@@ -2,6 +2,18 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 4, 2026 (looking and listening)
+
+- The kindergarten art and music lessons now have spoken lessons written for the ear, and every answer comes with its reason.
+- Children now meet form and balance, the two parts of the Texas art standard the lesson had left out, and hear that flutes are woodwinds and trumpets are brass inside the wind family.
+- Every kindergarten course now meets the full standard, so the kindergarten review is finished.
+
+## October 4, 2026 (money and me)
+
+- The kindergarten business lessons now have spoken lessons written for the ear, and every answer comes with its reason.
+- Children now hear why a job earns income, why needs come first, what a food bank does, and why giving a borrowed thing back on time matters.
+- The two kindergarten money courses now say the same things in the same words, and both follow the Council for Economic Education's 2025 standards.
+
 ## October 4, 2026 (on the farm)
 
 - The kindergarten farm lessons now have spoken lessons written for the ear, and every answer comes with its reason.

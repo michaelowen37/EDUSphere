@@ -28,7 +28,7 @@ Not new material, so each is fixed when the review reaches its course (accuracy 
 | # | What | Found | Status |
 |---|---|---|---|
 | A1 | The Technology Applications courses for grades 5, 6 and 7 (§§126.10, 126.17, 126.18, Adopted 2022) cite subsection (b), the introduction; the knowledge and skills are subsection (c). Read each section and correct its codes. | KC | Waiting |
-| A2 | Every course whose national column cites the Voluntary National Content Standards in Economics, second edition (2010), moves to the National Content Standards in K-12 Economics, third edition (Council for Economic Education, May 2025), which reorganizes twenty standards into eighteen and rewrites them; pass KG moved the kindergarten course. Left: the economics and business courses from grade 1 up, and the college macroeconomics course. Read the third edition's statement for each row when the review reaches the course. | KG | Waiting |
+| A2 | Every course whose national column cites the Voluntary National Content Standards in Economics, second edition (2010), moves to the National Content Standards in K-12 Economics, third edition (Council for Economic Education, May 2025), which reorganizes twenty standards into eighteen and rewrites them; pass KG moved the kindergarten economics course and pass KI the kindergarten business course. Left: the economics and business courses from grade 1 up, and the college macroeconomics course. Read the third edition's statement for each row when the review reaches the course. | KG | Waiting |
 
 ## How to add one
 

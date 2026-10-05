@@ -10417,14 +10417,29 @@ function ARTSK_MODULES() { return [
     tagline: 'The pieces every picture is made of',
     requires: [],
     lesson: {
-      paragraphs: ['Every picture is made of lines, shapes and colors. A line can be straight, curved or a zigzag. A shape is a line that closes, like a circle, a square or a triangle.', 'Red, yellow and blue are the primary colors. Mix two and you get a new one. Red and yellow make orange, blue and yellow make green, and red and blue make purple.', 'Some colors feel warm, like red, orange and yellow, the colors of the sun. Some feel cool, like blue, green and purple, the colors of water. Texture is how a thing would feel: rough like bark, smooth like glass. A pattern is something that repeats, like stripes.', 'Lines, shapes, colors, texture and pattern. Look at any picture and you can find them all.'],
-      keyIdea: 'Lines, shapes and colors make every picture. Red, yellow and blue mix into orange, green and purple. Warm colors feel like sun, cool colors like water.',
+      paragraphs: ['Every picture is made of lines, shapes and colors. A line can be straight, curved or a zigzag. A shape is a line that closes, like a circle, a square or a triangle. A form is a shape with thickness, like a ball or a box, that you could hold in your hand.', 'Red, yellow and blue are the three colors painters start with, called the primary colors. Mix two and you get a new one. Red and yellow make orange, blue and yellow make green, and red and blue make purple.', 'Some colors feel warm, like red, orange and yellow, the colors of the sun. Some feel cool, like blue, green and purple, the colors of water. Texture is how a thing would feel, rough like bark or smooth like glass. A pattern is something that repeats, like stripes. Balance is when the two sides of a picture feel even, like a seesaw with the same weight on each end.', 'Lines, shapes, colors, form, texture, pattern and balance. Look at any picture and you can find them all.'],
+      // Full standard, pass KJ: a spoken script of its own (it read its paragraphs over one picture of word boxes); form and
+      // balance taught, since 117.102(b)(1)(B) names them with "including" and the lesson had neither; red, yellow and blue
+      // said as the colors painters start with (light mixes differently, which later grades meet); warm and cool painted (P36).
+      script: [
+        { say: 'Every picture is made of lines, shapes and colors. A line can be straight, curved or a zigzag.', show: null },
+        { say: 'A shape is a line that closes, like a circle, a square or a triangle.', show: { kind: 'shape', name: 'circle' } },
+        { say: 'A form is a shape with thickness, like a ball or a box, that you could hold in your hand.', show: { kind: 'solid', name: 'sphere' } },
+        { say: 'Red, yellow and blue are the three colors painters start with, called the primary colors. Mix two and you get a new one.', show: { kind: 'pair', a: { kind: 'swatch', colour: 'red' }, b: { kind: 'swatch', colour: 'yellow' } } },
+        { say: 'Red and yellow make orange, blue and yellow make green, and red and blue make purple.', show: { kind: 'flow', steps: ['red and yellow, orange', 'blue and yellow, green', 'red and blue, purple'] } },
+        { say: 'Some colors feel warm, like red, orange and yellow, the colors of the sun. Some feel cool, like blue, green and purple, the colors of water.', show: null },
+        { say: 'Texture is how a thing would feel, rough like bark or smooth like glass.', show: null },
+        { say: 'A pattern is something that repeats, like stripes. Balance is when the two sides of a picture feel even, like a seesaw with the same weight on each end.', show: null },
+        { say: 'Lines, shapes, colors, form, texture, pattern and balance. Look at any picture and you can find them all.', show: null },
+      ],
+      pictures: [{ serial: 'P36', step: 5, alt: 'A sunset in warm reds, oranges and yellows beside a lake in cool blues, greens and purples' }],
+      keyIdea: 'Lines, shapes and colors make every picture, with form, texture, pattern and balance. Red, yellow and blue mix into orange, green and purple. Warm colors feel like sun, cool colors like water.',
       example: { kind: 'flow', steps: ['red and yellow', 'orange'], caption: 'Two primary colors mixed make a new one.',
         another: ['Take a walk with your eyes. The road is a straight line, a hill is a curve, a roof is a zigzag or a triangle. The world is drawn with the same lines a picture is.',
-          { text: 'Warm and cool are feelings, not temperatures. A red room feels busy and bright; a blue room feels calm. Painters choose colors the way you choose a coat.', visual: { kind: 'flow', steps: ['red, orange, yellow: warm', 'blue, green, purple: cool'] } },
-          'A pattern is a promise: stripe, stripe, stripe, and you know the next one before you see it.'] },
+          { text: 'Warm and cool are feelings, not temperatures. A red room feels busy and bright, and a blue room feels calm. Painters choose colors the way you choose a coat.', visual: { kind: 'flow', steps: ['warm, busy and bright', 'cool, calm'] } },
+          'A picture with everything piled on one side feels like it might tip over. Put something on the other side, and it feels even. That is balance.'] },
     },
-    sources: ['Aligned with TEKS Fine Arts 117.102(b)(1)(A) (gather information from subjects in the environment using the senses) and 117.102(b)(1)(B) (identify the elements of art, including line, shape, color, texture and form, and the principles of design, including repetition/pattern and balance, in the environment), and the National Core Arts Standards, VA:Re7.2.Ka (describe what an image represents).'],
+    sources: ['Aligned with TEKS Fine Arts 117.102(b)(1)(A) (gather information from subjects in the environment using the senses) and 117.102(b)(1)(B) (identify the elements of art, including line, shape, color, texture, and form, and the principles of design, including repetition/pattern and balance, in the environment), and the National Core Arts Standards, VA:Re7.2.Ka (describe what an image represents).'],
     generators: ['ak-lines', 'ak-lines', 'ak-lines', 'ak-lines', 'ak-lines'],
   },
   {
@@ -10434,14 +10449,26 @@ function ARTSK_MODULES() { return [
     tagline: 'A picture shows something, and it makes you feel something',
     requires: ['lines-shapes-and-colors'],
     lesson: {
-      paragraphs: ['A picture shows something, like a cat, a house or a storm. That is its subject. A picture also makes you feel something. Bright colors and curved lines can feel happy. Dark colors and sharp zigzags can feel stormy.', 'Two people can look at the same picture and feel different things. Both are right.', 'Art is not only in museums. It is on a cup, a quilt, a street sign, a birthday card and the wall of a building. People make art to show what they love and to make plain things beautiful.', 'When you look at a picture, ask two questions. What does it show? How does it make me feel? Then say your idea out loud, and listen to a friend say theirs.'],
+      paragraphs: ['A picture shows something, like a cat, a house or a storm. That is its subject. A picture also makes you feel something. Bright colors and curved lines can feel happy, and dark colors and sharp zigzags can feel stormy.', 'Two people can look at the same picture and feel different things. Both are right.', 'Art is not only in museums. It is on a cup, a quilt, a street sign, a birthday card and the wall of a building. People make art to show what they love and to make plain things beautiful.', 'When you look at a picture, ask two questions. What does it show? How does it make me feel? Then say your idea out loud, and listen to a friend say theirs.'],
+      // Full standard, pass KJ: a spoken script; the same cat drawn two ways gets a painting (P37), since the feeling a color
+      // and a line give is the lesson; why people make art is asked.
+      script: [
+        { say: 'A picture shows something, like a cat, a house or a storm. That is its subject.', show: null },
+        { say: 'A picture also makes you feel something. Bright colors and curved lines can feel happy, and dark colors and sharp zigzags can feel stormy.', show: null },
+        { say: 'Two people can look at the same picture and feel different things. Both are right.', show: null },
+        { say: 'Art is not only in museums. It is on a cup, a quilt, a street sign, a birthday card and the wall of a building.', show: { kind: 'icon', name: 'cup' } },
+        { say: 'People make art to show what they love and to make plain things beautiful.', show: null },
+        { say: 'When you look at a picture, ask two questions. What does it show? How does it make me feel?', show: { kind: 'flow', steps: ['what does it show?', 'how does it feel?'] } },
+        { say: 'Then say your idea out loud, and listen to a friend say theirs.', show: null },
+      ],
+      pictures: [{ serial: 'P37', step: 1, alt: 'The same cat drawn twice, once in bright yellow with curved lines and once in dark gray with sharp zigzags' }],
       keyIdea: 'A picture has a subject, what it shows, and a feeling. Art is everywhere, and two people can see it differently.',
       example: { kind: 'flow', steps: ['look', 'what does it show?', 'how does it feel?', 'say your idea'], caption: 'Two questions open any picture.',
-        another: ['A museum is a house for pictures, but the first gallery a child visits is the fridge door, and the rules are the same: look, and say what you see.',
-          { text: 'The same cat drawn in yellow with round lines and in gray with sharp lines is the same subject and two different feelings.', visual: { kind: 'flow', steps: ['same subject', 'different colors and lines', 'different feelings'] } },
-          'Everyone is allowed an idea about a picture. Saying it is how you find out what you think.'] },
+        another: ['A museum is a house for pictures, but the first gallery a child visits is the fridge door, and the rules are the same. Look, and say what you see.',
+          { text: 'The same cat drawn in yellow with round lines and in gray with sharp lines is the same subject and two different feelings.', visual: { kind: 'flow', steps: ['same subject', 'two feelings'] } },
+          'A cup does not need a bird on it. Someone wanted one there, and that is art in everyday life.'] },
     },
-    sources: ['Aligned with TEKS Fine Arts 117.102(b)(3)(A) (identify simple subjects expressed in artworks), 117.102(b)(3)(C) (identify the uses of art in everyday life) and 117.102(b)(4)(B) (express ideas found in collections such as real or virtual art museums, galleries, portfolios or exhibitions), and the National Core Arts Standards, VA:Re7.1.Ka (identify uses of art within one\'s personal environment) and VA:Re8.1.Ka (interpret art by identifying subject matter and describing relevant details).'],
+    sources: ['Aligned with TEKS Fine Arts 117.102(b)(3)(A) (identify simple subjects expressed in artworks), 117.102(b)(3)(C) (identify the uses of art in everyday life) and 117.102(b)(4)(B) (express ideas found in collections such as real or virtual art museums, galleries, portfolios, or exhibitions using original artworks created by artists or peers), and the National Core Arts Standards, VA:Re7.1.Ka (identify uses of art within one\'s personal environment) and VA:Re8.1.Ka (interpret art by identifying subject matter and describing relevant details).'],
     generators: ['ak-picture', 'ak-picture', 'ak-picture', 'ak-picture', 'ak-picture'],
   },
   {
@@ -10451,14 +10478,26 @@ function ARTSK_MODULES() { return [
     tagline: 'The steady beat, the rhythm on top, and how sounds differ',
     requires: ['what-a-picture-says'],
     lesson: {
-      paragraphs: ['Put a hand on your heart. That steady thump is a beat. Music has a steady beat too, and you can clap it, tap it or march to it, always the same.', 'Rhythm is different. Rhythm is the pattern of the words on top of the beat. Clap your name: some claps are quick and some are slow. That is rhythm.', 'Sounds can be fast or slow, loud or soft, high or low. A bird sings high, and a big drum sounds low. A lullaby is soft and slow, and a marching song is loud and steady. Between the sounds there is silence, and silence is part of music too.', 'Steady beat, rhythm on top, fast or slow, loud or soft, high or low, and silence in between. Listen for each one.'],
-      keyIdea: 'The steady beat is the same every time, and the rhythm is the pattern of the words on top. Sounds can be fast or slow, loud or soft, high or low.',
-      example: { kind: 'flow', steps: ['beat: tap, tap, tap, tap', 'rhythm: clap your name'], caption: 'The beat stays steady, and the rhythm follows the words.',
-        another: ['A clock ticks a steady beat. A song sung over the ticking has a rhythm. The tick never changes; the song does.',
-          { text: 'Loud and soft are volume; fast and slow are speed; high and low are pitch. A bird is high and soft, a truck is low and loud.', visual: { kind: 'flow', steps: ['bird: high, soft', 'drum: low, loud'] } },
-          'The best way to find the beat is to move to it. Feet know before ears do.'] },
+      paragraphs: ['Put a hand on your heart. That steady thump is a beat. Music has a steady beat too, and you can clap it, tap it or march to it, always the same.', 'Rhythm is different. Rhythm is the pattern of long and short sounds on top of the beat, like the words of a song. Clap your name. Some claps are quick and some are slow. That is rhythm.', 'Sounds can be fast or slow, loud or soft, high or low. A bird sings high, and a big drum sounds low. A lullaby is soft and slow, and a marching song is loud and steady. Between the sounds there is silence, and silence is part of music too.', 'The steady beat, the rhythm on top, fast and slow, loud and soft, high and low, and silence in between. Listen for each one.'],
+      // Full standard, pass KJ: a spoken script; rhythm said as the pattern of long and short sounds (the words of a song are
+      // one example); the semicolons and colons are gone from the example; the bank grows from six questions to eleven.
+      script: [
+        { say: 'Put a hand on your heart. That steady thump is a beat.', show: null },
+        { say: 'Music has a steady beat too, and you can clap it, tap it or march to it, always the same.', show: { kind: 'flow', steps: ['tap', 'tap', 'tap', 'tap'] } },
+        { say: 'Rhythm is different. Rhythm is the pattern of long and short sounds on top of the beat, like the words of a song.', show: null },
+        { say: 'Clap your name. Some claps are quick and some are slow. That is rhythm.', show: null },
+        { say: 'Sounds can be fast or slow, loud or soft, high or low. A bird sings high, and a big drum sounds low.', show: { kind: 'icon', name: 'bird' } },
+        { say: 'A lullaby is soft and slow, and a marching song is loud and steady.', show: null },
+        { say: 'Between the sounds there is silence, and silence is part of music too.', show: null },
+        { say: 'The steady beat, the rhythm on top, fast and slow, loud and soft, high and low, and silence in between. Listen for each one.', show: null },
+      ],
+      keyIdea: 'The steady beat is the same every time, and the rhythm is the pattern of long and short sounds on top. Sounds can be fast or slow, loud or soft, high or low.',
+      example: { kind: 'flow', steps: ['beat, tap, tap, tap, tap', 'rhythm, clap your name'], caption: 'The beat stays steady, and the rhythm follows the words.',
+        another: ['A clock ticks a steady beat. A song sung over the ticking has a rhythm. The tick never changes, and the song does.',
+          { text: 'Loud and soft are about how big a sound is. Fast and slow are about speed. High and low are about pitch. A bird is high and soft, and a truck is low and loud.', visual: { kind: 'flow', steps: ['a bird, high and soft', 'a drum, low and loud'] } },
+          'The quiet after the last note is part of the song. A good audience waits in it before clapping.'] },
     },
-    sources: ['Aligned with TEKS Fine Arts 117.103(b)(1)(D) (identify same/different in beat/rhythm, higher/lower, louder/softer, faster/slower and simple patterns in musical performances), 117.103(b)(4)(B) (identify steady beat in musical performances) and 117.103(b)(4)(C) (compare same/different in beat/rhythm, higher/lower, louder/softer, faster/slower and simple patterns), and the National Core Arts Standards, MU:Re7.2.Ka (with guidance, demonstrate how a specific music concept, such as beat, is used in music) and MU:Re8.1.Ka (with guidance, demonstrate awareness of expressive qualities such as dynamics and tempo).'],
+    sources: ['Aligned with TEKS Fine Arts 117.103(b)(1)(D) (identify same/different in beat/rhythm, higher/lower, louder/softer, faster/slower, and simple patterns in musical performances), 117.103(b)(4)(B) (identify steady beat in musical performances) and 117.103(b)(4)(C) (compare same/different in beat/rhythm, higher/lower, louder/softer, faster/slower, and simple patterns in musical performances), and the National Core Arts Standards, MU:Re7.2.Ka (with guidance, demonstrate how a specific music concept (such as beat or melodic direction) is used in music) and MU:Re8.1.Ka (with guidance, demonstrate awareness of expressive qualities (such as dynamics and tempo) that reflect creators\'/performers\' expressive intent).'],
     generators: ['ak-beat', 'ak-beat', 'ak-beat', 'ak-beat', 'ak-beat'],
   },
   {
@@ -10468,15 +10507,30 @@ function ARTSK_MODULES() { return [
     tagline: 'Five voices, three families, and how to listen',
     requires: ['beat-and-sound'],
     lesson: {
-      pictures: [{ serial: 'P10', alt: 'Strings, wind and percussion instruments', step: 1 }],
-      paragraphs: ['You have five voices. A singing voice. A speaking voice. A whispering voice. A calling voice, for across the yard. And an inner voice, the one you hear only inside your head. A grown-up\'s singing voice sounds lower than a child\'s.', 'Instruments come in families. String instruments, like a guitar or a violin, have strings you pluck or bow. Wind instruments, like a flute or a trumpet, sound when you blow. Percussion instruments, like a drum or a shaker, sound when you hit or shake them.', 'Every family has its own sound, and you can tell them apart with your eyes closed.', 'People sing songs and play music games everywhere: rhymes, folk songs, songs for holidays. When someone plays for you, be a good audience: sit still, listen with your ears, and clap at the end.'],
-      keyIdea: 'Five voices: singing, speaking, whispering, calling and inner. Three instrument families: strings, wind and percussion. A good audience listens and claps at the end.',
-      example: { kind: 'flow', steps: ['strings: pluck or bow', 'wind: blow', 'percussion: hit or shake'], caption: 'Each family makes its sound a different way.',
+      paragraphs: ['You have five voices. A singing voice. A speaking voice. A whispering voice. A calling voice, for across the yard. And an inner voice, the one you hear only inside your head. A grown-up\'s singing voice sounds lower and bigger than a child\'s.', 'Instruments come in families, and each family makes its sound a different way. String instruments, like a guitar or a violin, have strings you pluck or bow. Wind instruments, like a flute or a trumpet, sound when you blow. Flutes are woodwinds and trumpets are brass, and both are wind instruments. Percussion instruments, like a drum or a shaker, sound when you hit or shake them.', 'Every family has its own sound, and you can tell them apart with your eyes closed.', 'People sing songs and play music games everywhere, rhymes, folk songs and songs for holidays. When someone plays for you, be a good audience. Sit quietly, put your brain on the music, and clap at the end.'],
+      // Full standard, pass KJ: a spoken script; woodwinds and brass named inside the wind family, so the three families do not
+      // have to be unlearned; a grown-up's voice is lower and bigger (timbre, 117.103(b)(1)(B)); the audience rule says what the
+      // listening lesson says (your brain on the music); colons gone; the painting P10 sits on the families line.
+      script: [
+        { say: 'You have five voices. A singing voice, a speaking voice, and a whispering voice.', show: { kind: 'flow', steps: ['singing', 'speaking', 'whispering'] } },
+        { say: 'A calling voice, for across the yard. And an inner voice, the one you hear only inside your head.', show: { kind: 'flow', steps: ['calling', 'inner'] } },
+        { say: 'A grown-up\'s singing voice sounds lower and bigger than a child\'s.', show: null },
+        { say: 'Instruments come in families, and each family makes its sound a different way.', show: null },
+        { say: 'String instruments, like a guitar or a violin, have strings you pluck or bow.', show: null },
+        { say: 'Wind instruments, like a flute or a trumpet, sound when you blow. Flutes are woodwinds and trumpets are brass, and both are wind instruments.', show: null },
+        { say: 'Percussion instruments, like a drum or a shaker, sound when you hit or shake them.', show: null },
+        { say: 'Every family has its own sound, and you can tell them apart with your eyes closed.', show: null },
+        { say: 'People sing songs and play music games everywhere, rhymes, folk songs and songs for holidays.', show: null },
+        { say: 'When someone plays for you, be a good audience. Sit quietly, put your brain on the music, and clap at the end.', show: null },
+      ],
+      pictures: [{ serial: 'P10', alt: 'Strings, wind and percussion instruments', step: 3 }],
+      keyIdea: 'Five voices, singing, speaking, whispering, calling and inner. Three instrument families, strings, wind and percussion, each with its own sound. A good audience listens and claps at the end.',
+      example: { kind: 'flow', steps: ['strings, pluck or bow', 'wind, blow', 'percussion, hit or shake'], caption: 'Each family makes its sound a different way.',
         another: ['Try the five voices on one word. Sing hello, say hello, whisper hello, call hello across the room, and think hello without a sound. Same word, five voices.',
-          { text: 'A family of instruments is like a family of people: each one is different, but you can hear that they belong together.', visual: { kind: 'flow', steps: ['guitar and violin', 'flute and trumpet', 'drum and shaker'] } },
-          'Clapping at the end is how an audience says thank you. Sitting still during the song is how it says I am listening.'] },
+          { text: 'A family of instruments is like a family of people. Each one is different, but you can hear that they belong together.', visual: { kind: 'flow', steps: ['one family', 'different voices', 'the same sound'] } },
+          'Clapping at the end says thank you to the people who played.'] },
     },
-    sources: ['Aligned with TEKS Fine Arts 117.103(b)(1)(A) (identify the differences between the five voices, including singing, speaking, inner, whispering and calling voices), 117.103(b)(1)(B) (identify the timbre of adult and child singing voices), 117.103(b)(1)(C) (identify the timbre of instrument families), 117.103(b)(3)(A) (sing songs and play musical games, including rhymes, folk music and seasonal music) and 117.103(b)(4)(A) (identify and demonstrate appropriate audience behavior during live or recorded performances), and the National Core Arts Standards, MU:Re7.2.Ka.'],
+    sources: ['Aligned with TEKS Fine Arts 117.103(b)(1)(A) (identify the differences between the five voices, including singing, speaking, inner, whispering, and calling voices), 117.103(b)(1)(B) (identify the timbre of adult and child singing voices), 117.103(b)(1)(C) (identify the timbre of instrument families), 117.103(b)(3)(A) (sing songs and play musical games, including rhymes, folk music, and seasonal music) and 117.103(b)(4)(A) (identify and demonstrate appropriate audience behavior during live or recorded performances), and the National Core Arts Standards, MU:Re7.2.Ka (with guidance, demonstrate how a specific music concept (such as beat or melodic direction) is used in music).'],
     generators: ['ak-voices', 'ak-voices', 'ak-voices', 'ak-voices', 'ak-voices'],
   },
 ]; }
@@ -11984,14 +12038,26 @@ function BIZK_MODULES() { return [
     tagline: 'People work at jobs to earn money, and a gift is not the same as pay',
     requires: [],
     lesson: {
-      paragraphs: ['People work at jobs to earn money. Money you earn by working is called income. A baker earns income by baking bread, and a nurse earns income by caring for sick people.', 'Jobs need skills. A baker has to measure and to get up early. A bus driver has to drive with care and know the way. You can learn skills like these, one at a time.', 'Not all money is income. When your grandma gives you money for your birthday, that money is a gift. You did not work for it. Income is earned, and a gift is given.'],
-      keyIdea: 'Money you earn by working is income. Jobs need skills. A gift of money is not income, because you did not work for it.',
+      paragraphs: ['People work at jobs to earn money. Money you earn by working is called income. A baker earns income by baking bread, and a nurse earns income by caring for sick people. People pay for work they want done, and that is why a job earns income.', 'Jobs need skills. A baker has to measure and to get up early. A bus driver has to drive with care and know the way. You can learn skills like these, one at a time, and they grow with practice.', 'Not all money is income. When your grandma gives you money for your birthday, that money is a gift. You did not work for it. Income is earned, and a gift is given.'],
+      // Full standard, pass KI: a spoken script of its own (it read its paragraphs over one picture of word boxes); why a job
+      // earns income (people pay for work they want done); skills grow with practice; the bank grows from five questions.
+      script: [
+        { say: 'People work at jobs to earn money. Money you earn by working is called income.', show: { kind: 'letters', text: 'income' } },
+        { say: 'A baker earns income by baking bread, and a nurse earns income by caring for sick people.', show: null },
+        { say: 'People pay for work they want done. That is why a job earns income.', show: null },
+        { say: 'Jobs need skills. A baker has to measure and to get up early.', show: null },
+        { say: 'A bus driver has to drive with care and know the way.', show: { kind: 'icon', name: 'bus' } },
+        { say: 'You can learn skills like these, one at a time, and they grow with practice.', show: null },
+        { say: 'Not all money is income. When your grandma gives you money for your birthday, that money is a gift.', show: null },
+        { say: 'You did not work for it. Income is earned, and a gift is given.', show: { kind: 'flow', steps: ['a job, income', 'a birthday card, a gift'] } },
+      ],
+      keyIdea: 'Money you earn by working is income, because people pay for work they want done. Jobs need skills, and skills grow with practice. A gift of money is not income.',
       example: { kind: 'flow', steps: ['do a job', 'earn money', 'that money is income'], caption: 'How people earn income.',
         another: ['A dog walker earns income for each walk. The dog\'s owner pays for the work.',
-          { text: 'Five dollars from a job is income. Five dollars in a birthday card is a gift. The money looks the same; where it came from is different.', visual: { kind: 'flow', steps: ['a job', 'income'] } },
-          'A firefighter needs to be strong and calm. A teacher needs to read well and be kind.'] },
+          { text: 'Five dollars from a job is income. Five dollars in a birthday card is a gift. The money looks the same, and where it came from is different.', visual: { kind: 'flow', steps: ['a job', 'income'] } },
+          'A firefighter, a teacher and a farmer all earn income, because people pay for the work they do.'] },
     },
-    sources: ['Aligned with TEKS Mathematics 111.2(b)(9)(A) (identify ways to earn income), 111.2(b)(9)(B) (differentiate between money received as income and money received as gifts), 111.2(b)(9)(C) (list simple skills required for jobs) and 111.3(b)(9)(A) (define money earned as income), and the Voluntary National Content Standards in Economics, Standard 13.'],
+    sources: ['Aligned with TEKS Mathematics 111.2(b)(9)(A) (identify ways to earn income), 111.2(b)(9)(B) (differentiate between money received as income and money received as gifts), 111.2(b)(9)(C) (list simple skills required for jobs) and 111.3(b)(9)(A) (define money earned as income), and the National Content Standards in K-12 Economics (Council for Economic Education, third edition, 2025), Standard 8 (Labor and Income).'],
     generators: ['bzk-earn', 'bzk-earn', 'bzk-earn', 'bzk-earn', 'bzk-earn'],
   },
   {
@@ -12001,14 +12067,26 @@ function BIZK_MODULES() { return [
     tagline: 'Needs keep us alive and well, wants are nice to have, and income pays for both',
     requires: ['earning-money-k'],
     lesson: {
-      paragraphs: ['A need is something we must have to live and be well. Food, water, a home and warm clothes are needs.', 'A want is something nice to have. A new toy, a kite and a game are wants. We can live without them.', 'Families use income to buy goods, like food and shoes, and services, like a haircut. Money runs out, so families buy needs first and then choose which wants to buy.'],
-      keyIdea: 'A need is something we must have, like food and a home. A want is nice to have. Income pays for needs first, then for some wants.',
+      paragraphs: ['A need is something we must have to live and be well. Food, water, a home and warm clothes are needs.', 'A want is something nice to have. A new toy, a kite and a game are wants. We can live without them, and wanting things is fine. Everyone wants things.', 'Families use income to buy goods, like food and shoes, and services, like a haircut. A good is a thing you can hold, and a service is a thing someone does for you. Money runs out before wants do, so families buy needs first. If money is left, the family chooses which wants to buy, so milk and bread come before a treat.'],
+      // Full standard, pass KI: a spoken script; needs and wants painted (P34); a good and a service each said with its
+      // reason, as Needs, wants, work and saving says it; why needs come first (money runs out before wants do); wanting is fine.
+      script: [
+        { say: 'A need is something we must have to live and be well. Food, water, a home and warm clothes are needs.', show: { kind: 'flow', steps: ['food', 'water', 'a home', 'warm clothes'] } },
+        { say: 'A want is something nice to have. A new toy, a kite and a game are wants.', show: { kind: 'flow', steps: ['a toy', 'a kite', 'a game'] } },
+        { say: 'We can live without them, and wanting things is fine. Everyone wants things.', show: null },
+        { say: 'Families use income to buy goods, like food and shoes, and services, like a haircut.', show: null },
+        { say: 'A good is a thing you can hold, and a service is a thing someone does for you.', show: null },
+        { say: 'Money runs out before wants do, so families buy needs first.', show: null },
+        { say: 'If money is left, the family chooses which wants to buy, so milk and bread come before a treat.', show: null },
+      ],
+      pictures: [{ serial: 'P34', step: 0, alt: 'Two lists on a fridge, needs with food, water, a coat and a home, and wants with a kite, a game and a puppy' }],
+      keyIdea: 'A need is something we must have, like food and a home. A want is nice to have. Income pays for needs first, then for some wants, because money runs out before wants do.',
       example: { kind: 'flow', steps: ['income', 'needs first', 'then some wants'], caption: 'How a family spends its money.',
         another: ['Shoes are a need. Shoes with lights in them are nice, and the lights are a want.',
           { text: 'A family has twenty dollars. Milk and bread come first. If money is left, they can choose a treat.', visual: { kind: 'flow', steps: ['milk and bread', 'a treat'] } },
-          'Wanting things is fine. Everyone wants things. Choosing well is the skill.'] },
+          'Wanting things is fine. Everyone wants things. The needs just come first.'] },
     },
-    sources: ['Aligned with TEKS Mathematics 111.2(b)(9)(D) (distinguish between wants and needs and identify income as a source to meet one\'s wants and needs) and 111.3(b)(9)(B) (identify income as a means of obtaining goods and services, oftentimes making choices between wants and needs), and the Voluntary National Content Standards in Economics, Standard 1.'],
+    sources: ['Aligned with TEKS Mathematics 111.2(b)(9)(D) (distinguish between wants and needs and identify income as a source to meet one\'s wants and needs) and 111.3(b)(9)(B) (identify income as a means of obtaining goods and services, oftentimes making choices between wants and needs), and the National Content Standards in K-12 Economics (Council for Economic Education, third edition, 2025), Standard 1 (Scarcity and Allocation).'],
     generators: ['bzk-wants', 'bzk-wants', 'bzk-wants', 'bzk-wants', 'bzk-wants'],
   },
   {
@@ -12018,14 +12096,27 @@ function BIZK_MODULES() { return [
     tagline: 'Saving instead of spending, money that adds up week by week, the bank, and giving',
     requires: ['wants-and-needs-k'],
     lesson: {
-      paragraphs: ['When you get money, you can spend it now or save it for later. Saving is a choice instead of spending.', 'Saved money adds up. Save one dollar each week, and after five weeks you have five dollars. A bank keeps money safe. Putting money in the bank is a deposit. Taking money out is a withdrawal.', 'You can also share. Some people give money to help others, like a food bank or an animal shelter. Giving to help others is called charity.'],
-      keyIdea: 'You can spend, save or share money. Saving adds up over time. Putting money in a bank is a deposit, and taking it out is a withdrawal.',
+      paragraphs: ['When you get money, you can spend it now or save it for later. Saving is a choice instead of spending, and it adds up.', 'Save one dollar each week, and after five weeks you have five dollars. A bank keeps money safe for lots of people. Putting money in the bank is a deposit. Taking money out is a withdrawal.', 'You can also share. Some people give money to help others. A food bank gives food to families who need it, and an animal shelter cares for animals with no home. Giving to help others is called charity.'],
+      // Full standard, pass KI: a spoken script; a food bank and an animal shelter each said for what it does, with a painting
+      // (P35); a bank keeps money safe for lots of people; the listed questions grow beside the computed sums.
+      script: [
+        { say: 'When you get money, you can spend it now or save it for later.', show: { kind: 'flow', steps: ['spend now', 'save for later'] } },
+        { say: 'Saving is a choice instead of spending, and it adds up.', show: null },
+        { say: 'Save one dollar each week, and after five weeks you have five dollars.', show: { kind: 'flow', steps: ['one', 'two', 'three', 'four', 'five'] } },
+        { say: 'A bank keeps money safe for lots of people. Putting money in the bank is a deposit.', show: null },
+        { say: 'Taking money out of the bank is a withdrawal.', show: null },
+        { say: 'You can also share. Some people give money to help others.', show: null },
+        { say: 'A food bank gives food to families who need it, and an animal shelter cares for animals with no home.', show: null },
+        { say: 'Giving to help others is called charity.', show: null },
+      ],
+      pictures: [{ serial: 'P35', step: 6, alt: 'Volunteers at a food bank handing bags of food to families' }],
+      keyIdea: 'You can spend, save or share money. Saving adds up over time. Putting money in a bank is a deposit, and taking it out is a withdrawal. Giving to help others is charity.',
       example: { kind: 'flow', steps: ['save one dollar a week', 'five weeks go by', 'five dollars saved'], caption: 'Saving adds up.',
-        another: ['Three jars help: one to spend, one to save and one to share.',
+        another: ['Three jars help, one to spend, one to save and one to share.',
           { text: 'Put ten dollars in the bank. That is a deposit. Take out four dollars. That is a withdrawal, and six dollars are still there.', visual: { kind: 'flow', steps: ['deposit ten dollars', 'withdraw four dollars', 'six dollars left'] } },
-          'Sharing can be time, too. Helping at a food bank is a way to give.'] },
+          'A food bank gives food to families who need it. A dollar in the share jar can help fill a bag.'] },
     },
-    sources: ['Aligned with TEKS Mathematics 111.3(b)(9)(C) (distinguish between spending and saving), 111.3(b)(9)(D) (consider charitable giving), 111.4(b)(11)(A) (calculate how money saved can accumulate into a larger amount over time), 111.4(b)(11)(B) (explain that saving is an alternative to spending) and 111.4(b)(11)(C) (distinguish between a deposit and a withdrawal), and the Voluntary National Content Standards in Economics, Standard 10.'],
+    sources: ['Aligned with TEKS Mathematics 111.3(b)(9)(C) (distinguish between spending and saving), 111.3(b)(9)(D) (consider charitable giving), 111.4(b)(11)(A) (calculate how money saved can accumulate into a larger amount over time), 111.4(b)(11)(B) (explain that saving is an alternative to spending) and 111.4(b)(11)(C) (distinguish between a deposit and a withdrawal), and the National Content Standards in K-12 Economics (Council for Economic Education, third edition, 2025), Standard 14 (Banks, Interest Rates, and Financial Markets).'],
     generators: ['bzk-save', 'bzk-save', 'bzk-save', 'bzk-save', 'bzk-save'],
   },
   {
@@ -12035,14 +12126,26 @@ function BIZK_MODULES() { return [
     tagline: 'Borrowing and lending with care, and the people who make things and the people who buy them',
     requires: ['save-spend-share-k'],
     lesson: {
-      paragraphs: ['To borrow is to use something that belongs to someone else and give it back. When you borrow well, you give it back on time and in good shape. Losing it or breaking it is borrowing badly.', 'To lend is to let someone use your things. Before you lend, think about what could go well and what could go wrong. A friend may give it back late, or not at all.', 'People who make things are producers. People who buy and use things are consumers. To find what something costs to make, add up the cost of each part. A bookmark made from paper that costs two dollars and a ribbon that costs one dollar costs three dollars to make.'],
-      keyIdea: 'Borrow well: give it back on time and in good shape. Think before you lend. Producers make things, and consumers buy and use them.',
-      example: { kind: 'flow', steps: ['paper: two dollars', 'ribbon: one dollar', 'a bookmark: three dollars'], caption: 'The cost to make a bookmark.',
+      paragraphs: ['To borrow is to use something that belongs to someone else and give it back. When you borrow well, you give it back on time and in good shape. Losing it or breaking it is borrowing badly, and then people stop lending to you.', 'To lend is to let someone use your things. Before you lend, think about what could go well and what could go wrong. A friend may give it back late, or not at all, so lend what you can do without for a while.', 'People who make things are producers. People who buy and use things are consumers. To find what something costs to make, add up the cost of each part. A bookmark made from paper that costs two dollars and a ribbon that costs one dollar costs three dollars to make.'],
+      // Full standard, pass KI: a spoken script; why borrowing well matters (people keep lending to you); a rule for lending
+      // (lend what you can do without for a while); producers and consumers with the cost of a thing counted on screen.
+      script: [
+        { say: 'To borrow is to use something that belongs to someone else and give it back.', show: null },
+        { say: 'When you borrow well, you give it back on time and in good shape.', show: { kind: 'flow', steps: ['borrow it', 'take care of it', 'give it back on time'] } },
+        { say: 'Losing it or breaking it is borrowing badly, and then people stop lending to you.', show: null },
+        { say: 'To lend is to let someone use your things. Before you lend, think about what could go well and what could go wrong.', show: null },
+        { say: 'A friend may give it back late, or not at all, so lend what you can do without for a while.', show: null },
+        { say: 'People who make things are producers. People who buy and use things are consumers.', show: { kind: 'flow', steps: ['producers make', 'consumers buy and use'] } },
+        { say: 'To find what something costs to make, add up the cost of each part.', show: null },
+        { say: 'A bookmark made from paper that costs two dollars and a ribbon that costs one dollar costs three dollars to make.', show: { kind: 'flow', steps: ['paper, two dollars', 'ribbon, one dollar', 'a bookmark, three dollars'] } },
+      ],
+      keyIdea: 'Borrow well by giving it back on time and in good shape. Think before you lend. Producers make things, consumers buy and use them, and a thing costs what its parts add up to.',
+      example: { kind: 'flow', steps: ['paper, two dollars', 'ribbon, one dollar', 'a bookmark, three dollars'], caption: 'The cost to make a bookmark.',
         another: ['A baker is a producer. The family that buys her bread is a consumer.',
           { text: 'You borrow a library book. You read it, keep it dry and bring it back by the due date. That is borrowing well.', visual: { kind: 'flow', steps: ['borrow it', 'take care of it', 'give it back on time'] } },
-          'Lending a pencil is an easy yes. Lending a new game takes more thinking.'] },
+          'Before you lend your scooter, ask what could go wrong. If you need it tomorrow, lend something else.'] },
     },
-    sources: ['Aligned with TEKS Mathematics 111.4(b)(11)(D) (identify examples of borrowing and distinguish between responsible and irresponsible borrowing), 111.4(b)(11)(E) (identify examples of lending and use concepts of benefits and costs to evaluate lending decisions) and 111.4(b)(11)(F) (differentiate between producers and consumers and calculate the cost to produce a simple item), and the Voluntary National Content Standards in Economics, Standard 14.'],
+    sources: ['Aligned with TEKS Mathematics 111.4(b)(11)(D) (identify examples of borrowing and distinguish between responsible and irresponsible borrowing), 111.4(b)(11)(E) (identify examples of lending and use concepts of benefits and costs to evaluate lending decisions) and 111.4(b)(11)(F) (differentiate between producers and consumers and calculate the cost to produce a simple item), and the National Content Standards in K-12 Economics (Council for Economic Education, third edition, 2025), Standards 5 (Business Decisions and Market Structure) and 14 (Banks, Interest Rates, and Financial Markets).'],
     generators: ['bzk-make', 'bzk-make', 'bzk-make', 'bzk-make', 'bzk-make'],
   },
 ]; }
@@ -19186,48 +19289,71 @@ Object.assign(GENERATORS, {
   // (dollars saved over a few weeks, and the cost of a bookmark's parts), so those answers are computed, never typed.
   // ---------------------------------------------------------------------------------------------------------------
   'bzk-earn': (rng) => {
-    const Q = [['Money you earn by working is called what?', ['income', 'a gift', 'a toy'], 'income', 'You work, and you earn income.'],
+    // Full standard, pass KI: every answer is spoken in the lesson, every explanation gives the reason, and a setup line
+    // (the fifth item) carries the situation a question needs.
+    const Q = [['Money you earn by working is called what?', ['income', 'a gift', 'a toy'], 'income', 'Money you earn by working is income. People pay for work they want done.'],
+      ['How does a baker earn money?', ['baking bread', 'sleeping late', 'playing games'], 'baking bread', 'A baker earns income by baking bread. That is the baker\'s job, and people pay for the bread.'],
+      ['How does a nurse earn income?', ['caring for sick people', 'baking bread', 'driving a bus'], 'caring for sick people', 'A nurse earns income by caring for sick people. That is work people want done.'],
+      ['Why does a job earn income?', ['people pay for work they want done', 'money grows on jobs', 'because it is Monday'], 'people pay for work they want done', 'People pay for work they want done, like bread baked or sick people cared for.'],
+      ['What skill does a baker need?', ['to measure', 'to swim', 'to fly'], 'to measure', 'A baker needs to measure, and to get up early. Too much salt spoils a loaf.'],
+      ['What does a bus driver need to know?', ['the way', 'how to bake', 'how to swim'], 'the way', 'A bus driver has to drive with care and know the way.'],
+      ['How do skills grow?', ['with practice', 'by wishing', 'by sleeping'], 'with practice', 'Skills grow with practice, one at a time.'],
       ['Grandma gives you money for your birthday. What is it?', ['a gift', 'income', 'a job'], 'a gift', 'It is a gift. You did not work for it, so it is not income.'],
-      ['How does a baker earn money?', ['baking bread', 'sleeping late', 'playing games'], 'baking bread', 'A baker earns money by baking bread. That is the baker\'s job.'],
-      ['What skill does a baker need?', ['to measure', 'to fly', 'to swim'], 'to measure', 'A baker needs to measure, and to get up early.'],
-      ['Why do people work at jobs?', ['to earn money', 'to get a gift', 'to sleep'], 'to earn money', 'Money earned is income.']];
-    const [prompt, choices, answer, explain] = pick(rng, Q);
-    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+      ['Why do people work at jobs?', ['to earn money', 'to get a gift', 'to sleep'], 'to earn money', 'People work at jobs to earn money, and that money is income.'],
+      ['What is the pay called?', ['income', 'a gift', 'a want'], 'income', 'The pay is income, because she earned it by working.', 'Nia\'s mom bakes bread at a shop, and the shop pays her.'],
+      ['Income is earned, and a gift is what?', ['given', 'earned', 'lost'], 'given', 'Income is earned by working, and a gift is given, like birthday money from Grandma.']];
+    const [prompt, choices, answer, explain, story = null] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'bzk-wants': (rng) => {
-    const Q = [['Is food a need or a want?', ['a need', 'a want', 'a gift'], 'a need', 'Food is a need. We must have food to live.'],
+    const Q = [['Which one is a need?', ['water', 'a kite', 'a game'], 'water', 'Water is a need. We must have it to live and be well.'],
+      ['Is food a need or a want?', ['a need', 'a want', 'a gift'], 'a need', 'Food is a need. We must have food to live.'],
       ['Is a new toy a need or a want?', ['a want', 'a need', 'a job'], 'a want', 'A new toy is a want. It is nice to have, but we can live without it.'],
-      ['Which one is a need?', ['water', 'a kite', 'a game'], 'water', 'We must have water.'],
-      ['Which one is a want?', ['a kite', 'food', 'a home'], 'a kite', 'We can live without a kite.'],
-      ['What do families buy first?', ['needs', 'wants', 'games'], 'needs', 'Families buy needs first. Then they choose some wants.']];
-    const [prompt, choices, answer, explain] = pick(rng, Q);
-    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+      ['Which one is a want?', ['a kite', 'a home', 'food'], 'a kite', 'A kite is a want. We can live without a kite, and wanting one is fine.'],
+      ['What do families buy first?', ['needs', 'wants', 'games'], 'needs', 'Families buy needs first, because money runs out before wants do. Then they choose some wants.'],
+      ['Why do families buy needs first?', ['money runs out before wants do', 'needs are more fun', 'stores say so'], 'money runs out before wants do', 'Money runs out before wants do, so the needs come first and the wants wait.'],
+      ['Is it okay to want things?', ['yes, everyone wants things', 'no, never', 'only on birthdays'], 'yes, everyone wants things', 'Wanting things is fine. Everyone wants things. The needs just come first.'],
+      ['A haircut is which kind of thing?', ['a service', 'a good', 'a gift'], 'a service', 'A haircut is a service, a thing someone does for you. Food and shoes are goods.'],
+      ['Shoes are which kind of thing?', ['a good', 'a service', 'a job'], 'a good', 'Shoes are a good, a thing you can hold. A haircut is a service.'],
+      ['What pays for needs and wants?', ['income', 'a kite', 'a game'], 'income', 'Families use income to buy goods and services, needs first and then some wants.'],
+      ['What comes first, milk and bread or a treat?', ['milk and bread', 'a treat', 'neither'], 'milk and bread', 'Milk and bread are needs, so they come first. If money is left, the family can choose a treat.', 'A family has money for the week.']];
+    const [prompt, choices, answer, explain, story = null] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'bzk-save': (rng) => {
-    if (rng() < 0.3) { // saving adds up: a small amount each week for a few weeks
-      const each = 1 + Math.floor(rng() * 2); const weeks = 2 + Math.floor(rng() * 4); const total = each * weeks;
-      const answer = `${total} dollars`; const choices = [answer, `${total + each} dollars`, `${Math.max(1, total - each) === total ? total + 2 * each : Math.max(1, total - each)} dollars`];
-      return { type: 'choice', story: `You save ${each === 1 ? 'one dollar' : 'two dollars'} each week.`, prompt: `How much will you have after ${weeks} weeks?`, choices: shuffle(rng, choices), answer, explain: `${Array.from({ length: weeks }, () => each).join(' + ')} = ${each * weeks} dollars, one week at a time.`, visual: null, explainVisual: null };
+    const dollars = (n) => `${n} ${n === 1 ? 'dollar' : 'dollars'}`;
+    if (rng() < 0.5) {
+      const each = pick(rng, [1, 2]); const weeks = randInt(rng, 2, 5); const ans = each * weeks;
+      return { type: 'choice', story: `You save ${each === 1 ? 'one dollar' : 'two dollars'} each week.`, prompt: `How much will you have after ${weeks} weeks?`, choices: shuffle(rng, [ans, ans + each, ans - each].filter((v, i, a) => a.indexOf(v) === i && v > 0).slice(0, 3).map(dollars)), answer: dollars(ans), explain: `${Array.from({ length: weeks }, () => each).join(' + ')} = ${ans} dollars, one week at a time. Saving adds up.`, visual: null, explainVisual: null };
     }
-    const Q = [['Putting money in the bank is called what?', ['a deposit', 'a withdrawal', 'a gift'], 'a deposit', 'Putting money in is a deposit. Taking it out is a withdrawal.'],
+    const Q = [['When you get money, what are your two choices?', ['spend it now or save it for later', 'hide it or lose it', 'eat it or wear it'], 'spend it now or save it for later', 'You can spend it now or save it for later. Saving is a choice instead of spending.'],
+      ['What keeps money safe for lots of people?', ['a bank', 'the sidewalk', 'a pocket with a hole'], 'a bank', 'A bank keeps money safe for lots of people. Putting money in is a deposit.'],
+      ['Putting money in the bank is called what?', ['a deposit', 'a withdrawal', 'a gift'], 'a deposit', 'Putting money in is a deposit. Taking it out is a withdrawal.'],
       ['Taking money out of the bank is called what?', ['a withdrawal', 'a deposit', 'a job'], 'a withdrawal', 'Taking money out is a withdrawal. Putting it in is a deposit.'],
-      ['Giving to help others is called what?', ['charity', 'income', 'a loan'], 'charity', 'Giving to help others is called charity, like giving to an animal shelter.'],
-      ['What keeps money safe?', ['a bank', 'a pocket with a hole', 'the sidewalk'], 'a bank', 'A bank keeps money safe.']];
+      ['Giving to help others is called what?', ['charity', 'income', 'a loan'], 'charity', 'Giving to help others is called charity, like giving to a food bank or an animal shelter.'],
+      ['What does a food bank do?', ['gives food to families who need it', 'keeps money safe', 'sells kites'], 'gives food to families who need it', 'A food bank gives food to families who need it. Giving to it is charity.'],
+      ['What does an animal shelter do?', ['cares for animals with no home', 'bakes bread', 'keeps money'], 'cares for animals with no home', 'An animal shelter cares for animals with no home, and gifts of money help it buy their food.'],
+      ['Does saved money add up?', ['yes, a little every week adds up', 'no, it stays the same', 'only in a bank'], 'yes, a little every week adds up', 'Saving adds up. One dollar each week is five dollars after five weeks.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'bzk-make': (rng) => {
-    if (rng() < 0.3) { // the cost to make a bookmark: add up its two parts
-      const paper = 1 + Math.floor(rng() * 4); const ribbon = 1 + Math.floor(rng() * 3); const cost = paper + ribbon;
-      const answer = `${cost} dollars`; const others = [...new Set([paper, ribbon, cost + 1, cost - 1].filter((v) => v > 0 && v !== cost))].slice(0, 2);
-      return { type: 'choice', story: `Paper costs ${paper} dollars. Ribbon costs ${ribbon} dollars.`, prompt: 'What does the bookmark cost to make?', choices: shuffle(rng, [answer, ...others.map((v) => `${v} dollars`)]), answer, explain: `Add the parts. The paper plus the ribbon is ${answer}.`, visual: null, explainVisual: null };
+    const dollars = (n) => `${n} ${n === 1 ? 'dollar' : 'dollars'}`;
+    if (rng() < 0.45) {
+      const paper = randInt(rng, 1, 4); const ribbon = randInt(rng, 1, 3); const ans = paper + ribbon;
+      return { type: 'choice', story: `Paper costs ${dollars(paper)}. Ribbon costs ${dollars(ribbon)}.`, prompt: 'What does the bookmark cost to make?', choices: shuffle(rng, [ans, ans + 1, Math.max(paper, ribbon)].filter((v, i, a) => a.indexOf(v) === i).slice(0, 3).map(dollars)), answer: dollars(ans), explain: `Add up the cost of each part. The paper plus the ribbon is ${ans} dollars.`, visual: null, explainVisual: null };
     }
-    const Q = [['People who make things are called what?', ['producers', 'consumers', 'bankers'], 'producers', 'People who make things are producers. A baker is a producer.'],
+    const Q = [['To borrow is to do what?', ['use something and give it back', 'keep something forever', 'buy something'], 'use something and give it back', 'To borrow is to use something that belongs to someone else and give it back.'],
+      ['How do you borrow well?', ['give it back on time', 'keep it forever', 'lose it'], 'give it back on time', 'Give it back on time, and in good shape. Then people keep lending to you.'],
+      ['You lose a friend\'s marker. What is that?', ['borrowing badly', 'borrowing well', 'lending'], 'borrowing badly', 'Losing it or breaking it is borrowing badly, and then people stop lending to you.'],
+      ['Letting someone use your things is to do what?', ['lend', 'spend', 'borrow'], 'lend', 'To lend is to let someone use your things. Think first about what could go well and what could go wrong.'],
+      ['What do you think about before you lend?', ['what could go well and what could go wrong', 'how old your shoes are', 'nothing at all'], 'what could go well and what could go wrong', 'Before you lend, think about what could go well and what could go wrong. A friend may give it back late.'],
+      ['People who make things are called what?', ['producers', 'consumers', 'bankers'], 'producers', 'People who make things are producers. A baker is a producer.'],
       ['People who buy and use things are called what?', ['consumers', 'producers', 'farmers'], 'consumers', 'People who buy and use things are consumers. You are a consumer when you buy bread.'],
-      ['How do you borrow well?', ['give it back on time', 'keep it forever', 'lose it'], 'give it back on time', 'Give it back on time, and in good shape.'],
-      ['Letting someone use your things is to do what?', ['lend', 'borrow', 'spend'], 'lend', 'Think before you lend.']];
-    const [prompt, choices, answer, explain] = pick(rng, Q);
-    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+      ['How do you find what something costs to make?', ['add up the cost of each part', 'guess a big number', 'ask the consumer'], 'add up the cost of each part', 'Add up the cost of each part. Paper plus ribbon is the cost of a bookmark.'],
+      ['Ben makes bookmarks and his neighbors buy them. Who is the producer?', ['Ben', 'the neighbors', 'the ribbon'], 'Ben', 'Ben is the producer, because he makes the bookmarks. The neighbors are the consumers.']];
+    const [prompt, choices, answer, explain, story = null] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   // ---------------------------------------------------------------------------------------------------------------
   // Business question banks (2026-09-30, pass HD). In plain terms: each bank is a list of quick-check questions for one
@@ -19760,44 +19886,67 @@ Object.assign(GENERATORS, {
   },
   // Art and music appreciation, K to 2 (2026-09-29, pass GE): spoken questions with tapped answers, every answer said in its lesson first.
   'ak-lines': (rng) => {
-    const Q = [['Red and yellow mixed make what?', ['orange', 'green', 'purple'], 'orange', 'Red and yellow make orange.'],
-      ['Blue and yellow mixed make what?', ['green', 'orange', 'purple'], 'green', 'Blue and yellow make green.'],
-      ['Red and blue mixed make what?', ['purple', 'green', 'orange'], 'purple', 'Red and blue make purple.'],
-      ['Which color feels warm, like the sun?', ['red', 'blue', 'green'], 'red', 'Red, orange and yellow are the warm colors.'],
-      ['A line that closes makes what?', ['a shape', 'a color', 'a pattern'], 'a shape', 'A shape is a line that closes, like a circle, a square or a triangle.'],
-      ['Stripe, stripe, stripe. What is that?', ['a pattern', 'a texture', 'a shape'], 'a pattern', 'A pattern is something that repeats.']];
-    const [prompt, choices, answer, explain] = pick(rng, Q);
-    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+    // Full standard, pass KJ: every answer is spoken in the lesson, every explanation gives the reason, and a setup line
+    // (the fifth item) carries the situation a question needs.
+    const Q = [['A line that closes makes what?', ['a shape', 'a color', 'a pattern'], 'a shape', 'A shape is a line that closes, like a circle, a square or a triangle.'],
+      ['Which line goes back and forth with sharp corners?', ['a zigzag', 'a straight line', 'a curve'], 'a zigzag', 'A zigzag goes back and forth with sharp corners. A curve bends smoothly, and a straight line does not bend.'],
+      ['A shape with thickness, like a ball or a box, is called what?', ['a form', 'a line', 'a pattern'], 'a form', 'A form is a shape with thickness, like a ball or a box, that you could hold in your hand.'],
+      ['Which are the three colors painters start with?', ['red, yellow and blue', 'green, orange and purple', 'black, white and gray'], 'red, yellow and blue', 'Red, yellow and blue are the primary colors, the three colors painters start with. Mixing two makes a new one.'],
+      ['Red and yellow mixed make what?', ['orange', 'green', 'purple'], 'orange', 'Red and yellow make orange, bright as a pumpkin.'],
+      ['Blue and yellow mixed make what?', ['green', 'purple', 'orange'], 'green', 'Blue and yellow make green, the color of leaves.'],
+      ['Red and blue mixed make what?', ['purple', 'green', 'orange'], 'purple', 'Red and blue make purple, the color a painter uses for the sky at night.'],
+      ['Which color feels warm, like the sun?', ['red', 'blue', 'green'], 'red', 'Red, orange and yellow are the warm colors, the colors of the sun.'],
+      ['Which color feels cool, like water?', ['blue', 'red', 'orange'], 'blue', 'Blue, green and purple are the cool colors, the colors of water.'],
+      ['How a thing would feel, rough or smooth, is called what?', ['texture', 'color', 'a line'], 'texture', 'Texture is how a thing would feel, rough like bark or smooth like glass.'],
+      ['Stripe, stripe, stripe. What is this?', ['a pattern', 'a texture', 'a shape'], 'a pattern', 'A pattern is something that repeats, like stripes.'],
+      ['What do we call it when the two sides of a picture feel even?', ['balance', 'texture', 'a zigzag'], 'balance', 'Balance is when the two sides of a picture feel even, like a seesaw with the same weight on each end.']];
+    const [prompt, choices, answer, explain, story = null] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'ak-picture': (rng) => {
-    const Q = [['What a picture shows is called its what?', ['subject', 'pattern', 'beat'], 'subject', 'A cat, a house or a storm. That is the subject.'],
-      ['Bright colors and curved lines can feel how?', ['happy', 'stormy', 'quiet'], 'happy', 'Bright colors and curved lines can feel happy.'],
-      ['Dark colors and sharp zigzags can feel how?', ['stormy', 'happy', 'sleepy'], 'stormy', 'Dark colors and sharp zigzags can feel stormy.'],
+    const Q = [['What a picture shows is called its what?', ['subject', 'pattern', 'beat'], 'subject', 'A cat, a house or a storm. What a picture shows is its subject.'],
+      ['Bright colors and curved lines can feel how?', ['happy', 'quiet', 'stormy'], 'happy', 'Bright colors and curved lines can feel happy, the way a sunny day does.'],
+      ['Dark colors and sharp zigzags can feel how?', ['stormy', 'sleepy', 'happy'], 'stormy', 'Dark colors and sharp zigzags can feel stormy, the way a dark sky with lightning does.'],
       ['Two people feel different things about one picture. Who is right?', ['both', 'the older one', 'nobody'], 'both', 'Two people can look at the same picture and feel different things. Both are right.'],
-      ['Where can you find art besides a museum?', ['on a cup', 'nowhere', 'only in a book'], 'on a cup', 'Art can be on a cup, a quilt, a street sign, a birthday card or a wall.'],
-      ['What are the two questions to ask a picture?', ['what does it show, how does it feel', 'how big, how old', 'who paid, who sold'], 'what does it show, how does it feel', 'What does it show? How does it make me feel?']];
-    const [prompt, choices, answer, explain] = pick(rng, Q);
-    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+      ['Where can you find art besides a museum?', ['on a cup', 'only in a book', 'nowhere'], 'on a cup', 'Art can be on a cup, a quilt, a street sign, a birthday card or a wall.'],
+      ['What are the two questions to ask a picture?', ['what does it show, how does it feel', 'how big, how old', 'who paid, who sold'], 'what does it show, how does it feel', 'Ask what it shows and how it makes you feel. Those two questions open any picture.'],
+      ['Why do people make art?', ['to show what they love and make plain things beautiful', 'to hide things', 'only to make money'], 'to show what they love and make plain things beautiful', 'People make art to show what they love and to make plain things beautiful, like a bird on a cup.'],
+      ['What is its subject?', ['a boat on a river', 'a cat', 'a storm'], 'a boat on a river', 'The subject is what the picture shows, a boat on a river. How it feels can be different for each person.', 'A picture shows a boat alone on a wide river.'],
+      ['After you say your idea about a picture, what do you do?', ['listen to a friend say theirs', 'walk away', 'say it again louder'], 'listen to a friend say theirs', 'Say your idea out loud, and then listen to a friend say theirs. Both of you can be right.'],
+      ['Is a street sign with a painted bird art?', ['yes, art is on signs and cups too', 'no, only museums have art', 'only if it is big'], 'yes, art is on signs and cups too', 'Art is not only in museums. It is on a cup, a quilt, a street sign, a birthday card and the wall of a building.']];
+    const [prompt, choices, answer, explain, story = null] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'ak-beat': (rng) => {
-    const Q = [['Tap, tap, tap, tap, always the same. What is that?', ['the steady beat', 'the rhythm', 'silence'], 'the steady beat', 'A steady beat is the same every time, like your heart.'],
-      ['The pattern of the words on top of the beat is called what?', ['rhythm', 'beat', 'pitch'], 'rhythm', 'Clap your name, with quick and slow claps. That is rhythm.'],
+    const Q = [['Tap, tap, tap, tap, always the same. What is this?', ['the steady beat', 'the rhythm', 'silence'], 'the steady beat', 'A steady beat is the same every time, like your heart while you sit still.'],
+      ['Your heart goes thump, thump, thump at the same pace. What is that?', ['a steady beat', 'a rhythm', 'a lullaby'], 'a steady beat', 'A steady beat is the same every time. Music has one too, and you can clap it or march to it.'],
+      ['The pattern of long and short sounds on top of the beat is called what?', ['rhythm', 'pitch', 'beat'], 'rhythm', 'Rhythm is the pattern of long and short sounds on top of the beat, like the words of a song. Clap your name, quick and slow.'],
       ['How does a bird sing?', ['high', 'low', 'loud'], 'high', 'A bird sings high, and a big drum sounds low.'],
-      ['A big drum sounds how?', ['low', 'high', 'soft'], 'low', 'A big drum sounds low.'],
-      ['What is a lullaby like?', ['soft and slow', 'loud and fast', 'high and loud'], 'soft and slow', 'A lullaby is soft and slow, and a marching song is loud and steady.'],
-      ['The quiet between the sounds is called what?', ['silence', 'rhythm', 'a pattern'], 'silence', 'Silence is part of music too.']];
-    const [prompt, choices, answer, explain] = pick(rng, Q);
-    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+      ['A big drum sounds how?', ['low', 'high', 'soft'], 'low', 'A big drum sounds low, and a bird sings high.'],
+      ['What is a lullaby like?', ['soft and slow', 'loud and fast', 'high and loud'], 'soft and slow', 'A lullaby is soft and slow, so a baby can fall asleep to it.'],
+      ['Which is loud and steady?', ['a marching song', 'a lullaby', 'a whisper'], 'a marching song', 'A marching song is loud and steady, so you can march to its beat.'],
+      ['Which pair is about speed?', ['fast and slow', 'loud and soft', 'high and low'], 'fast and slow', 'Fast and slow are about speed. Loud and soft are about how big a sound is, and high and low are about pitch.'],
+      ['The quiet between the sounds is called what?', ['silence', 'rhythm', 'a pattern'], 'silence', 'Between the sounds there is silence, and silence is part of music too.'],
+      ['Where is silence in music?', ['between the sounds', 'nowhere', 'only at the start'], 'between the sounds', 'Between the sounds there is silence, and silence is part of music too.'],
+      ['When you march to music, what are you following?', ['the steady beat', 'the silence', 'the words'], 'the steady beat', 'You march to the steady beat, which stays the same the whole song.']];
+    const [prompt, choices, answer, explain, story = null] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   'ak-voices': (rng) => {
-    const Q = [['Which voice do you use across the yard?', ['a calling voice', 'a whispering voice', 'an inner voice'], 'a calling voice', 'A calling voice, for across the yard.'],
-      ['Which voice do you hear only inside your head?', ['an inner voice', 'a singing voice', 'a calling voice'], 'an inner voice', 'The inner voice is the one you hear only inside your head.'],
+    const Q = [['Which voice do you use to sing?', ['a singing voice', 'a whispering voice', 'an inner voice'], 'a singing voice', 'A singing voice is one of your five voices. Grown-ups have one too, lower and bigger than a child\'s.'],
+      ['Which voice do you use across the yard?', ['a calling voice', 'an inner voice', 'a whispering voice'], 'a calling voice', 'A calling voice is for across the yard, loud enough to reach a friend far away.'],
+      ['Which voice do you hear only inside your head?', ['an inner voice', 'a singing voice', 'a calling voice'], 'an inner voice', 'The inner voice is the one you hear only inside your head. Nobody else can hear it.'],
+      ['How does a grown-up\'s singing voice sound next to a child\'s?', ['lower and bigger', 'higher and smaller', 'just the same'], 'lower and bigger', 'A grown-up\'s singing voice sounds lower and bigger than a child\'s.'],
       ['A guitar belongs to which family?', ['string instruments', 'wind instruments', 'percussion instruments'], 'string instruments', 'String instruments, like a guitar or a violin, have strings you pluck or bow.'],
-      ['A flute sounds when you do what?', ['blow', 'hit it', 'shake it'], 'blow', 'Wind instruments, like a flute or a trumpet, sound when you blow.'],
-      ['A drum belongs to which family?', ['percussion instruments', 'string instruments', 'wind instruments'], 'percussion instruments', 'Percussion instruments sound when you hit or shake them.'],
-      ['What does a good audience do at the end?', ['clap', 'shout', 'leave'], 'clap', 'Sit still, listen, and clap at the end.']];
-    const [prompt, choices, answer, explain] = pick(rng, Q);
-    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+      ['A violin belongs to which family?', ['string instruments', 'wind instruments', 'percussion instruments'], 'string instruments', 'A violin has strings you bow, so it is a string instrument.'],
+      ['A flute sounds when you do what?', ['blow', 'shake it', 'hit it'], 'blow', 'Wind instruments, like a flute or a trumpet, sound when you blow. A flute is a woodwind.'],
+      ['A drum belongs to which family?', ['percussion instruments', 'string instruments', 'wind instruments'], 'percussion instruments', 'Percussion instruments, like a drum or a shaker, sound when you hit or shake them.'],
+      ['A shaker sounds when you do what?', ['shake', 'blow', 'pluck'], 'shake', 'Percussion instruments, like a drum or a shaker, sound when you hit or shake them.'],
+      ['Can you tell the instrument families apart with your eyes closed?', ['yes, each family has its own sound', 'no, never', 'only strings'], 'yes, each family has its own sound', 'Every family has its own sound, and you can tell them apart with your eyes closed.'],
+      ['Where do people sing songs and play music games?', ['everywhere', 'only in a music room', 'nowhere'], 'everywhere', 'People sing songs and play music games everywhere, rhymes, folk songs and songs for holidays.'],
+      ['What does a good audience do at the end?', ['clap', 'shout', 'leave'], 'clap', 'Sit quietly, put your brain on the music, and clap at the end. Clapping says thank you.']];
+    const [prompt, choices, answer, explain, story = null] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   // Art and music appreciation, grades 3 to 5 (2026-09-29, pass GF): every answer is said in its lesson first.
   'a3-principles': (rng) => {

@@ -183,3 +183,15 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - An earmark can be covered by a course in another subject. The science earmark listed the plant and animal codes, and the agriculture course had mapped every one of them; read every plan that cites the section before building anything from the list.
 - A fact settled in one course must hold in every course. Looking at the world stopped calling nutrients food in pass JY, and From seed to plant still did; grep every lesson for a corrected claim in the pass that corrects it.
 - A bank at the round's bare minimum (five questions for a five-question round) is a bank to grow, since no round can vary.
+
+## Learned in pass KI (kindergarten Money and me)
+
+- Two courses on the same strand say the same things in the same words. The business course and the economics course both teach goods and services, banks and income; a child who meets both should hear one voice.
+- A thing a lesson names, it also says what it is. A food bank and an animal shelter were named for a five-year-old who may know neither.
+- A computed question's words are checked like any other (one dollar, two dollars), and a bank whose setups the rules read for numbers never carries a wordy setup.
+
+## Learned in pass KJ (kindergarten Looking and listening)
+
+- Read every "including" in a standard against the lesson. The art standard names form and balance, and the lesson had five of its seven words.
+- When the world's grown-up count differs from the child's (four instrument families, three in the lesson), name the grown-up pieces inside the child's groups, so nothing has to be unlearned.
+- A rule settled in one course (listening is your brain on the words, pass KD) is applied in every course that says how to listen, the audience rule here included.

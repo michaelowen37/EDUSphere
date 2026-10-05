@@ -1174,8 +1174,8 @@ export const CURRICULUM = [
       { framework: 'CCSS', code: 'NCAS VA:Re7.2.Ka', text: 'Describe what an image represents.', moduleIds: ['lines-shapes-and-colors', 'what-a-picture-says'] },
       { framework: 'CCSS', code: 'NCAS VA:Re7.1.Ka', text: 'Identify uses of art within one\'s personal environment.', moduleIds: ['what-a-picture-says'] },
       { framework: 'CCSS', code: 'NCAS VA:Re8.1.Ka', text: 'Interpret art by identifying subject matter and describing relevant details.', moduleIds: ['what-a-picture-says'] },
-      { framework: 'CCSS', code: 'NCAS MU:Re7.2.Ka', text: 'With guidance, demonstrate how a specific music concept, such as beat or melodic direction, is used in music.', moduleIds: ['beat-and-sound', 'voices-and-instruments'] },
-      { framework: 'CCSS', code: 'NCAS MU:Re8.1.Ka', text: 'With guidance, demonstrate awareness of expressive qualities, such as dynamics and tempo, that reflect creators\' and performers\' expressive intent.', moduleIds: ['beat-and-sound'] },
+      { framework: 'CCSS', code: 'NCAS MU:Re7.2.Ka', text: 'With guidance, demonstrate how a specific music concept (such as beat or melodic direction) is used in music.', moduleIds: ['beat-and-sound', 'voices-and-instruments'] },
+      { framework: 'CCSS', code: 'NCAS MU:Re8.1.Ka', text: 'With guidance, demonstrate awareness of expressive qualities (such as dynamics and tempo) that reflect creators\'/performers\' expressive intent.', moduleIds: ['beat-and-sound'] },
     ],
   },
   {
@@ -1746,7 +1746,7 @@ export const CURRICULUM = [
   },
   {
     grade: 'K', subject: 'Business', status: 'ready',
-    source: 'Texas Essential Knowledge and Skills for Mathematics, personal financial literacy: Kindergarten §111.2(b)(9), Grade 1 §111.3(b)(9) and Grade 2 §111.4(b)(11) (Adopted 2012); Texas has no business course for these grades, so this elective is built above the minimum on the money strands every Texas student meets in mathematics. The Voluntary National Content Standards in Economics, second edition (Council for Economic Education, 2010), are the national framework, shown in the Common Core column.',
+    source: 'Texas Essential Knowledge and Skills for Mathematics, personal financial literacy: Kindergarten §111.2(b)(9), Grade 1 §111.3(b)(9) and Grade 2 §111.4(b)(11) (Adopted 2012); Texas has no business course for these grades, so this elective is built above the minimum on the money strands every Texas student meets in mathematics. The National Content Standards in K-12 Economics, third edition (Council for Economic Education, 2025, which replaced the Voluntary National Content Standards in Economics, second edition, 2010), carry the national column, shown in the Common Core column.',
     standards: [
       { framework: 'TEKS', code: '111.2(b)(9)(A)', text: 'Identify ways to earn income.', moduleIds: ['earning-money-k'] },
       { framework: 'TEKS', code: '111.2(b)(9)(B)', text: 'Differentiate between money received as income and money received as gifts.', moduleIds: ['earning-money-k'] },
@@ -1762,10 +1762,10 @@ export const CURRICULUM = [
       { framework: 'TEKS', code: '111.4(b)(11)(D)', text: 'Identify examples of borrowing and distinguish between responsible and irresponsible borrowing.', moduleIds: ['borrow-and-make-k'] },
       { framework: 'TEKS', code: '111.4(b)(11)(E)', text: 'Identify examples of lending and use concepts of benefits and costs to evaluate lending decisions.', moduleIds: ['borrow-and-make-k'] },
       { framework: 'TEKS', code: '111.4(b)(11)(F)', text: 'Differentiate between producers and consumers and calculate the cost to produce a simple item.', moduleIds: ['borrow-and-make-k'] },
-      { framework: 'CCSS', code: 'CEE Standard 1', text: 'Productive resources are limited. Therefore, people cannot have all the goods and services they want; as a result, they must choose some things and give up others.', moduleIds: ['wants-and-needs-k'] },
-      { framework: 'CCSS', code: 'CEE Standard 10', text: 'Institutions evolve and are created to help individuals and groups accomplish their goals. Banks, labor unions, markets, corporations, legal systems, and not-for-profit organizations are examples of important institutions. A different kind of institution, clearly defined and enforced property rights, is essential to a market economy.', moduleIds: ['save-spend-share-k'] },
-      { framework: 'CCSS', code: 'CEE Standard 13', text: 'Income for most people is determined by the market value of the productive resources they sell. What workers earn primarily depends on the market value of what they produce.', moduleIds: ['earning-money-k'] },
-      { framework: 'CCSS', code: 'CEE Standard 14', text: 'Entrepreneurs take on the calculated risk of starting new businesses, either by embarking on new ventures similar to existing ones or by introducing new innovations. Entrepreneurial innovation is an important source of economic growth.', moduleIds: ['borrow-and-make-k'] },
+      { framework: 'CCSS', code: 'CEE Standard 1', text: 'Productive resources are limited. Therefore, people must choose which goods and services they want and which to forego, and they must also select a method for how to allocate these goods and services.', moduleIds: ['wants-and-needs-k'] },
+      { framework: 'CCSS', code: 'CEE Standard 14', text: 'Banks connect savers and borrowers by accepting deposits and making loans, with the interest rate serving as the price of money borrowed or saved. Businesses can also obtain funds by issuing debt or selling ownership shares in the company.', moduleIds: ['save-spend-share-k', 'borrow-and-make-k'] },
+      { framework: 'CCSS', code: 'CEE Standard 8', text: 'Income for most people is determined by the market value of their labor and other productive resources they sell. A worker\'s wage depends on their productivity and the price of the product they produce. Many factors affect the distribution of income in an economy, including differences in educational levels, experience, and career choices, as well as discrimination and government policies.', moduleIds: ['earning-money-k'] },
+      { framework: 'CCSS', code: 'CEE Standard 5', text: 'Businesses typically make decisions to maximize profit. Competition among sellers usually lowers costs and prices for buyers. A lack of competition in some types of markets can lead to higher prices and less-favorable outcomes for buyers.', moduleIds: ['borrow-and-make-k'] },
     ],
   },
   {

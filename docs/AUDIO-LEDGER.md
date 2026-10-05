@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-05 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 6940 clips, 1,279,873 characters in all; the longest clip is 508 characters and the longest whole story 2,751, far under Eleven v4's 10,000 a request. 144 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-05 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 7078 clips, 1,296,064 characters in all; the longest clip is 508 characters and the longest whole story 2,751, far under Eleven v4's 10,000 a request. 149 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,7 +17,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 2884 | 328,213 |
+| Pre-K to grade 2 | 3022 | 344,404 |
 | Grades 3 to 5 | 1263 | 278,553 |
 | Grades 6 to 8 | 1138 | 272,072 |
 | Grades 9 to college | 1655 | 401,035 |
@@ -39,9 +39,9 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 | Kind | Clips |
 |---|---|
-| story title | 615 |
-| story | 3887 |
-| lesson line | 1520 |
+| story title | 620 |
+| story | 3922 |
+| lesson line | 1618 |
 | long story title | 102 |
 | long story | 816 |
 
@@ -116,6 +116,56 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S92-5: The snow cone was not cold anymore either. It had melted into a puddle of juice. [surprised] When Sam touched both cups, they felt the same.
 - S92-6: [thoughtful] Hot things cool down and cold things warm up. In the end it all feels as warm as the room.
 - S92-7: [slowly, warmly] Hot things warm us and cold things chill us. Then they both end up as warm as the room.
+
+### The toy box (S3644, sort-by-looks)
+
+- S3644-1: [playful] Theo's toy box was a jumble. Blocks, a red ball, a teddy bear and three socks were all mixed up. [warmly] Dad said, Let's sort it out.
+- S3644-2: Theo made a red pile and a blue pile. The red ball and the red sock went together, and the blue block with the blue sock. [pleased] Sorting by color was easy.
+- S3644-3: Then Dad held up a brown block and the brown teddy bear. [curious] Where do these two go? he asked. [puzzled] Theo frowned. The same color, but they did not feel the same at all.
+- S3644-4: [a wooden knock] He squeezed the block. It was hard, and it was made of wood. He squeezed the bear. [softly] It was soft, and it was made of cloth.
+- S3644-5: [bright] So Theo sorted a new way. Hard things went in the box, and soft things went on the shelf. Now the bear and the block were apart, and both fit.
+- S3644-6: [laughing] Dad laughed. The same toys, two ways to sort them, he said. Theo liked that. Tomorrow he might sort by shape, with the round ball all by itself.
+- S3644-7: [slowly, warmly] Look at a thing and touch it. Its shape, color, feel and material tell you where it goes.
+
+### The jar of paper clips (S3649, magnets-k)
+
+- S3649-1: [a jar clattering to the floor] Nora bumped the table, and the jar fell off. Paper clips went all over the rug, under the chair and under the couch. [sighs] Picking them up one by one would take all day.
+- S3649-2: Grandpa came in with something red in his hand. It was a magnet, shaped like a horseshoe. [kindly] Try this, he said.
+- S3649-3: Nora held the magnet near the rug. [small metal clicks] Click, click, click. [amazed] The paper clips jumped up and stuck to it before it even touched them.
+- S3649-4: Three buttons were on the rug too, but they did not jump. [puzzled] Why not? asked Nora. A magnet pulls iron, said Grandpa. A paper clip is steel, which has iron in it, and a button has none.
+- S3649-5: Then Grandpa gave her a second magnet. Nora put the two ends together, and snap, they pulled tight. [surprised] She turned one around, and now they pushed apart. She could feel the push in her hands.
+- S3649-6: The jar went back on the shelf, full again. The magnet went on the fridge, holding up Nora's drawing. [warmly] The fridge door is steel too, said Grandpa, and a magnet pulls right through the paper.
+- S3649-7: [slowly, warmly] A magnet pulls things with iron in them. Magnets can pull, and they can push.
+
+### The shape on the wall (S3654, light-and-shadows)
+
+- S3654-1: [softly] Omar woke up in the night. It was so dark that he could not see his own hand. Then a little light came in from the hall.
+- S3654-2: Now he could see shapes, but no colors. His red rug looked gray. [a little scared] And on the wall was a big dark shape with two long arms.
+- S3654-3: Omar pulled the blanket up. [calling out] Mom! he called. [a light switch clicking on] Mom came in and turned on the lamp. [relieved] The room was bright, and the rug was red again.
+- S3654-4: The dark shape was still there, but now Omar could see what made it. It was his coat on its hook. The hall light had hit the coat, and the coat had blocked it. The dark shape was its shadow.
+- S3654-5: Mom held her hand up in front of the lamp. A hand shadow sat on the wall. [playful] She bent two fingers, and the hand turned into a bunny with tall ears. [laughing] Omar laughed and made a dog.
+- S3654-6: [quietly] When Mom turned off the lamp, the shadows went too. No light, no shadows, and no colors either. [sleepy] Omar closed his eyes and slept.
+- S3654-7: [slowly, warmly] You see things only when there is light. Where something blocks the light, there is a shadow.
+
+### Priya's rocks (S3659, kinds-of-rocks)
+
+- S3659-1: [a river murmuring] Priya walked by the river with a bag, and she kept bending down. She found a gray pebble, a flat white rock and a speckled one with pink spots. [a little out of breath] The bag got heavy fast.
+- S3659-2: [rocks tumbling onto a table] At home she tipped the rocks onto the table. They were all so different. [wondering] How could she put them in rows?
+- S3659-3: First she sorted by color, gray, white and brown. The speckled rock had three colors and fit nowhere, so it got a pile of its own.
+- S3659-4: Next she sorted by size, from tiny pebbles up to the one that filled her hand. After that came shape, round ones here and flat ones there. [pleased] Three ways to sort, and the rocks fit every time.
+- S3659-5: She rubbed a river pebble, smooth as an egg. [curious] Why is it so smooth? she asked. The river did it, said Grandma. Water rolled it against other rocks for years and years, until every bump wore away.
+- S3659-6: Priya lined her rocks up on the shelf, smooth ones in front and rough ones behind. [proud] The speckled rock sat in the middle, where she could see it best.
+- S3659-7: [slowly, warmly] Size, shape, color and feel. Look closely, and every rock has a place.
+
+### The garden wall (S3664, rocks-soil-and-water)
+
+- S3664-1: [hopeful] Ben wanted a garden. He pushed a bean seed into the gravel path. [disappointed] Nothing came up. Little rocks are good for a path, said Aunt May, but a seed needs soil.
+- S3664-2: So they built a garden bed. [rocks clunking together] They carried flat rocks and stacked them into a low wall. Rocks are good for building, she said, so this wall will last.
+- S3664-3: Inside the wall they poured dark soil. It smelled like rain. Ben pushed the bean seeds in, this time where they could grow.
+- S3664-4: [water pouring] The soil was dry, so Ben filled the watering can and gave the bed a drink. Seeds need water, said Aunt May. So do we, and so does every plant and animal on the farm.
+- S3664-5: Days went by. [delighted] Then one morning a green sprout came up, and then another. The wall held the soil, the soil held the roots, and the water kept them alive.
+- S3664-6: Ben sat on the wall and ate a cracker. Even the cracker came from a plant grown in soil, said Aunt May. Rocks, soil and water. [proud] Ben used all three before lunch.
+- S3664-7: [slowly, warmly] Rocks to build with, soil to grow in, water to drink. The Earth gives us all three.
 
 ### Two balls (S95, red-and-blue)
 

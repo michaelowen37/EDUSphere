@@ -459,6 +459,82 @@ STORIES['hot-and-cold'] = {
     'Hot things warm us and cold things chill us. Then they both end up as warm as the room.',
   ],
 };
+// Kindergarten science, earmark E1 (pass KK): five stories for the sorting, magnet, light, rock and earth-materials lessons.
+STORIES['sort-by-looks'] = {
+  about: 'a toy box sorted by color, and then sorted again by how the toys felt',
+  more: [{ serial: 'S3645', after: 1, alt: 'Two piles on the rug, red things in one and blue things in the other' }, { serial: 'S3646', after: 2, alt: 'Dad holding up a brown wooden block and a brown teddy bear, the boy frowning' }, { serial: 'S3647', after: 4, alt: 'Hard toys in the box and soft toys on a shelf, the bear and the block apart' }, { serial: 'S3648', after: 5, alt: 'The boy and his dad laughing beside the tidy toy box' }],
+  title: 'The toy box', art: 'S3644', cast: [],
+  alt: 'A small boy on a rug beside an open toy box, blocks, a red ball, a teddy bear and socks spilled out',
+  words: [
+    'Theo\'s toy box was a jumble. Blocks, a red ball, a teddy bear and three socks were all mixed up. Dad said, Let\'s sort it out.',
+    'Theo made a red pile and a blue pile. The red ball and the red sock went together, and the blue block with the blue sock. Sorting by color was easy.',
+    'Then Dad held up a brown block and the brown teddy bear. Where do these two go? he asked. Theo frowned. The same color, but they did not feel the same at all.',
+    'He squeezed the block. It was hard, and it was made of wood. He squeezed the bear. It was soft, and it was made of cloth.',
+    'So Theo sorted a new way. Hard things went in the box, and soft things went on the shelf. Now the bear and the block were apart, and both fit.',
+    'Dad laughed. The same toys, two ways to sort them, he said. Theo liked that. Tomorrow he might sort by shape, with the round ball all by itself.',
+    'Look at a thing and touch it. Its shape, color, feel and material tell you where it goes.',
+  ],
+};
+STORIES['magnets-k'] = {
+  about: 'a jar of spilled paper clips, three buttons that would not jump, and a magnet',
+  more: [{ serial: 'S3650', after: 1, alt: 'Grandpa holding out a red horseshoe magnet' }, { serial: 'S3651', after: 2, alt: 'Paper clips jumping up from the rug to the magnet' }, { serial: 'S3652', after: 4, alt: 'Two magnets end to end, the girl feeling them push apart' }, { serial: 'S3653', after: 5, alt: 'A drawing held on the fridge door by the magnet' }],
+  title: 'The jar of paper clips', art: 'S3649', cast: [],
+  alt: 'A small girl kneeling on a rug covered in paper clips, a jar on its side beside her',
+  words: [
+    'Nora bumped the table, and the jar fell off. Paper clips went all over the rug, under the chair and under the couch. Picking them up one by one would take all day.',
+    'Grandpa came in with something red in his hand. It was a magnet, shaped like a horseshoe. Try this, he said.',
+    'Nora held the magnet near the rug. Click, click, click. The paper clips jumped up and stuck to it before it even touched them.',
+    'Three buttons were on the rug too, but they did not jump. Why not? asked Nora. A magnet pulls iron, said Grandpa. A paper clip is steel, which has iron in it, and a button has none.',
+    'Then Grandpa gave her a second magnet. Nora put the two ends together, and snap, they pulled tight. She turned one around, and now they pushed apart. She could feel the push in her hands.',
+    'The jar went back on the shelf, full again. The magnet went on the fridge, holding up Nora\'s drawing. The fridge door is steel too, said Grandpa, and a magnet pulls right through the paper.',
+    'A magnet pulls things with iron in them. Magnets can pull, and they can push.',
+  ],
+};
+STORIES['light-and-shadows'] = {
+  about: 'a dark shape on a bedroom wall, and the coat and the hall light that made it',
+  more: [{ serial: 'S3655', after: 1, alt: 'The dim room, the rug gray, the dark shape on the wall' }, { serial: 'S3656', after: 3, alt: 'The lamp on, a coat on its hook and its shadow on the wall beside it' }, { serial: 'S3657', after: 4, alt: 'Mom\'s hand in front of the lamp making a bunny shadow on the wall' }, { serial: 'S3658', after: 5, alt: 'The lamp off and the boy asleep, no shadows on the wall' }],
+  title: 'The shape on the wall', art: 'S3654', cast: [],
+  alt: 'A small boy sitting up in bed in a dim room, a big dark shape with two long arms on the wall',
+  words: [
+    'Omar woke up in the night. It was so dark that he could not see his own hand. Then a little light came in from the hall.',
+    'Now he could see shapes, but no colors. His red rug looked gray. And on the wall was a big dark shape with two long arms.',
+    'Omar pulled the blanket up. Mom! he called. Mom came in and turned on the lamp. The room was bright, and the rug was red again.',
+    'The dark shape was still there, but now Omar could see what made it. It was his coat on its hook. The hall light had hit the coat, and the coat had blocked it. The dark shape was its shadow.',
+    'Mom held her hand up in front of the lamp. A hand shadow sat on the wall. She bent two fingers, and the hand turned into a bunny with tall ears. Omar laughed and made a dog.',
+    'When Mom turned off the lamp, the shadows went too. No light, no shadows, and no colors either. Omar closed his eyes and slept.',
+    'You see things only when there is light. Where something blocks the light, there is a shadow.',
+  ],
+};
+STORIES['kinds-of-rocks'] = {
+  about: 'a bag of river rocks and the three ways Priya found to line them up',
+  more: [{ serial: 'S3660', after: 1, alt: 'Rocks of many sizes and colors tipped out on a kitchen table' }, { serial: 'S3661', after: 2, alt: 'Three piles of rocks sorted by color, gray, white and brown, and one speckled rock on its own' }, { serial: 'S3662', after: 4, alt: 'Grandma and the girl holding a smooth river pebble' }, { serial: 'S3663', after: 5, alt: 'A shelf of rocks in rows, smooth ones in front and rough ones behind, the speckled rock in the middle' }],
+  title: 'Priya\'s rocks', art: 'S3659', cast: [],
+  alt: 'A small girl by a river bending down for a pebble, a cloth bag over her shoulder',
+  words: [
+    'Priya walked by the river with a bag, and she kept bending down. She found a gray pebble, a flat white rock and a speckled one with pink spots. The bag got heavy fast.',
+    'At home she tipped the rocks onto the table. They were all so different. How could she put them in rows?',
+    'First she sorted by color, gray, white and brown. The speckled rock had three colors and fit nowhere, so it got a pile of its own.',
+    'Next she sorted by size, from tiny pebbles up to the one that filled her hand. After that came shape, round ones here and flat ones there. Three ways to sort, and the rocks fit every time.',
+    'She rubbed a river pebble, smooth as an egg. Why is it so smooth? she asked. The river did it, said Grandma. Water rolled it against other rocks for years and years, until every bump wore away.',
+    'Priya lined her rocks up on the shelf, smooth ones in front and rough ones behind. The speckled rock sat in the middle, where she could see it best.',
+    'Size, shape, color and feel. Look closely, and every rock has a place.',
+  ],
+};
+STORIES['rocks-soil-and-water'] = {
+  about: 'a bean seed in a gravel path, and the rock wall, the soil and the water a garden needs',
+  more: [{ serial: 'S3665', after: 0, alt: 'A bean seed pushed into a gravel path, nothing growing' }, { serial: 'S3666', after: 1, alt: 'The boy and his aunt stacking flat rocks into a low wall' }, { serial: 'S3667', after: 3, alt: 'The boy pouring water from a watering can onto the dark soil' }, { serial: 'S3668', after: 4, alt: 'Green sprouts coming up inside the rock wall' }],
+  title: 'The garden wall', art: 'S3664', cast: [],
+  alt: 'A small boy and his aunt beside a low stone wall around a bed of dark soil',
+  words: [
+    'Ben wanted a garden. He pushed a bean seed into the gravel path. Nothing came up. Little rocks are good for a path, said Aunt May, but a seed needs soil.',
+    'So they built a garden bed. They carried flat rocks and stacked them into a low wall. Rocks are good for building, she said, so this wall will last.',
+    'Inside the wall they poured dark soil. It smelled like rain. Ben pushed the bean seeds in, this time where they could grow.',
+    'The soil was dry, so Ben filled the watering can and gave the bed a drink. Seeds need water, said Aunt May. So do we, and so does every plant and animal on the farm.',
+    'Days went by. Then one morning a green sprout came up, and then another. The wall held the soil, the soil held the roots, and the water kept them alive.',
+    'Ben sat on the wall and ate a cracker. Even the cracker came from a plant grown in soil, said Aunt May. Rocks, soil and water. Ben used all three before lunch.',
+    'Rocks to build with, soil to grow in, water to drink. The Earth gives us all three.',
+  ],
+};
 // Pre-K stories: the fewest words that still make a story, three pictures each, read aloud.
 STORIES['red-and-blue'] = {
   about: 'a red ball and a blue ball that looked alike until Mia said their colors',
@@ -8981,7 +9057,7 @@ export const COURSE_GOALS = {
   'first-sounds-pk': 'Hearing the sounds inside words and meeting the first letters',
   'counting-k': 'Counting with confidence and seeing how numbers grow and shrink',
   'letters-k': 'Turning letters into sounds and sounds into the first read words',
-  'science-k': 'Looking closely at the sky, the weather and every living thing',
+  'science-k': 'Looking closely at the sky, the weather, every living thing, and the rocks, magnets and light around us',
   'civics-k': 'Learning what it means to be part of a class, a town and a country',
   'health-k': 'Building the small daily habits that keep a body well',
   'numbers-1': 'Working with numbers to twenty and beyond, in tens and ones',
@@ -9269,6 +9345,12 @@ export const COLOR_PAGES = {
   'wants-and-needs-k': ['D192', 'A kite, a warm coat, an apple and a small house in a row'],
   'save-spend-share-k': ['D193', 'Three glass jars with coins on a shelf'],
   'borrow-and-make-k': ['D194', 'A child handing a book back to a smiling friend'],
+  // Kindergarten science, earmark E1 (pass KK).
+  'sort-by-looks': ['D195', 'A toy box with a ball, a block, a teddy bear and a sock lined up in front of it'],
+  'magnets-k': ['D196', 'A horseshoe magnet with paper clips flying toward it'],
+  'light-and-shadows': ['D197', 'A child making a bunny shadow with a hand in front of a flashlight'],
+  'kinds-of-rocks': ['D198', 'A row of rocks from a tiny pebble to a big boulder beside a river'],
+  'rocks-soil-and-water': ['D199', 'A low stone wall around a garden bed with sprouts and a watering can'],
 };
 
 // Audio tags (2026-10-04, pass JH, Mikey). In plain terms: how ElevenLabs' Eleven v4 should perform each story the writing review
@@ -9429,3 +9511,8 @@ STORIES["goods-and-services"].audio = ["[a busy street] Mia bought a hat and got
 STORIES["maps-of-my-world"].audio = ["[puzzled] Sam had a map of his yard, and it said north at the top. He turned it every way, and he still could not tell which way was which.", "[patient] The map needed one true direction to start from, and Dad said to wait for the sun.", "[morning birds] The sun rose over the fence, so that way was east. Sam faced the sun and turned the map until its east side pointed at the fence.", "[slowly, turning] Now north was on his left, where the tree stood. South was on his right, by the door. West was behind him. Four directions, like a cross laid over the yard.", "[proud] Sam drew the cross on the map, north, south, east and west. Now he would never have to wait for the sun again.", "He walked the yard, north to the tree, east to the fence and south to the door. Then west, back toward the house. [satisfied] The map matched the world.", "[slowly, warmly] North, south, east, west. The sun rises in the east."];
 STORIES["signs-around-town"].audio = ["[cars braking at a stop sign] Rosa watched a red sign with eight sides, and every car that came to it stopped. Nobody told the drivers to. [curious] How did they all know?", "[explaining] The sign told them, all of them at once, and that is what signs do.", "[steady] A stop sign says stop, in red, with eight sides. A green sign says the street's name, like Oak Street, that way.", "[careful] A yellow sign says to slow down, because something is ahead. This one had children on it, so a school was ahead.", "[confident] Rosa read the signs all the way home, stop, Oak Street and school. She knew what each one meant.", "Then she made a sign for her room, red with eight sides, and it said stop. Her brother stopped at the door. [triumphant, giggling] It worked.", "[slowly, warmly] Signs tell everyone the same thing at once."];
 STORIES["symbols-of-our-country"].audio = ["[curious] Leo saw a picture of a bell with a big crack in it. Why keep a broken bell? His teacher said it was famous.", "[puzzled] Famous for what? A crack is a crack, and Leo did not get it.", "[a distant bell ringing] The Liberty Bell rang for freedom, long ago, and people came to hear it. The crack came later, and they kept the bell anyway.", "[harbor waves, gulls] The Statue of Liberty holds up a torch to welcome people. She stands in the harbor, green and tall.", "[respectful] The Alamo is an old mission in Texas where Texans fought, and people remember what happened there. And the flag stands for the whole country.", "[proud] Each one stands for something bigger than itself. Leo drew all four, the bell, the torch, the mission and the flag.", "[slowly, warmly] The bell, the statue, the Alamo and the flag stand for us."];
+STORIES["sort-by-looks"].audio = ["[playful] Theo's toy box was a jumble. Blocks, a red ball, a teddy bear and three socks were all mixed up. [warmly] Dad said, Let's sort it out.", "Theo made a red pile and a blue pile. The red ball and the red sock went together, and the blue block with the blue sock. [pleased] Sorting by color was easy.", "Then Dad held up a brown block and the brown teddy bear. [curious] Where do these two go? he asked. [puzzled] Theo frowned. The same color, but they did not feel the same at all.", "[a wooden knock] He squeezed the block. It was hard, and it was made of wood. He squeezed the bear. [softly] It was soft, and it was made of cloth.", "[bright] So Theo sorted a new way. Hard things went in the box, and soft things went on the shelf. Now the bear and the block were apart, and both fit.", "[laughing] Dad laughed. The same toys, two ways to sort them, he said. Theo liked that. Tomorrow he might sort by shape, with the round ball all by itself.", "[slowly, warmly] Look at a thing and touch it. Its shape, color, feel and material tell you where it goes."];
+STORIES["magnets-k"].audio = ["[a jar clattering to the floor] Nora bumped the table, and the jar fell off. Paper clips went all over the rug, under the chair and under the couch. [sighs] Picking them up one by one would take all day.", "Grandpa came in with something red in his hand. It was a magnet, shaped like a horseshoe. [kindly] Try this, he said.", "Nora held the magnet near the rug. [small metal clicks] Click, click, click. [amazed] The paper clips jumped up and stuck to it before it even touched them.", "Three buttons were on the rug too, but they did not jump. [puzzled] Why not? asked Nora. A magnet pulls iron, said Grandpa. A paper clip is steel, which has iron in it, and a button has none.", "Then Grandpa gave her a second magnet. Nora put the two ends together, and snap, they pulled tight. [surprised] She turned one around, and now they pushed apart. She could feel the push in her hands.", "The jar went back on the shelf, full again. The magnet went on the fridge, holding up Nora's drawing. [warmly] The fridge door is steel too, said Grandpa, and a magnet pulls right through the paper.", "[slowly, warmly] A magnet pulls things with iron in them. Magnets can pull, and they can push."];
+STORIES["light-and-shadows"].audio = ["[softly] Omar woke up in the night. It was so dark that he could not see his own hand. Then a little light came in from the hall.", "Now he could see shapes, but no colors. His red rug looked gray. [a little scared] And on the wall was a big dark shape with two long arms.", "Omar pulled the blanket up. [calling out] Mom! he called. [a light switch clicking on] Mom came in and turned on the lamp. [relieved] The room was bright, and the rug was red again.", "The dark shape was still there, but now Omar could see what made it. It was his coat on its hook. The hall light had hit the coat, and the coat had blocked it. The dark shape was its shadow.", "Mom held her hand up in front of the lamp. A hand shadow sat on the wall. [playful] She bent two fingers, and the hand turned into a bunny with tall ears. [laughing] Omar laughed and made a dog.", "[quietly] When Mom turned off the lamp, the shadows went too. No light, no shadows, and no colors either. [sleepy] Omar closed his eyes and slept.", "[slowly, warmly] You see things only when there is light. Where something blocks the light, there is a shadow."];
+STORIES["kinds-of-rocks"].audio = ["[a river murmuring] Priya walked by the river with a bag, and she kept bending down. She found a gray pebble, a flat white rock and a speckled one with pink spots. [a little out of breath] The bag got heavy fast.", "[rocks tumbling onto a table] At home she tipped the rocks onto the table. They were all so different. [wondering] How could she put them in rows?", "First she sorted by color, gray, white and brown. The speckled rock had three colors and fit nowhere, so it got a pile of its own.", "Next she sorted by size, from tiny pebbles up to the one that filled her hand. After that came shape, round ones here and flat ones there. [pleased] Three ways to sort, and the rocks fit every time.", "She rubbed a river pebble, smooth as an egg. [curious] Why is it so smooth? she asked. The river did it, said Grandma. Water rolled it against other rocks for years and years, until every bump wore away.", "Priya lined her rocks up on the shelf, smooth ones in front and rough ones behind. [proud] The speckled rock sat in the middle, where she could see it best.", "[slowly, warmly] Size, shape, color and feel. Look closely, and every rock has a place."];
+STORIES["rocks-soil-and-water"].audio = ["[hopeful] Ben wanted a garden. He pushed a bean seed into the gravel path. [disappointed] Nothing came up. Little rocks are good for a path, said Aunt May, but a seed needs soil.", "So they built a garden bed. [rocks clunking together] They carried flat rocks and stacked them into a low wall. Rocks are good for building, she said, so this wall will last.", "Inside the wall they poured dark soil. It smelled like rain. Ben pushed the bean seeds in, this time where they could grow.", "[water pouring] The soil was dry, so Ben filled the watering can and gave the bed a drink. Seeds need water, said Aunt May. So do we, and so does every plant and animal on the farm.", "Days went by. [delighted] Then one morning a green sprout came up, and then another. The wall held the soil, the soil held the roots, and the water kept them alive.", "Ben sat on the wall and ate a cracker. Even the cracker came from a plant grown in soil, said Aunt May. Rocks, soil and water. [proud] Ben used all three before lunch.", "[slowly, warmly] Rocks to build with, soil to grow in, water to drink. The Earth gives us all three."];

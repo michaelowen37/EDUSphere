@@ -2,6 +2,12 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 5, 2026 (sorting, magnets, light, rocks, soil and water)
+
+- Kindergarten science has five new lessons, so the course now covers every Texas kindergarten science standard it claims: sorting things by shape, color, feel and material, magnets, light and shadows, kinds of rocks, and how we use rocks, soil and water every day.
+- Each lesson is spoken for a child who cannot read yet, every answer comes with its reason, and each has a story of its own, with a coloring page to follow.
+- Children hear that a magnet pulls things with iron in them and not every metal, that nothing can be seen with no light at all, and why a river pebble is so smooth.
+
 ## October 4, 2026 (looking and listening)
 
 - The kindergarten art and music lessons now have spoken lessons written for the ear, and every answer comes with its reason.

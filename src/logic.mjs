@@ -4036,6 +4036,151 @@ function K_SCIENCE_MODULES() { return [
     sources: ["Aligned with Texas TEKS K.5B (investigate and predict cause-and-effect relationships in science) and K.5G (describe how factors or conditions can cause objects, organisms, and systems to either change or stay the same), since the 2021 kindergarten standards no longer name temperature, and NGSS K-PS3-1 (make observations to determine the effect of sunlight on Earth's surface)."],
     generators: ['sk-hot-or-cold', 'sk-tap-hot', 'sk-hot-or-cold', 'sk-tap-hot', 'sk-hot-or-cold'],
   },
+  {
+    id: 'sort-by-looks',
+    order: 6,
+    title: 'Sorting things',
+    tagline: 'Shape, color, feel, and what a thing is made of',
+    lesson: {
+      // Full standard, pass KK (earmark E1, TEKS K.6): the four kinds of property the standard names (shape, color, texture
+      // and material), each shown on a real thing a five-year-old knows, and sorting as putting alike things together, with
+      // more than one way to sort the same things. Every answer the banks ask is spoken here.
+      paragraphs: ['We can tell what a thing is like by looking at it and touching it. A ball is round, and a block has corners. That is its shape, and we can sort by shape, the round things together. A ball can be red, and a sock can be blue. That is its color, and color is another way to sort.', 'Touch a thing, and you can tell how it feels. A teddy bear is soft, and a rock is hard. A log has rough, bumpy bark, and a window is smooth and flat. How a thing feels, soft or hard, smooth or rough, is called its texture.', 'What a thing is made of is called its material. A spoon is made of metal, cold and shiny. A block is made of wood, from a tree. A sock and a teddy bear are made of cloth, and a book is made of paper, which is thin and tears.', 'Sorting means putting things that are alike in one group. Put every red thing in one pile and every blue thing in another, and that is sorting by color. The same things can be sorted another way too. Put the soft things together, the teddy bear and the sock, and the hard things together, the rock and the spoon. That is sorting by how they feel.'],
+      keyIdea: 'Shape, color, texture and material tell us what a thing is like. Sorting puts alike things in one group, and the same things can be sorted more than one way.',
+      example: { kind: 'pair', a: { kind: 'icon', name: 'teddy' }, b: { kind: 'icon', name: 'rock' }, caption: 'The teddy bear is soft. The rock is hard.' },
+      script: [
+        { say: 'We can tell what a thing is like by looking at it and touching it. This ball is round, and this block has corners. That is its shape, and we can sort by shape, the round things together.', show: { kind: 'pair', a: { kind: 'icon', name: 'ball' }, b: { kind: 'icon', name: 'block' } } },
+        { say: 'Color is another way to sort. This ball is red, and this sock is blue.', show: { kind: 'pair', a: { kind: 'icon', name: 'ball' }, b: { kind: 'icon', name: 'sock' } } },
+        { say: 'Touch a thing, and you can tell how it feels. This teddy bear is soft, and this rock is hard.', show: { kind: 'pair', a: { kind: 'icon', name: 'teddy' }, b: { kind: 'icon', name: 'rock' } } },
+        { say: 'This log has rough, bumpy bark, and this window is smooth and flat. How a thing feels, soft or hard, smooth or rough, is called its texture.', show: { kind: 'pair', a: { kind: 'icon', name: 'log' }, b: { kind: 'icon', name: 'window' } } },
+        { say: 'What a thing is made of is called its material. This spoon is made of metal, and it is cold and shiny.', show: { kind: 'icon', name: 'spoon' } },
+        { say: 'This block is made of wood, from a tree. This sock is made of cloth, and so is the teddy bear.', show: { kind: 'pair', a: { kind: 'icon', name: 'block' }, b: { kind: 'icon', name: 'sock' } } },
+        { say: 'This book is made of paper. Paper is thin, and it tears. A window is made of glass, which you can see through.', show: { kind: 'icon', name: 'book' } },
+        { say: 'Sorting means putting things that are alike in one group. Put every red thing in one pile and every blue thing in another. That is sorting by color.', show: { kind: 'pair', a: { kind: 'icon', name: 'ball' }, b: { kind: 'icon', name: 'sock' } } },
+        { say: 'The same things can be sorted another way too. Put the soft things together, the teddy bear and the sock, and the hard things together, the rock and the spoon. That is sorting by how they feel.', show: { kind: 'pair', a: { kind: 'icon', name: 'teddy' }, b: { kind: 'icon', name: 'spoon' } } },
+        { say: 'Shape, color, texture and material. Look, touch, pick a way to sort, and then try another way.', show: { kind: 'flow', steps: ['shape', 'color', 'texture', 'material'] } },
+      ],
+      pictures: [{ serial: 'P38', step: 7, alt: 'A child sorting toys into a red pile and a blue pile on the floor' }],
+    },
+    sources: ['Aligned with Texas TEKS K.6 (identify and record observable physical properties of objects, including shape, color, texture, and material, and generate ways to classify objects) and NGSS 2-PS1-1 (plan and conduct an investigation to describe and classify different kinds of materials by their observable properties), which NGSS places in grade 2.'],
+    generators: ['sk-how-it-feels', 'sk-made-of', 'sk-tap-property', 'sk-how-sorted', 'sk-how-it-feels'],
+  },
+  {
+    id: 'magnets-k',
+    order: 7,
+    title: 'Magnets',
+    tagline: 'What a magnet pulls, and how magnets push and pull',
+    lesson: {
+      // Full standard, pass KK (earmark E1, TEKS K.7): a magnet pulls things with iron in them (a steel paper clip, a steel
+      // nail) and not wood, cloth, rock, or a penny, which is metal without iron; two magnets pull together one way and push
+      // apart the other; a fridge magnet pulls through paper to the steel door; and magnets never go in a mouth. It says the
+      // same things in the same words as the grade 2 Magnets lesson, so a child hears one voice.
+      paragraphs: ['A magnet can pull some things toward it, even before it touches them. Hold a magnet near a paper clip, and the paper clip jumps to the magnet. The paper clip is made of steel, and steel has iron in it. A magnet pulls iron. A nail is steel too, so a magnet pulls a nail.', 'A magnet does not pull a rock, a block of wood or a sock. They have no iron in them. A magnet does not pull every metal either. A penny is metal, but it has no iron in it, so a magnet does not pull a penny.', 'A magnet has two ends. Put two magnets end to end one way, and they pull together with a snap. Turn one magnet around, and now they push apart. You can feel the push in your hands. Magnets can pull, and magnets can push.', 'People use magnets to pull and push every day. A magnet on the fridge holds up your drawing, because it pulls through the paper to the steel door. Magnets are for pulling and pushing, and they never go in your mouth. Keep them away from babies, who put things in their mouths.'],
+      keyIdea: 'A magnet pulls things with iron in them, like a steel paper clip or a nail, and not wood, cloth, rock or a penny. Two magnets pull together one way and push apart the other way.',
+      example: { kind: 'pair', a: { kind: 'icon', name: 'magnet' }, b: { kind: 'icon', name: 'clip' }, caption: 'A magnet pulls a paper clip. The paper clip is steel, and steel has iron in it.' },
+      script: [
+        { say: 'This is a magnet. A magnet can pull some things toward it, even before it touches them.', show: { kind: 'icon', name: 'magnet' } },
+        { say: 'Hold a magnet near a paper clip, and the paper clip jumps to the magnet. The paper clip is made of steel, and steel has iron in it. A magnet pulls iron.', show: { kind: 'icon', name: 'clip' } },
+        { say: 'A nail is steel too, so a magnet pulls a nail.', show: { kind: 'icon', name: 'nail' } },
+        { say: 'A magnet does not pull a rock, a block of wood or a sock. They have no iron in them.', show: { kind: 'pair', a: { kind: 'icon', name: 'rock' }, b: { kind: 'icon', name: 'block' } } },
+        { say: 'A magnet does not pull every metal. This penny is metal, but it has no iron in it, so a magnet does not pull a penny.', show: { kind: 'icon', name: 'penny' } },
+        { say: 'A magnet has two ends. Put two magnets end to end one way, and they pull together with a snap.', show: { kind: 'pair', a: { kind: 'icon', name: 'magnet' }, b: { kind: 'icon', name: 'magnet' } } },
+        { say: 'Turn one magnet around, and now they push apart. You can feel the push in your hands. Magnets can pull, and magnets can push.', show: { kind: 'pair', a: { kind: 'icon', name: 'magnet' }, b: { kind: 'icon', name: 'magnet' } } },
+        { say: 'People use magnets to pull and push every day. A magnet on the fridge holds up your drawing, because it pulls through the paper to the steel door.', show: { kind: 'icon', name: 'magnet' } },
+        { say: 'Magnets are for pulling and pushing, and they never go in your mouth. Keep them away from babies, who put things in their mouths.', show: { kind: 'icon', name: 'magnet' } },
+        { say: 'A magnet pulls things with iron in them, like a paper clip or a nail. Magnets can pull, and they can push.', show: { kind: 'pair', a: { kind: 'icon', name: 'clip' }, b: { kind: 'icon', name: 'nail' } } },
+      ],
+      pictures: [{ serial: 'P39', step: 1, alt: 'Paper clips jumping up to a red horseshoe magnet, a button and a penny left on the table' }],
+    },
+    sources: ['Aligned with Texas TEKS K.7 (describe and predict how a magnet interacts with various materials and how magnets can be used to push or pull) and NGSS 3-PS2-3 (ask questions to determine cause and effect relationships of electric or magnetic interactions between two objects not in contact with each other), which NGSS places in grade 3.'],
+    generators: ['sk-magnet-pulls', 'sk-tap-pulled', 'sk-magnet-push', 'sk-magnet-pulls', 'sk-tap-pulled'],
+  },
+  {
+    id: 'light-and-shadows',
+    order: 8,
+    title: 'Light and shadows',
+    tagline: 'Seeing needs light, and a shadow is where the light cannot go',
+    lesson: {
+      // Full standard, pass KK (earmark E1, TEKS K.8A and K.8B): things that make light; nothing can be seen with no light at
+      // all; a little light shows shapes but turns colors gray, and lots of light shows them bright (the eye's color cells
+      // need light, so dim light truly looks gray); light goes through a window and a glass of water and is blocked by a
+      // book, a wall and a hand, and the dark shape behind the thing that blocks it is a shadow, on the side away from the light.
+      paragraphs: ['Light comes from the sun. It comes from a lamp, a flashlight and a candle too. These things make light. You can only see things when there is light. Shut the closet door, and it is dark, and you cannot see your shoes at all. Click a flashlight on, and there they are.', 'A little light shows a little. With just a little light, your red ball looks dim and gray. With lots of light from a lamp, it looks bright and red.', 'Light goes through some things. It goes through a window, and through clear water in a glass. Light is blocked by other things. It cannot go through a book, a wall or your hand.', 'When something blocks the light, there is a dark shape behind it. That dark shape is a shadow. Your shadow is the shape of you. A shadow is always on the side away from the light. Stand with the sun in front of you, and your shadow is behind you. Hold your hand in front of a flashlight, and a hand shadow shows on the wall.'],
+      keyIdea: 'You can only see things when there is light. Light goes through a window but not through a book or your hand, and the dark shape behind the thing that blocks it is a shadow.',
+      example: { kind: 'icon', name: 'shadow', caption: 'The sun shines on the child. The child blocks the light, and that makes a shadow on the ground.' },
+      script: [
+        { say: 'Light comes from the sun. It comes from a lamp, a flashlight and a candle too. These things make light.', show: { kind: 'pair', a: { kind: 'icon', name: 'sun' }, b: { kind: 'icon', name: 'flashlight' } } },
+        { say: 'You can only see things when there is light. Shut the closet door, and it is dark, and you cannot see your shoes at all. Click a flashlight on, and there they are.', show: { kind: 'icon', name: 'flashlight' } },
+        { say: 'A little light shows a little. With just a little light, this red ball looks dim and gray. With lots of light from a lamp, it looks bright and red.', show: { kind: 'pair', a: { kind: 'icon', name: 'lamp' }, b: { kind: 'icon', name: 'ball' } } },
+        { say: 'Light goes through some things. It goes through this window, and through clear water in this glass.', show: { kind: 'pair', a: { kind: 'icon', name: 'window' }, b: { kind: 'icon', name: 'glass' } } },
+        { say: 'Light is blocked by other things. It cannot go through this book, a wall or your hand.', show: { kind: 'icon', name: 'book' } },
+        { say: 'When something blocks the light, there is a dark shape behind it. That dark shape is a shadow. Your shadow is the shape of you.', show: { kind: 'icon', name: 'shadow' } },
+        { say: 'A shadow is always on the side away from the light. Stand with the sun in front of you, and your shadow is behind you.', show: { kind: 'pair', a: { kind: 'icon', name: 'sun' }, b: { kind: 'icon', name: 'shadow' } } },
+        { say: 'Hold your hand in front of a flashlight, and a hand shadow shows on the wall. Bend two fingers up for ears, and now it is a bunny.', show: { kind: 'icon', name: 'flashlight' } },
+        { say: 'You see things only when there is light. Light goes through a window, but not through you, and that makes your shadow.', show: { kind: 'icon', name: 'shadow' } },
+      ],
+      pictures: [{ serial: 'P40', step: 7, alt: 'A hand in front of a flashlight making a bunny shadow on the wall' }],
+    },
+    sources: ['Aligned with Texas TEKS K.8A (communicate the idea that objects can only be seen when a light source is present and compare the effects of different amounts of light on the appearance of objects) and K.8B (demonstrate and explain that light travels through some objects and is blocked by other objects, creating shadows), and NGSS 1-PS4-2 (make observations to construct an evidence-based account that objects can be seen only when illuminated) and 1-PS4-3 (plan and conduct an investigation to determine the effect of placing objects made with different materials in the path of a beam of light), which NGSS places in grade 1.'],
+    generators: ['sk-makes-light', 'sk-see-in-dark', 'sk-light-through', 'sk-shadow', 'sk-light-through'],
+  },
+  {
+    id: 'kinds-of-rocks',
+    order: 9,
+    title: 'Looking at rocks',
+    tagline: 'Big or small, round or flat, smooth or rough',
+    requires: ['sort-by-looks'],
+    lesson: {
+      // Full standard, pass KK (earmark E1, TEKS K.10A): rocks sorted by the four properties the standard names, size (a
+      // pebble, a boulder), shape (round, flat, pointy), color (gray, brown, white, speckled) and texture (a river pebble is
+      // smooth because water rolled it against other rocks for a very long time; many rocks are rough and bumpy).
+      paragraphs: ['Rocks are everywhere, in the yard, by the river and under the soil. Pick one up and look closely. Rocks come in many sizes. A pebble is a tiny rock you can hold between two fingers. A boulder is a rock so big that you could climb on it.', 'Rocks come in many shapes. Some are round, some are flat, and some have pointy corners. Rocks come in many colors too. Some are gray, some are brown or white, and some are speckled, with spots of many colors.', 'Touch a rock to feel its texture. A river pebble is smooth, because water rolled it against other rocks for a very long time. Many rocks are rough and bumpy.', 'We can sort rocks by size, by shape, by color or by how they feel. Put the smooth rocks in one pile and the rough rocks in another.'],
+      keyIdea: 'Rocks come in many sizes, shapes, colors and textures. A pebble is tiny and a boulder is huge, a river pebble is smooth, and we can sort rocks by any of those.',
+      example: { kind: 'pair', a: { kind: 'icon', name: 'pebble' }, b: { kind: 'icon', name: 'boulder' }, caption: 'A pebble is a tiny rock. A boulder is a huge one.' },
+      script: [
+        { say: 'Rocks are everywhere, in the yard, by the river and under the soil. Pick up a rock and look closely.', show: { kind: 'icon', name: 'rock' } },
+        { say: 'Rocks come in many sizes. A pebble is a tiny rock you can hold between two fingers.', show: { kind: 'icon', name: 'pebble' } },
+        { say: 'A boulder is a rock so big that you could climb on it.', show: { kind: 'icon', name: 'boulder' } },
+        { say: 'Rocks come in many shapes. This pebble is round, this rock is flat, and some rocks have pointy corners.', show: { kind: 'pair', a: { kind: 'icon', name: 'pebble' }, b: { kind: 'icon', name: 'flatrock' } } },
+        { say: 'Rocks come in many colors. Some are gray, some are brown or white, and this one is speckled, with spots of many colors.', show: { kind: 'icon', name: 'speckled' } },
+        { say: 'Touch a rock to feel its texture. This river pebble is smooth, because water rolled it against other rocks for a very long time. This rock is rough and bumpy.', show: { kind: 'pair', a: { kind: 'icon', name: 'pebble' }, b: { kind: 'icon', name: 'rock' } } },
+        { say: 'We can sort rocks by size, by shape, by color or by how they feel. Put the smooth pebble in one pile and the rough rock in another.', show: { kind: 'pair', a: { kind: 'icon', name: 'pebble' }, b: { kind: 'icon', name: 'rock' } } },
+        { say: 'Look at the size of a rock, its shape, its color and how it feels, and you can sort it.', show: { kind: 'flow', steps: ['size', 'shape', 'color', 'feel'] } },
+      ],
+      pictures: [{ serial: 'P41', step: 0, alt: 'Rocks of many sizes, shapes and colors spread on a table, a speckled pink one among them' }],
+    },
+    sources: ['Aligned with Texas TEKS K.10A (describe and classify rocks by the observable properties of size, shape, color, and texture).'],
+    generators: ['sk-which-rock', 'sk-tap-rock', 'sk-rock-feel', 'sk-rocks-sorted', 'sk-which-rock'],
+  },
+  {
+    id: 'rocks-soil-and-water',
+    order: 10,
+    title: 'Using rocks, soil and water',
+    tagline: 'The Earth gives us rocks, soil and water, and we use them every day',
+    lesson: {
+      // Full standard, pass KK (earmark E1, TEKS K.11): practical uses a five-year-old can see. Rocks build a stone wall and a
+      // step, gravel makes a path and crushed rock lies under roads; soil grows every plant we eat, and clay, a sticky soil,
+      // is baked into pots and bricks; water is for drinking, cooking, washing, plants and animals, fires and boats; sand is
+      // tiny bits of rock, and glass is made from melted sand. Every claim was checked.
+      paragraphs: ['Rocks, soil and water come from the Earth, and we use all three every day. We build with rocks. A stone wall is rocks stacked up, and a stone step is one flat rock. Little rocks called gravel make a path or a driveway, and crushed rock is under every road.', 'Soil is where plants grow. Every carrot, every apple and every flower comes from a plant that grew in soil, so farmers need soil to grow plants in their fields. Clay is a sticky kind of soil. People shape clay into pots and bricks and bake them hard.', 'Water is for drinking and cooking, and every drop counts. We use water for washing our hands and for baths. Plants and animals need water too, and a fish lives in it. Water puts out a fire, and boats float on it.', 'Sand is tiny bits of rock. We build sandcastles with it, and glass is made from sand that was melted and cooled.'],
+      keyIdea: 'We build with rocks, we grow plants in soil, and we drink, cook and wash with water. The Earth gives us all three.',
+      example: { kind: 'flow', steps: ['rocks to build with', 'soil to grow in', 'water to drink'], caption: 'Three things from the Earth that we use every day.' },
+      script: [
+        { say: 'Rocks, soil and water come from the Earth, and we use all three every day.', show: { kind: 'pair', a: { kind: 'icon', name: 'rock' }, b: { kind: 'icon', name: 'drop' } } },
+        { say: 'We build with rocks. This stone wall is rocks stacked up, and a stone step is one flat rock.', show: { kind: 'icon', name: 'wall' } },
+        { say: 'Little rocks called gravel make a path or a driveway, and crushed rock is under every road.', show: { kind: 'icon', name: 'gravel' } },
+        { say: 'Soil is where plants grow. Every carrot, every apple and every flower comes from a plant that grew in soil, so farmers need soil to grow plants in their fields.', show: { kind: 'icon', name: 'soil' } },
+        { say: 'Clay is a sticky kind of soil. People shape clay into pots and bricks and bake them hard.', show: { kind: 'icon', name: 'bricks' } },
+        { say: 'Water is for drinking and cooking, and every drop counts. We use water for washing our hands and for baths.', show: { kind: 'icon', name: 'drop' } },
+        { say: 'Plants and animals need water too, and a fish lives in it. Water puts out a fire, and boats float on it.', show: { kind: 'pair', a: { kind: 'icon', name: 'drop' }, b: { kind: 'icon', name: 'fish' } } },
+        { say: 'Sand is tiny bits of rock. We build sandcastles with it, and this glass is made from sand that was melted and cooled.', show: { kind: 'icon', name: 'glass' } },
+        { say: 'Rocks to build with, soil to grow in, and water to drink. The Earth gives us all three.', show: { kind: 'flow', steps: ['rocks', 'soil', 'water'] } },
+      ],
+      pictures: [{ serial: 'P42', step: 1, alt: 'A low stone wall around a garden bed of dark soil with green sprouts and a watering can beside it' }],
+    },
+    sources: ['Aligned with Texas TEKS K.11 (observe and generate examples of practical uses for rocks, soil, and water).'],
+    generators: ['sk-earth-uses', 'sk-tap-earth', 'sk-earth-uses', 'sk-water-uses', 'sk-tap-earth'],
+  },
 ]; }
 
 function GRADE1_SCIENCE_MODULES() { return [
@@ -15484,6 +15629,212 @@ Object.assign(GENERATORS, {
     const [prompt, need] = pick(rng, [['Tap what a plant needs to grow.', 'drop'], ['Tap what a plant needs to grow.', 'sun'], ['Tap what a plant needs to grow.', 'soil'], ['Tap what a plant drinks.', 'drop'], ['Tap what gives a plant light.', 'sun'], ["Tap what a plant's roots grow in.", 'soil']]); const not = pick(rng, ['rock', 'magnet']);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [`icon:${need}`, `icon:${not}`]), answer: `icon:${need}`,
       explain: { drop: 'A plant needs water. Its roots drink it up from the soil.', sun: 'A plant needs the sun. Its leaves use the light to make food.', soil: "A plant's roots grow in the soil, which holds the nutrients it needs." }[need], visual: null, explainVisual: null };
+  },
+  // ---------------------------------------------------------------------------------------------------------------
+  // Kindergarten science banks for earmark E1 (pass KK): sorting by properties (K.6), magnets (K.7), light and shadows
+  // (K.8A and K.8B), kinds of rocks (K.10A) and uses of rocks, soil and water (K.11). Each entry is [what is asked, the
+  // choices, the right one, the reason said after]; a setup line, when there is one, is the fifth item and the question
+  // names it with this. Every answer and every picture asked for is spoken in its lesson, which the checks prove.
+  // ---------------------------------------------------------------------------------------------------------------
+  'sk-how-it-feels': (rng) => {
+    const Q = [['teddy', 'Look at the teddy bear. Does it feel soft or hard?', ['Soft', 'Hard'], 'Soft', 'The teddy bear is soft. It is made of cloth, and it squashes when you squeeze it.'],
+      ['rock', 'Look at the rock. Does it feel soft or hard?', ['Soft', 'Hard'], 'Hard', 'The rock is hard. It does not squash at all when you squeeze it.'],
+      ['sock', 'Look at the sock. Does it feel soft or hard?', ['Soft', 'Hard'], 'Soft', 'The sock is soft, because it is made of cloth.'],
+      ['spoon', 'Look at the spoon. Does it feel soft or hard?', ['Soft', 'Hard'], 'Hard', 'The spoon is hard. It is made of metal, cold and shiny.'],
+      ['log', 'Look at the log. Is its bark smooth or rough?', ['Smooth', 'Rough'], 'Rough', 'The bark on a log is rough and bumpy. Rough is how it feels, its texture.'],
+      ['window', 'Look at the window. Is the glass smooth or rough?', ['Smooth', 'Rough'], 'Smooth', 'A window is smooth and flat. Your hand slides right across it.'],
+      ['ball', 'Look at the ball. Is it smooth or rough?', ['Smooth', 'Rough'], 'Smooth', 'The ball is smooth, with no bumps. Smooth is how it feels, its texture.'],
+      ['block', 'Look at the block. Does it feel soft or hard?', ['Soft', 'Hard'], 'Hard', 'The block is hard. It is made of wood, from a tree.']];
+    const [name, prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: [...choices], answer, explain, visual: { kind: 'icon', name }, explainVisual: null };
+  },
+  'sk-made-of': (rng) => {
+    const Q = [['spoon', 'Look at the spoon. What is it made of?', ['Metal', 'Wood', 'Cloth'], 'Metal', 'The spoon is made of metal. Metal is cold and shiny.'],
+      ['block', 'Look at the block. What is it made of?', ['Wood', 'Metal', 'Paper'], 'Wood', 'The block is made of wood, which comes from a tree.'],
+      ['sock', 'Look at the sock. What is it made of?', ['Cloth', 'Wood', 'Glass'], 'Cloth', 'The sock is made of cloth, which is soft.'],
+      ['window', 'Look at the window. What is it made of?', ['Glass', 'Cloth', 'Wood'], 'Glass', 'The window is made of glass, which you can see through.'],
+      ['book', 'Look at the book. What are its pages made of?', ['Paper', 'Metal', 'Glass'], 'Paper', 'The pages of a book are made of paper. Paper is thin, and it tears.'],
+      ['teddy', 'Look at the teddy bear. What is it made of?', ['Cloth', 'Metal', 'Glass'], 'Cloth', 'The teddy bear is made of cloth, and that is why it is soft.']];
+    const [name, prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: { kind: 'icon', name }, explainVisual: null };
+  },
+  'sk-tap-property': (rng) => {
+    const Q = [['Tap the soft one.', 'teddy', 'rock', 'The teddy bear is soft, because it is made of cloth. The rock is hard.'],
+      ['Tap the soft one.', 'sock', 'spoon', 'The sock is soft, because it is made of cloth. The spoon is hard metal.'],
+      ['Tap the hard one.', 'rock', 'teddy', 'The rock is hard. It does not squash when you squeeze it, and the teddy bear does.'],
+      ['Tap the hard one.', 'block', 'sock', 'The block is hard, because it is made of wood. The sock is soft cloth.'],
+      ['Tap the one that is made of wood.', 'block', 'sock', 'The block is made of wood, from a tree. The sock is made of cloth.'],
+      ['Tap the one that is made of metal.', 'spoon', 'teddy', 'The spoon is made of metal, cold and shiny. The teddy bear is made of cloth.'],
+      ['Tap the round one.', 'ball', 'block', 'The ball is round. The block has corners. That is their shape.'],
+      ['Tap the one with corners.', 'block', 'ball', 'The block has corners. The ball is round, with no corners at all.'],
+      ['Tap the one that is rough.', 'log', 'window', 'The log has rough, bumpy bark. The window is smooth and flat.']];
+    const [prompt, yes, no, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [`icon:${yes}`, `icon:${no}`]), answer: `icon:${yes}`, explain, visual: null, explainVisual: null };
+  },
+  'sk-how-sorted': (rng) => {
+    const Q = [['A red ball, a red hat and a red cup are in one pile.', 'How was this pile sorted?', ['By color', 'By shape', 'By how they feel'], 'By color', 'Every thing in the pile is red, so the pile was sorted by color.'],
+      ['The teddy bear and the sock are in one pile, and the rock and the spoon are in another.', 'How were these piles sorted?', ['By how they feel', 'By color', 'By shape'], 'By how they feel', 'The teddy bear and the sock are soft, and the rock and the spoon are hard. The piles were sorted by how they feel.'],
+      ['A spoon, a nail and a paper clip are in one pile. They are all made of metal.', 'How was this pile sorted?', ['By what they are made of', 'By color', 'By shape'], 'By what they are made of', 'The spoon, the nail and the paper clip are all made of metal, so the pile was sorted by material, what the things are made of.'],
+      ['A ball, an orange and a marble are in one pile. They are all round.', 'How was this pile sorted?', ['By shape', 'By color', 'By what they are made of'], 'By shape', 'The ball, the orange and the marble are all round, so the pile was sorted by shape.'],
+      ['A block and a log are in one pile. Both are made of wood.', 'How was this pile sorted?', ['By what they are made of', 'By shape', 'By color'], 'By what they are made of', 'The block and the log are both made of wood, so the pile was sorted by material, what the things are made of.'],
+      ['Three blue things are in one pile, and three red things are in another.', 'How were these piles sorted?', ['By color', 'By shape', 'By how they feel'], 'By color', 'One pile is all blue and the other is all red, so the piles were sorted by color.']];
+    const [story, prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'sk-magnet-pulls': (rng) => {
+    const Q = [['clip', 'Look at the paper clip. Does a magnet pull it?', 'Yes', 'A magnet pulls the paper clip. The paper clip is steel, and steel has iron in it.'],
+      ['nail', 'Look at the nail. Does a magnet pull it?', 'Yes', 'A magnet pulls the nail. The nail is steel, and steel has iron in it.'],
+      ['rock', 'Look at the rock. Does a magnet pull it?', 'No', 'A magnet does not pull the rock. A rock has no iron in it.'],
+      ['sock', 'Look at the sock. Does a magnet pull it?', 'No', 'A magnet does not pull the sock. Cloth has no iron in it.'],
+      ['block', 'Look at the block. Does a magnet pull it?', 'No', 'A magnet does not pull the block. Wood has no iron in it.'],
+      ['penny', 'Look at the penny. Does a magnet pull it?', 'No', 'A magnet does not pull the penny. A penny is metal, but it has no iron in it, and a magnet pulls iron.'],
+      ['flower', 'Look at the flower. Does a magnet pull it?', 'No', 'A magnet does not pull the flower. A flower has no iron in it.']];
+    const [name, prompt, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: ['Yes', 'No'], answer, explain, visual: { kind: 'icon', name }, explainVisual: null };
+  },
+  'sk-tap-pulled': (rng) => {
+    const Q = [['Tap what a magnet pulls.', 'clip', 'rock', 'A magnet pulls the paper clip, because it is steel, and steel has iron in it. A rock has no iron.'],
+      ['Tap what a magnet pulls.', 'nail', 'sock', 'A magnet pulls the nail, because it is steel, and steel has iron in it. A sock is cloth, with no iron.'],
+      ['Tap what a magnet pulls.', 'clip', 'block', 'A magnet pulls the paper clip, because it is steel, and steel has iron in it. A block is wood, with no iron.'],
+      ['Tap what a magnet pulls.', 'nail', 'penny', 'A magnet pulls the nail, because it is steel, and steel has iron in it. A penny is metal with no iron in it.'],
+      ['Tap what a magnet does not pull.', 'rock', 'clip', 'A magnet does not pull the rock, because a rock has no iron in it. It pulls the steel paper clip.'],
+      ['Tap what a magnet does not pull.', 'sock', 'nail', 'A magnet does not pull the sock, because cloth has no iron in it. It pulls the steel nail.'],
+      ['Tap what a magnet does not pull.', 'penny', 'clip', 'A magnet does not pull the penny. A penny is metal, but it has no iron in it. The paper clip is steel, with iron.']];
+    const [prompt, yes, no, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [`icon:${yes}`, `icon:${no}`]), answer: `icon:${yes}`, explain, visual: null, explainVisual: null };
+  },
+  'sk-magnet-push': (rng) => {
+    const Q = [['Two magnets pull together with a snap. Turn one magnet around. What happens?', ['They push apart', 'They pull harder', 'They melt'], 'They push apart', 'Turn one magnet around, and the two magnets push apart. You can feel the push in your hands.', null],
+      ['What does a magnet pull?', ['Things with iron in them', 'Every single thing', 'Only wood'], 'Things with iron in them', 'A magnet pulls things with iron in them, like a steel paper clip or a nail.', null],
+      ['What is holding this drawing up?', ['A magnet', 'The wind', 'Water'], 'A magnet', 'A magnet on the fridge holds the drawing up. It pulls through the paper to the steel door.', 'A drawing stays up on the steel fridge door with no tape and no glue.'],
+      ['Can a magnet pull a paper clip through a piece of paper?', ['Yes, it pulls through the paper', 'No, paper stops it'], 'Yes, it pulls through the paper', 'A magnet pulls through paper. That is how a fridge magnet holds up a drawing.', null],
+      ['A magnet can pull. What else can a magnet do?', ['Push', 'Sing', 'Float'], 'Push', 'Magnets can pull, and magnets can push. Two magnets end to end push apart one way and pull together the other way.', null],
+      ['Where should a magnet never go?', ['In your mouth', 'On the fridge', 'Near a paper clip'], 'In your mouth', 'Magnets are for pulling and pushing, never for your mouth. Keep them out of your mouth and away from babies.', null],
+      ['What is a paper clip made of?', ['Steel, which has iron in it', 'Wood', 'Cloth'], 'Steel, which has iron in it', 'A paper clip is made of steel, and steel has iron in it. That is why a magnet pulls it.', null],
+      ['Does a magnet pull every kind of metal?', ['No, only metal with iron in it', 'Yes, every metal'], 'No, only metal with iron in it', 'A magnet does not pull every metal. A penny is metal with no iron in it, so a magnet does not pull it.', null],
+      ['Does a magnet have to touch a paper clip to pull it?', ['No, it pulls from a little way off', 'Yes, it must touch it'], 'No, it pulls from a little way off', 'A magnet can pull a paper clip toward it even before it touches it. The paper clip jumps to the magnet.', null]];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'sk-makes-light': (rng) => {
+    const Q = [['Tap what makes light.', 'sun', 'rock', null, 'The sun makes light. A rock makes no light of its own.'],
+      ['Tap what makes light.', 'flashlight', 'cup', null, 'A flashlight makes light when you click it on. A cup makes no light.'],
+      ['Tap what makes light.', 'lamp', 'book', null, 'A lamp makes light. A book makes no light, so you need light to read it.'],
+      ['Look at the lamp. Does it make light?', 'lamp', null, ['Yes', 'No'], 'A lamp makes light. Turn it on, and the room is bright.'],
+      ['Look at the rock. Does it make light?', 'rock', null, ['Yes', 'No'], 'A rock makes no light of its own. You can only see it when light from the sun or a lamp shines on it.'],
+      ['Look at the fire. Does it make light?', 'fire', null, ['Yes', 'No'], 'Fire makes light. A candle flame is a small fire, and it lights up a dark room.'],
+      ['Look at the flashlight. Does it make light?', 'flashlight', null, ['Yes', 'No'], 'A flashlight makes light when you click it on.']];
+    const [prompt, yes, no, yn, explain] = pick(rng, Q);
+    if (yn) { const answer = /rock/.test(prompt) ? 'No' : 'Yes'; return { type: 'choice', story: null, prompt, choices: ['Yes', 'No'], answer, explain, visual: { kind: 'icon', name: yes }, explainVisual: null }; }
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [`icon:${yes}`, `icon:${no}`]), answer: `icon:${yes}`, explain, visual: null, explainVisual: null };
+  },
+  'sk-see-in-dark': (rng) => {
+    const Q = [['The closet door is shut, and it is dark inside. The flashlight is off.', 'Can you see your shoes in this closet?', ['No, there is no light', 'Yes, a little', 'Yes, in color'], 'No, there is no light', 'With no light at all, you cannot see your shoes. You can only see things when there is light.'],
+      ['The closet door is shut, but now the flashlight is on.', 'Can you see your shoes in this closet now?', ['Yes, the light shows them', 'No, it is still dark', 'Only on Mondays'], 'Yes, the light shows them', 'The flashlight makes light, and the light shows your shoes. You can only see things when there is light.'],
+      [null, 'With only a little light, how does a red ball look?', ['Dim and gray', 'Bright and red', 'Bigger'], 'Dim and gray', 'With just a little light, a red ball looks dim and gray. A little light shows a little.'],
+      [null, 'With lots of light, how does a red ball look?', ['Bright and red', 'Dim and gray', 'Smaller'], 'Bright and red', 'With lots of light, the ball looks bright and red. Lots of light shows its color.'],
+      [null, 'What do you need to see anything at all?', ['Light', 'A hat', 'Wind'], 'Light', 'You can only see things when there is light. In the dark you see nothing at all.'],
+      ['The sun is down, and the lamp is off. The room is dark.', 'Can you see the colors of your toys in this room?', ['No, there is no light', 'Yes, every color'], 'No, there is no light', 'With no light, you cannot see your toys or their colors. Turn on the lamp, and there they are.']];
+    const [story, prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'sk-light-through': (rng) => {
+    const Q = [['window', 'Look at the window. Does light go through it?', ['Yes', 'No'], 'Yes', 'Light goes through a window. That is why the room is bright on a sunny day.', null],
+      ['glass', 'Look at the glass of water. Does light go through it?', ['Yes', 'No'], 'Yes', 'Light goes through a glass and through the clear water in it.', null],
+      ['book', 'Look at the book. Does light go through it?', ['Yes', 'No'], 'No', 'Light cannot go through a book. The book blocks the light, and there is a shadow behind it.', null],
+      ['rock', 'Look at the rock. Does light go through it?', ['Yes', 'No'], 'No', 'Light cannot go through a rock. The rock blocks the light and makes a shadow.', null],
+      [null, 'Tap what light goes through.', null, 'icon:window', 'Light goes through the window. It cannot go through the book, which blocks it.', ['icon:window', 'icon:book']],
+      [null, 'Tap what light goes through.', null, 'icon:glass', 'Light goes through the glass and the clear water in it. It cannot go through the rock.', ['icon:glass', 'icon:rock']],
+      [null, 'Tap what blocks the light.', null, 'icon:book', 'The book blocks the light, so there is a shadow behind it. Light goes right through the window.', ['icon:book', 'icon:window']]];
+    const [name, prompt, choices, answer, explain, pics] = pick(rng, Q);
+    if (pics) return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...pics]), answer, explain, visual: null, explainVisual: null };
+    return { type: 'choice', story: null, prompt, choices: [...choices], answer, explain, visual: { kind: 'icon', name }, explainVisual: null };
+  },
+  'sk-shadow': (rng) => {
+    const Q = [['What is a shadow?', ['A dark shape where the light is blocked', 'A kind of light', 'A puddle'], 'A dark shape where the light is blocked', 'A shadow is the dark shape behind something that blocks the light.', null],
+      ['What shape is the shadow on the wall?', ['The shape of your hand', 'A circle', 'No shape at all'], 'The shape of your hand', 'Your hand blocks the light, so the shadow on the wall is the shape of your hand.', 'Your hand is in front of a flashlight.'],
+      ['Where is your shadow?', ['Behind you', 'In front of you', 'Up in the sky'], 'Behind you', 'A shadow is always on the side away from the light. With the sun in front of you, your shadow is behind you.', 'The sun is in front of you.'],
+      ['Can you have a shadow in a dark room with no light?', ['No, a shadow needs light', 'Yes, always'], 'No, a shadow needs light', 'A shadow is where something blocks the light. With no light, there is nothing to block, so there is no shadow.', null],
+      ['What makes a shadow?', ['Something blocking the light', 'Water', 'More light'], 'Something blocking the light', 'When something blocks the light, there is a dark shape behind it. That dark shape is a shadow.', null],
+      ['Which side of the tree is its shadow on?', ['The side away from the sun', 'The side facing the sun', 'The top'], 'The side away from the sun', 'A shadow is always on the side away from the light, so the shadow is on the side of the tree away from the sun.', 'The sun shines on a tree.']];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'sk-which-rock': (rng) => {
+    const Q = [['Which rock is tiny, small enough to hold between two fingers?', ['A pebble', 'A boulder'], 'A pebble', 'A pebble is a tiny rock you can hold between two fingers.', null],
+      ['Which rock is so big that you could climb on it?', ['A boulder', 'A pebble'], 'A boulder', 'A boulder is a rock so big that you could climb on it.', null],
+      ['Why is a river pebble so smooth?', ['Water rolled it against other rocks', 'Someone painted it', 'It is soft'], 'Water rolled it against other rocks', 'A river pebble is smooth because water rolled it against other rocks for a very long time, and the bumps wore away.', null],
+      ['What is a speckled rock?', ['A rock with spots of many colors', 'A soft rock', 'A round rock'], 'A rock with spots of many colors', 'A speckled rock has spots of many colors. That is its color.', null],
+      ['Name one shape a rock can be.', ['Round', 'Wet', 'Loud'], 'Round', 'Rocks come in many shapes. Some are round, some are flat, and some have pointy corners.', null],
+      ['What do you feel when you touch a rock?', ['Its texture, smooth or rough', 'Its color', 'Its name'], 'Its texture, smooth or rough', 'Touch a rock to feel its texture. A river pebble is smooth, and many rocks are rough and bumpy.', null],
+      ['Which is a way to sort rocks?', ['By size', 'By smell', 'By sound'], 'By size', 'We can sort rocks by size, by shape, by color or by how they feel.', null]];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'sk-tap-rock': (rng) => {
+    const Q = [['Tap the pebble.', 'pebble', 'boulder', 'The pebble is the tiny rock. The boulder is the huge one.'],
+      ['Tap the boulder.', 'boulder', 'pebble', 'The boulder is the huge rock, big enough to climb on. The pebble is tiny.'],
+      ['Tap the flat rock.', 'flatrock', 'pebble', 'This rock is flat. The pebble is round.'],
+      ['Tap the round rock.', 'pebble', 'flatrock', 'The pebble is round. The other rock is flat.'],
+      ['Tap the speckled rock.', 'speckled', 'pebble', 'The speckled rock has spots of many colors. The pebble is plain gray.'],
+      ['Tap the smaller rock.', 'pebble', 'boulder', 'The pebble is smaller. A boulder is a rock so big that you could climb on it.'],
+      ['Tap the bigger rock.', 'boulder', 'pebble', 'The boulder is bigger. A pebble is a tiny rock you can hold between two fingers.']];
+    const [prompt, yes, no, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [`icon:${yes}`, `icon:${no}`]), answer: `icon:${yes}`, explain, visual: null, explainVisual: null };
+  },
+  'sk-rock-feel': (rng) => {
+    const Q = [['pebble', 'Look at the river pebble. Is it smooth or rough?', 'Smooth', 'A river pebble is smooth. Water rolled it against other rocks for a very long time.'],
+      ['rock', 'Look at the rock. Is it smooth or rough?', 'Rough', 'This rock is rough and bumpy. Rough is how it feels, its texture.'],
+      ['speckled', 'Look at the speckled rock. What color is it?', 'Spotted, with many colors', 'A speckled rock is spotted, with spots of many colors.'],
+      ['boulder', 'Look at the boulder. Is it big or tiny?', 'Big', 'A boulder is a rock so big that you could climb on it.'],
+      ['pebble', 'Look at the pebble. Is it big or tiny?', 'Tiny', 'A pebble is a tiny rock you can hold between two fingers.']];
+    const [name, prompt, answer, explain] = pick(rng, Q);
+    const choices = /smooth or rough/.test(prompt) ? ['Smooth', 'Rough'] : /big or tiny/.test(prompt) ? ['Big', 'Tiny'] : shuffle(rng, ['Spotted, with many colors', 'Plain gray', 'Plain white']);
+    return { type: 'choice', story: null, prompt, choices, answer, explain, visual: { kind: 'icon', name }, explainVisual: null };
+  },
+  'sk-rocks-sorted': (rng) => {
+    const Q = [['The gray rocks are in one pile, and the white rocks are in another.', 'How were these rocks sorted?', ['By color', 'By size', 'By shape'], 'By color', 'One pile is gray and the other is white, so the rocks were sorted by color.'],
+      ['The smooth rocks are in one pile, and the rough rocks are in another.', 'How were these rocks sorted?', ['By how they feel', 'By color', 'By size'], 'By how they feel', 'Smooth and rough are how a rock feels, its texture, so the rocks were sorted by how they feel.'],
+      ['The tiny pebbles are in one pile, and the big rocks are in another.', 'How were these rocks sorted?', ['By size', 'By color', 'By how they feel'], 'By size', 'Tiny pebbles in one pile and big rocks in another is sorting by size.'],
+      ['The round rocks are in one pile, and the flat rocks are in another.', 'How were these rocks sorted?', ['By shape', 'By color', 'By size'], 'By shape', 'Round and flat are shapes, so the rocks were sorted by shape.'],
+      ['Three speckled rocks are in one pile, and three plain gray rocks are in another.', 'How were these rocks sorted?', ['By color', 'By size', 'By shape'], 'By color', 'Speckled and plain gray are colors, so the rocks were sorted by color.']];
+    const [story, prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'sk-earth-uses': (rng) => {
+    const Q = [['What is a stone wall made of?', ['Rocks', 'Water', 'Cloth'], 'Rocks', 'A stone wall is rocks stacked up. We build with rocks.', null],
+      ['What are bricks made from?', ['Clay, a kind of soil', 'Water', 'Snow'], 'Clay, a kind of soil', 'Bricks are made from clay, a sticky kind of soil, shaped and baked hard.', null],
+      ['What grows in soil?', ['Plants', 'Rocks', 'Clouds'], 'Plants', 'Plants grow in soil. Every carrot, every apple and every flower comes from a plant that grew in soil.', null],
+      ['What is under every road?', ['Crushed rock', 'Soft cloth', 'Glass'], 'Crushed rock', 'Crushed rock is under every road. We build with rocks.', null],
+      ['What is gravel?', ['Little rocks', 'Big rocks', 'Wet soil'], 'Little rocks', 'Gravel is little rocks. It makes a path or a driveway.', null],
+      ['What is sand?', ['Tiny bits of rock', 'Tiny bits of cloth', 'Wet soil'], 'Tiny bits of rock', 'Sand is tiny bits of rock. We build sandcastles with it.', null],
+      ['What is glass made from?', ['Sand that was melted', 'Water', 'Wood'], 'Sand that was melted', 'Glass is made from sand that was melted and cooled. Sand is tiny bits of rock.', null],
+      ['What do the seeds grow in?', ['Soil', 'Rocks', 'Glass'], 'Soil', 'Seeds grow in soil. Farmers need soil for their fields.', 'A farmer plants seeds in a field.'],
+      ['Why does a farmer need soil?', ['To grow plants', 'To drink', 'To build a wall'], 'To grow plants', 'A farmer needs soil to grow plants, because soil is where plants grow.', null],
+      ['What do people make from clay?', ['Pots and bricks', 'Socks', 'Rain'], 'Pots and bricks', 'People shape clay into pots and bricks and bake them hard. Clay is a sticky kind of soil.', null]];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'sk-tap-earth': (rng) => {
+    const Q = [['Tap what plants grow in.', 'soil', 'rock', 'Plants grow in soil. A rock is for building.'],
+      ['Tap what we drink.', 'drop', 'rock', 'We drink water. Nobody drinks a rock.'],
+      ['Tap what a stone wall is made of.', 'rock', 'drop', 'A stone wall is rocks stacked up. We build with rocks.'],
+      ['Tap what a fish lives in.', 'drop', 'soil', 'A fish lives in water. Plants grow in soil.'],
+      ['Tap what farmers need for their fields.', 'soil', 'glass', 'Farmers need soil for their fields, because soil is where plants grow.'],
+      ['Tap what gravel is made of.', 'gravel', 'drop', 'Gravel is little rocks. It makes a path or a driveway.'],
+      ['Tap what is made from clay.', 'bricks', 'drop', 'Bricks are made from clay, a sticky kind of soil, shaped and baked hard.']];
+    const [prompt, yes, no, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [`icon:${yes}`, `icon:${no}`]), answer: `icon:${yes}`, explain, visual: null, explainVisual: null };
+  },
+  'sk-water-uses': (rng) => {
+    const Q = [['Which one is a way we use water?', ['Washing our hands', 'Building a wall', 'Baking a brick'], 'Washing our hands', 'We wash our hands with water. We drink it and cook with it too.', null],
+      ['What puts out a fire?', ['Water', 'A sock', 'A pebble'], 'Water', 'Water puts out a fire. That is one more way we use water.', null],
+      ['What does a boat float on?', ['Water', 'Soil', 'Rocks'], 'Water', 'Boats float on water.', null],
+      ['Which one needs water?', ['A plant', 'A rock', 'A brick'], 'A plant', 'Plants and animals need water. A rock and a brick need nothing.', null],
+      ['What do we cook with?', ['Water', 'Gravel', 'Sand'], 'Water', 'We cook with water, and we drink it too.', null],
+      ['What is in the watering can?', ['Water', 'Gravel', 'Glass'], 'Water', 'A watering can holds water, and the plants drink it up through their roots.', 'A child waters the garden with a watering can.']];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   's1-when-sun': (rng) => {
     const sun = randInt(rng, 0, 1) === 1;

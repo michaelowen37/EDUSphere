@@ -97,6 +97,18 @@ export const CURRICULUM = [
       { framework: 'TEKS', code: 'K.5G', text: 'Describe how factors or conditions can cause objects, organisms, and systems to either change or stay the same.', moduleIds: ['hot-and-cold'] },
       { framework: 'TEKS', code: 'K.12A', text: 'Observe and identify the dependence of plants on air, sunlight, water, nutrients in the soil, and space to grow.', moduleIds: ['what-plants-need'] },
       { framework: 'TEKS', code: 'K.12B', text: 'Observe and identify the dependence of animals on air, water, food, space, and shelter.', moduleIds: ['living-or-not'] },
+      // Earmark E1 (pass KK): the six codes no module taught, each read in 19 TAC 112.2 (Adopted 2021). K.6, K.7 and K.11
+      // are single expectations in the published text, so they take no letter.
+      { framework: 'TEKS', code: 'K.6', text: 'Identify and record observable physical properties of objects, including shape, color, texture, and material, and generate ways to classify objects.', moduleIds: ['sort-by-looks'] },
+      { framework: 'TEKS', code: 'K.7', text: 'Describe and predict how a magnet interacts with various materials and how magnets can be used to push or pull.', moduleIds: ['magnets-k'] },
+      { framework: 'TEKS', code: 'K.8A', text: 'Communicate the idea that objects can only be seen when a light source is present and compare the effects of different amounts of light on the appearance of objects.', moduleIds: ['light-and-shadows'] },
+      { framework: 'TEKS', code: 'K.8B', text: 'Demonstrate and explain that light travels through some objects and is blocked by other objects, creating shadows.', moduleIds: ['light-and-shadows'] },
+      { framework: 'TEKS', code: 'K.10A', text: 'Describe and classify rocks by the observable properties of size, shape, color, and texture.', moduleIds: ['kinds-of-rocks'] },
+      { framework: 'TEKS', code: 'K.11', text: 'Observe and generate examples of practical uses for rocks, soil, and water.', moduleIds: ['rocks-soil-and-water'] },
+      { framework: 'CCSS', code: 'NGSS 2-PS1-1', text: 'Plan and conduct an investigation to describe and classify different kinds of materials by their observable properties.', moduleIds: ['sort-by-looks'] },
+      { framework: 'CCSS', code: 'NGSS 3-PS2-3', text: 'Ask questions to determine cause and effect relationships of electric or magnetic interactions between two objects not in contact with each other.', moduleIds: ['magnets-k'] },
+      { framework: 'CCSS', code: 'NGSS 1-PS4-2', text: 'Make observations to construct an evidence-based account that objects can be seen only when illuminated.', moduleIds: ['light-and-shadows'] },
+      { framework: 'CCSS', code: 'NGSS 1-PS4-3', text: 'Plan and conduct an investigation to determine the effect of placing objects made with different materials in the path of a beam of light.', moduleIds: ['light-and-shadows'] },
       { framework: 'CCSS', code: 'NGSS K-ESS2-1', text: 'Use and share observations of local weather conditions to describe patterns over time.', moduleIds: ['kinds-of-weather'] },
       { framework: 'CCSS', code: 'NGSS K-LS1-1', text: 'Use observations to describe patterns of what plants and animals (including humans) need to survive.', moduleIds: ['living-or-not', 'what-plants-need'] },
       { framework: 'CCSS', code: 'NGSS K-PS3-1', text: "Make observations to determine the effect of sunlight on Earth's surface.", moduleIds: ['hot-and-cold'] },

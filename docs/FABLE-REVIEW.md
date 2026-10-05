@@ -190,6 +190,13 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A thing a lesson names, it also says what it is. A food bank and an animal shelter were named for a five-year-old who may know neither.
 - A computed question's words are checked like any other (one dollar, two dollars), and a bank whose setups the rules read for numbers never carries a wordy setup.
 
+## Learned in pass KK (earmark E1, five new kindergarten science modules)
+
+- A national framework's assessment boundary can exclude the very thing a code seems to cover. NGSS K-PS2-1 (pushes and pulls) says in its boundary that it excludes non-contact pushes or pulls such as those produced by magnets, so a magnet lesson cites 3-PS2-3 with a note, never K-PS2-1. Read the boundary and the clarification statement, not only the performance expectation.
+- Build a new module's wrong answers the way the review checks old ones. Sand puts out a fire, so it cannot be a wrong answer to what puts out a fire; most kitchen spoons and soda cans are not pulled by a magnet, so "metal" is never the rule, iron is.
+- Draw every new icon, render the set to one sheet, and look at it before delivering. A penny's profile read like a letter R, and a shadow drawn as a patch under the feet did not sit on the side away from the sun; both were only visible in the picture.
+- A one-off story child's name is checked against every story in the course before it is used (pass JX's rule holds for new stories too), and a new early-years story is counted before it is trusted: four of five ran a few words over the limit.
+
 ## Learned in pass KJ (kindergarten Looking and listening)
 
 - Read every "including" in a standard against the lesson. The art standard names form and balance, and the lesson had five of its seven words.

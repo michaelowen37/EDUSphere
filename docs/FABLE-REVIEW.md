@@ -190,6 +190,40 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A thing a lesson names, it also says what it is. A food bank and an animal shelter were named for a five-year-old who may know neither.
 - A computed question's words are checked like any other (one dollar, two dollars), and a bank whose setups the rules read for numbers never carries a wordy setup.
 
+## Learned in pass KS (earmark E6, the last twenty letters)
+
+- A letter's strokes are drawn the way handwriting is taught, not the way the font draws it: a ball-and-stick a with the font's two-story a switched off underneath, bumps that start from the top dot, tails that stay on the pad.
+- On the tracing pad, 90 degrees is the bottom and -90 the top; an arc around the bottom from left to right runs from 180 to 0, and the first U went over the top. Every new letter gets an ideal-trace check and a screenshot in the built page.
+- A story's audio is rebuilt from its words by a script after any trim, never edited as a second copy by hand; the tagged-words test catches the drift, but rebuilding avoids it.
+
+## Learned in pass KR (earmark E5 part two, kindergarten technology)
+
+- Check a new icon in the real built page, not only the icon sheet: the sheet renderer in /tmp cannot draw parts built with a map (the keyboard's keys, the comb's teeth), while the app draws them. build.sh, then tests/e2e/make-page.mjs, then a Playwright screenshot of the lesson step.
+- A hands-on standard (keys, saving, posture) is still teachable by voice and picture: name the key, say what it does, show it, and let the practice be the lesson itself, which is an app.
+- A design process for a five-year-old is a story with a failed test in the middle; the fix is the lesson, and a failed test is a clue in the story because information has four syllables.
+
+## Learned in pass KQ (earmark E5 part one, kindergarten technology)
+
+- An earmark written during a review pass can undercount: KC listed one unmapped code of 126.1(c) and there were ten. When an earmark comes due, read the whole section against the plan again before building, and widen the earmark in writing.
+- A teacher's name with a period (Ms. Lin) splits a sentence for the flow audit and the read-aloud count; Miss Lin reads the same and keeps the sentence whole.
+- Everything and information have four syllables; a kindergarten story says every picture and facts.
+- A lesson about searching teaches the check, not just the search: a device brings back what it finds, right or wrong, so the story's first answer is wrong (thirty feet) and the class checks two more pages.
+
+## Learned in pass KP (earmark E4 part two, kindergarten health)
+
+- Body safety for a five-year-old is taught the way child-safety educators teach it, plainly and without fear: your body is yours, the swimsuit rule, a safe grown-up never asks you to keep a secret from your parents, it is never your fault, and keep telling until someone helps. It is abuse prevention, not human sexuality instruction, so it is not consent-gated.
+- A story about danger shows the stop, never the act: Noah holds the pill to his mouth and stops; nobody drinks from the can; the hat stays on.
+- A standard half taught in another course is narrowed, not duplicated: the online situations that call for a trusted adult went into Safe and kind online, with the health code in its sources and a plan row pointing there.
+- An icon key is a word the line says (stop, bottle, cigarette, house); a made-up compound (handstop, pillbottle, nosmoke) fails the picture rule and sounds wrong read aloud.
+
+## Learned in pass KO (earmark E4 part one, kindergarten health)
+
+- A health claim for a five-year-old is checked against the agency that owns it (the CDC for lice, ticks and vaccines, USDA MyPlate for portions, the FDA's allergen list) and said at the child's level without being softened into something false: lice are no shame, and a hurt brain may not heal the way a scraped knee does.
+- A law's threshold (a booster until eight unless four feet nine) is said as big enough in a kindergarten lesson, with the code cited in the comment, so the lesson stays true in every family's car without a number a child cannot use.
+- An icon's key must be a word the spoken line says naturally; belt, not seatbelt, since the lesson says seat belt.
+- Remembered and emergency have four syllables; the read-aloud rule shapes even a 911 story's closing line.
+- A national framework's edition is checked before a new module cites it (the NHES third edition, 2024); when it has not been read in full, map under the row already there and log the move as an accuracy item, never quote a number from memory.
+
 ## Learned in pass KN (earmark E3 part two, places, families and technology)
 
 - Teach religion and family shape as things each family decides, name several and the choice of none, and keep every painting free of a default: P57's prompt asks for no religious symbols so that no family's way is painted as the way.

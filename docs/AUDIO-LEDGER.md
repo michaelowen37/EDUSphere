@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-05 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 7337 clips, 1,327,726 characters in all; the longest clip is 508 characters and the longest whole story 2,751, far under Eleven v4's 10,000 a request. 158 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-05 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 7709 clips, 1,376,948 characters in all; the longest clip is 508 characters and the longest whole story 2,751, far under Eleven v4's 10,000 a request. 174 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,7 +17,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 3281 | 376,066 |
+| Pre-K to grade 2 | 3653 | 425,288 |
 | Grades 3 to 5 | 1263 | 278,553 |
 | Grades 6 to 8 | 1138 | 272,072 |
 | Grades 9 to college | 1655 | 401,035 |
@@ -39,9 +39,9 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 | Kind | Clips |
 |---|---|
-| story title | 629 |
-| story | 3985 |
-| lesson line | 1805 |
+| story title | 645 |
+| story | 4097 |
+| lesson line | 2049 |
 | long story title | 102 |
 | long story | 816 |
 
@@ -256,6 +256,166 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S3709-5: [a refrigerator humming to life] In the morning the lights came back on. The fridge hummed, the tablet lit up, and the phone charged. Owen looked at each one in a new way. Every one did a job.
 - S3709-6: People lived without these things for a long, long time, said Dad. They just did every job the slow way. Owen nodded, then he went outside to play. [playful] The tablet could wait.
 - S3709-7: [slowly, warmly] A tool is anything people make to do a job better. Without our tools, many things would take much longer.
+
+### The itchy head (S3714, health-helpers)
+
+- S3714-1: Zoe's head itched all through dinner. [scratching] She scratched behind her ear, then the top, then the other ear. Mom put down her fork and looked closely.
+- S3714-2: Lice, said Mom, tiny bugs living in your hair. [worried] Zoe's eyes filled up, and she asked if she was dirty. [gently] No, said Mom. Lice crawl onto clean heads too.
+- S3714-3: Mom called the nurse at the clinic, who told her just what to do. A special shampoo, then a fine comb through every bit of hair, slow and careful. [humming a tune] It took a while, so they sang.
+- S3714-4: Then Mom washed the pillowcase and the brush. Your hat is yours, she said, and your brush is yours. Lice walk from head to head, so heads stay apart, and hats stay home.
+- S3714-5: A week later the nurse checked again. [cheerful] All clear, she said, and Zoe grinned. The nurse knew all about lice because that was her job.
+- S3714-6: At school Zoe told her friend Ben, who had lice once too. Nobody was dirty, and nobody was in trouble. [matter of fact] Just bugs, and bugs can be combed out.
+- S3714-7: [slowly, warmly] Ask a parent, a teacher, a doctor or a nurse about your body. Lice are no shame, and a grown-up helps.
+
+### The cookie that stayed in the bag (S3719, portions-and-allergies)
+
+- S3719-1: Jamal had two cookies in his lunch, and Lila had none, so he held one out. [quietly] Lila shook her head and said she could not, because it might have peanuts.
+- S3719-2: Peanuts can make me very sick, said Lila. My lips puff up and it gets hard to breathe. Jamal put the cookie back in the bag. [thoughtful] He had not known.
+- S3719-3: Ms. Reyes said the rule to the class. Nobody shares food, and nobody trades snacks, so every friend stays safe. Then we wash our hands, so crumbs do not travel.
+- S3719-4: [water running] After lunch Jamal washed with soap and sat on his own side. Keeping Lila safe was his job too, and an easy one.
+- S3719-5: One day a crumb got on the table anyway, and a red spot came up on Lila's hand. [quick footsteps] Jamal ran to tell Ms. Reyes. [relieved] The nurse came, and Lila was fine.
+- S3719-6: Lila does not want to be sick, said Ms. Reyes, so her allergy is not silly, and it is not a choice. Jamal nodded. He never thought it was silly again.
+- S3719-7: [slowly, warmly] Never share food with a friend who has an allergy. If a friend swells or breathes hard, tell a grown-up right away.
+
+### Ruby and the phone (S3724, emergencies-and-helmets)
+
+- S3724-1: Ruby and Grandpa were building a tower when Grandpa stood up too fast. [a thud] He slipped, fell hard and could not get up. [pained] My leg, he said, and his face went white.
+- S3724-2: [tense] Ruby's heart banged. No other grown-up was home. Then the words from school came back to her. Tell a grown-up, and if no grown-up can help, call 911.
+- S3724-3: She took Grandpa's phone and pressed 9, 1, 1. [calm, steady] A calm voice asked what was wrong. My name is Ruby, she said, and my grandpa fell and hurt his leg. Then she said the street and the house number.
+- S3724-4: Stay on the phone, said the voice, and Ruby did. She held Grandpa's hand. [a siren far off, coming closer] Soon a siren came up the street, and two helpers knocked.
+- S3724-5: They wrapped Grandpa's leg and lifted him onto a bed with wheels. [warmly] You did it all right, one helper told Ruby.
+- S3724-6: Grandpa came home with a cast and a story. Ruby wore her helmet every ride after that, strap snug. [playful] Helpers are great, she said, but a helmet is better.
+- S3724-7: [slowly, warmly] When someone is badly hurt, tell a grown-up or call 911. Say your name, what happened and where you are, and stay on the phone.
+
+### No thank you (S3729, my-space-and-my-no)
+
+- S3729-1: Nadia's dad had a friend over, a big man. [booming, friendly] Come give me a hug, he said, arms wide. [small, unsure] Nadia did not want to. She hid behind the couch.
+- S3729-2: Dad saw her face. [gently] She gets to choose, said Dad, and his friend put his arms down and waved instead. Nadia waved back. That felt right.
+- S3729-3: That night Dad explained. Your body is yours, and the space around you is yours too, like a bubble. People ask before a hug, and you can say no, even to someone you know.
+- S3729-4: At school a boy named Theo kept poking Nadia's arm. [firm] Stop, she said, in her strong voice. He poked again, so Nadia walked away and told her teacher.
+- S3729-5: Telling was not tattling, said her teacher. Telling is how you get help. [proud] Nadia felt tall. Her no had worked, and so had her telling.
+- S3729-6: On the way home she told Dad. If anyone ever makes you feel wrong or scared, you tell me, he said. If I am not there, tell another grown-up, and keep telling until someone helps.
+- S3729-7: [slowly, warmly] Your body is yours, and your space is yours. Say a strong no, walk away, and tell a trusted adult.
+
+### The bystander (S3734, about-bullying)
+
+- S3734-1: Every morning at the bus stop, a big kid named Cole threw Isaac's hat in the bushes. [children laughing] The other kids laughed. [quietly] On Monday, Felix laughed too.
+- S3734-2: [a bus rumbling] On the bus Felix felt bad in his stomach. Isaac sat alone, with leaves in his hair. Felix had not thrown the hat, but he had laughed, and laughing made it worse.
+- S3734-3: That night he told his mom. You were a bystander, she said. A bystander sees it happen, and a bystander gets to choose. You can laugh, or you can help.
+- S3734-4: On Tuesday, Cole reached for the hat. Felix stepped next to Isaac. [firm] Stop, he said, in a strong voice. Then he told the bus driver, who had a word with Cole.
+- S3734-5: The hat stayed on Isaac's head after that, and Isaac saved Felix a seat. [thoughtful] Telling the driver was not tattling. Someone was being hurt, and Felix had gotten help.
+- S3734-6: Felix still felt bad about Monday. [warmly] But Tuesday was better, and Wednesday better still. Now Isaac and Felix walked to the bus stop together, and nobody grabbed anything.
+- S3734-7: [slowly, warmly] Bullying is being mean on purpose, over and over. A bystander can say stop, stand with the person, and get a grown-up.
+
+### The name tag (S3739, safe-play-and-my-address)
+
+- S3739-1: [a busy crowd murmuring] The market was loud and full of legs. Gabi looked up from the apples, and Mom was gone. [worried] No Mom anywhere.
+- S3739-2: Her heart went fast. She wanted to run and look, but Mom had said to stay still and find a helper. So she stood by the apples and looked for a name tag.
+- S3739-3: A worker in a green apron came by, and her name tag said Rosa. Gabi tugged her apron and said she had lost her mom. [kindly] Rosa knelt down and asked if Gabi knew her address.
+- S3739-4: Gabi did. [steady, clear] She said the number, then the street, then the town, the way she had practiced. Then she said Mom's phone number too, all the numbers in a row.
+- S3739-5: Rosa called from the front desk. [quick footsteps] Two minutes later Mom came running, and the hug went on and on. Rosa gave Gabi a sticker for being brave.
+- S3739-6: On the way home Mom made her say the address again, just to hear it. Gabi said it perfectly, and then asked for another sticker. [laughing] No, said Mom, laughing, but you can have ice cream.
+- S3739-7: [slowly, warmly] Know your home address and a parent's phone number. Tell them only to a helper who is helping you.
+
+### The purple candy (S3744, medicines-and-harmful-things)
+
+- S3744-1: Noah was looking for gum in Grandma's purse. Instead he found a bag of shiny purple candies. He held one up to his mouth. [a pause] Then he stopped.
+- S3744-2: Never eat something you find, his teacher had said. Ask a grown-up first. Noah put the candy back and carried the bag to Grandma.
+- S3744-3: [surprised] Grandma's eyes went wide. Those are not candy, she said, those are my heart pills. One of those could make a little boy very sick.
+- S3744-4: She hugged him hard and moved the bag to a high shelf with a locking lid. Medicine only comes from a grown-up, she said, the right amount at the right time.
+- S3744-5: Later, Noah's cousin Max held out a can at the park. Just a sip, Max said. It smelled sour and strong. [firm] No, said Noah, in his strong voice, and he went and told his dad.
+- S3744-6: [proud] Dad was proud. Beer is for grown-ups, he said, and even for grown-ups too much is bad. You did the right thing twice today. Noah thought about the pills and the can, and he agreed.
+- S3744-7: [slowly, warmly] Medicine comes only from a grown-up. Alcohol, tobacco and drugs are not for kids. Say no, walk away, and tell.
+
+### The dragon with two names (S3749, someone-made-it)
+
+- S3749-1: Cora drew a dragon on the class tablet, green with purple wings, the best thing she ever made. Then she went to wash her hands.
+- S3749-2: When she came back, Dev was showing the teacher the tablet. [proud] Look what I drew, he said. [surprised] It was her dragon, every scale, with his name under it.
+- S3749-3: [upset] Cora's face went hot, and she said the dragon was hers, because she had made it. [quietly] Dev looked at his shoes and said he had copied it.
+- S3749-4: Miss Lin sat them down. Every picture on a screen was made by someone, she said, and it belongs to that person. Cora is the owner, so you ask her, and you say she made it.
+- S3749-5: Dev took a breath. [steady] Cora drew it, he told the class, and I copied it without asking. Cora's face cooled. You can use it, she said, if my name goes on.
+- S3749-6: So the dragon got two lines under it. Drawn by Cora. Copied by Dev, with her okay. [warmly] The next day they drew a new one together, both names on it.
+- S3749-7: [slowly, warmly] Every picture, song and game on a screen was made by someone and belongs to them. Ask, and say who made it.
+
+### How tall is a giraffe? (S3754, what-is-data)
+
+- S3754-1: Miss Lin asked the class a question, what is your favorite pet. [children calling out] Each kid said one, and she made a mark beside a dog, a cat or a fish.
+- S3754-2: The dog row had nine marks, the cat row six, the fish row two. That is data, said Miss Lin, facts we collected by asking. Now we can see it.
+- S3754-3: [curious] Ezra had a different question, how tall a giraffe is. Nobody knew, so Miss Lin held up the class tablet. A device can search for facts and bring them back, she said.
+- S3754-4: The first answer said thirty feet, taller than the school. [puzzled] Miss Lin frowned and found a second page. It said about sixteen to eighteen feet, as tall as a two-story house.
+- S3754-5: Two answers, said Miss Lin. A device brings back what it finds, right or wrong, so we check. [satisfied] A third page, from a zoo, agreed with the second.
+- S3754-6: Ezra drew a giraffe next to a house. [playful] Then he asked how tall an elephant is, and Miss Lin handed him the tablet to search together.
+- S3754-7: [slowly, warmly] Data is what you collect by counting, measuring or asking. A device can search for it, and a grown-up helps you check.
+
+### The extra O (S3759, keys-and-saving)
+
+- S3759-1: Juno sat at the class computer for the first time, nose close to the screen. [kindly] Feet flat, said Miss Oak, and sit up tall, an arm away.
+- S3759-2: [keys clicking] Juno found the J, the U, the N and the O. Then her finger slipped, and the O came twice. JUNOO, said the screen.
+- S3759-3: Backspace, said Miss Oak, pointing to the key with the arrow. Juno pressed it once, and the extra O vanished.
+- S3759-4: Next came her last name, Park. Juno typed it, and the screen said JUNOPARK, all squashed. The space bar, said Miss Oak, the long one. Juno pressed it, and a space opened up.
+- S3759-5: Now save it, said Miss Oak, so it is still here tomorrow. Juno tapped the save picture. [a printer humming] Then she tapped print, and the printer hummed and pushed out a page with her name on it.
+- S3759-6: [proud] Juno held the paper up. JUNO PARK, with a space in the middle and no extra O. Her feet were still flat and her back still tall. Twenty minutes, said Miss Oak, so look out the window.
+- S3759-7: [slowly, warmly] Backspace erases a mistake, the space bar makes a space, and saving keeps your work. Sit tall, feet flat, and rest your eyes.
+
+### The tipping bowl (S3764, ask-plan-build)
+
+- S3764-1: [water sloshing] Pepper the hamster tipped his water bowl again, and the shavings went soggy. [sighing] Milo mopped it up and asked why it tipped every day.
+- S3764-2: They watched. Pepper climbed the edge of the bowl to drink, and over it went. So the question was what could hold it still.
+- S3764-3: Ideas, said Miss Oak, lots of them, and no idea is silly yet. A heavier bowl, a box around it, tape. A tiny ladder, so Pepper would not climb. [children laughing] The class laughed, then thought.
+- S3764-4: Milo drew the plan in four boxes. Cut a ring of cardboard, fold the edge, glue it, set the bowl in. He wanted to glue first. [firm, kind] Steps in order, said Miss Oak, or the glue dries on nothing.
+- S3764-5: They built it and tested it. [a small crash] Pepper climbed the ring instead, and over went both. [disappointed] Milo's face fell. That is not a failure, said Miss Oak, that is a clue.
+- S3764-6: So they fixed it. They cut the ring lower, so Pepper could step over it. [hopeful] Test two, and the bowl stayed. [warmly] Pepper drank and slept in dry shavings.
+- S3764-7: [slowly, warmly] Ask, brainstorm, draw the plan, build it with a grown-up, test it and fix it. A failed test is a clue.
+
+### Bumps on the B (S3769, tracing-bump-capitals)
+
+- S3769-1: Kofi drew a B for his name tag, and it came out backward. [puzzled] The bumps stuck out to the left, and the line was on the right. It looked like a B in a mirror.
+- S3769-2: Grandpa sat down beside him. [kindly] Draw the line first, he said, straight down, then go back to the top. Kofi drew the line and went back to the top dot.
+- S3769-3: Now a bump, said Grandpa, out to the right and back in to the line. Kofi swung out and came back, a small bump on top, then a bigger one below.
+- S3769-4: [pleased] There was his B, bumps on the right. D is one big bump, said Grandpa, P is one bump, and R is P with a leg. Kofi drew all four in a row.
+- S3769-5: Which side do the bumps go on, asked Grandpa. The right, said Kofi, the same side as my right hand.
+- S3769-6: The name tag got a new B, bumps out front. [proud] Kofi wore it to school, and nobody saw a mirror.
+- S3769-7: [slowly, warmly] A line down first, then the bumps on the right. D has one big bump, P has one, B has two, and R is P with a leg.
+
+### The snake letter (S3774, tracing-curve-capitals)
+
+- S3774-1: Suki could trace every letter with straight lines. Then came S, and her finger kept making corners. [frustrated] Her S looked like a lightning bolt.
+- S3774-2: An S has no corners, said her dad. It winds the way a snake does. [sand scraping] They went outside to the sandbox, and he drew a snake trail with a stick.
+- S3774-3: Suki took the stick and followed the trail, slow where it bent. [slowly] Around to the left, then around to the right. No corners at all.
+- S3774-4: Back inside, she traced S on the tablet the same way, slow where it bent. The corners were gone. She did it five times, just to feel it.
+- S3774-5: Then came the others. G went around and made a little line in. U curved around the bottom. J curled at the end, and Q was an O with a tail.
+- S3774-6: That night Suki drew a whole snake out of S shapes, winding across the page. Every bend was smooth. [warmly] Her dad hung it on the fridge.
+- S3774-7: [slowly, warmly] A curve has no corners. Keep your finger moving, and slow down where the line bends.
+
+### Small o and its cousins (S3779, tracing-small-circles)
+
+- S3779-1: Dario liked small o. It was just a circle, around to the left and back to the dot. The other small letters looked harder.
+- S3779-2: [marker squeaking] Watch this, said Miss Fox, and she drew a small o with a short line on its right. Now it is a, she said, and Dario blinked, because it was o with one line.
+- S3779-3: She drew another o and gave it a tall line, up high. That is d, she said. Then an o with a line that went down past the bottom and curled left. That is g.
+- S3779-4: And q, said Miss Fox, is an o with a line past the bottom and a little flick. Four letters, and every one starts as small o.
+- S3779-5: Dario drew a row of circles. Then he added a short line, a tall line, a curl and a flick. The circles turned into a, d, g and q, one after another.
+- S3779-6: [delighted] They are cousins, said Dario. Small o is the one who came first. He wrote the whole family across the top of his page.
+- S3779-7: [slowly, warmly] Small a, d, g and q all start with a little circle. Then comes the line, short, tall, curling or with a flick.
+
+### The bump on the right (S3784, tracing-small-bumps)
+
+- S3784-1: Imani wrote her p with the bump on the left. Now it looked like q, and the word pig looked like qig. [giggling] Her friend giggled.
+- S3784-2: Miss Fox leaned over. The bump goes on the right, she said, for b and for p. Then look at the line. In b the line reaches up high.
+- S3784-3: In p the line reaches down low, under the floor. Imani drew a tall line and a bump, and there was b. She drew a low line and a bump, and there was p.
+- S3784-4: Small e is different, said Miss Fox. Start with a short line across the middle. Then go up and around to the left, and stop near the bottom.
+- S3784-5: And f curls over at the top, comes down, and gets a short line across. Imani drew an e and an f, and then she drew them again, because they felt good.
+- S3784-6: [satisfied] She fixed her pig, with the bump on the right. Then she wrote big and bed and fed, and every bump was where it belonged.
+- S3784-7: [slowly, warmly] The bump goes on the right. Look at the line, up high for b and down low for p.
+
+### The last three (S3789, tracing-small-curls)
+
+- S3789-1: The letter wall had a card for every letter, big and small. Wren had traced most of them. Three small cards were still empty, s, j and y.
+- S3789-2: Small s was easy once she thought of big S. [slowly] Around to the left, around to the right, winding the way a snake does, only smaller.
+- S3789-3: Small j was small i with a tail. A line down past the bottom, curling to the left, then a dot on top. Wren drew the dot last and smiled.
+- S3789-4: Small y took two tries. A short slant down, then a long slant that crossed it and kept going below the line. [pleased] On the second try, the slants met in the right spot.
+- S3789-5: Miss Fox handed her three cards. Wren drew s, j and y, one on each, and pinned them at the end of the wall.
+- S3789-6: [proud] Every card was full. Twenty-six big letters and twenty-six small ones, all the way from A to z. Wren walked along the wall and read every one.
+- S3789-7: [slowly, warmly] With s, j and y, you can trace every letter, big and small. Start at the dot and follow the arrow.
 
 ### Two balls (S95, red-and-blue)
 

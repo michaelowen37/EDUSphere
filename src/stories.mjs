@@ -673,6 +673,251 @@ STORIES['tools-that-help'] = {
     'A tool is anything people make to do a job better. Without our tools, many things would take much longer.',
   ],
 };
+// Kindergarten Taking care of me, earmark E4 part one (pass KO): lice, a cookie that stayed in the bag, and a 911 call.
+STORIES['health-helpers'] = {
+  about: 'an itchy head, the tiny bugs that caused it, and the nurse who knew just what to do',
+  more: [{ serial: 'S3715', after: 1, alt: 'Mom looking closely at the girl\'s hair at the dinner table' }, { serial: 'S3716', after: 2, alt: 'Mom combing the girl\'s wet hair with a fine comb, both singing' }, { serial: 'S3717', after: 4, alt: 'A nurse checking the girl\'s hair and giving a thumbs up' }, { serial: 'S3718', after: 5, alt: 'The girl and her friend talking at school, both grinning' }],
+  title: 'The itchy head', art: 'S3714', cast: [],
+  alt: 'A small girl scratching her head at the dinner table while her mother looks closely at her hair',
+  words: [
+    'Zoe\'s head itched all through dinner. She scratched behind her ear, then the top, then the other ear. Mom put down her fork and looked closely.',
+    'Lice, said Mom, tiny bugs living in your hair. Zoe\'s eyes filled up, and she asked if she was dirty. No, said Mom. Lice crawl onto clean heads too.',
+    'Mom called the nurse at the clinic, who told her just what to do. A special shampoo, then a fine comb through every bit of hair, slow and careful. It took a while, so they sang.',
+    'Then Mom washed the pillowcase and the brush. Your hat is yours, she said, and your brush is yours. Lice walk from head to head, so heads stay apart, and hats stay home.',
+    'A week later the nurse checked again. All clear, she said, and Zoe grinned. The nurse knew all about lice because that was her job.',
+    'At school Zoe told her friend Ben, who had lice once too. Nobody was dirty, and nobody was in trouble. Just bugs, and bugs can be combed out.',
+    'Ask a parent, a teacher, a doctor or a nurse about your body. Lice are no shame, and a grown-up helps.',
+  ],
+};
+STORIES['portions-and-allergies'] = {
+  about: 'a cookie that stayed in its bag, and the friend whose allergy made that the kind thing to do',
+  more: [{ serial: 'S3720', after: 1, alt: 'The boy putting the cookie back in its bag, the girl shaking her head' }, { serial: 'S3721', after: 2, alt: 'The teacher telling the class the rule, children at their own lunches' }, { serial: 'S3722', after: 4, alt: 'The boy running to the teacher, the girl looking at a red spot on her hand' }, { serial: 'S3723', after: 5, alt: 'The two friends at the lunch table, each with their own food, smiling' }],
+  title: 'The cookie that stayed in the bag', art: 'S3719', cast: [],
+  alt: 'A small boy holding out a cookie at a lunch table while a small girl shakes her head',
+  words: [
+    'Jamal had two cookies in his lunch, and Lila had none, so he held one out. Lila shook her head and said she could not, because it might have peanuts.',
+    'Peanuts can make me very sick, said Lila. My lips puff up and it gets hard to breathe. Jamal put the cookie back in the bag. He had not known.',
+    'Ms. Reyes said the rule to the class. Nobody shares food, and nobody trades snacks, so every friend stays safe. Then we wash our hands, so crumbs do not travel.',
+    'After lunch Jamal washed with soap and sat on his own side. Keeping Lila safe was his job too, and an easy one.',
+    'One day a crumb got on the table anyway, and a red spot came up on Lila\'s hand. Jamal ran to tell Ms. Reyes. The nurse came, and Lila was fine.',
+    'Lila does not want to be sick, said Ms. Reyes, so her allergy is not silly, and it is not a choice. Jamal nodded. He never thought it was silly again.',
+    'Never share food with a friend who has an allergy. If a friend swells or breathes hard, tell a grown-up right away.',
+  ],
+};
+STORIES['emergencies-and-helmets'] = {
+  about: 'a grandfather who fell, a girl who remembered what to say, and the helmet she wore ever after',
+  more: [{ serial: 'S3725', after: 1, alt: 'The girl standing very still, remembering the words from school' }, { serial: 'S3726', after: 2, alt: 'The girl on the phone, calm, her grandfather on the floor behind her' }, { serial: 'S3727', after: 3, alt: 'Two helpers at the door, a siren light outside' }, { serial: 'S3728', after: 5, alt: 'The girl on her bike with her helmet flat on her head, her grandfather with a cast waving' }],
+  title: 'Ruby and the phone', art: 'S3724', cast: [],
+  alt: 'A small girl holding a phone beside her grandfather, who sits on the floor holding his leg',
+  words: [
+    'Ruby and Grandpa were building a tower when Grandpa stood up too fast. He slipped, fell hard and could not get up. My leg, he said, and his face went white.',
+    'Ruby\'s heart banged. No other grown-up was home. Then the words from school came back to her. Tell a grown-up, and if no grown-up can help, call 911.',
+    'She took Grandpa\'s phone and pressed 9, 1, 1. A calm voice asked what was wrong. My name is Ruby, she said, and my grandpa fell and hurt his leg. Then she said the street and the house number.',
+    'Stay on the phone, said the voice, and Ruby did. She held Grandpa\'s hand. Soon a siren came up the street, and two helpers knocked.',
+    'They wrapped Grandpa\'s leg and lifted him onto a bed with wheels. You did it all right, one helper told Ruby.',
+    'Grandpa came home with a cast and a story. Ruby wore her helmet every ride after that, strap snug. Helpers are great, she said, but a helmet is better.',
+    'When someone is badly hurt, tell a grown-up or call 911. Say your name, what happened and where you are, and stay on the phone.',
+  ],
+};
+// Kindergarten Taking care of me, earmark E4 part two (pass KP): a hug that was not wanted, a bystander, a name tag, purple candy.
+STORIES['my-space-and-my-no'] = {
+  about: 'a hug a girl did not want, the no she learned to say, and the telling that worked',
+  more: [{ serial: 'S3730', after: 1, alt: 'Dad speaking to his friend, who puts his arms down and waves instead' }, { serial: 'S3731', after: 2, alt: 'Dad and the girl at bedtime, a bubble drawn in the air around her' }, { serial: 'S3732', after: 3, alt: 'The girl at school with her hand up in a stop, a boy pulling back his finger' }, { serial: 'S3733', after: 5, alt: 'The girl and her dad walking home, talking' }],
+  title: 'No thank you', art: 'S3729', cast: [],
+  alt: 'A small girl peeking from behind a couch while a big man holds his arms out for a hug',
+  words: [
+    'Nadia\'s dad had a friend over, a big man. Come give me a hug, he said, arms wide. Nadia did not want to. She hid behind the couch.',
+    'Dad saw her face. She gets to choose, said Dad, and his friend put his arms down and waved instead. Nadia waved back. That felt right.',
+    'That night Dad explained. Your body is yours, and the space around you is yours too, like a bubble. People ask before a hug, and you can say no, even to someone you know.',
+    'At school a boy named Theo kept poking Nadia\'s arm. Stop, she said, in her strong voice. He poked again, so Nadia walked away and told her teacher.',
+    'Telling was not tattling, said her teacher. Telling is how you get help. Nadia felt tall. Her no had worked, and so had her telling.',
+    'On the way home she told Dad. If anyone ever makes you feel wrong or scared, you tell me, he said. If I am not there, tell another grown-up, and keep telling until someone helps.',
+    'Your body is yours, and your space is yours. Say a strong no, walk away, and tell a trusted adult.',
+  ],
+};
+STORIES['about-bullying'] = {
+  about: 'a hat thrown in the bushes every morning, the boy who laughed once, and what he did on Tuesday',
+  more: [{ serial: 'S3735', after: 1, alt: 'The boy sitting alone on the bus with leaves in his hair, another boy looking sorry' }, { serial: 'S3736', after: 2, alt: 'Mom and the boy talking at the kitchen table at night' }, { serial: 'S3737', after: 3, alt: 'The boy stepping beside his friend at the bus stop with his hand up in a stop' }, { serial: 'S3738', after: 5, alt: 'Two boys walking to the bus stop together, the hat on' }],
+  title: 'The bystander', art: 'S3734', cast: [],
+  alt: 'A bus stop where a big kid tosses a small boy\'s hat into the bushes while other children laugh',
+  words: [
+    'Every morning at the bus stop, a big kid named Cole threw Isaac\'s hat in the bushes. The other kids laughed. On Monday, Felix laughed too.',
+    'On the bus Felix felt bad in his stomach. Isaac sat alone, with leaves in his hair. Felix had not thrown the hat, but he had laughed, and laughing made it worse.',
+    'That night he told his mom. You were a bystander, she said. A bystander sees it happen, and a bystander gets to choose. You can laugh, or you can help.',
+    'On Tuesday, Cole reached for the hat. Felix stepped next to Isaac. Stop, he said, in a strong voice. Then he told the bus driver, who had a word with Cole.',
+    'The hat stayed on Isaac\'s head after that, and Isaac saved Felix a seat. Telling the driver was not tattling. Someone was being hurt, and Felix had gotten help.',
+    'Felix still felt bad about Monday. But Tuesday was better, and Wednesday better still. Now Isaac and Felix walked to the bus stop together, and nobody grabbed anything.',
+    'Bullying is being mean on purpose, over and over. A bystander can say stop, stand with the person, and get a grown-up.',
+  ],
+};
+STORIES['safe-play-and-my-address'] = {
+  about: 'a girl lost at the market, a worker with a name tag, and the address she had practiced',
+  more: [{ serial: 'S3740', after: 1, alt: 'The girl standing still by the apples, looking for a name tag' }, { serial: 'S3741', after: 2, alt: 'A worker in a green apron kneeling to talk to the girl' }, { serial: 'S3742', after: 4, alt: 'Mom running up and hugging the girl by the front desk' }, { serial: 'S3743', after: 5, alt: 'The girl eating ice cream in the car, saying her address' }],
+  title: 'The name tag', art: 'S3739', cast: [],
+  alt: 'A small girl alone by a stand of apples in a crowded market, looking up for her mother',
+  words: [
+    'The market was loud and full of legs. Gabi looked up from the apples, and Mom was gone. No Mom anywhere.',
+    'Her heart went fast. She wanted to run and look, but Mom had said to stay still and find a helper. So she stood by the apples and looked for a name tag.',
+    'A worker in a green apron came by, and her name tag said Rosa. Gabi tugged her apron and said she had lost her mom. Rosa knelt down and asked if Gabi knew her address.',
+    'Gabi did. She said the number, then the street, then the town, the way she had practiced. Then she said Mom\'s phone number too, all the numbers in a row.',
+    'Rosa called from the front desk. Two minutes later Mom came running, and the hug went on and on. Rosa gave Gabi a sticker for being brave.',
+    'On the way home Mom made her say the address again, just to hear it. Gabi said it perfectly, and then asked for another sticker. No, said Mom, laughing, but you can have ice cream.',
+    'Know your home address and a parent\'s phone number. Tell them only to a helper who is helping you.',
+  ],
+};
+STORIES['medicines-and-harmful-things'] = {
+  about: 'a bag of purple candies that were not candy, and the two strong noes a boy said in one day',
+  more: [{ serial: 'S3745', after: 1, alt: 'The boy carrying the little bag of purple pills to his grandmother' }, { serial: 'S3746', after: 3, alt: 'Grandma putting the bag on a high shelf with a locking lid' }, { serial: 'S3747', after: 4, alt: 'The boy with his hand up in a stop, a cousin holding out a can at the park' }, { serial: 'S3748', after: 5, alt: 'Dad with his hand on the boy\'s shoulder, proud' }],
+  title: 'The purple candy', art: 'S3744', cast: [],
+  alt: 'A small boy holding a shiny purple pill up to his mouth beside an open purse, stopping himself',
+  words: [
+    'Noah was looking for gum in Grandma\'s purse. Instead he found a bag of shiny purple candies. He held one up to his mouth. Then he stopped.',
+    'Never eat something you find, his teacher had said. Ask a grown-up first. Noah put the candy back and carried the bag to Grandma.',
+    'Grandma\'s eyes went wide. Those are not candy, she said, those are my heart pills. One of those could make a little boy very sick.',
+    'She hugged him hard and moved the bag to a high shelf with a locking lid. Medicine only comes from a grown-up, she said, the right amount at the right time.',
+    'Later, Noah\'s cousin Max held out a can at the park. Just a sip, Max said. It smelled sour and strong. No, said Noah, in his strong voice, and he went and told his dad.',
+    'Dad was proud. Beer is for grown-ups, he said, and even for grown-ups too much is bad. You did the right thing twice today. Noah thought about the pills and the can, and he agreed.',
+    'Medicine comes only from a grown-up. Alcohol, tobacco and drugs are not for kids. Say no, walk away, and tell.',
+  ],
+};
+// Kindergarten Tell, show, step and repeat, earmark E5 part one (pass KQ): a copied dragon, and how tall a giraffe is.
+STORIES['someone-made-it'] = {
+  about: 'a dragon drawn on the class tablet, the boy who copied it, and the two names that went under it',
+  more: [{ serial: 'S3750', after: 1, alt: 'The boy showing the tablet to the teacher, the dragon on the screen with his name under it' }, { serial: 'S3751', after: 3, alt: 'The teacher sitting with both children, the tablet between them' }, { serial: 'S3752', after: 4, alt: 'The boy standing in front of the class, telling them who drew the dragon' }, { serial: 'S3753', after: 5, alt: 'The two children drawing a new dragon together on the tablet' }],
+  title: 'The dragon with two names', art: 'S3749', cast: [],
+  alt: 'A small girl drawing a green dragon with purple wings on a classroom tablet',
+  words: [
+    'Cora drew a dragon on the class tablet, green with purple wings, the best thing she ever made. Then she went to wash her hands.',
+    'When she came back, Dev was showing the teacher the tablet. Look what I drew, he said. It was her dragon, every scale, with his name under it.',
+    'Cora\'s face went hot, and she said the dragon was hers, because she had made it. Dev looked at his shoes and said he had copied it.',
+    'Miss Lin sat them down. Every picture on a screen was made by someone, she said, and it belongs to that person. Cora is the owner, so you ask her, and you say she made it.',
+    'Dev took a breath. Cora drew it, he told the class, and I copied it without asking. Cora\'s face cooled. You can use it, she said, if my name goes on.',
+    'So the dragon got two lines under it. Drawn by Cora. Copied by Dev, with her okay. The next day they drew a new one together, both names on it.',
+    'Every picture, song and game on a screen was made by someone and belongs to them. Ask, and say who made it.',
+  ],
+};
+STORIES['what-is-data'] = {
+  about: 'a class that collected data about pets, and a search for how tall a giraffe is that needed checking',
+  more: [{ serial: 'S3755', after: 1, alt: 'A chart with rows of marks beside a dog, a cat and a fish, the dog row longest' }, { serial: 'S3756', after: 2, alt: 'The teacher holding up the class tablet, the children leaning in' }, { serial: 'S3757', after: 3, alt: 'The teacher frowning at the tablet, a giraffe taller than a school on the screen' }, { serial: 'S3758', after: 5, alt: 'The boy drawing a giraffe next to a house on the board' }],
+  title: 'How tall is a giraffe?', art: 'S3754', cast: [],
+  alt: 'A teacher making marks on a chart of pets while small children raise their hands',
+  words: [
+    'Miss Lin asked the class a question, what is your favorite pet. Each kid said one, and she made a mark beside a dog, a cat or a fish.',
+    'The dog row had nine marks, the cat row six, the fish row two. That is data, said Miss Lin, facts we collected by asking. Now we can see it.',
+    'Ezra had a different question, how tall a giraffe is. Nobody knew, so Miss Lin held up the class tablet. A device can search for facts and bring them back, she said.',
+    'The first answer said thirty feet, taller than the school. Miss Lin frowned and found a second page. It said about sixteen to eighteen feet, as tall as a two-story house.',
+    'Two answers, said Miss Lin. A device brings back what it finds, right or wrong, so we check. A third page, from a zoo, agreed with the second.',
+    'Ezra drew a giraffe next to a house. Then he asked how tall an elephant is, and Miss Lin handed him the tablet to search together.',
+    'Data is what you collect by counting, measuring or asking. A device can search for it, and a grown-up helps you check.',
+  ],
+};
+// Kindergarten Tell, show, step and repeat, earmark E5 part two (pass KR): an extra O, and a bowl that tipped.
+STORIES['keys-and-saving'] = {
+  about: 'a girl typing her name for the first time, the extra O, the space bar, and the page the printer pushed out',
+  more: [{ serial: 'S3760', after: 1, alt: 'The screen showing JUNOO, the girl\'s finger still on the O key' }, { serial: 'S3761', after: 2, alt: 'The teacher pointing at the backspace key, the extra O vanishing' }, { serial: 'S3762', after: 4, alt: 'The printer pushing out a page, the girl reaching for it' }, { serial: 'S3763', after: 5, alt: 'The girl holding up the printed page, sitting tall with feet flat' }],
+  title: 'The extra O', art: 'S3759', cast: [],
+  alt: 'A small girl at a classroom computer, sitting up tall with her feet flat, a teacher beside her',
+  words: [
+    'Juno sat at the class computer for the first time, nose close to the screen. Feet flat, said Miss Oak, and sit up tall, an arm away.',
+    'Juno found the J, the U, the N and the O. Then her finger slipped, and the O came twice. JUNOO, said the screen.',
+    'Backspace, said Miss Oak, pointing to the key with the arrow. Juno pressed it once, and the extra O vanished.',
+    'Next came her last name, Park. Juno typed it, and the screen said JUNOPARK, all squashed. The space bar, said Miss Oak, the long one. Juno pressed it, and a space opened up.',
+    'Now save it, said Miss Oak, so it is still here tomorrow. Juno tapped the save picture. Then she tapped print, and the printer hummed and pushed out a page with her name on it.',
+    'Juno held the paper up. JUNO PARK, with a space in the middle and no extra O. Her feet were still flat and her back still tall. Twenty minutes, said Miss Oak, so look out the window.',
+    'Backspace erases a mistake, the space bar makes a space, and saving keeps your work. Sit tall, feet flat, and rest your eyes.',
+  ],
+};
+STORIES['ask-plan-build'] = {
+  about: 'a hamster who tipped his water bowl every day, and the class that asked, planned, built, tested and fixed',
+  more: [{ serial: 'S3765', after: 1, alt: 'The hamster climbing the edge of the bowl, water sloshing, the children watching' }, { serial: 'S3766', after: 2, alt: 'The teacher writing ideas on the board, a child drawing a tiny ladder in the air' }, { serial: 'S3767', after: 3, alt: 'The boy\'s plan in four boxes, a cardboard ring, a fold, glue, a bowl' }, { serial: 'S3768', after: 5, alt: 'The hamster asleep in dry shavings beside a bowl sitting in a low cardboard ring' }],
+  title: 'The tipping bowl', art: 'S3764', cast: [],
+  alt: 'A small boy mopping soggy shavings in a hamster cage, a tipped water bowl beside the hamster',
+  words: [
+    'Pepper the hamster tipped his water bowl again, and the shavings went soggy. Milo mopped it up and asked why it tipped every day.',
+    'They watched. Pepper climbed the edge of the bowl to drink, and over it went. So the question was what could hold it still.',
+    'Ideas, said Miss Oak, lots of them, and no idea is silly yet. A heavier bowl, a box around it, tape. A tiny ladder, so Pepper would not climb. The class laughed, then thought.',
+    'Milo drew the plan in four boxes. Cut a ring of cardboard, fold the edge, glue it, set the bowl in. He wanted to glue first. Steps in order, said Miss Oak, or the glue dries on nothing.',
+    'They built it and tested it. Pepper climbed the ring instead, and over went both. Milo\'s face fell. That is not a failure, said Miss Oak, that is a clue.',
+    'So they fixed it. They cut the ring lower, so Pepper could step over it. Test two, and the bowl stayed. Pepper drank and slept in dry shavings.',
+    'Ask, brainstorm, draw the plan, build it with a grown-up, test it and fix it. A failed test is a clue.',
+  ],
+};
+// Kindergarten Letters, earmark E6 (pass KS): the last twenty letters to trace, five stories.
+STORIES['tracing-bump-capitals'] = {
+  about: 'a boy whose B grew its bumps on the wrong side, and the line that fixed it',
+  more: [{ serial: 'S3770', after: 1, alt: 'Grandpa drawing a line down on paper, the boy watching the pencil' }, { serial: 'S3771', after: 2, alt: 'Grandpa\'s hand tracing a bump out to the right and back in' }, { serial: 'S3772', after: 3, alt: 'The boy drawing B, D, P and R in a row, bumps on the right' }, { serial: 'S3773', after: 5, alt: 'The boy holding up his page, four letters standing tall' }],
+  title: 'Bumps on the B', art: 'S3769', cast: [],
+  alt: 'A small boy at a kitchen table frowning at a backward B he has drawn',
+  words: [
+    'Kofi drew a B for his name tag, and it came out backward. The bumps stuck out to the left, and the line was on the right. It looked like a B in a mirror.',
+    'Grandpa sat down beside him. Draw the line first, he said, straight down, then go back to the top. Kofi drew the line and went back to the top dot.',
+    'Now a bump, said Grandpa, out to the right and back in to the line. Kofi swung out and came back, a small bump on top, then a bigger one below.',
+    'There was his B, bumps on the right. D is one big bump, said Grandpa, P is one bump, and R is P with a leg. Kofi drew all four in a row.',
+    'Which side do the bumps go on, asked Grandpa. The right, said Kofi, the same side as my right hand.',
+    'The name tag got a new B, bumps out front. Kofi wore it to school, and nobody saw a mirror.',
+    'A line down first, then the bumps on the right. D has one big bump, P has one, B has two, and R is P with a leg.',
+  ],
+};
+STORIES['tracing-curve-capitals'] = {
+  about: 'a girl whose S kept getting corners, and the snake in the sand that smoothed it out',
+  more: [{ serial: 'S3775', after: 1, alt: 'An S on paper with three sharp corners, the girl looking puzzled' }, { serial: 'S3776', after: 2, alt: 'A stick drawing a smooth S trail in the sand' }, { serial: 'S3777', after: 3, alt: 'The girl tracing a smooth S on a tablet with a slow finger' }, { serial: 'S3778', after: 4, alt: 'G, J, U and Q drawn in the sand beside the S' }],
+  title: 'The snake letter', art: 'S3774', cast: [],
+  alt: 'A small girl on a beach drawing a winding S in the sand with a stick',
+  words: [
+    'Suki could trace every letter with straight lines. Then came S, and her finger kept making corners. Her S looked like a lightning bolt.',
+    'An S has no corners, said her dad. It winds the way a snake does. They went outside to the sandbox, and he drew a snake trail with a stick.',
+    'Suki took the stick and followed the trail, slow where it bent. Around to the left, then around to the right. No corners at all.',
+    'Back inside, she traced S on the tablet the same way, slow where it bent. The corners were gone. She did it five times, just to feel it.',
+    'Then came the others. G went around and made a little line in. U curved around the bottom. J curled at the end, and Q was an O with a tail.',
+    'That night Suki drew a whole snake out of S shapes, winding across the page. Every bend was smooth. Her dad hung it on the fridge.',
+    'A curve has no corners. Keep your finger moving, and slow down where the line bends.',
+  ],
+};
+STORIES['tracing-small-circles'] = {
+  about: 'a boy who found that four small letters are small o with a line added',
+  more: [{ serial: 'S3780', after: 1, alt: 'The boy drawing a small o, then adding a short line to make a' }, { serial: 'S3781', after: 2, alt: 'A row of small o, a, d, g and q on a whiteboard' }, { serial: 'S3782', after: 3, alt: 'The boy drawing the tail of g curling to the left' }, { serial: 'S3783', after: 5, alt: 'The boy showing his teacher a page of circle letters' }],
+  title: 'Small o and its cousins', art: 'S3779', cast: [],
+  alt: 'A small boy at a whiteboard drawing a small circle with a marker, his teacher beside him',
+  words: [
+    'Dario liked small o. It was just a circle, around to the left and back to the dot. The other small letters looked harder.',
+    'Watch this, said Miss Fox, and she drew a small o with a short line on its right. Now it is a, she said, and Dario blinked, because it was o with one line.',
+    'She drew another o and gave it a tall line, up high. That is d, she said. Then an o with a line that went down past the bottom and curled left. That is g.',
+    'And q, said Miss Fox, is an o with a line past the bottom and a little flick. Four letters, and every one starts as small o.',
+    'Dario drew a row of circles. Then he added a short line, a tall line, a curl and a flick. The circles turned into a, d, g and q, one after another.',
+    'They are cousins, said Dario. Small o is the one who came first. He wrote the whole family across the top of his page.',
+    'Small a, d, g and q all start with a little circle. Then comes the line, short, tall, curling or with a flick.',
+  ],
+};
+STORIES['tracing-small-bumps'] = {
+  about: 'a girl whose p came out backward, and the line that told her which letter it was',
+  more: [{ serial: 'S3785', after: 1, alt: 'A small p drawn with its bump on the left, looking like q' }, { serial: 'S3786', after: 2, alt: 'The teacher pointing at the line of a b reaching up and a p reaching down' }, { serial: 'S3787', after: 3, alt: 'The girl drawing a small e, starting with the short line across' }, { serial: 'S3788', after: 5, alt: 'The girl holding up a page with b, p, e and f drawn in a row' }],
+  title: 'The bump on the right', art: 'S3784', cast: [],
+  alt: 'A small girl at a desk looking at a backward p she has drawn, pencil in hand',
+  words: [
+    'Imani wrote her p with the bump on the left. Now it looked like q, and the word pig looked like qig. Her friend giggled.',
+    'Miss Fox leaned over. The bump goes on the right, she said, for b and for p. Then look at the line. In b the line reaches up high.',
+    'In p the line reaches down low, under the floor. Imani drew a tall line and a bump, and there was b. She drew a low line and a bump, and there was p.',
+    'Small e is different, said Miss Fox. Start with a short line across the middle. Then go up and around to the left, and stop near the bottom.',
+    'And f curls over at the top, comes down, and gets a short line across. Imani drew an e and an f, and then she drew them again, because they felt good.',
+    'She fixed her pig, with the bump on the right. Then she wrote big and bed and fed, and every bump was where it belonged.',
+    'The bump goes on the right. Look at the line, up high for b and down low for p.',
+  ],
+};
+STORIES['tracing-small-curls'] = {
+  about: 'the last three small letters, and a wall where every letter finally had a card',
+  more: [{ serial: 'S3790', after: 1, alt: 'The girl tracing a small s on the tablet, slow where it bends' }, { serial: 'S3791', after: 2, alt: 'A small j with its tail curling left and its dot on top' }, { serial: 'S3792', after: 3, alt: 'The girl drawing y, the long slant crossing the short one' }, { serial: 'S3793', after: 5, alt: 'A classroom wall with twenty-six letter cards, big and small, all filled in' }],
+  title: 'The last three', art: 'S3789', cast: [],
+  alt: 'A small girl standing at a classroom letter wall with three empty cards left at the end',
+  words: [
+    'The letter wall had a card for every letter, big and small. Wren had traced most of them. Three small cards were still empty, s, j and y.',
+    'Small s was easy once she thought of big S. Around to the left, around to the right, winding the way a snake does, only smaller.',
+    'Small j was small i with a tail. A line down past the bottom, curling to the left, then a dot on top. Wren drew the dot last and smiled.',
+    'Small y took two tries. A short slant down, then a long slant that crossed it and kept going below the line. On the second try, the slants met in the right spot.',
+    'Miss Fox handed her three cards. Wren drew s, j and y, one on each, and pinned them at the end of the wall.',
+    'Every card was full. Twenty-six big letters and twenty-six small ones, all the way from A to z. Wren walked along the wall and read every one.',
+    'With s, j and y, you can trace every letter, big and small. Start at the dot and follow the arrow.',
+  ],
+};
 // Pre-K stories: the fewest words that still make a story, three pictures each, read aloud.
 STORIES['red-and-blue'] = {
   about: 'a red ball and a blue ball that looked alike until Mia said their colors',
@@ -9197,7 +9442,7 @@ export const COURSE_GOALS = {
   'letters-k': 'Turning letters into sounds and sounds into the first read words',
   'science-k': 'Looking closely at the sky, the weather, every living thing, and the rocks, magnets and light around us',
   'civics-k': 'Learning what it means to be part of a class, a town, a state and a country, and finding your way around them',
-  'health-k': 'Building the small daily habits that keep a body well',
+  'health-k': 'Building the small daily habits that keep a body well, and knowing who to ask and what to do when something goes wrong',
   'numbers-1': 'Working with numbers to twenty and beyond, in tens and ones',
   'reading-1': 'Reading whole words and whole sentences, and telling what happened',
   'science-1': 'Finding the patterns in the sky, in water and in what animals need',
@@ -9501,6 +9746,27 @@ export const COLOR_PAGES = {
   'land-water-and-weather': ['D206', 'A house on stilts by the sea on one side and a snowy house with a steep roof on the other'],
   'families-and-traditions': ['D207', 'Two families at a table, one with candles and one with a plate of tamales, everyone smiling'],
   'tools-that-help': ['D208', 'A kitchen with a refrigerator, a stove, a washing machine and a phone on the counter'],
+  // Kindergarten Taking care of me, earmark E4 part one (pass KO).
+  'health-helpers': ['D209', 'A grown-up combing a child\'s hair with a fine comb at a sink'],
+  'portions-and-allergies': ['D210', 'Two children at a lunch table, each with their own lunch, a cookie staying in its bag'],
+  'emergencies-and-helmets': ['D211', 'A child holding a phone beside a grandfather sitting on the floor, a helmet on the hook by the door'],
+  // Kindergarten Taking care of me, earmark E4 part two (pass KP).
+  'my-space-and-my-no': ['D212', 'A child standing inside a drawn bubble with a hand up, another child outside the bubble asking first'],
+  'about-bullying': ['D213', 'Two children standing together at a bus stop, a hat safe on one head, a bus coming'],
+  'safe-play-and-my-address': ['D214', 'A child beside a market worker with a name tag, pointing at an apple stand'],
+  'medicines-and-harmful-things': ['D215', 'A grandmother putting a medicine bag on a high shelf while a boy watches'],
+  // Kindergarten Tell, show, step and repeat, earmark E5 part one (pass KQ).
+  'someone-made-it': ['D216', 'Two children at a classroom table with a tablet showing a dragon, two name lines under it'],
+  'what-is-data': ['D217', 'A picture graph of dogs, cats and fish on a classroom board, a giraffe drawn beside a house'],
+  // Kindergarten Tell, show, step and repeat, earmark E5 part two (pass KR).
+  'keys-and-saving': ['D218', 'A keyboard with a big space bar and a backspace key, a printer beside it pushing out a page'],
+  'ask-plan-build': ['D219', 'A plan in four boxes on a wall, a hamster drinking from a bowl inside a cardboard ring'],
+  // Kindergarten Letters, earmark E6 (pass KS).
+  'tracing-bump-capitals': ['D220', 'Big outlined letters B, D, P and R in a row, a bear beside the B'],
+  'tracing-curve-capitals': ['D221', 'Big outlined letters G, J, S, U and Q, a snake winding under the S'],
+  'tracing-small-circles': ['D222', 'Small outlined letters a, d, g and q, each beside a small o, an apple at the end'],
+  'tracing-small-bumps': ['D223', 'Small outlined letters b, p, e and f, a ball, a pig, an egg and a fish beneath them'],
+  'tracing-small-curls': ['D224', 'Small outlined letters s, j and y, a sun, a jar and a yo-yo beneath them'],
 };
 
 // Audio tags (2026-10-04, pass JH, Mikey). In plain terms: how ElevenLabs' Eleven v4 should perform each story the writing review
@@ -9675,3 +9941,19 @@ STORIES["maps-and-globes"].audio = ["[digging in dirt] Jonah buried a toy car in
 STORIES["land-water-and-weather"].audio = ["Ava lived in the hills, where a river ran past limestone cliffs. Her cousin Ravi lived far away by the sea. [excited] One summer they traded houses for a week.", "[waves and gulls] At Ravi's house the air smelled like salt. The house stood on tall stilts, so high water could go under it. For dinner they ate fish that Ravi's dad had caught that morning.", "[playful] Ava swam in the waves and got sand in her shoes. Everyone wore sandals and hats. The sun was hot, and the wind never stopped.", "[puzzled] Back home, Ravi stared at the hills and asked where the sea was. We have a river, said Ava, and a swimming hole with cold spring water.", "Ravi climbed a hill and saw the whole town below, with houses built of pale limestone rock. [softly] That night the air was dry and cool, and the stars were bright.", "Different land, different water, different weather, said Ava's mom. So you eat different food, wear different clothes, and play in different ways.", "[slowly, warmly] Every place has its own land, water and weather, and where you live shapes how you live."];
 STORIES["families-and-traditions"].audio = ["Every winter, Mila's family hung lights on the house and ate tamales on the big night. Mila thought every family did the same.", "Then her friend Noor came over in December. We do not hang lights, said Noor. We light a candle each night for eight nights, and we eat potato pancakes.", "[puzzled] Mila frowned. No lights on the house? she asked. Noor shook her head. [quietly] Mila felt a little sorry for her, and then she felt bad about that.", "[a family singing softly] That weekend Mila went to Noor's house, where the whole family stood around the candles and sang. Noor's grandmother told a story from long ago. [warmly] Everyone was together, and everyone was happy.", "[thoughtful] It is like our big night, Mila said on the way home. Different food and different lights, but the same gathering. Her mom nodded. Every family has its own traditions, she said.", "The next week Noor came to Mila's house and helped hang the lights. [laughing] Then she ate four tamales. Next year, said Mila, you bring the candles.", "[slowly, warmly] Families are alike and different. A tradition is something a family does again and again, and sharing one makes it bigger."];
 STORIES["tools-that-help"].audio = ["[thunder rumbling] The storm came at dinner, and then the lights went out. Owen's tablet went dark. The fridge stopped humming. [hushed] The whole house was quiet in a way he had never heard.", "Dad lit candles and set them on the table. Mom filled a cooler with ice and moved the milk and eggs into it to keep them cold.", "[hopeful] Can I call Grandma? asked Owen. His phone was dead, and there was no way to charge it. Dad shook his head. Tonight is like long ago, he said.", "They played cards by candlelight. [water sloshing in a tub] Owen washed the dinner dishes in a tub of water that Mom warmed on the camp stove. [sighs] It took a long time.", "[a refrigerator humming to life] In the morning the lights came back on. The fridge hummed, the tablet lit up, and the phone charged. Owen looked at each one in a new way. Every one did a job.", "People lived without these things for a long, long time, said Dad. They just did every job the slow way. Owen nodded, then he went outside to play. [playful] The tablet could wait.", "[slowly, warmly] A tool is anything people make to do a job better. Without our tools, many things would take much longer."];
+STORIES["health-helpers"].audio = ["Zoe's head itched all through dinner. [scratching] She scratched behind her ear, then the top, then the other ear. Mom put down her fork and looked closely.", "Lice, said Mom, tiny bugs living in your hair. [worried] Zoe's eyes filled up, and she asked if she was dirty. [gently] No, said Mom. Lice crawl onto clean heads too.", "Mom called the nurse at the clinic, who told her just what to do. A special shampoo, then a fine comb through every bit of hair, slow and careful. [humming a tune] It took a while, so they sang.", "Then Mom washed the pillowcase and the brush. Your hat is yours, she said, and your brush is yours. Lice walk from head to head, so heads stay apart, and hats stay home.", "A week later the nurse checked again. [cheerful] All clear, she said, and Zoe grinned. The nurse knew all about lice because that was her job.", "At school Zoe told her friend Ben, who had lice once too. Nobody was dirty, and nobody was in trouble. [matter of fact] Just bugs, and bugs can be combed out.", "[slowly, warmly] Ask a parent, a teacher, a doctor or a nurse about your body. Lice are no shame, and a grown-up helps."];
+STORIES["portions-and-allergies"].audio = ["Jamal had two cookies in his lunch, and Lila had none, so he held one out. [quietly] Lila shook her head and said she could not, because it might have peanuts.", "Peanuts can make me very sick, said Lila. My lips puff up and it gets hard to breathe. Jamal put the cookie back in the bag. [thoughtful] He had not known.", "Ms. Reyes said the rule to the class. Nobody shares food, and nobody trades snacks, so every friend stays safe. Then we wash our hands, so crumbs do not travel.", "[water running] After lunch Jamal washed with soap and sat on his own side. Keeping Lila safe was his job too, and an easy one.", "One day a crumb got on the table anyway, and a red spot came up on Lila's hand. [quick footsteps] Jamal ran to tell Ms. Reyes. [relieved] The nurse came, and Lila was fine.", "Lila does not want to be sick, said Ms. Reyes, so her allergy is not silly, and it is not a choice. Jamal nodded. He never thought it was silly again.", "[slowly, warmly] Never share food with a friend who has an allergy. If a friend swells or breathes hard, tell a grown-up right away."];
+STORIES["emergencies-and-helmets"].audio = ["Ruby and Grandpa were building a tower when Grandpa stood up too fast. [a thud] He slipped, fell hard and could not get up. [pained] My leg, he said, and his face went white.", "[tense] Ruby's heart banged. No other grown-up was home. Then the words from school came back to her. Tell a grown-up, and if no grown-up can help, call 911.", "She took Grandpa's phone and pressed 9, 1, 1. [calm, steady] A calm voice asked what was wrong. My name is Ruby, she said, and my grandpa fell and hurt his leg. Then she said the street and the house number.", "Stay on the phone, said the voice, and Ruby did. She held Grandpa's hand. [a siren far off, coming closer] Soon a siren came up the street, and two helpers knocked.", "They wrapped Grandpa's leg and lifted him onto a bed with wheels. [warmly] You did it all right, one helper told Ruby.", "Grandpa came home with a cast and a story. Ruby wore her helmet every ride after that, strap snug. [playful] Helpers are great, she said, but a helmet is better.", "[slowly, warmly] When someone is badly hurt, tell a grown-up or call 911. Say your name, what happened and where you are, and stay on the phone."];
+STORIES["my-space-and-my-no"].audio = ["Nadia's dad had a friend over, a big man. [booming, friendly] Come give me a hug, he said, arms wide. [small, unsure] Nadia did not want to. She hid behind the couch.", "Dad saw her face. [gently] She gets to choose, said Dad, and his friend put his arms down and waved instead. Nadia waved back. That felt right.", "That night Dad explained. Your body is yours, and the space around you is yours too, like a bubble. People ask before a hug, and you can say no, even to someone you know.", "At school a boy named Theo kept poking Nadia's arm. [firm] Stop, she said, in her strong voice. He poked again, so Nadia walked away and told her teacher.", "Telling was not tattling, said her teacher. Telling is how you get help. [proud] Nadia felt tall. Her no had worked, and so had her telling.", "On the way home she told Dad. If anyone ever makes you feel wrong or scared, you tell me, he said. If I am not there, tell another grown-up, and keep telling until someone helps.", "[slowly, warmly] Your body is yours, and your space is yours. Say a strong no, walk away, and tell a trusted adult."];
+STORIES["about-bullying"].audio = ["Every morning at the bus stop, a big kid named Cole threw Isaac's hat in the bushes. [children laughing] The other kids laughed. [quietly] On Monday, Felix laughed too.", "[a bus rumbling] On the bus Felix felt bad in his stomach. Isaac sat alone, with leaves in his hair. Felix had not thrown the hat, but he had laughed, and laughing made it worse.", "That night he told his mom. You were a bystander, she said. A bystander sees it happen, and a bystander gets to choose. You can laugh, or you can help.", "On Tuesday, Cole reached for the hat. Felix stepped next to Isaac. [firm] Stop, he said, in a strong voice. Then he told the bus driver, who had a word with Cole.", "The hat stayed on Isaac's head after that, and Isaac saved Felix a seat. [thoughtful] Telling the driver was not tattling. Someone was being hurt, and Felix had gotten help.", "Felix still felt bad about Monday. [warmly] But Tuesday was better, and Wednesday better still. Now Isaac and Felix walked to the bus stop together, and nobody grabbed anything.", "[slowly, warmly] Bullying is being mean on purpose, over and over. A bystander can say stop, stand with the person, and get a grown-up."];
+STORIES["safe-play-and-my-address"].audio = ["[a busy crowd murmuring] The market was loud and full of legs. Gabi looked up from the apples, and Mom was gone. [worried] No Mom anywhere.", "Her heart went fast. She wanted to run and look, but Mom had said to stay still and find a helper. So she stood by the apples and looked for a name tag.", "A worker in a green apron came by, and her name tag said Rosa. Gabi tugged her apron and said she had lost her mom. [kindly] Rosa knelt down and asked if Gabi knew her address.", "Gabi did. [steady, clear] She said the number, then the street, then the town, the way she had practiced. Then she said Mom's phone number too, all the numbers in a row.", "Rosa called from the front desk. [quick footsteps] Two minutes later Mom came running, and the hug went on and on. Rosa gave Gabi a sticker for being brave.", "On the way home Mom made her say the address again, just to hear it. Gabi said it perfectly, and then asked for another sticker. [laughing] No, said Mom, laughing, but you can have ice cream.", "[slowly, warmly] Know your home address and a parent's phone number. Tell them only to a helper who is helping you."];
+STORIES["medicines-and-harmful-things"].audio = ["Noah was looking for gum in Grandma's purse. Instead he found a bag of shiny purple candies. He held one up to his mouth. [a pause] Then he stopped.", "Never eat something you find, his teacher had said. Ask a grown-up first. Noah put the candy back and carried the bag to Grandma.", "[surprised] Grandma's eyes went wide. Those are not candy, she said, those are my heart pills. One of those could make a little boy very sick.", "She hugged him hard and moved the bag to a high shelf with a locking lid. Medicine only comes from a grown-up, she said, the right amount at the right time.", "Later, Noah's cousin Max held out a can at the park. Just a sip, Max said. It smelled sour and strong. [firm] No, said Noah, in his strong voice, and he went and told his dad.", "[proud] Dad was proud. Beer is for grown-ups, he said, and even for grown-ups too much is bad. You did the right thing twice today. Noah thought about the pills and the can, and he agreed.", "[slowly, warmly] Medicine comes only from a grown-up. Alcohol, tobacco and drugs are not for kids. Say no, walk away, and tell."];
+STORIES["someone-made-it"].audio = ["Cora drew a dragon on the class tablet, green with purple wings, the best thing she ever made. Then she went to wash her hands.", "When she came back, Dev was showing the teacher the tablet. [proud] Look what I drew, he said. [surprised] It was her dragon, every scale, with his name under it.", "[upset] Cora's face went hot, and she said the dragon was hers, because she had made it. [quietly] Dev looked at his shoes and said he had copied it.", "Miss Lin sat them down. Every picture on a screen was made by someone, she said, and it belongs to that person. Cora is the owner, so you ask her, and you say she made it.", "Dev took a breath. [steady] Cora drew it, he told the class, and I copied it without asking. Cora's face cooled. You can use it, she said, if my name goes on.", "So the dragon got two lines under it. Drawn by Cora. Copied by Dev, with her okay. [warmly] The next day they drew a new one together, both names on it.", "[slowly, warmly] Every picture, song and game on a screen was made by someone and belongs to them. Ask, and say who made it."];
+STORIES["what-is-data"].audio = ["Miss Lin asked the class a question, what is your favorite pet. [children calling out] Each kid said one, and she made a mark beside a dog, a cat or a fish.", "The dog row had nine marks, the cat row six, the fish row two. That is data, said Miss Lin, facts we collected by asking. Now we can see it.", "[curious] Ezra had a different question, how tall a giraffe is. Nobody knew, so Miss Lin held up the class tablet. A device can search for facts and bring them back, she said.", "The first answer said thirty feet, taller than the school. [puzzled] Miss Lin frowned and found a second page. It said about sixteen to eighteen feet, as tall as a two-story house.", "Two answers, said Miss Lin. A device brings back what it finds, right or wrong, so we check. [satisfied] A third page, from a zoo, agreed with the second.", "Ezra drew a giraffe next to a house. [playful] Then he asked how tall an elephant is, and Miss Lin handed him the tablet to search together.", "[slowly, warmly] Data is what you collect by counting, measuring or asking. A device can search for it, and a grown-up helps you check."];
+STORIES["keys-and-saving"].audio = ["Juno sat at the class computer for the first time, nose close to the screen. [kindly] Feet flat, said Miss Oak, and sit up tall, an arm away.", "[keys clicking] Juno found the J, the U, the N and the O. Then her finger slipped, and the O came twice. JUNOO, said the screen.", "Backspace, said Miss Oak, pointing to the key with the arrow. Juno pressed it once, and the extra O vanished.", "Next came her last name, Park. Juno typed it, and the screen said JUNOPARK, all squashed. The space bar, said Miss Oak, the long one. Juno pressed it, and a space opened up.", "Now save it, said Miss Oak, so it is still here tomorrow. Juno tapped the save picture. [a printer humming] Then she tapped print, and the printer hummed and pushed out a page with her name on it.", "[proud] Juno held the paper up. JUNO PARK, with a space in the middle and no extra O. Her feet were still flat and her back still tall. Twenty minutes, said Miss Oak, so look out the window.", "[slowly, warmly] Backspace erases a mistake, the space bar makes a space, and saving keeps your work. Sit tall, feet flat, and rest your eyes."];
+STORIES["ask-plan-build"].audio = ["[water sloshing] Pepper the hamster tipped his water bowl again, and the shavings went soggy. [sighing] Milo mopped it up and asked why it tipped every day.", "They watched. Pepper climbed the edge of the bowl to drink, and over it went. So the question was what could hold it still.", "Ideas, said Miss Oak, lots of them, and no idea is silly yet. A heavier bowl, a box around it, tape. A tiny ladder, so Pepper would not climb. [children laughing] The class laughed, then thought.", "Milo drew the plan in four boxes. Cut a ring of cardboard, fold the edge, glue it, set the bowl in. He wanted to glue first. [firm, kind] Steps in order, said Miss Oak, or the glue dries on nothing.", "They built it and tested it. [a small crash] Pepper climbed the ring instead, and over went both. [disappointed] Milo's face fell. That is not a failure, said Miss Oak, that is a clue.", "So they fixed it. They cut the ring lower, so Pepper could step over it. [hopeful] Test two, and the bowl stayed. [warmly] Pepper drank and slept in dry shavings.", "[slowly, warmly] Ask, brainstorm, draw the plan, build it with a grown-up, test it and fix it. A failed test is a clue."];
+STORIES["tracing-bump-capitals"].audio = ["Kofi drew a B for his name tag, and it came out backward. [puzzled] The bumps stuck out to the left, and the line was on the right. It looked like a B in a mirror.", "Grandpa sat down beside him. [kindly] Draw the line first, he said, straight down, then go back to the top. Kofi drew the line and went back to the top dot.", "Now a bump, said Grandpa, out to the right and back in to the line. Kofi swung out and came back, a small bump on top, then a bigger one below.", "[pleased] There was his B, bumps on the right. D is one big bump, said Grandpa, P is one bump, and R is P with a leg. Kofi drew all four in a row.", "Which side do the bumps go on, asked Grandpa. The right, said Kofi, the same side as my right hand.", "The name tag got a new B, bumps out front. [proud] Kofi wore it to school, and nobody saw a mirror.", "[slowly, warmly] A line down first, then the bumps on the right. D has one big bump, P has one, B has two, and R is P with a leg."];
+STORIES["tracing-curve-capitals"].audio = ["Suki could trace every letter with straight lines. Then came S, and her finger kept making corners. [frustrated] Her S looked like a lightning bolt.", "An S has no corners, said her dad. It winds the way a snake does. [sand scraping] They went outside to the sandbox, and he drew a snake trail with a stick.", "Suki took the stick and followed the trail, slow where it bent. [slowly] Around to the left, then around to the right. No corners at all.", "Back inside, she traced S on the tablet the same way, slow where it bent. The corners were gone. She did it five times, just to feel it.", "Then came the others. G went around and made a little line in. U curved around the bottom. J curled at the end, and Q was an O with a tail.", "That night Suki drew a whole snake out of S shapes, winding across the page. Every bend was smooth. [warmly] Her dad hung it on the fridge.", "[slowly, warmly] A curve has no corners. Keep your finger moving, and slow down where the line bends."];
+STORIES["tracing-small-circles"].audio = ["Dario liked small o. It was just a circle, around to the left and back to the dot. The other small letters looked harder.", "[marker squeaking] Watch this, said Miss Fox, and she drew a small o with a short line on its right. Now it is a, she said, and Dario blinked, because it was o with one line.", "She drew another o and gave it a tall line, up high. That is d, she said. Then an o with a line that went down past the bottom and curled left. That is g.", "And q, said Miss Fox, is an o with a line past the bottom and a little flick. Four letters, and every one starts as small o.", "Dario drew a row of circles. Then he added a short line, a tall line, a curl and a flick. The circles turned into a, d, g and q, one after another.", "[delighted] They are cousins, said Dario. Small o is the one who came first. He wrote the whole family across the top of his page.", "[slowly, warmly] Small a, d, g and q all start with a little circle. Then comes the line, short, tall, curling or with a flick."];
+STORIES["tracing-small-bumps"].audio = ["Imani wrote her p with the bump on the left. Now it looked like q, and the word pig looked like qig. [giggling] Her friend giggled.", "Miss Fox leaned over. The bump goes on the right, she said, for b and for p. Then look at the line. In b the line reaches up high.", "In p the line reaches down low, under the floor. Imani drew a tall line and a bump, and there was b. She drew a low line and a bump, and there was p.", "Small e is different, said Miss Fox. Start with a short line across the middle. Then go up and around to the left, and stop near the bottom.", "And f curls over at the top, comes down, and gets a short line across. Imani drew an e and an f, and then she drew them again, because they felt good.", "[satisfied] She fixed her pig, with the bump on the right. Then she wrote big and bed and fed, and every bump was where it belonged.", "[slowly, warmly] The bump goes on the right. Look at the line, up high for b and down low for p."];
+STORIES["tracing-small-curls"].audio = ["The letter wall had a card for every letter, big and small. Wren had traced most of them. Three small cards were still empty, s, j and y.", "Small s was easy once she thought of big S. [slowly] Around to the left, around to the right, winding the way a snake does, only smaller.", "Small j was small i with a tail. A line down past the bottom, curling to the left, then a dot on top. Wren drew the dot last and smiled.", "Small y took two tries. A short slant down, then a long slant that crossed it and kept going below the line. [pleased] On the second try, the slants met in the right spot.", "Miss Fox handed her three cards. Wren drew s, j and y, one on each, and pinned them at the end of the wall.", "[proud] Every card was full. Twenty-six big letters and twenty-six small ones, all the way from A to z. Wren walked along the wall and read every one.", "[slowly, warmly] With s, j and y, you can trace every letter, big and small. Start at the dot and follow the arrow."];

@@ -2,6 +2,36 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 5, 2026 (every letter, both ways)
+
+- The tracing pad now draws all twenty-six letters, big and small. Nine capitals (B, D, P, R, G, J, S, U and Q) and eleven small letters (a, d, g, q, b, p, e, f, s, j and y) have joined, each with a start dot, an arrow and words that say how it is made.
+- Five new Letters lessons trace them in families: a line down and bumps for B, D, P and R; curves for G, J, S, U and Q; small o with a line for a, d, g and q; a line with a bump for b and p, with e and f; and s, j and y to finish.
+- With this, every kindergarten course covers every Texas kindergarten standard, and every kindergarten lesson, story and question meets the full standard.
+
+## October 5, 2026 (keys, saving, and ask, plan, build)
+
+- Kindergarten Tell, show, step and repeat has two more lessons, so it now covers every Texas kindergarten technology standard: the keys on a keyboard (letters, numbers, the space bar, backspace, enter and shift), how to open an app, change your work, save it and print it, and how to sit so your body and eyes stay comfortable; and the design process, ask questions, brainstorm, draw the plan in boxes, build it with a grown-up, test it and fix it, with directions followed in order.
+- Children hear that a failed test is information, that no idea is silly while you are brainstorming, and that a tower starts with the bottom block.
+- Each lesson is spoken for a child who cannot read yet, every answer comes with its reason, and each has a story of its own with a coloring page.
+
+## October 5, 2026 (who made it, and what data is)
+
+- Kindergarten Tell, show, step and repeat has two new lessons: every picture, song, game and story on a screen was made by someone and belongs to them, so we ask and say who made it, and devices have rules we keep; and data is information we collect by counting, measuring or asking, shown in a picture graph, with a device that can search for an answer and a grown-up who helps check it.
+- Children hear that a copied drawing still belongs to the child who drew it, that they are owners too, and that a device brings back what it finds, right or wrong.
+- Each lesson is spoken for a child who cannot read yet, every answer comes with its reason, and each has a story of its own with a coloring page.
+
+## October 5, 2026 (my space, bullying, safe play and medicines)
+
+- Kindergarten Taking care of me has four more lessons, so it now covers every Texas kindergarten health standard: a trusted adult and a strong no, what bullying is and what a bystander can do, safe places to play and the things that can cut or poke, your home address, and medicine only from a grown-up with why alcohol, tobacco and drugs are not for kids.
+- Children hear that their body and the space around it are theirs, that telling is not tattling, and that they are never in trouble for telling and should keep telling until someone helps.
+- Safe and kind online now names the online moments that call for a trusted adult, like someone asking where you live or asking you to keep a secret.
+
+## October 5, 2026 (health helpers, allergies and 911)
+
+- Kindergarten Taking care of me has three new lessons: the people who help us stay healthy, with shots, lice and bug bites explained kindly; how much to eat and why we never share food with a friend who has an allergy; and what to do in an emergency, how to call 911, and why seat belts, booster seats and helmets matter.
+- Children hear that lice are no shame and come out with a comb, that one bite of the wrong food can hurt a friend, and that a helmet takes the bump because a scraped knee heals and a hurt brain may not.
+- Each lesson is spoken for a child who cannot read yet, every answer comes with its reason, and each has a story of its own with a coloring page.
+
 ## October 5, 2026 (places, families and technology)
 
 - Kindergarten Me and my community has three more lessons, so it now covers every Texas kindergarten social studies standard: the land, water and weather of a place and how it shapes the way people live there, families alike and different and the traditions they keep, and technology at home and school.

@@ -3542,6 +3542,121 @@ function LETTER_MODULES() { return [
     sources: ['Aligned with TEKS K.2.E (develop handwriting by accurately forming all uppercase and lowercase letters using appropriate directionality) and CCSS L.K.1.A (print many upper- and lowercase letters).'],
     generators: ['pk-trace-van', 'pk-trace-van', 'pk-trace-van', 'pk-trace-van', 'pk-trace-van'],
   },
+  {
+    id: 'tracing-bump-capitals',
+    order: 13,
+    title: 'Trace B, D, P and R',
+    tagline: 'A line down, then bumps',
+    requires: ['tracing-more-letters'],
+    needsTouch: true,
+    lesson: {
+      // Earmark E6, pass KS (TEKS K.2E): the four capitals built from a line down and a bump or two.
+      paragraphs: ['Four capital letters start the same way, with a line straight down. Then they grow bumps on the right side. D has one big bump from the top all the way to the bottom. P has one bump from the top to the middle.', 'B has two bumps, a smaller one on top and a bigger one on the bottom. R starts the same as P, a line down and a bump to the middle, and then a slant goes down to the corner, a leg for the letter to stand on.', 'Line down first, lift your finger, then go back to the top dot for the bump. The bump swings out to the right and comes back in to the line.'],
+      keyIdea: 'A line down, lift, then a bump from the top. D is one big bump, P is one bump to the middle, B is two bumps, and R is a bump with a leg.',
+      example: { kind: 'trace', text: 'D', caption: 'A line down, then one big bump from the top to the bottom. That is D.' },
+      script: [
+        { say: 'Four capital letters start with a line straight down, and then they grow bumps. D is a line down, then from the top one big bump around to the bottom.', show: { kind: 'trace', text: 'D' } },
+        { say: 'P is a line down, then from the top a bump out to the middle. The bump swings out to the right and comes back in to the line.', show: { kind: 'trace', text: 'P' } },
+        { say: 'B is a line down, then from the top a bump out to the middle, and a bigger bump out to the bottom. Two bumps, the small one on top.', show: { kind: 'trace', text: 'B' } },
+        { say: 'R starts the same as P, a line down and a bump out to the middle, then a slant goes down to the corner, a leg for the letter to stand on.', show: { kind: 'trace', text: 'R' } },
+        { say: 'Line down first, lift your finger, then go back to the top dot for the bump. Start at the dot and follow the arrow.', show: null },
+      ],
+    },
+    sources: ['Aligned with TEKS K.2.E (develop handwriting by accurately forming all uppercase and lowercase letters using appropriate directionality) and CCSS L.K.1.A (print many upper- and lowercase letters).'],
+    generators: ['rt-trace-bumps', 'rt-trace-bumps', 'rt-trace-bumps', 'rt-trace-bumps', 'rt-trace-bumps'],
+  },
+  {
+    id: 'tracing-curve-capitals',
+    order: 14,
+    title: 'Trace G, J, S, U and Q',
+    tagline: 'Letters that curve',
+    requires: ['tracing-bump-capitals'],
+    needsTouch: true,
+    lesson: {
+      // Earmark E6, pass KS (TEKS K.2E): the capitals built from curves, each said the way its strokes draw it.
+      paragraphs: ['Some capital letters are made of curves, like C and O. G goes around like C, then comes up to the middle and makes a short line in. Q is an O with a short tail at the bottom.', 'U goes down, curves around the bottom and comes back up. J is a line down that curls to the left at the bottom. S curves around to the left, then around to the right, winding the way a snake does.', 'A curve has no corners, so keep your finger moving smoothly. Start at the dot and follow the arrow, and slow down where the line bends.'],
+      keyIdea: 'G is C with a line in, and Q is O with a tail. U curves around the bottom, J curls at the bottom, and S winds like a snake.',
+      example: { kind: 'trace', text: 'S', caption: 'Around to the left, then around to the right, winding the way a snake does. That is S.' },
+      script: [
+        { say: 'Some capital letters are made of curves, like C and O. G goes around like C, then comes up to the middle and makes a short line in.', show: { kind: 'trace', text: 'G' } },
+        { say: 'Q is an O with a short tail at the bottom. Go all the way around, lift your finger, then add the tail.', show: { kind: 'trace', text: 'Q' } },
+        { say: 'U goes down, curves around the bottom and comes back up, with no corners.', show: { kind: 'trace', text: 'U' } },
+        { say: 'J is a line down that curls to the left at the bottom.', show: { kind: 'trace', text: 'J' } },
+        { say: 'S curves around to the left, then around to the right, winding the way a snake does. Slow down where the line bends.', show: { kind: 'trace', text: 'S' } },
+        { say: 'A curve has no corners, so keep your finger moving smoothly. Start at the dot and follow the arrow.', show: null },
+      ],
+    },
+    sources: ['Aligned with TEKS K.2.E (develop handwriting by accurately forming all uppercase and lowercase letters using appropriate directionality) and CCSS L.K.1.A (print many upper- and lowercase letters).'],
+    generators: ['rt-trace-curves', 'rt-trace-curves', 'rt-trace-curves', 'rt-trace-curves', 'rt-trace-curves'],
+  },
+  {
+    id: 'tracing-small-circles',
+    order: 15,
+    title: 'Trace a, d, g and q',
+    tagline: 'A little circle, then a line',
+    requires: ['tracing-small-letters'],
+    needsTouch: true,
+    lesson: {
+      // Earmark E6, pass KS (TEKS K.2E): the small letters that begin with a little circle, like small o, and add a line.
+      paragraphs: ['Four small letters start with a little circle, the same circle as small o, and then add a line on the right side. Small a is a little circle, then a short line down its right side. Small d is a little circle, then a tall line that reaches up high.', 'Small g is a little circle, then a line down past the bottom that curls to the left. Small q is a little circle, then a line down past the bottom with a little flick.', 'Circle first, the way small o goes, starting near the top and going around to the left. Lift your finger, then make the line.'],
+      keyIdea: 'A little circle first, like small o. Then a short line for a, a tall line for d, a curl below for g, and a line below with a flick for q.',
+      example: { kind: 'trace', text: 'a', caption: 'A little circle, then a short line down the right side. That is small a.' },
+      script: [
+        { say: 'Four small letters start with a little circle, the same circle as small o. Small a is a little circle, then a short line down its right side.', show: { kind: 'trace', text: 'a' } },
+        { say: 'Small d is a little circle, then a tall line down its right side. The line reaches up high, like small l.', show: { kind: 'trace', text: 'd' } },
+        { say: 'Small g is a little circle, then a line down past the bottom that curls to the left.', show: { kind: 'trace', text: 'g' } },
+        { say: 'Small q is a little circle, then a line down past the bottom with a little flick.', show: { kind: 'trace', text: 'q' } },
+        { say: 'Circle first, starting near the top and going around to the left. Lift your finger, then make the line. Start at the dot and follow the arrow.', show: null },
+      ],
+    },
+    sources: ['Aligned with TEKS K.2.E (develop handwriting by accurately forming all uppercase and lowercase letters using appropriate directionality) and CCSS L.K.1.A (print many upper- and lowercase letters).'],
+    generators: ['rt-trace-small-circles', 'rt-trace-small-circles', 'rt-trace-small-circles', 'rt-trace-small-circles', 'rt-trace-small-circles'],
+  },
+  {
+    id: 'tracing-small-bumps',
+    order: 16,
+    title: 'Trace b, p, e and f',
+    tagline: 'A line, then a bump or a curl',
+    requires: ['tracing-small-circles'],
+    needsTouch: true,
+    lesson: {
+      // Earmark E6, pass KS (TEKS K.2E): b and p as a line with a bump, e and f as curls.
+      paragraphs: ['Small b is a tall line down, then from the middle a bump out to the right. Small p is a line down past the bottom, then from the top a bump out to the right. The bump is on the same side for both, so look at the line. In b the line reaches up high, and in p it reaches down low.', 'Small e is a short line across the middle, then up and around to the left, stopping near the bottom. Small f curls over at the top, goes down, then has a short line across.', 'Line first, lift, then the bump. For e, the short line comes first. For f, the curl comes first.'],
+      keyIdea: 'b is a tall line with a bump, and p is a low line with a bump. e is a short line then a curl around, and f is a curl over then a line down with a bar.',
+      example: { kind: 'trace', text: 'b', caption: 'A tall line down, then from the middle a bump out to the right. That is small b.' },
+      script: [
+        { say: 'Small b is a tall line down, then from the middle a bump out to the right.', show: { kind: 'trace', text: 'b' } },
+        { say: 'Small p is a line down past the bottom, then from the top a bump out to the right. The bump is on the same side as b, so look at the line. In b it reaches up high, and in p it reaches down low.', show: { kind: 'trace', text: 'p' } },
+        { say: 'Small e is a short line across the middle, then up and around to the left, stopping near the bottom.', show: { kind: 'trace', text: 'e' } },
+        { say: 'Small f curls over at the top, goes down, then has a short line across.', show: { kind: 'trace', text: 'f' } },
+        { say: 'Line first, lift, then the bump. For e, the short line comes first, and for f, the curl comes first. Start at the dot and follow the arrow.', show: null },
+      ],
+    },
+    sources: ['Aligned with TEKS K.2.E (develop handwriting by accurately forming all uppercase and lowercase letters using appropriate directionality) and CCSS L.K.1.A (print many upper- and lowercase letters).'],
+    generators: ['rt-trace-small-bumps', 'rt-trace-small-bumps', 'rt-trace-small-bumps', 'rt-trace-small-bumps', 'rt-trace-small-bumps'],
+  },
+  {
+    id: 'tracing-small-curls',
+    order: 17,
+    title: 'Trace s, j and y',
+    tagline: 'The last small letters',
+    requires: ['tracing-small-bumps'],
+    needsTouch: true,
+    lesson: {
+      // Earmark E6, pass KS (TEKS K.2E): the last three small letters, so every letter is traced both ways.
+      paragraphs: ['Small s curves around to the left, then around to the right, winding the way a snake does, the same as big S, only small. Small j is a line down past the bottom that curls to the left, then a dot on top, like small i with a tail.', 'Small y is a short slant down, then a long slant down past the bottom that crosses it. The long slant keeps going below the line, like the tail on g.', 'With these three, you can trace every letter, big and small. Start at the dot and follow the arrow.'],
+      keyIdea: 's winds like a snake, j is i with a curling tail, and y is a short slant crossed by a long slant that goes below the line.',
+      example: { kind: 'trace', text: 'y', caption: 'A short slant down, then a long slant that crosses it and goes below the line. That is small y.' },
+      script: [
+        { say: 'Small s curves around to the left, then around to the right, winding the way a snake does, the same as big S, only small.', show: { kind: 'trace', text: 's' } },
+        { say: 'Small j is a line down past the bottom that curls to the left, then a dot on top, like small i with a tail.', show: { kind: 'trace', text: 'j' } },
+        { say: 'Small y is a short slant down, then a long slant down past the bottom that crosses it. The long slant keeps going below the line.', show: { kind: 'trace', text: 'y' } },
+        { say: 'With these three, you can trace every letter, big and small. Start at the dot and follow the arrow.', show: null },
+      ],
+    },
+    sources: ['Aligned with TEKS K.2.E (develop handwriting by accurately forming all uppercase and lowercase letters using appropriate directionality) and CCSS L.K.1.A (print many upper- and lowercase letters).'],
+    generators: ['rt-trace-small-curls', 'rt-trace-small-curls', 'rt-trace-small-curls', 'rt-trace-small-curls', 'rt-trace-small-curls'],
+  },
 ]; }
 
 // Kindergarten content. Lessons are two short spoken sentences with a picture.
@@ -10076,6 +10191,215 @@ function HEALTHK_MODULES() { return [
     sources: ['Aligned with Texas TEKS K.6A (demonstrate an understanding that the human body is composed mostly of water and explain the importance of drinking water daily), K.6C (identify types of foods that help the body grow, including fruits and vegetables, dairy, and protein) and K.6D (identify healthy and unhealthy snack choices), and USDA MyPlate guidance.'],
     generators: ['hk-plate', 'hk-plate', 'hk-plate', 'hk-plate', 'hk-plate'],
   },
+  {
+    id: 'health-helpers',
+    order: 5,
+    title: 'People who help us stay healthy',
+    tagline: 'Who to ask about your health, why shots help, and what to do about lice and bug bites',
+    requires: ['washing-hands'],
+    lesson: {
+      // Earmark E4 part one, pass KO (TEKS K.2A, people who can provide health care guidance; the importance of immunization
+      // in K.2C; and K.2D, head lice and biting insects, their removal and care). Facts from the CDC: a vaccine teaches the body
+      // to fight a germ before it can make you sick; lice crawl from head to head, do not jump or fly, and are not a sign of
+      // being dirty; a tick comes out with tweezers close to the skin; bug spray goes on with a grown-up's help.
+      paragraphs: ['When you have a question about your body, there are people to ask. Your parents and the grown-ups in your family come first. A teacher can help at school. And some people learned all about bodies for their job, a doctor, a nurse and a dentist. They are health care professionals.', 'A shot at the doctor stings for a moment, and then it does a big job. A shot is a vaccine, and a vaccine teaches your body how to fight a germ before that germ can make you sick. That is called immunization, and it keeps you, and the people around you, from getting some very bad sicknesses.', 'Head lice are tiny bugs that can live in hair and make your head itch. They crawl from one head to another when heads touch, and they do not jump or fly. Having lice does not mean you are dirty. A grown-up checks your hair, washes it with a special shampoo and combs the lice out with a fine comb. Keep your own hat, brush and pillow to yourself, so lice stay away.', 'Some bugs bite. A mosquito bite makes an itchy bump, so wear long sleeves in the evening and let a grown-up put bug spray on you. A tick is a tiny bug that holds on to your skin in tall grass or woods. After you play outside, a grown-up checks you for ticks and pulls one out with tweezers, close to the skin. Then the spot gets washed, and you tell a grown-up if it gets red or you feel sick.'],
+      keyIdea: 'Ask a parent, a teacher, a doctor, a nurse or a dentist about your health. A shot teaches your body to fight a germ. Lice and bug bites are no shame, and a grown-up helps with both.',
+      example: { kind: 'icon', name: 'doctor', caption: 'A doctor learned all about bodies for her job. She is a health care professional.' },
+      script: [
+        { say: 'When you have a question about your body, there are people to ask. Your parents and the grown-ups in your family come first, and a teacher can help at school.', show: null },
+        { say: 'Some people learned all about bodies for their job. A doctor, a nurse and a dentist are health care professionals, and you can ask them too.', show: { kind: 'icon', name: 'doctor' } },
+        { say: 'A shot at the doctor stings for a moment, and then it does a big job. A shot is a vaccine, and a vaccine teaches your body how to fight a germ before that germ can make you sick.', show: { kind: 'icon', name: 'shot' } },
+        { say: 'That is called immunization, and one shot keeps you, and the people around you, from getting some very bad sicknesses.', show: { kind: 'icon', name: 'shot' } },
+        { say: 'Head lice are tiny bugs that can live in hair and make your head itch. They crawl from one head to another when heads touch, and they do not jump or fly. Having lice does not mean you are dirty.', show: null },
+        { say: 'A grown-up checks your hair, washes it with a special shampoo and combs the lice out with a fine comb. Keep your own hat, brush and pillow to yourself, so lice stay away.', show: { kind: 'icon', name: 'comb' } },
+        { say: 'Some bugs bite. A mosquito bite makes an itchy bump, so wear long sleeves in the evening and let a grown-up put bug spray on you.', show: { kind: 'icon', name: 'mosquito' } },
+        { say: 'A tick is a tiny bug that holds on to your skin in tall grass or woods. After you play outside, a grown-up checks you for ticks and pulls one out with tweezers, close to the skin.', show: null },
+        { say: 'Then the spot gets washed, and you tell a grown-up if it gets red or you feel sick.', show: null },
+        { say: 'Ask a parent, a teacher, a doctor, a nurse or a dentist about your health. A shot teaches your body to fight a germ. Lice and bug bites are no shame, and a grown-up helps with both.', show: { kind: 'flow', steps: ['ask a grown-up', 'shots fight germs', 'lice and bites'] } },
+      ],
+      pictures: [{ serial: 'P60', step: 1, alt: 'A doctor, a nurse and a dentist in a bright clinic, smiling at a child' }, { serial: 'P61', step: 5, alt: 'A grown-up combing a child\'s wet hair with a fine comb at a sink' }],
+    },
+    sources: ['Aligned with Texas TEKS K.2A (name people who can provide health care guidance such as parents, family members, other trusted adults, teachers, and health care professionals), the importance of immunization in K.2C (discuss ways in which germs are transmitted, methods of preventing the spread of germs, and the importance of immunization) and K.2D (identify head lice and biting insects that may cause illness and their proper removal and care), and the National Health Education Standards, 1.2.1. Lice, tick and vaccine facts follow the CDC.'],
+    generators: ['hk-who-helps', 'hk-shots-and-bugs', 'hk-tap-helper', 'hk-shots-and-bugs', 'hk-who-helps'],
+  },
+  {
+    id: 'portions-and-allergies',
+    order: 6,
+    title: 'How much to eat, and whose food',
+    tagline: 'A healthy portion, and why we never share food with a friend who has an allergy',
+    requires: ['my-plate'],
+    lesson: {
+      // Earmark E4 part one, pass KO (TEKS K.6B, healthy portion sizes for common food items, and K.7A, food allergy safety
+      // such as not sharing food, and respecting others who have allergies). Portion sizes follow USDA MyPlate for children
+      // (kid-sized portions, half the plate fruits and vegetables); allergy facts follow the FDA's list of major food
+      // allergens and the usual signs of a reaction.
+      paragraphs: ['A portion is how much you eat at one time. A child needs a child-sized portion, not a grown-up\'s. A good portion of grapes is about what fits in your two hands cupped together, and a good portion of chicken is about the size of your palm. Half your plate is fruits and vegetables, and the rest is grains and protein, with milk or water beside it.', 'Your tummy tells you when it is full. Eat slowly, and stop when you feel full, even if food is left. You can always have more later if you are still hungry.', 'Some bodies get very sick from one kind of food. That is called a food allergy. Peanuts, milk and eggs are common ones. For a friend with an allergy, one bite of the wrong food can make lips swell or make breathing hard, so we never share food at school, and we never trade snacks.', 'If a friend eats something and starts to swell, itch all over or breathe hard, tell a grown-up right away. Wash your hands after you eat, so crumbs do not travel to a friend. An allergy is not silly and it is not a choice, so we respect it and keep our friends safe.'],
+      keyIdea: 'A portion is how much you eat at one time, and a child needs a child-sized one. Never share food with a friend who has an allergy, and tell a grown-up fast if a friend swells or breathes hard.',
+      example: { kind: 'icon', name: 'plate', caption: 'Half the plate is fruits and vegetables. The rest is grains and protein.' },
+      script: [
+        { say: 'A portion is how much you eat at one time. A child needs a child-sized portion on the plate, not a grown-up\'s.', show: { kind: 'icon', name: 'plate' } },
+        { say: 'A good portion of grapes is about what fits in your two hands cupped together. A good portion of chicken is about the size of your palm.', show: null },
+        { say: 'Half your plate is fruits and vegetables, and the rest is grains and protein, with milk or water beside it.', show: { kind: 'icon', name: 'plate' } },
+        { say: 'Your tummy tells you when it is full. Eat slowly, and stop when you feel full, even if food is left. You can always have more later if you are still hungry.', show: null },
+        { say: 'Some bodies get very sick from one kind of food. That is called a food allergy. Peanuts, milk and eggs are common ones.', show: { kind: 'icon', name: 'peanut' } },
+        { say: 'For a friend with an allergy, one bite of the wrong food, even one peanut, can make lips swell or make breathing hard. So we never share food at school, and we never trade snacks.', show: { kind: 'icon', name: 'peanut' } },
+        { say: 'If a friend eats something and starts to swell, itch all over or breathe hard, tell a grown-up right away.', show: null },
+        { say: 'Wash your hands after you eat, so crumbs do not travel to a friend. An allergy is not silly and it is not a choice, so we respect it and keep our friends safe.', show: null },
+        { say: 'A portion is how much you eat at one time, and a child needs a child-sized one. Never share food with a friend who has an allergy, and tell a grown-up fast if a friend swells or breathes hard.', show: { kind: 'flow', steps: ['a child-sized portion', 'never share food', 'tell a grown-up'] } },
+      ],
+      pictures: [{ serial: 'P62', step: 2, alt: 'A child-sized plate, half fruits and vegetables, a quarter grains and a quarter chicken, a glass of milk beside it' }],
+    },
+    sources: ['Aligned with Texas TEKS K.6B (identify healthy portion sizes for common food items) and K.7A (describe basic facts of food allergy safety such as not sharing food and explain the importance of respecting others who have allergies), and the National Health Education Standards, 1.2.1. Portions follow USDA MyPlate; the common allergens are from the FDA\'s list of major food allergens.'],
+    generators: ['hk-portion', 'hk-allergy', 'hk-portion', 'hk-allergy', 'hk-allergy'],
+  },
+  {
+    id: 'emergencies-and-helmets',
+    order: 7,
+    title: 'Emergencies, 911 and helmets',
+    tagline: 'What to do when someone is badly hurt, and the things that protect your body in a car and on a bike',
+    requires: ['washing-hands'],
+    lesson: {
+      // Earmark E4 part one, pass KO (TEKS K.8A, procedures for responding to emergencies, including reporting to a parent or
+      // another trusted adult or contacting 911, and K.8B, the purpose and proper use of protective equipment such as seat
+      // belts, booster seats and bicycle helmets). Texas law puts a child under eight in a car seat or booster unless the
+      // child is taller than four feet nine inches (Transportation Code 545.412); the lesson says it as big enough.
+      paragraphs: ['An emergency is when someone is badly hurt or very sick, when there is a fire, or when a person will not wake up. In an emergency, first tell a grown-up, a parent or another trusted adult. If no grown-up can help, call 911 on any phone. A helper answers, and you say your name, what happened and where you are. Then you stay on the phone until the helper says you can hang up.', '911 is only for real emergencies. Call it for fun or as a joke? No, never, because that helper is needed by someone who is really hurt.', 'Some things protect your body. In a car, a seat belt holds you in your seat if the car stops suddenly or crashes, so you do not fly forward. A child who is not big enough yet sits in a booster seat, which lifts you so the seat belt crosses your shoulder and your lap in the right places. Every ride, every time, even a short one.', 'On a bike or a scooter, a helmet protects your brain if you fall. A scraped knee heals, but a hurt brain may not, so the helmet takes the bump instead. Wear it flat on your head, not tipped back, with the strap snug under your chin.'],
+      keyIdea: 'In an emergency, tell a grown-up or call 911, say your name, what happened and where you are, and stay on the phone. A seat belt, a booster seat and a helmet take the hit so your body does not.',
+      example: { kind: 'icon', name: 'helmet', caption: 'A helmet protects your brain if you fall. Wear it flat on your head, with the strap snug.' },
+      script: [
+        { say: 'An emergency is when someone is badly hurt or very sick, when there is a fire, or when a person will not wake up.', show: { kind: 'icon', name: 'fire' } },
+        { say: 'In an emergency, first tell a grown-up, a parent or another trusted adult. If no grown-up can help, call 911 on any phone.', show: { kind: 'icon', name: 'phone' } },
+        { say: 'A helper answers, and you say your name, what happened and where you are. Then you stay on the phone until the helper says you can hang up.', show: { kind: 'flow', steps: ['your name', 'what happened', 'where you are', 'stay on the phone'] } },
+        { say: '911 is only for real emergencies. Pick up the phone and call it for fun or as a joke? No, never, because that helper is needed by someone who is really hurt.', show: { kind: 'icon', name: 'phone' } },
+        { say: 'Some things protect your body. In a car, a seat belt holds you in your seat if the car stops suddenly or crashes, so you do not fly forward.', show: { kind: 'icon', name: 'belt' } },
+        { say: 'A child who is not big enough yet sits in a booster seat, which lifts you so the seat belt crosses your shoulder and your lap in the right places. Every ride, every time, even a short one.', show: { kind: 'icon', name: 'booster' } },
+        { say: 'On a bike or a scooter, a helmet protects your brain if you fall. A scraped knee heals, but a hurt brain may not, so the helmet takes the bump instead.', show: { kind: 'icon', name: 'helmet' } },
+        { say: 'Wear the helmet flat on your head, not tipped back, with the strap snug under your chin.', show: { kind: 'icon', name: 'helmet' } },
+        { say: 'In an emergency, tell a grown-up or call 911, say your name, what happened and where you are, and stay on the phone. A seat belt, a booster seat and a helmet take the hit so your body does not.', show: { kind: 'flow', steps: ['tell a grown-up', 'call 911', 'belt, booster, helmet'] } },
+      ],
+      pictures: [{ serial: 'P63', step: 2, alt: 'A child on a phone in a kitchen, calm, a grown-up lying on the floor behind' }, { serial: 'P64', step: 5, alt: 'A child buckled into a booster seat in a car, the seat belt across the shoulder and lap' }, { serial: 'P65', step: 7, alt: 'A child wearing a bike helmet flat on the head with the strap snug under the chin' }],
+    },
+    sources: ['Aligned with Texas TEKS K.8A (discuss and demonstrate procedures for responding to emergencies, including reporting to a parent or another trusted adult or contacting 911) and K.8B (identify the purpose and demonstrate the proper use of protective equipment such as seat belts, booster seats, and bicycle helmets), and the National Health Education Standards, 1.2.1.'],
+    generators: ['hk-emergency', 'hk-protect', 'hk-tap-protect', 'hk-emergency', 'hk-protect'],
+  },
+  {
+    id: 'my-space-and-my-no',
+    order: 8,
+    title: 'My space and my no',
+    tagline: 'A trusted adult, a strong no, and the space around your body that is yours',
+    requires: ['health-helpers'],
+    lesson: {
+      // Earmark E4 part two, pass KP (TEKS K.9A, the roles and characteristics of a trusted adult; K.9B, refusal skills such
+      // as saying no to protect personal space and avoid unsafe situations; K.9C, personal space and appropriate boundaries;
+      // K.12D, getting help from a parent or another trusted adult when made to feel uncomfortable or unsafe). Body safety is
+      // taught the way child-safety educators teach it: your body is yours, a safe grown-up never asks you to keep a secret
+      // from your parents, and you keep telling until someone helps.
+      paragraphs: ['A trusted adult is a grown-up who keeps you safe. A trusted adult listens to you, helps when you are hurt, scared or mixed up, and is someone your family says is okay, such as a parent, a grandparent, a teacher, a coach or the school nurse. A safe grown-up never asks you to keep a secret from your parents. If someone does, that is a reason to tell.', 'Your body belongs to you. Around your body is your personal space, like a bubble, and you decide who comes into it. People ask before a hug, and you can say no to a hug or a tickle you do not want, even from someone you know, and that is not rude. The parts of your body that a swimsuit covers are private. Nobody should touch or look at them, except to keep you clean or healthy, with a parent knowing.', 'If something feels wrong, you can say no in a strong voice. No, I do not like that. Stop. Then walk away and go to a trusted adult. If someone you do not know asks you to go somewhere, or a friend dares you to do something unsafe, the answer is no, and then you tell.', 'If anyone makes you feel uncomfortable, scared or unsafe, tell a parent or another trusted adult, even if you were told not to. It is never your fault, and you are never in trouble for telling. If the first grown-up does not help, tell another one, and keep telling until someone does.'],
+      keyIdea: 'A trusted adult keeps you safe and never asks you to keep a secret from your parents. Your body is yours, you can say a strong no, and if anything feels wrong you tell a trusted adult, and keep telling until someone helps.',
+      example: { kind: 'icon', name: 'bubble', caption: 'Your personal space is like a bubble around you. You decide who comes into it.' },
+      script: [
+        { say: 'A trusted adult is a grown-up who keeps you safe. A trusted adult listens to you and helps when you are hurt, scared or mixed up.', show: null },
+        { say: 'A trusted adult is someone your family says is okay, such as a parent, a grandparent, a teacher, a coach or the school nurse. A safe grown-up never asks you to keep a secret from your parents. If someone does, that is a reason to tell.', show: { kind: 'flow', steps: ['parent', 'grandparent', 'teacher', 'coach', 'nurse'] } },
+        { say: 'Your body belongs to you. Around your body is your personal space, like a bubble, and you decide who comes into it.', show: { kind: 'icon', name: 'bubble' } },
+        { say: 'People ask before a hug, because your bubble is yours, and you can say no to a hug or a tickle you do not want, even from someone you know. That is not rude.', show: { kind: 'icon', name: 'bubble' } },
+        { say: 'The parts of your body that a swimsuit covers are private. Nobody should touch or look at them, except to keep you clean or healthy, with a parent knowing.', show: null },
+        { say: 'If something feels wrong, you can say no in a strong voice. No, I do not like that. Stop. Then walk away and go to a trusted adult.', show: { kind: 'icon', name: 'stop' } },
+        { say: 'If someone you do not know asks you to go somewhere, or a friend dares you to do something unsafe, the answer is no, and then you tell.', show: null },
+        { say: 'If anyone makes you feel uncomfortable, scared or unsafe, tell a parent or another trusted adult, even if you were told not to. It is never your fault, and you are never in trouble for telling.', show: null },
+        { say: 'If the first grown-up does not help, tell another one, and keep telling until someone does.', show: null },
+        { say: 'A trusted adult keeps you safe. Your body is yours, you can say a strong no, and if anything feels wrong you tell, and keep telling until someone helps.', show: { kind: 'flow', steps: ['say no', 'walk away', 'tell a trusted adult'] } },
+      ],
+      pictures: [{ serial: 'P66', step: 2, alt: 'A child standing inside a clear bubble of space, arms out, smiling, another child outside the bubble asking first' }],
+    },
+    sources: ['Aligned with Texas TEKS K.9A (identify roles and characteristics of a trusted adult), K.9B (identify and role play refusal skills such as saying no to protect personal space and to avoid unsafe situations), K.9C (identify personal space and appropriate boundaries) and K.12D (explain and practice how to get help from a parent or another trusted adult when made to feel uncomfortable or unsafe by another person), and the National Health Education Standards, 1.2.1.'],
+    generators: ['hk-trusted-adult', 'hk-say-no', 'hk-trusted-adult', 'hk-say-no', 'hk-tap-safe'],
+  },
+  {
+    id: 'about-bullying',
+    order: 9,
+    title: 'When someone keeps being mean',
+    tagline: 'What bullying is, what a bystander can do, and why telling is not tattling',
+    requires: ['my-space-and-my-no'],
+    lesson: {
+      // Earmark E4 part two, pass KP (TEKS K.12A, bullying behaviors and the role of the bystander; K.12B, ways to discourage
+      // bullying; K.12C, appropriate actions in response to bullying such as telling a parent or another trusted adult).
+      paragraphs: ['Bullying is when someone keeps being mean to another person on purpose, again and again. Hitting, pushing, calling names, taking things, or leaving someone out every time are all bullying. One bad moment is not bullying, but mean on purpose, over and over, is.', 'A bystander is a person who sees bullying happen. A bystander has a choice. Laughing along makes the bullying bigger. Standing next to the person being hurt, saying stop, or going to get a grown-up makes it smaller.', 'We can keep bullying from starting. Be a friend to the new kid and the quiet kid. Ask someone sitting alone to play. When everyone is included, a bully has nowhere to start.', 'If someone bullies you, say stop in a strong voice, walk away, and tell a parent, a teacher or another trusted adult. Telling is not tattling. Tattling is trying to get someone in trouble for nothing. Telling is getting help when someone is being hurt, and that is always right.'],
+      keyIdea: 'Bullying is being mean on purpose, over and over. A bystander can say stop, stand with the person or get a grown-up. Say stop, walk away and tell, because telling is not tattling.',
+      example: { kind: 'icon', name: 'stop', caption: 'Say stop in a strong voice, walk away, and tell a trusted adult.' },
+      script: [
+        { say: 'Bullying is when someone keeps being mean to another person on purpose, again and again.', show: null },
+        { say: 'Hitting, pushing, calling names, taking things, or leaving someone out every time are all bullying. One bad moment is not bullying, but mean on purpose, over and over, is.', show: null },
+        { say: 'A bystander is a person who sees bullying happen. A bystander has a choice.', show: null },
+        { say: 'Laughing along makes the bullying bigger. Standing next to the person being hurt, saying stop, or going to get a grown-up makes it smaller.', show: { kind: 'icon', name: 'stop' } },
+        { say: 'We can keep bullying from starting. Be a friend to the new kid and the quiet kid. Ask someone sitting alone to play. When everyone is included, a bully has nowhere to start.', show: null },
+        { say: 'If someone bullies you, say stop in a strong voice, walk away, and tell a parent, a teacher or another trusted adult.', show: { kind: 'flow', steps: ['say stop', 'walk away', 'tell'] } },
+        { say: 'Telling is not tattling. Tattling is trying to get someone in trouble for nothing. Telling is getting help when someone is being hurt, and that is always right.', show: null },
+        { say: 'Bullying is being mean on purpose, over and over. A bystander can say stop, stand with the person or get a grown-up. Say stop, walk away and tell, because telling is not tattling.', show: { kind: 'flow', steps: ['stand with them', 'say stop', 'get a grown-up'] } },
+      ],
+      pictures: [{ serial: 'P67', step: 3, alt: 'A child stepping beside a smaller child on a playground, hand raised in a stop, a third child looking on' }],
+    },
+    sources: ['Aligned with Texas TEKS K.12A (identify bullying behaviors and the role of the bystander), K.12B (identify ways to discourage bullying) and K.12C (describe appropriate actions to take in response to bullying such as telling a parent or another trusted adult), and the National Health Education Standards, 1.2.1.'],
+    generators: ['hk-bullying', 'hk-bystander', 'hk-bullying', 'hk-bystander', 'hk-bullying'],
+  },
+  {
+    id: 'safe-play-and-my-address',
+    order: 10,
+    title: 'Safe places, sharp things and my address',
+    tagline: 'Where it is safe to play, what can cut or poke, and the words that tell a helper where you live',
+    requires: ['emergencies-and-helmets'],
+    lesson: {
+      // Earmark E4 part two, pass KP (TEKS K.10A, safe play environments; K.10B, objects that may be dangerous such as knives,
+      // scissors and screwdrivers and how they can be harmful; K.10C, recalling a personal home address as part of a personal
+      // safety plan).
+      paragraphs: ['Some places are safe to play, like a playground, a park with a grown-up near, or a yard with a fence. Some places are not, such as the street, a parking lot where cars back up, beside water with no grown-up, or a place where things are being built.', 'Some things at home can hurt you. A knife can cut. Scissors can cut and poke. A screwdriver can poke, and so can a nail. They are tools for a grown-up, or for you only with a grown-up right there. Matches and lighters make fire, and bottles under the sink are not for drinking, so you leave those alone too.', 'Every child should know their home address, the number and the street, and the name of the town. Practice saying it until it comes out easily, along with a parent\'s phone number. If you ever get lost, a police officer, a store worker with a name tag or a 911 helper can bring you home when you can say where home is.', 'Your address is private, so you tell it only to a parent, a trusted adult or a helper who is helping you, never to someone online or a stranger who just asks.'],
+      keyIdea: 'Play where it is safe. Knives, scissors and screwdrivers can cut or poke, so they are for a grown-up. Know your home address and a parent\'s phone number, and tell them only to a helper who is helping you.',
+      example: { kind: 'icon', name: 'slide', caption: 'A playground is a safe place to play. The street is not.' },
+      script: [
+        { say: 'Some places are safe to play, like a playground with a slide, a park with a grown-up near, or a yard with a fence.', show: { kind: 'icon', name: 'slide' } },
+        { say: 'Some places are not safe to play, such as the street, a parking lot where cars back up, beside water with no grown-up, or a place where things are being built.', show: null },
+        { say: 'Some things at home can hurt you. A knife can cut. Scissors can cut and poke.', show: { kind: 'pair', a: { kind: 'icon', name: 'knife' }, b: { kind: 'icon', name: 'scissors' } } },
+        { say: 'A screwdriver can poke, and so can a nail. They are tools for a grown-up, or for you only with a grown-up right there.', show: { kind: 'icon', name: 'screwdriver' } },
+        { say: 'Matches and lighters make fire, and bottles under the sink are not for drinking, so you leave those alone too.', show: { kind: 'icon', name: 'fire' } },
+        { say: 'Every child should know their home address, the number on the house and the street, and the name of the town. Practice saying it until it comes out easily, along with a parent\'s phone number.', show: { kind: 'icon', name: 'house' } },
+        { say: 'If you ever get lost, a police officer, a store worker with a name tag or a 911 helper can bring you home to your house when you can say where home is.', show: { kind: 'icon', name: 'house' } },
+        { say: 'Your address is private, so you tell it only to a parent, a trusted adult or a helper who is helping you, never to someone online or a stranger who just asks.', show: null },
+        { say: 'Play where it is safe. Knives, scissors and screwdrivers can cut or poke, so they are for a grown-up. Know your home address and a parent\'s phone number, and tell them only to a helper who is helping you.', show: { kind: 'flow', steps: ['safe places', 'sharp things', 'my address'] } },
+      ],
+      pictures: [{ serial: 'P68', step: 0, alt: 'A playground with a slide and swings inside a fence, a grown-up on a bench nearby' }, { serial: 'P69', step: 5, alt: 'A child at a front door pointing at the house number beside it' }],
+    },
+    sources: ['Aligned with Texas TEKS K.10A (name safe play environments), K.10B (name objects that may be dangerous such as knives, scissors, and screwdrivers and explain how they can be harmful) and K.10C (recall personal home address as part of a personal safety plan), and the National Health Education Standards, 1.2.1.'],
+    generators: ['hk-safe-place', 'hk-sharp', 'hk-address', 'hk-sharp', 'hk-safe-place'],
+  },
+  {
+    id: 'medicines-and-harmful-things',
+    order: 11,
+    title: 'Medicine, and things that are not for kids',
+    tagline: 'Medicine only from a grown-up, why alcohol, tobacco and drugs hurt a body, and how to say no',
+    requires: ['health-helpers'],
+    lesson: {
+      // Earmark E4 part two, pass KP (TEKS K.13A, the proper usage of medications; K.13B, the harmful effects of alcohol,
+      // tobacco and drugs on physical health; K.14, refusal skills and how to get help from a parent or another trusted adult
+      // in unsafe situations involving alcohol, tobacco and other drugs). Harm facts follow the CDC and the National Institute
+      // on Drug Abuse, said at a child's level.
+      paragraphs: ['Medicine helps when you are sick, but only when it is the right medicine, the right amount, at the right time. So only a grown-up gives you medicine, a parent, a nurse or a doctor, and never a friend, and you never take medicine on your own. Some medicine looks like candy, and some candy looks like medicine, so never eat or drink something you find, and ask a grown-up first.', 'Some things are not for kids at all. Alcohol is in beer and wine, and it is for grown-ups only, because it makes a person slow and clumsy, and too much hurts the body. Tobacco is in cigarettes and vapes, and the smoke and vapor hurt the lungs and the heart, so people who use it get out of breath and sick.', 'Drugs that are not medicine from a grown-up can hurt your brain and your body, and some can hurt a person with just one try. That is why they are never for kids.', 'If anyone offers you a pill, a drink, a cigarette or a vape, say no in a strong voice, walk away, and tell a parent or another trusted adult. If you find pills, a vape or a bottle lying around, do not touch them. Go and tell a grown-up.'],
+      keyIdea: 'Medicine comes only from a grown-up, in the right amount at the right time. Alcohol, tobacco and drugs hurt a body, so they are not for kids. Say no, walk away, and tell a trusted adult.',
+      example: { kind: 'icon', name: 'bottle', caption: 'Medicine helps, but only when a grown-up gives it. Never take it on your own.' },
+      script: [
+        { say: 'Medicine helps when you are sick, but only when it is the right medicine, the right amount, at the right time.', show: null },
+        { say: 'So only a grown-up opens the bottle and gives you medicine, a parent, a nurse or a doctor, and never a friend. You never take medicine on your own.', show: { kind: 'icon', name: 'bottle' } },
+        { say: 'Some medicine looks like candy, and some candy looks like medicine, so never eat or drink something you find, and ask a grown-up first.', show: null },
+        { say: 'Some things are not for kids at all. Alcohol is in beer and wine, and it is for grown-ups only, because it makes a person slow and clumsy, and too much hurts the body.', show: null },
+        { say: 'Tobacco is in cigarettes and vapes, and the smoke and vapor hurt the lungs and the heart, so people who use it get out of breath and sick. No smoke is good for a body.', show: { kind: 'icon', name: 'cigarette' } },
+        { say: 'Drugs that are not medicine from a grown-up can hurt your brain and your body, and some can hurt a person with just one try. That is why they are never for kids.', show: null },
+        { say: 'If anyone offers you a pill, a drink, a cigarette or a vape, say no in a strong voice, or stop, then walk away, and tell a parent or another trusted adult.', show: { kind: 'icon', name: 'stop' } },
+        { say: 'If you find pills, a vape or a bottle lying around, do not touch them. Go and tell a grown-up.', show: { kind: 'icon', name: 'bottle' } },
+        { say: 'Medicine comes only from a grown-up, in the right amount at the right time. Alcohol, tobacco and drugs hurt a body, so they are not for kids. Say no, walk away, and tell a trusted adult.', show: { kind: 'flow', steps: ['only from a grown-up', 'not for kids', 'say no and tell'] } },
+      ],
+      pictures: [{ serial: 'P70', step: 1, alt: 'A parent measuring medicine into a small cup for a child at a kitchen counter' }],
+    },
+    sources: ['Aligned with Texas TEKS K.13A (discuss the proper usage of medications), K.13B (discuss the harmful effects of alcohol, tobacco, and drugs on physical health) and K.14 (identify refusal skills and how to get help from a parent or another trusted adult in unsafe situations involving the use or misuse of alcohol, tobacco, and other drugs; paragraph (14) of 19 TAC 115.12 is a single expectation, so it takes no letter), and the National Health Education Standards, 1.2.1.'],
+    generators: ['hk-medicine', 'hk-not-for-kids', 'hk-medicine', 'hk-not-for-kids', 'hk-tap-medicine'],
+  },
 ]; }
 function HEALTH4_MODULES() { return [
   {
@@ -10235,7 +10559,7 @@ function TECHK_MODULES() { return [
     tagline: 'Secret words and private things',
     requires: ['do-it-again'],
     lesson: {
-      paragraphs: ['A password is a secret word that opens your account. Keep it secret. Only a parent or a teacher may know it. When you are done, log off, so the next person cannot get in.', 'Some things are safe to share online, like your favorite color, a game you like or a pet. Some things are private and stay private, like your full name, your address, your school and your birthday.', 'Be kind online, just like at the park, because a real person is on the other side. If something online makes you feel bad, stop and tell a grown-up.', 'Secret password, private things private, kind words, and tell a grown-up.'],
+      paragraphs: ['A password is a secret word that opens your account. Keep it secret. Only a parent or a teacher may know it. When you are done, log off, so the next person cannot get in.', 'Some things are safe to share online, like your favorite color, a game you like or a pet. Some things are private and stay private, like your full name, your address, your school and your birthday.', 'Be kind online, just like at the park, because a real person is on the other side. If something online makes you feel bad, stop and tell a grown-up. Get help right away if someone online is mean to you or bullies you, asks you to keep a secret, asks where you live or what school you go to, or shows you something that makes you feel yucky, scared or unsafe. Stop, and tell a teacher, a parent or another trusted adult.', 'Secret password, private things private, kind words, and tell a grown-up.'],
       // Full standard (pass KC): a spoken script of its own, one idea a line.
       script: [
         { say: 'A password is a secret word that opens your account. Keep it secret. Only a parent or a teacher may know it.', show: null },
@@ -10244,6 +10568,8 @@ function TECHK_MODULES() { return [
         { say: 'Some things are private and stay private, like your full name, your address, your school and your birthday.', show: null },
         { say: 'Be kind online, just like at the park, because a real person is on the other side.', show: null },
         { say: 'If something online makes you feel bad, stop and tell a grown-up.', show: null },
+        // Earmark E4, pass KP (health TEKS K.11): the situations that call for a grown-up, named one by one.
+        { say: 'Get help right away if someone online is mean to you or bullies you, asks you to keep a secret, asks where you live or what school you go to, or shows you something that makes you feel yucky, scared or unsafe. Stop, and tell a teacher, a parent or another trusted adult.', show: null },
       ],
       keyIdea: 'Keep your password secret, keep private things private, be kind, and tell a grown-up.',
       example: { kind: 'flow', steps: ['log in', 'play', 'log off'], caption: 'Log in with your secret word, and log off when you are done.',
@@ -10251,8 +10577,126 @@ function TECHK_MODULES() { return [
           { text: 'A favorite color, a favorite game and a pet are safe to share. Your full name, your address, your school and your birthday are private.', visual: { kind: 'flow', steps: ['color is safe', 'game is safe', 'address is private'] } },
           "Kind online is the same as kind at the park, so if you would not say it to someone's face, do not type it."] },
     },
-    sources: ['Aligned with Texas TEKS Technology Applications 126.1(c)(7)(A) (identify ways to keep a user account safe, including not sharing login information and logging off accounts and devices), 126.1(c)(7)(B) (identify and discuss what information is safe to share online such as hobbies and likes and dislikes and what information is unsafe such as identifying information) and 126.1(c)(5) (identify and demonstrate responsible behavior within a digital environment), and CSTA K-12 CS Standards 1A-IC-18, 1A-NI-04 and 1A-IC-17.'],
+    sources: ['Aligned with Texas TEKS Health Education K.11 (identify situations when one should get help from a teacher, parent, or other trusted adult when made to feel bullied, uncomfortable, or unsafe in a digital or online environment), Technology Applications 126.1(c)(7)(A) (identify ways to keep a user account safe, including not sharing login information and logging off accounts and devices), 126.1(c)(7)(B) (identify and discuss what information is safe to share online such as hobbies and likes and dislikes and what information is unsafe such as identifying information) and 126.1(c)(5) (identify and demonstrate responsible behavior within a digital environment), and CSTA K-12 CS Standards 1A-IC-18, 1A-NI-04 and 1A-IC-17.'],
     generators: ['tk-safe', 'tk-safe', 'tk-safe', 'tk-safe', 'tk-safe'],
+  },
+  {
+    id: 'someone-made-it',
+    order: 5,
+    title: 'Someone made that',
+    tagline: 'Every picture, song and game on a screen belongs to the person who made it, and devices have rules',
+    requires: ['safe-online-k'],
+    lesson: {
+      // Earmark E5, pass KQ (TEKS 126.1(c)(6)(B), communicate an understanding that all digital content has owners, and
+      // 126.1(c)(6)(A), acceptable use of digital resources and devices as outlined in local policies or an acceptable use
+      // policy, said for a five-year-old as the device rules you agreed to). Attribution matches CSTA 1A-AP-13.
+      paragraphs: ['Every song, picture, game and story on a screen was made by someone. A person took that photo, drew that picture, wrote that story or made up that song. The person who made it is its owner, and all digital content, the pictures, songs, videos, games and words on a screen, has an owner. Even when you cannot see the person, the thing still belongs to them.', 'Because it belongs to the owner, we ask before we use it, and we say who made it. Saying who made it is called giving credit, and it is like saying thank you out loud. We never say we made something that someone else made, not even a picture we copied. The owner gets the name on it. Some owners say that anyone may use their work, and then you may use it, and you still say who made it.', 'You are an owner too. When you draw a picture on a tablet, it is yours, and other people should ask you before they use it.', 'At school and at home, devices have rules, and the rules are an agreement you keep. Use the device a grown-up gives you, with gentle hands and clean fingers. Open only the apps you are allowed to open. Tell a grown-up if something breaks or looks wrong. A rule for the device is the same as a rule for the playground. It keeps the device working and keeps you safe.'],
+      keyIdea: 'Everything on a screen was made by someone, and it belongs to them. Ask, use it kindly, and say who made it. Keep the device rules you agreed to.',
+      example: { kind: 'pair', a: { kind: 'icon', name: 'camera' }, b: { kind: 'icon', name: 'music' }, caption: 'Someone took that photo, and someone made up that song. Each one belongs to the person who made it.' },
+      script: [
+        { say: 'Every song, picture, game and story on a screen was made by someone. A person took that photo with a camera, drew that picture, wrote that story or made up that music.', show: { kind: 'pair', a: { kind: 'icon', name: 'camera' }, b: { kind: 'icon', name: 'music' } } },
+        { say: 'The person who made it is its owner, and all digital content, the pictures, songs, videos, games and words on a screen, has an owner. Even when you cannot see the person, the thing on the tablet still belongs to them.', show: { kind: 'icon', name: 'tablet' } },
+        { say: 'Because it belongs to the owner, we ask before we use it, and we say who made it. Saying who made it is called giving credit, and it is like saying thank you out loud.', show: { kind: 'flow', steps: ['ask', 'use it kindly', 'say who made it'] } },
+        { say: 'We never say we made something that someone else made, not even a picture we copied. The owner gets the name on it.', show: null },
+        { say: 'Some owners say that anyone may use their work. Then you may use it, and you still say who made it.', show: null },
+        { say: 'You are an owner too. When you draw a picture on a tablet with your finger or a pencil, it is yours, and other people should ask you before they use it.', show: { kind: 'icon', name: 'pencil' } },
+        { say: 'At school and at home, devices have rules, and the rules are an agreement you keep. Use the tablet or computer a grown-up gives you, with gentle hands and clean fingers.', show: { kind: 'icon', name: 'tablet' } },
+        { say: 'Open only the apps you are allowed to open, and tell a grown-up if something breaks or looks wrong.', show: { kind: 'flow', steps: ['the device you are given', 'gentle hands', 'allowed apps', 'tell a grown-up'] } },
+        { say: 'A rule for the device is the same as a rule for the playground. It keeps the device working and keeps you safe.', show: null },
+        { say: 'Everything on a screen was made by someone, and it belongs to them. Ask, use it kindly, and say who made it. Keep the device rules you agreed to.', show: { kind: 'flow', steps: ['it has an owner', 'say who made it', 'keep the rules'] } },
+      ],
+      pictures: [{ serial: 'P71', step: 0, alt: 'A child looking at a drawing on a tablet while, beside her, a girl at a table draws that same drawing on paper' }, { serial: 'P72', step: 6, alt: 'Two children at a classroom table using a tablet with clean hands, a teacher nearby' }],
+    },
+    sources: ['Aligned with Texas TEKS Technology Applications 126.1(c)(6)(B) (communicate an understanding that all digital content has owners) and 126.1(c)(6)(A) (demonstrate acceptable use of digital resources and devices as outlined in local policies or acceptable use policy (AUP)), and CSTA K-12 CS Standards 1A-AP-13 (give attribution when using the ideas and creations of others while developing programs).'],
+    generators: ['tk-owner', 'tk-device-rules', 'tk-owner', 'tk-tap-made', 'tk-device-rules'],
+  },
+  {
+    id: 'what-is-data',
+    order: 6,
+    title: 'Data is information',
+    tagline: 'What data is, how you collect it, and how a device can search for information and bring it back',
+    requires: ['do-it-again'],
+    lesson: {
+      // Earmark E5, pass KQ (TEKS 126.1(c)(4)(A), data is information collected about people, events, or objects such as
+      // computer searches and weather patterns, and 126.1(c)(4)(B), digital devices can search for and retrieve information,
+      // with adult assistance). The picture graph is the one Counting teaches (math K.8B and K.8C).
+      paragraphs: ['Data is information collected about people, events or objects. How many kids like apples, how tall the bean plant is, how hot it was each day this week, those are all data. You collect data by counting, measuring or asking. Ask every kid in the class their favorite fruit, make a mark for each answer, and you have data.', 'A picture graph shows data so you can see it, one picture for each answer, and the longer row is the one more kids chose. Weather is data too. Sunny, sunny, rainy, cloudy, written down each day. When you write it down for many days, you can see a pattern, and a pattern helps you guess tomorrow.', 'When many people ask a computer the same question, that is data too. The computer keeps count of what people ask.', 'A digital device can search for information and bring it back to you. With a grown-up, you can ask a tablet how tall a giraffe is, and it looks through a huge pile of information and shows you an answer. The answer comes from what people wrote and collected, so a grown-up helps you check that it is true, because a device brings back what it finds, right or wrong.'],
+      keyIdea: 'Data is information collected about people, events or objects. You collect it by counting, measuring or asking, and a device can search for information and bring it back, with a grown-up to help check it.',
+      example: { kind: 'picto', rows: [{ icon: 'apple', count: 4 }, { icon: 'banana', count: 2 }], caption: 'Four kids like apples and two like bananas. That is data, shown in a picture graph.' },
+      script: [
+        { say: 'Data is information collected about people, events or objects. How many kids like apples, how tall the bean plant is, how hot it was each day this week, those are all data.', show: null },
+        { say: 'You collect data by counting, measuring or asking. Ask every kid in the class their favorite fruit, make a mark for each answer, and you have data.', show: null },
+        { say: 'A picture graph shows data so you can see it, one picture for each answer. Four kids chose apples and two chose bananas, and the longer row is the one more kids chose.', show: { kind: 'picto', rows: [{ icon: 'apple', count: 4 }, { icon: 'banana', count: 2 }] } },
+        { say: 'Weather is data too. Sunny, sunny, rainy, cloudy, written down each day. When you write it down for many days, you can see a pattern, and a pattern helps you guess tomorrow.', show: { kind: 'pair', a: { kind: 'icon', name: 'sun' }, b: { kind: 'icon', name: 'rain' } } },
+        { say: 'When many people ask a computer the same question, that is data too. The computer keeps count of what people ask.', show: null },
+        { say: 'A digital device can search for information and bring it back to you. With a grown-up, you can ask a tablet how tall a giraffe is, and it looks through a huge pile of information and shows you an answer.', show: { kind: 'icon', name: 'search' } },
+        { say: 'The answer comes from what people wrote and collected, so a grown-up helps you check that it is true, because a device brings back what it finds, right or wrong.', show: null },
+        { say: 'Data is information collected about people, events or objects. You collect it by counting, measuring or asking, and a device can search for information and bring it back, with a grown-up to help check it.', show: { kind: 'flow', steps: ['count, measure or ask', 'show it in a graph', 'search with a grown-up'] } },
+      ],
+      pictures: [{ serial: 'P73', step: 1, alt: 'Children raising hands while a teacher makes marks beside pictures of fruit on a chart' }, { serial: 'P74', step: 5, alt: 'A child and a grown-up looking at a tablet showing a tall giraffe' }],
+    },
+    sources: ['Aligned with Texas TEKS Technology Applications 126.1(c)(4)(A) (communicate an understanding that data is information collected about people, events, or objects such as computer searches and weather patterns) and 126.1(c)(4)(B) (communicate with adult assistance the idea that digital devices can search for and retrieve information), and CSTA K-12 CS Standards 1A-DA-05 (store, copy, search, retrieve, modify, and delete information using a computing device and define the information stored as data), 1A-DA-06 (collect and present the same data in various visual formats) and 1A-DA-07 (identify and describe patterns in data visualizations, such as charts or graphs, to make predictions).'],
+    generators: ['tk-data-what', 'tk-collect', 'tk-search', 'tk-data-what', 'tk-search'],
+  },
+  {
+    id: 'keys-and-saving',
+    order: 7,
+    title: 'Keys, saving and sitting up',
+    tagline: 'The keys on a keyboard, how to open, change, save and print, and how to sit so your body stays comfortable',
+    requires: ['tell-and-show'],
+    lesson: {
+      // Earmark E5 part two, pass KR (TEKS 126.1(c)(8)(E), keys on the keyboard including letters, numbers and special keys
+      // such as space bar and backspace; (8)(C), opening an application and modifying, printing and saving digital artifacts;
+      // (8)(D), ergonomically correct keyboarding and hand and body positions; (8)(A), applications, devices and online
+      // learning environments). The eye break follows the twenty-twenty-twenty rule eye doctors give for screens.
+      paragraphs: ['A keyboard is full of keys, and each key does one job. The letter keys make letters, and the number keys along the top make numbers. The long key at the bottom is the space bar, and it makes the space between words. The backspace key erases the letter before the blinking line, so a mistake disappears. The enter key starts a new line, and holding shift while you press a letter makes it a capital.', 'An app is a tool on a device, and this lesson is one. To use an app, you open it by tapping its picture. When you change a drawing or some words, that is called modifying. Save your work so it is still there tomorrow, and print it when you want a paper copy, which the printer makes.', 'Your body matters too. Sit up tall with your feet flat on the floor, the screen in front of you about an arm away, and your wrists straight, not bent. Touch the keys lightly. Every twenty minutes, look at something far away for a little while, so your eyes can rest.', 'Keys for letters, numbers and spaces, backspace for mistakes, open, modify, save and print, and a body that sits up tall. That is how you use a device without getting sore.'],
+      keyIdea: 'Letter and number keys type, the space bar makes a space, and backspace erases a mistake. You open an app, modify your work, save it and print it. Sit up tall, feet flat, wrists straight, and rest your eyes.',
+      example: { kind: 'icon', name: 'keyboard', caption: 'A keyboard is full of keys. The long one at the bottom is the space bar.' },
+      script: [
+        { say: 'A keyboard is full of keys, and each key does one job. The letter keys make letters, and the number keys along the top make numbers.', show: { kind: 'icon', name: 'keyboard' } },
+        { say: 'The long key at the bottom is the space bar, and it makes the space between words.', show: { kind: 'icon', name: 'space' } },
+        { say: 'The backspace key erases the letter before the blinking line, so a mistake disappears.', show: { kind: 'icon', name: 'backspace' } },
+        { say: 'The enter key starts a new line, and holding shift while you press a letter makes it a capital.', show: { kind: 'letters', text: 'a A' } },
+        { say: 'An app is a tool on a device, and this lesson is one. To use an app, you open it by tapping its picture on the tablet.', show: { kind: 'icon', name: 'tablet' } },
+        { say: 'When you change a drawing or some words, that is called modifying. Save your work so it is still there tomorrow.', show: { kind: 'icon', name: 'save' } },
+        { say: 'Print it when you want a paper copy, which the printer makes.', show: { kind: 'icon', name: 'printer' } },
+        { say: 'Your body matters too. Sit up tall in your chair with your feet flat on the floor, the screen in front of you about an arm away, and your wrists straight, not bent.', show: { kind: 'icon', name: 'chair' } },
+        { say: 'Touch the keys lightly. Every twenty minutes, look at something far away for a little while, so your eyes can rest.', show: null },
+        { say: 'Letter and number keys type, the space bar makes a space, and backspace erases a mistake. You open an app, modify your work, save it and print it. Sit up tall, feet flat, wrists straight, and rest your eyes.', show: { kind: 'flow', steps: ['open', 'modify', 'save', 'print'] } },
+      ],
+      pictures: [{ serial: 'P75', step: 0, alt: 'A keyboard seen from above with the space bar, backspace and enter keys standing out' }, { serial: 'P76', step: 7, alt: 'A child sitting up tall at a desk, feet flat, wrists straight, the screen an arm away' }],
+    },
+    sources: ['Aligned with Texas TEKS Technology Applications 126.1(c)(8)(A) (use a variety of applications, devices, and online learning environments to engage with content), 126.1(c)(8)(C) (perform software application functions such as opening an application and modifying, printing, and saving digital artifacts using a variety of developmentally appropriate digital tools and resources), 126.1(c)(8)(D) (practice ergonomically correct keyboarding techniques and developmentally appropriate hand and body positions) and 126.1(c)(8)(E) (identify, locate, and practice using keys on the keyboard, including letters, numbers, and special keys such as space bar and backspace), and CSTA K-12 CS Standards 1A-CS-01 (select and operate appropriate software to perform a variety of tasks, and recognize that users have different needs and preferences for the technology they use).'],
+    generators: ['tk-keys', 'tk-tap-key', 'tk-open-save', 'tk-sit-tall', 'tk-keys'],
+  },
+  {
+    id: 'ask-plan-build',
+    order: 8,
+    title: 'Ask, plan, build',
+    tagline: 'How to solve a real problem: ask questions, think of lots of ideas, draw the plan, build it with a grown-up, and test it',
+    requires: ['first-next-then-last'],
+    lesson: {
+      // Earmark E5 part two, pass KR (TEKS 126.1(c)(3)(B), a design process with components such as asking questions,
+      // brainstorming or story boarding to identify and solve authentic problems with adult assistance, and (3)(A), personal
+      // skills including following directions). The plan-build-test-fix loop is the one the section's introduction names.
+      paragraphs: ['When something is not working, you can fix it the way a designer does. First, ask questions. The water bowl keeps tipping over, so why does it tip? What could hold it still? Next, think of lots of ideas, which is called brainstorming. A heavier bowl, a box around it, tape on the bottom. No idea is silly while you are brainstorming, because a silly idea can lead to a good one.', 'Then pick an idea and draw the plan in boxes, one step in each box. That is a story board, and it shows what to do first, next, then and last. Now build it with a grown-up, and test it. Does the bowl still tip? If it does, that is not a failure. It is information. Change the plan and try again. Designers call that fixing, and they do it over and over until it works.', 'A design needs directions too, so follow them. Listen to all the steps before you start, do them in order, and ask when you are not sure. A step done out of order can make the whole build fall down.', 'Ask, brainstorm, draw the plan, build it with a grown-up, test it and fix it. That is a design process, and it works for a tipping bowl, a tower of blocks and a problem you have not met yet.'],
+      keyIdea: 'Ask questions, brainstorm lots of ideas, draw the plan in boxes, build it with a grown-up, test it and fix it. Follow the directions in order.',
+      example: { kind: 'flow', steps: ['ask', 'brainstorm', 'draw the plan', 'build', 'test', 'fix'], caption: 'A design process. If the test fails, that is information, and you fix the plan.' },
+      script: [
+        { say: 'When something is not working, you can fix it the way a designer does. First, ask questions. The water bowl keeps tipping over, so why does it tip? What could hold it still?', show: null },
+        { say: 'Next, think of lots of ideas, which is called brainstorming. A light bulb over your head is the sign for an idea. A heavier bowl, a box around it, tape on the bottom.', show: { kind: 'icon', name: 'bulb' } },
+        { say: 'No idea is silly while you are brainstorming, because a silly idea can lead to a good one, and a good one lights the bulb.', show: { kind: 'icon', name: 'bulb' } },
+        { say: 'Then pick an idea and draw the plan in boxes, one step in each box. That is a story board, and it shows what to do first, next, then and last.', show: { kind: 'icon', name: 'board' } },
+        { say: 'Now build it with a grown-up, and test it. Does the bowl still tip?', show: { kind: 'flow', steps: ['build', 'test'] } },
+        { say: 'If it does, that is not a failure. It is information. Change the plan and try again. Designers call that fixing, and they do it over and over until it works.', show: { kind: 'flow', steps: ['test', 'fix', 'test again'] } },
+        { say: 'A design needs directions too, so follow them. Listen to all the steps before you start, do them in order, and ask when you are not sure.', show: null },
+        { say: 'A step done out of order can make the whole build fall down, so a tower of blocks starts with the bottom block.', show: { kind: 'icon', name: 'block' } },
+        { say: 'Ask, brainstorm, draw the plan, build it with a grown-up, test it and fix it. That is a design process, and it works for a tipping bowl, a tower of blocks and a problem you have not met yet.', show: { kind: 'flow', steps: ['ask', 'brainstorm', 'draw the plan', 'build', 'test', 'fix'] } },
+      ],
+      pictures: [{ serial: 'P77', step: 1, alt: 'Children around a table calling out ideas while a teacher writes them on a chart, a water bowl in the middle' }, { serial: 'P78', step: 3, alt: 'A story board of four boxes drawn in crayon, a bowl, a box, tape and a hamster drinking' }],
+    },
+    sources: ['Aligned with Texas TEKS Technology Applications 126.1(c)(3)(A) (practice personal skills, including following directions, needed to successfully implement design processes) and 126.1(c)(3)(B) (use a design process with components such as asking questions, brainstorming, or story boarding to identify and solve authentic problems with adult assistance), and CSTA K-12 CS Standards 1A-AP-12 (develop plans that describe a program\'s sequence of events, goals, and expected outcomes) and 1A-AP-14 (debug (identify and fix) errors in an algorithm or program that includes sequences and simple loops).'],
+    generators: ['tk-design', 'tk-directions', 'tk-design', 'tk-tap-design', 'tk-design'],
   },
 ]; }
 // The plain AI course (2026-09-29, pass FT), for the 6 to 8 band at grade 6: what a machine that learns really does, in
@@ -18037,6 +18481,148 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   // Computer science, K to 2 (2026-09-28, pass FS): spoken questions with tapped answers; every answer is said in its lesson first.
+  // Kindergarten technology banks for earmark E5 (pass KQ): digital content has owners and device rules (126.1(c)(6)), data
+  // and searching (126.1(c)(4)).
+  // Kindergarten technology banks for earmark E5 part two (pass KR): keys, saving and sitting up (126.1(c)(8)), and the
+  // design process with following directions (126.1(c)(3)).
+  'tk-keys': (rng) => {
+    const Q = [['What does the space bar make?', ['The space between words', 'A capital letter', 'A number'], 'The space between words', 'The long key at the bottom is the space bar, and it makes the space between words.', null],
+      ['What does the backspace key do?', ['Erases the letter before the blinking line', 'Makes a space', 'Prints the page'], 'Erases the letter before the blinking line', 'The backspace key erases the letter before the blinking line, so a mistake disappears.', null],
+      ['Which keys make numbers?', ['The number keys along the top', 'The space bar', 'The enter key'], 'The number keys along the top', 'The number keys along the top of the keyboard make numbers.', null],
+      ['What does the enter key do?', ['Starts a new line', 'Erases a letter', 'Turns the screen off'], 'Starts a new line', 'The enter key starts a new line.', null],
+      ['How do you make a capital letter?', ['Hold shift while you press the letter', 'Press the letter twice', 'Press the space bar'], 'Hold shift while you press the letter', 'Holding shift while you press a letter makes it a capital.', null],
+      ['Which key is the long one at the bottom?', ['The space bar', 'Backspace', 'Enter'], 'The space bar', 'The long key at the bottom is the space bar.', null],
+      ['What should she press?', ['Backspace', 'The space bar', 'Enter'], 'Backspace', 'The backspace key erases the letter before the blinking line, so the extra letter disappears.', 'A girl types her name and one letter too many.'],
+      ['What should he press?', ['The space bar', 'Backspace', 'Shift'], 'The space bar', 'The space bar makes the space between words.', 'A boy types his first name and wants a space before his last name.']];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'tk-tap-key': (rng) => {
+    const Q = [['Tap the space bar.', 'space', 'backspace', 'The space bar is the long key. It makes the space between words.'],
+      ['Tap the backspace key.', 'backspace', 'space', 'The backspace key erases the letter before the blinking line.'],
+      ['Tap the key that erases a mistake.', 'backspace', 'printer', 'Backspace erases the letter before the blinking line. The printer makes a paper copy.'],
+      ['Tap the keyboard.', 'keyboard', 'printer', 'A keyboard is full of keys, each with one job.'],
+      ['Tap what makes a paper copy.', 'printer', 'keyboard', 'The printer makes a paper copy when you print.'],
+      ['Tap what keeps your work for tomorrow.', 'save', 'printer', 'Save your work so it is still there tomorrow.']];
+    const [prompt, yes, no, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [`icon:${yes}`, `icon:${no}`]), answer: `icon:${yes}`, explain, visual: null, explainVisual: null };
+  },
+  'tk-open-save': (rng) => {
+    const Q = [['What is an app?', ['A tool on a device', 'A kind of key', 'A paper copy'], 'A tool on a device', 'An app is a tool on a device, and this lesson is one.', null],
+      ['How do you open an app?', ['By tapping its picture', 'By shaking the tablet', 'By saying its name'], 'By tapping its picture', 'To use an app, you open it by tapping its picture.', null],
+      ['What is modifying?', ['Changing a drawing or some words', 'Turning the device off', 'Sitting up tall'], 'Changing a drawing or some words', 'When you change a drawing or some words, that is called modifying.', null],
+      ['Why save your work?', ['So it is still there tomorrow', 'To make it louder', 'To erase it'], 'So it is still there tomorrow', 'Save your work so it is still there tomorrow.', null],
+      ['What does printing give you?', ['A paper copy', 'A new app', 'A bigger screen'], 'A paper copy', 'Print it when you want a paper copy, which the printer makes.', null],
+      ['What should she do?', ['Save it', 'Close the app and hope', 'Print it ten times'], 'Save it', 'Save your work so it is still there tomorrow.', 'A girl draws a picture on the tablet and wants it to be there tomorrow.'],
+      ['Which order is right?', ['Open, modify, save, print', 'Print, open, save, modify', 'Save, open, print, modify'], 'Open, modify, save, print', 'You open an app, modify your work, save it and print it.', null]];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'tk-sit-tall': (rng) => {
+    const Q = [['Where do your feet go when you use a device?', ['Flat on the floor', 'Up on the desk', 'Tucked under you'], 'Flat on the floor', 'Sit up tall with your feet flat on the floor.', null],
+      ['How far away should the screen be?', ['About an arm away', 'Touching your nose', 'Across the room'], 'About an arm away', 'The screen goes in front of you about an arm away.', null],
+      ['How should your wrists be?', ['Straight, not bent', 'Bent up', 'Bent down'], 'Straight, not bent', 'Keep your wrists straight, not bent, and touch the keys lightly.', null],
+      ['How hard do you press the keys?', ['Lightly', 'As hard as you can', 'With your fist'], 'Lightly', 'Touch the keys lightly.', null],
+      ['What do you do every twenty minutes?', ['Look at something far away', 'Press backspace', 'Print a page'], 'Look at something far away', 'Every twenty minutes, look at something far away for a little while, so your eyes can rest.', null],
+      ['Why look far away now and then?', ['So your eyes can rest', 'To find the printer', 'To make the screen brighter'], 'So your eyes can rest', 'Looking at something far away for a little while lets your eyes rest.', null],
+      ['What should he fix?', ['Sit up tall with his feet flat', 'Nothing', 'Move the screen closer to his nose'], 'Sit up tall with his feet flat', 'Sit up tall with your feet flat on the floor, so your body does not get sore.', 'A boy is slumped over the tablet with his feet dangling.']];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'tk-design': (rng) => {
+    const Q = [['What do you do first when something is not working?', ['Ask questions', 'Give up', 'Build anything'], 'Ask questions', 'First, ask questions, like why does it tip and what could hold it still.', null],
+      ['What is brainstorming?', ['Thinking of lots of ideas', 'A kind of rain', 'Building a tower'], 'Thinking of lots of ideas', 'Thinking of lots of ideas is called brainstorming, and no idea is silly while you are brainstorming.', null],
+      ['Is an idea silly while you are brainstorming?', ['No, a silly idea can lead to a good one', 'Yes, most are'], 'No, a silly idea can lead to a good one', 'No idea is silly while you are brainstorming, because a silly idea can lead to a good one.', null],
+      ['What is a story board?', ['The plan drawn in boxes, one step in each', 'A board game', 'A kind of bowl'], 'The plan drawn in boxes, one step in each', 'A story board is the plan drawn in boxes, one step in each box, first, next, then and last.', null],
+      ['Who do you build it with?', ['A grown-up', 'Nobody', 'A hamster'], 'A grown-up', 'Build it with a grown-up, and test it.', null],
+      ['What does it mean?', ['It is information, so change the plan and try again', 'The idea was silly', 'Stop forever'], 'It is information, so change the plan and try again', 'If the test fails, that is not a failure. It is information. Change the plan and try again.', 'The bowl holder is built, and the bowl still tips.'],
+      ['What do designers call changing the plan and trying again?', ['Fixing', 'Quitting', 'Printing'], 'Fixing', 'Designers call that fixing, and they do it over and over until it works.', null],
+      ['What comes after you build it?', ['Test it', 'Brainstorm', 'Ask questions'], 'Test it', 'Build it with a grown-up, and then test it.', null],
+      ['Which order is a design process?', ['Ask, brainstorm, draw the plan, build, test, fix', 'Build, ask, fix, draw the plan', 'Test, build, ask'], 'Ask, brainstorm, draw the plan, build, test, fix', 'Ask, brainstorm, draw the plan, build it with a grown-up, test it and fix it.', null]];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'tk-directions': (rng) => {
+    const Q = [['When do you listen to the steps?', ['All of them, before you start', 'After you are done', 'Only the first one'], 'All of them, before you start', 'Listen to all the steps before you start, do them in order, and ask when you are not sure.', null],
+      ['In what order do you do the steps?', ['In order', 'Backward', 'Any order'], 'In order', 'Do the steps in order, because a step done out of order can make the whole build fall down.', null],
+      ['What do you do when you are not sure?', ['Ask', 'Guess', 'Skip it'], 'Ask', 'Ask when you are not sure.', null],
+      ['Which block does a tower start with?', ['The bottom block', 'The top block', 'The middle block'], 'The bottom block', 'A tower of blocks starts with the bottom block, because a step done out of order makes the build fall down.', null],
+      ['What should she do?', ['Do the steps in order', 'Do the last step first', 'Skip the middle'], 'Do the steps in order', 'Do the steps in order. A step done out of order can make the whole build fall down.', 'A girl has four steps to build a box, and she wants to tape the lid on first.'],
+      ['What can a step done out of order do?', ['Make the whole build fall down', 'Make it stronger', 'Nothing'], 'Make the whole build fall down', 'A step done out of order can make the whole build fall down.', null]];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'tk-tap-design': (rng) => {
+    const Q = [['Tap the sign for an idea.', 'bulb', 'board', 'A light bulb is the sign for an idea. The story board is the plan in boxes.'],
+      ['Tap the story board, the plan in boxes.', 'board', 'bulb', 'The story board is the plan drawn in boxes, one step in each.'],
+      ['Tap what a tower starts with.', 'block', 'bulb', 'A tower of blocks starts with the bottom block.']];
+    const [prompt, yes, no, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [`icon:${yes}`, `icon:${no}`]), answer: `icon:${yes}`, explain, visual: null, explainVisual: null };
+  },
+  'tk-owner': (rng) => {
+    const Q = [['Who made the pictures, songs and games on a screen?', ['Someone', 'Nobody', 'The screen'], 'Someone', 'Every song, picture, game and story on a screen was made by someone. A person took that photo, drew that picture or made up that song.', null],
+      ['Who is the owner of a picture?', ['The person who made it', 'Whoever sees it first', 'The tablet'], 'The person who made it', 'The person who made it is its owner. All digital content has an owner.', null],
+      ['Does a song on a screen belong to someone?', ['Yes, to the person who made it', 'No, it belongs to nobody'], 'Yes, to the person who made it', 'All digital content has an owner, even when you cannot see the person. The song still belongs to them.', null],
+      ['What do we do before we use someone\'s picture?', ['Ask', 'Grab it', 'Hide it'], 'Ask', 'Because it belongs to the owner, we ask before we use it, and we say who made it.', null],
+      ['What is giving credit?', ['Saying who made it', 'Paying money', 'Drawing a star'], 'Saying who made it', 'Saying who made it is called giving credit, and it is like saying thank you out loud.', null],
+      ['Is that okay?', ['No, the owner gets the name on it', 'Yes, if the picture is nice'], 'No, the owner gets the name on it', 'We never say we made something that someone else made, not even a picture we copied. The owner gets the name on it.', 'A girl finds a drawing online and puts her own name on it.'],
+      ['The owner says anyone may use it. What do you still do?', ['Say who made it', 'Say you made it', 'Nothing'], 'Say who made it', 'When an owner says anyone may use their work, you may use it, and you still say who made it.', null],
+      ['Who owns it?', ['The boy, because he made it', 'His teacher', 'Anyone who likes it'], 'The boy, because he made it', 'You are an owner too. When you draw a picture on a tablet, it is yours, and other people should ask you before they use it.', 'A boy draws a picture of a dragon on a tablet.'],
+      ['Someone wants to use your drawing. What should they do?', ['Ask you', 'Take it', 'Say they drew it'], 'Ask you', 'A picture you drew is yours, and other people should ask you before they use it.', null]];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'tk-device-rules': (rng) => {
+    const Q = [['Which device do you use at school?', ['The one a grown-up gives you', 'Any one you like', 'The biggest one'], 'The one a grown-up gives you', 'Use the device a grown-up gives you. The rules are an agreement you keep.', null],
+      ['How do you hold a tablet?', ['With gentle hands and clean fingers', 'By one corner, swinging it', 'With sticky hands'], 'With gentle hands and clean fingers', 'Use the device with gentle hands and clean fingers, so it keeps working.', null],
+      ['Which apps may you open?', ['Only the apps you are allowed to open', 'Any app', 'The ones with the best colors'], 'Only the apps you are allowed to open', 'Open only the apps you are allowed to open.', null],
+      ['What do you do?', ['Tell a grown-up', 'Hide it', 'Keep tapping'], 'Tell a grown-up', 'Tell a grown-up if something breaks or looks wrong.', 'The screen goes strange and shows something you did not open.'],
+      ['What is a device rule like?', ['A rule for the playground', 'A silly song', 'A secret'], 'A rule for the playground', 'A rule for the device is the same as a rule for the playground. It keeps the device working and keeps you safe.', null],
+      ['What do the device rules do?', ['Keep the device working and keep you safe', 'Make the device slow', 'Nothing'], 'Keep the device working and keep you safe', 'The device rules keep the device working and keep you safe.', null],
+      ['What should he do?', ['Keep the rules he agreed to', 'Open it, since nobody is looking', 'Open it quickly'], 'Keep the rules he agreed to', 'The rules are an agreement you keep. Open only the apps you are allowed to open.', 'A boy wants to open a game that is not allowed at school.']];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'tk-tap-made': (rng) => {
+    const Q = [['Tap what takes a photo that someone owns.', 'camera', 'spoon', 'A person takes a photo with a camera, and that photo belongs to them.'],
+      ['Tap the music that someone made up.', 'music', 'ball', 'Someone made up that music, and it belongs to them.'],
+      ['Tap what you draw your own picture with.', 'pencil', 'camera', 'When you draw a picture with a pencil or your finger, it is yours.'],
+      ['Tap the device a grown-up gives you at school.', 'tablet', 'ball', 'Use the tablet or computer a grown-up gives you, with gentle hands.']];
+    const [prompt, yes, no, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [`icon:${yes}`, `icon:${no}`]), answer: `icon:${yes}`, explain, visual: null, explainVisual: null };
+  },
+  'tk-data-what': (rng) => {
+    const Q = [['What is data?', ['Information collected about people, events or objects', 'A kind of fruit', 'A loud noise'], 'Information collected about people, events or objects', 'Data is information collected about people, events or objects.', null],
+      ['Which one is data?', ['How many kids like apples', 'A tickle', 'A yawn'], 'How many kids like apples', 'How many kids like apples is information collected about people, so it is data.', null],
+      ['Is the weather each day data?', ['Yes', 'No'], 'Yes', 'Weather is data too, when it is written down each day.', null],
+      ['What does a pattern in the weather data help you do?', ['Guess tomorrow', 'Make it rain', 'Change the sun'], 'Guess tomorrow', 'When you write the weather down for many days, you can see a pattern, and a pattern helps you guess tomorrow.', null],
+      ['Which is data?', ['How tall the bean plant is', 'The color of a dream', 'A hug'], 'How tall the bean plant is', 'How tall the bean plant is, measured, is information collected about an object, so it is data.', null],
+      ['Is it data when a computer keeps count of what people ask?', ['Yes', 'No'], 'Yes', 'When many people ask a computer the same question, that is data too. The computer keeps count of what people ask.', null],
+      ['What did she collect?', ['Data', 'Rocks', 'Apples'], 'Data', 'A mark for each answer about what kids like is information collected about people, and that is data.', 'A girl asks every kid their favorite fruit and makes a mark for each answer.']];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'tk-collect': (rng) => {
+    const Q = [['How do you collect data?', ['By counting, measuring or asking', 'By sleeping', 'By waiting'], 'By counting, measuring or asking', 'You collect data by counting, measuring or asking.', null],
+      ['You want to know every kid\'s favorite fruit. What do you do?', ['Ask each kid and make a mark for each answer', 'Guess', 'Eat the fruit'], 'Ask each kid and make a mark for each answer', 'Ask every kid their favorite fruit, make a mark for each answer, and you have data.', null],
+      ['How do you find out how tall the bean plant is?', ['Measuring', 'Asking it', 'Counting it'], 'Measuring', 'You collect data by counting, measuring or asking. How tall a plant is, you find by measuring.', null],
+      ['What shows data so you can see it?', ['A picture graph', 'A pillow', 'A song'], 'A picture graph', 'A picture graph shows data so you can see it, one picture for each answer.', null],
+      ['Which row shows the fruit more kids chose?', ['The longer row', 'The shorter row', 'They are the same'], 'The longer row', 'In a picture graph, the longer row is the one more kids chose.', null],
+      ['Which fruit did more kids choose?', ['Apples', 'Bananas'], 'Apples', 'Four kids chose apples and two chose bananas, so the apple row is longer.', 'Four kids chose apples and two kids chose bananas.'],
+      ['How many pictures go on the graph for each answer?', ['One', 'Ten', 'None'], 'One', 'A picture graph has one picture for each answer.', null]];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'tk-search': (rng) => {
+    const Q = [['What can a digital device do with information?', ['Search for it and bring it back to you', 'Eat it', 'Lose it on purpose'], 'Search for it and bring it back to you', 'A digital device can search for information and bring it back to you.', null],
+      ['Who helps you search on a tablet?', ['A grown-up', 'Nobody', 'The cat'], 'A grown-up', 'With a grown-up, you can ask a tablet a question, and it looks through a huge pile of information and shows you an answer.', null],
+      ['Where does a search answer come from?', ['What people wrote and collected', 'The tablet makes it up', 'The sky'], 'What people wrote and collected', 'The answer comes from what people wrote and collected.', null],
+      ['Is every answer a device brings back true?', ['No, a grown-up helps you check', 'Yes, always'], 'No, a grown-up helps you check', 'A device brings back what it finds, right or wrong, so a grown-up helps you check that it is true.', null],
+      ['What should they do?', ['Ask a grown-up to help search on the tablet', 'Guess and argue', 'Give up'], 'Ask a grown-up to help search on the tablet', 'With a grown-up, you can ask a tablet how tall a giraffe is, and it searches and shows you an answer.', 'Two kids want to know how tall a giraffe is.'],
+      ['What does the device look through to find an answer?', ['A huge pile of information', 'Your lunch box', 'A tree'], 'A huge pile of information', 'The device looks through a huge pile of information and shows you an answer.', null]];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
   'tk-tell': (rng) => {
     const Q = [['Which part do you use to tell a computer something?', ['a keyboard', 'a screen', 'a speaker'], 'a keyboard', 'You tell with a keyboard, a mouse or a touch screen. Those are inputs.'],
       ['Which part shows you a picture?', ['a screen', 'a mouse', 'a keyboard'], 'a screen', 'The screen shows you things. It is an output.'],
@@ -18073,7 +18659,12 @@ Object.assign(GENERATORS, {
       ['Which is safe to share online?', ['your favorite color', 'your address', 'your full name'], 'your favorite color', 'A favorite color, a game you like or a pet are safe to share.'],
       ['Which one is private?', ['your address', 'your favorite color', 'a game you like'], 'your address', 'Your address is private, like your full name, your school and your birthday, because they tell people who you are and where to find you.'],
       ['Something online makes you feel bad. What do you do?', ['stop and tell a grown-up', 'keep going', 'hide it'], 'stop and tell a grown-up', 'Stop and tell a grown-up, who can help make it right.'],
-      ['A password is what kind of word?', ['a secret word', 'a loud word', 'a long song'], 'a secret word', 'A password is a secret word that opens your account, so keep it secret.']];
+      ['A password is what kind of word?', ['a secret word', 'a loud word', 'a long song'], 'a secret word', 'A password is a secret word that opens your account, so keep it secret.'],
+      // Earmark E4, pass KP (health TEKS K.11).
+      ['Someone in a game asks what school you go to. What do you do?', ['stop and tell a trusted adult', 'tell them', 'ask them back'], 'stop and tell a trusted adult', 'Someone online asking where you live or what school you go to is a reason to stop and tell a teacher, a parent or another trusted adult.'],
+      ['Someone online keeps calling you names. What do you do?', ['stop and tell a trusted adult', 'call them names back', 'keep playing and say nothing'], 'stop and tell a trusted adult', 'Someone online being mean to you or bullying you is a reason to stop and tell a trusted adult right away.'],
+      ['Someone online says, this is our secret. What do you do?', ['stop and tell a trusted adult', 'keep the secret', 'tell only a friend'], 'stop and tell a trusted adult', 'A safe grown-up never asks you to keep a secret from your parents. Stop, and tell a teacher, a parent or another trusted adult.'],
+      ['Something on the screen makes you feel yucky or scared. What do you do?', ['stop and tell a trusted adult', 'look at it again', 'hide it and say nothing'], 'stop and tell a trusted adult', 'Something that makes you feel yucky, scared or unsafe is a reason to stop and tell a trusted adult.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
@@ -20748,6 +21339,211 @@ Object.assign(GENERATORS, {
       ['Who sings for nothing but the singing?', ['the weekend choir member', 'the sound engineer', 'the music therapist', 'the critic'], 'the weekend choir member', 'Music is a vocation and an avocation.']];
     const [prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  // Kindergarten health banks for earmark E4, part one (pass KO): who gives health care guidance, shots, lice and bites
+  // (K.2A, K.2C, K.2D), portions and allergies (K.6B, K.7A), emergencies and protective gear (K.8A, K.8B).
+  // Kindergarten health banks for earmark E4, part two (pass KP): trusted adults, saying no and personal space (K.9A to
+  // K.9C, K.12D), bullying (K.12A to K.12C), safe play, sharp things and a home address (K.10A to K.10C), and medicines and
+  // things that are not for kids (K.13A, K.13B, K.14).
+  'hk-trusted-adult': (rng) => {
+    const Q = [['What does a trusted adult do?', ['Keeps you safe and listens to you', 'Keeps secrets from your parents', 'Tells you to be quiet'], 'Keeps you safe and listens to you', 'A trusted adult keeps you safe, listens to you, and helps when you are hurt, scared or mixed up.', null],
+      ['Who could be a trusted adult?', ['A parent, a grandparent, a teacher, a coach or the school nurse', 'Anyone who gives you candy', 'A stranger at the park'], 'A parent, a grandparent, a teacher, a coach or the school nurse', 'A trusted adult is someone your family says is okay, such as a parent, a grandparent, a teacher, a coach or the school nurse.', null],
+      ['A grown-up says, keep this a secret from your mom. What is that?', ['A reason to tell', 'A fun game', 'Nothing to worry about'], 'A reason to tell', 'A safe grown-up never asks you to keep a secret from your parents. If someone does, that is a reason to tell.', null],
+      ['Who does your body belong to?', ['You', 'Your teacher', 'Whoever is bigger'], 'You', 'Your body belongs to you, and you decide who comes into your personal space.', null],
+      ['What is personal space?', ['The space around your body, like a bubble', 'A room at school', 'A kind of game'], 'The space around your body, like a bubble', 'Around your body is your personal space, like a bubble, and you decide who comes into it.', null],
+      ['Which parts of your body are private?', ['The parts a swimsuit covers', 'Your hands', 'Your feet'], 'The parts a swimsuit covers', 'The parts of your body that a swimsuit covers are private. Nobody should touch or look at them, except to keep you clean or healthy, with a parent knowing.', null],
+      ['Is it your fault if someone makes you feel unsafe?', ['No, it is never your fault', 'Yes'], 'No, it is never your fault', 'It is never your fault, and you are never in trouble for telling.', null],
+      ['What do you do?', ['Tell another grown-up, and keep telling until someone helps', 'Give up', 'Keep it to yourself'], 'Tell another grown-up, and keep telling until someone helps', 'If the first grown-up does not help, tell another one, and keep telling until someone does.', 'You tell a grown-up that something felt wrong, and the grown-up does not listen.']];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'hk-say-no': (rng) => {
+    const Q = [['What do you do?', ['Say no, and that is not rude', 'Let him, to be polite', 'Hide'], 'Say no, and that is not rude', 'You can say no to a hug or a tickle you do not want, even from someone you know, and that is not rude.', 'A cousin wants to tickle you, and you do not like it.'],
+      ['What should you say?', ['No, I do not like that. Stop.', 'Nothing', 'Okay'], 'No, I do not like that. Stop.', 'If something feels wrong, say no in a strong voice. No, I do not like that. Stop. Then walk away and go to a trusted adult.', 'Something someone is doing feels wrong to you.'],
+      ['After you say no, what comes next?', ['Walk away and go to a trusted adult', 'Stay and argue', 'Say sorry'], 'Walk away and go to a trusted adult', 'After a strong no, walk away and go to a trusted adult.', null],
+      ['What is the answer?', ['No, and then tell a trusted adult', 'Yes, if they seem nice', 'Maybe'], 'No, and then tell a trusted adult', 'If someone you do not know asks you to go somewhere, the answer is no, and then you tell.', 'Someone you do not know asks you to come and see something in their car.'],
+      ['What is the answer?', ['No', 'Yes, because they dared you'], 'No', 'If a friend dares you to do something unsafe, the answer is no, and then you tell.', 'A friend dares you to climb onto the roof of the shed.'],
+      ['Should people ask before a hug?', ['Yes', 'No'], 'Yes', 'People ask before a hug, because your personal space is yours.', null],
+      ['What do you do?', ['Tell a parent or another trusted adult anyway', 'Keep quiet, since you were told to', 'Wait a few years'], 'Tell a parent or another trusted adult anyway', 'If anyone makes you feel uncomfortable, scared or unsafe, tell a trusted adult, even if you were told not to.', 'Someone makes you feel unsafe and tells you not to tell anyone.']];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'hk-tap-safe': (rng) => {
+    const Q = [['Tap the picture that shows personal space.', 'bubble', 'slide', 'Your personal space is like a bubble around your body. The slide is a safe place to play.'],
+      ['Tap the picture that shows saying stop.', 'stop', 'bubble', 'A hand held up means stop. Say no in a strong voice and walk away.'],
+      ['Tap the sign a strong no makes.', 'stop', 'house', 'A hand held up is a strong stop. The house is where you live.']];
+    const [prompt, yes, no, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [`icon:${yes}`, `icon:${no}`]), answer: `icon:${yes}`, explain, visual: null, explainVisual: null };
+  },
+  'hk-bullying': (rng) => {
+    const Q = [['What is bullying?', ['Being mean to someone on purpose, again and again', 'One bad moment', 'A game everyone likes'], 'Being mean to someone on purpose, again and again', 'Bullying is when someone keeps being mean to another person on purpose, again and again.', null],
+      ['Which one is bullying?', ['Calling someone names every day', 'Bumping someone once by accident', 'Losing a game'], 'Calling someone names every day', 'Hitting, pushing, calling names, taking things, or leaving someone out every time are all bullying.', null],
+      ['Is one bad moment bullying?', ['No, bullying is mean on purpose, over and over', 'Yes, always'], 'No, bullying is mean on purpose, over and over', 'One bad moment is not bullying, but mean on purpose, over and over, is.', null],
+      ['What do you do?', ['Say stop, walk away, and tell a trusted adult', 'Push back harder', 'Say nothing and hope it stops'], 'Say stop, walk away, and tell a trusted adult', 'If someone bullies you, say stop in a strong voice, walk away, and tell a parent, a teacher or another trusted adult.', 'Someone keeps pushing you in line every day.'],
+      ['Is telling a grown-up about bullying tattling?', ['No, telling is getting help when someone is being hurt', 'Yes'], 'No, telling is getting help when someone is being hurt', 'Telling is not tattling. Tattling is trying to get someone in trouble for nothing. Telling is getting help when someone is being hurt.', null],
+      ['How can we keep bullying from starting?', ['Be a friend and include everyone', 'Pick teams by who is strongest', 'Keep to ourselves'], 'Be a friend and include everyone', 'Be a friend to the new kid and the quiet kid, and ask someone sitting alone to play. When everyone is included, a bully has nowhere to start.', null],
+      ['Which is a bullying behavior?', ['Leaving someone out every time', 'Sharing a crayon', 'Saying hello'], 'Leaving someone out every time', 'Leaving someone out every time, on purpose, is bullying.', null]];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'hk-bystander': (rng) => {
+    const Q = [['What is a bystander?', ['A person who sees bullying happen', 'The person doing the bullying', 'A teacher'], 'A person who sees bullying happen', 'A bystander is a person who sees bullying happen, and a bystander has a choice.', null],
+      ['What makes bullying bigger?', ['Laughing along', 'Saying stop', 'Getting a grown-up'], 'Laughing along', 'Laughing along makes the bullying bigger. Saying stop or getting a grown-up makes it smaller.', null],
+      ['What can a bystander do to make it smaller?', ['Stand next to the person being hurt and say stop', 'Laugh', 'Walk the other way and forget it'], 'Stand next to the person being hurt and say stop', 'Standing next to the person being hurt, saying stop, or going to get a grown-up makes the bullying smaller.', null],
+      ['What should you do?', ['Stand with him, say stop, or get a grown-up', 'Laugh with the others', 'Nothing, it is not your problem'], 'Stand with him, say stop, or get a grown-up', 'A bystander can stand next to the person being hurt, say stop, or go and get a grown-up.', 'You see two kids calling a boy names, and some kids are laughing.'],
+      ['What should she do?', ['Ask the girl to play', 'Pretend not to see', 'Save the swing for a friend'], 'Ask the girl to play', 'Ask someone sitting alone to play. When everyone is included, a bully has nowhere to start.', 'A girl sees a new girl sitting alone at recess every day.'],
+      ['Does a bystander have a choice?', ['Yes, a bystander can make bullying smaller', 'No, a bystander can only watch'], 'Yes, a bystander can make bullying smaller', 'A bystander has a choice. Standing with the person, saying stop, or getting a grown-up makes the bullying smaller.', null]];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'hk-safe-place': (rng) => {
+    const Q = [['Which is a safe place to play?', ['A playground', 'The street', 'A parking lot'], 'A playground', 'A playground, a park with a grown-up near, or a yard with a fence is a safe place to play.', null],
+      ['Which is not a safe place to play?', ['The street', 'A yard with a fence', 'A park with a grown-up near'], 'The street', 'The street is not safe to play in. Cars come, and a driver may not see a child.', null],
+      ['Why is a parking lot not a safe place to play?', ['Cars back up and may not see you', 'It is too quiet', 'It has no grass'], 'Cars back up and may not see you', 'In a parking lot, cars back up and may not see a child, so it is not a safe place to play.', null],
+      ['Is it safe to play beside water with no grown-up?', ['No', 'Yes'], 'No', 'Beside water with no grown-up is not a safe place to play.', null],
+      ['Tap the safe place to play.', null, null, null, 'tap'],
+      ['Which is a safe place to play?', ['A yard with a fence', 'A place where things are being built', 'Beside a lake with no grown-up'], 'A yard with a fence', 'A yard with a fence is a safe place to play. A place where things are being built is not.', null]];
+    const picked = pick(rng, Q.filter((q) => q[4] !== 'tap'));
+    const [prompt, choices, answer, explain, story] = picked;
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'hk-sharp': (rng) => {
+    const Q = [['knife', 'Look at the knife. What can it do?', ['Cut', 'Sing', 'Float'], 'Cut', 'A knife can cut, so it is a tool for a grown-up, or for you only with a grown-up right there.'],
+      ['scissors', 'Look at the scissors. What can they do?', ['Cut and poke', 'Keep you warm', 'Make light'], 'Cut and poke', 'Scissors can cut and poke, so you use them only with a grown-up right there.'],
+      ['screwdriver', 'Look at the screwdriver. What can it do?', ['Poke', 'Cut bread', 'Bounce'], 'Poke', 'A screwdriver can poke, and so can a nail. They are tools for a grown-up.'],
+      ['fire', 'Look at the fire. What makes fire at home, so you leave them alone?', ['Matches and lighters', 'Soap and water', 'Pillows'], 'Matches and lighters', 'Matches and lighters make fire, so you leave them alone.'],
+      ['knife', 'Who may use a knife?', ['A grown-up, or you with a grown-up right there', 'Any kid', 'Nobody ever'], 'A grown-up, or you with a grown-up right there', 'A knife is a tool for a grown-up, or for you only with a grown-up right there.'],
+      ['scissors', 'Can you use scissors alone?', ['No, only with a grown-up right there', 'Yes, any time'], 'No, only with a grown-up right there', 'Scissors can cut and poke, so you use them only with a grown-up right there.']];
+    const [name, prompt, choices, answer, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: { kind: 'icon', name }, explainVisual: null };
+  },
+  'hk-address': (rng) => {
+    const Q = [['What is in your home address?', ['The number, the street and the town', 'Your favorite color', 'Your shoe size'], 'The number, the street and the town', 'Your home address is the number and the street, and the name of the town.', null],
+      ['Why learn your home address?', ['So a helper can bring you home if you get lost', 'To write it on the wall', 'For a song'], 'So a helper can bring you home if you get lost', 'If you ever get lost, a helper can bring you home when you can say where home is.', null],
+      ['Who can you tell your address to?', ['A parent, a trusted adult or a helper who is helping you', 'Anyone who asks', 'Someone online'], 'A parent, a trusted adult or a helper who is helping you', 'Your address is private, so you tell it only to a parent, a trusted adult or a helper who is helping you.', null],
+      ['Who could help you get home?', ['A police officer or a store worker with a name tag', 'A stranger in a car', 'Nobody'], 'A police officer or a store worker with a name tag', 'If you get lost, a police officer, a store worker with a name tag or a 911 helper can bring you home.', null],
+      ['What else should you know besides your address?', ['A parent\'s phone number', 'The name of every street in town', 'Your teacher\'s address'], 'A parent\'s phone number', 'Practice your address until it comes out easily, along with a parent\'s phone number.', null],
+      ['What should you do?', ['Keep it private and tell a trusted adult', 'Tell them', 'Ask them theirs'], 'Keep it private and tell a trusted adult', 'Your address is private. Never tell it to someone online or a stranger who just asks.', 'Someone online asks where you live.'],
+      ['How can you make your address easy to say?', ['Practice it until it comes out easily', 'Say it once', 'Whisper it'], 'Practice it until it comes out easily', 'Practice saying your address until it comes out easily.', null]];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'hk-medicine': (rng) => {
+    const Q = [['Who gives you medicine?', ['A grown-up, like a parent, a nurse or a doctor', 'A friend', 'You, on your own'], 'A grown-up, like a parent, a nurse or a doctor', 'Only a grown-up gives you medicine, a parent, a nurse or a doctor, and never a friend.', null],
+      ['When does medicine help?', ['When it is the right medicine, the right amount, at the right time', 'Any time you want', 'When it tastes good'], 'When it is the right medicine, the right amount, at the right time', 'Medicine helps when you are sick, but only when it is the right medicine, the right amount, at the right time.', null],
+      ['Should you ever take medicine on your own?', ['No', 'Yes, if you feel sick'], 'No', 'You never take medicine on your own. A grown-up gives it.', null],
+      ['What do you do?', ['Ask a grown-up first, and do not eat them', 'Eat them, they look like candy', 'Share them with a friend'], 'Ask a grown-up first, and do not eat them', 'Some medicine looks like candy, so never eat or drink something you find. Ask a grown-up first.', 'You find some little red pills on the floor that look like candy.'],
+      ['What do you do?', ['Do not touch it, and tell a grown-up', 'Try it', 'Hide it in your pocket'], 'Do not touch it, and tell a grown-up', 'If you find pills, a vape or a bottle lying around, do not touch them. Go and tell a grown-up.', 'You find a vape on the sidewalk.'],
+      ['Can some candy look like medicine?', ['Yes, so ask a grown-up first', 'No, never'], 'Yes, so ask a grown-up first', 'Some medicine looks like candy, and some candy looks like medicine, so ask a grown-up first.', null]];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'hk-not-for-kids': (rng) => {
+    const Q = [['Where is alcohol?', ['In beer and wine', 'In milk', 'In water'], 'In beer and wine', 'Alcohol is in beer and wine, and it is for grown-ups only.', null],
+      ['What does alcohol do to a person?', ['Makes them slow and clumsy, and too much hurts the body', 'Makes them faster', 'Nothing'], 'Makes them slow and clumsy, and too much hurts the body', 'Alcohol makes a person slow and clumsy, and too much hurts the body.', null],
+      ['What does tobacco smoke hurt?', ['The lungs and the heart', 'The hair', 'The shoes'], 'The lungs and the heart', 'Tobacco is in cigarettes and vapes, and the smoke and vapor hurt the lungs and the heart.', null],
+      ['Is a vape safe for kids?', ['No, the vapor hurts the lungs and the heart', 'Yes, it is only vapor'], 'No, the vapor hurts the lungs and the heart', 'A vape has tobacco in it, and the vapor hurts the lungs and the heart, so it is not for kids.', null],
+      ['What can drugs that are not medicine do?', ['Hurt your brain and your body', 'Help you grow', 'Make you smarter'], 'Hurt your brain and your body', 'Drugs that are not medicine from a grown-up can hurt your brain and your body, and some can hurt a person with just one try.', null],
+      ['What do you do?', ['Say no, walk away, and tell a trusted adult', 'Try it once', 'Take it and hide it'], 'Say no, walk away, and tell a trusted adult', 'If anyone offers you a pill, a drink, a cigarette or a vape, say no in a strong voice, walk away, and tell a parent or another trusted adult.', 'An older kid offers you a cigarette.'],
+      ['What do you do?', ['Say no, walk away, and tell a trusted adult', 'Drink it', 'Pour it out and say nothing'], 'Say no, walk away, and tell a trusted adult', 'Beer has alcohol in it, and it is for grown-ups only. Say no, walk away, and tell a trusted adult.', 'Someone offers you a sip of beer.'],
+      ['Why are alcohol, tobacco and drugs not for kids?', ['They hurt a body', 'They cost money', 'They are loud'], 'They hurt a body', 'Alcohol, tobacco and drugs hurt a body, so they are not for kids.', null]];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'hk-tap-medicine': (rng) => {
+    const Q = [['Tap what only a grown-up gives you.', 'bottle', 'ball', 'Medicine comes only from a grown-up. A ball is for playing.'],
+      ['Tap the sign that means no smoking.', 'cigarette', 'bottle', 'The crossed-out cigarette means no smoking. Smoke hurts the lungs and the heart.'],
+      ['Tap what you say when someone offers you a vape.', 'stop', 'cigarette', 'A hand held up is a strong no. Say no, walk away, and tell a trusted adult.']];
+    const [prompt, yes, no, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [`icon:${yes}`, `icon:${no}`]), answer: `icon:${yes}`, explain, visual: null, explainVisual: null };
+  },
+  'hk-who-helps': (rng) => {
+    const Q = [['Who should you ask first when you have a question about your body?', ['Your parents or the grown-ups in your family', 'A stranger', 'Nobody'], 'Your parents or the grown-ups in your family', 'Your parents and the grown-ups in your family come first when you have a question about your body.', null],
+      ['Who can help with a health question at school?', ['A teacher', 'A puppy', 'A mailbox'], 'A teacher', 'A teacher can help with a health question at school.', null],
+      ['Who learned all about bodies for their job?', ['A doctor, a nurse and a dentist', 'A baker', 'A bus driver'], 'A doctor, a nurse and a dentist', 'A doctor, a nurse and a dentist learned all about bodies for their job. They are health care professionals.', null],
+      ['Which one helps with your teeth?', ['A dentist', 'A farmer', 'A firefighter'], 'A dentist', 'A dentist is a health care professional who takes care of teeth.', null],
+      ['What is a doctor?', ['A health care professional', 'A kind of teacher', 'A kind of bug'], 'A health care professional', 'A doctor is a health care professional, someone who learned all about bodies for their job.', null],
+      ['Who should he ask?', ['A parent or another grown-up in his family', 'The cat', 'Nobody, he should hide it'], 'A parent or another grown-up in his family', 'Your parents and the grown-ups in your family come first with a question about your body, and they can take you to a doctor.', 'A boy has an itchy red spot and does not know what it is.']];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'hk-shots-and-bugs': (rng) => {
+    const Q = [['What does a vaccine do?', ['Teaches your body how to fight a germ', 'Makes you taller', 'Cleans your teeth'], 'Teaches your body how to fight a germ', 'A vaccine teaches your body how to fight a germ before that germ can make you sick.', null],
+      ['What is immunization?', ['A shot that keeps you from getting some very bad sicknesses', 'A kind of bug bite', 'A game'], 'A shot that keeps you from getting some very bad sicknesses', 'Immunization is a shot, a vaccine, and it keeps you and the people around you from getting some very bad sicknesses.', null],
+      ['How do head lice get from one head to another?', ['They crawl when heads touch', 'They jump', 'They fly'], 'They crawl when heads touch', 'Lice crawl from one head to another when heads touch. They do not jump or fly.', null],
+      ['Does having lice mean you are dirty?', ['No', 'Yes'], 'No', 'Having lice does not mean you are dirty. Lice crawl onto clean heads too.', null],
+      ['How does a grown-up get lice out?', ['A special shampoo and a fine comb', 'A hat', 'Bug spray'], 'A special shampoo and a fine comb', 'A grown-up washes your hair with a special shampoo and combs the lice out with a fine comb.', null],
+      ['How do you keep lice away?', ['Keep your own hat, brush and pillow to yourself', 'Share hats with friends', 'Never wash your hair'], 'Keep your own hat, brush and pillow to yourself', 'Keep your own hat, brush and pillow to yourself, so lice stay away.', null],
+      ['What does a mosquito bite make?', ['An itchy bump', 'A broken bone', 'A cold'], 'An itchy bump', 'A mosquito bite makes an itchy bump, so wear long sleeves in the evening and let a grown-up put bug spray on you.', null],
+      ['What does a grown-up do after you play in tall grass or woods?', ['Checks you for ticks', 'Gives you candy', 'Nothing'], 'Checks you for ticks', 'After you play in tall grass or woods, a grown-up checks you for ticks and pulls one out with tweezers, close to the skin.', null],
+      ['How does a grown-up take a tick off?', ['With tweezers, close to the skin', 'With bug spray', 'By waiting for it to leave'], 'With tweezers, close to the skin', 'A grown-up pulls a tick out with tweezers, close to the skin, and then the spot gets washed.', null],
+      ['What should you do if a tick bite gets red or you feel sick?', ['Tell a grown-up', 'Hide it', 'Scratch it'], 'Tell a grown-up', 'Tell a grown-up if the spot gets red or you feel sick, so a doctor can check it.', null]];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'hk-tap-helper': (rng) => {
+    const Q = [['Tap the health care professional.', 'doctor', 'teddy', 'The doctor learned all about bodies for her job. She is a health care professional.'],
+      ['Tap what teaches your body to fight a germ.', 'shot', 'comb', 'A shot is a vaccine, and it teaches your body to fight a germ. The comb is for lice.'],
+      ['Tap what a grown-up uses to comb lice out.', 'comb', 'shot', 'A fine comb gets the lice out after a special shampoo.'],
+      ['Tap the bug that makes an itchy bump when it bites.', 'mosquito', 'comb', 'A mosquito bite makes an itchy bump.'],
+      ['Tap who you can ask about your teeth.', 'doctor', 'mosquito', 'A doctor, a nurse or a dentist can answer a question about your body, teeth included.']];
+    const [prompt, yes, no, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [`icon:${yes}`, `icon:${no}`]), answer: `icon:${yes}`, explain, visual: null, explainVisual: null };
+  },
+  'hk-portion': (rng) => {
+    const Q = [['What is a portion?', ['How much you eat at one time', 'A kind of fruit', 'A plate'], 'How much you eat at one time', 'A portion is how much you eat at one time.', null],
+      ['What size portion does a child need?', ['A child-sized portion', 'A grown-up\'s portion', 'The whole bowl'], 'A child-sized portion', 'A child needs a child-sized portion, not a grown-up\'s.', null],
+      ['About how big is a good portion of grapes?', ['What fits in your two hands cupped together', 'A whole bag', 'One grape'], 'What fits in your two hands cupped together', 'A good portion of grapes is about what fits in your two hands cupped together.', null],
+      ['About how big is a good portion of chicken?', ['The size of your palm', 'The size of your head', 'One tiny crumb'], 'The size of your palm', 'A good portion of chicken is about the size of your palm.', null],
+      ['How much of your plate is fruits and vegetables?', ['Half', 'None', 'A tiny corner'], 'Half', 'Half your plate is fruits and vegetables, and the rest is grains and protein.', null],
+      ['When should you stop eating?', ['When you feel full', 'When the plate is empty, always', 'Never'], 'When you feel full', 'Your tummy tells you when it is full. Stop when you feel full, even if food is left.', null],
+      ['What can she do?', ['Have more later if she is still hungry', 'Keep eating until it hurts', 'Cry'], 'Have more later if she is still hungry', 'Stop when you feel full. You can always have more later if you are still hungry.', 'A girl feels full, but there is still food on her plate.']];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'hk-allergy': (rng) => {
+    const Q = [['What is a food allergy?', ['When a body gets very sick from one kind of food', 'When you do not like a food', 'A kind of snack'], 'When a body gets very sick from one kind of food', 'A food allergy is when a body gets very sick from one kind of food, like peanuts, milk or eggs.', null],
+      ['Which are common food allergies?', ['Peanuts, milk and eggs', 'Water and air', 'Rocks and sand'], 'Peanuts, milk and eggs', 'Peanuts, milk and eggs are common food allergies.', null],
+      ['Should you share your snack with a friend at school?', ['No, we never share food at school', 'Yes, always'], 'No, we never share food at school', 'We never share food at school, and we never trade snacks, because one bite of the wrong food can make a friend very sick.', null],
+      ['What should you do?', ['Tell a grown-up right away', 'Wait and see', 'Give her water and walk away'], 'Tell a grown-up right away', 'If a friend starts to swell, itch all over or breathe hard, tell a grown-up right away.', 'A friend eats something, and her lips start to swell.'],
+      ['Why wash your hands after you eat?', ['So crumbs do not travel to a friend', 'To make them wet', 'Because the sink is close'], 'So crumbs do not travel to a friend', 'Wash your hands after you eat, so crumbs of a food do not travel to a friend who is allergic to it.', null],
+      ['Is an allergy a choice?', ['No, it is not a choice, so we respect it', 'Yes'], 'No, it is not a choice, so we respect it', 'An allergy is not silly and it is not a choice, so we respect it and keep our friends safe.', null],
+      ['What can one bite of the wrong food do to a friend with an allergy?', ['Make lips swell or make breathing hard', 'Nothing', 'Make them taller'], 'Make lips swell or make breathing hard', 'For a friend with an allergy, one bite of the wrong food can make lips swell or make breathing hard.', null],
+      ['What should he do?', ['Say no thank you, since we never trade snacks', 'Trade', 'Eat both'], 'Say no thank you, since we never trade snacks', 'We never trade snacks at school, because one bite of the wrong food can make a friend very sick.', 'A boy wants to trade his cookie for a friend\'s crackers.']];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'hk-emergency': (rng) => {
+    const Q = [['Which one is an emergency?', ['A person will not wake up', 'A lost crayon', 'A boring show'], 'A person will not wake up', 'An emergency is when someone is badly hurt or very sick, when there is a fire, or when a person will not wake up.', null],
+      ['In an emergency, what do you do first?', ['Tell a grown-up', 'Hide', 'Keep playing'], 'Tell a grown-up', 'In an emergency, first tell a grown-up, a parent or another trusted adult.', null],
+      ['What number do you call if no grown-up can help?', ['911', '411', '123'], '911', 'If no grown-up can help, call 911 on any phone.', null],
+      ['What do you tell the 911 helper?', ['Your name, what happened and where you are', 'A joke', 'Your favorite color'], 'Your name, what happened and where you are', 'You say your name, what happened and where you are, and then you stay on the phone.', null],
+      ['When do you hang up on 911?', ['When the helper says you can', 'Right away', 'After you say hello'], 'When the helper says you can', 'Stay on the phone until the helper says you can hang up.', null],
+      ['Is it okay to call 911 for fun?', ['No, never', 'Yes'], 'No, never', '911 is only for real emergencies. Call it for fun or as a joke? No, never, because that helper is needed by someone who is really hurt.', null],
+      ['What should she do?', ['Tell a grown-up, and call 911 if no grown-up can help', 'Wait for the smell to go away', 'Open a window and keep playing'], 'Tell a grown-up, and call 911 if no grown-up can help', 'A fire is an emergency. Tell a grown-up, and if no grown-up can help, call 911.', 'A girl smells smoke and sees flames in the kitchen.']];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'hk-protect': (rng) => {
+    const Q = [['What does a seat belt do?', ['Holds you in your seat if the car stops suddenly', 'Makes the car go', 'Keeps you warm'], 'Holds you in your seat if the car stops suddenly', 'A seat belt holds you in your seat if the car stops suddenly or crashes, so you do not fly forward.', null],
+      ['What does a booster seat do?', ['Lifts you so the seat belt crosses you in the right places', 'Makes you taller forever', 'Plays music'], 'Lifts you so the seat belt crosses you in the right places', 'A booster seat lifts you so the seat belt crosses your shoulder and your lap in the right places.', null],
+      ['When do you buckle up in the car?', ['Every ride, every time', 'Only on long trips', 'Only when it rains'], 'Every ride, every time', 'Every ride, every time, even a short one.', null],
+      ['What does a helmet protect?', ['Your brain', 'Your knees', 'Your shoes'], 'Your brain', 'A helmet protects your brain if you fall. A scraped knee heals, but a hurt brain may not.', null],
+      ['How should a helmet sit?', ['Flat on your head with the strap snug under your chin', 'Tipped back', 'Hanging from the handlebars'], 'Flat on your head with the strap snug under your chin', 'Wear the helmet flat on your head, not tipped back, with the strap snug under your chin.', null],
+      ['Why does the helmet take the bump?', ['A hurt brain may not heal the way a scraped knee does', 'Helmets like bumps', 'So it looks nice'], 'A hurt brain may not heal the way a scraped knee does', 'A scraped knee heals, but a hurt brain may not, so the helmet takes the bump instead.', null],
+      ['What should he do?', ['Buckle up, even for a short ride', 'Skip the belt', 'Stand up in the car'], 'Buckle up, even for a short ride', 'Every ride, every time, even a short one. A seat belt holds you in your seat if the car stops suddenly.', 'A boy is riding two streets over to the store.']];
+    const [prompt, choices, answer, explain, story] = pick(rng, Q);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
+  },
+  'hk-tap-protect': (rng) => {
+    const Q = [['Tap what protects your brain on a bike.', 'helmet', 'belt', 'The helmet protects your brain if you fall. The seat belt is for the car.'],
+      ['Tap what holds you in your seat in a car.', 'belt', 'helmet', 'A seat belt holds you in your seat if the car stops suddenly or crashes.'],
+      ['Tap what lifts a child so the seat belt fits.', 'booster', 'helmet', 'A booster seat lifts you so the seat belt crosses your shoulder and lap in the right places.'],
+      ['Tap what you use to call 911.', 'phone', 'helmet', 'Call 911 on any phone when no grown-up can help in an emergency.'],
+      ['Tap the helmet.', 'helmet', 'booster', 'The helmet goes on your head. The booster seat goes in the car.'],
+      ['Tap the booster seat.', 'booster', 'belt', 'The booster seat lifts a child in the car. The seat belt goes across you.']];
+    const [prompt, yes, no, explain] = pick(rng, Q);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [`icon:${yes}`, `icon:${no}`]), answer: `icon:${yes}`, explain, visual: null, explainVisual: null };
   },
   'hk-hands': (rng) => {
     // Full standard (pass KB): every explanation says why, and two questions join from the lesson (after blowing your nose,
@@ -25722,6 +26518,29 @@ export const TRACE_LETTERS = {
   w: { strokes: [[[22, 42], [36, 85], [50, 50], [64, 85], [78, 42]]] },
   z: { strokes: [[[32, 42], [68, 42]], [[68, 42], [32, 85]], [[32, 85], [68, 85]]] },
   k: { strokes: [[[32, 15], [32, 85]], [[64, 42], [32, 66]], [[42, 58], [66, 85]]] },
+  // Earmark E6, pass KS: the nine capitals and eleven small letters the app could not trace before, so kindergarten traces
+  // all 26 both ways. Capitals sit between 15 and 85; small bodies between 42 and 85, with g, j, p, q and y set higher
+  // (36 to 72) so their tails reach 95 and stay on the pad. Bumps and curls are arcs drawn smooth through their points.
+  B: { strokes: [[[30, 15], [30, 85]], ringPts(30, 32.5, 28, 17.5, -90, 90, 8), ringPts(30, 67.5, 31, 17.5, -90, 90, 8)], curve: [null, [], []] },
+  D: { strokes: [[[30, 15], [30, 85]], ringPts(30, 50, 42, 35, -90, 90, 12)], curve: [null, []] },
+  P: { strokes: [[[30, 15], [30, 85]], ringPts(30, 33, 30, 18, -90, 90, 8)], curve: [null, []] },
+  R: { strokes: [[[30, 15], [30, 85]], ringPts(30, 33, 30, 18, -90, 90, 8), [[30, 51], [74, 85]]], curve: [null, [], null] },
+  G: { strokes: [ringPts(50, 50, 35, 35, -38, -360, 14), [[85, 50], [58, 50]]], curve: [[], null] },
+  J: { strokes: [[[56, 15], [56, 60], ...ringPts(41, 60, 15, 24, 0, 180, 6).slice(1)]], curve: [[]] },
+  S: { strokes: [[[70, 24], [50, 15], [30, 28], [36, 42], [50, 50], [64, 58], [70, 72], [50, 85], [30, 76]]], curve: [[]] },
+  U: { strokes: [[[25, 15], [25, 60], ...ringPts(50, 60, 25, 25, 180, 0, 8).slice(1), [75, 15]]], curve: [[]] },
+  Q: { strokes: [ringPts(50, 50, 35, 35, -90, -450, 16), [[60, 66], [82, 88]]], curve: [[], null] },
+  a: { strokes: [ringPts(46, 63.5, 20, 21.5, -20, -380, 14), [[66, 42], [66, 85]]], curve: [[], null], noGlyph: true },
+  d: { strokes: [ringPts(46, 63.5, 20, 21.5, -20, -380, 14), [[66, 15], [66, 85]]], curve: [[], null] },
+  g: { strokes: [ringPts(46, 54, 19, 18, -20, -380, 14), [[65, 36], [65, 82], ...ringPts(49, 82, 16, 13, 0, 180, 6).slice(1)]], curve: [[], []] },
+  q: { strokes: [ringPts(46, 54, 19, 18, -20, -380, 14), [[65, 36], [65, 95], [73, 89]]], curve: [[], [1]] },
+  p: { strokes: [[[34, 36], [34, 95]], ringPts(34, 54, 19, 18, -90, 90, 8)], curve: [null, []] },
+  b: { strokes: [[[34, 15], [34, 85]], ringPts(34, 63.5, 21, 21.5, -90, 90, 8)], curve: [null, []] },
+  e: { strokes: [[[30, 63.5], ...ringPts(50, 63.5, 20, 21.5, 0, -300, 12)]], curve: [[1]] },
+  f: { strokes: [[...ringPts(48, 27, 14, 12, 0, -180, 6), [34, 85]], [[22, 42], [48, 42]]], curve: [[], null] },
+  s: { strokes: [[[62, 48], [50, 42], [38, 49], [42, 58], [50, 63], [58, 68], [62, 77], [50, 85], [38, 80]]], curve: [[]] },
+  j: { strokes: [[[56, 36], [56, 82], ...ringPts(42, 82, 14, 13, 0, 180, 6).slice(1)], [[56, 22], [56, 26]]], curve: [[], null] },
+  y: { strokes: [[[30, 36], [50, 72]], [[70, 36], [50, 72], [38, 95]]] },
 };
 const TRACE_EASY = ['L', 'T', 'I', 'H', 'E', 'F'];
 const TRACE_MEDIUM = ['V', 'A', 'N', 'M'];
@@ -25743,6 +26562,19 @@ const TRACE_HOW = {
   o: 'Small o is a little circle that starts at the top and goes around to the left.', c: 'Small c goes around like small o, but it stops before it closes.',
   v: 'Small v slants down to a point, then slants back up.', x: 'Small x is two slanted lines that cross in the middle.',
   n: 'Small n is a line down, then a hump that goes over and down.', u: 'Small u goes down, curves around the bottom and up, then makes a short line down.',
+  // Earmark E6, pass KS: the twenty letters added, and the grade 1 small letters that had no words.
+  B: 'B is a line down, then from the top a bump out to the middle, and a bigger bump out to the bottom.', D: 'D is a line down, then from the top one big bump around to the bottom.',
+  P: 'P is a line down, then from the top a bump out to the middle.', R: 'R is a line down, a bump out to the middle, then a slant down to the corner.',
+  G: 'G goes around like C, then comes up to the middle and makes a short line in.', J: 'J is a line down that curls to the left at the bottom.',
+  S: 'S curves around to the left, then around to the right, winding the way a snake does.', U: 'U goes down, curves around the bottom and comes back up.', Q: 'Q is an O with a short tail at the bottom.',
+  a: 'Small a is a little circle, then a short line down its right side.', d: 'Small d is a little circle, then a tall line down its right side.',
+  g: 'Small g is a little circle, then a line down past the bottom that curls to the left.', q: 'Small q is a little circle, then a line down past the bottom with a little flick.',
+  p: 'Small p is a line down past the bottom, then from the top a bump out to the right.', b: 'Small b is a tall line down, then from the middle a bump out to the right.',
+  e: 'Small e is a short line across the middle, then up and around to the left, stopping near the bottom.', f: 'Small f curls over at the top, goes down, then has a short line across.',
+  s: 'Small s curves around to the left, then around to the right, winding the way a snake does.', j: 'Small j is a line down past the bottom that curls to the left, then a dot on top.',
+  y: 'Small y is a short slant down, then a long slant down past the bottom that crosses it.',
+  h: 'Small h is a tall line down, then a hump that goes over and down.', k: 'Small k is a tall line down, then two slants that meet it in the middle.', m: 'Small m is a line down, then two humps that go over and down.',
+  r: 'Small r is a line down, then a short hook over to the right.', w: 'Small w zigzags, slanting down, up, down and up.', z: 'Small z goes across the top, slants down to the left, then goes across the bottom.',
 };
 const DOT_PICTURES = ['triangle', 'square', 'house', 'star', 'zigzag', 'boat', 'kite', 'fish', 'tree', 'cup'];
 const FIRST_LINES = ['line-down', 'line-across', 'line-wave', 'line-zigzag', 'line-circle'];
@@ -25769,6 +26601,12 @@ const TRACE_SMALL_TALL = ['h', 'k'];
 const TRACE_SMALL_BUMPS = ['m', 'r'];
 const TRACE_SMALL_ZIGZAG = ['w', 'z'];
 const TRACE_SMALL_MORE = [...TRACE_SMALL_TALL, ...TRACE_SMALL_BUMPS, ...TRACE_SMALL_ZIGZAG, ...TRACE_SMALL_ANY];
+// Earmark E6 (pass KS): the five tracing families kindergarten adds so every letter is traced both ways.
+const TRACE_BUMPS = ['B', 'D', 'P', 'R'];
+const TRACE_CURVES = ['G', 'J', 'S', 'U', 'Q'];
+const TRACE_SMALL_CIRCLES = ['a', 'd', 'g', 'q'];
+const TRACE_SMALL_STICK_BUMPS = ['b', 'p', 'e', 'f'];
+const TRACE_SMALL_CURLS = ['s', 'j', 'y'];
 
 // Was the traced path close enough? Every stroke must be visited in order: for each
 // point along a stroke, some drawn point must lie within `tolerance` grid units. This
@@ -25900,6 +26738,11 @@ Object.assign(GENERATORS, {
   },
   'rt-trace-mixed': traceQuestion([...TRACE_MORE, 'M']),   // zigzags and crosses, the letters its lesson traces (pass JV)
   'rt-trace-small-easy': traceQuestion(TRACE_SMALL_EASY),
+  'rt-trace-bumps': traceQuestion(TRACE_BUMPS),
+  'rt-trace-curves': traceQuestion(TRACE_CURVES),
+  'rt-trace-small-circles': traceQuestion(TRACE_SMALL_CIRCLES),
+  'rt-trace-small-bumps': traceQuestion(TRACE_SMALL_STICK_BUMPS),
+  'rt-trace-small-curls': traceQuestion(TRACE_SMALL_CURLS),
   'rt-trace-small-round': traceQuestion(TRACE_SMALL_ROUND),
   'rt-trace-small-any': traceQuestion(TRACE_SMALL_ANY),
   'r1-trace-tall': traceQuestion(TRACE_SMALL_TALL),

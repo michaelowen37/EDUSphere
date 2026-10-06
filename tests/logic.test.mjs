@@ -80,6 +80,9 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     else if (q.visual && q.visual.kind === 'bars') { if (!q.visual.lengths.every((n) => n >= 1 && n <= 9)) problems.push('bar out of range'); }
     else if (q.visual && q.visual.kind === 'solid') { if (!['sphere', 'cube', 'cylinder', 'cone'].includes(q.visual.name)) problems.push('unknown solid'); }
     else if (q.visual && q.visual.kind === 'tenframe') { if (!(q.visual.filled >= 0 && q.visual.filled <= 10)) problems.push('ten frame out of range'); }
+    else if (q.visual && q.visual.kind === 'sign') { if (!(typeof q.visual.text === 'string' && q.visual.text && /^#[0-9A-Fa-f]{6}$/.test(q.visual.color))) problems.push('sign incomplete'); }   // pass KW: a road sign with its words and color
+    else if (q.visual && q.visual.kind === 'map') { if (!(typeof q.visual.region === 'string' && Array.isArray(q.visual.spots))) problems.push('map incomplete'); }
+    else if (q.visual && q.visual.kind === 'pair') { if (![q.visual.a, q.visual.b].every((h) => h && (h.kind || h.shape) && (h.kind !== 'dots' || (h.count >= 1 && h.count <= 10)) && (h.kind !== 'tenframe' || (h.filled >= 0 && h.filled <= 10)) && (h.kind !== 'tens' || (h.count >= 1 && h.count <= 10)))) problems.push('pair visual incomplete or out of range'); }   // pass KT: a ten and some more, side by side
     else if (q.visual && q.visual.kind === 'array') { if (!(q.visual.rows >= 1 && q.visual.rows <= 10 && q.visual.cols >= 1 && q.visual.cols <= 10)) problems.push('array out of range'); }
     else if (q.visual && q.visual.kind === 'numberline' && q.visual.parts !== undefined) { if (!(q.visual.parts >= 2 && q.visual.mark >= 0 && q.visual.mark <= q.visual.parts)) problems.push('number line out of range'); }
     else if (q.visual && q.visual.kind === 'bar') { if (!(q.visual.shaded >= 0 && q.visual.shaded <= q.visual.parts)) problems.push('bar picture out of range'); }
@@ -88,7 +91,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     else if (q.visual && q.visual.kind === 'pattern') { if (!Array.isArray(q.visual.items) || (q.visual.counting ? q.visual.items.length < 1 : q.visual.items.length < 3)) problems.push('pattern too short'); } // a counting row (pass HS) may hold one shape
     else if (q.visual && q.visual.kind === 'clock') { if (!(q.visual.hour >= 1 && q.visual.hour <= 12 && [0, 15, 30, 45].includes(q.visual.minute))) problems.push('clock out of range'); }
     else if (q.visual && q.visual.kind === 'picto') { if (!(Array.isArray(q.visual.rows) && q.visual.rows.length >= 2 && q.visual.rows.length <= 3 && q.visual.rows.every((r) => typeof r.icon === 'string' && Number.isInteger(r.count) && r.count >= 0 && r.count <= 6))) problems.push('picture graph out of range'); }   // pass KL: two or three rows of up to six pictures
-    else if (q.visual && q.visual.kind === 'icon') { if (!['sun', 'moon', 'cloud', 'rain', 'snow', 'plant', 'tree', 'flower', 'fish', 'bird', 'rock', 'drop', 'ice', 'fire', 'magnet', 'clip', 'nail', 'cup', 'bus', 'dog', 'hat', 'bed', 'fan', 'soil', 'ball', 'block', 'teddy', 'sock', 'spoon', 'log', 'book', 'glass', 'flashlight', 'lamp', 'shadow', 'pebble', 'boulder', 'speckled', 'flatrock', 'penny', 'wall', 'gravel', 'bricks', 'window', 'nickel', 'dime', 'quarter', 'table', 'hill', 'map', 'globe', 'mountain', 'river', 'lake', 'ocean', 'cactus', 'coat', 'candle', 'cake', 'fridge', 'washer', 'phone', 'tablet', 'pencil', 'doctor', 'shot', 'comb', 'mosquito', 'plate', 'peanut', 'helmet', 'booster', 'belt', 'bubble', 'stop', 'slide', 'knife', 'scissors', 'screwdriver', 'house', 'bottle', 'cigarette', 'camera', 'music', 'search', 'keyboard', 'space', 'backspace', 'save', 'printer', 'chair', 'bulb', 'board'].includes(q.visual.name)) problems.push('unknown icon'); }
+    else if (q.visual && q.visual.kind === 'icon') { if (!['sun', 'moon', 'cloud', 'rain', 'snow', 'plant', 'tree', 'flower', 'fish', 'bird', 'rock', 'drop', 'ice', 'fire', 'magnet', 'clip', 'nail', 'cup', 'bus', 'dog', 'hat', 'bed', 'fan', 'soil', 'ball', 'block', 'teddy', 'sock', 'spoon', 'log', 'book', 'glass', 'flashlight', 'lamp', 'shadow', 'pebble', 'boulder', 'speckled', 'flatrock', 'penny', 'wall', 'gravel', 'bricks', 'window', 'nickel', 'dime', 'quarter', 'table', 'hill', 'map', 'globe', 'mountain', 'river', 'lake', 'ocean', 'cactus', 'coat', 'candle', 'cake', 'fridge', 'washer', 'phone', 'tablet', 'pencil', 'doctor', 'shot', 'comb', 'mosquito', 'plate', 'peanut', 'helmet', 'booster', 'belt', 'bubble', 'stop', 'slide', 'knife', 'scissors', 'screwdriver', 'house', 'bottle', 'cigarette', 'camera', 'music', 'search', 'keyboard', 'space', 'backspace', 'save', 'printer', 'chair', 'bulb', 'board', 'star'].includes(q.visual.name)) problems.push('unknown icon'); }
     else if (q.visual && (q.visual.kind === 'pic' || q.visual.kind === 'art')) { if (!q.visual.name) problems.push('picture incomplete'); }
     else if (q.visual && q.visual.kind === 'numberline') { if (!(q.visual.from < q.visual.to && (q.visual.marks || [q.visual.mark]).every((v) => v === null || v === undefined || (v >= q.visual.from && v <= q.visual.to)))) problems.push('number line out of range'); }
     else if (q.visual && (q.visual.kind === 'tri' || q.visual.kind === 'para')) { if (!(q.visual.base > 0 && (q.visual.height === '?' || q.visual.height > 0))) problems.push('shape measures missing'); }
@@ -254,7 +257,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     const g1 = text.match(/\d+/g) ? text.match(/\d+/g).map(Number) : [];
     if (genId === 'g1-ten-and' && Number(q.answer) !== 10 + g1[0]) problems.push('ten-and wrong');
     if (genId === 'g1-teen-split' && Number(q.answer) !== g1[0] - 10) problems.push('teen split wrong');
-    if (genId === 'g1-teen-pic' && Number(q.answer) !== 10 + q.visual.count) problems.push('teen picture wrong');
+    if (genId === 'g1-teen-pic' && Number(q.answer) !== 10 + (q.visual.b || q.visual).count) problems.push('teen picture wrong');
     if (genId === 'g1-which-teen' && dotCount(q.answer) !== g1[0] - 10) problems.push('which teen wrong');
     if (genId === 'g1-teen-after' && Number(q.answer) !== g1[0] + 1) problems.push('teen after wrong');
     if ((genId === 'g1-add' || genId === 'g1-add-story') && Number(q.answer) !== g1[0] + g1[1]) problems.push('grade 1 add wrong');
@@ -270,14 +273,22 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'g1-how-many-ones' && Number(q.answer) !== g1[0] % 10) problems.push('how many ones wrong');
     if (genId === 'g1-build-number') { const [t, o] = q.answer.match(/\d+/g).map(Number); const target = Number(q.prompt.match(/\d+/)[0]); if (t * 10 + o !== target) problems.push('build number wrong'); }
     if (genId === 'g1-ten-more' && Number(q.answer) !== g1[0] + 10) problems.push('ten more wrong');
+    // Pass KT: the kinds added at the full standard, each re-derived from the numbers in the words.
+    if (genId === 'g1-add-start' && Number(q.answer) + g1[0] !== g1[1]) problems.push('missing start wrong');
+    if (genId === 'g1-sub-missing' && g1[0] - Number(q.answer) !== g1[1]) problems.push('missing take-away wrong');
+    if (genId === 'g1-sub-start' && Number(q.answer) - g1[0] !== g1[1]) problems.push('missing start of take-away wrong');
+    if (genId === 'g1-ten-less' && Number(q.answer) !== g1[0] - 10) problems.push('ten less wrong');
+    if (genId === 'g1-tens-plus' && Number(q.answer) !== g1[0] + g1[1]) problems.push('tens plus wrong');
+    if (genId === 'g1-other-way') { const [t, o] = q.answer.match(/\d+/g).map(Number); const target = Number(q.prompt.match(/\d+/)[0]); if (t * 10 + o !== target || o < 10) problems.push('other way wrong'); }
+    if (genId === 'g1-more-less-same') { const [a, b] = g1; if (q.answer !== (a > b ? 'Greater than' : a < b ? 'Less than' : 'Equal to')) problems.push('greater, less or equal wrong'); }
+    if (genId === 'g1-which-sign') { const [a, b] = g1; if (q.answer !== (a > b ? '>' : a < b ? '<' : '=')) problems.push('comparison sign wrong'); }
     if (genId === 'g1-bigger' && Number(q.answer) !== Math.max(...q.choices.map(Number))) problems.push('grade 1 bigger wrong');
     if (genId === 'g1-smaller' && Number(q.answer) !== Math.min(...q.choices.map(Number))) problems.push('grade 1 smaller wrong');
     if (genId === 'g1-between') { const [lo, hi] = g1; const a = Number(q.answer); if (!(a > lo && a < hi)) problems.push('between wrong'); }
     if (genId === 'g1-order-three') { const arr = q.answer.split(', ').map(Number); if (!arr.every((v, i) => i === 0 || v > arr[i - 1])) problems.push('order wrong'); }
-    if (genId === 'g1-more-less-same') { const [a, b] = g1; if (q.answer !== (a > b ? 'More' : a < b ? 'Less' : 'The same')) problems.push('grade 1 more/less/same wrong'); }
     // Grade 1 reading, re-derived from the shown word or sentence
     const shown = q.visual && q.visual.kind === 'letters' ? q.visual.text : '';
-    const PICW = { 'solid:cube': 'box', 'solid:cylinder': 'can', 'art:ball': 'ball', 'solid:cone': 'cone', 'pic:cat': 'cat', 'icon:sun': 'sun', 'pic:fish': 'fish', 'art:boat': 'boat', 'art:car': 'car', 'icon:tree': 'tree' };
+    const PICW = { 'solid:cube': 'box', 'solid:cylinder': 'can', 'pic:cat': 'cat', 'pic:fox': 'fox', 'icon:sun': 'sun', 'icon:dog': 'dog', 'icon:hat': 'hat', 'icon:bed': 'bed', 'icon:cup': 'cup', 'icon:bus': 'bus', 'icon:fan': 'fan', 'icon:log': 'log', 'icon:map': 'map' };   // pass KU: closed-syllable words with pictures
     const NUMW = ['one', 'two', 'three', 'four', 'five', 'six'];
     const DIG = (w) => (['sh', 'ch', 'th'].find((d) => w.startsWith(d)) || ['sh', 'ch', 'th'].find((d) => w.endsWith(d)));
     if (genId === 'r1-word-picture' && PICW[q.answer] !== shown) problems.push('word picture wrong');
@@ -301,6 +312,8 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'r1-sentence-count' && Number(q.answer) !== NUMW.indexOf(shown.match(/see (\w+) /)[1]) + 1) problems.push('sentence count wrong');
     if (genId === 'r1-sentence-yes-no') { const m2 = q.explainVisual.text.match(/is (\w+)\./); if (q.answer !== (m2[1] === q.visual.colour ? 'Yes' : 'No')) problems.push('sentence yes/no wrong'); }
     if (genId === 'r1-who' && q.answer !== q.story.match(/^(\w+) has/)[1]) problems.push('who wrong');
+    if (genId === 'r1-end-mark' && q.answer !== shown.slice(-1)) problems.push('end mark wrong');
+    if (genId === 'r1-order-events') { const m2 = q.story.match(/^First (.+?)\. Then (.+?)\. Last (.+?)\.$/); const want = /first\?$/.test(q.prompt) ? m2[1] : m2[3]; if (q.answer.toLowerCase() !== want.toLowerCase()) problems.push('order of events wrong'); }
     if (genId === 'r1-where' && q.answer !== q.story.match(/ran to (the \w+)\./)[1]) problems.push('where wrong');
     if (genId === 'r1-what-colour' && q.answer !== q.story.match(/got a (\w+) /)[1]) problems.push('what colour wrong');
     if (genId === 'r1-how-many' && Number(q.answer) !== NUMW.indexOf(q.story.match(/has (\w+) /)[1]) + 1) problems.push('how many wrong');
@@ -476,7 +489,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'c3-can-afford') { const [have, a, b] = q.story.match(/\d+/g).map(Number); if (q.answer !== (a + b <= have ? 'Yes' : 'No')) problems.push('afford wrong'); }
     if (genId === 'c3-vote-winner') { const nums = q.story.match(/\d+/g).map(Number); const total = nums[0]; const zoo = q.story.indexOf('zoo') < q.story.indexOf('museum') ? nums[1] : nums[2]; if (!(zoo > total / 2)) problems.push('zoo must hold the majority'); }
     if (genId === 'c2-earlier-year') { const [a, b] = q.choices.map(Number); if (Number(q.answer) !== Math.min(a, b)) problems.push('earlier year wrong'); }
-    if (genId === 'c1-count-coins') { const n = ['Two', 'Three', 'Four', 'Five'].indexOf(q.story.split(' ')[0]) + 2; const cents = /dime/.test(q.story) ? 10 : /nickel/.test(q.story) ? 5 : 1; if (Number(q.answer) !== n * cents) problems.push('coins wrong'); }
+    if (genId === 'c1-count-coins') { const n = ['two', 'three', 'four', 'five'].indexOf(q.story.match(/^(\w+) /)[1].toLowerCase()) + 2; const cents = /dime/.test(q.story) ? 10 : /nickel/.test(q.story) ? 5 : 1; if (Number(q.answer) !== n * cents) problems.push('coins wrong'); }   // pass KW: the setup now reads Here are three dimes
     // Explanations read cleanly too: no sentence runs past 45 words, a run-on guard (pass JG) (the second run-on check).
     for (const sent of String(q.explain || '').replace(/\[\[|\]\]|\*\*/g, '').split(/(?<=[.!?])\s+|\n/)) { if (sent.trim().split(/\s+/).filter(Boolean).length > 45) problems.push(`explanation sentence over 32 words: ${sent.trim().slice(0, 40)}`); }
     // Science facts carry a story after the answer (the story rule, applied centrally)

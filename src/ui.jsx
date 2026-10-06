@@ -7563,7 +7563,7 @@ function EduSphereScreens() {
   // Answer sizes: a question's choices share one size, so 4 never towers over -3 or 1/6 beside it.
   const choiceFont = (choices) => {
     if (!choices || !choices.length) return 18;
-    if (choices.every((c) => /^[A-Za-z]$/.test(c))) return 34;
+    if (choices.every((c) => /^[A-Za-z<>=.?!]$/.test(c))) return 34;   // a letter, a comparison sign (pass KT) or an end mark (pass KU)
     if (choices.every((c) => /^-?[\d.,\/ ]+$/.test(c))) { const longest = Math.max(...choices.map((c) => c.length)); return longest <= 2 ? 34 : longest <= 3 ? 26 : longest <= 6 ? 22 : 18; }
     return 18;
   };

@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-05 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 7709 clips, 1,376,948 characters in all; the longest clip is 508 characters and the longest whole story 2,751, far under Eleven v4's 10,000 a request. 174 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-06 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 8153 clips, 1,417,621 characters in all; the longest clip is 508 characters and the longest whole story 2,797, far under Eleven v4's 10,000 a request. 174 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,7 +17,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 3653 | 425,288 |
+| Pre-K to grade 2 | 4097 | 465,961 |
 | Grades 3 to 5 | 1263 | 278,553 |
 | Grades 6 to 8 | 1138 | 272,072 |
 | Grades 9 to college | 1655 | 401,035 |
@@ -41,7 +41,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 |---|---|
 | story title | 645 |
 | story | 4097 |
-| lesson line | 2049 |
+| lesson line | 2493 |
 | long story title | 102 |
 | long story | 816 |
 
@@ -1159,12 +1159,12 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 ### Ten and three (S317, teen-numbers)
 
-- S317-1: [warm] Ten eggs filled the carton, in two rows of five. Three more eggs sat beside it, brown and speckled. Mia had to say how many.
-- S317-2: [frustrated] She started counting from one, and by eight she had lost her place. The eggs all looked the same.
-- S317-3: [a tap on a carton] Mom tapped the carton. This is ten, she said, and you do not need to count those again. [firmly, kindly] Ten is done.
+- S317-1: [warm] The box held ten juice pouches in two rows of five. Three more pouches sat beside it, left over from last week. Mia had to say how many there were for the picnic.
+- S317-2: [frustrated] She started counting from one, and by eight she had lost her place. Every pouch looked the same.
+- S317-3: [a tap on a cardboard box] Mom tapped the box. This is ten, she said, and you do not need to count those again. [firmly, kindly] Ten is done.
 - S317-4: [slowly, counting on] Ten, and then the three more, eleven, twelve, thirteen. Ten and three is thirteen.
 - S317-5: [confident] Mia tried more. Ten and five was eleven, twelve, thirteen, fourteen, fifteen. Ten and seven was seventeen.
-- S317-6: [thoughtful] Every teen number is ten and some more. The carton is the ten, and the loose eggs are the some.
+- S317-6: [thoughtful] Every teen number is ten and some more. The box is the ten, and the loose pouches are the some more.
 - S317-7: [slowly, warmly] A teen number is ten and some more. Start at ten and count on.
 
 ### Two pockets (S320, adding-to-20)
@@ -1211,8 +1211,8 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 - S332-1: Lena wrote a five, and it looked like an S. She wrote it again and got an S with a hat. [teasing] Her brother said it was a snake.
 - S332-2: [frustrated] A five has a place to start. Lena kept starting in the wrong spot, in the middle or at the bottom.
-- S332-3: Her teacher drew a dot at the top. [gently] Start here, she said. Down, round the belly, lift, and across the top.
-- S332-4: Lena tried it, [slowly, tracing] down, round, lift and across. [delighted] A five, and not a snake! A real five stood up straight on the page.
+- S332-3: Her teacher drew a dot at the top. [gently] Start here, she said. Across the top, then down, then around the belly.
+- S332-4: Lena tried it, [slowly, tracing] across, down and around the belly. [delighted] A five, and not a snake! A real five stood up straight on the page.
 - S332-5: [thoughtful] Every number had its own dot. A two started at the top and curved. A seven started at the top and went across, then down.
 - S332-6: Lena wrote a row of fives and then a row of sevens, all from their dots. [proud] No snakes.
 - S332-7: [slowly, warmly] Every number starts at its dot. Follow the arrow.
@@ -1221,8 +1221,8 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 - S335-1: [curious] There were three letters on the box, M, A and P, and Kai knew them all. [slowly, letter names] Em, ay, pee. He said the names, but that was not a word.
 - S335-2: [gently] Letter names do not make words, said Dad. Sounds do. He tapped the M and asked what sound it makes.
-- S335-3: [slowly, each sound] Mmm. After that came the A, aaa, and then the P, puh. Kai said them one at a time. Mmm, aaa, puh.
-- S335-4: Now push them together, said Dad. Kai slid his finger under the letters. [faster and faster] Mmm-aaa-puh, mmm-aaa-puh, map!
+- S335-3: [slowly, each sound] Mmm. After that came the A, the sound at the start of apple, and then the P, puh. Kai said them one at a time, mmm, then the apple sound, then puh.
+- S335-4: Now push them together, said Dad. Kai slid his finger under the letters. [faster and faster] Mmm-a-puh, mmm-a-puh, map!
 - S335-5: [a box opening, paper rustling] He opened the box, and inside was a map, a big folded one. The word had told him what was inside.
 - S335-6: [excited] Kai looked for more boxes. C-U-P was cuh-uh-puh, cup, and there was a cup inside. He read every box in the garage.
 - S335-7: [slowly, warmly] Say each sound. Push them together. Read the word.
@@ -1267,44 +1267,44 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S347-6: [warm] Sam told the story again at dinner, first, then, last, and everyone understood it the first time.
 - S347-7: [slowly, warmly] First, then, last. Tell what happened in order.
 
-### Tails, bumps and zigzags (S350, tracing-more-small-letters)
+### Tall sticks, bumps and zigzags (S350, tracing-more-small-letters)
 
-- S350-1: Mia traced a g and kept its tail on the line. [amused] It looked like a q with a hat. Her teacher smiled.
-- S350-2: [puzzled] Some small letters go below the line, some have bumps, and some zigzag. Mia did not know which was which.
-- S350-3: A g has a tail, said her teacher, and it hangs below the line, so let it drop. Mia traced it, the tail hung down, [pleased] and there was a real g.
+- S350-1: [warm, playful] Mia traced an h, but she stopped the stick halfway. It came out short, and it looked like an n. [amused] Her teacher smiled.
+- S350-2: [puzzled] Some small letters have a tall stick, some have bumps, and some zigzag. Mia did not know which was which.
+- S350-3: [gently] An h has a tall stick, said her teacher, and it reaches up to the top line. [slowly, tracing] Mia traced it tall, then the bump, and there was a real h.
 - S350-4: [slowly, tracing] An m has two bumps, up, over, up, over. Mia traced two round hills. A z zigzags, across, down, across.
-- S350-5: [playful] Tails, bumps and zigzags. Mia found more: a y had a tail, an n had one bump, and a w zigzagged too.
-- S350-6: She traced a whole row, every letter its own way. [proud] Her teacher put a star on the page.
+- S350-5: [confident] Tall sticks, bumps and zigzags. Mia found more. A k had a tall stick, an r had one bump, and a w zigzagged too.
+- S350-6: [proud] She traced a whole row, every letter its own way. Her teacher put a star on the page.
 - S350-7: [slowly, warmly] Tall sticks, bumps and zigzags. Start at the dot and follow the arrow.
 
 ### One line, then the rest (S353, trace-small-letters-3)
 
-- S353-1: [a little frustrated] Kai traced an i and forgot the dot. He traced a t and forgot the bar. Both looked like the letter l, so he had three l's in a row.
+- S353-1: [a little frustrated] Theo traced an i and forgot the dot. He traced a t and forgot the bar. Both looked like the letter l, so he had three l's in a row.
 - S353-2: [gently] Each one starts the same way, said his teacher, with one line down, and then something else. The something else was the part he kept forgetting.
-- S353-3: One line down, then a dot on top, makes an i. Kai traced it. [delighted] Dot! Not an l anymore.
-- S353-4: One line down, then a bar across, makes a t. Kai traced it. [delighted] Bar! And one line down, then a kick out, makes a k.
-- S353-5: [rhythmic] Start the same, finish your own way. Kai said it as he traced, line and dot, line and bar, line and kick.
+- S353-3: One line down, then a dot on top, makes an i. Theo traced it. [delighted] Dot! Not an l anymore.
+- S353-4: One line down, then a bar across, makes a t. Theo traced it. [delighted] Bar! And one line down, then a kick out, makes a k.
+- S353-5: [rhythmic] Start the same, finish your own way. Theo said it as he traced, line and dot, line and bar, line and kick.
 - S353-6: [proud] He traced a whole row of i, t and k, with no more l's. Every letter had its own finish.
 - S353-7: [slowly, warmly] One line down, then the rest. Start at the dot.
 
 ### Curve, point, cross (S356, trace-small-letters-4)
 
-- S356-1: [frustrated] Ana traced a c, and it came out as a circle. She traced a v, and it came out round, like a u. All she drew was round.
-- S356-2: [gently] Not every letter is round, said her teacher. Some have points, and some cross. Ana looked at the letters again.
-- S356-3: A c is a curve, like a cup on its side, open on the right. Ana traced it and stopped. [pleased] Not a circle, but a c.
-- S356-4: A v goes down to a point and back up, sharp at the bottom. Ana made the point. [crisp] Sharp!
+- S356-1: [frustrated] Nia traced a c, and it came out as a circle. She traced a v, and it came out round, like a u. All she drew was round.
+- S356-2: [gently] Not every letter is round, said her teacher. Some have points, and some cross. Nia looked at the letters again.
+- S356-3: A c is a curve, like a cup on its side, open on the right. Nia traced it and stopped. [pleased] Not a circle, but a c.
+- S356-4: A v goes down to a point and back up, sharp at the bottom. Nia made the point. [crisp] Sharp!
 - S356-5: [slowly, tracing] An x is two lines that cross, one slant and then the other slant over it. An x, with nothing round at all.
-- S356-6: [proud] Curve, point, cross. Ana traced them in a row, c, v, x, each one different and each one right.
+- S356-6: [proud] Curve, point, cross. Nia traced them in a row, c, v, x, each one different and each one right.
 - S356-7: [slowly, warmly] A curve, a point, a cross. Start at the dot.
 
 ### Line and arch (S359, trace-small-letters-5)
 
-- S359-1: [curious] Sam traced an n, then a u, then an r. His teacher asked what they had in common, and Sam said nothing, because they looked different.
+- S359-1: [curious] Eli traced an n, then a u, then an r. His teacher asked what they had in common, and Eli said nothing, because they looked different.
 - S359-2: [thoughtful] He looked again. Each one had a line, and each one had a little arch. The arch went one way or another.
-- S359-3: [slowly, tracing] A line down, then up and over, makes an arch, and that is an n. Sam traced it, down, up and over.
-- S359-4: [slowly, tracing] Down, round the bottom, and up makes a u, an arch turned upside down. Sam traced it, down, round and up.
-- S359-5: [slowly, tracing] A line down, then a small arch that stops, makes an r, just the start of an n. Sam traced it, down, a little arch, and stop.
-- S359-6: Line and arch, three letters from one move. Sam wrote run, r, u, n, [delighted] all three in one word!
+- S359-3: [slowly, tracing] A line down, then up and over, makes an arch, and that is an n. Eli traced it, down, up and over.
+- S359-4: [slowly, tracing] Down, round the bottom, and up, then a short line down, makes a u. Eli traced it, down, round, up and down again.
+- S359-5: [slowly, tracing] A line down, then a small arch that stops, makes an r, just the start of an n. Eli traced it, down, a little arch, and stop.
+- S359-6: Line and arch, three letters from one move. Eli wrote run, r, u, n, [delighted] all three in one word!
 - S359-7: [slowly, warmly] A line, then a little arch. Start at the dot.
 
 ### The same place every day (S362, sun-moon-patterns)
@@ -1381,7 +1381,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 - S383-1: [curious] Leo saw a picture of a bell with a big crack in it. Why keep a broken bell? His teacher said it was famous.
 - S383-2: [puzzled] Famous for what? A crack is a crack, and Leo did not get it.
-- S383-3: [a distant bell ringing] The Liberty Bell rang for freedom, long ago, and people came to hear it. The crack came later, and they kept the bell anyway.
+- S383-3: [gently] The Liberty Bell has the word Liberty on it, and liberty means freedom. A crack grew in it long ago, and they kept the bell anyway.
 - S383-4: [harbor waves, gulls] The Statue of Liberty holds up a torch to welcome people. She stands in the harbor, green and tall.
 - S383-5: [respectful] The Alamo is an old mission in Texas where Texans fought, and people remember what happened there. And the flag stands for the whole country.
 - S383-6: [proud] Each one stands for something bigger than itself. Leo drew all four, the bell, the torch, the mission and the flag.

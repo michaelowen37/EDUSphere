@@ -190,6 +190,48 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A thing a lesson names, it also says what it is. A food bank and an animal shelter were named for a five-year-old who may know neither.
 - A computed question's words are checked like any other (one dollar, two dollars), and a bank whose setups the rules read for numbers never carries a wordy setup.
 
+## Learned in pass KX (grade 1 Beat, high, low, loud, soft)
+
+- A plan can cite a real section with the wrong letters: both grade 1 music codes pointed at expectations about voices and instrument families while their text described the beat and pitch. Read the lettered expectation the code names, not the text the plan wrote beside it.
+- The fine arts sections run in threes (art, music, theatre per grade): §117.103 is kindergarten music and §117.106 is grade 1 music. Check the section number against the subchapter list before reading.
+- A standard that names the words to use (allegro/largo, forte/piano) is taught by using those words, so a grade 1 lesson can say forte and piano as long as it says loud and soft with them.
+- An older-grade lesson left inside a read-aloud course (prose with example.another and no script) is not at the full standard even when its facts are right; write the script and let the prose follow it.
+- Fixed-question banks for the early years are written as whole, capitalized answers, never lowercase fragments, because the child reads the choice as a sentence of its own.
+
+## Learned in pass KW (grade 1 Our community)
+
+- A bank can already ask what another subject's earmark lists (coins counted in a social studies lesson while the math earmark waits to build them). Teach it where the bank asks it, cite it from the other plan, and narrow the earmark, rather than build it twice.
+- A lesson can cite a code and teach only its examples (signs, under the purpose of rules and laws). Teach the purpose first, then the examples, and say so in the title.
+- A popular story about a symbol (the bell rang for freedom) is not a fact. Say what can be checked: the word cast on the bell, the crack, the gift from France.
+- A question setup like Three dimes becomes a sentence a child hears (Here are three dimes), and the rules test that re-derives the arithmetic follows the new words.
+- A compass rose, a road sign and a map are question pictures now, validated like the rest; a sign carries its words and its color.
+
+## Learned in pass KV (grade 1 Sky, water and living things)
+
+- A plan's header can name the current edition while its codes come from the old one, and a code can exist in no edition at all. Read the section the header names, in full, and check that every code and its words are there; the grade 1 science plan had none of its three codes in the 2021 text.
+- A grade can lose a topic when a standard is rewritten. The 2021 Texas grade 1 science standard has no Sun and Moon expectation (grade 2 has it), so a lesson that teaches them cites the recurring theme it serves (patterns, 1.5A) and the national expectation that fits (NGSS 1-ESS1-1), and says so in its source line.
+- A bank at the bare minimum (six different questions for a round of five) is not at the full standard even if the pools report is clean; grow it from the script, kind by kind, until a child meets different questions each round.
+- A young-learner question that shows an icon names it in its own words (a drop of water, over a fire, in the freezer of the fridge), and a question with no natural name for its picture shows none.
+- A toy pictured as a teddy is called a toy in the question, not a toy dog, so the words and the picture agree.
+
+## Learned in pass KU (grade 1 Reading words and sentences)
+
+- A reading course shows the word and speaks the instruction, so a lesson without a script reads its paragraphs out, letter names and formulas included (b + o + x = box). Every sound in a script is said by its anchor word or a sound the voice can hold (mmm, sss), and a bare pair (sh, ch, th) is asked by its anchor word (the same two-letter sound as shell), never as letters a voice would name.
+- A decoding bank must hold only words the course has taught how to decode. Read the word asked boat, car, tree, cone, ball and fish under a lesson about sounding out closed syllables; a word that needs a vowel team, an r-controlled syllable, a silent e or a digraph waits for its lesson.
+- A plan row's words are the standard's words. "Ask and answer questions about a text" was no code of 110.3; the lesson teaches 1.6I, 1.7C, 1.8B, 1.8C and 1.8D, and is cited to those.
+- A tracing lesson's any-letter question asks only the letters that lesson traces; the other families have their own lessons. Every stroke the pad draws is said (the u's short line down), and a story about tracing is about the letters its lesson traces.
+- No story child leads two stories in one course (pass JX's rule holds in reading too): Kai, Ana and Sam each led two here.
+- A phonics rule is taught with its exceptions named at the child's level (most words ending in e; have and come do not), so nothing has to be unlearned.
+
+## Learned in pass KT (grade 1 Numbers to 20, the first grade 1 course)
+
+- A read-aloud course from an earlier pass can have no script at all; the first grade lessons read their paragraphs out. Write the script first and the paragraphs to match, as pre-K and kindergarten were done.
+- A plan can paraphrase a code into something weaker than the standard asks (1.2B without "in more than one way", 1.3B without its unknowns). Quote the code in full, then check the lesson against every clause.
+- A symbol a voice would read aloud (>, <, =) is taught on a line that starts with Look, so the scripts test treats the shown sign as the thing to act on and the voice says its name instead; the choices for a sign question are the signs themselves, drawn large, and a tapped sign stays silent.
+- A story's real object must truly come in the count the lesson uses. An egg carton holds a dozen in most kitchens, so a box of ten juice pouches became the ten.
+- A story that describes a stroke order is checked against TRACE_LETTERS, as the lessons are: The Five drew the five down first, and the app draws it across the top first.
+- A question that shows a ten and some more shows both (a pair of a ten frame and dots), and the rules test validates the pair, so what a child sees never disagrees with what the voice says.
+
 ## Learned in pass KS (earmark E6, the last twenty letters)
 
 - A letter's strokes are drawn the way handwriting is taught, not the way the font draws it: a ball-and-stick a with the font's two-story a switched off underneath, bumps that start from the top dot, tails that stay on the pad.

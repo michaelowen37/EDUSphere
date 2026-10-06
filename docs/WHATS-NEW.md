@@ -2,6 +2,38 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 5, 2026 (first grade music, beat to dynamics)
+
+- The three first grade music lessons now talk, and they use the words musicians use. The steady beat tells beat from rhythm (the even pulse underneath against the pattern of long and short sounds on top) and names the speed of the beat, tempo, with allegro for fast and largo for slow. Loud and soft names forte and piano, and tells children why the piano is called that: it was the first keyboard that could play both soft and loud.
+- High and low explains pitch the way a child can hear it: a bird high and a cow low, bigger things usually lower, a child's voice higher than a grown-up's, and the piano's notes climbing to the right.
+- Each lesson's practice has two to three times as many questions as before, written as whole answers a child can read, and every lesson is matched to the Texas music standard it actually teaches. With this, every first grade lesson in the app meets the full standard, and the parts of the first grade standards no lesson teaches yet are listed to be built next.
+
+## October 5, 2026 (first grade community, leaders to symbols)
+
+- The five first grade Our community lessons grew from a few spoken lines each to full lessons with a picture on every line. Leaders near and far says what a mayor, a governor and a president each do, where each works, and that people choose all three by voting. Maps of my world shows how to find north from the rising sun and where Texas and the United States sit on a map and a globe.
+- Goods and services now teaches the coins too: a penny 1¢, a nickel 5¢, a dime 10¢, a quarter 25¢, and how to count a handful by ones, fives or tens, along with paying, trading and what a market is. Signs around town became Rules, laws and signs, so children hear why we have rules before they read the signs that carry them.
+- Symbols of our country has its facts checked: the Liberty Bell carries the word Liberty and a crack stopped it ringing, the Statue of Liberty was a gift from France, and the Texas flag's one star is the Lone Star. The practice banks doubled and tripled, and every lesson is matched to the current Texas social studies standard, adopted in 2022.
+
+## October 5, 2026 (first grade science, sky, water and animals)
+
+- The three first grade science lessons grew from four spoken lines each to full lessons that say the why. Patterns in the sky explains that the sun comes up in the east and goes down in the west every day because the Earth turns, that the moon's shape comes round in about a month, that the stars keep their patterns, and that summer days are long and winter days short, and it tells children never to look straight at the sun.
+- Water changes teaches that ice, water and steam are the same water made colder or hotter, lets children predict what heat and cold will do, and separates the changes heat can undo (melted butter, candle wax) from the ones it cannot (a cooked egg, a baked cake). What animals need adds air to food, water and a home, and shows how fins and gills, wings and a beak, and legs and fur help each animal, and how people copy them in helmets, coats and swim fins.
+- The practice banks tripled, so a child meets different questions each round, and every lesson is now matched to the current Texas science standard, adopted in 2021; the parts of that standard no lesson teaches yet are listed to be built next.
+
+## October 5, 2026 (first grade reading, sound by sound)
+
+- The first grade reading lessons now talk, and they say the sounds the way a teacher does. Read the word says each sound by a word a child knows (the sound at the start of apple, not a letter name), pushes the sounds together, and checks the word against its picture. Sh, ch and th lights the two letters inside each word and names the sound by shell, chair and thumb. The silent e shows cap beside cape and says why the a changes, and that a few words like have and come do not follow the rule.
+- Read the sentence teaches the capital letter at the start, the period, question mark and exclamation point at the end, the spaces between words, and reading smoothly the way you talk. What happened? teaches who the character is, where the story happens, finding the words that answer, and telling a story in order, first, then, last.
+- The practice words a child sounds out are now words a child can sound out with what the lessons taught (box, can, dog, hat, map), and two new questions ask which mark ends a sentence and what happened first or last. The tracing lessons show every letter they ask for, say why a short h turns into an n, give the u its short line down, and teach the finger space between words.
+- Every part of the grade 1 reading standard was read in full, and what the course does not teach yet (blends, vowel teams, word endings, sight words, spelling, book parts, story genres and more) is listed so it can be built next.
+
+## October 5, 2026 (grade 1 numbers, start to finish)
+
+- The first grade number lessons now talk. Teen numbers, Adding to 20, Subtracting to 20, Tens and ones, Bigger and smaller to 100 and Writing numbers each have a spoken lesson that shows the idea one line at a time, with the ten frame and the extra dots side by side, so a child who is still learning to read hears the whole lesson and sees what it says.
+- The lessons teach the why, not just the how: why you start with the bigger number when you count on, how to make ten and how to take away across ten in two steps, that subtracting undoes adding, that thirty-four can be three tens and four ones or two tens and fourteen ones, and what the greater than, less than and equal signs mean and which way each one opens.
+- New practice questions go with them: the missing number at the start of a sum or a take-away, ten less, a ten plus a one-digit number, a number made another way, and the right sign between two numbers.
+- Every code in the grade 1 math standard was read in full, and the ones no lesson teaches yet (coins by value, telling time to the hour and half hour, shapes and halves, tally marks and bar graphs, and more) are listed so they can be built next.
+
 ## October 5, 2026 (every letter, both ways)
 
 - The tracing pad now draws all twenty-six letters, big and small. Nine capitals (B, D, P, R, G, J, S, U and Q) and eleven small letters (a, d, g, q, b, p, e, f, s, j and y) have joined, each with a start dot, an arrow and words that say how it is made.

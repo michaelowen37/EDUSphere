@@ -83,13 +83,13 @@ Mikey's order (pass JG): pre-K first, then kindergarten, grades 1 to 12 and coll
 Mikey asked whether the review covers writing style, explanatory quality and context in the lessons, titles, questions, answers and stories, and pictures that add value. Passes JG to JN did not, fully: they were a first pass, fixing facts, punctuation and story flow and writing audio tags, with some explanation fixes, but they did not rewrite lessons for teaching quality or add lesson pictures (the app had no lesson picture slot until pass JO). Those items are marked "firstPass" in docs/review-status.json, and the full standard goes back over them, starting again at pre-K. An item counts as reviewed only when all nine of these are done.
 
 1. Accuracy. Every fact checked against a source; nothing a learner will have to unlearn later; the numbers inside a story add up.
-2. Teaching quality. The lesson says why, not only what, and connects its ideas into one system (what causes what, how the pieces fit). It gives one clear example a learner can picture, at the right level for the grade, and teaches everything its questions ask.
-3. Writing style. Natural sentences that flow, as in the Scarcity sample (pass JF): no colons or semicolons, warm plain words, no robotic runs, and the read-aloud limits for the early years.
-4. Titles. Clear, accurate and inviting, shown in title case.
+2. Teaching quality. The lesson says why, not only what, and connects its ideas into one system (what causes what, how the pieces fit). It gives one clear example a learner can picture, at the right level for the grade, and teaches everything its questions ask. Since pass LE (Mikey): the same idea is shown from up to four angles, other ways of looking at it with pictures that change with them, where the topic bears it, and never an awkward angle to satisfy a count; most question kinds apply the idea to new numbers, words or pictures, so a screenshot of the lesson does not answer them.
+3. Writing style. Natural sentences that flow, as in the Scarcity sample (pass JF): no colons or semicolons, warm plain words, no robotic runs, and the read-aloud limits for the early years. Since pass LE (Mikey) the read-aloud limits (eighteen words a sentence, three syllables a word) are guidelines against scrolling, kept when a longer sentence or word carries educational value or another rule needs it; the stories test reports them as a note.
+4. Titles. Clear, accurate and inviting, shown in title case. In summary text a course or module title is in title case and emphasized, like a book title (pass LE).
 5. Questions. Each reads as a natural sentence, with a setup line wherever the question needs a situation; distractors are mistakes a learner could really make; the answer is taught in the lesson.
 6. Explanations. Each says the answer and the reason in whole sentences, so it makes sense read aloud or seen after a wrong answer, never a fragment that only continues the answer ("And in good shape."). A rule now checks this for pre-K to grade 1.
 7. Stories. A real problem, a turn and a resolution; the lesson's facts and no others; one tense; smooth read aloud.
-8. Pictures. A lesson picture (P serial) wherever seeing the real thing teaches more than words, such as landmarks, plant parts, instruments and the moon's shapes; story picture prompts match the story; every prompt follows Mikey's template, and a real place is checked against a photo. Since pass KZ (Mikey): whenever an app-drawn shape, diagram, coloring page or any other image would look better generated with Leonardo, add it to the ledger instead of drawing it, and keep a drawing only when it looks pleasant, sleek and accurate; a drawing that carries an exact count, time or length the question depends on stays drawn, and the real thing beside it becomes a painting on a line that states no count.
+8. Pictures. A lesson picture (P serial) wherever seeing the real thing teaches more than words, such as landmarks, plant parts, instruments and the moon's shapes; story picture prompts match the story; every prompt follows Mikey's template, and a real place is checked against a photo. Since pass KZ (Mikey): whenever an app-drawn shape, diagram, coloring page or any other image would look better generated with Leonardo, add it to the ledger instead of drawing it, and keep a drawing only when it looks pleasant, sleek and accurate; a drawing that carries an exact count, time or length the question depends on stays drawn, and the real thing beside it becomes a painting on a line that states no count. Since pass LE (Mikey) the five pictures a story are a judgment, fewer when a picture adds nothing, more when it helps; and a generated picture is preferred over a drawing whenever it would look better (pass KZ).
 9. Audio. Eleven v4 tags in every story.
 
 ## Learned in pass JP, the first full-standard batch (pre-K 3)
@@ -189,6 +189,29 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - Two courses on the same strand say the same things in the same words. The business course and the economics course both teach goods and services, banks and income; a child who meets both should hear one voice.
 - A thing a lesson names, it also says what it is. A food bank and an animal shelter were named for a five-year-old who may know neither.
 - A computed question's words are checked like any other (one dollar, two dollars), and a bank whose setups the rules read for numbers never carries a wordy setup.
+
+## Learned in pass LE (the rules audit rewritten, the limits made guidelines)
+
+- A rule's reason decides its strength: the eighteen-word sentence exists so a young reader is not scrolling, so it is a guideline a longer sentence can outweigh, and the test now reports it instead of failing. A rule with a reason that admits no exception (an answer must be taught before it is asked, a count in a painting must not contradict the lesson) stays a hard test.
+- The audit itself is the rule most worth keeping: whenever Mikey changes the app's structure or an algorithm, the change goes into docs/RULES-AUDIT.md in the same pass, and nothing there is deleted or changed without his approval.
+
+## Learned in pass LD (the rules audit)
+
+- A standard enforced per module can pass a whole grade while a course-level rule goes unmet. The ledger listed long stories only where they existed, so no grade 1 course was ever marked as lacking one. A ledger must list what is required, not what is present: every course is a long-story row now, done or not.
+- Claude keeps nothing between chats and loses the early part of a long chat as it goes; a rule survives only where it is written, and reliably only where a check runs it. docs/RULES-AUDIT.md says, for every rule, which of those it is. The work ahead is to move doc-only rules into checks, one at a time, as each comes up.
+
+## Learned in pass LC (the grade 1 math course split in two)
+
+- A course that outgrows its title can be split along the standard's own strands, and the split is cheap when modules carry their own ids and prerequisites: move the module list, give the new course a game and a Wonder question (the rules test requires one per course), and update the two tests that name the course. The plan is per grade and subject, so no plan row moves.
+- A silent replace in a docs patch is a bug that lives for passes: the plan's source line kept saying the grade 1 codes were still earmarked for two passes because two patches replaced a string that was not there and did not say so. Every replace asserts its count, including the ones that only touch a comment or a source line.
+- Title case is applied where the title is shown, not where it is stored: course lists had been showing the stored sentence case while headings showed title case, which read as an inconsistency to Mikey. Wherever a stored title is printed, it goes through titleCase.
+
+## Learned in pass LB (earmark E7 part three (b), grade 1 equations and word problems)
+
+- A course title is checked at the end of an earmark, not the start: Numbers to 20 was right for six modules and wrong for nineteen, so it became Numbers, shapes and measuring once every grade 1 math expectation had a lesson. A retitle touches one string in logic.mjs and one in the click-through test; the review ledger and games plan regenerate.
+- A lesson picture reused from an older grade carries its own words: the algebra balance says to do the same to both pans, which a first grader has not met. A grade 1 version of a picture gets its own drawing rather than a prop that hides a caption.
+- A question mark written as a blank after a space (= ? + 2) reads to the spelling test as stray punctuation. Lesson prose says a missing number; the picture carries the question mark; a prompt builds the sentence at run time.
+- A number sentence written in single digits is not a word to spell out letter by letter: the letters picture shows it on one line when it holds a digit or a sign.
 
 ## Learned in pass LA (earmark E7 part three (a), grade 1 number sense)
 

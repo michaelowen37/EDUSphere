@@ -2,6 +2,17 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 6, 2026 (first grade math is now two courses)
+
+- First grade math is two courses now, so neither is nineteen lessons long. Numbers to 120 holds counting, adding and subtracting, tens and ones, number lines and the equal sign. Shapes, measuring and graphs holds flat and solid shapes, halves and fourths, measuring, telling time and reading graphs, with its own game, Catch the Hexagons, and its own Wonder question.
+- Course titles now read in title case in every list, the way lesson titles already did on their cards.
+
+## October 6, 2026 (first grade: the equal sign, number sentences, and a new course name)
+
+- The first grade math course is now called Numbers, shapes and measuring, because that is what it holds: nineteen lessons from counting to clocks. Every first grade Texas math standard now has a lesson that teaches it.
+- The equal sign teaches what the sign really means, the same as, with a balance that stays level only when both sides match. A child checks whether 4 + 3 = 5 + 2 is true, finds a missing number in any place, even in a sentence with four numbers, learns turn-around facts, and adds three numbers by making ten first.
+- Number sentences and stories turns a story into a number sentence and a number sentence back into a story, with ten frames as the picture, and teaches a child to say how they solved it, by counting on, making ten or using a double. Two new stories go with them.
+
 ## October 6, 2026 (first grade quick looks, counting to 120 and number lines)
 
 - Numbers to 20 has three more lessons, and they talk. Quick looks teaches a child to see how many at a glance, the way you read a dice, five is four corners and one in the middle, a full row on a ten frame is five, and a domino is two patterns added. Counting on to 120 starts a count anywhere, forward or backward, crosses into a new ten after a nine and into one hundred after ninety-nine, and skip counts by twos, fives and tens to find a total, the last number you say.

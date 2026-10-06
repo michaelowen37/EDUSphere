@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-06 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 8555 clips, 1,461,779 characters in all; the longest clip is 508 characters and the longest whole story 3,420, far under Eleven v4's 10,000 a request. 185 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-06 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 8632 clips, 1,469,823 characters in all; the longest clip is 508 characters and the longest whole story 3,420, far under Eleven v4's 10,000 a request. 187 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,7 +17,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 4499 | 510,119 |
+| Pre-K to grade 2 | 4576 | 518,163 |
 | Grades 3 to 5 | 1263 | 278,553 |
 | Grades 6 to 8 | 1138 | 272,072 |
 | Grades 9 to college | 1655 | 401,035 |
@@ -39,9 +39,9 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 | Kind | Clips |
 |---|---|
-| story title | 656 |
-| story | 4179 |
-| lesson line | 2802 |
+| story title | 658 |
+| story | 4194 |
+| lesson line | 2862 |
 | long story title | 102 |
 | long story | 816 |
 
@@ -1331,6 +1331,27 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S3844-5: Lily, stand on thirty-four, said the teacher. Lily counted from thirty and stopped to the left of Finn. Who is standing on the greater number, asked the teacher. [confident] Finn is, said Lily, because he is farther to the right.
 - S3844-6: Then Noor stood on fifty-one. The teacher pointed from left to right. [slowly] Thirty-four, forty-three, fifty-one, least to greatest.
 - S3844-7: [slowly, warmly] Start at a number you know and count the marks. Greater numbers stand to the right.
+
+### Both Sides the Same (S3849, the-equal-sign)
+
+- S3849-1: [cheerful] Ivy was adding up the blocks for her tower. [blocks clicking together] Four blue ones and three red ones made seven. Then two yellow ones made nine.
+- S3849-2: She wrote it all in one line on the whiteboard. [a marker squeaking] Four plus three equals seven plus two equals nine. [proud] It looked neat.
+- S3849-3: Her friend Tomas read it and stopped at the first equal sign. [carefully] That part says four plus three is the same as seven plus two, he said. It is not.
+- S3849-4: [puzzled] Ivy frowned. The equal sign just means the answer comes next, she said. Tomas shook his head. [kindly] It means both sides are the same.
+- S3849-5: They got out the pan balance. Four blocks and three blocks on the left pan, seven on the right. [pleased] The pans sat level.
+- S3849-6: Then Ivy put seven on the left and seven and two on the right. [a pan clunking down] The right pan dropped. Seven is not the same as nine.
+- S3849-7: So Ivy wrote two number sentences instead of one long chain. [slowly] Four plus three equals seven, and seven plus two equals nine. [delighted] Both were true, and the balance agreed.
+- S3849-8: [slowly, warmly] The equal sign means the same as. Check that both sides match.
+
+### The Missing Number (S3854, number-sentences-and-stories)
+
+- S3854-1: Oscar found four marbles under the couch and put them in his bag. [marbles clattering onto a table] Then he poured the bag out and counted. Eleven marbles.
+- S3854-2: [puzzled] How many had been in the bag before he found the four? He did not know. He had never counted them.
+- S3854-3: Grandpa gave him a scrap of paper and a pencil. [warmly] Make it a number sentence, he said. Some plus four is eleven. Oscar drew a little box where the some should go.
+- S3854-4: Oscar counted on from four. [slowly] Five, six, seven, eight, nine, ten, eleven. He put up a finger for each number. Seven fingers.
+- S3854-5: [pleased] The box was seven. Seven marbles had been in the bag before, and seven plus four is eleven. He checked it with the marbles themselves.
+- S3854-6: Then he explained it to Grandpa, with the paper, with his fingers and with the marbles. [proud] Grandpa said that was three ways to be sure.
+- S3854-7: [slowly, warmly] Turn the story into a number sentence. Then say how you solved it.
 
 ### The word on the box (S335, read-the-word)
 

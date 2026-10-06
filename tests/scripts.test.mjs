@@ -64,7 +64,7 @@ for (const c of L.COURSES.filter((x) => x.readAloud)) for (const m of c.modules)
   const text = `${q.story || ''} ${q.prompt}`.toLowerCase();
   let fine = deictic.test(text);
   if (!fine) {
-    if (v.kind === 'letters') { const words = v.text.split(' ').filter((w) => w !== '?'); const singles = words.every((w) => w.length === 1); fine = singles ? words.some((w) => new RegExp(`\\b${w.toLowerCase()}\\b`).test(text)) : words.every((w) => text.includes(w.toLowerCase())); }
+    if (v.kind === 'letters') { const words = v.text.split(' ').filter((w) => w !== '?'); const singles = words.every((w) => w.length === 1); fine = singles ? words.some((w) => /^[a-z0-9]$/i.test(w) && new RegExp(`\\b${w.toLowerCase()}\\b`).test(text)) : words.every((w) => text.includes(w.toLowerCase())); }   // a sign like + or = is never a word to find (pass LB)
     else if (v.kind === 'shape' || v.kind === 'solid') fine = text.includes(v.name) || (v.kind === 'solid' && text.includes(THING[v.name]));
     else if (v.kind === 'swatch') fine = text.includes(v.colour);
     else if (v.kind === 'icon') fine = text.includes(v.name);

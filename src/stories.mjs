@@ -2305,6 +2305,39 @@ STORIES['open-number-lines'] = {
     'Start at a number you know and count the marks. Greater numbers stand to the right.',
   ],
 };
+STORIES['the-equal-sign'] = {
+  // Pass LB (earmark E7 part three (b)): a run-on chain of equal signs, and a pan balance that shows the equal sign means the same as.
+  about: 'a number sentence that ran on and on, until Ivy put each side on a balance',
+  more: [{ serial: 'S3850', after: 1, alt: 'A girl writing a long chain of numbers and equal signs across a whiteboard' }, { serial: 'S3851', after: 2, alt: 'A boy pointing at the first equal sign on the whiteboard, the girl looking puzzled' }, { serial: 'S3852', after: 4, alt: 'A pan balance level, four blocks and three blocks on one pan, seven blocks on the other' }, { serial: 'S3853', after: 5, alt: 'The pan balance tipped, seven blocks on one pan and seven blocks and two more on the other' }],
+  title: 'Both Sides the Same', art: 'S3849', cast: [],
+  alt: 'A small girl at a classroom whiteboard holding a marker, a pan balance with blocks on the table beside her',
+  words: [
+    'Ivy was adding up the blocks for her tower. Four blue ones and three red ones made seven. Then two yellow ones made nine.',
+    'She wrote it all in one line on the whiteboard. Four plus three equals seven plus two equals nine. It looked neat.',
+    'Her friend Tomas read it and stopped at the first equal sign. That part says four plus three is the same as seven plus two, he said. It is not.',
+    'Ivy frowned. The equal sign just means the answer comes next, she said. Tomas shook his head. It means both sides are the same.',
+    'They got out the pan balance. Four blocks and three blocks on the left pan, seven on the right. The pans sat level.',
+    'Then Ivy put seven on the left and seven and two on the right. The right pan dropped. Seven is not the same as nine.',
+    'So Ivy wrote two number sentences instead of one long chain. Four plus three equals seven, and seven plus two equals nine. Both were true, and the balance agreed.',
+    'The equal sign means the same as. Check that both sides match.',
+  ],
+};
+STORIES['number-sentences-and-stories'] = {
+  // Pass LB: some plus four is eleven, a box for the missing number, and three ways to explain the answer.
+  about: 'a bag of marbles with some missing, and the number sentence that found them',
+  more: [{ serial: 'S3855', after: 0, alt: 'A boy holding a cloth marble bag open, eleven marbles on the table beside it' }, { serial: 'S3856', after: 2, alt: 'The boy writing a number sentence with a box for the missing number on a scrap of paper' }, { serial: 'S3857', after: 3, alt: 'The boy counting on his fingers from four up to eleven' }, { serial: 'S3858', after: 5, alt: 'Grandpa listening as the boy explains with the paper and the marbles' }],
+  title: 'The Missing Number', art: 'S3854', cast: [],
+  alt: 'A small boy at a table with a cloth bag and a pile of marbles, a scrap of paper with a number sentence beside him',
+  words: [
+    'Oscar found four marbles under the couch and put them in his bag. Then he poured the bag out and counted. Eleven marbles.',
+    'How many had been in the bag before he found the four? He did not know. He had never counted them.',
+    'Grandpa gave him a scrap of paper and a pencil. Make it a number sentence, he said. Some plus four is eleven. Oscar drew a little box where the some should go.',
+    'Oscar counted on from four. Five, six, seven, eight, nine, ten, eleven. He put up a finger for each number. Seven fingers.',
+    'The box was seven. Seven marbles had been in the bag before, and seven plus four is eleven. He checked it with the marbles themselves.',
+    'Then he explained it to Grandpa, with the paper, with his fingers and with the marbles. Grandpa said that was three ways to be sure.',
+    'Turn the story into a number sentence. Then say how you solved it.',
+  ],
+};
 STORIES['read-the-word'] = {
   about: 'three letters on a box, and the word that came out when they were pushed together',
   more: [{ serial: 'S336', after: 0, alt: 'The box with M A P on its side' }, { serial: 'S1640', after: 2, alt: 'Dad tapping the M, saying mmm' }, { serial: 'S1641', after: 3, alt: 'The finger sliding from M to A to P' }, { serial: 'S1642', after: 4, alt: 'A map unfolded on the garage floor' }],
@@ -9628,7 +9661,8 @@ export const COURSE_GOALS = {
   'science-k': 'Looking closely at the sky, the weather, every living thing, and the rocks, magnets and light around us',
   'civics-k': 'Learning what it means to be part of a class, a town, a state and a country, and finding your way around them',
   'health-k': 'Building the small daily habits that keep a body well, and knowing who to ask and what to do when something goes wrong',
-  'numbers-1': 'Working with numbers to twenty and beyond, in tens and ones',
+  'numbers-1': 'Counting, adding and subtracting to twenty, numbers to one hundred twenty in tens and ones, and what the equal sign means',
+  'shapes-1': 'Flat and solid shapes, halves and fourths, measuring length, telling time, and reading tally charts and graphs',
   'reading-1': 'Reading whole words and whole sentences, and telling what happened',
   'science-1': 'Finding the patterns in the sky, in water and in what animals need',
   'civics-1': 'Knowing the leaders, the signs, the maps and the symbols of a community',
@@ -9966,6 +10000,9 @@ export const COLOR_PAGES = {
   'quick-looks': ['D233', 'A big dice showing five, four corners and one in the middle, beside a domino and a ten frame'],
   'counting-to-120': ['D234', 'Bottle caps pushed into piles of ten on a table, with a few single caps beside them and a jar'],
   'open-number-lines': ['D235', 'A long number line on a playground with a child standing on one mark and the tens written below'],
+  // Grade 1 equations and word problems (pass LB, earmark E7 part three (b)).
+  'the-equal-sign': ['D236', 'A pan balance sitting level with a few blocks on each pan, a big equal sign drawn above it'],
+  'number-sentences-and-stories': ['D237', 'A cloth marble bag tipped over with marbles spilling out, and a scrap of paper with a box drawn on it'],
 };
 
 // Audio tags (2026-10-04, pass JH, Mikey). In plain terms: how ElevenLabs' Eleven v4 should perform each story the writing review
@@ -10167,3 +10204,5 @@ STORIES["tallies-and-graphs"].audio = ["The class party needed one snack, and Za
 STORIES["quick-looks"].audio = ["[cheerful] Elio and his sister Pia were playing a board game. [a dice rattling and landing] Every turn, Pia rolled the dice, said the number right away, and moved her piece.","Elio rolled and bent over the dice. [slowly] One, two, three, four, five. He touched every dot with his finger. [sighs] By the time he moved, Pia was far ahead.","[puzzled] How do you know so fast, he asked. You do not even count. Pia laughed. I do not have to, she said. I know the pattern.","She pointed at the dice. [patiently] Four corners and one in the middle is always five. One dot in every corner is four. Two rows of three is six.","Elio rolled again. Four corners and one in the middle. [quickly] Five, he said, before his finger could move. He slid his piece five spaces.","[cheerful] After that the game went fast. They tried dominoes next, and Elio saw each side at a glance and added. Four and three, seven.","Pia still won, but only by two spaces. Elio did not mind. [proud] He had a new way of seeing.","[slowly, warmly] Learn the pattern, and you know how many at a glance."];
 STORIES["counting-to-120"].audio = ["Maya was counting the bottle caps in the big jar for a school project. [bottle caps clinking] She laid them in a long line and counted. [slowly] One, two, three, all the way up.","At fifty-eight her little brother asked for juice. [frustrated] When she looked back, she had lost her place. So she started again. One, two, three.","At sixty-one the phone rang, and she started again from one. At seventy the cat jumped up onto the table. [sighs] Maya put her head in her hands.","Dad came in. [kindly] You do not have to start from one, he said. Start where you stopped. What was the last cap you counted?","Fifty-eight, said Maya. Then say fifty-nine, said Dad, and keep going. [slowly] Fifty-nine, sixty, sixty-one, sixty-two. [relieved] It worked.","Then Dad showed her something better. They pushed the caps into piles of ten. [slowly] Ten, twenty, thirty, forty, fifty, sixty, and four more. Sixty-four caps.","[pleased] Maya wrote sixty-four on the paper and put the lid on the jar before the cat came back.","[slowly, warmly] Start where you stopped, and count in jumps when things come in groups."];
 STORIES["open-number-lines"].audio = ["[cheerful] The class drew a long number line in chalk on the playground. There was a mark for every number, but only the tens were written. [slowly] Ten, twenty, thirty, forty, fifty.","Finn, stand on forty-three, said the teacher. [running footsteps] Finn ran along the line and found forty, and then he found fifty. [puzzled] There was no forty-three written anywhere.","It is not here, he said, and he threw up his hands. The teacher smiled. [kindly] It is there, she said, but you have to count to it.","Finn stood on forty and stepped to the next mark, counting out loud. [slowly] Forty-one, forty-two, forty-three. [delighted] He stopped on the third mark and waved both arms. Found it.","Lily, stand on thirty-four, said the teacher. Lily counted from thirty and stopped to the left of Finn. Who is standing on the greater number, asked the teacher. [confident] Finn is, said Lily, because he is farther to the right.","Then Noor stood on fifty-one. The teacher pointed from left to right. [slowly] Thirty-four, forty-three, fifty-one, least to greatest.","[slowly, warmly] Start at a number you know and count the marks. Greater numbers stand to the right."];
+STORIES["the-equal-sign"].audio = ["[cheerful] Ivy was adding up the blocks for her tower. [blocks clicking together] Four blue ones and three red ones made seven. Then two yellow ones made nine.","She wrote it all in one line on the whiteboard. [a marker squeaking] Four plus three equals seven plus two equals nine. [proud] It looked neat.","Her friend Tomas read it and stopped at the first equal sign. [carefully] That part says four plus three is the same as seven plus two, he said. It is not.","[puzzled] Ivy frowned. The equal sign just means the answer comes next, she said. Tomas shook his head. [kindly] It means both sides are the same.","They got out the pan balance. Four blocks and three blocks on the left pan, seven on the right. [pleased] The pans sat level.","Then Ivy put seven on the left and seven and two on the right. [a pan clunking down] The right pan dropped. Seven is not the same as nine.","So Ivy wrote two number sentences instead of one long chain. [slowly] Four plus three equals seven, and seven plus two equals nine. [delighted] Both were true, and the balance agreed.","[slowly, warmly] The equal sign means the same as. Check that both sides match."];
+STORIES["number-sentences-and-stories"].audio = ["Oscar found four marbles under the couch and put them in his bag. [marbles clattering onto a table] Then he poured the bag out and counted. Eleven marbles.","[puzzled] How many had been in the bag before he found the four? He did not know. He had never counted them.","Grandpa gave him a scrap of paper and a pencil. [warmly] Make it a number sentence, he said. Some plus four is eleven. Oscar drew a little box where the some should go.","Oscar counted on from four. [slowly] Five, six, seven, eight, nine, ten, eleven. He put up a finger for each number. Seven fingers.","[pleased] The box was seven. Seven marbles had been in the bag before, and seven plus four is eleven. He checked it with the marbles themselves.","Then he explained it to Grandpa, with the paper, with his fingers and with the marbles. [proud] Grandpa said that was three ways to be sure.","[slowly, warmly] Turn the story into a number sentence. Then say how you solved it."];

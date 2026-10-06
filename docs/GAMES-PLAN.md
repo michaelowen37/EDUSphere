@@ -1,6 +1,5 @@
-# Games plan
-
-Written by tools/games-plan.mjs from the app's own lists; run it again after any change to the games. Every course has its own game, or two, chosen to suit its subject and grade; finishing the course unlocks them. Inside a grade the same kind is avoided wherever today's kinds allow. A course that no game suits yet has a quick fire of its own lessons, and so does a history course whose only game is a map still waiting for its painting.
+games plan written: 122 courses, 61 kinds, 8 quick fires, 10 repeats, doubles none
+n after any change to the games. Every course has its own game, or two, chosen to suit its subject and grade; finishing the course unlocks them. Inside a grade the same kind is avoided wherever today's kinds allow. A course that no game suits yet has a quick fire of its own lessons, and so does a history course whose only game is a map still waiting for its painting.
 
 Starter, open from the first day: Star. Kinds of game: 61. Quick fires still standing in for a game: 8. Kinds repeated inside a grade: 10. Courses holding two games of one kind: none. The rules test holds both numbers as ceilings, so each new kind must bring them down.
 
@@ -37,7 +36,8 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 | K | Looking and listening | Spot It (spot) |
 | K | Counting | Maze (maze) |
 | K | Letters | Pairs (pairs) |
-| 1 | Numbers to 20 | Kite (dots), Many Pairs (pairs) |
+| 1 | Numbers to 120 | Kite (dots), Many Pairs (pairs) |
+| 1 | Shapes, measuring and graphs | Catch the Hexagons (catch) |
 | 1 | Reading words and sentences | Big Puzzle (jigsaw) |
 | 1 | Sky, water and living things | Balance the Scale (balance) |
 | 1 | Our community | Step on the Goods (path) |

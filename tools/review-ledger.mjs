@@ -20,7 +20,9 @@ const moduleRow = ({ c, m, st }) => `| ${done(`module:${m.id}`)} | ${cell(c.grad
 const head = '| Reviewed | Grade | Course | Module | Lesson colons | Story | Story colons | Question banks |\n|---|---|---|---|---|---|---|---|';
 const gameCourse = {}; for (const [cid, ids] of Object.entries(COURSE_GAMES || {})) for (const id of [].concat(ids)) (gameCourse[id] ||= []).push(cid);
 const wonders = Array.isArray(WONDER) ? WONDER : Object.values(WONDER || {});
-const keys = [...rows.map((r) => `module:${r.m.id}`), ...Object.keys(COURSE_STORIES).map((id) => `course-story:${id}`), ...GAMES.map((g) => `game:${g.id}`), ...wonders.map((w, i) => `wonder:${w.id || i}`)];
+// Every course is a long-story item, written or not (pass LD, Mikey): a course without one shows as an undone row, so an absence
+// is visible in the count instead of silent (the grade 1 review passed every module while no grade 1 course had a long story).
+const keys = [...rows.map((r) => `module:${r.m.id}`), ...courses.map((c) => `course-story:${c.id}`), ...GAMES.map((g) => `game:${g.id}`), ...wonders.map((w, i) => `wonder:${w.id || i}`)];
 const lessonColons = rows.reduce((a, r) => a + colons(r.m.lesson), 0); const storyColons = rows.reduce((a, r) => a + (r.st ? colons(r.st.words || r.st.paragraphs || '') : 0), 0) + Object.values(COURSE_STORIES).reduce((a, s) => a + colons(s.words || s.paragraphs || ''), 0);
 console.log(`# Review ledger
 
@@ -37,7 +39,7 @@ ${rows.map(moduleRow).join('\n')}
 
 | Reviewed | Grade | Course | Story | Colons |
 |---|---|---|---|---|
-${courses.filter((c) => COURSE_STORIES[c.id]).map((c) => { const s = COURSE_STORIES[c.id]; return `| ${done(`course-story:${c.id}`)} | ${cell(c.grade)} | ${cell(c.title)} | ${cell(s.title)} (${s.art}) | ${colons(s.words || s.paragraphs || '')} |`; }).join('\n')}
+${courses.map((c) => { const s = COURSE_STORIES[c.id]; return s ? `| ${done(`course-story:${c.id}`)} | ${cell(c.grade)} | ${cell(c.title)} | ${cell(s.title)} (${s.art}) | ${colons(s.words || s.paragraphs || '')} |` : `| no | ${cell(c.grade)} | ${cell(c.title)} | none yet (program item L1 in docs/EARMARKS.md) | |`; }).join('\n')}
 
 ## 3. Games
 

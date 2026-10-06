@@ -909,7 +909,7 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0 }) {
     // Words and expressions ("ethos pathos logos", "5x + 3 = 2x + 15") are shown as one centered
     // line that wraps. Only short runs of single letters are spelled out large, one by one.
     const tokens = visual.text.split(' ');
-    if (tokens.some((t) => t.length > 1) && visual.text.replace(/\s/g, '').length > 4 && !visual.highlight) {
+    if ((tokens.some((t) => t.length > 1) || /[\d+=-]/.test(visual.text)) && visual.text.replace(/\s/g, '').length > 4 && !visual.highlight) {   // a number sentence of single digits is one line too (pass LB)
       return <p style={{ fontSize: 28, fontWeight: 700, margin: '6px 0', textAlign: 'center', color: C.green, lineHeight: 1.3, wordBreak: 'break-word' }}>{visual.text}</p>;
     }
     // Each letter swells as it is named, so a child who cannot read still knows which one
@@ -2192,6 +2192,16 @@ function BalancePic({ left = 'x + 5', right = '12' }) {
     </Diagram>
   );
 }
+// A level balance for grade 1 (pass LB, TEKS 1.5E): what sits on one pan weighs the same as the other. No algebra caption.
+function PansPic({ left = '4 + 3', right = '7' }) {
+  return (
+    <svg viewBox="0 0 160 100" width="100%" role="img" aria-label={`a level balance with ${left} on one side and ${right} on the other`} style={{ display: 'block', maxWidth: 300, margin: '0 auto', height: 'auto' }}>
+      <polygon points="70,92 90,92 80,62" fill="#B9B3A6" /><line x1="14" y1="60" x2="146" y2="60" stroke="#2E2E2E" strokeWidth="2.6" /><circle cx="80" cy="60" r="3" fill="#2E2E2E" />
+      <path d="M14 60 L20 40 L50 40 L56 60" fill="#FFF3C8" stroke="#2E2E2E" strokeWidth="1.4" /><path d="M104 60 L110 40 L140 40 L146 60" fill="#C9DDF5" stroke="#2E2E2E" strokeWidth="1.4" />
+      <text x="35" y="31" textAnchor="middle" fontSize="12" fontWeight="700" fontFamily={FONT} fill="#2E2E2E">{left}</text><text x="125" y="31" textAnchor="middle" fontSize="12" fontWeight="700" fontFamily={FONT} fill="#2E2E2E">{right}</text>
+    </svg>
+  );
+}
 function CirclePic({ d = 4 }) {
   return (
     <Diagram label="A circle with its diameter">
@@ -2503,7 +2513,7 @@ function OpenLinePic({ from = 0, to = 10, labels = [], dots = [] }) {
     </svg>
   );
 }
-const DIAGRAMS = { dice: DicePic, domino: DominoPic, sets: SetsPic, openline: OpenLinePic, shares: SharesPic, joined: JoinedPic, measure: MeasurePic, digital: DigitalPic, tally: TallyPic, bargraph: BarGraphPic, timeline: TimelinePic, map: MapPic, branches: BranchesPic, stack: StackPic, compass: CompassPic, flag: FlagPic, sign: SignPic, flow: FlowPic, loop: LoopPic, states: StatesPic, thermometer: ThermometerPic, circuit: CircuitPic, orbits: OrbitsPic, mixture: MixturePic, densitypic: DensityPic, pyramid: PyramidPic, molecule: MoleculePic, plates: PlatesPic, moths: MothsPic, layers: LayersPic, celldiv: CellDivPic, basepairs: BasePairsPic, homology: HomologyPic, twoway: TwoWayPic, phscale: PhScalePic, reaction: ReactionPic, gaslaw: GasLawPic, bonds: BondsPic, momentum: MomentumPic, wave: WavePic, work: WorkPic, earthlayers: EarthLayersPic, ocean: OceanPic, heat: HeatPic, equalgroups: EqualGroupsPic, fracgrid: FracGridPic, opspic: OpsPic, cuboid: CuboidPic, fracpieces: FracPiecesPic, balance: BalancePic, circlepic: CirclePic, doubling: DoublingPic, growthbars: GrowthBarsPic, plot: PlotPic, tiles: TilesPic, sector: SectorPic, trigtri: TrigTriPic, similar: SimilarPic, reflect: ReflectPic, unitcircle: UnitCirclePic, scatter: ScatterPic, dotplot: DotPlotPic, spinner: SpinnerPic, cycle: CyclePic, leaf: LeafPic, pythag: PythagPic, cell: CellPic, forces: ForcesPic, curves: CurvesPic, atom: AtomPic, daynight: DayNightPic, percentgrid: PercentGridPic, groups: GroupsPic, angles: AnglesPic, lightray: LightRayPic, punnett: PunnettPic, alleles: AllelesPic, beaker: BeakerPic };
+const DIAGRAMS = { pans: PansPic, dice: DicePic, domino: DominoPic, sets: SetsPic, openline: OpenLinePic, shares: SharesPic, joined: JoinedPic, measure: MeasurePic, digital: DigitalPic, tally: TallyPic, bargraph: BarGraphPic, timeline: TimelinePic, map: MapPic, branches: BranchesPic, stack: StackPic, compass: CompassPic, flag: FlagPic, sign: SignPic, flow: FlowPic, loop: LoopPic, states: StatesPic, thermometer: ThermometerPic, circuit: CircuitPic, orbits: OrbitsPic, mixture: MixturePic, densitypic: DensityPic, pyramid: PyramidPic, molecule: MoleculePic, plates: PlatesPic, moths: MothsPic, layers: LayersPic, celldiv: CellDivPic, basepairs: BasePairsPic, homology: HomologyPic, twoway: TwoWayPic, phscale: PhScalePic, reaction: ReactionPic, gaslaw: GasLawPic, bonds: BondsPic, momentum: MomentumPic, wave: WavePic, work: WorkPic, earthlayers: EarthLayersPic, ocean: OceanPic, heat: HeatPic, equalgroups: EqualGroupsPic, fracgrid: FracGridPic, opspic: OpsPic, cuboid: CuboidPic, fracpieces: FracPiecesPic, balance: BalancePic, circlepic: CirclePic, doubling: DoublingPic, growthbars: GrowthBarsPic, plot: PlotPic, tiles: TilesPic, sector: SectorPic, trigtri: TrigTriPic, similar: SimilarPic, reflect: ReflectPic, unitcircle: UnitCirclePic, scatter: ScatterPic, dotplot: DotPlotPic, spinner: SpinnerPic, cycle: CyclePic, leaf: LeafPic, pythag: PythagPic, cell: CellPic, forces: ForcesPic, curves: CurvesPic, atom: AtomPic, daynight: DayNightPic, percentgrid: PercentGridPic, groups: GroupsPic, angles: AnglesPic, lightray: LightRayPic, punnett: PunnettPic, alleles: AllelesPic, beaker: BeakerPic };
 // The periodic table, drawn here so a lesson can show it and a question can light up the element it
 // names. Cells are tinted by family; a highlighted element, period or group gets a gold edge.
 const PT_SYMBOLS = 'H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Sc Ti V Cr Mn Fe Co Ni Cu Zn Ga Ge As Se Br Kr Rb Sr Y Zr Nb Mo Tc Ru Rh Pd Ag Cd In Sn Sb Te I Xe Cs Ba La Ce Pr Nd Pm Sm Eu Gd Tb Dy Ho Er Tm Yb Lu Hf Ta W Re Os Ir Pt Au Hg Tl Pb Bi Po At Rn Fr Ra Ac Th Pa U Np Pu Am Cm Bk Cf Es Fm Md No Lr Rf Db Sg Bh Hs Mt Ds Rg Cn Nh Fl Mc Lv Ts Og'.split(' ');
@@ -6583,7 +6593,7 @@ function CourseChoiceRow({ course, checked, onToggle, onPreview, onSave = null }
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span style={{ width: 24, display: 'flex', justifyContent: 'center', flexShrink: 0 }}>{box}</span>
           <div data-course-lines="" style={{ flex: 1, minWidth: 0, textAlign: 'center' }}>
-            <div><label htmlFor={boxId} style={{ cursor: 'pointer' }}>{course.title}</label>{touchButton}</div>
+            <div><label htmlFor={boxId} style={{ cursor: 'pointer' }}>{titleCase(course.title)}</label>{touchButton}</div>
             <p data-course-grade="" style={{ margin: '2px 0 0', fontSize: 14, color: C.muted }}>{gradeText}</p>
             <div style={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>{link}</div>
             {touchNote}
@@ -6625,6 +6635,15 @@ function ClearableInput({ value, onClear, style = {}, ...rest }) {
 }
 // InfoButton: the small round i that opens a note. `tone="warn"` draws it in the warning color (the red of the old
 // "Needs a touch screen" tag) for notes that caution rather than explain (pass HA).
+// What a child starting at each early grade should already be comfortable with (Mikey, pass LE): one line each, taken from what
+// the grade below teaches, shown under the grade buttons in place of the question once a grade is chosen.
+const EARLY_START_NOTE = {
+  PK3: 'Pre-K 3 starts from nothing. A child only needs to tap, listen and look.',
+  PK4: 'Pre-K 4 suits a child who can tap and listen, match a few colors and shapes, and sit with a short story read aloud.',
+  K: 'Kindergarten suits a child who can count a few things, name some colors and shapes, and knows a handful of letters.',
+  1: 'Grade 1 suits a child who counts to ten and beyond, knows letter names and most letter sounds, and can add small numbers with objects.',
+  2: 'Grade 2 suits a child who adds and subtracts to twenty, knows tens and ones, and reads short words and simple sentences.',
+};
 function InfoButton({ onClick, label, open = false, tone = 'info' }) {
   const ink = tone === 'warn' ? C.clay : C.green;
   return (
@@ -8294,7 +8313,7 @@ function EduSphereScreens() {
                 <div style={{ padding: '0 12px 12px' }}>
                   {subCourses.map((course) => (
                     <div key={course.id}>
-                      {subCourses.length > 1 && !youngLearner && <p style={{ margin: '10px 0 2px', fontSize: 14, color: C.muted, paddingLeft: 4 }}>{course.title}</p>}
+                      {subCourses.length > 1 && !youngLearner && <p style={{ margin: '10px 0 2px', fontSize: 14, color: C.muted, paddingLeft: 4 }}>{titleCase(course.title)}</p>}
                       {/* Where the standards name dates to know, they sit at the top of the course, before the first module. */}
                       {REFERENCE_DATES[course.id] && (
                         <div style={{ ...card, padding: '12px 14px', marginBottom: 10, background: C.goldSoft || C.surface }}>
@@ -8445,7 +8464,7 @@ function EduSphereScreens() {
                         <StoryThumb serial={cs.art} />
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <p style={{ margin: 0, fontWeight: 600 }}>{titleCase(cs.title)}</p>
-                          <p style={{ margin: '2px 0 0', fontSize: 13, color: C.muted }}>{c.title}{unlocked ? (read ? ' · read' : '') : ` · ${left} ${left === 1 ? 'module' : 'modules'} to go`}</p>
+                          <p style={{ margin: '2px 0 0', fontSize: 13, color: C.muted }}>{titleCase(c.title)}{unlocked ? (read ? ' · read' : '') : ` · ${left} ${left === 1 ? 'module' : 'modules'} to go`}</p>
                         </div>
                         <Btn kind="secondary" disabled={!unlocked || busy} onClick={() => leaveOverviewTo(() => { if (record && !record.preview && !read) addEvent(makeStoryReadEvent(`course:${c.id}`, new Date().toISOString())); setCourseStoryId(c.id); setScreen('course-story'); })} style={{ padding: '8px 14px', minHeight: 38, fontSize: 14 }}>{unlocked ? (read ? 'Read again' : 'Read') : 'Locked'}</Btn>
                       </div>
@@ -9660,7 +9679,7 @@ function EduSphereScreens() {
         {list.length === 0 && <p style={{ margin: 0, fontSize: 15, color: C.muted, textAlign: 'center' }}>Nothing to show here yet.</p>}
         {list.map((c) => (
           <div key={c.id} style={{ border: `1px solid ${C.line}`, borderRadius: 10, padding: 14, marginBottom: 10, background: C.surface }}>
-            <p style={{ margin: 0, fontSize: 17, fontWeight: 600 }}>{c.title}</p>
+            <p style={{ margin: 0, fontSize: 17, fontWeight: 600 }}>{titleCase(c.title)}</p>
             <p style={{ margin: '2px 0 8px', fontSize: 13, color: C.muted }}>{gradeShort(c.grade)} - {c.subject}</p>
             <p style={{ margin: 0, fontSize: 15 }}>
               {c.modulesMastered} of {c.modulesTotal} modules mastered
@@ -10053,7 +10072,9 @@ function EduSphereScreens() {
             })}
             {newLevel && levelFor(newLevel) && (
               <div style={{ gridColumn: '1 / -1', marginTop: 4 }}>
-                <p style={{ margin: '0 0 6px', fontSize: 14, color: C.muted }}>Which grade should they start in? The placement check can still move a reader up or down from here.</p>
+                {/* Early years get no placement check (Mikey, pass LE), so the line says so, and once a grade is picked it becomes a one-line
+                    note of what a child starting there should already be comfortable with, drawn from what the grade below teaches. */}
+                <p style={{ margin: '0 0 6px', fontSize: 14, color: C.muted }}>{newLevel === 'early' ? (EARLY_START_NOTE[newStartGrade] || 'Which grade should they start in? (There is no placement check.)') : 'Which grade should they start in? The placement check can still move a reader up or down from here.'}</p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center' }}>
                   {gradesWithCourses().filter((g) => levelFor(newLevel).grades.includes(g)).map((g) => {
                     const on = newStartGrade === g;
@@ -10502,7 +10523,7 @@ function EduSphereScreens() {
             <p style={{ margin: '0 0 12px', fontSize: 14, color: C.greenSoft }}>Every story in a course, in order, with the long story at the end. Open it, print it or save as a PDF for a class that likes to read on paper.</p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, justifyContent: 'center', alignItems: 'center' }}>
               <select aria-label="Story book course" value={chosen} onChange={(e) => setBookCourseId(e.target.value)} style={{ fontFamily: FONT, fontSize: 15, padding: '8px 12px', borderRadius: 8, border: `1px solid ${C.line}`, background: C.greenSoft, color: C.ink, width: 'min(340px, 100%)', textAlign: 'center', textAlignLast: 'center' , ...pickerLook() }}>
-                {withBook.map((c) => <option style={{ background: C.surface, color: C.ink }} key={c.id} value={c.id}>{courseGradeLabel(c)}: {c.title}</option>)}
+                {withBook.map((c) => <option style={{ background: C.surface, color: C.ink }} key={c.id} value={c.id}>{courseGradeLabel(c)}: {titleCase(c.title)}</option>)}
               </select>
               <Btn kind="secondary" onClick={() => { setBookCourseId(chosen); setScreen('story-book'); }}>Open Book</Btn>
             </div>

@@ -44,7 +44,9 @@ for (const [id, cs] of Object.entries(COURSE_STORIES)) {
   const bad = [];
   for (const m of L.MODULES) { const st = STORIES[m.id]; const c = L.getCourse(m.courseId); if (!st || !c || !early.has(c.grade)) continue;
     for (const par of st.words) for (const sent of par.split(/(?<=[.!?])\s+/)) { const ws = sent.split(/\s+/).filter(Boolean); if (ws.length > 18) bad.push(`${m.id}: ${ws.length} words`); for (const w of ws) if (syl(w) > 3) bad.push(`${m.id}: ${w}`); } }
-  ok('early-years stories read aloud kindly: sentences of eighteen words or fewer, words of three syllables or fewer', bad.length === 0, bad.slice(0, 6).join(' | '));
+  // Since pass LE (Mikey) the eighteen-word sentence and the three-syllable word are guidelines, kept when a longer sentence or
+  // word carries educational value or another rule needs it, so this reports rather than fails; the writer judges each one.
+  console.log(`NOTE - early-years stories over the read-aloud guidelines (sentences past eighteen words, words past three syllables): ${bad.length}${bad.length ? ' (' + bad.slice(0, 6).join(' | ') + ')' : ''}`);
 }
 // Course stories spread the cast (2026-09-23, Mikey): in a grade's Let's Read list, two stories side by side never lead
 // with the same core character, so nobody meets Georgette three times in a row.

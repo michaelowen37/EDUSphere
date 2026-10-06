@@ -82,6 +82,8 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     // Grade 1 geometry pictures (pass KY): a cut shape names a shape, a cut the screen draws and a shaded count within its
     // pieces; a joined figure is one the screen draws.
     else if (q.visual && q.visual.kind === 'shares') { const cuts = { none: 1, half: 2, 'half-across': 2, 'half-slant': 2, fourths: 4, 'fourths-strips': 4, 'fourths-x': 4, 'unequal-two': 2, 'unequal-four': 4 }; if (!(['circle', 'square', 'rectangle'].includes(q.visual.shape) && cuts[q.visual.cut] && Number.isInteger(q.visual.shaded) && q.visual.shaded >= 0 && q.visual.shaded <= cuts[q.visual.cut] && !(q.visual.shape === 'circle' && q.visual.cut === 'fourths-strips'))) problems.push('shares picture out of range'); }
+    // The equal sign (pass LB): a level balance names what sits on each pan.
+    else if (q.visual && q.visual.kind === 'pans') { if (!(typeof q.visual.left === 'string' && typeof q.visual.right === 'string' && q.visual.left.trim() && q.visual.right.trim())) problems.push('balance picture incomplete'); }
     // Grade 1 number sense pictures (pass LA): a dice face, a domino, equal sets and an open number line.
     else if (q.visual && q.visual.kind === 'dice') { if (!(Number.isInteger(q.visual.pips) && q.visual.pips >= 1 && q.visual.pips <= 6)) problems.push('dice out of range'); }
     else if (q.visual && q.visual.kind === 'domino') { if (!([q.visual.a, q.visual.b].every((v) => Number.isInteger(v) && v >= 1 && v <= 6))) problems.push('domino out of range'); }
@@ -199,6 +201,23 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'j1-tap-result') { const want = /two squares/.test(q.prompt) || /three squares/.test(q.prompt) ? 'rectangle' : /four squares/.test(q.prompt) ? 'square' : /three triangles/.test(q.prompt) ? 'trapezoid' : 'hexagon'; if (shapeOf(q.answer) !== want) problems.push('tap result wrong'); }
     if (genId === 'j1-more-ways') { const t = q.prompt.match(/make a (\w+)\?$/)[1]; if (!makes(q.answer, t) || q.choices.filter((c) => c !== q.answer).some((c) => makes(c, t))) problems.push('more ways wrong'); }
     if (genId === 'j1-can') { const m2 = /^Can (.+) make a (\w+)\?$/.exec(q.prompt); const label = m2[1].replace(/^\w/, (c) => c.toUpperCase()); const want = makes(label, m2[2]) ? 'Yes' : 'No'; if (q.answer !== want) problems.push('can make wrong'); }
+    // Grade 1 equations and word problems (pass LB), re-derived by working out each side of the number sentence in the words.
+    const sideValue = (t) => { const toks = t.trim().split(/\s+/); let v = Number(toks[0]); for (let i = 1; i < toks.length; i += 2) v = toks[i] === '+' ? v + Number(toks[i + 1]) : v - Number(toks[i + 1]); return v; };
+    const eqOf = (t) => (String(t).match(/(?:\d+|\?)(?: [-+] (?:\d+|\?))* = (?:\d+|\?)(?: [-+] (?:\d+|\?))*/) || [null])[0];
+    if (genId === 'eq1-true-false') { const [l, r] = eqOf(q.prompt).split(' = '); if (q.answer !== (sideValue(l) === sideValue(r) ? 'Yes' : 'No')) problems.push('true or false wrong'); }
+    if (genId === 'eq1-missing-four' || (genId === 'eq1-turn-around' && / = /.test(q.prompt))) { const eq = eqOf(q.prompt); const filled = eq.replace('?', q.answer); const [l, r] = filled.split(' = '); if (sideValue(l) !== sideValue(r)) problems.push('missing number does not balance'); }
+    if (genId === 'eq1-turn-around' && !/ = /.test(q.prompt)) { const [a, b] = q.prompt.match(/\d+/g).map(Number); if (Number(q.answer) !== a + b) problems.push('turn-around sum wrong'); }
+    if (genId === 'eq1-three') { const ns = q.prompt.match(/\d+/g).map(Number); if (Number(q.answer) !== ns[0] + ns[1] + ns[2]) problems.push('three addends wrong'); }
+    if (genId === 'eq1-first-two') { const [a, b] = q.answer.match(/\d+/g).map(Number); if (a + b !== 10) problems.push('first two do not make ten'); }
+    if (genId === 'eq1-make-ten') { if (sideValue(q.answer) !== 10 || q.choices.filter((c) => c !== q.answer).some((c) => sideValue(c) === 10)) problems.push('make ten wrong'); }
+    if (genId === 'eq1-balance') { const [a, b] = q.prompt.match(/\d+/g).map(Number); if (Number(q.answer) !== a + b) problems.push('balance side wrong'); }
+    if (genId === 'eq1-which-true') { const [l, r] = q.answer.split(' = '); if (sideValue(l) !== sideValue(r) || q.choices.filter((c) => c !== q.answer).some((c) => { const [x, y] = c.split(' = '); return sideValue(x) === sideValue(y); })) problems.push('which true wrong'); }
+    if (genId === 'ns1-story-to-sentence' || genId === 'ns1-picture') { const [l, r] = q.answer.split(' = '); if (sideValue(l) !== sideValue(r)) problems.push('story sentence wrong'); const ns = (q.story || '').match(/\d+/g); if (genId === 'ns1-story-to-sentence' && ns && !(q.answer.startsWith(`${ns[0]} `) && q.answer.includes(` ${ns[1]} `))) problems.push('story numbers not used'); if (genId === 'ns1-picture' && sideValue(l) !== q.visual.a.filled + q.visual.b.filled) problems.push('picture sentence wrong'); }
+    if (genId === 'ns1-sentence-to-story') { const [l, r] = eqOf(q.prompt).split(' = '); if (sideValue(l) !== sideValue(r)) problems.push('sentence story equation wrong'); }
+    if (genId === 'ns1-count-on' || genId === 'ns1-doubles') { const ns = q.prompt.match(/\d+/g).map(Number); if (Number(q.answer) !== ns[ns.length - 2] + ns[ns.length - 1]) problems.push('count on or double wrong'); }
+    if (genId === 'ns1-which-operation' && q.answer !== (/got \d+ more/.test(q.story) ? 'Add' : 'Take away')) problems.push('which operation wrong');
+    if (genId === 'ns1-missing-in-story') { const ns = q.story.match(/\d+/g).map(Number); const want = /start with/.test(q.prompt) ? ns[1] - ns[0] : ns[0] - ns[1]; if (Number(q.answer) !== want) problems.push('missing in story wrong'); }
+    if (genId === 'ns1-how-many-more') { const [a, b] = q.story.match(/\d+/g).map(Number); if (Number(q.answer) !== a - b) problems.push('how many more wrong'); }
     // Grade 1 number sense (pass LA), re-derived from the picture or the words.
     const NUMW1 = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 };
     if (genId === 'ql1-dice' && Number(q.answer) !== q.visual.pips) problems.push('dice count wrong');
@@ -1441,7 +1460,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
     const pr = L.deriveProgress(ev);
     ok('both memory checks count in the review tally', pr.review.asked === 2 && pr.review.correct === 1); }
   // Course search: every typed word must appear, and grades are matched every way they are said
-  ok('"grade 1 math" finds the grade 1 math course and nothing else', L.COURSES.filter((c) => L.matchesCourseSearch(c, 'grade 1 math')).map((c) => c.id).join() === 'numbers-1');
+  ok('"grade 1 math" finds the two grade 1 math courses and nothing else', L.COURSES.filter((c) => L.matchesCourseSearch(c, 'grade 1 math')).map((c) => c.id).join() === 'numbers-1,shapes-1');   // two courses since pass LC
   ok('"1st grade" and "first grade" find the same courses', JSON.stringify(L.COURSES.filter((c) => L.matchesCourseSearch(c, '1st grade')).map((c) => c.id)) === JSON.stringify(L.COURSES.filter((c) => L.matchesCourseSearch(c, 'first grade')).map((c) => c.id)) && L.COURSES.some((c) => L.matchesCourseSearch(c, '1st grade')));
   ok('"math" finds every math course', L.COURSES.filter((c) => L.matchesCourseSearch(c, 'math')).length === L.COURSES.filter((c) => c.subject === 'Math').length);
   ok('"kinder reading" narrows to kindergarten reading', L.COURSES.filter((c) => L.matchesCourseSearch(c, 'kinder reading')).map((c) => c.id).join() === 'letters-k');

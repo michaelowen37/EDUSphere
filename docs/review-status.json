@@ -197,7 +197,13 @@
     "module:open-number-lines": "LA, full standard, new (earmark E7 part three (a), TEKS 1.2F, 1.2D, CCSS 1.NBT.B.3): greater to the right and less to the left, an open line that shows only the numbers you need, counting the marks from a known number, a number between two numbers, which of two is farther right, ordering three numbers by tens then ones on the line, counting on across a ten; eight question kinds",
     "story:quick-looks": "LA, new: Seeing Five, a board game lost to counting every dot until Elio learns the five pattern; audio tags",
     "story:counting-to-120": "LA, new: Start Where You Stopped, bottle caps counted from one again and again until Maya counts on, then by tens; audio tags",
-    "story:open-number-lines": "LA, new: Standing on Forty-three, a chalk line with only the tens written, found by counting the marks from forty; audio tags"
+    "story:open-number-lines": "LA, new: Standing on Forty-three, a chalk line with only the tens written, found by counting the marks from forty; audio tags",
+    "module:the-equal-sign": "LB, full standard, new (earmark E7 part three (b), TEKS 1.5E, 1.5F, 1.5G, 1.3C, CCSS 1.OA.D.7, 1.OA.D.8, 1.OA.B.3, 1.OA.A.2): the equal sign as the same as with a level balance, a sum on either or both sides, true and false, turn-around facts, three addends in any order with ten first, ten from two or three numbers, a missing number in any of four places; nine question kinds",
+    "module:number-sentences-and-stories": "LB, full standard, new (earmark E7 part three (b), TEKS 1.3E, 1.3F, 1.5D, CCSS 1.OA.A.1, 1.OA.C.6): a story to a number sentence for adding to, taking from and comparing, a number sentence to a story, ten frames as the model, counting on, making ten and doubles explained in words, the missing number anywhere in a story; nine question kinds",
+    "story:the-equal-sign": "LB, new: Both Sides the Same, a run-on chain of equal signs set right by a pan balance; audio tags",
+    "story:number-sentences-and-stories": "LB, new: The Missing Number, some plus four is eleven with a box for the some, solved by counting on and explained three ways; audio tags",
+    "game:catch-hexagons": "LC, full standard, new: Catch the Hexagons for Shapes, measuring and graphs; the hexagon is new in grade 1 (TEKS 1.6D), caught against triangles, rhombuses and circles in four colors",
+    "wonder:w-turned-square": "LC, full standard, new: If you turn a square so it stands on a corner, is it still a square? (TEKS 1.6B, what defines a shape); two short voices for a pre-reader, four perspectives, a closing question"
   },
   "firstPass": {}
 }

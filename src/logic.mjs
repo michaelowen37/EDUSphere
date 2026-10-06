@@ -282,10 +282,21 @@ export const COURSES = [
     id: 'numbers-1',
     grade: '1',
     subject: 'Math',
-    title: 'Numbers to 20',
+    title: 'Numbers to 120',   // Numbers to 20 until pass LB, Numbers, shapes and measuring for one pass, then split in two (pass LC, Mikey)
     audience: 'Grade 1',
     readAloud: true, // first graders are still learning to read; questions stay spoken and tapped
     modules: GRADE1_MATH_MODULES(),
+  },
+  {
+    // Grade 1 math, second course (pass LC): the geometry, measurement and data strands of 19 TAC 111.3 (b)(6) to (b)(8), eight
+    // modules at the full standard, so that neither course is nineteen lessons long and each title says what it holds.
+    id: 'shapes-1',
+    grade: '1',
+    subject: 'Math',
+    title: 'Shapes, measuring and graphs',
+    audience: 'Grade 1',
+    readAloud: true, // first graders are still learning to read; questions stay spoken and tapped
+    modules: GRADE1_SHAPES_MODULES(),
   },
   {
     id: 'reading-1',
@@ -1623,6 +1634,7 @@ export const GAMES = [
   { id: 'map-south-america', kind: 'map', title: 'Where is it? South America', map: 'south-america', minGrade: '6' },
   // Balance the scale (2026-09-23): weights dragged onto the right pan until it matches the left.
   { id: 'balance-ten', kind: 'balance', title: 'Balance the Scale', balance: 'ten', young: true, minGrade: '1' },
+  { id: 'catch-hexagons', kind: 'catch', title: 'Catch the Hexagons', rule: 'hexagons', young: true, minGrade: '1' },   // grade 1 Shapes, measuring and graphs (pass LC): six sides go in the basket
   { id: 'balance-times', kind: 'balance', title: 'Balance the scale: times', balance: 'times', minGrade: '3' },
   { id: 'balance-fractions', kind: 'balance', title: 'Balance the scale: fractions', balance: 'fractions', minGrade: '4' },
   { id: 'balance-expressions', kind: 'balance', title: 'Balance the scale: expressions', balance: 'expressions', minGrade: '6' },
@@ -1779,6 +1791,8 @@ const isPrime = (n) => n > 1 && numbersWhere((d) => n % d === 0, 2, Math.floor(M
 const shapesOf = (kinds, colors) => kinds.flatMap((k) => colors.map((c) => `shape:${k}:${c}`));
 export const RULE_DECKS = {
   circles: { a: { label: 'Circles', items: shapesOf(['circle'], ['red', 'blue', 'green', 'yellow']) }, b: { label: 'Other shapes', items: shapesOf(['square', 'triangle'], ['red', 'blue', 'green', 'yellow']) } },
+  // Grade 1 Shapes, measuring and graphs (pass LC): the hexagon is new in grade 1 (TEKS 1.6D), so the catch is hexagons against the shapes a child already knows.
+  hexagons: { a: { label: 'Hexagons', items: shapesOf(['hexagon'], ['red', 'blue', 'green', 'yellow']) }, b: { label: 'Other shapes', items: shapesOf(['triangle', 'rhombus', 'circle'], ['red', 'blue', 'green', 'yellow']) } },
   'even-odd': { a: { label: 'Even numbers', items: numbersWhere((n) => n % 2 === 0, 2, 40) }, b: { label: 'Odd numbers', items: numbersWhere((n) => n % 2 === 1, 1, 39) } },
   'multiples-3': { a: { label: 'Multiples of 3', items: numbersWhere((n) => n % 3 === 0, 3, 36) }, b: { label: 'Other numbers', items: numbersWhere((n) => n % 3 !== 0, 1, 40) } },
   'multiples-4': { a: { label: 'Multiples of 4', items: numbersWhere((n) => n % 4 === 0, 4, 48) }, b: { label: 'Other numbers', items: numbersWhere((n) => n % 4 !== 0, 1, 50) } },
@@ -5621,13 +5635,174 @@ function GRADE1_MATH_MODULES() { return [
     sources: ['Aligned with Texas TEKS 1.2C (use objects, pictures, and expanded and standard forms to represent numbers up to 120; writing the ten digits, tens digit first, is the hand skill standard form asks for) and Common Core 1.NBT.A.1 (count to 120, starting at any number less than 120; in this range, read and write numerals and represent a number of objects with a written numeral).'],
     generators: ['kn-trace-number', 'kn-trace-number', 'kn-trace-number', 'kn-trace-number', 'kn-trace-number'],
   },
+  // Grade 1 number sense (pass LA, earmark E7 part three (a)): quick looks at dice, ten frames and dominoes (1.2A), counting
+  // forward and backward from any number to 120 with skip counting by twos, fives and tens and a number greater or less than
+  // a given one (1.5A, 1.5B, 1.2D, Common Core 1.NBT.A.1), and open number lines (1.2F). Each at the full standard from the start.
+  {
+    id: 'quick-looks',
+    order: 7,
+    title: 'Quick looks',
+    tagline: 'See how many without counting',
+    requires: ['teen-numbers'],
+    lesson: {
+      // Full standard from the start (pass LA, TEKS 1.2A): the six dice patterns by their shape, the ten frame by its full row of
+      // five and the counters underneath, the empty spaces as the missing part of ten, dominoes and two dice as two patterns added,
+      // and hands as fives. Every number word and every pattern the bank asks is said here.
+      prose: true,
+      paragraphs: ['A **quick look** is seeing how many without counting one by one. The quick way is to see the pattern, and you can do it when the dots sit in a pattern you know. On a dice, one is a single dot right in the middle. Two is one dot in each of two corners. Three is two corners and the middle, in a slanted line. Four is one dot in every corner. Five is four corners and one in the middle. Six is two rows of three.', 'A ten frame is a pattern too. A full row is five. Five in the top row and two more underneath is seven, and you can see it without counting every counter. Count the empty spaces to see how many are missing. Seven filled means three empty, and seven and three make ten. Ten fills the whole frame.', 'A domino has two dice patterns side by side. See each side at a glance, then add them. Four and three is seven. Two dice work the same way, and six and five is eleven. Your fingers are a pattern as well. One open hand is five, and both hands are ten, without counting each finger. Seeing the pattern is faster than counting one dot at a time.'],
+      keyIdea: 'A quick look sees how many from the pattern. A dice, a ten frame, a domino and two open hands are patterns you can know at a glance.',
+      example: { kind: 'dice', pips: 5, caption: 'Five on a dice, four corners and one in the middle. Say five at a glance.' },
+      script: [
+        { say: 'A quick look is seeing how many without counting one by one. The quick way is to see the pattern. On a dice, one is a single dot right in the middle.', show: { kind: 'dice', pips: 1 } },
+        { say: 'Two is one dot in each of two corners. Three is two corners and the middle, in a slanted line.', show: { kind: 'dice', pips: 3 } },
+        { say: 'Four is one dot in every corner.', show: { kind: 'dice', pips: 4 } },
+        { say: 'Five is four corners and one in the middle.', show: { kind: 'dice', pips: 5 } },
+        { say: 'Six is two rows of three.', show: { kind: 'dice', pips: 6 } },
+        { say: 'A ten frame is a pattern too. A full row is five. Five in the top row and two more underneath is seven, and you can see it without counting every counter.', show: { kind: 'tenframe', filled: 7 } },
+        { say: 'Count the empty spaces to see how many are missing. Seven filled means three empty, and seven and three make ten. Ten fills the whole frame.', show: { kind: 'tenframe', filled: 7 } },
+        { say: 'A domino has two dice patterns side by side. See each side at a glance, then add them. Four and three is seven.', show: { kind: 'domino', a: 4, b: 3 } },
+        { say: 'Two dice work the same way. Six and five is eleven. Seeing the pattern is faster than counting one dot at a time.', show: { kind: 'pair', a: { kind: 'dice', pips: 6 }, b: { kind: 'dice', pips: 5 } } },
+        { say: 'Your fingers are a pattern as well. One open hand is five, and both hands are ten, without counting each finger.', show: { kind: 'tenframe', filled: 10 } },
+      ],
+    },
+    sources: ['Aligned with Texas TEKS 1.2A (recognize instantly the quantity of structured arrangements). Common Core has no grade 1 expectation for this; it supports 1.OA.C.6 (add and subtract within 20, demonstrating fluency for addition and subtraction within 10), which Adding to 20 cites.'],
+    generators: ['ql1-dice', 'ql1-tenframe', 'ql1-empty', 'ql1-domino', 'ql1-two-dice', 'ql1-tap-dice', 'ql1-fact', 'ql1-faster'],
+  },
+  {
+    id: 'counting-to-120',
+    order: 8,
+    title: 'Counting on to 120',
+    tagline: 'Forward, backward, and in jumps',
+    requires: ['tens-and-ones'],
+    lesson: {
+      // Full standard from the start (pass LA, TEKS 1.5A, 1.5B, 1.2D; Common Core 1.NBT.A.1): counting on from any number and
+      // back from any number, the new ten after a nine, the hundred after ninety-nine and one hundred twenty after one hundred
+      // nineteen, skip counting by twos, fives and tens to find a total, and a number greater or less than a given number as one
+      // that comes after or before it when you count.
+      prose: true,
+      paragraphs: ['You can start counting from any number, not just from one. Start at fifty-seven and count on. Fifty-seven, fifty-eight, fifty-nine, sixty. When you reach a number that ends in nine, the next number starts a new ten. Twenty-nine, then thirty. Ninety-nine, then one hundred. One hundred nineteen, then one hundred twenty. You can count backward too. Start at forty-three and count back. Forty-three, forty-two, forty-one, forty, and the number before forty is thirty-nine.', '**Skip counting** is counting in jumps. Socks come in pairs, so count them by twos. Two, four, six, eight, ten. Five pairs are ten socks. Count by fives when things come in fives, such as fingers on hands. Five, ten, fifteen, twenty, twenty-five. Five hands are twenty-five fingers. Count by tens when things come in tens. Ten, twenty, thirty, forty. Four tens are forty. Skip counting goes all the way up. By tens, ninety, one hundred, one hundred ten, one hundred twenty. To find how many things there are, count the groups in jumps, and the last number you say is the total.', 'A number **greater** than a number comes later when you count. Any number after fifty-two is greater than fifty-two, such as fifty-three or sixty. A number **less** than fifty-two comes before it when you count, such as fifty-one or forty.'],
+      keyIdea: 'Count on or back from any number. Skip count by twos, fives or tens to find a total, and the last number you say is the total. A greater number comes later when you count.',
+      example: { kind: 'sets', groups: 5, each: 2, caption: 'Five pairs of socks. Count by twos, two, four, six, eight, ten. Ten socks.' },
+      script: [
+        { say: 'You can start counting from any number, not just from one. Start at fifty-seven and count on. Fifty-seven, fifty-eight, fifty-nine, sixty. The number after fifty-nine is sixty, a new ten.', show: { kind: 'openline', from: 50, to: 60, labels: [50, 60], dots: [{ at: 57, name: '57' }, { at: 58, name: '58' }, { at: 59, name: '59' }, { at: 60, name: '60' }] } },
+        { say: 'When you reach a number that ends in nine, the next number starts a new ten. Twenty-nine, then thirty. Ninety-nine, then one hundred. One hundred nineteen, then one hundred twenty.', show: { kind: 'openline', from: 90, to: 120, labels: [90, 100, 110, 120], dots: [{ at: 99, name: '99' }, { at: 100, name: '100' }, { at: 119, name: '119' }, { at: 120, name: '120' }] } },
+        { say: 'You can count backward too. Start at forty-three and count back. Forty-three, forty-two, forty-one, forty. The number before forty is thirty-nine.', show: { kind: 'openline', from: 30, to: 50, labels: [30, 40, 50], dots: [{ at: 43, name: '43' }, { at: 40, name: '40' }, { at: 39, name: '39' }] } },
+        { say: 'Skip counting is counting in jumps. Socks come in pairs, so count them by twos. Two, four, six, eight, ten. Five pairs are ten socks.', show: { kind: 'sets', groups: 5, each: 2 } },
+        { say: 'Count by fives when things come in fives, such as fingers on hands. Five, ten, fifteen, twenty, twenty-five. Five hands are twenty-five fingers.', show: { kind: 'sets', groups: 5, each: 5 } },
+        { say: 'Count by tens when things come in tens. Ten, twenty, thirty, forty. Four tens are forty.', show: { kind: 'sets', groups: 4, each: 10 } },
+        { say: 'Skip counting goes all the way up. By tens, ninety, one hundred, one hundred ten, one hundred twenty. By fives, one hundred five, one hundred ten, one hundred fifteen, one hundred twenty.', show: { kind: 'openline', from: 90, to: 120, labels: [90, 100, 110, 120], dots: [] } },
+        { say: 'To find how many things there are, you do not have to count by ones. Count the groups in jumps, and the last number you say is the total. Two, four, six, eight. Eight socks.', show: { kind: 'sets', groups: 4, each: 2 } },
+        { say: 'A number greater than a number comes later when you count. Any number after fifty-two is greater than fifty-two, such as fifty-three or sixty. A number less than fifty-two comes before it when you count, such as fifty-one or forty.', show: { kind: 'openline', from: 30, to: 70, labels: [30, 40, 50, 60, 70], dots: [{ at: 40, name: '40' }, { at: 52, name: '52' }, { at: 60, name: '60' }] } },
+      ],
+    },
+    sources: ['Aligned with Texas TEKS 1.5A (recite numbers forward and backward from any given number between 1 and 120), 1.5B (skip count by twos, fives, and tens to determine the total number of objects up to 120 in a set) and 1.2D (generate a number that is greater than or less than a given whole number up to 120), and Common Core 1.NBT.A.1 (count to 120, starting at any number less than 120; in this range, read and write numerals and represent a number of objects with a written numeral).'],
+    generators: ['ct1-next', 'ct1-before', 'ct1-fill-forward', 'ct1-fill-backward', 'ct1-skip', 'ct1-total', 'ct1-greater', 'ct1-less', 'ct1-which-count'],
+  },
+  {
+    id: 'open-number-lines',
+    order: 9,
+    title: 'Open number lines',
+    tagline: 'Numbers in order along a line',
+    requires: ['comparing-to-100'],
+    lesson: {
+      // Full standard from the start (pass LA, TEKS 1.2F open number lines; the place-value ordering is in Bigger and smaller to 100
+      // and is used again here): greater to the right and less to the left, an open line that shows only the numbers you need,
+      // counting the marks from a known number to find a dot, a number between two numbers, which of two is farther right,
+      // ordering three numbers by tens then ones, and counting on across a ten along the line.
+      prose: true,
+      paragraphs: ['A **number line** is numbers in order along a line. Numbers get greater as you go to the right and less as you go to the left. An **open number line** shows only the numbers you need. One might show forty and fifty, with a mark for every number between them. To find a number on it, start at a number you know and count the marks. Start at forty and count to the dot. Forty-one, forty-two, forty-three. The dot shows forty-three.', 'A number between two numbers sits between them on the line, so fifty-seven sits between fifty-six and fifty-eight. The number farther to the right is greater. Thirty-four sits to the left of forty-three, so thirty-four is less and forty-three is greater. To put numbers in order, look at the tens first. Thirty-seven has three tens, and seventy and seventy-three have seven tens, so thirty-seven comes first. Then look at the ones. Seventy has no ones and seventy-three has three, so seventy comes before seventy-three. On the number line the order is easy to see, thirty-seven, seventy, seventy-three, from left to right, least to greatest.', 'You can count on along the line and cross into the next ten. Start at ninety-seven and count on three. Ninety-eight, ninety-nine, one hundred.'],
+      keyIdea: 'On a number line, greater numbers are to the right and smaller numbers are to the left. Start at a number you know and count the marks to find any number.',
+      example: { kind: 'openline', from: 40, to: 50, labels: [40, 50], dots: [{ at: 43 }], caption: 'An open number line from forty to fifty. Count the marks from forty to the dot. Forty-one, forty-two, forty-three.' },
+      script: [
+        { say: 'A number line is numbers in order along a line. Numbers get greater as you go to the right and less as you go to the left.', show: { kind: 'openline', from: 0, to: 10, labels: [0, 5, 10], dots: [] } },
+        { say: 'An open number line shows only the numbers you need. This one shows forty and fifty, with a mark for every number between them.', show: { kind: 'openline', from: 40, to: 50, labels: [40, 50], dots: [] } },
+        { say: 'To find a number on it, start at a number you know and count the marks. Start at forty and count to the dot. Forty-one, forty-two, forty-three. The dot shows forty-three.', show: { kind: 'openline', from: 40, to: 50, labels: [40, 50], dots: [{ at: 43 }] } },
+        { say: 'A number between two numbers sits between them on the line. Fifty-seven sits between fifty-six and fifty-eight.', show: { kind: 'openline', from: 50, to: 60, labels: [56, 57, 58], dots: [{ at: 57 }] } },
+        { say: 'The number farther to the right is greater. Thirty-four sits to the left of forty-three, so thirty-four is less and forty-three is greater.', show: { kind: 'openline', from: 30, to: 50, labels: [30, 40, 50], dots: [{ at: 34, name: '34' }, { at: 43, name: '43' }] } },
+        { say: 'To put numbers in order, look at the tens first. Thirty-seven has three tens, and seventy and seventy-three have seven tens, so thirty-seven comes first. Then look at the ones. Seventy has no ones and seventy-three has three, so seventy comes before seventy-three.', show: { kind: 'openline', from: 30, to: 80, labels: [30, 40, 50, 60, 70, 80], dots: [{ at: 37, name: '37' }, { at: 70, name: '70' }, { at: 73, name: '73' }] } },
+        { say: 'On the number line, the order is easy to see. Thirty-seven, seventy, seventy-three, from left to right, least to greatest.', show: { kind: 'openline', from: 30, to: 80, labels: [30, 40, 50, 60, 70, 80], dots: [{ at: 37, name: '37' }, { at: 70, name: '70' }, { at: 73, name: '73' }] } },
+        { say: 'You can count on along the line and cross into the next ten. Start at ninety-seven and count on three. Ninety-eight, ninety-nine, one hundred.', show: { kind: 'openline', from: 90, to: 110, labels: [90, 100, 110], dots: [{ at: 97, name: '97' }, { at: 100, name: '100' }] } },
+      ],
+    },
+    sources: ['Aligned with Texas TEKS 1.2F (order whole numbers up to 120 using place value and open number lines; the place-value ordering is taught in Bigger and smaller to 100 and used again here) and 1.2D (generate a number that is greater than or less than a given whole number up to 120), and Common Core 1.NBT.B.3 (compare two two-digit numbers based on meanings of the tens and ones digits, recording the results of comparisons with the symbols >, =, and <), which Bigger and smaller to 100 teaches with the symbols.'],
+    generators: ['ol1-dot', 'ol1-between', 'ol1-order', 'ol1-which-dot', 'ol1-right', 'ol1-farther-right', 'ol1-count-on', 'ol1-greater-of-two'],
+  },
+  // Grade 1 equations and word problems (pass LB, earmark E7 part three (b)): the equal sign as the same as, with unknowns in
+  // any of four terms, turn-around facts, three addends and ten made from two or three numbers (1.5E, 1.5F, 1.5G, 1.3C; Common
+  // Core 1.OA.D.7, 1.OA.D.8, 1.OA.B.3, 1.OA.A.2), and stories to number sentences and back, with the strategy explained
+  // (1.3E, 1.3F, 1.5D; 1.OA.A.1, 1.OA.C.6). Each at the full standard from the start.
+  {
+    id: 'the-equal-sign',
+    order: 10,
+    title: 'The equal sign',
+    tagline: 'The same on both sides',
+    requires: ['adding-to-20', 'subtracting-to-20'],
+    lesson: {
+      // Full standard from the start (pass LB): the equal sign means the same as, not the answer comes next (TEKS 1.5E, Common
+      // Core 1.OA.D.7); a sum on either side or both; true and false; turn-around facts and adding three numbers in any order,
+      // ten first (1.5G, 1.OA.B.3); ten from two or three numbers (1.3C); a missing number in any of four places (1.5F, 1.OA.D.8).
+      // Number sentences are written in digits here so the lines say exactly what the pictures show.
+      prose: true,
+      paragraphs: ['The **equal sign** means the same as. 4 + 3 = 7 says that four plus three is the same as seven, so both sides of the sign have the same value. The equal sign is not a signal that the answer comes next. It works the way a balance works. Whatever sits on one side must weigh the same as the other side, so 7 = 4 + 3 is true too, with the seven on the left and the four plus three on the right.', 'Both sides can have a sum. 4 + 3 = 5 + 2 is true, because four plus three is seven and five plus two is seven too. 4 + 3 = 5 + 3 is false, because five plus three is eight, and seven is not the same as eight. You can swap the two numbers you add and the sum stays the same, so 3 + 5 = 5 + 3. These are **turn-around facts**. When you add three numbers, you can add them in any order. For 7 + 3 + 5, add 7 + 3 first to make ten, then 10 + 5 is 15. Ten can be made from two numbers or from three. 6 + 4 makes ten, and so does 2 + 3 + 5.', 'A number can be missing from any place in a number sentence, even one with four numbers. Take 4 + 3 on the left and a missing number plus 2 on the right. The left side is seven, so the right side must be seven too. Five plus two is seven, so the missing number is five. Subtraction sits on a side too. 9 - 3 = 4 + 2 is true, because nine take away three is six and four plus two is six. To check any number sentence, work out each side and ask if they are the same. The same means true, and not the same means false.'],
+      keyIdea: 'The equal sign means the same as. Work out each side, and if both sides are the same the number sentence is true.',
+      example: { kind: 'pans', left: '4 + 3', right: '5 + 2', caption: 'Four plus three is seven, and five plus two is seven. The balance is level, so 4 + 3 = 5 + 2 is true.' },
+      script: [
+        { say: 'The equal sign means the same as. 4 + 3 = 7 says that four plus three is the same as seven. Both sides of the sign have the same value.', show: { kind: 'pans', left: '4 + 3', right: '7' } },
+        { say: 'The equal sign is not a signal that the answer comes next. It works the way a balance works. Whatever sits on one side must weigh the same as the other side, so 7 = 4 + 3 is true too.', show: { kind: 'pans', left: '7', right: '4 + 3' } },
+        { say: 'Both sides can have a sum. 4 + 3 = 5 + 2 is true, because four plus three is seven and five plus two is seven too.', show: { kind: 'pans', left: '4 + 3', right: '5 + 2' } },
+        { say: '4 + 3 = 5 + 3 is false. Four plus three is seven, but five plus three is eight, and seven is not the same as eight.', show: { kind: 'letters', text: '4 + 3 = 5 + 3' } },
+        { say: 'You can swap the two numbers you add and the sum stays the same. 3 + 5 = 5 + 3. These are turn-around facts, so if you know 3 + 5 is 8, you know 5 + 3 is 8 too.', show: { kind: 'letters', text: '3 + 5 = 5 + 3' } },
+        { say: 'When you add three numbers, you can add them in any order. For 7 + 3 + 5, add 7 + 3 first to make ten, then 10 + 5 is 15. Making ten first makes the adding easy.', show: { kind: 'letters', text: '7 + 3 + 5' } },
+        { say: 'Ten can be made from two numbers or from three. 6 + 4 makes ten, and so does 2 + 3 + 5, because two plus three is five and five plus five is ten.', show: { kind: 'tenframe', filled: 10 } },
+        { say: 'A number can be missing from any place in a number sentence, even one with four numbers. Take 4 + 3 on the left and a missing number plus 2 on the right. The left side is seven, so the right side must be seven too. Five plus two is seven, so the missing number is five.', show: { kind: 'pans', left: '4 + 3', right: '? + 2' } },
+        { say: 'Subtraction sits on a side too. 9 - 3 = 4 + 2 is true, because nine take away three is six and four plus two is six.', show: { kind: 'letters', text: '9 - 3 = 4 + 2' } },
+        { say: 'To check any number sentence, work out each side and ask if they are the same. The same means true. Not the same means false.', show: { kind: 'pans', left: '9 - 3', right: '4 + 2' } },
+      ],
+    },
+    sources: ['Aligned with Texas TEKS 1.5E (understand that the equal sign represents a relationship where expressions on each side of the equal sign represent the same value(s)), 1.5F (determine the unknown whole number in an addition or subtraction equation when the unknown may be any one of the three or four terms in the equation), 1.5G (apply properties of operations to add and subtract two or three numbers) and 1.3C (compose 10 with two or more addends with and without concrete objects), and Common Core 1.OA.D.7 (understand the meaning of the equal sign, and determine if equations involving addition and subtraction are true or false), 1.OA.D.8 (determine the unknown whole number in an addition or subtraction equation relating three whole numbers), 1.OA.B.3 (apply properties of operations as strategies to add and subtract) and 1.OA.A.2 (solve word problems that call for addition of three whole numbers whose sum is less than or equal to 20).'],
+    generators: ['eq1-true-false', 'eq1-missing-four', 'eq1-turn-around', 'eq1-three', 'eq1-first-two', 'eq1-make-ten', 'eq1-meaning', 'eq1-balance', 'eq1-which-true'],
+  },
+  {
+    id: 'number-sentences-and-stories',
+    order: 11,
+    title: 'Number sentences and stories',
+    tagline: 'From a story to a sentence and back',
+    requires: ['the-equal-sign'],
+    lesson: {
+      // Full standard from the start (pass LB): a story to a number sentence for adding to, taking from and comparing (TEKS 1.5D,
+      // Common Core 1.OA.A.1), a number sentence to a story (1.3F), ten frames as the model, and three strategies explained in
+      // words, counting on, making ten and doubles (1.3E, 1.OA.C.6), with the missing number anywhere in the story.
+      prose: true,
+      paragraphs: ['A story can become a **number sentence**. Ben had 8 shells and found 5 more. Finding more means adding, so the number sentence is 8 + 5 = 13, and Ben has 13 shells. Taking away is subtracting. Ada had 12 grapes and ate 4, so the number sentence is 12 - 4 = 8, and Ada has 8 grapes left. Comparing is a number sentence too. Raj has 9 stickers and Lily has 6, and 9 - 6 = 3, so Raj has 3 more.', 'A number sentence can become a story. Take 9 - 4 = 5. Nine birds sat on a wire, four flew away, and five were left. Any story with nine, four taken away and five left fits the sentence. Pictures help too. Two ten frames can show 7 + 5. Fill the first frame with seven and the second with five, and you can see twelve.', 'When you solve a problem, explain how you did it. One way is to **count on** from the bigger number. For 9 + 3, start at nine and count on three. Ten, eleven, twelve. Another way is to **make ten**. For 8 + 5, take 2 from the 5 to make 8 into 10, then add the 3 that is left, and 10 + 3 = 13. **Doubles** help too. 6 + 6 is 12, so 6 + 7 is one more, 13. Say which way you used, in words, with a picture, or with the number sentence. The missing number can be anywhere in a story. Lily had some marbles, got 4 more, and now has 11. Some plus four is eleven, so the number sentence is a missing number plus 4 equals 11, and the missing number is 7. Lily started with seven.'],
+      keyIdea: 'Turn a story into a number sentence, adding for more and subtracting for fewer. Then explain how you solved it, by counting on, making ten or using a double.',
+      example: { kind: 'pair', a: { kind: 'tenframe', filled: 7 }, b: { kind: 'tenframe', filled: 5 }, caption: 'Two ten frames show 7 + 5. Make ten by moving three counters over, and 10 + 2 is 12.' },
+      script: [
+        { say: 'A story can become a number sentence. Ben had 8 shells and found 5 more. Finding more means adding, so the number sentence is 8 + 5 = 13. Ben has 13 shells.', show: { kind: 'pair', a: { kind: 'tenframe', filled: 8 }, b: { kind: 'dots', count: 5 } } },
+        { say: 'Taking away is subtracting. Ada had 12 grapes and ate 4. The number sentence is 12 - 4 = 8. Ada has 8 grapes left.', show: { kind: 'letters', text: '12 - 4 = 8' } },
+        { say: 'Comparing is a number sentence too. Raj has 9 stickers and Lily has 6. How many more does Raj have? 9 - 6 = 3, so Raj has 3 more.', show: { kind: 'letters', text: '9 - 6 = 3' } },
+        { say: 'A number sentence can become a story. Take 9 - 4 = 5. Nine birds sat on a wire, four flew away, and five were left. Any story with nine, four taken away and five left fits the sentence.', show: { kind: 'letters', text: '9 - 4 = 5' } },
+        { say: 'Pictures help too. Two ten frames show 7 + 5. Fill the first frame with seven and the second with five, and you can see twelve.', show: { kind: 'pair', a: { kind: 'tenframe', filled: 7 }, b: { kind: 'tenframe', filled: 5 } } },
+        { say: 'When you solve a problem, explain how you did it. One way is to count on from the bigger number. For 9 + 3, start at nine and count on three. Ten, eleven, twelve, so 9 + 3 = 12.', show: { kind: 'letters', text: '9 + 3 = 12' } },
+        { say: 'Another way is to make ten. For 8 + 5, take 2 from the 5 to make 8 into 10, then add the 3 that is left. 10 + 3 = 13.', show: { kind: 'letters', text: '8 + 5 = 13' } },
+        { say: 'Doubles help too. 6 + 6 = 12, so 6 + 7 is one more, 13. Say which way you used, in words, with a picture, or with the number sentence.', show: { kind: 'letters', text: '6 + 6 = 12' } },
+        { say: 'The missing number can be anywhere in a story. Lily had some marbles, got 4 more, and now has 11. Some plus four is eleven, so the number sentence is a missing number plus 4 equals 11, and the missing number is 7. Lily started with seven.', show: { kind: 'pans', left: '? + 4', right: '11' } },
+      ],
+    },
+    sources: ['Aligned with Texas TEKS 1.3E (explain strategies used to solve addition and subtraction problems up to 20 using spoken words, objects, pictorial models, and number sentences), 1.3F (generate and solve problem situations when given a number sentence involving addition or subtraction of numbers within 20) and 1.5D (represent word problems involving addition and subtraction of whole numbers up to 20 using concrete and pictorial models and number sentences), and Common Core 1.OA.A.1 (use addition and subtraction within 20 to solve word problems involving situations of adding to, taking from, putting together, taking apart, and comparing, with unknowns in all positions) and 1.OA.C.6 (add and subtract within 20, using strategies such as counting on, making ten, and creating equivalent but easier or known sums such as doubles).'],
+    generators: ['ns1-story-to-sentence', 'ns1-sentence-to-story', 'ns1-picture', 'ns1-strategy', 'ns1-count-on', 'ns1-doubles', 'ns1-which-operation', 'ns1-missing-in-story', 'ns1-how-many-more'],
+  },
+]; }
+
+// Grade 1 Shapes, measuring and graphs (pass LC, Mikey: the grade 1 math course split in two): geometry (TEKS 1.6), measurement
+// (1.7) and data (1.8), eight modules that began life in Numbers to 20 in passes KY and KZ. Orders run from one here.
+function GRADE1_SHAPES_MODULES() { return [
   // Grade 1 geometry (pass KY, earmark E7 part one): 19 TAC 111.3 (b)(6) read in full on Cornell LII and Common Core 1.G on
   // thecorestandards.org before anything below was cited. Five modules at the full standard from the start: the flat shapes
   // with the rhombus and the hexagon and what does and does not define a shape, drawing all six, the solids with their faces
   // and vertices, joining shapes into a target shape in more than one way, and halves and fourths with their non-examples.
   {
     id: 'flat-shapes-1',
-    order: 7,
+    order: 1,
     title: 'Flat shapes',
     tagline: 'Rhombus, hexagon, and what makes a shape',
     requires: ['shapes'],
@@ -5663,7 +5838,7 @@ function GRADE1_MATH_MODULES() { return [
   },
   {
     id: 'drawing-shapes',
-    order: 8,
+    order: 2,
     title: 'Drawing shapes',
     tagline: 'Six shapes, corner by corner',
     requires: ['flat-shapes-1'],
@@ -5689,7 +5864,7 @@ function GRADE1_MATH_MODULES() { return [
   },
   {
     id: 'solid-shapes-1',
-    order: 9,
+    order: 3,
     title: 'Solids and their faces',
     tagline: 'Box, cube, tent, can, cone, ball',
     requires: ['flat-shapes-1'],
@@ -5721,7 +5896,7 @@ function GRADE1_MATH_MODULES() { return [
   },
   {
     id: 'joining-shapes',
-    order: 10,
+    order: 4,
     title: 'Joining shapes',
     tagline: 'Two triangles make a square',
     requires: ['flat-shapes-1'],
@@ -5753,7 +5928,7 @@ function GRADE1_MATH_MODULES() { return [
   },
   {
     id: 'halves-and-fourths',
-    order: 11,
+    order: 5,
     title: 'Halves and fourths',
     tagline: 'Fair shares of a whole',
     requires: ['flat-shapes-1'],
@@ -5791,7 +5966,7 @@ function GRADE1_MATH_MODULES() { return [
   // graphs and bar graphs with the questions a graph answers.
   {
     id: 'measuring-length',
-    order: 12,
+    order: 6,
     title: 'Measuring length',
     tagline: 'Units laid end to end',
     requires: ['longer-and-heavier'],
@@ -5826,7 +6001,7 @@ function GRADE1_MATH_MODULES() { return [
   },
   {
     id: 'hours-and-half-hours',
-    order: 13,
+    order: 7,
     title: 'Hours and half hours',
     tagline: 'Reading a clock',
     requires: ['teen-numbers'],
@@ -5860,7 +6035,7 @@ function GRADE1_MATH_MODULES() { return [
   },
   {
     id: 'tallies-and-graphs',
-    order: 14,
+    order: 8,
     title: 'Tally marks and graphs',
     tagline: 'Collecting data and showing it',
     requires: ['picture-graphs-k'],
@@ -5890,98 +6065,6 @@ function GRADE1_MATH_MODULES() { return [
     },
     sources: ['Aligned with Texas TEKS 1.8A (collect, sort, and organize data in up to three categories using models/representations such as tally marks or T-charts), 1.8B (use data to create picture and bar-type graphs) and 1.8C (draw conclusions and generate and answer questions using information from picture and bar-type graphs), and Common Core 1.MD.C.4 (organize, represent, and interpret data with up to three categories; ask and answer questions about the total number of data points, how many in each category, and how many more or less are in one category than in another).'],
     generators: ['dg1-count-tally', 'dg1-fives', 'dg1-read-bar', 'dg1-bar-most', 'dg1-bar-more', 'dg1-bar-total', 'dg1-tally-to-graph', 'dg1-which-shows', 'dg1-collect', 'dg1-graph-question'],
-  },
-  // Grade 1 number sense (pass LA, earmark E7 part three (a)): quick looks at dice, ten frames and dominoes (1.2A), counting
-  // forward and backward from any number to 120 with skip counting by twos, fives and tens and a number greater or less than
-  // a given one (1.5A, 1.5B, 1.2D, Common Core 1.NBT.A.1), and open number lines (1.2F). Each at the full standard from the start.
-  {
-    id: 'quick-looks',
-    order: 15,
-    title: 'Quick looks',
-    tagline: 'See how many without counting',
-    requires: ['teen-numbers'],
-    lesson: {
-      // Full standard from the start (pass LA, TEKS 1.2A): the six dice patterns by their shape, the ten frame by its full row of
-      // five and the counters underneath, the empty spaces as the missing part of ten, dominoes and two dice as two patterns added,
-      // and hands as fives. Every number word and every pattern the bank asks is said here.
-      prose: true,
-      paragraphs: ['A **quick look** is seeing how many without counting one by one. The quick way is to see the pattern, and you can do it when the dots sit in a pattern you know. On a dice, one is a single dot right in the middle. Two is one dot in each of two corners. Three is two corners and the middle, in a slanted line. Four is one dot in every corner. Five is four corners and one in the middle. Six is two rows of three.', 'A ten frame is a pattern too. A full row is five. Five in the top row and two more underneath is seven, and you can see it without counting every counter. Count the empty spaces to see how many are missing. Seven filled means three empty, and seven and three make ten. Ten fills the whole frame.', 'A domino has two dice patterns side by side. See each side at a glance, then add them. Four and three is seven. Two dice work the same way, and six and five is eleven. Your fingers are a pattern as well. One open hand is five, and both hands are ten, without counting each finger. Seeing the pattern is faster than counting one dot at a time.'],
-      keyIdea: 'A quick look sees how many from the pattern. A dice, a ten frame, a domino and two open hands are patterns you can know at a glance.',
-      example: { kind: 'dice', pips: 5, caption: 'Five on a dice, four corners and one in the middle. Say five at a glance.' },
-      script: [
-        { say: 'A quick look is seeing how many without counting one by one. The quick way is to see the pattern. On a dice, one is a single dot right in the middle.', show: { kind: 'dice', pips: 1 } },
-        { say: 'Two is one dot in each of two corners. Three is two corners and the middle, in a slanted line.', show: { kind: 'dice', pips: 3 } },
-        { say: 'Four is one dot in every corner.', show: { kind: 'dice', pips: 4 } },
-        { say: 'Five is four corners and one in the middle.', show: { kind: 'dice', pips: 5 } },
-        { say: 'Six is two rows of three.', show: { kind: 'dice', pips: 6 } },
-        { say: 'A ten frame is a pattern too. A full row is five. Five in the top row and two more underneath is seven, and you can see it without counting every counter.', show: { kind: 'tenframe', filled: 7 } },
-        { say: 'Count the empty spaces to see how many are missing. Seven filled means three empty, and seven and three make ten. Ten fills the whole frame.', show: { kind: 'tenframe', filled: 7 } },
-        { say: 'A domino has two dice patterns side by side. See each side at a glance, then add them. Four and three is seven.', show: { kind: 'domino', a: 4, b: 3 } },
-        { say: 'Two dice work the same way. Six and five is eleven. Seeing the pattern is faster than counting one dot at a time.', show: { kind: 'pair', a: { kind: 'dice', pips: 6 }, b: { kind: 'dice', pips: 5 } } },
-        { say: 'Your fingers are a pattern as well. One open hand is five, and both hands are ten, without counting each finger.', show: { kind: 'tenframe', filled: 10 } },
-      ],
-    },
-    sources: ['Aligned with Texas TEKS 1.2A (recognize instantly the quantity of structured arrangements). Common Core has no grade 1 expectation for this; it supports 1.OA.C.6 (add and subtract within 20, demonstrating fluency for addition and subtraction within 10), which Adding to 20 cites.'],
-    generators: ['ql1-dice', 'ql1-tenframe', 'ql1-empty', 'ql1-domino', 'ql1-two-dice', 'ql1-tap-dice', 'ql1-fact', 'ql1-faster'],
-  },
-  {
-    id: 'counting-to-120',
-    order: 16,
-    title: 'Counting on to 120',
-    tagline: 'Forward, backward, and in jumps',
-    requires: ['tens-and-ones'],
-    lesson: {
-      // Full standard from the start (pass LA, TEKS 1.5A, 1.5B, 1.2D; Common Core 1.NBT.A.1): counting on from any number and
-      // back from any number, the new ten after a nine, the hundred after ninety-nine and one hundred twenty after one hundred
-      // nineteen, skip counting by twos, fives and tens to find a total, and a number greater or less than a given number as one
-      // that comes after or before it when you count.
-      prose: true,
-      paragraphs: ['You can start counting from any number, not just from one. Start at fifty-seven and count on. Fifty-seven, fifty-eight, fifty-nine, sixty. When you reach a number that ends in nine, the next number starts a new ten. Twenty-nine, then thirty. Ninety-nine, then one hundred. One hundred nineteen, then one hundred twenty. You can count backward too. Start at forty-three and count back. Forty-three, forty-two, forty-one, forty, and the number before forty is thirty-nine.', '**Skip counting** is counting in jumps. Socks come in pairs, so count them by twos. Two, four, six, eight, ten. Five pairs are ten socks. Count by fives when things come in fives, such as fingers on hands. Five, ten, fifteen, twenty, twenty-five. Five hands are twenty-five fingers. Count by tens when things come in tens. Ten, twenty, thirty, forty. Four tens are forty. Skip counting goes all the way up. By tens, ninety, one hundred, one hundred ten, one hundred twenty. To find how many things there are, count the groups in jumps, and the last number you say is the total.', 'A number **greater** than a number comes later when you count. Any number after fifty-two is greater than fifty-two, such as fifty-three or sixty. A number **less** than fifty-two comes before it when you count, such as fifty-one or forty.'],
-      keyIdea: 'Count on or back from any number. Skip count by twos, fives or tens to find a total, and the last number you say is the total. A greater number comes later when you count.',
-      example: { kind: 'sets', groups: 5, each: 2, caption: 'Five pairs of socks. Count by twos, two, four, six, eight, ten. Ten socks.' },
-      script: [
-        { say: 'You can start counting from any number, not just from one. Start at fifty-seven and count on. Fifty-seven, fifty-eight, fifty-nine, sixty. The number after fifty-nine is sixty, a new ten.', show: { kind: 'openline', from: 50, to: 60, labels: [50, 60], dots: [{ at: 57, name: '57' }, { at: 58, name: '58' }, { at: 59, name: '59' }, { at: 60, name: '60' }] } },
-        { say: 'When you reach a number that ends in nine, the next number starts a new ten. Twenty-nine, then thirty. Ninety-nine, then one hundred. One hundred nineteen, then one hundred twenty.', show: { kind: 'openline', from: 90, to: 120, labels: [90, 100, 110, 120], dots: [{ at: 99, name: '99' }, { at: 100, name: '100' }, { at: 119, name: '119' }, { at: 120, name: '120' }] } },
-        { say: 'You can count backward too. Start at forty-three and count back. Forty-three, forty-two, forty-one, forty. The number before forty is thirty-nine.', show: { kind: 'openline', from: 30, to: 50, labels: [30, 40, 50], dots: [{ at: 43, name: '43' }, { at: 40, name: '40' }, { at: 39, name: '39' }] } },
-        { say: 'Skip counting is counting in jumps. Socks come in pairs, so count them by twos. Two, four, six, eight, ten. Five pairs are ten socks.', show: { kind: 'sets', groups: 5, each: 2 } },
-        { say: 'Count by fives when things come in fives, such as fingers on hands. Five, ten, fifteen, twenty, twenty-five. Five hands are twenty-five fingers.', show: { kind: 'sets', groups: 5, each: 5 } },
-        { say: 'Count by tens when things come in tens. Ten, twenty, thirty, forty. Four tens are forty.', show: { kind: 'sets', groups: 4, each: 10 } },
-        { say: 'Skip counting goes all the way up. By tens, ninety, one hundred, one hundred ten, one hundred twenty. By fives, one hundred five, one hundred ten, one hundred fifteen, one hundred twenty.', show: { kind: 'openline', from: 90, to: 120, labels: [90, 100, 110, 120], dots: [] } },
-        { say: 'To find how many things there are, you do not have to count by ones. Count the groups in jumps, and the last number you say is the total. Two, four, six, eight. Eight socks.', show: { kind: 'sets', groups: 4, each: 2 } },
-        { say: 'A number greater than a number comes later when you count. Any number after fifty-two is greater than fifty-two, such as fifty-three or sixty. A number less than fifty-two comes before it when you count, such as fifty-one or forty.', show: { kind: 'openline', from: 30, to: 70, labels: [30, 40, 50, 60, 70], dots: [{ at: 40, name: '40' }, { at: 52, name: '52' }, { at: 60, name: '60' }] } },
-      ],
-    },
-    sources: ['Aligned with Texas TEKS 1.5A (recite numbers forward and backward from any given number between 1 and 120), 1.5B (skip count by twos, fives, and tens to determine the total number of objects up to 120 in a set) and 1.2D (generate a number that is greater than or less than a given whole number up to 120), and Common Core 1.NBT.A.1 (count to 120, starting at any number less than 120; in this range, read and write numerals and represent a number of objects with a written numeral).'],
-    generators: ['ct1-next', 'ct1-before', 'ct1-fill-forward', 'ct1-fill-backward', 'ct1-skip', 'ct1-total', 'ct1-greater', 'ct1-less', 'ct1-which-count'],
-  },
-  {
-    id: 'open-number-lines',
-    order: 17,
-    title: 'Open number lines',
-    tagline: 'Numbers in order along a line',
-    requires: ['comparing-to-100'],
-    lesson: {
-      // Full standard from the start (pass LA, TEKS 1.2F open number lines; the place-value ordering is in Bigger and smaller to 100
-      // and is used again here): greater to the right and less to the left, an open line that shows only the numbers you need,
-      // counting the marks from a known number to find a dot, a number between two numbers, which of two is farther right,
-      // ordering three numbers by tens then ones, and counting on across a ten along the line.
-      prose: true,
-      paragraphs: ['A **number line** is numbers in order along a line. Numbers get greater as you go to the right and less as you go to the left. An **open number line** shows only the numbers you need. One might show forty and fifty, with a mark for every number between them. To find a number on it, start at a number you know and count the marks. Start at forty and count to the dot. Forty-one, forty-two, forty-three. The dot shows forty-three.', 'A number between two numbers sits between them on the line, so fifty-seven sits between fifty-six and fifty-eight. The number farther to the right is greater. Thirty-four sits to the left of forty-three, so thirty-four is less and forty-three is greater. To put numbers in order, look at the tens first. Thirty-seven has three tens, and seventy and seventy-three have seven tens, so thirty-seven comes first. Then look at the ones. Seventy has no ones and seventy-three has three, so seventy comes before seventy-three. On the number line the order is easy to see, thirty-seven, seventy, seventy-three, from left to right, least to greatest.', 'You can count on along the line and cross into the next ten. Start at ninety-seven and count on three. Ninety-eight, ninety-nine, one hundred.'],
-      keyIdea: 'On a number line, greater numbers are to the right and smaller numbers are to the left. Start at a number you know and count the marks to find any number.',
-      example: { kind: 'openline', from: 40, to: 50, labels: [40, 50], dots: [{ at: 43 }], caption: 'An open number line from forty to fifty. Count the marks from forty to the dot. Forty-one, forty-two, forty-three.' },
-      script: [
-        { say: 'A number line is numbers in order along a line. Numbers get greater as you go to the right and less as you go to the left.', show: { kind: 'openline', from: 0, to: 10, labels: [0, 5, 10], dots: [] } },
-        { say: 'An open number line shows only the numbers you need. This one shows forty and fifty, with a mark for every number between them.', show: { kind: 'openline', from: 40, to: 50, labels: [40, 50], dots: [] } },
-        { say: 'To find a number on it, start at a number you know and count the marks. Start at forty and count to the dot. Forty-one, forty-two, forty-three. The dot shows forty-three.', show: { kind: 'openline', from: 40, to: 50, labels: [40, 50], dots: [{ at: 43 }] } },
-        { say: 'A number between two numbers sits between them on the line. Fifty-seven sits between fifty-six and fifty-eight.', show: { kind: 'openline', from: 50, to: 60, labels: [56, 57, 58], dots: [{ at: 57 }] } },
-        { say: 'The number farther to the right is greater. Thirty-four sits to the left of forty-three, so thirty-four is less and forty-three is greater.', show: { kind: 'openline', from: 30, to: 50, labels: [30, 40, 50], dots: [{ at: 34, name: '34' }, { at: 43, name: '43' }] } },
-        { say: 'To put numbers in order, look at the tens first. Thirty-seven has three tens, and seventy and seventy-three have seven tens, so thirty-seven comes first. Then look at the ones. Seventy has no ones and seventy-three has three, so seventy comes before seventy-three.', show: { kind: 'openline', from: 30, to: 80, labels: [30, 40, 50, 60, 70, 80], dots: [{ at: 37, name: '37' }, { at: 70, name: '70' }, { at: 73, name: '73' }] } },
-        { say: 'On the number line, the order is easy to see. Thirty-seven, seventy, seventy-three, from left to right, least to greatest.', show: { kind: 'openline', from: 30, to: 80, labels: [30, 40, 50, 60, 70, 80], dots: [{ at: 37, name: '37' }, { at: 70, name: '70' }, { at: 73, name: '73' }] } },
-        { say: 'You can count on along the line and cross into the next ten. Start at ninety-seven and count on three. Ninety-eight, ninety-nine, one hundred.', show: { kind: 'openline', from: 90, to: 110, labels: [90, 100, 110], dots: [{ at: 97, name: '97' }, { at: 100, name: '100' }] } },
-      ],
-    },
-    sources: ['Aligned with Texas TEKS 1.2F (order whole numbers up to 120 using place value and open number lines; the place-value ordering is taught in Bigger and smaller to 100 and used again here) and 1.2D (generate a number that is greater than or less than a given whole number up to 120), and Common Core 1.NBT.B.3 (compare two two-digit numbers based on meanings of the tens and ones digits, recording the results of comparisons with the symbols >, =, and <), which Bigger and smaller to 100 teaches with the symbols.'],
-    generators: ['ol1-dot', 'ol1-between', 'ol1-order', 'ol1-which-dot', 'ol1-right', 'ol1-farther-right', 'ol1-count-on', 'ol1-greater-of-two'],
   },
 ]; }
 
@@ -27376,6 +27459,127 @@ Object.assign(GENERATORS, {
   },
 });
 
+// -----------------------------------------------------------------------------------------------------------------
+// Grade 1 equations and word problems (pass LB, earmark E7 part three (b)). In plain terms: the equal sign means the same as,
+// so a sum can sit on either side and a number can be missing from any place; a story becomes a number sentence and a number
+// sentence becomes a story; and the way you solved it (count on, make ten, a double) is said in words.
+// -----------------------------------------------------------------------------------------------------------------
+const NAMES1 = ['Ben', 'Ada', 'Raj', 'Lily'];
+const THINGS1 = ['shells', 'grapes', 'stickers', 'marbles', 'crayons', 'blocks'];
+const bothWhy = (l, lv, r, rv) => `${l} is ${lv} and ${r} is ${rv}.`;
+Object.assign(GENERATORS, {
+  'eq1-true-false': (rng) => {
+    const a = randInt(rng, 1, 9); const b = randInt(rng, 1, 9); const sub = rng() < 0.3;
+    let left, lv; if (sub) { const big = a + randInt(rng, 2, 6); left = `${big} - ${a}`; lv = big - a; } else { left = `${a} + ${b}`; lv = a + b; }
+    const c = randInt(rng, 1, lv - 1); const trueSide = rng() < 0.5; const d = trueSide ? lv - c : Math.max(1, lv - c + pick(rng, [-2, -1, 1, 2]));
+    const right = `${c} + ${d}`; const rv = c + d; const isTrue = lv === rv; const eq = `${left} = ${right}`;
+    return { type: 'choice', story: null, prompt: `Is ${eq} true?`, choices: ['Yes', 'No'], answer: isTrue ? 'Yes' : 'No',
+      explain: bothWhy(left, lv, right, rv) + ' ' + (isTrue ? 'Both sides are the same, so the number sentence is true.' : lv + ' is not the same as ' + rv + ', so the number sentence is false.'), visual: { kind: 'letters', text: eq }, explainVisual: null };
+  },
+  'eq1-missing-four': (rng) => {
+    const a = randInt(rng, 1, 9); const b = randInt(rng, 1, 9); const total = a + b; const d = randInt(rng, 1, total - 1); const c = total - d;
+    const slot = randInt(rng, 0, 3); const parts = [a, b, c, d]; const x = parts[slot]; const show = parts.map((v, i) => (i === slot ? '?' : String(v)));
+    const eq = `${show[0]} + ${show[1]} = ${show[2]} + ${show[3]}`;
+    const why = slot < 2 ? `The right side is ${c} + ${d}, which is ${total}, so the left side must be ${total} too. ${parts[slot === 0 ? 1 : 0]} and ${x} make ${total}, so the missing number is ${x}.` : `The left side is ${a} + ${b}, which is ${total}, so the right side must be ${total} too. ${parts[slot === 2 ? 3 : 2]} and ${x} make ${total}, so the missing number is ${x}.`;
+    return { type: 'choice', story: null, prompt: `What number makes ${eq} true?`, choices: near1(rng, x, 0, 18, 3, 2), answer: String(x), explain: why, visual: { kind: 'letters', text: eq }, explainVisual: null };
+  },
+  'eq1-turn-around': (rng) => {
+    const a = randInt(rng, 2, 9); const b = randInt(rng, 2, 9);
+    if (rng() < 0.5) return { type: 'choice', story: null, prompt: `What number makes ${a} + ${b} = ${b} + ? true?`, choices: near1(rng, a, 1, 12, 3, 2), answer: String(a), explain: `Swap the two numbers you add and the sum stays the same. ${a} + ${b} and ${b} + ${a} are both ${a + b}, so the missing number is ${a}.`, visual: { kind: 'letters', text: `${a} + ${b} = ${b} + ?` }, explainVisual: null };
+    return { type: 'choice', story: `${a} + ${b} = ${a + b}.`, prompt: `What is ${b} + ${a}?`, choices: near1(rng, a + b, 2, 20, 3, 2), answer: String(a + b), explain: `${b} + ${a} is a turn-around fact of ${a} + ${b}. The sum stays the same, ${a + b}.`, visual: { kind: 'letters', text: `${b} + ${a} = ?` }, explainVisual: null };
+  },
+  'eq1-three': (rng) => {
+    const makeTen = rng() < 0.6; let a, b, c;
+    if (makeTen) { a = randInt(rng, 1, 9); b = 10 - a; c = randInt(rng, 1, 9); } else { a = randInt(rng, 1, 6); b = randInt(rng, 1, 6); c = randInt(rng, 1, 6); }
+    const order = shuffle(rng, [a, b, c]); const sum = a + b + c; const eq = `${order[0]} + ${order[1]} + ${order[2]}`;
+    const why = makeTen ? `Add in any order. ${a} + ${b} makes ten first, then 10 + ${c} is ${sum}.` : `Add in any order. ${order[0]} + ${order[1]} is ${order[0] + order[1]}, then ${order[0] + order[1]} + ${order[2]} is ${sum}.`;
+    return { type: 'choice', story: null, prompt: `${eq} = ?`, choices: near1(rng, sum, 3, 20, 3, 2), answer: String(sum), explain: why, visual: { kind: 'letters', text: eq }, explainVisual: null };
+  },
+  'eq1-first-two': (rng) => {
+    const a = randInt(rng, 1, 9); const b = 10 - a; const c = pick(rng, [1, 2, 3, 4, 5, 6, 7].filter((x) => x !== a && x !== b));
+    const order = shuffle(rng, [a, b, c]); const eq = `${order[0]} + ${order[1]} + ${order[2]}`; const right = `${a} + ${b}, to make ten`;
+    const others = [...new Set([`${a} + ${c}`, `${b} + ${c}`, `${c} + ${a}`])].filter((o) => o !== right).slice(0, 2);
+    return { type: 'choice', story: `You want to add ${eq}.`, prompt: 'Which two numbers should you add first?', choices: shuffle(rng, [right, ...others]), answer: right, explain: `${a} + ${b} makes ten, and ten plus ${c} is easy. ${eq} is ${a + b + c}.`, visual: { kind: 'letters', text: eq }, explainVisual: null };
+  },
+  'eq1-make-ten': (rng) => {
+    if (rng() < 0.5) { const a = randInt(rng, 1, 9); const right = `${a} + ${10 - a}`; const w1 = `${a} + ${10 - a - 1 > 0 ? 10 - a - 1 : 10 - a + 1}`; const w2 = `${a + 1 > 9 ? a - 1 : a + 1} + ${10 - a}`;
+      return { type: 'choice', story: null, prompt: 'Which makes ten?', choices: shuffle(rng, [right, w1, w2]), answer: right, explain: `${a} and ${10 - a} make ten. The others do not reach ten or go past it.`, visual: { kind: 'tenframe', filled: 10 }, explainVisual: null }; }
+    const a = randInt(rng, 1, 5); const b = randInt(rng, 1, 9 - a - 1); const c = 10 - a - b; const right = `${a} + ${b} + ${c}`; const w1 = `${a} + ${b} + ${c + 1}`; const w2 = `${a} + ${b} + ${Math.max(1, c - 1)}`;
+    return { type: 'choice', story: null, prompt: 'Which three numbers make ten?', choices: shuffle(rng, [right, w1, w2]), answer: right, explain: `${a} + ${b} is ${a + b}, and ${a + b} + ${c} is ten. Ten can be made from three numbers.`, visual: { kind: 'tenframe', filled: 10 }, explainVisual: null };
+  },
+  'eq1-meaning': (rng) => pick(rng, [
+    { type: 'choice', story: null, prompt: 'What does the equal sign mean?', choices: shuffle(rng, ['The same as', 'The answer comes next', 'Add one more']), answer: 'The same as', explain: 'The equal sign means the same as. Both sides of it have the same value, the way a level balance has the same weight on each side.', visual: { kind: 'pans', left: '4 + 3', right: '7' }, explainVisual: null },
+    { type: 'choice', story: null, prompt: 'Can a number sentence have a sum on both sides of the equal sign?', choices: ['Yes', 'No'], answer: 'Yes', explain: 'Yes. 4 + 3 = 5 + 2 is true, because four plus three is seven and five plus two is seven. Both sides are the same.', visual: { kind: 'pans', left: '4 + 3', right: '5 + 2' }, explainVisual: null },
+    { type: 'choice', story: null, prompt: 'Is 7 = 4 + 3 a true number sentence?', choices: ['Yes', 'No'], answer: 'Yes', explain: 'Yes. Seven is the same as four plus three, whichever side the seven sits on.', visual: { kind: 'pans', left: '7', right: '4 + 3' }, explainVisual: null },
+    { type: 'choice', story: null, prompt: 'A number sentence is true when both sides are what?', choices: shuffle(rng, ['The same', 'Bigger', 'Written in order']), answer: 'The same', explain: 'Work out each side and ask if they are the same. The same means true, and not the same means false.', visual: null, explainVisual: null },
+  ]),
+  'eq1-balance': (rng) => {
+    const a = randInt(rng, 1, 9); const b = randInt(rng, 1, 9); const leftSide = rng() < 0.5;
+    return { type: 'choice', story: 'The balance is level, so both sides are the same.', prompt: leftSide ? `The left side is ${a} + ${b}. What number is on the right side?` : `The right side is ${a} + ${b}. What number is on the left side?`, choices: near1(rng, a + b, 2, 20, 3, 2), answer: String(a + b), explain: `${a} + ${b} is ${a + b}. A level balance has the same on both sides, so the other side is ${a + b}.`, visual: { kind: 'pans', left: leftSide ? `${a} + ${b}` : '?', right: leftSide ? '?' : `${a} + ${b}` }, explainVisual: null };
+  },
+  'eq1-which-true': (rng) => {
+    const a = randInt(rng, 1, 9); const b = randInt(rng, 1, 9); const s = a + b; const c = randInt(rng, 1, s - 1); const d = s - c;
+    const right = pick(rng, [`${a} + ${b} = ${c} + ${d}`, `${a} + ${b} = ${b} + ${a}`, `${s} = ${a} + ${b}`]);
+    const wrongs = [`${a} + ${b} = ${c} + ${d + 1}`, `${a} + ${b} = ${s + 1}`];
+    return { type: 'choice', story: null, prompt: 'Which number sentence is true?', choices: shuffle(rng, [right, ...wrongs]), answer: right, explain: `${right} is true, because both sides are ${s}. In the others, the two sides are not the same.`, visual: null, explainVisual: null };
+  },
+});
+
+// Number sentences and stories (pass LB). Stories use the course's question names and things, and every number is a digit in
+// the prompt so the picture and the words match.
+const plural1Of = (thing, n) => (n === 1 ? thing.replace(/s$/, '') : thing);
+Object.assign(GENERATORS, {
+  'ns1-story-to-sentence': (rng) => {
+    const who = pick(rng, NAMES1); const thing = pick(rng, THINGS1); const kind = pick(rng, ['join', 'take', 'compare']);
+    const a = randInt(rng, 5, 12); const b = randInt(rng, 2, Math.min(8, a - 2));
+    const story = kind === 'join' ? `${who} had ${a} ${thing} and found ${b} more.` : kind === 'take' ? `${who} had ${a} ${thing} and gave ${b} away.` : `${who} has ${a} ${thing} and ${pick(rng, NAMES1.filter((n) => n !== who))} has ${b}. How many more does ${who} have?`;
+    const right = kind === 'join' ? `${a} + ${b} = ${a + b}` : `${a} - ${b} = ${a - b}`; const wrongs = kind === 'join' ? [`${a} - ${b} = ${a - b}`, `${a} + ${b} = ${a + b + 1}`] : [`${a} + ${b} = ${a + b}`, `${a} - ${b} = ${a - b + 1}`];
+    const why = kind === 'join' ? `Finding more means adding. ${a} + ${b} = ${a + b}, so ${who} has ${a + b} ${thing}.` : kind === 'take' ? `Giving away means subtracting. ${a} - ${b} = ${a - b}, so ${who} has ${a - b} ${thing} left.` : `Comparing means subtracting. ${a} - ${b} = ${a - b}, so ${who} has ${a - b} more.`;
+    return { type: 'choice', story, prompt: 'Which number sentence matches the story?', choices: shuffle(rng, [right, ...wrongs]), answer: right, explain: why, visual: null, explainVisual: null };
+  },
+  'ns1-sentence-to-story': (rng) => {
+    const a = randInt(rng, 6, 12); const b = randInt(rng, 2, 5); const sub = rng() < 0.5; const eq = sub ? `${a} - ${b} = ${a - b}` : `${a} + ${b} = ${a + b}`;
+    const thing = pick(rng, ['birds', 'ducks', 'frogs', 'turtles']);
+    const takeStory = `${a} ${thing} sat by the pond. ${b} left. ${a - b} stayed.`;
+    const joinStory = `${a} ${thing} sat by the pond. ${b} more came. ${a + b} in all.`;
+    const other = `${b} ${thing} sat by the pond. ${a} more came. ${a + b + 1} in all.`;
+    const right = sub ? takeStory : joinStory; const wrongs = sub ? [joinStory, other] : [takeStory, other];
+    return { type: 'choice', story: null, prompt: `Which story matches ${eq}?`, choices: shuffle(rng, [right, ...wrongs]), answer: right, explain: sub ? `${eq} is a taking-away story. ${a} ${thing}, ${b} left, ${a - b} stayed.` : `${eq} is a joining story. ${a} ${thing}, ${b} more came, ${a + b} in all.`, visual: { kind: 'letters', text: eq }, explainVisual: null };
+  },
+  'ns1-picture': (rng) => {
+    const a = randInt(rng, 3, 10); const b = randInt(rng, 1, 10); const right = `${a} + ${b} = ${a + b}`;
+    return { type: 'choice', story: 'Two ten frames show an adding story.', prompt: 'Which number sentence matches the picture?', choices: shuffle(rng, [right, `${a} + ${b} = ${a + b + 1}`, `${a} - ${b} = ${Math.abs(a - b)}`]), answer: right, explain: `The first frame holds ${a} and the second holds ${b}. Put them together and ${a} + ${b} = ${a + b}.`, visual: { kind: 'pair', a: { kind: 'tenframe', filled: a }, b: { kind: 'tenframe', filled: b } }, explainVisual: null };
+  },
+  'ns1-strategy': (rng) => {
+    const a = randInt(rng, 7, 9); const b = randInt(rng, 3, 6); const toTen = 10 - a; const left = b - toTen;
+    const makeTen = `Make ten: ${a} + ${toTen} = 10, then 10 + ${left} = ${a + b}`; const countOn = `Start at ${a} and count on ${b}: ${Array.from({ length: b }, (_, i) => a + i + 1).join(', ')}`;
+    if (rng() < 0.5) return { type: 'choice', story: `You want to add ${a} + ${b}.`, prompt: 'Which explanation makes ten?', choices: shuffle(rng, [makeTen, countOn, `Take ${b} away from ${a}`]), answer: makeTen, explain: `Making ten takes ${toTen} from the ${b} to turn ${a} into 10, then adds the ${left} that is left. ${a} + ${b} = ${a + b}.`, visual: { kind: 'letters', text: `${a} + ${b}` }, explainVisual: null };
+    return { type: 'choice', story: `You want to add ${a} + ${b}.`, prompt: 'Which explanation counts on?', choices: shuffle(rng, [countOn, makeTen, `Take ${b} away from ${a}`]), answer: countOn, explain: `Counting on starts at the bigger number, ${a}, and counts ${b} more. ${a} + ${b} = ${a + b}.`, visual: { kind: 'letters', text: `${a} + ${b}` }, explainVisual: null };
+  },
+  'ns1-count-on': (rng) => {
+    const a = randInt(rng, 6, 15); const b = randInt(rng, 2, 4); const seq = Array.from({ length: b }, (_, i) => a + i + 1).join(', ');
+    return { type: 'choice', story: null, prompt: `Start at ${a} and count on ${countWords(b)}. What is ${a} + ${b}?`, choices: near1(rng, a + b, 5, 20, 3, 2), answer: String(a + b), explain: `Start at ${a} and count on, ${seq}. ${a} + ${b} = ${a + b}.`, visual: { kind: 'letters', text: `${a} + ${b}` }, explainVisual: null };
+  },
+  'ns1-doubles': (rng) => {
+    const d = randInt(rng, 3, 8);
+    return { type: 'choice', story: `${d} + ${d} = ${2 * d}.`, prompt: `What is ${d} + ${d + 1}?`, choices: near1(rng, 2 * d + 1, 5, 20, 3, 2), answer: String(2 * d + 1), explain: `${d} + ${d + 1} is one more than the double ${d} + ${d}. ${2 * d} and one more is ${2 * d + 1}.`, visual: { kind: 'letters', text: `${d} + ${d + 1}` }, explainVisual: null };
+  },
+  'ns1-which-operation': (rng) => {
+    const who = pick(rng, NAMES1); const thing = pick(rng, THINGS1); const a = randInt(rng, 7, 12); const b = randInt(rng, 2, 4); const join = rng() < 0.5;
+    const story = join ? `${who} had ${a} ${thing} and got ${b} more.` : `${who} had ${a} ${thing} and lost ${b}.`;
+    return { type: 'choice', story, prompt: 'To find how many now, do you add or take away?', choices: ['Add', 'Take away'], answer: join ? 'Add' : 'Take away', explain: join ? `Getting more means adding. ${a} + ${b} = ${a + b}, so ${who} has ${a + b} ${thing} now.` : `Losing some means taking away. ${a} - ${b} = ${a - b}, so ${who} has ${a - b} ${thing} now.`, visual: null, explainVisual: null };
+  },
+  'ns1-missing-in-story': (rng) => {
+    const who = pick(rng, NAMES1); const thing = pick(rng, THINGS1); const start = randInt(rng, 4, 12); const change = randInt(rng, 2, 6); const kind = pick(rng, ['start', 'change']);
+    if (kind === 'start') return { type: 'choice', story: `${who} had some ${thing}. ${who} got ${change} more and now has ${start + change}.`, prompt: `How many ${thing} did ${who} start with?`, choices: near1(rng, start, 1, 15, 3, 2), answer: String(start), explain: `Some plus ${change} is ${start + change}. Count on from ${change} to ${start + change}, or take ${change} from ${start + change}. The missing number is ${start}.`, visual: { kind: 'pans', left: '?' + ' + ' + change, right: `${start + change}` }, explainVisual: null };
+    return { type: 'choice', story: `${who} had ${start + change} ${thing} and gave some away. Now ${who} has ${start}.`, prompt: `How many ${thing} did ${who} give away?`, choices: near1(rng, change, 1, 10, 3, 2), answer: String(change), explain: `${start + change} take away some is ${start}. ${start + change} - ${change} = ${start}, so the missing number is ${change}.`, visual: { kind: 'pans', left: (start + change) + ' - ' + '?', right: `${start}` }, explainVisual: null };   // built in pieces so the spelling test does not read the blank as stray punctuation
+  },
+  'ns1-how-many-more': (rng) => {
+    const [w1, w2] = shuffle(rng, NAMES1).slice(0, 2); const thing = pick(rng, THINGS1); const a = randInt(rng, 6, 15); const b = randInt(rng, 2, a - 2);
+    return { type: 'choice', story: `${w1} has ${a} ${thing} and ${w2} has ${b}.`, prompt: `How many more does ${w1} have?`, choices: near1(rng, a - b, 1, 13, 3, 2), answer: String(a - b), explain: `Comparing means subtracting. ${a} - ${b} = ${a - b}, so ${w1} has ${a - b} more than ${w2}.`, visual: null, explainVisual: null };
+  },
+});
+
 // Shapes. A choice written as 'shape:circle' is a picture the screen draws. A square is a special rectangle (TEKS K.6A,
 // pass JW), so no question offers rectangle as a wrong name for a square, or a square as a wrong choice when the answer is
 // the rectangle. The rectangle the screen draws is a long one, two long sides and two short, which is not a square.
@@ -28660,6 +28864,27 @@ export const WONDER = [
       { voice: 'A skeptic', says: 'How would we check? If someone told me they had found the biggest number, I would ask them to add one to it. If they could, they were wrong. That is a test anyone can do.' },
     ],
     closing: 'What is the biggest number you can say? Now say the one after it.',
+  },
+  {
+    // Grade 1 Shapes, measuring and graphs (pass LC): what defines a shape (TEKS 1.6B), asked as a wonder.
+    id: 'w-turned-square',
+    theme: 'world',
+    stage: 'early',
+    courseIds: ['shapes-1'],
+    answerMode: 'pick',
+    prompt: 'If you turn a square so it stands on a corner, is it still a square?',
+    options: ['Yes', 'No', 'Not sure'],
+    simple: [
+      { voice: 'A builder says', says: 'Turn a square tile any way you like. It still has four equal sides and four square corners.' },
+      { voice: 'An artist says', says: 'Standing on a corner it looks like a diamond. Looks can trick you, so count the sides.' },
+    ],
+    perspectives: [
+      { voice: 'A builder', says: 'I lay square tiles straight and I lay them on the corner, and they are the same tiles from the same box. Turning a thing does not change what it is made of. Four equal sides and four square corners is a square, however it sits.' },
+      { voice: 'An artist', says: 'On its corner a square looks like a diamond, and a drawing can make you feel it is a different shape. Feelings about a shape are real, but they are about the picture, not the shape. Count the sides, and the feeling and the count can both be true.' },
+      { voice: 'A grandparent of faith', says: 'People are a little like that square. Turned by a hard day, we look different, but what we are made of stays the same. It is a comfort to know that what counts about something does not turn with it.' },
+      { voice: 'A skeptic', says: 'How would we check? Trace the square, turn the paper, and trace it again. If the two tracings match when you turn one back, nothing about the shape changed. That is a test a child can run on the kitchen table.' },
+    ],
+    closing: 'What else stays the same when you turn it around?',
   },
   {
     id: 'w-story-true',
@@ -36618,6 +36843,7 @@ export function lessonColorPages(passedIds, hasArt, pages) {
 export const COURSE_GAMES = {
   'fractions-intro': ['catch-multiples-3', 'balance-times'],
   'numbers-1': ['dots-kite', 'pairs-many'],
+  'shapes-1': ['catch-hexagons'],
   'reading-1': ['jigsaw-9'],
   'numbers-2': ['maze-huge', 'ship-even'],
   'reading-2': ['catch-compound'],

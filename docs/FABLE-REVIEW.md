@@ -89,7 +89,7 @@ Mikey asked whether the review covers writing style, explanatory quality and con
 5. Questions. Each reads as a natural sentence, with a setup line wherever the question needs a situation; distractors are mistakes a learner could really make; the answer is taught in the lesson.
 6. Explanations. Each says the answer and the reason in whole sentences, so it makes sense read aloud or seen after a wrong answer, never a fragment that only continues the answer ("And in good shape."). A rule now checks this for pre-K to grade 1.
 7. Stories. A real problem, a turn and a resolution; the lesson's facts and no others; one tense; smooth read aloud.
-8. Pictures. A lesson picture (P serial) wherever seeing the real thing teaches more than words, such as landmarks, plant parts, instruments and the moon's shapes; story picture prompts match the story; every prompt follows Mikey's template, and a real place is checked against a photo.
+8. Pictures. A lesson picture (P serial) wherever seeing the real thing teaches more than words, such as landmarks, plant parts, instruments and the moon's shapes; story picture prompts match the story; every prompt follows Mikey's template, and a real place is checked against a photo. Since pass KZ (Mikey): whenever an app-drawn shape, diagram, coloring page or any other image would look better generated with Leonardo, add it to the ledger instead of drawing it, and keep a drawing only when it looks pleasant, sleek and accurate; a drawing that carries an exact count, time or length the question depends on stays drawn, and the real thing beside it becomes a painting on a line that states no count.
 9. Audio. Eleven v4 tags in every story.
 
 ## Learned in pass JP, the first full-standard batch (pre-K 3)
@@ -189,6 +189,30 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - Two courses on the same strand say the same things in the same words. The business course and the economics course both teach goods and services, banks and income; a child who meets both should hear one voice.
 - A thing a lesson names, it also says what it is. A food bank and an animal shelter were named for a five-year-old who may know neither.
 - A computed question's words are checked like any other (one dollar, two dollars), and a bank whose setups the rules read for numbers never carries a wordy setup.
+
+## Learned in pass LA (earmark E7 part three (a), grade 1 number sense)
+
+- A picture drawn on the lesson card must use the paper palette (#2E2E2E ink, white, B.green), never the theme's ink: the first number line came out near-white on the light card in the dark theme, and only the real-page screenshot showed it. Every new drawing is screenshotted in the built page before delivery for this reason.
+- A `letters` show in a read-aloud lesson must be said as written (a numeral shown is a numeral said); when the line says number words, show an open number line or another picture instead.
+- When two helpers share a name across banks, the later one shadows nothing but breaks the earlier one's calls if a blanket rename touches them; rename within the new block only, by its own banner, and run the whole rules test before moving on.
+- Names of dots on a number line are staggered when two sit close, or they overprint (70 and 73 read as 7073).
+
+## Learned in pass KZ (earmark E7 part two, grade 1 measurement and data)
+
+- The untaught tool lists six missing answers per module and stops. A clock bank can ask twenty-four time phrases, and the report showed six, so a lesson that fixes the six it names is still short; read the module count in the heading, run the check again after the fix, and teach the whole set (two lines that count around the clock, once for o'clock and once for half past).
+- A spoken explanation that says a digit twice ("zero zero") trips the doubled-word flag and sounds like a stutter; say what the digits mean ("two zeros", "three zero, thirty minutes").
+- Choices read as capitalized wholes, so a helper that writes time phrases returns them capitalized, and a prompt or explanation that embeds one lowercases it. The rules test's own copy of the helper follows the same rule.
+- A lesson line added above a painting's line moves the painting's step; the scripts test catches the drift (the painting then shares no word with its line), so re-check every `pictures:` step after inserting lines.
+- A drawing that carries an exact count, time or length the question depends on is never replaced by a painting, however much better the painting would look, because a painted count can disagree with the words; the real thing beside it is the painting, on a line that states no count (P83 to P87).
+- When a turn fails mid-pass and the sandbox keeps the work, read every lesson and sample every bank before building on them. The reading found a plural slip, a lowercase sentence start, an awkward question and a drifted painting that no test had caught.
+
+## Learned in pass KY (earmark E7 part one, grade 1 geometry)
+
+- An inclusive definition has to hold in the questions, not only the lesson. Once a lesson says a square is a special rectangle and a special rhombus, no question may offer rectangle or rhombus as a wrong name for a square, or show a square as a wrong picture when a rectangle or a rhombus is asked for, and the same for a cube among rectangular prisms. Tables of what is also true (ALSO_TRUE_OF, IS_ALSO, SOLID_ALSO) carry the rule, and the rules test checks it on every seed.
+- A question that shows the thing it asks about can give the answer away. "A camping tent is shaped like which solid?" beside a drawing of the triangular prism is no question at all, so a real-thing recall question shows no picture.
+- Where books disagree, do not ask. A cone's point is a vertex in some first grade books and not in others, so the lesson says the cone comes to a point and no question counts its vertices.
+- A drawing for a lesson line is drawn for paper. The cut shapes first used the theme's own surface and ink colors and showed as black pieces with white seams in the dark theme, where every diagram sits on the almond board; the paper palette (white pieces, dark seams, the light theme's green) reads in both themes. Look at every new drawing in the real built page, in the theme the test page uses.
+- The same pieces can make different shapes, so a "which pieces make this" question must exclude every piece set that can make the asked shape, not only the one drawn, and a yes-or-no about joining is only safe when the no is plainly impossible (straight-sided pieces never make a circle; two, three or four squares never make a triangle).
 
 ## Learned in pass KX (grade 1 Beat, high, low, loud, soft)
 

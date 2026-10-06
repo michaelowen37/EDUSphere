@@ -2124,6 +2124,187 @@ STORIES['writing-numbers'] = {
     'Every number starts at its dot. Follow the arrow.',
   ],
 };
+STORIES['flat-shapes-1'] = {
+  // Pass KY (earmark E7 part one): Chloe, the one who notices what things look like, learns that a tall thin triangle is still a triangle.
+  about: 'a paper roof that did not look like the triangle on the chart, until Chloe counted its sides',
+  more: [{ serial: 'S3795', after: 0, alt: 'A small girl cutting a tall thin triangle from red paper for the roof of a paper house' }, { serial: 'S3796', after: 3, alt: 'A finger counting the three sides of the paper triangle, one, two, three' }, { serial: 'S3797', after: 5, alt: 'A boy counting the sides of the paper roof and grinning' }, { serial: 'S3798', after: 6, alt: 'A paper house with a tall thin triangle roof and a six-sided hexagon window' }],
+  title: 'The Tall, Thin Triangle', art: 'S3794', cast: ['Chloe'],
+  alt: 'A small girl with wavy dark hair holding a tall thin paper triangle beside a wall chart that shows a short wide one, a boy frowning',
+  words: [
+    'Chloe was making a paper picture for her grandmother. She cut a tall, thin triangle for the roof of the house. Her cousin Ben looked at it and frowned.',
+    'That is not a triangle, he said. A triangle is short and wide, the way the one on the wall chart is.',
+    'Chloe looked at the chart. Her roof did not look like that triangle at all, so maybe Ben was right. She picked up the scissors to cut a new one.',
+    'Then she stopped and counted instead. One side, two sides, three sides, and three corners where the sides met. The chart triangle had three sides and three corners too.',
+    'Being tall and thin did not change the sides. Being red or green did not change them either. A shape is named by its sides and its vertices, not by its look.',
+    'Ben counted the sides of her roof himself. Three, he said, and he grinned, because it had been a triangle all along.',
+    'Chloe cut a hexagon for the window, with six sides, and Ben checked that one too. Six. It passed.',
+    'Count the sides and the vertices. That is what makes a shape a shape.',
+  ],
+};
+STORIES['drawing-shapes'] = {
+  // Pass KY: stopping at every corner, the way the tracing pad draws the hexagon (TRACE_LETTERS shape-hexagon).
+  about: 'a hexagon drawn in one fast swoop that came out with a gap, until Milo stopped at every corner',
+  more: [{ serial: 'S3800', after: 1, alt: 'A wobbly hexagon on paper with sides of different lengths and a gap where the line stopped early' }, { serial: 'S3801', after: 3, alt: 'An older girl guiding a boy, his finger stopped on the dot at a corner of a hexagon' }, { serial: 'S3802', after: 4, alt: 'A neat hexagon with six straight sides, the pencil back at the starting dot' }, { serial: 'S3803', after: 5, alt: 'A rhombus and a rectangle drawn neatly beside the hexagon, a dot at every corner' }],
+  title: 'The Hexagon With a Gap', art: 'S3799', cast: [],
+  alt: 'A small boy at a kitchen table drawing fast with a fat crayon, a circle and a square beside a lopsided hexagon',
+  words: [
+    'Milo liked to draw fast. He drew a circle in one swoop and a square in one swoop. Then he tried a hexagon, six sides, all in one swoop.',
+    'It came out wrong. The sides were different lengths, and one corner was round. The line stopped before it got back to the start, so there was a gap.',
+    'His sister looked at it. A shape with a gap is not finished, she said. The line has to come all the way back to the dot.',
+    'She showed him the trick. Put your finger on the dot, go to the first corner, and stop. Turn, go to the next corner, and stop again.',
+    'Milo tried it slowly, saying stop out loud at every corner. Across the top, stop. Slant down and out, stop. Six corners and six stops later, the line came back to the dot.',
+    'It was a real hexagon, with six straight sides and six corners. He drew a rhombus the same way, and then a rectangle, stopping at every corner.',
+    'Start at the dot, stop at every corner, and come all the way back.',
+  ],
+};
+STORIES['solid-shapes-1'] = {
+  // Pass KY: a tower stands on flat faces; a sphere has none, so it rolls, which is what the solids lesson says.
+  about: 'a tower built on a ball that fell every time, until Omar found the flat faces',
+  more: [{ serial: 'S3805', after: 1, alt: 'A ball rolling away under a kitchen table, a can and a cereal box tipped over on the floor' }, { serial: 'S3806', after: 2, alt: 'Dad holding up the ball with one hand, the boy looking up at it' }, { serial: 'S3807', after: 4, alt: 'A tower standing tall, a cereal box lying flat, a can on one end and a block on top' }, { serial: 'S3808', after: 5, alt: 'The ball resting in a fruit bowl beside the standing tower' }],
+  title: 'The Tower That Fell', art: 'S3804', cast: [],
+  alt: 'A small boy in a kitchen reaching for a wobbling tower of a ball, a soup can and a cereal box as it starts to topple',
+  words: [
+    'Omar wanted to build the tallest tower in the kitchen. He put the ball down first, then the soup can, then the cereal box on top.',
+    'The tower fell before he let go. He tried again with the ball at the bottom, and it fell again. The ball rolled under the table.',
+    'Dad picked up the ball. A ball is a sphere, he said. It is round all over, with no flat face, so nothing can sit still on top of it.',
+    'Omar looked at the cereal box. Every side of it was flat, a face. The can had two flat faces, one at each end.',
+    'So the box went first, lying on its biggest face. The can stood on one flat end. A block, a cube with six square faces, sat on the can.',
+    'The tower stood. The sphere went into the fruit bowl, where round things belong. Omar counted the faces one more time.',
+    'Flat faces stack. A sphere rolls.',
+  ],
+};
+STORIES['joining-shapes'] = {
+  // Pass KY: two triangles joined long side to long side make a square, two squares a rectangle, six triangles a hexagon, as the lesson draws them.
+  about: 'a tile floor with a square gap and only triangle tiles left, until Theo joined two',
+  more: [{ serial: 'S3810', after: 1, alt: 'An empty tile box tipped on its side, a small pile of triangle tiles beside it' }, { serial: 'S3811', after: 2, alt: 'One triangle tile filling half of a square gap, a slanted edge across the middle' }, { serial: 'S3812', after: 4, alt: 'Two triangle tiles meeting along a seam, the square gap filled' }, { serial: 'S3813', after: 5, alt: 'Two square tiles side by side in a long gap, and a hexagon made of six triangle tiles' }],
+  title: 'The Missing Tile', art: 'S3809', cast: [],
+  alt: 'A small boy kneeling over the tile floor of a toy house, one square gap left and a pile of small triangle tiles beside him',
+  words: [
+    'Theo was laying a tile floor in his toy house. The floor was almost done, and one gap was left, a square gap.',
+    'He reached for a square tile. The box was empty. All that was left were triangles, little ones with one long side.',
+    'Theo tried one triangle in the gap. It filled half, with a slanted edge across the middle. The floor could not have a hole.',
+    'His grandpa looked over the top of his newspaper. Try another one, he said, and put the long sides together.',
+    'Theo slid a second triangle in, long side to long side. The two pieces met along a seam, and the gap was gone. Two triangles made a square.',
+    'There was one more gap, a long rectangle. Theo joined two squares side by side, and it fit. Then he made a hexagon from six triangles, just for fun.',
+    'Join shapes to make new shapes. The same shape can be made more than one way.',
+  ],
+};
+STORIES['halves-and-fourths'] = {
+  // Pass KY: two pieces are halves only when they are the same size, and a fourth is smaller than a half of the same sandwich.
+  about: 'a sandwich cut into a big piece and a small piece, and the halves that made it fair',
+  more: [{ serial: 'S3815', after: 0, alt: 'A girl handing her brother the small piece of a sandwich while she keeps the big piece' }, { serial: 'S3816', after: 3, alt: 'Mom cutting a sandwich right down the middle into two matching halves' }, { serial: 'S3817', after: 4, alt: 'A sandwich cut into four equal pieces on a plate, four people reaching for them' }, { serial: 'S3818', after: 5, alt: 'A family at a kitchen table, each person eating a piece the same size' }],
+  title: 'The Unfair Sandwich', art: 'S3814', cast: [],
+  alt: 'A small girl at a kitchen table holding a sandwich cut into one big piece and one small piece, her little brother frowning at the small one',
+  words: [
+    'Nia cut the sandwich in two so she and Kai could share. One piece was big and one piece was small. She handed Kai the small one.',
+    'That is not half, said Kai. You cut it into two pieces, but my piece is not the same as yours.',
+    'Nia looked at the two pieces. He was right. Two pieces are only halves when they are the same size.',
+    'Mom helped her cut a new sandwich right down the middle. The two pieces matched, so each one was one half. Kai was happy.',
+    'Then Dad came in hungry, and so did Grandma. Nia cut each half across the middle, and now there were four pieces the same size, four fourths.',
+    'A fourth was smaller than a half, because the same sandwich was shared by more people. Nobody minded, because every piece was fair.',
+    'Fair shares are the same size. Two make halves, and four make fourths.',
+  ],
+};
+STORIES['measuring-length'] = {
+  // Pass KZ (earmark E7 part two): a shelf in cubes and a gap in paper clips, so the two numbers could not be compared.
+  about: 'a shelf measured in cubes and a wall measured in paper clips, and why the numbers lied',
+  more: [{ serial: 'S3820', after: 1, alt: 'A girl laying cubes end to end along a small wooden shelf on the floor' }, { serial: 'S3821', after: 2, alt: 'Paper clips laid end to end across a gap between a dresser and a wall' }, { serial: 'S3822', after: 4, alt: 'The shelf held up to the gap, too long to fit, the girl surprised' }, { serial: 'S3823', after: 5, alt: 'Paper clips laid along the shelf and along the gap, side by side' }],
+  title: 'Twelve Clips and Six Cubes', art: 'S3819', cast: [],
+  alt: 'A small girl kneeling on a bedroom floor with a row of cubes along a little shelf and a row of paper clips along the wall beside her dresser',
+  words: [
+    'Ruby had a new little shelf for her books. She wanted it in the gap between her dresser and the wall. Would it fit?',
+    'She measured the shelf with cubes, laid end to end with no gaps. One, two, three, four, five, six. The shelf was six cubes long.',
+    'Then she measured the gap with paper clips, because the cube box was empty. Twelve paper clips reached across it.',
+    'Six is smaller than twelve, so the shelf would fit. Ruby was sure. She carried it over and pushed it into the gap.',
+    'It did not fit. It stuck out past the dresser. Ruby stared at the shelf and then at her two numbers.',
+    'Dad knelt down beside her. A paper clip is shorter than a cube, he said, so more clips fit. You measured the shelf and the gap with different units.',
+    'Ruby measured the shelf again, this time with paper clips. Fourteen. Fourteen is more than twelve, so the shelf was longer than the gap.',
+    'Measure both things with the same unit. Then the numbers can be compared.',
+  ],
+};
+STORIES['hours-and-half-hours'] = {
+  // Pass KZ: the minute hand first, then the hour hand, the way the lesson reads a clock.
+  about: 'a soccer game at half past three, and the hour hand that seemed to say four',
+  more: [{ serial: 'S3825', after: 1, alt: 'A boy in a soccer shirt looking up at a kitchen clock whose minute hand points straight up' }, { serial: 'S3826', after: 2, alt: 'The same clock with the minute hand straight down and the hour hand between the 3 and the 4' }, { serial: 'S3827', after: 4, alt: 'Grandpa pointing at the long minute hand on the clock' }, { serial: 'S3828', after: 6, alt: 'The boy running onto the soccer field with his ball, the game just starting' }],
+  title: 'Half Past Soccer', art: 'S3824', cast: [],
+  alt: 'A small boy in a soccer shirt standing on a kitchen chair to look at a round wall clock, a soccer ball under one arm',
+  words: [
+    'Jonah had a soccer game at half past three. He checked the kitchen clock again and again, because he did not want to be late.',
+    'At three o\'clock the long hand pointed straight up and the short hand pointed right at the 3. Not yet.',
+    'A while later he looked again. The short hand had moved. It sat between the 3 and the 4, closer to the 4 than before.',
+    'It is almost four, Jonah said. We missed the game! He grabbed his ball and his shoes and ran to find Grandpa.',
+    'Grandpa looked at the clock and laughed. Look at the long hand first, he said. It points straight down to the 6. That means half past.',
+    'The short hand has only passed the 3, Grandpa said. So it is half past three, right now. Your game starts right now.',
+    'Jonah ran all the way to the field, and he was not late at all.',
+    'Look at the minute hand first. Straight up is o\'clock, and straight down is half past.',
+  ],
+};
+STORIES['tallies-and-graphs'] = {
+  // Pass KZ: tally marks in gates of five and a bar graph, the way the lesson counts and shows data.
+  about: 'a class that could not agree on a party snack, until Zara counted the votes with tally marks',
+  more: [{ serial: 'S3830', after: 0, alt: 'A classroom of children all calling out snack names at once, a girl covering her ears' }, { serial: 'S3831', after: 2, alt: 'A girl at the whiteboard drawing tally marks beside a picture of grapes, a pretzel and a cracker' }, { serial: 'S3832', after: 3, alt: 'A close view of tally marks in groups of five, the fifth line crossing the other four' }, { serial: 'S3833', after: 5, alt: 'A bar graph on the whiteboard with three bars, the grapes bar the tallest' }],
+  title: 'Which Snack Wins', art: 'S3829', cast: [],
+  alt: 'A small girl at a classroom whiteboard holding a marker beside three rows of tally marks, her classmates watching',
+  words: [
+    'The class party needed one snack, and Zara had to choose it. Everyone called out at once. Grapes! Pretzels! Crackers! She could not tell which was the favorite.',
+    'Her teacher gave her a marker. Ask one at a time, she said, and write each answer down. That is collecting data.',
+    'Zara drew three rows on the whiteboard, one for grapes, one for pretzels and one for crackers. For every answer she made one small line, a tally mark.',
+    'When a row reached five, she drew the fifth line across the other four, closing it off. Then she could count the marks by fives.',
+    'Grapes had a gate and two more, seven. Pretzels had five. Crackers had three. Now the answer was easy to see.',
+    'To be sure, Zara drew a bar graph. The grapes bar was the tallest, two taller than pretzels. Grapes won.',
+    'Count the votes with tally marks. Then a graph shows the answer at a glance.',
+  ],
+};
+STORIES['quick-looks'] = {
+  // Pass LA (earmark E7 part three (a)): five on a dice is four corners and one in the middle, the way the lesson says it.
+  about: 'a board game lost to slow counting, until Elio learned to see five at a glance',
+  more: [{ serial: 'S3835', after: 1, alt: 'A boy bent over a dice, touching each dot with his finger while his sister waits' }, { serial: 'S3836', after: 3, alt: 'A close view of a dice showing five, four corner dots and one in the middle' }, { serial: 'S3837', after: 4, alt: 'The boy moving his game piece quickly while his sister looks surprised' }, { serial: 'S3838', after: 5, alt: 'A domino showing four and three, the boy pointing at each side' }],
+  title: 'Seeing Five', art: 'S3834', cast: [],
+  alt: 'A small boy and his older sister at a kitchen table with a board game between them, a dice in the middle of the board',
+  words: [
+    'Elio and his sister Pia were playing a board game. Every turn, Pia rolled the dice, said the number right away, and moved her piece.',
+    'Elio rolled and bent over the dice. One, two, three, four, five. He touched every dot with his finger. By the time he moved, Pia was far ahead.',
+    'How do you know so fast, he asked. You do not even count. Pia laughed. I do not have to, she said. I know the pattern.',
+    'She pointed at the dice. Four corners and one in the middle is always five. One dot in every corner is four. Two rows of three is six.',
+    'Elio rolled again. Four corners and one in the middle. Five, he said, before his finger could move. He slid his piece five spaces.',
+    'After that the game went fast. They tried dominoes next, and Elio saw each side at a glance and added. Four and three, seven.',
+    'Pia still won, but only by two spaces. Elio did not mind. He had a new way of seeing.',
+    'Learn the pattern, and you know how many at a glance.',
+  ],
+};
+STORIES['counting-to-120'] = {
+  // Pass LA: start where you stopped, then count the piles by tens, the way the lesson counts on and skip counts.
+  about: 'a jar of bottle caps counted from one again and again, until Maya started where she stopped',
+  more: [{ serial: 'S3840', after: 1, alt: 'A girl losing her place in a long line of bottle caps as her little brother asks for juice' }, { serial: 'S3841', after: 2, alt: 'The girl with her head in her hands, the line of caps in front of her, a little brother holding a cap' }, { serial: 'S3842', after: 4, alt: 'Dad pointing at the last cap in the line while the girl counts on' }, { serial: 'S3843', after: 5, alt: 'Bottle caps grouped in piles of ten on the table, the girl counting the piles' }],
+  title: 'Start Where You Stopped', art: 'S3839', cast: [],
+  alt: 'A small girl at a kitchen table with a big jar of bottle caps, a long line of caps laid out in front of her',
+  words: [
+    'Maya was counting the bottle caps in the big jar for a school project. She laid them in a long line and counted. One, two, three, all the way up.',
+    'At fifty-eight her little brother asked for juice. When she looked back, she had lost her place. So she started again. One, two, three.',
+    'At sixty-one the phone rang, and she started again from one. At seventy the cat jumped up onto the table. Maya put her head in her hands.',
+    'Dad came in. You do not have to start from one, he said. Start where you stopped. What was the last cap you counted?',
+    'Fifty-eight, said Maya. Then say fifty-nine, said Dad, and keep going. Fifty-nine, sixty, sixty-one, sixty-two. It worked.',
+    'Then Dad showed her something better. They pushed the caps into piles of ten. Ten, twenty, thirty, forty, fifty, sixty, and four more. Sixty-four caps.',
+    'Maya wrote sixty-four on the paper and put the lid on the jar before the cat came back.',
+    'Start where you stopped, and count in jumps when things come in groups.',
+  ],
+};
+STORIES['open-number-lines'] = {
+  // Pass LA: a chalk line with only the tens written; count the marks from forty, and greater numbers stand to the right.
+  about: 'a chalk number line with only the tens written, and the forty-three that was not there until Finn counted the marks',
+  more: [{ serial: 'S3845', after: 1, alt: 'A long chalk line on a playground with marks and only the tens written below them' }, { serial: 'S3846', after: 3, alt: 'A boy on the chalk mark for forty, stepping to the next marks and counting out loud' }, { serial: 'S3847', after: 4, alt: 'A boy and a girl standing on the chalk line, the girl to the left of the boy' }, { serial: 'S3848', after: 5, alt: 'Three children standing on the chalk line in order, the teacher pointing left to right' }],
+  title: 'Standing on Forty-three', art: 'S3844', cast: [],
+  alt: 'A small boy standing on a long chalk number line on a playground, only the tens written below the marks, a teacher beside him',
+  words: [
+    'The class drew a long number line in chalk on the playground. There was a mark for every number, but only the tens were written. Ten, twenty, thirty, forty, fifty.',
+    'Finn, stand on forty-three, said the teacher. Finn ran along the line and found forty, and then he found fifty. There was no forty-three written anywhere.',
+    'It is not here, he said, and he threw up his hands. The teacher smiled. It is there, she said, but you have to count to it.',
+    'Finn stood on forty and stepped to the next mark, counting out loud. Forty-one, forty-two, forty-three. He stopped on the third mark and waved both arms. Found it.',
+    'Lily, stand on thirty-four, said the teacher. Lily counted from thirty and stopped to the left of Finn. Who is standing on the greater number, asked the teacher. Finn is, said Lily, because he is farther to the right.',
+    'Then Noor stood on fifty-one. The teacher pointed from left to right. Thirty-four, forty-three, fifty-one, least to greatest.',
+    'Start at a number you know and count the marks. Greater numbers stand to the right.',
+  ],
+};
 STORIES['read-the-word'] = {
   about: 'three letters on a box, and the word that came out when they were pushed together',
   more: [{ serial: 'S336', after: 0, alt: 'The box with M A P on its side' }, { serial: 'S1640', after: 2, alt: 'Dad tapping the M, saying mmm' }, { serial: 'S1641', after: 3, alt: 'The finger sliding from M to A to P' }, { serial: 'S1642', after: 4, alt: 'A map unfolded on the garage floor' }],
@@ -9771,6 +9952,20 @@ export const COLOR_PAGES = {
   'tracing-small-circles': ['D222', 'Small outlined letters a, d, g and q, each beside a small o, an apple at the end'],
   'tracing-small-bumps': ['D223', 'Small outlined letters b, p, e and f, a ball, a pig, an egg and a fish beneath them'],
   'tracing-small-curls': ['D224', 'Small outlined letters s, j and y, a sun, a jar and a yo-yo beneath them'],
+  // Grade 1 geometry (pass KY, earmark E7 part one).
+  'flat-shapes-1': ['D225', 'A paper house with a tall thin triangle roof and a hexagon window, scissors and paper scraps beside it'],
+  'drawing-shapes': ['D226', 'A hexagon, a rhombus and a rectangle outlined on paper with a dot at every corner and a fat crayon'],
+  'solid-shapes-1': ['D227', 'A tower of a cereal box, a soup can and a block, with a ball resting in a fruit bowl beside it'],
+  'joining-shapes': ['D228', 'The tile floor of a toy house, two triangle tiles joined into one square tile and a pile of tiles beside it'],
+  'halves-and-fourths': ['D229', 'A sandwich cut into four equal pieces on a plate, with four forks around it'],
+  // Grade 1 measurement and data (pass KZ, earmark E7 part two).
+  'measuring-length': ['D230', 'A row of cubes laid end to end along a pencil and a row of paper clips laid along a crayon, with no gaps'],
+  'hours-and-half-hours': ['D231', 'A round wall clock with a short hour hand and a long minute hand, and a digital clock on the shelf below it'],
+  'tallies-and-graphs': ['D232', 'A whiteboard with three rows of tally marks beside pictures of snacks, and a bar graph with three bars beside it'],
+  // Grade 1 number sense (pass LA, earmark E7 part three (a)).
+  'quick-looks': ['D233', 'A big dice showing five, four corners and one in the middle, beside a domino and a ten frame'],
+  'counting-to-120': ['D234', 'Bottle caps pushed into piles of ten on a table, with a few single caps beside them and a jar'],
+  'open-number-lines': ['D235', 'A long number line on a playground with a child standing on one mark and the tens written below'],
 };
 
 // Audio tags (2026-10-04, pass JH, Mikey). In plain terms: how ElevenLabs' Eleven v4 should perform each story the writing review
@@ -9961,3 +10156,14 @@ STORIES["tracing-curve-capitals"].audio = ["Suki could trace every letter with s
 STORIES["tracing-small-circles"].audio = ["Dario liked small o. It was just a circle, around to the left and back to the dot. The other small letters looked harder.", "[marker squeaking] Watch this, said Miss Fox, and she drew a small o with a short line on its right. Now it is a, she said, and Dario blinked, because it was o with one line.", "She drew another o and gave it a tall line, up high. That is d, she said. Then an o with a line that went down past the bottom and curled left. That is g.", "And q, said Miss Fox, is an o with a line past the bottom and a little flick. Four letters, and every one starts as small o.", "Dario drew a row of circles. Then he added a short line, a tall line, a curl and a flick. The circles turned into a, d, g and q, one after another.", "[delighted] They are cousins, said Dario. Small o is the one who came first. He wrote the whole family across the top of his page.", "[slowly, warmly] Small a, d, g and q all start with a little circle. Then comes the line, short, tall, curling or with a flick."];
 STORIES["tracing-small-bumps"].audio = ["Imani wrote her p with the bump on the left. Now it looked like q, and the word pig looked like qig. [giggling] Her friend giggled.", "Miss Fox leaned over. The bump goes on the right, she said, for b and for p. Then look at the line. In b the line reaches up high.", "In p the line reaches down low, under the floor. Imani drew a tall line and a bump, and there was b. She drew a low line and a bump, and there was p.", "Small e is different, said Miss Fox. Start with a short line across the middle. Then go up and around to the left, and stop near the bottom.", "And f curls over at the top, comes down, and gets a short line across. Imani drew an e and an f, and then she drew them again, because they felt good.", "[satisfied] She fixed her pig, with the bump on the right. Then she wrote big and bed and fed, and every bump was where it belonged.", "[slowly, warmly] The bump goes on the right. Look at the line, up high for b and down low for p."];
 STORIES["tracing-small-curls"].audio = ["The letter wall had a card for every letter, big and small. Wren had traced most of them. Three small cards were still empty, s, j and y.", "Small s was easy once she thought of big S. [slowly] Around to the left, around to the right, winding the way a snake does, only smaller.", "Small j was small i with a tail. A line down past the bottom, curling to the left, then a dot on top. Wren drew the dot last and smiled.", "Small y took two tries. A short slant down, then a long slant that crossed it and kept going below the line. [pleased] On the second try, the slants met in the right spot.", "Miss Fox handed her three cards. Wren drew s, j and y, one on each, and pinned them at the end of the wall.", "[proud] Every card was full. Twenty-six big letters and twenty-six small ones, all the way from A to z. Wren walked along the wall and read every one.", "[slowly, warmly] With s, j and y, you can trace every letter, big and small. Start at the dot and follow the arrow."];
+STORIES["flat-shapes-1"].audio = ["[cheerful] Chloe was making a paper picture for her grandmother. [scissors snipping paper] She cut a tall, thin triangle for the roof of the house. Her cousin Ben looked at it and frowned.","[doubtful] That is not a triangle, he said. A triangle is short and wide, the way the one on the wall chart is.","Chloe looked at the chart. [unsure] Her roof did not look like that triangle at all, so maybe Ben was right. She picked up the scissors to cut a new one.","[thoughtful] Then she stopped and counted instead. [slowly] One side, two sides, three sides, and three corners where the sides met. The chart triangle had three sides and three corners too.","Being tall and thin did not change the sides. Being red or green did not change them either. [confident] A shape is named by its sides and its vertices, not by its look.","Ben counted the sides of her roof himself. [pleased] Three, he said, and he grinned, because it had been a triangle all along.","Chloe cut a hexagon for the window, with six sides, and Ben checked that one too. [playful] Six. It passed.","[slowly, warmly] Count the sides and the vertices. That is what makes a shape a shape."];
+STORIES["drawing-shapes"].audio = ["[energetic] Milo liked to draw fast. [crayon scribbling] He drew a circle in one swoop and a square in one swoop. Then he tried a hexagon, six sides, all in one swoop.","[disappointed] It came out wrong. The sides were different lengths, and one corner was round. The line stopped before it got back to the start, so there was a gap.","His sister looked at it. [kindly] A shape with a gap is not finished, she said. The line has to come all the way back to the dot.","She showed him the trick. [slowly] Put your finger on the dot, go to the first corner, and stop. Turn, go to the next corner, and stop again.","Milo tried it slowly, saying stop out loud at every corner. [slowly] Across the top, stop. Slant down and out, stop. [pleased] Six corners and six stops later, the line came back to the dot.","[delighted] It was a real hexagon, with six straight sides and six corners. He drew a rhombus the same way, and then a rectangle, stopping at every corner.","[slowly, warmly] Start at the dot, stop at every corner, and come all the way back."];
+STORIES["solid-shapes-1"].audio = ["[excited] Omar wanted to build the tallest tower in the kitchen. He put the ball down first, then the soup can, then the cereal box on top.","[a tower of cans and boxes toppling] The tower fell before he let go. [sighs] He tried again with the ball at the bottom, and it fell again. [a ball rolling across a floor] The ball rolled under the table.","Dad picked up the ball. [warmly] A ball is a sphere, he said. It is round all over, with no flat face, so nothing can sit still on top of it.","[thoughtful] Omar looked at the cereal box. Every side of it was flat, a face. The can had two flat faces, one at each end.","So the box went first, lying on its biggest face. The can stood on one flat end. [carefully] A block, a cube with six square faces, sat on the can.","[delighted] The tower stood. The sphere went into the fruit bowl, where round things belong. Omar counted the faces one more time.","[slowly, warmly] Flat faces stack. A sphere rolls."];
+STORIES["joining-shapes"].audio = ["[cheerful] Theo was laying a tile floor in his toy house. The floor was almost done, and one gap was left, a square gap.","He reached for a square tile. [puzzled] The box was empty. All that was left were triangles, little ones with one long side.","[a small tile clicking into place] Theo tried one triangle in the gap. It filled half, with a slanted edge across the middle. [worried] The floor could not have a hole.","His grandpa looked over the top of his newspaper. [warmly] Try another one, he said, and put the long sides together.","Theo slid a second triangle in, long side to long side. [a tile clicking into place] The two pieces met along a seam, and the gap was gone. [delighted] Two triangles made a square.","There was one more gap, a long rectangle. Theo joined two squares side by side, and it fit. [playful] Then he made a hexagon from six triangles, just for fun.","[slowly, warmly] Join shapes to make new shapes. The same shape can be made more than one way."];
+STORIES["halves-and-fourths"].audio = ["Nia cut the sandwich in two so she and Kai could share. One piece was big and one piece was small. [a little sheepish] She handed Kai the small one.","[indignant] That is not half, said Kai. You cut it into two pieces, but my piece is not the same as yours.","Nia looked at the two pieces. [sighs] He was right. Two pieces are only halves when they are the same size.","[a knife cutting through bread] Mom helped her cut a new sandwich right down the middle. The two pieces matched, so each one was one half. [pleased] Kai was happy.","Then Dad came in hungry, and so did Grandma. Nia cut each half across the middle, and now there were four pieces the same size, four fourths.","[thoughtful] A fourth was smaller than a half, because the same sandwich was shared by more people. [warmly] Nobody minded, because every piece was fair.","[slowly, warmly] Fair shares are the same size. Two make halves, and four make fourths."];
+STORIES["measuring-length"].audio = ["[cheerful] Ruby had a new little shelf for her books. She wanted it in the gap between her dresser and the wall. [curious] Would it fit?","She measured the shelf with cubes, laid end to end with no gaps. [slowly] One, two, three, four, five, six. The shelf was six cubes long.","Then she measured the gap with paper clips, because the cube box was empty. Twelve paper clips reached across it.","[confident] Six is smaller than twelve, so the shelf would fit. Ruby was sure. [wood bumping against a wall] She carried it over and pushed it into the gap.","[surprised] It did not fit. It stuck out past the dresser. Ruby stared at the shelf and then at her two numbers.","Dad knelt down beside her. [kindly] A paper clip is shorter than a cube, he said, so more clips fit. You measured the shelf and the gap with different units.","Ruby measured the shelf again, this time with paper clips. [slowly] Fourteen. Fourteen is more than twelve, so the shelf was longer than the gap.","[slowly, warmly] Measure both things with the same unit. Then the numbers can be compared."];
+STORIES["hours-and-half-hours"].audio = ["[excited] Jonah had a soccer game at half past three. He checked the kitchen clock again and again, because he did not want to be late.","At three o'clock the long hand pointed straight up and the short hand pointed right at the 3. [a clock ticking] Not yet.","A while later he looked again. The short hand had moved. It sat between the 3 and the 4, closer to the 4 than before.","[alarmed] It is almost four, Jonah said. We missed the game! He grabbed his ball and his shoes and ran to find Grandpa.","Grandpa looked at the clock and laughed. [warmly] Look at the long hand first, he said. It points straight down to the 6. That means half past.","The short hand has only passed the 3, Grandpa said. So it is half past three, right now. [cheerful] Your game starts right now.","[running footsteps] Jonah ran all the way to the field, and he was not late at all.","[slowly, warmly] Look at the minute hand first. Straight up is o'clock, and straight down is half past."];
+STORIES["tallies-and-graphs"].audio = ["The class party needed one snack, and Zara had to choose it. [children all talking at once] Everyone called out at once. Grapes! Pretzels! Crackers! [overwhelmed] She could not tell which was the favorite.","Her teacher gave her a marker. [calmly] Ask one at a time, she said, and write each answer down. That is collecting data.","Zara drew three rows on the whiteboard, one for grapes, one for pretzels and one for crackers. [a marker squeaking on a whiteboard] For every answer she made one small line, a tally mark.","When a row reached five, she drew the fifth line across the other four, closing it off. Then she could count the marks by fives.","[slowly] Grapes had a gate and two more, seven. Pretzels had five. Crackers had three. [pleased] Now the answer was easy to see.","To be sure, Zara drew a bar graph. The grapes bar was the tallest, two taller than pretzels. [delighted] Grapes won.","[slowly, warmly] Count the votes with tally marks. Then a graph shows the answer at a glance."];
+STORIES["quick-looks"].audio = ["[cheerful] Elio and his sister Pia were playing a board game. [a dice rattling and landing] Every turn, Pia rolled the dice, said the number right away, and moved her piece.","Elio rolled and bent over the dice. [slowly] One, two, three, four, five. He touched every dot with his finger. [sighs] By the time he moved, Pia was far ahead.","[puzzled] How do you know so fast, he asked. You do not even count. Pia laughed. I do not have to, she said. I know the pattern.","She pointed at the dice. [patiently] Four corners and one in the middle is always five. One dot in every corner is four. Two rows of three is six.","Elio rolled again. Four corners and one in the middle. [quickly] Five, he said, before his finger could move. He slid his piece five spaces.","[cheerful] After that the game went fast. They tried dominoes next, and Elio saw each side at a glance and added. Four and three, seven.","Pia still won, but only by two spaces. Elio did not mind. [proud] He had a new way of seeing.","[slowly, warmly] Learn the pattern, and you know how many at a glance."];
+STORIES["counting-to-120"].audio = ["Maya was counting the bottle caps in the big jar for a school project. [bottle caps clinking] She laid them in a long line and counted. [slowly] One, two, three, all the way up.","At fifty-eight her little brother asked for juice. [frustrated] When she looked back, she had lost her place. So she started again. One, two, three.","At sixty-one the phone rang, and she started again from one. At seventy the cat jumped up onto the table. [sighs] Maya put her head in her hands.","Dad came in. [kindly] You do not have to start from one, he said. Start where you stopped. What was the last cap you counted?","Fifty-eight, said Maya. Then say fifty-nine, said Dad, and keep going. [slowly] Fifty-nine, sixty, sixty-one, sixty-two. [relieved] It worked.","Then Dad showed her something better. They pushed the caps into piles of ten. [slowly] Ten, twenty, thirty, forty, fifty, sixty, and four more. Sixty-four caps.","[pleased] Maya wrote sixty-four on the paper and put the lid on the jar before the cat came back.","[slowly, warmly] Start where you stopped, and count in jumps when things come in groups."];
+STORIES["open-number-lines"].audio = ["[cheerful] The class drew a long number line in chalk on the playground. There was a mark for every number, but only the tens were written. [slowly] Ten, twenty, thirty, forty, fifty.","Finn, stand on forty-three, said the teacher. [running footsteps] Finn ran along the line and found forty, and then he found fifty. [puzzled] There was no forty-three written anywhere.","It is not here, he said, and he threw up his hands. The teacher smiled. [kindly] It is there, she said, but you have to count to it.","Finn stood on forty and stepped to the next mark, counting out loud. [slowly] Forty-one, forty-two, forty-three. [delighted] He stopped on the third mark and waved both arms. Found it.","Lily, stand on thirty-four, said the teacher. Lily counted from thirty and stopped to the left of Finn. Who is standing on the greater number, asked the teacher. [confident] Finn is, said Lily, because he is farther to the right.","Then Noor stood on fifty-one. The teacher pointed from left to right. [slowly] Thirty-four, forty-three, fifty-one, least to greatest.","[slowly, warmly] Start at a number you know and count the marks. Greater numbers stand to the right."];

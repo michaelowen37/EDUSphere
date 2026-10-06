@@ -2,6 +2,25 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+## October 6, 2026 (first grade quick looks, counting to 120 and number lines)
+
+- Numbers to 20 has three more lessons, and they talk. Quick looks teaches a child to see how many at a glance, the way you read a dice, five is four corners and one in the middle, a full row on a ten frame is five, and a domino is two patterns added. Counting on to 120 starts a count anywhere, forward or backward, crosses into a new ten after a nine and into one hundred after ninety-nine, and skip counts by twos, fives and tens to find a total, the last number you say.
+- Open number lines puts numbers in order along a line, greater to the right, with only the numbers you need written down, so a child counts the marks from a number they know, finds a number between two others, and orders three numbers by tens then ones.
+- Three new stories go with them, with every question checked against its own picture. These lessons teach the first grade Texas standards for recognizing a quantity at a glance, counting to 120 from any number, skip counting, and open number lines.
+
+## October 6, 2026 (first grade measuring, clocks, tally marks and graphs)
+
+- Numbers to 20 has three more lessons, and they talk too. Measuring length shows a child that measuring is counting, laying cubes or paper clips end to end along a pencil with no gaps and no overlaps and saying the length with a number and a unit, and then measuring the same pencil both ways to see why the smaller unit gives the bigger count. Hours and half hours reads a clock the way a child can, the long hand first, straight up for o'clock and straight down for half past, with the digital clock beside it showing the same time.
+- Tally marks and graphs starts where data starts, asking a question and writing every answer down, then tally marks in gates of five, a T-chart, a picture graph and a bar graph, and the questions a graph can answer, the most, the fewest, how many more and how many in all.
+- Three new stories go with them, and every practice question is checked against its own picture. These lessons teach the first grade Texas measurement and data standards that no lesson covered before.
+
+## October 6, 2026 (first grade shapes, solids, joining and fair shares)
+
+- Numbers to 20 has five new lessons on shapes, and every one of them talks. Flat shapes adds the rhombus and the hexagon to the shapes children already know, teaches the math words for a shape's parts (sides and vertices), and makes the point first graders most need: a tall thin triangle, a turned square and a stretched hexagon are still what they are, because a shape is named by its sides and vertices, never by its color, its size or which way it turns. A square is a special rectangle, and a special rhombus too, and the lesson says why.
+- Drawing shapes lets a child trace all six, corner by corner, with the rectangle, rhombus and hexagon new on the tracing pad. Solids and their faces teaches faces, edges and vertices with the rectangular prism (a cereal box) and the triangular prism (a camping tent) beside the ball, block, can and cone, and which real things have each shape.
+- Joining shapes shows that the same two triangles make a square, a bigger triangle, a rectangle or a rhombus depending on how they are joined, and that a hexagon can be made from six triangles or two trapezoids, so the same shape can be made more than one way. Halves and fourths teaches fair shares, halves and fourths (quarters too), why a fourth is smaller than a half of the same sandwich, and that two pieces are only halves when they are the same size.
+- Five new stories go with the lessons, and the practice rounds draw on more than thirty new kinds of questions. These lessons teach the first grade Texas geometry standards that no lesson covered before.
+
 ## October 5, 2026 (first grade music, beat to dynamics)
 
 - The three first grade music lessons now talk, and they use the words musicians use. The steady beat tells beat from rhythm (the even pulse underneath against the pattern of long and short sounds on top) and names the speed of the beat, tempo, with allegro for fast and largo for slow. Loud and soft names forte and piano, and tells children why the piano is called that: it was the first keyboard that could play both soft and loud.

@@ -78,7 +78,21 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     else if (q.visual && q.visual.kind === 'shape') { /* checked below */ }
     else if (q.visual && q.visual.kind === 'tens') { if (!(q.visual.count >= 1 && q.visual.count <= 10)) problems.push('tens out of range'); }
     else if (q.visual && q.visual.kind === 'bars') { if (!q.visual.lengths.every((n) => n >= 1 && n <= 9)) problems.push('bar out of range'); }
-    else if (q.visual && q.visual.kind === 'solid') { if (!['sphere', 'cube', 'cylinder', 'cone'].includes(q.visual.name)) problems.push('unknown solid'); }
+    else if (q.visual && q.visual.kind === 'solid') { if (!['sphere', 'cube', 'cylinder', 'cone', 'box', 'prism'].includes(q.visual.name)) problems.push('unknown solid'); }   // box and prism: the two prisms (pass KY)
+    // Grade 1 geometry pictures (pass KY): a cut shape names a shape, a cut the screen draws and a shaded count within its
+    // pieces; a joined figure is one the screen draws.
+    else if (q.visual && q.visual.kind === 'shares') { const cuts = { none: 1, half: 2, 'half-across': 2, 'half-slant': 2, fourths: 4, 'fourths-strips': 4, 'fourths-x': 4, 'unequal-two': 2, 'unequal-four': 4 }; if (!(['circle', 'square', 'rectangle'].includes(q.visual.shape) && cuts[q.visual.cut] && Number.isInteger(q.visual.shaded) && q.visual.shaded >= 0 && q.visual.shaded <= cuts[q.visual.cut] && !(q.visual.shape === 'circle' && q.visual.cut === 'fourths-strips'))) problems.push('shares picture out of range'); }
+    // Grade 1 number sense pictures (pass LA): a dice face, a domino, equal sets and an open number line.
+    else if (q.visual && q.visual.kind === 'dice') { if (!(Number.isInteger(q.visual.pips) && q.visual.pips >= 1 && q.visual.pips <= 6)) problems.push('dice out of range'); }
+    else if (q.visual && q.visual.kind === 'domino') { if (!([q.visual.a, q.visual.b].every((v) => Number.isInteger(v) && v >= 1 && v <= 6))) problems.push('domino out of range'); }
+    else if (q.visual && q.visual.kind === 'sets') { if (!(Number.isInteger(q.visual.groups) && q.visual.groups >= 1 && q.visual.groups <= 12 && [2, 5, 10].includes(q.visual.each))) problems.push('sets out of range'); }
+    else if (q.visual && q.visual.kind === 'openline') { const v = q.visual; if (!(Number.isInteger(v.from) && Number.isInteger(v.to) && v.from < v.to && v.to <= 120 && Array.isArray(v.labels) && v.labels.every((x) => x >= v.from && x <= v.to) && Array.isArray(v.dots) && v.dots.every((d) => d.at >= v.from && d.at <= v.to))) problems.push('open number line out of range'); }
+    // Grade 1 measurement and data pictures (pass KZ): a measured object, a digital clock, tally marks and a bar graph.
+    else if (q.visual && q.visual.kind === 'measure') { if (!(['pencil', 'crayon', 'ribbon', 'straw'].includes(q.visual.object) && Number.isInteger(q.visual.units) && q.visual.units >= 1 && q.visual.units <= 9 && ['cube', 'clip'].includes(q.visual.unit) && [null, undefined, 'gaps', 'overlap'].includes(q.visual.flaw) && [null, undefined, 'clip'].includes(q.visual.second) && !(q.visual.second && (q.visual.unit !== 'cube' || q.visual.units % 2)))) problems.push('measure picture out of range'); }
+    else if (q.visual && q.visual.kind === 'digital') { if (!(q.visual.hour >= 1 && q.visual.hour <= 12 && [0, 30].includes(q.visual.minute))) problems.push('digital clock out of range'); }
+    else if (q.visual && q.visual.kind === 'tally') { if (!(Array.isArray(q.visual.rows) && q.visual.rows.length >= 1 && q.visual.rows.length <= 3 && q.visual.rows.every((r) => typeof r.icon === 'string' && Number.isInteger(r.count) && r.count >= 0 && r.count <= 12))) problems.push('tally picture out of range'); }
+    else if (q.visual && q.visual.kind === 'bargraph') { if (!(Array.isArray(q.visual.rows) && q.visual.rows.length >= 2 && q.visual.rows.length <= 3 && q.visual.rows.every((r) => typeof r.icon === 'string' && Number.isInteger(r.count) && r.count >= 0 && r.count <= 6))) problems.push('bar graph out of range'); }
+    else if (q.visual && q.visual.kind === 'joined') { if (!['square-2tri', 'rect-2tri', 'triangle-2tri', 'rhombus-2tri', 'rect-2sq', 'rect-3sq', 'square-4sq', 'square-4tri', 'triangle-4tri', 'trapezoid-3tri', 'hexagon-6tri', 'hexagon-2trap'].includes(q.visual.figure)) problems.push('unknown joined figure'); }
     else if (q.visual && q.visual.kind === 'tenframe') { if (!(q.visual.filled >= 0 && q.visual.filled <= 10)) problems.push('ten frame out of range'); }
     else if (q.visual && q.visual.kind === 'sign') { if (!(typeof q.visual.text === 'string' && q.visual.text && /^#[0-9A-Fa-f]{6}$/.test(q.visual.color))) problems.push('sign incomplete'); }   // pass KW: a road sign with its words and color
     else if (q.visual && q.visual.kind === 'map') { if (!(typeof q.visual.region === 'string' && Array.isArray(q.visual.spots))) problems.push('map incomplete'); }
@@ -142,14 +156,115 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'km-make-fewer' && !(dotCount(q.answer) < ints[0])) problems.push('make-fewer is not fewer');
     if (/^km-/.test(genId) && q.explainVisual && !(q.explainVisual.count >= 1 && q.explainVisual.count <= 10)) problems.push('explain picture out of range');
     // Shapes, re-derived from a table the generator does not share
-    const SIDES = { circle: 0, triangle: 3, square: 4, rectangle: 4 };
-    const shapeOf = (c) => String(c).replace(/^shape:/, '').split('#')[0];
+    const SIDES = { circle: 0, triangle: 3, square: 4, rectangle: 4, rhombus: 4, hexagon: 6, trapezoid: 4 };   // rhombus, hexagon and trapezoid: grade 1 (pass KY)
+    const shapeOf = (c) => String(c).replace(/^shape:/, '').split('#')[0].split('~')[0];
     if (genId === 'ks-name' && q.answer !== q.visual.name) problems.push('named the wrong shape');
     if (genId === 'ks-tap' && shapeOf(q.answer) !== q.prompt.match(/Tap the (\w+)/)[1]) problems.push('tapped the wrong shape');
     if (genId === 'ks-sides' && Number(q.answer) !== SIDES[q.visual.name]) problems.push('side count wrong');
     if (genId === 'ks-odd-one-out') { const names = q.choices.map(shapeOf); const odd = names.find((n) => names.filter((x) => x === n).length === 1); if (shapeOf(q.answer) !== odd) problems.push('odd one out wrong'); }
     if (genId === 'ks-corners' && q.answer !== (SIDES[q.visual.name] > 0 ? 'Yes' : 'No')) problems.push('corners yes/no wrong');
     if (q.visual && q.visual.kind === 'shape' && !SIDES.hasOwnProperty(q.visual.name)) problems.push('unknown shape');
+    // Grade 1 geometry (pass KY), re-derived from tables the generators do not share. A look after a tilde never changes a shape.
+    const VERTICES = { circle: 0, triangle: 3, square: 4, rectangle: 4, rhombus: 4, hexagon: 6 };
+    const SIDE_WORD = { no: 0, three: 3, four: 4, six: 6 };
+    const ALSO = { square: ['rectangle', 'rhombus'] };   // names also true of a shape, never a wrong choice for it
+    if (genId === 'f1-name') { if (q.answer !== q.visual.name) problems.push('grade 1 named the wrong shape'); if ((ALSO[q.visual.name] || []).some((n) => q.choices.includes(n))) problems.push('a name also true of the shape is offered as wrong'); }
+    if (genId === 'f1-tap') { const want = q.prompt.match(/Tap the (\w+)\./)[1]; if (shapeOf(q.answer) !== want) problems.push('grade 1 tapped the wrong shape'); if (q.choices.map(shapeOf).filter((n) => n !== want).some((n) => (ALSO[n] || []).includes(want))) problems.push('a shape that is also the asked name is shown as wrong'); }
+    if (genId === 'f1-sides' && Number(q.answer) !== SIDES[q.visual.name]) problems.push('grade 1 side count wrong');
+    if (genId === 'f1-vertices' && Number(q.answer) !== VERTICES[q.visual.name]) problems.push('vertex count wrong');
+    if (genId === 'f1-still') { const still = /^Is it still a (\w+)\?$/.exec(q.prompt); const want = still ? (still[1] === (q.visual.name || q.visual.shape) ? 'Yes' : 'No') : (/^Is it a square\?$/.test(q.prompt) && q.visual.name !== 'square' ? 'No' : null); if (q.answer !== want) problems.push('still-a-shape wrong'); }
+    if (genId === 'f1-what-counts') { const defining = ['Its number of sides', 'Its number of vertices'].includes(q.answer); if (defining !== /can change/.test(q.prompt)) problems.push('what counts wrong'); }
+    if (genId === 'f1-tap-by-sides') { const m2 = /with (no|three|four|six) /.exec(q.prompt); const n = SIDE_WORD[m2[1]]; const names = q.choices.map(shapeOf); if (SIDES[shapeOf(q.answer)] !== n || names.filter((x) => SIDES[x] === n).length !== 1) problems.push('tap by sides wrong'); }
+    if (genId === 'f1-odd-one-out') { const names = q.choices.map(shapeOf); const odd = names.find((n) => names.filter((x) => x === n).length === 1); const pair = names.find((n) => n !== odd); if (shapeOf(q.answer) !== odd) problems.push('grade 1 odd one out wrong'); if ((ALSO[odd] || []).includes(pair)) problems.push('the odd one is also the pair shape'); }
+    if (genId === 'f1-special') { const want = /^Is this square a (rhombus|rectangle) too\?$/.test(q.prompt) ? 'Yes' : /^Is this (rhombus|rectangle) a square\?$/.test(q.prompt) ? 'No' : null; if (q.answer !== want) problems.push('special shape wrong'); }
+    const SOLID_LABEL = { sphere: 'sphere', cube: 'cube', box: 'rectangular prism', prism: 'triangular prism', cylinder: 'cylinder', cone: 'cone' };
+    const SOLID_FACES = { sphere: 0, cube: 6, box: 6, prism: 5, cylinder: 2, cone: 1 }; const SOLID_VERT = { sphere: 0, cube: 8, box: 8, prism: 6, cylinder: 0 };
+    const FACE_OF = { cube: 'square', box: 'rectangle', prism: 'triangle', cylinder: 'circle', cone: 'circle' };
+    const THING_SOLID = { 'A ball': 'sphere', 'A globe': 'sphere', 'A toy block': 'cube', 'A cereal box': 'rectangular prism', 'A book': 'rectangular prism', 'A brick': 'rectangular prism', 'A camping tent': 'triangular prism', 'A wedge of cheese': 'triangular prism', 'A soup can': 'cylinder', 'A drum': 'cylinder', 'An ice cream cone': 'cone', 'A party hat': 'cone' };
+    const solidOf = (c) => String(c).replace(/^solid:/, '').split('#')[0];
+    if (genId === 'so1-name') { if (q.answer !== SOLID_LABEL[q.visual.name]) problems.push('named the wrong solid'); if (q.visual.name === 'cube' && q.choices.includes('rectangular prism')) problems.push('rectangular prism offered as wrong for a cube'); }
+    if (genId === 'so1-tap') { const want = q.prompt.match(/Tap the (.+)\./)[1]; if (SOLID_LABEL[solidOf(q.answer)] !== want) problems.push('tapped the wrong solid'); if (want === 'rectangular prism' && q.choices.includes('solid:cube')) problems.push('a cube shown as wrong for a rectangular prism'); }
+    if (genId === 'so1-faces' && Number(q.answer) !== SOLID_FACES[q.visual.name]) problems.push('face count wrong');
+    if (genId === 'so1-vertices' && Number(q.answer) !== SOLID_VERT[q.visual.name]) problems.push('solid vertex count wrong');
+    if (genId === 'so1-face-shape') { if (shapeOf(q.answer) !== FACE_OF[q.visual.name]) problems.push('face shape wrong'); if (q.visual.name === 'cube' && q.choices.includes('shape:rectangle')) problems.push('rectangle offered as wrong for a cube face'); }
+    if (genId === 'so1-real') { const thing = q.prompt.match(/^(.+) is shaped like which solid\?$/)[1]; if (q.answer !== THING_SOLID[thing]) problems.push('real thing solid wrong'); }
+    if (genId === 'so1-special') { const want = /^Is this cube a rectangular prism too\?$/.test(q.prompt) ? 'Yes' : /^(Is this rectangular prism a cube|Is this triangular prism a rectangular prism|Does this sphere have any flat faces)\?$/.test(q.prompt) ? 'No' : null; if (q.answer !== want) problems.push('special solid wrong'); }
+    if (genId === 'so1-prism-faces' && Number(q.answer) !== (/triangles\?$/.test(q.prompt) ? 2 : 3)) problems.push('prism faces wrong');
+    if (genId === 'so1-which-solid') { const want = /circle faces and a curved/.test(q.prompt) ? 'cylinder' : /no flat faces/.test(q.prompt) ? 'sphere' : /comes to a point/.test(q.prompt) ? 'cone' : /two triangle faces/.test(q.prompt) ? 'triangular prism' : /all squares/.test(q.prompt) ? 'cube' : 'rectangular prism'; if (q.answer !== want) problems.push('which solid wrong'); }
+    const JOIN = { 'square-2tri': ['Two triangles', 'square', 2], 'triangle-2tri': ['Two triangles', 'triangle', 2], 'rect-2tri': ['Two triangles', 'rectangle', 2], 'rhombus-2tri': ['Two triangles', 'rhombus', 2], 'rect-2sq': ['Two squares', 'rectangle', 2], 'rect-3sq': ['Three squares', 'rectangle', 3], 'square-4sq': ['Four squares', 'square', 4], 'square-4tri': ['Four triangles', 'square', 4], 'triangle-4tri': ['Four triangles', 'triangle', 4], 'trapezoid-3tri': ['Three triangles', 'trapezoid', 3], 'hexagon-6tri': ['Six triangles', 'hexagon', 6], 'hexagon-2trap': ['Two trapezoids', 'hexagon', 2] };
+    const makes = (label, result) => Object.values(JOIN).some(([l, r]) => l === label && r === result);
+    if (genId === 'j1-made-what') { const [, r] = JOIN[q.visual.figure]; if (q.answer !== r) problems.push('joined result wrong'); if ((ALSO[r] || []).some((n) => q.choices.includes(n))) problems.push('a name also true of the joined shape is offered as wrong'); }
+    if (genId === 'j1-how-many' && Number(q.answer) !== JOIN[q.visual.figure][2]) problems.push('joined piece count wrong');
+    if (genId === 'j1-which-pieces') { const [l, r] = JOIN[q.visual.figure]; if (q.answer !== l) problems.push('joined pieces wrong'); if (q.choices.filter((c) => c !== l).some((c) => makes(c, r))) problems.push('a wrong piece set can make the same shape'); }
+    if (genId === 'j1-tap-result') { const want = /two squares/.test(q.prompt) || /three squares/.test(q.prompt) ? 'rectangle' : /four squares/.test(q.prompt) ? 'square' : /three triangles/.test(q.prompt) ? 'trapezoid' : 'hexagon'; if (shapeOf(q.answer) !== want) problems.push('tap result wrong'); }
+    if (genId === 'j1-more-ways') { const t = q.prompt.match(/make a (\w+)\?$/)[1]; if (!makes(q.answer, t) || q.choices.filter((c) => c !== q.answer).some((c) => makes(c, t))) problems.push('more ways wrong'); }
+    if (genId === 'j1-can') { const m2 = /^Can (.+) make a (\w+)\?$/.exec(q.prompt); const label = m2[1].replace(/^\w/, (c) => c.toUpperCase()); const want = makes(label, m2[2]) ? 'Yes' : 'No'; if (q.answer !== want) problems.push('can make wrong'); }
+    // Grade 1 number sense (pass LA), re-derived from the picture or the words.
+    const NUMW1 = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 };
+    if (genId === 'ql1-dice' && Number(q.answer) !== q.visual.pips) problems.push('dice count wrong');
+    if (genId === 'ql1-tenframe' && Number(q.answer) !== q.visual.filled) problems.push('ten frame count wrong');
+    if (genId === 'ql1-empty' && Number(q.answer) !== 10 - q.visual.filled) problems.push('empty spaces wrong');
+    if (genId === 'ql1-domino' && Number(q.answer) !== q.visual.a + q.visual.b) problems.push('domino total wrong');
+    if (genId === 'ql1-two-dice' && Number(q.answer) !== q.visual.a.pips + q.visual.b.pips) problems.push('two dice total wrong');
+    if (genId === 'ql1-tap-dice') { const w = q.prompt.match(/shows (\w+)\./)[1]; if (q.answer !== `dice:${NUMW1[w]}`) problems.push('tapped the wrong dice'); }
+    if (genId === 'ql1-fact') { const want = /two rows of how many/.test(q.prompt) ? 'Three' : /fill a whole ten frame/.test(q.prompt) ? 'Ten' : 'Five'; if (q.answer !== want) problems.push('quick look fact wrong'); }
+    if (genId === 'ql1-faster' && q.answer !== 'See the pattern') problems.push('quick way wrong');
+    const numsIn = (t) => (String(t).match(/\d+/g) || []).map(Number);
+    if (genId === 'ct1-next' && Number(q.answer) !== numsIn(q.prompt)[0] + 1) problems.push('count on wrong');
+    if (genId === 'ct1-before' && Number(q.answer) !== numsIn(q.prompt)[0] - 1) problems.push('count back wrong');
+    if (genId === 'ct1-fill-forward' && Number(q.answer) !== numsIn(q.prompt)[2] + 1) problems.push('fill forward wrong');
+    if (genId === 'ct1-fill-backward' && Number(q.answer) !== numsIn(q.prompt)[2] - 1) problems.push('fill backward wrong');
+    if (genId === 'ct1-skip') { const [a, b, c] = numsIn(q.prompt); if (b - a !== c - b || Number(q.answer) !== c + (b - a)) problems.push('skip count wrong'); }
+    if (genId === 'ct1-total' && Number(q.answer) !== q.visual.groups * q.visual.each) problems.push('skip total wrong');
+    if (genId === 'ct1-greater' && !(Number(q.answer) > numsIn(q.prompt)[0] && q.choices.filter((c) => c !== q.answer).every((c) => Number(c) <= numsIn(q.prompt)[0]))) problems.push('greater than wrong');
+    if (genId === 'ct1-less' && !(Number(q.answer) < numsIn(q.prompt)[0] && q.choices.filter((c) => c !== q.answer).every((c) => Number(c) >= numsIn(q.prompt)[0]))) problems.push('less than wrong');
+    if (genId === 'ct1-which-count') { const by = { twos: 2, fives: 5, tens: 10 }[q.prompt.match(/by (\w+)\?/)[1]]; const step = (c) => { const n = numsIn(c); return n[1] - n[0]; }; if (step(q.answer) !== by || q.choices.filter((c) => c !== q.answer).some((c) => step(c) === by)) problems.push('which count wrong'); }
+    if (genId === 'ol1-dot' && Number(q.answer) !== q.visual.dots[0].at) problems.push('dot number wrong');
+    if (genId === 'ol1-between' && Number(q.answer) !== numsIn(q.prompt)[0] + 1) problems.push('between wrong');
+    if (genId === 'ol1-order') { const want = numsIn(q.story).sort((a, b) => a - b).join(', '); if (q.answer !== want) problems.push('order wrong'); }
+    if (genId === 'ol1-which-dot') { const v = numsIn(q.prompt)[0]; const d = q.visual.dots.find((x) => x.at === v); if (!d || q.answer !== d.name) problems.push('which dot wrong'); }
+    if (genId === 'ol1-right' && q.answer !== (/greater/.test(q.prompt) ? 'To the right' : 'To the left')) problems.push('right or left wrong');
+    if (genId === 'ol1-farther-right' && Number(q.answer) !== Math.max(...numsIn(q.prompt))) problems.push('farther right wrong');
+    if (genId === 'ol1-count-on') { const n = numsIn(q.prompt)[0]; const k = NUMW1[q.prompt.match(/count on (\w+) along/)[1]]; if (Number(q.answer) !== n + k) problems.push('count on line wrong'); }
+    if (genId === 'ol1-greater-of-two' && Number(q.answer) !== Math.max(...numsIn(q.story))) problems.push('greater of two wrong');
+    // Grade 1 measurement and data (pass KZ), re-derived from the picture or the words.
+    const barOf = (c) => Number(String(c).replace(/^bar:/, ''));
+    if (genId === 'ml1-how-long' && Number(q.answer) !== q.visual.units) problems.push('how long wrong');
+    if (genId === 'ml1-number-and-unit' && q.answer !== `${q.visual.units} ${q.visual.unit === 'cube' ? 'cubes' : 'paper clips'}`) problems.push('number and unit wrong');
+    if (genId === 'ml1-which-count' && q.answer !== (/bigger/.test(q.prompt) ? 'The paper clips' : 'The cubes')) problems.push('which count wrong');
+    if (genId === 'ml1-good-measure' && q.answer !== (q.visual.flaw ? 'No' : 'Yes')) problems.push('good measure wrong');
+    if (genId === 'ml1-longest') { const ls = q.choices.map(barOf); if (barOf(q.answer) !== (/longest/.test(q.prompt) ? Math.max(...ls) : Math.min(...ls))) problems.push('longest ribbon wrong'); }
+    if (genId === 'ml1-middle') { const ls = q.choices.map(barOf).sort((a, b) => a - b); if (barOf(q.answer) !== ls[1]) problems.push('middle ribbon wrong'); }
+    if (genId === 'ml1-indirect') { const m2 = /^The (\w+) is longer than the (\w+)\. The \w+ is longer than the (\w+)\./.exec(q.story); if (q.answer !== (/longer/.test(q.prompt) ? `The ${m2[1]}` : `The ${m2[3]}`)) problems.push('indirect compare wrong'); }
+    const HOURS1 = ['twelve', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven'];
+    const cap1 = (t) => t.charAt(0).toUpperCase() + t.slice(1);
+    const tw = (h, m) => (m === 30 ? `Half past ${HOURS1[h % 12]}` : `${cap1(HOURS1[h % 12])} o'clock`);
+    if ((genId === 'tm1-oclock' || genId === 'tm1-half-past' || genId === 'tm1-hand-between') && q.answer !== tw(q.visual.hour, q.visual.minute)) problems.push('grade 1 clock reading wrong');
+    if (genId === 'tm1-which-clock') { const half = /half past/.test(q.prompt); const word = half ? q.prompt.match(/half past (\w+)/)[1] : q.prompt.match(/shows (\w+) o'clock/)[1]; const h = HOURS1.indexOf(word) === 0 ? 12 : HOURS1.indexOf(word); if (q.answer !== `clock:${h}:${half ? 30 : 0}`) problems.push('grade 1 which clock wrong'); }
+    if (genId === 'tm1-hands' && q.answer !== (/hour hand/.test(q.prompt) ? 'The short hand' : 'The long hand')) problems.push('hands wrong');
+    if (genId === 'tm1-up-or-down' && q.answer !== (/straight up/.test(q.story) ? 'O\'clock' : 'Half past')) problems.push('up or down wrong');
+    if (genId === 'tm1-digital-read' && q.answer !== tw(q.visual.hour, q.visual.minute)) problems.push('digital read wrong');
+    if (genId === 'tm1-match-digital' && q.answer !== `digital:${q.visual.hour}:${q.visual.minute}`) problems.push('match digital wrong');
+    if (genId === 'tm1-minutes' && Number(q.answer) !== (/half an hour/.test(q.prompt) ? 30 : 60)) problems.push('minutes wrong');
+    if (genId === 'tm1-write-digital') { const half = /half past/.test(q.prompt); const word = half ? q.prompt.match(/half past (\w+)/)[1] : q.prompt.match(/How is (\w+) o'clock/)[1]; const h = HOURS1.indexOf(word) === 0 ? 12 : HOURS1.indexOf(word); if (q.answer !== `${h}:${half ? '30' : '00'}`) problems.push('write digital wrong'); }
+    if ((genId === 'dg1-count-tally' || genId === 'dg1-tally-to-graph') && Number(q.answer) !== q.visual.rows[0].count) problems.push('tally count wrong');
+    if (genId === 'dg1-fives' && Number(q.answer) !== Math.floor(q.visual.rows[0].count / 5)) problems.push('tally groups wrong');
+    if (genId === 'dg1-read-bar') { const names = { ball: 'balls', teddy: 'teddy bears', block: 'blocks', dog: 'dogs', fish: 'fish', bird: 'birds', sun: 'sunny days', rain: 'rainy days', snow: 'snowy days' }; const row = q.visual.rows.find((r) => q.prompt.includes(`How many ${names[r.icon]} `)); if (!row || Number(q.answer) !== row.count) problems.push('read bar wrong'); }
+    if (genId === 'dg1-bar-most') { const sorted = [...q.visual.rows].sort((x, y) => y.count - x.count); const want = /fewest/.test(q.prompt) ? sorted[2] : sorted[0]; if (q.answer !== `icon:${want.icon}`) problems.push('bar most wrong'); }
+    if (genId === 'dg1-bar-more') { const [a, b] = q.visual.rows.map((r) => r.count); if (Number(q.answer) !== Math.abs(a - b)) problems.push('bar more wrong'); }
+    if (genId === 'dg1-bar-total' && Number(q.answer) !== q.visual.rows.reduce((t, r) => t + r.count, 0)) problems.push('bar total wrong');
+    if (genId === 'dg1-graph-question' && !/most|fewest|in all/.test(q.answer)) problems.push('graph question wrong');
+    const FAIR2 = ['half', 'half-across', 'half-slant']; const FAIR4 = ['fourths', 'fourths-strips', 'fourths-x'];
+    const cutOf = (c) => String(c).split(':')[2];
+    if (genId === 'h1-halves-yes-no' && q.answer !== (FAIR2.includes(q.visual.cut) ? 'Yes' : 'No')) problems.push('halves yes/no wrong');
+    if (genId === 'h1-fourths-yes-no' && q.answer !== (FAIR4.includes(q.visual.cut) ? 'Yes' : 'No')) problems.push('fourths yes/no wrong');
+    if (genId === 'h1-how-many-shares' && Number(q.answer) !== (FAIR2.includes(q.visual.cut) ? 2 : 4)) problems.push('fair share count wrong');
+    if (genId === 'h1-name-share' && q.answer !== (FAIR2.includes(q.visual.cut) ? 'One half' : 'One fourth')) problems.push('share name wrong');
+    if (genId === 'h1-tap-shows') { const halves = /halves\.$/.test(q.prompt); const fair = halves ? FAIR2 : FAIR4; if (!fair.includes(cutOf(q.answer)) || q.choices.filter((c) => c !== q.answer).some((c) => fair.includes(cutOf(c)))) problems.push('tap shows wrong'); }
+    if (genId === 'h1-bigger') { const halfEater = q.story.match(/(\w+) eats one half/)[1]; const fourthEater = q.story.match(/(\w+) eats one fourth/)[1]; if (q.answer !== (/bigger/.test(q.prompt) ? halfEater : fourthEater)) problems.push('bigger share wrong'); }
+    if (genId === 'h1-make-whole' && Number(q.answer) !== (/halves/.test(q.prompt) ? 2 : 4)) problems.push('make whole wrong');
+    if (genId === 'h1-quarter' && q.answer !== (/one fourth\?$/.test(q.prompt) ? 'One quarter' : 'One fourth')) problems.push('quarter name wrong');
+    if (genId === 'h1-fair-yes-no' && q.answer !== (['unequal-two', 'unequal-four'].includes(q.visual.cut) ? 'No' : 'Yes')) problems.push('fair yes/no wrong');
     // Tens, lengths, sorting: re-derived from the words and the pictures
     const num = (c, key) => Number((new RegExp(`^${key}:(\\d+)$`).exec(c) || [])[1]);
     if (genId === 'kt-next-ten' && Number(q.answer) !== Number(q.prompt.match(/after (\d+)/)[1]) + 10) problems.push('next ten wrong');

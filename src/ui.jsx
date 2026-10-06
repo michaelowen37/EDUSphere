@@ -462,6 +462,10 @@ function SolidPic({ name, size = 90 }) {
   const body = clean === 'sphere' ? <g>{shadow}<circle cx="50" cy="48" r="36" fill={`url(#${uid}-ball)`} /><ellipse cx="36" cy="34" rx="9" ry="6" fill="#fff" opacity="0.45" /></g>
     : clean === 'cube' ? <g>{shadow}<path d="M22 34 L54 22 L82 34 L50 46 Z" fill={`url(#${uid}-top)`} /><path d="M22 34 L50 46 L50 84 L22 72 Z" fill={C.green} /><path d="M50 46 L82 34 L82 72 L50 84 Z" fill={`url(#${uid}-side)`} /></g>
     : clean === 'cylinder' ? <g>{shadow}<rect x="24" y="24" width="52" height="52" fill={`url(#${uid}-cone)`} /><ellipse cx="50" cy="76" rx="26" ry="10" fill="#2A4E42" /><ellipse cx="50" cy="24" rx="26" ry="10" fill={`url(#${uid}-top)`} /></g>
+    // A rectangular prism (pass KY, TEKS 1.6E), drawn as a box longer than it is tall, so it reads as a box and not a cube.
+    : clean === 'box' ? <g>{shadow}<path d="M10 38 L32 22 L90 22 L68 38 Z" fill={`url(#${uid}-top)`} /><path d="M10 38 L68 38 L68 82 L10 82 Z" fill={C.green} /><path d="M68 38 L90 22 L90 66 L68 82 Z" fill={`url(#${uid}-side)`} /></g>
+    // A triangular prism (pass KY): a triangle in front and the same triangle behind, joined by three rectangles, like a tent.
+    : clean === 'prism' ? <g>{shadow}<path d="M44 24 L66 10 L96 66 L74 80 Z" fill={`url(#${uid}-side)`} /><path d="M14 80 L44 24 L74 80 Z" fill={C.green} /><path d="M74 80 L96 66" stroke="#1F3B31" strokeWidth="1.5" /></g>
     : <g>{shadow}<path d="M50 12 L22 74 L78 74 Z" fill={`url(#${uid}-cone)`} /><ellipse cx="50" cy="74" rx="28" ry="10" fill="#2A4E42" /></g>;
   return <svg viewBox="0 0 100 100" width={size} height={size} role="img" aria-label={clean} style={{ display: 'block', margin: '0 auto' }}>{defs}{body}</svg>;
 }
@@ -645,13 +649,184 @@ function IconPic({ name, size = 90 }) {
   return <svg viewBox="0 0 100 100" width={size} height={size} role="img" aria-label={name} style={{ display: 'block', margin: '0 auto' }}>{body}</svg>;
 }
 
-function ShapePic({ name, size = 90, color = C.green }) {
-  const clean = String(name).split('#')[0];
-  const body = clean === 'circle' ? <circle cx="50" cy="50" r="38" fill={color} />
-    : clean === 'triangle' ? <path d="M50 12 L88 84 L12 84 Z" fill={color} />
-    : clean === 'square' ? <rect x="14" y="14" width="72" height="72" rx="4" fill={color} />
-    : <rect x="6" y="26" width="88" height="48" rx="4" fill={color} />;
-  return <svg viewBox="0 0 100 100" width={size} height={size} role="img" aria-label={clean} style={{ display: 'block', margin: '0 auto' }}>{body}</svg>;
+// Grade 1 geometry (pass KY, TEKS 1.6A to 1.6D): the rhombus, the hexagon and the trapezoid join the four kindergarten shapes,
+// and a shape can be drawn in a look that does not change its name, turned, thin, wide, tall, leaning or long, so a child
+// sees that a tall thin triangle is still a triangle (1.6B, what defines a shape and what does not). The look rides on
+// the name after a tilde ('triangle~thin'), which a tapped choice carries, or in the `variant` prop a lesson line passes,
+// so the spoken words still name the plain shape. Every variant keeps the shape's sides and vertices; only its look changes.
+const SHAPE_PATHS = {
+  circle: { plain: null },   // drawn as a circle below, never as a path
+  triangle: { plain: 'M50 12 L88 84 L12 84 Z', thin: 'M50 6 L70 92 L30 92 Z', wide: 'M12 84 L92 84 L66 34 Z', turned: 'M50 88 L12 16 L88 16 Z' },
+  square: { plain: 'M14 14 L86 14 L86 86 L14 86 Z', turned: 'M50 8 L92 50 L50 92 L8 50 Z', small: 'M30 30 L70 30 L70 70 L30 70 Z' },
+  rectangle: { plain: 'M6 26 L94 26 L94 74 L6 74 Z', tall: 'M26 6 L74 6 L74 94 L26 94 Z', thin: 'M4 36 L96 36 L96 64 L4 64 Z' },
+  // A rhombus has four sides all the same length. The plain one is the diamond a child knows (its two corner-to-corner
+  // lines differ, 88 and 56, so it is not a square); the leaning one has sides of 60 at a sixty-degree lean.
+  rhombus: { plain: 'M50 6 L78 50 L50 94 L22 50 Z', leaning: 'M5 24 L65 24 L95 76 L35 76 Z', wide: 'M6 50 L50 28 L94 50 L50 72 Z' },
+  // Six straight sides. The plain hexagon is regular, the long one is stretched and still a hexagon.
+  hexagon: { plain: 'M92 50 L71 86.4 L29 86.4 L8 50 L29 13.6 L71 13.6 Z', long: 'M6 50 L26 16 L74 16 L94 50 L74 84 L26 84 Z', turned: 'M50 8 L86.4 29 L86.4 71 L50 92 L13.6 71 L13.6 29 Z' },
+  trapezoid: { plain: 'M10 78 L90 78 L70 22 L30 22 Z', tall: 'M22 90 L78 90 L66 10 L34 10 Z' },
+};
+function ShapePic({ name, size = 90, color = C.green, variant = null }) {
+  const raw = String(name).split('#')[0]; const [base, tilde] = raw.split('~'); const look = variant || tilde || 'plain';
+  const paths = SHAPE_PATHS[base] || SHAPE_PATHS.rectangle;
+  const body = base === 'circle' ? <circle cx="50" cy="50" r="38" fill={color} />
+    : <path d={paths[look] || paths.plain} fill={color} strokeLinejoin="round" />;
+  return <svg viewBox="0 0 100 100" width={size} height={size} role="img" aria-label={look === 'plain' ? base : `${look} ${base}`} style={{ display: 'block', margin: '0 auto' }}>{body}</svg>;
+}
+// Fair shares (pass KY, TEKS 1.6G and 1.6H): a circle, a square or a rectangle cut into pieces, with some pieces shaded.
+// `cut` names the cut (none, half, half-across, half-slant, fourths, fourths-strips, fourths-x, unequal-two, unequal-four)
+// and `shaded` says how many pieces are filled, counted in the order the pieces are listed. The unequal cuts are the
+// non-examples: two pieces, but not halves, because fair shares must be the same size. Drawn for paper, like the other
+// diagrams (white pieces, dark seams, the light green), so the dark theme shows them on its almond board unchanged.
+const SHARE_R = 42; const shareAt = (a) => [50 + SHARE_R * Math.cos((a * Math.PI) / 180), 50 + SHARE_R * Math.sin((a * Math.PI) / 180)];
+const wedge = (a1, a2) => { const [x1, y1] = shareAt(a1); const [x2, y2] = shareAt(a2); return `M50 50 L${x1.toFixed(1)} ${y1.toFixed(1)} A${SHARE_R} ${SHARE_R} 0 ${a2 - a1 > 180 ? 1 : 0} 1 ${x2.toFixed(1)} ${y2.toFixed(1)} Z`; };
+const halfDisc = (a1, a2) => { const [x1, y1] = shareAt(a1); const [x2, y2] = shareAt(a2); return `M${x1.toFixed(1)} ${y1.toFixed(1)} A${SHARE_R} ${SHARE_R} 0 0 1 ${x2.toFixed(1)} ${y2.toFixed(1)} Z`; };
+function sharePieces(shape, cut) {
+  if (shape === 'circle') {
+    const q = (start) => [0, 1, 2, 3].map((i) => wedge(start + i * 90, start + (i + 1) * 90));
+    const chordX = 66; const dy = Math.sqrt(SHARE_R * SHARE_R - (chordX - 50) ** 2); // the off-center cut of the two-piece non-example
+    const chordY = 34; const dx = Math.sqrt(SHARE_R * SHARE_R - (chordY - 50) ** 2); // the off-center cut of the four-piece non-example
+    return {
+      none: [`M50 8 A${SHARE_R} ${SHARE_R} 0 1 1 49.9 8 Z`],
+      half: [halfDisc(90, 270), halfDisc(270, 450)],
+      'half-across': [halfDisc(180, 360), halfDisc(0, 180)],
+      'half-slant': [halfDisc(135, 315), halfDisc(315, 495)],
+      fourths: q(270), 'fourths-x': q(225), 'fourths-strips': q(270),
+      'unequal-two': [`M${chordX} ${(50 - dy).toFixed(1)} A${SHARE_R} ${SHARE_R} 0 1 0 ${chordX} ${(50 + dy).toFixed(1)} Z`, `M${chordX} ${(50 - dy).toFixed(1)} A${SHARE_R} ${SHARE_R} 0 0 1 ${chordX} ${(50 + dy).toFixed(1)} Z`],
+      'unequal-four': [`M50 ${chordY} L${(50 + dx).toFixed(1)} ${chordY} A${SHARE_R} ${SHARE_R} 0 0 0 50 8 Z`, `M50 ${chordY} L50 8 A${SHARE_R} ${SHARE_R} 0 0 0 ${(50 - dx).toFixed(1)} ${chordY} Z`, `M50 ${chordY} L${(50 - dx).toFixed(1)} ${chordY} A${SHARE_R} ${SHARE_R} 0 0 0 50 92 Z`, `M50 ${chordY} L50 92 A${SHARE_R} ${SHARE_R} 0 0 0 ${(50 + dx).toFixed(1)} ${chordY} Z`],
+    }[cut] || null;
+  }
+  const [x0, y0, x1, y1] = shape === 'square' ? [10, 10, 90, 90] : [4, 27, 96, 73];
+  const w = x1 - x0; const h = y1 - y0; const xm = x0 + w / 2; const ym = y0 + h / 2;
+  const box = (a, b, c, d) => `M${a} ${b} L${c} ${b} L${c} ${d} L${a} ${d} Z`;
+  const strips = (cuts) => { const xs = [x0, ...cuts.map((f) => x0 + w * f), x1]; return xs.slice(0, -1).map((x, i) => box(x, y0, xs[i + 1], y1)); };
+  return {
+    none: [box(x0, y0, x1, y1)],
+    half: strips([0.5]),
+    'half-across': [box(x0, y0, x1, ym), box(x0, ym, x1, y1)],
+    'half-slant': [`M${x0} ${y0} L${x1} ${y0} L${x1} ${y1} Z`, `M${x0} ${y0} L${x1} ${y1} L${x0} ${y1} Z`],
+    fourths: [box(x0, y0, xm, ym), box(xm, y0, x1, ym), box(x0, ym, xm, y1), box(xm, ym, x1, y1)],
+    'fourths-strips': strips([0.25, 0.5, 0.75]),
+    'fourths-x': [`M${x0} ${y0} L${x1} ${y0} L${xm} ${ym} Z`, `M${x1} ${y0} L${x1} ${y1} L${xm} ${ym} Z`, `M${x1} ${y1} L${x0} ${y1} L${xm} ${ym} Z`, `M${x0} ${y1} L${x0} ${y0} L${xm} ${ym} Z`],
+    'unequal-two': strips([0.3]),
+    'unequal-four': strips([0.15, 0.4, 0.8]),
+  }[cut] || null;
+}
+function SharesPic({ shape = 'circle', cut = 'half', shaded = 0, size = 120 }) {
+  const pieces = sharePieces(shape, cut) || sharePieces(shape, 'none');
+  return (
+    <svg viewBox="0 0 100 100" width={size} height={size} role="img" aria-label={`a ${shape} cut into ${pieces.length} pieces, ${shaded} shaded`} style={{ display: 'block', margin: '0 auto' }}>
+      {pieces.map((d, i) => <path key={i} d={d} fill={i < shaded ? B.green : '#FFFFFF'} stroke="#2E2E2E" strokeWidth="2.4" strokeLinejoin="round" />)}
+    </svg>
+  );
+}
+// Measuring length (pass KZ, TEKS 1.7A to 1.7D): an object drawn above a row of same-size units that span it exactly, cubes
+// 30 wide or paper clips 20 wide, so the same object measures 4 cubes or 6 clips. `second` adds a second row in the other
+// unit under the same object (1.7C). `flaw` draws the non-examples: units with gaps between them, or units that overlap.
+const MEASURE_UNIT_W = { cube: 30, clip: 20 };
+function unitRow(unit, n, y, flaw) {
+  const w = MEASURE_UNIT_W[unit] || 30; const out = [];
+  for (let i = 0; i < n; i++) {
+    const x = 16 + i * (flaw === 'gaps' ? w + 8 : flaw === 'overlap' ? w * 0.72 : w);
+    out.push(unit === 'clip'
+      ? <g key={i}><rect x={x + 1.5} y={y + 3} width={w - 3} height={14} rx="7" fill="none" stroke="#5B6770" strokeWidth="2" /><rect x={x + 5} y={y + 6.5} width={w - 10} height={7} rx="3.5" fill="none" stroke="#5B6770" strokeWidth="1.6" /></g>
+      : <g key={i}><rect x={x} y={y} width={w - 1} height={20} rx="2" fill={B.green} stroke="#2E2E2E" strokeWidth="1.2" /><rect x={x + 3} y={y + 3} width={w - 7} height={5} rx="1.5" fill="#9CC7B0" opacity="0.8" /></g>);
+  }
+  return out;
+}
+function MeasurePic({ object = 'pencil', units = 4, unit = 'cube', second = null, flaw = null }) {
+  const w = MEASURE_UNIT_W[unit] || 30; const L = units * w; const W = L + 32 + (flaw === 'gaps' ? units * 8 : 0);
+  const rows = second ? 2 : 1; const H = 44 + rows * 26;
+  const x0 = 16; const x1 = x0 + L; const y = 10;
+  // The object itself, drawn from x0 to x1 so the units underneath match it end to end.
+  const body = object === 'pencil' ? <g><rect x={x0} y={y + 4} width={L - 14} height="16" fill="#F2C14E" stroke="#2E2E2E" strokeWidth="1.2" /><path d={`M${x1 - 14} ${y + 4} L${x1} ${y + 12} L${x1 - 14} ${y + 20} Z`} fill="#F7E3B5" stroke="#2E2E2E" strokeWidth="1.2" /><rect x={x0} y={y + 4} width="8" height="16" fill="#E88A8A" stroke="#2E2E2E" strokeWidth="1.2" /></g>
+    : object === 'crayon' ? <g><rect x={x0} y={y + 4} width={L - 10} height="16" rx="2" fill="#C9573E" stroke="#2E2E2E" strokeWidth="1.2" /><path d={`M${x1 - 10} ${y + 4} L${x1} ${y + 12} L${x1 - 10} ${y + 20} Z`} fill="#C9573E" stroke="#2E2E2E" strokeWidth="1.2" /></g>
+    : object === 'ribbon' ? <path d={`M${x0} ${y + 4} L${x1} ${y + 4} L${x1 - 7} ${y + 12} L${x1} ${y + 20} L${x0} ${y + 20} L${x0 + 7} ${y + 12} Z`} fill="#4A7FC1" stroke="#2E2E2E" strokeWidth="1.2" />
+    : <g><rect x={x0} y={y + 7} width={L} height="10" rx="5" fill="#9ED3E0" stroke="#2E2E2E" strokeWidth="1.2" /><line x1={x0 + 10} y1={y + 7} x2={x0 + 10} y2={y + 17} stroke="#2E2E2E" strokeWidth="0.8" /></g>;   // a straw
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} width={Math.min(W * 1.4, 360)} role="img" aria-label={`a ${object} measured with ${units} ${unit}s`} style={{ display: 'block', maxWidth: '100%', margin: '0 auto', height: 'auto' }}>
+      {body}
+      {unitRow(unit, units, y + 28, flaw)}
+      {second && unitRow(second, Math.round(L / MEASURE_UNIT_W[second]), y + 54, null)}
+    </svg>
+  );
+}
+// A digital clock (pass KZ, TEKS 1.7E): the hour, two dots and the minutes, on a dark face the way a bedside clock shows them.
+function DigitalPic({ hour = 3, minute = 0, size = 120 }) {
+  const text = `${hour}:${String(minute).padStart(2, '0')}`;
+  return (
+    <svg viewBox="0 0 100 56" width={size} role="img" aria-label={`digital clock showing ${text}`} style={{ display: 'block', margin: '0 auto', height: 'auto' }}>
+      <rect x="4" y="4" width="92" height="48" rx="10" fill="#2E3A36" stroke="#2E2E2E" strokeWidth="2" />
+      <rect x="12" y="12" width="76" height="32" rx="5" fill="#1B2422" />
+      <text x="50" y="30" textAnchor="middle" dominantBaseline="central" fontFamily={FONT} fontSize="24" fontWeight="700" fill="#9CF0B0">{text}</text>
+    </svg>
+  );
+}
+// Tally marks (pass KZ, TEKS 1.8A): one line for each answer, the fifth drawn across the other four, so the marks come in
+// groups of five. Each row is one group with its icon; `layout: 'tchart'` stands two rows side by side under a bar, a T-chart.
+function tallyMarks(n, x, y) {
+  const out = []; const groups = Math.floor(n / 5); const rest = n % 5;
+  const draw = (k, count, gate) => { const gx = x + k * 34; for (let i = 0; i < count; i++) out.push(<line key={`${k}-${i}`} x1={gx + i * 6} y1={y} x2={gx + i * 6} y2={y + 22} stroke="#2E2E2E" strokeWidth="2.2" strokeLinecap="round" />); if (gate) out.push(<line key={`${k}-g`} x1={gx - 3} y1={y + 19} x2={gx + 21} y2={y + 3} stroke="#2E2E2E" strokeWidth="2.2" strokeLinecap="round" />); };
+  for (let k = 0; k < groups; k++) draw(k, 4, true);
+  if (rest) draw(groups, rest, false);
+  return out;
+}
+function TallyPic({ rows = [], layout = null }) {
+  if (layout === 'tchart' && rows.length === 2) {
+    return (
+      <svg viewBox="0 0 220 96" width="100%" role="img" aria-label="a T-chart with tally marks" style={{ display: 'block', maxWidth: 300, margin: '0 auto', height: 'auto' }}>
+        <line x1="10" y1="40" x2="210" y2="40" stroke="#2E2E2E" strokeWidth="2.5" /><line x1="110" y1="12" x2="110" y2="92" stroke="#2E2E2E" strokeWidth="2.5" />
+        {rows.map((r, i) => <g key={i}><g transform={`translate(${i * 100 + 40} 8) scale(0.5)`}><IconPic name={r.icon} size={50} /></g>{tallyMarks(r.count, i * 100 + 22, 56)}</g>)}
+      </svg>
+    );
+  }
+  const H = rows.length * 40 + 8;
+  return (
+    <svg viewBox={`0 0 240 ${H}`} width="100%" role="img" aria-label="tally marks" style={{ display: 'block', maxWidth: 320, margin: '0 auto', height: 'auto' }}>
+      {rows.map((r, i) => <g key={i}><g transform={`translate(4 ${i * 40 + 2}) scale(0.72)`}><IconPic name={r.icon} size={50} /></g>{tallyMarks(r.count, 52, i * 40 + 9)}</g>)}
+    </svg>
+  );
+}
+// A bar graph (pass KZ, TEKS 1.8B and 1.8C): one bar for each group, its icon under it and the counts up the side, so a
+// child reads a bar's top against the numbers to find how many.
+function BarGraphPic({ rows = [] }) {
+  const max = 6; const H = 150; const base = 118; const unitH = 16; const bw = 34; const gap = 22; const left = 34;
+  const W = left + rows.length * (bw + gap) + 10;
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img" aria-label="a bar graph" style={{ display: 'block', maxWidth: 320, margin: '0 auto', height: 'auto' }}>
+      {Array.from({ length: max + 1 }, (_, k) => <g key={k}><line x1={left - 4} y1={base - k * unitH} x2={W - 6} y2={base - k * unitH} stroke="#A9B1AA" strokeWidth="0.8" /><text x={left - 9} y={base - k * unitH + 3.5} textAnchor="end" fontFamily={FONT} fontSize="9" fill="#2E2E2E">{k}</text></g>)}
+      <line x1={left} y1={base - max * unitH - 6} x2={left} y2={base} stroke="#2E2E2E" strokeWidth="1.5" /><line x1={left} y1={base} x2={W - 6} y2={base} stroke="#2E2E2E" strokeWidth="1.5" />
+      {rows.map((r, i) => { const x = left + 12 + i * (bw + gap); return <g key={i}>{r.count > 0 && <rect x={x} y={base - r.count * unitH} width={bw} height={r.count * unitH} rx="3" fill={B.green} stroke="#2E2E2E" strokeWidth="1.2" />}<g transform={`translate(${x + 3} ${base + 4}) scale(0.56)`}><IconPic name={r.icon} size={50} /></g></g>; })}
+    </svg>
+  );
+}
+// Shapes joined into a bigger shape (pass KY, TEKS 1.6F): each figure is a target shape drawn as the pieces that make it,
+// every piece in its own tint with the seams showing, so a child sees both the pieces and the whole. The figures are the
+// JOINED table in logic.mjs; the drawings live here.
+const HEX6 = [0, 1, 2, 3, 4, 5].map((i) => { const a = (i * 60 * Math.PI) / 180; return [50 + 42 * Math.cos(a), 50 + 42 * Math.sin(a)]; });
+const pt = ([x, y]) => `${x.toFixed(1)} ${y.toFixed(1)}`;
+const JOINED_PIECES = {
+  'square-2tri': ['M14 14 L86 14 L86 86 Z', 'M14 14 L86 86 L14 86 Z'],
+  'rect-2tri': ['M6 26 L94 26 L94 74 Z', 'M6 26 L94 74 L6 74 Z'],
+  'triangle-2tri': ['M50 10 L50 88 L10 88 Z', 'M50 10 L90 88 L50 88 Z'],
+  'rhombus-2tri': ['M26 50 L50 8.4 L74 50 Z', 'M26 50 L74 50 L50 91.6 Z'],
+  'rect-2sq': ['M4 27 L50 27 L50 73 L4 73 Z', 'M50 27 L96 27 L96 73 L50 73 Z'],
+  'rect-3sq': ['M5 35 L35 35 L35 65 L5 65 Z', 'M35 35 L65 35 L65 65 L35 65 Z', 'M65 35 L95 35 L95 65 L65 65 Z'],
+  'square-4sq': ['M14 14 L50 14 L50 50 L14 50 Z', 'M50 14 L86 14 L86 50 L50 50 Z', 'M14 50 L50 50 L50 86 L14 86 Z', 'M50 50 L86 50 L86 86 L50 86 Z'],
+  'square-4tri': ['M14 14 L86 14 L50 50 Z', 'M86 14 L86 86 L50 50 Z', 'M86 86 L14 86 L50 50 Z', 'M14 86 L14 14 L50 50 Z'],
+  'triangle-4tri': ['M50 10 L73 49.9 L27 49.9 Z', 'M27 49.9 L50 89.7 L4 89.7 Z', 'M73 49.9 L96 89.7 L50 89.7 Z', 'M27 49.9 L73 49.9 L50 89.7 Z'],
+  'trapezoid-3tri': ['M10 76 L50 76 L30 41.4 Z', 'M50 76 L90 76 L70 41.4 Z', 'M30 41.4 L70 41.4 L50 76 Z'],
+  'hexagon-6tri': HEX6.map((p, i) => `M50 50 L${pt(p)} L${pt(HEX6[(i + 1) % 6])} Z`),
+  'hexagon-2trap': [`M${pt(HEX6[3])} L${pt(HEX6[4])} L${pt(HEX6[5])} L${pt(HEX6[0])} Z`, `M${pt(HEX6[0])} L${pt(HEX6[1])} L${pt(HEX6[2])} L${pt(HEX6[3])} Z`],
+};
+const JOINED_TINTS = ['#5E9A62', '#8FC49A', '#3F7A4E', '#B7DDBE', '#6DAE7A', '#2F5F3D'];
+function JoinedPic({ figure = 'square-2tri', size = 120 }) {
+  const pieces = JOINED_PIECES[figure] || JOINED_PIECES['square-2tri'];
+  return (
+    <svg viewBox="0 0 100 100" width={size} height={size} role="img" aria-label={`${pieces.length} shapes joined`} style={{ display: 'block', margin: '0 auto' }}>
+      {pieces.map((d, i) => <path key={i} d={d} fill={JOINED_TINTS[i % JOINED_TINTS.length]} stroke="#2E2E2E" strokeWidth="2.2" strokeLinejoin="round" />)}
+    </svg>
+  );
 }
 
 function DotGroup({ count, size = 34, animate = false, animKey = 0 }) {
@@ -711,7 +886,7 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0 }) {
   if (visual.kind === 'pic') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0', display: 'flex', justifyContent: 'center' }}><StudentPicture name={visual.name} size={110} /></div>;
   if (visual.kind === 'art') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0', display: 'flex', justifyContent: 'center' }}><ColorThumb picture={visual.name} size={120} /></div>;
   if (visual.kind === 'icon') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><IconPic name={visual.name} size={110} /></div>;
-  if (visual.kind === 'shape') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><ShapePic name={visual.name} size={visual.size === 'big' ? 140 : visual.size === 'small' ? 50 : 110} /></div>;
+  if (visual.kind === 'shape') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><ShapePic name={visual.name} variant={visual.variant || null} color={SWATCH[visual.colour] || C.green} size={visual.size === 'big' ? 140 : visual.size === 'small' ? 50 : 110} /></div>;
   if (visual.kind === 'tens') return <div style={{ padding: '6px 0' }}><TensGroup count={visual.count} animate={animate} animKey={animKey} /></div>;
   if (visual.kind === 'array') return <div style={{ padding: '6px 0' }}><ArrayPic rows={visual.rows} cols={visual.cols} /></div>;
   if (visual.kind === 'numberline') return <div style={{ padding: '6px 0' }}><NumberLine parts={visual.parts} mark={visual.mark} /></div>;
@@ -724,7 +899,7 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0 }) {
     return <div style={{ padding: '6px 0', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 28 }}>{half(visual.a, 0)}{half(visual.b, 1)}</div>;
   }
   if (visual.kind === 'swatch') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><Swatch colour={visual.colour} size={120} /></div>;
-  if (visual.kind === 'item') return <div style={{ padding: '6px 0' }}><Item spec={`${visual.shape}-${visual.colour}`} size={110} /></div>;
+  if (visual.kind === 'item') { const scale = visual.scale ? '-' + visual.scale : ''; return <div style={{ padding: '6px 0' }}><Item spec={`${visual.shape}-${visual.colour}${scale}`} size={110} /></div>; }
   if (visual.kind === 'pattern') return <div key={animKey} className={animate ? 'edu-rise' : undefined} style={{ padding: '6px 0' }}><PatternRow items={visual.items} colour={visual.colour || 'green'} /></div>;
   if (visual.kind === 'solid') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><SolidPic name={visual.name} size={110} /></div>;
   if (visual.kind === 'tenframe') return <div key={animKey} className={animate ? 'edu-rise' : undefined} style={{ padding: '6px 0' }}><TenFrame filled={visual.filled} /></div>;
@@ -2273,7 +2448,62 @@ function SignPic({ text = 'STOP', color = '#D9534F' }) {
   const oct = text === 'STOP';
   return <Diagram label={`A ${text} sign`}>{oct ? <polygon points="62,22 98,22 116,40 116,60 98,78 62,78 44,60 44,40" fill={color} stroke="#2E2E2E" strokeWidth="1.2" /> : <rect x="44" y="30" width="72" height="40" rx="4" fill={color} stroke="#2E2E2E" strokeWidth="1.2" />}<text x="80" y="50" {...DIAGRAM_TEXT} fontSize="12" fontWeight="800" fill="#FFFFFF">{text}</text></Diagram>;
 }
-const DIAGRAMS = { timeline: TimelinePic, map: MapPic, branches: BranchesPic, stack: StackPic, compass: CompassPic, flag: FlagPic, sign: SignPic, flow: FlowPic, loop: LoopPic, states: StatesPic, thermometer: ThermometerPic, circuit: CircuitPic, orbits: OrbitsPic, mixture: MixturePic, densitypic: DensityPic, pyramid: PyramidPic, molecule: MoleculePic, plates: PlatesPic, moths: MothsPic, layers: LayersPic, celldiv: CellDivPic, basepairs: BasePairsPic, homology: HomologyPic, twoway: TwoWayPic, phscale: PhScalePic, reaction: ReactionPic, gaslaw: GasLawPic, bonds: BondsPic, momentum: MomentumPic, wave: WavePic, work: WorkPic, earthlayers: EarthLayersPic, ocean: OceanPic, heat: HeatPic, equalgroups: EqualGroupsPic, fracgrid: FracGridPic, opspic: OpsPic, cuboid: CuboidPic, fracpieces: FracPiecesPic, balance: BalancePic, circlepic: CirclePic, doubling: DoublingPic, growthbars: GrowthBarsPic, plot: PlotPic, tiles: TilesPic, sector: SectorPic, trigtri: TrigTriPic, similar: SimilarPic, reflect: ReflectPic, unitcircle: UnitCirclePic, scatter: ScatterPic, dotplot: DotPlotPic, spinner: SpinnerPic, cycle: CyclePic, leaf: LeafPic, pythag: PythagPic, cell: CellPic, forces: ForcesPic, curves: CurvesPic, atom: AtomPic, daynight: DayNightPic, percentgrid: PercentGridPic, groups: GroupsPic, angles: AnglesPic, lightray: LightRayPic, punnett: PunnettPic, alleles: AllelesPic, beaker: BeakerPic };
+// Grade 1 number sense (pass LA, earmark E7 part three): a dice face, a domino, sets of equal groups for skip counting, and
+// an open number line. Each carries a count or a position the question depends on, so each stays drawn (pass KL rule).
+const PIP_AT = { 1: [[50, 50]], 2: [[27, 27], [73, 73]], 3: [[27, 27], [50, 50], [73, 73]], 4: [[27, 27], [73, 27], [27, 73], [73, 73]], 5: [[27, 27], [73, 27], [50, 50], [27, 73], [73, 73]], 6: [[27, 27], [50, 27], [73, 27], [27, 73], [50, 73], [73, 73]] };   // two rows of three, as the lesson says
+function DiceFace({ pips = 1, x = 0, y = 0, size = 100 }) {
+  const k = size / 100;
+  return (
+    <g transform={`translate(${x} ${y}) scale(${k})`}>
+      <rect x="4" y="4" width="92" height="92" rx="16" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="3" />
+      {(PIP_AT[pips] || []).map(([px, py], i) => <circle key={i} cx={px} cy={py} r="8.5" fill="#2E2E2E" />)}
+    </g>
+  );
+}
+function DicePic({ pips = 1, size = 110 }) {
+  return <svg viewBox="0 0 100 100" width={size} height={size} role="img" aria-label={`a dice showing ${pips}`} style={{ display: 'block', margin: '0 auto' }}><DiceFace pips={pips} /></svg>;
+}
+function DominoPic({ a = 1, b = 1, size = 200 }) {
+  return (
+    <svg viewBox="0 0 200 100" width={size} height={size / 2} role="img" aria-label={`a domino showing ${a} and ${b}`} style={{ display: 'block', margin: '0 auto', maxWidth: '100%' }}>
+      <rect x="3" y="3" width="194" height="94" rx="14" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="3" />
+      <line x1="100" y1="10" x2="100" y2="90" stroke="#2E2E2E" strokeWidth="2.5" />
+      {(PIP_AT[a] || []).map(([px, py], i) => <circle key={`a${i}`} cx={px} cy={py} r="8" fill="#2E2E2E" />)}
+      {(PIP_AT[b] || []).map(([px, py], i) => <circle key={`b${i}`} cx={100 + px} cy={py} r="8" fill="#2E2E2E" />)}
+    </svg>
+  );
+}
+// Equal sets for skip counting: `groups` boxes of `each` dots (2 side by side, 5 in a row, 10 as two rows of five).
+function SetsPic({ groups = 3, each = 2 }) {
+  const box = each === 2 ? [44, 26] : each === 5 ? [92, 24] : [92, 44]; const gap = 8; const perRow = each === 2 ? 6 : 4;
+  const rows = Math.ceil(groups / perRow); const w = Math.min(groups, perRow) * (box[0] + gap) + gap; const h = rows * (box[1] + gap) + gap;
+  const dot = (i) => (each === 2 ? [14 + i * 16, 13] : each === 5 ? [12 + i * 17, 12] : [12 + (i % 5) * 17, 12 + Math.floor(i / 5) * 20]);
+  return (
+    <svg viewBox={`0 0 ${w} ${h}`} width={Math.min(w, 300)} role="img" aria-label={`${groups} groups of ${each}`} style={{ display: 'block', margin: '0 auto', maxWidth: '100%', height: 'auto' }}>
+      {Array.from({ length: groups }).map((_, g) => { const gx = gap + (g % perRow) * (box[0] + gap); const gy = gap + Math.floor(g / perRow) * (box[1] + gap); return (
+        <g key={g} transform={`translate(${gx} ${gy})`}>
+          <rect x="0" y="0" width={box[0]} height={box[1]} rx="8" fill="#FFFFFF" stroke="#A9B1AA" strokeWidth="2" />
+          {Array.from({ length: each }).map((__, i) => { const [cx, cy] = dot(i); return <circle key={i} cx={cx} cy={cy} r="6" fill={B.green} />; })}
+        </g>); })}
+    </svg>
+  );
+}
+// An open number line: only the numbers in `labels` are written, a tick for every whole number when the span is short, and
+// dots named with a letter (or unnamed) at `dots`. Greater numbers are to the right, which the lesson says.
+function OpenLinePic({ from = 0, to = 10, labels = [], dots = [] }) {
+  const x0 = 18; const x1 = 282; const span = Math.max(1, to - from); const xAt = (v) => x0 + ((v - from) / span) * (x1 - x0);
+  const ticks = span <= 24 ? Array.from({ length: span + 1 }, (_, i) => from + i) : labels;
+  return (
+    <svg viewBox="0 0 300 84" width="300" role="img" aria-label={`a number line from ${from} to ${to}`} style={{ display: 'block', margin: '0 auto', maxWidth: '100%', height: 'auto' }}>
+      <line x1="6" y1="48" x2="294" y2="48" stroke="#2E2E2E" strokeWidth="2.5" />
+      <path d="M6 48 L14 43 L14 53 Z" fill="#2E2E2E" /><path d="M294 48 L286 43 L286 53 Z" fill="#2E2E2E" />
+      {ticks.map((v) => <line key={`t${v}`} x1={xAt(v)} y1={labels.includes(v) ? 40 : 43} x2={xAt(v)} y2={labels.includes(v) ? 56 : 53} stroke="#2E2E2E" strokeWidth={labels.includes(v) ? 2.5 : 1.5} />)}
+      {labels.map((v) => <text key={`l${v}`} x={xAt(v)} y="74" textAnchor="middle" fontSize="13" fontFamily={FONT} fill="#2E2E2E">{v}</text>)}
+      {dots.map((d, i) => { const near = i > 0 && Math.abs(xAt(d.at) - xAt(dots[i - 1].at)) < 26; return <g key={`d${i}`}><circle cx={xAt(d.at)} cy="48" r="6" fill={B.green} stroke="#2E2E2E" strokeWidth="1.5" />{d.name && <text x={xAt(d.at)} y={near ? 12 : 26} textAnchor="middle" fontSize="14" fontWeight="700" fontFamily={FONT} fill="#2E2E2E">{d.name}</text>}</g>; })}
+    </svg>
+  );
+}
+const DIAGRAMS = { dice: DicePic, domino: DominoPic, sets: SetsPic, openline: OpenLinePic, shares: SharesPic, joined: JoinedPic, measure: MeasurePic, digital: DigitalPic, tally: TallyPic, bargraph: BarGraphPic, timeline: TimelinePic, map: MapPic, branches: BranchesPic, stack: StackPic, compass: CompassPic, flag: FlagPic, sign: SignPic, flow: FlowPic, loop: LoopPic, states: StatesPic, thermometer: ThermometerPic, circuit: CircuitPic, orbits: OrbitsPic, mixture: MixturePic, densitypic: DensityPic, pyramid: PyramidPic, molecule: MoleculePic, plates: PlatesPic, moths: MothsPic, layers: LayersPic, celldiv: CellDivPic, basepairs: BasePairsPic, homology: HomologyPic, twoway: TwoWayPic, phscale: PhScalePic, reaction: ReactionPic, gaslaw: GasLawPic, bonds: BondsPic, momentum: MomentumPic, wave: WavePic, work: WorkPic, earthlayers: EarthLayersPic, ocean: OceanPic, heat: HeatPic, equalgroups: EqualGroupsPic, fracgrid: FracGridPic, opspic: OpsPic, cuboid: CuboidPic, fracpieces: FracPiecesPic, balance: BalancePic, circlepic: CirclePic, doubling: DoublingPic, growthbars: GrowthBarsPic, plot: PlotPic, tiles: TilesPic, sector: SectorPic, trigtri: TrigTriPic, similar: SimilarPic, reflect: ReflectPic, unitcircle: UnitCirclePic, scatter: ScatterPic, dotplot: DotPlotPic, spinner: SpinnerPic, cycle: CyclePic, leaf: LeafPic, pythag: PythagPic, cell: CellPic, forces: ForcesPic, curves: CurvesPic, atom: AtomPic, daynight: DayNightPic, percentgrid: PercentGridPic, groups: GroupsPic, angles: AnglesPic, lightray: LightRayPic, punnett: PunnettPic, alleles: AllelesPic, beaker: BeakerPic };
 // The periodic table, drawn here so a lesson can show it and a question can light up the element it
 // names. Cells are tinted by family; a highlighted element, period or group gets a gold edge.
 const PT_SYMBOLS = 'H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Sc Ti V Cr Mn Fe Co Ni Cu Zn Ga Ge As Se Br Kr Rb Sr Y Zr Nb Mo Tc Ru Rh Pd Ag Cd In Sn Sb Te I Xe Cs Ba La Ce Pr Nd Pm Sm Eu Gd Tb Dy Ho Er Tm Yb Lu Hf Ta W Re Os Ir Pt Au Hg Tl Pb Bi Po At Rn Fr Ra Ac Th Pa U Np Pu Am Cm Bk Cf Es Fm Md No Lr Rf Db Sg Bh Hs Mt Ds Rg Cn Nh Fl Mc Lv Ts Og'.split(' ');
@@ -8506,7 +8736,7 @@ function EduSphereScreens() {
                   // because naming it would hand over the answer.
                   <button key={c} type="button" data-choice={c} onClick={() => { if (!checked) { if (readAloud) { playTap(); if (!c.includes(':')) speak(c); } setGiven(c); } }}
                     style={{ opacity: ruledOut && !checked ? (C.mode === 'dark' ? 0.72 : 0.5) : 1, fontFamily: FONT, fontSize: choiceFont(q.choices), textAlign: 'center', padding: '12px 10px', minWidth: 0, overflowWrap: /^-?[\d.,\/ ]+$/.test(c) ? 'normal' : 'anywhere', whiteSpace: /^-?[\d.,\/ ]+$/.test(c) ? 'nowrap' : 'normal', borderRadius: 10, background: bg, border: `2px solid ${border}`, color: C.ink, cursor: checked ? 'default' : 'pointer', minHeight: 48 }}>
-                    {/^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={28} /> : /^shape:/.test(c) ? <ShapePic name={c.split(':')[1]} size={c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={14} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={18} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={14} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6)} size={64} /> : /^pic:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><StudentPicture name={c.slice(4).split('#')[0]} size={72} /></span> : /^art:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><ColorThumb picture={c.slice(4).split('#')[0]} size={84} /></span> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={64} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={64} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={64} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={80} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={12} /> : c}
+                    {/^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={28} /> : /^shape:/.test(c) ? <ShapePic name={c.split(':')[1]} size={c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={14} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={18} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={14} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6).split('#')[0]} size={64} /> : /^shares:/.test(c) ? <SharesPic shape={c.split(':')[1]} cut={c.split(':')[2]} shaded={Number(c.split(':')[3] || 0)} size={72} /> : /^dice:/.test(c) ? <DicePic pips={Number(c.split(':')[1].split('#')[0])} size={64} /> : /^pic:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><StudentPicture name={c.slice(4).split('#')[0]} size={72} /></span> : /^art:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><ColorThumb picture={c.slice(4).split('#')[0]} size={84} /></span> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={64} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={64} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={64} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={80} /> : /^digital:/.test(c) ? <DigitalPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={96} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={12} /> : c}
                   </button>
                 );
               })}

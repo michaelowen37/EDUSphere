@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-06 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 8153 clips, 1,417,621 characters in all; the longest clip is 508 characters and the longest whole story 2,797, far under Eleven v4's 10,000 a request. 174 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-06 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 8555 clips, 1,461,779 characters in all; the longest clip is 508 characters and the longest whole story 3,420, far under Eleven v4's 10,000 a request. 185 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,7 +17,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 4097 | 465,961 |
+| Pre-K to grade 2 | 4499 | 510,119 |
 | Grades 3 to 5 | 1263 | 278,553 |
 | Grades 6 to 8 | 1138 | 272,072 |
 | Grades 9 to college | 1655 | 401,035 |
@@ -39,9 +39,9 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 | Kind | Clips |
 |---|---|
-| story title | 645 |
-| story | 4097 |
-| lesson line | 2493 |
+| story title | 656 |
+| story | 4179 |
+| lesson line | 2802 |
 | long story title | 102 |
 | long story | 816 |
 
@@ -1216,6 +1216,121 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S332-5: [thoughtful] Every number had its own dot. A two started at the top and curved. A seven started at the top and went across, then down.
 - S332-6: Lena wrote a row of fives and then a row of sevens, all from their dots. [proud] No snakes.
 - S332-7: [slowly, warmly] Every number starts at its dot. Follow the arrow.
+
+### The Tall, Thin Triangle (S3794, flat-shapes-1)
+
+- S3794-1: [cheerful] Chloe was making a paper picture for her grandmother. [scissors snipping paper] She cut a tall, thin triangle for the roof of the house. Her cousin Ben looked at it and frowned.
+- S3794-2: [doubtful] That is not a triangle, he said. A triangle is short and wide, the way the one on the wall chart is.
+- S3794-3: Chloe looked at the chart. [unsure] Her roof did not look like that triangle at all, so maybe Ben was right. She picked up the scissors to cut a new one.
+- S3794-4: [thoughtful] Then she stopped and counted instead. [slowly] One side, two sides, three sides, and three corners where the sides met. The chart triangle had three sides and three corners too.
+- S3794-5: Being tall and thin did not change the sides. Being red or green did not change them either. [confident] A shape is named by its sides and its vertices, not by its look.
+- S3794-6: Ben counted the sides of her roof himself. [pleased] Three, he said, and he grinned, because it had been a triangle all along.
+- S3794-7: Chloe cut a hexagon for the window, with six sides, and Ben checked that one too. [playful] Six. It passed.
+- S3794-8: [slowly, warmly] Count the sides and the vertices. That is what makes a shape a shape.
+
+### The Hexagon With a Gap (S3799, drawing-shapes)
+
+- S3799-1: [energetic] Milo liked to draw fast. [crayon scribbling] He drew a circle in one swoop and a square in one swoop. Then he tried a hexagon, six sides, all in one swoop.
+- S3799-2: [disappointed] It came out wrong. The sides were different lengths, and one corner was round. The line stopped before it got back to the start, so there was a gap.
+- S3799-3: His sister looked at it. [kindly] A shape with a gap is not finished, she said. The line has to come all the way back to the dot.
+- S3799-4: She showed him the trick. [slowly] Put your finger on the dot, go to the first corner, and stop. Turn, go to the next corner, and stop again.
+- S3799-5: Milo tried it slowly, saying stop out loud at every corner. [slowly] Across the top, stop. Slant down and out, stop. [pleased] Six corners and six stops later, the line came back to the dot.
+- S3799-6: [delighted] It was a real hexagon, with six straight sides and six corners. He drew a rhombus the same way, and then a rectangle, stopping at every corner.
+- S3799-7: [slowly, warmly] Start at the dot, stop at every corner, and come all the way back.
+
+### The Tower That Fell (S3804, solid-shapes-1)
+
+- S3804-1: [excited] Omar wanted to build the tallest tower in the kitchen. He put the ball down first, then the soup can, then the cereal box on top.
+- S3804-2: [a tower of cans and boxes toppling] The tower fell before he let go. [sighs] He tried again with the ball at the bottom, and it fell again. [a ball rolling across a floor] The ball rolled under the table.
+- S3804-3: Dad picked up the ball. [warmly] A ball is a sphere, he said. It is round all over, with no flat face, so nothing can sit still on top of it.
+- S3804-4: [thoughtful] Omar looked at the cereal box. Every side of it was flat, a face. The can had two flat faces, one at each end.
+- S3804-5: So the box went first, lying on its biggest face. The can stood on one flat end. [carefully] A block, a cube with six square faces, sat on the can.
+- S3804-6: [delighted] The tower stood. The sphere went into the fruit bowl, where round things belong. Omar counted the faces one more time.
+- S3804-7: [slowly, warmly] Flat faces stack. A sphere rolls.
+
+### The Missing Tile (S3809, joining-shapes)
+
+- S3809-1: [cheerful] Theo was laying a tile floor in his toy house. The floor was almost done, and one gap was left, a square gap.
+- S3809-2: He reached for a square tile. [puzzled] The box was empty. All that was left were triangles, little ones with one long side.
+- S3809-3: [a small tile clicking into place] Theo tried one triangle in the gap. It filled half, with a slanted edge across the middle. [worried] The floor could not have a hole.
+- S3809-4: His grandpa looked over the top of his newspaper. [warmly] Try another one, he said, and put the long sides together.
+- S3809-5: Theo slid a second triangle in, long side to long side. [a tile clicking into place] The two pieces met along a seam, and the gap was gone. [delighted] Two triangles made a square.
+- S3809-6: There was one more gap, a long rectangle. Theo joined two squares side by side, and it fit. [playful] Then he made a hexagon from six triangles, just for fun.
+- S3809-7: [slowly, warmly] Join shapes to make new shapes. The same shape can be made more than one way.
+
+### The Unfair Sandwich (S3814, halves-and-fourths)
+
+- S3814-1: Nia cut the sandwich in two so she and Kai could share. One piece was big and one piece was small. [a little sheepish] She handed Kai the small one.
+- S3814-2: [indignant] That is not half, said Kai. You cut it into two pieces, but my piece is not the same as yours.
+- S3814-3: Nia looked at the two pieces. [sighs] He was right. Two pieces are only halves when they are the same size.
+- S3814-4: [a knife cutting through bread] Mom helped her cut a new sandwich right down the middle. The two pieces matched, so each one was one half. [pleased] Kai was happy.
+- S3814-5: Then Dad came in hungry, and so did Grandma. Nia cut each half across the middle, and now there were four pieces the same size, four fourths.
+- S3814-6: [thoughtful] A fourth was smaller than a half, because the same sandwich was shared by more people. [warmly] Nobody minded, because every piece was fair.
+- S3814-7: [slowly, warmly] Fair shares are the same size. Two make halves, and four make fourths.
+
+### Twelve Clips and Six Cubes (S3819, measuring-length)
+
+- S3819-1: [cheerful] Ruby had a new little shelf for her books. She wanted it in the gap between her dresser and the wall. [curious] Would it fit?
+- S3819-2: She measured the shelf with cubes, laid end to end with no gaps. [slowly] One, two, three, four, five, six. The shelf was six cubes long.
+- S3819-3: Then she measured the gap with paper clips, because the cube box was empty. Twelve paper clips reached across it.
+- S3819-4: [confident] Six is smaller than twelve, so the shelf would fit. Ruby was sure. [wood bumping against a wall] She carried it over and pushed it into the gap.
+- S3819-5: [surprised] It did not fit. It stuck out past the dresser. Ruby stared at the shelf and then at her two numbers.
+- S3819-6: Dad knelt down beside her. [kindly] A paper clip is shorter than a cube, he said, so more clips fit. You measured the shelf and the gap with different units.
+- S3819-7: Ruby measured the shelf again, this time with paper clips. [slowly] Fourteen. Fourteen is more than twelve, so the shelf was longer than the gap.
+- S3819-8: [slowly, warmly] Measure both things with the same unit. Then the numbers can be compared.
+
+### Half Past Soccer (S3824, hours-and-half-hours)
+
+- S3824-1: [excited] Jonah had a soccer game at half past three. He checked the kitchen clock again and again, because he did not want to be late.
+- S3824-2: At three o'clock the long hand pointed straight up and the short hand pointed right at the 3. [a clock ticking] Not yet.
+- S3824-3: A while later he looked again. The short hand had moved. It sat between the 3 and the 4, closer to the 4 than before.
+- S3824-4: [alarmed] It is almost four, Jonah said. We missed the game! He grabbed his ball and his shoes and ran to find Grandpa.
+- S3824-5: Grandpa looked at the clock and laughed. [warmly] Look at the long hand first, he said. It points straight down to the 6. That means half past.
+- S3824-6: The short hand has only passed the 3, Grandpa said. So it is half past three, right now. [cheerful] Your game starts right now.
+- S3824-7: [running footsteps] Jonah ran all the way to the field, and he was not late at all.
+- S3824-8: [slowly, warmly] Look at the minute hand first. Straight up is o'clock, and straight down is half past.
+
+### Which Snack Wins (S3829, tallies-and-graphs)
+
+- S3829-1: The class party needed one snack, and Zara had to choose it. [children all talking at once] Everyone called out at once. Grapes! Pretzels! Crackers! [overwhelmed] She could not tell which was the favorite.
+- S3829-2: Her teacher gave her a marker. [calmly] Ask one at a time, she said, and write each answer down. That is collecting data.
+- S3829-3: Zara drew three rows on the whiteboard, one for grapes, one for pretzels and one for crackers. [a marker squeaking on a whiteboard] For every answer she made one small line, a tally mark.
+- S3829-4: When a row reached five, she drew the fifth line across the other four, closing it off. Then she could count the marks by fives.
+- S3829-5: [slowly] Grapes had a gate and two more, seven. Pretzels had five. Crackers had three. [pleased] Now the answer was easy to see.
+- S3829-6: To be sure, Zara drew a bar graph. The grapes bar was the tallest, two taller than pretzels. [delighted] Grapes won.
+- S3829-7: [slowly, warmly] Count the votes with tally marks. Then a graph shows the answer at a glance.
+
+### Seeing Five (S3834, quick-looks)
+
+- S3834-1: [cheerful] Elio and his sister Pia were playing a board game. [a dice rattling and landing] Every turn, Pia rolled the dice, said the number right away, and moved her piece.
+- S3834-2: Elio rolled and bent over the dice. [slowly] One, two, three, four, five. He touched every dot with his finger. [sighs] By the time he moved, Pia was far ahead.
+- S3834-3: [puzzled] How do you know so fast, he asked. You do not even count. Pia laughed. I do not have to, she said. I know the pattern.
+- S3834-4: She pointed at the dice. [patiently] Four corners and one in the middle is always five. One dot in every corner is four. Two rows of three is six.
+- S3834-5: Elio rolled again. Four corners and one in the middle. [quickly] Five, he said, before his finger could move. He slid his piece five spaces.
+- S3834-6: [cheerful] After that the game went fast. They tried dominoes next, and Elio saw each side at a glance and added. Four and three, seven.
+- S3834-7: Pia still won, but only by two spaces. Elio did not mind. [proud] He had a new way of seeing.
+- S3834-8: [slowly, warmly] Learn the pattern, and you know how many at a glance.
+
+### Start Where You Stopped (S3839, counting-to-120)
+
+- S3839-1: Maya was counting the bottle caps in the big jar for a school project. [bottle caps clinking] She laid them in a long line and counted. [slowly] One, two, three, all the way up.
+- S3839-2: At fifty-eight her little brother asked for juice. [frustrated] When she looked back, she had lost her place. So she started again. One, two, three.
+- S3839-3: At sixty-one the phone rang, and she started again from one. At seventy the cat jumped up onto the table. [sighs] Maya put her head in her hands.
+- S3839-4: Dad came in. [kindly] You do not have to start from one, he said. Start where you stopped. What was the last cap you counted?
+- S3839-5: Fifty-eight, said Maya. Then say fifty-nine, said Dad, and keep going. [slowly] Fifty-nine, sixty, sixty-one, sixty-two. [relieved] It worked.
+- S3839-6: Then Dad showed her something better. They pushed the caps into piles of ten. [slowly] Ten, twenty, thirty, forty, fifty, sixty, and four more. Sixty-four caps.
+- S3839-7: [pleased] Maya wrote sixty-four on the paper and put the lid on the jar before the cat came back.
+- S3839-8: [slowly, warmly] Start where you stopped, and count in jumps when things come in groups.
+
+### Standing on Forty-three (S3844, open-number-lines)
+
+- S3844-1: [cheerful] The class drew a long number line in chalk on the playground. There was a mark for every number, but only the tens were written. [slowly] Ten, twenty, thirty, forty, fifty.
+- S3844-2: Finn, stand on forty-three, said the teacher. [running footsteps] Finn ran along the line and found forty, and then he found fifty. [puzzled] There was no forty-three written anywhere.
+- S3844-3: It is not here, he said, and he threw up his hands. The teacher smiled. [kindly] It is there, she said, but you have to count to it.
+- S3844-4: Finn stood on forty and stepped to the next mark, counting out loud. [slowly] Forty-one, forty-two, forty-three. [delighted] He stopped on the third mark and waved both arms. Found it.
+- S3844-5: Lily, stand on thirty-four, said the teacher. Lily counted from thirty and stopped to the left of Finn. Who is standing on the greater number, asked the teacher. [confident] Finn is, said Lily, because he is farther to the right.
+- S3844-6: Then Noor stood on fifty-one. The teacher pointed from left to right. [slowly] Thirty-four, forty-three, fifty-one, least to greatest.
+- S3844-7: [slowly, warmly] Start at a number you know and count the marks. Greater numbers stand to the right.
 
 ### The word on the box (S335, read-the-word)
 

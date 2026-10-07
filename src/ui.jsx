@@ -8048,7 +8048,45 @@ function EduSphereScreens() {
     check(); window.addEventListener('resize', check); window.addEventListener('orientationchange', check);
     return () => { window.removeEventListener('resize', check); window.removeEventListener('orientationchange', check); if (box.parentNode) box.parentNode.removeChild(box); };
   }, []);
-  useEffect(() => { if (typeof window !== 'undefined') window.__eduTest = { screen, question: q || null, isReviewQ, openModule: (id) => openModule(id), openColoring: (pic) => { setColoring(pic); setScreen('coloring'); }, openCertificate: (id, grade) => { setCertFor({ id, grade }); setCertTemplate('classic'); setCertName(''); setCertPhotos([]); setScreen('certificate'); }, visibleModuleIds: () => visibleModules.map((m) => m.id), openStory: (id) => { setModuleId(id); setScreen('story'); }, crash: () => setBoom(true), goTo: (name) => {
+  // Test only (pass LM): give a student weeks of history, so a browser test can walk the quick look back, the stuck path and
+  // Action Items, which a real student reaches only after three weeks. It appends dated events and changes nothing else.
+  // plan.due: how many lessons to star twenty-five days ago (they fall due four days ago); plan.stuck: leave one lesson stuck
+  // after a failed review; plan.paper: add a paper waiting for a mark. Lessons are taken from the student's own courses, ones
+  // whose questions are all taps (no tracing), so the walk can answer them. Returns what it seeded.
+  async function seedHistoryForTest(key, plan = {}) {
+    const st = activeStudents(roster).find((s) => s.id === key || s.label === key);
+    if (!st) return null;
+    const rec = await withStarterCourses(await loadRecord(st.id));
+    const courseIds = enabledCourseIds(rec.events);
+    const tappable = courseIds.flatMap((id) => (getCourse(id) ? getCourse(id).modules : []))
+      .filter((m) => !m.needsTouch && m.generators.every((g) => { try { return generateQuestion(g, 1).type === 'choice'; } catch (e) { return false; } }));
+    const now = Date.now(); const ago = (d, h = 0) => new Date(now - d * 86400000 - h * 3600000).toISOString();
+    const att = (m, d, marks, h = 0) => makeAttemptEvent({ moduleId: m, seed: 1 }, marks.map((c) => ({ correct: !!c, ms: 3000 })), null, ago(d, h), ago(d, h));
+    const pass = (m, d, h = 0) => att(m, d, [1, 1, 1, 1, 1], h); const miss = (m, d, h = 0) => att(m, d, [0, 0, 0, 1, 1], h);
+    const events = [...rec.events]; const byTime = () => events.sort((a, b) => String(a.at).localeCompare(String(b.at)));
+    const seeded = { due: [], stuck: null, prereq: null, paper: null, courses: courseIds };
+    for (const m of tappable.slice(0, plan.due || 0)) { events.push(pass(m.id, 26), pass(m.id, 25)); seeded.due.push(m.id); }
+    if (plan.stuck) {
+      const x = tappable.find((m) => prerequisitesOf(m.id).length && !seeded.due.includes(m.id));
+      if (x) {
+        const p = prerequisitesOf(x.id).slice(-1)[0];
+        events.push(pass(p, 42), pass(p, 41), pass(x.id, 40), pass(x.id, 39)); byTime();
+        const review = buildLightReview(events, 9, { moduleId: x.id, stage: 'first', missedKinds: [] });
+        if (review) events.push(makeLightReviewEvent(review, [1, 0, 0, 0, 0].map((c) => ({ correct: !!c })), ago(8), ago(8)));
+        events.push(miss(x.id, 7), miss(x.id, 6), makeLoopBackEvent(x.id, p, ago(6, -1)), pass(p, 5), pass(p, 5, -1), miss(x.id, 4), miss(x.id, 3));
+        seeded.stuck = x.id; seeded.prereq = p;
+      }
+    }
+    if (plan.paper) {
+      const w = tappable[0];
+      if (w) { events.push(makeWritingEvent(w.id, 'Write three sentences about your favorite animal.', 'My favorite animal is a fox. It is fast. It lives in a den.', [], ago(1, 1), ago(1))); seeded.paper = w.id; }
+    }
+    byTime();
+    await saveRecord({ ...rec, events });
+    setRoster((r) => ({ ...r }));   // the classroom reloads its Action Items
+    return seeded;
+  }
+  useEffect(() => { if (typeof window !== 'undefined') window.__eduTest = { seedHistory: (key, plan) => seedHistoryForTest(key, plan), screen, question: q || null, isReviewQ, openModule: (id) => openModule(id), openColoring: (pic) => { setColoring(pic); setScreen('coloring'); }, openCertificate: (id, grade) => { setCertFor({ id, grade }); setCertTemplate('classic'); setCertName(''); setCertPhotos([]); setScreen('certificate'); }, visibleModuleIds: () => visibleModules.map((m) => m.id), openStory: (id) => { setModuleId(id); setScreen('story'); }, crash: () => setBoom(true), goTo: (name) => {
     // Test-only: land on a screen with enough state for it to render, so the back-button sweep can press back from every screen.
     if (name === 'story' || name === 'lesson') { if (!moduleId && visibleModules[0]) setModuleId(visibleModules[0].id); }
     if (name === 'course-story') { const c = COURSES.find((x) => courseStoryFor(x.id)); if (c) setCourseStoryId(c.id); }
@@ -8177,7 +8215,9 @@ function EduSphereScreens() {
   useEffect(() => { if (screen === 'welcome' || screen === 'educator-pick') loadRoster().then(setRoster); }, [screen]);
   // The band under each name on the login screen, read from each student's own record.
   const [bands, setBands] = useState({});
-  useEffect(() => { if (screen !== 'welcome') return; (async () => {
+  // Also on the classroom page (pass LM): the Action Items are read here, and an educator who opens or stays on My Classroom
+  // must see a new one without passing through the sign-in screen first.
+  useEffect(() => { if (screen !== 'welcome' && screen !== 'educator-pick') return; (async () => {
     const pairs = await Promise.all(activeStudents(roster).map(async (st) => { try { const rec = await loadRecord(st.id); return [st.id, bandTitle(rec.events), completedGrades(rec.events), { stuck: stuckAfterReviewIds(rec.events).map((moduleId) => ({ moduleId, sentence: stuckSentence(rec.events, moduleId, st.label) })), writings: pendingWritings(rec.events).length }]; } catch (e) { return [st.id, '', [], { stuck: [], writings: 0 }]; } }));
     setBands(Object.fromEntries(pairs.map(([id, band]) => [id, band])));
     setReadyGrades(Object.fromEntries(pairs.map(([id, , grades]) => [id, grades])));
@@ -8188,6 +8228,8 @@ function EduSphereScreens() {
 
   // ---------- Screens ----------
   const refreshIds = refresherIds(record ? record.events : []);
+  // The student's name as the educator typed it (pass LM): records are stored under a normalized id (s-88), the roster keeps the label (S-88).
+  const studentLabelFor = (rec, fallback = 'This student') => (rec && ((findStudent(roster, rec.name) || {}).label || rec.label || rec.name)) || fallback;
   const reopenedIds = reviewingIds(record ? record.events : []);                                 // reopened by a failed quick look back (pass LH)
   const lookBack = record && !record.preview ? lightReviewDue(record.events, undefined, visibleCourses.flatMap((c) => c.modules.map((m) => m.id))) : null;              // the quick look back due now, if any
   // Subjects still waiting on a placement decision: the check is offered, and that subject's
@@ -8323,7 +8365,9 @@ function EduSphereScreens() {
       // A skill or subject with nothing left to do today drops off a young learner's screen.
       if (!youngLearner) return true;
       const today = new Date().toISOString();
-      return group.courses.some((c) => c.modules.some((m) => statusOf(m.id) !== 'locked' && statusOf(m.id) !== 'mastered' && !waitingForAnotherDay(record.events, m.id, today)));
+      // A lesson reopened by a failed quick look back counts as something to do (pass LM): it keeps its star, but the student
+      // was told it is open again on their list, so its group must stay on a young learner's screen.
+      return group.courses.some((c) => c.modules.some((m) => statusOf(m.id) !== 'locked' && (statusOf(m.id) !== 'mastered' || reopenedIds.includes(m.id)) && !waitingForAnotherDay(record.events, m.id, today)));
         });
     // The quick look back opens the student's day (Mikey, pass LI): when one is due, the overview shows only it, with Start,
     // and the lessons follow as soon as it is done. Five questions, about two minutes, one a day at most (lightReviewDue).
@@ -8462,7 +8506,8 @@ function EduSphereScreens() {
                         // and a module passed today can only be mastered on another day, so it waits until then.
                         if (youngLearner && locked) return null;
                         if (youngLearner && waitingForAnotherDay(record.events, m.id, new Date().toISOString())) return null;
-                        if (isPreReader(course.id) && st === 'mastered' && (youngLearner || !showFinished)) return null;
+                        // A lesson reopened by a failed quick look back stays in view (pass LM): the child was told it is open again.
+                        if (isPreReader(course.id) && st === 'mastered' && (youngLearner || !showFinished) && !reopenedIds.includes(m.id)) return null;
                         return renderModuleCard(course, m, st, p, locked);
                       })}
                       {isPreReader(course.id) && !youngLearner && course.modules.some((m) => statusOf(m.id) === 'mastered') && (
@@ -11460,14 +11505,14 @@ function EduSphereScreens() {
         )}
         {/* Everything the student has ever worked on, including courses since switched off. */}
         {/* Practice reviews (pass LG): the sentences an educator reads about the fourth exposure, newest first, without the action line. */}
-        {!!lightReviewSentences(educatorRecord.events, educatorRecord.label || educatorRecord.name || 'This student', 3).length && (
+        {!!lightReviewSentences(educatorRecord.events, studentLabelFor(educatorRecord), 3).length && (
           <div style={{ ...card }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 8 }}>
               <p style={{ margin: 0, fontSize: 17, fontWeight: 700 }}>Practice Reviews</p>
               <InfoButton onClick={() => setReviewsNoteOpen(!reviewsNoteOpen)} label="About practice reviews" open={reviewsNoteOpen} />
             </div>
-            {reviewsNoteOpen && <div role="note" style={{ margin: '0 0 10px', fontSize: 14, color: C.muted, lineHeight: 1.5 }}><p style={{ margin: 0, color: C.muted }}>{PRACTICE_REVIEWS_NOTE}</p><p style={{ margin: '10px 0 0', color: C.muted }} data-reviews-note-more>{practiceReviewsMore(educatorRecord.label || educatorRecord.name || 'this student')}</p></div>}
-            {lightReviewSentences(educatorRecord.events, educatorRecord.label || educatorRecord.name || 'This student', 3).map((s, i) => <p key={i} style={{ margin: '0 0 8px', fontSize: 15, lineHeight: 1.5 }}><Emphasized text={s} /></p>)}
+            {reviewsNoteOpen && <div role="note" style={{ margin: '0 0 10px', fontSize: 14, color: C.muted, lineHeight: 1.5 }}><p style={{ margin: 0, color: C.muted }}>{PRACTICE_REVIEWS_NOTE}</p><p style={{ margin: '10px 0 0', color: C.muted }} data-reviews-note-more>{practiceReviewsMore(studentLabelFor(educatorRecord, 'this student'))}</p></div>}
+            {lightReviewSentences(educatorRecord.events, studentLabelFor(educatorRecord), 3).map((s, i) => <p key={i} style={{ margin: '0 0 8px', fontSize: 15, lineHeight: 1.5 }}><Emphasized text={s} /></p>)}
           </div>
         )}
         <div className="edu-no-print" style={{ ...card, background: C.transcriptFill, borderColor: C.transcriptLine, color: C.transcriptInk }} data-tour="transcript">

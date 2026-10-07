@@ -35268,26 +35268,24 @@ export function lightReviewState(events, moduleId) {
   return { stage: passedSince ? 'first' : 'reopened', dueAt: passedSince ? since(active.filter((e) => e.type === 'attempt_completed' && e.moduleId === moduleId && String(e.at) > String(last.at) && isMasteredAttempt(e)).pop().at, LIGHT_REVIEW_FIRST_DAYS) : null, last, masteredAt: p.masteredAt };
 }
 // The one review due now, if any: the longest-overdue lesson first, one at a time.
-// One quick look back a day (Mikey, pass LI). A student who masters ten lessons in a day would otherwise meet ten reviews
-// on one day three weeks later; instead every review that has fallen due waits in a queue, oldest first, and the student
-// sees one a day, so the tenth comes about ten days later than its date. That costs nothing: a review taken a little later
-// is a harder recall, and spacing research finds the best gap grows with how long the learning has to last. `allowIds`
-// limits the queue to lessons the student can see (a course the educator switched off does not hold up the others).
-export const LIGHT_REVIEWS_PER_DAY = 1;
-// A busy day (Mikey, passes LK and LL): when more than a week's worth is waiting, counting any already taken that day, a
-// second review is allowed, never a third, and both are taken back to back at the start of the day: the start-of-day card
-// shows both, and the lessons follow when both are done (Mikey, pass LL, in place of LK's review, lesson, review). One a
-// day alone falls behind a student who masters more than one lesson a day.
-export const LIGHT_REVIEWS_BUSY_DAY = 2;
-export const LIGHT_REVIEW_BACKLOG = 7;
+// The quick look back's daily rule (Mikey, passes LI to LM). Every review that has come due waits in a queue, oldest first,
+// and a student gets at most two a day (LIGHT_REVIEWS_PER_DAY). When two or more are due, the first two are offered together
+// at the start of the day and taken back to back; a third waits for the next day. Two a day keeps pace with a student who
+// masters up to two lessons a day, so the queue does not back up (passes LK and LL waited for a week's worth before allowing a
+// second; Mikey, pass LM: no waiting). A review is due on its day: it is offered from the start of that day, not from the hour
+// its three weeks run out, so nothing appears in the middle of a student's lessons. A review taken a few days after its date
+// costs nothing: a later recall is harder, and spacing research finds the best gap grows with how long the learning has to
+// last. `allowIds` limits the queue to lessons the student can see (a course the educator switched off holds nothing up).
+export const LIGHT_REVIEWS_PER_DAY = 2;
 const localDayKey = (iso) => { const d = new Date(iso); return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; };
+const endOfLocalDay = (iso) => { const d = new Date(iso); d.setHours(23, 59, 59, 999); return d.toISOString(); };
 export function lightReviewQueue(events, now = new Date().toISOString(), allowIds = null) {
   const progress = deriveProgress(events);
   const queue = [];
   for (const id of progress.masteredIds) {
     if (allowIds && !allowIds.includes(id)) continue;
     const st = lightReviewState(events, id);
-    if (!st.dueAt || String(st.dueAt) > String(now)) continue;
+    if (!st.dueAt || String(st.dueAt) > endOfLocalDay(now)) continue;   // due on its day, from the start of that day
     queue.push({ moduleId: id, stage: st.stage, dueAt: st.dueAt, missedKinds: st.missedKinds || [] });
   }
   return queue.sort((a, b) => String(a.dueAt).localeCompare(String(b.dueAt)));   // a stable sort keeps the star order on a tie
@@ -35298,7 +35296,7 @@ export function lightReviewDay(events, now = new Date().toISOString(), allowIds 
   const today = localDayKey(now);
   const todays = activeEvents(events).filter((e) => e.type === 'light_review_completed' && localDayKey(e.at) === today);
   const queue = lightReviewQueue(events, now, allowIds);
-  const allowance = queue.length + todays.length > LIGHT_REVIEW_BACKLOG ? LIGHT_REVIEWS_BUSY_DAY : LIGHT_REVIEWS_PER_DAY;
+  const allowance = LIGHT_REVIEWS_PER_DAY;
   return { done: todays.map((e) => e.moduleId), next: queue.slice(0, Math.max(0, allowance - todays.length)), allowance };
 }
 export function lightReviewDue(events, now = new Date().toISOString(), allowIds = null) {

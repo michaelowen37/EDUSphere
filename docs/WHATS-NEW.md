@@ -3,6 +3,11 @@
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
 
+
+## October 7, 2026 (quick look backs, up to two a day)
+
+- When two quick look backs are due, a student now gets both at the start of the day, one right after the other, so reviews never pile up. A third waits for the next day. Students never see a pass or a fail; you read what each review showed in the Practice Reviews section of their report.
+- The red Action Item link on a student's card now sits right under Wonder Questions, and when two things need you it says so, then shows them one at a time.
 ## October 7, 2026 (one quick look back a day)
 
 - Quick look backs now come one a day at most. A student who finishes many lessons in a day gets their reviews spread over the days that follow, oldest first, instead of all at once.

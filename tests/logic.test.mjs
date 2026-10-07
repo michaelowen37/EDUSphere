@@ -2066,31 +2066,24 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   const sMoved = L.lightReviewSentences(moved, 'S-77');
   ok('the moved sentence names the day, the loop back, and that the lesson keeps flowing through memory checks', sMoved.length === 1 && /You moved S-77 forward on \*Teen Numbers\* on October 30/.test(sMoved[0]) && /loop back to \*/.test(sMoved[0]) && /continue to flow through infrequent memory checks/.test(sMoved[0]));
   ok('a new star after moving forward restarts the schedule like any star', L.lightReviewState([...moved, ...star('teen-numbers', 40, 41)], 'teen-numbers').stage === 'first');
-  // One a day, oldest first (Mikey, pass LI): three lessons starred on one day become three days of one review each.
+  // Two a day at most, oldest first, offered together at the start of the day and taken back to back (Mikey, passes LI to
+  // LM): three lessons starred on one day give two reviews on the day they fall due and the third the next day.
   { const ids = ['teen-numbers', 'adding-to-20', 'subtracting-to-20']; const many = ids.flatMap((id) => star(id, 1, 2));
-    const q = L.lightReviewQueue(many, iso(24)); const first = L.lightReviewDue(many, iso(24));
-    const r1 = L.buildLightReview(many, 5, first);
-    const done1 = [...many, L.makeLightReviewEvent(r1, [1, 1, 1, 1, 1].map((c) => ({ correct: !!c })), iso(24), iso(24))];
-    ok('lessons starred on the same day queue up, oldest first, the first one offered', q.length === 3 && !!first && first.moduleId === q[0].moduleId);
-    ok('one quick look back a day: after one is done, nothing more is offered that day', L.lightReviewDue(done1, iso(24).replace('T15', 'T20')) === null);
-    ok('the next day the next lesson in the queue is offered', (L.lightReviewDue(done1, iso(25)) || {}).moduleId === q[1].moduleId);
-    ok('a lesson outside the allowed list does not hold up the queue', (L.lightReviewDue(many, iso(24), [q[2].moduleId]) || {}).moduleId === q[2].moduleId); }
-  // A busy day (Mikey, passes LK and LL): more than a week's worth waiting allows a second review, taken back to back with the
-  // first at the start of the day, never a third.
-  { const ids = ['teen-numbers', 'adding-to-20', 'subtracting-to-20', 'tens-and-ones', 'comparing-to-100', 'writing-numbers', 'quick-looks', 'counting-to-120', 'open-number-lines'];
-    const many = ids.flatMap((id) => star(id, 1, 2)); const q = L.lightReviewQueue(many, iso(24));
-    const at = (h) => iso(24).replace('T15', `T${h}`);
-    const day0 = L.lightReviewDay(many, at(10));
-    ok('a busy day: nine waiting, the start-of-day card offers two reviews from the start, oldest first', q.length === 9 && day0.next.length === 2 && day0.next[0].moduleId === q[0].moduleId && day0.next[1].moduleId === q[1].moduleId && day0.done.length === 0);
-    const first = L.lightReviewDue(many, at(10)); const r1 = L.buildLightReview(many, 5, first);
-    const done1 = [...many, L.makeLightReviewEvent(r1, [1, 1, 1, 1, 1].map((c) => ({ correct: !!c })), at(10), at(10))];
-    const second = L.lightReviewDue(done1, at(10));
-    ok('the second follows straight after the first, with no lesson round in between', !!second && second.moduleId === q[1].moduleId && second.todayCount === 1 && L.lightReviewDay(done1, at(10)).done.length === 1);
+    const at = (d, h) => iso(d).replace('T15', 'T' + String(h).padStart(2, '0'));
+    const q = L.lightReviewQueue(many, at(24, 10)); const day0 = L.lightReviewDay(many, at(24, 10));
+    ok('three due: the start-of-day card offers two from the start, oldest first', q.length === 3 && day0.next.length === 2 && day0.next[0].moduleId === q[0].moduleId && day0.next[1].moduleId === q[1].moduleId && day0.done.length === 0);
+    const first = L.lightReviewDue(many, at(24, 10)); const r1 = L.buildLightReview(many, 5, first);
+    const done1 = [...many, L.makeLightReviewEvent(r1, [1, 1, 1, 1, 1].map((c) => ({ correct: !!c })), at(24, 10), at(24, 10))];
+    const second = L.lightReviewDue(done1, at(24, 10));
+    ok('the second follows straight after the first, with no lesson round in between', !!second && second.moduleId === q[1].moduleId && second.todayCount === 1);
     const r2 = L.buildLightReview(done1, 6, second);
-    const done2 = [...done1, L.makeLightReviewEvent(r2, [1, 1, 1, 1, 1].map((c) => ({ correct: !!c })), at(11), at(11))];
-    ok('never a third review in a day', L.lightReviewDue(done2, at(16)) === null && L.lightReviewDay(done2, at(16)).next.length === 0);
-    const one = star('teen-numbers', 1, 2); const rq = L.buildLightReview(one, 5, L.lightReviewDue(one, at(10)));
-    ok('a quiet day (a week\'s worth or less) stays at one', L.lightReviewDue([...one, L.makeLightReviewEvent(rq, [1, 1, 1, 0, 0].map((c) => ({ correct: !!c })), at(10), at(10)), ...star('adding-to-20', 1, 2)], at(13)) === null); }
+    const done2 = [...done1, L.makeLightReviewEvent(r2, [1, 1, 1, 1, 1].map((c) => ({ correct: !!c })), at(24, 11), at(24, 11))];
+    ok('never a third review in a day', L.lightReviewDue(done2, at(24, 20)) === null && L.lightReviewDay(done2, at(24, 20)).next.length === 0);
+    ok('the third comes the next day', (L.lightReviewDue(done2, at(25, 9)) || {}).moduleId === q[2].moduleId);
+    const one = star('teen-numbers', 1, 2);
+    ok('one due: the card offers just that one', L.lightReviewDay(one, at(24, 10)).next.length === 1);
+    ok('a review is offered from the start of its day, not from the hour its three weeks run out', !!L.lightReviewDue(one, at(23, 6)) && L.lightReviewDue(one, at(22, 20)) === null);
+    ok('a lesson outside the allowed list does not hold up the queue', (L.lightReviewDue(many, at(24, 10), [q[2].moduleId]) || {}).moduleId === q[2].moduleId); }
   // The memory check favors the probed lessons after a failed review (pass LH): with probe set, most rounds' first check comes from it.
   { const mastered = ['count-to-10', 'making-ten', 'teen-numbers', 'one-more-one-less']; let hits = 0; for (let s = 1; s <= 40; s++) { const a = L.buildAttempt('adding-to-20', s, mastered, { probe: ['making-ten'] }); if (a.review && a.review.moduleId === 'making-ten') hits++; }
     ok('memory checks favor the lessons a failed quick look back probes', hits >= 20); }

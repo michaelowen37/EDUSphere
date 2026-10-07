@@ -213,6 +213,27 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'pk3-tap-littlest' && !q.choices.every((c) => lnRankOf(c) >= lnRankOf(q.answer))) problems.push('littlest wrong');
     if (genId === 'p4-tap-bigger' && !q.choices.every((c) => lnRankOf(c) <= lnRankOf(q.answer))) problems.push('bigger wrong');
     if (genId === 'p4-tap-smaller' && !q.choices.every((c) => lnRankOf(c) >= lnRankOf(q.answer))) problems.push('smaller wrong');
+    // First Steps part one (pass LU): each new kind re-derived from its words with tables the generators do not share.
+    const luColour = { 'a strawberry': 'red', 'a stop sign': 'red', 'the sky on a sunny day': 'blue', 'a blueberry': 'blue', 'a banana': 'yellow', 'a lemon': 'yellow', 'the grass': 'green', 'a pickle': 'green' };
+    if (genId === 'pc-colour-of-thing' && q.answer !== luColour[(q.prompt.match(/^What color is (.+)\?$/) || [])[1]]) problems.push('color of a thing wrong');
+    const luGoes = { 'goes on the water': 'boat', 'goes up into space': 'rocket', 'runs on a track': 'train', 'drives on the road': 'car' };
+    if (genId === 'pm-vehicle-where' && q.answer !== 'art:' + luGoes[(q.prompt.match(/^Which one (.+)\?$/) || [])[1]]) problems.push('vehicle place wrong');
+    const luHas = { 'has wings': 'butterfly', 'has petals': 'flower', 'has points': 'star', 'has arms and legs': 'robot', 'has a string': 'balloon' };
+    if (genId === 'pm-thing-part') { const k = (q.prompt.match(/^Which one (.+)\?$/) || [])[1]; if (q.answer !== 'art:' + luHas[k]) problems.push('thing part wrong'); if (k === 'has points' && q.choices.includes('art:flower')) problems.push('a pointed flower offered against the star'); if (k === 'has arms and legs' && q.choices.includes('art:butterfly')) problems.push('a butterfly, which has legs, offered against the robot'); }
+    const luEars = { 'has long ears': 'rabbit', 'has round ears': 'bear', 'has pointy ears': 'fox', 'has no legs and slides along on one foot': 'snail' };
+    if (genId === 'pm-land-ears') { const k = (q.prompt.match(/^Which one (.+)\?$/) || [])[1]; if (q.answer !== 'pic:' + luEars[k]) problems.push('ears wrong'); if (k === 'has pointy ears' && ['pic:cat', 'pic:rabbit'].some((c) => q.choices.includes(c))) problems.push('another pointy-eared animal offered as wrong'); if (k === 'has round ears' && q.choices.includes('pic:rabbit')) problems.push('the rabbit offered against round ears'); }
+    const luCorners = { 'has three corners': 'triangle', 'has no corners': 'circle', 'has four sides that are all the same length': 'square', 'has two long sides and two short sides': 'rectangle' };
+    if (genId === 'pm-shape-corners' && q.answer !== 'shape:' + luCorners[(q.prompt.match(/^Which shape (.+)\?$/) || [])[1]]) problems.push('corners wrong');
+    const luLike = { 'a can': 'cylinder', 'an ice cream cone': 'cone', 'a ball': 'sphere', 'a block': 'cube' };
+    if (genId === 'pm-solid-like' && q.answer !== 'solid:' + luLike[(q.prompt.match(/^Which shape is like (.+)\?$/) || [])[1]]) problems.push('solid like wrong');
+    if (genId === 'pm-solid-do' && (q.answer !== (/roll/.test(q.prompt) ? 'solid:sphere' : 'solid:cube') || q.choices.some((c) => !['solid:sphere', 'solid:cube'].includes(c)))) problems.push('solid do wrong');
+    if (genId === 'pm-water-facts' && (q.answer !== 'pic:whale' || q.choices.some((c) => !['pic:whale', 'pic:fish'].includes(c)))) problems.push('water fact wrong');
+    if (['pm-tap-vehicle', 'pm-tap-water', 'pm-tap-shape'].includes(genId)) { const nm = (q.prompt.match(/^Tap the (\w+)\.$/) || [])[1]; if (String(q.answer).split(':')[1] !== nm) problems.push('tapped the wrong picture'); if (nm === 'rectangle' && q.choices.includes('shape:square')) problems.push('a square offered as wrong for a rectangle'); }
+    const luN = (c) => Number(String(c).split(':')[1]); const luTwo = () => Array.isArray(q.choices) && q.choices.length === 2 && luN(q.choices[0]) !== luN(q.choices[1]) && q.choices.every((c) => luN(c) >= 1 && luN(c) <= 5);
+    if (genId === 'p4-tap-more-5' && !(luTwo() && q.choices.every((c) => luN(c) <= luN(q.answer)))) problems.push('more up to five wrong');
+    if (genId === 'p4-tap-fewer-5' && !(luTwo() && q.choices.every((c) => luN(c) >= luN(q.answer)))) problems.push('fewer up to five wrong');
+    if (genId === 'p4-more-close' && !(luTwo() && q.choices.every((c) => luN(c) <= luN(q.answer)) && Math.abs(luN(q.choices[0]) - luN(q.choices[1])) === 1)) problems.push('close more wrong');
+    if (genId === 'p4-fewer-close' && !(luTwo() && q.choices.every((c) => luN(c) >= luN(q.answer)) && Math.abs(luN(q.choices[0]) - luN(q.choices[1])) === 1)) problems.push('close fewer wrong');
     if (genId === 'p3-tap-more' && !q.choices.every((c) => lnDots(c) <= lnDots(q.answer))) problems.push('more dots wrong');
     if (genId === 'p3-tap-fewer' && !q.choices.every((c) => lnDots(c) >= lnDots(q.answer))) problems.push('fewer dots wrong');
     if (genId === 'p3-tap-colour-item' && String(q.answer).split('-')[1] !== q.prompt.match(/Tap the (\w+) one/)[1]) problems.push('colour item wrong');

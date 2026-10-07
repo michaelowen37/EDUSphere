@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-07 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 8693 clips, 1,477,020 characters in all; the longest clip is 508 characters and the longest whole story 3,420, far under Eleven v4's 10,000 a request. 187 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-07 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 8771 clips, 1,487,861 characters in all; the longest clip is 508 characters and the longest whole story 3,420, far under Eleven v4's 10,000 a request. 189 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,7 +17,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 4637 | 525,360 |
+| Pre-K to grade 2 | 4715 | 536,201 |
 | Grades 3 to 5 | 1263 | 278,553 |
 | Grades 6 to 8 | 1138 | 272,072 |
 | Grades 9 to college | 1655 | 401,035 |
@@ -40,10 +40,10 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 | Kind | Clips |
 |---|---|
 | story title | 658 |
-| story | 4194 |
-| lesson line | 2913 |
-| long story title | 103 |
-| long story | 825 |
+| story | 4199 |
+| lesson line | 2975 |
+| long story title | 104 |
+| long story | 835 |
 
 ## Stories with hand-written tags
 
@@ -579,53 +579,58 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 ### Roll or sit (S143, circle-and-square)
 
-- S143-1: [curious] Ana had a ramp, a ball and a block. Which one would roll?
-- S143-2: She put the ball at the top. [a ball rolling down a ramp] Whee! It rolled down fast, all the way.
-- S143-3: She put the block at the top, and it just sat there. [puzzled] It did not move.
-- S143-4: She gave it a push. [a wooden block thunk] It tipped over, and then it stopped. No rolling.
-- S143-5: [thoughtful] Ana looked at the ball, round all over. She looked at the block, with corners and flat sides.
-- S143-6: Round rolls, and corners sit. Ana rolled the ball again. [a ball rolling, delighted] Whee!
+- S143-1: [curious] Ana had a ramp, a ball and a block. [playful] Which one would roll?
+- S143-2: [excited] She put the ball at the top. [a ball rolling down a wooden ramp] Whee! [rushed] It rolled down fast, all the way.
+- S143-3: [slowly] She put the block at the top, and it just sat there. [pause] [puzzled] It did not move.
+- S143-4: [determined] She gave it a push. [a wooden block tipping over with a thunk] It tipped over, and then it stopped. [sighs] No rolling.
+- S143-5: [thoughtful] Ana looked at the ball, round all over. [slowly] She looked at the block, with corners and flat sides.
+- S143-6: [delighted] Round rolls, and corners sit. Ana rolled the ball again. [laughs] Whee!
 - S143-7: [slowly, warmly] A circle is round. A square has corners.
 
-### A, then B (S146, a-and-b)
+### The B hunt (S146, a-and-b)
 
-- S146-1: [cheerful, party chatter in the background] It was a party, and a banner hung across the room. It had big letters on it.
-- S146-2: [wondering] Kai looked up. He knew they were letters, but he did not know their names.
-- S146-3: Grandma came over and pointed at the first one. [warm, grandmotherly] That is A, she said.
-- S146-4: A was tall, with a bar across the middle. [proudly] Kai said it. A.
-- S146-5: Next to it was B, with two round bumps on one side. B, said Grandma. [slowly] A, then B.
-- S146-6: Kai said them together, A and B, [clapping] and Grandma clapped. So he said them again.
-- S146-7: [slowly, warmly] A and B are letters. A comes first. B comes next.
+- S146-1: [playful] Kai rolled his ball to Grandma, [a ball rolling on grass] and she rolled it back. [excited] Ball starts with B, she said. Let's go on a B hunt!
+- S146-2: [curious] B has two round bumps on one side. [slowly] Kai looked all around the yard for things that start with B.
+- S146-3: [a bee buzzing] Buzz! [excited] A fat bee was busy on a yellow flower, and Kai pointed at it. [proud] Bee starts with B!
+- S146-4: [rushed] He ran inside and found his book, and his little boat from the bath. [delighted] Book starts with B, and so does boat.
+- S146-5: [pleased] Then Kai found a big red apple in the fruit bowl. [proudly] He held it up high. [loudly] Apple starts with B! he said.
+- S146-6: [gently] Grandma smiled. [slowly] Listen closely, she said, apple, apple. [warmly] Apple starts with A, the tall letter with a bar across the middle.
+- S146-7: [laughs] So the B hunt became an A hunt too. [curious] Under the big oak tree, Kai found a little acorn. [delighted] Acorn starts with A!
+- S146-8: [slowly, warmly] Apple starts with A, and ball starts with B. Once you know them, you will find them all around you.
 
-### The green apple (S149, not-the-same)
+### The apple puzzle (S149, not-the-same)
 
-- S149-1: [warm, curious] Four apples sat in a row, red, red, red and green. Mia looked at them.
-- S149-2: [gently] Which one is different? asked Dad. Mia looked, and looked.
-- S149-3: Three apples were red, with the same color and the same shine.
-- S149-4: One apple was green, not like the others. [excited] Different!
-- S149-5: Mia pointed at that one, the green one, and Dad nodded.
-- S149-6: Mia picked it up and took a bite. [an apple crunching] Crunch. It was sour, and good.
-- S149-7: [slowly, warmly] Different means not alike. Find the one that does not match.
+- S149-1: [cheerful] Four apples sat in a row, red, red, red and green. [curious] Which one is different? asked Dad.
+- S149-2: [thoughtful] Mia looked at them. [slowly] Three apples were red, with the same color and the same shine. [surprised] One was green, not like the others.
+- S149-3: [excited] That one! said Mia, and she pointed at the green apple. Different! [warmly] Dad nodded and smiled.
+- S149-4: [playful] Then Dad made it harder. He took the green apple away and put down a new red one. [mysterious] Now all four were red.
+- S149-5: [slowly] Mia looked, and looked. [puzzled] Same color, same shine, same round shape. [whispers] Were they all the same, every one?
+- S149-6: [gasps] No! [delighted] One apple was small, much smaller than the other three. Different can be size, too.
+- S149-7: [happy] Mia picked up the small apple and took a bite. [a crisp apple crunch] Crunch! [pleased] It was sweet, and just right for a small hand.
+- S149-8: [slowly, warmly] Different means not alike. It can be the color, the shape or the size.
 
-### Where is the dog? (S152, listen-and-tap-pictures)
+### Where is the cloud? (S152, listen-and-tap-pictures)
 
-- S152-1: [warm] Three cards lay on the table. One had a dog, one had a cup, and one had a hat. Leo looked at them.
-- S152-2: [playful] Dog, said his sister. Where is the dog?
-- S152-3: Leo looked, and there! He tapped the dog card, [cheering] and his sister cheered.
-- S152-4: [playful] Cup, she said, and where is the cup? Leo looked again.
-- S152-5: [excited] There! He tapped the cup. Hat, she said, and he tapped the hat.
-- S152-6: [proud] Every word had a picture, and Leo found them all. He wanted more cards.
-- S152-7: [slowly, warmly] A word names a thing. Hear the word, and you can find its picture.
+- S152-1: [cheerful] Leo and his sister had picture cards on the porch, a fish, a cup and a sun. [playful] She said a word, and Leo tapped its card.
+- S152-2: [excited] Fish! [a finger tapping a card] Leo tapped the fish, the one that swims. [quickly] Cup! He tapped the cup, the one we drink from.
+- S152-3: [excited] Sun! He tapped the sun, bright and yellow on its card. [proud] Leo was very good at this game.
+- S152-4: [playful] Then his sister said, cloud. [puzzled] Leo looked at the cards, a fish, a cup and a sun. [surprised] There was no cloud at all!
+- S152-5: [rushed] Leo looked under the cards and behind them, too. [sighs] No cloud card anywhere. [puzzled] How could he tap a cloud?
+- S152-6: [laughs] His sister laughed and pointed up. [curious] Leo stepped off the porch and looked up. [amazed] There it was, a real cloud, white and puffy, floating in the blue sky.
+- S152-7: [delighted] Leo pointed up at it. Cloud! he said. [thoughtful] A word names a real thing, not just a picture on a card.
+- S152-8: [excited] After that they played with the whole world. Bird! Leo pointed at a bird in the tree. [playful] Flower! He found one by the steps.
+- S152-9: [slowly, warmly] A word names a thing. Hear the word, then look for the thing, all around you.
 
 ### Who said that? (S155, animal-sounds)
 
-- S155-1: Rosa stood at the fence and heard a sound. [a cow mooing in the distance] Moo! [curious] Who said that?
-- S155-2: She looked, and there was a cow, big and brown. [a cow mooing] Moo, it said again. The cow!
-- S155-3: [a duck quacking] Then, quack! Who said that? Rosa looked, and there was a duck by the pond. The duck!
-- S155-4: [a cat meowing] Then, meow! Who said that? Rosa looked up, and there was a cat on the post. The cat!
-- S155-5: [playful] Rosa played a game with the sounds. Moo! She pointed at the cow. Quack! She pointed at the duck.
-- S155-6: Meow! She pointed at the cat. [proud] Every animal had its own sound, and Rosa knew them all.
-- S155-7: [slowly, warmly] Many animals have a sound of their own. Listen, and the sound tells you who is there.
+- S155-1: [calm] Rosa sat on a hay bale at the farm and closed her eyes. [a duck quacking] Quack! [curious] Who said that?
+- S155-2: [excited] She opened her eyes, and there was a duck on the pond. [playful] Quack, it said again. [delighted] The duck!
+- S155-3: [softly] She closed her eyes once more. [playful] Ribbit! [curious] Who said that? [pleased] She looked, and a green frog sat on a log by the pond.
+- S155-4: [a bee buzzing] Buzz! [whispers] That one was close. [hushed] A fat bee was busy on a flower by her feet, so Rosa sat very still.
+- S155-5: [surprised] Then two sounds came at once, [a duck quacking and a cat meowing at once] quack and meow, all mixed up together. [slowly] Rosa listened closely.
+- S155-6: [thoughtful] Quack came from the pond, so that was the duck. [delighted] Meow came from the fence post, and there sat a cat.
+- S155-7: [laughs] Rosa laughed. [proud] She did not even need her eyes. Her ears could tell her who was there.
+- S155-8: [slowly, warmly] Many animals have a sound of their own. Listen closely, and the sound tells you who is near.
 
 ### Two socks (S158, same-and-different)
 

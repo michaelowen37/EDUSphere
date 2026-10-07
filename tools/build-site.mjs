@@ -8,17 +8,23 @@
 //   artifact host uses, so the app code is identical in both places.
 //
 // Nothing here talks to a server. The file is the product.
-import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, readdirSync, existsSync, realpathSync } from 'node:fs';
+import { dirname } from 'node:path';
 import { execSync } from 'node:child_process';
 import { newestNews, recentNews } from './whats-new.mjs';
 
 const G = execSync('npm root -g').toString().trim();
 const read = (rel) => readFileSync(`${G}/${rel}`, 'utf8');
+// React DOM needs its scheduler package. One build machine keeps it inside react-dom, another keeps every package side by
+// side in one shared folder (pass LU, when the build moved), so it is looked for in both places, the way Node itself would
+// find it, and the build stops with a plain message if it is in neither.
+const SCHEDULER = [G + '/react-dom/node_modules/scheduler', dirname(realpathSync(G + '/react-dom')) + '/scheduler', G + '/scheduler'].find((d) => existsSync(d + '/cjs/scheduler.production.js'));
+if (!SCHEDULER) throw new Error('React DOM needs its scheduler package, and it was found neither inside react-dom nor beside it.');
 const mods = {
   react: read('react/cjs/react.production.js'),
   'react-dom': read('react-dom/cjs/react-dom.production.js'),
   'react-dom/client': read('react-dom/cjs/react-dom-client.production.js'),
-  scheduler: read('react-dom/node_modules/scheduler/cjs/scheduler.production.js'),
+  scheduler: readFileSync(SCHEDULER + '/cjs/scheduler.production.js', 'utf8'),
 };
 execSync('tsc --allowJs --jsx react --target es2020 --module commonjs --outDir tests/e2e/out dist/edusphere-prototype.jsx', { stdio: 'ignore' });
 mods.app = readFileSync('tests/e2e/out/edusphere-prototype.js', 'utf8');

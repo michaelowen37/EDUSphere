@@ -2,18 +2,24 @@
 // React is loaded from the machine's node_modules with a tiny require() shim
 // (React 19 ships no browser bundle), and window.storage is a fake in-memory
 // version of the artifact host's storage API.
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, realpathSync } from 'node:fs';
+import { dirname } from 'node:path';
 import { execSync } from 'node:child_process';
 import { createRequire } from 'node:module';
 
 const G = execSync('npm root -g').toString().trim();
 const req = createRequire(import.meta.url);
 const read = (rel) => readFileSync(`${G}/${rel}`, 'utf8');
+// React DOM needs its scheduler package. One build machine keeps it inside react-dom, another keeps every package side by
+// side in one shared folder (pass LU, when the build moved), so it is looked for in both places, the way Node itself would
+// find it, and the build stops with a plain message if it is in neither.
+const SCHEDULER = [G + '/react-dom/node_modules/scheduler', dirname(realpathSync(G + '/react-dom')) + '/scheduler', G + '/scheduler'].find((d) => existsSync(d + '/cjs/scheduler.production.js'));
+if (!SCHEDULER) throw new Error('React DOM needs its scheduler package, and it was found neither inside react-dom nor beside it.');
 const mods = {
   react: read('react/cjs/react.production.js'),
   'react-dom': read('react-dom/cjs/react-dom.production.js'),
   'react-dom/client': read('react-dom/cjs/react-dom-client.production.js'),
-  scheduler: read('react-dom/node_modules/scheduler/cjs/scheduler.production.js'),
+  scheduler: readFileSync(SCHEDULER + '/cjs/scheduler.production.js', 'utf8'),
 };
 // Transpile the artifact's JSX + imports to plain CommonJS with TypeScript.
 execSync('tsc --allowJs --jsx react --target es2020 --module commonjs --outDir tests/e2e/out dist/edusphere-prototype.jsx', { stdio: 'ignore' });

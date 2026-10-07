@@ -4531,7 +4531,8 @@ function PREK_MODULES() { return [
     title: 'Colors',
     tagline: 'Red, blue, yellow, green',
     lesson: {
-      paragraphs: ['Every color has a name. Red is like a strawberry, blue is like the sky, yellow is like a banana, and green is like the grass.', 'Two things can be the same color even when their shapes are different, like a red circle and a red square. Naming colors helps us sort things and tell them apart.'],
+      pictures: [{ serial: 'P102', alt: 'A ripe red strawberry on a white plate', step: 0 }, { serial: 'P103', alt: 'A clear blue sky with one small white cloud', step: 1 }, { serial: 'P104', alt: 'A yellow banana on a kitchen table', step: 2 }, { serial: 'P105', alt: 'Green grass in a sunny yard', step: 3 }],
+      paragraphs: ['Every color has a name. Red is like a strawberry, blue is like the sky, yellow is like a banana, and green is like the grass.', 'Lots of other things have these colors too. A stop sign is red, a blueberry is blue, a lemon is yellow, and a pickle is green.', 'Two things can be the same color even when their shapes are different, like a red circle and a red square. Naming colors helps us sort, so all the red blocks can go together, and it helps us tell things apart. Look at your clothes and name the colors you are wearing.'],
       keyIdea: 'Every color has a name, and two things can match by color alone.',
       example: { kind: 'swatch', colour: 'red', caption: 'Red.' },
       script: [
@@ -4539,11 +4540,14 @@ function PREK_MODULES() { return [
         { say: 'This color is blue, like the sky.', show: { kind: 'swatch', colour: 'blue' } },
         { say: 'This color is yellow, like a banana.', show: { kind: 'swatch', colour: 'yellow' } },
         { say: 'This color is green, like the grass.', show: { kind: 'swatch', colour: 'green' } },
+        { say: 'Lots of other things have these colors too. A stop sign is red, a blueberry is blue, a lemon is yellow, and a pickle is green.', show: null },
         { say: 'A red circle and a red square are the same color, even though their shapes are different.', show: { kind: 'pair', a: { kind: 'item', shape: 'circle', colour: 'red' }, b: { kind: 'item', shape: 'square', colour: 'red' } } },
+        { say: 'Colors help us sort. All the red blocks can go together, and all the blue blocks can go together.', show: { kind: 'pair', a: { kind: 'item', shape: 'square', colour: 'red' }, b: { kind: 'item', shape: 'square', colour: 'blue' } } },
+        { say: 'Look at your clothes. Can you name a color you are wearing today?', show: null },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups and uses language to describe how the groups are similar and different) and Head Start ELOF Goal P-SCI 1 (observes and describes observable phenomena).'],
-    generators: ['pc-tap-colour', 'pc-name-colour', 'pc-same-colour', 'pc-different-colour', 'pc-tap-colour'],
+    generators: ['pc-tap-colour', 'pc-name-colour', 'pc-same-colour', 'pc-different-colour', 'pc-colour-of-thing'],
   },
   {
     id: 'same-and-different',
@@ -4552,7 +4556,8 @@ function PREK_MODULES() { return [
     title: 'Same and different',
     tagline: 'Find the match',
     lesson: {
-      paragraphs: ['Two things are the same when they are alike in every way, the same shape, the same color and the same size. They are different when even one of those is not alike.', 'To find a match, check all three. A green circle and a green square share a color but not a shape, and two triangles can share a shape but not a size.'],
+      pictures: [{ serial: 'P106', alt: 'A pair of matching striped socks beside one sock with dots', step: 4 }],
+      paragraphs: ['Two things are the same when they are alike in every way, the same shape, the same color and the same size. They are different when even one of those is not alike.', 'To find a match, check all three. A green circle and a green square share a color but not a shape, and two triangles can share a shape but not a size.', 'Matching is everywhere. Two socks match when they are the same color with the same stripes, two red crayons from one box match, and at cleanup time the blocks that match go together.'],
       keyIdea: 'The same means alike in shape, color and size. Different means at least one is not alike.',
       example: { kind: 'pair', a: { shape: 'circle', colour: 'green' }, b: { shape: 'circle', colour: 'green' }, caption: 'Two circles are the same.' },
       script: [
@@ -4560,6 +4565,9 @@ function PREK_MODULES() { return [
         { say: 'A green circle and a green square are the same color, but they are different shapes.', show: { kind: 'pair', a: { shape: 'circle', colour: 'green' }, b: { shape: 'square', colour: 'green' } } },
         { say: 'These two triangles are the same shape, but one is bigger and one is smaller.', show: { kind: 'pair', a: { kind: 'shape', name: 'triangle', size: 'big' }, b: { kind: 'shape', name: 'triangle', size: 'small' } } },
         { say: 'To match, two things must be alike in every way, like these two blue triangles.', show: { kind: 'pair', a: { shape: 'triangle', colour: 'blue' }, b: { shape: 'triangle', colour: 'blue' } } },
+        { say: 'Socks come in pairs. Two socks match when they are the same color, with the same stripes.', show: null },
+        { say: 'Two red crayons from the same box match. They are the same color, the same shape and the same size.', show: null },
+        { say: 'At cleanup time, check all three, the shape, the color and the size. These two blue squares match, so they go together.', show: { kind: 'pair', a: { shape: 'square', colour: 'blue' }, b: { shape: 'square', colour: 'blue' } } },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups and uses language to describe how the groups are similar and different) and Head Start ELOF Goal P-MATH 8.'],
@@ -4573,18 +4581,21 @@ function PREK_MODULES() { return [
     tagline: 'Cars, trains, boats',
     requires: ['same-and-different'],
     lesson: {
-      paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Vehicles carry people and things. A car and a train go on land, a boat goes on water, and a rocket goes up into space. To match them, look at their parts, like wheels.'],
+      pictures: [{ serial: 'P107', alt: 'A boat on the water and a rocket rising into the sky', step: 4 }],
+      paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Vehicles carry people and things. A car drives on the road, a train runs on a track, a boat goes on the water, and a rocket goes up into space. To match them, look at their parts, like wheels.', 'Outside, two cars match when they have the same color and the same shape.'],
       keyIdea: 'The same means just alike. Look at the shape, the color and the parts.',
       example: { kind: 'pair', a: { kind: 'art', name: 'car' }, b: { kind: 'art', name: 'car' }, caption: 'Two cars. They are the same.' },
       script: [
         { say: 'Look at this car. See its shape, its color and its wheels.', show: { kind: 'art', name: 'car' } },
         { say: 'Here is another car, just the same. The two cars match.', show: { kind: 'pair', a: { kind: 'art', name: 'car' }, b: { kind: 'art', name: 'car' } } },
-        { say: 'This is a train. It does not look like the car, so it is different.', show: { kind: 'pair', a: { kind: 'art', name: 'car' }, b: { kind: 'art', name: 'train' } } },
+        { say: 'This is a train. It is not the same as the car, so it is different.', show: { kind: 'pair', a: { kind: 'art', name: 'car' }, b: { kind: 'art', name: 'train' } } },
         { say: 'To match, look at the parts. A car has wheels, and a boat has none.', show: { kind: 'pair', a: { kind: 'art', name: 'car' }, b: { kind: 'art', name: 'boat' } } },
+        { say: 'A car drives on the road, and a train runs on a track. A boat goes on the water, and a rocket goes up into space.', show: { kind: 'pair', a: { kind: 'art', name: 'boat' }, b: { kind: 'art', name: 'rocket' } } },
+        { say: 'When you see two cars outside, look at their color and their shape. Do they match?', show: { kind: 'pair', a: { kind: 'art', name: 'car' }, b: { kind: 'art', name: 'car' } } },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups) and Head Start ELOF Goal P-MATH 8.'],
-    generators: ['pm-same-vehicles', 'pm-different-vehicles', 'pm-same-vehicles', 'pm-different-vehicles', 'pm-same-vehicles'],
+    generators: ['pm-same-vehicles', 'pm-different-vehicles', 'pm-vehicle-where', 'pm-tap-vehicle', 'pm-same-vehicles'],
   },
   {
     id: 'match-the-things',
@@ -4594,18 +4605,21 @@ function PREK_MODULES() { return [
     tagline: 'Balls, balloons, robots',
     requires: ['match-the-vehicles'],
     lesson: {
-      paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Some things are almost alike. A ball and a balloon are both round, but a balloon is light and has a string. A star has points, a butterfly has wings, a flower has petals, and a robot has arms and legs.'],
+      pictures: [{ serial: 'P108', alt: 'A real butterfly with open wings resting on a flower', step: 4 }],
+      paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Some things are almost alike. A ball and a balloon are both round, but a balloon is light and has a string. A star has points, a butterfly has wings, a flower has petals, and a robot has arms and legs.', 'You have two arms and two legs, and so does the robot.'],
       keyIdea: 'The same means just alike. Look closely, because some things are almost alike.',
       example: { kind: 'pair', a: { kind: 'art', name: 'ball' }, b: { kind: 'art', name: 'ball' }, caption: 'Two balls. They are the same.' },
       script: [
         { say: 'Look at this ball. See its shape and its color.', show: { kind: 'art', name: 'ball' } },
         { say: 'Here is another ball, just the same. The two balls match.', show: { kind: 'pair', a: { kind: 'art', name: 'ball' }, b: { kind: 'art', name: 'ball' } } },
-        { say: 'This is a balloon. It does not look like the ball, so it is different.', show: { kind: 'pair', a: { kind: 'art', name: 'ball' }, b: { kind: 'art', name: 'balloon' } } },
+        { say: 'This is a balloon. It is light and has a string, so it is different from the ball.', show: { kind: 'pair', a: { kind: 'art', name: 'ball' }, b: { kind: 'art', name: 'balloon' } } },
         { say: 'Look closely, because some things are almost alike. A star has points, and a flower has petals.', show: { kind: 'pair', a: { kind: 'art', name: 'star' }, b: { kind: 'art', name: 'flower' } } },
+        { say: 'A butterfly has wings, and a robot has arms and legs.', show: { kind: 'pair', a: { kind: 'art', name: 'butterfly' }, b: { kind: 'art', name: 'robot' } } },
+        { say: 'You have two arms and two legs, and so does the robot. Can you wiggle yours?', show: { kind: 'art', name: 'robot' } },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups) and Head Start ELOF Goal P-MATH 8.'],
-    generators: ['pm-same-things', 'pm-different-things', 'pm-same-things', 'pm-different-things', 'pm-same-things'],
+    generators: ['pm-same-things', 'pm-different-things', 'pm-thing-part', 'pm-same-things', 'pm-thing-part'],
   },
   {
     id: 'match-the-water-animals',
@@ -4615,18 +4629,22 @@ function PREK_MODULES() { return [
     tagline: 'Whales, fish, turtles',
     requires: ['match-the-things'],
     lesson: {
-      paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Water animals live in or near water. A whale and a fish both swim, but a whale breathes air, so they are different. A turtle, a duck and a frog live in and near the water too.'],
+      pictures: [{ serial: 'P109', alt: 'A huge whale swimming beside a tiny fish in the ocean', step: 4 }],
+      paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Water animals live in or near water. A whale and a fish both swim, but a whale breathes air, so they are different, and in real life a whale is much, much bigger than most fish. A turtle, a duck and a frog live in and near the water too.'],
       keyIdea: 'The same means just alike. Animals that look a little alike can still be different.',
       example: { kind: 'pair', a: { kind: 'pic', name: 'whale' }, b: { kind: 'pic', name: 'whale' }, caption: 'Two whales. They are the same.' },
       script: [
         { say: 'Look at this whale. See its shape and its color.', show: { kind: 'pic', name: 'whale' } },
         { say: 'Here is another whale, just the same. The two whales match.', show: { kind: 'pair', a: { kind: 'pic', name: 'whale' }, b: { kind: 'pic', name: 'whale' } } },
-        { say: 'This is a fish. It does not look like the whale, so it is different.', show: { kind: 'pair', a: { kind: 'pic', name: 'whale' }, b: { kind: 'pic', name: 'fish' } } },
+        { say: 'This is a fish. It is not the same as the whale, so it is different.', show: { kind: 'pair', a: { kind: 'pic', name: 'whale' }, b: { kind: 'pic', name: 'fish' } } },
         { say: 'A whale and a fish both swim, but a whale breathes air. Look closely before you match.', show: { kind: 'pair', a: { kind: 'pic', name: 'whale' }, b: { kind: 'pic', name: 'fish' } } },
+        { say: 'In real life, a whale is much, much bigger than most fish, even when their pictures are the same size.', show: { kind: 'pair', a: { kind: 'pic', name: 'whale' }, b: { kind: 'pic', name: 'fish' } } },
+        { say: 'A turtle and a frog live in and near the water too.', show: { kind: 'pair', a: { kind: 'pic', name: 'turtle' }, b: { kind: 'pic', name: 'frog' } } },
+        { say: 'A duck lives near the water and swims on top of it.', show: { kind: 'pic', name: 'duck' } },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups) and Head Start ELOF Goal P-MATH 8.'],
-    generators: ['pm-same-water', 'pm-different-water', 'pm-same-water', 'pm-different-water', 'pm-same-water'],
+    generators: ['pm-same-water', 'pm-different-water', 'pm-tap-water', 'pm-water-facts', 'pm-same-water'],
   },
   {
     id: 'match-the-land-animals',
@@ -4636,18 +4654,22 @@ function PREK_MODULES() { return [
     tagline: 'Foxes, bears, rabbits',
     requires: ['match-the-water-animals'],
     lesson: {
-      paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Land animals live on land. A bear has round ears, a rabbit has long ears, and a fox has pointy ears, so ears help tell them apart.'],
+      pictures: [{ serial: 'P110', alt: 'A brown bear with round ears, a rabbit with long ears and a red fox with pointy ears', step: 3 }],
+      paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Land animals live on land. A bear has round ears, a rabbit has long ears, and a fox has pointy ears, so ears help tell them apart. A cat has pointy ears too, so look at the face and the color as well.', 'A snail has no legs and slides along on one flat foot. An owl has big round eyes, and most owls hunt at night.'],
       keyIdea: 'The same means just alike. Look at the ears, the face and the color.',
       example: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'bear' }, caption: 'Two bears. They are the same.' },
       script: [
         { say: 'Look at this bear. See its round ears and its color.', show: { kind: 'pic', name: 'bear' } },
         { say: 'Here is another bear, just the same. The two bears match.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'bear' } } },
-        { say: 'This is a fox. It does not look like the bear, so it is different.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'fox' } } },
-        { say: 'Ears help tell animals apart. A bear has round ears, and a rabbit has long ones.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
+        { say: 'This is a fox. It is not the same as the bear, so it is different.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'fox' } } },
+        { say: 'Ears help tell animals apart. A bear has round ears, and a rabbit has long ears.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
+        { say: 'A fox has pointy ears, and so does a cat, so look at the face and the color too.', show: { kind: 'pair', a: { kind: 'pic', name: 'fox' }, b: { kind: 'pic', name: 'cat' } } },
+        { say: 'A snail has no legs at all. It slides along slowly on one flat foot.', show: { kind: 'pic', name: 'snail' } },
+        { say: 'An owl has big round eyes, and most owls hunt at night.', show: { kind: 'pic', name: 'owl' } },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups) and Head Start ELOF Goal P-MATH 8.'],
-    generators: ['pm-same-land', 'pm-different-land', 'pm-same-land', 'pm-different-land', 'pm-same-land'],
+    generators: ['pm-same-land', 'pm-different-land', 'pm-land-ears', 'pm-same-land', 'pm-land-ears'],
   },
   {
     id: 'match-the-shapes',
@@ -4657,18 +4679,21 @@ function PREK_MODULES() { return [
     tagline: 'Circles, squares, triangles',
     requires: ['match-the-land-animals'],
     lesson: {
-      paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Count the corners to tell shapes apart. A triangle has three, a square and a rectangle have four, and a circle has none. A square has four sides the same length, and a rectangle has two long sides and two short ones.'],
+      pictures: [{ serial: 'P111', alt: 'A wooden door, a square window and a round clock on the wall of a house', step: 4 }],
+      paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Count the corners to tell shapes apart. A triangle has three, a square and a rectangle have four, and a circle has none. A square has four sides the same length, and a rectangle has two long sides and two short ones.', 'Shapes are all around the house. Most doors are rectangles, a window can be a square, and a clock can be a circle.'],
       keyIdea: 'The same means just alike. Count the corners and look at the sides.',
       example: { kind: 'pair', a: { kind: 'shape', name: 'triangle' }, b: { kind: 'shape', name: 'triangle' }, caption: 'Two triangles. They are the same.' },
       script: [
         { say: 'Look at this triangle. It has three corners.', show: { kind: 'shape', name: 'triangle' } },
         { say: 'Here is another triangle, just the same. The two triangles match.', show: { kind: 'pair', a: { kind: 'shape', name: 'triangle' }, b: { kind: 'shape', name: 'triangle' } } },
-        { say: 'This is a circle. It does not look like the triangle, so it is different.', show: { kind: 'pair', a: { kind: 'shape', name: 'triangle' }, b: { kind: 'shape', name: 'circle' } } },
+        { say: 'This is a circle. It is not the same as the triangle, so it is different.', show: { kind: 'pair', a: { kind: 'shape', name: 'triangle' }, b: { kind: 'shape', name: 'circle' } } },
         { say: 'A square and a rectangle both have four corners. A square\'s sides are all the same, and a rectangle has two long sides and two short ones.', show: { kind: 'pair', a: { kind: 'shape', name: 'square' }, b: { kind: 'shape', name: 'rectangle' } } },
+        { say: 'Look for shapes at home. Most doors are rectangles, a window can be a square, and a clock can be a circle.', show: { kind: 'pair', a: { kind: 'shape', name: 'rectangle' }, b: { kind: 'shape', name: 'circle' } } },
+        { say: 'Draw a triangle in the air with your finger. One, two, three corners!', show: { kind: 'shape', name: 'triangle' } },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups) and Head Start ELOF Goal P-MATH 8.'],
-    generators: ['pm-same-shape', 'pm-different-shape', 'pm-same-shape', 'pm-different-shape', 'pm-same-shape'],
+    generators: ['pm-same-shape', 'pm-different-shape', 'pm-shape-corners', 'pm-tap-shape', 'pm-same-shape'],
   },
   {
     id: 'match-the-solids',
@@ -4679,19 +4704,21 @@ function PREK_MODULES() { return [
     requires: ['match-the-shapes'],
     lesson: {
       pictures: [{ serial: 'P17', alt: 'A wooden block, a ball, an ice cream cone and a can in a row', step: 3 }],
-      paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Solid shapes are all around us. A cube is like a block, a sphere is like a ball, a cone is like an ice cream cone, and a cylinder is like a can. Spheres roll, and cubes stack.'],
+      paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Solid shapes are all around us. A cube is like a block, a sphere is like a ball, a cone is like an ice cream cone, and a cylinder is like a can. Spheres roll, and cubes stack.', 'A cylinder rolls on its curved side and stands still on its flat end. Try it at home with a ball and two blocks.'],
       keyIdea: 'The same means just alike. Every solid shape looks like something we use.',
       example: { kind: 'pair', a: { kind: 'solid', name: 'cube' }, b: { kind: 'solid', name: 'cube' }, caption: 'Two cubes. They are the same.' },
       script: [
-        { say: 'Look at this cube. It has flat sides, like a block.', show: { kind: 'solid', name: 'cube' } },
+        { say: 'Look at this cube. It has flat sides and corners.', show: { kind: 'solid', name: 'cube' } },
         { say: 'Here is another cube, just the same. The two cubes match.', show: { kind: 'pair', a: { kind: 'solid', name: 'cube' }, b: { kind: 'solid', name: 'cube' } } },
-        { say: 'This is a sphere. It does not look like the cube, so it is different.', show: { kind: 'pair', a: { kind: 'solid', name: 'cube' }, b: { kind: 'solid', name: 'sphere' } } },
-        { say: 'A cone is like an ice cream cone, and a cylinder is like a can.', show: { kind: 'pair', a: { kind: 'solid', name: 'cone' }, b: { kind: 'solid', name: 'cylinder' } } },
+        { say: 'This is a sphere. It is not the same as the cube, so it is different.', show: { kind: 'pair', a: { kind: 'solid', name: 'cube' }, b: { kind: 'solid', name: 'sphere' } } },
+        { say: 'A cube is like a block, a sphere is like a ball, a cone is like an ice cream cone, and a cylinder is like a can.', show: { kind: 'pair', a: { kind: 'solid', name: 'cone' }, b: { kind: 'solid', name: 'cylinder' } } },
         { say: 'Spheres roll, and cubes stack. The shape tells you what a thing can do.', show: { kind: 'pair', a: { kind: 'solid', name: 'cube' }, b: { kind: 'solid', name: 'sphere' } } },
+        { say: 'A cylinder rolls on its curved side, and it stands still on its flat end.', show: { kind: 'solid', name: 'cylinder' } },
+        { say: 'Try it at home. Roll a ball, then stack two blocks.', show: { kind: 'pair', a: { kind: 'solid', name: 'sphere' }, b: { kind: 'solid', name: 'cube' } } },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines V.C.1 (names and describes common 2D shapes and names at least 1 solid 3D shape) and Head Start ELOF Goal P-MATH 9.'],
-    generators: ['pm-same-solid', 'pm-different-solid', 'pm-same-solid', 'pm-different-solid', 'pm-same-solid'],
+    generators: ['pm-same-solid', 'pm-different-solid', 'pm-solid-like', 'pm-solid-do', 'pm-same-solid'],
   },
   {
     id: 'more-and-fewer-5',
@@ -4701,7 +4728,8 @@ function PREK_MODULES() { return [
     tagline: 'Up to five',
     requires: ['count-to-3'],
     lesson: {
-      paragraphs: ['Look at both groups. The bigger group has more, and the smaller group has fewer.', 'When two groups look close in size, like four and three, count each one. The group with the bigger number has more.'],
+      pictures: [{ serial: 'P112', alt: 'Two plates of strawberries, one with a big group and one with only a few', step: 5 }],
+      paragraphs: ['Look at both groups. The bigger group has more, and the smaller group has fewer.', 'When two groups look close in size, like four and three, count each one. The group with the bigger number has more.', 'Your hands can help, five fingers on one hand and two on the other. At snack time, the plate with the bigger group has more. You can also line two groups up, one with one, and the group with some left over has more.'],
       keyIdea: 'More is the bigger group. Fewer is the smaller group.',
       example: { kind: 'pair', a: { kind: 'dots', count: 5 }, b: { kind: 'dots', count: 2 }, caption: 'Five dots and two dots. Five is more.' },
       script: [
@@ -4709,10 +4737,13 @@ function PREK_MODULES() { return [
         { say: 'Five is more than two. This group has more.', show: { kind: 'pair', a: { kind: 'dots', count: 5 }, b: { kind: 'dots', count: 2 } } },
         { say: 'Two is fewer than five. This group has fewer.', show: { kind: 'pair', a: { kind: 'dots', count: 2 }, b: { kind: 'dots', count: 5 } } },
         { say: 'When two groups are close, like four and three, count each one. The bigger number has more.', show: { kind: 'pair', a: { kind: 'dots', count: 4 }, b: { kind: 'dots', count: 3 } } },
+        { say: 'Use your hands. Hold up five fingers on one hand and two on the other. Five is more than two.', show: { kind: 'pair', a: { kind: 'dots', count: 5 }, b: { kind: 'dots', count: 2 } } },
+        { say: 'At snack time, look at two plates. The plate with the bigger group of strawberries has more.', show: null },
+        { say: 'Another way to compare is to line the groups up, one with one. The group with some left over has more.', show: { kind: 'pair', a: { kind: 'dots', count: 4 }, b: { kind: 'dots', count: 3 } } },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines V.A.8 (compares sets of objects up to 10 using comparative language) and Head Start ELOF Goal P-MATH 4.'],
-    generators: ['p4-tap-more-5', 'p4-tap-fewer-5', 'p4-tap-more-5', 'p4-tap-fewer-5', 'p4-tap-more-5'],
+    generators: ['p4-tap-more-5', 'p4-tap-fewer-5', 'p4-more-close', 'p4-fewer-close', 'p4-tap-more-5'],
   },
   {
     id: 'bigger-and-smaller',
@@ -17668,12 +17699,12 @@ Object.assign(GENERATORS, {
       explain: `This ${shape} takes up less room than the other one, so it is smaller.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'shape', name: shape, size: b }, b: { kind: 'shape', name: shape, size: a } } };
   },
   'p4-tap-more-5': (rng) => {
-    const small = randInt(rng, 1, 3); const big = Math.min(5, small + randInt(rng, 1, 2));
+    const small = randInt(rng, 1, 4); const big = randInt(rng, small + 1, 5);   // every pair up to five (pass LU)
     return { type: 'choice', story: null, prompt: 'Tap the one with more dots.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${big}`,
       explain: `${NUMBER_NAMES[big].charAt(0).toUpperCase() + NUMBER_NAMES[big].slice(1)} dots are more than ${NUMBER_NAMES[small]} ${small === 1 ? 'dot' : 'dots'}. The bigger group has more.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: big }, b: { kind: 'dots', count: small } } };
   },
   'p4-tap-fewer-5': (rng) => {
-    const small = randInt(rng, 1, 3); const big = Math.min(5, small + randInt(rng, 1, 2));
+    const small = randInt(rng, 1, 4); const big = randInt(rng, small + 1, 5);   // every pair up to five (pass LU)
     return { type: 'choice', story: null, prompt: 'Tap the one with fewer dots.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${small}`,
       explain: `${NUMBER_NAMES[small].charAt(0).toUpperCase() + NUMBER_NAMES[small].slice(1)} ${small === 1 ? 'dot is' : 'dots are'} fewer than ${NUMBER_NAMES[big]} dots. The smaller group has fewer.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: small }, b: { kind: 'dots', count: big } } };
   },
@@ -17749,6 +17780,81 @@ Object.assign(GENERATORS, {
     const shape = pick(rng, PATTERN_SHAPES); const c = pickColor(rng); const otherShape = pick(rng, PATTERN_SHAPES.filter((x) => x !== shape)); const otherColor = otherColors(rng, c, 1)[0];
     return { type: 'choice', story: `This is a ${c} ${shape}.`, prompt: 'Tap the one that is different.', choices: shuffle(rng, [`item:${shape}-${c}`, `item:${otherShape}-${otherColor}`]), answer: `item:${otherShape}-${otherColor}`,
       explain: `This one is a ${otherColor} ${otherShape}, not a ${c} ${shape}, so it is different.`, visual: { kind: 'item', shape, colour: c }, explainVisual: null };
+  },
+});
+// First Steps part one at the refined standard (pass LU). In plain terms: question kinds that apply each lesson's facts to
+// pictures, so a child who comes back meets new questions. Every fact asked here is said aloud in its lesson's script first,
+// and the rules test re-derives each answer from the words with tables of its own. A wrong choice never shares the asked
+// property (a cat is never the wrong answer for pointy ears, a square never the wrong answer for a rectangle).
+const LU_THING_COLOURS = [['a strawberry', 'red'], ['a stop sign', 'red'], ['the sky on a sunny day', 'blue'], ['a blueberry', 'blue'], ['a banana', 'yellow'], ['a lemon', 'yellow'], ['the grass', 'green'], ['a pickle', 'green']];
+const LU_VEHICLE_WHERE = [['goes on the water', 'boat'], ['goes up into space', 'rocket'], ['runs on a track', 'train'], ['drives on the road', 'car']];
+const LU_THING_PARTS = [['has wings', 'butterfly', ['ball', 'balloon', 'star', 'flower', 'robot']], ['has petals', 'flower', ['ball', 'balloon', 'star', 'butterfly', 'robot']], ['has points', 'star', ['ball', 'balloon', 'butterfly', 'robot']], ['has arms and legs', 'robot', ['ball', 'balloon', 'star', 'flower']], ['has a string', 'balloon', ['ball', 'star', 'flower', 'butterfly', 'robot']]];
+const LU_EARS = [['has long ears', 'rabbit', ['bear', 'fox', 'cat', 'snail'], 'A rabbit has long ears.'], ['has round ears', 'bear', ['fox', 'cat', 'snail'], 'A bear has round ears.'], ['has pointy ears', 'fox', ['bear', 'snail', 'owl'], 'A fox has pointy ears.'], ['has no legs and slides along on one foot', 'snail', ['bear', 'fox', 'rabbit', 'cat'], 'A snail has no legs. It slides along on one flat foot.']];
+const LU_CORNERS = [['has three corners', 'triangle', ['circle', 'square', 'rectangle']], ['has no corners', 'circle', ['triangle', 'square', 'rectangle']], ['has four sides that are all the same length', 'square', ['triangle', 'circle', 'rectangle']], ['has two long sides and two short sides', 'rectangle', ['triangle', 'circle', 'square']]];
+const LU_SOLID_LIKE = [['a can', 'cylinder'], ['an ice cream cone', 'cone'], ['a ball', 'sphere'], ['a block', 'cube']];
+const luCap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+// Tap a matching-lesson picture by its name; avoid lists names that must never be offered as wrong for a given answer.
+const luTapThemed = (rng, theme, avoid = {}) => {
+  const a = pick(rng, theme.items); const others = shuffle(rng, theme.items.filter((x) => x !== a && !(avoid[a] || []).includes(x))).slice(0, 2);
+  return { type: 'choice', story: null, prompt: `Tap the ${a}.`, choices: shuffle(rng, [a, ...others].map((x) => `${theme.kind}:${x}`)), answer: `${theme.kind}:${a}`,
+    explain: `This is ${aOrAn(a)} ${a}.`, visual: null, explainVisual: null };
+};
+// Find the one picture with a property the lesson named (the second item); wrong choices come from the list beside it.
+const luFindBy = (rng, rows, kind, ask) => {
+  const [has, a, wrong] = pick(rng, rows); const others = shuffle(rng, wrong).slice(0, 2);
+  return { has, a, prompt: `${ask} ${has}?`, choices: shuffle(rng, [a, ...others].map((x) => `${kind}:${x}`)), answer: `${kind}:${a}` };
+};
+Object.assign(GENERATORS, {
+  'pc-colour-of-thing': (rng) => {
+    const [thing, c] = pick(rng, LU_THING_COLOURS);
+    return { type: 'choice', story: null, prompt: `What color is ${thing}?`, choices: shuffle(rng, [c, ...otherColors(rng, c, 2)]), answer: c,
+      explain: `${luCap(thing)} is ${c}.`, visual: null, explainVisual: null };
+  },
+  'pm-vehicle-where': (rng) => {
+    const [where, v] = pick(rng, LU_VEHICLE_WHERE); const others = shuffle(rng, LU_VEHICLE_WHERE.filter((x) => x[1] !== v)).slice(0, 2).map((x) => x[1]);
+    return { type: 'choice', story: null, prompt: `Which one ${where}?`, choices: shuffle(rng, [v, ...others].map((x) => `art:${x}`)), answer: `art:${v}`,
+      explain: `A ${v} ${where}.`, visual: null, explainVisual: null };
+  },
+  'pm-tap-vehicle': (rng) => luTapThemed(rng, MATCH_THEMES.vehicles),
+  'pm-thing-part': (rng) => {
+    const f = luFindBy(rng, LU_THING_PARTS, 'art', 'Which one');
+    return { type: 'choice', story: null, prompt: f.prompt, choices: f.choices, answer: f.answer, explain: `The ${f.a} ${f.has}.`, visual: null, explainVisual: null };
+  },
+  'pm-tap-water': (rng) => luTapThemed(rng, MATCH_THEMES.water),
+  'pm-water-facts': (rng) => {
+    const air = rng() < 0.5;
+    return { type: 'choice', story: null, prompt: air ? 'Which one breathes air, the whale or the fish?' : 'Which one is much bigger in real life?', choices: shuffle(rng, ['pic:whale', 'pic:fish']), answer: 'pic:whale',
+      explain: air ? 'A whale breathes air. It comes up to the top of the water to breathe, and a fish breathes under the water.' : 'A whale is much, much bigger than most fish.', visual: null, explainVisual: { kind: 'pic', name: 'whale' } };
+  },
+  'pm-land-ears': (rng) => {
+    const [has, a, wrong, why] = pick(rng, LU_EARS); const others = shuffle(rng, wrong).slice(0, 2);
+    return { type: 'choice', story: null, prompt: `Which one ${has}?`, choices: shuffle(rng, [a, ...others].map((x) => `pic:${x}`)), answer: `pic:${a}`,
+      explain: why, visual: null, explainVisual: { kind: 'pic', name: a } };
+  },
+  'pm-shape-corners': (rng) => {
+    const f = luFindBy(rng, LU_CORNERS, 'shape', 'Which shape');
+    return { type: 'choice', story: null, prompt: f.prompt, choices: f.choices, answer: f.answer, explain: `A ${f.a} ${f.has}.`, visual: null, explainVisual: null };
+  },
+  'pm-tap-shape': (rng) => luTapThemed(rng, MATCH_THEMES.shapes, { rectangle: ['square'] }),
+  'pm-solid-like': (rng) => {
+    const [thing, s] = pick(rng, LU_SOLID_LIKE); const others = shuffle(rng, LU_SOLID_LIKE.filter((x) => x[1] !== s)).slice(0, 2).map((x) => x[1]);
+    return { type: 'choice', story: null, prompt: `Which shape is like ${thing}?`, choices: shuffle(rng, [s, ...others].map((x) => `solid:${x}`)), answer: `solid:${s}`,
+      explain: `A ${s} is like ${thing}.`, visual: null, explainVisual: null };
+  },
+  'pm-solid-do': (rng) => {
+    const roll = rng() < 0.5;
+    return { type: 'choice', story: null, prompt: roll ? 'Which one can roll?' : 'Which one can you stack?', choices: shuffle(rng, ['solid:sphere', 'solid:cube']), answer: roll ? 'solid:sphere' : 'solid:cube',
+      explain: roll ? 'A sphere is round all over, so it rolls.' : 'A cube has flat sides, so it stacks.', visual: null, explainVisual: null };
+  },
+  'p4-more-close': (rng) => {
+    const small = randInt(rng, 1, 4); const big = small + 1;
+    return { type: 'choice', story: 'These groups are close. Count each one.', prompt: 'Tap the group with more.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${big}`,
+      explain: `${luCap(NUMBER_NAMES[big])} is more than ${NUMBER_NAMES[small]}, so this group has more.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: big }, b: { kind: 'dots', count: small } } };
+  },
+  'p4-fewer-close': (rng) => {
+    const small = randInt(rng, 1, 4); const big = small + 1;
+    return { type: 'choice', story: 'These groups are close. Count each one.', prompt: 'Tap the group with fewer.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${small}`,
+      explain: `${luCap(NUMBER_NAMES[small])} is fewer than ${NUMBER_NAMES[big]}, so this group has fewer.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: small }, b: { kind: 'dots', count: big } } };
   },
 });
 Object.assign(GENERATORS, {

@@ -884,7 +884,7 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0 }) {
   if (visual.kind === 'para') return <div key={animKey} style={{ padding: '6px 0' }}><ParaPic base={visual.base} height={visual.height} side={visual.side} /></div>;
   if (visual.kind === 'periodic') return <div key={animKey} style={{ padding: '6px 0' }}><PeriodicPic highlight={visual.highlight || []} period={visual.period || null} group={visual.group || null} /></div>;
   if (visual.kind === 'pic') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0', display: 'flex', justifyContent: 'center' }}><StudentPicture name={visual.name} size={110} /></div>;
-  if (visual.kind === 'art') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0', display: 'flex', justifyContent: 'center' }}><ColorThumb picture={visual.name} size={120} /></div>;
+  if (visual.kind === 'art') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0', display: 'flex', justifyContent: 'center' }}><ColorThumb picture={visual.name} size={120} thing /></div>;
   if (visual.kind === 'icon') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><IconPic name={visual.name} size={110} /></div>;
   if (visual.kind === 'shape') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><ShapePic name={visual.name} variant={visual.variant || null} color={SWATCH[visual.colour] || C.green} size={visual.size === 'big' ? 140 : visual.size === 'small' ? 50 : 110} /></div>;
   if (visual.kind === 'tens') return <div style={{ padding: '6px 0' }}><TensGroup count={visual.count} animate={animate} animKey={animKey} /></div>;
@@ -6268,7 +6268,7 @@ function nameLines(name) {
   const y = (i) => 52 + (i - (lines.length - 1) / 2) * step + size * 0.34;
   return { lines, size, y };
 }
-function ColorThumb({ picture, name, size = 72 }) {
+function ColorThumb({ picture, name, size = 72, thing = false }) {
   const box = { width: size, height: size, display: 'block' };
   if (picture === 'my-name') {
     const { lines, size: fs, y } = nameLines(name);
@@ -6280,7 +6280,12 @@ function ColorThumb({ picture, name, size = 72 }) {
       </svg>
     );
   }
-  const parts = layoutLetterParts(COLORING_ART[picture] || []);
+  // A thing to look at (pass LU): a flower, a rocket or a butterfly is also a Leonardo coloring page, and until that page
+  // is painted a lesson or a question (thing) draws the app's own line drawing of it, never the placeholder card with its
+  // serial, which a child cannot read. The painted page takes over once it exists; the coloring list keeps its placeholder.
+  const pageSerial = thing && DRAWN_PAGES[picture] ? DRAWN_PAGES[picture][0] : null;
+  const pagePainted = !!pageSerial && typeof window !== 'undefined' && Array.isArray(window.__eduColoringArt) && window.__eduColoringArt.includes(pageSerial);
+  const parts = layoutLetterParts((pageSerial && !pagePainted && THING_LINE_ART[picture]) || COLORING_ART[picture] || []);
   return (
     <svg viewBox="0 0 100 100" {...box} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
       {parts.map((p, i) => {
@@ -6414,6 +6419,9 @@ const DRAWN_PAGES = {
   'pirate-ship': ['D20', 'A pirate ship on rolling waves'], dragon: ['D21', 'A friendly dragon over a village'], 'space-station': ['D22', 'A space station with planets behind it'], 'jungle-waterfall': ['D23', 'A jungle waterfall with animals'],
   aquarium: ['D24', 'A big aquarium tank with a diver'], 'race-track': ['D25', 'Race cars on a winding track'], 'busy-harbor': ['D26', 'A harbor with boats, cranes and a lighthouse'], 'dinosaur-valley': ['D27', 'A valley of dinosaurs with a volcano'],
 };
+// The app's own line drawings of the things that are also Leonardo pages (pass LU), kept before the pages replace them, so a
+// lesson or a question can still draw a flower, a rocket or a butterfly while its painted page is on the way (ColorThumb, thing).
+const THING_LINE_ART = Object.fromEntries(Object.keys(DRAWN_PAGES).filter((pic) => Array.isArray(COLORING_ART[pic])).map((pic) => [pic, COLORING_ART[pic]]));
 for (const [pic, [serial, alt]] of Object.entries(DRAWN_PAGES)) COLORING_ART[pic] = [{ t: 'art', serial, x: 4, y: 4, w: 92, h: 92, alt }];
 // Lesson pages (2026-09-24): one Leonardo page per early-years lesson, drawn the same way as the pages above.
 for (const [mid, [serial, alt]] of Object.entries(COLOR_PAGES)) COLORING_ART[`lesson-${mid}`] = [{ t: 'art', serial, x: 4, y: 4, w: 92, h: 92, alt }];
@@ -8949,7 +8957,7 @@ function EduSphereScreens() {
                   // because naming it would hand over the answer.
                   <button key={c} type="button" data-choice={c} onClick={() => { if (!checked) { if (readAloud) { playTap(); if (!c.includes(':')) speak(c); } setGiven(c); } }}
                     style={{ opacity: ruledOut && !checked ? (C.mode === 'dark' ? 0.72 : 0.5) : 1, fontFamily: FONT, fontSize: choiceFont(q.choices), textAlign: 'center', padding: '12px 10px', minWidth: 0, overflowWrap: /^-?[\d.,\/ ]+$/.test(c) ? 'normal' : 'anywhere', whiteSpace: /^-?[\d.,\/ ]+$/.test(c) ? 'nowrap' : 'normal', borderRadius: 10, background: bg, border: `2px solid ${border}`, color: C.ink, cursor: checked ? 'default' : 'pointer', minHeight: 48 }}>
-                    {/^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={28} /> : /^shape:/.test(c) ? <ShapePic name={c.split(':')[1]} size={c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={14} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={18} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={14} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6).split('#')[0]} size={64} /> : /^shares:/.test(c) ? <SharesPic shape={c.split(':')[1]} cut={c.split(':')[2]} shaded={Number(c.split(':')[3] || 0)} size={72} /> : /^dice:/.test(c) ? <DicePic pips={Number(c.split(':')[1].split('#')[0])} size={64} /> : /^pic:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><StudentPicture name={c.slice(4).split('#')[0]} size={72} /></span> : /^art:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><ColorThumb picture={c.slice(4).split('#')[0]} size={84} /></span> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={64} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={64} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={64} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={80} /> : /^digital:/.test(c) ? <DigitalPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={96} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={12} /> : c}
+                    {/^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={28} /> : /^shape:/.test(c) ? <ShapePic name={c.split(':')[1]} size={c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={14} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={18} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={14} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6).split('#')[0]} size={64} /> : /^shares:/.test(c) ? <SharesPic shape={c.split(':')[1]} cut={c.split(':')[2]} shaded={Number(c.split(':')[3] || 0)} size={72} /> : /^dice:/.test(c) ? <DicePic pips={Number(c.split(':')[1].split('#')[0])} size={64} /> : /^pic:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><StudentPicture name={c.slice(4).split('#')[0]} size={72} /></span> : /^art:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><ColorThumb picture={c.slice(4).split('#')[0]} size={84} thing /></span> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={64} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={64} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={64} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={80} /> : /^digital:/.test(c) ? <DigitalPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={96} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={12} /> : c}
                   </button>
                 );
               })}

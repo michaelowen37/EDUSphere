@@ -185,6 +185,12 @@ for (const [id, cs] of Object.entries(COURSE_STORIES)) {
   ok('no story shows a tag to readers', all.every(([, s]) => s.words.every((p) => !/[\[\]]/.test(p))));
   ok('every tag is a short phrase in one pair of brackets', tagged.every(([, s]) => s.audio.every((p) => (p.match(/\[[^\[\]]{1,60}\]/g) || []).length === (p.match(/\[/g) || []).length)));
   ok('every story fits one Eleven v4 request of 10,000 characters', all.every(([, s]) => (s.audio || s.words).join(' ').length + s.title.length < 9000));
+  // Long stories carry tags too (pass LT): where a long story has audio, it is its words with tags and nothing else, its tags
+  // are short phrases in one pair of brackets, no long story shows a tag to readers, and an early-years one closes [slowly, warmly].
+  const longTagged = Object.entries(COURSE_STORIES).filter(([, s]) => s.audio);
+  ok(`tagged long stories keep their words exactly (${longTagged.length} tagged)`, longTagged.length >= 2 && longTagged.every(([, s]) => s.audio.length === s.words.length && s.audio.every((p, i) => stripTags(p) === s.words[i].replace(/\s+/g, ' ').trim())));
+  ok('every long-story tag is a short phrase in one pair of brackets, and no long story shows a tag to readers', longTagged.every(([, s]) => s.audio.every((p) => (p.match(/\[[^\[\]]{1,60}\]/g) || []).length === (p.match(/\[/g) || []).length)) && Object.values(COURSE_STORIES).every((s) => s.words.every((p) => !/[\[\]]/.test(p))));
+  ok('a tagged early-years long story closes [slowly, warmly]', longTagged.every(([id, s]) => { const c = L.getCourse(id); return !c || !early.has(c.grade) || /^\[slowly, warmly\]/.test(s.audio[s.audio.length - 1]); }));
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

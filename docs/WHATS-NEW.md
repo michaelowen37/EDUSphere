@@ -9,6 +9,15 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## October 7, 2026 (First Steps, part one refreshed)
+
+- The first half of First Steps for pre-K 4 has been reviewed again at a higher standard. Colors, matching and More and Fewer now show each idea more than one way, with real things to look for, like a red stop sign, a door shaped like a rectangle or two plates of strawberries, and more paintings on the way.
+- These lessons also hold about twice as many questions as before, so a child who comes back meets new ones, like where a boat goes or which shape is like a can.
+- In Match the Vehicles and Match the Things, the rocket, the butterfly and the flower now show as drawings, where they had shown as blank cards while their paintings are on the way.
+## October 7, 2026 (Listen and Point's stories)
+
+- Listen and Point now ends with its own long story, The Ball That Rolled Away. Mike loses his ball at the park, and he and his friend Georgette find it by thinking about what round things do, listening for who is near, spotting letters he knows on a sign and noticing the one thing that is different.
+- Four of the course's short stories were rewritten so each one uses the lesson's own words and has a real puzzle in it, like a picture-card game where one word has no card because its thing is up in the sky. All five sound livelier when read aloud.
 ## October 7, 2026 (Listen and Point, refreshed)
 
 - Listen and Point, the second pre-K 3 course, now shows each idea more than one way, like a plate and a window for circles and squares, and one red apple among green ones for different, with more pictures on the way. Its lessons hold more questions too, so a child who comes back meets new ones.

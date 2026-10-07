@@ -200,6 +200,24 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A sample built by hand to look like a real screen drifts: the LI tour sample missed the Merge link and the Wonder pill and was laid out differently, and Mikey saw all three at a glance. Feed made-up data through the real component instead, with taps switched off, and the sample can never differ from the page.
 - Count a daily allowance against the day as it started, not as it stands: finishing the first review shrinks the queue, and a rule that rechecked the live queue would cancel the second review the backlog asked for.
 
+## Learned in pass LU (banks that grow)
+
+- A question is the same question when its words, picture and answer match, whatever the wrong choices (questionKey), so shuffling distractors never deepens a bank. It grows with new words, pictures or answers, and the best of those apply the lesson's own facts: where a boat goes, which shape is like a can, which animal has long ears.
+- A property question needs wrong choices that do not share the property. A cat also has pointy ears, a butterfly has legs, a square is a special rectangle from kindergarten on, and a cylinder rolls too, so each is kept out of the choices for that question, and the rules test checks it.
+- An everyday pair is not always the same. A left shoe and a right shoe match as a pair but are mirror images, so a lesson that defines the same as alike in shape, color and size uses two crayons from one box instead.
+- Check that a bank can ask the lesson's own example: the lesson compared five dots with two, and the old generator never could. Widening it to every pair up to five closed the gap.
+- "It does not look like the car" is not a comparison to a real thing, but the picture-candidate tool counted it as one. Say "It is not the same as the car" and the tool's list stays a list of real comparisons.
+- The scripts test reads a line against its picture: a line that names an animal must show it, and a picture of squares needs the word square. Plan a line and its picture together.
+- A new rules check is only as good as its failure: break what it guards on purpose, in a copy, and watch it fail before trusting its pass.
+- A change made for one screen can quietly break another that shares its pictures: when the coloring pages moved to Leonardo, the matching questions' rocket, butterfly and flower became blank cards, and only screenshots of a real practice round showed it. Look at the questions in the real page, not only the lesson.
+
+## Learned in pass LT (stories that are stories)
+
+- A story's pictures can never carry letters: every Leonardo prompt bans text, so a story about letters is drawn with the things the letters start (a ball, a bee, an apple, an acorn) and the letters stay in the words. The old A and B story hung on a banner its pictures could not show.
+- The lesson's facts and no others reaches a story's nouns too. A cow that moos and a dog card were true but untaught; with the lesson's own animals and pictures, the story becomes one more meeting with what the questions ask.
+- A demonstration is not a story. A child tapping three cards in order has no problem and no turn; give the idea a moment where common sense fails (a word with no card) and let the idea solve it (the thing is up in the sky).
+- Read a scene for what it models, not only what it says: a child with closed eyes belongs on a hay bale, not at the edge of a pond, and a grown-up is the one who takes a ball out of the water.
+
 ## Learned in pass LS (look before you name)
 
 - A picture name in a lesson line is only as good as the drawing behind it: the animal drawings have no dog and the bird is an icon, so two new lines drew blank. The real-page screenshot caught it before delivery; check the drawing set before writing a line or a bank around a picture.

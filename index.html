@@ -37,7 +37,7 @@ window.__eduArt = [];
 window.__eduColoringArt = [];
 window.__eduMapArt = [];
 window.__eduAudio = [];
-window.__eduNews = {"stamp":"October 7, 2026 (Listen and Point, refreshed)","date":"October 7, 2026","items":["Listen and Point, the second pre-K 3 course, now shows each idea more than one way, like a plate and a window for circles and squares, and one red apple among green ones for different, with more pictures on the way. Its lessons hold more questions too, so a child who comes back meets new ones."],"brief":["Listen and Point, the second pre-K 3 course, now shows each idea more than one way, like a plate and a window for circles and squares, and one red apple among green ones for different, with more pictures on the way."],"history":[{"date":"October 7, 2026","title":"Listen and Point, refreshed","items":["Listen and Point, the second pre-K 3 course, now shows each idea more than one way, like a plate and a window for circles and squares, and one red apple among green ones for different, with more pictures on the way. Its lessons hold more questions too, so a child who comes back meets new ones."]},{"date":"October 7, 2026","title":"Move Forward for a lesson never mastered","items":["When a student cannot get past a lesson they have never mastered, even after the app loops them back and gives them more tries, an Action Item now lets you move them forward. The lesson stays on their list without its star and comes back in three weeks as a fresh try, which can earn the star.","During a Quick Review, the questions are headed Quick Review, and the review questions inside regular rounds are now called \"A question from an earlier module\"."]},{"date":"October 7, 2026","title":"Practice Review history","items":["Each student's Practice Reviews now keep a dated history. The newest two show on the report, and a History link opens the rest. When you move a student forward, that is logged with its date too.","The weekly note now includes the week's practice reviews, so one printed page holds everything, and Who Needs Help shows a student who is stuck on a lesson a review reopened."]},{"date":"October 7, 2026","title":"a long story for Very First Steps","items":["Very First Steps now ends with its own long story, The Mixed-Up Picnic, where three small friends use colors, matching, sizes and counting to sort out a jumbled picnic basket, and remember please and thank you for the last grape. Its twelve short stories also sound livelier when read aloud."]},{"date":"October 7, 2026","title":"Very First Steps, refreshed","items":["The first pre-K course has been reviewed again at a higher standard. Each lesson now shows its idea more than one way, with real things to look for at home, like a red fire truck, a green frog or two hands to count, and more pictures on the way.","Big and Little now teaches three sizes, big, middle-size and little, the way the three bears' bowls do, and every lesson has more questions, so a child who comes back meets new ones."]},{"date":"October 7, 2026","title":"quick look backs, up to two a day","items":["When two quick look backs are due, a student now gets both at the start of the day, one right after the other, so reviews never pile up. A third waits for the next day. Students never see a pass or a fail; you read what each review showed in the Practice Reviews section of their report.","The red Action Item link on a student's card now sits right under Wonder Questions, and when two things need you it says so, then shows them one at a time."]}]};
+window.__eduNews = {"stamp":"October 7, 2026 (First Steps, part one refreshed)","date":"October 7, 2026","items":["The first half of First Steps for pre-K 4 has been reviewed again at a higher standard. Colors, matching and More and Fewer now show each idea more than one way, with real things to look for, like a red stop sign, a door shaped like a rectangle or two plates of strawberries, and more paintings on the way.","These lessons also hold about twice as many questions as before, so a child who comes back meets new ones, like where a boat goes or which shape is like a can.","In Match the Vehicles and Match the Things, the rocket, the butterfly and the flower now show as drawings, where they had shown as blank cards while their paintings are on the way."],"brief":["The first half of First Steps for pre-K 4 has been reviewed again at a higher standard.","These lessons also hold about twice as many questions as before, so a child who comes back meets new ones, like where a boat goes or which shape is like a can.","In Match the Vehicles and Match the Things, the rocket, the butterfly and the flower now show as drawings, where they had shown as blank cards while their paintings are on the way."],"history":[{"date":"October 7, 2026","title":"First Steps, part one refreshed","items":["The first half of First Steps for pre-K 4 has been reviewed again at a higher standard. Colors, matching and More and Fewer now show each idea more than one way, with real things to look for, like a red stop sign, a door shaped like a rectangle or two plates of strawberries, and more paintings on the way.","These lessons also hold about twice as many questions as before, so a child who comes back meets new ones, like where a boat goes or which shape is like a can.","In Match the Vehicles and Match the Things, the rocket, the butterfly and the flower now show as drawings, where they had shown as blank cards while their paintings are on the way."]},{"date":"October 7, 2026","title":"Listen and Point's stories","items":["Listen and Point now ends with its own long story, The Ball That Rolled Away. Mike loses his ball at the park, and he and his friend Georgette find it by thinking about what round things do, listening for who is near, spotting letters he knows on a sign and noticing the one thing that is different.","Four of the course's short stories were rewritten so each one uses the lesson's own words and has a real puzzle in it, like a picture-card game where one word has no card because its thing is up in the sky. All five sound livelier when read aloud."]},{"date":"October 7, 2026","title":"Listen and Point, refreshed","items":["Listen and Point, the second pre-K 3 course, now shows each idea more than one way, like a plate and a window for circles and squares, and one red apple among green ones for different, with more pictures on the way. Its lessons hold more questions too, so a child who comes back meets new ones."]},{"date":"October 7, 2026","title":"Move Forward for a lesson never mastered","items":["When a student cannot get past a lesson they have never mastered, even after the app loops them back and gives them more tries, an Action Item now lets you move them forward. The lesson stays on their list without its star and comes back in three weeks as a fresh try, which can earn the star.","During a Quick Review, the questions are headed Quick Review, and the review questions inside regular rounds are now called \"A question from an earlier module\"."]},{"date":"October 7, 2026","title":"Practice Review history","items":["Each student's Practice Reviews now keep a dated history. The newest two show on the report, and a History link opens the rest. When you move a student forward, that is logged with its date too.","The weekly note now includes the week's practice reviews, so one printed page holds everything, and Who Needs Help shows a student who is stuck on a lesson a review reopened."]},{"date":"October 7, 2026","title":"a long story for Very First Steps","items":["Very First Steps now ends with its own long story, The Mixed-Up Picnic, where three small friends use colors, matching, sizes and counting to sort out a jumbled picnic basket, and remember please and thank you for the last grape. Its twelve short stories also sound livelier when read aloud."]}]};
 // Installable app: the worker keeps a copy of the page for offline use and asks the network first, so a fresh build always wins.
 if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) { navigator.serviceWorker.register('sw.js').catch(function () {}); }
 var process = { env: { NODE_ENV: 'production' } };
@@ -595,7 +595,7 @@ exports.useSyncExternalStore = function (
 exports.useTransition = function () {
   return ReactSharedInternals.H.useTransition();
 };
-exports.version = "19.2.5";
+exports.version = "19.2.8";
 
 });
 __def("react-dom", function(module, exports, require){/**
@@ -807,7 +807,7 @@ exports.useFormState = function (action, initialState, permalink) {
 exports.useFormStatus = function () {
   return ReactSharedInternals.H.useHostTransitionStatus();
 };
-exports.version = "19.2.5";
+exports.version = "19.2.8";
 
 });
 __def("react-dom/client", function(module, exports, require){/**
@@ -16728,14 +16728,14 @@ ReactDOMHydrationRoot.prototype.unstable_scheduleHydration = function (target) {
 };
 var isomorphicReactPackageVersion$jscomp$inline_1840 = React.version;
 if (
-  "19.2.5" !==
+  "19.2.8" !==
   isomorphicReactPackageVersion$jscomp$inline_1840
 )
   throw Error(
     formatProdErrorMessage(
       527,
       isomorphicReactPackageVersion$jscomp$inline_1840,
-      "19.2.5"
+      "19.2.8"
     )
   );
 ReactDOMSharedInternals.findDOMNode = function (componentOrElement) {
@@ -16757,10 +16757,10 @@ ReactDOMSharedInternals.findDOMNode = function (componentOrElement) {
 };
 var internals$jscomp$inline_2347 = {
   bundleType: 0,
-  version: "19.2.5",
+  version: "19.2.8",
   rendererPackageName: "react-dom",
   currentDispatcherRef: ReactSharedInternals,
-  reconcilerVersion: "19.2.5"
+  reconcilerVersion: "19.2.8"
 };
 if ("undefined" !== typeof __REACT_DEVTOOLS_GLOBAL_HOOK__) {
   var hook$jscomp$inline_2348 = __REACT_DEVTOOLS_GLOBAL_HOOK__;
@@ -16858,7 +16858,7 @@ exports.hydrateRoot = function (container, initialChildren, options) {
   listenToAllSupportedEvents(container);
   return new ReactDOMHydrationRoot(initialChildren);
 };
-exports.version = "19.2.5";
+exports.version = "19.2.8";
 
 });
 __def("scheduler", function(module, exports, require){/**
@@ -22159,7 +22159,8 @@ function PREK_MODULES() {
             title: 'Colors',
             tagline: 'Red, blue, yellow, green',
             lesson: {
-                paragraphs: ['Every color has a name. Red is like a strawberry, blue is like the sky, yellow is like a banana, and green is like the grass.', 'Two things can be the same color even when their shapes are different, like a red circle and a red square. Naming colors helps us sort things and tell them apart.'],
+                pictures: [{ serial: 'P102', alt: 'A ripe red strawberry on a white plate', step: 0 }, { serial: 'P103', alt: 'A clear blue sky with one small white cloud', step: 1 }, { serial: 'P104', alt: 'A yellow banana on a kitchen table', step: 2 }, { serial: 'P105', alt: 'Green grass in a sunny yard', step: 3 }],
+                paragraphs: ['Every color has a name. Red is like a strawberry, blue is like the sky, yellow is like a banana, and green is like the grass.', 'Lots of other things have these colors too. A stop sign is red, a blueberry is blue, a lemon is yellow, and a pickle is green.', 'Two things can be the same color even when their shapes are different, like a red circle and a red square. Naming colors helps us sort, so all the red blocks can go together, and it helps us tell things apart. Look at your clothes and name the colors you are wearing.'],
                 keyIdea: 'Every color has a name, and two things can match by color alone.',
                 example: { kind: 'swatch', colour: 'red', caption: 'Red.' },
                 script: [
@@ -22167,11 +22168,14 @@ function PREK_MODULES() {
                     { say: 'This color is blue, like the sky.', show: { kind: 'swatch', colour: 'blue' } },
                     { say: 'This color is yellow, like a banana.', show: { kind: 'swatch', colour: 'yellow' } },
                     { say: 'This color is green, like the grass.', show: { kind: 'swatch', colour: 'green' } },
+                    { say: 'Lots of other things have these colors too. A stop sign is red, a blueberry is blue, a lemon is yellow, and a pickle is green.', show: null },
                     { say: 'A red circle and a red square are the same color, even though their shapes are different.', show: { kind: 'pair', a: { kind: 'item', shape: 'circle', colour: 'red' }, b: { kind: 'item', shape: 'square', colour: 'red' } } },
+                    { say: 'Colors help us sort. All the red blocks can go together, and all the blue blocks can go together.', show: { kind: 'pair', a: { kind: 'item', shape: 'square', colour: 'red' }, b: { kind: 'item', shape: 'square', colour: 'blue' } } },
+                    { say: 'Look at your clothes. Can you name a color you are wearing today?', show: null },
                 ],
             },
             sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups and uses language to describe how the groups are similar and different) and Head Start ELOF Goal P-SCI 1 (observes and describes observable phenomena).'],
-            generators: ['pc-tap-colour', 'pc-name-colour', 'pc-same-colour', 'pc-different-colour', 'pc-tap-colour'],
+            generators: ['pc-tap-colour', 'pc-name-colour', 'pc-same-colour', 'pc-different-colour', 'pc-colour-of-thing'],
         },
         {
             id: 'same-and-different',
@@ -22180,7 +22184,8 @@ function PREK_MODULES() {
             title: 'Same and different',
             tagline: 'Find the match',
             lesson: {
-                paragraphs: ['Two things are the same when they are alike in every way, the same shape, the same color and the same size. They are different when even one of those is not alike.', 'To find a match, check all three. A green circle and a green square share a color but not a shape, and two triangles can share a shape but not a size.'],
+                pictures: [{ serial: 'P106', alt: 'A pair of matching striped socks beside one sock with dots', step: 4 }],
+                paragraphs: ['Two things are the same when they are alike in every way, the same shape, the same color and the same size. They are different when even one of those is not alike.', 'To find a match, check all three. A green circle and a green square share a color but not a shape, and two triangles can share a shape but not a size.', 'Matching is everywhere. Two socks match when they are the same color with the same stripes, two red crayons from one box match, and at cleanup time the blocks that match go together.'],
                 keyIdea: 'The same means alike in shape, color and size. Different means at least one is not alike.',
                 example: { kind: 'pair', a: { shape: 'circle', colour: 'green' }, b: { shape: 'circle', colour: 'green' }, caption: 'Two circles are the same.' },
                 script: [
@@ -22188,6 +22193,9 @@ function PREK_MODULES() {
                     { say: 'A green circle and a green square are the same color, but they are different shapes.', show: { kind: 'pair', a: { shape: 'circle', colour: 'green' }, b: { shape: 'square', colour: 'green' } } },
                     { say: 'These two triangles are the same shape, but one is bigger and one is smaller.', show: { kind: 'pair', a: { kind: 'shape', name: 'triangle', size: 'big' }, b: { kind: 'shape', name: 'triangle', size: 'small' } } },
                     { say: 'To match, two things must be alike in every way, like these two blue triangles.', show: { kind: 'pair', a: { shape: 'triangle', colour: 'blue' }, b: { shape: 'triangle', colour: 'blue' } } },
+                    { say: 'Socks come in pairs. Two socks match when they are the same color, with the same stripes.', show: null },
+                    { say: 'Two red crayons from the same box match. They are the same color, the same shape and the same size.', show: null },
+                    { say: 'At cleanup time, check all three, the shape, the color and the size. These two blue squares match, so they go together.', show: { kind: 'pair', a: { shape: 'square', colour: 'blue' }, b: { shape: 'square', colour: 'blue' } } },
                 ],
             },
             sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups and uses language to describe how the groups are similar and different) and Head Start ELOF Goal P-MATH 8.'],
@@ -22201,18 +22209,21 @@ function PREK_MODULES() {
             tagline: 'Cars, trains, boats',
             requires: ['same-and-different'],
             lesson: {
-                paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Vehicles carry people and things. A car and a train go on land, a boat goes on water, and a rocket goes up into space. To match them, look at their parts, like wheels.'],
+                pictures: [{ serial: 'P107', alt: 'A boat on the water and a rocket rising into the sky', step: 4 }],
+                paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Vehicles carry people and things. A car drives on the road, a train runs on a track, a boat goes on the water, and a rocket goes up into space. To match them, look at their parts, like wheels.', 'Outside, two cars match when they have the same color and the same shape.'],
                 keyIdea: 'The same means just alike. Look at the shape, the color and the parts.',
                 example: { kind: 'pair', a: { kind: 'art', name: 'car' }, b: { kind: 'art', name: 'car' }, caption: 'Two cars. They are the same.' },
                 script: [
                     { say: 'Look at this car. See its shape, its color and its wheels.', show: { kind: 'art', name: 'car' } },
                     { say: 'Here is another car, just the same. The two cars match.', show: { kind: 'pair', a: { kind: 'art', name: 'car' }, b: { kind: 'art', name: 'car' } } },
-                    { say: 'This is a train. It does not look like the car, so it is different.', show: { kind: 'pair', a: { kind: 'art', name: 'car' }, b: { kind: 'art', name: 'train' } } },
+                    { say: 'This is a train. It is not the same as the car, so it is different.', show: { kind: 'pair', a: { kind: 'art', name: 'car' }, b: { kind: 'art', name: 'train' } } },
                     { say: 'To match, look at the parts. A car has wheels, and a boat has none.', show: { kind: 'pair', a: { kind: 'art', name: 'car' }, b: { kind: 'art', name: 'boat' } } },
+                    { say: 'A car drives on the road, and a train runs on a track. A boat goes on the water, and a rocket goes up into space.', show: { kind: 'pair', a: { kind: 'art', name: 'boat' }, b: { kind: 'art', name: 'rocket' } } },
+                    { say: 'When you see two cars outside, look at their color and their shape. Do they match?', show: { kind: 'pair', a: { kind: 'art', name: 'car' }, b: { kind: 'art', name: 'car' } } },
                 ],
             },
             sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups) and Head Start ELOF Goal P-MATH 8.'],
-            generators: ['pm-same-vehicles', 'pm-different-vehicles', 'pm-same-vehicles', 'pm-different-vehicles', 'pm-same-vehicles'],
+            generators: ['pm-same-vehicles', 'pm-different-vehicles', 'pm-vehicle-where', 'pm-tap-vehicle', 'pm-same-vehicles'],
         },
         {
             id: 'match-the-things',
@@ -22222,18 +22233,21 @@ function PREK_MODULES() {
             tagline: 'Balls, balloons, robots',
             requires: ['match-the-vehicles'],
             lesson: {
-                paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Some things are almost alike. A ball and a balloon are both round, but a balloon is light and has a string. A star has points, a butterfly has wings, a flower has petals, and a robot has arms and legs.'],
+                pictures: [{ serial: 'P108', alt: 'A real butterfly with open wings resting on a flower', step: 4 }],
+                paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Some things are almost alike. A ball and a balloon are both round, but a balloon is light and has a string. A star has points, a butterfly has wings, a flower has petals, and a robot has arms and legs.', 'You have two arms and two legs, and so does the robot.'],
                 keyIdea: 'The same means just alike. Look closely, because some things are almost alike.',
                 example: { kind: 'pair', a: { kind: 'art', name: 'ball' }, b: { kind: 'art', name: 'ball' }, caption: 'Two balls. They are the same.' },
                 script: [
                     { say: 'Look at this ball. See its shape and its color.', show: { kind: 'art', name: 'ball' } },
                     { say: 'Here is another ball, just the same. The two balls match.', show: { kind: 'pair', a: { kind: 'art', name: 'ball' }, b: { kind: 'art', name: 'ball' } } },
-                    { say: 'This is a balloon. It does not look like the ball, so it is different.', show: { kind: 'pair', a: { kind: 'art', name: 'ball' }, b: { kind: 'art', name: 'balloon' } } },
+                    { say: 'This is a balloon. It is light and has a string, so it is different from the ball.', show: { kind: 'pair', a: { kind: 'art', name: 'ball' }, b: { kind: 'art', name: 'balloon' } } },
                     { say: 'Look closely, because some things are almost alike. A star has points, and a flower has petals.', show: { kind: 'pair', a: { kind: 'art', name: 'star' }, b: { kind: 'art', name: 'flower' } } },
+                    { say: 'A butterfly has wings, and a robot has arms and legs.', show: { kind: 'pair', a: { kind: 'art', name: 'butterfly' }, b: { kind: 'art', name: 'robot' } } },
+                    { say: 'You have two arms and two legs, and so does the robot. Can you wiggle yours?', show: { kind: 'art', name: 'robot' } },
                 ],
             },
             sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups) and Head Start ELOF Goal P-MATH 8.'],
-            generators: ['pm-same-things', 'pm-different-things', 'pm-same-things', 'pm-different-things', 'pm-same-things'],
+            generators: ['pm-same-things', 'pm-different-things', 'pm-thing-part', 'pm-same-things', 'pm-thing-part'],
         },
         {
             id: 'match-the-water-animals',
@@ -22243,18 +22257,22 @@ function PREK_MODULES() {
             tagline: 'Whales, fish, turtles',
             requires: ['match-the-things'],
             lesson: {
-                paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Water animals live in or near water. A whale and a fish both swim, but a whale breathes air, so they are different. A turtle, a duck and a frog live in and near the water too.'],
+                pictures: [{ serial: 'P109', alt: 'A huge whale swimming beside a tiny fish in the ocean', step: 4 }],
+                paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Water animals live in or near water. A whale and a fish both swim, but a whale breathes air, so they are different, and in real life a whale is much, much bigger than most fish. A turtle, a duck and a frog live in and near the water too.'],
                 keyIdea: 'The same means just alike. Animals that look a little alike can still be different.',
                 example: { kind: 'pair', a: { kind: 'pic', name: 'whale' }, b: { kind: 'pic', name: 'whale' }, caption: 'Two whales. They are the same.' },
                 script: [
                     { say: 'Look at this whale. See its shape and its color.', show: { kind: 'pic', name: 'whale' } },
                     { say: 'Here is another whale, just the same. The two whales match.', show: { kind: 'pair', a: { kind: 'pic', name: 'whale' }, b: { kind: 'pic', name: 'whale' } } },
-                    { say: 'This is a fish. It does not look like the whale, so it is different.', show: { kind: 'pair', a: { kind: 'pic', name: 'whale' }, b: { kind: 'pic', name: 'fish' } } },
+                    { say: 'This is a fish. It is not the same as the whale, so it is different.', show: { kind: 'pair', a: { kind: 'pic', name: 'whale' }, b: { kind: 'pic', name: 'fish' } } },
                     { say: 'A whale and a fish both swim, but a whale breathes air. Look closely before you match.', show: { kind: 'pair', a: { kind: 'pic', name: 'whale' }, b: { kind: 'pic', name: 'fish' } } },
+                    { say: 'In real life, a whale is much, much bigger than most fish, even when their pictures are the same size.', show: { kind: 'pair', a: { kind: 'pic', name: 'whale' }, b: { kind: 'pic', name: 'fish' } } },
+                    { say: 'A turtle and a frog live in and near the water too.', show: { kind: 'pair', a: { kind: 'pic', name: 'turtle' }, b: { kind: 'pic', name: 'frog' } } },
+                    { say: 'A duck lives near the water and swims on top of it.', show: { kind: 'pic', name: 'duck' } },
                 ],
             },
             sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups) and Head Start ELOF Goal P-MATH 8.'],
-            generators: ['pm-same-water', 'pm-different-water', 'pm-same-water', 'pm-different-water', 'pm-same-water'],
+            generators: ['pm-same-water', 'pm-different-water', 'pm-tap-water', 'pm-water-facts', 'pm-same-water'],
         },
         {
             id: 'match-the-land-animals',
@@ -22264,18 +22282,22 @@ function PREK_MODULES() {
             tagline: 'Foxes, bears, rabbits',
             requires: ['match-the-water-animals'],
             lesson: {
-                paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Land animals live on land. A bear has round ears, a rabbit has long ears, and a fox has pointy ears, so ears help tell them apart.'],
+                pictures: [{ serial: 'P110', alt: 'A brown bear with round ears, a rabbit with long ears and a red fox with pointy ears', step: 3 }],
+                paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Land animals live on land. A bear has round ears, a rabbit has long ears, and a fox has pointy ears, so ears help tell them apart. A cat has pointy ears too, so look at the face and the color as well.', 'A snail has no legs and slides along on one flat foot. An owl has big round eyes, and most owls hunt at night.'],
                 keyIdea: 'The same means just alike. Look at the ears, the face and the color.',
                 example: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'bear' }, caption: 'Two bears. They are the same.' },
                 script: [
                     { say: 'Look at this bear. See its round ears and its color.', show: { kind: 'pic', name: 'bear' } },
                     { say: 'Here is another bear, just the same. The two bears match.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'bear' } } },
-                    { say: 'This is a fox. It does not look like the bear, so it is different.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'fox' } } },
-                    { say: 'Ears help tell animals apart. A bear has round ears, and a rabbit has long ones.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
+                    { say: 'This is a fox. It is not the same as the bear, so it is different.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'fox' } } },
+                    { say: 'Ears help tell animals apart. A bear has round ears, and a rabbit has long ears.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
+                    { say: 'A fox has pointy ears, and so does a cat, so look at the face and the color too.', show: { kind: 'pair', a: { kind: 'pic', name: 'fox' }, b: { kind: 'pic', name: 'cat' } } },
+                    { say: 'A snail has no legs at all. It slides along slowly on one flat foot.', show: { kind: 'pic', name: 'snail' } },
+                    { say: 'An owl has big round eyes, and most owls hunt at night.', show: { kind: 'pic', name: 'owl' } },
                 ],
             },
             sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups) and Head Start ELOF Goal P-MATH 8.'],
-            generators: ['pm-same-land', 'pm-different-land', 'pm-same-land', 'pm-different-land', 'pm-same-land'],
+            generators: ['pm-same-land', 'pm-different-land', 'pm-land-ears', 'pm-same-land', 'pm-land-ears'],
         },
         {
             id: 'match-the-shapes',
@@ -22285,18 +22307,21 @@ function PREK_MODULES() {
             tagline: 'Circles, squares, triangles',
             requires: ['match-the-land-animals'],
             lesson: {
-                paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Count the corners to tell shapes apart. A triangle has three, a square and a rectangle have four, and a circle has none. A square has four sides the same length, and a rectangle has two long sides and two short ones.'],
+                pictures: [{ serial: 'P111', alt: 'A wooden door, a square window and a round clock on the wall of a house', step: 4 }],
+                paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Count the corners to tell shapes apart. A triangle has three, a square and a rectangle have four, and a circle has none. A square has four sides the same length, and a rectangle has two long sides and two short ones.', 'Shapes are all around the house. Most doors are rectangles, a window can be a square, and a clock can be a circle.'],
                 keyIdea: 'The same means just alike. Count the corners and look at the sides.',
                 example: { kind: 'pair', a: { kind: 'shape', name: 'triangle' }, b: { kind: 'shape', name: 'triangle' }, caption: 'Two triangles. They are the same.' },
                 script: [
                     { say: 'Look at this triangle. It has three corners.', show: { kind: 'shape', name: 'triangle' } },
                     { say: 'Here is another triangle, just the same. The two triangles match.', show: { kind: 'pair', a: { kind: 'shape', name: 'triangle' }, b: { kind: 'shape', name: 'triangle' } } },
-                    { say: 'This is a circle. It does not look like the triangle, so it is different.', show: { kind: 'pair', a: { kind: 'shape', name: 'triangle' }, b: { kind: 'shape', name: 'circle' } } },
+                    { say: 'This is a circle. It is not the same as the triangle, so it is different.', show: { kind: 'pair', a: { kind: 'shape', name: 'triangle' }, b: { kind: 'shape', name: 'circle' } } },
                     { say: 'A square and a rectangle both have four corners. A square\'s sides are all the same, and a rectangle has two long sides and two short ones.', show: { kind: 'pair', a: { kind: 'shape', name: 'square' }, b: { kind: 'shape', name: 'rectangle' } } },
+                    { say: 'Look for shapes at home. Most doors are rectangles, a window can be a square, and a clock can be a circle.', show: { kind: 'pair', a: { kind: 'shape', name: 'rectangle' }, b: { kind: 'shape', name: 'circle' } } },
+                    { say: 'Draw a triangle in the air with your finger. One, two, three corners!', show: { kind: 'shape', name: 'triangle' } },
                 ],
             },
             sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups) and Head Start ELOF Goal P-MATH 8.'],
-            generators: ['pm-same-shape', 'pm-different-shape', 'pm-same-shape', 'pm-different-shape', 'pm-same-shape'],
+            generators: ['pm-same-shape', 'pm-different-shape', 'pm-shape-corners', 'pm-tap-shape', 'pm-same-shape'],
         },
         {
             id: 'match-the-solids',
@@ -22307,19 +22332,21 @@ function PREK_MODULES() {
             requires: ['match-the-shapes'],
             lesson: {
                 pictures: [{ serial: 'P17', alt: 'A wooden block, a ball, an ice cream cone and a can in a row', step: 3 }],
-                paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Solid shapes are all around us. A cube is like a block, a sphere is like a ball, a cone is like an ice cream cone, and a cylinder is like a can. Spheres roll, and cubes stack.'],
+                paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Solid shapes are all around us. A cube is like a block, a sphere is like a ball, a cone is like an ice cream cone, and a cylinder is like a can. Spheres roll, and cubes stack.', 'A cylinder rolls on its curved side and stands still on its flat end. Try it at home with a ball and two blocks.'],
                 keyIdea: 'The same means just alike. Every solid shape looks like something we use.',
                 example: { kind: 'pair', a: { kind: 'solid', name: 'cube' }, b: { kind: 'solid', name: 'cube' }, caption: 'Two cubes. They are the same.' },
                 script: [
-                    { say: 'Look at this cube. It has flat sides, like a block.', show: { kind: 'solid', name: 'cube' } },
+                    { say: 'Look at this cube. It has flat sides and corners.', show: { kind: 'solid', name: 'cube' } },
                     { say: 'Here is another cube, just the same. The two cubes match.', show: { kind: 'pair', a: { kind: 'solid', name: 'cube' }, b: { kind: 'solid', name: 'cube' } } },
-                    { say: 'This is a sphere. It does not look like the cube, so it is different.', show: { kind: 'pair', a: { kind: 'solid', name: 'cube' }, b: { kind: 'solid', name: 'sphere' } } },
-                    { say: 'A cone is like an ice cream cone, and a cylinder is like a can.', show: { kind: 'pair', a: { kind: 'solid', name: 'cone' }, b: { kind: 'solid', name: 'cylinder' } } },
+                    { say: 'This is a sphere. It is not the same as the cube, so it is different.', show: { kind: 'pair', a: { kind: 'solid', name: 'cube' }, b: { kind: 'solid', name: 'sphere' } } },
+                    { say: 'A cube is like a block, a sphere is like a ball, a cone is like an ice cream cone, and a cylinder is like a can.', show: { kind: 'pair', a: { kind: 'solid', name: 'cone' }, b: { kind: 'solid', name: 'cylinder' } } },
                     { say: 'Spheres roll, and cubes stack. The shape tells you what a thing can do.', show: { kind: 'pair', a: { kind: 'solid', name: 'cube' }, b: { kind: 'solid', name: 'sphere' } } },
+                    { say: 'A cylinder rolls on its curved side, and it stands still on its flat end.', show: { kind: 'solid', name: 'cylinder' } },
+                    { say: 'Try it at home. Roll a ball, then stack two blocks.', show: { kind: 'pair', a: { kind: 'solid', name: 'sphere' }, b: { kind: 'solid', name: 'cube' } } },
                 ],
             },
             sources: ['Aligned with Texas Prekindergarten Guidelines V.C.1 (names and describes common 2D shapes and names at least 1 solid 3D shape) and Head Start ELOF Goal P-MATH 9.'],
-            generators: ['pm-same-solid', 'pm-different-solid', 'pm-same-solid', 'pm-different-solid', 'pm-same-solid'],
+            generators: ['pm-same-solid', 'pm-different-solid', 'pm-solid-like', 'pm-solid-do', 'pm-same-solid'],
         },
         {
             id: 'more-and-fewer-5',
@@ -22329,7 +22356,8 @@ function PREK_MODULES() {
             tagline: 'Up to five',
             requires: ['count-to-3'],
             lesson: {
-                paragraphs: ['Look at both groups. The bigger group has more, and the smaller group has fewer.', 'When two groups look close in size, like four and three, count each one. The group with the bigger number has more.'],
+                pictures: [{ serial: 'P112', alt: 'Two plates of strawberries, one with a big group and one with only a few', step: 5 }],
+                paragraphs: ['Look at both groups. The bigger group has more, and the smaller group has fewer.', 'When two groups look close in size, like four and three, count each one. The group with the bigger number has more.', 'Your hands can help, five fingers on one hand and two on the other. At snack time, the plate with the bigger group has more. You can also line two groups up, one with one, and the group with some left over has more.'],
                 keyIdea: 'More is the bigger group. Fewer is the smaller group.',
                 example: { kind: 'pair', a: { kind: 'dots', count: 5 }, b: { kind: 'dots', count: 2 }, caption: 'Five dots and two dots. Five is more.' },
                 script: [
@@ -22337,10 +22365,13 @@ function PREK_MODULES() {
                     { say: 'Five is more than two. This group has more.', show: { kind: 'pair', a: { kind: 'dots', count: 5 }, b: { kind: 'dots', count: 2 } } },
                     { say: 'Two is fewer than five. This group has fewer.', show: { kind: 'pair', a: { kind: 'dots', count: 2 }, b: { kind: 'dots', count: 5 } } },
                     { say: 'When two groups are close, like four and three, count each one. The bigger number has more.', show: { kind: 'pair', a: { kind: 'dots', count: 4 }, b: { kind: 'dots', count: 3 } } },
+                    { say: 'Use your hands. Hold up five fingers on one hand and two on the other. Five is more than two.', show: { kind: 'pair', a: { kind: 'dots', count: 5 }, b: { kind: 'dots', count: 2 } } },
+                    { say: 'At snack time, look at two plates. The plate with the bigger group of strawberries has more.', show: null },
+                    { say: 'Another way to compare is to line the groups up, one with one. The group with some left over has more.', show: { kind: 'pair', a: { kind: 'dots', count: 4 }, b: { kind: 'dots', count: 3 } } },
                 ],
             },
             sources: ['Aligned with Texas Prekindergarten Guidelines V.A.8 (compares sets of objects up to 10 using comparative language) and Head Start ELOF Goal P-MATH 4.'],
-            generators: ['p4-tap-more-5', 'p4-tap-fewer-5', 'p4-tap-more-5', 'p4-tap-fewer-5', 'p4-tap-more-5'],
+            generators: ['p4-tap-more-5', 'p4-tap-fewer-5', 'p4-more-close', 'p4-fewer-close', 'p4-tap-more-5'],
         },
         {
             id: 'bigger-and-smaller',
@@ -35504,14 +35535,14 @@ Object.assign(GENERATORS, {
             explain: `This ${shape} takes up less room than the other one, so it is smaller.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'shape', name: shape, size: b }, b: { kind: 'shape', name: shape, size: a } } };
     },
     'p4-tap-more-5': (rng) => {
-        const small = randInt(rng, 1, 3);
-        const big = Math.min(5, small + randInt(rng, 1, 2));
+        const small = randInt(rng, 1, 4);
+        const big = randInt(rng, small + 1, 5); // every pair up to five (pass LU)
         return { type: 'choice', story: null, prompt: 'Tap the one with more dots.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${big}`,
             explain: `${NUMBER_NAMES[big].charAt(0).toUpperCase() + NUMBER_NAMES[big].slice(1)} dots are more than ${NUMBER_NAMES[small]} ${small === 1 ? 'dot' : 'dots'}. The bigger group has more.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: big }, b: { kind: 'dots', count: small } } };
     },
     'p4-tap-fewer-5': (rng) => {
-        const small = randInt(rng, 1, 3);
-        const big = Math.min(5, small + randInt(rng, 1, 2));
+        const small = randInt(rng, 1, 4);
+        const big = randInt(rng, small + 1, 5); // every pair up to five (pass LU)
         return { type: 'choice', story: null, prompt: 'Tap the one with fewer dots.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${small}`,
             explain: `${NUMBER_NAMES[small].charAt(0).toUpperCase() + NUMBER_NAMES[small].slice(1)} ${small === 1 ? 'dot is' : 'dots are'} fewer than ${NUMBER_NAMES[big]} dots. The smaller group has fewer.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: small }, b: { kind: 'dots', count: big } } };
     },
@@ -35603,6 +35634,88 @@ Object.assign(GENERATORS, {
         const otherColor = otherColors(rng, c, 1)[0];
         return { type: 'choice', story: `This is a ${c} ${shape}.`, prompt: 'Tap the one that is different.', choices: shuffle(rng, [`item:${shape}-${c}`, `item:${otherShape}-${otherColor}`]), answer: `item:${otherShape}-${otherColor}`,
             explain: `This one is a ${otherColor} ${otherShape}, not a ${c} ${shape}, so it is different.`, visual: { kind: 'item', shape, colour: c }, explainVisual: null };
+    },
+});
+// First Steps part one at the refined standard (pass LU). In plain terms: question kinds that apply each lesson's facts to
+// pictures, so a child who comes back meets new questions. Every fact asked here is said aloud in its lesson's script first,
+// and the rules test re-derives each answer from the words with tables of its own. A wrong choice never shares the asked
+// property (a cat is never the wrong answer for pointy ears, a square never the wrong answer for a rectangle).
+const LU_THING_COLOURS = [['a strawberry', 'red'], ['a stop sign', 'red'], ['the sky on a sunny day', 'blue'], ['a blueberry', 'blue'], ['a banana', 'yellow'], ['a lemon', 'yellow'], ['the grass', 'green'], ['a pickle', 'green']];
+const LU_VEHICLE_WHERE = [['goes on the water', 'boat'], ['goes up into space', 'rocket'], ['runs on a track', 'train'], ['drives on the road', 'car']];
+const LU_THING_PARTS = [['has wings', 'butterfly', ['ball', 'balloon', 'star', 'flower', 'robot']], ['has petals', 'flower', ['ball', 'balloon', 'star', 'butterfly', 'robot']], ['has points', 'star', ['ball', 'balloon', 'butterfly', 'robot']], ['has arms and legs', 'robot', ['ball', 'balloon', 'star', 'flower']], ['has a string', 'balloon', ['ball', 'star', 'flower', 'butterfly', 'robot']]];
+const LU_EARS = [['has long ears', 'rabbit', ['bear', 'fox', 'cat', 'snail'], 'A rabbit has long ears.'], ['has round ears', 'bear', ['fox', 'cat', 'snail'], 'A bear has round ears.'], ['has pointy ears', 'fox', ['bear', 'snail', 'owl'], 'A fox has pointy ears.'], ['has no legs and slides along on one foot', 'snail', ['bear', 'fox', 'rabbit', 'cat'], 'A snail has no legs. It slides along on one flat foot.']];
+const LU_CORNERS = [['has three corners', 'triangle', ['circle', 'square', 'rectangle']], ['has no corners', 'circle', ['triangle', 'square', 'rectangle']], ['has four sides that are all the same length', 'square', ['triangle', 'circle', 'rectangle']], ['has two long sides and two short sides', 'rectangle', ['triangle', 'circle', 'square']]];
+const LU_SOLID_LIKE = [['a can', 'cylinder'], ['an ice cream cone', 'cone'], ['a ball', 'sphere'], ['a block', 'cube']];
+const luCap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+// Tap a matching-lesson picture by its name; avoid lists names that must never be offered as wrong for a given answer.
+const luTapThemed = (rng, theme, avoid = {}) => {
+    const a = pick(rng, theme.items);
+    const others = shuffle(rng, theme.items.filter((x) => x !== a && !(avoid[a] || []).includes(x))).slice(0, 2);
+    return { type: 'choice', story: null, prompt: `Tap the ${a}.`, choices: shuffle(rng, [a, ...others].map((x) => `${theme.kind}:${x}`)), answer: `${theme.kind}:${a}`,
+        explain: `This is ${aOrAn(a)} ${a}.`, visual: null, explainVisual: null };
+};
+// Find the one picture with a property the lesson named (the second item); wrong choices come from the list beside it.
+const luFindBy = (rng, rows, kind, ask) => {
+    const [has, a, wrong] = pick(rng, rows);
+    const others = shuffle(rng, wrong).slice(0, 2);
+    return { has, a, prompt: `${ask} ${has}?`, choices: shuffle(rng, [a, ...others].map((x) => `${kind}:${x}`)), answer: `${kind}:${a}` };
+};
+Object.assign(GENERATORS, {
+    'pc-colour-of-thing': (rng) => {
+        const [thing, c] = pick(rng, LU_THING_COLOURS);
+        return { type: 'choice', story: null, prompt: `What color is ${thing}?`, choices: shuffle(rng, [c, ...otherColors(rng, c, 2)]), answer: c,
+            explain: `${luCap(thing)} is ${c}.`, visual: null, explainVisual: null };
+    },
+    'pm-vehicle-where': (rng) => {
+        const [where, v] = pick(rng, LU_VEHICLE_WHERE);
+        const others = shuffle(rng, LU_VEHICLE_WHERE.filter((x) => x[1] !== v)).slice(0, 2).map((x) => x[1]);
+        return { type: 'choice', story: null, prompt: `Which one ${where}?`, choices: shuffle(rng, [v, ...others].map((x) => `art:${x}`)), answer: `art:${v}`,
+            explain: `A ${v} ${where}.`, visual: null, explainVisual: null };
+    },
+    'pm-tap-vehicle': (rng) => luTapThemed(rng, MATCH_THEMES.vehicles),
+    'pm-thing-part': (rng) => {
+        const f = luFindBy(rng, LU_THING_PARTS, 'art', 'Which one');
+        return { type: 'choice', story: null, prompt: f.prompt, choices: f.choices, answer: f.answer, explain: `The ${f.a} ${f.has}.`, visual: null, explainVisual: null };
+    },
+    'pm-tap-water': (rng) => luTapThemed(rng, MATCH_THEMES.water),
+    'pm-water-facts': (rng) => {
+        const air = rng() < 0.5;
+        return { type: 'choice', story: null, prompt: air ? 'Which one breathes air, the whale or the fish?' : 'Which one is much bigger in real life?', choices: shuffle(rng, ['pic:whale', 'pic:fish']), answer: 'pic:whale',
+            explain: air ? 'A whale breathes air. It comes up to the top of the water to breathe, and a fish breathes under the water.' : 'A whale is much, much bigger than most fish.', visual: null, explainVisual: { kind: 'pic', name: 'whale' } };
+    },
+    'pm-land-ears': (rng) => {
+        const [has, a, wrong, why] = pick(rng, LU_EARS);
+        const others = shuffle(rng, wrong).slice(0, 2);
+        return { type: 'choice', story: null, prompt: `Which one ${has}?`, choices: shuffle(rng, [a, ...others].map((x) => `pic:${x}`)), answer: `pic:${a}`,
+            explain: why, visual: null, explainVisual: { kind: 'pic', name: a } };
+    },
+    'pm-shape-corners': (rng) => {
+        const f = luFindBy(rng, LU_CORNERS, 'shape', 'Which shape');
+        return { type: 'choice', story: null, prompt: f.prompt, choices: f.choices, answer: f.answer, explain: `A ${f.a} ${f.has}.`, visual: null, explainVisual: null };
+    },
+    'pm-tap-shape': (rng) => luTapThemed(rng, MATCH_THEMES.shapes, { rectangle: ['square'] }),
+    'pm-solid-like': (rng) => {
+        const [thing, s] = pick(rng, LU_SOLID_LIKE);
+        const others = shuffle(rng, LU_SOLID_LIKE.filter((x) => x[1] !== s)).slice(0, 2).map((x) => x[1]);
+        return { type: 'choice', story: null, prompt: `Which shape is like ${thing}?`, choices: shuffle(rng, [s, ...others].map((x) => `solid:${x}`)), answer: `solid:${s}`,
+            explain: `A ${s} is like ${thing}.`, visual: null, explainVisual: null };
+    },
+    'pm-solid-do': (rng) => {
+        const roll = rng() < 0.5;
+        return { type: 'choice', story: null, prompt: roll ? 'Which one can roll?' : 'Which one can you stack?', choices: shuffle(rng, ['solid:sphere', 'solid:cube']), answer: roll ? 'solid:sphere' : 'solid:cube',
+            explain: roll ? 'A sphere is round all over, so it rolls.' : 'A cube has flat sides, so it stacks.', visual: null, explainVisual: null };
+    },
+    'p4-more-close': (rng) => {
+        const small = randInt(rng, 1, 4);
+        const big = small + 1;
+        return { type: 'choice', story: 'These groups are close. Count each one.', prompt: 'Tap the group with more.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${big}`,
+            explain: `${luCap(NUMBER_NAMES[big])} is more than ${NUMBER_NAMES[small]}, so this group has more.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: big }, b: { kind: 'dots', count: small } } };
+    },
+    'p4-fewer-close': (rng) => {
+        const small = randInt(rng, 1, 4);
+        const big = small + 1;
+        return { type: 'choice', story: 'These groups are close. Count each one.', prompt: 'Tap the group with fewer.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${small}`,
+            explain: `${luCap(NUMBER_NAMES[small])} is fewer than ${NUMBER_NAMES[big]}, so this group has fewer.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: small }, b: { kind: 'dots', count: big } } };
     },
 });
 Object.assign(GENERATORS, {
@@ -60973,7 +61086,7 @@ STORIES['big-and-little'] = {
 };
 STORIES['circle-and-square'] = {
     about: 'a ball that rolled down the ramp and a block that would not',
-    more: [{ serial: 'S144', after: 1, alt: 'The ball rolling down the ramp' }, { serial: 'S1400', after: 3, alt: 'The girl pushing the block, it tipping once and stopping' }, { serial: 'S1402', after: 5, alt: 'The girl rolling the ball again, laughing' }],
+    more: [{ serial: 'S144', after: 1, alt: 'The ball rolling down the ramp' }, { serial: 'S1400', after: 3, alt: 'The girl pushing the block, it tipping once and stopping' }, { serial: 'S1402', after: 4, alt: 'A round ball beside a wooden block with corners and flat sides' }, { serial: 'S3859', after: 5, alt: 'The girl rolling the ball down the ramp again, laughing' }],
     title: 'Roll or sit', art: 'S143', cast: [],
     alt: 'A small girl at the top of a wooden ramp with a ball in one hand and a block in the other',
     words: [
@@ -60987,63 +61100,68 @@ STORIES['circle-and-square'] = {
     ],
 };
 STORIES['a-and-b'] = {
-    about: 'big letters on a party banner, and the two Grandma named first',
-    more: [{ serial: 'S147', after: 0, alt: 'The banner across the room, letters big and bright' }, { serial: 'S1403', after: 2, alt: 'Grandma pointing at the first letter' }, { serial: 'S1405', after: 4, alt: 'Grandma pointing at the next big letter on a birthday banner while a small boy watches' }],
-    title: 'A, then B', art: 'S146', cast: [],
-    alt: 'A small boy looking up at a birthday banner with big colorful letters, balloons around it',
+    about: 'a hunt for things that start with B, and an apple that did not',
+    more: [{ serial: 'S147', after: 2, alt: 'A fat bee on a yellow flower, a small boy pointing at it' }, { serial: 'S1403', after: 3, alt: 'A small boy holding a picture book and a little toy boat' }, { serial: 'S1405', after: 4, alt: 'A small boy holding a big red apple up high in a kitchen' }, { serial: 'S3860', after: 6, alt: 'A small boy holding a little acorn under a big oak tree' }],
+    title: 'The B hunt', art: 'S146', cast: [],
+    alt: 'A small boy rolling a red ball to his grandma on the grass of a sunny backyard',
     words: [
-        'It was a party, and a banner hung across the room. It had big letters on it.',
-        'Kai looked up. He knew they were letters, but he did not know their names.',
-        'Grandma came over and pointed at the first one. That is A, she said.',
-        'A was tall, with a bar across the middle. Kai said it. A.',
-        'Next to it was B, with two round bumps on one side. B, said Grandma. A, then B.',
-        'Kai said them together, A and B, and Grandma clapped. So he said them again.',
-        'A and B are letters. A comes first. B comes next.',
+        'Kai rolled his ball to Grandma, and she rolled it back. Ball starts with B, she said. Let\'s go on a B hunt!',
+        'B has two round bumps on one side. Kai looked all around the yard for things that start with B.',
+        'Buzz! A fat bee was busy on a yellow flower, and Kai pointed at it. Bee starts with B!',
+        'He ran inside and found his book, and his little boat from the bath. Book starts with B, and so does boat.',
+        'Then Kai found a big red apple in the fruit bowl. He held it up high. Apple starts with B! he said.',
+        'Grandma smiled. Listen closely, she said, apple, apple. Apple starts with A, the tall letter with a bar across the middle.',
+        'So the B hunt became an A hunt too. Under the big oak tree, Kai found a little acorn. Acorn starts with A!',
+        'Apple starts with A, and ball starts with B. Once you know them, you will find them all around you.',
     ],
 };
 STORIES['not-the-same'] = {
-    about: 'four apples in a row, and the one that did not belong',
-    more: [{ serial: 'S150', after: 0, alt: 'Four apples in a row on a wooden counter' }, { serial: 'S1406', after: 2, alt: 'Three red apples, side by side' }, { serial: 'S1408', after: 5, alt: 'The girl taking a big bite of the green apple' }],
-    title: 'The green apple', art: 'S149', cast: [],
+    about: 'four apples in a row, one green and then one small, and how Mia spotted each one',
+    more: [{ serial: 'S150', after: 2, alt: 'A small girl pointing at the green apple at the end of a row of red apples' }, { serial: 'S1406', after: 3, alt: 'A dad putting down a new red apple where the green one was' }, { serial: 'S1408', after: 5, alt: 'Four red apples in a row, one of them much smaller' }, { serial: 'S3861', after: 6, alt: 'A small girl taking a bite of a small red apple' }],
+    title: 'The apple puzzle', art: 'S149', cast: [],
     alt: 'A small girl at a counter looking at four apples in a row, three red and one green',
     words: [
-        'Four apples sat in a row, red, red, red and green. Mia looked at them.',
-        'Which one is different? asked Dad. Mia looked, and looked.',
-        'Three apples were red, with the same color and the same shine.',
-        'One apple was green, not like the others. Different!',
-        'Mia pointed at that one, the green one, and Dad nodded.',
-        'Mia picked it up and took a bite. Crunch. It was sour, and good.',
-        'Different means not alike. Find the one that does not match.',
+        'Four apples sat in a row, red, red, red and green. Which one is different? asked Dad.',
+        'Mia looked at them. Three apples were red, with the same color and the same shine. One was green, not like the others.',
+        'That one! said Mia, and she pointed at the green apple. Different! Dad nodded and smiled.',
+        'Then Dad made it harder. He took the green apple away and put down a new red one. Now all four were red.',
+        'Mia looked, and looked. Same color, same shine, same round shape. Were they all the same, every one?',
+        'No! One apple was small, much smaller than the other three. Different can be size, too.',
+        'Mia picked up the small apple and took a bite. Crunch! It was sweet, and just right for a small hand.',
+        'Different means not alike. It can be the color, the shape or the size.',
     ],
 };
 STORIES['listen-and-tap-pictures'] = {
-    about: 'a word said out loud, and the picture that matched it',
-    more: [{ serial: 'S153', after: 0, alt: 'Three picture cards laid out on a table' }, { serial: 'S154', after: 2, alt: 'The boy tapping the dog card' }, { serial: 'S1410', after: 4, alt: 'The boy tapping the cup card' }],
-    title: 'Where is the dog?', art: 'S152', cast: [],
-    alt: 'A small boy at a low table with picture cards: a dog, a cup and a hat',
+    about: 'a game of picture cards, and the one word that had no card at all',
+    more: [{ serial: 'S153', after: 1, alt: 'A small boy tapping a picture card of a fish' }, { serial: 'S154', after: 3, alt: 'A puzzled boy looking at three picture cards with no cloud among them' }, { serial: 'S1410', after: 5, alt: 'A small boy looking up at a white puffy cloud in a blue sky' }, { serial: 'S3862', after: 7, alt: 'A small boy pointing at a bird in a tree, his sister beside him' }],
+    title: 'Where is the cloud?', art: 'S152', cast: [],
+    alt: 'A small boy and his big sister on a porch with picture cards of a fish, a cup and the sun',
     words: [
-        'Three cards lay on the table. One had a dog, one had a cup, and one had a hat. Leo looked at them.',
-        'Dog, said his sister. Where is the dog?',
-        'Leo looked, and there! He tapped the dog card, and his sister cheered.',
-        'Cup, she said, and where is the cup? Leo looked again.',
-        'There! He tapped the cup. Hat, she said, and he tapped the hat.',
-        'Every word had a picture, and Leo found them all. He wanted more cards.',
-        'A word names a thing. Hear the word, and you can find its picture.',
+        'Leo and his sister had picture cards on the porch, a fish, a cup and a sun. She said a word, and Leo tapped its card.',
+        'Fish! Leo tapped the fish, the one that swims. Cup! He tapped the cup, the one we drink from.',
+        'Sun! He tapped the sun, bright and yellow on its card. Leo was very good at this game.',
+        'Then his sister said, cloud. Leo looked at the cards, a fish, a cup and a sun. There was no cloud at all!',
+        'Leo looked under the cards and behind them, too. No cloud card anywhere. How could he tap a cloud?',
+        'His sister laughed and pointed up. Leo stepped off the porch and looked up. There it was, a real cloud, white and puffy, floating in the blue sky.',
+        'Leo pointed up at it. Cloud! he said. A word names a real thing, not just a picture on a card.',
+        'After that they played with the whole world. Bird! Leo pointed at a bird in the tree. Flower! He found one by the steps.',
+        'A word names a thing. Hear the word, then look for the thing, all around you.',
     ],
 };
 STORIES['animal-sounds'] = {
-    about: 'a moo, a quack and a meow, and who made each one',
-    more: [{ serial: 'S156', after: 0, alt: 'The girl at the fence, ears open, listening' }, { serial: 'S1412', after: 2, alt: 'A duck by the pond, quacking' }, { serial: 'S1414', after: 4, alt: 'The girl pointing at the cow' }],
+    about: 'a duck, a frog, a bee and a cat, each found by its sound before it was seen',
+    more: [{ serial: 'S156', after: 1, alt: 'A white duck on a farm pond, quacking' }, { serial: 'S1412', after: 2, alt: 'A green frog sitting on a log by a pond' }, { serial: 'S1414', after: 3, alt: 'A fat bee on a flower near the feet of a small girl' }, { serial: 'S3863', after: 5, alt: 'A cat sitting on a fence post at a farm' }],
     title: 'Who said that?', art: 'S155', cast: [],
-    alt: 'A small girl at a farm fence with a cow, a duck and a cat looking over it',
+    alt: 'A small girl sitting on a hay bale at a farm with her eyes closed, a duck on a pond behind her',
     words: [
-        'Rosa stood at the fence and heard a sound. Moo! Who said that?',
-        'She looked, and there was a cow, big and brown. Moo, it said again. The cow!',
-        'Then, quack! Who said that? Rosa looked, and there was a duck by the pond. The duck!',
-        'Then, meow! Who said that? Rosa looked up, and there was a cat on the post. The cat!',
-        'Rosa played a game with the sounds. Moo! She pointed at the cow. Quack! She pointed at the duck.',
-        'Meow! She pointed at the cat. Every animal had its own sound, and Rosa knew them all.',
-        'Many animals have a sound of their own. Listen, and the sound tells you who is there.',
+        'Rosa sat on a hay bale at the farm and closed her eyes. Quack! Who said that?',
+        'She opened her eyes, and there was a duck on the pond. Quack, it said again. The duck!',
+        'She closed her eyes once more. Ribbit! Who said that? She looked, and a green frog sat on a log by the pond.',
+        'Buzz! That one was close. A fat bee was busy on a flower by her feet, so Rosa sat very still.',
+        'Then two sounds came at once, quack and meow, all mixed up together. Rosa listened closely.',
+        'Quack came from the pond, so that was the duck. Meow came from the fence post, and there sat a cat.',
+        'Rosa laughed. She did not even need her eyes. Her ears could tell her who was there.',
+        'Many animals have a sound of their own. Listen closely, and the sound tells you who is near.',
     ],
 };
 STORIES['same-and-different'] = {
@@ -66273,6 +66391,7 @@ const COURSE_STORIES = {
     // L1 (pass LO): the first long story of an early course, Very First Steps tied together at a picnic, with the core cast as
     // small children (Chloe notices colors, Mike asks how you know, Frederick lines things up and counts).
     'very-first-steps-pk3': { title: 'The mixed-up picnic', about: 'three friends sort a mixed-up picnic basket by color, size and how many, and ask for the last grape kindly', art: 'CS613', alt: 'Three small children on a red picnic blanket in a park, with a big basket, cups and bowls around them', cast: ['Chloe', 'Mike', 'Frederick'], words: ['Chloe, Mike and Frederick were going on a picnic in the park. Chloe carried the blanket, and it was red, red like a strawberry. Mike carried the big basket with both arms. Frederick carried nothing at all, because he was busy watching a bug.', 'They spread the red blanket on the grass and opened the basket. Oh no! Everything was mixed up. Cups and bowls and napkins and socks were all tumbled together. Socks? said Mike. Who packs socks for a picnic?', 'Chloe laughed. Those are my rain socks, in case it rains. She pulled out two. They did not match! One was blue with stars, and one was green with stripes. She dug again, way down at the bottom of the basket, and found the other blue sock with stars. Now they matched.', 'Next came the cups, two red and two blue. Chloe put the red cups on one side and the blue cups on the other. Mike frowned. How do you know which is which? Chloe held one up and looked at it closely, the way she always did. Look at the color, she said. Red is red, and blue is blue.', 'Then the bowls came out, a big bowl, a middle-size bowl and a little bowl. Frederick lined them up from the biggest to the littlest. The grapes go in the big bowl, he said, because there are lots of grapes. The two crackers go in the little bowl.', 'Mike counted the crackers, one, two, and there were just two. And how many grapes are in the big bowl? he asked. Too many to count, said Frederick. The big bowl had more, and the little bowl had fewer, and anyone could see it.', 'Chloe took a napkin and a crayon. She made three dots and joined them, one, two, three, and back to one. A triangle! Frederick folded his bread the same way, corner to corner. Now his sandwich was a triangle too.', 'At the end there was one grape left. Mike reached for it, then stopped and looked at his friends. May I have the last grape, please? Chloe nodded, and Frederick nodded too. Thank you, said Mike. Then he gave it to Frederick, who had been too busy with his bug to eat a single one.', 'Look closely at color, shape, size and how many. Kind words make sharing easy.'], more: [{ serial: 'CS614', after: 1, alt: 'Socks, cups, bowls and napkins tumbled together in an open picnic basket' }, { serial: 'CS615', after: 3, alt: 'A small girl holding up a red cup beside red cups and blue cups on a red blanket' }, { serial: 'CS616', after: 4, alt: 'A big bowl, a middle-size bowl and a little bowl lined up on a red picnic blanket' }, { serial: 'CS617', after: 6, alt: 'A napkin with a crayon triangle beside a sandwich folded into a triangle' }, { serial: 'CS618', after: 7, alt: 'A small boy giving the last grape to a friend on a red picnic blanket' }] },
+    'listen-and-point-pk3': { title: 'The ball that rolled away', about: 'a red ball lost in the park, and the shapes, sounds and letters that helped Mike find it', art: 'CS619', alt: 'A small boy holding a red ball at the top of a grassy hill in a park, a woman in a red coat beside him', cast: ['Mike', 'Georgette'], words: ['Mike had a red ball, round all over, and it was his favorite thing. One windy morning he took it to the park with Georgette, who wore her red coat.', 'At the top of a grassy hill, Mike set the ball down to tie his shoe. When he looked up, the ball was gone! He looked under the bench and behind the big tree, but there was no ball anywhere.', 'Mike\'s lip began to shake, and Georgette knelt down beside him. Let\'s think, she said. Your ball is round, with no corners. What do round things do?', 'They roll! said Mike. Round things roll, and things with corners sit still, like the bench. On a hill, a ball rolls down. Mike looked down the long slope of grass to the pond at the bottom. It must have rolled all the way down there!', 'So down the hill they went, and Mike listened as they walked. Buzz! A bee was busy on a yellow flower. Quack! Ducks paddled on the pond below. You can hear who is near before you see them, said Georgette.', 'At the bottom stood a sign with big letters and an arrow. Mike could not read it yet, but he found a letter he knew. B, with two round bumps on one side! B, like ball! There was an A too, tall with a bar across the middle. That sign says boats, said Georgette, and the arrow points to the water. Boat starts with B, she said, and arrow starts with A.', 'Mike looked out at the pond. Lily pads floated on the water, green and green and green, and one round thing was red. Which one is different? asked Georgette. Mike saw it at once, the red one, his ball!', 'But the ball was out of reach, and something was sitting on top of it. Ribbit! A little green frog! Mike laughed so hard that the frog jumped off with a splash. The splash and the wind pushed the ball to the edge, where Georgette scooped it out.', 'Before they went home, Georgette played a game by the pond. She said a word, and Mike found the real thing. Cloud! Mike pointed up at a puffy white cloud in the sky. Fish! He pointed down at an orange fish swimming in the water. Ball! He held his ball up high and hugged it.', 'Listen closely and look closely. Sounds, shapes and letters are clues all around you.'], more: [{ serial: 'CS620', after: 3, alt: 'A grassy slope running down to a pond, a small boy pointing down the hill' }, { serial: 'CS621', after: 4, alt: 'A bee on a yellow flower, with ducks paddling on a pond below' }, { serial: 'CS622', after: 6, alt: 'A red ball floating among green lily pads on a pond' }, { serial: 'CS623', after: 7, alt: 'A little green frog sitting on a red ball floating on a pond' }, { serial: 'CS624', after: 8, alt: 'A small boy pointing up at a puffy white cloud, a woman in a red coat beside him by a pond' }] },
     'fractions-intro': { title: 'The pizza that fed the whole street', about: 'a block party, three pizzas, and every fraction on the block', art: 'CS1', alt: 'A street block party with three pizzas on a folding table, children with paper plates, chalk marks on the sidewalk', cast: [], words: ['The pizzas arrived at noon: three of them, all the same size, for a street with more mouths than slices. The air smelled of cut grass and charcoal. Mrs. Okafor from number twelve picked up the knife. Somebody had to cut them, she said, and cutting is where fractions live.', 'The first pizza went into two equal pieces, halves, and Malik\'s sister took one. The second went into four equal pieces, fourths, and Malik took two. Equal pieces are the whole rule. Cut a pizza into four lopsided chunks, and the word fourth stops meaning anything.', 'Then the arguments started. Malik said his two fourths were less than his sister\'s one half, because a half was one big slice and he had two little ones. Mrs. Okafor laid the slices on one plate, crust to crust. Two fourths covered exactly the same space as one half. Same pizza, different cuts.', 'The third pizza had to reach everyone else, so it went into eighths. Wren got one and was sure it beat one of Malik\'s fourths, because eight is bigger than four. They held the slices side by side. Her eighth was half the size of his fourth. The bottom number counts the cuts, and more cuts make smaller pieces.', 'Wren\'s little brother took his eighths one at a time, grinning with sauce on his chin. One eighth, two eighths, three eighths. A fraction is built from unit pieces like that, and three eighths is simply three of them.', 'Then three latecomers ran up, and only two fourths were left. Mrs. Okafor did not flip a coin. She cut each slice into three equal pieces and gave every latecomer one piece of each. Two slices shared by three people is two thirds of a slice apiece. Nobody argued, which was a first for the afternoon.', 'When the pizzas were gone, Wren drew a chalk line on the sidewalk from 0 to 1 and cut it into eight equal steps. Her friends hopped behind her as she walked it: one eighth, two eighths, three eighths, four eighths. Four eighths landed exactly halfway, right where one half would be.', 'A fraction is a share of one whole, cut into equal parts. The bottom number says how many parts, the top says how many you have, and every fraction has its own spot on the line from 0 to 1. The street had eaten the lesson.'], more: [{ serial: 'CS63', after: 1, alt: 'A woman cutting one pizza into two halves and another into four fourths on a folding table' }, { serial: 'CS64', after: 2, alt: 'Two fourth slices and one half slice laid crust to crust on one plate, covering the same space' }, { serial: 'CS65', after: 3, alt: 'A girl holding up a thin eighth slice beside a boy with a wider fourth slice' }, { serial: 'CS66', after: 5, alt: 'One slice cut into three equal pieces as three latecomers run up the sidewalk' }, { serial: 'CS67', after: 6, alt: 'A girl hopping along a chalk number line on the sidewalk, eight equal steps from end to end' }] },
     'reading-3': { title: 'The day the newspaper came to school', about: 'a class that wrote its own newspaper and learned to read like editors', art: 'CS2', alt: 'A classroom holding up a freshly printed one-page newspaper, children at desks with red pens', cast: [], words: ['The class was going to make a newspaper. One page, real stories, printed for the whole school, with real bylines. Ms. Reyes handed out red pens and made one rule: every reader must understand every story on the first try.', 'The first job was headlines. A headline is the main idea in a few words. The story about the leaky gym roof had twelve facts in it, from the drip on the free-throw line to the bucket everyone called Gerald. The headline was four words long. Gym Roof Leaks Again.', 'The second job was hard words. The sports report called the fifth grade team unbeatable, and half the class stopped reading. So they took the word apart. Un means not. Able means can be. Unbeatable: cannot be beaten. Once you can see the pieces, a long word opens like a door.', 'Another story said the rain had been torrential. Nobody knew that word either, but the next sentence helped: the gutters overflowed, and the parking lot turned into a lake. Torrential rain is very heavy rain. The words around a stranger usually give it away, so the class left it in.', 'The lunch review was the trickiest. It said the Friday pizza was the best in the world. Fact or opinion? Nobody could check every pizza in the world, so it was an opinion. It stayed in the paper, but now it said whose opinion it was: the writer\'s.', 'The field trip story had its events in a jumble, like a puzzle dumped on a table. So the writers put them in order and showed the causes. The bus was late because of the rain, so lunch moved indoors, and then the sun came out just in time for the walk home.', 'The best story of all was a profile of Mr. Bell, the custodian. The writer never called him kind. She wrote what he did: he dried the gym floor with his own towels before the big game, and he knew every kid\'s name by October. Readers could see who he was from what he did.', 'When the page was printed, every reader in the school found the main ideas and opened the long words. They knew what was checked and what was only felt, followed each story in order and met Mr. Bell. That is reading to understand, and the class had learned it by working from the other side of the page.'], more: [{ serial: 'CS68', after: 1, alt: 'A bucket catching a drip on the free-throw line of a school gym' }, { serial: 'CS69', after: 2, alt: 'Children pulling a long word apart like puzzle pieces on a classroom table' }, { serial: 'CS70', after: 3, alt: 'Heavy rain overflowing the gutters and turning a school parking lot into a lake' }, { serial: 'CS71', after: 5, alt: 'A school bus in the rain, children eating lunch indoors, then sunshine on the walk home' }, { serial: 'CS72', after: 6, alt: 'A school custodian drying a gym floor with his own towels while children wave hello' }] },
     'reading-4': { title: 'The letter with the missing lines', about: 'a letter from a grandmother, and everything it said without saying', art: 'CS3', alt: 'A child at a kitchen table reading a two-page handwritten letter, a dictionary open beside it, a garden photo tucked in the envelope', cast: [], words: ['The letter was two pages long and said almost nothing directly. That was the point. It began with the weather, which is how you know someone has something else to say. It came from a grandmother who had just moved three hundred miles away.', 'The grandchild who read it had learned to summarize: keep the big events, drop the details. A summary is short on purpose. The big events were three: a move, a new garden and a question about visiting. Everything else, the rain, the neighbor and the price of tomatoes, was detail.', 'Then came the reading between the lines. The letter never said she was lonely. It said the house was quiet at night and that the garden was slow to grow when there was nobody to show it to. That is an inference: a guess with a clue behind it.', 'She wrote that the new town was as strange as a shoe on the wrong foot, a simile, because it compares with as. Later she wrote that the days were a long gray hallway, a metaphor, because it says the days were one. Both told the truth better than plain words would have.', 'The letter had a shape too. First the move, then the garden, then the question, with signal words holding it together: first, after that, finally. Structure is a map. A reader who knows the shape can find the question without reading every line twice. Hers was on the last page.', 'One word the reader did not know, disconsolate, sent them to the dictionary. The guide words at the top of each page, the first and last words on it, walked them there: past dirt, past disagree, to a page that began with disco and ended with discord. Disconsolate: unable to be comforted.', 'The words the grandmother chose did something the facts alone could not. A reader who only summarized would know she moved and planted a garden. A reader who inferred would know she missed them, and that the question at the end was not really about June. It was about whether anyone would come.', 'The reply went out that afternoon, in the same shape: first the news, then the feelings, finally the answer. It said yes. The visit was arranged for June, and the next letter from the grandmother began with the weather again, and then said, plainly, that the garden was finally growing. It had someone to show it to.'], more: [{ serial: 'CS108', after: 0, alt: 'An envelope with a pressed flower and two handwritten pages on a sunny kitchen table' }, { serial: 'CS109', after: 2, alt: 'A quiet house at night with one lamp on and a small garden outside the dark window' }, { serial: 'CS110', after: 3, alt: 'A left shoe on a right foot on one side and a long gray hallway on the other, like two pictures in a book' }, { serial: 'CS111', after: 5, alt: 'A child running a finger down a dictionary page, the guide words at the top of the page highlighted' }, { serial: 'CS112', after: 7, alt: 'A grandmother in a sun hat kneeling in a garden of tall green plants while a child waves from the gate' }] },
@@ -69607,8 +69726,8 @@ const COLOR_PAGES = {
     'circle-and-square': ['D40', 'A round ball and a square block at the top of a little ramp'],
     'a-and-b': ['D41', 'An apple and a ball side by side'],
     'not-the-same': ['D42', 'Three apples and one banana in a row'],
-    'listen-and-tap-pictures': ['D43', 'A dog, a cup and a hat in a row'],
-    'animal-sounds': ['D44', 'A cow, a duck and a cat looking over a farm fence'],
+    'listen-and-tap-pictures': ['D43', 'A sun, a fish and a cup in a row'],
+    'animal-sounds': ['D44', 'A duck, a frog and a cat by a farm pond'],
     'colours': ['D45', 'A rainbow arching over a backyard with puddles'],
     'same-and-different': ['D46', 'Two striped socks side by side'],
     'match-the-vehicles': ['D47', 'Two toy cars that look just alike, and one toy truck'],
@@ -69832,11 +69951,14 @@ STORIES["yellow-and-green"].audio = ["[cheerful] Theo had two bath toys, a yello
 STORIES["triangles-too"].audio = ["[excited] Dinner was pizza, a big round pizza cut into slices.", "[curious] Diego took a slice. It had a pointy end and a wide end, [blowing on hot food] and it was hot.", "[slowly, counting] He counted the corners. One corner, at the point.", "[slowly, counting] Two corners and three corners, at the wide end, and then no more. [thoughtful] He counted again. [pleased] Three.", "[thoughtful] Three corners and three sides, and Diego knew that shape. [excited] A triangle, almost!", "[proud] He drew a triangle on his napkin, with three straight lines and three corners. It looked like his pizza.", "[slowly, warmly] A triangle has three corners. Count them. One, two, three."]; // pass LN-LO: tags at the turns, reactions and named sounds
 STORIES["big-and-little"].audio = ["[curious] By the door there were two shoes, one big and one little. Lena looked at both.", "[playful] She tried the big one. Her foot went in, and in, and in. [giggles] It swam inside.", "She tried to walk. [a heavy shoe clomping] Clomp, wobble, [laughs] and the big shoe fell off.", "[curious] She tried the little one, and her foot went in and stopped. [pleased] Just right.", "[happy] The big shoe was Dad's, and the little shoe was hers.", "[warm] Dad put on the big one and Lena put on the little one, and they went out together.", "[slowly, warmly] Big things take up lots of room, and little things take up just a little. That is how Lena knew which shoe was hers."]; // pass LN-LO: tags at the turns, reactions and named sounds
 STORIES["please-and-thank-you"].audio = ["[cheerful] Sam was drawing a big red fire truck. [thoughtful] He needed the red crayon, but it was in Ana's hand.", "[rushed] Sam reached over and grabbed it. [loudly] Mine! he said.", "[sadly] Ana's face crumpled, and her lip shook. [softly] She was not done with it yet.", "[thoughtful] Sam looked at her sad face, and his tummy felt funny. [softly] He gave the crayon back.", "[gently] Then he tried again. [kindly] Ana, may I have the red crayon, please, when you are done?", "[warm] Ana smiled and drew one more line. Here you go, she said. [happy] Thank you! said Sam.", "[slowly, warmly] Please is the kind way to ask. Thank you shows we are glad. Kind words make friends glad too."]; // pass LN-LO: tags at the turns, reactions and named sounds
-STORIES["circle-and-square"].audio = ["[curious] Ana had a ramp, a ball and a block. Which one would roll?", "She put the ball at the top. [a ball rolling down a ramp] Whee! It rolled down fast, all the way.", "She put the block at the top, and it just sat there. [puzzled] It did not move.", "She gave it a push. [a wooden block thunk] It tipped over, and then it stopped. No rolling.", "[thoughtful] Ana looked at the ball, round all over. She looked at the block, with corners and flat sides.", "Round rolls, and corners sit. Ana rolled the ball again. [a ball rolling, delighted] Whee!", "[slowly, warmly] A circle is round. A square has corners."];
-STORIES["a-and-b"].audio = ["[cheerful, party chatter in the background] It was a party, and a banner hung across the room. It had big letters on it.", "[wondering] Kai looked up. He knew they were letters, but he did not know their names.", "Grandma came over and pointed at the first one. [warm, grandmotherly] That is A, she said.", "A was tall, with a bar across the middle. [proudly] Kai said it. A.", "Next to it was B, with two round bumps on one side. B, said Grandma. [slowly] A, then B.", "Kai said them together, A and B, [clapping] and Grandma clapped. So he said them again.", "[slowly, warmly] A and B are letters. A comes first. B comes next."];
-STORIES["not-the-same"].audio = ["[warm, curious] Four apples sat in a row, red, red, red and green. Mia looked at them.", "[gently] Which one is different? asked Dad. Mia looked, and looked.", "Three apples were red, with the same color and the same shine.", "One apple was green, not like the others. [excited] Different!", "Mia pointed at that one, the green one, and Dad nodded.", "Mia picked it up and took a bite. [an apple crunching] Crunch. It was sour, and good.", "[slowly, warmly] Different means not alike. Find the one that does not match."];
-STORIES["listen-and-tap-pictures"].audio = ["[warm] Three cards lay on the table. One had a dog, one had a cup, and one had a hat. Leo looked at them.", "[playful] Dog, said his sister. Where is the dog?", "Leo looked, and there! He tapped the dog card, [cheering] and his sister cheered.", "[playful] Cup, she said, and where is the cup? Leo looked again.", "[excited] There! He tapped the cup. Hat, she said, and he tapped the hat.", "[proud] Every word had a picture, and Leo found them all. He wanted more cards.", "[slowly, warmly] A word names a thing. Hear the word, and you can find its picture."];
-STORIES["animal-sounds"].audio = ["Rosa stood at the fence and heard a sound. [a cow mooing in the distance] Moo! [curious] Who said that?", "She looked, and there was a cow, big and brown. [a cow mooing] Moo, it said again. The cow!", "[a duck quacking] Then, quack! Who said that? Rosa looked, and there was a duck by the pond. The duck!", "[a cat meowing] Then, meow! Who said that? Rosa looked up, and there was a cat on the post. The cat!", "[playful] Rosa played a game with the sounds. Moo! She pointed at the cow. Quack! She pointed at the duck.", "Meow! She pointed at the cat. [proud] Every animal had its own sound, and Rosa knew them all.", "[slowly, warmly] Many animals have a sound of their own. Listen, and the sound tells you who is there."];
+STORIES["circle-and-square"].audio = ["[curious] Ana had a ramp, a ball and a block. [playful] Which one would roll?", "[excited] She put the ball at the top. [a ball rolling down a wooden ramp] Whee! [rushed] It rolled down fast, all the way.", "[slowly] She put the block at the top, and it just sat there. [pause] [puzzled] It did not move.", "[determined] She gave it a push. [a wooden block tipping over with a thunk] It tipped over, and then it stopped. [sighs] No rolling.", "[thoughtful] Ana looked at the ball, round all over. [slowly] She looked at the block, with corners and flat sides.", "[delighted] Round rolls, and corners sit. Ana rolled the ball again. [laughs] Whee!", "[slowly, warmly] A circle is round. A square has corners."]; // pass LT: rebuilt for pacing at the turns, reactions and the sounds the story names
+STORIES["a-and-b"].audio = ["[playful] Kai rolled his ball to Grandma, [a ball rolling on grass] and she rolled it back. [excited] Ball starts with B, she said. Let's go on a B hunt!", "[curious] B has two round bumps on one side. [slowly] Kai looked all around the yard for things that start with B.", "[a bee buzzing] Buzz! [excited] A fat bee was busy on a yellow flower, and Kai pointed at it. [proud] Bee starts with B!", "[rushed] He ran inside and found his book, and his little boat from the bath. [delighted] Book starts with B, and so does boat.", "[pleased] Then Kai found a big red apple in the fruit bowl. [proudly] He held it up high. [loudly] Apple starts with B! he said.", "[gently] Grandma smiled. [slowly] Listen closely, she said, apple, apple. [warmly] Apple starts with A, the tall letter with a bar across the middle.", "[laughs] So the B hunt became an A hunt too. [curious] Under the big oak tree, Kai found a little acorn. [delighted] Acorn starts with A!", "[slowly, warmly] Apple starts with A, and ball starts with B. Once you know them, you will find them all around you."]; // pass LT: rebuilt for pacing at the turns, reactions and the sounds the story names
+STORIES["not-the-same"].audio = ["[cheerful] Four apples sat in a row, red, red, red and green. [curious] Which one is different? asked Dad.", "[thoughtful] Mia looked at them. [slowly] Three apples were red, with the same color and the same shine. [surprised] One was green, not like the others.", "[excited] That one! said Mia, and she pointed at the green apple. Different! [warmly] Dad nodded and smiled.", "[playful] Then Dad made it harder. He took the green apple away and put down a new red one. [mysterious] Now all four were red.", "[slowly] Mia looked, and looked. [puzzled] Same color, same shine, same round shape. [whispers] Were they all the same, every one?", "[gasps] No! [delighted] One apple was small, much smaller than the other three. Different can be size, too.", "[happy] Mia picked up the small apple and took a bite. [a crisp apple crunch] Crunch! [pleased] It was sweet, and just right for a small hand.", "[slowly, warmly] Different means not alike. It can be the color, the shape or the size."]; // pass LT: rebuilt for pacing at the turns, reactions and the sounds the story names
+STORIES["listen-and-tap-pictures"].audio = ["[cheerful] Leo and his sister had picture cards on the porch, a fish, a cup and a sun. [playful] She said a word, and Leo tapped its card.", "[excited] Fish! [a finger tapping a card] Leo tapped the fish, the one that swims. [quickly] Cup! He tapped the cup, the one we drink from.", "[excited] Sun! He tapped the sun, bright and yellow on its card. [proud] Leo was very good at this game.", "[playful] Then his sister said, cloud. [puzzled] Leo looked at the cards, a fish, a cup and a sun. [surprised] There was no cloud at all!", "[rushed] Leo looked under the cards and behind them, too. [sighs] No cloud card anywhere. [puzzled] How could he tap a cloud?", "[laughs] His sister laughed and pointed up. [curious] Leo stepped off the porch and looked up. [amazed] There it was, a real cloud, white and puffy, floating in the blue sky.", "[delighted] Leo pointed up at it. Cloud! he said. [thoughtful] A word names a real thing, not just a picture on a card.", "[excited] After that they played with the whole world. Bird! Leo pointed at a bird in the tree. [playful] Flower! He found one by the steps.", "[slowly, warmly] A word names a thing. Hear the word, then look for the thing, all around you."]; // pass LT: rebuilt for pacing at the turns, reactions and the sounds the story names
+STORIES["animal-sounds"].audio = ["[calm] Rosa sat on a hay bale at the farm and closed her eyes. [a duck quacking] Quack! [curious] Who said that?", "[excited] She opened her eyes, and there was a duck on the pond. [playful] Quack, it said again. [delighted] The duck!", "[softly] She closed her eyes once more. [playful] Ribbit! [curious] Who said that? [pleased] She looked, and a green frog sat on a log by the pond.", "[a bee buzzing] Buzz! [whispers] That one was close. [hushed] A fat bee was busy on a flower by her feet, so Rosa sat very still.", "[surprised] Then two sounds came at once, [a duck quacking and a cat meowing at once] quack and meow, all mixed up together. [slowly] Rosa listened closely.", "[thoughtful] Quack came from the pond, so that was the duck. [delighted] Meow came from the fence post, and there sat a cat.", "[laughs] Rosa laughed. [proud] She did not even need her eyes. Her ears could tell her who was there.", "[slowly, warmly] Many animals have a sound of their own. Listen closely, and the sound tells you who is near."]; // pass LT: rebuilt for pacing at the turns, reactions and the sounds the story names
+// Long stories carry audio tags too (pass LT): the same rule as a short story, its words with tags and nothing else.
+COURSE_STORIES["very-first-steps-pk3"].audio = ["[cheerful] Chloe, Mike and Frederick were going on a picnic in the park. Chloe carried the blanket, and it was red, red like a strawberry. [straining] Mike carried the big basket with both arms. [amused] Frederick carried nothing at all, because he was busy watching a bug.", "[curious] They spread the red blanket on the grass and opened the basket. [gasps] Oh no! Everything was mixed up. [rushed] Cups and bowls and napkins and socks were all tumbled together. [puzzled] Socks? said Mike. [incredulous] Who packs socks for a picnic?", "[laughs] Chloe laughed. Those are my rain socks, in case it rains. She pulled out two. [surprised] They did not match! One was blue with stars, and one was green with stripes. [rummaging through a picnic basket] She dug again, way down at the bottom of the basket, and found the other blue sock with stars. [pleased] Now they matched.", "[cheerful] Next came the cups, two red and two blue. Chloe put the red cups on one side and the blue cups on the other. [skeptical] Mike frowned. How do you know which is which? [thoughtful] Chloe held one up and looked at it closely, the way she always did. [matter-of-fact] Look at the color, she said. Red is red, and blue is blue.", "[slowly] Then the bowls came out, a big bowl, a middle-size bowl and a little bowl. [carefully] Frederick lined them up from the biggest to the littlest. [thoughtful] The grapes go in the big bowl, he said, because there are lots of grapes. The two crackers go in the little bowl.", "[slowly, counting] Mike counted the crackers, one, two, and there were just two. [curious] And how many grapes are in the big bowl? he asked. [laughs] Too many to count, said Frederick. [pleased] The big bowl had more, and the little bowl had fewer, and anyone could see it.", "[playful] Chloe took a napkin and a crayon. [a crayon squeaking on paper] [slowly, counting] She made three dots and joined them, one, two, three, and back to one. [delighted] A triangle! [proud] Frederick folded his bread the same way, corner to corner. Now his sandwich was a triangle too.", "[softly] At the end there was one grape left. Mike reached for it, [pause] then stopped and looked at his friends. [kindly] May I have the last grape, please? Chloe nodded, and Frederick nodded too. [warm] Thank you, said Mike. [tender] Then he gave it to Frederick, who had been too busy with his bug to eat a single one.", "[slowly, warmly] Look closely at color, shape, size and how many. Kind words make sharing easy."];
+COURSE_STORIES["listen-and-point-pk3"].audio = ["[cheerful] Mike had a red ball, round all over, and it was his favorite thing. [brightly] One windy morning he took it to the park with Georgette, who wore her red coat.", "[playful] At the top of a grassy hill, Mike set the ball down to tie his shoe. [gasps] When he looked up, the ball was gone! [rushed] He looked under the bench and behind the big tree, but there was no ball anywhere.", "[sadly] Mike's lip began to shake, and Georgette knelt down beside him. [gently] Let's think, she said. Your ball is round, with no corners. [curious] What do round things do?", "[excited] They roll! said Mike. [thoughtful] Round things roll, and things with corners sit still, like the bench. On a hill, a ball rolls down. [slowly] Mike looked down the long slope of grass to the pond at the bottom. [excited] It must have rolled all the way down there!", "[determined] So down the hill they went, and Mike listened as they walked. [a bee buzzing] Buzz! A bee was busy on a yellow flower. [playful] Quack! Ducks paddled on the pond below. [warmly] You can hear who is near before you see them, said Georgette.", "[curious] At the bottom stood a sign with big letters and an arrow. Mike could not read it yet, but he found a letter he knew. [excited] B, with two round bumps on one side! B, like ball! [pleased] There was an A too, tall with a bar across the middle. [warmly] That sign says boats, said Georgette, and the arrow points to the water. Boat starts with B, she said, and arrow starts with A.", "[slowly] Mike looked out at the pond. Lily pads floated on the water, green and green and green, and one round thing was red. [playful] Which one is different? asked Georgette. [delighted] Mike saw it at once, the red one, his ball!", "[worried] But the ball was out of reach, and something was sitting on top of it. [a frog croaking] Ribbit! A little green frog! [laughs] Mike laughed so hard that the frog jumped off [a small splash] with a splash. [relieved] The splash and the wind pushed the ball to the edge, where Georgette scooped it out.", "[playful] Before they went home, Georgette played a game by the pond. She said a word, and Mike found the real thing. [excited] Cloud! Mike pointed up at a puffy white cloud in the sky. Fish! He pointed down at an orange fish swimming in the water. [joyful] Ball! He held his ball up high and hugged it.", "[slowly, warmly] Listen closely and look closely. Sounds, shapes and letters are clues all around you."];
 // First steps (pre-K 4), pass JI: audio tags for the eighteen stories read in this pass, written the same way.
 STORIES["colours"].audio = ["[rain pattering on a window] It rained all morning. Lena watched the drops run down the glass, drip, drip, [wistful] and she wanted to go out.", "[brightening] Then the rain stopped, the sun came out, and the whole yard sparkled.", "Lena ran outside and looked up. [amazed] A rainbow! It went all the way across the sky.", "She wanted to name it, but it had so many colors. [wondering] Where should she start?", "Dad said to start at the top. [slowly, naming each color] Red, said Lena. Then orange, then yellow, then green.", "Then blue, then purple, every color she could see. She said them one at a time, then again, fast.", "[slowly, warmly] Every color has a name, and naming them helps us tell things apart."];
 STORIES["same-and-different"].audio = ["Kai needed socks, [rummaging in a drawer] so he dug in the drawer. He found two with blue and white stripes.", "He held them together, stripes and stripes, the same size. [wondering] Were they the same? They looked it.", "[gently] Look again, said Mom. Kai looked closer, and closer still, until his nose almost touched them.", "One sock had a hole, right at the toe, [surprised] and his finger went through it. The other sock had no hole.", "This one has a hole, and that one does not. They were not the same after all. [delighted] Different!", "Kai wore the good sock and waved the holey one. [laughs] Mom laughed and got the sewing box.", "[slowly, warmly] The same means alike in every way. One small difference, like a hole, makes two things different. Look twice to be sure."];
@@ -70146,7 +70268,7 @@ function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
 }
 // A stamp of when this copy of the page was built, so a stale page in a cache can be told apart
 // from a fresh one at a glance. Written by the build, never by hand.
-const BUILD_STAMP = '2026-10-07 02:19 PM CDT';
+const BUILD_STAMP = '2026-10-07 06:13 PM CDT';
 function ContactLine({ onOpen, inline = false }) {
     return (react_1.default.createElement("p", { className: "edu-no-print", style: { textAlign: 'center', marginTop: inline ? 0 : 28, fontSize: inline ? 14 : 12, color: C.muted, margin: inline ? '0' : undefined } }, onOpen
         ? react_1.default.createElement("button", { type: "button", onClick: onOpen, style: { background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' } }, "Contact us")
@@ -71423,7 +71545,7 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0 }) {
             react_1.default.createElement(StudentPicture, { name: visual.name, size: 110 }));
     if (visual.kind === 'art')
         return react_1.default.createElement("div", { key: animKey, className: animate ? 'edu-drift' : undefined, style: { padding: '6px 0', display: 'flex', justifyContent: 'center' } },
-            react_1.default.createElement(ColorThumb, { picture: visual.name, size: 120 }));
+            react_1.default.createElement(ColorThumb, { picture: visual.name, size: 120, thing: true }));
     if (visual.kind === 'icon')
         return react_1.default.createElement("div", { key: animKey, className: animate ? 'edu-drift' : undefined, style: { padding: '6px 0' } },
             react_1.default.createElement(IconPic, { name: visual.name, size: 110 }));
@@ -79531,13 +79653,18 @@ function nameLines(name) {
     const y = (i) => 52 + (i - (lines.length - 1) / 2) * step + size * 0.34;
     return { lines, size, y };
 }
-function ColorThumb({ picture, name, size = 72 }) {
+function ColorThumb({ picture, name, size = 72, thing = false }) {
     const box = { width: size, height: size, display: 'block' };
     if (picture === 'my-name') {
         const { lines, size: fs, y } = nameLines(name);
         return (react_1.default.createElement("svg", { viewBox: "0 0 100 100", ...box, preserveAspectRatio: "xMidYMid meet", "aria-hidden": "true" }, lines.map((line, i) => (react_1.default.createElement("text", { key: line + i, x: "50", y: y(i), textAnchor: "middle", fontFamily: FONT, fontSize: fs, fontWeight: "700", fill: "#FFFFFF", stroke: "#2E2E2E", strokeWidth: fs * 0.055, paintOrder: "stroke", strokeLinejoin: "round" }, line)))));
     }
-    const parts = layoutLetterParts(COLORING_ART[picture] || []);
+    // A thing to look at (pass LU): a flower, a rocket or a butterfly is also a Leonardo coloring page, and until that page
+    // is painted a lesson or a question (thing) draws the app's own line drawing of it, never the placeholder card with its
+    // serial, which a child cannot read. The painted page takes over once it exists; the coloring list keeps its placeholder.
+    const pageSerial = thing && DRAWN_PAGES[picture] ? DRAWN_PAGES[picture][0] : null;
+    const pagePainted = !!pageSerial && typeof window !== 'undefined' && Array.isArray(window.__eduColoringArt) && window.__eduColoringArt.includes(pageSerial);
+    const parts = layoutLetterParts((pageSerial && !pagePainted && THING_LINE_ART[picture]) || COLORING_ART[picture] || []);
     return (react_1.default.createElement("svg", { viewBox: "0 0 100 100", ...box, preserveAspectRatio: "xMidYMid meet", "aria-hidden": "true" }, parts.map((p, i) => {
         const common = { key: i, fill: p.line ? 'none' : C.paperBoard, stroke: '#2E2E2E', strokeWidth: 2.4, strokeLinecap: 'round', strokeLinejoin: 'round' };
         if (p.t === 'art')
@@ -79732,6 +79859,9 @@ const DRAWN_PAGES = {
     'pirate-ship': ['D20', 'A pirate ship on rolling waves'], dragon: ['D21', 'A friendly dragon over a village'], 'space-station': ['D22', 'A space station with planets behind it'], 'jungle-waterfall': ['D23', 'A jungle waterfall with animals'],
     aquarium: ['D24', 'A big aquarium tank with a diver'], 'race-track': ['D25', 'Race cars on a winding track'], 'busy-harbor': ['D26', 'A harbor with boats, cranes and a lighthouse'], 'dinosaur-valley': ['D27', 'A valley of dinosaurs with a volcano'],
 };
+// The app's own line drawings of the things that are also Leonardo pages (pass LU), kept before the pages replace them, so a
+// lesson or a question can still draw a flower, a rocket or a butterfly while its painted page is on the way (ColorThumb, thing).
+const THING_LINE_ART = Object.fromEntries(Object.keys(DRAWN_PAGES).filter((pic) => Array.isArray(COLORING_ART[pic])).map((pic) => [pic, COLORING_ART[pic]]));
 for (const [pic, [serial, alt]] of Object.entries(DRAWN_PAGES))
     COLORING_ART[pic] = [{ t: 'art', serial, x: 4, y: 4, w: 92, h: 92, alt }];
 // Lesson pages (2026-09-24): one Leonardo page per early-years lesson, drawn the same way as the pages above.
@@ -82642,7 +82772,7 @@ function EduSphereScreens() {
                                 setGiven(c);
                             } }, style: { opacity: ruledOut && !checked ? (C.mode === 'dark' ? 0.72 : 0.5) : 1, fontFamily: FONT, fontSize: choiceFont(q.choices), textAlign: 'center', padding: '12px 10px', minWidth: 0, overflowWrap: /^-?[\d.,\/ ]+$/.test(c) ? 'normal' : 'anywhere', whiteSpace: /^-?[\d.,\/ ]+$/.test(c) ? 'nowrap' : 'normal', borderRadius: 10, background: bg, border: `2px solid ${border}`, color: C.ink, cursor: checked ? 'default' : 'pointer', minHeight: 48 } }, /^dots:(\d+)$/.test(c) ? react_1.default.createElement(DotGroup, { count: Number(c.split(':')[1]), size: 28 }) : /^shape:/.test(c) ? react_1.default.createElement(ShapePic, { name: c.split(':')[1], size: c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64 }) : /^tens:(\d+)$/.test(c) ? react_1.default.createElement(TensGroup, { count: Number(c.split(':')[1]), size: 14 }) : /^bar:(\d+)$/.test(c) ? react_1.default.createElement(BarPic, { length: Number(c.split(':')[1]), size: 18 }) : /^tower:(\d+)$/.test(c) ? react_1.default.createElement(BarPic, { length: Number(c.split(':')[1]), vertical: true, size: 14 }) : /^solid:/.test(c) ? react_1.default.createElement(SolidPic, { name: c.slice(6).split('#')[0], size: 64 }) : /^shares:/.test(c) ? react_1.default.createElement(SharesPic, { shape: c.split(':')[1], cut: c.split(':')[2], shaded: Number(c.split(':')[3] || 0), size: 72 }) : /^dice:/.test(c) ? react_1.default.createElement(DicePic, { pips: Number(c.split(':')[1].split('#')[0]), size: 64 }) : /^pic:/.test(c) ? react_1.default.createElement("span", { style: { display: 'flex', justifyContent: 'center' } },
                             react_1.default.createElement(StudentPicture, { name: c.slice(4).split('#')[0], size: 72 })) : /^art:/.test(c) ? react_1.default.createElement("span", { style: { display: 'flex', justifyContent: 'center' } },
-                            react_1.default.createElement(ColorThumb, { picture: c.slice(4).split('#')[0], size: 84 })) : /^icon:/.test(c) ? react_1.default.createElement(IconPic, { name: c.slice(5), size: 64 }) : /^swatch:/.test(c) ? react_1.default.createElement(Swatch, { colour: c.slice(7), size: 64 }) : /^item:/.test(c) ? react_1.default.createElement(Item, { spec: c.slice(5), size: 64 }) : /^clock:/.test(c) ? react_1.default.createElement(ClockPic, { hour: Number(c.split(':')[1]), minute: Number(c.split(':')[2]), size: 80 }) : /^digital:/.test(c) ? react_1.default.createElement(DigitalPic, { hour: Number(c.split(':')[1]), minute: Number(c.split(':')[2]), size: 96 }) : /^array:/.test(c) ? react_1.default.createElement(ArrayPic, { rows: Number(c.slice(6).split('x')[0]), cols: Number(c.slice(6).split('x')[1]), size: 12 }) : c));
+                            react_1.default.createElement(ColorThumb, { picture: c.slice(4).split('#')[0], size: 84, thing: true })) : /^icon:/.test(c) ? react_1.default.createElement(IconPic, { name: c.slice(5), size: 64 }) : /^swatch:/.test(c) ? react_1.default.createElement(Swatch, { colour: c.slice(7), size: 64 }) : /^item:/.test(c) ? react_1.default.createElement(Item, { spec: c.slice(5), size: 64 }) : /^clock:/.test(c) ? react_1.default.createElement(ClockPic, { hour: Number(c.split(':')[1]), minute: Number(c.split(':')[2]), size: 80 }) : /^digital:/.test(c) ? react_1.default.createElement(DigitalPic, { hour: Number(c.split(':')[1]), minute: Number(c.split(':')[2]), size: 96 }) : /^array:/.test(c) ? react_1.default.createElement(ArrayPic, { rows: Number(c.slice(6).split('x')[0]), cols: Number(c.slice(6).split('x')[1]), size: 12 }) : c));
                     }))) : q.type === 'writing' ? (react_1.default.createElement("div", null,
                         react_1.default.createElement("div", { style: { padding: 14, borderRadius: 10, background: C.goldSoft, marginBottom: 12 } },
                             react_1.default.createElement("p", { style: { margin: '0 0 6px', fontWeight: 600 } }, q.medium === 'typed' ? 'Type this in a word processor.' : 'Write this by hand, on paper.'),

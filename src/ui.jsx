@@ -1612,6 +1612,16 @@ html, body { overflow-x: hidden; }
 .edu-stress { animation: edu-stress 1.6s ease-in-out both; }
 @keyframes edu-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.025); } }
 .edu-pulse { animation: edu-pulse 1.6s ease-in-out infinite; }
+/* Action Item (pass LG, Mikey): a red pulsing link on a student's card when something needs the educator, and a popup whose
+   whole outside border breathes red, so the eye lands on it. */
+@keyframes edu-alert-text { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+.edu-action-link { color: #D64541 !important; font-weight: 700; animation: edu-alert-text 1.3s ease-in-out infinite; }
+@keyframes edu-alert-border { 0%, 100% { box-shadow: 0 0 0 0 rgba(214, 69, 65, 0.55); border-color: #D64541; } 50% { box-shadow: 0 0 0 12px rgba(214, 69, 65, 0); border-color: #F2A19E; } }
+.edu-alert-box { border: 3px solid #D64541; animation: edu-alert-border 1.6s ease-in-out infinite; }
+/* A real student card with an Action Item breathes red at its edge (Mikey, pass LI); in the tour Roger's card glows gold instead,
+   like every tour target (pass LK), because the sample card carries no data-action-card. */
+[data-action-card="1"] { animation: edu-alert-border 1.6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .edu-tour-target[data-tour="action-demo"] { box-shadow: 0 0 0 5px #E6B84B, 0 0 18px 6px rgba(230, 184, 75, 0.55) !important; } .edu-action-link, .edu-alert-box { animation: none; } [data-action-card="1"] { animation: none; border-color: #D64541 !important; } }
 @keyframes edu-chevron { 0%, 55%, 100% { opacity: 0.22; } 22% { opacity: 1; } }
 .edu-chevron { animation: edu-chevron 1.2s ease-in-out infinite; opacity: 0.22; }
 @media (prefers-reduced-motion: reduce) { .edu-chevron { animation: none !important; opacity: 1 !important; } }
@@ -2691,7 +2701,67 @@ const TOUR = [
   ['Student Summaries', 'rows', 'class', 'right-at-search', <>Every student has a personalized report. Whether you want to see what they've done that day, that week or from the very beginning, we've got you covered! Every module they practice, every story they read, every attempt they make, even their level of confidence on any given topic is continually updated in plain English.<br /><br />Print weekly summaries, add personalized notes, practice missed questions and more!<br /><br />Have more than one student? <strong>Who Needs Help</strong> lets you know who might need a little guidance.</>],
   ['Story Log', 'storylog-page', 'storylog', 'bottom-right', <>Every module comes with a story, and the Story Log is where you see who has read what. Open any story from there to read it together, print it, or mark it as read.</>],
   ['Transcripts', 'transcript', 'report', 'above', <>Every student has a printable transcript covering everything they've ever worked on. While weekly summaries are helpful, this is the clearest view of progression across the years.</>],
+  // Pass LG (Mikey): a red Action Item link on a student's card when something needs the educator; Roger's popup shows it.
+  ['Action Items', 'action-demo', null, 'under-action', <>When something needs your attention, an Action Item link appears.<br /><br />This feature is tied to written papers ready for your review and students who need help sooner rather than later.</>],
 ];
+// Emphasized titles: the sentences from logic wrap a lesson title in asterisks, shown here in bold.
+function Emphasized({ text }) {
+  const parts = String(text).split(/(\*[^*]+\*)/g);
+  return <>{parts.map((p, i) => (/^\*[^*]+\*$/.test(p) ? <strong key={i}>{p.slice(1, -1)}</strong> : <span key={i}>{p}</span>))}</>;
+}
+// The Action Item popup (pass LG, Mikey): what needs the educator for one student, in whole sentences, with the one action the
+// app can offer (Move forward on a lesson that is stuck after its review) and an X. The border breathes red. The tour shows it
+// for a made-up student, Roger, where the buttons only close it.
+// The card of an Action Item popup: the red breathing border, the X, a title, and whatever the popup carries.
+// How many separate things need the educator for one student (pass LJ): each stuck lesson is one, and waiting papers are one
+// together, since a single Review button opens them all in the report.
+function actionCount(items) { return items ? items.stuck.length + (items.writings > 0 ? 1 : 0) : 0; }
+function ActionCard({ children, onClose, inline = false, style = {}, step = null }) {
+  return (
+    <div className={inline ? 'edu-alert-box' : 'edu-rise edu-alert-box'} role={inline ? undefined : 'dialog'} aria-label={inline ? undefined : 'Action Item'} style={{ width: 'min(440px, 100%)', background: C.surface, borderRadius: 16, padding: '18px 20px 20px', position: 'relative', pointerEvents: 'auto', boxSizing: 'border-box', ...style }} onClick={(e) => e.stopPropagation()}>
+      {onClose && <button type="button" aria-label="Close" onClick={onClose} style={{ position: 'absolute', top: 10, right: 12, background: 'none', border: 'none', fontSize: 22, lineHeight: 1, color: C.muted, cursor: 'pointer', fontFamily: FONT }}>×</button>}
+      <p style={{ margin: '0 0 10px', fontSize: 19, fontWeight: 700, color: '#D64541' }}>Action Item{step && <span style={{ marginLeft: 10, fontSize: 13, fontWeight: 600, color: C.muted }} data-action-step={`${step.at}/${step.of}`}>{step.at} of {step.of}</span>}</p>
+      {children}
+    </div>
+  );
+}
+// A lesson stuck after its practice review: the sentence and one button, Move Forward (Mikey: the name is in the sentence).
+// One item at a time (Mikey, pass LJ: clean and intuitive): the first stuck lesson; the next appears when this one is resolved.
+function ActionItemPopup({ stuck = [], onPush, onClose, busy = false, step = null }) {
+  return (
+    <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }} onClick={onClose}>
+      <ActionCard onClose={onClose} step={step}>
+        {stuck.slice(0, 1).map((item) => (
+          <div key={item.moduleId} style={{ marginBottom: 6 }}>
+            <p style={{ margin: '0 0 12px', fontSize: 15, lineHeight: 1.5 }}><Emphasized text={item.sentence} /></p>
+            <Btn full onClick={() => onPush(item.moduleId)} disabled={busy}>Move Forward</Btn>
+          </div>
+        ))}
+      </ActionCard>
+    </div>
+  );
+}
+// A paper waiting for a mark gets its own popup (Mikey, pass LG): a one-line summary and Review, which opens the report at
+// the writing section; marking the paper there is what makes the Action Item link go away.
+function ActionWritingPopup({ name, count = 1, onReview, onClose, busy = false, step = null }) {
+  return (
+    <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }} onClick={onClose}>
+      <ActionCard onClose={onClose} step={step}>
+        <p style={{ margin: '0 0 12px', fontSize: 15, lineHeight: 1.5 }}>{count === 1 ? `${name} has submitted a paper for review.` : `${name} has submitted ${countWords(count)} papers for review.`}</p>
+        <Btn full onClick={onReview} disabled={busy}>Review</Btn>
+      </ActionCard>
+    </div>
+  );
+}
+const PRACTICE_REVIEWS_NOTE = 'Practice Reviews are impromptu quizzes that appear weeks after a student masters a concept. This is what determines whether or not re-introduction of learning material is worthwhile.';
+// The note's second paragraph, after a blank line (Mikey, pass LL), with the student's name.
+const practiceReviewsMore = (name) => 'Review quizzes are capped at two per day and students will never see a PASS or FAIL. They provide insight into ' + name + "'s strengths and weaknesses and help to determine the appropriate learning trajectory.";
+// The tour's eleventh card (Mikey, passes LI and LK): made-up students shown through the real classroom card code, below the
+// Active Students header, so every link, pill and alignment is the real one. Only Roger has an Action Item; his card glows gold
+// like every tour target, and nothing on these cards takes a tap. Nothing is saved.
+const TOUR_SAMPLE_ROSTER = [['tour-alex', 'Alex', '1'], ['tour-frederick', 'Frederick', 'K'], ['tour-roger', 'Roger', '1'], ['tour-sydney', 'Sydney', 'K']]
+  .map(([id, label, startGrade]) => ({ id, label, level: 'early', startGrade, active: true }));
+const TOUR_ROGER_ITEMS = { stuck: [{ moduleId: 'teen-numbers', sentence: '' }], writings: 0 };
 // Three made-up students for the tour's sample Who needs help view. Nothing is saved.
 function sampleClass() {
   const one = sampleRecord();
@@ -2705,11 +2775,12 @@ function sampleClass() {
 function sampleRecord() {
   const day = (n, h) => { const d = new Date(); d.setDate(d.getDate() - n); d.setHours(h, 0, 0, 0); return d.toISOString(); };
   const done = (moduleId, seed, at, misses = 0) => { const a = buildAttempt(moduleId, seed, []); const res = a.core.map((q, k) => ({ genId: q.genId, seed: q.seed, correct: k >= misses, given: k >= misses ? q.answer : String(q.choices ? q.choices.find((c) => c !== q.answer) : ''), answer: q.answer, elapsedMs: 4000 + k * 900 })); return makeAttemptEvent(a, res, null, at, at); };
-  const events = [makeCoursesEnabledEvent(['counting-k', 'letters-k', 'science-k'], day(9, 8))];
+  const events = [makeCoursesEnabledEvent(['counting-k', 'letters-k', 'science-k'], day(31, 8))];
   events.push(done('count-to-10', 11, day(8, 9)), done('count-to-10', 12, day(6, 9)), done('one-more-one-less', 13, day(6, 10)), done('one-more-one-less', 14, day(4, 9)));
   events.push(done('shapes', 15, day(4, 10)), done('shapes', 16, day(2, 9)), done('making-ten', 17, day(2, 10), 2), done('making-ten', 18, day(1, 9), 1));
   events.push(makeStoryReadEvent('count-to-10', day(6, 9)), makeStoryReadEvent('shapes', day(2, 9)));
   events.push(makeNoteEvent('Loves the counting stories. Needs a little more time with partners of ten.', day(1, 15)));
+  events.sort((x, y) => String(x.at).localeCompare(String(y.at)));
   return { name: 'Frederick', events, preview: true, level: 'early' };
 }
 
@@ -7113,7 +7184,11 @@ function EduSphereScreens() {
   const [wizardWonder, setWizardWonder] = useState(true);    // Wonder questions on for the student being added
   const [showWonderWhy, setShowWonderWhy] = useState(false);   // the i beside the Wonder switch
   const [pinFor, setPinFor] = useState(null);                  // student whose PIN is being set on their card
-  const [wonderPopupFor, setWonderPopupFor] = useState(null);            // student whose Wonder Questions popup is open
+  const [wonderPopupFor, setWonderPopupFor] = useState(null);
+  const [actionItems, setActionItems] = useState({});                   // per student: lessons stuck after a review, writings waiting (pass LG)
+  const [actionFor, setActionFor] = useState(null);                     // student whose Action Item popup is open
+  const [actionTotal, setActionTotal] = useState(0);                   // how many items the open popup started with, for "1 of 2" (pass LJ)
+  const [reviewsNoteOpen, setReviewsNoteOpen] = useState(false);         // the i note on the report's Practice Reviews card            // student whose Wonder Questions popup is open
   const [coursePreview, setCoursePreview] = useState(null);              // course whose module preview popup is open on the report (2026-09-29, Mikey)
   const [consentAsk, setConsentAsk] = useState(null);   // pass HO: a course that needs a parent's consent, waiting for the educator to confirm it
   const [showPinWhy, setShowPinWhy] = useState(false);         // the i beside PIN (optional) in the add-student popup
@@ -7680,7 +7755,19 @@ function EduSphereScreens() {
     // A module opened from Practice the missed ones gets a triple dose; every round avoids the prompts of the last two.
     const dose = boostModuleId === moduleId ? 3 : 1;
     if (dose > 1) setBoostModuleId(null);   // one triple dose per visit from Practice the missed ones
-    setAttempt(buildAttempt(moduleId, seed, progress.passedIds, { dose, avoid: recentPrompts(record ? record.events : [], moduleId, 2), missed: recentMisses(record ? record.events : []) }));
+    setAttempt(buildAttempt(moduleId, seed, progress.passedIds, { dose, avoid: recentPrompts(record ? record.events : [], moduleId, 2), missed: recentMisses(record ? record.events : []), probe: probeIds(record ? record.events : []) }));
+    setQIndex(0); setGiven(''); setChecked(false); setMisses(0); setCoreResults([]); setOrderPicked([]); setReviewResult(null); setReview2Result(null);
+    setStartedAt(new Date().toISOString());
+    setQShownAt(Date.now());
+    setScreen('practice');
+  }
+  // A quick look back (pass LH, the fourth exposure): five questions from a lesson's own bank, weeks after its star, run on
+  // the practice screen like any round and recorded as one light_review_completed event. The child never sees a fail.
+  function startLightReview(due) {
+    const seed = (Date.now() % 2147483646) + 1;
+    const review = buildLightReview(record ? record.events : [], seed, due);
+    if (!review) return;
+    setAttempt(review); setModuleId(review.moduleId);
     setQIndex(0); setGiven(''); setChecked(false); setMisses(0); setCoreResults([]); setOrderPicked([]); setReviewResult(null); setReview2Result(null);
     setStartedAt(new Date().toISOString());
     setQShownAt(Date.now());
@@ -7785,6 +7872,13 @@ function EduSphereScreens() {
       setScreen('quick-result');
       return;
     }
+    if (attempt.lightReview) {
+      const lr = makeLightReviewEvent(attempt, coreResults, startedAt, new Date().toISOString());
+      setLastEvent(lr);
+      await addEvent(lr);
+      setScreen('light-review-result');
+      return;
+    }
     if (attempt.checkpoint) {
       const cpEvent = makeCheckpointEvent(attempt, coreResults, startedAt, new Date().toISOString());
       setLastEvent(cpEvent);
@@ -7808,7 +7902,7 @@ function EduSphereScreens() {
   // Which module/course is open, and read-aloud for courses that use it.
   // (Hooks live here, above the first early return, so React sees the same hooks every render.)
   const currentFrom = attempt && (attempt.checkpoint || attempt.placement) && screen === 'practice' && attempt.core[qIndex] ? attempt.core[qIndex].fromModuleId : null;
-  const roundLabel = !attempt ? '' : attempt.checkpoint ? 'Checkpoint · ' : attempt.placement ? `Placement, ${gradeLabel(attempt.grade).toLowerCase()} · ` : attempt.quickCheck ? 'Quick check · ' : '';
+  const roundLabel = !attempt ? '' : attempt.lightReview ? 'Quick look back · ' : attempt.checkpoint ? 'Checkpoint · ' : attempt.placement ? `Placement, ${gradeLabel(attempt.grade).toLowerCase()} · ` : attempt.quickCheck ? 'Quick check · ' : '';
   // Answer sizes: a question's choices share one size, so 4 never towers over -3 or 1/6 beside it.
   const choiceFont = (choices) => {
     if (!choices || !choices.length) return 18;
@@ -8025,6 +8119,9 @@ function EduSphereScreens() {
       // Cards 8 and 9 read with the top of their page behind them; card 3 brings the backup link low on the screen with room
       // above it for the whole card; every other card brings its target to the middle of the screen.
       if (where === 'right-at-search' || where === 'bottom-right') scrollToTop(true);
+      else if (where === 'under-action') {   // card 11 (pass LI): Roger's card near the top, so the card fits under it and covers part of the next one
+        if (!framed) scrollPageBy(els[0], els[0].getBoundingClientRect().top - (T + 16)); else els[0].scrollIntoView({ block: 'start' });
+      }
       else if (where === 'over-life-by-backup') {
         if (!framed) scrollPageBy(els[0], els[0].getBoundingClientRect().top - clamp(B - 110, T + cardH + 30, B - 60));
         const lr = els[0].getBoundingClientRect();   // where a host page scrolls in a way none of that reaches, ask the link into view
@@ -8035,7 +8132,10 @@ function EduSphereScreens() {
       const twoCol = !!(lifeR && expR && Math.abs(lifeR.top - expR.top) < 8);    // Experiments and Life Skills side by side
       const farEnd = r.top + r.height / 2 > (T + B) / 2 ? T + 12 : low;            // the end of the screen away from the target
       let box = null;
-      if (where === 'below-add') {   // card 1 (pass JW, Mikey): centered close under Add someone new, over Who needs help when it shows
+      if (where === 'under-action') {   // card 11 (pass LG, Mikey): centered close under Roger's Action Item popup, above it if the screen is short
+        const under = r.bottom + 10; const fits = under + cardH <= B - 8;
+        box = { left: clamp(r.left + r.width / 2 - cardW / 2, 12, flushRight), top: fits ? under : Math.max(T + 8, r.top - 10 - cardH), width: cardW };
+      } else if (where === 'below-add') {   // card 1 (pass JW, Mikey): centered close under Add someone new, over Who needs help when it shows
         box = { left: clamp(r.left + r.width / 2 - cardW / 2, 12, flushRight), top: r.bottom + 10, width: cardW };
       } else if (where === 'flush-right-low') {   // card 2: against the right edge of the screen, near its bottom
         box = { left: flushRight, top: low, width: cardW };
@@ -8078,15 +8178,18 @@ function EduSphereScreens() {
   // The band under each name on the login screen, read from each student's own record.
   const [bands, setBands] = useState({});
   useEffect(() => { if (screen !== 'welcome') return; (async () => {
-    const pairs = await Promise.all(activeStudents(roster).map(async (st) => { try { const rec = await loadRecord(st.id); return [st.id, bandTitle(rec.events), completedGrades(rec.events)]; } catch (e) { return [st.id, '', []]; } }));
+    const pairs = await Promise.all(activeStudents(roster).map(async (st) => { try { const rec = await loadRecord(st.id); return [st.id, bandTitle(rec.events), completedGrades(rec.events), { stuck: stuckAfterReviewIds(rec.events).map((moduleId) => ({ moduleId, sentence: stuckSentence(rec.events, moduleId, st.label) })), writings: pendingWritings(rec.events).length }]; } catch (e) { return [st.id, '', [], { stuck: [], writings: 0 }]; } }));
     setBands(Object.fromEntries(pairs.map(([id, band]) => [id, band])));
     setReadyGrades(Object.fromEntries(pairs.map(([id, , grades]) => [id, grades])));
+    setActionItems(Object.fromEntries(pairs.map(([id, , , items]) => [id, items])));
   })(); }, [screen, roster]);
   // A young learner who was wrong tries again, so the voice must not give the answer away.
   useEffect(() => { if (screen === 'practice' && readAloud && checked && q) speak(wasCorrect ? 'Correct. ' + q.explain : 'Not that one. Have another try.'); }, [checked]);
 
   // ---------- Screens ----------
   const refreshIds = refresherIds(record ? record.events : []);
+  const reopenedIds = reviewingIds(record ? record.events : []);                                 // reopened by a failed quick look back (pass LH)
+  const lookBack = record && !record.preview ? lightReviewDue(record.events, undefined, visibleCourses.flatMap((c) => c.modules.map((m) => m.id))) : null;              // the quick look back due now, if any
   // Subjects still waiting on a placement decision: the check is offered, and that subject's
   // courses, the mastered count and My progress stay out of sight until it is settled.
   const placementPending = record && !youngLearner && !record.preview
@@ -8222,6 +8325,35 @@ function EduSphereScreens() {
       const today = new Date().toISOString();
       return group.courses.some((c) => c.modules.some((m) => statusOf(m.id) !== 'locked' && statusOf(m.id) !== 'mastered' && !waitingForAnotherDay(record.events, m.id, today)));
         });
+    // The quick look back opens the student's day (Mikey, pass LI): when one is due, the overview shows only it, with Start,
+    // and the lessons follow as soon as it is done. Five questions, about two minutes, one a day at most (lightReviewDue).
+    // Not started by itself: a child, a pre-reader most of all, should see what is coming before the first question.
+    if (lookBack && getModule(lookBack.moduleId)) {
+      // The day's reviews (Mikey, pass LL): on a busy day both show from the start and are taken back to back.
+      const lbDay = lightReviewDay(record.events, undefined, visibleCourses.flatMap((c) => c.modules.map((m) => m.id)));
+      const lbList = lbDay.next.map((d) => getModule(d.moduleId)).filter(Boolean);
+      const lbMod = lbList[0] || getModule(lookBack.moduleId);
+      const lbTwo = lbList.length > 1;
+      const lbAgain = !lbTwo && lookBack.todayCount > 0;   // the second of a busy day, when the student left after the first
+      const lbHead = lbTwo ? 'First, two quick look backs' : lbAgain ? 'One more quick look back' : 'First, a quick look back';
+      const lbBody = lbTwo ? 'Five quick questions from each of two lessons you finished a while ago, one after the other.' : 'Five quick questions from a lesson you finished a while ago.';
+      const lbTail = lbAgain ? 'Then straight to your lessons.' : 'Just to see what stuck. Your lessons are right after.';
+      const lbSay = lbHead + '. ' + lbBody + ' ' + (lbTwo ? lowerTitle(lbList[0].title) + ', then ' + lowerTitle(lbList[1].title) + '. ' : lowerTitle(lbMod.title) + '. ') + lbTail;
+      return (
+        <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={false} /><div className="edu-wrap" style={{ ...wrap }}>
+          <div className="edu-rise" style={{ ...card, textAlign: 'center', marginTop: 36 }} data-light-review-card={lookBack.moduleId} data-light-review-count={lbList.length}>
+            <h1 style={{ fontSize: 24, margin: '0 0 10px' }}>{lbHead}</h1>
+            <p style={{ margin: '0 0 12px', fontSize: 17, lineHeight: 1.5 }}>{lbBody} {lbTail}</p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 8, margin: '0 0 16px' }}>
+              {(lbTwo ? lbList : [lbMod]).map((m, i) => <span key={m.id} style={{ display: 'inline-block', padding: '6px 14px', borderRadius: 999, border: `1px solid ${C.line}`, fontSize: 15, fontWeight: 700 }}>{lbTwo ? (i + 1) + '. ' : ''}{titleCase(m.title)}</span>)}
+            </div>
+            {isPreReader(lbMod.courseId) && <div style={{ marginBottom: 10 }}><Btn kind="secondary" onClick={() => speak(lbSay)}>Hear it</Btn></div>}
+            <Btn full onClick={() => startLightReview(lookBack)} style={{ width: 'min(320px, 100%)' }}>Start</Btn>
+            <div style={{ marginTop: 14 }}><button type="button" onClick={async () => { if (record && record.preview) { setRecord(null); setScreen('educator-pick'); } else { await autoBackup('sign-out'); setScreen('welcome'); } }} style={{ position: 'absolute', top: 0, right: 0, background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer' }}>Exit</button></div>
+          </div>
+        </div></div>
+      );
+    }
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <div style={{ position: 'relative', paddingTop: 6 }}>
@@ -8271,6 +8403,7 @@ function EduSphereScreens() {
                             {youngLearner && st === 'passed' && <p style={{ color: C.muted, fontSize: 15, margin: '8px 0 0' }}>Passed once. Pass again to master.</p>}
                             {p.attempts > 0 && !isPreReader(course.id) && <p style={{ color: C.muted, fontSize: 14, margin: '10px 0 0' }}>Best score {p.bestCore} of {moduleRules(m.id).questions}{st === 'passed' ? '. Pass it again on another day to master it.' : ''}</p>}
                             {refreshIds.includes(m.id) && <p style={{ color: C.clay, fontSize: 14, margin: '6px 0 0', fontWeight: 600 }}>Missed in the last checkpoint. A quick refresher round will help.</p>}
+                            {reopenedIds.includes(m.id) && <p style={{ color: C.clay, fontSize: 14, margin: '6px 0 0', fontWeight: 600 }} data-reviewing={m.id}>Open again after a quick look back. Go through it once more, story and all, when you're ready.</p>}
                             {p.pendingWriting && <p style={{ color: C.gold, fontSize: 14, margin: '6px 0 0', fontWeight: 600 }}>Handed in. Waiting for your teacher to check it.</p>}
                             {locked ? (
                               !isPreReader(course.id) && <p style={{ color: C.muted, fontSize: 14, margin: '10px 0 0' }}>Finish the module before this one first.</p>
@@ -8432,7 +8565,10 @@ function EduSphereScreens() {
             course is mastered. Locked ones show how many modules are still to go. */}
         {(() => {
           if (youngLearner) return null;
-          const withStory = spreadLeads(visibleCourses.filter((c) => courseStoryFor(c.id)), (c) => courseStoryFor(c.id).title);
+          const allWithStory = spreadLeads(visibleCourses.filter((c) => courseStoryFor(c.id)), (c) => courseStoryFor(c.id).title);
+          // An early learner sees only the stories open now (Mikey, pass LI): a locked row and a count of modules to go mean
+          // nothing to a pre-reader, so the list shows what can be read today and nothing at all until something can.
+          const withStory = youngLearner ? allWithStory.filter((c) => record.preview || c.modules.every((m) => progress.masteredIds.includes(m.id))) : allWithStory;
           if (!withStory.length) return null;
           const open = openSubject === '__read';
           const readIds = new Set(storiesRead(record.events).map((r) => r.moduleId));
@@ -8454,7 +8590,7 @@ function EduSphereScreens() {
                 <div style={{ padding: '0 0 12px' }}>
                   <div style={{ background: C.mode === 'dark' ? '#AAD8C5' : C.greenSoft, color: C.mode === 'dark' ? '#16201B' : undefined, padding: '12px 16px' }}>
                     <p style={{ margin: '0 0 6px', fontSize: 14, color: C.mode === 'dark' ? '#16201B' : C.ink, textAlign: 'center' }}>Finishing every module within a course unlocks a story which ties all of the concepts together.</p>
-                    <p style={{ margin: 0, fontSize: 14, color: C.mode === 'dark' ? '#2E4A3E' : C.muted, textAlign: 'center' }}>{unlockedCount} of {withStory.length} unlocked</p>
+                    {!youngLearner && <p style={{ margin: 0, fontSize: 14, color: C.mode === 'dark' ? '#2E4A3E' : C.muted, textAlign: 'center' }}>{unlockedCount} of {withStory.length} unlocked</p>}
                   </div>
                   <div style={{ padding: '0 16px' }}>
                   {withStory.map((c) => {
@@ -8913,6 +9049,26 @@ function EduSphereScreens() {
     );
   }
 
+  if (screen === 'light-review-result' && lastEvent && lastEvent.type === 'light_review_completed') {
+    const mod = getModule(lastEvent.moduleId);
+    const title = mod ? titleCase(mod.title) : 'this lesson';
+    const line = lastEvent.outcome === 'clear' ? `You remembered ${title} well. That one is yours to keep.`
+      : lastEvent.outcome === 'bare' ? `You remembered a lot of ${title}. We will look back at it once more soon.`
+      : `${title} is worth another visit. It's open again on your list so you can go back through it any time.`;
+    const spokenLine = `${lastEvent.correct} of ${lastEvent.total}. ${line}`;
+    return (
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
+        <div className="edu-rise" style={{ ...card, textAlign: 'center' }} data-light-review-result={lastEvent.outcome}>
+          <p style={{ margin: '0 0 6px', fontSize: 13, color: C.muted, letterSpacing: 0.3 }}>QUICK LOOK BACK</p>
+          <h1 style={{ fontSize: 26, margin: '0 0 10px' }}>{lastEvent.correct} of {lastEvent.total}</h1>
+          <p style={{ fontSize: 17, lineHeight: 1.5, margin: '0 0 18px' }}>{line}</p>
+          {mod && isPreReader(mod.courseId) && <div style={{ marginBottom: 14 }}><Btn kind="secondary" onClick={() => speak(spokenLine)}>Hear it</Btn></div>}
+          {/* A busy day's second review follows straight on (Mikey, pass LL: back to back at the start of the day). */}
+          {lookBack && getModule(lookBack.moduleId) ? <Btn full onClick={() => startLightReview(lookBack)}>Next quick look back</Btn> : <Btn full onClick={() => { setAttempt(null); setScreen('overview'); }}>Back to my lessons</Btn>}
+        </div>
+      </div></div>
+    );
+  }
   if (screen === 'checkpoint-result' && lastEvent && lastEvent.type === 'checkpoint_completed') {
     const missed = [...new Set(lastEvent.results.filter((r) => !r.correct).map((r) => r.moduleId))].map((id) => getModule(id)).filter(Boolean);
     const strong = lastEvent.correct === lastEvent.total;
@@ -9941,6 +10097,9 @@ function EduSphereScreens() {
       if (!outcome.saved) setSaveNote('That change could not be saved on this device. This happens only during incognito browsing or when browser storage is full.');
     };
     const visible = classroomOrder(roster.students.filter((st) => st.active));
+    const tourSample = tourStep === TOUR.length - 1;                                    // card 11 shows made-up students (pass LK)
+    const shownStudents = tourSample ? classroomOrder(TOUR_SAMPLE_ROSTER) : visible;
+    const itemsFor = (id) => (tourSample && id === 'tour-roger' ? TOUR_ROGER_ITEMS : actionItems[id]);
     const hidden = roster.students.filter((st) => !st.active);
     const isControl = (el) => !!(el && el.closest && el.closest('button, input, textarea, select, a'));
     // Where a held card would land: the place among the other cards whose middle the pointer is above, or the end.
@@ -10135,17 +10294,17 @@ function EduSphereScreens() {
           </div>
         )}
 
-        {visible.length === 0 && <div style={{ ...card, background: C.greenSoft, borderColor: C.softEdge, textAlign: 'center' }}><p style={{ margin: 0, color: C.muted }}>Nobody here yet. Add someone above.</p></div>}
-        {visible.length > 0 && (<div style={{ ...card, padding: 10, background: C.tintSage, borderColor: C.tintMintLine }}>
+        {visible.length === 0 && tourStep !== TOUR.length - 1 && <div style={{ ...card, background: C.greenSoft, borderColor: C.softEdge, textAlign: 'center' }}><p style={{ margin: 0, color: C.muted }}>Nobody here yet. Add someone above.</p></div>}
+        {shownStudents.length > 0 && (<div style={{ ...card, padding: 10, background: C.tintSage, borderColor: C.tintMintLine }}>
           <button type="button" className="edu-fold-head" onClick={() => setActiveOpen(!activeOpen)} aria-expanded={activeOpen}
             style={{ fontFamily: FONT, width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: C.tintHead, border: `1px solid ${C.tabEdge}`, borderRadius: 12, padding: '14px 16px', marginBottom: 10, cursor: 'pointer', color: C.ink }}>
             <span className="edu-fold-title" style={{ fontSize: 18, fontWeight: 600 }}>Active Students</span>
-            <span className="edu-fold-meta" style={{ fontSize: 14, color: C.muted }}>{visible.length} {activeOpen ? '▴' : '▾'}</span>
+            <span className="edu-fold-meta" style={{ fontSize: 14, color: C.muted }}>{shownStudents.length} {activeOpen ? '▴' : '▾'}</span>
           </button>
-        {activeOpen && visible.length > 1 && <p style={{ margin: '0 0 8px', fontSize: 13, color: C.muted, textAlign: 'center' }}>Youngest band first, then by name. Press and hold a card to drag it somewhere else.</p>}
-        {activeOpen && visible.map((st, i) => (
-          <div key={st.id} ref={(el) => { if (el) cardEls.current.set(st.id, el); else cardEls.current.delete(st.id); }} {...holdProps(st)}
-            style={{ ...card, paddingBottom: 14, touchAction: dragId ? 'none' : 'auto', WebkitUserSelect: dragId ? 'none' : 'auto', userSelect: dragId ? 'none' : 'auto', opacity: dragId === st.id ? 0.55 : 1, transform: dragId === st.id ? 'scale(1.02)' : 'none', boxShadow: dragId === st.id ? '0 8px 24px rgba(36, 41, 31, 0.25)' : 'none', position: 'relative', zIndex: dragId === st.id ? 5 : 'auto', borderTop: dragId && dragId !== st.id && dragOver === others.indexOf(st.id) ? `4px solid ${C.green}` : undefined, borderBottom: dragId && dragId !== st.id && dragOver === others.length && others.indexOf(st.id) === others.length - 1 ? `4px solid ${C.green}` : undefined, transition: dragId === st.id ? 'opacity 0.15s ease' : 'transform 0.15s ease, opacity 0.15s ease' }}>
+        {activeOpen && shownStudents.length > 1 && <p style={{ margin: '0 0 8px', fontSize: 13, color: C.muted, textAlign: 'center' }}>Youngest band first, then by name. Press and hold a card to drag it somewhere else.</p>}
+        {(activeOpen || tourSample) && shownStudents.map((st, i) => (
+          <div key={st.id} data-tour={tourSample && st.id === 'tour-roger' ? 'action-demo' : undefined} data-action-card={!tourSample && (itemsFor(st.id) && (itemsFor(st.id).stuck.length > 0 || itemsFor(st.id).writings > 0)) ? '1' : undefined} ref={(el) => { if (el) cardEls.current.set(st.id, el); else cardEls.current.delete(st.id); }} {...holdProps(st)}
+            style={{ ...card, ...(tourSample ? { pointerEvents: 'none' } : {}), paddingBottom: 14, touchAction: dragId ? 'none' : 'auto', WebkitUserSelect: dragId ? 'none' : 'auto', userSelect: dragId ? 'none' : 'auto', opacity: dragId === st.id ? 0.55 : 1, transform: dragId === st.id ? 'scale(1.02)' : 'none', boxShadow: dragId === st.id ? '0 8px 24px rgba(36, 41, 31, 0.25)' : 'none', position: 'relative', zIndex: dragId === st.id ? 5 : 'auto', borderTop: dragId && dragId !== st.id && dragOver === others.indexOf(st.id) ? `4px solid ${C.green}` : undefined, borderBottom: dragId && dragId !== st.id && dragOver === others.length && others.indexOf(st.id) === others.length - 1 ? `4px solid ${C.green}` : undefined, transition: dragId === st.id ? 'opacity 0.15s ease' : 'transform 0.15s ease, opacity 0.15s ease' }}>
             {renamingId === st.id ? (
               <>
                 <input value={renameInput} onChange={(e) => setRenameInput(e.target.value)} placeholder="Name shown to the student" maxLength={NAME_MAX}
@@ -10194,9 +10353,15 @@ function EduSphereScreens() {
                     }} style={{ ...cardLink, color: C.gold }}>Merge here</button>
                   )}
                   <span aria-hidden="true" style={{ flexBasis: '100%', height: 0 }} />{/* Wonder Questions is the third line of links (2026-09-23, Mikey), left aligned with the others; it opens a popup rather than acting at once. */}
+                  <span style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', verticalAlign: 'top' }}>{/* Wonder Questions, with the Action Item centered underneath it on every device (Mikey, pass LL). */}
                   <button type="button" onClick={() => setWonderPopupFor(st.id)} style={{ ...cardLink, marginRight: 0, display: 'inline-flex', alignItems: 'center', gap: 8 }}>Wonder Questions
                     <span aria-hidden="true" style={{ display: 'inline-block', fontSize: 12, fontWeight: 700, letterSpacing: 0.5, padding: '2px 10px', borderRadius: 999, background: wonderOnFor(st) ? C.green : C.line, color: wonderOnFor(st) ? C.onAccent : C.muted, textDecoration: 'none' }}>{wonderOnFor(st) ? 'ON' : 'OFF'}</span>
                   </button>
+                  {/* The Action Item link: bold, red and pulsing, centered under Wonder Questions (Mikey, pass LL). */}
+                  {itemsFor(st.id) && (itemsFor(st.id).stuck.length > 0 || itemsFor(st.id).writings > 0) && (
+                  <button type="button" className="edu-action-link" onClick={() => { setActionFor(st.id); setActionTotal(actionCount(itemsFor(st.id))); }} style={{ ...cardLink, marginRight: 0, marginTop: 6 }}>{actionCount(itemsFor(st.id)) > 1 ? `${actionCount(itemsFor(st.id))} Action Items` : 'Action Item'}</button>
+                )}
+                  </span>
                 </div>
                 {certificatesPending(st, readyGrades[st.id] || []).map((g) => (
                   <div key={g} className="edu-rise" style={{ margin: '10px auto 0', maxWidth: 360, padding: '10px 12px', borderRadius: 12, background: C.paper, border: `2px solid ${C.gold}`, textAlign: 'center' }}>
@@ -10217,6 +10382,23 @@ function EduSphereScreens() {
                     setOpenSubjects([]); setShowAllCourses(false); setConfirmReset(false); setBusy(false); setScreen('educator-report');
                   }}>Open report</Btn></div>
                 {mergeFrom === st.id && <p style={{ color: C.gold, fontSize: 13, margin: '8px 0 0', textAlign: 'center' }}>Now tap “Merge here” on the student to keep. Both histories are joined; nothing is deleted.</p>}
+                {actionFor === st.id && itemsFor(st.id) && !itemsFor(st.id).stuck.length && itemsFor(st.id).writings > 0 && (
+                  <ActionWritingPopup name={st.label} count={itemsFor(st.id).writings} busy={busy} step={actionTotal > 1 ? { at: Math.max(1, actionTotal - actionCount(itemsFor(st.id)) + 1), of: actionTotal } : null} onClose={() => setActionFor(null)} onReview={async () => {
+                    setActionFor(null); setBusy(true);
+                    const rec = await withStarterCourses(await loadRecord(st.id));
+                    setEducatorRecord(rec);
+                    setRecommendedIds(recommendedCourseIds(rec.events, st.level)); setSavedCourseIds(enabledCourseIds(rec.events).filter((id) => !recommendedCourseIds(rec.events, st.level).includes(id)));
+                    setOpenSubjects([]); setShowAllCourses(false); setConfirmReset(false); setBusy(false); setScreen('educator-report');
+                  }} />
+                )}
+                {actionFor === st.id && itemsFor(st.id) && itemsFor(st.id).stuck.length > 0 && (
+                  <ActionItemPopup stuck={itemsFor(st.id).stuck} busy={busy} step={actionTotal > 1 ? { at: Math.max(1, actionTotal - actionCount(itemsFor(st.id)) + 1), of: actionTotal } : null} onClose={() => setActionFor(null)} onPush={async (moduleId) => {
+                    // One appended event: the review closes, the star and the memory checks stay (logic: makeMovedForwardEvent).
+                    const rec = await loadRecord(st.id); const next = { ...rec, events: [...rec.events, makeMovedForwardEvent(moduleId, new Date().toISOString())] }; await saveRecord(next);
+                    const items = { stuck: stuckAfterReviewIds(next.events).map((id) => ({ id, moduleId: id, sentence: stuckSentence(next.events, id, st.label) })), writings: pendingWritings(next.events).length };
+                    setActionItems((prev) => ({ ...prev, [st.id]: items })); if (!items.stuck.length && !items.writings) setActionFor(null);
+                  }} />
+                )}
                 {wonderPopupFor === st.id && (
                   <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }} onClick={() => setWonderPopupFor(null)}>
                     <div className="edu-rise" style={{ width: 'min(420px, 100%)', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: '26px 22px', textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
@@ -11277,6 +11459,17 @@ function EduSphereScreens() {
             onSave={async (code) => { const next = { ...roster, students: roster.students.map((s) => (s.id === educatorRecord.name ? { ...s, licenseCode: code } : s)) }; setRoster(next); await saveRoster(next); }} />
         )}
         {/* Everything the student has ever worked on, including courses since switched off. */}
+        {/* Practice reviews (pass LG): the sentences an educator reads about the fourth exposure, newest first, without the action line. */}
+        {!!lightReviewSentences(educatorRecord.events, educatorRecord.label || educatorRecord.name || 'This student', 3).length && (
+          <div style={{ ...card }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 8 }}>
+              <p style={{ margin: 0, fontSize: 17, fontWeight: 700 }}>Practice Reviews</p>
+              <InfoButton onClick={() => setReviewsNoteOpen(!reviewsNoteOpen)} label="About practice reviews" open={reviewsNoteOpen} />
+            </div>
+            {reviewsNoteOpen && <div role="note" style={{ margin: '0 0 10px', fontSize: 14, color: C.muted, lineHeight: 1.5 }}><p style={{ margin: 0, color: C.muted }}>{PRACTICE_REVIEWS_NOTE}</p><p style={{ margin: '10px 0 0', color: C.muted }} data-reviews-note-more>{practiceReviewsMore(educatorRecord.label || educatorRecord.name || 'this student')}</p></div>}
+            {lightReviewSentences(educatorRecord.events, educatorRecord.label || educatorRecord.name || 'This student', 3).map((s, i) => <p key={i} style={{ margin: '0 0 8px', fontSize: 15, lineHeight: 1.5 }}><Emphasized text={s} /></p>)}
+          </div>
+        )}
         <div className="edu-no-print" style={{ ...card, background: C.transcriptFill, borderColor: C.transcriptLine, color: C.transcriptInk }} data-tour="transcript">
           <p className="edu-card-title" style={{ margin: '0 0 6px', fontWeight: 600 }}>Transcript</p>
           <p style={{ margin: '0 0 10px', fontSize: 15, textAlign: 'center' }}>A printable record of everything {shownName} has ever worked on, including courses that are no longer assigned. This is the clearest view of student progression.</p>

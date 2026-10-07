@@ -2,6 +2,16 @@
 
 The newest block is what educators see once, in a pop-up on the classroom page, after each update. Write it the way Mikey talks to a teacher: conversational, complete sentences, say what changed and why it matters, and skip the shorthand (2026-09-23). Two to four items. The date line is the version stamp.
 
+
+## October 7, 2026 (one quick look back a day)
+
+- Quick look backs now come one a day at most. A student who finishes many lessons in a day gets their reviews spread over the days that follow, oldest first, instead of all at once.
+- When one is waiting, it opens the student's day. They see a short card first, tap Start, answer five questions, and their lessons follow right after, so a review never sits untouched for days.
+## October 7, 2026 (Action Items and Practice Reviews)
+
+- When something needs you, a red Action Item link now appears on that student's card in My Classroom, and only then. Tap it to read what happened in plain sentences. If a lesson has slipped and the app has run out of its own ways to bring it back, one button, Move Forward, lets you move the student on while the lesson keeps flowing through memory checks. A paper waiting for your mark opens its own note with a Review button.
+- Every student's report has a Practice Reviews section, with an i that explains what practice reviews are, and the tour's new last card shows the whole feature with a made-up student named Roger.
+
 ## October 6, 2026 (first grade math is now two courses)
 
 - First grade math is two courses now, so neither is nineteen lessons long. Numbers to 120 holds counting, adding and subtracting, tens and ones, number lines and the equal sign. Shapes, measuring and graphs holds flat and solid shapes, halves and fourths, measuring, telling time and reading graphs, with its own game, Catch the Hexagons, and its own Wonder question.

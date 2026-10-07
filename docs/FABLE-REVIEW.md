@@ -195,6 +195,22 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A rule's reason decides its strength: the eighteen-word sentence exists so a young reader is not scrolling, so it is a guideline a longer sentence can outweigh, and the test now reports it instead of failing. A rule with a reason that admits no exception (an answer must be taught before it is asked, a count in a painting must not contradict the lesson) stays a hard test.
 - The audit itself is the rule most worth keeping: whenever Mikey changes the app's structure or an algorithm, the change goes into docs/RULES-AUDIT.md in the same pass, and nothing there is deleted or changed without his approval.
 
+## Learned in pass LK (a sample drawn by the real code)
+
+- A sample built by hand to look like a real screen drifts: the LI tour sample missed the Merge link and the Wonder pill and was laid out differently, and Mikey saw all three at a glance. Feed made-up data through the real component instead, with taps switched off, and the sample can never differ from the page.
+- Count a daily allowance against the day as it started, not as it stands: finishing the first review shrinks the queue, and a rule that rechecked the live queue would cancel the second review the backlog asked for.
+
+## Learned in pass LJ (one feature, one place)
+
+- A feature whose rules are spread across logic, screens, sentences and the tour gets its own section in the rules audit, and the sentences there are generated from the code, never retyped, so the audit cannot drift from the screens.
+- A cap fixes a burst but can starve a backlog: one review a day solved ten-in-a-day, and the same rule falls behind any student who masters more than one lesson a day. Check every rate limit against the rate that feeds it.
+
+## Learned in pass LI (one quick look back a day, and a plain tour card)
+
+- A schedule that is right for one lesson can be wrong for a day: ten lessons mastered together made ten reviews due together. A per-day cap with a queue fixes it, and the right test asks what a busy student's calendar looks like, not one lesson's.
+- A tour card should look like the page it explains. The three-picture collage over a blurred page read as busy to Mikey; the real classroom with made-up students, one of them glowing, says the same thing in the same visual language as the other ten cards.
+- Screenshots taken with reduced motion freeze animations: the tour's orbiting gold dot shows as a still circle at a corner, which is not a bug.
+
 ## Learned in pass LD (the rules audit)
 
 - A standard enforced per module can pass a whole grade while a course-level rule goes unmet. The ledger listed long stories only where they existed, so no grade 1 course was ever marked as lacking one. A ledger must list what is required, not what is present: every course is a long-story row now, done or not.

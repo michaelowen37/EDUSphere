@@ -34978,7 +34978,10 @@ export function buildAttempt(moduleId, seed, masteredIds, options = {}) {
   // The memory check favors the mastered modules a student has missed most lately (options.missed: id to miss count),
   // so the alternate stack goes where it is needed; otherwise nearer modules in the same course are more likely.
   const missed = anywhere.filter((m) => (options.missed || {})[m.id] > 0);
-  const earlierMastered = missed.length && rng() < 0.6 ? missed : inCourse.length && rng() < 0.6 ? inCourse : anywhere;
+  // After a failed light review the lessons it leads back from come first (options.probe, from probeIds), since a slip
+  // that deep usually starts one step earlier (pass LH); then the missed ones, then nearer modules in the same course.
+  const probed = anywhere.filter((m) => (options.probe || []).includes(m.id));
+  const earlierMastered = probed.length && rng() < 0.7 ? probed : missed.length && rng() < 0.6 ? missed : inCourse.length && rng() < 0.6 ? inCourse : anywhere;
   let review2 = null;
   if (CONFIG.REVIEW_QUESTIONS_PER_ATTEMPT > 0 && earlierMastered.length > 0) {
     const rm = pick(rng, earlierMastered);
@@ -35210,6 +35213,230 @@ export function checkpointSummary(events) {
   if (!done.length) return null;
   const last = done[done.length - 1];
   return { count: done.length, lastAt: last.at, lastCorrect: last.correct, lastTotal: last.total, missed: refresherIds(events) };
+}
+
+// ---------------------------------------------------------------------
+// THE LIGHT REVIEW (the fourth exposure, 2026-10-06, passes LD to LF, Mikey)
+// A lesson is met four times: the lesson, the practice that masters it, the memory checks
+// that bring it back inside later rounds, and now a short review that arrives without
+// warning three weeks after the star, five questions from the lesson's own bank at the same
+// difficulty. In plain terms: the first three touches happen while the idea is fresh; this
+// one asks whether it is still there once it has had time to fade.
+//   Four or five right is a clear pass: the lesson is holding and no further review is planned.
+//   Three right is a bare pass: the idea is there but not firm, so another short review comes
+//     in a week, and it opens with the kinds of question that were missed.
+//   Two or fewer is a fail: the lesson is reopened and reassigned (a full round again, with its
+//     story offered), and the lessons it builds on are probed by the memory checks of the next
+//     rounds, because a slip this deep usually starts one step earlier. Nothing is ever shown
+//     to the child as a failure, and no pass or star is rewritten; the record only grows.
+// There is no switch (Mikey, pass LF: the review helps, and the student card has enough on it).
+// A child who cannot get past a reopened lesson is not left there: once the app's own ladder
+// has run (two misses, a loop back to the lesson before, and two more misses), the lesson is
+// "stuck" and the educator is shown a way to move the student forward. Moving forward records
+// a moved_forward event, which closes the review for that lesson; the star, the gate and the
+// memory checks are untouched, so the lesson keeps coming back lightly and a later slip
+// still shows. The numbers are judgements, chosen from the forgetting curve: three weeks is
+// long enough for a weak memory to fade and short enough to repair it cheaply; a week is the
+// retry that keeps a half-held idea from going.
+// ---------------------------------------------------------------------
+export const LIGHT_REVIEW_FIRST_DAYS = 21;   // three weeks after the star
+export const LIGHT_REVIEW_RETRY_DAYS = 7;    // a week after a bare pass
+export const LIGHT_REVIEW_QUESTIONS = 5;
+export const LIGHT_REVIEW_CLEAR = 4;         // four or five of five
+export const LIGHT_REVIEW_BARE = 3;          // three of five
+const DAY_MS = 24 * 60 * 60 * 1000;
+export function lightReviewOutcome(correct) { return correct >= LIGHT_REVIEW_CLEAR ? 'clear' : correct >= LIGHT_REVIEW_BARE ? 'bare' : 'fail'; }
+// Where one lesson stands in its review schedule, read from the record. masteredAt is the star; a reset or a new star
+// after a fail starts the schedule again from that moment.
+export function lightReviewState(events, moduleId) {
+  const progress = deriveProgress(events);
+  const p = progress.perModule[moduleId];
+  if (!p || !p.mastered || !p.masteredAt) return { stage: 'none', dueAt: null, last: null };
+  const active = activeEvents(events);
+  const reviews = active.filter((e) => e.type === 'light_review_completed' && e.moduleId === moduleId && String(e.at) > String(p.masteredAt));
+  const last = reviews.length ? reviews[reviews.length - 1] : null;
+  const since = (iso, days) => new Date(new Date(iso).getTime() + days * DAY_MS).toISOString();
+  if (!last) return { stage: 'first', dueAt: since(p.masteredAt, LIGHT_REVIEW_FIRST_DAYS), last: null, masteredAt: p.masteredAt };
+  if (last.outcome === 'clear') return { stage: 'done', dueAt: null, last, masteredAt: p.masteredAt };
+  if (last.outcome === 'bare') return { stage: 'retry', dueAt: since(last.at, LIGHT_REVIEW_RETRY_DAYS), last, masteredAt: p.masteredAt, missedKinds: (last.results || []).filter((r) => !r.correct).map((r) => r.genId) };
+  // A fail reopens the lesson: no review is due until it is passed again, which restarts the schedule (a later star).
+  // The educator can close a stuck review instead (a moved_forward event after the fail): the lesson leaves the
+  // reviewing list and nothing more is due for it, while its star and its memory checks stay as they were.
+  const passedSince = active.some((e) => e.type === 'attempt_completed' && e.moduleId === moduleId && String(e.at) > String(last.at) && isMasteredAttempt(e));
+  const movedOn = !passedSince && active.some((e) => e.type === 'moved_forward' && e.moduleId === moduleId && String(e.at) > String(last.at));
+  if (movedOn) return { stage: 'moved', dueAt: null, last, masteredAt: p.masteredAt, movedAt: active.filter((e) => e.type === 'moved_forward' && e.moduleId === moduleId).pop().at };
+  return { stage: passedSince ? 'first' : 'reopened', dueAt: passedSince ? since(active.filter((e) => e.type === 'attempt_completed' && e.moduleId === moduleId && String(e.at) > String(last.at) && isMasteredAttempt(e)).pop().at, LIGHT_REVIEW_FIRST_DAYS) : null, last, masteredAt: p.masteredAt };
+}
+// The one review due now, if any: the longest-overdue lesson first, one at a time.
+// One quick look back a day (Mikey, pass LI). A student who masters ten lessons in a day would otherwise meet ten reviews
+// on one day three weeks later; instead every review that has fallen due waits in a queue, oldest first, and the student
+// sees one a day, so the tenth comes about ten days later than its date. That costs nothing: a review taken a little later
+// is a harder recall, and spacing research finds the best gap grows with how long the learning has to last. `allowIds`
+// limits the queue to lessons the student can see (a course the educator switched off does not hold up the others).
+export const LIGHT_REVIEWS_PER_DAY = 1;
+// A busy day (Mikey, passes LK and LL): when more than a week's worth is waiting, counting any already taken that day, a
+// second review is allowed, never a third, and both are taken back to back at the start of the day: the start-of-day card
+// shows both, and the lessons follow when both are done (Mikey, pass LL, in place of LK's review, lesson, review). One a
+// day alone falls behind a student who masters more than one lesson a day.
+export const LIGHT_REVIEWS_BUSY_DAY = 2;
+export const LIGHT_REVIEW_BACKLOG = 7;
+const localDayKey = (iso) => { const d = new Date(iso); return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; };
+export function lightReviewQueue(events, now = new Date().toISOString(), allowIds = null) {
+  const progress = deriveProgress(events);
+  const queue = [];
+  for (const id of progress.masteredIds) {
+    if (allowIds && !allowIds.includes(id)) continue;
+    const st = lightReviewState(events, id);
+    if (!st.dueAt || String(st.dueAt) > String(now)) continue;
+    queue.push({ moduleId: id, stage: st.stage, dueAt: st.dueAt, missedKinds: st.missedKinds || [] });
+  }
+  return queue.sort((a, b) => String(a.dueAt).localeCompare(String(b.dueAt)));   // a stable sort keeps the star order on a tie
+}
+// The day's quick look backs: the ones taken today (done) and the ones still to take now (next, at most the day's
+// allowance, oldest first), so the start-of-day card can show them together.
+export function lightReviewDay(events, now = new Date().toISOString(), allowIds = null) {
+  const today = localDayKey(now);
+  const todays = activeEvents(events).filter((e) => e.type === 'light_review_completed' && localDayKey(e.at) === today);
+  const queue = lightReviewQueue(events, now, allowIds);
+  const allowance = queue.length + todays.length > LIGHT_REVIEW_BACKLOG ? LIGHT_REVIEWS_BUSY_DAY : LIGHT_REVIEWS_PER_DAY;
+  return { done: todays.map((e) => e.moduleId), next: queue.slice(0, Math.max(0, allowance - todays.length)), allowance };
+}
+export function lightReviewDue(events, now = new Date().toISOString(), allowIds = null) {
+  const day = lightReviewDay(events, now, allowIds);
+  return day.next.length ? { ...day.next[0], todayCount: day.done.length } : null;
+}
+// Five questions from the lesson's own bank, no repeats; a retry opens with the kinds that were missed.
+export function buildLightReview(events, seed, due) {
+  const mod = getModule(due.moduleId);
+  if (!mod) return null;
+  const rng = makeRng(seed);
+  const banks = [...new Set(mod.generators)];
+  const first = (due.missedKinds || []).filter((g) => banks.includes(g));
+  const order = [...first, ...shuffle(rng, banks.filter((g) => !first.includes(g)))];
+  const core = [];
+  const same = (q) => q.type !== 'trace' && core.some((c) => questionKey(c) === questionKey(q));
+  for (let i = 0; core.length < LIGHT_REVIEW_QUESTIONS && i < LIGHT_REVIEW_QUESTIONS * 6; i++) {
+    const gen = order[i % order.length];
+    let q = generateQuestion(gen, randInt(rng, 1, 2147483646));
+    for (let tries = 0; tries < 40 && same(q); tries++) q = generateQuestion(gen, randInt(rng, 1, 2147483646));
+    if (same(q)) continue;
+    core.push(q);
+  }
+  if (!core.length) return null;
+  return { lightReview: { moduleId: mod.id, stage: due.stage }, moduleId: mod.id, seed, core, review: null, review2: null };
+}
+export function makeLightReviewEvent(review, results, startedAt, finishedAt) {
+  const correct = results.filter((r) => r.correct).length;
+  return {
+    type: 'light_review_completed',
+    at: finishedAt,
+    startedAt,
+    moduleId: review.moduleId,
+    stage: review.lightReview.stage,
+    results: results.map((r, i) => ({ correct: !!r.correct, genId: review.core[i].genId, prompt: review.core[i].prompt })),
+    correct,
+    total: results.length,
+    outcome: lightReviewOutcome(correct),
+  };
+}
+// Lessons whose latest light review failed and that have not been passed again since: reopened, shown as reviewing.
+export function reviewingIds(events) {
+  const progress = deriveProgress(events);
+  return progress.masteredIds.filter((id) => lightReviewState(events, id).stage === 'reopened');
+}
+// The lessons a failed review probes: the prerequisites of every reopened lesson that the student has mastered,
+// which the next rounds' memory checks favor. The summary names the same list.
+export function probeIds(events) {
+  const progress = deriveProgress(events);
+  const out = [];
+  for (const id of reviewingIds(events)) for (const pre of prerequisitesOf(id)) if (progress.masteredIds.includes(pre) && !out.includes(pre)) out.push(pre);
+  return out;
+}
+// Stuck after a failed review (Mikey, pass LF): the app's own ladder has run once, two misses on the reopened lesson, a
+// loop back to the lesson before it, and two more misses, with no pass in between. Only then is the educator offered a
+// way forward; before that the app keeps working on it by itself.
+export function lightReviewStuck(events, moduleId) {
+  const st = lightReviewState(events, moduleId);
+  if (st.stage !== 'reopened' || !st.last) return null;
+  const active = activeEvents(events).filter((e) => String(e.at) > String(st.last.at));
+  const attempts = active.filter((e) => e.type === 'attempt_completed' && e.moduleId === moduleId);
+  if (attempts.some((e) => isMasteredAttempt(e))) return null;
+  const loop = active.find((e) => e.type === 'looped_back' && e.moduleId === moduleId);
+  if (!loop) return null;
+  const after = attempts.filter((e) => String(e.at) > String(loop.at)).length;
+  const before = attempts.length - after;
+  if (before < LOOP_BACK_AFTER || after < LOOP_BACK_AFTER) return null;
+  return { moduleId, rounds: attempts.length, loopedTo: loop.toModuleId, since: st.last.at };
+}
+export function stuckAfterReviewIds(events) { return reviewingIds(events).filter((id) => lightReviewStuck(events, id)); }
+// The educator moves the student forward: one appended event, never a rewrite. The lesson's review closes; the star,
+// the gate and the memory checks are untouched, so the lesson keeps coming back lightly inside later rounds.
+export function makeMovedForwardEvent(moduleId, at) { return { type: 'moved_forward', at, moduleId }; }
+const describeDay = (iso) => { const d = new Date(iso); return `${['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][d.getUTCMonth()]} ${d.getUTCDate()}`; };
+const gapWords = (fromIso, toIso) => {
+  const days = Math.round((new Date(toIso) - new Date(fromIso)) / DAY_MS);
+  if (days <= 10) return 'a week';
+  if (days <= 17) return 'two weeks';
+  if (days <= 24) return 'three weeks';
+  if (days <= 35) return 'one month';
+  if (days <= 49) return 'six weeks';
+  if (days <= 75) return 'two months';
+  return `${Math.round(days / 30)} months`;
+};
+const ofFive = (n) => ['none', 'one', 'two', 'three', 'four', 'all five'][n] || String(n);
+// The sentences an educator reads, in Mikey's approved wording (pass LE): one per lesson for its latest review, newest
+// first. Titles are wrapped in asterisks so the screen can emphasize them.
+// The stuck sentence by itself, in Mikey's wording (pass LG); `action` adds the line that points at the Move forward
+// button, which the Action Item popup shows and the summary leaves out.
+export function stuckSentence(events, moduleId, name = 'This student', { action = true } = {}) {
+  const stuck = lightReviewStuck(events, moduleId);
+  if (!stuck) return null;
+  const mod = getModule(moduleId); if (!mod) return null;
+  const title = `*${titleCase(mod.title)}*`;
+  const back = getModule(stuck.loopedTo);
+  const backNote = back ? ' and one of those rounds was after looping back to *' + titleCase(back.title) + '*' : '';
+  const score = ofFive(lightReviewState(events, moduleId).last.correct);
+  const act = action ? ` You can still move ${name} forward by clicking below.` : '';
+  return `${name} cannot seem to get past ${title}. They scored ${score} out of five on their practice review which prompted us to route them backward. ${name} had ${countWords(stuck.rounds)} rounds at it without a pass${backNote}.${act} The lesson will keep its star and the lesson material will continue to flow through infrequent memory checks.`;
+}
+export function lightReviewSentences(events, name = 'This student', limit = 3, { action = false } = {}) {
+  const active = activeEvents(events);
+  const reviews = active.filter((e) => e.type === 'light_review_completed');
+  const moved = new Map(); for (const e of active) if (e.type === 'moved_forward') moved.set(e.moduleId, e);
+  const latestPer = new Map();
+  for (const e of reviews) latestPer.set(e.moduleId, e);
+  const items = [...latestPer.values()].sort((a, b) => String(b.at).localeCompare(String(a.at))).slice(0, limit);
+  const sentences = [];
+  for (const e of items) {
+    const mod = getModule(e.moduleId); if (!mod) continue;
+    const title = `*${titleCase(mod.title)}*`;
+    const st = lightReviewState(events, e.moduleId);
+    const gap = gapWords(st.masteredAt || e.at, e.at);
+    const gapCap = gap.charAt(0).toUpperCase() + gap.slice(1);
+    const stuck = lightReviewStuck(events, e.moduleId);
+    if (st.stage === 'moved') {
+      const loop = [...active].filter((x) => x.type === 'looped_back' && x.moduleId === e.moduleId && String(x.at) > String(e.at)).pop();
+      const back = loop ? getModule(loop.toModuleId) : null;
+      const loopNote = back ? ', including a loop back to *' + titleCase(back.title) + '*,' : '';
+      sentences.push(`You moved ${name} forward on ${title} on ${describeDay(st.movedAt)}. Their practice review had come back ${ofFive(e.correct)} out of five, and the rounds that followed${loopNote} did not get it to hold. The lesson keeps its star and the lesson material will continue to flow through infrequent memory checks.`);
+      continue;
+    }
+    if (stuck) { sentences.push(stuckSentence(events, e.moduleId, name, { action })); continue; }
+    if (e.outcome === 'clear') {
+      sentences.push(`${name} took a short five-question practice review of ${title} ${gap} after mastering it, without any warning, and scored ${countWords(e.correct)} out of five. That lesson is holding, so no further review is planned.`);
+    } else if (e.outcome === 'bare') {
+      const missed = (e.results || []).filter((r) => !r.correct).map((r) => `"${r.prompt}"`);
+      const kinds = missed.length === 2 ? `${missed[0]} and ${missed[1]}` : missed.length === 1 ? missed[0] : missed.join(', ');
+      const howMany = missed.length === 1 ? 'the kind of question' : `the ${countWords(missed.length)} kinds of questions`;
+      sentences.push(`${name} took a short practice review of ${title} and scored three out of five. They are keeping the idea but it is not yet firm, so another short review comes in a week. We will start that review with ${howMany} ${name} missed, ${kinds}.`);
+    } else {
+      const probes = prerequisitesOf(e.moduleId).map((id) => getModule(id)).filter(Boolean).map((m) => `*${titleCase(m.title)}*`);
+      const joined = probes.length > 1 ? probes.slice(0, -1).join(', ') + ' and ' + probes[probes.length - 1] : (probes[0] || '');
+      const list = probes.length ? ', ' + joined : '';
+      sentences.push(`${name} took a short practice review of ${title} ${gap} after mastering it and scored ${ofFive(e.correct)} out of five. That prompted us to reopen and reassign the lesson, and the memory checks in the next few rounds will probe the lessons leading up to it${list}. Sometimes a slip like this starts one step earlier, so those refreshers may reach even further back.`);
+    }
+  }
+  return sentences;
 }
 
 // ---------------------------------------------------------------------
@@ -36013,7 +36240,8 @@ export function computeConfidence(moduleId, events) {
   let streak = 0;
   for (let i = answers.length - 1; i >= 0 && answers[i].correct; i--) streak += 1;
   const reviews = active.filter((e) => e.type === 'attempt_completed').flatMap((e) => [e.review, e.review2].filter((r) => r && r.moduleId === moduleId))
-    .concat(active.filter((e) => e.type === 'checkpoint_completed').flatMap((e) => (e.results || []).filter((r) => r.moduleId === moduleId)));
+    .concat(active.filter((e) => e.type === 'checkpoint_completed').flatMap((e) => (e.results || []).filter((r) => r.moduleId === moduleId)))
+    .concat(active.filter((e) => e.type === 'light_review_completed' && e.moduleId === moduleId).flatMap((e) => e.results || []));   // the light review's five count too (pass LF)
   const reviewsCorrect = reviews.filter((r) => r.correct).length;
   const retentionStrong = reviews.length >= 2 && reviewsCorrect / reviews.length >= 0.8;
   if (streak >= 8) signals.push(`${streak} correct in a row`);

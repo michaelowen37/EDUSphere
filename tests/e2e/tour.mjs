@@ -28,7 +28,7 @@ const measure = (f) => f.evaluate(() => {
   const r = (el) => { if (!el) return null; const b = el.getBoundingClientRect(); return { left: Math.round(b.left), top: Math.round(b.top), right: Math.round(b.right), bottom: Math.round(b.bottom) }; };
   const q = (s) => r(document.querySelector(s));
   const sheet = document.querySelector('[aria-label="First week tour"]');
-  return { screen: window.__eduTest.screen, y: Math.round(window.scrollY + ((document.getElementById('root') || {}).scrollTop || 0) + document.body.scrollTop), W: window.innerWidth, H: window.innerHeight, sheet: r(sheet), title: sheet ? (sheet.querySelectorAll('p')[1] || {}).textContent : '', life: q('[data-tour="life"]'), exp: q('[data-tour="experiments"]'), wonder: q('[data-tour="wonder"]'), reading: q('[data-tour="reading"]'), backup: q('[data-tour="backup"]'), link: q('.edu-backup-link'), add: q('[data-tour="add"]'), help: q('[data-tour="help"]'), search: q('input[aria-label="Search notes"]'), transcript: q('[data-tour="transcript"]') };
+  return { screen: window.__eduTest.screen, y: Math.round(window.scrollY + ((document.getElementById('root') || {}).scrollTop || 0) + document.body.scrollTop), W: window.innerWidth, H: window.innerHeight, sheet: r(sheet), title: sheet ? (sheet.querySelectorAll('p')[1] || {}).textContent : '', life: q('[data-tour="life"]'), exp: q('[data-tour="experiments"]'), wonder: q('[data-tour="wonder"]'), reading: q('[data-tour="reading"]'), backup: q('[data-tour="backup"]'), link: q('.edu-backup-link'), add: q('[data-tour="add"]'), help: q('[data-tour="help"]'), action: q('[data-tour="action-demo"]'), search: q('input[aria-label="Search notes"]'), transcript: q('[data-tour="transcript"]') };
 });
 // Card by card at one size, then the classroom after the tour and after Later.
 // box: the app scrolls inside a box of its own, as in the claude.ai panel that previews the .jsx file (pass JF), where scrolling
@@ -41,7 +41,7 @@ async function walk(W, H, box = false) {   // box: false, 'root' (a box holds th
   else if (box) await page.addStyleTag({ content: 'html, body { height: 100% !important; overflow: hidden !important; } #root { height: 100vh; overflow-y: auto; }' });
   await signUp(page);
   ok(`${tag}: the backup reminder waits for the tour`, !(await page.evaluate(() => window.__nudgeEarly)));
-  for (let step = 1; step <= 10; step++) {
+  for (let step = 1; step <= 11; step++) {
     await page.waitForTimeout(1250);
     const m = await measure(page); const s = m.sheet;
     let good = !!s && s.left >= -1 && s.top >= -1 && s.right <= m.W + 1 && s.bottom <= m.H + 1;
@@ -59,8 +59,10 @@ async function walk(W, H, box = false) {   // box: false, 'root' (a box holds th
     if (step === 8) good = good && m.y === 0 && near(s.right, m.W, 14) && !!m.search && near(s.top, m.search.top, 6);
     if (step === 9) good = good && m.y === 0 && near(s.right, m.W, 14) && near(s.bottom, m.H, 14);
     if (step === 10) good = good && !!m.transcript && s.bottom <= m.transcript.top + 2;
+    // Card 11 (pass LG, Mikey): centered close under Roger's Action Item popup, whole on the screen, the popup whole too.
+    if (step === 11) good = good && !!m.action && m.action.top >= -1 && m.action.bottom <= m.H + 1 && near((s.left + s.right) / 2, (m.action.left + m.action.right) / 2, 8) && (s.top - m.action.bottom >= -1 && s.top - m.action.bottom <= 24 || m.action.top - s.bottom >= -1 && m.action.top - s.bottom <= 24);
     ok(`${tag}: card ${step} (${m.title}) sits where Mikey asked`, good, good ? null : m);
-    await page.getByRole('button', { name: step < 10 ? 'Next' : 'Done' }).first().click();
+    await page.getByRole('button', { name: step < 11 ? 'Next' : 'Done' }).first().click();
   }
   await page.waitForTimeout(900);
   const after = await page.evaluate(() => ({ screen: window.__eduTest.screen, y: Math.round(window.scrollY + ((document.getElementById('root') || {}).scrollTop || 0) + document.body.scrollTop), nudge: document.body.innerText.includes('Make your first backup soon') }));
@@ -92,7 +94,7 @@ for (const [W, H, box] of process.env.FRAME_ONLY ? [] : [[760, 900], [820, 1180]
   // from the backup page's Show the first week tour again.
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
   await page.goto(pageUrl); await signUp(page);
-  for (let i = 0; i < 9; i++) { await page.getByRole('button', { name: 'Next' }).first().click(); await page.waitForTimeout(700); }
+  for (let i = 0; i < 10; i++) { await page.getByRole('button', { name: 'Next' }).first().click(); await page.waitForTimeout(700); }
   await page.getByRole('button', { name: 'Done' }).first().click(); await page.waitForTimeout(900);
   for (const name of ['Later', 'Got it']) { const b = page.getByRole('button', { name }); if (await b.count()) { await b.first().click({ force: true }); await page.waitForTimeout(250); } }
   for (const id of ['S-1', 'S-2']) {
@@ -127,6 +129,7 @@ for (const [W, H, box] of process.env.FRAME_ONLY ? [] : [[760, 900], [820, 1180]
   const outerY = await page.evaluate(() => Math.round(window.scrollY)); const m = await measure(f); const shownBottom = outerY - 120 + 800;
   ok('in a page-tall frame, card 9 brings the top of the page on screen and sits in the bottom right of what shows', outerY <= 122 && !!m.sheet && near(m.sheet.right, m.W, 14) && near(m.sheet.bottom, shownBottom, 16), { outerY, sheet: m.sheet, shownBottom });
   await press('Next'); await page.waitForTimeout(1300);
+  await press('Next'); await page.waitForTimeout(1300);   // card 11, Action Items (pass LG)
   await press('Done'); await page.waitForTimeout(1200);
   await page.evaluate(() => window.scrollTo(0, 1500)); await page.waitForTimeout(200);
   await press('Later'); await page.waitForTimeout(900);
@@ -143,14 +146,14 @@ for (const [W, H, box] of process.env.FRAME_ONLY ? [] : [[760, 900], [820, 1180]
   await signUp(f);
   const press = (name) => f.evaluate((n) => [...document.querySelectorAll('button')].find((b) => b.textContent.trim() === n).click(), name);
   const panelTop = () => page.evaluate(() => Math.round(document.getElementById('panel').scrollTop));
-  for (let step = 1; step <= 10; step++) {
+  for (let step = 1; step <= 11; step++) {
     await page.waitForTimeout(1300);
     const pt = await panelTop(); const m = await measure(f); const top = pt; const bottom = Math.min(pt + 700, 820);
     let good = !!m.sheet && m.sheet.top >= top - 1 && m.sheet.bottom <= bottom + 1;
     if (step === 3) good = good && !!m.backup && m.backup.top >= top - 1 && m.backup.bottom <= bottom + 1 && m.backup.top - m.sheet.bottom >= -1 && m.backup.top - m.sheet.bottom <= 24;
     if (step === 8 || step === 9) good = good && pt === 0 && m.y === 0;
     ok(`in a frame cut short by its panel, card ${step} (${m.title}) shows whole${step === 3 ? ', close above the backup link' : ''}`, good, good ? null : { pt, sheet: m.sheet, backup: m.backup, y: m.y });
-    await press(step < 10 ? 'Next' : 'Done');
+    await press(step < 11 ? 'Next' : 'Done');
   }
   await page.waitForTimeout(1200);
   await page.evaluate(() => { document.getElementById('panel').scrollTop = 120; }); await f.evaluate(() => window.scrollTo(0, 400)); await page.waitForTimeout(200);

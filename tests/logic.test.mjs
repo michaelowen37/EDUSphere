@@ -2013,5 +2013,95 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   ok('early-years explanations never start in the middle of a thought', bad.length === 0, bad.slice(0, 6).join(' | '));
 }
 
+// ---------------------------------------------------------------------
+// The light review, the fourth exposure (pass LF): the schedule, the three outcomes, what a fail reopens and probes,
+// and the sentences an educator reads, in Mikey's approved wording.
+// ---------------------------------------------------------------------
+{
+  const iso = (d) => new Date(Date.UTC(2026, 9, d, 15, 0, 0)).toISOString();
+  const pass = (moduleId, day) => L.makeAttemptEvent({ moduleId, seed: 1 }, [1, 1, 1, 1, 1].map(() => ({ correct: true, ms: 3000 })), null, iso(day), iso(day));
+  const star = (moduleId, d1, d2) => [pass(moduleId, d1), pass(moduleId, d2)];
+  const events = [...star('teen-numbers', 1, 2), ...star('adding-to-20', 3, 4)];
+  const st = L.lightReviewState(events, 'teen-numbers');
+  ok('a star starts the schedule, first review three weeks later', st.stage === 'first' && st.dueAt === new Date(new Date(iso(2)).getTime() + 21 * 86400000).toISOString());
+  ok('an unstarred lesson has no review', L.lightReviewState(events, 'subtracting-to-20').stage === 'none');
+  ok('nothing is due before three weeks', L.lightReviewDue(events, iso(20)) === null);
+  ok('after three weeks the review is due, the oldest star first', L.lightReviewDue(events, iso(24)).moduleId === 'teen-numbers');
+  const due = L.lightReviewDue(events, iso(24));
+  const review = L.buildLightReview(events, 7, due);
+  ok('a light review is five questions from the lesson\'s own bank, no repeats', review.core.length === 5 && review.core.every((q) => L.getModule('teen-numbers').generators.includes(q.genId)) && new Set(review.core.map((q) => L.questionKey(q))).size === 5 && review.lightReview.stage === 'first');
+  const clear = L.makeLightReviewEvent(review, [1, 1, 1, 1, 0].map((c) => ({ correct: !!c })), iso(24), iso(24));
+  ok('four of five is a clear pass and ends the schedule', clear.outcome === 'clear' && L.lightReviewState([...events, clear], 'teen-numbers').stage === 'done' && L.lightReviewDue([...events, clear], iso(60)) === null || L.lightReviewDue([...events, clear], iso(60)).moduleId !== 'teen-numbers');
+  const bare = L.makeLightReviewEvent(review, [1, 1, 1, 0, 0].map((c) => ({ correct: !!c })), iso(24), iso(24));
+  const afterBare = L.lightReviewState([...events, bare], 'teen-numbers');
+  ok('three of five is a bare pass: a retry in a week that opens with the missed kinds', bare.outcome === 'bare' && afterBare.stage === 'retry' && afterBare.dueAt === new Date(new Date(iso(24)).getTime() + 7 * 86400000).toISOString() && afterBare.missedKinds.length === 2);
+  const retry = L.buildLightReview([...events, bare], 9, { moduleId: 'teen-numbers', stage: 'retry', missedKinds: afterBare.missedKinds });
+  ok('the longest-overdue lesson is reviewed first (the other star fell due before the retry)', L.lightReviewDue([...events, bare], iso(32)).moduleId === 'adding-to-20');
+  ok('the retry asks the missed kinds first', retry.lightReview.stage === 'retry' && retry.core[0].genId === afterBare.missedKinds[0] && retry.core[1].genId === afterBare.missedKinds[1]);
+  const fail = L.makeLightReviewEvent(review, [1, 0, 0, 0, 0].map((c) => ({ correct: !!c })), iso(24), iso(24));
+  const afterFail = [...events, fail];
+  ok('two or fewer is a fail: the lesson is reopened and nothing is due until it is passed again', fail.outcome === 'fail' && L.lightReviewState(afterFail, 'teen-numbers').stage === 'reopened' && L.reviewingIds(afterFail).includes('teen-numbers') && (L.lightReviewDue(afterFail, iso(90)) || {}).moduleId !== 'teen-numbers');
+  ok('a fail never rewrites the star', L.deriveProgress(afterFail).perModule['teen-numbers'].mastered === true);
+  ok('a fail probes the mastered prerequisites of the reopened lesson, the ones the summary names', JSON.stringify(L.probeIds([...afterFail, ...star('making-ten', 5, 6)])) === JSON.stringify(L.prerequisitesOf('teen-numbers').filter((id) => ['making-ten'].includes(id))) && L.prerequisitesOf('teen-numbers').length >= 1);
+  ok('every lesson maps to its prerequisites, in its course or across courses', L.MODULES.every((m) => Array.isArray(L.prerequisitesOf(m.id)) && L.prerequisitesOf(m.id).every((id) => L.getModule(id))));
+  const passedAgain = [...afterFail, ...star('teen-numbers', 30, 31)];
+  ok('passing a reopened lesson again restarts the schedule from the new star', L.lightReviewState(passedAgain, 'teen-numbers').stage === 'first' && L.reviewingIds(passedAgain).length === 0);
+  // Stuck after a failed review (no switch; Mikey, pass LF): the ladder is two misses, a loop back, two more misses.
+  const miss = (moduleId, day) => L.makeAttemptEvent({ moduleId, seed: 1 }, [0, 0, 0, 1, 1].map((c) => ({ correct: !!c, ms: 3000 })), null, iso(day), iso(day));
+  const twoMisses = [...afterFail, miss('teen-numbers', 25), miss('teen-numbers', 26)];
+  ok('two misses alone are not stuck; the app loops back first', L.lightReviewStuck(twoMisses, 'teen-numbers') === null && L.stuckAfterReviewIds(twoMisses).length === 0);
+  const looped = [...twoMisses, L.makeLoopBackEvent('teen-numbers', L.prerequisitesOf('teen-numbers').slice(-1)[0], iso(26)), ...star(L.prerequisitesOf('teen-numbers').slice(-1)[0], 27, 27), miss('teen-numbers', 28)];
+  ok('one miss after the loop back is still not stuck', L.lightReviewStuck(looped, 'teen-numbers') === null);
+  const stuck = [...looped, miss('teen-numbers', 29)];
+  const stuckInfo = L.lightReviewStuck(stuck, 'teen-numbers');
+  ok('two misses, a loop back and two more misses is stuck, with the rounds and the lesson looped to', stuckInfo && stuckInfo.rounds === 4 && stuckInfo.loopedTo === L.prerequisitesOf('teen-numbers').slice(-1)[0] && L.stuckAfterReviewIds(stuck).includes('teen-numbers'));
+  ok('a pass on the reopened lesson clears stuck', L.lightReviewStuck([...stuck, pass('teen-numbers', 30)], 'teen-numbers') === null);
+  const sStuck = L.lightReviewSentences(stuck, 'S-77');
+  ok('the stuck sentence, in Mikey\'s wording, says the score, the rounds, the loop back and that the lesson keeps its star', sStuck.length === 1 && /cannot seem to get past \*Teen Numbers\*/.test(sStuck[0]) && /scored one out of five on their practice review/.test(sStuck[0]) && /four rounds at it without a pass and one of those rounds was after looping back to \*Making Ten\*/.test(sStuck[0]) && /keep its star/.test(sStuck[0]) && !/clicking below/.test(sStuck[0]));
+  ok('the popup version adds the line that points at the Move forward button, the summary version leaves it out', /You can still move S-77 forward by clicking below\./.test(L.stuckSentence(stuck, 'teen-numbers', 'S-77')) && !/clicking below/.test(L.stuckSentence(stuck, 'teen-numbers', 'S-77', { action: false })) && L.lightReviewSentences(stuck, 'S-77', 3, { action: true })[0] === L.stuckSentence(stuck, 'teen-numbers', 'S-77'));
+  const moved = [...stuck, L.makeMovedForwardEvent('teen-numbers', iso(30))];
+  const stMoved = L.lightReviewState(moved, 'teen-numbers');
+  ok('moving forward closes the review: not reviewing, nothing due, the star untouched', stMoved.stage === 'moved' && L.reviewingIds(moved).length === 0 && L.stuckAfterReviewIds(moved).length === 0 && (L.lightReviewDue(moved, iso(120)) || {}).moduleId !== 'teen-numbers' && L.deriveProgress(moved).perModule['teen-numbers'].mastered === true);
+  ok('the lesson stays in the memory checks after moving forward', L.deriveProgress(moved).masteredIds.includes('teen-numbers'));
+  const sMoved = L.lightReviewSentences(moved, 'S-77');
+  ok('the moved sentence names the day, the loop back, and that the lesson keeps flowing through memory checks', sMoved.length === 1 && /You moved S-77 forward on \*Teen Numbers\* on October 30/.test(sMoved[0]) && /loop back to \*/.test(sMoved[0]) && /continue to flow through infrequent memory checks/.test(sMoved[0]));
+  ok('a new star after moving forward restarts the schedule like any star', L.lightReviewState([...moved, ...star('teen-numbers', 40, 41)], 'teen-numbers').stage === 'first');
+  // One a day, oldest first (Mikey, pass LI): three lessons starred on one day become three days of one review each.
+  { const ids = ['teen-numbers', 'adding-to-20', 'subtracting-to-20']; const many = ids.flatMap((id) => star(id, 1, 2));
+    const q = L.lightReviewQueue(many, iso(24)); const first = L.lightReviewDue(many, iso(24));
+    const r1 = L.buildLightReview(many, 5, first);
+    const done1 = [...many, L.makeLightReviewEvent(r1, [1, 1, 1, 1, 1].map((c) => ({ correct: !!c })), iso(24), iso(24))];
+    ok('lessons starred on the same day queue up, oldest first, the first one offered', q.length === 3 && !!first && first.moduleId === q[0].moduleId);
+    ok('one quick look back a day: after one is done, nothing more is offered that day', L.lightReviewDue(done1, iso(24).replace('T15', 'T20')) === null);
+    ok('the next day the next lesson in the queue is offered', (L.lightReviewDue(done1, iso(25)) || {}).moduleId === q[1].moduleId);
+    ok('a lesson outside the allowed list does not hold up the queue', (L.lightReviewDue(many, iso(24), [q[2].moduleId]) || {}).moduleId === q[2].moduleId); }
+  // A busy day (Mikey, passes LK and LL): more than a week's worth waiting allows a second review, taken back to back with the
+  // first at the start of the day, never a third.
+  { const ids = ['teen-numbers', 'adding-to-20', 'subtracting-to-20', 'tens-and-ones', 'comparing-to-100', 'writing-numbers', 'quick-looks', 'counting-to-120', 'open-number-lines'];
+    const many = ids.flatMap((id) => star(id, 1, 2)); const q = L.lightReviewQueue(many, iso(24));
+    const at = (h) => iso(24).replace('T15', `T${h}`);
+    const day0 = L.lightReviewDay(many, at(10));
+    ok('a busy day: nine waiting, the start-of-day card offers two reviews from the start, oldest first', q.length === 9 && day0.next.length === 2 && day0.next[0].moduleId === q[0].moduleId && day0.next[1].moduleId === q[1].moduleId && day0.done.length === 0);
+    const first = L.lightReviewDue(many, at(10)); const r1 = L.buildLightReview(many, 5, first);
+    const done1 = [...many, L.makeLightReviewEvent(r1, [1, 1, 1, 1, 1].map((c) => ({ correct: !!c })), at(10), at(10))];
+    const second = L.lightReviewDue(done1, at(10));
+    ok('the second follows straight after the first, with no lesson round in between', !!second && second.moduleId === q[1].moduleId && second.todayCount === 1 && L.lightReviewDay(done1, at(10)).done.length === 1);
+    const r2 = L.buildLightReview(done1, 6, second);
+    const done2 = [...done1, L.makeLightReviewEvent(r2, [1, 1, 1, 1, 1].map((c) => ({ correct: !!c })), at(11), at(11))];
+    ok('never a third review in a day', L.lightReviewDue(done2, at(16)) === null && L.lightReviewDay(done2, at(16)).next.length === 0);
+    const one = star('teen-numbers', 1, 2); const rq = L.buildLightReview(one, 5, L.lightReviewDue(one, at(10)));
+    ok('a quiet day (a week\'s worth or less) stays at one', L.lightReviewDue([...one, L.makeLightReviewEvent(rq, [1, 1, 1, 0, 0].map((c) => ({ correct: !!c })), at(10), at(10)), ...star('adding-to-20', 1, 2)], at(13)) === null); }
+  // The memory check favors the probed lessons after a failed review (pass LH): with probe set, most rounds' first check comes from it.
+  { const mastered = ['count-to-10', 'making-ten', 'teen-numbers', 'one-more-one-less']; let hits = 0; for (let s = 1; s <= 40; s++) { const a = L.buildAttempt('adding-to-20', s, mastered, { probe: ['making-ten'] }); if (a.review && a.review.moduleId === 'making-ten') hits++; }
+    ok('memory checks favor the lessons a failed quick look back probes', hits >= 20); }
+  const sClear = L.lightReviewSentences([...events, L.makeLightReviewEvent(review, [1, 1, 1, 1, 1].map((c) => ({ correct: !!c })), iso(23), iso(23))], 'S-77');
+  ok('the clear-pass sentence, in Mikey\'s style, names the gap, the score and that no further review is planned', sClear[0] === 'S-77 took a short five-question practice review of *Teen Numbers* three weeks after mastering it, without any warning, and scored five out of five. That lesson is holding, so no further review is planned.');
+  const sBare = L.lightReviewSentences([...events, bare], 'S-77');
+  ok('the bare-pass sentence names the two kinds of questions missed', /^S-77 took a short practice review of \*Teen Numbers\* and scored three out of five\. They are keeping the idea but it is not yet firm, so another short review comes in a week\. We will start that review with the two kinds of questions S-77 missed, ".+" and ".+"\.$/.test(sBare[0]));
+  const sFail = L.lightReviewSentences([...events, L.makeLightReviewEvent(review, [1, 1, 0, 0, 0].map((c) => ({ correct: !!c })), iso(33), iso(33))], 'S-77');
+  ok('the fail sentence names the lessons the probe reaches back to', /^S-77 took a short practice review of \*Teen Numbers\* one month after mastering it and scored two out of five\. That prompted us to reopen and reassign the lesson, and the memory checks in the next few rounds will probe the lessons leading up to it, \*.+\*\. Sometimes a slip like this starts one step earlier, so those refreshers may reach even further back\.$/.test(sFail[0]));
+  ok('a light review counts toward confidence like a memory check', L.computeConfidence('teen-numbers', [...events, clear]).reviewsAsked === 5);
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

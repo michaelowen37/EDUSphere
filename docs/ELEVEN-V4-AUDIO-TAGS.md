@@ -49,6 +49,8 @@ Ours: a story's sound effects are written this way, as a short phrase that names
 
 ## Our conventions in one place
 
+- The aim (Mikey, pass LF): tags make a story exciting, fun and dynamic. A mood word alone is the floor; pacing at the turns ([slowly] before a count, [rushed] in a scramble, [drawn out] on a reveal), a reaction where a person would have one ([gasps], [laughs], [sighs]) and a sound effect where the story names a sound are what bring a picture-book story to life for a child who is listening, not reading.
+
 - The `audio` array of a story is its `words` with tags inserted and nothing else changed; a test holds the two equal once the brackets are stripped.
 - Tags go before the words they color, at the turns of the paragraph; the emotion carries forward, so a paragraph usually needs one to three tags, not one per sentence.
 - The closing moral of an early-years story is [slowly, warmly].

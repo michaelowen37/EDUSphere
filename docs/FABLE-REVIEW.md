@@ -200,6 +200,11 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A sample built by hand to look like a real screen drifts: the LI tour sample missed the Merge link and the Wonder pill and was laid out differently, and Mikey saw all three at a glance. Feed made-up data through the real component instead, with taps switched off, and the sample can never differ from the page.
 - Count a daily allowance against the day as it started, not as it stands: finishing the first review shrinks the queue, and a rule that rechecked the live queue would cancel the second review the backlog asked for.
 
+## Learned in pass LS (look before you name)
+
+- A picture name in a lesson line is only as good as the drawing behind it: the animal drawings have no dog and the bird is an icon, so two new lines drew blank. The real-page screenshot caught it before delivery; check the drawing set before writing a line or a bank around a picture.
+- A title is centered against the screen, not against what is left of a row: balance an icon on one side with an empty column on the other.
+
 ## Learned in pass LJ (one feature, one place)
 
 - A feature whose rules are spread across logic, screens, sentences and the tour gets its own section in the rules audit, and the sentences there are generated from the code, never retyped, so the audit cannot drift from the screens.

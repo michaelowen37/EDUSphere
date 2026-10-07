@@ -4,6 +4,29 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+
+
+
+
+
+## October 7, 2026 (Listen and Point, refreshed)
+
+- Listen and Point, the second pre-K 3 course, now shows each idea more than one way, like a plate and a window for circles and squares, and one red apple among green ones for different, with more pictures on the way. Its lessons hold more questions too, so a child who comes back meets new ones.
+## October 7, 2026 (Move Forward for a lesson never mastered)
+
+- When a student cannot get past a lesson they have never mastered, even after the app loops them back and gives them more tries, an Action Item now lets you move them forward. The lesson stays on their list without its star and comes back in three weeks as a fresh try, which can earn the star.
+- During a Quick Review, the questions are headed Quick Review, and the review questions inside regular rounds are now called "A question from an earlier module".
+## October 7, 2026 (Practice Review history)
+
+- Each student's Practice Reviews now keep a dated history. The newest two show on the report, and a History link opens the rest. When you move a student forward, that is logged with its date too.
+- The weekly note now includes the week's practice reviews, so one printed page holds everything, and Who Needs Help shows a student who is stuck on a lesson a review reopened.
+## October 7, 2026 (a long story for Very First Steps)
+
+- Very First Steps now ends with its own long story, The Mixed-Up Picnic, where three small friends use colors, matching, sizes and counting to sort out a jumbled picnic basket, and remember please and thank you for the last grape. Its twelve short stories also sound livelier when read aloud.
+## October 7, 2026 (Very First Steps, refreshed)
+
+- The first pre-K course has been reviewed again at a higher standard. Each lesson now shows its idea more than one way, with real things to look for at home, like a red fire truck, a green frog or two hands to count, and more pictures on the way.
+- Big and Little now teaches three sizes, big, middle-size and little, the way the three bears' bowls do, and every lesson has more questions, so a child who comes back meets new ones.
 ## October 7, 2026 (quick look backs, up to two a day)
 
 - When two quick look backs are due, a student now gets both at the start of the day, one right after the other, so reviews never pile up. A third waits for the next day. Students never see a pass or a fail; you read what each review showed in the Practice Reviews section of their report.

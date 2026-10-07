@@ -130,33 +130,24 @@ per-module results. refresherIds returns modules missed in the latest checkpoint
 since; computeConfidence counts checkpoint misses with memory-check misses, and a return that
 is half missed or worse costs one point. A checkpoint never changes a pass or a star.
 
-## The light review, the fourth exposure (2026-10-06, pass LF, Mikey's L2)
+## The Quick Review and Move Forward (passes LF to LR; called the light review, then the quick look back, before pass LP)
 
-A lesson is met four times: the lesson, the practice that earns its star, the memory checks
-that bring it back inside later rounds, and a short review that arrives without warning
-three weeks after the star (`LIGHT_REVIEW_FIRST_DAYS`, 21), five questions from the
-lesson's own bank at the same difficulty (`buildLightReview`), no repeats. The outcomes
-(`lightReviewOutcome`): four or five right is a clear pass, and no further review is
-planned; three right is a bare pass, so another short review comes a week later
-(`LIGHT_REVIEW_RETRY_DAYS`, 7) and opens with the kinds of question that were missed; two or
-fewer is a fail, so the lesson is reopened and reassigned (a full round again, its story
-offered), nothing is due for it until it is passed again, and the new star restarts the
-schedule. A fail also names the lessons it builds on (`probeIds`: the mastered
-prerequisites of the reopened lesson) for the next rounds' memory checks to favor, because
-a slip this deep usually starts one step earlier. The review's five answers count toward
-the confidence score exactly as memory checks do. Nothing is shown to the child as a
-failure, and no pass or star is ever rewritten. There is no switch (Mikey, pass LF): the
-review helps, and the student card has enough on it. A child who cannot get past a reopened
-lesson is not left there. Once the app's own ladder has run, two misses on the reopened
-lesson, a loop back to the lesson before it, and two more misses with no pass between
-(`lightReviewStuck`, `stuckAfterReviewIds`), the educator's page says so in a sentence and
-offers one action, move the student forward, which appends a `moved_forward` event
-(`makeMovedForwardEvent`). That closes the review for the lesson (its state becomes `moved`,
-it leaves the reviewing list, nothing more is due for it) and touches nothing else: the star
-stands, the gate stands, and the lesson stays in the memory checks, so a later slip still
-shows. A new star after that restarts the schedule like any star. Two a day at most (Mikey, passes LI to LM): every review that has come due waits in a queue, oldest first (`lightReviewQueue`), and when two or more are due the first two are offered together at the start of the day and taken back to back, a third waiting for the next day (`LIGHT_REVIEWS_PER_DAY` = 2, `lightReviewDay`); a review is offered from the start of its day. When one is due it opens the student's day: the overview shows only it, with Start, until it is done. The queue holds only lessons the student can see. Calendar days, not days logged in (Mikey, pass LK): forgetting runs on the calendar. The record is one event
-per review, `light_review_completed`, with
-each question's kind and prompt, so the educator's sentence can name what was missed. One
-review is offered at a time, the longest overdue first (`lightReviewDue`). The three weeks
-and the week are judgements taken from the forgetting curve: long enough for a weak memory
-to fade, short enough to repair it cheaply.
+The fourth exposure. A lesson is met in the lesson, in the practice that masters it, in memory checks inside later rounds (labeled "A question from an earlier module" since pass LQ, so they are not mistaken for this), and in the Quick Review weeks later, which decides whether the lesson is worth teaching again. Every rule here is held by tests; the full rules and the exact words on screen are in docs/RULES-AUDIT.md sections 7a and 7b, and tests/docs-sync.test.mjs fails if either doc stops matching the code.
+
+**Schedule** (`lightReviewState(events, moduleId)` gives each lesson a stage and a due time):
+- first: 21 calendar days after the lesson's star (LIGHT_REVIEW_FIRST_DAYS). Calendar days, not days logged in (Mikey, pass LK), because forgetting runs on the calendar.
+- done: after a review passed clearly (four or five of five); no more reviews.
+- retry: after a review nearly passed (three of five), another review 7 days later (LIGHT_REVIEW_RETRY_DAYS), opening with the kinds of question missed.
+- reopened: after a review missed (two or fewer); nothing is due until the lesson is passed again, which earns a new star and restarts the schedule.
+- moved: after Move Forward on a lesson stuck after its review; closed, with the star, the gate and the memory checks standing.
+- fresh: a lesson moved past before it was mastered comes back 21 calendar days after the move; a clear pass earns the star (deriveProgress), a near pass retries 7 days later, a miss tries again 21 days later.
+
+**The queue** (`lightReviewQueue`, `lightReviewDay`, `lightReviewDue`): every review that has come due waits, oldest first, counted as due from the start of its day, for lessons the student can see. At most two a day (LIGHT_REVIEWS_PER_DAY = 2): whenever two are due both are offered at the start of the day and taken back to back; a third waits for the next day. A day the student does not open the app costs nothing.
+
+**The student's day.** When a review is due the overview opens on the start-of-day card, "First, A Quick Review" (or "One More Quick Review" for the second of two after a break), naming the module or both modules, with the speaker icon for an early learner and an x to exit; the lessons appear when the reviews are done. A review is five questions from the lesson's own bank with no repeats, headed "Quick Review" over "Question 1 of 5". The result never says fail.
+
+**Stuck, two kinds, one ladder** (`lightReviewStuck` after a missed review, `neverMasteredStuck` for a lesson never mastered): counted from the missed review or from the last pass on the lesson, two misses (the app then loops back to the lesson before it), then two more misses with no pass in between. A lesson with nothing before it to loop back to is stuck after four misses. Until then the app works alone and the educator is not asked.
+
+**Move Forward** (from the Action Item popup; `actionStuckItems` lists both kinds, one item at a time, stuck lessons before papers): one `moved_forward` event, nothing rewritten. After a review: the review closes; the star, the gate and the memory checks stand. Before mastery: no star (`perModule.movedPast`); the gate counts the lesson, so the lessons after it open (`moduleStatuses`; the gate also follows course order); the lesson stays on the student's list, open to practice, and returns as a fresh try. There is no switch to turn reviews off (Mikey, pass LF).
+
+**What the educator reads** (Mikey's style: explanatory, varied sentence lengths, no jargon; titles in title case): `lightReviewHistory` lists every review, every Move Forward and every lesson stuck now, each with its date, newest first; the report shows the newest two, with a History link for the rest, and the section stays once it appears. `weeklyNote` adds the entries dated within the note's own seven days, and only those, as plain paragraphs under "Practice reviews:" in the same note as the week's other lines. `classView` (Who Needs Help) weighs a lesson stuck after a review like any stuck lesson, a reopened lesson like one miss, and notes a lesson moved past instead of calling it stuck.

@@ -2718,9 +2718,9 @@ function Emphasized({ text }) {
 function actionCount(items) { return items ? items.stuck.length + (items.writings > 0 ? 1 : 0) : 0; }
 function ActionCard({ children, onClose, inline = false, style = {}, step = null }) {
   return (
-    <div className={inline ? 'edu-alert-box' : 'edu-rise edu-alert-box'} role={inline ? undefined : 'dialog'} aria-label={inline ? undefined : 'Action Item'} style={{ width: 'min(440px, 100%)', background: C.surface, borderRadius: 16, padding: '18px 20px 20px', position: 'relative', pointerEvents: 'auto', boxSizing: 'border-box', ...style }} onClick={(e) => e.stopPropagation()}>
+    <div className={inline ? 'edu-alert-box' : 'edu-rise edu-alert-box'} role={inline ? undefined : 'dialog'} aria-label={inline ? undefined : 'Action Item'} style={{ width: 'min(440px, 100%)', background: C.surface, borderRadius: 16, padding: '18px 20px 20px', textAlign: 'center', position: 'relative', pointerEvents: 'auto', boxSizing: 'border-box', ...style }} onClick={(e) => e.stopPropagation()}>
       {onClose && <button type="button" aria-label="Close" onClick={onClose} style={{ position: 'absolute', top: 10, right: 12, background: 'none', border: 'none', fontSize: 22, lineHeight: 1, color: C.muted, cursor: 'pointer', fontFamily: FONT }}>×</button>}
-      <p style={{ margin: '0 0 10px', fontSize: 19, fontWeight: 700, color: '#D64541' }}>Action Item{step && <span style={{ marginLeft: 10, fontSize: 13, fontWeight: 600, color: C.muted }} data-action-step={`${step.at}/${step.of}`}>{step.at} of {step.of}</span>}</p>
+      <p style={{ margin: step ? '0 0 2px' : '0 0 10px', fontSize: 19, fontWeight: 700, color: '#D64541' }}>Action Item</p>{step && <p style={{ margin: '0 0 10px', fontSize: 13, fontWeight: 600, color: C.muted }} data-action-step={`${step.at}/${step.of}`}>{step.at} of {step.of}</p>}
       {children}
     </div>
   );
@@ -7189,6 +7189,7 @@ function EduSphereScreens() {
   const [actionFor, setActionFor] = useState(null);                     // student whose Action Item popup is open
   const [actionTotal, setActionTotal] = useState(0);                   // how many items the open popup started with, for "1 of 2" (pass LJ)
   const [reviewsNoteOpen, setReviewsNoteOpen] = useState(false);         // the i note on the report's Practice Reviews card            // student whose Wonder Questions popup is open
+  const [reviewsHistoryOpen, setReviewsHistoryOpen] = useState(false);   // the report's Practice Reviews history, folded past two (pass LP)
   const [coursePreview, setCoursePreview] = useState(null);              // course whose module preview popup is open on the report (2026-09-29, Mikey)
   const [consentAsk, setConsentAsk] = useState(null);   // pass HO: a course that needs a parent's consent, waiting for the educator to confirm it
   const [showPinWhy, setShowPinWhy] = useState(false);         // the i beside PIN (optional) in the add-student popup
@@ -7902,7 +7903,7 @@ function EduSphereScreens() {
   // Which module/course is open, and read-aloud for courses that use it.
   // (Hooks live here, above the first early return, so React sees the same hooks every render.)
   const currentFrom = attempt && (attempt.checkpoint || attempt.placement) && screen === 'practice' && attempt.core[qIndex] ? attempt.core[qIndex].fromModuleId : null;
-  const roundLabel = !attempt ? '' : attempt.lightReview ? 'Quick look back · ' : attempt.checkpoint ? 'Checkpoint · ' : attempt.placement ? `Placement, ${gradeLabel(attempt.grade).toLowerCase()} · ` : attempt.quickCheck ? 'Quick check · ' : '';
+  const roundLabel = !attempt ? '' : attempt.lightReview ? '' : attempt.checkpoint ? 'Checkpoint · ' : attempt.placement ? `Placement, ${gradeLabel(attempt.grade).toLowerCase()} · ` : attempt.quickCheck ? 'Quick check · ' : '';
   // Answer sizes: a question's choices share one size, so 4 never towers over -3 or 1/6 beside it.
   const choiceFont = (choices) => {
     if (!choices || !choices.length) return 18;
@@ -8077,6 +8078,12 @@ function EduSphereScreens() {
         seeded.stuck = x.id; seeded.prereq = p;
       }
     }
+    if (plan.never) {
+      const y = tappable.find((m) => prerequisitesOf(m.id).length && !seeded.due.includes(m.id) && m.id !== seeded.stuck);
+      if (y) { const p2 = prerequisitesOf(y.id).slice(-1)[0];
+        events.push(pass(p2, 12), pass(p2, 11), miss(y.id, 7, 2), miss(y.id, 6, 2), makeLoopBackEvent(y.id, p2, ago(6, 1)), pass(p2, 5, 2), miss(y.id, 4, 2), miss(y.id, 3, 2));
+        seeded.never = y.id; seeded.neverPrereq = p2; }
+    }
     if (plan.paper) {
       const w = tappable[0];
       if (w) { events.push(makeWritingEvent(w.id, 'Write three sentences about your favorite animal.', 'My favorite animal is a fox. It is fast. It lives in a den.', [], ago(1, 1), ago(1))); seeded.paper = w.id; }
@@ -8218,7 +8225,7 @@ function EduSphereScreens() {
   // Also on the classroom page (pass LM): the Action Items are read here, and an educator who opens or stays on My Classroom
   // must see a new one without passing through the sign-in screen first.
   useEffect(() => { if (screen !== 'welcome' && screen !== 'educator-pick') return; (async () => {
-    const pairs = await Promise.all(activeStudents(roster).map(async (st) => { try { const rec = await loadRecord(st.id); return [st.id, bandTitle(rec.events), completedGrades(rec.events), { stuck: stuckAfterReviewIds(rec.events).map((moduleId) => ({ moduleId, sentence: stuckSentence(rec.events, moduleId, st.label) })), writings: pendingWritings(rec.events).length }]; } catch (e) { return [st.id, '', [], { stuck: [], writings: 0 }]; } }));
+    const pairs = await Promise.all(activeStudents(roster).map(async (st) => { try { const rec = await loadRecord(st.id); return [st.id, bandTitle(rec.events), completedGrades(rec.events), { stuck: actionStuckItems(rec.events, st.label), writings: pendingWritings(rec.events).length }]; } catch (e) { return [st.id, '', [], { stuck: [], writings: 0 }]; } }));
     setBands(Object.fromEntries(pairs.map(([id, band]) => [id, band])));
     setReadyGrades(Object.fromEntries(pairs.map(([id, , grades]) => [id, grades])));
     setActionItems(Object.fromEntries(pairs.map(([id, , , items]) => [id, items])));
@@ -8230,6 +8237,7 @@ function EduSphereScreens() {
   const refreshIds = refresherIds(record ? record.events : []);
   // The student's name as the educator typed it (pass LM): records are stored under a normalized id (s-88), the roster keeps the label (S-88).
   const studentLabelFor = (rec, fallback = 'This student') => (rec && ((findStudent(roster, rec.name) || {}).label || rec.label || rec.name)) || fallback;
+  const movedPastNow = movedPastIds(record ? record.events : []);              // moved past before mastery, back later for a fresh try (pass LQ)
   const reopenedIds = reviewingIds(record ? record.events : []);                                 // reopened by a failed quick look back (pass LH)
   const lookBack = record && !record.preview ? lightReviewDue(record.events, undefined, visibleCourses.flatMap((c) => c.modules.map((m) => m.id))) : null;              // the quick look back due now, if any
   // Subjects still waiting on a placement decision: the check is offered, and that subject's
@@ -8379,21 +8387,21 @@ function EduSphereScreens() {
       const lbMod = lbList[0] || getModule(lookBack.moduleId);
       const lbTwo = lbList.length > 1;
       const lbAgain = !lbTwo && lookBack.todayCount > 0;   // the second of a busy day, when the student left after the first
-      const lbHead = lbTwo ? 'First, two quick look backs' : lbAgain ? 'One more quick look back' : 'First, a quick look back';
-      const lbBody = lbTwo ? 'Five quick questions from each of two lessons you finished a while ago, one after the other.' : 'Five quick questions from a lesson you finished a while ago.';
-      const lbTail = lbAgain ? 'Then straight to your lessons.' : 'Just to see what stuck. Your lessons are right after.';
+      const lbHead = lbAgain ? 'One More Quick Review' : 'First, A Quick Review';   // Mikey's titles (pass LP)
+      const lbBody = lbTwo ? "Five quick review questions from each of two modules you've mastered long ago." : lookBack.stage === 'fresh' ? "Five quick review questions from a module you moved on from a while ago, for a fresh try." : "Five quick review questions from a module you've mastered long ago.";
+      const lbTail = 'Your lessons come right after!';
       const lbSay = lbHead + '. ' + lbBody + ' ' + (lbTwo ? lowerTitle(lbList[0].title) + ', then ' + lowerTitle(lbList[1].title) + '. ' : lowerTitle(lbMod.title) + '. ') + lbTail;
       return (
         <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={false} /><div className="edu-wrap" style={{ ...wrap }}>
           <div className="edu-rise" style={{ ...card, textAlign: 'center', marginTop: 36 }} data-light-review-card={lookBack.moduleId} data-light-review-count={lbList.length}>
             <h1 style={{ fontSize: 24, margin: '0 0 10px' }}>{lbHead}</h1>
             <p style={{ margin: '0 0 12px', fontSize: 17, lineHeight: 1.5 }}>{lbBody} {lbTail}</p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 8, margin: '0 0 16px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, margin: '0 0 16px' }}>
               {(lbTwo ? lbList : [lbMod]).map((m, i) => <span key={m.id} style={{ display: 'inline-block', padding: '6px 14px', borderRadius: 999, border: `1px solid ${C.line}`, fontSize: 15, fontWeight: 700 }}>{lbTwo ? (i + 1) + '. ' : ''}{titleCase(m.title)}</span>)}
             </div>
-            {isPreReader(lbMod.courseId) && <div style={{ marginBottom: 10 }}><Btn kind="secondary" onClick={() => speak(lbSay)}>Hear it</Btn></div>}
+            {youngLearner && <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}><SpeakButton mini text={lbSay} label="Hear it" /></div>}
             <Btn full onClick={() => startLightReview(lookBack)} style={{ width: 'min(320px, 100%)' }}>Start</Btn>
-            <div style={{ marginTop: 14 }}><button type="button" onClick={async () => { if (record && record.preview) { setRecord(null); setScreen('educator-pick'); } else { await autoBackup('sign-out'); setScreen('welcome'); } }} style={{ position: 'absolute', top: 0, right: 0, background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer' }}>Exit</button></div>
+            <div style={{ marginTop: 14 }}><button type="button" onClick={async () => { if (record && record.preview) { setRecord(null); setScreen('educator-pick'); } else { await autoBackup('sign-out'); setScreen('welcome'); } }} style={{ position: 'absolute', top: 10, right: 14, background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer' }} aria-label="Exit"><span aria-hidden="true" style={{ fontSize: 22, lineHeight: 1 }}>×</span></button></div>
           </div>
         </div></div>
       );
@@ -8447,7 +8455,8 @@ function EduSphereScreens() {
                             {youngLearner && st === 'passed' && <p style={{ color: C.muted, fontSize: 15, margin: '8px 0 0' }}>Passed once. Pass again to master.</p>}
                             {p.attempts > 0 && !isPreReader(course.id) && <p style={{ color: C.muted, fontSize: 14, margin: '10px 0 0' }}>Best score {p.bestCore} of {moduleRules(m.id).questions}{st === 'passed' ? '. Pass it again on another day to master it.' : ''}</p>}
                             {refreshIds.includes(m.id) && <p style={{ color: C.clay, fontSize: 14, margin: '6px 0 0', fontWeight: 600 }}>Missed in the last checkpoint. A quick refresher round will help.</p>}
-                            {reopenedIds.includes(m.id) && <p style={{ color: C.clay, fontSize: 14, margin: '6px 0 0', fontWeight: 600 }} data-reviewing={m.id}>Open again after a quick look back. Go through it once more, story and all, when you're ready.</p>}
+                            {reopenedIds.includes(m.id) && <p style={{ color: C.clay, fontSize: 14, margin: '6px 0 0', fontWeight: 600 }} data-reviewing={m.id}>You've mastered this once before but one of your reviews prompted a refresher. Go through it once more, story and all, when you're ready.</p>}
+                            {movedPastNow.includes(m.id) && <p style={{ color: C.muted, fontSize: 14, margin: '6px 0 0', fontWeight: 600 }} data-moved-past={m.id}>You moved on from this one for now. It will come back later for a fresh try.</p>}
                             {p.pendingWriting && <p style={{ color: C.gold, fontSize: 14, margin: '6px 0 0', fontWeight: 600 }}>Handed in. Waiting for your teacher to check it.</p>}
                             {locked ? (
                               !isPreReader(course.id) && <p style={{ color: C.muted, fontSize: 14, margin: '10px 0 0' }}>Finish the module before this one first.</p>
@@ -8901,8 +8910,9 @@ function EduSphereScreens() {
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         {/* Module name on the left, the question count in the middle, and a bold green X on the
             right that leaves the round. Leaving mid-round records nothing, so nobody is locked in. */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', alignItems: 'center', gap: 10, margin: '4px 0 0' }}>
-          <p style={{ color: C.muted, fontSize: 14, margin: 0 }}>{isReviewQ ? 'Quick review from an earlier module' : `${roundLabel}Question ${qIndex + 1} of ${attempt.core.length}`}</p>
+        <div style={{ display: 'grid', gridTemplateColumns: attempt && attempt.lightReview ? '36px 1fr 36px' : '1fr auto', alignItems: 'center', gap: 10, margin: '4px 0 0' }}>
+          {attempt && attempt.lightReview ? <><span aria-hidden="true" /><div data-quick-review-head style={{ textAlign: 'center' }}><p style={{ margin: 0, fontSize: 16, fontWeight: 700 }}>Quick Review</p><p style={{ color: C.muted, fontSize: 13, margin: '2px 0 0' }}>Question {qIndex + 1} of {attempt.core.length}</p></div></>
+            : <p style={{ color: C.muted, fontSize: 14, margin: 0 }}>{isReviewQ ? 'A question from an earlier module' : `${roundLabel}Question ${qIndex + 1} of ${attempt.core.length}`}</p>}
           <button type="button" onClick={() => setScreen('overview')} aria-label="Back" title="Leave this round"
             style={{ justifySelf: 'end', background: 'none', border: 'none', color: C.green, width: 36, height: 36, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" /></svg>
@@ -8910,7 +8920,10 @@ function EduSphereScreens() {
         </div>
         {/* The speaker sits to the right of the module title (2026-10-01, pass HG, Mikey's screenshot), out of the question card,
             where it covered the end of a long question's first line. A review question has no title, so its speaker stands alone. */}
-        <div data-title-row="" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, margin: isReviewQ ? '8px 0 10px' : '10px 0 18px' }}>
+        {/* Truly centered (pass LS, Mikey): an empty column on the left as wide as the speaker's column on the right, so the
+            title sits on the screen's center line with the speaker beside it. A review question has no title; its speaker stands alone. */}
+        <div data-title-row="" style={isReviewQ ? { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, margin: '8px 0 10px' } : { display: 'grid', gridTemplateColumns: '1fr auto 1fr', justifyItems: 'start', alignItems: 'center', gap: 8, margin: '10px 0 18px' }}>
+          {!isReviewQ && <span aria-hidden="true" />}
           {!isReviewQ && <p style={{ margin: 0, fontSize: 18, fontWeight: 600, textAlign: 'center' }}>{titleCase(mod.title)}</p>}
           <SpeakButton mini text={questionText} label={readAloud ? 'Hear it again' : 'Read it to me'} />
         </div>
@@ -9096,20 +9109,21 @@ function EduSphereScreens() {
 
   if (screen === 'light-review-result' && lastEvent && lastEvent.type === 'light_review_completed') {
     const mod = getModule(lastEvent.moduleId);
-    const title = mod ? titleCase(mod.title) : 'this lesson';
-    const line = lastEvent.outcome === 'clear' ? `You remembered ${title} well. That one is yours to keep.`
+    const title = mod ? '*' + titleCase(mod.title) + '*' : 'this lesson';   // emphasized on screen (Mikey, pass LP)
+    const line = lastEvent.stage === 'fresh' ? (lastEvent.outcome === 'clear' ? `You've got ${title} now! That one is yours to keep!` : lastEvent.outcome === 'bare' ? `You're getting closer with ${title}. We will look back at it once more soon.` : `${title} is still tricky, and that's okay. It's on your list so you can go back through it any time.`)
+      : lastEvent.outcome === 'clear' ? `You remembered ${title} well. That one is yours to keep!`
       : lastEvent.outcome === 'bare' ? `You remembered a lot of ${title}. We will look back at it once more soon.`
       : `${title} is worth another visit. It's open again on your list so you can go back through it any time.`;
-    const spokenLine = `${lastEvent.correct} of ${lastEvent.total}. ${line}`;
+    const spokenLine = `${lastEvent.correct} of ${lastEvent.total}. ${line.replace(/\*/g, '')}`;
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <div className="edu-rise" style={{ ...card, textAlign: 'center' }} data-light-review-result={lastEvent.outcome}>
-          <p style={{ margin: '0 0 6px', fontSize: 13, color: C.muted, letterSpacing: 0.3 }}>QUICK LOOK BACK</p>
+          <p style={{ margin: '0 0 6px', fontSize: 20, fontWeight: 700 }}>Quick Review</p>
           <h1 style={{ fontSize: 26, margin: '0 0 10px' }}>{lastEvent.correct} of {lastEvent.total}</h1>
-          <p style={{ fontSize: 17, lineHeight: 1.5, margin: '0 0 18px' }}>{line}</p>
-          {mod && isPreReader(mod.courseId) && <div style={{ marginBottom: 14 }}><Btn kind="secondary" onClick={() => speak(spokenLine)}>Hear it</Btn></div>}
+          <p style={{ fontSize: 17, lineHeight: 1.5, margin: '0 0 18px' }}><Emphasized text={line} /></p>
+          {youngLearner && <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}><SpeakButton mini text={spokenLine} label="Hear it" /></div>}
           {/* A busy day's second review follows straight on (Mikey, pass LL: back to back at the start of the day). */}
-          {lookBack && getModule(lookBack.moduleId) ? <Btn full onClick={() => startLightReview(lookBack)}>Next quick look back</Btn> : <Btn full onClick={() => { setAttempt(null); setScreen('overview'); }}>Back to my lessons</Btn>}
+          {lookBack && getModule(lookBack.moduleId) ? <Btn full onClick={() => startLightReview(lookBack)}>Next</Btn> : <Btn full onClick={() => { setAttempt(null); setScreen('overview'); }}>Back to my lessons</Btn>}
         </div>
       </div></div>
     );
@@ -10440,7 +10454,7 @@ function EduSphereScreens() {
                   <ActionItemPopup stuck={itemsFor(st.id).stuck} busy={busy} step={actionTotal > 1 ? { at: Math.max(1, actionTotal - actionCount(itemsFor(st.id)) + 1), of: actionTotal } : null} onClose={() => setActionFor(null)} onPush={async (moduleId) => {
                     // One appended event: the review closes, the star and the memory checks stay (logic: makeMovedForwardEvent).
                     const rec = await loadRecord(st.id); const next = { ...rec, events: [...rec.events, makeMovedForwardEvent(moduleId, new Date().toISOString())] }; await saveRecord(next);
-                    const items = { stuck: stuckAfterReviewIds(next.events).map((id) => ({ id, moduleId: id, sentence: stuckSentence(next.events, id, st.label) })), writings: pendingWritings(next.events).length };
+                    const items = { stuck: actionStuckItems(next.events, st.label), writings: pendingWritings(next.events).length };
                     setActionItems((prev) => ({ ...prev, [st.id]: items })); if (!items.stuck.length && !items.writings) setActionFor(null);
                   }} />
                 )}
@@ -11504,17 +11518,24 @@ function EduSphereScreens() {
             onSave={async (code) => { const next = { ...roster, students: roster.students.map((s) => (s.id === educatorRecord.name ? { ...s, licenseCode: code } : s)) }; setRoster(next); await saveRoster(next); }} />
         )}
         {/* Everything the student has ever worked on, including courses since switched off. */}
-        {/* Practice reviews (pass LG): the sentences an educator reads about the fourth exposure, newest first, without the action line. */}
-        {!!lightReviewSentences(educatorRecord.events, studentLabelFor(educatorRecord), 3).length && (
-          <div style={{ ...card }}>
+        {/* Practice Reviews (passes LG and LP): every review, Move Forward and stuck lesson, dated, newest first; two show and History
+            opens the rest. Reviews are kept for good, so once the card appears it stays. */}
+        {(() => { const hist = lightReviewHistory(educatorRecord.events, studentLabelFor(educatorRecord)); if (!hist.length) return null; return (
+          <div style={{ ...card }} data-practice-reviews={hist.length}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 8 }}>
               <p style={{ margin: 0, fontSize: 17, fontWeight: 700 }}>Practice Reviews</p>
               <InfoButton onClick={() => setReviewsNoteOpen(!reviewsNoteOpen)} label="About practice reviews" open={reviewsNoteOpen} />
             </div>
             {reviewsNoteOpen && <div role="note" style={{ margin: '0 0 10px', fontSize: 14, color: C.muted, lineHeight: 1.5 }}><p style={{ margin: 0, color: C.muted }}>{PRACTICE_REVIEWS_NOTE}</p><p style={{ margin: '10px 0 0', color: C.muted }} data-reviews-note-more>{practiceReviewsMore(studentLabelFor(educatorRecord, 'this student'))}</p></div>}
-            {lightReviewSentences(educatorRecord.events, studentLabelFor(educatorRecord), 3).map((s, i) => <p key={i} style={{ margin: '0 0 8px', fontSize: 15, lineHeight: 1.5 }}><Emphasized text={s} /></p>)}
+            {(reviewsHistoryOpen ? hist : hist.slice(0, 2)).map((h, i) => (
+              <div key={i} style={{ margin: '0 0 12px' }}>
+                <p style={{ margin: '0 0 2px', fontSize: 12, color: C.muted, letterSpacing: 0.3 }} data-review-date>{h.at ? new Date(h.at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : ''}</p>
+                <p style={{ margin: 0, fontSize: 15, lineHeight: 1.5 }}><Emphasized text={h.text} /></p>
+              </div>
+            ))}
+            {hist.length > 2 && <div style={{ textAlign: 'center' }}><button type="button" onClick={() => setReviewsHistoryOpen(!reviewsHistoryOpen)} style={{ ...cardLink, marginRight: 0 }}>{reviewsHistoryOpen ? 'Hide history' : 'History'}</button></div>}
           </div>
-        )}
+        ); })()}
         <div className="edu-no-print" style={{ ...card, background: C.transcriptFill, borderColor: C.transcriptLine, color: C.transcriptInk }} data-tour="transcript">
           <p className="edu-card-title" style={{ margin: '0 0 6px', fontWeight: 600 }}>Transcript</p>
           <p style={{ margin: '0 0 10px', fontSize: 15, textAlign: 'center' }}>A printable record of everything {shownName} has ever worked on, including courses that are no longer assigned. This is the clearest view of student progression.</p>

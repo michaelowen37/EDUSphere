@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-06 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 8632 clips, 1,469,823 characters in all; the longest clip is 508 characters and the longest whole story 3,420, far under Eleven v4's 10,000 a request. 187 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-07 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 8693 clips, 1,477,020 characters in all; the longest clip is 508 characters and the longest whole story 3,420, far under Eleven v4's 10,000 a request. 187 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,7 +17,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 4576 | 518,163 |
+| Pre-K to grade 2 | 4637 | 525,360 |
 | Grades 3 to 5 | 1263 | 278,553 |
 | Grades 6 to 8 | 1138 | 272,072 |
 | Grades 9 to college | 1655 | 401,035 |
@@ -41,9 +41,9 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 |---|---|
 | story title | 658 |
 | story | 4194 |
-| lesson line | 2862 |
-| long story title | 102 |
-| long story | 816 |
+| lesson line | 2913 |
+| long story title | 103 |
+| long story | 825 |
 
 ## Stories with hand-written tags
 
@@ -419,42 +419,42 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 ### Two balls (S95, red-and-blue)
 
-- S95-1: [cheerful] Mia had a ball, and it was red, red like a strawberry. [a ball rolling on grass] She rolled it down the yard.
-- S95-2: Sam had a ball too, and it was blue, blue like the sky. He rolled his ball after hers.
-- S95-3: [soft bump] Bump! The two balls hit and stopped together in the grass. Mia ran over, and so did Sam.
-- S95-4: [puzzled] Which one is mine? said Mia. They were the same size and the same shape, and they felt the same.
-- S95-5: Mia looked hard, and then she smiled. [happily] Mine is red, she said, and she picked up the red ball.
-- S95-6: Sam laughed. [playful] Mine is blue, he said, and he picked up the blue ball and took it home.
+- S95-1: [cheerful] Mia had a ball, and it was red, red like a strawberry. [a ball rolling across the grass] She rolled it down the yard.
+- S95-2: [playful] Sam had a ball too, and it was blue, blue like the sky. He rolled his ball after hers.
+- S95-3: [a soft thump] Bump! [excited] The two balls hit and stopped together in the grass. Mia ran over, and so did Sam.
+- S95-4: [puzzled] Which one is mine? said Mia. [slowly] They were the same size and the same shape, and they felt the same.
+- S95-5: [thoughtful] Mia looked hard, [pause] and then she smiled. [delighted] Mine is red, she said, and she picked up the red ball.
+- S95-6: [laughs] Sam laughed. Mine is blue, he said, and he picked up the blue ball and took it home.
 - S95-7: [slowly, warmly] Red and blue are colors. Colors help us tell things apart, even when all else is the same.
 
 ### One small bed (S98, big-and-small)
 
-- S98-1: [warm, playful] Max was a big dog, long and tall. When he lay down, he filled the rug.
-- S98-2: Bean was a small dog, short and light. She could fit in a basket.
-- S98-3: There was one bed, and it was a small bed. Both dogs wanted it.
-- S98-4: Max tried it first. He squeezed in, but his legs hung off and his tail hung off. [amused] He did not fit.
-- S98-5: Bean tried it. She curled up until her nose touched her tail. [softly, pleased] Just right.
-- S98-6: [a big dog sighing] Max sighed and lay down on the big rug. [whispers] Both dogs fell asleep.
+- S98-1: [playful] Max was a big dog, long and tall. [slowly] When he lay down, he filled the rug.
+- S98-2: [cheerful] Bean was a small dog, short and light. She could fit in a basket.
+- S98-3: [curious] There was one bed, and it was a small bed. [playful] Both dogs wanted it.
+- S98-4: [playful] Max tried it first. [straining] He squeezed in, but his legs hung off and his tail hung off. [laughs] He did not fit.
+- S98-5: [softly] Bean tried it. She curled up until her nose touched her tail. [pleased] Just right.
+- S98-6: [sighs] Max sighed and lay down on the big rug. [whispers] Both dogs fell asleep.
 - S98-7: [slowly, warmly] Big things take up more room, and small things take up less. A small bed fits a small dog.
 
 ### Splash (S101, one-and-two)
 
-- S101-1: [softly, gentle water lapping] One duck swam on the pond, all by itself. The water was still.
-- S101-2: It quacked. [a single duck quacking] Quack! [quietly] Nobody quacked back, and only the wind moved.
-- S101-3: [wings flapping, coming closer] Then a shape came in the sky, wings and feathers, coming closer.
-- S101-4: [a big splash] Splash! Another duck landed, and water flew up. The first duck jumped.
-- S101-5: [happy] Now there were two ducks, two heads and two tails, and they swam together.
-- S101-6: [two ducks quacking] Quack, quack! Two quacks, not one, and the pond was not quiet anymore.
-- S101-7: [slowly, counting] One, then two. One more makes two.
+- S101-1: [softly] One duck swam on the pond, all by itself. The water was still.
+- S101-2: It quacked. [a duck quacking] Quack! [quietly] Nobody quacked back, and only the wind moved.
+- S101-3: [curious] Then a shape came in the sky, wings and feathers, [excited] coming closer.
+- S101-4: [water splashing] Splash! Another duck landed, and water flew up. [surprised] The first duck jumped.
+- S101-5: [delighted] Now there were two ducks, two heads and two tails, and they swam together.
+- S101-6: [two ducks quacking] Quack, quack! [happy] Two quacks, not one, and the pond was not quiet anymore.
+- S101-7: [slowly, warmly] One, then two. One more makes two.
 
 ### May I, Please? (S104, please-and-thank-you)
 
-- S104-1: [warm] Sam was drawing a big red fire truck. He needed the red crayon, but it was in Ana's hand.
-- S104-2: [quick] Sam reached over and grabbed it. [sharply] Mine! he said.
-- S104-3: [softly, sad] Ana's face crumpled, and her lip shook. She was not done with it yet.
-- S104-4: [slowly, thoughtful] Sam looked at her sad face, and his tummy felt funny. He gave the crayon back.
-- S104-5: Then he tried again. [gently, kindly] Ana, may I have the red crayon, please, when you are done?
-- S104-6: [warmly] Ana smiled and drew one more line. Here you go, she said. [happily] Thank you! said Sam.
+- S104-1: [cheerful] Sam was drawing a big red fire truck. [thoughtful] He needed the red crayon, but it was in Ana's hand.
+- S104-2: [rushed] Sam reached over and grabbed it. [loudly] Mine! he said.
+- S104-3: [sadly] Ana's face crumpled, and her lip shook. [softly] She was not done with it yet.
+- S104-4: [thoughtful] Sam looked at her sad face, and his tummy felt funny. [softly] He gave the crayon back.
+- S104-5: [gently] Then he tried again. [kindly] Ana, may I have the red crayon, please, when you are done?
+- S104-6: [warm] Ana smiled and drew one more line. Here you go, she said. [happy] Thank you! said Sam.
 - S104-7: [slowly, warmly] Please is the kind way to ask. Thank you shows we are glad. Kind words make friends glad too.
 
 ### One color at a time (S107, colours)
@@ -499,82 +499,82 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 ### The other mitten (S119, find-the-match)
 
-- S119-1: [excited] Snow! Leo wanted to go out, so he needed his mittens. He found one, and it was red.
-- S119-2: One mitten, but two hands, so one hand would be cold. [wondering] Where was the other one?
-- S119-3: [soft rustling] Leo tipped the basket over, and out came mittens of every kind. Blue ones, black ones and striped ones.
-- S119-4: [playful] He held up a blue one. No, not the same. He held up a big black one. No, too big.
-- S119-5: Then he saw it, a red one, small and soft, just like the first. He put them side by side. [delighted] A match!
-- S119-6: Two red mittens meant two warm hands. [footsteps crunching in snow] Leo ran out into the snow.
+- S119-1: [excited] Snow! Leo wanted to go out, so he needed his mittens. [curious] He found one, and it was red.
+- S119-2: [worried] One mitten, but two hands, so one hand would be cold. [whispering] Where was the other one?
+- S119-3: [rushed] Leo tipped the basket over, and out came mittens of every kind. [amazed] Blue ones, black ones and striped ones.
+- S119-4: [thoughtful] He held up a blue one. [disappointed] No, not the same. He held up a big black one. [sighs] No, too big.
+- S119-5: [gasps] Then he saw it, a red one, small and soft, just like the first. He put them side by side. [delighted] A match!
+- S119-6: [happy] Two red mittens meant two warm hands. [excited] Leo ran out into the snow.
 - S119-7: [slowly, warmly] Same means just alike. Look for the same color and the same size.
 
 ### Like me? (S122, match-the-animals)
 
-- S122-1: [softly] A little duckling woke up alone in the big barn. Where was everyone? [small, hopeful voice] Is there anyone like me?
-- S122-2: It saw a hen. The hen had feathers, but they were brown, and it clucked. [hen clucking] No, not like me.
-- S122-3: It saw a goat, big, with horns, and it said maa. [goat bleating] No, not like me.
-- S122-4: It saw a cat, soft, but with fur and not feathers, and it said meow. [cat meowing] No, not like me.
-- S122-5: [quietly, a little sad] The duckling sat down in the straw and peeped one small peep.
-- S122-6: [a duckling peeping] Peep! Something peeped back. Another duckling, with the same yellow, the same feathers and the same peep. [overjoyed] Yes, just like me!
+- S122-1: [softly] A little duckling woke up alone in the big barn. [worried] Where was everyone? Is there anyone like me?
+- S122-2: [curious] It saw a hen. The hen had feathers, but they were brown, [a hen clucking] and it clucked. [sighs] No, not like me.
+- S122-3: [curious] It saw a goat, big, with horns, [a goat bleating] and it said maa. [disappointed] No, not like me.
+- S122-4: [curious] It saw a cat, soft, but with fur and not feathers, [a cat meowing] and it said meow. [sadly] No, not like me.
+- S122-5: [slowly, softly] The duckling sat down in the straw and [a tiny peep] peeped one small peep.
+- S122-6: [gasps] Peep! [excited] Something peeped back. Another duckling, with the same yellow, the same feathers and the same peep. [delighted] Yes, just like me!
 - S122-7: [slowly, warmly] The same means just alike. Look closely, and then look again.
 
 ### Two bowls (S125, more-or-fewer)
 
-- S125-1: [warm] Two bowls sat on the table, and both had green grapes, cold from the fridge.
-- S125-2: This bowl was full, with grapes piled up high. That bowl had three, just three at the bottom.
-- S125-3: Ana looked at one, and then the other. [thinking] Which one had more? She wanted more.
-- S125-4: She counted the small bowl. [slowly, counting] One, two, three, and that was all.
-- S125-5: She did not count the big bowl, because she could see it was full. [excited] More!
-- S125-6: Ana picked the full bowl. [happy munching] She ate one grape, and then another, and there were plenty.
+- S125-1: [cheerful] Two bowls sat on the table, and both had green grapes, cold from the fridge.
+- S125-2: [curious] This bowl was full, with grapes piled up high. [thoughtful] That bowl had three, just three at the bottom.
+- S125-3: [curious] Ana looked at one, and then the other. [thoughtful] Which one had more? [playful] She wanted more.
+- S125-4: [slowly, counting] She counted the small bowl. One, two, three, [disappointed] and that was all.
+- S125-5: [thoughtful] She did not count the big bowl, because she could see it was full. [excited] More!
+- S125-6: [delighted] Ana picked the full bowl. She ate one grape, and then another, [happy] and there were plenty.
 - S125-7: [slowly, warmly] More means the bigger group, and fewer means the smaller one. The full bowl had more, and the small bowl had fewer.
 
 ### The first line (S128, first-marks)
 
-- S128-1: [warm, playful] Kai had a new crayon, fat and red, and he held it tight.
-- S128-2: He pressed it on the paper, and it made a dot. [soft tap] One red dot.
-- S128-3: [thoughtful] A dot is nice, but it just sits there. It does not go anywhere.
-- S128-4: [crayon scribbling] Kai moved his hand, and the dot grew a tail. The tail got longer, and it was a line! [giggles] A wobbly line.
-- S128-5: The line went across, then up, then right off the page. [a child laughing] Kai laughed.
-- S128-6: [quick crayon scribbles] He made another, and another, until lines were all over. His page was full.
+- S128-1: [excited] Kai had a new crayon, fat and red, and he held it tight.
+- S128-2: [curious] He pressed it on the paper, and it made a dot. [proud] One red dot.
+- S128-3: [thoughtful] A dot is nice, but it just sits there. [sighs] It does not go anywhere.
+- S128-4: [curious] Kai moved his hand, and the dot grew a tail. The tail got longer, [gasps] and it was a line! [giggles] A wobbly line.
+- S128-5: [rushed] The line went across, then up, then right off the page. [laughs] Kai laughed.
+- S128-6: [playful] He made another, and another, until lines were all over. [proud] His page was full.
 - S128-7: [slowly, warmly] Start at the dot. Follow the line. A line is a dot that went for a walk.
 
 ### One, two, three (S131, three-dots)
 
-- S131-1: [slowly, counting] One, two, three. Three dots on the page, just dots. Rosa looked at them.
-- S131-2: [curious] What were they for? Dots do not do anything, and they just sit.
-- S131-3: Rosa put her crayon on dot one and drew to dot two. [pleased] A line!
-- S131-4: From two, she drew to three, and that was another line. Now there was a corner.
-- S131-5: From three, she drew back to one, the last line, and the lines met.
-- S131-6: Rosa held up the page. The dots had become a shape with three sides and three corners. [delighted] A triangle!
+- S131-1: [slowly, counting] One, two, three. Three dots on the page, just dots. [curious] Rosa looked at them.
+- S131-2: [puzzled] What were they for? Dots do not do anything, and they just sit.
+- S131-3: [carefully] Rosa put her crayon on dot one and drew to dot two. [delighted] A line!
+- S131-4: [carefully] From two, she drew to three, and that was another line. [curious] Now there was a corner.
+- S131-5: [slowly] From three, she drew back to one, the last line, [excited] and the lines met.
+- S131-6: [proud] Rosa held up the page. The dots had become a shape with three sides and three corners. [delighted] A triangle!
 - S131-7: [slowly, warmly] Start at 1. Draw to each dot in order. The dots know the way.
 
 ### Where Is the Frog? (S134, yellow-and-green)
 
 - S134-1: [cheerful] Theo had two bath toys, a yellow duck and a green frog. Today they got to play outside.
-- S134-2: [playful whisper] Let's hide them! said Theo. [soft rustling grass] He tucked the duck and the frog into the tall green grass.
-- S134-3: Grandma came out to look, and [pleased] she saw the yellow duck right away. Yellow on green is easy to spot.
-- S134-4: [puzzled] But where was the frog? Grandma looked and looked. Green on green is hard to see.
-- S134-5: [a child giggling] Theo giggled. [delighted] The frog is green like the grass, he said. It looks just like the grass!
-- S134-6: At last Grandma found it by a green leaf. [happily] Theo held up both toys, one yellow and one green.
+- S134-2: [whispering, playful] Let's hide them! said Theo. [giggles] He tucked the duck and the frog into the tall green grass.
+- S134-3: [curious] Grandma came out to look, and she saw the yellow duck right away. [pleased] Yellow on green is easy to spot.
+- S134-4: [puzzled] But where was the frog? [slowly] Grandma looked and looked. [whispers] Green on green is hard to see.
+- S134-5: [giggles] Theo giggled. The frog is green like the grass, he said. [delighted] It looks just like the grass!
+- S134-6: [relieved] At last Grandma found it by a green leaf. [proud] Theo held up both toys, one yellow and one green.
 - S134-7: [slowly, warmly] Yellow like a banana, green like the grass. When colors are different, they are easy to tell apart.
 
 ### Pizza corners (S137, triangles-too)
 
-- S137-1: [cheerful] Dinner was pizza, a big round pizza cut into slices.
-- S137-2: Diego took a slice. It had a pointy end and a wide end, [blowing on hot food] and it was hot.
-- S137-3: He counted the corners. [slowly, counting] One corner, at the point.
-- S137-4: Two corners and three corners, at the wide end, and then no more. He counted again. [pleased] Three.
-- S137-5: Three corners and three sides, and Diego knew that shape. [delighted] A triangle, almost!
-- S137-6: [pencil scratching] He drew a triangle on his napkin, with three straight lines and three corners. It looked like his pizza.
+- S137-1: [excited] Dinner was pizza, a big round pizza cut into slices.
+- S137-2: [curious] Diego took a slice. It had a pointy end and a wide end, [blowing on hot food] and it was hot.
+- S137-3: [slowly, counting] He counted the corners. One corner, at the point.
+- S137-4: [slowly, counting] Two corners and three corners, at the wide end, and then no more. [thoughtful] He counted again. [pleased] Three.
+- S137-5: [thoughtful] Three corners and three sides, and Diego knew that shape. [excited] A triangle, almost!
+- S137-6: [proud] He drew a triangle on his napkin, with three straight lines and three corners. It looked like his pizza.
 - S137-7: [slowly, warmly] A triangle has three corners. Count them. One, two, three.
 
 ### Two shoes (S140, big-and-little)
 
-- S140-1: [warm, playful] By the door there were two shoes, one big and one little. Lena looked at both.
-- S140-2: She tried the big one. Her foot went in, and in, and in. [giggles] It swam inside.
-- S140-3: She tried to walk. [heavy clomping footsteps] Clomp, wobble, and the big shoe fell off.
-- S140-4: She tried the little one, and her foot went in and stopped. [pleased] Just right.
-- S140-5: The big shoe was Dad's, and the little shoe was hers.
-- S140-6: Dad put on the big one and Lena put on the little one, [a door opening] and they went out together.
+- S140-1: [curious] By the door there were two shoes, one big and one little. Lena looked at both.
+- S140-2: [playful] She tried the big one. Her foot went in, and in, and in. [giggles] It swam inside.
+- S140-3: She tried to walk. [a heavy shoe clomping] Clomp, wobble, [laughs] and the big shoe fell off.
+- S140-4: [curious] She tried the little one, and her foot went in and stopped. [pleased] Just right.
+- S140-5: [happy] The big shoe was Dad's, and the little shoe was hers.
+- S140-6: [warm] Dad put on the big one and Lena put on the little one, and they went out together.
 - S140-7: [slowly, warmly] Big things take up lots of room, and little things take up just a little. That is how Lena knew which shoe was hers.
 
 ### Roll or sit (S143, circle-and-square)

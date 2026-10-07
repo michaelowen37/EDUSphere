@@ -201,6 +201,22 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'j1-tap-result') { const want = /two squares/.test(q.prompt) || /three squares/.test(q.prompt) ? 'rectangle' : /four squares/.test(q.prompt) ? 'square' : /three triangles/.test(q.prompt) ? 'trapezoid' : 'hexagon'; if (shapeOf(q.answer) !== want) problems.push('tap result wrong'); }
     if (genId === 'j1-more-ways') { const t = q.prompt.match(/make a (\w+)\?$/)[1]; if (!makes(q.answer, t) || q.choices.filter((c) => c !== q.answer).some((c) => makes(c, t))) problems.push('more ways wrong'); }
     if (genId === 'j1-can') { const m2 = /^Can (.+) make a (\w+)\?$/.exec(q.prompt); const label = m2[1].replace(/^\w/, (c) => c.toUpperCase()); const want = makes(label, m2[2]) ? 'Yes' : 'No'; if (q.answer !== want) problems.push('can make wrong'); }
+    // Listen and Point (pass LS): sounds and pictures re-derived from the words.
+    const lsSounds = { cat: 'meow', duck: 'quack', bee: 'buzz', frog: 'ribbit', owl: 'hoot', bear: 'growl', dog: 'woof', bird: 'tweet' };
+    if (genId === 'p3-animal-says' && q.answer !== lsSounds[q.prompt.match(/the (\w+) say/)[1]]) problems.push('animal says wrong');
+    if (genId === 'p3-animal-sound' && lsSounds[String(q.answer).replace('pic:', '')] !== q.prompt.match(/says (\w+)\./)[1]) problems.push('animal sound wrong');
+    if (genId === 'p3-tap-picture' && q.answer !== 'icon:' + q.prompt.match(/Tap the (\w+)\./)[1]) problems.push('picture wrong');
+    // Very First Steps (pass LN): sizes, dots and colors re-derived from the tokens.
+    const lnRank = { small: 1, medium: 2, big: 3 }; const lnRankOf = (c) => lnRank[String(c).split(':')[2]]; const lnDots = (c) => Number(String(c).split(':')[1]);
+    if (genId === 'pk3-tap-middle' && !String(q.answer).endsWith(':medium')) problems.push('middle size wrong');
+    if (genId === 'pk3-tap-biggest' && !q.choices.every((c) => lnRankOf(c) <= lnRankOf(q.answer))) problems.push('biggest wrong');
+    if (genId === 'pk3-tap-littlest' && !q.choices.every((c) => lnRankOf(c) >= lnRankOf(q.answer))) problems.push('littlest wrong');
+    if (genId === 'p4-tap-bigger' && !q.choices.every((c) => lnRankOf(c) <= lnRankOf(q.answer))) problems.push('bigger wrong');
+    if (genId === 'p4-tap-smaller' && !q.choices.every((c) => lnRankOf(c) >= lnRankOf(q.answer))) problems.push('smaller wrong');
+    if (genId === 'p3-tap-more' && !q.choices.every((c) => lnDots(c) <= lnDots(q.answer))) problems.push('more dots wrong');
+    if (genId === 'p3-tap-fewer' && !q.choices.every((c) => lnDots(c) >= lnDots(q.answer))) problems.push('fewer dots wrong');
+    if (genId === 'p3-tap-colour-item' && String(q.answer).split('-')[1] !== q.prompt.match(/Tap the (\w+) one/)[1]) problems.push('colour item wrong');
+    if (genId === 'p3-tap-three-shapes' && String(q.answer).replace('shape:', '').split('~')[0] !== q.prompt.match(/Tap the (\w+)\./)[1]) problems.push('three shapes wrong');
     // Grade 1 equations and word problems (pass LB), re-derived by working out each side of the number sentence in the words.
     const sideValue = (t) => { const toks = t.trim().split(/\s+/); let v = Number(toks[0]); for (let i = 1; i < toks.length; i += 2) v = toks[i] === '+' ? v + Number(toks[i + 1]) : v - Number(toks[i + 1]); return v; };
     const eqOf = (t) => (String(t).match(/(?:\d+|\?)(?: [-+] (?:\d+|\?))* = (?:\d+|\?)(?: [-+] (?:\d+|\?))*/) || [null])[0];
@@ -2065,6 +2081,37 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   ok('the lesson stays in the memory checks after moving forward', L.deriveProgress(moved).masteredIds.includes('teen-numbers'));
   const sMoved = L.lightReviewSentences(moved, 'S-77');
   ok('the moved sentence names the day, the loop back, and that the lesson keeps flowing through memory checks', sMoved.length === 1 && /You moved S-77 forward on \*Teen Numbers\* on October 30/.test(sMoved[0]) && /loop back to \*/.test(sMoved[0]) && /continue to flow through infrequent memory checks/.test(sMoved[0]));
+  { const h = L.lightReviewHistory(moved, 'S-77');
+    ok('the history lists each review and each Move Forward with its date, newest first', h.length === 2 && h[0].kind === 'moved' && h[1].kind === 'fail' && h.every((x) => !!x.at) && String(h[0].at) > String(h[1].at) && /^You moved S-77 forward/.test(h[0].text));
+    const hs = L.lightReviewHistory(stuck, 'S-77');
+    ok('a lesson stuck right now is in the history too, without the action line', hs.length === 2 && hs[0].kind === 'stuck' && !/clicking below/.test(hs[0].text));
+    const note = L.weeklyNote('S-77', moved, iso(31));
+    ok('the weekly note carries the week\'s practice reviews and Move Forward', /Practice reviews:/.test(note) && /You moved S-77 forward on \*\*Teen Numbers\*\*/.test(note));
+    const later = L.weeklyNote('S-77', moved, iso(32));
+    ok('the weekly note carries only that week\'s practice reviews (the Move Forward of day 30, not the review of day 24)', /You moved S-77 forward/.test(later) && !/took a short practice review of/.test(later));
+    ok('Who Needs Help lists a lesson stuck after its practice review', JSON.stringify(L.classView([{ id: 's-77', label: 'S-77', events: stuck }], iso(30))).includes('since a practice review reopened it')); }
+  // A lesson never mastered (Mikey, pass LQ): the ladder, Move Forward without a star, the gate, the fresh try, the record.
+  { const pre = L.prerequisitesOf('teen-numbers').slice(-1)[0];
+    const nv = [...star(pre, 1, 2), miss('teen-numbers', 3), miss('teen-numbers', 4), L.makeLoopBackEvent('teen-numbers', pre, iso(4).replace('T15', 'T16')), pass(pre, 5), miss('teen-numbers', 6)];
+    ok('a never-mastered lesson is not stuck before the ladder has run', L.neverMasteredStuck(nv, 'teen-numbers') === null);
+    const nv2 = [...nv, miss('teen-numbers', 7)]; const ns = L.neverMasteredStuck(nv2, 'teen-numbers');
+    ok('two misses, a loop back and two more misses on a lesson never mastered is stuck', !!ns && ns.rounds === 4 && ns.loopedTo === pre && L.neverMasteredStuckIds(nv2).includes('teen-numbers'));
+    const sn = L.neverStuckSentence(nv2, 'teen-numbers', 'S-77');
+    ok('its sentence offers Move Forward and says the lesson stays on the list', /^S-77 cannot seem to master \*Teen Numbers\*\. They have had four rounds at it without a pass and one of those rounds was after looping back to/.test(sn) && /clicking below/.test(sn) && L.actionStuckItems(nv2, 'S-77').some((x) => x.moduleId === 'teen-numbers'));
+    const nmv = [...nv2, L.makeMovedForwardEvent('teen-numbers', iso(8))]; const pr = L.deriveProgress(nmv).perModule['teen-numbers'];
+    ok('Move Forward on a lesson never mastered gives no star, and it is not stuck any more', pr.mastered === false && pr.movedPast === true && L.neverMasteredStuck(nmv, 'teen-numbers') === null && L.movedPastIds(nmv).includes('teen-numbers'));
+    const stOf = (evs) => (L.moduleStatuses(L.deriveProgress(evs), ['teen-numbers', 'adding-to-20']).find((x) => x.id === 'adding-to-20') || {}).status;
+    ok('Move Forward opens the next lesson (Adding to 20 comes after Teen Numbers)', stOf(nv2) === 'locked' && stOf(nmv) === 'available');
+    ok('a lesson moved past comes back as a fresh-try review three weeks later', L.lightReviewQueue(nmv, iso(30)).some((x) => x.moduleId === 'teen-numbers' && x.stage === 'fresh') && !L.lightReviewQueue(nmv, iso(28)).some((x) => x.moduleId === 'teen-numbers'));
+    const fr = L.buildLightReview(nmv, 3, L.lightReviewQueue(nmv, iso(30)).find((x) => x.moduleId === 'teen-numbers'));
+    const fclear = [...nmv, L.makeLightReviewEvent(fr, [1, 1, 1, 1, 1].map((c) => ({ correct: !!c })), iso(30), iso(30))];
+    ok('a clear fresh try earns the star', L.deriveProgress(fclear).perModule['teen-numbers'].mastered === true);
+    const ffail = [...nmv, L.makeLightReviewEvent(fr, [1, 0, 0, 0, 0].map((c) => ({ correct: !!c })), iso(30), iso(30))];
+    ok('a missed fresh try leaves the lesson open and comes back again in three weeks', L.deriveProgress(ffail).perModule['teen-numbers'].mastered === false && L.lightReviewState(ffail, 'teen-numbers').stage === 'fresh' && String(L.lightReviewState(ffail, 'teen-numbers').dueAt) > iso(50));
+    const hn = L.lightReviewHistory(ffail, 'S-77');
+    ok('the history logs the move past and the fresh try, with dates', hn.some((x) => x.kind === 'moved' && /before it was mastered/.test(x.text) && !!x.at) && hn.some((x) => x.kind === 'fail' && /fresh-try practice review/.test(x.text)));
+    const cvj = JSON.stringify(L.classView([{ id: 's-77', label: 'S-77', events: nmv }], iso(9)));
+    ok('Who Needs Help notes the move past and no longer calls the lesson stuck', /was moved past/.test(cvj) && !/is stuck on \*\*Teen Numbers\*\*/.test(cvj)); }
   ok('a new star after moving forward restarts the schedule like any star', L.lightReviewState([...moved, ...star('teen-numbers', 40, 41)], 'teen-numbers').stage === 'first');
   // Two a day at most, oldest first, offered together at the start of the day and taken back to back (Mikey, passes LI to
   // LM): three lessons starred on one day give two reviews on the day they fall due and the third the next day.
@@ -2092,7 +2139,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   const sBare = L.lightReviewSentences([...events, bare], 'S-77');
   ok('the bare-pass sentence names the two kinds of questions missed', /^S-77 took a short practice review of \*Teen Numbers\* and scored three out of five\. They are keeping the idea but it is not yet firm, so another short review comes in a week\. We will start that review with the two kinds of questions S-77 missed, ".+" and ".+"\.$/.test(sBare[0]));
   const sFail = L.lightReviewSentences([...events, L.makeLightReviewEvent(review, [1, 1, 0, 0, 0].map((c) => ({ correct: !!c })), iso(33), iso(33))], 'S-77');
-  ok('the fail sentence names the lessons the probe reaches back to', /^S-77 took a short practice review of \*Teen Numbers\* one month after mastering it and scored two out of five\. That prompted us to reopen and reassign the lesson, and the memory checks in the next few rounds will probe the lessons leading up to it, \*.+\*\. Sometimes a slip like this starts one step earlier, so those refreshers may reach even further back\.$/.test(sFail[0]));
+  ok('the fail sentence reads in Mikey\'s words', /^S-77 took a short practice review of \*Teen Numbers\* four weeks after mastering it and scored two out of five\. This prompted us to reopen and reassign the lesson as well as restructure the memory checks in a way that probes S-77's understanding of the prerequisites\. Depending on how this goes, there's a chance of additional lessons reopening\.$/.test(sFail[0]));
   ok('a light review counts toward confidence like a memory check', L.computeConfidence('teen-numbers', [...events, clear]).reviewsAsked === 5);
 }
 

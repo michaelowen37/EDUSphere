@@ -45,7 +45,7 @@ ok('back in the classroom, the link counts what is left', (await page.getByRole(
 await page.getByRole('button', { name: 'Home' }).first().click(); await page.waitForTimeout(500);
 await page.getByRole('button', { name: /S-77$/ }).first().click(); await page.waitForTimeout(800); await tapIf('Later');
 t = await text(); await snap('4-start-of-day');
-ok('the day opens on the quick look backs, two of them, both named', /First, two quick look backs/.test(t) && (await page.locator('[data-light-review-count="2"]').count()) === 1);
+ok('the day opens on the quick look backs, two of them, both named', /First, A Quick Review/.test(t) && (await page.locator('[data-light-review-count="2"]').count()) === 1);
 const answer = async (rightCount) => {
   for (let k = 0; k < 5; k++) {
     const q = await page.evaluate(() => window.__eduTest.question); if (!q) break;
@@ -59,19 +59,19 @@ const answer = async (rightCount) => {
   }
 };
 await page.getByRole('button', { name: 'Start', exact: true }).click(); await page.waitForTimeout(500);
-ok('Start opens the first review on the practice screen', (await screen()) === 'practice' && /Quick look back/.test(await text()));
+ok('Start opens the first review on the practice screen, Quick Review over Question 1 of 5', (await screen()) === 'practice' && /Quick Review\s*Question 1 of 5/.test(await text()));
 await answer(5); await page.waitForTimeout(500); t = await text(); await snap('5-result-clear');
-ok('a clear pass reads Mikey\'s line and offers the next review straight away', (await screen()) === 'light-review-result' && /well\. That one is yours to keep\./.test(t) && (await page.getByRole('button', { name: 'Next quick look back' }).count()) === 1 && !/fail/i.test(t));
-await page.getByRole('button', { name: 'Next quick look back' }).click(); await page.waitForTimeout(500);
+ok('a clear pass reads Mikey\'s line and offers the next review straight away', (await screen()) === 'light-review-result' && /well\. That one is yours to keep!/.test(t) && (await page.getByRole('button', { name: 'Next' }).count()) === 1 && !/fail/i.test(t));
+await page.getByRole('button', { name: 'Next', exact: true }).click(); await page.waitForTimeout(500);
 await answer(2); await page.waitForTimeout(500); t = await text(); await snap('6-result-fail');
 ok('a fail never says fail, reads Mikey\'s line, and goes back to the lessons', (await screen()) === 'light-review-result' && /is worth another visit\. It's open again on your list so you can go back through it any time\./.test(t) && !/\bfail/i.test(t) && (await page.getByRole('button', { name: 'Back to my lessons' }).count()) === 1);
 await page.getByRole('button', { name: 'Back to my lessons' }).click(); await page.waitForTimeout(600); t = await text(); await snap('7-overview');
 ok('the lessons follow, with no third review that day', (await screen()) === 'overview' && !/quick look back/i.test(t.split('Open again')[0].slice(0, 400)) && (await page.locator('[data-light-review-card]').count()) === 0);
 // A young learner's lessons sit inside skill groups that open with a tap; open them the way a child would.
 let seenLine = false; const heads = page.locator('button[aria-expanded]'); const nHeads = await heads.count();
-for (let g = 0; g < nHeads && !seenLine; g++) { const h = heads.nth(g); if ((await h.getAttribute('aria-expanded')) === 'false') { await h.click(); await page.waitForTimeout(200); } seenLine = /Open again after a quick look back\. Go through it once more, story and all, when you're ready\./.test(await text()); }
+for (let g = 0; g < nHeads && !seenLine; g++) { const h = heads.nth(g); if ((await h.getAttribute('aria-expanded')) === 'false') { await h.click(); await page.waitForTimeout(200); } seenLine = /You've mastered this once before but one of your reviews prompted a refresher\. Go through it once more, story and all, when you're ready\./.test(await text()); }
 t = await text(); await snap('8-overview-open');
-ok('the failed lesson carries Mikey\'s reopened line', /Open again after a quick look back\. Go through it once more, story and all, when you're ready\./.test(t));
+ok('the failed lesson carries Mikey\'s reopened line', /You've mastered this once before but one of your reviews prompted a refresher\. Go through it once more, story and all, when you're ready\./.test(t));
 ok('no page errors along the way', errors.length === 0, errors);
 await browser.close();
 console.log(`\n${passed} passed, ${failed} failed`);

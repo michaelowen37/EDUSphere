@@ -9,6 +9,16 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## October 7, 2026 (First Steps stories, part one)
+
+- Drawings that stand in for our painted illustrations now say so in a small note in the corner. You will see it on lessons and stories, and on questions only when you walk through a course, so a child answering never sees it.
+- A right answer now shows its explanation picture too, like two boats beside the words both are boats. Those pictures were being made but never shown.
+- Nine First Steps stories have been rewritten so each one gives a child a real problem to solve with the lesson's idea. Look for a red circle at cleanup time, a sock that only fits the baby, and strawberries lined up one with one to see who really has more.
+
+## October 7, 2026 (First Steps, part two refreshed)
+
+- The second half of First Steps has been reviewed again at a higher standard. The size lessons now teach taller and longer as well as bigger and smaller, and remind children that a book can show a bee and a bear the same size, even though a bear is huge in real life.
+- Taking Turns now talks about how hard waiting can feel and three things to do while you wait, Helpers All Around shows where each helper works, and One, Two, Three now asks children to count all the way to three. These lessons hold more questions too, so a child who comes back meets new ones.
 ## October 7, 2026 (First Steps, part one refreshed)
 
 - The first half of First Steps for pre-K 4 has been reviewed again at a higher standard. Colors, matching and More and Fewer now show each idea more than one way, with real things to look for, like a red stop sign, a door shaped like a rectangle or two plates of strawberries, and more paintings on the way.

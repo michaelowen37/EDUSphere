@@ -200,6 +200,26 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A sample built by hand to look like a real screen drifts: the LI tour sample missed the Merge link and the Wonder pill and was laid out differently, and Mikey saw all three at a glance. Feed made-up data through the real component instead, with taps switched off, and the sample can never differ from the page.
 - Count a daily allowance against the day as it started, not as it stands: finishing the first review shrinks the queue, and a rule that rechecked the live queue would cancel the second review the backlog asked for.
 
+## Learned in pass LW (stories with a turn, and a second reader)
+
+- A matching story needs a pair that looks like a match and is not. A pond where every animal came in twos had nothing go wrong; a red train beside a red car, a whale beside a fish and a fox's pointy ears on the fence each make the child look again.
+- A narrator never says a child's mistake as fact. Same color, same stripes, a match! belongs to Finn (said Finn), and There it is! to Ivy, so the story never teaches the wrong match.
+- A general fact inside a past-tense story is said by a grown-up (A train runs on a track, said Grandpa), so the narration keeps one tense and the fact has a voice.
+- A solid is not a flat shape. A round block is a cylinder or a sphere, not a circle, and a triangle block has six corners (its top has three). A colors story that needs circles and squares sorts flat foam shapes.
+- Tell things apart the way the lesson does. A balloon is light and has a string; floating is not in the lesson, only a helium balloon floats, and light things do not float.
+- When the words give a count (three strawberries in a row, four in a bunch), the picture's prompt names it, so a painting can be checked against the story before it is saved.
+- Read each scene for a young child's safety, not only the plot: the porch light goes on at dusk, and a grown-up opens the door after a fox has passed.
+- A reader who has not seen the writing finds what the writer cannot: the independent check found eight things to fix in nine stories. Give every story batch one.
+- A field a generator makes is checked on the screen, not only in the rules test: 34 kinds of question made explanation pictures that were validated every run and never drawn.
+
+## Learned in pass LV (read the citation against the lesson)
+
+- A citation is a promise about what the lesson teaches. Both size lessons cited V.D.1, which compares heights or lengths, and taught only the room a thing takes up; they now teach taller and longer too. Read the cited text against the lesson, not only the code against the plan.
+- A count lesson asks every number it counts to: One, Two, Three had no question that asked for three.
+- A setup line that names things in a random order counts every order as a new question, so the bank looks bigger than the variety a child meets (369 was really 69). Name them in a fixed order and shuffle only the pictures.
+- Compare only what is clearly different. A bear and a whale are never set against each other, because the smallest whales are about the size of a big bear; the size groups the lessons name keep every comparison safe.
+- A kind shared with another course is not widened for one course: the helper and good-choice kinds are kindergarten's too, so pre-K's new facts got kinds of their own.
+
 ## Learned in pass LU (banks that grow)
 
 - A question is the same question when its words, picture and answer match, whatever the wrong choices (questionKey), so shuffling distractors never deepens a bank. It grows with new words, pictures or answers, and the best of those apply the lesson's own facts: where a boat goes, which shape is like a can, which animal has long ears.

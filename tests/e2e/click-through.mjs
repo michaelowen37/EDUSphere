@@ -67,9 +67,12 @@ const openIfStill = async () => { await page.waitForTimeout(120); if ((await sta
 // Module titles show in title case since pass JE, so a title is looked for without regard to case.
 const openSubject = async (name, marker) => { if (!(await text()).toLowerCase().includes(marker.toLowerCase())) await page.getByRole('button', { name: new RegExp('^' + name) }).click(); };
 
-// Answers the current question right or wrong using the page's own question object.
+// Answers the current question right or wrong using the page's own question object. Since pass LW it also counts any
+// stand-in note a child could see; there must be none.
+let studentNotes = 0;
 async function answer(correctly) {
   const { question: q } = await state();
+  studentNotes += await page.locator('[data-replace-note]').count();
   let choice;
   if (q.type === 'number') {
     const wrong = String(Number(q.answer) + 1);
@@ -450,6 +453,8 @@ await page.evaluate(() => window.__eduTest.openModule('red-and-blue'));
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'lesson');
 for (let i = 0; i < 2; i++) await page.getByLabel('Next').click();
 ok('a read-aloud lesson shows its picture on the spoken line it belongs to', (await page.locator('[data-lesson-picture="P13"]').count()) === 1 && /Illustration P13 to come/.test(await text()));
+// Pass LW (Mikey): until P13 is painted, the line's drawing wears his note in its corner, in his words.
+ok('a drawing waiting for its painting says so in its corner', (await page.locator('[data-lesson-picture="P13"] [data-replace-note]').count()) === 1 && (await page.locator('[data-lesson-picture="P13"] [data-replace-note]').textContent()) === "To be replaced with Mikey's provided image.");
 await page.getByLabel('Back').first().click();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
 await page.evaluate(() => window.__eduTest.openModule('count-to-5'));
@@ -901,6 +906,8 @@ await page.fill('input[aria-label="Search notes"]', '');
 // Coloring: play with no score. One picture from the start, opened and colored from the overview.
 await tap('Back to Classroom');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'educator-pick');
+// Pass LW: no question a child answered above showed a stand-in note (the walk-through below checks that one does show).
+ok('a child answering a question never sees the stand-in note', studentNotes === 0);
 await page.waitForTimeout(400); await page.getByRole('button', { name: 'Walk through early years' }).click();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
 await page.waitForTimeout(300);
@@ -930,6 +937,29 @@ ok('a coloring break shows the five minute bar and its two icons', (await page.l
 await page.getByRole('button', { name: 'Close coloring' }).first().click({ force: true });
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
 ok('coloring records nothing: the round count is untouched', (await state()).screen === 'overview');
+// Pass LW (Mikey): in a walk-through, a rocket, flower or butterfly drawn in place of its coloring page wears the note on
+// its answer button, and every right answer shows its explanation picture (the vehicles' pairs). The round is answered
+// to its end, and Back returns to the overview for the steps below.
+{ await page.evaluate(() => window.__eduTest.openModule('match-the-vehicles'));
+  await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'lesson');
+  for (let i = 0; i < 16 && !(await page.getByLabel('Start practice').count()); i++) { await page.getByLabel('Next').first().click(); await page.waitForTimeout(120); }
+  await page.getByLabel('Start practice').click();
+  await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'practice');
+  let asked = 0, noted = 0, shown = 0, drawn = 0;
+  for (let k = 0; k < 10 && (await state()).screen === 'practice'; k++) {
+    const q = (await state()).question; const want = ((q && q.choices) || []).filter((ch) => /^art:(rocket|flower|butterfly)(#|$)/.test(ch)).length;
+    if (want) { asked++; if ((await page.locator('button[data-choice^="art:"] [data-replace-note]').count()) === want) noted++; }
+    await page.locator(`button[data-choice="${q.answer.replace(/"/g, '\\"')}"]`).first().click(); await tap('Check answer');
+    const ev = q.explainVisual; if (ev && !Array.isArray(ev) && ev.kind !== 'dots') { shown++; if (await page.locator('[data-explain-picture]').count()) drawn++; }
+    const nx = page.getByRole('button', { name: /Next question|See results/ }); const label = await nx.first().textContent(); await nx.first().click(); await page.waitForTimeout(150);
+    if (/See results/.test(label)) break;
+  }
+  ok('in a walk-through, a picture answer drawn in place of its painting says so in its corner', asked > 0 && noted === asked);
+  ok('a right answer shows its explanation picture: the two vehicles its words describe', shown > 0 && drawn === shown);
+  console.log(`  (walk-through questions with a stand-in answer: ${noted} of ${asked} noted; explanation pictures drawn: ${drawn} of ${shown})`);
+  if ((await state()).screen !== 'overview') { await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'result'); await page.getByLabel('Back').click(); }
+  await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+}
 // Walk the Robot (pass FS, computer science K to 2): the child writes the steps. The first robot of round one is walk
 // number five (start 0,2; star 0,0; a rock at 0,1): right, up, up, left brings it home. The second (start 4,4; star 2,3;
 // rocks at 3,4 and 2,4) bumps on a first step left; taking the step back and going up, left, left brings it home too.

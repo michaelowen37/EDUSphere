@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-07 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 8771 clips, 1,487,861 characters in all; the longest clip is 508 characters and the longest whole story 3,420, far under Eleven v4's 10,000 a request. 189 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-08 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 8832 clips, 1,495,835 characters in all; the longest clip is 508 characters and the longest whole story 3,420, far under Eleven v4's 10,000 a request. 189 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,7 +17,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 4715 | 536,201 |
+| Pre-K to grade 2 | 4776 | 544,175 |
 | Grades 3 to 5 | 1263 | 278,553 |
 | Grades 6 to 8 | 1138 | 272,072 |
 | Grades 9 to college | 1655 | 401,035 |
@@ -40,8 +40,8 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 | Kind | Clips |
 |---|---|
 | story title | 658 |
-| story | 4199 |
-| lesson line | 2975 |
+| story | 4210 |
+| lesson line | 3025 |
 | long story title | 104 |
 | long story | 835 |
 
@@ -457,15 +457,16 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S104-6: [warm] Ana smiled and drew one more line. Here you go, she said. [happy] Thank you! said Sam.
 - S104-7: [slowly, warmly] Please is the kind way to ask. Thank you shows we are glad. Kind words make friends glad too.
 
-### One color at a time (S107, colours)
+### The red circle (S107, colours)
 
-- S107-1: [rain pattering on a window] It rained all morning. Lena watched the drops run down the glass, drip, drip, [wistful] and she wanted to go out.
-- S107-2: [brightening] Then the rain stopped, the sun came out, and the whole yard sparkled.
-- S107-3: Lena ran outside and looked up. [amazed] A rainbow! It went all the way across the sky.
-- S107-4: She wanted to name it, but it had so many colors. [wondering] Where should she start?
-- S107-5: Dad said to start at the top. [slowly, naming each color] Red, said Lena. Then orange, then yellow, then green.
-- S107-6: Then blue, then purple, every color she could see. She said them one at a time, then again, fast.
-- S107-7: [slowly, warmly] Every color has a name, and naming them helps us tell things apart.
+- S107-1: [cheerful] It was cleanup time, and foam shapes were all over the floor. [brightly] Dad set out four bins, red, blue, yellow and green.
+- S107-2: [playful] Lena put the red squares in the red bin, red like a strawberry. [happily] The blue ones went in the blue bin, blue like the sky.
+- S107-3: [sing-song] Yellow ones went in, yellow like a banana, and green ones, green like the grass. [curious] Then Lena picked up a red circle.
+- S107-4: [slowly] She stopped and looked. [puzzled] The red bin was full of squares, and this shape was a circle. [wondering] Did it go somewhere else?
+- S107-5: [gently] Look at the color, said Dad. [slowly] A red circle and a red square are the same color, even though their shapes are different.
+- S107-6: [delighted] So in it went with the red squares. [proud] Soon every shape was in a bin, and each bin held just one color.
+- S107-7: [curious] Then Lena looked down at her shirt, yellow like a banana. [giggles] Do I go in the yellow bin? she asked, [laughs] and Dad laughed.
+- S107-8: [slowly, warmly] Colors help us sort. Look at the color, and things of one color go together.
 
 ### Red, blue, red, blue (S110, patterns)
 
@@ -632,85 +633,95 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S155-7: [laughs] Rosa laughed. [proud] She did not even need her eyes. Her ears could tell her who was there.
 - S155-8: [slowly, warmly] Many animals have a sound of their own. Listen closely, and the sound tells you who is near.
 
-### Two socks (S158, same-and-different)
+### The tiny sock (S158, same-and-different)
 
-- S158-1: Kai needed socks, [rummaging in a drawer] so he dug in the drawer. He found two with blue and white stripes.
-- S158-2: He held them together, stripes and stripes, the same size. [wondering] Were they the same? They looked it.
-- S158-3: [gently] Look again, said Mom. Kai looked closer, and closer still, until his nose almost touched them.
-- S158-4: One sock had a hole, right at the toe, [surprised] and his finger went through it. The other sock had no hole.
-- S158-5: This one has a hole, and that one does not. They were not the same after all. [delighted] Different!
-- S158-6: Kai wore the good sock and waved the holey one. [laughs] Mom laughed and got the sewing box.
-- S158-7: [slowly, warmly] The same means alike in every way. One small difference, like a hole, makes two things different. Look twice to be sure.
+- S158-1: [cheerful] Finn was getting dressed, and he needed two socks. [curious] In the laundry basket he found one, blue with white stripes.
+- S158-2: [rushed] He dug some more and found another, blue with white stripes. [delighted] Same color, same stripes, a match! said Finn.
+- S158-3: Finn pulled it on, [surprised] but it stopped at his toes. [straining] He tugged and tugged, and it would not go any farther.
+- S158-4: [laughs] Mom laughed. [playful] That sock is your baby sister's, she said. [gently] Did you check the size?
+- S158-5: [thoughtful] Finn held the two socks side by side. Same color and same stripes, [slowly] but one was big and one was tiny.
+- S158-6: [determined] So he dug in the basket again. [slowly] This sock had the same color, the same stripes and the same size. [relieved] Now both feet were warm.
+- S158-7: [warmly] His baby sister got her tiny sock back, [giggles] and she waved it like a little flag.
+- S158-8: [slowly, warmly] To match, two things must be alike in every way. Check the shape, the color and the size.
 
-### The other red car (S161, match-the-vehicles)
+### Two red cars (S161, match-the-vehicles)
 
-- S161-1: Sam had a red car, small and shiny. [playful, a toy car revving] Vroom! He wanted to race it, but a race needs two.
-- S161-2: [playful] He looked down the line and held up a truck. No, too big, and not the same.
-- S161-3: A bus was yellow and long, so no. A tractor was green with big wheels, so no.
-- S161-4: Sam looked and looked, and then, at the end of the line, [hopeful] he saw something red.
-- S161-5: Another red car, with the same size, the same shine and the same four wheels! He put them side by side. [delighted] Twins!
-- S161-6: [toy cars racing across a rug] Two red cars, vroom, vroom, raced across the rug. [laughing] The red one won, and the red one came second.
-- S161-7: [slowly, warmly] The same means just alike. Same color, same size, same shape.
+- S161-1: [excited] Omar wanted to race his little red car down the road on his play mat. [thoughtful] But for a race, he needed two cars.
+- S161-2: [rushed] He dug in the toy box and pulled out something red. [delighted] Red like my car, he said. [proudly] A match!
+- S161-3: [gently] Grandpa smiled. Look at the shape and the wheels, he said. [surprised] It was a long red train, with lots of wheels.
+- S161-4: [thoughtful] It was red, [slowly] but it was not the same shape, so it did not match. [gently] A train runs on a track, said Grandpa, not on the road.
+- S161-5: [curious] Next came a boat, with no wheels at all, [playful] and then a rocket. [warmly] A boat goes on the water, said Grandpa, and a rocket goes up into space.
+- S161-6: [slowly] At the very bottom of the box, [gasps] Omar found another red car. [excited] It had the same shape, the same color and the same wheels as his.
+- S161-7: [delighted] Now they matched! [playful] Vroom, vroom, the two red cars raced down the road side by side.
+- S161-8: [slowly, warmly] To match, look at the color, the shape and the parts. Two red cars are the same, and a red train is different.
 
-### Twins on the table (S164, match-the-things)
+### Not a ball (S164, match-the-things)
 
-- S164-1: [dishes clinking] Ana was helping, and the dishes were on the table in a jumble of cups, spoons and plates.
-- S164-2: She found a cup, and then another cup, blue like the first. They went together. [pleased] Twins.
-- S164-3: She found a spoon and wondered what went with it. [thinking] A cup? No, because a cup is not a spoon.
-- S164-4: She hunted, and there was another spoon, shiny. [pleased] Together. Twins.
-- S164-5: A plate, and another plate, together. Every thing on the table had a twin.
-- S164-6: Ana set them out in pairs, cup with cup, spoon with spoon and plate with plate. [proud] The table looked neat.
-- S164-7: [slowly, warmly] The same means just alike. Find the twin.
+- S164-1: [cheerful] At Ivy's party, every child got a red ball to play catch. [surprised] Then Ivy's ball [a ball bouncing] bounced away under the table.
+- S164-2: [curious] She looked under the chairs and saw something red and round. [excited] There it is! she said, [rushed] and she grabbed it.
+- S164-3: [surprised] But it was light, much too light, [puzzled] and it had a long string. [gasps] A red balloon!
+- S164-4: [gently] Look closely, said Mom. [warmly] A balloon is light and has a string, so it is not the same as a ball.
+- S164-5: [thoughtful] Ivy tied the balloon to her chair and looked again. [delighted] There, under the table, sat her ball.
+- S164-6: [pleased] It was round and red, with no string at all. [happy] It was just like her friend's ball, so the two balls matched.
+- S164-7: [playful] Ivy threw it, her friend caught it, [giggles] and the red balloon waited, tied to her chair.
+- S164-8: [slowly, warmly] Some things are almost alike. Look closely before you say two things are the same.
 
-### Two of each (S167, match-the-water-animals)
+### The whale card (S167, match-the-water-animals)
 
-- S167-1: [gentle pond sounds] Leo lay on his tummy by the pond and looked in. The water was full of animals.
-- S167-2: [a soft splash] A fish, orange, and then another fish, just the same. Two fish, and they swam together.
-- S167-3: [a frog croaking] A frog sat on a rock, green with a white belly. [wondering] Where was its twin?
-- S167-4: [searching, slowly] Leo looked in the reeds, under the leaves, and on the log.
-- S167-5: [excited] There, on the lily pad! Another frog, just the same, green with a white belly. Two frogs.
-- S167-6: [ducks quacking softly] Then two ducks floated by. Two of each. In the pond, everyone had a match.
-- S167-7: [slowly, warmly] The same means just alike. Every animal had a twin.
+- S167-1: [cheerful] Leo and Grandpa were playing a matching game. [softly] All the cards lay face down, and every card had a twin.
+- S167-2: [curious] Leo turned over a whale, and then a fish. [excited] They both swim, he said, so they match!
+- S167-3: [gently] Look closely, said Grandpa. [slowly] They both swim, but a whale breathes air, like you do.
+- S167-4: [thoughtful] Leo looked again. A whale and a fish were not the same. [whispers] He turned them back over and tried to remember where the whale was.
+- S167-5: [curious] Grandpa turned over a turtle and a duck, [sighs] but no twins yet. [playful] Then it was Leo's turn, [gasps] and he turned over another whale!
+- S167-6: [carefully] He knew where the first whale was, so he turned it over too. [delighted] Side by side, they were just the same. [proud] Two whales, a match!
+- S167-7: [warmly] The cards are the same size, said Grandpa. [amazed] But in real life, a whale is much, much bigger than most fish.
+- S167-8: [playful] Leo stretched his arms out wide. Bigger than this? he asked. [laughs] Much bigger! said Grandpa, and they both laughed.
+- S167-9: [slowly, warmly] Look closely before you match. Two whales are the same, but a whale and a fish are different.
 
-### Two by two (S170, match-the-land-animals)
+### Pointy ears (S170, match-the-land-animals)
 
-- S170-1: [playful] Two rabbits hopped by, with the same ears, the same hop and the same white tails.
-- S170-2: Two cows stood in the field, with the same spots and the same slow chew. [cows mooing] Moo, moo.
-- S170-3: [a pig oinking] One pig rolled in the mud, pink and round, just one. Rosa frowned. [puzzled] Where was its twin?
-- S170-4: [searching] She looked in the barn, she looked by the trough, and she looked behind the hay.
-- S170-5: [a big muddy splat] Then, splat! Another pig flopped into the mud, pink and round and just the same. Two pigs.
-- S170-6: [happy] Two by two, the rabbits, the cows and the pigs. Every animal on the farm had a match.
-- S170-7: [slowly, warmly] The same means just alike. Two by two.
+- S170-1: [softly] It was getting dark, and Nora was waiting at the window. [worried] Her gray cat, Muffin, was late for supper.
+- S170-2: [whispers] Something came along the fence, with two pointy ears. [excited] There she is! said Nora.
+- S170-3: [calmly] Dad came to look and turned on the porch light. Pointy ears, he said, [slowly] but look at the face and the color too.
+- S170-4: [curious] This animal was orange, with a long, pointy face. [gasps] It was a fox!
+- S170-5: [thoughtful] A fox has pointy ears, said Dad, and so does a cat. [slowly] The ears matched, but the animals did not.
+- S170-6: [softly] Nora watched from inside as the fox ran off into the dark. [hopeful] Then a gray cat jumped up on the fence.
+- S170-7: [slowly] Pointy ears, a round face and gray fur. [delighted] It was Muffin at last! [relieved] Dad opened the door, and Nora let her in.
+- S170-8: [whispers] Out in the yard, an owl opened its big round eyes. [softly] Most owls hunt at night, said Dad, so it was just waking up.
+- S170-9: [slowly, warmly] Ears help tell animals apart. When the ears match, look at the face and the color too.
 
 ### The right hole (S173, match-the-shapes)
 
-- S173-1: [curious] Diego had a box with three holes, a round one, a square one and a triangle one. And he had a block.
-- S173-2: The block had three corners. He tried the round hole and pushed, but it did not fit. [straining] It stuck.
-- S173-3: He tried the square hole and pushed harder, but it did not fit either. [frustrated] He was getting cross.
-- S173-4: Mom said to look at the block and look at the hole. [gently] Are they the same shape?
-- S173-5: Three corners on the block, and three corners on the triangle hole. [delighted] Yes, the same! In it went. [a soft plop] Plop.
-- S173-6: Diego picked up the round block and knew which hole it wanted, the round one, of course. [a soft plop] Plop.
-- S173-7: [slowly, warmly] The same means just alike. Same shape, same hole.
+- S173-1: [cheerful] Diego had a box with three holes, a round one, a square one and a triangle one. [playful] He had some blocks to put in.
+- S173-2: [curious] He picked up a block whose top was a triangle, with three corners. [straining] He tried the round hole and pushed, [disappointed] but it would not go in.
+- S173-3: [straining] He tried the square hole and pushed harder, but it would not go in there either. [frustrated] Diego was getting grumpy.
+- S173-4: [gently] Look at the block, said Mom, and then look at the hole. [curious] Are they the same shape?
+- S173-5: [slowly, counting] Diego counted. Three corners on top of the block, and three corners on the triangle hole. [excited] The same! In it went, [a wooden block dropping into a box] plop.
+- S173-6: [confident] Then Diego picked up a round block, and he knew which hole it wanted. [proudly] The round one, of course. [a wooden block dropping into a box] Plop!
+- S173-7: [playful] He drew a triangle in the air with his finger, [slowly, counting] one, two, three corners, [laughs] and laughed.
+- S173-8: [slowly, warmly] The same means just alike. Same shape, same hole.
 
-### Stack or roll (S176, match-the-solids)
+### The can that stood up (S176, match-the-solids)
 
-- S176-1: [warm, playful] Mia had a pile of shapes, some cubes and some balls, and she wanted to build.
-- S176-2: She took a cube and another cube, just the same, and put one on top. It stayed. [pleased] A tower!
-- S176-3: Then a ball and another ball. She put one on top of the cube, [a ball wobbling and rolling away] and it wobbled and rolled off.
-- S176-4: She tried again, and the ball rolled off again. [amused] Balls do not stack. Balls roll.
-- S176-5: So Mia matched them up, cubes with cubes and balls with balls. The ones alike went together.
-- S176-6: The cubes made a tall tower, and the balls went in a basket. [satisfied] Each thing was in its place.
-- S176-7: [slowly, warmly] The same means just alike. Cubes stack. Balls roll.
+- S176-1: [cheerful] Mia was building a tower. [carefully] She set one cube on the rug and another cube on top, flat side on flat side. [pleased] It stayed.
+- S176-2: [curious] Next she tried a sphere, round like a ball. [nervous] It wobbled on top, [a wooden ball rolling away] and then it rolled right off. [chuckles] Spheres roll, said Grandpa.
+- S176-3: [curious] Then she picked up a cylinder, shaped like a can. She laid it on its side on the cubes, [surprised] and away it rolled too.
+- S176-4: [disappointed] It rolls like the ball, said Mia, so it will not stack. [warmly] Grandpa picked it up with a smile.
+- S176-5: [slowly] A cylinder rolls on its curved side, he said, but it stands still on its flat end. [encouraging] Try it.
+- S176-6: [carefully] So Mia stood the cylinder up on its flat end, right on top of the cubes. [whispers] It did not roll. [delighted] It stood still!
+- S176-7: [playful] Last of all came a cone, like an ice cream cone. [proud] Mia set it on top, and her tower had a pointy roof.
+- S176-8: [slowly, warmly] The shape tells you what a thing can do. Spheres roll, cubes stack, and a cylinder can roll or stand still.
 
-### Five, then two (S179, more-and-fewer-5)
+### The long row (S179, more-and-fewer-5)
 
-- S179-1: Theo sat on the dock, and five ducks floated by. He counted them. [slowly, counting] One, two, three, four, five.
-- S179-2: Five ducks, and five fingers. He held up his whole hand. [proud] Five!
-- S179-3: [wings flapping] Then, flap, flap, flap! Three ducks flew away, up over the trees, and were gone.
-- S179-4: Theo looked at the water and counted again. [slowly] One, two. Only two ducks were left.
-- S179-5: [thoughtful] Now there were fewer ducks, two instead of five. He held up two fingers, then five, then two.
-- S179-6: [two ducks quacking] The two ducks quacked at him. The pond seemed much quieter now, since more ducks had made more noise.
-- S179-7: [slowly, warmly] More is the bigger group. Fewer is the smaller group.
+- S179-1: [cheerful] At snack time, Mom gave Theo and his sister June some strawberries.
+- S179-2: [playful] Theo spread his out in a long row across his plate. [softly] June kept hers close together in a little bunch.
+- S179-3: [proudly] Mine go all the way across, said Theo, so I have more! [disappointed] June looked at her bunch and frowned.
+- S179-4: [gently] Line them up, one with one, said Mom, [curious] and see who has some left over.
+- S179-5: [carefully] So they did. [slowly, counting] One strawberry with one, two with two, and three with three. [surprised] June had one left over!
+- S179-6: [slowly, counting] They counted too. Theo had three, and June had four. [thoughtful] Four is more than three, said Mom, so June has more.
+- S179-7: [warmly] June smiled and gave Theo her extra strawberry. They lined them up again, [delighted] and now Theo had one left over.
+- S179-8: [slowly, warmly] To find out who has more, count each group, or line them up one with one. The group with some left over has more.
 
 ### The pumpkin wagon (S182, bigger-and-smaller)
 

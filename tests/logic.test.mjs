@@ -234,6 +234,22 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'p4-tap-fewer-5' && !(luTwo() && q.choices.every((c) => luN(c) >= luN(q.answer)))) problems.push('fewer up to five wrong');
     if (genId === 'p4-more-close' && !(luTwo() && q.choices.every((c) => luN(c) <= luN(q.answer)) && Math.abs(luN(q.choices[0]) - luN(q.choices[1])) === 1)) problems.push('close more wrong');
     if (genId === 'p4-fewer-close' && !(luTwo() && q.choices.every((c) => luN(c) >= luN(q.answer)) && Math.abs(luN(q.choices[0]) - luN(q.choices[1])) === 1)) problems.push('close fewer wrong');
+    // First Steps part two (pass LV): re-derived from the words with tables the generators do not share.
+    const lvSize = { bee: 1, snail: 1, cat: 2, rabbit: 2, duck: 2, owl: 2, fox: 2, bear: 3, whale: 3 };
+    const lvPics = () => (q.choices || []).map((c) => String(c).replace(/^pic:/, ''));
+    const lvNamed = () => (String(q.story || '').match(/\b(bee|snail|cat|rabbit|duck|owl|fox|bear|whale)\b/g) || []);
+    if (genId === 'p4-real-bigger') { const p = lvPics(); const want = /bigger/.test(q.prompt) ? (lvSize[p[0]] > lvSize[p[1]] ? p[0] : p[1]) : (lvSize[p[0]] < lvSize[p[1]] ? p[0] : p[1]); if (p.length !== 2 || lvSize[p[0]] === lvSize[p[1]] || q.answer !== 'pic:' + want || lvNamed().join() !== [...p].sort().join()) problems.push('real bigger wrong'); }
+    if (genId === 'p4-real-biggest') { const p = lvPics(); const want = p.find((x) => lvSize[x] === (/biggest/.test(q.prompt) ? 3 : 1)); if (p.length !== 3 || new Set(p.map((x) => lvSize[x])).size !== 3 || q.answer !== 'pic:' + want || lvNamed().join() !== [...p].sort().join()) problems.push('real biggest wrong'); }
+    if (genId === 'p4-real-middle') { const p = lvPics(); if (p.length !== 3 || new Set(p.map((x) => lvSize[x])).size !== 3 || q.answer !== 'pic:' + p.find((x) => lvSize[x] === 2) || lvNamed().join() !== [...p].sort().join()) problems.push('real middle wrong'); }
+    if (genId === 'p4-how-many-3') { const n = q.visual.kind === 'dots' ? q.visual.count : q.visual.items.length; if (q.answer !== String(n) || n < 1 || n > 3 || q.choices.join() !== '1,2,3') problems.push('how many to three wrong'); }
+    const lvTurns = { 'Ana goes down the slide, and then Sam goes down.': 'Taking turns', 'Sam swings while Ana waits, and then Ana swings.': 'Taking turns', 'Sam reads the book first, and then Ana reads it.': 'Taking turns', 'Ana plays the drum, and then she hands it to Sam to play.': 'Taking turns', 'Ana and Sam build one tower together at the same time.': 'Sharing', 'Ana and Sam color with one box of crayons at the same time.': 'Sharing', 'Two friends eat from one bowl of grapes at snack time.': 'Sharing' };
+    if (genId === 'pk-turn-or-share' && q.answer !== lvTurns[q.story]) problems.push('turns or sharing wrong');
+    const lvWaitGood = ['Take a slow breath', 'Count to ten', 'Cheer for your friend'];
+    if (genId === 'pk-while-waiting' && !(lvWaitGood.includes(q.answer) && q.choices.length === 2 && q.choices.filter((c) => lvWaitGood.includes(c)).length === 1)) problems.push('while waiting wrong');
+    const lvWorks = { 'Who works at a fire station?': 'Firefighter', "Who works at a doctor's office or a hospital?": 'Doctor', 'Who works at a school?': 'Teacher', 'Who works at the post office?': 'Mail carrier', 'Who works at a police station?': 'Police officer' };
+    if (genId === 'pk-helper-where' && (q.answer !== lvWorks[q.prompt] || new Set(q.choices).size !== 3)) problems.push('helper place wrong');
+    const lvScene = { 'Who comes to put out the fire?': 'Firefighter', 'Who rides on the fire truck?': 'Firefighter', 'Who helps you get well?': 'Doctor', 'Who checks it and helps it heal?': 'Doctor', 'Who helps you learn?': 'Teacher', 'Who reads it to the class?': 'Teacher', 'Who brings it to your home?': 'Mail carrier', 'Who brings the package?': 'Mail carrier', 'Who helps keep them safe?': 'Police officer' };
+    if (genId === 'pk-helper-scene' && (q.answer !== lvScene[q.prompt] || new Set(q.choices).size !== 3)) problems.push('helper scene wrong');
     if (genId === 'p3-tap-more' && !q.choices.every((c) => lnDots(c) <= lnDots(q.answer))) problems.push('more dots wrong');
     if (genId === 'p3-tap-fewer' && !q.choices.every((c) => lnDots(c) >= lnDots(q.answer))) problems.push('fewer dots wrong');
     if (genId === 'p3-tap-colour-item' && String(q.answer).split('-')[1] !== q.prompt.match(/Tap the (\w+) one/)[1]) problems.push('colour item wrong');

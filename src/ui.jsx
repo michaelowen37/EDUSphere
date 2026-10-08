@@ -867,12 +867,73 @@ function SkillIcon({ skill, size = 40 }) {
   return <svg viewBox="0 0 100 100" width={size} height={size} aria-hidden="true" style={{ display: 'block', flexShrink: 0 }}>{body}</svg>;
 }
 
+// "To be replaced" (pass LW, Mikey: people looking at the app today should know which drawings are stand-ins). The words
+// are Mikey's and are shown exactly as he wrote them. A stand-in is a drawing the app shows only until his Leonardo
+// painting arrives: the drawing on a lesson line whose painting is on the ledger, a story's drawn fallback, and a flower,
+// a rocket or a butterfly drawn while its coloring page waits to be painted.
+const REPLACE_NOTE = "To be replaced with Mikey's provided image.";
+// True while a lesson or a question draws the app's own line drawing of a thing in place of its coloring page. It is the
+// same test ColorThumb makes with its thing flag (pass LU), so the note and the drawing can never disagree.
+function thingStandIn(picture) {
+  const page = DRAWN_PAGES[picture];
+  if (!page || !THING_LINE_ART[picture]) return false;
+  return !(typeof window !== 'undefined' && Array.isArray(window.__eduColoringArt) && window.__eduColoringArt.includes(page[0]));
+}
+// A picture holds a stand-in when it is one of those things, or a pair with one on either side.
+function visualStandIn(v) {
+  if (!v || typeof v !== 'object') return false;
+  if (v.kind === 'art') return thingStandIn(v.name);
+  return v.kind === 'pair' && (visualStandIn(v.a) || visualStandIn(v.b));
+}
+// The note itself: small, italic and muted. It never takes a tap, it is hidden from screen readers like the drawing it
+// labels, it is left off anything printed, and it fades in once the drawing has arrived. `pal` is the palette under it:
+// the paper palette (B) under a picture, the live palette (C) on an answer button.
+function ReplaceNote({ pal = B, style = null }) {
+  return <span data-replace-note="" className="edu-note-in edu-no-print" aria-hidden="true" style={{ position: 'absolute', fontSize: 10.5, lineHeight: 1.25, fontStyle: 'italic', color: pal.muted, textAlign: 'right', maxWidth: 150, pointerEvents: 'none', ...style }}>{REPLACE_NOTE}</span>;
+}
+// A drawing with the note in its bottom-right corner. The note sits in a strip under the drawing, never on top of it,
+// because a note over a counted picture could hide a dot, and its right edge lines up with the drawing's right edge.
+// A diagram fills the column while an icon is a small square in the middle of it, so the drawing's right edge is
+// measured: after each render, again when the drawing's entrance animation ends (the drift starts small and to the
+// left), and whenever the box changes size. The edge is the furthest right of the outermost pictures inside, or of the
+// words themselves for a word card, whose paragraph is as wide as the column.
+function NotedDrawing({ children, animKey = 0 }) {
+  const box = useRef(null);
+  const [right, setRight] = useState(0);
+  useEffect(() => {
+    const el = box.current; if (!el) return undefined;
+    const place = () => {
+      const outer = el.getBoundingClientRect(); if (!outer.width) return;
+      let edge = -Infinity;
+      for (const m of el.querySelectorAll('svg, img, p')) {
+        if (m.closest('[data-replace-note]') || (m.parentElement && m.parentElement.closest('svg'))) continue;
+        let r = m.getBoundingClientRect();
+        if (m.tagName === 'P') { const words = document.createRange(); words.selectNodeContents(m); r = words.getBoundingClientRect(); }
+        if (r.width > 0) edge = Math.max(edge, r.right);
+      }
+      const next = edge > -Infinity ? Math.max(0, Math.round(outer.right - edge)) : 0;
+      setRight((cur) => (cur === next ? cur : next));
+    };
+    place();
+    el.addEventListener('animationend', place);
+    const watch = typeof ResizeObserver === 'function' ? new ResizeObserver(place) : null;
+    if (watch) watch.observe(el);
+    return () => { el.removeEventListener('animationend', place); if (watch) watch.disconnect(); };
+  });
+  return <div ref={box} data-stand-in="" style={{ position: 'relative', paddingBottom: 30 }}>{children}<ReplaceNote key={animKey} style={{ right, bottom: 2 }} /></div>;
+}
 // Draws whichever picture a lesson or question asks for.
 // Lesson pictures and diagrams are drawn for paper (dark labels, white shapes), so in the dark theme they sit on the
 // almond paper and draw with the light palette, where every label reads (Mikey, 2026-09-24: hard-to-read diagram text).
+// The note (pass LW): `note` true always wears it (a lesson line whose painting is on the way, a story's drawn fallback),
+// false never (half of a pair, whose whole picture decides; a question a child is answering, where a mark on one picture
+// could point at an answer); left unset, a picture wears it only when it holds a thing drawn in place of its coloring page.
 function Picture(props) {
   if (!props.visual) return null;
-  return C.mode === 'dark' ? <div className="edu-paper-picture" style={{ background: C.paperBoard, borderRadius: 12, padding: '4px 10px', color: B.ink }}><PictureInner {...props} /></div> : <PictureInner {...props} />;
+  const { note, ...rest } = props;
+  const noted = note === true || (note !== false && visualStandIn(props.visual));
+  const drawing = noted ? <NotedDrawing animKey={props.animKey}><PictureInner {...rest} /></NotedDrawing> : <PictureInner {...rest} />;
+  return C.mode === 'dark' ? <div className="edu-paper-picture" style={{ background: C.paperBoard, borderRadius: 12, padding: '4px 10px', color: B.ink }}>{drawing}</div> : drawing;
 }
 function PictureInner({ visual, animate = false, animKey = 0, nudge = 0 }) {
   if (!visual) return null;
@@ -895,7 +956,7 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0 }) {
   // Two things side by side: two shapes, two colors, two groups of dots. Each half is any picture
   // this function can draw, so "red and blue are colors" shows red beside blue, not red alone.
   if (visual.kind === 'pair') {
-    const half = (v, i) => (v.kind ? <div key={`${animKey}-${i}`} className={animate ? 'edu-drift' : undefined} style={{ animationDelay: `${i * 0.5}s`, maxWidth: '46%', transform: 'scale(0.85)' }}><Picture visual={v} /></div> : <Item key={i} spec={`${v.shape}-${v.colour}`} size={96} />);
+    const half = (v, i) => (v.kind ? <div key={`${animKey}-${i}`} className={animate ? 'edu-drift' : undefined} style={{ animationDelay: `${i * 0.5}s`, maxWidth: '46%', transform: 'scale(0.85)' }}><Picture visual={v} note={false} /></div> : <Item key={i} spec={`${v.shape}-${v.colour}`} size={96} />);
     return <div style={{ padding: '6px 0', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 28 }}>{half(visual.a, 0)}{half(visual.b, 1)}</div>;
   }
   if (visual.kind === 'swatch') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><Swatch colour={visual.colour} size={120} /></div>;
@@ -1333,6 +1394,9 @@ const KID_ANIMATION = () => `
 /* A halo behind a button, so the invitation to tap pulses while the button itself holds still. */
 .edu-halo { animation: edu-halo 1.9s ease-out infinite; }
 .edu-drift { animation: edu-drift-in 0.9s cubic-bezier(0.25, 1.1, 0.4, 1) both; }
+/* The stand-in note (pass LW) waits for the drawing to arrive and settle, then fades in. */
+@keyframes edu-note-in { 0% { opacity: 0; } 100% { opacity: 1; } }
+.edu-note-in { animation: edu-note-in 0.5s ease 1.5s both; }
 .edu-cheer { animation: edu-cheer 0.9s ease-in-out; }
 .edu-wobble { animation: edu-wobble 0.55s ease-in-out; }
 .edu-burst { animation: edu-burst 0.9s ease-out forwards; }
@@ -1654,7 +1718,9 @@ html[data-young="1"] .edu-mod-card:nth-child(n+4) { animation-delay: 0.36s; }
 @media (prefers-reduced-motion: reduce) {
   .edu-glow, .edu-breathe, .edu-slide-in, .edu-pulse, .edu-zoom-back, .edu-stress, .edu-twinkle-star, .edu-trace-draw, .edu-rainbow, .edu-colorwash, .edu-colorwash-soft, .edu-sparkle, .edu-side path { animation: none; }
   .edu-side path { stroke-dasharray: none; }
-  .edu-halo, .edu-drift, .edu-cheer, .edu-wobble, .edu-burst, .edu-rise, .edu-sway, .edu-star-twinkle, .edu-grow, .edu-draw, .edu-settle, .edu-settle-late { animation: none; }
+  .edu-halo, .edu-drift, .edu-cheer, .edu-wobble, .edu-burst, .edu-rise, .edu-sway, .edu-star-twinkle, .edu-grow, .edu-draw, .edu-settle, .edu-settle-late, .edu-note-in { animation: none; }
+  /* The stars of a right answer fly out and fade, so with motion off none shows (pass LW: a still star sat on the explanation picture). */
+  .edu-burst { opacity: 0; }
   .edu-draw { stroke-dasharray: none; }
   .edu-press { transition: none; }
 }`;
@@ -2899,7 +2965,7 @@ function StoryArt({ serial, alt, fallback = null }) {
   return (
     <div style={{ margin: '0 0 14px' }}>
       {!missing && <img src={`art/stories/${serial}.webp`} alt={alt} loading="lazy" onError={() => setMissing(true)} style={{ display: 'block', width: '100%', borderRadius: 12 }} />}
-      {missing && fallback && !(C.mode === 'dark') && <div style={{ padding: '4px 0 0' }}><Picture visual={fallback} /><p style={{ margin: '4px 0 0', fontSize: 12, color: C.muted, textAlign: 'center' }}>Illustration {serial} to come</p></div>}
+      {missing && fallback && !(C.mode === 'dark') && <div style={{ padding: '4px 0 0' }}><Picture visual={fallback} note /><p style={{ margin: '4px 0 0', fontSize: 12, color: C.muted, textAlign: 'center' }}>Illustration {serial} to come</p></div>}
       {missing && (!fallback || C.mode === 'dark') && (
         <div className="edu-art-placeholder" aria-label={`Illustration ${serial} to come`} style={{ aspectRatio: '4 / 3', borderRadius: 12, border: `2px dashed ${C.muted}`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6, color: C.muted, background: C.veil }}>
           <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="currentColor" strokeWidth="1.6" /><circle cx="8.5" cy="9.5" r="1.8" fill="currentColor" /><path d="M4 18l5-5 4 4 3-3 4 4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" /></svg>
@@ -2911,13 +2977,14 @@ function StoryArt({ serial, alt, fallback = null }) {
 }
 // A lesson picture on a read-aloud line (pass JP). Pre-readers meet a lesson one spoken line at a time, each with its own
 // picture, so a painting (P serial) belongs to the line that names what it shows (its `step`). Once painted, it takes that
-// line's place; until then the line keeps its drawn picture, with a small note naming the painting to come.
+// line's place; until then the line keeps its drawn picture, with a small note naming the painting to come, and since
+// pass LW the drawing wears Mikey's "To be replaced" note in its corner.
 function LessonStepArt({ pic, visual, animKey }) {
   const present = typeof window !== 'undefined' && Array.isArray(window.__eduArt) && window.__eduArt.includes(pic.serial);
   const [missing, setMissing] = useState(!present);
   if (!missing) return <img data-lesson-picture={pic.serial} src={`art/stories/${pic.serial}.webp`} alt={pic.alt} onError={() => setMissing(true)} style={{ display: 'block', width: '100%', maxWidth: 420, maxHeight: 300, objectFit: 'contain', margin: '0 auto', borderRadius: 12 }} />;
   if (!visual) return <div data-lesson-picture={pic.serial}><StoryArt serial={pic.serial} alt={pic.alt} /></div>;
-  return <div data-lesson-picture={pic.serial}><Picture visual={visual} animate animKey={animKey} /><p style={{ margin: '4px 0 0', fontSize: 12, color: C.muted }}>Illustration {pic.serial} to come</p></div>;
+  return <div data-lesson-picture={pic.serial}><Picture visual={visual} animate animKey={animKey} note /><p style={{ margin: '4px 0 0', fontSize: 12, color: C.muted }}>Illustration {pic.serial} to come</p></div>;
 }
 // The story page body: title, pictures where they fall in the text, the words, one speaker.
 // The snail and the hare (2026-09-23, Mikey): an early-years story is read at three quarters speed on the snail and at the
@@ -8938,7 +9005,7 @@ function EduSphereScreens() {
         <div style={{ ...card, position: 'relative' }}>
           <p data-question-text="" style={{ fontSize: 20, fontWeight: 600, margin: '0 0 12px', textAlign: 'center' }}>{q.prompt}</p>
           {q.story && <div style={{ margin: '0 0 14px', color: C.ink }}><RichText text={q.story} size={17} center lineGap={8} /></div>}
-          {q.visual && <div style={{ margin: '0 0 14px' }}><Picture visual={q.visual} /></div>}
+          {q.visual && <div style={{ margin: '0 0 14px' }}><Picture visual={q.visual} note={record.preview ? undefined : false} /></div>}
           {q.type === 'choice' ? (
             // Number answers never stack onto two lines (2026-09-23, Mikey): the columns are as wide as the longest one needs.
             <div style={{ display: 'grid', gap: 10, gridTemplateColumns: q.choices.every((c) => /^(\d+|[A-Za-z])$/.test(c)) ? `repeat(auto-fit, minmax(${Math.max(70, Math.max(...q.choices.map((c) => c.length)) * 15 + 24)}px, 1fr))` : '1fr' }}>
@@ -8952,12 +9019,16 @@ function EduSphereScreens() {
                 if (checked && c === q.answer) { bg = C.greenSoft; border = C.green; }
                 else if (checked && picked) { bg = C.claySoft; border = C.clay; }
                 else if (picked) { border = C.green; }
+                // In a walk-through (pass LW), a thing drawn in place of its coloring page says so in the button's corner, with
+                // room left under the drawing; a child answering never sees it, since a mark on one answer could point at it.
+                const standIn = !!(record && record.preview) && /^art:/.test(c) && thingStandIn(c.slice(4).split('#')[0]);
                 return (
                   // A word answer says itself for a child who cannot read; a picture answer never does,
                   // because naming it would hand over the answer.
                   <button key={c} type="button" data-choice={c} onClick={() => { if (!checked) { if (readAloud) { playTap(); if (!c.includes(':')) speak(c); } setGiven(c); } }}
-                    style={{ opacity: ruledOut && !checked ? (C.mode === 'dark' ? 0.72 : 0.5) : 1, fontFamily: FONT, fontSize: choiceFont(q.choices), textAlign: 'center', padding: '12px 10px', minWidth: 0, overflowWrap: /^-?[\d.,\/ ]+$/.test(c) ? 'normal' : 'anywhere', whiteSpace: /^-?[\d.,\/ ]+$/.test(c) ? 'nowrap' : 'normal', borderRadius: 10, background: bg, border: `2px solid ${border}`, color: C.ink, cursor: checked ? 'default' : 'pointer', minHeight: 48 }}>
+                    style={{ opacity: ruledOut && !checked ? (C.mode === 'dark' ? 0.72 : 0.5) : 1, fontFamily: FONT, fontSize: choiceFont(q.choices), textAlign: 'center', padding: standIn ? '12px 10px 34px' : '12px 10px', ...(standIn ? { position: 'relative' } : null), minWidth: 0, overflowWrap: /^-?[\d.,\/ ]+$/.test(c) ? 'normal' : 'anywhere', whiteSpace: /^-?[\d.,\/ ]+$/.test(c) ? 'nowrap' : 'normal', borderRadius: 10, background: bg, border: `2px solid ${border}`, color: C.ink, cursor: checked ? 'default' : 'pointer', minHeight: 48 }}>
                     {/^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={28} /> : /^shape:/.test(c) ? <ShapePic name={c.split(':')[1]} size={c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={14} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={18} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={14} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6).split('#')[0]} size={64} /> : /^shares:/.test(c) ? <SharesPic shape={c.split(':')[1]} cut={c.split(':')[2]} shaded={Number(c.split(':')[3] || 0)} size={72} /> : /^dice:/.test(c) ? <DicePic pips={Number(c.split(':')[1].split('#')[0])} size={64} /> : /^pic:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><StudentPicture name={c.slice(4).split('#')[0]} size={72} /></span> : /^art:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><ColorThumb picture={c.slice(4).split('#')[0]} size={84} thing /></span> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={64} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={64} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={64} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={80} /> : /^digital:/.test(c) ? <DigitalPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={96} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={12} /> : c}
+                    {standIn && <ReplaceNote pal={C} style={{ right: 8, bottom: 5 }} />}
                   </button>
                 );
               })}
@@ -9041,10 +9112,13 @@ function EduSphereScreens() {
             <div key={cheer} className={wasCorrect ? 'edu-cheer' : 'edu-wobble'} style={{ position: 'relative', marginTop: 14, padding: 14, borderRadius: 10, background: wasCorrect ? C.greenSoft : C.claySoft }}>
               {wasCorrect && <StarBurst />}
               <p style={{ margin: 0, fontWeight: 600, color: wasCorrect ? C.green : C.clay }}>{wasCorrect ? 'Correct' : readAloud ? 'Not that one. Have another try.' : `Not quite. The answer is ${describeChoice(q.answer)}.`}</p>
-              {(wasCorrect || !readAloud) && <div style={{ margin: '8px 0 0' }}><RichText text={formatTeachingText(q.explain)} size={15} lineGap={6} />{!wasCorrect && !readAloud && taughtLine(mod.id, q.answer) && <p style={{ margin: '8px 0 0', fontSize: 14, color: C.muted }}>From the lesson: “{taughtLine(mod.id, q.answer)}”</p>}{!wasCorrect && !readAloud && mod.lesson.example && mod.lesson.example.another && (wrongWay ? <div style={{ margin: '8px 0 0', padding: '10px 12px', borderRadius: 10, background: C.goldSoft }}><div style={{ maxWidth: 240, margin: '0 auto 8px' }}><Picture visual={wayVisual(mod.lesson.example, 1)} /></div><RichText text={wayText([].concat(mod.lesson.example.another)[0])} size={14} lineGap={6} /></div> : <p style={{ margin: '8px 0 0' }}><button type="button" style={{ ...linkBtn, fontSize: 14 }} onClick={() => setWrongWay(true)}>Show me another way</button></p>)}{!wasCorrect && q.choiceNotes && q.choiceNotes[given] && <p style={{ margin: '6px 0 0', fontSize: 15, color: C.muted }}>{q.choiceNotes[given]}</p>}</div>}
-              {/* An explanation picture is either a set of fraction bars or one group of dots. */}
+              {(wasCorrect || !readAloud) && <div style={{ margin: '8px 0 0' }}><RichText text={formatTeachingText(q.explain)} size={15} lineGap={6} />{!wasCorrect && !readAloud && taughtLine(mod.id, q.answer) && <p style={{ margin: '8px 0 0', fontSize: 14, color: C.muted }}>From the lesson: “{taughtLine(mod.id, q.answer)}”</p>}{!wasCorrect && !readAloud && mod.lesson.example && mod.lesson.example.another && (wrongWay ? <div style={{ margin: '8px 0 0', padding: '10px 12px', borderRadius: 10, background: C.goldSoft }}><div style={{ maxWidth: 240, margin: '0 auto 8px' }}><Picture visual={wayVisual(mod.lesson.example, 1)} note={record.preview ? undefined : false} /></div><RichText text={wayText([].concat(mod.lesson.example.another)[0])} size={14} lineGap={6} /></div> : <p style={{ margin: '8px 0 0' }}><button type="button" style={{ ...linkBtn, fontSize: 14 }} onClick={() => setWrongWay(true)}>Show me another way</button></p>)}{!wasCorrect && q.choiceNotes && q.choiceNotes[given] && <p style={{ margin: '6px 0 0', fontSize: 15, color: C.muted }}>{q.choiceNotes[given]}</p>}</div>}
+              {/* An explanation picture is a set of fraction bars, one group of dots, or (since pass LW) any picture kind below. */}
               {(wasCorrect || !readAloud) && Array.isArray(q.explainVisual) && q.explainVisual.map((b, i) => <LabeledBar key={i} parts={b.parts} shaded={b.shaded} label={b.label} color={wasCorrect ? C.green : C.clay} />)}
               {(wasCorrect || !readAloud) && q.explainVisual && !Array.isArray(q.explainVisual) && q.explainVisual.kind === 'dots' && <div style={{ marginTop: 8 }}><DotGroup count={q.explainVisual.count} size={28} animate animKey={cheer} /></div>}
+              {/* Every other explanation picture (pass LW): a pair, a picture, a word card, a number line, a triangle or a grid, the
+                  ones the rules test validates. Before this line only bars and dots reached the screen. */}
+              {(wasCorrect || !readAloud) && q.explainVisual && !Array.isArray(q.explainVisual) && q.explainVisual.kind !== 'dots' && <div data-explain-picture="" style={{ marginTop: 8 }}><Picture visual={q.explainVisual} note={record.preview ? undefined : false} /></div>}
             </div>
           )}
         </div>

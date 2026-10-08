@@ -4565,7 +4565,7 @@ function PREK_MODULES() { return [
         { say: 'A green circle and a green square are the same color, but they are different shapes.', show: { kind: 'pair', a: { shape: 'circle', colour: 'green' }, b: { shape: 'square', colour: 'green' } } },
         { say: 'These two triangles are the same shape, but one is bigger and one is smaller.', show: { kind: 'pair', a: { kind: 'shape', name: 'triangle', size: 'big' }, b: { kind: 'shape', name: 'triangle', size: 'small' } } },
         { say: 'To match, two things must be alike in every way, like these two blue triangles.', show: { kind: 'pair', a: { shape: 'triangle', colour: 'blue' }, b: { shape: 'triangle', colour: 'blue' } } },
-        { say: 'Socks come in pairs. Two socks match when they are the same color, with the same stripes.', show: null },
+        { say: 'Socks come in pairs. Two socks match when they are the same color and the same size, with the same stripes.', show: null },
         { say: 'Two red crayons from the same box match. They are the same color, the same shape and the same size.', show: null },
         { say: 'At cleanup time, check all three, the shape, the color and the size. These two blue squares match, so they go together.', show: { kind: 'pair', a: { shape: 'square', colour: 'blue' }, b: { shape: 'square', colour: 'blue' } } },
       ],
@@ -4753,18 +4753,24 @@ function PREK_MODULES() { return [
     tagline: 'Two of the same shape',
     requires: ['big-bigger-biggest'],
     lesson: {
-      paragraphs: ['Here are two of the same shape. The one that takes up more room is bigger, and the one that takes up less room is smaller.', 'Bigger and smaller always compare two things. A cat is bigger than a mouse but smaller than a horse, so the same cat can be bigger or smaller, depending on what is next to it.'],
-      keyIdea: 'Bigger things take up more room. Smaller things take up less.',
+      pictures: [{ serial: 'P113', alt: 'A mouse, a cat and a horse side by side', step: 3 }, { serial: 'P114', alt: 'Two children standing back to back to see who is taller', step: 6 }],
+      paragraphs: ['Here are two of the same shape. The one that takes up more room is bigger, and the one that takes up less room is smaller.', 'Bigger and smaller always compare two things. A cat is bigger than a mouse but smaller than a horse, so the same cat can be bigger or smaller, depending on what is next to it.', 'Size has helper words too. A tower that reaches higher is taller, and a line that reaches farther is longer. To compare, start them at the same place, the way two friends stand back to back to see who is taller.', 'Pictures can be any size, so think about real life. A bee and a snail are tiny, a cat, a rabbit, a duck, an owl and a fox are middle-sized, and a bear and a whale are huge, even when a picture shows them all the same size.'],
+      keyIdea: 'Bigger things take up more room and smaller things take up less. Taller reaches higher, and longer reaches farther.',
       example: { kind: 'pair', a: { kind: 'shape', name: 'square', size: 'big' }, b: { kind: 'shape', name: 'square', size: 'small' }, caption: 'A big square and a small square.' },
       script: [
         { say: 'Here is a big square, and here is a small square.', show: { kind: 'pair', a: { kind: 'shape', name: 'square', size: 'big' }, b: { kind: 'shape', name: 'square', size: 'small' } } },
         { say: 'The big square takes up more room, so it is bigger.', show: { kind: 'pair', a: { kind: 'shape', name: 'square', size: 'big' }, b: { kind: 'shape', name: 'square', size: 'small' } } },
         { say: 'The small circle takes up less room, so it is smaller than the big circle.', show: { kind: 'pair', a: { kind: 'shape', name: 'circle', size: 'small' }, b: { kind: 'shape', name: 'circle', size: 'big' } } },
         { say: 'Bigger and smaller compare two things. A cat is bigger than a mouse, but smaller than a horse.', show: { kind: 'pic', name: 'cat' } },
+        { say: 'When one tower reaches higher than another, it is taller. Both towers stand on the same floor.', show: { kind: 'bars', lengths: [6, 3], vertical: true } },
+        { say: 'When one line reaches farther than another, it is longer. Both lines start at the same place.', show: { kind: 'bars', lengths: [7, 4] } },
+        { say: 'Stand back to back with a friend or a grown-up. The one whose head reaches higher is taller.', show: null },
+        { say: 'In real life, a bear is much bigger than a bee, even when a picture shows them the same size.', show: { kind: 'pair', a: { kind: 'pic', name: 'bee' }, b: { kind: 'pic', name: 'bear' } } },
+        { say: 'A bee and a snail are tiny. A cat, a rabbit and a fox are middle-sized, and so are a duck and an owl. A bear and a whale are huge.', show: null },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines V.D.1 (recognizes and compares heights or lengths of people or objects) and Head Start ELOF Goal P-MATH 8 (uses differences in attributes to make comparisons).'],
-    generators: ['p4-tap-bigger', 'p4-tap-smaller', 'p4-tap-bigger', 'p4-tap-smaller', 'p4-tap-bigger'],
+    generators: ['p4-tap-bigger', 'p4-tap-smaller', 'kl-taller', 'kl-longer', 'p4-real-bigger'],
   },
   {
     id: 'patterns',
@@ -4774,7 +4780,8 @@ function PREK_MODULES() { return [
     tagline: 'What comes next?',
     requires: ['same-and-different'],
     lesson: {
-      paragraphs: ['A pattern repeats the same way again and again. Circle, square, circle, square, so a circle comes next.', 'Say the pattern out loud, and your voice tells you what comes next or what is missing. A row that keeps changing its order is not a pattern, because it does not repeat.'],
+      pictures: [{ serial: 'P117', alt: 'A string of beads in a red, blue, red, blue pattern', step: 6 }],
+      paragraphs: ['A pattern repeats the same way again and again. Circle, square, circle, square, so a circle comes next.', 'Say the pattern out loud, and your voice tells you what comes next or what is missing. A row that keeps changing its order is not a pattern, because it does not repeat.', 'You can make a pattern with your body, clap, stomp, clap, stomp, or with beads on a string, red, blue, red, blue. Then make your own, and ask a grown-up to guess what comes next.'],
       keyIdea: 'A pattern repeats. Say it out loud to find what comes next.',
       example: { kind: 'pattern', items: ['circle', 'square', 'circle', 'square'], caption: 'Circle, square, circle, square.' },
       script: [
@@ -4783,6 +4790,9 @@ function PREK_MODULES() { return [
         { say: 'When one is missing, say the pattern and listen for the gap. Circle, square, circle, square. The missing one is a circle.', show: { kind: 'pattern', items: ['circle', 'square', '?', 'square'] } },
         { say: 'Triangle, square, circle, triangle, circle, square. The order keeps changing, so this is not a pattern.', show: { kind: 'pattern', items: ['triangle', 'square', 'circle', 'triangle', 'circle', 'square'] } },
         { say: 'Patterns are all around us, in songs, in beads and in the days of the week.', show: { kind: 'pattern', items: ['triangle', 'circle', 'triangle', 'circle'] } },
+        { say: 'You can make a pattern with your body too. Clap, stomp, clap, stomp. What comes next? A clap!', show: null },
+        { say: 'Beads on a string can make a pattern. Red, blue, red, blue, so a red bead comes next.', show: null },
+        { say: 'Make your own pattern with blocks or crayons, and ask a grown-up to guess what comes next.', show: null },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines V.E.3 (recognizes, duplicates, extends, and creates patterns) and Head Start ELOF Goal P-MATH 7.'],
@@ -4795,7 +4805,7 @@ function PREK_MODULES() { return [
     title: 'One, two, three',
     tagline: 'First counting',
     lesson: {
-      paragraphs: ['Touch each dot as you count it, and say one number for each dot. One, two, three.', 'The last number you say tells how many. Count one, two, three, and there are three dots.'],
+      paragraphs: ['Touch each dot as you count it, and say one number for each dot. One, two, three.', 'The last number you say tells how many. Count one, two, three, and there are three dots.', 'Count anything, not just dots. Hold up three fingers, one, two, three, or clap three times. Things can sit in a row or in a pile, and you still count each one once.'],
       keyIdea: 'Touch and count, one number for each dot. The last number tells how many.',
       example: { kind: 'dots', count: 3, caption: 'One, two, three.' },
       script: [
@@ -4804,10 +4814,13 @@ function PREK_MODULES() { return [
         { say: 'One more again. One, two, three. Now there are three dots.', show: { kind: 'dots', count: 3 } },
         { say: 'Touch each dot as you count it, and say one number for each dot.', show: { kind: 'dots', count: 3 } },
         { say: 'The last number you say tells how many. One, two, three. There are three dots.', show: { kind: 'dots', count: 3 } },
+        { say: 'Hold up one finger. Now two. Now three! One, two, three fingers.', show: { kind: 'dots', count: 3 } },
+        { say: 'Clap three times with me. One, two, three claps.', show: { kind: 'dots', count: 3 } },
+        { say: 'Things can sit in a row or in a pile. Count each one once, and the last number tells how many.', show: { kind: 'dots', count: 3 } },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines V.A.2 and V.A.3 (counting with one-to-one correspondence and cardinality) and Head Start ELOF Goals P-MATH 1 (knows number names and the count sequence) and P-MATH 3 (understands the relationship between numbers and quantities).'],
-    generators: ['p3-how-many', 'p3-tap-group', 'p3-tap-one', 'p3-more', 'p3-how-many'],
+    generators: ['p3-how-many', 'p3-tap-group', 'p3-tap-one', 'p3-more', 'p4-how-many-3'],
   },
   {
     id: 'first-strokes',
@@ -4817,7 +4830,8 @@ function PREK_MODULES() { return [
     tagline: 'Lines, waves and circles',
     needsTouch: true,
     lesson: {
-      paragraphs: ['Hold the stylus like a crayon, or use your finger. Start at the dot and draw along the line.', 'Lines can go down, across, in a wave, in a zigzag, or round and round. Every letter is made of lines like these.'],
+      pictures: [{ serial: 'P118', alt: 'A zigzag bolt of lightning in a dark stormy sky', step: 3 }],
+      paragraphs: ['Hold the stylus like a crayon, or use your finger. Start at the dot and draw along the line.', 'Lines can go down, across, in a wave, in a zigzag, or round and round. Every letter is made of lines like these.', 'Lines are all around you. Rain falls in lines down, the top of a table is a line across, waves on water go up and down, and lightning makes a zigzag in a storm.'],
       keyIdea: 'Start at the dot and follow the line.',
       example: { kind: 'trace', text: 'line-wave', caption: 'Start at the dot and draw along the wave.' },
       script: [
@@ -4826,6 +4840,7 @@ function PREK_MODULES() { return [
         { say: 'A wave goes up and down, smooth and curvy, like water.', show: { kind: 'trace', text: 'line-wave' } },
         { say: 'A zigzag goes up and down too, but with sharp points, like a lightning bolt.', show: { kind: 'trace', text: 'line-zigzag' } },
         { say: 'One more. Start at the dot and go round and round.', show: { kind: 'trace', text: 'line-circle' } },
+        { say: 'Lines are everywhere. Rain falls in lines down, and the top of a table is a line across.', show: null },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines IX.B.2 (shows increasing control of tasks that require eye-hand coordination) and Head Start ELOF Goal P-PMP 3.'],
@@ -4839,7 +4854,8 @@ function PREK_MODULES() { return [
     tagline: 'Draw from 1 to 2 to 3',
     needsTouch: true,
     lesson: {
-      paragraphs: ['Start at dot 1, draw to dot 2, then to dot 3, and keep going in order.', 'The numbers show the order. Go in order, and when you reach the last dot, a picture appears. Skip a dot, and the picture comes out wrong.'],
+      pictures: [{ serial: 'P119', alt: 'Bright stars in a night sky joined by soft lines into a picture', step: 5 }],
+      paragraphs: ['Start at dot 1, draw to dot 2, then to dot 3, and keep going in order.', 'The numbers show the order. Go in order, and when you reach the last dot, a picture appears. Skip a dot, and the picture comes out wrong.', 'Say each number out loud as you reach its dot, and you will always know where to go next. Long ago, people looked at the stars at night and joined them with lines they imagined, to make pictures in the sky.'],
       keyIdea: 'Start at 1 and draw to each dot in order.',
       example: { kind: 'trace', text: 'house', caption: 'Go in order, and a picture appears.' },
       script: [
@@ -4847,6 +4863,8 @@ function PREK_MODULES() { return [
         { say: 'It draws a line to dot number 2, then keeps going in order.', show: { kind: 'trace', text: 'house' } },
         { say: 'At the last dot, a picture appears. It is a house.', show: { kind: 'trace', text: 'house' } },
         { say: 'The numbers show the order. Skip a dot, and the picture comes out wrong.', show: { kind: 'trace', text: 'house' } },
+        { say: 'Say each number out loud as you reach its dot. One, two, three, four. The numbers tell you where to go next.', show: { kind: 'trace', text: 'house' } },
+        { say: 'Long ago, people joined the stars at night with lines they imagined, to make pictures in the sky.', show: null },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines IX.B.2 (shows increasing control of tasks that require eye-hand coordination) and Head Start ELOF Goal P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles).'],
@@ -4860,7 +4878,7 @@ function PREK_MODULES() { return [
     tagline: 'A circle, a square, a triangle',
     needsTouch: true,
     lesson: {
-      paragraphs: ['A shape is a line that comes back to where it started. Start at the dot and go all the way around.', 'A circle goes round, a square has four corners, and a triangle has three. A star has five points and a heart has a point at the bottom, and every one of them ends back at the dot.'],
+      paragraphs: ['A shape is a line that comes back to where it started. Start at the dot and go all the way around.', 'A circle goes round, a square has four corners, and a triangle has three. A star has five points and a heart has a point at the bottom, and every one of them ends back at the dot.', 'You can find these shapes all around you. A button is round, a cracker can be square, a slice of pizza can be a triangle, and a heart can be on a card.'],
       keyIdea: 'Start at the dot and go all the way around.',
       example: { kind: 'trace', text: 'shape-circle', caption: 'Round and round. That is a circle.' },
       script: [
@@ -4869,6 +4887,7 @@ function PREK_MODULES() { return [
         { say: 'One more. Three corners, and back to the dot. That is a triangle.', show: { kind: 'trace', text: 'shape-triangle' } },
         { say: 'Watch a star. It has five points, and the line still comes back to the dot.', show: { kind: 'trace', text: 'shape-star' } },
         { say: 'A heart has two round bumps and a point. Go all the way around the heart, back to the dot.', show: { kind: 'trace', text: 'shape-heart' } },
+        { say: 'Look for these shapes around you. A button is round, a cracker can be square, and a heart can be on a card.', show: null },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines IX.B.2 (shows increasing control of tasks that require eye-hand coordination) and Head Start ELOF Goals P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles) and P-MATH 9 (identifies, describes, compares, and composes shapes).'],
@@ -4881,7 +4900,8 @@ function PREK_MODULES() { return [
     title: 'Taking turns',
     tagline: 'Wait, then it is your turn',
     lesson: {
-      paragraphs: ['When two people want the same thing, they can take turns. One goes first while the other waits, and then they swap, so both get a turn.', 'Sharing is different. When friends share, they both use the thing at the same time. Good choices like these help everyone get along.'],
+      pictures: [{ serial: 'P120', alt: 'Two children at a swing, one swinging while the other waits for a turn', step: 1 }],
+      paragraphs: ['When two people want the same thing, they can take turns. One goes first while the other waits, and then they swap, so both get a turn.', 'Sharing is different. When friends share, they both use the thing at the same time. Good choices like these help everyone get along.', 'Waiting for a turn can feel hard, and that is okay. While you wait, you can take a slow breath, count to ten or cheer for your friend, and soon it is your turn.'],
       keyIdea: 'Wait, and then it is your turn. Taking turns and sharing are fair to everyone.',
       example: { kind: 'pair', a: { kind: 'pic', name: 'frog' }, b: { kind: 'pic', name: 'turtle' }, caption: 'Two friends, one swing. Take turns.' },
       script: [
@@ -4891,10 +4911,12 @@ function PREK_MODULES() { return [
         { say: 'Sharing is different. Two friends can share one ball and both play at the same time. Share it!', show: { kind: 'art', name: 'ball' } },
         { say: 'Good choices help everyone. When someone is talking, listen. When you finish a snack, throw away the wrapper.', show: null },
         { say: 'When a friend drops their crayons, help pick them up.', show: null },
+        { say: 'Waiting for a turn can feel hard, and that is okay. Take a slow breath in, and let it out.', show: null },
+        { say: 'While you wait, you can count to ten, or cheer for your friend. Then it is your turn!', show: null },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines I.C.4 (interacts with peers during cooperative play scenarios that share a common plan and goal) and Head Start ELOF Goal P-SE 3 (engages in and maintains positive interactions and relationships with other children).'],
-    generators: ['pk-turn-choice', 'ck-good-choice', 'pk-whose-turn', 'pk-turn-choice', 'pk-whose-turn'],
+    generators: ['pk-turn-choice', 'ck-good-choice', 'pk-whose-turn', 'pk-turn-or-share', 'pk-while-waiting'],
   },
   {
     id: 'big-bigger-biggest',
@@ -4903,18 +4925,22 @@ function PREK_MODULES() { return [
     title: 'Big, bigger, biggest',
     tagline: 'Three sizes in a row',
     lesson: {
-      paragraphs: ['Three circles in a row. One is small, one is middle-sized, and one is the biggest of all.', 'Biggest and smallest compare three or more things. The middle-sized circle is bigger than the small one, but smaller than the biggest.'],
-      keyIdea: 'Little, middle-sized, biggest. Three sizes in a row.',
+      pictures: [{ serial: 'P115', alt: 'Three snowmen in a row, big, bigger and biggest', step: 4 }, { serial: 'P116', alt: 'A tiny bee, a middle-sized cat and a huge bear in a meadow', step: 5 }],
+      paragraphs: ['Three circles in a row. One is small, one is middle-sized, and one is the biggest of all.', 'Biggest and smallest compare three or more things. The middle-sized circle is bigger than the small one, but smaller than the biggest.', 'Say it as you point: big, bigger, biggest. Each one is bigger than the one before, and the last is the biggest of all.', 'Real animals come in sizes too. A bee and a snail are tiny, a cat, a rabbit, a duck, an owl and a fox are middle-sized, and a bear and a whale are huge. A picture can show them all the same size, so think about real life.'],
+      keyIdea: 'Big, bigger, biggest: each one is bigger than the one before, and the biggest takes up the most room.',
       example: { kind: 'pair', a: { kind: 'shape', name: 'circle' }, b: { kind: 'shape', name: 'circle', size: 'big' }, caption: 'A middle-sized circle and the biggest circle.' },
       script: [
         { say: 'Here is a small circle. It is the smallest.', show: { kind: 'shape', name: 'circle', size: 'small' } },
         { say: 'Here is a middle-sized circle. Not little, and not big.', show: { kind: 'shape', name: 'circle' } },
         { say: 'Here is the biggest circle of all. It takes up the most room.', show: { kind: 'shape', name: 'circle', size: 'big' } },
         { say: 'The middle-sized circle is bigger than the small one, but smaller than the biggest circle.', show: { kind: 'pair', a: { kind: 'shape', name: 'circle' }, b: { kind: 'shape', name: 'circle', size: 'big' } } },
+        { say: 'Big, bigger, biggest. Each one is bigger than the one before, and the last is the biggest of all.', show: null },
+        { say: 'Real animals come in sizes too. A bee and a snail are tiny. A cat, a rabbit and a fox are middle-sized, and so are a duck and an owl. A bear and a whale are huge.', show: null },
+        { say: 'Pictures can fool you, because a book may show a bee and a bear the same size. In real life, the bear is huge.', show: { kind: 'pair', a: { kind: 'pic', name: 'bee' }, b: { kind: 'pic', name: 'bear' } } },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines V.D.1 (recognizes and compares heights or lengths of people or objects) and Head Start ELOF Goal P-MATH 8 (measures objects by their attributes).'],
-    generators: ['pk4-tap-biggest', 'pk4-tap-smallest', 'pk4-tap-middle', 'pk4-tap-biggest', 'pk4-tap-smallest'],
+    generators: ['pk4-tap-biggest', 'pk4-tap-smallest', 'pk4-tap-middle', 'p4-real-biggest', 'p4-real-middle'],
   },
   {
     id: 'helpers-all-around',
@@ -4923,19 +4949,24 @@ function PREK_MODULES() { return [
     title: 'Helpers all around',
     tagline: 'Who helps, and how',
     lesson: {
-      paragraphs: ['Helpers are all around us, and every helper has a job. A firefighter puts out fires with a hose. A doctor helps you when you are sick and listens to your heart with a stethoscope.', 'A teacher teaches you at school and writes on a whiteboard. A mail carrier brings the mail in a mail truck. A police officer keeps people safe on the street.'],
+      pictures: [{ serial: 'P121', alt: 'A friendly doctor listening to a child\'s heart with a stethoscope', step: 1 }, { serial: 'P122', alt: 'A teacher writing on a whiteboard in front of a class', step: 2 }, { serial: 'P123', alt: 'A mail carrier with a bag of letters beside a mail truck', step: 3 }, { serial: 'P124', alt: 'A police officer beside a police car, waving to children on the sidewalk', step: 4 }],
+      paragraphs: ['Helpers are all around us, and every helper has a job. A firefighter puts out fires with a hose and rides a fire truck to get there fast. A doctor helps you when you are sick or hurt and listens to your heart with a stethoscope.', 'A teacher teaches you at school, reads stories to the class and writes on a whiteboard. A mail carrier brings letters, cards and packages in a mail truck. A police officer keeps people and cars safe on the street.', 'Helpers work in many places. Firefighters work at a fire station, doctors at a doctor\'s office or a hospital, teachers at a school, mail carriers at the post office, and police officers at a police station. You can be a helper too, at home and at school.'],
       keyIdea: 'Helpers are all around. Every helper has a job, and tools to help do it.',
       example: { kind: 'flow', steps: ['firefighter', 'doctor', 'teacher'], caption: 'Firefighter, doctor, teacher. Every helper has a job.' },
       script: [
-        { say: 'A firefighter is a helper. Firefighters put out fires with a hose.', show: { kind: 'icon', name: 'fire' } },
-        { say: 'A doctor helps when you are sick, and listens to your heart with a stethoscope.', show: null },
-        { say: 'A teacher teaches you at school and writes on a whiteboard.', show: null },
-        { say: 'A mail carrier brings the mail in a mail truck. A police officer keeps people safe on the street.', show: { kind: 'flow', steps: ['mail carrier', 'police officer', 'firefighter'] } },
+        { say: 'A firefighter is a helper. Firefighters put out fires with a hose, and they ride a fire truck to get there fast.', show: { kind: 'icon', name: 'fire' } },
+        { say: 'A doctor helps when you are sick or hurt, and listens to your heart with a stethoscope.', show: null },
+        { say: 'A teacher teaches you at school, reads stories to the class and writes on a whiteboard.', show: null },
+        { say: 'A mail carrier brings letters, cards and packages in a mail truck.', show: null },
+        { say: 'A police officer keeps people and cars safe on the street.', show: null },
+        { say: 'Helpers work in many places. Firefighters work at a fire station, and teachers work at a school.', show: null },
+        { say: 'Doctors work at a doctor\'s office or a hospital, mail carriers work at the post office, and police officers work at a police station.', show: null },
         { say: 'Every helper has a job, and every job helps us all.', show: null },
+        { say: 'You can be a helper too. Set the table, put away your toys, or help a friend who drops their crayons.', show: null },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines VII.B.3 (discusses the roles and responsibilities of family, school, and community helpers) and Head Start ELOF Goal P-SE 11 (has a sense of belonging to family, community, and other groups).'],
-    generators: ['ck-which-helper', 'ck-job-tool', 'ck-which-helper', 'ck-job-tool', 'ck-which-helper'],
+    generators: ['ck-which-helper', 'ck-job-tool', 'pk-helper-where', 'pk-helper-scene', 'ck-which-helper'],
   },
 ]; }
 
@@ -17856,6 +17887,58 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: 'These groups are close. Count each one.', prompt: 'Tap the group with fewer.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${small}`,
       explain: `${luCap(NUMBER_NAMES[small])} is fewer than ${NUMBER_NAMES[big]}, so this group has fewer.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: small }, b: { kind: 'dots', count: big } } };
   },
+});
+// First Steps part two at the refined standard (pass LV). In plain terms: question kinds that apply each lesson's facts, each
+// said aloud in its lesson first and re-derived in the rules test from tables of its own. Real sizes come in the three groups
+// the size lessons name: tiny (a bee, a snail), middle-sized (a cat, a rabbit, a duck, an owl, a fox) and huge (a bear, a
+// whale). Only animals from different groups are compared, so a bear never meets a whale: the smallest whales are about the
+// size of a big bear.
+const LV_TINY = ['bee', 'snail']; const LV_MIDDLE = ['cat', 'rabbit', 'duck', 'owl', 'fox']; const LV_HUGE = ['bear', 'whale'];
+const lvGroup = (a) => (LV_TINY.includes(a) ? 1 : LV_MIDDLE.includes(a) ? 2 : 3);
+// The setup line a child hears first, naming the animals in alphabetical order ("A bear and a bee.", "A fox, a snail and a
+// whale."); the pictures are shuffled on their own, so one set of animals is one question however its pictures fall.
+const lvList = (names) => names.length === 2 ? `${luCap(aOrAn(names[0]))} ${names[0]} and ${aOrAn(names[1])} ${names[1]}.` : `${luCap(aOrAn(names[0]))} ${names[0]}, ${aOrAn(names[1])} ${names[1]} and ${aOrAn(names[2])} ${names[2]}.`;
+const LV_TURN_OR_SHARE = [['Ana goes down the slide, and then Sam goes down.', 'Taking turns'], ['Sam swings while Ana waits, and then Ana swings.', 'Taking turns'], ['Sam reads the book first, and then Ana reads it.', 'Taking turns'], ['Ana plays the drum, and then she hands it to Sam to play.', 'Taking turns'], ['Ana and Sam build one tower together at the same time.', 'Sharing'], ['Ana and Sam color with one box of crayons at the same time.', 'Sharing'], ['Two friends eat from one bowl of grapes at snack time.', 'Sharing']];
+const LV_WAIT_RIGHT = [['Take a slow breath', 'A slow breath in and out helps you feel calm while you wait.'], ['Count to ten', 'Counting to ten helps the wait go by, and then it is your turn.'], ['Cheer for your friend', 'Cheering for your friend is kind, and your turn comes next.']];
+const LV_WAIT_WRONG = ['Push your friend', 'Grab it away', 'Yell and stomp'];
+const LV_WAIT_PLACES = ['the swing', 'the slide', 'the red crayon'];
+const LV_HELPER_PLACES = [['Who works at a fire station?', 'Firefighter', 'Firefighters work at a fire station, where the fire trucks wait until someone needs help.'], ["Who works at a doctor's office or a hospital?", 'Doctor', "Doctors work at a doctor's office or a hospital, where sick or hurt people go to get well."], ['Who works at a school?', 'Teacher', 'Teachers work at a school, where children learn.'], ['Who works at the post office?', 'Mail carrier', 'Mail carriers work at the post office, where they pick up the mail to bring to every home.'], ['Who works at a police station?', 'Police officer', 'Police officers work at a police station, and they go out to keep people safe on the street.']];
+const LV_HELPER_SCENES = [['Smoke and flames are coming from a house.', 'Who comes to put out the fire?', 'Firefighter', 'Firefighters put out fires with water from a hose.'], ['A fire truck rushes down the street with its siren on.', 'Who rides on the fire truck?', 'Firefighter', 'Firefighters ride the fire truck to get to a fire fast.'], ['You are sick with a fever.', 'Who helps you get well?', 'Doctor', 'A doctor helps sick people get well.'], ['You hurt your arm, and it needs to be checked.', 'Who checks it and helps it heal?', 'Doctor', 'A doctor checks a hurt arm and helps it heal.'], ['You want to learn your letters at school.', 'Who helps you learn?', 'Teacher', 'A teacher helps you learn at school.'], ['Your class sits down for a story.', 'Who reads it to the class?', 'Teacher', 'A teacher reads stories to the class and helps everyone learn.'], ['Grandma mailed you a birthday card.', 'Who brings it to your home?', 'Mail carrier', 'A mail carrier brings letters and cards to every home.'], ['A package is on its way to your house.', 'Who brings the package?', 'Mail carrier', 'A mail carrier brings packages as well as letters.'], ['People and cars need to stay safe on a busy street.', 'Who helps keep them safe?', 'Police officer', 'A police officer keeps people and cars safe on the street.']];
+Object.assign(GENERATORS, {
+  'p4-real-bigger': (rng) => {
+    const [ga, gb] = pick(rng, [[LV_TINY, LV_MIDDLE], [LV_TINY, LV_HUGE], [LV_MIDDLE, LV_HUGE]]);
+    const small = pick(rng, ga); const big = pick(rng, gb); const names = [small, big].sort(); const bigger = rng() < 0.5;
+    return { type: 'choice', story: lvList(names), prompt: bigger ? 'Which one is bigger in real life?' : 'Which one is smaller in real life?', choices: shuffle(rng, names.map((x) => `pic:${x}`)), answer: `pic:${bigger ? big : small}`,
+      explain: bigger ? `In real life ${aOrAn(big)} ${big} is much bigger than ${aOrAn(small)} ${small}, even when their pictures are the same size.` : `In real life ${aOrAn(small)} ${small} is much smaller than ${aOrAn(big)} ${big}, even when their pictures are the same size.`, visual: null, explainVisual: null };
+  },
+  'p4-real-biggest': (rng) => {
+    const names = [pick(rng, LV_TINY), pick(rng, LV_MIDDLE), pick(rng, LV_HUGE)].sort(); const biggest = rng() < 0.5;
+    const want = names.find((x) => lvGroup(x) === (biggest ? 3 : 1));
+    return { type: 'choice', story: lvList(names), prompt: biggest ? 'Which one is the biggest in real life?' : 'Which one is the smallest in real life?', choices: shuffle(rng, names.map((x) => `pic:${x}`)), answer: `pic:${want}`,
+      explain: biggest ? `In real life ${aOrAn(want)} ${want} is huge, so it is the biggest of the three.` : `In real life ${aOrAn(want)} ${want} is tiny, so it is the smallest of the three.`, visual: null, explainVisual: null };
+  },
+  'p4-real-middle': (rng) => {
+    const names = [pick(rng, LV_TINY), pick(rng, LV_MIDDLE), pick(rng, LV_HUGE)].sort();
+    const tiny = names.find((x) => lvGroup(x) === 1); const want = names.find((x) => lvGroup(x) === 2); const huge = names.find((x) => lvGroup(x) === 3);
+    return { type: 'choice', story: lvList(names), prompt: 'Which one is middle-sized in real life?', choices: shuffle(rng, names.map((x) => `pic:${x}`)), answer: `pic:${want}`,
+      explain: `In real life ${aOrAn(want)} ${want} is bigger than ${aOrAn(tiny)} ${tiny} and smaller than ${aOrAn(huge)} ${huge}, so it is middle-sized.`, visual: null, explainVisual: null };
+  },
+  'p4-how-many-3': (rng) => {
+    // One, two or three (pass LV): the lesson counts to three, and the older kind asked only one or two.
+    const n = randInt(rng, 1, 3);
+    if (rng() < 0.6) { const shape = pick(rng, PATTERN_SHAPES); const colour = pick(rng, ['red', 'blue', 'green']);
+      return { type: 'choice', story: null, prompt: `How many ${shape}s?`, choices: ['1', '2', '3'], answer: String(n), explain: n === 1 ? `There is one ${shape}, just one.` : `Count them, ${countUp(n)}. There are ${NUMBER_NAMES[n]} ${shape}s.`, visual: { kind: 'pattern', items: Array.from({ length: n }, () => shape), colour, counting: true }, explainVisual: null }; }
+    return { type: 'choice', story: null, prompt: 'How many dots?', choices: ['1', '2', '3'], answer: String(n), explain: n === 1 ? 'There is one dot, just one.' : `Count them, ${countUp(n)}. There are ${NUMBER_NAMES[n]} dots.`, visual: { kind: 'dots', count: n }, explainVisual: null };
+  },
+  'pk-turn-or-share': (rng) => { const [story, answer] = pick(rng, LV_TURN_OR_SHARE);
+    return { type: 'choice', story, prompt: 'Is this taking turns or sharing?', choices: ['Taking turns', 'Sharing'], answer,
+      explain: answer === 'Taking turns' ? 'One goes first and then the other, so this is taking turns.' : 'They both use it at the same time, so this is sharing.', visual: null, explainVisual: null }; },
+  'pk-while-waiting': (rng) => { const place = pick(rng, LV_WAIT_PLACES); const [answer, why] = pick(rng, LV_WAIT_RIGHT); const wrong = pick(rng, LV_WAIT_WRONG);
+    return { type: 'choice', story: `Your friend has a turn with ${place}, and you are waiting.`, prompt: 'What can you do while you wait?', choices: shuffle(rng, [answer, wrong]), answer, explain: why, visual: null, explainVisual: null }; },
+  'pk-helper-where': (rng) => { const [prompt, answer, explain] = pick(rng, LV_HELPER_PLACES);
+    return { type: 'choice', story: null, prompt, choices: twoOf(rng, CIV_HELPER_NAMES, answer), answer, explain, visual: null, explainVisual: null }; },
+  'pk-helper-scene': (rng) => { const [story, prompt, answer, explain] = pick(rng, LV_HELPER_SCENES);
+    return { type: 'choice', story, prompt, choices: twoOf(rng, CIV_HELPER_NAMES, answer), answer, explain, visual: null, explainVisual: null }; },
 });
 Object.assign(GENERATORS, {
   'pl-tap-letter': (rng) => {

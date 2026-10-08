@@ -9,6 +9,11 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## October 8, 2026 (a few facts set straight)
+
+- Three Texas history stories and two lines in the lessons now tell the Battle of Gonzales the way historians agree on it. The settlers would not give up their cannon, and the first shots of the revolution were fired there. Historians disagree about when the Come and Take It flag was made and about who fired first, so we no longer say either.
+- In the kindergarten story about our two flags, Kai now puts his right hand over his heart for both flags, the way the pledges lesson teaches, instead of saluting.
+
 ## October 8, 2026 (Wonder voices by name)
 
 - The four voices in Wonder questions now go by name: Frederick, Chloe, Georgette and Mike. A small label under each name says how they see things, The Scientist, The Artist, The Grandparent of Faith and The Skeptic, so children can connect the voices with the people in their stories.

@@ -962,6 +962,22 @@ ok('coloring records nothing: the round count is untouched', (await state()).scr
   if ((await state()).screen !== 'overview') { await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'result'); await page.getByLabel('Back').click(); }
   await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
 }
+// Every page painted in Leonardo opens for brushing, never tap-to-fill (pass LZ, Mikey: "Coloring is about using the
+// stylus and brushing and taking time"). The accuracy check found the lesson pages opening in fill mode, with no nibs,
+// since COLORING_MODE named none of them; a drawing, a letter page and a lesson page are opened here.
+{
+  const modes = [];
+  for (const pic of ['flower', 'letter-a', 'lesson-our-pledges']) {
+    await page.evaluate((p) => window.__eduTest.openColoring(p), pic);
+    // Wait for this page's own drawing, since the screen is already coloring after the first page (the code check).
+    await page.waitForFunction((p) => { const s = document.querySelector('.edu-pad svg[role=img]'); return !!s && s.getAttribute('aria-label') === `A ${p} to color`; }, pic);
+    modes.push(await page.evaluate(() => { const pad = document.querySelector('.edu-pad'); return !pad ? 'none' : pad.classList.contains('edu-pad-fill') ? 'fill' : 'brush'; }));
+  }
+  ok('a drawing, a letter page and a lesson page all open for brushing, never tap-to-fill', modes.every((m) => m === 'brush'));
+  console.log(`  (coloring modes: ${modes.join(', ')})`);
+  await page.getByRole('button', { name: 'Close coloring' }).first().click({ force: true });
+  await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+}
 // Walk the Robot (pass FS, computer science K to 2): the child writes the steps. The first robot of round one is walk
 // number five (start 0,2; star 0,0; a rock at 0,1): right, up, up, left brings it home. The second (start 4,4; star 2,3;
 // rocks at 3,4 and 2,4) bumps on a first step left; taking the step back and going up, left, left brings it home too.

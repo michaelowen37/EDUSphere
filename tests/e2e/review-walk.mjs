@@ -75,4 +75,4 @@ ok('the failed lesson carries Mikey\'s reopened line', /You've mastered this onc
 ok('no page errors along the way', errors.length === 0, errors);
 await browser.close();
 console.log(`\n${passed} passed, ${failed} failed`);
-process.exit(failed ? 1 : 0);
+process.exitCode = failed ? 1 : 0;   // never process.exit() (CLAUDE.md, 2026-09-23)

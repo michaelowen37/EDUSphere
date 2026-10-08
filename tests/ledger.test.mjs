@@ -2,7 +2,7 @@
 // story serials (S), coloring page serials (L), and nothing in the ledger that the app does not use.
 import { readFileSync } from 'node:fs';
 import { STORIES, COURSE_STORIES, COLOR_PAGES } from '../src/stories.mjs';
-import { stylesFor, ROW } from '../tools/coloring-levels.mjs';
+import { stylesFor, ROW, TRY_ROW } from '../tools/coloring-levels.mjs';
 import { MAP_SERIALS, MODULES } from '../src/logic.mjs';
 let pass = 0; let fail = 0;
 const ok = (label, cond, detail = '') => { console.log((cond ? 'PASS' : 'FAIL') + ' - ' + label + (cond ? '' : '  ' + detail)); cond ? pass++ : fail++; };
@@ -48,6 +48,33 @@ ok('the ledger has no rows the app does not use', orphans.length === 0, orphans.
   ok('every coloring page scene names more than one thing', lone.length === 0, lone.join(','));
   const levels = new Set(rows.map(([, serial, page]) => (stylesFor(serial, page) || {}).level));
   ok('the pages climb through every level, pre-K 3 to grade 2', ['PK3', 'PK4', 'K', '1', '2'].every((l) => levels.has(l)));
+}
+// Images to try (pass LZ, Mikey: "a separate section for desired images that may or may not work"): each try is a
+// hoped-for version of a planned picture, so it names a row the ledger plans (same serial and page), whose safe version is
+// painted if the try fails; a coloring page's try keeps its level's style and negative prompt.
+{
+  const lines = ledger.split('\n');
+  const planned = new Map(lines.map((l) => /^\| ((?:CS|[A-Z])\d+) \| (.*?) \|/.exec(l)).filter(Boolean).map((m) => [m[1], m[2]]));
+  const tries = lines.map((l) => TRY_ROW.exec(l)).filter(Boolean);
+  const orphan = tries.filter(([, serial, page]) => planned.get(serial) !== page).map((m) => m[1]);
+  const offLevel = tries.filter(([, serial, page, , prompt, neg]) => { if (!/^[DG]\d/.test(serial)) return false; const s = stylesFor(serial, page); return !s || !prompt.endsWith(`, ${s.style}`) || neg !== s.negative; }).map((m) => m[1]);
+  ok('every image to try names a planned picture, and a coloring page\'s try keeps its level\'s style', tries.length >= 1 && orphan.length === 0 && offLevel.length === 0, [...orphan, ...offLevel].join(','));
+}
+// Lesson coloring pages (pass LZ): the scene lives twice, in COLOR_PAGES (src/stories.mjs) and in its ledger row, so the
+// row must name the page the app uses (lesson-<module id>) and carry the same scene, with at most a check note after it.
+{
+  const rows = new Map(ledger.split('\n').map((l) => ROW.exec(l)).filter(Boolean).map(([, serial, page, scene]) => [serial, [page, scene]]));
+  const drift = Object.entries(COLOR_PAGES).filter(([mid, [serial, scene]]) => { const r = rows.get(serial); return !r || r[0] !== `lesson-${mid}` || !(r[1] === scene || r[1].startsWith(`${scene} (check:`)); }).map(([, [serial]]) => serial);
+  ok('every lesson coloring page has its page and scene in the ledger as the code has them', Object.keys(COLOR_PAGES).length >= 210 && drift.length === 0, drift.join(','));
+}
+// The Images to try section is the ledger's last, so a row appended at the end of the file lands in it: the section holds
+// only Try rows, and a Try row sits nowhere else.
+{
+  const lines = ledger.split('\n'); const at = lines.findIndex((l) => l.startsWith('## Images to try'));
+  const next = lines.findIndex((l, i) => i > at && l.startsWith('## ')); const end = next < 0 ? lines.length : next;
+  const inside = lines.slice(at + 1, end).filter((l) => /^\| /.test(l) && !/^\| Serial \|/.test(l));
+  const strays = lines.filter((l, i) => (i <= at || i >= end) && TRY_ROW.test(l));
+  ok('the Images to try section holds only Try rows, and no Try row sits anywhere else', at > 0 && inside.length >= 1 && inside.every((l) => TRY_ROW.test(l)) && strays.length === 0, inside.filter((l) => !TRY_ROW.test(l)).map((l) => l.slice(0, 12)).join(','));
 }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

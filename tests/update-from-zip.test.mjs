@@ -74,4 +74,4 @@ const walk = (dir, rel) => {
 walk(ROOT, '');
 check(spaced.length === 0, `no file name in the project has a space (found: ${spaced.slice(0, 5).join(', ')})`);
 console.log(`${passed} passed, ${failed} failed`);
-if (failed) process.exit(1);
+process.exitCode = failed ? 1 : 0;   // never process.exit() (CLAUDE.md, 2026-09-23)

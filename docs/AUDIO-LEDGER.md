@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-08 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 8857 clips, 1,503,391 characters in all; the longest clip is 508 characters and the longest whole story 3,420, far under Eleven v4's 10,000 a request. 190 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-08 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 8857 clips, 1,503,397 characters in all; the longest clip is 508 characters and the longest whole story 3,420, far under Eleven v4's 10,000 a request. 190 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,9 +17,9 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 4801 | 551,731 |
-| Grades 3 to 5 | 1263 | 278,553 |
-| Grades 6 to 8 | 1138 | 272,072 |
+| Pre-K to grade 2 | 4801 | 551,761 |
+| Grades 3 to 5 | 1263 | 278,546 |
+| Grades 6 to 8 | 1138 | 272,055 |
 | Grades 9 to college | 1655 | 401,035 |
 
 ## Voices
@@ -923,7 +923,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S236-3: The top one had fifty, one star for every state, too many to count fast. [surprised] The one below had just one big star.
 - S236-4: That was the flag for Texas, our state. [proud] One star, the Lone Star.
 - S236-5: [warm] Two flags, one for the country and one for home, both on one pole and waving together.
-- S236-6: [proud] Kai saluted both of them. Then he drew them, fifty little stars and one big one.
+- S236-6: [proud] Kai put his right hand over his heart for both of them. Then he drew them, fifty little stars and one big one.
 - S236-7: [slowly, warmly] Fifty stars for the country. One star for Texas.
 
 ### Ten steps (S239, count-to-10)

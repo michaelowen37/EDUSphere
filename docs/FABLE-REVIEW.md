@@ -200,6 +200,16 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A sample built by hand to look like a real screen drifts: the LI tour sample missed the Merge link and the Wonder pill and was laid out differently, and Mikey saw all three at a glance. Feed made-up data through the real component instead, with taps switched off, and the sample can never differ from the page.
 - Count a daily allowance against the day as it started, not as it stands: finishing the first review shrinks the queue, and a rule that rechecked the live queue would cancel the second review the backlog asked for.
 
+## Learned in pass LZ (Mikey's notes before a new chat)
+
+- The Wonder voices are the cast grown up, and the stories are the flashbacks (Mikey: "It's like a sophisticated story that has flashbacks to their childhood to show how they developed the mindset they have today"). Write a core-cast story knowing the grown voice it leads to.
+- A reader looking for facts and safety stops hearing rhythm, so story flow gets its own reader (docs/INDEPENDENT-CHECKS.md, the story flow brief).
+- An overarching reader sees what specialists cannot: two fixes that pull against each other, or a pass that drifts from the vision. In this pass it caught a rule I had written in Mikey's name that his words only offered as a perhaps.
+- A national flag a picture needs may wave outdoors or hang in folds indoors, so part of its pattern is hidden; an exact flag is a try beside a safe picture, and where the words count stripes or stars, the picture leaves the count to the words.
+- A sweep that stops at the first screen of results is not a sweep: read every row a search returns.
+- When sources disagree on a fact, the words say only what they agree on, and DECISIONS names the sources (the Gonzales flag, pass LZ).
+- A prompt that asks for a letter while its negative prompt bans letters asks for what it forbids; a picture that needs a letter is planned around things instead (a hand, a crayon, a trail in the sand).
+
 ## Learned in pass LY (pictures at the child's level, and voices with names)
 
 - A coloring page is a scene with several things to color, never one object alone, and it grows more intricate with the child. A rule that lives only in the decisions log is lost: this one was decided in September and every planned page still shared one style line for every age. Put a rule where a test can see it.

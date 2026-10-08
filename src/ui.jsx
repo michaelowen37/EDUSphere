@@ -6550,7 +6550,10 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
   const svgRef = useRef(null);
   useEffect(() => paperStop, []);
   const parts = layoutLetterParts(COLORING_ART[picture] || []);
-  const freeDraw = COLORING_MODE[picture] === 'draw';
+  // A page painted in Leonardo (an art part: a drawing page, a letter page, a lesson page, a better page once saved) is
+  // always brushed with the crayons' nibs, never tapped to fill (pass LZ, Mikey: coloring is the stylus and brushing).
+  // Before pass LZ the 210 lesson pages would have opened in fill mode, since COLORING_MODE names none of them.
+  const freeDraw = COLORING_MODE[picture] === 'draw' || (COLORING_ART[picture] || []).some((part) => part.t === 'art');
   // Zoomed in, the picture is still drawn in its own coordinates, so color put on close up stays
   // exactly where it belongs when they zoom back out.
   const span = 100 / zoom;

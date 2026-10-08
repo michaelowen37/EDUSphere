@@ -8,7 +8,8 @@
 // circles to color, and are not on this ladder.
 // The ledger test checks every D and G row against this file, and
 //   node tools/coloring-levels.mjs --write
-// rewrites the style and the negative prompt of every D and G row in docs/ART-REQUESTS.md from it, keeping each scene.
+// rewrites the style and the negative prompt of every D and G row in docs/ART-REQUESTS.md from it, keeping each scene,
+// and of every coloring page's row under Images to try (pass LZ).
 import { readFileSync, writeFileSync } from 'node:fs';
 import { COLORING_PICTURES, MODULES, getCourse } from '../src/logic.mjs';
 import { COLOR_PAGES } from '../src/stories.mjs';
@@ -47,17 +48,21 @@ export function stylesFor(serial, page) {
 }
 // A ledger row: | serial | page | scene | prompt | negative | status |
 export const ROW = /^\| ((?:D|G)\d+) \| (.*?) \| (.*?) \| (.*?) \| (.*?) \| (\w+) \|$/;
+// A row under Images to try (pass LZ, Mikey): the same six columns with Try before the serial, a hoped-for version of a
+// planned picture. A coloring page's try keeps its level's style and negative prompt, like the page's planned row.
+export const TRY_ROW = /^\| Try ((?:CS|[A-Z])\d+) \| (.*?) \| (.*?) \| (.*?) \| (.*?) \| (\w+) \|$/;
 
 if (process.argv.includes('--write')) {
   const path = new URL('../docs/ART-REQUESTS.md', import.meta.url);
   let rewritten = 0;
   const out = readFileSync(path, 'utf8').split('\n').map((line) => {
-    const m = ROW.exec(line); if (!m) return line;
+    const tried = TRY_ROW.exec(line);
+    const m = ROW.exec(line) || (tried && /^[DG]\d/.test(tried[1]) ? tried : null); if (!m) return line;
     const [, serial, page, scene, prompt, , status] = m; const s = stylesFor(serial, page);
     if (!s) throw new Error(`${serial} (${page}) has no level`);
     const at = prompt.indexOf(', Style:'); if (at < 0) throw new Error(`${serial}: the prompt has no Style line`);
     rewritten++;
-    return `| ${serial} | ${page} | ${scene} | ${prompt.slice(0, at)}, ${s.style} | ${s.negative} | ${status} |`;
+    return `| ${m === tried ? 'Try ' : ''}${serial} | ${page} | ${scene} | ${prompt.slice(0, at)}, ${s.style} | ${s.negative} | ${status} |`;
   });
   writeFileSync(path, out.join('\n'));
   console.log(`${rewritten} coloring rows written`);

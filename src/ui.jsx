@@ -352,6 +352,21 @@ function PictoGraph({ rows }) {
     </div>
   );
 }
+// A counted row of shapes (pass MA), drawn the way DotGroup draws dots: one cell for each shape at the dots' spacing, in a frame
+// five cells wide or the frame a pair shares, the row in the middle. A row of shapes and a group of dots of the same number then
+// line up exactly, each shape above its dot, and shrink together on a narrow screen; and a row's length follows its count, never
+// the room it is spread across, so the picture cannot hint at the wrong group (pass JW: young children judge how many by length).
+function CountRow({ items, colour, cell = 34, frame = 5, snap = false }) {
+  const gap = 8; const cols = Math.max(frame, items.length); const shift = (cols - items.length) / 2;
+  const w = cols * cell + (cols - 1) * gap; const lead = (snap ? Math.floor(shift) : shift) * (cell + gap);   // snap: as DotGroup
+  const color = SWATCH[colour] || B.green; const label = items.every((x) => x === items[0]) ? items.length + ' ' + items[0] + 's' : items.length + ' shapes';
+  return (
+    <svg viewBox={`0 0 ${w} ${cell}`} width={w} height={cell} role="img" aria-label={label} style={{ display: 'block', maxWidth: '100%', overflow: 'visible', margin: '0 auto' }}>
+      {items.map((it, i) => <svg key={i} x={lead + i * (cell + gap)} y={0} width={cell} height={cell} viewBox="0 0 100 100">{shapeBody(it, color)}</svg>)}
+    </svg>
+  );
+}
+// A row of shapes spread across the picture: a pattern (with ? for the missing piece), or a counted row drawn without a cell size.
 function PatternRow({ items, colour }) {
   return (
     <div style={{ display: 'flex', gap: 10, justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
@@ -656,7 +671,7 @@ function IconPic({ name, size = 90 }) {
 // so the spoken words still name the plain shape. Every variant keeps the shape's sides and vertices; only its look changes.
 const SHAPE_PATHS = {
   circle: { plain: null },   // drawn as a circle below, never as a path
-  triangle: { plain: 'M50 12 L88 84 L12 84 Z', thin: 'M50 6 L70 92 L30 92 Z', wide: 'M12 84 L92 84 L66 34 Z', turned: 'M50 88 L12 16 L88 16 Z' },
+  triangle: { plain: 'M50 12 L88 84 L12 84 Z', thin: 'M50 6 L70 92 L30 92 Z', wide: 'M12 84 L92 84 L66 34 Z', turned: 'M50 88 L12 16 L88 16 Z', small: 'M50 34 L70 70 L30 70 Z' },
   square: { plain: 'M14 14 L86 14 L86 86 L14 86 Z', turned: 'M50 8 L92 50 L50 92 L8 50 Z', small: 'M30 30 L70 30 L70 70 L30 70 Z' },
   rectangle: { plain: 'M6 26 L94 26 L94 74 L6 74 Z', tall: 'M26 6 L74 6 L74 94 L26 94 Z', thin: 'M4 36 L96 36 L96 64 L4 64 Z' },
   // A rhombus has four sides all the same length. The plain one is the diamond a child knows (its two corner-to-corner
@@ -666,12 +681,18 @@ const SHAPE_PATHS = {
   hexagon: { plain: 'M92 50 L71 86.4 L29 86.4 L8 50 L29 13.6 L71 13.6 Z', long: 'M6 50 L26 16 L74 16 L94 50 L74 84 L26 84 Z', turned: 'M50 8 L86.4 29 L86.4 71 L50 92 L13.6 71 L13.6 29 Z' },
   trapezoid: { plain: 'M10 78 L90 78 L70 22 L30 22 Z', tall: 'M22 90 L78 90 L66 10 L34 10 Z' },
 };
-function ShapePic({ name, size = 90, color = C.green, variant = null }) {
+// A shape's drawn body in a box 100 units wide: a circle, or the path for its look. A small look (pass MA, PK3.V.C.4: a child
+// recognizes common shapes regardless of size) is the same shape drawn smaller, so a small circle is still a circle. ShapePic
+// draws one shape alone, and CountRow draws a counted row of them.
+function shapeBody(name, color, variant = null) {
   const raw = String(name).split('#')[0]; const [base, tilde] = raw.split('~'); const look = variant || tilde || 'plain';
   const paths = SHAPE_PATHS[base] || SHAPE_PATHS.rectangle;
-  const body = base === 'circle' ? <circle cx="50" cy="50" r="38" fill={color} />
+  return base === 'circle' ? <circle cx="50" cy="50" r={look === 'small' ? 20 : 38} fill={color} />
     : <path d={paths[look] || paths.plain} fill={color} strokeLinejoin="round" />;
-  return <svg viewBox="0 0 100 100" width={size} height={size} role="img" aria-label={look === 'plain' ? base : `${look} ${base}`} style={{ display: 'block', margin: '0 auto' }}>{body}</svg>;
+}
+function ShapePic({ name, size = 90, color = C.green, variant = null }) {
+  const raw = String(name).split('#')[0]; const [base, tilde] = raw.split('~'); const look = variant || tilde || 'plain';
+  return <svg viewBox="0 0 100 100" width={size} height={size} role="img" aria-label={look === 'plain' ? base : `${look} ${base}`} style={{ display: 'block', margin: '0 auto' }}>{shapeBody(name, color, variant)}</svg>;
 }
 // Fair shares (pass KY, TEKS 1.6G and 1.6H): a circle, a square or a rectangle cut into pieces, with some pieces shaded.
 // `cut` names the cut (none, half, half-across, half-slant, fourths, fourths-strips, fourths-x, unequal-two, unequal-four)
@@ -829,18 +850,27 @@ function JoinedPic({ figure = 'square-2tri', size = 120 }) {
   );
 }
 
-function DotGroup({ count, size = 34, animate = false, animKey = 0 }) {
-  const cols = 5; const rows = Math.ceil(count / cols); const gap = 8;
+function DotGroup({ count, size = 34, animate = false, animKey = 0, frame = 5, snap = false, gap = 8 }) {
+  // gap is the space between dots: 8 for every group, wider for the long row of the long-row picture (pass MA), narrower for
+  // the five close together beneath it.
+  const cols = frame; const rows = Math.ceil(count / cols);
   const w = cols * size + (cols - 1) * gap; const h = rows * size + (rows - 1) * gap;
+  // Centered (pass MA): a single row sits in the middle of its frame, and the frame sits in the middle of its picture, so one
+  // or two dots are not off at the left. A group alone has a five-wide frame. Two groups in a pair share one frame as wide as
+  // the bigger group (frame, set by the pair), so both draw their dots at one size, and two small groups draw them large enough
+  // to count (a frame for each group drew the bigger group's dots smaller, a size cue the counting lesson must not give).
+  // Groups of six or more keep their rows of five from the left. In a stacked pair (snap) the smaller group lands on the bigger
+  // group's columns, each dot right under a partner, even when the two counts differ by an odd number.
+  const shift = (cols - count) / 2; const lead = count <= cols ? (snap ? Math.floor(shift) : shift) * (size + gap) : 0;
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} width={w} height={h} role="img" aria-label={`${count} dots`} style={{ display: 'block', maxWidth: '100%', overflow: 'visible' }}>
+    <svg viewBox={`0 0 ${w} ${h}`} width={w} height={h} role="img" aria-label={`${count} dots`} style={{ display: 'block', maxWidth: '100%', overflow: 'visible', margin: '0 auto' }}>
       <defs>
         <radialGradient id="edu-ball" cx="35%" cy="32%" r="70%"><stop offset="0%" stopColor="#9CC7B0" /><stop offset="45%" stopColor={C.green} /><stop offset="100%" stopColor="#1F3B31" /></radialGradient>
       </defs>
       {Array.from({ length: count }).map((_, i) => (
         <circle key={`${animKey}-${i}`} className={animate ? 'edu-drift' : undefined}
           style={animate ? { animationDelay: `${i * 0.55}s`, transformBox: 'fill-box', transformOrigin: 'center' } : undefined}
-          cx={(i % cols) * (size + gap) + size / 2} cy={Math.floor(i / cols) * (size + gap) + size / 2} r={size / 2 - 2} fill="url(#edu-ball)" />
+          cx={lead + (i % cols) * (size + gap) + size / 2} cy={Math.floor(i / cols) * (size + gap) + size / 2} r={size / 2 - 2} fill="url(#edu-ball)" />
       ))}
     </svg>
   );
@@ -931,14 +961,15 @@ function NotedDrawing({ children, animKey = 0 }) {
 // could point at an answer); left unset, a picture wears it only when it holds a thing drawn in place of its coloring page.
 function Picture(props) {
   if (!props.visual) return null;
-  const { note, ...rest } = props;
+  // bare (pass MA): a picture drawn on another picture's paper, half of a pair, takes no paper card of its own.
+  const { note, bare, ...rest } = props;
   const noted = note === true || (note !== false && visualStandIn(props.visual));
   const drawing = noted ? <NotedDrawing animKey={props.animKey}><PictureInner {...rest} /></NotedDrawing> : <PictureInner {...rest} />;
-  return C.mode === 'dark' ? <div className="edu-paper-picture" style={{ background: C.paperBoard, borderRadius: 12, padding: '4px 10px', color: B.ink }}>{drawing}</div> : drawing;
+  return C.mode === 'dark' && !bare ? <div className="edu-paper-picture" style={{ background: C.paperBoard, borderRadius: 12, padding: '4px 10px', color: B.ink }}>{drawing}</div> : drawing;
 }
 function PictureInner({ visual, animate = false, animKey = 0, nudge = 0 }) {
   if (!visual) return null;
-  if (visual.kind === 'dots') return <div style={{ padding: '6px 0' }}><DotGroup count={visual.count} animate={animate} animKey={animKey} /></div>;
+  if (visual.kind === 'dots') return <div style={{ padding: '6px 0' }}><DotGroup count={visual.count} frame={visual.frame || 5} snap={!!visual.snap} gap={visual.gap || 8} animate={animate} animKey={animKey} /></div>;
   if (visual.kind === 'trace') return <div style={{ padding: '6px 0' }}><TraceDemo letter={visual.text} animKey={animKey} pace={visual.pace} nudge={nudge} /></div>;
   if (DIAGRAMS[visual.kind]) { const D = DIAGRAMS[visual.kind]; return <div key={animKey} style={{ padding: '6px 0' }}><D {...visual} /></div>; }
   if (visual.kind === 'numberline' && visual.from !== undefined) return <div key={animKey} style={{ padding: '6px 0' }}><NumberLinePic from={visual.from} to={visual.to} mark={visual.mark ?? null} marks={visual.marks || []} /></div>;
@@ -948,7 +979,9 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0 }) {
   if (visual.kind === 'pic') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0', display: 'flex', justifyContent: 'center' }}><StudentPicture name={visual.name} size={110} /></div>;
   if (visual.kind === 'art') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0', display: 'flex', justifyContent: 'center' }}><ColorThumb picture={visual.name} size={120} thing /></div>;
   if (visual.kind === 'icon') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><IconPic name={visual.name} size={110} /></div>;
-  if (visual.kind === 'shape') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><ShapePic name={visual.name} variant={visual.variant || null} color={SWATCH[visual.colour] || C.green} size={visual.size === 'big' ? 140 : visual.size === 'small' ? 50 : 110} /></div>;
+  // A shape with no color of its own takes the paper's green, B.green, in both themes (pass MA): the dark theme's mint was 1.7
+  // to 1 on the almond paper, and pass CY's rule gives every drawing on paper the light palette.
+  if (visual.kind === 'shape') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><ShapePic name={visual.name} variant={visual.variant || null} color={SWATCH[visual.colour] || B.green} size={visual.size === 'big' ? 140 : visual.size === 'small' ? 50 : 110} /></div>;
   if (visual.kind === 'tens') return <div style={{ padding: '6px 0' }}><TensGroup count={visual.count} animate={animate} animKey={animKey} /></div>;
   if (visual.kind === 'array') return <div style={{ padding: '6px 0' }}><ArrayPic rows={visual.rows} cols={visual.cols} /></div>;
   if (visual.kind === 'numberline') return <div style={{ padding: '6px 0' }}><NumberLine parts={visual.parts} mark={visual.mark} /></div>;
@@ -957,22 +990,53 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0 }) {
   // Two things side by side: two shapes, two colors, two groups of dots. Each half is any picture
   // this function can draw, so "red and blue are colors" shows red beside blue, not red alone.
   if (visual.kind === 'pair') {
-    const half = (v, i) => (v.kind ? <div key={`${animKey}-${i}`} className={animate ? 'edu-drift' : undefined} style={{ animationDelay: `${i * 0.5}s`, maxWidth: '46%', transform: 'scale(0.85)' }}><Picture visual={v} note={false} /></div> : <Item key={i} spec={`${v.shape}-${v.colour}`} size={96} />);
-    return <div style={{ padding: '6px 0', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 28 }}>{half(visual.a, 0)}{half(visual.b, 1)}</div>;
+    // A stacked pair (pass MA) puts one group above the other at full width, so a row of shapes and a row of dots at one size
+    // line up for counting; a plain pair sits side by side.
+    const stack = !!visual.stack;
+    // Two counted groups (dots, or a row of shapes drawn like dots) share one frame as wide as the bigger group, up to five
+    // (pass MA), so both draw at one size, a row of shapes sits over its dots, and two small groups draw large enough for a
+    // three-year-old to count. Each half is bare: it already sits on the pair's paper, so it adds no paper card of its own (in
+    // the dark theme a second card padded each half and broke rows that the light theme keeps on one line).
+    // A group with its own spacing (gap: the long-row picture, three dots spread out over five close together) keeps a frame
+    // as wide as its own dots and shares none, so the long row is truly the longer one, as the words say it looks.
+    const counted = (v) => (v && v.kind === 'dots' ? v.count : v && v.kind === 'pattern' && v.size ? v.items.length : 0);
+    const spaced = [visual.a, visual.b].some((v) => v && v.gap);
+    const frame = !spaced && counted(visual.a) && counted(visual.b) ? Math.min(5, Math.max(counted(visual.a), counted(visual.b))) : null;
+    const own = (v) => (v && v.kind === 'dots' ? { ...v, frame: v.count } : v);
+    const [first, second] = spaced ? [own(visual.a), own(visual.b)] : frame ? [{ ...visual.a, frame, snap: stack }, { ...visual.b, frame, snap: stack }] : [visual.a, visual.b];
+    const half = (v, i) => (v.kind ? <div key={`${animKey}-${i}`} className={animate ? 'edu-drift' : undefined} style={{ animationDelay: `${i * 0.5}s`, maxWidth: stack ? '100%' : '46%', transform: stack ? undefined : 'scale(0.85)' }}><Picture visual={v} note={false} bare /></div> : <Item key={i} spec={`${v.shape}-${v.colour}`} size={96} />);
+    return <div style={{ padding: '6px 0', display: 'flex', flexDirection: stack ? 'column' : 'row', justifyContent: 'center', alignItems: 'center', gap: stack ? 10 : 28 }}>{half(first, 0)}{half(second, 1)}</div>;
+  }
+  // A row of up to three pictures (pass MA): two owls and a fox, or a big, a middle-size and a little circle, so a line that names
+  // three things shows all three. Each cell takes the same share of the width and each picture a share of its cell in proportion
+  // to its drawn size, so three sizes keep their sizes beside each other on every screen, each capped at its own size so a tablet
+  // never draws a circle bigger than a lesson draws it alone. The items are drawn bare (PictureInner):
+  // the row already sits on the paper, and a paper card around each item would eat a little circle whole.
+  if (visual.kind === 'row') {
+    const items = (visual.items || []).slice(0, 3);
+    const nominal = (v) => (v.kind === 'shape' ? (v.size === 'big' ? 140 : v.size === 'small' ? 54 : 92) : 110);   // the questions' 88, 58 and 34, scaled
+    const most = Math.max(...items.map(nominal));
+    return <div className="edu-row-pic" style={{ padding: '6px 0', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '2%' }}>{items.map((v, i) => <div key={`${animKey}-${i}`} className={animate ? 'edu-drift' : undefined} style={{ width: '31%', display: 'flex', justifyContent: 'center', animationDelay: `${i * 0.4}s` }}><div style={{ width: `${Math.round((nominal(v) / most) * 100)}%`, maxWidth: nominal(v) }}><PictureInner visual={v} /></div></div>)}</div>;
   }
   if (visual.kind === 'swatch') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><Swatch colour={visual.colour} size={120} /></div>;
-  if (visual.kind === 'item') { const scale = visual.scale ? '-' + visual.scale : ''; return <div style={{ padding: '6px 0' }}><Item spec={`${visual.shape}-${visual.colour}${scale}`} size={110} /></div>; }
+  // A thing to match can be drawn at its choices' size (size, pass MA), so the one that is the same is the same size too.
+  if (visual.kind === 'item') { const scale = visual.scale ? '-' + visual.scale : ''; return <div style={{ padding: '6px 0' }}><Item spec={`${visual.shape}-${visual.colour}${scale}`} size={visual.size || 110} /></div>; }
+  // A counted row with a cell size (pass MA) is drawn like a group of dots (CountRow), so it lines up with dots of the same
+  // number; every other row of shapes keeps PatternRow.
+  if (visual.kind === 'pattern' && visual.size) return <div key={animKey} className={animate ? 'edu-rise' : undefined} style={{ padding: '6px 0' }}><CountRow items={visual.items} colour={visual.colour || 'green'} cell={visual.size} frame={visual.frame || 5} snap={!!visual.snap} /></div>;
   if (visual.kind === 'pattern') return <div key={animKey} className={animate ? 'edu-rise' : undefined} style={{ padding: '6px 0' }}><PatternRow items={visual.items} colour={visual.colour || 'green'} /></div>;
   if (visual.kind === 'solid') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><SolidPic name={visual.name} size={110} /></div>;
   if (visual.kind === 'tenframe') return <div key={animKey} className={animate ? 'edu-rise' : undefined} style={{ padding: '6px 0' }}><TenFrame filled={visual.filled} /></div>;
   // Towers (pass JX): with vertical set, the bars stand side by side on one floor, so a lesson can compare heights.
   if (visual.kind === 'bars') return <div style={visual.vertical ? { padding: '6px 0', display: 'flex', gap: 28, justifyContent: 'center', alignItems: 'flex-end' } : { padding: '6px 0', display: 'grid', gap: 10 }}>{visual.lengths.map((n, i) => <BarPic vertical={!!visual.vertical} key={`${animKey}-${i}`} length={n} />)}</div>;
   if (visual.kind === 'letters') {
+    // Letters sit on paper, so they take the light palette's ink (B) in both themes (pass MA): the dark theme's green is mint,
+    // too faint on the almond paper to read (1.7 to 1).
     // Words and expressions ("ethos pathos logos", "5x + 3 = 2x + 15") are shown as one centered
     // line that wraps. Only short runs of single letters are spelled out large, one by one.
     const tokens = visual.text.split(' ');
     if ((tokens.some((t) => t.length > 1) || /[\d+=-]/.test(visual.text)) && visual.text.replace(/\s/g, '').length > 4 && !visual.highlight) {   // a number sentence of single digits is one line too (pass LB)
-      return <p style={{ fontSize: 28, fontWeight: 700, margin: '6px 0', textAlign: 'center', color: C.green, lineHeight: 1.3, wordBreak: 'break-word' }}>{visual.text}</p>;
+      return <p style={{ fontSize: 28, fontWeight: 700, margin: '6px 0', textAlign: 'center', color: B.green, lineHeight: 1.3, wordBreak: 'break-word' }}>{visual.text}</p>;
     }
     // Each letter swells as it is named, so a child who cannot read still knows which one
     // is being talked about.
@@ -982,7 +1046,7 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0 }) {
     if (visual.highlight) {
       const words = visual.text.split(' ');
       return (
-        <p style={{ fontSize: 44, fontWeight: 700, letterSpacing: 6, margin: '6px 0', textAlign: 'center', color: C.green }}>
+        <p style={{ fontSize: 44, fontWeight: 700, letterSpacing: 6, margin: '6px 0', textAlign: 'center', color: B.green }}>
           {words.map((w, wi) => {
             const at = visual.highlight === 'first' ? 0 : w.toLowerCase().lastIndexOf(visual.highlight.toLowerCase());
             const len = visual.highlight === 'first' ? 1 : visual.highlight.length;
@@ -990,7 +1054,7 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0 }) {
             return (
               <span key={`${animKey}-${wi}`} style={{ display: 'inline-block', marginRight: wi < words.length - 1 ? 18 : 0 }}>
                 {before}
-                {hot && <span className={animate ? 'edu-stress' : undefined} style={{ display: 'inline-block', color: C.gold, transform: 'scale(1.12)', transformOrigin: 'center', animationDelay: `${0.4 + wi * 0.9}s` }}>{hot}</span>}
+                {hot && <span className={animate ? 'edu-stress' : undefined} style={{ display: 'inline-block', color: B.gold, transform: 'scale(1.12)', transformOrigin: 'center', animationDelay: `${0.4 + wi * 0.9}s` }}>{hot}</span>}
                 {after}
               </span>
             );
@@ -999,7 +1063,7 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0 }) {
       );
     }
     return (
-      <p style={{ fontSize: 44, fontWeight: 700, letterSpacing: 6, margin: '6px 0', textAlign: 'center', color: C.green }}>
+      <p style={{ fontSize: 44, fontWeight: 700, letterSpacing: 6, margin: '6px 0', textAlign: 'center', color: B.green }}>
         {parts.map((ch, i) => (
           <span key={`${animKey}-${i}`} className={animate && ch.trim() ? 'edu-grow' : undefined}
             style={animate && ch.trim() ? { display: 'inline-block', animationDelay: `${parts.slice(0, i).filter((x) => x.trim()).length * 0.75}s` } : undefined}>
@@ -1395,6 +1459,8 @@ const KID_ANIMATION = () => `
 /* A halo behind a button, so the invitation to tap pulses while the button itself holds still. */
 .edu-halo { animation: edu-halo 1.9s ease-out infinite; }
 .edu-drift { animation: edu-drift-in 0.9s cubic-bezier(0.25, 1.1, 0.4, 1) both; }
+/* A row picture's drawings fill their cells (pass MA), so three sizes keep their proportions at any width. */
+.edu-row-pic svg { width: 100%; height: auto; }
 /* The stand-in note (pass LW) waits for the drawing to arrive and settle, then fades in. */
 @keyframes edu-note-in { 0% { opacity: 0; } 100% { opacity: 1; } }
 .edu-note-in { animation: edu-note-in 0.5s ease 1.5s both; }
@@ -1764,6 +1830,9 @@ function WonderButton({ onClick, children }) {
 // Eight friendly faces, drawn here so nothing is ever uploaded. Simple enough to read at
 // thumbnail size, distinct enough that a five-year-old finds theirs at a glance.
 function StudentPicture({ name, tint = null, size = 56 }) {
+  // In the dark theme the rabbit wears a soft brown outline wherever it is drawn (pass MA): its pale fur all but vanishes on the
+  // almond paper of lessons and questions (1.1 to 1), and the owl's brown keeps the outline at 3.4 to 1. The light theme is unchanged.
+  const fur = C.mode === 'dark' ? { stroke: '#8C7A5B', strokeWidth: 1.5 } : {};
   const faces = {
     fox: <g><path d="M12 44 L18 14 L30 26 L42 14 L48 44 Z" fill="#D98B3D" /><circle cx="24" cy="34" r="2.6" fill="#24291F" /><circle cx="36" cy="34" r="2.6" fill="#24291F" /><path d="M27 41 L30 44 L33 41 Z" fill="#24291F" /></g>,
     owl: <g><ellipse cx="30" cy="34" rx="18" ry="20" fill="#8C7A5B" /><circle cx="22" cy="30" r="7" fill="#F5F1E6" /><circle cx="38" cy="30" r="7" fill="#F5F1E6" /><circle cx="22" cy="30" r="3" fill="#24291F" /><circle cx="38" cy="30" r="3" fill="#24291F" /><path d="M27 40 L30 46 L33 40 Z" fill="#C79A3D" /></g>,
@@ -1772,7 +1841,7 @@ function StudentPicture({ name, tint = null, size = 56 }) {
     bee: <g><ellipse cx="30" cy="36" rx="16" ry="12" fill="#E2B83A" /><rect x="22" y="26" width="5" height="20" fill="#24291F" /><rect x="34" y="26" width="5" height="20" fill="#24291F" /><ellipse cx="22" cy="20" rx="8" ry="5" fill="#DCE9F5" opacity="0.9" /><ellipse cx="38" cy="20" rx="8" ry="5" fill="#DCE9F5" opacity="0.9" /><circle cx="15" cy="34" r="2.2" fill="#24291F" /></g>,
     cat: <g><path d="M14 44 L14 18 L24 26 L36 26 L46 18 L46 44 Z" fill="#A9A19A" /><circle cx="24" cy="34" r="2.6" fill="#24291F" /><circle cx="36" cy="34" r="2.6" fill="#24291F" /><path d="M27 40 L30 43 L33 40 Z" fill="#B45A3C" /><path d="M8 40 L22 41 M8 46 L22 44 M52 40 L38 41 M52 46 L38 44" stroke="#24291F" strokeWidth="1.5" /></g>,
     turtle: <g><ellipse cx="30" cy="36" rx="18" ry="12" fill="#6A8F5B" /><circle cx="48" cy="34" r="6" fill="#8FB07E" /><circle cx="50" cy="33" r="1.8" fill="#24291F" /><path d="M18 32 L24 30 L30 32 L36 30 L42 32" fill="none" stroke="#4F6E44" strokeWidth="2" /></g>,
-    rabbit: <g><ellipse cx="30" cy="38" rx="14" ry="12" fill="#E8DFD3" /><ellipse cx="23" cy="18" rx="5" ry="12" fill="#E8DFD3" /><ellipse cx="37" cy="18" rx="5" ry="12" fill="#E8DFD3" /><circle cx="25" cy="36" r="2.4" fill="#24291F" /><circle cx="35" cy="36" r="2.4" fill="#24291F" /><path d="M28 42 L30 44 L32 42 Z" fill="#D98B8B" /></g>,
+    rabbit: <g><ellipse cx="30" cy="38" rx="14" ry="12" fill="#E8DFD3" {...fur} /><ellipse cx="23" cy="18" rx="5" ry="12" fill="#E8DFD3" {...fur} /><ellipse cx="37" cy="18" rx="5" ry="12" fill="#E8DFD3" {...fur} /><circle cx="25" cy="36" r="2.4" fill="#24291F" /><circle cx="35" cy="36" r="2.4" fill="#24291F" /><path d="M28 42 L30 44 L32 42 Z" fill="#D98B8B" /></g>,
     bear: <g><circle cx="30" cy="34" r="16" fill="#8B6B4A" /><circle cx="18" cy="22" r="6" fill="#8B6B4A" /><circle cx="42" cy="22" r="6" fill="#8B6B4A" /><ellipse cx="30" cy="40" rx="7" ry="5" fill="#C9A98A" /><circle cx="24" cy="31" r="2.4" fill="#24291F" /><circle cx="36" cy="31" r="2.4" fill="#24291F" /><circle cx="30" cy="38" r="2.4" fill="#24291F" /></g>,
     fish: <g><path d="M10 34 Q26 16 44 34 Q26 52 10 34 Z" fill="#E28A5B" /><path d="M44 34 L54 24 L54 44 Z" fill="#E28A5B" /><circle cx="20" cy="32" r="2.6" fill="#24291F" /><path d="M26 26 Q30 34 26 42" fill="none" stroke="#C9704A" strokeWidth="2" /></g>,
     duck: <g><ellipse cx="32" cy="38" rx="17" ry="11" fill="#F0D45C" /><circle cx="20" cy="26" r="9" fill="#F0D45C" /><path d="M11 27 L4 30 L11 32 Z" fill="#E28A2B" /><circle cx="18" cy="24" r="2.2" fill="#24291F" /></g>,
@@ -3127,19 +3196,25 @@ function Done({ show }) {
 // Join the dots in order. The next dot is gold; a wrong one wobbles; the last line closes the shape.
 function DotsGame({ game, round }) {
   const dots = useMemo(() => DOT_SHAPES[game.shape] || DOT_SHAPES.kite, [game]);
-  const [next, setNext] = useState(0); const [wrong, setWrong] = useState(-1);
+  const [next, setNext] = useState(0); const [wrong, setWrong] = useState(-1); const svgRef = useRef(null);
   useEffect(() => { setNext(0); }, [round]);
   const done = next >= dots.length;
-  const tap = (i) => { if (done) return; if (i === next) setNext(next + 1); else { setWrong(i); setTimeout(() => setWrong(-1), 400); } };
+  const small = 1;   // every picture keeps its dots DOT_GAP apart, so nothing needs to shrink
+  // A right tap joins the dot and says its number aloud, in words past ten too (the fish has eleven dots, the rocket twelve);
+  // a dot already joined does nothing; any other dot wobbles.
+  const tap = (i) => { if (done || i < next) return; if (i === next) { setNext(next + 1); speak(NUMBER_NAMES[i + 1] || ['eleven', 'twelve'][i - 10] || String(i + 1)); } else { setWrong(i); setTimeout(() => setWrong(-1), 400); } };
+  // A tap on a drawn dot goes to that dot: the gold one joins, a joined one does nothing, any other wobbles. A tap that misses
+  // every drawn dot still reaches the gold dot within 9 units (dots sit at least DOT_GAP, 11, apart), or else the nearest dot
+  // within 9, so a small finger that lands just beside a dot still reaches it.
+  const tapNear = (e) => { if (!svgRef.current || done) return; const [x, y] = boxPoint(svgRef.current, e); const far = ([dx, dy]) => Math.hypot(dx - x, dy - y); const on = dots.findIndex((d, i) => far(d) <= (i === next ? 5.2 : 4.2) * small); if (on >= 0) { tap(on); return; } if (far(dots[next]) < 9) { tap(next); return; } let best = -1; let gap = 9; dots.forEach((d, i) => { const r = far(d); if (r < gap) { gap = r; best = i; } }); if (best >= 0) tap(best); };
   const drawn = dots.slice(0, next).concat(done ? [dots[0]] : []);
-  const small = 1;                                                    // every picture keeps its dots DOT_GAP apart, so nothing needs to shrink
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX }}>
-      <svg viewBox="0 0 100 100" width="100%" height="100%" style={{ display: 'block' }}>
+      <svg ref={svgRef} onPointerDown={tapNear} data-dots-board={game.id} viewBox="0 0 100 100" width="100%" height="100%" style={{ display: 'block' }}>
         <polyline points={drawn.map((d) => d.join(',')).join(' ')} fill="none" stroke={B.green} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
         {dots.map(([x, y], i) => (
-          <g key={i} onPointerDown={() => tap(i)} style={{ cursor: 'pointer' }} className={wrong === i ? 'edu-wobble' : undefined}>
-            <circle cx={x} cy={y} r={(i === next ? 5.2 : 4.2) * small} fill={i < next ? B.green : i === next ? B.gold : '#FFFFFF'} stroke="#2E2E2E" strokeWidth="0.9" />
+          <g key={i} style={{ cursor: 'pointer' }} className={wrong === i ? 'edu-wobble' : undefined}>
+            <circle cx={x} cy={y} r={(i === next ? 5.2 : 4.2) * small} fill={i < next ? B.green : i === next ? B.gold : '#FFFFFF'} stroke={wrong === i ? B.clay : '#2E2E2E'} strokeWidth={wrong === i ? 1.6 : 0.9} />
             <text x={x} y={y} fontSize={4.6 * small} fontWeight="700" fontFamily={FONT} textAnchor="middle" dominantBaseline="central" fill={i < next ? '#FFFFFF' : '#2E2E2E'}>{i + 1}</text>
           </g>
         ))}
@@ -5892,7 +5967,7 @@ function gameInstructions(game) {
     if (game.kind === 'buckets') return `Drag each chip into its bucket: ${a.label} on the left, ${b.label} on the right. A chip in the wrong bucket bounces back.`;
   }
   if (game.kind === 'sort') return game.by === 'size' ? 'Drag each object to the side it belongs. When they are all sorted, you win!' : 'Drag each object to the side it belongs. When each one is sorted, you win!';
-  return { sprint: 'Sixty seconds. Questions from your own lessons come one after another; tap the answer and the next one appears. A right answer is a point, a wrong one takes a point away, and three right in a row starts a streak. Beat your best.', order: 'The steps are shuffled. Tap them in the order they happen, first to last. Tap a numbered step to take its number back. When every step has a number, a right order moves on and the first mistake comes loose to try again. On a timeline, the dates appear once the set is in order, and the clock waits while you read them. Three sets, and the clock counts up, so race yourself.', dots: 'Tap the dots in order, 1, 2, 3, and a picture appears. Tap the wrong dot and nothing happens; find the next number.', pairs: 'Tap two cards. If the pictures match, they stay up. If not, they turn back over. Find every pair.', maze: 'Drag the dot to the star without crossing a wall.', jigsaw: 'Drag each piece to where it belongs until the picture is whole.', pong: 'Slide the paddle to hit the ball back. Miss, and the ball resets. See how many hits you can keep going.' }[game.kind] || 'Tap to play.';
+  return { sprint: 'Sixty seconds. Questions from your own lessons come one after another; tap the answer and the next one appears. A right answer is a point, a wrong one takes a point away, and three right in a row starts a streak. Beat your best.', order: 'The steps are shuffled. Tap them in the order they happen, first to last. Tap a numbered step to take its number back. When every step has a number, a right order moves on and the first mistake comes loose to try again. On a timeline, the dates appear once the set is in order, and the clock waits while you read them. Three sets, and the clock counts up, so race yourself.', dots: 'Tap the dots in order, 1, 2, 3, and a picture appears. Count along as each dot says its number. The gold dot is the next one, and a wrong dot just wiggles.', pairs: 'Tap two cards. If the pictures match, they stay up. If not, they turn back over. Find every pair.', maze: 'Drag the dot to the star without crossing a wall.', jigsaw: 'Drag each piece to where it belongs until the picture is whole.', pong: 'Slide the paddle to hit the ball back. Miss, and the ball resets. See how many hits you can keep going.' }[game.kind] || 'Tap to play.';
 }
 // The foot of an opened fold (pass IT, Mikey): a centered Collapse link, so a long open list can be closed from the bottom.
 // Closing brings the fold's own title back into view, so the student is not left somewhere unfamiliar.
@@ -9012,6 +9087,12 @@ function EduSphereScreens() {
   }
 
   if (screen === 'practice' && q) {
+    // Dot choices share one frame as wide as the biggest group, up to five, and snap onto it (pass MA), so in a comparison each
+    // dot sits under its partner in the next button; every dot keeps its size. A counted row above them (the same-number
+    // question) takes the same frame and snaps too, so it lies right over the right answer's dots. The frame is worked out here,
+    // not in the question, so a question's picture never depends on its wrong answer (passes IU and LV).
+    const dotFrame = q.type === 'choice' && Array.isArray(q.choices) && q.choices.length > 0 && q.choices.every((x) => /^dots:\d+$/.test(x)) ? Math.min(5, Math.max(...q.choices.map((x) => Number(x.split(':')[1])))) : 0;
+    const shownVisual = q.visual && dotFrame && q.visual.kind === 'pattern' && q.visual.size ? { ...q.visual, frame: dotFrame, snap: true } : q.visual;
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         {/* Module name on the left, the question count in the middle, and a bold green X on the
@@ -9036,10 +9117,11 @@ function EduSphereScreens() {
         <div style={{ ...card, position: 'relative' }}>
           <p data-question-text="" style={{ fontSize: 20, fontWeight: 600, margin: '0 0 12px', textAlign: 'center' }}>{q.prompt}</p>
           {q.story && <div style={{ margin: '0 0 14px', color: C.ink }}><RichText text={q.story} size={17} center lineGap={8} /></div>}
-          {q.visual && <div style={{ margin: '0 0 14px' }}><Picture visual={q.visual} note={record.preview ? undefined : false} /></div>}
+          {q.visual && <div style={{ margin: '0 0 14px' }}><Picture visual={shownVisual} note={record.preview ? undefined : false} /></div>}
           {q.type === 'choice' ? (
             // Number answers never stack onto two lines (2026-09-23, Mikey): the columns are as wide as the longest one needs.
-            <div style={{ display: 'grid', gap: 10, gridTemplateColumns: q.choices.every((c) => /^(\d+|[A-Za-z])$/.test(c)) ? `repeat(auto-fit, minmax(${Math.max(70, Math.max(...q.choices.map((c) => c.length)) * 15 + 24)}px, 1fr))` : '1fr' }}>
+            // Towers stand side by side on one floor (pass MA): the explanation says both stand on the same floor, so the buttons do too.
+            <div style={{ display: 'grid', gap: 10, alignItems: q.choices.every((c) => /^tower:\d+$/.test(c)) ? 'end' : undefined, gridTemplateColumns: q.choices.every((c) => /^tower:\d+$/.test(c)) ? `repeat(${q.choices.length}, 1fr)` : q.choices.every((c) => /^(\d+|[A-Za-z])$/.test(c)) ? `repeat(auto-fit, minmax(${Math.max(70, Math.max(...q.choices.map((c) => c.length)) * 15 + 24)}px, 1fr))` : '1fr' }}>
               {q.choices.map((c) => {
                 const picked = given === c;
                 let bg = C.surface; let border = C.line;
@@ -9058,7 +9140,7 @@ function EduSphereScreens() {
                   // because naming it would hand over the answer.
                   <button key={c} type="button" data-choice={c} onClick={() => { if (!checked) { if (readAloud) { playTap(); if (!c.includes(':')) speak(c); } setGiven(c); } }}
                     style={{ opacity: ruledOut && !checked ? (C.mode === 'dark' ? 0.72 : 0.5) : 1, fontFamily: FONT, fontSize: choiceFont(q.choices), textAlign: 'center', padding: standIn ? '12px 10px 34px' : '12px 10px', ...(standIn ? { position: 'relative' } : null), minWidth: 0, overflowWrap: /^-?[\d.,\/ ]+$/.test(c) ? 'normal' : 'anywhere', whiteSpace: /^-?[\d.,\/ ]+$/.test(c) ? 'nowrap' : 'normal', borderRadius: 10, background: bg, border: `2px solid ${border}`, color: C.ink, cursor: checked ? 'default' : 'pointer', minHeight: 48 }}>
-                    {/^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={28} /> : /^shape:/.test(c) ? <ShapePic name={c.split(':')[1]} size={c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={14} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={18} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={14} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6).split('#')[0]} size={64} /> : /^shares:/.test(c) ? <SharesPic shape={c.split(':')[1]} cut={c.split(':')[2]} shaded={Number(c.split(':')[3] || 0)} size={72} /> : /^dice:/.test(c) ? <DicePic pips={Number(c.split(':')[1].split('#')[0])} size={64} /> : /^pic:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><StudentPicture name={c.slice(4).split('#')[0]} size={72} /></span> : /^art:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><ColorThumb picture={c.slice(4).split('#')[0]} size={84} thing /></span> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={64} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={64} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={64} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={80} /> : /^digital:/.test(c) ? <DigitalPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={96} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={12} /> : c}
+                    {/^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={28} frame={dotFrame || 5} snap={dotFrame > 0} /> : /^shape:/.test(c) ? <ShapePic name={c.split(':')[1]} size={c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={14} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={18} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={14} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6).split('#')[0]} size={64} /> : /^shares:/.test(c) ? <SharesPic shape={c.split(':')[1]} cut={c.split(':')[2]} shaded={Number(c.split(':')[3] || 0)} size={72} /> : /^dice:/.test(c) ? <DicePic pips={Number(c.split(':')[1].split('#')[0])} size={64} /> : /^pic:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><StudentPicture name={c.slice(4).split('#')[0]} size={72} /></span> : /^art:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><ColorThumb picture={c.slice(4).split('#')[0]} size={84} thing /></span> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={64} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={64} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={64} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={80} /> : /^digital:/.test(c) ? <DigitalPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={96} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={12} /> : c}
                     {standIn && <ReplaceNote pal={C} style={{ right: 8, bottom: 5 }} />}
                   </button>
                 );
@@ -10901,11 +10983,14 @@ function EduSphereScreens() {
     // every course the same way: two short unpainted stories a page, a painted or long story on sheets that split only
     // between paragraphs (each paragraph with its own picture), the long story last on as many sheets as it needs.
     const { groups, csParts } = bookPages(chapters, cs, hasArt);
-    // The last page: which of the state's standards each story serves, from the standards map (2026-09-24, Mikey).
+    // The last pages: which of the state's standards each story serves, from the standards map (2026-09-24, Mikey), on as many
+    // sheets as the list needs (pass MA). A story with no standard in the educator's framework is left out, and the page says so.
     const fw = frameworkForState(stateCode || 'CA');
     const standardsFor = (moduleId) => CURRICULUM.flatMap((e) => e.standards).filter((st) => st.framework === fw && (st.moduleIds || []).includes(moduleId));
     const standardRows = chapters.map(({ m, st }, i) => ({ i, m, list: standardsFor(m.id) })).filter((r) => r.list.length);
-    const pageTotal = 1 + groups.length + csParts.length + (standardRows.length ? 1 : 0);
+    const standardSheets = standardsSheets(standardRows);   // as many sheets as the list needs (pass MA)
+    const leftOut = standardRows.length < chapters.length;
+    const pageTotal = 1 + groups.length + csParts.length + standardSheets.length;
     // Every painting loads before the printer sees the page (2026-09-24): pictures load lazily on screen, and a lazy one
     // further down the book could print as a blank.
     const printBook = () => {
@@ -10948,21 +11033,21 @@ function EduSphereScreens() {
               <StoryBody story={cs} part={part} />
             </div><p className="edu-book-foot">{titleCase(c.title)} · Page {groups.length + 2 + k} of {pageTotal}</p></div>
           ))}
-          {standardRows.length > 0 && (
-            <div className="edu-book-group edu-book-standards">
+          {standardSheets.map((sheet, k) => (
+            <div key={`std-${k}`} className="edu-book-group edu-book-standards">
               <div style={{ ...card, marginTop: 18 }}>
-                <p style={{ margin: '0 0 4px', fontSize: 18, fontWeight: 700, textAlign: 'center' }}>What these stories teach</p>
-                <p style={{ margin: '0 0 12px', fontSize: 13, color: C.muted, textAlign: 'center' }}>{fw} standards served by each story</p>
-                {standardRows.map((r) => (
+                <p style={{ margin: '0 0 4px', fontSize: 18, fontWeight: 700, textAlign: 'center' }}>{k === 0 ? 'What these stories teach' : 'What these stories teach, continued'}</p>
+                {k === 0 && <p style={{ margin: '0 0 12px', fontSize: 13, color: C.muted, textAlign: 'center' }}>{fw} standards served by each story{leftOut ? '. A story with none is left out.' : ''}</p>}
+                {sheet.rows.map((r) => (
                   <div key={r.m.id} style={{ marginBottom: 10 }}>
                     <p style={{ margin: 0, fontSize: 14, fontWeight: 600, textAlign: 'center' }}>Story {r.i + 1}. {titleCase(r.m.title)}</p>
                     {r.list.map((st) => <p key={st.code} style={{ margin: '2px 0 0', fontSize: 13, color: C.muted, textAlign: 'center' }}><strong style={{ color: C.ink }}>{st.code}</strong> {st.text}</p>)}
                   </div>
                 ))}
               </div>
-              <p className="edu-book-foot">{titleCase(c.title)} · Page {pageTotal} of {pageTotal}</p>
+              <p className="edu-book-foot">{titleCase(c.title)} · Page {pageTotal - standardSheets.length + k + 1} of {pageTotal}</p>
             </div>
-          )}
+          ))}
         </div>
       </div></div>
     );

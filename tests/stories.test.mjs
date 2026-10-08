@@ -174,6 +174,21 @@ for (const [id, cs] of Object.entries(COURSE_STORIES)) {
     st.words.forEach((par, i) => { const parts = L.printParts([par], [0], true); if (parts.length !== 1 || parts[0].used > P.room) tall.push(`${id} paragraph ${i + 1}: ${parts[0] ? parts[0].used : '?'} inches`); });
   }
   ok('every paragraph fits one sheet beside its picture, under the title and main painting', tall.length === 0, tall.slice(0, 5).join(' | '));
+  // The book's last pages (pass MA): the state's standards each story serves fill as many sheets as they need, a story's
+  // standards never split from its title, and no sheet is fuller than the room above its footer. Checked for every course in
+  // both frameworks, since an educator's state picks which list prints. Before pass MA the list was one sheet, and pre-K 4
+  // First Steps' list ran past its bottom.
+  const { CURRICULUM } = await import('../src/curriculum.mjs');
+  const overfull = []; let sheetsCounted = 0;
+  for (const c of L.COURSES) for (const fw of ['TEKS', 'CCSS']) {
+    const rows = c.modules.filter((m) => STORIES[m.id]).map((m, i) => ({ i, m, list: CURRICULUM.flatMap((e) => e.standards).filter((st) => st.framework === fw && (st.moduleIds || []).includes(m.id)) })).filter((r) => r.list.length);
+    if (!rows.length) continue;
+    const sheets = L.standardsSheets(rows); sheetsCounted += sheets.length;
+    const placed = sheets.flatMap((sh) => sh.rows.map((r) => r.m.id));
+    if (placed.join(',') !== rows.map((r) => r.m.id).join(',')) overfull.push(`${c.id} ${fw}: stories out of place`);
+    sheets.forEach((sh, k) => { if (sh.used > L.STANDARDS_PAGE.room + 0.001) overfull.push(`${c.id} ${fw} sheet ${k + 1}: ${sh.used} inches of ${L.STANDARDS_PAGE.room}`); });
+  }
+  ok(`every course's standards pages fit their sheets (${sheetsCounted} sheets)`, overfull.length === 0, overfull.slice(0, 5).join(' | '));
 }
 
 // Audio tags (pass JH): a story's `audio` is its `words` with Eleven v4 tags added and nothing else changed, the words never

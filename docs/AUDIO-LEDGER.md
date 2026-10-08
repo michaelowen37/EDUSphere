@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-08 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 8857 clips, 1,503,397 characters in all; the longest clip is 508 characters and the longest whole story 3,420, far under Eleven v4's 10,000 a request. 190 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-08 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 8891 clips, 1,506,688 characters in all; the longest clip is 508 characters and the longest whole story 3,420, far under Eleven v4's 10,000 a request. 190 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,7 +17,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 4801 | 551,761 |
+| Pre-K to grade 2 | 4835 | 555,052 |
 | Grades 3 to 5 | 1263 | 278,546 |
 | Grades 6 to 8 | 1138 | 272,055 |
 | Grades 9 to college | 1655 | 401,035 |
@@ -41,7 +41,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 |---|---|
 | story title | 658 |
 | story | 4223 |
-| lesson line | 3025 |
+| lesson line | 3059 |
 | long story title | 105 |
 | long story | 846 |
 
@@ -506,11 +506,11 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 - S119-1: [excited] Snow! Leo wanted to go out, so he needed his mittens. [curious] He found one, and it was red.
 - S119-2: [worried] One mitten, but two hands, so one hand would be cold. [whispering] Where was the other one?
-- S119-3: [rushed] Leo tipped the basket over, and out came mittens of every kind. [amazed] Blue ones, black ones and striped ones.
-- S119-4: [thoughtful] He held up a blue one. [disappointed] No, not the same. He held up a big black one. [sighs] No, too big.
-- S119-5: [gasps] Then he saw it, a red one, small and soft, just like the first. He put them side by side. [delighted] A match!
-- S119-6: [happy] Two red mittens meant two warm hands. [excited] Leo ran out into the snow.
-- S119-7: [slowly, warmly] Same means just alike. Look for the same color and the same size.
+- S119-3: [rushed] Leo tipped the basket over, and out came mittens and gloves of every kind. [amazed] Blue ones, black ones and striped ones.
+- S119-4: [thoughtful] He held up a blue mitten, the same shape as his, but not the same color. [curious] Then he found a red glove with fingers. [disappointed] Same color, but not the same shape!
+- S119-5: [gasps] At last he saw it, a red mitten, just like the first. He put them side by side, the same shape and the same color. [delighted] A match!
+- S119-6: [happy] Two red mittens meant two warm hands, [excited] and Leo ran out to play in the snow with Dad.
+- S119-7: [slowly, warmly] The same means just alike, the same shape and the same color.
 
 ### Like me? (S122, match-the-animals)
 
@@ -522,15 +522,15 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S122-6: [gasps] Peep! [excited] Something peeped back. Another duckling, with the same yellow, the same feathers and the same peep. [delighted] Yes, just like me!
 - S122-7: [slowly, warmly] The same means just alike. Look closely, and then look again.
 
-### Two bowls (S125, more-or-fewer)
+### Two plates (S125, more-or-fewer)
 
-- S125-1: [cheerful] Two bowls sat on the table, and both had green grapes, cold from the fridge.
-- S125-2: [curious] This bowl was full, with grapes piled up high. [thoughtful] That bowl had three, just three at the bottom.
-- S125-3: [curious] Ana looked at one, and then the other. [thoughtful] Which one had more? [playful] She wanted more.
-- S125-4: [slowly, counting] She counted the small bowl. One, two, three, [disappointed] and that was all.
-- S125-5: [thoughtful] She did not count the big bowl, because she could see it was full. [excited] More!
-- S125-6: [delighted] Ana picked the full bowl. She ate one grape, and then another, [happy] and there were plenty.
-- S125-7: [slowly, warmly] More means the bigger group, and fewer means the smaller one. The full bowl had more, and the small bowl had fewer.
+- S125-1: [cheerful] Mom set two plates on the table at snack time, [warmly] and both had crackers, crunchy and square.
+- S125-2: [curious] On one plate, the crackers were spread out in a long, long row. [thoughtful] On the other plate, they sat close together.
+- S125-3: [excited] That one has more! said Ana, and she pointed at the long row. [playful] She wanted the plate with more.
+- S125-4: [gently] Are you sure? said Mom. [encouraging] Let's count each plate, and touch each cracker once.
+- S125-5: [slowly, counting] Ana counted the long row first, one, two, three, [matter-of-fact] and that was all. [slowly, counting] Then she counted the crackers sitting close together, one, two, three, four, [surprised] five!
+- S125-6: [amazed] Five crackers are more than three crackers! said Ana. [thoughtful] The long row only looked like more, but it had fewer. [happy] So Ana took the plate with five, and there was plenty to share with Mom.
+- S125-7: [slowly, warmly] Count each group to find which has more. Fewer means not as many.
 
 ### The first line (S128, first-marks)
 

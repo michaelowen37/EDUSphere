@@ -19,7 +19,7 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 
 | Grade | Course | Games |
 |---|---|---|
-| PK3 | Very first steps | House (dots) |
+| PK3 | Very first steps | Kite (dots) |
 | PK3 | Listen and point | Red and Blue (sort) |
 | PK4 | First steps | Puzzle (jigsaw) |
 | PK4 | First sounds and letters | Fish (dots) |
@@ -36,7 +36,7 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 | K | Looking and listening | Spot It (spot) |
 | K | Counting | Maze (maze) |
 | K | Letters | Pairs (pairs) |
-| 1 | Numbers to 120 | Kite (dots), Many Pairs (pairs) |
+| 1 | Numbers to 120 | House (dots), Many Pairs (pairs) |
 | 1 | Shapes, measuring and graphs | Catch the Hexagons (catch) |
 | 1 | Reading words and sentences | Big Puzzle (jigsaw) |
 | 1 | Sky, water and living things | Balance the Scale (balance) |

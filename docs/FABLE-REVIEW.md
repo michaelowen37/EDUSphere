@@ -200,6 +200,21 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A sample built by hand to look like a real screen drifts: the LI tour sample missed the Merge link and the Wonder pill and was laid out differently, and Mikey saw all three at a glance. Feed made-up data through the real component instead, with taps switched off, and the sample can never differ from the page.
 - Count a daily allowance against the day as it started, not as it stands: finishing the first review shrinks the queue, and a rule that rechecked the live queue would cancel the second review the backlog asked for.
 
+## Learned in pass MA (the sweep again, through every layer)
+
+- A lesson that changes its idea leaves its story and its long story behind unless someone reads them that day: More and Fewer stopped saying the bigger group, and both stories still said it. Read every story the lesson owns in the same pass (pass KF said so for long stories).
+- A fix can be right and still not be a story: counting both plates only confirmed what the piled plate already showed. The turn is where the look misleads (a long row of three) and the idea settles it (count five).
+- A picture can teach the wrong idea without a wrong word: a row of shapes spread across a card looked longer than the dots it matched, and a group of five drawn beside a group of three drew smaller dots. Draw counted groups on one grid and stack what is compared.
+- Two specialists can disagree (the story check wanted four cookies painted in a bowl, the picture check wanted the bowls empty); choose what cannot be miscounted, and say why.
+- A check that only reads one direction proves half: the yellow-or-green check read the color word but not the answer's shape, and nothing compared the spoken counts with the pictures until the code check asked.
+- Who says a rule matters even in a story for three-year-olds: a sentence with no speaker reads as the narrator stating it.
+- A grown-up belongs in every early-years scene where a careful parent would want one (a picnic in a park), and the story skill keeps the core cast's family ties out of the text, so a teacher can be that grown-up. Before naming how far a rule is broken, scan for it: four older stories turned out to be at least 34. Check a new name against every story before using it (June was already a pre-K 4 child and a kindergarten lead).
+- A game practices what a lesson teaches: the nine-dot house was kept for counting to nine, which no pre-K 3 lesson teaches, so the four-dot kite, which Three Dots teaches, took its place.
+- Teach the trap before the story springs it: Two Plates' long row is now a lesson line first.
+- The printed book lists a module's citations under its story, so a story is read for what its module cites, not only for its lesson's idea.
+- A bank counts what a child meets, so a question carries only what it draws: a frame worked out from the wrong answer counted one counting task as up to four questions (30 for 12 tasks), and a triple dose repeated it. Layout shared with the choices belongs to the screen, and a rules check now holds every generator to it.
+- A record can be wrong while the work is right: the final read found a bank size, a count of questions and a claim of what was read that no test could see.
+
 ## Learned in pass LZ (Mikey's notes before a new chat)
 
 - The Wonder voices are the cast grown up, and the stories are the flashbacks (Mikey: "It's like a sophisticated story that has flashbacks to their childhood to show how they developed the mindset they have today"). Write a core-cast story knowing the grown voice it leads to.

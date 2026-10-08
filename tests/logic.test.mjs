@@ -10,8 +10,16 @@ const val = (s) => { const [n, d] = s.split('/').map(Number); return n / d; }; /
 
 // ---- 1. Every generator produces valid, correct questions across many seeds ----
 const whenAnswers = new Map(); // event story -> the years it has been answered with, across every course
+// The parts of a picture that only lay it out (pass MA): a frame, a snap, a gap, a stack and a cell size in pixels, taken out
+// of every part of the picture (a pair's halves, a row's items, anything nested), so only what is drawn is left.
+const LAYOUT_KEYS = ['frame', 'snap', 'gap', 'stack'];
+const layoutFree = (v) => (Array.isArray(v) ? v.map(layoutFree) : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).filter(([k, x]) => !LAYOUT_KEYS.includes(k) && !(k === 'size' && typeof x === 'number')).map(([k, x]) => [k, layoutFree(x)])) : v);
 for (const [genId, gen] of Object.entries(L.GENERATORS)) {
   let bad = [];
+  // A question's layout never makes it a new question (pass MA): questions that ask the same thing, with the same answer and
+  // the same things drawn, are one task whatever frame, snap, gap, stack or cell size draws them, or a bank counts its layout
+  // as variety (the same-number row's frame followed its wrong answer, and More and Fewer's bank read 38 for 20).
+  const tasks = new Map();
   for (let seed = 1; seed <= 300; seed++) {
     const q = L.generateQuestion(genId, seed);
     if (q.prompt === 'When did this happen?' && q.story) { if (!whenAnswers.has(q.story)) whenAnswers.set(q.story, new Set()); whenAnswers.get(q.story).add(q.answer); }
@@ -254,6 +262,28 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'p3-tap-fewer' && !q.choices.every((c) => lnDots(c) >= lnDots(q.answer))) problems.push('fewer dots wrong');
     if (genId === 'p3-tap-colour-item' && String(q.answer).split('-')[1] !== q.prompt.match(/Tap the (\w+) one/)[1]) problems.push('colour item wrong');
     if (genId === 'p3-tap-three-shapes' && String(q.answer).replace('shape:', '').split('~')[0] !== q.prompt.match(/Tap the (\w+)\./)[1]) problems.push('three shapes wrong');
+    // Very First Steps read by the layered checks (pass MA): each new or widened kind re-derived from its tokens and words.
+    if ((genId === 'p3-tap-more' || genId === 'p3-tap-fewer') && !(q.choices.length === 2 && q.choices.every((c) => lnDots(c) >= 1 && lnDots(c) <= 5) && lnDots(q.choices[0]) !== lnDots(q.choices[1]))) problems.push('more or fewer outside one to five');
+    if (genId === 'p3-same-number') { const n = q.visual.items.length; const wrongs = q.choices.filter((c) => c !== q.answer); if (q.answer !== `dots:${n}` || n < 2 || n > 5 || wrongs.length !== 1 || lnDots(wrongs[0]) === n || lnDots(wrongs[0]) < 1 || lnDots(wrongs[0]) > 5 || !q.visual.items.every((x) => x === q.visual.items[0]) || !q.prompt.includes(q.visual.items[0])) problems.push('same number wrong'); }
+    const maItem = (c) => { const m = /^item:([a-z]+)-([a-z]+)$/.exec(String(c)); return m ? { shape: m[1], colour: m[2] } : null; };
+    if (genId === 'p3-sort-red-blue' || genId === 'p3-sort-yellow-green') { const two = genId === 'p3-sort-red-blue' ? ['red', 'blue'] : ['yellow', 'green']; const [x, y] = q.choices.map(maItem); const ans = maItem(q.answer); if (!x || !y || x.shape !== y.shape || x.colour === y.colour || ans.colour !== q.visual.colour || !two.includes(x.colour) || !two.includes(y.colour)) problems.push('sort by color wrong'); }
+    if (genId === 'p3-find-match') { const ans = maItem(q.answer); const w = maItem(q.choices.find((c) => c !== q.answer)); const differs = Number(ans.shape !== w.shape) + Number(ans.colour !== w.colour); if (ans.shape !== q.visual.shape || ans.colour !== q.visual.colour || differs !== 1) problems.push('find the match wrong'); }
+    // Yellow or green (the code check): the prompt names the color, and the shape when there is one; the answer is that thing,
+    // and the only other choice is the same thing in the other color.
+    if (genId === 'p3-tap-yellow-green') { const m = /^Tap the (yellow|green)(?: (circle|square|triangle))?(?: one)?\.$/.exec(q.prompt); const other = m && (m[1] === 'yellow' ? 'green' : 'yellow'); const want = m && (m[2] ? `item:${m[2]}-${m[1]}` : `swatch:${m[1]}`); const alt = m && (m[2] ? `item:${m[2]}-${other}` : `swatch:${other}`); if (!m || q.answer !== want || q.choices.length !== 2 || !q.choices.includes(want) || !q.choices.includes(alt)) problems.push('yellow or green wrong'); }
+    // The counts said in the reasons and drawn under them (the code check): an off-by-one in the number words, or a picture of
+    // other groups, would pass every check above.
+    const maW = ['', 'one', 'two', 'three', 'four', 'five'];
+    if (genId === 'p3-tap-more' || genId === 'p3-tap-fewer') { const [hi, lo] = q.choices.map(lnDots).sort((a, b) => b - a); const head = genId === 'p3-tap-more' ? `${maW[hi]} dots are more than ${maW[lo]} dot` : `${maW[lo]} ${lo === 1 ? 'dot is' : 'dots are'} fewer than ${maW[hi]} dots`; const drawn = [q.explainVisual.a.count, q.explainVisual.b.count].sort((a, b) => b - a).join(); if (!q.explain.toLowerCase().startsWith(head) || !q.explain.includes(`count past ${maW[lo]} to get to ${maW[hi]}`) || drawn !== [hi, lo].join()) problems.push('more or fewer explanation miscounts'); }
+    if (genId === 'p3-same-number') { const n = q.visual.items.length; const run = maW.slice(1, n + 1).join(', '); if (!q.explain.startsWith(`There are ${maW[n]} ${q.visual.items[0]}s and ${maW[n]} dots. Count them, ${run}, and ${run}.`) || q.explainVisual.b.count !== n || q.explainVisual.a.items.length !== n) problems.push('same number explanation miscounts'); }
+    // A counted row (pass MA) is drawn by CountRow on DotGroup's grid: one to five shapes with no missing piece, and in a pair
+    // beside dots, the dots' own cell of 34, or the row and its dots would not line up (the code check).
+    { const ev = q.explainVisual && q.explainVisual.kind === 'pair' ? [q.explainVisual.a, q.explainVisual.b] : [];
+      const rows = [q.visual, ...ev].filter((v) => v && v.kind === 'pattern' && v.size);
+      if (rows.some((v) => !(v.items.length >= 1 && v.items.length <= 5 && !v.items.includes('?')))) problems.push('counted row the screen cannot draw');
+      if (ev.some((h) => h && h.kind === 'dots') && ev.some((h) => h && h.kind === 'pattern' && h.size && h.size !== 34)) problems.push('counted row off its dots'); }
+    if (genId === 'pm-same-animals' && !/, and they look just alike\.$/.test(q.explain)) problems.push('same animals explanation gives no reason');
+    if (genId === 'pm-different-animals' && !/ is not the same as the \w+, so it is the odd one out\.$/.test(q.explain)) problems.push('odd animal explanation gives no reason');
     // Grade 1 equations and word problems (pass LB), re-derived by working out each side of the number sentence in the words.
     const sideValue = (t) => { const toks = t.trim().split(/\s+/); let v = Number(toks[0]); for (let i = 1; i < toks.length; i += 2) v = toks[i] === '+' ? v + Number(toks[i + 1]) : v - Number(toks[i + 1]); return v; };
     const eqOf = (t) => (String(t).match(/(?:\d+|\?)(?: [-+] (?:\d+|\?))* = (?:\d+|\?)(?: [-+] (?:\d+|\?))*/) || [null])[0];
@@ -864,8 +894,10 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'rr-odd-rhyme') { const ends = q.choices.map(RHYME_END); const odd = q.choices.find((c) => ends.filter((e) => e === RHYME_END(c)).length === 1); if (q.answer !== odd) problems.push('odd rhyme wrong'); }
     if (genId === 'rr-same-end') { const end = q.prompt.match(/ends with (\w+)/)[1]; if (!q.answer.endsWith(end)) problems.push('same-end word does not end that way'); }
     if (genId === 'rr-which-two') { const [x, y] = q.answer.split(' and '); if (RHYME_END(x) !== RHYME_END(y)) problems.push('which-two pair does not rhyme'); }
+    { const k = L.questionKey({ ...q, visual: layoutFree(q.visual) }); if (!tasks.has(k)) tasks.set(k, new Set()); tasks.get(k).add(L.questionKey(q)); }
     if (problems.length) bad.push(`seed ${seed}: ${problems.join('; ')}`);
   }
+  { const split = [...tasks.values()].filter((keys) => keys.size > 1).length; if (split) bad.push(`${split} tasks drawn more than one way, so the bank counts layout as variety`); }
   ok(`${genId}: 300 seeds all valid and arithmetically correct`, bad.length === 0, bad.slice(0, 3).join(' | '));
 }
 { const twice = [...whenAnswers].filter(([, years]) => years.size > 1).map(([story, years]) => `${story} -> ${[...years].join('/')}`);
@@ -2192,6 +2224,31 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   const sFail = L.lightReviewSentences([...events, L.makeLightReviewEvent(review, [1, 1, 0, 0, 0].map((c) => ({ correct: !!c })), iso(33), iso(33))], 'S-77');
   ok('the fail sentence reads in Mikey\'s words', /^S-77 took a short practice review of \*Teen Numbers\* four weeks after mastering it and scored two out of five\. This prompted us to reopen and reassign the lesson as well as restructure the memory checks in a way that probes S-77's understanding of the prerequisites\. Depending on how this goes, there's a chance of additional lessons reopening\.$/.test(sFail[0]));
   ok('a light review counts toward confidence like a memory check', L.computeConfidence('teen-numbers', [...events, clear]).reviewsAsked === 5);
+}
+
+// Groups are compared by counting or matching, never as "the bigger group" (pass MA, from the independent checks: More and Fewer
+// said "More means the bigger group" while Big and Small says bigger means taking up more room, which teaches a three-year-old to
+// judge how many by space, the error pass JW's rule guards against). Every lesson line, paragraph and key idea, every module
+// and long story, and sixty questions of every bank a lesson uses are read; a plate, bowl, pile, basket or jar that is big or
+// little and has more counts too (the code check). Pre-K 4's More and Fewer and One, Two, Three still say it and are fixed when the sweep
+// reaches them (docs/EARMARKS.md A7); the waiting list may only shrink, and the check fails once a waiting lesson is fixed and
+// still listed.
+{
+  const WAITING = new Set(['more-and-fewer-5', 'count-to-3']);
+  // The claims themselves (more means the bigger group, the bigger group of berries has more), not every use of the words: grade 1
+  // counting on (one count for each one in the smaller group) compares numbers already counted, which is fine.
+  const SAYS_BIGGER_GROUP = /\b(bigger|smaller) group( of \w+)? (has|is|had|was) (more|fewer)\b|\b(more|fewer) (means|is) the (bigger|smaller) group\b|\b(big|bigger|larger|little|small|smaller) (group|pile|plate|bowl|basket|jar)s?( of \w+)? (has|have|had) (more|fewer)\b/i;
+  const { STORIES: MA_STORIES, COURSE_STORIES: MA_COURSE_STORIES } = await import('../src/stories.mjs');
+  const words = (m) => [...(m.lesson.paragraphs || []), m.lesson.keyIdea || '', ...((m.lesson.script || []).map((x) => x.say)), ...((MA_STORIES[m.id] || {}).words || [])].join(' ');
+  const bad = new Set();
+  for (const m of L.MODULES) {
+    if (SAYS_BIGGER_GROUP.test(words(m))) bad.add(m.id);
+    for (const g of new Set(m.generators)) for (let s = 1; s <= 60; s++) { const q = L.generateQuestion(g, s * 7919); if (SAYS_BIGGER_GROUP.test(q.explain || '')) bad.add(m.id); }
+  }
+  // The long stories too (pass KF: a retired idea is searched for in every long story in the same pass).
+  for (const [cid, cs] of Object.entries(MA_COURSE_STORIES)) if (SAYS_BIGGER_GROUP.test((cs.words || []).join(' '))) bad.add(`long story of ${cid}`);
+  const unexpected = [...bad].filter((id) => !WAITING.has(id)); const fixed = [...WAITING].filter((id) => !bad.has(id));
+  ok('no lesson or explanation calls the group with more the bigger group (pre-K 4 waits for its pass)', unexpected.length === 0 && fixed.length === 0, `new: ${unexpected.join(', ')}; fixed, so take off the list: ${fixed.join(', ')}`);
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

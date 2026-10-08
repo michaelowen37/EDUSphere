@@ -9,6 +9,13 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## October 8, 2026 (Very First Steps, read again)
+
+- More and Fewer now teaches three-year-olds to count each group to find which has more, instead of looking for the bigger group. Young children often think a longer row has more, so the lesson, its questions and its story now show that counting is how you know.
+- In the new More and Fewer story, Ana thinks a long row of crackers has more, then counts and finds that five crackers close together are more than three spread out. In the course's long story the children now picnic with their teacher, count the cookies and crackers, and share cookies instead of whole grapes, which aren't safe for children under four.
+- Several Very First Steps lessons now teach more, with towers and lines for taller and longer, sorting by color, counting to five, the numerals one to four, and shapes that keep their name at any size. The course's connect-the-dots game is now a kite with four dots (the house moved to first grade), and it says each number out loud as a child joins the dots.
+- When you print a story book, the list of standards each story teaches now continues onto a second page when it needs one, so nothing gets cut off at the bottom.
+
 ## October 8, 2026 (a few facts set straight)
 
 - Three Texas history stories and two lines in the lessons now tell the Battle of Gonzales the way historians agree on it. The settlers would not give up their cannon, and the first shots of the revolution were fired there. Historians disagree about when the Come and Take It flag was made and about who fired first, so we no longer say either.

@@ -721,6 +721,16 @@ await tap('Back to Classroom');
   const paintedThree = execSync('pdftotext -f 3 -l 3 tests/e2e/out/story-book-painted.pdf -').toString();
   ok('a painted story prints on a page of its own and the rest still share', paintedTwo.includes('Story 1.') && !paintedTwo.includes('Story 2.') && paintedThree.includes('Story 2.') && paintedThree.includes('Story 3.'));
   await page.evaluate((serial) => { window.__eduArt = (window.__eduArt || []).filter((x) => x !== serial); }, firstSerial);
+  // The standards pages in print (pass MA, the code and screen checks): pre-K 4 First Steps' list runs onto a second sheet, and
+  // on every sheet the list ends above the footer, so the size model in standardsSheets (logic.mjs), which the stories test
+  // checks, also holds in a real print with this machine's fonts.
+  await tap('Back to Story Log'); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'story-log');
+  await page.selectOption('select[aria-label="Story book course"]', 'first-steps-pk');
+  await tap('Open Book'); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'story-book');
+  await page.setViewportSize({ width: 816, height: 1056 }); await page.emulateMedia({ media: 'print' });
+  const stdSheets = await page.evaluate(() => [...document.querySelectorAll('.edu-book-standards')].map((sh) => { const card = sh.firstElementChild.getBoundingClientRect(); const foot = sh.querySelector('.edu-book-foot').getBoundingClientRect(); const box = sh.getBoundingClientRect(); return { clear: card.bottom <= foot.top + 0.5, inside: foot.bottom <= box.bottom + 0.5, fixed: Math.abs(box.bottom - foot.bottom - 0.6 * 96) < 2 }; }));
+  await page.emulateMedia({ media: 'screen' }); await page.setViewportSize({ width: 360, height: 780 });
+  ok('a long standards list runs onto more sheets in print, each ending above its footer', stdSheets.length >= 2 && stdSheets.every((x) => x.clear && x.inside && x.fixed), JSON.stringify(stdSheets));
   // the pretend painting has no file on the test page, so its one missing-file line is not a browser error for the tally
   const kept = errors.filter((e) => !/ERR_FILE_NOT_FOUND/.test(e)); errors.splice(0, errors.length, ...kept);
   // The phone's back button (2026-09-24, Mikey): from the book it goes to the Story Log, from the Story Log to the classroom,
@@ -978,6 +988,44 @@ ok('coloring records nothing: the round count is untouched', (await state()).scr
   await page.getByRole('button', { name: 'Close coloring' }).first().click({ force: true });
   await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
 }
+// The dots game counts aloud and takes a tap near a dot (pass MA, from the game check): each dot joined in order says its
+// number, a tap that lands a little beside the next dot still joins it, and the star shows when the last dot closes the house.
+await page.evaluate(() => window.__eduTest.openColoring('play:dots-house'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(300);
+{ await page.waitForFunction(() => !window.__eduSettleUntil || Date.now() >= window.__eduSettleUntil);   // touch taps skip settleTaps
+  const box = await page.locator('[data-dots-board="dots-house"]').boundingBox();
+  const DL = await import('../../src/logic.mjs'); const dots = DL.DOT_SHAPES.house;
+  const at = ([x, y], nudge = 0) => [box.x + ((x + nudge) / 100) * box.width, box.y + (y / 100) * box.height];
+  await page.evaluate(() => { window.__spoken = []; });
+  let nearMissOffDot = false; let wrongWobbles = false; let wrongSilent = false; let joinedSilent = false;
+  for (let i = 0; i < dots.length; i++) {
+    if (i === 3) {
+      // With dot 4 gold, a tap on dot 6 wobbles it and turns its ring clay without a word, and a tap on dot 1, already joined,
+      // does nothing at all.
+      const before = await page.evaluate(() => window.__spoken.length);
+      await page.touchscreen.tap(...at(dots[5]));
+      wrongWobbles = await page.evaluate(() => { const g = document.querySelectorAll('[data-dots-board] g')[5]; const c = g && g.querySelector('circle'); return !!c && c.getAttribute('stroke-width') === '1.6'; });
+      await page.waitForTimeout(450);
+      wrongSilent = (await page.evaluate(() => window.__spoken.length)) === before;
+      await page.touchscreen.tap(...at(dots[0])); await page.waitForTimeout(250);
+      joinedSilent = (await page.evaluate(() => window.__spoken.length)) === before && (await page.evaluate(() => { const g = document.querySelectorAll('[data-dots-board] g')[0]; const c = g && g.querySelector('circle'); return !!c && c.getAttribute('stroke-width') === '0.9' && !g.classList.contains('edu-wobble'); }));
+    }
+    const nudge = i === 2 ? 8 : 0;   // the third tap lands 8 units beside its dot, off the drawn dot
+    const [px, py] = at(dots[i], nudge);
+    if (nudge) nearMissOffDot = await page.evaluate(([a, b]) => { const el = document.elementFromPoint(a, b); return !!el && !el.closest('g'); }, [px, py]);
+    await page.touchscreen.tap(px, py); await page.waitForTimeout(250);
+  }
+  const said = await page.evaluate(() => window.__spoken.slice());
+  const want = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+  const counted = said.map((x) => String(x).toLowerCase()).join(' ') === want.join(' ');
+  if (!counted || !nearMissOffDot || !wrongWobbles || !wrongSilent || !joinedSilent) console.log('  (dots game spoke:', JSON.stringify(said), 'near tap off the dot:', nearMissOffDot, 'wrong dot clay:', wrongWobbles, 'wrong dot silent:', wrongSilent, 'joined dot silent:', joinedSilent, ')');
+  ok('the dots game says each number once, in order, as its dot is joined, a tap beside the gold dot included', counted && nearMissOffDot);
+  ok('a tap on a wrong dot wobbles it with a clay ring and says nothing, and a tap on a joined dot does nothing', wrongWobbles && wrongSilent && joinedSilent);
+  ok('joining the last dot closes the house and shows the star', (await page.locator('[aria-label="Done"]').count()) >= 1);
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
 // Walk the Robot (pass FS, computer science K to 2): the child writes the steps. The first robot of round one is walk
 // number five (start 0,2; star 0,0; a rock at 0,1): right, up, up, left brings it home. The second (start 4,4; star 2,3;
 // rocks at 3,4 and 2,4) bumps on a first step left; taking the step back and going up, left, left brings it home too.

@@ -4586,7 +4586,7 @@ function PREK_MODULES() { return [
       keyIdea: 'The same means just alike. Look at the shape, the color and the parts.',
       example: { kind: 'pair', a: { kind: 'art', name: 'car' }, b: { kind: 'art', name: 'car' }, caption: 'Two cars. They are the same.' },
       script: [
-        { say: 'Look at this car. See its shape, its color and its wheels.', show: { kind: 'art', name: 'car' } },
+        { say: 'Look at this car. See its shape and its wheels.', show: { kind: 'art', name: 'car' } },
         { say: 'Here is another car, just the same. The two cars match.', show: { kind: 'pair', a: { kind: 'art', name: 'car' }, b: { kind: 'art', name: 'car' } } },
         { say: 'This is a train. It is not the same as the car, so it is different.', show: { kind: 'pair', a: { kind: 'art', name: 'car' }, b: { kind: 'art', name: 'train' } } },
         { say: 'To match, look at the parts. A car has wheels, and a boat has none.', show: { kind: 'pair', a: { kind: 'art', name: 'car' }, b: { kind: 'art', name: 'boat' } } },
@@ -4605,12 +4605,12 @@ function PREK_MODULES() { return [
     tagline: 'Balls, balloons, robots',
     requires: ['match-the-vehicles'],
     lesson: {
-      pictures: [{ serial: 'P108', alt: 'A real butterfly with open wings resting on a flower', step: 4 }],
+      pictures: [{ serial: 'P108', alt: 'A real butterfly with open wings beside a small toy robot with two arms and two legs', step: 4 }],
       paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Some things are almost alike. A ball and a balloon are both round, but a balloon is light and has a string. A star has points, a butterfly has wings, a flower has petals, and a robot has arms and legs.', 'You have two arms and two legs, and so does the robot.'],
       keyIdea: 'The same means just alike. Look closely, because some things are almost alike.',
       example: { kind: 'pair', a: { kind: 'art', name: 'ball' }, b: { kind: 'art', name: 'ball' }, caption: 'Two balls. They are the same.' },
       script: [
-        { say: 'Look at this ball. See its shape and its color.', show: { kind: 'art', name: 'ball' } },
+        { say: 'Look at this ball. See its round shape.', show: { kind: 'art', name: 'ball' } },
         { say: 'Here is another ball, just the same. The two balls match.', show: { kind: 'pair', a: { kind: 'art', name: 'ball' }, b: { kind: 'art', name: 'ball' } } },
         { say: 'This is a balloon. It is light and has a string, so it is different from the ball.', show: { kind: 'pair', a: { kind: 'art', name: 'ball' }, b: { kind: 'art', name: 'balloon' } } },
         { say: 'Look closely, because some things are almost alike. A star has points, and a flower has petals.', show: { kind: 'pair', a: { kind: 'art', name: 'star' }, b: { kind: 'art', name: 'flower' } } },
@@ -29069,6 +29069,24 @@ export const SCIENCE_WHY_GENERATORS = Object.keys(SCIENCE_WHY);
 //    listed in docs/DECISIONS.md for approval. Perspectives are shown side by side and none is declared right;
 //    none takes a side for or against religion or non-belief.
 // ---------------------------------------------------------------------
+// The four Wonder voices are the core cast (pass LY, Mikey): a reader meets Frederick, Chloe, Georgette and Mike by name, the
+// same people as in the stories, so a child can connect the two, and a small label says how each one sees things: The
+// Scientist, The Artist, The Grandparent of Faith and The Skeptic, his words. The questions keep their voice labels ('A
+// scientist', 'An artist says'); wonderVoice turns any of them into the person, and wonderVoiceSpoken into the words a
+// voice reads aloud. The names are the most prominent thing on screen, and the label sits just above the statement.
+export const WONDER_VOICES = [
+  { key: 'scientist', name: 'Frederick', role: 'The Scientist' },
+  { key: 'artist', name: 'Chloe', role: 'The Artist' },
+  { key: 'grandparent', name: 'Georgette', role: 'The Grandparent of Faith' },
+  { key: 'skeptic', name: 'Mike', role: 'The Skeptic' },
+];
+export function wonderVoice(label) { const words = String(label || '').toLowerCase().split(/[^a-z]+/); const hits = WONDER_VOICES.filter((v) => words.includes(v.key)); return hits.length === 1 ? hits[0] : null; }
+export function wonderVoiceSpoken(label) { const v = wonderVoice(label); return v ? `${v.name}, ${v.role.toLowerCase()}, says` : String(label || '').replace(/:$/, ''); }
+// Answer choices laid out in even columns (pass LY, Mikey's screenshot): four make two by two rather than three and one left
+// over, up to three short ones share a row, and a list with any choice longer than a short word stacks one a row, so no
+// answer spills out of its chip on a phone (the independent check measured "Sometimes" at 360 pixels).
+export function evenColumns(n) { return n <= 3 ? Math.max(1, n) : n % 3 === 0 ? 3 : n % 2 === 0 ? 2 : 1; }
+export function chipColumns(options) { return (options || []).some((o) => String(o).length > 8) ? 1 : evenColumns((options || []).length); }
 export const WONDER = [
   {
     id: 'w-one-thing',
@@ -29150,11 +29168,11 @@ export const WONDER = [
     prompt: 'If you turn a square so it stands on a corner, is it still a square?',
     options: ['Yes', 'No', 'Not sure'],
     simple: [
-      { voice: 'A builder says', says: 'Turn a square tile any way you like. It still has four equal sides and four square corners.' },
+      { voice: 'A scientist says', says: 'Turn a square tile any way you like. It still has four equal sides and four square corners.' },
       { voice: 'An artist says', says: 'Standing on a corner it looks like a diamond. Looks can trick you, so count the sides.' },
     ],
     perspectives: [
-      { voice: 'A builder', says: 'I lay square tiles straight and I lay them on the corner, and they are the same tiles from the same box. Turning a thing does not change what it is made of. Four equal sides and four square corners is a square, however it sits.' },
+      { voice: 'A scientist', says: 'A shape is named by what it has, not by which way it points. Turn a square tile, and its four sides stay the same length and its four corners stay square. Four equal sides and four square corners is a square, however it sits.' },
       { voice: 'An artist', says: 'On its corner a square looks like a diamond, and a drawing can make you feel it is a different shape. Feelings about a shape are real, but they are about the picture, not the shape. Count the sides, and the feeling and the count can both be true.' },
       { voice: 'A grandparent of faith', says: 'People are a little like that square. Turned by a hard day, we look different, but what we are made of stays the same. It is a comfort to know that what counts about something does not turn with it.' },
       { voice: 'A skeptic', says: 'How would we check? Trace the square, turn the paper, and trace it again. If the two tracings match when you turn one back, nothing about the shape changed. That is a test a child can run on the kitchen table.' },
@@ -32700,7 +32718,7 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'You talked when it was not your turn and your friend got sad. What now?',
     options: ['Say sorry and listen', 'Talk louder', 'Stop talking forever'],
-    simple: [{ voice: 'A grandparent says', says: 'Say sorry, then listen with your ears and your eyes.' }, { voice: 'A skeptic says', says: 'Everyone slips; the next turn is a fresh one.' }],
+    simple: [{ voice: 'A grandparent says', says: 'Say sorry, then listen with your brain and your body.' }, { voice: 'A skeptic says', says: 'Everyone slips; the next turn is a fresh one.' }],
     perspectives: [
       { voice: 'A scientist', says: 'Everyone slips once in a while. The fix is small and quick: say sorry, then listen so hard that your friend can tell.' },
       { voice: 'An artist', says: 'Your friend is sad because they wanted to be heard. Ask them to say it again, and look at them while they do.' },

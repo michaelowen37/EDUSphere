@@ -319,9 +319,11 @@ ok('opening a stage reveals its questions', t.includes('If you cut a cookie') &&
 await page.getByRole('button', { name: /If you cut a cookie/ }).click();
 t = await text();
 ok('a question opens over the page rather than pushing it down', t.includes('The four voices:') && t.includes('Closing question'));
-ok('the four voices are listed but not spoken until asked for', t.includes('A scientist') && t.includes('A skeptic') && !(await page.getByText('The amount of cookie is exactly the same').isVisible().catch(() => false)));
-await page.getByRole('button', { name: /^A scientist/ }).click();
-ok('a voice opens when chosen', await page.getByText('The amount of cookie is exactly the same').isVisible());
+const voiceButtons = await Promise.all(['Frederick', 'Chloe', 'Georgette', 'Mike'].map((n) => page.getByRole('button', { name: new RegExp(`^${n}$`) }).count()));
+ok('the four voices are listed by name, each a button, label and words hidden until asked for', voiceButtons.every((c) => c === 1) && !t.includes('A scientist') && !(await page.getByText('The Scientist', { exact: true }).isVisible()) && !(await page.getByText('The amount of cookie is exactly the same').isVisible().catch(() => false)));
+await page.getByRole('button', { name: /^Frederick$/ }).click();
+const [nameBox, roleBox, saysBox] = await Promise.all([page.getByRole('button', { name: /^Frederick$/ }).boundingBox(), page.getByText('The Scientist', { exact: true }).boundingBox(), page.getByText('The amount of cookie is exactly the same').boundingBox()]);
+ok('a voice opens when chosen, its label between the name and what it says', !!(nameBox && roleBox && saysBox) && nameBox.y < roleBox.y && roleBox.y < saysBox.y);
 await page.getByRole('button', { name: 'Approve', exact: true }).click();
 await page.waitForTimeout(300);
 ok('approving closes the question by itself', (await page.getByRole('button', { name: 'Close' }).count()) === 0);
@@ -388,7 +390,7 @@ await page.fill('textarea', 'I think it is still one cookie because it is the sa
 await tap('See how others think');
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'wonder-voices');
 t = await text();
-ok('four perspectives shown with none declared right', ['A scientist', 'An artist', 'A grandparent of faith', 'A skeptic'].every((v) => t.includes(v)) && !t.includes('correct answer'));
+ok('four perspectives shown by name with none declared right', (() => { const seq = ['Frederick', 'The Scientist', 'Chloe', 'The Artist', 'Georgette', 'The Grandparent of Faith', 'Mike', 'The Skeptic'].map((v) => t.indexOf(v, t.indexOf('How others might see it'))); return t.includes('How others might see it') && seq.every((at, i) => at >= 0 && (i === 0 || at > seq[i - 1])); })() && !t.includes('A scientist') && !t.includes('correct answer'));
 const stored = await page.evaluate(() => { const vals = []; for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k.startsWith('fake:')) vals.push(localStorage.getItem(k)); } return JSON.stringify(vals); });
 ok('the typed reflection was never stored', !stored.includes('same cookie'));
 await tap('Back to overview');
@@ -503,9 +505,9 @@ ok('a young child gets a spoken tap-only reflection', t.includes('tiny ants') &&
 await page.getByRole('button', { name: 'It depends' }).click();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'wonder-voices');
 t = await text();
-ok('two short voices, one at a time', t.includes('A scientist says') && !t.includes('An artist says'));
+ok('two short voices, one at a time, each by name with its label', t.includes('Frederick') && t.includes('The Scientist') && !t.includes('Chloe') && !t.includes('A scientist says'));
 await page.getByLabel('Next').click();
-ok('the second voice follows', (await text()).includes('An artist says'));
+ok('the second voice follows', (await text()).includes('Chloe') && (await text()).includes('The Artist'));
 await page.getByLabel('Finish').click();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'result');
 ok('after the reflection the arrow goes on, not round again', (await page.getByLabel('Keep going').count()) === 1);

@@ -24,6 +24,14 @@ const WORDS = [
   'A question from an earlier module', 'Practice Reviews are impromptu quizzes that appear weeks after a student masters a concept.',
   'Review quizzes are capped at two per day and students will never see a PASS or FAIL.', 'Move Forward',
 ];
+// The four Wonder voices (pass LY, Mikey's words): each name and label is in the code and in the rules audit.
+{
+  const logic = readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8');
+  for (const w of ["name: 'Frederick', role: 'The Scientist'", "name: 'Chloe', role: 'The Artist'", "name: 'Georgette', role: 'The Grandparent of Faith'", "name: 'Mike', role: 'The Skeptic'"]) {
+    const [, n, r] = w.match(/name: '(.*)', role: '(.*)'/);
+    ok(`the Wonder voice ${n}, ${r}, is in the code and in the rules audit`, logic.includes(w) && audit.includes(`${n} (${r})`));
+  }
+}
 for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.includes(w) && audit.includes(w), (ui.includes(w) ? '' : 'missing from src/ui.jsx; ') + (audit.includes(w) ? '' : 'missing from the rules audit'));
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exit(failed ? 1 : 0);

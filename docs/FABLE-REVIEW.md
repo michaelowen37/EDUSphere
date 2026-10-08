@@ -84,7 +84,7 @@ Mikey asked whether the review covers writing style, explanatory quality and con
 
 1. Accuracy. Every fact checked against a source; nothing a learner will have to unlearn later; the numbers inside a story add up.
 2. Teaching quality. The lesson says why, not only what, and connects its ideas into one system (what causes what, how the pieces fit). It gives one clear example a learner can picture, at the right level for the grade, and teaches everything its questions ask. Since pass LE (Mikey): the same idea is shown from up to four angles, other ways of looking at it with pictures that change with them, where the topic bears it, and never an awkward angle to satisfy a count; most question kinds apply the idea to new numbers, words or pictures, so a screenshot of the lesson does not answer them.
-3. Writing style. Natural sentences that flow, as in the Scarcity sample (pass JF): no colons or semicolons, warm plain words, no robotic runs, and the read-aloud limits for the early years. Since pass LE (Mikey) the read-aloud limits (eighteen words a sentence, three syllables a word) are guidelines against scrolling, kept when a longer sentence or word carries educational value or another rule needs it; the stories test reports them as a note.
+3. Writing style. Natural sentences that flow, as in the Scarcity sample (pass JF): no colons or semicolons, warm plain words, no robotic runs, and the read-aloud limits for the early years. Since pass LE (Mikey) the read-aloud limits (eighteen words a sentence, and three syllables a word until pass LY retired that one) are guidelines against scrolling, kept when a longer sentence or word carries educational value or another rule needs it; the stories test reports them as a note.
 4. Titles. Clear, accurate and inviting, shown in title case. In summary text a course or module title is in title case and emphasized, like a book title (pass LE).
 5. Questions. Each reads as a natural sentence, with a setup line wherever the question needs a situation; distractors are mistakes a learner could really make; the answer is taught in the lesson.
 6. Explanations. Each says the answer and the reason in whole sentences, so it makes sense read aloud or seen after a wrong answer, never a fragment that only continues the answer ("And in good shape."). A rule now checks this for pre-K to grade 1.
@@ -199,6 +199,29 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 
 - A sample built by hand to look like a real screen drifts: the LI tour sample missed the Merge link and the Wonder pill and was laid out differently, and Mikey saw all three at a glance. Feed made-up data through the real component instead, with taps switched off, and the sample can never differ from the page.
 - Count a daily allowance against the day as it started, not as it stands: finishing the first review shrinks the queue, and a rule that rechecked the live queue would cancel the second review the backlog asked for.
+
+## Learned in pass LY (pictures at the child's level, and voices with names)
+
+- A coloring page is a scene with several things to color, never one object alone, and it grows more intricate with the child. A rule that lives only in the decisions log is lost: this one was decided in September and every planned page still shared one style line for every age. Put a rule where a test can see it.
+- Before adding things to a picture, read what it stands in for. A flower on the butterfly page would make "which one has petals?" ambiguous; stars around the rocket would answer "which one has points?".
+- Anything with writing on it attracts garbled text in a generated picture (clocks, signs, buses, books, keyboards, phones, coins, the N and S on magnets, number lines): plain faces, blank signs and a check note.
+- Flags with exact star and stripe counts stay out of generated pictures unless a check note names the count to see before saving.
+- A young child near water, a road or a height has a grown-up nearby, in pictures as in stories.
+- Name the voices. Frederick in a story and Frederick in a Wonder question are one person, and the label says how he sees.
+- Try a layout fix on every case it touches, not only the one in the screenshot: equal columns fixed four color chips and would have broken ninety-three three-answer questions on a phone.
+- The browser tests read textContent, which includes hidden text and the page's style text (its comments say Mikey, so a search for Mike landed in the CSS); a check that something is hidden asks isVisible, and a search for words starts from a heading on the screen.
+- A large set needs a reader who has not seen it: the coloring audit found 203 pages to change in 238.
+
+## Learned in pass LX (safe scenes, and a second read after the fixes)
+
+- Read every scene as a careful parent would. The first drafts had a girl waiting beside a moving swing, four-year-olds at a creek's edge and a child at the window in a storm close by; a bench, a park and a far-off storm kept every plot.
+- Physical order matters to a child who knows it: lightning flashes before its thunder.
+- Continuity is checked action by action. The words put the pile on a flat rock before a picture shows it there; a star's line comes back to a dot only if a dot was made; Grandma holds the card on her birthday, not in a classroom she was never in; one handful from two bowls of single colors cannot come out mixed.
+- In a long story the children are the heroes, so they use the ideas, and a grown-up still says each rule (The last number tells how many, said Georgette).
+- A line drawing has no color, so a lesson line beside one asks about its shape.
+- A page the app draws can wait for Mikey's better page out of sight: keep the drawing, mark it, and let the saved file switch it everywhere (a G page), where a missing page (a D page) shows a placeholder card.
+- Read the ledger rows a batch writes, not only the stories. A character note had been landing in the negative prompt, and one background per story put a dinner table on a town street; each row's prompt, background and negative prompt are checked against its scene.
+- Fixes can break a limit or a voice. One fix took a story past the early years' 200 words, and another dropped a she said, which turned Georgette's rule into the narrator's; check lengths after every round and give the fixed batch a second read.
 
 ## Learned in pass LW (stories with a turn, and a second reader)
 

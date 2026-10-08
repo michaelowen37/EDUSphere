@@ -40,13 +40,14 @@ for (const [id, cs] of Object.entries(COURSE_STORIES)) {
 {
   const L = await import('../src/logic.mjs');
   const early = new Set(['PK3', 'PK4', 'K', '1', '2']);
-  const syl = (w) => { const x = w.toLowerCase().replace(/[^a-z]/g, ''); if (!x) return 0; let n = (x.match(/[aeiouy]+/g) || []).length; if (/[^aeiouy]e$/.test(x) && !/le$/.test(x) && n > 1) n -= 1; return Math.max(1, n); };
   const bad = [];
   for (const m of L.MODULES) { const st = STORIES[m.id]; const c = L.getCourse(m.courseId); if (!st || !c || !early.has(c.grade)) continue;
-    for (const par of st.words) for (const sent of par.split(/(?<=[.!?])\s+/)) { const ws = sent.split(/\s+/).filter(Boolean); if (ws.length > 18) bad.push(`${m.id}: ${ws.length} words`); for (const w of ws) if (syl(w) > 3) bad.push(`${m.id}: ${w}`); } }
+    for (const par of st.words) for (const sent of par.split(/(?<=[.!?])\s+/)) { const ws = sent.split(/\s+/).filter(Boolean); if (ws.length > 18) bad.push(`${m.id}: ${ws.length} words`); } }
   // Since pass LE (Mikey) the eighteen-word sentence and the three-syllable word are guidelines, kept when a longer sentence or
   // word carries educational value or another rule needs it, so this reports rather than fails; the writer judges each one.
-  console.log(`NOTE - early-years stories over the read-aloud guidelines (sentences past eighteen words, words past three syllables): ${bad.length}${bad.length ? ' (' + bad.slice(0, 6).join(' | ') + ')' : ''}`);
+  // Since pass LY (Mikey: "The three syllables rule is really not a big deal") syllables are no longer counted; words are
+  // chosen for meaning, and a lesson's own word is always right.
+  console.log(`NOTE - early-years stories over the read-aloud guideline (sentences past eighteen words): ${bad.length}${bad.length ? ' (' + bad.slice(0, 6).join(' | ') + ')' : ''}`);
 }
 // Course stories spread the cast (2026-09-23, Mikey): in a grade's Let's Read list, two stories side by side never lead
 // with the same core character, so nobody meets Georgette three times in a row.

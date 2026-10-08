@@ -9,6 +9,19 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## October 8, 2026 (Wonder voices by name)
+
+- The four voices in Wonder questions now go by name: Frederick, Chloe, Georgette and Mike. A small label under each name says how they see things, The Scientist, The Artist, The Grandparent of Faith and The Skeptic, so children can connect the voices with the people in their stories.
+- When you review a Wonder question, its answer choices now line up in even rows.
+- The new star coloring page will have a moon and a few little stars around one big star after all. Until it arrives, the star you see keeps its small note.
+- The coloring pages still waiting for their illustrations have been redesigned as fuller scenes that grow more detailed as children grow, so there is always more than one thing to color.
+
+## October 7, 2026 (First Steps stories, part two)
+
+- The star coloring page will soon be one big star, without the moon and the little stars. Until the new page arrives, the star you see carries a small note saying it will be replaced.
+- The rest of the First Steps stories have been rewritten so each one gives a child a real problem to solve with the lesson's idea. Look for two cousins standing back to back, a necklace whose beads would not make a pattern, and a girl who waits for the swing by counting to ten.
+- First Steps now has its own long story, The Treasure in the Garden. A child who finishes the course follows Frederick and Chloe through Georgette's garden, where every clue uses something the course taught, from counting stones to joining dots in order.
+
 ## October 7, 2026 (First Steps stories, part one)
 
 - Drawings that stand in for our painted illustrations now say so in a small note in the corner. You will see it on lessons and stories, and on questions only when you walk through a course, so a child answering never sees it.

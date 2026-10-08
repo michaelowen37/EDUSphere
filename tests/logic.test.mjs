@@ -1024,6 +1024,20 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
     ok('every Wonder question has its own id', new Set(L.WONDER.map((w) => w.id)).size === L.WONDER.length);
     ok('every Wonder question carries a theme the rotation knows', L.WONDER.every((w) => Object.keys(L.WONDER_THEMES).includes(w.theme || 'world')));
   }
+  { // Pass LY (Mikey): the four voices are the core cast by name, each with the label for how they see things.
+    ok('the four Wonder voices are Frederick the Scientist, Chloe the Artist, Georgette the Grandparent of Faith and Mike the Skeptic',
+      L.WONDER_VOICES.map((v) => `${v.name}|${v.role}`).join(',') === 'Frederick|The Scientist,Chloe|The Artist,Georgette|The Grandparent of Faith,Mike|The Skeptic');
+    const order = L.WONDER.filter((w) => w.perspectives.map((p) => (L.wonderVoice(p.voice) || {}).name).join() !== 'Frederick,Chloe,Georgette,Mike').map((w) => w.id);
+    ok('every Wonder question gives its four perspectives to Frederick, Chloe, Georgette and Mike, in that order', order.length === 0, order.join(', '));
+    const lost = L.WONDER.filter((w) => (w.simple || []).some((v) => !L.wonderVoice(v.voice))).map((w) => w.id);
+    ok('every short voice a pre-reader hears is one of the four', lost.length === 0, lost.join(', '));
+    ok('a voice is read aloud by name and label', L.wonderVoiceSpoken('An artist says') === 'Chloe, the artist, says' && L.wonderVoiceSpoken('A grandparent says') === 'Georgette, the grandparent of faith, says' && L.wonderVoiceSpoken('A scientist') === 'Frederick, the scientist, says');
+    ok('answer choices sit in even columns: four make two by two, up to three share a row, an odd five stacks', L.evenColumns(4) === 2 && L.evenColumns(3) === 3 && L.evenColumns(2) === 2 && L.evenColumns(1) === 1 && L.evenColumns(6) === 3 && L.evenColumns(5) === 1);
+    ok('a list with a long answer stacks one a row, and short ones share', L.chipColumns(['Sometimes', 'Always', 'Never']) === 1 && L.chipColumns(['Yes', 'No', 'Not sure']) === 3 && L.chipColumns(['Red', 'Blue', 'Yellow', 'Green']) === 2);
+    ok('a voice label names exactly one person or none', L.wonderVoice('A scientist') && L.wonderVoice('A grandparent of faith says').name === 'Georgette' && L.wonderVoice('A builder') === null && L.wonderVoice("A scientist's grandparent says") === null);
+    const longest = L.WONDER.filter((w) => w.answerMode === 'pick').flatMap((w) => w.options).filter((o) => o.length > 40);
+    ok('every Wonder answer fits one chip on a phone (forty characters or fewer)', longest.length === 0, longest.join(' | '));
+  }
   { // Pass IX: no Wonder voice tells a child to vent a feeling out (give it somewhere to go, stomp it out, squeeze or punch a
     // pillow). The evidence supports calming the body and absorbing distraction (Bushman 2002; Kjaervik and Bushman 2024;
     // Drake and Winner 2013). Prompts may still ask about the myth; only the voices are read.

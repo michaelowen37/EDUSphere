@@ -75,8 +75,9 @@ tapping fast usually means not thinking.
 
 **Wonder questions.** After every second finished practice round, whether it went
 well or not, a student spends a minute on an open question with no right answer, then
-reads how four different people might see it: a scientist, an artist, a grandparent
-of faith, and a skeptic. None of them is presented as right. Every question is
+reads how four people from the stories might see it: Frederick the scientist, Chloe
+the artist, Georgette the grandparent of faith, and Mike the skeptic. None of them is
+presented as right. Every question is
 written toward one of four aims: curiosity about the world; failure as the way
 learning happens; naming and handling feelings; and the truth that hard days are a
 normal part of being human and that people get through them. The questions rotate

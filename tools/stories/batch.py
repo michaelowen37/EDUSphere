@@ -3,6 +3,7 @@
 #   1. Copy tools/stories/batch-example.py to /tmp/batch.py and replace NEW with a dict per module id:
 #        dict(about=..., title=..., alt=<main picture>, bg=<minimalist scene word>,
 #             more=[(<picture alt>, <paragraph index it follows>), ...],   # pre-K three extras, K to 2 four, grade 3 up five
+#             (a picture whose scene moves away from bg names its own: (<alt>, <after>, <bg>); alt_bg does it for the main picture)
 #             words=[<paragraph>, ...])                                    # apostrophes written as APOS
 #   2. Run: python3 tools/stories/batch.py /tmp/batch.py
 #   3. node tests/stories.test.mjs (fix read-aloud slips and picture spread from its output), node tests/ledger.test.mjs,
@@ -32,22 +33,25 @@ for mid, d in NEW.items():
     block = (m or literal).group(0); art = re.search(r"art: '(S\d+)'", block).group(1); castm = re.search(r"cast: (\[[^\]]*\])", block); cast = castm.group(1) if castm else "['Mike']" if 'Mike' in block else '[]'
     have = re.findall(r"serial: '(S\d+)'", block)
     serials = []
-    for k, (alt, aft) in enumerate(d['more']):
+    for k, (alt, aft, *_) in enumerate(d['more']):
         if k < len(have): serials.append(have[k])
         else: serials.append(f"S{next_serial}"); next_serial += 1
-    more = "[" + ", ".join(f"{{ serial: '{ser}', after: {aft}, alt: '{alt}' }}" for ser, (alt, aft) in zip(serials, d['more'])) + "]"
+    more = "[" + ", ".join(f"{{ serial: '{ser}', after: {aft}, alt: '{alt}' }}" for ser, (alt, aft, *_) in zip(serials, d['more'])) + "]"
     words = "\n".join("    '" + w + "'," for w in d['words'])
     if literal:
         new = (f"  '{mid}': {{\n  about: '{d['about']}',\n    title: '{d['title']}', art: '{art}', cast: {cast}, more: {more},\n    alt: '{d['alt']}',\n    words: [\n{words}\n    ],\n  }},\n").replace('APOS', "\\'")
     else:
         new = (f"STORIES['{mid}'] = {{\n  about: '{d['about']}',\n  more: {more},\n  title: '{d['title']}', art: '{art}', cast: {cast},\n  alt: '{d['alt']}',\n  words: [\n{words}\n  ],\n}};\n").replace('APOS', "\\'")
     s = s.replace(block, new)
-    for ser, alt in [(art, d['alt'])] + list(zip(serials, [a for a, _ in d['more']])):
-        alt1 = alt.replace('APOS', "'"); row = f"| {ser} | {mid} | {alt1} | {prompt(alt1, SUBJECT.get(mid, ''), d.get('bg', 'scene'))} | {NEG} | Needed |"
+    # Each picture's own background where its scene moves (pass LX); otherwise the story's.
+    pics = [(art, d['alt'], d.get('alt_bg', d.get('bg', 'scene')))] + [(ser, m[0], m[2] if len(m) > 2 else d.get('bg', 'scene')) for ser, m in zip(serials, d['more'])]
+    for ser, alt, bg in pics:
+        alt1 = alt.replace('APOS', "'")
         old = re.search(r"^\| " + ser + r" \| .*$", L, flags=re.M)
-        if old:
-            sheet = re.search(r"Character: C\d+\.", old.group(0))
-            L = L.replace(old.group(0), row[:-len(" | Needed |")] + (' ' + sheet.group(0) if sheet else '') + " | Needed |", 1)
+        # A kept character-sheet note ends the prompt (pass LX: it used to land after the negative prompt).
+        sheet = re.search(r"Character: C\d+(?:, C\d+)*\.", old.group(0)) if old else None
+        row = f"| {ser} | {mid} | {alt1} | {prompt(alt1, SUBJECT.get(mid, ''), bg)}{(' ' + sheet.group(0)) if sheet else ''} | {NEG} | Needed |"
+        if old: L = L.replace(old.group(0), row, 1)
         else: new_rows.append(row)
 open(p, 'w').write(s.replace('APOS', "\\'"))
 if new_rows:

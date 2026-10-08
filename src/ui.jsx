@@ -869,13 +869,14 @@ function SkillIcon({ skill, size = 40 }) {
 
 // "To be replaced" (pass LW, Mikey: people looking at the app today should know which drawings are stand-ins). The words
 // are Mikey's and are shown exactly as he wrote them. A stand-in is a drawing the app shows only until his Leonardo
-// painting arrives: the drawing on a lesson line whose painting is on the ledger, a story's drawn fallback, and a flower,
-// a rocket or a butterfly drawn while its coloring page waits to be painted.
+// painting arrives: the drawing on a lesson line whose painting is on the ledger, a story's drawn fallback, a flower, a
+// rocket or a butterfly drawn while its coloring page waits to be painted, and (pass LX) a page the app draws itself that
+// Mikey wants replaced, such as the star, whose Leonardo page has a G serial.
 const REPLACE_NOTE = "To be replaced with Mikey's provided image.";
 // True while a lesson or a question draws the app's own line drawing of a thing in place of its coloring page. It is the
 // same test ColorThumb makes with its thing flag (pass LU), so the note and the drawing can never disagree.
 function thingStandIn(picture) {
-  const page = DRAWN_PAGES[picture];
+  const page = DRAWN_PAGES[picture] || BETTER_PAGES[picture];
   if (!page || !THING_LINE_ART[picture]) return false;
   return !(typeof window !== 'undefined' && Array.isArray(window.__eduColoringArt) && window.__eduColoringArt.includes(page[0]));
 }
@@ -6477,19 +6478,28 @@ function layoutLetterParts(parts) {
 // Drawing pages that Mikey makes in Leonardo (D1 to D10 in the ledger): until the image exists the card
 // wears a placeholder with its serial; the child colors over the image by hand once it is there.
 const DRAWN_PAGES = {
-  fishbowl: ['D1', 'A goldfish bowl on a table'], fish: ['D2', 'One fish with sea plants behind it'], cat: ['D3', 'A sitting cat'], flower: ['D4', 'One flower, and three flowers together'],
-  rocket: ['D5', 'A rocket taking off'], butterfly: ['D6', 'A butterfly with open wings'], dinosaur: ['D7', 'A friendly dinosaur'], farm: ['D8', 'A barn, a fence and a cow'],
-  birthday: ['D9', 'A birthday cake with candles'], playground: ['D10', 'A slide and a swing'], city: ['D11', 'A city street with tall buildings'],
+  fishbowl: ['D1', 'A goldfish bowl on a table'], fish: ['D2', 'One fish with sea plants behind it'], cat: ['D3', 'A sitting cat with a long curled tail on a round rug, a ball of yarn and a food bowl beside it'], flower: ['D4', 'One big flower with round petals and two wide leaves growing from the grass, a watering can beside it, a ladybug on a leaf and a puffy cloud above'],
+  rocket: ['D5', 'A rocket blasting off from a launch pad beside a tall tower, big puffy smoke clouds below and a round moon in the sky'], butterfly: ['D6', 'A big butterfly with open patterned wings resting on a broad leaf of a bush, grass below, a small snail and a puffy cloud in the sky'], dinosaur: ['D7', 'A friendly dinosaur'], farm: ['D8', 'A barn, a fence and a cow'],
+  birthday: ['D9', 'A three-layer birthday cake with candles on a party table with a striped tablecloth, wrapped presents with bows, party hats, streamers and balloons tied to a chair'], playground: ['D10', 'A playground on the grass with a slide and a swing set side by side, a sandbox with a bucket and spade, a small tree and a cloud above'], city: ['D11', 'A city street with tall buildings'],
   // New pages, simplest first: the further down the list, the busier the scene.
-  kite: ['D12', 'A kite on a string in the sky'], ladybug: ['D13', 'A ladybug on a leaf'], 'ice-cream': ['D14', 'An ice cream cone with two scoops'], snowman: ['D15', 'A snowman with a scarf and a hat'],
-  'hot-air-balloon': ['D16', 'A hot air balloon over hills'], lighthouse: ['D17', 'A lighthouse on rocks by the sea'], treehouse: ['D18', 'A treehouse with a rope ladder'], submarine: ['D19', 'A submarine among fish and coral'],
+  kite: ['D12', 'A diamond kite with a striped bow tail flying high over a grassy park, a child holding the string beside a grown-up, a tree, a picnic blanket and fluffy clouds'], ladybug: ['D13', 'A big spotted ladybug on a wide leaf in a garden, with tall grass, two flowers, a snail, a little mushroom, a striped bee and fluffy clouds above'], 'ice-cream': ['D14', 'A child holding a two-scoop ice cream cone with sprinkles beside a striped ice cream cart with an umbrella in a sunny park, a bench and a tree'], snowman: ['D15', 'A snowman with a striped scarf, top hat and carrot nose in a snowy yard, a sled, snowy pine trees, a house with a smoking chimney and falling snowflakes'],
+  'hot-air-balloon': ['D16', 'A hot air balloon with a striped envelope and a basket floating over rolling hills with a farmhouse, round trees, a winding path, birds, a sun and clouds'], lighthouse: ['D17', 'A lighthouse on rocks by the sea'], treehouse: ['D18', 'A treehouse with a rope ladder'], submarine: ['D19', 'A submarine among fish and coral'],
   'pirate-ship': ['D20', 'A pirate ship on rolling waves'], dragon: ['D21', 'A friendly dragon over a village'], 'space-station': ['D22', 'A space station with planets behind it'], 'jungle-waterfall': ['D23', 'A jungle waterfall with animals'],
-  aquarium: ['D24', 'A big aquarium tank with a diver'], 'race-track': ['D25', 'Race cars on a winding track'], 'busy-harbor': ['D26', 'A harbor with boats, cranes and a lighthouse'], 'dinosaur-valley': ['D27', 'A valley of dinosaurs with a volcano'],
+  aquarium: ['D24', 'A big aquarium tank with a diver'], 'race-track': ['D25', 'Three race cars with stripe and zigzag patterns on a winding track with a bridge, a grandstand of cheering fans, a pit crew, trees and a checkered flag'], 'busy-harbor': ['D26', 'A harbor with boats, cranes and a lighthouse'], 'dinosaur-valley': ['D27', 'A valley of dinosaurs with a volcano'],
 };
+// Better pages (pass LX, Mikey): a page the app draws itself that Mikey wants replaced gets a Leonardo page with a G serial
+// (the star first: he disliked the app's drawing; since pass LY its page has a moon and small stars too, as he asked). Unlike the D pages above, which
+// show a placeholder card until they are painted, a G page waits out of sight: the app's own drawing stays, still colorable
+// and marked with his "To be replaced" note, until art/coloring/<serial>.webp exists, and then the page takes over in Let's
+// Color, in lessons and in questions alike.
+const BETTER_PAGES = { star: ['G1', 'One big star with five points in the night sky, a crescent moon beside it and small stars around it'] };
+const betterPainted = (serial) => typeof window !== 'undefined' && Array.isArray(window.__eduColoringArt) && window.__eduColoringArt.includes(serial);
 // The app's own line drawings of the things that are also Leonardo pages (pass LU), kept before the pages replace them, so a
-// lesson or a question can still draw a flower, a rocket or a butterfly while its painted page is on the way (ColorThumb, thing).
-const THING_LINE_ART = Object.fromEntries(Object.keys(DRAWN_PAGES).filter((pic) => Array.isArray(COLORING_ART[pic])).map((pic) => [pic, COLORING_ART[pic]]));
+// lesson or a question can still draw a flower, a rocket, a butterfly or (pass LX) the star while its page is on the way
+// (ColorThumb, thing).
+const THING_LINE_ART = Object.fromEntries([...Object.keys(DRAWN_PAGES), ...Object.keys(BETTER_PAGES)].filter((pic) => Array.isArray(COLORING_ART[pic])).map((pic) => [pic, COLORING_ART[pic]]));
 for (const [pic, [serial, alt]] of Object.entries(DRAWN_PAGES)) COLORING_ART[pic] = [{ t: 'art', serial, x: 4, y: 4, w: 92, h: 92, alt }];
+for (const [pic, [serial, alt]] of Object.entries(BETTER_PAGES)) if (betterPainted(serial)) COLORING_ART[pic] = [{ t: 'art', serial, x: 4, y: 4, w: 92, h: 92, alt }];
 // Lesson pages (2026-09-24): one Leonardo page per early-years lesson, drawn the same way as the pages above.
 for (const [mid, [serial, alt]] of Object.entries(COLOR_PAGES)) COLORING_ART[`lesson-${mid}`] = [{ t: 'art', serial, x: 4, y: 4, w: 92, h: 92, alt }];
 // Letter pages are art now: a coloring page Mikey makes in Leonardo (L1 to L26 in the ledger), shown
@@ -6587,6 +6597,9 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
         </div>
       )}
       <div className="edu-picture edu-pad-col" style={{ position: 'relative', margin: '0 auto' }}>
+      {/* A page the app draws only until Mikey's Leonardo page arrives says so in its corner (pass LX); the zoom buttons hold the
+          bottom corners, so the note sits top right, on a chip of the page's paper. */}
+      {BETTER_PAGES[picture] && !betterPainted(BETTER_PAGES[picture][0]) && <ReplaceNote style={{ top: 10, right: 12, zIndex: 2, background: C.paperBoard, padding: '1px 5px', borderRadius: 4 }} />}
       <svg ref={svgRef} viewBox={`${view.x} ${view.y} ${span} ${spanY}`} role="img" aria-label={`A ${picture} to color`}
         onPointerDown={start} onPointerMove={move} onPointerUp={stop} onPointerLeave={stop}
         style={{ width: '100%', aspectRatio: `1 / ${tall}`, display: 'block', background: C.paperBoard, border: `2px solid ${C.line}`, borderRadius: 16, clipPath: 'inset(0 round 15px)', touchAction: freeDraw ? 'none' : 'auto' }}>
@@ -7013,6 +7026,21 @@ function PageChrome({ idleWarning = false, stars = true, logoutIn = null, walkth
           You will be logged out in a few seconds due to inactivity. Tap anywhere to stay.
         </div>
       )}
+    </>
+  );
+}
+
+// A Wonder voice by name (pass LY, Mikey): Frederick, Chloe, Georgette or Mike, the most prominent words, then a small
+// muted label for how they see things (The Scientist, The Artist, The Grandparent of Faith, The Skeptic) just above what
+// they say. roleOnly draws just the label, for a dropdown whose button already shows the name. It never sets its own
+// alignment, so it sits centered or left like the card it is in.
+function VoiceName({ label, size = 16, color, roleOnly = false }) {
+  const v = wonderVoice(label);
+  if (!v) return <p style={{ margin: '0 0 3px', fontSize: size, fontWeight: 700, color }}>{label}</p>;
+  return (
+    <>
+      {!roleOnly && <p data-voice-name="" style={{ margin: 0, fontSize: size + 1, fontWeight: 700, lineHeight: 1.3, color }}>{v.name}</p>}
+      <p data-voice-role="" style={{ margin: '1px 0 5px', fontSize: Math.max(12, size - 3), fontWeight: 600, letterSpacing: '0.02em', color: C.muted }}>{v.role}</p>
     </>
   );
 }
@@ -8107,7 +8135,7 @@ function EduSphereScreens() {
     return () => stop();
   }, [screen, readAloud, wonder]);
   const spokenVoice = screen === 'wonder-voices' && readAloud && wonder ? (wonder.simple || [])[Math.min(wonderVoiceStep, ((wonder.simple || []).length || 1) - 1)] : null;
-  useEffect(() => { if (spokenVoice) speak(`${spokenVoice.voice}. ${spokenVoice.says}`); }, [spokenVoice]);
+  useEffect(() => { if (spokenVoice) speak(`${wonderVoiceSpoken(spokenVoice.voice)}: ${spokenVoice.says}`); }, [spokenVoice]);
   // The test hook: what screen is up, which question, and a way to open a named module without
   // hunting for its card, so a browser check can go straight to a lesson.
   // A phone held sideways is asked to turn upright rather than shown a squeezed layout. Tablets and
@@ -8168,7 +8196,7 @@ function EduSphereScreens() {
     setRoster((r) => ({ ...r }));   // the classroom reloads its Action Items
     return seeded;
   }
-  useEffect(() => { if (typeof window !== 'undefined') window.__eduTest = { seedHistory: (key, plan) => seedHistoryForTest(key, plan), screen, question: q || null, isReviewQ, openModule: (id) => openModule(id), openColoring: (pic) => { setColoring(pic); setScreen('coloring'); }, openCertificate: (id, grade) => { setCertFor({ id, grade }); setCertTemplate('classic'); setCertName(''); setCertPhotos([]); setScreen('certificate'); }, visibleModuleIds: () => visibleModules.map((m) => m.id), openStory: (id) => { setModuleId(id); setScreen('story'); }, crash: () => setBoom(true), goTo: (name) => {
+  useEffect(() => { if (typeof window !== 'undefined') window.__eduTest = { seedHistory: (key, plan) => seedHistoryForTest(key, plan), screen, question: q || null, isReviewQ, openModule: (id) => openModule(id), openColoring: (pic) => { setColoring(pic); setScreen('coloring'); }, openCertificate: (id, grade) => { setCertFor({ id, grade }); setCertTemplate('classic'); setCertName(''); setCertPhotos([]); setScreen('certificate'); }, visibleModuleIds: () => visibleModules.map((m) => m.id), openStory: (id) => { setModuleId(id); setScreen('story'); }, openCourseStory: (id) => { setCourseStoryId(id); setScreen('course-story'); }, openWonderVoices: (id, mid) => { if (mid) setModuleId(mid); setWonder(WONDER.find((w) => w.id === id) || null); setWonderVoiceStep(0); setScreen('wonder-voices'); }, reviewWonder: (id) => { setReviewing(id); setOpenVoices([]); setScreen('wonder-review'); }, crash: () => setBoom(true), goTo: (name) => {
     // Test-only: land on a screen with enough state for it to render, so the back-button sweep can press back from every screen.
     if (name === 'story' || name === 'lesson') { if (!moduleId && visibleModules[0]) setModuleId(visibleModules[0].id); }
     if (name === 'course-story') { const c = COURSES.find((x) => courseStoryFor(x.id)); if (c) setCourseStoryId(c.id); }
@@ -9367,7 +9395,7 @@ function EduSphereScreens() {
         </div>
         {/* Big tap targets. The question and then each choice are read aloud in turn, and the choice being read lights up,
             so a child who cannot read yet knows what each button says (pass IS: before it, the choices were never spoken). */}
-        <div style={{ display: 'grid', gap: 12, gridTemplateColumns: `repeat(${Math.min(3, options.length)}, 1fr)` }}>
+        <div style={{ display: 'grid', gap: 12, gridTemplateColumns: `repeat(${evenColumns(options.length)}, 1fr)` }}>
           {options.map((o, i) => (
             <button key={o} type="button" onClick={() => finish(o)} className="edu-press" data-wonder-lit={wonderLit === i ? '' : undefined}
               style={{ fontFamily: FONT, fontSize: 20, fontWeight: 600, padding: '22px 10px', borderRadius: 14, background: wonderLit === i ? C.goldSoft : C.surface, border: `3px solid ${wonderLit === i ? C.gold : C.green}`, color: wonderLit === i ? C.ink : C.green, cursor: 'pointer', minHeight: 78, transform: wonderLit === i ? 'scale(1.04)' : 'none', transition: 'transform 200ms, background 200ms' }}>
@@ -9388,12 +9416,12 @@ function EduSphereScreens() {
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <div key={step} className="edu-rise" style={{ ...card, textAlign: 'center', padding: '22px 18px' }}>
-          <p style={{ fontSize: 15, color: C.muted, margin: '0 0 8px' }}>{v.voice}</p>
-          <p style={{ fontSize: 22, lineHeight: 1.5, margin: 0 }}>{v.says}</p>
+          <VoiceName label={v.voice} size={21} color={C.green} />
+          <p style={{ fontSize: 20, lineHeight: 1.5, margin: '2px 0 0' }}>{v.says}</p>
         </div>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
           {canSpeak() && (
-            <button type="button" onClick={() => speak(`${v.voice}. ${v.says}`)} aria-label="Say it again" className="edu-press edu-sway"
+            <button type="button" onClick={() => speak(`${wonderVoiceSpoken(v.voice)}: ${v.says}`)} aria-label="Say it again" className="edu-press edu-sway"
               style={{ width: 66, height: 66, borderRadius: 999, border: `3px solid ${C.gold}`, background: C.goldSoft, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
                 <path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={C.gold} />
@@ -9455,7 +9483,7 @@ function EduSphereScreens() {
   }
 
   if (screen === 'wonder-voices' && wonder) {
-    const allText = wonder.perspectives.map((p) => `${p.voice} says: ${p.says}`).join(' ') + ' ' + wonder.closing;
+    const allText = wonder.perspectives.map((p) => `${wonderVoiceSpoken(p.voice)}: ${p.says}`).join(' ') + ' ' + wonder.closing;
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <p style={{ color: C.muted, fontSize: 14, margin: '4px 0 6px' }}>How others might see it</p>
@@ -9466,7 +9494,7 @@ function EduSphereScreens() {
         <SpeakButton text={allText} label="Read it to me" />
         {wonder.perspectives.map((p) => (
           <div key={p.voice} style={{ ...card }}>
-            <p style={{ margin: '0 0 4px', fontWeight: 600, color: C.green }}>{p.voice}</p>
+            <VoiceName label={p.voice} size={16} color={C.green} />
             <p style={{ margin: 0, fontSize: 16 }}>{p.says}</p>
           </div>
         ))}
@@ -9800,10 +9828,11 @@ function EduSphereScreens() {
                 <div style={{ background: PANEL, ...(C.mode === 'dark' ? { border: `1px solid ${C.panelLine}` } : {}), borderRadius: 10, padding: '10px 12px', marginBottom: 12 }}>
                   <p style={{ margin: '0 0 6px', fontSize: 14, fontWeight: 600, textAlign: 'center' }}>What the youngest children hear</p>
                   <p style={{ margin: '0 0 8px', paddingBottom: 8, borderBottom: `1px solid ${C.mode === 'dark' ? 'rgba(124, 195, 166, 0.45)' : C.line}`, fontSize: 13, color: C.muted, textAlign: 'center' }}>Children who cannot read yet hear the question spoken, tap one of the choices, and then hear only these two short voices. The four voices below are for readers.</p>
-                  {/* Each voice: its name on a line of its own, the sentence under it, and a gap before the next voice (Mikey, 2026-09-25). */}
+                  {/* Each voice: the person's name, the small label for how they see things just above the sentence, and a gap
+                      before the next voice (Mikey, 2026-09-25; by name since pass LY). */}
                   {reviewingQuestion.simple.map((v, i) => (
                     <div key={v.voice} style={{ margin: i === 0 ? 0 : '14px 0 0', textAlign: 'center' }}>
-                      <p style={{ margin: '0 0 3px', fontSize: 14, fontWeight: 700 }}>{/:$/.test(v.voice) ? v.voice : `${v.voice}:`}</p>
+                      <VoiceName label={v.voice} size={14} color={C.green} />
                       <p style={{ margin: 0, fontSize: 14 }}>{v.says}</p>
                     </div>
                   ))}
@@ -9814,9 +9843,11 @@ function EduSphereScreens() {
                 {reviewingQuestion.answerMode === 'typed' ? (
                   <p style={{ margin: 0, fontSize: 14, color: C.muted, textAlign: 'center' }}>Typing in their own words. Nothing they write is saved.</p>
                 ) : (
-                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 4, justifyContent: 'center' }}>
+                  /* Even columns of equal width, so four answers make a two by two block rather than three and one left over
+                     (pass LY, Mikey's screenshot). */
+                  <div data-answer-chips="" style={{ display: 'grid', gridTemplateColumns: `repeat(${chipColumns(reviewingQuestion.options)}, minmax(0, 1fr))`, gap: 8, marginTop: 4, maxWidth: 420, marginLeft: 'auto', marginRight: 'auto' }}>
                     {(reviewingQuestion.options || []).map((o) => (
-                      <span key={o} style={{ fontSize: 14, fontWeight: 600, color: C.green, background: C.surface, border: `2px solid ${C.line}`, borderRadius: 10, padding: '7px 14px' }}>{o}</span>
+                      <span key={o} style={{ fontSize: 14, fontWeight: 600, color: C.green, background: C.surface, border: `2px solid ${C.line}`, borderRadius: 10, padding: '7px 10px', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{o}</span>
                     ))}
                   </div>
                 )}
@@ -9829,10 +9860,11 @@ function EduSphereScreens() {
                   <div key={p.voice} style={{ borderTop: `1px solid ${C.line}` }}>
                     <button type="button" onClick={() => setOpenVoices((list) => (list.includes(p.voice) ? list.filter((x) => x !== p.voice) : [...list, p.voice]))} aria-expanded={shown}
                       style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: 'transparent', border: 'none', padding: '10px 0', cursor: 'pointer', color: C.green, fontSize: 15, fontWeight: 600, display: 'flex', justifyContent: 'space-between', gap: 10 }}>
-                      <span style={{ flex: 1, textAlign: 'center', paddingLeft: 18 }}>{p.voice}</span>
-                      <span style={{ color: C.muted, fontWeight: 400 }}>{shown ? '▴' : '▾'}</span>
+                      <span style={{ flex: 1, textAlign: 'center', paddingLeft: 18 }}>{(wonderVoice(p.voice) || { name: p.voice }).name}</span>
+                      <span aria-hidden="true" style={{ color: C.muted, fontWeight: 400 }}>{shown ? '▴' : '▾'}</span>
                     </button>
-                    <div className="edu-collapsible" style={{ display: shown ? 'block' : 'none', paddingBottom: 10 }}>
+                    <div className="edu-collapsible" style={{ display: shown ? 'block' : 'none', paddingBottom: 10, textAlign: 'center' }}>
+                      <VoiceName label={p.voice} size={15} roleOnly />
                       <p style={{ margin: 0, fontSize: 15, lineHeight: 1.6, textAlign: 'center' }}>{p.says}</p>
                     </div>
                   </div>

@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-08 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 8832 clips, 1,495,835 characters in all; the longest clip is 508 characters and the longest whole story 3,420, far under Eleven v4's 10,000 a request. 189 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-08 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 8857 clips, 1,503,391 characters in all; the longest clip is 508 characters and the longest whole story 3,420, far under Eleven v4's 10,000 a request. 190 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,7 +17,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 4776 | 544,175 |
+| Pre-K to grade 2 | 4801 | 551,731 |
 | Grades 3 to 5 | 1263 | 278,553 |
 | Grades 6 to 8 | 1138 | 272,072 |
 | Grades 9 to college | 1655 | 401,035 |
@@ -40,22 +40,23 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 | Kind | Clips |
 |---|---|
 | story title | 658 |
-| story | 4210 |
+| story | 4223 |
 | lesson line | 3025 |
-| long story title | 104 |
-| long story | 835 |
+| long story title | 105 |
+| long story | 846 |
 
 ## Stories with hand-written tags
 
 ### Three stones (S1, count-to-3)
 
-- S1-1: [warm, playful] Mike had one job, to bring back three stones from the creek, not a pile, just three. He nodded. Easy.
-- S1-2: The creek was full of stones, big ones, wet ones, ones that sparkled. [splashing in a creek] Mike scooped a handful and ran back.
-- S1-3: [laughing gently] That is a lot of stones, said his teacher with a laugh. I asked for three.
-- S1-4: So Mike put one stone on the flat rock, one, and another next to it, two. [slowly, counting] One more made three, and then he stopped.
-- S1-5: Three stones, not a pile. He held up three fingers. [proud] Three!
-- S1-6: Mike skipped all three across the water, and each one bounced. [stones skipping across water] Plip, plip, plip.
-- S1-7: [slowly, warmly] Touch and count. One, two, three. The last number you say tells how many.
+- S1-1: [cheerful] Mike's class went to the park, and his teacher gave everyone a job. [clearly] Bring back three stones, she said, just three, for the counting jar.
+- S1-2: [excited] Mike found smooth stones, round stones and stones that sparkled. [eagerly] He scooped up a whole handful and set the pile on a flat rock by his teacher.
+- S1-3: [curious] How many is that? asked his teacher. [slowly, counting] Mike started to count the pile. One, two, three, four, [puzzled] but he was not sure which ones he had counted already.
+- S1-4: [gently] Touch each stone as you count it, said his teacher, [slowly] and count each one once.
+- S1-5: [slowly, counting] So Mike touched one stone and slid it into a row. One. He touched the next and slid it over. Two. Then one more. [proud] Three!
+- S1-6: [pleased] He stopped right there. [warmly] The last number you say tells how many, said his teacher. [delighted] You said three, so you have three stones!
+- S1-7: [gently] Mike put the rest back on the path where he found them. [happily] Back in class, he dropped his three in the counting jar. [stones dropping into a glass jar] Plink, plink, plink.
+- S1-8: [slowly, warmly] Touch each one and count it once. The last number you say tells how many.
 
 ### Five ducklings (S2, count-to-5)
 
@@ -470,23 +471,26 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 ### Red, blue, red, blue (S110, patterns)
 
-- S110-1: [warm] Kai was making a necklace. He had a bowl of beads, red ones and blue ones, and a long string.
-- S110-2: [beads clicking, steady] Red bead, blue bead, red bead, blue bead, and he threaded them on.
-- S110-3: Then he stopped. [puzzled] What comes next? He held a bead in the air, and he did not know.
-- S110-4: Grandma said to look back, so Kai looked at the string. [slowly] Red, blue, red, blue.
-- S110-5: He said it out loud, red, blue, red, blue, and then he knew. [excited] Red! The next one was red.
-- S110-6: Red, blue, red, blue, all the way to the end. The necklace was long, [proud] and Grandma put it on.
-- S110-7: [slowly, warmly] A pattern repeats. Say it out loud to find what comes next.
+- S110-1: [cheerful] Eli was making a necklace for Mom. [softly] He had a bowl of red beads, a bowl of blue beads and a long string.
+- S110-2: [sing-song] Red, blue, red, blue. [carefully] He threaded them on one at a time and said each color out loud.
+- S110-3: [playful] Then his friend Bea wanted to help. [rushed] She grabbed beads from both bowls and pushed them on fast. Red, red, blue, red, blue, blue.
+- S110-4: [slowly] Eli said all the colors out loud, one by one, and they sounded wrong. [puzzled] The order kept changing, so it was not a pattern anymore.
+- S110-5: [patiently] They slid Bea's beads off and started again. [gently] This time Eli said the colors, and Bea listened. [sing-song] Red, blue, red, blue.
+- S110-6: [curious] What comes next? asked Eli. [sing-song] Bea said the pattern with him, red, blue, red, blue. [excited] Red! she shouted, and she was right.
+- S110-7: [happy] Together they went on, red, blue, red, blue, all the way to the end. [warmly] Mom put the necklace on and smiled.
+- S110-8: [playful] Then Bea made a pattern of her own. [clapping and stomping] Clap, stomp, clap, stomp, she went, [laughs] and everyone joined in.
+- S110-9: [slowly, warmly] A pattern repeats. Say it out loud to hear what comes next.
 
 ### Count to ten (S113, taking-turns)
 
-- S113-1: One swing, and two children, Sam and Rosa. Both wanted it, [impatient] and both wanted it now.
-- S113-2: [tugging and grunting] Pull, pull. Sam pulled one way and Rosa pulled the other, and nobody swung.
-- S113-3: [kindly] You go, said Rosa, and then I go. She let go of the swing, and Sam sat down.
-- S113-4: [a swing creaking] Rosa counted. [slowly, counting] One, two, three, and Sam swung high. Four, five, six, and higher.
-- S113-5: [excited] Seven, eight, nine, ten! Sam jumped off and Rosa sat down, and now Sam counted.
-- S113-6: [children laughing] Ten for Sam and ten for Rosa. Both of them swung, and both of them flew.
-- S113-7: [slowly, warmly] Wait, and then it is your turn. Count to ten.
+- S113-1: [playful] There was one swing, and Sam and Ana both wanted it. [rushed] They both grabbed the ropes at once. [shouting] Mine! Mine!
+- S113-2: [straining] Sam pulled one way, and Ana pulled the other. [frustrated] The swing just twisted, and nobody could swing at all.
+- S113-3: [calmly] Let's take turns, said Ana. You go first, and I will wait. [gently] She let go, and Sam sat down.
+- S113-4: [excited] Sam swung up high, and Ana waited on the bench. [sighs] Waiting felt hard. [restless] Her hands wanted the ropes, and her feet wanted to kick.
+- S113-5: [slowly] So Ana took a slow breath in and let it out. [cheering] Then she cheered for her friend, go, Sam, go, [counting] and counted to ten.
+- S113-6: [excited] Ten! [carefully] Sam let the swing slow down and climbed off. [warmly] Your turn, he said, and held it still for her.
+- S113-7: [delighted] Now Ana swung, and Sam counted for her. [playful] Later they found a big red ball and played with it together, both at once. [warmly] That was sharing.
+- S113-8: [slowly, warmly] Wait, and then it is your turn. Taking turns and sharing are fair to everyone.
 
 ### Cat, mat, hat (S116, listen-for-rhymes)
 
@@ -723,65 +727,74 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S179-7: [warmly] June smiled and gave Theo her extra strawberry. They lined them up again, [delighted] and now Theo had one left over.
 - S179-8: [slowly, warmly] To find out who has more, count each group, or line them up one with one. The group with some left over has more.
 
-### The pumpkin wagon (S182, bigger-and-smaller)
+### Back to back (S182, bigger-and-smaller)
 
-- S182-1: [cheerful] It was pumpkin day, and Rosa had a red wagon. She wanted one pumpkin to take home.
-- S182-2: She saw a huge one, bigger than the wagon! [straining] She pushed, but it did not move. [laughing] Too big.
-- S182-3: She saw a tiny one, small as her fist. She put it in, [something small rolling in a wagon] and it rolled around. Too small.
-- S182-4: [footsteps in dry leaves] Rosa walked the whole patch, past big ones and little ones. She wanted just right.
-- S182-5: [delighted] There! A middle one, not huge and not tiny. She lifted it, and it fit the wagon, snug.
-- S182-6: [a wagon rolling] Rosa set it in the wagon and pulled her pumpkin home, slow and steady.
-- S182-7: [slowly, warmly] Bigger things take up more room. Smaller things take up less.
+- S182-1: [playful] Ruby and her cousin Ezra were in Grandma's kitchen, and they could not agree. [proudly] I am bigger! said Ezra. [firmly] No, I am! said Ruby.
+- S182-2: [mischievous] Ezra hopped up on the bottom step of the stairs and stood up tall. [triumphant] See? he said. My head is way up here!
+- S182-3: [laughing] That is not fair, said Grandma with a laugh. [curious] Do you mean taller? [gently] Taller means whose head reaches higher when you both stand on the same floor.
+- S182-4: [sighs] So Ezra hopped down. [slowly] They stood back to back on the kitchen floor, heels together, as straight and still as they could.
+- S182-5: [carefully] Grandma laid her hand flat across the tops of their heads. [whispers] Her hand tipped down toward Ezra, just a tiny bit.
+- S182-6: [warmly] Ruby is taller, said Grandma, by just a little. [disappointed] Ezra frowned, and then he grinned. [determined] Next summer I will grow! he said.
+- S182-7: [curious] Then they set their sneakers side by side, heels on the same line. [surprised] Ezra's shoe reached farther. [laughs] Mine is longer! he laughed.
+- S182-8: [slowly, warmly] Taller reaches higher, and longer reaches farther. To compare two things, start them at the same place.
 
 ### Lines on the window (S185, first-strokes)
 
-- S185-1: [rain on a window] It was raining, and the window was fogged up. Ana pressed her finger on it, [a finger squeaking on glass] and it squeaked.
-- S185-2: [softly] Her finger went down and left a line, a clear line in the fog, straight down.
-- S185-3: Then she drew across, and another line crossed the first one. [pleased] A plus sign.
-- S185-4: [playful] Then a wavy one, up and down, up and down, like a wave and like a snake.
-- S185-5: Down, across, wavy. Lines can go any way you like, [happily] so Ana drew and drew.
-- S185-6: [gentle wonder] Soon the whole window was lines, and she could see the yard through them.
-- S185-7: [slowly, warmly] Start at the dot. Follow the line. A line goes where your finger goes.
+- S185-1: [softly] It was raining hard, and the window was foggy. [curious] Zoe pressed a dot at the top with her finger and pulled a line straight down.
+- S185-2: [delighted] A line down, just like the rain! [playful] She drew more lines down, side by side, until the window was full of rain.
+- S185-3: [carefully] Next she drew a line across for the windowsill, flat and straight, like the top of a table.
+- S185-4: [softly] Far away, the sky flashed white, and then [thunder rumbling] the thunder rumbled. [excited] Zoe drew the lightning, up and down, smooth and curvy.
+- S185-5: [gently] Mom came to look and smiled. [warmly] That looks like a wave, she said, smooth and curvy like water, [slowly] but lightning has sharp points.
+- S185-6: [determined] So Zoe drew it again, up and down, with sharp points this time. [delighted] A zigzag! Now it looked like lightning.
+- S185-7: [brightly] When the storm was over, the sun came out. [happily] Zoe drew it round and round, right in the middle of the glass.
+- S185-8: [slowly, warmly] Start at the dot and follow the line. A wave is smooth, and a zigzag has sharp points.
 
-### What is it? (S188, connect-the-dots)
+### The lopsided house (S188, connect-the-dots)
 
-- S188-1: Leo had a page of dots, and each dot had a tiny number. [curious] What was hiding in there?
-- S188-2: [slowly, counting] One to two, and he drew a line. Two to three, and another line. What is it?
-- S188-3: Three to four, then four to five. That made a corner, and then another corner. [puzzled] Leo could not tell yet.
-- S188-4: [wondering] Is it a house, he guessed, or is it a boat? He kept going, six, and then seven.
-- S188-5: Eight, and the last line! Leo sat back and saw points all around. [amazed] A star!
-- S188-6: [warmly] The dots had known all along. They just needed to be joined in order.
-- S188-7: [slowly, warmly] Start at 1. Draw to each dot in order. The picture comes out.
+- S188-1: [curious] Ravi had a page of dots, and each dot had a number beside it. [whispers] Something was hiding in there, and he wanted to find it.
+- S188-2: [excited] He started at dot one and went fast. [rushed] One, two, three, and then his crayon jumped right to five.
+- S188-3: [slowly] He finished the lines and looked. [puzzled] It was a lopsided shape, with one long line slanting across the page.
+- S188-4: [disappointed] It does not look like anything, said Ravi. [gently] Dad pointed at the numbers and said they show the order. [warmly] You skipped four, he said.
+- S188-5: [encouraging] Say each number out loud as you reach its dot, said Dad, and you will not skip one.
+- S188-6: [determined] So Ravi began on a new page. [slowly, counting] One, two, three, four, five, he said, and back to one.
+- S188-7: [delighted] There it was, a house with a pointy roof! [amazed] The dots had been a house all along.
+- S188-8: [softly] That night Dad showed him the stars. [in awe] Long ago, he said, people joined stars with pretend lines to make pictures in the sky.
+- S188-9: [curious] Ravi pointed his finger and joined three stars with pretend lines. [proud] A triangle, he said, a picture in the sky.
+- S188-10: [slowly, warmly] Start at one and go in order. Say each number, and the picture comes out right.
 
 ### Back to the dot (S191, draw-the-shapes)
 
-- S191-1: [warm] Mia put her crayon on the dot. Start here, go round. She started.
-- S191-2: [a crayon gliding on paper] Round and round, the curve grew. It was like a moon, and then like a bowl.
-- S191-3: She stopped and looked. Her circle had a gap, like a door in it. [thoughtful] It was not a circle yet.
-- S191-4: [encouraging] Almost there, said her teacher. Keep going, and do not stop early.
-- S191-5: Mia kept going, round and round, back to the dot. The gap closed. [delighted] A circle!
-- S191-6: [happy] She drew another one, all the way round with no stopping. Two circles, and then three.
-- S191-7: [slowly, warmly] Start at the dot. Go all the way around. Back to the dot.
+- S191-1: [cheerful] Ada was making a birthday card for Grandma, and she wanted a big heart on the front. [warmly] Her teacher made a little dot to start from.
+- S191-2: [eagerly] She put her crayon on the dot and started. [quickly] One round bump, then the second round bump, then down to the point.
+- S191-3: [rushed] But she was in a hurry, and she stopped too soon. [disappointed] There was a gap, like a door left open. It was not a heart yet.
+- S191-4: [gently] Almost, said her teacher. [encouraging] Go all the way around, back to the dot.
+- S191-5: [slowly] So Ada went around again, slowly this time. Bump, bump, point, and back to the dot. [delighted] The gap closed. A heart!
+- S191-6: [proud] Then she made a new dot and drew a star beside the heart, with five points. [pleased] Its line came back to the dot too, and the star was closed.
+- S191-7: [warmly] On her birthday, Grandma held the card up and traced the heart with her finger. [softly] All the way around, she said. Just right.
+- S191-8: [slowly, warmly] Start at the dot. Go all the way around and back to the dot, and the shape is closed.
 
-### Three bowls (S194, big-bigger-biggest)
+### The animal book (S194, big-bigger-biggest)
 
-- S194-1: [like a storyteller] Three bears had three bowls, a little bowl, a middle bowl and a big bowl.
-- S194-2: Little bear grabbed the big bowl, and it was too heavy! [a bowl wobbling, porridge splashing] It wobbled, and porridge spilled.
-- S194-3: Big bear took the little bowl, and it was too small! [a big gulp] One bite, and it was empty.
-- S194-4: Middle bear looked at the middle bowl. [slowly, pleased] Not too big, not too small, but just right.
-- S194-5: So little bear took the little bowl, and big bear took the big bowl. [happy] Now everyone matched.
-- S194-6: [warm] Little, middle, biggest. Three bears, three bowls, three sizes in a row.
-- S194-7: [slowly, warmly] Little, middle, biggest. Three sizes in a row.
+- S194-1: [cheerful] On the bus to the zoo, Iris looked at her animal book. [curious] A bee, a fox and a bear sat in little squares, all the same size.
+- S194-2: [puzzled] Is a bee as big as a bear? she asked. [knowingly] Pictures can fool you, said her teacher with a smile. Just wait and see.
+- S194-3: [softly] In the zoo garden, [a bee buzzing] a bee buzzed on a flower. [whispers] It was tiny, smaller than Iris's thumb.
+- S194-4: [curious] Next they saw a fox, bigger than the bee, curled up by a log. [gently] A fox is middle-sized, like a cat, said her teacher.
+- S194-5: [gasps] Then, behind thick glass, a bear stood up on its back legs. [amazed] It was huge, much bigger than Iris, and much bigger than her teacher too.
+- S194-6: [thoughtful] Iris opened her book again. On the page, all three looked the same size. [slowly] In real life, they were not.
+- S194-7: [happily] That night she drew them in a row, a tiny bee, a middle-sized fox and a huge bear. [proudly] Big, bigger, biggest!
+- S194-8: [slowly, warmly] Big, bigger, biggest, each one bigger than the one before. A picture can fool you, but in real life a bear is huge and a bee is tiny.
 
-### Helpers (S197, helpers-all-around)
+### A helper too (S197, helpers-all-around)
 
-- S197-1: Kai walked to school, [cars zooming past] and cars zoomed by. [a crossing guard whistle] The crossing guard held up her sign, the cars stopped, and Kai crossed.
-- S197-2: [bus doors opening] The bus pulled up and the driver opened the door. [cheerful] Good morning, he said, and Kai climbed in.
-- S197-3: At school, Kai fell and hurt his knee. [gently] The nurse cleaned it and put on a bandage, and it was all better.
-- S197-4: [a fire truck siren in the distance] A fire truck drove by the window, and the driver waved. Kai waved back.
-- S197-5: [warmly] Helpers were all around him. Each one had a job, and each one helped.
-- S197-6: At dinner, Kai told everyone about the guard, the bus driver, the nurse and the fire truck. [proud] Four helpers in one day.
-- S197-7: [slowly, warmly] Helpers are all around. Every helper has a job.
+- S197-1: [cheerful] On the way to school with Dad, Milo saw helpers all around. [admiring] A police officer held up her hand, and the cars stopped so people could cross.
+- S197-2: [excited] A mail carrier hopped out of her truck with a big package. [amazed] Then a big red fire truck rolled by. It was going home to the fire station.
+- S197-3: [warmly] At school, Milo's teacher read the class a story about helpers. [gently] Every helper has a job, she said, and every job helps us all.
+- S197-4: [sighs] Milo turned to his teacher and sighed. [sadly] I want to be a helper, he said, but I do not have a truck or a hose.
+- S197-5: [surprised] Just then his friend Jade bumped the table, [rushed] and her crayons rolled all over the floor.
+- S197-6: [kindly] Milo knelt down and picked them up, one by one, [carefully] and put them all back in her box.
+- S197-7: [grateful] Thank you, said Jade. [warmly] Then the teacher smiled at Milo. You did not need a truck or a hose, she said. [proudly] You are a helper too.
+- S197-8: [happily] That night Milo set the table, a fork and a spoon at every place. [pleased] Another way to help!
+- S197-9: [slowly, warmly] Helpers are all around, and every helper has a job. You can be a helper too.
 
 ### Buh and sss (S200, first-sounds)
 

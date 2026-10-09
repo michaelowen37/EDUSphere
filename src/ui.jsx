@@ -90,19 +90,71 @@ const wrap = { margin: '0 auto', minHeight: 'calc(100vh - 62px)' };
 // Where 'Contact us' goes. One place to change it later.
 const CONTACT_EMAIL = 'michaelowen37@gmail.com';
 
+// Copies a few words to the clipboard and says whether it worked (pass MB). The old way, a hidden box selected and copied,
+// still works inside a page shown in another page's sandboxed frame, as the claude.ai preview is, where the newer clipboard
+// call is refused; so the old way goes first, inside the tap, and the newer call is the fallback for pages that refuse it.
+async function copyText(text) {
+  const back = document.activeElement;   // the button that was tapped gets its focus back after the copy
+  try {
+    const box = document.createElement('textarea');
+    box.value = text; box.setAttribute('readonly', '');
+    box.style.position = 'fixed'; box.style.top = '0'; box.style.left = '-9999px'; box.style.fontSize = '16px';   // iOS zooms into a smaller box it focuses
+    document.body.appendChild(box); box.select(); box.setSelectionRange(0, text.length);
+    let ok = false;
+    try { ok = document.execCommand('copy'); } finally { box.remove(); if (back && back.focus) back.focus(); }
+    if (ok) return true;
+  } catch (e) { /* this browser refuses the old way; the newer call below may still work */ }
+  try { await navigator.clipboard.writeText(text); return true; } catch (e) { return false; }
+}
+
 // A quiet line at the foot of a screen. Discreet by design: help is there without shouting.
 // The contact popup, shared by the welcome page and the Classroom page.
+// Opening the email app (pass MB, Mikey: it opened on his phone but did nothing in Chrome on his Mac). A page shown inside
+// another page's sandboxed frame, as the claude.ai preview is, is not allowed to open an outside app, and desktop Chrome then
+// does nothing at all and says so only in its developer console. The app cannot change the frame it is shown in, so the
+// popup also offers to copy the address, and when the page is still in front a moment after the tap (an email app opening
+// would have taken the focus or hidden the page) it says what may have happened and points to the copy button.
+const CONTACT_STUCK_MS = 1500;
+const CONTACT_NOTES = {
+  refused: 'This browser would not copy it. Select the address above to copy it yourself.',
+  stuck: 'If no email app opened, this page may not be allowed to open one. Copy the address and paste it into a new email.',
+  copied: 'Now paste it into a new email.',
+};
 function ContactPopup({ onClose }) {
+  const [copied, setCopied] = useState(null);      // null before a copy, true once copied, false when the browser refused
+  const [stuck, setStuck] = useState(false);       // the email app seems not to have opened
+  const watch = useRef(null);                      // stops the watch for the email app, if one is running
+  useEffect(() => () => { if (watch.current) watch.current(); }, []);
+  // Watches for the email app after the tap: losing the focus or being hidden means it opened, so the note stays away.
+  const watchForApp = () => {
+    if (watch.current) watch.current();
+    setStuck(false);
+    let left = false;
+    const away = () => { left = true; };
+    const hidden = () => { if (document.visibilityState === 'hidden') left = true; };
+    let timer = 0;
+    const stop = () => { clearTimeout(timer); window.removeEventListener('blur', away); document.removeEventListener('visibilitychange', hidden); watch.current = null; };
+    window.addEventListener('blur', away); document.addEventListener('visibilitychange', hidden);
+    timer = setTimeout(() => { stop(); if (!left && document.visibilityState === 'visible' && document.hasFocus()) setStuck(true); }, CONTACT_STUCK_MS);
+    watch.current = stop;
+  };
+  const copy = async () => { const ok = await copyText(CONTACT_EMAIL); setCopied(ok); };
+  // The note under the buttons: after a copy, what to do next or why it failed; before one, the email app may not have opened.
+  const contactNote = copied === false ? CONTACT_NOTES.refused : copied === true ? CONTACT_NOTES.copied : stuck ? CONTACT_NOTES.stuck : '';
   return (
-    <div className="edu-no-print" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
-      <div className="edu-rise" style={{ maxWidth: 420, width: '100%', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: 20, position: 'relative', textAlign: 'center' }}>
+    <Overlay className="edu-no-print">
+      <div className="edu-rise" role="dialog" aria-modal="true" aria-label="Contact us" style={{ maxWidth: 420, width: '100%', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: 20, position: 'relative', textAlign: 'center' }}>
         <button type="button" onClick={onClose} aria-label="Close" style={{ position: 'absolute', top: 8, right: 10, background: 'none', border: 'none', width: 36, height: 36, fontSize: 30, lineHeight: '34px', cursor: 'pointer', color: C.ink, fontFamily: FONT, padding: 0 }}>×</button>
         <p style={{ margin: '0 0 6px', fontSize: 18, fontWeight: 600 }}>Contact us</p>
         <p style={{ margin: '0 0 14px', fontSize: 15, color: C.muted }}>Questions, problems, or an idea. We read everything.</p>
-        <p style={{ margin: '0 0 14px', fontSize: 16, fontWeight: 600 }}>{CONTACT_EMAIL}</p>
-        <a href={`mailto:${CONTACT_EMAIL}`} style={{ display: 'inline-block', fontFamily: FONT, fontSize: 16, fontWeight: 600, padding: '12px 18px', borderRadius: 10, background: C.green, color: C.onAccent, textDecoration: 'none' }}>Open in your email app</a>
+        <p data-contact-address="" style={{ margin: '0 0 14px', fontSize: 16, fontWeight: 600, userSelect: 'all', WebkitUserSelect: 'all', overflowWrap: 'anywhere' }}>{CONTACT_EMAIL}</p>
+        <a href={`mailto:${CONTACT_EMAIL}`} onClick={watchForApp} style={{ display: 'inline-block', fontFamily: FONT, fontSize: 16, fontWeight: 600, padding: '12px 18px', borderRadius: 10, background: C.green, color: C.onAccent, textDecoration: 'none' }}>Open in your email app</a>
+        <div style={{ margin: '12px 0 0' }}><Btn kind="secondary" onClick={copy}>{copied === true ? 'Copied!' : 'Copy the address'}</Btn></div>
+        {/* One status line, always there, whose words change (pass MB, the screen check's second read): a live region added
+            together with its words is often not announced, so a screen reader would miss the note. Empty, it takes no room. */}
+        <p role="status" data-contact-note="" {...(contactNote === CONTACT_NOTES.stuck ? { 'data-contact-stuck': '' } : {})} style={{ margin: contactNote ? '12px 0 0' : 0, fontSize: 14, lineHeight: 1.5, color: C.muted }}>{contactNote}</p>
       </div>
-    </div>
+    </Overlay>
   );
 }
 
@@ -135,13 +187,17 @@ function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
 // A stamp of when this copy of the page was built, so a stale page in a cache can be told apart
 // from a fresh one at a glance. Written by the build, never by hand.
 const BUILD_STAMP = '__BUILD_STAMP__';
+// Every way to the address goes through the popup (pass MB), since a bare email link does nothing where the page may not
+// open an email app: a line given no popup of its own opens one here.
 function ContactLine({ onOpen, inline = false }) {
+  const [own, setOwn] = useState(false);
   return (
-    <p className="edu-no-print" style={{ textAlign: 'center', marginTop: inline ? 0 : 28, fontSize: inline ? 14 : 12, color: C.muted, margin: inline ? '0' : undefined }}>
-      {onOpen
-        ? <button type="button" onClick={onOpen} style={{ background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' }}>Contact us</button>
-        : <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: C.muted, textDecoration: 'underline' }}>Contact us</a>}
-    </p>
+    <>
+      <p className="edu-no-print" style={{ textAlign: 'center', marginTop: inline ? 0 : 28, fontSize: inline ? 14 : 12, color: C.muted, margin: inline ? '0' : undefined }}>
+        <button type="button" onClick={onOpen || (() => setOwn(true))} style={{ background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 12, cursor: 'pointer', padding: 0, textDecoration: 'underline' }}>Contact us</button>
+      </p>
+      {own && <ContactPopup onClose={() => setOwn(false)} />}
+    </>
   );
 }
 
@@ -2822,7 +2878,8 @@ Object.assign(STORY_TITLES, Object.fromEntries(Object.entries(STORIES).map(([id,
 //   6 by-reading: on a laptop, to the left of the glowing Reading Lists card, over Wonder Questions (pass JF); in one column,
 //     on top of Science Experiments, close under Reading Lists.
 //   7 under-exp: overlapping Practical Life Skills, close by the glowing Experiments card.
-//   8 right-at-search: Who needs help at its top, the card right-aligned with its top level with the search box.
+//   8 right-at-search: Who needs help at its top, the card right-aligned with its top level with the search box. Where the whole card would
+//     not fit below that (a 768-pixel laptop since pass MB's longer Who Needs Help sentence), it sits as low as the screen allows.
 //   9 bottom-right: the bottom right corner of the screen, so the top of the Story Log reads behind it.
 //  10 above: just above the transcript. Good as it is.
 // tests/e2e/tour.mjs checks every one of these at tablet and laptop sizes.
@@ -2865,7 +2922,7 @@ function ActionCard({ children, onClose, inline = false, style = {}, step = null
 // One item at a time (Mikey, pass LJ: clean and intuitive): the first stuck lesson; the next appears when this one is resolved.
 function ActionItemPopup({ stuck = [], onPush, onClose, busy = false, step = null }) {
   return (
-    <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }} onClick={onClose}>
+    <Overlay onClick={onClose}>
       <ActionCard onClose={onClose} step={step}>
         {stuck.slice(0, 1).map((item) => (
           <div key={item.moduleId} style={{ marginBottom: 6 }}>
@@ -2874,19 +2931,19 @@ function ActionItemPopup({ stuck = [], onPush, onClose, busy = false, step = nul
           </div>
         ))}
       </ActionCard>
-    </div>
+    </Overlay>
   );
 }
 // A paper waiting for a mark gets its own popup (Mikey, pass LG): a one-line summary and Review, which opens the report at
 // the writing section; marking the paper there is what makes the Action Item link go away.
 function ActionWritingPopup({ name, count = 1, onReview, onClose, busy = false, step = null }) {
   return (
-    <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }} onClick={onClose}>
+    <Overlay onClick={onClose}>
       <ActionCard onClose={onClose} step={step}>
         <p style={{ margin: '0 0 12px', fontSize: 15, lineHeight: 1.5 }}>{count === 1 ? `${name} has submitted a paper for review.` : `${name} has submitted ${countWords(count)} papers for review.`}</p>
         <Btn full onClick={onReview} disabled={busy}>Review</Btn>
       </ActionCard>
-    </div>
+    </Overlay>
   );
 }
 const PRACTICE_REVIEWS_NOTE = 'Practice Reviews are impromptu quizzes that appear weeks after a student masters a concept. This is what determines whether or not re-introduction of learning material is worthwhile.';
@@ -2946,6 +3003,28 @@ function scrollerOf(el) {
     if ((oy === 'auto' || oy === 'scroll' || oy === 'overlay') && p.scrollHeight > p.clientHeight + 1) return p;
   }
   return window;   // the root element's scrolling belongs to the window
+}
+// overlayPlace (pass MB review). In plain terms: some previews show the app in a frame as tall as the whole page, where a pop-up
+// centered in the frame sits halfway down the page, out of sight. There it opens at the top of what shows instead. The pop-ups
+// sit inside .edu-wrap, which is zoomed on laptops, so the distance is written in its zoomed units, as the tour's cards are.
+// A sheet (a pop-up that scrolls as one long page) is moved down by the same distance.
+function overlayPlace(sheet = false) {
+  if (!framedFullHeight()) return {};
+  const wrapEl = typeof document === 'undefined' ? null : document.querySelector('.edu-wrap');
+  const z = (wrapEl && parseFloat(getComputedStyle(wrapEl).zoom)) || 1;
+  const top = (visibleBand().top + 24) / z;
+  return sheet ? { paddingTop: top } : { alignItems: 'flex-start', paddingTop: top };
+}
+// Overlay (pass MB, the code check's second read). In plain terms: the dimmed screen behind every pop-up, with the box in the
+// middle, or, in a page-tall frame, at the top of what shows. The place is measured when the pop-up opens and once more a moment
+// later (the first look can come before the page has reported what shows), and then it stays put: educator screens redraw every
+// second, and a box that followed the page as it scrolled could never be scrolled to the buttons at its foot. z is the layer,
+// sheet a pop-up that scrolls as one long page, start a box that sits at the top and scrolls, and the rest pass straight through.
+function Overlay({ children, z = 100, onClick, role, label, modal, className, bg, pad = 16, sheet = false, start = false, scroll = false }) {
+  const [place, setPlace] = useState(() => overlayPlace(sheet));
+  useEffect(() => { const t = setTimeout(() => setPlace(overlayPlace(sheet)), 150); return () => clearTimeout(t); }, []);
+  const lay = sheet ? { overflowY: 'auto', padding: '24px 12px' } : { display: 'flex', alignItems: start ? 'flex-start' : 'center', justifyContent: 'center', padding: pad, ...(scroll ? { overflowY: 'auto' } : {}) };
+  return <div className={className} role={role} aria-label={label} aria-modal={modal} onClick={onClick} style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: bg || C.scrim, zIndex: z, ...lay, ...place }}>{children}</div>;
 }
 function isFramed() { if (typeof window === 'undefined') return false; try { return window.self !== window.top; } catch (e) { return true; } }
 function pageScroller() { return scrollerOf(typeof document === 'undefined' ? null : document.querySelector('.edu-wrap')); }
@@ -3145,6 +3224,7 @@ function sinceLine(since) {
   if (since.questions) bits.push([String(since.questions), ' questions answered'].join(''));
   if (since.stories) bits.push([String(since.stories), since.stories === 1 ? ' story read' : ' stories read'].join(''));
   if (since.colored) bits.push([String(since.colored), since.colored === 1 ? ' picture colored' : ' pictures colored'].join(''));
+  if (since.played) bits.push([String(since.played), since.played === 1 ? ' game played' : ' games played'].join(''));
   return bits.join('; ');
 }
 function niceDateShort(iso) { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
@@ -3777,9 +3857,26 @@ function FixGame({ game, round, onScore = null }) {
   );
 }
 // A chip inside an SVG game: a drawn shape ('shape:kind:color') for the youngest, or a word in a rounded box.
+// The corners of every chip shape drawn as a polygon (pass MB, the game check's second read). In plain terms: one table, so each
+// shape a rule deck names is drawn as itself, and the rules test fails when a deck names a shape the table lacks (hexagons and
+// rhombuses once fell through to the triangle, so grade 1's Catch the Hexagons scored triangles as hexagons). A hexagon has six
+// equal sides; a rhombus is drawn longer than wide, 88 to 56 as ShapePic draws it, so it never reads as a square.
+const CHIP_CORNERS = {
+  triangle: [[0, -1], [1, 1], [-1, 1]],
+  hexagon: [[1, 0], [0.5, 0.866], [-0.5, 0.866], [-1, 0], [-0.5, -0.866], [0.5, -0.866]],
+  rhombus: [[0, -1.15], [0.73, 0], [0, 1.15], [-0.73, 0]],
+};
 function SvgChip({ text, x, y, tone = null }) {
   const m = /^shape:([a-z]+):([a-z]+)$/.exec(text);
-  if (m) { const col = SWATCH[m[2]] || B.green; const r = 4.2; return m[1] === 'circle' ? <circle cx={x} cy={y} r={r} fill={col} /> : m[1] === 'square' ? <rect x={x - r} y={y - r} width={r * 2} height={r * 2} fill={col} /> : m[1] === 'diamond' ? <rect x={x - r} y={y - r} width={r * 2} height={r * 2} fill={col} transform={`rotate(45 ${x} ${y})`} /> : <polygon points={`${x},${y - r} ${x + r},${y + r} ${x - r},${y + r}`} fill={col} />; }
+  // A circle, a square and a diamond have their own drawings; every other shape is a polygon through its corners in CHIP_CORNERS.
+  if (m) {
+    const col = SWATCH[m[2]] || B.green; const r = 4.2;
+    if (m[1] === 'circle') return <circle cx={x} cy={y} r={r} fill={col} />;
+    if (m[1] === 'square') return <rect x={x - r} y={y - r} width={r * 2} height={r * 2} fill={col} />;
+    if (m[1] === 'diamond') return <rect x={x - r} y={y - r} width={r * 2} height={r * 2} fill={col} transform={`rotate(45 ${x} ${y})`} />;
+    const corners = CHIP_CORNERS[m[1]] || CHIP_CORNERS.triangle;
+    return <polygon points={corners.map(([dx, dy]) => [x + dx * r, y + dy * r].join(',')).join(' ')} fill={col} />;
+  }
   const w = Math.max(9, text.length * 2.15 + 4);
   return <g><rect x={x - w / 2} y={y - 3.6} width={w} height={7.2} rx={2.4} fill={tone || '#FFFFFF'} stroke="#2E2E2E" strokeWidth="0.6" /><text x={x} y={y} fontSize="3.6" fontWeight="700" fontFamily={FONT} textAnchor="middle" dominantBaseline="central" fill="#2E2E2E">{text}</text></g>;
 }
@@ -3942,7 +4039,7 @@ function PathGame({ game, round, onScore = null }) {
         )))}
         <polyline points={trail.map(([r, c]) => `${mid(c)},${midY(r)}`).join(' ')} fill="none" stroke={B.green} strokeWidth={s * 0.14} strokeOpacity="0.5" strokeLinecap="round" strokeLinejoin="round" />
         <circle cx={mid(pc)} cy={midY(pr)} r={s * 0.17} fill={B.gold} stroke="#2E2E2E" strokeWidth="0.9" />
-        <text x="98" y="3.6" fontSize="3" fontFamily={FONT} fill={B.muted} textAnchor="end" dominantBaseline="central">{ticks}s</text>
+        {!game.young && <text x="98" y="3.6" fontSize="3" fontFamily={FONT} fill={B.muted} textAnchor="end" dominantBaseline="central">{ticks}s</text>}
         <text x="2" y="3.6" fontSize="3" fontFamily={FONT} fill={B.muted} dominantBaseline="central">{deck.a.label}</text>
       </svg>
       <Done show={done} />
@@ -5963,10 +6060,11 @@ function gameInstructions(game) {
     const { a, b } = ruleDeck(game.rule); const low = (t) => t.charAt(0).toLowerCase() + t.slice(1);
     if (game.kind === 'ship') return `Tap where you want the ship to go: it glides there and fires straight up. Hit the ${low(a.label)}; hitting one of the ${low(b.label)} costs a point. On a keyboard, the arrow keys move the ship and the space bar fires.`;
     if (game.kind === 'catch') return `Slide the basket to catch the ${low(a.label)} and let the ${low(b.label)} fall past. A right catch is a point; a wrong one costs a point.`;
+    if (game.kind === 'path' && game.young) return `Tap the ${low(a.label)} one at a time to walk the dot from the top corner to the star, or drag it there. A wrong step turns red and the dot stays put.`;
     if (game.kind === 'path') return `Drag the dot from the top corner to the star, stepping only on ${low(a.label)}. A wrong step turns red and the dot stays put.`;
     if (game.kind === 'buckets') return `Drag each chip into its bucket: ${a.label} on the left, ${b.label} on the right. A chip in the wrong bucket bounces back.`;
   }
-  if (game.kind === 'sort') return game.by === 'size' ? 'Drag each object to the side it belongs. When they are all sorted, you win!' : 'Drag each object to the side it belongs. When each one is sorted, you win!';
+  if (game.kind === 'sort') return game.by === 'size' ? 'Drag each object to the side it belongs. When they are all sorted, you win!' : 'Drag each red shape to the red box and each blue shape to the blue box. When each one is sorted, you win!';
   return { sprint: 'Sixty seconds. Questions from your own lessons come one after another; tap the answer and the next one appears. A right answer is a point, a wrong one takes a point away, and three right in a row starts a streak. Beat your best.', order: 'The steps are shuffled. Tap them in the order they happen, first to last. Tap a numbered step to take its number back. When every step has a number, a right order moves on and the first mistake comes loose to try again. On a timeline, the dates appear once the set is in order, and the clock waits while you read them. Three sets, and the clock counts up, so race yourself.', dots: 'Tap the dots in order, 1, 2, 3, and a picture appears. Count along as each dot says its number. The gold dot is the next one, and a wrong dot just wiggles.', pairs: 'Tap two cards. If the pictures match, they stay up. If not, they turn back over. Find every pair.', maze: 'Drag the dot to the star without crossing a wall.', jigsaw: 'Drag each piece to where it belongs until the picture is whole.', pong: 'Slide the paddle to hit the ball back. Miss, and the ball resets. See how many hits you can keep going.' }[game.kind] || 'Tap to play.';
 }
 // The foot of an opened fold (pass IT, Mikey): a centered Collapse link, so a long open list can be closed from the bottom.
@@ -6018,13 +6116,13 @@ function GamePad({ game, name, secondsLeft, total, onClose, modules = [], onScor
       {/* The youngest can hear the instructions (2026-09-23, Mikey): a speaker under the link, played only when tapped. */}
       {young && <div style={{ display: 'flex', justifyContent: 'center', marginTop: 8 }}><SpeakButton mini text={`${game.title}. ${gameInstructions(game)}`} label="Hear the instructions" /></div>}
       {showHow && (
-        <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 120, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }} onClick={(e) => { if (e.target === e.currentTarget) setShowHow(false); }}>
+        <Overlay z={120} onClick={(e) => { if (e.target === e.currentTarget) setShowHow(false); }}>
           <div className="edu-rise" style={{ width: 'min(420px, 100%)', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: '20px 20px 18px', textAlign: 'center' }} role="dialog" aria-label="Instructions">
             <p style={{ margin: '0 0 8px', fontSize: 18, fontWeight: 700 }}>{game.title}</p>
             <p style={{ margin: '0 0 16px', fontSize: 15, lineHeight: 1.6 }}>{gameInstructions(game)}</p>
             <Btn onClick={() => setShowHow(false)}>Got it</Btn>
           </div>
-        </div>
+        </Overlay>
       )}
     </div>
   );
@@ -7595,7 +7693,7 @@ function EduSphereScreens() {
         // The five minutes are up: the picture rests, and next time it starts blank again.
         const state = { ...colorState, [coloring]: { left: playSecs, restUntil: Date.now() + restMins * 60000, art: null } };
         setColorState(state); saveColorState(record.name, state);
-        if (!record.preview && !coloring.startsWith('play:')) addEvent(makeColoredEvent(coloring, new Date().toISOString()));
+        if (!record.preview) addEvent(coloring.startsWith('play:') ? makePlayedEvent(coloring.slice(5), new Date().toISOString()) : makeColoredEvent(coloring, new Date().toISOString()));
         setColoring(null); setScreen('overview'); return playSecs;
       }
       if (next % 5 === 0) { const state = { ...colorState, [coloring]: { ...(colorState[coloring] || {}), left: next, art: colorArt.current } }; setColorState(state); saveColorState(record.name, state); }
@@ -7608,12 +7706,19 @@ function EduSphereScreens() {
     if (record && coloring) {
       const state = { ...colorState, [coloring]: { ...(colorState[coloring] || {}), left: colorLeft, art: colorArt.current } };
       setColorState(state); saveColorState(record.name, state);
-      if (!record.preview && !coloring.startsWith('play:')) addEvent(makeColoredEvent(coloring, new Date().toISOString()));
+      // A game session is a game break and a picture a coloring break (pass MB): both are play, never marked.
+      if (!record.preview) addEvent(coloring.startsWith('play:') ? makePlayedEvent(coloring.slice(5), new Date().toISOString()) : makeColoredEvent(coloring, new Date().toISOString()));
     }
     // Back to the overview where the student left it (2026-09-23, Mikey): the fold stays open and the page scrolls back to the tiles.
     pendingScroll.current = { screen: 'overview', y: overviewScroll.current }; setColoring(null); setScreen('overview');
   };
   const overviewScroll = useRef(0);                                   // where the overview was scrolled when a game, a picture or a long story opened
+  // The story open right now (pass MB, Mikey's Elective stories line). A story already read once is noted as it opens, with
+  // where it was opened (a lesson or a shelf) and when; reading it to the end then logs a story_reread with both, a fact and
+  // never a verdict. Whether that read was more than required is worked out later from the log (electiveStoryReads and
+  // rereadIsElective in logic.mjs), so a change to the rule reaches every read ever made. A walk-through records nothing.
+  const storyReading = useRef(null);
+  const noteStoryOpen = (storyId, from) => { const rec = recordRef.current || record; storyReading.current = rec && !rec.preview && rec.events.some((e) => e.type === 'story_read' && e.moduleId === storyId) ? { id: storyId, from, openedAt: new Date().toISOString(), at: Date.now(), seen: false, logged: false } : null; };
   const leaveOverviewTo = (fn) => { if (typeof window !== 'undefined') overviewScroll.current = window.scrollY; fn(); };
   // The phone's back button goes up one level inside the app instead of leaving it: a lesson or a
   // picture goes back to the courses, the courses go back to the sign-in screen, an educator page
@@ -8199,12 +8304,35 @@ function EduSphereScreens() {
   const startAccountSetup = () => { setNewPin(''); setNewPin2(''); setDeviceDraft(deviceName || ''); setStateDraft(stateCode || ''); setSetupError(''); setScreen('educator-setup'); };
   // The first week tour opens on a wide screen for a new educator, and What's new waits until the tour is done. On a phone
   // the tour never runs (its cards need room), so What's new opens straight away there (2026-09-28, pass FR): before this
-  // a phone-only educator waited for a tour that never came and saw no news at all.
+  // a phone-only educator waited for a tour that never came and saw no news at all. Until pass MB the tour's end also marked
+  // the news as seen, so on a laptop it never opened at all (Mikey: it showed on his phone and not in Chrome on his Mac); now
+  // it opens when the tour ends, after the first-backup reminder if that is waiting, the same order a phone has.
   useEffect(() => {
     if (screen !== 'educator-pick' || !educator) return;
     if (!educator.tourSeen && !phoneScreen) { if (!tourBegun.current) { tourBegun.current = true; setTourStep(0); } return; }
     if (news && educator.newsSeen !== news.stamp) setNewsOpen(true);
   }, [screen, educator && educator.newsSeen, educator && educator.tourSeen]);
+  // A read to the end of a story read before (pass MB) is logged once, when the story's end has come into view and the story has
+  // been open STORY_REREAD_SECONDS: the marker under the story is watched while the story shows, and a timer checks both each
+  // second. Whether it counts as an elective read is worked out from the log, never here.
+  useEffect(() => {
+    const open = storyReading.current;
+    const id = screen === 'story' ? moduleId : screen === 'course-story' && courseStoryId ? `course:${courseStoryId}` : null;
+    if (!id || !open || open.logged || open.id !== id) return undefined;
+    let io = null;
+    const watchEnd = () => {
+      const end = document.querySelector('[data-story-end]');
+      if (!end || typeof IntersectionObserver === 'undefined') { open.seen = true; return; }
+      io = new IntersectionObserver((list) => { if (list.some((x) => x.isIntersecting)) open.seen = true; });
+      io.observe(end);
+    };
+    const raf = window.requestAnimationFrame(watchEnd);
+    const tick = setInterval(() => {
+      if (open.logged || !open.seen || Date.now() - open.at < STORY_REREAD_SECONDS * 1000) return;
+      open.logged = true; addEvent(makeStoryRereadEvent(open.id, new Date().toISOString(), open.from, open.openedAt));
+    }, 1000);
+    return () => { window.cancelAnimationFrame(raf); clearInterval(tick); if (io) io.disconnect(); };
+  }, [screen, moduleId, courseStoryId]);
   // A pre-reader hears the Wonder question and then each choice, the choice being read lit on screen (pass IS). Leaving
   // the screen stops the reading, so the two short voices that follow are never talked over.
   useEffect(() => {
@@ -8265,6 +8393,12 @@ function EduSphereScreens() {
         events.push(pass(p2, 12), pass(p2, 11), miss(y.id, 7, 2), miss(y.id, 6, 2), makeLoopBackEvent(y.id, p2, ago(6, 1)), pass(p2, 5, 2), miss(y.id, 4, 2), miss(y.id, 3, 2));
         seeded.never = y.id; seeded.neverPrereq = p2; }
     }
+    // A course finished a few days ago (pass MB): every module passed on two days, recently enough that no Quick Review is due,
+    // so the walk can open Let's Read and read the course's story again.
+    if (plan.finish && getCourse(plan.finish)) {
+      for (const m of getCourse(plan.finish).modules) events.push(pass(m.id, 3), pass(m.id, 2));
+      seeded.finished = plan.finish;
+    }
     if (plan.paper) {
       const w = tappable[0];
       if (w) { events.push(makeWritingEvent(w.id, 'Write three sentences about your favorite animal.', 'My favorite animal is a fox. It is fast. It lives in a den.', [], ago(1, 1), ago(1))); seeded.paper = w.id; }
@@ -8274,7 +8408,7 @@ function EduSphereScreens() {
     setRoster((r) => ({ ...r }));   // the classroom reloads its Action Items
     return seeded;
   }
-  useEffect(() => { if (typeof window !== 'undefined') window.__eduTest = { seedHistory: (key, plan) => seedHistoryForTest(key, plan), screen, question: q || null, isReviewQ, openModule: (id) => openModule(id), openColoring: (pic) => { setColoring(pic); setScreen('coloring'); }, openCertificate: (id, grade) => { setCertFor({ id, grade }); setCertTemplate('classic'); setCertName(''); setCertPhotos([]); setScreen('certificate'); }, visibleModuleIds: () => visibleModules.map((m) => m.id), openStory: (id) => { setModuleId(id); setScreen('story'); }, openCourseStory: (id) => { setCourseStoryId(id); setScreen('course-story'); }, openWonderVoices: (id, mid) => { if (mid) setModuleId(mid); setWonder(WONDER.find((w) => w.id === id) || null); setWonderVoiceStep(0); setScreen('wonder-voices'); }, reviewWonder: (id) => { setReviewing(id); setOpenVoices([]); setScreen('wonder-review'); }, crash: () => setBoom(true), goTo: (name) => {
+  useEffect(() => { if (typeof window !== 'undefined') window.__eduTest = { seedHistory: (key, plan) => seedHistoryForTest(key, plan), screen, question: q || null, isReviewQ, openModule: (id) => openModule(id), openColoring: (pic) => { setColoring(pic); setScreen('coloring'); }, openCertificate: (id, grade) => { setCertFor({ id, grade }); setCertTemplate('classic'); setCertName(''); setCertPhotos([]); setScreen('certificate'); }, visibleModuleIds: () => visibleModules.map((m) => m.id), openStory: (id) => { noteStoryOpen(id, 'shelf'); setModuleId(id); setScreen('story'); }, openCourseStory: (id) => { noteStoryOpen(`course:${id}`, 'shelf'); setCourseStoryId(id); setScreen('course-story'); }, openWonderVoices: (id, mid) => { if (mid) setModuleId(mid); setWonder(WONDER.find((w) => w.id === id) || null); setWonderVoiceStep(0); setScreen('wonder-voices'); }, reviewWonder: (id) => { setReviewing(id); setOpenVoices([]); setScreen('wonder-review'); }, crash: () => setBoom(true), goTo: (name) => {
     // Test-only: land on a screen with enough state for it to render, so the back-button sweep can press back from every screen.
     if (name === 'story' || name === 'lesson') { if (!moduleId && visibleModules[0]) setModuleId(visibleModules[0].id); }
     if (name === 'course-story') { const c = COURSES.find((x) => courseStoryFor(x.id)); if (c) setCourseStoryId(c.id); }
@@ -8300,7 +8434,7 @@ function EduSphereScreens() {
   }, [screen]);
   // Only this device's own educator account PIN opens the educator side; with no account, no PIN does (starter PIN retired, pass HB).
   useEffect(() => { if (screen !== 'educator-pin' || pinInput.length < 4) return; const ok = !!educator && scramble(pinInput) === educator.pin; if (ok) { if (pinLock.failures) savePinLock({ failures: 0, lockUntil: 0 }); goBackTo(); } }, [pinInput, screen]);
-  const endTour = async () => { setTourStep(-1); if ((screen === 'educator-report' && educatorRecord && educatorRecord.preview) || screen === 'class-view' || screen === 'story-log' || (screen === 'lesson' && record && record.preview)) { setEducatorRecord(null); setClassRows(null); setStoryRows(null); if (record && record.preview) { setRecord(null); setModuleId(null); } setScreen('educator-pick'); } const next = { ...educator, tourSeen: true, newsSeen: news ? news.stamp : educator.newsSeen }; setEducator(next); await saveEducator(next); };
+  const endTour = async () => { setTourStep(-1); if ((screen === 'educator-report' && educatorRecord && educatorRecord.preview) || screen === 'class-view' || screen === 'story-log' || (screen === 'lesson' && record && record.preview)) { setEducatorRecord(null); setClassRows(null); setStoryRows(null); if (record && record.preview) { setRecord(null); setModuleId(null); } setScreen('educator-pick'); } const next = { ...educator, tourSeen: true }; setEducator(next); await saveEducator(next); };
   const tourPopup = tourStep >= 0 && educator && (screen === 'educator-pick' || (screen === 'educator-report' && educatorRecord && educatorRecord.preview) || screen === 'class-view' || (screen === 'story-log' && TOUR[tourStep] && TOUR[tourStep][2] === 'storylog') || (screen === 'lesson' && record && record.preview)) ? (
     <div className="edu-no-print" style={{ position: 'fixed', zIndex: 130, pointerEvents: 'none', ...(tourBox ? { left: tourBox.left, top: tourBox.top, width: tourBox.width } : { right: 0, left: 0, bottom: 0, display: 'flex', justifyContent: 'center', padding: '0 12px 10px' }) }}>
       {/* Each card sits where its words say: beside, above or below the thing it points at, whole, never scrolling. */}
@@ -8507,7 +8641,7 @@ function EduSphereScreens() {
         {/* A PIN keeps classmates out of each other's records on a shared screen. Four digits, and the door opens on its own
             (the effect above the screens checks it), so the keypad never has to come down for a button. */}
         {pinAsk && (() => { const st = findStudent(roster, pinAsk); if (!st) return null; return (
-          <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+          <Overlay>
             <div className="edu-rise" style={{ width: '100%', maxWidth: 340, background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: 20, textAlign: 'center' }}>
               {st.picture && <StudentPicture name={st.picture} tint={st.tint} size={56} />}
               <p style={{ margin: '8px 0 12px', fontSize: 18, fontWeight: 600 }}>{keepTogether(st.label)}</p>
@@ -8516,7 +8650,7 @@ function EduSphereScreens() {
               {pinWrong && <p style={{ margin: '0 0 10px', fontSize: 14, color: C.clay }}>That is not the PIN. Try again.</p>}
               <div style={{ marginTop: 4 }}><button type="button" style={{ ...linkBtn }} onClick={() => setPinAsk(null)}>Not me</button></div>
             </div>
-          </div>
+          </Overlay>
         ); })()}
       </div></div>
     );
@@ -8796,10 +8930,10 @@ function EduSphereScreens() {
               {open && <FoldEnd label="Let's Color" onCollapse={() => setOpenSubject(null)} />}
             </div>
           ); })()}
-        {/* Let's Read: for students past the early years, one longer story per course, unlocked when the whole
-            course is mastered. Locked ones show how many modules are still to go. */}
+        {/* Let's Read: one longer story per course, unlocked when the whole course is mastered. An older student sees the locked
+            ones with how many modules are still to go; an early learner sees only the open ones (pass LI). Until pass MB an early
+            return here hid the list from every early learner, so a finished pre-K course's story could not be read again. */}
         {(() => {
-          if (youngLearner) return null;
           const allWithStory = spreadLeads(visibleCourses.filter((c) => courseStoryFor(c.id)), (c) => courseStoryFor(c.id).title);
           // An early learner sees only the stories open now (Mikey, pass LI): a locked row and a count of modules to go mean
           // nothing to a pre-reader, so the list shows what can be read today and nothing at all until something can.
@@ -8837,7 +8971,7 @@ function EduSphereScreens() {
                           <p style={{ margin: 0, fontWeight: 600 }}>{titleCase(cs.title)}</p>
                           <p style={{ margin: '2px 0 0', fontSize: 13, color: C.muted }}>{titleCase(c.title)}{unlocked ? (read ? ' · read' : '') : ` · ${left} ${left === 1 ? 'module' : 'modules'} to go`}</p>
                         </div>
-                        <Btn kind="secondary" disabled={!unlocked || busy} onClick={() => leaveOverviewTo(() => { if (record && !record.preview && !read) addEvent(makeStoryReadEvent(`course:${c.id}`, new Date().toISOString())); setCourseStoryId(c.id); setScreen('course-story'); })} style={{ padding: '8px 14px', minHeight: 38, fontSize: 14 }}>{unlocked ? (read ? 'Read again' : 'Read') : 'Locked'}</Btn>
+                        <Btn kind="secondary" halo={youngLearner && unlocked && !read} disabled={!unlocked || busy} onClick={() => leaveOverviewTo(() => { noteStoryOpen(`course:${c.id}`, 'shelf'); if (record && !record.preview && !read) addEvent(makeStoryReadEvent(`course:${c.id}`, new Date().toISOString())); setCourseStoryId(c.id); setScreen('course-story'); })} style={{ padding: '8px 14px', minHeight: 38, fontSize: 14 }}>{unlocked ? (read ? 'Read again' : 'Read') : 'Locked'}</Btn>
                       </div>
                     );
                   })}
@@ -9006,6 +9140,7 @@ function EduSphereScreens() {
         </div>
         <p style={{ margin: '0 0 4px', fontSize: 14, color: C.muted, textAlign: 'center' }}>The story of {cc ? cc.title : 'this course'}</p>
         <div className="edu-story-sheet"><StoryBody story={cs} /></div>
+        <div data-story-end="" aria-hidden="true" style={{ height: 1 }} />
         {/* The same way back at the end, so a reader who finished need not scroll to the top (Mikey, 2026-09-24). */}
         <p className="edu-no-print" style={{ textAlign: 'center', margin: '18px 0 6px' }}><button type="button" onClick={() => { pendingScroll.current = { screen: 'overview', y: overviewScroll.current }; setScreen('overview'); }} style={{ ...linkBtn, fontSize: 15 }}>Back to my courses</button></p>
       </div></div>
@@ -9019,6 +9154,7 @@ function EduSphereScreens() {
           <button type="button" onClick={() => window.print()} style={{ background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 13, cursor: 'pointer', padding: 0 }}>Print</button>
         </div>
         <div className="edu-story-sheet"><StoryBody story={storyFor(mod.id)} pace={storyPaceFor(mod)} /></div>
+        <div data-story-end="" aria-hidden="true" style={{ height: 1 }} />
         <div style={{ marginTop: 16 }}><Btn full onClick={startPractice}>Practice this</Btn></div>
       </div></div>
     );
@@ -9078,7 +9214,7 @@ function EduSphereScreens() {
         {/* Air between the Experiment link and the button below it (2026-09-23, Mikey). */}
         <div style={{ height: 22 }} />
         {storyFor(mod.id)
-          ? <Btn full onClick={() => { if (record && !record.preview && !record.events.some((e) => e.type === 'story_read' && e.moduleId === mod.id)) addEvent(makeStoryReadEvent(mod.id, new Date().toISOString())); setScreen('story'); }}>View story</Btn>
+          ? <Btn full onClick={() => { noteStoryOpen(mod.id, 'lesson'); if (record && !record.preview && !record.events.some((e) => e.type === 'story_read' && e.moduleId === mod.id)) addEvent(makeStoryReadEvent(mod.id, new Date().toISOString())); setScreen('story'); }}>View story</Btn>
           : <Btn full onClick={startPractice}>Practice this</Btn>}
         <p style={{ color: C.muted, fontSize: 13, marginTop: 48, textAlign: 'center' }}>Source: {mod.sources.join(' ')}</p>
         {tourPopup}
@@ -9157,7 +9293,7 @@ function EduSphereScreens() {
                 <button type="button" style={{ ...linkBtn }} onClick={() => setShowRequirements(true)}>Requirements</button>
               </div>
               {showRequirements && (
-                <div role="dialog" aria-label="Requirements" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: 'rgba(0,0,0,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, zIndex: 40 }} onClick={() => setShowRequirements(false)}>
+                <Overlay role="dialog" label="Requirements" bg="rgba(0,0,0,0.35)" z={40} onClick={() => setShowRequirements(false)}>
                   <div style={{ ...card, maxWidth: 520, width: '100%', maxHeight: '80vh', overflowY: 'auto' }} onClick={(e) => e.stopPropagation()}>
                     <p style={{ margin: '0 0 10px', fontWeight: 600, fontSize: 17 }}>Requirements</p>
                     <p style={{ margin: '0 0 10px', fontSize: 14, color: C.muted }}>Check each one against your work before you hand it in.</p>
@@ -9169,7 +9305,7 @@ function EduSphereScreens() {
                     ))}
                     <div style={{ textAlign: 'center', marginTop: 12 }}><Btn onClick={() => setShowRequirements(false)}>Done</Btn></div>
                   </div>
-                </div>
+                </Overlay>
               )}
             </div>
           ) : q.type === 'order' ? (
@@ -9399,7 +9535,7 @@ function EduSphereScreens() {
           )}
         </div>
         {courseDone && courseStoryFor(mod.courseId) && (
-          <div style={{ margin: '0 0 14px' }}><Btn full onClick={() => { if (record && !record.preview && !record.events.some((e) => e.type === 'story_read' && e.moduleId === `course:${mod.courseId}`)) addEvent(makeStoryReadEvent(`course:${mod.courseId}`, new Date().toISOString())); setCourseStoryId(mod.courseId); setScreen('course-story'); }}>Let's Read!</Btn></div>
+          <div style={{ margin: '0 0 14px' }}><Btn full onClick={() => { noteStoryOpen(`course:${mod.courseId}`, 'shelf'); if (record && !record.preview && !record.events.some((e) => e.type === 'story_read' && e.moduleId === `course:${mod.courseId}`)) addEvent(makeStoryReadEvent(`course:${mod.courseId}`, new Date().toISOString())); setCourseStoryId(mod.courseId); setScreen('course-story'); }}>Let's Read!</Btn></div>
         )}
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <span style={{ position: 'relative', display: 'inline-flex' }}>
@@ -9661,7 +9797,7 @@ function EduSphereScreens() {
                 <div key={r.moduleId} style={{ display: 'flex', gap: 10, alignItems: 'center', padding: '8px 0', borderTop: `1px solid ${C.line}` }}>
                   <StoryThumb serial={st.art} />
                   <div style={{ flex: 1, minWidth: 0 }}><p style={{ margin: 0, fontWeight: 600 }}>{st.title}</p><p style={{ margin: '1px 0 0', fontSize: 13, color: C.muted }}>{niceDateShort(r.at)}</p></div>
-                  <Btn kind="secondary" onClick={() => { setModuleId(r.moduleId); setScreen('story'); }} style={{ padding: '8px 14px', minHeight: 38, fontSize: 14 }}>Read again</Btn>
+                  <Btn kind="secondary" onClick={() => { noteStoryOpen(r.moduleId, 'shelf'); setModuleId(r.moduleId); setScreen('story'); }} style={{ padding: '8px 14px', minHeight: 38, fontSize: 14 }}>Read again</Btn>
                 </div>); })}
             </div>
           );
@@ -9757,6 +9893,10 @@ function EduSphereScreens() {
         <button type="button" onClick={() => setScreen('educator-pick')} style={{ ...linkBtn, marginBottom: 6 }}>Back</button>
         <h1 style={{ fontSize: 24, margin: '12px 0 4px', textAlign: 'center' }}>{lists ? 'Reading List Ideas' : 'Science Experiment Ideas'}</h1>
         <p style={{ color: C.muted, margin: '0 0 26px', fontSize: 15, textAlign: 'center' }}>{lists ? 'Here\'s a comprehensive list of books you might consider incorporating into your curriculum. Regular reading is fantastic for growing brains!' : 'Science is way more fun when it\'s tangible. Here are some ideas for every age group!'}</p>
+        {/* One line for every experiment (pass MB, the careful-parent read of all 116 early-years ideas, read again by the accuracy
+            and screen checks): it shows over every grade, so it speaks to every age first and then to the youngest, whom an inch
+            or two of water can drown (AAP), and the parts that need a grown-up's hands are named in each idea. */}
+        {!lists && <p data-experiments-safety="" style={{ color: C.muted, margin: '-14px 0 24px', fontSize: 14, textAlign: 'center', lineHeight: 1.5 }}>Read each idea through before you start, and keep a grown-up nearby. Young children do every idea with a grown-up beside them. Small things and balloons can choke a young child, and even an inch or two of water can drown one, so stay within arm's reach of any water and keep hot water in grown-up hands.</p>}
         {(lists ? [...gradesWithCourses(), 'grown'] : gradesWithCourses().filter((g) => experimentsFor(g).length)).map((g) => {
           const open = openResourceGrades.includes(g);
           const title = g === 'grown' ? 'For parents, educators and advanced readers' : gradeLabel(g);
@@ -9773,8 +9913,8 @@ function EduSphereScreens() {
               <div className="edu-collapsible" style={{ display: open ? 'block' : 'none', background: C.listBody, ...(C.mode === 'dark' ? { borderTop: `1px solid ${C.cardEdge}` } : {}), padding: '14px 18px' }}>
                 {lists
                   ? <ul style={{ margin: 0, paddingLeft: 20, fontSize: 15 }}>{readingListFor(g).map((t) => <li key={t} style={{ margin: '3px 0' }}>{t}</li>)}</ul>
-                  : experimentsFor(g).map((x) => (
-                    <div key={x.title} className="edu-experiment" style={C.mode === 'dark' ? { background: C.surface, border: `1px solid ${C.cardEdge}`, borderRadius: 12, padding: '12px 14px', margin: '0 0 12px' } : { borderTop: `1px solid rgba(26, 71, 58, 0.15)`, padding: '8px 0' }}>
+                  : experimentsFor(g).map((x, k) => (
+                    <div key={`${x.title}-${k}`} className="edu-experiment" style={C.mode === 'dark' ? { background: C.surface, border: `1px solid ${C.cardEdge}`, borderRadius: 12, padding: '12px 14px', margin: '0 0 12px' } : { borderTop: `1px solid rgba(26, 71, 58, 0.15)`, padding: '8px 0' }}>
                       <p style={{ margin: '0 0 2px', fontWeight: 600 }}>{x.title}</p>
                       <p style={{ margin: '0 0 4px', fontSize: 15 }}><strong>Ask first:</strong> {x.ask}</p>
                       <p style={{ margin: '0 0 4px', fontSize: 15 }}>{x.do}</p>
@@ -9897,7 +10037,7 @@ function EduSphereScreens() {
         {/* Reviewing one question opens over the page rather than pushing everything down.
             With a hundred questions to work through, expanding in place would mean endless scrolling. */}
         {reviewingQuestion && (
-          <div className="edu-no-print" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, overflowY: 'auto', padding: '24px 12px' }}>
+          <Overlay className="edu-no-print" sheet>
             <div style={{ maxWidth: 560, margin: '0 auto', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: 18, position: 'relative' }}>
               <button type="button" onClick={() => setReviewing(null)} aria-label="Close"
                 style={{ position: 'absolute', top: 8, right: 10, background: 'none', border: 'none', width: 36, height: 36, fontSize: 30, fontWeight: 400, lineHeight: '34px', cursor: 'pointer', color: C.ink, fontFamily: FONT, padding: 0 }}>×</button>
@@ -9977,7 +10117,7 @@ function EduSphereScreens() {
                 )}
               </div>
             </div>
-          </div>
+          </Overlay>
         )}
       </div></div>
     );
@@ -10389,8 +10529,8 @@ function EduSphereScreens() {
     // tour has not started yet, because it starts a moment later, so a tour that is about to start counts as running.
     const tourPending = !!(educator && !educator.tourSeen && !phoneScreen && !tourBegun.current);
     const backupNudgeOpen = !!(educator && backupAt === null && !backupNudgeSeen && tourStep < 0 && !tourPending);
-    const newsPopup = newsOpen && news && !backupNudgeOpen ? (
-      <div className="edu-no-print" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+    const newsPopup = newsOpen && news && !backupNudgeOpen && tourStep < 0 && !tourPending ? (
+      <Overlay className="edu-no-print">
         <div className="edu-rise" style={{ width: 'min(440px, 100%)', maxHeight: '85vh', overflowY: 'auto', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: '24px 22px', textAlign: 'center' }} role="dialog" aria-label="What's new">
           <p style={{ margin: '0 0 4px', fontSize: 19, fontWeight: 700 }}>What's new</p>
           <p style={{ margin: '0 0 14px', fontSize: 13, color: C.muted }}>{news.date}</p>
@@ -10399,7 +10539,7 @@ function EduSphereScreens() {
           <Btn onClick={dismissNews}>Got it</Btn>
           <p style={{ margin: '14px 0 0', textAlign: 'center' }}><button type="button" style={{ ...linkBtn, fontSize: 15 }} onClick={async () => { await dismissNews(); setScreen('whats-new'); }}>More Details</button></p>
         </div>
-      </div>
+      </Overlay>
     ) : null;
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
@@ -10419,7 +10559,7 @@ function EduSphereScreens() {
           );
         })()}
         {backupNudgeOpen && (
-          <div className="edu-no-print" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+          <Overlay className="edu-no-print">
             <div className="edu-rise" style={{ maxWidth: 420, width: '100%', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: 22, textAlign: 'center' }}>
               <p style={{ margin: '0 0 8px', fontSize: 18, fontWeight: 600 }}>Make your first backup soon</p>
               <p style={{ margin: '0 0 18px', fontSize: 15, color: C.muted }}>A forgotten PIN can only be reset with a backup file.</p>
@@ -10428,7 +10568,7 @@ function EduSphereScreens() {
                 <Btn full onClick={() => { setBackupNudgeSeen(true); setScreen('backup'); }}>Backup now</Btn>
               </div>
             </div>
-          </div>
+          </Overlay>
         )}
         <h1 style={{ fontSize: 24, margin: '26px 0 4px', textAlign: 'center' }}>My Classroom</h1>
         <p className="edu-classroom-intro" style={{ color: C.muted, marginTop: 0, fontSize: 15, textAlign: 'center' }}>
@@ -10461,7 +10601,7 @@ function EduSphereScreens() {
           </div>
         )}
         {adding && (
-          <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, overflowY: 'auto', padding: '24px 12px' }}>
+          <Overlay sheet>
             <div className="edu-rise" style={{ maxWidth: 560, margin: '0 auto', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: 22, position: 'relative', textAlign: 'center' }}>
               <button type="button" onClick={() => setAdding(false)} aria-label="Close"
                 style={{ position: 'absolute', top: 8, right: 10, background: 'none', border: 'none', width: 36, height: 36, fontSize: 30, lineHeight: '34px', cursor: 'pointer', color: C.ink, fontFamily: FONT, padding: 0 }}>×</button>
@@ -10549,7 +10689,7 @@ function EduSphereScreens() {
           }}>Add</Btn>
           {rosterError && <p style={{ color: C.clay, fontSize: 14, margin: '10px 0 0' }}>{rosterError}</p>}
             </div>
-          </div>
+          </Overlay>
         )}
 
         {visible.length === 0 && tourStep !== TOUR.length - 1 && <div style={{ ...card, background: C.greenSoft, borderColor: C.softEdge, textAlign: 'center' }}><p style={{ margin: 0, color: C.muted }}>Nobody here yet. Add someone above.</p></div>}
@@ -10658,7 +10798,7 @@ function EduSphereScreens() {
                   }} />
                 )}
                 {wonderPopupFor === st.id && (
-                  <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }} onClick={() => setWonderPopupFor(null)}>
+                  <Overlay onClick={() => setWonderPopupFor(null)}>
                     <div className="edu-rise" style={{ width: 'min(420px, 100%)', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: '26px 22px', textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
                       <p style={{ margin: '0 0 6px', fontSize: 19, fontWeight: 700 }}>Wonder Questions</p>
                       <p style={{ margin: '0 0 6px', fontSize: 15, color: C.muted }}>Currently: <strong style={{ color: wonderOnFor(st) ? C.green : C.ink }}>{wonderOnFor(st) ? 'On' : 'Off'}</strong></p>
@@ -10667,7 +10807,7 @@ function EduSphereScreens() {
                       <SegToggle size="big" options={[['on', 'On'], ['off', 'Off']]} value={wonderOnFor(st) ? 'on' : 'off'} onChange={(v) => applyRoster(setStudentWonder(roster, st.id, v === 'on'))} ariaLabel="Wonder Questions" />
                       <Btn kind="secondary" onClick={() => setWonderPopupFor(null)}>Close</Btn>
                     </div>
-                  </div>
+                  </Overlay>
                 )}
                 {pinFor === st.id && (
                   <div style={{ marginTop: 10, display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
@@ -10745,7 +10885,7 @@ function EduSphereScreens() {
             setConfirmDelete(null);
           };
           return (
-            <div role="dialog" aria-modal="true" onClick={() => setConfirmDelete(null)} style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 80, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
+            <Overlay role="dialog" modal="true" z={80} pad={20} onClick={() => setConfirmDelete(null)}>
               <div onClick={(e) => e.stopPropagation()} style={{ ...card, maxWidth: 420, width: '100%', textAlign: 'center', padding: 22, boxShadow: '0 12px 40px rgba(0,0,0,0.25)' }}>
                 <p style={{ margin: '0 0 8px', fontSize: 19, fontWeight: 700 }}>{all ? `Delete every record for all ${targets.length} inactive students?` : `Delete every record for ${targets[0].label}?`}</p>
                 <p style={{ margin: '0 0 18px', fontSize: 15, color: C.muted }}>Their history and progress leave this device for good. Old backup files still hold them.</p>
@@ -10754,7 +10894,7 @@ function EduSphereScreens() {
                   <Btn kind="secondary" onClick={() => setConfirmDelete(null)} style={{ minWidth: 140 }}>Keep</Btn>
                 </div>
               </div>
-            </div>
+            </Overlay>
           );
         })()}
         <RemembranceCard educator />
@@ -10932,7 +11072,7 @@ function EduSphereScreens() {
           );
         })}
         {openStory && (
-          <div className="edu-no-print edu-story-overlay" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 140, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: 16, overflowY: 'auto' }} onClick={(e) => { if (e.target === e.currentTarget) setOpenStoryId(null); }}>
+          <Overlay className="edu-no-print edu-story-overlay" z={140} start scroll onClick={(e) => { if (e.target === e.currentTarget) setOpenStoryId(null); }}>
             <div className="edu-rise edu-story-sheet" style={{ width: 'min(560px, 100%)', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: '18px 18px 22px', position: 'relative', marginTop: 12 }} role="dialog" aria-label={openStory.title}>
               <button type="button" onClick={() => setOpenStoryId(null)} aria-label="Close" style={{ position: 'absolute', top: 8, right: 10, background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 26, cursor: 'pointer', lineHeight: 1 }}>×</button>
               <p style={{ margin: '0 0 2px' }}>
@@ -10948,7 +11088,7 @@ function EduSphereScreens() {
               )}
               <StoryBody story={openStory} pace={String(openStoryId).startsWith('course:') ? null : storyPaceFor(getModule(openStoryId))} />
             </div>
-          </div>
+          </Overlay>
         )}
         {/* A printable story book per course (2026-09-23, Mikey): every module story in order, the long story last, one story a page. */}
         {(() => {
@@ -11412,7 +11552,7 @@ function EduSphereScreens() {
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <button type="button" onClick={() => setScreen('educator-pick')} style={{ ...linkBtn }}>Back to Classroom</button>
         <h1 style={{ fontSize: 26, margin: '10px 0 26px', textAlign: 'center' }}>{keepTogether(shownName)}</h1>
-        {since && (since.attempts || since.mastered.length || since.stories || since.colored) ? (
+        {since && (since.attempts || since.mastered.length || since.stories || since.colored || since.played) ? (
           <p style={{ margin: '0 0 14px', fontSize: 14, color: C.muted, textAlign: 'center' }}>
             Since you last looked: {sinceLine(since)}.<br />({niceDateShort(reportOpenedFrom)})
           </p>
@@ -11483,8 +11623,16 @@ function EduSphereScreens() {
                       {first.length > 0 && second.length > 0 && <div aria-hidden="true" data-summary-rule="" style={{ width: 120, height: 1, background: C.line, opacity: 0.7, margin: '14px auto' }} />}
                       {second.length > 0 && <div>{second.map((line) => <p key={line} style={{ margin: '2px 0' }}>{line}</p>)}</div>}
                     </div>); })()}
-                  {rep.coloringBreaks > 0 && <div aria-hidden="true" data-summary-rule="" style={{ width: 120, height: 1, background: C.line, opacity: 0.7, margin: '14px auto' }} />}
-                  {rep.coloringBreaks > 0 && <p style={{ margin: '0 0 6px', fontSize: 15, color: C.muted, textAlign: 'center' }}>Coloring breaks taken: {rep.coloringBreaks}. Coloring is play; it is never marked and never appears on the transcript.</p>}
+                  {/* Play and reading (pass MB, Mikey): the coloring line, then game breaks and elective stories in his words, each under
+                      the same short faint rule, each only when it has something to count (summaryPlayLines in logic.mjs). */}
+                  {summaryPlayLines(rep).map((line) => (
+                    <React.Fragment key={line.key}>
+                      <div aria-hidden="true" data-summary-rule="" style={{ width: 120, height: 1, background: C.line, opacity: 0.7, margin: '14px auto' }} />
+                      {/* The student's name never breaks across two lines (S-55 split at its hyphen at phone width): it sits in a span
+                          that does not wrap, so copying or searching the report still finds the name as typed. */}
+                      <p data-summary-play={line.key} style={{ margin: '0 0 6px', fontSize: 15, color: C.muted, textAlign: 'center' }}>{(rep.learnerName ? line.text.split(rep.learnerName) : [line.text]).map((part, k) => <React.Fragment key={k}>{k > 0 && <span data-summary-name="" style={{ whiteSpace: 'nowrap' }}>{rep.learnerName}</span>}{part}</React.Fragment>)}</p>
+                    </React.Fragment>
+                  ))}
                   {parts.tried && parts.tried.length > 0 && (
                     <div style={{ margin: '30px 0 0' }}>
                       <p style={{ margin: '0 0 6px', fontSize: 16, lineHeight: 1.6, textAlign: 'center', fontWeight: 600 }}>Tried but not passed yet:</p>
@@ -11526,7 +11674,7 @@ function EduSphereScreens() {
               student receives human sexuality instruction (Texas Education Code §28.004(i-2)), so the course is assigned only when the
               educator confirms that consent; Cancel leaves it unassigned. */}
           {consentAsk && (
-            <div role="dialog" aria-modal="true" aria-label="Consent required" className="edu-no-print" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 120, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+            <Overlay role="dialog" modal="true" label="Consent required" className="edu-no-print" z={120}>
               <div className="edu-rise" style={{ maxWidth: 440, width: '100%', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: 22, textAlign: 'center' }}>
                 <p style={{ margin: '0 0 8px', fontSize: 18, fontWeight: 700 }}>A parent's consent comes first</p>
                 <p style={{ margin: '0 0 16px', fontSize: 15, lineHeight: 1.55 }}>{consentAsk.title} is human sexuality instruction. Texas requires schools to get a parent's written consent before a student receives it (Texas Education Code §28.004). Assign it only with a parent's consent.</p>
@@ -11535,7 +11683,7 @@ function EduSphereScreens() {
                   <button type="button" onClick={() => setConsentAsk(null)} style={{ fontFamily: FONT, fontSize: 15, fontWeight: 700, padding: '10px 16px', borderRadius: 10, border: `2px solid ${C.green}`, background: 'transparent', color: C.ink, cursor: 'pointer' }}>Cancel</button>
                 </div>
               </div>
-            </div>
+            </Overlay>
           )}
           <ClearableInput value={courseQuery} onChange={(e) => setCourseQuery(e.target.value)} onClear={() => setCourseQuery('')} placeholder="Search courses, for example: grade 1 math, kinder, fractions" aria-label="Search courses"
             style={{ fontFamily: FONT, fontSize: 15, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10, background: C.surface, color: C.ink, WebkitTextFillColor: C.ink, caretColor: C.ink, textAlign: 'center' }} />
@@ -11613,7 +11761,7 @@ function EduSphereScreens() {
           <p style={{ margin: '10px 0 0', fontSize: 13, color: C.muted, textAlign: 'center' }}>Switching a course off hides it from the student. Their progress is kept.</p>
           {coursePreview && getCourse(coursePreview) && (
             // A course previewed before it is assigned (2026-09-29, Mikey): every module with its one-line description.
-            <div style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }} onClick={() => setCoursePreview(null)}>
+            <Overlay onClick={() => setCoursePreview(null)}>
               <div className="edu-rise" role="dialog" aria-label="Course preview" style={{ width: 'min(520px, 100%)', maxHeight: '86vh', overflowY: 'auto', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: '22px 22px 18px' }} onClick={(e) => e.stopPropagation()}>
                 <p style={{ margin: '0 0 2px', fontSize: 19, fontWeight: 700, textAlign: 'center' }}>{getCourse(coursePreview).title}</p>
                 <p style={{ margin: '0 0 14px', fontSize: 14, color: C.muted, textAlign: 'center' }}>{courseGradeLabel(getCourse(coursePreview))} · {getCourse(coursePreview).subject} · {getCourse(coursePreview).modules.length} {getCourse(coursePreview).modules.length === 1 ? 'module' : 'modules'}</p>
@@ -11627,7 +11775,7 @@ function EduSphereScreens() {
                 </ol>
                 <div style={{ textAlign: 'center', marginTop: 16 }}><Btn kind="secondary" onClick={() => setCoursePreview(null)}>Close</Btn></div>
               </div>
-            </div>
+            </Overlay>
           )}
         </div>
 
@@ -11694,7 +11842,7 @@ function EduSphereScreens() {
         })}
 
         {storyModule && (
-          <div className="edu-no-print" style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: C.scrim, zIndex: 100, overflowY: 'auto', padding: '24px 12px' }}>
+          <Overlay className="edu-no-print" sheet>
             <div className="edu-rise" style={{ maxWidth: 560, margin: '0 auto', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: 18, position: 'relative' }}>
               <button type="button" onClick={() => setStoryModule(null)} aria-label="Close"
                 style={{ position: 'absolute', top: 8, right: 10, background: 'none', border: 'none', width: 36, height: 36, fontSize: 30, lineHeight: '34px', cursor: 'pointer', color: C.ink, fontFamily: FONT, padding: 0 }}>×</button>
@@ -11711,7 +11859,7 @@ function EduSphereScreens() {
                 );
               })()}
             </div>
-          </div>
+          </Overlay>
         )}
 
         {LICENSING_ON && !educatorRecord.preview && roster && findStudent(roster, educatorRecord.name) && (

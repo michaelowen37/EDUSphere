@@ -5,6 +5,8 @@ import * as L from '../src/logic.mjs';
 import { briefNews, recentNews } from '../tools/whats-new.mjs'; // What's new short notes and history (pass HL)
 
 let pass = 0, fail = 0;
+// The choice token a shown shape picture would have (pass MB): Circle and Square's same-shape kind must offer another look.
+const csTokenOf = (v) => (v && v.kind === 'shape' ? (v.variant ? `shape:${v.name}~${v.variant}` : `shape:${v.name}`) : '');
 const ok = (label, cond, detail = '') => { console.log((cond ? 'PASS' : 'FAIL') + ' - ' + label + (cond ? '' : '  ' + detail)); cond ? pass++ : fail++; };
 const val = (s) => { const [n, d] = s.split('/').map(Number); return n / d; }; // independent fraction value
 
@@ -214,6 +216,38 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'p3-animal-says' && q.answer !== lsSounds[q.prompt.match(/the (\w+) say/)[1]]) problems.push('animal says wrong');
     if (genId === 'p3-animal-sound' && lsSounds[String(q.answer).replace('pic:', '')] !== q.prompt.match(/says (\w+)\./)[1]) problems.push('animal sound wrong');
     if (genId === 'p3-tap-picture' && q.answer !== 'icon:' + q.prompt.match(/Tap the (\w+)\./)[1]) problems.push('picture wrong');
+    // Listen and Point (pass MB): every bank re-derived from its words and pictures with tables of the test's own (the lesson
+    // brief found five of the course's eight kinds had none).
+    { const mbShape = (c) => String(c).replace(/^(?:item|shape|icon):/, '').split(/[-~#]/)[0];
+      const mbOthers = (q.choices || []).filter((c) => c !== q.answer);
+      const ROUND = ['ball', 'plate']; const CORNERS = ['block', 'window'];
+      if (genId === 'p3-tap-shape') { const want = (q.prompt.match(/^Tap the (circle|square)\.$/) || [])[1]; if (!want || mbShape(q.answer) !== want || mbOthers.some((c) => mbShape(c) === want)) problems.push('tap shape wrong'); }
+      if (genId === 'p3-name-shape' && (q.answer !== q.visual.name || !['circle', 'square'].includes(q.answer))) problems.push('name shape wrong');
+      if (genId === 'p3-shape-by-corners') { const want = /four corners/.test(q.prompt) ? 'square' : 'circle'; if (mbShape(q.answer) !== want || mbOthers.some((c) => mbShape(c) === want)) problems.push('shape by corners wrong'); }
+      if (genId === 'p3-shape-thing') { const a = mbShape(q.answer); const w = mbShape(mbOthers[0]); const round = /round like a circle/.test(q.prompt); const corners = /corners like a square/.test(q.prompt); const rolls = /rolls\.$/.test(q.prompt);
+        if ((round && (!ROUND.includes(a) || ROUND.includes(w))) || (corners && (!CORNERS.includes(a) || CORNERS.includes(w))) || (rolls && (a !== 'ball' || w === 'ball' || w === 'plate')) || (!round && !corners && !rolls)) problems.push('shape thing wrong'); }
+      if (genId === 'p3-same-shape-any-size') { if (mbShape(q.answer) !== q.visual.name || mbShape(mbOthers[0]) === q.visual.name || q.answer === csTokenOf(q.visual)) problems.push('same shape wrong'); }
+      if (genId === 'p3-tap-ab' && q.answer !== (q.prompt.match(/^Tap the letter ([AB])\.$/) || [])[1]) problems.push('tap letter wrong');
+      if (genId === 'p3-name-ab' && q.answer !== q.visual.text.charAt(0).toUpperCase()) problems.push('name letter wrong');
+      if (genId === 'p3-odd-one') { const shown = `item:${q.visual.shape}-${q.visual.colour}`; if (q.answer === shown || mbOthers[0] !== shown || q.visual.size !== 64 || mbShape(q.answer) === q.visual.shape || String(q.answer).split('-')[1] === q.visual.colour) problems.push('odd one wrong'); }
+      if (['p3-odd-color', 'p3-odd-shape', 'p3-odd-size'].includes(genId)) {
+        const base = (c) => String(c).split('#')[0].replace(/^item:/, ''); const same = mbOthers.map(base);
+        const [as, ac, az] = base(q.answer).split('-'); const [ss, sc, sz] = (same[0] || '').split('-');
+        const by = { 'p3-odd-color': 'color', 'p3-odd-shape': 'shape', 'p3-odd-size': 'size' }[genId];
+        const differs = { shape: as !== ss, color: ac !== sc, size: (az || '') !== (sz || '') };
+        if (same.length !== 2 || same[0] !== same[1] || !differs[by] || Object.entries(differs).some(([k, v]) => k !== by && v)) problems.push('odd by ' + by + ' wrong');
+        if (by === 'color' && [ac, sc].sort().join() === 'green,red') problems.push('red against green'); }
+      if (genId === 'p3-sort-out') { const ac = String(q.answer).split('-')[1]; if (ac === q.visual.colour || String(mbOthers[0]).split('-')[1] !== q.visual.colour || mbShape(q.answer) !== mbShape(mbOthers[0])) problems.push('sort out wrong'); }
+      if (genId === 'p3-tap-by-clue') { const T = { 'shines in the day': 'sun', 'swims in the water': 'fish', 'grows tall, with a trunk': 'tree', 'grows on a plant': 'flower', 'we drink from': 'cup', 'floats high in the sky': 'cloud', 'falls from the clouds': 'rain', 'has wings': 'bird', 'we cut into slices to eat': 'pizza' };
+        const clue = q.prompt.replace(/^Tap the one (that )?/, '').replace(/\.$/, ''); const want = T[clue];
+        if (!want || q.answer !== 'icon:' + want || mbOthers.includes('icon:' + want) || (/sky/.test(clue) && mbOthers.some((c) => ['icon:sun', 'icon:moon', 'icon:bird'].includes(c))) || (/shines/.test(clue) && mbOthers.includes('icon:moon')) || (/slices/.test(clue) && mbOthers.some((c) => ['icon:fish', 'icon:bird'].includes(c)))) problems.push('tap by clue wrong'); }
+      if (genId === 'p3-up-or-down') { const up = /up in the sky/.test(q.prompt); const SKY = ['icon:sun', 'icon:moon', 'icon:cloud'];
+        if (up ? (!SKY.includes(q.answer) || mbOthers.some((c) => SKY.includes(c) || ['icon:bird', 'icon:rain', 'icon:tree'].includes(c))) : (q.answer !== 'icon:fish' || mbOthers.some((c) => ['icon:rain', 'icon:cup', 'icon:fish', 'icon:bird', 'icon:flower'].includes(c)))) problems.push('up or down wrong'); }
+      if (genId === 'p3-animal-order') { const m = (q.story || '').match(/^Listen\. (\w+), then (\w+)\.$/); const w = (q.prompt.match(/hear (first|second)\?$/) || [])[1];
+        if (!m || !w || lsSounds[String(q.answer).replace('pic:', '')] !== (w === 'first' ? m[1].toLowerCase() : m[2])) problems.push('animal order wrong'); }
+      if (genId === 'p3-two-at-once') { const ws = (q.prompt.match(/says (\w+)\.$/) || [])[1];
+        if (lsSounds[String(q.answer).replace('pic:', '')] !== ws || !q.choices.every((c) => (q.story || '').includes(lsSounds[c.replace('pic:', '')])) || q.choices.includes('pic:bear')) problems.push('two at once wrong'); }
+    }
     // Very First Steps (pass LN): sizes, dots and colors re-derived from the tokens.
     const lnRank = { small: 1, medium: 2, big: 3 }; const lnRankOf = (c) => lnRank[String(c).split(':')[2]]; const lnDots = (c) => Number(String(c).split(':')[1]);
     if (genId === 'pk3-tap-middle' && !String(q.answer).endsWith(':medium')) problems.push('middle size wrong');
@@ -267,7 +301,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'p3-same-number') { const n = q.visual.items.length; const wrongs = q.choices.filter((c) => c !== q.answer); if (q.answer !== `dots:${n}` || n < 2 || n > 5 || wrongs.length !== 1 || lnDots(wrongs[0]) === n || lnDots(wrongs[0]) < 1 || lnDots(wrongs[0]) > 5 || !q.visual.items.every((x) => x === q.visual.items[0]) || !q.prompt.includes(q.visual.items[0])) problems.push('same number wrong'); }
     const maItem = (c) => { const m = /^item:([a-z]+)-([a-z]+)$/.exec(String(c)); return m ? { shape: m[1], colour: m[2] } : null; };
     if (genId === 'p3-sort-red-blue' || genId === 'p3-sort-yellow-green') { const two = genId === 'p3-sort-red-blue' ? ['red', 'blue'] : ['yellow', 'green']; const [x, y] = q.choices.map(maItem); const ans = maItem(q.answer); if (!x || !y || x.shape !== y.shape || x.colour === y.colour || ans.colour !== q.visual.colour || !two.includes(x.colour) || !two.includes(y.colour)) problems.push('sort by color wrong'); }
-    if (genId === 'p3-find-match') { const ans = maItem(q.answer); const w = maItem(q.choices.find((c) => c !== q.answer)); const differs = Number(ans.shape !== w.shape) + Number(ans.colour !== w.colour); if (ans.shape !== q.visual.shape || ans.colour !== q.visual.colour || differs !== 1) problems.push('find the match wrong'); }
+    if (genId === 'p3-find-match') { const ans = maItem(q.answer); const w = maItem(q.choices.find((c) => c !== q.answer)); const differs = Number(ans.shape !== w.shape) + Number(ans.colour !== w.colour); if (ans.shape !== q.visual.shape || ans.colour !== q.visual.colour || differs !== 1) problems.push('find the match wrong'); if (ans.shape === w.shape && [ans.colour, w.colour].sort().join() === 'green,red') problems.push('red against green, the only difference (pass MB)'); }
     // Yellow or green (the code check): the prompt names the color, and the shape when there is one; the answer is that thing,
     // and the only other choice is the same thing in the other color.
     if (genId === 'p3-tap-yellow-green') { const m = /^Tap the (yellow|green)(?: (circle|square|triangle))?(?: one)?\.$/.exec(q.prompt); const other = m && (m[1] === 'yellow' ? 'green' : 'yellow'); const want = m && (m[2] ? `item:${m[2]}-${m[1]}` : `swatch:${m[1]}`); const alt = m && (m[2] ? `item:${m[2]}-${other}` : `swatch:${other}`); if (!m || q.answer !== want || q.choices.length !== 2 || !q.choices.includes(want) || !q.choices.includes(alt)) problems.push('yellow or green wrong'); }
@@ -1221,11 +1255,81 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
     ok('coloring breaks are counted for the report', L.coloringBreaks(ev) === 2 && L.buildReport('S-8', ev).coloringBreaks === 2);
     ok('a coloring break is no kind of progress', L.deriveProgress(ev).masteredIds.length === 0 && L.deriveProgress(ev).passedIds.length === 0 && L.buildReport('S-8', ev).totalAttempts === 0);
     ok('the transcript never mentions coloring', !JSON.stringify(L.buildTranscript('S-8', ev)).toLowerCase().includes('color')); }
+  // Game breaks and elective stories (pass MB, Mikey): a game session leaves a played event the way a coloring break does, a
+  // story read to its end again leaves a story_reread, and the report's summary carries his words for both under the coloring line.
+  { const t = (h) => `2026-09-16T${String(h).padStart(2, '0')}:00:00.000Z`;
+    const n = L.moduleRules('count-to-5').questions;
+    const pass = (at) => ({ type: 'attempt_completed', at, startedAt: at, moduleId: 'count-to-5', seed: 1, core: Array.from({ length: n }, () => ({ correct: true, timeMs: 9000 })), review: null, coreCorrect: n, coreTotal: n });
+    const base = [L.makeCoursesEnabledEvent(['counting-k'], t(8)), L.makeColoredEvent('house', t(9)), L.makePlayedEvent('dots-house', t(9)), L.makePlayedEvent('dots-kite', t(10))];
+    ok('game breaks are counted for the report, and are no kind of progress and never on the transcript', L.gameBreaks(base) === 2 && L.buildReport('S-8', base).gameBreaks === 2 && L.coloringBreaks(base) === 1 && L.deriveProgress(base).masteredIds.length === 0 && !JSON.stringify(L.buildTranscript('S-8', base)).toLowerCase().includes('play'));
+    ok('a first read is never elective, from a shelf or a lesson', !L.rereadIsElective(base, 'count-to-5', 'shelf') && !L.rereadIsElective(base, 'count-to-5', 'lesson') && !L.rereadIsElective(base, 'course:counting-k', 'shelf'));
+    const read = [...base, L.makeStoryReadEvent('count-to-5', t(11)), L.makeStoryReadEvent('course:counting-k', t(11))];
+    ok('a later read from a shelf is elective, and a course story always is', L.rereadIsElective(read, 'count-to-5', 'shelf') && L.rereadIsElective(read, 'course:counting-k', 'shelf') && L.rereadIsElective(read, 'course:counting-k', 'lesson'));
+    const mastered = [...read, pass('2026-09-14T10:00:00.000Z'), pass('2026-09-15T10:00:00.000Z')].sort((a, b) => String(a.at).localeCompare(String(b.at)));
+    ok('a later read on the way to practice counts only once the lesson is mastered', L.deriveProgress(mastered).masteredIds.includes('count-to-5') && !L.rereadIsElective(read, 'count-to-5', 'lesson') && L.rereadIsElective(mastered, 'count-to-5', 'lesson'));
+    // A lesson a Quick Review reopened asks for its story again ("story and all"), so a read from its lesson is not elective.
+    { const early = [L.makeCoursesEnabledEvent(['counting-k'], '2026-07-01T08:00:00.000Z'), L.makeStoryReadEvent('count-to-5', '2026-07-01T09:00:00.000Z'), pass('2026-07-01T10:00:00.000Z'), pass('2026-07-02T10:00:00.000Z')];
+      const review = L.buildLightReview(early, 9, { moduleId: 'count-to-5', stage: 'first', missedKinds: [] });
+      const reopened = review ? [...early, L.makeLightReviewEvent(review, [1, 0, 0, 0, 0].map((c) => ({ correct: !!c })), '2026-07-30T10:00:00.000Z', '2026-07-30T10:02:00.000Z')] : early;
+      ok('a lesson reopened by a Quick Review takes its story as asked, not elective', !!review && L.reviewingIds(reopened).includes('count-to-5') && !L.rereadIsElective(reopened, 'count-to-5', 'lesson') && L.rereadIsElective(reopened, 'count-to-5', 'shelf')); }
+    // A loop back sends the student to the lesson before, story and all, until it is passed again: that read is asked for.
+    { const pre = L.prerequisitesOf('count-to-10'); const A = pre[pre.length - 1]; const nA = L.moduleRules(A).questions; const n10 = L.moduleRules('count-to-10').questions;
+      const r = (id, at, right, k) => ({ type: 'attempt_completed', at, startedAt: at, moduleId: id, seed: 1, core: Array.from({ length: k }, (_, i) => ({ correct: i < right, timeMs: 9000 })), review: null, coreCorrect: right, coreTotal: k });
+      const ev = [L.makeCoursesEnabledEvent(['counting-k'], '2026-09-01T08:00:00.000Z'), L.makeStoryReadEvent(A, '2026-09-01T09:00:00.000Z'), r(A, '2026-09-01T10:00:00.000Z', nA, nA), r(A, '2026-09-02T10:00:00.000Z', nA, nA), r('count-to-10', '2026-09-03T10:00:00.000Z', 0, n10), r('count-to-10', '2026-09-03T11:00:00.000Z', 0, n10), L.makeLoopBackEvent('count-to-10', A, '2026-09-03T12:00:00.000Z')];
+      ok('a lesson a loop back sends the student to takes its story as asked, until it is passed again', L.loopBackTarget(ev.slice(0, -1), 'count-to-10') === A && !L.rereadIsElective(ev, A, 'lesson') && L.rereadIsElective(ev, A, 'shelf') && L.rereadIsElective([...ev, r(A, '2026-09-03T13:00:00.000Z', nA, nA)], A, 'lesson')); }
+    ok('Since you last looked counts game breaks beside pictures', L.changesSince(base, t(8)).played === 2);
+    const full = [...mastered, L.makeStoryRereadEvent('count-to-5', t(13)), L.makeStoryRereadEvent('course:counting-k', t(14)), L.makeStoryRereadEvent('count-to-5', t(15))];
+    const lines = L.summaryPlayLines(L.buildReport('S-8', full));
+    ok("the summary's play lines are the coloring line, then Mikey's game and story lines, word for word", lines.map((x) => x.key).join() === 'coloring,games,stories'
+      && lines[0].text === 'Coloring breaks taken: 1. Coloring is play; it is never marked and never appears on the transcript.'
+      && lines[1].text === "Game breaks taken: 2. Playing is still learning as concepts are woven into objectives but these are never marked on a student's transcript."
+      && lines[2].text === "Elective stories: 3. Every module pairs with a short story and every course with a long. After these stories unlock, they're available to re-read. 3 represents how many times S-8 has read through a story more times than required.", lines);
+    ok('a play or reading line with nothing to count is left out', L.summaryPlayLines(L.buildReport('S-8', [L.makeCoursesEnabledEvent(['counting-k'], t(8))])).length === 0 && L.summaryPlayLines(L.buildReport('S-8', base)).map((x) => x.key).join() === 'coloring,games');
+    ok('a story is read to its end and open a while before it counts', L.STORY_REREAD_SECONDS >= 10);
+    // Every read to the end of a story read before is logged as a fact, where it was opened and when (pass MB, the code check's
+    // second read); whether it was more than required is worked out from the log as it stood when the story was opened, so a read
+    // from a lesson not yet mastered is in the log and never counted, and the same read after mastery counts.
+    { const d = (day, h) => `2026-09-${String(day).padStart(2, '0')}T${String(h).padStart(2, '0')}:00:00.000Z`;
+      const ev = [L.makeCoursesEnabledEvent(['counting-k'], d(10, 8)), L.makeStoryReadEvent('count-to-5', d(10, 9)), L.makeStoryRereadEvent('count-to-5', d(10, 11), 'lesson', d(10, 10)),
+        pass(d(11, 10)), pass(d(12, 10)), L.makeStoryRereadEvent('count-to-5', d(13, 11), 'lesson', d(13, 10))];
+      ok('a read from a lesson before it is mastered is logged and not counted, and one after mastery counts', ev.filter((e) => e.type === 'story_reread').length === 2 && L.electiveStoryReads(ev) === 1 && L.electiveStoryReads(ev.slice(0, 3)) === 0 && ev[2].from === 'lesson' && ev[2].openedAt === d(10, 10)); }
+    // Where a story is opened from is what the count rests on, so the screens are read too (the screen check's second read): the
+    // lesson's View story notes 'lesson', and every shelf (Let's Read, My Stories, a finished course's Let's Read!) notes 'shelf'.
+    { const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8'); const calls = [...ui.matchAll(/noteStoryOpen\(([^,]+), '(\w+)'\)/g)].map((m) => [m[1], m[2]]);
+      ok("a lesson's View story notes its story as opened from the lesson, and every shelf as from a shelf", calls.filter(([, f]) => f === 'lesson').map(([id]) => id).join() === 'mod.id' && calls.filter(([, f]) => f === 'shelf').length >= 4 && calls.every(([, f]) => ['lesson', 'shelf'].includes(f)), calls); }
+    ok('the weekly note counts the games beside the coloring', /S-8 colored a picture\./.test(L.weeklyNote('S-8', base, t(18))) && /S-8 played 2 games\./.test(L.weeklyNote('S-8', base, t(18)))); }
   // Pre-K is grouped by skill on the student's screen; every skill named is one the order knows.
   { const preK = L.COURSES.filter((c) => c.grade === 'PK3' || c.grade === 'PK4').flatMap((c) => c.modules);
     ok('every pre-K module names the skill it practises', preK.every((m) => m.skill && L.SKILL_ORDER.includes(m.skill)));
     const preKIds = new Set(preK.map((m) => m.id));
     ok('no other module carries a skill label', !L.MODULES.filter((m) => !preKIds.has(m.id)).some((m) => m.skill)); }
+  // Every full-screen pop-up is one Overlay (pass MB, the alignment read): a hand-made fixed box centers in a page-tall frame and
+  // follows the page as it scrolls on educator screens, and thirteen were missed once, so a full-screen fixed style (all four
+  // sides at 0, in any order, or inset 0) anywhere but inside Overlay fails here.
+  { const uiSrc = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+    const start = uiSrc.indexOf('function Overlay('); const end = start < 0 ? -1 : uiSrc.indexOf('\nfunction ', start + 1);
+    const full = [...uiSrc.matchAll(/position: 'fixed'/g)].filter((m) => { const body = uiSrc.slice(uiSrc.lastIndexOf('{', m.index), uiSrc.indexOf('}', m.index));
+      return /\binset: 0\b/.test(body) || ['top', 'right', 'bottom', 'left'].every((side) => new RegExp(`\\b${side}: 0\\b`).test(body)); });
+    const outside = full.filter((m) => m.index < start || m.index > end).map((m) => uiSrc.slice(0, m.index).split('\n').length);
+    ok('every full-screen pop-up is drawn by Overlay, never by a fixed box of its own (pass MB)', start > 0 && full.length >= 1 && outside.length === 0, `full-screen fixed styles outside Overlay at lines ${outside.join(', ')}`); }
+  // Experiments for the youngest (pass MB, the accuracy check read all 116 early-years ideas as a careful parent would): the
+  // Science Experiment Ideas page keeps its safety line, and no pre-K 3 idea uses something a three-year-old can choke on (the
+  // AAP's choking list and the CPSC small-parts cylinder; foods such as nuts, grapes and popcorn stay away until four).
+  { const uiSrc = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+    ok('the Science Experiment Ideas page keeps its safety line: balloons and small things can choke, and an inch or two of water can drown (pass MB)', /data-experiments-safety[^>]*>[^<]*balloons can choke[^<]*inch or two of water/.test(uiSrc));
+    const choke = /\b(coins?|pennies|penny|buttons?|corks?|pebbles?|marbles?|beads?|raisins?|grapes?|popcorn|peanuts?|nuts?|balloons?|small toys?)\b/i;
+    const bad = L.experimentsFor('PK3').filter((e) => choke.test([e.title, e.ask, e.do, e.see, e.tell].filter(Boolean).join(' '))).map((e) => e.title);
+    ok('no pre-K 3 experiment uses something a three-year-old can choke on (pass MB; AAP, CPSC)', L.experimentsFor('PK3').length >= 20 && bad.length === 0, bad.join(', ')); }
+  // Red against green, every pre-K 3 kind (pass MB, the alignment read's second read): where only the color tells a wrong choice
+  // from the answer, the two are never red and green, the most common color vision deficiency (MedlinePlus). Every pre-K 3
+  // generator is sampled, so a new kind is held too; a question that asks for a color by its name is exempt (RULES-AUDIT 6).
+  { const strip = (x) => String(x).replace(/red|green|blue|yellow/g, 'C').split('#')[0];
+    const gens = [...new Set(L.COURSES.filter((c) => c.grade === 'PK3').flatMap((c) => c.modules).flatMap((m) => m.generators))];
+    const bad = gens.filter((g) => { for (let s = 1; s <= 300; s += 1) { const q = L.generateQuestion(g, s);
+      if (/\b(red|blue|yellow|green)\b|what color/i.test(q.prompt || '')) continue;
+      const a = String(q.answer); const ac = (a.match(/red|green/) || [])[0]; if (!ac) continue;
+      if ((q.choices || []).some((w) => w !== a && strip(w) === strip(a) && /red|green/.test(w) && !w.includes(ac))) return true; } return false; });
+    ok('no pre-K 3 kind sets red against green where color alone decides (pass MB; asking for a color by its name is exempt)', gens.length >= 40 && bad.length === 0, bad.join(', ')); }
   ok('an elective is never recommended, only offered under other courses', !L.recommendedCourseIds([L.makeCoursesEnabledEvent([], 't')], 'elementary').some((id) => L.getCourse(id).elective) && L.COURSES.some((c) => c.elective));
   ok('a high school student starts on the grade 9 courses', JSON.stringify(L.recommendedCourseIds([L.makeCoursesEnabledEvent([], 't')], 'high')) === '["history-9","math-9","reading-9","science-9","writing-9"]');
   ok('the letters course and now the counting course both have a touch module', L.courseNeedsTouch('letters-k') === true && L.courseNeedsTouch('counting-k') === true && L.courseNeedsTouch('fractions-intro') === false);
@@ -1492,6 +1596,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('each row names what the student should do next', rows.every((r) => typeof r.next === 'string'));
   ok('the summary explains the order, then counts', L.classSummary(rows).startsWith('Students on top could use a bit more guidance than those on bottom.') && L.classSummary(rows).endsWith('\n1 student needs help now (S-1). 1 student worth keeping an eye on. 1 on track.'));
   ok('an empty class says so', L.classSummary([]) === 'No students yet.');
+  ok("Who Needs Help explains its order in Mikey's words, word for word (pass MB)", L.classSummary(rows).startsWith('Students on top could use a bit more guidance than those on bottom. Guessing, low confidence, multiple failed attempts and unusually slow progression pushes a student higher up the list.\n'));
   ok('September 11 and Veterans Day are remembered in any year, and ordinary days are not', L.remembranceFor('2026-09-11').id === 'september-11' && L.remembranceFor('2031-11-11').id === 'veterans-day' && !L.isRemembranceDay('2026-09-12') && !L.isRemembranceDay('2026-11-09'));
   ok('Memorial Day is the last Monday of May', L.remembranceFor('2026-05-25').id === 'memorial-day' && L.remembranceFor('2027-05-31').id === 'memorial-day' && !L.isRemembranceDay('2026-05-18') && !L.isRemembranceDay('2026-05-26'));
   ok('every remembrance card has a title and three or four plain lines', L.REMEMBRANCE_DAYS.every((d) => d.title && d.lines.length >= 3 && d.lines.length <= 4 && d.lines.every((l) => l.length > 30)));   // four lines in Mikey's words (2026-09-23)
@@ -1658,6 +1763,17 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   const deckBad = Object.entries(L.RULE_DECKS).flatMap(([id, d]) => [...(d.a.items.length < 4 || d.b.items.length < 4 ? [`${id} is short`] : []), ...d.a.items.filter((x) => d.b.items.includes(x)).map((x) => `${id} has ${x} in both`), ...[...d.a.items, ...d.b.items].filter((x) => !/^shape:/.test(x) && x.length > 11).map((x) => `${id}: ${x} is too long`)]);
   ok('every rule deck has two clean groups of short chips', deckBad.length === 0, deckBad.join(', '));
   ok('every rule game names a rule deck and the kinds are catch, path, buckets or ship', L.GAMES.filter((g) => g.rule).every((g) => L.RULE_DECKS[g.rule] && ['catch', 'path', 'buckets', 'ship'].includes(g.kind)));
+  // Every shape a rule deck names is drawn as itself (pass MB, the game check): SvgChip drew hexagons and rhombuses as its
+  // fallback triangle, so grade 1's Catch the Hexagons scored triangles as hexagons. The triangle is the only shape the fallback may draw.
+  { const uiSrc = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+    // Since the second read: the corners live in one table, CHIP_CORNERS, read here as data, so a shape counts as drawn only when
+    // the table holds it with the right number of corners (a broken name or gate can no longer pass by mentioning the shape).
+    const at = uiSrc.indexOf('const CHIP_CORNERS = {'); const table = at < 0 ? {} : Function('return ' + uiSrc.slice(at + 'const CHIP_CORNERS = '.length, uiSrc.indexOf('};', at) + 1))();
+    const SIDES = { triangle: 3, rhombus: 4, hexagon: 6, pentagon: 5, trapezoid: 4, octagon: 8 };
+    const named = [...new Set(Object.values(L.RULE_DECKS).flatMap((d) => [...d.a.items, ...d.b.items]).filter((x) => /^shape:/.test(x)).map((x) => x.split(':')[1]))];
+    const undrawn = named.filter((n) => !['circle', 'square', 'diamond'].includes(n) && !(table[n] && table[n].length === SIDES[n]));
+    ok('every shape a rule deck names has its own drawing in SvgChip, with its own number of corners', named.length >= 4 && Object.keys(table).length >= 3 && undrawn.length === 0, undrawn.join(', ')); }
+  ok("Listen and Point owns Step on the Circles, circles against squares in the same four colors, and Very First Steps owns Red and Blue (pass MB)", (L.COURSE_GAMES['listen-and-point-pk3'] || []).join() === 'path-circles' && (L.COURSE_GAMES['very-first-steps-pk3'] || []).includes('sort-color') && L.RULE_DECKS['circle-square'].a.items.every((x) => /^shape:circle:/.test(x)) && L.RULE_DECKS['circle-square'].b.items.every((x) => /^shape:square:/.test(x)) && L.RULE_DECKS['circle-square'].a.items.map((x) => x.split(':')[2]).join() === L.RULE_DECKS['circle-square'].b.items.map((x) => x.split(':')[2]).join());
   ok('older lists take a rule, jump or map game only when it is not for the youngest', L.GAMES.filter((g) => (g.jump || g.map || g.balance) && !g.young).every((g) => L.GRADES.indexOf(g.minGrade) >= L.GRADES.indexOf('3')));
   ok('the older list holds at least ten kinds of game', new Set(older.map((g) => g.kind)).size >= 10, [...new Set(older.map((g) => g.kind))].join(','));
   // Frog jumps (2026-09-23): every deck's questions land on a tick of its own line, over many seeds.

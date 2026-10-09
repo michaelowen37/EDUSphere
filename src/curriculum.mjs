@@ -84,17 +84,25 @@ export const CURRICULUM = [
     ],
   },
   {
+    // Pass MB: every code below was read in full in the 2022 Texas Prekindergarten Guidelines, PK3 Streamlined Version (TEA),
+    // and the Head Start ELOF preschool goals on headstart.gov, and is quoted word for word. II.A.1 and III.C.1 had been
+    // misquoted, V.E.1 carried the pre-K 4 wording, and P-MATH 8 was half quoted.
     grade: 'PK3', subject: 'Reading', status: 'ready',
-    source: 'Texas Prekindergarten Guidelines (2022), Domains III and V, three-year-old outcomes; Head Start Early Learning Outcomes Framework',
+    source: 'Texas Prekindergarten Guidelines (2022), PK3 outcomes in Domains II, III and V, from the PK3 Streamlined Version (TEA), read in full in pass MA and again for Domains II and III, V.C and V.E in pass MB; Head Start Early Learning Outcomes Framework, preschool goals for Language and Communication, Literacy, Mathematics and Scientific Reasoning, with their 36 to 48 month progressions (headstart.gov: Language and Communication and Literacy read in full in pass MB, the other two in pass MA, and the goals cited here again in pass MB)',
     standards: [
       { framework: 'TEKS', code: 'PK3.V.C.1', text: 'Child names and describes common 2D shapes.', moduleIds: ['circle-and-square'] },
-      { framework: 'TEKS', code: 'PK3.III.C.1', text: 'Child shows awareness of letters and recognizes some frequently encountered letters.', moduleIds: ['a-and-b'] },
-      { framework: 'TEKS', code: 'PK3.V.E.1', text: 'Child sorts objects that are the same and different into groups and uses language to describe how the groups are similar and different.', moduleIds: ['not-the-same'] },
+      { framework: 'TEKS', code: 'PK3.V.C.4', text: 'Child recognizes common shapes, regardless of size.', moduleIds: ['circle-and-square'] },
+      { framework: 'TEKS', code: 'PK3.III.C.1', text: 'Child shows awareness of letters by singing alphabet songs and recognizing some frequently encountered letters (e.g., first letter of name or letters in environmental print).', moduleIds: ['a-and-b'] },
+      { framework: 'TEKS', code: 'PK3.V.E.1', text: 'Child sorts objects that are the same and different.', moduleIds: ['not-the-same'] },
       { framework: 'CCSS', code: 'ELOF.P-MATH.9', text: 'Identifies, describes, compares, and composes shapes.', moduleIds: ['circle-and-square'] },
       { framework: 'CCSS', code: 'ELOF.P-LIT.3', text: 'Identifies letters of the alphabet and produces correct sounds associated with letters.', moduleIds: ['a-and-b'] },
-      { framework: 'CCSS', code: 'ELOF.P-MATH.8', text: 'Uses differences in attributes to make comparisons.', moduleIds: ['not-the-same'] },
-      { framework: 'TEKS', code: 'PK3.II.A.1', text: 'Child shows understanding by responding appropriately to what has been communicated by adults and peers.', moduleIds: ['listen-and-tap-pictures', 'animal-sounds'] },
+      { framework: 'CCSS', code: 'ELOF.P-MATH.8', text: 'Measures objects by their various attributes using standard and non-standard measurement. Uses differences in attributes to make comparisons.', moduleIds: ['not-the-same'] },
+      { framework: 'CCSS', code: 'ELOF.P-SCI.3', text: 'Compares and categorizes observable phenomena.', moduleIds: ['not-the-same'] },
+      { framework: 'TEKS', code: 'PK3.II.A.1', text: 'Child responds to situations in ways that demonstrate an understanding of what has been communicated.', moduleIds: ['listen-and-tap-pictures'] },
+      { framework: 'TEKS', code: 'PK3.II.D.1', text: 'Child understands (receptive) and uses (expressive) expected words to label and describe common objects, people, places, actions, and events.', moduleIds: ['listen-and-tap-pictures', 'animal-sounds'] },
       { framework: 'CCSS', code: 'ELOF.P-LC.1', text: 'Attends to communication and language from others.', moduleIds: ['listen-and-tap-pictures'] },
+      { framework: 'CCSS', code: 'ELOF.P-LC.6', text: 'Understands and uses a wide variety of words for a variety of purposes.', moduleIds: ['listen-and-tap-pictures'] },
+      { framework: 'CCSS', code: 'ELOF.P-SCI.1', text: 'Observes and describes observable phenomena (objects, materials, organisms, and events).', moduleIds: ['animal-sounds'] },
     ],
   },
   {

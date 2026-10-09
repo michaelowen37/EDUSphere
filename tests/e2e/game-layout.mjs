@@ -51,6 +51,9 @@ for (const [w, h, label] of SIZES) {
   for (const g of games) {
     await page.evaluate((id) => window.__eduTest.openColoring('play:' + id), g.id);
     await page.waitForTimeout(450);
+    // A game that moves on its own opens behind its Begin cover (pass IU); press Begin so its board is measured, not the cover
+    // (pass MB, the game check's second read: every catch, ship and pong game had read as "no game board on the screen").
+    if (await page.locator('[data-begin-cover] button').count()) { await page.locator('[data-begin-cover] button').first().click(); await page.waitForTimeout(2500); }
     const found = await page.evaluate(() => {
       const vw = window.innerWidth, vh = window.innerHeight; const issues = [];
       const box = document.querySelector('.edu-game-box');

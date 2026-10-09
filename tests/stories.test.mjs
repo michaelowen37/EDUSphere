@@ -21,10 +21,22 @@ for (const [id, s] of Object.entries(STORIES)) {
   ok(`${id}: no em dashes and no sentence over 45 words (a run-on guard; Eleven v4 sets no limit, pass JG)`, !s.words.some((p) => p.includes('\u2014')) && s.words.every((p) => p.split(/[.!?]\s/).every((sent) => sent.split(/\s+/).length <= 45)));
   ok(`${id}: cast names are core characters`, s.cast.every((n) => CORE.includes(n)));
   ok(`${id}: a where line only when the core cast is here, one short line`, !s.where || (s.cast.length > 0 && s.where.length <= 90 && !/\b(was|is|turned) (four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|\d+)\b/.test(s.where)));
-  ok(`${id}: no ages in the text (they live in the art prompts)`, !/\b(Mike|Chloe|Frederick|Georgette|Savanah|Jaxon|Harlow) (was|is|turned) (four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|\d+)\b/.test(s.words.join(' ')));
   ok(`${id}: extra pictures point at a paragraph, never two back to back`, (s.more || []).every((m) => /^S\d+$/.test(m.serial) && m.alt && m.after >= 0 && m.after < s.words.length) && new Set((s.more || []).map((m) => m.after)).size === (s.more || []).length);
   ok(`${id}: at most two core characters in one story`, s.cast.length <= 2);
 }
+// Core-cast ages in story text (pass MB, Mikey: "I think the ages and relatives are okay to mention in stories but keep the age
+// part at a minimum.  It's actually good to state the age periodically just not consistently.  Relatives, no restriction
+// anymore."). Until pass MB no module story could state one; now a story may, now and then, and never as a habit: at most one
+// long story in three, never more than three in a row in grade order, and at most one in three module stories with the core
+// cast. tools/cast-ages.mjs > docs/CAST-AGES.md lists them for the story brief, beside the clock in docs/CHARACTERS.md.
+{ const { castAges, agePhrases } = await import('../tools/cast-ages.mjs');
+  const r = castAges(L, { STORIES, COURSE_STORIES });
+  ok(`core-cast ages stay occasional: ${r.longStating} of ${r.longTotal} long stories state one, at most one in three`, r.longStating * 3 <= r.longTotal, r.longPattern);
+  ok(`no habit: at most three long stories in a row state a core character's age (longest run ${r.longestRun})`, r.longestRun <= 3, r.longPattern);
+  const withCast = Object.values(STORIES).filter((x) => (x.cast || []).length);
+  const stating = withCast.filter((x) => agePhrases(x.words).length);
+  ok(`core-cast ages stay occasional in module stories: ${stating.length} of ${withCast.length} with the core cast state one, at most one in three`, stating.length * 3 <= withCast.length);
+  ok('the age finder reads the usual ways an age is said, and not a count or a time', agePhrases(['Frederick was eight and loved ants.']).length === 1 && agePhrases(['Eight-year-old Chloe painted.']).length === 1 && agePhrases(['When Mike was nine, he built a ramp.']).length === 1 && agePhrases(['Mike was ten minutes late.']).length === 0 && agePhrases(['Chloe was two steps behind.']).length === 0 && agePhrases(['Frederick had eight jars.']).length === 0 && agePhrases(['The summer she turned seventeen, Savanah left the farm.']).length === 1 && agePhrases(['Savanah, then seventeen, left.']).length === 1 && agePhrases(['Mike was 100 percent sure.']).length === 0); }
 // Course stories: one longer story per course, still under the Gladwell ceiling for older readers, with three paragraphs and a scene.
 for (const [id, cs] of Object.entries(COURSE_STORIES)) {
   const words = cs.words.join(' ').split(/\s+/).length;

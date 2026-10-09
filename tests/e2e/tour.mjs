@@ -56,7 +56,9 @@ async function walk(W, H, box = false) {   // box: false, 'root' (a box holds th
     if (step === 5) good = good && !overlap(s, m.life);
     if (step === 6) good = good && !overlap(s, m.reading) && (oneCol ? overlap(s, m.exp) && s.top - m.reading.bottom >= -1 && s.top - m.reading.bottom <= 24 : overlap(s, m.wonder) && s.right <= m.reading.left + 1);
     if (step === 7) good = good && overlap(s, m.life) && !overlap(s, m.exp) && (oneCol ? s.top - m.exp.bottom >= -1 && s.top - m.exp.bottom <= 24 : s.top <= m.life.top);
-    if (step === 8) good = good && m.y === 0 && near(s.right, m.W, 14) && !!m.search && near(s.top, m.search.top, 6);
+    // Card 8's top is level with the search box's, or, where the whole card would not fit below it (a 768-pixel laptop since
+    // Mikey's longer Who Needs Help sentence, pass MB), as low as the screen allows, its bottom 12 pixels above the screen's.
+    if (step === 8) good = good && m.y === 0 && near(s.right, m.W, 14) && !!m.search && (near(s.top, m.search.top, 6) || (m.search.top + (s.bottom - s.top) > m.H - 12 && near(s.bottom, m.H - 12, 3) && s.top <= m.search.top));
     if (step === 9) good = good && m.y === 0 && near(s.right, m.W, 14) && near(s.bottom, m.H, 14);
     if (step === 10) good = good && !!m.transcript && s.bottom <= m.transcript.top + 2;
     // Card 11 (pass LG, Mikey): centered close under Roger's Action Item popup, whole on the screen, the popup whole too.

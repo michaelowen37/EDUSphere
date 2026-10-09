@@ -11,6 +11,10 @@
 # The driver keeps a story's old picture serials in order, mints new ones after the ledger's highest S serial and appends
 # their rows (in Mikey's subject template) before the Course stories heading; it handles both story forms in src/stories.mjs
 # (STORIES['id'] = { ... } and the literal 'id': { ... } inside the top object, where cast stories such as count-to-3 live).
+# Hand-written rows are kept (pass MB, the picture check's second read): a row whose picture keeps its alt is left whole, check
+# note, hand-written prompt and extra negative words and all; and when an alt changes on a row written by hand (a check note,
+# a prompt that is not the template's, or extra negative words), the driver writes nothing and lists those serials, so their
+# rows are rewritten by hand, never silently replaced by the template.
 import sys
 p = 'src/stories.mjs'; s = open(p).read()
 NEW = {}
@@ -25,6 +29,7 @@ def prompt(scene, subject, bg):
 L = open('docs/ART-REQUESTS.md').read()
 next_serial = max(int(x) for x in re.findall(r"^\| S(\d+) \|", L, flags=re.M)) + 1
 new_rows = []
+manual = []   # serials whose hand-written rows need a hand rewrite because their alts changed
 for mid, d in NEW.items():
     m = re.search(r"STORIES\['" + re.escape(mid) + r"'\] = \{.*?\n\};\n", s, re.S)
     literal = None
@@ -48,11 +53,18 @@ for mid, d in NEW.items():
     for ser, alt, bg in pics:
         alt1 = alt.replace('APOS', "'")
         old = re.search(r"^\| " + ser + r" \| .*$", L, flags=re.M)
+        if old:
+            cells = old.group(0).split(' | '); old_scene = re.sub(r' \(check: .*\)$', '', cells[2])
+            if old_scene == alt1: continue   # the picture keeps its alt: its row stays whole, whoever wrote it
+            hand = '(check:' in cells[2] or cells[4] != NEG or not cells[3].startswith(old_scene + ', ' + MOD.get(SUBJECT.get(mid, ''), ('wonder-filled and vibrant',))[0] + '.')
+            if hand: manual.append(ser); continue
         # A kept character-sheet note ends the prompt (pass LX: it used to land after the negative prompt).
         sheet = re.search(r"Character: C\d+(?:, C\d+)*\.", old.group(0)) if old else None
         row = f"| {ser} | {mid} | {alt1} | {prompt(alt1, SUBJECT.get(mid, ''), bg)}{(' ' + sheet.group(0)) if sheet else ''} | {NEG} | Needed |"
         if old: L = L.replace(old.group(0), row, 1)
         else: new_rows.append(row)
+if manual:
+    print('Stopped: these pictures have hand-written ledger rows and new alts. Rewrite their rows by hand (scene, check note, prompt), then run the driver again:', ', '.join(manual)); sys.exit(1)
 open(p, 'w').write(s.replace('APOS', "\\'"))
 if new_rows:
     anchor = "\n\n## Course stories (CS serials)"

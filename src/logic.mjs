@@ -1585,6 +1585,7 @@ export const GAMES = [
   { id: 'dots-boat', kind: 'dots', title: 'Boat', shape: 'boat' },
   { id: 'pairs-more', kind: 'pairs', title: 'More Pairs', pairs: 4 },
   { id: 'sort-color', kind: 'sort', title: 'Red and Blue', by: 'color' },
+  { id: 'path-circles', kind: 'path', title: 'Step on the Circles', rule: 'circle-square', young: true },   // Listen and Point (pass MB): only a circle moves the dot to the star
   { id: 'dots-house', kind: 'dots', title: 'House', shape: 'house' },
   { id: 'maze-big', kind: 'maze', title: 'Big Maze', cells: 9, minGrade: 'K' },
   { id: 'dots-star', kind: 'dots', title: 'Star', shape: 'star' },
@@ -1793,6 +1794,9 @@ export const RULE_DECKS = {
   circles: { a: { label: 'Circles', items: shapesOf(['circle'], ['red', 'blue', 'green', 'yellow']) }, b: { label: 'Other shapes', items: shapesOf(['square', 'triangle'], ['red', 'blue', 'green', 'yellow']) } },
   // Grade 1 Shapes, measuring and graphs (pass LC): the hexagon is new in grade 1 (TEKS 1.6D), so the catch is hexagons against the shapes a child already knows.
   hexagons: { a: { label: 'Hexagons', items: shapesOf(['hexagon'], ['red', 'blue', 'green', 'yellow']) }, b: { label: 'Other shapes', items: shapesOf(['triangle', 'rhombus', 'circle'], ['red', 'blue', 'green', 'yellow']) } },
+  // Listen and Point's Circle and Square (pass MB): circles against squares, the same four colors on both sides, so a color never
+  // gives the answer away and only the shape does, as the lesson teaches.
+  'circle-square': { a: { label: 'Circles', items: shapesOf(['circle'], ['red', 'blue', 'green', 'yellow']) }, b: { label: 'Squares', items: shapesOf(['square'], ['red', 'blue', 'green', 'yellow']) } },
   'even-odd': { a: { label: 'Even numbers', items: numbersWhere((n) => n % 2 === 0, 2, 40) }, b: { label: 'Odd numbers', items: numbersWhere((n) => n % 2 === 1, 1, 39) } },
   'multiples-3': { a: { label: 'Multiples of 3', items: numbersWhere((n) => n % 3 === 0, 3, 36) }, b: { label: 'Other numbers', items: numbersWhere((n) => n % 3 !== 0, 1, 40) } },
   'multiples-4': { a: { label: 'Multiples of 4', items: numbersWhere((n) => n % 4 === 0, 4, 48) }, b: { label: 'Other numbers', items: numbersWhere((n) => n % 4 !== 0, 1, 50) } },
@@ -3516,7 +3520,7 @@ function LETTER_MODULES() { return [
     tagline: 'Pictures tell you',
     requires: ['sounding-out'],
     lesson: {
-      paragraphs: ['A word names something, and a picture can show what it names. When you meet a new word, look at the picture for a clue. If the word says circle and the picture shows a round shape with no corners, the word and the picture match.', 'Some words name flat shapes. A square has four sides that are all the same length, a triangle has three sides and three corners, and a rectangle has four sides, two long and two short.', 'Some words name solid things. A ball is round all over, a box has six flat sides like a block, a can has round ends and straight sides, and a cone is round at one end and comes to a point.', 'Number words tell how many. One, two, three, four, five and six each name a count, so three dots go with the word three.'],
+      paragraphs: ['Many words name something, and a picture can show what a word names. When you meet a new word, look at the picture for a clue. If the word says circle and the picture shows a round shape with no corners, the word and the picture match.', 'Some words name flat shapes. A square has four sides that are all the same length, a triangle has three sides and three corners, and a rectangle has four sides, two long and two short.', 'Some words name solid things. A ball is round all over, a box has six flat sides like a block, a can has round ends and straight sides, and a cone is round at one end and comes to a point.', 'Number words tell how many. One, two, three, four, five and six each name a count, so three dots go with the word three.'],
       keyIdea: 'A picture can show what a word means. Check that the word and the picture name the same thing.',
       example: { kind: 'shape', name: 'circle', size: 'small', caption: 'Circle. The picture shows a circle.' },
       script: [
@@ -3918,14 +3922,14 @@ function PREK3_MODULES() { return [
     requires: ['find-the-match'],
     lesson: {
       pictures: [{ serial: 'P15', alt: 'A slice of cheese pizza beside a plain triangle', step: 4 }, { serial: 'P96', alt: 'A triangle road sign turned upside down', step: 7 }],
-      paragraphs: ['A triangle has three straight sides and three corners. Count three straight sides and three corners, and you know it is a triangle.', 'A circle is round, with no corners, and a square has four corners. A slice of round pizza is almost a triangle, though its crust is curved.', 'A triangle is still a triangle when it is big or little, tall and thin, or turned upside down, like a road sign.'],
+      paragraphs: ['A triangle has three straight sides and three corners. Count three straight sides and three corners, and you know it is a triangle.', 'A circle is round, with no corners, and a square has four corners and four sides the same length. A slice of round pizza is almost a triangle, though its crust is curved.', 'A triangle is still a triangle when it is big or little, tall and thin, or turned upside down, like a road sign.'],
       keyIdea: 'A triangle has three straight sides and three corners.',
       example: { kind: 'shape', name: 'triangle', caption: 'A triangle.' },
       script: [
         { say: 'This is a triangle. It has three straight sides and three corners.', show: { kind: 'shape', name: 'triangle' } },
         { say: 'Count the corners with me. One, two, three.', show: { kind: 'shape', name: 'triangle' } },
         { say: 'This is a circle. It is round, with no corners at all.', show: { kind: 'shape', name: 'circle' } },
-        { say: 'This is a square. It has four corners.', show: { kind: 'shape', name: 'square' } },
+        { say: 'This is a square. It has four corners, and its four sides are all the same length.', show: { kind: 'shape', name: 'square' } },
         { say: 'A slice of round pizza is almost a triangle. It has three corners, but its crust is curved.', show: { kind: 'pair', a: { kind: 'icon', name: 'pizza' }, b: { kind: 'shape', name: 'triangle' } } },
         { say: 'A big triangle and a little triangle are both triangles. Size does not change the shape.', show: { kind: 'pair', a: { kind: 'shape', name: 'triangle', size: 'big' }, b: { kind: 'shape', name: 'triangle', size: 'small' } } },
         { say: 'A triangle is still a triangle when it is tall and thin, or turned upside down. It still has three corners.', show: { kind: 'shape', name: 'triangle', variant: 'thin' } },
@@ -3993,21 +3997,28 @@ function PREK3_READING_MODULES() { return [
     title: 'Circle and square',
     tagline: 'Two shapes',
     lesson: {
-      pictures: [{ serial: 'P16', alt: 'A red ball and a wooden block side by side', step: 4 }, { serial: 'P98', alt: 'A round plate on a table beside a square kitchen window', step: 5 }],
-      paragraphs: ['A circle is round, with no corners. A square has four corners and four straight sides.', 'Round things like a ball can roll, and things with corners like a block sit still. That is one way to tell a circle from a square.', 'A plate is round like a circle, and many windows are square.'],
-      keyIdea: 'A circle is round. A square has four corners.',
+      // Pass MB (the lesson brief and the accuracy check): a square is four corners AND four sides all the same length, or a
+      // child calls every window a square; a little or turned square is still a square and size does not change a shape
+      // (PK3.V.C.4, P-MATH 9's matching across sizes and turns); the ball, the block, the plate and the window are drawn
+      // beside the shapes they are like (pass JV); a block "does not roll", since on a slope it slides; many plates are round.
+      pictures: [{ serial: 'P16', alt: 'A red ball rolling across the floor', step: 6 }, { serial: 'P98', alt: 'A round plate on a table beside a square kitchen window', step: 8 }],
+      paragraphs: ['A circle is round, with no corners. A square has four corners and four straight sides, all the same length.', 'Round things like a ball can roll, and things with corners like a block do not roll. That is one way to tell round things from things with corners.', 'A little square is still a square, and so is a square turned on its corner. Size does not change the shape. Many plates are round like a circle, and some windows are square.'],
+      keyIdea: 'A circle is round. A square has four corners and four sides the same length.',
       example: { kind: 'item', shape: 'circle', colour: 'blue', caption: 'A circle.' },
       script: [
         { say: 'This is a circle. It is round, with no corners.', show: { kind: 'item', shape: 'circle', colour: 'blue' } },
-        { say: 'This is a square. It has four corners.', show: { kind: 'item', shape: 'square', colour: 'red' } },
+        { say: 'This is a square. It has four corners, and its four sides are all the same length.', show: { kind: 'item', shape: 'square', colour: 'red' } },
         { say: 'Count the square\'s corners with me. One, two, three, four.', show: { kind: 'item', shape: 'square', colour: 'red' } },
         { say: 'Run your finger around the circle. It goes round and round, with no corners to stop you.', show: { kind: 'item', shape: 'circle', colour: 'blue' } },
-        { say: 'A ball is round like a circle, so it rolls. A block has corners like a square, so it sits still.', show: { kind: 'pair', a: { kind: 'item', shape: 'circle', colour: 'blue' }, b: { kind: 'item', shape: 'square', colour: 'red' } } },
-        { say: 'Look around the room. A plate is round like a circle, and many windows are square.', show: { kind: 'pair', a: { kind: 'item', shape: 'circle', colour: 'blue' }, b: { kind: 'item', shape: 'square', colour: 'red' } } },
+        { say: 'A little square is still a square, and a square turned on its corner is still a square. Count its corners, one, two, three, four.', show: { kind: 'row', items: [{ kind: 'shape', name: 'square' }, { kind: 'shape', name: 'square', size: 'small' }, { kind: 'shape', name: 'square', variant: 'turned' }] } },
+        { say: 'A big circle and a little circle are the same shape. Size does not change the shape.', show: { kind: 'pair', a: { kind: 'shape', name: 'circle', size: 'big' }, b: { kind: 'shape', name: 'circle', size: 'small' } } },
+        { say: 'A ball is round like a circle, so it rolls.', show: { kind: 'pair', a: { kind: 'icon', name: 'ball' }, b: { kind: 'item', shape: 'circle', colour: 'blue' } } },
+        { say: 'A square has corners, and so does a block. With its flat sides and corners, a block does not roll.', show: { kind: 'pair', a: { kind: 'icon', name: 'block' }, b: { kind: 'item', shape: 'square', colour: 'red' } } },
+        { say: 'Look around the room. Many plates are round like a circle, and some windows are square.', show: { kind: 'pair', a: { kind: 'icon', name: 'plate' }, b: { kind: 'icon', name: 'window' } } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.C.1 (names and describes common 2D shapes) and Head Start ELOF Goal P-MATH 9.'],
-    generators: ['p3-tap-shape', 'p3-name-shape', 'p3-tap-shape', 'p3-name-shape', 'p3-tap-shape'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.C.1 (names and describes common 2D shapes) and V.C.4 (recognizes common shapes, regardless of size), and Head Start ELOF Goal P-MATH 9 (identifies, describes, compares, and composes shapes), which for three-year-olds means recognizing and naming a typical circle and square and, with adult support, matching some shapes that are different sizes and orientations.'],
+    generators: ['p3-tap-shape', 'p3-name-shape', 'p3-shape-by-corners', 'p3-shape-thing', 'p3-same-shape-any-size'],
   },
   {
     id: 'a-and-b',
@@ -4029,7 +4040,7 @@ function PREK3_READING_MODULES() { return [
         { say: 'Bear, boat and book start with B. Acorn and arrow start with A.', show: { kind: 'letters', text: 'Bear', highlight: 0 } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines III.C.1 (shows awareness of letters and recognizes some frequently encountered letters) and Head Start ELOF Goal P-LIT 3.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines III.C.1 (shows awareness of letters by singing alphabet songs and recognizing some frequently encountered letters, for example first letter of name or letters in environmental print), in part, since this lesson recognizes A and B and looks for them on signs and in books, and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), which for three-year-olds means an awareness of alphabet letters, such as naming some letters that are encountered often.'],
     generators: ['p3-tap-ab', 'p3-name-ab', 'p3-tap-ab', 'p3-name-ab', 'p3-tap-ab'],
   },
   {
@@ -4039,21 +4050,27 @@ function PREK3_READING_MODULES() { return [
     title: 'Which one is different?',
     tagline: 'Spot the odd one',
     lesson: {
-      paragraphs: ['Two things are the same when they look just alike. One thing is different when it does not look like the others.', 'A red circle next to two green squares is different. Its shape is different, and so is its color.', 'Different can be the color, the shape or the size. In a bowl of green apples, one red apple is different.'],
-      keyIdea: 'Different means not alike.',
+      // Pass MB (the lesson brief): "different" is shown among others (two green squares and a red circle, not a lone pair);
+      // sorting is taught, since PK3.V.E.1 is "Child sorts objects that are the same and different.", and it names its
+      // attribute, by color, as Very First Steps does, so "the same" keeps meaning "look just alike" (the second read); the last
+      // line states its reason instead of asking a child to spot an apple on a card that is not painted yet.
+      paragraphs: ['Two things are the same when they look just alike. One thing is different when it does not look like the others.', 'A red circle next to two green squares is different. Its shape is different, and so is its color.', 'Different can be the color, the shape or the size. In a bowl of green apples, one red apple is different.', 'To sort by color, put the things that are the same color together. The one that is a different color goes in a group of its own.'],
+      keyIdea: 'Different means not alike. When we sort by color, things that are the same color go together.',
       example: { kind: 'item', shape: 'square', colour: 'green', caption: 'A green square.' },
-      pictures: [{ serial: 'P99', alt: 'One red apple among green apples in a bowl', step: 5 }],
+      pictures: [{ serial: 'P99', alt: 'One red apple among green apples in a bowl', step: 7 }],
       script: [
         { say: 'Here is a green square.', show: { kind: 'item', shape: 'square', colour: 'green' } },
         { say: 'Here is another green square. The two green squares are the same.', show: { kind: 'pair', a: { kind: 'item', shape: 'square', colour: 'green' }, b: { kind: 'item', shape: 'square', colour: 'green' } } },
-        { say: 'Here is a red circle next to a green square. The red circle is different.', show: { kind: 'pair', a: { kind: 'item', shape: 'square', colour: 'green' }, b: { kind: 'item', shape: 'circle', colour: 'red' } } },
-        { say: 'Different means not alike. The circle has a different shape and a different color from the squares.', show: { kind: 'pair', a: { kind: 'item', shape: 'square', colour: 'green' }, b: { kind: 'item', shape: 'circle', colour: 'red' } } },
+        { say: 'Here are two green squares and a red circle. The red circle is different.', show: { kind: 'row', items: [{ kind: 'shape', name: 'square', colour: 'green' }, { kind: 'shape', name: 'square', colour: 'green' }, { kind: 'shape', name: 'circle', colour: 'red' }] } },
+        { say: 'Different means not alike. The circle has a different shape and a different color from the squares.', show: { kind: 'row', items: [{ kind: 'shape', name: 'square', colour: 'green' }, { kind: 'shape', name: 'square', colour: 'green' }, { kind: 'shape', name: 'circle', colour: 'red' }] } },
         { say: 'Different can be size too. A big circle and a small circle have the same shape, but not the same size.', show: { kind: 'pair', a: { kind: 'shape', name: 'circle', size: 'big' }, b: { kind: 'shape', name: 'circle', size: 'small' } } },
-        { say: 'In a bowl of green apples, one red apple is different. Can you spot it?', show: null },
+        { say: 'Let\'s sort by color. Things that are the same color go together. The red ones go in one group, and the blue ones go in another.', show: { kind: 'pair', stack: true, a: { kind: 'pattern', items: ['circle', 'square'], colour: 'red' }, b: { kind: 'pattern', items: ['square', 'circle'], colour: 'blue' } } },
+        { say: 'This blue circle is different from the red circles, so it does not go with them. It goes in a group of its own.', show: { kind: 'row', items: [{ kind: 'shape', name: 'circle', colour: 'red' }, { kind: 'shape', name: 'circle', colour: 'red' }, { kind: 'shape', name: 'circle', colour: 'blue' }] } },
+        { say: 'In a bowl of green apples, one red apple is different, because its color is not the same.', show: null },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups) and Head Start ELOF Goal P-MATH 8.'],
-    generators: ['p3-odd-one', 'p3-odd-one', 'p3-odd-one', 'p3-odd-one', 'p3-odd-one'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different), and Head Start ELOF Goals P-SCI 3 (compares and categorizes observable phenomena), which for three-year-olds means sorting objects into groups based on simple attributes, such as color, and P-MATH 8 (measures objects by their various attributes using standard and non-standard measurement, and uses differences in attributes to make comparisons), which for three-year-olds begins with seeing that attributes can be compared.'],
+    generators: ['p3-odd-one', 'p3-odd-color', 'p3-odd-shape', 'p3-odd-size', 'p3-sort-out'],
   },
   {
     id: 'listen-and-tap-pictures',
@@ -4062,26 +4079,32 @@ function PREK3_READING_MODULES() { return [
     title: 'Listen and tap',
     tagline: 'Sun, fish, tree, cup',
     lesson: {
-      paragraphs: ['A word names a thing. When you hear a word, think of what it looks like, then find its picture.', 'The sun shines in the day, and we often see the moon at night. A fish swims, a tree grows tall, a flower grows on a plant, and we drink from a cup.', 'A cloud floats in the sky, rain falls from clouds, a bird flies, and we eat pizza in slices. The sun, the moon and the clouds are up in the sky, and a fish is down in the water.'],
-      keyIdea: 'A word names a thing. Listen to the word, then find its picture.',
+      // Pass MB (the lesson brief and the accuracy check): many words name things (not every word does); the moon is often up in
+      // the day too (pass JK); most birds fly (penguins do not); the pizza drawn is a slice; a tree is known by its trunk, since
+      // many are bare in winter and a palm has no branches (the second read); up in the sky and down in the water are drawn as up and down; and the child
+      // hears the instruction PK3.II.A.1 and P-LC 1 rest on, listen to the word, then find its picture.
+      pictures: [{ serial: 'P100', alt: 'The sun and a cloud up in the sky above a pond where a fish swims', step: 11 }],
+      paragraphs: ['Many words name things. When you hear a word, think of what it looks like, then find its picture.', 'The sun shines in the day, and we often see the moon at night, and sometimes in the day too. A fish swims, a tree grows tall, a flower grows on a plant, and we drink from a cup.', 'A cloud floats in the sky, rain falls from clouds, most birds fly, and we cut a pizza into slices to eat it. The sun, the moon and the clouds are up in the sky, and a fish is down in the water.'],
+      keyIdea: 'Many words name things. Listen to the word, then find its picture.',
       example: { kind: 'icon', name: 'sun', caption: 'The sun.' },
-      pictures: [{ serial: 'P100', alt: 'The sun and a cloud up in the sky above a pond where a fish swims', step: 10 }],
       script: [
-        { say: 'A word names a thing. This is the sun, and the sun shines in the day.', show: { kind: 'icon', name: 'sun' } },
-        { say: 'This is the moon. We often see the moon at night.', show: { kind: 'icon', name: 'moon' } },
+        { say: 'Many words name things. This is the sun, and the sun shines in the day.', show: { kind: 'icon', name: 'sun' } },
+        { say: 'This is the moon. We often see the moon at night, and sometimes in the day too.', show: { kind: 'icon', name: 'moon' } },
         { say: 'This is a fish. A fish swims in the water.', show: { kind: 'icon', name: 'fish' } },
-        { say: 'This is a tree. A tree grows tall, with leaves on top.', show: { kind: 'icon', name: 'tree' } },
+        { say: 'This is a tree. A tree grows tall, with a trunk.', show: { kind: 'icon', name: 'tree' } },
         { say: 'This is a flower. A flower grows on a plant.', show: { kind: 'icon', name: 'flower' } },
         { say: 'This is a cup. We drink from a cup.', show: { kind: 'icon', name: 'cup' } },
         { say: 'This is a cloud. Clouds float high in the sky.', show: { kind: 'icon', name: 'cloud' } },
         { say: 'This is rain. Rain falls from the clouds and makes puddles.', show: { kind: 'icon', name: 'rain' } },
-        { say: 'This is a bird. A bird has wings, so it can fly.', show: { kind: 'icon', name: 'bird' } },
-        { say: 'This is a pizza. A pizza is round, and we eat it in slices.', show: { kind: 'icon', name: 'pizza' } },
-        { say: 'The sun, the moon and a cloud are up in the sky. A fish is down in the water.', show: { kind: 'pair', a: { kind: 'icon', name: 'sun' }, b: { kind: 'icon', name: 'fish' } } },
+        { say: 'This is a bird. A bird has wings, and most birds can fly.', show: { kind: 'icon', name: 'bird' } },
+        { say: 'This is a slice of pizza. We cut a pizza into slices to eat it.', show: { kind: 'icon', name: 'pizza' } },
+        { say: 'The sun, the moon and the clouds are up in the sky.', show: { kind: 'row', items: [{ kind: 'icon', name: 'sun' }, { kind: 'icon', name: 'moon' }, { kind: 'icon', name: 'cloud' }] } },
+        { say: 'The sun is up in the sky, and a fish is down in the water.', show: { kind: 'pair', stack: true, a: { kind: 'icon', name: 'sun' }, b: { kind: 'icon', name: 'fish' } } },
+        { say: 'When you practice, listen to the word, then find its picture and tap it.', show: { kind: 'row', items: [{ kind: 'icon', name: 'cup' }, { kind: 'icon', name: 'bird' }, { kind: 'icon', name: 'flower' }] } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines II.A.1 (shows understanding by responding appropriately) and Head Start ELOF Goal P-LC 1.'],
-    generators: ['p3-tap-picture', 'p3-tap-picture', 'p3-tap-picture', 'p3-tap-picture', 'p3-tap-picture'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines II.A.1 (responds to situations in ways that demonstrate an understanding of what has been communicated) and II.D.1 (understands, receptive, and uses, expressive, expected words to label and describe common objects, people, places, actions, and events), in part, since a child here understands words for things, places and actions and is not asked to say them, and Head Start ELOF Goals P-LC 1 (attends to communication and language from others), which for three-year-olds means showing acknowledgment of comments or questions, and P-LC 6 (understands and uses a wide variety of words for a variety of purposes), which for three-year-olds means a rapid increase in new words that describe actions and things in the everyday environment.'],
+    generators: ['p3-tap-picture', 'p3-tap-by-clue', 'p3-tap-picture', 'p3-up-or-down', 'p3-tap-by-clue'],
   },
   {
     id: 'animal-sounds',
@@ -4091,10 +4114,13 @@ function PREK3_READING_MODULES() { return [
     tagline: 'Meow, quack, buzz',
     requires: ['listen-and-tap-pictures'],
     lesson: {
-      paragraphs: ['Animals make sounds, and many have a sound of their own. The cat says meow, the duck says quack, and the bee says buzz.', 'The frog says ribbit, the owl says hoot, and the bear says growl. A sound can tell you which animal is near, even when you cannot see it.', 'On a farm you can hear many sounds at once, so listen closely.'],
+      paragraphs: ['Animals make sounds, and many have a sound of their own. The cat says meow, the duck says quack, and the bee says buzz.', 'The frog says ribbit, the owl says hoot, and the bear says growl. A sound can tell you which animal is near, even when you cannot see it.', 'When one sound comes after another, one is first and the other is second. On a farm you can hear many sounds at once, and real animals make lots of sounds, so listen closely.'],
       keyIdea: 'Many animals have a sound of their own, so a sound tells you which animal is near.',
       example: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'pic', name: 'duck' }, caption: 'The cat says meow. The duck says quack.' },
-      pictures: [{ serial: 'P101', alt: 'A duck and a dog in a sunny farmyard', step: 7 }],
+      // Pass MB (the lesson brief and the accuracy check): hearing is how a child observes an animal it cannot see (P-SCI 1),
+      // two sounds heard one after another are told apart as first and second (P-MATH 4's progression for three-year-olds), and
+      // real animals make many sounds, so listening closely matters.
+      pictures: [{ serial: 'P101', alt: 'A duck and a dog in a sunny farmyard', step: 9 }],
       script: [
         { say: 'The cat says meow.', show: { kind: 'pic', name: 'cat' } },
         { say: 'The duck says quack.', show: { kind: 'pic', name: 'duck' } },
@@ -4103,11 +4129,13 @@ function PREK3_READING_MODULES() { return [
         { say: 'The owl says hoot.', show: { kind: 'pic', name: 'owl' } },
         { say: 'The bear says growl.', show: { kind: 'pic', name: 'bear' } },
         { say: 'Many animals have a sound of their own. When you hear one, you can tell which animal is near.', show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'pic', name: 'duck' } } },
-        { say: 'On a farm you might hear a duck quack and a dog woof at the same time. Listen closely to tell them apart.', show: null },
+        { say: 'Hearing helps you know what is near. When you hear hoot, an owl may be near, even when you cannot see it.', show: { kind: 'pic', name: 'owl' } },
+        { say: 'Listen. Meow, then quack. You heard the cat first, because the cat says meow. You heard the duck second, because the duck says quack.', show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'pic', name: 'duck' } } },
+        { say: 'On a farm you might hear a duck quack and a dog woof at the same time. Real animals make lots of sounds, so listen closely to tell them apart.', show: { kind: 'pair', a: { kind: 'pic', name: 'duck' }, b: { kind: 'icon', name: 'dog' } } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines II.A.1 (shows understanding by responding appropriately to what has been communicated) and Head Start ELOF Goal P-LC 1.'],
-    generators: ['p3-animal-sound', 'p3-animal-says', 'p3-animal-sound', 'p3-animal-says', 'p3-animal-sound'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines II.D.1 (understands, receptive, and uses, expressive, expected words to label and describe common objects, people, places, actions, and events), in part, since a child here understands the names of six animals and the words for their sounds and is not asked to say them, and Head Start ELOF Goal P-SCI 1 (observes and describes observable phenomena, which the goal lists as objects, materials, organisms, and events), which for three-year-olds means using the senses to observe them, here hearing a sound to know which animal is near.'],
+    generators: ['p3-animal-sound', 'p3-animal-says', 'p3-animal-order', 'p3-two-at-once', 'p3-animal-sound'],
   },
 ]; }
 
@@ -6216,7 +6244,7 @@ function GRADE1_READING_MODULES() { return [
       // cat, fox, sun, dog, hat, bed, cup, bus, fan, log, map); boat, car, tree, cone, ball and fish left this bank, since
       // vowel teams, r-controlled syllables, the silent e and digraphs are other lessons.
       prose: true,
-      paragraphs: ['You can read a short word by saying each letter sound in order and then pushing the sounds together. In box, b says buh, o says the sound at the start of octopus, and x makes the sound at the end of six. Say them slowly, then faster and faster, until they run together into one word. Box.', 'Reading sounds is not saying letter names. The names b, o, x do not make a word, but the sounds do. The same way, cuh, the sound at the start of apple, and nnn make can, and duh, the sound at the start of octopus, and guh make dog.', 'A picture can check your reading. If the word says can and the picture shows a can, you read it right, and if the picture shows a hat, the word must say hat. A word names a thing, a color, a number or a shape, and reading it tells you which one.'],
+      paragraphs: ['You can read a short word by saying each letter sound in order and then pushing the sounds together. In box, b says buh, o says the sound at the start of octopus, and x makes the sound at the end of six. Say them slowly, then faster and faster, until they run together into one word. Box.', 'Reading sounds is not saying letter names. The names b, o, x do not make a word, but the sounds do. The same way, cuh, the sound at the start of apple, and nnn make can, and duh, the sound at the start of octopus, and guh make dog.', 'A picture can check your reading. If the word says can and the picture shows a can, you read it right, and if the picture shows a hat, the word must say hat. Many words name a thing, a color, a number or a shape, and reading the word tells you which one.'],
       keyIdea: 'Say each sound in order, then push the sounds together to hear the word.',
       example: { kind: 'letters', text: 'box', caption: 'Buh, o, and the sound at the end of six. Pushed together, box.' },
       script: [
@@ -17658,6 +17686,42 @@ function p3SortByColour(rng, pair) {
   return { type: 'choice', story: null, prompt: 'Tap the one that goes with these.', choices: shuffle(rng, [`item:${shape}-${colour}`, `item:${shape}-${other}`]), answer: `item:${shape}-${colour}`,
     explain: `It is ${colour}, like these, so it goes with the ${colour} things.`, visual: { kind: 'pattern', items: row, colour }, explainVisual: null };
 }
+// Circle and square (pass MB, the lesson brief). In plain terms: the two shapes in every look the lesson teaches (a little one,
+// and a square turned on its corner), drawn without color so a color never points at the answer and the bank counts tasks a
+// child meets, not recolorings (pass LV); then the shapes found by what the lesson says about them, in the real things it
+// names, and matched across sizes and turns (P-MATH 9 for three-year-olds, PK3.V.C.4).
+const CS_LOOKS = { circle: ['plain', 'small'], square: ['plain', 'small', 'turned'] };
+const csToken = (shape, look) => (look === 'plain' ? 'shape:' + shape : 'shape:' + shape + '~' + look);
+const CS_WHY = { circle: 'A circle is round, with no corners.', square: 'A square has four corners, and its four sides are all the same length.' };
+const csSeen = (shape, look) => (look === 'small' ? ['This is a little ', shape, ', and it is still a ', shape, '.'].join('') : look === 'turned' ? 'This is a square turned on its corner, and it is still a square.' : ['This is a ', shape, '.'].join(''));
+const CS_CLUES = [['has four corners', 'square'], ['has no corners', 'circle'], ['is round', 'circle']];
+// The real things the lesson names: a wrong choice never shares the asked property (a plate can roll on its edge, so it is
+// never the wrong one for "rolls", and never a right one either).
+const CS_THINGS = [['is round like a circle', ['ball', 'plate'], ['block', 'window']], ['has corners like a square', ['block', 'window'], ['ball', 'plate']], ['rolls', ['ball'], ['block', 'window']]];
+const CS_THING_WHY = { ball: 'A ball is round like a circle, so it rolls.', plate: 'This plate is round like a circle.', block: 'A block has flat sides and corners like a square, so it does not roll.', window: 'This window is square, with four corners.' };
+// Which one is different? (pass MB): two are the same and one differs in just one way, its color, its shape or its size, the
+// three ways the lesson names, so a child has to look at each one. Shapes and colors are shown, never named, and a color
+// question never sets red against green, which red-green colorblind children (about one boy in twelve) cannot tell apart.
+const P3_ODD_WHY = { color: 'It is the same shape as the other two, but not the same color, so it is different.', shape: 'It is the same color as the other two, but not the same shape, so it is different.', size: 'It is the same shape and the same color as the other two, but not the same size, so it is different.' };
+function p3OddBy(rng, by) {
+  const s = pick(rng, PATTERN_SHAPES); const c = pickColor(rng);
+  const redGreen = (x) => x === 'red' || x === 'green';
+  const odd = by === 'color' ? 'item:' + s + '-' + pick(rng, COLOURS.filter((x) => x !== c && !(redGreen(x) && redGreen(c)))) : by === 'shape' ? 'item:' + pick(rng, PATTERN_SHAPES.filter((x) => x !== s)) + '-' + c : 'item:' + s + '-' + c + '-' + pick(rng, ['small', 'big']);
+  const choices = shuffle(rng, ['item:' + s + '-' + c + '#0', 'item:' + s + '-' + c + '#1', odd + '#2']);
+  return { type: 'choice', story: 'Two are the same.', prompt: 'Tap the one that is different.', choices, answer: choices.find((x) => x.endsWith('#2')), explain: ['This one is a different ', by, '. ', P3_ODD_WHY[by]].join(''), visual: null, explainVisual: null };
+}
+// Listen and tap (pass MB): a picture found from what the lesson says it does or where it is, so a child shows they understand
+// the describing words too (PK3.II.D.1, the receptive half). Each clue is the lesson's own words, and a wrong choice never fits
+// it (the moon never stands against "shines in the day", pass JK; nothing in the sky against "floats high in the sky").
+const LT_CLUES = [['that shines in the day', 'sun', ['fish', 'tree', 'cup', 'flower', 'pizza', 'rain'], 'The sun shines in the day.'],
+  ['that swims in the water', 'fish', ['sun', 'moon', 'tree', 'cup', 'flower', 'pizza', 'cloud'], 'A fish swims in the water.'],
+  ['that grows tall, with a trunk', 'tree', ['sun', 'moon', 'fish', 'cup', 'cloud', 'pizza', 'rain'], 'A tree grows tall, with a trunk.'],
+  ['that grows on a plant', 'flower', ['sun', 'moon', 'fish', 'cup', 'cloud', 'pizza', 'rain', 'bird'], 'A flower grows on a plant.'],
+  ['we drink from', 'cup', ['sun', 'moon', 'tree', 'flower', 'cloud', 'bird', 'fish'], 'We drink from a cup.'],
+  ['that floats high in the sky', 'cloud', ['fish', 'tree', 'cup', 'flower', 'pizza'], 'Clouds float high in the sky.'],
+  ['that falls from the clouds', 'rain', ['sun', 'moon', 'fish', 'tree', 'cup', 'flower', 'pizza'], 'Rain falls from the clouds and makes puddles.'],
+  ['that has wings', 'bird', ['sun', 'moon', 'fish', 'tree', 'cup', 'flower', 'pizza'], 'A bird has wings, and most birds can fly.'],
+  ['we cut into slices to eat', 'pizza', ['sun', 'moon', 'tree', 'cup', 'flower', 'cloud', 'rain'], 'We cut a pizza into slices to eat it.']];
 // Pre-K 3: two choices, one thing asked, everything named in the words the child hears.
 Object.assign(GENERATORS, {
   'p3-tap-red-blue': (rng) => {
@@ -17679,8 +17743,11 @@ Object.assign(GENERATORS, {
   'p3-find-match': (rng) => {
     // Both ways a match can fail (pass MA): the wrong choice is the same color in another shape, or the same shape in another
     // color, the two cases the lesson shows, so a child who looks only at the shape, or only at the color, does not pass.
+    // When only the color differs, it is never red against green (pass MB, the alignment read): red-green is the most common
+    // color vision deficiency (MedlinePlus), and to a child who has it the two choices would look alike.
     const shape = pick(rng, PATTERN_SHAPES); const c = pickColor(rng);
-    const wrong = rng() < 0.5 ? `item:${pick(rng, PATTERN_SHAPES.filter((x) => x !== shape))}-${c}` : `item:${shape}-${pick(rng, COLOURS.filter((x) => x !== c))}`;
+    const redGreen = (x) => x === 'red' || x === 'green';
+    const wrong = rng() < 0.5 ? `item:${pick(rng, PATTERN_SHAPES.filter((x) => x !== shape))}-${c}` : `item:${shape}-${pick(rng, COLOURS.filter((x) => x !== c && !(redGreen(x) && redGreen(c))))}`;
     return { type: 'choice', story: `This is a ${c} ${shape}.`, prompt: 'Tap the one that is the same.', choices: shuffle(rng, [`item:${shape}-${c}`, wrong]), answer: `item:${shape}-${c}`,
       explain: `Both are ${c} ${shape}s, the same shape and the same color.`, visual: { kind: 'item', shape, colour: c, size: 64 }, explainVisual: null };
   },
@@ -17825,29 +17892,48 @@ Object.assign(GENERATORS, {
     const shape = pick(rng, ['circle', 'square', 'triangle']); const others = ['circle', 'square', 'triangle'].filter((x) => x !== shape);
     const right = p3ShapeToken(shape, pick(rng, P3_LOOKS[shape]));
     return { type: 'choice', story: null, prompt: `Tap the ${shape}.`, choices: shuffle(rng, [right, ...others.map((x) => p3ShapeToken(x, pick(rng, P3_LOOKS[x])))]), answer: right,
-      explain: ({ triangle: 'This is a triangle. It has three corners.', circle: 'This is a circle. It is round, with no corners.', square: 'This is a square. It has four corners.' })[shape] || `This is a ${shape}.`, visual: null, explainVisual: null };
+      explain: ({ triangle: 'This is a triangle. It has three corners.', circle: 'This is a circle. It is round, with no corners.', square: 'This is a square. It has four corners, and its four sides are all the same length.' })[shape] || `This is a ${shape}.`, visual: null, explainVisual: null };
   },
   'p3-name-three-shapes': (rng) => {
     const shape = pick(rng, ['circle', 'square', 'triangle']); const look = pick(rng, P3_LOOKS[shape]);
     return { type: 'choice', story: null, prompt: 'What shape is this?', choices: shuffle(rng, ['circle', 'square', 'triangle']), answer: shape,
-      explain: ({ triangle: 'This is a triangle. It has three corners.', circle: 'This is a circle. It is round, with no corners.', square: 'This is a square. It has four corners.' })[shape], visual: { kind: 'shape', name: shape, variant: look }, explainVisual: null };
+      explain: ({ triangle: 'This is a triangle. It has three corners.', circle: 'This is a circle. It is round, with no corners.', square: 'This is a square. It has four corners, and its four sides are all the same length.' })[shape], visual: { kind: 'shape', name: shape, variant: look }, explainVisual: null };
   },
   'p3-tap-picture': (rng) => {
     // Ten pictures, three to choose from (pass LS: a deeper bank), each named in the lesson first.
     const P3_PICTURES = ['sun', 'fish', 'tree', 'cup', 'moon', 'flower', 'cloud', 'rain', 'bird', 'pizza'];
     const name = pick(rng, P3_PICTURES); const others = shuffle(rng, P3_PICTURES.filter((x) => x !== name)).slice(0, 2);
     return { type: 'choice', story: null, prompt: `Tap the ${name}.`, choices: shuffle(rng, [`icon:${name}`, ...others.map((x) => `icon:${x}`)]), answer: `icon:${name}`,
-      explain: ({ sun: 'This is the sun. It shines in the day.', moon: 'This is the moon. We often see it at night.', fish: 'This is a fish. It swims in the water.', tree: 'This is a tree. It grows tall, with leaves on top.', cloud: 'This is a cloud. Clouds float high in the sky.', rain: 'This is rain. Rain falls from the clouds.', bird: 'This is a bird. A bird has wings, so it can fly.', pizza: 'This is a pizza. We eat it in slices.', cup: 'This is a cup. We drink from it.', flower: 'This is a flower. It grows on a plant.' })[name], visual: null, explainVisual: null };
+      explain: ({ sun: 'This is the sun. It shines in the day.', moon: 'This is the moon. We often see it at night, and sometimes in the day too.', fish: 'This is a fish. It swims in the water.', tree: 'This is a tree. It grows tall, with a trunk.', cloud: 'This is a cloud. Clouds float high in the sky.', rain: 'This is rain. Rain falls from the clouds.', bird: 'This is a bird. A bird has wings, and most birds can fly.', pizza: 'This is a slice of pizza. We cut a pizza into slices to eat it.', cup: 'This is a cup. We drink from it.', flower: 'This is a flower. It grows on a plant.' })[name], visual: null, explainVisual: null };
   },
+  // Circle and square (pass MB): a shape in each of its looks, uncolored, so the bank is the tasks a child meets.
   'p3-tap-shape': (rng) => {
-    const shape = pick(rng, ['circle', 'square']); const other = shape === 'circle' ? 'square' : 'circle'; const c = pickColor(rng); const c2 = pickColor(rng);
-    return { type: 'choice', story: null, prompt: `Tap the ${shape}.`, choices: shuffle(rng, [`item:${shape}-${c}`, `item:${other}-${c2}`]), answer: `item:${shape}-${c}`,
-      explain: `This is a ${shape}. ${shape === 'circle' ? 'It is round, with no corners.' : 'It has four corners.'}`, visual: null, explainVisual: null };
+    const shape = pick(rng, ['circle', 'square']); const other = shape === 'circle' ? 'square' : 'circle'; const look = pick(rng, CS_LOOKS[shape]); const right = csToken(shape, look);
+    return { type: 'choice', story: null, prompt: `Tap the ${shape}.`, choices: shuffle(rng, [right, csToken(other, pick(rng, CS_LOOKS[other]))]), answer: right,
+      explain: [csSeen(shape, look), CS_WHY[shape]].join(' '), visual: null, explainVisual: null };
   },
   'p3-name-shape': (rng) => {
-    const shape = pick(rng, ['circle', 'square']); const c = pickColor(rng);
+    const shape = pick(rng, ['circle', 'square']); const look = pick(rng, CS_LOOKS[shape]);
     return { type: 'choice', story: null, prompt: 'What shape is this?', choices: shuffle(rng, ['circle', 'square']), answer: shape,
-      explain: `It is a ${shape}. ${shape === 'circle' ? 'It is round, with no corners.' : 'It has four corners.'}`, visual: { kind: 'item', shape, colour: c }, explainVisual: null };
+      explain: [csSeen(shape, look), CS_WHY[shape]].join(' '), visual: { kind: 'shape', name: shape, variant: look === 'plain' ? null : look }, explainVisual: null };
+  },
+  // A shape found by what the lesson says about it: four corners, no corners, round.
+  'p3-shape-by-corners': (rng) => {
+    const [clue, shape] = pick(rng, CS_CLUES); const other = shape === 'circle' ? 'square' : 'circle'; const look = pick(rng, CS_LOOKS[shape]); const right = csToken(shape, look);
+    return { type: 'choice', story: null, prompt: `Tap the shape that ${clue}.`, choices: shuffle(rng, [right, csToken(other, pick(rng, CS_LOOKS[other]))]), answer: right,
+      explain: ['This is a ', shape, '. ', CS_WHY[shape]].join(''), visual: null, explainVisual: null };
+  },
+  // The real things the lesson names and draws beside the shapes.
+  'p3-shape-thing': (rng) => {
+    const [clue, rights, wrongs] = pick(rng, CS_THINGS); const a = pick(rng, rights); const w = pick(rng, wrongs);
+    return { type: 'choice', story: null, prompt: `Tap the one that ${clue}.`, choices: shuffle(rng, ['icon:' + a, 'icon:' + w]), answer: 'icon:' + a, explain: CS_THING_WHY[a], visual: null, explainVisual: null };
+  },
+  // The same shape at another size or turn (P-MATH 9's "matches some shapes that are different sizes and orientations").
+  'p3-same-shape-any-size': (rng) => {
+    const shape = pick(rng, ['circle', 'square']); const other = shape === 'circle' ? 'square' : 'circle'; const shown = pick(rng, ['plain', 'small']);
+    const look = pick(rng, CS_LOOKS[shape].filter((l) => l !== shown)); const right = csToken(shape, look);
+    return { type: 'choice', story: `This is a ${shape}.`, prompt: 'Tap the one that is the same shape.', choices: shuffle(rng, [right, csToken(other, pick(rng, CS_LOOKS[other]))]), answer: right,
+      explain: ['It is a ', shape, ' too. ', look === 'turned' ? 'Turning a square does not change its shape.' : 'Size does not change the shape.'].join(''), visual: { kind: 'shape', name: shape, variant: shown === 'plain' ? null : shown }, explainVisual: null };
   },
   'p3-tap-ab': (rng) => {
     const L = pick(rng, ['A', 'B']); const other = L === 'A' ? 'B' : 'A';
@@ -17857,16 +17943,45 @@ Object.assign(GENERATORS, {
   'p3-name-ab': (rng) => {
     // More examples (pass HT, Mikey): the letter alone, or lit up at the start of a word read aloud.
     if (rng() < 0.6) { const [word, L] = pick(rng, [['Apple', 'A'], ['Ant', 'A'], ['Alligator', 'A'], ['Acorn', 'A'], ['Arrow', 'A'], ['Ball', 'B'], ['Bee', 'B'], ['Bus', 'B'], ['Bat', 'B'], ['Bear', 'B'], ['Boat', 'B'], ['Book', 'B']]);
-      return { type: 'choice', story: null, prompt: `What letter does ${word.toLowerCase()} start with?`, choices: shuffle(rng, ['A', 'B']), answer: L, explain: `${word} starts with ${L}.`, visual: { kind: 'letters', text: word, highlight: 0 }, explainVisual: null }; }
+      const why = L === 'A' ? 'It is tall, with a bar across the middle, so it is A.' : 'It has two round bumps on one side, so it is B.';
+      return { type: 'choice', story: null, prompt: `What letter does ${word.toLowerCase()} start with?`, choices: shuffle(rng, ['A', 'B']), answer: L, explain: [word, ' starts with ', L, '. Look at the first letter. ', why].join(''), visual: { kind: 'letters', text: word, highlight: 0 }, explainVisual: null }; }
     const L = pick(rng, ['A', 'B']);
     return { type: 'choice', story: null, prompt: 'What letter is this?', choices: shuffle(rng, ['A', 'B']), answer: L,
       explain: `This is ${L}. ${L === 'A' ? 'It is tall, with a bar across the middle.' : 'It has two round bumps on one side.'}`, visual: { kind: 'letters', text: L, highlight: 0 }, explainVisual: null };
   },
 
   'p3-odd-one': (rng) => {
+    // The shown one is drawn at its choices' size, as Find the Match's is (pass MB), so the same one is just alike; the words
+    // name no shape or color this lesson has not taught (Listen and Point is not linear, so it can come before Very First Steps).
     const shape = pick(rng, PATTERN_SHAPES); const c = pickColor(rng); const otherShape = pick(rng, PATTERN_SHAPES.filter((x) => x !== shape)); const otherColor = otherColors(rng, c, 1)[0];
-    return { type: 'choice', story: `This is a ${c} ${shape}.`, prompt: 'Tap the one that is different.', choices: shuffle(rng, [`item:${shape}-${c}`, `item:${otherShape}-${otherColor}`]), answer: `item:${otherShape}-${otherColor}`,
-      explain: `This one is a ${otherColor} ${otherShape}, not a ${c} ${shape}, so it is different.`, visual: { kind: 'item', shape, colour: c }, explainVisual: null };
+    return { type: 'choice', story: 'Look at this one.', prompt: 'Tap the one that is different.', choices: shuffle(rng, [`item:${shape}-${c}`, `item:${otherShape}-${otherColor}`]), answer: `item:${otherShape}-${otherColor}`,
+      explain: 'This one has a different shape and a different color, so it is different.', visual: { kind: 'item', shape, colour: c, size: 64 }, explainVisual: null };
+  },
+  'p3-odd-color': (rng) => p3OddBy(rng, 'color'),
+  'p3-odd-shape': (rng) => p3OddBy(rng, 'shape'),
+  'p3-odd-size': (rng) => p3OddBy(rng, 'size'),
+  // Sorting (pass MB, PK3.V.E.1): a group sorted by color, red or blue as the lesson's sorting line says; the one in the other
+  // color does not go with them. Both choices are one shape, so only the color decides; the group's order is fixed (pass LV).
+  'p3-sort-out': (rng) => {
+    const c = pick(rng, ['red', 'blue']); const c2 = c === 'red' ? 'blue' : 'red'; const row = pick(rng, P3_SORT_ROWS); const s = pick(rng, PATTERN_SHAPES);
+    return { type: 'choice', story: 'These go together.', prompt: 'Tap the one that does not go with them.', choices: shuffle(rng, ['item:' + s + '-' + c, 'item:' + s + '-' + c2]), answer: 'item:' + s + '-' + c2,
+      explain: ['It is ', c2, ', and these are ', c, ', so it does not go with them. It goes in a group of its own.'].join(''), visual: { kind: 'pattern', items: row, colour: c }, explainVisual: null };
+  },
+  // Listen and tap (pass MB): a picture found from what it does or where it is.
+  'p3-tap-by-clue': (rng) => {
+    const [clue, a, wrongs, why] = pick(rng, LT_CLUES); const others = shuffle(rng, wrongs).slice(0, 2);
+    return { type: 'choice', story: null, prompt: `Tap the one ${clue}.`, choices: shuffle(rng, [a, ...others].map((x) => 'icon:' + x)), answer: 'icon:' + a, explain: why, visual: null, explainVisual: null };
+  },
+  // Up in the sky or down in the water (the lesson's two lines; P-MATH 10's spatial words). A bird, rain and a tall tree are
+  // never wrong choices for the sky, and rain, a cup, a bird (a duck swims) and a flower (a water lily) never for the water.
+  'p3-up-or-down': (rng) => {
+    if (rng() < 0.75) {
+      const a = pick(rng, ['sun', 'moon', 'cloud']); const others = shuffle(rng, ['fish', 'cup', 'flower', 'pizza']).slice(0, 2);
+      return { type: 'choice', story: null, prompt: 'Tap the one that is up in the sky.', choices: shuffle(rng, [a, ...others].map((x) => 'icon:' + x)), answer: 'icon:' + a,
+        explain: ({ sun: 'The sun is up in the sky.', moon: 'The moon is up in the sky.', cloud: 'Clouds float high up in the sky.' })[a], visual: null, explainVisual: null };
+    }
+    const others = shuffle(rng, ['sun', 'moon', 'cloud', 'tree', 'pizza']).slice(0, 2);
+    return { type: 'choice', story: null, prompt: 'Tap the one that is down in the water.', choices: shuffle(rng, ['fish', ...others].map((x) => 'icon:' + x)), answer: 'icon:fish', explain: 'A fish is down in the water, where it swims.', visual: null, explainVisual: null };
   },
 });
 // First Steps part one at the refined standard (pass LU). In plain terms: question kinds that apply each lesson's facts to
@@ -27906,7 +28021,21 @@ Object.assign(GENERATORS, {
 });
 
 // Listen and Point (pass LS): the sound an animal makes, asked the other way round, so the bank holds twice as much.
+// Pass MB (the lesson brief): two sounds one after another, which came first and which second (the Head Start progression for
+// three-year-olds, P-MATH 4), and two heard at once, told apart by listening closely. Answers come from the one sound table.
 Object.assign(GENERATORS, {
+  'p3-animal-order': (rng) => {
+    const [a, sa] = pick(rng, P3_ANIMAL_SOUNDS); const [b, sb] = pick(rng, P3_ANIMAL_SOUNDS.filter((x) => x[0] !== a)); const second = rng() < 0.5; const [want, ws] = second ? [b, sb] : [a, sa]; const word = second ? 'second' : 'first';
+    return { type: 'choice', story: ['Listen. ', capFirst(sa), ', then ', sb, '.'].join(''), prompt: `Which animal did you hear ${word}?`, choices: shuffle(rng, ['pic:' + a, 'pic:' + b]), answer: 'pic:' + want,
+      explain: [capFirst(ws), ' came ', word, ', and the ', want, ' says ', ws, '.'].join(''), visual: null, explainVisual: { kind: 'pic', name: want } };
+  },
+  'p3-two-at-once': (rng) => {
+    // "Two animals are near": never a bear beside a three-year-old (the second read), so the bear's growl is asked the other ways.
+    const near = P3_ANIMAL_SOUNDS.filter((x) => x[0] !== 'bear');
+    const [a, sa] = pick(rng, near); const [b, sb] = pick(rng, near.filter((x) => x[0] !== a)); const [want, ws] = rng() < 0.5 ? [a, sa] : [b, sb];
+    return { type: 'choice', story: ['Two animals are near. You hear ', sa, ' and ', sb, ' at the same time.'].join(''), prompt: `Tap the one that says ${ws}.`, choices: shuffle(rng, ['pic:' + a, 'pic:' + b]), answer: 'pic:' + want,
+      explain: ['The ', want, ' says ', ws, '. Listening closely tells the two sounds apart.'].join(''), visual: null, explainVisual: { kind: 'pic', name: want } };
+  },
   'p3-animal-says': (rng) => { const [animal, sound] = pick(rng, P3_ANIMAL_SOUNDS); const [, other] = pick(rng, P3_ANIMAL_SOUNDS.filter((x) => x[0] !== animal));
     return { type: 'choice', story: null, prompt: `What does the ${animal} say?`, choices: shuffle(rng, [sound, other]), answer: sound, explain: `The ${animal} says ${sound}.`, visual: { kind: 'pic', name: animal }, explainVisual: null }; },
 });
@@ -31554,7 +31683,7 @@ export const WONDER = [
   },
   {
     id: 'w-big-or-small',
-    theme: 'world',   // pass MA, for Mikey's approval: it asks about size, not a feeling, so it is not offered first after a hard round
+    theme: 'world',   // pass MA: it asks about size, not a feeling, so it is not offered first after a hard round (Mikey checks Wonder text after it ships, pass MB)
     stage: 'early',
     courseIds: ['very-first-steps-pk3'],
     answerMode: 'pick',
@@ -31567,8 +31696,11 @@ export const WONDER = [
     perspectives: [
       { voice: 'A scientist', says: 'Big and small are always compared to something. You are enormous next to an ant and tiny next to a tree. So before I answer, I always ask what you are being compared to.' },
       { voice: 'An artist', says: 'Painters make a mountain feel huge by putting a small person at the bottom of it. Size on a page is a trick of what sits next to what, and you can try that trick in your own drawings.' },
-      { voice: 'A grandparent of faith', says: 'Old stories are full of small ones who did big things. Being small has never meant being unimportant, and every grandparent knows it.' },
-      { voice: 'A skeptic', says: 'Grown-ups sometimes say you are big and sometimes say you are small. Both can be true at once. It is one of the first questions with more than one good answer.' },
+      // Georgette's and Mike's voices: the rewrites pass MA proposed, shipped in pass MB (Mikey: "You don't really need me to approve
+      // wonder questions, just add them and I'll check them all later"). Georgette's faith is her own; Mike asks big enough for what,
+      // never doubting a grown-up's too small, which is how a safety limit is said (the Wonder brief's second read).
+      { voice: 'A grandparent of faith', says: 'The old stories I love, some of them from my faith, are full of small ones who did big things. I have always believed that being small never means being unimportant.' },
+      { voice: 'A skeptic', says: 'Grown-ups call you big one day and too small the next, and I used to wonder which one was true. Now I ask, big enough for what? Big enough to carry your plate is not the same as big enough to drive. It is one of the first questions with more than one good answer.' },
     ],
     closing: 'What is something you are bigger than, and something you are smaller than?',
   },
@@ -31578,17 +31710,19 @@ export const WONDER = [
     stage: 'early',
     courseIds: ['listen-and-point-pk3'],
     answerMode: 'pick',
-    prompt: 'Are you the same as your friend, or different?',
+    // Pass MB (the Wonder brief; shipped under Mikey's MB rule and quoted in DECISIONS for his later check): the scientist had
+    // declared Both the honest answer, Chloe called a one-color picture a wall, Georgette had no faith of her own, and Mike tested nothing.
+    prompt: 'Are you and a friend the same, or different?',
     options: ['The same', 'Different', 'Both'],
     simple: [
-      { voice: 'A scientist says', says: 'Everyone is a little the same and a little different.' },
-      { voice: 'An artist says', says: 'Different is what makes a picture interesting.' },
+      { voice: 'A scientist says', says: 'Let\'s test it! Ask a friend their favorite food, and listen. Is it your favorite too?' },
+      { voice: 'An artist says', says: 'When I paint two friends, I look for what matches, and then for what does not.' },
     ],
     perspectives: [
-      { voice: 'A scientist', says: 'Every person shares almost everything with every other person, and still no two are alike. Both things are true at once, so the honest answer is both.' },
-      { voice: 'An artist', says: 'A picture made of one color is a wall. Art needs sameness to hold together and difference to be worth looking at. Friendships are a lot like that.' },
-      { voice: 'A grandparent of faith', says: 'Old stories are full of friends who were nothing alike and loved each other anyway. The differences were usually the point of the story.' },
-      { voice: 'A skeptic', says: 'You will notice ways you and a friend are different, and noticing is fine. Different does not mean better or worse. It just means not the same.' },
+      { voice: 'A scientist', says: 'Before I answer a question like this, I collect evidence. Ask a friend about their favorite food, game and song, and listen closely to each answer. Make two lists, one for what matches and one for what does not, and see what your lists tell you.' },
+      { voice: 'An artist', says: 'When I paint two friends, I look twice. The first time I notice what matches, the same muddy boots or the same big smile. The second time I notice what does not, and that is how each face ends up looking like nobody else.' },
+      { voice: 'A grandparent of faith', says: 'My faith teaches me that every person is made with care, and that no two are made the same. So when I meet someone very different from me, I look for what I can learn from them, and I always find something.' },
+      { voice: 'A skeptic', says: 'The same in what way? You and a friend might laugh at the same jokes and go to bed at different times, so I check one thing at a time. I keep my answer in pencil, because friends grow and change. If anyone says different means better or worse, I ask them how they know.' },
     ],
     closing: 'What is one thing that is the same about you and a friend, and one thing that is different?',
   },
@@ -36019,102 +36153,102 @@ export function readingListFor(grade) { return READING_LISTS[grade] || []; }
 // not modules, and nothing about doing them is recorded.
 export const EXPERIMENTS = {
   PK3: [
-    { title: 'Sink or float', ask: 'Which will float?', do: 'A bowl of water; drop in a spoon, a cork, a coin, a leaf. Guess first.', see: 'Some float, some sink. Size does not decide.' },
+    { title: 'Sink or float', ask: 'Which will float?', do: 'A bowl of water and a grown-up beside you. Drop in a metal spoon, an apple, a leaf and a plastic bath toy. Guess first.', see: 'Some float and some sink. The big apple floats and the small spoon sinks, so size does not decide.' },
     { title: 'Color mixing', ask: 'What do red and blue make?', do: 'Two drops of food coloring in a cup of water. Stir.', see: 'A new color. Red and blue make purple.' },
-    { title: 'Loud and quiet', ask: 'Which makes a louder sound?', do: 'Tap a spoon on a pot, a cup, a pillow, a table.', see: 'Hard things ring; soft things thud.' },
+    { title: 'Loud and quiet', ask: 'Which makes a louder sound?', do: 'Tap a spoon on a pot, a plastic cup, a pillow, a table.', see: 'Hard things make a sharp, loud sound, and soft things make a dull, quiet one.' },
     { title: 'Ice cube race', ask: 'Where does ice melt fastest?', do: 'One cube on a plate in the sun, one in the fridge, one in your hand.', see: 'Warmth melts ice. Your hand is warm.' },
-    { title: 'Rolling or not', ask: 'Which of these will roll?', do: 'A ball, a block, a can, a book, on a tray tilted a little.', see: 'Round things roll; flat things slide or stay.' },
+    { title: 'Rolling or not', ask: 'Which of these will roll?', do: 'A ball, a block, an unopened can, a book, on a tray tilted a little.', see: 'A ball, round all over, rolls, and so does a can on its side. Flat things slide or stay.' },   // pass MB: "round things roll" was retired, since a plate lying flat does not
     { title: 'Wet sand, dry sand', ask: 'Which sand makes a castle?', do: 'Two cups of sand, one with a little water. Try to shape each.', see: 'Wet sand holds a shape; dry sand falls apart.' },
-    { title: 'Smell jars', ask: 'Can you tell what it is with your nose?', do: 'Cotton balls with vanilla, lemon, cinnamon, in covered cups with holes.', see: 'Noses know things eyes cannot see.' },
-    { title: 'Sound shakers', ask: 'Which shaker is loudest?', do: 'Rice, beans and coins in three closed containers. Shake each.', see: 'Different things make different sounds.' },
+    { title: 'Smell jars', ask: 'Can you tell what it is with your nose?', do: 'A grown-up puts a drop of vanilla on one cotton ball, a squeeze of lemon on another and a cinnamon stick in a third cup, covers the cups and pokes holes in the lids. Sniff gently, and no tasting.', see: 'Noses know things eyes cannot see.' },
+    { title: 'Sound shakers', ask: 'Which shaker is loudest?', do: 'A grown-up puts rice in one plastic tub, dried beans in another and a metal spoon in a third, and tapes each lid shut. Shake each.', see: 'Different things make different sounds.' },
     { title: 'Melting chocolate', ask: 'What does warmth do?', do: 'A chocolate chip in a warm hand, one on a cold plate.', see: 'Warmth melts it; cold keeps it solid.' },
-    { title: 'Big splash, small splash', ask: 'Which makes the bigger splash?', do: 'A pebble and a big rock dropped into a bucket, from the same height.', see: 'Bigger things push more water out of the way.' },
-    { title: 'Frozen toys', ask: 'How do you get the toy out?', do: 'A small toy frozen in a cup of water; salt, warm water, a spoon.', see: 'Warmth and salt melt ice faster than waiting.' },
-    { title: 'Feathers and rocks', ask: 'Which falls faster?', do: 'Drop a feather and a rock together.', see: 'The rock hits first because air slows the feather.' },
+    { title: 'Big splash, small splash', ask: 'Which makes the bigger splash?', do: 'With a grown-up right beside you, drop a rock as big as an egg and a rock as big as an orange into a shallow tub of water, from the same height. Tip the water out when you finish.', see: 'Bigger things push more water out of the way.' },
+    { title: 'Frozen toys', ask: 'How do you get the toy out?', do: 'A bath toy as big as your hand, frozen in a plastic tub of water. A grown-up gives you salt, warm water and a spoon.', see: 'Warmth and salt melt ice faster than waiting.' },
+    { title: 'Feathers and rocks', ask: 'Which falls faster?', do: 'Drop a craft feather and a rock as big as an orange onto the grass, away from your toes.', see: 'The rock hits first because air slows the feather.' },
     { title: 'Shadow puppets', ask: 'What makes a shadow?', do: 'A flashlight, a wall, your hands.', see: 'Something in the way of the light makes a shadow.' },
-    { title: 'Sorting by color', ask: 'Which pile does it go in?', do: 'A bowl of colored buttons or blocks, sorted into cups.', see: 'Things can be grouped by what they look like.' },
-    { title: 'Fizzing colors', ask: 'What happens when they meet?', do: 'Baking soda on a tray, colored vinegar dripped on with a dropper.', see: 'It fizzes. Two things met and made a gas.' },
-    { title: 'Bird watching', ask: 'Who lives outside?', do: 'Sit quietly by a window or outside for five minutes. Count what moves.', see: 'Living things are everywhere when you are still enough to notice.' },
-    { title: "Shadow tag", ask: "Can you catch your shadow?", do: "Go outside on a sunny day. Try to step on your own shadow, then a friend's.", see: "A shadow moves when you move and stretches when the sun is low." },
-    { title: "Bubble breath", ask: "What is inside a bubble?", do: "Dip a wand in soapy water and blow slowly, then fast.", see: "Air. Slow breath makes big bubbles; fast breath makes many small ones." },
-    { title: "Magnet hunt", ask: "What will the magnet stick to?", do: "Carry a fridge magnet around the room. Try a spoon, a door, a book, a coin.", see: "It sticks to some metal things and nothing else." },
+    { title: 'Sorting by color', ask: 'Which pile does it go in?', do: 'A bowl of big colored blocks, sorted into piles by color.', see: 'Things can be grouped by what they look like.' },
+    { title: 'Fizzing colors', ask: 'What happens when they meet?', do: 'With a grown-up right beside you, drip colored vinegar onto baking soda on a tray with a plastic dropper. Keep your hands away from your eyes, and wash them when you finish.', see: 'It fizzes. Two things met and made a gas.' },
+    { title: 'Bird watching', ask: 'Who lives outside?', do: 'Sit quietly with a grown-up by a closed window, or outside together, for five minutes. Count what moves.', see: 'Living things are everywhere when you are still enough to notice.' },
+    { title: "Shadow tag", ask: "Can you catch your shadow?", do: "Go outside with a grown-up on a sunny day, in a yard or a park away from the street. Try to step on your own shadow, then a friend's.", see: "A shadow moves when you move and stretches when the sun is low." },
+    { title: "Bubble breath", ask: "What is inside a bubble?", do: "Dip a wand in soapy water and blow slowly, then fast. Blow out, never sip.", see: "Air. Slow breath makes big bubbles; fast breath makes many small ones." },
+    { title: "Magnet hunt", ask: "What will the magnet stick to?", do: "Carry a big fridge magnet around the room. Try a spoon, a door, a book and a soup can.", see: "It sticks to some metal things and nothing else." },
     { title: "Warm hands", ask: "Can rubbing make warmth?", do: "Rub your palms together fast for ten seconds, then touch your cheeks.", see: "Rubbing makes heat. Friction is warm." },
-    { title: "Sink the boat", ask: "How many pennies can a foil boat hold?", do: "Shape a piece of foil into a boat. Add pennies one at a time.", see: "It floats until it is too heavy, then it sinks all at once." },
+    { title: "Sink the boat", ask: "How many spoons can a foil boat hold?", do: "Shape a piece of foil into a boat and float it in a baking pan of water. Lay metal teaspoons in, one at a time, with a grown-up beside you.", see: "It floats until it is too heavy, then it sinks all at once." },
   ],
   PK4: [
-    { title: 'Grow a bean', ask: 'What does a seed need?', do: 'A bean in a damp paper towel in a clear cup by a window. Keep it damp.', see: 'A sprout, then a root, then leaves.' },
-    { title: 'Shadow tracing', ask: 'Does a shadow move?', do: 'Trace a toy\'s shadow on paper outside in the morning; trace it again after lunch.', see: 'The shadow moved because the sun did.' },
-    { title: 'Magnet hunt', ask: 'What does a magnet pull?', do: 'Walk around the house with a fridge magnet and touch things.', see: 'It grabs some metal things and nothing else.' },
-    { title: 'Bubbles', ask: 'What shape is a bubble?', do: 'Dish soap and water; blow through a straw, a bent pipe cleaner, your hands.', see: 'Always round, whatever the shape of the wand.' },
-    { title: 'Which cup keeps it warm?', ask: 'Where does the warm water stay warm?', do: 'Warm water in a paper cup, a metal cup and a foam cup. Feel each after ten minutes.', see: 'Some materials hold heat in; some let it out.' },
+    { title: 'Grow a bean', ask: 'What does a seed need?', do: 'A bean in a damp paper towel in a clear cup by a window. Keep it damp. Beans for planting are not for eating.', see: 'A root comes out first, then a sprout, then leaves.' },
+    { title: 'Shadow tracing', ask: 'Does a shadow move?', do: 'Trace a toy\'s shadow on paper outside in the morning; trace it again after lunch.', see: 'The shadow moved because the sun seemed to move across the sky.' },
+    { title: 'Magnet hunt', ask: 'What does a magnet pull?', do: 'Walk around the house with a big fridge magnet and touch things.', see: 'It grabs some metal things and nothing else.' },
+    { title: 'Bubbles', ask: 'What shape is a bubble?', do: 'Dish soap and water; blow out through a straw, never sip. Then try a pipe cleaner a grown-up bends into a loop, with the sharp ends tucked in, and your hands.', see: 'Always round, whatever the shape of the wand.' },
+    { title: 'Which cup keeps it warm?', ask: 'Where does the warm water stay warm?', do: 'Warm, not hot, water that a grown-up pours into a paper cup, a metal cup and a foam cup. Feel each after ten minutes.', see: 'Some materials hold heat in; some let it out.' },
     { title: 'Ramp race', ask: 'Which ramp is faster?', do: 'Two books, two boards at different angles, one toy car.', see: 'Steeper is faster.' },
-    { title: 'Sink the boat', ask: 'How many coins can a foil boat hold?', do: 'A small boat folded from foil; add pennies one at a time.', see: 'A wide, flat boat holds more before it sinks.' },
+    { title: 'Sink the boat', ask: 'How many spoons can a foil boat hold?', do: 'A small boat folded from foil, in a baking pan of water; lay metal teaspoons in one at a time, with a grown-up beside you.', see: 'A wide, flat boat holds more before it sinks.' },
     { title: 'Celery in colored water', ask: 'Where does the water go?', do: 'A celery stalk in a glass of water with food coloring, left overnight.', see: 'The leaves turn color. Plants drink through their stems.' },
-    { title: 'Static balloon', ask: 'Can a balloon pick things up?', do: 'Rub a balloon on your hair, hold it near tiny bits of paper.', see: 'The paper jumps to the balloon. That is static.' },
+    { title: 'Static balloon', ask: 'Can a balloon pick things up?', do: 'A grown-up blows up a balloon and ties it. Rub it on your hair and hold it near tiny bits of paper. If it pops, a grown-up picks up every piece.', see: 'The paper jumps to the balloon. That is static.' },
     { title: 'Which is heavier?', ask: 'Can you guess by feel?', do: 'Two closed boxes, one with rocks and one with cotton. Guess, then open.', see: 'Size does not tell weight.' },
-    { title: 'Rain in a jar', ask: 'Where does the rain come from?', do: 'Hot water in a jar, a plate of ice on top.', see: 'Drops form under the plate and fall. That is rain.' },
-    { title: 'Butter shaking', ask: 'Can you make butter?', do: 'Heavy cream in a jar with a lid; shake for ten minutes.', see: 'The cream turns to butter and buttermilk.' },
+    { title: 'Rain in a jar', ask: 'Where does the rain come from?', do: 'A grown-up pours hot tap water into a jar and sets a plate of ice on top.', see: 'Drops form under the plate and fall. That is how rain forms.' },
+    { title: 'Butter shaking', ask: 'Can you make butter?', do: 'Heavy cream in a plastic jar with a tight lid; shake for ten minutes. Check first that no one who will taste it has a milk allergy.', see: 'The cream turns to butter and buttermilk.' },
     { title: 'Salt or sugar?', ask: 'Which one disappears faster in water?', do: 'A spoon of each in two cups of warm water, stirred the same.', see: 'Both dissolve; one takes longer.' },
-    { title: 'Living things need water', ask: 'What happens to a plant without water?', do: 'Two potted plants, one watered, one not, for a week.', see: 'The dry one droops. Plants need water.' },
-    { title: 'Magnet fishing', ask: 'Which fish will the magnet catch?', do: 'Paper fish, some with paper clips, on a string with a magnet.', see: 'Only the fish with metal get caught.' },
+    { title: 'Living things need water', ask: 'What happens to a plant without water?', do: 'Two leafy potted plants, one watered, one not, for a week.', see: 'The dry one droops. Plants need water.' },
+    { title: 'Magnet fishing', ask: 'Which fish will the magnet catch?', do: 'Paper fish, some with paper clips, on a string with a big fridge magnet. A grown-up counts the paper clips back and puts the string away after.', see: 'Only the fish with metal get caught.' },
     { title: 'Sound through the table', ask: 'Can you hear through wood?', do: 'Put your ear on the table while a friend taps the far end.', see: 'Sound travels through wood, and loudly.' },
-    { title: "Rain in a jar", ask: "Where does rain come from?", do: "Hot water in a jar, a plate of ice on top. Wait.", see: "Drops form under the plate and fall. Warm wet air meets cold and rains." },
-    { title: "Seeds in the dark", ask: "Do seeds need light to start?", do: "Two wet paper towels with beans, one in a dark cupboard, one in the light.", see: "Both sprout. Seeds need water first; light comes later." },
-    { title: "Salt and pepper", ask: "Can a balloon pick up pepper?", do: "Mix salt and pepper. Rub a balloon on hair and hold it close.", see: "The pepper jumps up. Static pulls the light grains." },
-    { title: "Sound through a string", ask: "Can sound travel down a string?", do: "Two cups joined by a long string, pulled tight. One talks, one listens.", see: "The voice comes through the string, not the air." },
-    { title: "Melting race", ask: "Which melts fastest, ice, chocolate or butter?", do: "A cube of each on a warm plate in the sun.", see: "Each has its own melting point. Butter first, ice last on a warm day." },
+    { title: "Rain in a jar", ask: "Where does rain come from?", do: "A grown-up pours hot tap water into a jar and sets a plate of ice on top. Wait.", see: "Drops form under the plate and fall. Warm wet air meets cold and rains." },
+    { title: "Seeds in the dark", ask: "Do seeds need light to start?", do: "Two wet paper towels with beans, one in a dark cupboard, one in the light. Beans for planting are not for eating.", see: "Both sprout. Seeds need water first; light comes later." },
+    { title: "Salt and pepper", ask: "Can a balloon pick up pepper?", do: "Mix salt and pepper on a plate. A grown-up blows up a balloon and ties it. Rub it on your hair and hold it just above the plate, and keep the pepper away from your eyes. If it pops, a grown-up picks up every piece.", see: "The pepper jumps up. Static pulls the light grains." },
+    { title: "Sound through a string", ask: "Can sound travel down a string?", do: "A grown-up pokes a hole in two cups and knots a long string through them. Pull it tight; one talks, one listens. Put the string away after.", see: "The voice travels along the tight string to the other cup." },
+    { title: "Melting race", ask: "Which melts fastest, ice, chocolate or butter?", do: "A cube of each on a warm plate in the sun.", see: "Each one starts to melt at its own warmth, so they melt at different times. Watch which goes first." },
   ],
   K: [
-    { title: 'Sound through a string', ask: 'Can sound travel through a string?', do: 'Two paper cups and a long string pulled tight.', see: 'A whisper comes through the string.' },
-    { title: 'Which paper towel is strongest?', ask: 'Which brand holds the most water?', do: 'Wet each, hang it, add coins until it tears.', see: 'Some hold far more. Testing beats guessing.' },
+    { title: 'Sound through a string', ask: 'Can sound travel through a string?', do: 'A grown-up pokes a hole in two paper cups and knots a long string through them, pulled tight. Put the string away after.', see: 'A whisper comes through the string.' },
+    { title: 'Which paper towel is strongest?', ask: 'Which brand holds the most water?', do: 'Wet each, hang it, add coins until it tears. Keep the coins away from little brothers and sisters.', see: 'Some hold far more. Testing beats guessing.' },
     { title: 'Freeze and melt', ask: 'Can water go back and forth?', do: 'Freeze water in a cup, melt it, freeze it again.', see: 'Same water, solid then liquid then solid.' },
     { title: 'Living or not', ask: 'Which of these is alive?', do: 'A rock, a plant, a toy, a pet. Ask: does it grow, eat, move on its own?', see: 'Living things grow and need food and water.' },
     { title: 'Ice cube lifting', ask: 'Can you lift ice with a string?', do: 'A wet string on an ice cube, sprinkled with salt; wait a minute and lift.', see: 'Salt melts the ice a little and it refreezes around the string.' },
     { title: 'Dancing raisins', ask: 'Why do the raisins go up and down?', do: 'Raisins dropped into a clear cup of fizzy water.', see: 'Bubbles stick to them and lift them; the bubbles pop and they sink.' },
     { title: 'Seed sorting', ask: 'Which seeds are alike?', do: 'A handful of mixed seeds sorted by size, color and shape.', see: 'Seeds come in many kinds, and each grows its own plant.' },
-    { title: 'Which cup is loudest?', ask: 'Does the size change the sound?', do: 'Tap a spoon on a full glass, a half-full glass, an empty glass.', see: 'More water, lower sound.' },
+    { title: 'Which glass sounds lowest?', ask: 'Does the water change the sound?', do: 'Tap a spoon gently on a full glass, a half-full glass, an empty glass.', see: 'More water, lower note.' },
     { title: 'Bending water', ask: 'Can a comb pull water?', do: 'A charged comb held near a thin stream from the tap.', see: 'The stream bends toward the comb.' },
     { title: 'Ice and salt on the sidewalk', ask: 'Why do people salt roads?', do: 'Two ice cubes on plates, one sprinkled with salt.', see: 'The salted one melts first.' },
-    { title: 'Growing crystals on a string', ask: 'What grows on the string?', do: 'Sugar dissolved in hot water, a string hung in it, a week of waiting.', see: 'Sugar crystals grow along the string.' },
+    { title: 'Growing crystals on a string', ask: 'What grows on the string?', do: 'A grown-up stirs sugar into hot water until no more dissolves and pours it into a jar. Hang a string in it and wait a week.', see: 'Sugar crystals grow along the string.' },
     { title: 'Sink or float, part two', ask: 'Can you make a sinker float?', do: 'A ball of clay sinks; the same clay shaped like a boat floats.', see: 'Shape changes floating.' },
-    { title: 'Shadow lengths', ask: 'When is your shadow longest?', do: 'Measure your shadow at morning, noon and late afternoon.', see: 'Longest when the sun is low.' },
-    { title: 'Which soil drains?', ask: 'Where does water go fastest?', do: 'Cups of sand, soil and clay with holes; pour water and time it.', see: 'Sand drains fast; clay holds water.' },
-    { title: 'Ladybug or ant?', ask: 'How many legs?', do: 'Look closely at a bug outside and count its legs.', see: 'Insects have six legs. Spiders have eight.' },
+    { title: 'Shadow lengths', ask: 'When is your shadow longest?', do: 'Measure your shadow at morning, noon and late afternoon. Never look at the sun, and wear a hat at noon.', see: 'Longest when the sun is low.' },
+    { title: 'Which soil drains?', ask: 'Where does water go fastest?', do: 'Cups of sand, soil and clay with holes a grown-up makes; pour water and time it.', see: 'Sand drains fast; clay holds water.' },
+    { title: 'Ladybug or ant?', ask: 'How many legs?', do: 'Look closely at a bug outside, without touching it, and count its legs. Stay away from ant mounds.', see: 'Insects have six legs. Spiders have eight.' },
     { title: 'Plant in the dark', ask: 'Does a plant need light?', do: 'Two bean sprouts, one in a dark box for a week.', see: 'The dark one grows pale and thin, reaching for light.' },
     { title: "Rainbow in a glass", ask: "Can water make a rainbow?", do: "A glass of water on a sunny windowsill, white paper on the floor.", see: "Colors on the paper. Sunlight is all the colors mixed." },
-    { title: "Plant maze", ask: "Will a plant find the light?", do: "A bean in a pot inside a shoebox with a hole cut in one end. Cardboard walls inside.", see: "The sprout bends and turns toward the hole. Plants grow toward light." },
-    { title: "Egg in vinegar", ask: "What happens to a shell in vinegar?", do: "An egg in a jar of vinegar for two days.", see: "The shell fizzes away and the egg turns rubbery. Acid dissolves shell." },
+    { title: "Plant maze", ask: "Will a plant find the light?", do: "A bean in a pot inside a shoebox with a hole a grown-up cuts in one end. Cardboard walls inside.", see: "The sprout bends and turns toward the hole. Plants grow toward light." },
+    { title: "Egg in vinegar", ask: "What happens to a shell in vinegar?", do: "An egg in a jar of vinegar for two days. Keep the vinegar away from your eyes, and wash your hands after touching the egg.", see: "The shell fizzes away and the egg turns rubbery. Acid dissolves shell." },
     { title: "Float a paper clip", ask: "Can metal float?", do: "A dry paper clip laid gently on still water with a fork.", see: "It floats on the water's skin. Surface tension holds it up." },
     { title: "Ice fishing", ask: "Can you lift an ice cube with a string?", do: "A string laid on an ice cube in water. Sprinkle salt on it. Wait a minute.", see: "The salt melts and refreezes the ice around the string. Lift." },
     { title: "Flashlight day and night", tell: "Grab a ball for the Earth and a flashlight for the sun, then turn off the room lights. Shine the flashlight at the ball and turn the ball slowly. Watch how one side is always lit and the other side is always dark, and how a spot on the ball goes from day to night and back just by turning. That's all a day is: the Earth spinning past the sun.", ask: "Why is it dark at night?", do: "A ball for the Earth, a flashlight for the sun. Turn the ball slowly.", see: "One side is lit and one is dark; turning is what changes them.", moduleId: "day-and-night" },
     { title: "Weather window", tell: "Pick one window and look out of it every morning for a week, then draw what the sky is doing in a little box each day. By Friday you'll have a row of drawings, and no two are quite the same. Sun, cloud, rain, wind: the weather changes, and your drawings prove it.", ask: "What is the weather doing?", do: "Look out the same window every morning for a week and draw it.", see: "Sun, cloud, rain, wind: the weather changes and the drawings show it.", moduleId: "kinds-of-weather" },
-    { title: "Alive or not", tell: "Put a plant, a rock, a toy and a snail on a tray and just watch for a while. The snail will wander, the plant leans toward the window, and the rock and the toy sit there doing exactly nothing. Living things move, eat or grow; the others never will, no matter how long you wait.", ask: "Which things are alive?", do: "Put a plant, a rock, a toy and a snail on a tray. Watch for an hour.", see: "The living things move, eat or grow; the rock and the toy do nothing.", moduleId: "living-or-not" },
+    { title: "Alive or not", tell: "Put a plant, a rock, a toy and a snail on a tray with a damp paper towel, and watch for a while. The snail creeps about, but the plant is slow, so check it again in a few days. It grows and leans toward the window, while the rock and the toy never change. Living things move, eat or grow, even when they do it slowly. Wash your hands after you touch the snail.", ask: "Which things are alive?", do: "Put a plant, a rock, a toy and a snail on a tray. Watch the snail for a while, and check the plant again in a few days.", see: "The snail moves and the plant grows. The rock and the toy do nothing.", moduleId: "living-or-not" },
     { title: "Bean in the cupboard", tell: "Plant two beans in two pots, water them both, and put one on the windowsill and one in a dark cupboard. Check them every day. The windowsill bean grows green and sturdy; the cupboard bean comes up pale and stringy, reaching for light it can't find. Plants need light as well as water, and the cupboard bean will tell you so.", ask: "What does a plant need?", do: "Two bean pots: one on the windowsill, one in a dark cupboard, both watered.", see: "The dark one grows pale and thin. Plants need light as well as water.", moduleId: "what-plants-need" },
-    { title: "Two cups", tell: "Fill one cup with warm water and one with ice water, set them side by side, and touch both every ten minutes. The warm one cools and the cold one warms until, after a while, they feel the same. Hot things cool down and cold things warm up until everything matches the room.", ask: "Which cools and which warms?", do: "A cup of warm water and a cup of ice water side by side. Touch both every ten minutes.", see: "Both end up like the room. Hot cools down; cold warms up.", moduleId: "hot-and-cold" },
+    { title: "Two cups", tell: "Ask a grown-up for one cup of warm water and one of ice water, set them side by side, and touch both every ten minutes. The warm one cools and the cold one warms until, after a while, they feel the same. Hot things cool down and cold things warm up until everything matches the room.", ask: "Which cools and which warms?", do: "A cup of warm water and a cup of ice water side by side. Touch both every ten minutes.", see: "Both end up like the room. Hot cools down; cold warms up.", moduleId: "hot-and-cold" },
   ],
   1: [
     { title: 'Day and night in a room', ask: 'Why do we have night?', do: 'A flashlight and a ball. Turn the ball slowly in front of the light.', see: 'Half the ball is dark. The turning makes night.' },
-    { title: 'Melt, boil, cool', ask: 'What happens when water gets hot?', do: 'With an adult, watch a pot of water boil, then hold a cold spoon over the steam.', see: 'Steam rises; it turns back to drops on the cold spoon.' },
-    { title: 'Bird feeder', ask: 'What do birds eat?', do: 'A pine cone rolled in peanut butter and seed, hung outside. Watch for a week.', see: 'Birds come for the seed. They need food like we do.' },
+    { title: 'Melt, boil, cool', ask: 'What happens when water gets hot?', do: 'A grown-up boils a pot of water and holds a cold metal spoon in the steam with an oven mitt, while you watch from a step back.', see: 'Steam rises; it turns back to drops on the cold spoon.' },
+    { title: 'Bird feeder', ask: 'What do birds eat?', do: 'Spread a pine cone with sunflower seed butter instead of peanut butter, roll it in birdseed with no peanuts or tree nuts on the label, and a grown-up hangs it outside. Watch for a week. Skip this one if anyone in the room has a nut allergy.', see: 'Birds come for the seed. They need food like we do.' },
     { title: 'Ramps', ask: 'Does a steeper ramp make a car go faster?', do: 'A book, a board, a toy car. Raise the board one book at a time.', see: 'Steeper means farther and faster.' },
-    { title: 'Homemade thermometer', ask: 'Can water show temperature?', do: 'A bottle of colored water with a straw through the lid; warm it in your hands.', see: 'The water climbs the straw as it warms.' },
+    { title: 'Homemade thermometer', ask: 'Can water show temperature?', do: 'A bottle of colored water with a straw through a hole a grown-up makes in the lid; warm it in your hands.', see: 'The water climbs the straw as it warms.' },
     { title: 'Paper airplane test', ask: 'Which design flies farthest?', do: 'Three folds, three throws each, measure with steps.', see: 'Design changes flight. Testing beats guessing.' },
-    { title: 'Tooth in soda', ask: 'What does soda do to teeth?', do: 'An eggshell in a cup of soda for three days, another in water.', see: 'The soda egg gets soft and stained.' },
+    { title: 'Tooth in soda', ask: 'What does soda do to teeth?', do: 'Put a hard-boiled egg, shell on, in a cup of soda for three days, and another in water. Wash your hands after.', see: 'The soda egg gets soft and stained.' },
     { title: 'Which materials block light?', ask: 'Can light get through it?', do: 'A flashlight through paper, wax paper, plastic wrap, cardboard.', see: 'Some block, some blur, some let light straight through.' },
-    { title: 'Moon journal', ask: 'Does the moon change?', do: 'Draw the moon every clear night for two weeks.', see: 'It changes shape a little each night.' },
-    { title: 'Pinwheel', ask: 'What moves the pinwheel?', do: 'A paper pinwheel on a pin; blow on it, hold it in the wind.', see: 'Moving air pushes it around.' },
+    { title: 'Moon journal', ask: 'Does the moon change?', do: 'Draw the moon on every clear night you can see it, for two weeks.', see: 'It changes shape a little each night.' },
+    { title: 'Pinwheel', ask: 'What moves the pinwheel?', do: 'A paper pinwheel that a grown-up pins to a pencil eraser, with the point buried in the eraser. Blow on it, then hold it in the wind.', see: 'Moving air pushes it around.' },
     { title: 'Mixing colors with light', ask: 'What do colored lights make?', do: 'Three flashlights with red, green and blue cellophane, shone together on a wall.', see: 'Colored lights mix differently from paints.' },
-    { title: 'Fruit or vegetable?', ask: 'Does it have seeds inside?', do: 'Cut open a tomato, a cucumber, a carrot, an apple.', see: 'Fruits have seeds inside; roots and stems do not.' },
-    { title: 'Egg drop', ask: 'Can you protect an egg?', do: 'An egg wrapped in a small package of your design, dropped from a chair.', see: 'Cushioning and slowing the fall protect it.' },
+    { title: 'Fruit or vegetable?', ask: 'Does it have seeds inside?', do: 'A grown-up cuts open a tomato, a cucumber, a carrot and an apple, and you look inside.', see: 'Fruits have seeds inside; roots and stems do not.' },
+    { title: 'Egg drop', ask: 'Can you protect an egg?', do: 'An egg wrapped in a small package of your design, dropped while you stand on the floor, as high as you can reach. A grown-up can drop it from higher. Wash your hands after.', see: 'Cushioning and slowing the fall protect it.' },
     { title: 'Which freezes first?', ask: 'Salt water or fresh?', do: 'Two cups in the freezer, one salty.', see: 'Fresh water freezes first.' },
     { title: 'Sound vibrations', tell: "Hum with a hand on your throat and feel the buzz. Then hold a ruler over the edge of a table and twang the free end: it blurs and hums. Sound is something shaking, whether it's your throat or the ruler.", moduleId: 'sound', ask: 'Can you feel a sound?', do: 'Hum with a hand on your throat; a ruler twanged on a table edge.', see: 'Sound is something vibrating.' },
-    { title: 'Ant watching', ask: 'Where do ants go?', do: 'A crumb on the sidewalk; watch for ten minutes.', see: 'Ants follow trails and work together.' },
-    { title: "Shadow clock", ask: "Does a shadow move by the hour?", do: "A stick in the ground. Mark the tip of its shadow every hour.", see: "The shadow swings around like a clock hand as the sun crosses the sky." },
+    { title: 'Ant watching', ask: 'Where do ants go?', do: 'A crumb on the sidewalk; watch from a step back for ten minutes. Never touch the ants, and stay off ant mounds.', see: 'Ants follow trails and work together.' },
+    { title: "Shadow clock", ask: "Does a shadow move by the hour?", do: "A stick in the ground. Mark the tip of its shadow every hour, and never look at the sun.", see: "The shadow swings around like a clock hand as the sun crosses the sky." },
     { title: "Celery drinks", ask: "How does water climb a plant?", do: "A celery stalk in colored water overnight.", see: "The color climbs the tubes inside. Plants pull water up." },
-    { title: "Sound jars", tell: "Line up four glasses with different amounts of water and tap each one with a spoon. The fuller the glass, the lower the note. Try playing a tune. What rings is the glass and the water together, so changing the water changes the sound.", moduleId: 'sound', ask: "Can water change a sound?", do: "Four glasses with different water levels. Tap each with a spoon.", see: "More water, lower note. The water changes what rings." },
-    { title: "Mold garden", ask: "What grows on old bread?", do: "A slice of bread, a few drops of water, sealed in a bag for a week.", see: "Fuzzy spots appear and spread. Mold is alive and it grows." },
+    { title: "Sound jars", tell: "Line up four glasses with different amounts of water and tap each one with a spoon. The fuller the glass, the lower the note. Try playing a tune. What rings is the glass and the water together, so changing the water changes the sound.", moduleId: 'sound', ask: "Can water change a sound?", do: "Four glasses with different water levels. Tap each gently with a spoon.", see: "More water, lower note. The water changes what rings." },
+    { title: "Mold garden", ask: "What grows on old bread?", do: "A slice of bread and a few drops of water in a clear bag, taped shut for a week. Look through the bag but never open it, and a grown-up throws it away still sealed.", see: "Fuzzy spots appear and spread. Mold is alive and it grows." },
     { title: "Bridge of paper", ask: "How strong is a folded sheet?", do: "A flat sheet between two books, then the same sheet folded like a fan.", see: "The fan holds far more. Shape adds strength." },
-    { title: "Sun and moon chart", tell: "For a week, mark where the sun comes up and goes down from the same spot, and each night draw the moon. The sun keeps to its side of the sky, while the moon changes shape a little every night. Two patterns, both worth knowing.", ask: "Where does the sun come up?", do: "Mark where the sun rises and sets for a week; draw the moon each night.", see: "The sun keeps its side; the moon changes shape a little each night.", moduleId: "sun-moon-patterns" },
+    { title: "Sun and moon chart", tell: "For a week, notice which windows the morning sun shines through and which ones the evening sun shines through, and never look straight at the sun. Each time you can see the moon, at night or in the day, draw it. The sun keeps to its side of the sky, while the moon changes shape a little from day to day. Two patterns, both worth knowing.", ask: "Where does the sun come up?", do: "Notice which windows the morning and evening sun shine through, never looking straight at the sun, and draw the moon each time you can see it.", see: "The sun keeps to its side, and the moon changes shape a little from day to day.", moduleId: "sun-moon-patterns" },
     { title: "Ice to water to ice", tell: "Set an ice cube in a cup on a warm table and watch it turn into a puddle. Then pour the puddle into the freezer and check back later. Same water, twice: solid to liquid and back again, and nothing was lost along the way.", ask: "Can water change and change back?", do: "An ice cube in a cup on a warm table, then the water back in the freezer.", see: "It melts, then freezes again. The same water, twice.", moduleId: "water-changes" },
     { title: "Bird visitors", tell: "Put out a dish of water and a handful of seed, then watch from a window. Birds arrive to eat and drink and leave when they feel safe. Food, water and a safe spot are what animals need, and the birds will show you all three.", ask: "What do animals need?", do: "Put out water and seed. Watch which birds come and when.", see: "They come to eat and drink. Animals need food, water and a safe place.", moduleId: "animal-needs" },
   ],
@@ -36125,23 +36259,23 @@ export const EXPERIMENTS = {
     { title: 'Erosion in a tray', ask: 'What does rain do to a hill?', do: 'A pile of soil in a tray; pour water from a cup over it slowly.', see: 'The water carries soil downhill and drops it at the bottom.' },
     { title: 'Bridge of straws', ask: 'Which shape is strongest?', do: 'Straws taped into triangles, then squares; push on each.', see: 'Triangles hold their shape; squares fold.' },
     { title: 'Water on a penny', ask: 'How many drops fit?', do: 'A dropper of water onto a penny, counting drops until it spills.', see: 'Far more than you guess. Water sticks to itself.' },
-    { title: 'Invisible ink', ask: 'Can you read it?', do: 'Lemon juice written on paper, dried, warmed near a bulb with an adult.', see: 'The writing turns brown as it warms.' },
+    { title: 'Invisible ink', ask: 'Can you read it?', do: 'Lemon juice written on paper and left to dry, then a grown-up warms the paper with an iron.', see: 'The writing turns brown as it warms.' },
     { title: 'Which fabric dries fastest?', ask: 'Cotton, wool or nylon?', do: 'Wet squares of each, hung side by side, checked every ten minutes.', see: 'Thin, smooth fabrics dry first.' },
-    { title: 'Balloon rocket', ask: 'What pushes the balloon?', do: 'A balloon taped to a straw on a string across the room; let it go.', see: 'Air rushing out one way pushes the balloon the other way.' },
-    { title: 'Habitat walk', ask: 'What lives here?', do: 'Ten minutes in a yard, a park and a parking lot. Count living things.', see: 'Different places hold different lives.' },
-    { title: 'Marshmallow tower', ask: 'How tall can it stand?', do: 'Spaghetti and marshmallows; build the tallest tower that stands alone.', see: 'A wide base and triangles win.' },
+    { title: 'Balloon rocket', ask: 'What pushes the balloon?', do: 'A grown-up blows up a balloon and holds its neck shut while you tape it to a straw on a string across the room. Then let it go. Throw away any broken balloon pieces right away.', see: 'Air rushing out one way pushes the balloon the other way.' },
+    { title: 'Habitat walk', ask: 'What lives here?', do: 'Ten minutes in a yard, a park and the edge of a parking lot, holding a grown-up\'s hand near cars. Count living things.', see: 'Different places hold different lives.' },
+    { title: 'Marshmallow tower', ask: 'How tall can it stand?', do: 'Spaghetti and marshmallows; build the tallest tower that stands alone. Keep the marshmallows away from little brothers and sisters.', see: 'A wide base and triangles win.' },
     { title: 'Rock scratch test', ask: 'Which rock is harder?', do: 'Scratch rocks against each other and a penny.', see: 'The harder rock scratches the softer one.' },
     { title: 'Magnet maze', ask: 'Can you move it without touching?', do: 'A paper clip on a paper maze, a magnet underneath.', see: 'The magnet pulls through the paper.' },
     { title: 'Evaporation race', ask: 'Where does water disappear fastest?', do: 'Equal water in a wide dish and a narrow cup, for a day.', see: 'More surface, faster evaporation.' },
     { title: 'Bean in the dark and light', ask: 'Which way does it grow?', do: 'A bean sprout in a box with one hole for light.', see: 'It bends toward the light.' },
     { title: 'Oil and water', ask: 'Will they mix?', do: 'Oil and water in a jar, shaken hard, then left.', see: 'They separate again. Oil floats.' },
     { title: "Erosion tray", ask: "What does rain do to a hill?", do: "A tray of soil shaped into a hill. Pour water from a cup at the top.", see: "Channels cut and soil washes to the bottom. Water moves land." },
-    { title: "Static butterfly", ask: "Can you move paper without touching it?", do: "A tissue-paper butterfly on a card. Rub a balloon on hair and hover it.", see: "The wings lift toward the balloon. Static pulls." },
-    { title: "Sugar crystals", ask: "Can sugar grow?", do: "Very sweet hot water in a jar, a string hanging in. Wait a week.", see: "Crystals grow on the string as the water leaves." },
+    { title: "Static butterfly", ask: "Can you move paper without touching it?", do: "A tissue-paper butterfly on a card. A grown-up blows up a balloon and ties it. Rub it on your hair and hover it over the wings. Throw away any broken balloon pieces right away.", see: "The wings lift toward the balloon. Static pulls." },
+    { title: "Sugar crystals", ask: "Can sugar grow?", do: "A grown-up stirs sugar into hot water until no more dissolves and pours it into a jar. Hang a string in it and wait a week.", see: "Crystals grow on the string as the water leaves." },
     { title: "Heartbeat", ask: "Does exercise change your pulse?", do: "Count heartbeats for ten seconds sitting, then after twenty jumping jacks.", see: "Faster after. Muscles at work want more blood." },
-    { title: "Air has weight", ask: "Does a balloon weigh anything?", do: "Two balloons on a stick balance. Blow one up.", see: "The full one tips down. Air weighs something." },
+    { title: "Air has weight", ask: "Does a balloon weigh anything?", do: "Two balloons balance on a stick. A grown-up blows one up, ties it and hangs it back in its place.", see: "The full one tips down. Air weighs something." },
     { title: "Sorting table", tell: "Spread a tray of everyday things out and sort them twice: first into hard and soft, then into wet and dry. Notice that a wet sponge lands in one group the first time and a different group the second. A thing can have more than one property, and sorting is how you find them.", ask: "Hard or soft, wet or dry?", do: "A tray of everyday things. Sort them twice: hard and soft, then wet and dry.", see: "Each thing has properties, and one thing can be in two groups.", moduleId: "hard-or-soft" },
-    { title: "Magnet fishing", tell: "Tie a magnet to a string and go fishing in a bowl of paper clips, coins, buttons and beads. Only some of the metal things come up on the line. Magnets pull iron and steel and leave everything else in the bowl.", ask: "What does a magnet pull?", do: "A magnet on a string. Dip it into a bowl of paper clips, coins, buttons and beads.", see: "Only some metal things come up. Magnets pull iron and steel.", moduleId: "magnets" },
+    { title: "Magnet fishing", tell: "Tie a magnet to a string and go fishing in a bowl of paper clips, coins, buttons and beads. Only some of the metal things come up on the line. Magnets pull iron and steel and leave everything else in the bowl.", ask: "What does a magnet pull?", do: "A magnet on a string. Dip it into a bowl of paper clips, coins, buttons and beads, and keep them away from little brothers and sisters.", see: "Only some metal things come up. Magnets pull iron and steel.", moduleId: "magnets" },
     { title: "Habitat box", tell: "Turn a shoebox into a home for a toy animal: something for food, a bottle cap of water, a corner for shelter and a bit of room to move. When you're done, you've built a habitat, which is any place that gives an animal what it needs.", ask: "What does a home need?", do: "Make a shoebox home for a toy animal: food, water, shelter, space.", see: "A habitat is the place that gives an animal what it needs.", moduleId: "habitats" },
   ],
   3: [
@@ -36583,6 +36717,53 @@ export function storiesRead(events) {
   return [...seen.entries()].map(([moduleId, at]) => ({ moduleId, at }));
 }
 export function coloringBreaks(events) { return activeEvents(events).filter((e) => e.type === 'colored').length; }
+// A game break (pass MB, Mikey): a game opened from Let's Play and closed again, logged the way a coloring break is, with
+// which game and when, never a score. Before pass MB a game left no trace at all, so the report could not count them.
+export function makePlayedEvent(game, at) { return { type: 'played', at, game }; }
+export function gameBreaks(events) { return activeEvents(events).filter((e) => e.type === 'played').length; }
+// Elective stories (pass MB, Mikey). Every module pairs with a short story and every course with a long one, and a story
+// stays open to read again once it unlocks. The first read of each story is the one the course asks for (story_read, logged
+// once); an elective read is a later read to the end (story_reread). Where the read starts decides the rest: a lesson sends a
+// student through its story on the way to every practice round, so a read started from the lesson counts only once that
+// lesson is mastered and not reopened by a Quick Review, while a read started from a shelf (My Stories, Let's Read, the
+// course's own Let's Read!) is the student's own choice and counts whenever the story was read before. A read counts once
+// the story's end has come into view and the story has been open at least STORY_REREAD_SECONDS, so opening a story and
+// closing it again is not a read.
+export const STORY_REREAD_SECONDS = 20;
+// A read to the end of a story read before (a fact: where it was opened and when; never a judgment). Whether it was more than
+// required is worked out from the log by electiveStoryReads, so a change to the rule applies to every read ever made.
+export function makeStoryRereadEvent(storyId, at, from = 'shelf', openedAt = at) { return { type: 'story_reread', at, moduleId: storyId, from, openedAt }; }
+export function rereadIsElective(events, storyId, from = 'shelf') {
+  const all = events || [];
+  if (!all.some((e) => e.type === 'story_read' && e.moduleId === storyId)) return false;
+  if (String(storyId).startsWith('course:') || from === 'shelf') return true;
+  // A loop back sends the student to this lesson, story and all, until it is passed again: that read is asked for.
+  const active = activeEvents(all);
+  const loop = [...active].reverse().find((e) => e.type === 'looped_back' && e.toModuleId === storyId);
+  if (loop && !active.some((e) => e.type === 'attempt_completed' && e.moduleId === storyId && isMasteredAttempt(e) && String(e.at) > String(loop.at))) return false;
+  // reviewingIds asks every mastered lesson; this lesson's own state says the same thing for it, many times faster.
+  return deriveProgress(all).masteredIds.includes(storyId) && lightReviewState(all, storyId).stage !== 'reopened';
+}
+// Each read to the end is judged by the log as it stood when that story was opened (pass MB, the code check's second read).
+// Worked out once per log, since the report redraws every second on an educator's screen.
+const electiveMemo = new WeakMap();
+export function electiveStoryReads(events) {
+  const all = events || [];
+  if (electiveMemo.has(all)) return electiveMemo.get(all);
+  const n = activeEvents(all).filter((e) => e.type === 'story_reread' && rereadIsElective(all.filter((x) => String(x.at) < String(e.openedAt || e.at)), e.moduleId, e.from || 'shelf')).length;
+  electiveMemo.set(all, n);
+  return n;
+}
+// The report summary's lines about play and reading, each shown only when it has something to count, each under a short
+// faint rule on the screen. Mikey's words for the game and story lines (pass MB); the coloring line is pass GD's.
+export function summaryPlayLines(rep) {
+  const name = rep.learnerName || 'This student';
+  const out = [];
+  if (rep.coloringBreaks > 0) out.push({ key: 'coloring', text: `Coloring breaks taken: ${rep.coloringBreaks}. Coloring is play; it is never marked and never appears on the transcript.` });
+  if (rep.gameBreaks > 0) out.push({ key: 'games', text: `Game breaks taken: ${rep.gameBreaks}. Playing is still learning as concepts are woven into objectives but these are never marked on a student's transcript.` });
+  if (rep.electiveStories > 0) { const n = rep.electiveStories; out.push({ key: 'stories', text: `Elective stories: ${n}. Every module pairs with a short story and every course with a long. After these stories unlock, they're available to re-read. ${n} represents how many times ${name} has read through a story more times than required.` }); }
+  return out;
+}
 export function makeNoteEvent(text, at) { return { type: 'note', at, noteId: `n_${at}`, text: String(text).trim() }; }
 export function makeNoteRemovedEvent(noteId, at) { return { type: 'note_removed', at, noteId }; }
 export function teacherNotes(events) {
@@ -36620,7 +36801,7 @@ export function changesSince(events, sinceIso) {
   const attempts = recent.filter((e) => e.type === 'attempt_completed');
   const per = deriveProgress(events).perModule;
   const mastered = Object.entries(per).filter(([, p]) => p.mastered && p.masteredAt && new Date(p.masteredAt).getTime() >= since).map(([id]) => (getModule(id) || {}).title).filter(Boolean);
-  return { attempts: attempts.length, questions: attempts.reduce((n, e) => n + ((e.core || []).length), 0), mastered, stories: storiesRead(events).filter((r) => new Date(r.at).getTime() >= since).length, colored: recent.filter((e) => e.type === 'colored').length };
+  return { attempts: attempts.length, questions: attempts.reduce((n, e) => n + ((e.core || []).length), 0), mastered, stories: storiesRead(events).filter((r) => new Date(r.at).getTime() >= since).length, colored: recent.filter((e) => e.type === 'colored').length, played: recent.filter((e) => e.type === 'played').length };
 }
 export function setCertificateState(roster, id, grade, state) {
   return { ...roster, students: roster.students.map((s) => (s.id === normalizeStudentId(id) ? { ...s, certificates: { ...(s.certificates || {}), [grade]: state } } : s)) };
@@ -36899,6 +37080,7 @@ export function weeklyNote(shownName, events, now) {
   const touched = [...new Set(attempts.map((e) => (getModule(e.moduleId) || {}).title).filter(Boolean))];
   const masteredNow = rows.filter((m) => m.mastered && m.masteredAt && new Date(m.masteredAt).getTime() >= week).map((m) => m.title);
   const colored = recent.filter((e) => e.type === 'colored').length;
+  const played = recent.filter((e) => e.type === 'played').length;   // pass MB
   const met = storiesRead(events).filter((r) => new Date(r.at).getTime() >= week).map((r) => STORY_TITLES[r.moduleId] ? { ...STORY_TITLES[r.moduleId], goal: String(r.moduleId).startsWith('course:') ? ((getCourse(r.moduleId.slice(7)) || {}).title || '') : ((getModule(r.moduleId) || {}).title || '') } : null).filter(Boolean);
   // Each lesson name sits on its own bold line (pass IT, Mikey): a list run into one sentence read the comma inside One
   // more, one less as two lessons, and the same lessons appeared twice, once as worked on and again as mastered. Now the
@@ -36911,6 +37093,7 @@ export function weeklyNote(shownName, events, now) {
   if (masteredNow.length) parts.push([shownName, ' mastered:', bullets(masteredNow, 8)].join(''));
   if (practicing.length) parts.push(['Still practicing:', bullets(practicing, 5)].join(''));
   if (colored) parts.push([shownName, ' colored ', colored === 1 ? 'a picture' : `${colored} pictures`, '.'].join(''));
+  if (played) parts.push([shownName, ' played ', played === 1 ? 'a game' : `${played} games`, '.'].join(''));
   if (met.length) parts.push([shownName, ' read:', ...met.map((m) => ['\n• **', m.title, '**', m.about ? [', a story about ', m.about].join('') : '', '.', m.goal ? [' Through this story, the goal was to learn ', goalPhrase(m.goal), '.'].join('') : ''].join(''))].join(''));
   // Practice reviews and Move Forward this week (Mikey, pass LP), so one printed note carries everything.
   // Each entry is its own plain paragraph with the lesson in bold (the card bolds whole bullets, which suits lesson names only).
@@ -37012,7 +37195,8 @@ export function classSummary(rows) {
   const eye = rows.filter((r) => r.band === 'keep an eye on');
   const fine = rows.length - now.length - eye.length;
   // The explanation, then the counts on a line of their own (the screen splits on the newline).
-  const parts = ['Students on top could use a bit more guidance than those on bottom. Guessing, low confidence, failed attempts and slow progress all pushes students higher up the list.\n'];
+  // The second sentence is Mikey's, word for word (pass MB).
+  const parts = ['Students on top could use a bit more guidance than those on bottom. Guessing, low confidence, multiple failed attempts and unusually slow progression pushes a student higher up the list.\n'];
   if (now.length) parts.push(`${now.length} ${now.length === 1 ? 'student needs' : 'students need'} help now (${now.map((r) => r.label).join(', ')}).`);
   if (eye.length) parts.push(`${eye.length} ${eye.length === 1 ? 'student' : 'students'} worth keeping an eye on.`);
   parts.push(`${fine} on track.`);
@@ -37283,6 +37467,8 @@ export function buildReport(learnerName, events) {
   return {
     notes: teacherNotes(events),
     coloringBreaks: coloringBreaks(events),
+    gameBreaks: gameBreaks(events),                  // pass MB
+    get electiveStories() { return electiveStoryReads(events); },   // pass MB: worked out only when a screen reads it
     learnerName,
     generatedAt: new Date().toISOString(),
     modulesMastered: progress.masteredIds.length,
@@ -37580,8 +37766,8 @@ export const COURSE_GAMES = {
   'history-5': ['order-timeline'],
   'math-4': ['path-even'],
   'multiplication-3': ['pairs-fractions'],
-  'very-first-steps-pk3': ['dots-kite'],   // four dots, as Three Dots teaches (pass MA; it was grade 1's)
-  'listen-and-point-pk3': ['sort-color'],
+  'very-first-steps-pk3': ['dots-kite', 'sort-color'],   // four dots, as Three Dots teaches (pass MA; it was grade 1's); Red and Blue sorts by color, as the Red and Blue lesson says word for word (pass MB; it was Listen and Point's, which now has Step on the Circles)
+  'listen-and-point-pk3': ['path-circles'],   // pass MB: circles and squares, as Circle and Square teaches
   'art-3': ['mix-art-3'],
   'art-4': ['mix-art-4'],
   'science-k': ['catch-circles'],

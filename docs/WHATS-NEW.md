@@ -9,6 +9,13 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## October 8, 2026 (Listen and Point, read again)
+
+- Contact Us now has a Copy button for our address, for browsers that won't open your email app. If your email app doesn't open, a note points you to the Copy button. What's New now opens on laptops too, after the first week tour.
+- Each student's report summary now counts game breaks and elective stories, right under the coloring line. A game break is a game played during a break, and an elective story is one a student chose to read again after it was done, and neither is ever marked or put on a transcript.
+- Listen and Point, the second pre-K 3 course, now teaches more in four of its five lessons. Children learn that a square's four sides are the same length, that a shape keeps its name when it's little or turned, that different can be color, shape or size, how to sort by color, what's up in the sky and down in the water, and which animal sound came first. Its own game is Step on the Circles, and Red and Blue moved to Very First Steps, where its lesson is.
+- Ten Very First Steps stories were rewritten so each one teaches exactly what its lesson does. Every science experiment idea for young children was also read again for safety, so a grown-up is right beside the child, especially near any water.
+
 ## October 8, 2026 (Very First Steps, read again)
 
 - More and Fewer now teaches three-year-olds to count each group to find which has more, instead of looking for the bigger group. Young children often think a longer row has more, so the lesson, its questions and its story now show that counting is how you know.

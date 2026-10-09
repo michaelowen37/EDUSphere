@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-08 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 8891 clips, 1,506,688 characters in all; the longest clip is 508 characters and the longest whole story 3,420, far under Eleven v4's 10,000 a request. 190 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-09 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 8912 clips, 1,510,994 characters in all; the longest clip is 508 characters and the longest whole story 3,420, far under Eleven v4's 10,000 a request. 190 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,7 +17,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 4835 | 555,052 |
+| Pre-K to grade 2 | 4856 | 559,358 |
 | Grades 3 to 5 | 1263 | 278,546 |
 | Grades 6 to 8 | 1138 | 272,055 |
 | Grades 9 to college | 1655 | 401,035 |
@@ -40,8 +40,8 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 | Kind | Clips |
 |---|---|
 | story title | 658 |
-| story | 4223 |
-| lesson line | 3059 |
+| story | 4228 |
+| lesson line | 3075 |
 | long story title | 105 |
 | long story | 846 |
 
@@ -418,45 +418,47 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S3789-6: [proud] Every card was full. Twenty-six big letters and twenty-six small ones, all the way from A to z. Wren walked along the wall and read every one.
 - S3789-7: [slowly, warmly] With s, j and y, you can trace every letter, big and small. Start at the dot and follow the arrow.
 
-### Two balls (S95, red-and-blue)
+### Two buckets (S95, red-and-blue)
 
-- S95-1: [cheerful] Mia had a ball, and it was red, red like a strawberry. [a ball rolling across the grass] She rolled it down the yard.
-- S95-2: [playful] Sam had a ball too, and it was blue, blue like the sky. He rolled his ball after hers.
-- S95-3: [a soft thump] Bump! [excited] The two balls hit and stopped together in the grass. Mia ran over, and so did Sam.
-- S95-4: [puzzled] Which one is mine? said Mia. [slowly] They were the same size and the same shape, and they felt the same.
-- S95-5: [thoughtful] Mia looked hard, [pause] and then she smiled. [delighted] Mine is red, she said, and she picked up the red ball.
-- S95-6: [laughs] Sam laughed. Mine is blue, he said, and he picked up the blue ball and took it home.
-- S95-7: [slowly, warmly] Red and blue are colors. Colors help us tell things apart, even when all else is the same.
+- S95-1: [cheerful] Mia had a bucket of red balls, red like a strawberry. [playful] Sam had a bucket of blue balls, blue like the sky.
+- S95-2: [excited] They tipped both buckets out on the grass, and the balls rolled together into one jumble.
+- S95-3: [warmly] Time to tidy up, said Mia's mom. [puzzled] Mia looked at the jumble and scratched her head. Which balls are mine? she asked.
+- S95-4: [thoughtful] She picked up one ball and felt it, and then another. [slowly] They were the same size and the same shape, and they felt the same.
+- S95-5: [gently] Colors help us tell things apart, said Mia's mom. [curious] Mia looked again, [delighted] and she grinned. Mine are the red ones! she said.
+- S95-6: [proud] Mia put the red ones together in her bucket, [happy] and Sam put the blue ones together in his.
+- S95-7: [slowly, warmly] Red and blue are colors. Colors help us tell things apart and sort them into groups.
 
 ### One small bed (S98, big-and-small)
 
-- S98-1: [playful] Max was a big dog, long and tall. [slowly] When he lay down, he filled the rug.
-- S98-2: [cheerful] Bean was a small dog, short and light. She could fit in a basket.
+- S98-1: [playful] Max was a big dog, long and tall. [slowly] When he lay down, he filled the big rug from end to end.
+- S98-2: [cheerful] Bean was a small dog, short and little. [curious] When the two dogs stood side by side, Max's head reached much higher than Bean's.
 - S98-3: [curious] There was one bed, and it was a small bed. [playful] Both dogs wanted it.
-- S98-4: [playful] Max tried it first. [straining] He squeezed in, but his legs hung off and his tail hung off. [laughs] He did not fit.
-- S98-5: [softly] Bean tried it. She curled up until her nose touched her tail. [pleased] Just right.
-- S98-6: [sighs] Max sighed and lay down on the big rug. [whispers] Both dogs fell asleep.
-- S98-7: [slowly, warmly] Big things take up more room, and small things take up less. A small bed fits a small dog.
+- S98-4: [playful] Max tried it first. [straining] His nose was at one end, but his tail reached far past the other end. [laughs] His legs hung off too, and he did not fit.
+- S98-5: [softly] Bean tried it. She curled up until her nose touched her tail, and she fit with room left over. [pleased] Just right.
+- S98-6: [sighs] Max sighed and lay down on the big rug, [whispers] and both dogs fell asleep.
+- S98-7: [slowly, warmly] Bigger things take up more room. Taller things reach higher, and longer things reach farther.
 
 ### Splash (S101, one-and-two)
 
-- S101-1: [softly] One duck swam on the pond, all by itself. The water was still.
-- S101-2: It quacked. [a duck quacking] Quack! [quietly] Nobody quacked back, and only the wind moved.
-- S101-3: [curious] Then a shape came in the sky, wings and feathers, [excited] coming closer.
-- S101-4: [water splashing] Splash! Another duck landed, and water flew up. [surprised] The first duck jumped.
-- S101-5: [delighted] Now there were two ducks, two heads and two tails, and they swam together.
-- S101-6: [two ducks quacking] Quack, quack! [happy] Two quacks, not one, and the pond was not quiet anymore.
-- S101-7: [slowly, warmly] One, then two. One more makes two.
+- S101-1: [softly] Nell sat on a bench by the pond with Grandpa. [gently] One duck swam on the still water, all by itself.
+- S101-2: [warmly] Grandpa picked up a stick and drew a 1 in the dirt. One duck, he said. [slowly] This is how we write one.
+- S101-3: [water splashing] Splash! [surprised] Another duck came down from the sky and landed beside the first one. [delighted] Now there was one duck, and one more.
+- S101-4: [playful] The ducks swam round and round each other, and Nell tried to count them. [rushed] One, two, one, two, one, two, she counted, [amused] and she could not stop!
+- S101-5: [gently] Grandpa smiled. Point to each duck as you count it, he said.
+- S101-6: [carefully] Nell pointed at one duck and then the other, [slowly, counting] one, two. [warmly] The last number you say tells how many, said Grandpa. [delighted] Two ducks! said Nell.
+- S101-7: [proud] Grandpa made a 2 beside the 1. This is how we write two, he said.
+- S101-8: [slowly, warmly] One, then two. The last number you count tells how many.
 
 ### May I, Please? (S104, please-and-thank-you)
 
-- S104-1: [cheerful] Sam was drawing a big red fire truck. [thoughtful] He needed the red crayon, but it was in Ana's hand.
-- S104-2: [rushed] Sam reached over and grabbed it. [loudly] Mine! he said.
-- S104-3: [sadly] Ana's face crumpled, and her lip shook. [softly] She was not done with it yet.
-- S104-4: [thoughtful] Sam looked at her sad face, and his tummy felt funny. [softly] He gave the crayon back.
-- S104-5: [gently] Then he tried again. [kindly] Ana, may I have the red crayon, please, when you are done?
-- S104-6: [warm] Ana smiled and drew one more line. Here you go, she said. [happy] Thank you! said Sam.
-- S104-7: [slowly, warmly] Please is the kind way to ask. Thank you shows we are glad. Kind words make friends glad too.
+- S104-1: [politely] May I have some paper, please? Gus asked his teacher, Miss Hazel. [warmly] She gave him a big sheet, and he said thank you.
+- S104-2: [cheerful] Gus drew a big fire truck. [thoughtful] He needed the red crayon, but it was in Mira's hand.
+- S104-3: [rushed] Gus reached over and grabbed it. [loudly] Mine! he said.
+- S104-4: [sadly] Mira's face crumpled, and her lip shook. [softly] She was not done with it yet.
+- S104-5: [thoughtful] Gus looked at her sad face, and his tummy felt funny. [softly] He gave the crayon back.
+- S104-6: [gently] Then he tried again. [kindly] Mira, when you are done, may I have the red crayon, please?
+- S104-7: [warm] Mira smiled and drew one more line. Here you go, she said. [happy] Thank you! said Gus.
+- S104-8: [slowly, warmly] Say please when you ask, and say thank you when you get something. Kind words make friends glad.
 
 ### The red circle (S107, colours)
 
@@ -512,15 +514,15 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S119-6: [happy] Two red mittens meant two warm hands, [excited] and Leo ran out to play in the snow with Dad.
 - S119-7: [slowly, warmly] The same means just alike, the same shape and the same color.
 
-### Like me? (S122, match-the-animals)
+### There you are! (S122, match-the-animals)
 
-- S122-1: [softly] A little duckling woke up alone in the big barn. [worried] Where was everyone? Is there anyone like me?
-- S122-2: [curious] It saw a hen. The hen had feathers, but they were brown, [a hen clucking] and it clucked. [sighs] No, not like me.
-- S122-3: [curious] It saw a goat, big, with horns, [a goat bleating] and it said maa. [disappointed] No, not like me.
-- S122-4: [curious] It saw a cat, soft, but with fur and not feathers, [a cat meowing] and it said meow. [sadly] No, not like me.
-- S122-5: [slowly, softly] The duckling sat down in the straw and [a tiny peep] peeped one small peep.
-- S122-6: [gasps] Peep! [excited] Something peeped back. Another duckling, with the same yellow, the same feathers and the same peep. [delighted] Yes, just like me!
-- S122-7: [slowly, warmly] The same means just alike. Look closely, and then look again.
+- S122-1: [softly] Little Fox and her brother lived in a den under a big tree. [warmly] They had the same pointy ears, the same eyes and the same orange color.
+- S122-2: [curious] One evening, her brother ran off after a leaf, [worried] and Little Fox went to look for him.
+- S122-3: [whispers] Two eyes looked at her from the top of an old stump. [delighted] There you are! said Little Fox.
+- S122-4: [surprised] But these eyes were big and round, and there were no pointy ears. [amused] It was a brown owl.
+- S122-5: [gasps] Then a bush wiggled, [excited] and out came a little fox. It had the same pointy ears, the same eyes and the same orange color. [delighted] It was her brother!
+- S122-6: [amused] The owl blinked down at them. [wise, gently] Two foxes and one owl, he said. You two go together, so I am the odd one out.
+- S122-7: [slowly, warmly] The same means just alike. The one that is different is the odd one out.
 
 ### Two plates (S125, more-or-fewer)
 
@@ -534,63 +536,66 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 ### The first line (S128, first-marks)
 
-- S128-1: [excited] Kai had a new crayon, fat and red, and he held it tight.
-- S128-2: [curious] He pressed it on the paper, and it made a dot. [proud] One red dot.
-- S128-3: [thoughtful] A dot is nice, but it just sits there. [sighs] It does not go anywhere.
-- S128-4: [curious] Kai moved his hand, and the dot grew a tail. The tail got longer, [gasps] and it was a line! [giggles] A wobbly line.
-- S128-5: [rushed] The line went across, then up, then right off the page. [laughs] Kai laughed.
-- S128-6: [playful] He made another, and another, until lines were all over. [proud] His page was full.
-- S128-7: [slowly, warmly] Start at the dot. Follow the line. A line is a dot that went for a walk.
+- S128-1: [rain tapping on a window] [softly] Rain tapped on the window, so Kai stayed in to draw. [excited] He held his fat blue crayon tight. I will draw the rain! he said.
+- S128-2: [playful] He pressed the crayon down in the middle of the page and pushed. [rushed] The line went up, then sideways, [surprised] then right off the page!
+- S128-3: [disappointed] Kai frowned at the tangle. That does not look like rain, he said.
+- S128-4: [warmly] Mom sat down beside him. [gently] She made a dot at the top of the page, with a thin line going straight down.
+- S128-5: [kindly] A line down starts at the top, said Mom, and a line across starts on the left. [encouraging] Put your crayon on the dot, and follow the line.
+- S128-6: [carefully] Kai put his crayon on the dot, and he watched the line as he pulled it slowly down. [pleased] It wobbled a little, but it went down, just like falling rain.
+- S128-7: [happy] Mom made more dots along the top, and Kai drew more rain. [proud] Then she made a dot on the left, and he drew a line across for the ground.
+- S128-8: [slowly, warmly] Start at the dot and follow the line.
 
-### One, two, three (S131, three-dots)
+### Dot to dot (S131, three-dots)
 
-- S131-1: [slowly, counting] One, two, three. Three dots on the page, just dots. [curious] Rosa looked at them.
-- S131-2: [puzzled] What were they for? Dots do not do anything, and they just sit.
-- S131-3: [carefully] Rosa put her crayon on dot one and drew to dot two. [delighted] A line!
-- S131-4: [carefully] From two, she drew to three, and that was another line. [curious] Now there was a corner.
-- S131-5: [slowly] From three, she drew back to one, the last line, [excited] and the lines met.
-- S131-6: [proud] Rosa held up the page. The dots had become a shape with three sides and three corners. [delighted] A triangle!
-- S131-7: [slowly, warmly] Start at 1. Draw to each dot in order. The dots know the way.
+- S131-1: [cheerful] Dad made four dots on a page and gave Rosa a blue crayon. [playful] Connect the dots to make a boat, he said.
+- S131-2: [confident] Rosa drew from dot to dot her own way. [puzzled] The lines crossed in the middle, and it did not look like a boat at all.
+- S131-3: [disappointed] Rosa shook her head. [thoughtful] So Dad made four new dots, and beside them he wrote 1, 2, 3 and 4.
+- S131-4: [gently] The numbers show the order, said Dad. Start at 1, and go to each dot in order. [encouraging] Count as you go.
+- S131-5: [carefully] Rosa found the 1 and put her crayon on it. [slowly, counting] She drew to the 2, then the 3, then the 4, and back to the 1.
+- S131-6: [surprised] This time the lines did not cross. [delighted] They made a boat! [playful] Rosa drew blue waves under it, so her boat had a sea to sail on.
+- S131-7: [slowly, warmly] Start at 1 and draw to each dot in order. The numbers show the way.
 
 ### Where Is the Frog? (S134, yellow-and-green)
 
-- S134-1: [cheerful] Theo had two bath toys, a yellow duck and a green frog. Today they got to play outside.
-- S134-2: [whispering, playful] Let's hide them! said Theo. [giggles] He tucked the duck and the frog into the tall green grass.
-- S134-3: [curious] Grandma came out to look, and she saw the yellow duck right away. [pleased] Yellow on green is easy to spot.
-- S134-4: [puzzled] But where was the frog? [slowly] Grandma looked and looked. [whispers] Green on green is hard to see.
-- S134-5: [giggles] Theo giggled. The frog is green like the grass, he said. [delighted] It looks just like the grass!
-- S134-6: [relieved] At last Grandma found it by a green leaf. [proud] Theo held up both toys, one yellow and one green.
-- S134-7: [slowly, warmly] Yellow like a banana, green like the grass. When colors are different, they are easy to tell apart.
+- S134-1: [cheerful] Theo took two bath toys outside to play with Grandma, a yellow duck and a green frog.
+- S134-2: [whispering, playful] Let's play hide and seek! said Theo. [softly] Grandma covered her eyes, and Theo tucked the yellow duck into the green grass by the steps.
+- S134-3: [curious] Grandma opened her eyes and spotted the duck right away. [pleased] A yellow toy is easy to see in green grass, she said, because the colors are different.
+- S134-4: [thoughtful] Theo looked at his frog, and then at the grass. [excited] The frog was green like the grass!
+- S134-5: [whispers] So this time, with Grandma's eyes shut, he tucked the frog into the grass. [slowly] Grandma looked and looked, [puzzled] but she could not find it anywhere.
+- S134-6: [giggles] At last Theo giggled and held it up. [delighted] The frog is green like the grass, he said, so it was hard to see! [laughs] Grandma laughed.
+- S134-7: [warmly] Back inside, Theo sorted all his bath toys, the yellow ones together and the green ones together.
+- S134-8: [slowly, warmly] Yellow like a banana, green like the grass. When colors are different, they are easy to tell apart.
 
 ### Pizza corners (S137, triangles-too)
 
-- S137-1: [excited] Dinner was pizza, a big round pizza cut into slices.
-- S137-2: [curious] Diego took a slice. It had a pointy end and a wide end, [blowing on hot food] and it was hot.
-- S137-3: [slowly, counting] He counted the corners. One corner, at the point.
-- S137-4: [slowly, counting] Two corners and three corners, at the wide end, and then no more. [thoughtful] He counted again. [pleased] Three.
-- S137-5: [thoughtful] Three corners and three sides, and Diego knew that shape. [excited] A triangle, almost!
-- S137-6: [proud] He drew a triangle on his napkin, with three straight lines and three corners. It looked like his pizza.
-- S137-7: [slowly, warmly] A triangle has three corners. Count them. One, two, three.
+- S137-1: [cheerful] It was pizza night, but the pizza was too hot to eat. [playful] So Dad made a game while it cooled.
+- S137-2: [curious] He took a pen and drew some shapes on a paper napkin. [playful] Find all the triangles, he said.
+- S137-3: [thoughtful] Diego looked at each shape. The circle was round, with no corners, and the square had four corners. [slowly, counting] The big one had three straight sides and three corners. [excited] That one is a triangle! said Diego.
+- S137-4: [matter-of-fact] But he skipped the little shape at the bottom. That one is too little to be a triangle, he said.
+- S137-5: [gently] Count its sides and its corners, said Dad. [slowly, counting] So Diego looked closely, one, two, three straight sides, and one, two, three corners.
+- S137-6: [warmly] A triangle is still a triangle when it is big or little, said Dad. [delighted] Diego grinned and tapped the little triangle too.
+- S137-7: [happy] By then the pizza was cool. [playful] Your slice is almost a triangle, said Dad, but its crust is curved.
+- S137-8: [slowly, warmly] A triangle has three straight sides and three corners. Big or little, it is still a triangle.
 
 ### Two shoes (S140, big-and-little)
 
-- S140-1: [curious] By the door there were two shoes, one big and one little. Lena looked at both.
-- S140-2: [playful] She tried the big one. Her foot went in, and in, and in. [giggles] It swam inside.
+- S140-1: [curious] By the door there were two pairs of shoes, one big pair and one little pair. Lena looked at both.
+- S140-2: [playful] She tried a big one first. Her foot went in, and in, and in. [giggles] It swam inside!
 - S140-3: She tried to walk. [a heavy shoe clomping] Clomp, wobble, [laughs] and the big shoe fell off.
-- S140-4: [curious] She tried the little one, and her foot went in and stopped. [pleased] Just right.
-- S140-5: [happy] The big shoe was Dad's, and the little shoe was hers.
-- S140-6: [warm] Dad put on the big one and Lena put on the little one, and they went out together.
-- S140-7: [slowly, warmly] Big things take up lots of room, and little things take up just a little. That is how Lena knew which shoe was hers.
+- S140-4: [curious] She tried a little one, and her foot went in and stopped. [pleased] Just right.
+- S140-5: [happy] The big shoes were Dad's, and the little shoes were hers.
+- S140-6: [warm] Dad put on the big shoes and Lena put on the little shoes, and they went out together.
+- S140-7: [slowly, warmly] Big things take up lots of room, and little things take up just a little. That is how Lena knew which shoes were hers.
 
-### Roll or sit (S143, circle-and-square)
+### Will it roll? (S143, circle-and-square)
 
 - S143-1: [curious] Ana had a ramp, a ball and a block. [playful] Which one would roll?
-- S143-2: [excited] She put the ball at the top. [a ball rolling down a wooden ramp] Whee! [rushed] It rolled down fast, all the way.
+- S143-2: [excited] She put the ball at the top. [delighted] Whee! [rushed] It rolled down fast, all the way.
 - S143-3: [slowly] She put the block at the top, and it just sat there. [pause] [puzzled] It did not move.
-- S143-4: [determined] She gave it a push. [a wooden block tipping over with a thunk] It tipped over, and then it stopped. [sighs] No rolling.
+- S143-4: [determined] She gave it a push. [surprised] It tipped over, and then it stopped. [sighs] No rolling.
 - S143-5: [thoughtful] Ana looked at the ball, round all over. [slowly] She looked at the block, with corners and flat sides.
-- S143-6: [delighted] Round rolls, and corners sit. Ana rolled the ball again. [laughs] Whee!
-- S143-7: [slowly, warmly] A circle is round. A square has corners.
+- S143-6: [thoughtful] The round ball rolled, and the block with corners did not. [playful] Ana rolled her ball again, and then she got her big beach ball from the toy box. [curious] It was much bigger, [delighted] but it was round too, so it rolled. [laughs] Whee!
+- S143-7: [slowly, warmly] A circle is round. A square has four corners and four sides the same length.
 
 ### The B hunt (S146, a-and-b)
 
@@ -610,9 +615,9 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S149-3: [excited] That one! said Mia, and she pointed at the green apple. Different! [warmly] Dad nodded and smiled.
 - S149-4: [playful] Then Dad made it harder. He took the green apple away and put down a new red one. [mysterious] Now all four were red.
 - S149-5: [slowly] Mia looked, and looked. [puzzled] Same color, same shine, same round shape. [whispers] Were they all the same, every one?
-- S149-6: [gasps] No! [delighted] One apple was small, much smaller than the other three. Different can be size, too.
-- S149-7: [happy] Mia picked up the small apple and took a bite. [a crisp apple crunch] Crunch! [pleased] It was sweet, and just right for a small hand.
-- S149-8: [slowly, warmly] Different means not alike. It can be the color, the shape or the size.
+- S149-6: [gasps] No! [delighted] One apple was small, much smaller than the other three. [warmly] Different can be size, too, said Dad.
+- S149-7: [playful] Then Dad put the green apple back, and Mia sorted them by color. [proud] All the red apples went in one bowl, even the small one. [pleased] The green apple got a bowl all its own.
+- S149-8: [slowly, warmly] Different means not alike. When we sort by color, things that are the same color go together.
 
 ### Where is the cloud? (S152, listen-and-tap-pictures)
 
@@ -622,13 +627,13 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S152-4: [playful] Then his sister said, cloud. [puzzled] Leo looked at the cards, a fish, a cup and a sun. [surprised] There was no cloud at all!
 - S152-5: [rushed] Leo looked under the cards and behind them, too. [sighs] No cloud card anywhere. [puzzled] How could he tap a cloud?
 - S152-6: [laughs] His sister laughed and pointed up. [curious] Leo stepped off the porch and looked up. [amazed] There it was, a real cloud, white and puffy, floating in the blue sky.
-- S152-7: [delighted] Leo pointed up at it. Cloud! he said. [thoughtful] A word names a real thing, not just a picture on a card.
+- S152-7: [delighted] Leo pointed up at it. Cloud! he said. [thoughtful] He had found the real thing, not just a picture on a card.
 - S152-8: [excited] After that they played with the whole world. Bird! Leo pointed at a bird in the tree. [playful] Flower! He found one by the steps.
-- S152-9: [slowly, warmly] A word names a thing. Hear the word, then look for the thing, all around you.
+- S152-9: [slowly, warmly] Many words name things. Hear the word, then look for the thing, all around you.
 
 ### Who said that? (S155, animal-sounds)
 
-- S155-1: [calm] Rosa sat on a hay bale at the farm and closed her eyes. [a duck quacking] Quack! [curious] Who said that?
+- S155-1: [calm] Rosa sat on a hay bale beside her mom at the farm and closed her eyes. [a duck quacking] Quack! [curious] Who said that?
 - S155-2: [excited] She opened her eyes, and there was a duck on the pond. [playful] Quack, it said again. [delighted] The duck!
 - S155-3: [softly] She closed her eyes once more. [playful] Ribbit! [curious] Who said that? [pleased] She looked, and a green frog sat on a log by the pond.
 - S155-4: [a bee buzzing] Buzz! [whispers] That one was close. [hushed] A fat bee was busy on a flower by her feet, so Rosa sat very still.

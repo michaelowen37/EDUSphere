@@ -167,7 +167,7 @@ ok('every lesson picture matches the words spoken over it', mismatches.length ==
   }
   const missing = [...used].filter((n) => !drawn.has(n));
   ok('every picture a lesson or a question shows as art has a line drawing to fall back on', used.size >= 10 && missing.length === 0, missing.join(', '));
-  ok('lessons and questions draw a thing, never its coloring page placeholder', ui.includes("<ColorThumb picture={visual.name} size={120} thing />") && ui.includes("<ColorThumb picture={c.slice(4).split('#')[0]} size={84} thing />") && ui.includes('const THING_LINE_ART = '));
+  ok('lessons and questions draw a thing, never its coloring page placeholder', ui.includes("<ColorThumb picture={visual.name} size={at(120)} thing />") && ui.includes("<ColorThumb picture={c.slice(4).split('#')[0]} size={Math.round(84 * k)} thing />") && ui.includes('const THING_LINE_ART = '));
 }
 // The stand-in note (pass LW, Mikey): his exact words, worn by a lesson line's drawing while its painting is on the way, by a
 // story's drawn fallback and by a thing drawn in place of its coloring page; on a question only in a walk-through, where no
@@ -176,7 +176,7 @@ ok('every lesson picture matches the words spoken over it', mismatches.length ==
 {
   const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
   ok('the stand-in note says exactly what Mikey asked', ui.includes(`const REPLACE_NOTE = "To be replaced with Mikey's provided image.";`) && (ui.match(/\{REPLACE_NOTE\}/g) || []).length === 1);
-  ok('a lesson line whose painting is on the way, and a story drawn in its place, wear the note', ui.includes('<Picture visual={visual} animate animKey={animKey} note />') && ui.includes('<Picture visual={fallback} note />'));
+  ok('a lesson line whose painting is on the way, and a story drawn in its place, wear the note', ui.includes('<Picture visual={visual} animate animKey={animKey} note big />') && ui.includes('<Picture visual={fallback} note />'));
   ok('a question shows the note only in a walk-through, and half of a pair never adds a second one', (ui.match(/note=\{record\.preview \? undefined : false\}/g) || []).length === 3 && ui.includes('<Picture visual={v} note={false} bare />') && ui.includes("const standIn = !!(record && record.preview) && /^art:/.test(c) && thingStandIn("));
   ok('the note decides a thing is a stand-in the same way the drawing does', ui.includes('const pageSerial = thing && DRAWN_PAGES[picture] ? DRAWN_PAGES[picture][0] : null;') && ui.includes('if (!page || !THING_LINE_ART[picture]) return false;'));
   ok('every explanation picture kind the rules test validates reaches the screen', ui.includes(`q.explainVisual.kind !== 'dots' && <div data-explain-picture="" style={{ marginTop: 8 }}><Picture visual={q.explainVisual}`));
@@ -209,6 +209,22 @@ ok('every lesson picture matches the words spoken over it', mismatches.length ==
 // grade 6 and up line can never drift back to the party's on one screen (the code check: a typed-in result line passed every test).
 { const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
   const lines = [...ui.matchAll(/data-course-finished-line=""[^>]*>\{([^}]+)\}/g)].map((m) => m[1].trim());
-  ok("both reader result screens take the finished course's line from logic, and no screen types the party's words itself", lines.length === 2 && lines.every((x) => /^courseFinishedWords\((?:rc|course)\)\.result$/.test(x)) && !ui.includes('That was the whole course!') && !/['`"]Hooray! You finished/.test(ui) && ui.includes('courseFinishedWords(cc).cheer'), JSON.stringify(lines)); }
+  ok("both reader result screens take the finished course's line from logic, and no screen types the party's words itself", lines.length === 2 && lines.every((x) => /^courseFinishedWords\((?:rc(?:, reviewStage)?|course(?:, stage)?)\)\.result$/.test(x)) && !ui.includes('That was the whole course!') && !ui.includes('That was every lesson in the course') && !/['`"]Hooray! You (finished|did|passed|earned)/.test(ui) && ui.includes('courseFinishedWords(cc, stage).cheer'), JSON.stringify(lines)); }
+// Since pass MH a course celebrates twice, and the words of both come from logic (courseFinishedWords with its stage).
+// A result keeps a tracing as whether it was traced, never the strokes a child's finger drew (pass MH, the code check's second
+// read): read from the source, every result the practice screen builds takes `kept`, which holds no stroke for a trace question.
+{ const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+  const rows = [...ui.matchAll(/const result = \{ genId: q\.genId[^\n]*/g)].map((m) => m[0]);
+  const loose = rows.filter((r) => !r.includes('given: kept,') && !r.includes("given: 'I do not know',"));
+  ok('a result never keeps the strokes of a tracing, only whether it was traced, and the where-note never holds them either', rows.length >= 2 && loose.length === 0 && rows.some((r) => r.includes('given: kept,')) && ui.includes("const kept = q.type === 'trace' ? (correct ? 'traced' : 'not traced') : String(given);") && ui.includes("given: q && q.type === 'trace' ? '' : given,"), JSON.stringify(loose.map((r) => r.slice(0, 160)))); }
+// An eraser is the paper (pass MH, the alignment read): kept as 'paper' and drawn in the paper's own color, so the dark theme's
+// light green paper never takes white streaks (white only where strokes multiply over a painted page, where white leaves the art).
+{ const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+  ok("an eraser stroke is kept as the paper and drawn in the paper's color", ui.includes("eraser ? { colour: 'paper', width: eraser") && ui.includes("stroke={st.colour === 'paper' || st.colour === '#FFFFFF' ? (parts.some((p) => p.t === 'art') ? '#FFFFFF' : C.paperBoard) : st.colour}") && !ui.includes("eraser ? { colour: '#FFFFFF'"));
+  // The name page's letters are the paper too, as the thumbnail draws them, so an erased letter matches an untouched one; and a
+  // coloring mask's backdrop is white, which in a mask means fully shown, so every crayon keeps its full color in the dark theme
+  // (the code check's second read of the late fixes: the paper's light green let only about 88 percent through).
+  const backs = [...ui.matchAll(/<mask id="edu-(?:name|edge)-guard"[\s\S]*?<rect x="-60" y="-60" width="220" height="220" fill=([^ ]+) \/>/g)].map((m) => m[1]);
+  ok("the name page's letters are drawn in the paper's color, and both coloring masks let every crayon through whole", ui.includes('fontWeight="700" fill={C.paperBoard} stroke="#2E2E2E" strokeWidth={n.size * 0.055}') && backs.length === 2 && backs.every((b) => b === '"#FFFFFF"'), JSON.stringify(backs)); }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

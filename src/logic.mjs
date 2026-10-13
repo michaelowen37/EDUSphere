@@ -58,9 +58,11 @@ export function lowerTitle(title) {
   const words = t.split(' ');
   const first = words[0];
   // Names keep their capital wherever they land in a sentence (pass IE added the history names: Texas, Texans, San Jacinto, Lincoln...).
-  const keep = /^[A-Z]{2,}/.test(first) || /^(Dr|Mr|Mrs|Ms|St|Newton|Ohm|Boyle|Punnett|Pythagorean|Earth|Milky|Gulf|Big|Texas|Texans|Texan|Tejanos|Tejano|San|Santa|Juneteenth|Austin|Stephen|Sputnik|D-Day|Brown|Pearl|Germany|Standard|Social|Americans|Marbury|Federalist|Japan|Japanese|Soviet|Berlin|Cuban|Montgomery|Franklin|Hitler|Congress|Kansas|Missouri|Andrew|Jefferson|Leo|Mia|Ava|Ben|Max|Zoe|Ana|Eli|Noah|Maya|Omar|Priya|Kai|Mateo|Amara|Marcus|Nadia|Rosa|Sol|Grandpa|Grandma|Ortiz|Jaxon|Harlow|Savanah|Mike|Chloe|Frederick|Georgette|Moses|Sam|Houston|Galveston|Goliad|Gonzales|Alamo|Spindletop|President|Congress|Rome|Roman|Romans|Greek|Greece|Athens|Sumer|Egypt|Egyptian|China|Chinese|Japan|Japanese|Pearl|Germany|German|Germans|Hitler|Soviet|Soviets|Martin|Rosa|Neil|Americans|American|America|Brown|British|Britain|English|England|Spanish|Spain|Mexico|Mexican|Mexicans|French|France|Europe|European|Europeans|Africa|African|Asia|Columbus|Magellan|Gutenberg|Napoleon|Washington|Lincoln|Jefferson|Franklin|Roosevelt|Kennedy|Johnson|Nixon|Reagan|Obama|Churchill|Confederate|Confederacy|Union|Allied|Allies|Treaty|Battle|Declaration|Constitution|Comanche|Apache|Caddo|Jumano|Karankawa|Native|Indian|Christopher|George|Abraham|Thomas|Benjamin|John|Juan|Lyndon|Barack|Ronald)\b/.test(first);
-  // Big, Standard and Social are names only before another name (Big Bang, Big Dipper); Big and small is not (pass IT).
-  const common = /^(Big|Standard|Social)$/.test(first) && !/^[A-Z]/.test(words[1] || '');
+  const keep = /^[A-Z]{2,}/.test(first) || /^(Dr|Mr|Mrs|Ms|St|Newton|Ohm|Boyle|Punnett|Pythagorean|Earth|Milky|Gulf|Big|Texas|Texans|Texan|Tejanos|Tejano|San|Santa|Juneteenth|Austin|Stephen|Sputnik|D-Day|Brown|Pearl|Germany|Standard|Social|Americans|Marbury|Federalist|Japan|Japanese|Soviet|Berlin|Cuban|Montgomery|Franklin|Hitler|Congress|Kansas|Missouri|Andrew|Jefferson|Leo|Mia|Ava|Ben|Max|Zoe|Ana|Eli|Noah|Maya|Omar|Priya|Kai|Mateo|Amara|Marcus|Nadia|Rosa|Sol|Grandpa|Grandma|Ortiz|Jaxon|Harlow|Savanah|Mike|Chloe|Frederick|Georgette|Moses|Sam|Houston|Galveston|Goliad|Gonzales|Alamo|Spindletop|President|Congress|Rome|Roman|Romans|Greek|Greece|Athens|Sumer|Egypt|Egyptian|China|Chinese|Japan|Japanese|Pearl|Germany|German|Germans|Hitler|Soviet|Soviets|Martin|Rosa|Neil|Americans|American|America|Brown|British|Britain|English|England|Spanish|Spain|Mexico|Mexican|Mexicans|French|France|Europe|European|Europeans|Africa|African|Asia|Columbus|Magellan|Gutenberg|Napoleon|Washington|Lincoln|Jefferson|Franklin|Roosevelt|Kennedy|Johnson|Nixon|Reagan|Obama|Churchill|Confederate|Confederacy|Union|Allied|Allies|Treaty|Battle|Declaration|Constitution|Comanche|Apache|Caddo|Jumano|Karankawa|Native|Indian|Christopher|George|Abraham|Thomas|Benjamin|John|Juan|Lyndon|Barack|Ronald|New)\b/.test(first);
+  // Big, Standard and Social are names only before another name (Big Bang, Big Dipper); Big and small is not (pass IT). New is
+  // the same (pass MH, the second read of the late fixes: "Massachusetts belonged to new England."): New England, New York and
+  // New Orleans keep it, and new ocean floor does not.
+  const common = /^(Big|Standard|Social|New)$/.test(first) && !/^[A-Z]/.test(words[1] || '');
   words[0] = keep && !common ? first : first.charAt(0).toLowerCase() + first.slice(1);
   return words.map((w, i) => (i === 0 ? w : (/^[A-Z]{2,}/.test(w) || /^(DNA|RNA|Earth|Newton|Ohm|Boyle|Punnett|Pythagorean|Milky|Gulf|Big|Bang)$/.test(w) ? w : w))).join(' ');
 }
@@ -3851,15 +3853,15 @@ function PREK3_MODULES() { return [
         { say: 'Here are five dots and three dots. One, two, three, four, five, and one, two, three. Three dots are fewer than five dots.', show: { kind: 'pair', stack: true, a: { kind: 'dots', count: 5 }, b: { kind: 'dots', count: 3 } } },
         { say: 'Touch each dot once as you count. One, two, three, four, five. The last number tells how many, so there are five dots.', show: { kind: 'dots', count: 5 } },
         { say: 'Here are three circles and three dots. One, two, three, and one, two, three. They are the same number, so neither group has more.', show: { kind: 'pair', stack: true, a: { kind: 'pattern', items: ['circle', 'circle', 'circle'], colour: 'blue', counting: true, size: 34 }, b: { kind: 'dots', count: 3 } } },
-        { say: 'Here are three dots in a long row, and five dots close together. The long row looks like more. Does it have more?', show: { kind: 'pair', stack: true, a: { kind: 'dots', count: 3, gap: 56 }, b: { kind: 'dots', count: 5, gap: 3 } } },
-        { say: 'Count each group. One, two, three, and one, two, three, four, five. Five dots are more than three dots, so the long row only looked like more.', show: { kind: 'pair', stack: true, a: { kind: 'dots', count: 3, gap: 56 }, b: { kind: 'dots', count: 5, gap: 3 } } },
+        { say: 'Three dots, when spread far apart, create a row that appears long. Five dots, when close together, create a row that appears short. The long row looks like more. Is it more?', show: { kind: 'pair', stack: true, a: { kind: 'dots', count: 3, gap: 74 }, b: { kind: 'dots', count: 5, gap: 3 } } },
+        { say: 'Count each group. One, two, three, and one, two, three, four, five. Five dots are more than three dots, so the long row only looked like more.', show: { kind: 'pair', stack: true, a: { kind: 'dots', count: 3, gap: 74 }, b: { kind: 'dots', count: 5, gap: 3 } } },
         // The size trap (pass MF, Mikey's answer to Q6: pre-K 3's story takes a trap of its own, and a story uses only what its
         // lesson taught): three big circles take more room than five little ones, and only counting says which group has more.
         // Stacked (the lesson check: side by side the little circles drew 11 pixels wide), the big row a little shorter than the
         // little row, so size is the only cue that misleads. Since pass MG (Mikey: "Can we make the big circles even larger for
         // more contrast and impact?") the big circles are cells of 80, over two and a half times as wide as the little ones,
         // and the five little circles spread out (gap 27) so their row still reaches a little past the big row (258 against 256).
-        { say: 'Here are three big circles, and here are five little circles. The big circles look like more. Do they have more?', show: { kind: 'pair', stack: true, a: { kind: 'pattern', items: ['circle', 'circle', 'circle'], colour: 'blue', counting: true, size: 80, frame: 3 }, b: { kind: 'pattern', items: ['circle', 'circle', 'circle', 'circle', 'circle'], colour: 'blue', counting: true, size: 30, gap: 27 } } },
+        { say: 'Three circles, when drawn big, take up lots of room. Five circles, when drawn little, take up only a little room. The big circles look like more. Are they more?', show: { kind: 'pair', stack: true, a: { kind: 'pattern', items: ['circle', 'circle', 'circle'], colour: 'blue', counting: true, size: 80, frame: 3 }, b: { kind: 'pattern', items: ['circle', 'circle', 'circle', 'circle', 'circle'], colour: 'blue', counting: true, size: 30, gap: 27 } } },
         { say: 'Count each group. One, two, three, and one, two, three, four, five. Five little circles are more than three big circles. Big is not the same as more.', show: { kind: 'pair', stack: true, a: { kind: 'pattern', items: ['circle', 'circle', 'circle'], colour: 'blue', counting: true, size: 80, frame: 3 }, b: { kind: 'pattern', items: ['circle', 'circle', 'circle', 'circle', 'circle'], colour: 'blue', counting: true, size: 30, gap: 27 } } },
         { say: 'At snack time, count the crackers on two plates. The plate with more crackers has more crackers to share.', show: null },
       ],
@@ -4023,7 +4025,7 @@ function PREK3_MODULES() { return [
     title: 'Happy, sad, mad and scared',
     tagline: 'Four feelings',
     lesson: {
-      paragraphs: ['Everyone has feelings. Happy, sad, mad and scared are four of them, and a face can show how someone feels. A happy face smiles, and a sad face turns its mouth down. A mad face squeezes its eyebrows down, and a scared face opens its eyes wide.', 'Your body can show feelings too. Mad can feel hot, with tight fists. Scared can make your heart beat fast, and you may want to hide.', 'Every feeling is okay to have, even mad. Hitting and pushing are not okay, because they hurt. When you feel mad, use your words.', 'Say your feeling\'s name, like I feel sad, I feel mad or I feel scared. Saying the name can help. When a feeling is very big, find your grown-up for a hug and a slow breath together. Pretend to smell a flower as you breathe in slowly. Then pretend to blow out a candle as you breathe out slowly.'],
+      paragraphs: ['Everyone has feelings. Happy, sad, mad and scared are four of them, and a face can show how someone feels. A happy face smiles, and a sad face turns its mouth down and lets a tear roll out. A mad face squeezes its eyebrows down, and a scared face opens its eyes wide.', 'Your body can show feelings too. Mad can feel hot, with tight fists. Scared can make your heart beat fast, and you may want to hide.', 'Every feeling is okay to have, even mad. Hitting and pushing are not okay, because they hurt. When you feel mad, use your words.', 'Say your feeling\'s name, like I feel sad, I feel mad or I feel scared. Saying the name can help. When a feeling is very big, find your grown-up for a hug and a slow breath together. Pretend to smell a flower as you breathe in slowly. Then pretend to blow out a candle as you breathe out slowly.'],
       keyIdea: 'Happy, sad, mad and scared are feelings, and every feeling is okay. Say its name, and when a feeling is big, take a slow breath with your grown-up.',
       example: { kind: 'faces', feelings: ['happy', 'sad', 'mad', 'scared'], caption: 'Happy, sad, mad and scared.' },
       pictures: [{ serial: 'P128', alt: 'Two small children laughing together as they play with blocks on a rug', step: 1 }, { serial: 'P129', alt: 'A grown-up kneeling to hug a small child who holds a teddy bear, both taking a slow breath', step: 8 }],
@@ -4183,7 +4185,7 @@ function PREK3_READING_MODULES() { return [
         { say: 'This is the letter A. Its two slanted sides lean in and meet at the top, with a bar across.', show: { kind: 'letters', text: 'A' } },
         { say: 'Apple starts with A. Say it with me, apple.', show: { kind: 'letters', text: 'Apple', highlight: 'first' } },
         { say: 'This is the letter B. It has two round bumps on one side.', show: { kind: 'letters', text: 'B' } },
-        { say: 'Ball starts with B, and so does bee.', show: { kind: 'letters', text: 'Ball', highlight: 'first' } },
+        { say: 'Ball starts with B. Say it with me, ball.', show: { kind: 'letters', text: 'Ball', highlight: 'first' } },
         { say: 'A and B are letters. We put letters together to write words.', show: { kind: 'letters', text: 'A   B' } },
         { say: 'Look for A and B on signs and in books. Here is one, the B in bus. Once you know them, you will find them everywhere.', show: { kind: 'letters', text: 'BUS', highlight: 'first' } },
         { say: 'Bear, boat and book start with B. Acorn and arrow start with A.', show: { kind: 'letters', text: 'Bear', highlight: 'first' } },
@@ -10850,11 +10852,11 @@ function GRADE1_CIVICS_MODULES() { return [
         { say: 'A rule says what to do, and a law is a rule for everyone in a city, a state or a country. At home, in your house, a rule might be lights out at eight. At school a rule is raise your hand to speak.', show: { kind: 'icon', name: 'house' } },
         { say: 'In the community a law says stop at a stop sign and wear your seat belt in the car. A belt keeps you in your seat if the car stops fast.', show: { kind: 'icon', name: 'belt' } },
         { say: 'We have rules and laws for three reasons, keeping order, keeping people safe and settling disagreements fairly. Order means everyone knows what to expect. Safe means nobody gets hurt. Fairly means nobody has to fight about whose turn it is.', show: { kind: 'letters', text: 'order safe fair' } },
-        { say: 'A sign says a rule to everyone at once, even people who cannot read yet, with its color and its shape. This is a stop sign. It is red with eight sides, and it means stop, every single time.', show: { kind: 'icon', name: 'stop' } },
+        { say: 'A sign says a rule to everyone at once, even people who cannot read yet, with its color and its shape. This is a stop sign. It is red with eight sides, and it means stop, every single time.', show: { kind: 'sign', text: 'STOP', color: '#D9534F' } },
         { say: 'Look at this sign. EXIT. An exit sign shows the way out of a building.', show: { kind: 'sign', text: 'EXIT', color: '#1F7A5A' } },
         { say: 'A yellow sign with a point at the top says slow down, something is ahead, such as a school.', show: { kind: 'sign', text: 'SLOW', color: '#D9A520' } },
         { say: 'At a crossing, the white walking person means cross now, and the red hand means wait. A green sign with a name on it tells you the street.', show: { kind: 'swatch', colour: 'red' } },
-        { say: 'Read the sign, then do what it says. A sign only works if everyone follows it, and that is what keeps everyone safe.', show: { kind: 'icon', name: 'stop' } },
+        { say: 'Read the sign, then do what it says. A sign only works if everyone follows it, and that is what keeps everyone safe.', show: { kind: 'sign', text: 'STOP', color: '#D9534F' } },
       ],
     },
     sources: ['Aligned with Texas TEKS 1.10A (explain the purpose for rules and laws in the home, school, and community) and 1.10B (identify rules and laws that establish order, provide security, and manage conflict), and NCSS Theme VI (Power, Authority, and Governance).'],
@@ -16960,7 +16962,7 @@ const singular = (word) => word.slice(0, -1); // "slices" -> "slice"
 // explanations show the pair the words describe, so the picture follows the question's own logic.
 // What the themed matching modules match. 'pic' is a sign-in animal; 'art' is a coloring outline.
 export const MATCH_THEMES = {
-  animals: { kind: 'pic', items: ['fox', 'owl', 'frog', 'bee', 'cat', 'turtle', 'rabbit', 'bear', 'duck', 'snail'], same: 'and they look just alike', odd: true },   // why, said aloud in the lesson's own words (pass MA)
+  animals: { kind: 'pic', items: ['fox', 'owl', 'frog', 'bee', 'cat', 'turtle', 'rabbit', 'bear', 'duck', 'snail'], same: 'and they look just alike', odd: true, notes: true },   // why, said aloud in the lesson's own words (pass MA); notes: why each wrong choice does not fit (pass MH)
   vehicles: { kind: 'art', items: ['car', 'train', 'boat', 'rocket'] },
   things: { kind: 'art', items: ['ball', 'balloon', 'robot', 'butterfly', 'star', 'flower'] },
   water: { kind: 'pic', items: ['whale', 'fish', 'turtle', 'duck', 'frog'] },
@@ -16968,16 +16970,22 @@ export const MATCH_THEMES = {
   shapes: { kind: 'shape', items: ['circle', 'square', 'triangle', 'rectangle'] },
   solids: { kind: 'solid', items: ['cube', 'sphere', 'cone', 'cylinder'] },
 };
+// A theme with notes (pass MH, the animals Very First Steps matches) also says why each wrong choice does not fit, in the
+// Match the Animals lesson's words (same means just alike; the two alike go together and the other is the odd one out),
+// with one more example of the idea from the lessons.
 const themedSame = (theme) => (rng) => {
   const a = pick(rng, theme.items); const b = pick(rng, theme.items.filter((x) => x !== a)); const sameWhy = theme.same ? ', ' + theme.same : '';
-  return { type: 'choice', story: `This is ${aOrAn(a)} ${a}.`, prompt: 'Tap the one that is the same.', choices: shuffle(rng, [`${theme.kind}:${a}`, `${theme.kind}:${b}`]), answer: `${theme.kind}:${a}`,
-    explain: `Both are ${pluralOf(a)}${sameWhy}.`, visual: { kind: theme.kind, name: a }, explainVisual: { kind: 'pair', a: { kind: theme.kind, name: a }, b: { kind: theme.kind, name: a } } };
+  const choices = shuffle(rng, [`${theme.kind}:${a}`, `${theme.kind}:${b}`]); const answer = `${theme.kind}:${a}`;
+  return { type: 'choice', story: `This is ${aOrAn(a)} ${a}.`, prompt: 'Tap the one that is the same.', choices, answer,
+    explain: `Both are ${pluralOf(a)}${sameWhy}.`, visual: { kind: theme.kind, name: a }, explainVisual: { kind: 'pair', a: { kind: theme.kind, name: a }, b: { kind: theme.kind, name: a } },
+    ...(theme.notes ? { whyNot: p3WhyNot(choices, answer, (t) => ({ name: p3PicName(t), why: `is a different animal, and it does not look just like the ${a}.` })), alsoRight: ['Two socks from one pair look just alike, so they are the same too.'] } : {}) };
 };
 const themedDifferent = (theme) => (rng) => {
   const a = pick(rng, theme.items); const b = pick(rng, theme.items.filter((x) => x !== a));
-  const choices = shuffle(rng, [`${theme.kind}:${a}#0`, `${theme.kind}:${a}#1`, `${theme.kind}:${b}#2`]);
-  return { type: 'choice', story: 'Two are the same.', prompt: 'Tap the one that is different.', choices, answer: choices.find((x) => x.startsWith(`${theme.kind}:${b}#`)),
-    explain: theme.odd ? `The ${b} is not the same as the ${pluralOf(a)}, so it is the odd one out.` : `The ${b} is different from the ${pluralOf(a)}.`, visual: null, explainVisual: { kind: 'pair', a: { kind: theme.kind, name: a }, b: { kind: theme.kind, name: b } } };
+  const choices = shuffle(rng, [`${theme.kind}:${a}#0`, `${theme.kind}:${a}#1`, `${theme.kind}:${b}#2`]); const answer = choices.find((x) => x.startsWith(`${theme.kind}:${b}#`));
+  return { type: 'choice', story: 'Two are the same.', prompt: 'Tap the one that is different.', choices, answer,
+    explain: theme.odd ? `The ${b} is not the same as the ${pluralOf(a)}, so it is the odd one out.` : `The ${b} is different from the ${pluralOf(a)}.`, visual: null, explainVisual: { kind: 'pair', a: { kind: theme.kind, name: a }, b: { kind: theme.kind, name: b } },
+    ...(theme.notes ? { whyNot: p3WhyNot(choices, answer, (t) => ({ name: p3PicName(t), why: `looks just like the other ${p3PicWord(t)}, so those two go together.` })), alsoRight: ['Two zebras both have stripes and a lion has none, so the lion is the odd one out.'] } : {}) };
 };
 export const GENERATORS = {
   // ---------- Module 1: what a fraction means ----------
@@ -17303,20 +17311,20 @@ Object.assign(GENERATORS, {
     const [a, b] = shuffle(rng, PATTERN_SHAPES).slice(0, 2); const c = pickColor(rng);
     const items = [a, b, a, b]; const next = a; const wrong = b;
     return { type: 'choice', story: null, prompt: 'What comes next?', choices: shuffle(rng, [`item:${next}-${c}`, `item:${wrong}-${c}`]), answer: `item:${next}-${c}`,
-      explain: `${capFirst(a)}, ${b}, ${a}, ${b}. Next comes ${a}.`, visual: { kind: 'pattern', items, color: c }, explainVisual: null };
+      explain: `${capFirst(a)}, ${b}, ${a}, ${b}. Next comes ${a}.`, visual: { kind: 'pattern', items, colour: c }, explainVisual: null };
   },
   'pp-which-repeats': (rng) => {
     const [a, b, d] = shuffle(rng, PATTERN_SHAPES); const c = pickColor(rng);
     const yes = randInt(rng, 0, 1) === 1;
     const items = yes ? [a, b, a, b, a, b] : [a, b, d, a, d, b];
     return { type: 'choice', story: null, prompt: 'Does this repeat the same way each time?', choices: ['Yes', 'No'], answer: yes ? 'Yes' : 'No',
-      explain: yes ? `${capFirst(a)}, ${b}, ${a}, ${b}. It repeats.` : 'The order keeps changing. It does not repeat.', visual: { kind: 'pattern', items, color: c }, explainVisual: null };
+      explain: yes ? `${capFirst(a)}, ${b}, ${a}, ${b}. It repeats.` : 'The order keeps changing. It does not repeat.', visual: { kind: 'pattern', items, colour: c }, explainVisual: null };
   },
   'pp-missing': (rng) => {
     const [a, b] = shuffle(rng, PATTERN_SHAPES).slice(0, 2); const c = pickColor(rng);
     const items = [a, b, '?', b, a, b]; const missing = a;
     return { type: 'choice', story: null, prompt: 'Which one is missing?', choices: shuffle(rng, [`item:${missing}-${c}`, `item:${b}-${c}`]), answer: `item:${missing}-${c}`,
-      explain: `${capFirst(a)}, ${b}, ${a}, ${b}. The missing one is ${a}.`, visual: { kind: 'pattern', items, color: c }, explainVisual: null };
+      explain: `${capFirst(a)}, ${b}, ${a}, ${b}. The missing one is ${a}.`, visual: { kind: 'pattern', items, colour: c }, explainVisual: null };
   },
 
 
@@ -17837,10 +17845,83 @@ const p3ShapeToken = (shape, look) => (look && look !== 'plain' ? 'shape:' + sha
 // the color decides, whether or not that shape is in the group. The group lists its shapes in a fixed order, so the bank's
 // count is the variety a child meets (pass LV).
 const P3_SORT_ROWS = [['circle', 'square', 'triangle'], ['circle', 'circle', 'square'], ['square', 'triangle', 'triangle'], ['triangle', 'circle', 'circle']];
+// -----------------------------------------------------------------------------------------------------------------
+// Why each wrong answer does not fit (pass MH, Mikey: "explanations for each wrong answer too", "in conversational and
+// explanatory text", the tapped one named as the one "you had chosen", and "other examples of correct answers after the
+// explanations"). In plain terms: every pre-K 3 question carries two more fields. `whyNot` has one entry for each wrong
+// choice, keyed by that choice exactly as the question offers it, and none for the answer. Its `name` is how a person
+// says that choice out loud (The green triangle, Walking away), and its `why` is the rest of one sentence, told with the
+// lesson's own facts. The practice screen reads "name why", or "name, which you just chose, why" for the choice the child
+// tapped, so both must read as plain English, and a pre-reader hears the line before "Have another try", so a line stays
+// at eighteen words or fewer. `alsoRight` holds up to three more true examples of the same idea, and none where another
+// example would not help. Every picture's name below is built from that picture's own token, so a name can never
+// disagree with the drawing it names; tests/logic.test.mjs re-derives each one.
+// -----------------------------------------------------------------------------------------------------------------
+// One entry for every choice except the answer, each made by note(choice).
+const p3WhyNot = (choices, answer, note) => Object.fromEntries(choices.filter((c) => c !== answer).map((c) => [c, note(c)]));
+// A count said aloud (One dot, Three dots), and a group as the group questions name it (The group with three dots).
+const p3DotsName = (n) => `${capFirst(NUMBER_NAMES[n])} ${n === 1 ? 'dot' : 'dots'}`;
+const p3GroupName = (n) => `The group with ${NUMBER_NAMES[n]} ${n === 1 ? 'dot' : 'dots'}`;
+const p3DotCount = (token) => Number(String(token).replace(/^dots:/, ''));
+const p3SwatchColour = (token) => String(token).replace(/^swatch:/, '');
+// An 'item:shape-color' picture, sometimes with a size, or a '#n' tag that keeps two alike pictures apart: The red circle.
+const p3Item = (token) => { const [shape, colour, size] = String(token).replace(/^item:/, '').split('#')[0].split('-'); return { shape, colour, size }; };
+const p3ItemName = (token) => { const { shape, colour, size } = p3Item(token); return ['The', size, colour, shape].filter(Boolean).join(' '); };
+// A 'shape:name~look' picture: The circle, The little square, The thin triangle, The upside-down triangle, and The square
+// turned on its corner, the way the Circle and Square lesson says it.
+const P3_LOOK_SAID = { thin: 'thin', small: 'little' };   // no "wide" (the lesson check, pass MH): the lesson never says it
+const p3ShapeName = (token) => { const [shape, look] = String(token).replace(/^shape:/, '').split('#')[0].split('~');
+  if (look === 'turned') return shape === 'square' ? 'The square turned on its corner' : `The upside-down ${shape}`;
+  return look && P3_LOOK_SAID[look] ? `The ${P3_LOOK_SAID[look]} ${shape}` : `The ${shape}`; };
+const p3ShapeOf = (token) => String(token).replace(/^shape:/, '').split(/[~:#]/)[0];
+// A 'shape:name:size' picture in Big and Little's three sizes: The big circle, The middle-size circle, The little circle.
+const P3_SIZE_SAID = { big: 'big', medium: 'middle-size', small: 'little' };
+const p3SizeName = (token) => { const [, shape, size] = String(token).split(':'); return `The ${P3_SIZE_SAID[size]} ${shape}`; };
+// An animal or a thing the app draws ('pic:fox', 'icon:cup', with a '#n' tag sometimes): The fox, The cup, and The slice
+// of pizza, which is what the pizza drawing shows.
+const p3PicWord = (token) => String(token).replace(/^(?:pic|icon|art):/, '').split('#')[0];
+const p3PicName = (token) => (p3PicWord(token) === 'pizza' ? 'The slice of pizza' : `The ${p3PicWord(token)}`);
+// A feeling face ('face:sad'), each face's one sign as the feelings lesson names it, and the lesson's moment for each feeling.
+const p3FaceName = (token) => `The ${String(token).replace(/^face:/, '')} face`;
+// Sad by its tear (the lesson check, pass MH): the mad face's mouth turns down too, so only the tear tells sad from mad.
+const P3_FACE_SIGN = { happy: 'a big smile', sad: 'a tear rolling out', mad: 'eyebrows that squeeze down', scared: 'wide-open eyes' };
+const P3_FEEL_WHEN = { happy: 'You might feel happy when you play with a friend.', sad: 'You might feel sad when your balloon floats away.', mad: 'You might feel mad when someone grabs your toy.', scared: 'You might feel scared when you hear a big boom of thunder.' };
+// The four colors, each tied to the thing its lesson names, and each color lesson's further examples, word for word.
+const P3_COLOR_OF = { red: 'the color of a strawberry', blue: 'the color of the sky', yellow: 'the color of a banana', green: 'the color of the grass' };
+const P3_COLOR_MORE = { red: 'Many fire trucks are red, and so are many apples.', blue: 'The sea is often blue, and so are a bluebird\'s wings.', yellow: 'A lemon is yellow too, and so are a sunflower\'s petals.', green: 'Many frogs are green, and so are most leaves.' };
+// A color told from the asked one by the thing each is like: blue like the sky, not red like a strawberry.
+const p3ColorNot = (shown, asked) => `${shown} ${EARLY_COLOR_LIKE[shown]}, not ${asked} ${EARLY_COLOR_LIKE[asked]}`;
+// What each shape has, as the shape lessons say it, and a further true example for each shape.
+const P3_SHAPE_HAS = { circle: 'is round, with no corners', square: 'has four corners', triangle: 'has three corners' };
+// Circle and Square's own further examples, for each of its two shapes.
+const CS_MORE = { circle: ['Many plates are round like a circle.', 'A ball is round like a circle, so it rolls.'], square: ['Some windows are square, with four corners.', 'A square turned on its corner is still a square.'] };
+// The animal each sound belongs to, and A and B by the looks the A and B lesson teaches, with each look-alike's own look.
+const P3_SAYS = Object.fromEntries(P3_ANIMAL_SOUNDS);
+const P3_LETTER_LOOK = { A: 'has slanted sides that meet at the top', B: 'has two round bumps' };
+const P3_TWIN_WHY = { H: 'has a bar too, but its sides stand up straight and never meet.', V: 'has sides that meet at the bottom, not the top, and it has no bar.', P: 'has just one bump, and B has two.', D: 'has just one bump, and B has two.' };
+// Why a letter is not the asked A or B: the other of the two by its look, a look-alike by its own look, and any other
+// letter by name, with the asked letter's look (the lesson describes A, B, H and P, so no other letter is described).
+const p3LetterWhy = (o, L) => {
+  if (o === 'A' || o === 'B') return `${P3_LETTER_LOOK[o]}, and ${L} ${P3_LETTER_LOOK[L]}.`;
+  if ((L === 'A' && (o === 'H' || o === 'V')) || (L === 'B' && (o === 'P' || o === 'D'))) return P3_TWIN_WHY[o];
+  if (o === 'P' || o === 'D') return `has just one bump, and ${L} ${P3_LETTER_LOOK[L]}.`;
+  return `is not ${L}, and ${L} ${P3_LETTER_LOOK[L]}.`;
+};
+// Words the A and B lesson says start with each letter, two at a time, leaving out the word a question already used.
+// A letter by name only where the A and B lesson names it (A, B, H, P); any other is the other letter (the lesson check, pass MH).
+const p3LetterName = (o) => (['A', 'B', 'H', 'P'].includes(o) ? `The letter ${o}` : 'This letter');
+// No bee (the lesson check, pass MH): a voice says bee like the letter B, so What letter does bee start with? was heard as B.
+const P3_AB_WORDS = { A: ['apple', 'acorn', 'arrow'], B: ['ball', 'bear', 'boat', 'book', 'bus'] };
+const p3AbMore = (L, not = '') => { const [x, y] = P3_AB_WORDS[L].filter((w) => w !== not); return `${capFirst(x)} and ${y} start with ${L}${not ? ' too' : ''}.`; };
+const P3_SHAPE_MORE = { triangle: 'A triangle is still a triangle when it is tall and thin, or turned upside down.', circle: 'A big circle and a little circle are both circles, because size does not change the shape.', square: 'A little square is still a square, because size does not change the shape.' };
 function p3SortByColour(rng, pair) {
   const colour = pick(rng, pair); const other = pair.find((c) => c !== colour); const row = pick(rng, P3_SORT_ROWS); const shape = pick(rng, PATTERN_SHAPES);
-  return { type: 'choice', story: null, prompt: 'Tap the one that goes with these.', choices: shuffle(rng, [`item:${shape}-${colour}`, `item:${shape}-${other}`]), answer: `item:${shape}-${colour}`,
-    explain: `It is ${colour}, like these, so it goes with the ${colour} things.`, visual: { kind: 'pattern', items: row, colour }, explainVisual: null };
+  const choices = shuffle(rng, [`item:${shape}-${colour}`, `item:${shape}-${other}`]); const answer = `item:${shape}-${colour}`;
+  return { type: 'choice', story: null, prompt: 'Tap the one that goes with these.', choices, answer,
+    explain: `It is ${colour}, like these, so it goes with the ${colour} things.`, visual: { kind: 'pattern', items: row, colour }, explainVisual: null,
+    // The one in the other color belongs in a group of its own (pass MH).
+    whyNot: p3WhyNot(choices, answer, (c) => ({ name: p3ItemName(c), why: `is ${other}, and these are all ${colour}, so it does not go with them.` })),
+    alsoRight: [`A ${colour} crayon would go with these too, because it is ${colour}.`] };
 }
 // Circle and square (pass MB, the lesson brief). In plain terms: the two shapes in every look the lesson teaches (a little one,
 // and a square turned on its corner), drawn without color so a color never points at the answer and the bank counts tasks a
@@ -17854,6 +17935,10 @@ const CS_CLUES = [['has four corners', 'square'], ['has no corners', 'circle'], 
 // The real things the lesson names: a wrong choice never shares the asked property (a plate can roll on its edge, so it is
 // never the wrong one for "rolls", and never a right one either).
 const CS_THINGS = [['is round like a circle', ['ball', 'plate'], ['block', 'window']], ['has corners like a square', ['block', 'window'], ['ball', 'plate']], ['rolls', ['ball'], ['block', 'window']]];
+// A wrong real thing by what it is, the clue it misses, and a further true thing for each clue and answer (pass MH).
+const CS_THING_IS = { block: 'has flat sides and corners', window: 'is square, with four corners', ball: 'is round like a circle', plate: 'is round like a circle' };
+const CS_THING_NOT = { 'is round like a circle': 'so it is not round', 'has corners like a square': 'with no corners', rolls: 'so it does not roll' };
+const CS_THING_MORE = { 'is round like a circle': { ball: ['Many plates are round like a circle too.'], plate: ['A ball is round like a circle too, so it rolls.'] }, 'has corners like a square': { block: ['Some windows are square, with four corners too.'], window: ['A block has corners like a square too.'] }, rolls: { ball: ['A wheel is round too, so it rolls.'] } };
 const CS_THING_WHY = { ball: 'A ball is round like a circle, so it rolls.', plate: 'This plate is round like a circle.', block: 'A block has flat sides and corners like a square, so it does not roll.', window: 'This window is square, with four corners.' };
 // Which one is different? (pass MB): two are the same and one differs in just one way, its color, its shape or its size, the
 // three ways the lesson names, so a child has to look at each one. Shapes and colors are shown, never named, and a color
@@ -17863,9 +17948,14 @@ function p3OddBy(rng, by) {
   const s = pick(rng, PATTERN_SHAPES); const c = pickColor(rng);
   const redGreen = (x) => x === 'red' || x === 'green';
   const odd = by === 'color' ? 'item:' + s + '-' + pick(rng, COLOURS.filter((x) => x !== c && !(redGreen(x) && redGreen(c)))) : by === 'shape' ? 'item:' + pick(rng, PATTERN_SHAPES.filter((x) => x !== s)) + '-' + c : 'item:' + s + '-' + c + '-' + pick(rng, ['small', 'big']);
-  const choices = shuffle(rng, ['item:' + s + '-' + c + '#0', 'item:' + s + '-' + c + '#1', odd + '#2']);
-  return { type: 'choice', story: 'Two are the same.', prompt: 'Tap the one that is different.', choices, answer: choices.find((x) => x.endsWith('#2')), explain: ['This one is a different ', by, '. ', P3_ODD_WHY[by]].join(''), visual: null, explainVisual: null };
+  const choices = shuffle(rng, ['item:' + s + '-' + c + '#0', 'item:' + s + '-' + c + '#1', odd + '#2']); const answer = choices.find((x) => x.endsWith('#2'));
+  return { type: 'choice', story: 'Two are the same.', prompt: 'Tap the one that is different.', choices, answer, explain: ['This one is a different ', by, '. ', P3_ODD_WHY[by]].join(''), visual: null, explainVisual: null,
+    // Each of the two alike ones has its twin (pass MH); the further example differs in the same one way, never red against green.
+    // "This one" (the lesson check, pass MH): naming it said yellow or triangle, which this lesson never teaches.
+    whyNot: p3WhyNot(choices, answer, () => ({ name: 'This one', why: 'is just like one of the others, so those two are the same.' })),
+    alsoRight: [P3_ODD_MORE[by]] };
 }
+const P3_ODD_MORE = { color: 'A blue circle next to two red circles is different, because its color is not the same.', shape: 'A circle next to two squares of the same color is different, because its shape is not the same.', size: 'A big circle and a small circle have the same shape, but not the same size.' };
 // Listen and tap (pass MB): a picture found from what the lesson says it does or where it is, so a child shows they understand
 // the describing words too (PK3.II.D.1, the receptive half). Each clue is the lesson's own words, and a wrong choice never fits
 // it (the moon never stands against "shines in the day", pass JK; nothing in the sky against "floats high in the sky").
@@ -17878,22 +17968,41 @@ const LT_CLUES = [['that shines in the day', 'sun', ['fish', 'tree', 'cup', 'flo
   ['that falls from the clouds', 'rain', ['sun', 'moon', 'fish', 'tree', 'cup', 'flower', 'pizza'], 'Rain falls from the clouds and makes puddles.'],
   ['that has wings', 'bird', ['sun', 'moon', 'fish', 'tree', 'cup', 'flower', 'pizza'], 'A bird has wings, and most birds can fly.'],
   ['we cut into slices to eat', 'pizza', ['sun', 'moon', 'tree', 'cup', 'flower', 'cloud', 'rain'], 'We cut a pizza into slices to eat it.']];
+// What each of the lesson's ten pictures is, in its own words (pass MH), so a wrong picture is told by what it is; what a
+// wrong picture is not, for each clue, said so it is true of every wrong choice that clue can meet; and a further true thing
+// that fits a clue, where one helps. The moon is never a wrong choice for the sun's clue or a cloud's, so its words, up in
+// the sky, never fit a clue it is wrong for.
+const P3_PIC_FACT = { sun: 'shines in the day', moon: 'is up in the sky', fish: 'swims in the water', tree: 'grows tall, with a trunk', flower: 'grows on a plant', cup: 'is for drinking from', cloud: 'floats high in the sky', rain: 'falls from the clouds', bird: 'has wings', pizza: 'is for eating' };
+const LT_NOT = { sun: 'it does not shine in the day', fish: 'it does not swim in the water', tree: 'it does not grow tall, with a trunk', flower: 'it does not grow on a plant', cup: 'we do not drink from it', cloud: 'it does not float high in the sky', rain: 'it does not fall from the clouds', bird: 'it does not have wings', pizza: 'we do not cut it into slices to eat' };
+const LT_UP_NOT = { fish: 'swims down in the water, not up in the sky', cup: 'is for drinking from, and it is not up in the sky', flower: 'grows on a plant, and it is not up in the sky', pizza: 'is for eating, and it is not up in the sky' };
+const LT_DOWN_NOT = { sun: 'is up in the sky, not down in the water', moon: 'is up in the sky, not down in the water', cloud: 'floats high in the sky, not down in the water', tree: 'grows tall, with a trunk, but it does not swim in the water', pizza: 'is for eating, and it does not swim in the water' };
+const LT_MORE = { fish: ['A duck can swim in the water too.'], flower: ['A strawberry grows on a plant too.'], cup: ['We drink from a glass too.'], rain: ['Snow falls from the clouds too.'], bird: ['A butterfly has wings too.'], pizza: ['We cut bread into slices to eat too.'] };
 // Pre-K 3: two choices, one thing asked, everything named in the words the child hears.
 Object.assign(GENERATORS, {
   'p3-tap-red-blue': (rng) => {
     // More examples (pass HT, Mikey): tap a color on swatches or on two shapes that differ only in color.
     const c = pick(rng, ['red', 'blue']); const other = c === 'red' ? 'blue' : 'red';
-    if (rng() < 0.5) { const shape = pick(rng, PATTERN_SHAPES); return { type: 'choice', story: null, prompt: `Tap the ${c} ${shape}.`, choices: shuffle(rng, [`item:${shape}-${c}`, `item:${shape}-${other}`]), answer: `item:${shape}-${c}`, explain: `This ${shape} is ${c}, ${EARLY_COLOR_LIKE[c]}.`, visual: null, explainVisual: null }; }
-    return { type: 'choice', story: null, prompt: `Tap the ${c} one.`, choices: shuffle(rng, [`swatch:${c}`, `swatch:${other}`]), answer: `swatch:${c}`,
-      explain: `This one is ${c}, ${EARLY_COLOR_LIKE[c]}.`, visual: null, explainVisual: null };
+    // Each wrong choice is told by its own color and the thing that color is like (pass MH).
+    if (rng() < 0.5) { const shape = pick(rng, PATTERN_SHAPES); const choices = shuffle(rng, [`item:${shape}-${c}`, `item:${shape}-${other}`]); const answer = `item:${shape}-${c}`;
+      return { type: 'choice', story: null, prompt: `Tap the ${c} ${shape}.`, choices, answer, explain: `This ${shape} is ${c}, ${EARLY_COLOR_LIKE[c]}.`, visual: null, explainVisual: null,
+        whyNot: p3WhyNot(choices, answer, (x) => ({ name: p3ItemName(x), why: `is the same shape, but it is ${p3Item(x).colour}, not ${c} ${EARLY_COLOR_LIKE[c]}.` })), alsoRight: [P3_COLOR_MORE[c]] }; }
+    const choices = shuffle(rng, [`swatch:${c}`, `swatch:${other}`]); const answer = `swatch:${c}`;
+    return { type: 'choice', story: null, prompt: `Tap the ${c} one.`, choices, answer,
+      explain: `This one is ${c}, ${EARLY_COLOR_LIKE[c]}.`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, answer, (x) => ({ name: `The ${p3SwatchColour(x)} one`, why: `is ${p3ColorNot(p3SwatchColour(x), c)}.` })), alsoRight: [P3_COLOR_MORE[c]] };
   },
 
   'p3-which-colour': (rng) => {
     // More examples (pass HT, Mikey): the color on a swatch or on a shape, so a round of five never repeats.
     const c = pick(rng, ['red', 'blue']); const other = c === 'red' ? 'blue' : 'red';
-    if (rng() < 0.5) { const shape = pick(rng, PATTERN_SHAPES); return { type: 'choice', story: null, prompt: `What color is this ${shape}?`, choices: shuffle(rng, [c, other]), answer: c, explain: `This ${shape} is ${c}, ${EARLY_COLOR_LIKE[c]}.`, visual: { kind: 'item', shape, colour: c }, explainVisual: null }; }
-    return { type: 'choice', story: null, prompt: 'What color is this?', choices: shuffle(rng, [c, other]), answer: c,
-      explain: `It is ${c}, ${EARLY_COLOR_LIKE[c]}.`, visual: { kind: 'swatch', colour: c }, explainVisual: null };
+    // A wrong color word is told by the thing it is the color of (pass MH).
+    if (rng() < 0.5) { const shape = pick(rng, PATTERN_SHAPES); const choices = shuffle(rng, [c, other]);
+      return { type: 'choice', story: null, prompt: `What color is this ${shape}?`, choices, answer: c, explain: `This ${shape} is ${c}, ${EARLY_COLOR_LIKE[c]}.`, visual: { kind: 'item', shape, colour: c }, explainVisual: null,
+        whyNot: p3WhyNot(choices, c, (w) => ({ name: capFirst(w), why: `is ${P3_COLOR_OF[w]}, and this ${shape} is ${c} ${EARLY_COLOR_LIKE[c]}.` })), alsoRight: [P3_COLOR_MORE[c]] }; }
+    const choices = shuffle(rng, [c, other]);
+    return { type: 'choice', story: null, prompt: 'What color is this?', choices, answer: c,
+      explain: `It is ${c}, ${EARLY_COLOR_LIKE[c]}.`, visual: { kind: 'swatch', colour: c }, explainVisual: null,
+      whyNot: p3WhyNot(choices, c, (w) => ({ name: capFirst(w), why: `is ${P3_COLOR_OF[w]}, and this one is ${c} ${EARLY_COLOR_LIKE[c]}.` })), alsoRight: [P3_COLOR_MORE[c]] };
   },
 
   'p3-find-match': (rng) => {
@@ -17904,22 +18013,36 @@ Object.assign(GENERATORS, {
     const shape = pick(rng, PATTERN_SHAPES); const c = pickColor(rng);
     const redGreen = (x) => x === 'red' || x === 'green';
     const wrong = rng() < 0.5 ? `item:${pick(rng, PATTERN_SHAPES.filter((x) => x !== shape))}-${c}` : `item:${shape}-${pick(rng, COLOURS.filter((x) => x !== c && !(redGreen(x) && redGreen(c))))}`;
-    return { type: 'choice', story: `This is a ${c} ${shape}.`, prompt: 'Tap the one that is the same.', choices: shuffle(rng, [`item:${shape}-${c}`, wrong]), answer: `item:${shape}-${c}`,
-      explain: `Both are ${c} ${shape}s, the same shape and the same color.`, visual: { kind: 'item', shape, colour: c, size: 64 }, explainVisual: null };
+    const choices = shuffle(rng, [`item:${shape}-${c}`, wrong]); const answer = `item:${shape}-${c}`;
+    return { type: 'choice', story: `This is a ${c} ${shape}.`, prompt: 'Tap the one that is the same.', choices, answer,
+      explain: `Both are ${c} ${shape}s, the same shape and the same color.`, visual: { kind: 'item', shape, colour: c, size: 64 }, explainVisual: null,
+      // The wrong one shares one thing and differs in the other, as the lesson's red square and red triangle do (pass MH).
+      whyNot: p3WhyNot(choices, answer, (x) => { const w = p3Item(x); return { name: p3ItemName(x), why: w.shape === shape ? `is the same shape, but it is ${w.colour}, not ${c}.` : `is the same color, but it is a ${w.shape}, not a ${shape}.` }; }),
+      alsoRight: ['Two socks match when they have the same color and the same stripes or spots.'] };
   },
   'p3-tap-count': (rng) => {
     const n = randInt(rng, 1, 2); const other = n === 1 ? 2 : 1; const word = n === 1 ? 'one' : 'two';
-    return { type: 'choice', story: null, prompt: `Tap ${word} ${n === 1 ? 'dot' : 'dots'}.`, choices: shuffle(rng, [`dots:${n}`, `dots:${other}`]), answer: `dots:${n}`,
-      explain: n === 1 ? 'This is one dot, just one.' : 'These are two dots. Count them, one, two.', visual: null, explainVisual: null };
+    const choices = shuffle(rng, [`dots:${n}`, `dots:${other}`]); const answer = `dots:${n}`;
+    return { type: 'choice', story: null, prompt: `Tap ${word} ${n === 1 ? 'dot' : 'dots'}.`, choices, answer,
+      explain: n === 1 ? 'This is one dot, just one.' : 'These are two dots. Count them, one, two.', visual: null, explainVisual: null,
+      // The count the wrong group shows, against the count asked (pass MH), and the lesson's own one nose and two eyes.
+      whyNot: p3WhyNot(choices, answer, (x) => ({ name: p3DotsName(p3DotCount(x)), why: p3DotCount(x) === 2 ? 'are too many, because you want just one dot.' : 'is not enough, because you want two dots, one, two.' })),
+      alsoRight: [n === 1 ? 'Most people have just one nose.' : 'Most people have two eyes and two ears.'] };
   },
   'p3-how-many': (rng) => {
     // More examples (pass HT, Mikey): count one or two dots, or one or two shapes in a row in red or blue, so a round of
     // five never repeats. (An unused older copy of this bank was removed in pass HS; no bank may be defined twice.)
     const n = randInt(rng, 1, 2);
-    if (rng() < 0.6) { const shape = pick(rng, PATTERN_SHAPES); const colour = pick(rng, ['red', 'blue']);
-      return { type: 'choice', story: null, prompt: `How many ${shape}s?`, choices: shuffle(rng, ['1', '2']), answer: String(n), explain: n === 1 ? `There is one ${shape}, just one.` : `There are two ${shape}s. Count them, one, two.`, visual: { kind: 'pattern', items: Array.from({ length: n }, () => shape), colour, counting: true }, explainVisual: null }; }
-    return { type: 'choice', story: null, prompt: 'How many dots?', choices: shuffle(rng, ['1', '2']), answer: String(n),
-      explain: n === 1 ? 'There is one dot, just one.' : 'There are two dots. Count them, one, two.', visual: { kind: 'dots', count: n }, explainVisual: null };
+    // A wrong count is too many or not enough for what is drawn (pass MH; true in First Steps' One, two, three as well).
+    const notes = (thing) => (w) => (w === '2' ? { name: 'Two', why: `is too many, because there is just one ${thing}.` } : { name: 'One', why: `is not enough, because there are two ${thing}s, one, two.` });
+    const more = [n === 1 ? 'Most people have just one nose.' : 'Most people have two hands, one, two.'];
+    if (rng() < 0.6) { const shape = pick(rng, PATTERN_SHAPES); const colour = pick(rng, ['red', 'blue']); const choices = shuffle(rng, ['1', '2']);
+      return { type: 'choice', story: null, prompt: `How many ${shape}s?`, choices, answer: String(n), explain: n === 1 ? `There is one ${shape}, just one.` : `There are two ${shape}s. Count them, one, two.`, visual: { kind: 'pattern', items: Array.from({ length: n }, () => shape), colour, counting: true }, explainVisual: null,
+        whyNot: p3WhyNot(choices, String(n), notes(shape)), alsoRight: more }; }
+    const choices = shuffle(rng, ['1', '2']);
+    return { type: 'choice', story: null, prompt: 'How many dots?', choices, answer: String(n),
+      explain: n === 1 ? 'There is one dot, just one.' : 'There are two dots. Count them, one, two.', visual: { kind: 'dots', count: n }, explainVisual: null,
+      whyNot: p3WhyNot(choices, String(n), notes('dot')), alsoRight: more };
   },
 
   'p4-which-came-first': (rng) => {
@@ -17951,8 +18074,13 @@ Object.assign(GENERATORS, {
   'p3-animal-sound': (rng) => {
     const SOUNDS = P3_ANIMAL_SOUNDS;
     const [animal, sound] = pick(rng, SOUNDS); const [other] = pick(rng, SOUNDS.filter((x) => x[0] !== animal));
-    return { type: 'choice', story: null, prompt: `Tap the animal that says ${sound}.`, choices: shuffle(rng, [`pic:${animal}`, `pic:${other}`]), answer: `pic:${animal}`,
-      explain: `The ${animal} says ${sound}.`, visual: null, explainVisual: { kind: 'pic', name: animal } };
+    const choices = shuffle(rng, [`pic:${animal}`, `pic:${other}`]); const answer = `pic:${animal}`;
+    return { type: 'choice', story: null, prompt: `Tap the animal that says ${sound}.`, choices, answer,
+      explain: `The ${animal} says ${sound}.`, visual: null, explainVisual: { kind: 'pic', name: animal },
+      // The other animal by its own sound, and the lesson's hearing line: a sound tells which animal is near (pass MH). Never a
+      // bear near a three-year-old (the rule p3-two-at-once keeps), so the bear's growl is told as its own sound instead.
+      whyNot: p3WhyNot(choices, answer, (t) => ({ name: p3PicName(t), why: `says ${P3_SAYS[p3PicWord(t)]}, not ${sound}.` })),
+      alsoRight: [animal === 'bear' ? 'Many animals have a sound of their own, and a bear\'s sound is growl.' : `When you hear ${sound}, ${aOrAn(animal)} ${animal} may be near.`] };
   },
   'sk-hot-or-cold': (rng) => {
     // Full standard (pass JY): each answer gives its reason, and the hot ones say what the warmth does or why we keep away.
@@ -17977,13 +18105,20 @@ Object.assign(GENERATORS, {
   'p4-tap-bigger': (rng) => {
     // Any two of three sizes (pass LN), so bigger is a comparison and not always the giant one.
     const shape = pick(rng, ['square', 'circle', 'triangle']); const [a, b] = pick(rng, [['big', 'small'], ['big', 'medium'], ['medium', 'small']]);
-    return { type: 'choice', story: null, prompt: 'Tap the bigger one.', choices: shuffle(rng, [`shape:${shape}:${a}`, `shape:${shape}:${b}`]), answer: `shape:${shape}:${a}`,
-      explain: `This ${shape} takes up more room than the other one, so it is bigger.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'shape', name: shape, size: a }, b: { kind: 'shape', name: shape, size: b } } };
+    const choices = shuffle(rng, [`shape:${shape}:${a}`, `shape:${shape}:${b}`]); const answer = `shape:${shape}:${a}`;
+    return { type: 'choice', story: null, prompt: 'Tap the bigger one.', choices, answer,
+      explain: `This ${shape} takes up more room than the other one, so it is bigger.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'shape', name: shape, size: a }, b: { kind: 'shape', name: shape, size: b } },
+      // Two of three sizes are shown, so each is named against the other one, never by a size word the pair does not show (pass MH).
+      whyNot: p3WhyNot(choices, answer, (t) => ({ name: `The smaller ${p3ShapeOf(t)}`, why: 'takes up less room than the other one, so it is not the bigger one.' })),
+      alsoRight: ['An elephant is bigger than a mouse, because it takes up much more room.'] };
   },
   'p4-tap-smaller': (rng) => {
     const shape = pick(rng, ['square', 'circle', 'triangle']); const [a, b] = pick(rng, [['big', 'small'], ['big', 'medium'], ['medium', 'small']]);
-    return { type: 'choice', story: null, prompt: 'Tap the smaller one.', choices: shuffle(rng, [`shape:${shape}:${a}`, `shape:${shape}:${b}`]), answer: `shape:${shape}:${b}`,
-      explain: `This ${shape} takes up less room than the other one, so it is smaller.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'shape', name: shape, size: b }, b: { kind: 'shape', name: shape, size: a } } };
+    const choices = shuffle(rng, [`shape:${shape}:${a}`, `shape:${shape}:${b}`]); const answer = `shape:${shape}:${b}`;
+    return { type: 'choice', story: null, prompt: 'Tap the smaller one.', choices, answer,
+      explain: `This ${shape} takes up less room than the other one, so it is smaller.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'shape', name: shape, size: b }, b: { kind: 'shape', name: shape, size: a } },
+      whyNot: p3WhyNot(choices, answer, (t) => ({ name: `The bigger ${p3ShapeOf(t)}`, why: 'takes up more room than the other one, so it is not the smaller one.' })),
+      alsoRight: ['A mouse is smaller than an elephant, because it takes up much less room.'] };
   },
   'p4-tap-more-5': (rng) => {
     const small = randInt(rng, 1, 4); const big = randInt(rng, small + 1, 5);   // every pair up to five (pass LU)
@@ -18001,14 +18136,21 @@ Object.assign(GENERATORS, {
     // hear as the group that takes up more room (pass JW: groups are compared by counting or matching, never by look). The
     // explanation stacks the two groups, one above the other, so each dot sits under a partner (the screen check).
     const small = randInt(rng, 1, 4); const big = randInt(rng, small + 1, 5);
-    return { type: 'choice', story: null, prompt: 'Tap the one with more dots.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${big}`,
-      explain: `${capFirst(NUMBER_WORDS[big - 1])} dots are more than ${NUMBER_WORDS[small - 1]} ${small === 1 ? 'dot' : 'dots'}, because you count past ${NUMBER_WORDS[small - 1]} to get to ${NUMBER_WORDS[big - 1]}.`, visual: null, explainVisual: { kind: 'pair', stack: true, a: { kind: 'dots', count: big }, b: { kind: 'dots', count: small } } };
+    const choices = shuffle(rng, [`dots:${big}`, `dots:${small}`]); const answer = `dots:${big}`;
+    return { type: 'choice', story: null, prompt: 'Tap the one with more dots.', choices, answer,
+      explain: `${capFirst(NUMBER_WORDS[big - 1])} dots are more than ${NUMBER_WORDS[small - 1]} ${small === 1 ? 'dot' : 'dots'}, because you count past ${NUMBER_WORDS[small - 1]} to get to ${NUMBER_WORDS[big - 1]}.`, visual: null, explainVisual: { kind: 'pair', stack: true, a: { kind: 'dots', count: big }, b: { kind: 'dots', count: small } },
+      // The wrong group's count against the other's, in counting words (pass MH), and the lesson's size trap as a further example.
+      whyNot: p3WhyNot(choices, answer, (t) => ({ name: p3DotsName(p3DotCount(t)), why: `${p3DotCount(t) === 1 ? 'is' : 'are'} fewer than ${NUMBER_NAMES[big]} dots, because you count past ${NUMBER_NAMES[p3DotCount(t)]} to get to ${NUMBER_NAMES[big]}.` })),
+      alsoRight: ['Five little circles are more than three big circles, because big is not the same as more.'] };
   },
   'p3-tap-fewer': (rng) => {
     // Up to five dots, the reason in counting words (pass MA), as p3-tap-more.
     const small = randInt(rng, 1, 4); const big = randInt(rng, small + 1, 5);
-    return { type: 'choice', story: null, prompt: 'Tap the one with fewer dots.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${small}`,
-      explain: `${capFirst(NUMBER_WORDS[small - 1])} ${small === 1 ? 'dot is' : 'dots are'} fewer than ${NUMBER_WORDS[big - 1]} dots. You count past ${NUMBER_WORDS[small - 1]} to get to ${NUMBER_WORDS[big - 1]}, so ${NUMBER_WORDS[small - 1]} is not as many.`, visual: null, explainVisual: { kind: 'pair', stack: true, a: { kind: 'dots', count: small }, b: { kind: 'dots', count: big } } };
+    const choices = shuffle(rng, [`dots:${big}`, `dots:${small}`]); const answer = `dots:${small}`;
+    return { type: 'choice', story: null, prompt: 'Tap the one with fewer dots.', choices, answer,
+      explain: `${capFirst(NUMBER_WORDS[small - 1])} ${small === 1 ? 'dot is' : 'dots are'} fewer than ${NUMBER_WORDS[big - 1]} dots. You count past ${NUMBER_WORDS[small - 1]} to get to ${NUMBER_WORDS[big - 1]}, so ${NUMBER_WORDS[small - 1]} is not as many.`, visual: null, explainVisual: { kind: 'pair', stack: true, a: { kind: 'dots', count: small }, b: { kind: 'dots', count: big } },
+      whyNot: p3WhyNot(choices, answer, (t) => ({ name: p3DotsName(p3DotCount(t)), why: `are more than ${p3Dots(small)}, because you count past ${NUMBER_NAMES[small]} to get to ${NUMBER_NAMES[p3DotCount(t)]}.` })),
+      alsoRight: ['Three big circles are fewer than five little circles, because big is not the same as more.'] };
   },
   'p3-same-number': (rng) => {
     // The same number (pass MA): PK3.V.A.8 names "same number of" beside more and less, and the ELOF progression for three-year-olds
@@ -18021,89 +18163,130 @@ Object.assign(GENERATORS, {
     // shape keeps one color, so the bank's count is not a recoloring either.
     const n = randInt(rng, 2, 5); const shape = pick(rng, PATTERN_SHAPES); const colour = shape === 'triangle' ? 'red' : 'blue';
     const other = pick(rng, [1, 2, 3, 4, 5].filter((x) => x !== n)); const row = Array(n).fill(shape); const counted = NUMBER_WORDS.slice(0, n).join(', ');
-    return { type: 'choice', story: null, prompt: `Count the ${shape}s. Tap the dots that are the same number.`, choices: shuffle(rng, [`dots:${n}`, `dots:${other}`]), answer: `dots:${n}`,
-      explain: `There are ${NUMBER_WORDS[n - 1]} ${shape}s and ${NUMBER_WORDS[n - 1]} dots. Count them, ${counted}, and ${counted}. They are the same number.`, visual: { kind: 'pattern', items: row, colour, counting: true, size: 28 }, explainVisual: { kind: 'pair', stack: true, a: { kind: 'pattern', items: row, colour, counting: true, size: 34 }, b: { kind: 'dots', count: n } } };
+    const choices = shuffle(rng, [`dots:${n}`, `dots:${other}`]); const answer = `dots:${n}`;
+    return { type: 'choice', story: null, prompt: `Count the ${shape}s. Tap the dots that are the same number.`, choices, answer,
+      explain: `There are ${NUMBER_WORDS[n - 1]} ${shape}s and ${NUMBER_WORDS[n - 1]} dots. Count them, ${counted}, and ${counted}. They are the same number.`, visual: { kind: 'pattern', items: row, colour, counting: true, size: 28 }, explainVisual: { kind: 'pair', stack: true, a: { kind: 'pattern', items: row, colour, counting: true, size: 34 }, b: { kind: 'dots', count: n } },
+      // The wrong group is more or fewer than the shapes by count (pass MH), and the lesson's own same-number example.
+      whyNot: p3WhyNot(choices, answer, (t) => { const k = p3DotCount(t); return { name: p3DotsName(k), why: `${k === 1 ? 'is' : 'are'} ${k < n ? 'fewer' : 'more'} than the ${NUMBER_NAMES[n]} ${shape}s, so ${k === 1 ? 'it is' : 'they are'} not the same number.` }; }),
+      alsoRight: ['Three circles and three dots are the same number, so neither group has more.'] };
   },
   'p3-tap-yellow-green': (rng) => {
     // Swatches, or two shapes that differ only in color (pass MA, as Red and Blue does), so the bank holds more than two.
     const color = pick(rng, ['yellow', 'green']); const other = color === 'yellow' ? 'green' : 'yellow';
-    if (rng() < 0.5) { const shape = pick(rng, PATTERN_SHAPES); return { type: 'choice', story: null, prompt: `Tap the ${color} ${shape}.`, choices: shuffle(rng, [`item:${shape}-${color}`, `item:${shape}-${other}`]), answer: `item:${shape}-${color}`, explain: `This ${shape} is ${color}, ${EARLY_COLOR_LIKE[color]}.`, visual: null, explainVisual: null }; }
-    return { type: 'choice', story: null, prompt: `Tap the ${color} one.`, choices: shuffle(rng, [`swatch:${color}`, `swatch:${other}`]), answer: `swatch:${color}`,
-      explain: `This is ${color}, ${EARLY_COLOR_LIKE[color]}.`, visual: null, explainVisual: null };
+    // Each wrong choice is told by its own color and the thing that color is like (pass MH), as in Red and Blue.
+    if (rng() < 0.5) { const shape = pick(rng, PATTERN_SHAPES); const choices = shuffle(rng, [`item:${shape}-${color}`, `item:${shape}-${other}`]); const answer = `item:${shape}-${color}`;
+      return { type: 'choice', story: null, prompt: `Tap the ${color} ${shape}.`, choices, answer, explain: `This ${shape} is ${color}, ${EARLY_COLOR_LIKE[color]}.`, visual: null, explainVisual: null,
+        whyNot: p3WhyNot(choices, answer, (x) => ({ name: p3ItemName(x), why: `is the same shape, but it is ${p3Item(x).colour}, not ${color} ${EARLY_COLOR_LIKE[color]}.` })), alsoRight: [P3_COLOR_MORE[color]] }; }
+    const choices = shuffle(rng, [`swatch:${color}`, `swatch:${other}`]); const answer = `swatch:${color}`;
+    return { type: 'choice', story: null, prompt: `Tap the ${color} one.`, choices, answer,
+      explain: `This is ${color}, ${EARLY_COLOR_LIKE[color]}.`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, answer, (x) => ({ name: `The ${p3SwatchColour(x)} one`, why: `is ${p3ColorNot(p3SwatchColour(x), color)}.` })), alsoRight: [P3_COLOR_MORE[color]] };
   },
   'p3-sort-red-blue': (rng) => p3SortByColour(rng, ['red', 'blue']),
   'p3-sort-yellow-green': (rng) => p3SortByColour(rng, ['yellow', 'green']),
   'p3-which-colour-four': (rng) => {
     const color = pick(rng, ['red', 'blue', 'yellow', 'green']);
-    return { type: 'choice', story: null, prompt: 'What color is this?', choices: shuffle(rng, ['red', 'blue', 'yellow', 'green']), answer: color,
-      explain: `This is ${color}, ${EARLY_COLOR_LIKE[color]}.`, visual: { kind: 'swatch', colour: color }, explainVisual: null };
+    const choices = shuffle(rng, ['red', 'blue', 'yellow', 'green']);
+    return { type: 'choice', story: null, prompt: 'What color is this?', choices, answer: color,
+      explain: `This is ${color}, ${EARLY_COLOR_LIKE[color]}.`, visual: { kind: 'swatch', colour: color }, explainVisual: null,
+      // Each wrong color word by the thing it is the color of (pass MH). The question asks for a color by its name, so the
+      // red-against-green rule does not apply, and the things each color is like tell the two apart without seeing the hue.
+      whyNot: p3WhyNot(choices, color, (w) => ({ name: capFirst(w), why: `is ${P3_COLOR_OF[w]}, and this one is ${color} ${EARLY_COLOR_LIKE[color]}.` })), alsoRight: [P3_COLOR_MORE[color]] };
   },
   'p3-tap-any-colour': (rng) => {
     const color = pick(rng, ['red', 'blue', 'yellow', 'green']); const others = shuffle(rng, ['red', 'blue', 'yellow', 'green'].filter((c) => c !== color)).slice(0, 2);
-    return { type: 'choice', story: null, prompt: `Tap the ${color} one.`, choices: shuffle(rng, [`swatch:${color}`, ...others.map((c) => `swatch:${c}`)]), answer: `swatch:${color}`,
-      explain: `This is ${color}, ${EARLY_COLOR_LIKE[color]}.`, visual: null, explainVisual: null };
+    const choices = shuffle(rng, [`swatch:${color}`, ...others.map((c) => `swatch:${c}`)]); const answer = `swatch:${color}`;
+    return { type: 'choice', story: null, prompt: `Tap the ${color} one.`, choices, answer,
+      explain: `This is ${color}, ${EARLY_COLOR_LIKE[color]}.`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, answer, (x) => ({ name: `The ${p3SwatchColour(x)} one`, why: `is ${p3ColorNot(p3SwatchColour(x), color)}.` })), alsoRight: [P3_COLOR_MORE[color]] };
   },
   'p3-tap-three-shapes': (rng) => {
     // A shape in different looks (pass LN): a tall thin or upside-down triangle is still a triangle, a small square still a square.
     const shape = pick(rng, ['circle', 'square', 'triangle']); const others = ['circle', 'square', 'triangle'].filter((x) => x !== shape);
     const right = p3ShapeToken(shape, pick(rng, P3_LOOKS[shape]));
-    return { type: 'choice', story: null, prompt: `Tap the ${shape}.`, choices: shuffle(rng, [right, ...others.map((x) => p3ShapeToken(x, pick(rng, P3_LOOKS[x])))]), answer: right,
-      explain: ({ triangle: 'This is a triangle. It has three corners.', circle: 'This is a circle. It is round, with no corners.', square: 'This is a square. It has four corners, and its four sides are all the same length.' })[shape] || `This is a ${shape}.`, visual: null, explainVisual: null };
+    const choices = shuffle(rng, [right, ...others.map((x) => p3ShapeToken(x, pick(rng, P3_LOOKS[x])))]);
+    return { type: 'choice', story: null, prompt: `Tap the ${shape}.`, choices, answer: right,
+      explain: ({ triangle: 'This is a triangle. It has three corners.', circle: 'This is a circle. It is round, with no corners.', square: 'This is a square. It has four corners, and its four sides are all the same length.' })[shape] || `This is a ${shape}.`, visual: null, explainVisual: null,
+      // Each wrong shape by its corners against the asked shape's (pass MH); a look never changes a shape's corners.
+      whyNot: p3WhyNot(choices, right, (t) => ({ name: p3ShapeName(t), why: `${P3_SHAPE_HAS[p3ShapeOf(t)]}, and a ${shape} ${P3_SHAPE_HAS[shape]}.` })), alsoRight: [P3_SHAPE_MORE[shape]] };
   },
   'p3-name-three-shapes': (rng) => {
-    const shape = pick(rng, ['circle', 'square', 'triangle']); const look = pick(rng, P3_LOOKS[shape]);
-    return { type: 'choice', story: null, prompt: 'What shape is this?', choices: shuffle(rng, ['circle', 'square', 'triangle']), answer: shape,
-      explain: ({ triangle: 'This is a triangle. It has three corners.', circle: 'This is a circle. It is round, with no corners.', square: 'This is a square. It has four corners, and its four sides are all the same length.' })[shape], visual: { kind: 'shape', name: shape, variant: look }, explainVisual: null };
+    const shape = pick(rng, ['circle', 'square', 'triangle']); const look = pick(rng, P3_LOOKS[shape]); const choices = shuffle(rng, ['circle', 'square', 'triangle']);
+    return { type: 'choice', story: null, prompt: 'What shape is this?', choices, answer: shape,
+      explain: ({ triangle: 'This is a triangle. It has three corners.', circle: 'This is a circle. It is round, with no corners.', square: 'This is a square. It has four corners, and its four sides are all the same length.' })[shape], visual: { kind: 'shape', name: shape, variant: look }, explainVisual: null,
+      whyNot: p3WhyNot(choices, shape, (w) => ({ name: `A ${w}`, why: `${P3_SHAPE_HAS[w]}, and this shape ${P3_SHAPE_HAS[shape]}.` })), alsoRight: [P3_SHAPE_MORE[shape]] };
   },
   'p3-tap-picture': (rng) => {
     // Ten pictures, three to choose from (pass LS: a deeper bank), each named in the lesson first.
     const P3_PICTURES = ['sun', 'fish', 'tree', 'cup', 'moon', 'flower', 'cloud', 'rain', 'bird', 'pizza'];
-    const name = pick(rng, P3_PICTURES); const others = shuffle(rng, P3_PICTURES.filter((x) => x !== name)).slice(0, 2);
-    return { type: 'choice', story: null, prompt: `Tap the ${name}.`, choices: shuffle(rng, [`icon:${name}`, ...others.map((x) => `icon:${x}`)]), answer: `icon:${name}`,
+    // The rain picture is a cloud with drops under it (the lesson check, pass MH), so it never stands against "Tap the cloud".
+    const name = pick(rng, P3_PICTURES); const others = shuffle(rng, P3_PICTURES.filter((x) => x !== name && !(name === 'cloud' && x === 'rain'))).slice(0, 2);
+    const choices = shuffle(rng, [`icon:${name}`, ...others.map((x) => `icon:${x}`)]);
+    // A wrong picture by what it is (pass MH); two things in the sky are told apart by name, since both are up there.
+    const SKY = ['sun', 'moon', 'cloud'];
+    const whyNot = p3WhyNot(choices, `icon:${name}`, (t) => { const w = p3PicWord(t); return { name: p3PicName(t), why: SKY.includes(w) && SKY.includes(name) ? `is up in the sky too, but it is not ${name === 'cloud' ? 'a cloud' : 'the ' + name}.` : `${P3_PIC_FACT[w]}, and you are looking for the ${name}.` }; });
+    return { type: 'choice', story: null, prompt: `Tap the ${name}.`, choices, answer: `icon:${name}`, whyNot, alsoRight: [],
       explain: ({ sun: 'This is the sun. It shines in the day.', moon: 'This is the moon. We often see it at night, and sometimes in the day too.', fish: 'This is a fish. It swims in the water.', tree: 'This is a tree. It grows tall, with a trunk.', cloud: 'This is a cloud. Clouds float high in the sky.', rain: 'This is rain. Rain falls from the clouds.', bird: 'This is a bird. A bird has wings, and most birds can fly.', pizza: 'This is a slice of pizza. We cut a pizza into slices to eat it.', cup: 'This is a cup. We drink from it.', flower: 'This is a flower. It grows on a plant.' })[name], visual: null, explainVisual: null };
   },
   // Circle and square (pass MB): a shape in each of its looks, uncolored, so the bank is the tasks a child meets.
   'p3-tap-shape': (rng) => {
     const shape = pick(rng, ['circle', 'square']); const other = shape === 'circle' ? 'square' : 'circle'; const look = pick(rng, CS_LOOKS[shape]); const right = csToken(shape, look);
-    return { type: 'choice', story: null, prompt: `Tap the ${shape}.`, choices: shuffle(rng, [right, csToken(other, pick(rng, CS_LOOKS[other]))]), answer: right,
-      explain: [csSeen(shape, look), CS_WHY[shape]].join(' '), visual: null, explainVisual: null };
+    const choices = shuffle(rng, [right, csToken(other, pick(rng, CS_LOOKS[other]))]);
+    return { type: 'choice', story: null, prompt: `Tap the ${shape}.`, choices, answer: right,
+      explain: [csSeen(shape, look), CS_WHY[shape]].join(' '), visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, right, (t) => ({ name: p3ShapeName(t), why: `${P3_SHAPE_HAS[p3ShapeOf(t)]}, and a ${shape} ${P3_SHAPE_HAS[shape]}.` })), alsoRight: CS_MORE[shape] };
   },
   'p3-name-shape': (rng) => {
-    const shape = pick(rng, ['circle', 'square']); const look = pick(rng, CS_LOOKS[shape]);
-    return { type: 'choice', story: null, prompt: 'What shape is this?', choices: shuffle(rng, ['circle', 'square']), answer: shape,
-      explain: [csSeen(shape, look), CS_WHY[shape]].join(' '), visual: { kind: 'shape', name: shape, variant: look === 'plain' ? null : look }, explainVisual: null };
+    const shape = pick(rng, ['circle', 'square']); const look = pick(rng, CS_LOOKS[shape]); const choices = shuffle(rng, ['circle', 'square']);
+    return { type: 'choice', story: null, prompt: 'What shape is this?', choices, answer: shape,
+      explain: [csSeen(shape, look), CS_WHY[shape]].join(' '), visual: { kind: 'shape', name: shape, variant: look === 'plain' ? null : look }, explainVisual: null,
+      whyNot: p3WhyNot(choices, shape, (w) => ({ name: `A ${w}`, why: `${P3_SHAPE_HAS[w]}, and this shape ${P3_SHAPE_HAS[shape]}.` })), alsoRight: CS_MORE[shape] };
   },
   // A shape found by what the lesson says about it: four corners, no corners, round.
   'p3-shape-by-corners': (rng) => {
     const [clue, shape] = pick(rng, CS_CLUES); const other = shape === 'circle' ? 'square' : 'circle'; const look = pick(rng, CS_LOOKS[shape]); const right = csToken(shape, look);
-    return { type: 'choice', story: null, prompt: `Tap the shape that ${clue}.`, choices: shuffle(rng, [right, csToken(other, pick(rng, CS_LOOKS[other]))]), answer: right,
-      explain: ['This is a ', shape, '. ', CS_WHY[shape]].join(''), visual: null, explainVisual: null };
+    const choices = shuffle(rng, [right, csToken(other, pick(rng, CS_LOOKS[other]))]);
+    // The wrong shape by what it has, against the clue (pass MH).
+    const why = { 'has four corners': 'is round, with no corners, and the shape you want has four.', 'has no corners': 'has four corners, and the shape you want has none.', 'is round': 'has four corners, so it is not round.' }[clue];
+    return { type: 'choice', story: null, prompt: `Tap the shape that ${clue}.`, choices, answer: right,
+      explain: ['This is a ', shape, '. ', CS_WHY[shape]].join(''), visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, right, (t) => ({ name: p3ShapeName(t), why })), alsoRight: shape === 'square' ? ['A block has corners like a square, and some windows are square too.'] : CS_MORE.circle };
   },
   // The real things the lesson names and draws beside the shapes.
   'p3-shape-thing': (rng) => {
     const [clue, rights, wrongs] = pick(rng, CS_THINGS); const a = pick(rng, rights); const w = pick(rng, wrongs);
-    return { type: 'choice', story: null, prompt: `Tap the one that ${clue}.`, choices: shuffle(rng, ['icon:' + a, 'icon:' + w]), answer: 'icon:' + a, explain: CS_THING_WHY[a], visual: null, explainVisual: null };
+    const choices = shuffle(rng, ['icon:' + a, 'icon:' + w]);
+    return { type: 'choice', story: null, prompt: `Tap the one that ${clue}.`, choices, answer: 'icon:' + a, explain: CS_THING_WHY[a], visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, 'icon:' + a, (t) => ({ name: p3PicName(t), why: `${CS_THING_IS[p3PicWord(t)]}, ${CS_THING_NOT[clue]}.` })), alsoRight: CS_THING_MORE[clue][a] };
   },
   // The same shape at another size or turn (P-MATH 9's "matches some shapes that are different sizes and orientations").
   'p3-same-shape-any-size': (rng) => {
     const shape = pick(rng, ['circle', 'square']); const other = shape === 'circle' ? 'square' : 'circle'; const shown = pick(rng, ['plain', 'small']);
     const look = pick(rng, CS_LOOKS[shape].filter((l) => l !== shown)); const right = csToken(shape, look);
-    return { type: 'choice', story: `This is a ${shape}.`, prompt: 'Tap the one that is the same shape.', choices: shuffle(rng, [right, csToken(other, pick(rng, CS_LOOKS[other]))]), answer: right,
-      explain: ['It is a ', shape, ' too. ', look === 'turned' ? 'Turning a square does not change its shape.' : 'Size does not change the shape.'].join(''), visual: { kind: 'shape', name: shape, variant: shown === 'plain' ? null : shown }, explainVisual: null };
+    const choices = shuffle(rng, [right, csToken(other, pick(rng, CS_LOOKS[other]))]);
+    return { type: 'choice', story: `This is a ${shape}.`, prompt: 'Tap the one that is the same shape.', choices, answer: right,
+      explain: ['It is a ', shape, ' too. ', look === 'turned' ? 'Turning a square does not change its shape.' : 'Size does not change the shape.'].join(''), visual: { kind: 'shape', name: shape, variant: shown === 'plain' ? null : shown }, explainVisual: null,
+      whyNot: p3WhyNot(choices, right, (t) => ({ name: p3ShapeName(t), why: `${P3_SHAPE_HAS[p3ShapeOf(t)]}, and this ${shape} ${P3_SHAPE_HAS[shape]}.` })),
+      alsoRight: [shape === 'circle' ? 'A big circle and a little circle are the same shape.' : 'A little square is still a square, and so is a square turned on its corner.'] };
   },
   'p3-tap-ab': (rng) => {
-    const L = pick(rng, ['A', 'B']); const other = L === 'A' ? 'B' : 'A';
-    return { type: 'choice', story: null, prompt: `Tap the letter ${L}.`, choices: shuffle(rng, [L, other]), answer: L,
-      explain: `This is ${L}. ${L === 'A' ? 'Its two slanted sides meet at the top, with a bar across.' : 'It has two round bumps on one side.'}`, visual: null, explainVisual: null };
+    const L = pick(rng, ['A', 'B']); const other = L === 'A' ? 'B' : 'A'; const choices = shuffle(rng, [L, other]);
+    return { type: 'choice', story: null, prompt: `Tap the letter ${L}.`, choices, answer: L,
+      explain: `This is ${L}. ${L === 'A' ? 'Its two slanted sides meet at the top, with a bar across.' : 'It has two round bumps on one side.'}`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, L, (o) => ({ name: p3LetterName(o), why: p3LetterWhy(o, L) })), alsoRight: [p3AbMore(L)] };
   },
   'p3-name-ab': (rng) => {
     // More examples (pass HT, Mikey): the letter alone, or lit up at the start of a word read aloud.
-    if (rng() < 0.6) { const [word, L] = pick(rng, [['Apple', 'A'], ['Ant', 'A'], ['Alligator', 'A'], ['Acorn', 'A'], ['Arrow', 'A'], ['Ball', 'B'], ['Bee', 'B'], ['Bus', 'B'], ['Bat', 'B'], ['Bear', 'B'], ['Boat', 'B'], ['Book', 'B']]);
+    if (rng() < 0.6) { const [word, L] = pick(rng, [['Apple', 'A'], ['Ant', 'A'], ['Alligator', 'A'], ['Acorn', 'A'], ['Arrow', 'A'], ['Ball', 'B'], ['Bus', 'B'], ['Bat', 'B'], ['Bear', 'B'], ['Boat', 'B'], ['Book', 'B']]);
       const why = L === 'A' ? 'Its two slanted sides meet at the top, with a bar across, so it is A.' : 'It has two round bumps on one side, so it is B.';
-      return { type: 'choice', story: null, prompt: `What letter does ${word.toLowerCase()} start with?`, choices: shuffle(rng, ['A', 'B']), answer: L, explain: [word, ' starts with ', L, '. Look at the first letter. ', why].join(''), visual: { kind: 'letters', text: word, highlight: 'first' }, explainVisual: null }; }
-    const L = pick(rng, ['A', 'B']);
-    return { type: 'choice', story: null, prompt: 'What letter is this?', choices: shuffle(rng, ['A', 'B']), answer: L,
-      explain: `This is ${L}. ${L === 'A' ? 'Its two slanted sides meet at the top, with a bar across.' : 'It has two round bumps on one side.'}`, visual: { kind: 'letters', text: L }, explainVisual: null };
+      const choices = shuffle(rng, ['A', 'B']); const w = word.toLowerCase();
+      // The other letter by its look, against the look of the word's first letter (pass MH).
+      return { type: 'choice', story: null, prompt: `What letter does ${w} start with?`, choices, answer: L, explain: [word, ' starts with ', L, '. Look at the first letter. ', why].join(''), visual: { kind: 'letters', text: word, highlight: 'first' }, explainVisual: null,
+        whyNot: p3WhyNot(choices, L, (o) => ({ name: p3LetterName(o), why: o === 'B' ? `has two round bumps, and ${w} starts with a letter that has slanted sides.` : `has slanted sides, and ${w} starts with a letter that has two round bumps.` })), alsoRight: [p3AbMore(L, w)] }; }
+    const L = pick(rng, ['A', 'B']); const choices = shuffle(rng, ['A', 'B']);
+    return { type: 'choice', story: null, prompt: 'What letter is this?', choices, answer: L,
+      explain: `This is ${L}. ${L === 'A' ? 'Its two slanted sides meet at the top, with a bar across.' : 'It has two round bumps on one side.'}`, visual: { kind: 'letters', text: L }, explainVisual: null,
+      whyNot: p3WhyNot(choices, L, (o) => ({ name: p3LetterName(o), why: `${P3_LETTER_LOOK[o]}, and this letter ${P3_LETTER_LOOK[L]}.` })), alsoRight: [p3AbMore(L)] };
   },
   // A or B found by its look (pass MC). Until pass MC the lesson called A tall, with a bar across the middle, which is just as
   // true of B, so a question that asked for A by its look had two right answers; the new description is true of A alone.
@@ -18112,16 +18295,21 @@ Object.assign(GENERATORS, {
   'p3-ab-by-look': (rng) => {
     const L = pick(rng, ['A', 'B']); const twin = pick(rng, L === 'A' ? ['H', 'V'] : ['P', 'D']);
     const why = { H: 'The other letter has a bar too, but its sides stand up straight and never meet.', V: 'The sides of the other letter meet at the bottom, and it has no bar.', P: 'The other letter has just one bump.', D: 'The other letter has just one bump.' }[twin];
-    return { type: 'choice', story: null, prompt: L === 'A' ? 'Tap the letter with two slanted sides that meet at the top.' : 'Tap the letter with two round bumps on one side.', choices: shuffle(rng, [L, twin]), answer: L,
-      explain: [L === 'A' ? 'This is A. Its two slanted sides meet at the top, with a bar across. ' : 'This is B. It has two round bumps on one side. ', why].join(''), visual: null, explainVisual: null };
+    const choices = shuffle(rng, [L, twin]);
+    return { type: 'choice', story: null, prompt: L === 'A' ? 'Tap the letter with two slanted sides that meet at the top.' : 'Tap the letter with two round bumps on one side.', choices, answer: L,
+      explain: [L === 'A' ? 'This is A. Its two slanted sides meet at the top, with a bar across. ' : 'This is B. It has two round bumps on one side. ', why].join(''), visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, L, (o) => ({ name: p3LetterName(o), why: p3LetterWhy(o, L) })), alsoRight: [p3AbMore(L)] };
   },
   // A or B inside a word, the way a sign shows it (pass MC, the lesson check): the lesson says to look for A and B on signs and in
   // books, which is what PK3.III.C.1 means by letters in environmental print. The word is said and shown in capitals, its letters
   // are the choices in order, each once, and the child taps the asked letter; a tapped letter never says its name (choiceSpeaks).
   'p3-ab-in-word': (rng) => {
-    const [word, L] = pick(rng, P3_SIGN_WORDS);
-    return { type: 'choice', story: `Here is the word ${word.toLowerCase()}, the way a sign shows it.`, prompt: `Tap the letter ${L}.`, choices: word.split(''), answer: L,
-      explain: [`This is the letter ${L}, in the word ${word.toLowerCase()}. `, L === 'A' ? 'Its two slanted sides meet at the top, with a bar across.' : 'It has two round bumps on one side.'].join(''), visual: { kind: 'letters', text: word }, explainVisual: null };
+    const [word, L] = pick(rng, P3_SIGN_WORDS); const choices = word.split('');
+    // Each other letter of the word by name, and by its look where the lesson teaches it (pass MH); two more sign words with the letter.
+    const [x, y] = [...new Set(P3_SIGN_WORDS.filter(([w, l]) => l === L && w !== word).map(([w]) => w.toLowerCase()))];
+    return { type: 'choice', story: `Here is the word ${word.toLowerCase()}, the way a sign shows it.`, prompt: `Tap the letter ${L}.`, choices, answer: L,
+      explain: [`This is the letter ${L}, in the word ${word.toLowerCase()}. `, L === 'A' ? 'Its two slanted sides meet at the top, with a bar across.' : 'It has two round bumps on one side.'].join(''), visual: { kind: 'letters', text: word }, explainVisual: null,
+      whyNot: p3WhyNot(choices, L, (o) => ({ name: p3LetterName(o), why: p3LetterWhy(o, L) })), alsoRight: [`You can find ${L} in ${x} and ${y} too.`] };
   },
   // A or B beside a letter that looks a little like it (pass MC): H has a bar too, but its two sides stand up straight and never
   // meet; the sides of V meet at the bottom and it has no bar; P and D have one bump, not two. The child is asked only for
@@ -18131,16 +18319,21 @@ Object.assign(GENERATORS, {
   'p3-ab-look-alike': (rng) => {
     const L = pick(rng, ['A', 'B']); const twin = pick(rng, L === 'A' ? ['H', 'V'] : ['P', 'D']);
     const why = { H: 'The other letter has a bar too, but its sides stand up straight and never meet.', V: 'The sides of the other letter meet at the bottom, and it has no bar.', P: 'The other letter has just one bump.', D: 'The other letter has just one bump.' }[twin];
-    return { type: 'choice', story: `One of these is the letter ${L}, and the other only looks a little like it.`, prompt: `Tap the letter ${L}.`, choices: shuffle(rng, [L, twin]), answer: L,
-      explain: [`This is ${L}. `, L === 'A' ? 'Its two slanted sides meet at the top, with a bar across. ' : 'It has two round bumps on one side. ', why].join(''), visual: null, explainVisual: null };
+    const choices = shuffle(rng, [L, twin]);
+    return { type: 'choice', story: `One of these is the letter ${L}, and the other only looks a little like it.`, prompt: `Tap the letter ${L}.`, choices, answer: L,
+      explain: [`This is ${L}. `, L === 'A' ? 'Its two slanted sides meet at the top, with a bar across. ' : 'It has two round bumps on one side. ', why].join(''), visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, L, (o) => ({ name: p3LetterName(o), why: p3LetterWhy(o, L) })), alsoRight: [p3AbMore(L)] };
   },
 
   'p3-odd-one': (rng) => {
     // The shown one is drawn at its choices' size, as Find the Match's is (pass MB), so the same one is just alike; the words
     // name no shape or color this lesson has not taught (Listen and Point is not linear, so it can come before Very First Steps).
     const shape = pick(rng, PATTERN_SHAPES); const c = pickColor(rng); const otherShape = pick(rng, PATTERN_SHAPES.filter((x) => x !== shape)); const otherColor = otherColors(rng, c, 1)[0];
-    return { type: 'choice', story: 'Look at this one.', prompt: 'Tap the one that is different.', choices: shuffle(rng, [`item:${shape}-${c}`, `item:${otherShape}-${otherColor}`]), answer: `item:${otherShape}-${otherColor}`,
-      explain: 'This one has a different shape and a different color, so it is different.', visual: { kind: 'item', shape, colour: c, size: 64 }, explainVisual: null };
+    const choices = shuffle(rng, [`item:${shape}-${c}`, `item:${otherShape}-${otherColor}`]); const answer = `item:${otherShape}-${otherColor}`;
+    return { type: 'choice', story: 'Look at this one.', prompt: 'Tap the one that is different.', choices, answer,
+      explain: 'This one has a different shape and a different color, so it is different.', visual: { kind: 'item', shape, colour: c, size: 64 }, explainVisual: null,
+      whyNot: p3WhyNot(choices, answer, () => ({ name: 'This one', why: 'is just like the one you looked at, the same shape and the same color.' })),
+      alsoRight: ['A blue circle is different from two red squares, because its shape and color are not the same.'] };
   },
   'p3-odd-color': (rng) => p3OddBy(rng, 'color'),
   'p3-odd-shape': (rng) => p3OddBy(rng, 'shape'),
@@ -18149,24 +18342,35 @@ Object.assign(GENERATORS, {
   // color does not go with them. Both choices are one shape, so only the color decides; the group's order is fixed (pass LV).
   'p3-sort-out': (rng) => {
     const c = pick(rng, ['red', 'blue']); const c2 = c === 'red' ? 'blue' : 'red'; const row = pick(rng, P3_SORT_ROWS); const s = pick(rng, PATTERN_SHAPES);
-    return { type: 'choice', story: 'These go together.', prompt: 'Tap the one that does not go with them.', choices: shuffle(rng, ['item:' + s + '-' + c, 'item:' + s + '-' + c2]), answer: 'item:' + s + '-' + c2,
-      explain: ['It is ', c2, ', and these are ', c, ', so it does not go with them. It goes in a group of its own.'].join(''), visual: { kind: 'pattern', items: row, colour: c }, explainVisual: null };
+    const choices = shuffle(rng, ['item:' + s + '-' + c, 'item:' + s + '-' + c2]); const answer = 'item:' + s + '-' + c2;
+    return { type: 'choice', story: 'These go together.', prompt: 'Tap the one that does not go with them.', choices, answer,
+      explain: ['It is ', c2, ', and these are ', c, ', so it does not go with them. It goes in a group of its own.'].join(''), visual: { kind: 'pattern', items: row, colour: c }, explainVisual: null,
+      whyNot: p3WhyNot(choices, answer, (t) => ({ name: `The ${p3Item(t).colour} one`, why: `is ${p3Item(t).colour} like these, so it goes with them.` })),
+      alsoRight: ['The red ones go in one group, and the blue ones go in another.'] };
   },
   // Listen and tap (pass MB): a picture found from what it does or where it is.
   'p3-tap-by-clue': (rng) => {
     const [clue, a, wrongs, why] = pick(rng, LT_CLUES); const others = shuffle(rng, wrongs).slice(0, 2);
-    return { type: 'choice', story: null, prompt: `Tap the one ${clue}.`, choices: shuffle(rng, [a, ...others].map((x) => 'icon:' + x)), answer: 'icon:' + a, explain: why, visual: null, explainVisual: null };
+    const choices = shuffle(rng, [a, ...others].map((x) => 'icon:' + x));
+    return { type: 'choice', story: null, prompt: `Tap the one ${clue}.`, choices, answer: 'icon:' + a, explain: why, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, 'icon:' + a, (t) => ({ name: p3PicName(t), why: `${P3_PIC_FACT[p3PicWord(t)]}, but ${LT_NOT[a]}.` })), alsoRight: LT_MORE[a] || [] };
   },
   // Up in the sky or down in the water (the lesson's two lines; P-MATH 10's spatial words). A bird, rain and a tall tree are
   // never wrong choices for the sky, and rain, a cup, a bird (a duck swims) and a flower (a water lily) never for the water.
   'p3-up-or-down': (rng) => {
     if (rng() < 0.75) {
       const a = pick(rng, ['sun', 'moon', 'cloud']); const others = shuffle(rng, ['fish', 'cup', 'flower', 'pizza']).slice(0, 2);
-      return { type: 'choice', story: null, prompt: 'Tap the one that is up in the sky.', choices: shuffle(rng, [a, ...others].map((x) => 'icon:' + x)), answer: 'icon:' + a,
-        explain: ({ sun: 'The sun is up in the sky.', moon: 'The moon is up in the sky.', cloud: 'Clouds float high up in the sky.' })[a], visual: null, explainVisual: null };
+      const choices = shuffle(rng, [a, ...others].map((x) => 'icon:' + x));
+      // A wrong picture by what it is, and where it is not (pass MH); the other two sky things as further examples.
+      return { type: 'choice', story: null, prompt: 'Tap the one that is up in the sky.', choices, answer: 'icon:' + a,
+        explain: ({ sun: 'The sun is up in the sky.', moon: 'The moon is up in the sky.', cloud: 'Clouds float high up in the sky.' })[a], visual: null, explainVisual: null,
+        whyNot: p3WhyNot(choices, 'icon:' + a, (t) => ({ name: p3PicName(t), why: `${LT_UP_NOT[p3PicWord(t)]}.` })),
+        alsoRight: [({ sun: 'The moon and the clouds are up in the sky too.', moon: 'The sun and the clouds are up in the sky too.', cloud: 'The sun and the moon are up in the sky too.' })[a]] };
     }
     const others = shuffle(rng, ['sun', 'moon', 'cloud', 'tree', 'pizza']).slice(0, 2);
-    return { type: 'choice', story: null, prompt: 'Tap the one that is down in the water.', choices: shuffle(rng, ['fish', ...others].map((x) => 'icon:' + x)), answer: 'icon:fish', explain: 'A fish is down in the water, where it swims.', visual: null, explainVisual: null };
+    const choices = shuffle(rng, ['fish', ...others].map((x) => 'icon:' + x));
+    return { type: 'choice', story: null, prompt: 'Tap the one that is down in the water.', choices, answer: 'icon:fish', explain: 'A fish is down in the water, where it swims.', visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, 'icon:fish', (t) => ({ name: p3PicName(t), why: `${LT_DOWN_NOT[p3PicWord(t)]}.` })), alsoRight: [] };
   },
 });
 // First Steps part one at the refined standard (pass LU). In plain terms: question kinds that apply each lesson's facts to
@@ -24104,7 +24308,7 @@ Object.assign(GENERATORS, {
   'r10-bias-move': (rng) => {
     const c = pick(rng, BIAS_CASES);
     return { type: 'choice', story: c.text, prompt: 'Which bias move is this?', choices: shuffle(rng, BIAS_MOVES), answer: c.move,
-      explain: `${c.move}. The facts may all be true, and the text still leans.`, choiceNotes: { 'Leaving out facts that point the other way': 'Leaving out facts is when true things that would change the picture are simply not mentioned.', 'Wrapping the facts in charged words': 'Charged words are when the facts are correct but the words around them judge.', 'Quoting only one side': 'Quoting one side is when every voice in the text wants the same thing.' }, visual: null, explainVisual: null };
+      explain: `The move here is ${c.move.charAt(0).toLowerCase()}${c.move.slice(1)}. The facts may all be true, and the text still leans.`, choiceNotes: { 'Leaving out facts that point the other way': 'Leaving out facts is when true things that would change the picture are simply not mentioned.', 'Wrapping the facts in charged words': 'Charged words are when the facts are correct but the words around them judge.', 'Quoting only one side': 'Quoting one side is when every voice in the text wants the same thing.' }, visual: null, explainVisual: null };
   },
   'r10-best-paraphrase': (rng) => {
     const pp = pick(rng, PARAPHRASES);
@@ -24423,7 +24627,7 @@ const PRECISE = [
   { context: 'A witness was not sure of the car\'s speed and offered a rough number.', right: 'estimated', wrong: ['claimed', 'proved'], implies: { estimated: 'The speaker admits it is a guess', claimed: 'The writer hints at doubt', proved: 'The writer says it was demonstrated' } },
   { context: 'A scientist ran the experiment three times and got the same result each time.', right: 'confirmed', wrong: ['suggested', 'hoped'], implies: { confirmed: 'The result was checked and held', suggested: 'The result only hinted', hoped: 'The scientist wished it were so' } },
   { context: 'The mayor gave an order and expected it to be carried out.', right: 'directed', wrong: ['asked', 'wondered'], implies: { directed: 'An instruction with authority behind it', asked: 'A request that could be refused', wondered: 'A thought, not an instruction' } },
-  { context: 'The report changed a few words but kept every fact and figure.', right: 'revised', wrong: ['rewrote', 'replaced'], implies: { revised: 'Changed in small ways, keeping the substance', rewrote: 'Made again from the start', replaced: 'Swapped for something else' } },
+  { context: 'The report changed a few words but kept every fact and figure.', right: 'revised', wrong: ['rewrote', 'replaced'], implies: { revised: 'It was changed in small ways, keeping the substance', rewrote: 'It was made again from the start', replaced: 'It was swapped for something else' } },
 ];
 const STRUCTURE_CHOICES = [
   { setup: 'A story about a wedding could begin on the morning of the wedding or on the day the couple first met.', choice: 'Beginning on the morning of the wedding', effect: 'It makes the wedding the question the story asks', other: 'Beginning when the couple met', otherEffect: 'It makes the wedding the answer the story arrives at' },
@@ -24503,7 +24707,7 @@ Object.assign(GENERATORS, {
   'r12-precise-word': (rng) => {
     const pr = pick(rng, PRECISE);
     return { type: 'choice', story: pr.context, prompt: 'Which word names exactly what happened?', choices: shuffle(rng, [pr.right, ...pr.wrong]), answer: pr.right,
-      explain: `${pr.right}: ${pr.implies[pr.right].toLowerCase()}. The others name something slightly different.`, choiceNotes: Object.fromEntries(Object.entries(pr.implies).map(([w, m]) => [w, `${w} implies: ${m.toLowerCase()}.`])), visual: null, explainVisual: null };
+      explain: `${capFirst(pr.right)} implies ${pr.implies[pr.right].charAt(0).toLowerCase()}${pr.implies[pr.right].slice(1)}. The others name something slightly different.`, choiceNotes: Object.fromEntries(Object.entries(pr.implies).map(([w, m]) => [w, `${capFirst(w)} would mean ${m.charAt(0).toLowerCase()}${m.slice(1)}.`])), visual: null, explainVisual: null };
   },
   'r12-word-implies': (rng) => {
     const pr = pick(rng, PRECISE); const w = pick(rng, [pr.right, ...pr.wrong]); const right = pr.implies[w]; const others = Object.entries(pr.implies).filter(([k]) => k !== w).map(([, m]) => m);
@@ -24933,7 +25137,7 @@ Object.assign(GENERATORS, {
   's4-which-step': (rng) => {
     const c = pick(rng, LAND_CASES);
     return { type: 'choice', story: c.text, prompt: 'Is this weathering, erosion or deposition?', choices: shuffle(rng, LAND_STEPS), answer: c.step,
-      explain: c.step === 'Weathering' ? 'Rock is being broken into pieces, so it is weathering.' : c.step === 'Erosion' ? 'Pieces are being carried away, so it is erosion.' : 'Pieces are being dropped somewhere new, so it is deposition.', choiceNotes: { Weathering: 'Weathering breaks rock into pieces.', Erosion: 'Erosion carries the pieces away.', Deposition: 'Deposition drops them somewhere new.' }, visual: null, explainVisual: null };
+      explain: c.step === 'Weathering' ? 'Rock is being broken into pieces, so it is weathering.' : c.step === 'Erosion' ? 'Pieces are being carried away, so it is erosion.' : 'Pieces are being dropped somewhere new, so it is deposition.', choiceNotes: { Weathering: 'Weathering breaks rock into pieces.', Erosion: 'Erosion carries the pieces away.', Deposition: 'Deposition drops the pieces somewhere new.' }, visual: null, explainVisual: null };
   },
   's4-what-caused': (rng) => {
     const c = pick(rng, LAND_CASES);
@@ -24976,7 +25180,7 @@ Object.assign(GENERATORS, {
   's5-which-motion': (rng) => {
     const c = pick(rng, SKY);
     return { type: 'choice', story: c.text, prompt: 'Which motion causes this?', choices: shuffle(rng, MOTIONS), answer: c.motion,
-      explain: `${c.motion} is what does it.`, choiceNotes: { 'The Earth spinning': 'The Earth spinning once a day gives day and night.', 'The Earth circling the sun, tilted': 'The tilted Earth circling the sun once a year gives the seasons.', 'The moon circling the Earth': 'The moon circling the Earth about once a month gives its phases.' }, visual: null, explainVisual: null };
+      explain: `${c.motion}${c.motion.includes(',') ? ',' : ''} is what does it.`, choiceNotes: { 'The Earth spinning': 'The Earth spinning once a day gives day and night.', 'The Earth circling the sun, tilted': 'The tilted Earth circling the sun once a year gives the seasons.', 'The moon circling the Earth': 'The moon circling the Earth about once a month gives its phases.' }, visual: null, explainVisual: null };
   },
   's5-moon-phase': (rng) => {
     const i = randInt(rng, 0, 2); const seen = ['none of the lit side', 'half of the lit side', 'all of the lit side'][i];
@@ -24990,7 +25194,7 @@ Object.assign(GENERATORS, {
   's5-which-stage': (rng) => {
     const c = pick(rng, CYCLE_CASES);
     return { type: 'choice', story: c.text, prompt: 'Which stage of the water cycle is this?', choices: shuffle(rng, CYCLE), answer: c.stage,
-      explain: `${c.stage}: ${c.change.toLowerCase()}.`, choiceNotes: { Evaporation: 'Evaporation is water rising as a gas.', Condensation: 'Condensation is the gas cooling into drops.', Precipitation: 'Precipitation is water falling as rain or snow.', Collection: 'Collection is water gathering in rivers, lakes and seas.' }, visual: null, explainVisual: null };
+      explain: `This is ${c.stage.toLowerCase()}, water ${({ 'Liquid to gas': 'turning from a liquid into a gas', 'Gas to liquid': 'turning from a gas back into a liquid', 'Falling liquid': 'falling as a liquid', 'Falling solid': 'falling as a solid', 'Gathering liquid': 'gathering as a liquid' })[c.change]}.`, choiceNotes: { Evaporation: 'Evaporation is water rising as a gas.', Condensation: 'Condensation is the gas cooling into drops.', Precipitation: 'Precipitation is water falling as rain or snow.', Collection: 'Collection is water gathering in rivers, lakes and seas.' }, visual: null, explainVisual: null };
   },
   's5-next-stage': (rng) => {
     const i = randInt(rng, 0, 3); const right = CYCLE[(i + 1) % 4];
@@ -25144,7 +25348,7 @@ Object.assign(GENERATORS, {
   's8-which-law': (rng) => {
     const c = pick(rng, LAW_CASES);
     return { type: 'choice', story: c.text, prompt: 'Which of Newton\'s laws is this?', choices: shuffle(rng, LAWS), answer: c.law,
-      explain: c.law === 'First law' ? 'A thing keeps doing what it is doing until a force changes it.' : c.law === 'Second law' ? 'More force means more acceleration, and more mass means less.' : 'Every push has an equal push back the other way.', choiceNotes: { 'First law': 'The first law: things keep doing what they are doing until a force acts.', 'Second law': 'The second law: force equals mass times acceleration.', 'Third law': 'The third law: every push has an equal push back.' }, visual: null, explainVisual: null };
+      explain: c.law === 'First law' ? 'A thing keeps doing what it is doing until a force changes it.' : c.law === 'Second law' ? 'More force means more acceleration, and more mass means less.' : 'Every push has an equal push back the other way.', choiceNotes: { 'First law': 'The first law says things keep doing what they are doing until a force acts.', 'Second law': 'The second law says force equals mass times acceleration.', 'Third law': 'The third law says every push has an equal push back.' }, visual: null, explainVisual: null };
   },
   's8-f-equals-ma': (rng) => {
     const m = randInt(rng, 2, 10); const a = randInt(rng, 2, 9); const f = m * a;
@@ -25442,7 +25646,7 @@ Object.assign(GENERATORS, {
   's12-rock-kind': (rng) => {
     const r = pick(rng, ROCKS);
     return { type: 'choice', story: null, prompt: `Which kind of rock is ${r.name}?`, choices: shuffle(rng, ROCK_KINDS), answer: r.kind,
-      explain: `${r.name.charAt(0).toUpperCase() + r.name.slice(1)} is ${r.kind.toLowerCase()}: ${r.how.toLowerCase()}.`, choiceNotes: { Igneous: 'Igneous rock cooled from a melt.', Sedimentary: 'Sedimentary rock was pressed together from pieces.', Metamorphic: 'Metamorphic rock was changed by heat and pressure without melting.' }, visual: null, explainVisual: null };
+      explain: `${r.name.charAt(0).toUpperCase() + r.name.slice(1)} is ${r.kind.toLowerCase()}, because ${({ Igneous: 'it cooled from melted rock', Sedimentary: 'it is made of pieces pressed together over time', Metamorphic: 'it was changed by heat and pressure without melting' })[r.kind]}.`, choiceNotes: { Igneous: 'Igneous rock cooled from a melt.', Sedimentary: 'Sedimentary rock was pressed together from pieces.', Metamorphic: 'Metamorphic rock was changed by heat and pressure without melting.' }, visual: null, explainVisual: null };
   },
   's12-how-formed': (rng) => {
     const kind = pick(rng, ROCK_KINDS); const right = ROCKS.find((r) => r.kind === kind).how; const others = [...new Set(ROCKS.filter((r) => r.kind !== kind).map((r) => r.how))];
@@ -26201,58 +26405,73 @@ const yesNo = (rng) => shuffle(rng, ['Yes', 'No']);
 // the lesson names, and the lesson's own moments, the body's signs, big-feeling helpers and ways to help a friend.
 const P3_FEELINGS = ['happy', 'sad', 'mad', 'scared'];
 const P3_FEEL_LOOK = { happy: 'It has a big smile.', sad: 'Its mouth turns down, and a tear rolls out.', mad: 'Its eyebrows squeeze down.', scared: 'Its eyes open wide.' };
+// The moments (pass MH, Mikey: a situation and its question read as one sentence, What is a kind thing to do when your friend
+// looks sad?): each row is the whole question, the feeling, the wrong face, the explanation, what the moment says about the
+// feeling (said after the wrong face's own sign, so the line is right for that face), and one more example of the feeling.
+// The wrong face varies (pass MH, the alignment read, closing EARMARKS A23): happy was the wrong face in five of six moments, so
+// a child who avoided the smile passed without reading the moment. Each wrong face is one no child would fairly feel then (a
+// lost balloon or a grabbed toy can make a child sad or mad alike, so those two keep happy).
 const P3_FEEL_MOMENTS = [
-  ['Sam is playing with his friend.', 'Sam', 'happy', 'sad', 'Playing with a friend can make you feel happy, so Sam might feel happy.'],
-  ['Ana watched her balloon float away.', 'Ana', 'sad', 'happy', 'Ana\'s balloon floated away, so she might feel sad. Every feeling is okay to have.'],
-  ['Someone grabbed Leo\'s toy.', 'Leo', 'mad', 'happy', 'Someone grabbed Leo\'s toy, so he might feel mad. Feeling mad is okay, and Leo can use his words.'],
-  ['Rosa heard a big boom of thunder.', 'Rosa', 'scared', 'happy', 'A big boom of thunder can make you feel scared, so Rosa might feel scared.'],
-  ['Kai\'s face feels hot, and his hands make tight fists.', 'Kai', 'mad', 'happy', 'A hot face and tight fists can show you feel mad, so Kai might feel mad.'],
-  ['Mia\'s heart is beating fast, and she wants to hide.', 'Mia', 'scared', 'happy', 'A fast heart and wanting to hide can show you feel scared, so Mia might feel scared.'],
+  ['How might Sam feel when he is playing with his friend?', 'happy', 'sad', 'Playing with a friend can make you feel happy, so Sam might feel happy.', 'playing with a friend can make you happy', 'When you feel happy, your face may show a big smile.'],
+  ['How might Ana feel when her balloon floats away?', 'sad', 'happy', 'Ana\'s balloon floats away, so she might feel sad. Every feeling is okay to have.', 'a balloon floating away can make you feel sad', 'When you feel sad, your mouth may turn down, and a tear may roll out.'],
+  ['How might Leo feel when someone grabs his toy?', 'mad', 'happy', 'Someone grabs Leo\'s toy, so he might feel mad. Feeling mad is okay, and Leo can use his words.', 'someone grabbing your toy can make you feel mad', 'Mad can feel hot, with tight fists.'],
+  ['How might Rosa feel when she hears a big boom of thunder?', 'scared', 'mad', 'A big boom of thunder can make you feel scared, so Rosa might feel scared.', 'thunder can make you feel scared', 'Scared can make your heart beat fast, and you may want to hide.'],
+  ['How might Kai feel when his face feels hot and his hands make tight fists?', 'mad', 'sad', 'A hot face and tight fists can show you feel mad, so Kai might feel mad.', 'tight fists go with feeling mad', 'You might feel mad when someone grabs your toy.'],
+  ['How might Mia feel when her heart is beating fast and she wants to hide?', 'scared', 'mad', 'A fast heart and wanting to hide can show you feel scared, so Mia might feel scared.', 'wanting to hide can show you feel scared', 'You might feel scared when you hear a big boom of thunder.'],
 ];
+// Each row: the question, the answer, the explanation, what the wrong answer would mean (pass MH), and one more example.
 const P3_FEEL_OKAY = [
-  ['Is it okay to feel sad?', 'Yes', 'Yes, it is okay. Every feeling is okay to have, and sad is a feeling.'],
-  ['Is it okay to feel mad?', 'Yes', 'Yes, it is okay. Every feeling is okay to have, and when you feel mad, you can use your words.'],
-  ['Is it okay to feel scared?', 'Yes', 'Yes, it is okay. Every feeling is okay to have, and your grown-up can help when you feel scared.'],
-  ['Is it okay to hit when you feel mad?', 'No', 'No, it is not. Feeling mad is okay, but hitting is not okay, because it hurts. Use your words.'],
-  ['Is it okay to push when you feel mad?', 'No', 'No, it is not. Feeling mad is okay, but pushing is not okay, because it hurts. Use your words.'],
+  ['Is it okay to feel sad?', 'Yes', 'Yes, it is okay. Every feeling is okay to have, and sad is a feeling.', 'would mean feeling sad is not okay, but every feeling is okay to have.', 'When you feel sad, you can say your feeling\'s name, like I feel sad.'],
+  ['Is it okay to feel mad?', 'Yes', 'Yes, it is okay. Every feeling is okay to have, and when you feel mad, you can use your words.', 'would mean feeling mad is not okay, but every feeling is okay to have, even mad.', 'When you feel mad, you can use your words and say, I feel mad.'],
+  ['Is it okay to feel scared?', 'Yes', 'Yes, it is okay. Every feeling is okay to have, and your grown-up can help when you feel scared.', 'would mean feeling scared is not okay, but every feeling is okay to have.', 'When a feeling is very big, you can find your grown-up.'],
+  ['Is it okay to hit when you feel mad?', 'No', 'No, it is not. Feeling mad is okay, but hitting is not okay, because it hurts. Use your words.', 'would mean hitting is okay, but hitting is not okay, because it hurts.', 'When you feel mad, you can use your words, like I feel mad.'],
+  ['Is it okay to push when you feel mad?', 'No', 'No, it is not. Feeling mad is okay, but pushing is not okay, because it hurts. Use your words.', 'would mean pushing is okay, but pushing is not okay, because it hurts.', 'When you feel mad, you can use your words, like I feel mad.'],
 ];
+// Each row: the question (the big feeling and the slow breath merged into it, pass MH), the answer, the wrong choice, the
+// explanation, the face shown (or none), why the wrong choice does not fit, and one more example.
 const P3_FEEL_CALM = [
-  ['Your feeling is very big.', 'Who can you find to help?', 'Your grown-up', 'Nobody', 'Find your grown-up. A hug and a slow breath together can help a big feeling get smaller.', null],
-  ['Your feeling is very big.', 'What can help it get smaller?', 'A slow breath', 'Throwing a toy', 'A slow breath with your grown-up helps your body calm down, so a big feeling can get smaller. Throwing a toy is not okay, because it can hurt someone.', null],
-  [null, 'When your face looks like this, what can you say?', 'I feel sad', 'I feel mad', 'That face is sad, with a tear. You can say your feeling\'s name, I feel sad. Saying the name can help.', 'sad'],
-  [null, 'When your face looks like this, what can you say?', 'I feel mad', 'I feel scared', 'That face is mad, with its eyebrows squeezed down. You can say your feeling\'s name, I feel mad. Saying the name can help.', 'mad'],
-  [null, 'When your face looks like this, what can you say?', 'I feel scared', 'I feel sad', 'That face is scared, with its eyes open wide. You can say your feeling\'s name, I feel scared. Saying the name can help.', 'scared'],
-  ['You are taking a slow breath.', 'What do you pretend to smell as you breathe in?', 'icon:flower', 'icon:candle', 'You smell a flower by breathing in, so you pretend to smell one as you breathe in slowly. After that, you pretend to blow out a candle.', null],
-  ['You are taking a slow breath.', 'What do you pretend to blow out as you breathe out?', 'icon:candle', 'icon:flower', 'You blow out a candle by breathing out, so you pretend to blow one out as you breathe out slowly. Before that, you pretend to smell a flower.', null],
+  ['Who can you find to help when your feeling is very big?', 'Your grown-up', 'Nobody', 'Find your grown-up. A hug and a slow breath together can help a big feeling get smaller.', null, 'means no one helps you, and your grown-up can help a big feeling get smaller.', 'A hug and a teddy to hold can help a big feeling get smaller too.'],
+  ['What can help your very big feeling get smaller?', 'A slow breath', 'Throwing a toy', 'A slow breath with your grown-up helps your body calm down, so a big feeling can get smaller. Throwing a toy is not okay, because it can hurt someone.', null, 'can hurt someone, and it does not help a big feeling get smaller.', 'A hug from your grown-up and a teddy to hold can help too.'],
+  ['When your face looks like this, what can you say?', 'I feel sad', 'I feel mad', 'That face is sad, with a tear. You can say your feeling\'s name, I feel sad. Saying the name can help.', 'sad', 'goes with eyebrows that squeeze down, and this face has a tear.', 'You can say the name of other feelings too, like I feel mad or I feel scared.'],
+  ['When your face looks like this, what can you say?', 'I feel mad', 'I feel scared', 'That face is mad, with its eyebrows squeezed down. You can say your feeling\'s name, I feel mad. Saying the name can help.', 'mad', 'goes with wide-open eyes, and this face has eyebrows that squeeze down.', 'You can say the name of other feelings too, like I feel sad or I feel scared.'],
+  ['When your face looks like this, what can you say?', 'I feel scared', 'I feel sad', 'That face is scared, with its eyes open wide. You can say your feeling\'s name, I feel scared. Saying the name can help.', 'scared', 'goes with a tear, and this face has wide-open eyes.', 'You can say the name of other feelings too, like I feel sad or I feel mad.'],
+  ['What do you pretend to smell as you breathe in slowly?', 'icon:flower', 'icon:candle', 'You smell a flower by breathing in, so you pretend to smell one as you breathe in slowly. After that, you pretend to blow out a candle.', null, 'is what you pretend to blow out as you breathe out, not in.', 'Pretend to smell the flower as you breathe in, then pretend to blow out the candle as you breathe out.'],
+  ['What do you pretend to blow out as you breathe out slowly?', 'icon:candle', 'icon:flower', 'You blow out a candle by breathing out, so you pretend to blow one out as you breathe out slowly. Before that, you pretend to smell a flower.', null, 'is what you pretend to smell as you breathe in, not out.', 'Pretend to smell the flower as you breathe in, then pretend to blow out the candle as you breathe out.'],
 ];
+// The friend who may need help: each row adds one more example. A wrong face is told by its own sign, against the asked
+// friend's look (pass MH).
 const P3_HELP_WHO = [
-  ['Tap the friend who might need help.', 'sad', ['happy'], 'That friend looks sad and may need help. You can ask, are you okay?'],
-  ['Tap the friend who might need help.', 'scared', ['happy'], 'That friend looks scared and may need help. You can ask, are you okay?'],
-  ['Tap the friend who looks sad.', 'sad', ['mad', 'scared'], 'That friend\'s mouth turns down, and a tear rolls out, so your friend looks sad.'],
-  ['Tap the friend who looks scared.', 'scared', ['sad', 'mad'], 'That friend\'s eyes are open wide, so your friend looks scared.'],
+  ['Tap the friend who might need help.', 'sad', ['happy'], 'That friend looks sad and may need help. You can ask, are you okay?', 'A friend who falls and gets hurt may need help too.'],
+  ['Tap the friend who might need help.', 'scared', ['happy'], 'That friend looks scared and may need help. You can ask, are you okay?', 'A friend who falls and gets hurt may need help too.'],
+  ['Tap the friend who looks sad.', 'sad', ['mad', 'scared'], 'That friend\'s mouth turns down, and a tear rolls out, so your friend looks sad.', 'You can ask a sad friend if they are okay.'],
+  ['Tap the friend who looks scared.', 'scared', ['sad', 'mad'], 'That friend\'s eyes are open wide, so your friend looks scared.', 'You can bring a scared friend a teddy to hug.'],
 ];
+const P3_FRIEND_LOOK = { sad: 'a sad friend has a tear rolling out', scared: 'a scared friend\'s eyes open wide' };
+// Kind things, the grown-up to get, and the ball (pass MH): each row is the whole question, the answer, the wrong choice, the
+// explanation, how a person says the wrong choice, what it does to the friend or why it is not okay, and one more right thing.
 const P3_HELP_KIND = [
-  ['Your friend is crying.', 'What is a kind thing to say?', 'Are you okay?', 'Go away', 'Asking your friend if they are okay is kind. It shows you care how your friend feels.'],
-  ['Your friend looks sad.', 'What is a kind thing to do?', 'Sit beside your friend', 'Walk away', 'Sitting beside your friend is kind. It shows you care how your friend feels.'],
-  ['Your friend looks scared.', 'What is a kind thing to do?', 'Bring a teddy to hug', 'Laugh at your friend', 'Bringing a teddy to hug is kind. It shows you care how your friend feels.'],
+  ['What is a kind thing to say when your friend is crying?', 'Are you okay?', 'Go away', 'Asking your friend if they are okay is kind. It shows you care how your friend feels.', 'Saying go away', 'is not kind, because it leaves your crying friend alone and sad.', 'You can also sit beside your friend, or bring a teddy to hug.'],
+  ['What is a kind thing to do when your friend looks sad?', 'Sit beside your friend', 'Walk away', 'Sitting beside your friend is kind. It shows you care how your friend feels.', 'Walking away', 'leaves your friend alone and still sad, so it is not kind.', 'You can also ask if your friend is okay, or bring a teddy to hug.'],
+  ['What is a kind thing to do when your friend looks scared?', 'Bring a teddy to hug', 'Laugh at your friend', 'Bringing a teddy to hug is kind. It shows you care how your friend feels.', 'Laughing at your friend', 'can make a scared friend feel sad too, so it is not kind.', 'You can also sit beside your friend and ask if your friend is okay.'],
 ];
 const P3_HELP_GROWNUP = [
-  ['Your friend fell down and hurt a knee.', 'Who can help?', 'A toy', 'Get a grown-up. Grown-ups know how to help when someone gets hurt, and a toy cannot.'],
-  ['Your friend is very sad and cannot stop crying.', 'Who can you get to help?', 'Nobody', 'Get a grown-up. Grown-ups know how to help a friend who is very sad.'],
-  ['You and a friend both want one ball, and a fight starts.', 'Who can help you both?', 'The ball', 'Get a grown-up. A grown-up can help you take turns, so you both get to play.'],
+  ['Who can help when your friend falls down and hurts a knee?', 'A toy', 'Get a grown-up. Grown-ups know how to help when someone gets hurt, and a toy cannot.', 'cannot help a hurt knee, so get a grown-up, who knows how to help.'],
+  ['Who can you get to help when your friend is very sad and cannot stop crying?', 'Nobody', 'Get a grown-up. Grown-ups know how to help a friend who is very sad.', 'means your friend gets no help, so get a grown-up, who knows how to help.'],
+  ['Who can help you and a friend when you both want one ball and a fight starts?', 'The ball', 'Get a grown-up. A grown-up can help you take turns, so you both get to play.', 'cannot stop a fight, so get a grown-up, who can help you take turns.'],
 ];
 const P3_HELP_BALL = [
-  ['Your friend tries to grab the ball from you.', 'What can you say?', 'Stop, please', 'Mine!', 'You can say, stop, please. Those kind words tell your friend that grabbing is not okay. Then get a grown-up to help you both.'],
-  ['You and a friend both want one ball, and a fight starts.', 'What can you do?', 'Get a grown-up', 'Grab the ball', 'Get a grown-up to help you both, because a grown-up can help you take turns. Grabbing is not okay.'],
-  ['A friend grabs the ball you were playing with.', 'What can you do?', 'Get a grown-up', 'Push your friend', 'Pushing is not okay, because it hurts. Keep your hands to yourself, and get a grown-up.'],
-  ['You and a friend both want one ball, and a fight starts.', 'How can a grown-up help you both get to play?', 'Help you take turns', 'Take the ball away', 'A grown-up can help you take turns, so you both get to play.'],
+  ['What can you say when your friend tries to grab the ball from you?', 'Stop, please', 'Mine!', 'You can say, stop, please. Those kind words tell your friend that grabbing is not okay. Then get a grown-up to help you both.', 'Saying mine', 'is not a kind way to tell your friend to stop grabbing.', 'You can keep your hands to yourself, and then get a grown-up to help you both.'],
+  ['What can you do when you and a friend both want one ball and a fight starts?', 'Get a grown-up', 'Grab the ball', 'Get a grown-up to help you both, because a grown-up can help you take turns. Grabbing is not okay.', 'Grabbing the ball', 'is not okay, and it can make the fight bigger, so get a grown-up.', 'You can also keep your hands to yourself, so nobody gets hurt.'],
+  ['What can you do when a friend grabs the ball you were playing with?', 'Get a grown-up', 'Push your friend', 'Pushing is not okay, because it hurts. Keep your hands to yourself, and get a grown-up.', 'Pushing your friend', 'is not okay, because it hurts, so get a grown-up to help.', 'You can also say, stop, please, to tell your friend that grabbing is not okay.'],
+  ['How can a grown-up help you both get to play when a fight starts over one ball?', 'Help you take turns', 'Take the ball away', 'A grown-up can help you take turns, so you both get to play.', 'Taking the ball away', 'stops the fight, but then nobody gets to play with the ball.', 'A grown-up can also help you share the ball, so you both play at the same time.'],
 ];
+// Each row: the question, the answer, the explanation, what the wrong answer would mean (pass MH), and one more right thing.
 const P3_HELP_YESNO = [
-  ['Is it kind to ask a sad friend if they are okay?', 'Yes', 'Yes, it is kind. Asking if your friend is okay shows you care.'],
-  ['Is it kind to sit beside a friend who is sad?', 'Yes', 'Yes, it is kind. Sitting beside a sad friend shows you care.'],
-  ['Is it kind to laugh at a friend who falls and gets hurt?', 'No', 'No, it is not kind, because laughing can make a hurt friend feel sad. Ask if your friend is okay, and get a grown-up.'],
-  ['Is it okay to push when you both want one ball?', 'No', 'No, it is not. Pushing is not okay, because it hurts. You can take turns, or get a grown-up to help you both.'],
-  ['Should you get a grown-up when a friend is hurt?', 'Yes', 'Yes, you should. Grown-ups know how to help when someone gets hurt.'],
+  ['Is it kind to ask a sad friend if they are okay?', 'Yes', 'Yes, it is kind. Asking if your friend is okay shows you care.', 'would mean asking is not kind, but asking if your friend is okay shows you care.', 'Sitting beside a sad friend shows you care too.'],
+  ['Is it kind to sit beside a friend who is sad?', 'Yes', 'Yes, it is kind. Sitting beside a sad friend shows you care.', 'would mean sitting beside a sad friend is not kind, but it shows you care.', 'Bringing a teddy to hug shows you care too.'],
+  ['Is it kind to laugh at a friend who falls and gets hurt?', 'No', 'No, it is not kind, because laughing can make a hurt friend feel sad. Ask if your friend is okay, and get a grown-up.', 'would mean laughing is kind, but laughing can make a hurt friend feel sad.', 'Asking if your friend is okay is kind, and so is getting a grown-up.'],
+  ['Is it okay to push when you both want one ball?', 'No', 'No, it is not. Pushing is not okay, because it hurts. You can take turns, or get a grown-up to help you both.', 'would mean pushing is okay, but pushing is not okay, because it hurts.', 'Taking turns with the ball is kind, and a grown-up can help you both.'],
+  ['Should you get a grown-up when a friend is hurt?', 'Yes', 'Yes, you should. Grown-ups know how to help when someone gets hurt.', 'would mean your hurt friend gets no help, so get a grown-up, who knows how to help.', 'A grown-up can help when a friend is very sad, too.'],
 ];
 // One more and one fewer (pass ME, earmark E12 part two: PK3 V.B.1 and V.B.2, ELOF P-MATH 6): every answer is the count in the
 // words plus or minus one, said in counting words, and a wrong group is never that count, so a child who counts always finds it.
@@ -26260,6 +26479,11 @@ const P3_NUM = ['zero', 'one', 'two', 'three', 'four', 'five'];
 const p3Dots = (n) => `${P3_NUM[n]} ${n === 1 ? 'dot' : 'dots'}`;
 const p3Here = (n) => `${n === 1 ? 'Here is' : 'Here are'} ${p3Dots(n)}.`;
 const p3CountUp = (n) => ['One', 'two', 'three', 'four', 'five'].slice(0, n).join(', ');
+// Further examples of the same idea with other counts than the question's (pass MH), the way the lesson counts up and down.
+const p3AddFacts = (n) => { const [a, b] = [1, 2, 3, 4].filter((k) => k !== n); return `${capFirst(P3_NUM[a])} and one more is ${P3_NUM[a + 1]}, and ${P3_NUM[b]} and one more is ${P3_NUM[b + 1]}.`; };
+const p3TakeFacts = (n) => { const [a, b] = [2, 3, 4, 5].filter((k) => k !== n); return `${capFirst(P3_NUM[a])} take away one is ${P3_NUM[a - 1]}, and ${P3_NUM[b]} take away one is ${P3_NUM[b - 1]}.`; };
+const p3OneMoreFacts = (n) => { const [a, b] = [1, 2, 3, 4].filter((k) => k !== n); return `${capFirst(p3Dots(a + 1))} are one more than ${p3Dots(a)}, and ${p3Dots(b + 1)} are one more than ${p3Dots(b)}.`; };
+const p3OneFewerFacts = (n) => { const [a, b] = [2, 3, 4, 5].filter((k) => k !== n); return `${capFirst(p3Dots(a - 1))} ${a - 1 === 1 ? 'is' : 'are'} one fewer than ${p3Dots(a)}, and ${p3Dots(b - 1)} are one fewer than ${p3Dots(b)}.`; };
 // Rhymes heard with pictures (pass ME, earmark E12 part two: PK3 III.B.6 in part, ELOF P-LIT 1 in part): seven families of
 // things the lesson names and the screen draws, so a child hears the words and taps a picture, never reads a word. A wrong
 // choice comes from another family, so it never rhymes with the asked word.
@@ -26271,31 +26495,51 @@ const p3RhymePic = ([, c]) => (c.startsWith('pic:') ? { kind: 'pic', name: c.sli
 // test looking, not listening.
 const P3_RHYME_NEAR = [[1, 4], [0, 4]];
 const p3RhymeOdd = (rng, fam) => { const i = P3_RHYME_FAMILIES.indexOf(fam); const near = P3_RHYME_NEAR.flatMap(([a, b]) => (a === i ? [b] : b === i ? [a] : [])); return pick(rng, pick(rng, P3_RHYME_FAMILIES.filter((f, k) => k !== i && !near.includes(k)))); };
+// One more rhyme (pass MH): the third word of the family when it has one, or the next family's pair, all said in the lesson.
+const p3RhymeMore = (fam, a, b) => { const third = fam.find((e) => e !== a && e !== b); if (third) return `${capFirst(third[0])} rhymes with ${a[0]} and ${b[0]} too.`;
+  const f2 = P3_RHYME_FAMILIES[(P3_RHYME_FAMILIES.indexOf(fam) + 1) % P3_RHYME_FAMILIES.length]; return `${capFirst(f2[0][0])} and ${f2[1][0]} rhyme too.`; };
+// The word a rhyme picture's token stands for, and a word's rhyming partner from its own family.
+const p3RhymePartner = (e) => P3_RHYME_FAMILIES.find((f) => f.includes(e)).find((x) => x !== e);
 const twoOf = (rng, list, answer) => shuffle(rng, [answer, ...shuffle(rng, [...new Set(list.filter((x) => x !== answer))]).slice(0, 2)]);
 Object.assign(GENERATORS, {
   // One more and one fewer (pass ME). The picture shows the group before the change, so the child works out the new count;
   // the wrong group is the old count or one past the answer, never the answer itself. The more-or-fewer question says We add one
   // dot, never One more dot comes, so the heard words do not hand over More (the lesson check).
-  'p3-add-one': (rng) => { const n = randInt(rng, 1, 4); const wrong = n + 2 <= 5 && rng() < 0.5 ? n + 2 : n;
-    return { type: 'choice', story: `${p3Here(n)} One more dot comes.`, prompt: 'Tap the group that shows how many there are now.', choices: shuffle(rng, [`dots:${n + 1}`, `dots:${wrong}`]), answer: `dots:${n + 1}`, explain: `One more dot came, so now there are ${p3Dots(n + 1)}. ${p3CountUp(n + 1)}.`, visual: { kind: 'dots', count: n }, explainVisual: { kind: 'dots', count: n + 1 } }; },
-  'p3-take-one': (rng) => { const n = randInt(rng, 2, 5); const wrong = n - 2 >= 1 && rng() < 0.5 ? n - 2 : n;
-    return { type: 'choice', story: `${p3Here(n)} One dot goes away.`, prompt: 'Tap the group that shows how many are left.', choices: shuffle(rng, [`dots:${n - 1}`, `dots:${wrong}`]), answer: `dots:${n - 1}`, explain: `One dot went away, so ${p3Dots(n - 1)} ${n - 1 === 1 ? 'is' : 'are'} left. ${p3CountUp(n - 1)}.`, visual: { kind: 'dots', count: n }, explainVisual: { kind: 'dots', count: n - 1 } }; },
-  'p3-more-or-fewer-now': (rng) => { const add = rng() < 0.5; const n = add ? randInt(rng, 1, 4) : randInt(rng, 2, 5);
-    return { type: 'choice', story: `${p3Here(n)} ${add ? 'We add one dot.' : 'One dot goes away.'}`, prompt: 'Are there more dots now, or fewer?', choices: shuffle(rng, ['More', 'Fewer']), answer: add ? 'More' : 'Fewer', explain: add ? `We added one dot, so there are more dots now. ${capFirst(P3_NUM[n])} and one more is ${P3_NUM[n + 1]}.` : `One dot went away, so there are fewer dots now. ${capFirst(P3_NUM[n])} take away one is ${P3_NUM[n - 1]}.`, visual: { kind: 'dots', count: n }, explainVisual: { kind: 'dots', count: add ? n + 1 : n - 1 } }; },
-  'p3-one-more-group': (rng) => { const n = randInt(rng, 1, 4); const wrong = pick(rng, [n - 1, n + 2].filter((k) => k >= 1 && k <= 5));
-    return { type: 'choice', story: p3Here(n), prompt: 'Tap the group that has one more than this.', choices: shuffle(rng, [`dots:${n + 1}`, `dots:${wrong}`]), answer: `dots:${n + 1}`, explain: `${capFirst(p3Dots(n + 1))} are one more than ${p3Dots(n)}. ${p3CountUp(n + 1)}.`, visual: { kind: 'dots', count: n }, explainVisual: { kind: 'pair', stack: true, a: { kind: 'dots', count: n + 1 }, b: { kind: 'dots', count: n } } }; },
-  'p3-one-fewer-group': (rng) => { const n = randInt(rng, 2, 5); const wrong = pick(rng, [n + 1, n - 2].filter((k) => k >= 1 && k <= 5));
-    return { type: 'choice', story: p3Here(n), prompt: 'Tap the group that has one fewer than this.', choices: shuffle(rng, [`dots:${n - 1}`, `dots:${wrong}`]), answer: `dots:${n - 1}`, explain: `${capFirst(p3Dots(n - 1))} ${n - 1 === 1 ? 'is' : 'are'} one fewer than ${p3Dots(n)}. ${p3CountUp(n - 1)}.`, visual: { kind: 'dots', count: n }, explainVisual: { kind: 'pair', stack: true, a: { kind: 'dots', count: n }, b: { kind: 'dots', count: n - 1 } } }; },
+  // Each wrong group by its own count against the count asked (pass MH): the count from before the change, or one past the
+  // answer, said with the lesson's own and one more, take away one, one more than and one fewer than.
+  'p3-add-one': (rng) => { const n = randInt(rng, 1, 4); const wrong = n + 2 <= 5 && rng() < 0.5 ? n + 2 : n; const choices = shuffle(rng, [`dots:${n + 1}`, `dots:${wrong}`]); const answer = `dots:${n + 1}`;
+    return { type: 'choice', story: `${p3Here(n)} One more dot comes.`, prompt: 'Tap the group that shows how many there are now.', choices, answer, explain: `One more dot came, so now there are ${p3Dots(n + 1)}. ${p3CountUp(n + 1)}.`, visual: { kind: 'dots', count: n }, explainVisual: { kind: 'dots', count: n + 1 },
+      whyNot: p3WhyNot(choices, answer, (t) => { const k = p3DotCount(t); const what = k === n ? 'shows how many there were before' : 'has one more than ' + P3_NUM[n + 1]; return { name: p3GroupName(k), why: `${what}, and ${P3_NUM[n]} and one more is ${P3_NUM[n + 1]}.` }; }), alsoRight: [p3AddFacts(n)] }; },
+  'p3-take-one': (rng) => { const n = randInt(rng, 2, 5); const wrong = n - 2 >= 1 && rng() < 0.5 ? n - 2 : n; const choices = shuffle(rng, [`dots:${n - 1}`, `dots:${wrong}`]); const answer = `dots:${n - 1}`;
+    return { type: 'choice', story: `${p3Here(n)} One dot goes away.`, prompt: 'Tap the group that shows how many are left.', choices, answer, explain: `One dot went away, so ${p3Dots(n - 1)} ${n - 1 === 1 ? 'is' : 'are'} left. ${p3CountUp(n - 1)}.`, visual: { kind: 'dots', count: n }, explainVisual: { kind: 'dots', count: n - 1 },
+      whyNot: p3WhyNot(choices, answer, (t) => { const k = p3DotCount(t); const what = k === n ? 'shows how many there were before' : 'has one fewer than ' + P3_NUM[n - 1]; return { name: p3GroupName(k), why: `${what}, and ${P3_NUM[n]} take away one is ${P3_NUM[n - 1]}.` }; }), alsoRight: [p3TakeFacts(n)] }; },
+  'p3-more-or-fewer-now': (rng) => { const add = rng() < 0.5; const n = add ? randInt(rng, 1, 4) : randInt(rng, 2, 5); const choices = shuffle(rng, ['More', 'Fewer']); const answer = add ? 'More' : 'Fewer';
+    return { type: 'choice', story: `${p3Here(n)} ${add ? 'We add one dot.' : 'One dot goes away.'}`, prompt: 'Are there more dots now, or fewer?', choices, answer, explain: add ? `We added one dot, so there are more dots now. ${capFirst(P3_NUM[n])} and one more is ${P3_NUM[n + 1]}.` : `One dot went away, so there are fewer dots now. ${capFirst(P3_NUM[n])} take away one is ${P3_NUM[n - 1]}.`, visual: { kind: 'dots', count: n }, explainVisual: { kind: 'dots', count: add ? n + 1 : n - 1 },
+      whyNot: p3WhyNot(choices, answer, (w) => ({ name: w, why: add ? `would mean a dot went away, but we added one, and ${P3_NUM[n]} and one more is ${P3_NUM[n + 1]}.` : `would mean a dot came, but one went away, and ${P3_NUM[n]} take away one is ${P3_NUM[n - 1]}.` })),
+      alsoRight: [add ? 'When your grown-up gives you one more cracker, you have more crackers.' : 'When you eat one cracker, there are fewer crackers on your plate.'] }; },
+  'p3-one-more-group': (rng) => { const n = randInt(rng, 1, 4); const wrong = pick(rng, [n - 1, n + 2].filter((k) => k >= 1 && k <= 5)); const choices = shuffle(rng, [`dots:${n + 1}`, `dots:${wrong}`]); const answer = `dots:${n + 1}`;
+    return { type: 'choice', story: p3Here(n), prompt: 'Tap the group that has one more than this.', choices, answer, explain: `${capFirst(p3Dots(n + 1))} are one more than ${p3Dots(n)}. ${p3CountUp(n + 1)}.`, visual: { kind: 'dots', count: n }, explainVisual: { kind: 'pair', stack: true, a: { kind: 'dots', count: n + 1 }, b: { kind: 'dots', count: n } },
+      whyNot: p3WhyNot(choices, answer, (t) => { const k = p3DotCount(t); return { name: p3GroupName(k), why: `has ${k < n ? 'one fewer' : 'two more'} than ${P3_NUM[n]}, and one more than ${P3_NUM[n]} is ${P3_NUM[n + 1]}.` }; }), alsoRight: [p3OneMoreFacts(n)] }; },
+  'p3-one-fewer-group': (rng) => { const n = randInt(rng, 2, 5); const wrong = pick(rng, [n + 1, n - 2].filter((k) => k >= 1 && k <= 5)); const choices = shuffle(rng, [`dots:${n - 1}`, `dots:${wrong}`]); const answer = `dots:${n - 1}`;
+    return { type: 'choice', story: p3Here(n), prompt: 'Tap the group that has one fewer than this.', choices, answer, explain: `${capFirst(p3Dots(n - 1))} ${n - 1 === 1 ? 'is' : 'are'} one fewer than ${p3Dots(n)}. ${p3CountUp(n - 1)}.`, visual: { kind: 'dots', count: n }, explainVisual: { kind: 'pair', stack: true, a: { kind: 'dots', count: n }, b: { kind: 'dots', count: n - 1 } },
+      whyNot: p3WhyNot(choices, answer, (t) => { const k = p3DotCount(t); return { name: p3GroupName(k), why: `has ${k > n ? 'one more' : 'two fewer'} than ${P3_NUM[n]}, and one fewer than ${P3_NUM[n]} is ${P3_NUM[n - 1]}.` }; }), alsoRight: [p3OneFewerFacts(n)] }; },
   // Words that rhyme (pass ME). The asked word is spoken in the prompt (and shown, in the tap kind); the choices are pictures,
   // which never speak, so the child must know and say each name, which the lesson taught, and listen to its end.
-  'p3-rhyme-tap': (rng) => { const fam = pick(rng, P3_RHYME_FAMILIES); const [a, b] = shuffle(rng, fam).slice(0, 2); const odd = p3RhymeOdd(rng, fam);
-    return { type: 'choice', story: a[0] === 'moon' ? 'This is the moon.' : `This is a ${a[0]}.`, prompt: `Tap the one that rhymes with ${a[0]}.`, choices: shuffle(rng, [b[1], odd[1]]), answer: b[1], explain: `${capFirst(a[0])} and ${b[0]} rhyme. They sound the same at the end. ${capFirst(odd[0])} does not rhyme with ${a[0]}.`, visual: p3RhymePic(a), explainVisual: null }; },
-  'p3-rhyme-listen': (rng) => { const fam = pick(rng, P3_RHYME_FAMILIES); const [a, b] = shuffle(rng, fam).slice(0, 2); const odd = p3RhymeOdd(rng, fam);
-    return { type: 'choice', story: null, prompt: `Listen. ${capFirst(a[0])}. Tap the one that rhymes with ${a[0]}.`, choices: shuffle(rng, [b[1], odd[1]]), answer: b[1], explain: `${capFirst(a[0])} and ${b[0]} rhyme. They sound the same at the end. ${capFirst(odd[0])} does not rhyme with ${a[0]}.`, visual: null, explainVisual: null }; },
-  'p3-rhyme-yesno': (rng) => { const fam = pick(rng, P3_RHYME_FAMILIES); const [a, b] = shuffle(rng, fam).slice(0, 2); const yes = rng() < 0.5; const c = yes ? b : p3RhymeOdd(rng, fam);
-    return { type: 'choice', story: null, prompt: `Do ${a[0]} and ${c[0]} rhyme?`, choices: yesNo(rng), answer: yes ? 'Yes' : 'No', explain: yes ? `Yes, they rhyme. ${capFirst(a[0])} and ${c[0]} sound the same at the end.` : `No, they do not rhyme. ${capFirst(a[0])} and ${c[0]} do not sound the same at the end.`, visual: { kind: 'pair', a: p3RhymePic(a), b: p3RhymePic(c) }, explainVisual: null }; },
-  'p3-rhyme-odd': (rng) => { const fam = pick(rng, P3_RHYME_FAMILIES); const [a, b] = shuffle(rng, fam).slice(0, 2); const odd = p3RhymeOdd(rng, fam);
-    return { type: 'choice', story: 'Two of these rhyme.', prompt: 'Tap the one that does not rhyme.', choices: shuffle(rng, [a[1], b[1], odd[1]]), answer: odd[1], explain: `${capFirst(a[0])} and ${b[0]} rhyme. ${capFirst(odd[0])} does not sound the same at the end, so it does not rhyme with them.`, visual: null, explainVisual: null }; },
+  // A word that does not rhyme is told by its end sound, by its own name (pass MH); one more rhyme from the lesson follows.
+  'p3-rhyme-tap': (rng) => { const fam = pick(rng, P3_RHYME_FAMILIES); const [a, b] = shuffle(rng, fam).slice(0, 2); const odd = p3RhymeOdd(rng, fam); const choices = shuffle(rng, [b[1], odd[1]]);
+    return { type: 'choice', story: a[0] === 'moon' ? 'This is the moon.' : `This is a ${a[0]}.`, prompt: `Tap the one that rhymes with ${a[0]}.`, choices, answer: b[1], explain: `${capFirst(a[0])} and ${b[0]} rhyme. They sound the same at the end. ${capFirst(odd[0])} does not rhyme with ${a[0]}.`, visual: p3RhymePic(a), explainVisual: null,
+      whyNot: p3WhyNot(choices, b[1], () => ({ name: capFirst(odd[0]), why: `does not sound the same as ${a[0]} at the end, so they do not rhyme.` })), alsoRight: [p3RhymeMore(fam, a, b)] }; },
+  'p3-rhyme-listen': (rng) => { const fam = pick(rng, P3_RHYME_FAMILIES); const [a, b] = shuffle(rng, fam).slice(0, 2); const odd = p3RhymeOdd(rng, fam); const choices = shuffle(rng, [b[1], odd[1]]);
+    return { type: 'choice', story: null, prompt: `Listen. ${capFirst(a[0])}. Tap the one that rhymes with ${a[0]}.`, choices, answer: b[1], explain: `${capFirst(a[0])} and ${b[0]} rhyme. They sound the same at the end. ${capFirst(odd[0])} does not rhyme with ${a[0]}.`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, b[1], () => ({ name: capFirst(odd[0]), why: `does not sound the same as ${a[0]} at the end, so they do not rhyme.` })), alsoRight: [p3RhymeMore(fam, a, b)] }; },
+  'p3-rhyme-yesno': (rng) => { const fam = pick(rng, P3_RHYME_FAMILIES); const [a, b] = shuffle(rng, fam).slice(0, 2); const yes = rng() < 0.5; const c = yes ? b : p3RhymeOdd(rng, fam); const choices = yesNo(rng); const answer = yes ? 'Yes' : 'No';
+    return { type: 'choice', story: null, prompt: `Do ${a[0]} and ${c[0]} rhyme?`, choices, answer, explain: yes ? `Yes, they rhyme. ${capFirst(a[0])} and ${c[0]} sound the same at the end.` : `No, they do not rhyme. ${capFirst(a[0])} and ${c[0]} do not sound the same at the end.`, visual: { kind: 'pair', a: p3RhymePic(a), b: p3RhymePic(c) }, explainVisual: null,
+      whyNot: p3WhyNot(choices, answer, (w) => ({ name: w, why: yes ? `would mean they do not rhyme, but ${a[0]} and ${c[0]} sound the same at the end.` : `would mean they rhyme, but ${a[0]} and ${c[0]} do not sound the same at the end.` })),
+      alsoRight: [yes ? p3RhymeMore(fam, a, c) : `${capFirst(a[0])} rhymes with ${b[0]}, and ${c[0]} rhymes with ${p3RhymePartner(c)[0]}.`] }; },
+  'p3-rhyme-odd': (rng) => { const fam = pick(rng, P3_RHYME_FAMILIES); const [a, b] = shuffle(rng, fam).slice(0, 2); const odd = p3RhymeOdd(rng, fam); const choices = shuffle(rng, [a[1], b[1], odd[1]]);
+    return { type: 'choice', story: 'Two of these rhyme.', prompt: 'Tap the one that does not rhyme.', choices, answer: odd[1], explain: `${capFirst(a[0])} and ${b[0]} rhyme. ${capFirst(odd[0])} does not sound the same at the end, so it does not rhyme with them.`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, odd[1], (t) => { const [w, x] = t === a[1] ? [a, b] : [b, a]; return { name: capFirst(w[0]), why: `rhymes with ${x[0]}, because they sound the same at the end.` }; }),
+      alsoRight: [`${capFirst(odd[0])} rhymes with ${p3RhymePartner(odd)[0]}, not with ${a[0]} and ${b[0]}.`] }; },
   'pk4-tap-biggest': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']);
     return { type: 'choice', story: null, prompt: 'Tap the biggest one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:medium`, `shape:${sh}:small`]), answer: `shape:${sh}:big`, explain: `That ${sh} takes up the most room, so it is the biggest.`, visual: null, explainVisual: null }; },
   'pk4-tap-smallest': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']);
@@ -26304,56 +26548,75 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt: 'Tap the middle-sized one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:medium`, `shape:${sh}:small`]), answer: `shape:${sh}:medium`, explain: `That is the middle-sized ${sh}, not little and not big.`, visual: null, explainVisual: null }; },
   // The four feelings (pass MD, earmark E12: PK3 I.B.2.a and I.B.2.b, ELOF P-SE 6), each face told by the one sign the lesson
   // names. A wrong face is any of the other three, which the drawings keep apart.
-  'p3-feel-tap-face': (rng) => { const f = pick(rng, P3_FEELINGS); const other = pick(rng, P3_FEELINGS.filter((x) => x !== f));
-    return { type: 'choice', story: null, prompt: `Tap the ${f} face.`, choices: shuffle(rng, [`face:${f}`, `face:${other}`]), answer: `face:${f}`, explain: `That is the ${f} face. ${P3_FEEL_LOOK[f]}`, visual: null, explainVisual: null }; },
-  'p3-feel-name-face': (rng) => { const f = pick(rng, P3_FEELINGS); const other = pick(rng, P3_FEELINGS.filter((x) => x !== f));
-    return { type: 'choice', story: null, prompt: 'How does this face feel?', choices: shuffle(rng, [capFirst(f), capFirst(other)]), answer: capFirst(f), explain: `This face is ${f}. ${P3_FEEL_LOOK[f]}`, visual: { kind: 'face', feeling: f }, explainVisual: null }; },
+  // A wrong face by its own sign against the asked one's (pass MH). A name-it question never names the face shown, so its
+  // wrong word is told against this face's sign, never its feeling.
+  'p3-feel-tap-face': (rng) => { const f = pick(rng, P3_FEELINGS); const other = pick(rng, P3_FEELINGS.filter((x) => x !== f)); const choices = shuffle(rng, [`face:${f}`, `face:${other}`]);
+    return { type: 'choice', story: null, prompt: `Tap the ${f} face.`, choices, answer: `face:${f}`, explain: `That is the ${f} face. ${P3_FEEL_LOOK[f]}`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, `face:${f}`, (t) => ({ name: p3FaceName(t), why: `has ${P3_FACE_SIGN[t.slice(5)]}, and a ${f} face has ${P3_FACE_SIGN[f]}.` })), alsoRight: [P3_FEEL_WHEN[f]] }; },
+  'p3-feel-name-face': (rng) => { const f = pick(rng, P3_FEELINGS); const other = pick(rng, P3_FEELINGS.filter((x) => x !== f)); const choices = shuffle(rng, [capFirst(f), capFirst(other)]);
+    return { type: 'choice', story: null, prompt: 'How does this face feel?', choices, answer: capFirst(f), explain: `This face is ${f}. ${P3_FEEL_LOOK[f]}`, visual: { kind: 'face', feeling: f }, explainVisual: null,
+      whyNot: p3WhyNot(choices, capFirst(f), (w) => ({ name: w, why: `would show ${P3_FACE_SIGN[w.toLowerCase()]}, but this face has ${P3_FACE_SIGN[f]}.` })), alsoRight: [P3_FEEL_WHEN[f]] }; },
   // The lesson's own moments and body clues (pass MD), answered with a face: playing with a friend, a balloon floating away, a
   // grabbed toy, a boom of thunder, a hot face with tight fists, a fast heart that wants to hide. The wrong face is happy, or sad
   // when the answer is happy, so it is never a feeling a child could also fairly have there.
-  'p3-feel-moment': (rng) => { const [story, name, f, wrong, why] = pick(rng, P3_FEEL_MOMENTS);
-    return { type: 'choice', story, prompt: `How might ${name} feel?`, choices: shuffle(rng, [`face:${f}`, `face:${wrong}`]), answer: `face:${f}`, explain: why, visual: null, explainVisual: null }; },
-  'p3-feel-okay': (rng) => { const [prompt, answer, why] = pick(rng, P3_FEEL_OKAY);
-    return { type: 'choice', story: null, prompt, choices: yesNo(rng), answer, explain: why, visual: null, explainVisual: null }; },
+  'p3-feel-moment': (rng) => { const [prompt, f, wrong, why, moment, more] = pick(rng, P3_FEEL_MOMENTS); const choices = shuffle(rng, [`face:${f}`, `face:${wrong}`]);
+    return { type: 'choice', story: null, prompt, choices, answer: `face:${f}`, explain: why, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, `face:${f}`, (t) => ({ name: p3FaceName(t), why: `has ${P3_FACE_SIGN[t.slice(5)]}, and ${moment}.` })), alsoRight: [more] }; },
+  'p3-feel-okay': (rng) => { const [prompt, answer, why, notWhy, more] = pick(rng, P3_FEEL_OKAY); const choices = yesNo(rng);
+    return { type: 'choice', story: null, prompt, choices, answer, explain: why, visual: null, explainVisual: null, whyNot: p3WhyNot(choices, answer, (w) => ({ name: w, why: notWhy })), alsoRight: [more] }; },
   // A big feeling and what helps (pass MD, PK3 I.B.2.c, ELOF P-SE 8 in part): find your grown-up, a slow breath, the feeling's
   // name for the face shown (never said, so the face is read), and the slow breath itself, a pretend flower to smell and a
   // pretend candle to blow out.
-  'p3-feel-calm': (rng) => { const [story, prompt, answer, wrong, why, face] = pick(rng, P3_FEEL_CALM);
-    return { type: 'choice', story, prompt, choices: shuffle(rng, [answer, wrong]), answer, explain: why, visual: face ? { kind: 'face', feeling: face } : null, explainVisual: null }; },
+  'p3-feel-calm': (rng) => { const [prompt, answer, wrong, why, face, notWhy, more] = pick(rng, P3_FEEL_CALM); const choices = shuffle(rng, [answer, wrong]);
+    return { type: 'choice', story: null, prompt, choices, answer, explain: why, visual: face ? { kind: 'face', feeling: face } : null, explainVisual: null,
+      whyNot: p3WhyNot(choices, answer, (w) => ({ name: /^icon:/.test(w) ? p3PicName(w) : /^I feel /.test(w) ? `Saying ${w}` : w, why: notWhy })), alsoRight: [more] }; },
   // Helping a friend (pass MD, PK3 I.C.5, I.C.6 and I.D.1, ELOF P-SE 5 and P-SE 7): the friend who may need help by the face,
   // the kind thing to say or do, the grown-up to get, and the fight over one ball, with the lesson's own words.
-  'p3-help-who': (rng) => { const [prompt, f, foils, why] = pick(rng, P3_HELP_WHO); const other = pick(rng, foils);
-    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [`face:${f}`, `face:${other}`]), answer: `face:${f}`, explain: why, visual: null, explainVisual: null }; },
-  'p3-help-kind': (rng) => { const [story, prompt, answer, wrong, why] = pick(rng, P3_HELP_KIND);
-    return { type: 'choice', story, prompt, choices: shuffle(rng, [answer, wrong]), answer, explain: why, visual: null, explainVisual: null }; },
-  'p3-help-grownup': (rng) => { const [story, prompt, wrong, why] = pick(rng, P3_HELP_GROWNUP);
-    return { type: 'choice', story, prompt, choices: shuffle(rng, ['A grown-up', wrong]), answer: 'A grown-up', explain: why, visual: null, explainVisual: null }; },
-  'p3-help-ball': (rng) => { const [story, prompt, answer, wrong, why] = pick(rng, P3_HELP_BALL);
-    return { type: 'choice', story, prompt, choices: shuffle(rng, [answer, wrong]), answer, explain: why, visual: null, explainVisual: null }; },
-  'p3-help-yesno': (rng) => { const [prompt, answer, why] = pick(rng, P3_HELP_YESNO);
-    return { type: 'choice', story: null, prompt, choices: yesNo(rng), answer, explain: why, visual: null, explainVisual: null }; },
-  // Please and thank you in four everyday moments (pass JP), each explained with its reason.
+  'p3-help-who': (rng) => { const [prompt, f, foils, why, more] = pick(rng, P3_HELP_WHO); const other = pick(rng, foils); const choices = shuffle(rng, [`face:${f}`, `face:${other}`]); const needs = /might need help/.test(prompt);
+    return { type: 'choice', story: null, prompt, choices, answer: `face:${f}`, explain: why, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, `face:${f}`, (t) => ({ name: p3FaceName(t), why: needs ? `has ${P3_FACE_SIGN[t.slice(5)]}, so that friend may not need help right now.` : `has ${P3_FACE_SIGN[t.slice(5)]}, and ${P3_FRIEND_LOOK[f]}.` })), alsoRight: [more] }; },
+  'p3-help-kind': (rng) => { const [prompt, answer, wrong, why, wrongName, notWhy, more] = pick(rng, P3_HELP_KIND); const choices = shuffle(rng, [answer, wrong]);
+    return { type: 'choice', story: null, prompt, choices, answer, explain: why, visual: null, explainVisual: null, whyNot: p3WhyNot(choices, answer, () => ({ name: wrongName, why: notWhy })), alsoRight: [more] }; },
+  'p3-help-grownup': (rng) => { const [prompt, wrong, why, notWhy] = pick(rng, P3_HELP_GROWNUP); const choices = shuffle(rng, ['A grown-up', wrong]);
+    return { type: 'choice', story: null, prompt, choices, answer: 'A grown-up', explain: why, visual: null, explainVisual: null, whyNot: p3WhyNot(choices, 'A grown-up', (w) => ({ name: w, why: notWhy })),
+      alsoRight: ['A teacher is a grown-up who can help, and so is your grown-up at home.'] }; },
+  'p3-help-ball': (rng) => { const [prompt, answer, wrong, why, wrongName, notWhy, more] = pick(rng, P3_HELP_BALL); const choices = shuffle(rng, [answer, wrong]);
+    return { type: 'choice', story: null, prompt, choices, answer, explain: why, visual: null, explainVisual: null, whyNot: p3WhyNot(choices, answer, () => ({ name: wrongName, why: notWhy })), alsoRight: [more] }; },
+  'p3-help-yesno': (rng) => { const [prompt, answer, why, notWhy, more] = pick(rng, P3_HELP_YESNO); const choices = yesNo(rng);
+    return { type: 'choice', story: null, prompt, choices, answer, explain: why, visual: null, explainVisual: null, whyNot: p3WhyNot(choices, answer, (w) => ({ name: w, why: notWhy })), alsoRight: [more] }; },
+  // Please and thank you in four everyday moments (pass JP), each explained with its reason. Each moment is said inside its
+  // question (pass MH, Mikey: one conversational sentence), and each wrong word is told by what it does not do.
   'pk3-magic-word': (rng) => { const c = pick(rng, [
       // More moments to practice (pass LN), so a child who comes back meets new ones.
-      ['You would like some water.', 'Please', 'Water now', 'We say please when we ask for something. It is the kind way to ask for water.'],
-      ['You want to hold the bunny.', 'Please', 'Give it', 'We say please when we ask to hold something. It tells the other person we are asking kindly.'],
-      ['You want a turn with the ball.', 'Please', 'Mine', 'We say please when we ask for a turn. It is the kind way to ask.'],
-      ['A friend helps you find your shoe.', 'Thank you', 'Nothing', 'We say thank you when someone helps us. It shows we are glad.'],
-      ['Grandma reads you a story.', 'Thank you', 'Nothing', 'We say thank you when someone does something nice for us. It shows we are glad.'],
-      ['Your teacher gives you a sticker.', 'Thank you', 'Mine', 'We say thank you when someone gives us something. It shows we are glad.'],
-      ['You want a cracker.', 'Please', 'Give me', 'We say please when we ask. It is the kind way to ask for a cracker.'],
-      ['You need help with your coat.', 'Please', 'Do it now', 'We say please when we ask for help. It tells the other person we are asking kindly.'],
-      ['Someone hands you a cracker.', 'Thank you', 'Nothing', 'We say thank you when someone gives us something. It shows we are glad.'],
-      ['A friend shares a toy with you.', 'Thank you', 'Mine', 'We say thank you when someone shares with us. It shows we are glad.']]);
-    return { type: 'choice', story: c[0], prompt: 'What do you say?', choices: shuffle(rng, [c[1], c[2]]), answer: c[1], explain: c[3], visual: null, explainVisual: null }; },
-  'pk3-tap-big': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']);
-    return { type: 'choice', story: null, prompt: 'Tap the big one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:small`]), answer: `shape:${sh}:big`, explain: `That is the big ${sh}. It takes up more room than the little one.`, visual: null, explainVisual: null }; },
-  'pk3-tap-little': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']);
-    return { type: 'choice', story: null, prompt: 'Tap the little one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:small`]), answer: `shape:${sh}:small`, explain: `That is the little ${sh}. It takes up less room than the big one.`, visual: null, explainVisual: null }; },
+      ['you would like some water', 'Please', 'Water now', 'We say please when we ask for something. It is the kind way to ask for water.', 'does not ask kindly, and please is the kind way to ask for water.'],
+      ['you want to hold the bunny', 'Please', 'Give it', 'We say please when we ask to hold something. It tells the other person we are asking kindly.', 'does not ask kindly, and please tells the other person you are asking kindly.'],
+      ['you want a turn with the ball', 'Please', 'Mine', 'We say please when we ask for a turn. It is the kind way to ask.', 'does not ask kindly, and please is the kind way to ask for a turn.'],
+      ['a friend helps you find your shoe', 'Thank you', 'Nothing', 'We say thank you when someone helps us. It shows we are glad.', 'does not show your friend you are glad, and thank you does.'],
+      ['Grandma reads you a story', 'Thank you', 'Nothing', 'We say thank you when someone does something nice for us. It shows we are glad.', 'does not show Grandma you are glad, and thank you does.'],
+      ['your teacher gives you a sticker', 'Thank you', 'Mine', 'We say thank you when someone gives us something. It shows we are glad.', 'does not thank your teacher, and thank you shows you are glad.'],
+      ['you want a cracker', 'Please', 'Give me', 'We say please when we ask. It is the kind way to ask for a cracker.', 'does not ask kindly, and please is the kind way to ask for a cracker.'],
+      ['you need help with your coat', 'Please', 'Do it now', 'We say please when we ask for help. It tells the other person we are asking kindly.', 'does not ask kindly, and please is the kind way to ask for help.'],
+      ['someone hands you a cracker', 'Thank you', 'Nothing', 'We say thank you when someone gives us something. It shows we are glad.', 'does not show you are glad, and thank you does.'],
+      ['a friend shares a toy with you', 'Thank you', 'Mine', 'We say thank you when someone shares with us. It shows we are glad.', 'does not thank your friend for sharing, and thank you shows you are glad.']]);
+    const choices = shuffle(rng, [c[1], c[2]]);
+    return { type: 'choice', story: null, prompt: `What do you say when ${c[0]}?`, choices, answer: c[1], explain: c[3], visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, c[1], (w) => ({ name: `Saying ${w.toLowerCase()}`, why: c[4] })),
+      alsoRight: [c[1] === 'Please' ? 'When you would like a snack, hold out your plate and say please.' : 'When you get your snack, say thank you.'] }; },
+  // Big and little in the lesson's own words, lots of room and just a little room (pass MH).
+  'pk3-tap-big': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']); const choices = shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:small`]);
+    return { type: 'choice', story: null, prompt: 'Tap the big one.', choices, answer: `shape:${sh}:big`, explain: `That is the big ${sh}. It takes up more room than the little one.`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, `shape:${sh}:big`, (t) => ({ name: p3SizeName(t), why: 'takes up just a little room, and the big one takes up lots of room.' })), alsoRight: ['A grown-up\'s shoe is big, and your shoe is little.'] }; },
+  'pk3-tap-little': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']); const choices = shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:small`]);
+    return { type: 'choice', story: null, prompt: 'Tap the little one.', choices, answer: `shape:${sh}:small`, explain: `That is the little ${sh}. It takes up less room than the big one.`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, `shape:${sh}:small`, (t) => ({ name: p3SizeName(t), why: 'takes up lots of room, and the little one takes up just a little room.' })), alsoRight: ['A grown-up\'s shoe is big, and your shoe is little.'] }; },
   // Taking turns and sharing (pass JP): whole setup sentences, a question that makes sense read first, and an explanation
-  // that says what the friends do and why.
-  'pk-turn-choice': (rng) => { const c = pick(rng, [['You and a friend both want the slide.', 'Take turns', 'Push to go first', 'You take turns on the slide, so you both get to play.'], ['You and a friend both want the same book.', 'Take turns', 'Grab it', 'You take turns with the book, so you both get to read it.'], ['There is one box of blocks and two of you.', 'Share it', 'Keep it all', 'You share the blocks, so you can both build.'], ['You have a box of crayons and a friend has none.', 'Share it', 'Hide it', 'You share the box of crayons, so your friend can draw too.'], ['You and a friend both want the swing.', 'Take turns', 'Grab it', 'You take turns on the swing, so you both get to play.'], ['You and a friend both want the red crayon.', 'Take turns', 'Keep it all day', 'You take turns with the red crayon, so you both get to draw.'], ['Two friends want to play with one ball.', 'Share it', 'Hide it', 'They share the ball, so both friends get to play.']]);
-    return { type: 'choice', story: c[0], prompt: 'What is the kind thing to do?', choices: shuffle(rng, [c[1], c[2]]), answer: c[1], explain: c[3], visual: null, explainVisual: null }; },
+  // that says what the friends do and why. Since pass MH the moment is said inside the question (Mikey: one conversational
+  // sentence), and each row adds how a person says the wrong choice, what it does to the friend, and one more example, each
+  // true in First Steps' Taking turns as well.
+  'pk-turn-choice': (rng) => { const c = pick(rng, [['you and a friend both want the slide', 'Take turns', 'Push to go first', 'You take turns on the slide, so you both get to play.', 'Pushing to go first', 'can hurt your friend, so it is not kind.', 'Taking turns works with the swing and a new book too.'], ['you and a friend both want the same book', 'Take turns', 'Grab it', 'You take turns with the book, so you both get to read it.', 'Grabbing it', 'leaves your friend with no turn, so it is not kind.', 'Taking turns works with the slide and the swing too.'], ['there is one box of blocks and two of you', 'Share it', 'Keep it all', 'You share the blocks, so you can both build.', 'Keeping it all', 'leaves your friend with nothing to build, so it is not kind.', 'Two friends can share one ball and both play at the same time.'], ['you have a box of crayons and a friend has none', 'Share it', 'Hide it', 'You share the box of crayons, so your friend can draw too.', 'Hiding it', 'leaves your friend with nothing to draw with, so it is not kind.', 'Two friends can share one ball and both play at the same time.'], ['you and a friend both want the swing', 'Take turns', 'Grab it', 'You take turns on the swing, so you both get to play.', 'Grabbing it', 'leaves your friend with no turn, so it is not kind.', 'Taking turns works with the slide and a new book too.'], ['you and a friend both want the red crayon', 'Take turns', 'Keep it all day', 'You take turns with the red crayon, so you both get to draw.', 'Keeping it all day', 'leaves your friend with no turn, so it is not kind.', 'Taking turns works with the slide, the swing and a new book too.'], ['two friends want to play with one ball', 'Share it', 'Hide it', 'They share the ball, so both friends get to play.', 'Hiding it', 'leaves one friend with no ball to play with, so it is not kind.', 'Two friends can share a box of blocks, so they can both build.']]);
+    const choices = shuffle(rng, [c[1], c[2]]);
+    return { type: 'choice', story: null, prompt: `What is the kind thing to do when ${c[0]}?`, choices, answer: c[1], explain: c[3], visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, c[1], () => ({ name: c[4], why: c[5] })), alsoRight: [c[6]] }; },
   'pk-whose-turn': (rng) => { const first = randInt(rng, 0, 1) === 1; const done = first ? 'Sam' : 'Ana'; const next = first ? 'Ana' : 'Sam';
     return { type: 'choice', story: null, prompt: `${done} had a turn and is done, so whose turn is next?`, choices: ['Sam', 'Ana'], answer: next, explain: `${done} had a turn, so ${next} is next.`, visual: null, explainVisual: null }; },
   'ck-which-flag': (rng) => { const tx = randInt(rng, 0, 1) === 1;
@@ -26764,7 +27027,7 @@ const CLIMATE_WHY = [['Snow on Kilimanjaro, three degrees from the equator', 'El
 const MAP_KINDS = [['Borders, countries and cities', 'Political'], ['Land and water, mountains and rivers', 'Physical'], ['Rainfall across a continent', 'Thematic'], ['Population, shaded by county', 'Thematic']];
 const RESOURCE_KINDS = [['Sunlight', 'Renewable'], ['Wind', 'Renewable'], ['A forest that is replanted', 'Renewable'], ['Oil', 'Nonrenewable'], ['Coal', 'Nonrenewable'], ['Copper', 'Nonrenewable']];
 const SECTORS = [['A wheat farmer', 'Primary'], ['A coal miner', 'Primary'], ['A factory welder', 'Secondary'], ['A house builder', 'Secondary'], ['A nurse', 'Tertiary'], ['A bus driver', 'Tertiary'], ['A software designer', 'Quaternary'], ['A research scientist', 'Quaternary']];
-const SECTOR_NOTES = { Primary: 'Primary work takes from the land: farming, fishing, mining, logging.', Secondary: 'Secondary work makes things: factories, mills, construction.', Tertiary: 'Tertiary work is services: teaching, nursing, selling, driving.', Quaternary: 'Quaternary work is ideas and information: research, software, design.' };
+const SECTOR_NOTES = { Primary: 'Primary work takes from the land, as farming, fishing, mining and logging do.', Secondary: 'Secondary work makes things, in factories and mills and on construction sites.', Tertiary: 'Tertiary work is services, such as teaching, nursing, selling and driving.', Quaternary: 'Quaternary work is ideas and information, such as research, software and design.' };
 const CAPITALS = [['Mexico', 'Mexico City'], ['Canada', 'Ottawa'], ['Brazil', 'Brasília'], ['Argentina', 'Buenos Aires'], ['France', 'Paris'], ['Germany', 'Berlin'], ['Egypt', 'Cairo'], ['Kenya', 'Nairobi'], ['Nigeria', 'Abuja'], ['India', 'New Delhi'], ['China', 'Beijing'], ['Japan', 'Tokyo'], ['Australia', 'Canberra']];
 const kindQ = (rng, list, prompt, notes, story = (c) => `${c[0]}.`) => { const c = pick(rng, list); const kinds = [...new Set(list.map((x) => x[1]))];
   return { type: 'choice', story: story(c), prompt, choices: kinds, answer: c[1], explain: notes ? notes[c[1]] : `${c[0]}: ${c[1].toLowerCase()}.`, choiceNotes: notes || undefined, visual: null, explainVisual: null }; };
@@ -27011,9 +27274,9 @@ const FREE_ENTERPRISE = [
   { case: 'A company makes phones because people will pay for them', kind: 'The profit motive' }, { case: 'Three grocery stores race for the same shoppers', kind: 'Competition' },
   { case: 'The government sets the rules of the game and steps back', kind: 'Limited government' },
 ];
-const FE_NOTES = { 'Private property': 'Private property: you own what you earn and what you buy.', 'Freedom of choice': 'Freedom of choice: you pick your work and your purchases.', 'The profit motive': 'The profit motive: people make things because they can earn from it.', 'Competition': 'Competition: sellers race for the buyer\'s dollar.', 'Limited government': 'Limited government: the government sets the rules and steps back.' };
+const FE_NOTES = { 'Private property': 'Private property means you own what you earn and what you buy.', 'Freedom of choice': 'Freedom of choice means you pick your work and your purchases.', 'The profit motive': 'The profit motive means people make things because they can earn from it.', 'Competition': 'Competition means sellers race for the buyer\'s dollar.', 'Limited government': 'Limited government means the government sets the rules and steps back.' };
 const MONEY_JOBS = [{ case: 'Prices in every store are written in dollars', job: 'A unit of account' }, { case: 'You sell your Saturday for 60 dollars and buy groceries with them', job: 'A medium of exchange' }, { case: 'You keep 200 dollars in a drawer to spend next summer', job: 'A store of value' }];
-const MONEY_NOTES = { 'A unit of account': 'A unit of account: prices are written in it, so things can be compared.', 'A medium of exchange': 'A medium of exchange: you trade for money and money for goods.', 'A store of value': 'A store of value: you can hold it and spend it later.' };
+const MONEY_NOTES = { 'A unit of account': 'As a unit of account, money is what prices are written in, so things can be compared.', 'A medium of exchange': 'As a medium of exchange, money is what you trade your work for, and then trade for goods.', 'A store of value': 'As a store of value, money is something you can hold and spend later.' };
 const LABOR_FORCE = [{ who: 'A retired teacher', in: 'No' }, { who: 'A student who is not looking for a job', in: 'No' }, { who: 'A person applying for jobs every week', in: 'Yes' }, { who: 'A part-time cashier', in: 'Yes' }, { who: 'A full-time welder', in: 'Yes' }];
 const NEEDS_WANTS = [{ item: 'Rent', kind: 'Need' }, { item: 'Groceries', kind: 'Need' }, { item: 'The electric bill', kind: 'Need' }, { item: 'Concert tickets', kind: 'Want' }, { item: 'A new video game', kind: 'Want' }, { item: 'A third streaming subscription', kind: 'Want' }];
 Object.assign(GENERATORS, {
@@ -27279,7 +27542,7 @@ Object.assign(GENERATORS, {
   'h5-colony-region': (rng) => {
     const c = pick(rng, COLONY_REGIONS);
     return { type: 'choice', story: `${c.clue}.`, prompt: 'Which region of the colonies is this?', choices: shuffle(rng, REGIONS), answer: c.region,
-      explain: `${c.clue} belonged to ${lowerTitle(c.region)}.`, choiceNotes: { 'New England': 'New England: small farms, fishing, ships, church towns.', 'The middle colonies': 'The middle colonies: wheat, trade, many faiths.', 'The southern colonies': 'The southern colonies: big farms and slavery.' }, visual: null, explainVisual: null };
+      explain: c.clue.includes(',') ? `${c.region} had ${c.clue.charAt(0).toLowerCase()}${c.clue.slice(1)}.` : `${c.clue} belonged to ${lowerTitle(c.region)}.`, choiceNotes: { 'New England': 'New England had small farms, fishing, ships and church towns.', 'The middle colonies': 'The middle colonies had wheat, trade and many faiths.', 'The southern colonies': 'The southern colonies had big farms and slavery.' }, visual: null, explainVisual: null };
   },
   'h5-why-they-came': (rng) => {
     const right = pick(rng, WHY_CAME);
@@ -27303,7 +27566,7 @@ Object.assign(GENERATORS, {
   'h5-which-branch': (rng) => {
     const b = pick(rng, BRANCHES);
     return { type: 'choice', story: `${b.who}.`, prompt: 'Which branch is this?', choices: shuffle(rng, BRANCHES.map((x) => x.name)), answer: b.name,
-      explain: `${b.who}: the ${b.name.toLowerCase()} branch. ${b.job}.`, choiceNotes: { Legislative: 'Legislative is the Congress, which makes the laws.', Executive: 'Executive is the President, who carries out the laws.', Judicial: 'Judicial is the courts, which decide what the laws mean.' }, visual: null, explainVisual: null };
+      explain: ({ Legislative: 'The Congress is the legislative branch, which makes the laws.', Executive: 'The President leads the executive branch, which carries out the laws.', Judicial: 'The courts are the judicial branch, and they decide what the laws mean.' })[b.name], choiceNotes: { Legislative: 'Legislative is the Congress, which makes the laws.', Executive: 'Executive is the President, who carries out the laws.', Judicial: 'Judicial is the courts, which decide what the laws mean.' }, visual: null, explainVisual: null };
   },
   'h5-branch-job': (rng) => {
     const b = pick(rng, BRANCHES);
@@ -28320,16 +28583,23 @@ Object.assign(GENERATORS, {
 
 // Very First Steps (pass LN): three sizes for Big and Little, the way the three bears' bowls come in three, and a color
 // question with colored shapes for Yellow and Green, so the banks hold more for a child who comes back.
+const P3_BEARS = 'The three bears have a big bowl, a middle-size bowl and a little bowl.';
 Object.assign(GENERATORS, {
-  'pk3-tap-middle': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']);
-    return { type: 'choice', story: null, prompt: 'Tap the middle-size one.', choices: shuffle(rng, ['big', 'medium', 'small'].map((s) => `shape:${sh}:${s}`)), answer: `shape:${sh}:medium`, explain: `That is the middle-size ${sh}. It is smaller than the big one and bigger than the little one.`, visual: null, explainVisual: null }; },
-  'pk3-tap-biggest': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']);
-    return { type: 'choice', story: null, prompt: 'Tap the biggest one.', choices: shuffle(rng, ['big', 'medium', 'small'].map((s) => `shape:${sh}:${s}`)), answer: `shape:${sh}:big`, explain: `That is the biggest ${sh}. It takes up the most room.`, visual: null, explainVisual: null }; },
-  'pk3-tap-littlest': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']);
-    return { type: 'choice', story: null, prompt: 'Tap the littlest one.', choices: shuffle(rng, ['big', 'medium', 'small'].map((s) => `shape:${sh}:${s}`)), answer: `shape:${sh}:small`, explain: `That is the littlest ${sh}. It takes up the least room.`, visual: null, explainVisual: null }; },
+  // Each wrong size by the room it takes up against the asked one, in the lesson's words (pass MH), and the three bears' bowls.
+  'pk3-tap-middle': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']); const choices = shuffle(rng, ['big', 'medium', 'small'].map((s) => `shape:${sh}:${s}`)); const answer = `shape:${sh}:medium`;
+    return { type: 'choice', story: null, prompt: 'Tap the middle-size one.', choices, answer, explain: `That is the middle-size ${sh}. It is smaller than the big one and bigger than the little one.`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, answer, (t) => ({ name: p3SizeName(t), why: t.endsWith(':big') ? 'takes up the most room, and the middle-size one is smaller than it.' : 'takes up the least room, and the middle-size one is bigger than it.' })), alsoRight: [P3_BEARS] }; },
+  'pk3-tap-biggest': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']); const choices = shuffle(rng, ['big', 'medium', 'small'].map((s) => `shape:${sh}:${s}`)); const answer = `shape:${sh}:big`;
+    return { type: 'choice', story: null, prompt: 'Tap the biggest one.', choices, answer, explain: `That is the biggest ${sh}. It takes up the most room.`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, answer, (t) => ({ name: p3SizeName(t), why: t.endsWith(':medium') ? 'is smaller than the big one, which takes up the most room.' : 'takes up the least room, so it is the littlest, not the biggest.' })), alsoRight: [P3_BEARS] }; },
+  'pk3-tap-littlest': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']); const choices = shuffle(rng, ['big', 'medium', 'small'].map((s) => `shape:${sh}:${s}`)); const answer = `shape:${sh}:small`;
+    return { type: 'choice', story: null, prompt: 'Tap the littlest one.', choices, answer, explain: `That is the littlest ${sh}. It takes up the least room.`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, answer, (t) => ({ name: p3SizeName(t), why: t.endsWith(':medium') ? 'is bigger than the little one, which takes up the least room.' : 'takes up the most room, so it is the biggest, not the littlest.' })), alsoRight: [P3_BEARS] }; },
   'p3-tap-colour-item': (rng) => { const color = pick(rng, ['red', 'blue', 'yellow', 'green']); const sh = pick(rng, ['circle', 'square', 'triangle']);
     const others = shuffle(rng, ['red', 'blue', 'yellow', 'green'].filter((c) => c !== color)).slice(0, 2);
-    return { type: 'choice', story: null, prompt: `Tap the ${color} one.`, choices: shuffle(rng, [color, ...others].map((c) => `item:${sh}-${c}`)), answer: `item:${sh}-${color}`, explain: `This is the ${color} ${sh}, ${color} ${EARLY_COLOR_LIKE[color]}.`, visual: null, explainVisual: null }; },
+    const choices = shuffle(rng, [color, ...others].map((c) => `item:${sh}-${c}`)); const answer = `item:${sh}-${color}`;
+    return { type: 'choice', story: null, prompt: `Tap the ${color} one.`, choices, answer, explain: `This is the ${color} ${sh}, ${color} ${EARLY_COLOR_LIKE[color]}.`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, answer, (t) => ({ name: p3ItemName(t), why: `is ${p3ColorNot(p3Item(t).colour, color)}.` })), alsoRight: [P3_COLOR_MORE[color]] }; },
 });
 
 // Listen and Point (pass LS): the sound an animal makes, asked the other way round, so the bank holds twice as much.
@@ -28338,18 +28608,30 @@ Object.assign(GENERATORS, {
 Object.assign(GENERATORS, {
   'p3-animal-order': (rng) => {
     const [a, sa] = pick(rng, P3_ANIMAL_SOUNDS); const [b, sb] = pick(rng, P3_ANIMAL_SOUNDS.filter((x) => x[0] !== a)); const second = rng() < 0.5; const [want, ws] = second ? [b, sb] : [a, sa]; const word = second ? 'second' : 'first';
-    return { type: 'choice', story: ['Listen. ', capFirst(sa), ', then ', sb, '.'].join(''), prompt: `Which animal did you hear ${word}?`, choices: shuffle(rng, ['pic:' + a, 'pic:' + b]), answer: 'pic:' + want,
-      explain: [capFirst(ws), ' came ', word, ', and the ', want, ' says ', ws, '.'].join(''), visual: null, explainVisual: { kind: 'pic', name: want } };
+    const choices = shuffle(rng, ['pic:' + a, 'pic:' + b]);
+    // The other animal by its sound and when that sound came (pass MH); one more order with two other animals, never the bear.
+    const [[c, sc], [d, sd]] = P3_ANIMAL_SOUNDS.filter((x) => ![a, b, 'bear'].includes(x[0]));
+    return { type: 'choice', story: ['Listen. ', capFirst(sa), ', then ', sb, '.'].join(''), prompt: `Which animal did you hear ${word}?`, choices, answer: 'pic:' + want,
+      explain: [capFirst(ws), ' came ', word, ', and the ', want, ' says ', ws, '.'].join(''), visual: null, explainVisual: { kind: 'pic', name: want },
+      whyNot: p3WhyNot(choices, 'pic:' + want, (t) => { const s2 = P3_SAYS[p3PicWord(t)]; return { name: p3PicName(t), why: second ? `says ${s2}, and ${s2} came first, before ${sb}.` : `says ${s2}, and ${s2} came second, after ${sa}.` }; }),
+      alsoRight: [`If you hear ${sc}, then ${sd}, the ${c} came first and the ${d} came second.`] };
   },
   'p3-two-at-once': (rng) => {
     // "Two animals are near": never a bear beside a three-year-old (the second read), so the bear's growl is asked the other ways.
     const near = P3_ANIMAL_SOUNDS.filter((x) => x[0] !== 'bear');
     const [a, sa] = pick(rng, near); const [b, sb] = pick(rng, near.filter((x) => x[0] !== a)); const [want, ws] = rng() < 0.5 ? [a, sa] : [b, sb];
-    return { type: 'choice', story: ['Two animals are near. You hear ', sa, ' and ', sb, ' at the same time.'].join(''), prompt: `Tap the one that says ${ws}.`, choices: shuffle(rng, ['pic:' + a, 'pic:' + b]), answer: 'pic:' + want,
-      explain: ['The ', want, ' says ', ws, '. Listening closely tells the two sounds apart.'].join(''), visual: null, explainVisual: { kind: 'pic', name: want } };
+    const choices = shuffle(rng, ['pic:' + a, 'pic:' + b]);
+    return { type: 'choice', story: ['Two animals are near. You hear ', sa, ' and ', sb, ' at the same time.'].join(''), prompt: `Tap the one that says ${ws}.`, choices, answer: 'pic:' + want,
+      explain: ['The ', want, ' says ', ws, '. Listening closely tells the two sounds apart.'].join(''), visual: null, explainVisual: { kind: 'pic', name: want },
+      // The other animal by the other sound heard (pass MH), and the lesson's farm, where two sounds come at once.
+      whyNot: p3WhyNot(choices, 'pic:' + want, (t) => ({ name: p3PicName(t), why: `says ${P3_SAYS[p3PicWord(t)]}, the other sound you heard, not ${ws}.` })),
+      alsoRight: ['On a farm you might hear a duck quack and a dog woof at the same time.'] };
   },
-  'p3-animal-says': (rng) => { const [animal, sound] = pick(rng, P3_ANIMAL_SOUNDS); const [, other] = pick(rng, P3_ANIMAL_SOUNDS.filter((x) => x[0] !== animal));
-    return { type: 'choice', story: null, prompt: `What does the ${animal} say?`, choices: shuffle(rng, [sound, other]), answer: sound, explain: `The ${animal} says ${sound}.`, visual: { kind: 'pic', name: animal }, explainVisual: null }; },
+  'p3-animal-says': (rng) => { const [animal, sound] = pick(rng, P3_ANIMAL_SOUNDS); const [, other] = pick(rng, P3_ANIMAL_SOUNDS.filter((x) => x[0] !== animal)); const choices = shuffle(rng, [sound, other]);
+    // The other sound by the animal that makes it (pass MH), and the lesson's hearing line, never with a bear near.
+    return { type: 'choice', story: null, prompt: `What does the ${animal} say?`, choices, answer: sound, explain: `The ${animal} says ${sound}.`, visual: { kind: 'pic', name: animal }, explainVisual: null,
+      whyNot: p3WhyNot(choices, sound, (w) => ({ name: capFirst(w), why: `is what the ${P3_ANIMAL_SOUNDS.find((x) => x[1] === w)[0]} says, not the ${animal}.` })),
+      alsoRight: [animal === 'bear' ? 'Many animals have a sound of their own, and a bear\'s sound is growl.' : `When you hear ${sound}, ${aOrAn(animal)} ${animal} may be near.`] }; },
 });
 
 // Shapes. A choice written as 'shape:circle' is a picture the screen draws. A square is a special rectangle (TEKS K.6A,
@@ -28532,9 +28814,12 @@ const HOLD_PAIRS = [['a cup', 'a bucket'], ['a spoon', 'a bowl'], ['a sink', 'a 
 Object.assign(GENERATORS, {
   // Full standard (pass JX): each explanation gives the reason, and lines and towers are compared from the same start.
   'kl-longer': (rng) => {
-    const [a, b] = distinctCounts(rng, 2, 9, randInt(rng, 2, 9));
-    return { type: 'choice', story: null, prompt: 'Which line is longer?', choices: shuffle(rng, [`bar:${a}`, `bar:${b}`]), answer: `bar:${Math.max(a, b)}`,
-      explain: 'Both lines start at the same place, and this one reaches farther, so it is longer.', visual: null, explainVisual: null };
+    const [a, b] = distinctCounts(rng, 2, 9, randInt(rng, 2, 9)); const choices = shuffle(rng, [`bar:${a}`, `bar:${b}`]); const answer = `bar:${Math.max(a, b)}`;
+    // The shorter line stops sooner from the same start (pass MH), true in every lesson that uses this kind.
+    return { type: 'choice', story: null, prompt: 'Which line is longer?', choices, answer,
+      explain: 'Both lines start at the same place, and this one reaches farther, so it is longer.', visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, answer, () => ({ name: 'The shorter line', why: 'does not reach as far, and both start at the same place.' })),
+      alsoRight: ['Lay two crayons side by side from the same start, and the one that reaches farther is longer.'] };
   },
   'kl-shorter': (rng) => {
     const [a, b] = distinctCounts(rng, 2, 9, randInt(rng, 2, 9));
@@ -28552,9 +28837,12 @@ Object.assign(GENERATORS, {
       explain: `${capFirst(heavy)} is heavier than ${light}, so it would be much harder to lift.`, visual: null, explainVisual: null };
   },
   'kl-taller': (rng) => {
-    const [a, b] = distinctCounts(rng, 2, 9, randInt(rng, 2, 9));
-    return { type: 'choice', story: null, prompt: 'Which is taller?', choices: shuffle(rng, [`tower:${a}`, `tower:${b}`]), answer: `tower:${Math.max(a, b)}`,
-      explain: 'Both towers stand on the same floor, and this one reaches higher, so it is taller.', visual: null, explainVisual: null };
+    const [a, b] = distinctCounts(rng, 2, 9, randInt(rng, 2, 9)); const choices = shuffle(rng, [`tower:${a}`, `tower:${b}`]); const answer = `tower:${Math.max(a, b)}`;
+    // The shorter tower does not reach as high from the same floor (pass MH), true in every lesson that uses this kind.
+    return { type: 'choice', story: null, prompt: 'Which is taller?', choices, answer,
+      explain: 'Both towers stand on the same floor, and this one reaches higher, so it is taller.', visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, answer, () => ({ name: 'The shorter tower', why: 'does not reach as high, and both stand on the same floor.' })),
+      alsoRight: ['Stand back to back with a friend, and the one whose head reaches higher is taller.'] };
   },
   'kl-holds-more': (rng) => {
     const [small, big] = HOLD_PAIRS[randInt(rng, 0, HOLD_PAIRS.length - 1)];
@@ -29445,6 +29733,137 @@ export function describeChoice(choice) {
   return sh ? `the ${sh[2] === 'big' ? 'big' : sh[2] === 'medium' ? 'middle-sized' : 'small'} ${sh[1]}` : choice;
 }
 
+// -----------------------------------------------------------------------------------------------------------------
+// More Info (pass MH). In plain terms: after a question is answered, a child can open a short page that says why each wrong
+// answer does not fit, why the right one does, and a few more right examples. Mikey, word for word: "I wonder if it could be
+// helpful to have explanations for each wrong answer too but it wouldn't clog up the screen.  The user would be able to select a
+// discrete link that says "More Info"" and "Maybe the explanation text can be "smart text" and show that it knows which wrong
+// answer was selected.  In a future visit to the module it can slightly change to "which you've chosen once before" instead of
+// "what you chose previously.""
+// How it fits together:
+// - A question may carry `whyNot`, one entry for every wrong choice, { name, why }, so a sentence reads "name why" or, when the
+//   child picked it, "name, which you just chose, why"; and `alsoRight`, up to three more right examples. The generator writes
+//   them, from the same data it builds the choices from, so they can never describe a different picture (the rules test
+//   re-derives them). Older banks that carry `choiceNotes` (a definition for each choice) get a plain sentence from it.
+// - choiceHistory reads the record for the same question asked before (same generator, prompt and answer) and counts each
+//   wrong pick: a reader's wrong first answer, and since pass MH a pre-reader's wrong taps before the right one (`missed`).
+//   Only what was tapped is kept, never anything a child wrote.
+// - choiceInsight puts it together for the screen: the wrong choices, the one picked now first, each with its sentence and
+//   the smart words (whyNotClause), then the reason the answer is right and the more-right examples.
+// -----------------------------------------------------------------------------------------------------------------
+export function whyNotClause(chosenNow, before) {
+  const n = Number(before) || 0;
+  // "once before too", not "last time too" (the lesson and code checks, pass MH): n counts every earlier round, and the round
+  // just before may have been right, so only Mikey's own words ("which you've chosen once before") stay true.
+  if (chosenNow) return n >= 2 ? 'which you have chosen a few times now' : n === 1 ? 'which you chose once before too' : 'which you just chose';
+  return n >= 2 ? 'which you have chosen before' : n === 1 ? 'which you chose once before' : '';
+}
+export function whyNotSentence(entry, clause = '') {
+  if (!entry || !entry.name) return '';
+  const lead = clause ? `${entry.name}, ${clause},` : /,/.test(entry.name) ? `${entry.name},` : entry.name;
+  // "cannot be" agrees with a plural name (The southern colonies), and a note always starts a sentence (the alignment read, pass MH).
+  return entry.why ? `${lead} ${entry.why}` : `${lead} cannot be the answer here.${entry.note ? ' ' + capFirst(String(entry.note)) : ''}`;
+}
+// How many times each wrong choice of this very question was picked before, from the record (attempt_completed rounds only:
+// core questions and memory checks). The same question is the same generator, prompt and answer.
+// Since the code check (pass MH) it reads only the active log (a progress reset forgets everything before it), skips a lesson's
+// rounds at or before that lesson's own reset, the way progress does, and matches the very same question: one generator can ask
+// the same words over different setups or pictures (s4-which-form's campfire and stove top), so where a round kept its seed the
+// question is made again from it and compared whole (questionKey), on both sides alike.
+export function choiceHistory(events, q) {
+  const counts = {};
+  if (!q || !Array.isArray(events)) return counts;
+  const active = activeEvents(events);
+  const resetAt = {};
+  for (const e of active) if (e && e.type === 'module_reset') resetAt[e.moduleId] = e.at;
+  const cleared = (moduleId, at) => !!resetAt[moduleId] && String(at) <= String(resetAt[moduleId]);
+  const keyOf = (x) => { if (x && x.seed !== undefined && x.seed !== null && GENERATORS[x.genId]) { try { return questionKey(generateQuestion(x.genId, x.seed)); } catch (err) { /* an old seed that no longer builds */ } } return null; };
+  const mine = keyOf(q);
+  for (const e of active) {
+    if (!e || e.type !== 'attempt_completed') continue;
+    for (const r of [...(e.core || []), e.review, e.review2]) {
+      if (!r || r.genId !== q.genId || r.prompt !== q.prompt || r.answer !== q.answer) continue;
+      if (cleared(r.moduleId || e.moduleId, e.at)) continue;
+      if (mine !== null) { const theirs = keyOf(r); if (theirs !== null && theirs !== mine) continue; }
+      const wrong = [...(Array.isArray(r.missed) ? r.missed : []), ...(r.given !== undefined && String(r.given) !== String(r.answer) && !(Array.isArray(r.missed) && r.missed.includes(String(r.given))) ? [String(r.given)] : [])];
+      for (const c of new Set(wrong)) counts[c] = (counts[c] || 0) + 1;
+    }
+  }
+  return counts;
+}
+// The wrong taps a result keeps (pass MH, the code check): only the choices a choice question offered, never the right one, each
+// once, so a failed tracing (its strokes) or anything typed is never kept in the record or a backup.
+export function missedPicks(q, picks) {
+  if (!q || q.type !== 'choice' || !Array.isArray(q.choices) || !Array.isArray(picks)) return [];
+  const offered = new Set(q.choices.map(String));
+  return [...new Set(picks.map(String))].filter((c) => offered.has(c) && c !== String(q.answer));
+}
+// The More Info page for one answered question. picked is the choice tapped now, or a pre-reader's taps in order (null or an
+// empty list when nothing wrong was picked), before is choiceHistory's counts. any is false when the question has nothing to add beyond its
+// explanation, and then the screen shows no link.
+export function choiceInsight(q, picked = null, before = {}) {
+  const empty = { any: false, wrong: [], right: '', more: [], answer: q ? q.answer : null };
+  if (!q || q.type !== 'choice' || !Array.isArray(q.choices)) return empty;
+  const notes = q.choiceNotes || null;
+  const entryFor = (c) => (q.whyNot && q.whyNot[c]) || (notes && notes[c] ? { name: capFirst(String(c)), why: null, note: notes[c] } : null);
+  const wrongChoices = [...new Set(q.choices.map(String).filter((c) => c !== String(q.answer)))];
+  // picked may be one choice or, for a pre-reader who tapped more than one before the right answer, a list in tap order.
+  const pickedList = [...new Set((Array.isArray(picked) ? picked : picked == null ? [] : [picked]).map(String))].filter((c) => wrongChoices.includes(c));
+  const ordered = [...pickedList, ...wrongChoices.filter((c) => !pickedList.includes(c))];
+  const wrong = ordered.map((c) => { const entry = entryFor(c); if (!entry) return null; const now = pickedList.includes(c); const n = before[c] || 0; return { choice: c, chosenNow: now, chosenBefore: n, text: whyNotSentence(entry, whyNotClause(now, n)) }; }).filter(Boolean);
+  const more = Array.isArray(q.alsoRight) ? q.alsoRight.slice(0, 3) : [];
+  return { any: wrong.length > 0 || more.length > 0, wrong, right: q.explain || '', more, answer: q.answer };
+}
+// What a pre-reader hears after a wrong tap (pass MH): the reason that choice does not fit, then the invitation to try again.
+// A young learner who was wrong tries again, so the voice must not give the answer away (the rule above the screen's voice, and
+// RULES-AUDIT's: nothing gives an answer away by sound). The screen check found that many reasons name the answer, since a reason
+// is told against it; the lesson check's second read found that holding all of those back left whole lessons with no reason at
+// all, though most could give nothing away: in a two-choice question the tapped one is ruled out and only the answer is left,
+// and many reasons only repeat what the question said ("you are looking for the cloud"). So a reason is held back only while
+// two or more choices are still open and it names something of the answer the question has not said itself (about a dozen
+// four-color reasons, "this one is yellow like a banana"). Those wait in More Info after the right tap, and the voice keeps the
+// old words. A question with no reason written yet keeps them too.
+const HEARD_NUMBERS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve'];
+const HEARD_KIN = { big: ['bigger', 'biggest', 'large'], small: ['smaller', 'smallest', 'little', 'littler', 'littlest', 'tiny'], little: ['small', 'smaller', 'smallest', 'littler', 'littlest', 'tiny'], medium: ['middle', 'middle-size', 'middle-sized'], thin: ['tall'] };
+const HEARD_SKIP = new Set(['a', 'an', 'the', 'to', 'of', 'and', 'or', 'in', 'on', 'at', 'for', 'with', 'is', 'are', 'it', 'its', 'this', 'that', 'these', 'those', 'you', 'your', 'my', 'i', 'we', 'up', 'so', 'not', 'be', 'can', 'one', 'friend', 'friends']);   // a friend is in nearly every kindness question, its answer and its reasons alike
+// The words a child would hear for a choice: a picture token's own parts (item:square-blue is square and blue; dots:4 is four),
+// with a number's word and a size's kin, or a worded choice's words, the little words left out.
+function heardWords(choice) {
+  const raw = String(choice).split('#')[0];
+  const parts = /^[a-z]+:/.test(raw) ? raw.slice(raw.indexOf(':') + 1).split(/[-:~\s]+/) : raw.toLowerCase().split(/[^a-z0-9]+/);
+  const out = new Set();
+  for (const p of parts) {
+    const w = String(p).toLowerCase(); if (!w || HEARD_SKIP.has(w)) continue;
+    out.add(w);
+    if (/^\d+$/.test(w) && HEARD_NUMBERS[Number(w)]) out.add(HEARD_NUMBERS[Number(w)]);
+    if (HEARD_NUMBERS.includes(w)) out.add(String(HEARD_NUMBERS.indexOf(w)));
+    for (const k of HEARD_KIN[w] || []) out.add(k);
+  }
+  return out;
+}
+// True when the reason a pre-reader would hear names something that tells the right answer from the choice just tapped and
+// that the question's own words (its setup line and prompt) have not said already. A letter is read by its capital, since the
+// little word a is no letter (the code and lesson checks' second reads: "A has slanted sides" was said while B's line was held).
+export function whyNotNamesAnswer(q, picked) {
+  const entry = q && q.whyNot && q.whyNot[picked]; if (!entry) return false;
+  const sentence = whyNotSentence(entry);
+  const question = `${q.story || ''} ${q.prompt || ''}`;
+  if (/^[A-Z]$/.test(String(q.answer))) { const letter = new RegExp(`\\b${q.answer}\\b`); return letter.test(sentence.slice(1)) && !letter.test(question); }
+  const said = new Set(sentence.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean));
+  // A word the question says counts with its kin both ways, so "Tap the biggest one." has already said big.
+  const asked = new Set(); for (const w of question.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean)) { asked.add(w); for (const k of heardWords(w)) asked.add(k); for (const [base, kin] of Object.entries(HEARD_KIN)) if (kin.includes(w)) { asked.add(base); kin.forEach((x) => asked.add(x)); } }
+  const mine = heardWords(picked);
+  return [...heardWords(q.answer)].filter((w) => !mine.has(w) && !asked.has(w)).some((w) => said.has(w) || said.has(`${w}s`) || said.has(`${w}es`));
+}
+// ruledOut: the choices already tapped wrong in this question, the one just tapped included; the screen dims them.
+export function preReaderWrongWords(q, picked, ruledOut = []) {
+  const entry = q && q.whyNot && q.whyNot[picked];
+  if (!entry) return 'Not that one. Have another try.';
+  const out = new Set([String(picked), ...(ruledOut || []).map(String)]);
+  const open = (q.choices || []).map(String).filter((c) => !out.has(c));
+  return open.length >= 2 && whyNotNamesAnswer(q, picked) ? 'Not that one. Have another try.' : `${whyNotSentence(entry)} Have another try.`;
+}
+
 // The story rule, applied to science: a wrong answer on a fact question is followed by the fact
 // and a line that says why, so it sticks. Keyed by generator and answer, added centrally here so
 // no generator has to remember. Mikey's rule (2026-09-14): stories beat memorization.
@@ -29488,7 +29907,7 @@ const SCIENCE_WHY = {
   's9-gene-or-chromosome': { Gene: 'A gene is one instruction, a stretch of DNA for one trait or one protein.', Chromosome: 'A chromosome is a whole bundle of DNA carrying thousands of genes, like a volume of an encyclopedia.' },
   's9-which-process': { Photosynthesis: 'Photosynthesis stores the sun\'s energy in sugar: carbon dioxide and water in, sugar and oxygen out.', Respiration: 'Respiration releases that energy: sugar and oxygen in, carbon dioxide and water out. Every living cell does it, plants included.' },
   's9-where-process': { 'In the chloroplasts': 'Chloroplasts catch sunlight, so photosynthesis happens there.', 'In the mitochondria': 'Mitochondria burn sugar for energy, so respiration happens there.' },
-  's9-which-evidence': { Fossils: 'Fossils show life changing over time, layer by layer, older below and newer above.', 'Homologous structures': 'A human arm, a whale flipper and a bat wing share the same bones in the same order, inherited from one ancestor and reshaped for different jobs.', DNA: 'DNA shows relatedness directly: the more letters two species share, the more recently they shared an ancestor.' },
+  's9-which-evidence': { Fossils: 'Fossils show life changing over time, layer by layer, older below and newer above.', 'Homologous structures': 'A human arm, a whale flipper and a bat wing share the same bones in the same order, inherited from one ancestor and reshaped for different jobs.', DNA: 'DNA shows relatedness directly. The more letters two species share, the more recently they shared an ancestor.' },
   's9-rna-letter': { U: 'RNA uses uracil, U, in place of thymine, T. So wherever DNA has an A, the RNA copy has a U.' },
   's9-cycle-step': { 'A leaf, building it into sugar': 'Carbon enters life through a leaf: photosynthesis pulls carbon dioxide from the air and builds it into sugar.', 'Bacteria in the soil, fixing it': 'Nitrogen enters life through bacteria in the soil that fix it into a form roots can take up. Air is mostly nitrogen, but plants cannot use it straight.' },
   's9-too-hot-or-cold': { 'Too hot': 'Sweating and flushed skin shed heat. The body is correcting too hot.', 'Too cold': 'Shivering makes heat by working the muscles. The body is correcting too cold.' },
@@ -29523,7 +29942,7 @@ function lowerLead(text) {
   const t = String(text);
   return /^(The|A|An|About|Around|Why|Where|When|What|How|Who|Farmed|Farming|Writing|Followed|Hunted|Fished|Gathered|Built|Lived|Grew|Traded|Moved|Raised|Planted|Made|In|On|At|After|Before|For|From|With|By|People|Colonists|Settlers|Soldiers|Slavery|One|Two|Three|Each|Every|Some|Many|Most)\b/.test(t) ? t.charAt(0).toLowerCase() + t.slice(1) : t;
 }
-function capFirst(text) { const t = String(text); return t.charAt(0).toUpperCase() + t.slice(1); }
+export function capFirst(text) { const t = String(text); return t.charAt(0).toUpperCase() + t.slice(1); }
 // -----------------------------------------------------------------------------------------------------------------
 // Number words, tidied (2026-10-02, pass IB). In plain terms: a computed question can land on exactly one of
 // something, and a template written for many then says 1 meters, or it lands on 8 and says a 8-inch nose. This last
@@ -29545,6 +29964,9 @@ function tidyQuestion(q) {
   // A sentence starts with a capital (pass IC); a letter name (b, d) or a symbol (x = 5, pH) keeps its case.
   if (typeof out.explain === 'string' && /^[a-z]/.test(out.explain) && !/^[a-z](\s|$|[=+\-*/^(<>.,_])/.test(out.explain) && !/^(pH|mL|km|cm|mm|kg|mg|kW|e\.g|i\.e)\b/.test(out.explain) && !/^(log|ln|sin|cos|tan)\b(?=\s*(base\b|\(|[A-Za-z\u03b8](?![a-z])|\d))/.test(out.explain)) out.explain = out.explain.charAt(0).toUpperCase() + out.explain.slice(1);
   for (const key of ['choices', 'items']) if (Array.isArray(q[key])) out[key] = q[key].map(tidyNumberWords);
+  // More Info (pass MH): the why-not entries follow their choices through the same tidying, keys and words alike.
+  if (q.whyNot && typeof q.whyNot === 'object') out.whyNot = Object.fromEntries(Object.entries(q.whyNot).filter(([, e]) => e && typeof e === 'object').map(([c, e]) => [tidyNumberWords(c), { ...e, name: tidyNumberWords(e.name), why: tidyNumberWords(e.why) }]));
+  if (Array.isArray(q.alsoRight)) out.alsoRight = q.alsoRight.map(tidyNumberWords);
   return out;
 }
 // Every question in the app comes through here, so the tidy step above sees all of them.
@@ -29626,8 +30048,10 @@ export const WONDER = [
     prompt: 'Which color makes you happiest?',
     options: ['Red', 'Blue', 'Yellow', 'Green'],
     simple: [
-      { voice: 'An artist says', says: 'Every color is somebody\'s favorite.' },
-      { voice: 'A scientist says', says: 'Your eyes see colors. Your heart picks one.' },
+      { voice: 'A scientist says', says: 'From what scientists know, your eyes see a color, and your brain decides how it makes you feel.' },
+      { voice: 'An artist says', says: 'To me, a favorite color is like a hug you can see.' },
+      { voice: 'A grandparent of faith says', says: 'Red has always made me happiest. That is why I wear my red coat everywhere!' },
+      { voice: 'A skeptic says', says: 'My favorite color changes all the time. I wonder if yours will change too.' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Colors are light bouncing off things into your eyes. Every person sees them a little differently, so the color that makes you happiest might look a little different to someone else.' },
@@ -29646,8 +30070,10 @@ export const WONDER = [
     prompt: 'Is there a biggest number of all?',
     options: ['Yes', 'No', 'Not sure'],
     simple: [
-      { voice: 'A scientist says', says: 'Whatever number you say, you can always add one more.' },
-      { voice: 'An artist says', says: 'Try to draw the biggest number. You will run out of paper first.' },
+      { voice: 'A scientist says', says: 'I study numbers, and they never end. There is a special word for that, infinity!' },
+      { voice: 'An artist says', says: 'I once drew dots for the biggest number. My paper ran out, but the numbers never did!' },
+      { voice: 'A grandparent of faith says', says: 'I believe kindness is like numbers. No matter how much you give, there is always more.' },
+      { voice: 'A skeptic says', says: 'How would we check for a biggest number? If someone says they found it, I just add one!' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Whatever number you name, you can always add one more, and that number is bigger. So there is no biggest number. People have thought hard about this for a very long time, and it still surprises most of us.' },
@@ -29667,8 +30093,10 @@ export const WONDER = [
     prompt: 'If you turn a square so it stands on a corner, is it still a square?',
     options: ['Yes', 'No', 'Not sure'],
     simple: [
-      { voice: 'A scientist says', says: 'Turn a square tile any way you like. It still has four equal sides and four square corners.' },
-      { voice: 'An artist says', says: 'Standing on a corner it looks like a diamond. Looks can trick you, so count the sides.' },
+      { voice: 'A scientist says', says: 'I measured a turned square once. It still had four equal sides and four square corners.' },
+      { voice: 'An artist says', says: 'When I paint a square on its corner, it looks like a diamond. I still count four sides!' },
+      { voice: 'A grandparent of faith says', says: 'I believe people are like that square. Turned around by a hard day, we are still ourselves.' },
+      { voice: 'A skeptic says', says: 'Trace a square block, then turn your paper. Did the square change, or only the way it sits?' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'A shape is named by what it has, not by which way it points. Turn a square tile, and its four sides stay the same length and its four corners stay square. Four equal sides and four square corners is a square, however it sits.' },
@@ -29676,7 +30104,7 @@ export const WONDER = [
       { voice: 'A grandparent of faith', says: 'People are a little like that square. Turned by a hard day, we look different, but what we are made of stays the same. It is a comfort to know that what counts about something does not turn with it.' },
       { voice: 'A skeptic', says: 'How would we check? Trace the square, turn the paper, and trace it again. If the two tracings match when you turn one back, nothing about the shape changed. That is a test a child can run on the kitchen table.' },
     ],
-    closing: 'What else stays the same when you turn it around?',
+    closing: 'Turn a block or a cup around. Is it still the same thing?',
   },
   {
     id: 'w-story-true',
@@ -29687,8 +30115,10 @@ export const WONDER = [
     prompt: 'Can a story be true and made up at the same time?',
     options: ['Yes', 'No', 'Not sure'],
     simple: [
-      { voice: 'An artist says', says: 'A made-up story can still tell you something true.' },
-      { voice: 'A scientist says', says: 'The dog in the story is not real. The feeling might be.' },
+      { voice: 'A scientist says', says: 'From what I know, a made-up bee story can still teach true things, like how bees make honey.' },
+      { voice: 'An artist says', says: 'A pretend story can still make me cry real tears. That is my favorite thing about stories.' },
+      { voice: 'A grandparent of faith says', says: 'I taught history for forty years. I loved the true old stories and the made-up ones too.' },
+      { voice: 'A skeptic says', says: 'I ask two things about every story. Did it really happen, and does it feel true?' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'The dog in a story did not really run to the box, because there is no dog. But a story can still show something true about how dogs behave or how people feel. The events are made up while the idea inside them is not.' },
@@ -30654,8 +31084,10 @@ export const WONDER = [
     prompt: 'Who made the rules at your house?',
     options: ['Grown-ups', 'Everybody together', 'Not sure'],
     simple: [
-      { voice: 'A scientist says', says: 'Rules are made by people, so people can talk about them and change them.' },
-      { voice: 'An artist says', says: 'The best rules are the ones you would make yourself if you were in charge.' },
+      { voice: 'A scientist says', says: 'I once counted the rules at my house. There were five, and each kept somebody safe or happy.' },
+      { voice: 'An artist says', says: 'A kind house rule feels warm to me, like everybody helping clean up after dinner.' },
+      { voice: 'A grandparent of faith says', says: 'Our house had one rule I still keep today. Always tell the truth.' },
+      { voice: 'A skeptic says', says: 'I wonder who made each rule at my house. Asking why, nicely, is always fair.' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Every rule was made by someone, for a reason. Ask what the reason is. A rule with a good reason is easy to follow, and a rule with no reason is worth asking about.' },
@@ -30674,8 +31106,10 @@ export const WONDER = [
     prompt: 'Is a friend a need or a want?',
     options: ['A need', 'A want', 'Both'],
     simple: [
-      { voice: 'A scientist says', says: 'People need other people. Even grown-ups get sad when they are alone too long.' },
-      { voice: 'An artist says', says: 'A friend is not food or a coat, but it is very hard to be happy without one.' },
+      { voice: 'A scientist says', says: 'I have read that people with good friends are often healthier and happier.' },
+      { voice: 'An artist says', says: 'When I am with a friend, colors look brighter and songs sound sweeter.' },
+      { voice: 'A grandparent of faith says', says: 'In my long life, good friends have mattered as much as a warm supper.' },
+      { voice: 'A skeptic says', says: 'I used to think friends were just for fun. Now I could not do without mine.' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Food, water and shelter keep a body alive. Friends keep a person well. Doctors find that people with friends get sick less and live longer, so a friend is closer to a need than it looks.' },
@@ -30694,8 +31128,10 @@ export const WONDER = [
     prompt: 'Your class voted, and your choice lost. How does that feel?',
     options: ['Bad', 'Okay', 'It depends'],
     simple: [
-      { voice: 'A scientist says', says: 'Losing a vote feels bad for a while. Getting to vote again next time makes it fair.' },
-      { voice: 'An artist says', says: 'Sometimes the thing you did not pick turns out to be good too.' },
+      { voice: 'A scientist says', says: 'I count votes carefully. The choice with the most hands wins, and next time, everyone votes again.' },
+      { voice: 'An artist says', says: 'I think the thing you did not pick can still surprise you and turn out lovely.' },
+      { voice: 'A grandparent of faith says', says: 'In forty years of teaching, I saw that being kind about losing makes a happy class.' },
+      { voice: 'A skeptic says', says: 'Does losing a vote mean your idea was bad? Not always. Good ideas lose votes too!' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Voting works because everyone agrees ahead of time to accept the count. The feeling of losing is real, and the promise to try again next time is what keeps the whole thing running.' },
@@ -30879,8 +31315,10 @@ export const WONDER = [
     prompt: 'Why is the sky blue?',
     options: ['The sea', 'The sun', 'Nobody knows'],
     simple: [
-      { voice: 'A scientist says', says: 'Sunlight has every color in it. The air scatters the blue bits all over the sky.' },
-      { voice: 'An artist says', says: 'At sunset, the same sky turns orange and pink.' },
+      { voice: 'A scientist says', says: 'It turns out sunlight hides every color, and the air bounces the blue all around the sky.' },
+      { voice: 'An artist says', says: 'When I paint the sky, I mix lots of blues, and pinks and oranges for the evening.' },
+      { voice: 'A grandparent of faith says', says: 'My grandmother called the sky her big blue blanket. I have loved that ever since.' },
+      { voice: 'A skeptic says', says: 'I used to think the sea made the sky blue. But deserts have blue skies, and no sea!' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Sunlight looks white but it has every color mixed in. When it passes through the air, the blue part gets scattered in all directions, so wherever you look up, blue is coming at you. At sunset the light travels through more air and the blue scatters away before it reaches you, which is why the reds are left.' },
@@ -30899,8 +31337,10 @@ export const WONDER = [
     prompt: 'If you have three cookies and two friends, what is the fair way to share?',
     options: ['One each', 'Break them', 'Keep them'],
     simple: [
-      { voice: 'A scientist says', says: 'Three cookies, three people. One each is exactly equal.' },
-      { voice: 'An artist says', says: 'Fair does not always mean the same. It means everyone feels okay.' },
+      { voice: 'A scientist says', says: 'Count with me. You and two friends make three people, and three cookies make one each.' },
+      { voice: 'An artist says', says: 'To me, fair is when every face at the table is smiling.' },
+      { voice: 'A grandparent of faith says', says: 'When I was little, we shared everything with our cousins. A shared treat tasted sweeter somehow.' },
+      { voice: 'A skeptic says', says: 'Let\'s ask your friends what feels fair to them. They might surprise you!' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Three cookies and three people, counting you, means one each with nothing left over. That is the equal answer, and equal is one kind of fair. If there were only two cookies, you could break each in half and everyone would get two halves.' },
@@ -30919,8 +31359,10 @@ export const WONDER = [
     prompt: 'Where do dreams come from?',
     options: ['My head', 'Outside', 'Not sure'],
     simple: [
-      { voice: 'A scientist says', says: 'Your brain keeps working while you sleep. Dreams are some of that work.' },
-      { voice: 'An artist says', says: 'Dreams mix up your day into new pictures. That is a kind of art.' },
+      { voice: 'A scientist says', says: 'From what scientists know, your brain stays busy while you sleep, and dreams come from that busy work.' },
+      { voice: 'An artist says', says: 'Dreams are like paintings my sleepy brain makes at night, with no brushes at all!' },
+      { voice: 'A grandparent of faith says', says: 'I taught my students about a dream book from Egypt. It is over three thousand years old!' },
+      { voice: 'A skeptic says', says: 'Even today, nobody knows for sure what dreams are for. I love a mystery we are still solving!' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Your brain does not switch off when you sleep. It sorts through the day, and some of that sorting shows up as pictures and stories. Scientists can see the brain being very busy during dreams, even though they still argue about what dreams are for.' },
@@ -30982,10 +31424,13 @@ export const WONDER = [
     courseIds: [],
     answerMode: 'pick',
     prompt: 'Why do we sleep at night and not in the day?',
-    options: ['At night', 'Because it is dark', 'Not sure'],
+    // Every choice answers the why (pass MH; "At night" was offered before, an answer to when, not why).
+    options: ['Because it is dark', 'Because we are tired', 'Not sure'],
     simple: [
-      { voice: 'A scientist says', says: 'Your body has a clock inside. It feels sleepy when it gets dark.' },
-      { voice: 'An artist says', says: 'Night is quiet. Quiet is good for dreaming.' },
+      { voice: 'A scientist says', says: 'From what scientists know, your body has a little clock that makes you sleepy when it gets dark.' },
+      { voice: 'An artist says', says: 'Night feels soft and quiet to me, like the whole world is tucking in.' },
+      { voice: 'A grandparent of faith says', says: 'At bedtime I say a quiet prayer. It tells my heart the day is done.' },
+      { voice: 'A skeptic says', says: 'I wonder about owls. Most of them sleep in the day and hunt at night!' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Your body has a clock inside it that follows the light. When it gets dark, the clock tells your body to slow down and get sleepy. When the sun comes up, it tells you to wake. That clock is why it is so hard to stay awake late.' },
@@ -31004,8 +31449,10 @@ export const WONDER = [
     prompt: 'Where does rain come from?',
     options: ['The clouds', 'The sea', 'Not sure'],
     simple: [
-      { voice: 'A scientist says', says: 'Water goes up into the sky as tiny bits, then falls back down as rain.' },
-      { voice: 'An artist says', says: 'Rain is the sky giving the water back.' },
+      { voice: 'A scientist says', says: 'Did you know clouds are full of tiny water drops? When they grow heavy, down comes the rain!' },
+      { voice: 'An artist says', says: 'I think rain on the roof sounds like tiny drums. I could listen all day.' },
+      { voice: 'A grandparent of faith says', says: 'I like to say a little thank-you for rain. It helps the gardens grow.' },
+      { voice: 'A skeptic says', says: 'Why not the clouds and the sea? Water goes round and round, from sea to cloud and back.' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'The sun warms the sea and the puddles, and tiny bits of water float up into the sky where you cannot see them. High up it is cold, so they gather into clouds. When the drops get heavy enough, they fall. The same water goes round and round.' },
@@ -31024,8 +31471,10 @@ export const WONDER = [
     prompt: 'Do animals talk to each other?',
     options: ['Yes', 'No', 'Sort of'],
     simple: [
-      { voice: 'A scientist says', says: 'Animals do not use words, but they tell each other things with sounds and moves.' },
-      { voice: 'An artist says', says: 'A wagging tail says a lot without any words.' },
+      { voice: 'A scientist says', says: 'It turns out honeybees dance to tell each other where the flowers are.' },
+      { voice: 'An artist says', says: 'My own dog\'s wagging tail is my favorite hello, and it does not need one single word.' },
+      { voice: 'A grandparent of faith says', says: 'Old stories from all over the world have talking animals. I have loved them since I was small.' },
+      { voice: 'A skeptic says', says: 'Some parrots can say hello. But do they know what hello means? I wonder!' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Animals do not have words the way we do, but they tell each other plenty. Bees dance to say where the flowers are. Birds sing to say this tree is mine. A dog can tell you it is happy without a single word.' },
@@ -31044,8 +31493,10 @@ export const WONDER = [
     prompt: 'Why do leaves change color in the autumn?',
     options: ['They get old', 'The cold', 'Not sure'],
     simple: [
-      { voice: 'A scientist says', says: 'The green fades away in autumn, and the yellow and red were hiding underneath.' },
-      { voice: 'An artist says', says: 'Autumn is when the trees show all their colors at once.' },
+      { voice: 'A scientist says', says: 'I once tested a green leaf and found yellow hiding inside. In fall, the green fades away.' },
+      { voice: 'An artist says', says: 'I think fall is when trees put on their party clothes, red, orange and gold.' },
+      { voice: 'A grandparent of faith says', says: 'Every fall, I watch the trees let go of their leaves so gently. It always calms me.' },
+      { voice: 'A skeptic says', says: 'I wonder why some trees stay green all winter. So it cannot be just the cold!' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Leaves are green because of a color that helps them use sunlight. In autumn the tree stops making it, and the green fades. The yellow and orange were there all along, hidden under the green. Some trees make red on top of that.' },
@@ -31064,8 +31515,10 @@ export const WONDER = [
     prompt: 'Is bigger always better?',
     options: ['Yes', 'No', 'Sometimes'],
     simple: [
-      { voice: 'A scientist says', says: 'An elephant is big, but an ant can carry more than its own weight.' },
-      { voice: 'An artist says', says: 'A small picture can say more than a big one.' },
+      { voice: 'A scientist says', says: 'Technically, an elephant is huge, but it cannot climb a tree. A little squirrel can!' },
+      { voice: 'An artist says', says: 'I love tiny drawings. You hold them close, and they feel like a secret.' },
+      { voice: 'A grandparent of faith says', says: 'My favorite old story is the tiny mouse who saves the big lion.' },
+      { voice: 'A skeptic says', says: 'Better for what? A giant spoon would never fit in your mouth!' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'It depends on the job. An elephant is huge but cannot climb a tree. An ant is tiny and can lift many times its own weight. Every size is good at something and bad at something else.' },
@@ -31084,8 +31537,10 @@ export const WONDER = [
     prompt: 'What makes a friend a friend?',
     options: ['Playing', 'Being kind', 'Not sure'],
     simple: [
-      { voice: 'A scientist says', says: 'Friends are people who spend time together and look after each other.' },
-      { voice: 'An artist says', says: 'A friend is someone you can be quiet with.' },
+      { voice: 'A scientist says', says: 'From what I have seen, friends spend time together and look after each other.' },
+      { voice: 'An artist says', says: 'I think a friend is someone you can be quiet with, and it still feels cozy.' },
+      { voice: 'A grandparent of faith says', says: 'I believe kindness is the glue that holds friends together. My oldest friends are my kindest.' },
+      { voice: 'A skeptic says', says: 'Can a puppy be a friend? Lots of people would say yes!' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'People who study friendship find a few things that keep coming up: spending time together, helping each other, and being able to trust the other person. It is not about how many friends you have. One good one is plenty.' },
@@ -31104,8 +31559,10 @@ export const WONDER = [
     prompt: 'Why does music make us want to move?',
     options: ['It is fun', 'The beat', 'Not sure'],
     simple: [
-      { voice: 'A scientist says', says: 'Your body hears the beat and wants to keep time with it.' },
-      { voice: 'An artist says', says: 'Music is a feeling you can hear. Moving is how it gets out.' },
+      { voice: 'A scientist says', says: 'I once watched babies wiggle to music, all on their own. A beat seems to tug at us!' },
+      { voice: 'An artist says', says: 'When I dance, the music tells my feet what to do. I just follow along!' },
+      { voice: 'A grandparent of faith says', says: 'At family weddings, young and old dance side by side. Music brings my whole family together.' },
+      { voice: 'A skeptic says', says: 'I wonder why some people wiggle and others sit still. Maybe bodies feel music differently.' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'A steady beat is something your body can follow, the way your heart follows a rhythm. Even babies bounce to music before anyone shows them how. Scientists think the part of the brain that plans movement lights up when it hears a beat.' },
@@ -31124,8 +31581,10 @@ export const WONDER = [
     prompt: 'Can you be brave and scared at the same time?',
     options: ['Yes', 'No', 'Not sure'],
     simple: [
-      { voice: 'A scientist says', says: 'Brave is what you do. Scared is what you feel. You can do both at once.' },
-      { voice: 'An artist says', says: 'The bravest people in stories are scared first.' },
+      { voice: 'A scientist says', says: 'Technically, scared is a feeling, and brave is something you choose to do.' },
+      { voice: 'An artist says', says: 'In every story I love, the hero is scared first. Then they do the brave thing anyway.' },
+      { voice: 'A grandparent of faith says', says: 'When I feel scared, I say a little prayer, and then I take one brave step.' },
+      { voice: 'A skeptic says', says: 'I used to think brave people never felt scared. Then I asked, and they all felt scared too!' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Being scared is a feeling your body makes to keep you safe. Being brave is a choice you make anyway. So yes, they happen together all the time. In fact, you cannot be brave without being a little scared first. There would be nothing to be brave about.' },
@@ -31144,8 +31603,10 @@ export const WONDER = [
     prompt: 'What is the smallest thing you can think of?',
     options: ['A seed', 'A speck of dust', 'Smaller'],
     simple: [
-      { voice: 'A scientist says', says: 'Everything is made of bits far too small to see.' },
-      { voice: 'An artist says', says: 'Try drawing something so small the pencil is too big.' },
+      { voice: 'A scientist says', says: 'I checked once under my microscope. One drop of pond water was full of tiny living things!' },
+      { voice: 'An artist says', says: 'I draw tiny things big, like a seed that fills my whole page.' },
+      { voice: 'A grandparent of faith says', says: 'A ladybug on my finger fills me with wonder. There is so much life in something so small!' },
+      { voice: 'A skeptic says', says: 'People once thought they had found the smallest thing. Then they found even smaller bits inside it!' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'A grain of sand looks small, but it is made of billions and billions of bits far too tiny to see, and those are made of smaller bits still. Scientists have found things so small that a million of them side by side would not reach across a hair.' },
@@ -31314,8 +31775,10 @@ export const WONDER = [
     prompt: 'When you fall off a bike, what should you do next?',
     options: ['Get back on', 'Stop riding', 'Cry first'],
     simple: [
-      { voice: 'A scientist says', says: 'Everyone who can ride a bike fell off first. Falling is part of learning.' },
-      { voice: 'An artist says', says: 'It is okay to cry, and then get back on.' },
+      { voice: 'A scientist says', says: 'It turns out each try teaches your body more balance, even the falls!' },
+      { voice: 'An artist says', says: 'To me, a fall stings twice, on your knee and in your heart. Both get better.' },
+      { voice: 'A grandparent of faith says', says: 'When I learned to ride, I fell more times than I can count, and I kept going.' },
+      { voice: 'A skeptic says', says: 'Before I get back on, I ask what went wrong. Then I try again a little slower.' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Nobody has ever learned to ride a bike without falling off. Your body learns balance by finding out what does not work. Each fall teaches your legs something, even if it does not feel like it at the time. Getting back on is how the lesson sticks.' },
@@ -31334,8 +31797,10 @@ export const WONDER = [
     prompt: 'You tried a question and got it wrong. Is that bad?',
     options: ['Yes', 'No', 'A little'],
     simple: [
-      { voice: 'A scientist says', says: 'A wrong answer shows you what to learn next. That is useful.' },
-      { voice: 'An artist says', says: 'Every drawing I love came after a lot of ones I threw away.' },
+      { voice: 'A scientist says', says: 'In my lab, I get things wrong every day. Each wrong answer points me somewhere new.' },
+      { voice: 'An artist says', says: 'My favorite drawings came after lots of ones I crumpled up. Wrong ones are practice!' },
+      { voice: 'A grandparent of faith says', says: 'In forty years of teaching, I loved wrong answers. They showed me what to teach next.' },
+      { voice: 'A skeptic says', says: 'Is a wrong answer bad? I am not so sure. I always ask why it was wrong.' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'A wrong answer is information. It tells you exactly where the gap is, which a lucky right answer never does. Scientists get things wrong every single day, and the wrong results are how they find their way to the right ones.' },
@@ -31354,8 +31819,10 @@ export const WONDER = [
     prompt: 'Why does trying again usually work better than trying the first time?',
     options: ['You know more', 'Luck', 'Not sure'],
     simple: [
-      { voice: 'A scientist says', says: 'The second time, you already know one thing that does not work.' },
-      { voice: 'An artist says', says: 'The second try has the first try inside it.' },
+      { voice: 'A scientist says', says: 'My experiments go better the second time. By then, I know one way that does not work!' },
+      { voice: 'An artist says', says: 'I think every new try has the old tries tucked inside it, like layers of paint.' },
+      { voice: 'A grandparent of faith says', says: 'My grandmother made bread every week. She said her hands got a little wiser each time.' },
+      { voice: 'A skeptic says', says: 'I used to try the very same way again. Now I change one little thing first.' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'The second time you try, you carry the first time with you. You know one way that did not work, and your hands remember more than you think. That is why the tenth try is nearly always better than the first, at anything.' },
@@ -31371,11 +31838,13 @@ export const WONDER = [
     stage: 'early',
     courseIds: [],
     answerMode: 'pick',
-    prompt: 'When you feel angry, where do you feel it in your body?',
+    prompt: 'When you feel mad, where do you feel it in your body?',
     options: ['My hands', 'My tummy', 'My face'],
     simple: [
-      { voice: 'A scientist says', says: 'Angry feelings show up in the body first: hot face, tight hands, fast heart.' },
-      { voice: 'An artist says', says: 'If anger had a color and a shape, what would yours look like?' },
+      { voice: 'A scientist says', says: 'If you measure it, a mad feeling can make your heart beat faster and your face feel hot.' },
+      { voice: 'An artist says', says: 'When I am mad, I picture it as a red, spiky shape. Naming its color helps me.' },
+      { voice: 'A grandparent of faith says', says: 'I often feel mad in my tummy first. A slow breath helps it settle.' },
+      { voice: 'A skeptic says', says: 'My mad feeling starts in my hands. I wonder where yours starts, and if it moves.' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Anger starts in the body before you even know it is there. Your heart speeds up, your hands get tight, your face gets warm. Learning to notice those signs early is like seeing a wave before it reaches you. You get a moment to choose what to do.' },
@@ -31383,7 +31852,7 @@ export const WONDER = [
       { voice: 'A grandparent of faith', says: 'Every tradition has something to say about anger, and most say the same thing: the feeling is not wrong, but what you do with it matters. Taking a slow breath before you act is advice older than any book.' },
       { voice: 'A skeptic', says: 'Some people say count to ten, and I would ask whether that actually works for you. Try it and notice what happens. If it does not, try something else, like walking to the door and back. Find your own way to let the wave pass.' },
     ],
-    closing: 'What is one thing that helps your body calm down when it is angry?',
+    closing: 'What is one thing that helps your body calm down when you feel mad?',
   },
   {
     id: 'w-sad-okay',
@@ -31394,8 +31863,10 @@ export const WONDER = [
     prompt: 'Is it okay to feel sad?',
     options: ['Yes', 'No', 'Sometimes'],
     simple: [
-      { voice: 'A scientist says', says: 'Sad is a normal feeling. It comes, and then it goes.' },
-      { voice: 'An artist says', says: 'Some of the most beautiful songs are sad ones.' },
+      { voice: 'A scientist says', says: 'Here is something true. Everyone feels sad sometimes, and sad feelings come and go.' },
+      { voice: 'An artist says', says: 'I think some of the most beautiful songs are sad ones. Sad can be lovely too.' },
+      { voice: 'A grandparent of faith says', says: 'I still feel sad sometimes, even at my age. A cup of tea and a hug help me.' },
+      { voice: 'A skeptic says', says: 'I used to hide sad feelings. Then I tried telling a friend, and I felt lighter. Try it!' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Sadness is one of the feelings every person has, in every country, at every age. It usually comes when something is lost or missed, and it tends to pass on its own if you let it. Feeling sad does not mean anything is broken.' },
@@ -31414,8 +31885,10 @@ export const WONDER = [
     prompt: 'Why does it help to say what you are feeling out loud?',
     options: ['It gets smaller', 'People can help', 'Not sure'],
     simple: [
-      { voice: 'A scientist says', says: 'Naming a feeling makes it a little smaller and easier to hold.' },
-      { voice: 'An artist says', says: 'A feeling with a name is a feeling you can do something with.' },
+      { voice: 'A scientist says', says: 'When scientists tested it, saying a feeling\'s name helped people feel a little calmer.' },
+      { voice: 'An artist says', says: 'A feeling with no name is like a shape in the dark. A name turns on the light.' },
+      { voice: 'A grandparent of faith says', says: 'My mother asked me every night, how is your heart today? Saying it out loud helped.' },
+      { voice: 'A skeptic says', says: 'Need a feeling word? Point to where you feel it, and a grown-up can help you find one.' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Scientists have found something surprising: when people say the name of a feeling, the part of the brain that makes the feeling calms down a little. Saying I am frustrated is not just talking. It actually helps the feeling settle.' },
@@ -31434,8 +31907,10 @@ export const WONDER = [
     prompt: 'Everyone has bad days. What makes a bad day end?',
     options: ['Sleep', 'Time', 'Not sure'],
     simple: [
-      { voice: 'A scientist says', says: 'Every day ends, and a new one starts. Bad days do not last forever.' },
-      { voice: 'An artist says', says: 'Even a gray day has a little bit of color in it somewhere.' },
+      { voice: 'A scientist says', says: 'Scientists found that missing sleep makes people less happy and more worried. Sleep matters on a bad day!' },
+      { voice: 'An artist says', says: 'Even a gray day has one bright color somewhere, like a red umbrella or a yellow cup.' },
+      { voice: 'A grandparent of faith says', says: 'In my long life, every bad day has ended, and a new morning has come.' },
+      { voice: 'A skeptic says', says: 'I kept a list of my bad days. A week later, most of them felt much smaller.' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Every day has an end built into it. Whatever happened, you sleep and the next day is new. Scientists who study happiness find that most bad feelings fade faster than we expect, and a good sleep helps more than almost anything.' },
@@ -31454,8 +31929,10 @@ export const WONDER = [
     prompt: 'Does everyone find some things hard?',
     options: ['Yes', 'No', 'Only me'],
     simple: [
-      { voice: 'A scientist says', says: 'Everyone finds some things hard. Even grown-ups. Even experts.' },
-      { voice: 'An artist says', says: 'The people who look like it is easy have just practiced a lot.' },
+      { voice: 'A scientist says', says: 'Everyone does, even grown-up scientists. I still find whistling very hard!' },
+      { voice: 'An artist says', says: 'The people who make it look easy have usually practiced a lot. I practice every day.' },
+      { voice: 'A grandparent of faith says', says: 'In forty years of teaching, I never met one child who found everything easy. Not one.' },
+      { voice: 'A skeptic says', says: 'Only me? I tested that once by asking around. Lots of people found the same things hard.' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Everyone finds some things hard, without exception. The people who look like it is easy have practiced for years, or they are good at that one thing and struggle with something else you never see. There is no such person as someone who finds everything easy.' },
@@ -31474,8 +31951,10 @@ export const WONDER = [
     prompt: 'Some days feel great and some feel awful. Is that normal?',
     options: ['Yes', 'No', 'Not sure'],
     simple: [
-      { voice: 'A scientist says', says: 'Feelings go up and down like waves. That is how they are meant to work.' },
-      { voice: 'An artist says', says: 'A song with only one note would be boring. Ups and downs are the music.' },
+      { voice: 'A scientist says', says: 'From what scientists know, everyone\'s feelings go up and down like waves, even mine!' },
+      { voice: 'An artist says', says: 'I think a song with only one note would be so boring. Ups and downs make the music.' },
+      { voice: 'A grandparent of faith says', says: 'My faith reminds me that hard days and happy days both pass, like seasons.' },
+      { voice: 'A skeptic says', says: 'I like to keep a bad day the size of one day, and not let it grow.' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Feelings go up and down for everyone, like waves on the sea. That is not a sign something is wrong. It is how feelings work. A person who felt exactly the same every day would be the unusual one.' },
@@ -31494,8 +31973,10 @@ export const WONDER = [
     prompt: 'Is it bad to learn something slowly?',
     options: ['Yes', 'No', 'Depends'],
     simple: [
-      { voice: 'A scientist says', says: 'Slow learning often lasts longer than fast learning.' },
-      { voice: 'An artist says', says: 'A tree grows slowly. Nobody says a tree is bad at growing.' },
+      { voice: 'A scientist says', says: 'I study how people learn. A little each day helps you remember more than rushing.' },
+      { voice: 'An artist says', says: 'A tree grows slowly, and nobody says it is bad at growing. I love slow things.' },
+      { voice: 'A grandparent of faith says', says: 'I still smile at the tortoise and the hare. Slow and steady won the race!' },
+      { voice: 'A skeptic says', says: 'Who says learning slowly is bad? A slow reader might be a super fast swimmer!' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Something surprising: things learned slowly often stay longer than things learned fast. When you have to work at it, your brain builds more paths to it. Slow is not a problem. Slow is often how deep gets done.' },
@@ -31664,8 +32145,10 @@ export const WONDER = [
     prompt: 'How do birds fly?',
     options: ['Their wings', 'Magic', 'Not sure'],
     simple: [
-      { voice: 'A scientist says', says: 'Wings push the air down, and the air pushes the bird up.' },
-      { voice: 'An artist says', says: 'Watch a bird land. It is the most careful thing you will see all day.' },
+      { voice: 'A scientist says', says: 'Technically, wings push the air down, and the air pushes the bird up.' },
+      { voice: 'An artist says', says: 'I love watching a bird land. It slows down, spreads its tail, and stops just right.' },
+      { voice: 'A grandparent of faith says', says: 'Long ago, people could only dream of flying like the birds. Now we have airplanes!' },
+      { voice: 'A skeptic says', says: 'I wonder if a bird could fly with no feathers. It could not, so feathers matter too!' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'A bird pushes its wings down against the air, and the air pushes back up. Its bones are hollow so it is very light, and its feathers make a smooth shape the air slides over. Every part of a bird is built for the sky.' },
@@ -31684,8 +32167,10 @@ export const WONDER = [
     prompt: 'What is a shadow?',
     options: ['Dark light', 'Where light cannot go', 'Not sure'],
     simple: [
-      { voice: 'A scientist says', says: 'A shadow is the place where you are blocking the light.' },
-      { voice: 'An artist says', says: 'Shadows change shape all day. Try tracing yours.' },
+      { voice: 'A scientist says', says: 'I test shadows with a flashlight. A shadow is the spot where my hand blocks the light.' },
+      { voice: 'An artist says', says: 'Shadows are my favorite thing to paint. They make a picture look round and real.' },
+      { voice: 'A grandparent of faith says', says: 'As a girl, I made my shadow dance on my bedroom wall. I called it my little friend.' },
+      { voice: 'A skeptic says', says: 'Can a shadow disappear? In a room with no light at all, it does. No light, no shadow!' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Light travels in straight lines. When something is in the way, the light cannot get past, and the dark patch behind it is the shadow. Your shadow is long in the morning and short at midday because the sun is in a different place.' },
@@ -31704,8 +32189,10 @@ export const WONDER = [
     prompt: 'Why do we wash our hands?',
     options: ['Germs', 'Dirt', 'Not sure'],
     simple: [
-      { voice: 'A scientist says', says: 'Tiny living things too small to see live on your hands. Soap washes them off.' },
-      { voice: 'An artist says', says: 'Warm water and bubbles is a small nice thing you can do every day.' },
+      { voice: 'A scientist says', says: 'Under my microscope, I have seen tiny germs. Soap and water wash them right off your hands!' },
+      { voice: 'An artist says', says: 'Warm water and bubbles feel so cozy to me. Washing my hands is a happy little moment.' },
+      { voice: 'A grandparent of faith says', says: 'My mother made us wash before every supper, long before I knew about germs.' },
+      { voice: 'A skeptic says', says: 'How do we know washing works? Scientists tested it, and fewer people got sick!' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Your hands pick up tiny living things called germs everywhere they go. You cannot see them, but some of them can make you ill. Soap grabs them and water carries them away. Twenty seconds of washing is one of the best tricks anyone ever found for staying well.' },
@@ -31724,8 +32211,10 @@ export const WONDER = [
     prompt: 'Is it normal to feel worried before something new?',
     options: ['Yes', 'No', 'Not sure'],
     simple: [
-      { voice: 'A scientist says', says: 'Everyone feels wobbly before something new. Your body is getting ready.' },
-      { voice: 'An artist says', says: 'The wobble means you care about it.' },
+      { voice: 'A scientist says', says: 'Here is how it works. A fluttery tummy before something new is your body getting ready.' },
+      { voice: 'An artist says', says: 'Before every art show, I feel wobbly inside. To me, the wobble means I care.' },
+      { voice: 'A grandparent of faith says', says: 'When I was little, I stood at the school door, so worried. Then I walked in anyway.' },
+      { voice: 'A skeptic says', says: 'I like to ask what exactly I am worried about. Saying it out loud often shrinks it.' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Feeling worried before something new is your body getting ready. Your heart speeds up and your tummy flutters, and that is the same thing that happens before something exciting. Grown-ups feel it too, before a new job or a big day. It nearly always fades once the new thing starts.' },
@@ -31744,8 +32233,10 @@ export const WONDER = [
     prompt: 'What does it feel like when a friend gets something you wanted?',
     options: ['Sad', 'Mad', 'Both'],
     simple: [
-      { voice: 'A scientist says', says: 'That mixed-up feeling has a name: jealous. Everyone gets it.' },
-      { voice: 'An artist says', says: 'You can feel jealous and still be glad for your friend, at the same time.' },
+      { voice: 'A scientist says', says: 'I feel jealous sometimes too, even as a grown-up scientist. Everyone does.' },
+      { voice: 'An artist says', says: 'I think a heart can hold two things, glad for your friend and wishing you had one too.' },
+      { voice: 'A grandparent of faith says', says: 'I remember feeling jealous of my cousin\'s red bike. The feeling passed, and we rode it together.' },
+      { voice: 'A skeptic says', says: 'I check what I really want. Is it the toy, or a turn? Often a turn is enough.' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'That prickly feeling has a name, jealous, and everyone gets it, grown-ups too. It usually mixes a bit of sad and a bit of mad. Naming it does not make it go away, but it makes it smaller and easier to be honest about.' },
@@ -31764,8 +32255,10 @@ export const WONDER = [
     prompt: 'Why is it hard to say sorry, and why does it help?',
     options: ['It feels bad', 'It helps the other person', 'Both'],
     simple: [
-      { voice: 'A scientist says', says: 'Saying sorry is hard because it means admitting a mistake. It helps because it fixes things.' },
-      { voice: 'An artist says', says: 'A real sorry is small and quiet and means a lot.' },
+      { voice: 'A scientist says', says: 'Sorry is hard to say, because being wrong feels bad. But I have seen a sorry fix things.' },
+      { voice: 'An artist says', says: 'To me, a real sorry sounds soft and quiet, and it comes from your heart.' },
+      { voice: 'A grandparent of faith says', says: 'My faith teaches me that sorry and forgiving go together, like two hands clapping.' },
+      { voice: 'A skeptic says', says: 'I used to say sorry really fast to get it over with. Slow and real works better.' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Saying sorry is hard because it means admitting you got something wrong, and nobody likes that feeling. But saying it usually helps. People who apologize properly are trusted more, not less, because everyone knows mistakes happen. It is the fixing that matters.' },
@@ -31784,8 +32277,10 @@ export const WONDER = [
     prompt: 'How does it feel to lose a game, and what can you do with that feeling?',
     options: ['Mad', 'Sad', 'Fine'],
     simple: [
-      { voice: 'A scientist says', says: 'Losing feels bad for a little while. Then you get another go.' },
-      { voice: 'An artist says', says: 'The people who lose the most games are the ones who play the most.' },
+      { voice: 'A scientist says', says: 'I have noticed that the people who lose the most games are the ones who play the most.' },
+      { voice: 'An artist says', says: 'Losing feels like a gray cloud to me. Then the cloud drifts away, and I feel light again.' },
+      { voice: 'A grandparent of faith says', says: 'When I lost at checkers, I took a slow breath and asked for one more game.' },
+      { voice: 'A skeptic says', says: 'Is losing really so bad? Every game I lost showed me a move to try next time.' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Losing feels bad, and that is normal. The feeling is there to make you want to do better. The trick is to let it pass in a few minutes rather than carry it all day. Then look at one thing you could try differently next time.' },
@@ -31804,8 +32299,10 @@ export const WONDER = [
     prompt: 'What is the difference between I cannot do it and I cannot do it yet?',
     options: ['One word', 'A lot', 'Not sure'],
     simple: [
-      { voice: 'A scientist says', says: 'Yet is a small word that means you are still on the way.' },
-      { voice: 'An artist says', says: 'Every artist was once someone who could not draw yet.' },
+      { voice: 'A scientist says', says: 'Technically, it is one small word. But yet means you are still on the way.' },
+      { voice: 'An artist says', says: 'Every artist was once someone who could not draw yet. Even me!' },
+      { voice: 'A grandparent of faith says', says: 'I believe yet is one of the most hopeful words there is. It keeps the door open.' },
+      { voice: 'A skeptic says', says: 'Before I say I cannot, I count my tries. Was it ten times, or just once?' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'One word, and it changes everything. I cannot do it closes a door. I cannot do it yet says the door is still open and you are walking toward it. People who think in yets keep trying, and trying is how the yet turns into can.' },
@@ -31824,8 +32321,10 @@ export const WONDER = [
     prompt: 'When something is hard, does that mean you are bad at it?',
     options: ['Yes', 'No', 'Not sure'],
     simple: [
-      { voice: 'A scientist says', says: 'Hard means your brain is working. That is when it grows.' },
-      { voice: 'An artist says', says: 'If it was easy, you would already know it.' },
+      { voice: 'A scientist says', says: 'I read that when you keep practicing something hard, your brain builds new paths.' },
+      { voice: 'An artist says', says: 'If it were easy, you would already know it. I look for the hard part on purpose.' },
+      { voice: 'A grandparent of faith says', says: 'Reading was hard for me at first. Now my reading room is full of books!' },
+      { voice: 'A skeptic says', says: 'Does hard mean bad? I am not so sure. Sometimes hard just means try a new way.' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Hard does not mean bad at it. Hard means your brain is stretching, and stretching is exactly when it grows. Things that feel easy are things you already know. The hard part is the learning part, every single time.' },
@@ -31833,7 +32332,7 @@ export const WONDER = [
       { voice: 'A grandparent of faith', says: 'Grown-ups sometimes forget how hard things were the first time. Ask one to tell you about learning to read, or drive, or cook. They will remember it was hard, and they will be glad they kept going.' },
       { voice: 'A skeptic', says: 'Sometimes hard means you need a different approach, not more effort. If you have tried the same way five times, try a new way, or ask someone. Hard is information about what to do next, so read it carefully.' },
     ],
-    closing: 'What is something that is hard right now? What is one small piece of it you can already do?',
+    closing: 'What is hard for you right now? What small piece of it can you already do?',
   },
   {
     id: 'w-stuck',
@@ -31844,8 +32343,10 @@ export const WONDER = [
     prompt: 'What can you do when you feel stuck?',
     options: ['Try again', 'Ask for help', 'Take a break'],
     simple: [
-      { voice: 'A scientist says', says: 'Stuck is a normal part of learning. A break, a question, or a new way usually unsticks it.' },
-      { voice: 'An artist says', says: 'Sometimes the best thing is to step back and look from further away.' },
+      { voice: 'A scientist says', says: 'In my lab, when I get stuck, a short break or a fresh idea usually gets me going.' },
+      { voice: 'An artist says', says: 'When I am stuck on a painting, I step back and look from far away. It helps!' },
+      { voice: 'A grandparent of faith says', says: 'I ask for help when I am stuck, and sometimes I say a quiet prayer too.' },
+      { voice: 'A skeptic says', says: 'I check if I am stuck or just tired. If I am tired, I rest first.' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Everyone gets stuck, and there are three things that usually work. Take a short break, because your brain keeps working on it quietly. Ask someone, because a fresh pair of eyes sees what you cannot. Or try it a different way, because the stuck way is not the only way.' },
@@ -31864,8 +32365,10 @@ export const WONDER = [
     prompt: 'Can a day be good and bad at the same time?',
     options: ['Yes', 'No', 'Not sure'],
     simple: [
-      { voice: 'A scientist says', says: 'Most days are a mix. That is what days are like.' },
-      { voice: 'An artist says', says: 'A picture with only bright colors is not a real picture.' },
+      { voice: 'A scientist says', says: 'If you measure a day hour by hour, most days are a mix of good and hard.' },
+      { voice: 'An artist says', says: 'I think a painting with only bright colors looks flat. Shadows make the bright parts shine.' },
+      { voice: 'A grandparent of faith says', says: 'On my hardest days, I still find one good thing, and I am thankful for it.' },
+      { voice: 'A skeptic says', says: 'When I say a day was bad, I check. Was it all bad, or one bad thing?' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Most days are a mix, and that is normal. A good morning and a hard afternoon are both real. If you look for one word to describe the whole day, you will usually get it wrong. Two words is more honest.' },
@@ -31884,8 +32387,10 @@ export const WONDER = [
     prompt: 'Do feelings last forever?',
     options: ['Yes', 'No', 'Some do'],
     simple: [
-      { voice: 'A scientist says', says: 'Feelings come like weather. Even big ones pass.' },
-      { voice: 'An artist says', says: 'A storm feels like it will never end, and then it does.' },
+      { voice: 'A scientist says', says: 'I have watched my own feelings like an experiment. Even my biggest ones got smaller with time.' },
+      { voice: 'An artist says', says: 'When I am sad, I paint it blue. Days later, I often paint the same thing yellow.' },
+      { voice: 'A grandparent of faith says', says: 'Each time I pray, I remember that hard feelings come and go, like night and morning.' },
+      { voice: 'A skeptic says', says: 'Some feelings, like loving my family, last a very long time. I hope those ones stay!' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Feelings are a lot like weather. They come, they feel like everything while they are here, and then they pass. Scientists who asked people to time their feelings found that fear often fades within an hour, while sadness can stay for days. But every feeling changes in the end, and knowing that makes the big ones easier to sit through.' },
@@ -31904,8 +32409,10 @@ export const WONDER = [
     prompt: 'Is it okay to be different from everyone else?',
     options: ['Yes', 'No', 'Sometimes'],
     simple: [
-      { voice: 'A scientist says', says: 'No two people are the same. Different is how people come.' },
-      { voice: 'An artist says', says: 'The best pictures are the ones nobody else could have made.' },
+      { voice: 'A scientist says', says: 'I once looked at twins\' fingerprints with a magnifying glass. Even twins have different ones!' },
+      { voice: 'An artist says', says: 'The pictures I love most are the ones nobody else could have made. Just like you.' },
+      { voice: 'A grandparent of faith says', says: 'I believe every person is made with care, and no two are the same.' },
+      { voice: 'A skeptic says', says: 'I asked my friends if they ever feel different. Every one said yes, so I am not alone!' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'No two people are alike, not even twins. Different is not something that happens to a few people. It is how every person is made. Being different is the normal way to be.' },
@@ -31924,8 +32431,10 @@ export const WONDER = [
     prompt: 'How deep is the ocean?',
     options: ['Very', 'To the middle of the world', 'Not sure'],
     simple: [
-      { voice: 'A scientist says', says: 'The deepest part is so deep that a mountain would disappear in it.' },
-      { voice: 'An artist says', says: 'Nobody has seen most of the ocean. Imagine what is down there.' },
+      { voice: 'A scientist says', says: 'It turns out the tallest mountain could fit inside the deepest part of the ocean!' },
+      { voice: 'An artist says', says: 'Most of the ocean has never been seen by people. I like imagining what lives down there.' },
+      { voice: 'A grandparent of faith says', says: 'Looking out at the sea fills me with wonder. I like to say a little thank-you for it.' },
+      { voice: 'A skeptic says', says: 'How would anyone measure something so deep? Sailors used to lower long ropes, and now ships use sound.' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'The deepest part of the ocean is so deep that the tallest mountain on Earth would sink into it with room to spare. It is pitch dark down there and very cold, and there are still creatures living in it that nobody has ever seen up close.' },
@@ -31933,7 +32442,7 @@ export const WONDER = [
       { voice: 'A grandparent of faith', says: 'The sea has always made people feel small in a good way. Standing on a beach and looking out is one of the oldest ways of feeling wonder. You do not need to know how deep it is to feel that.' },
       { voice: 'A skeptic', says: 'How would anyone measure something that deep? People lowered ropes for hundreds of years and ran out of rope. Then they used sound, which bounces back. Every big fact has a story of how someone found it out.' },
     ],
-    closing: 'If you could go to the bottom of the sea in a little window boat, what would you hope to see?',
+    closing: 'In a little window boat at the bottom of the sea, what would you hope to see?',
   },
   {
     id: 'w-cat-purr',
@@ -31944,8 +32453,10 @@ export const WONDER = [
     prompt: 'Why do cats purr?',
     options: ['They are happy', 'They are talking', 'Not sure'],
     simple: [
-      { voice: 'A scientist says', says: 'Cats purr when they are happy, and sometimes when they are hurt too. Nobody knows all of why.' },
-      { voice: 'An artist says', says: 'A purr sounds like a tiny, happy engine.' },
+      { voice: 'A scientist says', says: 'Scientists have found that cats purr when happy, and sometimes when hurt. Nobody knows all the reasons yet.' },
+      { voice: 'An artist says', says: 'To me, a purr sounds like a tiny, happy engine.' },
+      { voice: 'A grandparent of faith says', says: 'As a girl, I had a cat who purred on my lap every time I read a book.' },
+      { voice: 'A skeptic says', says: 'Maybe a purr is happy talk. I would watch when a cat purrs, and when it stays quiet.' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Cats purr when they are content, but also sometimes when they are frightened or hurt, which puzzled scientists for a long time. Some think the purring helps a cat heal. The strange truth is that nobody fully knows why cats purr, and cats are not telling.' },
@@ -31964,8 +32475,10 @@ export const WONDER = [
     prompt: 'Why do older people know so many things?',
     options: ['They read a lot', 'They lived a lot', 'Not sure'],
     simple: [
-      { voice: 'A scientist says', says: 'They have had more days to learn things in. Every day adds a little.' },
-      { voice: 'An artist says', says: 'Ask an older person you know a question, and watch what happens.' },
+      { voice: 'A scientist says', says: 'I once counted my grandpa\'s days. He had lived over thirty thousand, and learned something every day!' },
+      { voice: 'An artist says', says: 'Listening to older people is my favorite. Their stories are like treasure boxes waiting to open.' },
+      { voice: 'A grandparent of faith says', says: 'Well, I have read a lot of books and lived a lot of days. Both helped me!' },
+      { voice: 'A skeptic says', says: 'Older people taught me a lot. I still check things myself, because the world keeps changing.' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Older people have simply had more days, and every day teaches something. Not just facts, but how things go, what usually happens next, which mistakes are worth avoiding. That kind of knowing takes years to build and cannot be rushed.' },
@@ -31984,8 +32497,10 @@ export const WONDER = [
     prompt: 'How does it feel to help someone?',
     options: ['Good', 'Tiring', 'Both'],
     simple: [
-      { voice: 'A scientist says', says: 'Helping someone makes your own brain feel good. It is built that way.' },
-      { voice: 'An artist says', says: 'The smallest help can be the biggest thing in the day of someone else.' },
+      { voice: 'A scientist says', says: 'Scientists keep finding that helping others often gives the helper a happy feeling too.' },
+      { voice: 'An artist says', says: 'The smallest help, like holding a door, can light up someone\'s whole day.' },
+      { voice: 'A grandparent of faith says', says: 'Helping someone always fills my heart. I believe that is how we were made.' },
+      { voice: 'A skeptic says', says: 'I have noticed helping can feel great, and tiring too. So I help in small, steady ways.' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Helping someone makes your own brain release a little wave of good feeling. It is built in, and scientists think it is part of why people managed to live together for so long. The feeling is real, and it is yours to keep.' },
@@ -32004,8 +32519,10 @@ export const WONDER = [
     prompt: 'Are you big or small?',
     options: ['Big', 'Small', 'Both'],
     simple: [
-      { voice: 'A scientist says', says: 'You are bigger than a mouse and smaller than a horse.' },
-      { voice: 'An artist says', says: 'Next to a mountain, everyone is small.' },
+      { voice: 'A scientist says', says: 'Technically, you are bigger than a mouse and smaller than a horse.' },
+      { voice: 'An artist says', says: 'I think, when you are next to a mountain, everyone feels small.' },
+      { voice: 'A grandparent of faith says', says: 'I have always believed that small ones matter just as much as big ones.' },
+      { voice: 'A skeptic says', says: 'Grown-ups call you big one day and too small the next. I ask, big enough for what?' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Big and small are always compared to something. You are enormous next to an ant and tiny next to a tree. So before I answer, I always ask what you are being compared to.' },
@@ -32029,8 +32546,10 @@ export const WONDER = [
     prompt: 'Are you and a friend the same, or different?',
     options: ['The same', 'Different', 'Both'],
     simple: [
-      { voice: 'A scientist says', says: 'Let\'s test it! Ask a friend their favorite food, and listen. Is it your favorite too?' },
-      { voice: 'An artist says', says: 'When I paint two friends, I look for what matches, and then for what does not.' },
+      { voice: 'A scientist says', says: 'I like to collect clues. Ask a friend their favorite food, and see if it matches yours.' },
+      { voice: 'An artist says', says: 'When I paint two friends, I look for what matches first, then for what does not.' },
+      { voice: 'A grandparent of faith says', says: 'Meeting someone very different from me is my favorite way to learn something new.' },
+      { voice: 'A skeptic says', says: 'The same in what way? You might both love pizza and go to bed at different times.' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Before I answer a question like this, I collect evidence. Ask a friend about their favorite food, game and song, and listen closely to each answer. Make two lists, one for what matches and one for what does not, and see what your lists tell you.' },
@@ -32038,7 +32557,7 @@ export const WONDER = [
       { voice: 'A grandparent of faith', says: 'My faith teaches me that every person is made with care, and that no two are made the same. So when I meet someone very different from me, I look for what I can learn from them, and I always find something.' },
       { voice: 'A skeptic', says: 'The same in what way? You and a friend might laugh at the same jokes and go to bed at different times, so I check one thing at a time. I keep my answer in pencil, because friends grow and change. If anyone says different means better or worse, I ask them how they know.' },
     ],
-    closing: 'What is one thing that is the same about you and a friend, and one thing that is different?',
+    closing: 'What is one way you and a friend are the same, and one way you are different?',
   },
   {
     id: 'w-where-sun-goes',
@@ -32049,8 +32568,10 @@ export const WONDER = [
     prompt: 'Where does the sun go at night?',
     options: ['To sleep', 'To the other side', 'Not sure'],
     simple: [
-      { voice: 'A scientist says', says: 'The sun does not go anywhere. The Earth turns us away from it.' },
-      { voice: 'An artist says', says: 'Somewhere it is morning right now, and the sun is there.' },
+      { voice: 'A scientist says', says: 'Technically, the sun does not leave. The Earth turns our side away from it, and that is night.' },
+      { voice: 'An artist says', says: 'While you sleep, I picture children far away waking up to their morning. It makes me smile.' },
+      { voice: 'A grandparent of faith says', says: 'Long ago, people told stories of the sun sailing a boat through the night. I love those stories.' },
+      { voice: 'A skeptic says', says: 'Try this with a grown-up. Turn a ball slowly by a lamp, and watch day and night happen.' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'The sun stays where it is. The Earth is a ball that turns once a day, and at night your side is turned away. Somewhere on the other side of the world, children are waking up to the same sun. Tomorrow morning your side turns back to face it.' },
@@ -32066,11 +32587,13 @@ export const WONDER = [
     stage: 'early',
     courseIds: ['science-1', 'science-2'],
     answerMode: 'pick',
-    prompt: 'A fish needs water and a bird needs a tree. What does your home give you?',
+    prompt: 'A fish needs water, and many birds need trees. What does your home give you?',
     options: ['A warm bed', 'People who love me', 'Both'],
     simple: [
-      { voice: 'A scientist says', says: 'Every living thing needs a place that gives it what it needs.' },
-      { voice: 'An artist says', says: 'A home is the place where you can be yourself.' },
+      { voice: 'A scientist says', says: 'I study animal homes. Every animal needs food, water and a safe spot, and so do people!' },
+      { voice: 'An artist says', says: 'To me, home is where I can wear my comfiest socks and just be myself.' },
+      { voice: 'A grandparent of faith says', says: 'I have always found that home is more than walls. It is people who care.' },
+      { voice: 'A skeptic says', says: 'Does a home have to be a house? I have friends who live on boats!' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'A habitat is the place that gives a living thing its food, water, shelter and safety. People have habitats too, and your habitat is mostly made of the people who care for you.' },
@@ -32089,8 +32612,10 @@ export const WONDER = [
     prompt: 'What is the quietest sound you can hear right now?',
     options: ['My breath', 'The wind', 'Not sure'],
     simple: [
-      { voice: 'A scientist says', says: 'Close your eyes and listen. There is always a small sound somewhere.' },
-      { voice: 'An artist says', says: 'Quiet sounds are hiding under the loud ones.' },
+      { voice: 'A scientist says', says: 'Here is something amazing. Your ears keep working all the time, even when you are not listening.' },
+      { voice: 'An artist says', says: 'Quiet sounds are my favorite music, like a clock ticking or a cat breathing.' },
+      { voice: 'A grandparent of faith says', says: 'When I want quiet, I sit by my round window with my tea and just listen.' },
+      { voice: 'A skeptic says', says: 'I wonder if there is ever total silence. Maybe there is always some tiny sound.' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Your ears are always working, even when you are not listening. Close your eyes for a moment and the small sounds come forward: a clock, a bird, your own breath. They were there all along, waiting under the louder ones.' },
@@ -32106,13 +32631,17 @@ export const WONDER = [
     stage: 'early',
     courseIds: ['counting-k', 'letters-k'],
     answerMode: 'pick',
-    prompt: 'Is a big group of tiny ants more than one elephant, or less?',
-    options: ['More', 'Less', 'It depends'],
-    // For children who cannot read yet: two voices, one short sentence each, meant to be
-    // heard rather than read. Four paragraphs is far too much to listen to at five.
+    // Which is more, without less (pass MH): the lessons teach more and fewer for groups, and the question turns on whether you
+    // count the ants or weigh them, so it asks which is more and the voices say it depends on what you measure.
+    prompt: 'Which is more, a big group of tiny ants or one elephant?',
+    options: ['The ants', 'The elephant', 'It depends'],
+    // For children who cannot read yet: short voices, one or two sentences each, meant to be heard rather than read
+    // (four of them since pass MH). Four paragraphs is far too much to listen to at five.
     simple: [
-      { voice: 'A scientist says', says: 'There are more ants, but the elephant is heavier.' },
-      { voice: 'An artist says', says: 'Ants make a wiggly line. An elephant is one big shape.' },
+      { voice: 'A scientist says', says: 'If you count, there are more ants. If you weigh them, one elephant is heavier.' },
+      { voice: 'An artist says', says: 'Ants make a wiggly, dotty line, and an elephant is one big gray shape.' },
+      { voice: 'A grandparent of faith says', says: 'I believe every creature matters, the tiniest ant and the biggest elephant alike.' },
+      { voice: 'A skeptic says', says: 'When someone asks which is more, I ask, more what? The answer can change.' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'It depends on what you are counting. There are many more ants in the group, but the elephant is far heavier than all of them put together. Both answers are correct once you say which one you mean.' },
@@ -32165,8 +32694,8 @@ export const WONDER = [
   {"id": "w-growing-new-place", "theme": "feelings", "stage": "growing", "courseIds": [], "answerMode": "typed", "prompt": "What is scary about the first day somewhere new, and what makes it better?", "perspectives": [{"voice": "A scientist", "says": "New places make the brain alert, because everything is unfamiliar. After a few days, the brain learns the new place and the scared feeling fades."}, {"voice": "An artist", "says": "I sketch new places on my first day. By the time I finish, I know where the doors and windows are, and the room feels like mine."}, {"voice": "A grandparent of faith", "says": "You are brave for going. It helps to remember that the other people there were new once too."}, {"voice": "A skeptic", "says": "Look for one person who seems friendly and say hello. You do not need a whole group of friends on the first day. One is enough to start."}], "closing": "What would you say to someone new at your school?"},
   {"id": "w-growing-proud", "theme": "feelings", "stage": "growing", "courseIds": [], "answerMode": "typed", "prompt": "What does it feel like to be proud of yourself, and how is that different from showing off?", "perspectives": [{"voice": "A scientist", "says": "Feeling proud after hard work is healthy; it helps you want to keep trying. It is different from bragging, which is about how others see you."}, {"voice": "An artist", "says": "When I finish a painting I am proud of, I want to show it to someone who will be happy for me, not to someone I want to beat."}, {"voice": "A grandparent of faith", "says": "Being grateful for what you did well, and for the people who helped you, is a gentle kind of pride."}, {"voice": "A skeptic", "says": "A good test: would you still feel proud if nobody ever found out? If yes, that is real pride."}], "closing": "What is something you are proud of this week?"},
   {"id": "w-growing-embarrassed", "theme": "feelings", "stage": "growing", "courseIds": [], "answerMode": "typed", "prompt": "Everyone laughed when you tripped. How long does embarrassment really last?", "perspectives": [{"voice": "A scientist", "says": "Embarrassment is strongest right away and fades quickly. Other people forget much faster than we do, usually by the next class."}, {"voice": "An artist", "says": "Some of the funniest stories people tell are about the times they tripped. Years later, they laugh along."}, {"voice": "A grandparent of faith", "says": "Laughing at yourself kindly is a gift. It helps you and everyone around you move on."}, {"voice": "A skeptic", "says": "If someone keeps teasing you about it for days, that is not okay, and it is worth telling a teacher."}], "closing": "What is a funny story you can tell about yourself now?"},
-  {"id": "w-early-tower-fell", "theme": "failure", "stage": "early", "courseIds": [], "answerMode": "pick", "prompt": "Your block tower fell down. What do you do next?", "options": ["Build it again", "Build it wider", "Take a break first"], "simple": [{"voice": "A scientist says", "says": "A wide bottom helps a tower stand."}, {"voice": "An artist says", "says": "Every tower you build is a new one."}], "perspectives": [{"voice": "A scientist", "says": "Towers fall when they are taller than their bottom can hold. A wider bottom helps them stand. Every fall teaches you how to build the next one."}, {"voice": "An artist", "says": "I like to build the second tower a little differently from the first. Sometimes the new way is better."}, {"voice": "A grandparent of faith", "says": "It is okay to be sad when something falls. Take a breath, and try again when you are ready."}, {"voice": "A skeptic", "says": "Look at how it fell before you build again. Did it lean? Wobble? That tells you what to change."}], "closing": "What will you build next?"},
-  {"id": "w-early-feeling-sad", "theme": "feelings", "stage": "early", "courseIds": [], "answerMode": "pick", "prompt": "When you feel sad, what helps you feel better?", "options": ["A hug", "Telling someone", "Quiet time"], "simple": [{"voice": "A scientist says", "says": "Telling someone how you feel can make it feel smaller."}, {"voice": "A grandparent of faith says", "says": "You are never alone when you are sad."}], "perspectives": [{"voice": "A scientist", "says": "Telling someone how you feel helps your body calm down. Your feelings are real, and they change."}, {"voice": "An artist", "says": "Some people draw something they love when they feel sad, like a pet or a favorite place. In one study, that helped children feel better more than drawing the sad thing did."}, {"voice": "A grandparent of faith", "says": "It is okay to be sad sometimes. The people who love you want to help. Let them help you feel better."}, {"voice": "A skeptic", "says": "Sad feelings come and go like clouds. If a sad feeling stays a long time, tell a grown-up you trust."}], "closing": "Who can you go to when you feel sad?"},
+  {"id": "w-early-tower-fell", "theme": "failure", "stage": "early", "courseIds": [], "answerMode": "pick", "prompt": "Your block tower fell down. What do you do next?", "options": ["Build it again", "Build it wider", "Take a break first"], "simple": [{"voice": "A scientist says", "says": "A wide bottom helps a tower stand tall. I test that with my own blocks!"}, {"voice": "An artist says", "says": "I think every new tower is a brand new chance to make something different."}, {"voice": "A grandparent of faith says", "says": "When my towers fell as a girl, I felt sad too. A slow breath helped me build again."}, {"voice": "A skeptic says", "says": "Let's look at how the tower fell, leaning or wobbling. That tells us what to change."}], "perspectives": [{"voice": "A scientist", "says": "Towers fall when they are taller than their bottom can hold. A wider bottom helps them stand. Every fall teaches you how to build the next one."}, {"voice": "An artist", "says": "I like to build the second tower a little differently from the first. Sometimes the new way is better."}, {"voice": "A grandparent of faith", "says": "It is okay to be sad when something falls. Take a breath, and try again when you are ready."}, {"voice": "A skeptic", "says": "Look at how it fell before you build again. Did it lean? Wobble? That tells you what to change."}], "closing": "What will you build next?"},
+  {"id": "w-early-feeling-sad", "theme": "feelings", "stage": "early", "courseIds": [], "answerMode": "pick", "prompt": "When you feel sad, what helps you feel better?", "options": ["A hug", "Telling someone", "Quiet time"], "simple": [{"voice": "A scientist says", "says": "It turns out a warm hug can help a body calm down."}, {"voice": "An artist says", "says": "Drawing my favorite place helps me when I am sad. It feels like a little trip there."}, {"voice": "A grandparent of faith says", "says": "When I am sad, I say a little prayer and have a cup of tea with a friend."}, {"voice": "A skeptic says", "says": "I check how long my sad feelings stay. If one stays long, tell a grown-up you trust."}], "perspectives": [{"voice": "A scientist", "says": "Telling someone how you feel helps your body calm down. Your feelings are real, and they change."}, {"voice": "An artist", "says": "Some people draw something they love when they feel sad, like a pet or a favorite place. In one study, that helped children feel better more than drawing the sad thing did."}, {"voice": "A grandparent of faith", "says": "It is okay to be sad sometimes. The people who love you want to help. Let them help you feel better."}, {"voice": "A skeptic", "says": "Sad feelings come and go like clouds. If a sad feeling stays a long time, tell a grown-up you trust."}], "closing": "Who can you go to when you feel sad?"},
   {
     id: 'w-grown-exactly-what-you-wrote',
     theme: 'failure',
@@ -32707,7 +33236,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'Your aunt gives you five dollars for your birthday. Did you earn it?',
     options: ['No, it was a gift', 'Yes, I earned it', 'I am not sure'],
-    simple: [{ voice: 'A scientist says', says: 'Money you work for is income. This was a gift.' }, { voice: 'An artist says', says: 'Draw a birthday card with money inside it.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'I like clear names for things. Money you work for is earned, and birthday money is a gift.' },
+      { voice: 'An artist says', says: 'A gift feels like a warm surprise to me. Earning money makes me proud, like finishing a painting.' },
+      { voice: 'A grandparent of faith says', says: 'Whenever someone gives me a gift, I say thank you, and I try to give gifts too.' },
+      { voice: 'A skeptic says', says: 'What if your aunt said the money was for helping in her garden? Then maybe you earned it!' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'Income is money you earn by doing work. A birthday gift is given because someone loves you, not because you did a job.' },
       { voice: 'An artist', says: 'Picture two drawings side by side. In one, you rake leaves and get paid. In the other, you open a card. Same money, two different stories.' },
@@ -32724,7 +33258,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'You spent all your money on a toy. Then you saw something you wanted more. What can you do?',
     options: ['Start saving for it', 'Ask for it right now', 'I am not sure'],
-    simple: [{ voice: 'A scientist says', says: 'Save a little each week, and it adds up.' }, { voice: 'An artist says', says: 'Draw the thing you want on your saving jar.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'Here is some math I love. One coin every week adds up to a nice little pile.' },
+      { voice: 'An artist says', says: 'I would draw the thing I want and tape it to my saving jar. It keeps me excited!' },
+      { voice: 'A grandparent of faith says', says: 'Everyone has spent money and then wished they had waited. I have too, many times.' },
+      { voice: 'A skeptic says', says: 'Before I spend, I ask one question. Do I want this more than anything else?' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'Saving a little at a time adds up. One dollar a week for five weeks is five dollars, and you can count it as it grows.' },
       { voice: 'An artist', says: 'Make a picture of what you want and tape it to a jar. Every coin you add brings you closer.' },
@@ -33137,7 +33676,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'You think a picture looks happy. Your friend thinks it looks sad. Who is right?',
     options: ['Both of us', 'The one who looked longer', 'We should ask the painter'],
-    simple: [{ voice: 'An artist says', says: 'A picture can be two things at once.' }, { voice: 'A skeptic says', says: 'Ask each other what you saw.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'From what I have seen, the same picture can make two people feel different things.' },
+      { voice: 'An artist says', says: 'I hope my paintings feel happy to some people and sad to others. Then they are really looking!' },
+      { voice: 'A grandparent of faith says', says: 'Two people at one window can see two different skies. I like to listen to both.' },
+      { voice: 'A skeptic says', says: 'Point to the happy part and the sad part. Maybe you were looking at different corners!' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'You both looked at the same picture and had different feelings, which means the feeling is partly yours. That is not a mistake at all. It is simply how looking works.' },
       { voice: 'An artist', says: 'A picture can be two things at once, and the best ones usually are. When I paint, I hope people argue about it a little, because then they are really looking.' },
@@ -33154,7 +33698,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'You clapped along to a song and lost the beat in front of everyone. What now?',
     options: ['Listen, then join back in', 'Stop clapping', 'Clap louder'],
-    simple: [{ voice: 'A scientist says', says: 'Tap your foot first. Then your hands can follow.' }, { voice: 'An artist says', says: 'Everyone loses the beat; music waits for you.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'If you listen closely, the beat keeps going even when you stop. It is always there to catch.' },
+      { voice: 'An artist says', says: 'Losing the beat feels wobbly, like a missed step. Musicians do it sometimes, me too!' },
+      { voice: 'A grandparent of faith says', says: 'In my long life, I have learned that people remember your smile, not your missed clap.' },
+      { voice: 'A skeptic says', says: 'Hmm, clapping louder just makes the miss louder. I would go quiet, listen, then come back in.' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'Stop, listen for the steady thump, and tap your foot to it first. A quiet foot can find the beat again, and then your hands can follow it.' },
       { voice: 'An artist', says: 'Every musician loses the beat sometimes, even the drummer. The song keeps going, and it takes you back the moment you listen. Music is very forgiving in that way.' },
@@ -33171,7 +33720,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'A coat in the dark looked like a monster. Was your brain being silly?',
     options: ['No, it was guessing to keep me safe', 'Yes, brains are silly', 'Coats are monsters at night'],
-    simple: [{ voice: 'A scientist says', says: 'Your brain guesses fast in the dark to keep you safe.' }, { voice: 'A grandparent says', says: 'Turn on the light and thank your brain.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'I read that in the dark, brains guess fast to keep us safe. Mine would rather be careful!' },
+      { voice: 'An artist says', says: 'I think your brain was drawing a story in the dark, the way I do on paper.' },
+      { voice: 'A grandparent of faith says', says: 'Every child meets that coat, me too. A hug from someone you love makes the dark feel smaller.' },
+      { voice: 'A skeptic says', says: 'Let\'s check with the light on. A monster that is a coat every time is a coat!' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'Your brain was not being silly. In the dark it guesses fast, and it would rather guess monster and be wrong than guess coat and be wrong. Turn on the light, and it learns.' },
       { voice: 'An artist', says: 'A coat that turns into a monster is your brain making up a story. It makes up stories all day. That is where drawings come from too.' },
@@ -33188,7 +33742,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'You forgot your line in the class play. What now?',
     options: ['Take a breath and try again', 'Give up on plays', 'Say the whole play was silly'],
-    simple: [{ voice: 'A scientist says', says: 'Breathe, then say it again a little every day.' }, { voice: 'An artist says', says: 'Every actor forgets a line once.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'It turns out a worried brain can drop words. It happens to grown-ups too, even me!' },
+      { voice: 'An artist says', says: 'I forgot my line in a play once. I giggled, took a breath, and then I remembered.' },
+      { voice: 'A grandparent of faith says', says: 'My students forgot lines in almost every play. One lost line is a small thing that feels big.' },
+      { voice: 'A skeptic says', says: 'Giving up on plays over one line is like giving up lunch over one dropped fork!' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'A scared brain drops things. Breathe in slow and out slow, and the line comes back. Then say it a little every day, and next time it stays.' },
       { voice: 'An artist', says: 'Every actor in the world has forgotten a line. The show kept going, and yours will too. The people watching only remember that you were brave.' },
@@ -33205,7 +33764,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'Is a stick a toy?',
     options: ['Yes, if you play with it', 'No, toys come from a store', 'It depends what you mean by toy'],
-    simple: [{ voice: 'A scientist says', says: 'Say what a toy is first.' }, { voice: 'An artist says', says: 'A stick can be anything you like.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'I would test the stick. Give it to a friend and watch. Do they play with it?' },
+      { voice: 'An artist says', says: 'A stick can be a magic wand, a horse, or a fishing pole, all in one afternoon!' },
+      { voice: 'A grandparent of faith says', says: 'When I was little, our best toy was a stick, and the second best was a box!' },
+      { voice: 'A skeptic says', says: 'What makes a toy a toy? A pot and a spoon can make a great drum!' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'Say what a toy is first, and then the stick either fits or it does not. Most arguments about sticks are really arguments about the word toy.' },
       { voice: 'An artist', says: 'A stick can be a sword, a wand, a horse or a fishing pole in one afternoon. I have never seen a store toy do that many things.' },
@@ -33222,7 +33786,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'You talked when it was not your turn and your friend got sad. What now?',
     options: ['Say sorry and listen', 'Talk louder', 'Stop talking forever'],
-    simple: [{ voice: 'A grandparent says', says: 'Say sorry, then listen with your brain and your body.' }, { voice: 'A skeptic says', says: 'Everyone slips; the next turn is a fresh one.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'I count to three in my head before I talk. It gives my friend time to finish.' },
+      { voice: 'An artist says', says: 'I think your friend just wanted to be heard. Ask them to say it again.' },
+      { voice: 'A grandparent of faith says', says: 'In my classroom, a real sorry, then listening with your brain and body, fixed most troubles.' },
+      { voice: 'A skeptic says', says: 'Talking louder makes it worse, and you never need to stop talking forever. Next turn, try again!' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'Everyone slips once in a while. The fix is small and quick: say sorry, then listen so hard that your friend can tell.' },
       { voice: 'An artist', says: 'Your friend is sad because they wanted to be heard. Ask them to say it again, and look at them while they do.' },
@@ -33239,7 +33808,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'You have coins for one thing and you want two things. What do you do?',
     options: ['Pick the one I want most', 'Save for the other one', 'Ask which one lasts longer'],
-    simple: [{ voice: 'A scientist says', says: 'Choosing one means the other waits, not disappears.' }, { voice: 'An artist says', says: 'The one you still think about tomorrow is the one.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'I count my coins first. If they buy one thing, the other one waits for my next coins.' },
+      { voice: 'An artist says', says: 'I like to wait until morning. The one I still want when I wake up is the one.' },
+      { voice: 'A grandparent of faith says', says: 'Every grown-up makes this choice every week. I try to be glad about the one I picked.' },
+      { voice: 'A skeptic says', says: 'Let\'s think about which one lasts longer. A toy that breaks by Friday is not much fun.' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'You cannot have both today, and that is not sad, it is just true. Pick one, and the other one waits for the next coins. Waiting is how the second one arrives.' },
       { voice: 'An artist', says: 'Sleep on it before you choose. The one you still think about in the morning is the one you really want, and the other was only shiny in the store.' },
@@ -33256,7 +33830,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'You saved for weeks, then spent it all in one day and felt bad. What now?',
     options: ['Start the jar again', 'Decide the rule before the store', 'Talk to a grown-up about it'],
-    simple: [{ voice: 'A scientist says', says: 'The jar can start again tomorrow.' }, { voice: 'A skeptic says', says: 'Make the rule before you walk into the store.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'When my experiments fail, I start again, a little smarter. Your jar can start again tomorrow too!' },
+      { voice: 'An artist says', says: 'To me, that icky feeling is a little teacher. It will remind you next time.' },
+      { voice: 'A grandparent of faith says', says: 'Money mistakes happen to me too. Being kind to myself always comes first.' },
+      { voice: 'A skeptic says', says: 'I make my spending rule at home. In the store, shiny toys make it too hard to think!' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'Spending it is not the mistake. Spending it without deciding first is. The jar starts again tomorrow, and this time you know what happens at the store.' },
       { voice: 'An artist', says: 'You learned what the feeling after is like. That feeling is worth more than the coins, because it will stop you next time, right at the shelf.' },
@@ -33273,7 +33852,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'Your robot walked into a rock. What do you do next?',
     options: ['Change one step', 'Start the steps over', 'Watch it walk again'],
-    simple: [{ voice: 'A scientist says', says: 'A bump shows you which step to change.' }, { voice: 'A skeptic says', says: 'Watch it again before you change anything.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'My little robot does exactly what its steps say. So a bump shows me which step to fix.' },
+      { voice: 'An artist says', says: 'I would draw the path on paper first. A picture of the walk is easy to check.' },
+      { voice: 'A grandparent of faith says', says: 'A bump is not a failure, dear. It is the robot telling you something new.' },
+      { voice: 'A skeptic says', says: 'Before I change anything, I watch the robot walk again. Then I know just where it bumped.' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'The robot did exactly what its steps said, so the bump points at one step. Change that one and watch again. That is how every program gets fixed.' },
       { voice: 'An artist', says: 'I would draw the path on paper first, then press the arrows. A picture of the walk is easier to check than a row of arrows.' },
@@ -33293,7 +33877,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'Your milk came from the store. Where was it before the store?',
     options: ['On a farm, from a cow', 'The store made it', 'I am not sure'],
-    simple: [{ voice: 'A scientist says', says: 'Milk comes from cows on a dairy farm.' }, { voice: 'An artist says', says: 'Picture a cow, a truck and a store in a row.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'I visited a dairy farm once. Cows get milked every day, and cold trucks carry the milk away.' },
+      { voice: 'An artist says', says: 'I picture it like a little parade, a cow, a shiny truck, a store, and your cup.' },
+      { voice: 'A grandparent of faith says', says: 'A farmer got up early to care for the cows. I say a little thank-you for farmers.' },
+      { voice: 'A skeptic says', says: 'Next time, look at the carton with a grown-up. Some cartons name the farm or the dairy!' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'Cows make milk for their calves, and a dairy farmer milks the cows every day. The milk is kept cold, then a truck carries it to the store.' },
       { voice: 'An artist', says: 'Draw it as a line of pictures: a cow in a green field, a shiny truck, a store, and your glass. That line is the whole trip.' },
@@ -33310,7 +33899,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'You forgot to water your plant, and now it is drooping. What can you do?',
     options: ['Give it water and wait', 'Throw it away', 'I am not sure'],
-    simple: [{ voice: 'A scientist says', says: 'A droopy plant is thirsty. Give it water and wait.' }, { voice: 'A grandparent of faith says', says: 'Everybody forgets sometimes. Try again today.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'I study plants. A droopy one is often thirsty, and water can help it stand back up.' },
+      { voice: 'An artist says', says: 'I love watching the leaves lift slowly after a drink, like someone waking up from a nap.' },
+      { voice: 'A grandparent of faith says', says: 'Every gardener forgets to water sometimes, even me. Plants forgive more than we think.' },
+      { voice: 'A skeptic says', says: 'Let\'s check the soil first with one finger. Dry means water it, and wet means wait.' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'A droopy plant is thirsty, and water can help it stand up again. Give it a drink and check it in an hour.' },
       { voice: 'An artist', says: 'Watch closely after you water it. The leaves lift slowly, like someone waking up from a nap.' },
@@ -33330,7 +33924,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'You put your hand up and waited, and three other friends got turns first. Was that fair?',
     options: ['Yes, turns take time', 'No, I waited longest', 'I am not sure'],
-    simple: [{ voice: 'A scientist says', says: 'Every turn is one talker. Yours is coming.' }, { voice: 'An artist says', says: 'Waiting is part of the game, like the quiet between songs.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'When everyone talks at once, I notice nobody is heard well. So turns line up. Yours is coming!' },
+      { voice: 'An artist says', says: 'I think waiting with your hand up feels long, like the quiet between two songs.' },
+      { voice: 'A grandparent of faith says', says: 'Waiting is hard at five and hard at eighty. I still wiggle when I wait!' },
+      { voice: 'A skeptic says', says: 'Count the hands next time. If yours was up first, tell the teacher kindly.' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'Only one person can be heard at a time, so turns line up. Three before you means three people were heard, and the fourth turn is yours, because the line keeps moving.' },
       { voice: 'An artist', says: 'Waiting with your hand up is like the quiet between two songs. It feels long, and it is what lets the next song be heard.' },
@@ -33347,7 +33946,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'The teacher said three steps, and you did two and forgot the last one. What now?',
     options: ['Ask what the last step was', 'Give up', 'Guess'],
-    simple: [{ voice: 'A scientist says', says: 'Ask for the last step. Asking is how you get it right.' }, { voice: 'A grandparent of faith says', says: 'Two out of three is nearly there. Ask, and finish.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'I act out each step as I hear it. That helps all three steps stick in my head!' },
+      { voice: 'An artist says', says: 'I picture the steps like three stones in a row. The third stone is still waiting for you.' },
+      { voice: 'A grandparent of faith says', says: 'I always smiled when a student asked about a forgotten step. Two out of three is nearly there!' },
+      { voice: 'A skeptic says', says: 'Hmm, guessing might give you the wrong step. Asking gets you the right one.' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'Three steps is a lot for one head. Next time say them back first, cup, water, table, and the last one stays. Today, ask what it was.' },
       { voice: 'An artist', says: 'Picture the three steps like three stones in a row. You stepped on two of them, and the third stone is still there, waiting for you to ask where it is.' },
@@ -33364,7 +33968,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'A computer only does what it is told. Is that good, or not so good?',
     options: ['Good, it always listens', 'Not so good, it cannot think', 'A little of both'],
-    simple: [{ voice: 'A scientist says', says: 'It does every step you give it, and no more.' }, { voice: 'An artist says', says: 'You are the one with the ideas.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'Technically, a computer does every step you give it, and not one more.' },
+      { voice: 'An artist says', says: 'I think you are the artist with the ideas, and the computer is your paintbrush.' },
+      { voice: 'A grandparent of faith says', says: 'People can stop, think, and choose to be kind. A computer needs us to tell it carefully.' },
+      { voice: 'A skeptic says', says: 'Wrong steps make a computer do the wrong thing just as fast. So I always check the steps.' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'A computer does every step you give it and not one more. That is why it never gets tired and never gets bored, and why your steps have to be right.' },
       { voice: 'An artist', says: 'The computer has no ideas of its own. The ideas all come from you. That makes you the artist, and the computer the brush.' },
@@ -33564,7 +34173,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'You spilled water on your picture. Is it ruined?',
     options: ['Yes, it is ruined', 'No, I can change it', 'I am not sure'],
-    simple: [{ voice: 'An artist says', says: 'A spill can turn into a cloud or a puddle.' }, { voice: 'A scientist says', says: 'Watch how the water spreads. It makes new shapes.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'With paint or markers, water carries some color along the paper. That makes soft new edges!' },
+      { voice: 'An artist says', says: 'Spills can make lovely shapes. I once turned a spill into a rain cloud in my picture!' },
+      { voice: 'A grandparent of faith says', says: 'A spill would make me sad too. But you made your picture once, so you can make another!' },
+      { voice: 'A skeptic says', says: 'Wait until the paper dries before you decide. Wet paper looks darker than it will later.' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'Water soaks along paper and can carry some of the color with it. That is why a spill makes soft new edges. Look closely before you decide anything, because the new shapes might be interesting.' },
       { voice: 'An artist', says: 'Many painters wet their paper on purpose to make the colors run together. Your spill did the same thing by accident. You could add a few lines and turn it into rain, a lake or a sky.' },
@@ -33581,7 +34195,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'You tried and tried to zip your coat, and it kept getting stuck. What now?',
     options: ['Try again slowly', 'Ask someone to show me', 'Take a break first'],
-    simple: [{ voice: 'A scientist says', says: 'Your hands learn a little more every time you try.' }, { voice: 'A skeptic says', says: 'Pull gently. Pulling harder can make it stick more.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'I checked once, and pulling harder only jammed my zipper more. Slow and gentle works better.' },
+      { voice: 'An artist says', says: 'My hands get wobbly when I rush. So I rest them a moment, then try the zipper again.' },
+      { voice: 'A grandparent of faith says', says: 'Asking for help is not giving up. I still ask, and someday you will teach someone to zip!' },
+      { voice: 'A skeptic says', says: 'I look closely at the exact spot where the zipper catches. Then I fix just that spot.' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'Hands learn new jobs a little at a time, by doing them again and again. Each try teaches your fingers something, even the tries that do not work. That is how everyone learns to zip, button and tie.' },
       { voice: 'An artist', says: 'Slow hands are careful hands. Try it the way a painter makes a careful line, slowly, with your eyes on the spot. Speed comes later, after the slow way works.' },
@@ -33598,7 +34217,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'You colored outside the lines. Is that a mistake?',
     options: ['Yes', 'No', 'Sometimes'],
-    simple: [{ voice: 'An artist says', says: 'Lines are a helper, not a rule.' }, { voice: 'A scientist says', says: 'Hands get steadier the more you color.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'Scientists have found that hands keep getting steadier for years. Coloring inside small lines takes time!' },
+      { voice: 'An artist says', says: 'Lots of artists paint past the lines on purpose. To me, lines are a helper, not a rule.' },
+      { voice: 'A grandparent of faith says', says: 'Nobody has to be perfect to make something lovely. I keep every picture my students give me.' },
+      { voice: 'A skeptic says', says: 'A mistake is when you meant one thing and did another. On purpose is a choice!' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'Coloring inside small lines takes steady hands and careful eyes working together. That skill keeps growing for years, so going over the lines is normal while it grows. Every picture you color is practice for your hands.' },
       { voice: 'An artist', says: 'Plenty of artists paint right past the lines on purpose. Lines are a helper when you want them and a choice when you do not. Ask yourself whether the picture looks the way you wanted.' },
@@ -33615,7 +34239,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'You kicked at the ball and missed it. What do you do next?',
     options: ['Kick again', 'Watch the ball closely', 'Stop playing'],
-    simple: [{ voice: 'A scientist says', says: 'Your eyes tell your foot where to go.' }, { voice: 'An artist says', says: 'Every good player has missed the ball lots of times.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'I tested my own kicks once. Every miss helped my eyes, brain and legs practice teamwork!' },
+      { voice: 'An artist says', says: 'Even great players miss the ball. To me, a miss is just one moment, not the whole game.' },
+      { voice: 'A grandparent of faith says', says: 'I have watched many children learn to kick, and every one missed at first. Then they tried again!' },
+      { voice: 'A skeptic says', says: 'If you are tired, rest. But if you just feel silly, stay and kick again!' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'Kicking is a team job for your eyes, your brain and your legs. Your eyes tell your brain where the ball is going, and your brain gets better at guessing with every try. Misses are how that guessing gets sharper.' },
       { voice: 'An artist', says: 'Watch a good player for a while and you will see them miss too. The difference is what they do next: they get ready for the next ball. A miss is one moment, not the whole game.' },
@@ -33632,7 +34261,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'Your shoes are on the wrong feet. Is that a big mistake?',
     options: ['A big mistake', 'A small one I can fix', 'I am not sure'],
-    simple: [{ voice: 'A scientist says', says: 'Your feet can tell. The shoes feel squished and funny.' }, { voice: 'A grandparent of faith says', says: 'Everybody does this sometimes. Switch them and off you go.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'Most shoes curve to fit one foot, I checked! So the wrong one feels squished.' },
+      { voice: 'An artist says', says: 'I put half a sticker in each shoe. When the halves make one picture, my shoes are right!' },
+      { voice: 'A grandparent of faith says', says: 'Every grown-up you know has done this, and some of us still do it when we rush!' },
+      { voice: 'A skeptic says', says: 'I ask how long a mistake takes to fix. Ten seconds means it is a tiny one!' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'Most shoes are shaped to fit one foot, with more room on the big toe side. On the wrong feet, they press in the wrong places, and that is the funny feeling you notice. Your feet are giving you a clue.' },
       { voice: 'An artist', says: 'A pair of shoes is two mirror shapes, like your two hands. Put them side by side and look at them from the top. You can see how each one curves to fit one foot.' },
@@ -33649,7 +34283,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'When you miss someone you love, what can you do?',
     options: ['Draw them a picture', 'Call or visit them', 'Hug someone close'],
-    simple: [{ voice: 'A scientist says', says: 'Missing someone shows how much they matter to you.' }, { voice: 'An artist says', says: 'A picture can carry your love to someone far away.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'I have noticed that missing someone comes from caring about them. Grown-ups feel it too.' },
+      { voice: 'An artist says', says: 'When I miss someone, I draw us doing something we love together. It feels like a visit.' },
+      { voice: 'A grandparent of faith says', says: 'I hold the people I miss in my heart, and sometimes I say a little prayer for them.' },
+      { voice: 'A skeptic says', says: 'Missing someone hurts, and that is okay. Telling a grown-up you trust can make it lighter.' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'Missing someone is a feeling that comes from caring about them. People feel it at every age, even grown-ups. Doing something for that person, like drawing or calling, can make the feeling easier to hold.' },
       { voice: 'An artist', says: 'Draw the person you miss doing something you love to do together. Then you can mail it, give it to them later, or keep it by your bed. Making something for someone is a way of being with them.' },
@@ -33666,7 +34305,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'Your friends are playing a game and did not ask you. How do you feel?',
     options: ['Sad', 'Mad', 'A little of both'],
-    simple: [{ voice: 'A scientist says', says: 'Being left out hurts. That hurt is real, and lots of people feel it.' }, { voice: 'A skeptic says', says: 'Try asking to join. Maybe they just forgot to ask.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'Scientists have found that being left out hurts almost everyone, even grown-ups.' },
+      { voice: 'An artist says', says: 'Being left out feels like a small, heavy cloud in my chest. That feeling is real and okay.' },
+      { voice: 'A grandparent of faith says', says: 'I was left out sometimes as a girl. Now I always look for anyone standing alone.' },
+      { voice: 'A skeptic says', says: 'Before deciding they left you out on purpose, check. Maybe they did not see you!' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'Scientists study this with a simple ball game on a computer. When the other players stop passing to one person, that person feels sad and left out, even when the others are strangers. So the hurt you feel is real, and lots of people feel it.' },
       { voice: 'An artist', says: 'Feelings show in our faces and in how we stand. When you feel left out, you might look at the ground and stand far away. Standing a little closer and smiling can make it easier for others to invite you in.' },
@@ -33683,7 +34327,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'When a feeling gets very big, can slow breaths help it get smaller?',
     options: ['Yes', 'No', 'Let me try'],
-    simple: [{ voice: 'A scientist says', says: 'Long, slow breaths out help your body calm down.' }, { voice: 'An artist says', says: 'Pretend to smell a flower, then pretend to blow out a candle, slowly.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'Here is something true. Long, slow breaths out can help your body calm down.' },
+      { voice: 'An artist says', says: 'Pretend to smell a flower, then pretend to blow out a candle, slowly. I do it too.' },
+      { voice: 'A grandparent of faith says', says: 'When my heart feels heavy, I sit quietly and breathe slowly. Sometimes I pray too.' },
+      { voice: 'A skeptic says', says: 'Do not just take my word for it. Try five slow breaths, and notice how you feel.' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'When a feeling gets big, your heart beats faster and your breathing speeds up. Breathing out long and slow helps your body settle down. In one study, grown-ups who did five minutes of long breaths out each day felt their mood lift over a month.' },
       { voice: 'An artist', says: 'Try painting a picture of your breath. Breathe in while you count to three, then breathe out while you count to five, slow and smooth like a long brushstroke. Watch your shoulders drop as you go.' },
@@ -33700,7 +34349,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'Is it okay to feel shy when you meet someone new?',
     options: ['Yes', 'No', 'Sometimes'],
-    simple: [{ voice: 'A scientist says', says: 'Lots of people feel shy at first. It often fades as you get to know someone.' }, { voice: 'An artist says', says: 'Quiet watching is a fine way to start.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'It turns out feeling shy is very common. It often fades as you get to know someone new.' },
+      { voice: 'An artist says', says: 'I think shy people are often great watchers, and watching is a big part of art.' },
+      { voice: 'A grandparent of faith says', says: 'Even now I feel shy sometimes. A small smile and a soft hello are enough.' },
+      { voice: 'A skeptic says', says: 'Shy is a feeling, not a rule about you. I bet the new person feels shy too!' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'Many children, and many grown-ups, feel shy with someone new. It is a careful feeling, a way of waiting until you know the new person is safe and kind. For most people, it fades as they get to know someone.' },
       { voice: 'An artist', says: 'Shy people are often good at watching, and watching is a big part of art. Start by noticing one thing you like about the new person, like their shoes or their laugh. Then you have something to say.' },
@@ -33717,7 +34371,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'A grown-up said no to something you really wanted. What helps the mad feeling?',
     options: ['Take a big breath', 'Ask why', 'Find something else to do'],
-    simple: [{ voice: 'A scientist says', says: 'A mad feeling is biggest at the start. It usually shrinks with time.' }, { voice: 'A skeptic says', says: 'Ask why, in a calm voice. There may be a good reason.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'I timed my own mad feelings once. They were biggest at the start, then shrank minute by minute.' },
+      { voice: 'An artist says', says: 'When I feel mad, I draw something I love, like a garden. My busy hands calm me down.' },
+      { voice: 'A grandparent of faith says', says: 'I often said no to keep my students safe. You can say how you feel, calmly and kindly.' },
+      { voice: 'A skeptic says', says: 'Ask why, in a calm voice. Not now is not the same as never!' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'When you want something a lot, hearing no can sting. The mad feeling is usually biggest right at the start and gets smaller as the minutes go by. Slow breaths and a little waiting often help it shrink.' },
       { voice: 'An artist', says: 'When I feel mad, I draw something I love, like a garden or my dog, and my busy hands help my mind settle. In one study, children who drew something new felt better than children who drew what had upset them.' },
@@ -33734,7 +34393,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'A job feels long and boring, and you want to stop. What could help you keep going?',
     options: ['Pretend I am a hero', 'Take a short break', 'Ask a friend to help'],
-    simple: [{ voice: 'A scientist says', says: 'Kids who pretended to be a hard-working hero kept going longer.' }, { voice: 'An artist says', says: 'Picture a hero who keeps going. Do the job the way they would.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'Scientists found that kids who pretended to be a hard-working hero kept going longer.' },
+      { voice: 'An artist says', says: 'On a long painting, I take a short break and look out my window. Then I keep going!' },
+      { voice: 'A grandparent of faith says', says: 'When a job gets long, I think of my grandmother. She never rushed and never quit.' },
+      { voice: 'A skeptic says', says: 'Does pretending really help? Test it. Do a job as you, then again as your hero.' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'Scientists gave children aged four and six a boring job, with a fun game they could switch to whenever they liked. The children who pretended to be a hard-working hero stuck with the job the longest. Picturing yourself from a little farther away seems to help.' },
       { voice: 'An artist', says: 'Actors do this every day. They step into someone braver or calmer and borrow the way that person moves. You can borrow the patience of a hero for ten minutes and give it back when you are done.' },
@@ -33751,7 +34415,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'When you are very tired, do little problems feel bigger?',
     options: ['Yes', 'No', 'Sometimes'],
-    simple: [{ voice: 'A scientist says', says: 'A tired body makes feelings bigger. Sleep helps shrink them back.' }, { voice: 'An artist says', says: 'Tired eyes see a gray world. Rested eyes see more color.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'I read about toddlers who skipped one nap. They got upset more easily and smiled less.' },
+      { voice: 'An artist says', says: 'When I am tired, my colors come out muddy. After a rest, I see everything fresh.' },
+      { voice: 'A grandparent of faith says', says: 'My grandmother always said, everything looks better after a good night\'s sleep.' },
+      { voice: 'A skeptic says', says: 'Next time something feels terrible, I ask myself, am I just tired? Often, yes!' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'Scientists asked some young children who usually nap to skip one nap, and then watched them do puzzles. Without the nap, they got upset more easily and smiled less. Sleep helps your brain handle big feelings.' },
       { voice: 'An artist', says: 'When I am tired, I stop painting, because tired hands make muddy colors. I come back after a rest and see the picture fresh. A problem can look smaller in the morning too.' },
@@ -34253,7 +34922,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'Your drawing came out different from the picture in your head. Is it a bad drawing?',
     options: ['Yes', 'No', 'It is a start'],
-    simple: [{ voice: 'An artist says', says: 'Every artist feels this. The picture in your head is something to aim for.' }, { voice: 'A scientist says', says: 'Your hands get better at drawing every time you try.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'Even my microscope drawings never match perfectly. Drawing what you picture is a skill that grows for years!' },
+      { voice: 'An artist says', says: 'Every artist feels this, me too. The picture in my head is something to aim for.' },
+      { voice: 'A grandparent of faith says', says: 'A drawing made with care is a good drawing to me, whatever it looks like.' },
+      { voice: 'A skeptic says', says: 'Bad compared to what? Compare it to last month\'s drawing, not the one in your head.' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'Drawing what you picture takes your eyes, your memory and your hands working together. Your hands keep getting more skillful for many years. So the gap between your idea and your drawing is normal, and it shrinks as you practice.' },
       { voice: 'An artist', says: 'Every artist knows this feeling, even the famous ones. Many artists make lots of sketches before they keep one. Find one part you like, and start your next drawing from there.' },
@@ -34270,7 +34944,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'You said a word wrong, and someone giggled. What do you do?',
     options: ['Giggle too', 'Say it again', 'Feel a bit sad'],
-    simple: [{ voice: 'A scientist says', says: 'Some sounds are hard to say. Lots of kids learn them later.' }, { voice: 'A skeptic says', says: 'Maybe they giggled because it sounded funny, not to be mean.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'I read that the sound at the start of thumb is one of the last sounds children learn.' },
+      { voice: 'An artist says', says: 'I practice tricky words slowly, clapping each part like a drumbeat.' },
+      { voice: 'A grandparent of faith says', says: 'My faith teaches me to be gentle when someone makes a mistake, and gentle with myself too.' },
+      { voice: 'A skeptic says', says: 'Was the giggle mean, or was the word just funny? People often laugh at sounds, not at you.' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'Some sounds take longer to learn than others. Most children can say almost every English sound by about age five, but the th in thumb often comes last, at around six. Saying a word wrong is part of learning to say it right.' },
       { voice: 'An artist', says: 'Actors and singers practice hard words out loud, slowly, again and again. They break a long word into small pieces, like a song with beats. Try clapping the parts of a tricky word as you say it.' },
@@ -34287,7 +34966,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'Your paper airplane crashed right away. What do you do next?',
     options: ['Fold a new one', 'Change one thing', 'Give up on it'],
-    simple: [{ voice: 'A scientist says', says: 'Each crash is a test. It shows you what to change next.' }, { voice: 'A skeptic says', says: 'Change just one thing at a time. Then you know what helped.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'My heroes, the Wright brothers, tested lots of wing shapes before their first airplane flew.' },
+      { voice: 'An artist says', says: 'I make sharp folds and matching wings, like a mirror. And I always give my plane a name!' },
+      { voice: 'A grandparent of faith says', says: 'Long ago, some people said nobody would ever fly. I am so glad someone kept trying!' },
+      { voice: 'A skeptic says', says: 'Change just one thing at a time. Then you will know what helped.' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'The Wright brothers\' first gliders lifted much less than their math said they would. So in 1901 they built a wind tunnel and tested about two hundred little wing shapes. In 1903, their airplane flew.' },
       { voice: 'An artist', says: 'Folding is a craft, like painting. Sharp creases, matching wings and a little weight at the front can all change how a plane flies. Make a few planes, give each one a name, and see which flies best.' },
@@ -34304,7 +34988,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'You broke your friend\'s toy by accident. What do you do?',
     options: ['Say sorry', 'Help fix it', 'Tell a grown-up'],
-    simple: [{ voice: 'A grandparent of faith says', says: 'A real sorry, and an offer to help, can mend a lot.' }, { voice: 'A scientist says', says: 'Your friend may still feel sad, even though it was an accident.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'I once broke a friend\'s toy by accident. He felt sad, though I did not mean it.' },
+      { voice: 'An artist says', says: 'In Japan, some broken bowls are fixed with gold along the cracks. I think that is beautiful.' },
+      { voice: 'A grandparent of faith says', says: 'My grandmother taught me that a real sorry tells what happened and offers to help.' },
+      { voice: 'A skeptic says', says: 'Is hiding a broken toy easier? I tried it once, and it made everything worse.' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'Even when it was an accident, your friend may still feel sad or mad. Studies find that young children often judge by what happened more than by what someone meant. Weighing what a person meant grows a lot between about four and eight.' },
       { voice: 'An artist', says: 'A broken thing can sometimes be mended into something new. In Japan, an old art called kintsugi mends broken bowls with gold along the cracks. The mended bowl shows its story instead of hiding it.' },
@@ -34321,7 +35010,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'You tried to help wash the dishes, and water went everywhere. Was helping a mistake?',
     options: ['Yes', 'No', 'A little of both'],
-    simple: [{ voice: 'A scientist says', says: 'Even toddlers want to help. Helping well just takes practice.' }, { voice: 'A skeptic says', says: 'Helping was good. Too much water was the part to change.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'Scientists found that even toddlers help without being asked. Wanting to help starts very young!' },
+      { voice: 'An artist says', says: 'Every new job is a little messy at first, like my first paintings. I love a messy start!' },
+      { voice: 'A grandparent of faith says', says: 'In my kitchen, a helper with wet sleeves is still a helper. We clean up together.' },
+      { voice: 'A skeptic says', says: 'I would say helping was good, and too much water was the part to change.' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'Scientists found that toddlers only one and a half years old will help a grown-up who drops something, without being asked and without a reward. Wanting to help starts very early. Doing the job neatly takes longer to learn.' },
       { voice: 'An artist', says: 'Every new job is a little messy at first, like a first painting. Ask to be shown one small part, like rinsing the cups. Do that part well, and add a new part next time.' },
@@ -34338,7 +35032,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'You woke up from a scary dream. What helps you feel safe again?',
     options: ['A big hug', 'A light on', 'Telling someone'],
-    simple: [{ voice: 'A scientist says', says: 'Bad dreams are common in young children. A dream cannot hurt you.' }, { voice: 'An artist says', says: 'Draw your dream again, and give it a happy ending.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'From what scientists know, bad dreams are common in children, and a dream cannot hurt you.' },
+      { voice: 'An artist says', says: 'In the morning, I draw my bad dream with a new, happy ending. I get to choose!' },
+      { voice: 'A grandparent of faith says', says: 'When I was little, my mother sat with me after bad dreams until I felt calm.' },
+      { voice: 'A skeptic says', says: 'Dreams can feel real, so I check. My own bed and blanket tell me I am safe.' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'Bad dreams are very common in young children, especially between about three and six. A dream is a story your brain makes while you sleep, and it cannot hurt you. Most children have bad dreams less often as they grow.' },
       { voice: 'An artist', says: 'In the morning, try drawing your dream, but give it a new ending. Make the scary thing small and silly, or give yourself a shield and a flashlight. You are the artist, so you get to decide how it ends.' },
@@ -34355,7 +35054,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'A thunderstorm is booming outside. What helps when you feel scared?',
     options: ['Count after the flash', 'Snuggle up close', 'Cover my ears'],
-    simple: [{ voice: 'A scientist says', says: 'Count after the flash. Five seconds means the lightning is about a mile away.' }, { voice: 'A skeptic says', says: 'When you hear thunder, go inside. Inside is the safest place.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'I count after every flash. The longer I count before the boom, the farther away the lightning is.' },
+      { voice: 'An artist says', says: 'To me, thunder sounds like giant drums rolling across the sky.' },
+      { voice: 'A grandparent of faith says', says: 'When storms came at night, my family sat close, and we sang and prayed until they passed.' },
+      { voice: 'A skeptic says', says: 'Being scared of thunder makes sense. When you can hear thunder, stay inside, away from windows.' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'Thunder is the sound lightning makes when it heats the air very fast. Light reaches you first, so count the seconds from the flash to the boom. Every five seconds is about one mile.' },
       { voice: 'An artist', says: 'Musicians use big drums to make thunder on a stage, from a soft rumble to a giant boom. Listen to the storm like music. Is this boom louder or softer than the last one?' },
@@ -34372,7 +35076,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'You need a shot at the doctor. What helps you feel brave?',
     options: ['Hold a hand', 'Look at something else', 'Slow breaths'],
-    simple: [{ voice: 'A scientist says', says: 'Looking at something else, or slow breaths, can make a shot hurt less.' }, { voice: 'A grandparent of faith says', says: 'Holding a hand you love makes hard things easier.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'Looking at something else, or breathing slowly, can make a shot hurt less. Scientists tested it!' },
+      { voice: 'An artist says', says: 'I count the colors on a picture on the wall. The shot is over before I know it.' },
+      { voice: 'A grandparent of faith says', says: 'I held my mother\'s hand tight at the doctor when I was small. Holding on is brave too.' },
+      { voice: 'A skeptic says', says: 'Let\'s test which trick works best for you. Try one this time, and another next time.' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'Doctors have tested many ways to help children with needles. A large review of 59 studies found that distractions, like a toy or a video, and slow breathing helped many children feel less pain and fear. The studies were not perfect, but the help showed up again and again.' },
       { voice: 'An artist', says: 'Pick something to look at closely, like a picture on the wall or a pattern on your sleeve. Count its colors or its corners while the nurse works. Your eyes stay busy, and the moment passes quickly.' },
@@ -34389,7 +35098,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'Someone grabbed your toy without asking. What do you do?',
     options: ['Use my words', 'Get a grown-up', 'Grab it back'],
-    simple: [{ voice: 'A scientist says', says: 'Anger makes your body hot and fast. A slow breath helps you think.' }, { voice: 'A skeptic says', says: 'Say it calmly: I was playing with that. Please give it back.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'My heart beats fast when someone grabs my things. One slow breath lets my thinking catch up.' },
+      { voice: 'An artist says', says: 'A calm, strong voice can sound braver than yelling. I practiced mine with a stuffed bunny.' },
+      { voice: 'A grandparent of faith says', says: 'I believe in treating others the way I want to be treated, even when they forget.' },
+      { voice: 'A skeptic says', says: 'Grabbing it back might work for a second, but then two people are mad instead of one.' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'When you feel angry, your heart beats faster and your muscles get tight. Your body gets ready to act before your thinking has caught up. A slow breath gives your thinking time to catch up.' },
       { voice: 'An artist', says: 'Your face and voice tell a story. A calm, strong voice says I mean it, and it works without yelling. Try practicing your strong voice with a stuffed animal first.' },
@@ -34406,7 +35120,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'A fun trip got canceled because of the rain. What helps the sad feeling?',
     options: ['Plan a new day', 'Find fun inside', 'Feel sad for a while'],
-    simple: [{ voice: 'A scientist says', says: 'Feeling let down shows how much you were looking forward to it.' }, { voice: 'An artist says', says: 'Rainy days are good for building forts and drawing pictures.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'I have noticed that the bigger the hope, the bigger the sad feeling. It shrinks with time.' },
+      { voice: 'An artist says', says: 'I feel sad too when plans change. Then I find one cozy thing to look forward to.' },
+      { voice: 'A grandparent of faith says', says: 'I believe every day holds a gift, even a rainy one. We just have to find it.' },
+      { voice: 'A skeptic says', says: 'Let\'s ask a grown-up for a new day. A trip moved to another day is still coming!' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'The let-down feeling has a name: disappointment. It shows up when what happens is different from what you hoped for. The bigger the hope, the bigger the feeling, and like most feelings, it usually gets smaller with time.' },
       { voice: 'An artist', says: 'A rainy day can be its own adventure. Build a blanket fort, draw the trip you will take another day, or put on music and dance. Plans can change and still be fun.' },
@@ -34423,7 +35142,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'Your morning went wrong: spilled cereal and a lost shoe. Will the whole day be bad?',
     options: ['Yes', 'No', 'It can get better'],
-    simple: [{ voice: 'An artist says', says: 'A boy named Alexander had a very bad day in a famous book. Some days are like that.' }, { voice: 'A skeptic says', says: 'Two bad things this morning do not mean the whole day is bad.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'I look for what made each thing happen. The spilled cereal did not make your shoe go missing!' },
+      { voice: 'An artist says', says: 'I love a famous book about Alexander\'s terrible, horrible day. Some days are just like that!' },
+      { voice: 'A grandparent of faith says', says: 'I start fresh at lunch with a deep breath. The morning does not decide the whole day.' },
+      { voice: 'A skeptic says', says: 'Let\'s test the day. Count the good things that happen from now until bedtime, then decide!' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'When a day starts badly, it is easy to start watching for more bad things, and then you notice them more. But each new hour is a fresh chance. The cereal does not know about the shoe.' },
       { voice: 'An artist', says: 'In a famous picture book by Judith Viorst, a boy named Alexander wakes up with gum in his hair, and everything goes wrong from there. He wants to move to Australia. At the end, his mom tells him some days are like that, even in Australia.' },
@@ -34440,7 +35164,12 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'Waiting for something you really want feels so long. What helps you wait?',
     options: ['Play something else', 'Sing a song', 'Count the days'],
-    simple: [{ voice: 'A scientist says', says: 'Kids waited longer when they looked away and thought about something else.' }, { voice: 'A skeptic says', says: 'Waiting is easier when you trust the promise will be kept.' }],
+    simple: [
+      { voice: 'A scientist says', says: 'Scientists found that kids waited longer when they looked away or sang a little song.' },
+      { voice: 'An artist says', says: 'I make a paper chain and tear off one loop each night. The wait gets shorter and shorter!' },
+      { voice: 'A grandparent of faith says', says: 'Before holidays, my family counts the days with songs. Waiting can be part of the joy.' },
+      { voice: 'A skeptic says', says: 'I wait better when I know the grown-up will keep their promise. So I ask them first!' },
+    ],
     perspectives: [
       { voice: 'A scientist', says: 'In famous experiments from around 1970, children could have a small treat now or a bigger one if they waited. Children who looked away, sang or thought about something else could wait longer. Later studies found that waiting well at four does not decide how a life turns out.' },
       { voice: 'An artist', says: 'Make the waiting into something. Draw a picture each day until the big day, or make a paper chain and tear off one loop every night. Then you can watch the wait get shorter.' },
@@ -35007,18 +35736,36 @@ export function makeWonderEvent(wonderId, moduleId, at, seconds, wordCount) {
   return { type: 'wonder_answered', at, wonderId, moduleId, seconds, wordCount };
 }
 // The cards a child who cannot read meets after answering a Wonder question (pass MG, Mikey's answer to Q10, "yes"): the
-// question's two short voices (simple), then its closing line on a card of its own, so the last thought the question leaves to
+// question's short voices (simple: two until pass MH, all four since), then its closing line on a card of its own, so the last thought the question leaves to
 // carry away reaches a pre-reader too; before pass MG it stayed on the readers' screen. A question with no short voices (none
-// reaches a pre-reader; the rules test holds it) falls back to the first sentence of its first two voices. wonderCardSpoken is
+// reaches a pre-reader; the rules test holds it) falls back to the first sentence of each of its four voices. wonderCardSpoken is
 // what the voice says for a card: the voice by name and label (Chloe, the artist, says), then its words; the closing as it is.
-export function wonderPreReaderCards(w) {
-  if (!w) return [];
-  const voices = (w.simple || (w.perspectives || []).slice(0, 2).map((p) => ({ voice: p.voice, says: p.says.split('. ')[0] + '.' }))).map((v) => ({ voice: v.voice, says: v.says }));
-  return w.closing ? [...voices, { closing: w.closing }] : voices;
+// The closing card's title (pass MH, Mikey: "The last ponder question should have a title above the text too.  Maybe it can
+// actually rotate with titles that change "Let's Ponder!", "Let's Reflect!", "A Question for You" , "One More Thought", "One Last
+// Thought", "One More", "Here's One" etc.  It should kind of have an undertone that reflection and curiosity is exciting.  You can
+// add even more to the list so the titles feel adaptive and not overly repetitive although it is okay to repeat."). His seven
+// come first, word for word, and the rest carry the same lift. ponderTitle picks one from the question and how many Wonder
+// questions the child has answered, so the title changes from one question to the next and the same visit always shows the same.
+export const PONDER_TITLES = ["Let's Ponder!", "Let's Reflect!", 'A Question for You', 'One More Thought', 'One Last Thought', 'One More', "Here's One", 'Your Turn to Wonder!', 'Think About This!', 'Wonder With Me!', "Here's a Big One!", 'A Thought to Keep', 'Something to Wonder About', 'Ponder This!', 'Curious Minds Ask', "Let's Think!"];
+export function ponderTitle(w, answered = 0) {
+  const id = String((w && w.id) || ''); let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
+  return PONDER_TITLES[(h + (Number(answered) || 0)) % PONDER_TITLES.length];
 }
+// The cards a pre-reader meets after a Wonder answer: since pass MH all four short voices, in order, Frederick, Chloe, Georgette
+// and Mike (Mikey: "We can also use all four voices, even for the early learners.  We don't need to restrict them to two."),
+// then the closing line on a card of its own (pass MG, Q10) under its rotating title.
+export function wonderPreReaderCards(w, answered = 0) {
+  if (!w) return [];
+  const voices = (w.simple || (w.perspectives || []).slice(0, 4).map((p) => ({ voice: p.voice, says: p.says.split('. ')[0] + '.' }))).map((v) => ({ voice: v.voice, says: v.says }));
+  return w.closing ? [...voices, { closing: w.closing, title: ponderTitle(w, answered) }] : voices;
+}
+// What a card says aloud: a voice by its name and label, then its words; the closing card its title, then its line.
 export function wonderCardSpoken(card) {
   if (!card) return '';
-  return card.closing ? card.closing : `${wonderVoiceSpoken(card.voice)}: ${card.says}`;
+  // A title with no end mark of its own (One More, Here's One) takes a period when spoken, so the voice pauses before the line.
+  const title = card.title ? (/[.!?]$/.test(card.title) ? card.title : `${card.title}.`) : '';
+  return card.closing ? (title ? `${title} ${card.closing}` : card.closing) : `${wonderVoiceSpoken(card.voice)}: ${card.says}`;
 }
 // -----------------------------------------------------------------------------------------------------------------
 // wonderSpokenParts (2026-10-03, pass IS). In plain terms: what a child who cannot read yet hears on a Wonder question,
@@ -37134,8 +37881,69 @@ export function coverShelfReady(moduleIds, hasArt = () => false) {
   const ids = (moduleIds || []).filter(Boolean);
   return ids.length > 0 && ids.every((id) => !!hasArt(id));
 }
-// A course is finished when every one of its lessons has its star (pass ME, Mikey's answer to Q17), the same rule that opens
-// its long story in Let's Read; a round that only passed the last lesson leaves the star, and the finish, for another day.
+// Long-story read ids (pass MH): course:<id> is a course's first long story, mastery:<id> its second (MASTERY_STORIES in
+// stories.mjs). Every place that tells a long story from a lesson story asks these two, never the prefix by hand.
+export function isLongStoryId(id) { return /^(course|mastery):./.test(String(id || '')); }
+export function longStoryCourseId(id) { return isLongStoryId(id) ? String(id).slice(String(id).indexOf(':') + 1) : null; }
+// A course is completed the first time every one of its lessons is passed (pass MH, Mikey: "Even for early readers, they should
+// be launched into the long story at the end of a completed course (both 1st and 2nd time on different days)"). Passed is four
+// of five right in a round, or a lesson placed by a quick check; the stars come with a second pass on another day.
+export function isCourseCompleted(passedIds, course) {
+  if (!course || !course.modules || !course.modules.length) return false;
+  const set = new Set(passedIds || []);
+  return course.modules.every((m) => set.has(m.id));
+}
+// The round that completes a course (pass MH): true only when this very round was its lesson's first pass and every lesson of
+// the course is passed now, so the course was not complete a moment before. A round on a lesson passed before completes
+// nothing, so the first celebration comes once, for that round.
+export function courseCompletedBy(progress, course, event) {
+  if (!progress || !progress.perModule || !course || !event || !course.modules.some((m) => m.id === event.moduleId)) return false;
+  const p = progress.perModule[event.moduleId];
+  if (!p || !p.passed) return false;
+  // A Quick Review's clear fresh try on a lesson moved past and never passed (the code check, pass MH) passes and stars it at
+  // once, with no passed round of its own, so that review is the moment the course is completed.
+  const byReview = event.type === 'light_review_completed' && !p.firstPassedAt && !p.placed && p.mastered && String(p.masteredAt) === String(event.at);
+  if (byReview) return isCourseCompleted(progress.passedIds, course);
+  if (String(p.firstPassedAt) !== String(event.at)) return false;
+  // A lesson can count as passed before its first passed round: placed by a quick check, or starred by a Quick Review's clear
+  // fresh try after a Move Forward (the browser walk found that one: a later first round celebrated the course a second time).
+  if (p.placed || (p.mastered && String(p.masteredAt) < String(event.at))) return false;
+  return isCourseCompleted(progress.passedIds, course);
+}
+// Which celebration a round earns (pass MH): 'mastered' when its star was the course's last (courseFinishedBy), 'complete' when
+// its pass was the course's last first pass, otherwise none. On another day, then, a course celebrates twice: once when every
+// lesson is passed and once when every lesson has its star.
+export function courseCelebrationStage(progress, course, event) {
+  if (courseFinishedBy(progress, course, event)) return 'mastered';
+  if (courseCompletedBy(progress, course, event)) return 'complete';
+  return null;
+}
+// The long story a celebration opens and the line that introduces it (pass MH): the first long story at the first
+// celebration; at mastery the second long story, or, while a course has none yet, the first again, said as again only when
+// the child has read it. Null when the course has no long story at all.
+export function celebrationStory(courseId, stage, { hasFirst = false, hasSecond = false, firstRead = false } = {}) {
+  if (stage === 'mastered' && hasSecond) return { id: `mastery:${courseId}`, line: 'Here is a new story.' };
+  if (!hasFirst) return null;
+  return { id: `course:${courseId}`, line: stage === 'mastered' && firstRead ? 'Here is its story again.' : 'Here is its story.' };
+}
+// The long-story rows a student's shelf and Story Log show (pass MH): for each course with a long story, the first story,
+// open once every lesson is passed (left counts the lessons still to pass), and, where the course has one, the second, open
+// once every lesson has its star (left counts the stars still to earn). A walk-through opens every row. The screens only
+// draw these rows, so the shelf, the Story Log and the counts can never disagree about what is open.
+// openOnly (the code check, pass MH): an early learner's shelf lists only the rows open now, decided here rather than on the screen.
+export function longStoryRows(courses, progress, courseStoryFor, masteryStoryFor = () => null, preview = false, openOnly = false) {
+  const passed = new Set((progress && progress.passedIds) || []); const mastered = new Set((progress && progress.masteredIds) || []);
+  const rows = [];
+  for (const c of courses || []) {
+    if (!c || !courseStoryFor(c.id)) continue;
+    const toPass = c.modules.filter((m) => !passed.has(m.id)).length;
+    rows.push({ id: `course:${c.id}`, courseId: c.id, kind: 'course', unlocked: preview || toPass === 0, left: toPass, unit: 'pass' });
+    if (masteryStoryFor(c.id)) { const toStar = c.modules.filter((m) => !mastered.has(m.id)).length; rows.push({ id: `mastery:${c.id}`, courseId: c.id, kind: 'mastery', unlocked: preview || toStar === 0, left: toStar, unit: 'master' }); }
+  }
+  return openOnly ? rows.filter((r) => r.unlocked) : rows;
+}
+// A course is finished when every one of its lessons has its star (pass ME, Mikey's answer to Q17); since pass MH that opens
+// its second long story, while its first opens when every lesson is passed (isCourseCompleted above).
 export function isCourseFinished(masteredIds, course) {
   if (!course || !course.modules || !course.modules.length) return false;
   const set = new Set(masteredIds || []);
@@ -37167,12 +37975,21 @@ export function nextCourseToStart(courseId, courses, statuses, events, now) {
 // star stay at every age; only the words change. cheer is the course-finished page's first line, result the reader's result
 // line beside its Celebrate! button. Every read-aloud course is grade 2 or younger, so a child who hears the page hears Hooray.
 export const CALM_CHEER_FROM = '6';
-export function courseFinishedWords(course) {
+// Since pass MH a course celebrates twice (courseCelebrationStage): 'complete', the first time every lesson is passed, and
+// 'mastered', when every lesson has its star. The first says every lesson; the second says the whole course, and a child who
+// cannot read hears every star, the mark a pre-reader's lessons show (a reader's lessons say Passed once and Mastered).
+export function courseFinishedWords(course, stage = 'mastered') {
   const title = course ? titleCase(course.title) : '';
   const calm = !!course && GRADES.indexOf(course.grade) >= GRADES.indexOf(CALM_CHEER_FROM);
+  const hears = !!(course && course.readAloud);
+  if (stage === 'complete') {
+    return calm
+      ? { calm, stage, cheer: `Well done. You passed every lesson in ${title}.`, result: 'That was every lesson in the course.' }
+      : { calm, stage, cheer: hears ? `Hooray! You did every lesson in ${title}!` : `Hooray! You passed every lesson in ${title}!`, result: 'That was every lesson in the course!' };
+  }
   return calm
-    ? { calm, cheer: `Well done. You finished ${title}.`, result: 'That was the whole course.' }
-    : { calm, cheer: `Hooray! You finished the whole course, ${title}!`, result: 'That was the whole course!' };
+    ? { calm, stage: 'mastered', cheer: `Well done. You finished ${title}.`, result: 'That was the whole course.' }
+    : { calm, stage: 'mastered', cheer: hears ? `Hooray! You earned every star in ${title}!` : `Hooray! You finished the whole course, ${title}!`, result: 'That was the whole course!' };
 }
 export function courseFinishedBy(progress, course, event) {
   if (!progress || !progress.perModule || !course || !event) return false;
@@ -37200,7 +38017,7 @@ export function makeStoryRereadEvent(storyId, at, from = 'shelf', openedAt = at)
 export function rereadIsElective(events, storyId, from = 'shelf') {
   const all = events || [];
   if (!all.some((e) => e.type === 'story_read' && e.moduleId === storyId)) return false;
-  if (String(storyId).startsWith('course:') || from === 'shelf') return true;
+  if (isLongStoryId(storyId) || from === 'shelf') return true;
   // A loop back sends the student to this lesson, story and all, until it is passed again: that read is asked for.
   const active = activeEvents(all);
   const loop = [...active].reverse().find((e) => e.type === 'looped_back' && e.toModuleId === storyId);
@@ -37544,7 +38361,7 @@ export function weeklyNote(shownName, events, now) {
   const masteredNow = rows.filter((m) => m.mastered && m.masteredAt && new Date(m.masteredAt).getTime() >= week).map((m) => m.title);
   const colored = recent.filter((e) => e.type === 'colored').length;
   const played = recent.filter((e) => e.type === 'played').length;   // pass MB
-  const met = storiesRead(events).filter((r) => new Date(r.at).getTime() >= week).map((r) => STORY_TITLES[r.moduleId] ? { ...STORY_TITLES[r.moduleId], goal: String(r.moduleId).startsWith('course:') ? ((getCourse(r.moduleId.slice(7)) || {}).title || '') : ((getModule(r.moduleId) || {}).title || '') } : null).filter(Boolean);
+  const met = storiesRead(events).filter((r) => new Date(r.at).getTime() >= week).map((r) => STORY_TITLES[r.moduleId] ? { ...STORY_TITLES[r.moduleId], goal: isLongStoryId(r.moduleId) ? ((getCourse(longStoryCourseId(r.moduleId)) || {}).title || '') : ((getModule(r.moduleId) || {}).title || '') } : null).filter(Boolean);
   // Each lesson name sits on its own bold line (pass IT, Mikey): a list run into one sentence read the comma inside One
   // more, one less as two lessons, and the same lessons appeared twice, once as worked on and again as mastered. Now the
   // week splits into mastered this week, still practicing, and what comes next, and no lesson is named twice.
@@ -38102,7 +38919,7 @@ export function printParts(words, paintedAfter = [], mainPainted = false) {
 // Short stories go two to a page while neither is painted and under 260 words (the dense face); a painted story, or one
 // that needs more than one sheet, takes a page per part from printParts, which splits only between paragraphs. The long
 // story comes last, on as many sheets as it needs. Nothing here knows about screens or printers, only sizes.
-export function bookPages(chapters, courseStory, hasArt) {
+export function bookPages(chapters, courseStory, hasArt, masteryStory = null) {
   const painted = (st) => [st.art, ...(st.more || []).map((m) => m.serial)].some(hasArt);
   const partsOf = (st) => printParts(st.words, (st.more || []).filter((m) => hasArt(m.serial)).map((m) => m.after), hasArt(st.art));
   const words = (st) => st.words.join(' ').split(/\s+/).length;
@@ -38115,7 +38932,9 @@ export function bookPages(chapters, courseStory, hasArt) {
     if (per > 1 && last && last.per === per && last.items.length < per) last.items.push({ ...ch, i }); else groups.push({ per, items: [{ ...ch, i }] });
   });
   const csParts = courseStory ? partsOf(courseStory) : [];
-  return { groups, csParts };
+  // The second long story (pass MH) comes after the first, on sheets of its own.
+  const msParts = masteryStory ? partsOf(masteryStory) : [];
+  return { groups, csParts, msParts };
 }
 // ---------- The story book's standards pages (pass MA) ----------
 // The book ends with the state's standards each story serves (2026-09-24, Mikey). A long list spills onto as many sheets as it
@@ -38134,16 +38953,16 @@ export function standardsSheets(rows) {
   return sheets.map((x) => ({ rows: x.rows, used: Math.round(x.used * 100) / 100 }));
 }
 // Everything a student's Story Log can list: every module story on a course the student has, and every long story of
-// those courses, each with when it was first read (null when unread). A long story unlocks when every module of its
-// course is mastered; `left` counts the modules still to master. The screen sorts these into Most recent, Read and Unread
-// and never decides on its own what exists, so a story that is missing here is missing everywhere, and the rule test
-// checks that none is.
-export function storyLogAvailable(events, storyFor, courseStoryFor) {
+// those courses, each with when it was first read (null when unread). Since pass MH a course's first long story unlocks when
+// every lesson of the course is passed and its second, where there is one, when every lesson has its star (longStoryRows);
+// `left` counts the lessons still to pass or to master, and `unit` says which. The screen sorts these into Most recent, Read
+// and Unread and never decides on its own what exists, so a story that is missing here is missing everywhere, and the rule
+// test checks that none is.
+export function storyLogAvailable(events, storyFor, courseStoryFor, masteryStoryFor = () => null) {
   const readAt = new Map(storiesRead(events).map((r) => [r.moduleId, r.at]));
-  const mastered = new Set(deriveProgress(events).masteredIds);
   const courses = enabledCourseIds(events).map((cid) => getCourse(cid)).filter(Boolean);
   const shorts = courses.flatMap((c) => c.modules.filter((m) => storyFor(m.id)).map((m) => ({ moduleId: m.id, courseId: c.id, at: readAt.get(m.id) || null })));
-  const longs = courses.filter((c) => courseStoryFor(c.id)).map((c) => ({ moduleId: `course:${c.id}`, courseId: c.id, unlocked: c.modules.every((m) => mastered.has(m.id)), left: c.modules.filter((m) => !mastered.has(m.id)).length, at: readAt.get(`course:${c.id}`) || null }));
+  const longs = longStoryRows(courses, deriveProgress(events), courseStoryFor, masteryStoryFor).map((r) => ({ moduleId: r.id, courseId: r.courseId, kind: r.kind, unlocked: r.unlocked, left: r.left, unit: r.unit, at: readAt.get(r.id) || null }));
   return { shorts, longs };
 }
 // Most recent reading, newest first: everything read today (the device's day) or, when nothing was read today, the last

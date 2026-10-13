@@ -84,6 +84,35 @@ reflection is skipped. A pre-reader's round that finishes a course goes to the c
 (pass MF), so a reflection due after that round waits for the next finished round; it stays due (Mikey kept it in
 pass MG, Q25: "keep it"). A pre-reader hears the question and its choices, taps one, and then hears its two short
 voices and, since pass MG (Q10), its closing line, one card each (wonderPreReaderCards).
+Since pass MH every early question carries four short voices, so a pre-reader hears all four, Frederick, Chloe,
+Georgette and Mike, and then the closing line, one card each; the closing card's title is PONDER_TITLES[n], picked by
+ponderTitle from the question and the number of Wonder questions the child has answered, so one visit always shows the
+same title and the next question another.
+
+## More Info: why a wrong choice does not fit (pass MH)
+
+A choice question may carry whyNot, for each wrong choice its name and why it does not fit, and alsoRight, more right
+examples. choiceInsight(q, picked, before) puts the choice just tapped first and the others after it; whyNotClause names
+the tap: "which you just chose" for this tap, "which you chose once before too" when it was also tapped on one earlier
+visit to this very question, and "which you have chosen a few times now" after two or more; a choice tapped only on earlier
+visits is "which you chose once before", or "which you have chosen before" after two or more. choiceHistory(events, q) finds those earlier taps in the active log only, skips any round at or before
+the lesson's own latest reset, and counts an earlier round only when the question made again from its seed has this
+question's questionKey, so the same words over another setup are another question. A pre-reader's wrong taps before the
+right one are kept with the result as missed (missedPicks: only choices the question offered, each once, never a tracing
+or anything typed). After a wrong tap a pre-reader hears the reason and "Have another try." (preReaderWrongWords), unless
+two or more choices are still open and the reason names something of the answer the question has not said itself
+(whyNotNamesAnswer: the answer's words, numbers as words, sizes and their kin both ways, plurals, a letter by its
+capital); then "Not that one. Have another try.", since a voice never answers a retry for the child.
+
+## Two celebrations a course (pass MH)
+
+courseCompletedBy(progress, course, event) is true for the round whose pass first completes a course, every lesson
+passed once: a round that passes a lesson never passed before when every other lesson has been, or a Quick Review's clear
+fresh try on a lesson moved past and never passed. A lesson placed by a quick check, or starred by a review, completes
+nothing, since placing is not doing every lesson; a course completed that way opens its long story on the shelf without a
+party. courseFinishedBy is the round that earns the last star, as before. courseCelebrationStage names the stage a round
+earned, complete or mastered (mastered when both happen at once), and celebrationStory picks the story: the course's long
+story for the first, its next long story (MASTERY_STORIES) for the second, or the first again while it has none.
 
 ## Placement (designed, not yet built)
 

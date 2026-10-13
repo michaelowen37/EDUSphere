@@ -1,7 +1,10 @@
 // Every story belongs to a real module, fits its band's word limit, has a unique serial, names only
 // the core cast, and reads like a story: at least three paragraphs, no em dashes.
 import * as L from '../src/logic.mjs';
-import { COURSE_STORIES, STORIES, STORY_WORD_LIMIT, COLOR_PAGES } from '../src/stories.mjs';
+import { COURSE_STORIES, MASTERY_STORIES, STORIES, STORY_WORD_LIMIT, COLOR_PAGES } from '../src/stories.mjs';
+// Every long story, the first of each course and since pass MH the next one its mastery opens (MASTERY_STORIES), as
+// [course id, story, label] so a check names which one failed.
+const LONG_ENTRIES = [...Object.entries(COURSE_STORIES).map(([id, s]) => [id, s, id]), ...Object.entries(MASTERY_STORIES).map(([id, s]) => [id, s, `mastery:${id}`])];
 let pass = 0; let fail = 0;
 const ok = (label, cond, detail = '') => { console.log((cond ? 'PASS' : 'FAIL') + ' - ' + label + (cond ? '' : '  ' + detail)); cond ? pass++ : fail++; };
 const CORE = ['Mike', 'Chloe', 'Frederick', 'Georgette', 'Savanah', 'Jaxon', 'Harlow'];
@@ -33,7 +36,7 @@ for (const [id, s] of Object.entries(STORIES)) {
 // with the core cast. tools/cast-ages.mjs > docs/CAST-AGES.md lists them for the story brief, beside the clock in
 // docs/CHARACTERS.md.
 { const { castAges, agePhrases } = await import('../tools/cast-ages.mjs');
-  const r = castAges(L, { STORIES, COURSE_STORIES });
+  const r = castAges(L, { STORIES, COURSE_STORIES, MASTERY_STORIES });
   ok(`core-cast ages stay occasional: ${r.longStating} of ${r.longTotal} long stories state one, at most one in six`, r.longStating * 6 <= r.longTotal, r.longPattern);
   ok(`no habit: no two long stories in a row state a core character's age (longest run ${r.longestRun})`, r.longestRun <= 1, r.longPattern);
   const chapters = Object.entries(r.byChapter).filter(([, b]) => b.total >= 6);
@@ -45,7 +48,7 @@ for (const [id, s] of Object.entries(STORIES)) {
   // habit shows most ("a story about eighteen-year-old Georgette"). The finder reads it with the story's first cast name in
   // front, so "a junior counselor at seventeen" counts as Savanah's, and a camper's age or "twenty weeks" does not.
   const aboutAge = (x) => agePhrases([`${(x.cast || [])[0] || ''} ${x.about || ''}`]);
-  const aboutAges = [...Object.entries(COURSE_STORIES), ...Object.entries(STORIES)].filter(([, x]) => aboutAge(x).length).map(([id, x]) => `${id}: ${x.about}`);
+  const aboutAges = [...LONG_ENTRIES.map(([, x, label]) => [label, x]), ...Object.entries(STORIES)].filter(([, x]) => aboutAge(x).length).map(([id, x]) => `${id}: ${x.about}`);
   ok('no story\'s about line states a core character\'s age', aboutAges.length === 0 && aboutAge({ cast: ['Savanah'], about: 'a junior counselor at seventeen, a camper' }).length === 1 && aboutAge({ cast: ['Frederick'], about: 'eight-year-old Frederick, an ant farm' }).length === 1 && aboutAge({ cast: ['Chloe'], about: 'a week minding an eight-year-old, a jar' }).length === 0, aboutAges.slice(0, 4).join(' | '));
   ok('the age finder reads the usual ways an age is said, and not a count or a time', agePhrases(['Frederick was eight and loved ants.']).length === 1 && agePhrases(['Eight-year-old Chloe painted.']).length === 1 && agePhrases(['When Mike was nine, he built a ramp.']).length === 1 && agePhrases(['Mike was ten minutes late.']).length === 0 && agePhrases(['Chloe was two steps behind.']).length === 0 && agePhrases(['Frederick had eight jars.']).length === 0 && agePhrases(['The summer she turned seventeen, Savanah left the farm.']).length === 1 && agePhrases(['Savanah, then seventeen, left.']).length === 1 && agePhrases(['Mike was 100 percent sure.']).length === 0 && (agePhrases(['Frederick was twenty-three and a student.'])[0] || '').endsWith('twenty-three'));
   // The forms the finder learned in pass MC (the story check's first and second reads), each in a sentence the stories use, and
@@ -65,7 +68,7 @@ for (const [id, s] of Object.entries(STORIES)) {
   const sonographer = (t) => /sonograph/i.test(t);
   const nurse = (t) => /\b(?:was|had been|worked as|became|retired as)\s+(?:a|an|the)\s+(?:\w+\s+)?nurse\b|\bnursing\b/i.test(t);
   const names = (x, n) => (x.cast || []).includes(n) || new RegExp(`\\b${n}\\b`).test(told(x));
-  const bad = [...Object.entries(COURSE_STORIES), ...Object.entries(STORIES)].filter(([, x]) => (names(x, 'Savanah') && sonographer(told(x))) || (names(x, 'Georgette') && nurse(told(x)))).map(([id]) => id);
+  const bad = [...LONG_ENTRIES.map(([id, x]) => [id, x]), ...Object.entries(STORIES)].filter(([, x]) => (names(x, 'Savanah') && sonographer(told(x))) || (names(x, 'Georgette') && nurse(told(x)))).map(([id]) => id);
   ok('no story makes Savanah a sonographer or Georgette a nurse (pass MF, Q13 and Q15)', bad.length === 0 && sonographer('Savanah was a cardiac sonographer.') && nurse('Georgette had been a nurse for forty years.') && nurse('She had been a nurse for forty years.') && !nurse('Georgette volunteered beside Nurse Okafor.'), bad.join(', '));
   // The path (pass MG, Mikey: "Savanah isn't always CTO.  She gets there through hard work and starts in customer service."):
   // she is the chief technology officer only from the adult chapter on (grades 9 to 12, and college), never in a story of an
@@ -73,16 +76,21 @@ for (const [id, s] of Object.entries(STORIES)) {
   const chief = (t) => /chief tech\w* officer|chief of technology|technology chief|head of technology|\bC\.?T\.?O\b/i.test(t);
   const gradeOf = (id) => { const c = L.getCourse(id) || L.getCourse((L.getModule(id) || {}).courseId); return c ? c.grade : null; };
   const early = (id) => !['9', '10', '11', '12', 'C'].includes(gradeOf(id));
-  const tooSoon = [...Object.entries(COURSE_STORIES), ...Object.entries(STORIES)].filter(([id, x]) => names(x, 'Savanah') && chief(told(x)) && early(id)).map(([id]) => id);
+  const tooSoon = [...LONG_ENTRIES.map(([id, x]) => [id, x]), ...Object.entries(STORIES)].filter(([id, x]) => names(x, 'Savanah') && chief(told(x)) && early(id)).map(([id]) => id);
   ok('Savanah is a chief technology officer only from the adult chapter on, since she works her way up from customer service (pass MG)', tooSoon.length === 0 && chief('Savanah was the chief technology officer of a company.') && chief('the technology chief of a company') && chief('the chief technical officer') && chief('head of technology') && chief('the C.T.O.') && !chief('a first job in customer service') && early('sexual-health-6') && !early('psychology-9') && !early('psychology-college'), tooSoon.join(', '));
 }
 // Course stories: one longer story per course, still under the Gladwell ceiling for older readers, with three paragraphs and a scene.
-for (const [id, cs] of Object.entries(COURSE_STORIES)) {
+// The next long stories (pass MH) are always doubled, belong to a course that has its first long story, and carry serials of
+// their own: no CS serial is used twice across both kinds.
+ok('every next long story belongs to a real course that has its first long story', Object.keys(MASTERY_STORIES).every((id) => L.getCourse(id) && COURSE_STORIES[id]), Object.keys(MASTERY_STORIES).filter((id) => !L.getCourse(id) || !COURSE_STORIES[id]).join(','));
+{ const longSerials = LONG_ENTRIES.flatMap(([, s]) => [s.art, ...(s.more || []).map((m) => m.serial)]);
+  ok('every long-story picture serial is a CS number used once, across both kinds of long story', new Set(longSerials).size === longSerials.length && longSerials.every((x) => /^CS\d+$/.test(x)), longSerials.filter((x, i) => longSerials.indexOf(x) !== i).join(',')); }
+for (const [, cs, id] of LONG_ENTRIES) {
   const words = cs.words.join(' ').split(/\s+/).length;
   // A long story is either the original (three paragraphs, under 350 words) or doubled (2026-09-24, Mikey): six or more
   // paragraphs of 400 to 460 words, with five more pictures after five different paragraphs, spread over both halves. The floor
   // is held since pass MC, when an edit that took two ages out left reading-college at 398 and only docs/STORY-LENGTH.md saw it.
-  const doubled = words > 350; const af = (cs.more || []).map((m) => m.after); const half = cs.words.length / 2;
+  const doubled = words > 350 || id.startsWith('mastery:'); const af = (cs.more || []).map((m) => m.after); const half = cs.words.length / 2;
   ok(`${id}: course story has a title, a scene and its length (three paragraphs under 350 words, or doubled to six or more, 400 to 460)`, (doubled ? words >= 400 && words <= 460 && cs.words.length >= 6 : words <= 350 && cs.words.length === 3) && !!cs.title && !!cs.alt && /^CS\d+$/.test(cs.art), `${words} words`);
   if (doubled) ok(`${id}: a doubled long story has five more pictures after five different paragraphs in both halves`, af.length === 5 && new Set(af).size === 5 && af.some((a) => a < half) && af.some((a) => a >= half) && af.every((a) => a >= 0 && a < cs.words.length) && cs.more.every((m) => /^CS\d+$/.test(m.serial) && m.alt), af.join(','));
 }
@@ -166,14 +174,16 @@ for (const [id, cs] of Object.entries(COURSE_STORIES)) {
 {
   const L = await import('../src/logic.mjs');
   const S = await import('../src/stories.mjs');
-  const fresh = L.storyLogAvailable([], S.storyFor, S.courseStoryFor);
+  const fresh = L.storyLogAvailable([], S.storyFor, S.courseStoryFor, S.masteryStoryFor);
   const shortIds = new Set(fresh.shorts.map((s) => s.moduleId)); const longIds = new Set(fresh.longs.map((l) => l.courseId));
   const missingShort = Object.keys(STORIES).filter((id) => !shortIds.has(id));
   ok('a fresh student\'s Story Log lists every module story, each unread', missingShort.length === 0 && fresh.shorts.every((s) => s.at === null) && fresh.shorts.length === Object.keys(STORIES).length, missingShort.slice(0, 5).join(','));
   const missingLong = Object.keys(COURSE_STORIES).filter((id) => !longIds.has(id));
-  ok('a fresh student\'s Story Log lists every long story, locked with every module still to master', missingLong.length === 0 && fresh.longs.every((l) => !l.unlocked && l.at === null && l.left === L.getCourse(l.courseId).modules.length && l.left > 0), missingLong.slice(0, 5).join(','));
+  // Since pass MH a first long story counts the lessons still to pass and a next one the lessons still to master.
+  const longReadIds = new Set(fresh.longs.map((l) => l.moduleId)); const missingNext = Object.keys(MASTERY_STORIES).filter((id) => !longReadIds.has(`mastery:${id}`));
+  ok('a fresh student\'s Story Log lists every long story, the first and the next, each locked with every lesson still to pass or to master', missingLong.length === 0 && missingNext.length === 0 && fresh.longs.every((l) => !l.unlocked && l.at === null && l.left === L.getCourse(l.courseId).modules.length && l.left > 0 && l.unit === (l.kind === 'mastery' ? 'master' : 'pass')), [...missingLong, ...missingNext].slice(0, 5).join(','));
   ok('every long story belongs to a real course with modules', Object.keys(COURSE_STORIES).every((id) => L.getCourse(id) && L.getCourse(id).modules.length > 0), Object.keys(COURSE_STORIES).filter((id) => !L.getCourse(id)).join(','));
-  ok('every story shows a title on the Story Log', Object.values(STORIES).every((st) => L.titleCase(st.title).trim().length > 0) && Object.values(COURSE_STORIES).every((st) => String(st.title).trim().length > 0));
+  ok('every story shows a title on the Story Log', Object.values(STORIES).every((st) => L.titleCase(st.title).trim().length > 0) && LONG_ENTRIES.every(([, st]) => String(st.title).trim().length > 0));
   // Reading moves a story: first opening counts, Most recent is today's reading or the last three, newest first.
   const ids = Object.keys(STORIES).slice(0, 5); const cid = Object.keys(COURSE_STORIES)[0];
   const evs = ids.map((id, i) => L.makeStoryReadEvent(id, `2026-09-0${i + 1}T10:00:00.000Z`)).concat([L.makeStoryReadEvent(ids[0], '2026-09-09T10:00:00.000Z'), L.makeStoryReadEvent(`course:${cid}`, '2026-09-10T10:00:00.000Z')]);
@@ -202,11 +212,11 @@ for (const [id, cs] of Object.entries(COURSE_STORIES)) {
     for (const m of st.more || []) { const page = parts.findIndex((p) => m.after >= p.from && m.after <= p.to); if (page < 0) bad.push(`${label}: picture ${m.serial} after paragraph ${m.after} is on no page`); }
   };
   for (const c of L.COURSES) {
-    const chapters = c.modules.map((m) => ({ m, st: STORIES[m.id] })).filter((x) => x.st); const cs = COURSE_STORIES[c.id] || null;
+    const chapters = c.modules.map((m) => ({ m, st: STORIES[m.id] })).filter((x) => x.st); const cs = COURSE_STORIES[c.id] || null; const ms = MASTERY_STORIES[c.id] || null;
     if (!chapters.length && !cs) continue;
     courses += 1;
     for (const painted of [false, true]) {
-      const { groups, csParts } = L.bookPages(chapters, cs, () => painted);
+      const { groups, csParts, msParts } = L.bookPages(chapters, cs, () => painted, ms);
       // Each chapter appears once, in course order, its parts on consecutive pages; two stories share a page only unpainted.
       const seen = groups.flatMap((g) => g.items.map((it) => it.i));
       const order = chapters.map((_, i) => i); const heads = groups.flatMap((g) => g.items.filter((it) => !it.part || it.part.head).map((it) => it.i));
@@ -215,14 +225,16 @@ for (const [id, cs] of Object.entries(COURSE_STORIES)) {
       if (groups.some((g) => g.items.length > g.per || g.items.length === 0)) bad.push(`${c.id}${painted ? ' painted' : ''}: a sheet holds more than its share`);
       chapters.forEach((ch, i) => { const parts = groups.flatMap((g) => g.items.filter((it) => it.i === i).map((it) => it.part || { head: true, from: 0, to: ch.st.words.length - 1, used: 0 })); checkStory(`${c.id}/${ch.m.id}${painted ? ' painted' : ''}`, ch.st, parts, painted); });
       if (cs) checkStory(`${c.id}/long${painted ? ' painted' : ''}`, cs, csParts, painted);
+      if (ms) checkStory(`${c.id}/next long${painted ? ' painted' : ''}`, ms, msParts, painted);
+      if (!ms && msParts.length) bad.push(`${c.id}: pages for a next long story it does not have`);
       if (seen.length < chapters.length) bad.push(`${c.id}: ${seen.length} placements for ${chapters.length} chapters`);
-      if (painted) pages += groups.length + csParts.length;
+      if (painted) pages += groups.length + csParts.length + msParts.length;
     }
   }
   ok(`every course's book pages every story with its pictures, painted or not (${courses} courses, ${pages} painted sheets)`, bad.length === 0 && courses === L.COURSES.filter((c) => c.modules.some((m) => STORIES[m.id]) || COURSE_STORIES[c.id]).length, bad.slice(0, 6).join(' | '));
   // A paragraph with its picture always fits a sheet of its own, so the book never has to part them.
   const tall = [];
-  for (const [id, st] of [...Object.entries(STORIES), ...Object.entries(COURSE_STORIES).map(([k, v]) => [`long:${k}`, v])]) {
+  for (const [id, st] of [...Object.entries(STORIES), ...LONG_ENTRIES.map(([, v, label]) => [`long:${label}`, v])]) {
     st.words.forEach((par, i) => { const parts = L.printParts([par], [0], true); if (parts.length !== 1 || parts[0].used > P.room) tall.push(`${id} paragraph ${i + 1}: ${parts[0] ? parts[0].used : '?'} inches`); });
   }
   ok('every paragraph fits one sheet beside its picture, under the title and main painting', tall.length === 0, tall.slice(0, 5).join(' | '));
@@ -255,9 +267,9 @@ for (const [id, cs] of Object.entries(COURSE_STORIES)) {
   ok('every story fits one Eleven v4 request of 10,000 characters', all.every(([, s]) => (s.audio || s.words).join(' ').length + s.title.length < 9000));
   // Long stories carry tags too (pass LT): where a long story has audio, it is its words with tags and nothing else, its tags
   // are short phrases in one pair of brackets, no long story shows a tag to readers, and an early-years one closes [slowly, warmly].
-  const longTagged = Object.entries(COURSE_STORIES).filter(([, s]) => s.audio);
+  const longTagged = LONG_ENTRIES.filter(([, s]) => s.audio).map(([id, s]) => [id, s]);
   ok(`tagged long stories keep their words exactly (${longTagged.length} tagged)`, longTagged.length >= 2 && longTagged.every(([, s]) => s.audio.length === s.words.length && s.audio.every((p, i) => stripTags(p) === s.words[i].replace(/\s+/g, ' ').trim())));
-  ok('every long-story tag is a short phrase in one pair of brackets, and no long story shows a tag to readers', longTagged.every(([, s]) => s.audio.every((p) => (p.match(/\[[^\[\]]{1,60}\]/g) || []).length === (p.match(/\[/g) || []).length)) && Object.values(COURSE_STORIES).every((s) => s.words.every((p) => !/[\[\]]/.test(p))));
+  ok('every long-story tag is a short phrase in one pair of brackets, and no long story shows a tag to readers', longTagged.every(([, s]) => s.audio.every((p) => (p.match(/\[[^\[\]]{1,60}\]/g) || []).length === (p.match(/\[/g) || []).length)) && LONG_ENTRIES.every(([, s]) => s.words.every((p) => !/[\[\]]/.test(p))));
   ok('a tagged early-years long story closes [slowly, warmly]', longTagged.every(([id, s]) => { const c = L.getCourse(id); return !c || !early.has(c.grade) || /^\[slowly, warmly\]/.test(s.audio[s.audio.length - 1]); }));
 }
 

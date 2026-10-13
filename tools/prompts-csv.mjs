@@ -129,7 +129,9 @@ export function foldPrompt(prompt, negative) {
   // Quality and people.
   if (has('blurry')) out.push('Every edge is sharp and clean.');
   const person = hasPerson(subject);
-  if (HANDS.some(has) && person) out.push('Hands have five fingers, and bodies look natural.');
+  // A head-and-shoulders portrait (the Wonder voices, pass MH) shows no hands, so naming hands would only invite them in.
+  const portrait = /head-and-shoulders/i.test(subject);
+  if (HANDS.some(has) && person) out.push(portrait ? 'The head and shoulders look natural.' : 'Hands have five fingers, and bodies look natural.');
   if (has('photorealistic skin') && person) out.push('Skin is smooth and stylized like the rest of the illustration.');
   if (has('photorealism')) out.push('Every part of it is a drawn illustration.');
   // Maps and the sun.

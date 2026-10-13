@@ -329,9 +329,11 @@ await page.waitForTimeout(300);
 ok('approving closes the question by itself', (await page.getByRole('button', { name: 'Close' }).count()) === 0);
 // approve the kindergarten one as well, for the spoken reflection later
 await page.getByRole('button', { name: /^Early/ }).click();
-await page.getByRole('button', { name: /Is a big group of tiny ants/ }).click();
+await page.getByRole('button', { name: /a big group of tiny ants/ }).click();
 t = await text();
-ok('a young children\'s question shows the two spoken voices in the review', t.includes('What the youngest children hear'));
+// Four short voices since pass MH (Mikey: all four voices for pre-readers), each listed for the educator by name.
+{ const ants = (await import('../../src/logic.mjs')).WONDER.find((x) => x.id === 'w-ants-elephant');
+  ok('a young children\'s question shows the four spoken voices in the review', t.includes('What the youngest children hear') && ants.simple.length === 4 && ants.simple.every((v) => t.includes(v.says)) && t.includes('these four short voices')); }
 await page.getByRole('button', { name: 'Approve', exact: true }).click();
 await page.waitForTimeout(300);
 ok('approving two leaves two fewer waiting', (await text()).includes(`${WONDER_COUNT - 2} to review`));
@@ -346,7 +348,7 @@ ok('un-approving sends questions back to review', (await text()).includes(`${WON
 await page.getByRole('button', { name: /If you cut a cookie/ }).click();
 await page.getByRole('button', { name: 'Approve', exact: true }).click();
 await page.waitForTimeout(300);
-await page.getByRole('button', { name: /Is a big group of tiny ants/ }).click();
+await page.getByRole('button', { name: /a big group of tiny ants/ }).click();
 await page.getByRole('button', { name: 'Approve', exact: true }).click();
 await page.waitForTimeout(300);
 await tap('Back to Classroom');
@@ -510,7 +512,8 @@ await page.waitForTimeout(1200);
 { const said = await page.evaluate(() => window.__spoken.slice()); const rs = (await import('../../src/stories.mjs')).STORIES['count-to-5'];
   ok('the reward story reads itself aloud, its title first', !!rs && said[0] === `${rs.title}.`, said.slice(0, 2).join(' | '));
   ok('the reward story has one big arrow and no Practice this or Back to the lesson', (await page.getByLabel('Keep going').count()) === 1 && (await page.getByRole('button', { name: 'Practice this' }).count()) === 0 && (await page.getByRole('button', { name: 'Back to the lesson' }).count()) === 0 && (await page.locator('[data-read-aloud-story="reward"]').count()) === 1); }
-// The story's arrow carries on where the round left off: into a spoken reflection, one question, big taps, two short voices
+// The story's arrow carries on where the round left off: into a spoken reflection, one question, big taps, four short voices
+// (two until pass MH, when Mikey asked for all four voices for pre-readers)
 await page.getByLabel('Keep going').click();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'wonder');
 t = await text();
@@ -518,16 +521,21 @@ ok('a young child gets a spoken tap-only reflection', t.includes('tiny ants') &&
 await page.getByRole('button', { name: 'It depends' }).click();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'wonder-voices');
 t = await text();
-ok('two short voices, one at a time, each by name with its label', t.includes('Frederick') && t.includes('The Scientist') && !t.includes('Chloe') && !t.includes('A scientist says'));
+ok('four short voices, one at a time, each by name with its label', t.includes('Frederick') && t.includes('The Scientist') && !t.includes('Chloe') && !t.includes('A scientist says'));
 await page.getByLabel('Next').click();
 ok('the second voice follows', (await text()).includes('Chloe') && (await text()).includes('The Artist'));
-// Pass MG (Mikey's answer to Q10, "yes"): after the two voices the question's closing line comes on a card of its own, spoken
+await page.getByLabel('Next').click();
+ok('the third voice follows', (await page.getAttribute('[data-wonder-portrait]', 'data-wonder-portrait')) === 'Georgette' && (await text()).includes('The Grandparent of Faith'));
+await page.getByLabel('Next').click();
+ok('the fourth voice follows', (await page.getAttribute('[data-wonder-portrait]', 'data-wonder-portrait')) === 'Mike' && (await text()).includes('The Skeptic'));
+// Pass MG (Mikey's answer to Q10, "yes"): after the voices the question's closing line comes on a card of its own, spoken
 // as it appears, so a child who cannot read meets the last thought too; Finish waits on that card.
 { const w = (await import('../../src/logic.mjs')).WONDER.find((x) => x.id === 'w-ants-elephant');
   await page.evaluate(() => { window.__spoken = []; });
-  ok('the second voice is not the end yet: Next goes on', (await page.getByLabel('Finish').count()) === 0 && (await page.getByLabel('Next').count()) === 1);
+  ok('the last voice is not the end yet: Next goes on', (await page.getByLabel('Finish').count()) === 0 && (await page.getByLabel('Next').count()) === 1);
   await page.getByLabel('Next').click(); await page.waitForTimeout(400);
-  const closing = await page.evaluate(() => { const c = document.querySelector('[data-wonder-closing]'); return c ? c.textContent.trim() : null; });
+  // Since pass MH the card wears a rotating title above the closing line (PONDER_TITLES), so the line is read on its own.
+  const closing = await page.evaluate(() => { const c = document.querySelector('[data-wonder-closing]'); const line = c ? [...c.querySelectorAll('p')].find((p) => !p.hasAttribute('data-ponder-title')) : null; return line ? line.textContent.trim() : null; });
   const heard = (await page.evaluate(() => window.__spoken.join(' '))).replace(/\s+/g, ' ');
   ok("the closing line follows on its own card, spoken as it appears, and Finish waits there", !!w && closing === w.closing && heard.includes(w.closing.split('? ')[0]) && (await page.getByLabel('Finish').count()) === 1, { closing, heard });
   { const vp = page.viewportSize(); for (let k = 0; k < 3; k++) { await page.setViewportSize({ width: vp.width + 6, height: vp.height }); await page.waitForTimeout(150); await page.setViewportSize(vp); await page.waitForTimeout(150); }
@@ -1630,7 +1638,9 @@ ok('a switched-off course is hidden from the learner', !/what a fraction means/i
     const slowRates = await page.evaluate(() => (window.__rates || []).slice());
     await page.getByRole('button', { name: 'Read at the usual speed' }).click(); await page.evaluate(() => { window.__rates = []; window.__spoken = []; });
     await readBtn.click();
-    const lit = await page.waitForFunction(() => [...document.querySelectorAll('div')].some((d) => d.style && d.style.background && d.style.background.indexOf('rgb(') === 0 && d.textContent && d.textContent.length > 20 && getComputedStyle(d).backgroundColor !== 'rgba(0, 0, 0, 0)' && d.querySelector('p')), null, { timeout: 3000 }).then(() => true).catch(() => false);
+    // Since pass MH the light is on the sentence being read (data-read-lit), never a whole paragraph; the old check matched any
+    // tinted div, the page's style sheet included, so it could not fail (the code check).
+    const lit = await page.waitForFunction(() => { const el = document.querySelector('[data-read-lit]'); return !!el && el.textContent.trim().length > 0 && getComputedStyle(el).backgroundColor !== 'rgba(0, 0, 0, 0)'; }, null, { timeout: 3000 }).then(() => true).catch(() => false);
     await page.waitForTimeout(400);
     const spoken = await page.evaluate(() => window.__spoken.slice());
     const normalRates = await page.evaluate(() => (window.__rates || []).slice());
@@ -1639,7 +1649,7 @@ ok('a switched-off course is hidden from the learner', !/what a fraction means/i
     // The voice takes a story one sentence at a time, so the sentences joined back up must equal the title and every paragraph in order.
     const tidy = (t) => t.replace(/\s+/g, ' ').trim();
     ok('a spoken story reads its title and every paragraph in order', tidy(spoken.join(' ')) === tidy([`${story.title}.`, ...story.words].join(' ')));
-    ok('the paragraph being read lights up', lit);
+    ok('the sentence being read lights up', lit);
   } else ok('a spoken story reads its title and every paragraph in order (skipped: no voice on this page)', true);
 }
 ok('no browser errors during the whole run', errors.length === 0);

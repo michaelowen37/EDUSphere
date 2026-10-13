@@ -1,8 +1,8 @@
 # Review ledger
 
-Generated 2026-10-12 by tools/review-ledger.mjs. What Mikey wants from the review is in docs/FABLE-REVIEW.md; this file is the work list, in order. To mark an item reviewed, add its key to "reviewed" in docs/review-status.json with the pass that did it (keys look like module:saving-investing-and-risk, course-story:econ-9, game:dots-kite, wonder:w-grown-the-rumor), then run the tool again.
+Generated 2026-10-13 by tools/review-ledger.mjs. What Mikey wants from the review is in docs/FABLE-REVIEW.md; this file is the work list, in order. To mark an item reviewed, add its key to "reviewed" in docs/review-status.json with the pass that did it (keys look like module:saving-investing-and-risk, course-story:econ-9, game:dots-kite, wonder:w-grown-the-rumor), then run the tool again.
 
-Reviewed to the full standard so far: 202 of 1309 items; first pass only (accuracy, punctuation, audio tags): 0 (662 modules with their lessons, stories and question banks, 105 long stories, 159 games and 366 Wonder questions). Colons today: 2110 in lessons and 1261 in stories (times like 3:30 and ratios are not counted). Pictures are reviewed through docs/ART-REQUESTS.md as they are painted; a rewritten story keeps each picture beside the paragraph it shows.
+Reviewed to the full standard so far: 204 of 1431 items; first pass only (accuracy, punctuation, audio tags): 0 (662 modules with their lessons, stories and question banks, 105 long stories, 2 next long stories, 159 games and 366 Wonder questions). Colons today: 2110 in lessons and 1261 in stories (times like 3:30 and ratios are not counted). Pictures are reviewed through docs/ART-REQUESTS.md as they are painted; a rewritten story keeps each picture beside the paragraph it shows.
 
 ## 1. Every module, in review order (pre-K first, then up through college)
 
@@ -798,6 +798,133 @@ Reviewed to the full standard so far: 202 of 1309 items; first pass only (accura
 |  | C | Public speaking | Chloe and the three minutes (CS607) | 11 |
 |  | C | How computers compute | Chloe and the catalogue of ten thousand paintings (CS415) | 4 |
 
+## 2b. Next long course stories (since pass MH, opened when every lesson has its star)
+
+| Reviewed | Grade | Course | Story | Colons |
+|---|---|---|---|---|
+| yes (MH, The rainy-day picnic, written new when Mikey chose Write both now as Very First Steps' next long story, opened at the course's second celebration: read whole by the story, story flow, picture and accuracy briefs with second reads (three-year-olds in every picture, rain on a window far across the room, the children count the cups themselves, Chloe's mistake in her own voice, one tag fewer)) | PK3 | Very first steps | The rainy-day picnic (CS631) | 0 |
+| yes (MH, The ball over the wall, written new when Mikey chose Write both now as Listen and Point's next long story, opened at the course's second celebration: read whole by the story, story flow, picture and accuracy briefs with second reads (The letter A, like apple; by their shapes; holding her hand; the grass below, not long grass; one big red playground ball across both Listen and Point stories)) | PK3 | Listen and point | The ball over the wall (CS637) | 0 |
+| no | PK4 | First steps | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | PK4 | First sounds and letters | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | K | Looking at the world | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | K | Me and my community | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | K | Taking care of me | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | K | Counting | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | K | Letters | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | K | Tell, show, step and repeat | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | K | I can listen, I can say | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | K | Me and my mind | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | K | I wonder | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | K | Needs, wants, work and saving | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | K | On the farm | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | K | Money and me | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | K | Looking and listening | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 1 | Numbers to 120 | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 1 | Shapes, measuring and graphs | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 1 | Reading words and sentences | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 1 | Sky, water and living things | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 1 | Our community | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 1 | Beat, high, low, loud, soft | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 2 | Numbers to 1,000 | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 2 | Reading longer words and stories | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 2 | Writing sentences | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 2 | Our community's story | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 2 | Materials and habitats | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 3 | Fractions | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 3 | Reading to understand | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 3 | How the world works | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 3 | Writing a paragraph | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 3 | Multiplication and division | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 3 | How computers think | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 3 | Communities and government | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 3 | Looking and making | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 3 | How your mind works | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 3 | I wonder why | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 3 | Money that works | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 3 | Listen, then say it | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 3 | Down on the farm | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 3 | Jars, banks and lemonade | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 3 | Looking closer, listening longer | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 4 | Reading between the lines | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 4 | Energy, Earth and living things | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 4 | Writing paragraphs | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 4 | The story of Texas | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 4 | Bigger numbers and operations | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 4 | Reading music | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 4 | A body that works well | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 4 | Color, shape and story | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 5 | Decimals, fractions and volume | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 5 | Reading with judgment | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 5 | Mixtures, sky and water | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 5 | Writing several paragraphs | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 5 | The story of the United States | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 5 | Programs that decide | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 6 | Ratios, negatives and equations | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 6 | Reading like a thinker | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 6 | Matter, energy and Earth | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 6 | Writing with a purpose | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 6 | World cultures | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 6 | What a machine learns | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 6 | How people work | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 6 | Big questions, good reasons | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 6 | Money over time | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 6 | Say what you mean | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 6 | Where food comes from | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 6 | Earn, save, start | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 6 | Growing up healthy | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 6 | Healthy choices | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 6 | Reading a work of art | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 7 | Proportions, integers and circles | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 7 | Reading with an eye for craft | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 7 | Bodies, weather and change | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 7 | Writing about what you read | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 7 | Texas history | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 7 | Bits, networks and safety | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 8 | Lines, powers and triangles | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 8 | Reading with a critical eye | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 8 | Atoms, forces and the universe | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 8 | Writing essays | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 8 | The United States to 1877 | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 9 | Algebra 1 | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 9 | English 1 | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 9 | Biology | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 9 | Writing about texts and turns | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 9 | World geography | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 9 | How a program is built | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 9 | Relationships and health | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 9 | Health for life | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 9 | Open for business | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 9 | From soil to supper | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 9 | Say it so it lands | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 9 | The science of behavior | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 9 | How to think about anything | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 9 | Money for a life | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 9 | The informed eye and ear | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 10 | Geometry | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 10 | English 2 | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 10 | Chemistry | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 10 | Writing about texts | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 10 | World history | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 11 | Algebra 2 | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 11 | English 3 | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 11 | Physics | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 11 | Writing with sources | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 11 | United States history since 1877 | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 12 | Precalculus | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 12 | English 4 | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 12 | Earth and space | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 12 | Writing for the world | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 12 | United States government | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | 12 | Economics and personal finance | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | C | Statistics and reasoning | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | C | Academic reading | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | C | Thinking like a historian | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | C | Business principles | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | C | General psychology | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | C | Principles of macroeconomics | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | C | Public speaking | none yet (program item L9 in docs/EARMARKS.md) | |
+| no | C | How computers compute | none yet (program item L9 in docs/EARMARKS.md) | |
+
 ## 3. Games
 
 | Reviewed | Game | Kind | Course |
@@ -1077,7 +1204,7 @@ Reviewed to the full standard so far: 202 of 1309 items; first pass only (accura
 |  | `w-fell-off-bike` | When you fall off a bike, what should you do next? |
 |  | `w-got-it-wrong` | You tried a question and got it wrong. Is that bad? |
 |  | `w-try-again` | Why does trying again usually work better than trying the first time? |
-|  | `w-angry-feeling` | When you feel angry, where do you feel it in your body? |
+|  | `w-angry-feeling` | When you feel mad, where do you feel it in your body? |
 |  | `w-sad-okay` | Is it okay to feel sad? |
 |  | `w-name-feeling` | Why does it help to say what you are feeling out loud? |
 |  | `w-bad-day` | Everyone has bad days. What makes a bad day end? |
@@ -1114,9 +1241,9 @@ Reviewed to the full standard so far: 202 of 1309 items; first pass only (accura
 | yes (MB: Georgette's rewrite and Mike's (in the second read's wording, "Now I ask, big enough for what?") shipped under Mikey's rule, quoted in DECISIONS. Earlier: MA, theme world (was feelings) and Frederick's voice corrected (it declared a right answer); read by the Wonder brief twice and by the alignment read.) | `w-big-or-small` | Are you big or small? |
 | yes (MB, the Wonder brief: the prompt and all six voices rewritten so no answer is declared right and each voice speaks from its person's grown mindset (Frederick tests, Chloe paints and looks twice, Georgette's own faith, Mike checks one thing at a time); quoted in DECISIONS for Mikey's later check.) | `w-same-or-different` | Are you and a friend the same, or different? |
 |  | `w-where-sun-goes` | Where does the sun go at night? |
-|  | `w-fish-home` | A fish needs water and a bird needs a tree. What does your home give you? |
+|  | `w-fish-home` | A fish needs water, and many birds need trees. What does your home give you? |
 |  | `w-quiet-sound` | What is the quietest sound you can hear right now? |
-|  | `w-ants-elephant` | Is a big group of tiny ants more than one elephant, or less? |
+|  | `w-ants-elephant` | Which is more, a big group of tiny ants or one elephant? |
 |  | `w-grown-rejection-letter` | A rejection letter arrives. What is it evidence of, and what is it not evidence of? |
 |  | `w-grown-failed-exam` | You failed an exam you studied hard for. What questions should you ask before deciding what it means? |
 |  | `w-grown-public-mistake` | You made a mistake that other people saw. What does a good recovery look like? |

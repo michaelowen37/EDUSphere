@@ -4,7 +4,7 @@
 // count before and after a rewrite is easy to see. Run: node tools/review-ledger.mjs > docs/REVIEW-LEDGER.md
 import { readFileSync } from 'node:fs';
 import { COURSES, GAMES, COURSE_GAMES, WONDER } from '../src/logic.mjs';
-import { STORIES, COURSE_STORIES } from '../src/stories.mjs';
+import { STORIES, COURSE_STORIES, MASTERY_STORIES } from '../src/stories.mjs';
 
 const status = (() => { try { return JSON.parse(readFileSync(new URL('../docs/review-status.json', import.meta.url), 'utf8')); } catch (e) { return {}; } })();
 const reviewed = status.reviewed || {}; const firstPass = status.firstPass || {};   // first pass: accuracy, punctuation, audio (pass JO)
@@ -22,13 +22,16 @@ const gameCourse = {}; for (const [cid, ids] of Object.entries(COURSE_GAMES || {
 const wonders = Array.isArray(WONDER) ? WONDER : Object.values(WONDER || {});
 // Every course is a long-story item, written or not (pass LD, Mikey): a course without one shows as an undone row, so an absence
 // is visible in the count instead of silent (the grade 1 review passed every module while no grade 1 course had a long story).
-const keys = [...rows.map((r) => `module:${r.m.id}`), ...courses.map((c) => `course-story:${c.id}`), ...GAMES.map((g) => `game:${g.id}`), ...wonders.map((w, i) => `wonder:${w.id || i}`)];
+// Since pass MH a course's next long story (MASTERY_STORIES, opened at its second celebration) is an item of its own,
+// mastery-story:<id>, for every course, written or not (the final read: the missing ones would otherwise be silent, as first long
+// stories were before pass LD; EARMARKS L9 is the program).
+const keys = [...rows.map((r) => `module:${r.m.id}`), ...courses.map((c) => `course-story:${c.id}`), ...courses.map((c) => `mastery-story:${c.id}`), ...GAMES.map((g) => `game:${g.id}`), ...wonders.map((w, i) => `wonder:${w.id || i}`)];
 const lessonColons = rows.reduce((a, r) => a + colons(r.m.lesson), 0); const storyColons = rows.reduce((a, r) => a + (r.st ? colons(r.st.words || r.st.paragraphs || '') : 0), 0) + Object.values(COURSE_STORIES).reduce((a, s) => a + colons(s.words || s.paragraphs || ''), 0);
 console.log(`# Review ledger
 
 Generated ${new Date().toISOString().slice(0, 10)} by tools/review-ledger.mjs. What Mikey wants from the review is in docs/FABLE-REVIEW.md; this file is the work list, in order. To mark an item reviewed, add its key to "reviewed" in docs/review-status.json with the pass that did it (keys look like module:saving-investing-and-risk, course-story:econ-9, game:dots-kite, wonder:w-grown-the-rumor), then run the tool again.
 
-Reviewed to the full standard so far: ${keys.filter((k) => reviewed[k]).length} of ${keys.length} items; first pass only (accuracy, punctuation, audio tags): ${keys.filter((k) => !reviewed[k] && firstPass[k]).length} (${rows.length} modules with their lessons, stories and question banks, ${Object.keys(COURSE_STORIES).length} long stories, ${GAMES.length} games and ${wonders.length} Wonder questions). Colons today: ${lessonColons} in lessons and ${storyColons} in stories (times like 3:30 and ratios are not counted). Pictures are reviewed through docs/ART-REQUESTS.md as they are painted; a rewritten story keeps each picture beside the paragraph it shows.
+Reviewed to the full standard so far: ${keys.filter((k) => reviewed[k]).length} of ${keys.length} items; first pass only (accuracy, punctuation, audio tags): ${keys.filter((k) => !reviewed[k] && firstPass[k]).length} (${rows.length} modules with their lessons, stories and question banks, ${Object.keys(COURSE_STORIES).length} long stories, ${Object.keys(MASTERY_STORIES).length} next long stories, ${GAMES.length} games and ${wonders.length} Wonder questions). Colons today: ${lessonColons} in lessons and ${storyColons} in stories (times like 3:30 and ratios are not counted). Pictures are reviewed through docs/ART-REQUESTS.md as they are painted; a rewritten story keeps each picture beside the paragraph it shows.
 
 ## 1. Every module, in review order (pre-K first, then up through college)
 
@@ -40,6 +43,12 @@ ${rows.map(moduleRow).join('\n')}
 | Reviewed | Grade | Course | Story | Colons |
 |---|---|---|---|---|
 ${courses.map((c) => { const s = COURSE_STORIES[c.id]; return s ? `| ${done(`course-story:${c.id}`)} | ${cell(c.grade)} | ${cell(c.title)} | ${cell(s.title)} (${s.art}) | ${colons(s.words || s.paragraphs || '')} |` : `| no | ${cell(c.grade)} | ${cell(c.title)} | none yet (program item L1 in docs/EARMARKS.md) | |`; }).join('\n')}
+
+## 2b. Next long course stories (since pass MH, opened when every lesson has its star)
+
+| Reviewed | Grade | Course | Story | Colons |
+|---|---|---|---|---|
+${courses.map((c) => { const s = MASTERY_STORIES[c.id]; return s ? `| ${done(`mastery-story:${c.id}`)} | ${cell(c.grade)} | ${cell(c.title)} | ${cell(s.title)} (${s.art}) | ${colons(s.words || s.paragraphs || '')} |` : `| no | ${cell(c.grade)} | ${cell(c.title)} | none yet (program item L9 in docs/EARMARKS.md) | |`; }).join('\n')}
 
 ## 3. Games
 

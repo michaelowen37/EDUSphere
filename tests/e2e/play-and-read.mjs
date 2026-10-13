@@ -64,29 +64,29 @@ ok('it lists only the open story, with no locked row, no count of modules and no
   if ((await fold.count()) && (await fold.first().getAttribute('aria-expanded')) !== 'true') { await fold.first().click(); await page.waitForTimeout(300); } }
 // The first read is the one the course asks for; the second, read to the end after STORY_REREAD_SECONDS, is elective. Since pass
 // ME (Mikey's answer to Q17) an early learner opens the course's story with a gold book named for the story, and the story reads
-// itself aloud on the self-reading page with one way home (pass MF, Mikey's answer to Q22), since pass MG a Return home button
+// itself aloud on the self-reading page with one way home (pass MF, Mikey's answer to Q22), since pass MG a Return Home button
 // across the bottom (Mikey: "No home icon, just a home button across the bottom"), which goes home.
 const hearIt = `Hear ${storyTitle}`; const hearAgain = `Hear ${storyTitle} again`;
 ok("the course's story is a gold book named for it, not a worded Read button", (await page.getByRole('button', { name: hearIt, exact: true }).count()) === 1 && (await page.getByRole('button', { name: 'Read', exact: true }).count()) === 0);
 await page.evaluate(() => { window.__spoken = []; });
 await page.getByRole('button', { name: hearIt, exact: true }).first().click(); await screenIs('course-story'); await page.waitForTimeout(700);
-ok("opened from the shelf, the course's story reads itself aloud on the self-reading page with one way home across the bottom and no Back to my courses or Keep going", (await page.locator('[data-read-aloud-story="shelf"][data-course-story-page]').count()) === 1 && (await page.getByLabel('Return home').count()) === 1 && (await page.getByLabel('Keep going').count()) === 0 && (await page.getByRole('button', { name: 'Back to my courses' }).count()) === 0 && (await page.evaluate(() => window.__spoken[0])) === `${ST.COURSE_STORIES[FINISH].title}.`, await page.evaluate(() => window.__spoken.slice(0, 2)));
+ok("opened from the shelf, the course's story reads itself aloud on the self-reading page with one way home across the bottom and no Back to my courses or Keep going", (await page.locator('[data-read-aloud-story="shelf"][data-course-story-page]').count()) === 1 && (await page.getByLabel('Return Home').count()) === 1 && (await page.getByLabel('Keep going').count()) === 0 && (await page.getByRole('button', { name: 'Back to my courses' }).count()) === 0 && (await page.evaluate(() => window.__spoken[0])) === `${ST.COURSE_STORIES[FINISH].title}.`, await page.evaluate(() => window.__spoken.slice(0, 2)));
 await page.locator('[data-story-end]').scrollIntoViewIfNeeded(); await page.waitForTimeout((L.STORY_REREAD_SECONDS + 3) * 1000);   // read to the end: still the read the course asks for
-await page.getByLabel('Return home').first().click(); await screenIs('overview'); await page.waitForTimeout(400);
+await page.getByLabel('Return Home').first().click(); await screenIs('overview'); await page.waitForTimeout(400);
 if ((await page.getByRole('button', { name: hearAgain, exact: true }).count()) === 0 && (await fold.count())) { await fold.first().click(); await page.waitForTimeout(400); }
 ok('after the first read the book offers the story again', (await page.getByRole('button', { name: hearAgain, exact: true }).count()) === 1);
 const readAgain = async () => {
   if ((await page.getByRole('button', { name: hearAgain, exact: true }).count()) === 0 && (await fold.count())) { await fold.first().click(); await page.waitForTimeout(400); }
   await page.getByRole('button', { name: hearAgain, exact: true }).first().click(); await screenIs('course-story'); await page.waitForTimeout(500);   // past the settle-scroll (pass JK)
 };
-const backToCourses = async () => { await page.getByLabel('Return home').first().click(); await screenIs('overview'); await page.waitForTimeout(300); };
+const backToCourses = async () => { await page.getByLabel('Return Home').first().click(); await screenIs('overview'); await page.waitForTimeout(300); };
 const longEnough = (L.STORY_REREAD_SECONDS + 3) * 1000;
 // Two test voices: the page's own ends every line in thirty milliseconds; the slow one takes 400 and reports speaking and
 // pending the way a device's does (pass MD), so a reading can be stopped before the page has followed it to the end.
 const fastVoice = () => page.evaluate(() => { Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { cancel() {}, getVoices() { return []; }, speak(u) { window.__spoken.push(u.text); (window.__rates = window.__rates || []).push(u.rate); setTimeout(() => { if (u.onend) u.onend({}); }, 30); } } }); });
-const slowVoice = () => page.evaluate(() => { const q = []; let cur = null; let timer = null; window.__spoken = [];
+const slowVoice = () => page.evaluate(() => { const q = []; let cur = null; let timer = null; window.__spoken = []; window.__rates = [];
   const next = () => { cur = q.shift() || null; if (!cur) return; const mine = cur; timer = setTimeout(() => { if (cur !== mine) return; cur = null; if (mine.onend) mine.onend({}); if (!cur) next(); }, 400); };
-  Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { get speaking() { return !!cur; }, get pending() { return q.length > 0; }, cancel() { q.length = 0; if (timer) clearTimeout(timer); cur = null; }, getVoices() { return []; }, speak(u) { window.__spoken.push(u.text); q.push(u); if (!cur) next(); } } }); });
+  Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { get speaking() { return !!cur; }, get pending() { return q.length > 0; }, cancel() { q.length = 0; if (timer) clearTimeout(timer); cur = null; }, getVoices() { return []; }, speak(u) { window.__spoken.push(u.text); window.__rates.push(u.rate); q.push(u); if (!cur) next(); } } }); });
 // Read again to the end and stay long enough: counted.
 await readAgain(); await page.locator('[data-story-end]').scrollIntoViewIfNeeded(); await page.waitForTimeout(longEnough); await backToCourses();
 // Read again, stop the voice at once, and stay long enough without reaching the end: not counted. (Since pass ME the page reads
@@ -162,8 +162,17 @@ await page.getByRole('button', { name: /S-56$/ }).first().click(); await page.wa
   // voice reports), and so does a pace change in the middle of a reading.
   await page.getByRole('button', { name: 'Read the story to me' }).click(); await page.waitForTimeout(600);
   const readingAgain = !(await pulsing()) && (await page.getByRole('button', { name: 'Stop reading' }).count()) === 1;
-  await page.getByLabel('Read slowly').click(); await page.waitForTimeout(400);
-  ok('a pace change in the middle of a reading stops it, and the arrow invites a tap', readingAgain && (await pulsing()) && (await page.getByRole('button', { name: 'Read the story to me' }).count()) === 1);
+  const spokenBefore = await page.evaluate(() => window.__spoken.length);
+  // A pre-K 3 story starts on the snail, and a tap on the pace already set does nothing (pass MH), so the other pace is tapped and
+  // the sentence in the voice's mouth is said again at the new rate (the code check's second read).
+  const slowNow = await page.evaluate(() => document.querySelector('button[aria-label="Read slowly"]').getAttribute('aria-pressed') === 'true');
+  await page.getByLabel(slowNow ? 'Read at the usual speed' : 'Read slowly').click(); await page.waitForTimeout(400);
+  // The sentence in the voice's mouth is said again from its start, three quarters as fast (the code check: no rate was read).
+  const paced = await page.evaluate((n0) => { const s = window.__spoken; const r = window.__rates; const t = s[n0]; const k = s.indexOf(t); return { t, then: r[k], now: r[n0], k, n0 }; }, spokenBefore);
+  // Since pass MH (Mikey: "the story should continue to read but the speed should adjust in real time.  Not stop the audio.") a
+  // pace change in the middle of a reading goes on reading at the new pace: the arrow keeps resting and the speaker still stops.
+  ok('a pace change in the middle of a reading keeps reading at the new pace, the arrow still resting', readingAgain && !(await pulsing()) && (await page.getByRole('button', { name: 'Stop reading' }).count()) === 1 && !!paced.t && paced.k < paced.n0 && Math.abs(paced.now / paced.then - (slowNow ? 1 / 0.75 : 0.75)) < 0.02, paced);
+  await page.getByRole('button', { name: 'Stop reading' }).click(); await page.waitForTimeout(400);
   await page.getByRole('button', { name: 'Read the story to me' }).click(); await page.waitForTimeout(600);
   const restsWhileReading = !(await pulsing());
   await page.waitForFunction(() => !!document.querySelector('button[aria-label="Read the story to me"]'), null, { timeout: 20000 });
@@ -178,9 +187,9 @@ await page.getByRole('button', { name: /S-56$/ }).first().click(); await page.wa
   const surpriseBook = page.locator('[data-surprise-book] button');
   ok("with two heard stories the shelf offers a surprise-me book, a gold book with a star, named for what it does", (await surpriseBook.count()) === 1 && (await surpriseBook.getAttribute('aria-label')) === 'Surprise me with a story' && (await page.locator('[data-surprise-book] [data-book-star]').count()) === 1);
   // Its row has a picture where every story row has one (pass MG, Mikey: "It can just be a bunch overlapping question marks"):
-  // until the painting U1 is saved, four question marks the app draws, each in a color of its own, overlapping on the paper.
+  // four question marks the app draws, each in a color of its own, overlapping on the paper, the picture for good since pass MH.
   { const pic = await page.evaluate(() => { const p = document.querySelector('[data-surprise-book] [data-surprise-picture]'); if (!p) return null; const marks = [...p.querySelectorAll('[data-question-mark]')]; const colors = new Set(marks.map((m) => m.querySelectorAll('path')[1].getAttribute('stroke'))); const boxes = marks.map((m) => m.getBoundingClientRect()); const overlap = boxes.some((a, i) => boxes.some((b, j) => i < j && a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom)); const r = p.getBoundingClientRect(); const story = document.querySelector('[data-heard-story] > div'); return { state: p.getAttribute('data-surprise-picture'), marks: marks.length, colors: colors.size, overlap, w: Math.round(r.width), storyW: story ? Math.round(story.getBoundingClientRect().width) : 0, first: p.parentElement.firstElementChild === p }; });
-    ok('the surprise row shows its picture first, as big as a story row\'s: four overlapping question marks in four colors until its painting comes', !!pic && pic.state === 'drawn' && pic.marks === 4 && pic.colors === 4 && pic.overlap && pic.w >= 52 && pic.w === pic.storyW && pic.first, pic); }
+    ok('the surprise row shows its picture first, as big as a story row\'s: four overlapping question marks in four colors', !!pic && pic.state === 'drawn' && pic.marks === 4 && pic.colors === 4 && pic.overlap && pic.w >= 52 && pic.w === pic.storyW && pic.first, pic); }
   const surprised = [];
   for (let k = 0; k < 3; k++) {
     await openFold(); await settle(); await surpriseBook.click(); await screenIs('story'); await page.waitForTimeout(400);
@@ -228,22 +237,15 @@ await page.getByRole('button', { name: /S-56$/ }).first().click(); await page.wa
   await settle(); await page.locator('[data-heard-covers] [data-heard-story="colours"] button').click(); await screenIs('story'); await page.waitForTimeout(300);
   ok('a cover opens its story on the self-reading page', (await page.evaluate(() => window.__eduTest.moduleId)) === 'colours' && (await page.locator('[data-read-aloud-story="shelf"]').count()) === 1);
   await settle(); await page.getByLabel('Keep going').click(); await screenIs('overview'); await page.waitForTimeout(300);
-  // A painting listed whose file does not load leaves the drawing in place, as a story cover falls back (pass MG, the screen check).
-  // The Let's Read tap closes the fold and openFold opens it again, so the picture mounts afresh and forgets a failed load (the
-  // code check's second read): keep that order here and in the check after it.
+  // The drawn question marks are the Surprise me picture for good (pass MH, Mikey: "I actually like the question marks you drew for
+  // the surprise me section.  We can keep those instead of Leonard prompt"): U1 is retired, so even a file of that name in the
+  // painting list leaves the drawing in place. The Let's Read tap closes the fold and openFold opens it again, so the picture
+  // mounts afresh (the code check's second read in pass MG).
   await page.evaluate((a) => { window.__eduArt = [...a, 'U1']; }, arts);
   await page.getByRole('button', { name: "Let's Read", exact: true }).first().click(); await page.waitForTimeout(200); await openFold();
   await page.locator('[data-surprise-book]').scrollIntoViewIfNeeded();
-  const fellBack = await page.waitForFunction(() => { const p = document.querySelector('[data-surprise-picture]'); return !!p && p.getAttribute('data-surprise-picture') === 'drawn' && p.querySelectorAll('[data-question-mark]').length === 4; }, null, { timeout: 8000 }).then(() => true).catch(() => false);
-  ok("a Surprise me painting that is listed but fails to load leaves the drawn question marks", fellBack);
-  await page.evaluate((a) => { window.__eduArt = a; }, arts);
-  // Once the surprise row's painting is saved (U1, listed like every story picture), it takes the drawing's place (pass MG).
-  await sharp(Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240"><rect width="240" height="240" fill="#F4EBDD"/><circle cx="120" cy="120" r="70" fill="#7D5BA6"/></svg>')).webp().toFile(`${artDir}/U1.webp`);
-  await page.evaluate((a) => { window.__eduArt = [...a, 'U1']; }, arts);
-  await page.getByRole('button', { name: "Let's Read", exact: true }).first().click(); await page.waitForTimeout(200); await openFold();
-  await page.locator('[data-surprise-book]').scrollIntoViewIfNeeded();
-  const surprisePainted = await page.waitForFunction(() => { const p = document.querySelector('[data-surprise-picture="painted"] img'); return !!p && p.complete && p.naturalWidth > 0 && !document.querySelector('[data-surprise-picture] [data-question-mark]'); }, null, { timeout: 8000 }).then(() => true).catch(() => false);
-  ok("once the surprise row's painting U1 is saved, it shows in place of the drawn question marks", surprisePainted);
+  const keptDrawn = await page.waitForFunction(() => { const p = document.querySelector('[data-surprise-picture]'); return !!p && p.getAttribute('data-surprise-picture') === 'drawn' && p.querySelectorAll('[data-question-mark]').length === 4 && !p.querySelector('img'); }, null, { timeout: 4000 }).then(() => true).catch(() => false);
+  ok("the Surprise me row keeps its drawn question marks for good, whatever the painting list says (U1 retired, pass MH)", keptDrawn);
   await page.evaluate((a) => { window.__eduArt = a; }, savedArt); cleanArt(); }
 // A course finished live (pass ME, Mikey's answer to Q17): an early learner one star short of First Steps passes its last lesson.
 // The result says the whole course is done; the lesson's own story comes first, as the round's reward; then the course-finished
@@ -269,25 +271,27 @@ await page.getByRole('button', { name: /S-56$/ }).first().click(); await page.wa
   const courseTitle = L.titleCase(L.getCourse(FINISH).title);
   const cheer = await page.evaluate(() => ({ confetti: document.querySelectorAll('.edu-confetti').length, star: !!document.querySelector('.edu-land-star'), labels: [...document.querySelectorAll('button')].map((b) => b.getAttribute('aria-label')).filter(Boolean), said: window.__spoken.join(' '), words: document.querySelector('[data-course-done]') ? document.querySelector('[data-course-done]').textContent : '', page: document.body.innerText.replace(/\s+/g, ' ') }));
   await snap('4-course-done');
-  const cheerSaid = `Hooray! You finished the whole course, ${courseTitle}! Here is its story. Tap the gold book to hear it, or tap the green button at the bottom to go home.`;
-  ok('the course-finished page shows its confetti and star, names the course aloud as it opens and says what the two taps do, and offers the big gold book and the way home, with only Back and the speaker beside them', cheer.confetti >= 24 && cheer.star && cheer.said.includes(cheerSaid) && cheer.labels.join('|') === `Back|Say it again|Hear the story of ${courseTitle}|Return home` && cheer.words.includes(`Hooray! You finished the whole course, ${courseTitle}!`) && cheer.words.includes('Here is its story.'), cheer);
-  ok('the book wears Hear the story under it and the way home says Return home (Mikey, Q22: a button that says Return Home)', cheer.page.includes('Hear the story') && cheer.page.includes('Return home') && !cheer.labels.includes('Keep going'), cheer.page.slice(0, 300));
+  // Since pass MH the last star is the second celebration: a child who hears it hears every star (the first, every lesson passed,
+  // came on an earlier day in the seeded history, with no story read, so the book's line is the plain one).
+  const cheerSaid = `Hooray! You earned every star in ${courseTitle}! Here is its story. Tap the gold book to hear it, or tap the green button at the bottom to go home.`;
+  ok('the course-finished page shows its confetti and star, names the course aloud as it opens and says what the two taps do, and offers the big gold book and the way home, with only Back and the speaker beside them', cheer.confetti >= 24 && cheer.star && cheer.said.includes(cheerSaid) && cheer.labels.join('|') === `Back|Say it again|Hear the story of ${courseTitle}|Return Home` && cheer.words.includes(`Hooray! You earned every star in ${courseTitle}!`) && cheer.words.includes('Here is its story.'), cheer);
+  ok('the book wears Hear the story under it and the way home says Return Home (Mikey, Q22: a button that says Return Home)', cheer.page.includes('Hear the story') && cheer.page.includes('Return Home') && !cheer.labels.includes('Keep going'), cheer.page.slice(0, 300));
   // The way home (pass MG, Mikey: "No home icon, just a home button across the bottom"): one wide button, words and no drawing,
   // the page's last control, under the book and across the card's width; the book stays the prominent round tap above it.
   const home = await page.evaluate(() => { const b = document.querySelector('[data-course-done-home]'); const book = document.querySelector('[data-course-story-book]'); const cardEl = document.querySelector('[data-course-done]'); const r = b.getBoundingClientRect(); const k = book.getBoundingClientRect(); const c = cardEl.getBoundingClientRect(); const all = [...document.querySelectorAll('button')].filter((x) => x.offsetParent); return { wide: r.width, card: c.width, below: r.top >= k.bottom, last: all[all.length - 1] === b, drawing: b.querySelectorAll('svg').length, text: b.textContent.trim(), book: k.width }; });
-  ok('the way home is one wide button across the bottom, with words and no drawing, under the prominent gold book', home.text === 'Return home' && home.drawing === 0 && home.wide >= home.card - 2 && home.below && home.last && home.book >= 100, home);
+  ok('the way home is one wide button across the bottom, with words and no drawing, under the prominent gold book', home.text === 'Return Home' && home.drawing === 0 && home.wide >= home.card - 2 && home.below && home.last && home.book >= 100, home);
   await page.evaluate(() => { window.__spoken = []; });
   await page.locator('[data-course-story-book]').click(); await screenIs('course-story'); await page.waitForTimeout(1200);
   const saidCs = await page.evaluate(() => window.__spoken.slice());
-  ok("the book opens the course's story, which reads itself aloud from its title on the self-reading page, with the same way home and no arrow", saidCs[0] === `${ST.COURSE_STORIES[FINISH].title}.` && (await page.locator('[data-read-aloud-story="reward"][data-course-story-page]').count()) === 1 && (await page.getByLabel('Return home').count()) === 1 && (await page.getByLabel('Keep going').count()) === 0 && (await page.getByRole('button', { name: 'Back to my courses' }).count()) === 0, saidCs.slice(0, 2));
-  await settle(); await page.getByLabel('Return home').click(); await page.waitForTimeout(900);
+  ok("the book opens the course's story, which reads itself aloud from its title on the self-reading page, with the same way home and no arrow", saidCs[0] === `${ST.COURSE_STORIES[FINISH].title}.` && (await page.locator('[data-read-aloud-story="reward"][data-course-story-page]').count()) === 1 && (await page.getByLabel('Return Home').count()) === 1 && (await page.getByLabel('Keep going').count()) === 0 && (await page.getByRole('button', { name: 'Back to my courses' }).count()) === 0, saidCs.slice(0, 2));
+  await settle(); await page.getByLabel('Return Home').click(); await page.waitForTimeout(900);
   const after = await screen();
   // The celebration ends at home (pass MF, Mikey's answer to Q22), where the course the result named (Next: First Sounds and
   // Letters) waits with its first lesson open to start, by the page's own statuses: finishing First Steps switches on the grade 1
   // Numbers course too, locked behind kindergarten, and that one must not be the course the result named.
   const nextCourse = L.getCourse('first-sounds-pk'); const nextFirst = [...nextCourse.modules].sort((a, b) => a.order - b.order)[0];
   const landed = await page.evaluate(() => ({ module: window.__eduTest.moduleId, visible: window.__eduTest.visibleModuleIds() }));
-  ok("the story's Return home button goes home, where the next course's first lesson is open to start", after === 'overview' && landed.visible.includes(nextFirst.id), { after, landed });
+  ok("the story's Return Home button goes home, where the next course's first lesson is open to start", after === 'overview' && landed.visible.includes(nextFirst.id), { after, landed });
   ok('the result had named that course, the first open one, never the locked course the finish switched on', t2.includes(`Next: ${L.titleCase(nextCourse.title)}.`), t2.slice(0, 200));
   await page.evaluate(() => window.__eduTest.goTo('overview')); await page.waitForTimeout(600);
   const fold3 = page.getByRole('button', { name: "Let's Read", exact: true });
@@ -316,7 +320,7 @@ await page.getByRole('button', { name: /S-56$/ }).first().click(); await page.wa
   await page.emulateMedia({ reducedMotion: 'reduce' }); await page.waitForTimeout(200);
   ok('every confetti shower ends, and once it has, no piece is left showing on the card', ended.anims >= 24 && ended.finite && ended.showing === 0, ended); }
 // A last star earned by a Quick Review (pass ME, the code check): a child whose last First Steps lesson was moved past clears its
-// fresh try at the start of the day; the review's result goes on to the celebration page once, and that page's Return home button goes
+// fresh try at the start of the day; the review's result goes on to the celebration page once, and that page's Return Home button goes
 // home, where the day's second review waits.
 { await page.evaluate(() => window.__eduTest.goHome()); await screenIs('educator-pick'); await page.waitForTimeout(400); await tapIf('Got it');
   await page.getByRole('button', { name: 'Add someone new' }).first().click(); await page.waitForTimeout(300);
@@ -345,9 +349,9 @@ await page.getByRole('button', { name: /S-56$/ }).first().click(); await page.wa
   await settle(); await page.getByRole('button', { name: 'Next', exact: true }).click(); await page.waitForTimeout(900);
   const courseTitle = L.titleCase(L.getCourse(FINISH).title);
   const said = await page.evaluate(() => window.__spoken.join(' '));
-  ok("the star it earned was the course's last, so the celebration page comes before the second review, naming the course (the second read: it used to wait behind Next and never show)", (await screen()) === 'course-done' && said.includes(`You finished the whole course, ${courseTitle}!`), { screen: await screen(), said: said.slice(0, 120) });
-  await settle(); await page.getByLabel('Return home').click(); await page.waitForTimeout(700);
-  ok("its Return home button goes home, where the day's second review waits", (await screen()) === 'overview' && (await page.locator('[data-light-review-count="1"]').count()) === 1, { screen: await screen(), cards: await page.locator('[data-light-review-card]').count() });
+  ok("the star it earned was the course's last, so the celebration page comes before the second review, naming the course (the second read: it used to wait behind Next and never show)", (await screen()) === 'course-done' && said.includes(`You earned every star in ${courseTitle}!`), { screen: await screen(), said: said.slice(0, 120) });
+  await settle(); await page.getByLabel('Return Home').click(); await page.waitForTimeout(700);
+  ok("its Return Home button goes home, where the day's second review waits", (await screen()) === 'overview' && (await page.locator('[data-light-review-count="1"]').count()) === 1, { screen: await screen(), cards: await page.locator('[data-light-review-card]').count() });
   await page.getByRole('button', { name: 'Start', exact: true }).click(); await page.waitForTimeout(500); await clearReview();
   ok('the second review clears and goes home without a second celebration', (await screen()) === 'light-review-result' && (await page.getByRole('button', { name: 'Back to my lessons' }).count()) === 1);
   await settle(); await page.getByRole('button', { name: 'Back to my lessons' }).click(); await page.waitForTimeout(700);
@@ -363,7 +367,7 @@ await page.getByRole('button', { name: /S-56$/ }).first().click(); await page.wa
 // S-56, one star short of How Computers Think (tech-3, three tap-answer lessons with a long story), passes its last lesson. Her
 // result says the whole course is done and offers Celebrate!, once; the celebration page names the course on its card without
 // speaking unasked (a reader's screens never talk unless asked), its gold book reads Read the story, its button across the
-// bottom reads Return home, the book opens the reader's story page with no Print link and Return home at both ends, the end one
+// bottom reads Return Home, the book opens the reader's story page with no Print link and Return Home at both ends, the end one
 // the same wide button (pass MG, the screen check), and that goes home.
 { const READER = 'tech-3';
   await page.evaluate(() => window.__eduTest.goHome()); await screenIs('educator-pick'); await page.waitForTimeout(400); await tapIf('Got it');
@@ -390,14 +394,14 @@ await page.getByRole('button', { name: /S-56$/ }).first().click(); await page.wa
   await settle(); await page.getByRole('button', { name: 'Celebrate!', exact: true }).click(); await screenIs('course-done'); await page.waitForTimeout(900);
   const rc = await page.evaluate(() => ({ confetti: document.querySelectorAll('.edu-confetti').length, labels: [...document.querySelectorAll('button')].map((b) => b.getAttribute('aria-label')).filter(Boolean), said: window.__spoken.join(' '), page: document.body.innerText.replace(/\s+/g, ' ') }));
   await snap('5-reader-course-done');
-  ok("a reader's celebration shows the confetti, names the course on the card, says Read the story under its gold book and Return home across the bottom, and speaks nothing unasked", rc.confetti >= 24 && rc.page.includes(`Hooray! You finished the whole course, ${readerTitle}!`) && rc.page.includes('Read the story') && rc.page.includes('Return home') && rc.labels.join('|') === `Back|Hear it|Read the story of ${readerTitle}|Return home` && rc.said === '', rc);
+  ok("a reader's celebration shows the confetti, names the course on the card, says Read the story under its gold book and Return Home across the bottom, and speaks nothing unasked", rc.confetti >= 24 && rc.page.includes(`Hooray! You finished the whole course, ${readerTitle}!`) && rc.page.includes('Read the story') && rc.page.includes('Return Home') && rc.labels.join('|') === `Back|Hear it|Read the story of ${readerTitle}|Return Home` && rc.said === '', rc);
   await page.locator('[data-course-story-book]').click(); await screenIs('course-story'); await page.waitForTimeout(600);
   const rp = await text();
-  ok("the book opens the reader's story page, with no Print link and Return home at both ends (Mikey: don't need the print)", (await page.locator('[data-reader-story="reward"][data-course-story-page]').count()) === 1 && rp.includes(ST.COURSE_STORIES[READER].title.split(' ')[0]) && (await page.getByRole('button', { name: 'Print', exact: true }).count()) === 0 && (await page.getByRole('button', { name: 'Return home', exact: true }).count()) === 2 && (await page.getByRole('button', { name: 'Back to my courses' }).count()) === 0, rp.slice(0, 200));
+  ok("the book opens the reader's story page, with no Print link and Return Home at both ends (Mikey: don't need the print)", (await page.locator('[data-reader-story="reward"][data-course-story-page]').count()) === 1 && rp.includes(ST.COURSE_STORIES[READER].title.split(' ')[0]) && (await page.getByRole('button', { name: 'Print', exact: true }).count()) === 0 && (await page.getByRole('button', { name: 'Return Home', exact: true }).count()) === 2 && (await page.getByRole('button', { name: 'Back to my courses' }).count()) === 0, rp.slice(0, 200));
   { const wide = await page.evaluate(() => { const b = document.querySelector('[data-reader-story-home]'); const s = document.querySelector('[data-reader-story]'); return b && s ? { b: Math.round(b.getBoundingClientRect().width), s: Math.round(s.getBoundingClientRect().width), label: b.getAttribute('aria-label'), last: [...document.querySelectorAll('button')].filter((x) => x.offsetParent).pop() === b } : null; });
-    ok("the reader's story page from Celebrate! ends on the same wide Return home button the celebration ended on", !!wide && wide.label === 'Return home' && wide.b >= wide.s - 2 && wide.last, wide); }
-  await settle(); await page.getByRole('button', { name: 'Return home', exact: true }).first().click(); await screenIs('overview'); await page.waitForTimeout(500);
-  ok("Return home goes home, and the course's story now waits on Let's Read with its Print link, as before", (await screen()) === 'overview');
+    ok("the reader's story page from Celebrate! ends on the same wide Return Home button the celebration ended on", !!wide && wide.label === 'Return Home' && wide.b >= wide.s - 2 && wide.last, wide); }
+  await settle(); await page.getByRole('button', { name: 'Return Home', exact: true }).first().click(); await screenIs('overview'); await page.waitForTimeout(500);
+  ok("Return Home goes home, and the course's story now waits on Let's Read with its Print link, as before", (await screen()) === 'overview');
   // From grade 6 up the line is calmer (pass MG, Mikey's answer to Q24, "calmer"), the confetti and the star kept: a grade 9
   // course's page, opened by the test hook, says Well done with the course's name, and no Hooray.
   { const calm = L.getCourse('psychology-9'); await page.evaluate((id) => window.__eduTest.goTo('course-done', id), calm.id); await screenIs('course-done'); await page.waitForTimeout(700);
@@ -446,7 +450,68 @@ await page.getByRole('button', { name: /S-56$/ }).first().click(); await page.wa
   await settle(); await page.getByRole('button', { name: 'Celebrate!', exact: true }).click(); await screenIs('course-done'); await page.waitForTimeout(500);
   ok("Celebrate! opens the reader's celebration, with Read the story under its book", (await text()).includes('Read the story') && (await page.locator('[data-course-done-home]').count()) === 1);
   await settle(); await page.locator('[data-course-done-home]').click(); await screenIs('overview'); await page.waitForTimeout(400);
-  ok('its Return home button goes home', (await screen()) === 'overview'); }
+  ok('its Return Home button goes home', (await screen()) === 'overview'); }
+// The first finish (pass MH, Mikey: "Even for early readers, they should be launched into the long story at the end of a completed
+// course (both 1st and 2nd time on different days)" and "I saw an arrow and not an unlocked long story"): the Early years student
+// S-58 has passed every First Steps lesson but the last, once, two days ago. Passing the last today says that was every lesson;
+// after the lesson's own reward story the first celebration opens, says every lesson aloud and offers the course's long story,
+// which reads itself; and the long story then waits on Let's Read, open, before a single star.
+{ await page.evaluate(() => window.__eduTest.goHome()); await screenIs('educator-pick'); await page.waitForTimeout(400); await tapIf('Got it');
+  await page.getByRole('button', { name: 'Add someone new' }).first().click(); await page.waitForTimeout(300);
+  await page.fill('input[placeholder="School-issued ID"]', 'S-58'); await page.getByRole('button', { name: /^Early years/ }).first().click(); await page.waitForTimeout(200);
+  await page.getByRole('button', { name: 'Add', exact: true }).click(); await page.waitForTimeout(500); await tapIf('Later');
+  const one = await page.evaluate((id) => window.__eduTest.seedHistory('S-58', { complete: id }), FINISH);
+  ok('the hook leaves First Steps one lesson short of its first finish for S-58', !!one && one.complete === FINISH && !!one.lastLesson, one);
+  await page.getByRole('button', { name: 'Home' }).first().click(); await page.waitForTimeout(500);
+  await page.getByRole('button', { name: /S-58$/ }).first().click(); await page.waitForTimeout(900); await tapIf('Later');
+  await page.evaluate(() => { window.__spoken = []; });
+  await passRound(one.lastLesson);
+  const t1 = await text();
+  ok('the round that passes the last unpassed lesson says that was every lesson, and names no next course yet', t1.includes('Well done! That was every lesson.') && !t1.includes('Next: ') && !t1.includes('whole course'), t1.slice(0, 200));
+  if ((await page.getByLabel('Hear your story').count()) === 1) { await settle(); await page.getByLabel('Hear your story').click(); await screenIs('story'); await page.waitForTimeout(500); }
+  await settle(); await page.getByLabel('Keep going').click(); await screenIs('course-done'); await page.waitForTimeout(900);
+  const courseTitle1 = L.titleCase(L.getCourse(FINISH).title);
+  const first = await page.evaluate(() => ({ stage: (document.querySelector('[data-course-done]') || {}).getAttribute ? document.querySelector('[data-course-done]').getAttribute('data-course-done-stage') : null, said: window.__spoken.join(' '), kind: (document.querySelector('[data-course-story-book]') || { getAttribute: () => null }).getAttribute('data-course-story-kind') }));
+  ok('the first celebration opens with every lesson said aloud and the course\'s first long story offered', first.stage === 'complete' && first.kind === 'course' && first.said.includes(`Hooray! You did every lesson in ${courseTitle1}! Here is its story. Tap the gold book to hear it, or tap the green button at the bottom to go home.`), first);
+  await snap('4b-first-finish');
+  await page.evaluate(() => { window.__spoken = []; });
+  await settle(); await page.locator('[data-course-story-book]').click(); await screenIs('course-story'); await page.waitForTimeout(1200);
+  const saidFirst = await page.evaluate(() => window.__spoken.slice());
+  ok('its gold book opens the long story on the self-reading page, the story of the course, read aloud from its title', saidFirst[0] === `${ST.COURSE_STORIES[FINISH].title}.` && (await page.locator('[data-read-aloud-story="reward"][data-course-story-kind="course"]').count()) === 1 && (await text()).includes(`The story of ${courseTitle1}`), saidFirst.slice(0, 2));
+  await settle(); await page.getByLabel('Return Home').click(); await screenIs('overview'); await page.waitForTimeout(600);
+  const fold4 = page.getByRole('button', { name: "Let's Read", exact: true });
+  if ((await fold4.count()) && (await fold4.first().getAttribute('aria-expanded')) !== 'true') { await fold4.first().click(); await page.waitForTimeout(400); }
+  const openBook = await page.locator(`[data-course-story-book="${FINISH}"]`).evaluateAll((bs) => bs.map((b) => ({ label: b.getAttribute('aria-label'), disabled: b.disabled })));
+  ok("afterwards the long story waits on Let's Read, open before a single star (it used to wait for every star)", openBook.length === 1 && !openBook[0].disabled && openBook[0].label === `Hear ${storyTitle} again`, openBook); }
+// A reader's first finish (pass MH): the Elementary student S-61, one lesson short of How Computers Think's first finish, passes
+// it; her result says that was every lesson and offers Celebrate!, whose page names every lesson passed and offers the story.
+{ await page.evaluate(() => window.__eduTest.goHome()); await screenIs('educator-pick'); await page.waitForTimeout(400); await tapIf('Got it');
+  await page.getByRole('button', { name: 'Add someone new' }).first().click(); await page.waitForTimeout(300);
+  await page.fill('input[placeholder="School-issued ID"]', 'S-61'); await page.getByRole('button', { name: /^Elementary/ }).first().click(); await page.waitForTimeout(200);
+  await page.getByRole('button', { name: 'Add', exact: true }).click(); await page.waitForTimeout(500); await tapIf('Later');
+  const oneR = await page.evaluate(() => window.__eduTest.seedHistory('S-61', { complete: 'tech-3' }));
+  ok("the hook leaves the reader's course one lesson short of its first finish for S-61", !!oneR && oneR.complete === 'tech-3' && !!oneR.lastLesson, oneR);
+  await page.getByRole('button', { name: 'Home' }).first().click(); await page.waitForTimeout(500);
+  await page.getByRole('button', { name: /S-61$/ }).first().click(); await page.waitForTimeout(900); await tapIf('Later');
+  await page.evaluate((m) => window.__eduTest.openModule(m), oneR.lastLesson); await screenIs('lesson'); await settle();
+  if (await tapIf('View story')) { await screenIs('story'); await settle(); }
+  await page.getByRole('button', { name: 'Practice this', exact: true }).first().click(); await screenIs('practice');
+  for (let i = 0; i < 30; i++) {
+    const st = await page.evaluate(() => ({ screen: window.__eduTest.screen, q: window.__eduTest.question })); if (st.screen !== 'practice') break;
+    await settle();
+    const byValue = page.locator(`button[data-choice="${String(st.q.answer).replace(/"/g, '\\"')}"]`); if (await byValue.count()) await byValue.first().click(); else await page.getByRole('button', { name: st.q.answer, exact: true }).first().click();
+    await page.getByRole('button', { name: 'Check answer' }).click();
+    const btn = page.getByRole('button', { name: /Next question|See results/ }); const label = await btn.textContent(); await btn.click();
+    if (label.includes('See results')) break;
+  }
+  await screenIs('result'); await page.waitForTimeout(300);
+  const tr1 = await text(); const readerTitle1 = L.titleCase(L.getCourse('tech-3').title);
+  ok("a reader's round that passes the last unpassed lesson says that was every lesson and offers Celebrate!", tr1.includes('That was every lesson in the course!') && (await page.getByRole('button', { name: 'Celebrate!', exact: true }).count()) === 1, tr1.slice(0, 200));
+  await settle(); await page.getByRole('button', { name: 'Celebrate!', exact: true }).click(); await screenIs('course-done'); await page.waitForTimeout(700);
+  const rp1 = await text();
+  ok("the reader's first celebration names every lesson passed and offers the course's story to read", rp1.includes(`Hooray! You passed every lesson in ${readerTitle1}!`) && rp1.includes('Here is its story.') && rp1.includes('Read the story'), rp1.slice(0, 300));
+  await settle(); await page.locator('[data-course-done-home]').click(); await screenIs('overview'); await page.waitForTimeout(400);
+  ok("its Return Home button goes home", (await screen()) === 'overview'); }
 // A walk-through's reward comes once (the code check, pass MD): the walk-through logs the first read in the log it keeps in
 // memory, so when a Wonder returns to the result, the arrow goes on and the book does not come back with the same story.
 { await page.evaluate(() => window.__eduTest.goHome()); await screenIs('educator-pick'); await page.waitForTimeout(400); await tapIf('Got it');

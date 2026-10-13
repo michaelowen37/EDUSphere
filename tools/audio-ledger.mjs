@@ -7,7 +7,7 @@
 // Run: node tools/audio-ledger.mjs > docs/AUDIO-LEDGER.md   (it also writes docs/AUDIO-LEDGER.csv, which tools/audio-generate.mjs reads)
 import { writeFileSync } from 'node:fs';
 import { COURSES, readAloudScript } from '../src/logic.mjs';
-import { STORIES, COURSE_STORIES } from '../src/stories.mjs';
+import { STORIES, COURSE_STORIES, MASTERY_STORIES } from '../src/stories.mjs';
 
 // Voices by age (Mikey, pass JH). The directions are short on purpose: one opens every clip, and ElevenLabs counts tags as characters.
 // Voices by age (Mikey, pass JH): warm and pleasant everywhere, never over-excited; young learners hear words drawn out and
@@ -37,17 +37,18 @@ for (const c of courses) {
     // A read-aloud lesson speaks readAloudScript's lines (pass JP: paragraphs too when it has no script), keyed by step as the app plays them.
     (c.readAloud ? readAloudScript(m) : (m.lesson && m.lesson.script ? m.lesson.script : [])).forEach((line, li) => sentencesOf(line.say).forEach((s, si) => add(`${m.id}-${li}-${si}`, 'lesson line', m.id, c.grade, `${DIRECTION.early} ${s}`, s, `${m.id}-lesson`)));
   }
-  const cs = COURSE_STORIES[c.id];
-  if (cs) {
-    add(`${cs.art}-0`, 'long story title', c.id, c.grade, `${DIRECTION.title} ${cs.title}.`, `${cs.title}.`, cs.art);
-    (cs.words || []).forEach((p, i) => add(`${cs.art}-${i + 1}`, 'long story', c.id, c.grade, `${DIRECTION[band(c.grade)]} ${(cs.audio && cs.audio[i]) || p}`, p, cs.art));
+  // A course's long story, and since pass MH its next one (MASTERY_STORIES), keyed by each story's own main picture serial.
+  for (const [cs, kind] of [[COURSE_STORIES[c.id], 'long story'], [MASTERY_STORIES[c.id], 'next long story']]) {
+    if (!cs) continue;
+    add(`${cs.art}-0`, `${kind} title`, c.id, c.grade, `${DIRECTION.title} ${cs.title}.`, `${cs.title}.`, cs.art);
+    (cs.words || []).forEach((p, i) => add(`${cs.art}-${i + 1}`, kind, c.id, c.grade, `${DIRECTION[band(c.grade)]} ${(cs.audio && cs.audio[i]) || p}`, p, cs.art));
   }
 }
 const csv = (v) => `"${String(v).replace(/"/g, '""')}"`;
 writeFileSync(new URL('../docs/AUDIO-LEDGER.csv', import.meta.url), ['key,kind,source,grade,voice,group,characters,text', ...rows.map((r) => [r.key, r.kind, r.source, r.grade, r.voice, r.group, r.text.length, r.text].map(csv).join(','))].join('\n') + '\n');
 const longest = Math.max(...rows.map((r) => r.text.length));
 const groups = new Map(); for (const r of rows) groups.set(r.group, (groups.get(r.group) || 0) + r.text.length);
-const tagged = Object.values(STORIES).filter((s) => s.audio).length + Object.values(COURSE_STORIES).filter((s) => s.audio).length;
+const tagged = Object.values(STORIES).filter((s) => s.audio).length + Object.values(COURSE_STORIES).filter((s) => s.audio).length + Object.values(MASTERY_STORIES).filter((s) => s.audio).length;
 const chars = rows.reduce((a, r) => a + r.text.length, 0);
 console.log(`# Audio ledger
 

@@ -89,9 +89,12 @@ export function castAges(L, ST) {
   const rows = []; const longs = []; const byChapter = {};
   for (const c of [...L.COURSES].sort((a, b) => order(a) - order(b))) {
     for (const m of c.modules) { const s = ST.STORIES[m.id]; if (!s) continue; const a = agePhrases(s.words); if (a.length) rows.push({ kind: 'module story', id: m.id, grade: c.grade, title: s.title, phrases: a }); }
-    const cs = ST.COURSE_STORIES[c.id];
-    if (cs) { const a = agePhrases(cs.words); longs.push(a.length ? 'A' : '.'); if (a.length) rows.push({ kind: 'long story', id: c.id, grade: c.grade, title: cs.title, phrases: a });
-      const ch = chapterOf(c.grade); byChapter[ch] = byChapter[ch] || { total: 0, stating: 0 }; byChapter[ch].total += 1; if (a.length) byChapter[ch].stating += 1; }
+    // A course's first long story, then since pass MH its next one (MASTERY_STORIES), each counted like any long story.
+    for (const [cs, id, kind] of [[ST.COURSE_STORIES[c.id], c.id, 'long story'], [(ST.MASTERY_STORIES || {})[c.id], `mastery:${c.id}`, 'next long story']]) {
+      if (!cs) continue;
+      const a = agePhrases(cs.words); longs.push(a.length ? 'A' : '.'); if (a.length) rows.push({ kind, id, grade: c.grade, title: cs.title, phrases: a });
+      const ch = chapterOf(c.grade); byChapter[ch] = byChapter[ch] || { total: 0, stating: 0 }; byChapter[ch].total += 1; if (a.length) byChapter[ch].stating += 1;
+    }
   }
   const runs = longs.join('').split('.').map((r) => r.length);
   return { rows, byChapter, longPattern: longs.join(''), longTotal: longs.length, longStating: longs.filter((x) => x === 'A').length, longestRun: Math.max(0, ...runs) };

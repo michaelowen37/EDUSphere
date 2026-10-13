@@ -33,4 +33,7 @@ echo "13c/13 the quick look back and Action Items, walked as a student and an ed
 # celebration and the cover shelf joined it), since a second read of a story must stay open STORY_REREAD_SECONDS with its
 # end in view before it counts; the timeout is seven minutes, to catch a hang rather than a slow machine (pass KU's rule).
 echo "13d/13 game breaks, elective stories and Let's Read, walked as a student and an educator"; timeout 420 node tests/e2e/play-and-read.mjs 2>&1 | tail -1 | tee /tmp/edu_play.txt; grep -q " 0 failed" /tmp/edu_play.txt || fail=1
+# Bigger question pictures with answer buttons kept their size, More Info, the Wonder portraits and pondering pictures, and the
+# read-along's lit sentence (pass MH, from Mikey's notes): about a minute; the timeout is five, to catch a hang (pass KU's rule).
+echo "13e/13 question pictures, More Info, the Wonder pictures and the read-along"; timeout 300 node tests/e2e/question-screens.mjs 2>&1 | tail -1 | tee /tmp/edu_qs.txt; grep -q " 0 failed" /tmp/edu_qs.txt || fail=1
 if [ "$fail" = 0 ]; then echo "ALL CHECKS PASSED"; else echo "CHECKS FAILED - read the lines above"; exit 1; fi

@@ -33,7 +33,8 @@
 // (goldEdge), and panels inside a card are lifted a shade with a hairline (panel, panelLine).
 // Mikey (2026-09-24): in the dark theme every card edge is the Let's Read card's light green (#7CC3A6), the logo keeps its gold,
 // and the Classroom's four feature cards are light playful colors (feat*) with dark words and no contrasting edge.
-// paperBoard is the paper that games, coloring pages and lesson pictures sit on: white in light, almond in dark.
+// paperBoard is the paper that games, coloring pages and lesson pictures sit on: white in light, and in dark a very light green
+// (#D9E6DC) since pass MH (Mikey: "maybe a very light green to match the theme"), where it was almond (#EFE8DC).
 // Mikey (2026-09-24): the light theme stays exactly as it was before the dark theme; anything that changes a look for the
 // dark theme alone checks C.mode, and tabEdge is the Active Students tab's own edge (never gold).
 const THEMES = {
@@ -61,7 +62,7 @@ const THEMES = {
     logoInk: '#F1EDE3', logoOrbit: '#F1EDE3', logoTag: '#D9A441', veil: 'rgba(0, 0, 0, 0.18)', panel: '#2A4C40', panelLine: '#7CC3A6', goldEdge: '#7CC3A6', cardEdge: '#7CC3A6', softEdge: '#7CC3A6', tabEdge: '#2F5A48',
     featWonder: '#DCD1F5', featWonderLine: '#DCD1F5', featReading: '#C7DFF8', featReadingLine: '#C7DFF8',
     featExperiments: '#FAD1C2', featExperimentsLine: '#FAD1C2', featLife: '#F9EDC2', featLifeLine: '#F9EDC2', featInk: '#16201B',
-    paperBoard: '#EFE8DC', transcriptFill: '#FAD1C2', transcriptLine: '#FAD1C2', transcriptInk: '#16201B', listBody: '#1A2B25', scrim: 'rgba(4, 10, 8, 0.72)',
+    paperBoard: '#D9E6DC', transcriptFill: '#FAD1C2', transcriptLine: '#FAD1C2', transcriptInk: '#16201B', listBody: '#1A2B25', scrim: 'rgba(4, 10, 8, 0.72)',
     tintMint: 'linear-gradient(135deg, #1F3B31 0%, #1A322A 100%)', tintSage: 'linear-gradient(135deg, #1C352C 0%, #182D26 100%)', tintMintLine: '#7CC3A6',
     tintBlue: 'linear-gradient(135deg, #1F2C42 0%, #1A2537 100%)', tintBlueLine: '#7CC3A6', tintRose: 'linear-gradient(135deg, rgba(238, 123, 91, 0.09) 0%, rgba(238, 123, 91, 0.03) 70%), #1D302A', tintRoseLine: '#7CC3A6',
     tintAmber: 'linear-gradient(135deg, rgba(217, 164, 65, 0.10) 0%, rgba(217, 164, 65, 0.03) 70%), #1D302A', tintAmberLine: '#7CC3A6', roseSoft: 'linear-gradient(135deg, rgba(238, 123, 91, 0.09) 0%, rgba(238, 123, 91, 0.03) 70%), #1D302A', mist: '#1F2C27', mistLine: '#7CC3A6',
@@ -74,10 +75,23 @@ const C = { ...THEMES.light };
 const B = THEMES.light;
 // Lit letters in the dark theme (pass MD, Mikey: "Whatever you think about the highlighted letter question"). A letters picture
 // lights the part its line names (the A of Apple, the B of BUS) in gold (B.gold, the light palette's #B8862B), on the paper the
-// picture sits on. The paper is white in the light theme, where that gold reads 3.24 to 1, and almond in the dark, where it
-// read 2.66 to 1, under the 3 to 1 that large letters need. So in the dark theme lit letters take this deeper gold, 3.17 to 1
-// on the almond and still apart from the green letters beside them; the light theme, frozen since 2026-09-24, keeps its gold.
-const LIT_LETTER_DARK = '#A67A26';
+// picture sits on. The paper is white in the light theme, where that gold reads 3.24 to 1; in the dark theme it was almond
+// until pass MH, where it read 2.66 to 1, under the 3 to 1 that large letters need, so from pass MD the dark theme's lit letters
+// took a deeper gold (#A67A26, 3.17 to 1 on the almond, still apart from the green letters beside them), and on pass MH's light
+// green paper the deeper gold below; the light theme, frozen since 2026-09-24, keeps its gold.
+const LIT_LETTER_DARK = '#9C7020';   // since pass MH, 3.43 to 1 on the light green paper (#A67A26 read 3.00 there)
+// Read-along lighting (pass MH, Mikey: "At least on dark theme, the highlighted text, while audio is playing, should be a light
+// green background to see the highlighted words more clearly."). The sentence or Wonder choice the voice is on (a story lit its
+// whole paragraph until Mikey's note at 2:03, "I meant just the words (how they were before)") sits on the light green of the
+// Key idea card, with the dark ink, in the dark theme (10.6 to 1); the light theme keeps its pale gold until Q32 is answered.
+// The round speaker's drawing (pass MH, Mikey's answer to Q29: "your discretion"): the gold loudspeaker a child taps to hear the
+// words again reads 5.36 to 1 on its button in the dark theme, and in the light theme took the deeper gold (#A67A26, 3.25 to 1
+// on the cream, where the logo gold read 2.72), so a child who cannot read can find it by its drawing alone.
+const speakerInk = () => (C.mode === 'dark' ? C.gold : '#A67A26');
+const readLit = () => (C.mode === 'dark' ? { background: '#AAD8C5', color: '#16201B' } : { background: C.goldSoft, color: C.ink });
+// The shape of a lit sentence (pass MH): a highlight hugging the words, rounded at each line's ends, its padding taken back by
+// a negative margin so the words never move as the light passes over them.
+const LIT_WORDS = { borderRadius: 5, padding: '1px 2px', margin: '0 -2px', boxDecorationBreak: 'clone', WebkitBoxDecorationBreak: 'clone', transition: 'background 150ms' };
 // Style objects shared across screens copy colors from C when they are made, so each is made from a recipe that
 // applyTheme runs again after a switch.
 const THEMED = [];
@@ -431,12 +445,18 @@ function CountRow({ items, colour, cell = 34, frame = 5, snap = false, gap = 8 }
   );
 }
 // A row of shapes spread across the picture: a pattern (with ? for the missing piece), or a counted row drawn without a cell size.
-function PatternRow({ items, colour }) {
+function PatternRow({ items, colour, k = 1 }) {
+  // Bigger on a tablet or laptop (pass MH): 76 pixels from 700 wide, 56 on a phone, each shape in a cell of its own, times k for
+  // a question's or a lesson's own picture. The row is one line always (the code and screen checks, pass MH): its cells share the
+  // width the row has and shrink together when it is short of room, so a pattern is never split across two lines (six shapes
+  // used to break five and one), and each drawing fills its cell (edu-fit).
+  const wide = typeof window !== 'undefined' && window.innerWidth >= 700;
+  const size = Math.round((wide ? 76 : 56) * k);
   return (
-    <div style={{ display: 'flex', gap: 10, justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
+    <div data-pattern-row="" style={{ display: 'grid', gridTemplateColumns: `repeat(${items.length}, minmax(0, ${size}px))`, columnGap: `min(${Math.round(size * 0.24)}px, 3%)`, justifyContent: 'center', alignItems: 'center' }}>
       {items.map((it, i) => it === '?'
-        ? <span key={i} style={{ width: 52, height: 52, borderRadius: 12, border: `3px dashed ${B.muted}`, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: 26, color: B.muted, fontWeight: 700 }}>?</span>
-        : <ShapePic key={i} name={it} size={52} color={SWATCH[colour] || B.green} />)}
+        ? <span key={i} style={{ width: '100%', aspectRatio: '1 / 1', boxSizing: 'border-box', borderRadius: 12, border: `3px dashed ${B.muted}`, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontSize: Math.round(size / 2.4), lineHeight: 1, color: B.muted, fontWeight: 700 }}>?</span>
+        : <span key={i} className="edu-fit"><ShapePic name={it} size={size} color={SWATCH[colour] || B.green} /></span>)}
     </div>
   );
 }
@@ -673,7 +693,14 @@ function IconPic({ name, size = 90 }) {
     // playground slide, a kitchen knife, scissors, a screwdriver, a house with its number plate blank, a medicine bottle and a
     // crossed-out cigarette.
     bubble: <g><circle cx="50" cy="50" r="40" fill="#CFEAF7" stroke={blue} strokeWidth="3" strokeDasharray="6 5" opacity="0.9" /><circle cx="50" cy="34" r="9" fill="#E8C9A0" /><rect x="43" y="44" width="14" height="22" rx="5" fill="#C9573E" /><path d="M46 66 L44 82 M54 66 L56 82" stroke="#2E4A62" strokeWidth="5" strokeLinecap="round" /><path d="M43 48 L30 56 M57 48 L70 56" stroke="#E8C9A0" strokeWidth="5" strokeLinecap="round" /><circle cx="46" cy="33" r="1.5" fill="#2E2E2E" /><circle cx="54" cy="33" r="1.5" fill="#2E2E2E" /><path d="M46 38 Q50 41 54 38" fill="none" stroke="#2E2E2E" strokeWidth="1.5" strokeLinecap="round" /></g>,
-    stop: <g><path d="M34 92 L34 50 Q34 44 40 44 Q46 44 46 50 L46 38 Q46 32 52 32 Q58 32 58 38 L58 36 Q58 30 64 30 Q70 30 70 36 L70 44 Q70 38 76 38 Q82 38 82 44 L82 70 Q82 92 62 92 Z" fill="#E8C9A0" stroke="#8B5A2B" strokeWidth="3" strokeLinejoin="round" /><path d="M34 60 Q24 48 20 56 Q16 64 30 74" fill="#E8C9A0" stroke="#8B5A2B" strokeWidth="3" strokeLinejoin="round" /><circle cx="22" cy="22" r="12" fill={red} /><path d="M16 22 L28 22" stroke="#fff" strokeWidth="4" strokeLinecap="round" /></g>,
+    stop: <g>{/* The stop hand (pass MH): one outlined shape from a sleeve, four fingers and an attached thumb, and the red no sign. */}
+      <rect x="31" y="84" width="40" height="16" rx="5" fill="#4A7FC1" stroke="#2E2E2E" strokeWidth="2.5" />
+      {[['M38 30 L38 64', 9.4], ['M48.5 23 L48.5 64', 9.8], ['M59 26 L59 64', 9.4], ['M68.4 35 L68.4 66', 8.2], ['M38 78 L24 58', 9.6]].map(([d, w], i) => <path key={`o${i}`} d={d} stroke="#8B5A2B" strokeWidth={w + 5} strokeLinecap="round" fill="none" />)}
+      <path d="M33 58 L73 58 L73 76 Q73 90 60 90 L44 90 Q33 90 33 78 Z" fill="#8B5A2B" stroke="#8B5A2B" strokeWidth="5" strokeLinejoin="round" />
+      <path d="M33 58 L73 58 L73 76 Q73 90 60 90 L44 90 Q33 90 33 78 Z" fill="#E8C9A0" />
+      {[['M38 30 L38 64', 9.4], ['M48.5 23 L48.5 64', 9.8], ['M59 26 L59 64', 9.4], ['M68.4 35 L68.4 66', 8.2], ['M38 78 L24 58', 9.6]].map(([d, w], i) => <path key={`f${i}`} d={d} stroke="#E8C9A0" strokeWidth={w} strokeLinecap="round" fill="none" />)}
+      <path d="M43.4 46 L43.4 60 M53.8 44 L53.8 60 M63.8 48 L63.8 61" stroke="#C99E72" strokeWidth="1.4" strokeLinecap="round" />
+      <circle cx="84" cy="18" r="12" fill={red} stroke="#FFFFFF" strokeWidth="2" /><path d="M78 18 L90 18" stroke="#fff" strokeWidth="4" strokeLinecap="round" /></g>,
     slide: <g><path d="M14 84 L14 70 L40 70" fill="none" stroke="#6B716A" strokeWidth="4" /><path d="M20 70 L20 84 M34 70 L34 84" stroke="#6B716A" strokeWidth="4" /><path d="M14 30 L36 30 L36 70" fill="none" stroke="#6B716A" strokeWidth="4" /><path d="M36 30 Q60 32 70 56 Q78 76 90 82" fill="none" stroke={gold} strokeWidth="12" strokeLinecap="round" /><path d="M36 30 Q60 32 70 56 Q78 76 90 82" fill="none" stroke="#F2C14E" strokeWidth="6" strokeLinecap="round" opacity="0.7" /><path d="M14 30 L14 84" stroke="#6B716A" strokeWidth="4" /><path d="M14 40 L36 40 M14 50 L36 50 M14 60 L36 60" stroke="#6B716A" strokeWidth="3" /><path d="M4 90 L96 90" stroke="#3E7D52" strokeWidth="5" strokeLinecap="round" /></g>,
     knife: <g transform="rotate(-40 50 50)"><rect x="14" y="43" width="30" height="14" rx="4" fill="#4A3B2A" stroke="#2E2E2E" strokeWidth="2.5" /><path d="M44 42 L90 46 Q92 50 90 54 L44 58 Z" fill="#D8DEE2" stroke="#6F7A76" strokeWidth="2.5" strokeLinejoin="round" /><path d="M48 54 L86 54" stroke="#B8BFBA" strokeWidth="2" /></g>,
     scissors: <g><circle cx="30" cy="70" r="11" fill="none" stroke={red} strokeWidth="6" /><circle cx="58" cy="78" r="11" fill="none" stroke={red} strokeWidth="6" /><path d="M36 61 L78 22" stroke="#D8DEE2" strokeWidth="9" strokeLinecap="round" /><path d="M36 61 L78 22" stroke="#6F7A76" strokeWidth="3" strokeLinecap="round" opacity="0.6" /><path d="M52 70 L30 18" stroke="#D8DEE2" strokeWidth="9" strokeLinecap="round" /><path d="M52 70 L30 18" stroke="#6F7A76" strokeWidth="3" strokeLinecap="round" opacity="0.6" /><circle cx="46" cy="56" r="4" fill="#6F7A76" /></g>,
@@ -1061,31 +1088,49 @@ function NotedDrawing({ children, animKey = 0 }) {
 function Picture(props) {
   if (!props.visual) return null;
   // bare (pass MA): a picture drawn on another picture's paper, half of a pair, takes no paper card of its own.
-  const { note, bare, ...rest } = props;
+  const { note, bare, big, ...rest } = props;
+  // A size in words (a big, middle or small shape) scales with the rest, so a lesson's three sizes keep their order (the code
+  // check, pass MH: 'big' once kept a shape still while an unsized one grew past it); a number size is a layout and stays.
+  const free = !(typeof props.visual.size === 'number' || props.visual.frame || props.visual.snap || props.visual.gap);
+  rest.k = big && free ? bigScale() : 1;
   const noted = note === true || (note !== false && visualStandIn(props.visual));
   const drawing = noted ? <NotedDrawing animKey={props.animKey}><PictureInner {...rest} /></NotedDrawing> : <PictureInner {...rest} />;
-  return C.mode === 'dark' && !bare ? <div className="edu-paper-picture" style={{ background: C.paperBoard, borderRadius: 12, padding: '4px 10px', color: B.ink }}>{drawing}</div> : drawing;
+  // A picture of one thing, one short row or two such things side by side sits on a paper sized to it (pass MH); a diagram, a
+  // counted row with cells of a set size and a stacked pair keep the full width their layout is measured against.
+  const snugKind = (v) => !!v && ['pattern', 'icon', 'pic', 'art', 'face', 'faces', 'shape', 'solid', 'dots', 'swatch', 'item'].includes(v.kind) && !(v.kind === 'pattern' && v.size);
+  const snug = snugKind(props.visual) || (props.visual.kind === 'pair' && !props.visual.stack && snugKind(props.visual.a) && snugKind(props.visual.b));
+  // The snug paper keeps the old paper's 4 pixels above and below (a 375 by 667 phone's Check answer sits 1 pixel above the fold
+  // on a four-color question), and a row of shapes keeps 12 at its sides, so a long row on a phone has the width to stay on one line.
+  const side = props.visual.kind === 'pattern' ? 12 : 22;
+  return C.mode === 'dark' && !bare ? <div className="edu-paper-picture" style={{ background: C.paperBoard, borderRadius: 12, padding: snug ? `4px ${side}px` : '4px 10px', color: B.ink, ...(snug ? { width: 'fit-content', maxWidth: '100%', margin: '0 auto', boxSizing: 'border-box' } : {}) }}>{drawing}</div> : drawing;
 }
-function PictureInner({ visual, animate = false, animKey = 0, nudge = 0 }) {
+// How much bigger a question's or a lesson's picture draws (pass MH): a wide screen has room to spare, a phone a little, and a
+// short phone (under 720 pixels tall, an iPhone SE's 667) none, so Check answer stays above the fold (the screen check), and
+// nor does a phone held sideways (wide but under 600 tall; the code check's second read).
+function bigScale() { if (typeof window === 'undefined') return 1; const w = window.innerWidth; const h = window.innerHeight; return w >= 700 ? (h >= 600 ? 1.45 : 1) : h >= 720 ? 1.12 : 1; }
+function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1 }) {
   if (!visual) return null;
-  if (visual.kind === 'dots') return <div style={{ padding: '6px 0' }}><DotGroup count={visual.count} frame={visual.frame || 5} snap={!!visual.snap} gap={visual.gap || 8} animate={animate} animKey={animKey} /></div>;
+  const at = (n) => Math.round(n * k);   // a size, scaled for a question's or a lesson's own picture (k is 1 everywhere else)
+  // Dots to count grow a little more than other pictures (60 pixels on a laptop, 40 on a phone), so a row of two or three fills
+  // the paper the way a counting picture should (pass MH).
+  if (visual.kind === 'dots') return <div style={{ padding: '6px 0' }}><DotGroup count={visual.count} size={k > 1 ? (k >= 1.4 ? 60 : 40) : 34} frame={visual.frame || 5} snap={!!visual.snap} gap={visual.gap || 8} animate={animate} animKey={animKey} /></div>;
   if (visual.kind === 'trace') return <div style={{ padding: '6px 0' }}><TraceDemo letter={visual.text} animKey={animKey} pace={visual.pace} nudge={nudge} /></div>;
   if (DIAGRAMS[visual.kind]) { const D = DIAGRAMS[visual.kind]; return <div key={animKey} style={{ padding: '6px 0' }}><D {...visual} /></div>; }
   if (visual.kind === 'numberline' && visual.from !== undefined) return <div key={animKey} style={{ padding: '6px 0' }}><NumberLinePic from={visual.from} to={visual.to} mark={visual.mark ?? null} marks={visual.marks || []} /></div>;
   if (visual.kind === 'tri') return <div key={animKey} style={{ padding: '6px 0' }}><TriPic base={visual.base} height={visual.height} area={visual.area} /></div>;
   if (visual.kind === 'para') return <div key={animKey} style={{ padding: '6px 0' }}><ParaPic base={visual.base} height={visual.height} side={visual.side} /></div>;
   if (visual.kind === 'periodic') return <div key={animKey} style={{ padding: '6px 0' }}><PeriodicPic highlight={visual.highlight || []} period={visual.period || null} group={visual.group || null} /></div>;
-  if (visual.kind === 'pic') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0', display: 'flex', justifyContent: 'center' }}><StudentPicture name={visual.name} size={110} /></div>;
-  if (visual.kind === 'art') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0', display: 'flex', justifyContent: 'center' }}><ColorThumb picture={visual.name} size={120} thing /></div>;
-  if (visual.kind === 'icon') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><IconPic name={visual.name} size={110} /></div>;
+  if (visual.kind === 'pic') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0', display: 'flex', justifyContent: 'center' }}><StudentPicture name={visual.name} size={at(110)} /></div>;
+  if (visual.kind === 'art') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0', display: 'flex', justifyContent: 'center' }}><ColorThumb picture={visual.name} size={at(120)} thing /></div>;
+  if (visual.kind === 'icon') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><IconPic name={visual.name} size={at(110)} /></div>;
   // A feeling face, or a grid of two to four of them two to a row (pass MD), each face its own drawing (FeelingFace).
-  if (visual.kind === 'face') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><FeelingFace feeling={visual.feeling} size={140} /></div>;
+  if (visual.kind === 'face') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><FeelingFace feeling={visual.feeling} size={at(140)} /></div>;
   // An odd last face spans both columns, so three faces sit two above and one centered below.
   if (visual.kind === 'faces') { const fs = (visual.feelings || []).slice(0, 4);
     return <div key={animKey} data-faces="" style={{ padding: '6px 0', display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 10, justifyItems: 'center', maxWidth: 300, margin: '0 auto' }}>{fs.map((f, i) => <div key={`${animKey}-${f}`} className={animate ? 'edu-drift' : undefined} style={{ animationDelay: `${i * 0.35}s`, width: '100%', maxWidth: 120, gridColumn: fs.length % 2 && i === fs.length - 1 ? '1 / -1' : undefined }}><FeelingFace feeling={f} size={120} /></div>)}</div>; }
   // A shape with no color of its own takes the paper's green, B.green, in both themes (pass MA): the dark theme's mint was 1.7
   // to 1 on the almond paper, and pass CY's rule gives every drawing on paper the light palette.
-  if (visual.kind === 'shape') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><ShapePic name={visual.name} variant={visual.variant || null} color={SWATCH[visual.colour] || B.green} size={visual.size === 'big' ? 140 : visual.size === 'small' ? 50 : 110} /></div>;
+  if (visual.kind === 'shape') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><ShapePic name={visual.name} variant={visual.variant || null} color={SWATCH[visual.colour] || B.green} size={at(visual.size === 'big' ? 140 : visual.size === 'small' ? 50 : 110)} /></div>;
   if (visual.kind === 'tens') return <div style={{ padding: '6px 0' }}><TensGroup count={visual.count} animate={animate} animKey={animKey} /></div>;
   if (visual.kind === 'array') return <div style={{ padding: '6px 0' }}><ArrayPic rows={visual.rows} cols={visual.cols} /></div>;
   if (visual.kind === 'numberline') return <div style={{ padding: '6px 0' }}><NumberLine parts={visual.parts} mark={visual.mark} /></div>;
@@ -1124,18 +1169,18 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0 }) {
   // the row already sits on the paper, and a paper card around each item would eat a little circle whole.
   if (visual.kind === 'row') {
     const items = (visual.items || []).slice(0, 3);
-    const nominal = (v) => (v.kind === 'shape' ? (v.size === 'big' ? 140 : v.size === 'small' ? 54 : 92) : 110);   // the questions' 88, 58 and 34, scaled
+    const nominal = (v) => at(v.kind === 'shape' ? (v.size === 'big' ? 140 : v.size === 'small' ? 54 : 92) : 110);   // the questions' 88, 58 and 34, scaled (and by k for a question's or a lesson's own row, pass MH)
     const most = Math.max(...items.map(nominal));
     return <div className="edu-row-pic" style={{ padding: '6px 0', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '2%' }}>{items.map((v, i) => <div key={`${animKey}-${i}`} className={animate ? 'edu-drift' : undefined} style={{ width: '31%', display: 'flex', justifyContent: 'center', animationDelay: `${i * 0.4}s` }}><div style={{ width: `${Math.round((nominal(v) / most) * 100)}%`, maxWidth: nominal(v) }}><PictureInner visual={v} /></div></div>)}</div>;
   }
-  if (visual.kind === 'swatch') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><Swatch colour={visual.colour} size={120} /></div>;
+  if (visual.kind === 'swatch') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><Swatch colour={visual.colour} size={at(120)} /></div>;
   // A thing to match can be drawn at its choices' size (size, pass MA), so the one that is the same is the same size too.
-  if (visual.kind === 'item') { const scale = visual.scale ? '-' + visual.scale : ''; return <div style={{ padding: '6px 0' }}><Item spec={`${visual.shape}-${visual.colour}${scale}`} size={visual.size || 110} /></div>; }
+  if (visual.kind === 'item') { const scale = visual.scale ? '-' + visual.scale : ''; return <div style={{ padding: '6px 0' }}><Item spec={`${visual.shape}-${visual.colour}${scale}`} size={visual.size || at(110)} /></div>; }
   // A counted row with a cell size (pass MA) is drawn like a group of dots (CountRow), so it lines up with dots of the same
   // number; every other row of shapes keeps PatternRow.
   if (visual.kind === 'pattern' && visual.size) return <div key={animKey} className={animate ? 'edu-rise' : undefined} style={{ padding: '6px 0' }}><CountRow items={visual.items} colour={visual.colour || 'green'} cell={visual.size} frame={visual.frame || 5} snap={!!visual.snap} gap={visual.gap || 8} /></div>;
-  if (visual.kind === 'pattern') return <div key={animKey} className={animate ? 'edu-rise' : undefined} style={{ padding: '6px 0' }}><PatternRow items={visual.items} colour={visual.colour || 'green'} /></div>;
-  if (visual.kind === 'solid') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><SolidPic name={visual.name} size={110} /></div>;
+  if (visual.kind === 'pattern') return <div key={animKey} className={animate ? 'edu-rise' : undefined} style={{ padding: '6px 0' }}><PatternRow items={visual.items} colour={visual.colour || 'green'} k={k} /></div>;
+  if (visual.kind === 'solid') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><SolidPic name={visual.name} size={at(110)} /></div>;
   if (visual.kind === 'tenframe') return <div key={animKey} className={animate ? 'edu-rise' : undefined} style={{ padding: '6px 0' }}><TenFrame filled={visual.filled} /></div>;
   // Towers (pass JX): with vertical set, the bars stand side by side on one floor, so a lesson can compare heights.
   if (visual.kind === 'bars') return <div style={visual.vertical ? { padding: '6px 0', display: 'flex', gap: 28, justifyContent: 'center', alignItems: 'flex-end' } : { padding: '6px 0', display: 'grid', gap: 10 }}>{visual.lengths.map((n, i) => <BarPic vertical={!!visual.vertical} key={`${animKey}-${i}`} length={n} />)}</div>;
@@ -1244,16 +1289,16 @@ function speechPieces(text) {
   const src = String(text);
   const sentences = src.split(/(?<=[.!?])\s+/).filter((x) => x.trim());
   const pieces = [];
-  for (const sentence of sentences) {
+  for (const [si, sentence] of sentences.entries()) {
     const words = sentence.replace(/[.!?]+$/, '').trim().split(/\s+/).filter(Boolean);
     const shape = words.length === 1 && !/\d/.test(words[0]) ? 'key' : /\?$/.test(sentence.trim()) ? 'question' : 'plain';
     let last = 0;
     for (const m of sentence.matchAll(SOUND_TOKEN)) {
-      if (m.index > last) pieces.push({ text: sentence.slice(last, m.index), shape });
-      pieces.push({ text: speechFriendly(m[0]), shape: 'sound' });
+      if (m.index > last) pieces.push({ text: sentence.slice(last, m.index), shape, sentence: si });
+      pieces.push({ text: speechFriendly(m[0]), shape: 'sound', sentence: si });
       last = m.index + m[0].length;
     }
-    if (last < sentence.length) pieces.push({ text: sentence.slice(last), shape });
+    if (last < sentence.length) pieces.push({ text: sentence.slice(last), shape, sentence: si });
   }
   // A piece that is only punctuation would be read aloud as a word. Drop it.
   return pieces.filter((p) => /[A-Za-z0-9]/.test(p.text));
@@ -1313,35 +1358,56 @@ function sentencesOf(text) { return String(text || '').split(/(?<=[.!?])\s+/).fi
 // title, S7-3 for its third paragraph, or counting-k:tracing-letters:2:1 for a lesson line's sentence),
 // the clip plays in place of the device voice and the same read-along lighting follows it.
 function clipFor(key) { return typeof window !== 'undefined' && Array.isArray(window.__eduAudio) && key && window.__eduAudio.includes(key) ? `audio/${key}.mp3` : null; }
+// onIndex(i, s) is told the text being read and, since pass MH, the sentence inside it, so a page can light the words being
+// read rather than the whole paragraph; a recorded clip has no sentence marks, so its sentence is worked out from how far the
+// clip has played, by each sentence's share of the letters.
 function speakSequence(texts, onIndex, onDone, keys = []) {
   if (typeof window === 'undefined' || !texts.length) return () => {};
+  // A clip plays a little slower on the snail (pass MH): the rate follows SPEECH_NUDGE, read again whenever the pace changes.
+  const clipRate = () => (SPEECH_NUDGE < 0 ? 0.8 : 1);
   if (keys.length && keys.every((k) => clipFor(k))) {
     let stopped = false; let current = null;
     const play = (i) => {
       if (stopped) return; if (i >= texts.length) { onDone && onDone(); return; }
-      onIndex(i); current = new Audio(clipFor(keys[i])); current.onended = () => play(i + 1); current.onerror = () => play(i + 1);
+      onIndex(i, 0); current = new Audio(clipFor(keys[i])); current.playbackRate = clipRate(); current.onended = () => play(i + 1); current.onerror = () => play(i + 1);
+      const parts = sentencesOf(texts[i]); const total = parts.reduce((a, p) => a + p.length, 0) || 1; let lit = 0;
+      current.ontimeupdate = () => { if (stopped || !current || !current.duration) return; const frac = current.currentTime / current.duration; let sum = 0; let s = 0; for (; s < parts.length - 1; s++) { sum += parts[s].length; if (sum / total > frac) break; } if (s !== lit) { lit = s; onIndex(i, s); } };
       current.play().catch(() => play(i + 1));
     };
     play(0);
-    return () => { stopped = true; if (current) { try { current.pause(); } catch (e) { /* a broken clip must never stop a story */ } } onDone && onDone(); };
+    const stopClips = () => { stopped = true; if (current) { try { current.pause(); } catch (e) { /* a broken clip must never stop a story */ } } onDone && onDone(); };
+    stopClips.setNudge = (n) => { setSpeechNudge(n); if (current) { try { current.playbackRate = clipRate(); } catch (e) { /* as above */ } } };
+    return stopClips;
   }
   if (!window.speechSynthesis) return () => {};
   const ticket = ++speechTicket; const ss = window.speechSynthesis;
+  // Where the voice is: the text it is reading and the sentence inside it, moved on as each sentence ends. A new pace starts a new
+  // run (run), so the sentences of a cancelled run say nothing when they report their end.
+  const place = { i: 0, k: 0 }; let run = 0;
   const stop = () => { if (ticket === speechTicket) speechTicket += 1; try { ss.cancel(); } catch (e) { /* a broken voice must never stop a story */ } onDone && onDone(); };
-  const say = (i) => {
+  const say = (i, from = 0) => {
     if (ticket !== speechTicket) return;
     if (i >= texts.length) { onDone && onDone(); return; }
-    onIndex(i);
-    const pieces = speechPieces(texts[i]); if (!pieces.length) { say(i + 1); return; }
-    const voice = pickVoice(); let left = pieces.length;
-    pieces.forEach((piece) => {
+    const pieces = speechPieces(texts[i]); if (from >= pieces.length) { onIndex(i, 0); say(i + 1); return; }
+    onIndex(i, pieces[from].sentence || 0); place.i = i; place.k = from;
+    const voice = pickVoice(); const mine = run; let left = pieces.length - from;
+    pieces.slice(from).forEach((piece, j) => {
       const u = new SpeechSynthesisUtterance(piece.text); if (voice) u.voice = voice;
       const shape = SPEECH_SHAPES[piece.shape] || SPEECH_SHAPES.plain; u.rate = shape.rate * (SPEECH_NUDGE < 0 ? 0.75 : SPEECH_NUDGE > 0 ? 1.1 : 1); u.pitch = shape.pitch;
-      u.onend = () => { left -= 1; if (left === 0) say(i + 1); }; u.onerror = () => { left -= 1; if (left === 0) say(i + 1); };
-      try { ss.speak(u); } catch (e) { left -= 1; if (left === 0) say(i + 1); }
+      const done = () => { if (mine !== run) return; left -= 1; place.k = from + j + 1; if (left === 0) say(i + 1); else onIndex(i, pieces[place.k].sentence || 0); };
+      u.onend = done; u.onerror = done;
+      try { ss.speak(u); } catch (e) { done(); }
     });
   };
-  if (ss.speaking || ss.pending) { try { ss.cancel(); } catch (e) { /* as above */ } setTimeout(() => say(0), 80); } else say(0);
+  // Each delayed start checks that no newer pace has taken over in the meantime (the code and screen checks, pass MH: two pace
+  // taps inside 80 ms once left two readings live, every later sentence said twice).
+  if (ss.speaking || ss.pending) { try { ss.cancel(); } catch (e) { /* as above */ } const first = run; setTimeout(() => { if (run === first) say(0); }, 80); } else say(0);
+  stop.setNudge = (n) => {
+    setSpeechNudge(n); if (ticket !== speechTicket) return;
+    run += 1; const mineRun = run; const at = { ...place };
+    try { ss.cancel(); } catch (e) { /* as above */ }
+    setTimeout(() => { if (mineRun === run) say(at.i, at.k); }, 80);
+  };
   return stop;
 }
 // One button for every read-aloud spot. If the device or preview has no speech, the
@@ -1372,8 +1438,8 @@ function SpeakButton({ text, label, full = false, corner = false, mini = false }
       <button type="button" onClick={press} aria-label={shownLabel} title={shownLabel} className="edu-press edu-sway"
         style={{ position: 'absolute', top: 12, right: 12, width: 48, height: 48, borderRadius: 999, border: C.mode === 'dark' ? 'none' : `3px solid ${C.gold}`, background: C.mode === 'dark' ? 'transparent' : C.goldSoft, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2 }}>
         <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
-          <path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={C.gold} />
-          <path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12" fill="none" stroke={C.gold} strokeWidth="2" strokeLinecap="round" />
+          <path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={speakerInk()} />
+          <path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12" fill="none" stroke={speakerInk()} strokeWidth="2" strokeLinecap="round" />
         </svg>
       </button>
     );
@@ -1386,6 +1452,64 @@ function SpeakButton({ text, label, full = false, corner = false, mini = false }
 }
 function SilentNote({ shown }) {
   return shown && canSpeak() ? <p style={{ margin: '14px 0 0', fontSize: 13, color: C.muted, textAlign: 'center' }}>If you hear nothing, check that your device is not on silent.</p> : null;
+}
+// More Info (pass MH, Mikey: "a discrete link that says "More Info". If someone clicks on it, a popup appears to explains why
+// each wrong answer is wrong in conversational and explanatory text."). In plain terms: one pop-up with three short parts, the
+// wrong choices first (the one just picked at the top, in words that remember it: which you just chose, which you chose last
+// time too), each beside its own small drawing; then why the answer fits; then a few more right examples. Every sentence comes
+// from choiceInsight in logic; this only draws it. A speaker reads it all aloud for a child who cannot read, or the grown-up
+// beside one. It opens by itself after a reader's wrong answer and from the quiet link otherwise, and Got it closes it.
+function MoreInfoSheet({ insight, face, onClose, visual = null }) {
+  const spoken = [...insight.wrong.map((w) => w.text), insight.right, ...insight.more].filter(Boolean).join(' ');
+  // A drawn choice sits in a box beside its sentence; a worded one (or a long number) is named by its sentence already, so its row
+  // is the sentence alone, full width (at 360 pixels a 64-pixel box broke Language into Langua and ge).
+  // Decided once for the whole sheet (the screen check's second read): one worded choice longer than three letters and every
+  // row is a sentence alone, so Gas never sits in a box while Solid and Liquid do not.
+  const worded = [insight.answer, ...insight.wrong.map((w) => w.choice)].some((c) => typeof face(c) === 'string' && String(c).length > 3);
+  const drawn = (c) => typeof face(c) !== 'string' || !worded;
+  const row = (c) => ({ display: 'grid', gridTemplateColumns: drawn(c) ? '64px 1fr' : '1fr', gap: 12, alignItems: 'center', padding: '10px 0', borderTop: `1px solid ${C.line}` });
+  useEffect(() => {
+    const back = typeof document !== 'undefined' ? document.activeElement : null;
+    const got = typeof document !== 'undefined' ? document.querySelector('[data-more-info-close] button') : null;
+    if (got) got.focus({ preventScroll: true });   // without scrolling, so the sheet opens at its top (the screen check's second read)
+    const keys = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', keys);
+    return () => { window.removeEventListener('keydown', keys); const link = document.querySelector('[data-more-info-link]'); const to = link || back; if (to && to.focus) to.focus(); };
+  }, []);
+  return (
+    <Overlay role="dialog" modal="true" label="More Info" z={45} onClick={onClose} scroll>
+      <div data-more-info="" onClick={(e) => e.stopPropagation()} style={{ ...card, maxWidth: 560, width: '100%', margin: 'auto', textAlign: 'left' }}>
+        {/* The title truly centered, the speaker in a column of its own on the right and an empty one of the same width on the left (pass LS's rule). */}
+        <div style={{ display: 'grid', gridTemplateColumns: '44px 1fr 44px', alignItems: 'center', margin: '0 0 6px' }}>
+          <span aria-hidden="true" />
+          <p style={{ margin: 0, fontSize: 19, fontWeight: 700, textAlign: 'center' }}>More Info</p>
+          <SpeakButton mini text={spoken} label="Read it to me" />
+        </div>
+        {/* The question's own picture (the lesson check, pass MH): the reasons say "these are all blue" and "this shape". */}
+        {visual && <div data-more-info-picture="" style={{ maxWidth: 240, margin: '0 auto 4px' }}><Picture visual={visual} note={false} /></div>}
+        {insight.wrong.length > 0 && <p style={{ margin: '8px 0 2px', fontSize: 14, fontWeight: 700, color: C.muted, textAlign: 'center' }}>Why not the others?</p>}
+        {insight.wrong.map((w) => (
+          <div key={w.choice} data-more-info-wrong={w.choice} data-chosen={w.chosenNow ? 'now' : w.chosenBefore ? 'before' : undefined} style={row(w.choice)}>
+            {drawn(w.choice) && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 48, borderRadius: 10, background: C.paperBoard, border: `1px solid ${C.line}`, color: B.ink, fontWeight: 600, fontSize: 14, textAlign: 'center', padding: 4 }}>{face(w.choice)}</div>}
+            <p style={{ margin: 0, fontSize: 16, lineHeight: 1.55 }}>{w.text}</p>
+          </div>
+        ))}
+        {insight.right && (
+          <div data-more-info-right="" style={{ ...row(insight.answer), borderTop: `1px solid ${C.line}` }}>
+            {drawn(insight.answer) && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 48, borderRadius: 10, background: C.paperBoard, border: `2px solid ${C.green}`, color: B.ink, fontWeight: 600, fontSize: 14, textAlign: 'center', padding: 4 }}>{face(insight.answer)}</div>}
+            <div>{!drawn(insight.answer) && <p data-more-info-answer="" style={{ margin: '0 0 2px', fontSize: 16, fontWeight: 700 }}>{capFirst(String(insight.answer))}</p>}<p style={{ margin: '0 0 2px', fontSize: 14, fontWeight: 700, color: C.green }}>Why this one fits</p><RichText text={formatTeachingText(insight.right)} size={16} lineGap={6} /></div>
+          </div>
+        )}
+        {insight.more.length > 0 && (
+          <div data-more-info-more="" style={{ padding: '10px 0 0', borderTop: `1px solid ${C.line}` }}>
+            <p style={{ margin: '0 0 4px', fontSize: 14, fontWeight: 700, color: C.muted, textAlign: 'center' }}>More right answers</p>
+            {insight.more.map((m, i) => <p key={i} style={{ margin: '4px 0', fontSize: 16, lineHeight: 1.55 }}>{m}</p>)}
+          </div>
+        )}
+        <div data-more-info-close="" style={{ textAlign: 'center', marginTop: 14 }}><Btn onClick={onClose}>Got it</Btn></div>
+      </div>
+    </Overlay>
+  );
 }
 
 function LabeledBar({ parts, shaded, label, color }) {
@@ -1693,13 +1817,20 @@ const KID_ANIMATION = () => `
   html[data-theme="dark"] .edu-colorwash { background-image: linear-gradient(115deg, #F7D154, #F4A259, #EE7B5B, #A58BD1, #6FA8DC, #7CC26B, #F7D154); }
   /* With motion off (pass MG, Mikey: "I don't like the gold dropdowns as much as the old multi-colored dropdowns for let's read,
      let's play and Let's color"): the wash cannot drift, and frozen it showed only its first quarter, the gold end, so on a phone
-     that asks for less motion all three folds looked gold. Still, the whole rainbow now shows at once across each strip. The
-     light theme is frozen (Mikey, 2026-09-24) and keeps its look; RULES-AUDIT section 11 asks him about it. */
-  @media (prefers-reduced-motion: reduce) { html[data-theme="dark"] .edu-colorwash { background-size: 100% 100%; background-position: 50% 50%; } }
+     that asks for less motion all three folds looked gold. Still, the whole rainbow now shows at once across each strip. Since
+     pass MH the light theme does the same (Mikey's answer to Q27: "whatever you think is most visually appealing from a modern
+     and unique designer perspective"), with a lighter purple in its still rainbow, since the strip's dark words sit across the
+     whole rainbow at once there and the deep purple read 2.78 to 1 under them (#9A7BC4 reads 4.2); the moving light wash keeps its
+     deep purple, Mikey's choice in Q12. */
+  @media (prefers-reduced-motion: reduce) { .edu-colorwash { background-size: 100% 100%; background-position: 50% 50%; } html:not([data-theme="dark"]) .edu-colorwash { background-image: linear-gradient(115deg, #F7D154, #F4A259, #E4572E, #9A7BC4, #5B90C4, #5BA84A, #F7D154); } }
   /* Still, the sparkles would be white dots stuck on the strip, two of them crowding its arrow (the screen check), so with
      motion off they go, in the dark theme; the light theme keeps its look (Q27). */
-  @media (prefers-reduced-motion: reduce) { html[data-theme="dark"] .edu-sparkle { display: none; } }
+  @media (prefers-reduced-motion: reduce) { .edu-sparkle { display: none; } }
+  .edu-fit { display: block; width: 100%; min-width: 0; } .edu-fit > svg { width: 100%; height: auto; }
   html[data-theme="dark"] .edu-colorwash-soft { background-image: linear-gradient(120deg, #3D3417, #43291E, #432329, #30264A, #1C2E45, #1E3827, #3D3417); }
+  /* With motion off, the soft wash behind Let's Color's and Let's Play's tiles shows all its jewel tones at once, as the bright
+     wash does (pass MH), rather than freezing on its first, olive end. The light theme keeps its look. */
+  @media (prefers-reduced-motion: reduce) { html[data-theme="dark"] .edu-colorwash-soft { background-size: 100% 100%; background-position: 50% 50%; } }
   @media print { html[data-theme="dark"] body { background: #FFFFFF !important; } html[data-theme="dark"] body * { color: #24291F !important; background-color: transparent !important; } }
   /* A picture ready to color: the drawing stays black and white, the square behind it drifts through
      the crayons, paler than the fold so the outline still reads. */
@@ -1888,7 +2019,7 @@ html, body { overflow-x: hidden; }
    the coloring and game tiles lost their only "go here" sign (pass MG, the screen check, on the setting Mikey's phone most likely
    uses). In the dark theme the ring now stays, still, at its fullest, and a card that is open or resting (--beat 0) still has
    none; the light theme is frozen and keeps its look until Mikey answers Q27. */
-@media (prefers-reduced-motion: reduce) { html[data-theme="dark"] .edu-breathe { box-shadow: 0 0 0 calc(4px * var(--beat, 1)) rgba(var(--edu-ring), calc(0.5 * var(--beat, 1))); } }
+@media (prefers-reduced-motion: reduce) { .edu-breathe { box-shadow: 0 0 0 calc(4px * var(--beat, 1)) rgba(var(--edu-ring), calc(0.5 * var(--beat, 1))); } }
 /* Young learners (2026-09-24, Mikey: hold their hand and make it obvious, but never booming). The one thing to tap next
    pulses a little more and sends out a soft gold ring every two seconds, and a subject's modules rise in one after
    another when it opens. With less motion asked for, nothing moves and the ring simply stays around the button. */
@@ -1907,7 +2038,7 @@ html[data-young="1"] .edu-mod-card:nth-child(n+4) { animation-delay: 0.36s; }
 @keyframes edu-side-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 .edu-side path { stroke-dasharray: 1; animation: edu-side-draw 1.6s ease-out both; }
 @keyframes edu-slide-in { 0% { transform: translateY(-70px) scale(0.5) rotate(-6deg); opacity: 0; } 55% { transform: translateY(10px) scale(1.12) rotate(2deg); opacity: 1; } 78% { transform: translateY(-4px) scale(0.96) rotate(0deg); } 100% { transform: translateY(0) scale(1); } }
-.edu-slide-in { animation: edu-slide-in 1.1s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; background: linear-gradient(90deg, #3A6B58, #D9A83B, #3A6B58); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent !important; animation: edu-slide-in 1.1s cubic-bezier(0.2, 0.9, 0.3, 1.2) both, edu-shimmer 3s linear 1.1s infinite; }
+.edu-slide-in { animation: edu-slide-in 1.1s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; background: linear-gradient(90deg, #3A6B58, #A67A26, #3A6B58); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent !important; animation: edu-slide-in 1.1s cubic-bezier(0.2, 0.9, 0.3, 1.2) both, edu-shimmer 3s linear 1.1s infinite; }
 /* In the dark theme the title's shimmer runs from the theme's own mint (7.92 to 1 on the page) to the gold (7.46), since the
    light theme's deep green read 2.66 to 1 there, under the 3 to 1 large words need, and with motion off it sat dim on "Let's"
    (pass MG, measured while checking the screen check's light-theme finding; the light theme is frozen, Q27). */
@@ -1916,7 +2047,23 @@ html[data-theme="dark"] .edu-slide-in { background-image: linear-gradient(90deg,
    the title's clip and size, so the gradient filled its whole box, a bar with no letters (the second reads, pass MG); the dark
    theme sets them back. In the light theme the title has shown nothing there since September 2026; Q27 asks Mikey. */
 @media (min-width: 700px) { html[data-theme="dark"] .edu-wrap h1.edu-slide-in { background: linear-gradient(90deg, #7CC3A6, #D9A83B, #7CC3A6) 0 0 / 200% auto; -webkit-background-clip: text; background-clip: text; } }
+/* The same in the light theme since pass MH (Q27): until then its title showed nothing from 700 pixels, since September 2026. */
+@media (min-width: 700px) { html:not([data-theme="dark"]) .edu-wrap h1.edu-slide-in { background: linear-gradient(90deg, #3A6B58, #A67A26, #3A6B58) 0 0 / 200% auto; -webkit-background-clip: text; background-clip: text; } }
 .edu-glow { animation: edu-glow 1.8s ease-in-out infinite; }
+/* A story's title row (pass MH): on a narrow card the speaker, the snail and the hare sit at the top right and the title centered
+   under them; from 640 pixels they share one row, the title truly centered between an empty column and the controls' column. */
+.edu-story-head { display: grid; grid-template-columns: 1fr; justify-items: center; gap: 8px; margin: 0 0 10px; }
+.edu-story-head .edu-story-tools { justify-self: end; order: -1; display: flex; gap: 6px; align-items: center; }
+.edu-story-head .edu-story-head-spacer { display: none; }
+@media (min-width: 640px) { .edu-story-head { grid-template-columns: 152px 1fr 152px; align-items: center; } .edu-story-head .edu-story-tools { order: 0; } .edu-story-head .edu-story-head-spacer { display: block; } }
+/* Pondering pictures around a Wonder question and its closing card (pass MH): each falls or slides in from its own side with a
+   little bounce and settles at its own angle; the closing title pops in. Transform and opacity only; with motion off both are
+   simply there. */
+@keyframes edu-ponder-in { 0% { transform: translate(var(--px, 0px), var(--py, -60px)) rotate(calc(var(--pr, 0deg) - 40deg)) scale(0.4); opacity: 0; } 60% { opacity: var(--po, 0.6); } 78% { transform: translate(0, 0) rotate(calc(var(--pr, 0deg) + 7deg)) scale(1.08); } 100% { transform: translate(0, 0) rotate(var(--pr, 0deg)) scale(1); opacity: var(--po, 0.6); } }
+.edu-ponder-icon { position: absolute; opacity: var(--po, 0.6); transform: rotate(var(--pr, 0deg)); animation: edu-ponder-in 1.05s cubic-bezier(0.2, 0.9, 0.3, 1.2) var(--pd, 0s) both; }
+@keyframes edu-ponder-title { 0% { transform: translateY(-26px) scale(0.6) rotate(-5deg); opacity: 0; } 60% { transform: translateY(5px) scale(1.1) rotate(2deg); opacity: 1; } 100% { transform: none; opacity: 1; } }
+.edu-ponder-title { animation: edu-ponder-title 0.9s cubic-bezier(0.2, 0.9, 0.3, 1.2) 0.25s both; }
+@media (prefers-reduced-motion: reduce) { .edu-ponder-icon, .edu-ponder-title { animation: none; } }
 /* The course-finished page (pass ME, Mikey's answer to Q17): confetti falls down the card and a big star lands. Both move by
    transform and opacity only; with motion off the confetti lies still where it fell and the star simply sits there. */
 @keyframes edu-confetti { 0% { transform: translate3d(0, -40px, 0) rotate(0deg); opacity: 0; } 6% { opacity: 1; } 100% { transform: translate3d(var(--sway, 0px), 560px, 0) rotate(var(--spin, 540deg)); opacity: 0.85; } }
@@ -2107,7 +2254,9 @@ function StoryCover({ serial, title, label, onClick, disabled = false, attrs = n
 // celebration opens too. A child who cannot read is told where it is, since the voice's guide names it by its color and, under
 // the gold book, its place ("the green button at the bottom"); invite pulses it when it is the one thing left to tap (no long
 // story yet, or the story's voice has stopped).
-function HomeButton({ onClick, disabled = false, invite = false, label = 'Return home', attrs = null }) {
+// Its words are Return Home, capitals on both words like the app's other button words (pass MH, Mikey: "Maybe the new Return home
+// button can capitalize the H").
+function HomeButton({ onClick, disabled = false, invite = false, label = 'Return Home', attrs = null }) {
   return (
     <button type="button" onClick={onClick} disabled={disabled} aria-label={label} {...(attrs || {})} className={invite && !disabled ? 'edu-press edu-pulse' : 'edu-press'}
       style={{ fontFamily: FONT, display: 'block', width: '100%', minHeight: 58, padding: '14px 18px', borderRadius: 14, border: `2px solid ${C.green}`, background: C.green, color: C.onAccent, fontSize: 19, fontWeight: 700, cursor: disabled ? 'default' : 'pointer', opacity: disabled ? 0.5 : 1 }}>
@@ -2217,7 +2366,9 @@ function LicenseCard({ name, code, license, usedBy, onSave }) {
     </div>
   );
 }
-function RichText({ text, size = 17, color = null, center = false, lineGap = 10 }) {
+// lit (pass MH): the sentence of a one-line paragraph being read aloud, lit word by word as a highlight the size of its words,
+// in readLit's colors; the rest of the paragraph stays as it is.
+function RichText({ text, size = 17, color = null, center = false, lineGap = 10, lit = null }) {
   const lines = String(text || '').split('\n');
   return (
     <>
@@ -2229,6 +2380,8 @@ function RichText({ text, size = 17, color = null, center = false, lineGap = 10 
         if (trimmed.startsWith('• ') || labelled) return <p key={i} style={{ margin: center ? '0 auto 6px' : '0 0 6px', maxWidth: center ? '32ch' : undefined, fontSize: size, lineHeight: 1.6, textAlign: 'left', paddingLeft: 18, textIndent: -18, color: color || undefined }}>{'• '}{inlineRich(labelled ? trimmed : trimmed.slice(2), i)}</p>;
         const centered = /^\[\[.*\]\]$/.test(trimmed);
         if (centered) return <p key={i} style={{ margin: '14px 0', fontSize: size + 3, fontWeight: 700, textAlign: 'center', letterSpacing: 0.3, color: color || C.ink }}>{inlineRich(trimmed.slice(2, -2).trim(), i)}</p>;
+        if (lit !== null && lines.length === 1) { const ss = sentencesOf(trimmed);
+          return <p key={i} style={{ margin: `0 0 ${lineGap}px`, fontSize: size, lineHeight: 1.6, textAlign: center ? 'center' : 'left', color: color || undefined }}>{ss.map((sen, j) => <React.Fragment key={j}><span data-read-lit={j === lit ? '' : undefined} style={j === lit ? { ...readLit(), ...LIT_WORDS } : { transition: 'background 150ms' }}>{inlineRich(sen, `${i}-${j}`)}</span>{j < ss.length - 1 ? ' ' : ''}</React.Fragment>)}</p>; }
         return <p key={i} style={{ margin: `0 0 ${lineGap}px`, fontSize: size, lineHeight: 1.6, textAlign: center ? 'center' : 'left', color: color || undefined }}>{inlineRich(trimmed, i)}</p>;
       })}
     </>
@@ -2824,8 +2977,11 @@ function FlagPic({ stars = false, texas = false }) {
 }
 function BigStarSmall({ x, y }) { const pts = Array.from({ length: 10 }, (_, i) => { const a = -Math.PI / 2 + (i * Math.PI) / 5; const r = i % 2 ? 5 : 12; return `${x + Math.cos(a) * r},${y + Math.sin(a) * r}`; }).join(' '); return <polygon points={pts} fill="#FFFFFF" />; }
 function SignPic({ text = 'STOP', color = '#D9534F' }) {
-  const oct = text === 'STOP';
-  return <Diagram label={`A ${text} sign`}>{oct ? <polygon points="62,22 98,22 116,40 116,60 98,78 62,78 44,60 44,40" fill={color} stroke="#2E2E2E" strokeWidth="1.2" /> : <rect x="44" y="30" width="72" height="40" rx="4" fill={color} stroke="#2E2E2E" strokeWidth="1.2" />}<text x="80" y="50" {...DIAGRAM_TEXT} fontSize="12" fontWeight="800" fill="#FFFFFF">{text}</text></Diagram>;
+  const oct = text === 'STOP'; const diamond = text === 'SLOW';
+  // The grade 1 lesson tells signs by color and shape (pass MH: its SLOW sign was a rectangle while its words said "a point at the
+  // top"): a stop sign has eight sides, a slow-down warning is a yellow diamond with its point at the top, with dark letters as on
+  // the road, and the others are rectangles.
+  return <Diagram label={`A ${text} sign`}>{oct ? <polygon points="62,22 98,22 116,40 116,60 98,78 62,78 44,60 44,40" fill={color} stroke="#2E2E2E" strokeWidth="1.2" /> : diamond ? <polygon points="80,8 122,50 80,92 38,50" fill={color} stroke="#2E2E2E" strokeWidth="1.2" strokeLinejoin="round" /> : <rect x="44" y="30" width="72" height="40" rx="4" fill={color} stroke="#2E2E2E" strokeWidth="1.2" />}<text x="80" y="50" {...DIAGRAM_TEXT} fontSize="12" fontWeight="800" fill={diamond ? '#2E2E2E' : '#FFFFFF'}>{text}</text></Diagram>;
 }
 // Grade 1 number sense (pass LA, earmark E7 part three): a dice face, a domino, sets of equal groups for skip counting, and
 // an open number line. Each carries a count or a position the question depends on, so each stays drawn (pass KL rule).
@@ -3032,7 +3188,7 @@ async function certificatePng(svgEl, w = 1600, h = 1100) {
 }
 function saveBlob(name, blob) { const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
 // The loading word: each letter bobs in turn, the same in the page shell and on the app's loading screen.
-Object.assign(STORY_TITLES, Object.fromEntries(Object.entries(STORIES).map(([id, st]) => [id, { title: titleCase(st.title), about: st.about || '' }])), Object.fromEntries(Object.entries(COURSE_STORIES).map(([id, st]) => [`course:${id}`, { title: st.title, about: st.about || '' }])));
+Object.assign(STORY_TITLES, Object.fromEntries(Object.entries(STORIES).map(([id, st]) => [id, { title: titleCase(st.title), about: st.about || '' }])), Object.fromEntries(Object.entries(COURSE_STORIES).map(([id, st]) => [`course:${id}`, { title: st.title, about: st.about || '' }])), Object.fromEntries(Object.entries(MASTERY_STORIES).map(([id, st]) => [`mastery:${id}`, { title: st.title, about: st.about || '' }])));
 // The first-week tour: title, the element it points at (a data-tour name, or null), the sample screen it opens, where its card
 // sits, and the words. Where each card sits, in Mikey's words (passes DH, IT and JE), at every screen width the tour runs at:
 //   1 below-add: centered close under Add someone new, its top a little above Who needs help, so it sits by the glowing Add
@@ -3218,12 +3374,12 @@ const BAND_STEP = 200; let bandWatch = null; const bandSeen = [];
 // the screen, and a tap scrolls the row into view. It sits in the bottom right corner, where the star appears, so it never
 // covers the speaker button in the middle or the words above it (pass KA). It watches the page and any box the app scrolls in (visibleBand), comes
 // back when a new line starts at the top, and holds still when the device asks for reduced motion.
-function ScrollCue({ target, watch }) {
+function ScrollCue({ target, watch, whole = false }) {
   const [show, setShow] = useState(false);
   useEffect(() => {
     if (typeof window === 'undefined') return undefined;
     let frame = 0;
-    const check = () => { frame = 0; const el = document.querySelector(target); if (!el) { setShow(false); return; } const r = el.getBoundingClientRect(); const band = visibleBand(); setShow(r.top > band.bottom - 24); };
+    const check = () => { frame = 0; const el = document.querySelector(target); if (!el) { setShow(false); return; } const r = el.getBoundingClientRect(); const band = visibleBand(); setShow(whole ? r.bottom > band.bottom + 4 : r.top > band.bottom - 24); };
     const soon = () => { if (!frame) frame = window.requestAnimationFrame(check); };
     const timers = [60, 450, 1200].map((ms) => setTimeout(check, ms));
     window.addEventListener('scroll', soon, true); window.addEventListener('resize', soon);
@@ -3277,23 +3433,22 @@ function StoryThumb({ serial }) {
 // just like the stories have.   It can just be a bunch overlapping question marks or something that represents mystery.  If you
 // use question marks, maybe they can be different colors.  You can create a Leonardo prompt for this one too."). Every story row
 // shows its picture beside it, and so does the surprise row now: Mikey's painting once art/stories/<serial>.webp is saved (the
-// serial in SHELF_ART, its ledger row in docs/ART-REQUESTS.md under Shelf pictures), and until then four question marks the app
-// draws, overlapping, each a hook with a dot under it in a crayon of its own, outlined in the paper's color so the overlaps
-// read. It sits on the paper like every drawing (C.paperBoard), and is decoration, hidden from a screen reader: the row's words
-// and its gold book say what it does.
-const SHELF_ART = { surprise: 'U1' };
+// serial U1, its ledger row in docs/ART-REQUESTS.md), and until then four question marks the app draws, overlapping, each a hook
+// with a dot under it in a crayon of its own, outlined in the paper's color so the overlaps read. Since pass MH the drawing is
+// the picture for good (Mikey: "I actually like the question marks you drew for the surprise me section.  We can keep those
+// instead of Leonard prompt"), so U1 is retired, never reused, and the row never waits for a painting. It sits on the paper like
+// every drawing (C.paperBoard), and is decoration, hidden from a screen reader: the row's words and its gold book say what it does.
+// SHELF_ART names the pictures for the app's own screens that wait for Mikey's paintings (U serials, rows under Screen pictures
+// in docs/ART-REQUESTS.md): since pass MH the four Wonder voices' portraits (WonderPortrait), U2 to U5.
+const SHELF_ART = { frederick: 'U2', chloe: 'U3', georgette: 'U4', mike: 'U5' };
 const QUESTION_MARK = 'M8.2 8.7a3.9 3.9 0 1 1 6.5 2.9c-1.6 1.2-2.7 2.1-2.7 4.2';
 function SurpriseThumb() {
-  const serial = SHELF_ART.surprise;
-  const listed = typeof window !== 'undefined' && Array.isArray(window.__eduArt) && window.__eduArt.includes(serial);
-  // A listed painting whose file still fails to load shows the drawing instead, the way a story cover falls back (the screen check).
-  const [failed, setFailed] = useState(false); const present = listed && !failed;
   // The green mark crosses the purple one's stem, clear of its dot, in a deeper green that reads on the paper (the picture check,
   // and the screen check's second read: placed low and left the marks barely overlapped).
   const marks = [{ x: 1, y: 6, s: 1.6, r: -14, c: '#7D5BA6' }, { x: 21, y: 2, s: 1.25, r: 13, c: '#3E7CB1' }, { x: 25, y: 22, s: 1.12, r: 22, c: '#E4572E' }, { x: 5, y: 20, s: 1.02, r: 10, c: '#3F8A33' }];
   return (
-    <div aria-hidden="true" data-surprise-picture={present ? 'painted' : 'drawn'} style={{ width: 52, height: 52, flex: '0 0 52px', borderRadius: 10, overflow: 'hidden', border: `1px solid ${C.line}`, background: C.paperBoard, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      {present ? <img src={`art/stories/${serial}.webp`} alt="" loading="lazy" onError={() => setFailed(true)} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : (
+    <div aria-hidden="true" data-surprise-picture="drawn" style={{ width: 52, height: 52, flex: '0 0 52px', borderRadius: 10, overflow: 'hidden', border: `1px solid ${C.line}`, background: C.paperBoard, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      {(
         <svg viewBox="0 0 52 52" width="52" height="52">
           {marks.map((m, i) => (
             <g key={i} data-question-mark="" transform={`translate(${m.x} ${m.y}) rotate(${m.r} ${12 * m.s} ${12 * m.s}) scale(${m.s})`}>
@@ -3335,7 +3490,7 @@ function LessonStepArt({ pic, visual, animKey }) {
   const [missing, setMissing] = useState(!present);
   if (!missing) return <img data-lesson-picture={pic.serial} src={`art/stories/${pic.serial}.webp`} alt={pic.alt} onError={() => setMissing(true)} style={{ display: 'block', width: '100%', maxWidth: 420, maxHeight: 300, objectFit: 'contain', margin: '0 auto', borderRadius: 12 }} />;
   if (!visual) return <div data-lesson-picture={pic.serial}><StoryArt serial={pic.serial} alt={pic.alt} /></div>;
-  return <div data-lesson-picture={pic.serial}><Picture visual={visual} animate animKey={animKey} note /><p style={{ margin: '4px 0 0', fontSize: 12, color: C.muted }}>Illustration {pic.serial} to come</p></div>;
+  return <div data-lesson-picture={pic.serial}><Picture visual={visual} animate animKey={animKey} note big /><p style={{ margin: '4px 0 0', fontSize: 12, color: C.muted }}>Illustration {pic.serial} to come</p></div>;
 }
 // The story page body: title, pictures where they fall in the text, the words, one speaker.
 // The snail and the hare (2026-09-23, Mikey): an early-years story is read at three quarters speed on the snail and at the
@@ -3348,7 +3503,32 @@ function savePace(v) { try { window.localStorage.setItem(PACE_KEY, v); } catch (
 function PaceGlyph({ kind }) {
   return kind === 'slow'
     ? <svg viewBox="0 0 32 20" width="34" height="21" aria-hidden="true"><circle cx="20" cy="11" r="7" fill="none" stroke="currentColor" strokeWidth="2" /><circle cx="20" cy="11" r="3" fill="none" stroke="currentColor" strokeWidth="1.5" /><path d="M13 16 L3 16 Q1 16 2 13 L5 8 M5 8 L4 3 M5 8 L8 4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /><path d="M2 18 L30 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
-    : <svg viewBox="0 0 32 20" width="34" height="21" aria-hidden="true"><path d="M6 15 Q10 9 18 10 L26 9 M26 9 L28 3 M25 9 L23 3" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /><circle cx="27" cy="12" r="3" fill="none" stroke="currentColor" strokeWidth="2" /><path d="M6 15 L3 18 M12 14 L10 18 M18 13 L20 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>;
+    : <svg viewBox="0 0 32 20" width="34" height="21" aria-hidden="true"><g fill="currentColor"><ellipse cx="15" cy="12.2" rx="8.2" ry="4.6" transform="rotate(-10 15 12.2)" /><circle cx="9.6" cy="13" r="4.4" /><ellipse cx="24.4" cy="8.6" rx="3.9" ry="3.3" /><ellipse cx="21.4" cy="3.8" rx="1.25" ry="4.1" transform="rotate(-48 21.4 3.8)" /><ellipse cx="23.3" cy="3.3" rx="1.2" ry="3.9" transform="rotate(-30 23.3 3.3)" /><circle cx="4.7" cy="10.4" r="2" /></g><path d="M20.5 14.5 L26.5 17.6 M8 16.2 L2.6 18.4" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" /></svg>;
+}
+// Following a voice down the page, and letting go when the reader takes over (pass MH, Mikey: "The stories, as they are being
+// read and words are highlighted, pulls me back up the page when I scroll down and sit still."). In plain terms: a story page
+// (StoryBody) and the whole book (BookReader) scroll to what the voice is reading; once the reader scrolls the page themselves,
+// they stop, and follow again only when the voice reaches something the reader can see. followPaused says the reader has taken
+// over; autoScrollUntil marks the moment the page's own scroll is still moving, so that scroll is never taken for the reader's.
+// A wheel, a key that scrolls or a finger that moves 12 pixels is always the reader, even while the page is still moving itself;
+// a bare scroll event counts only outside that moment; and Space on a button (the snail and the hare) presses the button
+// rather than scrolling, so it is not the reader (the code check's second read of the late fixes: one Space on the snail had
+// stopped the following for the rest of the story).
+function useReaderPause(stopRef) {
+  const followPaused = useRef(false); const autoScrollUntil = useRef(0);
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
+    const reader = () => { if (stopRef.current) followPaused.current = true; };
+    const mine = () => { if (stopRef.current && Date.now() > autoScrollUntil.current) followPaused.current = true; };
+    const keys = (e) => { const t = e.target; if (e.key === ' ' && t && t.closest && t.closest('button, a, input, select, textarea, [role="button"], [contenteditable="true"]')) return; if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' '].includes(e.key)) reader(); };
+    let startY = null;
+    const touchStart = (e) => { startY = e.touches && e.touches[0] ? e.touches[0].clientY : null; };
+    const touchMove = (e) => { const y = e.touches && e.touches[0] ? e.touches[0].clientY : null; if (startY === null || y === null || Math.abs(y - startY) > 12) reader(); };
+    window.addEventListener('wheel', reader, { passive: true }); window.addEventListener('touchstart', touchStart, { passive: true }); window.addEventListener('touchmove', touchMove, { passive: true }); window.addEventListener('keydown', keys);
+    window.addEventListener('scroll', mine, true);
+    return () => { window.removeEventListener('wheel', reader); window.removeEventListener('touchstart', touchStart); window.removeEventListener('touchmove', touchMove); window.removeEventListener('keydown', keys); window.removeEventListener('scroll', mine, true); };
+  }, []);
+  return { followPaused, autoScrollUntil };
 }
 function StoryBody({ story, pace: paceDefault = null, part = null, autoRead = false, onReadingChange = null, round = false }) {
   // A printed book may split a painted story across sheets (2026-09-24, Mikey): part = { head, from, to } names the paragraphs
@@ -3369,7 +3549,11 @@ function StoryBody({ story, pace: paceDefault = null, part = null, autoRead = fa
   }, [story, from, to]);
   // Read-along: the title, then each paragraph in turn, the one being read lit until the voice moves on.
   const [readingAt, setReadingAt] = useState(-1); const stopRef = useRef(null);
+  const [readingSentence, setReadingSentence] = useState(0);   // pass MH: the sentence of the paragraph being read, lit as words
   const [pace, setPace] = useState(() => (paceDefault ? loadPace(paceDefault) : 'normal'));
+  // Following the voice down the page, and letting go once the reader scrolls (useReaderPause, above StoryBody): the page follows
+  // again only when the voice reaches a paragraph the reader can see.
+  const { followPaused, autoScrollUntil } = useReaderPause(stopRef);
   useEffect(() => () => { if (stopRef.current) stopRef.current(); }, []);
   // Reading begins at the title, so the page goes there first (2026-09-28, Mikey): the button sits under the last paragraph,
   // and a reader who tapped it was left at the bottom while the voice started at the top. While the voice reads, the lit
@@ -3378,11 +3562,11 @@ function StoryBody({ story, pace: paceDefault = null, part = null, autoRead = fa
   const toggle = () => {
     if (stopRef.current) { stopRef.current(); stopRef.current = null; setReadingAt(-1); if (onReadingChange) onReadingChange(false); return; }
     setSpeechNudge(paceDefault && pace === 'slow' ? -1 : 0);
-    const card = cardRef.current;
+    const card = cardRef.current; followPaused.current = false; autoScrollUntil.current = Date.now() + 1200;
     if (card && typeof window !== 'undefined' && window.scrollTo) window.scrollTo({ top: Math.max(0, card.getBoundingClientRect().top + window.scrollY - 12), behavior: scrollWay() });
     if (onReadingChange) onReadingChange(true);
     const keys = [`${story.art}-0`, ...story.words.map((_, i) => `${story.art}-${i + 1}`)];
-    stopRef.current = speakSequence([`${story.title}.`, ...story.words], (i) => setReadingAt(i - 1), () => { stopRef.current = null; setReadingAt(-1); setVoiceWatch(0); if (onReadingChange) onReadingChange(false); }, keys);
+    stopRef.current = speakSequence([`${story.title}.`, ...story.words], (i, si) => { setReadingAt(i - 1); setReadingSentence(si || 0); }, () => { stopRef.current = null; setReadingAt(-1); setVoiceWatch(0); if (onReadingChange) onReadingChange(false); }, keys);
     if (!keys.every((k) => clipFor(k))) setVoiceWatch((n) => n + 1);   // the device voice reads, so the page watches it
   };
   // A story that reads itself (pass MD): a read-aloud course's lesson story starts its voice a moment after the page opens,
@@ -3416,13 +3600,44 @@ function StoryBody({ story, pace: paceDefault = null, part = null, autoRead = fa
   useEffect(() => {
     if (readingAt < 0 || !cardRef.current) return;
     const el = cardRef.current.querySelector(`[data-story-par="${readingAt}"]`); if (!el || !el.scrollIntoView) return;
-    const r = el.getBoundingClientRect(); const h = window.innerHeight || document.documentElement.clientHeight || 0;
-    if (r.top < 0 || r.bottom > h) el.scrollIntoView({ behavior: scrollWay(), block: 'center' });
+    const r = el.getBoundingClientRect(); const band = visibleBand();
+    const seen = r.bottom > band.top && r.top < band.bottom;
+    // The reader scrolled away: the page stays where they put it until the voice reaches a paragraph they can see.
+    if (followPaused.current) { if (seen) followPaused.current = false; return; }
+    if (r.top < band.top || r.bottom > band.bottom) { autoScrollUntil.current = Date.now() + 1200; el.scrollIntoView({ behavior: scrollWay(), block: 'center' }); }
   }, [readingAt]);
+  // A new pace while the voice reads (pass MH, Mikey: "When switching between the snail and rabbit ... the story should continue to
+  // read but the speed should adjust in real time.  Not stop the audio.  We can do that with the speaker icon."): the reading
+  // carries on at the new pace from the sentence it is on, and the speaker is what stops it.
+  const choosePace = (v) => { if (v === pace) return; setPace(v); savePace(v); if (stopRef.current && stopRef.current.setNudge) stopRef.current.setNudge(v === 'slow' ? -1 : 0); };
   const reading = stopRef.current !== null && readingAt >= -1 && stopRef.current;
+  const tools = head && paceDefault && canSpeak();
   return (
     <div ref={cardRef} style={{ ...card, background: C.paper, borderColor: C.paperLine }}>
-      {head && <p style={{ margin: '0 0 8px', fontSize: 22, fontWeight: 700, textAlign: 'center' }}>{titleCase(story.title)}</p>}
+      {/* The snail and the hare at the top, beside the title (pass MH, Mikey: "This icons would be better suited to the right of the
+          title where the sound icon is closer to the same size as the fast and slow toggles.  Then the reader can see it when the
+          story first begins.  Not above the story card, within the card and to the far right.  Make sure the title stays true to
+          center and isn't pushed left."). */}
+      {head && (tools ? (
+        <div className="edu-story-head" data-story-head="">
+          <span className="edu-story-head-spacer" aria-hidden="true" />
+          <p style={{ margin: 0, fontSize: 22, fontWeight: 700, textAlign: 'center' }}>{titleCase(story.title)}</p>
+          <div className="edu-story-tools" data-story-tools="" role="group" aria-label="Reading">
+            <button type="button" onClick={toggle} aria-label={reading ? 'Stop reading' : 'Read the story to me'} className="edu-press"
+              style={{ width: 44, height: 44, borderRadius: 999, border: `2px solid ${C.gold}`, background: reading ? C.gold : C.goldSoft, cursor: 'pointer', padding: 0, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flex: '0 0 44px' }}>
+              {reading
+                ? <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2.5" fill={C.onAccent} /></svg>
+                : <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={speakerInk()} /><path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12" fill="none" stroke={speakerInk()} strokeWidth="2" strokeLinecap="round" /></svg>}
+            </button>
+            {[['slow', 'Read slowly'], ['normal', 'Read at the usual speed']].map(([v, label]) => (
+              <button key={v} type="button" aria-label={label} aria-pressed={pace === v} onClick={() => choosePace(v)}
+                style={{ width: 48, height: 40, borderRadius: 999, border: `2px solid ${C.green}`, background: pace === v ? C.green : C.surface, color: pace === v ? C.onAccent : C.green, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0, flex: '0 0 48px' }}>
+                <PaceGlyph kind={v} />
+              </button>
+            ))}
+          </div>
+        </div>
+      ) : <p style={{ margin: '0 0 8px', fontSize: 22, fontWeight: 700, textAlign: 'center' }}>{titleCase(story.title)}</p>)}
       {head && <div className={`edu-reveal${hasArt(story.art) ? ' edu-story-main' : ''}`}><StoryArt serial={story.art} alt={story.alt} fallback={story.diagram || null} /></div>}
       {story.words.map((t, i) => (i < from || i > to ? null : (
         // A paragraph and its picture are one piece (2026-09-24, Mikey). On screen the picture follows the words; on paper a
@@ -3431,31 +3646,21 @@ function StoryBody({ story, pace: paceDefault = null, part = null, autoRead = fa
           {(story.more || []).filter((m) => m.after === i).map((m) => (
             <div key={m.serial} className={`edu-par-pic edu-reveal ${story.more.indexOf(m) % 2 ? 'edu-pic-left' : 'edu-pic-right'}${hasArt(m.serial) ? ' edu-story-pic' : ''}`} style={{ order: 2 }}><StoryArt serial={m.serial} alt={m.alt} /></div>
           ))}
-          <div data-story-par={i} style={{ order: 1, borderRadius: 10, padding: readingAt === i ? '6px 10px' : 0, margin: readingAt === i ? '0 -10px' : 0, background: readingAt === i ? C.goldSoft : 'transparent', transition: 'background 200ms' }}><RichText text={t} size={17} lineGap={12} /></div>
+          <div data-story-par={i} data-reading={readingAt === i ? '' : undefined} style={{ order: 1 }}><RichText text={t} size={17} lineGap={12} lit={readingAt === i ? readingSentence : null} /></div>
         </div>
       )))}
       {/* A pre-reader's story (round, pass MD) has the round drawn speaker of the young learners' screens, where a worded button
           meant nothing to the child (DESIGN.md: controls are large round taps with drawn icons); a square shows while it reads. */}
-      {!head ? null : canSpeak()
+      {!head || tools ? null : canSpeak()
         ? (round
           ? <div style={{ display: 'flex', justifyContent: 'center' }}><button type="button" onClick={toggle} aria-label={reading ? 'Stop reading' : 'Read the story to me'} className="edu-press edu-sway"
               style={{ width: 66, height: 66, borderRadius: 999, border: `3px solid ${C.gold}`, background: C.goldSoft, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               {reading
-                ? <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2.5" fill={C.gold} /></svg>
-                : <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={C.gold} /><path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12" fill="none" stroke={C.gold} strokeWidth="2" strokeLinecap="round" /></svg>}
+                ? <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2.5" fill={speakerInk()} /></svg>
+                : <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={speakerInk()} /><path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12" fill="none" stroke={speakerInk()} strokeWidth="2" strokeLinecap="round" /></svg>}
             </button></div>
           : <Btn full kind={reading ? 'secondary' : 'primary'} onClick={toggle}>{reading ? 'Stop reading' : 'Read the story to me'}</Btn>)
         : <p style={{ margin: '0 0 12px', fontSize: 14, color: C.muted }}>Reading aloud is not available on this device or in this preview. The words are all on screen.</p>}
-      {head && paceDefault && canSpeak() && (
-        <div style={{ display: 'flex', justifyContent: 'center', gap: 14, marginTop: 10 }}>
-          {[['slow', 'Read slowly'], ['normal', 'Read at the usual speed']].map(([v, label]) => (
-            <button key={v} type="button" aria-label={label} aria-pressed={pace === v} onClick={() => { setPace(v); savePace(v); if (stopRef.current) { stopRef.current(); stopRef.current = null; setReadingAt(-1); } }}
-              style={{ width: 56, height: 40, borderRadius: 999, border: `2px solid ${C.green}`, background: pace === v ? C.green : C.surface, color: pace === v ? C.onAccent : C.green, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0 }}>
-              <PaceGlyph kind={v} />
-            </button>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
@@ -6388,70 +6593,70 @@ function GameThumb({ kind, game = null }) {
   const k = '#2E2E2E';
   // A connect-the-dots tile draws its own shape from the game's points; the name game shows a few dotted letters.
   const dotShape = game && game.kind === 'dots' ? (game.shape && DOT_SHAPES[game.shape] ? DOT_SHAPES[game.shape].map(([x, y]) => [4 + (x * 32) / 100, 4 + (y * 32) / 100]) : null) : null;
-  if (dotShape) return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><polyline points={[...dotShape, dotShape[0]].map((pt) => pt.join(',')).join(' ')} fill="none" stroke={C.green} strokeWidth="2" strokeLinejoin="round" />{dotShape.map(([x, y], i) => <circle key={i} cx={x} cy={y} r="2.6" fill={C.paperBoard} stroke={k} strokeWidth="1.4" />)}</svg>;
-  if (game && game.kind === 'bits') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2, 3].map((i) => <g key={i}><rect x={4 + i * 8.6} y="9" width="6.4" height="20" rx="3.2" fill={i === 1 || i === 3 ? C.green : C.paperBoard} stroke={k} strokeWidth="1" /><circle cx={7.2 + i * 8.6} cy={i === 1 || i === 3 ? 13 : 25} r="2.3" fill="#fff" stroke={k} strokeWidth="0.8" /></g>)}<text x="20" y="37" fontSize="6.5" fontWeight="700" textAnchor="middle" fill={k} fontFamily="sans-serif">0101</text></svg>;
+  if (dotShape) return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><polyline points={[...dotShape, dotShape[0]].map((pt) => pt.join(',')).join(' ')} fill="none" stroke={B.green} strokeWidth="2" strokeLinejoin="round" />{dotShape.map(([x, y], i) => <circle key={i} cx={x} cy={y} r="2.6" fill={C.paperBoard} stroke={k} strokeWidth="1.4" />)}</svg>;
+  if (game && game.kind === 'bits') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2, 3].map((i) => <g key={i}><rect x={4 + i * 8.6} y="9" width="6.4" height="20" rx="3.2" fill={i === 1 || i === 3 ? B.green : C.paperBoard} stroke={k} strokeWidth="1" /><circle cx={7.2 + i * 8.6} cy={i === 1 || i === 3 ? 13 : 25} r="2.3" fill="#fff" stroke={k} strokeWidth="0.8" /></g>)}<text x="20" y="37" fontSize="6.5" fontWeight="700" textAnchor="middle" fill={k} fontFamily="sans-serif">0101</text></svg>;
   if (game && game.kind === 'teach') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="3" y="3" width="34" height="34" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" />{[[11, 12], [17, 21], [10, 27]].map(([x, y], i) => <g key={`a${i}`}><circle cx={x} cy={y} r="4.4" fill="none" stroke="#D9534F" strokeWidth="1" strokeDasharray="1.6 1" /><circle cx={x} cy={y} r="2.3" fill="#D9534F" /></g>)}{[[27, 14], [30, 26], [22, 31]].map(([x, y], i) => <g key={`b${i}`}><circle cx={x} cy={y} r="4.4" fill="none" stroke="#E6B84B" strokeWidth="1" strokeDasharray="1.6 1" /><path d={`M ${x - 2.4} ${y - 1} q 2.4 3.4 4.8 0 q -2.3 1.6 -4.8 0 z`} fill="#F2C94C" /></g>)}</svg>;
-  if (game && game.kind === 'search') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2, 3, 4, 5, 6, 7].map((i) => <rect key={i} x={3 + (i % 4) * 8.8} y={i < 4 ? 8 : 22} width="7.5" height="10" rx="1.5" fill={i === 5 ? C.green : C.paperBoard} stroke={k} strokeWidth="1" />)}<path d="M20 4v34" stroke={k} strokeWidth="1" strokeDasharray="2 2" /></svg>;
-  if (game && game.kind === 'because') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="9" y="10" width="22" height="4" rx="1.5" fill={k} opacity="0.85" /><rect x="9" y="18" width="22" height="4" rx="1.5" fill={C.green} opacity="0.9" /><rect x="9" y="25" width="22" height="4" rx="1.5" fill="none" stroke={k} strokeWidth="1" /><rect x="9" y="32" width="22" height="4" rx="1.5" fill={C.green} opacity="0.9" /></svg>;
-  if (game && game.kind === 'reason') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="9" y="11" width="22" height="5" rx="2" fill={k} opacity="0.85" /><path d="M9 23h14" stroke={k} strokeWidth="1.5" strokeLinecap="round" /><path d="M26 21l3 3 5-5" fill="none" stroke={C.green} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /><path d="M9 29h10" stroke={k} strokeWidth="1.5" strokeLinecap="round" /></svg>;
-  if (game && game.kind === 'recall') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="9" y="10" width="9" height="5" rx="1.5" fill={k} opacity="0.7" /><rect x="21" y="10" width="10" height="5" rx="1.5" fill={k} opacity="0.7" /><rect x="9" y="18" width="11" height="5" rx="1.5" fill={k} opacity="0.7" /><rect x="9" y="26" width="22" height="5" rx="1.5" fill="none" stroke={C.green} strokeWidth="1.2" strokeDasharray="2 1.5" /><text x="25" y="22.5" fontSize="7" fontWeight="700" fill={C.green}>?</text></svg>;
+  if (game && game.kind === 'search') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2, 3, 4, 5, 6, 7].map((i) => <rect key={i} x={3 + (i % 4) * 8.8} y={i < 4 ? 8 : 22} width="7.5" height="10" rx="1.5" fill={i === 5 ? B.green : C.paperBoard} stroke={k} strokeWidth="1" />)}<path d="M20 4v34" stroke={k} strokeWidth="1" strokeDasharray="2 2" /></svg>;
+  if (game && game.kind === 'because') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="9" y="10" width="22" height="4" rx="1.5" fill={k} opacity="0.85" /><rect x="9" y="18" width="22" height="4" rx="1.5" fill={B.green} opacity="0.9" /><rect x="9" y="25" width="22" height="4" rx="1.5" fill="none" stroke={k} strokeWidth="1" /><rect x="9" y="32" width="22" height="4" rx="1.5" fill={B.green} opacity="0.9" /></svg>;
+  if (game && game.kind === 'reason') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="9" y="11" width="22" height="5" rx="2" fill={k} opacity="0.85" /><path d="M9 23h14" stroke={k} strokeWidth="1.5" strokeLinecap="round" /><path d="M26 21l3 3 5-5" fill="none" stroke={B.green} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /><path d="M9 29h10" stroke={k} strokeWidth="1.5" strokeLinecap="round" /></svg>;
+  if (game && game.kind === 'recall') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="9" y="10" width="9" height="5" rx="1.5" fill={k} opacity="0.7" /><rect x="21" y="10" width="10" height="5" rx="1.5" fill={k} opacity="0.7" /><rect x="9" y="18" width="11" height="5" rx="1.5" fill={k} opacity="0.7" /><rect x="9" y="26" width="22" height="5" rx="1.5" fill="none" stroke={B.green} strokeWidth="1.2" strokeDasharray="2 1.5" /><text x="25" y="22.5" fontSize="7" fontWeight="700" fill={B.green}>?</text></svg>;
   if (game && game.kind === 'face') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><circle cx="20" cy="21" r="15" fill="#F5CBA7" stroke={k} strokeWidth="1" /><circle cx="14" cy="18" r="1.8" fill={k} /><circle cx="26" cy="18" r="1.8" fill={k} /><path d="M13 26q7 6 14 0" fill="none" stroke={k} strokeWidth="1.6" strokeLinecap="round" /></svg>;
-  if (game && game.kind === 'filler') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><path d="M9 14h8M21 14h10M9 21h6M9 28h14M27 28h4" stroke={k} strokeWidth="2.2" strokeLinecap="round" /><path d="M16 19l6 4M16 23l6-4" stroke={C.clay} strokeWidth="2" strokeLinecap="round" /></svg>;
-  if (game && game.kind === 'room') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="6" width="14" height="12" rx="2" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="22" y="6" width="14" height="12" rx="2" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="4" y="22" width="14" height="12" rx="2" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="22" y="22" width="14" height="12" rx="2" fill={C.green} stroke={k} strokeWidth="1" /><path d="M25 28h8" stroke="#fff" strokeWidth="2" strokeLinecap="round" /></svg>;
-  if (game && game.kind === 'ask') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><path d="M6 8h22a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H14l-6 5v-5H6a3 3 0 0 1-3-3V11a3 3 0 0 1 3-3z" fill={C.paperBoard} stroke={k} strokeWidth="1" /><text x="17" y="21" textAnchor="middle" fontSize="13" fontWeight="700" fill={k}>?</text><circle cx="33" cy="31" r="5" fill={C.green} /></svg>;
-  if (game && game.kind === 'turn') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><circle cx="20" cy="20" r="13" fill="none" stroke={k} strokeWidth="1" strokeDasharray="2 3" /><circle cx="20" cy="7" r="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><circle cx="33" cy="20" r="4" fill={C.green} stroke={k} strokeWidth="1" /><circle cx="20" cy="33" r="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><circle cx="7" cy="20" r="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><line x1="23" y1="3" x2="26" y2="10" stroke={C.clay} strokeWidth="2" strokeLinecap="round" /></svg>;
+  if (game && game.kind === 'filler') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><path d="M9 14h8M21 14h10M9 21h6M9 28h14M27 28h4" stroke={k} strokeWidth="2.2" strokeLinecap="round" /><path d="M16 19l6 4M16 23l6-4" stroke={B.clay} strokeWidth="2" strokeLinecap="round" /></svg>;
+  if (game && game.kind === 'room') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="6" width="14" height="12" rx="2" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="22" y="6" width="14" height="12" rx="2" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="4" y="22" width="14" height="12" rx="2" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="22" y="22" width="14" height="12" rx="2" fill={B.green} stroke={k} strokeWidth="1" /><path d="M25 28h8" stroke="#fff" strokeWidth="2" strokeLinecap="round" /></svg>;
+  if (game && game.kind === 'ask') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><path d="M6 8h22a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H14l-6 5v-5H6a3 3 0 0 1-3-3V11a3 3 0 0 1 3-3z" fill={C.paperBoard} stroke={k} strokeWidth="1" /><text x="17" y="21" textAnchor="middle" fontSize="13" fontWeight="700" fill={k}>?</text><circle cx="33" cy="31" r="5" fill={B.green} /></svg>;
+  if (game && game.kind === 'turn') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><circle cx="20" cy="20" r="13" fill="none" stroke={k} strokeWidth="1" strokeDasharray="2 3" /><circle cx="20" cy="7" r="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><circle cx="33" cy="20" r="4" fill={B.green} stroke={k} strokeWidth="1" /><circle cx="20" cy="33" r="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><circle cx="7" cy="20" r="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><line x1="23" y1="3" x2="26" y2="10" stroke={B.clay} strokeWidth="2" strokeLinecap="round" /></svg>;
   if (game && game.kind === 'jar') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="12" y="8" width="16" height="28" rx="3" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="13" y="24" width="14" height="11" fill="#E3C27A" /><rect x="13" y="17" width="14" height="7" fill="#B9A58A" /><rect x="13" y="12" width="14" height="5" fill="#8C6A4A" /><rect x="14" y="4" width="12" height="4" rx="1" fill={k} /></svg>;
-  if (game && game.kind === 'relation') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><circle cx="13" cy="20" r="8" fill={C.paperBoard} stroke={k} strokeWidth="1" /><circle cx="29" cy="20" r="6" fill={C.green} stroke={k} strokeWidth="1" /><path d="M21 16l4 0M21 24l4 0" stroke={k} strokeWidth="2" strokeLinecap="round" /><path d="M24 14l3 2-3 2M22 26l-3-2 3-2" fill="none" stroke={k} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>;
+  if (game && game.kind === 'relation') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><circle cx="13" cy="20" r="8" fill={C.paperBoard} stroke={k} strokeWidth="1" /><circle cx="29" cy="20" r="6" fill={B.green} stroke={k} strokeWidth="1" /><path d="M21 16l4 0M21 24l4 0" stroke={k} strokeWidth="2" strokeLinecap="round" /><path d="M24 14l3 2-3 2M22 26l-3-2 3-2" fill="none" stroke={k} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>;
   if (game && game.kind === 'sprout') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><path d="M20 24 C20 18 20 14 20 10" stroke="#3E8E4F" strokeWidth="2" fill="none" /><path d="M20 15 C15 12 13 9 14 7 C17 8 19 11 20 15 Z" fill="#5DB36D" /><path d="M20 13 C25 10 27 7 26 5 C23 6 21 9 20 13 Z" fill="#5DB36D" /><path d="M9 24 L31 24 L28 37 L12 37 Z" fill="#C8734B" stroke={k} strokeWidth="1" /></svg>;
-  if (game && game.kind === 'grow') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><path d="M13 26h14l-2 10h-10z" fill="#C8734B" stroke={k} strokeWidth="1" /><path d="M20 26v-12" stroke={C.green} strokeWidth="2" strokeLinecap="round" /><path d="M20 20q-6-3-7-8q5 0 7 5z" fill={C.green} /><path d="M20 18q6-3 7-8q-5 0-7 5z" fill={C.green} /><circle cx="32" cy="8" r="4" fill="#F2C94C" /></svg>;
-  if (game && game.kind === 'deal') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="9" width="14" height="22" rx="3" fill={C.paperBoard} stroke={C.green} strokeWidth="1.6" strokeDasharray="3 2" /><rect x="22" y="9" width="14" height="22" rx="3" fill={C.paperBoard} stroke={C.clay} strokeWidth="1.6" strokeDasharray="3 2" /><text x="11" y="24" textAnchor="middle" fontSize="9" fontWeight="700" fill={k}>%</text><text x="29" y="24" textAnchor="middle" fontSize="9" fontWeight="700" fill={k}>$</text></svg>;
-  if (game && game.kind === 'greenred') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><line x1="12" y1="10" x2="12" y2="31" stroke={k} strokeWidth="1.6" /><path d="M12 10 H20 L18 14 L20 18 H12 Z" fill={C.green} /><line x1="25" y1="10" x2="25" y2="31" stroke={k} strokeWidth="1.6" /><path d="M25 10 H33 L31 14 L33 18 H25 Z" fill={C.clay} /></svg>;
-  if (game && game.kind === 'cite') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><path d="M10 10 h20 a2 2 0 0 1 2 2 v11 a2 2 0 0 1 -2 2 h-11 l-5 5 v-5 h-4 a2 2 0 0 1 -2 -2 v-11 a2 2 0 0 1 2 -2 z" fill={C.green} /><path d="M15 14 v5 M18 14 v5 M23 14 v5 M26 14 v5" stroke="#fff" strokeWidth="1.6" /></svg>;
-  if (game && game.kind === 'gdp') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="9" y="22" width="5" height="9" fill={C.green} /><rect x="17" y="17" width="5" height="14" fill={C.green} /><rect x="25" y="12" width="5" height="19" fill={C.green} /><path d="M8 11 L14 11" stroke={C.clay} strokeWidth="2" /></svg>;
-  if (game && game.kind === 'cause') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><path d="M9 30 L31 10" stroke={k} strokeWidth="1" strokeDasharray="2 2" /><circle cx="11" cy="27" r="2" fill={C.clay} /><circle cx="15" cy="22" r="2" fill={C.clay} /><circle cx="20" cy="24" r="2" fill={C.clay} /><circle cx="24" cy="16" r="2" fill={C.green} /><circle cx="29" cy="13" r="2" fill={C.green} /></svg>;
-  if (game && game.kind === 'mythfact') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="8" y="12" width="11" height="16" rx="2" fill={C.clay} /><rect x="21" y="12" width="11" height="16" rx="2" fill={C.green} /><path d="M11 18 L16 23 M16 18 L11 23" stroke="#fff" strokeWidth="1.8" /><path d="M23.5 20.5 L26 23 L30 17.5" fill="none" stroke="#fff" strokeWidth="1.8" /></svg>;
-  if (game && game.kind === 'cpr') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><path d="M20 31 C10 24 8 19 8 15 C8 11 11 9 14 9 C17 9 19 11 20 13 C21 11 23 9 26 9 C29 9 32 11 32 15 C32 19 30 24 20 31 Z" fill={C.clay} /><path d="M10 20 H15 L17 16 L20 24 L22 19 H30" fill="none" stroke="#fff" strokeWidth="1.6" /></svg>;
+  if (game && game.kind === 'grow') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><path d="M13 26h14l-2 10h-10z" fill="#C8734B" stroke={k} strokeWidth="1" /><path d="M20 26v-12" stroke={B.green} strokeWidth="2" strokeLinecap="round" /><path d="M20 20q-6-3-7-8q5 0 7 5z" fill={B.green} /><path d="M20 18q6-3 7-8q-5 0-7 5z" fill={B.green} /><circle cx="32" cy="8" r="4" fill="#F2C94C" /></svg>;
+  if (game && game.kind === 'deal') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="9" width="14" height="22" rx="3" fill={C.paperBoard} stroke={B.green} strokeWidth="1.6" strokeDasharray="3 2" /><rect x="22" y="9" width="14" height="22" rx="3" fill={C.paperBoard} stroke={B.clay} strokeWidth="1.6" strokeDasharray="3 2" /><text x="11" y="24" textAnchor="middle" fontSize="9" fontWeight="700" fill={k}>%</text><text x="29" y="24" textAnchor="middle" fontSize="9" fontWeight="700" fill={k}>$</text></svg>;
+  if (game && game.kind === 'greenred') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><line x1="12" y1="10" x2="12" y2="31" stroke={k} strokeWidth="1.6" /><path d="M12 10 H20 L18 14 L20 18 H12 Z" fill={B.green} /><line x1="25" y1="10" x2="25" y2="31" stroke={k} strokeWidth="1.6" /><path d="M25 10 H33 L31 14 L33 18 H25 Z" fill={B.clay} /></svg>;
+  if (game && game.kind === 'cite') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><path d="M10 10 h20 a2 2 0 0 1 2 2 v11 a2 2 0 0 1 -2 2 h-11 l-5 5 v-5 h-4 a2 2 0 0 1 -2 -2 v-11 a2 2 0 0 1 2 -2 z" fill={B.green} /><path d="M15 14 v5 M18 14 v5 M23 14 v5 M26 14 v5" stroke="#fff" strokeWidth="1.6" /></svg>;
+  if (game && game.kind === 'gdp') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="9" y="22" width="5" height="9" fill={B.green} /><rect x="17" y="17" width="5" height="14" fill={B.green} /><rect x="25" y="12" width="5" height="19" fill={B.green} /><path d="M8 11 L14 11" stroke={B.clay} strokeWidth="2" /></svg>;
+  if (game && game.kind === 'cause') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><path d="M9 30 L31 10" stroke={k} strokeWidth="1" strokeDasharray="2 2" /><circle cx="11" cy="27" r="2" fill={B.clay} /><circle cx="15" cy="22" r="2" fill={B.clay} /><circle cx="20" cy="24" r="2" fill={B.clay} /><circle cx="24" cy="16" r="2" fill={B.green} /><circle cx="29" cy="13" r="2" fill={B.green} /></svg>;
+  if (game && game.kind === 'mythfact') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="8" y="12" width="11" height="16" rx="2" fill={B.clay} /><rect x="21" y="12" width="11" height="16" rx="2" fill={B.green} /><path d="M11 18 L16 23 M16 18 L11 23" stroke="#fff" strokeWidth="1.8" /><path d="M23.5 20.5 L26 23 L30 17.5" fill="none" stroke="#fff" strokeWidth="1.8" /></svg>;
+  if (game && game.kind === 'cpr') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><path d="M20 31 C10 24 8 19 8 15 C8 11 11 9 14 9 C17 9 19 11 20 13 C21 11 23 9 26 9 C29 9 32 11 32 15 C32 19 30 24 20 31 Z" fill={B.clay} /><path d="M10 20 H15 L17 16 L20 24 L22 19 H30" fill="none" stroke="#fff" strokeWidth="1.6" /></svg>;
   if (game && game.kind === 'label') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="8" y="9" width="11" height="22" rx="1" fill="#fff" stroke={k} strokeWidth="1.2" /><rect x="21" y="9" width="11" height="22" rx="1" fill="#fff" stroke={k} strokeWidth="1.2" /><path d="M10 14h7M10 18h7M10 22h7M23 14h7M23 18h7M23 22h7" stroke={k} strokeWidth="1" /></svg>;
-  if (game && game.kind === 'ledger') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="8" y="12" width="7" height="18" rx="1" fill={C.green} /><rect x="17" y="18" width="7" height="12" rx="1" fill={C.clay} /><rect x="26" y="22" width="7" height="8" rx="1" fill={k} /></svg>;
+  if (game && game.kind === 'ledger') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="8" y="12" width="7" height="18" rx="1" fill={B.green} /><rect x="17" y="18" width="7" height="12" rx="1" fill={B.clay} /><rect x="26" y="22" width="7" height="8" rx="1" fill={k} /></svg>;
   if (game && game.kind === 'tool') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="18" y="15" width="4" height="16" rx="1" fill="#A0522D" /><rect x="11" y="10" width="18" height="6" rx="1" fill="#6B6B6B" /></svg>;
-  if (game && game.kind === 'breakeven') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><path d="M8 30L32 10" stroke={C.green} strokeWidth="2.2" strokeLinecap="round" /><path d="M8 20L32 14" stroke={C.clay} strokeWidth="2.2" strokeLinecap="round" /><circle cx="20" cy="20" r="2.6" fill={k} /></svg>;
-  if (game && game.kind === 'savejar') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="14" y="4" width="12" height="5" rx="1.5" fill="#C8A26B" stroke={k} strokeWidth="1" /><rect x="9" y="9" width="22" height="27" rx="5" fill={C.paperBoard} stroke={k} strokeWidth="1.2" /><rect x="11" y="22" width="18" height="12" rx="2" fill={C.green} /><line x1="9" y1="15" x2="31" y2="15" stroke={C.clay} strokeWidth="1.4" strokeDasharray="2 1.5" /></svg>;
-  if (game && game.kind === 'stat') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="9" y="22" width="4" height="9" fill={k} opacity="0.6" /><rect x="15" y="16" width="4" height="15" fill={k} opacity="0.6" /><rect x="21" y="12" width="4" height="19" fill={C.green} /><rect x="27" y="18" width="4" height="13" fill={k} opacity="0.6" /><path d="M7 20h26" stroke={C.green} strokeWidth="1.2" strokeDasharray="2 1.5" /></svg>;
-  if (game && game.kind === 'valid') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><path d="M9 13h22M9 19h16M9 25h22" stroke={k} strokeWidth="1.5" strokeLinecap="round" /><path d="M11 31l3 3 6-6" fill="none" stroke={C.green} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>;
-  if (game && game.kind === 'fund') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="5" y="7" width="30" height="26" rx="4" fill="#fff" stroke={k} strokeWidth="1.2" />{[[10, 22, 8], [17, 14, 16], [24, 18, 12]].map(([x, y, h], i) => <rect key={i} x={x} y={y} width="5" height={h} rx="1" fill={i === 1 ? C.green : '#DDE3DE'} stroke={k} strokeWidth="0.7" />)}<path d="M31 13l-3 -3 -3 3M28 10v9" fill="none" stroke={k} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg>;
-  if (game && game.kind === 'loan') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[[8, 24, 12], [15, 18, 18], [22, 12, 24], [29, 6, 30]].map(([x, y, h], i) => <rect key={i} x={x} y={y} width="5" height={h} rx="1.2" fill={i === 3 ? C.green : '#D9534F'} stroke={k} strokeWidth="0.7" />)}<line x1="5" y1="36" x2="36" y2="36" stroke={k} strokeWidth="1.2" strokeLinecap="round" /></svg>;
-  if (game && game.kind === 'price') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><path d="M8 6h16l8 8v20H8z" fill="#fff" stroke={k} strokeWidth="1.2" strokeLinejoin="round" /><circle cx="13" cy="11" r="1.6" fill={k} />{[[13, 22, 10], [19, 17, 15], [25, 20, 12]].map(([x, y, h], i) => <rect key={i} x={x} y={y} width="4.5" height={h} rx="1" fill={i === 1 ? C.green : '#DDE3DE'} stroke={k} strokeWidth="0.7" />)}</svg>;
-  if (game && game.kind === 'chord') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2, 3, 4, 5, 6].map((i) => <rect key={i} x={2 + i * 5.2} y="8" width="4.6" height="26" rx="1" fill={i === 0 || i === 2 || i === 4 ? C.green : C.paperBoard} stroke={k} strokeWidth="0.8" />)}{[0, 1, 3, 4, 5].map((i) => <rect key={`b${i}`} x={5.4 + i * 5.2} y="8" width="3" height="15" rx="0.8" fill={k} />)}</svg>;
-  if (game && game.kind === 'shape') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[10, 18, 26, 34, 26, 14].map((h, i) => <rect key={i} x={4 + i * 5.6} y={36 - h} width="4.4" height={h} rx="1" fill={i === 3 ? C.clay : C.green} stroke={k} strokeWidth="0.7" />)}<path d="M3 37h34" stroke={k} strokeWidth="1" /></svg>;
-  if (game && game.kind === 'pattern') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><circle cx="8" cy="14" r="4.5" fill="#D9534F" stroke={k} strokeWidth="0.8" /><rect x="15.5" y="9.5" width="9" height="9" rx="2" fill="#4B6B8B" stroke={k} strokeWidth="0.8" /><circle cx="31" cy="14" r="4.5" fill="#D9534F" stroke={k} strokeWidth="0.8" /><rect x="3.5" y="24.5" width="9" height="9" rx="2" fill="#4B6B8B" stroke={k} strokeWidth="0.8" /><circle cx="20" cy="29" r="4.5" fill="#D9534F" stroke={k} strokeWidth="0.8" /><rect x="27" y="24.5" width="9" height="9" rx="2" fill="none" stroke={C.green} strokeWidth="1.2" strokeDasharray="2 1.5" /></svg>;
-  if (game && game.kind === 'sense') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="3" y="5" width="34" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><path d="M8 18q12-10 24 0q-12 10-24 0z" fill="#fff" stroke={k} strokeWidth="1" /><circle cx="20" cy="18" r="4" fill="#4B6B8B" stroke={k} strokeWidth="0.8" /><circle cx="20" cy="18" r="1.6" fill={k} /><path d="M10 30h20" stroke={C.green} strokeWidth="1.5" strokeLinecap="round" /></svg>;
+  if (game && game.kind === 'breakeven') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><path d="M8 30L32 10" stroke={B.green} strokeWidth="2.2" strokeLinecap="round" /><path d="M8 20L32 14" stroke={B.clay} strokeWidth="2.2" strokeLinecap="round" /><circle cx="20" cy="20" r="2.6" fill={k} /></svg>;
+  if (game && game.kind === 'savejar') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="14" y="4" width="12" height="5" rx="1.5" fill="#C8A26B" stroke={k} strokeWidth="1" /><rect x="9" y="9" width="22" height="27" rx="5" fill={C.paperBoard} stroke={k} strokeWidth="1.2" /><rect x="11" y="22" width="18" height="12" rx="2" fill={B.green} /><line x1="9" y1="15" x2="31" y2="15" stroke={B.clay} strokeWidth="1.4" strokeDasharray="2 1.5" /></svg>;
+  if (game && game.kind === 'stat') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="9" y="22" width="4" height="9" fill={k} opacity="0.6" /><rect x="15" y="16" width="4" height="15" fill={k} opacity="0.6" /><rect x="21" y="12" width="4" height="19" fill={B.green} /><rect x="27" y="18" width="4" height="13" fill={k} opacity="0.6" /><path d="M7 20h26" stroke={B.green} strokeWidth="1.2" strokeDasharray="2 1.5" /></svg>;
+  if (game && game.kind === 'valid') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><path d="M9 13h22M9 19h16M9 25h22" stroke={k} strokeWidth="1.5" strokeLinecap="round" /><path d="M11 31l3 3 6-6" fill="none" stroke={B.green} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>;
+  if (game && game.kind === 'fund') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="5" y="7" width="30" height="26" rx="4" fill="#fff" stroke={k} strokeWidth="1.2" />{[[10, 22, 8], [17, 14, 16], [24, 18, 12]].map(([x, y, h], i) => <rect key={i} x={x} y={y} width="5" height={h} rx="1" fill={i === 1 ? B.green : '#DDE3DE'} stroke={k} strokeWidth="0.7" />)}<path d="M31 13l-3 -3 -3 3M28 10v9" fill="none" stroke={k} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg>;
+  if (game && game.kind === 'loan') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[[8, 24, 12], [15, 18, 18], [22, 12, 24], [29, 6, 30]].map(([x, y, h], i) => <rect key={i} x={x} y={y} width="5" height={h} rx="1.2" fill={i === 3 ? B.green : '#D9534F'} stroke={k} strokeWidth="0.7" />)}<line x1="5" y1="36" x2="36" y2="36" stroke={k} strokeWidth="1.2" strokeLinecap="round" /></svg>;
+  if (game && game.kind === 'price') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><path d="M8 6h16l8 8v20H8z" fill="#fff" stroke={k} strokeWidth="1.2" strokeLinejoin="round" /><circle cx="13" cy="11" r="1.6" fill={k} />{[[13, 22, 10], [19, 17, 15], [25, 20, 12]].map(([x, y, h], i) => <rect key={i} x={x} y={y} width="4.5" height={h} rx="1" fill={i === 1 ? B.green : '#DDE3DE'} stroke={k} strokeWidth="0.7" />)}</svg>;
+  if (game && game.kind === 'chord') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2, 3, 4, 5, 6].map((i) => <rect key={i} x={2 + i * 5.2} y="8" width="4.6" height="26" rx="1" fill={i === 0 || i === 2 || i === 4 ? B.green : C.paperBoard} stroke={k} strokeWidth="0.8" />)}{[0, 1, 3, 4, 5].map((i) => <rect key={`b${i}`} x={5.4 + i * 5.2} y="8" width="3" height="15" rx="0.8" fill={k} />)}</svg>;
+  if (game && game.kind === 'shape') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[10, 18, 26, 34, 26, 14].map((h, i) => <rect key={i} x={4 + i * 5.6} y={36 - h} width="4.4" height={h} rx="1" fill={i === 3 ? B.clay : B.green} stroke={k} strokeWidth="0.7" />)}<path d="M3 37h34" stroke={k} strokeWidth="1" /></svg>;
+  if (game && game.kind === 'pattern') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><circle cx="8" cy="14" r="4.5" fill="#D9534F" stroke={k} strokeWidth="0.8" /><rect x="15.5" y="9.5" width="9" height="9" rx="2" fill="#4B6B8B" stroke={k} strokeWidth="0.8" /><circle cx="31" cy="14" r="4.5" fill="#D9534F" stroke={k} strokeWidth="0.8" /><rect x="3.5" y="24.5" width="9" height="9" rx="2" fill="#4B6B8B" stroke={k} strokeWidth="0.8" /><circle cx="20" cy="29" r="4.5" fill="#D9534F" stroke={k} strokeWidth="0.8" /><rect x="27" y="24.5" width="9" height="9" rx="2" fill="none" stroke={B.green} strokeWidth="1.2" strokeDasharray="2 1.5" /></svg>;
+  if (game && game.kind === 'sense') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="3" y="5" width="34" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><path d="M8 18q12-10 24 0q-12 10-24 0z" fill="#fff" stroke={k} strokeWidth="1" /><circle cx="20" cy="18" r="4" fill="#4B6B8B" stroke={k} strokeWidth="0.8" /><circle cx="20" cy="18" r="1.6" fill={k} /><path d="M10 30h20" stroke={B.green} strokeWidth="1.5" strokeLinecap="round" /></svg>;
   if (game && game.kind === 'share') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><ellipse cx="12" cy="26" rx="10" ry="6" fill={C.paperBoard} stroke={k} strokeWidth="1" /><ellipse cx="28" cy="26" rx="10" ry="6" fill={C.paperBoard} stroke={k} strokeWidth="1" /><circle cx="9" cy="24" r="3" fill="#D9A441" stroke={k} strokeWidth="0.7" /><circle cx="15" cy="24" r="3" fill="#D9A441" stroke={k} strokeWidth="0.7" /><circle cx="25" cy="24" r="3" fill="#D9A441" stroke={k} strokeWidth="0.7" /><circle cx="31" cy="24" r="3" fill="#D9A441" stroke={k} strokeWidth="0.7" /><circle cx="20" cy="10" r="3" fill="#D9A441" stroke={k} strokeWidth="0.7" /></svg>;
   if (game && game.kind === 'spot') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="3" y="3" width="34" height="34" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><circle cx="13" cy="14" r="5" fill="#D9534F" stroke={k} strokeWidth="0.7" /><rect x="22" y="9" width="10" height="10" rx="1.5" fill="#4B6B8B" stroke={k} strokeWidth="0.7" /><polygon points="13,23 19,32 7,32" fill="#F2C94C" stroke={k} strokeWidth="0.7" /><polyline points="22,31 25,25 28,31 31,25 34,31" fill="none" stroke="#5BA84A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>;
-  if (game && game.kind === 'pay') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="5" y="6" width="30" height="14" rx="3" fill="#fff" stroke={k} strokeWidth="1" />{[0, 1, 2, 3].map((i) => <circle key={i} cx={11 + i * 6} cy="13" r="2" fill={i < 2 ? C.green : '#DDE3DE'} stroke={k} strokeWidth="0.6" />)}<circle cx="13" cy="30" r="6" fill="#E6B84B" stroke="#9C7A1C" strokeWidth="1.2" /><circle cx="27" cy="30" r="4.6" fill="#D7DCDF" stroke="#7B8388" strokeWidth="1.2" /></svg>;
-  if (game && game.kind === 'walk') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2].map((r) => [0, 1, 2].map((c) => <rect key={`${r}${c}`} x={4.5 + c * 10.5} y={4.5 + r * 10.5} width="9.5" height="9.5" rx="1.5" fill={C.paperBoard} stroke={k} strokeWidth="1" />))}<rect x="6.5" y="6.5" width="5.5" height="5.5" rx="1.5" fill="#D9534F" stroke={k} strokeWidth="0.7" /><path d="M30.3 24.8l1.3 2.7 3.0 0.4-2.2 2.1 0.5 3.0-2.6-1.4-2.6 1.4 0.5-3.0-2.2-2.1 3.0-0.4z" fill={C.gold} stroke={k} strokeWidth="0.6" /><path d="M13.5 9.3h8.5M19 6.5l3 2.8-3 2.8M20 14v7M17.2 18l2.8 3 2.8-3" fill="none" stroke={k} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg>;
-  if (game && game.kind === 'balance') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="19" y="14" width="2.4" height="16" fill="#8A9086" /><rect x="12" y="30" width="16" height="3" rx="1.5" fill="#8A9086" /><rect x="6" y="13" width="28" height="2.4" rx="1.2" fill={k} transform="rotate(-6 20 14)" /><path d="M4 22h10l-1.5 5h-7z" fill={C.greenSoft} stroke={k} strokeWidth="1" /><path d="M26 20h10l-1.5 5h-7z" fill="#F7EAD1" stroke={k} strokeWidth="1" /><rect x="28" y="15" width="5" height="4" rx="1" fill={C.gold} stroke={k} strokeWidth="0.8" /></svg>;
-  if (game && game.kind === 'jump') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><line x1="4" y1="30" x2="36" y2="30" stroke={k} strokeWidth="1.5" strokeLinecap="round" />{[8, 15, 22, 29].map((x) => <line key={x} x1={x} y1="27.5" x2={x} y2="32.5" stroke={k} strokeWidth="1.2" />)}<ellipse cx="14" cy="18" rx="7" ry="5" fill="#5BA84A" stroke={k} strokeWidth="1.2" /><circle cx="11.5" cy="14.5" r="2" fill={C.paperBoard} stroke={k} strokeWidth="0.8" /><circle cx="16.5" cy="14.5" r="2" fill={C.paperBoard} stroke={k} strokeWidth="0.8" /><circle cx="12" cy="14.7" r="0.8" fill={k} /><circle cx="17" cy="14.7" r="0.8" fill={k} /><path d="M22 20q6-8 12 0" fill="none" stroke={C.gold} strokeWidth="1.6" strokeDasharray="2 1.5" /></svg>;
-  if (game && game.kind === 'map') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="6" width="32" height="26" rx="3" fill="#DDEFF8" stroke={k} strokeWidth="1.3" /><path d="M9 12q6-4 10 1t-2 8q-8 2-8-9z" fill="#F1E8CF" stroke={k} strokeWidth="1" /><path d="M24 16q8-4 9 3t-6 7q-5-1-3-10z" fill={C.greenSoft} stroke={k} strokeWidth="1" /><path d="M27 21 L24.5 15 A3 3 0 1 1 29.5 15 Z" fill={C.gold} stroke={k} strokeWidth="0.8" /></svg>;
-  if (game && game.kind === 'ship') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="4" width="32" height="32" rx="6" fill="#1E2A3A" /><circle cx="11" cy="11" r="1" fill="#DDE6F0" /><circle cx="29" cy="14" r="1" fill="#DDE6F0" /><rect x="19" y="9" width="2" height="6" rx="1" fill={C.gold} /><path d="M20 19l7 13-7-3-7 3z" fill={C.gold} stroke="#F2F5F8" strokeWidth="1" strokeLinejoin="round" /></svg>;
-  if (game && game.kind === 'catch') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><circle cx="17" cy="11" r="3.5" fill={C.gold} stroke={k} strokeWidth="1" /><rect x="24" y="17" width="9" height="6" rx="2" fill={C.paperBoard} stroke={k} strokeWidth="1.2" /><path d="M8 27h24l-3 9H11z" fill={C.gold} stroke={k} strokeWidth="1.4" strokeLinejoin="round" /><rect x="7" y="25" width="26" height="3" rx="1.5" fill={C.green} /></svg>;
-  if (game && game.kind === 'path') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2].map((r) => [0, 1, 2].map((c) => <rect key={`${r}${c}`} x={5 + c * 10.5} y={5 + r * 10.5} width="9" height="9" rx="2" fill={(r === 0 && c <= 1) || (r >= 1 && c === 1) || (r === 2 && c === 2) ? C.greenSoft : C.paperBoard} stroke={k} strokeWidth="1.1" />))}<circle cx="9.5" cy="9.5" r="2.6" fill={C.gold} stroke={k} strokeWidth="0.8" /><path d="M30 26.5l1.4 2.9 3.2.5-2.3 2.2.6 3.2-2.9-1.5-2.9 1.5.6-3.2-2.3-2.2 3.2-.5z" fill={C.gold} stroke={k} strokeWidth="0.8" strokeLinejoin="round" /></svg>;
-  if (game && game.kind === 'buckets') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="12" y="6" width="16" height="8" rx="3" fill={C.paperBoard} stroke={k} strokeWidth="1.3" /><path d="M4 20h14l-2 14H6z" fill={C.greenSoft} stroke={k} strokeWidth="1.3" strokeLinejoin="round" /><path d="M22 20h14l-2 14H24z" fill={C.paperBoard} stroke={k} strokeWidth="1.3" strokeLinejoin="round" /><path d="M20 15v4" stroke={C.green} strokeWidth="1.6" strokeLinecap="round" /></svg>;
-  if (game && game.kind === 'sprint') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><path d="M22 4 L10 22 h9 l-3 14 L30 18 h-9 z" fill={C.gold} stroke={k} strokeWidth="1.5" strokeLinejoin="round" /></svg>;
-  if (game && game.kind === 'evidence') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2, 3].map((r) => <rect key={r} x="6" y={7 + r * 7.5} width={r === 2 ? 28 : 24 - (r % 2) * 4} height="5" rx="1.5" fill={r === 2 ? C.greenSoft : C.paperBoard} stroke={r === 2 ? C.green : k} strokeWidth="1" />)}</svg>;
-  if (game && game.kind === 'ptable') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2, 3].map((r) => [0, 1, 2, 3, 4, 5].map((c) => ((r === 0 && c > 0 && c < 5) ? null : <rect key={`${r}${c}`} x={3 + c * 5.8} y={8 + r * 6.2} width="5" height="5.4" rx="1" fill={r === 2 && c === 4 ? C.greenSoft : C.paperBoard} stroke={r === 2 && c === 4 ? C.green : k} strokeWidth="0.8" />)))}</svg>;
-  if (game && game.kind === 'debug') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2].map((a) => [0, 1, 2].map((b) => <rect key={`${a}${b}`} x={5 + a * 10} y={5 + b * 10} width="10" height="10" fill={C.paperBoard} stroke={k} strokeWidth="1" />))}<rect x="6.5" y="26.5" width="7" height="7" rx="2" fill={C.green} /><path d="M30 6.5 l1.6 3.3 l3.6 0.5 l-2.6 2.5 l0.6 3.6 l-3.2 -1.7 l-3.2 1.7 l0.6 -3.6 l-2.6 -2.5 l3.6 -0.5 z" fill="#E6B84B" /></svg>;
+  if (game && game.kind === 'pay') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="5" y="6" width="30" height="14" rx="3" fill="#fff" stroke={k} strokeWidth="1" />{[0, 1, 2, 3].map((i) => <circle key={i} cx={11 + i * 6} cy="13" r="2" fill={i < 2 ? B.green : '#DDE3DE'} stroke={k} strokeWidth="0.6" />)}<circle cx="13" cy="30" r="6" fill="#E6B84B" stroke="#9C7A1C" strokeWidth="1.2" /><circle cx="27" cy="30" r="4.6" fill="#D7DCDF" stroke="#7B8388" strokeWidth="1.2" /></svg>;
+  if (game && game.kind === 'walk') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2].map((r) => [0, 1, 2].map((c) => <rect key={`${r}${c}`} x={4.5 + c * 10.5} y={4.5 + r * 10.5} width="9.5" height="9.5" rx="1.5" fill={C.paperBoard} stroke={k} strokeWidth="1" />))}<rect x="6.5" y="6.5" width="5.5" height="5.5" rx="1.5" fill="#D9534F" stroke={k} strokeWidth="0.7" /><path d="M30.3 24.8l1.3 2.7 3.0 0.4-2.2 2.1 0.5 3.0-2.6-1.4-2.6 1.4 0.5-3.0-2.2-2.1 3.0-0.4z" fill={B.gold} stroke={k} strokeWidth="0.6" /><path d="M13.5 9.3h8.5M19 6.5l3 2.8-3 2.8M20 14v7M17.2 18l2.8 3 2.8-3" fill="none" stroke={k} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg>;
+  if (game && game.kind === 'balance') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="19" y="14" width="2.4" height="16" fill="#8A9086" /><rect x="12" y="30" width="16" height="3" rx="1.5" fill="#8A9086" /><rect x="6" y="13" width="28" height="2.4" rx="1.2" fill={k} transform="rotate(-6 20 14)" /><path d="M4 22h10l-1.5 5h-7z" fill={B.greenSoft} stroke={k} strokeWidth="1" /><path d="M26 20h10l-1.5 5h-7z" fill="#F7EAD1" stroke={k} strokeWidth="1" /><rect x="28" y="15" width="5" height="4" rx="1" fill={B.gold} stroke={k} strokeWidth="0.8" /></svg>;
+  if (game && game.kind === 'jump') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><line x1="4" y1="30" x2="36" y2="30" stroke={k} strokeWidth="1.5" strokeLinecap="round" />{[8, 15, 22, 29].map((x) => <line key={x} x1={x} y1="27.5" x2={x} y2="32.5" stroke={k} strokeWidth="1.2" />)}<ellipse cx="14" cy="18" rx="7" ry="5" fill="#5BA84A" stroke={k} strokeWidth="1.2" /><circle cx="11.5" cy="14.5" r="2" fill={C.paperBoard} stroke={k} strokeWidth="0.8" /><circle cx="16.5" cy="14.5" r="2" fill={C.paperBoard} stroke={k} strokeWidth="0.8" /><circle cx="12" cy="14.7" r="0.8" fill={k} /><circle cx="17" cy="14.7" r="0.8" fill={k} /><path d="M22 20q6-8 12 0" fill="none" stroke={B.gold} strokeWidth="1.6" strokeDasharray="2 1.5" /></svg>;
+  if (game && game.kind === 'map') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="6" width="32" height="26" rx="3" fill="#DDEFF8" stroke={k} strokeWidth="1.3" /><path d="M9 12q6-4 10 1t-2 8q-8 2-8-9z" fill="#F1E8CF" stroke={k} strokeWidth="1" /><path d="M24 16q8-4 9 3t-6 7q-5-1-3-10z" fill={B.greenSoft} stroke={k} strokeWidth="1" /><path d="M27 21 L24.5 15 A3 3 0 1 1 29.5 15 Z" fill={B.gold} stroke={k} strokeWidth="0.8" /></svg>;
+  if (game && game.kind === 'ship') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="4" width="32" height="32" rx="6" fill="#1E2A3A" /><circle cx="11" cy="11" r="1" fill="#DDE6F0" /><circle cx="29" cy="14" r="1" fill="#DDE6F0" /><rect x="19" y="9" width="2" height="6" rx="1" fill={B.gold} /><path d="M20 19l7 13-7-3-7 3z" fill={B.gold} stroke="#F2F5F8" strokeWidth="1" strokeLinejoin="round" /></svg>;
+  if (game && game.kind === 'catch') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><circle cx="17" cy="11" r="3.5" fill={B.gold} stroke={k} strokeWidth="1" /><rect x="24" y="17" width="9" height="6" rx="2" fill={C.paperBoard} stroke={k} strokeWidth="1.2" /><path d="M8 27h24l-3 9H11z" fill={B.gold} stroke={k} strokeWidth="1.4" strokeLinejoin="round" /><rect x="7" y="25" width="26" height="3" rx="1.5" fill={B.green} /></svg>;
+  if (game && game.kind === 'path') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2].map((r) => [0, 1, 2].map((c) => <rect key={`${r}${c}`} x={5 + c * 10.5} y={5 + r * 10.5} width="9" height="9" rx="2" fill={(r === 0 && c <= 1) || (r >= 1 && c === 1) || (r === 2 && c === 2) ? B.greenSoft : C.paperBoard} stroke={k} strokeWidth="1.1" />))}<circle cx="9.5" cy="9.5" r="2.6" fill={B.gold} stroke={k} strokeWidth="0.8" /><path d="M30 26.5l1.4 2.9 3.2.5-2.3 2.2.6 3.2-2.9-1.5-2.9 1.5.6-3.2-2.3-2.2 3.2-.5z" fill={B.gold} stroke={k} strokeWidth="0.8" strokeLinejoin="round" /></svg>;
+  if (game && game.kind === 'buckets') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="12" y="6" width="16" height="8" rx="3" fill={C.paperBoard} stroke={k} strokeWidth="1.3" /><path d="M4 20h14l-2 14H6z" fill={B.greenSoft} stroke={k} strokeWidth="1.3" strokeLinejoin="round" /><path d="M22 20h14l-2 14H24z" fill={C.paperBoard} stroke={k} strokeWidth="1.3" strokeLinejoin="round" /><path d="M20 15v4" stroke={B.green} strokeWidth="1.6" strokeLinecap="round" /></svg>;
+  if (game && game.kind === 'sprint') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><path d="M22 4 L10 22 h9 l-3 14 L30 18 h-9 z" fill={B.gold} stroke={k} strokeWidth="1.5" strokeLinejoin="round" /></svg>;
+  if (game && game.kind === 'evidence') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2, 3].map((r) => <rect key={r} x="6" y={7 + r * 7.5} width={r === 2 ? 28 : 24 - (r % 2) * 4} height="5" rx="1.5" fill={r === 2 ? B.greenSoft : C.paperBoard} stroke={r === 2 ? B.green : k} strokeWidth="1" />)}</svg>;
+  if (game && game.kind === 'ptable') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2, 3].map((r) => [0, 1, 2, 3, 4, 5].map((c) => ((r === 0 && c > 0 && c < 5) ? null : <rect key={`${r}${c}`} x={3 + c * 5.8} y={8 + r * 6.2} width="5" height="5.4" rx="1" fill={r === 2 && c === 4 ? B.greenSoft : C.paperBoard} stroke={r === 2 && c === 4 ? B.green : k} strokeWidth="0.8" />)))}</svg>;
+  if (game && game.kind === 'debug') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2].map((a) => [0, 1, 2].map((b) => <rect key={`${a}${b}`} x={5 + a * 10} y={5 + b * 10} width="10" height="10" fill={C.paperBoard} stroke={k} strokeWidth="1" />))}<rect x="6.5" y="26.5" width="7" height="7" rx="2" fill={B.green} /><path d="M30 6.5 l1.6 3.3 l3.6 0.5 l-2.6 2.5 l0.6 3.6 l-3.2 -1.7 l-3.2 1.7 l0.6 -3.6 l-2.6 -2.5 l3.6 -0.5 z" fill="#E6B84B" /></svg>;
   if (game && game.kind === 'mix') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><circle cx="15" cy="15" r="9" fill="#D7263D" opacity="0.85" /><circle cx="25" cy="15" r="9" fill="#F4D03F" opacity="0.85" /><circle cx="20" cy="24" r="9" fill="#2E5EAA" opacity="0.85" /><circle cx="20" cy="18" r="15.5" fill="none" stroke={k} strokeWidth="1.5" /></svg>;
-  if (game && game.kind === 'build') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="8" width="32" height="10" rx="3" fill="none" stroke={k} strokeWidth="1.5" strokeDasharray="3 2" />{[[4, 12], [18, 9], [29, 7]].map(([x, w], i) => <rect key={i} x={x} y="24" width={w} height="9" rx="2" fill={i === 0 ? C.greenSoft : C.paperBoard} stroke={k} strokeWidth="1.5" />)}</svg>;
-  if (game && game.kind === 'fix') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[[4, 9], [15, 11], [28, 8]].map(([x, w], i) => <rect key={i} x={x} y="15" width={w} height="9" rx="2" fill={i === 1 ? C.greenSoft : C.paperBoard} stroke={i === 1 ? C.green : k} strokeWidth="1.5" />)}<path d="M15 28 q2.75 -3 5.5 0 t5.5 0" fill="none" stroke={C.clay} strokeWidth="1.6" strokeLinecap="round" /></svg>;
-  if (game && game.kind === 'order') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2].map((r) => <g key={r}><rect x="6" y={6 + r * 11} width="28" height="8" rx="2" fill={r === 0 ? C.greenSoft : C.paperBoard} stroke={k} strokeWidth="1.5" /><text x="11" y={12.5 + r * 11} fontFamily={FONT} fontSize="6" fontWeight="700" fill={C.ink}>{r + 1}</text></g>)}</svg>;
-  if (game && game.deck) { const label = { fractions: '½', roots: 'port', elements: 'Na', dates: '1776', formulas: 'F=ma', times: '6×7', vocabulary: 'Aa', capitals: 'TX' }[game.deck] || 'Aa'; return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="6" width="14" height="18" rx="2" fill={C.paperBoard} stroke={k} strokeWidth="1.5" /><rect x="22" y="16" width="14" height="18" rx="2" fill={C.greenSoft} stroke={k} strokeWidth="1.5" /><text x="11" y="18" fontFamily={FONT} fontSize={label.length > 3 ? 5 : 8} fontWeight="700" textAnchor="middle" fill={C.ink}>{label}</text></svg>; }
+  if (game && game.kind === 'build') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="8" width="32" height="10" rx="3" fill="none" stroke={k} strokeWidth="1.5" strokeDasharray="3 2" />{[[4, 12], [18, 9], [29, 7]].map(([x, w], i) => <rect key={i} x={x} y="24" width={w} height="9" rx="2" fill={i === 0 ? B.greenSoft : C.paperBoard} stroke={k} strokeWidth="1.5" />)}</svg>;
+  if (game && game.kind === 'fix') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[[4, 9], [15, 11], [28, 8]].map(([x, w], i) => <rect key={i} x={x} y="15" width={w} height="9" rx="2" fill={i === 1 ? B.greenSoft : C.paperBoard} stroke={i === 1 ? B.green : k} strokeWidth="1.5" />)}<path d="M15 28 q2.75 -3 5.5 0 t5.5 0" fill="none" stroke={B.clay} strokeWidth="1.6" strokeLinecap="round" /></svg>;
+  if (game && game.kind === 'order') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2].map((r) => <g key={r}><rect x="6" y={6 + r * 11} width="28" height="8" rx="2" fill={r === 0 ? B.greenSoft : C.paperBoard} stroke={k} strokeWidth="1.5" /><text x="11" y={12.5 + r * 11} fontFamily={FONT} fontSize="6" fontWeight="700" fill={B.ink}>{r + 1}</text></g>)}</svg>;
+  if (game && game.deck) { const label = { fractions: '½', roots: 'port', elements: 'Na', dates: '1776', formulas: 'F=ma', times: '6×7', vocabulary: 'Aa', capitals: 'TX' }[game.deck] || 'Aa'; return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="6" width="14" height="18" rx="2" fill={C.paperBoard} stroke={k} strokeWidth="1.5" /><rect x="22" y="16" width="14" height="18" rx="2" fill={B.greenSoft} stroke={k} strokeWidth="1.5" /><text x="11" y="18" fontFamily={FONT} fontSize={label.length > 3 ? 5 : 8} fontWeight="700" textAnchor="middle" fill={B.ink}>{label}</text></svg>; }
   const body = {
-    dots: <g><polyline points="8,32 20,8 32,32 6,17 34,17 8,32" fill="none" stroke={C.green} strokeWidth="2" strokeLinejoin="round" />{[[8, 32], [20, 8], [32, 32], [6, 17], [34, 17]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r="3" fill={i === 0 ? C.gold : C.paperBoard} stroke={k} strokeWidth="1" />)}</g>,
-    pairs: <g><rect x="5" y="9" width="16" height="22" rx="3" fill={C.greenSoft} stroke={k} strokeWidth="1.4" /><rect x="19" y="9" width="16" height="22" rx="3" fill={C.paperBoard} stroke={k} strokeWidth="1.4" /><circle cx="27" cy="20" r="5" fill={C.gold} /></g>,
-    sort: <g><circle cx="13" cy="18" r="9" fill={C.green} /><circle cx="29" cy="24" r="4.5" fill={C.green} /><rect x="3" y="30" width="34" height="6" rx="2" fill="none" stroke={C.muted} strokeWidth="1.6" strokeDasharray="3 2" /></g>,
-    maze: <g fill="none" stroke={k} strokeWidth="1.6"><rect x="5" y="5" width="30" height="30" rx="2" /><path d="M15 5v12M25 13v14M5 25h10M25 35v-4M15 17h10" /><circle cx="10" cy="10" r="2.5" fill={C.gold} stroke="none" /></g>,
-    jigsaw: <g><path d="M8 8h9a4 4 0 0 1 6 0h9v9a4 4 0 0 0 0 6v9h-9a4 4 0 0 1-6 0H8v-9a4 4 0 0 0 0-6z" fill={C.gold} stroke={k} strokeWidth="1.4" strokeLinejoin="round" /></g>,
-    pong: <g><rect x="10" y="31" width="20" height="4" rx="2" fill={C.green} /><circle cx="24" cy="15" r="4" fill={C.gold} stroke={k} strokeWidth="1" /></g>,
+    dots: <g><polyline points="8,32 20,8 32,32 6,17 34,17 8,32" fill="none" stroke={B.green} strokeWidth="2" strokeLinejoin="round" />{[[8, 32], [20, 8], [32, 32], [6, 17], [34, 17]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r="3" fill={i === 0 ? B.gold : C.paperBoard} stroke={k} strokeWidth="1" />)}</g>,
+    pairs: <g><rect x="5" y="9" width="16" height="22" rx="3" fill={B.greenSoft} stroke={k} strokeWidth="1.4" /><rect x="19" y="9" width="16" height="22" rx="3" fill={C.paperBoard} stroke={k} strokeWidth="1.4" /><circle cx="27" cy="20" r="5" fill={B.gold} /></g>,
+    sort: <g><circle cx="13" cy="18" r="9" fill={B.green} /><circle cx="29" cy="24" r="4.5" fill={B.green} /><rect x="3" y="30" width="34" height="6" rx="2" fill="none" stroke={B.muted} strokeWidth="1.6" strokeDasharray="3 2" /></g>,
+    maze: <g fill="none" stroke={k} strokeWidth="1.6"><rect x="5" y="5" width="30" height="30" rx="2" /><path d="M15 5v12M25 13v14M5 25h10M25 35v-4M15 17h10" /><circle cx="10" cy="10" r="2.5" fill={B.gold} stroke="none" /></g>,
+    jigsaw: <g><path d="M8 8h9a4 4 0 0 1 6 0h9v9a4 4 0 0 0 0 6v9h-9a4 4 0 0 1-6 0H8v-9a4 4 0 0 0 0-6z" fill={B.gold} stroke={k} strokeWidth="1.4" strokeLinejoin="round" /></g>,
+    pong: <g><rect x="10" y="31" width="20" height="4" rx="2" fill={B.green} /><circle cx="24" cy="15" r="4" fill={B.gold} stroke={k} strokeWidth="1" /></g>,
   }[kind];
   return <svg viewBox="0 0 40 40" width="100%" height="100%" aria-hidden="true">{body}</svg>;
 }
@@ -6762,11 +6967,13 @@ function nameLines(name) {
 function ColorThumb({ picture, name, size = 72, thing = false }) {
   const box = { width: size, height: size, display: 'block' };
   if (picture === 'my-name') {
+    // The name page's thumbnail: the name in outlined letters on the paper, the paper's own color inside them in both themes
+    // (pass MH; in the dark theme white letters had stood out from the light green paper like stickers).
     const { lines, size: fs, y } = nameLines(name);
     return (
       <svg viewBox="0 0 100 100" {...box} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
         {lines.map((line, i) => (
-          <text key={line + i} x="50" y={y(i)} textAnchor="middle" fontFamily={FONT} fontSize={fs} fontWeight="700" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth={fs * 0.055} paintOrder="stroke" strokeLinejoin="round">{line}</text>
+          <text key={line + i} x="50" y={y(i)} textAnchor="middle" fontFamily={FONT} fontSize={fs} fontWeight="700" fill={C.paperBoard} stroke="#2E2E2E" strokeWidth={fs * 0.055} paintOrder="stroke" strokeLinejoin="round">{line}</text>
         ))}
       </svg>
     );
@@ -6855,9 +7062,11 @@ function ArtPart({ p, thumb = false }) {
   if (have) return <image href={`art/coloring/${p.serial}.webp`} x={p.x} y={p.y} width={p.w} height={p.h} preserveAspectRatio="xMidYMid meet" style={{ pointerEvents: 'none' }} />;
   return (
     <g style={{ pointerEvents: 'none' }}>
-      <rect x={p.x} y={p.y} width={p.w} height={p.h} rx="4" fill="#FAFBF8" stroke={C.muted} strokeWidth={thumb ? 1.2 : 0.8} strokeDasharray="3 2" />
-      <text x={p.x + p.w / 2} y={p.y + p.h / 2 - (thumb ? 0 : 4)} fontFamily={FONT} fontSize={thumb ? 16 : 9} fontWeight="700" fill={C.muted} textAnchor="middle" dominantBaseline="central">{p.serial}</text>
-      {!thumb && <text x={p.x + p.w / 2} y={p.y + p.h / 2 + 8} fontFamily={FONT} fontSize="4.6" fill={C.muted} textAnchor="middle" dominantBaseline="central">{p.alt}</text>}
+      {/* On paper, so in the paper palette (pass MH): in the dark theme a near-white frame with the light grey serial on it was
+          glaring and hard to read (1.8 to 1); it is now a shade lighter than the light green paper, with the paper's grey words. */}
+      <rect x={p.x} y={p.y} width={p.w} height={p.h} rx="4" fill={C.mode === 'dark' ? '#E6EEE8' : '#FAFBF8'} stroke={B.muted} strokeWidth={thumb ? 1.2 : 0.8} strokeDasharray="3 2" />
+      <text x={p.x + p.w / 2} y={p.y + p.h / 2 - (thumb ? 0 : 4)} fontFamily={FONT} fontSize={thumb ? 16 : 9} fontWeight="700" fill={B.muted} textAnchor="middle" dominantBaseline="central">{p.serial}</text>
+      {!thumb && <text x={p.x + p.w / 2} y={p.y + p.h / 2 + 8} fontFamily={FONT} fontSize="4.6" fill={B.muted} textAnchor="middle" dominantBaseline="central">{p.alt}</text>}
     </g>
   );
 }
@@ -6997,8 +7206,10 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
     setZoom(next);
   };
   const nudge = (dx, dy) => setPan({ x: clamp(view.x + dx * span * 0.45), y: clamp(view.y + dy * span * 0.45) });
-  // An eraser is a stroke of paper color: it lifts crayon without touching the outline, which is drawn on top.
-  const start = (e) => { if (!freeDraw) return; drawing.current = true; lastPt.current = [e.clientX, e.clientY, performance.now()]; paperStart(); setStrokes((list) => [...list, eraser ? { colour: '#FFFFFF', width: eraser, points: [at(e)] } : { colour: crayon, width: nib, points: [at(e)] }]); };
+  // An eraser is a stroke of paper color: it lifts crayon without touching the outline, which is drawn on top. Since pass MH
+  // (the alignment read) it is kept as 'paper' and drawn in the paper's own color, so in the dark theme it no longer leaves white
+  // streaks on the light green paper; an older saved eraser stroke (white, which no crayon is) is drawn the same way.
+  const start = (e) => { if (!freeDraw) return; drawing.current = true; lastPt.current = [e.clientX, e.clientY, performance.now()]; paperStart(); setStrokes((list) => [...list, eraser ? { colour: 'paper', width: eraser, points: [at(e)] } : { colour: crayon, width: nib, points: [at(e)] }]); };
   const move = (e) => { if (!freeDraw || !drawing.current) return; e.preventDefault(); const [lx, ly, lt] = lastPt.current; const now = performance.now(); paperMove(Math.hypot(e.clientX - lx, e.clientY - ly) / Math.max(1, now - lt)); lastPt.current = [e.clientX, e.clientY, now]; setStrokes((list) => { const rest = list.slice(0, -1); const last = list[list.length - 1]; return [...rest, { ...last, points: [...last.points, at(e)] }]; }); };
   const stop = () => { drawing.current = false; paperStop(); };
   return (
@@ -7031,10 +7242,12 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
         style={{ width: '100%', aspectRatio: `1 / ${tall}`, display: 'block', background: C.paperBoard, border: `2px solid ${C.line}`, borderRadius: 16, clipPath: 'inset(0 round 15px)', touchAction: freeDraw ? 'none' : 'auto' }}>
         {/* The square behind the picture is colorable too: a sky, a wall, whatever they decide it is. */}
         <rect x="-60" y="-60" width="220" height="220" fill={fills.bg || C.paperBoard} onClick={freeDraw ? undefined : () => setFills((f) => ({ ...f, bg: crayon }))} style={{ cursor: freeDraw ? 'default' : 'pointer' }} />
-        {/* The name, drawn once, white letters with their outline behind them. This is the drawing
-            Mikey approved: one element, no spacing of our own, no second copy over the ink. */}
+        {/* The name, drawn once, letters in the paper's color with their outline behind them, as the thumbnail draws them (white in
+            the light theme; in the dark theme white letters on the light green paper had looked like stickers, and the eraser left
+            green streaks across them, the code check's second read). This is the drawing Mikey approved: one element, no spacing
+            of our own, no second copy over the ink. */}
         {picture === 'my-name' && (() => { const n = nameLines(name); return n.lines.map((line, i) => (
-          <text key={line + i} x="50" y={n.y(i)} textAnchor="middle" fontFamily={FONT} fontSize={n.size} fontWeight="700" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth={n.size * 0.055} paintOrder="stroke" strokeLinejoin="round" pointerEvents="none">{line}</text>
+          <text key={line + i} x="50" y={n.y(i)} textAnchor="middle" fontFamily={FONT} fontSize={n.size} fontWeight="700" fill={C.paperBoard} stroke="#2E2E2E" strokeWidth={n.size * 0.055} paintOrder="stroke" strokeLinejoin="round" pointerEvents="none">{line}</text>
         )); })()}
         {parts.map((p, i) => {
           const common = p.line
@@ -7050,7 +7263,9 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
         })}
         {picture === 'my-name' && (() => { const n = nameLines(name); return (
           <mask id="edu-name-guard" maskUnits="userSpaceOnUse" x="-60" y="-60" width="220" height="220">
-            <rect x="-60" y="-60" width="220" height="220" fill={C.paperBoard} />
+            {/* A mask's white means fully shown, in both themes; it is not the paper (the paper's light green let only about 88
+                percent of each crayon through in the dark theme, the code check's second read of the late fixes). */}
+            <rect x="-60" y="-60" width="220" height="220" fill="#FFFFFF" />
             {n.lines.map((line, i) => (
               <text key={`guard-${i}`} x="50" y={n.y(i)} textAnchor="middle" fontFamily={FONT} fontSize={n.size} fontWeight="700" fill="#FFFFFF" stroke="#000000" strokeWidth={n.size * 0.055} paintOrder="stroke" strokeLinejoin="round">{line}</text>
             ))}
@@ -7061,7 +7276,8 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
             guard that keeps the whole name clear. */}
         {freeDraw && picture !== 'my-name' && (
           <mask id="edu-edge-guard" maskUnits="userSpaceOnUse" x="-60" y="-60" width="220" height="220">
-            <rect x="-60" y="-60" width="220" height="220" fill={C.paperBoard} />
+            {/* White, as in the name's mask above: fully shown in both themes. */}
+            <rect x="-60" y="-60" width="220" height="220" fill="#FFFFFF" />
             {parts.map((p, i) => {
               // The band is the drawn outline plus a hair, so no white shows around the lines. The glyph must match the visible one exactly: same weight, same size.
               const band = { key: `band-${i}`, fill: 'none', stroke: '#000000', strokeWidth: p.t === 'text' ? 4 : 2, strokeLinecap: 'round', strokeLinejoin: 'round' };
@@ -7075,7 +7291,9 @@ function ColoringPad({ picture, name, secondsLeft, total, saved, onArt, onClose 
           </mask>
         )}
         <g mask={picture === 'my-name' ? 'url(#edu-name-guard)' : freeDraw ? 'url(#edu-edge-guard)' : undefined} style={parts.some((p) => p.t === 'art') ? { mixBlendMode: 'multiply' } : undefined}>
-          {strokes.map((st, i) => <polyline key={`s${i}`} points={st.points.map((pt) => pt.join(',')).join(' ')} fill="none" stroke={st.colour} strokeWidth={st.width || 5} strokeLinecap="round" strokeLinejoin="round" pointerEvents="none" />)}
+          {/* On a painted page the strokes multiply over the art, where white is what leaves the art as it is; elsewhere the eraser is
+              the paper itself. */}
+          {strokes.map((st, i) => <polyline key={`s${i}`} points={st.points.map((pt) => pt.join(',')).join(' ')} fill="none" stroke={st.colour === 'paper' || st.colour === '#FFFFFF' ? (parts.some((p) => p.t === 'art') ? '#FFFFFF' : C.paperBoard) : st.colour} strokeWidth={st.width || 5} strokeLinecap="round" strokeLinejoin="round" pointerEvents="none" />)}
         </g>
         {/* Letters: the outline is drawn once, over the ink, at normal weight, so the line is never
             buried and never doubled. The body underneath is plain white and takes the color. */}
@@ -7372,10 +7590,20 @@ function CoverArt() {
 function BookReader({ items, pace: paceDefault }) {
   const [at, setAt] = useState(-1); const stopRef = useRef(null);
   const [pace, setPace] = useState(() => (paceDefault ? loadPace(paceDefault) : 'normal'));
+  const { followPaused, autoScrollUntil } = useReaderPause(stopRef);
   useEffect(() => () => { if (stopRef.current) stopRef.current(); }, []);
-  useEffect(() => { if (at >= 0 && typeof document !== 'undefined') { const el = document.querySelector(`[data-book-story="${at}"]`); if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }, [at]);
+  // Each story the voice starts is scrolled to, unless the reader has scrolled the page: then it stays where they put it until
+  // the voice reaches a story they can see (pass MH, the code check's second read of the late fixes; as StoryBody does).
+  useEffect(() => {
+    if (at < 0 || typeof document === 'undefined') return;
+    const el = document.querySelector(`[data-book-story="${at}"]`); if (!el || !el.scrollIntoView) return;
+    const r = el.getBoundingClientRect(); const band = visibleBand();
+    if (followPaused.current) { if (r.bottom > band.top && r.top < band.bottom) followPaused.current = false; return; }
+    autoScrollUntil.current = Date.now() + 1200; el.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
+  }, [at]);
   const stop = () => { if (stopRef.current) { stopRef.current(); stopRef.current = null; } setAt(-1); };
   const start = () => {
+    followPaused.current = false;
     setSpeechNudge(paceDefault && pace === 'slow' ? -1 : 0);
     const texts = []; const owner = [];
     items.forEach((st, i) => { [`${st.title}.`, ...st.words].forEach((t) => { texts.push(t); owner.push(i); }); });
@@ -7388,7 +7616,7 @@ function BookReader({ items, pace: paceDefault }) {
       {paceDefault && (
         <div style={{ display: 'flex', justifyContent: 'center', gap: 14, marginTop: 10 }}>
           {[['slow', 'Read slowly'], ['normal', 'Read at the usual speed']].map(([v, label]) => (
-            <button key={v} type="button" aria-label={label} aria-pressed={pace === v} onClick={() => { setPace(v); savePace(v); stop(); }}
+            <button key={v} type="button" aria-label={label} aria-pressed={pace === v} onClick={() => { if (v === pace) return; setPace(v); savePace(v); if (stopRef.current && stopRef.current.setNudge) stopRef.current.setNudge(v === 'slow' ? -1 : 0); }}
               style={{ width: 56, height: 40, borderRadius: 999, border: `2px solid ${C.green}`, background: pace === v ? C.green : C.surface, color: pace === v ? C.onAccent : C.green, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0 }}>
               <PaceGlyph kind={v} />
             </button>
@@ -7468,6 +7696,335 @@ function VoiceName({ label, size = 16, color, roleOnly = false }) {
       {!roleOnly && <p data-voice-name="" style={{ margin: 0, fontSize: size + 1, fontWeight: 700, lineHeight: 1.3, color }}>{v.name}</p>}
       <p data-voice-role="" style={{ margin: '1px 0 5px', fontSize: Math.max(12, size - 3), fontWeight: 600, letterSpacing: '0.02em', color: C.muted }}>{v.role}</p>
     </>
+  );
+}
+
+// The four Wonder voices' portraits (pass MH, Mikey: "There should also be a face profile shot of the four characters answering
+// the wonder questions.  Frederick (top center)  The scientist (centered under the title with the same size, color and design)
+// Image of him (centered underneath his name and title)  "Statement here""). In plain terms: a round head-and-shoulders picture of
+// the person speaking, under the name and the label and above the words. Each waits for Mikey's painting (U2 to U5, SHELF_ART);
+// until it is saved the app draws a stand-in with a small badge of how they see things (Frederick a flask, Chloe a palette,
+// Georgette a heart, Mike a question mark), and a walk-through shows Mikey's note under it, as a question's stand-in does (pass
+// LW). A painting that fails to load shows the drawing again. Decoration, hidden from a screen reader: the name above says who
+// speaks. Since Mikey's notes of the same pass ("See images for ideas I like when it comes to drawing icons ... You will see the
+// core characters"), the stand-ins are friendly flat avatars in the style of his references rather than silhouettes.
+// The four portraits as friendly flat avatars after Mikey's reference pictures (the picture check, pass MH: they follow his
+// pictures, which differ from docs/CHARACTERS.md in places, such as Georgette's glasses and Mike's tee; the paintings U2 to U5
+// follow the cast's sheets, and which look the portraits keep is a question for him): Frederick the old professor (wild white hair, round glasses, a gray handlebar mustache, a white lab coat over a
+// blue shirt and tie), Chloe the artist (wavy dark hair under a beret, a bright patterned top and a teal scarf, a palette),
+// Georgette the grandparent of faith (short auburn hair, round glasses, a red coat with a white collar), Mike the skeptic
+// (bald, a close brown beard, one eyebrow raised, an orange tee). A soft circle of each person's color sits behind each.
+const VOICE_LOOK = {
+  Frederick: { color: '#3E6FAE', back: '#DCE9F7', emblem: 'flask' },
+  Chloe: { color: '#A8487A', back: '#F7DDE8', emblem: 'palette' },
+  Georgette: { color: '#B9473A', back: '#FBE7B5', emblem: 'heart' },
+  Mike: { color: '#2F7A5F', back: '#D5EEE2', emblem: 'question' },
+};
+function PortraitStandIn({ name, size }) {
+  const look = VOICE_LOOK[name] || VOICE_LOOK.Frederick; const c = look.color;
+  const shoulders = 'M13 104 C13 82 27 72 50 72 C73 72 87 82 87 104 Z';
+  const badge = {
+    flask: <g><path d="M75.4 70.6 L82.6 70.6 M76.6 70.8 L76.6 76.6 L71.4 86.4 C70.6 88 71.6 89.4 73.4 89.4 L84.6 89.4 C86.4 89.4 87.4 88 86.6 86.4 L81.4 76.6 L81.4 70.8" fill="none" stroke={c} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /><path d="M73.4 83 L84.6 83 L86.2 86.6 C86.8 88 86 89 84.6 89 L73.4 89 C72 89 71.2 88 71.8 86.6 Z" fill="#7FD1A9" /></g>,
+    palette: <g><path d="M79 70.4 C71.6 70.4 67.6 75.6 67.6 80.4 C67.6 85.6 72.2 89.6 77.6 89.6 C80.4 89.6 80.8 87.6 79.8 86.2 C78.6 84.6 79.6 82.8 81.6 82.8 L85 82.8 C88.4 82.8 90.4 80.6 90.4 77.8 C90.4 73.8 85.6 70.4 79 70.4 Z" fill="#E8B07A" stroke={PONDER_INK} strokeWidth="1.6" /><circle cx="73.4" cy="78.6" r="2" fill="#E04F5F" /><circle cx="76.6" cy="74.4" r="2" fill="#FFD43B" /><circle cx="82" cy="74.2" r="2" fill="#4CC2B8" /><circle cx="73.8" cy="84" r="2" fill="#4C8DD0" /></g>,
+    heart: <path d="M79 88.4 C72.4 83.8 70.2 79.8 72 76.4 C73.8 73.2 77.8 73.8 79 76.8 C80.2 73.8 84.2 73.2 86 76.4 C87.8 79.8 85.6 83.8 79 88.4 Z" fill={c} />,
+    question: <g><path d="M75 75.4 C75 70.8 83 70.8 83 75.6 C83 79 79 78.8 79 82.8" fill="none" stroke={c} strokeWidth="2.8" strokeLinecap="round" /><circle cx="79" cy="87" r="1.9" fill={c} /></g>,
+  }[look.emblem];
+  const art = {
+    Frederick: (
+      <g stroke={PONDER_INK} strokeWidth="2.4" strokeLinejoin="round" strokeLinecap="round">
+        <path d={shoulders} fill="#F3F5F8" />
+        <path d="M40 72.6 L50 90 L60 72.6 Z" fill="#7CC4F0" />
+        <path d="M46.8 73.4 L53.2 73.4 L52.4 77.4 L47.6 77.4 Z" fill="#5B6072" /><path d="M47.6 77.4 L52.4 77.4 L54.4 91 L50 96.4 L45.6 91 Z" fill="#5B6072" />
+        <path d="M37.4 73.8 L45 93 M62.6 73.8 L55 93" fill="none" />
+        <rect x="43" y="59" width="14" height="14.6" fill={PONDER_SKIN} />
+        <path d="M27.8 46 C17 43 16.6 30.4 24.6 27.6 C21.4 19 30.4 12 37.4 15.4 C39.6 6.6 52.6 6.4 55 13.2 C61.6 7.6 72 12.4 69.6 19.8 C78 19.8 81.4 28.8 76.6 33.2 C82 37.6 78.8 46.4 72.2 46 Z" fill="#FFFFFF" />
+        <circle cx="29.6" cy="47.6" r="5" fill={PONDER_SKIN} /><circle cx="70.4" cy="47.6" r="5" fill={PONDER_SKIN} />
+        <ellipse cx="50" cy="45.4" rx="19.4" ry="21.6" fill={PONDER_SKIN} />
+        <path d="M33 33.4 C36 26.4 42 23.6 47.4 25.6 M53 25.2 C58.6 23.8 64.4 27 67 33.4" fill="none" strokeWidth="2" />
+        <circle cx="42.2" cy="45.6" r="6.6" fill="#E9F5FF" /><circle cx="57.8" cy="45.6" r="6.6" fill="#E9F5FF" /><path d="M48.8 45.2 L51.2 45.2" fill="none" />
+        <circle cx="42.2" cy="46.2" r="1.7" fill={PONDER_INK} stroke="none" /><circle cx="57.8" cy="46.2" r="1.7" fill={PONDER_INK} stroke="none" />
+        <path d="M50 55.2 C46 52.2 40 52.2 37 55.2 C35 57.2 32.4 57.2 31.4 55 C30.8 58.2 33.8 60.8 37.4 59.8 C41.4 58.8 45 57 50 57.6 C55 57 58.6 58.8 62.6 59.8 C66.2 60.8 69.2 58.2 68.6 55 C67.6 57.2 65 57.2 63 55.2 C60 52.2 54 52.2 50 55.2 Z" fill="#B4BAC4" strokeWidth="2" />
+        <path d="M45.4 62.4 Q50 65.4 54.6 62.4" fill="none" strokeWidth="2" />
+      </g>
+    ),
+    Chloe: (
+      <g stroke={PONDER_INK} strokeWidth="2.4" strokeLinejoin="round" strokeLinecap="round">
+        <path d="M27.6 50 C23 34 32.4 19.6 50 19.6 C67.6 19.6 77 34 72.4 50 C77.4 59.6 75.6 70.2 66.6 74.4 L33.4 74.4 C24.4 70.2 22.6 59.6 27.6 50 Z" fill="#3B2A24" />
+        <path d={shoulders} fill="#F28C6B" />
+        <g fill="#FFD43B" stroke="none"><circle cx="24" cy="92" r="2" /><circle cx="33" cy="86" r="2" /><circle cx="70" cy="88" r="2" /><circle cx="78" cy="96" r="2" /><circle cx="62" cy="98" r="2" /><circle cx="38" cy="99" r="2" /></g>
+        <rect x="43" y="61" width="14" height="13" fill={PONDER_SKIN} />
+        <path d="M35.6 71.6 C40 80.6 60 80.6 64.4 71.6 C63.4 85.4 57 90.4 50 90.4 C43 90.4 36.6 85.4 35.6 71.6 Z" fill="#3FB8AF" />
+        <ellipse cx="50" cy="47.6" rx="17.8" ry="19.8" fill={PONDER_SKIN} />
+        <path d="M32.2 44.6 C33.6 32 43.6 27 52.6 28.6 C60.6 30 66.8 35.6 68 44.6 C62.6 38.8 56.4 37 49.6 38.4 C43 39.8 37.4 41.6 32.2 44.6 Z" fill="#3B2A24" />
+        <path d="M26.6 31.6 C28.4 19.6 45 12.4 60.4 15.8 C71.6 18.2 76.2 25.6 72.6 32.2 C65.6 27.6 55.4 25.6 44.6 26.6 C37.6 27.4 31.6 29 26.6 31.6 Z" fill="#6A4A9C" />
+        <path d="M51.4 14.2 C51 10.8 53.2 9.4 55.6 10.4" fill="none" strokeWidth="2.2" />
+        <path d="M40.4 49.4 Q43 47 45.6 49.4 M54.4 49.4 Q57 47 59.6 49.4" fill="none" strokeWidth="2.2" />
+        <circle cx="40.6" cy="55.4" r="2.8" fill="#F7A8B8" stroke="none" opacity="0.75" /><circle cx="59.4" cy="55.4" r="2.8" fill="#F7A8B8" stroke="none" opacity="0.75" />
+        <path d="M44.6 58.4 Q50 63 55.4 58.4" fill="none" strokeWidth="2.2" />
+        <circle cx="32.4" cy="58" r="2" fill="#FFD43B" strokeWidth="1.4" /><circle cx="67.6" cy="58" r="2" fill="#FFD43B" strokeWidth="1.4" />
+      </g>
+    ),
+    Georgette: (
+      <g stroke={PONDER_INK} strokeWidth="2.4" strokeLinejoin="round" strokeLinecap="round">
+        <path d="M27.6 48 C24.4 33 34 21.6 50 21.6 C66 21.6 75.6 33 72.4 48 C72.4 56.4 70.4 61 66.8 63.4 L33.2 63.4 C29.6 61 27.6 56.4 27.6 48 Z" fill="#A4522F" />
+        <path d={shoulders} fill="#C8483D" />
+        <rect x="43" y="61" width="14" height="13" fill={PONDER_SKIN} />
+        <path d="M38.4 72.6 L50 82 L43.6 89.6 Z" fill="#FFFFFF" /><path d="M61.6 72.6 L50 82 L56.4 89.6 Z" fill="#FFFFFF" />
+        <circle cx="50" cy="91.6" r="1.9" fill="#F2C14E" strokeWidth="1.4" /><circle cx="50" cy="99" r="1.9" fill="#F2C14E" strokeWidth="1.4" />
+        <ellipse cx="50" cy="48.4" rx="17.4" ry="19.6" fill={PONDER_SKIN} />
+        <path d="M32.6 41.6 C35.6 31 45.6 27.4 52.2 29.2 C59.6 30.2 66 34.4 67.6 42.4 C62.4 37.4 56.2 35.4 49.8 36.2 C43.6 37 37.8 38.8 32.6 41.6 Z" fill="#A4522F" />
+        <path d="M38.6 35.6 C40.6 33.4 43.4 32.6 45.6 33.2 M54 33 C56.6 32.6 59.6 33.8 61.4 35.8" fill="none" stroke="#C8714A" strokeWidth="1.6" />
+        {/* A silver streak at the hairline and two smile lines (pass MH, the alignment read) give the Grandparent of Faith a little
+            age; her auburn hair is the canon's (docs/CHARACTERS.md, sheet C11), so beside the Scientist's white hair she can still
+            look the younger of the two, which Q35 asks Mikey about. */}
+        <path d="M58.4 30.4 C62.6 31.6 65.8 35 67.2 40.4" fill="none" stroke="#E6E2DA" strokeWidth="2.6" />
+        <path d="M40.2 59.4 Q41.2 61.4 42.8 62 M59.8 59.4 Q58.8 61.4 57.2 62" fill="none" strokeWidth="1.3" />
+        <circle cx="43" cy="49.6" r="5.8" fill="#FFF8EA" strokeWidth="2.2" /><circle cx="57" cy="49.6" r="5.8" fill="#FFF8EA" strokeWidth="2.2" /><path d="M48.8 49.2 L51.2 49.2" fill="none" strokeWidth="2" />
+        <path d="M40.6 50.4 Q43 48.2 45.4 50.4 M54.6 50.4 Q57 48.2 59.4 50.4" fill="none" strokeWidth="1.8" />
+        <path d="M35.4 47.6 L33.6 46.6 M64.6 47.6 L66.4 46.6" fill="none" strokeWidth="1.4" />
+        <circle cx="39.6" cy="57.2" r="2.8" fill="#F4A3A3" stroke="none" opacity="0.7" /><circle cx="60.4" cy="57.2" r="2.8" fill="#F4A3A3" stroke="none" opacity="0.7" />
+        <path d="M44.4 59.6 Q50 64 55.6 59.6" fill="none" strokeWidth="2.2" />
+      </g>
+    ),
+    Mike: (
+      <g stroke={PONDER_INK} strokeWidth="2.4" strokeLinejoin="round" strokeLinecap="round">
+        <path d={shoulders} fill="#F5A02A" />
+        <path d="M39.4 72.8 C42 79 58 79 60.6 72.8" fill="none" />
+        <rect x="43" y="59" width="14" height="14" fill="#F9DDBB" />
+        <circle cx="30" cy="46.4" r="5" fill="#F9DDBB" /><circle cx="70" cy="46.4" r="5" fill="#F9DDBB" />
+        <ellipse cx="50" cy="43.6" rx="19.6" ry="22.6" fill="#F9DDBB" />
+        <path d="M37.4 26.6 C40.4 23.6 44.6 22 48.6 22" fill="none" stroke="#FFFFFF" strokeWidth="2.6" />
+        <path d="M30.8 45.8 C30.8 62.6 40 70.6 50 70.6 C60 70.6 69.2 62.6 69.2 45.8 C66.2 51.8 60.4 53.8 56.6 53 C53.4 52.2 46.6 52.2 43.4 53 C39.6 53.8 33.8 51.8 30.8 45.8 Z" fill="#7A4A2A" />
+        <path d="M43.6 60.4 Q50 64.6 56.4 60.4" fill="none" stroke="#F9DDBB" strokeWidth="2.2" />
+        <path d="M36.6 36.6 Q41.6 33.8 46 36.2 M54.2 33.6 Q59.2 30.2 63.6 33.2" fill="none" strokeWidth="2.6" />
+        <circle cx="41.6" cy="42" r="2" fill={PONDER_INK} stroke="none" /><circle cx="58.4" cy="41.4" r="2" fill={PONDER_INK} stroke="none" />
+        <path d="M48.4 44.6 Q50 49.4 52.4 47.6" fill="none" strokeWidth="1.8" />
+      </g>
+    ),
+  }[name] || null;
+  return (
+    <svg viewBox="0 0 100 100" width={size} height={size} style={{ display: 'block' }}>
+      <circle cx="50" cy="50" r="50" fill={look.back} />
+      {art}
+      <circle cx="79" cy="80" r="13.4" fill="#FFFFFF" stroke={c} strokeWidth="2.4" />
+      {badge}
+    </svg>
+  );
+}
+function WonderPortrait({ name, size = 96, note = false }) {
+  const look = VOICE_LOOK[name] || VOICE_LOOK.Frederick; const serial = SHELF_ART[String(name || '').toLowerCase()];
+  const listed = !!serial && typeof window !== 'undefined' && Array.isArray(window.__eduArt) && window.__eduArt.includes(serial);
+  const [failed, setFailed] = useState(false); const painted = listed && !failed;
+  return (
+    <div aria-hidden="true" data-wonder-portrait={name} data-portrait={painted ? 'painted' : 'drawn'} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '8px 0 10px' }}>
+      <div style={{ width: size, height: size, borderRadius: '50%', overflow: 'hidden', border: `3px solid ${look.color}`, background: C.paperBoard, boxSizing: 'border-box' }}>
+        {painted ? <img src={`art/stories/${serial}.webp`} alt="" loading="lazy" onError={() => setFailed(true)} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} /> : <PortraitStandIn name={name} size={size - 6} />}
+      </div>
+      {/* In a walk-through, the drawn stand-in says it waits for Mikey's painting, with the one note every stand-in wears. */}
+      {note && !painted && <ReplaceNote pal={C} style={{ position: 'static', marginTop: 4, textAlign: 'center' }} />}
+    </div>
+  );
+}
+// Pondering pictures (pass MH, Mikey: "random images (that are animated like the title and fall into place from different
+// directions in a playful way) surrounding the question that represent pondering like a silhouette of a head looking upward with
+// a finger on their mouth, a faint galaxy, globe, pen writing on paper, silohouette of a person meditating with legs cross and
+// arms out to side ... Make sure it isn't symmetrical in size or location.  Should look random, fun and maybe even have varying
+// angles."; "The let's wonder question should also be spiced up with icons around the question.  They can be the same icons
+// as the last ponder question"). Since his note of 08:05 the same day ("The icons for the wonder question and lets ponder go
+// inside of the card and around the text, not outside of the card ... It would be nice if those icons were more like line art
+// without the color similar to the snail and hare as if you can see through them amd their background matches the card behind
+// them.  Most of the general icon shapes are good but I still don't like the person thinking icon as is."), with fourteen
+// pictures of his own, and of 08:10 ("Let's also improve the mediator, here are some ideas"), the pictures are line art: one
+// ink line in the card's own ink, no fill, so the card shows through every shape, drawn after his pictures (a child thinking
+// with a finger at her chin and a question in a cloud, a figure meditating with a bun, a halo and hands pressed together, a
+// globe on a stand, an open book, a stack of books, a scroll and quill, a pen writing on paper). Eleven pictures, six to a card.
+const PONDER_INK = '#2A2D34';   // the outline the Wonder voices' stand-in portraits share
+const PONDER_SKIN = '#F6CFA8';
+const PONDER_ICONS = {
+  // A child with a bun, eyes up, a finger at the chin and the elbow on a table, wondering at a cloud with a question in it
+  // (Mikey's thinking-person pictures, drawn as one ink line).
+  thinker: () => (
+    <g stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
+      <path transform="translate(43.4 5.4) scale(1.1)" d="M3.2 9.6 C0.4 9.8 -1.2 7.4 0 5.2 C-1.2 2.4 1.4 0 4.2 0.8 C5.4 -1.8 9.4 -2 10.8 0.4 C13.4 -0.4 16.2 1.6 15.6 4.4 C17.6 6 16.8 9.6 14 9.8 C13.2 12.2 9.8 12.6 8.4 10.8 C7 12 4.4 11.6 3.2 9.6 Z"/>
+      <path d="M51.8 10 C51.8 8 55.2 8 55.2 10.2 C55.2 11.8 53.5 11.8 53.5 13.4" strokeWidth="1.6"/><path d="M53.5 15.6 L53.5 15.7" strokeWidth="2.4"/>
+      <circle cx="44.8" cy="20.2" r="1.5"/><circle cx="41.8" cy="23.8" r="0.9"/>
+      <path d="M18.2 18.4 A 4.8 4.8 0 1 1 26.6 17.6"/>
+      <path d="M12.4 30 C12.4 22.6 18 17.4 25 17.4 C32 17.4 37.6 22.6 37.6 30 C37.6 37.4 32.2 42.6 25 42.6 C17.8 42.6 12.4 37.4 12.4 30 Z"/>
+      <path d="M12.8 28.6 C17.4 27.6 21.6 24.4 23.6 19.6 C26 23.4 31 26.2 37.4 27"/>
+      <path d="M18.8 28.2 Q20.8 26.8 22.8 27.8 M27.4 27.6 Q29.4 26.6 31.4 28"/>
+      <path d="M22 30.6 L22 30.7 M30.2 30.6 L30.2 30.7" strokeWidth="3.6"/>
+      <circle cx="25.4" cy="37.8" r="1.1"/>
+      <path d="M30.6 39.6 L33 42.4 C35 41.8 37 43 37.4 45.2 C37.8 47.8 36 50.2 33 50.2 C30 50.2 27.8 47.6 28.2 44.6"/>
+      <path d="M30.8 49.2 L33 59.6 M35.8 49.2 L38.6 59.6"/>
+      <path d="M21.2 42.4 L21.2 45.4 C14.2 46.4 8.6 51 7.8 59.6"/>
+      <path d="M3.6 59.6 L60.4 59.6"/>
+    </g>
+  ),
+  // A globe on its stand: meridians and parallels, a tilted axis, an arc and a foot.
+  globe: () => (
+    <g stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
+      <circle cx="31" cy="27" r="16"/>
+      <ellipse cx="31" cy="27" rx="7" ry="16"/>
+      <path d="M15 27 L47 27 M17.2 19 C24 21 38 21 44.8 19 M17.2 35 C24 33 38 33 44.8 35"/>
+      <path d="M46.6 9.4 A 23 23 0 0 1 29.4 50"/>
+      <path d="M46.6 9.4 L48.6 7.4 M29.4 50 L28.6 52.4"/>
+      <path d="M32 50.6 L32 55.6"/>
+      <path d="M22 59.6 C22 56.8 26.4 55.6 32 55.6 C37.6 55.6 42 56.8 42 59.6 C42 61.2 37.6 62 32 62 C26.4 62 22 61.2 22 59.6 Z"/>
+    </g>
+  ),
+  // A person sitting cross-legged in calm, a bun on top and a halo behind, hands pressed together at the chest (Mikey's two
+  // meditating pictures, 08:10): the face left plain, as his pictures leave it.
+  meditator: () => (
+    <g stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
+      <path d="M21.4 24.4 A 13.4 13.4 0 1 1 42.6 24.4"/>
+      <circle cx="32" cy="5.6" r="2.8"/>
+      <path d="M32 8.6 C28.4 8.6 25.8 11.4 25.8 15 C25.8 18.8 28.6 21.6 32 21.6 C35.4 21.6 38.2 18.8 38.2 15 C38.2 11.4 35.6 8.6 32 8.6 Z"/>
+      <path d="M26.2 14 C28.8 14 31 12.6 32 10.6 C33 12.6 35.2 14 37.8 14"/>
+      <path d="M30 21.4 L30 24.2 M34 21.4 L34 24.2"/>
+      <path d="M30 24.2 C25.6 24.6 22.8 26.6 21.8 31 L19.8 40.4 C19.4 42.4 20.8 43.6 22.6 42.8 C25.6 41.4 28.6 39.2 30.8 37"/>
+      <path d="M34 24.2 C38.4 24.6 41.2 26.6 42.2 31 L44.2 40.4 C44.6 42.4 43.2 43.6 41.4 42.8 C38.4 41.4 35.4 39.2 33.2 37"/>
+      <path d="M32 27.6 C30.4 29.8 30 33.4 30.8 37 L33.2 37 C34 33.4 33.6 29.8 32 27.6 Z"/>
+      <path d="M25 33.6 L24.4 39.4 M39 33.6 L39.6 39.4"/>
+      <path d="M8 50.4 C9 45.2 18.6 43 32 43 C45.4 43 55 45.2 56 50.4 C56.8 54.6 51.2 56.4 44.8 55.2 L32 52.4 L19.2 55.2 C12.8 56.4 7.2 54.6 8 50.4 Z"/>
+      <path d="M15.6 49.4 C23 48.2 32 48.6 40 51"/>
+    </g>
+  ),
+  // A light bulb lit by an idea: rays, a looping filament, a screw base.
+  bulb: () => (
+    <g stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
+      <path d="M32 9 C23 9 17 15.8 17 23.6 C17 29.4 20 32.8 22.8 36.2 C24.6 38.4 25.2 40 25.2 42.8 L38.8 42.8 C38.8 40 39.4 38.4 41.2 36.2 C44 32.8 47 29.4 47 23.6 C47 15.8 41 9 32 9 Z"/>
+      <path d="M28.4 42.6 L29.2 33.6 C29.6 30.8 31.4 29.6 32.2 31.4 C33 33.2 31 34.6 30.2 32.8 C29.6 31 31.8 28.6 33.8 29.6 C35.8 30.6 35.2 33.8 34.8 36.4 L35.6 42.6"/>
+      <path d="M25.6 46.6 L38.4 46.6 M26.4 50.4 L37.6 50.4 M28.8 54 C29.4 56 30.6 57 32 57 C33.4 57 34.6 56 35.2 54 Z"/>
+      <path d="M22 18.2 C23.4 15 26 12.8 29.4 12"/>
+      <path d="M9.6 24 L4.6 24 M54.4 24 L59.4 24 M13.4 10.4 L9.8 6.8 M50.6 10.4 L54.2 6.8 M32 4.4 L32 1.6 M13.6 37.4 L10 40.6 M50.4 37.4 L54 40.6"/>
+    </g>
+  ),
+  // A telescope on its tripod, pointed up at a crescent moon and a star.
+  telescope: () => (
+    <g stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
+      <path d="M17.6 4.6 C11.4 5.8 7.6 11.8 8.8 18 C10 24 15.8 27.8 21.8 26.6 C18.4 24.8 16 21.6 15.4 17.6 C14.8 13 15.6 8 17.6 4.6 Z"/>
+      <path d="M31 4 L32.4 7.4 L35.8 8.8 L32.4 10.2 L31 13.6 L29.6 10.2 L26.2 8.8 L29.6 7.4 Z"/>
+      <path d="M50.4 3.4 L51.2 5.4 L53.2 6.2 L51.2 7 L50.4 9 L49.6 7 L47.6 6.2 L49.6 5.4 Z"/>
+      <g transform="rotate(-30 35 32)"><path d="M17 27 L51 27 L51 37.4 L17 37.4 Z M24.6 27 L24.6 37.4 M41.6 27 L41.6 37.4"/><path d="M51 25.2 L57 25.2 L57 39.2 L51 39.2 Z"/><path d="M10.4 29.4 L17 29.4 L17 35 L10.4 35 Z"/></g>
+      <path d="M34 41.4 L23.4 62 M34 41.4 L44.6 62 M34 41.4 L34 62"/>
+      <circle cx="34" cy="40.4" r="2.6"/>
+    </g>
+  ),
+  // Three orbits around a center, each with its own world.
+  orbit: () => (
+    <g stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
+      <ellipse cx="32" cy="32" rx="26" ry="9.6"/>
+      <ellipse cx="32" cy="32" rx="26" ry="9.6" transform="rotate(60 32 32)"/>
+      <ellipse cx="32" cy="32" rx="26" ry="9.6" transform="rotate(120 32 32)"/>
+      <circle cx="32" cy="32" r="4.6"/>
+      <circle cx="57.6" cy="30.4" r="2.6"/><circle cx="18.4" cy="11.6" r="2.6"/><circle cx="23" cy="53.2" r="2.6"/>
+    </g>
+  ),
+  // A pen writing a line of words on a sheet of paper.
+  pen: () => (
+    <g stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
+      <path d="M6 42 L37.6 30.4 L58 47.6 L26.6 60.6 Z"/>
+      <path d="M14.4 44.2 C17.6 41 19.6 46.4 22.6 43.6 C25.4 41 27 46 30.2 43.2 C32.4 41.4 33.8 43.6 35.2 43"/>
+      <path d="M18.4 50 C21 47.8 23 51.4 25.6 49.4 C27.4 48 28.8 50.6 31 49.4"/>
+      <path d="M35.4 42.4 L39.2 37.2 L58 9.6 C59.2 7.8 61.6 9.4 60.4 11.2 L41.6 38.8 Z"/>
+      <path d="M52.2 18.4 L55.4 20.6 M39.2 37.2 L41.6 38.8"/>
+    </g>
+  ),
+  // An open book, its pages lined.
+  book: () => (
+    <g stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
+      <path d="M32 17.4 C25 12.8 16 12.2 7.6 14 L7.6 47.6 C16 45.8 25 46.4 32 51 C39 46.4 48 45.8 56.4 47.6 L56.4 14 C48 12.2 39 12.8 32 17.4 Z"/>
+      <path d="M32 17.4 L32 51"/>
+      <path d="M3.6 18.4 L3.6 51.6 C13.6 49.6 23.6 50.4 32 55 C40.4 50.4 50.4 49.6 60.4 51.6 L60.4 18.4"/>
+      <path d="M12.6 22.4 C17 21.4 22 21.8 26.6 23.6 M12.6 28.4 C17 27.4 22 27.8 26.6 29.6 M12.6 34.4 C16 33.6 19.6 33.8 23 35 M37.4 23.6 C42 21.8 47 21.4 51.4 22.4 M37.4 29.6 C42 27.8 47 27.4 51.4 28.4 M41 35 C44.4 33.8 48 33.6 51.4 34.4"/>
+    </g>
+  ),
+  // A stack of three books, page edges showing.
+  books: () => (
+    <g stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
+      <path d="M8 50.6 L50.6 50.6 C53.4 50.6 55.4 52.6 55.4 55.4 C55.4 58.2 53.4 60.2 50.6 60.2 L8 60.2 Z"/>
+      <path d="M50.6 53.4 L13.4 53.4 M50.6 57.2 L13.4 57.2"/>
+      <path d="M13.6 39.4 L53.4 39.4 L53.4 50.6 M13.6 39.4 C10.8 39.4 9 41.8 9 45 C9 48.2 10.8 50.6 13.6 50.6"/>
+      <path d="M16.6 42.4 L50.2 42.4 M16.6 47.6 L50.2 47.6"/>
+      <g transform="rotate(-7 32 32)"><path d="M12.6 26.6 L47 26.6 C49.8 26.6 51.6 29 51.6 32.4 C51.6 35.8 49.8 38.2 47 38.2 L12.6 38.2 Z"/><path d="M47 29.6 L16 29.6 M47 35.2 L16 35.2"/></g>
+    </g>
+  ),
+  // A rolled scroll with a quill across it.
+  scroll: () => (
+    <g stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
+      <path d="M14.6 14 L44.6 14 C47.6 14 49.4 16.2 49.4 19 L49.4 50"/>
+      <path d="M14.6 14 C11.6 14 9.8 16.2 9.8 19 C9.8 21.8 11.6 24 14.6 24 L18.6 24 L18.6 19 C18.6 16.2 16.8 14 14.6 14 Z"/>
+      <path d="M18.6 24 L18.6 50"/>
+      <path d="M18.6 50 C18.6 52.8 20.4 55 23.4 55 L53.4 55 C56.4 55 58.2 52.8 58.2 50 C58.2 47.2 56.4 45 53.4 45 L49.4 45 M18.6 50 L45.4 50 C47.6 50 49.4 47.8 49.4 45"/>
+      <path d="M24.6 24 L41.6 24 M24.6 30 L41.6 30 M24.6 36 L36.6 36"/>
+      <path d="M30.4 49.4 C34 41 41.6 26.8 55.8 9.4 C56.8 18.4 50.4 31.6 37.4 43 C34.8 45.2 32.6 47.2 30.4 49.4 Z"/>
+      <path d="M33.6 45.8 L54 13.2 M44.4 33.4 L48.4 34 M48.2 26.6 L52 26.2 M40.6 39.2 L44 40"/>
+    </g>
+  ),
+  // A speech bubble with a question in it.
+  question: () => (
+    <g stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2">
+      <path d="M9 14 C9 10.7 11.7 8 15 8 L49 8 C52.3 8 55 10.7 55 14 L55 38 C55 41.3 52.3 44 49 44 L28 44 L17.6 54.4 L19.4 44 L15 44 C11.7 44 9 41.3 9 38 Z"/>
+      <path d="M25.4 20.4 C25.4 14.6 38.6 14.6 38.6 20.8 C38.6 26 32 25.8 32 31" strokeWidth="3"/>
+      <path d="M32 37 L32 37.2" strokeWidth="4"/>
+    </g>
+  ),
+};
+// Where the pictures go (Mikey, 08:05: "inside of the card and around the text ... we don't have anything directly left or right
+// of the text"): inside the card, in a band above the words and a band below them, never beside the words, so the words keep the
+// card's whole width. Two or three sit in the band above and the rest below, each at its own place across the card, its own size
+// and its own angle, sized and placed by its turned box so it stays in its band and never touches a word; each falls or rises in
+// from the card's edge with a little bounce, then is still, and with motion off it is simply there. The scatter comes from the
+// question's id, so one question always looks the same and the next one different.
+const PONDER_FROM = { top: [0, -60], bottom: [0, 60] };
+// The pictures' ink: the card's own text color, softened, so they read as part of the card and never compete with its words.
+const ponderInk = () => C.ink;
+function PonderFrame({ seed = 1, children, style = null, attrs = null, className }) {
+  const vw = typeof window !== 'undefined' ? window.innerWidth : 390;
+  const wide = vw >= 700;
+  const band = wide ? 74 : 56;   // the room inside the card, above and below the words, that the pictures live in
+  const icons = useMemo(() => {
+    const rnd = lcg(seed); const names = shuffle(rnd, Object.keys(PONDER_ICONS)).slice(0, 6);
+    const lo = wide ? 46 : 36; const hi = wide ? 64 : 48;
+    const above = rnd() < 0.7 ? 2 : 3;
+    const spread = (n, where) => Array.from({ length: n }, (_, j) => [where, (j + 0.5) / n + (rnd() - 0.5) * (0.6 / n)]);
+    const spots = [...spread(above, 'top'), ...spread(6 - above, 'bottom')];
+    return names.map((nm, i) => {
+      // A turned picture's box is wider than the picture (a square turned 25 degrees is a third wider), so each is sized and placed
+      // by its turned box, which stays inside its band.
+      const [where, at0] = spots[i]; const rot = Math.round((rnd() - 0.5) * 44); const [fx, fy] = PONDER_FROM[where];
+      const turn = Math.abs(Math.cos((rot * Math.PI) / 180)) + Math.abs(Math.sin((rot * Math.PI) / 180));
+      const size = Math.min(Math.floor((band - 6) / turn), Math.round(lo + rnd() * (hi - lo)));
+      const ext = Math.ceil((size * turn - size) / 2);
+      return { nm, where, at: Math.min(0.86, Math.max(0.14, at0)), size, off: ext + 2 + Math.round(rnd() * Math.max(0, band - size - 2 * ext - 4)), rot, wait: (0.15 + i * 0.12 + rnd() * 0.1).toFixed(2), fx: fx + Math.round((rnd() - 0.5) * 40), fy: fy + Math.round((rnd() - 0.5) * 20) };
+    });
+  }, [seed, wide, band]);
+  const placeOf = (ic) => (ic.where === 'top' ? { left: `calc(${(ic.at * 100).toFixed(1)}% - ${Math.round(ic.size / 2)}px)`, top: ic.off }
+    : { left: `calc(${(ic.at * 100).toFixed(1)}% - ${Math.round(ic.size / 2)}px)`, bottom: ic.off });
+  return (
+    <div {...(attrs || {})} data-ponder-frame="" className={className} style={{ ...(style || {}), position: 'relative', overflow: 'hidden', paddingTop: band, paddingBottom: band }}>
+      <div aria-hidden="true" data-ponder-pictures="" style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, pointerEvents: 'none', zIndex: 0, color: ponderInk() }}>
+        {icons.map((ic) => (
+          <svg key={ic.nm} data-ponder-icon={ic.nm} className="edu-ponder-icon" viewBox="0 0 64 64" width={ic.size} height={ic.size}
+            style={{ ...placeOf(ic), '--pr': `${ic.rot}deg`, '--po': '0.55', '--pd': `${ic.wait}s`, '--px': `${ic.fx}px`, '--py': `${ic.fy}px` }}>
+            {PONDER_ICONS[ic.nm]()}
+          </svg>
+        ))}
+      </div>
+      <div style={{ position: 'relative', zIndex: 1 }}>{children}</div>
+    </div>
+  );
+}
+// A number from a Wonder question's id, so its scatter of pictures is its own and the same on every visit.
+function seedOf(text) { let h = 7; for (const ch of String(text || '')) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return h || 7; }
+// The closing card (pass MH): the rotating title from logic (ponderTitle) above the closing line, the pondering pictures around
+// it. A pre-reader meets it as the last card; a reader at the foot of the voices.
+function PonderCard({ wonder, title, text, big = false, attrs = null }) {
+  return (
+    <PonderFrame seed={seedOf(`${wonder.id}-closing`)} attrs={attrs} className="edu-rise" style={{ ...card, background: C.goldSoft, borderColor: C.goldEdge, textAlign: 'center', padding: big ? '20px 18px 22px' : '14px 16px 16px', margin: '0 0 14px' }}>
+        <p data-ponder-title="" className="edu-ponder-title" style={{ margin: '0 0 8px', fontSize: big ? 24 : 19, fontWeight: 800, letterSpacing: '0.01em', color: C.mode === 'dark' ? '#E9C46A' : C.green }}>{title}</p>
+        <p style={{ fontSize: big ? 20 : 16, lineHeight: 1.5, margin: 0 }}>{text}</p>
+    </PonderFrame>
   );
 }
 
@@ -7730,6 +8287,7 @@ function EduSphereScreens() {
   const [storyReward, setStoryReward] = useState(null);         // pass MD: the lesson whose story is playing as a round's reward
   const [storyVoiceOn, setStoryVoiceOn] = useState(false);      // pass MD: a read-aloud story's voice is reading, so its arrow rests
   const [celebrateCourse, setCelebrateCourse] = useState(null);  // pass ME: the course whose finished page is showing
+  const [celebrateStage, setCelebrateStage] = useState('mastered');   // pass MH: complete (every lesson passed) or mastered (every star)
   const [courseStoryReward, setCourseStoryReward] = useState(false);   // pass ME: the course's story opened from its finished page, so its arrow carries on
   const celebratedRound = useRef(null);                          // pass ME: the round already celebrated, so a Wonder's return never celebrates it twice
   const lastSurprise = useRef(null);                             // pass MF: { who, id }, the story the surprise-me book read last for that child, never twice running
@@ -7862,7 +8420,9 @@ function EduSphereScreens() {
   const [weeklyEditing, setWeeklyEditing] = useState(false);        // the note box is open
   const [reportOpenedFrom, setReportOpenedFrom] = useState(null);   // the previous visit's time, kept for this opening only
   const [wrongWay, setWrongWay] = useState(false);                  // the other explanation, opened on a wrong answer
+  const [moreInfo, setMoreInfo] = useState(false);                  // the More Info sheet (pass MH): why the other choices do not fit
   const [courseStoryId, setCourseStoryId] = useState(null);         // the course whose story is open
+  const [courseStoryPart, setCourseStoryPart] = useState('course');   // pass MH: which of its long stories, course (the first) or mastery (the second)
   const [showExperiment, setShowExperiment] = useState(false);       // the Experiment link on a lesson, opened                 // the note box has the cursor, so its example text steps aside
   const [showRecTip, setShowRecTip] = useState(false);               // the i beside the recommendations line on the report
   const [showNoteTip, setShowNoteTip] = useState(false);             // what a note is for, under the note box
@@ -8141,7 +8701,7 @@ function EduSphereScreens() {
     if (record && !record.preview && WHERE_SCREENS.has(screen)) {
       const inSet = screen === 'practice' && attempt && Array.isArray(attempt.core);
       saveWhere({ name: record.name, screen, moduleId: screen === 'lesson' || screen === 'story' || screen === 'practice' ? moduleId : null,
-        ...(inSet ? { set: { attempt, qIndex, given, checked, wasCorrect, misses, coreResults, reviewResult, review2Result, startedAt, placementWalk: attempt.placement ? placementWalk : null } } : {}) });
+        ...(inSet ? { set: { attempt, qIndex, given: q && q.type === 'trace' ? '' : given, checked, wasCorrect, misses, coreResults, reviewResult, review2Result, startedAt, placementWalk: attempt.placement ? placementWalk : null } } : {}) });
     } else if (screen === 'welcome') saveWhere(null);
     else if (record && !record.preview) { const w = loadWhere(); if (w && w.set) saveWhere({ name: w.name, screen: 'overview', moduleId: null }); }
   }, [screen, moduleId, record && record.name, record && record.preview, attempt, qIndex, checked, coreResults, reviewResult, review2Result]);
@@ -8321,6 +8881,7 @@ function EduSphereScreens() {
   const questions = attempt ? [...attempt.core, ...(attempt.review ? [attempt.review.question] : []), ...(attempt.review2 ? [attempt.review2.question] : [])] : [];
   const isReviewQ = attempt ? qIndex >= attempt.core.length : false;
   const q = questions[qIndex];
+  const qHistory = useMemo(() => (q && q.type === 'choice' && record ? choiceHistory(record.events, q) : {}), [q, record]);
 
   // On a placement check, "I don't know" counts as a miss and moves straight on, with no
   // lesson in between: a guess would only add noise to where the student lands.
@@ -8348,29 +8909,42 @@ function EduSphereScreens() {
     // What we record is whether they were right FIRST time, which is what mastery should mean.
     if (readAloud && !correct) {
       setMisses((n) => n + 1);
-      setWrongPicks((list) => (list.includes(String(given)) ? list : [...list, String(given)]));
+      if (q.type === 'choice') setWrongPicks((list) => (list.includes(String(given)) ? list : [...list, String(given)]));
       setWasCorrect(false); setChecked(true);
       return;
     }
     const firstTry = misses === 0;
-    const result = { genId: q.genId, seed: q.seed, prompt: q.prompt, answer: q.answer, given: String(given), correct: readAloud ? firstTry : correct, timeMs: Date.now() - qShownAt, retries: misses };
+    // The wrong taps a pre-reader made before the right one are kept too (pass MH), so More Info can say "which you chose once
+    // before too" on a later visit; missedPicks (logic) keeps only choices the question offered, never a tracing or anything typed.
+    const missedNow = readAloud ? missedPicks(q, wrongPicks) : [];
+    // A tracing is kept as whether it was traced, never as the strokes the child's finger drew (pass MH, the code check's second
+    // read, older than the pass): the log keeps only what a question needs, and nothing reads a tracing back.
+    const kept = q.type === 'trace' ? (correct ? 'traced' : 'not traced') : String(given);
+    const result = { genId: q.genId, seed: q.seed, prompt: q.prompt, answer: q.answer, given: kept, correct: readAloud ? firstTry : correct, timeMs: Date.now() - qShownAt, retries: misses, ...(missedNow.length ? { missed: missedNow } : {}) };
     if (isReviewQ && qIndex === attempt.core.length) setReviewResult({ moduleId: attempt.review.moduleId, ...result });
     else if (isReviewQ) setReview2Result({ moduleId: attempt.review2.moduleId, ...result });
     else setCoreResults((r) => [...r, result]);
     setWasCorrect(correct); setChecked(true); setWrongWay(false);
+    // A reader's wrong answer opens More Info by itself (Mikey: "It could be cool to have the popup show up automatically when a
+    // wrong answer is selected too"), once there is something it can add; a placement check never does.
+    if (!correct && !readAloud && !attempt.placement && choiceInsight(q, String(given)).any) setMoreInfo(true);
     if (correct) setCheer((n) => n + 1);
     else { const line = taughtLine(mod.id, q.answer); if (line) setMissed((m) => ({ ...m, [mod.id]: [...new Set([...(m[mod.id] || []), line])].slice(-3) })); }
   }
 
   // Clears the feedback so the child can have another go at the same question.
   function tryAgain() {
-    setOrderPicked([]);
+    setOrderPicked([]); setMoreInfo(false);
     setGiven(''); setChecked(false); setTracePaths([]); setQShownAt(Date.now());
+    // A pre-reader tries again from the top of the question, its picture and speaker in view, even after the scroll cue took the
+    // page down to the button (the code check's second read of the late fixes).
+    if (readAloud) scrollToTop(false);
   }
 
   async function nextQuestion() {
     if (qIndex + 1 < questions.length) {
       setQIndex(qIndex + 1); setGiven(''); setChecked(false); setMisses(0); setQShownAt(Date.now()); setOrderPicked([]);
+      if (readAloud) scrollToTop(false);   // a pre-reader's next question opens at its top, as a new screen does
       return;
     }
     if (attempt.placement && placementWalk) {
@@ -8468,15 +9042,19 @@ function EduSphereScreens() {
     const mastered = isMasteredAttempt(lastEvent);
     const nextMod = sortedModules.filter((m) => m.courseId === mod.courseId && m.order > mod.order && !(progress.perModule[m.id] || {}).mastered).sort((a, b) => a.order - b.order)[0] || null;
     const courseDone = mastered && !nextMod && sortedModules.filter((m) => m.courseId === mod.courseId && m.id !== mod.id).every((m) => (progress.perModule[m.id] || {}).mastered);
-    const finished = record.preview ? mastered && !nextMod : courseFinishedBy(progress, course, lastEvent);
-    const next = courseDone || finished ? nextToStart(mod.courseId) : null;
+    // Since pass MH a course celebrates twice (courseCelebrationStage in logic): the round that passes its last unpassed lesson
+    // (complete) and the round that earns its last star (mastered), each launching a long story. A walk-through earns no star,
+    // so there a pass of the course's last lesson stands for the first finish.
+    const stage = record.preview ? (mastered && !nextMod ? 'complete' : null) : courseCelebrationStage(progress, course, lastEvent);
+    const finished = !!stage;
+    const next = courseDone || stage === 'mastered' ? nextToStart(mod.courseId) : null;
     const backTo = mastered ? null : loopBackTarget(record.events, mod.id);
     // The course finished (pass ME, Mikey's answer to Q17): the round that earned the course's last star goes on to the
     // celebration page, once (a Wonder question brings the result back, and its arrow must not celebrate again). Since pass MF
     // (Mikey's answer to Q22) the celebration ends at home, so a Wonder question due after this round waits for the next
     // finished round. In a walk-through no star can be earned, so passing a course's last lesson stands for the finish there,
     // which lets an educator see the page.
-    if (finished && celebratedRound.current !== lastEvent.at) { celebratedRound.current = lastEvent.at; setCelebrateCourse(mod.courseId); setScreen('course-done'); return; }
+    if (finished && celebratedRound.current !== lastEvent.at) { celebratedRound.current = lastEvent.at; setCelebrateCourse(mod.courseId); setCelebrateStage(stage); setScreen('course-done'); return; }
     const wonderHere = FEATURES.reflection && wonderOnFor(findStudent(roster, record.name)) ? nextWonder(record.events, mod.courseId, previewReview(), true) : null;
     const wonderDone = wonderHere && record.events.some((e) => e.type === 'wonder_answered' && e.wonderId === wonderHere.id && String(e.at) > String(lastEvent.at));
     if (wonderHere && !wonderDone) { setWonder(wonderHere); setWonderText(''); setWonderPick(''); setWonderStartedAt(Date.now()); setScreen('wonder'); return; }
@@ -8547,7 +9125,7 @@ function EduSphereScreens() {
   }, [screen]);
   // Whatever route brought a question on screen, it starts clean: nothing picked, nothing counted.
   const questionKey = attempt ? `${attempt.seed}-${qIndex}` : '';
-  useEffect(() => { setGiven(''); setChecked(false); setMisses(0); setWrongPicks([]); setTracePaths([]); }, [questionKey]);
+  useEffect(() => { setGiven(''); setChecked(false); setMisses(0); setWrongPicks([]); setTracePaths([]); setMoreInfo(false); }, [questionKey]);
   // Each line of a pre-reader lesson is spoken as it appears, without waiting to be asked.
   const lessonLines = mod && readAloud ? (mod.lesson.script || []).map((x) => x.say) : [];
   const currentLessonLine = lessonLines[Math.min(lessonStep, Math.max(0, lessonLines.length - 1))] || '';
@@ -8563,7 +9141,7 @@ function EduSphereScreens() {
   // ends it, so the same story opened later from Let's Read goes home rather than on to that round's next step.
   useEffect(() => {
     if (screen !== 'story') setStoryReward(null);
-    if (screen !== 'course-story') setCourseStoryReward(false);   // pass ME: the course's story, given from its finished page
+    if (screen !== 'course-story') { setCourseStoryReward(false); setCourseStoryPart('course'); }   // pass ME: the course's story, given from its finished page
     if (screen !== 'story' && screen !== 'course-story') setStoryVoiceOn(false);
     if (screen !== 'course-done') setCelebrateCourse(null);
   }, [screen]);
@@ -8579,10 +9157,13 @@ function EduSphereScreens() {
     // The whole course is done only when this round's star was its last (courseFinishedBy in logic, pass ME): until pass ME
     // the words said so on the first pass of the last lesson, while its star still waited for another day. A walk-through
     // earns no star, so there a pass of the course's last lesson stands for the finish.
-    const finished = record.preview ? mastered && !nextMod : courseFinishedBy(progress, course, lastEvent);
+    // Since pass MH the first time every lesson is passed says so too (complete), and its celebration follows the round's reward
+    // story; finished stays the last star's, the round after which the line names the next course.
+    const stage = record.preview ? (mastered && !nextMod ? 'complete' : null) : courseCelebrationStage(progress, course, lastEvent);
+    const finished = stage === 'mastered';
     const storyDue = rewardStoryDue(record.events, mod.id, { passed: mastered, readAloud: true, hasStory: !!storyFor(mod.id) });
-    const card = mastered ? (lastEvent.dose > 1 ? 'You did it! The tricky one is yours now.' : finished ? 'Well done! That was the whole course.' : 'Well done!') : 'Good try. Let\'s go again.';
-    return { mastered, nextMod, finished, storyDue, card, spoken: storyDue ? `${card} You earned a story!` : card };
+    const card = mastered ? (lastEvent.dose > 1 ? 'You did it! The tricky one is yours now.' : finished ? 'Well done! That was the whole course.' : stage === 'complete' ? 'Well done! That was every lesson.' : 'Well done!') : 'Good try. Let\'s go again.';
+    return { mastered, nextMod, stage, finished, storyDue, card, spoken: storyDue ? `${card} You earned a story!` : card };
   };
   // What the course-finished page says (pass ME): one set of words for the card, the voice as the page opens and its speaker,
   // so what is seen and what is heard never differed (DESIGN.md: one spoken line).
@@ -8594,17 +9175,21 @@ function EduSphereScreens() {
   // The book's verb follows the page the book opens (the screen check): a read-aloud course's story reads itself, so hear; a
   // reader's course opens the reader's page, so read. The page speaks as it opens for a child in a read-aloud course or a young
   // learner (speaks), the way that child's result did; a reader's page waits for its speaker.
-  const celebrationWords = (courseId) => {
-    const cc = getCourse(courseId); const cs = cc ? courseStoryFor(cc.id) : null;
+  const celebrationWords = (courseId, stage = 'mastered') => {
+    // Since pass MH: the first celebration opens the course's first long story, the second its next one (or the first again,
+    // said as again only once it has been read), decided in logic (celebrationStory).
+    const cc = getCourse(courseId);
+    const story = cc ? celebrationStory(cc.id, stage, { hasFirst: !!courseStoryFor(cc.id), hasSecond: !!masteryStoryFor(cc.id), firstRead: !!(record && record.events.some((e) => e.type === 'story_read' && e.moduleId === `course:${cc.id}`)) }) : null;
+    const cs = story ? longStoryFor(story.id) : null;
     const hears = !!(cc && cc.readAloud); const speaks = !!(cc && (cc.readAloud || youngLearner));
     // The first line comes from logic (courseFinishedWords): the party's Hooray through grade 5, and from grade 6 up the calmer
     // "Well done." (pass MG, Mikey's answer to Q24, "calmer"); the confetti and the star stay at every age. The guide names the
     // way home by its color and, under the book, its place (pass MG: the house gave way to a button across the bottom; with no
     // long story yet the button sits mid-page, so the guide says only its color, the screen check).
-    const lines = cc ? [courseFinishedWords(cc).cheer, ...(cs ? ['Here is its story.'] : [])] : [];
+    const lines = cc ? [courseFinishedWords(cc, stage).cheer, ...(cs ? [story.line] : [])] : [];
     const bookCaption = cs ? (hears ? 'Hear the story' : 'Read the story') : null;
     const guide = cs ? `Tap the gold book to ${hears ? 'hear' : 'read'} it, or tap the green button at the bottom to go home.` : 'Tap the green button to go home.';
-    return { lines, bookCaption, homeCaption: 'Return home', guide, hears, speaks, spoken: [...lines, guide].join(' ') };
+    return { lines, bookCaption, homeCaption: 'Return Home', guide, hears, speaks, story: cs ? story : null, spoken: [...lines, guide].join(' ') };
   };
   // Spoken once a round: a Wonder question that follows brings the screen back, and the words were heard already (the code
   // check's second read), so the round's own time stamp remembers that it was said.
@@ -8620,11 +9205,11 @@ function EduSphereScreens() {
   const cheerSpokenFor = useRef(null);
   useEffect(() => {
     if (screen !== 'course-done' || !celebrateCourse) return;
-    const key = `${celebrateCourse}|${lastEvent ? lastEvent.at : ''}`;
-    const words = celebrationWords(celebrateCourse);
+    const key = `${celebrateCourse}|${celebrateStage}|${lastEvent ? lastEvent.at : ''}`;
+    const words = celebrationWords(celebrateCourse, celebrateStage);
     if (cheerSpokenFor.current === key || !words.speaks) return;
     cheerSpokenFor.current = key; speak(words.spoken);
-  }, [screen, celebrateCourse]);
+  }, [screen, celebrateCourse, celebrateStage]);
   // Opening a report remembers the visit on the roster, after noting when the last one was.
   useEffect(() => { if (screen !== 'educator-report' || !educatorRecord || !roster || educatorRecord.preview) return; const st = findStudent(roster, educatorRecord.name); setReportOpenedFrom(st && st.reportSeenAt ? st.reportSeenAt : null); const next = setReportSeen(roster, educatorRecord.name, new Date().toISOString()); setRoster(next); saveRoster(next); setWeeklyEdit(null); setWeeklyEditing(false); }, [screen === 'educator-report' ? (educatorRecord && educatorRecord.name) : null]);
   useEffect(() => { if (typeof document !== 'undefined') { document.body.classList.toggle('edu-cert-mode', screen === 'certificate'); document.body.classList.toggle('edu-story-mode', screen === 'story' || screen === 'course-story'); document.body.classList.toggle('edu-book-mode', screen === 'story-book'); } }, [screen]);
@@ -8665,7 +9250,7 @@ function EduSphereScreens() {
   // second. Whether it counts as an elective read is worked out from the log, never here.
   useEffect(() => {
     const open = storyReading.current;
-    const id = screen === 'story' ? moduleId : screen === 'course-story' && courseStoryId ? `course:${courseStoryId}` : null;
+    const id = screen === 'story' ? moduleId : screen === 'course-story' && courseStoryId ? `${courseStoryPart}:${courseStoryId}` : null;
     if (!id || !open || open.logged || open.id !== id) return undefined;
     let io = null;
     const watchEnd = () => {
@@ -8682,16 +9267,18 @@ function EduSphereScreens() {
     return () => { window.cancelAnimationFrame(raf); clearInterval(tick); if (io) io.disconnect(); };
   }, [screen, moduleId, courseStoryId]);
   // A pre-reader hears the Wonder question and then each choice, the choice being read lit on screen (pass IS). Leaving
-  // the screen stops the reading, so the two short voices that follow are never talked over.
+  // the screen stops the reading, so the short voices that follow (four since pass MH) are never talked over.
   useEffect(() => {
     if (!(screen === 'wonder' && readAloud && wonder)) return undefined;
     const stop = speakSequence(wonderSpokenParts(wonder), (i) => setWonderLit(i - 1), () => setWonderLit(-1));
     return () => stop();
   }, [screen, readAloud, wonder]);
-  // Each card a pre-reader meets after the Wonder question is spoken as it appears: the two short voices, then since pass MG
+  // Each card a pre-reader meets after the Wonder question is spoken as it appears: the four short voices (two until pass MH), then since pass MG
   // the closing line (Mikey's answer to Q10, "yes"). The cards and their spoken words come from logic (wonderPreReaderCards,
   // wonderCardSpoken), and the effect is keyed on the words and the step, so a redraw never says a card twice.
-  const preReaderCards = screen === 'wonder-voices' && readAloud && wonder ? wonderPreReaderCards(wonder) : null;
+  // How many Wonder questions this child has answered, which turns the closing card's title (ponderTitle, pass MH).
+  const wonderAnswered = record ? record.events.filter((e) => e.type === 'wonder_answered').length : 0;
+  const preReaderCards = screen === 'wonder-voices' && readAloud && wonder ? wonderPreReaderCards(wonder, wonderAnswered) : null;
   const spokenCard = preReaderCards ? wonderCardSpoken(preReaderCards[Math.min(wonderVoiceStep, preReaderCards.length - 1)]) : null;
   useEffect(() => { if (spokenCard) speak(spokenCard); }, [spokenCard, wonderVoiceStep]);
   // The test hook: what screen is up, which question, and a way to open a named module without
@@ -8751,6 +9338,13 @@ function EduSphereScreens() {
       for (const m of getCourse(plan.finish).modules) events.push(pass(m.id, 3), pass(m.id, 2));
       seeded.finished = plan.finish;
     }
+    // A course one lesson short of its first finish (pass MH): every lesson but the last in order passed once, two days ago, and
+    // the last never passed, so a pass of it today completes the course and the walk meets the first celebration live.
+    if (plan.complete && getCourse(plan.complete)) {
+      const ms = [...getCourse(plan.complete).modules].sort((a, b) => a.order - b.order);
+      for (const m of ms.slice(0, -1)) events.push(pass(m.id, 2));
+      seeded.complete = plan.complete; seeded.lastLesson = ms[ms.length - 1].id;
+    }
     // A course one star short (pass ME): every lesson starred but the last in order, which was passed once, two days ago, so a
     // pass of it today earns the course's last star and the walk meets the course-finished page live.
     if (plan.almost && getCourse(plan.almost)) {
@@ -8784,11 +9378,14 @@ function EduSphereScreens() {
   useEffect(() => { if (typeof window !== 'undefined') window.__eduTest = { seedHistory: (key, plan) => seedHistoryForTest(key, plan), screen, moduleId: moduleId || null, question: q || null, isReviewQ, openModule: (id) => openModule(id),
     // Test-only (pass ME): draws the current trace question along its own strokes, the way a steady hand would, so a browser
     // walk can pass a round whose memory check reaches into a tracing lesson (a finished course has those among its stars).
-    traceWell: () => { const def = q && q.type === 'trace' ? TRACE_LETTERS[q.answer] : null; if (!def) return false; const paths = def.strokes.map((s) => s.flatMap((p, i) => (i === 0 ? [p] : Array.from({ length: 8 }, (_, k) => [s[i - 1][0] + ((p[0] - s[i - 1][0]) * (k + 1)) / 8, s[i - 1][1] + ((p[1] - s[i - 1][1]) * (k + 1)) / 8])))); setTracePaths(paths); setGiven(JSON.stringify(paths)); return true; }, openColoring: (pic) => { setColoring(pic); setScreen('coloring'); }, openCertificate: (id, grade) => { setCertFor({ id, grade }); setCertTemplate('classic'); setCertName(''); setCertPhotos([]); setScreen('certificate'); }, visibleModuleIds: () => visibleModules.map((m) => m.id), openStory: (id) => { noteStoryOpen(id, 'shelf'); setModuleId(id); setScreen('story'); }, openCourseStory: (id) => { noteStoryOpen(`course:${id}`, 'shelf'); setCourseStoryId(id); setScreen('course-story'); }, openWonderVoices: (id, mid) => { if (mid) setModuleId(mid); setWonder(WONDER.find((w) => w.id === id) || null); setWonderVoiceStep(0); setScreen('wonder-voices'); }, reviewWonder: (id) => { setReviewing(id); setOpenVoices([]); setScreen('wonder-review'); }, crash: () => setBoom(true), goTo: (name, arg) => {
+    traceWell: () => { const def = q && q.type === 'trace' ? TRACE_LETTERS[q.answer] : null; if (!def) return false; const paths = def.strokes.map((s) => s.flatMap((p, i) => (i === 0 ? [p] : Array.from({ length: 8 }, (_, k) => [s[i - 1][0] + ((p[0] - s[i - 1][0]) * (k + 1)) / 8, s[i - 1][1] + ((p[1] - s[i - 1][1]) * (k + 1)) / 8])))); setTracePaths(paths); setGiven(JSON.stringify(paths)); return true; }, openColoring: (pic) => { setColoring(pic); setScreen('coloring'); }, openCertificate: (id, grade) => { setCertFor({ id, grade }); setCertTemplate('classic'); setCertName(''); setCertPhotos([]); setScreen('certificate'); }, visibleModuleIds: () => visibleModules.map((m) => m.id), openStory: (id) => { noteStoryOpen(id, 'shelf'); setModuleId(id); setScreen('story'); }, openCourseStory: (id, part = 'course') => { noteStoryOpen(`${part}:${id}`, 'shelf'); setCourseStoryId(id); setCourseStoryPart(part); setScreen('course-story'); }, openWonderVoices: (id, mid) => { if (mid) setModuleId(mid); setWonder(WONDER.find((w) => w.id === id) || null); setWonderVoiceStep(0); setScreen('wonder-voices'); }, openWonder: (id, mid) => { if (mid) setModuleId(mid); setWonder(WONDER.find((w) => w.id === id) || null); setWonderText(''); setWonderPick(''); setWonderStartedAt(Date.now()); setScreen('wonder'); },
+    // Test-only (pass MH): one round of a single named question, so a browser check can look at any kind of question on screen.
+    showQuestion: (genId, seed = 1) => { const home = COURSES.flatMap((c) => c.modules).find((m) => (m.generators || []).includes(genId)); if (!home) return false; setModuleId(home.id); setAttempt({ moduleId: home.id, seed, core: [generateQuestion(genId, seed)], review: null, review2: null }); setQIndex(0); setGiven(''); setChecked(false); setMisses(0); setCoreResults([]); setOrderPicked([]); setReviewResult(null); setReview2Result(null); setStartedAt(new Date().toISOString()); setQShownAt(Date.now()); setScreen('practice'); return true; }, reviewWonder: (id) => { setReviewing(id); setOpenVoices([]); setScreen('wonder-review'); }, crash: () => setBoom(true), goTo: (name, arg) => {
     // Test-only: land on a screen with enough state for it to render, so the back-button sweep can press back from every screen.
     if (name === 'story' || name === 'lesson') { if (!moduleId && visibleModules[0]) setModuleId(visibleModules[0].id); }
     if (name === 'course-story') { const c = COURSES.find((x) => courseStoryFor(x.id)); if (c) setCourseStoryId(c.id); }
-    if (name === 'course-done') { const c = (arg && getCourse(arg)) || (record ? visibleCourses.find((x) => courseStoryFor(x.id)) : null) || COURSES.find((x) => courseStoryFor(x.id)); if (c) setCelebrateCourse(c.id); }
+    // 'course-done' takes a course id, and since pass MH may name the stage after a bar: 'first-steps-pk4|complete'.
+    if (name === 'course-done') { const [argId, argStage] = String(arg || '').split('|'); const c = (argId && getCourse(argId)) || (record ? visibleCourses.find((x) => courseStoryFor(x.id)) : null) || COURSES.find((x) => courseStoryFor(x.id)); if (c) { setCelebrateCourse(c.id); setCelebrateStage(argStage === 'complete' ? 'complete' : 'mastered'); } }
     if (name === 'story-book') { const c = COURSES.find((x) => courseStoryFor(x.id)); if (c) setBookCourseId(c.id); }
     if (name === 'coloring') setColoring(COLORING_PICTURES[0].id);
     if (name === 'certificate') { const st = (roster && roster.students && roster.students[0]) || record; if (st) { setCertFor({ id: st.id, grade: '3' }); setCertTemplate('classic'); setCertName(''); setCertPhotos([]); } }
@@ -8923,7 +9520,7 @@ function EduSphereScreens() {
     setActionItems(Object.fromEntries(pairs.map(([id, , , items]) => [id, items])));
   })(); }, [screen, roster]);
   // A young learner who was wrong tries again, so the voice must not give the answer away.
-  useEffect(() => { if (screen === 'practice' && readAloud && checked && q) speak(wasCorrect ? 'Correct. ' + q.explain : 'Not that one. Have another try.'); }, [checked]);
+  useEffect(() => { if (screen === 'practice' && readAloud && checked && q) speak(wasCorrect ? 'Correct. ' + q.explain : preReaderWrongWords(q, String(given), wrongPicks)); }, [checked]);
 
   // ---------- Screens ----------
   const refreshIds = refresherIds(record ? record.events : []);
@@ -9249,10 +9846,10 @@ function EduSphereScreens() {
                 <span className="edu-sparkle edu-sparkle-3" aria-hidden="true" />
                 <span className="edu-sparkle edu-sparkle-4" aria-hidden="true" />
                 <span style={{ fontSize: 20, fontWeight: 700, position: 'relative' }}>Let's Color</span>
-                <span aria-hidden="true" style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', fontSize: 14, color: C.mode === 'dark' ? '#24291F' : C.muted }}>{open ? '▴' : '▾'}</span>
+                <span aria-hidden="true" style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', fontSize: 14, color: '#24291F' }}>{open ? '▴' : '▾'}</span>
               </button>
               {open && (
-                <div className="edu-colorwash" style={{ padding: 14 }}>
+                <div className={C.mode === 'dark' ? 'edu-colorwash-soft' : 'edu-colorwash'} data-fold-body="color" style={{ padding: 14 }}>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(96px, 1fr))', gap: 10 }}>
                     {COLORING_PICTURES.map((pic, i) => {
                       const locked = i >= unlocked;
@@ -9261,7 +9858,7 @@ function EduSphereScreens() {
                       return (
                         <button key={pic} type="button" disabled={locked || resting} aria-label={locked ? 'Locked picture' : resting ? 'Resting picture' : `Color the ${pic === 'my-name' ? 'name' : pictureTitle(pic).toLowerCase()}`}
                           onClick={() => leaveOverviewTo(() => { setColoring(pic); setScreen('coloring'); })} className={`edu-breathe${!locked && !resting ? ' edu-press' : ''}`}
-                          style={{ position: 'relative', overflow: 'hidden', aspectRatio: '1 / 1', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 6, borderRadius: 12, background: locked ? 'rgba(255,255,255,0.55)' : C.paperBoard, border: `2px solid ${locked || resting ? 'rgba(255,255,255,0.7)' : C.ink}`, cursor: locked || resting ? 'default' : 'pointer', '--beat': locked || resting ? 0 : 1, ...inBeat(2.2) }}>
+                          style={{ position: 'relative', overflow: 'hidden', aspectRatio: '1 / 1', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 6, borderRadius: 12, background: locked ? (C.mode === 'dark' ? 'rgba(217, 230, 220, 0.16)' : 'rgba(255,255,255,0.55)') : C.paperBoard, border: `2px solid ${locked || resting ? (C.mode === 'dark' ? 'rgba(217, 230, 220, 0.35)' : 'rgba(255,255,255,0.7)') : C.mode === 'dark' ? 'rgba(170, 216, 197, 0.7)' : C.ink}`, cursor: locked || resting ? 'default' : 'pointer', '--beat': locked || resting ? 0 : 1, ...inBeat(2.2) }}>
                           {locked ? (
                             <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M7 10V8a5 5 0 0110 0v2" fill="none" stroke={C.muted} strokeWidth="2" strokeLinecap="round" /><rect x="5" y="10" width="14" height="10" rx="2" fill={C.line} stroke={C.muted} strokeWidth="1.5" /></svg>
                           ) : (
@@ -9314,7 +9911,9 @@ function EduSphereScreens() {
           const allWithStory = spreadLeads(visibleCourses.filter((c) => courseStoryFor(c.id)), (c) => courseStoryFor(c.id).title);
           // An early learner sees only the stories open now (Mikey, pass LI): a locked row and a count of modules to go mean
           // nothing to a pre-reader, so the list shows what can be read today and nothing at all until something can.
-          const withStory = youngLearner ? allWithStory.filter((c) => record.preview || isCourseFinished(progress.masteredIds, c)) : allWithStory;
+          // Since pass MH the rows come from logic (longStoryRows): a course's first long story opens once every lesson is passed,
+          // its next one, where it has one, once every lesson has its star; an early learner sees only the open ones.
+          const longRows = longStoryRows(allWithStory, progress, courseStoryFor, masteryStoryFor, !!record.preview, youngLearner);
           // An early learner's lesson stories (pass MD): the stories heard as a round's reward wait here to be heard again, after
           // the course stories, newest first (heardStoryGroups decides, in logic). Older students reach theirs from My Stories, and
           // an educator reaches every one from the Story Log. A walk-through lists them too, from the log it keeps in memory, so
@@ -9323,7 +9922,7 @@ function EduSphereScreens() {
           // with the newest story first; a heading names each course only when the stories come from more than one.
           const heardGroups = youngLearner ? heardStoryGroups(record.events, shownCourses, (id) => !!storyFor(id)) : [];
           const heardStories = heardGroups.flatMap((g) => g.moduleIds);
-          if (!withStory.length && !heardStories.length) return null;
+          if (!longRows.length && !heardStories.length) return null;
           // Opens a heard story from the shelf: a read again, watched as one, on the self-reading page.
           const openHeardStory = (id) => leaveOverviewTo(() => { noteStoryOpen(id, 'shelf'); setModuleId(id); setStoryVoiceOn(canSpeak()); setScreen('story'); });
           // The surprise-me book (pass MF, Mikey's answer to Q18): with two or more heard stories, one more gold book, with a star,
@@ -9335,10 +9934,10 @@ function EduSphereScreens() {
           const painted = (id) => { const st = storyFor(id); return !!(st && st.art && typeof window !== 'undefined' && Array.isArray(window.__eduArt) && window.__eduArt.includes(st.art)); };
           // One way to open a course's story from the shelf, for the gold book and the worded button alike (its first read is
           // logged as the read the course asks for; a later one is watched as a read again, from the shelf).
-          const openShelfStory = (c, read) => leaveOverviewTo(() => { noteStoryOpen(`course:${c.id}`, 'shelf'); if (record && !record.preview && !read) addEvent(makeStoryReadEvent(`course:${c.id}`, new Date().toISOString())); setCourseStoryId(c.id); setStoryVoiceOn(canSpeak()); setScreen('course-story'); });
+          const openShelfStory = (r, read) => leaveOverviewTo(() => { noteStoryOpen(r.id, 'shelf'); if (record && !record.preview && !read) addEvent(makeStoryReadEvent(r.id, new Date().toISOString())); setCourseStoryId(r.courseId); setCourseStoryPart(r.kind); setStoryVoiceOn(canSpeak()); setScreen('course-story'); });
           const open = openSubject === '__read';
           const readIds = new Set(storiesRead(record.events).map((r) => r.moduleId));
-          const unlockedCount = withStory.filter((c) => record.preview || c.modules.every((m) => progress.masteredIds.includes(m.id))).length;
+          const unlockedCount = longRows.filter((r) => r.unlocked).length;
           return (
             <div style={{ ...card, padding: 0, overflow: 'hidden', marginTop: 18, ...(C.mode === 'dark' ? { border: 'none' } : {}) }}>
               {/* The same crayon strip as Let's Play and Let's Color (2026-09-23, Mikey): the title centered, only a chevron at the edge. */}
@@ -9350,30 +9949,32 @@ function EduSphereScreens() {
                 <span className="edu-sparkle edu-sparkle-3" aria-hidden="true" />
                 <span className="edu-sparkle edu-sparkle-4" aria-hidden="true" />
                 <span style={{ fontSize: 20, fontWeight: 700, position: 'relative' }}>Let's Read</span>
-                <span aria-hidden="true" style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', fontSize: 14, color: C.mode === 'dark' ? '#24291F' : C.muted }}>{open ? '▴' : '▾'}</span>
+                <span aria-hidden="true" style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', fontSize: 14, color: '#24291F' }}>{open ? '▴' : '▾'}</span>
               </button>
               {open && (
                 <div style={{ padding: '0 0 12px' }}>
                   <div style={{ background: C.mode === 'dark' ? '#AAD8C5' : C.greenSoft, color: C.mode === 'dark' ? '#16201B' : undefined, padding: '12px 16px' }}>
                     <p style={{ margin: '0 0 6px', fontSize: 14, color: C.mode === 'dark' ? '#16201B' : C.ink, textAlign: 'center' }}>Finishing every module within a course unlocks a story which ties all of the concepts together.</p>
-                    {!youngLearner && <p style={{ margin: 0, fontSize: 14, color: C.mode === 'dark' ? '#2E4A3E' : C.muted, textAlign: 'center' }}>{unlockedCount} of {withStory.length} unlocked</p>}
+                    {!youngLearner && longRows.some((r) => r.kind === 'mastery') && <p style={{ margin: '0 0 6px', fontSize: 14, color: C.mode === 'dark' ? '#16201B' : C.ink, textAlign: 'center' }}>Mastering every module unlocks the course's next story.</p>}
+                    {!youngLearner && <p style={{ margin: 0, fontSize: 14, color: C.mode === 'dark' ? '#2E4A3E' : C.muted, textAlign: 'center' }}>{unlockedCount} of {longRows.length} unlocked</p>}
                     {heardStories.length > 0 && <p data-heard-note="" style={{ margin: 0, fontSize: 14, color: C.mode === 'dark' ? '#16201B' : C.ink, textAlign: 'center' }}>{heardGroups.length > 1 ? 'The stories earned in lessons wait here too, newest first under each course.' : 'The stories earned in lessons wait here too, the newest first.'}</p>}
                   </div>
                   <div style={{ padding: '0 16px' }}>
-                  {withStory.map((c) => {
-                    const left = c.modules.filter((m) => !progress.masteredIds.includes(m.id)).length; const unlocked = record.preview || left === 0; const cs = courseStoryFor(c.id); const read = readIds.has(`course:${c.id}`);
+                  {longRows.map((r) => {
+                    const c = getCourse(r.courseId); const left = r.left; const unlocked = r.unlocked; const cs = longStoryFor(r.id); const read = readIds.has(r.id);
+                    const toGo = r.unit === 'master' ? `${left} ${left === 1 ? 'module' : 'modules'} to master` : `${left} ${left === 1 ? 'module' : 'modules'} to go`;
                     return (
-                      <div key={c.id} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '10px 0', borderTop: `1px solid ${C.line}` }}>
+                      <div key={r.id} data-long-story-row={r.id} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '10px 0', borderTop: `1px solid ${C.line}` }}>
                         <StoryThumb serial={cs.art} />
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <p style={{ margin: 0, fontWeight: 600 }}>{titleCase(cs.title)}</p>
-                          <p style={{ margin: '2px 0 0', fontSize: 13, color: C.muted }}>{titleCase(c.title)}{unlocked ? (read ? ' · read' : '') : ` · ${left} ${left === 1 ? 'module' : 'modules'} to go`}</p>
+                          <p style={{ margin: '2px 0 0', fontSize: 13, color: C.muted }}>{titleCase(c.title)}{r.kind === 'mastery' ? ' · the next story' : ''}{unlocked ? (read ? ' · read' : '') : ` · ${toGo}`}</p>
                         </div>
                         {/* An early learner's course story is a gold book too (pass ME, Mikey's answer to Q17), the same sign as
                             the lesson stories below it; readers keep the worded button. */}
                         {youngLearner && c.readAloud
-                          ? <GoldBook size={52} breathe={unlocked} disabled={!unlocked || busy} label={unlocked ? (read ? `Hear ${titleCase(cs.title)} again` : `Hear ${titleCase(cs.title)}`) : `${titleCase(cs.title)} is locked`} attrs={{ 'data-course-story-book': c.id }} onClick={() => openShelfStory(c, read)} />
-                          : <Btn kind="secondary" disabled={!unlocked || busy} onClick={() => openShelfStory(c, read)} style={{ padding: '8px 14px', minHeight: 38, fontSize: 14 }}>{unlocked ? (read ? 'Read again' : 'Read') : 'Locked'}</Btn>}
+                          ? <GoldBook size={52} breathe={unlocked} disabled={!unlocked || busy} label={unlocked ? (read ? `Hear ${titleCase(cs.title)} again` : `Hear ${titleCase(cs.title)}`) : `${titleCase(cs.title)} is locked`} attrs={r.kind === 'mastery' ? { 'data-mastery-story-book': c.id } : { 'data-course-story-book': c.id }} onClick={() => openShelfStory(r, read)} />
+                          : <Btn kind="secondary" disabled={!unlocked || busy} onClick={() => openShelfStory(r, read)} style={{ padding: '8px 14px', minHeight: 38, fontSize: 14 }}>{unlocked ? (read ? 'Read again' : 'Read') : 'Locked'}</Btn>}
                       </div>
                     );
                   })}
@@ -9449,7 +10050,7 @@ function EduSphereScreens() {
                 <span className="edu-sparkle edu-sparkle-3" aria-hidden="true" />
                 <span className="edu-sparkle edu-sparkle-4" aria-hidden="true" />
                 <span style={{ fontSize: 20, fontWeight: 700, position: 'relative' }}>Let's Play</span>
-                <span aria-hidden="true" style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', fontSize: 14, color: C.mode === 'dark' ? '#24291F' : C.muted }}>{open ? '▴' : '▾'}</span>
+                <span aria-hidden="true" style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', fontSize: 14, color: '#24291F' }}>{open ? '▴' : '▾'}</span>
               </button>
               {/* A locked tile says nothing on its own (the code check, pass MC), so while one shows, a reader sees how a game opens,
                   in a strip like Let's Read's note: on the moving wash the words fell to 2.74 to 1 in the light theme (the screen
@@ -9460,7 +10061,7 @@ function EduSphereScreens() {
                 </div>
               )}
               {open && (
-                <div className="edu-colorwash" style={{ padding: 14 }}>
+                <div className={C.mode === 'dark' ? 'edu-colorwash-soft' : 'edu-colorwash'} data-fold-body="play" style={{ padding: 14 }}>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(96px, 1fr))', gap: 10 }}>
                     {games.map((g, i) => {
                       const locked = !isOpen(g); const resting = !locked && restLeft(g) > 0;
@@ -9468,12 +10069,12 @@ function EduSphereScreens() {
                       return (
                         <button key={g.id} type="button" disabled={locked || resting} aria-label={locked ? 'Locked game' : resting ? 'Resting game' : `Play ${g.title}`}
                           onClick={() => leaveOverviewTo(() => { setColoring(`play:${g.id}`); setScreen('coloring'); })} className={`edu-breathe${!locked && !resting ? ' edu-press' : ''}`}
-                          style={{ position: 'relative', overflow: 'hidden', aspectRatio: '1 / 1', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 10, borderRadius: 12, background: locked ? 'rgba(255,255,255,0.55)' : C.paperBoard, border: `2px solid ${locked || resting ? 'rgba(255,255,255,0.7)' : C.ink}`, cursor: locked || resting ? 'default' : 'pointer', '--beat': locked || resting ? 0 : 1, ...inBeat(2.2) }}>
+                          style={{ position: 'relative', overflow: 'hidden', aspectRatio: '1 / 1', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 10, borderRadius: 12, background: locked ? (C.mode === 'dark' ? 'rgba(217, 230, 220, 0.16)' : 'rgba(255,255,255,0.55)') : C.paperBoard, border: `2px solid ${locked || resting ? (C.mode === 'dark' ? 'rgba(217, 230, 220, 0.35)' : 'rgba(255,255,255,0.7)') : C.mode === 'dark' ? 'rgba(170, 216, 197, 0.7)' : C.ink}`, cursor: locked || resting ? 'default' : 'pointer', '--beat': locked || resting ? 0 : 1, ...inBeat(2.2) }}>
                           {locked ? (
                             <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M7 10V8a5 5 0 0110 0v2" fill="none" stroke={C.muted} strokeWidth="2" strokeLinecap="round" /><rect x="5" y="10" width="14" height="10" rx="2" fill={C.line} stroke={C.muted} strokeWidth="1.5" /></svg>
                           ) : (
                             <>
-                              <GameThumb kind={g.kind} game={g} />
+                              <span data-game-thumb="" style={{ display: 'inline-flex', transform: 'scale(1.25)' }}><GameThumb kind={g.kind} game={g} /></span>
                               {(colorState[`play:${g.id}`] || {}).best !== undefined && !resting && bestLine(g, colorState[`play:${g.id}`] || {}) !== null && (
                                 // The badge sits on a white chip on paper, so it draws with the paper palette (B): mint C.green on white was
                                 // 2.00 to 1 in the dark theme (the screen check, pass MC).
@@ -9540,9 +10141,9 @@ function EduSphereScreens() {
           <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke={C.green} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </button>
         <div key={lessonStep} className="edu-rise" style={{ ...card, textAlign: 'center', padding: '20px 18px' }}>
-          {stepArt ? <LessonStepArt pic={stepArt} visual={step.show} animKey={`${lessonStep}-${replays}`} /> : <Picture visual={step.show} animate animKey={`${lessonStep}-${replays}`} />}
+          {stepArt ? <LessonStepArt pic={stepArt} visual={step.show} animKey={`${lessonStep}-${replays}`} /> : <Picture visual={step.show} animate animKey={`${lessonStep}-${replays}`} big />}
 
-          <p style={{ fontSize: 22, lineHeight: 1.5, margin: '18px 0 0' }}>{sentencesOf(line).map((sentence, i) => <span key={i} style={{ background: litSentence === i ? C.goldSoft : 'transparent', borderRadius: 6, padding: litSentence === i ? '0 4px' : 0, transition: 'background 150ms' }}>{sentence}{i < sentencesOf(line).length - 1 ? ' ' : ''}</span>)}</p>
+          <p style={{ fontSize: 22, lineHeight: 1.5, margin: '18px 0 0' }}>{sentencesOf(line).map((sentence, i) => <React.Fragment key={i}><span data-read-lit={litSentence === i ? '' : undefined} style={litSentence === i ? { ...readLit(), ...LIT_WORDS } : { background: 'transparent', transition: 'background 150ms' }}>{sentence}</span>{i < sentencesOf(line).length - 1 ? ' ' : ''}</React.Fragment>)}</p>
         </div>
         {/* One tap repeats the line, in case they missed it. */}
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
@@ -9550,8 +10151,8 @@ function EduSphereScreens() {
             <button type="button" onClick={() => { speak(line); setReplays((n) => n + 1); }} aria-label="Say it again" className="edu-press edu-sway"
               style={{ width: 66, height: 66, borderRadius: 999, border: `3px solid ${C.gold}`, background: C.goldSoft, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
-                <path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={C.gold} />
-                <path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12" fill="none" stroke={C.gold} strokeWidth="2" strokeLinecap="round" />
+                <path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={speakerInk()} />
+                <path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12" fill="none" stroke={speakerInk()} strokeWidth="2" strokeLinecap="round" />
               </svg>
             </button>
           ) : (
@@ -9589,15 +10190,17 @@ function EduSphereScreens() {
   // bottom"); the story's own page ends at home too, since the celebration is the end of the round. A course with no long story
   // yet (EARMARKS L1) still gets its celebration, with the button alone. The small back arrow goes home.
   if (screen === 'course-done' && celebrateCourse && getCourse(celebrateCourse)) {
-    const cc = getCourse(celebrateCourse); const cs = courseStoryFor(cc.id); const words = celebrationWords(cc.id);
-    const hearStory = () => { storyReading.current = null; if (record && !record.events.some((e) => e.type === 'story_read' && e.moduleId === `course:${cc.id}`)) addEvent(makeStoryReadEvent(`course:${cc.id}`, new Date().toISOString())); setCourseStoryReward(true); setCourseStoryId(cc.id); setStoryVoiceOn(canSpeak()); setScreen('course-story'); };
+    const cc = getCourse(celebrateCourse); const words = celebrationWords(cc.id, celebrateStage); const story = words.story; const cs = story ? longStoryFor(story.id) : null;
+    // The book opens the long story this celebration names (pass MH): the first at the first finish, the next one at the last
+    // star; its first read is logged as the read the course asks for.
+    const hearStory = () => { if (!story) return; storyReading.current = null; if (record && !record.events.some((e) => e.type === 'story_read' && e.moduleId === story.id)) addEvent(makeStoryReadEvent(story.id, new Date().toISOString())); setCourseStoryReward(true); setCourseStoryId(cc.id); setCourseStoryPart(story.id.startsWith('mastery:') ? 'mastery' : 'course'); setStoryVoiceOn(canSpeak()); setScreen('course-story'); };
     const goHomeNow = () => { setAttempt(null); setScreen('overview'); };
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <button type="button" onClick={() => setScreen('overview')} aria-label="Back" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
           <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke={C.green} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </button>
-        <div className="edu-rise" data-course-done={cc.id} style={{ ...card, textAlign: 'center', padding: '30px 18px 26px', position: 'relative', overflow: 'hidden' }}>
+        <div className="edu-rise" data-course-done={cc.id} data-course-done-stage={celebrateStage} style={{ ...card, textAlign: 'center', padding: '30px 18px 26px', position: 'relative', overflow: 'hidden' }}>
           {/* A wide card gets more pieces, so the shower looks as full on a laptop as on a phone (the screen check's second read). */}
           <CourseCheer seed={cc.title.length + 7} n={phoneScreen ? 36 : 60} />
           <div style={{ position: 'relative', zIndex: 1 }}>
@@ -9616,8 +10219,8 @@ function EduSphereScreens() {
             <button type="button" onClick={() => speak(words.spoken)} aria-label={words.speaks ? 'Say it again' : 'Hear it'} className="edu-press edu-sway"
               style={{ width: 66, height: 66, borderRadius: 999, border: `3px solid ${C.gold}`, background: C.goldSoft, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
-                <path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={C.gold} />
-                <path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12" fill="none" stroke={C.gold} strokeWidth="2" strokeLinecap="round" />
+                <path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={speakerInk()} />
+                <path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12" fill="none" stroke={speakerInk()} strokeWidth="2" strokeLinecap="round" />
               </svg>
             </button>
           )}
@@ -9628,7 +10231,7 @@ function EduSphereScreens() {
             pulses. The book wears its words underneath, with the verb the voice's guide uses. */}
         {cs && <div style={{ display: 'flex', justifyContent: 'center', margin: '0 0 22px' }}>
           <span style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-            <GoldBook size={112} pulse disabled={busy} label={`${words.hears ? 'Hear' : 'Read'} the story of ${titleCase(cc.title)}`} attrs={{ 'data-course-story-book': cc.id }} onClick={hearStory} />
+            <GoldBook size={112} pulse disabled={busy} label={`${words.hears ? 'Hear' : 'Read'} the ${story.id.startsWith('mastery:') ? 'next story' : 'story'} of ${titleCase(cc.title)}`} attrs={{ 'data-course-story-book': cc.id, 'data-course-story-kind': story.id.startsWith('mastery:') ? 'mastery' : 'course' }} onClick={hearStory} />
             <p aria-hidden="true" style={{ margin: 0, padding: '2px 10px', borderRadius: 8, fontSize: 15, fontWeight: 600, color: C.green }}>{words.bookCaption}</p>
           </span>
         </div>}
@@ -9647,16 +10250,19 @@ function EduSphereScreens() {
   // the same wide Return home button across the bottom as the celebration's (Mikey: "No home icon, just a home button across
   // the bottom").
   // The words stay on the page for the grown-up beside the child, and the Print link waits on the educator's Story Log.
-  if (screen === 'course-story' && courseStoryId && courseStoryFor(courseStoryId) && getCourse(courseStoryId) && getCourse(courseStoryId).readAloud && (youngLearner || courseStoryReward)) {
-    const cs = courseStoryFor(courseStoryId); const cc = getCourse(courseStoryId); const reward = courseStoryReward;
+  // Since pass MH the page shows either of a course's long stories (courseStoryPart): the first, or the next one its mastery opens.
+  const openLongStory = courseStoryId ? longStoryFor(`${courseStoryPart}:${courseStoryId}`) : null;
+  const longStoryHeading = (cc) => `${courseStoryPart === 'mastery' ? 'The next story' : 'The story'} of ${cc ? titleCase(cc.title) : 'this course'}`;
+  if (screen === 'course-story' && courseStoryId && openLongStory && getCourse(courseStoryId) && getCourse(courseStoryId).readAloud && (youngLearner || courseStoryReward)) {
+    const cs = openLongStory; const cc = getCourse(courseStoryId); const reward = courseStoryReward;
     const onward = () => { setStoryVoiceOn(false); setCourseStoryReward(false); setAttempt(null); pendingScroll.current = { screen: 'overview', y: overviewScroll.current }; setScreen('overview'); };
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <button type="button" onClick={() => setScreen('overview')} aria-label="Back" className="edu-no-print" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
           <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke={C.green} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </button>
-        <p style={{ margin: '0 0 4px', fontSize: 14, color: C.muted, textAlign: 'center' }}>The story of {titleCase(cc.title)}</p>
-        <div className="edu-story-sheet" data-read-aloud-story={reward ? 'reward' : 'shelf'} data-course-story-page={cc.id}><StoryBody story={cs} pace={storyPaceFor({ courseId: cc.id })} autoRead round onReadingChange={setStoryVoiceOn} /></div>
+        <p style={{ margin: '0 0 4px', fontSize: 14, color: C.muted, textAlign: 'center' }}>{longStoryHeading(cc)}</p>
+        <div className="edu-story-sheet" data-read-aloud-story={reward ? 'reward' : 'shelf'} data-course-story-page={cc.id} data-course-story-kind={courseStoryPart}><StoryBody story={cs} pace={storyPaceFor({ courseId: cc.id })} autoRead round onReadingChange={setStoryVoiceOn} /></div>
         <div data-story-end="" aria-hidden="true" style={{ height: 1 }} />
         {/* The button rests while the voice reads and invites a tap once it stops (a child can still tap it any time). */}
         <div data-story-next="" className="edu-no-print" style={{ margin: '18px 0 8px' }}>
@@ -9670,18 +10276,18 @@ function EduSphereScreens() {
   // Opened from the course-finished page (pass MF, Mikey's answer to Q21: "reader too but don't need the print"), the reader's
   // page shows no Print link, its link at the top reads Return home, the words of the celebration's button, and since pass MG it
   // ends on that same wide button (the screen check); from Let's Read it is as it was, Back to my courses and Print.
-  if (screen === 'course-story' && courseStoryId && courseStoryFor(courseStoryId)) {
-    const cs = courseStoryFor(courseStoryId); const cc = getCourse(courseStoryId); const reward = courseStoryReward;
+  if (screen === 'course-story' && courseStoryId && openLongStory) {
+    const cs = openLongStory; const cc = getCourse(courseStoryId); const reward = courseStoryReward;
     const back = () => { setCourseStoryReward(false); setAttempt(null); pendingScroll.current = { screen: 'overview', y: overviewScroll.current }; setScreen('overview'); };
-    const backWords = reward ? 'Return home' : 'Back to my courses';
+    const backWords = reward ? 'Return Home' : 'Back to my courses';
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <div className="edu-no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
           <button type="button" onClick={back} style={{ background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer', padding: 0 }}>{backWords}</button>
           {!reward && <button type="button" onClick={() => window.print()} style={{ background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 13, cursor: 'pointer', padding: 0 }}>Print</button>}
         </div>
-        <p style={{ margin: '0 0 4px', fontSize: 14, color: C.muted, textAlign: 'center' }}>The story of {cc ? titleCase(cc.title) : 'this course'}</p>
-        <div className="edu-story-sheet" data-reader-story={reward ? 'reward' : 'shelf'} data-course-story-page={cc ? cc.id : ''}><StoryBody story={cs} /></div>
+        <p style={{ margin: '0 0 4px', fontSize: 14, color: C.muted, textAlign: 'center' }}>{longStoryHeading(cc)}</p>
+        <div className="edu-story-sheet" data-reader-story={reward ? 'reward' : 'shelf'} data-course-story-page={cc ? cc.id : ''} data-course-story-kind={courseStoryPart}><StoryBody story={cs} /></div>
         <div data-story-end="" aria-hidden="true" style={{ height: 1 }} />
         {/* The same way back at the end, so a reader who finished need not scroll to the top (Mikey, 2026-09-24): after a
             celebration the wide Return home button the celebration ended on, otherwise the link. */}
@@ -9744,7 +10350,7 @@ function EduSphereScreens() {
           {/* Lesson pictures (pass JO): where a real picture teaches better than words, like the Liberty Bell's crack or the plant parts we eat. P serials live in art/stories with the story art. */}
           {(mod.lesson.pictures || []).length > 0 && <div data-lesson-pictures="" style={{ display: 'grid', gridTemplateColumns: `repeat(auto-fit, minmax(${mod.lesson.pictures.length > 1 ? 150 : 220}px, 1fr))`, gap: 10, margin: '2px 0 12px' }}>{mod.lesson.pictures.map((pic) => <StoryArt key={pic.serial} serial={pic.serial} alt={pic.alt} />)}</div>}
           <div style={{ background: C.greenSoft, borderRadius: 10, padding: 14 }}>
-            <Picture visual={wayVisual(mod.lesson.example, anotherWay)} />
+            <Picture visual={wayVisual(mod.lesson.example, anotherWay)} big />
             {mod.lesson.example.formula && <p style={{ margin: '10px 0 0', fontSize: 17, fontWeight: 700, textAlign: 'center' }}>{mod.lesson.example.formula}</p>}
             {(() => {
               const ways = [mod.lesson.example.caption, ...[].concat(mod.lesson.example.another || []).map((w) => (typeof w === 'string' ? w : w.text))].filter(Boolean).slice(0, 4); const at = Math.min(anotherWay, ways.length - 1);
@@ -9775,7 +10381,7 @@ function EduSphereScreens() {
               <div style={{ ...card, marginTop: 10, textAlign: 'left', background: C.roseSoft, borderColor: C.tintRoseLine }}>
                 {experimentsForModule(mod.id).slice(0, 2).map((e, idx) => (
                   <div key={e.title} style={{ margin: idx ? '14px 0 0' : 0 }}>
-                    <p style={{ margin: '0 0 4px', fontWeight: 600 }}>{e.title}</p>
+                    <p style={{ margin: '0 0 4px', fontWeight: 600, textAlign: 'center' }}>{e.title}</p>
                     {e.tell
                       ? <p style={{ margin: 0, fontSize: 15, lineHeight: 1.6 }}>{e.tell}</p>
                       : <p style={{ margin: 0, fontSize: 15, lineHeight: 1.6 }}>Here's the question: {e.ask.charAt(0).toLowerCase() + e.ask.slice(1)} Give it a try: {e.do.charAt(0).toLowerCase() + e.do.slice(1)} Watch for this: {e.see.charAt(0).toLowerCase() + e.see.slice(1)}</p>}
@@ -9803,6 +10409,11 @@ function EduSphereScreens() {
     // not in the question, so a question's picture never depends on its wrong answer (passes IU and LV).
     const dotFrame = q.type === 'choice' && Array.isArray(q.choices) && q.choices.length > 0 && q.choices.every((x) => /^dots:\d+$/.test(x)) ? Math.min(5, Math.max(...q.choices.map((x) => Number(x.split(':')[1])))) : 0;
     const shownVisual = q.visual && dotFrame && q.visual.kind === 'pattern' && q.visual.size ? { ...q.visual, frame: dotFrame, snap: true } : q.visual;
+    // How a choice is drawn, in its button and, smaller, in the More Info sheet (pass MH): one function, so the two never differ.
+    const choiceFace = (c, k = 1) => (/^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={Math.round(28 * k)} frame={dotFrame || 5} snap={dotFrame > 0} /> : /^shape:/.test(c) ? <ShapePic name={c.split(':')[1]} size={Math.round((c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64) * k)} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={Math.round(14 * k)} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={Math.round(18 * k)} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={Math.round(14 * k)} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6).split('#')[0]} size={Math.round(64 * k)} /> : /^shares:/.test(c) ? <SharesPic shape={c.split(':')[1]} cut={c.split(':')[2]} shaded={Number(c.split(':')[3] || 0)} size={Math.round(72 * k)} /> : /^dice:/.test(c) ? <DicePic pips={Number(c.split(':')[1].split('#')[0])} size={Math.round(64 * k)} /> : /^pic:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><StudentPicture name={c.slice(4).split('#')[0]} size={Math.round(72 * k)} /></span> : /^art:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><ColorThumb picture={c.slice(4).split('#')[0]} size={Math.round(84 * k)} thing /></span> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={Math.round(64 * k)} /> : /^face:/.test(c) ? <FeelingFace feeling={c.slice(5).split('#')[0]} size={Math.round(84 * k)} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={Math.round(64 * k)} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={Math.round(64 * k)} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={Math.round(80 * k)} /> : /^digital:/.test(c) ? <DigitalPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={Math.round(96 * k)} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={Math.round(12 * k)} /> : c);
+    // More Info (pass MH): why each wrong choice does not fit, the one picked now first, in words that remember earlier rounds.
+    const pickedNow = checked ? (readAloud ? [...wrongPicks, ...(wasCorrect ? [] : [String(given)])] : (wasCorrect ? [] : [String(given)])) : [];
+    const insight = q.type === 'choice' ? choiceInsight(q, pickedNow, qHistory) : null;
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         {/* Module name on the left, the question count in the middle, and a bold green X on the
@@ -9825,9 +10436,14 @@ function EduSphereScreens() {
           <SpeakButton mini text={questionText} label={readAloud ? 'Hear it again' : 'Read it to me'} />
         </div>
         <div style={{ ...card, position: 'relative' }}>
-          <p data-question-text="" style={{ fontSize: 20, fontWeight: 600, margin: '0 0 12px', textAlign: 'center' }}>{q.prompt}</p>
-          {q.story && <div style={{ margin: '0 0 14px', color: C.ink }}><RichText text={q.story} size={17} center lineGap={8} /></div>}
-          {q.visual && <div style={{ margin: '0 0 14px' }}><Picture visual={shownVisual} note={record.preview ? undefined : false} /></div>}
+          {/* The setup line comes first and the question after it (pass MH, Mikey: "What is a kind thing to do?  New line Your friend
+              looks sad."  Would reach much better like What is a kind thing to do when your friend looks sad?"), the order the voice
+              has always read them in; until pass MH the question sat above its setup, so a reader met them backward. */}
+          {q.story && <div data-question-setup="" style={{ margin: '0 0 10px', color: C.ink }}><RichText text={q.story} size={17} center lineGap={8} /></div>}
+          <p data-question-text="" style={{ fontSize: 20, fontWeight: 600, margin: '0 0 14px', textAlign: 'center' }}>{q.prompt}</p>
+          {/* The question's own picture draws bigger (pass MH, Mikey), except when its answers are pictures of the same kind (a
+              turtle to match among animal answers), so the one that is the same never looks a different size from the answer. */}
+          {q.visual && <div style={{ margin: '0 0 14px' }}><Picture visual={shownVisual} note={record.preview ? undefined : false} big={!(Array.isArray(q.choices) && q.choices.some((c) => String(c).startsWith(`${q.visual.kind}:`)))} /></div>}
           {q.type === 'choice' ? (
             // Number answers never stack onto two lines (2026-09-23, Mikey): the columns are as wide as the longest one needs.
             // Towers stand side by side on one floor (pass MA): the explanation says both stand on the same floor, so the buttons do too.
@@ -9850,7 +10466,7 @@ function EduSphereScreens() {
                   // hand over the answer, nor, since pass MC, a single letter (choiceSpeaks reads only the choice, never which one is right).
                   <button key={c} type="button" data-choice={c} onClick={() => { if (!checked) { if (readAloud) { playTap(); if (choiceSpeaks(q, c)) speak(c); } setGiven(c); } }}
                     style={{ opacity: ruledOut && !checked ? (C.mode === 'dark' ? 0.72 : 0.5) : 1, fontFamily: FONT, fontSize: choiceFont(q.choices), textAlign: 'center', padding: standIn ? '12px 10px 34px' : '12px 10px', ...(standIn ? { position: 'relative' } : null), minWidth: 0, overflowWrap: /^-?[\d.,\/ ]+$/.test(c) ? 'normal' : 'anywhere', whiteSpace: /^-?[\d.,\/ ]+$/.test(c) ? 'nowrap' : 'normal', borderRadius: 10, background: bg, border: `2px solid ${border}`, color: C.ink, cursor: checked ? 'default' : 'pointer', minHeight: 48 }}>
-                    {/^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={28} frame={dotFrame || 5} snap={dotFrame > 0} /> : /^shape:/.test(c) ? <ShapePic name={c.split(':')[1]} size={c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={14} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={18} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={14} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6).split('#')[0]} size={64} /> : /^shares:/.test(c) ? <SharesPic shape={c.split(':')[1]} cut={c.split(':')[2]} shaded={Number(c.split(':')[3] || 0)} size={72} /> : /^dice:/.test(c) ? <DicePic pips={Number(c.split(':')[1].split('#')[0])} size={64} /> : /^pic:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><StudentPicture name={c.slice(4).split('#')[0]} size={72} /></span> : /^art:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><ColorThumb picture={c.slice(4).split('#')[0]} size={84} thing /></span> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={64} /> : /^face:/.test(c) ? <FeelingFace feeling={c.slice(5).split('#')[0]} size={84} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={64} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={64} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={80} /> : /^digital:/.test(c) ? <DigitalPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={96} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={12} /> : c}
+                    {choiceFace(c)}
                     {standIn && <ReplaceNote pal={C} style={{ right: 8, bottom: 5 }} />}
                   </button>
                 );
@@ -9934,18 +10550,24 @@ function EduSphereScreens() {
           {checked && !(attempt.placement && !wasCorrect && given === '') && (
             <div key={cheer} className={wasCorrect ? 'edu-cheer' : 'edu-wobble'} style={{ position: 'relative', marginTop: 14, padding: 14, borderRadius: 10, background: wasCorrect ? C.greenSoft : C.claySoft }}>
               {wasCorrect && <StarBurst />}
-              <p style={{ margin: 0, fontWeight: 600, color: wasCorrect ? C.green : C.clay }}>{wasCorrect ? 'Correct' : readAloud ? 'Not that one. Have another try.' : `Not quite. The answer is ${describeChoice(q.answer)}.`}</p>
-              {(wasCorrect || !readAloud) && <div style={{ margin: '8px 0 0' }}><RichText text={formatTeachingText(q.explain)} size={15} lineGap={6} />{!wasCorrect && !readAloud && taughtLine(mod.id, q.answer) && <p style={{ margin: '8px 0 0', fontSize: 14, color: C.muted }}>From the lesson: “{taughtLine(mod.id, q.answer)}”</p>}{!wasCorrect && !readAloud && mod.lesson.example && mod.lesson.example.another && (wrongWay ? <div style={{ margin: '8px 0 0', padding: '10px 12px', borderRadius: 10, background: C.goldSoft }}><div style={{ maxWidth: 240, margin: '0 auto 8px' }}><Picture visual={wayVisual(mod.lesson.example, 1)} note={record.preview ? undefined : false} /></div><RichText text={wayText([].concat(mod.lesson.example.another)[0])} size={14} lineGap={6} /></div> : <p style={{ margin: '8px 0 0' }}><button type="button" style={{ ...linkBtn, fontSize: 14 }} onClick={() => setWrongWay(true)}>Show me another way</button></p>)}{!wasCorrect && q.choiceNotes && q.choiceNotes[given] && <p style={{ margin: '6px 0 0', fontSize: 15, color: C.muted }}>{q.choiceNotes[given]}</p>}</div>}
+              <p style={{ margin: 0, fontWeight: 600, color: wasCorrect ? C.green : C.clay }}>{wasCorrect ? 'Correct' : readAloud ? preReaderWrongWords(q, String(given), wrongPicks) : `Not quite. The answer is ${describeChoice(q.answer)}.`}</p>
+              {(wasCorrect || !readAloud) && <div style={{ margin: '8px 0 0' }}><RichText text={formatTeachingText(q.explain)} size={15} lineGap={6} />{!wasCorrect && !readAloud && taughtLine(mod.id, q.answer) && <p style={{ margin: '8px 0 0', fontSize: 14, color: C.muted }}>From the lesson: “{taughtLine(mod.id, q.answer)}”</p>}{!wasCorrect && !readAloud && mod.lesson.example && mod.lesson.example.another && (wrongWay ? <div style={{ margin: '8px 0 0', padding: '10px 12px', borderRadius: 10, background: C.goldSoft }}><div style={{ maxWidth: 240, margin: '0 auto 8px' }}><Picture visual={wayVisual(mod.lesson.example, 1)} note={record.preview ? undefined : false} /></div><RichText text={wayText([].concat(mod.lesson.example.another)[0])} size={14} lineGap={6} /></div> : <p style={{ margin: '8px 0 0', textAlign: 'center' }}><button type="button" style={{ ...linkBtn, fontSize: 14 }} onClick={() => setWrongWay(true)}>Show me another way</button></p>)}{!wasCorrect && q.choiceNotes && q.choiceNotes[given] && !(insight && insight.any) && <p style={{ margin: '6px 0 0', fontSize: 15, color: C.muted }}>{q.choiceNotes[given]}</p>}</div>}
               {/* An explanation picture is a set of fraction bars, one group of dots, or (since pass LW) any picture kind below. */}
               {(wasCorrect || !readAloud) && Array.isArray(q.explainVisual) && q.explainVisual.map((b, i) => <LabeledBar key={i} parts={b.parts} shaded={b.shaded} label={b.label} color={wasCorrect ? C.green : C.clay} />)}
               {(wasCorrect || !readAloud) && q.explainVisual && !Array.isArray(q.explainVisual) && q.explainVisual.kind === 'dots' && <div style={{ marginTop: 8 }}><DotGroup count={q.explainVisual.count} size={28} animate animKey={cheer} /></div>}
               {/* Every other explanation picture (pass LW): a pair, a picture, a word card, a number line, a triangle or a grid, the
                   ones the rules test validates. Before this line only bars and dots reached the screen. */}
               {(wasCorrect || !readAloud) && q.explainVisual && !Array.isArray(q.explainVisual) && q.explainVisual.kind !== 'dots' && <div data-explain-picture="" style={{ marginTop: 8 }}><Picture visual={q.explainVisual} note={record.preview ? undefined : false} /></div>}
+              {!readAloud && insight && insight.any && <p style={{ margin: '8px 0 0', textAlign: 'center' }}><button type="button" data-more-info-link="" onClick={() => setMoreInfo(true)} style={{ ...linkBtn, fontSize: 14 }}>More Info</button></p>}
             </div>
           )}
+          {moreInfo && insight && insight.any && <MoreInfoSheet insight={insight} face={(c) => choiceFace(c, 0.6)} visual={q.visual || null} onClose={() => setMoreInfo(false)} />}
         </div>
-        {/* A pre-reader who got it wrong tries again. Nobody moves on from a wrong answer. */}
+        {/* A pre-reader who got it wrong tries again. Nobody moves on from a wrong answer. The row is a scroll cue's target (pass
+            MH, the alignment read): a pre-reader's reason after a wrong tap can push Try again below a short phone's screen, where a
+            child who cannot read would never find it, and the explanation after a right tap can push Next question down the same
+            way, so the cue's arrows point at it while any of it is hidden, as on the lesson and story pages. */}
+        <div data-practice-next="" style={{ scrollMarginBottom: 56 }}>
         {checked && !wasCorrect && readAloud
           ? <Btn full halo onClick={tryAgain}>Try again</Btn>
           : checked
@@ -9956,6 +10578,11 @@ function EduSphereScreens() {
                 <Btn full halo={given !== ''} onClick={checkCurrent} disabled={given === '' || (q.type === 'order' && orderPicked.length < q.items.length)}>Check answer</Btn>
                 {attempt.placement && <div style={{ marginTop: 10 }}><Btn full kind="secondary" onClick={dontKnow}>I don't know</Btn></div>}
               </>}
+        </div>
+        {/* For a pre-reader, More Info waits under the next button after the right tap (pass MH, the alignment read): it is for the
+            grown-up beside the child, so it never pushes the child's own button down. */}
+        {readAloud && checked && wasCorrect && insight && insight.any && <p style={{ margin: '10px 0 0', textAlign: 'center' }}><button type="button" data-more-info-link="" onClick={() => setMoreInfo(true)} style={{ ...linkBtn, fontSize: 14 }}>More Info</button></p>}
+        {readAloud && checked && <ScrollCue target="[data-practice-next]" whole watch={`${qIndex}-${wasCorrect}-${misses}`} />}
         {record.preview && <div style={{ marginTop: 10 }}><Btn full kind="secondary" onClick={() => { setChecked(false); setGiven(''); setOrderPicked([]); if (qIndex + 1 < questions.length) { setQIndex(qIndex + 1); setQShownAt(Date.now()); } else { setScreen('overview'); } }}>Skip (walk-through)</Btn></div>}
         <SilentNote shown={heardNote} />
       </div></div>
@@ -10033,8 +10660,11 @@ function EduSphereScreens() {
             // review as well as on the way home (the second read: with two reviews due the button is Next, and the first finish
             // never showed); its arrow goes home, where the next review's card waits.
             const rc = mod ? getCourse(mod.courseId) : null;
-            const cheer = !!(rc && record && !record.preview && courseFinishedBy(progress, rc, lastEvent) && celebratedRound.current !== lastEvent.at);   // readers too since pass MF (Q21)
-            const celebrate = () => { celebratedRound.current = lastEvent.at; setAttempt(null); setCelebrateCourse(rc.id); setScreen('course-done'); };
+            // Since pass MH (the code check) a clear fresh try on a lesson moved past and never passed can also complete a course,
+            // the first celebration, so the stage comes from courseCelebrationStage as a round's does.
+            const reviewStage = rc && record && !record.preview ? courseCelebrationStage(progress, rc, lastEvent) : null;
+            const cheer = !!(reviewStage && celebratedRound.current !== lastEvent.at);   // readers too since pass MF (Q21)
+            const celebrate = () => { celebratedRound.current = lastEvent.at; setAttempt(null); setCelebrateCourse(rc.id); setCelebrateStage(reviewStage); setScreen('course-done'); };
             // A reader reads the buttons, so the finish gets its own line and its own gold button, and Next or Back to my lessons
             // does exactly what it says; a young learner's one button goes to the celebration first, as pass ME built it.
             const readerCheer = cheer && !youngLearner; const onNext = cheer && !readerCheer;
@@ -10042,7 +10672,7 @@ function EduSphereScreens() {
               ? <Btn full onClick={onNext ? celebrate : () => startLightReview(lookBack)}>Next</Btn>
               : <Btn full onClick={onNext ? celebrate : () => { setAttempt(null); setScreen('overview'); }}>Back to my lessons</Btn>;
             return readerCheer ? (<>
-              <p data-course-finished-line="" style={{ fontSize: 18, fontWeight: 700, color: C.green, margin: '0 0 12px' }}>{courseFinishedWords(rc).result}</p>
+              <p data-course-finished-line="" style={{ fontSize: 18, fontWeight: 700, color: C.green, margin: '0 0 12px' }}>{courseFinishedWords(rc, reviewStage).result}</p>
               <div style={{ display: 'grid', gap: 10 }}><Btn full halo onClick={celebrate} disabled={busy} style={{ background: C.gold, borderColor: C.gold, color: C.onGold }}>Celebrate!</Btn>{own}</div>
             </>) : own;
           })()}
@@ -10120,8 +10750,8 @@ function EduSphereScreens() {
             <button type="button" onClick={() => speak(resultSpoken)} aria-label="Say it again" className="edu-press edu-sway"
               style={{ width: 66, height: 66, borderRadius: 999, border: `3px solid ${C.gold}`, background: C.goldSoft, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
-                <path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={C.gold} />
-                <path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12" fill="none" stroke={C.gold} strokeWidth="2" strokeLinecap="round" />
+                <path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={speakerInk()} />
+                <path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12" fill="none" stroke={speakerInk()} strokeWidth="2" strokeLinecap="round" />
               </svg>
             </button>
           )}
@@ -10153,9 +10783,10 @@ function EduSphereScreens() {
     // A reader's course finished by this round (pass MF, Mikey's answer to Q21: "reader too"): the same celebration page the
     // read-aloud courses have, reached by one gold button, once (courseFinishedBy in logic; a walk-through earns no star, so
     // there a pass of the course's last lesson stands for the finish, as the read-aloud result does).
-    const finished = !!(record && progress && (record.preview ? mastered && !nextMod : courseFinishedBy(progress, course, lastEvent)));
-    const cheer = finished && celebratedRound.current !== lastEvent.at;
-    const celebrate = () => { celebratedRound.current = lastEvent.at; setCelebrateCourse(mod.courseId); setScreen('course-done'); };
+    // Since pass MH twice: the first time every lesson is passed (complete) and when every lesson has its star (mastered).
+    const stage = record && progress ? (record.preview ? (mastered && !nextMod ? 'complete' : null) : courseCelebrationStage(progress, course, lastEvent)) : null;
+    const cheer = !!stage && celebratedRound.current !== lastEvent.at;
+    const celebrate = () => { celebratedRound.current = lastEvent.at; setCelebrateCourse(mod.courseId); setCelebrateStage(stage); setScreen('course-done'); };
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <div style={{ ...card, borderColor: mastered ? C.gold : C.clay }}>
@@ -10173,7 +10804,7 @@ function EduSphereScreens() {
             return <p style={{ fontSize: 17, margin: '0 0 12px', textAlign: 'center' }}>{lastEvent.coreCorrect} of {lastEvent.coreTotal} correct. {mastered ? `Getting ${rules.toMaster} or more right shows you truly understand it.` : `You need ${rules.toMaster} of ${lastEvent.coreTotal}. Reading the lesson once more, then trying a fresh set of questions, usually does it.`}</p>;
           })()}
           <FractionBar parts={lastEvent.coreTotal} shaded={lastEvent.coreCorrect} color={mastered ? C.gold : C.clay} height={36} />
-          {cheer && <p data-course-finished-line="" style={{ fontSize: 18, fontWeight: 700, color: C.green, margin: '14px 0 0', textAlign: 'center' }}>{courseFinishedWords(course).result}</p>}
+          {cheer && <p data-course-finished-line="" style={{ fontSize: 18, fontWeight: 700, color: C.green, margin: '14px 0 0', textAlign: 'center' }}>{courseFinishedWords(course, stage).result}</p>}
           {lastEvent.review && <p style={{ color: C.muted, fontSize: 14, margin: '12px 0 0', textAlign: 'center' }}>Memory {lastEvent.review2 ? 'checks' : 'check'} from earlier: {[lastEvent.review, lastEvent.review2].filter(Boolean).map((r) => `${(getModule(r.moduleId) || { title: 'earlier' }).title.toLowerCase()} ${r.correct ? 'correct' : 'missed'}`).join(', ')} (does not affect mastery).</p>}
         </div>
         <div style={{ display: 'grid', gap: 10 }}>
@@ -10190,7 +10821,7 @@ function EduSphereScreens() {
     );
   }
 
-  // ---------- Wonder for a child who cannot read: one spoken question, a tap, two short spoken voices ----------
+  // ---------- Wonder for a child who cannot read: one spoken question, a tap, four short spoken voices (two until pass MH) ----------
   if (screen === 'wonder' && wonder && readAloud) {
     const options = wonder.options || ['Yes', 'No'];
     const finish = async (choice) => {
@@ -10203,16 +10834,18 @@ function EduSphereScreens() {
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <h1 className="edu-slide-in" style={{ fontSize: 30, margin: '8px 0 12px', textAlign: 'center', color: C.green }}>Let's Wonder!</h1>
-        <div className="edu-rise" style={{ ...card, textAlign: 'center', padding: '22px 18px', position: 'relative' }}>
+        {/* The pondering pictures around the question (pass MH, Mikey: "The let's wonder question should also be spiced up with icons
+            around the question."). */}
+        <PonderFrame seed={seedOf(wonder.id)} attrs={{ 'data-wonder-question': '' }} className="edu-rise" style={{ ...card, textAlign: 'center', padding: '22px 18px', margin: '0 0 14px' }}>
           <p style={{ fontSize: 22, lineHeight: 1.5, margin: 0 }}>{wonder.prompt}</p>
-        </div>
+        </PonderFrame>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
           {canSpeak() && (
             <button type="button" onClick={() => speakSequence(wonderSpokenParts(wonder), (i) => setWonderLit(i - 1), () => setWonderLit(-1))} aria-label="Say it again" className="edu-press edu-sway"
               style={{ width: 66, height: 66, borderRadius: 999, border: `3px solid ${C.gold}`, background: C.goldSoft, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
-                <path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={C.gold} />
-                <path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12" fill="none" stroke={C.gold} strokeWidth="2" strokeLinecap="round" />
+                <path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={speakerInk()} />
+                <path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12" fill="none" stroke={speakerInk()} strokeWidth="2" strokeLinecap="round" />
               </svg>
             </button>
           )}
@@ -10222,7 +10855,7 @@ function EduSphereScreens() {
         <div style={{ display: 'grid', gap: 12, gridTemplateColumns: `repeat(${evenColumns(options.length)}, 1fr)` }}>
           {options.map((o, i) => (
             <button key={o} type="button" onClick={() => finish(o)} className="edu-press" data-wonder-lit={wonderLit === i ? '' : undefined}
-              style={{ fontFamily: FONT, fontSize: 20, fontWeight: 600, padding: '22px 10px', borderRadius: 14, background: wonderLit === i ? C.goldSoft : C.surface, border: `3px solid ${wonderLit === i ? C.gold : C.green}`, color: wonderLit === i ? C.ink : C.green, cursor: 'pointer', minHeight: 78, transform: wonderLit === i ? 'scale(1.04)' : 'none', transition: 'transform 200ms, background 200ms' }}>
+              style={{ fontFamily: FONT, fontSize: 20, fontWeight: 600, padding: '22px 10px', borderRadius: 14, background: wonderLit === i ? readLit().background : C.surface, border: `3px solid ${wonderLit === i ? (C.mode === 'dark' ? '#AAD8C5' : C.gold) : C.green}`, color: wonderLit === i ? readLit().color : C.green, cursor: 'pointer', minHeight: 78, transform: wonderLit === i ? 'scale(1.04)' : 'none', transition: 'transform 200ms, background 200ms' }}>
               {o}
             </button>
           ))}
@@ -10231,31 +10864,35 @@ function EduSphereScreens() {
     );
   }
 
-  // The two short voices, one at a time, each spoken as it appears, and since pass MG (Mikey's answer to Q10, "yes") the
+  // The four short voices (two until pass MH), one at a time, each spoken as it appears, and since pass MG (Mikey's answer to Q10, "yes") the
   // question's closing line on one more card, gold like the closing card a reader sees, spoken as it appears too: until then a
   // child who could not read never met the last thought a Wonder question leaves to carry away.
   if (screen === 'wonder-voices' && wonder && readAloud) {
-    const cards = wonderPreReaderCards(wonder);
+    const cards = wonderPreReaderCards(wonder, wonderAnswered);
     const step = Math.min(wonderVoiceStep, cards.length - 1);
     const v = cards[step];
     const last = step >= cards.length - 1;
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
+        {/* The question stays above the voices, small, so a child remembers what they are talking about (pass MH, Mikey: "They should
+            also still see the question above what the characters are saying so they can remember what is being discussed.  It can
+            be discrete."). */}
+        <p data-wonder-asked="" style={{ margin: '4px 0 10px', fontSize: 15, lineHeight: 1.45, color: C.muted, textAlign: 'center', fontStyle: 'italic' }}>{wonder.prompt}</p>
         {v.closing
-          ? <div key={step} className="edu-rise" data-wonder-closing="" style={{ ...card, background: C.goldSoft, borderColor: C.goldEdge, textAlign: 'center', padding: '22px 18px' }}>
-            <p style={{ fontSize: 20, lineHeight: 1.5, margin: 0 }}>{v.closing}</p>
-          </div>
-          : <div key={step} className="edu-rise" style={{ ...card, textAlign: 'center', padding: '22px 18px' }}>
+          ? <div key={step}><PonderCard wonder={wonder} title={v.title} text={v.closing} big attrs={{ 'data-wonder-closing': '' }} /></div>
+          : <div key={step} className="edu-rise" data-wonder-voice-card={wonderVoice(v.voice) ? wonderVoice(v.voice).name : ''} style={{ ...card, textAlign: 'center', padding: '20px 18px 22px' }}>
+            {/* Mikey's layout: the name at the top, the label under it, the portrait under both, then the words in quotes. */}
             <VoiceName label={v.voice} size={21} color={C.green} />
-            <p style={{ fontSize: 20, lineHeight: 1.5, margin: '2px 0 0' }}>{v.says}</p>
+            <WonderPortrait name={wonderVoice(v.voice) ? wonderVoice(v.voice).name : ''} size={96} note={!!(record && record.preview)} />
+            <p style={{ fontSize: 20, lineHeight: 1.5, margin: '2px 0 0' }}>{'\u201C'}{v.says}{'\u201D'}</p>
           </div>}
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
           {canSpeak() && (
             <button type="button" onClick={() => speak(wonderCardSpoken(v))} aria-label="Say it again" className="edu-press edu-sway"
               style={{ width: 66, height: 66, borderRadius: 999, border: `3px solid ${C.gold}`, background: C.goldSoft, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
-                <path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={C.gold} />
-                <path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12" fill="none" stroke={C.gold} strokeWidth="2" strokeLinecap="round" />
+                <path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={speakerInk()} />
+                <path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12" fill="none" stroke={speakerInk()} strokeWidth="2" strokeLinecap="round" />
               </svg>
             </button>
           )}
@@ -10290,7 +10927,7 @@ function EduSphereScreens() {
           <SpeakButton mini text={wonder.prompt} label={readAloud ? 'Hear it again' : 'Read it to me'} />
         </div>
         <p style={{ color: C.muted, fontSize: 14, margin: '0 0 10px', textAlign: 'center' }}>No right answer</p>
-        <div style={{ ...card, position: 'relative' }}>
+        <PonderFrame seed={seedOf(wonder.id)} attrs={{ 'data-wonder-question': '' }} style={{ ...card, margin: '0 0 14px' }}>
           <p style={{ fontSize: 20, fontWeight: 600, margin: '0 0 14px' }}>{wonder.prompt}</p>
           {wonder.answerMode === 'pick' ? (
             <div style={{ display: 'grid', gap: 10 }}>
@@ -10303,7 +10940,7 @@ function EduSphereScreens() {
               style={{ fontFamily: FONT, fontSize: 17, padding: 12, width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10 }} />
           )}
           <p style={{ color: C.muted, fontSize: 13, margin: '10px 0 0' }}>Your words stay on this screen. Only that you thought about it is saved.</p>
-        </div>
+        </PonderFrame>
         <div style={{ display: 'grid', gap: 10 }}>
           <Btn full onClick={finish} disabled={!canContinue || busy}>See how others think</Btn>
           <Btn full kind="secondary" onClick={() => setScreen('overview')}>Skip for now</Btn>
@@ -10322,15 +10959,16 @@ function EduSphereScreens() {
           <p style={{ margin: 0, fontSize: 17, fontWeight: 600 }}>{wonder.prompt}</p>
         </div>
         <SpeakButton text={allText} label="Read it to me" />
+        {/* Each voice (pass MH, Mikey's layout): the name, the label and the portrait centered, then the words in quotes, which run
+            to several lines for a reader and so sit left-aligned to be read easily. */}
         {wonder.perspectives.map((p) => (
-          <div key={p.voice} style={{ ...card }}>
+          <div key={p.voice} data-wonder-voice-card={wonderVoice(p.voice) ? wonderVoice(p.voice).name : ''} style={{ ...card, textAlign: 'center' }}>
             <VoiceName label={p.voice} size={16} color={C.green} />
-            <p style={{ margin: 0, fontSize: 16 }}>{p.says}</p>
+            <WonderPortrait name={wonderVoice(p.voice) ? wonderVoice(p.voice).name : ''} size={64} note={!!(record && record.preview)} />
+            <p style={{ margin: 0, fontSize: 16, textAlign: 'left' }}>{'\u201C'}{p.says}{'\u201D'}</p>
           </div>
         ))}
-        <div style={{ ...card, background: C.goldSoft, borderColor: C.goldEdge }}>
-          <p style={{ margin: 0, fontSize: 16 }}>{wonder.closing}</p>
-        </div>
+        <PonderCard wonder={wonder} title={ponderTitle(wonder, wonderAnswered)} text={wonder.closing} attrs={{ 'data-wonder-closing': '' }} />
         <Btn full onClick={() => setScreen('overview')}>Back to overview</Btn>
       </div></div>
     );
@@ -10394,9 +11032,9 @@ function EduSphereScreens() {
         {(() => {
           const read = storiesRead(record.events).filter((r) => storyFor(r.moduleId));
           // Long stories count too (pass IT, Mikey): one per course, unlocked when the course is finished.
-          const longRead = storiesRead(record.events).filter((r) => String(r.moduleId).startsWith('course:') && visibleCourses.some((c) => `course:${c.id}` === r.moduleId)).length;
+          const longRead = storiesRead(record.events).filter((r) => isLongStoryId(r.moduleId) && longStoryFor(r.moduleId) && visibleCourses.some((c) => c.id === longStoryCourseId(r.moduleId))).length;
           const waiting = visibleModules.filter((m) => storyFor(m.id) && !read.some((r) => r.moduleId === m.id)).length
-            + visibleCourses.filter((c) => courseStoryFor(c.id) && !storiesRead(record.events).some((r) => r.moduleId === `course:${c.id}`)).length;
+            + longStoryRows(visibleCourses, progress, courseStoryFor, masteryStoryFor).filter((r) => !storiesRead(record.events).some((x) => x.moduleId === r.id)).length;
           if (!read.length && !longRead && !waiting) return null;
           return (
             <div style={{ ...card, marginTop: 24 }}>
@@ -10524,10 +11162,14 @@ function EduSphereScreens() {
                   ? <ul style={{ margin: 0, paddingLeft: 20, fontSize: 15 }}>{readingListFor(g).map((t) => <li key={t} style={{ margin: '3px 0' }}>{t}</li>)}</ul>
                   : experimentsFor(g).map((x, k) => (
                     <div key={`${x.title}-${k}`} className="edu-experiment" style={C.mode === 'dark' ? { background: C.surface, border: `1px solid ${C.cardEdge}`, borderRadius: 12, padding: '12px 14px', margin: '0 0 12px' } : { borderTop: `1px solid rgba(26, 71, 58, 0.15)`, padding: '8px 0' }}>
-                      <p style={{ margin: '0 0 2px', fontWeight: 600 }}>{x.title}</p>
+                      {/* The title centered, and What you see on a panel of its own (pass MH, Mikey): the dark theme's light green with dark
+                          ink, the green of the Key idea card he chose in pass HI, and in the light theme a white panel with a #C9DCCF
+                          border, since the pale green first tried there matched the fold under it (the screen check), so what to watch
+                          for stands apart from what to do. */}
+                      <p data-experiment-title="" style={{ margin: '0 0 6px', fontWeight: 600, textAlign: 'center' }}>{x.title}</p>
                       <p style={{ margin: '0 0 4px', fontSize: 15 }}><strong>Ask first:</strong> {x.ask}</p>
-                      <p style={{ margin: '0 0 4px', fontSize: 15 }}>{x.do}</p>
-                      <p style={{ margin: 0, fontSize: 15, color: C.muted }}><strong>What you see:</strong> {x.see}</p>
+                      <p style={{ margin: '0 0 8px', fontSize: 15 }}>{x.do}</p>
+                      <p data-experiment-see="" style={{ margin: 0, fontSize: 15, padding: '8px 12px', borderRadius: 10, ...(C.mode === 'dark' ? { background: '#AAD8C5', color: '#16201B' } : { background: C.surface, color: C.ink, border: '1px solid #C9DCCF' }) }}><strong>What you see:</strong> {x.see}</p>
                     </div>
                   ))}
               </div>
@@ -10661,7 +11303,7 @@ function EduSphereScreens() {
               {Array.isArray(reviewingQuestion.simple) && (
                 <div style={{ background: PANEL, ...(C.mode === 'dark' ? { border: `1px solid ${C.panelLine}` } : {}), borderRadius: 10, padding: '10px 12px', marginBottom: 12 }}>
                   <p style={{ margin: '0 0 6px', fontSize: 14, fontWeight: 600, textAlign: 'center' }}>What the youngest children hear</p>
-                  <p style={{ margin: '0 0 8px', paddingBottom: 8, borderBottom: `1px solid ${C.mode === 'dark' ? 'rgba(124, 195, 166, 0.45)' : C.line}`, fontSize: 13, color: C.muted, textAlign: 'center' }}>Children who cannot read yet hear the question spoken, tap one of the choices, and then hear only these two short voices. The four voices below are for readers.</p>
+                  <p style={{ margin: '0 0 8px', paddingBottom: 8, borderBottom: `1px solid ${C.mode === 'dark' ? 'rgba(124, 195, 166, 0.45)' : C.line}`, fontSize: 13, color: C.muted, textAlign: 'center' }}>Children who cannot read yet hear the question spoken and tap one of the choices. Then they meet these four short voices one at a time, each with its person's picture, and the closing question last. The longer voices below are for readers.</p>
                   {/* Each voice: the person's name, the small label for how they see things just above the sentence, and a gap
                       before the next voice (Mikey, 2026-09-25; by name since pass LY). */}
                   {reviewingQuestion.simple.map((v, i) => (
@@ -10919,12 +11561,12 @@ function EduSphereScreens() {
         <p style={{ fontSize: 13, color: C.muted, textAlign: 'center' }}>Courses that were never started are left off this record.</p>
 
         {(() => {
-          const read = storiesRead(educatorRecord.events).filter((r) => String(r.moduleId).startsWith('course:') && courseStoryFor(r.moduleId.slice(7)));
+          const read = storiesRead(educatorRecord.events).filter((r) => isLongStoryId(r.moduleId) && longStoryFor(r.moduleId));
           if (!read.length) return null;
           return (
             <div style={{ ...card, marginTop: 14 }}>
               <p className="edu-card-title" style={{ margin: '0 0 6px', fontWeight: 600 }}>Course stories read</p>
-              {read.map((r) => { const cid = r.moduleId.slice(7); const cc = getCourse(cid); return <p key={r.moduleId} style={{ margin: '0 0 4px', fontSize: 15 }}>{courseStoryFor(cid).title}, the story of {cc ? cc.title : cid}, read {niceDateShort(r.at)}.</p>; })}
+              {read.map((r) => { const cid = longStoryCourseId(r.moduleId); const cc = getCourse(cid); return <p key={r.moduleId} style={{ margin: '0 0 4px', fontSize: 15 }}>{longStoryFor(r.moduleId).title}, the {r.moduleId.startsWith('mastery:') ? 'next story' : 'story'} of {cc ? cc.title : cid}, read {niceDateShort(r.at)}.</p>; })}
             </div>
           );
         })()}
@@ -11598,15 +12240,16 @@ function EduSphereScreens() {
       if (view === 'read') return shorts.filter((s) => s.at).sort((a, b) => (a.at < b.at ? 1 : -1)).map((s) => ({ ...line(s.moduleId), at: s.at })).filter((x) => x.title);
       if (view === 'unread') return shorts.filter((s) => !s.at).map((s) => line(s.moduleId)).filter(Boolean);
       // Most recent: today's reading, or the last three stories opened, newest first; course stories count too.
-      return recentReads(row.events).map((r) => (String(r.moduleId).startsWith('course:') ? { moduleId: r.moduleId, title: courseStoryFor(r.moduleId.slice(7)) ? courseStoryFor(r.moduleId.slice(7)).title : '', about: (courseStoryFor(r.moduleId.slice(7)) || {}).about || '', goal: (getCourse(r.moduleId.slice(7)) || {}).title || '', at: r.at, isCourse: true } : { ...line(r.moduleId), at: r.at })).filter((x) => x.title);
+      return recentReads(row.events).map((r) => (isLongStoryId(r.moduleId) ? { moduleId: r.moduleId, title: longStoryFor(r.moduleId) ? longStoryFor(r.moduleId).title : '', about: (longStoryFor(r.moduleId) || {}).about || '', goal: (getCourse(longStoryCourseId(r.moduleId)) || {}).title || '', at: r.at, isCourse: true } : { ...line(r.moduleId), at: r.at })).filter((x) => x.title);
     };
     const countsFor = (row) => {
       const { shorts } = storyLogAvailable(row.events, storyFor, courseStoryFor);
       return { read: shorts.filter((s) => s.at).length, total: shorts.length };
     };
-    const openStory = openStoryId ? (String(openStoryId).startsWith('course:') ? courseStoryFor(openStoryId.slice(7)) : storyFor(openStoryId)) : null;
-    // Course stories per student: unlocked when every module of the course is mastered; read when logged.
-    const courseRows = (row) => storyLogAvailable(row.events, storyFor, courseStoryFor).longs.map((l) => ({ id: l.moduleId, title: courseStoryFor(l.courseId).title, course: getCourse(l.courseId).title, unlocked: l.unlocked, left: l.left, read: !!l.at, art: courseStoryFor(l.courseId).art }));
+    const openStory = openStoryId ? (isLongStoryId(openStoryId) ? longStoryFor(openStoryId) : storyFor(openStoryId)) : null;
+    // Long stories per student (since pass MH a course's first opens when every lesson is passed, its next when every lesson is
+    // mastered); read when logged.
+    const courseRows = (row) => storyLogAvailable(row.events, storyFor, courseStoryFor, masteryStoryFor).longs.map((l) => ({ id: l.moduleId, title: longStoryFor(l.moduleId).title, course: getCourse(l.courseId).title, unlocked: l.unlocked, left: l.left, unit: l.unit, read: !!l.at, art: longStoryFor(l.moduleId).art }));
     const SHOW = 3;   // a long list shows three rows, then offers the rest
     const markRead = async (studentId, moduleId) => {
       const rec = await loadRecord(studentId); const next = { ...rec, events: [...(rec.events || []), makeStoryReadEvent(moduleId, new Date().toISOString())] };
@@ -11637,7 +12280,7 @@ function EduSphereScreens() {
         {storyRows.filter((row) => who === 'all' || row.id === who).map((row, rowIdx) => {
           const items = listFor(row); const view = viewAll; const counts = countsFor(row);
           const shorts = items.filter((it) => !it.isCourse);
-          const longs = view === 'recent' ? items.filter((it) => it.isCourse) : courseRows(row).filter((cr) => (view === 'read' ? cr.read : !cr.read)).map((cr) => ({ moduleId: cr.id, title: cr.title, about: '', goal: cr.course, note: cr.unlocked ? (cr.read ? 'read' : 'unlocked') : `${cr.left} to go`, isCourse: true }));
+          const longs = view === 'recent' ? items.filter((it) => it.isCourse) : courseRows(row).filter((cr) => (view === 'read' ? cr.read : !cr.read)).map((cr) => ({ moduleId: cr.id, title: cr.title, about: '', goal: cr.course, note: cr.unlocked ? (cr.read ? 'read' : 'unlocked') : cr.unit === 'master' ? `${cr.left} to master` : `${cr.left} to go`, isCourse: true }));
           const section = (label, list, key, empty) => {
             const limit = view === 'unread' ? (key.endsWith('long') ? 1 : 2) : view === 'recent' ? 2 : SHOW;
             const open = !!storyExpanded[key]; const shown = open ? list : list.slice(0, limit);
@@ -11652,7 +12295,7 @@ function EduSphereScreens() {
                       {it.at && <p style={{ margin: '1px 0 0', fontSize: 13, color: C.muted }}>{niceDateShort(it.at)}</p>}
                       <p style={{ margin: '2px 0 0', fontSize: 14, color: C.muted }}>{it.about ? `A story about ${it.about}. ` : ''}{it.goal ? (it.isCourse ? `The ${it.goal} course.` : `It teaches ${teachPhrase(it.goal)}.`) : ''}{it.note ? ` ${it.note.charAt(0).toUpperCase() + it.note.slice(1)}.` : ''}</p>
                     </div>
-                    <div className="edu-story-thumb" style={{ justifySelf: 'end' }}><StoryThumb serial={it.isCourse ? (courseStoryFor(it.moduleId.slice(7)) || {}).art : (storyFor(it.moduleId) || {}).art} /></div>
+                    <div className="edu-story-thumb" style={{ justifySelf: 'end' }}><StoryThumb serial={it.isCourse ? (longStoryFor(it.moduleId) || {}).art : (storyFor(it.moduleId) || {}).art} /></div>
                     <div className="edu-story-open" style={{ justifySelf: 'end', alignSelf: 'end' }}><Btn kind="secondary" onClick={() => { setOpenStoryId(it.moduleId); setOpenStoryFor(row.id); }} style={{ padding: '8px 14px', minHeight: 38, fontSize: 14 }}>Open</Btn></div>
                   </div>
                 ))}
@@ -11695,14 +12338,14 @@ function EduSphereScreens() {
                     : <span style={{ fontSize: 13, color: C.muted }}>Read</span>}
                 </p>
               )}
-              <StoryBody story={openStory} pace={String(openStoryId).startsWith('course:') ? null : storyPaceFor(getModule(openStoryId))} />
+              <StoryBody story={openStory} pace={isLongStoryId(openStoryId) ? null : storyPaceFor(getModule(openStoryId))} />
             </div>
           </Overlay>
         )}
         {/* A printable story book per course (2026-09-23, Mikey): every module story in order, the long story last, one story a page. */}
         {(() => {
           // Every course with any story, youngest grade first and then in the order the grade's courses appear (2026-09-24, Mikey).
-          const withBook = COURSES.map((c, i) => ({ c, i })).filter(({ c }) => courseStoryFor(c.id) || c.modules.some((m) => storyFor(m.id))).sort((a, b) => (GRADES.indexOf(a.c.grade) - GRADES.indexOf(b.c.grade)) || (a.i - b.i)).map(({ c }) => c);
+          const withBook = COURSES.map((c, i) => ({ c, i })).filter(({ c }) => courseStoryFor(c.id) || masteryStoryFor(c.id) || c.modules.some((m) => storyFor(m.id))).sort((a, b) => (GRADES.indexOf(a.c.grade) - GRADES.indexOf(b.c.grade)) || (a.i - b.i)).map(({ c }) => c);
           const chosen = bookCourseId || (withBook[0] ? withBook[0].id : '');
           return withBook.length ? (
           // The book card wears the deep green (2026-09-24, Mikey), so it reads as its own tool under the students' light green bands.
@@ -11722,7 +12365,7 @@ function EduSphereScreens() {
     );
   }
   if (screen === 'story-book' && bookCourseId && getCourse(bookCourseId)) {
-    const c = getCourse(bookCourseId); const cs = courseStoryFor(c.id);
+    const c = getCourse(bookCourseId); const cs = courseStoryFor(c.id); const ms = masteryStoryFor(c.id);   // pass MH: the next long story, where there is one
     const chapters = c.modules.map((m) => ({ m, st: storyFor(m.id) })).filter((x) => x.st);
     // Printed pages (2026-09-24, Mikey): short stories go three to a page, close enough to read as one book and far enough
     // apart to read as three stories; a long story keeps a page of its own, and so does any story whose painting has arrived,
@@ -11731,7 +12374,7 @@ function EduSphereScreens() {
     // The pages come from logic's bookPages (2026-09-28, pass FR), the one place that decides them, so the rule test pages
     // every course the same way: two short unpainted stories a page, a painted or long story on sheets that split only
     // between paragraphs (each paragraph with its own picture), the long story last on as many sheets as it needs.
-    const { groups, csParts } = bookPages(chapters, cs, hasArt);
+    const { groups, csParts, msParts } = bookPages(chapters, cs, hasArt, ms);
     // The last pages: which of the state's standards each story serves, from the standards map (2026-09-24, Mikey), on as many
     // sheets as the list needs (pass MA). A story with no standard in the educator's framework is left out, and the page says so.
     const fw = frameworkForState(stateCode || 'CA');
@@ -11739,7 +12382,7 @@ function EduSphereScreens() {
     const standardRows = chapters.map(({ m, st }, i) => ({ i, m, list: standardsFor(m.id) })).filter((r) => r.list.length);
     const standardSheets = standardsSheets(standardRows);   // as many sheets as the list needs (pass MA)
     const leftOut = standardRows.length < chapters.length;
-    const pageTotal = 1 + groups.length + csParts.length + standardSheets.length;
+    const pageTotal = 1 + groups.length + csParts.length + msParts.length + standardSheets.length;
     // Every painting loads before the printer sees the page (2026-09-24): pictures load lazily on screen, and a lazy one
     // further down the book could print as a blank.
     const printBook = () => {
@@ -11754,7 +12397,7 @@ function EduSphereScreens() {
           <button type="button" onClick={() => setScreen('story-log')} style={{ ...linkBtn }}>Back to Story Log</button>
           <button type="button" onClick={printBook} style={{ ...linkBtn }}>Print or Save</button>
         </div>
-        <BookReader items={[...chapters.map((ch) => ch.st), ...(cs ? [cs] : [])]} pace={storyPaceFor(chapters[0] ? chapters[0].m : null)} />
+        <BookReader items={[...chapters.map((ch) => ch.st), ...(cs ? [cs] : []), ...(ms ? [ms] : [])]} pace={storyPaceFor(chapters[0] ? chapters[0].m : null)} />
         <div className="edu-book-sheet">
           <div className="edu-book-group edu-book-cover-group"><div className="edu-book-cover" style={{ ...card, textAlign: 'center', padding: '48px 22px', position: 'relative', overflow: 'hidden' }}>
             <CoverArt />
@@ -11781,6 +12424,12 @@ function EduSphereScreens() {
               <p style={{ margin: '0 0 2px', fontSize: 13, color: C.muted, textAlign: 'center' }}>{k === 0 ? 'The long story' : 'The long story, continued'}</p>
               <StoryBody story={cs} part={part} />
             </div><p className="edu-book-foot">{titleCase(c.title)} · Page {groups.length + 2 + k} of {pageTotal}</p></div>
+          ))}
+          {msParts.map((part, k) => (
+            <div key={`ms-${k}`} className="edu-book-group"><div className="edu-book-story" data-book-story={k === 0 ? chapters.length + (cs ? 1 : 0) : undefined} style={{ marginTop: 18 }}>
+              <p style={{ margin: '0 0 2px', fontSize: 13, color: C.muted, textAlign: 'center' }}>{k === 0 ? 'The next long story' : 'The next long story, continued'}</p>
+              <StoryBody story={ms} part={part} />
+            </div><p className="edu-book-foot">{titleCase(c.title)} · Page {groups.length + 2 + csParts.length + k} of {pageTotal}</p></div>
           ))}
           {standardSheets.map((sheet, k) => (
             <div key={`std-${k}`} className="edu-book-group edu-book-standards">

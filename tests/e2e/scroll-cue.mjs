@@ -71,32 +71,41 @@ ok('every start arrow in the tracing lessons sits on its stroke, curves included
 // circle is at least two and a half times as wide as a little one, the two rows stacked, and the big row no longer than the
 // little row, so size alone looks like more; before pass MF's fix the two groups sat side by side at 13 and 11 pixels.
 { await page.evaluate(() => window.__eduTest.openModule('more-or-fewer')); await page.waitForFunction(() => window.__eduTest.screen === 'lesson'); await page.waitForTimeout(700);
-  const L = await import('../../src/logic.mjs'); const script = L.readAloudScript(L.getModule('more-or-fewer')); const at = script.findIndex((s) => /three big circles, and here are five little circles/.test(s.say));
-  for (let step = 0; step < at; step++) { await page.getByRole('button', { name: 'Next', exact: true }).first().click({ force: true }); await page.waitForTimeout(250); }
+  const L = await import('../../src/logic.mjs'); const script = L.readAloudScript(L.getModule('more-or-fewer')); const at = script.findIndex((s) => /Three circles, when drawn big, take up lots of room/.test(s.say));
+  // On the way, the long row (pass MH, Mikey's words: "Three dots, when spread far apart, create a row that appears long."): the
+  // long row is clearly longer than the short row, and its dots are never drawn smaller than the short row's, which would make
+  // size a cue (the lesson check's second read: 90 apart shrank them on a narrow phone, so they sit 74 apart).
+  const longAt = script.findIndex((s) => /Three dots, when spread far apart/.test(s.say));
+  for (let step = 0; step < longAt; step++) { await page.getByRole('button', { name: 'Next', exact: true }).first().click({ force: true }); await page.waitForTimeout(250); }
+  await page.waitForTimeout(700);
+  const rows = await page.evaluate(() => [...document.querySelectorAll('svg[role="img"]')].filter((s) => /^[35] dots$/.test(s.getAttribute('aria-label') || '')).map((s) => ({ label: s.getAttribute('aria-label'), w: Math.round(s.getBoundingClientRect().width), dot: Math.min(...[...s.querySelectorAll('circle')].map((c) => c.getBoundingClientRect().width)) })));
+  const long = rows.find((x) => x.label === '3 dots'); const short = rows.find((x) => x.label === '5 dots');
+  ok('on a 360-pixel phone the long row is clearly longer than the short row, and its dots are no smaller than the short row\'s', longAt > 0 && longAt < at && !!long && !!short && long.w >= short.w * 1.25 && long.dot >= short.dot - 0.5, { longAt, long, short });
+  for (let step = longAt; step < at; step++) { await page.getByRole('button', { name: 'Next', exact: true }).first().click({ force: true }); await page.waitForTimeout(250); }
   await page.waitForTimeout(700);
   const trap = await page.evaluate(() => { const rows = [...document.querySelectorAll('svg[role="img"]')].filter((s) => /^[35] circles$/.test(s.getAttribute('aria-label') || '')); return rows.map((s) => { const r = s.getBoundingClientRect(); const items = [...s.querySelectorAll(':scope > svg')].map((k) => k.getBoundingClientRect()); return { label: s.getAttribute('aria-label'), top: r.top, span: items.length ? items[items.length - 1].right - items[0].left : 0, each: items.length ? items[0].width : 0, n: items.length }; }); });
   const big = trap.find((x) => x.label === '3 circles'); const little = trap.find((x) => x.label === '5 circles');
   ok('on a phone the size trap draws its big circles at least two and a half times as wide as the little ones, stacked, the big row no longer than the little row', at > 0 && !!big && !!little && big.n === 3 && little.n === 5 && big.each >= 2.5 * little.each && big.top < little.top && big.span <= little.span + 0.5 && big.each >= 50, { at, big, little }); }
-// The course-finished page on a short phone (pass MG, the screen check): at 375 by 667, an iPhone SE or 8, Return home sits below
+// The course-finished page on a short phone (pass MG, the screen check): at 375 by 667, an iPhone SE or 8, Return Home sits below
 // the screen while the voice says to tap the green button at the bottom, so the cue shows, and a tap brings the button into view.
 { await page.setViewportSize({ width: 375, height: 667 }); await page.evaluate(() => window.__eduTest.goTo('course-done')); await page.waitForFunction(() => window.__eduTest.screen === 'course-done'); await page.waitForTimeout(1500);
   const home = () => page.evaluate(() => { const b = document.querySelector('[data-course-done-home]'); const r = b ? b.getBoundingClientRect() : null; const badge = [...document.querySelectorAll('[role="status"]')].find((x) => /Walkthrough Mode/.test(x.textContent)); return { top: r ? Math.round(r.top) : null, bottom: r ? Math.round(r.bottom) : null, H: window.innerHeight, cue: !!document.querySelector('[data-scroll-cue]'), book: !!document.querySelector('[data-course-story-book]'), badgeTop: badge ? Math.round(badge.getBoundingClientRect().top) : null }; });
   let h = await home();
-  ok('on a short phone the course-finished page opens with Return home below the screen, and the scroll cue shows', h.book && h.top !== null && h.top > h.H - 24 && h.cue, h);
+  ok('on a short phone the course-finished page opens with Return Home below the screen, and the scroll cue shows', h.book && h.top !== null && h.top > h.H - 24 && h.cue, h);
   if (h.cue) { await page.locator('[data-scroll-cue]').click({ force: true }); await page.waitForTimeout(1200); }
   h = await home();
-  ok('a tap on the cue brings Return home into view, above the Walkthrough Mode badge, and the cue goes away', h.top !== null && h.top >= 0 && h.bottom <= h.H + 1 && !h.cue && h.badgeTop !== null && h.bottom <= h.badgeTop, h);
+  ok('a tap on the cue brings Return Home into view, above the Walkthrough Mode badge, and the cue goes away', h.top !== null && h.top >= 0 && h.bottom <= h.H + 1 && !h.cue && h.badgeTop !== null && h.bottom <= h.badgeTop, h);
   // The same at 360 by 640 and in a laptop's 1366 by 657 browser window, and never at 390 by 844, where the button shows; and a
   // course with no long story, whose button sits mid-page, shows no cue and its guide names no place (the screen check's second read).
   for (const [w, tall, want] of [[360, 640, true], [1366, 657, true], [390, 844, false]]) {
     await page.setViewportSize({ width: w, height: tall }); await page.evaluate(() => window.__eduTest.goTo('overview')); await page.waitForTimeout(300);
     await page.evaluate(() => window.__eduTest.goTo('course-done')); await page.waitForFunction(() => window.__eduTest.screen === 'course-done'); await page.waitForTimeout(1500);
-    h = await home(); ok(`at ${w} by ${tall} the cue shows exactly when Return home is below the screen`, h.book && h.cue === want && (h.top > h.H - 24) === want, h);
+    h = await home(); ok(`at ${w} by ${tall} the cue shows exactly when Return Home is below the screen`, h.book && h.cue === want && (h.top > h.H - 24) === want, h);
   }
   await page.setViewportSize({ width: 375, height: 667 }); await page.evaluate(() => { window.__spoken = []; window.__eduTest.goTo('overview'); }); await page.waitForTimeout(300);
   await page.evaluate(() => window.__eduTest.goTo('course-done', 'first-sounds-pk')); await page.waitForFunction(() => window.__eduTest.screen === 'course-done'); await page.waitForTimeout(1500);
   h = await home(); const said = await page.evaluate(() => (window.__spoken || []).join(' '));
-  ok('a course with no long story shows Return home on a short phone with no cue, and its guide names no place', !h.book && !h.cue && h.bottom <= h.H && said.includes('Tap the green button to go home.') && !said.includes('at the bottom'), { h, said }); }
+  ok('a course with no long story shows Return Home on a short phone with no cue, and its guide names no place', !h.book && !h.cue && h.bottom <= h.H && said.includes('Tap the green button to go home.') && !said.includes('at the bottom'), { h, said }); }
 await browser.close();
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exitCode = failed ? 1 : 0;

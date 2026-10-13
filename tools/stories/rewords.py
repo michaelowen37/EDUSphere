@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Replace only the words of existing stories (2026-09-28, the flow polish): python3 tools/stories/rewords.py batch.py
 The batch file defines NEW = { story_id: [paragraph, ...] }. Paragraph counts must match, so every picture keeps its place.
-Write APOS for an apostrophe. Long stories (COURSE_STORIES) use the same file with LONG = { course_id: [...] }."""
+Write APOS for an apostrophe. Long stories (COURSE_STORIES) use the same file with LONG = { course_id: [...] }, and a course's
+next long story (MASTERY_STORIES, pass MH) with MASTERY = { course_id: [...] }. A story kept on one line (its words array on the
+same line as its key) cannot be rewritten here: the tool stops rather than reach into the next story's words (the story flow
+check, pass MH, found that it would have), so such a story is edited by hand, its audio with it."""
 import re, sys
 src = 'src/stories.mjs'
 ns = {}; exec(open(sys.argv[1], encoding='utf-8').read(), ns)
@@ -20,6 +23,9 @@ def swap(table, sid, words):
     assert m, (table, sid)
     start = m.end()
     wm = re.compile(r"^( *)words: \[\n", re.M).search(s, start); assert wm, sid
+    # The words array found must be this story's own: nothing between the key and it may open another story or hold words.
+    between = s[start:wm.start()]
+    assert 'words: [' not in between and not re.search(r"^  '[\w-]+': \{|\w+\['[\w-]+'\] = \{", between, re.M), (table, sid, 'this story keeps its words on one line, so the next words array belongs to another story: edit it by hand')
     indent = wm.group(1); w0 = wm.start()
     em = re.compile(r"^%s\],\n" % indent, re.M).search(s, wm.end()); assert em, sid
     w1 = em.end()
@@ -29,4 +35,5 @@ def swap(table, sid, words):
 n = 0
 for sid, words in ns.get('NEW', {}).items(): swap('STORIES', sid, words); n += 1
 for sid, words in ns.get('LONG', {}).items(): swap('COURSE_STORIES', sid, words); n += 1
+for sid, words in ns.get('MASTERY', {}).items(): swap('MASTERY_STORIES', sid, words); n += 1
 open(src, 'w', encoding='utf-8').write(s); print('rewrote words of', n, 'stories')

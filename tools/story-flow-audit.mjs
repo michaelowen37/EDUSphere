@@ -3,7 +3,7 @@
 // This lists every paragraph that reads robotic: a run of three or more sentences of six words or fewer (choppy), a run of
 // four or more sentences all within three words of the same length (monotone), or two sentences in a row starting with
 // Then. The rules live in tools/story-flow.mjs. Run: node tools/story-flow-audit.mjs > docs/STORY-FLOW.md
-import { STORIES, COURSE_STORIES } from '../src/stories.mjs';
+import { STORIES, COURSE_STORIES, MASTERY_STORIES } from '../src/stories.mjs';
 import { COURSES, MODULES } from '../src/logic.mjs';
 
 const gradeOf = (moduleId) => { const c = COURSES.find((k) => k.modules.some((m) => m.id === moduleId)); return c ? c.grade : '?'; };
@@ -16,10 +16,11 @@ for (const [id, st] of Object.entries(STORIES)) {
   st.words.forEach((p, i) => { const f = flowFlags(p, { moral: i === st.words.length - 1 }); if (f.flags.length) hits.push({ i, flags: f.flags, lens: f.lens }); });
   rows.push({ kind: 'story', id, grade, title: st.title, hits, paragraphs: st.words.length });
 }
-for (const [id, st] of Object.entries(COURSE_STORIES)) {
+// A course's long story, and since pass MH its next one (listed as next long, under the course's id).
+for (const [id, st, kind] of [...Object.entries(COURSE_STORIES).map(([k, v]) => [k, v, 'long']), ...Object.entries(MASTERY_STORIES).map(([k, v]) => [k, v, 'next long'])]) {
   const grade = courseGrade(id); const hits = [];
   st.words.forEach((p, i) => { const f = flowFlags(p, { moral: i === st.words.length - 1 }); if (f.flags.length) hits.push({ i, flags: f.flags, lens: f.lens }); });
-  rows.push({ kind: 'long', id, grade, title: st.title, hits, paragraphs: st.words.length });
+  rows.push({ kind, id, grade, title: st.title, hits, paragraphs: st.words.length });
 }
 const order = ['PK3', 'PK4', 'K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', 'college', '?'];
 const gk = (g) => { const i = order.indexOf(String(g)); return i < 0 ? 99 : i; };

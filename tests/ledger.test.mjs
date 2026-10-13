@@ -1,7 +1,7 @@
 // Every picture the app expects from Mikey has a row in the art ledger, so no photo is ever forgotten:
 // story serials (S), coloring page serials (L), and nothing in the ledger that the app does not use.
 import { readFileSync } from 'node:fs';
-import { STORIES, COURSE_STORIES, COLOR_PAGES } from '../src/stories.mjs';
+import { STORIES, COURSE_STORIES, MASTERY_STORIES, COLOR_PAGES } from '../src/stories.mjs';
 import { stylesFor, ROW, TRY_ROW } from '../tools/coloring-levels.mjs';
 import { MAP_SERIALS, MODULES } from '../src/logic.mjs';
 let pass = 0; let fail = 0;
@@ -12,7 +12,7 @@ const lessonSerials = MODULES.flatMap((m) => (m.lesson && m.lesson.pictures || [
 const storySerials = Object.values(STORIES).flatMap((s) => [s.art, ...(s.more || []).map((m) => m.serial)]);
 const letterSerials = 'abcdefghijklmnopqrstuvwxyz'.split('').map((ch, i) => `L${i + 1}`);
 const drawingSerials = [...Array.from({ length: 27 }, (_, i) => `D${i + 1}`), ...Object.values(COLOR_PAGES).map(([serial]) => serial)];   // lesson pages D28 on (2026-09-24)
-const courseSerials = Object.values(COURSE_STORIES).flatMap((s) => [s.art, ...(s.more || []).map((m) => m.serial)]);   // doubled long stories carry five more (2026-09-24)
+const courseSerials = [...Object.values(COURSE_STORIES), ...Object.values(MASTERY_STORIES)].flatMap((s) => [s.art, ...(s.more || []).map((m) => m.serial)]);   // doubled long stories carry five more (2026-09-24); the next long stories too (pass MH)
 const missing = [...storySerials, ...letterSerials, ...drawingSerials, ...courseSerials, ...MAP_SERIALS, ...lessonSerials].filter((x) => !rows.has(x));
 ok('every lesson picture has a ledger row and a serial of its own', lessonSerials.every((x) => rows.has(x)) && new Set(lessonSerials).size === lessonSerials.length && MODULES.every((m) => (m.lesson && m.lesson.pictures || []).every((p) => /^P\d+$/.test(p.serial) && p.alt && p.alt.length > 5)), lessonSerials.filter((x) => !rows.has(x)).join(','));
 ok('every story picture has a ledger row', missing.filter((x) => x.startsWith('S')).length === 0, missing.filter((x) => x.startsWith('S')).join(','));

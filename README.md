@@ -83,11 +83,18 @@ learning happens; naming and handling feelings; and the truth that hard days are
 normal part of being human and that people get through them. The questions rotate
 so a student never meets the same one a third time, and after a round that did not
 go well the questions about failure and feelings come first, because that is when
-they land. For the youngest children there is one spoken question and two short
-spoken voices. Nothing a student writes or taps is ever saved. Nothing reaches a
+they land. For the youngest children there is one spoken question, then four short
+spoken voices and a closing thought, each on a card of its own (since pass MH).
+Nothing a student writes or taps is ever saved. Nothing reaches a
 student until someone at their school has read it and approved it, and the pool
 grows with the curriculum: a check in the codebase notes any age group with fewer
 questions than modules.
+
+**More Info and two celebrations.** After an answer a quiet More Info button explains
+why each wrong choice does not fit and why the right one does, with more right examples
+where they suit the question: pre-K 3 in full now, and each grade as it is reviewed. A
+course celebrates twice, when every lesson is passed and again when every star is earned
+on another day, each time opening its long story where it has one (since pass MH).
 
 **Life skills.** Forty-five so far, in one sequence from earliest to most mature, each
 with why it matters and how to practice it. Educators mark them as covered for the
@@ -96,6 +103,7 @@ classroom. Nothing here is graded, tracked or shown to a child.
 **For children who cannot read yet.** Kindergarten courses are built to work without
 words: lessons are spoken one line at a time with the picture doing the work, status
 is a star, a ring or a padlock, a wrong answer means try again rather than move on,
+after hearing why that choice does not fit unless saying so would give the answer away,
 and the result screen is a row of stars and one big arrow. Young students sign in by
 picture, one of twelve animals on six colours, drawn in the app.
 

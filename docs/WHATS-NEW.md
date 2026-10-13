@@ -9,6 +9,13 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## October 13, 2026 (why each wrong answer is wrong, four voices for little ones, and a story at both celebrations)
+
+- In pre-K 3, after a question is answered, a small More Info button now explains why each wrong choice doesn't fit and why the right one does, with a few more right examples. It opens by itself when a student who reads picks a wrong answer, it remembers a choice the student made on an earlier visit, and little ones who can't read yet hear the reason spoken after a wrong tap. A few older questions show a short note, and the other grades will get it as each one is reviewed.
+- Little ones now hear all four Wonder voices, Frederick, Chloe, Georgette and Mike, each on a card with that person's picture and the question shown above it, so they can remember what's being discussed. The last thought comes under a title that changes from question to question, with small line drawings of a globe, books and a child thinking around it.
+- Finishing a course is now celebrated twice, the day a student first passes every lesson and again when every star is earned on a later day, and each celebration opens the course's long story wherever it has one, for little ones and readers alike. Pre-K 3's two courses have a second story for the second celebration, and the other courses will get theirs as they're reviewed.
+- When a story is read aloud, the sentence being read now lights up (in a soft green in the dark theme), the snail and the rabbit change the pace without stopping the story, and the page no longer pulls a reader back up after they scroll. Question pictures are bigger on tablets and laptops, and in the dark theme pictures sit on a soft light green instead of off-white.
+
 ## October 12, 2026 (a clear way home, calmer words for older students, and the last thought of every Wonder question)
 
 - When a course is finished, the celebration page now ends with one wide Return home button across the bottom. From sixth grade up its words are calmer too, "Well done. You finished" and the course's name, with the same confetti and star, while younger students still get "Hooray!"

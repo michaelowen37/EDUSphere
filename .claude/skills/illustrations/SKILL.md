@@ -18,7 +18,7 @@ Nano Banana 2 has no negative prompt, so the bans reach it through `docs/LEONARD
 
 ## Serials and files
 
-Serials: S story scene, C character sheet, I item picture, G game or coloring page, L logo, U shelf picture for the app's own screens (since pass MG: U1, the Surprise me row on Let's Read, at 52 pixels, so square and bold; until it is saved the app draws four overlapping question marks, SurpriseThumb, and no placeholder shows). Numbers never change. The ledger is `docs/ART-REQUESTS.md`.
+Serials: S story scene, C character sheet, I item picture, G game or coloring page, L logo, U screen picture for the app's own screens (since pass MH: U2 to U5, the Wonder voices' portraits, Frederick, Chloe, Georgette and Mike, painted 1:1 and shown as a circle 96 pixels wide on a pre-reader's card and 64 on a reader's, so a simple head and shoulders with the background showing above the head; until one is saved the app draws a flat stand-in, and no placeholder shows. U1, pass MG's Surprise me painting, was retired in pass MH, since Mikey kept the drawn question marks, SurpriseThumb, and the serial is never reused). Numbers never change. The ledger is `docs/ART-REQUESTS.md`.
 
 Story scenes are raster: Mikey uploads PNG or JPG, Claude resizes to about 1200 px wide and converts to WebP (`python3` with Pillow, which the sandbox has), and saves it as `art/stories/<serial>.webp`. They are loaded only when a story opens, so index.html does not grow. Never inline them as base64.
 

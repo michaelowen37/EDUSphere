@@ -200,6 +200,26 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A sample built by hand to look like a real screen drifts: the LI tour sample missed the Merge link and the Wonder pill and was laid out differently, and Mikey saw all three at a glance. Feed made-up data through the real component instead, with taps switched off, and the sample can never differ from the page.
 - Count a daily allowance against the day as it started, not as it stands: finishing the first review shrinks the queue, and a rule that rechecked the live queue would cancel the second review the backlog asked for.
 
+## Learned in pass MH (a reason for every wrong answer, four Wonder voices for the youngest, a long story at each celebration, the lit sentence, bigger question pictures)
+
+- Feedback that only says wrong is the weakest kind (Shute, 2008): a wrong choice's reason, said against the answer and in the lesson's own words, teaches what the choice gets wrong. A reason names a sign only its own choice shows (sad by its tear, since the mad face's mouth turns down too) and only the colors, shapes and letters its lesson names.
+- A voice must not answer a retry for the child, but holding every reason back left whole lessons silent: in a two-choice question only the answer is left, and many reasons only repeat what the question asked. Hold a reason back only while two or more choices are open and it says something of the answer the question has not.
+- Smart words are only as true as the record behind them: "last time" is false when the earlier visit was not the last one, a reset clears what came before it, and the same words over another setup are another question.
+- A word that sounds like a letter's name (bee, sea, tea) stays out of a letter lesson's script, its questions and its story, and a wrong picture is never a kind of the answer (rain is a cloud with drops).
+- A setup line and its question read as one sentence wherever they can ("What is a kind thing to do when your friend looks sad?"); a split kept because an older rule allowed it is still worth asking about.
+- Every Wonder voice speaks as its person, in the first person or with its own frame ("I think", "Technically", "To me"); a bare fact sounds like a textbook, and a doubt that opens a line can land on the line before it.
+- A story written for a celebration is read whole as a careful parent would: three-year-olds drawn as three, a storm day with rain on every window, a grown-up beside every search, and no long grass for a small child to wade through.
+- A drawing the app makes is looked at three times its size before it ships: a hand whose fingers float free reads as broken at any size, and no other check sees it.
+- A bigger picture is measured against the button below it on the shortest phone, and a growth that pushes Check answer below the fold is not taken there.
+- After a scripted rewrite of data, every field the script was not meant to touch is compared with a snapshot: the voices' script dropped forty questions' long voices, and only the comparison caught it.
+- A word a voice must never say is searched for anywhere in a line, not only at its start: one "actually" sat mid-line, after Georgette's belief, and sounded like correcting her as well as the child.
+- A worn opening is counted as a whole frame, not by its first two words: "Scientists have found that" and "Scientists found that" were one frame of nine lines, though each two-word count looked fine.
+- A wrong answer that is always the same kind teaches the child to avoid that kind, not to read the question: happy was the wrong face in five of six feelings moments, so a child who never tapped the smile passed (A23); vary the wrong choice wherever another is as clearly wrong.
+- A sentence the code puts together from parts is read whole, the way the child sees it: an older bank's note, a lower-case label, ran on after its sentence in More Info until every row was read as sentences.
+- A count in a record names its unit and is worked out over many seeds: "37 situation kinds" were 37 questions in seven kinds, and one seed gave 68 kinds with more right examples and 814 with a setup line where three hundred seeds give 69, and 872 that can show one (770 on every question).
+- An older explanation written as a label, a colon and a fragment ("The President: the executive branch. Carries out the laws.") reads as broken English the moment a sheet repeats it under the reasons, so it is written as a sentence wherever it shows.
+- A check whose answer depends on where the page sits starts every case from the same place: cases measured after an earlier tap had scrolled the page passed while a child would have seen half a button.
+
 ## Learned in pass MG (Mikey's answers by number: a home button across the bottom, the rainbow strips back in the dark theme, a Surprise me picture, two careers as paths)
 
 - A screen is looked at the way a device that asks for less motion shows it: a drifting rainbow stops on one end of its colors, a breathing ring stops on its empty frame and vanishes, and moving sparkles become stray dots. A sign that tells a child where to tap is measured where it shows (the computed shadow), never the variable that drives it.

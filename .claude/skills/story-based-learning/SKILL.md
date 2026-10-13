@@ -4,7 +4,7 @@ description: Write or edit a story for a module: the Miniature Gladwell arc, the
 ---
 # Story-based learning
 
-Stories live in `src/stories.mjs`, one per module id, written ahead of time (the app is static and offline). A reader's lesson offers View story in place of Practice this, and the story screen ends with Practice this; a pre-reader's story (a read-aloud course, pre-K 3 to grade 2) comes as the reward of the first passed round of its lesson (pass MD, Mikey): it reads itself aloud and one big arrow goes on, then it waits in an early learner's Let's Read, and a grown-up can also open it from the Story Log or the printed book; a course's long story (COURSE_STORIES) opens from Let's Read once the course is finished. Each story screen has Read the story to me.
+Stories live in `src/stories.mjs`, one per module id, written ahead of time (the app is static and offline). A reader's lesson offers View story in place of Practice this, and the story screen ends with Practice this; a pre-reader's story (a read-aloud course, pre-K 3 to grade 2) comes as the reward of the first passed round of its lesson (pass MD, Mikey): it reads itself aloud and one big arrow goes on, then it waits in an early learner's Let's Read, and a grown-up can also open it from the Story Log or the printed book; a course's long story (COURSE_STORIES) opens from Let's Read once every lesson is passed, and since pass MH its next long story (MASTERY_STORIES) once every lesson has its star, each launched by its own celebration; a long story is one line of src/stories.mjs, edited by hand with its audio (tools/stories/rewords.py stops on it). Each story screen has Read the story to me.
 
 ## The Miniature Gladwell Method (Mikey's rule, verbatim in spirit)
 

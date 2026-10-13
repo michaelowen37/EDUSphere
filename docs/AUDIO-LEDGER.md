@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-12 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 9104 clips, 1,529,671 characters in all; the longest clip is 520 characters and the longest whole story 3,420, far under Eleven v4's 10,000 a request. 194 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-13 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 9127 clips, 1,536,249 characters in all; the longest clip is 520 characters and the longest whole story 3,420, far under Eleven v4's 10,000 a request. 196 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,7 +17,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 5048 | 576,911 |
+| Pre-K to grade 2 | 5071 | 583,489 |
 | Grades 3 to 5 | 1263 | 278,665 |
 | Grades 6 to 8 | 1138 | 272,478 |
 | Grades 9 to college | 1655 | 401,617 |
@@ -41,9 +41,11 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 |---|---|
 | story title | 662 |
 | story | 4261 |
-| lesson line | 3230 |
+| lesson line | 3233 |
 | long story title | 105 |
 | long story | 846 |
+| next long story title | 2 |
+| next long story | 18 |
 
 ## Stories with hand-written tags
 
@@ -646,7 +648,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 - S146-1: [playful] Kai rolled his ball to Grandma, and she rolled it back. [excited] Ball starts with B, she said, and B has two round bumps on one side. Let's go on a B hunt!
 - S146-2: [curious] Kai looked all around the yard for things that start with B.
-- S146-3: [a bee buzzing] Buzz! [excited] A fat bee was busy on a yellow flower, and Kai pointed at it. [proud] Bee starts with B! he called.
+- S146-3: [warmly] On the back step sat his teddy bear, and Kai gave it a big hug. [proud] Bear starts with B! he called.
 - S146-4: [rushed] He ran inside with Grandma and found his book, and his little boat from the bath. [delighted] Book starts with B, and so does boat! he told her.
 - S146-5: [pleased] Then Kai found a big red apple in the fruit bowl. [proudly] He held it up high. [loudly] Apple starts with B! he said.
 - S146-6: [gently] Grandma smiled. [slowly] Listen closely, she said, apple, apple. [warmly] Apple starts with A, and A has two slanted sides that meet at the top, with a bar across.

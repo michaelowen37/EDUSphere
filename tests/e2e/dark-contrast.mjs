@@ -176,7 +176,7 @@ const tapInk = () => page.evaluate(() => {
   ok('the star on the gold tap that starts practice reads at 3 to 1 or better too (Q23)', inkStar.some((x) => x.label === 'Start practice') && inkStar.every((x) => x.ratio >= 3), JSON.stringify(inkStar.filter((x) => x.ratio < 3).slice(0, 3)));
   await page.evaluate(() => window.__eduTest.goTo('course-done')); await page.waitForTimeout(500);
   const inkBook = await tapInk();
-  ok("the book on the course-finished page's gold tap reads at 3 to 1 or better (Q23)", (await page.evaluate(() => window.__eduTest.screen)) === 'course-done' && inkBook.some((x) => /^(Hear|Read) the story of /.test(x.label || '')) && inkBook.every((x) => x.ratio >= 3), JSON.stringify(inkBook.filter((x) => x.ratio < 3).slice(0, 3)));
+  ok("the book on the course-finished page's gold tap reads at 3 to 1 or better (Q23)", (await page.evaluate(() => window.__eduTest.screen)) === 'course-done' && inkBook.some((x) => /^(Hear|Read) the (next )?story of /.test(x.label || '')) && inkBook.every((x) => x.ratio >= 3), JSON.stringify(inkBook.filter((x) => x.ratio < 3).slice(0, 3)));
   await check('course-done in an early years walk-through');
   await page.evaluate(() => window.__eduTest.goHome()); await page.waitForTimeout(300);
   await walkInto('Walk through elementary'); }

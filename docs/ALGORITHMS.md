@@ -80,7 +80,10 @@ answered longest ago comes first, and never-answered ones come before those, so 
 questions rotate rather than repeat. Pre-readers only ever draw questions that carry a
 short spoken two-voice version. No question is offered more than `WONDER_MAX_REPEATS`
 (2) times to one student; when every question in the pool has reached that, the
-reflection is skipped.
+reflection is skipped. A pre-reader's round that finishes a course goes to the course-finished page, which ends at home
+(pass MF), so a reflection due after that round waits for the next finished round; it stays due (Mikey kept it in
+pass MG, Q25: "keep it"). A pre-reader hears the question and its choices, taps one, and then hears its two short
+voices and, since pass MG (Q10), its closing line, one card each (wonderPreReaderCards).
 
 ## Placement (designed, not yet built)
 

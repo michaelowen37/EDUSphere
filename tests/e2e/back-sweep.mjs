@@ -12,7 +12,7 @@ const ok = (label, cond, detail = '') => { console.log((cond ? 'PASS' : 'FAIL') 
 // writing, a wonder question being spoken); the click-through test presses through those.
 const src = readFileSync('src/ui.jsx', 'utf8');
 const screens = [...new Set([...src.matchAll(/setScreen\('([a-z-]+)'\)/g)].map((m) => m[1]))].filter((s) => !['welcome', 'loading', 'result', 'quick-result', 'placement-result', 'checkpoint-result', 'writing-sent', 'wonder-voices', 'wonder', 'practice', 'educator-pin', 'educator-setup'].includes(s));
-const studentScreens = new Set(['overview', 'lesson', 'story', 'coloring', 'course-story', 'my-progress']);
+const studentScreens = new Set(['overview', 'lesson', 'story', 'coloring', 'course-story', 'course-done', 'my-progress']);
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 360, height: 780 }, reducedMotion: 'reduce', hasTouch: true });
 // These checks were written for the light theme; the dark theme has its own check (dark-contrast.mjs).

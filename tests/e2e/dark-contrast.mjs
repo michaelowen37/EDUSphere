@@ -12,7 +12,7 @@ let pass = 0, fail = 0;
 const ok = (label, cond, detail = '') => { console.log((cond ? 'PASS' : 'FAIL') + ' - ' + label + (cond || !detail ? '' : '  ' + detail)); cond ? pass++ : fail++; };
 const src = readFileSync('src/ui.jsx', 'utf8');
 const screens = [...new Set([...src.matchAll(/setScreen\('([a-z-]+)'\)/g)].map((m) => m[1]))].filter((s) => !['welcome', 'loading', 'result', 'quick-result', 'placement-result', 'checkpoint-result', 'writing-sent', 'wonder-voices', 'wonder', 'practice', 'educator-pin', 'educator-setup'].includes(s));
-const studentScreens = new Set(['overview', 'lesson', 'story', 'coloring', 'course-story', 'my-progress']);
+const studentScreens = new Set(['overview', 'lesson', 'story', 'coloring', 'course-story', 'course-done', 'my-progress']);
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 360, height: 780 }, reducedMotion: 'reduce', hasTouch: true });
 const url = pathToFileURL('tests/e2e/page.html').href;
@@ -77,10 +77,24 @@ const audit = () => page.evaluate(() => {
 });
 // An educator is signed out after a quiet minute (EDUCATOR_IDLE_MS), so the long walk taps an empty edge of the page as it goes.
 const keepAlive = () => page.mouse.click(3, 300).catch(() => {});
+// Into a walk-through: the tap is tried again, after any pop-up is closed, when the overview does not come within ten seconds
+// (the screen check, pass MG: the early-years walk once never reached the overview, and passed when run again).
+const walkInto = async (label) => {
+  for (let k = 0; k < 3; k++) {
+    await keepAlive(); await page.getByLabel(label).first().click({ force: true });
+    if (await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview', null, { timeout: 10000 }).then(() => true).catch(() => false)) return;
+    for (const name of ['Got it', 'Later', 'Skip tour', 'Close']) { const b = page.getByRole('button', { name, exact: true }); if (await b.count()) await b.first().click({ force: true }).catch(() => {}); }
+    await page.evaluate(() => window.__eduTest.goTo('educator-pick')).catch(() => {}); await page.waitForTimeout(400);
+  }
+  throw new Error(`the ${label} walk-through never reached the overview`);
+};
 // On a wide screen the Classroom starts its laptop tour the first time it is shown, and the tour holds the page there,
 // so the wide pass skips it the way an educator would.
 const skipTour = async () => { const b = page.getByRole('button', { name: 'Skip tour' }); if (await b.count()) { await b.first().click({ force: true }); await page.waitForTimeout(200); } };
 const themeNow = () => page.evaluate(() => document.documentElement.dataset.theme || 'light');
+// A screen is measured once it has opened, waited for up to three seconds, and one that never opens fails (the alignment read and
+// the final read, pass MG: a fixed 250 milliseconds skipped standards-map, experiments and certificate under load, silently).
+const opened = (s) => page.waitForFunction((n) => window.__eduTest && window.__eduTest.screen === n, s, { timeout: 3000 }).then(async () => { await page.waitForTimeout(150); return true; }).catch(() => false);
 // Dark is the default now (Mikey, 2026-09-24); the switch sits on the welcome page and at the top of the Classroom page.
 ok('the Classroom page has the light and dark switch', (await page.getByRole('button', { name: 'Dark theme' }).count()) === 1 && (await page.getByRole('button', { name: 'Light theme' }).count()) === 1);
 ok('a new device starts in the dark theme', (await themeNow()) === 'dark' && (await page.evaluate(() => getComputedStyle(document.querySelector('#root > div')).backgroundColor)) === 'rgb(20, 35, 30)');
@@ -97,7 +111,7 @@ ok('the Story Log opens from the Classroom page', (await storyLog.count()) > 0);
 if (await storyLog.count()) { await storyLog.first().click(); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'story-log'); await page.waitForTimeout(250); await check('story-log'); await page.setViewportSize({ width: 1280, height: 900 }); await page.waitForTimeout(250); await check('story-log at 1280'); await page.setViewportSize({ width: 360, height: 780 }); await page.waitForTimeout(200); await page.evaluate(() => window.__eduTest.goTo('educator-pick')); await page.waitForTimeout(200); }
 for (const s of screens.filter((x) => !studentScreens.has(x))) {
   await keepAlive(); await page.evaluate((name) => window.__eduTest.goTo(name), s); await page.waitForTimeout(250);
-  if (await page.evaluate(() => window.__eduTest.screen) === s) await check(s);
+  if (await opened(s)) await check(s); else ok(`${s} opened from goTo within three seconds`, false);
   await page.evaluate(() => window.__eduTest.goTo('educator-pick')); await page.waitForTimeout(200);
 }
 // Wide screens (Mikey's laptop, 2026-09-24): loose words there sit on a backing plate, so every screen is checked again at 1280.
@@ -105,16 +119,67 @@ await page.setViewportSize({ width: 1280, height: 900 }); await page.waitForTime
 await check('educator-pick at 1280');
 for (const s of screens.filter((x) => !studentScreens.has(x) && !paper.has(x))) {
   await keepAlive(); await page.evaluate((name) => window.__eduTest.goTo(name), s); await page.waitForTimeout(250);
-  if (await page.evaluate(() => window.__eduTest.screen) === s) await check(`${s} at 1280`);
+  if (await opened(s)) await check(`${s} at 1280`); else ok(`${s} at 1280 opened from goTo within three seconds`, false);
   await page.evaluate(() => window.__eduTest.goTo('educator-pick')); await page.waitForTimeout(200); await skipTour();
 }
 await page.setViewportSize({ width: 360, height: 780 }); await page.waitForTimeout(250);
-await keepAlive(); await page.getByLabel('Walk through elementary').click({ force: true }); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+await walkInto('Walk through elementary');
 await page.evaluate(() => window.__eduTest.openModule(window.__eduTest.visibleModuleIds()[0])); await page.waitForTimeout(400);
 for (const s of [...screens.filter((x) => studentScreens.has(x) && x !== 'overview'), 'overview']) {
   await page.evaluate((name) => window.__eduTest.goTo(name), s); await page.waitForTimeout(300);
-  if (await page.evaluate(() => window.__eduTest.screen) === s) await check(s);
+  if (await opened(s)) await check(s); else ok(`${s} opened from goTo within three seconds`, false);
 }
+// The drawings on the gold and green taps (pass MG, Mikey's answer to Q23, "change"): in the dark theme every drawing a filled
+// tap carries (the arrow, the book, the star that starts practice) reads at 3 to 1 or better on what it sits on, the rule for a
+// drawing that carries meaning, since a child who cannot read tells the taps apart by them; white read 2.25 to 1 on the gold
+// and 2.06 on the green. Each drawing is measured against its nearest painted background (the surprise book's star sits on a
+// badge of its own), and a tap counts when its fill is the dark theme's gold or green.
+const tapInk = () => page.evaluate(() => {
+  const parse = (s) => (String(s).match(/[\d.]+/g) || []).map(Number); const lin = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
+  const lum = ([r, g, b]) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b); const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+  const fills = ['rgb(217, 164, 65)', 'rgb(124, 195, 166)'];
+  const under = (el) => { let n = el.parentElement; while (n && n.nodeType === 1) { const c = parse(getComputedStyle(n).backgroundColor); if (c.length >= 3 && (c.length < 4 || c[3] >= 1)) return c; n = n.parentElement; } return [255, 255, 255]; };
+  const out = [];
+  for (const b of document.querySelectorAll('button')) {
+    if (!b.offsetParent || !fills.includes(getComputedStyle(b).backgroundColor)) continue;
+    for (const el of b.querySelectorAll('svg path, svg circle')) for (const prop of ['stroke', 'fill']) {
+      const v = getComputedStyle(el)[prop]; if (!v || v === 'none' || !/rgb/.test(v)) continue; const c = parse(v); if (c.length > 3 && c[3] === 0) continue;
+      out.push({ label: b.getAttribute('aria-label'), prop, color: v, ratio: Math.round(ratio(c, under(el)) * 100) / 100 });
+    }
+  }
+  return out;
+});
+// Lit letters on the paper (pass MD, Mikey: "Whatever you think about the highlighted letter question"): a letters picture
+// lights the part its line names, and the almond paper took the logo gold at 2.66 to 1, under the 3 to 1 large letters need,
+// while every walk above is a reader's and never met one. So A and B, a pre-reader's lesson, is opened in an Early years
+// walk-through, stepped to its Apple line, and measured: the lit A itself, read from the page, and every other word with it.
+{ await keepAlive(); await page.evaluate(() => window.__eduTest.goHome()); await page.waitForTimeout(300);
+  await walkInto('Walk through early years');
+  await page.evaluate(() => window.__eduTest.openModule('a-and-b')); await page.waitForTimeout(500);
+  const next = page.getByLabel('Next'); if (await next.count()) { await next.first().click(); await page.waitForTimeout(400); }
+  const lit = page.locator('[data-lit]').first();
+  const look = (await lit.count()) ? await lit.evaluate((el) => {
+    const parse = (s) => (String(s).match(/[\d.]+/g) || []).map(Number); const lin = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
+    const lum = ([r, g, b]) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+    let n = el.parentElement; let bg = null; let found = null; while (n && n.nodeType === 1) { const c = parse(getComputedStyle(n).backgroundColor); if (c.length >= 3 && (c.length < 4 || c[3] >= 1)) { bg = c; found = n; break; } n = n.parentElement; }
+    const fg = parse(getComputedStyle(el).color); const a = lum(fg), b = lum(bg || [255, 255, 255]);
+    return { text: el.textContent, color: getComputedStyle(el).color, bg: bg && bg.join(','), onPaper: !!found && found === el.closest('.edu-paper-picture'), ratio: (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05), size: parseFloat(getComputedStyle(el).fontSize) };
+  }) : null;
+  // The paper itself must be the background measured: a missing paper would leave the dark card, where the deeper gold passes
+  // at 3.6, or white, where it passes at 3.86 (the screen check, pass MD, and its second read).
+  ok('a lit letter on the paper reads at 3 to 1 or better in the dark theme', (await themeNow()) === 'dark' && look && look.text === 'A' && look.onPaper && look.size >= 24 && look.ratio >= 3, JSON.stringify(look));
+  await check('lesson with lit letters (A and B)');
+  const inkNext = await tapInk();
+  ok('in the dark theme the arrow on the green Next tap reads at 3 to 1 or better on its fill (Q23)', inkNext.some((x) => x.label === 'Next') && inkNext.every((x) => x.ratio >= 3), JSON.stringify(inkNext.filter((x) => x.ratio < 3).slice(0, 3)));
+  for (let n = 0; n < 16 && !(await page.getByLabel('Start practice').count()); n++) { await page.getByLabel('Next').first().click({ force: true }); await page.waitForTimeout(120); }
+  const inkStar = await tapInk();
+  ok('the star on the gold tap that starts practice reads at 3 to 1 or better too (Q23)', inkStar.some((x) => x.label === 'Start practice') && inkStar.every((x) => x.ratio >= 3), JSON.stringify(inkStar.filter((x) => x.ratio < 3).slice(0, 3)));
+  await page.evaluate(() => window.__eduTest.goTo('course-done')); await page.waitForTimeout(500);
+  const inkBook = await tapInk();
+  ok("the book on the course-finished page's gold tap reads at 3 to 1 or better (Q23)", (await page.evaluate(() => window.__eduTest.screen)) === 'course-done' && inkBook.some((x) => /^(Hear|Read) the story of /.test(x.label || '')) && inkBook.every((x) => x.ratio >= 3), JSON.stringify(inkBook.filter((x) => x.ratio < 3).slice(0, 3)));
+  await check('course-done in an early years walk-through');
+  await page.evaluate(() => window.__eduTest.goHome()); await page.waitForTimeout(300);
+  await walkInto('Walk through elementary'); }
 // A ruled-out answer on the dark board stays visible (2026-09-29, Mikey): answer a practice question wrong, tap Try again,
 // and the greyed choice must keep its ink apart from its background at seven-tenths or more.
 { await keepAlive(); await page.evaluate(() => window.__eduTest.goTo('overview')); await page.waitForTimeout(300);
@@ -139,13 +204,28 @@ for (const s of [...screens.filter((x) => studentScreens.has(x) && x !== 'overvi
     ok('a ruled-out answer stays readable on the dark board', look.opacity >= 0.7 && look.color !== look.bg && look.bg === 'rgb(44, 66, 56)', JSON.stringify(look));
   } else ok('a ruled-out answer stays readable on the dark board', false, `no choice question on the practice screen: ${JSON.stringify(q0 && q0.type)}`);
   await page.evaluate(() => window.__eduTest.goTo('overview')); await page.waitForTimeout(200); }
-// The colorful rows on the courses page, opened one at a time: they keep their color and their words stay readable.
-for (const name of [/Let's Color/, /Let's Play/, /Let's Read/]) {
-  const b = page.getByRole('button', { name }).first(); if (!(await b.count())) continue;
-  await b.click(); await page.waitForTimeout(300);
-  ok(`${name.source.replace(/\\/g, '')} opens in the dark theme with readable words`, (await audit()).length === 0, (await audit()).slice(0, 3).join(' | '));
-  await b.click().catch(() => {}); await page.waitForTimeout(200);
-}
+// The colorful rows on the courses page, opened one at a time: they keep their color and their words stay readable. With motion
+// off (this check asks for less motion) each strip shows the whole rainbow at once (pass MG, Mikey: "I don't like the gold
+// dropdowns as much as the old multi-colored dropdowns"; frozen, the drifting wash had stopped on its gold end).
+const checkStrips = async (where, expected) => {
+  const seen = [];
+  for (const label of ["Let's Color", "Let's Play", "Let's Read"]) {
+    const b = page.getByRole('button', { name: label }).first(); if (!(await b.count())) continue;
+    const wash = await b.evaluate((el) => { const cs = getComputedStyle(el); return { size: cs.backgroundSize, stops: (cs.backgroundImage.match(/rgb\(/g) || []).length, motion: matchMedia('(prefers-reduced-motion: reduce)').matches, theme: document.documentElement.getAttribute('data-theme'), sparkles: [...el.querySelectorAll('.edu-sparkle')].filter((s) => getComputedStyle(s).display !== 'none').length }; });
+    ok(`${label} (${where}) shows the whole rainbow at once with motion off in the dark theme, never one gold end, and no still sparkle`, wash.motion && wash.theme === 'dark' && wash.size === '100% 100%' && wash.stops >= 6 && wash.sparkles === 0, JSON.stringify(wash));
+    await b.click(); await page.waitForTimeout(300);
+    ok(`${label} (${where}) opens in the dark theme with readable words`, (await audit()).length === 0, (await audit()).slice(0, 3).join(' | '));
+    if (label === "Let's Color" && /early/.test(where)) {
+      const tiles = await b.evaluate((el) => { const box = el.parentElement; const ring = (t) => { const m = getComputedStyle(t).boxShadow.match(/(-?[\d.]+)px\s+(-?[\d.]+)px\s+(-?[\d.]+)px\s+(-?[\d.]+)px/); return !!m && Number(m[4]) >= 3; };
+        const ready = [...box.querySelectorAll('button.edu-breathe')].filter((t) => !t.disabled); return { ready: ready.length, ringed: ready.filter(ring).length }; });
+      ok("Let's Color's ready pictures wear the still green ring too, with motion off", tiles.ready >= 3 && tiles.ringed === tiles.ready, JSON.stringify(tiles));
+    }
+    await b.click().catch(() => {}); await page.waitForTimeout(200);
+    seen.push(label);
+  }
+  ok(`every strip ${where} is measured: ${expected.join(', ')}`, seen.join('|') === expected.join('|'), seen.join(', '));
+};
+await checkStrips("in a reader's walk-through", ["Let's Play", "Let's Read"]);
 // Games are played on a paper board in both themes (Mikey's laptop, 2026-09-24): three games whose boards carry words.
 for (const title of ['Quick fire: math', 'Space shooter: gases', 'In order: how things happen']) {   // the space shooter took the place of Solid or liquid, which left grade 7 science (pass IN)
   await keepAlive(); await page.evaluate(() => window.__eduTest.goTo('overview')); await page.waitForTimeout(300);
@@ -161,13 +241,38 @@ await keepAlive(); await page.evaluate(() => window.__eduTest.goTo('educator-pic
 const early = page.getByLabel(/Walk through early/i);
 ok('the Classroom page offers an early years walkthrough', (await early.count()) > 0);
 if (await early.count()) {
-  await early.first().click({ force: true }); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview'); await page.waitForTimeout(300);
-  const [beats, groups] = await page.evaluate(() => { const g = [...document.querySelectorAll('button[aria-expanded]')].filter((b) => b.style.getPropertyValue('--beat') !== ''); return [g.filter((b) => b.style.getPropertyValue('--beat') === '1').length, g.length]; });
-  ok('a young learner sees every group with something ready breathing', (await page.evaluate(() => document.documentElement.dataset.young)) === '1' && groups >= 2 && beats === groups, `${beats} of ${groups} breathing`);
+  await walkInto('Walk through early years'); await page.waitForTimeout(300);
+  const ringed = () => page.evaluate(() => { const ring = (b) => { const m = getComputedStyle(b).boxShadow.match(/rgba?\(([^)]+)\)\s+(-?[\d.]+)px\s+(-?[\d.]+)px\s+(-?[\d.]+)px\s+(-?[\d.]+)px/); if (!m) return false; const a = m[1].split(',').map(Number)[3]; return Number(m[5]) >= 3 && (a === undefined || a >= 0.3); };
+    const g = [...document.querySelectorAll('button[aria-expanded]')].filter((b) => b.style.getPropertyValue('--beat') !== '');
+    return { groups: g.length, beats: g.filter((b) => b.style.getPropertyValue('--beat') === '1').length, rings: g.filter((b) => b.style.getPropertyValue('--beat') === '1' && ring(b)).length, openRinged: g.filter((b) => b.getAttribute('aria-expanded') === 'true' && ring(b)).length, open: g.filter((b) => b.getAttribute('aria-expanded') === 'true').length }; });
+  const r0 = await ringed();
+  ok('a young learner sees every group with something ready breathing, its green ring still on with motion off (pass MG, the screen check)', (await page.evaluate(() => document.documentElement.dataset.young)) === '1' && r0.groups >= 2 && r0.beats === r0.groups && r0.rings === r0.groups, JSON.stringify(r0));
   await page.evaluate(() => { const b = [...document.querySelectorAll('button[aria-expanded]')].find((x) => x.style.getPropertyValue('--beat') === '1'); if (b) b.click(); }); await page.waitForTimeout(400);
+  const r1 = await ringed();
+  ok('an open group wears no ring', r1.open === 1 && r1.openRinged === 0, JSON.stringify(r1));
   const pulses = await page.locator('.edu-mod-card .edu-pulse').count(); const cardsNow = await page.locator('.edu-mod-card').count();
   ok('inside the open group every ready module invites a tap', pulses >= 2 && pulses === cardsNow, `${pulses} of ${cardsNow} pulsing`);
   ok('the open group still reads in the dark theme', (await audit()).length === 0, (await audit()).slice(0, 3).join(' | '));
+  await page.evaluate(() => { const b = document.querySelector('button[aria-expanded="true"]'); if (b) b.click(); }); await page.waitForTimeout(300);
+  await checkStrips('in an early years walk-through', ["Let's Color", "Let's Play", "Let's Read"]);
+  // The Let's Wonder! title a pre-reader sees on every Wonder question (pass MG): the sweep above never opens a Wonder screen, and
+  // there the light theme's deep green read 2.66 to 1. Every color its shimmer passes through must read at 3 to 1 on the page.
+  await page.evaluate(() => window.__eduTest.openWonderVoices('w-ants-elephant', 'count-to-5')); await page.waitForTimeout(400);
+  await page.evaluate(() => window.__eduTest.goTo('wonder')); await page.waitForTimeout(700);
+  for (const [w, tall] of [[360, 780], [1280, 900]]) {
+  await page.setViewportSize({ width: w, height: tall }); await page.waitForTimeout(400);
+  const title = await page.evaluate(() => {
+    const parse = (s) => (String(s).match(/[\d.]+/g) || []).map(Number); const lin = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
+    const lum = ([r, g, b]) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b); const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+    const h = [...document.querySelectorAll('h1')].find((x) => /Let's Wonder/.test(x.textContent)); if (!h) return null;
+    let n = h.parentElement; let bg = null; while (n && n.nodeType === 1) { const c = parse(getComputedStyle(n).backgroundColor); if (c.length >= 3 && (c.length < 4 || c[3] >= 1)) { bg = c; break; } n = n.parentElement; }
+    const stops = (getComputedStyle(h).backgroundImage.match(/rgba?\([^)]+\)/g) || []).map(parse);
+    return { screen: window.__eduTest.screen, stops: stops.length, clip: getComputedStyle(h).backgroundClip, worst: Math.round(Math.min(...stops.map((s) => ratio(s, bg || [255, 255, 255]))) * 100) / 100 };
+  });
+  ok(`the Let's Wonder! title at ${w} shows its letters and reads at 3 to 1 or better on every color of its shimmer in the dark theme`, !!title && title.screen === 'wonder' && title.stops >= 3 && title.clip === 'text' && title.worst >= 3, JSON.stringify(title));
+  }
+  await page.setViewportSize({ width: 360, height: 780 }); await page.waitForTimeout(300);
+  await page.evaluate(() => window.__eduTest.goTo('overview')); await page.waitForTimeout(300);
 }
 await page.reload(); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen);
 ok('the app is still dark after it reloads', (await themeNow()) === 'dark');

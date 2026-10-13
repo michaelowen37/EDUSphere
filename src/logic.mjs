@@ -1509,7 +1509,7 @@ export function askedNames(q) {
   const asked = String(q.prompt || '').toLowerCase();
   const named = (w) => new RegExp(`\\b${w}s?\\b`).test(asked);
   const parts = (x) => { const s = String(x).replace(/#\d+$/, ''); let m;
-    if ((m = /^(?:icon|pic|art|shape|solid):([a-z]+)/.exec(s))) return [m[1]];
+    if ((m = /^(?:icon|pic|art|shape|solid|face):([a-z]+)/.exec(s))) return [m[1]];   // face: pass MD
     if ((m = /^swatch:([a-z]+)$/.exec(s))) return [m[1]];
     if ((m = /^item:([a-z]+)-([a-z]+)/.exec(s))) return [m[1], m[2]];
     return null; };
@@ -1517,6 +1517,20 @@ export function askedNames(q) {
   if (mine) { const others = (q.choices || []).filter((c) => c !== q.answer).map(parts).filter(Boolean); return mine.filter((w) => named(w) && others.some((o) => !o.includes(w))); }
   if (/^[A-Z]$/.test(q.answer) && /\bletter\b/.test(asked)) return [q.answer];
   return [];
+}
+// Which answers say themselves when a pre-reader taps them (2026-09-15: a word answer says itself for a child who cannot read;
+// a picture answer never does, because naming it would hand over the answer). Since pass MC (the lesson check) a single letter
+// stays quiet too, since for a pre-reader a letter is a picture and its name is what the question asks (Tap the letter A beside
+// H: tapping each until a voice said A passed the question by ear). The rule reads only the choice, never which choice is
+// right: a first version also hushed the one answer a question named, and the second read found that silence then marked the
+// answer ("Is it living?" was quiet exactly when Living was right) and left some pre-K questions unread to a child. A one-letter
+// word among longer words still speaks (the screen check: in "Which word do we read first?" over a, see, I, dog, the silent I
+// was the answer), since there the letter is a word to hear, not a shape to name; that too reads only the choices.
+export function choiceSpeaks(q, c) {
+  const x = String(c);
+  if (x.includes(':')) return false;
+  if (/^[A-Za-z]$/.test(x)) return ((q && q.choices) || []).some((o) => !String(o).includes(':') && String(o).length > 1);
+  return true;
 }
 export function readAloudScript(mod) {
   if (!mod || !mod.lesson) return [];
@@ -1757,11 +1771,12 @@ export function spreadKinds(games) { return spreadBy(games, (g) => g.kind); }
 // the list is the game that opens before any course is finished. Arcade and hands-on kinds come first; reading-heavy
 // decks and quick fires never lead unless nothing else is on the list.
 export const FUN_FIRST = ['pong', 'ship', 'catch', 'jump', 'path', 'maze', 'dots', 'jigsaw', 'walk', 'balance', 'buckets', 'sort', 'map', 'mix', 'grow', 'sprout', 'savejar', 'share', 'pay', 'tool', 'spot', 'sense', 'turn', 'order', 'chord', 'cpr', 'bits', 'debug'];
-export function funFirst(games) {
+// Since pass MC a list may say which games are allowed to lead (canLead): the front of the list is the game that opens on day
+// one, and only a game that can open then may lead (playList). With no game allowed to lead, the list keeps its order.
+export function funFirst(games, canLead = () => true) {
   const rank = (g) => { const i = FUN_FIRST.indexOf(g.kind); return i < 0 ? FUN_FIRST.length : i; };
-  if (games.length < 2) return games;
-  let best = 0; for (let i = 1; i < games.length; i++) if (rank(games[i]) < rank(games[best])) best = i;
-  return best === 0 ? games : [games[best], ...games.slice(0, best), ...games.slice(best + 1)];
+  let best = -1; for (let i = 0; i < games.length; i++) if (canLead(games[i]) && (best < 0 || rank(games[i]) < rank(games[best]))) best = i;
+  return best <= 0 ? games : [games[best], ...games.slice(0, best), ...games.slice(best + 1)];
 }
 // Spread a list so items with the same key take turns (2026-09-23): each key is spread evenly along the list, and when
 // the key due next is the one just placed, another key that is nearly due goes first instead. Used for game kinds and
@@ -3084,6 +3099,9 @@ export const ORDER_DECKS = {
   ],
 };
 export function gamesFor(topGrade) { const at = GRADES.indexOf(topGrade); return GAMES.filter((g) => !g.minGrade || GRADES.indexOf(g.minGrade) <= at); }
+// A rough count, one starter plus one game for each finished course, that no screen reads any more: since pass MC the Let's Play
+// list comes from playList and its open games from unlockedGameIds below. The backup test still calls it to prove an old record
+// derives.
 export function gamesUnlocked(events) {
   const per = deriveProgress(events).perModule;
   const mastered = COURSES.filter((c) => c.modules.length > 0 && c.modules.every((m) => (per[m.id] || {}).mastered)).length;
@@ -3108,7 +3126,7 @@ export function dotsTooClose(points, gap = DOT_GAP) {
 }
 // A pre-K screen is grouped by the skill being practised rather than by subject: a three-year-old
 // knows what colors are, not what mathematics is. Every other grade groups by subject as before.
-export const SKILL_ORDER = ['Colors', 'Shapes', 'Sizes', 'Matching', 'Patterns', 'Counting', 'Comparing', 'Listening', 'Letters', 'Drawing', 'Getting along'];
+export const SKILL_ORDER = ['Colors', 'Shapes', 'Sizes', 'Matching', 'Patterns', 'Counting', 'Comparing', 'Listening', 'Letters', 'Drawing', 'Feelings', 'Getting along'];   // Feelings: pass MD (E12)
 export const COLOR_LOCKOUT_MINUTES = 15;
 // Play and rest by age: the youngest fill more of their time with coloring and games; older students play
 // for less and wait longer before a game or a picture comes back, so the day tilts toward the lessons.
@@ -3821,10 +3839,10 @@ function PREK3_MODULES() { return [
     title: 'More and fewer',
     tagline: 'Which group has more?',
     lesson: {
-      paragraphs: ['To compare two groups, count each one, touching each thing once. The last number you say tells how many. The group with more things has more, and the group with not as many has fewer.', 'Three dots are more than one dot, because you count past one to get to three. One dot is fewer than three dots.', 'Four dots are more than two dots, and three dots are fewer than five dots. Fewer means not as many.', 'A long row can look like more. Three dots spread out in a long row are still fewer than five dots sitting close together, so count each group, whatever the groups look like.', 'Three circles and three dots are the same number, so neither group has more.', 'At snack time, count the crackers on two plates. The plate with more crackers has more to share.'],
+      paragraphs: ['To compare two groups, count each one, touching each thing once. The last number you say tells how many. The group with more things has more, and the group with not as many has fewer.', 'Three dots are more than one dot, because you count past one to get to three. One dot is fewer than three dots.', 'Four dots are more than two dots, and three dots are fewer than five dots. Fewer means not as many.', 'A long row can look like more. Three dots spread out in a long row are still fewer than five dots sitting close together, so count each group, whatever the groups look like.', 'Big things can look like more too. Three big circles are still fewer than five little circles. Big is not the same as more, so count each group, whatever the size.', 'Three circles and three dots are the same number, so neither group has more.', 'At snack time, count the crackers on two plates. The plate with more crackers has more crackers to share.'],
       keyIdea: 'Count each group to find which has more. Fewer means not as many.',
       example: { kind: 'pair', stack: true, a: { kind: 'dots', count: 3 }, b: { kind: 'dots', count: 1 }, caption: 'Three dots are more than one dot.' },
-      pictures: [{ serial: 'P126', alt: 'Two snack plates of crackers, one with more crackers than the other', step: 9 }],
+      pictures: [{ serial: 'P126', alt: 'Two snack plates of crackers, one with more crackers than the other', step: 11 }],
       script: [
         { say: 'Here are three dots, and here is one dot.', show: { kind: 'pair', stack: true, a: { kind: 'dots', count: 3 }, b: { kind: 'dots', count: 1 } } },
         { say: 'Let\'s count each group. One, two, three, and one. Three dots are more than one dot.', show: { kind: 'pair', stack: true, a: { kind: 'dots', count: 3 }, b: { kind: 'dots', count: 1 } } },
@@ -3835,7 +3853,15 @@ function PREK3_MODULES() { return [
         { say: 'Here are three circles and three dots. One, two, three, and one, two, three. They are the same number, so neither group has more.', show: { kind: 'pair', stack: true, a: { kind: 'pattern', items: ['circle', 'circle', 'circle'], colour: 'blue', counting: true, size: 34 }, b: { kind: 'dots', count: 3 } } },
         { say: 'Here are three dots in a long row, and five dots close together. The long row looks like more. Does it have more?', show: { kind: 'pair', stack: true, a: { kind: 'dots', count: 3, gap: 56 }, b: { kind: 'dots', count: 5, gap: 3 } } },
         { say: 'Count each group. One, two, three, and one, two, three, four, five. Five dots are more than three dots, so the long row only looked like more.', show: { kind: 'pair', stack: true, a: { kind: 'dots', count: 3, gap: 56 }, b: { kind: 'dots', count: 5, gap: 3 } } },
-        { say: 'At snack time, count the crackers on two plates. The plate with more crackers has more to share.', show: null },
+        // The size trap (pass MF, Mikey's answer to Q6: pre-K 3's story takes a trap of its own, and a story uses only what its
+        // lesson taught): three big circles take more room than five little ones, and only counting says which group has more.
+        // Stacked (the lesson check: side by side the little circles drew 11 pixels wide), the big row a little shorter than the
+        // little row, so size is the only cue that misleads. Since pass MG (Mikey: "Can we make the big circles even larger for
+        // more contrast and impact?") the big circles are cells of 80, over two and a half times as wide as the little ones,
+        // and the five little circles spread out (gap 27) so their row still reaches a little past the big row (258 against 256).
+        { say: 'Here are three big circles, and here are five little circles. The big circles look like more. Do they have more?', show: { kind: 'pair', stack: true, a: { kind: 'pattern', items: ['circle', 'circle', 'circle'], colour: 'blue', counting: true, size: 80, frame: 3 }, b: { kind: 'pattern', items: ['circle', 'circle', 'circle', 'circle', 'circle'], colour: 'blue', counting: true, size: 30, gap: 27 } } },
+        { say: 'Count each group. One, two, three, and one, two, three, four, five. Five little circles are more than three big circles. Big is not the same as more.', show: { kind: 'pair', stack: true, a: { kind: 'pattern', items: ['circle', 'circle', 'circle'], colour: 'blue', counting: true, size: 80, frame: 3 }, b: { kind: 'pattern', items: ['circle', 'circle', 'circle', 'circle', 'circle'], colour: 'blue', counting: true, size: 30, gap: 27 } } },
+        { say: 'At snack time, count the crackers on two plates. The plate with more crackers has more crackers to share.', show: null },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines V.A.8 (compares sets of objects up to 5 using comparative language, for example more than, less than, same number of), V.A.2 (counts up to 5 objects with one-to-one correspondence) and V.A.3 (counts up to 5 items and demonstrates cardinality by communicating that the last number indicates how many items are in the set), and Head Start ELOF Goals P-MATH 4 (compares numbers), P-MATH 1 (knows number names and the count sequence) and P-MATH 3 (understands the relationship between numbers and quantities).'],
@@ -3987,9 +4013,132 @@ function PREK3_MODULES() { return [
     sources: ['Aligned with Texas Prekindergarten Guidelines I.C.1 (forms positive relationships with adults and peers) and II.B.4 (begins to use appropriate language for different situations), and Head Start ELOF Goals P-SE 2 (engages in prosocial and cooperative behavior with adults), whose indicators include using respectful language or greetings, and P-SE 5 (uses basic problem-solving skills to resolve conflicts with other children), whose indicators include sharing and taking turns.'],
     generators: ['pk3-magic-word', 'pk-turn-choice', 'pk3-magic-word', 'pk3-magic-word', 'pk-turn-choice'],
   },
+  // Pass MD, earmark E12 part one (the feelings outcomes of the 2022 Texas Prekindergarten Guidelines, PK3 Domain I, read in
+  // full on TEA's PK3 Streamlined Version, and the Head Start ELOF goals P-SE 5 to P-SE 8 with their 36 to 48 month progressions,
+  // read on headstart.gov). Faces are drawn by the screen from their feeling (FeelingFace), one clear sign each, as the lines say.
+  {
+    id: 'four-feelings',
+    skill: 'Feelings',
+    order: 13,
+    title: 'Happy, sad, mad and scared',
+    tagline: 'Four feelings',
+    lesson: {
+      paragraphs: ['Everyone has feelings. Happy, sad, mad and scared are four of them, and a face can show how someone feels. A happy face smiles, and a sad face turns its mouth down. A mad face squeezes its eyebrows down, and a scared face opens its eyes wide.', 'Your body can show feelings too. Mad can feel hot, with tight fists. Scared can make your heart beat fast, and you may want to hide.', 'Every feeling is okay to have, even mad. Hitting and pushing are not okay, because they hurt. When you feel mad, use your words.', 'Say your feeling\'s name, like I feel sad, I feel mad or I feel scared. Saying the name can help. When a feeling is very big, find your grown-up for a hug and a slow breath together. Pretend to smell a flower as you breathe in slowly. Then pretend to blow out a candle as you breathe out slowly.'],
+      keyIdea: 'Happy, sad, mad and scared are feelings, and every feeling is okay. Say its name, and when a feeling is big, take a slow breath with your grown-up.',
+      example: { kind: 'faces', feelings: ['happy', 'sad', 'mad', 'scared'], caption: 'Happy, sad, mad and scared.' },
+      pictures: [{ serial: 'P128', alt: 'Two small children laughing together as they play with blocks on a rug', step: 1 }, { serial: 'P129', alt: 'A grown-up kneeling to hug a small child who holds a teddy bear, both taking a slow breath', step: 8 }],
+      script: [
+        { say: 'Everyone has feelings. Happy, sad, mad and scared are four feelings, and a face can show how someone feels.', show: { kind: 'faces', feelings: ['happy', 'sad', 'mad', 'scared'] } },
+        { say: 'This is a happy face, with a big smile. You might feel happy when you play with a friend.', show: { kind: 'face', feeling: 'happy' } },
+        { say: 'This is a sad face. Its mouth turns down, and a tear rolls out. You might feel sad when your balloon floats away.', show: { kind: 'face', feeling: 'sad' } },
+        { say: 'This is a mad face. Its eyebrows squeeze down. You might feel mad when someone grabs your toy.', show: { kind: 'face', feeling: 'mad' } },
+        { say: 'This is a scared face. Its eyes open wide. You might feel scared when you hear a big boom of thunder.', show: { kind: 'face', feeling: 'scared' } },
+        { say: 'Your body can show feelings too. Mad can feel hot, with tight fists. Scared can make your heart beat fast, and you may want to hide.', show: { kind: 'pair', a: { kind: 'face', feeling: 'mad' }, b: { kind: 'face', feeling: 'scared' } } },
+        { say: 'Every feeling is okay to have, even mad. Hitting and pushing are not okay, because they hurt. When you feel mad, use your words.', show: { kind: 'face', feeling: 'mad' } },
+        { say: 'Say your feeling\'s name, like I feel sad, I feel mad or I feel scared. Saying the name can help.', show: { kind: 'faces', feelings: ['sad', 'mad', 'scared'] } },
+        { say: 'When a feeling is very big, find your grown-up. A hug, a teddy to hold and a slow breath together can help the feeling get smaller.', show: { kind: 'icon', name: 'teddy' } },
+        { say: 'Pretend to smell a flower, and breathe in slowly. Pretend to blow out a candle, and breathe out slowly.', show: { kind: 'pair', a: { kind: 'icon', name: 'flower' }, b: { kind: 'icon', name: 'candle' } } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines I.B.2.a (recognizes and expresses a range of emotions), I.B.2.b (is familiar with basic feeling words, for example happy, sad, mad, scared) and I.B.2.c (manages intensity of emotions with adult assistance), and Head Start ELOF Goals P-SE 6 (expresses a broad range of emotions and recognizes these emotions in self and others), whose 36 to 48 month progression reads "Expresses a broad range of emotions across contexts, such as during play and in interactions with adults. Notices when strong emotions are exhibited by others and begins to use words to describe some of these emotions, such as happy, sad, or mad.", and P-SE 8 (manages emotions with increasing independence), whose 36 to 48 month progression reads "Manages less intense emotions, such as mild frustration, independently. May require adult support to manage more intense emotions.", in part, since the lesson teaches a grown-up\'s help for a big feeling and, for a smaller one, only saying its name and using your words.'],
+    generators: ['p3-feel-tap-face', 'p3-feel-name-face', 'p3-feel-moment', 'p3-feel-okay', 'p3-feel-calm'],
+  },
+  {
+    id: 'help-a-friend',
+    skill: 'Getting along',
+    order: 14,
+    requires: ['four-feelings'],
+    title: 'Helping a friend',
+    tagline: 'Kind words and a grown-up',
+    lesson: {
+      paragraphs: ['Faces can show feelings. When a friend\'s face looks sad or scared, be kind. Ask, are you okay? Sit beside your friend, or bring a teddy to hug.', 'When a friend falls and gets hurt, or is very sad, get a grown-up. Grown-ups know how to help.', 'Sometimes two friends both want one ball, and a fight starts. Grabbing and pushing are not okay. Keep your hands to yourself, and say, stop, please. Then get a grown-up to help you both. A grown-up can help you take turns, so you both get to play.'],
+      keyIdea: 'When a friend looks sad or scared, be kind and ask, are you okay? When a friend is hurt, or you start to fight, get a grown-up.',
+      example: { kind: 'face', feeling: 'sad', caption: 'Are you okay?' },
+      pictures: [{ serial: 'P130', alt: 'A small child leading a grown-up by the hand to a friend who fell on the grass', step: 3 }, { serial: 'P131', alt: 'A grown-up kneeling beside two small children who take turns rolling one red ball', step: 6 }],
+      script: [
+        { say: 'Faces can show feelings. When your friend\'s face looks like this, your friend may be sad.', show: { kind: 'face', feeling: 'sad' } },
+        { say: 'When a friend looks sad or scared, you can be kind. Ask, are you okay?', show: { kind: 'pair', a: { kind: 'face', feeling: 'sad' }, b: { kind: 'face', feeling: 'scared' } } },
+        { say: 'You can sit beside your friend, or bring a teddy to hug.', show: { kind: 'icon', name: 'teddy' } },
+        { say: 'When a friend falls and gets hurt, or is very sad, get a grown-up. Grown-ups know how to help.', show: { kind: 'face', feeling: 'sad' } },
+        { say: 'Sometimes two friends both want one ball, and a fight starts. That is a problem.', show: { kind: 'icon', name: 'ball' } },
+        { say: 'Grabbing the ball and pushing are not okay. Keep your hands to yourself, and say, stop, please. Then get a grown-up to help you both.', show: { kind: 'icon', name: 'stop' } },
+        { say: 'A grown-up can help you take turns, so you both get to play with the ball.', show: { kind: 'icon', name: 'ball' } },
+        { say: 'Helping a friend can make you both feel happy. Asking a grown-up for help is a smart thing to do, too.', show: { kind: 'face', feeling: 'happy' } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines I.C.5 (seeks adult help when experiencing conflicts with another child), I.C.6 (responds with concern when a child or adult is distressed), in part, since the lesson teaches noticing a friend who is distressed and the kind words and acts to offer, and not yet a grown-up who is distressed, and I.D.1 (shows interest in other people and their feelings), in part, since the lesson teaches noticing a friend\'s feelings and asking about them, and Head Start ELOF Goals P-SE 7 (expresses care and concern toward others), whose 36 to 48 month progression reads "Often pays attention when others are distressed, but attention and response to this distress may be brief. May seek out adult support to help another child who is distressed.", P-SE 6 (expresses a broad range of emotions and recognizes these emotions in self and others), for the feelings a child reads on a friend\'s face, and P-SE 5 (uses basic problem-solving skills to resolve conflicts with other children), whose 36 to 48 month progression reads "Begins to recognize and describe social problems. Suggests solutions to conflicts with adult guidance and support."'],
+    generators: ['p3-help-who', 'p3-help-kind', 'p3-help-grownup', 'p3-help-ball', 'p3-help-yesno'],
+  },
+  // Earmark E12 part two (pass ME): adding one and taking one away, the PK3 joining and separating outcomes, with the dots on
+  // the screen as the objects and every group counted to find how many now. The lesson says every answer its bank asks for
+  // (every count from one to five, more, fewer, and one more than and one fewer than), twice over and with a real thing at the end.
+  {
+    id: 'one-more-one-fewer',
+    skill: 'Counting',
+    order: 15,
+    requires: ['more-or-fewer'],
+    title: 'One more and one fewer',
+    tagline: 'Add one, take one away',
+    lesson: {
+      paragraphs: ['Here are two dots. Touch each dot once as you count, one, two. The last number tells how many. When one more dot comes, there are three dots. Adding one makes more.', 'Here are three dots. When one dot goes away, there are two dots. Taking one away makes fewer.', 'Adding more than one makes more too. Two dots and two more dots make four dots. Taking more than one away makes fewer. Four dots take away two dots leave two dots.', 'Count to find how many now. One and one more is two. Two and one more is three. Three and one more is four. Four and one more is five. One, two, three, four, five.', 'Five take away one is four. Four take away one is three. Three take away one is two. Two take away one is one.', 'Three dots are one more than two dots. Two dots are one fewer than three dots. Count each group to see.', 'At snack time, when your grown-up gives you one more cracker, you have more crackers. When you eat one, there are fewer crackers on your plate. Try it. Put two crackers on a plate, add one more, and count them.'],
+      keyIdea: 'One more makes more, and one taken away makes fewer. Count to find how many now.',
+      example: { kind: 'pair', stack: true, a: { kind: 'dots', count: 2 }, b: { kind: 'dots', count: 3 }, caption: 'Two dots, and one more, make three dots.' },
+      pictures: [{ serial: 'P132', alt: 'A grown-up\'s hand setting one more cracker on a small child\'s snack plate', step: 10 }, { serial: 'P133', alt: 'A small child at the table taking a bite of a cracker from her snack plate', step: 11 }],
+      script: [
+        { say: 'Here are two dots. Touch each dot once as we count. One, two. The last number tells how many, so there are two dots.', show: { kind: 'dots', count: 2 } },
+        { say: 'Here comes one more dot. Now there are three dots. One, two, three.', show: { kind: 'dots', count: 3 } },
+        { say: 'Adding one makes more. Two dots and one more dot make three dots.', show: { kind: 'pair', stack: true, a: { kind: 'dots', count: 2 }, b: { kind: 'dots', count: 3 } } },
+        { say: 'Here are three dots. One, two, three. Now one dot goes away.', show: { kind: 'dots', count: 3 } },
+        { say: 'Two dots are left. One, two. Taking one away makes fewer.', show: { kind: 'pair', stack: true, a: { kind: 'dots', count: 3 }, b: { kind: 'dots', count: 2 } } },
+        { say: 'Adding more than one makes more too. Here are two dots. Two more dots come. Now there are four dots. One, two, three, four.', show: { kind: 'pair', stack: true, a: { kind: 'dots', count: 2 }, b: { kind: 'dots', count: 4 } } },
+        { say: 'Taking more than one away makes fewer. Here are four dots. Two dots go away. Two dots are left. One, two.', show: { kind: 'pair', stack: true, a: { kind: 'dots', count: 4 }, b: { kind: 'dots', count: 2 } } },
+        { say: 'Let\'s add one more each time. One and one more is two. Two and one more is three. Three and one more is four. Four and one more is five. One, two, three, four, five.', show: { kind: 'pair', stack: true, a: { kind: 'dots', count: 4 }, b: { kind: 'dots', count: 5 } } },
+        { say: 'Now let\'s take one away each time. Five take away one is four. Four take away one is three. Three take away one is two. Two take away one is one.', show: { kind: 'pair', stack: true, a: { kind: 'dots', count: 2 }, b: { kind: 'dots', count: 1 } } },
+        { say: 'Three dots are one more than two dots. Two dots are one fewer than three dots. Count each group to see.', show: { kind: 'pair', stack: true, a: { kind: 'dots', count: 3 }, b: { kind: 'dots', count: 2 } } },
+        { say: 'At snack time, your grown-up gives you one more cracker. Now you have more crackers. Try it. Put two crackers on a plate, add one more, and count them.', show: null },
+        { say: 'You eat one cracker. Crunch! Now there are fewer crackers on your plate.', show: null },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.B.1 (uses objects to demonstrate that adding one or more objects to a set will increase the number of objects in the set) and V.B.2 (uses objects to demonstrate that taking away one or more objects from a set will decrease the number of objects in the set), with the dots on the screen as the objects (one more, one away, and then two more and two away, so the standard\'s one or more is taught) and the crackers at snack time the child is asked to try with a grown-up, and V.A.2 (counts up to 5 objects with one-to-one correspondence) and V.A.3 (counts up to 5 items and demonstrates cardinality by communicating that the last number indicates how many items are in the set), since the groups are counted to find how many now, touching each dot once, with the last number telling how many, and Head Start ELOF Goal P-MATH 6 (understands addition as adding to and understands subtraction as taking away from), whose 36 to 48 month progression opens with "Begins to add and subtract very small collections of objects with adult support." and goes on with the example of three grapes and one more counted out to four, with P-MATH 1 (knows number names and the count sequence) and P-MATH 3 (understands the relationship between numbers and quantities) for the counting.'],
+    generators: ['p3-add-one', 'p3-take-one', 'p3-more-or-fewer-now', 'p3-one-more-group', 'p3-one-fewer-group'],
+  },
 ]; }
 
 function PREK3_READING_MODULES() { return [
+  // Earmark E12 part two (pass ME): rhymes heard with pictures of things a three-year-old knows, so a child taps a picture and never
+  // reads a word (pre-K 4's Rhyme time shows word cards; this is the step before it). Every word the questions use is a thing the
+  // screen draws and the lesson names, in seven families: ball and wall; dog, log and frog; cat and hat; moon and spoon; sock,
+  // block and rock; bear and chair; bee and tree.
+  {
+    id: 'rhymes-with-pictures',
+    skill: 'Listening',
+    order: 6,
+    requires: ['listen-and-tap-pictures'],
+    title: 'Words that rhyme',
+    tagline: 'Ball and wall',
+    lesson: {
+      paragraphs: ['Listen to two words. Ball. Wall. Ball and wall rhyme. Rhyming words sound the same at the end.', 'Dog and log rhyme. Cat and hat rhyme. Moon and spoon rhyme. Say each pair slowly, and listen to the end of each word.', 'Sock, block and rock all rhyme. Bear and chair rhyme. Bee and tree rhyme. A frog rhymes with a dog and a log.', 'Some words do not rhyme. Ball and cat do not sound the same at the end, so they do not rhyme. Dog, log, hat. Dog and log rhyme, and hat does not rhyme with them.', 'Rhymes are fun to say. Say a rhyme with your grown-up. Ball, wall! Cat, hat!'],
+      keyIdea: 'Rhyming words sound the same at the end. Listen to the end of each word.',
+      example: { kind: 'pair', a: { kind: 'icon', name: 'ball' }, b: { kind: 'icon', name: 'wall' }, caption: 'Ball, wall. Ball and wall rhyme.' },
+      pictures: [{ serial: 'P134', alt: 'A grown-up and a small child laughing together on a lawn, a red ball at the child\'s feet and a low stone wall behind them', step: 11 }],
+      script: [
+        { say: 'Listen to two words. Ball. Wall. Ball and wall rhyme. Rhyming words sound the same at the end.', show: { kind: 'pair', a: { kind: 'icon', name: 'ball' }, b: { kind: 'icon', name: 'wall' } } },
+        { say: 'Say them slowly. Ball. Wall. Hear how they end the same way? That is a rhyme.', show: { kind: 'pair', a: { kind: 'icon', name: 'ball' }, b: { kind: 'icon', name: 'wall' } } },
+        { say: 'Dog. Log. Dog and log rhyme. They sound the same at the end.', show: { kind: 'pair', a: { kind: 'icon', name: 'dog' }, b: { kind: 'icon', name: 'log' } } },
+        { say: 'Cat. Hat. Cat and hat rhyme. Say them with me. Cat, hat.', show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'icon', name: 'hat' } } },
+        { say: 'Moon. Spoon. Moon and spoon rhyme.', show: { kind: 'pair', a: { kind: 'icon', name: 'moon' }, b: { kind: 'icon', name: 'spoon' } } },
+        { say: 'Sock. Block. Sock and block rhyme. A rock rhymes with them too. Sock, block, rock.', show: { kind: 'row', items: [{ kind: 'icon', name: 'sock' }, { kind: 'icon', name: 'block' }, { kind: 'icon', name: 'rock' }] } },
+        { say: 'Bear. Chair. Bear and chair rhyme.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'icon', name: 'chair' } } },
+        { say: 'Bee. Tree. Do bee and tree rhyme? Yes! They sound the same at the end.', show: { kind: 'pair', a: { kind: 'pic', name: 'bee' }, b: { kind: 'icon', name: 'tree' } } },
+        { say: 'Some words do not rhyme. Ball. Cat. Ball and cat do not sound the same at the end, so they do not rhyme.', show: { kind: 'pair', a: { kind: 'icon', name: 'ball' }, b: { kind: 'pic', name: 'cat' } } },
+        { say: 'Dog. Log. Hat. Dog and log rhyme. Hat does not rhyme with them.', show: { kind: 'row', items: [{ kind: 'icon', name: 'dog' }, { kind: 'icon', name: 'log' }, { kind: 'icon', name: 'hat' }] } },
+        { say: 'A frog rhymes with a dog and a log. Dog, log, frog. All three sound the same at the end.', show: { kind: 'row', items: [{ kind: 'icon', name: 'dog' }, { kind: 'icon', name: 'log' }, { kind: 'pic', name: 'frog' }] } },
+        { say: 'Rhymes are fun to say. Say a rhyme with your grown-up. Ball, wall! Cat, hat!', show: null },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines III.B.6 (uses rhyming words through playful activities such as songs, nursery rhymes, and fingerplay), in part, since the lesson teaches pairing pictures of things whose names rhyme, telling whether two words rhyme and which of three does not, and not yet using rhyming words in a song, a nursery rhyme or a fingerplay, or making up a rhyme of its own, which only a grown-up can hear, and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 36 to 48 month progression reads "Shows rote imitation and enjoyment of rhyme and alliteration. With support, distinguishes when two words rhyme and when two words begin with the same sound.", in part, since the lesson teaches when two words rhyme and not yet alliteration, when two words begin with the same sound (the odd one of three reaches toward the 48 to 60 month progression, which names which words rhyme from a group of three).'],
+    generators: ['p3-rhyme-tap', 'p3-rhyme-yesno', 'p3-rhyme-listen', 'p3-rhyme-odd', 'p3-rhyme-tap'],
+  },
   {
     id: 'circle-and-square',
     skill: 'Shapes',
@@ -4027,21 +4176,28 @@ function PREK3_READING_MODULES() { return [
     title: 'A and B',
     tagline: 'Two letters',
     lesson: {
-      paragraphs: ['This is the letter A, tall with a bar across the middle. This is the letter B, with two round bumps on one side.', 'Letters are the pieces we write words with. Apple starts with A, and ball starts with B.', 'Bear, boat and book start with B, and acorn and arrow start with A. Look for A and B on signs and in books.'],
+      paragraphs: ['This is the letter A. Its two slanted sides lean in and meet at the top, with a bar across. This is the letter B, with two round bumps on one side.', 'Letters are the pieces we write words with. Apple starts with A, and ball starts with B.', 'Bear, boat and book start with B, and acorn and arrow start with A. Look for A and B on signs and in books.', 'Some other letters are hard to tell from A or B, so look closely. The sides of the letter A meet at the top, and B has two round bumps. H has a bar too, but its sides stand up straight and never meet, and P has just one bump.', 'A and B are the first two letters of the alphabet, so the alphabet song starts with them. Sing it with your grown-up.'],
       keyIdea: 'A and B are letters. Apple starts with A, and ball starts with B.',
       example: { kind: 'letters', text: 'A', caption: 'A.' },
       script: [
-        { say: 'This is the letter A. It is tall, with a bar across the middle.', show: { kind: 'letters', text: 'A', highlight: 0 } },
-        { say: 'Apple starts with A. Say it with me, apple.', show: { kind: 'letters', text: 'Apple', highlight: 0 } },
-        { say: 'This is the letter B. It has two round bumps on one side.', show: { kind: 'letters', text: 'B', highlight: 0 } },
-        { say: 'Ball starts with B, and so does bee.', show: { kind: 'letters', text: 'Ball', highlight: 0 } },
+        { say: 'This is the letter A. Its two slanted sides lean in and meet at the top, with a bar across.', show: { kind: 'letters', text: 'A' } },
+        { say: 'Apple starts with A. Say it with me, apple.', show: { kind: 'letters', text: 'Apple', highlight: 'first' } },
+        { say: 'This is the letter B. It has two round bumps on one side.', show: { kind: 'letters', text: 'B' } },
+        { say: 'Ball starts with B, and so does bee.', show: { kind: 'letters', text: 'Ball', highlight: 'first' } },
         { say: 'A and B are letters. We put letters together to write words.', show: { kind: 'letters', text: 'A   B' } },
-        { say: 'Look for A and B on signs and in books. Once you know them, you will find them everywhere.', show: { kind: 'letters', text: 'A   B' } },
-        { say: 'Bear, boat and book start with B. Acorn and arrow start with A.', show: { kind: 'letters', text: 'Bear', highlight: 0 } },
+        { say: 'Look for A and B on signs and in books. Here is one, the B in bus. Once you know them, you will find them everywhere.', show: { kind: 'letters', text: 'BUS', highlight: 'first' } },
+        { say: 'Bear, boat and book start with B. Acorn and arrow start with A.', show: { kind: 'letters', text: 'Bear', highlight: 'first' } },
+        // Pass MC (the lesson brief): some letters look a little like A or B, so a child looks closely at the sides and the
+        // bumps, and meets two of them, H and P, before a question shows one; and the alphabet song, the other half of
+        // PK3.III.C.1, which the app can invite but cannot hear.
+        { say: 'Some other letters are hard to tell from A or B, so look closely. The sides of the letter A meet at the top, and B has two round bumps.', show: { kind: 'letters', text: 'A   B' } },
+        { say: 'This is the letter H. It has a bar too, but its sides stand up straight and never meet, so it is not A.', show: { kind: 'letters', text: 'A   H', highlight: 'H' } },
+        { say: 'This is the letter P. It has just one bump, so it is not B.', show: { kind: 'letters', text: 'B   P', highlight: 'P' } },
+        { say: 'A and B are the first two letters of the alphabet, so the alphabet song starts with them. Sing it with your grown-up. A, B, C!', show: { kind: 'letters', text: 'A   B   C' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines III.C.1 (shows awareness of letters by singing alphabet songs and recognizing some frequently encountered letters, for example first letter of name or letters in environmental print), in part, since this lesson recognizes A and B and looks for them on signs and in books, and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), which for three-year-olds means an awareness of alphabet letters, such as naming some letters that are encountered often.'],
-    generators: ['p3-tap-ab', 'p3-name-ab', 'p3-tap-ab', 'p3-name-ab', 'p3-tap-ab'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines III.C.1 (shows awareness of letters by singing alphabet songs and recognizing some frequently encountered letters, for example first letter of name or letters in environmental print), in part, since this lesson recognizes A and B, tells them from letters that look a little like them, and looks for them on signs and in books, while the singing it invites is the grown-up\'s to hear, and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), in part, since the app keeps no names and this lesson names letters rather than their sounds; for three-year-olds it reads "Shows an awareness of alphabet letters, such as singing the ABC song, recognizing letters from one\'s name, or naming some letters that are encountered often."'],
+    generators: ['p3-tap-ab', 'p3-name-ab', 'p3-ab-by-look', 'p3-ab-in-word', 'p3-ab-look-alike'],
   },
   {
     id: 'not-the-same',
@@ -5584,19 +5740,19 @@ function COUNTING_MODULES() { return [
       // real-object and picture graphs): a real-object graph lines the things up in rows from one edge, a picture graph draws
       // one picture for each thing so the graph outlives the things, and the conclusions a five-year-old draws are more,
       // fewer, the same, how many in each row, how many in all, how many more, and the most and fewest of three rows.
-      paragraphs: ['After we sort things and count them, we can show the counts in a graph. A graph lets you see which group has more without counting again. First, a real-object graph. Line up the real things in rows, the balls in one row and the teddy bears in another, both rows starting at the same end. The row that reaches farther has more.', 'Now a picture graph. Draw one picture for each thing, one picture for each ball and one for each bear. The graph stays even after the toys are put away.', 'A graph answers questions. How many balls? Three. Which has fewer? The bears, because two is fewer than three. There is one more ball than bears, because three is one more than two. How many toys in all? Three and two make five.', 'A graph can have three rows. This week had four sunny days, two rainy days and one snowy day. The sunny row is the longest, so sunny days were the most, and snowy days were the fewest.'],
-      keyIdea: 'A real-object graph lines up the real things in rows. A picture graph draws one picture for each thing. The longer row has more.',
+      paragraphs: ['After we sort things and count them, we can show the counts in a graph. A graph lets you see which group has more without counting again. First, a real-object graph. Put the real things on a mat of same-size squares, one thing in each square. The balls go in one row and the teddy bears in another, both rows starting at the same end, so you can see which row is longer. With one thing in each square, the row that reaches farther has more.', 'Now a picture graph. Draw one picture for each thing, all the same size, one for each ball and one for each bear. The graph stays even after the toys are put away.', 'A graph answers questions. How many balls? Three. Which has fewer? The bears, because two is fewer than three. There is one more ball than bears, because three is one more than two. How many toys in all? Three and two make five.', 'A graph can have three rows. This week had four sunny days, two rainy days and one snowy day. The sunny row is the longest, so sunny days were the most, and snowy days were the fewest.'],
+      keyIdea: 'A real-object graph puts one real thing in each same-size square, in rows. A picture graph draws one picture for each thing. With one thing in each same-size space, the longer row has more.',
       example: { kind: 'picto', rows: [{ icon: 'ball', count: 3 }, { icon: 'teddy', count: 2 }], caption: 'Three balls and two teddy bears. The ball row is longer, so there are more balls.' },
       script: [
         { say: 'After we sort things and count them, we can show the counts in a graph. A graph lets you see which group has more without counting again.', show: { kind: 'picto', rows: [{ icon: 'ball', count: 3 }, { icon: 'teddy', count: 2 }] } },
-        { say: 'First, a real-object graph. Line up the real things in rows, the balls in one row and the teddy bears in another, both rows starting at the same end.', show: { kind: 'picto', rows: [{ icon: 'ball', count: 3 }, { icon: 'teddy', count: 2 }] } },
-        { say: 'The row that reaches farther has more. The ball row is longer, so there are more balls. Count to see how many. One, two, three balls, and one, two teddy bears.', show: { kind: 'picto', rows: [{ icon: 'ball', count: 3 }, { icon: 'teddy', count: 2 }] } },
-        { say: 'Now a picture graph. Draw one picture for each thing, one picture for each ball and one for each bear. The graph stays even after the toys are put away.', show: { kind: 'picto', rows: [{ icon: 'ball', count: 3 }, { icon: 'teddy', count: 2 }] } },
+        { say: 'First, a real-object graph. Put the real things on a mat of same-size squares, one thing in each square. The balls go in one row and the teddy bears in another, both rows starting at the same end, so you can see which row is longer.', show: { kind: 'picto', rows: [{ icon: 'ball', count: 3 }, { icon: 'teddy', count: 2 }] } },
+        { say: 'With one thing in each square, the row that reaches farther has more. The ball row is longer, so there are more balls. Count to see how many. One, two, three balls, and one, two teddy bears.', show: { kind: 'picto', rows: [{ icon: 'ball', count: 3 }, { icon: 'teddy', count: 2 }] } },
+        { say: 'Now a picture graph. Draw one picture for each thing, all the same size, one for each ball and one for each bear. The graph stays even after the toys are put away.', show: { kind: 'picto', rows: [{ icon: 'ball', count: 3 }, { icon: 'teddy', count: 2 }] } },
         { say: 'A graph answers questions. How many balls? Three. Which has fewer? The bears, because two is fewer than three. There is one more ball than bears, because three is one more than two. How many toys in all? Three and two make five.', show: { kind: 'picto', rows: [{ icon: 'ball', count: 3 }, { icon: 'teddy', count: 2 }] } },
         { say: 'A graph can have three rows. This week had four sunny days, two rainy days and one snowy day. The sunny row is the longest, so sunny days were the most, and snowy days were the fewest.', show: { kind: 'picto', rows: [{ icon: 'sun', count: 4 }, { icon: 'rain', count: 2 }, { icon: 'snow', count: 1 }] } },
         { say: 'Sort, count, and make a graph. The graph shows you which has more, which has fewer, and how many in all.', show: { kind: 'flow', steps: ['sort', 'count', 'graph'] } },
       ],
-      pictures: [{ serial: 'P44', step: 1, alt: 'Two rows of toys lined up on a rug, balls in one row and teddy bears in a shorter row, both rows starting at the same edge' }],
+      pictures: [{ serial: 'P44', step: 1, alt: 'Two rows of toys on a mat of same-size squares, one toy in each square, three balls in one row and two teddy bears in a shorter row, both rows starting at the same edge' }],
     },
     sources: ['Aligned with Texas TEKS K.8B (use data to create real-object and picture graphs) and K.8C (draw conclusions from real-object and picture graphs), and Common Core 1.MD.C.4 (organize, represent, and interpret data with up to three categories; ask and answer questions about the total number of data points, how many in each category, and how many more or less are in one category than in another), which Common Core places in grade 1.'],
     generators: ['kg-which-more', 'kg-how-many', 'kg-in-all', 'kg-most-three', 'kg-make-graph'],
@@ -10404,7 +10560,7 @@ function KINDER_CIVICS_MODULES() { return [
         { say: 'Navarro spoke up for Tejanos, Texans whose families came from Mexico, so that they could vote and own land like everyone else. Navarro County is named for him.', show: { kind: 'flag', texas: true } },
         { say: 'Washington, Columbus, Austin and Navarro each helped shape our state and our nation. That is why we remember their names.', show: { kind: 'pair', a: { kind: 'flag', stars: true }, b: { kind: 'flag', texas: true } } },
       ],
-      pictures: [{ serial: 'P46', step: 1, alt: 'George Washington in his blue and buff uniform, from his best known portrait' }, { serial: 'P47', step: 2, alt: 'Christopher Columbus at the rail of a wooden sailing ship, land in sight' }, { serial: 'P45', step: 4, alt: 'Stephen F. Austin beside a log cabin and a field, settlers arriving in wagons' }, { serial: 'P48', step: 5, alt: 'José Antonio Navarro at a desk with a quill and papers, the paper that made Texas its own country' }],   // four paintings, one for each figure the standard names (pass KM)
+      pictures: [{ serial: 'P46', step: 1, alt: 'George Washington in his blue and buff uniform, from his best known portrait' }, { serial: 'P47', step: 2, alt: 'Christopher Columbus\'s three wooden sailing ships on the ocean, land in sight' }, { serial: 'P45', step: 4, alt: 'Stephen F. Austin beside a log cabin and a field, settlers arriving in wagons' }, { serial: 'P48', step: 5, alt: 'José Antonio Navarro at a desk with a quill and papers, the paper that made Texas its own country' }],   // four paintings, one for each figure the standard names (pass KM)
     },
     sources: ['Aligned with Texas TEKS K.2 (identify contributions of historical figures, including Stephen F. Austin, George Washington, Christopher Columbus, and José Antonio Navarro, who helped to shape the state and nation; paragraph (2) of 19 TAC 113.11 is a single expectation, so it takes no letter) and NCSS Theme II (Time, Continuity, and Change).'],
     generators: ['ck-figure', 'ck-figure', 'ck-figure-did', 'ck-figure', 'ck-figure-did'],
@@ -17938,16 +18094,45 @@ Object.assign(GENERATORS, {
   'p3-tap-ab': (rng) => {
     const L = pick(rng, ['A', 'B']); const other = L === 'A' ? 'B' : 'A';
     return { type: 'choice', story: null, prompt: `Tap the letter ${L}.`, choices: shuffle(rng, [L, other]), answer: L,
-      explain: `This is ${L}. ${L === 'A' ? 'It is tall, with a bar across the middle.' : 'It has two round bumps on one side.'}`, visual: null, explainVisual: null };
+      explain: `This is ${L}. ${L === 'A' ? 'Its two slanted sides meet at the top, with a bar across.' : 'It has two round bumps on one side.'}`, visual: null, explainVisual: null };
   },
   'p3-name-ab': (rng) => {
     // More examples (pass HT, Mikey): the letter alone, or lit up at the start of a word read aloud.
     if (rng() < 0.6) { const [word, L] = pick(rng, [['Apple', 'A'], ['Ant', 'A'], ['Alligator', 'A'], ['Acorn', 'A'], ['Arrow', 'A'], ['Ball', 'B'], ['Bee', 'B'], ['Bus', 'B'], ['Bat', 'B'], ['Bear', 'B'], ['Boat', 'B'], ['Book', 'B']]);
-      const why = L === 'A' ? 'It is tall, with a bar across the middle, so it is A.' : 'It has two round bumps on one side, so it is B.';
-      return { type: 'choice', story: null, prompt: `What letter does ${word.toLowerCase()} start with?`, choices: shuffle(rng, ['A', 'B']), answer: L, explain: [word, ' starts with ', L, '. Look at the first letter. ', why].join(''), visual: { kind: 'letters', text: word, highlight: 0 }, explainVisual: null }; }
+      const why = L === 'A' ? 'Its two slanted sides meet at the top, with a bar across, so it is A.' : 'It has two round bumps on one side, so it is B.';
+      return { type: 'choice', story: null, prompt: `What letter does ${word.toLowerCase()} start with?`, choices: shuffle(rng, ['A', 'B']), answer: L, explain: [word, ' starts with ', L, '. Look at the first letter. ', why].join(''), visual: { kind: 'letters', text: word, highlight: 'first' }, explainVisual: null }; }
     const L = pick(rng, ['A', 'B']);
     return { type: 'choice', story: null, prompt: 'What letter is this?', choices: shuffle(rng, ['A', 'B']), answer: L,
-      explain: `This is ${L}. ${L === 'A' ? 'It is tall, with a bar across the middle.' : 'It has two round bumps on one side.'}`, visual: { kind: 'letters', text: L, highlight: 0 }, explainVisual: null };
+      explain: `This is ${L}. ${L === 'A' ? 'Its two slanted sides meet at the top, with a bar across.' : 'It has two round bumps on one side.'}`, visual: { kind: 'letters', text: L }, explainVisual: null };
+  },
+  // A or B found by its look (pass MC). Until pass MC the lesson called A tall, with a bar across the middle, which is just as
+  // true of B, so a question that asked for A by its look had two right answers; the new description is true of A alone.
+  // Since the lesson check (pass MC) the description is set beside a letter that looks a little like the answer, so the words are
+  // applied to a letter the lesson never named for this, rather than matched to A and B, which the lesson shows side by side.
+  'p3-ab-by-look': (rng) => {
+    const L = pick(rng, ['A', 'B']); const twin = pick(rng, L === 'A' ? ['H', 'V'] : ['P', 'D']);
+    const why = { H: 'The other letter has a bar too, but its sides stand up straight and never meet.', V: 'The sides of the other letter meet at the bottom, and it has no bar.', P: 'The other letter has just one bump.', D: 'The other letter has just one bump.' }[twin];
+    return { type: 'choice', story: null, prompt: L === 'A' ? 'Tap the letter with two slanted sides that meet at the top.' : 'Tap the letter with two round bumps on one side.', choices: shuffle(rng, [L, twin]), answer: L,
+      explain: [L === 'A' ? 'This is A. Its two slanted sides meet at the top, with a bar across. ' : 'This is B. It has two round bumps on one side. ', why].join(''), visual: null, explainVisual: null };
+  },
+  // A or B inside a word, the way a sign shows it (pass MC, the lesson check): the lesson says to look for A and B on signs and in
+  // books, which is what PK3.III.C.1 means by letters in environmental print. The word is said and shown in capitals, its letters
+  // are the choices in order, each once, and the child taps the asked letter; a tapped letter never says its name (choiceSpeaks).
+  'p3-ab-in-word': (rng) => {
+    const [word, L] = pick(rng, P3_SIGN_WORDS);
+    return { type: 'choice', story: `Here is the word ${word.toLowerCase()}, the way a sign shows it.`, prompt: `Tap the letter ${L}.`, choices: word.split(''), answer: L,
+      explain: [`This is the letter ${L}, in the word ${word.toLowerCase()}. `, L === 'A' ? 'Its two slanted sides meet at the top, with a bar across.' : 'It has two round bumps on one side.'].join(''), visual: { kind: 'letters', text: word }, explainVisual: null };
+  },
+  // A or B beside a letter that looks a little like it (pass MC): H has a bar too, but its two sides stand up straight and never
+  // meet; the sides of V meet at the bottom and it has no bar; P and D have one bump, not two. The child is asked only for
+  // the letter the lesson taught, and the look-alike is told apart by the lesson's own words, so it applies the description to
+  // a letter the lesson never showed. The setup line makes it a task of its own (questionKey reads setup and wording, never
+  // the wrong choice), so H and V, or P and D, count once.
+  'p3-ab-look-alike': (rng) => {
+    const L = pick(rng, ['A', 'B']); const twin = pick(rng, L === 'A' ? ['H', 'V'] : ['P', 'D']);
+    const why = { H: 'The other letter has a bar too, but its sides stand up straight and never meet.', V: 'The sides of the other letter meet at the bottom, and it has no bar.', P: 'The other letter has just one bump.', D: 'The other letter has just one bump.' }[twin];
+    return { type: 'choice', story: `One of these is the letter ${L}, and the other only looks a little like it.`, prompt: `Tap the letter ${L}.`, choices: shuffle(rng, [L, twin]), answer: L,
+      explain: [`This is ${L}. `, L === 'A' ? 'Its two slanted sides meet at the top, with a bar across. ' : 'It has two round bumps on one side. ', why].join(''), visual: null, explainVisual: null };
   },
 
   'p3-odd-one': (rng) => {
@@ -26012,14 +26197,141 @@ const CIV_LEVEL_NOTES = { Local: 'Local government is your city or town, led by 
 const CIV_RULE_LAW = [['Bedtime at eight in one family', 'Rule'], ['No running in one classroom', 'Rule'], ['Wear a seat belt in every car in Texas', 'Law'], ['Stop at every red light', 'Law']];
 const CIV_BRANCH_JOBS = [['Makes the laws', 'Congress'], ['Carries out the laws', 'The President'], ['Decides what a law means', 'The courts']];
 const yesNo = (rng) => shuffle(rng, ['Yes', 'No']);
+// Very First Steps' feelings (pass MD, earmark E12 part one): the four feelings of PK3 I.B.2.b, each with the one sign of its face
+// the lesson names, and the lesson's own moments, the body's signs, big-feeling helpers and ways to help a friend.
+const P3_FEELINGS = ['happy', 'sad', 'mad', 'scared'];
+const P3_FEEL_LOOK = { happy: 'It has a big smile.', sad: 'Its mouth turns down, and a tear rolls out.', mad: 'Its eyebrows squeeze down.', scared: 'Its eyes open wide.' };
+const P3_FEEL_MOMENTS = [
+  ['Sam is playing with his friend.', 'Sam', 'happy', 'sad', 'Playing with a friend can make you feel happy, so Sam might feel happy.'],
+  ['Ana watched her balloon float away.', 'Ana', 'sad', 'happy', 'Ana\'s balloon floated away, so she might feel sad. Every feeling is okay to have.'],
+  ['Someone grabbed Leo\'s toy.', 'Leo', 'mad', 'happy', 'Someone grabbed Leo\'s toy, so he might feel mad. Feeling mad is okay, and Leo can use his words.'],
+  ['Rosa heard a big boom of thunder.', 'Rosa', 'scared', 'happy', 'A big boom of thunder can make you feel scared, so Rosa might feel scared.'],
+  ['Kai\'s face feels hot, and his hands make tight fists.', 'Kai', 'mad', 'happy', 'A hot face and tight fists can show you feel mad, so Kai might feel mad.'],
+  ['Mia\'s heart is beating fast, and she wants to hide.', 'Mia', 'scared', 'happy', 'A fast heart and wanting to hide can show you feel scared, so Mia might feel scared.'],
+];
+const P3_FEEL_OKAY = [
+  ['Is it okay to feel sad?', 'Yes', 'Yes, it is okay. Every feeling is okay to have, and sad is a feeling.'],
+  ['Is it okay to feel mad?', 'Yes', 'Yes, it is okay. Every feeling is okay to have, and when you feel mad, you can use your words.'],
+  ['Is it okay to feel scared?', 'Yes', 'Yes, it is okay. Every feeling is okay to have, and your grown-up can help when you feel scared.'],
+  ['Is it okay to hit when you feel mad?', 'No', 'No, it is not. Feeling mad is okay, but hitting is not okay, because it hurts. Use your words.'],
+  ['Is it okay to push when you feel mad?', 'No', 'No, it is not. Feeling mad is okay, but pushing is not okay, because it hurts. Use your words.'],
+];
+const P3_FEEL_CALM = [
+  ['Your feeling is very big.', 'Who can you find to help?', 'Your grown-up', 'Nobody', 'Find your grown-up. A hug and a slow breath together can help a big feeling get smaller.', null],
+  ['Your feeling is very big.', 'What can help it get smaller?', 'A slow breath', 'Throwing a toy', 'A slow breath with your grown-up helps your body calm down, so a big feeling can get smaller. Throwing a toy is not okay, because it can hurt someone.', null],
+  [null, 'When your face looks like this, what can you say?', 'I feel sad', 'I feel mad', 'That face is sad, with a tear. You can say your feeling\'s name, I feel sad. Saying the name can help.', 'sad'],
+  [null, 'When your face looks like this, what can you say?', 'I feel mad', 'I feel scared', 'That face is mad, with its eyebrows squeezed down. You can say your feeling\'s name, I feel mad. Saying the name can help.', 'mad'],
+  [null, 'When your face looks like this, what can you say?', 'I feel scared', 'I feel sad', 'That face is scared, with its eyes open wide. You can say your feeling\'s name, I feel scared. Saying the name can help.', 'scared'],
+  ['You are taking a slow breath.', 'What do you pretend to smell as you breathe in?', 'icon:flower', 'icon:candle', 'You smell a flower by breathing in, so you pretend to smell one as you breathe in slowly. After that, you pretend to blow out a candle.', null],
+  ['You are taking a slow breath.', 'What do you pretend to blow out as you breathe out?', 'icon:candle', 'icon:flower', 'You blow out a candle by breathing out, so you pretend to blow one out as you breathe out slowly. Before that, you pretend to smell a flower.', null],
+];
+const P3_HELP_WHO = [
+  ['Tap the friend who might need help.', 'sad', ['happy'], 'That friend looks sad and may need help. You can ask, are you okay?'],
+  ['Tap the friend who might need help.', 'scared', ['happy'], 'That friend looks scared and may need help. You can ask, are you okay?'],
+  ['Tap the friend who looks sad.', 'sad', ['mad', 'scared'], 'That friend\'s mouth turns down, and a tear rolls out, so your friend looks sad.'],
+  ['Tap the friend who looks scared.', 'scared', ['sad', 'mad'], 'That friend\'s eyes are open wide, so your friend looks scared.'],
+];
+const P3_HELP_KIND = [
+  ['Your friend is crying.', 'What is a kind thing to say?', 'Are you okay?', 'Go away', 'Asking your friend if they are okay is kind. It shows you care how your friend feels.'],
+  ['Your friend looks sad.', 'What is a kind thing to do?', 'Sit beside your friend', 'Walk away', 'Sitting beside your friend is kind. It shows you care how your friend feels.'],
+  ['Your friend looks scared.', 'What is a kind thing to do?', 'Bring a teddy to hug', 'Laugh at your friend', 'Bringing a teddy to hug is kind. It shows you care how your friend feels.'],
+];
+const P3_HELP_GROWNUP = [
+  ['Your friend fell down and hurt a knee.', 'Who can help?', 'A toy', 'Get a grown-up. Grown-ups know how to help when someone gets hurt, and a toy cannot.'],
+  ['Your friend is very sad and cannot stop crying.', 'Who can you get to help?', 'Nobody', 'Get a grown-up. Grown-ups know how to help a friend who is very sad.'],
+  ['You and a friend both want one ball, and a fight starts.', 'Who can help you both?', 'The ball', 'Get a grown-up. A grown-up can help you take turns, so you both get to play.'],
+];
+const P3_HELP_BALL = [
+  ['Your friend tries to grab the ball from you.', 'What can you say?', 'Stop, please', 'Mine!', 'You can say, stop, please. Those kind words tell your friend that grabbing is not okay. Then get a grown-up to help you both.'],
+  ['You and a friend both want one ball, and a fight starts.', 'What can you do?', 'Get a grown-up', 'Grab the ball', 'Get a grown-up to help you both, because a grown-up can help you take turns. Grabbing is not okay.'],
+  ['A friend grabs the ball you were playing with.', 'What can you do?', 'Get a grown-up', 'Push your friend', 'Pushing is not okay, because it hurts. Keep your hands to yourself, and get a grown-up.'],
+  ['You and a friend both want one ball, and a fight starts.', 'How can a grown-up help you both get to play?', 'Help you take turns', 'Take the ball away', 'A grown-up can help you take turns, so you both get to play.'],
+];
+const P3_HELP_YESNO = [
+  ['Is it kind to ask a sad friend if they are okay?', 'Yes', 'Yes, it is kind. Asking if your friend is okay shows you care.'],
+  ['Is it kind to sit beside a friend who is sad?', 'Yes', 'Yes, it is kind. Sitting beside a sad friend shows you care.'],
+  ['Is it kind to laugh at a friend who falls and gets hurt?', 'No', 'No, it is not kind, because laughing can make a hurt friend feel sad. Ask if your friend is okay, and get a grown-up.'],
+  ['Is it okay to push when you both want one ball?', 'No', 'No, it is not. Pushing is not okay, because it hurts. You can take turns, or get a grown-up to help you both.'],
+  ['Should you get a grown-up when a friend is hurt?', 'Yes', 'Yes, you should. Grown-ups know how to help when someone gets hurt.'],
+];
+// One more and one fewer (pass ME, earmark E12 part two: PK3 V.B.1 and V.B.2, ELOF P-MATH 6): every answer is the count in the
+// words plus or minus one, said in counting words, and a wrong group is never that count, so a child who counts always finds it.
+const P3_NUM = ['zero', 'one', 'two', 'three', 'four', 'five'];
+const p3Dots = (n) => `${P3_NUM[n]} ${n === 1 ? 'dot' : 'dots'}`;
+const p3Here = (n) => `${n === 1 ? 'Here is' : 'Here are'} ${p3Dots(n)}.`;
+const p3CountUp = (n) => ['One', 'two', 'three', 'four', 'five'].slice(0, n).join(', ');
+// Rhymes heard with pictures (pass ME, earmark E12 part two: PK3 III.B.6 in part, ELOF P-LIT 1 in part): seven families of
+// things the lesson names and the screen draws, so a child hears the words and taps a picture, never reads a word. A wrong
+// choice comes from another family, so it never rhymes with the asked word.
+const P3_RHYME_FAMILIES = [[['ball', 'icon:ball'], ['wall', 'icon:wall']], [['dog', 'icon:dog'], ['log', 'icon:log'], ['frog', 'pic:frog']], [['cat', 'pic:cat'], ['hat', 'icon:hat']], [['moon', 'icon:moon'], ['spoon', 'icon:spoon']], [['sock', 'icon:sock'], ['block', 'icon:block'], ['rock', 'icon:rock']], [['bear', 'pic:bear'], ['chair', 'icon:chair']], [['bee', 'pic:bee'], ['tree', 'icon:tree']]];
+const p3RhymePic = ([, c]) => (c.startsWith('pic:') ? { kind: 'pic', name: c.slice(4) } : { kind: 'icon', name: c.slice(5) });
+// The dog and sock families sound close (one vowel for many Texas speakers, the accuracy check), so neither is the wrong choice
+// for the other: a three-year-old is never asked to hear rock against dog. The ball and sock families never meet either (the
+// alignment read): the wall icon is a grid of gray stones and the rock icon one gray stone, so a wrong wall beside a rock would
+// test looking, not listening.
+const P3_RHYME_NEAR = [[1, 4], [0, 4]];
+const p3RhymeOdd = (rng, fam) => { const i = P3_RHYME_FAMILIES.indexOf(fam); const near = P3_RHYME_NEAR.flatMap(([a, b]) => (a === i ? [b] : b === i ? [a] : [])); return pick(rng, pick(rng, P3_RHYME_FAMILIES.filter((f, k) => k !== i && !near.includes(k)))); };
 const twoOf = (rng, list, answer) => shuffle(rng, [answer, ...shuffle(rng, [...new Set(list.filter((x) => x !== answer))]).slice(0, 2)]);
 Object.assign(GENERATORS, {
+  // One more and one fewer (pass ME). The picture shows the group before the change, so the child works out the new count;
+  // the wrong group is the old count or one past the answer, never the answer itself. The more-or-fewer question says We add one
+  // dot, never One more dot comes, so the heard words do not hand over More (the lesson check).
+  'p3-add-one': (rng) => { const n = randInt(rng, 1, 4); const wrong = n + 2 <= 5 && rng() < 0.5 ? n + 2 : n;
+    return { type: 'choice', story: `${p3Here(n)} One more dot comes.`, prompt: 'Tap the group that shows how many there are now.', choices: shuffle(rng, [`dots:${n + 1}`, `dots:${wrong}`]), answer: `dots:${n + 1}`, explain: `One more dot came, so now there are ${p3Dots(n + 1)}. ${p3CountUp(n + 1)}.`, visual: { kind: 'dots', count: n }, explainVisual: { kind: 'dots', count: n + 1 } }; },
+  'p3-take-one': (rng) => { const n = randInt(rng, 2, 5); const wrong = n - 2 >= 1 && rng() < 0.5 ? n - 2 : n;
+    return { type: 'choice', story: `${p3Here(n)} One dot goes away.`, prompt: 'Tap the group that shows how many are left.', choices: shuffle(rng, [`dots:${n - 1}`, `dots:${wrong}`]), answer: `dots:${n - 1}`, explain: `One dot went away, so ${p3Dots(n - 1)} ${n - 1 === 1 ? 'is' : 'are'} left. ${p3CountUp(n - 1)}.`, visual: { kind: 'dots', count: n }, explainVisual: { kind: 'dots', count: n - 1 } }; },
+  'p3-more-or-fewer-now': (rng) => { const add = rng() < 0.5; const n = add ? randInt(rng, 1, 4) : randInt(rng, 2, 5);
+    return { type: 'choice', story: `${p3Here(n)} ${add ? 'We add one dot.' : 'One dot goes away.'}`, prompt: 'Are there more dots now, or fewer?', choices: shuffle(rng, ['More', 'Fewer']), answer: add ? 'More' : 'Fewer', explain: add ? `We added one dot, so there are more dots now. ${capFirst(P3_NUM[n])} and one more is ${P3_NUM[n + 1]}.` : `One dot went away, so there are fewer dots now. ${capFirst(P3_NUM[n])} take away one is ${P3_NUM[n - 1]}.`, visual: { kind: 'dots', count: n }, explainVisual: { kind: 'dots', count: add ? n + 1 : n - 1 } }; },
+  'p3-one-more-group': (rng) => { const n = randInt(rng, 1, 4); const wrong = pick(rng, [n - 1, n + 2].filter((k) => k >= 1 && k <= 5));
+    return { type: 'choice', story: p3Here(n), prompt: 'Tap the group that has one more than this.', choices: shuffle(rng, [`dots:${n + 1}`, `dots:${wrong}`]), answer: `dots:${n + 1}`, explain: `${capFirst(p3Dots(n + 1))} are one more than ${p3Dots(n)}. ${p3CountUp(n + 1)}.`, visual: { kind: 'dots', count: n }, explainVisual: { kind: 'pair', stack: true, a: { kind: 'dots', count: n + 1 }, b: { kind: 'dots', count: n } } }; },
+  'p3-one-fewer-group': (rng) => { const n = randInt(rng, 2, 5); const wrong = pick(rng, [n + 1, n - 2].filter((k) => k >= 1 && k <= 5));
+    return { type: 'choice', story: p3Here(n), prompt: 'Tap the group that has one fewer than this.', choices: shuffle(rng, [`dots:${n - 1}`, `dots:${wrong}`]), answer: `dots:${n - 1}`, explain: `${capFirst(p3Dots(n - 1))} ${n - 1 === 1 ? 'is' : 'are'} one fewer than ${p3Dots(n)}. ${p3CountUp(n - 1)}.`, visual: { kind: 'dots', count: n }, explainVisual: { kind: 'pair', stack: true, a: { kind: 'dots', count: n }, b: { kind: 'dots', count: n - 1 } } }; },
+  // Words that rhyme (pass ME). The asked word is spoken in the prompt (and shown, in the tap kind); the choices are pictures,
+  // which never speak, so the child must know and say each name, which the lesson taught, and listen to its end.
+  'p3-rhyme-tap': (rng) => { const fam = pick(rng, P3_RHYME_FAMILIES); const [a, b] = shuffle(rng, fam).slice(0, 2); const odd = p3RhymeOdd(rng, fam);
+    return { type: 'choice', story: a[0] === 'moon' ? 'This is the moon.' : `This is a ${a[0]}.`, prompt: `Tap the one that rhymes with ${a[0]}.`, choices: shuffle(rng, [b[1], odd[1]]), answer: b[1], explain: `${capFirst(a[0])} and ${b[0]} rhyme. They sound the same at the end. ${capFirst(odd[0])} does not rhyme with ${a[0]}.`, visual: p3RhymePic(a), explainVisual: null }; },
+  'p3-rhyme-listen': (rng) => { const fam = pick(rng, P3_RHYME_FAMILIES); const [a, b] = shuffle(rng, fam).slice(0, 2); const odd = p3RhymeOdd(rng, fam);
+    return { type: 'choice', story: null, prompt: `Listen. ${capFirst(a[0])}. Tap the one that rhymes with ${a[0]}.`, choices: shuffle(rng, [b[1], odd[1]]), answer: b[1], explain: `${capFirst(a[0])} and ${b[0]} rhyme. They sound the same at the end. ${capFirst(odd[0])} does not rhyme with ${a[0]}.`, visual: null, explainVisual: null }; },
+  'p3-rhyme-yesno': (rng) => { const fam = pick(rng, P3_RHYME_FAMILIES); const [a, b] = shuffle(rng, fam).slice(0, 2); const yes = rng() < 0.5; const c = yes ? b : p3RhymeOdd(rng, fam);
+    return { type: 'choice', story: null, prompt: `Do ${a[0]} and ${c[0]} rhyme?`, choices: yesNo(rng), answer: yes ? 'Yes' : 'No', explain: yes ? `Yes, they rhyme. ${capFirst(a[0])} and ${c[0]} sound the same at the end.` : `No, they do not rhyme. ${capFirst(a[0])} and ${c[0]} do not sound the same at the end.`, visual: { kind: 'pair', a: p3RhymePic(a), b: p3RhymePic(c) }, explainVisual: null }; },
+  'p3-rhyme-odd': (rng) => { const fam = pick(rng, P3_RHYME_FAMILIES); const [a, b] = shuffle(rng, fam).slice(0, 2); const odd = p3RhymeOdd(rng, fam);
+    return { type: 'choice', story: 'Two of these rhyme.', prompt: 'Tap the one that does not rhyme.', choices: shuffle(rng, [a[1], b[1], odd[1]]), answer: odd[1], explain: `${capFirst(a[0])} and ${b[0]} rhyme. ${capFirst(odd[0])} does not sound the same at the end, so it does not rhyme with them.`, visual: null, explainVisual: null }; },
   'pk4-tap-biggest': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']);
     return { type: 'choice', story: null, prompt: 'Tap the biggest one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:medium`, `shape:${sh}:small`]), answer: `shape:${sh}:big`, explain: `That ${sh} takes up the most room, so it is the biggest.`, visual: null, explainVisual: null }; },
   'pk4-tap-smallest': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']);
     return { type: 'choice', story: null, prompt: 'Tap the smallest one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:medium`, `shape:${sh}:small`]), answer: `shape:${sh}:small`, explain: `That ${sh} takes up the least room, so it is the smallest.`, visual: null, explainVisual: null }; },
   'pk4-tap-middle': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']);
     return { type: 'choice', story: null, prompt: 'Tap the middle-sized one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:medium`, `shape:${sh}:small`]), answer: `shape:${sh}:medium`, explain: `That is the middle-sized ${sh}, not little and not big.`, visual: null, explainVisual: null }; },
+  // The four feelings (pass MD, earmark E12: PK3 I.B.2.a and I.B.2.b, ELOF P-SE 6), each face told by the one sign the lesson
+  // names. A wrong face is any of the other three, which the drawings keep apart.
+  'p3-feel-tap-face': (rng) => { const f = pick(rng, P3_FEELINGS); const other = pick(rng, P3_FEELINGS.filter((x) => x !== f));
+    return { type: 'choice', story: null, prompt: `Tap the ${f} face.`, choices: shuffle(rng, [`face:${f}`, `face:${other}`]), answer: `face:${f}`, explain: `That is the ${f} face. ${P3_FEEL_LOOK[f]}`, visual: null, explainVisual: null }; },
+  'p3-feel-name-face': (rng) => { const f = pick(rng, P3_FEELINGS); const other = pick(rng, P3_FEELINGS.filter((x) => x !== f));
+    return { type: 'choice', story: null, prompt: 'How does this face feel?', choices: shuffle(rng, [capFirst(f), capFirst(other)]), answer: capFirst(f), explain: `This face is ${f}. ${P3_FEEL_LOOK[f]}`, visual: { kind: 'face', feeling: f }, explainVisual: null }; },
+  // The lesson's own moments and body clues (pass MD), answered with a face: playing with a friend, a balloon floating away, a
+  // grabbed toy, a boom of thunder, a hot face with tight fists, a fast heart that wants to hide. The wrong face is happy, or sad
+  // when the answer is happy, so it is never a feeling a child could also fairly have there.
+  'p3-feel-moment': (rng) => { const [story, name, f, wrong, why] = pick(rng, P3_FEEL_MOMENTS);
+    return { type: 'choice', story, prompt: `How might ${name} feel?`, choices: shuffle(rng, [`face:${f}`, `face:${wrong}`]), answer: `face:${f}`, explain: why, visual: null, explainVisual: null }; },
+  'p3-feel-okay': (rng) => { const [prompt, answer, why] = pick(rng, P3_FEEL_OKAY);
+    return { type: 'choice', story: null, prompt, choices: yesNo(rng), answer, explain: why, visual: null, explainVisual: null }; },
+  // A big feeling and what helps (pass MD, PK3 I.B.2.c, ELOF P-SE 8 in part): find your grown-up, a slow breath, the feeling's
+  // name for the face shown (never said, so the face is read), and the slow breath itself, a pretend flower to smell and a
+  // pretend candle to blow out.
+  'p3-feel-calm': (rng) => { const [story, prompt, answer, wrong, why, face] = pick(rng, P3_FEEL_CALM);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [answer, wrong]), answer, explain: why, visual: face ? { kind: 'face', feeling: face } : null, explainVisual: null }; },
+  // Helping a friend (pass MD, PK3 I.C.5, I.C.6 and I.D.1, ELOF P-SE 5 and P-SE 7): the friend who may need help by the face,
+  // the kind thing to say or do, the grown-up to get, and the fight over one ball, with the lesson's own words.
+  'p3-help-who': (rng) => { const [prompt, f, foils, why] = pick(rng, P3_HELP_WHO); const other = pick(rng, foils);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [`face:${f}`, `face:${other}`]), answer: `face:${f}`, explain: why, visual: null, explainVisual: null }; },
+  'p3-help-kind': (rng) => { const [story, prompt, answer, wrong, why] = pick(rng, P3_HELP_KIND);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [answer, wrong]), answer, explain: why, visual: null, explainVisual: null }; },
+  'p3-help-grownup': (rng) => { const [story, prompt, wrong, why] = pick(rng, P3_HELP_GROWNUP);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, ['A grown-up', wrong]), answer: 'A grown-up', explain: why, visual: null, explainVisual: null }; },
+  'p3-help-ball': (rng) => { const [story, prompt, answer, wrong, why] = pick(rng, P3_HELP_BALL);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [answer, wrong]), answer, explain: why, visual: null, explainVisual: null }; },
+  'p3-help-yesno': (rng) => { const [prompt, answer, why] = pick(rng, P3_HELP_YESNO);
+    return { type: 'choice', story: null, prompt, choices: yesNo(rng), answer, explain: why, visual: null, explainVisual: null }; },
   // Please and thank you in four everyday moments (pass JP), each explained with its reason.
   'pk3-magic-word': (rng) => { const c = pick(rng, [
       // More moments to practice (pass LN), so a child who comes back meets new ones.
@@ -28341,10 +28653,10 @@ Object.assign(GENERATORS, {
       visual: { kind: 'picto', rows }, explainVisual: null };
   },
   'kg-make-graph': (rng) => {
-    const Q = [[null, 'A graph made by lining up the real things in rows is called what?', ['A real-object graph', 'A picture graph', 'A clock'], 'A real-object graph', 'A real-object graph lines up the real things in rows, both rows starting at the same end.'],
+    const Q = [[null, 'A graph made by lining up the real things in rows is called what?', ['A real-object graph', 'A picture graph', 'A clock'], 'A real-object graph', 'A real-object graph lines up the real things in rows, one thing in each same-size square, both rows starting at the same end.'],
       [null, 'A graph with one picture for each thing is called what?', ['A picture graph', 'A real-object graph', 'A clock'], 'A picture graph', 'A picture graph draws one picture for each thing, so the graph stays even after the things are put away.'],
-      [null, 'In a graph, which row has more?', ['The row that reaches farther', 'The shorter row', 'The top row'], 'The row that reaches farther', 'The row that reaches farther has more, when both rows start at the same end.'],
-      [null, 'Why do both rows of a graph start at the same end?', ['So you can see which row is longer', 'To look pretty', 'So they fall over'], 'So you can see which row is longer', 'Both rows start at the same end, so the row that reaches farther really does have more.'],
+      [null, 'In a graph, which row has more?', ['The row that reaches farther', 'The shorter row', 'The top row'], 'The row that reaches farther', 'In a graph each thing takes one same-size space, so when both rows start at the same end, the row that reaches farther has more.'],
+      [null, 'Why do both rows of a graph start at the same end?', ['So you can see which row is longer', 'To look pretty', 'So they fall over'], 'So you can see which row is longer', 'Both rows start at the same end, and each thing takes one same-size space, so the row that reaches farther really does have more.'],
       [null, 'Why draw a picture graph after a real-object graph?', ['The graph stays after the things are put away', 'Pictures are bigger', 'You cannot count real things'], 'The graph stays after the things are put away', 'A picture graph draws one picture for each thing, and the graph stays even after the toys are put away.']];
     const picked = pick(rng, Q);
     if (picked[0] !== null || randInt(rng, 0, 1) === 1) {
@@ -29127,6 +29439,8 @@ function explainCommonDenominator(x, y, bigger) {
 export function describeChoice(choice) {
   const m = /^dots:(\d+)$/.exec(choice);
   if (m) return `the group with ${m[1]}`;
+  const fc = /^face:([a-z]+)$/.exec(choice);   // a feeling face (pass MD)
+  if (fc) return `the ${fc[1]} face`;
   const sh = /^shape:([a-z]+):(big|medium|small)$/.exec(choice);
   return sh ? `the ${sh[2] === 'big' ? 'big' : sh[2] === 'medium' ? 'middle-sized' : 'small'} ${sh[1]}` : choice;
 }
@@ -29382,7 +29696,7 @@ export const WONDER = [
       { voice: 'A grandparent of faith', says: 'Many families tell old stories to teach what matters. Some believe those stories happened, and some see them as ways of saying something true. Either way, the story is treasured because of what it carries.' },
       { voice: 'A skeptic', says: 'I would ask what we mean by true. Did it really happen, or does it tell us something correct about the world? Those are different questions, and the answers can differ too. Keeping those two questions apart stops a lot of arguments.' },
     ],
-    closing: 'Think of a story you love. What in it did not happen, and what in it is true anyway?',
+    closing: 'Think of a story you love. What in it is pretend, and what feels real?',
   },
   {
     id: 'w-time',
@@ -30566,15 +30880,15 @@ export const WONDER = [
     options: ['The sea', 'The sun', 'Nobody knows'],
     simple: [
       { voice: 'A scientist says', says: 'Sunlight has every color in it. The air scatters the blue bits all over the sky.' },
-      { voice: 'An artist says', says: 'Look again at sunset. The same sky turns orange and pink.' },
+      { voice: 'An artist says', says: 'At sunset, the same sky turns orange and pink.' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Sunlight looks white but it has every color mixed in. When it passes through the air, the blue part gets scattered in all directions, so wherever you look up, blue is coming at you. At sunset the light travels through more air and the blue scatters away before it reaches you, which is why the reds are left.' },
-      { voice: 'An artist', says: 'Painters have argued about the color of the sky for hundreds of years, and none of them paints it plain blue. There is violet near the top, pale near the horizon, and it changes every hour. Try looking for five minutes and naming every color you see.' },
+      { voice: 'An artist', says: 'Painters have argued about the color of the sky for hundreds of years, and none of them paints it plain blue. There is violet near the top, pale near the horizon, and it changes every hour. With your back to the sun, try looking for five minutes and naming every color you see.' },
       { voice: 'A grandparent of faith', says: 'Whatever you believe about how the sky came to be, most people agree it is a good thing to look at now and then. Some traditions make a point of stopping each day to notice it, and that habit is worth having whatever its reason.' },
       { voice: 'A skeptic', says: 'The sea is a common guess, and a good test is to ask what happens in the desert, far from any sea. The sky is still blue there. A guess that fails a simple test like that is worth letting go of, however nice it sounds.' },
     ],
-    closing: 'What color is the sky right now, if you look carefully?',
+    closing: 'What colors have you seen the sky turn?',
   },
   {
     id: 'w-share-fair',
@@ -30594,7 +30908,7 @@ export const WONDER = [
       { voice: 'A grandparent of faith', says: 'Sharing is one of the first things every family and every tradition teaches. Not because it is easy, but because it is hard, and doing it anyway is how people learn to trust each other.' },
       { voice: 'A skeptic', says: 'I would ask what the friends think is fair before deciding for them. Sometimes the person you are being fair to has a different idea, and finding out is quicker than guessing.' },
     ],
-    closing: 'Can you think of a time when the fair thing and the equal thing were different?',
+    closing: 'Think of a time you shared something. Did it feel fair to everyone?',
   },
   {
     id: 'w-dreams',
@@ -30614,7 +30928,7 @@ export const WONDER = [
       { voice: 'A grandparent of faith', says: 'People have paid attention to dreams for as long as there have been people. Some traditions see meaning in them, some see rest. Either way, it is worth noticing that you dream, and telling someone about it in the morning.' },
       { voice: 'A skeptic', says: 'I would want to separate what we know from what we guess. We know the brain is active. We do not know for certain why dreams take the shape they do. It is fine to enjoy a mystery without pretending it is solved.' },
     ],
-    closing: 'What is the strangest dream you remember? What bits of real life were in it?',
+    closing: 'What is the silliest dream you remember? Was anything from your day in it?',
   },
   {
     id: 'w-mistakes',
@@ -30739,7 +31053,7 @@ export const WONDER = [
       { voice: 'A grandparent of faith', says: 'Many traditions see the year as a circle: growing, resting, growing again. Autumn is the resting part. There is something calm about watching a tree let go of its leaves without any fuss.' },
       { voice: 'A skeptic', says: 'A good question is why some trees stay green all winter. If cold alone changed the color, they would change too. So it is not just the cold. Finding the odd one out often shows you the real reason.' },
     ],
-    closing: 'Find a leaf outside. How many colors can you count on just that one?',
+    closing: 'With a grown-up, find a leaf outside. How many colors can you count on it?',
   },
   {
     id: 'w-bigger-better',
@@ -31009,7 +31323,7 @@ export const WONDER = [
       { voice: 'A grandparent of faith', says: 'Every family has a story about the day someone learned to ride. Nobody tells the story of the first perfect go, because there was never one. The falls are the story, and they are told with a smile.' },
       { voice: 'A skeptic', says: 'I would ask what went wrong before getting back on. Too fast, looked down, forgot to pedal? A fall you understand is worth more than three you do not. Then get back on and ride.' },
     ],
-    closing: 'What is something you can do now that you fell over learning?',
+    closing: 'What is something you fell down a lot learning to do? Can you do it now?',
   },
   {
     id: 'w-got-it-wrong',
@@ -31029,7 +31343,7 @@ export const WONDER = [
       { voice: 'A grandparent of faith', says: 'Being wrong and trying again is one of the oldest lessons there is. Nobody expects a child to get everything right the first time. What people notice is whether you try again.' },
       { voice: 'A skeptic', says: 'Getting it wrong is only bad if you stop there. Getting it wrong and then finding out why is one of the best things that can happen. So the question is really what you do next.' },
     ],
-    closing: 'What is one thing you got wrong today, and what did it show you?',
+    closing: 'What is one thing you got wrong today? What will you try next time?',
   },
   {
     id: 'w-try-again',
@@ -31046,7 +31360,7 @@ export const WONDER = [
     perspectives: [
       { voice: 'A scientist', says: 'The second time you try, you carry the first time with you. You know one way that did not work, and your hands remember more than you think. That is why the tenth try is nearly always better than the first, at anything.' },
       { voice: 'An artist', says: 'A singer sings a song a hundred times before anyone hears it. Each time is a little different, and the differences add up. The version people hear has all the others hiding inside it.' },
-      { voice: 'A grandparent of faith', says: 'Patience is a word grown-ups use a lot, and this is what it means: trying again without being cross at yourself. Most traditions say it is one of the most important things a person can learn.' },
+      { voice: 'A grandparent of faith', says: 'Patience is a word grown-ups use a lot, and this is what it means: trying again without being mad at yourself. Most traditions say it is one of the most important things a person can learn.' },
       { voice: 'A skeptic', says: 'Trying again the exact same way does not always help. Trying again a little differently does. So I would say the trick is not just trying again, it is noticing what to change.' },
     ],
     closing: 'What is something you had to try more than once before it worked?',
@@ -31169,7 +31483,7 @@ export const WONDER = [
       { voice: 'A grandparent of faith', says: 'Many traditions teach that hard times and good times both pass, and that neither one is the whole story. Holding on loosely to both is a skill, and older people will tell you it takes a lifetime.' },
       { voice: 'A skeptic', says: 'I would watch out for the story that says a bad day means a bad life. One of those is a single day. The other is a lot of days. Keep them separate and the bad day gets to stay just a day.' },
     ],
-    closing: 'What was your best moment this week, and your hardest? Are you still here after both?',
+    closing: 'What was your best day this week, and your hardest? How do you feel now?',
   },
   {
     id: 'w-slow-learner',
@@ -31189,7 +31503,7 @@ export const WONDER = [
       { voice: 'A grandparent of faith', says: 'Many of the wisest people in old stories were slow to start. What mattered was that they kept going. The tortoise wins that race for a reason.' },
       { voice: 'A skeptic', says: 'Slow compared to whom? Everyone learns different things at different speeds. The child who is fast at reading may be slow at swimming. There is no one speed, so there is nothing to be bad at.' },
     ],
-    closing: 'What is something you learned slowly that you are glad you kept at?',
+    closing: 'What is something you learned slowly? Are you glad you kept trying?',
   },
   {
     id: 'w-experiment-fail',
@@ -31379,7 +31693,7 @@ export const WONDER = [
       { voice: 'A grandparent of faith', says: 'Shadows appear in a lot of old stories, sometimes as something scary and sometimes as a friend that follows you everywhere. Both are true in a way. A shadow is always yours.' },
       { voice: 'A skeptic', says: 'Can you have a shadow in the dark? Try it and see. With no light there is no shadow at all. So a shadow is not a thing on its own. It is a missing piece of light, and that is a strange idea to sit with.' },
     ],
-    closing: 'Go and find your shadow. What shape is it right now?',
+    closing: 'With a grown-up, find your shadow. What shape is it right now?',
   },
   {
     id: 'w-why-wash-hands',
@@ -31428,18 +31742,18 @@ export const WONDER = [
     courseIds: [],
     answerMode: 'pick',
     prompt: 'What does it feel like when a friend gets something you wanted?',
-    options: ['Sad', 'Cross', 'Both'],
+    options: ['Sad', 'Mad', 'Both'],
     simple: [
       { voice: 'A scientist says', says: 'That mixed-up feeling has a name: jealous. Everyone gets it.' },
       { voice: 'An artist says', says: 'You can feel jealous and still be glad for your friend, at the same time.' },
     ],
     perspectives: [
-      { voice: 'A scientist', says: 'That prickly feeling has a name, jealous, and everyone gets it, grown-ups too. It usually mixes a bit of sad and a bit of cross. Naming it does not make it go away, but it makes it smaller and easier to be honest about.' },
+      { voice: 'A scientist', says: 'That prickly feeling has a name, jealous, and everyone gets it, grown-ups too. It usually mixes a bit of sad and a bit of mad. Naming it does not make it go away, but it makes it smaller and easier to be honest about.' },
       { voice: 'An artist', says: 'You can feel jealous and be glad for your friend at the same time. That sounds impossible, but hearts can hold two things at once. Saying I am happy for you, and I wish I had one too, is honest and kind.' },
       { voice: 'A grandparent of faith', says: 'Nearly every old story has someone who got jealous and did something they regretted. The stories are told so we can learn the cheaper way. Feeling jealous is completely fine. Acting on it is where the trouble starts.' },
       { voice: 'A skeptic', says: 'I would ask whether you really wanted the thing, or whether you just wanted to be the one who got it. Those are different, and the second one fades fast once you notice it.' },
     ],
-    closing: 'When did you feel jealous? What would have helped in that moment?',
+    closing: 'When did you feel jealous? What could help next time?',
   },
   {
     id: 'w-say-sorry',
@@ -31468,7 +31782,7 @@ export const WONDER = [
     courseIds: [],
     answerMode: 'pick',
     prompt: 'How does it feel to lose a game, and what can you do with that feeling?',
-    options: ['Cross', 'Sad', 'Fine'],
+    options: ['Mad', 'Sad', 'Fine'],
     simple: [
       { voice: 'A scientist says', says: 'Losing feels bad for a little while. Then you get another go.' },
       { voice: 'An artist says', says: 'The people who lose the most games are the ones who play the most.' },
@@ -31631,7 +31945,7 @@ export const WONDER = [
     options: ['They are happy', 'They are talking', 'Not sure'],
     simple: [
       { voice: 'A scientist says', says: 'Cats purr when they are happy, and sometimes when they are hurt too. Nobody knows all of why.' },
-      { voice: 'An artist says', says: 'A purr is a tiny engine of contentment.' },
+      { voice: 'An artist says', says: 'A purr sounds like a tiny, happy engine.' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Cats purr when they are content, but also sometimes when they are frightened or hurt, which puzzled scientists for a long time. Some think the purring helps a cat heal. The strange truth is that nobody fully knows why cats purr, and cats are not telling.' },
@@ -31651,15 +31965,15 @@ export const WONDER = [
     options: ['They read a lot', 'They lived a lot', 'Not sure'],
     simple: [
       { voice: 'A scientist says', says: 'They have had more days to learn things in. Every day adds a little.' },
-      { voice: 'An artist says', says: 'Ask an older person a question and watch what happens.' },
+      { voice: 'An artist says', says: 'Ask an older person you know a question, and watch what happens.' },
     ],
     perspectives: [
       { voice: 'A scientist', says: 'Older people have simply had more days, and every day teaches something. Not just facts, but how things go, what usually happens next, which mistakes are worth avoiding. That kind of knowing takes years to build and cannot be rushed.' },
-      { voice: 'An artist', says: 'Ask an older person a real question and watch their face. Most have stories nobody has asked them for in years. Some of the best things you will ever hear are waiting inside someone who is over seventy.' },
+      { voice: 'An artist', says: 'Ask an older person you know a real question and watch their face. Most have stories nobody has asked them for in years. Some of the best things you will ever hear are waiting inside someone who is over seventy.' },
       { voice: 'A grandparent of faith', says: 'Every tradition asks children to respect their elders, and the reason is practical: the elders remember what did not work last time. That is worth more than it sounds. They are also, most of them, very glad to be asked.' },
       { voice: 'A skeptic', says: 'Older people know a lot, and they also sometimes know things that were true once and are not any more. So listen well, and check what you hear. Do both at the same time. That is a kind of respect too.' },
     ],
-    closing: 'What is one question you could ask an older person this week?',
+    closing: 'What is one question you could ask an older person you know?',
   },
   {
     id: 'w-help-someone',
@@ -31806,7 +32120,7 @@ export const WONDER = [
       { voice: 'A grandparent of faith', says: 'Some people believe that every living thing matters, however small it happens to be. In that way of thinking, a tiny ant and a huge elephant are both special. Being big is not the same as being important.' },
       { voice: 'A skeptic', says: 'I would rather find out than guess. We could count the ants one by one, or we could put them on a scale. Which answer we get depends entirely on which test we decide to run.' },
     ],
-    closing: 'What else could we count instead? What else could we weigh?',
+    closing: 'What else could we count? What else could we weigh to see which is heavier?',
   },
   // Added 2026-09-28 (Mikey's Wonder rules): more failure and feelings questions in every stage, so a student who
   // struggles often still meets a fresh one after a rough patch and never sees any question a third time.
@@ -32171,7 +32485,7 @@ export const WONDER = [
     perspectives: [
       { voice: 'A scientist', says: 'Puberty can start years apart in perfectly healthy people. Early or late, almost everyone ends up in the same adult range.' },
       { voice: 'An artist', says: 'A garden does not bloom all at once. The late flowers are not worse; they are simply later.' },
-      { voice: 'A grandparent of faith', says: 'I was the smallest boy in my class until I was fifteen. It felt like forever then, and it hardly matters now.' },
+      { voice: 'A grandparent of faith', says: 'I was the smallest girl in my class until I was fifteen. It felt like forever then, and it hardly matters now.' },
       { voice: 'A skeptic', says: 'Notice who is making it matter. Comparisons usually come from comments and pictures, not from anything your body is doing wrong.' },
     ],
     closing: 'Who could you talk to if a change worried you?',
@@ -32314,7 +32628,7 @@ export const WONDER = [
     perspectives: [
       { voice: 'A scientist', says: 'History gives one hard case. Around 1980 the Fed pushed its key rate to about 20 percent, unemployment reached 10.8 percent by 1982, and inflation fell from near 15 percent to below 4. The cure worked and the cost was real.' },
       { voice: 'An artist', says: 'Inflation is a slow leak in everyone\'s boat, and a recession is a hole in a few boats. Ask who is sitting in which one before you decide.' },
-      { voice: 'A grandparent of faith', says: 'In 1980 our mortgage rate was over 18 percent, and we ate a lot of beans. My brother lost his job that year. We both remember it, and we remember it differently.' },
+      { voice: 'A grandparent of faith', says: 'In 1981 our mortgage rate was over 18 percent, and we ate a lot of beans. My brother lost his job that year. We both remember it, and we remember it differently.' },
       { voice: 'A skeptic', says: 'Notice that the choice is between two costs, not a cost and nothing. Letting inflation run also hurts, most of all the people with savings in cash and wages that lag behind prices.' },
     ],
     closing: 'When a choice spreads a small cost over many people or a big cost over a few, which do you pick?',
@@ -32363,7 +32677,7 @@ export const WONDER = [
     perspectives: [
       { voice: 'A scientist', says: 'Look at what the evidence says about each path. Layoffs save money at once but can drain the trust and effort of the people who stay, while shared cuts spread the pain and keep skills in the building.' },
       { voice: 'An artist', says: 'Picture the room the morning after each choice. In one, ten desks are empty. In the other, everyone is a little poorer and still there. Which room would you rather lead?' },
-      { voice: 'A grandparent of faith', says: 'I worked for a man who cut his own pay first, before anyone else\'s. We never forgot it, and we stayed when times got better.' },
+      { voice: 'A grandparent of faith', says: 'The head of the school where I taught cut his own pay first, before anyone else\'s. We never forgot it, and we stayed when times got better.' },
       { voice: 'A skeptic', says: 'Ask whether the cut is temporary or permanent. Shared pay cuts work for a short storm, but if the business has truly shrunk, they only delay a harder choice.' },
     ],
     closing: 'What would you tell the people affected, and when?',
@@ -32830,7 +33144,7 @@ export const WONDER = [
       { voice: 'A grandparent of faith', says: 'Two people at a window see two different skies, and both are looking at the same sky. Listen to your friend, and you will see a little of theirs.' },
       { voice: 'A skeptic', says: 'Ask each other what you saw. Point to the part that looked happy and the part that looked sad. You may find you were looking at different corners.' },
     ],
-    closing: 'What part of the picture made you feel that way?',
+    closing: 'Next time you look at a picture with a friend, what could you ask them?',
   },
   {
     id: 'w-early-lost-the-beat',
@@ -32864,7 +33178,7 @@ export const WONDER = [
       { voice: 'A grandparent of faith', says: 'Every child has met that coat. Turn on the light, say hello to the coat, and thank your brain for looking out for you.' },
       { voice: 'A skeptic', says: 'Check with the light before you decide. A monster that is a coat every time you check is a coat. Your eyes reported, and your brain guessed. Now you know which one to believe.' },
     ],
-    closing: 'What would you do the next time?',
+    closing: 'What would you do next time something looks scary in the dark?',
   },
   {
     id: 'w-early-i-forgot-my-line',
@@ -32932,7 +33246,7 @@ export const WONDER = [
       { voice: 'A grandparent of faith', says: 'Every grown-up makes this choice every week. The trick is to be glad about the one you picked instead of sad about the one you did not.' },
       { voice: 'A skeptic', says: 'Ask which one lasts longer. A thing that breaks by Friday costs more than a thing that lasts a year, even if the coins are the same.' },
     ],
-    closing: 'Which one would you pick, and why?',
+    closing: 'Think of two things you want. Which one would you pick, and why?',
   },
   {
     id: 'w-early-jar-broke',
@@ -33037,7 +33351,7 @@ export const WONDER = [
     perspectives: [
       { voice: 'A scientist', says: 'Three steps is a lot for one head. Next time say them back first, cup, water, table, and the last one stays. Today, ask what it was.' },
       { voice: 'An artist', says: 'Picture the three steps like three stones in a row. You stepped on two of them, and the third stone is still there, waiting for you to ask where it is.' },
-      { voice: 'A grandparent of faith', says: 'Nobody is cross about a forgotten step. They are glad when you ask. Two done and one asked about is a good morning.' },
+      { voice: 'A grandparent of faith', says: 'Nobody is mad about a forgotten step. They are glad when you ask. Two done and one asked about is a good morning.' },
       { voice: 'A skeptic', says: 'Guessing might give you the wrong last step. Asking gives you the right one every time, so asking wins.' },
     ],
     closing: 'What would you say to the teacher?',
@@ -33351,7 +33665,7 @@ export const WONDER = [
     courseIds: [],
     answerMode: 'pick',
     prompt: 'Your friends are playing a game and did not ask you. How do you feel?',
-    options: ['Sad', 'Cross', 'A little of both'],
+    options: ['Sad', 'Mad', 'A little of both'],
     simple: [{ voice: 'A scientist says', says: 'Being left out hurts. That hurt is real, and lots of people feel it.' }, { voice: 'A skeptic says', says: 'Try asking to join. Maybe they just forgot to ask.' }],
     perspectives: [
       { voice: 'A scientist', says: 'Scientists study this with a simple ball game on a computer. When the other players stop passing to one person, that person feels sad and left out, even when the others are strangers. So the hurt you feel is real, and lots of people feel it.' },
@@ -33369,7 +33683,7 @@ export const WONDER = [
     answerMode: 'pick',
     prompt: 'When a feeling gets very big, can slow breaths help it get smaller?',
     options: ['Yes', 'No', 'Let me try'],
-    simple: [{ voice: 'A scientist says', says: 'Long, slow breaths out help your body calm down.' }, { voice: 'An artist says', says: 'Smell a flower, then slowly blow out a candle.' }],
+    simple: [{ voice: 'A scientist says', says: 'Long, slow breaths out help your body calm down.' }, { voice: 'An artist says', says: 'Pretend to smell a flower, then pretend to blow out a candle, slowly.' }],
     perspectives: [
       { voice: 'A scientist', says: 'When a feeling gets big, your heart beats faster and your breathing speeds up. Breathing out long and slow helps your body settle down. In one study, grown-ups who did five minutes of long breaths out each day felt their mood lift over a month.' },
       { voice: 'An artist', says: 'Try painting a picture of your breath. Breathe in while you count to three, then breathe out while you count to five, slow and smooth like a long brushstroke. Watch your shoulders drop as you go.' },
@@ -33401,16 +33715,16 @@ export const WONDER = [
     stage: 'early',
     courseIds: [],
     answerMode: 'pick',
-    prompt: 'A grown-up said no to something you really wanted. What helps the cross feeling?',
+    prompt: 'A grown-up said no to something you really wanted. What helps the mad feeling?',
     options: ['Take a big breath', 'Ask why', 'Find something else to do'],
-    simple: [{ voice: 'A scientist says', says: 'A cross feeling is biggest at the start. It usually shrinks with time.' }, { voice: 'A skeptic says', says: 'Ask why, in a calm voice. There may be a good reason.' }],
+    simple: [{ voice: 'A scientist says', says: 'A mad feeling is biggest at the start. It usually shrinks with time.' }, { voice: 'A skeptic says', says: 'Ask why, in a calm voice. There may be a good reason.' }],
     perspectives: [
-      { voice: 'A scientist', says: 'When you want something a lot, hearing no can sting. The cross feeling is usually biggest right at the start and gets smaller as the minutes go by. Slow breaths and a little waiting often help it shrink.' },
-      { voice: 'An artist', says: 'When I feel cross, I draw something I love, like a garden or my dog, and my busy hands help my mind settle. In one study, children who drew something new felt better than children who drew what had upset them.' },
+      { voice: 'A scientist', says: 'When you want something a lot, hearing no can sting. The mad feeling is usually biggest right at the start and gets smaller as the minutes go by. Slow breaths and a little waiting often help it shrink.' },
+      { voice: 'An artist', says: 'When I feel mad, I draw something I love, like a garden or my dog, and my busy hands help my mind settle. In one study, children who drew something new felt better than children who drew what had upset them.' },
       { voice: 'A grandparent of faith', says: 'Often a grown-up says no to keep you safe or to help you grow, even when it does not feel that way. Many families teach that you can disagree and still be kind. You can say how you feel, calmly and politely.' },
       { voice: 'A skeptic', says: 'Ask why, and really listen to the answer. Sometimes there is a reason you did not know about. Sometimes the answer is not now, and not now is different from never.' },
     ],
-    closing: 'What is one thing you can do when you feel cross?',
+    closing: 'Next time a grown-up says no, what could help you calm down?',
   },
   {
     id: 'w-early-pretend-hero',
@@ -33992,7 +34306,7 @@ export const WONDER = [
     options: ['Say sorry', 'Help fix it', 'Tell a grown-up'],
     simple: [{ voice: 'A grandparent of faith says', says: 'A real sorry, and an offer to help, can mend a lot.' }, { voice: 'A scientist says', says: 'Your friend may still feel sad, even though it was an accident.' }],
     perspectives: [
-      { voice: 'A scientist', says: 'Even when it was an accident, your friend may still feel sad or cross. Studies find that young children often judge by what happened more than by what someone meant. Weighing what a person meant grows a lot between about four and eight.' },
+      { voice: 'A scientist', says: 'Even when it was an accident, your friend may still feel sad or mad. Studies find that young children often judge by what happened more than by what someone meant. Weighing what a person meant grows a lot between about four and eight.' },
       { voice: 'An artist', says: 'A broken thing can sometimes be mended into something new. In Japan, an old art called kintsugi mends broken bowls with gold along the cracks. The mended bowl shows its story instead of hiding it.' },
       { voice: 'A grandparent of faith', says: 'A real sorry has three parts: saying what happened, saying you are sorry, and offering to help. Many traditions teach that making things right matters more than being perfect. Good friends usually forgive a true accident.' },
       { voice: 'A skeptic', says: 'Tell the truth about what happened, even if it is hard. If you hide it, your friend may think someone broke it on purpose. The truth keeps an accident from turning into a bigger problem.' },
@@ -34014,7 +34328,7 @@ export const WONDER = [
       { voice: 'A grandparent of faith', says: 'In my kitchen, a helper with wet sleeves is still a helper. Many families believe that working together matters more than how neat it looks. Cleaning up together is part of the job too.' },
       { voice: 'A skeptic', says: 'Helping was not the mistake. Using too much water was, and that part is easy to change. Keep the good part, and fix the other part.' },
     ],
-    closing: 'What is a job at home you could help with?',
+    closing: 'What is a job at home you could help a grown-up with?',
   },
   {
     id: 'w-early-bad-dream',
@@ -34116,7 +34430,7 @@ export const WONDER = [
       { voice: 'A grandparent of faith', says: 'Some families start again at lunch with a quiet moment, a prayer or a deep breath. Whatever you believe, you can make a fresh start any time. The morning does not get to decide the whole day.' },
       { voice: 'A skeptic', says: 'Count the good things too, not just the bad ones. Maybe the bus was on time, or your friend saved you a seat. A fair count often shows a day that was not all bad.' },
     ],
-    closing: 'What could you do to give a bad morning a fresh start?',
+    closing: 'What could you do to make the rest of the day better?',
   },
   {
     id: 'w-early-so-hard-to-wait',
@@ -34692,6 +35006,20 @@ export function wonderFor(courseId, seed, review) {
 export function makeWonderEvent(wonderId, moduleId, at, seconds, wordCount) {
   return { type: 'wonder_answered', at, wonderId, moduleId, seconds, wordCount };
 }
+// The cards a child who cannot read meets after answering a Wonder question (pass MG, Mikey's answer to Q10, "yes"): the
+// question's two short voices (simple), then its closing line on a card of its own, so the last thought the question leaves to
+// carry away reaches a pre-reader too; before pass MG it stayed on the readers' screen. A question with no short voices (none
+// reaches a pre-reader; the rules test holds it) falls back to the first sentence of its first two voices. wonderCardSpoken is
+// what the voice says for a card: the voice by name and label (Chloe, the artist, says), then its words; the closing as it is.
+export function wonderPreReaderCards(w) {
+  if (!w) return [];
+  const voices = (w.simple || (w.perspectives || []).slice(0, 2).map((p) => ({ voice: p.voice, says: p.says.split('. ')[0] + '.' }))).map((v) => ({ voice: v.voice, says: v.says }));
+  return w.closing ? [...voices, { closing: w.closing }] : voices;
+}
+export function wonderCardSpoken(card) {
+  if (!card) return '';
+  return card.closing ? card.closing : `${wonderVoiceSpoken(card.voice)}: ${card.says}`;
+}
 // -----------------------------------------------------------------------------------------------------------------
 // wonderSpokenParts (2026-10-03, pass IS). In plain terms: what a child who cannot read yet hears on a Wonder question,
 // the question and then each choice in turn, with Or before the last. Before this pass the choices were never spoken,
@@ -34891,8 +35219,8 @@ export const LIFE_SKILLS = [
     id: 'ls-feelings',
     stage: 'early',
     title: 'Naming how you feel',
-    why: 'A child who can say "I am frustrated" is far less likely to throw something. Putting a name to a feeling makes it smaller and easier to handle. This is the foundation everything else about emotions gets built on.',
-    ways: ['Name your own feelings out loud during the day, so they hear it modelled.', 'Keep a small set of faces on the wall and let them point rather than explain.', 'Ask what the feeling wanted them to do, not just what it was.'],
+    why: 'A child who can say "I am frustrated" is far less likely to throw something. Putting a name to a feeling can make it smaller and easier to handle. This is the foundation everything else about emotions gets built on.',
+    ways: ['Name your own feelings out loud during the day, so they hear it modeled.', 'Keep a small set of faces on the wall and let them point rather than explain.', 'Ask what the feeling wanted them to do, not just what it was.'],
   },
   {
     id: 'ls-boredom',
@@ -34906,7 +35234,7 @@ export const LIFE_SKILLS = [
     stage: 'early',
     title: 'Helping at home',
     why: 'Contributing to a household is how a child learns they matter to a group. The job itself is almost beside the point. What sticks is the sense of being counted on.',
-    ways: ['Give a job that is genuinely needed rather than one invented for them.', 'Accept work that is done badly rather than redoing it in front of them.', 'Rotate jobs so nobody gets stuck with the worst one forever.'],
+    ways: ['Give a job that is genuinely needed rather than one invented for them.', 'Accept work that is done badly rather than redoing it in front of them.', 'Rotate jobs so nobody gets stuck with the worst one forever.', 'Let a small child set the table, one plate and one cup for each person, counting as they go.'],
   },
   {
     id: 'ls-newpeople',
@@ -34950,7 +35278,7 @@ export const LIFE_SKILLS = [
     stage: 'early',
     title: 'Calming your body down',
     why: 'Big feelings land in the body before they reach words. A child who can slow their own breathing has a way out of a moment that would otherwise run away with them. It works because it is physical, not because they understand it.',
-    ways: ['Breathe out for longer than you breathe in, and count it together.', 'Practice when they are calm, so the skill is there when they are not.', 'Do it alongside them rather than instructing from across the room.'],
+    ways: ['Breathe out for longer than you breathe in, smelling a pretend flower and then blowing out a pretend candle, and count it together.', 'Practice when they are calm, so the skill is there when they are not.', 'Do it alongside them rather than instructing from across the room.'],
   },
   {
     id: 'ls-aww-moments',
@@ -36113,8 +36441,30 @@ export function makeQuickPlacedEvent(moduleId, at) {
 // Reading lists by grade, with a grown shelf for parents, educators and advanced readers. Pass HY (2026-10-02, Mikey) added
 // books by thinkers he admires where they fit: Frankl in grade 11, Marcus Aurelius in grade 12, Brooks and Popper for college,
 // and Brooks, McGilchrist, Naval Ravikant and the Dalai Lama on the grown shelf.
+// Pre-K 3's sign words (pass MC): short words a three-year-old hears every day, each holding A or B once and no letter twice.
+// The asked letter sits first or elsewhere (the lesson check's second read: with only cat, hat and map, A was always the middle
+// tile, and a child could learn the place instead of the letter), and the rules test holds every letter to two places. No word
+// sounds like a letter's name (tea, sea, pea, bee), which a lesson about letter names would muddle (the screen check).
+const P3_SIGN_WORDS = [['CAT', 'A'], ['HAT', 'A'], ['MAP', 'A'], ['VAN', 'A'], ['BAT', 'A'], ['CAB', 'A'], ['ANT', 'A'], ['ARM', 'A'], ['AIR', 'A'], ['ART', 'A'], ['TUB', 'B'], ['WEB', 'B'], ['CUB', 'B'], ['BUS', 'B'], ['BED', 'B'], ['CAB', 'B'], ['BAT', 'B']];
 export const READING_LISTS = {
-  PK3: ['Goodnight Moon (Margaret Wise Brown)', 'The Very Hungry Caterpillar (Eric Carle)', 'Brown Bear, Brown Bear, What Do You See? (Bill Martin Jr.)', 'Where Is the Green Sheep? (Mem Fox)', 'Dear Zoo (Rod Campbell)'],
+  // Pass MC (the alignment read of pass MB, each title checked before it was added): Polar Bear, Polar Bear, What Do You Hear?
+  // (Henry Holt, 1991, ages 2 to 5 in the publisher's listing: zoo animals and the sounds they make, beside Animal Sounds) and
+  // Mouse Shapes (Harcourt, 2007, ages 2 to 7 by Kirkus: three mice hide from a cat among shapes, then build pictures from them,
+  // beside Circle and Square). Chicka Chicka Boom Boom stays on pre-K 4's list, where it already was: Simon & Schuster lists the
+  // picture book for ages 4 to 8 (its Little Simon board book from age 1).
+  // Pass MD, beside the two feelings lessons (checked before it was added): In My Heart: A Book of Feelings (Jo Witek,
+  // illustrated by Christine Roussey, Abrams Appleseed; ages 2 to 4 in Publishers Weekly's review: feelings named one by one,
+  // with heart-shaped die-cuts). Left off, with the reasons: Hands Are Not for Hitting (Martine Agassi; the Free Spirit board
+  // book is for ages 1 to 4) because its notes for grown-ups suggest venting a feeling out (yelling into a pillow, a mad dance
+  // with punches in the air), which the rule on hard feelings (pass IX) keeps out of the app; Glad Monster, Sad Monster
+  // (Hachette: ages 4 to 8); and Todd Parr's The Feelings Book, whose picture book Hachette lists for ages 4 to 6, though its
+  // LB Kids board book (2005) is listed from birth to 3, so it could join after a read of its pages.
+  // Pass ME, beside Words that rhyme (checked before they were added): My Very First Mother Goose (Iona Opie, illustrated by
+  // Rosemary Wells, Candlewick; Publishers Weekly: Ages 2-up), the nursery rhymes III.B.6 names, and Each Peach Pear Plum (Janet
+  // and Allan Ahlberg, Viking Books for Young Readers' board book, age range 0 to 3 at the MIT Press Bookstore's listing), a
+  // rhyming I-spy. Left off: Five Little Monkeys Jumping on the Bed (Eileen Christelow, Clarion Books), one fewer each time,
+  // whose board book is listed for ages 4 to 7, so it waits for pre-K 4's list.
+  PK3: ['Goodnight Moon (Margaret Wise Brown)', 'The Very Hungry Caterpillar (Eric Carle)', 'Brown Bear, Brown Bear, What Do You See? (Bill Martin Jr.)', 'Polar Bear, Polar Bear, What Do You Hear? (Bill Martin Jr.)', 'Where Is the Green Sheep? (Mem Fox)', 'Dear Zoo (Rod Campbell)', 'Mouse Shapes (Ellen Stoll Walsh)', 'In My Heart: A Book of Feelings (Jo Witek)', 'My Very First Mother Goose (Iona Opie and Rosemary Wells)', 'Each Peach Pear Plum (Janet and Allan Ahlberg)'],
   PK4: ['Where the Wild Things Are (Maurice Sendak)', 'Chicka Chicka Boom Boom (Bill Martin Jr. and John Archambault)', 'The Snowy Day (Ezra Jack Keats)', 'Corduroy (Don Freeman)', 'Blueberries for Sal (Robert McCloskey)', 'Llama Llama Red Pajama (Anna Dewdney)'],
   K: ['Green Eggs and Ham (Dr. Seuss)', 'Frog and Toad Are Friends (Arnold Lobel)', 'The Little Engine That Could (Watty Piper)', 'Make Way for Ducklings (Robert McCloskey)', 'Owl Babies (Martin Waddell)', 'Elephant and Piggie: There Is a Bird on Your Head! (Mo Willems)',
     'The Snowy Day (Ezra Jack Keats)', 'Blueberries for Sal (Robert McCloskey)', 'The Velveteen Rabbit (Margery Williams)', 'Winnie-the-Pooh (A. A. Milne)', 'Mike Mulligan and the Steam Shovel (Virginia Lee Burton)', 'The Story of Ferdinand (Munro Leaf)', 'Aesop\'s Fables (Aesop)', 'Karl, Get Out of the Garden! (Anita Sanchez)', 'Strega Nona (Tomie dePaola)', 'Ox-Cart Man (Barbara Cooney)', 'Cinderella (Kinuko Y. Craft)', 'Little Red Riding Hood (Trina Schart Hyman)', 'Rumpelstiltskin (Paul O. Zelinsky)', 'The Story about Ping (Marjorie Flack)', 'The Legend of the Bluebonnet (Tomie dePaola)', 'Goldilocks and the Three Bears (Jan Brett)', 'King Midas and the Golden Touch (Kinuko Y. Craft)', 'The Story of Babar (Jean de Brunhoff)', 'Curious George (H. A. Rey)', 'Madeline (Ludwig Bemelmans)', 'Miss Rumphius (Barbara Cooney)', 'The Lion and the Mouse (Jerry Pinkney)', 'Corduroy (Don Freeman)', 'Ask Mr. Bear (Marjorie Flack)'],
@@ -36159,6 +36509,9 @@ export const EXPERIMENTS = {
     { title: 'Ice cube race', ask: 'Where does ice melt fastest?', do: 'One cube on a plate in the sun, one in the fridge, one in your hand.', see: 'Warmth melts ice. Your hand is warm.' },
     { title: 'Rolling or not', ask: 'Which of these will roll?', do: 'A ball, a block, an unopened can, a book, on a tray tilted a little.', see: 'A ball, round all over, rolls, and so does a can on its side. Flat things slide or stay.' },   // pass MB: "round things roll" was retired, since a plate lying flat does not
     { title: 'Wet sand, dry sand', ask: 'Which sand makes a castle?', do: 'Two cups of sand, one with a little water. Try to shape each.', see: 'Wet sand holds a shape; dry sand falls apart.' },
+    { title: 'Mirror faces', ask: 'Which parts of your face move for each feeling?', do: 'Sit at a mirror with a grown-up and make a happy face, a sad face, a mad face and a scared face, one at a time. Say the feeling\'s name as you make it.', see: 'The mouth, the eyebrows and the eyes move. A smile goes up, a sad mouth turns down, mad eyebrows squeeze down, and scared eyes open wide.', moduleId: 'four-feelings' },   // pass MD, beside Happy, sad, mad and scared
+    { title: 'Blocks on a tray', ask: 'Does adding one block make more?', do: 'Put two big wooden blocks on a tray and count them. Add one block and count again. Take one block away and count again. Big blocks only, nothing small enough to swallow.', see: 'Adding one makes more, and taking one away makes fewer. Counting tells how many there are now.', moduleId: 'one-more-one-fewer' },   // pass ME, beside One more and one fewer (V.B.1 and V.B.2 say a child uses objects)
+    { title: 'Big blocks, little blocks', ask: 'Which row has more blocks?', do: 'Line up three big wooden blocks in one row and five smaller wooden blocks in another, every block too big to swallow. Guess which row has more, then count each row, touching each block once.', see: 'The big blocks can look like more, but counting shows that five blocks are more than three. Big is not the same as more.', moduleId: 'more-or-fewer' },   // pass MF, beside More and Fewer (the size trap, Mikey's answer to Q6; the alignment read)
     { title: 'Smell jars', ask: 'Can you tell what it is with your nose?', do: 'A grown-up puts a drop of vanilla on one cotton ball, a squeeze of lemon on another and a cinnamon stick in a third cup, covers the cups and pokes holes in the lids. Sniff gently, and no tasting.', see: 'Noses know things eyes cannot see.' },
     { title: 'Sound shakers', ask: 'Which shaker is loudest?', do: 'A grown-up puts rice in one plastic tub, dried beans in another and a metal spoon in a third, and tapes each lid shut. Shake each.', see: 'Different things make different sounds.' },
     { title: 'Melting chocolate', ask: 'What does warmth do?', do: 'A chocolate chip in a warm hand, one on a cold plate.', see: 'Warmth melts it; cold keeps it solid.' },
@@ -36716,6 +37069,117 @@ export function storiesRead(events) {
   for (const e of events) if (e.type === 'story_read' && !seen.has(e.moduleId)) seen.set(e.moduleId, e.at);
   return [...seen.entries()].map(([moduleId, at]) => ({ moduleId, at }));
 }
+// The story as a reward (pass MD, Mikey: "They can play after the lesson as a reward like you mentioned."). A read-aloud
+// course (pre-K 3 to grade 2) speaks its lesson line by line and ends on the star that starts the round, so its lesson
+// stories were never offered before practice, and until pass MD a child met them only when a grown-up opened the Story Log
+// or printed the book. Now the first passed round of a lesson earns its story (passed: four of five right first time, which
+// opens the next lesson; the star, mastery, waits for a second pass on another day): the round's arrow becomes a book, and
+// the story reads itself aloud before the round's next step. It is due once, the first time, and never once read (story_read
+// is logged once and never repeats); after that the story waits in an early learner's Let's Read, to be heard again.
+export function rewardStoryDue(events, moduleId, { passed = false, readAloud = false, hasStory = false } = {}) {
+  if (!moduleId || !passed || !readAloud || !hasStory) return false;
+  return !(events || []).some((e) => e.type === 'story_read' && e.moduleId === moduleId);
+}
+// The lesson stories an early learner has heard (pass MD), for Let's Read, so a story earned once can be heard again: from the
+// lessons of the courses given that still have a story (hasStory), newest heard first, by the later of a story's first read
+// and its last read to the end. Every one of them since pass ME (Mikey's answer to Q18, "all"; pass MD showed the newest six,
+// since kindergarten alone has over a hundred lesson stories, and the shelf keeps its shape instead by grouping them by course,
+// heardStoryGroups below). A list a child sees is decided here, not on the screen (the code check, pass MD). Every story stays
+// in the Story Log for the grown-up. Course stories (course:<id>) Let's Read lists itself, and they are never a course's lesson.
+export function heardModuleStories(events, courses, hasStory = () => true, limit = Infinity) {
+  const lessonIds = (courses || []).flatMap((c) => [...(c.modules || [])].sort((a, b) => a.order - b.order).map((m) => m.id));
+  const inCourses = new Set(lessonIds);
+  const heard = new Set(storiesRead(events || []).map((r) => r.moduleId));
+  const last = new Map();
+  for (const e of events || []) {
+    if ((e.type !== 'story_read' && e.type !== 'story_reread') || !heard.has(e.moduleId) || !inCourses.has(e.moduleId) || !hasStory(e.moduleId)) continue;
+    if (!last.has(e.moduleId) || String(e.at) > String(last.get(e.moduleId))) last.set(e.moduleId, e.at);
+  }
+  // Newest first; two heard at the same moment keep the lessons' order.
+  return [...last.entries()].sort((a, b) => (String(a[1]) === String(b[1]) ? lessonIds.indexOf(a[0]) - lessonIds.indexOf(b[0]) : String(a[1]) < String(b[1]) ? 1 : -1)).slice(0, limit).map(([id]) => id);
+}
+// The same stories grouped by course for the shelf (pass ME, Q18): each course the child has heard a story from, the course
+// with the newest story first, and inside it that course's heard stories newest first, so the story heard today is the first
+// book on the shelf and a kindergartner's hundred stories still sit under their courses' names.
+export function heardStoryGroups(events, courses, hasStory = () => true) {
+  const ids = heardModuleStories(events, courses, hasStory);
+  const courseOf = new Map();
+  for (const c of courses || []) for (const m of c.modules || []) courseOf.set(m.id, c.id);
+  const groups = []; const byCourse = new Map();
+  for (const id of ids) {
+    const courseId = courseOf.get(id);
+    if (!byCourse.has(courseId)) { byCourse.set(courseId, { courseId, moduleIds: [] }); groups.push(byCourse.get(courseId)); }
+    byCourse.get(courseId).moduleIds.push(id);
+  }
+  return groups;
+}
+// The surprise-me book (pass MF, Mikey's answer to Q18, "good idea", to the suggestion pass ME sent: a book that reads a heard
+// story at random). In plain terms: an early learner with two or more heard stories gets one more gold book on the shelf, and
+// a tap on it picks one of them for the child. The pick is made here, from a chance in [0, 1) the screen draws, and it never
+// picks the story the book read last while any other is there, so two taps in a row never read the same story twice; with
+// one story there is nothing else to pick, and with none the book is not shown (SURPRISE_BOOK_FROM).
+export const SURPRISE_BOOK_FROM = 2;
+export function pickSurpriseStory(moduleIds, chance, lastId = null) {
+  const ids = (moduleIds || []).filter(Boolean);
+  if (!ids.length) return null;
+  const pool = ids.length > 1 ? ids.filter((id) => id !== lastId) : ids;
+  const at = Math.min(pool.length - 1, Math.max(0, Math.floor((Number.isFinite(chance) ? chance : 0) * pool.length)));
+  return pool[at];
+}
+// The cover shelf (pass MF, Q18, the other suggestion): a group of heard stories shows as a row of covers, each story's own
+// first picture, once every story in the group is painted (hasArt says which pictures the page has); until then a group keeps
+// its worded rows with the gold book, so a group never mixes covers and rows, and a story whose painting is missing is never a
+// blank tile. A list a child sees is decided here (the code check, pass MC); the screen only draws the form this names.
+export function coverShelfReady(moduleIds, hasArt = () => false) {
+  const ids = (moduleIds || []).filter(Boolean);
+  return ids.length > 0 && ids.every((id) => !!hasArt(id));
+}
+// A course is finished when every one of its lessons has its star (pass ME, Mikey's answer to Q17), the same rule that opens
+// its long story in Let's Read; a round that only passed the last lesson leaves the star, and the finish, for another day.
+export function isCourseFinished(masteredIds, course) {
+  if (!course || !course.modules || !course.modules.length) return false;
+  const set = new Set(masteredIds || []);
+  return course.modules.every((m) => set.has(m.id));
+}
+// The round that finishes a course (pass ME, Q17): true only when the star this very round earned was the course's last, so
+// every lesson is mastered now and was not before. A round on a lesson that already had its star finishes nothing, and so a
+// child who practices a finished course again is not celebrated again; the celebration page comes once, for that round.
+// The course to go on to when one is finished (pass ME, the code and screen checks' second reads): the first course the
+// child's own screen shows today, other than the one just finished, youngest grade first and then the subjects in the
+// screen's order, with a lesson open to start, and that lesson. Open means available (its gate passed) or passed on another
+// day (a lesson passed today waits until tomorrow for its star, and the young overview hides it). While any pre-K lesson is
+// unmastered only pre-K courses count, the way the overview holds kindergarten out of sight (the pre-K rule). The result's
+// Next line and every arrow use this one pick, so the words and the arrow agree. Before this the screen picked the first
+// course in the list with any unstarred lesson, and the grade 1 course that finishing First Steps switches on came first,
+// every lesson locked behind kindergarten, so the arrow did nothing.
+export function nextCourseToStart(courseId, courses, statuses, events, now) {
+  const statusOf = (id) => (statuses.find((s) => s.id === id) || {}).status;
+  const open = (m) => statusOf(m.id) === 'available' || (statusOf(m.id) === 'passed' && !waitingForAnotherDay(events, m.id, now));
+  const isPreK = (c) => c.grade === 'PK3' || c.grade === 'PK4';
+  const preK = (courses || []).some((c) => isPreK(c) && c.modules.some((m) => statusOf(m.id) !== 'mastered'));
+  const rank = sortSubjects((courses || []).map((c) => c.subject));
+  const list = (courses || []).filter((c) => c.id !== courseId && (!preK || isPreK(c))).sort((a, b) => GRADES.indexOf(a.grade) - GRADES.indexOf(b.grade) || rank.indexOf(a.subject) - rank.indexOf(b.subject));
+  for (const c of list) { const m = [...c.modules].sort((a, b) => a.order - b.order).find(open); if (m) return { course: c, module: m }; }
+  return null;
+}
+// The words for a finished course (pass MG, Mikey's answer to Q24, "calmer"): through grade 5 the party's line, and from grade
+// 6 up a calmer one, since a twelve-year-old or a college student is proud in a quieter voice. The confetti and the landing
+// star stay at every age; only the words change. cheer is the course-finished page's first line, result the reader's result
+// line beside its Celebrate! button. Every read-aloud course is grade 2 or younger, so a child who hears the page hears Hooray.
+export const CALM_CHEER_FROM = '6';
+export function courseFinishedWords(course) {
+  const title = course ? titleCase(course.title) : '';
+  const calm = !!course && GRADES.indexOf(course.grade) >= GRADES.indexOf(CALM_CHEER_FROM);
+  return calm
+    ? { calm, cheer: `Well done. You finished ${title}.`, result: 'That was the whole course.' }
+    : { calm, cheer: `Hooray! You finished the whole course, ${title}!`, result: 'That was the whole course!' };
+}
+export function courseFinishedBy(progress, course, event) {
+  if (!progress || !progress.perModule || !course || !event) return false;
+  const p = progress.perModule[event.moduleId];
+  if (!p || !p.mastered || String(p.masteredAt) !== String(event.at)) return false;
+  return isCourseFinished(progress.masteredIds, course);
+}
 export function coloringBreaks(events) { return activeEvents(events).filter((e) => e.type === 'colored').length; }
 // A game break (pass MB, Mikey): a game opened from Let's Play and closed again, logged the way a coloring break is, with
 // which game and when, never a score. Before pass MB a game left no trace at all, so the report could not count them.
@@ -36874,7 +37338,6 @@ export const EXPLANATIONS = [
   {
     term: 'Mastered',
     plain: 'A module is passed once a student answers a pre-determined number of questions correctly (depending on the grade and subject matter) within a single session. One session, rather than patching several attempts together, because a student either has it or does not on the day. A pass opens the next module right away. Mastery, the star, takes a second pass on a different day, because doing it again after a gap is the real test of whether it stuck. Mastery is not the end of a module: its questions return later as memory checks, inside rounds from any course, so the record shows whether the learning held rather than only that it happened once.',
-    plain: 'A module is considered mastered once a student answers a pre-determined number of questions correctly (depending on the grade and subject matter) within a single session. One session, rather than patching several sessions from varying days or times, shows true understanding. Until a student achieves this mastery mark, the following modules continue to remain locked. The result? No student is pushed forward without a solid understanding of the prerequisites. Mastery is not the end of a module: its questions return later as memory checks, inside rounds from any course, so the record shows whether the learning held rather than only that it happened once.',
   },
   {
     term: 'Confidence, scored 1 to 5',
@@ -37820,7 +38283,7 @@ export const COURSE_GAMES = {
   'tech-9': ['bits-tech-9'],
   'health-4': ['pairs-health'],
   'tech-3': ['pairs-technology', 'debug-tech-3'],
-  'tech-5': ['pong', 'debug-tech-5'],
+  'tech-5': ['debug-tech-5'],   // Pong became the older students' starter in pass MC, open from day one, so finishing a course always brings a game of its own
   'tech-7': ['sprint-tech-7'],
   'civics-3': ['map-continents', 'sprint-civics-3'],
   'science-2': ['pairs-more'],
@@ -37829,13 +38292,54 @@ export const COURSE_GAMES = {
   'counting-k': ['maze-small'],
   'letters-k': ['pairs-shapes'],
 };
-export const STARTER_GAMES = ['dots-star'];
+// The starters belong to no course and are open from the first day: the Star for young learners, and Pong from grade 2 up
+// (pass MC), so an older student always has a game to play while every course keeps one of its own to unlock.
+export const STARTER_GAMES = ['dots-star', 'pong'];
+// Mikey's day-one exception (pass MC, answering pass MB's question about a pre-K child with Listen and Point): "I think that's
+// a good setup as long as the rest of the courses unlock a new game." Step on the Circles may open on day one, though it is
+// Listen and Point's only game; no other course's only game ever opens before the course is finished.
+export const DAY_ONE_EXCEPTIONS = ['path-circles'];
 const GAME_COURSE = new Map(Object.entries(COURSE_GAMES).flatMap(([cid, ids]) => ids.map((id) => [id, cid])));
 export function gameCourse(gameId) { return GAME_COURSE.get(gameId) || null; }
-// Which games on a student's list are open: the starter, the first game on the list, and every game of a finished course.
+// A game may open on day one when it is a starter, Mikey's exception, or a game whose course owns another game on the same list,
+// so finishing that course still opens something new.
+export function canOpenOnDayOne(game, list = []) {
+  if (!game) return false;
+  if (STARTER_GAMES.includes(game.id) || DAY_ONE_EXCEPTIONS.includes(game.id)) return true;
+  const cid = gameCourse(game.id);
+  return !!cid && list.some((g) => g.id !== game.id && gameCourse(g.id) === cid);
+}
+// The Let's Play list for one student (pass MC moved it here from the screen, so the rules test reads what a child sees). The
+// student's top grade decides which games suit them. A young learner sees every game of their courses and the starters. An
+// older student sees every game of their courses that is not one of the youngest's, the decks, Pong, Quick fire, order and
+// rule games as before, and since pass MC every game of a course past the early years: until then the older list kept only
+// those kinds, so the games built for 32 courses in passes FS to JD never showed in Let's Play, not even in a teacher's walk-through (the browser tests opened them by id). A map
+// waits for its painting, a Quick fire for lessons to draw from, and the most playful game that may open on day one leads.
+// A young learner's list draws only on the early-years courses the screens show them (a pre-K child with a grade 3 course got the
+// grade 3 games and Pong); and a child whose courses are all early-years keeps the young list once the last is finished, so the
+// games that course unlocked stay on the list (until pass MC finishing it emptied Let's Play from pre-K 3 to grade 1). A child
+// with early-years courses and an older one keeps the early courses' games too once the older list takes over (the code check's
+// second read: Very First Steps beside Money That Works left only Pong and the price game).
+export function playList({ courses = [], young = false, preview = false, mapArt = [] } = {}) {
+  const early = (c) => stageForGrade(c.grade) === 'early';
+  if (!young && courses.length > 0 && courses.every(early)) young = true;
+  if (young && !preview && courses.some(early)) courses = courses.filter(early);
+  const top = courses.reduce((best, c) => (GRADES.indexOf(c.grade) > GRADES.indexOf(best) ? c.grade : best), 'PK3');
+  const enrolled = new Set(courses.map((c) => c.id)); const modules = courses.flatMap((c) => c.modules);
+  const ownCourse = (g) => { const c = getCourse(gameCourse(g.id)); return c && stageForGrade(c.grade) !== 'early' && !g.young; };
+  const olderGame = (g) => g.deck || g.kind === 'pong' || g.kind === 'sprint' || g.kind === 'order' || ((g.rule || g.jump || g.map || g.balance) && !g.young) || ownCourse(g);
+  const earnedEarly = (g) => { const c = getCourse(gameCourse(g.id)); return !!c && enrolled.has(c.id) && stageForGrade(c.grade) === 'early'; };
+  const listed = gamesFor(top).filter((g) => (young || olderGame(g) || earnedEarly(g)) && (preview || STARTER_GAMES.includes(g.id) || enrolled.has(gameCourse(g.id))) && (!g.map || preview || mapArt.includes((mapFor(g.map) || {}).art)) && (g.kind !== 'sprint' || sprintPool(modules, g).length > 0));
+  const ordered = young ? listed : spreadKinds(listed);
+  return funFirst(ordered, (g) => canOpenOnDayOne(g, ordered));
+}
+// Which games on a student's list are open: the starters, the list's first game when it may open on day one, every game of a
+// finished course, and since pass MC every game the student has played (a played event), so a game open on day one never locks
+// again when a new course moves a more playful game to the front.
 export function unlockedGameIds(events, list = []) {
   const per = deriveProgress(events).perModule;
-  const open = new Set(STARTER_GAMES); if (list[0]) open.add(list[0].id);
+  const open = new Set(STARTER_GAMES); if (list[0] && canOpenOnDayOne(list[0], list)) open.add(list[0].id);
+  for (const e of activeEvents(events)) if (e.type === 'played' && e.game) open.add(e.game);
   for (const c of COURSES) if (c.modules.length > 0 && c.modules.every((m) => (per[m.id] || {}).mastered)) for (const id of COURSE_GAMES[c.id] || []) open.add(id);
   return open;
 }

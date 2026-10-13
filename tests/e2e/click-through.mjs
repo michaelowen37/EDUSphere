@@ -491,13 +491,26 @@ r = await runSet([true, true, true, true, true]);
 // five core questions, plus a memory check from any mastered course when there is one
 ok('counting questions answered by tapping pictures or numbers', r.length >= 5 && r.every(Boolean));
 
-// The kindergarten result screen has no words to read: stars, a speaker and one arrow
+// The kindergarten result screen has no words to read: stars, a speaker and one big button. Since pass MD (Mikey: "They can
+// play after the lesson as a reward like you mentioned.") the first round that masters a lesson with a story turns the arrow
+// into a book.
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'result');
 t = await text();
 ok('a pre-reader sees a plain well done, not a score line', t.includes('Well done!') && !t.includes('of 5 correct'));
-ok('only one way forward is offered', (await page.getByLabel('Keep going').count()) === 1 && (await page.getByRole('button', { name: 'Back to overview' }).count()) === 0);
+ok('only one way forward is offered, a book the first time a lesson with a story is mastered', (await page.getByLabel('Hear your story').count()) === 1 && (await page.getByLabel('Keep going').count()) === 0 && (await page.getByRole('button', { name: 'Back to overview' }).count()) === 0 && t.includes('You earned a story!'));
 ok('a small back arrow still lets them leave', (await page.getByLabel('Back').count()) === 1);
-// The arrow leads into a spoken reflection: one question, big taps, two short voices
+// The result says its words as it opens, the earned story named after them (pass MD, the code check's second read).
+ok("the result speaks its line as it opens, naming the earned story", (await page.evaluate(() => window.__spoken.join(' '))).includes('Well done! You earned a story!'), await page.evaluate(() => window.__spoken.slice(-3).join(' | ')));
+// The book opens the lesson's story, which reads itself aloud from its title, with one big arrow to go on (the round speaker
+// and the snail and the hare stay for the grown-up beside the child).
+await page.evaluate(() => { window.__spoken = []; });
+await page.getByLabel('Hear your story').click();
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'story');
+await page.waitForTimeout(1200);
+{ const said = await page.evaluate(() => window.__spoken.slice()); const rs = (await import('../../src/stories.mjs')).STORIES['count-to-5'];
+  ok('the reward story reads itself aloud, its title first', !!rs && said[0] === `${rs.title}.`, said.slice(0, 2).join(' | '));
+  ok('the reward story has one big arrow and no Practice this or Back to the lesson', (await page.getByLabel('Keep going').count()) === 1 && (await page.getByRole('button', { name: 'Practice this' }).count()) === 0 && (await page.getByRole('button', { name: 'Back to the lesson' }).count()) === 0 && (await page.locator('[data-read-aloud-story="reward"]').count()) === 1); }
+// The story's arrow carries on where the round left off: into a spoken reflection, one question, big taps, two short voices
 await page.getByLabel('Keep going').click();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'wonder');
 t = await text();
@@ -508,6 +521,18 @@ t = await text();
 ok('two short voices, one at a time, each by name with its label', t.includes('Frederick') && t.includes('The Scientist') && !t.includes('Chloe') && !t.includes('A scientist says'));
 await page.getByLabel('Next').click();
 ok('the second voice follows', (await text()).includes('Chloe') && (await text()).includes('The Artist'));
+// Pass MG (Mikey's answer to Q10, "yes"): after the two voices the question's closing line comes on a card of its own, spoken
+// as it appears, so a child who cannot read meets the last thought too; Finish waits on that card.
+{ const w = (await import('../../src/logic.mjs')).WONDER.find((x) => x.id === 'w-ants-elephant');
+  await page.evaluate(() => { window.__spoken = []; });
+  ok('the second voice is not the end yet: Next goes on', (await page.getByLabel('Finish').count()) === 0 && (await page.getByLabel('Next').count()) === 1);
+  await page.getByLabel('Next').click(); await page.waitForTimeout(400);
+  const closing = await page.evaluate(() => { const c = document.querySelector('[data-wonder-closing]'); return c ? c.textContent.trim() : null; });
+  const heard = (await page.evaluate(() => window.__spoken.join(' '))).replace(/\s+/g, ' ');
+  ok("the closing line follows on its own card, spoken as it appears, and Finish waits there", !!w && closing === w.closing && heard.includes(w.closing.split('? ')[0]) && (await page.getByLabel('Finish').count()) === 1, { closing, heard });
+  { const vp = page.viewportSize(); for (let k = 0; k < 3; k++) { await page.setViewportSize({ width: vp.width + 6, height: vp.height }); await page.waitForTimeout(150); await page.setViewportSize(vp); await page.waitForTimeout(150); }
+    const times = (await page.evaluate(() => window.__spoken.join(' | '))).split(w.closing.split('? ')[0]).length - 1;
+    ok('the closing is said once, and redrawing the page never says it again', times === 1, times); } }
 await page.getByLabel('Finish').click();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'result');
 ok('after the reflection the arrow goes on, not round again', (await page.getByLabel('Keep going').count()) === 1);
@@ -1583,9 +1608,14 @@ ok('a switched-off course is hidden from the learner', !/what a fraction means/i
   // that to finish (pass JK: twice the scroll to this far-down button was undone before the tap landed).
   await page.waitForTimeout(400);
   if ((await state()).screen === 'educator-pick') { await page.getByLabel('Walk through early years').click({ force: true }); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview'); }
-  await page.evaluate(() => window.__eduTest.openStory('letter-names')); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'story');
+  // Since pass MD a read-aloud course's lesson story reads itself as it opens, so the walk lets that first reading finish before
+  // it taps anything (the code check: a tap that landed as the button turned into Stop reading stopped the run).
   await page.evaluate(() => { window.__spoken = []; });
+  await page.evaluate(() => window.__eduTest.openStory('letter-names')); await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'story');
   const readBtn = page.getByRole('button', { name: 'Read the story to me' });
+  const selfRead = await page.waitForFunction((n) => window.__spoken.length >= n && !!document.querySelector('button[aria-label="Read the story to me"]'), story.words.length + 1, { timeout: 8000 }).then(() => true).catch(() => false);
+  ok('a read-aloud lesson story reads itself as it opens, title first', selfRead && (await page.evaluate(() => window.__spoken[0])) === `${story.title}.`);
+  await page.evaluate(() => { window.__spoken = []; });
   if (await readBtn.count()) {
     // The snail and the hare (2026-09-23): the snail reads at three quarters speed, the hare at the usual pace, and the choice sticks.
     await page.getByRole('button', { name: 'Read slowly' }).click(); await page.evaluate(() => { window.__rates = []; });
@@ -1596,7 +1626,7 @@ ok('a switched-off course is hidden from the learner', !/what a fraction means/i
     const titleTop = await page.evaluate((t) => { const el = [...document.querySelectorAll('p')].find((p) => p.textContent.trim().toLowerCase() === t); return el ? el.getBoundingClientRect().top : -1; }, story.title.toLowerCase());
     ok('reading aloud scrolls the page to the top of the story', titleTop >= 0 && titleTop < 320);
     // The test page's voice ends each line in thirty milliseconds, so the whole story is spoken before the hare is tapped.
-    await page.waitForFunction((n) => window.__spoken.length >= n && !document.querySelector('button') !== null && [...document.querySelectorAll('button')].some((b) => b.textContent.trim() === 'Read the story to me'), story.words.length + 1);
+    await page.waitForFunction((n) => window.__spoken.length >= n && !!document.querySelector('button[aria-label="Read the story to me"]'), story.words.length + 1);
     const slowRates = await page.evaluate(() => (window.__rates || []).slice());
     await page.getByRole('button', { name: 'Read at the usual speed' }).click(); await page.evaluate(() => { window.__rates = []; window.__spoken = []; });
     await readBtn.click();

@@ -83,7 +83,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'm1-part-left') { const n = Number(text.match(/into (\d+) equal/)[1]); const m = Number(text.match(/\. (\d+) /)[1]); if (q.answer !== `${n - m}/${n}`) problems.push('part left wrong'); }
     if (genId === 'm1-picture') { if (q.answer !== `${q.visual.shaded}/${q.visual.parts}`) problems.push('picture answer does not match drawing'); }
     if (genId === 'm1-top-or-bottom') { const n = Number(text.match(/into (\d+) equal/)[1]); const m = Number(text.match(/eat (\d+)/)[1]); const want = /top number/.test(q.prompt) ? m : n; if (Number(q.answer) !== want) problems.push('top/bottom wrong'); }
-    if (q.visual && q.visual.kind === 'letters') { if (typeof q.visual.text !== 'string' || !q.visual.text.trim()) problems.push('letters visual empty'); }
+    if (q.visual && q.visual.kind === 'letters') { if (typeof q.visual.text !== 'string' || !q.visual.text.trim()) problems.push('letters visual empty'); if (q.visual.highlight !== undefined && (typeof q.visual.highlight !== 'string' || !q.visual.highlight)) problems.push('letters highlight is not a string, so it lights nothing'); }
     else if (q.visual && q.visual.kind === 'dots') { if (!(Number.isInteger(q.visual.count) && q.visual.count >= 1 && q.visual.count <= 10)) problems.push('dots out of range'); }
     else if (q.visual && q.visual.kind === 'shape') { /* checked below */ }
     else if (q.visual && q.visual.kind === 'tens') { if (!(q.visual.count >= 1 && q.visual.count <= 10)) problems.push('tens out of range'); }
@@ -119,6 +119,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     else if (q.visual && q.visual.kind === 'picto') { if (!(Array.isArray(q.visual.rows) && q.visual.rows.length >= 2 && q.visual.rows.length <= 3 && q.visual.rows.every((r) => typeof r.icon === 'string' && Number.isInteger(r.count) && r.count >= 0 && r.count <= 6))) problems.push('picture graph out of range'); }   // pass KL: two or three rows of up to six pictures
     else if (q.visual && q.visual.kind === 'icon') { if (!['sun', 'moon', 'cloud', 'rain', 'snow', 'plant', 'tree', 'flower', 'fish', 'bird', 'rock', 'drop', 'ice', 'fire', 'magnet', 'clip', 'nail', 'cup', 'bus', 'dog', 'hat', 'bed', 'fan', 'soil', 'ball', 'block', 'teddy', 'sock', 'spoon', 'log', 'book', 'glass', 'flashlight', 'lamp', 'shadow', 'pebble', 'boulder', 'speckled', 'flatrock', 'penny', 'wall', 'gravel', 'bricks', 'window', 'nickel', 'dime', 'quarter', 'table', 'hill', 'map', 'globe', 'mountain', 'river', 'lake', 'ocean', 'cactus', 'coat', 'candle', 'cake', 'fridge', 'washer', 'phone', 'tablet', 'pencil', 'doctor', 'shot', 'comb', 'mosquito', 'plate', 'peanut', 'helmet', 'booster', 'belt', 'bubble', 'stop', 'slide', 'knife', 'scissors', 'screwdriver', 'house', 'bottle', 'cigarette', 'camera', 'music', 'search', 'keyboard', 'space', 'backspace', 'save', 'printer', 'chair', 'bulb', 'board', 'star'].includes(q.visual.name)) problems.push('unknown icon'); }
     else if (q.visual && (q.visual.kind === 'pic' || q.visual.kind === 'art')) { if (!q.visual.name) problems.push('picture incomplete'); }
+    else if (q.visual && q.visual.kind === 'face') { if (!['happy', 'sad', 'mad', 'scared'].includes(q.visual.feeling)) problems.push('a face with a feeling the screen cannot draw'); }   // pass MD
     else if (q.visual && q.visual.kind === 'numberline') { if (!(q.visual.from < q.visual.to && (q.visual.marks || [q.visual.mark]).every((v) => v === null || v === undefined || (v >= q.visual.from && v <= q.visual.to)))) problems.push('number line out of range'); }
     else if (q.visual && (q.visual.kind === 'tri' || q.visual.kind === 'para')) { if (!(q.visual.base > 0 && (q.visual.height === '?' || q.visual.height > 0))) problems.push('shape measures missing'); }
     else if (q.visual && q.visual.kind === 'cell') { if (typeof q.visual.highlight !== 'string') problems.push('cell visual needs a highlight'); }
@@ -131,6 +132,8 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     else if (q.visual && q.visual.kind === 'periodic') { if (!((q.visual.highlight || []).every((s) => typeof s === 'string' && s.length) && (q.visual.period === null || q.visual.period === undefined || (q.visual.period >= 1 && q.visual.period <= 7)) && (q.visual.group === null || q.visual.group === undefined || (q.visual.group >= 1 && q.visual.group <= 18)))) problems.push('periodic visual out of range'); }
     else if (q.visual && q.visual.kind === 'plot') { if (!(q.visual.fn !== 'point' || (q.visual.px >= 0 && q.visual.px <= 6 && q.visual.py >= 0 && q.visual.py <= 6))) problems.push('plot point out of range'); }
     else if (q.visual && !(q.visual.shaded >= 0 && q.visual.shaded <= q.visual.parts)) problems.push('visual out of range');
+    // A face choice (pass MD) is one of the four feelings FeelingFace draws.
+    if ((q.choices || []).some((c) => /^face:/.test(String(c)) && !['happy', 'sad', 'mad', 'scared'].includes(String(c).slice(5)))) problems.push('a face choice names a feeling the screen cannot draw');
     // Independent checks for the counting questions (a 'dots:N' choice is a picture of N things)
     const dotCount = (c) => Number((/^dots:(\d+)$/.exec(c) || [])[1]);
     if (/^k(5|10)-how-many$/.test(genId) && String(q.visual.count) !== q.answer) problems.push('how-many answer does not match the picture');
@@ -216,6 +219,70 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'p3-animal-says' && q.answer !== lsSounds[q.prompt.match(/the (\w+) say/)[1]]) problems.push('animal says wrong');
     if (genId === 'p3-animal-sound' && lsSounds[String(q.answer).replace('pic:', '')] !== q.prompt.match(/says (\w+)\./)[1]) problems.push('animal sound wrong');
     if (genId === 'p3-tap-picture' && q.answer !== 'icon:' + q.prompt.match(/Tap the (\w+)\./)[1]) problems.push('picture wrong');
+    // Very First Steps' feelings (pass MD, earmark E12 part one): every bank re-derived from its words and pictures with tables of
+    // the test's own. A face choice is its feeling; the moments are the lesson's own (playing with a friend, a balloon floating away,
+    // a grabbed toy, a boom of thunder, and the body clues for mad and scared); a wrong face is never the asked feeling, and in a
+    // moment it is happy, or sad when happy is the answer, never a feeling a child could fairly have there too.
+    { const fe = (c) => (/^face:([a-z]+)$/.exec(String(c)) || [])[1];
+      const mdOthers = (q.choices || []).filter((c) => c !== q.answer);
+      const MD_MOMENT = [[/is playing with (his|her) friend\.$/, 'happy'], [/watched (his|her) balloon float away\.$/, 'sad'], [/^Someone grabbed \w+'s toy\.$/, 'mad'], [/heard a big boom of thunder\.$/, 'scared'], [/face feels hot, and (his|her) hands make tight fists\.$/, 'mad'], [/heart is beating fast, and (he|she) wants to hide\.$/, 'scared']];
+      if (genId === 'p3-feel-tap-face') { const f = (q.prompt.match(/^Tap the (happy|sad|mad|scared) face\.$/) || [])[1]; if (!f || fe(q.answer) !== f || mdOthers.length !== 1 || !fe(mdOthers[0]) || fe(mdOthers[0]) === f) problems.push('feeling face wrong'); }
+      if (genId === 'p3-feel-name-face') { const f = q.visual && q.visual.feeling; if (q.prompt !== 'How does this face feel?' || !f || q.answer.toLowerCase() !== f || mdOthers.some((c) => c.toLowerCase() === f)) problems.push('face named wrong'); }
+      if (genId === 'p3-feel-moment') { const hit = MD_MOMENT.find(([re]) => re.test(q.story || '')); const name = ((q.story || '').match(/^(?:Someone grabbed )?([A-Z][a-z]+)/) || [])[1];
+        if (!hit || fe(q.answer) !== hit[1] || mdOthers.length !== 1 || fe(mdOthers[0]) !== (hit[1] === 'happy' ? 'sad' : 'happy') || q.prompt !== `How might ${name} feel?`) problems.push('feeling moment wrong'); }
+      if (genId === 'p3-feel-okay') { const want = /^Is it okay to feel (sad|mad|scared)\?$/.test(q.prompt) ? 'Yes' : /^Is it okay to (hit|push) when you feel mad\?$/.test(q.prompt) ? 'No' : null; if (!want || q.answer !== want || [...q.choices].sort().join() !== 'No,Yes') problems.push('feeling okay wrong'); }
+      // A name-it question shows the face and never says its feeling (the lesson check, pass MD): the answer names the face
+      // shown, and the wrong choice names another feeling, never happy and never the one shown.
+      if (genId === 'p3-feel-calm') { const shown = q.visual && q.visual.kind === 'face' ? q.visual.feeling : null;
+        const want = q.prompt === 'Who can you find to help?' ? 'Your grown-up' : q.prompt === 'What can help it get smaller?' ? 'A slow breath' : q.prompt === 'When your face looks like this, what can you say?' && shown ? `I feel ${shown}` : /smell as you breathe in\?$/.test(q.prompt) ? 'icon:flower' : /blow out as you breathe out\?$/.test(q.prompt) ? 'icon:candle' : null;
+        const nameIt = /what can you say\?$/.test(q.prompt);
+        if (!want || q.answer !== want || mdOthers.includes(want) || mdOthers.length !== 1 || (nameIt && (!/^I feel (sad|mad|scared)$/.test(mdOthers[0]) || /\b(happy|sad|mad|scared)\b/.test(`${q.story || ''} ${q.prompt}`)))) problems.push('calming wrong'); }
+      // The friend who may need help: happy is the wrong face only where the question asks who might need help; a friend who
+      // looks sad or scared is told from another face that needs reading (the lesson check, pass MD).
+      if (genId === 'p3-help-who') { const want = /looks sad\.$/.test(q.prompt) ? ['sad'] : /looks scared\.$/.test(q.prompt) ? ['scared'] : /might need help\.$/.test(q.prompt) ? ['sad', 'scared'] : [];
+        const foil = mdOthers.length === 1 ? fe(mdOthers[0]) : null; const fair = /might need help\.$/.test(q.prompt) ? foil === 'happy' : !!foil && foil !== 'happy' && foil !== fe(q.answer);
+        if (!want.includes(fe(q.answer)) || !fair) problems.push('friend who needs help wrong'); }
+      const MD_KIND = ['Are you okay?', 'Sit beside your friend', 'Bring a teddy to hug']; const MD_UNKIND = ['Go away', 'Walk away', 'Laugh at your friend'];
+      if (genId === 'p3-help-kind' && (!MD_KIND.includes(q.answer) || mdOthers.length !== 1 || !MD_UNKIND.includes(mdOthers[0]))) problems.push('kind act wrong');
+      if (genId === 'p3-help-grownup' && (q.answer !== 'A grown-up' || mdOthers.length !== 1 || !['A toy', 'Nobody', 'The ball'].includes(mdOthers[0]))) problems.push('grown-up wrong');
+      // The ball (the lesson check, pass MD): stop, please answers a grab, a grown-up answers a fight, and a grown-up helps you
+      // both get to play by helping you take turns.
+      if (genId === 'p3-help-ball') { const want = q.prompt === 'What can you say?' && /grab/.test(q.story || '') ? 'Stop, please' : q.prompt === 'How can a grown-up help you both get to play?' ? 'Help you take turns' : q.prompt === 'What can you do?' && /(fight starts|grabs)/.test(q.story || '') ? 'Get a grown-up' : null; if (!want || q.answer !== want || mdOthers.length !== 1) problems.push('ball fight wrong'); }
+      if (genId === 'p3-help-yesno') { const want = /^Is it kind to (ask a sad friend if they are okay|sit beside a friend who is sad)\?$/.test(q.prompt) || q.prompt === 'Should you get a grown-up when a friend is hurt?' ? 'Yes' : /^Is it kind to laugh at a friend who falls and gets hurt\?$|^Is it okay to push when you both want one ball\?$/.test(q.prompt) ? 'No' : null; if (!want || q.answer !== want) problems.push('kind or not wrong'); }
+    }
+    // One more and one fewer (pass ME, earmark E12 part two): the count in the words plus or minus one, re-derived with the test's
+    // own number words; the picture shows the count before the change, and a wrong group is never the answer's count.
+    { const NW = { one: 1, two: 2, three: 3, four: 4, five: 5 }; const dc = (c) => Number((String(c).match(/^dots:(\d+)$/) || [])[1]);
+      const n0 = NW[((q.story || '').match(/^Here (?:is|are) (\w+) dots?\./) || [])[1]];
+      if (/^p3-(add-one|take-one|more-or-fewer-now|one-more-group|one-fewer-group)$/.test(genId) && ((n0 === 1 && !/^Here is one dot\./.test(q.story)) || (n0 > 1 && !/^Here are /.test(q.story)))) problems.push('here is or here are wrong');
+      const omOthers = (q.choices || []).filter((c) => c !== q.answer);
+      if (genId === 'p3-add-one' && (!n0 || !/One more dot comes\.$/.test(q.story) || dc(q.answer) !== n0 + 1 || q.visual.count !== n0 || omOthers.length !== 1 || omOthers.some((c) => dc(c) === n0 + 1) || q.explainVisual.count !== n0 + 1)) problems.push('add one wrong');
+      if (genId === 'p3-take-one' && (!n0 || !/One dot goes away\.$/.test(q.story) || dc(q.answer) !== n0 - 1 || q.visual.count !== n0 || omOthers.length !== 1 || omOthers.some((c) => dc(c) === n0 - 1) || q.explainVisual.count !== n0 - 1)) problems.push('take one wrong');
+      if (genId === 'p3-more-or-fewer-now') { const want = /We add one dot\.$/.test(q.story || '') ? 'More' : /One dot goes away\.$/.test(q.story || '') ? 'Fewer' : null; if (/\b(more|fewer)\b/i.test(q.story || '')) problems.push('the heard words hand over the answer'); const numWord = (k) => ['zero', 'one', 'two', 'three', 'four', 'five'][k]; if (n0 && want && q.explain !== (want === 'More' ? `We added one dot, so there are more dots now. ${numWord(n0)[0].toUpperCase()}${numWord(n0).slice(1)} and one more is ${numWord(n0 + 1)}.` : `One dot went away, so there are fewer dots now. ${numWord(n0)[0].toUpperCase()}${numWord(n0).slice(1)} take away one is ${numWord(n0 - 1)}.`)) problems.push('the more-or-fewer explanation sums wrong'); if (!n0 || !want || q.answer !== want || [...q.choices].sort().join() !== 'Fewer,More' || q.visual.count !== n0 || q.explainVisual.count !== (want === 'More' ? n0 + 1 : n0 - 1)) problems.push('more or fewer now wrong'); }
+      if (genId === 'p3-one-more-group' && (!n0 || dc(q.answer) !== n0 + 1 || omOthers.length !== 1 || omOthers.some((c) => dc(c) === n0 + 1) || q.visual.count !== n0 || !(q.explainVisual && q.explainVisual.kind === 'pair' && q.explainVisual.stack && q.explainVisual.a.count === n0 + 1 && q.explainVisual.b.count === n0))) problems.push('one more group wrong');
+      if (genId === 'p3-one-fewer-group' && (!n0 || dc(q.answer) !== n0 - 1 || omOthers.length !== 1 || omOthers.some((c) => dc(c) === n0 - 1) || q.visual.count !== n0 || !(q.explainVisual && q.explainVisual.kind === 'pair' && q.explainVisual.stack && q.explainVisual.a.count === n0 && q.explainVisual.b.count === n0 - 1))) problems.push('one fewer group wrong');
+      // The explanation counts to the answer, one word a dot (the lesson check's second read: a count that stopped short or ran past passed).
+      if (/^p3-(add-one|take-one|one-more-group|one-fewer-group)$/.test(genId)) { const up = ((q.explain || '').match(/\. (One(?:, \w+)*)\.$/) || [])[1]; if (!up || up.split(', ').length !== dc(q.answer) || up.split(', ').join(' ') !== ['One', 'two', 'three', 'four', 'five'].slice(0, dc(q.answer)).join(' ')) problems.push('the explanation counts wrong'); }
+    }
+    // Words that rhyme (pass ME, earmark E12 part two): the test's own rhyme families; the answer rhymes with the asked word and
+    // a wrong picture never does; the pair a yes-or-no question shows is the pair its prompt names; the odd one is the one whose
+    // ending no other choice shares.
+    { const RH = { ball: 'all', wall: 'all', dog: 'og', log: 'og', frog: 'og', cat: 'at', hat: 'at', moon: 'oon', spoon: 'oon', sock: 'ock', block: 'ock', rock: 'ock', bear: 'air', chair: 'air', bee: 'ee', tree: 'ee' };
+      const nameOf = (c) => String(c).replace(/^(?:icon|pic):/, ''); const rhOthers = (q.choices || []).filter((c) => c !== q.answer);
+      const NEAR = { og: ['ock'], ock: ['og', 'all'], all: ['ock'] };   // dog and sock sound close for many Texas speakers, and the wall and rock icons look alike, so neither is the other's wrong choice
+      if (/^p3-rhyme-/.test(genId)) { const names = [...(q.choices || []).filter((c) => /^(?:icon|pic):/.test(String(c))).map(nameOf), ...(q.visual && q.visual.kind === 'pair' ? [q.visual.a.name, q.visual.b.name] : []), ...(q.visual && q.visual.kind !== 'pair' && q.visual.name ? [q.visual.name] : []), ...((q.prompt.match(/^Do (\w+) and (\w+) rhyme\?$/) || []).slice(1))]; if (names.some((n) => !RH[n])) problems.push('a rhyme picture the table does not know'); const rimes = new Set(names.map((n) => RH[n])); if ([...rimes].some((r) => (NEAR[r] || []).some((x) => rimes.has(x)))) problems.push('a near rhyme offered against its neighbor'); }
+      if (genId === 'p3-rhyme-tap' || genId === 'p3-rhyme-listen') { const w = (q.prompt.match(/rhymes with (\w+)\.$/) || [])[1];
+        if (!w || !RH[w] || RH[nameOf(q.answer)] !== RH[w] || nameOf(q.answer) === w || rhOthers.length !== 1 || rhOthers.some((c) => RH[nameOf(c)] === RH[w]) || (genId === 'p3-rhyme-tap' ? !(q.visual && q.visual.name === w && q.story === (w === 'moon' ? 'This is the moon.' : `This is a ${w}.`)) : q.visual !== null || !q.prompt.startsWith('Listen. '))) problems.push('rhyme tap wrong');
+        // The explanation names the rhyme and the odd one by their own names (the lesson check's second read).
+        if (w && !(String(q.explain).startsWith(`${w[0].toUpperCase()}${w.slice(1)} and ${nameOf(q.answer)} rhyme.`) && String(q.explain).endsWith(`does not rhyme with ${w}.`) && rhOthers.every((c) => String(q.explain).includes(`${nameOf(c)[0].toUpperCase()}${nameOf(c).slice(1)} does not rhyme`)))) problems.push('the rhyme explanation names the wrong picture'); }
+      if (genId === 'p3-rhyme-yesno') { const m2 = q.prompt.match(/^Do (\w+) and (\w+) rhyme\?$/); const want = m2 && RH[m2[1]] === RH[m2[2]] ? 'Yes' : 'No';
+        if (!m2 || m2[1] === m2[2] || q.answer !== want || [...q.choices].sort().join() !== 'No,Yes' || !(q.visual && q.visual.kind === 'pair' && q.visual.a.name === m2[1] && q.visual.b.name === m2[2])) problems.push('rhyme yes-no wrong');
+        // The explanation says yes or no as the answer does, and names the two words asked (the final read: three kinds had no words check).
+        if (m2 && q.explain !== (want === 'Yes' ? `Yes, they rhyme. ${m2[1][0].toUpperCase()}${m2[1].slice(1)} and ${m2[2]} sound the same at the end.` : `No, they do not rhyme. ${m2[1][0].toUpperCase()}${m2[1].slice(1)} and ${m2[2]} do not sound the same at the end.`)) problems.push('the yes-or-no explanation says the wrong thing'); }
+      if (genId === 'p3-rhyme-odd') { const names = q.choices.map(nameOf); const odd = names.filter((n) => names.filter((x) => RH[x] === RH[n]).length === 1); if (names.length !== 3 || odd.length !== 1 || nameOf(q.answer) !== odd[0]) problems.push('rhyme odd one wrong');
+        // The explanation names the two that rhyme and the odd one by their own names.
+        const pair = names.filter((n) => n !== odd[0]); const cap = (s) => `${s[0].toUpperCase()}${s.slice(1)}`; const m3 = String(q.explain).match(/^(\w+) and (\w+) rhyme\. /); const said = m3 ? [m3[1].toLowerCase(), m3[2]] : []; if (odd.length === 1 && !([...said].sort().join() === [...pair].sort().join() && String(q.explain).endsWith(`${cap(odd[0])} does not sound the same at the end, so it does not rhyme with them.`))) problems.push('the odd-one explanation names the wrong picture'); }
+    }
     // Listen and Point (pass MB): every bank re-derived from its words and pictures with tables of the test's own (the lesson
     // brief found five of the course's eight kinds had none).
     { const mbShape = (c) => String(c).replace(/^(?:item|shape|icon):/, '').split(/[-~#]/)[0];
@@ -229,6 +296,20 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
       if (genId === 'p3-same-shape-any-size') { if (mbShape(q.answer) !== q.visual.name || mbShape(mbOthers[0]) === q.visual.name || q.answer === csTokenOf(q.visual)) problems.push('same shape wrong'); }
       if (genId === 'p3-tap-ab' && q.answer !== (q.prompt.match(/^Tap the letter ([AB])\.$/) || [])[1]) problems.push('tap letter wrong');
       if (genId === 'p3-name-ab' && q.answer !== q.visual.text.charAt(0).toUpperCase()) problems.push('name letter wrong');
+      // A and B by their looks (pass MC), from the test's own table: A's slanted sides meet at the top, B has two round bumps,
+      // and each look-alike is the one the description rules out (H straight sides, V meeting at the bottom, P and D one bump).
+      const MC_LOOK = { 'Tap the letter with two slanted sides that meet at the top.': 'A', 'Tap the letter with two round bumps on one side.': 'B' };
+      const MC_TWINS = { A: ['H', 'V'], B: ['P', 'D'] };
+      // Each look-alike is told apart in the explanation by its own look (pass MC, the lesson check's second suggestion).
+      const MC_WHY = { H: /stand up straight and never meet/, V: /meet at the bottom, and it has no bar/, P: /just one bump/, D: /just one bump/ };
+      const mcTwinSaid = () => mbOthers.length === 1 && MC_WHY[mbOthers[0]] && MC_WHY[mbOthers[0]].test(q.explain);
+      if (genId === 'p3-ab-by-look' && (q.answer !== MC_LOOK[q.prompt] || mbOthers.length !== 1 || !MC_TWINS[q.answer].includes(mbOthers[0]) || !mcTwinSaid())) problems.push('letter by its look wrong');
+      if (genId === 'p3-ab-look-alike') { const L = ((q.story || '').match(/^One of these is the letter ([AB]), and the other only looks a little like it\.$/) || [])[1];
+        if (!L || q.answer !== L || q.prompt !== `Tap the letter ${L}.` || mbOthers.length !== 1 || !MC_TWINS[L].includes(mbOthers[0]) || !mcTwinSaid()) problems.push('look-alike letter wrong'); }
+      // A or B inside a sign word (pass MC): the word said in the setup is the word shown, its letters are the choices in order,
+      // each once, and the asked letter is in it exactly once.
+      if (genId === 'p3-ab-in-word') { const w = ((q.story || '').match(/^Here is the word ([a-z]+), the way a sign shows it\.$/) || [])[1]; const L = (q.prompt.match(/^Tap the letter ([AB])\.$/) || [])[1];
+        if (!w || !L || !q.visual || q.visual.text !== w.toUpperCase() || q.choices.join('') !== q.visual.text || new Set(q.choices).size !== q.choices.length || q.answer !== L || q.choices.filter((c) => c === L).length !== 1) problems.push('letter in a sign word wrong'); }
       if (genId === 'p3-odd-one') { const shown = `item:${q.visual.shape}-${q.visual.colour}`; if (q.answer === shown || mbOthers[0] !== shown || q.visual.size !== 64 || mbShape(q.answer) === q.visual.shape || String(q.answer).split('-')[1] === q.visual.colour) problems.push('odd one wrong'); }
       if (['p3-odd-color', 'p3-odd-shape', 'p3-odd-size'].includes(genId)) {
         const base = (c) => String(c).split('#')[0].replace(/^item:/, ''); const same = mbOthers.map(base);
@@ -1087,6 +1168,20 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
     const spokenEarly = L.WONDER.filter((w) => w.stage === 'early' && w.answerMode === 'pick' && Array.isArray(w.simple));
     ok('a pre-reader hears the Wonder question and then every choice, in order', spokenEarly.length > 0 && spokenEarly.every((w) => { const p = L.wonderSpokenParts(w); return p.length === w.options.length + 1 && p[0] === w.prompt && w.options.every((o, i) => p[i + 1].includes(o)) && p[p.length - 1].startsWith('Or '); }));
     ok('the two voices a pre-reader hears are short and end like sentences', spokenEarly.every((w) => w.simple.length === 2 && w.simple.every((v) => /[.?!]$/.test(v.says) && v.says.split(/\s+/).length <= 20)));
+    // Pass MG (Mikey's answer to Q10, "yes"): after the two voices a pre-reader meets the question's closing line on a card of its
+    // own, spoken as it is, so the last thought reaches a child who cannot read; each voice is spoken by name and label first.
+    const reachable = L.WONDER.filter((w) => Array.isArray(w.simple));
+    ok('every question a pre-reader can meet ends on its closing line, after its two short voices', reachable.length > 0 && reachable.every((w) => { const cards = L.wonderPreReaderCards(w); return cards.length === w.simple.length + 1 && cards[cards.length - 1].closing === w.closing && cards.slice(0, -1).every((c, i) => c.voice === w.simple[i].voice && c.says === w.simple[i].says); }));
+    ok('the closing card is spoken word for word, and a voice card by its name, its label and its words', reachable.every((w) => { const cards = L.wonderPreReaderCards(w); return L.wonderCardSpoken(cards[cards.length - 1]) === w.closing && L.wonderCardSpoken(cards[0]) === `${L.wonderVoiceSpoken(cards[0].voice)}: ${cards[0].says}`; }) && L.wonderCardSpoken(null) === '' && L.wonderPreReaderCards(null).length === 0);
+    ok('only the questions with two short voices reach a pre-reader, and each has a closing line short enough to hear whole', reachable.every((w) => w.stage === 'early' && typeof w.closing === 'string' && w.closing.split(/\s+/).length <= 24));
+    // Pass MG (the Wonder check): an early question uses the lessons' own feeling word, mad, never cross, and an early closing
+    // or short voice that sends a child outside names a grown-up. A shadow or the sky with no outside word stays with the Wonder brief.
+    const earlyAll = L.WONDER.filter((w) => w.stage === 'early');
+    const wordsOf = (w) => [w.prompt, w.closing, ...(w.options || []), ...(w.simple || []).map((v) => v.says), ...w.perspectives.map((p) => p.says)];
+    const crossIds = earlyAll.filter((w) => wordsOf(w).some((t) => /\bcross\b/i.test(t))).map((w) => w.id);
+    ok('no early Wonder question says cross for a feeling, since the lessons teach mad', earlyAll.length >= 90 && crossIds.length === 0, crossIds.join(', '));
+    const aloneIds = earlyAll.filter((w) => [w.closing, ...(w.simple || []).map((v) => v.says)].some((t) => /\boutside\b(?! the lines)|\boutdoors\b/i.test(t) && !/\bgrown-up\b/i.test(t))).map((w) => w.id);
+    ok('an early closing or short voice that sends a child outside names a grown-up', aloneIds.length === 0, aloneIds.join(', '));
     ok('every Wonder question has its own id', new Set(L.WONDER.map((w) => w.id)).size === L.WONDER.length);
     ok('every Wonder question carries a theme the rotation knows', L.WONDER.every((w) => Object.keys(L.WONDER_THEMES).includes(w.theme || 'world')));
   }
@@ -1295,6 +1390,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
       ok('a read from a lesson before it is mastered is logged and not counted, and one after mastery counts', ev.filter((e) => e.type === 'story_reread').length === 2 && L.electiveStoryReads(ev) === 1 && L.electiveStoryReads(ev.slice(0, 3)) === 0 && ev[2].from === 'lesson' && ev[2].openedAt === d(10, 10)); }
     // Where a story is opened from is what the count rests on, so the screens are read too (the screen check's second read): the
     // lesson's View story notes 'lesson', and every shelf (Let's Read, My Stories, a finished course's Let's Read!) notes 'shelf'.
+    // A read-aloud round's reward story (pass MD) notes nothing: it is always the story's first read, so it clears the watch.
     { const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8'); const calls = [...ui.matchAll(/noteStoryOpen\(([^,]+), '(\w+)'\)/g)].map((m) => [m[1], m[2]]);
       ok("a lesson's View story notes its story as opened from the lesson, and every shelf as from a shelf", calls.filter(([, f]) => f === 'lesson').map(([id]) => id).join() === 'mod.id' && calls.filter(([, f]) => f === 'shelf').length >= 4 && calls.every(([, f]) => ['lesson', 'shelf'].includes(f)), calls); }
     ok('the weekly note counts the games beside the coloring', /S-8 colored a picture\./.test(L.weeklyNote('S-8', base, t(18))) && /S-8 played 2 games\./.test(L.weeklyNote('S-8', base, t(18)))); }
@@ -1318,7 +1414,8 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   { const uiSrc = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
     ok('the Science Experiment Ideas page keeps its safety line: balloons and small things can choke, and an inch or two of water can drown (pass MB)', /data-experiments-safety[^>]*>[^<]*balloons can choke[^<]*inch or two of water/.test(uiSrc));
     const choke = /\b(coins?|pennies|penny|buttons?|corks?|pebbles?|marbles?|beads?|raisins?|grapes?|popcorn|peanuts?|nuts?|balloons?|small toys?)\b/i;
-    const bad = L.experimentsFor('PK3').filter((e) => choke.test([e.title, e.ask, e.do, e.see, e.tell].filter(Boolean).join(' '))).map((e) => e.title);
+    const sized = /\b(?:small|smaller|little|tiny|mini)\s+(?:\w+\s+)?(?:blocks?|cubes?|toys?|balls?|rocks?|stones?|shapes?|pieces?|cars?|animals?)\b/i;   // small things must say they are too big to swallow (pass MF, the second read)
+    const bad = L.experimentsFor('PK3').filter((e) => { const t = [e.title, e.ask, e.do, e.see, e.tell].filter(Boolean).join(' '); return choke.test(t) || (sized.test(t) && !/too big to swallow|nothing small enough to swallow/i.test(t)); }).map((e) => e.title);
     ok('no pre-K 3 experiment uses something a three-year-old can choke on (pass MB; AAP, CPSC)', L.experimentsFor('PK3').length >= 20 && bad.length === 0, bad.join(', ')); }
   // Red against green, every pre-K 3 kind (pass MB, the alignment read's second read): where only the color tells a wrong choice
   // from the answer, the two are never red and green, the most common color vision deficiency (MedlinePlus). Every pre-K 3
@@ -1701,7 +1798,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
 }
 { // Taught before asked: a ratchet on tools/untaught.mjs. History is clean; the rest may only shrink.
   const STOP = new Set(['yes', 'no', 'true', 'false', 'same', 'different', 'more', 'fewer', 'less', 'bigger', 'smaller', 'both', 'neither', 'none', 'all']);
-  const wordy = (a) => typeof a === 'string' && !/\d/.test(a) && a.trim().split(/\s+/).length <= 3 && !STOP.has(a.toLowerCase().replace(/[.!]$/, '')) && !/^(dots|shape|item|pic|art|icon|swatch|letters|solid):/.test(a) && a.length > 1;
+  const wordy = (a) => typeof a === 'string' && !/\d/.test(a) && a.trim().split(/\s+/).length <= 3 && !STOP.has(a.toLowerCase().replace(/[.!]$/, '')) && !/^(dots|shape|item|pic|art|icon|swatch|letters|solid|face):/.test(a) && a.length > 1;
   const untaught = (m) => { const ex = m.lesson.example || {}; const taught = [...m.lesson.paragraphs, m.lesson.keyIdea, ex.caption || '', ex.formula || '', ex.text || '', ...(m.lesson.script || []).map((x) => x.say)].join(' ').toLowerCase();
     for (const g of new Set(m.generators)) for (let seed = 1; seed <= 40; seed++) { const q = L.generateQuestion(g, seed); if (q.type !== 'choice' || !wordy(q.answer)) continue; const a = String(q.answer).toLowerCase().replace(/[.!]$/, ''); if (!taught.includes(a) && !`${q.story || ''} ${q.prompt || ''}`.toLowerCase().includes(a)) return true; } return false; };
   const flagged = L.MODULES.filter((m) => L.getCourse(m.courseId).subject !== 'Reading' && untaught(m)); const history = flagged.filter((m) => ['History', 'Science'].includes(L.getCourse(m.courseId).subject));
@@ -1714,6 +1811,110 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   const read = L.storiesRead(evs);
   ok('a story is listed once, at its first opening', read.length === 2 && read[0].moduleId === 'cells' && read[0].at.startsWith('2026-09-20'));
   ok('a story event carries only the module and the time', Object.keys(L.makeStoryReadEvent('cells', 't')).sort().join() === 'at,moduleId,type');
+}
+{ // The story as a reward (pass MD, Mikey: "They can play after the lesson as a reward like you mentioned."): in a read-aloud
+  // course the first passed round of a lesson with a story earns it, once (a passed round, four of five right first time; the
+  // star waits for another day); a story already read is never due again.
+  const due = (evs, o) => L.rewardStoryDue(evs, 'red-and-blue', o);
+  const all = { passed: true, readAloud: true, hasStory: true };
+  ok('the reward is due after a passed round of a read-aloud lesson whose story was never read', due([], all) === true);
+  ok('it is not due after a round that was not passed', due([], { ...all, passed: false }) === false);
+  ok('it is not due outside a read-aloud course, where View story already comes before practice', due([], { ...all, readAloud: false }) === false);
+  ok('it is not due for a lesson with no story', due([], { ...all, hasStory: false }) === false);
+  ok('it is due once: a story read before is never offered as a reward again', due([L.makeStoryReadEvent('red-and-blue', '2026-10-01T10:00:00.000Z')], all) === false
+    && due([L.makeStoryReadEvent('find-the-match', '2026-10-01T10:00:00.000Z')], all) === true);
+  // Every read-aloud course's lessons: the rule asks for a story the screen can open (STORIES), so a lesson with none never shows a book.
+  const { STORIES: RW_STORIES } = await import('../src/stories.mjs');
+  const raLessons = L.COURSES.filter((c) => c.readAloud).flatMap((c) => c.modules);
+  const withStory = raLessons.filter((m) => RW_STORIES[m.id]);
+  // The count is what this line tests (the code check, pass MD: an every() over hasStory: true could never fail); the screen
+  // asks the rule with the story the screen can open, so a lesson with none never shows a book.
+  ok('the read-aloud courses carry lesson stories to give as rewards (every lesson but tracing pages and a few others)', withStory.length >= 150, `${withStory.length} of ${raLessons.length}`);
+  { const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+    ok("the screen asks for the reward with the story it can open, and the reward is never watched as a read again", /rewardStoryDue\(record\.events, mod\.id, \{ passed: mastered, readAloud: true, hasStory: !!storyFor\(mod\.id\) \}\)/.test(ui) && /const openRewardStory = \(\) => \{ storyReading\.current = null;/.test(ui)); }
+  // An early learner's heard lesson stories (pass MD, the code and screen checks): newest first, a read to the end counting as
+  // heard again, only lessons of the courses given that have a story, never a course story and never one not heard, and since
+  // pass ME every one of them (Mikey, Q18: "all"), grouped by course for the shelf. Real courses, not a hand-made order.
+  const vfs = L.getCourse('very-first-steps-pk3'); const day = (d) => `2026-10-${String(d).padStart(2, '0')}T10:00:00.000Z`;
+  const heard = [L.makeStoryReadEvent('find-the-match', day(2)), L.makeStoryReadEvent('red-and-blue', day(3)), L.makeStoryReadEvent('course:very-first-steps-pk3', day(4)), L.makeStoryRereadEvent('find-the-match', day(5), 'shelf', day(5))];
+  ok("an early learner's heard lesson stories come newest first, a read again counting, never a course story and never one not heard", L.heardModuleStories(heard.slice(0, 3), [vfs]).join() === 'red-and-blue,find-the-match' && L.heardModuleStories(heard, [vfs]).join() === 'find-the-match,red-and-blue', L.heardModuleStories(heard, [vfs]));
+  ok('only the lessons of the courses given, and only those with a story, are listed', L.heardModuleStories(heard, []).length === 0 && L.heardModuleStories(heard, [vfs], (id) => id !== 'red-and-blue').join() === 'find-the-match');
+  const nine = vfs.modules.filter((m) => RW_STORIES[m.id]).slice(0, 9).map((m, i) => L.makeStoryReadEvent(m.id, day(i + 1)));
+  ok("every story heard stays on the shelf, newest first (Mikey, Q18: all), and nothing in the code caps it", nine.length === 9 && L.heardModuleStories(nine, [vfs]).join() === nine.slice().reverse().map((e) => e.moduleId).join() && !/HEARD_STORIES_SHOWN/.test(readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8')));
+  // The groups: the course with the newest story first, its stories newest first inside it; a story of a course not given is
+  // left out, and a course with nothing heard has no group.
+  const lap = L.getCourse('listen-and-point-pk3'); const lapStory = lap.modules.find((m) => RW_STORIES[m.id]).id;
+  const mixed = [...nine.slice(0, 2), L.makeStoryReadEvent(lapStory, day(3)), L.makeStoryReadEvent(nine[2].moduleId, day(4))];
+  const groups = L.heardStoryGroups(mixed, [vfs, lap]);
+  ok('the shelf groups the heard stories by course, the course with the newest story first and newest first inside it', groups.map((g) => `${g.courseId}:${g.moduleIds.join('+')}`).join('|') === `very-first-steps-pk3:${nine[2].moduleId}+${nine[1].moduleId}+${nine[0].moduleId}|listen-and-point-pk3:${lapStory}`, groups);
+  ok('a group holds only stories of a course given, and a course with nothing heard has no group', L.heardStoryGroups(mixed, [lap]).map((g) => g.courseId).join() === 'listen-and-point-pk3' && L.heardStoryGroups(nine, [vfs, lap]).length === 1);
+  // The surprise-me book (pass MF, Mikey's Q18 "good idea"): the pick is from the list given, never the story read last while
+  // another is there, every story reachable by some chance, and with one story that one; nothing with none.
+  { const three = ['find-the-match', 'red-and-blue', 'big-and-little'];
+    const picks = new Set(Array.from({ length: 200 }, (_, i) => L.pickSurpriseStory(three, i / 200, null)));
+    ok('the surprise book picks from the heard stories, and every one of them can come up', [...picks].every((id) => three.includes(id)) && picks.size === 3, [...picks]);
+    const avoided = Array.from({ length: 200 }, (_, i) => L.pickSurpriseStory(three, i / 200, 'red-and-blue'));
+    ok('the surprise book never reads the story it read last while another is there', avoided.every((id) => id !== 'red-and-blue') && new Set(avoided).size === 2, [...new Set(avoided)]);
+    ok('with two stories the pick is always the other one, with one story that one, and with none nothing', L.pickSurpriseStory(['a', 'b'], 0.9, 'a') === 'b' && L.pickSurpriseStory(['a', 'b'], 0.1, 'b') === 'a' && L.pickSurpriseStory(['a'], 0.5, 'a') === 'a' && L.pickSurpriseStory([], 0.5, null) === null);
+    ok('a chance at either edge, or none at all, still lands on a story', L.pickSurpriseStory(three, 1, null) === 'big-and-little' && L.pickSurpriseStory(three, 0, null) === 'find-the-match' && three.includes(L.pickSurpriseStory(three, NaN, null)));
+    ok('the shelf shows the surprise book from two heard stories, a number the screen reads from logic', L.SURPRISE_BOOK_FROM === 2 && /SURPRISE_BOOK_FROM/.test(readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8')));
+    // The cover shelf (Q18): a group shows as covers only once every story in it is painted.
+    const painted = new Set(['find-the-match', 'red-and-blue']);
+    ok('a group of heard stories shows as covers only when every story in it is painted, never with one missing or none at all', L.coverShelfReady(['find-the-match', 'red-and-blue'], (id) => painted.has(id)) === true && L.coverShelfReady(three, (id) => painted.has(id)) === false && L.coverShelfReady([], () => true) === false && L.coverShelfReady(['find-the-match']) === false); }
+  // A course is finished when every lesson has its star (Q17), and a round finishes it only when the star it earned was the last.
+  const ids = vfs.modules.map((m) => m.id);
+  const att = (id, at, marks = [1, 1, 1, 1, 1]) => L.makeAttemptEvent({ moduleId: id, seed: 1 }, marks.map((c) => ({ correct: !!c, ms: 3000 })), null, at, at);
+  const starred = ids.flatMap((id) => [att(id, '2026-10-01T10:00:00.000Z'), att(id, '2026-10-02T10:00:00.000Z')]);
+  const butLast = starred.slice(0, -1); const lastRound = starred[starred.length - 1];
+  const before = L.deriveProgress(butLast); const after = L.deriveProgress(starred);
+  ok('a course is finished when every lesson is mastered, not while the last star waits for another day', !L.isCourseFinished(before.masteredIds, vfs) && L.isCourseFinished(after.masteredIds, vfs) && !L.isCourseFinished(after.masteredIds, null));
+  ok('the round that earned the last star finishes the course, and no other round does', L.courseFinishedBy(after, vfs, lastRound) === true && L.courseFinishedBy(before, vfs, butLast[butLast.length - 1]) === false);
+  const again = att(ids[0], '2026-10-03T10:00:00.000Z');
+  ok('a round on a lesson that already had its star finishes nothing, so a finished course is celebrated once', L.courseFinishedBy(L.deriveProgress([...starred, again]), vfs, again) === false);
+  const sameDay = att(ids[ids.length - 1], '2026-10-01T11:00:00.000Z');   // the last lesson passed again on the day of its first pass: the star still waits
+  ok('a pass that leaves the star for another day finishes nothing', L.courseFinishedBy(L.deriveProgress([...butLast, sameDay]), vfs, sameDay) === false);
+  // The course to go on to (pass ME): a locked grade 1 course listed first is skipped; a lesson passed today is skipped for the next
+  // open one; no kindergarten while any pre-K lesson is unmastered, and kindergarten once every one is; Math before Reading at
+  // one grade. The courses are the real ones, the statuses the real moduleStatuses over seeded events.
+  { const fs = L.getCourse('first-steps-pk'); const sounds = L.getCourse('first-sounds-pk'); const kc = L.getCourse('counting-k'); const n1 = L.getCourse('numbers-1');
+    const enabled = ['numbers-1', 'first-steps-pk', 'first-sounds-pk', 'counting-k']; const shown = [n1, fs, sounds, kc];
+    const now = '2026-10-12T12:00:00.000Z'; const stars = (c, d1, d2) => c.modules.flatMap((m) => [att(m.id, d1), att(m.id, d2)]);
+    const pick = (events, courses, courseId) => { const p = L.deriveProgress(events); const r = L.nextCourseToStart(courseId, courses, L.moduleStatuses(p, enabled), events, now); return r ? [r.course.id, r.module.id] : null; };
+    const fsDone = stars(fs, '2026-10-01T10:00:00.000Z', '2026-10-02T10:00:00.000Z');
+    const soundsFirst = [...sounds.modules].sort((a, b) => a.order - b.order);
+    ok('after First Steps the pick skips the grade 1 course the finish switched on, whose lessons are locked, and lands on First Sounds\' first lesson', JSON.stringify(pick(fsDone, shown, 'first-steps-pk')) === JSON.stringify(['first-sounds-pk', soundsFirst[0].id]));
+    const passedToday = [...fsDone, att(soundsFirst[0].id, '2026-10-12T09:00:00.000Z')];
+    ok('a lesson passed today waits for its star, so the pick goes on to the lesson its pass opened', JSON.stringify(pick(passedToday, shown, 'first-steps-pk')) === JSON.stringify(['first-sounds-pk', soundsFirst[1].id]));
+    const passedYesterday = [...fsDone, att(soundsFirst[0].id, '2026-10-11T09:00:00.000Z')];
+    ok('a lesson passed on another day is open to pass again', JSON.stringify(pick(passedYesterday, shown, 'first-steps-pk')) === JSON.stringify(['first-sounds-pk', soundsFirst[0].id]));
+    const allPreKToday = [...fsDone, ...sounds.modules.map((m) => att(m.id, '2026-10-12T09:00:00.000Z'))];
+    ok('while a pre-K lesson is unmastered the pick never reaches kindergarten, even with nothing open in pre-K today', pick(allPreKToday, shown, 'first-steps-pk') === null);
+    const allPreKDone = [...fsDone, ...stars(sounds, '2026-10-03T10:00:00.000Z', '2026-10-04T10:00:00.000Z')];
+    const kcFirst = [...kc.modules].sort((a, b) => a.order - b.order).find((m) => L.moduleStatuses(L.deriveProgress(allPreKDone), enabled).find((s) => s.id === m.id).status === 'available');
+    ok('with every pre-K lesson starred, kindergarten opens, before the locked grade 1 course', !!kcFirst && JSON.stringify(pick(allPreKDone, shown, 'first-sounds-pk')) === JSON.stringify(['counting-k', kcFirst.id]));
+    const fsFirst = [...fs.modules].sort((a, b) => a.order - b.order)[0];
+    ok('at one grade Math comes before Reading, the screen\'s own order, whatever order the courses are listed in', JSON.stringify(pick([], [sounds, fs], 'none')) === JSON.stringify(['first-steps-pk', fsFirst.id]));
+    // Grade order with the pre-K rule out of the way: a kindergarten lesson passed two days ago is open again, and comes before
+    // the grade 1 lesson that pass opened, however the courses are listed.
+    const sk = L.getCourse('science-k'); const s1 = L.getCourse('science-1'); const skFirst = [...sk.modules].sort((a, b) => a.order - b.order)[0]; const s1First = [...s1.modules].sort((a, b) => a.order - b.order)[0];
+    const kPassed = [...allPreKDone, att(skFirst.id, '2026-10-10T09:00:00.000Z')];
+    const pickK = (courses) => { const p = L.deriveProgress(kPassed); const r = L.nextCourseToStart('first-sounds-pk', courses, L.moduleStatuses(p, [...enabled, 'science-k', 'science-1']), kPassed, now); return r ? [r.course.id, r.module.id] : null; };
+    ok('the youngest grade with an open lesson comes first, however the courses are listed', L.moduleStatuses(L.deriveProgress(kPassed), [...enabled, 'science-k', 'science-1']).find((x) => x.id === s1First.id).status === 'available' && JSON.stringify(pickK([s1, sk])) === JSON.stringify(['science-k', skFirst.id]) && JSON.stringify(pickK([sk, s1])) === JSON.stringify(['science-k', skFirst.id]));
+    ok('a course the screen does not show is never picked', pick(fsDone, [n1, fs], 'first-steps-pk') === null); }
+  // A last star earned by a Quick Review's fresh try (after a Move Forward on a lesson never mastered) finishes the course too.
+  const lastId = ids[ids.length - 1]; const moved = L.makeMovedForwardEvent ? L.makeMovedForwardEvent(lastId, '2026-10-03T10:00:00.000Z') : { type: 'moved_forward', at: '2026-10-03T10:00:00.000Z', moduleId: lastId };
+  const fresh = { type: 'light_review_completed', at: '2026-10-25T10:00:00.000Z', moduleId: lastId, stage: 'fresh', outcome: 'clear', correct: 5, total: 5, results: [] };
+  const byReview = L.deriveProgress([...butLast.filter((e) => e.moduleId !== lastId), moved, fresh]);
+  ok('a clear fresh try that earns the last star finishes the course (the review\'s result screen celebrates it)', byReview.perModule[lastId].mastered && L.courseFinishedBy(byReview, vfs, fresh) === true);
+  // The words for a finished course (pass MG, Mikey's answer to Q24, "calmer"): Hooray through grade 5, a calmer Well done from
+  // grade 6 up, college included, with the reader's result line calm to match; every read-aloud course hears Hooray.
+  { const byGrade = (g) => L.COURSES.find((c) => c.grade === g && !c.elective) || L.COURSES.find((c) => c.grade === g);
+    const g5 = byGrade('5'); const g6 = byGrade('6'); const col = byGrade('C');
+    const w5 = L.courseFinishedWords(g5); const w6 = L.courseFinishedWords(g6); const wc = L.courseFinishedWords(col); const wv = L.courseFinishedWords(vfs);
+    ok('a finished course through grade 5 says Hooray, the whole course and its name in title case, with a lively result line', !!g5 && w5.cheer === `Hooray! You finished the whole course, ${L.titleCase(g5.title)}!` && w5.result === 'That was the whole course!' && !w5.calm && wv.cheer.startsWith('Hooray!'));
+    ok('from grade 6 up, college too, the line is calmer: Well done, and the course by name (Q24)', !!g6 && !!col && w6.cheer === `Well done. You finished ${L.titleCase(g6.title)}.` && wc.cheer === `Well done. You finished ${L.titleCase(col.title)}.` && w6.result === 'That was the whole course.' && w6.calm && wc.calm);
+    ok('every read-aloud course is younger than grade 6, so every child who hears the page hears the party', L.COURSES.filter((c) => c.readAloud).every((c) => !L.courseFinishedWords(c).calm));
+    ok('the calm line starts at grade 6 exactly, the band electives of grades 6 to 8 included', L.CALM_CHEER_FROM === '6' && L.COURSES.filter((c) => L.GRADES.indexOf(c.grade) >= L.GRADES.indexOf('6')).every((c) => L.courseFinishedWords(c).calm) && L.COURSES.filter((c) => L.GRADES.indexOf(c.grade) < L.GRADES.indexOf('6')).every((c) => !L.courseFinishedWords(c).calm)); }
 }
 ok('no pairs deck repeats a card, so every card has exactly one twin', Object.entries(L.PAIR_DECKS).every(([, deck]) => { const texts = deck.flat(); return new Set(texts).size === texts.length && deck.every((pr) => pr.length === 2); }), Object.entries(L.PAIR_DECKS).filter(([, deck]) => { const texts = deck.flat(); return new Set(texts).size !== texts.length; }).map(([k]) => k).join(','));
 // Variety: every module that is not a tracing page yields at least four different questions across many seeds,
@@ -1758,6 +1959,9 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   ok('connect-the-dots pictures get more dots down the list', counts.every((n, i) => i === 0 || n >= counts[i - 1]), counts.join(','));
   const early = L.gamesFor('2');   // what the oldest young learner sees, in list order
   ok('the early games never put two of a kind side by side', early.every((g, i) => i === 0 || g.kind !== early[i - 1].kind), early.map((g) => g.kind[0]).join(''));
+  // The kinds that suit any older student (decks, Pong, Quick fire, order, and rule, jump, map and balance games not for the
+  // youngest), the pool these spreading checks read. Since pass MC playList also lists every game of an older student's own
+  // courses; the Let's Play block below walks that whole list for every course.
   const older = L.GAMES.filter((g) => g.deck || g.kind === 'pong' || g.kind === 'sprint' || g.kind === 'order' || ((g.rule || g.jump || g.map || g.balance) && !g.young));
   // Rule decks (2026-09-23): two named groups, nothing in both, every word short enough for a chip, and every rule game names one.
   const deckBad = Object.entries(L.RULE_DECKS).flatMap(([id, d]) => [...(d.a.items.length < 4 || d.b.items.length < 4 ? [`${id} is short`] : []), ...d.a.items.filter((x) => d.b.items.includes(x)).map((x) => `${id} has ${x} in both`), ...[...d.a.items, ...d.b.items].filter((x) => !/^shape:/.test(x) && x.length > 11).map((x) => `${id}: ${x} is too long`)]);
@@ -1814,9 +2018,114 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   ok('no course holds two games of one kind (the element pairs left physics for the periodic table, 2026-09-25)', twoOfAKind === 0, `${twoOfAKind}`);
   let repeats = 0; for (const gr of L.GRADES) { const ks = L.COURSES.filter((c) => c.grade === gr).flatMap((c) => L.COURSE_GAMES[c.id].map(kindOf)); repeats += ks.length - new Set(ks).size; }
   ok('kinds repeated inside a grade stay at or under 10 (new kinds, timelines, the periodic table and find the evidence, 2026-09-25; world capitals in world geography, 2026-10-02)', repeats <= 10, `${repeats}`);
+  // Since pass MC the first game on the list opens on day one only when its course owns another game on the list (or it is a
+  // starter, or Mikey's exception), so a kindergartner with Counting and Letters, two courses of one game each, starts with the
+  // starters alone and each course still has its game to unlock.
   const list = L.GAMES.filter((g) => ['counting-k', 'letters-k'].includes(L.gameCourse(g.id)) || L.STARTER_GAMES.includes(g.id));
   const fresh = L.unlockedGameIds([], list);
-  ok('a new student has the starter and the first game open, and nothing from an unfinished course', fresh.size === new Set([...L.STARTER_GAMES, list[0].id]).size && list.slice(1).every((g) => L.STARTER_GAMES.includes(g.id) || !fresh.has(g.id)));
+  ok('a new student has the starters open, and nothing from an unfinished course whose only game it is', [...fresh].every((id) => L.STARTER_GAMES.includes(id)) && list.filter((g) => !L.STARTER_GAMES.includes(g.id)).every((g) => !fresh.has(g.id)));
+  // A tapped answer says itself for a pre-reader only when hearing it gives nothing away (pass MC, the lesson check: tapping each
+  // letter until a voice said A passed "Tap the letter A" by ear, and the first try still counted). Every read-aloud bank is
+  // sampled: no single letter or picture speaks, a word answer still does, and whether a choice speaks never depends on which
+  // choice is right (the second read: a rule that hushed the one answer a question named made the silence itself the answer).
+  { const leaks = []; let words = 0;
+    for (const c of L.COURSES.filter((x) => x.readAloud)) for (const m of c.modules) for (const g of new Set(m.generators)) for (let sd = 1; sd <= 60; sd += 1) {
+      const q = L.generateQuestion(g, sd); if (!q || q.type !== 'choice' || !Array.isArray(q.choices)) continue;
+      // A lone letter is a shape to name when the other choices are letters too (quiet), and a word to hear when a longer word
+      // stands beside it (a, I among see and dog: it speaks).
+      const amongWords = q.choices.some((o) => !String(o).includes(':') && String(o).length > 1);
+      for (const ch of q.choices) { const sp = L.choiceSpeaks(q, ch);
+        if (sp && /^[A-Za-z]$/.test(String(ch)) && !amongWords) leaks.push(`${g}: the letter ${ch} speaks among letters`);
+        if (!sp && /^[A-Za-z]$/.test(String(ch)) && amongWords) leaks.push(`${g}: the word ${ch} is silent among words`);
+        if (sp && String(ch).includes(':')) leaks.push(`${g}: the picture ${ch} speaks`);
+        if (q.choices.some((other) => L.choiceSpeaks({ ...q, answer: other }, ch) !== sp)) leaks.push(`${g}: whether ${ch} speaks depends on the answer`);
+        if (sp) words += 1; } }
+    ok('a tapped answer never hands itself over by voice: no letter or picture speaks, words still do, and the right answer changes nothing', leaks.length === 0 && words > 100, [...new Set(leaks)].slice(0, 6).join(' | '));
+    const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+    ok('the practice screen asks choiceSpeaks before a tapped answer speaks', /if \(choiceSpeaks\(q, c\)\) speak\(c\)/.test(ui) && !/if \(!c\.includes\(':'\)\) speak\(c\)/.test(ui)); }
+  // A sign word's asked letter sits in more than one place across the bank (the lesson check's second read: A was the middle tile
+  // in every A question, so the place could stand in for the letter).
+  { const at = { A: new Set(), B: new Set() };
+    for (let sd = 1; sd <= 400; sd += 1) { const q = L.generateQuestion('p3-ab-in-word', sd); at[q.answer].add(q.choices.indexOf(q.answer)); }
+    // No sign word sounds like a letter's name (the screen check: "Here is the word sea" with no C on screen).
+    const NAME_SOUNDS = ['bee', 'sea', 'see', 'tea', 'pea', 'eye', 'you', 'why', 'are', 'owe', 'jay', 'kay', 'gee', 'cue', 'ewe', 'ex'];
+    const said = new Set(); for (let sd = 1; sd <= 400; sd += 1) said.add(((L.generateQuestion('p3-ab-in-word', sd).story || '').match(/word ([a-z]+),/) || [])[1]);
+    ok('in a sign word the asked letter is sometimes first, sometimes not, for A and for B, and no word sounds like a letter', at.A.size >= 2 && at.B.size >= 2 && at.A.has(0) && at.B.has(0) && ![...said].some((w) => NAME_SOUNDS.includes(w)) && said.size >= 12, JSON.stringify({ A: [...at.A], B: [...at.B], said: [...said] })); }
+  // Let's Play as a child sees it (pass MC, from Mikey's answer on the day-one game: "I think that's a good setup as long as the
+  // rest of the courses unlock a new game."). playList is the list the screen draws. For every course, enrolled alone and with
+  // its whole grade, as the young learner or older student who takes it: every game the course owns is on the list once its map
+  // is painted (the older list had dropped 32 courses' games, even from a walk-through), something is open on day one, and finishing the course opens a
+  // game that was not open on day one, for every course but Listen and Point, whose Step on the Circles is Mikey's exception.
+  { const allMapArt = Object.values(L.MAPS).map((m) => m.art);
+    const missing = []; const noNew = []; const nothing = []; const front = [];
+    for (const c of L.COURSES) {
+      const young = L.stageForGrade(c.grade) === 'early';
+      for (const [how, ids] of [['alone', [c.id]], ['with its grade', L.COURSES.filter((x) => x.grade === c.grade).map((x) => x.id)]]) {
+        const courses = L.COURSES.filter((x) => ids.includes(x.id));
+        const painted = L.playList({ courses, young, mapArt: allMapArt }); const own = L.COURSE_GAMES[c.id] || [];
+        own.filter((id) => !painted.some((g) => g.id === id)).forEach((id) => missing.push(`${c.id} ${how}: ${id}`));
+        const list = L.playList({ courses, young }); const open = L.unlockedGameIds([], list);
+        if (!list.some((g) => open.has(g.id))) nothing.push(`${c.id} ${how}`);
+        if (list.length && !open.has(list[0].id)) front.push(`${c.id} ${how}: ${list[0].id}`);
+        if (!L.DAY_ONE_EXCEPTIONS.some((id) => own.includes(id)) && !own.some((id) => list.some((g) => g.id === id) && !open.has(id))) noNew.push(`${c.id} ${how}`);
+      }
+    }
+    ok('every game a course owns is on the Let\'s Play list of a student who takes it (a map once it is painted)', missing.length === 0, missing.slice(0, 8).join(' | '));
+    ok('every student has a game open on day one', nothing.length === 0, nothing.slice(0, 8).join(' | '));
+    ok('finishing any course but Listen and Point opens a game that was not open on day one', noNew.length === 0, noNew.slice(0, 8).join(' | '));
+    // The code check (pass MC): with the old funFirst back, 37 lists led with a locked tile and every test above still passed.
+    ok('the first game on every list is open on day one, never a locked tile', front.length === 0, front.slice(0, 8).join(' | '));
+    ok('funFirst puts the most playful game that may lead in front, and with none allowed keeps the order', (() => { const deck = { id: 'a', kind: 'pairs' }, pong = { id: 'c', kind: 'pong' }; return L.funFirst([deck, pong], (g) => g !== pong)[0] === deck && L.funFirst([deck, pong])[0] === pong && L.funFirst([deck, pong], () => false)[0] === deck; })());
+    const early = (id) => L.getCourse(id); const vfsOnly = L.playList({ courses: [early('very-first-steps-pk3')], young: false });
+    ok('a child whose courses are all early-years keeps the young list after finishing the last one, so its games stay', vfsOnly.some((g) => g.id === 'dots-kite') && vfsOnly.some((g) => g.id === 'sort-color'));
+    const mixed = L.playList({ courses: [early('very-first-steps-pk3'), early('business-3')], young: true });
+    ok('a young learner\'s list draws only on the early-years courses the screens show', !mixed.some((g) => g.id === 'savejar-business-3' || g.id === 'pong') && mixed.some((g) => g.id === 'dots-kite'));
+    const k2 = L.playList({ courses: [early('counting-k'), early('letters-k')], young: true });
+    // A child with an early-years course and an older one keeps the early course's games once the older list takes over (the code
+    // check's second read: Very First Steps beside Money That Works had left Pong and the price game alone).
+    const pastEarly = L.playList({ courses: [L.getCourse('very-first-steps-pk3'), L.getCourse('econ-3')], young: false }).map((g) => g.id);
+    ok('a child past the early years keeps the games of the early courses still assigned, beside the older course\'s', (L.COURSE_GAMES['very-first-steps-pk3'] || []).every((id) => pastEarly.includes(id)) && (L.COURSE_GAMES['econ-3'] || []).every((id) => pastEarly.includes(id)) && pastEarly.includes('pong'), pastEarly.join(','));
+    // The line under Let's Play (pass MC) sits in its own strip outside the moving wash, only for a reader, and its colors pass
+    // 4.5 to 1 in both themes (the screen check measured 2.74 to 1 on the wash in the light theme); a best badge on its white chip
+    // draws with the paper palette (mint on white was 2.00 to 1 in the dark theme).
+    { const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+      const at = ui.indexOf('data-play-strip'); const wash = ui.indexOf('className="edu-colorwash" style={{ padding: 14 }}', at);
+      const cond = ui.slice(ui.lastIndexOf('{open &&', at), at);
+      const tok = (theme, key) => (ui.match(new RegExp(`${theme}: \\{[\\s\\S]*?\\b${key}: '(#[0-9A-Fa-f]{6})'`)) || [])[1];
+      // The strip's own colors, read from its code: each is written as "C.mode === 'dark' ? '<dark>' : C.<light token>".
+      const strip = ui.slice(at, ui.indexOf('</div>', at)); const pick = (prop) => (strip.match(new RegExp(`${prop}: C\\.mode === 'dark' \\? '(#[0-9A-Fa-f]{6})' : C\\.(\\w+)`)) || []).slice(1);
+      const [bgDark, bgLight] = pick('background'); const [inkDark, inkLight] = pick('color');
+      const lum = (hex) => { const v = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4)); return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2]; };
+      const ratio = (a, b) => (Math.max(lum(a), lum(b)) + 0.05) / (Math.min(lum(a), lum(b)) + 0.05);
+      const light = bgLight && inkLight ? ratio(tok('light', bgLight), tok('light', inkLight)) : 0; const dark = bgDark && inkDark ? ratio(bgDark, inkDark) : 0;
+      ok('the Let\'s Play line sits in its own strip, for readers only, at 4.5 to 1 or better in both themes, and a best badge uses paper ink', at > 0 && wash > at && /!youngLearner/.test(cond) && light >= 4.5 && dark >= 4.5 && /data-best-badge style=\{\{[^}]*color: B\.green/.test(ui), JSON.stringify({ light: light.toFixed(2), dark: dark.toFixed(2) })); }
+    // A tool that runs on its own checks its own file name with endsWith (the code check, pass MC): comparing import.meta.url with
+    // `file://${process.argv[1]}` fails from a folder with a space in its path, as iCloud Drive's has, and the tool then writes
+    // nothing, so `node tools/prompts-csv.mjs > docs/LEONARDO-PROMPTS.csv` would have emptied the file.
+    { const { readdirSync } = await import('node:fs'); const toolDir = new URL('../tools/', import.meta.url);
+      const toolFiles = readdirSync(toolDir).filter((f) => f.endsWith('.mjs'));
+      const urlCompare = toolFiles.filter((f) => /import\.meta\.url\s*===\s*`file:\/\/\$\{process\.argv\[1\]\}`/.test(readFileSync(new URL(f, toolDir), 'utf8')));
+      const alone = toolFiles.filter((f) => /process\.argv\[1\]/.test(readFileSync(new URL(f, toolDir), 'utf8')));
+      const wrongName = alone.filter((f) => !readFileSync(new URL(f, toolDir), 'utf8').includes(`process.argv[1].endsWith('${f}')`));
+      ok('every tool that runs on its own checks its own name with endsWith, never import.meta.url against the path', urlCompare.length === 0 && wrongName.length === 0 && alone.length >= 4, [...urlCompare, ...wrongName].join(', ')); }
+    ok('a game once played stays open, even when it no longer leads the list', L.unlockedGameIds([L.makePlayedEvent('maze-small', '2026-10-01T10:00:00Z')], k2).has('maze-small') && !L.unlockedGameIds([], k2).has('maze-small'));
+    // Every game's best badge says what it counts (the code check: timed games read "best 42"). Each game's onScore call in
+    // ui.jsx decides its unit: ticks are seconds, so the kind must be in BEST_SECONDS; another low count takes a word or no badge.
+    { const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8'); const lines = ui.split('\n'); let fn = null; const units = {};
+      lines.forEach((l) => { const f = l.match(/^function (\w+)\(/); if (f) fn = f[1]; const m = l.match(/onScore\(([^,]+), '(low|high)'/); if (m && fn) units[fn] = `${m[1].trim()}:${m[2]}`; });
+      const gameOf = Object.fromEntries([...ui.match(/const GAME_OF = \{([\s\S]*?)\};/)[1].matchAll(/(\w+): (\w+)/g)].map((m) => [m[1], m[2]]));
+      const setOf = (name) => { const m = ui.match(new RegExp(`const ${name} = new Set\\(\\[([^\\]]*)\\]\\)`)); return new Set(m ? [...m[1].matchAll(/'(\w+)'/g)].map((x) => x[1]) : []); };
+      const secs = setOf('BEST_SECONDS'); const none = setOf('BEST_NONE'); const wordsAt = ui.indexOf('const BEST_WORDS = {'); const words = new Set([...ui.slice(wordsAt, ui.indexOf('};', wordsAt)).matchAll(/(\w+): \[/g)].map((m) => m[1]));
+      const wrong = Object.entries(gameOf).filter(([kind, comp]) => { const u = units[comp]; if (!u) return false; const [what, dir] = u.split(':'); if (/^ticks/.test(what)) return !secs.has(kind); if (dir === 'low') return !words.has(kind) && !none.has(kind); return secs.has(kind) || words.has(kind); });
+      // Build the Fund keeps its best in dollars, and a year that saves nothing ends below zero (the code check's second read
+      // found "best -1737" waiting), so it shows no badge, like Pay It Off.
+      ok('every game\'s best badge names what it counts: seconds for a timed game, a word or no badge for any other low count, none for dollars', secs.size >= 40 && wrong.length === 0 && ['fund', 'loan', 'price'].every((k) => none.has(k)), wrong.map(([k, c]) => `${k} (${units[c]})`).join(', ')); }
+    const lp = L.playList({ courses: [L.getCourse('listen-and-point-pk3')], young: true });
+    ok("Mikey's day-one exception holds: a pre-K child with Listen and Point can play Step on the Circles from day one", lp[0] && lp[0].id === 'path-circles' && L.unlockedGameIds([], lp).has('path-circles'));
+    const vfs = L.playList({ courses: [L.getCourse('very-first-steps-pk3')], young: true }); const vfsOpen = L.unlockedGameIds([], vfs);
+    ok('Very First Steps opens its kite on day one and still unlocks Red and Blue', vfsOpen.has('dots-kite') && !vfsOpen.has('sort-color'));
+    const older = L.playList({ courses: [L.getCourse('business-3')], young: false });
+    ok('an older student sees the starter Pong open and their course\'s own game, Fill the Jar, waiting', older.some((g) => g.id === 'pong') && L.unlockedGameIds([], older).has('pong') && older.some((g) => g.id === 'savejar-business-3') && !L.unlockedGameIds([], older).has('savejar-business-3')); }
   const qf = L.GAMES.filter((g) => g.course);
   ok('a course quick fire draws only on its own course, and always has questions', qf.length > 0 && qf.every((g) => { const pool = L.sprintPool(L.MODULES, g); return pool.length > 0 && pool.length === L.sprintPool(L.MODULES.filter((m) => m.courseId === g.course), g).length; }));
 }
@@ -2170,7 +2479,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   const otherPair = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']);
   const otherPriv = await crypto.subtle.exportKey('jwk', otherPair.privateKey);
   ok('a code signed with any other key is refused', (await L.checkLicenseCode(await L.makeLicenseCode(otherPriv, { id: 'X', name: 'Y', year: '2026-27', until: '2027-07-31' }), new Date('2026-10-01'))).ok === false);
-  ok('pre-K 3, pre-K 4 and kindergarten courses are free, grade 1 and up are not', L.COURSES.filter(L.courseIsFree).length > 0 && L.COURSES.every((c) => L.courseIsFree(c) === ['PK3', 'PK4', 'K'].includes(c.grade)) && L.COURSES.filter(L.courseIsFree).reduce((n, c) => n + c.modules.length, 0) === 148);   // 86 plus computer science (FS), economics (FV), art and music (GE), philosophy (GL), psychology (GP) and speech (GT), four modules each, plus the five kindergarten science modules of earmark E1 (pass KK) the two Counting modules of earmark E2 (pass KL) the seven Me and my community modules of earmark E3 (passes KM and KN) the seven Taking care of me modules of earmark E4 (passes KO and KP) the four Tell, show, step and repeat modules of earmark E5 (passes KQ and KR) and the five Letters tracing modules of earmark E6 (pass KS)
+  ok('pre-K 3, pre-K 4 and kindergarten courses are free, grade 1 and up are not', L.COURSES.filter(L.courseIsFree).length > 0 && L.COURSES.every((c) => L.courseIsFree(c) === ['PK3', 'PK4', 'K'].includes(c.grade)) && L.COURSES.filter(L.courseIsFree).reduce((n, c) => n + c.modules.length, 0) === 152);   // 86 plus computer science (FS), economics (FV), art and music (GE), philosophy (GL), psychology (GP) and speech (GT), four modules each, plus the five kindergarten science modules of earmark E1 (pass KK) the two Counting modules of earmark E2 (pass KL) the seven Me and my community modules of earmark E3 (passes KM and KN) the seven Taking care of me modules of earmark E4 (passes KO and KP) the four Tell, show, step and repeat modules of earmark E5 (passes KQ and KR) and the five Letters tracing modules of earmark E6 (pass KS), plus the two Very First Steps feelings modules of earmark E12 (pass MD) and its One more and one fewer and Listen and Point's Words that rhyme (pass ME)
   const mixed = ['counting-k', 'reading-3', 'letters-k'];
   ok('without a license only the free courses open; with one, all of them do', JSON.stringify(L.openCourseIds(mixed, false)) === JSON.stringify(['counting-k', 'letters-k']) && L.openCourseIds(mixed, true).length === 3);
   ok('the app carries a public key only, marked as the development key until launch', !('d' in L.LICENSE_PUBLIC_KEY) && L.LICENSE_KEY_IS_DEVELOPMENT === true);
@@ -2365,6 +2674,19 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   for (const [cid, cs] of Object.entries(MA_COURSE_STORIES)) if (SAYS_BIGGER_GROUP.test((cs.words || []).join(' '))) bad.add(`long story of ${cid}`);
   const unexpected = [...bad].filter((id) => !WAITING.has(id)); const fixed = [...WAITING].filter((id) => !bad.has(id));
   ok('no lesson or explanation calls the group with more the bigger group (pre-K 4 waits for its pass)', unexpected.length === 0 && fixed.length === 0, `new: ${unexpected.join(', ')}; fixed, so take off the list: ${fixed.join(', ')}`);
+}
+
+// Words on a gold fill (pass MF, the screen checks: Celebrate! was white on the light theme's gold, 3.24 to 1): onGold is read from
+// the theme tokens in src/ui.jsx itself and must reach 4.5 to 1 on gold in both themes, the bar for words of 16 pixels.
+{
+  const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+  const block = (name) => { const at = ui.indexOf(`  ${name}: {`, ui.indexOf('const THEMES = {')); return ui.slice(at, ui.indexOf('\n  },', at)); };
+  const hex = (b, key) => ((b.match(new RegExp(`\\b${key}: '(#[0-9A-Fa-f]{6})'`)) || [])[1]);
+  const lin = (c) => { c /= 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; };
+  const lum = (h) => { const [r, g, b] = [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b); };
+  const ratio = (a, b) => { const x = lum(a); const y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+  const pairs = ['light', 'dark'].map((t) => { const b = block(t); return { t, gold: hex(b, 'gold'), on: hex(b, 'onGold') }; });
+  ok('words on gold (onGold) reach 4.5 to 1 in both themes, read from the theme tokens', pairs.every((p) => p.gold && p.on && ratio(p.gold, p.on) >= 4.5), JSON.stringify(pairs.map((p) => ({ ...p, ratio: p.gold && p.on ? ratio(p.gold, p.on).toFixed(2) : null }))));
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

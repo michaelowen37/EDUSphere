@@ -200,6 +200,81 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A sample built by hand to look like a real screen drifts: the LI tour sample missed the Merge link and the Wonder pill and was laid out differently, and Mikey saw all three at a glance. Feed made-up data through the real component instead, with taps switched off, and the sample can never differ from the page.
 - Count a daily allowance against the day as it started, not as it stands: finishing the first review shrinks the queue, and a rule that rechecked the live queue would cancel the second review the backlog asked for.
 
+## Learned in pass MG (Mikey's answers by number: a home button across the bottom, the rainbow strips back in the dark theme, a Surprise me picture, two careers as paths)
+
+- A screen is looked at the way a device that asks for less motion shows it: a drifting rainbow stops on one end of its colors, a breathing ring stops on its empty frame and vanishes, and moving sparkles become stray dots. A sign that tells a child where to tap is measured where it shows (the computed shadow), never the variable that drives it.
+- A gradient drawn into its letters is looked at on a wide screen too: a later rule's background shorthand resets the clip, and the title became a bar there, or nothing.
+- A button the voice names by its place is checked on a short screen, where the place may be below the fold; the scroll cue points at it.
+- A line a pre-reader hears on a card of its own is written to be heard once by a three-year-old: it points at nothing it does not name ("instead" of what?), uses the lessons' own words (mad, not cross), never sends a child outside without a grown-up, never points a child toward the sun, never sounds like crisis language ("Are you still here after both?"), and never sounds like another sentence when heard ("now that you fell over learning"). The short voice heard just before it is read the same way.
+- A career is a path, and a story shows the step its chapter has reached; the path in docs/CHARACTERS.md skips no real step a reader could ask about (a degree, a license), while a story's one line that looks back may sum the steps up, and every picture of the person shows the age and clothes of that story's step, written out in the prompt, since a character sheet paints the age it was drawn at.
+- A memory comes after the story that shows its moment, in grade order; an opening that recalls what no earlier story shows is backstory, not a memory.
+- A check inside a loop sits above any skip that would pass over the lines it holds, and a rule the screens follow in many places is read from the source when the browser walks reach only some of them.
+- A description pasted into a sentence keeps its closing comma ("a badge clipped on watches" reads as clip-on watches), and a page, a printout, a screen or a sign is written as what its only marks are, with a check note that names it.
+
+## Learned in pass MF (Mikey's answers by number: home at the end of a celebration, readers celebrated, a surprise book, Two Plates' own trap, framed lesson paintings, two careers)
+
+- A reader reads a button's words, so a button does what it says: a Quick Review's Back to my lessons that opened a celebration was a lie to a reader, while a young learner's single tap may lead on to the celebration first.
+- A pre-reader hears the script and never the lesson's paragraphs, so a story's moral echoes the spoken lines ("Big is not the same as more"), not a phrase only a paragraph carries.
+- When a story turns on a trap, the narrator never gives the answer before the child finds it; "and there were more of them" told the listener what Ana's count was for.
+- A fact changed about a person is searched in every story about that person: Savanah's sonography sat in three stories, and a fourth ("had not written a line of code in her life") stopped being true once she studied engineering.
+- Every picture of a story keeps one look for each person, and a character sheet is named only where that character is drawn; otherwise the sheet paints a mother or a girl as the sheet's person.
+- A painting that replaces a drawing on a line that counts must count the same: P84 sits on "The crayon is five paper clips long."
+- A lesson painting's framing follows what it shows: straight-on where a shape, a size or a length must read true, wide for a whole place, and from directly above for things that lie flat; a story subject's anchor stylizes a real thing, and a framing word is read as a style word too ("flat" beside a 3D style can paint flat design).
+- A folder a browser test writes beside the page is ignored by git and left out of every zip, or a killed run ships it and the updater stops; the test that writes it clears it first and removes it on SIGTERM where it can (play-and-read does).
+- A count is not an amount: when a child in a story wants more, the story says more of what. Three big crackers, each twice as wide, are more cracker than five little ones, so a child who wanted more and took the five took less food.
+- A rule taught in one grade is read against the traps taught before it: kindergarten's "the longer row has more" holds only when each thing takes one same-size space, and pre-K 3 had just taught that a long row and big things can look like more.
+- A painting shows the count its line says: P47 sat on "with three ships" and painted one, where the bank offers One as a wrong answer.
+- A fix to a key idea sends its story's moral back for a read in the same pass: Picture Graphs' story still said "The longer row has more" after its lesson stopped saying it bare.
+- A new check is proven against the near misses as well as the case it was written for: the careers check read only the cast, and a nurse sentence that said she passed it.
+
+## Learned in pass ME (a celebration for a finished course, every heard story on the shelf, E12 part two)
+
+- A standard's "one or more" is taught with more than one as well as one, or it is cited in part: V.B.1 and V.B.2 say one or more objects, and the lesson that cites them whole adds two dots and takes two away as well as one.
+- A citation taught "in the counting" is counted, not only named: V.A.2 says up to five, and the lesson named five without touching five dots until the second read.
+- A re-derivation that reads only the numbers lets a wrong count in words through: the rules test now reads what an explanation chants and the names it gives.
+- A pick a child's arrow follows is decided in logic with a case for each part of its rule, and a browser check that a tap moved on names the screen it must reach; a tap that opened a locked lesson had passed as "not the celebration".
+- A flow with a daily cap is walked at the cap: the celebration behind a Quick Review's Next never showed on a two-review day until the walk took two reviews.
+- A check on an animation proves its end by jumping past it: the confetti check proved the fall and the waiting frame, and a fill mode that lined the pieces along the card after their showers would have passed.
+- For Texas ears the dog and sock families are near rhymes, so they are never set against each other, and a three-year-old's rhyme question rests on a final sound a child can hear.
+- A lesson picture's check note follows its line: when a line gains a count (two crackers), the painting above it counts the same.
+
+## Learned in pass MD (Mikey's notes on pinning, state history, the story as a reward and the lit letters; E12 part one; numbered questions and checkpoints)
+
+- A question for Mikey keeps its number for good, so he can answer "Q17. Keep it." in any chat; the numbers live in two files that a test holds together, and an answered question keeps its number with his words beside it.
+- A pass that runs for hours sends checkpoint zips he can re-upload: the project as it stands plus a note that says exactly where the work is and what comes next. The sandbox kept everything when the chat stopped this time, but the next stop may land on a new container.
+- A mirror of a regulation can print struck text: Cornell LII and Justia gave grade 5's social studies year as 2025-2026 while TEA's own text says 2024-2025. Read the agency's current chapter for a year, and treat the mirror as a convenience.
+- A code is cited whole when the lesson teaches its whole ("with adult assistance" is I.B.2.c's whole), and "in part" names exactly what is left out (a distressed grown-up; a child's own managing of a big feeling), so the earmark can be narrowed from the citation alone.
+- A question answered by echo is not a question: "You feel sad" followed by "I feel sad" is passed by matching the heard words. Show the face, never say the feeling, and make the wrong choice another feeling's words.
+- A wrong face must be one the child could not fairly have: a grabbed toy can make a child sad as well as mad, so happy is the wrong face for that moment; and happy as every foil lets a child pass without reading a face.
+- A story printed under a citation teaches it in what happens: a story under "happy, sad, mad, scared" that named only scared left the citation half true, and a fight rule said only by the narrator's moral belongs in a grown-up's mouth inside the story.
+- Heard aloud, "almost grabbed the ball and ran off" says that he ran off; a three-year-old hears the verbs, not the adverb. Write "wanted to grab the ball and run off. But then..."
+- A prompt gives every person one look (hair, clothes) that holds across a story's pictures, says night in every night scene, and leaves out anything the words never place (a candle by a bed, a ball in a boy's hands that undoes the turn).
+- A drawn scared face with arched eyebrows over a round mouth reads as surprised; fear is worried eyebrows raised and drawn together over a wide mouth.
+- A picture book for the list is read for what its notes tell grown-ups to do: a board book for ages 1 to 4 whose notes suggest yelling into a pillow and a mad dance with punches conflicts with the rule on hard feelings, however gentle its pages.
+- Features drawn on yellow take the paper's ink in both themes; the dark theme's light ink is 1.37 to 1 on yellow, a blank disc.
+- A check that measures contrast must name the surface it measured: with the paper gone, the lit letter passed on the dark card.
+- A check driven by a voice must let the voice end by itself: a stop tap proves nothing about the end a voice reports, and the test page's 30 ms voice never shows an arrow resting.
+- One set of words feeds a card, the voice that says it as the screen opens and the speaker that says it again; two sources drift (the card said the course was done while the voice said a story was earned).
+- A list a child sees is decided in logic, newest first, with a cap: a shelf that grows forever is not a shelf a three-year-old can use.
+- A walk-through needs the same log the real app keeps, in memory: skipping the reward's first read there made the book come twice.
+- Nothing is kept out of a delivery by memory: the delivery zip, the updater and a test keep the checkpoint folder out.
+
+## Learned in pass MC (Mikey's seven answers; Listen and Point's stories; A and B)
+
+- Mikey's answers from this pass: ages in long stories halved and spread ("I think we should have half of that number for the 105 stories and keep a similar ratio throughout all of the grades/long stories"), the bans folded into the prompt for Nano Banana 2 ("Yeah, let's fold into the prompt"), and the day-one game kept as built ("I think that's a good setup as long as the rest of the courses unlock a new game.").
+- Silence can give an answer away as surely as a voice. A pre-reader who taps each letter until a voice says A passes "Tap the letter A" by ear, so letters among letters stay quiet; but the first fix hushed "the one answer the question names", and then "Is it living?" fell quiet exactly when Living was right. Whether a choice speaks reads only the choices, never which one is right.
+- Place can give an answer away too: every sign word held A in the middle, so a child could learn the tile's place instead of the letter. Vary where the asked thing sits, and test that it varies.
+- A word chosen for a letter lesson must not sound like a letter's name: "Here is the word sea" with no C on screen muddles the lesson it serves (tea, pea, bee, eye, you, why, are).
+- A description that tells one letter from another must be true of that letter alone: "tall, with a bar across the middle" fit A, B and H; "two slanted sides that lean in and meet at the top, with a bar across" fits A only. Show the look-alikes (H, P) before a question offers them.
+- Removing a fact means hunting every place it hides: taking an age out of an opening sentence left "She was eighteen." seven paragraphs later, "at twenty" in a closing line, and "eighteen-year-old" in the about line the weekly note prints. Search the whole story and its about line, and widen the tool that counts.
+- A cue put in place of an age can become the next habit ("As a young", "In high school"): read each new opening against its neighbors in grade order.
+- A positive sentence can over-reach: "every surface plain and unmarked" was the positive way to say no text, and it would have blanked the picture cards a story turns on. Say exactly what is wanted ("wordless, telling everything through shapes and color"), and test a sentence against the scenes it lands on.
+- A word that means a person in one row means a thing in another: a clock's hands, a fox's face, a cube's flat face, a grown-up's shoe, "its neighbors" in geometry. Read the subject only, never the style text, and let a missed person cost a helpful sentence rather than invite hands into a picture of shoes.
+- A long story's character note belongs to the story, not to every picture: a jar of soil in Chloe's story gets no sheet, or the model paints Chloe into it.
+- A screenshot with motion reduced can hide a failure: the Let's Play wash froze at its yellow end, and the line on it fell to 2.74 to 1 at the purple end. Measure moving backgrounds with motion on, and keep words off them.
+- A test that types in the values it checks proves nothing about the thing: read the colors from the strip's own code, and a check passes only while the strip does.
+- A floor reported by a tool is not a floor: reading-college fell to 398 words while docs/STORY-LENGTH.md said so and every test passed. The stories test holds 400 now.
+
 ## Learned in pass MB (Mikey's notes; Listen and Point)
 
 - Mikey's standing rules from this pass: Wonder text ships when written and is listed for his later check ("You don't really need me to approve wonder questions, just add them and I'll check them all later."); core-cast ages now and then and relatives freely ("I think the ages and relatives are okay to mention in stories but keep the age part at a minimum.  It's actually good to state the age periodically just not consistently.  Relatives, no restriction anymore."); and every pass writes what it learned into the docs, the briefs, the tests and the tools and tells him what changed ("For each pass we do, if you learn anything new that should be remembered forever, please update the documentation, agent tasks, tests etc for future passes and let me know what changed.").

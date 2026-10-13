@@ -29,9 +29,13 @@ export const FRAMEWORKS = {
 // for TEKS and the federal Head Start framework (used by daycare centers nationwide)
 // stands in for CCSS, under the same two keys so every state still gets a coverage line.
 
-// Which framework each state builds to. States that adopted Common Core and then
-// renamed or lightly revised it are listed as CCSS: the content is the same to within
-// a few codes, and those differences are handled per standard, not per state.
+// Which framework the map shows for each state. Texas has its own (TEKS), and every other state is shown against the
+// Common Core for now. Many of them adopted it, and some then renamed or lightly revised it, but not all (pass MD, EARMARKS
+// A19): the National Center for Education Statistics' Table 2.17 (2015) lists Alaska, Nebraska and Virginia as never
+// adopting it, Indiana, Oklahoma and South Carolina as reversing their adoption in 2014, and Minnesota as adopting English
+// language arts only, and Florida's State Board of Education adopted its B.E.S.T. standards in its place on February 12, 2020,
+// in classrooms from 2021-2022 (the board's action item; pass MD's checks). So the screens name the Common Core State
+// Standards, never a state's own standards, for every state but Texas, until each state's own are read (EARMARKS L6).
 export const STATES = [
   ['AL', 'Alabama', 'CCSS'], ['AK', 'Alaska', 'CCSS'], ['AZ', 'Arizona', 'CCSS'], ['AR', 'Arkansas', 'CCSS'],
   ['CA', 'California', 'CCSS'], ['CO', 'Colorado', 'CCSS'], ['CT', 'Connecticut', 'CCSS'], ['DE', 'Delaware', 'CCSS'],
@@ -56,17 +60,22 @@ export const CURRICULUM = [
     // and the Head Start ELOF preschool goals on headstart.gov, and is quoted word for word. The old V.E.1 line quoted the
     // pre-K 4 wording ("into groups and uses language to describe"), which is not the PK3 outcome.
     grade: 'PK3', subject: 'Math', status: 'ready',
-    source: 'Texas Prekindergarten Guidelines (2022), PK3 outcomes in Domains I, II, IV, V and IX, read in full in the PK3 Streamlined Version (TEA) in pass MA; Head Start Early Learning Outcomes Framework, preschool goals for Mathematics, Scientific Reasoning, Social and Emotional, and Perceptual, Motor, and Physical Development, with their 36 to 48 month progressions',
+    source: 'Texas Prekindergarten Guidelines (2022), PK3 outcomes in Domains I, II, IV, V and IX, read in full in the PK3 Streamlined Version (TEA) in pass MA, Domain I again in pass MD and Domain V (B. Joining and Separating) again in pass ME; Head Start Early Learning Outcomes Framework, preschool goals for Mathematics, Scientific Reasoning, Social and Emotional, and Perceptual, Motor, and Physical Development, with their 36 to 48 month progressions (P-MATH 6 read on headstart.gov in pass ME)',
     standards: [
       { framework: 'TEKS', code: 'PK3.V.E.1', text: 'Child sorts objects that are the same and different.', moduleIds: ['red-and-blue', 'find-the-match', 'yellow-and-green', 'match-the-animals'] },
-      { framework: 'TEKS', code: 'PK3.V.A.2', text: 'Child counts up to 5 objects with one-to-one correspondence.', moduleIds: ['one-and-two', 'more-or-fewer'] },
-      { framework: 'TEKS', code: 'PK3.V.A.3', text: 'Child counts up to 5 items and demonstrates cardinality by communicating that the last number indicates how many items are in the set.', moduleIds: ['one-and-two', 'more-or-fewer'] },
+      { framework: 'TEKS', code: 'PK3.V.A.2', text: 'Child counts up to 5 objects with one-to-one correspondence.', moduleIds: ['one-and-two', 'more-or-fewer', 'one-more-one-fewer'] },
+      { framework: 'TEKS', code: 'PK3.V.A.3', text: 'Child counts up to 5 items and demonstrates cardinality by communicating that the last number indicates how many items are in the set.', moduleIds: ['one-and-two', 'more-or-fewer', 'one-more-one-fewer'] },
       { framework: 'TEKS', code: 'PK3.V.A.5', text: 'Child recognizes numerals 0-5.', moduleIds: ['one-and-two', 'three-dots'] },
       { framework: 'TEKS', code: 'PK3.V.A.8', text: 'Child compares sets of objects up to 5 using comparative language (e.g., more than, less than, same number of).', moduleIds: ['more-or-fewer'] },
       { framework: 'CCSS', code: 'ELOF.P-MATH.4', text: 'Compares numbers.', moduleIds: ['more-or-fewer'] },
       { framework: 'CCSS', code: 'ELOF.P-MATH.8', text: 'Measures objects by their various attributes using standard and non-standard measurement. Uses differences in attributes to make comparisons.', moduleIds: ['big-and-little', 'big-and-small'] },
-      { framework: 'CCSS', code: 'ELOF.P-MATH.1', text: 'Knows number names and the count sequence.', moduleIds: ['one-and-two', 'more-or-fewer'] },
-      { framework: 'CCSS', code: 'ELOF.P-MATH.3', text: 'Understands the relationship between numbers and quantities.', moduleIds: ['one-and-two', 'more-or-fewer'] },
+      { framework: 'CCSS', code: 'ELOF.P-MATH.1', text: 'Knows number names and the count sequence.', moduleIds: ['one-and-two', 'more-or-fewer', 'one-more-one-fewer'] },
+      { framework: 'CCSS', code: 'ELOF.P-MATH.3', text: 'Understands the relationship between numbers and quantities.', moduleIds: ['one-and-two', 'more-or-fewer', 'one-more-one-fewer'] },
+      // Pass ME, earmark E12 part two: joining and separating, read in full in TEA's PK3 Streamlined Version (Domain V, B. Joining
+      // and Separating) and on headstart.gov (P-MATH 6 with its 36 to 48 month progression), quoted word for word.
+      { framework: 'TEKS', code: 'PK3.V.B.1', text: 'Child uses objects to demonstrate that adding one or more objects to a set will increase the number of objects in the set.', moduleIds: ['one-more-one-fewer'] },
+      { framework: 'TEKS', code: 'PK3.V.B.2', text: 'Child uses objects to demonstrate that taking away one or more objects from a set will decrease the number of objects in the set.', moduleIds: ['one-more-one-fewer'] },
+      { framework: 'CCSS', code: 'ELOF.P-MATH.6', text: 'Understands addition as adding to and understands subtraction as taking away from.', moduleIds: ['one-more-one-fewer'] },
       { framework: 'CCSS', code: 'ELOF.P-SCI.1', text: 'Observes and describes observable phenomena (objects, materials, organisms, and events).', moduleIds: ['red-and-blue', 'yellow-and-green'] },
       { framework: 'CCSS', code: 'ELOF.P-SCI.3', text: 'Compares and categorizes observable phenomena.', moduleIds: ['red-and-blue', 'yellow-and-green', 'find-the-match', 'match-the-animals'] },
       { framework: 'TEKS', code: 'PK3.IX.B.1', text: 'Child experiments with a variety of fine motor tasks but may lack strength and control.', moduleIds: ['first-marks', 'three-dots'] },
@@ -79,7 +88,18 @@ export const CURRICULUM = [
       { framework: 'TEKS', code: 'PK3.I.C.1', text: 'Child forms positive relationships with adults and peers.', moduleIds: ['please-and-thank-you'] },
       { framework: 'TEKS', code: 'PK3.II.B.4', text: 'Child begins to use appropriate language for different situations.', moduleIds: ['please-and-thank-you'] },
       { framework: 'CCSS', code: 'ELOF.P-SE.2', text: 'Engages in prosocial and cooperative behavior with adults.', moduleIds: ['please-and-thank-you'] },
-      { framework: 'CCSS', code: 'ELOF.P-SE.5', text: 'Uses basic problem-solving skills to resolve conflicts with other children.', moduleIds: ['please-and-thank-you'] },
+      { framework: 'CCSS', code: 'ELOF.P-SE.5', text: 'Uses basic problem-solving skills to resolve conflicts with other children.', moduleIds: ['please-and-thank-you', 'help-a-friend'] },
+      // Pass MD, earmark E12 part one: the feelings outcomes, each read in full in TEA's PK3 Streamlined Version (Domain I) and the
+      // ELOF goals on headstart.gov, quoted word for word. I.C.6, I.D.1 and P-SE 8 are taught in part (each lesson's sources say how).
+      { framework: 'TEKS', code: 'PK3.I.B.2.a', text: 'Child recognizes and expresses a range of emotions.', moduleIds: ['four-feelings'] },
+      { framework: 'TEKS', code: 'PK3.I.B.2.b', text: 'Child is familiar with basic feeling words (e.g., happy, sad, mad, scared).', moduleIds: ['four-feelings'] },
+      { framework: 'TEKS', code: 'PK3.I.B.2.c', text: 'Child manages intensity of emotions with adult assistance.', moduleIds: ['four-feelings'] },
+      { framework: 'TEKS', code: 'PK3.I.C.5', text: 'Child seeks adult help when experiencing conflicts with another child.', moduleIds: ['help-a-friend'] },
+      { framework: 'TEKS', code: 'PK3.I.C.6', text: 'Child responds with concern when a child or adult is distressed.', moduleIds: ['help-a-friend'] },
+      { framework: 'TEKS', code: 'PK3.I.D.1', text: 'Child shows interest in other people and their feelings.', moduleIds: ['help-a-friend'] },
+      { framework: 'CCSS', code: 'ELOF.P-SE.6', text: 'Expresses a broad range of emotions and recognizes these emotions in self and others.', moduleIds: ['four-feelings', 'help-a-friend'] },
+      { framework: 'CCSS', code: 'ELOF.P-SE.7', text: 'Expresses care and concern toward others.', moduleIds: ['help-a-friend'] },
+      { framework: 'CCSS', code: 'ELOF.P-SE.8', text: 'Manages emotions with increasing independence.', moduleIds: ['four-feelings'] },
       { framework: 'CCSS', code: 'ELOF.P-MATH.9', text: 'Identifies, describes, compares, and composes shapes.', moduleIds: ['triangles-too'] },
     ],
   },
@@ -88,7 +108,7 @@ export const CURRICULUM = [
     // and the Head Start ELOF preschool goals on headstart.gov, and is quoted word for word. II.A.1 and III.C.1 had been
     // misquoted, V.E.1 carried the pre-K 4 wording, and P-MATH 8 was half quoted.
     grade: 'PK3', subject: 'Reading', status: 'ready',
-    source: 'Texas Prekindergarten Guidelines (2022), PK3 outcomes in Domains II, III and V, from the PK3 Streamlined Version (TEA), read in full in pass MA and again for Domains II and III, V.C and V.E in pass MB; Head Start Early Learning Outcomes Framework, preschool goals for Language and Communication, Literacy, Mathematics and Scientific Reasoning, with their 36 to 48 month progressions (headstart.gov: Language and Communication and Literacy read in full in pass MB, the other two in pass MA, and the goals cited here again in pass MB)',
+    source: 'Texas Prekindergarten Guidelines (2022), PK3 outcomes in Domains II, III and V, from the PK3 Streamlined Version (TEA), read in full in pass MA and again for Domains II and III, V.C and V.E in pass MB, and III.B again in pass ME; Head Start Early Learning Outcomes Framework, preschool goals for Language and Communication, Literacy, Mathematics and Scientific Reasoning, with their 36 to 48 month progressions (headstart.gov: Language and Communication and Literacy read in full in pass MB, the other two in pass MA, and the goals cited here again in pass MB)',
     standards: [
       { framework: 'TEKS', code: 'PK3.V.C.1', text: 'Child names and describes common 2D shapes.', moduleIds: ['circle-and-square'] },
       { framework: 'TEKS', code: 'PK3.V.C.4', text: 'Child recognizes common shapes, regardless of size.', moduleIds: ['circle-and-square'] },
@@ -102,6 +122,11 @@ export const CURRICULUM = [
       { framework: 'TEKS', code: 'PK3.II.D.1', text: 'Child understands (receptive) and uses (expressive) expected words to label and describe common objects, people, places, actions, and events.', moduleIds: ['listen-and-tap-pictures', 'animal-sounds'] },
       { framework: 'CCSS', code: 'ELOF.P-LC.1', text: 'Attends to communication and language from others.', moduleIds: ['listen-and-tap-pictures'] },
       { framework: 'CCSS', code: 'ELOF.P-LC.6', text: 'Understands and uses a wide variety of words for a variety of purposes.', moduleIds: ['listen-and-tap-pictures'] },
+      // Pass ME, earmark E12 part two: rhymes, read in full in TEA's PK3 Streamlined Version (Domain III, B. Phonological
+      // Awareness) and on headstart.gov (P-LIT 1 with its 36 to 48 month progression), quoted word for word; both taught in part
+      // (the lesson's sources say how: rhymes used in a song, nursery rhyme or fingerplay and the child's own made-up rhymes wait, and words that begin alike are not yet taught).
+      { framework: 'TEKS', code: 'PK3.III.B.6', text: 'Child uses rhyming words through playful activities such as songs, nursery rhymes, and fingerplay.', moduleIds: ['rhymes-with-pictures'] },
+      { framework: 'CCSS', code: 'ELOF.P-LIT.1', text: 'Demonstrates awareness that spoken language is composed of smaller segments of sound.', moduleIds: ['rhymes-with-pictures'] },
       { framework: 'CCSS', code: 'ELOF.P-SCI.1', text: 'Observes and describes observable phenomena (objects, materials, organisms, and events).', moduleIds: ['animal-sounds'] },
     ],
   },

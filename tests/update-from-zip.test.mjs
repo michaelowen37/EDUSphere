@@ -6,7 +6,7 @@
 // exactly, that his own things survive, and that it refuses to run while anything is uncommitted.
 // -----------------------------------------------------------------------------------------------------------------
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, mkdirSync, writeFileSync, existsSync, readFileSync, rmSync, statSync, readdirSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, existsSync, readFileSync, rmSync, statSync, readdirSync, cpSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -56,6 +56,14 @@ try {
   check((statSync(join(repo, 'build.sh')).mode & 0o111) !== 0, 'keeps build.sh runnable');
   const status = run('git', ['status', '--porcelain'], repo);
   check(/CHANGES\.md/.test(status) && /index 2\.html/.test(status), 'git sees the removals, ready to commit');
+
+  // 3. A checkpoint zip (pass MD) is never a delivery: it carries a CHECKPOINT folder, and the updater stops on it, touching nothing.
+  run('git', ['add', '-A'], repo); run('git', ['commit', '-q', '-m', 'updated'], repo);
+  const checkpoint = join(base, 'checkpoint'); cpSync(delivery, checkpoint, { recursive: true });
+  write(checkpoint, 'CHECKPOINT/CHECKPOINT.md', 'where the pass stands'); write(checkpoint, 'index.html', 'checkpoint page');
+  let stoppedOnCheckpoint = false;
+  try { run('bash', [TOOL, checkpoint], repo); } catch (e) { stoppedOnCheckpoint = /checkpoint zip, not a delivery/.test(String(e.stdout)); }
+  check(stoppedOnCheckpoint && readFileSync(join(repo, 'index.html'), 'utf8') === 'new page', 'stops on a checkpoint zip and touches nothing');
 } finally {
   rmSync(base, { recursive: true, force: true });
 }

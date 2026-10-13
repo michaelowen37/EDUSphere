@@ -1,12 +1,12 @@
 # Story flow audit
 
-Generated 2026-10-09. 136 of 763 stories have at least one paragraph that reads robotic (choppy: three or more sentences in a row of six words or fewer; monotone: four or more sentences in a row within three words of one length; then, then: two sentences in a row starting with Then). A story's closing moral, a short refrain by design, is exempt from the choppy rule, and single-word sentences (a sound, a shout, a beat) do not count toward it. Pre-K 3 to grade 2 are held at zero by a rule test. Grades 3 and up were read by hand on 2026-09-28 (pass FQ): the flags that remain there are deliberate short sentences, lists, dialogue or step sequences, kept on purpose, so a flag from grade 3 up is a prompt to read, not an order to rewrite.
+Generated 2026-10-12. 136 of 767 stories have at least one paragraph that reads robotic (choppy: three or more sentences in a row of six words or fewer; monotone: four or more sentences in a row within three words of one length; then, then: two sentences in a row starting with Then). A story's closing moral, a short refrain by design, is exempt from the choppy rule, and single-word sentences (a sound, a shout, a beat) do not count toward it. Pre-K 3 to grade 2 are held at zero by a rule test. Grades 3 and up were read by hand on 2026-09-28 (pass FQ): the flags that remain there are deliberate short sentences, lists, dialogue or step sequences, kept on purpose, so a flag from grade 3 up is a prompt to read, not an order to rewrite.
 
 ## By grade
 
 | Grade | Stories | Flagged | Paragraphs flagged |
 |---|---|---|---|
-| PK3 | 19 | 0 | 0 |
+| PK3 | 23 | 0 | 0 |
 | PK4 | 27 | 0 | 0 |
 | K | 113 | 0 | 0 |
 | 1 | 39 | 0 | 0 |
@@ -186,7 +186,7 @@ Generated 2026-10-09. 136 of 763 stories have at least one paragraph that reads 
 | 12 | story | two-sources | 2 of 6 | choppy | 12, 4, 6, 4, 2, 9, 11 |
 | 12 | story | unit-circle | 2 of 6 | choppy, monotone | 14, 8, 6, 5, 5, 11 |
 | C | story | correlation-causation | 3 of 6 | choppy | 4, 4, 3, 3, 4, 2, 8, 18, 4 |
-| C | long | history-college | 1 of 8 | choppy | 24, 5, 4, 3, 10 |
+| C | long | history-college | 1 of 8 | choppy | 25, 5, 4, 3, 10 |
 | C | long | reading-college | 1 of 8 | choppy | 28, 6, 3, 2, 9 |
 | C | long | speech-college | 4 of 8 | choppy, monotone | 7, 12, 5, 6, 5, 5 |
 | C | story | the-big-turns | 2 of 6 | monotone | 5, 7, 6, 8, 11, 7, 11, 8 |

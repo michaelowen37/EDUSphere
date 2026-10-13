@@ -4,7 +4,7 @@ import * as L from '../src/logic.mjs';
 const text = (m) => { const ex = m.lesson.example || {}; return [...m.lesson.paragraphs, m.lesson.keyIdea, ex.caption || '', ex.formula || '', ex.text || '', ...(m.lesson.script || []).map((s) => s.say)].join(' ').toLowerCase(); };
 // Only recall answers count: a few words, no digits, not a yes or a no. Computed answers (7 tens and 3 ones) are the rule at work, not a fact to have been told.
 const STOP = new Set(['yes', 'no', 'true', 'false', 'same', 'different', 'more', 'fewer', 'less', 'bigger', 'smaller', 'both', 'neither', 'none', 'all']);
-const wordy = (a) => typeof a === 'string' && !/\d/.test(a) && a.trim().split(/\s+/).length <= 3 && !STOP.has(a.toLowerCase().replace(/[.!]$/, '')) && !/^(dots|shape|item|pic|art|icon|swatch|letters|solid):/.test(a) && a.length > 1;
+const wordy = (a) => typeof a === 'string' && !/\d/.test(a) && a.trim().split(/\s+/).length <= 3 && !STOP.has(a.toLowerCase().replace(/[.!]$/, '')) && !/^(dots|shape|item|pic|art|icon|swatch|letters|solid|face):/.test(a) && a.length > 1;
 // Reading's decoding tasks (read this word, which has the sh sound) and vocabulary-from-context tasks teach in the question itself; they are not recall.
 const DECODING = new Set(['read-the-word', 'sh-ch-th', 'silent-e', 'read-the-sentence', 'what-happened', 'vowel-teams', 'two-syllable-words', 'word-meaning-from-context']);
 const rows = [];

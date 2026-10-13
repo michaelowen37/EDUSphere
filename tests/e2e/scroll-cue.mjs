@@ -28,7 +28,8 @@ await page.waitForFunction(() => window.__eduTest.screen === 'lesson'); await pa
 const look = () => page.evaluate(() => {
   const nav = document.querySelector('[data-lesson-nav]'); const cue = document.querySelector('[data-scroll-cue]');
   const r = nav ? nav.getBoundingClientRect() : null;
-  return { navTop: r ? Math.round(r.top) : null, navBottom: r ? Math.round(r.bottom) : null, H: window.innerHeight, cue: !!cue, arrows: cue ? cue.querySelectorAll('.edu-chevron').length : 0, cueBottom: cue ? Math.round(cue.getBoundingClientRect().bottom) : null, cueLeft: cue ? Math.round(cue.getBoundingClientRect().left) : null, W: window.innerWidth };
+  const badge = [...document.querySelectorAll('[role="status"]')].find((x) => /Walkthrough Mode/.test(x.textContent));
+  return { navTop: r ? Math.round(r.top) : null, navBottom: r ? Math.round(r.bottom) : null, H: window.innerHeight, cue: !!cue, arrows: cue ? cue.querySelectorAll('.edu-chevron').length : 0, cueBottom: cue ? Math.round(cue.getBoundingClientRect().bottom) : null, cueLeft: cue ? Math.round(cue.getBoundingClientRect().left) : null, W: window.innerWidth, badgeTop: badge ? Math.round(badge.getBoundingClientRect().top) : null };
 });
 let m = await look();
 ok('on a phone the lesson opens with its Next row below the screen (the case Mikey photographed)', m.navTop !== null && m.navTop > m.H, m);
@@ -36,7 +37,7 @@ ok('the scroll cue shows at the bottom of the screen with three arrows', m.cue &
 ok('the cue sits in the bottom right corner, clear of the speaker button in the middle', m.cue && m.cueLeft > m.W / 2, m);
 await page.locator('[data-scroll-cue]').click({ force: true }); await page.waitForTimeout(1200);
 m = await look();
-ok('a tap on the cue brings the Next row on screen', m.navTop !== null && m.navBottom <= m.H + 1 && m.navTop >= 0, m);
+ok('a tap on the cue brings the Next row on screen, above the Walkthrough Mode badge', m.navTop !== null && m.navBottom <= m.H + 1 && m.navTop >= 0 && m.badgeTop !== null && m.navBottom <= m.badgeTop, m);
 ok('the cue goes away once the Next row shows', !m.cue, m);
 await page.getByRole('button', { name: 'Next', exact: true }).first().click({ force: true }); await page.waitForTimeout(1500);
 m = await look();
@@ -65,6 +66,37 @@ for (const id of ['first-marks', 'tracing-shapes', 'tracing-numbers']) {
 const off = seen.filter((r) => !r.on);
 console.log(`checked ${seen.length} start arrows, ${curved} of them on curves`);
 ok('every start arrow in the tracing lessons sits on its stroke, curves included', seen.length >= 12 && curved >= 4 && off.length === 0, { checked: seen.length, curved, off });
+// The size trap on a 360-pixel phone (pass MG, Mikey's screenshot of More and Fewer: "Can we make the big circles even larger for
+// more contrast and impact?"): the line with three big circles over five little ones, read on the page as drawn. Each big
+// circle is at least two and a half times as wide as a little one, the two rows stacked, and the big row no longer than the
+// little row, so size alone looks like more; before pass MF's fix the two groups sat side by side at 13 and 11 pixels.
+{ await page.evaluate(() => window.__eduTest.openModule('more-or-fewer')); await page.waitForFunction(() => window.__eduTest.screen === 'lesson'); await page.waitForTimeout(700);
+  const L = await import('../../src/logic.mjs'); const script = L.readAloudScript(L.getModule('more-or-fewer')); const at = script.findIndex((s) => /three big circles, and here are five little circles/.test(s.say));
+  for (let step = 0; step < at; step++) { await page.getByRole('button', { name: 'Next', exact: true }).first().click({ force: true }); await page.waitForTimeout(250); }
+  await page.waitForTimeout(700);
+  const trap = await page.evaluate(() => { const rows = [...document.querySelectorAll('svg[role="img"]')].filter((s) => /^[35] circles$/.test(s.getAttribute('aria-label') || '')); return rows.map((s) => { const r = s.getBoundingClientRect(); const items = [...s.querySelectorAll(':scope > svg')].map((k) => k.getBoundingClientRect()); return { label: s.getAttribute('aria-label'), top: r.top, span: items.length ? items[items.length - 1].right - items[0].left : 0, each: items.length ? items[0].width : 0, n: items.length }; }); });
+  const big = trap.find((x) => x.label === '3 circles'); const little = trap.find((x) => x.label === '5 circles');
+  ok('on a phone the size trap draws its big circles at least two and a half times as wide as the little ones, stacked, the big row no longer than the little row', at > 0 && !!big && !!little && big.n === 3 && little.n === 5 && big.each >= 2.5 * little.each && big.top < little.top && big.span <= little.span + 0.5 && big.each >= 50, { at, big, little }); }
+// The course-finished page on a short phone (pass MG, the screen check): at 375 by 667, an iPhone SE or 8, Return home sits below
+// the screen while the voice says to tap the green button at the bottom, so the cue shows, and a tap brings the button into view.
+{ await page.setViewportSize({ width: 375, height: 667 }); await page.evaluate(() => window.__eduTest.goTo('course-done')); await page.waitForFunction(() => window.__eduTest.screen === 'course-done'); await page.waitForTimeout(1500);
+  const home = () => page.evaluate(() => { const b = document.querySelector('[data-course-done-home]'); const r = b ? b.getBoundingClientRect() : null; const badge = [...document.querySelectorAll('[role="status"]')].find((x) => /Walkthrough Mode/.test(x.textContent)); return { top: r ? Math.round(r.top) : null, bottom: r ? Math.round(r.bottom) : null, H: window.innerHeight, cue: !!document.querySelector('[data-scroll-cue]'), book: !!document.querySelector('[data-course-story-book]'), badgeTop: badge ? Math.round(badge.getBoundingClientRect().top) : null }; });
+  let h = await home();
+  ok('on a short phone the course-finished page opens with Return home below the screen, and the scroll cue shows', h.book && h.top !== null && h.top > h.H - 24 && h.cue, h);
+  if (h.cue) { await page.locator('[data-scroll-cue]').click({ force: true }); await page.waitForTimeout(1200); }
+  h = await home();
+  ok('a tap on the cue brings Return home into view, above the Walkthrough Mode badge, and the cue goes away', h.top !== null && h.top >= 0 && h.bottom <= h.H + 1 && !h.cue && h.badgeTop !== null && h.bottom <= h.badgeTop, h);
+  // The same at 360 by 640 and in a laptop's 1366 by 657 browser window, and never at 390 by 844, where the button shows; and a
+  // course with no long story, whose button sits mid-page, shows no cue and its guide names no place (the screen check's second read).
+  for (const [w, tall, want] of [[360, 640, true], [1366, 657, true], [390, 844, false]]) {
+    await page.setViewportSize({ width: w, height: tall }); await page.evaluate(() => window.__eduTest.goTo('overview')); await page.waitForTimeout(300);
+    await page.evaluate(() => window.__eduTest.goTo('course-done')); await page.waitForFunction(() => window.__eduTest.screen === 'course-done'); await page.waitForTimeout(1500);
+    h = await home(); ok(`at ${w} by ${tall} the cue shows exactly when Return home is below the screen`, h.book && h.cue === want && (h.top > h.H - 24) === want, h);
+  }
+  await page.setViewportSize({ width: 375, height: 667 }); await page.evaluate(() => { window.__spoken = []; window.__eduTest.goTo('overview'); }); await page.waitForTimeout(300);
+  await page.evaluate(() => window.__eduTest.goTo('course-done', 'first-sounds-pk')); await page.waitForFunction(() => window.__eduTest.screen === 'course-done'); await page.waitForTimeout(1500);
+  h = await home(); const said = await page.evaluate(() => (window.__spoken || []).join(' '));
+  ok('a course with no long story shows Return home on a short phone with no cue, and its guide names no place', !h.book && !h.cue && h.bottom <= h.H && said.includes('Tap the green button to go home.') && !said.includes('at the bottom'), { h, said }); }
 await browser.close();
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exitCode = failed ? 1 : 0;

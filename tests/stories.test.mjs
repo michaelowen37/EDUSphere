@@ -26,24 +26,64 @@ for (const [id, s] of Object.entries(STORIES)) {
 }
 // Core-cast ages in story text (pass MB, Mikey: "I think the ages and relatives are okay to mention in stories but keep the age
 // part at a minimum.  It's actually good to state the age periodically just not consistently.  Relatives, no restriction
-// anymore."). Until pass MB no module story could state one; now a story may, now and then, and never as a habit: at most one
-// long story in three, never more than three in a row in grade order, and at most one in three module stories with the core
-// cast. tools/cast-ages.mjs > docs/CAST-AGES.md lists them for the story brief, beside the clock in docs/CHARACTERS.md.
+// anymore."). Pass MC, when 33 of 105 long stories stated one (Mikey: "I think we should have half of that number for the 105
+// stories and keep a similar ratio throughout all of the grades/long stories"): at most one long story in six states a core
+// character's age, never two in a row in grade order; every chapter of the clock with six or more long stories has at least
+// one and at most one in five, so the ages come periodically through all the grades; and at most one in six module stories
+// with the core cast. tools/cast-ages.mjs > docs/CAST-AGES.md lists them for the story brief, beside the clock in
+// docs/CHARACTERS.md.
 { const { castAges, agePhrases } = await import('../tools/cast-ages.mjs');
   const r = castAges(L, { STORIES, COURSE_STORIES });
-  ok(`core-cast ages stay occasional: ${r.longStating} of ${r.longTotal} long stories state one, at most one in three`, r.longStating * 3 <= r.longTotal, r.longPattern);
-  ok(`no habit: at most three long stories in a row state a core character's age (longest run ${r.longestRun})`, r.longestRun <= 3, r.longPattern);
+  ok(`core-cast ages stay occasional: ${r.longStating} of ${r.longTotal} long stories state one, at most one in six`, r.longStating * 6 <= r.longTotal, r.longPattern);
+  ok(`no habit: no two long stories in a row state a core character's age (longest run ${r.longestRun})`, r.longestRun <= 1, r.longPattern);
+  const chapters = Object.entries(r.byChapter).filter(([, b]) => b.total >= 6);
+  ok(`a similar ratio in every chapter: each with six or more long stories states an age in at least one and at most one in five (${Object.entries(r.byChapter).map(([k, b]) => `${k} ${b.stating} of ${b.total}`).join(', ')})`, chapters.length >= 4 && chapters.every(([, b]) => b.stating >= 1 && b.stating * 5 <= b.total));
   const withCast = Object.values(STORIES).filter((x) => (x.cast || []).length);
   const stating = withCast.filter((x) => agePhrases(x.words).length);
-  ok(`core-cast ages stay occasional in module stories: ${stating.length} of ${withCast.length} with the core cast state one, at most one in three`, stating.length * 3 <= withCast.length);
-  ok('the age finder reads the usual ways an age is said, and not a count or a time', agePhrases(['Frederick was eight and loved ants.']).length === 1 && agePhrases(['Eight-year-old Chloe painted.']).length === 1 && agePhrases(['When Mike was nine, he built a ramp.']).length === 1 && agePhrases(['Mike was ten minutes late.']).length === 0 && agePhrases(['Chloe was two steps behind.']).length === 0 && agePhrases(['Frederick had eight jars.']).length === 0 && agePhrases(['The summer she turned seventeen, Savanah left the farm.']).length === 1 && agePhrases(['Savanah, then seventeen, left.']).length === 1 && agePhrases(['Mike was 100 percent sure.']).length === 0); }
+  ok(`core-cast ages stay occasional in module stories: ${stating.length} of ${withCast.length} with the core cast state one, at most one in six`, stating.length * 6 <= withCast.length);
+  // An about line states no age (pass MC, the story check): the weekly note and the Story Log print it as a list, where a
+  // habit shows most ("a story about eighteen-year-old Georgette"). The finder reads it with the story's first cast name in
+  // front, so "a junior counselor at seventeen" counts as Savanah's, and a camper's age or "twenty weeks" does not.
+  const aboutAge = (x) => agePhrases([`${(x.cast || [])[0] || ''} ${x.about || ''}`]);
+  const aboutAges = [...Object.entries(COURSE_STORIES), ...Object.entries(STORIES)].filter(([, x]) => aboutAge(x).length).map(([id, x]) => `${id}: ${x.about}`);
+  ok('no story\'s about line states a core character\'s age', aboutAges.length === 0 && aboutAge({ cast: ['Savanah'], about: 'a junior counselor at seventeen, a camper' }).length === 1 && aboutAge({ cast: ['Frederick'], about: 'eight-year-old Frederick, an ant farm' }).length === 1 && aboutAge({ cast: ['Chloe'], about: 'a week minding an eight-year-old, a jar' }).length === 0, aboutAges.slice(0, 4).join(' | '));
+  ok('the age finder reads the usual ways an age is said, and not a count or a time', agePhrases(['Frederick was eight and loved ants.']).length === 1 && agePhrases(['Eight-year-old Chloe painted.']).length === 1 && agePhrases(['When Mike was nine, he built a ramp.']).length === 1 && agePhrases(['Mike was ten minutes late.']).length === 0 && agePhrases(['Chloe was two steps behind.']).length === 0 && agePhrases(['Frederick had eight jars.']).length === 0 && agePhrases(['The summer she turned seventeen, Savanah left the farm.']).length === 1 && agePhrases(['Savanah, then seventeen, left.']).length === 1 && agePhrases(['Mike was 100 percent sure.']).length === 0 && (agePhrases(['Frederick was twenty-three and a student.'])[0] || '').endsWith('twenty-three'));
+  // The forms the finder learned in pass MC (the story check's first and second reads), each in a sentence the stories use, and
+  // the counts, times, sizes and prices it must leave alone.
+  const ages = ['Georgette read the letter twice. She was eighteen.', 'Savanah came to the city at eighteen with a print shop job.', 'The first thing Savanah ever sold was an egg, and by fifteen she was selling twelve dozen a week.', 'The director gave Savanah, eighteen and a junior counselor, the hour.', 'At twenty, Frederick knew not to trust a fast number.', 'Chloe, at seventeen, had a job.', 'Chloe, a girl of nine, painted the wall.', 'Mike, aged nine, built a ramp.'];
+  const notAges = ['Psychology came from her cousin Nico. He was eight and loved trains.', 'Frederick set jars at four spots along the creek.', 'Mike was the youngest by eight years.', 'Georgette opened the shop at nine in the morning.', 'Mike was twenty-five minutes late.', 'Chloe cut a card three by four.', 'Savanah sold apples at two dollars a pound.'];
+  // One overcount pass MC accepted: a clock hour after a cast name reads as an age (no story says one, and an overcount errs
+  // toward fewer ages), so a writer who meets it here rewords the sentence.
+  ok('the finder counts a clock hour after a cast name as an age, an overcount pass MC accepted', agePhrases(['Savanah woke at six.']).length === 1);
+  ok('the finder reads every form of a stated age the stories use, and none of the counts, times, sizes or prices', ages.every((t) => agePhrases([t]).length === 1) && notAges.every((t) => agePhrases([t]).length === 0), [...ages.filter((t) => agePhrases([t]).length !== 1), ...notAges.filter((t) => agePhrases([t]).length)].join(' | ')); }
+// Careers (pass MF, Mikey: Q13 "No, she is a CTO for a medical equipment company."; Q15 "a history teacher only"): no story
+// with Savanah in its cast gives her a sonographer's work, and none with Georgette makes her a nurse, in its words, its about
+// line or its picture lines. The alignment read: a career is a fact a machine can read, so a later edit cannot quietly undo it.
+// The second read: a story names its person in its words as often as in its cast, and a nurse sentence may say she, so the check
+// reads every story that names Savanah or Georgette anywhere and fails any sentence that makes someone in it a nurse.
+{ const told = (x) => [x.about || '', x.alt || '', ...(x.words || []), ...(x.more || []).map((m) => m.alt || '')].join(' ');
+  const sonographer = (t) => /sonograph/i.test(t);
+  const nurse = (t) => /\b(?:was|had been|worked as|became|retired as)\s+(?:a|an|the)\s+(?:\w+\s+)?nurse\b|\bnursing\b/i.test(t);
+  const names = (x, n) => (x.cast || []).includes(n) || new RegExp(`\\b${n}\\b`).test(told(x));
+  const bad = [...Object.entries(COURSE_STORIES), ...Object.entries(STORIES)].filter(([, x]) => (names(x, 'Savanah') && sonographer(told(x))) || (names(x, 'Georgette') && nurse(told(x)))).map(([id]) => id);
+  ok('no story makes Savanah a sonographer or Georgette a nurse (pass MF, Q13 and Q15)', bad.length === 0 && sonographer('Savanah was a cardiac sonographer.') && nurse('Georgette had been a nurse for forty years.') && nurse('She had been a nurse for forty years.') && !nurse('Georgette volunteered beside Nurse Okafor.'), bad.join(', '));
+  // The path (pass MG, Mikey: "Savanah isn't always CTO.  She gets there through hard work and starts in customer service."):
+  // she is the chief technology officer only from the adult chapter on (grades 9 to 12, and college), never in a story of an
+  // earlier chapter, whose clock has her a child, a teen on the farm or a young woman starting out (docs/CHARACTERS.md).
+  const chief = (t) => /chief tech\w* officer|chief of technology|technology chief|head of technology|\bC\.?T\.?O\b/i.test(t);
+  const gradeOf = (id) => { const c = L.getCourse(id) || L.getCourse((L.getModule(id) || {}).courseId); return c ? c.grade : null; };
+  const early = (id) => !['9', '10', '11', '12', 'C'].includes(gradeOf(id));
+  const tooSoon = [...Object.entries(COURSE_STORIES), ...Object.entries(STORIES)].filter(([id, x]) => names(x, 'Savanah') && chief(told(x)) && early(id)).map(([id]) => id);
+  ok('Savanah is a chief technology officer only from the adult chapter on, since she works her way up from customer service (pass MG)', tooSoon.length === 0 && chief('Savanah was the chief technology officer of a company.') && chief('the technology chief of a company') && chief('the chief technical officer') && chief('head of technology') && chief('the C.T.O.') && !chief('a first job in customer service') && early('sexual-health-6') && !early('psychology-9') && !early('psychology-college'), tooSoon.join(', '));
+}
 // Course stories: one longer story per course, still under the Gladwell ceiling for older readers, with three paragraphs and a scene.
 for (const [id, cs] of Object.entries(COURSE_STORIES)) {
   const words = cs.words.join(' ').split(/\s+/).length;
   // A long story is either the original (three paragraphs, under 350 words) or doubled (2026-09-24, Mikey): six or more
-  // paragraphs up to 460 words, with five more pictures after five different paragraphs, spread over both halves.
+  // paragraphs of 400 to 460 words, with five more pictures after five different paragraphs, spread over both halves. The floor
+  // is held since pass MC, when an edit that took two ages out left reading-college at 398 and only docs/STORY-LENGTH.md saw it.
   const doubled = words > 350; const af = (cs.more || []).map((m) => m.after); const half = cs.words.length / 2;
-  ok(`${id}: course story has a title, a scene and its length (three paragraphs under 350 words, or doubled to six or more up to 460)`, (doubled ? words <= 460 && cs.words.length >= 6 : words <= 350 && cs.words.length === 3) && !!cs.title && !!cs.alt && /^CS\d+$/.test(cs.art), `${words} words`);
+  ok(`${id}: course story has a title, a scene and its length (three paragraphs under 350 words, or doubled to six or more, 400 to 460)`, (doubled ? words >= 400 && words <= 460 && cs.words.length >= 6 : words <= 350 && cs.words.length === 3) && !!cs.title && !!cs.alt && /^CS\d+$/.test(cs.art), `${words} words`);
   if (doubled) ok(`${id}: a doubled long story has five more pictures after five different paragraphs in both halves`, af.length === 5 && new Set(af).size === 5 && af.some((a) => a < half) && af.some((a) => a >= half) && af.every((a) => a >= 0 && a < cs.words.length) && cs.more.every((m) => /^CS\d+$/.test(m.serial) && m.alt), af.join(','));
 }
 // Read-aloud rule for the early years (2026-09-23, Mikey): pre-K to grade 2 stories are spoken to five-year-olds, so no

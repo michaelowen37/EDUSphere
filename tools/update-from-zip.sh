@@ -87,6 +87,13 @@ main() {
     [ -n "$TMP" ] && rm -rf "$TMP"
     return 1
   fi
+  # A checkpoint zip (tools/checkpoint.sh, pass MD) carries a CHECKPOINT folder and is for a new chat to resume from, never
+  # for the repository: its checks may not have run and its docs may be half written.
+  if [ -f "$SRC/CHECKPOINT/CHECKPOINT.md" ]; then
+    echo "Stopped: this is a checkpoint zip, not a delivery (it carries a CHECKPOINT folder). Wait for the pass's delivery zip."
+    [ -n "$TMP" ] && rm -rf "$TMP"
+    return 1
+  fi
   if [ "$(cd "$SRC" && pwd -P)" = "$(pwd -P)" ]; then
     echo "That is this folder itself. Give the downloaded zip, or the folder it unzipped to."
     return 1

@@ -9,6 +9,39 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## October 12, 2026 (a clear way home, calmer words for older students, and the last thought of every Wonder question)
+
+- When a course is finished, the celebration page now ends with one wide Return home button across the bottom. From sixth grade up its words are calmer too, "Well done. You finished" and the course's name, with the same confetti and star, while younger students still get "Hooray!"
+- Little ones who can't read yet now hear the last thought of every Wonder question. After the two short voices, the question's closing line comes on a card of its own and is read aloud, so the thought it leaves them with reaches them as well as the readers. Nineteen of those closing lines were reworded so they make sense heard once, and any that sends a child outside now says to go with a grown-up.
+- In the dark theme, the arrows, books and stars on the round gold and green buttons are now drawn in dark ink, so a child who goes by the pictures can tell them apart at a glance. On a phone or tablet set to show less motion, the dark theme now shows the whole rainbow on the Let's Color, Let's Read and Let's Play strips instead of stopping on gold, and keeps the soft green ring around what a little one can tap instead of letting it disappear.
+- In pre-K 3's More and Fewer, the three big circles are now far bigger than the five little ones, so it's easier to see the lesson's point, that big things can look like more and counting is how you know. Under Let's Read, the Surprise me row now has a picture of its own, four colorful question marks.
+
+## October 12, 2026 (every finished course celebrated, a surprise story, and Two Plates)
+
+- Finishing a course is now celebrated in every course, not only the ones read aloud. When students who read on their own earn a course's last star, the result says "That was the whole course!" and a gold Celebrate! button opens the same party the little ones get, with confetti, a gold star and, when the course has one, a gold book that opens its long story. Every celebration now ends with a Return home button, so a child finishes on a high note and lands back on their courses.
+- Under Let's Read, a little one who has earned two or more stories now finds Surprise me, a gold book with a star that picks one of their stories to read aloud, never the same one twice in a row. Once the story paintings arrive, each course's stories will show there as covers to tap.
+- In the pre-K 3 story Two Plates, three big crackers now look like more than five little ones until Ana counts them. The More and Fewer lesson shows the same thing first with big and little circles, so the story is one more meeting with what the lesson taught.
+- Kindergarten's Picture Graphs lesson and its story now put the real things on same-size squares, one in each, before saying the longer row has more, since a row of big things can reach farther without having more.
+
+## October 12, 2026 (a celebration for a finished course, and two more pre-K 3 lessons)
+
+- Finishing a whole course is a big deal for a little one, so now it gets a party. In the courses that are read aloud, pre-K through the spoken courses of second grade, the round that earns a course's last star goes on to a celebration page: confetti falls, a gold star lands, the app says "Hooray! You finished the whole course!" with the course's name, and, in a course that has its own long story, a big gold book reads it aloud, the one that ties all its lessons together (a course still waiting for its story gets the Return home button alone for now). A Return home button under the book skips the story and goes home. If the last star comes from a Quick Review, the party comes right after that review.
+- Every story a little one has earned now waits under Let's Read. Until now only the six newest showed; now all of them do, grouped by course with the newest first, each a gold book that reads the story again, and once a course is finished, its own story sits above them as a gold book too.
+- Pre-K 3 has two more lessons. One More and One Fewer, in Very First Steps, shows that adding a dot makes more and taking one away makes fewer, counts each group to five, and asks a child to try it at snack time with two crackers and one more. Words That Rhyme, in Listen and Point, plays the rhyme game with pictures a child knows: ball and wall, dog and log, cat and hat, and the rest, and asks which of three does not rhyme. Each comes with its own story and coloring page.
+
+## October 11, 2026 (a story as a reward, and two lessons about feelings)
+
+- Little ones now earn a story. In the courses that are read aloud, pre-K through the spoken courses of second grade, the first time a child passes a lesson's practice, the big arrow at the end of the round turns into a book, and the lesson's story reads itself aloud, slowly for pre-K, with one big arrow to carry on. Until now those stories only reached a child when you opened the Story Log or printed the book. The newest six stories a child has heard wait under Let's Read as gold books, so they can hear them again whenever they like, and every story is still in the Story Log and the printed book.
+- Pre-K 3 has two new lessons in Very First Steps. Happy, Sad, Mad and Scared shows each feeling on a friendly yellow face, says that every feeling is okay to have (hitting and pushing are not, because they hurt), and teaches a child to say the feeling's name and, when a feeling is very big, to find you for a hug and a slow breath together, smelling a pretend flower and blowing out a pretend candle. Helping a Friend teaches a child to look at a friend's face, ask "are you okay?", and get a grown-up when a friend is hurt or a fight starts over one ball. Each has its own story, The Big Boom, about a far-off storm, and One Ball, Two Friends.
+- In the dark theme, the lit letters in the letter lessons (the A of Apple, the B of BUS) are a deeper gold now, so they stand out more clearly on the page.
+
+## October 9, 2026 (new games for older students, and the letters A and B)
+
+- Older students now see their own courses' games in Let's Play. Until now, the games of many courses past second grade never showed up in Let's Play at all, so finishing one of those courses could bring nothing new. Now every student starts with a game open, the Star for the youngest and Pong from second grade up, and finishing a course opens a new game (Listen and Point's is open from the first day). A short line under Let's Play says so while games are still locked, and a best score now names what it counts when it isn't points, like seconds or misses.
+- In Listen and Point, children now learn what makes A an A: two slanted sides that lean in and meet at the top, with a bar across. They see A beside H and B beside P, find A and B inside short words like cat and bus, and are invited to sing the alphabet song with you. Tapping a letter no longer says its name out loud, so a question about letters can't be answered by ear.
+- Listen and Point's five stories and its long story were read again closely. In Will It Roll?, Ana now runs her finger around the ball and counts the block's corners, so the story shows the circle and the square its lesson teaches, and the children in the stories now say what they find in their own words.
+- Two picture books joined the pre-K 3 reading list: Polar Bear, Polar Bear, What Do You Hear? by Bill Martin Jr., and Mouse Shapes by Ellen Stoll Walsh.
+
 ## October 8, 2026 (Listen and Point, read again)
 
 - Contact Us now has a Copy button for our address, for browsers that won't open your email app. If your email app doesn't open, a note points you to the Copy button. What's New now opens on laptops too, after the first week tour.

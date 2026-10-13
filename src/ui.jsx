@@ -40,7 +40,7 @@ const THEMES = {
   light: {
     mode: 'light', bg: '#F5F7F1', surface: '#FFFFFF', ink: '#24291F', muted: '#5C6355', line: '#DCE3D6',
     green: '#2F5D4F', greenSoft: '#E4EEE8', gold: '#B8862B', goldSoft: '#F7EAD1',
-    clay: '#B9634A', claySoft: '#F6E4DB', onAccent: '#FFFFFF', frame: '#2F5D4F',
+    clay: '#B9634A', claySoft: '#F6E4DB', onAccent: '#FFFFFF', onGold: '#24291F', frame: '#2F5D4F',
     paper: '#FFF8E8', paperLine: '#F1E3BE', glass: 'rgba(249, 251, 247, 0.9)',
     tipBg: 'linear-gradient(135deg, #EAF2EC 0%, #F5F9F5 100%)', tipLine: '#DCE8DF',
     logoInk: '#2F5D4F', logoOrbit: '#2F5D4F', logoTag: '#8A6424', veil: 'rgba(255, 255, 255, 0.5)', panel: 'rgb(240, 248, 238)', panelLine: 'transparent', goldEdge: '#F7EAD1', cardEdge: '#DCE3D6', softEdge: '#E4EEE8', tabEdge: '#C9DCCF',
@@ -55,7 +55,7 @@ const THEMES = {
   dark: {
     mode: 'dark', bg: '#14231E', surface: '#1D302A', ink: '#F1EDE3', muted: '#B3C1B9', line: '#34503F',
     green: '#7CC3A6', greenSoft: '#22413A', gold: '#D9A441', goldSoft: '#233B31',
-    clay: '#E08A6E', claySoft: '#3D2620', onAccent: '#0E1A16', frame: '#2F5D4F',
+    clay: '#E08A6E', claySoft: '#3D2620', onAccent: '#0E1A16', onGold: '#0E1A16', frame: '#2F5D4F',
     paper: '#1F2D27', paperLine: '#7CC3A6', glass: 'rgba(29, 48, 42, 0.92)',
     tipBg: 'linear-gradient(135deg, #1F3A31 0%, #1D302A 100%)', tipLine: '#34503F',
     logoInk: '#F1EDE3', logoOrbit: '#F1EDE3', logoTag: '#D9A441', veil: 'rgba(0, 0, 0, 0.18)', panel: '#2A4C40', panelLine: '#7CC3A6', goldEdge: '#7CC3A6', cardEdge: '#7CC3A6', softEdge: '#7CC3A6', tabEdge: '#2F5A48',
@@ -72,6 +72,12 @@ const THEMES = {
 const C = { ...THEMES.light };
 // B is the light palette, for everything drawn on paper: games, lesson pictures and diagrams (they sit on paperBoard).
 const B = THEMES.light;
+// Lit letters in the dark theme (pass MD, Mikey: "Whatever you think about the highlighted letter question"). A letters picture
+// lights the part its line names (the A of Apple, the B of BUS) in gold (B.gold, the light palette's #B8862B), on the paper the
+// picture sits on. The paper is white in the light theme, where that gold reads 3.24 to 1, and almond in the dark, where it
+// read 2.66 to 1, under the 3 to 1 that large letters need. So in the dark theme lit letters take this deeper gold, 3.17 to 1
+// on the almond and still apart from the green letters beside them; the light theme, frozen since 2026-09-24, keeps its gold.
+const LIT_LETTER_DARK = '#A67A26';
 // Style objects shared across screens copy colors from C when they are made, so each is made from a recipe that
 // applyTheme runs again after a switch.
 const THEMED = [];
@@ -412,8 +418,10 @@ function PictoGraph({ rows }) {
 // five cells wide or the frame a pair shares, the row in the middle. A row of shapes and a group of dots of the same number then
 // line up exactly, each shape above its dot, and shrink together on a narrow screen; and a row's length follows its count, never
 // the room it is spread across, so the picture cannot hint at the wrong group (pass JW: young children judge how many by length).
-function CountRow({ items, colour, cell = 34, frame = 5, snap = false }) {
-  const gap = 8; const cols = Math.max(frame, items.length); const shift = (cols - items.length) / 2;
+// A row may carry its own gap (pass MG): More and Fewer's five little circles spread to the length of the three big ones above
+// them, so the rows are as long as each other and size alone is the cue that misleads; every other row keeps the 8 it had.
+function CountRow({ items, colour, cell = 34, frame = 5, snap = false, gap = 8 }) {
+  const cols = Math.max(frame, items.length); const shift = (cols - items.length) / 2;
   const w = cols * cell + (cols - 1) * gap; const lead = (snap ? Math.floor(shift) : shift) * (cell + gap);   // snap: as DotGroup
   const color = SWATCH[colour] || B.green; const label = items.every((x) => x === items[0]) ? items.length + ' ' + items[0] + 's' : items.length + ' shapes';
   return (
@@ -932,6 +940,37 @@ function DotGroup({ count, size = 34, animate = false, animKey = 0, frame = 5, s
   );
 }
 
+// Feeling faces (pass MD, earmark E12 part one, PK3 I.B.2.a and I.B.2.b). The four feelings the pre-K 3 lesson teaches, each
+// told by the one sign its line names: happy smiles (with smiling eyes and rosy cheeks), sad turns its mouth down and a tear rolls out, mad
+// squeezes its eyebrows down toward the middle, and scared opens its eyes wide, with worried eyebrows raised high and drawn
+// together and a wide open mouth (the picture check, pass MD: arched eyebrows over a round O read as surprised). A round
+// yellow face, so no child's own skin is the one drawn; drawn for paper with the light palette's ink, like every lesson picture.
+// It scales down inside a pair or a grid and in an answer button, and it names its feeling for a screen reader, as the dots do.
+function FeelingFace({ feeling, size = 130 }) {
+  const ink = B.ink;
+  const brows = feeling === 'mad' ? <><path d="M26 30 L43 40" /><path d="M74 30 L57 40" /></>
+    : feeling === 'sad' ? <><path d="M27 37 L42 30" /><path d="M73 37 L58 30" /></>
+    : feeling === 'scared' ? <><path d="M24 31 Q32 29 42 22" /><path d="M76 31 Q68 29 58 22" /></>
+    : null;   // happy: its smiling eyes are enough
+  const eyes = feeling === 'happy'
+    ? <g fill="none" stroke={ink} strokeWidth="4.5" strokeLinecap="round"><path d="M28 48 Q35 39 42 48" /><path d="M58 48 Q65 39 72 48" /></g>
+    : feeling === 'scared'
+    ? <><circle cx="35" cy="46" r="8.5" fill="#FFFFFF" stroke={ink} strokeWidth="2.5" /><circle cx="65" cy="46" r="8.5" fill="#FFFFFF" stroke={ink} strokeWidth="2.5" /><circle cx="35" cy="46" r="3" fill={ink} /><circle cx="65" cy="46" r="3" fill={ink} /></>
+    : <><circle cx="35" cy="46" r="4.5" fill={ink} /><circle cx="65" cy="46" r="4.5" fill={ink} /></>;
+  const mouth = feeling === 'happy' ? <path d="M30 59 Q50 81 70 59" fill="none" stroke={ink} strokeWidth="4.5" strokeLinecap="round" />
+    : feeling === 'sad' ? <path d="M33 74 Q50 59 67 74" fill="none" stroke={ink} strokeWidth="4.5" strokeLinecap="round" />
+    : feeling === 'mad' ? <path d="M36 71 Q50 64 64 71" fill="none" stroke={ink} strokeWidth="5" strokeLinecap="round" />
+    : <><ellipse cx="50" cy="72" rx="13" ry="8" fill={ink} /><path d="M39.5 67.5 Q50 64.6 60.5 67.5 L59 70 Q50 67.6 41 70 Z" fill="#FFFFFF" /></>;
+  return (
+    <svg viewBox="0 0 100 100" width={size} height={size} role="img" aria-label={`A ${feeling} face`} data-face={feeling} style={{ display: 'block', margin: '0 auto', maxWidth: '100%', height: 'auto' }}>
+      <circle cx="50" cy="52" r="42" fill="#FFD45C" stroke={ink} strokeWidth="3" />
+      <g fill="none" stroke={ink} strokeWidth="4" strokeLinecap="round">{brows}</g>
+      {eyes}{mouth}
+      {feeling === 'happy' && <><circle cx="24" cy="60" r="6" fill="#F4A3A3" opacity="0.85" /><circle cx="76" cy="60" r="6" fill="#F4A3A3" opacity="0.85" /></>}
+      {feeling === 'sad' && <path d="M33 54 Q26 64 33 67 Q40 64 33 54 Z" fill="#4A90D9" stroke={ink} strokeWidth="1.2" />}
+    </svg>
+  );
+}
 // A small picture for each pre-K skill fold, drawn from the same shapes the lessons use, so a
 // child who cannot read the word Colors still knows which fold it is.
 function SkillIcon({ skill, size = 40 }) {
@@ -947,7 +986,11 @@ function SkillIcon({ skill, size = 40 }) {
     Listening: <g><path d="M22 40h14l18-14v48L36 60H22z" fill={C.gold} /><path d="M62 38a14 14 0 010 24M72 30a24 24 0 010 40" fill="none" stroke={C.gold} strokeWidth="6" strokeLinecap="round" /></g>,
     Letters: <text x="50" y="66" textAnchor="middle" fontFamily={FONT} fontSize="48" fontWeight="700" fill={g}>Aa</text>,
     Drawing: <g><path d="M18 78 C30 40, 60 40, 82 24" fill="none" stroke={g} strokeWidth="7" strokeLinecap="round" /><circle cx="18" cy="78" r="8" fill={C.gold} /></g>,
-    'Getting along': <g><circle cx="32" cy="50" r="20" fill={SWATCH.yellow} /><circle cx="68" cy="50" r="20" fill={SWATCH.yellow} />{[[24, 45], [34, 45], [60, 45], [70, 45]].map(([x, y]) => <circle key={`${x}${y}`} cx={x} cy={y} r="2.6" fill={ink} />)}<path d="M23 56q9 8 18 0M59 56q9 8 18 0" fill="none" stroke={ink} strokeWidth="2.6" strokeLinecap="round" /></g>,
+    // Feelings (pass MD): a happy yellow face beside a smaller blue sad one, apart from Getting along's two smiling friends. A
+    // face on yellow is drawn in the paper's ink, B.ink, in both themes (the screen check: the dark theme's light ink was 1.37 to
+    // 1 on the yellow, a blank disc); Getting along's two faces had the same flaw and take the same ink.
+    Feelings: <g><circle cx="36" cy="48" r="25" fill={SWATCH.yellow} /><circle cx="28" cy="43" r="3" fill={B.ink} /><circle cx="44" cy="43" r="3" fill={B.ink} /><path d="M25 54q11 11 22 0" fill="none" stroke={B.ink} strokeWidth="3" strokeLinecap="round" /><circle cx="76" cy="62" r="18" fill={SWATCH.blue} /><circle cx="70" cy="58" r="2.4" fill="#FFFFFF" /><circle cx="82" cy="58" r="2.4" fill="#FFFFFF" /><path d="M68 71q8-7 16 0" fill="none" stroke="#FFFFFF" strokeWidth="2.6" strokeLinecap="round" /></g>,
+    'Getting along': <g><circle cx="32" cy="50" r="20" fill={SWATCH.yellow} /><circle cx="68" cy="50" r="20" fill={SWATCH.yellow} />{[[24, 45], [34, 45], [60, 45], [70, 45]].map(([x, y]) => <circle key={`${x}${y}`} cx={x} cy={y} r="2.6" fill={B.ink} />)}<path d="M23 56q9 8 18 0M59 56q9 8 18 0" fill="none" stroke={B.ink} strokeWidth="2.6" strokeLinecap="round" /></g>,
   }[skill];
   if (!body) return null;
   return <svg viewBox="0 0 100 100" width={size} height={size} aria-hidden="true" style={{ display: 'block', flexShrink: 0 }}>{body}</svg>;
@@ -1035,6 +1078,11 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0 }) {
   if (visual.kind === 'pic') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0', display: 'flex', justifyContent: 'center' }}><StudentPicture name={visual.name} size={110} /></div>;
   if (visual.kind === 'art') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0', display: 'flex', justifyContent: 'center' }}><ColorThumb picture={visual.name} size={120} thing /></div>;
   if (visual.kind === 'icon') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><IconPic name={visual.name} size={110} /></div>;
+  // A feeling face, or a grid of two to four of them two to a row (pass MD), each face its own drawing (FeelingFace).
+  if (visual.kind === 'face') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><FeelingFace feeling={visual.feeling} size={140} /></div>;
+  // An odd last face spans both columns, so three faces sit two above and one centered below.
+  if (visual.kind === 'faces') { const fs = (visual.feelings || []).slice(0, 4);
+    return <div key={animKey} data-faces="" style={{ padding: '6px 0', display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 10, justifyItems: 'center', maxWidth: 300, margin: '0 auto' }}>{fs.map((f, i) => <div key={`${animKey}-${f}`} className={animate ? 'edu-drift' : undefined} style={{ animationDelay: `${i * 0.35}s`, width: '100%', maxWidth: 120, gridColumn: fs.length % 2 && i === fs.length - 1 ? '1 / -1' : undefined }}><FeelingFace feeling={f} size={120} /></div>)}</div>; }
   // A shape with no color of its own takes the paper's green, B.green, in both themes (pass MA): the dark theme's mint was 1.7
   // to 1 on the almond paper, and pass CY's rule gives every drawing on paper the light palette.
   if (visual.kind === 'shape') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><ShapePic name={visual.name} variant={visual.variant || null} color={SWATCH[visual.colour] || B.green} size={visual.size === 'big' ? 140 : visual.size === 'small' ? 50 : 110} /></div>;
@@ -1053,13 +1101,19 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0 }) {
     // (pass MA), so both draw at one size, a row of shapes sits over its dots, and two small groups draw large enough for a
     // three-year-old to count. Each half is bare: it already sits on the pair's paper, so it adds no paper card of its own (in
     // the dark theme a second card padded each half and broke rows that the light theme keeps on one line).
-    // A group with its own spacing (gap: the long-row picture, three dots spread out over five close together) keeps a frame
-    // as wide as its own dots and shares none, so the long row is truly the longer one, as the words say it looks.
+    // A group with its own spacing (gap: the long-row picture, three dots spread out over five close together, and since pass MG
+    // the size trap's five little circles, spread to the big row's length) keeps a frame as wide as its own group and shares
+    // none, so the long row is truly the longer one, as the words say it looks, and the trap's big circles keep their size.
     const counted = (v) => (v && v.kind === 'dots' ? v.count : v && v.kind === 'pattern' && v.size ? v.items.length : 0);
     const spaced = [visual.a, visual.b].some((v) => v && v.gap);
     const frame = !spaced && counted(visual.a) && counted(visual.b) ? Math.min(5, Math.max(counted(visual.a), counted(visual.b))) : null;
     const own = (v) => (v && v.kind === 'dots' ? { ...v, frame: v.count } : v);
-    const [first, second] = spaced ? [own(visual.a), own(visual.b)] : frame ? [{ ...visual.a, frame, snap: stack }, { ...visual.b, frame, snap: stack }] : [visual.a, visual.b];
+    // A half that names its own frame keeps it (pass MF, the size trap of More and Fewer, Mikey's Q6): three big circles in a
+    // frame of three over five little circles in a frame of five draw at one scale, so the big ones truly draw big; a shared
+    // frame as wide as the bigger group would scale the big row down to the little row's size and hide the very thing the line
+    // says to look at. Every other pair still shares its frame. (Since pass MG the trap's little row names its gap, so the trap
+    // takes the spaced branch above, where each half keeps its own frame; both rows fill their frames, so it draws the same.)
+    const [first, second] = spaced ? [own(visual.a), own(visual.b)] : frame ? [{ ...visual.a, frame: visual.a.frame || frame, snap: stack }, { ...visual.b, frame: visual.b.frame || frame, snap: stack }] : [visual.a, visual.b];
     const half = (v, i) => (v.kind ? <div key={`${animKey}-${i}`} className={animate ? 'edu-drift' : undefined} style={{ animationDelay: `${i * 0.5}s`, maxWidth: stack ? '100%' : '46%', transform: stack ? undefined : 'scale(0.85)' }}><Picture visual={v} note={false} bare /></div> : <Item key={i} spec={`${v.shape}-${v.colour}`} size={96} />);
     return <div style={{ padding: '6px 0', display: 'flex', flexDirection: stack ? 'column' : 'row', justifyContent: 'center', alignItems: 'center', gap: stack ? 10 : 28 }}>{half(first, 0)}{half(second, 1)}</div>;
   }
@@ -1079,7 +1133,7 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0 }) {
   if (visual.kind === 'item') { const scale = visual.scale ? '-' + visual.scale : ''; return <div style={{ padding: '6px 0' }}><Item spec={`${visual.shape}-${visual.colour}${scale}`} size={visual.size || 110} /></div>; }
   // A counted row with a cell size (pass MA) is drawn like a group of dots (CountRow), so it lines up with dots of the same
   // number; every other row of shapes keeps PatternRow.
-  if (visual.kind === 'pattern' && visual.size) return <div key={animKey} className={animate ? 'edu-rise' : undefined} style={{ padding: '6px 0' }}><CountRow items={visual.items} colour={visual.colour || 'green'} cell={visual.size} frame={visual.frame || 5} snap={!!visual.snap} /></div>;
+  if (visual.kind === 'pattern' && visual.size) return <div key={animKey} className={animate ? 'edu-rise' : undefined} style={{ padding: '6px 0' }}><CountRow items={visual.items} colour={visual.colour || 'green'} cell={visual.size} frame={visual.frame || 5} snap={!!visual.snap} gap={visual.gap || 8} /></div>;
   if (visual.kind === 'pattern') return <div key={animKey} className={animate ? 'edu-rise' : undefined} style={{ padding: '6px 0' }}><PatternRow items={visual.items} colour={visual.colour || 'green'} /></div>;
   if (visual.kind === 'solid') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><SolidPic name={visual.name} size={110} /></div>;
   if (visual.kind === 'tenframe') return <div key={animKey} className={animate ? 'edu-rise' : undefined} style={{ padding: '6px 0' }}><TenFrame filled={visual.filled} /></div>;
@@ -1110,7 +1164,7 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0 }) {
             return (
               <span key={`${animKey}-${wi}`} style={{ display: 'inline-block', marginRight: wi < words.length - 1 ? 18 : 0 }}>
                 {before}
-                {hot && <span className={animate ? 'edu-stress' : undefined} style={{ display: 'inline-block', color: B.gold, transform: 'scale(1.12)', transformOrigin: 'center', animationDelay: `${0.4 + wi * 0.9}s` }}>{hot}</span>}
+                {hot && <span data-lit="" className={animate ? 'edu-stress' : undefined} style={{ display: 'inline-block', color: C.mode === 'dark' ? LIT_LETTER_DARK : B.gold, transform: 'scale(1.12)', transformOrigin: 'center', animationDelay: `${0.4 + wi * 0.9}s` }}>{hot}</span>}
                 {after}
               </span>
             );
@@ -1637,6 +1691,14 @@ const KID_ANIMATION = () => `
   .edu-colorwash { background: linear-gradient(115deg, #F7D154, #F4A259, #E4572E, #7D5BA6, #3E7CB1, #5BA84A, #F7D154); background-size: 400% 400%; animation: edu-colorwash 9s ease-in-out infinite; color: #24291F; }
   /* The dark theme's rainbow is a touch softer, so its dark words read on every color (the light theme keeps its own). */
   html[data-theme="dark"] .edu-colorwash { background-image: linear-gradient(115deg, #F7D154, #F4A259, #EE7B5B, #A58BD1, #6FA8DC, #7CC26B, #F7D154); }
+  /* With motion off (pass MG, Mikey: "I don't like the gold dropdowns as much as the old multi-colored dropdowns for let's read,
+     let's play and Let's color"): the wash cannot drift, and frozen it showed only its first quarter, the gold end, so on a phone
+     that asks for less motion all three folds looked gold. Still, the whole rainbow now shows at once across each strip. The
+     light theme is frozen (Mikey, 2026-09-24) and keeps its look; RULES-AUDIT section 11 asks him about it. */
+  @media (prefers-reduced-motion: reduce) { html[data-theme="dark"] .edu-colorwash { background-size: 100% 100%; background-position: 50% 50%; } }
+  /* Still, the sparkles would be white dots stuck on the strip, two of them crowding its arrow (the screen check), so with
+     motion off they go, in the dark theme; the light theme keeps its look (Q27). */
+  @media (prefers-reduced-motion: reduce) { html[data-theme="dark"] .edu-sparkle { display: none; } }
   html[data-theme="dark"] .edu-colorwash-soft { background-image: linear-gradient(120deg, #3D3417, #43291E, #432329, #30264A, #1C2E45, #1E3827, #3D3417); }
   @media print { html[data-theme="dark"] body { background: #FFFFFF !important; } html[data-theme="dark"] body * { color: #24291F !important; background-color: transparent !important; } }
   /* A picture ready to color: the drawing stays black and white, the square behind it drifts through
@@ -1818,13 +1880,22 @@ html, body { overflow-x: hidden; }
 :root { --edu-ring: 26, 186, 110; } html[data-theme="dark"] { --edu-ring: 107, 255, 184; }
 @keyframes edu-breathe { 0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(var(--edu-ring), 0); } 50% { transform: scale(calc(1 + 0.01 * var(--beat, 1))); box-shadow: 0 0 0 calc(4px * var(--beat, 1)) rgba(var(--edu-ring), calc(0.5 * var(--beat, 1))); } }
 .edu-breathe { animation: edu-breathe 2.2s ease-in-out infinite; border-radius: 12px; }
+/* A tap on the scroll cue brings its row into view a little above the screen's foot, clear of the Walkthrough Mode badge and the
+   sign-out chip there (the final read, pass MG: flush at the bottom, the badge covered Return home's first letters, and the
+   lesson row's own 28 pixels left Go back under it); the page's own padding below gives the room. */
+[data-lesson-nav], [data-story-next], [data-course-done-home] { scroll-margin-bottom: 56px; }
+/* With motion off the breath stops, and its resting frame has no ring, so a pre-reader's courses page, the shelf's gold books and
+   the coloring and game tiles lost their only "go here" sign (pass MG, the screen check, on the setting Mikey's phone most likely
+   uses). In the dark theme the ring now stays, still, at its fullest, and a card that is open or resting (--beat 0) still has
+   none; the light theme is frozen and keeps its look until Mikey answers Q27. */
+@media (prefers-reduced-motion: reduce) { html[data-theme="dark"] .edu-breathe { box-shadow: 0 0 0 calc(4px * var(--beat, 1)) rgba(var(--edu-ring), calc(0.5 * var(--beat, 1))); } }
 /* Young learners (2026-09-24, Mikey: hold their hand and make it obvious, but never booming). The one thing to tap next
    pulses a little more and sends out a soft gold ring every two seconds, and a subject's modules rise in one after
    another when it opens. With less motion asked for, nothing moves and the ring simply stays around the button. */
 @keyframes edu-pulse-kid { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.025); } }
 @keyframes edu-ripple { 0% { transform: scale(0.98); opacity: 0.8; } 70%, 100% { transform: scale(1.07); opacity: 0; } }
 html[data-young="1"] .edu-pulse { position: relative; animation: edu-pulse-kid 2s ease-in-out infinite; }
-html[data-young="1"] .edu-pulse::after { content: ''; position: absolute; top: -5px; right: -5px; bottom: -5px; left: -5px; border-radius: 14px; border: 3px solid rgba(var(--edu-ring), 0.9); pointer-events: none; animation: edu-ripple 2s ease-out infinite; }
+html[data-young="1"] .edu-pulse::after { content: ''; position: absolute; top: -5px; right: -5px; bottom: -5px; left: -5px; border-radius: inherit; border: 3px solid rgba(var(--edu-ring), 0.9); pointer-events: none; animation: edu-ripple 2s ease-out infinite; }
 html[data-young="1"] .edu-mod-card { animation: edu-rise 0.55s cubic-bezier(0.2, 0.8, 0.3, 1.15) both; }
 html[data-young="1"] .edu-mod-card:nth-child(2) { animation-delay: 0.12s; }
 html[data-young="1"] .edu-mod-card:nth-child(3) { animation-delay: 0.24s; }
@@ -1837,7 +1908,26 @@ html[data-young="1"] .edu-mod-card:nth-child(n+4) { animation-delay: 0.36s; }
 .edu-side path { stroke-dasharray: 1; animation: edu-side-draw 1.6s ease-out both; }
 @keyframes edu-slide-in { 0% { transform: translateY(-70px) scale(0.5) rotate(-6deg); opacity: 0; } 55% { transform: translateY(10px) scale(1.12) rotate(2deg); opacity: 1; } 78% { transform: translateY(-4px) scale(0.96) rotate(0deg); } 100% { transform: translateY(0) scale(1); } }
 .edu-slide-in { animation: edu-slide-in 1.1s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; background: linear-gradient(90deg, #3A6B58, #D9A83B, #3A6B58); background-size: 200% auto; -webkit-background-clip: text; background-clip: text; color: transparent !important; animation: edu-slide-in 1.1s cubic-bezier(0.2, 0.9, 0.3, 1.2) both, edu-shimmer 3s linear 1.1s infinite; }
+/* In the dark theme the title's shimmer runs from the theme's own mint (7.92 to 1 on the page) to the gold (7.46), since the
+   light theme's deep green read 2.66 to 1 there, under the 3 to 1 large words need, and with motion off it sat dim on "Let's"
+   (pass MG, measured while checking the screen check's light-theme finding; the light theme is frozen, Q27). */
+html[data-theme="dark"] .edu-slide-in { background-image: linear-gradient(90deg, #7CC3A6, #D9A83B, #7CC3A6); }
+/* From 700 pixels the backing that loose words wear (.edu-wrap's plate, a background shorthand that outranks this class) reset
+   the title's clip and size, so the gradient filled its whole box, a bar with no letters (the second reads, pass MG); the dark
+   theme sets them back. In the light theme the title has shown nothing there since September 2026; Q27 asks Mikey. */
+@media (min-width: 700px) { html[data-theme="dark"] .edu-wrap h1.edu-slide-in { background: linear-gradient(90deg, #7CC3A6, #D9A83B, #7CC3A6) 0 0 / 200% auto; -webkit-background-clip: text; background-clip: text; } }
 .edu-glow { animation: edu-glow 1.8s ease-in-out infinite; }
+/* The course-finished page (pass ME, Mikey's answer to Q17): confetti falls down the card and a big star lands. Both move by
+   transform and opacity only; with motion off the confetti lies still where it fell and the star simply sits there. */
+@keyframes edu-confetti { 0% { transform: translate3d(0, -40px, 0) rotate(0deg); opacity: 0; } 6% { opacity: 1; } 100% { transform: translate3d(var(--sway, 0px), 560px, 0) rotate(var(--spin, 540deg)); opacity: 0.85; } }
+.edu-confetti { position: absolute; top: 0; width: 9px; height: 15px; border-radius: 2px; animation: edu-confetti var(--fall, 3.5s) linear var(--wait, 0s) 6 both; }
+@keyframes edu-land-star { 0% { transform: scale(0.2) rotate(-25deg); opacity: 0; } 60% { transform: scale(1.18) rotate(8deg); opacity: 1; } 100% { transform: scale(1) rotate(0deg); opacity: 1; } }
+@keyframes edu-landed-twinkle { 0%, 100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.1) rotate(7deg); } }
+.edu-land-star { animation: edu-land-star 1s cubic-bezier(0.2, 0.9, 0.3, 1.2) both, edu-landed-twinkle 2.6s ease-in-out 1.3s infinite; transform-origin: center; }
+@media (prefers-reduced-motion: reduce) {
+  .edu-confetti { animation: none; opacity: 0.85; transform: translate3d(var(--sway, 0px), var(--rest, 200px), 0) rotate(var(--spin, 0deg)); }
+  .edu-land-star { animation: none; }
+}
 @media (prefers-reduced-motion: reduce) {
   .edu-glow, .edu-breathe, .edu-slide-in, .edu-pulse, .edu-zoom-back, .edu-stress, .edu-twinkle-star, .edu-trace-draw, .edu-rainbow, .edu-colorwash, .edu-colorwash-soft, .edu-sparkle, .edu-side path { animation: none; }
   .edu-side path { stroke-dasharray: none; }
@@ -1949,6 +2039,9 @@ function StatusMark({ status, size = 30 }) {
 }
 
 // A big round tap target with a drawn arrow, for hands that cannot read a label.
+// The drawing on a filled tap takes C.onAccent (pass MG, Mikey's answer to Q23, "change"): white in the light theme, as it
+// always was, and dark ink in the dark theme, where white on the gold read 2.25 to 1 and on the green 2.06, under the 3 to 1
+// a drawing that carries meaning needs; a child who cannot read tells the taps apart by these drawings.
 function BigTap({ onClick, label, dir = 'next', disabled = false }) {
   const inviting = dir === 'next' && !disabled;
   return (
@@ -1956,13 +2049,87 @@ function BigTap({ onClick, label, dir = 'next', disabled = false }) {
       <button type="button" onClick={onClick} disabled={disabled} aria-label={label} className={inviting ? 'edu-press edu-pulse' : 'edu-press'}
         style={{ position: 'relative', width: 66, height: 66, borderRadius: 999, border: `3px solid ${C.green}`, background: dir === 'next' ? C.green : C.surface, cursor: disabled ? 'default' : 'pointer', opacity: disabled ? 0.35 : 1, padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <svg viewBox="0 0 24 24" width="38" height="38" aria-hidden="true">
-          <path d={dir === 'next' ? 'M9 5l7 7-7 7' : 'M15 5l-7 7 7 7'} fill="none" stroke={dir === 'next' ? '#fff' : C.green} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+          <path d={dir === 'next' ? 'M9 5l7 7-7 7' : 'M15 5l-7 7 7 7'} fill="none" stroke={dir === 'next' ? C.onAccent : C.green} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
     </span>
   );
 }
 
+// The gold book (pass MD, drawn in one place since pass ME): the one sign that a story waits, the same drawing wherever it is
+// tapped, so a child who cannot read learns it once: on the result in the arrow's place, on the course-finished page, and on
+// Let's Read's shelf. Its name says which story it opens; `attrs` carries the data marks the browser tests look for.
+// A `star` on the book (pass MF, Mikey's answer to Q18) marks the surprise-me book, the one book that picks a story for the child.
+function GoldBook({ label, onClick, disabled = false, size = 84, breathe = false, pulse = false, attrs = null, star = false }) {
+  const icon = Math.round(size * 0.57);
+  return (
+    <button type="button" onClick={onClick} disabled={disabled} aria-label={label} {...(attrs || {})} className={`edu-press${pulse ? ' edu-pulse' : ''}${breathe ? ' edu-breathe' : ''}`}
+      style={{ ...(breathe ? inBeat(2.2) : {}), position: 'relative', flex: `0 0 ${size}px`, width: size, height: size, borderRadius: 999, border: `3px solid ${C.gold}`, background: C.gold, cursor: disabled ? 'default' : 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: disabled ? 0.5 : 1 }}>
+      <svg viewBox="0 0 24 24" width={icon} height={icon} aria-hidden="true" style={star ? { transform: 'translate(-2px, 2px)' } : undefined}>
+        <path d="M12 7C10 5.6 7 5.1 3.5 5.6v12.2c3.5-.5 6.5 0 8.5 1.4 2-1.4 5-1.9 8.5-1.4V5.6C17 5.1 14 5.6 12 7z" fill="none" stroke={C.onAccent} strokeWidth="2" strokeLinejoin="round" />
+        <path d="M12 7v12.2" fill="none" stroke={C.onAccent} strokeWidth="2" strokeLinecap="round" />
+      </svg>
+      {/* The surprise book's star (the screen check: drawn inside the book it was 13 pixels, too small to tell apart) sits on
+          a round badge on the book's shoulder, half the book's size, gold on the page's own surface; the badge sits outside the
+          book's border and the book's glyph steps a little away from it, so the two never touch (the second read). */}
+      {star && <span aria-hidden="true" style={{ position: 'absolute', top: -9, right: -9, boxSizing: 'border-box', width: Math.round(size * 0.48), height: Math.round(size * 0.48), borderRadius: 999, background: C.surface, border: `2px solid ${C.gold}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <svg viewBox="0 0 24 24" width={Math.round(size * 0.36)} height={Math.round(size * 0.36)} aria-hidden="true"><path data-book-star="" d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z" fill={C.gold} /></svg>
+      </span>}
+    </button>
+  );
+}
+// A story's cover on the cover shelf (pass MF, Mikey's answer to Q18): the story's own first picture as one big tap, the gold
+// book sign in its corner so a child who learned the book finds it here too, and the title under it for the grown-up. The tile
+// shows only once the page has the painting (coverShelfReady in logic asks for every story of the group), so no tile is blank;
+// if the file still fails to load, the plate under the picture shows the book alone.
+function StoryCover({ serial, title, label, onClick, disabled = false, attrs = null }) {
+  const [missing, setMissing] = useState(false);
+  return (
+    <button type="button" onClick={onClick} disabled={disabled} aria-label={label} {...(attrs || {})} className="edu-press edu-breathe"
+      style={{ ...inBeat(2.2), fontFamily: FONT, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6, padding: 0, border: 'none', background: 'none', cursor: disabled ? 'default' : 'pointer', opacity: disabled ? 0.5 : 1, width: '100%', minWidth: 0 }}>
+      <span style={{ position: 'relative', display: 'block', width: '100%', aspectRatio: '4 / 3', borderRadius: 12, overflow: 'hidden', border: `3px solid ${C.gold}`, background: C.paperBoard }}>
+        {!missing && <img src={`art/stories/${serial}.webp`} alt="" loading="lazy" onError={() => setMissing(true)} style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover' }} />}
+        <span aria-hidden="true" style={{ position: 'absolute', right: 6, bottom: 6, width: 30, height: 30, borderRadius: 999, background: C.gold, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 1px 4px rgba(0,0,0,0.3)' }}>
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+            <path d="M12 7C10 5.6 7 5.1 3.5 5.6v12.2c3.5-.5 6.5 0 8.5 1.4 2-1.4 5-1.9 8.5-1.4V5.6C17 5.1 14 5.6 12 7z" fill="none" stroke={C.onAccent} strokeWidth="2" strokeLinejoin="round" />
+            <path d="M12 7v12.2" fill="none" stroke={C.onAccent} strokeWidth="2" strokeLinecap="round" />
+          </svg>
+        </span>
+      </span>
+      <span style={{ fontSize: 13, fontWeight: 600, color: C.ink, textAlign: 'center', lineHeight: 1.25, textWrap: 'balance' }}>{title}</span>
+    </button>
+  );
+}
+// The way home (pass MG, Mikey on his screenshot of the course-finished page: "No home icon, just a home button across the
+// bottom"): one wide button at the foot of the page with its words and no drawing, in the app's own primary look, so it reads
+// as the way out and never competes with the gold book above it. It replaced pass MF's gold house (HomeTap) on the celebration
+// and on the self-reading course story the celebration opens, and since the screen check it ends the reader's story page the
+// celebration opens too. A child who cannot read is told where it is, since the voice's guide names it by its color and, under
+// the gold book, its place ("the green button at the bottom"); invite pulses it when it is the one thing left to tap (no long
+// story yet, or the story's voice has stopped).
+function HomeButton({ onClick, disabled = false, invite = false, label = 'Return home', attrs = null }) {
+  return (
+    <button type="button" onClick={onClick} disabled={disabled} aria-label={label} {...(attrs || {})} className={invite && !disabled ? 'edu-press edu-pulse' : 'edu-press'}
+      style={{ fontFamily: FONT, display: 'block', width: '100%', minHeight: 58, padding: '14px 18px', borderRadius: 14, border: `2px solid ${C.green}`, background: C.green, color: C.onAccent, fontSize: 19, fontWeight: 700, cursor: disabled ? 'default' : 'pointer', opacity: disabled ? 0.5 : 1 }}>
+      {label}
+    </button>
+  );
+}
+// Confetti for the course-finished page (pass ME): a few dozen small pieces in the crayons' colors, the gold and the green, each
+// starting above the card at its own place and moment and falling at its own pace, drifting a little sideways as it turns. Every
+// piece is drawn from one seed, so the shower looks the same on each visit, and like every decoration it is hidden from a
+// screen reader and takes no taps. Each piece waits out its own delay above the card (the fill mode holds its first frame
+// there; without it the pieces lined the card's top edge, the screen check found), falls past the card's foot six times
+// and then rests out of sight, while the star keeps twinkling, so a tablet left on this page is not animating forever.
+function CourseCheer({ seed = 7, n = 36 }) {
+  const rnd = lcg(seed); const colors = [C.gold, C.green, CRAYONS[0], CRAYONS[3], CRAYONS[6], CRAYONS[8], CRAYONS[11], CRAYONS[12]];
+  const bits = Array.from({ length: n }, (_, i) => ({ left: Math.round(rnd() * 96) + 2, sway: Math.round(rnd() * 90 - 45), spin: Math.round(360 + rnd() * 540), fall: (2.6 + rnd() * 2).toFixed(2), wait: (rnd() * 3).toFixed(2), rest: Math.round(40 + rnd() * 260), color: colors[i % colors.length], round: i % 5 === 0 }));
+  return (
+    <span aria-hidden="true" style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+      {bits.map((b, i) => <span key={i} className="edu-confetti" style={{ left: `${b.left}%`, background: b.color, borderRadius: b.round ? 999 : 2, '--sway': `${b.sway}px`, '--spin': `${b.spin}deg`, '--fall': `${b.fall}s`, '--wait': `${b.wait}s`, '--rest': `${b.rest}px` }} />)}
+    </span>
+  );
+}
 // A small shower of stars, thrown out from the middle when an answer is right.
 function StarBurst() {
   const bits = [[-70, -40], [70, -46], [-46, 34], [52, 40], [0, -74], [-88, -4], [88, 8], [12, 62]];
@@ -3102,7 +3269,42 @@ function StoryThumb({ serial }) {
   const present = typeof window !== 'undefined' && Array.isArray(window.__eduArt) && serial && window.__eduArt.includes(serial);
   return (
     <div aria-hidden="true" style={{ width: 52, height: 52, flex: '0 0 52px', borderRadius: 10, overflow: 'hidden', border: `1px solid ${C.line}`, background: C.surface, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      {present ? <img src={`art/stories/${serial}.webp`} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ fontSize: 11, fontWeight: 700, color: C.muted }}>{serial || ''}</span>}
+      {present ? <img src={`art/stories/${serial}.webp`} alt="" loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ fontSize: 11, fontWeight: 700, color: C.muted }}>{serial || ''}</span>}
+    </div>
+  );
+}
+// The picture on Let's Read's Surprise me row (pass MG, Mikey: "The surprise me row can also have an image to0 representing it
+// just like the stories have.   It can just be a bunch overlapping question marks or something that represents mystery.  If you
+// use question marks, maybe they can be different colors.  You can create a Leonardo prompt for this one too."). Every story row
+// shows its picture beside it, and so does the surprise row now: Mikey's painting once art/stories/<serial>.webp is saved (the
+// serial in SHELF_ART, its ledger row in docs/ART-REQUESTS.md under Shelf pictures), and until then four question marks the app
+// draws, overlapping, each a hook with a dot under it in a crayon of its own, outlined in the paper's color so the overlaps
+// read. It sits on the paper like every drawing (C.paperBoard), and is decoration, hidden from a screen reader: the row's words
+// and its gold book say what it does.
+const SHELF_ART = { surprise: 'U1' };
+const QUESTION_MARK = 'M8.2 8.7a3.9 3.9 0 1 1 6.5 2.9c-1.6 1.2-2.7 2.1-2.7 4.2';
+function SurpriseThumb() {
+  const serial = SHELF_ART.surprise;
+  const listed = typeof window !== 'undefined' && Array.isArray(window.__eduArt) && window.__eduArt.includes(serial);
+  // A listed painting whose file still fails to load shows the drawing instead, the way a story cover falls back (the screen check).
+  const [failed, setFailed] = useState(false); const present = listed && !failed;
+  // The green mark crosses the purple one's stem, clear of its dot, in a deeper green that reads on the paper (the picture check,
+  // and the screen check's second read: placed low and left the marks barely overlapped).
+  const marks = [{ x: 1, y: 6, s: 1.6, r: -14, c: '#7D5BA6' }, { x: 21, y: 2, s: 1.25, r: 13, c: '#3E7CB1' }, { x: 25, y: 22, s: 1.12, r: 22, c: '#E4572E' }, { x: 5, y: 20, s: 1.02, r: 10, c: '#3F8A33' }];
+  return (
+    <div aria-hidden="true" data-surprise-picture={present ? 'painted' : 'drawn'} style={{ width: 52, height: 52, flex: '0 0 52px', borderRadius: 10, overflow: 'hidden', border: `1px solid ${C.line}`, background: C.paperBoard, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      {present ? <img src={`art/stories/${serial}.webp`} alt="" loading="lazy" onError={() => setFailed(true)} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : (
+        <svg viewBox="0 0 52 52" width="52" height="52">
+          {marks.map((m, i) => (
+            <g key={i} data-question-mark="" transform={`translate(${m.x} ${m.y}) rotate(${m.r} ${12 * m.s} ${12 * m.s}) scale(${m.s})`}>
+              <path d={QUESTION_MARK} fill="none" stroke={C.paperBoard} strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+              <circle cx="12" cy="20.2" r="2.8" fill={C.paperBoard} />
+              <path d={QUESTION_MARK} fill="none" stroke={m.c} strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
+              <circle cx="12" cy="20.2" r="1.75" fill={m.c} />
+            </g>
+          ))}
+        </svg>
+      )}
     </div>
   );
 }
@@ -3148,7 +3350,7 @@ function PaceGlyph({ kind }) {
     ? <svg viewBox="0 0 32 20" width="34" height="21" aria-hidden="true"><circle cx="20" cy="11" r="7" fill="none" stroke="currentColor" strokeWidth="2" /><circle cx="20" cy="11" r="3" fill="none" stroke="currentColor" strokeWidth="1.5" /><path d="M13 16 L3 16 Q1 16 2 13 L5 8 M5 8 L4 3 M5 8 L8 4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /><path d="M2 18 L30 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
     : <svg viewBox="0 0 32 20" width="34" height="21" aria-hidden="true"><path d="M6 15 Q10 9 18 10 L26 9 M26 9 L28 3 M25 9 L23 3" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /><circle cx="27" cy="12" r="3" fill="none" stroke="currentColor" strokeWidth="2" /><path d="M6 15 L3 18 M12 14 L10 18 M18 13 L20 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>;
 }
-function StoryBody({ story, pace: paceDefault = null, part = null }) {
+function StoryBody({ story, pace: paceDefault = null, part = null, autoRead = false, onReadingChange = null, round = false }) {
   // A printed book may split a painted story across sheets (2026-09-24, Mikey): part = { head, from, to } names the paragraphs
   // this card holds; the title, the main picture and the reading controls ride with the first part.
   const head = !part || part.head; const from = part ? part.from : 0; const to = part ? part.to : story.words.length - 1;
@@ -3174,12 +3376,43 @@ function StoryBody({ story, pace: paceDefault = null, part = null }) {
   // paragraph is kept on screen. Both moves are instant for anyone whose device asks for less motion.
   const scrollWay = () => (prefersReducedMotion() ? 'auto' : 'smooth');
   const toggle = () => {
-    if (stopRef.current) { stopRef.current(); stopRef.current = null; setReadingAt(-1); return; }
+    if (stopRef.current) { stopRef.current(); stopRef.current = null; setReadingAt(-1); if (onReadingChange) onReadingChange(false); return; }
     setSpeechNudge(paceDefault && pace === 'slow' ? -1 : 0);
     const card = cardRef.current;
     if (card && typeof window !== 'undefined' && window.scrollTo) window.scrollTo({ top: Math.max(0, card.getBoundingClientRect().top + window.scrollY - 12), behavior: scrollWay() });
-    stopRef.current = speakSequence([`${story.title}.`, ...story.words], (i) => setReadingAt(i - 1), () => { stopRef.current = null; setReadingAt(-1); }, [`${story.art}-0`, ...story.words.map((_, i) => `${story.art}-${i + 1}`)]);
+    if (onReadingChange) onReadingChange(true);
+    const keys = [`${story.art}-0`, ...story.words.map((_, i) => `${story.art}-${i + 1}`)];
+    stopRef.current = speakSequence([`${story.title}.`, ...story.words], (i) => setReadingAt(i - 1), () => { stopRef.current = null; setReadingAt(-1); setVoiceWatch(0); if (onReadingChange) onReadingChange(false); }, keys);
+    if (!keys.every((k) => clipFor(k))) setVoiceWatch((n) => n + 1);   // the device voice reads, so the page watches it
   };
+  // A story that reads itself (pass MD): a read-aloud course's lesson story starts its voice a moment after the page opens,
+  // once the screen has settled at the top, since a child who cannot read cannot find the button. It starts once a visit, and
+  // with the newest toggle, so a pace tapped in that moment is the pace it reads at (the code check: the timer held the first
+  // render's toggle and read at the pace the page opened with).
+  const autoStarted = useRef(false);
+  const toggleNow = useRef(toggle); toggleNow.current = toggle;
+  useEffect(() => {
+    if (!autoRead || !head || autoStarted.current || !canSpeak()) return undefined;
+    autoStarted.current = true;
+    const t = setTimeout(() => { if (!stopRef.current) toggleNow.current(); }, 400);
+    return () => clearTimeout(t);
+  }, [autoRead]);
+  // A voice that never says it has ended (some devices drop the end of a long reading) must not leave the page reading forever,
+  // with Stop reading stuck and the arrow below resting: while the device voice reads, the page looks every second, and two
+  // quiet looks in a row (nothing speaking, nothing waiting) end the reading, as SpeakButton does (the screen check, pass MD).
+  // It sees only a voice that went quiet; a voice that stays stuck saying it is speaking is left alone, and the stop button
+  // ends that. Bought clips report their own end.
+  const [voiceWatch, setVoiceWatch] = useState(0);
+  useEffect(() => {
+    if (!voiceWatch || typeof window === 'undefined' || !window.speechSynthesis) return undefined;
+    let quiet = 0;
+    const t = setInterval(() => {
+      const ss = window.speechSynthesis;
+      quiet = ss.speaking === false && ss.pending === false ? quiet + 1 : 0;
+      if (quiet >= 2 && stopRef.current) { stopRef.current(); stopRef.current = null; setReadingAt(-1); }
+    }, 1000);
+    return () => clearInterval(t);
+  }, [voiceWatch]);
   useEffect(() => {
     if (readingAt < 0 || !cardRef.current) return;
     const el = cardRef.current.querySelector(`[data-story-par="${readingAt}"]`); if (!el || !el.scrollIntoView) return;
@@ -3201,8 +3434,17 @@ function StoryBody({ story, pace: paceDefault = null, part = null }) {
           <div data-story-par={i} style={{ order: 1, borderRadius: 10, padding: readingAt === i ? '6px 10px' : 0, margin: readingAt === i ? '0 -10px' : 0, background: readingAt === i ? C.goldSoft : 'transparent', transition: 'background 200ms' }}><RichText text={t} size={17} lineGap={12} /></div>
         </div>
       )))}
+      {/* A pre-reader's story (round, pass MD) has the round drawn speaker of the young learners' screens, where a worded button
+          meant nothing to the child (DESIGN.md: controls are large round taps with drawn icons); a square shows while it reads. */}
       {!head ? null : canSpeak()
-        ? <Btn full kind={reading ? 'secondary' : 'primary'} onClick={toggle}>{reading ? 'Stop reading' : 'Read the story to me'}</Btn>
+        ? (round
+          ? <div style={{ display: 'flex', justifyContent: 'center' }}><button type="button" onClick={toggle} aria-label={reading ? 'Stop reading' : 'Read the story to me'} className="edu-press edu-sway"
+              style={{ width: 66, height: 66, borderRadius: 999, border: `3px solid ${C.gold}`, background: C.goldSoft, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              {reading
+                ? <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2.5" fill={C.gold} /></svg>
+                : <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={C.gold} /><path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12" fill="none" stroke={C.gold} strokeWidth="2" strokeLinecap="round" /></svg>}
+            </button></div>
+          : <Btn full kind={reading ? 'secondary' : 'primary'} onClick={toggle}>{reading ? 'Stop reading' : 'Read the story to me'}</Btn>)
         : <p style={{ margin: '0 0 12px', fontSize: 14, color: C.muted }}>Reading aloud is not available on this device or in this preview. The words are all on screen.</p>}
       {head && paceDefault && canSpeak() && (
         <div style={{ display: 'flex', justifyContent: 'center', gap: 14, marginTop: 10 }}>
@@ -6127,9 +6369,17 @@ function GamePad({ game, name, secondsLeft, total, onClose, modules = [], onScor
     </div>
   );
 }
-// The best line on a tile: a time for In order, points for the rest, and Quick fire's longest streak beside its points.
+// The best line on a tile, and what a game's best score counts (pass MC, the code check: once every older course's games reached real lists, a timed game
+// showed "best 42" for 42 seconds). Seconds for every game timed by its ticks, a word for the games that count something else,
+// and no badge where the number would need explaining (dollars of interest, how far from 110 a minute). The rules test reads
+// each game's onScore call and holds every kind to one of these.
+const BEST_SECONDS = new Set(['order', 'evidence', 'ptable', 'debug', 'mix', 'build', 'fix', 'path', 'buckets', 'jump', 'map', 'balance', 'walk', 'bits', 'pay', 'spot', 'pattern', 'shape', 'chord', 'valid', 'reason', 'because', 'share', 'stat', 'recall', 'face', 'sense', 'filler', 'room', 'ask', 'turn', 'jar', 'relation', 'sprout', 'grow', 'breakeven', 'deal', 'savejar', 'tool', 'ledger', 'label', 'greenred']);
+const BEST_WORDS = { teach: ['lesson', 'lessons'], search: ['guess', 'guesses'], cite: ['miss', 'misses'], gdp: ['miss', 'misses'], cause: ['miss', 'misses'], mythfact: ['miss', 'misses'] };
+const BEST_NONE = new Set(['loan', 'cpr', 'fund', 'price']);   // dollars (Set the Price's profit; Build the Fund's, which can fall below zero)
 function bestLine(game, kept) {
-  if (['order', 'path', 'buckets', 'jump', 'map', 'balance'].includes(game.kind)) return `${kept.best}s`;
+  if (BEST_SECONDS.has(game.kind)) return `${kept.best}s`;
+  if (BEST_WORDS[game.kind]) { const [one, many] = BEST_WORDS[game.kind]; return `${kept.best} ${kept.best === 1 ? one : many}`; }
+  if (BEST_NONE.has(game.kind)) return null;
   const streak = game.kind === 'sprint' && kept.streak ? ' · streak ' + kept.streak : '';
   return 'best ' + kept.best + streak;
 }
@@ -7477,6 +7727,12 @@ function EduSphereScreens() {
   const [pinAsk, setPinAsk] = useState(null);                  // sign-in: the student whose PIN is being asked for
   const [pinTry, setPinTry] = useState('');
   const [pinWrong, setPinWrong] = useState(false);
+  const [storyReward, setStoryReward] = useState(null);         // pass MD: the lesson whose story is playing as a round's reward
+  const [storyVoiceOn, setStoryVoiceOn] = useState(false);      // pass MD: a read-aloud story's voice is reading, so its arrow rests
+  const [celebrateCourse, setCelebrateCourse] = useState(null);  // pass ME: the course whose finished page is showing
+  const [courseStoryReward, setCourseStoryReward] = useState(false);   // pass ME: the course's story opened from its finished page, so its arrow carries on
+  const celebratedRound = useRef(null);                          // pass ME: the round already celebrated, so a Wonder's return never celebrates it twice
+  const lastSurprise = useRef(null);                             // pass MF: { who, id }, the story the surprise-me book read last for that child, never twice running
   // My Classroom: press and hold a card, then drag it to a new place. The order is kept on the roster.
   const [dragId, setDragId] = useState(null);                  // the student card being dragged
   const [dragOver, setDragOver] = useState(null);              // the row index it is held over
@@ -8200,6 +8456,32 @@ function EduSphereScreens() {
   const mod = currentFrom ? getModule(currentFrom) : moduleId ? getModule(moduleId) : null;
   const course = mod ? getCourse(mod.courseId) : null;
   const readAloud = !!(course && course.readAloud);
+  // What comes after a finished round in a read-aloud course (pass MD): one thing at a time, never a menu. The result screen's
+  // arrow and a reward story's arrow both call this, so a story given as a reward carries on exactly where the round left off:
+  // a Wonder question that is due, then the next lesson, the next course or home after a pass, and back through the lesson (or
+  // to the lesson a loop back names) after a miss. Well done never goes round the same lesson again.
+  // The course to go on to when one is finished (pass ME): nextCourseToStart in logic decides, from the courses the child's
+  // screen shows, the page's own statuses and the log; the screen only opens what it names.
+  const nextToStart = (courseId) => nextCourseToStart(courseId, shownCourses, statuses, record ? record.events : [], new Date().toISOString());
+  const readAloudNext = () => {
+    if (!lastEvent || !mod || !record || !progress) return;
+    const mastered = isMasteredAttempt(lastEvent);
+    const nextMod = sortedModules.filter((m) => m.courseId === mod.courseId && m.order > mod.order && !(progress.perModule[m.id] || {}).mastered).sort((a, b) => a.order - b.order)[0] || null;
+    const courseDone = mastered && !nextMod && sortedModules.filter((m) => m.courseId === mod.courseId && m.id !== mod.id).every((m) => (progress.perModule[m.id] || {}).mastered);
+    const finished = record.preview ? mastered && !nextMod : courseFinishedBy(progress, course, lastEvent);
+    const next = courseDone || finished ? nextToStart(mod.courseId) : null;
+    const backTo = mastered ? null : loopBackTarget(record.events, mod.id);
+    // The course finished (pass ME, Mikey's answer to Q17): the round that earned the course's last star goes on to the
+    // celebration page, once (a Wonder question brings the result back, and its arrow must not celebrate again). Since pass MF
+    // (Mikey's answer to Q22) the celebration ends at home, so a Wonder question due after this round waits for the next
+    // finished round. In a walk-through no star can be earned, so passing a course's last lesson stands for the finish there,
+    // which lets an educator see the page.
+    if (finished && celebratedRound.current !== lastEvent.at) { celebratedRound.current = lastEvent.at; setCelebrateCourse(mod.courseId); setScreen('course-done'); return; }
+    const wonderHere = FEATURES.reflection && wonderOnFor(findStudent(roster, record.name)) ? nextWonder(record.events, mod.courseId, previewReview(), true) : null;
+    const wonderDone = wonderHere && record.events.some((e) => e.type === 'wonder_answered' && e.wonderId === wonderHere.id && String(e.at) > String(lastEvent.at));
+    if (wonderHere && !wonderDone) { setWonder(wonderHere); setWonderText(''); setWonderPick(''); setWonderStartedAt(Date.now()); setScreen('wonder'); return; }
+    if (mastered && nextMod) openModule(nextMod.id); else if (mastered && next) openModule(next.module.id); else if (mastered) setScreen('overview'); else if (backTo) loopBack(mod.id, backTo); else { setLessonStep(0); setScreen('lesson'); }
+  };
   const questionText = q ? [q.story, q.prompt].filter(Boolean).join(' ') : '';
   // The question's position is a dependency too: two questions in a row can carry the very same words
   // (the same picture picked twice), and the second must still be spoken.
@@ -8277,6 +8559,72 @@ function EduSphereScreens() {
     return () => { stop(); };
   }, [screen, readAloud, currentLessonLine]);
   useEffect(() => { setStoryOpen(false); setAnotherWay(0); }, [screen === 'lesson' ? (mod && mod.id) : null]);
+  // A reward story belongs to the visit that earned it (pass MD): leaving the story screen by any way, the back button included,
+  // ends it, so the same story opened later from Let's Read goes home rather than on to that round's next step.
+  useEffect(() => {
+    if (screen !== 'story') setStoryReward(null);
+    if (screen !== 'course-story') setCourseStoryReward(false);   // pass ME: the course's story, given from its finished page
+    if (screen !== 'story' && screen !== 'course-story') setStoryVoiceOn(false);
+    if (screen !== 'course-done') setCelebrateCourse(null);
+  }, [screen]);
+  // What a pre-reader's result says (pass MD): one set of words for the card, the voice that says it as the screen opens (DESIGN.md:
+  // one spoken line) and the speaker that says it again, with the earned story named after it, so what is seen and what is heard
+  // never differ (the screen check's second read: the card said the whole course was done while the voice said a story was
+  // earned). The next lesson, the finished course and the due story are worked out here too, so the result screen and the
+  // opening voice read the same facts.
+  const readAloudResultWords = () => {
+    if (!(lastEvent && mod && readAloud && record && progress)) return null;
+    const mastered = isMasteredAttempt(lastEvent);
+    const nextMod = sortedModules.filter((m) => m.courseId === mod.courseId && m.order > mod.order && !(progress.perModule[m.id] || {}).mastered).sort((a, b) => a.order - b.order)[0] || null;
+    // The whole course is done only when this round's star was its last (courseFinishedBy in logic, pass ME): until pass ME
+    // the words said so on the first pass of the last lesson, while its star still waited for another day. A walk-through
+    // earns no star, so there a pass of the course's last lesson stands for the finish.
+    const finished = record.preview ? mastered && !nextMod : courseFinishedBy(progress, course, lastEvent);
+    const storyDue = rewardStoryDue(record.events, mod.id, { passed: mastered, readAloud: true, hasStory: !!storyFor(mod.id) });
+    const card = mastered ? (lastEvent.dose > 1 ? 'You did it! The tricky one is yours now.' : finished ? 'Well done! That was the whole course.' : 'Well done!') : 'Good try. Let\'s go again.';
+    return { mastered, nextMod, finished, storyDue, card, spoken: storyDue ? `${card} You earned a story!` : card };
+  };
+  // What the course-finished page says (pass ME): one set of words for the card, the voice as the page opens and its speaker,
+  // so what is seen and what is heard never differed (DESIGN.md: one spoken line).
+  // Since pass MF (Mikey's answers to Q21 and Q22) a reader celebrates too, reading the story rather than hearing it, and the
+  // page ends at home. The voice adds one sentence the page does not show, the guide that names the two taps by what they do
+  // (Tap the gold book to hear it, or tap the green button at the bottom to go home, since pass MG, when the house gave way to
+  // a button across the bottom), since a child who cannot read cannot use the words on them; the
+  // book's caption and the button's words carry the same verbs (Hear the story, Return home) for a reader and the grown-up beside a pre-reader.
+  // The book's verb follows the page the book opens (the screen check): a read-aloud course's story reads itself, so hear; a
+  // reader's course opens the reader's page, so read. The page speaks as it opens for a child in a read-aloud course or a young
+  // learner (speaks), the way that child's result did; a reader's page waits for its speaker.
+  const celebrationWords = (courseId) => {
+    const cc = getCourse(courseId); const cs = cc ? courseStoryFor(cc.id) : null;
+    const hears = !!(cc && cc.readAloud); const speaks = !!(cc && (cc.readAloud || youngLearner));
+    // The first line comes from logic (courseFinishedWords): the party's Hooray through grade 5, and from grade 6 up the calmer
+    // "Well done." (pass MG, Mikey's answer to Q24, "calmer"); the confetti and the star stay at every age. The guide names the
+    // way home by its color and, under the book, its place (pass MG: the house gave way to a button across the bottom; with no
+    // long story yet the button sits mid-page, so the guide says only its color, the screen check).
+    const lines = cc ? [courseFinishedWords(cc).cheer, ...(cs ? ['Here is its story.'] : [])] : [];
+    const bookCaption = cs ? (hears ? 'Hear the story' : 'Read the story') : null;
+    const guide = cs ? `Tap the gold book to ${hears ? 'hear' : 'read'} it, or tap the green button at the bottom to go home.` : 'Tap the green button to go home.';
+    return { lines, bookCaption, homeCaption: 'Return home', guide, hears, speaks, spoken: [...lines, guide].join(' ') };
+  };
+  // Spoken once a round: a Wonder question that follows brings the screen back, and the words were heard already (the code
+  // check's second read), so the round's own time stamp remembers that it was said.
+  const resultSpokenFor = useRef(null);
+  useEffect(() => {
+    if (screen !== 'result' || !lastEvent) return;
+    const words = readAloudResultWords();
+    if (!words || resultSpokenFor.current === lastEvent.at) return;
+    resultSpokenFor.current = lastEvent.at; speak(words.spoken);
+  }, [screen, lastEvent]);
+  // The course-finished page speaks its line as it opens (pass ME), once for the round that finished the course, the way the
+  // result does; its speaker says it again.
+  const cheerSpokenFor = useRef(null);
+  useEffect(() => {
+    if (screen !== 'course-done' || !celebrateCourse) return;
+    const key = `${celebrateCourse}|${lastEvent ? lastEvent.at : ''}`;
+    const words = celebrationWords(celebrateCourse);
+    if (cheerSpokenFor.current === key || !words.speaks) return;
+    cheerSpokenFor.current = key; speak(words.spoken);
+  }, [screen, celebrateCourse]);
   // Opening a report remembers the visit on the roster, after noting when the last one was.
   useEffect(() => { if (screen !== 'educator-report' || !educatorRecord || !roster || educatorRecord.preview) return; const st = findStudent(roster, educatorRecord.name); setReportOpenedFrom(st && st.reportSeenAt ? st.reportSeenAt : null); const next = setReportSeen(roster, educatorRecord.name, new Date().toISOString()); setRoster(next); saveRoster(next); setWeeklyEdit(null); setWeeklyEditing(false); }, [screen === 'educator-report' ? (educatorRecord && educatorRecord.name) : null]);
   useEffect(() => { if (typeof document !== 'undefined') { document.body.classList.toggle('edu-cert-mode', screen === 'certificate'); document.body.classList.toggle('edu-story-mode', screen === 'story' || screen === 'course-story'); document.body.classList.toggle('edu-book-mode', screen === 'story-book'); } }, [screen]);
@@ -8340,8 +8688,12 @@ function EduSphereScreens() {
     const stop = speakSequence(wonderSpokenParts(wonder), (i) => setWonderLit(i - 1), () => setWonderLit(-1));
     return () => stop();
   }, [screen, readAloud, wonder]);
-  const spokenVoice = screen === 'wonder-voices' && readAloud && wonder ? (wonder.simple || [])[Math.min(wonderVoiceStep, ((wonder.simple || []).length || 1) - 1)] : null;
-  useEffect(() => { if (spokenVoice) speak(`${wonderVoiceSpoken(spokenVoice.voice)}: ${spokenVoice.says}`); }, [spokenVoice]);
+  // Each card a pre-reader meets after the Wonder question is spoken as it appears: the two short voices, then since pass MG
+  // the closing line (Mikey's answer to Q10, "yes"). The cards and their spoken words come from logic (wonderPreReaderCards,
+  // wonderCardSpoken), and the effect is keyed on the words and the step, so a redraw never says a card twice.
+  const preReaderCards = screen === 'wonder-voices' && readAloud && wonder ? wonderPreReaderCards(wonder) : null;
+  const spokenCard = preReaderCards ? wonderCardSpoken(preReaderCards[Math.min(wonderVoiceStep, preReaderCards.length - 1)]) : null;
+  useEffect(() => { if (spokenCard) speak(spokenCard); }, [spokenCard, wonderVoiceStep]);
   // The test hook: what screen is up, which question, and a way to open a named module without
   // hunting for its card, so a browser check can go straight to a lesson.
   // A phone held sideways is asked to turn upright rather than shown a squeezed layout. Tablets and
@@ -8399,6 +8751,27 @@ function EduSphereScreens() {
       for (const m of getCourse(plan.finish).modules) events.push(pass(m.id, 3), pass(m.id, 2));
       seeded.finished = plan.finish;
     }
+    // A course one star short (pass ME): every lesson starred but the last in order, which was passed once, two days ago, so a
+    // pass of it today earns the course's last star and the walk meets the course-finished page live.
+    if (plan.almost && getCourse(plan.almost)) {
+      const ms = [...getCourse(plan.almost).modules].sort((a, b) => a.order - b.order);
+      for (const m of ms.slice(0, -1)) events.push(pass(m.id, 3), pass(m.id, 2));
+      events.push(pass(ms[ms.length - 1].id, 2));
+      seeded.almost = plan.almost; seeded.lastLesson = ms[ms.length - 1].id;
+    }
+    // A course whose last lesson was moved past (pass ME): every other lesson starred a few days ago (no Quick Review due for
+    // them), the last missed twice and moved forward 22 days ago, so its fresh try is due today; clearing it earns the
+    // course's last star from the review's own result screen, and the walk meets the celebration there.
+    if (plan.movedLast && getCourse(plan.movedLast)) {
+      const ms = [...getCourse(plan.movedLast).modules].sort((a, b) => a.order - b.order); const last = ms[ms.length - 1].id;
+      for (const m of ms.slice(0, -1)) events.push(pass(m.id, 3), pass(m.id, 2));
+      const movedDays = plan.movedDays || 22;   // further back, with { due: 1 }, makes the fresh try the older of a two-review day
+      events.push(miss(last, movedDays + 4), miss(last, movedDays + 3), makeMovedForwardEvent(last, ago(movedDays)));
+      seeded.movedLast = plan.movedLast; seeded.lastLesson = last;
+    }
+    // Lesson stories already heard (pass MD): each one's first read, logged two days ago as a round's reward would log it, in
+    // the order given and a minute apart (the last given is the newest), so an early learner's Let's Read lists them.
+    if (Array.isArray(plan.heard)) { seeded.heard = plan.heard.filter((id) => getModule(id) && storyFor(id)); seeded.heard.forEach((id, i) => events.push(makeStoryReadEvent(id, ago(2, (seeded.heard.length - i) / 60)))); }
     if (plan.paper) {
       const w = tappable[0];
       if (w) { events.push(makeWritingEvent(w.id, 'Write three sentences about your favorite animal.', 'My favorite animal is a fox. It is fast. It lives in a den.', [], ago(1, 1), ago(1))); seeded.paper = w.id; }
@@ -8408,15 +8781,19 @@ function EduSphereScreens() {
     setRoster((r) => ({ ...r }));   // the classroom reloads its Action Items
     return seeded;
   }
-  useEffect(() => { if (typeof window !== 'undefined') window.__eduTest = { seedHistory: (key, plan) => seedHistoryForTest(key, plan), screen, question: q || null, isReviewQ, openModule: (id) => openModule(id), openColoring: (pic) => { setColoring(pic); setScreen('coloring'); }, openCertificate: (id, grade) => { setCertFor({ id, grade }); setCertTemplate('classic'); setCertName(''); setCertPhotos([]); setScreen('certificate'); }, visibleModuleIds: () => visibleModules.map((m) => m.id), openStory: (id) => { noteStoryOpen(id, 'shelf'); setModuleId(id); setScreen('story'); }, openCourseStory: (id) => { noteStoryOpen(`course:${id}`, 'shelf'); setCourseStoryId(id); setScreen('course-story'); }, openWonderVoices: (id, mid) => { if (mid) setModuleId(mid); setWonder(WONDER.find((w) => w.id === id) || null); setWonderVoiceStep(0); setScreen('wonder-voices'); }, reviewWonder: (id) => { setReviewing(id); setOpenVoices([]); setScreen('wonder-review'); }, crash: () => setBoom(true), goTo: (name) => {
+  useEffect(() => { if (typeof window !== 'undefined') window.__eduTest = { seedHistory: (key, plan) => seedHistoryForTest(key, plan), screen, moduleId: moduleId || null, question: q || null, isReviewQ, openModule: (id) => openModule(id),
+    // Test-only (pass ME): draws the current trace question along its own strokes, the way a steady hand would, so a browser
+    // walk can pass a round whose memory check reaches into a tracing lesson (a finished course has those among its stars).
+    traceWell: () => { const def = q && q.type === 'trace' ? TRACE_LETTERS[q.answer] : null; if (!def) return false; const paths = def.strokes.map((s) => s.flatMap((p, i) => (i === 0 ? [p] : Array.from({ length: 8 }, (_, k) => [s[i - 1][0] + ((p[0] - s[i - 1][0]) * (k + 1)) / 8, s[i - 1][1] + ((p[1] - s[i - 1][1]) * (k + 1)) / 8])))); setTracePaths(paths); setGiven(JSON.stringify(paths)); return true; }, openColoring: (pic) => { setColoring(pic); setScreen('coloring'); }, openCertificate: (id, grade) => { setCertFor({ id, grade }); setCertTemplate('classic'); setCertName(''); setCertPhotos([]); setScreen('certificate'); }, visibleModuleIds: () => visibleModules.map((m) => m.id), openStory: (id) => { noteStoryOpen(id, 'shelf'); setModuleId(id); setScreen('story'); }, openCourseStory: (id) => { noteStoryOpen(`course:${id}`, 'shelf'); setCourseStoryId(id); setScreen('course-story'); }, openWonderVoices: (id, mid) => { if (mid) setModuleId(mid); setWonder(WONDER.find((w) => w.id === id) || null); setWonderVoiceStep(0); setScreen('wonder-voices'); }, reviewWonder: (id) => { setReviewing(id); setOpenVoices([]); setScreen('wonder-review'); }, crash: () => setBoom(true), goTo: (name, arg) => {
     // Test-only: land on a screen with enough state for it to render, so the back-button sweep can press back from every screen.
     if (name === 'story' || name === 'lesson') { if (!moduleId && visibleModules[0]) setModuleId(visibleModules[0].id); }
     if (name === 'course-story') { const c = COURSES.find((x) => courseStoryFor(x.id)); if (c) setCourseStoryId(c.id); }
+    if (name === 'course-done') { const c = (arg && getCourse(arg)) || (record ? visibleCourses.find((x) => courseStoryFor(x.id)) : null) || COURSES.find((x) => courseStoryFor(x.id)); if (c) setCelebrateCourse(c.id); }
     if (name === 'story-book') { const c = COURSES.find((x) => courseStoryFor(x.id)); if (c) setBookCourseId(c.id); }
     if (name === 'coloring') setColoring(COLORING_PICTURES[0].id);
     if (name === 'certificate') { const st = (roster && roster.students && roster.students[0]) || record; if (st) { setCertFor({ id: st.id, grade: '3' }); setCertTemplate('classic'); setCertName(''); setCertPhotos([]); } }
     setScreen(name);
-  }, goHome: () => { setRecord(null); setModuleId(null); setScreen(educator ? 'educator-pick' : 'welcome'); } }; }, [screen, q, isReviewQ, visibleModules, educator]);
+  }, goHome: () => { setRecord(null); setModuleId(null); setScreen(educator ? 'educator-pick' : 'welcome'); } }; }, [screen, q, isReviewQ, visibleModules, educator, moduleId]);
   // A full PIN opens the door on its own (2026-09-23, Mikey): nobody has to lower the phone keypad to reach Go or Open.
   // A student's wrong PIN clears the box and says so; an educator's wrong PIN just sits there with its line under it.
   useEffect(() => { if (!pinAsk || pinTry.length !== PIN_LENGTH) return; const st = findStudent(roster, pinAsk); if (!st) return; if (pinMatches(st, pinTry)) { setPinAsk(null); startWithName(st.id); } else { setPinWrong(true); setPinTry(''); } }, [pinTry, pinAsk]);
@@ -8916,7 +9293,7 @@ function EduSphereScreens() {
                             return (
                               <button key={pic} type="button" disabled={resting} aria-label={resting ? 'Resting picture' : `Color ${pictureTitle(pic)}`}
                                 onClick={() => leaveOverviewTo(() => { setColoring(pic); setScreen('coloring'); })} className={`edu-breathe${resting ? '' : ' edu-press'}`}
-                                style={{ position: 'relative', overflow: 'hidden', aspectRatio: '1 / 1', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 6, borderRadius: 12, background: C.paperBoard, border: `2px solid ${C.line}` }}>
+                                style={{ position: 'relative', overflow: 'hidden', aspectRatio: '1 / 1', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 6, borderRadius: 12, background: C.paperBoard, border: `2px solid ${C.line}`, '--beat': resting ? 0 : 1, ...inBeat(2.2) }}>
                                 <ColorThumb picture={pic} name={displayName} size="100%" />
                               </button>
                             );
@@ -8937,8 +9314,28 @@ function EduSphereScreens() {
           const allWithStory = spreadLeads(visibleCourses.filter((c) => courseStoryFor(c.id)), (c) => courseStoryFor(c.id).title);
           // An early learner sees only the stories open now (Mikey, pass LI): a locked row and a count of modules to go mean
           // nothing to a pre-reader, so the list shows what can be read today and nothing at all until something can.
-          const withStory = youngLearner ? allWithStory.filter((c) => record.preview || c.modules.every((m) => progress.masteredIds.includes(m.id))) : allWithStory;
-          if (!withStory.length) return null;
+          const withStory = youngLearner ? allWithStory.filter((c) => record.preview || isCourseFinished(progress.masteredIds, c)) : allWithStory;
+          // An early learner's lesson stories (pass MD): the stories heard as a round's reward wait here to be heard again, after
+          // the course stories, newest first (heardStoryGroups decides, in logic). Older students reach theirs from My Stories, and
+          // an educator reaches every one from the Story Log. A walk-through lists them too, from the log it keeps in memory, so
+          // an educator who heard a reward story in the walk sees where it waits (the screen check's second read, pass MD).
+          // Since pass ME every heard story stays (Mikey, Q18: "all"), grouped by course (heardStoryGroups in logic), the course
+          // with the newest story first; a heading names each course only when the stories come from more than one.
+          const heardGroups = youngLearner ? heardStoryGroups(record.events, shownCourses, (id) => !!storyFor(id)) : [];
+          const heardStories = heardGroups.flatMap((g) => g.moduleIds);
+          if (!withStory.length && !heardStories.length) return null;
+          // Opens a heard story from the shelf: a read again, watched as one, on the self-reading page.
+          const openHeardStory = (id) => leaveOverviewTo(() => { noteStoryOpen(id, 'shelf'); setModuleId(id); setStoryVoiceOn(canSpeak()); setScreen('story'); });
+          // The surprise-me book (pass MF, Mikey's answer to Q18): with two or more heard stories, one more gold book, with a star,
+          // that reads one of them picked by logic (pickSurpriseStory: never the one it read last while another is there).
+          const surprise = heardStories.length >= SURPRISE_BOOK_FROM;
+          const lastPick = lastSurprise.current && lastSurprise.current.who === record.name ? lastSurprise.current.id : null;
+          const openSurprise = () => { const id = pickSurpriseStory(heardStories, Math.random(), lastPick); if (!id) return; lastSurprise.current = { who: record.name, id }; openHeardStory(id); };
+          // The cover shelf (Q18): a group whose stories are all painted shows as covers (coverShelfReady in logic), the rest as rows.
+          const painted = (id) => { const st = storyFor(id); return !!(st && st.art && typeof window !== 'undefined' && Array.isArray(window.__eduArt) && window.__eduArt.includes(st.art)); };
+          // One way to open a course's story from the shelf, for the gold book and the worded button alike (its first read is
+          // logged as the read the course asks for; a later one is watched as a read again, from the shelf).
+          const openShelfStory = (c, read) => leaveOverviewTo(() => { noteStoryOpen(`course:${c.id}`, 'shelf'); if (record && !record.preview && !read) addEvent(makeStoryReadEvent(`course:${c.id}`, new Date().toISOString())); setCourseStoryId(c.id); setStoryVoiceOn(canSpeak()); setScreen('course-story'); });
           const open = openSubject === '__read';
           const readIds = new Set(storiesRead(record.events).map((r) => r.moduleId));
           const unlockedCount = withStory.filter((c) => record.preview || c.modules.every((m) => progress.masteredIds.includes(m.id))).length;
@@ -8946,7 +9343,7 @@ function EduSphereScreens() {
             <div style={{ ...card, padding: 0, overflow: 'hidden', marginTop: 18, ...(C.mode === 'dark' ? { border: 'none' } : {}) }}>
               {/* The same crayon strip as Let's Play and Let's Color (2026-09-23, Mikey): the title centered, only a chevron at the edge. */}
               <button type="button" aria-expanded={open} aria-label="Let's Read" onClick={() => setOpenSubject(open ? null : '__read')}
-                className={`edu-colorwash${unlockedCount > 0 ? ' edu-press' : ''}`}
+                className={`edu-colorwash${unlockedCount + heardStories.length > 0 ? ' edu-press' : ''}`}
                 style={{ fontFamily: FONT, width: '100%', border: 'none', padding: 16, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
                 <span className="edu-sparkle" aria-hidden="true" />
                 <span className="edu-sparkle edu-sparkle-2" aria-hidden="true" />
@@ -8960,6 +9357,7 @@ function EduSphereScreens() {
                   <div style={{ background: C.mode === 'dark' ? '#AAD8C5' : C.greenSoft, color: C.mode === 'dark' ? '#16201B' : undefined, padding: '12px 16px' }}>
                     <p style={{ margin: '0 0 6px', fontSize: 14, color: C.mode === 'dark' ? '#16201B' : C.ink, textAlign: 'center' }}>Finishing every module within a course unlocks a story which ties all of the concepts together.</p>
                     {!youngLearner && <p style={{ margin: 0, fontSize: 14, color: C.mode === 'dark' ? '#2E4A3E' : C.muted, textAlign: 'center' }}>{unlockedCount} of {withStory.length} unlocked</p>}
+                    {heardStories.length > 0 && <p data-heard-note="" style={{ margin: 0, fontSize: 14, color: C.mode === 'dark' ? '#16201B' : C.ink, textAlign: 'center' }}>{heardGroups.length > 1 ? 'The stories earned in lessons wait here too, newest first under each course.' : 'The stories earned in lessons wait here too, the newest first.'}</p>}
                   </div>
                   <div style={{ padding: '0 16px' }}>
                   {withStory.map((c) => {
@@ -8971,10 +9369,51 @@ function EduSphereScreens() {
                           <p style={{ margin: 0, fontWeight: 600 }}>{titleCase(cs.title)}</p>
                           <p style={{ margin: '2px 0 0', fontSize: 13, color: C.muted }}>{titleCase(c.title)}{unlocked ? (read ? ' · read' : '') : ` · ${left} ${left === 1 ? 'module' : 'modules'} to go`}</p>
                         </div>
-                        <Btn kind="secondary" halo={youngLearner && unlocked && !read} disabled={!unlocked || busy} onClick={() => leaveOverviewTo(() => { noteStoryOpen(`course:${c.id}`, 'shelf'); if (record && !record.preview && !read) addEvent(makeStoryReadEvent(`course:${c.id}`, new Date().toISOString())); setCourseStoryId(c.id); setScreen('course-story'); })} style={{ padding: '8px 14px', minHeight: 38, fontSize: 14 }}>{unlocked ? (read ? 'Read again' : 'Read') : 'Locked'}</Btn>
+                        {/* An early learner's course story is a gold book too (pass ME, Mikey's answer to Q17), the same sign as
+                            the lesson stories below it; readers keep the worded button. */}
+                        {youngLearner && c.readAloud
+                          ? <GoldBook size={52} breathe={unlocked} disabled={!unlocked || busy} label={unlocked ? (read ? `Hear ${titleCase(cs.title)} again` : `Hear ${titleCase(cs.title)}`) : `${titleCase(cs.title)} is locked`} attrs={{ 'data-course-story-book': c.id }} onClick={() => openShelfStory(c, read)} />
+                          : <Btn kind="secondary" disabled={!unlocked || busy} onClick={() => openShelfStory(c, read)} style={{ padding: '8px 14px', minHeight: 38, fontSize: 14 }}>{unlocked ? (read ? 'Read again' : 'Read') : 'Locked'}</Btn>}
                       </div>
                     );
                   })}
+                  {surprise && (
+                    <div data-surprise-book="" style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '10px 0', borderTop: `1px solid ${C.line}` }}>
+                      <SurpriseThumb />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <p style={{ margin: 0, fontWeight: 600 }}>Surprise me</p>
+                        <p style={{ margin: '2px 0 0', fontSize: 13, color: C.muted }}>A story picked for you</p>
+                      </div>
+                      <GoldBook size={52} breathe star disabled={busy} label="Surprise me with a story" onClick={openSurprise} />
+                    </div>
+                  )}
+                  {heardGroups.map((g) => { const gc = getCourse(g.courseId); const covers = coverShelfReady(g.moduleIds, painted); return (
+                    <div key={g.courseId} data-heard-course={g.courseId} data-heard-covers={covers ? '' : undefined}>
+                      {heardGroups.length > 1 && gc && <p style={{ margin: '14px 0 0', fontSize: 13, fontWeight: 700, color: C.muted }}>{titleCase(gc.title)}</p>}
+                      {covers ? (
+                        // The cover shelf: every story painted, so each is its own picture to tap, two to a row on a 360-pixel phone and
+                        // five on a laptop (the screen checks measured 125 pixels for both; 140 left one to a row on a small phone and 130 four).
+                        <div data-cover-grid="" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(125px, 1fr))', gap: 12, padding: '10px 0', borderTop: `1px solid ${C.line}` }}>
+                          {g.moduleIds.map((id) => { const st = storyFor(id); return (
+                            <div key={id} data-heard-story={id} style={{ minWidth: 0 }}>
+                              <StoryCover serial={st.art} title={titleCase(st.title)} label={`Hear ${titleCase(st.title)} again`} disabled={busy} onClick={() => openHeardStory(id)} />
+                            </div>
+                          ); })}
+                        </div>
+                      ) : g.moduleIds.map((id) => { const st = storyFor(id); const m = getModule(id); return (
+                        <div key={id} data-heard-story={id} style={{ display: 'flex', gap: 12, alignItems: 'center', padding: '10px 0', borderTop: `1px solid ${C.line}` }}>
+                          <StoryThumb serial={st.art} />
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <p style={{ margin: 0, fontWeight: 600 }}>{titleCase(st.title)}</p>
+                            <p style={{ margin: '2px 0 0', fontSize: 13, color: C.muted }}>{heardGroups.length > 1 || !gc ? '' : `${titleCase(gc.title)} · `}{m ? titleCase(m.title) : ''}</p>
+                          </div>
+                          {/* The same gold book a child tapped to earn the story, breathing like Let's Color's pictures, since a worded
+                              button means nothing to a pre-reader (the screen check, pass MD); its name says which story it opens. */}
+                          <GoldBook size={52} breathe disabled={busy} label={`Hear ${titleCase(st.title)} again`} onClick={() => openHeardStory(id)} />
+                        </div>
+                      ); })}
+                    </div>
+                  ); })}
                   </div>
                 </div>
               )}
@@ -8985,13 +9424,14 @@ function EduSphereScreens() {
         {/* Let's Play: the same fold as Let's Color, for games. One more game for every course
             mastered; a game rests like a picture does. Harder games wait for the grade that suits them. */}
         {(() => {
-          // Young learners get every game their grade allows; older students get the matching-pairs decks (fractions, roots,
-          // elements, dates, formulas) and Pong, so play reaches every age without the pre-K games following them up.
+          // Young learners get the games of their early-years courses and the Star; older students get the games of their own
+          // courses, the matching-pairs decks (fractions, roots, elements, dates, formulas) and Pong, so play reaches every age
+          // without the pre-K games following them up (playList in logic says exactly which).
           const top = visibleCourses.reduce((best, c) => (GRADES.indexOf(c.grade) > GRADES.indexOf(best) ? c.grade : best), 'PK3');
-          const enrolled = new Set(visibleCourses.map((c) => c.id));
           const mapArt = typeof window !== 'undefined' && Array.isArray(window.__eduMapArt) ? window.__eduMapArt : [];
-          const listed = gamesFor(top).filter((g) => (youngLearner || g.deck || g.kind === 'pong' || g.kind === 'sprint' || g.kind === 'order' || ((g.rule || g.jump || g.map || g.balance) && !g.young)) && (record.preview || STARTER_GAMES.includes(g.id) || enrolled.has(gameCourse(g.id))) && (!g.map || record.preview || mapArt.includes((mapFor(g.map) || {}).art)) && (g.kind !== 'sprint' || sprintPool(visibleModules, g).length > 0));
-          const games = funFirst(youngLearner ? listed : spreadKinds(listed));   // older lists take turns between kinds (2026-09-23, Mikey); the most playful leads and opens first (2026-10-02, Mikey)
+          // The list lives in logic since pass MC (playList), so the rules test reads the same list a child sees: older lists take
+          // turns between kinds (2026-09-23, Mikey), and the most playful game that may open on day one leads (2026-10-02; pass MC).
+          const games = playList({ courses: visibleCourses, young: youngLearner, preview: !!record.preview, mapArt });
           if (!games.length) return null;
           // A game opens when its course is finished (2026-09-24, Mikey): each course has its own, so finishing one always brings
           // something new, and the walk-through opens them all.
@@ -9011,6 +9451,14 @@ function EduSphereScreens() {
                 <span style={{ fontSize: 20, fontWeight: 700, position: 'relative' }}>Let's Play</span>
                 <span aria-hidden="true" style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', fontSize: 14, color: C.mode === 'dark' ? '#24291F' : C.muted }}>{open ? '▴' : '▾'}</span>
               </button>
+              {/* A locked tile says nothing on its own (the code check, pass MC), so while one shows, a reader sees how a game opens,
+                  in a strip like Let's Read's note: on the moving wash the words fell to 2.74 to 1 in the light theme (the screen
+                  check). A young learner sees no sentence here, since a pre-reader's screens explain with pictures (DESIGN.md). */}
+              {open && !youngLearner && games.some((g) => !isOpen(g)) && (
+                <div data-play-strip style={{ background: C.mode === 'dark' ? '#AAD8C5' : C.greenSoft, padding: '12px 16px' }}>
+                  <p data-play-note style={{ margin: 0, fontSize: 14, color: C.mode === 'dark' ? '#16201B' : C.ink, textAlign: 'center' }}>Finishing every module within a course unlocks a new game.</p>
+                </div>
+              )}
               {open && (
                 <div className="edu-colorwash" style={{ padding: 14 }}>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(96px, 1fr))', gap: 10 }}>
@@ -9026,8 +9474,10 @@ function EduSphereScreens() {
                           ) : (
                             <>
                               <GameThumb kind={g.kind} game={g} />
-                              {(colorState[`play:${g.id}`] || {}).best !== undefined && !resting && (
-                                <span style={{ position: 'absolute', bottom: 4, right: 6, fontSize: 11, fontWeight: 700, color: C.green, background: 'rgba(255,255,255,0.85)', borderRadius: 8, padding: '1px 6px' }}>{bestLine(g, colorState[`play:${g.id}`] || {})}</span>
+                              {(colorState[`play:${g.id}`] || {}).best !== undefined && !resting && bestLine(g, colorState[`play:${g.id}`] || {}) !== null && (
+                                // The badge sits on a white chip on paper, so it draws with the paper palette (B): mint C.green on white was
+                                // 2.00 to 1 in the dark theme (the screen check, pass MC).
+                                <span data-best-badge style={{ position: 'absolute', bottom: 4, right: 6, fontSize: 11, fontWeight: 700, color: B.green, background: 'rgba(255,255,255,0.85)', borderRadius: 8, padding: '1px 6px' }}>{bestLine(g, colorState[`play:${g.id}`] || {})}</span>
                               )}
                               {resting && (
                                 <span aria-hidden="true" style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, pointerEvents: 'none', background: `conic-gradient(from 0deg, rgba(150,158,152,0.92) 0 ${(restFraction * 100).toFixed(1)}%, rgba(150,158,152,0) ${(restFraction * 100).toFixed(1)}% 100%)` }} />
@@ -9108,7 +9558,7 @@ function EduSphereScreens() {
             <p style={{ margin: 0, fontSize: 14, color: C.muted }}>Reading aloud is not available in this preview.</p>
           )}
         </div>
-        <div data-lesson-nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', scrollMarginBottom: 28 }}>
+        <div data-lesson-nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <BigTap dir="back" label="Go back" disabled={lessonStep === 0} onClick={() => setLessonStep(Math.max(0, lessonStep - 1))} />
           <div style={{ display: 'flex', gap: 6 }}>
             {script.map((_, i) => <span key={i} style={{ width: 9, height: 9, borderRadius: 999, background: i === lessonStep ? C.green : C.line }} />)}
@@ -9117,7 +9567,7 @@ function EduSphereScreens() {
             <span style={{ position: 'relative', display: 'inline-flex' }}>
               <button type="button" onClick={startPractice} aria-label="Start practice" className="edu-press edu-pulse"
                 style={{ position: 'relative', width: 66, height: 66, borderRadius: 999, border: `3px solid ${C.gold}`, background: C.gold, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <svg className="edu-star-twinkle" viewBox="0 0 24 24" width="40" height="40" aria-hidden="true" style={{ transformOrigin: 'center' }}><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z" fill="#fff" /></svg>
+                <svg className="edu-star-twinkle" viewBox="0 0 24 24" width="40" height="40" aria-hidden="true" style={{ transformOrigin: 'center' }}><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z" fill={C.onAccent} /></svg>
               </button>
             </span>
           ) : (
@@ -9129,20 +9579,144 @@ function EduSphereScreens() {
     );
   }
 
+  // ---------- A course finished (pass ME, Mikey's answer to Q17): the celebration page, with the course's long story as a gold book ----------
+  // In plain terms: the round that earns a course's last star goes on, from the result's arrow (or a reader's Celebrate! button,
+  // pass MF, Mikey's answer to Q21), to this page. Stars burst and confetti falls (transform and opacity only; still with motion
+  // off), the course is named aloud as the page opens for a child who hears lessons, and two taps wait, as Mikey asked: a big
+  // gold book that opens the course's long story (read aloud on the self-reading page for a child in a read-aloud course, on the
+  // reader's page for a reader) and a way home (pass MF, Mikey's answer to Q22: "Home and it can be a button that says Return
+  // Home"), since pass MG one wide button across the bottom with no drawing (Mikey: "No home icon, just a home button across the
+  // bottom"); the story's own page ends at home too, since the celebration is the end of the round. A course with no long story
+  // yet (EARMARKS L1) still gets its celebration, with the button alone. The small back arrow goes home.
+  if (screen === 'course-done' && celebrateCourse && getCourse(celebrateCourse)) {
+    const cc = getCourse(celebrateCourse); const cs = courseStoryFor(cc.id); const words = celebrationWords(cc.id);
+    const hearStory = () => { storyReading.current = null; if (record && !record.events.some((e) => e.type === 'story_read' && e.moduleId === `course:${cc.id}`)) addEvent(makeStoryReadEvent(`course:${cc.id}`, new Date().toISOString())); setCourseStoryReward(true); setCourseStoryId(cc.id); setStoryVoiceOn(canSpeak()); setScreen('course-story'); };
+    const goHomeNow = () => { setAttempt(null); setScreen('overview'); };
+    return (
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
+        <button type="button" onClick={() => setScreen('overview')} aria-label="Back" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+          <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke={C.green} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        </button>
+        <div className="edu-rise" data-course-done={cc.id} style={{ ...card, textAlign: 'center', padding: '30px 18px 26px', position: 'relative', overflow: 'hidden' }}>
+          {/* A wide card gets more pieces, so the shower looks as full on a laptop as on a phone (the screen check's second read). */}
+          <CourseCheer seed={cc.title.length + 7} n={phoneScreen ? 36 : 60} />
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', marginBottom: 12 }}>
+              <StarBurst />
+              <svg className="edu-land-star" viewBox="0 0 24 24" width="118" height="118" aria-hidden="true"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z" fill={C.gold} /></svg>
+            </div>
+            <div style={{ display: 'inline-block', background: C.surface, borderRadius: 12, padding: '4px 12px' }}>
+              <p style={{ fontSize: 24, fontWeight: 700, margin: 0 }}>{words.lines[0]}</p>
+              {words.lines[1] && <p style={{ fontSize: 18, margin: '8px 0 0', fontWeight: 600, color: C.green }}>{words.lines[1]}</p>}
+            </div>
+          </div>
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
+          {canSpeak() && (
+            <button type="button" onClick={() => speak(words.spoken)} aria-label={words.speaks ? 'Say it again' : 'Hear it'} className="edu-press edu-sway"
+              style={{ width: 66, height: 66, borderRadius: 999, border: `3px solid ${C.gold}`, background: C.goldSoft, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
+                <path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={C.gold} />
+                <path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12" fill="none" stroke={C.gold} strokeWidth="2" strokeLinecap="round" />
+              </svg>
+            </button>
+          )}
+        </div>
+        {/* The prominent book, when the course has its long story, and the way home across the bottom (Mikey, Q17: "a prominent
+            gold book as well as another button to skip/return back"; Q22: "Home and it can be a button that says Return Home";
+            pass MG: "No home icon, just a home button across the bottom"); with no story yet, the button is the one tap and it
+            pulses. The book wears its words underneath, with the verb the voice's guide uses. */}
+        {cs && <div style={{ display: 'flex', justifyContent: 'center', margin: '0 0 22px' }}>
+          <span style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+            <GoldBook size={112} pulse disabled={busy} label={`${words.hears ? 'Hear' : 'Read'} the story of ${titleCase(cc.title)}`} attrs={{ 'data-course-story-book': cc.id }} onClick={hearStory} />
+            <p aria-hidden="true" style={{ margin: 0, padding: '2px 10px', borderRadius: 8, fontSize: 15, fontWeight: 600, color: C.green }}>{words.bookCaption}</p>
+          </span>
+        </div>}
+        <div style={{ margin: cs ? '6px 0 0' : '14px 0 0' }}>
+          <HomeButton onClick={goHomeNow} disabled={busy} invite={!cs} label={words.homeCaption} attrs={{ 'data-course-done-home': '' }} />
+        </div>
+        {/* On a short screen (an iPhone SE, a laptop's browser window) the button sits below what shows while the voice names it,
+            so the scroll cue points at it, as it does on the story page (the screen check). */}
+        <ScrollCue target="[data-course-done-home]" watch={cc.id} />
+      </div></div>
+    );
+  }
+  // A read-aloud course's long story (pass ME, Q17): it reads itself aloud at the course's pace like a lesson story, with the
+  // round speaker, the snail and the hare, and one way home that rests while the voice reads (pass MF, Mikey's answer to Q22:
+  // the celebration ends at home, and so does the story it opens; from Let's Read the page went home already), since pass MG
+  // the same wide Return home button across the bottom as the celebration's (Mikey: "No home icon, just a home button across
+  // the bottom").
+  // The words stay on the page for the grown-up beside the child, and the Print link waits on the educator's Story Log.
+  if (screen === 'course-story' && courseStoryId && courseStoryFor(courseStoryId) && getCourse(courseStoryId) && getCourse(courseStoryId).readAloud && (youngLearner || courseStoryReward)) {
+    const cs = courseStoryFor(courseStoryId); const cc = getCourse(courseStoryId); const reward = courseStoryReward;
+    const onward = () => { setStoryVoiceOn(false); setCourseStoryReward(false); setAttempt(null); pendingScroll.current = { screen: 'overview', y: overviewScroll.current }; setScreen('overview'); };
+    return (
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
+        <button type="button" onClick={() => setScreen('overview')} aria-label="Back" className="edu-no-print" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+          <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke={C.green} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        </button>
+        <p style={{ margin: '0 0 4px', fontSize: 14, color: C.muted, textAlign: 'center' }}>The story of {titleCase(cc.title)}</p>
+        <div className="edu-story-sheet" data-read-aloud-story={reward ? 'reward' : 'shelf'} data-course-story-page={cc.id}><StoryBody story={cs} pace={storyPaceFor({ courseId: cc.id })} autoRead round onReadingChange={setStoryVoiceOn} /></div>
+        <div data-story-end="" aria-hidden="true" style={{ height: 1 }} />
+        {/* The button rests while the voice reads and invites a tap once it stops (a child can still tap it any time). */}
+        <div data-story-next="" className="edu-no-print" style={{ margin: '18px 0 8px' }}>
+          <HomeButton onClick={onward} disabled={busy} invite={!storyVoiceOn} />
+        </div>
+        {!storyVoiceOn && <ScrollCue target="[data-story-next]" watch={`${cc.id}-${storyVoiceOn}`} />}
+      </div></div>
+    );
+  }
   // ---------- A course story: one longer story for a whole course, once every module in it is mastered ----------
+  // Opened from the course-finished page (pass MF, Mikey's answer to Q21: "reader too but don't need the print"), the reader's
+  // page shows no Print link, its link at the top reads Return home, the words of the celebration's button, and since pass MG it
+  // ends on that same wide button (the screen check); from Let's Read it is as it was, Back to my courses and Print.
   if (screen === 'course-story' && courseStoryId && courseStoryFor(courseStoryId)) {
-    const cs = courseStoryFor(courseStoryId); const cc = getCourse(courseStoryId);
+    const cs = courseStoryFor(courseStoryId); const cc = getCourse(courseStoryId); const reward = courseStoryReward;
+    const back = () => { setCourseStoryReward(false); setAttempt(null); pendingScroll.current = { screen: 'overview', y: overviewScroll.current }; setScreen('overview'); };
+    const backWords = reward ? 'Return home' : 'Back to my courses';
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <div className="edu-no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-          <button type="button" onClick={() => { pendingScroll.current = { screen: 'overview', y: overviewScroll.current }; setScreen('overview'); }} style={{ background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer', padding: 0 }}>Back to my courses</button>
-          <button type="button" onClick={() => window.print()} style={{ background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 13, cursor: 'pointer', padding: 0 }}>Print</button>
+          <button type="button" onClick={back} style={{ background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer', padding: 0 }}>{backWords}</button>
+          {!reward && <button type="button" onClick={() => window.print()} style={{ background: 'none', border: 'none', color: C.muted, fontFamily: FONT, fontSize: 13, cursor: 'pointer', padding: 0 }}>Print</button>}
         </div>
-        <p style={{ margin: '0 0 4px', fontSize: 14, color: C.muted, textAlign: 'center' }}>The story of {cc ? cc.title : 'this course'}</p>
-        <div className="edu-story-sheet"><StoryBody story={cs} /></div>
+        <p style={{ margin: '0 0 4px', fontSize: 14, color: C.muted, textAlign: 'center' }}>The story of {cc ? titleCase(cc.title) : 'this course'}</p>
+        <div className="edu-story-sheet" data-reader-story={reward ? 'reward' : 'shelf'} data-course-story-page={cc ? cc.id : ''}><StoryBody story={cs} /></div>
         <div data-story-end="" aria-hidden="true" style={{ height: 1 }} />
-        {/* The same way back at the end, so a reader who finished need not scroll to the top (Mikey, 2026-09-24). */}
-        <p className="edu-no-print" style={{ textAlign: 'center', margin: '18px 0 6px' }}><button type="button" onClick={() => { pendingScroll.current = { screen: 'overview', y: overviewScroll.current }; setScreen('overview'); }} style={{ ...linkBtn, fontSize: 15 }}>Back to my courses</button></p>
+        {/* The same way back at the end, so a reader who finished need not scroll to the top (Mikey, 2026-09-24): after a
+            celebration the wide Return home button the celebration ended on, otherwise the link. */}
+        {reward
+          ? <div className="edu-no-print" style={{ margin: '18px 0 8px' }}><HomeButton onClick={back} attrs={{ 'data-reader-story-home': '' }} /></div>
+          : <p className="edu-no-print" style={{ textAlign: 'center', margin: '18px 0 6px' }}><button type="button" onClick={back} style={{ ...linkBtn, fontSize: 15 }}>{backWords}</button></p>}
+      </div></div>
+    );
+  }
+  // A read-aloud course's lesson story (pass MD, Mikey: "They can play after the lesson as a reward like you mentioned."): it
+  // reads itself aloud at the course's pace as the page opens, and one big arrow goes on. Given as a round's reward, the arrow
+  // carries on where the round left off (readAloudNext); opened from Let's Read, it goes home. No Practice this, no Back to the
+  // lesson: a pre-reader's lesson never sends a child to its story, and the words are there for the grown-up beside them.
+  if (screen === 'story' && mod && storyFor(mod.id) && course && course.readAloud) {
+    const reward = storyReward === mod.id;
+    const onward = () => { setStoryVoiceOn(false); setStoryReward(null); if (reward) readAloudNext(); else { pendingScroll.current = { screen: 'overview', y: overviewScroll.current }; setScreen('overview'); } };
+    return (
+      <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
+        <button type="button" onClick={() => setScreen('overview')} aria-label="Back" className="edu-no-print" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
+          <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke={C.green} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
+        </button>
+        <div className="edu-story-sheet" data-read-aloud-story={reward ? 'reward' : 'shelf'}><StoryBody story={storyFor(mod.id)} pace={storyPaceFor(mod)} autoRead round onReadingChange={setStoryVoiceOn} /></div>
+        <div data-story-end="" aria-hidden="true" style={{ height: 1 }} />
+        {/* One big arrow, resting while the voice reads and inviting a tap once it stops (a child can still tap it any time). */}
+        <div data-story-next="" className="edu-no-print" style={{ display: 'flex', justifyContent: 'center', margin: '18px 0 8px' }}>
+          <span style={{ position: 'relative', display: 'inline-flex' }}>
+            <button type="button" onClick={onward} disabled={busy} aria-label="Keep going" className={storyVoiceOn ? 'edu-press' : 'edu-press edu-pulse'}
+              style={{ position: 'relative', width: 84, height: 84, borderRadius: 999, border: `3px solid ${C.gold}`, background: C.gold, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg viewBox="0 0 24 24" width="46" height="46" aria-hidden="true">
+                <path d="M9 5l7 7-7 7" fill="none" stroke={C.onAccent} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          </span>
+        </div>
+        {!storyVoiceOn && <ScrollCue target="[data-story-next]" watch={`${mod.id}-${storyVoiceOn}`} />}
       </div></div>
     );
   }
@@ -9272,11 +9846,11 @@ function EduSphereScreens() {
                 // room left under the drawing; a child answering never sees it, since a mark on one answer could point at it.
                 const standIn = !!(record && record.preview) && /^art:/.test(c) && thingStandIn(c.slice(4).split('#')[0]);
                 return (
-                  // A word answer says itself for a child who cannot read; a picture answer never does,
-                  // because naming it would hand over the answer.
-                  <button key={c} type="button" data-choice={c} onClick={() => { if (!checked) { if (readAloud) { playTap(); if (!c.includes(':')) speak(c); } setGiven(c); } }}
+                  // A word answer says itself for a child who cannot read; a picture answer never does, because naming it would
+                  // hand over the answer, nor, since pass MC, a single letter (choiceSpeaks reads only the choice, never which one is right).
+                  <button key={c} type="button" data-choice={c} onClick={() => { if (!checked) { if (readAloud) { playTap(); if (choiceSpeaks(q, c)) speak(c); } setGiven(c); } }}
                     style={{ opacity: ruledOut && !checked ? (C.mode === 'dark' ? 0.72 : 0.5) : 1, fontFamily: FONT, fontSize: choiceFont(q.choices), textAlign: 'center', padding: standIn ? '12px 10px 34px' : '12px 10px', ...(standIn ? { position: 'relative' } : null), minWidth: 0, overflowWrap: /^-?[\d.,\/ ]+$/.test(c) ? 'normal' : 'anywhere', whiteSpace: /^-?[\d.,\/ ]+$/.test(c) ? 'nowrap' : 'normal', borderRadius: 10, background: bg, border: `2px solid ${border}`, color: C.ink, cursor: checked ? 'default' : 'pointer', minHeight: 48 }}>
-                    {/^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={28} frame={dotFrame || 5} snap={dotFrame > 0} /> : /^shape:/.test(c) ? <ShapePic name={c.split(':')[1]} size={c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={14} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={18} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={14} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6).split('#')[0]} size={64} /> : /^shares:/.test(c) ? <SharesPic shape={c.split(':')[1]} cut={c.split(':')[2]} shaded={Number(c.split(':')[3] || 0)} size={72} /> : /^dice:/.test(c) ? <DicePic pips={Number(c.split(':')[1].split('#')[0])} size={64} /> : /^pic:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><StudentPicture name={c.slice(4).split('#')[0]} size={72} /></span> : /^art:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><ColorThumb picture={c.slice(4).split('#')[0]} size={84} thing /></span> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={64} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={64} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={64} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={80} /> : /^digital:/.test(c) ? <DigitalPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={96} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={12} /> : c}
+                    {/^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={28} frame={dotFrame || 5} snap={dotFrame > 0} /> : /^shape:/.test(c) ? <ShapePic name={c.split(':')[1]} size={c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={14} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={18} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={14} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6).split('#')[0]} size={64} /> : /^shares:/.test(c) ? <SharesPic shape={c.split(':')[1]} cut={c.split(':')[2]} shaded={Number(c.split(':')[3] || 0)} size={72} /> : /^dice:/.test(c) ? <DicePic pips={Number(c.split(':')[1].split('#')[0])} size={64} /> : /^pic:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><StudentPicture name={c.slice(4).split('#')[0]} size={72} /></span> : /^art:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><ColorThumb picture={c.slice(4).split('#')[0]} size={84} thing /></span> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={64} /> : /^face:/.test(c) ? <FeelingFace feeling={c.slice(5).split('#')[0]} size={84} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={64} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={64} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={80} /> : /^digital:/.test(c) ? <DigitalPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={96} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={12} /> : c}
                     {standIn && <ReplaceNote pal={C} style={{ right: 8, bottom: 5 }} />}
                   </button>
                 );
@@ -9454,7 +10028,24 @@ function EduSphereScreens() {
           <p style={{ fontSize: 17, lineHeight: 1.5, margin: '0 0 18px' }}><Emphasized text={line} /></p>
           {youngLearner && <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}><SpeakButton mini text={spokenLine} label="Hear it" /></div>}
           {/* A busy day's second review follows straight on (Mikey, pass LL: back to back at the start of the day). */}
-          {lookBack && getModule(lookBack.moduleId) ? <Btn full onClick={() => startLightReview(lookBack)}>Next</Btn> : <Btn full onClick={() => { setAttempt(null); setScreen('overview'); }}>Back to my lessons</Btn>}
+          {(() => {
+            // A fresh try that earned a course's last star (pass ME): the celebration page comes once, before the day's second
+            // review as well as on the way home (the second read: with two reviews due the button is Next, and the first finish
+            // never showed); its arrow goes home, where the next review's card waits.
+            const rc = mod ? getCourse(mod.courseId) : null;
+            const cheer = !!(rc && record && !record.preview && courseFinishedBy(progress, rc, lastEvent) && celebratedRound.current !== lastEvent.at);   // readers too since pass MF (Q21)
+            const celebrate = () => { celebratedRound.current = lastEvent.at; setAttempt(null); setCelebrateCourse(rc.id); setScreen('course-done'); };
+            // A reader reads the buttons, so the finish gets its own line and its own gold button, and Next or Back to my lessons
+            // does exactly what it says; a young learner's one button goes to the celebration first, as pass ME built it.
+            const readerCheer = cheer && !youngLearner; const onNext = cheer && !readerCheer;
+            const own = lookBack && getModule(lookBack.moduleId)
+              ? <Btn full onClick={onNext ? celebrate : () => startLightReview(lookBack)}>Next</Btn>
+              : <Btn full onClick={onNext ? celebrate : () => { setAttempt(null); setScreen('overview'); }}>Back to my lessons</Btn>;
+            return readerCheer ? (<>
+              <p data-course-finished-line="" style={{ fontSize: 18, fontWeight: 700, color: C.green, margin: '0 0 12px' }}>{courseFinishedWords(rc).result}</p>
+              <div style={{ display: 'grid', gap: 10 }}><Btn full halo onClick={celebrate} disabled={busy} style={{ background: C.gold, borderColor: C.gold, color: C.onGold }}>Celebrate!</Btn>{own}</div>
+            </>) : own;
+          })()}
         </div>
       </div></div>
     );
@@ -9481,28 +10072,28 @@ function EduSphereScreens() {
   }
 
   if (screen === 'result' && lastEvent && mod && course && course.readAloud) {
-    const mastered = isMasteredAttempt(lastEvent);
-    // The next module in this course by order, skipping any already mastered.
-    const nextMod = sortedModules.filter((m) => m.courseId === mod.courseId && m.order > mod.order && !(progress.perModule[m.id] || {}).mastered).sort((a, b) => a.order - b.order)[0] || null;
+    // The round's facts and words come from readAloudResultWords, the same ones the opening voice used (pass MD).
+    const { mastered, nextMod, finished, storyDue, card: resultCard, spoken: resultSpoken } = readAloudResultWords();
     const passedToday = !readAloud && mastered && !(progress.perModule[mod.id] || {}).mastered;   // a first pass: the star waits for another day
-    const courseDone = mastered && !nextMod && sortedModules.filter((m) => m.courseId === mod.courseId && m.id !== mod.id).every((m) => (progress.perModule[m.id] || {}).mastered);
-    const nextCourse = courseDone ? visibleCourses.find((c) => c.id !== mod.courseId && c.modules.some((m) => !(progress.perModule[m.id] || {}).mastered)) : null;
+    const next = finished ? nextToStart(mod.courseId) : null; const nextCourse = next ? next.course : null;
+    // With nothing open to start, the line tells the grown-up whether everything is finished or the next course waits on a gate.
+    const everyFinished = finished && !next && shownCourses.every((c) => c.modules.every((m) => (progress.perModule[m.id] || {}).mastered));
     const rules = moduleRules(mod.id);
-    // One thing to do next, never a menu. Well done goes forward; not yet goes round again
-    // through the lesson, because a child who struggled should see it explained once more.
-    const backTo = mastered ? null : loopBackTarget(record.events, mod.id);
-    // After any finished round, pass or fail, a due reflection is offered once, spoken and tap-only (Mikey, 2026-09-28:
-    // right after a failed round is when a question about failure or feelings lands). The record of this round shows
-    // whether it has already been answered, so it never repeats.
-    const wonderHere = FEATURES.reflection && wonderOnFor(findStudent(roster, record.name)) ? nextWonder(record.events, mod.courseId, previewReview(), true) : null;
-    const wonderDone = wonderHere && record.events.some((e) => e.type === 'wonder_answered' && e.wonderId === wonderHere.id && String(e.at) > String(lastEvent.at));
+    // One thing to do next, never a menu. Well done goes forward; not yet goes round again through the lesson, because a child
+    // who struggled should see it explained once more. After any finished round, pass or fail, a due reflection is offered
+    // once, spoken and tap-only (Mikey, 2026-09-28: right after a failed round is when a question about failure or feelings
+    // lands). readAloudNext holds that order, and a reward story's arrow follows it too (pass MD).
     // Coloring is not offered here on purpose: a picture in the middle of a round pulls a student
     // away from the work. The pictures wait in Let's Color, where they choose one themselves.
-    const goOn = () => {
-      if (wonderHere && !wonderDone) { setWonder(wonderHere); setWonderText(''); setWonderPick(''); setWonderStartedAt(Date.now()); setScreen('wonder'); return; }
-      // Well done goes on to the next module; at the end of a course it goes home, never round the same module again.
-      if (mastered && nextMod) openModule(nextMod.id); else if (mastered && nextCourse) openModule(sortedModules.filter((m) => m.courseId === nextCourse.id && !(progress.perModule[m.id] || {}).mastered).sort((a, b) => a.order - b.order)[0].id); else if (mastered) setScreen('overview'); else if (backTo) loopBack(mod.id, backTo); else { setLessonStep(0); setScreen('lesson'); }
-    };
+    // The story as a reward (pass MD, Mikey: "They can play after the lesson as a reward like you mentioned."): the first passed
+    // round of a lesson with a story (mastered here means the round was passed; the star waits for another day) turns the arrow
+    // into a book, and the story reads itself aloud before the round's next
+    // step. rewardStoryDue in logic decides, and it is due once; the first read is logged as the read the course asks for.
+    // The reward is always the story's first read (story_read), so it is never watched as a read again: storyReading is
+    // cleared, not noted (the code check, pass MD). A walk-through logs it too, in the log it keeps only in memory (addEvents
+    // writes nothing for a walk-through), or a Wonder's return to this screen offered the same story twice. The arrow rests
+    // from the first moment, since the voice starts by itself.
+    const openRewardStory = () => { storyReading.current = null; if (record && !record.events.some((e) => e.type === 'story_read' && e.moduleId === mod.id)) addEvent(makeStoryReadEvent(mod.id, new Date().toISOString())); setStoryReward(mod.id); setStoryVoiceOn(canSpeak()); setScreen('story'); };
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <button type="button" onClick={() => setScreen('overview')} aria-label="Back" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
@@ -9518,14 +10109,15 @@ function EduSphereScreens() {
               </svg>
             ))}
           </div>
-          <p style={{ fontSize: 22, margin: 0 }}>{mastered ? (lastEvent.dose > 1 ? 'You did it! The tricky one is yours now.' : courseDone ? 'Well done! That was the whole course.' : 'Well done!') : 'Good try. Let us go again.'}</p>
+          <p style={{ fontSize: 22, margin: 0 }}>{resultCard}</p>
           {passedToday && <p style={{ fontSize: 15, margin: '8px 0 0', color: C.muted }}>Passed today. Pass it again another day and the star is yours.</p>}
-          {courseDone && courseStoryFor(mod.courseId) && <p style={{ fontSize: 17, margin: '10px 0 0', fontWeight: 600, color: C.green }}>You've unlocked a story related to this course!</p>}
-          {courseDone && <p style={{ fontSize: 15, margin: '8px 0 0', color: C.muted }}>{nextCourse ? `Next: ${nextCourse.title}.` : 'Every course here is finished.'}</p>}
+          {storyDue && <p data-story-reward="" style={{ fontSize: 18, margin: '10px 0 0', fontWeight: 700, color: C.green }}>You earned a story!</p>}
+          {/* The course's own story is offered on the course-finished page that follows (pass ME), never here beside a lesson's reward. */}
+          {finished && <p style={{ fontSize: 15, margin: '8px 0 0', color: C.muted }}>{nextCourse ? `Next: ${titleCase(nextCourse.title)}.` : everyFinished ? 'Every course here is finished.' : 'What comes next is not open yet.'}</p>}
         </div>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
           {canSpeak() && (
-            <button type="button" onClick={() => speak(mastered ? 'Well done!' : 'Good try. Let us go again.')} aria-label="Say it again" className="edu-press edu-sway"
+            <button type="button" onClick={() => speak(resultSpoken)} aria-label="Say it again" className="edu-press edu-sway"
               style={{ width: 66, height: 66, borderRadius: 999, border: `3px solid ${C.gold}`, background: C.goldSoft, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
                 <path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={C.gold} />
@@ -9534,17 +10126,20 @@ function EduSphereScreens() {
             </button>
           )}
         </div>
-        {courseDone && courseStoryFor(mod.courseId) && (
-          <div style={{ margin: '0 0 14px' }}><Btn full onClick={() => { noteStoryOpen(`course:${mod.courseId}`, 'shelf'); if (record && !record.preview && !record.events.some((e) => e.type === 'story_read' && e.moduleId === `course:${mod.courseId}`)) addEvent(makeStoryReadEvent(`course:${mod.courseId}`, new Date().toISOString())); setCourseStoryId(mod.courseId); setScreen('course-story'); }}>Let's Read!</Btn></div>
-        )}
         <div style={{ display: 'flex', justifyContent: 'center' }}>
           <span style={{ position: 'relative', display: 'inline-flex' }}>
-            <button type="button" onClick={goOn} disabled={busy} aria-label={mastered ? 'Keep going' : 'Go again'} className="edu-press edu-pulse"
-              style={{ position: 'relative', width: 84, height: 84, borderRadius: 999, border: `3px solid ${mastered ? C.gold : C.green}`, background: mastered ? C.gold : C.green, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <svg viewBox="0 0 24 24" width="46" height="46" aria-hidden="true">
-                <path d="M9 5l7 7-7 7" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </button>
+            {storyDue ? (
+              // The reward (pass MD): the same gold button, with an open book where the arrow was, so a child who cannot read
+              // sees that a story comes next.
+              <GoldBook onClick={openRewardStory} disabled={busy} label="Hear your story" pulse attrs={{ 'data-story-reward-button': '' }} />
+            ) : (
+              <button type="button" onClick={readAloudNext} disabled={busy} aria-label={mastered ? 'Keep going' : 'Go again'} className="edu-press edu-pulse"
+                style={{ position: 'relative', width: 84, height: 84, borderRadius: 999, border: `3px solid ${mastered ? C.gold : C.green}`, background: mastered ? C.gold : C.green, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg viewBox="0 0 24 24" width="46" height="46" aria-hidden="true">
+                  <path d="M9 5l7 7-7 7" fill="none" stroke={C.onAccent} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+            )}
           </span>
         </div>
       </div></div>
@@ -9555,6 +10150,12 @@ function EduSphereScreens() {
     const mastered = isMasteredAttempt(lastEvent);
     // The next module in this course by order, skipping any already mastered.
     const nextMod = sortedModules.filter((m) => m.courseId === mod.courseId && m.order > mod.order && !(progress.perModule[m.id] || {}).mastered).sort((a, b) => a.order - b.order)[0] || null;
+    // A reader's course finished by this round (pass MF, Mikey's answer to Q21: "reader too"): the same celebration page the
+    // read-aloud courses have, reached by one gold button, once (courseFinishedBy in logic; a walk-through earns no star, so
+    // there a pass of the course's last lesson stands for the finish, as the read-aloud result does).
+    const finished = !!(record && progress && (record.preview ? mastered && !nextMod : courseFinishedBy(progress, course, lastEvent)));
+    const cheer = finished && celebratedRound.current !== lastEvent.at;
+    const celebrate = () => { celebratedRound.current = lastEvent.at; setCelebrateCourse(mod.courseId); setScreen('course-done'); };
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <div style={{ ...card, borderColor: mastered ? C.gold : C.clay }}>
@@ -9572,9 +10173,11 @@ function EduSphereScreens() {
             return <p style={{ fontSize: 17, margin: '0 0 12px', textAlign: 'center' }}>{lastEvent.coreCorrect} of {lastEvent.coreTotal} correct. {mastered ? `Getting ${rules.toMaster} or more right shows you truly understand it.` : `You need ${rules.toMaster} of ${lastEvent.coreTotal}. Reading the lesson once more, then trying a fresh set of questions, usually does it.`}</p>;
           })()}
           <FractionBar parts={lastEvent.coreTotal} shaded={lastEvent.coreCorrect} color={mastered ? C.gold : C.clay} height={36} />
+          {cheer && <p data-course-finished-line="" style={{ fontSize: 18, fontWeight: 700, color: C.green, margin: '14px 0 0', textAlign: 'center' }}>{courseFinishedWords(course).result}</p>}
           {lastEvent.review && <p style={{ color: C.muted, fontSize: 14, margin: '12px 0 0', textAlign: 'center' }}>Memory {lastEvent.review2 ? 'checks' : 'check'} from earlier: {[lastEvent.review, lastEvent.review2].filter(Boolean).map((r) => `${(getModule(r.moduleId) || { title: 'earlier' }).title.toLowerCase()} ${r.correct ? 'correct' : 'missed'}`).join(', ')} (does not affect mastery).</p>}
         </div>
         <div style={{ display: 'grid', gap: 10 }}>
+          {cheer && <Btn full halo onClick={celebrate} disabled={busy} style={{ background: C.gold, borderColor: C.gold, color: C.onGold }}>Celebrate!</Btn>}
           {FEATURES.reflection && !readAloud && wonderOnFor(findStudent(roster, record.name)) && nextWonder(record.events, mod.courseId, wonderReview) && <WonderButton onClick={() => { setWonder(nextWonder(record.events, mod.courseId, wonderReview)); setWonderText(''); setWonderPick(''); setWonderStartedAt(Date.now()); setScreen('wonder'); }}>Wonder for a minute</WonderButton>}
           {mastered && nextMod && <Btn full onClick={() => openModule(nextMod.id)} disabled={busy}>Next: {titleCase(nextMod.title)}</Btn>}
           {!mastered && loopBackTarget(record.events, mod.id) && <Btn full onClick={() => loopBack(mod.id, loopBackTarget(record.events, mod.id))} disabled={busy}>Look back at {getModule(loopBackTarget(record.events, mod.id)).title.toLowerCase()}</Btn>}
@@ -9628,21 +10231,27 @@ function EduSphereScreens() {
     );
   }
 
-  // The two short voices, one at a time, each spoken as it appears.
+  // The two short voices, one at a time, each spoken as it appears, and since pass MG (Mikey's answer to Q10, "yes") the
+  // question's closing line on one more card, gold like the closing card a reader sees, spoken as it appears too: until then a
+  // child who could not read never met the last thought a Wonder question leaves to carry away.
   if (screen === 'wonder-voices' && wonder && readAloud) {
-    const voices = wonder.simple || wonder.perspectives.slice(0, 2).map((p) => ({ voice: p.voice, says: p.says.split('. ')[0] + '.' }));
-    const step = Math.min(wonderVoiceStep, voices.length - 1);
-    const v = voices[step];
-    const last = step >= voices.length - 1;
+    const cards = wonderPreReaderCards(wonder);
+    const step = Math.min(wonderVoiceStep, cards.length - 1);
+    const v = cards[step];
+    const last = step >= cards.length - 1;
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
-        <div key={step} className="edu-rise" style={{ ...card, textAlign: 'center', padding: '22px 18px' }}>
-          <VoiceName label={v.voice} size={21} color={C.green} />
-          <p style={{ fontSize: 20, lineHeight: 1.5, margin: '2px 0 0' }}>{v.says}</p>
-        </div>
+        {v.closing
+          ? <div key={step} className="edu-rise" data-wonder-closing="" style={{ ...card, background: C.goldSoft, borderColor: C.goldEdge, textAlign: 'center', padding: '22px 18px' }}>
+            <p style={{ fontSize: 20, lineHeight: 1.5, margin: 0 }}>{v.closing}</p>
+          </div>
+          : <div key={step} className="edu-rise" style={{ ...card, textAlign: 'center', padding: '22px 18px' }}>
+            <VoiceName label={v.voice} size={21} color={C.green} />
+            <p style={{ fontSize: 20, lineHeight: 1.5, margin: '2px 0 0' }}>{v.says}</p>
+          </div>}
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
           {canSpeak() && (
-            <button type="button" onClick={() => speak(`${wonderVoiceSpoken(v.voice)}: ${v.says}`)} aria-label="Say it again" className="edu-press edu-sway"
+            <button type="button" onClick={() => speak(wonderCardSpoken(v))} aria-label="Say it again" className="edu-press edu-sway"
               style={{ width: 66, height: 66, borderRadius: 999, border: `3px solid ${C.gold}`, background: C.goldSoft, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
                 <path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={C.gold} />
@@ -9654,7 +10263,7 @@ function EduSphereScreens() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <BigTap dir="back" label="Go back" disabled={step === 0} onClick={() => setWonderVoiceStep(step - 1)} />
           <div style={{ display: 'flex', gap: 6 }}>
-            {voices.map((_, i) => <span key={i} style={{ width: 9, height: 9, borderRadius: 999, background: i === step ? C.green : C.line }} />)}
+            {cards.map((_, i) => <span key={i} style={{ width: 9, height: 9, borderRadius: 999, background: i === step ? C.green : C.line }} />)}
           </div>
           {last
             ? <BigTap dir="next" label="Finish" onClick={() => setScreen('result')} />

@@ -2130,6 +2130,13 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
     const freshEvent = reviewed[reviewed.length - 1];
     ok('a Quick Review\'s clear fresh try on the last lesson never passed completes the course, the first celebration', L.courseCompletedBy(L.deriveProgress(reviewed), vfs, freshEvent) === true && L.courseCelebrationStage(L.deriveProgress(reviewed), vfs, freshEvent) === 'complete');
     ok('a first round on a lesson already starred by a review, or placed by a quick check, completes nothing', L.courseCompletedBy(L.deriveProgress([...reviewed, laterRound]), vfs, laterRound) === false && L.courseCompletedBy(L.deriveProgress([...placedFirst, afterPlaced]), vfs, afterPlaced) === false);
+    // A quick check that completes a course celebrates (pass MI, Mikey's answer to Q37: "celebrate"): the placed event its pass
+    // appends is the first finish when it placed the course's last lesson not yet passed.
+    const qcEvent = { type: 'placed', at: '2026-10-02T09:00:00.000Z', subject: vfs.subject, startGrade: null, moduleIds: [lastId0], quickCheck: true };
+    const pQuick = L.deriveProgress([...once.slice(0, -1), qcEvent]);
+    ok("a quick check that places the course's last unpassed lesson completes it, the first celebration (Q37)", L.courseCompletedByQuickCheck(pQuick, vfs, qcEvent) === true && L.courseCelebrationStage(pQuick, vfs, qcEvent) === 'complete');
+    const subjectPlaced = { ...qcEvent, quickCheck: false };
+    ok('a quick check that leaves a lesson unpassed, a subject placement, a lesson passed before and another course celebrate nothing', L.courseCelebrationStage(L.deriveProgress([...once.slice(0, -2), qcEvent]), vfs, qcEvent) === null && L.courseCelebrationStage(L.deriveProgress([...once.slice(0, -1), subjectPlaced]), vfs, subjectPlaced) === null && L.courseCompletedByQuickCheck(L.deriveProgress([...once, qcEvent]), vfs, qcEvent) === false && L.courseCompletedByQuickCheck(pQuick, other, qcEvent) === false);
     ok('the stage is complete at the first finish, mastered at the last star, and none for any other round', L.courseCelebrationStage(pOnce, vfs, lastOnce) === 'complete' && L.courseCelebrationStage(after, vfs, lastRound) === 'mastered' && L.courseCelebrationStage(L.deriveProgress([...starred, again]), vfs, again) === null && L.courseCelebrationStage(pBefore, vfs, butLastOnce[butLastOnce.length - 1]) === null);
     // The story each celebration opens, and the line that brings it in.
     const cs1 = L.celebrationStory('x', 'complete', { hasFirst: true, hasSecond: true }); const cs2 = L.celebrationStory('x', 'mastered', { hasFirst: true, hasSecond: true });
@@ -2205,6 +2212,62 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   const deckBad = Object.entries(L.RULE_DECKS).flatMap(([id, d]) => [...(d.a.items.length < 4 || d.b.items.length < 4 ? [`${id} is short`] : []), ...d.a.items.filter((x) => d.b.items.includes(x)).map((x) => `${id} has ${x} in both`), ...[...d.a.items, ...d.b.items].filter((x) => !/^shape:/.test(x) && x.length > 11).map((x) => `${id}: ${x} is too long`)]);
   ok('every rule deck has two clean groups of short chips', deckBad.length === 0, deckBad.join(', '));
   ok('every rule game names a rule deck and the kinds are catch, path, buckets or ship', L.GAMES.filter((g) => g.rule).every((g) => L.RULE_DECKS[g.rule] && ['catch', 'path', 'buckets', 'ship'].includes(g.kind)));
+  // The space shooter runs until failure (pass MI, Mikey: "let's make the objects being shot speed up gradually and keep going,
+  // even past the 10 rounds it's set to now.  I want them to basically go until failure.  That said, we probably shouldn't have a
+  // correct object immediately over an incorrect one ... Then the high score would say how far they were able to get before
+  // failing."). The test plays it: a careful player aims at the lowest chip that fits and fires; an idle one never taps. Its own
+  // seeded random stands in for the screen's.
+  { const seeded = (seed) => () => { seed |= 0; seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+    const sp = Array.from({ length: 400 }, (_, k) => L.shipSpeed(k)); const gp = Array.from({ length: 400 }, (_, k) => L.shipGap(k));
+    ok('each chip falls a little faster than the one before, with no ceiling, and comes a little sooner, down to half a second', sp[0] === 0.16 && sp.every((v, k) => k === 0 || v > sp[k - 1]) && Math.abs(sp[73] - 0.598) < 1e-9 && sp[399] > 1.2 && gp[0] === 70 && gp.every((v, k) => k === 0 || v <= gp[k - 1]) && gp[399] === 30);
+    ok('a wave for every five fitting chips hit, and three shields', L.shipWave(0) === 1 && L.shipWave(4) === 1 && L.shipWave(5) === 2 && L.shipWave(23) === 5 && L.SHIP_SHIELDS === 3);
+    // The end card names a new best only when the game beats the best before it (the second read: a tie said "A new best!").
+    const bw = [[5, null], [0, null], [7, 7], [8, 7], [3, 7], [1, 1], [0, 4]].map(([h, b]) => L.shipBestWords(h, b));
+    ok('the space shooter names a new best only when it beats the best before the game, never on a tie', bw.join('|') === 'A new best!||Your best is 7 hits.|A new best!|Your best is 7 hits.|Your best is 1 hit.|Your best is 4 hits.', bw.join('|'));
+    const decks = [...new Set(L.GAMES.filter((g) => g.kind === 'ship').map((g) => g.rule))];
+    const short = []; const endless = []; const early = []; const idleWrong = []; let blocked = 0; let slower = 0;
+    for (const rule of decks) { const deck = L.ruleDeck(rule);
+      for (let seed = 1; seed <= 24; seed++) {
+        const rnd = seeded(seed * 97 + 1); const s = L.newShipGame(); let frames = 0;
+        while (!s.over && frames < 60000) {
+          const target = s.live.filter((it) => it.yes && it.y < 80 && it.y > 2).sort((a, b) => b.y - a.y)[0];
+          if (target) { s.target = target.x; s.fire = true; }
+          const happened = L.shipStep(s, 1, rnd, deck); frames += 1;
+          if (s.spawned <= 150 && happened.some((h) => h.kind === 'wrong')) early.push(`${rule}#${seed}`);
+          for (const a of s.live) for (const b of s.live) { if (a.yes && !b.yes && a.y <= 84 && b.y <= 84 && Math.abs(a.x - b.x) < Math.max(L.shipChipHalf(a.text), L.shipChipHalf(b.text)) + 2) blocked += 1; if (b.id > a.id && b.speed < a.speed) slower += 1; }
+        }
+        if (s.hits < 100) short.push(`${rule}#${seed}:${s.hits}`);
+        if (!s.over || s.shields !== 0) endless.push(`${rule}#${seed}`);
+        const idle = L.newShipGame(); const r2 = seeded(seed * 13 + 5); let f2 = 0; const lost = [];
+        while (!idle.over && f2 < 20000) { lost.push(...L.shipStep(idle, 1, r2, deck).filter((h) => h.kind !== 'hit').map((h) => h.kind)); f2 += 1; }
+        if (!(idle.over && idle.hits === 0 && lost.length === L.SHIP_SHIELDS && lost.every((k) => k === 'past'))) idleWrong.push(`${rule}#${seed}`);
+      } }
+    ok('a careful player keeps going far past the old round of ten, past a hundred fitting chips every time', short.length === 0 && decks.length >= 3, short.join(', '));
+    ok('and still every game ends, the last shield gone, since the chips keep getting faster', endless.length === 0, endless.join(', '));
+    ok('a chip never starts straight above or below a chip of the other kind still in play: each middle stays clear of the other', blocked === 0, blocked);
+    ok('a careful player never hits a wrong chip in the first 150, since no wrong chip starts in line with a fitting one or a flying shot', early.length === 0, early.join(', '));
+    ok('a chip that starts later is never slower than one before it', slower === 0, slower);
+    ok('with nobody playing, the game ends when three fitting chips have got past, and no wrong chip is ever counted', idleWrong.length === 0, idleWrong.join(', '));
+    // A child's play (the game check, pass MI): a tap lands anywhere across the chip aimed at, a second quick tap fires again,
+    // and a slow device moves the game three frames a step. None of it may cost a ship to a chip that does not fit, in the first
+    // 150 chips; a shot that hits nothing just flies off.
+    const childWrong = []; const slowShort = [];
+    for (const rule of decks) { const deck = L.ruleDeck(rule);
+      for (let seed = 1; seed <= 16; seed++) {
+        const rnd = seeded(seed * 31 + 7); const hand = seeded(seed * 53 + 11); const s = L.newShipGame(); let frames = 0; let aimed = null; let again = 0;
+        while (!s.over && frames < 9000 && s.spawned <= 150) {
+          const target = s.live.filter((it) => it.yes && it.y < 80 && it.y > 2).sort((a, b) => b.y - a.y)[0];
+          if (target && target.id !== aimed) { aimed = target.id; s.target = target.x + (hand() * 2 - 1) * 0.85 * L.shipChipHalf(target.text); s.fire = true; again = 8; }
+          else if (again > 0 && (again -= 1) === 0) s.fire = true;   // the second quick tap
+          if (L.shipAdvance(s, 3, rnd, deck).some((h) => h.kind === 'wrong')) childWrong.push(`${rule}#${seed}`);
+          frames += 3;
+        }
+        const quick = L.newShipGame(); const r3 = seeded(seed * 97 + 1); let f3 = 0;
+        while (!quick.over && f3 < 12000) { const tg = quick.live.filter((it) => it.yes && it.y < 80 && it.y > 2).sort((a, b) => b.y - a.y)[0]; if (tg) { quick.target = tg.x; quick.fire = true; } L.shipAdvance(quick, 3, r3, deck); f3 += 3; }
+        if (quick.hits < 100) slowShort.push(`${rule}#${seed}:${quick.hits}`);
+      } }
+    ok("a child's taps, anywhere across the chip aimed at and tapped twice, never lose a ship to a chip that does not fit", childWrong.length === 0, childWrong.slice(0, 6).join(', '));
+    ok('on a slow device, three frames a step, the careful player still passes a hundred fitting chips: no shot slips through a chip', slowShort.length === 0, slowShort.join(', ')); }
   // Every shape a rule deck names is drawn as itself (pass MB, the game check): SvgChip drew hexagons and rhombuses as its
   // fallback triangle, so grade 1's Catch the Hexagons scored triangles as hexagons. The triangle is the only shape the fallback may draw.
   { const uiSrc = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
@@ -2362,10 +2425,11 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
       const gameOf = Object.fromEntries([...ui.match(/const GAME_OF = \{([\s\S]*?)\};/)[1].matchAll(/(\w+): (\w+)/g)].map((m) => [m[1], m[2]]));
       const setOf = (name) => { const m = ui.match(new RegExp(`const ${name} = new Set\\(\\[([^\\]]*)\\]\\)`)); return new Set(m ? [...m[1].matchAll(/'(\w+)'/g)].map((x) => x[1]) : []); };
       const secs = setOf('BEST_SECONDS'); const none = setOf('BEST_NONE'); const wordsAt = ui.indexOf('const BEST_WORDS = {'); const words = new Set([...ui.slice(wordsAt, ui.indexOf('};', wordsAt)).matchAll(/(\w+): \[/g)].map((m) => m[1]));
-      const wrong = Object.entries(gameOf).filter(([kind, comp]) => { const u = units[comp]; if (!u) return false; const [what, dir] = u.split(':'); if (/^ticks/.test(what)) return !secs.has(kind); if (dir === 'low') return !words.has(kind) && !none.has(kind); return secs.has(kind) || words.has(kind); });
+      const wrong = Object.entries(gameOf).filter(([kind, comp]) => { const u = units[comp]; if (!u) return false; const [what, dir] = u.split(':'); if (/^ticks/.test(what)) return !secs.has(kind); if (dir === 'low') return !words.has(kind) && !none.has(kind); return secs.has(kind); });
       // Build the Fund keeps its best in dollars, and a year that saves nothing ends below zero (the code check's second read
       // found "best -1737" waiting), so it shows no badge, like Pay It Off.
-      ok('every game\'s best badge names what it counts: seconds for a timed game, a word or no badge for any other low count, none for dollars', secs.size >= 40 && wrong.length === 0 && ['fund', 'loan', 'price'].every((k) => none.has(k)), wrong.map(([k, c]) => `${k} (${units[c]})`).join(', ')); }
+      // Since pass MI a high count may take a word too, where the number alone would not say what it counts (the shooter's hits).
+      ok('every game\'s best badge names what it counts: seconds for a timed game, a word or no badge for any other low count, none for dollars, and hits for the shooter', secs.size >= 40 && wrong.length === 0 && ['fund', 'loan', 'price'].every((k) => none.has(k)) && words.has('ship'), wrong.map(([k, c]) => `${k} (${units[c]})`).join(', ')); }
     const lp = L.playList({ courses: [L.getCourse('listen-and-point-pk3')], young: true });
     ok("Mikey's day-one exception holds: a pre-K child with Listen and Point can play Step on the Circles from day one", lp[0] && lp[0].id === 'path-circles' && L.unlockedGameIds([], lp).has('path-circles'));
     const vfs = L.playList({ courses: [L.getCourse('very-first-steps-pk3')], young: true }); const vfsOpen = L.unlockedGameIds([], vfs);

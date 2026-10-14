@@ -5,7 +5,7 @@
 // the educator's report: the coloring line, then the game line and the elective story line in Mikey's words, each under the
 // same short faint rule. The second read of the story waits the real STORY_REREAD_SECONDS, and since pass MF the walk takes
 // about three minutes (check.sh allows seven).
-import { createRequire } from 'node:module'; import { pathToFileURL, fileURLToPath } from 'node:url'; import { execSync } from 'node:child_process'; import { mkdirSync, rmSync } from 'node:fs';
+import { createRequire } from 'node:module'; import { pathToFileURL, fileURLToPath } from 'node:url'; import { execSync } from 'node:child_process'; import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 const G = execSync('npm root -g').toString().trim(); const { chromium } = createRequire(import.meta.url)(`${G}/playwright`);
 const L = await import('../../src/logic.mjs'); const ST = await import('../../src/stories.mjs');
 const FINISH = 'first-steps-pk';   // an Early years student's pre-K 4 course with a long story (pre-K 3's courses are not assigned at that level)
@@ -198,6 +198,29 @@ await page.getByRole('button', { name: /S-56$/ }).first().click(); await page.wa
     await settle(); await page.getByLabel('Keep going').click(); await screenIs('overview'); await page.waitForTimeout(300);
   }
   ok('three taps never read the same story twice running, so with two heard stories they alternate', surprised[0] !== surprised[1] && surprised[1] !== surprised[2], surprised);
+  // Pass MI (Mikey: "The surprise me book to read should always be at the top of the book list."): its row heads the list,
+  // above the course's own story and every heard story.
+  await openFold();
+  const order = await page.evaluate(() => [...document.querySelectorAll('[data-surprise-book], [data-long-story-row], [data-heard-story]')].map((r) => (r.hasAttribute('data-surprise-book') ? 'surprise' : r.hasAttribute('data-long-story-row') ? 'long' : 'heard')));
+  ok('the Surprise me book is the first row of the book list, above the long story and the heard stories', order[0] === 'surprise' && order.includes('long') && order.includes('heard'), order);
+  // Pass MI (Mikey: "When selecting a book from let's read and selecting the forward arrow to finish, we should still be at the
+  // same place on the page where we clicked the book,  not back to the top of the page where the modules are."): a heard story
+  // opened from partway down the page, and the story's arrow comes back to the book where it was.
+  { const book = page.locator('[data-heard-story="colours"] button');
+    await book.evaluate((b) => b.scrollIntoView({ block: 'center' })); await page.waitForTimeout(300);
+    const before = await page.evaluate(() => ({ y: Math.round(window.scrollY), top: Math.round(document.querySelector('[data-heard-story="colours"]').getBoundingClientRect().top) }));
+    await settle(); await book.click(); await screenIs('story'); await page.waitForTimeout(500);
+    await settle(); await page.getByLabel('Keep going').click(); await screenIs('overview'); await page.waitForTimeout(800);
+    const after = await page.evaluate(() => { const r = document.querySelector('[data-heard-story="colours"]'); return { y: Math.round(window.scrollY), top: r ? Math.round(r.getBoundingClientRect().top) : null }; });
+    ok("the story's arrow comes back to the same place on the page, the book where it was tapped", before.y > 200 && after.top !== null && Math.abs(after.top - before.top) <= 4, { before, after }); }
+  // The device's back from a book Let's Read opened keeps the place too (pass MI, the alignment read; fromShelf since the second read).
+  { const book = page.locator('[data-heard-story="colours"] button');
+    await book.evaluate((b) => b.scrollIntoView({ block: 'center' })); await page.waitForTimeout(300);
+    const before = await page.evaluate(() => ({ y: Math.round(window.scrollY), top: Math.round(document.querySelector('[data-heard-story="colours"]').getBoundingClientRect().top) }));
+    await settle(); await book.click(); await screenIs('story'); await page.waitForTimeout(500);
+    await page.goBack().catch(() => {}); await screenIs('overview'); await page.waitForTimeout(800);
+    const after = await page.evaluate(() => { const r = document.querySelector('[data-heard-story="colours"]'); return r ? Math.round(r.getBoundingClientRect().top) : null; });
+    ok("the device's back from a book Let's Read opened comes back to the same place too", before.y > 200 && after !== null && Math.abs(after - before.top) <= 4, { before, after }); }
   // The cover shelf (Q18, the other suggestion): once every story of a course's group is painted, the group shows as covers to
   // tap, each named like its row was; with one painting missing the rows stay. The page learns which paintings it has from
   // window.__eduArt (the build lists art/stories), so the walk lists the two stories' pictures there and serves a tiny image.
@@ -378,6 +401,15 @@ await page.getByRole('button', { name: /S-56$/ }).first().click(); await page.wa
   // A reader's lesson offers View story, then Practice this on the story page; the round is answered by the page's own question.
   await page.evaluate((m) => window.__eduTest.openModule(m), almostR.lastLesson); await screenIs('lesson'); await settle();
   if (await tapIf('View story')) { await screenIs('story'); await settle(); }
+  // The device's back from a story a lesson opened goes to the top of the courses, never to a place Let's Read kept earlier in
+  // the walk (the second read of pass MI's late fixes: only a story Let's Read opened gives a place back).
+  if ((await screen()) === 'story') {
+    await page.goBack().catch(() => {}); await screenIs('overview'); await page.waitForTimeout(800);
+    const y = await page.evaluate(() => Math.round(window.scrollY));
+    ok("the device's back from a lesson's story opens the courses at the top, not at a place the shelf kept", y <= 4, y);
+    await page.evaluate((m) => window.__eduTest.openModule(m), almostR.lastLesson); await screenIs('lesson'); await settle();
+    if (await tapIf('View story')) { await screenIs('story'); await settle(); }
+  }
   await page.getByRole('button', { name: 'Practice this', exact: true }).first().click(); await screenIs('practice');
   for (let i = 0; i < 30; i++) {
     const st = await page.evaluate(() => ({ screen: window.__eduTest.screen, q: window.__eduTest.question })); if (st.screen !== 'practice') break;
@@ -512,6 +544,33 @@ await page.getByRole('button', { name: /S-56$/ }).first().click(); await page.wa
   ok("the reader's first celebration names every lesson passed and offers the course's story to read", rp1.includes(`Hooray! You passed every lesson in ${readerTitle1}!`) && rp1.includes('Here is its story.') && rp1.includes('Read the story'), rp1.slice(0, 300));
   await settle(); await page.locator('[data-course-done-home]').click(); await screenIs('overview'); await page.waitForTimeout(400);
   ok("its Return Home button goes home", (await screen()) === 'overview'); }
+// A quick check that completes a course (pass MI, Mikey's answer to Q37: "celebrate"): the Elementary student S-62, one lesson short
+// of the same course's first finish, places the last lesson with "I already know this"; the quick check's result says that was
+// every lesson and offers Celebrate!, whose page opens the course's story as after a round.
+{ await page.evaluate(() => window.__eduTest.goHome()); await screenIs('educator-pick'); await page.waitForTimeout(400); await tapIf('Got it');
+  await page.getByRole('button', { name: 'Add someone new' }).first().click(); await page.waitForTimeout(300);
+  await page.fill('input[placeholder="School-issued ID"]', 'S-62'); await page.getByRole('button', { name: /^Elementary/ }).first().click(); await page.waitForTimeout(200);
+  await page.getByRole('button', { name: 'Add', exact: true }).click(); await page.waitForTimeout(500); await tapIf('Later');
+  const oneQ = await page.evaluate(() => window.__eduTest.seedHistory('S-62', { complete: 'tech-3' }));
+  await page.getByRole('button', { name: 'Home' }).first().click(); await page.waitForTimeout(500);
+  await page.getByRole('button', { name: /S-62$/ }).first().click(); await page.waitForTimeout(900); await tapIf('Later');
+  await page.evaluate((m) => window.__eduTest.startQuickCheck(m), oneQ.lastLesson); await screenIs('practice');
+  for (let i = 0; i < 12; i++) {
+    const st = await page.evaluate(() => ({ screen: window.__eduTest.screen, q: window.__eduTest.question })); if (st.screen !== 'practice') break;
+    await page.waitForTimeout(2100);   // a quick check counts an answer under two seconds as rushed, and three rushed as a guess
+    await settle();
+    const byValue = page.locator(`button[data-choice="${String(st.q.answer).replace(/"/g, '\\"')}"]`); if (await byValue.count()) await byValue.first().click(); else await page.getByRole('button', { name: st.q.answer, exact: true }).first().click();
+    await page.getByRole('button', { name: 'Check answer' }).click();
+    const btn = page.getByRole('button', { name: /Next question|See results/ }); const label = await btn.textContent(); await btn.click();
+    if (label.includes('See results')) break;
+  }
+  await screenIs('quick-result'); await page.waitForTimeout(400);
+  const tq = await text();
+  ok('a quick check that places the last unpassed lesson says that was every lesson in the course and offers Celebrate! (Q37)', tq.includes('You already know') && tq.includes('That was every lesson in the course!') && (await page.getByRole('button', { name: 'Celebrate!', exact: true }).count()) === 1, tq.slice(0, 300));
+  await settle(); await page.getByRole('button', { name: 'Celebrate!', exact: true }).click(); await screenIs('course-done'); await page.waitForTimeout(700);
+  const tqd = await text();
+  ok("its celebration names every lesson passed and offers the course's story, as after a round", tqd.includes(`Hooray! You passed every lesson in ${L.titleCase(L.getCourse('tech-3').title)}!`) && tqd.includes('Read the story'), tqd.slice(0, 300));
+  await settle(); await page.locator('[data-course-done-home]').click(); await screenIs('overview'); await page.waitForTimeout(400); }
 // A walk-through's reward comes once (the code check, pass MD): the walk-through logs the first read in the log it keeps in
 // memory, so when a Wonder returns to the result, the arrow goes on and the book does not come back with the same story.
 { await page.evaluate(() => window.__eduTest.goHome()); await screenIs('educator-pick'); await page.waitForTimeout(400); await tapIf('Got it');
@@ -530,6 +589,60 @@ await page.getByRole('button', { name: /S-56$/ }).first().click(); await page.wa
     }
   }
   ok("a walk-through's reward story comes once: after a Wonder the result's arrow goes on", seen.join() === 'colours:book,colours:story,same-and-different:book,same-and-different:story,same-and-different:wonder,same-and-different:arrow', seen); }
+// The place kept in a frame as tall as the page (pass MI): the claude.ai preview on a laptop shows the app in such a frame, whose
+// own window never scrolls, so the page came back at its top after a book. A host page holds the app in a 5,000-pixel frame;
+// the page around it is scrolled so a heard story's book sits mid-screen, the book is pressed inside the frame, and the story's
+// arrow must bring the page around the frame back to the same place.
+{ writeFileSync('/tmp/edu-place-host.html', `<!doctype html><html><body style="margin:0;background:#111"><div style="height:120px;color:#ccc">Preview header</div><iframe id="app" src="${pathToFileURL(new URL('./page.html', import.meta.url).pathname).href}" style="border:0;width:100%;height:5000px;display:block"></iframe><div style="height:600px"></div></body></html>`);
+  const host = await browser.newPage({ viewport: { width: 1280, height: 800 }, hasTouch: true, reducedMotion: 'reduce' });
+  await host.goto('file:///tmp/edu-place-host.html'); await host.waitForTimeout(800);
+  const f = host.frames().find((x) => x.url().endsWith('page.html'));
+  const fIs = (n) => f.waitForFunction((x) => window.__eduTest && window.__eduTest.screen === x, n, { timeout: 15000 });
+  const press = (name) => f.evaluate((n) => { const b = [...document.querySelectorAll('button')].find((x) => x.textContent.trim() === n || x.getAttribute('aria-label') === n); if (b) b.click(); return !!b; }, name);
+  await fIs('welcome'); await press('Create account'); await fIs('educator-setup');
+  await f.fill('input[placeholder="PIN"]', '2468'); await f.fill('input[placeholder="PIN again"]', '2468'); await f.fill('input[placeholder="This device\'s name"]', 'Frame'); await f.selectOption('select[aria-label="Your state"]', 'TX');
+  await press('Create account'); await fIs('educator-pick'); await host.waitForTimeout(600);
+  for (const n of ['Skip tour', 'Later', 'Got it']) { await press(n); await host.waitForTimeout(250); }
+  await press('Add someone new'); await host.waitForTimeout(300);
+  await f.fill('input[placeholder="School-issued ID"]', 'S-71'); await f.evaluate(() => { const b = [...document.querySelectorAll('button')].find((x) => /^Early years/.test(x.textContent.trim())); if (b) b.click(); }); await host.waitForTimeout(200);
+  await press('Add'); await host.waitForTimeout(500); await press('Later');
+  await f.evaluate((id) => window.__eduTest.seedHistory('S-71', { finish: id }), FINISH);
+  await f.evaluate(() => window.__eduTest.seedHistory('S-71', { heard: ['colours', 'same-and-different'] }));
+  await press('Home'); await host.waitForTimeout(500);
+  const quiet = () => f.evaluate(() => Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { speaking: false, pending: false, cancel() {}, getVoices() { return []; }, speak() {} } }));   // no voice, so nothing follows the reading down the page
+  const signIn = async () => { await f.evaluate(() => { const b = [...document.querySelectorAll('button')].find((x) => x.getAttribute('aria-label') === 'S-71'); if (b) b.click(); }); await host.waitForTimeout(900); await press('Later'); await fIs('overview'); };
+  // Where the book sits on the host's screen: the frame starts 120 pixels down the host page.
+  const onScreen = (id) => f.evaluate((m) => { const r = document.querySelector(`[data-heard-story="${m}"]`); return r ? Math.round(r.getBoundingClientRect().top) : null; }, id).then(async (top) => (top === null ? null : 120 + top - (await host.evaluate(() => Math.round(window.scrollY)))));
+  const roundTrip = async (id, aim) => {
+    const fold = await f.evaluate(() => { const b = [...document.querySelectorAll('button')].find((x) => x.getAttribute('aria-label') === "Let's Read"); return b ? b.getAttribute('aria-expanded') : null; });
+    if (fold !== 'true') { await press("Let's Read"); await host.waitForTimeout(500); }
+    const top = await f.evaluate((m) => { const r = document.querySelector(`[data-heard-story="${m}"]`); return r ? Math.round(r.getBoundingClientRect().top) : null; }, id);
+    await host.evaluate((y) => window.scrollTo(0, y), 120 + top - aim); await host.waitForTimeout(700);
+    const before = await onScreen(id);
+    await f.evaluate((m) => document.querySelector(`[data-heard-story="${m}"] button`).click(), id); await fIs('story'); await host.waitForTimeout(800);
+    const atStory = await host.evaluate(() => Math.round(window.scrollY));
+    await f.evaluate(() => document.querySelector('[aria-label="Keep going"]').click()); await fIs('overview'); await host.waitForTimeout(1000);
+    return { before, atStory, after: await onScreen(id) }; };
+  await signIn(); await quiet();
+  const one = await roundTrip('colours', 400);
+  ok("in a page-tall frame (the claude.ai preview) the story's arrow brings the book back to where it was tapped on the screen", one.before !== null && one.after !== null && Math.abs(one.before - 400) <= 8 && Math.abs(one.after - one.before) <= 8, one);
+  const two = await roundTrip('same-and-different', 520);
+  ok('a second book on the same page comes back to its own place too', two.before !== null && two.after !== null && Math.abs(two.after - two.before) <= 8, two);
+  // A refreshed frame opens straight on the overview (the where-note), and its first book is the first thing measured.
+  await host.reload(); await host.waitForTimeout(1500);
+  const f2 = host.frames().find((x) => x.url().endsWith('page.html'));
+  await f2.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview', null, { timeout: 15000 }).catch(() => {});
+  await f2.evaluate(() => Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { speaking: false, pending: false, cancel() {}, getVoices() { return []; }, speak() {} } }));
+  const fold2 = await f2.evaluate(() => { const b = [...document.querySelectorAll('button')].find((x) => x.getAttribute('aria-label') === "Let's Read"); if (b && b.getAttribute('aria-expanded') !== 'true') b.click(); return !!b; }); await host.waitForTimeout(500);
+  const top2 = await f2.evaluate(() => { const r = document.querySelector('[data-heard-story="colours"]'); return r ? Math.round(r.getBoundingClientRect().top) : null; });
+  await host.evaluate((y) => window.scrollTo(0, y), 120 + top2 - 400); await host.waitForTimeout(700);
+  const where = async () => { const t = await f2.evaluate(() => { const r = document.querySelector('[data-heard-story="colours"]'); return r ? Math.round(r.getBoundingClientRect().top) : null; }); return t === null ? null : 120 + t - (await host.evaluate(() => Math.round(window.scrollY))); };
+  const b3 = await where();
+  await f2.evaluate(() => document.querySelector('[data-heard-story="colours"] button').click()); await f2.waitForFunction(() => window.__eduTest.screen === 'story', null, { timeout: 15000 }); await host.waitForTimeout(800);
+  await f2.evaluate(() => document.querySelector('[aria-label="Keep going"]').click()); await f2.waitForFunction(() => window.__eduTest.screen === 'overview', null, { timeout: 15000 }); await host.waitForTimeout(1000);
+  const a3 = await where();
+  ok('after a refresh, the first book tapped comes back to its place as well', fold2 && b3 !== null && a3 !== null && Math.abs(a3 - b3) <= 8, { b3, a3 });
+  await host.close(); rmSync('/tmp/edu-place-host.html', { force: true }); }
 ok('no page errors along the way', errors.length === 0, errors);
 await browser.close();
 console.log(`\n${passed} passed, ${failed} failed`);

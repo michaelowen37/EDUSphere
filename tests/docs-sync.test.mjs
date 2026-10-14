@@ -96,6 +96,29 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   const answeredOpen = answered.filter((n) => !new RegExp(`^- Q${n}\\. Answered in pass`, 'm').test(sec));
   ok('a question NEW-CHAT calls answered carries its answer in the rules audit', answeredOpen.length === 0, answeredOpen.join(','));
 }
+// An answered question is never called open again (pass MI, the alignment read: Q27, Q30, Q31 and Q32 were answered while
+// docs, comments and tests still said Q30 was waiting on Mikey or the light theme kept its gold until Q32 was settled, which a
+// new chat would believe). Every doc but
+// DECISIONS (history) and RULES-AUDIT section 11 (the questions themselves), the README, the skills and agents, and src, tests and tools are read. CLAUDE.md keeps
+// its lines as written (they change only with Mikey's approval), so a later line there settles them, and it is left out.
+{ const { readdirSync } = await import('node:fs');
+  const s11 = audit.indexOf('## 11. Open items that need Mikey'); const e11 = audit.indexOf('\n## ', s11 + 5);
+  const answeredNums = new Set([...audit.slice(s11, e11 < 0 ? audit.length : e11).matchAll(/^- Q(\d+)\. Answered in pass/gm)].map((m) => Number(m[1])));
+  const files = [];
+  // Since the second read of the late fixes: every doc but DECISIONS, the README, and the skills' and agents' briefs too.
+  for (const [dir, ext] of [['../docs/', '.md'], ['../src/', ''], ['../tools/', '.mjs'], ['./', '.mjs'], ['./e2e/', '.mjs'], ['../.claude/agents/', '.md']]) {
+    for (const f of readdirSync(new URL(dir, import.meta.url))) if (f.endsWith(ext) && f !== 'DECISIONS.md' && !/\.(csv|json|png|svg)$/.test(f) && (ext || /\.(mjs|jsx)$/.test(f))) files.push(new URL(dir + f, import.meta.url));
+  }
+  files.push(new URL('../README.md', import.meta.url));
+  for (const d of readdirSync(new URL('../.claude/skills/', import.meta.url))) { try { files.push(...readdirSync(new URL(`../.claude/skills/${d}/`, import.meta.url)).filter((f) => f.endsWith('.md')).map((f) => new URL(`../.claude/skills/${d}/${f}`, import.meta.url))); } catch (e) { /* a file, not a folder */ } }
+  const stale = [];
+  for (const u of files) {
+    let t = readFileSync(u, 'utf8'); if (u.pathname.endsWith('RULES-AUDIT.md')) t = t.slice(0, s11) + t.slice(e11 < 0 ? t.length : e11);
+    // The phrasings a stale line has taken so far; when another turns up, it joins this list (the second read found the last two).
+    for (const m of t.matchAll(/\(?Q(\d+) asks\b|until (?:Mikey )?answers Q(\d+)|until Q(\d+) is answered|waiting (?:on|for) Q(\d+)|(?:keeps its look|is frozen|still does[^.;,]{0,30}),? \(?Q(\d+)\b/g)) { const n = Number(m[1] || m[2] || m[3] || m[4] || m[5]); if (answeredNums.has(n)) stale.push(`${u.pathname.split('/').slice(-2).join('/')}: ${m[0]}`); }
+  }
+  ok('no doc, source, test or tool still calls an answered question open', answeredNums.size >= 30 && stale.length === 0, stale.slice(0, 8).join('; '));
+}
 // The pictures the browser tests write beside the page (tests/e2e/art; pass MF, the code check and the alignment read) never
 // ship: .gitignore, both zip tools and the delivery command in NEW-CHAT leave the folder out, and the command leaves a checkpoint
 // folder out too, since a killed walk can leave the folder behind and the updater stops on a file it does not expect.

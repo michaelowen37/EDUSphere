@@ -9,6 +9,13 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## October 13, 2026 (a word said once, More Info read aloud, a space shooter that runs until the last ship, and a party after a quick check)
+
+- When a child who can't read yet taps an answer, its word is now said once. A small quirk made short words like "blue" repeat.
+- More Info can now be read aloud with each sentence lit as it is read, a short pause between explanations, and a slightly slower voice for early learners.
+- The Space Shooter now keeps going until the player's three ships are gone, a little faster with every object, and the best score shows how far they got. A right answer never falls straight above a wrong one anymore.
+- When a student's "I already know this" check finishes the last lesson of a course, they get the same celebration and long story as after a regular round.
+
 ## October 13, 2026 (why each wrong answer is wrong, four voices for little ones, and a story at both celebrations)
 
 - In pre-K 3, after a question is answered, a small More Info button now explains why each wrong choice doesn't fit and why the right one does, with a few more right examples. It opens by itself when a student who reads picks a wrong answer, it remembers a choice the student made on an earlier visit, and little ones who can't read yet hear the reason spoken after a wrong tap. A few older questions show a short note, and the other grades will get it as each one is reviewed.

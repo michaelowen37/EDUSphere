@@ -169,7 +169,7 @@ const rowLook = () => page.evaluate(() => {
 //    wrong answer is selected too"), the one chosen first; on a 375 by 667 phone a tall sheet starts on screen and worded
 //    choices are not squeezed into a narrow box.
 { await walk('Walk through elementary');
-  // The setup line sits above its question since pass MH (the order the voice reads them; Q30 asks Mikey whether it stays).
+  // The setup line sits above its question since pass MH (the order the voice reads them), kept there by Mikey's answer to Q30.
   { const gen = Object.keys(L.GENERATORS).find((id) => { try { const k = L.generateQuestion(id, 3); return id.startsWith('r3-') && k.type === 'choice' && k.story; } catch (e) { return false; } });
     if (gen) await show(gen, 3);
     const order = await page.evaluate(() => { const st = document.querySelector('[data-question-setup]'); const qt = document.querySelector('[data-question-text]'); return st && qt ? { setup: Math.round(st.getBoundingClientRect().top), question: Math.round(qt.getBoundingClientRect().top) } : null; });
@@ -333,6 +333,68 @@ const ponder = () => page.evaluate(() => {
     return { theme: document.documentElement.dataset.theme, screen: window.__eduTest.screen, stops: stops.length, clip: getComputedStyle(h).backgroundClip || getComputedStyle(h).webkitBackgroundClip, worst: stops.length ? Math.round(Math.min(...stops.map((x) => ratio(x, bg || [255, 255, 255]))) * 100) / 100 : 0 };
   });
   ok("in the light theme at 1280 the Let's Wonder! title shows its letters, every color of its shimmer at 3 to 1 or better", !!title && title.theme !== 'dark' && title.screen === 'wonder' && title.stops >= 3 && title.clip === 'text' && title.worst >= 3, title); }
+
+// 9. Pass MI, from Mikey's notes, in the light theme the section above left on, at 1280 wide.
+//    a. Q32 ("I agree with you"): the lit sentence is the same light green in the light theme.
+{ await page.evaluate(() => { const q = []; let cur = null; let timer = null; window.__spoken = []; window.__rates = [];
+    const next = () => { cur = q.shift() || null; if (!cur) return; const mine = cur; if (mine.onstart) mine.onstart({}); timer = setTimeout(() => { if (cur !== mine) return; cur = null; if (mine.onend) mine.onend({}); if (!cur) next(); }, 1000); };
+    Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { get speaking() { return !!cur; }, get pending() { return q.length > 0; }, cancel() { q.length = 0; if (timer) clearTimeout(timer); cur = null; }, getVoices() { return []; }, speak(u) { window.__spoken.push(u.text); window.__rates.push(u.rate); q.push(u); if (!cur) next(); } } }); });
+  await page.evaluate(() => window.__eduTest.openStory('colours'));
+  await page.waitForFunction(() => { const el = document.querySelector('[data-read-lit]'); return !!el && !!el.closest('[data-story-par]'); }, null, { timeout: 15000 }).catch(() => {});
+  const lit = await page.evaluate(() => { const el = document.querySelector('[data-read-lit]'); return el ? { bg: getComputedStyle(el).backgroundColor, color: getComputedStyle(el).color, theme: document.documentElement.dataset.theme } : null; });
+  ok('in the light theme the lit sentence takes the same light green as the dark theme, with dark words on it (Q32)', !!lit && lit.theme !== 'dark' && lit.bg === 'rgb(170, 216, 197)' && lit.color === 'rgb(22, 32, 27)', lit);
+  await page.evaluate(() => window.speechSynthesis.cancel()); }
+//    b. "the answer is repeated twice.  "Blue, blue" and "red, red"": a voice with a real speaking flag says a short word and is
+//       done inside the 700 ms the old retry waited; the word is said once.
+{ await page.evaluate(() => { const q = []; let cur = null; let timer = null; window.__spoken = [];
+    const next = () => { cur = q.shift() || null; if (!cur) return; const mine = cur; if (mine.onstart) mine.onstart({}); timer = setTimeout(() => { if (cur !== mine) return; cur = null; if (mine.onend) mine.onend({}); if (!cur) next(); }, 150); };
+    Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { get speaking() { return !!cur; }, get pending() { return q.length > 0; }, cancel() { q.length = 0; if (timer) clearTimeout(timer); cur = null; }, getVoices() { return []; }, speak(u) { window.__spoken.push(u.text); (window.__ratesWord = window.__ratesWord || []).push(u.rate); q.push(u); if (!cur) next(); } } }); });
+  const q = await show('p3-which-colour-four', 3); await page.waitForTimeout(2500); await page.evaluate(() => { window.__spoken = []; window.__ratesWord = []; });
+  const word = q.choices.find((c) => c !== q.answer);
+  await settle(); await page.locator(`button[data-choice="${word}"]`).click(); await page.waitForTimeout(1600);
+  const said = await page.evaluate(() => window.__spoken.slice());
+  ok(`a tapped word is said once, never twice ("Blue, blue"): ${word}`, said.filter((t) => t.trim().toLowerCase() === String(word).toLowerCase()).length === 1, said);
+  // The story read on the snail in 9a has closed, and its slower pace closed with it (the alignment read): the word is said at
+  // the one-word pace, 0.6, not three quarters of it.
+  const rate = await page.evaluate((w) => { const k = window.__spoken.findIndex((t) => t.trim().toLowerCase() === String(w).toLowerCase()); return k >= 0 && window.__ratesWord ? window.__ratesWord[k] : null; }, word);
+  ok('a story\'s slow pace does not outlive the story: the tapped word is said at its own pace', rate === 0.6, rate); }
+//    c. The touch-screen warning (Mikey: "isolated by itself under the gold stars ... doesn't appear to be associated with any
+//       particular module"): on a device with no touch screen a touch lesson opens a pop-up that names it, and nothing is left on
+//       the page.
+{ await page.evaluate(() => window.__eduTest.goHome && window.__eduTest.goHome()); await walk('Walk through early years');
+  await page.evaluate(() => { window.__touchWas = { m: window.matchMedia, d: Object.getOwnPropertyDescriptor(Navigator.prototype, 'maxTouchPoints') }; Object.defineProperty(navigator, 'maxTouchPoints', { configurable: true, get: () => 0 }); const mm = window.matchMedia.bind(window); window.matchMedia = (qq) => (/pointer: coarse/.test(qq) ? { matches: false, media: qq, onchange: null, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {}, dispatchEvent() { return false; } } : mm(qq)); });
+  await page.evaluate(() => window.__eduTest.openModule('tracing-letters')); await page.waitForTimeout(700);
+  const pop = await page.evaluate(() => { const el = document.querySelector('[data-touch-only]'); return el ? { text: el.textContent, screen: window.__eduTest.screen } : null; });
+  ok('a touch lesson tapped on a laptop opens a pop-up on the overview that names it', !!pop && pop.screen === 'overview' && pop.text.includes('Tracing Letters needs a touch screen.') && pop.text.includes('An iPad or another large tablet with a stylus is best.'), pop);
+  await page.getByRole('button', { name: 'Got it', exact: true }).first().click(); await page.waitForTimeout(400);
+  const left = await page.evaluate(() => ({ pop: document.querySelectorAll('[data-touch-only]').length, stray: document.body.innerText.includes('This module needs a touch screen') }));
+  ok('Got it closes it, and no warning is left at the foot of the page', left.pop === 0 && !left.stray, left);
+  await page.evaluate(() => { delete navigator.maxTouchPoints; window.matchMedia = window.__touchWas.m; }); }
+//    d. More Info read aloud (Mikey: "highlight those words when they are spoken too", "a delay between each description so it
+//       isn't witching sentences too fast", "a little slower too for early learners"): a stand-in voice that times each line.
+{ const q = await show('p3-tap-picture', 5);
+  await settle(); await page.locator(`button[data-choice="${q.answer}"]`).click(); await page.getByRole('button', { name: 'Check answer' }).click(); await page.waitForTimeout(600);
+  await page.locator('[data-more-info-link]').click(); await page.waitForTimeout(500);
+  await page.evaluate(() => { const q2 = []; let cur = null; let timer = null; window.__lines = [];
+    const next = () => { cur = q2.shift() || null; if (!cur) return; const mine = cur; const rec = { text: mine.text, rate: mine.rate, start: performance.now(), end: null }; window.__lines.push(rec); if (mine.onstart) mine.onstart({}); timer = setTimeout(() => { if (cur !== mine) return; cur = null; rec.end = performance.now(); if (mine.onend) mine.onend({}); if (!cur) next(); }, 300); };
+    Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { get speaking() { return !!cur; }, get pending() { return q2.length > 0; }, cancel() { q2.length = 0; if (timer) clearTimeout(timer); cur = null; }, getVoices() { return []; }, speak(u) { q2.push(u); if (!cur) next(); } } }); });
+  const parts = await page.locator('[data-more-info-words]').evaluateAll((els) => els.length);
+  await page.locator('[data-more-info-speaker]').click();
+  await page.waitForFunction(() => !!document.querySelector('[data-more-info] [data-read-lit]'), null, { timeout: 5000 }).catch(() => {});
+  const first = await page.evaluate(() => { const el = document.querySelector('[data-more-info] [data-read-lit]'); const rows = [...document.querySelectorAll('[data-more-info-words]')]; return el ? { row: rows.findIndex((r) => r.contains(el)), bg: getComputedStyle(el).backgroundColor } : null; });
+  ok('More Info read aloud lights the sentence being read, starting in the first row, in the light green', !!first && first.row === 0 && first.bg === 'rgb(170, 216, 197)', first);
+  await page.waitForFunction(() => { const el = document.querySelector('[data-more-info] [data-read-lit]'); const rows = [...document.querySelectorAll('[data-more-info-words]')]; return !!el && rows.findIndex((r) => r.contains(el)) >= 1; }, null, { timeout: 8000 }).catch(() => {});
+  const moved = await page.evaluate(() => { const el = document.querySelector('[data-more-info] [data-read-lit]'); const rows = [...document.querySelectorAll('[data-more-info-words]')]; return el ? rows.findIndex((r) => r.contains(el)) : -1; });
+  ok('the light moves on to the next description as the voice does', moved >= 1, moved);
+  await page.waitForFunction(() => window.__lines.length > 0 && window.__lines.every((l) => l.end !== null) && !document.querySelector('[data-more-info] [data-read-lit]'), null, { timeout: 30000 }).catch(() => {});
+  const lines = await page.evaluate(() => window.__lines);
+  const gaps = lines.slice(1).map((l, k) => Math.round(l.start - lines[k].end));
+  const pauses = gaps.filter((g) => g >= 900).length; const quick = gaps.filter((g) => g < 900);
+  ok(`a pause of about a second sits between one description and the next, and none inside one (${parts} descriptions)`, parts >= 3 && pauses === parts - 1 && quick.every((g) => g < 300), gaps);
+  const base = [0.6, 0.9, 0.86, 0.1];
+  // Exactly 0.85 of the voice's own pace: the story read before this put its snail back when it closed (the second read).
+  ok('an early learner hears More Info a little slower: every line at 0.85 of its pace, with no story pace left over', lines.length >= parts && lines.every((l) => base.some((b) => Math.abs(l.rate - b * 0.85) < 0.002)), lines.map((l) => l.rate));
+  await page.getByRole('button', { name: 'Got it', exact: true }).first().click(); await page.waitForTimeout(300); }
 
 ok('no page errors along the way', errors.length === 0, errors);
 await browser.close();

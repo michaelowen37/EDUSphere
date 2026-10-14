@@ -200,6 +200,14 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A sample built by hand to look like a real screen drifts: the LI tour sample missed the Merge link and the Wonder pill and was laid out differently, and Mikey saw all three at a glance. Feed made-up data through the real component instead, with taps switched off, and the sample can never differ from the page.
 - Count a daily allowance against the day as it started, not as it stands: finishing the first review shrinks the queue, and a rule that rechecked the live queue would cancel the second review the backlog asked for.
 
+## Learned in pass MI (Mikey's answers Q30 to Q38 and his notes: a word said once, the place kept, the space shooter until the last ship, More Info read aloud)
+
+- A test's stand-in must behave like the real thing where the bug lives: the test page's voice never reported speaking, so a retry that said a short word twice ("Blue, blue") passed every test for weeks. A browser test of speech uses a voice that reports speaking and pending and ends fast.
+- The claude.ai preview on a laptop is a frame as tall as the page: window.scrollY is always 0 inside it. A place kept on a page is kept by what showed (visibleBand), in the page's own coordinates, by its bottom when the frame's top showed, and checked in such a frame twice and after a refresh.
+- A game's closure and an interval see the state of the render that started them; anything they write back reads a ref of the latest (a best score was lost five seconds after it was set, older than the pass).
+- A rule that keeps a game fair is played by the rules test, not only asserted: a careful player, a child's taps anywhere across a chip and tapped twice, a slow device three frames a step, and an idle player found three ways a ship was lost to a chip the child never aimed at.
+- A portrait drawn flat from a 3D sheet names what the sheet is for and writes out the age it shows; a stand-in is looked at beside the others, since four faces drawn alike can swap their ages.
+
 ## Learned in pass MH (a reason for every wrong answer, four Wonder voices for the youngest, a long story at each celebration, the lit sentence, bigger question pictures)
 
 - Feedback that only says wrong is the weakest kind (Shute, 2008): a wrong choice's reason, said against the answer and in the lesson's own words, teaches what the choice gets wrong. A reason names a sign only its own choice shows (sad by its tear, since the mad face's mouth turns down too) and only the colors, shapes and letters its lesson names.

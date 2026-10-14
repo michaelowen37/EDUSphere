@@ -40,7 +40,11 @@ ok('the ledger has no rows the app does not use', orphans.length === 0, orphans.
   const named = [...block.matchAll(/'(U\d+)'/g)].map((m) => m[1]);
   const uRows = ledger.split('\n').filter((l) => /^\| U\d+ \|/.test(l));
   const uSerials = uRows.map((l) => l.split(' | ')[0].slice(2));
-  const whole = uRows.every((l) => { const cols = l.split(' | '); return cols.length === 6 && cols[3].includes('Style: Clean 3D vector illustration') && /^text, words, letters/.test(cols[4]) && /\| (?:Needed|Done) \|$/.test(l); });
+  // Since pass MI (Mikey's answer to Q33: "flat is okay.  We can make a prompt for the flat version of the 3D character so it
+  // still matches in a way.") a head-and-shoulders portrait asks for the flat, outlined style, as the same person its 3D
+  // character sheet shows; any other screen picture keeps the house 3D style.
+  const flat = 'Style: Flat vector illustration with clean, even dark outlines';
+  const whole = uRows.every((l) => { const cols = l.split(' | '); const portrait = /head-and-shoulders portrait/.test(cols[3] || ''); return cols.length === 6 && (portrait ? cols[3].includes(flat) && /drawn flat and outlined/.test(cols[3]) && /Character: C\d+\.$/.test(cols[3].trim()) : cols[3].includes('Style: Clean 3D vector illustration')) && /^text, words, letters/.test(cols[4]) && /\| (?:Needed|Done) \|$/.test(l); });
   ok('every shelf picture the screens name has a ledger row with its prompt, and the ledger has no U row the app does not use', named.length >= 1 && named.every((u) => uSerials.includes(u)) && uSerials.every((u) => named.includes(u)) && whole, `named ${named.join(',')} rows ${uSerials.join(',')}`);
 }
 // Lesson paintings keep one style (pass MF, Mikey's answer to Q8, "your choice"): a P row shows a real thing a lesson line

@@ -49,9 +49,9 @@ A finished course (pass ME; every course since pass MF): Result → (the lesson'
 - Green = progress and correct; gold = mastered; clay = needs practice. Never red for a child's mistake.
 - The fraction bar (parts shaded of a whole) is the one signature visual: lessons, questions, explanations, and progress all use it.
 - Words on a gold fill take onGold, a dark ink in both themes, since white on the light theme's gold reads 3.24 to 1 (pass MF, Celebrate!). The drawings on the round taps (the gold arrow, book and practice star, and the green arrow) are graphics, which need 3 to 1: white reaches 3.24 on the light theme's gold and 7.5 on its green, but only 2.25 on the dark theme's gold and 2.06 on its green, so since pass MG (Mikey, Q23: "change") they take C.onAccent, white in the light theme and dark ink in the dark (7.93 and 8.67 to 1).
-- With motion off, the dark theme's colorful strips (Let's Color, Let's Read, Let's Play) show the whole rainbow at once, still, since frozen mid-drift they showed only the gold end (pass MG). With motion off the dark theme also keeps the soft green ring, still, around what a young learner can tap (the breathing course groups, the shelf's books, the coloring and game tiles), whose resting frame has none, and hides the strips' sparkles, which would sit as still white dots. Moving or still, and at every width, the dark theme draws the Let's Wonder! title from its own mint to the gold, since the light theme's deep green read 2.66 to 1 on the dark page, and from 700 pixels it sets back the title's text clip, which a wide screen's backing behind loose words wiped (pass MG). The light theme keeps its look until Mikey answers Q27, except that a resting lesson coloring page now rests in both themes, as its sibling tiles always did.
+- With motion off, the dark theme's colorful strips (Let's Color, Let's Read, Let's Play) show the whole rainbow at once, still, since frozen mid-drift they showed only the gold end (pass MG). With motion off the dark theme also keeps the soft green ring, still, around what a young learner can tap (the breathing course groups, the shelf's books, the coloring and game tiles), whose resting frame has none, and hides the strips' sparkles, which would sit as still white dots. Moving or still, and at every width, the dark theme draws the Let's Wonder! title from its own mint to the gold, since the light theme's deep green read 2.66 to 1 on the dark page, and from 700 pixels it sets back the title's text clip, which a wide screen's backing behind loose words wiped (pass MG). The light theme kept its look until Mikey answered Q27 (pass MH: it matches the dark theme in all five), except that a resting lesson coloring page now rests in both themes, as its sibling tiles always did.
 - The paper under every drawing in the dark theme (questions, the result's pictures, lessons, games, coloring) is a very light green, #D9E6DC, since white and then almond were harsh against the dark page (pass MH, Mikey: "maybe a very light green to match the theme ... Keep this concept in mind across all features in the app."); a single picture sits on paper sized to it, not a strip as wide as the card.
-- The read-along's light (pass MH): the sentence being read, hugging its words, the space after it outside the light; in the dark theme the light green #AAD8C5 under the ink #16201B, in the light theme its gold tint (Q32 asks).
+- The read-along's light (pass MH): the sentence being read, hugging its words, the space after it outside the light; in the dark theme the light green #AAD8C5 under the ink #16201B, and since Mikey's answer to Q32 (pass MI) the same light green in the light theme.
 - Since pass MH the light theme matches the dark with motion off (Q27: the whole rainbow with a lighter purple under the strips' words, the ring kept still, the sparkles hidden, the Let's Wonder! title from green to the deeper gold #A67A26 and shown from 700 pixels), and its speaker drawing takes #A67A26 (Q29), both at Mikey's word.
 - Planned: dark theme toggle (educator default dark, learner default light); Lexend or Atkinson Hyperlegible when a font can be bundled.
 
@@ -92,7 +92,7 @@ meeting the idea for the first time, and is rendered through one small markup:
 - On a question screen the question comes first, then the statement it is about, both centered, and every
   choice is centered in its button.
 - Since pass MH the statement (the setup line) comes first and the question under it, the order the voice reads them and
-  Quick fire shows them (CLAUDE.md, Setup lines, again). Q30 asks Mikey whether it stays; the line above is the order before
+  Quick fire shows them (CLAUDE.md, Setup lines, again). Mikey kept it there (Q30, pass MI); the line above is the order before
   pass MH. Pre-K 3's situation questions are one sentence now, and the rest will be merged where that reads better, as each grade is reviewed (EARMARKS L11).
 - A wrong answer is followed by one sentence about the answer the student chose, when the choices are named
   kinds (appeals, flaws, ironies).
@@ -100,3 +100,11 @@ meeting the idea for the first time, and is rendered through one small markup:
 Model lessons in this style: multi-step equations, rhetorical appeals, claims and reasons, the main idea.
 Older lessons are being brought up to this standard as they are touched; any lesson edited from now on
 must be written this way.
+
+## Pass MI (Mikey's notes)
+
+- More Info read aloud: the sentence being read is lit in the light green, as a story's is; a pause between explanations (0.7 seconds, 1 second for an early learner) and, for an early learner, a voice a little slower (0.85).
+- The lit sentence is the light green (#AAD8C5, words #16201B) in both themes since Q32.
+- A lesson that needs a touch screen, tapped on a laptop, says so in a pop-up that names it, on the overview, with Got it.
+- Quiet words on a game's paper in the dark theme take paperMuted, a deep green gray (#3A4A40), never the light palette's olive gray.
+- The space shooter's board shows the hits, then a small ship for each of the three left, the wave in the middle and the rule on the right; its end card names the hits, the wave reached and the best ("A new best!" when this game set it), and its tile shows the best as hits.

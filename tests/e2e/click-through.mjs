@@ -318,7 +318,7 @@ t = await text();
 ok('opening a stage reveals its questions', t.includes('If you cut a cookie') && t.includes('Awaiting review'));
 await page.getByRole('button', { name: /If you cut a cookie/ }).click();
 t = await text();
-ok('a question opens over the page rather than pushing it down', t.includes('The four voices:') && t.includes('Closing question'));
+ok('a question opens over the page rather than pushing it down', t.includes('For the readers:') && t.includes('Closing question'));
 const voiceButtons = await Promise.all(['Frederick', 'Chloe', 'Georgette', 'Mike'].map((n) => page.getByRole('button', { name: new RegExp(`^${n}$`) }).count()));
 ok('the four voices are listed by name, each a button, label and words hidden until asked for', voiceButtons.every((c) => c === 1) && !t.includes('A scientist') && !(await page.getByText('The Scientist', { exact: true }).isVisible()) && !(await page.getByText('The amount of cookie is exactly the same').isVisible().catch(() => false)));
 await page.getByRole('button', { name: /^Frederick$/ }).click();
@@ -333,7 +333,7 @@ await page.getByRole('button', { name: /a big group of tiny ants/ }).click();
 t = await text();
 // Four short voices since pass MH (Mikey: all four voices for pre-readers), each listed for the educator by name.
 { const ants = (await import('../../src/logic.mjs')).WONDER.find((x) => x.id === 'w-ants-elephant');
-  ok('a young children\'s question shows the four spoken voices in the review', t.includes('What the youngest children hear') && ants.simple.length === 4 && ants.simple.every((v) => t.includes(v.says)) && t.includes('these four short voices')); }
+  ok('a young children\'s question shows the four spoken voices in the review', t.includes('Early Learners') && t.includes('Children who cannot read yet hear the wonder questions instead. They select an answer, also spoken, then hear four differing perspectives which will hopefully broaden their own.') && ants.simple.length === 4 && ants.simple.every((v) => t.includes(v.says))); }
 await page.getByRole('button', { name: 'Approve', exact: true }).click();
 await page.waitForTimeout(300);
 ok('approving two leaves two fewer waiting', (await text()).includes(`${WONDER_COUNT - 2} to review`));

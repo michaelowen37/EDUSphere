@@ -3,7 +3,7 @@
 // Question review (2026-10-02, pass IB, Mikey: "review all questions and answers throughout to ensure everything
 // makes sense when read by a human"). In plain terms: this prints every practice question the way a student meets it
 // on the practice screen, in that order (since pass MH the setup line first, then the question, then the choices, then
-// the explanation shown after answering; Q30 asks Mikey whether the setup line stays above), so a person can read a whole
+// the explanation shown after answering; and Mikey kept the setup line above in Q30, pass MI), so a person can read a whole
 // grade like a book and catch anything that reads
 // badly. Computed banks make thousands of versions of the same question, so the sheet shows a few of each pattern and
 // the wording checks below read every version.

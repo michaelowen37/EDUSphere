@@ -1843,6 +1843,96 @@ export const RULE_DECKS = {
   'acid-base': { a: { label: 'Acids', items: ['lemon', 'vinegar', 'soda', 'tomato', 'coffee', 'orange', 'lime', 'grapefruit'] }, b: { label: 'Bases', items: ['soap', 'bleach', 'ammonia', 'antacid', 'lye', 'egg white', 'seawater', 'toothpaste'] } },
 };
 export function ruleDeck(id) { return RULE_DECKS[id] || null; }
+// The space shooter's rules (pass MI, Mikey: "let's make the objects being shot speed up gradually and keep going, even past the
+// 10 rounds it's set to now.  I want them to basically go until failure.  That said, we probably shouldn't have a correct object
+// immediately over an incorrect one because you have to wait for the incorrect one to pass then quickly tap to catch the right
+// one with only a tiny amount of space to do it.  It can be slightly to the side though.  Then the high score would say how far
+// they were able to get before failing."). In plain terms: chips keep coming for as long as the ship lasts, each one falling a
+// little faster and arriving a little sooner than the one before, with no ceiling, so even the steadiest hand meets a speed it
+// cannot keep up with. The player has three ships, drawn small at the top (SHIP_SHIELDS): one goes when a chip that fits the
+// rule gets past, and one when a shot hits a chip that does not. The game ends when the last one goes, and the
+// score is how many fitting chips were hit, with a wave for every five. A new chip never starts in line with a chip of the other
+// kind still on its way down: the two sit side by side with a gap between them ("It can be slightly to the side though"), so a
+// shot anywhere on either never meets the other. Nor does a chip that does not fit start in line with a shot still flying, or
+// with where the ship is or is gliding to, so a second quick tap's shot, or one aimed at a chip already hit, never meets a wrong
+// chip that came after it (the rules test's player lost every game that way, and the game check's player with a child's spread
+// of taps and second taps lost ships to chips that overlapped the one aimed at or came after, until these were added).
+// Before pass MI a round was twenty chips, ten that fit, and ended there.
+export const SHIP_SHIELDS = 3;
+export const SHIP_WAVE = 5;                                                                   // fitting chips hit a wave
+// Board units a frame (a sixtieth of a second): quicker by 0.006 a chip up to 0.6, then by 0.002 a chip with no ceiling, so even
+// the steadiest hand meets a speed it cannot keep up with ("go until failure").
+export function shipSpeed(spawned) { return spawned <= 73 ? 0.16 + 0.006 * spawned : 0.598 + 0.002 * (spawned - 73); }
+export function shipGap(spawned) { return Math.max(30, 70 - 1.2 * spawned); }             // frames from one chip to the next
+export function shipWave(hits) { return 1 + Math.floor(hits / SHIP_WAVE); }
+export function shipChipHalf(text) { return Math.max(9, String(text).length * 2.15 + 4) / 2; }   // half a chip's width on the board
+// Whether a chip at x sits wholly beside every chip of the other kind still above the ship's line, with a gap, and, for a chip
+// that does not fit, wholly beside every lane a shot is in or will take (shots flying, the ship, where it is gliding to).
+export function shipLaneClear(x, text, yes, live, shots = []) {
+  const half = shipChipHalf(text);
+  return (live || []).every((it) => it.yes === yes || it.y > 84 || Math.abs(it.x - x) >= half + shipChipHalf(it.text) + 1)
+    && (yes || (shots || []).every((sh) => Math.abs(sh.x - x) >= half + 2));
+}
+// Where the next chip starts: a spot across the board whose lane is clear, or null, and the game waits a moment and tries again.
+export function shipSpawnX(rnd, text, yes, live, shots = []) {
+  for (let k = 0; k < 24; k += 1) { const x = 14 + rnd() * 72; if (shipLaneClear(x, text, yes, live, shots)) return x; }
+  return null;
+}
+// The next chip's words: one that fits the rule about half the time, never the same words twice running.
+export function shipNextChip(rnd, deck, lastText) {
+  const yes = rnd() < 0.5; const all = yes ? deck.a.items : deck.b.items; const fresh = all.filter((t) => t !== lastText);
+  const list = fresh.length ? fresh : all;
+  return { text: list[Math.floor(rnd() * list.length) % list.length], yes };
+}
+// A new game: the ship in the middle, three shields, no chips yet.
+export function newShipGame() {
+  return { ship: 50, target: 50, fire: false, coolAt: 0, live: [], shots: [], bursts: [], spawnAt: 0, t: 0, n: 0, spawned: 0, hits: 0, shields: SHIP_SHIELDS, lastText: null, over: false };
+}
+// One step of the game, dt frames long (a slow device takes longer steps, up to three frames): a chip may start, the ship glides
+// toward where it was asked to go and fires when it gets there, chips fall at the speed each started with, shots rise, and what
+// happened comes back (hit, wrong, past), so the screen can say why a shield went. rnd is the screen's seeded random, and deck
+// the game's rule deck.
+export function shipStep(s, dt, rnd, deck) {
+  const happened = [];
+  if (s.over) return happened;
+  s.t += dt;
+  if (s.t >= s.spawnAt && s.live.length < 3) {
+    const chip = shipNextChip(rnd, deck, s.lastText); const x = shipSpawnX(rnd, chip.text, chip.yes, s.live, [...s.shots, { x: s.target }, { x: s.ship }]);
+    if (x === null) s.spawnAt = s.t + 10;
+    else { s.live.push({ id: s.n++, text: chip.text, yes: chip.yes, x, y: -5, speed: shipSpeed(s.spawned) }); s.lastText = chip.text; s.spawned += 1; s.spawnAt = s.t + shipGap(s.spawned); }
+  }
+  s.ship += Math.max(-2.4 * dt, Math.min(2.4 * dt, s.target - s.ship));
+  if (s.fire && Math.abs(s.target - s.ship) < 1.5 && s.t >= s.coolAt && s.shots.length < 3) { s.shots.push({ id: s.n++, x: s.ship, y: 84 }); s.coolAt = s.t + 12; s.fire = false; }
+  for (const it of s.live) it.y += it.speed * dt;
+  for (const sh of s.shots) sh.y -= 2.6 * dt;
+  for (const sh of s.shots) {
+    const hit = s.live.find((it) => !it.gone && Math.abs(sh.x - it.x) < shipChipHalf(it.text) && Math.abs(sh.y - it.y) < 4.5);
+    if (!hit) continue;
+    sh.gone = true; hit.gone = true; s.bursts.push({ id: s.n++, x: hit.x, y: hit.y, ok: hit.yes, until: s.t + 18 });
+    if (hit.yes) { s.hits += 1; happened.push({ kind: 'hit', text: hit.text }); } else { s.shields -= 1; happened.push({ kind: 'wrong', text: hit.text }); }
+  }
+  for (const it of s.live) if (!it.gone && it.y >= 90) { it.gone = true; if (it.yes) { s.shields -= 1; happened.push({ kind: 'past', text: it.text }); } }
+  s.shots = s.shots.filter((sh) => !sh.gone && sh.y > -4);
+  s.live = s.live.filter((it) => !it.gone);
+  s.bursts = s.bursts.filter((b) => b.until > s.t);
+  if (s.shields <= 0) { s.shields = 0; s.over = true; }
+  return happened;
+}
+// A slow device's long step, cut into steps of one frame or less (the code check, pass MI: at three frames a step a shot and a
+// fast chip could pass each other between two looks), with everything that happened in them.
+export function shipAdvance(s, dt, rnd, deck) {
+  const parts = Math.max(1, Math.ceil(dt)); const happened = [];
+  for (let k = 0; k < parts && !s.over; k += 1) happened.push(...shipStep(s, dt / parts, rnd, deck));
+  return happened;
+}
+// The shooter's end card (pass MI, the second read of the late fixes: a tie with the best said "A new best!"). A game is a new
+// best only when its hits beat every game before it (before is the best when the game began, null when there was none), since
+// the play screen keeps a best only when it is higher; otherwise the card says the best so far, and nothing before a first hit.
+export function shipBestWords(hits, before) {
+  if (hits > 0 && (typeof before !== 'number' || hits > before)) return 'A new best!';
+  if (typeof before === 'number') return `Your best is ${before} ${before === 1 ? 'hit' : 'hits'}.`;
+  return null;
+}
 // Number line jumps (2026-09-23): a frog on a drawn line; each round asks eight small sums and the frog is dragged to
 // the answer's tick. A deck names the line (lo, hi, step, how ticks are labelled) and how a question is made.
 export const JUMP_DECKS = {
@@ -37910,10 +38000,24 @@ export function courseCompletedBy(progress, course, event) {
   if (p.placed || (p.mastered && String(p.masteredAt) < String(event.at))) return false;
   return isCourseCompleted(progress.passedIds, course);
 }
+// A quick check that completes a course (pass MI, Mikey's answer to Q37: "celebrate"): the placed event a passed "I already know
+// this" check appends is the moment the course is completed when it placed the course's last lesson not yet passed, so the
+// reader is celebrated and launched into the long story, as after a round. The reader has shown the lesson (five questions,
+// passed at four, as a round is through grade 5). A lesson passed before, by a round or another placement, completes nothing
+// new, and a subject placement that clears whole grades stays quiet.
+export function courseCompletedByQuickCheck(progress, course, event) {
+  if (!progress || !progress.perModule || !course || !event || event.type !== 'placed' || !event.quickCheck) return false;
+  const ids = event.moduleIds || [];
+  if (ids.length !== 1 || !course.modules.some((m) => m.id === ids[0])) return false;
+  const p = progress.perModule[ids[0]];
+  if (!p || !p.placed || p.firstPassedAt || p.mastered) return false;
+  return isCourseCompleted(progress.passedIds, course);
+}
 // Which celebration a round earns (pass MH): 'mastered' when its star was the course's last (courseFinishedBy), 'complete' when
 // its pass was the course's last first pass, otherwise none. On another day, then, a course celebrates twice: once when every
-// lesson is passed and once when every lesson has its star.
+// lesson is passed and once when every lesson has its star. Since pass MI a quick check's placed event can earn 'complete' too.
 export function courseCelebrationStage(progress, course, event) {
+  if (event && event.type === 'placed') return courseCompletedByQuickCheck(progress, course, event) ? 'complete' : null;
   if (courseFinishedBy(progress, course, event)) return 'mastered';
   if (courseCompletedBy(progress, course, event)) return 'complete';
   return null;

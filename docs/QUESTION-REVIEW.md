@@ -6,7 +6,7 @@ Mikey asked (October 2, 2026, after pass IA) for a review of every question and 
 
 The practice screen shows a question in this order: the module title, the question in bold, its setup line under it, any picture, the choices, and after answering, the explanation. So a question must make sense when read first. It points at its setup with this (What is wrong with this argument?), never that; it is a whole question, never a fragment (The model?); and its explanation is a sentence that teaches, never a label or a repeat of the answer. Quick fire shows the setup above the question, and this reads well there too.
 
-Since pass MH the setup line sits above the question on the practice screen too, the order the voice reads them and Quick fire shows them (CLAUDE.md, Setup lines, again; Q30 asks Mikey whether it stays). A question still makes sense on its own and points at its setup with this, and a setup and question that read better as one sentence are merged as each grade is reviewed (EARMARKS L11).
+Since pass MH the setup line sits above the question on the practice screen too, the order the voice reads them and Quick fire shows them (CLAUDE.md, Setup lines, again; Mikey kept it there in Q30, pass MI). A question still makes sense on its own and points at its setup with this, and a setup and question that read better as one sentence are merged as each grade is reviewed (EARMARKS L11).
 
 ## The tools
 

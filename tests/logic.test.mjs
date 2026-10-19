@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 // Tests for src/logic.mjs.  Run:  node tests/logic.test.mjs
 // Any model (or person) can read PASS/FAIL lines below without knowing React.
 import * as L from '../src/logic.mjs';
-import { briefNews, recentNews } from '../tools/whats-new.mjs'; // What's new short notes and history (pass HL)
+import { briefNews, recentNews, newestNews } from '../tools/whats-new.mjs'; // What's new short notes and history (pass HL)
 
 let pass = 0, fail = 0;
 // The choice token a shown shape picture would have (pass MB): Circle and Square's same-shape kind must offer another look.
@@ -263,8 +263,10 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     // One more and one fewer (pass ME, earmark E12 part two): the count in the words plus or minus one, re-derived with the test's
     // own number words; the picture shows the count before the change, and a wrong group is never the answer's count.
     { const NW = { one: 1, two: 2, three: 3, four: 4, five: 5 }; const dc = (c) => Number((String(c).match(/^dots:(\d+)$/) || [])[1]);
-      const n0 = NW[((q.story || '').match(/^Here (?:is|are) (\w+) dots?\./) || [])[1]];
-      if (/^p3-(add-one|take-one|more-or-fewer-now|one-more-group|one-fewer-group)$/.test(genId) && ((n0 === 1 && !/^Here is one dot\./.test(q.story)) || (n0 > 1 && !/^Here are /.test(q.story)))) problems.push('here is or here are wrong');
+      // Since pass MJ the two group kinds ask in one sentence (than these three dots), so their count is read from the question.
+      const n0 = NW[((q.story || '').match(/^Here (?:is|are) (\w+) dots?\./) || (q.prompt || '').match(/than (?:this|these) (\w+) dots?\.$/) || [])[1]];
+      if (/^p3-(one-more-group|one-fewer-group)$/.test(genId) && (q.story || !((n0 === 1 && /than this one dot\.$/.test(q.prompt)) || (n0 > 1 && /than these \w+ dots\.$/.test(q.prompt))))) problems.push('this or these wrong');
+      if (/^p3-(add-one|take-one|more-or-fewer-now)$/.test(genId) && ((n0 === 1 && !/^Here is one dot\./.test(q.story)) || (n0 > 1 && !/^Here are /.test(q.story)))) problems.push('here is or here are wrong');
       const omOthers = (q.choices || []).filter((c) => c !== q.answer);
       if (genId === 'p3-add-one' && (!n0 || !/One more dot comes\.$/.test(q.story) || dc(q.answer) !== n0 + 1 || q.visual.count !== n0 || omOthers.length !== 1 || omOthers.some((c) => dc(c) === n0 + 1) || q.explainVisual.count !== n0 + 1)) problems.push('add one wrong');
       if (genId === 'p3-take-one' && (!n0 || !/One dot goes away\.$/.test(q.story) || dc(q.answer) !== n0 - 1 || q.visual.count !== n0 || omOthers.length !== 1 || omOthers.some((c) => dc(c) === n0 - 1) || q.explainVisual.count !== n0 - 1)) problems.push('take one wrong');
@@ -1148,6 +1150,35 @@ ok(`every pre-K 3 choice question says why each wrong choice does not fit, with 
     ok('a size the question already said with its kin (Tap the biggest one: the big one) is not news', !!big[0] && L.whyNotNamesAnswer(big[0], big[1]) === false); }
   { const kind = (() => { for (let sd = 1; sd < 60; sd++) { const k = L.generateQuestion('p3-help-kind', sd); const w = k.choices.find((c) => c !== k.answer); if (!L.whyNotNamesAnswer(k, w)) return [k, w]; } return [null, null]; })();
     ok('a reason that leaves the answer unsaid is heard, then the invitation to try again', !!kind[0] && L.preReaderWrongWords(kind[0], kind[1]) === `${L.whyNotSentence(kind[0].whyNot[kind[1]])} Have another try.`); }
+  // A reason that names another wrong picture still open is held back too (pass MJ, the lesson check: "The rabbit looks just like
+  // the other rabbit, so those two go together." ruled out the other rabbit and left only the answer; "Block rhymes with rock" the
+  // same). Read here without the logic's helper: every read-aloud course's choice kinds, 120 seeds each, every first wrong tap in a
+  // question of three or more choices, and the words heard must name no other open wrong picture the question did not name.
+  // Since pass MK an open twin of the tapped picture counts as named, whatever the words (the lesson check: "This one is just like
+  // one of the others, so those two are the same." ruled out the twin in Which One Is Different? and left only the answer).
+  { const said = (t) => ' ' + String(t).toLowerCase().replace(/[^a-z0-9]+/g, ' ') + ' ';
+    const nameOf = (c) => { const m = String(c).split('#')[0].match(/^(?:pic|icon):(.+)$/); return m ? m[1].replace(/-/g, ' ').toLowerCase() : null; };
+    const gens = [...new Set(L.COURSES.filter((c) => c.readAloud).flatMap((c) => c.modules.flatMap((m) => m.generators || [])))];
+    const leaks = []; let read = 0;
+    for (const g of gens) for (let sd = 1; sd <= 120; sd++) {
+      let q; try { q = L.generateQuestion(g, sd); } catch (e) { continue; }
+      if (!q || q.type !== 'choice' || !q.whyNot || (q.choices || []).length < 3) continue;
+      for (const w of q.choices.filter((c) => c !== q.answer)) {
+        const heard = said(L.preReaderWrongWords(q, w, [w])); read += 1; const asked = said((q.story || '') + ' ' + (q.prompt || ''));
+        for (const o of q.choices.filter((c) => c !== q.answer && c !== w)) { const n = nameOf(o); if (n && n !== nameOf(q.answer) && heard.includes(' ' + n + ' ') && !asked.includes(' ' + n + ' ')) leaks.push(`${g}#${sd} ${w}: ${n}`);
+          if (String(o).split(/[#~]/)[0] === String(w).split(/[#~]/)[0] && heard !== said('Not that one. Have another try.')) leaks.push(`${g}#${sd} ${w}: its twin, still open`); }
+      }
+    }
+    ok('a pre-reader never hears a reason that names another wrong picture still open (the rabbit and its twin, block and rock)', read > 500 && leaks.length === 0, `${read} taps; ${leaks.slice(0, 5).join('; ')}`);
+    const twin = L.generateQuestion('pm-different-animals', 1); const rabbit = twin.choices.find((c) => c !== twin.answer);
+    const askThis = (shown) => L.askedNames({ type: 'choice', prompt: 'Tap the one that is the same as this rabbit.', choices: ['pic:rabbit', 'pic:fox'], answer: 'pic:rabbit', visual: { kind: 'pic', name: shown } });
+    ok('a name said as this <name> labels the question\'s own picture only when the picture shows it; with a fox shown, rabbit is asked', askThis('rabbit').length === 0 && askThis('fox').join() === 'rabbit');
+    { const odd = L.generateQuestion('p3-odd-color', 3); const twins = odd.choices.filter((c) => c !== odd.answer);
+      ok('in Which One Is Different? a tap on one of the two alike pictures hears the plain invitation while its twin is open, and the reason once both are tapped', twins.length === 2 && twins[0].split('#')[0] === twins[1].split('#')[0] && L.preReaderWrongWords(odd, twins[0], [twins[0]]) === 'Not that one. Have another try.' && L.whyNotNamesOpenWrong(odd, twins[0], [odd.answer, twins[1]]) === true && L.preReaderWrongWords(odd, twins[1], twins) === `${L.whyNotSentence(odd.whyNot[twins[1]])} Have another try.`); }
+    // A look after ~ makes a twin too (the second read): two triangles that differ only by their look, beside a square.
+    { const looks = { type: 'choice', prompt: 'Tap the one that is different.', choices: ['shape:triangle~thin', 'shape:triangle~turned', 'shape:square'], answer: 'shape:square', whyNot: { 'shape:triangle~thin': { name: 'This one', why: 'is a triangle, just like the other one.' }, 'shape:triangle~turned': { name: 'This one', why: 'is a triangle, just like the other one.' } } };
+      ok('two triangles that differ only by their look are twins: a tap on one hears the plain invitation while the other is open', L.preReaderWrongWords(looks, 'shape:triangle~thin', ['shape:triangle~thin']) === 'Not that one. Have another try.' && L.preReaderWrongWords(looks, 'shape:triangle~turned', ['shape:triangle~thin', 'shape:triangle~turned']).startsWith('This one is a triangle')); }
+    ok('so after tapping one of the two alike animals the child hears the plain invitation, and the reason waits in More Info', twin.choices.length === 3 && L.preReaderWrongWords(twin, rabbit, [rabbit]) === 'Not that one. Have another try.' && L.whyNotNamesOpenWrong(twin, rabbit, twin.choices.filter((c) => c !== rabbit)) === true); }
   { const named = (answer, picked, why) => L.whyNotNamesAnswer({ type: 'choice', choices: [answer, picked], answer, prompt: 'Tap one.', whyNot: { [picked]: { name: 'That one', why } } }, picked);
     ok('the answer is named by a number word, a size word or a plural just as by its own word, and a word both choices share names nothing',
       named('dots:4', 'dots:3', 'is fewer than four dots.') && named('shape:circle:big', 'shape:circle:small', 'is smaller than the bigger one.') && named('item:square-blue', 'item:circle-blue', 'is round, and these are squares.')
@@ -1608,7 +1639,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
     ok('the Science Experiment Ideas page keeps its safety line: balloons and small things can choke, and an inch or two of water can drown (pass MB)', /data-experiments-safety[^>]*>[^<]*balloons can choke[^<]*inch or two of water/.test(uiSrc));
     const choke = /\b(coins?|pennies|penny|buttons?|corks?|pebbles?|marbles?|beads?|raisins?|grapes?|popcorn|peanuts?|nuts?|balloons?|small toys?)\b/i;
     const sized = /\b(?:small|smaller|little|tiny|mini)\s+(?:\w+\s+)?(?:blocks?|cubes?|toys?|balls?|rocks?|stones?|shapes?|pieces?|cars?|animals?)\b/i;   // small things must say they are too big to swallow (pass MF, the second read)
-    const bad = L.experimentsFor('PK3').filter((e) => { const t = [e.title, e.ask, e.do, e.see, e.tell].filter(Boolean).join(' '); return choke.test(t) || (sized.test(t) && !/too big to swallow|nothing small enough to swallow/i.test(t)); }).map((e) => e.title);
+    const bad = L.experimentsFor('PK3').filter((e) => { const t = [e.title, e.ask, e.do, e.see, e.tell].filter(Boolean).join(' '); return choke.test(t) || (sized.test(t) && !(/too big to swallow|nothing small enough to swallow/i.test(t) && /toilet-paper tube/i.test(t))); }).map((e) => e.title);
     ok('no pre-K 3 experiment uses something a three-year-old can choke on (pass MB; AAP, CPSC)', L.experimentsFor('PK3').length >= 20 && bad.length === 0, bad.join(', ')); }
   // Red against green, every pre-K 3 kind (pass MB, the alignment read's second read): where only the color tells a wrong choice
   // from the answer, the two are never red and green, the most common color vision deficiency (MedlinePlus). Every pre-K 3
@@ -2221,6 +2252,17 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
     const sp = Array.from({ length: 400 }, (_, k) => L.shipSpeed(k)); const gp = Array.from({ length: 400 }, (_, k) => L.shipGap(k));
     ok('each chip falls a little faster than the one before, with no ceiling, and comes a little sooner, down to half a second', sp[0] === 0.16 && sp.every((v, k) => k === 0 || v > sp[k - 1]) && Math.abs(sp[73] - 0.598) < 1e-9 && sp[399] > 1.2 && gp[0] === 70 && gp.every((v, k) => k === 0 || v <= gp[k - 1]) && gp[399] === 30);
     ok('a wave for every five fitting chips hit, and three shields', L.shipWave(0) === 1 && L.shipWave(4) === 1 && L.shipWave(5) === 2 && L.shipWave(23) === 5 && L.SHIP_SHIELDS === 3);
+    // Mikey's answer to Q39 (pass MK, "both"): an older student starts further up the ramp, five chips a grade above grade 2 up to
+    // twenty from grade 6, so a grade 6 student's first chip falls in about six seconds where grade 2's takes about ten.
+    const fall = (start) => { const g = L.newShipGame(start); const r = seeded(5); let f = 0; while (!g.live.length && f < 100) { L.shipStep(g, 1, r, L.ruleDeck('even-odd')); f += 1; } return g.live.length ? 95 / g.live[0].speed / 60 : null; };
+    ok('older students start the shooter faster: none before grade 3, five chips a grade, twenty from grade 6, and grade 6\'s first chip falls in about six seconds where grade 2\'s takes about ten',
+      ['PK3', 'K', '1', '2', '3', '4', '5', '6', '9', 'C', 'Z', null].map(L.shipStartFor).join() === '0,0,0,0,5,10,15,20,20,20,0,0' && Math.abs(fall(0) - 9.9) < 0.2 && Math.abs(fall(L.shipStartFor('6')) - 5.7) < 0.3,
+      [fall(0), fall(L.shipStartFor('6'))].join(' and '));
+    ok('the play list and the shooter go by the same grade, the oldest of the student\'s courses', L.topGrade([{ grade: 'K' }, { grade: '6' }, { grade: '2' }]) === '6' && L.topGrade([]) === 'PK3');
+    // A lost ship comes back on every tenth fitting chip hit, never past three (a chip and a shot set up to meet in one step).
+    const backAt = (hits, shields) => { const g = L.newShipGame(); g.hits = hits; g.shields = shields; g.live = [{ id: 1, text: '4', yes: true, x: 50, y: 60, speed: 0 }]; g.shots = [{ id: 2, x: 50, y: 61 }]; g.spawnAt = 1e9; const h = L.shipStep(g, 1, seeded(3), L.ruleDeck('even-odd')); return [g.hits, g.shields, h.map((x) => x.kind).join('+')].join(' '); };
+    ok('a lost ship comes back on every tenth fitting chip hit, and a player with all three keeps three', backAt(9, 2) === '10 3 hit+back' && backAt(19, 1) === '20 2 hit+back' && backAt(9, 3) === '10 3 hit' && backAt(10, 2) === '11 2 hit' && L.SHIP_BACK_EVERY === 10,
+      [backAt(9, 2), backAt(19, 1), backAt(9, 3), backAt(10, 2)].join(' | '));
     // The end card names a new best only when the game beats the best before it (the second read: a tie said "A new best!").
     const bw = [[5, null], [0, null], [7, 7], [8, 7], [3, 7], [1, 1], [0, 4]].map(([h, b]) => L.shipBestWords(h, b));
     ok('the space shooter names a new best only when it beats the best before the game, never on a tie', bw.join('|') === 'A new best!||Your best is 7 hits.|A new best!|Your best is 7 hits.|Your best is 1 hit.|Your best is 4 hits.', bw.join('|'));
@@ -2228,8 +2270,10 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
     const short = []; const endless = []; const early = []; const idleWrong = []; let blocked = 0; let slower = 0;
     for (const rule of decks) { const deck = L.ruleDeck(rule);
       for (let seed = 1; seed <= 24; seed++) {
+        // 120,000 frames, since pass MK's ship back every ten hits makes this tireless player's games about a seventh longer (about
+        // 65,000 frames at the most, where 60,000 held them before); a child's game ends far sooner.
         const rnd = seeded(seed * 97 + 1); const s = L.newShipGame(); let frames = 0;
-        while (!s.over && frames < 60000) {
+        while (!s.over && frames < 120000) {
           const target = s.live.filter((it) => it.yes && it.y < 80 && it.y > 2).sort((a, b) => b.y - a.y)[0];
           if (target) { s.target = target.x; s.fire = true; }
           const happened = L.shipStep(s, 1, rnd, deck); frames += 1;
@@ -2248,6 +2292,13 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
     ok('a careful player never hits a wrong chip in the first 150, since no wrong chip starts in line with a fitting one or a flying shot', early.length === 0, early.join(', '));
     ok('a chip that starts later is never slower than one before it', slower === 0, slower);
     ok('with nobody playing, the game ends when three fitting chips have got past, and no wrong chip is ever counted', idleWrong.length === 0, idleWrong.join(', '));
+    // Started where grade 6 starts (Q39), the careful player still meets no wrong chip in its first 150 and passes a hundred hits.
+    const g6 = [];
+    for (const rule of decks) { const deck = L.ruleDeck(rule);
+      for (let seed = 1; seed <= 8; seed++) { const rnd = seeded(seed * 71 + 3); const s = L.newShipGame(L.shipStartFor('6')); let frames = 0; let wrong = 0;
+        while (!s.over && s.hits < 100 && frames < 60000) { const tg = s.live.filter((it) => it.yes && it.y < 80 && it.y > 2).sort((a, b) => b.y - a.y)[0]; if (tg) { s.target = tg.x; s.fire = true; } if (L.shipStep(s, 1, rnd, deck).some((h) => h.kind === 'wrong') && s.spawned <= 170) wrong += 1; frames += 1; }
+        if (s.hits < 100 || wrong) g6.push(`${rule}#${seed}:${s.hits}${wrong ? ' wrong' : ''}`); } }
+    ok('started where grade 6 starts, the careful player meets no wrong chip in its first 150 and passes a hundred hits', g6.length === 0, g6.join(', '));
     // A child's play (the game check, pass MI): a tap lands anywhere across the chip aimed at, a second quick tap fires again,
     // and a slow device moves the game three frames a step. None of it may cost a ship to a chip that does not fit, in the first
     // 150 chips; a shot that hits nothing just flies off.
@@ -2359,6 +2410,13 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
     { let bad = 0; for (let sd = 1; sd <= 3000; sd++) { const k = L.generateQuestion('p3-tap-picture', sd); if (k.answer === 'icon:cloud' && k.choices.includes('icon:rain')) bad++; }
       ok('the rain picture, a cloud with drops, is never a wrong answer to Tap the cloud', bad === 0, bad); }
     ok('in a sign word the asked letter is sometimes first, sometimes not, for A and for B, and no word sounds like a letter', at.A.size >= 2 && at.B.size >= 2 && at.A.has(0) && at.B.has(0) && ![...said].some((w) => NAME_SOUNDS.includes(w)) && said.size >= 12, JSON.stringify({ A: [...at.A], B: [...at.B], said: [...said] })); }
+  // A Head Start progression is quoted or its parts named, never retold as what it means for three-year-olds (pass MK, the lesson
+  // check: the last such paraphrases, "which for three-year-olds means", were Listen and Point's, and one dropped the second half
+  // of P-LC 1). It reads that one wording; other retellings are the lesson brief's to find. Seven Very First Steps citations still
+  // name their progressions' parts, cite a goal whole, or retell part of one, without quoting it (Find the Match, Match the Animals,
+  // One and Two, More and Fewer, One More and One Fewer, Three Dots, Please and Thank You; EARMARKS E12).
+  { const said = L.MODULES.flatMap((m) => (m.sources || []).map((s) => [m.id, s])).filter(([, s]) => /Head Start/.test(s) && /for (?:three|four|five)-year-olds,? (?:it |which )?(?:means|begins)\b/.test(s));
+    ok('no Head Start citation retells a progression as what it means for three-year-olds (a paraphrase)', said.length === 0, said.map(([id]) => id).join(', ')); }
   // Let's Play as a child sees it (pass MC, from Mikey's answer on the day-one game: "I think that's a good setup as long as the
   // rest of the courses unlock a new game."). playList is the list the screen draws. For every course, enrolled alone and with
   // its whole grade, as the young learner or older student who takes it: every game the course owns is on the list once its map
@@ -2665,6 +2723,10 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
     ok("a short note never cuts a price or an abbreviation", briefNews('Prices like $4.95 and the U.S. economy stay whole.') === 'Prices like $4.95 and the U.S. economy stay whole.');
     const doc = '## October 1, 2026 (newer)\n\n- New one: detail.\n\n## September 30, 2026 (older)\n\n- Old one.\n'; const h = recentNews(doc, 6);
     ok('the More Details history lists the newest update first, with its title and full notes', h.length === 2 && h[0].date === 'October 1, 2026' && h[0].title === 'newer' && h[0].items[0] === 'New one: detail.');
+    // The pop-up shows each note cut at its first sentence, so a note whose first period sits inside a quotation would leave the
+    // quote open on screen (pass MK, the final read: `the voice now says "Not that one.`). Every short note closes what it opens.
+    { const news = newestNews(readFileSync(new URL('../docs/WHATS-NEW.md', import.meta.url), 'utf8')); const open = news.brief.filter((b) => (b.match(/"/g) || []).length % 2 === 1 || (b.match(/\u201C/g) || []).length !== (b.match(/\u201D/g) || []).length);
+      ok("every short note in the newest What's new block closes the quotation marks it opens", news.brief.length >= 2 && open.length === 0, open.join(' | ')); }
   }
   { // Read the Label (pass HM): six comparisons, two for each nutrient, the asked-for difference at least its gap, and the answer the better label.
     const gap = { sodium: 80, 'added sugars': 3, fiber: 2 };

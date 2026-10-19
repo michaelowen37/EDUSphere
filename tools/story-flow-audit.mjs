@@ -8,19 +8,19 @@ import { COURSES, MODULES } from '../src/logic.mjs';
 
 const gradeOf = (moduleId) => { const c = COURSES.find((k) => k.modules.some((m) => m.id === moduleId)); return c ? c.grade : '?'; };
 const courseGrade = (courseId) => { const c = COURSES.find((k) => k.id === courseId); return c ? c.grade : '?'; };
-import { flowFlags } from './story-flow.mjs';
+import { flowFlags, crossBreakRuns } from './story-flow.mjs';
 
 const rows = [];
 for (const [id, st] of Object.entries(STORIES)) {
   const grade = gradeOf(id); const hits = [];
   st.words.forEach((p, i) => { const f = flowFlags(p, { moral: i === st.words.length - 1 }); if (f.flags.length) hits.push({ i, flags: f.flags, lens: f.lens }); });
-  rows.push({ kind: 'story', id, grade, title: st.title, hits, paragraphs: st.words.length });
+  rows.push({ kind: 'story', id, grade, title: st.title, hits, paragraphs: st.words.length, runs: crossBreakRuns(st.words) });
 }
 // A course's long story, and since pass MH its next one (listed as next long, under the course's id).
 for (const [id, st, kind] of [...Object.entries(COURSE_STORIES).map(([k, v]) => [k, v, 'long']), ...Object.entries(MASTERY_STORIES).map(([k, v]) => [k, v, 'next long'])]) {
   const grade = courseGrade(id); const hits = [];
   st.words.forEach((p, i) => { const f = flowFlags(p, { moral: i === st.words.length - 1 }); if (f.flags.length) hits.push({ i, flags: f.flags, lens: f.lens }); });
-  rows.push({ kind, id, grade, title: st.title, hits, paragraphs: st.words.length });
+  rows.push({ kind, id, grade, title: st.title, hits, paragraphs: st.words.length, runs: crossBreakRuns(st.words) });
 }
 const order = ['PK3', 'PK4', 'K', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', 'college', '?'];
 const gk = (g) => { const i = order.indexOf(String(g)); return i < 0 ? 99 : i; };
@@ -32,4 +32,8 @@ out.push('## By grade', '', '| Grade | Stories | Flagged | Paragraphs flagged |'
 for (const g of order) { const rs = rows.filter((r) => String(r.grade) === g); if (!rs.length) continue; const fl = rs.filter((r) => r.hits.length); out.push(`| ${g} | ${rs.length} | ${fl.length} | ${fl.reduce((n, r) => n + r.hits.length, 0)} |`); }
 out.push('', '## Flagged stories', '', '| Grade | Kind | Story | Paragraph | Why | Sentence lengths |', '|---|---|---|---|---|---|');
 for (const r of flagged) for (const h of r.hits) out.push(`| ${r.grade} | ${r.kind} | ${r.id} | ${h.i + 1} of ${r.paragraphs} | ${h.flags.join(', ')} | ${h.lens.join(', ')} |`);
+// Short runs across a paragraph break in the early years (pass MK): tests/stories.test.mjs holds their number, falling, and pre-K 3 at none.
+const crossed = rows.filter((r) => ['PK3', 'PK4', 'K', '1', '2'].includes(String(r.grade)) && r.runs.length);
+out.push('', '## Short runs across a paragraph break, early years', '', `${crossed.reduce((n, r) => n + r.runs.length, 0)} runs of three or more sentences of six words or fewer cross a paragraph break (the moral left out, a one-word beat skipped). Smooth one by joining a short sentence to its neighbor.`, '', '| Grade | Kind | Story | Paragraphs |', '|---|---|---|---|');
+for (const r of crossed) for (const run of r.runs) out.push(`| ${r.grade} | ${r.kind} | ${r.id} | ${run.map((i) => i + 1).join(' and ')} of ${r.paragraphs} |`);
 console.log(out.join('\n'));

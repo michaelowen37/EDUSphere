@@ -1,6 +1,6 @@
 # Story flow audit
 
-Generated 2026-10-13. 136 of 769 stories have at least one paragraph that reads robotic (choppy: three or more sentences in a row of six words or fewer; monotone: four or more sentences in a row within three words of one length; then, then: two sentences in a row starting with Then). A story's closing moral, a short refrain by design, is exempt from the choppy rule, and single-word sentences (a sound, a shout, a beat) do not count toward it. Pre-K 3 to grade 2 are held at zero by a rule test. Grades 3 and up were read by hand on 2026-09-28 (pass FQ): the flags that remain there are deliberate short sentences, lists, dialogue or step sequences, kept on purpose, so a flag from grade 3 up is a prompt to read, not an order to rewrite.
+Generated 2026-10-18. 136 of 769 stories have at least one paragraph that reads robotic (choppy: three or more sentences in a row of six words or fewer; monotone: four or more sentences in a row within three words of one length; then, then: two sentences in a row starting with Then). A story's closing moral, a short refrain by design, is exempt from the choppy rule, and single-word sentences (a sound, a shout, a beat) do not count toward it. Pre-K 3 to grade 2 are held at zero by a rule test. Grades 3 and up were read by hand on 2026-09-28 (pass FQ): the flags that remain there are deliberate short sentences, lists, dialogue or step sequences, kept on purpose, so a flag from grade 3 up is a prompt to read, not an order to rewrite.
 
 ## By grade
 
@@ -192,3 +192,25 @@ Generated 2026-10-13. 136 of 769 stories have at least one paragraph that reads 
 | C | story | the-big-turns | 2 of 6 | monotone | 5, 7, 6, 8, 11, 7, 11, 8 |
 | C | story | thesis-statements | 1 of 6 | monotone | 9, 11, 8, 9, 9 |
 | C | story | thesis-statements | 3 of 6 | monotone | 20, 5, 4, 7, 6 |
+
+## Short runs across a paragraph break, early years
+
+15 runs of three or more sentences of six words or fewer cross a paragraph break (the moral left out, a one-word beat skipped). Smooth one by joining a short sentence to its neighbor.
+
+| Grade | Kind | Story | Paragraphs |
+|---|---|---|---|
+| PK4 | story | listen-for-rhymes | 1 and 2 of 7 |
+| PK4 | story | match-the-vehicles | 2 and 3 of 8 |
+| PK4 | story | more-big-letters | 2 and 3 of 7 |
+| K | story | my-brain-and-senses | 1 and 2 of 6 |
+| K | story | my-clear-voice | 2 and 3 of 5 |
+| K | story | my-space-and-my-no | 1 and 2 of 7 |
+| K | story | my-space-and-my-no | 2 and 3 of 7 |
+| K | story | remember-it | 1 and 2 of 6 |
+| K | story | syllables | 2 and 3 of 7 |
+| 1 | story | counting-to-120 | 5 and 6 of 8 |
+| 1 | story | hours-and-half-hours | 2 and 3 of 8 |
+| 1 | story | symbols-of-our-country | 1 and 2 of 7 |
+| 1 | story | tracing-more-small-letters | 4 and 5 of 7 |
+| 1 | story | water-changes | 1 and 2 of 7 |
+| 1 | story | water-changes | 5 and 6 of 7 |

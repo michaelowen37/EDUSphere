@@ -76,12 +76,15 @@ ok('every start arrow in the tracing lessons sits on its stroke, curves included
   // long row is clearly longer than the short row, and its dots are never drawn smaller than the short row's, which would make
   // size a cue (the lesson check's second read: 90 apart shrank them on a narrow phone, so they sit 74 apart).
   const longAt = script.findIndex((s) => /Three dots, when spread far apart/.test(s.say));
-  for (let step = 0; step < longAt; step++) { await page.getByRole('button', { name: 'Next', exact: true }).first().click({ force: true }); await page.waitForTimeout(250); }
+  // Steps by the words on the card (pass MJ: a tap 250 ms after the last one was sometimes lost under load, so the check measured
+  // the line before its own and failed now and then): Next until the card says the line, up to twenty taps.
+  const toLine = async (re) => { for (let k = 0; k < 20; k++) { const said = await page.evaluate(() => (document.querySelector('.edu-rise p') || {}).textContent || ''); if (re.test(said)) return true; await page.getByRole('button', { name: 'Next', exact: true }).first().click({ force: true }); await page.waitForTimeout(300); } return false; };
+  await toLine(/Three dots, when spread far apart/);
   await page.waitForTimeout(700);
   const rows = await page.evaluate(() => [...document.querySelectorAll('svg[role="img"]')].filter((s) => /^[35] dots$/.test(s.getAttribute('aria-label') || '')).map((s) => ({ label: s.getAttribute('aria-label'), w: Math.round(s.getBoundingClientRect().width), dot: Math.min(...[...s.querySelectorAll('circle')].map((c) => c.getBoundingClientRect().width)) })));
   const long = rows.find((x) => x.label === '3 dots'); const short = rows.find((x) => x.label === '5 dots');
   ok('on a 360-pixel phone the long row is clearly longer than the short row, and its dots are no smaller than the short row\'s', longAt > 0 && longAt < at && !!long && !!short && long.w >= short.w * 1.25 && long.dot >= short.dot - 0.5, { longAt, long, short });
-  for (let step = longAt; step < at; step++) { await page.getByRole('button', { name: 'Next', exact: true }).first().click({ force: true }); await page.waitForTimeout(250); }
+  await toLine(/Three circles, when drawn big, take up lots of room/);
   await page.waitForTimeout(700);
   const trap = await page.evaluate(() => { const rows = [...document.querySelectorAll('svg[role="img"]')].filter((s) => /^[35] circles$/.test(s.getAttribute('aria-label') || '')); return rows.map((s) => { const r = s.getBoundingClientRect(); const items = [...s.querySelectorAll(':scope > svg')].map((k) => k.getBoundingClientRect()); return { label: s.getAttribute('aria-label'), top: r.top, span: items.length ? items[items.length - 1].right - items[0].left : 0, each: items.length ? items[0].width : 0, n: items.length }; }); });
   const big = trap.find((x) => x.label === '3 circles'); const little = trap.find((x) => x.label === '5 circles');

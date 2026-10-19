@@ -200,6 +200,23 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A sample built by hand to look like a real screen drifts: the LI tour sample missed the Merge link and the Wonder pill and was laid out differently, and Mikey saw all three at a glance. Feed made-up data through the real component instead, with taps switched off, and the sample can never differ from the page.
 - Count a daily allowance against the day as it started, not as it stands: finishing the first review shrinks the queue, and a rule that rechecked the live queue would cancel the second review the backlog asked for.
 
+## Learned in pass MK (Listen and Point read again through every layer)
+
+- A reason for a picture that has a twin rules the twin out too, whatever its words, so it waits while the twin is open.
+- A run of short sentences sounds choppy across a paragraph break as much as inside one, since a listener hears no break.
+- A line that says which words start with a letter shows each of them; one lit letter under the other letter's name is a contradiction a pre-reader sees.
+- A narrator never answers the question a story just asked; the child in the story does.
+- A child named as in another course of the same grade is the same child to a listener, so keeps the same look; red and green tell apart by lightness too.
+- A wrong move shows the sign the instructions promise, even with motion off.
+
+## Learned in pass MJ (Very First Steps read again through every layer)
+
+- A pre-reader hears only the spoken script, so every phrase an explanation or a reason leans on (count past) is said on a script line first, and a yes or no question's idea (is it kind to laugh) is taught before it is asked.
+- A heard reason can give a retry away without naming the answer: naming the other wrong picture still open leaves only the answer.
+- A Head Start goal is read whole, every sentence of its 36 to 48 month progression; a lesson that teaches some of it cites it in part and names what waits.
+- A story's count never ends on the bigger thing having more, even when the thing is named by its food (the cookie bowl was the big bowl).
+- One look per person in every picture row of a story; a page or napkin with marks names its only marks, with a check note.
+
 ## Learned in pass MI (Mikey's answers Q30 to Q38 and his notes: a word said once, the place kept, the space shooter until the last ship, More Info read aloud)
 
 - A test's stand-in must behave like the real thing where the bug lives: the test page's voice never reported speaking, so a retry that said a short word twice ("Blue, blue") passed every test for weeks. A browser test of speech uses a voice that reports speaking and pending and ends fast.

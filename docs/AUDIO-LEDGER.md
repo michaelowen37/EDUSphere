@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-13 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 9127 clips, 1,536,249 characters in all; the longest clip is 520 characters and the longest whole story 3,420, far under Eleven v4's 10,000 a request. 196 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-18 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 9129 clips, 1,536,515 characters in all; the longest clip is 520 characters and the longest whole story 3,420, far under Eleven v4's 10,000 a request. 196 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,7 +17,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 5071 | 583,489 |
+| Pre-K to grade 2 | 5073 | 583,755 |
 | Grades 3 to 5 | 1263 | 278,665 |
 | Grades 6 to 8 | 1138 | 272,478 |
 | Grades 9 to college | 1655 | 401,617 |
@@ -41,7 +41,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 |---|---|
 | story title | 662 |
 | story | 4261 |
-| lesson line | 3233 |
+| lesson line | 3235 |
 | long story title | 105 |
 | long story | 846 |
 | next long story title | 2 |
@@ -420,7 +420,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S3789-6: [proud] Every card was full. Twenty-six big letters and twenty-six small ones, all the way from A to z. Wren walked along the wall and read every one.
 - S3789-7: [slowly, warmly] With s, j and y, you can trace every letter, big and small. Start at the dot and follow the arrow.
 
-### Two buckets (S95, red-and-blue)
+### Red balls, blue balls (S95, red-and-blue)
 
 - S95-1: [cheerful] Mia had a bucket of red balls, red like a strawberry. [playful] Sam had a bucket of blue balls, blue like the sky.
 - S95-2: [excited] They tipped both buckets out on the grass, and the balls rolled together into one jumble.
@@ -467,7 +467,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S3882-1: [softly] Nia was snug in bed with her teddy when the window lit up with a flash.
 - S3882-2: [distant thunder rumbling] Boom! [nervously] The thunder rumbled far away, and Nia's heart beat fast. [quickly] She pulled the blanket over her head.
 - S3882-3: [hushed] Under the blanket it was dark, and the scared feeling grew bigger and bigger. [whispers] Nia did not say a word.
-- S3882-4: [thoughtful] Then Nia remembered what Dad always said. [gently] Feelings have names, like happy, sad, mad or scared. Say its name, and when it is big, call me.
+- S3882-4: [thoughtful] Then Nia remembered what Dad always said. [gently] Feelings have names, like happy, sad, mad or scared. Say your feeling's name, and when it is big, call me.
 - S3882-5: [brave] Nia peeked out and called, Dad, I feel scared! [warmly] Dad came right away and sat on her bed for a hug. It is okay to feel scared, he said.
 - S3882-6: [calm] Let's take a slow breath together, said Dad. [slowly] Pretend to smell a flower. [inhales] Nia breathed in slowly. Now pretend to blow out a birthday candle, said Dad. [exhales] Nia breathed out slowly.
 - S3882-7: [relieved] They did it again, and again. [softly] The storm still rumbled far away, but Nia's heart slowed down, and the scared feeling got smaller.
@@ -475,7 +475,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 ### One ball, two friends (S3886, help-a-friend)
 
-- S3886-1: [cheerful] Owen and Tess both wanted the red ball at recess. [rushed] Owen grabbed one side, and Tess grabbed the other.
+- S3886-1: [cheerful] Owen and Tess both wanted the red ball at playtime. [rushed] Owen grabbed one side, and Tess grabbed the other.
 - S3886-2: [loudly] Mine! said Owen. Mine! said Tess. [straining] They pulled and pulled, and the ball slipped away.
 - S3886-3: [thud] Bump! Tess fell on the grass. [sadly] Her mouth turned down, and a tear rolled down her cheek.
 - S3886-4: [hesitant] Owen wanted to grab the ball and run off. [softly] But then he looked at Tess's face. [concerned] She looked sad, and a little scared.
@@ -492,14 +492,14 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S3890-3: [excited] More! said Zuri. [slowly] She touched each cracker as she counted. One, two, three. [proud] Three crackers, she said, and Dad smiled.
 - S3890-4: [cheerful] Zuri ate one cracker. [a cracker crunching] Crunch! [sadly] Then she looked at her plate, and her mouth turned down. All my crackers are gone, she said.
 - S3890-5: [gently] Are they? said Dad. Let's count them. [slowly] Zuri touched each cracker as she counted again. One, two. [surprised] Two crackers were still there.
-- S3890-6: [warmly] One cracker went away, so there are fewer, said Dad. Fewer is not all gone. [giggles] Zuri giggled and took one away. [a cracker crunching] Crunch!
-- S3890-7: [playful] Now how many? asked Dad. [slowly] Zuri counted. One. [softly] One cracker was left, and she saved it for later.
+- S3890-6: [warmly] One cracker went away, so there are fewer, said Dad, but fewer is not all gone. [giggles] Zuri giggled and took one away. [a cracker crunching] Crunch!
+- S3890-7: [playful] Now how many? asked Dad. [slowly] Zuri touched the last cracker as she counted, one. [softly] Just one cracker was left, and she saved it for later.
 - S3890-8: [slowly, warmly] One more makes more, and one taken away makes fewer. Count to find how many now.
 
 ### The rhyme walk (S3894, rhymes-with-pictures)
 
 - S3894-1: [cheerful] After lunch, Otto and Grandma walked along a path by a low stone wall. [playful] Let's play the rhyme game, said Grandma. I say a word, and you say one that rhymes.
-- S3894-2: [excited] Ball! said Grandma. Otto thought hard. [delighted] Cat! he said, because he loved cats. [laughs] Grandma laughed. [gently] Ball and cat do not sound the same at the end, she said.
+- S3894-2: [excited] Ball! said Grandma. [thoughtfully] Otto thought hard. [delighted] Cat! he said, because he loved cats. [laughing gently] Grandma laughed. Ball and cat do not sound the same at the end, she said.
 - S3894-3: [slowly] Listen to the end of the word, said Grandma. Ball. [curious] Otto listened, and then he grinned. [excited] Wall! he said, and patted the stone wall.
 - S3894-4: [warmly] Grandma smiled. Ball, wall, she said. They sound the same at the end, so they rhyme. [playful] Let's find more!
 - S3894-5: [cheerful] Dog! said Grandma, as a dog on a leash trotted by. [slowly] Otto listened to the end. Dog. [excited] Log! he said, and pointed at a log beside the path.
@@ -628,7 +628,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 - S140-1: [curious] By the door there were two pairs of shoes, one big pair and one little pair. Lena looked at both.
 - S140-2: [playful] She tried a big one first. Her foot went in, and in, and in. [giggles] It swam inside!
-- S140-3: She tried to walk. [a heavy shoe clomping] Clomp, wobble, [laughs] and the big shoe fell off.
+- S140-3: [carefully] She tried to walk. [a heavy shoe clomping] Clomp, wobble, [laughs] and the big shoe fell off.
 - S140-4: [curious] She tried a little one, and her foot went in and stopped. [pleased] Just right.
 - S140-5: [happy] The big shoes were Dad's, and the little shoes were hers.
 - S140-6: [warm] Dad put on the big shoes and Lena put on the little shoes, and they went out together.
@@ -640,7 +640,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S143-2: [excited] She put the ball at the top. [delighted] Whee! [rushed] It rolled down fast, all the way.
 - S143-3: [slowly] She put the block at the top, and it just sat there. [pause] [puzzled] It did not move.
 - S143-4: [determined] When she gave it a push, [surprised] it tipped over, and then it stopped. [sighs] No rolling.
-- S143-5: [thoughtful] Ana ran her finger around the ball, round and round, and found no corners at all. [delighted] Like a circle! she said. Next she counted the corners on one flat side of the block. [proud] One, two, three, four, like a square!
+- S143-5: [thoughtful] Ana ran her finger around the ball, round and round, and found no corners at all. [delighted] Like a circle! she said. Next she counted the corners on one flat side of the block. [slowly, proudly] One, two, three, four, like a square!
 - S143-6: [thoughtful] The round ball rolled, and the block with corners did not. [playful] Ana rolled her ball again, and then she got her big beach ball from the toy box. It was much bigger, [delighted] but it was round too, so it rolled. [laughs] Whee!
 - S143-7: [slowly, warmly] A circle is round. A square has four corners and four sides the same length.
 
@@ -650,9 +650,9 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S146-2: [curious] Kai looked all around the yard for things that start with B.
 - S146-3: [warmly] On the back step sat his teddy bear, and Kai gave it a big hug. [proud] Bear starts with B! he called.
 - S146-4: [rushed] He ran inside with Grandma and found his book, and his little boat from the bath. [delighted] Book starts with B, and so does boat! he told her.
-- S146-5: [pleased] Then Kai found a big red apple in the fruit bowl. [proudly] He held it up high. [loudly] Apple starts with B! he said.
-- S146-6: [gently] Grandma smiled. [slowly] Listen closely, she said, apple, apple. [warmly] Apple starts with A, and A has two slanted sides that meet at the top, with a bar across.
-- S146-7: [laughs] So the B hunt became an A hunt too. [curious] Under the big oak tree, Kai spotted a little acorn on the ground and pointed at it. [delighted] Acorn starts with A! he said.
+- S146-5: [proudly] Then Kai found a big red apple in the fruit bowl. He held it up high. [loudly] Apple starts with B! he said.
+- S146-6: [gently] Listen closely, said Grandma with a smile. [slowly] Apple, apple. [warmly] Apple starts with A, and A has two slanted sides meeting at the top, with a bar across.
+- S146-7: [laughs] So the B hunt became an A hunt too. [curious] Back in the yard, Kai spotted a little acorn under the big oak tree and pointed at it. [delighted] Acorn starts with A! he said.
 - S146-8: [slowly, warmly] A and B are letters. Apple starts with A, and ball starts with B. Once you know them, you will find them everywhere.
 
 ### The apple puzzle (S149, not-the-same)
@@ -662,7 +662,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S149-3: [excited] That one! said Mia, and she pointed at the green apple. Different! [warmly] Dad nodded and smiled.
 - S149-4: [playful] Then Dad made it harder. He took the green apple away and put down a new red one. [mysterious] Now all four were red.
 - S149-5: [slowly] Mia looked, and looked. [puzzled] Same color, same shine, same round shape. [whispers] Were they all the same, every one?
-- S149-6: [gasps] No! [delighted] One apple was small, much smaller than the other three. [warmly] Different can be size, too, said Dad.
+- S149-6: [gasps] No! said Mia. [delighted] That one is small, much smaller than the other three! [warmly] Different can be size, too, said Dad.
 - S149-7: [playful] Then Dad put the green apple back, and Mia sorted them by color. [proud] All the red apples went in one bowl, even the small one. [pleased] The green apple got a bowl all its own.
 - S149-8: [slowly, warmly] Different means not alike. When we sort by color, things that are the same color go together.
 
@@ -673,7 +673,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S152-3: [excited] Sun! He tapped the sun, bright and yellow on its card. [proud] Leo was very good at this game.
 - S152-4: [playful] Then his sister said, cloud. [puzzled] Leo looked at the cards, a fish, a cup and a sun. [surprised] Not one card had a cloud!
 - S152-5: [rushed] Leo looked under the cards and behind them, too. [sighs] No cloud card anywhere. [puzzled] How could he tap a cloud?
-- S152-6: [laughs] His sister laughed and pointed up. [curious] Leo stepped off the porch and looked up. [amazed] There it was, a real cloud, white and puffy, floating in the blue sky.
+- S152-6: [laughs] His sister laughed and pointed up, [curious] so Leo stepped off the porch and looked up. [amazed] There it was, a real cloud, white and puffy, floating in the blue sky.
 - S152-7: [delighted] Leo pointed up at it. Cloud! he said. [thoughtful] He had found the real thing, not just a picture on a card.
 - S152-8: [excited] After that they played with the whole world. Bird! Leo pointed at a bird in the tree. [playful] Flower! He found one by the steps.
 - S152-9: [slowly, warmly] Many words name things. Listen to the word, then find its picture or the real thing.
@@ -682,8 +682,8 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 - S155-1: [calm] Rosa sat on a hay bale beside her mom at the farm and closed her eyes. [a duck quacking] Quack! [curious] Who said that?
 - S155-2: [excited] She opened her eyes, and there was a duck on the pond. [playful] Quack, it said again. [delighted] The duck!
-- S155-3: [softly] She closed her eyes once more. [playful] Ribbit! [curious] Who said that? [pleased] She looked, and a green frog sat on a log by the pond.
-- S155-4: [a bee buzzing] Buzz! [whispers] That one was close. [hushed] A fat bee had landed on a flower by her feet. Rosa sat very still, then slowly moved her feet away.
+- S155-3: [softly] She closed her eyes once more and listened. [playful] Ribbit! [curious] Who said that? [pleased] She looked, and a green frog sat on a log by the pond.
+- S155-4: [a bee buzzing] Buzz! [whispers] That one was close. A fat bee had landed on a flower by her feet. [slowly] Rosa sat very still, then slowly moved her feet away.
 - S155-5: [surprised] Soon two sounds came at once, [a duck quacking and a cat meowing at once] quack and meow, all mixed up together. [slowly] Rosa listened closely.
 - S155-6: [thoughtful] Quack came from the pond, so that was the duck. [delighted] Meow came from the fence post, and there sat a cat.
 - S155-7: [laughs] Rosa laughed. [proud] She did not even need her eyes, because her ears could tell her who was there.

@@ -1,6 +1,7 @@
 // The Wise Human. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
-// The art ledger as a spreadsheet for Leonardo sessions (2026-09-23, Mikey): one row per serial in ledger order with the serial,
-// where it goes, the scene, the prompt to paste, the character sheets to attach, the bans and the status.
+// The art ledger as a spreadsheet for Leonardo sessions (2026-09-23, Mikey): one row per serial with the serial, where it goes,
+// the scene, the prompt to paste, the character sheets to attach, the bans and the status. Since pass MK the rows come in the
+// order Mikey paints them, with the model, the settings and each character reference's name (generationOrder, below).
 //
 // Since pass MC the prompt is ready for Nano Banana 2, the model Mikey paints with in Leonardo. That model has no negative prompt
 // (Leonardo's page for it lists none), so the ledger's negative prompt would never reach it. Mikey: "Yeah, let's fold into the
@@ -20,6 +21,7 @@
 // since its folded prompt would ask for the writing and forbid it at once. docs/ART-REQUESTS.md keeps both columns as they are.
 // Run: node tools/prompts-csv.mjs > docs/LEONARDO-PROMPTS.csv
 import { readFileSync } from 'node:fs';
+import { MODULES, getCourse, GRADES, gradeLabel, MAPS } from '../src/logic.mjs';
 
 // The bans the ledger uses, grouped, each group with the sentence that says it.
 const WRITING = ['text', 'words', 'letters', 'labels', 'numbers', 'logos', 'watermark', 'signature'];
@@ -170,15 +172,80 @@ export function replanSerials(earmarks) {
   return new Set([...earmarks.slice(at, end < 0 ? undefined : end).matchAll(/\b(?:CS|S|P|D)\d+\b/g)].map((m) => m[0]));
 }
 
-// The spreadsheet as text, the header and one line per ledger row (the ledger test compares the file with it).
+// Generation day (Mikey, pass MK, October 18, 2026, for after the standards review): "I think we can create a \"character
+// reference\" image and reuse that image for all future images pertaining to that particular character ... You can give each
+// version of Mike a serial number like Mike - 1, Mike - 2, Mike -3 and Mike-4 ... If a scene has multiple core characters, label
+// it with all appropriate reference images that would be needed.", "Let's group all of the core characters in a way that allows
+// me to generate all images for one particular character before moving to the next character so I can keep my focus and not
+// jump back and forth between characters.  Then, we can order the rest by grade so I can start at prek and work up." and "Can
+// you identify the specific model in our spreadsheet of prompts for each image too?" In plain terms: the spreadsheet lists the
+// pictures in the order he paints them, says which model and settings each takes, and names each character reference by its
+// person and number. docs/LEONARDO-BRIEF.md (Generation day) has the whole plan.
+//
+// The cast in the order their pictures come, and each character sheet's reference name: one reference for each chapter of
+// docs/CHARACTERS.md's clock the person appears in, numbered in age order. The numbers of references still to be made are kept
+// for them (the brief lists them: Mike - 2, 3 and 5, Chloe - 3 and 5, Frederick - 2 and 5, Georgette - 2 and 4, Savanah - 1
+// and 4), so a name never changes once given.
+export const CAST_ORDER = ['Mike', 'Chloe', 'Frederick', 'Georgette', 'Savanah', 'Jaxon', 'Harlow'];
+export const REFERENCE_NAMES = { C1: 'Mike - 1', C2: 'Mike - 4', C12: 'Chloe - 1', C3: 'Chloe - 2', C4: 'Chloe - 4', C13: 'Frederick - 1', C5: 'Frederick - 3', C6: 'Frederick - 4', C14: 'Georgette - 1', C11: 'Georgette - 3', C7: 'Savanah - 2', C8: 'Savanah - 3', C9: 'Jaxon - 1', C10: 'Harlow - 1' };
+export const personOf = (sheet) => (REFERENCE_NAMES[sheet] ? REFERENCE_NAMES[sheet].split(' - ')[0] : null);
+export const referenceLabel = (sheet) => (REFERENCE_NAMES[sheet] ? `${REFERENCE_NAMES[sheet]} (${sheet})` : sheet);
+// The model every picture is made with (Mikey: "After I created the text above, I saw that there is now a Nano Banana 2.1 so
+// that is the one I would use over Nano Banana 2"), one model for the whole set as the brief's rule 2 keeps it, and the settings
+// by kind of picture in the app's own words, from Mikey's screenshots of Nano Banana 2.1's panel (pass MK): Image Dimensions
+// 16:9, 1:1, 9:16 or Custom (so 4:3 and 3:2 are Custom; the story pages show every painting at 4:3, cropped to fill), at Small
+// 1024, Medium 2048 or Large 4096; Style, which starts on Dynamic, set to None; Prompt Enhance, which starts on Auto, set to
+// Off ("Prompts will not be modified"); Number of generations, one to four, five to eight on a paid plan; Private Mode On, a paid
+// plan's switch, since with it off Leonardo's help page says "generations will be visible to the public". Leonardo's documentation adds up to
+// six references, each at Low, Mid or High, and ten aspect ratios. A newer model on generation day is one edit here.
+export const MODEL = 'Nano Banana 2.1';
+const RATIOS = [[1, 1], [2, 3], [3, 2], [3, 4], [4, 3], [4, 5], [5, 4], [9, 16], [16, 9], [21, 9]];
+const nearestRatio = (w, h) => RATIOS.reduce((best, r) => (Math.abs(Math.log(r[0] / r[1] / (w / h))) < Math.abs(Math.log(best[0] / best[1] / (w / h))) ? r : best)).join(':');
+const dimsFor = (ratio) => `${['16:9', '1:1', '9:16'].includes(ratio) ? ratio : `Custom ${ratio}`}, Medium`;   // a preset, or Custom
+export function settingsFor(serial, refs = [], box = null) {
+  const base = 'Style None, Prompt Enhance Off, Private Mode On';
+  if (/^C\d/.test(serial)) return `${dimsFor('3:2')}, ${base}, 4 generations; once a person's first reference is approved, it is attached at High to make the others, so the person keeps one face, and the set's first approved reference goes at Mid on every other person's, so all seven share one look`;
+  if (/^U\d/.test(serial)) return `${dimsFor('1:1')}, ${base}, 2 generations; the person's reference at High, and once one portrait passes, that portrait at Mid for the other three, since an approved painting would pull a flat portrait back to 3D`;
+  if (/^(D|L|G)\d/.test(serial)) return `${dimsFor('1:1')}, ${base}, 4 generations`;
+  if (/^M\d/.test(serial)) { const [w, h] = box ? [box[2] - box[0], box[3] - box[1]] : [1, 1]; return `${dimsFor(nearestRatio(w, h))}, ${base}, 2 generations, cropped to the map's own box (${w} by ${h} in MAPS) before its hit areas are traced`; }
+  const look = 'one approved painting at Mid for the look';
+  return refs.length ? `${dimsFor('4:3')}, ${base}, 2 generations; ${refs.length > 1 ? 'the references' : 'the reference'} at High, and ${look}` : `${dimsFor('4:3')}, ${base}, 2 generations; ${look}`;
+}
+// A picture's grade, from where it goes: a lesson or its coloring page (lesson-<module>), a module's story, or a course's long
+// story; null for a Let's Color drawing or letter page, a map, the star and the Wonder portraits.
+export function gradeOfWhere(where) {
+  const id = String(where).replace(/^lesson-/, ''); const m = MODULES.find((x) => x.id === id);
+  const c = m ? getCourse(m.courseId) : getCourse(id); return c ? c.grade : null;
+}
+// The order Mikey paints in: each person's references, then the pictures with that person alone, person by person in
+// CAST_ORDER; then the pictures with two or more of the cast; then everything else by grade from pre-K 3 up; last, what has
+// no grade (the Let's Color drawing and letter pages, the maps, the star). Within a group, by grade and then ledger order.
+export function generationOrder(rows) {
+  const people = (r) => [...new Set(r.refs.map(personOf).filter(Boolean))];
+  const gradeAt = (r) => { const i = GRADES.indexOf(String(r.grade)); return i < 0 ? GRADES.length : i; };
+  const keyed = rows.map((r) => {
+    const self = /^C\d/.test(r.serial) ? personOf(r.serial) : null; const who = people(r);
+    if (self) return { r, g: 2 * CAST_ORDER.indexOf(self), sub: Number(REFERENCE_NAMES[r.serial].split(' - ')[1]), group: `${self}: references` };
+    if (who.length === 1) return { r, g: 2 * CAST_ORDER.indexOf(who[0]) + 1, sub: gradeAt(r), group: who[0] };
+    if (who.length > 1) return { r, g: 2 * CAST_ORDER.length, sub: gradeAt(r), group: 'Two or more of the cast' };
+    return { r, g: 2 * CAST_ORDER.length + (r.grade ? 1 : 2), sub: gradeAt(r), group: r.grade ? gradeLabel(r.grade) : "No grade: Let's Color pages, maps and the star" };
+  });
+  return keyed.sort((a, b) => a.g - b.g || a.sub - b.sub || a.r.at - b.r.at);
+}
+
+// The spreadsheet as text, the header and one line per ledger row in generationOrder (the ledger test compares the file with it).
 export function csvText(ledger, earmarks = '') {
   const cell = (t) => '"' + String(t).replace(/"/g, '""') + '"';
   const replan = replanSerials(earmarks);
-  const out = [['serial', 'where', 'scene', 'prompt for Nano Banana 2 (bans folded in)', 'character sheets to attach', 'bans (already in the prompt)', 'status'].map(cell).join(',')];
-  for (const [serial, where, scene, prompt, negative, status] of ledgerRows(ledger)) {
-    const f = foldPrompt(prompt, negative);
-    out.push([serial, where, scene, f.prompt, f.sheets, negative, replan.has(serial) && status === 'Needed' ? 'Re-plan first (A6)' : status].map(cell).join(','));
-  }
+  const boxOf = (serial) => { const m = Object.values(MAPS).find((x) => x.art === serial); return m ? m.box : null; };
+  const rows = ledgerRows(ledger).map(([serial, where, scene, prompt, negative, status], at) => {
+    const f = foldPrompt(prompt, negative); const refs = (f.sheets || '').split(/[,\s]+/).filter(Boolean);
+    return { serial, where, scene, prompt: f.prompt, negative, refs, at, grade: gradeOfWhere(where), status: replan.has(serial) && status === 'Needed' ? 'Re-plan first (A6)' : status };
+  });
+  const out = [['order', 'group', 'serial', 'reference name', 'where', 'grade', 'scene', 'model', 'settings', 'references to attach', 'prompt (bans folded in)', 'bans (already in the prompt)', 'status'].map(cell).join(',')];
+  generationOrder(rows).forEach(({ r, group }, k) => {
+    out.push([k + 1, group, r.serial, REFERENCE_NAMES[r.serial] || '', r.where, r.grade ? gradeLabel(r.grade) : '', r.scene, MODEL, settingsFor(r.serial, r.refs, boxOf(r.serial)), r.refs.map(referenceLabel).join(', '), r.prompt, r.negative, r.status].map(cell).join(','));
+  });
   return out.join('\n');
 }
 

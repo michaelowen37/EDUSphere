@@ -1757,6 +1757,10 @@ const KID_ANIMATION = () => `
 .edu-note-in { animation: edu-note-in 0.5s ease 1.5s both; }
 .edu-cheer { animation: edu-cheer 0.9s ease-in-out; }
 .edu-wobble { animation: edu-wobble 0.55s ease-in-out; }
+/* A chip on a game board wobbles in the board's own units: the board's SVG reads a px as one of its 100 units (about 3.6 screen
+   px on a phone), so the page's wobble swung a Step on the Circles chip about 30 px, out of its cell (pass MK, the second read). */
+@keyframes edu-wobble-chip { 0%, 100% { transform: translateX(0) rotate(0deg); } 20% { transform: translateX(-1.6px) rotate(-8deg); } 40% { transform: translateX(1.6px) rotate(8deg); } 60% { transform: translateX(-1px) rotate(-4deg); } 80% { transform: translateX(1px) rotate(4deg); } }
+.edu-wobble-chip { animation: edu-wobble-chip 0.55s ease-in-out; }
 .edu-burst { animation: edu-burst 0.9s ease-out forwards; }
 .edu-rise { animation: edu-rise 0.5s ease-out both; }
 /* The Wise Human logo (2026-09-24): the sphere and orbit draw themselves, each word lands on the old logo's settle, and
@@ -2136,7 +2140,7 @@ html[data-theme="dark"] .edu-slide-in { background-image: linear-gradient(90deg,
 @media (prefers-reduced-motion: reduce) {
   .edu-glow, .edu-breathe, .edu-slide-in, .edu-pulse, .edu-zoom-back, .edu-stress, .edu-twinkle-star, .edu-trace-draw, .edu-rainbow, .edu-colorwash, .edu-colorwash-soft, .edu-sparkle, .edu-side path { animation: none; }
   .edu-side path { stroke-dasharray: none; }
-  .edu-halo, .edu-drift, .edu-cheer, .edu-wobble, .edu-burst, .edu-rise, .edu-sway, .edu-star-twinkle, .edu-grow, .edu-draw, .edu-settle, .edu-settle-late, .edu-note-in { animation: none; }
+  .edu-halo, .edu-drift, .edu-cheer, .edu-wobble, .edu-wobble-chip, .edu-burst, .edu-rise, .edu-sway, .edu-star-twinkle, .edu-grow, .edu-draw, .edu-settle, .edu-settle-late, .edu-note-in { animation: none; }
   /* The stars of a right answer fly out and fade, so with motion off none shows (pass LW: a still star sat on the explanation picture). */
   .edu-burst { opacity: 0; }
   .edu-draw { stroke-dasharray: none; }
@@ -3817,13 +3821,16 @@ function Done({ show }) {
 // Join the dots in order. The next dot is gold; a wrong one wobbles; the last line closes the shape.
 function DotsGame({ game, round }) {
   const dots = useMemo(() => DOT_SHAPES[game.shape] || DOT_SHAPES.kite, [game]);
-  const [next, setNext] = useState(0); const [wrong, setWrong] = useState(-1); const svgRef = useRef(null);
-  useEffect(() => { setNext(0); }, [round]);
+  const [next, setNext] = useState(0); const [wrong, setWrong] = useState(-1); const svgRef = useRef(null); const kiteTimer = useRef(null);
+  // A new round or a closed board cancels "A kite!" if it has not been said yet (the second read).
+  useEffect(() => { setNext(0); return () => clearTimeout(kiteTimer.current); }, [round]);
   const done = next >= dots.length;
   const small = 1;   // every picture keeps its dots DOT_GAP apart, so nothing needs to shrink
   // A right tap joins the dot and says its number aloud, in words past ten too (the fish has eleven dots, the rocket twelve);
   // a dot already joined does nothing; any other dot wobbles.
-  const tap = (i) => { if (done || i < next) return; if (i === next) { setNext(next + 1); speak(NUMBER_NAMES[i + 1] || ['eleven', 'twelve'][i - 10] || String(i + 1)); } else { setWrong(i); setTimeout(() => setWrong(-1), 400); } };
+  // The kite (pass MJ, the game check: it finished as a bare diamond, though the instructions promise a picture): once its last
+  // dot joins, the voice says A kite! after the number, and a string with two bows hangs from its bottom dot.
+  const tap = (i) => { if (done || i < next) return; if (i === next) { setNext(next + 1); speak(NUMBER_NAMES[i + 1] || ['eleven', 'twelve'][i - 10] || String(i + 1)); if (game.shape === 'kite' && i === dots.length - 1) kiteTimer.current = setTimeout(() => speak('A kite!'), 900); } else { setWrong(i); setTimeout(() => setWrong(-1), 400); } };
   // A tap on a drawn dot goes to that dot: the gold one joins, a joined one does nothing, any other wobbles. A tap that misses
   // every drawn dot still reaches the gold dot within 9 units (dots sit at least DOT_GAP, 11, apart), or else the nearest dot
   // within 9, so a small finger that lands just beside a dot still reaches it.
@@ -3833,6 +3840,7 @@ function DotsGame({ game, round }) {
     <div className="edu-game-box" style={{ ...GAME_BOX }}>
       <svg ref={svgRef} onPointerDown={tapNear} data-dots-board={game.id} viewBox="0 0 100 100" width="100%" height="100%" style={{ display: 'block' }}>
         <polyline points={drawn.map((d) => d.join(',')).join(' ')} fill="none" stroke={B.green} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+        {done && game.shape === 'kite' && <g data-kite-tail=""><path d={`M${dots[2][0]} ${dots[2][1]} c-6 5 6 9 0 13 c-5 4 4 7 0 10`} fill="none" stroke={B.green} strokeWidth="1.2" strokeLinecap="round" />{[[dots[2][0] + 0.6, dots[2][1] + 7], [dots[2][0] + 0.3, dots[2][1] + 16]].map(([x, y], k) => <path key={k} d={`M${x - 4} ${y - 2.2}L${x} ${y}L${x - 4} ${y + 2.2}ZM${x + 4} ${y - 2.2}L${x} ${y}L${x + 4} ${y + 2.2}Z`} fill={SWATCH.red} stroke="#2E2E2E" strokeWidth="0.4" strokeLinejoin="round" />)}</g>}
         {dots.map(([x, y], i) => (
           <g key={i} style={{ cursor: 'pointer' }} className={wrong === i ? 'edu-wobble' : undefined}>
             <circle cx={x} cy={y} r={(i === next ? 5.2 : 4.2) * small} fill={i < next ? B.green : i === next ? B.gold : '#FFFFFF'} stroke={wrong === i ? B.clay : '#2E2E2E'} strokeWidth={wrong === i ? 1.6 : 0.9} />
@@ -3874,29 +3882,47 @@ function PairsGame({ game, round }) {
   );
 }
 // Sort: drag each shape into the box it belongs to, by size or by color. The boxes wear their rule.
+// Sort by color (pass MJ, the game check): the voice says "the red box" and "the blue box", so each box wears its color as a
+// dashed edge and a light wash, the shapes are drawn at 48 so a small hand can drag them, a shape that lands in its box says its
+// color, and one dropped in the other box wobbles before it slides back. The sort by size keeps its look.
 function SortGame({ game, round }) {
+  const byColour = game.by === 'color';
+  const binColour = (bin) => (byColour ? (bin === 0 ? SWATCH.red : SWATCH.blue) : B.muted);
+  // Opaque washes (the alignment read): a see-through wash over the dark theme's green paper left a sorted shape at 2.7 to 1.
+  const binWash = (bin) => (byColour ? (bin === 0 ? '#FAEAEA' : '#E9EFF7') : 'transparent');
   const items = useMemo(() => {
     const rnd = lcg(round * 104729 + 5); const shapes = ['circle', 'square', 'triangle'];
     const list = [0, 1, 2, 3, 4, 5].map((i) => (game.by === 'size' ? { id: i, bin: i % 2, shape: shapes[i % 3], colour: B.green, big: i % 2 === 0 } : { id: i, bin: i % 2, shape: shapes[i % 3], colour: i % 2 === 0 ? SWATCH.red : SWATCH.blue, big: false }));
     return shuffle(rnd, list).map((it, k) => ({ ...it, x: 18 + (k % 3) * 32, y: 16 + Math.floor(k / 3) * 24 }));
   }, [game, round]);
-  const [placed, setPlaced] = useState({}); const [drag, setDrag] = useState(null); const boxRef = useRef(null);
-  useEffect(() => { setPlaced({}); setDrag(null); }, [round]);
+  const [placed, setPlaced] = useState({}); const [drag, setDrag] = useState(null); const [shake, setShake] = useState(null); const boxRef = useRef(null);
+  // The color game's shapes are 48 across, or about 13 percent of a narrow board, so three sorted shapes stay inside their box (the
+  // second read: on a board under about 300 pixels the third crossed the dashed edge).
+  const [boardW, setBoardW] = useState(0);
+  useEffect(() => { const el = boxRef.current; if (!el || typeof ResizeObserver === 'undefined') return undefined; const ro = new ResizeObserver((entries) => setBoardW(entries[0].contentRect.width)); ro.observe(el); return () => ro.disconnect(); }, []);
+  const colourSize = boardW ? Math.min(48, Math.round(boardW * 0.13)) : 48;
+  useEffect(() => { setPlaced({}); setDrag(null); setShake(null); }, [round]);
   const start = (it, e) => { if (placed[it.id] !== undefined) return; grabPointer(boxRef.current, e); const [x, y] = boxPoint(boxRef.current, e); setDrag({ id: it.id, x, y }); };
   const move = (e) => { if (!drag) return; const [x, y] = boxPoint(boxRef.current, e); setDrag({ ...drag, x, y }); };
-  const drop = () => { if (!drag) return; const it = items.find((i) => i.id === drag.id); const bin = drag.y > 64 ? (drag.x < 50 ? 0 : 1) : -1; if (bin === it.bin) setPlaced({ ...placed, [it.id]: bin }); setDrag(null); };
+  const drop = () => {
+    if (!drag) return; const it = items.find((i) => i.id === drag.id); const bin = drag.y > 64 ? (drag.x < 50 ? 0 : 1) : -1;
+    if (bin === it.bin) { setPlaced({ ...placed, [it.id]: bin }); if (byColour) speak(bin === 0 ? 'Red' : 'Blue'); }
+    else if (bin !== -1) { setShake(it.id); setTimeout(() => setShake((s) => (s === it.id ? null : s)), 600); }
+    setDrag(null);
+  };
   const inBin = (bin) => items.filter((it) => placed[it.id] === bin);
-  const spot = (it) => { const p = placed[it.id]; if (p !== undefined) return [(p === 0 ? 12 : 60) + inBin(p).indexOf(it) * 12, 84]; if (drag && drag.id === it.id) return [drag.x, drag.y]; return [it.x, it.y]; };
+  const spot = (it) => { const p = placed[it.id]; if (p !== undefined) return [(p === 0 ? 12 : 60) + inBin(p).indexOf(it) * (byColour ? 14.5 : 12), 84]; if (drag && drag.id === it.id) return [drag.x, drag.y]; return [it.x, it.y]; };
   return (
     <div ref={boxRef} className="edu-game-box" style={{ ...GAME_BOX }} onPointerMove={move} onPointerUp={drop} onPointerCancel={drop}>
       {[0, 1].map((bin) => (
-        <div key={bin} style={{ position: 'absolute', left: bin === 0 ? '4%' : '52%', top: '66%', width: '44%', height: '30%', border: `3px dashed ${B.muted}`, borderRadius: 14, boxSizing: 'border-box' }}>
-          <span style={{ position: 'absolute', left: 6, top: 4, opacity: 0.55, lineHeight: 0 }}>{game.by === 'size' ? <ShapePic name="circle" size={bin === 0 ? 30 : 16} color={B.muted} /> : <Swatch colour={bin === 0 ? 'red' : 'blue'} size={22} />}</span>
+        <div key={bin} data-sort-bin={byColour ? (bin === 0 ? 'red' : 'blue') : bin} style={{ position: 'absolute', left: bin === 0 ? '4%' : '52%', top: '66%', width: '44%', height: '30%', border: `3px dashed ${binColour(bin)}`, background: binWash(bin), borderRadius: 14, boxSizing: 'border-box' }}>
+          <span style={{ position: 'absolute', left: 6, top: 4, opacity: byColour ? 1 : 0.55, lineHeight: 0 }}>{game.by === 'size' ? <ShapePic name="circle" size={bin === 0 ? 30 : 16} color={B.muted} /> : <Swatch colour={bin === 0 ? 'red' : 'blue'} size={22} />}</span>
         </div>
       ))}
       {items.map((it) => { const [x, y] = spot(it); const stuck = placed[it.id] !== undefined; return (
         <div key={it.id} onPointerDown={(e) => start(it, e)} style={{ position: 'absolute', left: `${x}%`, top: `${y}%`, transform: 'translate(-50%, -50%)', cursor: stuck ? 'default' : 'grab', touchAction: 'none', lineHeight: 0, transition: drag && drag.id === it.id ? 'none' : 'left 0.2s ease, top 0.2s ease' }}>
-          <ShapePic name={it.shape} size={it.big ? 58 : 34} color={it.colour} />
+          {/* A wrong drop wobbles, and wears a clay ring that shows even when motion is off (the second read). */}
+          <span className={shake === it.id ? 'edu-wobble' : undefined} style={{ display: 'inline-block', lineHeight: 0, borderRadius: 999, boxShadow: shake === it.id ? '0 0 0 3px ' + B.clay : 'none' }}><ShapePic name={it.shape} size={it.big ? 58 : byColour ? colourSize : 34} color={it.colour} /></span>
         </div>); })}
       <Done show={items.every((it) => placed[it.id] !== undefined)} />
     </div>
@@ -4412,11 +4438,13 @@ function SvgChip({ text, x, y, tone = null }) {
   // A circle, a square and a diamond have their own drawings; every other shape is a polygon through its corners in CHIP_CORNERS.
   if (m) {
     const col = SWATCH[m[2]] || B.green; const r = 4.2;
-    if (m[1] === 'circle') return <circle cx={x} cy={y} r={r} fill={col} />;
-    if (m[1] === 'square') return <rect x={x - r} y={y - r} width={r * 2} height={r * 2} fill={col} />;
-    if (m[1] === 'diamond') return <rect x={x - r} y={y - r} width={r * 2} height={r * 2} fill={col} transform={`rotate(45 ${x} ${y})`} />;
+    // Every shape wears the word chips' thin dark outline, so a yellow one reads by its edge on a pale cell (pass MK, the game check).
+    const edge = { stroke: '#2E2E2E', strokeWidth: 0.6 };
+    if (m[1] === 'circle') return <circle cx={x} cy={y} r={r} fill={col} {...edge} />;
+    if (m[1] === 'square') return <rect x={x - r} y={y - r} width={r * 2} height={r * 2} fill={col} {...edge} />;
+    if (m[1] === 'diamond') return <rect x={x - r} y={y - r} width={r * 2} height={r * 2} fill={col} transform={`rotate(45 ${x} ${y})`} {...edge} />;
     const corners = CHIP_CORNERS[m[1]] || CHIP_CORNERS.triangle;
-    return <polygon points={corners.map(([dx, dy]) => [x + dx * r, y + dy * r].join(',')).join(' ')} fill={col} />;
+    return <polygon points={corners.map(([dx, dy]) => [x + dx * r, y + dy * r].join(',')).join(' ')} fill={col} strokeLinejoin="round" {...edge} />;
   }
   const w = Math.max(9, text.length * 2.15 + 4);
   return <g><rect x={x - w / 2} y={y - 3.6} width={w} height={7.2} rx={2.4} fill={tone || '#FFFFFF'} stroke="#2E2E2E" strokeWidth="0.6" /><text x={x} y={y} fontSize="3.6" fontWeight="700" fontFamily={FONT} textAnchor="middle" dominantBaseline="central" fill="#2E2E2E">{text}</text></g>;
@@ -4476,7 +4504,7 @@ function CatchGame({ game, round, onScore = null }) {
 // and fires straight up. Hit the chips that fit the rule. On a keyboard the arrows move the ship and the space bar fires.
 // Since pass MI (Mikey: "go until failure") the game runs until its three shields are gone, faster with every chip, and the
 // best is how many fitting chips were hit (shipStep and the rest in logic.mjs hold every rule; this only draws and listens).
-function ShipGame({ game, round, onScore = null, best = null }) {
+function ShipGame({ game, round, onScore = null, best = null, grade = null }) {
   const deck = ruleDeck(game.rule); const boxRef = useRef(null); const st = useRef(null);
   // The best as it stood when this game began, so the end card can tell a new best from a tie (shipBestWords in logic.mjs).
   const startBest = useRef(best);
@@ -4484,15 +4512,18 @@ function ShipGame({ game, round, onScore = null, best = null }) {
   const low = (t) => t.charAt(0).toLowerCase() + t.slice(1);
   useEffect(() => {
     const rnd = lcg(round * 6151 + 29);
-    startBest.current = best; const s = newShipGame(); st.current = s; setDone(null); setNote(null);
+    startBest.current = best; const s = newShipGame(shipStartFor(grade)); st.current = s; setDone(null); setNote(null);
     let raf; let last = null; let noteTimer = null;
-    const say = (words) => { setNote(words); clearTimeout(noteTimer); noteTimer = setTimeout(() => setNote(null), 1600); };
+    // A note on the board for 1.6 seconds: a miss in the miss color, and good news (a ship back) in the board's progress green
+    // (pass MK, the alignment read: the ship-back note was drawn in the miss color).
+    const say = (words, good = false) => { setNote({ words, good }); clearTimeout(noteTimer); noteTimer = setTimeout(() => setNote(null), 1600); };
     const tick = (now) => {
       const dt = last === null ? 1 : Math.min(3, (now - last) / 16.667); last = now;
       for (const h of shipAdvance(s, dt, rnd, deck)) {
         const t = String(h.text); const named = t.charAt(0).toUpperCase() + t.slice(1);
         if (h.kind === 'wrong') say(`${named} is not one of the ${low(deck.a.label)}.`);
         else if (h.kind === 'past') say(`${named} is one of the ${low(deck.a.label)}, and it got past.`);   // the miss teaches (the game check)
+        else if (h.kind === 'back') say('Ten more hits, and a ship came back!', true);   // Mikey's answer to Q39 (pass MK)
       }
       setView({ items: s.live.map((it) => ({ ...it })), shots: s.shots.map((x) => ({ ...x })), bursts: s.bursts.map((b) => ({ ...b })), ship: s.ship, t: s.t, hits: s.hits, shields: s.shields });
       if (s.over) { setDone({ hits: s.hits, wave: shipWave(s.hits) }); if (onScore && s.hits > 0) onScore(s.hits, 'high'); return; }
@@ -4533,7 +4564,7 @@ function ShipGame({ game, round, onScore = null, best = null }) {
         {view.items.map((it) => <SvgChip key={it.id} text={it.text} x={it.x} y={it.y} />)}
         {view.shots.map((sh) => <rect key={sh.id} x={sh.x - 0.6} y={sh.y - 3} width="1.2" height="4" rx="0.6" fill={B.gold} />)}
         {view.bursts.map((b) => <circle key={b.id} cx={b.x} cy={b.y} r="5" fill="none" stroke={b.ok ? '#8FD18A' : '#F2A08A'} strokeWidth="1.2" />)}
-        {note ? <text x="50" y="80" fontSize="3.3" fontFamily={FONT} fontWeight="700" fill="#F2A08A" textAnchor="middle">{note}</text> : null}
+        {note ? <text x="50" y="80" fontSize="3.3" fontFamily={FONT} fontWeight="700" fill={note.good ? '#8FD18A' : '#F2A08A'} textAnchor="middle">{note.words}</text> : null}
         {view.t < 200 && !view.shots.length && view.hits === 0 && !note ? <text x="50" y="80" fontSize="3.3" fontFamily={FONT} fill="#DDE6F0" textAnchor="middle">Tap where you want the ship to fire</text> : null}
         <g><path d={`M${x} 85 L${x + 5} 95 L${x} 93 L${x - 5} 95 Z`} fill={B.gold} stroke="#F2F5F8" strokeWidth="0.6" strokeLinejoin="round" /><circle cx={x} cy="90.5" r="1.3" fill="#1E2A3A" /></g>
       </svg>
@@ -4554,26 +4585,39 @@ function PathGame({ game, round, onScore = null }) {
   const deck = ruleDeck(game.rule); const longest = Math.max(...deck.a.items.concat(deck.b.items).map((t) => (chipIsShape(t) ? 1 : t.length)));
   const n = longest > 6 ? 4 : 5; const cells = useMemo(() => makePath(deck, n, round * 31 + n), [deck, n, round]);
   const [trail, setTrail] = useState([[0, 0]]); const [bad, setBad] = useState(null); const [ticks, setTicks] = useState(0); const boxRef = useRef(null);
+  // The cell the finger was over a moment ago in this press, so a corner is cut only by a finger that came from the dot or a
+  // corner cell beside it (pass MK, the second read: a tap on a circle two steps away moved the dot two cells).
+  const lastCell = useRef(null);
   useEffect(() => { setTrail([[0, 0]]); setBad(null); setTicks(0); }, [round]);
   const [pr, pc] = trail[trail.length - 1]; const done = pr === n - 1 && pc === n - 1;
   useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((k) => k + 1), 1000); return () => clearInterval(t); }, [done]);
   useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
-  useEffect(() => { if (!bad) return undefined; const t = setTimeout(() => setBad(null), 450); return () => clearTimeout(t); }, [bad]);
+  // A wrong step shows for 700 ms: a clay edge on the cell, which shows with motion off too, and a wobble on its chip (pass MK, the
+  // game check: the old pale fill alone, 450 ms, was 1.41 to 1 against the cell, while the instructions promise a step turns red).
+  // The wobble is edu-wobble-chip, sized in board units, so the chip stays inside its cell (the second read).
+  useEffect(() => { if (!bad) return undefined; const t = setTimeout(() => setBad(null), 700); return () => clearTimeout(t); }, [bad]);
+  const isBad = (r, c) => !!bad && bad[0] === r && bad[1] === c;
   const top = 6; const s = (100 - top) / n; const left = (100 - n * s) / 2; const mid = (i) => left + i * s + s / 2; const midY = (i) => top + i * s + s / 2;   // centered across the board (it had hugged the left edge)
   const move = (e) => {
     if (done || !(e.buttons & 1)) return;
     const [x, y] = boxPoint(boxRef.current, e); const c = Math.floor((x - left) / s); const r = Math.floor((y - top) / s);
-    if (r < 0 || c < 0 || r >= n || c >= n || Math.abs(r - pr) + Math.abs(c - pc) !== 1) return;
+    if (r < 0 || c < 0 || r >= n || c >= n) return;
+    const from = lastCell.current; lastCell.current = [r, c];
+    // A finger that cuts a corner reaches a right cell diagonal to the dot; the dot steps through the right cell between them, when
+    // one is, so it is never left behind (pass MK, the game check: after a cut corner every move was ignored, and the finger
+    // reached the star with no Done). Only a finger that came from the dot's cell or a corner cell does; a tap there does nothing.
+    if (Math.abs(r - pr) === 1 && Math.abs(c - pc) === 1) { const via = [[pr, c], [r, pc]].find(([vr, vc]) => cells[vr][vc].yes); const cameFrom = !!from && [[pr, pc], [pr, c], [r, pc]].some(([fr, fc]) => fr === from[0] && fc === from[1]); if (cameFrom && cells[r][c].yes && via) setTrail([...trail, via, [r, c]]); return; }
+    if (Math.abs(r - pr) + Math.abs(c - pc) !== 1) return;
     if (cells[r][c].yes) setTrail([...trail, [r, c]]); else setBad([r, c]);
   };
   const stepped = (r, c) => trail.some(([tr, tc]) => tr === r && tc === c);
   return (
-    <div ref={boxRef} className="edu-game-box" style={{ ...GAME_BOX }} onPointerDown={(e) => { grabPointer(boxRef.current, e); move(e); }} onPointerMove={move}>
+    <div ref={boxRef} className="edu-game-box" style={{ ...GAME_BOX }} onPointerDown={(e) => { lastCell.current = null; grabPointer(boxRef.current, e); move(e); }} onPointerMove={move}>
       <svg viewBox="0 0 100 100" width="100%" height="100%" style={{ display: 'block' }}>
         {cells.map((row, r) => row.map((cell, c) => (
           <g key={`${r}-${c}`}>
-            <rect x={left + c * s + 0.6} y={top + r * s + 0.6} width={s - 1.2} height={s - 1.2} rx="2" fill={bad && bad[0] === r && bad[1] === c ? '#F3C9BC' : stepped(r, c) ? B.greenSoft : '#F6F8F4'} stroke={B.line} strokeWidth="0.5" />
-            {r === n - 1 && c === n - 1 ? <g transform={`translate(${mid(c)} ${midY(r)}) scale(${(s / 24) * 0.7})`}><path d="M0-9.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L0 5.4l-5.9 3.1 1.2-6.5L-9.5-2.6l6.6-.9z" fill={B.gold} stroke="#2E2E2E" strokeWidth="1.4" strokeLinejoin="round" /></g> : <SvgChip text={cell.text} x={mid(c)} y={midY(r)} tone={stepped(r, c) ? B.greenSoft : null} />}
+            <rect x={left + c * s + 0.6} y={top + r * s + 0.6} width={s - 1.2} height={s - 1.2} rx="2" fill={isBad(r, c) ? '#F3C9BC' : stepped(r, c) ? B.greenSoft : '#F6F8F4'} stroke={isBad(r, c) ? B.clay : B.line} strokeWidth={isBad(r, c) ? 1.6 : 0.5} />
+            {r === n - 1 && c === n - 1 ? <g transform={`translate(${mid(c)} ${midY(r)}) scale(${(s / 24) * 0.7})`}><path d="M0-9.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L0 5.4l-5.9 3.1 1.2-6.5L-9.5-2.6l6.6-.9z" fill={B.gold} stroke="#2E2E2E" strokeWidth="1.4" strokeLinejoin="round" /></g> : <g className={isBad(r, c) ? 'edu-wobble-chip' : undefined} style={{ transformBox: 'fill-box', transformOrigin: 'center' }}><SvgChip text={cell.text} x={mid(c)} y={midY(r)} tone={stepped(r, c) ? B.greenSoft : null} /></g>}
           </g>
         )))}
         <polyline points={trail.map(([r, c]) => `${mid(c)},${midY(r)}`).join(' ')} fill="none" stroke={B.green} strokeWidth={s * 0.14} strokeOpacity="0.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -6597,7 +6641,7 @@ function gameInstructions(game) {
   if (game.kind === 'map') return 'A place is named at the top. Tap it on the map. A right tap turns it green and plants a pin; a wrong tap wobbles the place you touched. Find every one, and the clock counts up.';
   if (game.rule && ruleDeck(game.rule)) {
     const { a, b } = ruleDeck(game.rule); const low = (t) => t.charAt(0).toLowerCase() + t.slice(1);
-    if (game.kind === 'ship') return `Tap where you want the ship to go: it glides there and fires straight up. Hit the ${low(a.label)} before they get past. You have ${['no', 'one', 'two', 'three', 'four', 'five'][SHIP_SHIELDS]} ships, shown at the top. You lose one when one of the ${low(a.label)} gets past, or when you hit something that is not one of the ${low(a.label)}. Everything falls a little faster as you go, until your last ship is gone. Every five hits starts a new wave, and your score is how many you hit. On a keyboard, the arrow keys move the ship and the space bar fires.`;
+    if (game.kind === 'ship') return `Tap where you want the ship to go: it glides there and fires straight up. Hit the ${low(a.label)} before they get past. You have ${['no', 'one', 'two', 'three', 'four', 'five'][SHIP_SHIELDS]} ships, shown at the top. You lose one when one of the ${low(a.label)} gets past, or when you hit something that is not one of the ${low(a.label)}. Everything falls a little faster as you go, until your last ship is gone. Every five hits starts a new wave, every ten hits brings back a ship you lost, and your score is how many you hit. On a keyboard, the arrow keys move the ship and the space bar fires.`;
     if (game.kind === 'catch') return `Slide the basket to catch the ${low(a.label)} and let the ${low(b.label)} fall past. A right catch is a point; a wrong one costs a point.`;
     if (game.kind === 'path' && game.young) return `Tap the ${low(a.label)} one at a time to walk the dot from the top corner to the star, or drag it there. A wrong step turns red and the dot stays put.`;
     if (game.kind === 'path') return `Drag the dot from the top corner to the star, stepping only on ${low(a.label)}. A wrong step turns red and the dot stays put.`;
@@ -6632,7 +6676,7 @@ function BeginCover({ onBegin }) {
     </div>
   );
 }
-function GamePad({ game, name, secondsLeft, total, onClose, modules = [], onScore = null, best = null, young = false }) {
+function GamePad({ game, name, secondsLeft, total, onClose, modules = [], onScore = null, best = null, young = false, grade = null }) {
   const [round, setRound] = useState(1);
   const [showHow, setShowHow] = useState(false);
   const Game = GAME_OF[game.kind];
@@ -6652,7 +6696,7 @@ function GamePad({ game, name, secondsLeft, total, onClose, modules = [], onScor
       <div style={{ margin: '8px 0 12px', height: 10, borderRadius: 5, background: C.line, overflow: 'hidden' }}>
         <div style={{ height: '100%', width: `${Math.min(100, Math.max(0, (secondsLeft / total) * 100))}%`, background: `linear-gradient(90deg, ${CRAYONS[0]}, ${CRAYONS[3]}, ${CRAYONS[4]})`, transition: 'width 1s linear' }} />
       </div>
-      {begun ? <Game game={game} name={name} round={round} modules={modules} onScore={onScore} best={best} /> : <BeginCover onBegin={() => setBegun(true)} />}
+      {begun ? <Game game={game} name={name} round={round} modules={modules} onScore={onScore} best={best} grade={grade} /> : <BeginCover onBegin={() => setBegun(true)} />}
       <p style={{ margin: '12px 0 0', textAlign: 'center' }}><button type="button" onClick={() => setShowHow(true)} style={{ background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, textDecoration: 'underline', cursor: 'pointer' }}>Instructions</button></p>
       {/* The youngest can hear the instructions (2026-09-23, Mikey): a speaker under the link, played only when tapped. */}
       {young && <div style={{ display: 'flex', justifyContent: 'center', marginTop: 8 }}><SpeakButton mini text={`${game.title}. ${gameInstructions(game)}`} label="Hear the instructions" /></div>}
@@ -6676,6 +6720,8 @@ const BEST_SECONDS = new Set(['order', 'evidence', 'ptable', 'debug', 'mix', 'bu
 const BEST_WORDS = { ship: ['hit', 'hits'], teach: ['lesson', 'lessons'], search: ['guess', 'guesses'], cite: ['miss', 'misses'], gdp: ['miss', 'misses'], cause: ['miss', 'misses'], mythfact: ['miss', 'misses'] };
 const BEST_NONE = new Set(['loan', 'cpr', 'fund', 'price']);   // dollars (Set the Price's profit; Build the Fund's, which can fall below zero)
 function bestLine(game, kept) {
+  // A young path board shows no clock, so its tile shows no seconds (pass MK, the game check: Step on the Circles' tile read 4s).
+  if (game.kind === 'path' && game.young) return null;
   if (BEST_SECONDS.has(game.kind)) return `${kept.best}s`;
   if (BEST_WORDS[game.kind]) { const [one, many] = BEST_WORDS[game.kind]; return `${kept.best} ${kept.best === 1 ? one : many}`; }
   if (BEST_NONE.has(game.kind)) return null;
@@ -6743,6 +6789,9 @@ function GameThumb({ kind, game = null }) {
   if (game && game.kind === 'build') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="8" width="32" height="10" rx="3" fill="none" stroke={k} strokeWidth="1.5" strokeDasharray="3 2" />{[[4, 12], [18, 9], [29, 7]].map(([x, w], i) => <rect key={i} x={x} y="24" width={w} height="9" rx="2" fill={i === 0 ? B.greenSoft : C.paperBoard} stroke={k} strokeWidth="1.5" />)}</svg>;
   if (game && game.kind === 'fix') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[[4, 9], [15, 11], [28, 8]].map(([x, w], i) => <rect key={i} x={x} y="15" width={w} height="9" rx="2" fill={i === 1 ? B.greenSoft : C.paperBoard} stroke={i === 1 ? B.green : k} strokeWidth="1.5" />)}<path d="M15 28 q2.75 -3 5.5 0 t5.5 0" fill="none" stroke={B.clay} strokeWidth="1.6" strokeLinecap="round" /></svg>;
   if (game && game.kind === 'order') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2].map((r) => <g key={r}><rect x="6" y={6 + r * 11} width="28" height="8" rx="2" fill={r === 0 ? B.greenSoft : C.paperBoard} stroke={k} strokeWidth="1.5" /><text x="11" y={12.5 + r * 11} fontFamily={FONT} fontSize="6" fontWeight="700" fill={B.ink}>{r + 1}</text></g>)}</svg>;
+  // Sort by color (pass MJ, the game check: every sort tile drew the size game's big and small green circles): a red circle and
+  // a blue one of the same size over a red box and a blue box.
+  if (game && game.kind === 'sort' && game.by === 'color') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><circle cx="12" cy="16" r="7" fill={SWATCH.red} /><circle cx="28" cy="16" r="7" fill={SWATCH.blue} /><rect x="3" y="28" width="15" height="8" rx="2" fill="none" stroke={SWATCH.red} strokeWidth="1.6" strokeDasharray="3 2" /><rect x="22" y="28" width="15" height="8" rx="2" fill="none" stroke={SWATCH.blue} strokeWidth="1.6" strokeDasharray="3 2" /></svg>;
   if (game && game.deck) { const label = { fractions: '½', roots: 'port', elements: 'Na', dates: '1776', formulas: 'F=ma', times: '6×7', vocabulary: 'Aa', capitals: 'TX' }[game.deck] || 'Aa'; return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="6" width="14" height="18" rx="2" fill={C.paperBoard} stroke={k} strokeWidth="1.5" /><rect x="22" y="16" width="14" height="18" rx="2" fill={B.greenSoft} stroke={k} strokeWidth="1.5" /><text x="11" y="18" fontFamily={FONT} fontSize={label.length > 3 ? 5 : 8} fontWeight="700" textAnchor="middle" fill={B.ink}>{label}</text></svg>; }
   const body = {
     dots: <g><polyline points="8,32 20,8 32,32 6,17 34,17 8,32" fill="none" stroke={B.green} strokeWidth="2" strokeLinejoin="round" />{[[8, 32], [20, 8], [32, 32], [6, 17], [34, 17]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r="3" fill={i === 0 ? B.gold : C.paperBoard} stroke={k} strokeWidth="1" />)}</g>,
@@ -9771,7 +9820,7 @@ function EduSphereScreens() {
   if (screen === 'coloring' && coloring) {
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap edu-wrap-wide" style={{ ...wrap }}>
-        {coloring.startsWith('play:') ? <GamePad key={coloring} game={GAMES.find((g) => `play:${g.id}` === coloring) || GAMES[0]} modules={visibleModules} best={(colorState[coloring] || {}).best === undefined ? null : colorState[coloring].best} young={youngLearner} onScore={(value, better, extra = null) => {
+        {coloring.startsWith('play:') ? <GamePad key={coloring} game={GAMES.find((g) => `play:${g.id}` === coloring) || GAMES[0]} modules={visibleModules} best={(colorState[coloring] || {}).best === undefined ? null : colorState[coloring].best} young={youngLearner} grade={topGrade(visibleCourses)} onScore={(value, better, extra = null) => {
           // The best score is kept per game on this device; Quick fire also keeps its most right and longest streak (2026-09-23).
           const latest = colorStateNow.current; const cur = latest[coloring] || {}; const isBest = cur.best === undefined || (better === 'high' ? value > cur.best : value < cur.best);
           const next = { ...cur, ...(isBest ? { best: value } : {}) };
@@ -11301,7 +11350,7 @@ function EduSphereScreens() {
         {/* One line for every experiment (pass MB, the careful-parent read of all 116 early-years ideas, read again by the accuracy
             and screen checks): it shows over every grade, so it speaks to every age first and then to the youngest, whom an inch
             or two of water can drown (AAP), and the parts that need a grown-up's hands are named in each idea. */}
-        {!lists && <p data-experiments-safety="" style={{ color: C.muted, margin: '-14px 0 24px', fontSize: 14, textAlign: 'center', lineHeight: 1.5 }}>Read each idea through before you start, and keep a grown-up nearby. Young children do every idea with a grown-up beside them. Small things and balloons can choke a young child, and even an inch or two of water can drown one, so stay within arm's reach of any water and keep hot water in grown-up hands.</p>}
+        {!lists && <p data-experiments-safety="" style={{ color: C.muted, margin: '-14px 0 24px', fontSize: 14, textAlign: 'center', lineHeight: 1.5 }}>Read each idea through before you start, and keep a grown-up nearby. Young children do every idea with a grown-up beside them. Small things (anything that fits inside a toilet-paper tube) and balloons can choke a young child, and even an inch or two of water can drown one, so stay within arm's reach of any water and keep hot water in grown-up hands.</p>}
         {(lists ? [...gradesWithCourses(), 'grown'] : gradesWithCourses().filter((g) => experimentsFor(g).length)).map((g) => {
           const open = openResourceGrades.includes(g);
           const title = g === 'grown' ? 'For parents, educators and advanced readers' : gradeLabel(g);

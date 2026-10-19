@@ -9,6 +9,10 @@ const NUMBER_WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'sev
 const nameOnly = (sentence) => /^[A-Za-z]$/.test(sentence) || NUMBER_WORDS.includes(sentence.toLowerCase()) || /^[A-Za-z]([, ]+[A-Za-z])+$/.test(sentence);
 
 const fragments = []; const mismatches = [];
+// Lines whose start-with words wait for their grade's pass (EARMARKS A27): pre-K 4's Big letters says apple starts with A over
+// the letter A alone, and kindergarten's Letter names says Jam starts with J over JAM with nothing lit. The list may only shrink,
+// and a line fixed comes off it.
+const START_WAITS = ['big-letters 0', 'letter-names 4']; const startWaited = [];
 for (const mod of L.MODULES) {
   for (const line of mod.lesson.script || []) {
     // Natural speech: at least one real sentence of four or more words, unless the line only names letters or counts aloud.
@@ -26,6 +30,16 @@ for (const mod of L.MODULES) {
       if (show.kind === 'faces' && !(Array.isArray(show.feelings) && show.feelings.length >= 2 && show.feelings.length <= 4)) mismatches.push(`${mod.id}: "${line.say}" shows a grid of faces the screen cannot draw`); }
     // A highlight names the part to light ('first' or a spelling): 0 lights nothing (pass MC found A and B's words unlit).
     if (show.kind === 'letters' && show.highlight !== undefined && (typeof show.highlight !== 'string' || !show.highlight)) mismatches.push(`${mod.id}: "${line.say}" lights nothing (highlight ${JSON.stringify(show.highlight)})`);
+    // A line that says which words start with a letter shows each word it names, first letters lit, and each starts with that
+    // letter (pass MK, the lesson check: "Bear, boat and book start with B. Acorn and arrow start with A." showed only Bear, its B
+    // lit while the voice said start with A). Since the second read the list may open a sentence or follow a comma inside one
+    // (", and apple starts with A."), a line with nothing lit fails, and a pronoun (", and it starts with J.") is read for the
+    // lighting alone, since it names no word to find. A line that waits for its grade's pass is in START_WAITS (EARMARKS A27).
+    if (show.kind === 'letters') { const shown = show.text.split(/\s+/).filter(Boolean); const where = `${mod.id} ${(mod.lesson.script || []).indexOf(line)}`; const wrong = [];
+      for (const m of line.say.matchAll(/(?:^|[.!?]\s+|,\s+(?:and\s+)?)([A-Za-z][a-z]+(?:, [a-z]+)*(?: and [a-z]+)?) starts? with ([A-Z])\b/g)) {
+        if (!/^(?:it|this|that|they|these|those)$/i.test(m[1])) for (const w of m[1].toLowerCase().split(/, | and /)) { const hit = shown.find((x) => x.toLowerCase() === w); if (!hit) wrong.push(`${mod.id}: "${line.say}" says ${w} starts with ${m[2]} but shows "${show.text}"`); else if (hit[0].toUpperCase() !== m[2]) wrong.push(`${mod.id}: "${line.say}" shows ${hit}, which does not start with ${m[2]}`); }
+        if (show.highlight !== 'first') wrong.push(`${mod.id}: "${line.say}" lights ${show.highlight || 'nothing'}, not each word's first letter`); }
+      if (wrong.length) { if (START_WAITS.includes(where)) startWaited.push(where); else mismatches.push(...wrong); } }
     // The size trap (pass MF, Mikey's Q6; pass MG, Mikey: "Can we make the big circles even larger for more contrast and
     // impact?"): a pair of two counted rows whose line names big and little draws the big things at least twice as wide as the
     // little ones, and the big row no longer than the little row, so size is the one cue that looks like more (a row's length
@@ -241,6 +255,24 @@ ok('every lesson picture matches the words spoken over it', mismatches.length ==
   // (the code check's second read of the late fixes: the paper's light green let only about 88 percent through).
   const backs = [...ui.matchAll(/<mask id="edu-(?:name|edge)-guard"[\s\S]*?<rect x="-60" y="-60" width="220" height="220" fill=([^ ]+) \/>/g)].map((m) => m[1]);
   ok("the name page's letters are drawn in the paper's color, and both coloring masks let every crayon through whole", ui.includes('fontWeight="700" fill={C.paperBoard} stroke="#2E2E2E" strokeWidth={n.size * 0.055}') && backs.length === 2 && backs.every((b) => b === '"#FFFFFF"'), JSON.stringify(backs)); }
+// What a pre-reader hears after an answer leans only on words the spoken lesson said (pass MJ, the lesson check: every More and
+// Fewer explanation said "because you count past three to get to four", while only a written paragraph, which a pre-reader never
+// hears, said count past). Read here: each read-aloud lesson's questions over 60 seeds, their explanations and More Info reasons,
+// for the counting phrases count past and count on, which the lesson's script must say whenever its questions do.
+{ const PHRASES = ['count past', 'count on'];
+  { const stale = START_WAITS.filter((x) => !startWaited.includes(x));
+    ok('the two start-with lines that wait for their grades (EARMARKS A27) still wait, and come off the list once fixed', stale.length === 0, `fixed ${stale.join('; ')}`); }
+  // Kindergarten's four wait for its sweep (EARMARKS A25); the list may only shrink, and a lesson fixed comes off it.
+  const WAITING = ['comparing-numbers: count past', 'sorting: count past', 'more-and-fewer-10: count past', 'picture-graphs-k: count on'];
+  const missing = [];
+  for (const c of L.COURSES.filter((x) => x.readAloud)) for (const m of c.modules) {
+    let script = ''; try { script = L.readAloudScript(m).map((l) => (typeof l === 'string' ? l : l.say || l.text || '')).join(' ').toLowerCase(); } catch (e) { continue; }
+    const heard = new Set();
+    for (const g of new Set(m.generators || [])) for (let sd = 1; sd <= 60; sd++) { let q; try { q = L.generateQuestion(g, sd); } catch (e) { continue; } if (!q) continue; const words = [q.explain || '', ...Object.values(q.whyNot || {}).map((e) => (L.whyNotSentence ? L.whyNotSentence(e) : ''))].join(' ').toLowerCase(); for (const p of PHRASES) if (words.includes(p)) heard.add(p); }
+    for (const p of heard) if (!script.includes(p)) missing.push(`${m.id}: ${p}`);
+  }
+  const fresh = missing.filter((x) => !WAITING.includes(x)); const stale = WAITING.filter((x) => !missing.includes(x));
+  ok('a counting phrase a pre-reader hears after an answer (count past, count on) is said in that lesson\'s spoken script, but for the four kindergarten lessons that wait (EARMARKS A25)', fresh.length === 0 && stale.length === 0, `new ${fresh.join('; ')} fixed ${stale.join('; ')}`); }
 // Nothing in the app component's body reads a state declared lower down (pass MI, the late fixes: a ref set in the body above
 // moduleId's useState line crashed every story screen, and only where its && reached moduleId, so the smoke test, which draws the
 // first screen, never saw it; question-screens found it). Read here: the body's own lines (two spaces in), a state's first value,
@@ -263,5 +295,11 @@ ok('every lesson picture matches the words spoken over it', mismatches.length ==
     for (const p of parts) for (const id of p.match(/[A-Za-z_$][\w$]*/g) || []) { const at = declared.get(id); if (at !== undefined && at > i) early.add(`${id} (body line ${i}, declared on ${at})`); }
   });
   ok("the app component's body reads no state above the line that declares it", declared.size > 300 && early.size === 0, [...early].slice(0, 6).join('; ')); }
+// A young path board shows no clock, so its tile shows no seconds; every shape chip on a game board wears the word chips' thin
+// dark outline (pass MK, the game check; read from the source since the alignment read, when RULES-AUDIT named a test of them
+// that did not exist).
+{ const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8'); const body = (ui.match(/function bestLine\(game, kept\) \{[\s\S]*?\n\}/) || [''])[0]; const chip = (ui.match(/function SvgChip\([\s\S]*?\n\}/) || [''])[0];
+  ok("a young path game's Let's Play tile shows no seconds", /if \(game\.kind === 'path' && game\.young\) return null;[\s\S]*BEST_SECONDS\.has/.test(body));
+  ok('every shape chip on a game board wears a thin dark outline', /const edge = \{ stroke: '#2E2E2E', strokeWidth: 0\.6 \}/.test(chip) && (chip.match(/\{\.\.\.edge\}/g) || []).length === 4); }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

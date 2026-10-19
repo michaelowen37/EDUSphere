@@ -9,6 +9,20 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## October 18, 2026 (Listen and Point, read again from the start)
+
+- We read Listen and Point, the second course for three-year-olds, again from the start. A few questions now ask in one sentence, like "Tap the one that does not go with these.", and a few story lines read more smoothly.
+- In Which One Is Different?, a child who taps one of the two matching pictures now hears only a plain invitation to try again, since the reason the voice used to give left only the answer. That reason now waits in More Info for the grown-up.
+- In Step on the Circles and the other Step on games, a wrong step now shows a clay-colored edge and a little wobble, and a finger that cuts a corner no longer leaves the dot behind.
+- The Space Shooter now starts a little faster for older students, and every ten hits brings back a ship they lost.
+
+## October 13, 2026 (Very First Steps, read again from the start)
+
+- We read the very first course for three-year-olds again from the start, since so much around it changed. A few questions now ask in one sentence, like "Tap the one that is the same as this rabbit.", and the lessons say every idea before a question asks it.
+- When a child taps a wrong picture, the voice never hints at the answer by naming the other wrong picture. The reason waits in More Info for the grown-up.
+- In the Red and Blue sorting game the boxes are now red and blue, so a child can see which box the voice means, and the finished Kite dot-to-dot has its string and bows.
+- The Science Experiment Ideas for little ones now give a simple test for small things, since anything that fits inside a toilet-paper tube can choke a young child.
+
 ## October 13, 2026 (a word said once, More Info read aloud, a space shooter that runs until the last ship, and a party after a quick check)
 
 - When a child who can't read yet taps an answer, its word is now said once. A small quirk made short words like "blue" repeat.

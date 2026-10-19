@@ -273,5 +273,43 @@ for (const [, cs, id] of LONG_ENTRIES) {
   ok('a tagged early-years long story closes [slowly, warmly]', longTagged.every(([id, s]) => { const c = L.getCourse(id); return !c || !early.has(c.grade) || /^\[slowly, warmly\]/.test(s.audio[s.audio.length - 1]); }));
 }
 
+// The tag floor (pass MJ, the alignment read): no paragraph carries more than four tags; Very First Steps' stories, read at the
+// refined standard, leave no paragraph untagged and close on [slowly, warmly] alone; elsewhere the untagged paragraphs (55) and the
+// early-years morals that are not [slowly, warmly] alone (14) may only fall, as each course is read. Since pass MK both pre-K 3
+// courses are held (Listen and Point's next long story closed on [slowly, warmly] and then [gently]), and the morals are 13.
+{ const UNTAGGED_LIMIT = 55; const MORALS_LIMIT = 13; const EARLY = new Set(['PK3', 'PK4', 'K', '1', '2']);
+  const gradeOf = (id) => { const c = L.COURSES.find((x) => x.id === id || x.modules.some((m) => m.id === id)); return c ? c.grade : null; };
+  const vfs = new Set(['very-first-steps-pk3', 'listen-and-point-pk3'].flatMap((cid) => [`course:${cid}`, `mastery:${cid}`, ...((L.COURSES.find((c) => c.id === cid) || { modules: [] }).modules.map((m) => m.id))]));
+  const all = [...Object.entries(STORIES).map(([id, s]) => [id, s, gradeOf(id)]), ...Object.entries(COURSE_STORIES).map(([id, s]) => [`course:${id}`, s, gradeOf(id)]), ...Object.entries(MASTERY_STORIES).map(([id, s]) => [`mastery:${id}`, s, gradeOf(id)])];
+  const over = []; const untagged = []; const morals = []; const vfsBad = [];
+  for (const [id, s, g] of all) {
+    if (!s.audio) continue; const a = [].concat(s.audio);
+    a.forEach((p, i) => { const n = (p.match(/\[[^\]]+\]/g) || []).length; if (n > 4) over.push(`${id} ${i}`); if (n === 0) { untagged.push(`${id} ${i}`); if (vfs.has(id)) vfsBad.push(`${id} ${i} untagged`); } });
+    if (EARLY.has(g)) { const last = a[a.length - 1]; const tags = last.match(/\[[^\]]+\]/g) || []; if (!(tags.length === 1 && last.startsWith('[slowly, warmly]'))) { morals.push(id); if (vfs.has(id)) vfsBad.push(`${id} moral`); } }
+  }
+  ok('no story paragraph carries more than four tags, and pre-K 3\'s two courses leave none untagged and close on [slowly, warmly] alone', over.length === 0 && vfsBad.length === 0, [...over, ...vfsBad].slice(0, 6).join('; '));
+  ok(`untagged paragraphs (${untagged.length}) and early-years morals not [slowly, warmly] alone (${morals.length}) stay at ${UNTAGGED_LIMIT} and ${MORALS_LIMIT} or fewer, falling as each course is read`, untagged.length <= UNTAGGED_LIMIT && morals.length <= MORALS_LIMIT, morals.slice(0, 6).join('; ')); }
+
+// Short runs across a paragraph break (pass MK, the story check): the flow rules read inside a paragraph, so three short sentences
+// could still run across a break. crossBreakRuns (tools/story-flow.mjs) finds them with the flow tool's own rules; pre-K 3 has
+// none, and the early years' 15 may only fall (node tools/story-flow-audit.mjs lists them).
+{ const { crossBreakRuns } = await import('../tools/story-flow.mjs'); const RUNS_LIMIT = 15; const EARLY = new Set(['PK3', 'PK4', 'K', '1', '2']);
+  const gradeOf = (id) => { const c = L.COURSES.find((x) => x.id === id || x.modules.some((m) => m.id === id)); return c ? c.grade : null; };
+  const all = [...Object.entries(STORIES).map(([id, s]) => [id, s]), ...Object.entries(COURSE_STORIES).map(([id, s]) => [id, s, `course:${id}`]), ...Object.entries(MASTERY_STORIES).map(([id, s]) => [id, s, `mastery:${id}`])];
+  const runs = []; for (const [id, s, label] of all) { const g = gradeOf(id); if (EARLY.has(g)) for (const r of crossBreakRuns(s.words)) runs.push([g, `${label || id} ${r.map((i) => i + 1).join('-')}`]); }
+  const pk3 = runs.filter(([g]) => g === 'PK3');
+  ok(`short runs across a paragraph break: pre-K 3 has none, and the early years' ${runs.length} stay at ${RUNS_LIMIT} or fewer`, pk3.length === 0 && runs.length <= RUNS_LIMIT, [...pk3, ...runs].slice(0, 6).map(([g, x]) => `${g} ${x}`).join('; ')); }
+
+// No two stories share a title (pass MJ, the story check: pre-K 3's Two buckets shared kindergarten's, so the Story Log and the book
+// listed two stories one name). Seven shared titles remain (EARMARKS A24); the number may only fall, and a renamed story comes off.
+{ const SHARED_LIMIT = 7;
+  const seen = new Map();
+  const add = (title, id) => { const t = String(title).toLowerCase(); if (!seen.has(t)) seen.set(t, []); seen.get(t).push(id); };
+  for (const [id, s] of Object.entries(STORIES)) add(s.title, id);
+  for (const [id, s] of Object.entries(COURSE_STORIES)) add(s.title, `course:${id}`);
+  for (const [id, s] of Object.entries(MASTERY_STORIES)) add(s.title, `mastery:${id}`);
+  const shared = [...seen].filter(([, ids]) => ids.length > 1);
+  ok(`no more than ${SHARED_LIMIT} story titles are shared by two stories, and none of pre-K 3's (EARMARKS A24)`, shared.length <= SHARED_LIMIT && !shared.some(([, ids]) => ids.some((id) => ['red-and-blue', 'course:very-first-steps-pk3', 'mastery:very-first-steps-pk3'].includes(id) || (L.MODULES.find((m) => m.id === id) || {}).id && L.COURSES.some((c) => c.grade === 'PK3' && c.modules.some((m) => m.id === id)))), shared.map(([t, ids]) => `${t}: ${ids.join(', ')}`).join('; ')); }
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

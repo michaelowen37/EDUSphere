@@ -102,7 +102,10 @@ right one are kept with the result as missed (missedPicks: only choices the ques
 or anything typed). After a wrong tap a pre-reader hears the reason and "Have another try." (preReaderWrongWords), unless
 two or more choices are still open and the reason names something of the answer the question has not said itself
 (whyNotNamesAnswer: the answer's words, numbers as words, sizes and their kin both ways, plurals, a letter by its
-capital); then "Not that one. Have another try.", since a voice never answers a retry for the child.
+capital); then "Not that one. Have another try.", since a voice never answers a retry for the child. Since pass MJ it is also
+held back while it names another wrong picture still open that the question did not name (whyNotNamesOpenWrong: "Block
+rhymes with rock" leaves only the answer), and since pass MK while a twin of the tapped picture (the same picture twice, or the same shape in another look) is
+still open, since any reason the tapped one gets rules out its twin; the reason waits in More Info.
 
 ## Two celebrations a course (pass MH)
 
@@ -186,7 +189,7 @@ The fourth exposure. A lesson is met in the lesson, in the practice that masters
 
 ## The space shooter (pass MI, Mikey: "go until failure")
 
-Chips keep coming until the player's three ships are gone. Each chip falls a little faster than the one before: 0.16 board units a frame (a sixtieth of a second) at first, 0.006 more a chip to about 0.6 at chip 73, then 0.002 more a chip with no ceiling, so even the steadiest hand meets a speed it cannot keep up with. Chips come about 70 frames apart at first (70 frames less 1.2 for each chip already started, so 68.8 after the first), never closer than 30, and at most three fall at once, so early on a chip can wait longer than its gap. A ship is lost when a chip that fits the rule gets past the ship's line or a shot hits a chip that does not fit. Every five fitting chips hit is a new wave, and the best is how many were hit. A chip never starts in line with a chip of the other kind (the two sit wholly side by side with a gap of one unit), and a chip that does not fit never starts in a flying shot's lane, the ship's or where it is gliding. Why: the owner asked for a game that runs until failure and never asks a child to wait for a wrong chip to pass before taking the right one. The rules test plays it (src/logic.mjs: shipStep and the rest).
+Chips keep coming until the player's three ships are gone. Each chip falls a little faster than the one before: 0.16 board units a frame (a sixtieth of a second) at first, 0.006 more a chip to about 0.6 at chip 73, then 0.002 more a chip with no ceiling, so even the steadiest hand meets a speed it cannot keep up with. Chips come about 70 frames apart at first (70 frames less 1.2 for each chip already started, so 68.8 after the first), never closer than 30, and at most three fall at once, so early on a chip can wait longer than its gap. A ship is lost when a chip that fits the rule gets past the ship's line or a shot hits a chip that does not fit. Every five fitting chips hit is a new wave, and the best is how many were hit. A chip never starts in line with a chip of the other kind (the two sit wholly side by side with a gap of one unit), and a chip that does not fit never starts in a flying shot's lane, the ship's or where it is gliding. Why: the owner asked for a game that runs until failure and never asks a child to wait for a wrong chip to pass before taking the right one. Since pass MK (Mikey's answer to Q39, "both"), an older student starts further up the ramp, as if 5 chips had fallen for each grade above grade 2, up to 20 from grade 6 (shipStartFor, by the oldest grade among the student's courses), so a grade 6 student's first chips fall in about 5.7 seconds where grade 2's take about 9.9; and every tenth fitting chip hit brings back a lost ship, never past three (SHIP_BACK_EVERY), so a game turns more on speed than on one early slip. The rules test plays it (src/logic.mjs: shipStep and the rest), from grade 6's start too.
 
 ## A quick check that completes a course (pass MI, Mikey's answer to Q37)
 

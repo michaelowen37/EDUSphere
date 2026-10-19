@@ -119,7 +119,7 @@ export const CURRICULUM = [
       { framework: 'CCSS', code: 'ELOF.P-MATH.8', text: 'Measures objects by their various attributes using standard and non-standard measurement. Uses differences in attributes to make comparisons.', moduleIds: ['not-the-same'] },
       { framework: 'CCSS', code: 'ELOF.P-SCI.3', text: 'Compares and categorizes observable phenomena.', moduleIds: ['not-the-same'] },
       { framework: 'TEKS', code: 'PK3.II.A.1', text: 'Child responds to situations in ways that demonstrate an understanding of what has been communicated.', moduleIds: ['listen-and-tap-pictures'] },
-      { framework: 'TEKS', code: 'PK3.II.D.1', text: 'Child understands (receptive) and uses (expressive) expected words to label and describe common objects, people, places, actions, and events.', moduleIds: ['listen-and-tap-pictures', 'animal-sounds'] },
+      { framework: 'TEKS', code: 'PK3.II.D.1', text: 'Child understands (receptive) and uses (expressive) expected words to label and describe common objects, people, places, actions, and events.', moduleIds: ['listen-and-tap-pictures', 'animal-sounds', 'big-and-little'] },   // pass MJ: Big and Little's size words, the receptive half
       { framework: 'CCSS', code: 'ELOF.P-LC.1', text: 'Attends to communication and language from others.', moduleIds: ['listen-and-tap-pictures'] },
       { framework: 'CCSS', code: 'ELOF.P-LC.6', text: 'Understands and uses a wide variety of words for a variety of purposes.', moduleIds: ['listen-and-tap-pictures'] },
       // Pass ME, earmark E12 part two: rhymes, read in full in TEA's PK3 Streamlined Version (Domain III, B. Phonological

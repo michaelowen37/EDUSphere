@@ -112,7 +112,7 @@ ok('the ledger has no rows the app does not use', orphans.length === 0, orphans.
 // each said the way Google's guide for the model advises (what the picture is, never what it is not), the character-sheet note
 // moves to its own column, and docs/LEONARDO-PROMPTS.csv is what the tool writes today.
 {
-  const { foldPrompt, ledgerRows, csvText, hasPerson, replanSerials, saysNot } = await import('../tools/prompts-csv.mjs');
+  const { foldPrompt, ledgerRows, csvText, hasPerson, replanSerials, saysNot, REFERENCE_NAMES, CAST_ORDER, MODEL } = await import('../tools/prompts-csv.mjs');
   const earmarks = readFileSync('docs/EARMARKS.md', 'utf8');
   const all = ledgerRows(ledger); const unknown = new Set(); const noteLeft = []; const sheetsLost = []; const unwritten = []; const negative = [];
   for (const [serial, , , prompt, bans] of all) {
@@ -148,13 +148,29 @@ ok('the ledger has no rows the app does not use', orphans.length === 0, orphans.
   ok('every Needed picture EARMARKS A6 lists waits as Re-plan first (A6) in the spreadsheet', replan.size >= 150 && waiting === all.filter((r) => replan.has(r[0]) && r[5] === 'Needed').length && waiting > 0, `${replan.size} listed, ${waiting} waiting`);
   // The character sheets are painted in the same sessions, so they are rows too (pass MC: the tool had read only six-column rows).
   const sheetsListed = all.filter((r) => r[1] === 'character sheet').map((r) => r[0]);
-  ok('docs/LEONARDO-PROMPTS.csv is the folded spreadsheet the tool writes today (node tools/prompts-csv.mjs > docs/LEONARDO-PROMPTS.csv), character sheets included', csv === want && /prompt for Nano Banana 2/.test(csv.split('\n')[0]) && sheetsListed.length === (ledger.match(/^\| C\d+ \|/gm) || []).length && sheetsListed.length >= 14, `${csv.split('\n').length - 1} rows, ${want.split('\n').length - 1} from the ledger`);
+  ok('docs/LEONARDO-PROMPTS.csv is the folded spreadsheet the tool writes today (node tools/prompts-csv.mjs > docs/LEONARDO-PROMPTS.csv), character sheets included', csv === want && /"prompt \(bans folded in\)"/.test(csv.split('\n')[0]) && sheetsListed.length === (ledger.match(/^\| C\d+ \|/gm) || []).length && sheetsListed.length >= 14, `${csv.split('\n').length - 1} rows, ${want.split('\n').length - 1} from the ledger`);
+  // Generation day (Mikey, pass MK): the rows come in his painting order, each person's references, then the pictures with that
+  // person alone, person by person; then two or more of the cast; then the rest by grade from pre-K 3 up; then what has no grade.
+  // Every row names its model, and every character sheet has its reference name (Mike - 1), one name each.
+  { const parse = (line) => [...line.matchAll(/"((?:[^"]|"")*)"/g)].map((m) => m[1].replace(/""/g, '"'));
+    const lines = want.split('\n').slice(1).map(parse); const head = parse(want.split('\n')[0]); const col = (n) => head.indexOf(n);
+    const groups = []; for (const l of lines) if (groups[groups.length - 1] !== l[col('group')]) groups.push(l[col('group')]);
+    const castGroups = CAST_ORDER.flatMap((p) => [`${p}: references`, p]).filter((g) => groups.includes(g));
+    const gradeGroups = groups.slice(castGroups.length + (groups.includes('Two or more of the cast') ? 1 : 0));
+    const names = Object.values(REFERENCE_NAMES);
+    ok('the spreadsheet runs in Mikey\'s painting order: each person\'s references and then their pictures, person by person, then two or more of the cast, then by grade from pre-K 3, then what has no grade, numbered from 1, each group once',
+      lines.every((l, k) => Number(l[col('order')]) === k + 1) && groups.length === new Set(groups).size && groups.slice(0, castGroups.length).join() === castGroups.join() && castGroups[0] === 'Mike: references' && gradeGroups[0] === 'Pre-K 3' && gradeGroups[gradeGroups.length - 1].startsWith('No grade'),
+      groups.join(' | '));
+    ok('every row names its model, Nano Banana 2.1, and its settings; every character sheet has a reference name of its own, and a picture names each reference it needs',
+      MODEL === 'Nano Banana 2.1' && lines.every((l) => l[col('model')] === MODEL && l[col('settings')].length > 20) && sheetsListed.every((s) => REFERENCE_NAMES[s]) && new Set(names).size === names.length
+      && lines.filter((l) => l[col('references to attach')]).every((l) => l[col('references to attach')].split(', ').every((x) => /^[A-Z][a-z]+ - \d \(C\d+\)$/.test(x))), names.join(', ')); }
   // A sheet attached to a picture that never writes its character out paints whoever is there with that face, at the age the
   // sheet was drawn (the alignment read, pass MG: CS400's grocer would take Savanah's C7; EARMARKS A22). The look words are the
   // cast list's in docs/LEONARDO-BRIEF.md; the count may only fall, as A13's does.
   const LOOK = { Mike: ['brown eyes', 'sturdy', 'half-smile', 'shaved', 'bald', 'beard', 'black ring', 'rolled'], Chloe: ['wavy dark hair', 'patterned', 'paint'], Frederick: ['neat dark hair', 'glasses', 'gray hair', 'handlebar', 'mustache', 'lab coat'], Georgette: ['auburn', 'red button-front coat', 'red coat', 'knowing smile'], Savanah: ['copper-red', 'copper red', 'high bun', 'freckles', 'tattoo', 'tortoiseshell'], Jaxon: ['sandy', 'checkered', 'sly'], Harlow: ['blonde', 'pigtails', 'sage-green', 'blue eyes'] };
   const sheetOf = Object.fromEntries(sheetsListed.map((s) => [s, Object.keys(LOOK).find((n) => by[s][2].startsWith(n))]));
-  const UNWRITTEN_SHEET_LIMIT = 130; let attached = 0; const unwrittenSheets = [];
+  // 121 since pass MK (124 before): Mike's three rows in The ball that rolled away write him out now.
+  const UNWRITTEN_SHEET_LIMIT = 121; let attached = 0; const unwrittenSheets = [];
   for (const [serial, , , prompt, bans] of all) {
     const f = foldPrompt(prompt, bans); const body = f.prompt.toLowerCase();
     for (const s of (f.sheets || '').split(/[,\s]+/).filter(Boolean)) { attached++; const who = sheetOf[s]; if (!who || !LOOK[who].some((w) => body.includes(w))) unwrittenSheets.push(`${serial}:${s}`); }

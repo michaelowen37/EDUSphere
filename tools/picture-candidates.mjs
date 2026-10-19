@@ -16,7 +16,8 @@ for (const c of L.COURSES.filter((x) => EARLY.includes(x.grade))) {
     const lines = c.readAloud ? L.readAloudScript(m).map((s) => s.say) : (m.lesson.paragraphs || []);
     const steps = new Set((m.lesson.pictures || []).map((p) => p.step));
     lines.forEach((text, i) => {
-      const hits = [...String(text).matchAll(COMPARE)].map((x) => x[0]);
+      // "Almost the same" says two groups are close in number, not that an idea is like a real thing (pass ML).
+      const hits = [...String(text).matchAll(COMPARE)].map((x) => x[0]).filter((h) => !/^almost the same\b/i.test(h));
       if (!hits.length) return;
       const pictured = c.readAloud ? steps.has(i) : steps.size > 0;
       rows.push({ grade: c.grade, course: c.title, module: m.title, id: m.id, line: i, hits, text, pictured });

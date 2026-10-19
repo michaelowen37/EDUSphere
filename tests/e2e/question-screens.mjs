@@ -165,6 +165,38 @@ const rowLook = () => page.evaluate(() => {
   ok("a pre-reader's retry after the scroll cue opens at the top of the question", retries.length >= 1 && retries.every((r) => r.top === 0), retries);
   await page.setViewportSize({ width: 1280, height: 900 }); await page.waitForTimeout(300); }
 
+// 4c. The groups that look like more, as a phone draws them (pass ML, the code check's second read: More Info squeezed a group into
+//     a 64-pixel box, and the picture after a right tap shrank the long row's dots and not the close bunch's, the size cue the
+//     lesson teaches past). In the buttons, the picture after the right tap and More Info, every dot or circle of one kind is one
+//     size, and More Info draws them at a size a child can count. And a pre-reader who taps a choice on a short phone sees the
+//     scroll cue when Check answer is below the screen.
+{ const sizesIn = (sel) => page.evaluate((s) => [...document.querySelectorAll(s)].map((box) => [...box.querySelectorAll('circle')].map((c) => Math.round(c.getBoundingClientRect().width * 10) / 10).filter((w) => w > 2)), sel);
+  const spread = (list) => { const all = list.flat(); return all.length ? Math.max(...all) / Math.min(...all) : 99; };
+  const found = [];
+  for (const [w, h] of [[360, 640], [320, 568]]) {
+    await page.setViewportSize({ width: w, height: h }); await page.waitForTimeout(300);
+    for (const seed of [14, 2]) {
+      const q = await show('p4-looks-like-more', seed); const dots = /dots/.test(q.answer);
+      const inButtons = await sizesIn('button[data-choice^="look:"]');
+      await settle(); await page.locator(`button[data-choice="${q.answer}"]`).click(); await page.getByRole('button', { name: 'Check answer' }).click(); await page.waitForTimeout(1200);
+      const explained = await sizesIn('[data-explain-picture]');
+      let sheet = []; if (await tapIf('More Info')) { await page.waitForTimeout(700); sheet = await sizesIn('[data-more-info] [style*="grid"]'); await page.locator('[data-more-info-close] button').first().click({ force: true }).catch(() => {}); await page.waitForTimeout(300); }
+      found.push({ w, seed, dots, buttons: inButtons.map((r) => r.length), buttonSpread: spread(inButtons), explainSpread: spread(explained), sheetSmallest: Math.min(...sheet.flat(), 99), sheetSpread: spread(sheet.filter((r) => r.length)) });
+    }
+  }
+  const dotCases = found.filter((r) => r.dots);
+  ok('a long row and a close bunch draw their dots one size in the buttons, after the right tap and in More Info, which draws them countable', dotCases.length >= 2 && dotCases.every((r) => r.buttonSpread <= 1.06 && r.explainSpread <= 1.06 && r.sheetSmallest >= 12 && r.sheetSpread <= 1.06), found);
+  const cueSeen = [];
+  await page.setViewportSize({ width: 375, height: 667 }); await page.waitForTimeout(300);
+  for (const [gen, seed] of [['pm-same-things', 1], ['ps-find-match', 1], ['pm-different-vehicles', 2]]) {
+    const q = await show(gen, seed); await page.evaluate(() => (document.scrollingElement || document.documentElement).scrollTo(0, 0)); await page.waitForTimeout(200);
+    await settle(); await page.locator(`button[data-choice="${q.choices[0]}"]`).click(); await page.waitForTimeout(700);
+    const at = await page.evaluate(() => { const b = [...document.querySelectorAll('[data-practice-next] button')].find((x) => /Check answer/.test(x.textContent)); if (!b) return null; const r = b.getBoundingClientRect(); return { bottom: Math.round(r.bottom), H: window.innerHeight, cue: !!document.querySelector('[data-scroll-cue]') }; });
+    cueSeen.push({ gen, ...at });
+  }
+  ok('on a short phone, once a pre-reader taps a choice, Check answer is on the screen or the scroll cue shows', cueSeen.length === 3 && cueSeen.every((r) => r.bottom !== null && (r.bottom <= r.H || r.cue)), cueSeen);
+  await page.setViewportSize({ width: 1280, height: 900 }); await page.waitForTimeout(300); }
+
 // 5. A reader's wrong answer opens More Info by itself (Mikey: "It could be cool to have the popup show up automatically when a
 //    wrong answer is selected too"), the one chosen first; on a 375 by 667 phone a tall sheet starts on screen and worded
 //    choices are not squeezed into a narrow box.

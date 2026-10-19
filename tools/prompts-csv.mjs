@@ -19,9 +19,16 @@
 // when the scene shows a person: attached to a scene with no one in it, a sheet would put the character there.
 // A row EARMARKS A6 lists, a picture that asks for drawn letters, words or numerals, carries the status "Re-plan first (A6)",
 // since its folded prompt would ask for the writing and forbid it at once. docs/ART-REQUESTS.md keeps both columns as they are.
+// Since pass ML two of Mikey's answers live here too. Q42, "relax it for scene words only, from grade 3 up.": a picture from
+// grade 3 up may carry a few large words that belong to its scene (a sign, a shop's name, a book's cover, a jersey), written in
+// its prompt in double quotes and spelled out in its check note; its bans say 'text other than the scene words', and the fold
+// names those words as the only writing (SCENE_WORDS_BAN, sceneWords). Q44, "run the trial, then move them if they pass": five
+// coloring pages are painted first on Nano Banana 2.1 and on Lucid Origin, and the coloring pages move to Lucid Origin, painted
+// last, unless the trial fails (COLORING_TRIAL, modelFor, trialRows).
 // Run: node tools/prompts-csv.mjs > docs/LEONARDO-PROMPTS.csv
 import { readFileSync } from 'node:fs';
 import { MODULES, getCourse, GRADES, gradeLabel, MAPS } from '../src/logic.mjs';
+import { levelOf } from './coloring-levels.mjs';
 
 // The bans the ledger uses, grouped, each group with the sentence that says it.
 const WRITING = ['text', 'words', 'letters', 'labels', 'numbers', 'logos', 'watermark', 'signature'];
@@ -31,7 +38,22 @@ const MAP_BANS = ['borders', 'country lines', 'state lines', 'roads', 'cities', 
 // Bans a single page carries, each with its own sentence (the flower page D4, the rocket D5, the butterfly D6), said as what the
 // page shows: these pages stand in for things that questions ask about, so a stray flower or star matters.
 const ONE_PAGE = { 'many flowers': 'This single flower is the only one on the page.', bouquet: null, stars: 'The sky is clear apart from the round moon.', flowers: 'The only plants are the leafy bush and the grass.' };
-const KNOWN = new Set([...WRITING, ...HANDS, ...LINE_ART, ...MAP_BANS, ...Object.keys(ONE_PAGE), 'blurry', 'photorealistic skin', 'photorealism', 'jagged lines', 'broken outlines', 'tiny details', 'crowded scene', 'background scenery', 'sun', 'text other than the two letters', 'extra letters']);
+// Scene words (Mikey's answer to Q42, pass ML: "relax it for scene words only, from grade 3 up."). In plain terms: a picture
+// for grade 3 or older may show a few large words that belong to its scene, such as the words on a shop's sign, a book's cover
+// or a jersey. The prompt writes each one in double quotes, the way Leonardo's prompt guide asks for words in a picture (short,
+// under about 25 characters), and the scene's check note spells it out, so the painting is read letter by letter before it is
+// saved and painted again if a letter is wrong. Such a row's bans say this instead of 'text, words, letters'. A word that
+// teaches, or that a question asks for (a letter in a reading lesson, a numeral, a count, a clock, a label on a diagram, a
+// map's names), is never a scene word: the app draws it, where it is always right, can be read aloud and changes without
+// repainting. Pre-K to grade 2 keep the old rule whole, since their lessons teach letters by their shapes to children learning
+// to read. The ledger test holds every part of this.
+export const SCENE_WORDS_BAN = 'text other than the scene words';
+export const SCENE_WORDS_FROM = '3';   // the first grade whose pictures may carry scene words
+// The words a prompt puts in double quotes, in order (only scene words are ever quoted in a prompt).
+export const sceneWords = (text) => [...String(text).matchAll(/"([^"]+)"/g)].map((m) => m[1]);
+// A list said as people say it: "A", "A and B", "A, B and C".
+const listOf = (xs) => (xs.length < 2 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`);
+const KNOWN = new Set([...WRITING, ...HANDS, ...LINE_ART, ...MAP_BANS, ...Object.keys(ONE_PAGE), 'blurry', 'photorealistic skin', 'photorealism', 'jagged lines', 'broken outlines', 'tiny details', 'crowded scene', 'background scenery', 'sun', 'text other than the two letters', 'extra letters', SCENE_WORDS_BAN]);
 // A person in the subject (the words before "Style:"). The hands and skin sentences go only where a person is drawn, because
 // Nano Banana 2 draws what the words name: told about hands, a clock or a fox might grow some. So the test leans toward
 // leaving a person out (a missed person only loses one helpful sentence) and reads these words:
@@ -84,7 +106,7 @@ export function hasPerson(subject) {
     if (w === 'class' && !/^(\s+(\w+ing|at|with|of|on|in|ready)\b|\s*[,.]|\s*$)/i.test(after)) continue;
     if (/^teams?$/.test(w) && !/^\s+(\w+ing|at|with|of|on|in|ready)\b/i.test(after)) continue;
     // A clock's hands, and hand-drawn or by hand.
-    if (/^hands?$/.test(w) && (CLOCK_HAND.test(before) || (clock && /\b(two|its|both|the clock's|with)\s+$/i.test(before)) || /^-/.test(after) || /\bby\s+$/i.test(before))) continue;
+    if (/^hands?$/.test(w) && (CLOCK_HAND.test(before) || (clock && /\b(two|its|both|the clock's|with)\s+(dark\s+|black\s+|thin\s+|red\s+)?$/i.test(before)) || /^-/.test(after) || /\bby\s+$/i.test(before))) continue;
     // A word joined to the next by a hyphen names a thing, not a person (a child-sized plate, a man-made lake; pass MF, the
     // picture check's second read: P62's plate drew a hands sentence).
     if (/^-\w/.test(after)) continue;
@@ -119,6 +141,8 @@ export function foldPrompt(prompt, negative) {
   // A coloring page tells its scene in outlines, everything else in shapes and color.
   const told = LINE_ART.some(has) ? 'telling everything through clean outlines' : 'telling everything through shapes and color';
   if (has('text other than the two letters')) out.push('The only marks on the page are the two letters themselves.');
+  // A scene word (Q42): the quoted words are the only writing, spelled as quoted, and the rest stays wordless.
+  else if (has(SCENE_WORDS_BAN)) out.push(`The only writing in the picture is ${listOf(sceneWords(subject).map((w) => `"${w}"`))}, spelled exactly so in large, plain letters.`, `The rest of the picture is wordless, ${told}.`);
   else if (has('text') || has('letters')) out.push(`The picture is wordless, ${told}.`);
   else if (WRITING.some(has)) out.push(`Apart from the letters the scene names, the picture is wordless, ${told}.`);
   // Line art for coloring pages.
@@ -145,7 +169,7 @@ export function foldPrompt(prompt, negative) {
   // Anything else, word for word.
   const rest = bans.filter((x) => !KNOWN.has(x));
   if (rest.length) out.push(`Do not include: ${rest.join(', ')}.`);
-  return { prompt: [body, ...out].join(' '), sheets: note && person ? note[1].trim() : '', note: note ? note[1].trim() : '', bans, unknown: rest, person };
+  return { prompt: [body, ...out].join(' '), sheets: note && person ? note[1].trim() : '', note: note ? note[1].trim() : '', bans, unknown: rest, person, words: has(SCENE_WORDS_BAN) ? sceneWords(subject) : [] };
 }
 
 // Every ledger row, planned rows and tries alike, as [serial, where, scene, prompt, negative, status].
@@ -199,11 +223,46 @@ export const referenceLabel = (sheet) => (REFERENCE_NAMES[sheet] ? `${REFERENCE_
 // plan's switch, since with it off Leonardo's help page says "generations will be visible to the public". Leonardo's documentation adds up to
 // six references, each at Low, Mid or High, and ten aspect ratios. A newer model on generation day is one edit here.
 export const MODEL = 'Nano Banana 2.1';
+// The coloring pages' model (Mikey's answer to Q44, pass ML: "run the trial, then move them if they pass"). In plain terms: a
+// coloring page is black outlines on white and shares no look with the paintings, so it can come from Leonardo's own Lucid
+// Origin, which Relaxed Generation keeps painting once every token, the rollover bank too, is spent; Nano Banana 2.1 always
+// spends tokens. So five pages are painted first on both models, side by side (TRIAL_PAGES, one each for pre-K 3, pre-K 4,
+// kindergarten and grade 2, chosen for a round shape that must close, a page that stands in for a thing, a count, fine detail
+// with people and coins, and the letters A and a), and a page passes on Lucid Origin when every outline is clean and closed
+// and nothing extra is on the page (docs/LEONARDO-BRIEF.md, The coloring trial). If they pass, every coloring page moves to
+// Lucid Origin and is painted last, level by level, each with its level's approved trial page as a Style Reference so the
+// outlines stay alike. COLORING_TRIAL holds the outcome, one for the scene pages (D and G) and one for the letter pages (L),
+// since a letter's exact shape is a risk of its own: 'waiting' until Mikey reports the trial, then 'passed' or 'failed'; a
+// kind that fails goes back to Nano Banana 2.1 in its old place, by grade. Changing one word here moves the whole spreadsheet.
+export const COLORING_MODEL = 'Lucid Origin';
+export const COLORING_TRIAL = { pages: 'waiting', letters: 'waiting' };
+export const TRIAL_PAGES = ['D40', 'D5', 'D90', 'D140', 'L1'];
+// The approved trial page each level's pages attach as a Style Reference (grade 1's first approved page serves grade 1).
+export const TRIAL_REFERENCE = { PK3: 'D40', PK4: 'D5', K: 'D90', 2: 'D140', L: 'L1' };
+export const coloringKind = (serial) => (/^L\d/.test(serial) ? 'letters' : /^[DG]\d/.test(serial) ? 'pages' : null);
+// Whether a picture is a coloring page painted on Lucid Origin, last: yes until its kind's trial fails.
+export const onLucid = (serial) => { const k = coloringKind(serial); return k ? COLORING_TRIAL[k] !== 'failed' : false; };
+// The model a picture is made with, in the spreadsheet's words.
+export function modelFor(serial) {
+  const k = coloringKind(serial);
+  if (!k || COLORING_TRIAL[k] === 'failed') return MODEL;
+  return COLORING_TRIAL[k] === 'passed' ? COLORING_MODEL : `${COLORING_MODEL}, or ${MODEL} if the trial fails`;
+}
+// A coloring page's level for the Style Reference: its lesson's grade or its place in Let's Color, and L for a letter page.
+const pageLevel = (serial, page) => (/^L\d/.test(serial) ? 'L' : levelOf(serial, page));
 const RATIOS = [[1, 1], [2, 3], [3, 2], [3, 4], [4, 3], [4, 5], [5, 4], [9, 16], [16, 9], [21, 9]];
 const nearestRatio = (w, h) => RATIOS.reduce((best, r) => (Math.abs(Math.log(r[0] / r[1] / (w / h))) < Math.abs(Math.log(best[0] / best[1] / (w / h))) ? r : best)).join(':');
 const dimsFor = (ratio) => `${['16:9', '1:1', '9:16'].includes(ratio) ? ratio : `Custom ${ratio}`}, Medium`;   // a preset, or Custom
-export function settingsFor(serial, refs = [], box = null) {
+export function settingsFor(serial, refs = [], box = null, page = '') {
   const base = 'Style None, Prompt Enhance Off, Private Mode On';
+  // A coloring page on Lucid Origin (Q44): Leonardo's page for the model lists Style None, Prompt Enhance, a Generation mode of
+  // Fast or Ultra, and one Style Reference, with no negative prompt, so the folded prompt is pasted as it is; the page attaches
+  // its level's approved trial page so the outlines of a level stay alike.
+  if (onLucid(serial)) {
+    const ref = TRIAL_REFERENCE[pageLevel(serial, page)];
+    const look = ref ? `the approved ${ref} as a Style Reference at Mid` : 'the first approved page of its level as a Style Reference at Mid';
+    return `${dimsFor('1:1')}, ${base}, Generation mode Fast, 4 generations; ${look}, so the outlines of a level stay alike`;
+  }
   if (/^C\d/.test(serial)) return `${dimsFor('3:2')}, ${base}, 4 generations; once a person's first reference is approved, it is attached at High to make the others, so the person keeps one face, and the set's first approved reference goes at Mid on every other person's, so all seven share one look`;
   if (/^U\d/.test(serial)) return `${dimsFor('1:1')}, ${base}, 2 generations; the person's reference at High, and once one portrait passes, that portrait at Mid for the other three, since an approved painting would pull a flat portrait back to 3D`;
   if (/^(D|L|G)\d/.test(serial)) return `${dimsFor('1:1')}, ${base}, 4 generations`;
@@ -220,20 +279,45 @@ export function gradeOfWhere(where) {
 // The order Mikey paints in: each person's references, then the pictures with that person alone, person by person in
 // CAST_ORDER; then the pictures with two or more of the cast; then everything else by grade from pre-K 3 up; last, what has
 // no grade (the Let's Color drawing and letter pages, the maps, the star). Within a group, by grade and then ledger order.
+// Since pass ML (Q44) the coloring pages painted on Lucid Origin come after everything else, level by level from pre-K 3 to
+// grade 2 and then the letter pages, since Relaxed Generation covers them only once the tokens are spent; and the group of
+// pictures with no grade is named for what is left in it.
+export const COLORING_LEVEL_ORDER = ['PK3', 'PK4', 'K', '1', '2', 'L'];
+export function coloringGroupName() {
+  const kinds = Object.keys(COLORING_TRIAL).filter((k) => COLORING_TRIAL[k] !== 'failed');
+  const what = kinds.length === 2 ? 'Coloring and letter pages' : kinds[0] === 'letters' ? 'Letter pages' : 'Coloring pages';
+  return `${what} on ${COLORING_MODEL}, painted last${kinds.some((k) => COLORING_TRIAL[k] === 'waiting') ? ' once the trial passes' : ''} (Q44)`;
+}
+export function noGradeGroupName() {
+  const left = [COLORING_TRIAL.pages === 'failed' && "Let's Color drawing pages", COLORING_TRIAL.letters === 'failed' && 'letter pages', 'maps', COLORING_TRIAL.pages === 'failed' && 'the star'].filter(Boolean);
+  return left.length === 1 ? 'No grade: the maps' : `No grade: ${listOf(left)}`;
+}
 export function generationOrder(rows) {
   const people = (r) => [...new Set(r.refs.map(personOf).filter(Boolean))];
   const gradeAt = (r) => { const i = GRADES.indexOf(String(r.grade)); return i < 0 ? GRADES.length : i; };
   const keyed = rows.map((r) => {
+    if (onLucid(r.serial)) return { r, g: 2 * CAST_ORDER.length + 3, sub: COLORING_LEVEL_ORDER.indexOf(pageLevel(r.serial, r.where)), group: coloringGroupName() };
     const self = /^C\d/.test(r.serial) ? personOf(r.serial) : null; const who = people(r);
     if (self) return { r, g: 2 * CAST_ORDER.indexOf(self), sub: Number(REFERENCE_NAMES[r.serial].split(' - ')[1]), group: `${self}: references` };
     if (who.length === 1) return { r, g: 2 * CAST_ORDER.indexOf(who[0]) + 1, sub: gradeAt(r), group: who[0] };
     if (who.length > 1) return { r, g: 2 * CAST_ORDER.length, sub: gradeAt(r), group: 'Two or more of the cast' };
-    return { r, g: 2 * CAST_ORDER.length + (r.grade ? 1 : 2), sub: gradeAt(r), group: r.grade ? gradeLabel(r.grade) : "No grade: Let's Color pages, maps and the star" };
+    return { r, g: 2 * CAST_ORDER.length + (r.grade ? 1 : 2), sub: gradeAt(r), group: r.grade ? gradeLabel(r.grade) : noGradeGroupName() };
   });
   return keyed.sort((a, b) => a.g - b.g || a.sub - b.sub || a.r.at - b.r.at);
 }
 
-// The spreadsheet as text, the header and one line per ledger row in generationOrder (the ledger test compares the file with it).
+// The trial's rows (Q44): each of TRIAL_PAGES whose kind is still waiting, once on each model, in the order the pages are listed.
+export const TRIAL_GROUP = 'Coloring trial (Q44): five pages on Nano Banana 2.1 and on Lucid Origin, painted first and compared';
+export function trialRows(rows) {
+  const none = 'no reference, so the two models are compared on the words alone';
+  return TRIAL_PAGES.filter((s) => COLORING_TRIAL[coloringKind(s)] === 'waiting').flatMap((s) => {
+    const r = rows.find((x) => x.serial === s); if (!r) return [];
+    return [{ r, group: TRIAL_GROUP, model: MODEL, settings: `${dimsFor('1:1')}, Style None, Prompt Enhance Off, Private Mode On, 4 generations; ${none}`, status: 'Trial' },
+      { r, group: TRIAL_GROUP, model: COLORING_MODEL, settings: `${dimsFor('1:1')}, Style None, Prompt Enhance Off, Private Mode On, Generation mode Fast, 4 generations; ${none}`, status: 'Trial' }];
+  });
+}
+// The spreadsheet as text, the header and one line per ledger row in generationOrder, after the trial's rows (the ledger test
+// compares the file with it).
 export function csvText(ledger, earmarks = '') {
   const cell = (t) => '"' + String(t).replace(/"/g, '""') + '"';
   const replan = replanSerials(earmarks);
@@ -243,8 +327,12 @@ export function csvText(ledger, earmarks = '') {
     return { serial, where, scene, prompt: f.prompt, negative, refs, at, grade: gradeOfWhere(where), status: replan.has(serial) && status === 'Needed' ? 'Re-plan first (A6)' : status };
   });
   const out = [['order', 'group', 'serial', 'reference name', 'where', 'grade', 'scene', 'model', 'settings', 'references to attach', 'prompt (bans folded in)', 'bans (already in the prompt)', 'status'].map(cell).join(',')];
-  generationOrder(rows).forEach(({ r, group }, k) => {
-    out.push([k + 1, group, r.serial, REFERENCE_NAMES[r.serial] || '', r.where, r.grade ? gradeLabel(r.grade) : '', r.scene, MODEL, settingsFor(r.serial, r.refs, boxOf(r.serial)), r.refs.map(referenceLabel).join(', '), r.prompt, r.negative, r.status].map(cell).join(','));
+  // The coloring trial (Q44) comes first, while its outcome is waiting: each trial page twice, on Nano Banana 2.1 and then on
+  // Lucid Origin, with no reference, so the two models are compared on the words alone. Its pages are not listed again later.
+  const trial = trialRows(rows);
+  const later = generationOrder(rows.filter((r) => !trial.some((t) => t.r === r)));
+  [...trial, ...later].forEach(({ r, group, model, settings, status }, k) => {
+    out.push([k + 1, group, r.serial, REFERENCE_NAMES[r.serial] || '', r.where, r.grade ? gradeLabel(r.grade) : '', r.scene, model || modelFor(r.serial), settings || settingsFor(r.serial, r.refs, boxOf(r.serial), r.where), r.refs.map(referenceLabel).join(', '), r.prompt, r.negative, status || r.status].map(cell).join(','));
   });
   return out.join('\n');
 }

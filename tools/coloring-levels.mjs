@@ -52,7 +52,7 @@ export const ROW = /^\| ((?:D|G)\d+) \| (.*?) \| (.*?) \| (.*?) \| (.*?) \| (\w+
 // planned picture. A coloring page's try keeps its level's style and negative prompt, like the page's planned row.
 export const TRY_ROW = /^\| Try ((?:CS|[A-Z])\d+) \| (.*?) \| (.*?) \| (.*?) \| (.*?) \| (\w+) \|$/;
 
-if (process.argv.includes('--write')) {
+if (process.argv[1] && process.argv[1].endsWith('coloring-levels.mjs') && process.argv.includes('--write')) {
   const path = new URL('../docs/ART-REQUESTS.md', import.meta.url);
   let rewritten = 0;
   const out = readFileSync(path, 'utf8').split('\n').map((line) => {

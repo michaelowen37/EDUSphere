@@ -19,7 +19,7 @@ const layoutFree = (v) => (Array.isArray(v) ? v.map(layoutFree) : v && typeof v 
 // The pre-K 3 kinds whose questions say why each wrong choice does not fit (pass MH): every kind the two pre-K 3 courses use,
 // read from their own module lists, so a kind added to either course is held to it at once (the checks are near the other
 // pre-K 3 checks below; a tracing kind has no choices and is passed over there).
-const P3_NOTED = new Set(L.COURSES.filter((c) => ['very-first-steps-pk3', 'listen-and-point-pk3'].includes(c.id)).flatMap((c) => c.modules.flatMap((m) => m.generators)));
+const P3_NOTED = new Set(L.COURSES.filter((c) => ['very-first-steps-pk3', 'listen-and-point-pk3', 'first-steps-pk'].includes(c.id)).flatMap((c) => c.modules.flatMap((m) => m.generators)));   // First Steps since pass ML (EARMARKS L10)
 const WN_BAD = []; const WN_KINDS = new Set();   // what those checks found, and the kinds they read, for their own line after the loop
 for (const [genId, gen] of Object.entries(L.GENERATORS)) {
   let bad = [];
@@ -358,7 +358,8 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
       // Sad by its tear (the lesson check, pass MH): the mad face's mouth turns down too, so the mouth never tells sad from mad.
       const WN_SIGN = { happy: 'a big smile', sad: 'a tear rolling out', mad: 'eyebrows that squeeze down', scared: 'wide-open eyes' };
       const WN_FACE = Object.fromEntries(Object.entries(WN_SIGN).map(([f, sign]) => [f, `has ${sign}`]));
-      const WN_SHAPE = { circle: 'is round, with no corners', square: 'has four corners', triangle: 'has three corners' };
+      // A shape's why opens on its corners, or, for a square or a long rectangle beside the other, on its sides (pass ML).
+      const WN_SHAPE = { circle: ['is round, with no corners'], square: ['has four corners', 'has four sides'], triangle: ['has three corners'], rectangle: ['has four corners', 'is long'] };
       const WN_LOOK = { small: 'little', thin: 'thin', wide: null, turned: null };   // a square turned on its corner, an upside-down triangle; the lesson never says wide
       const WN_SAYS = { cat: 'meow', duck: 'quack', bee: 'buzz', frog: 'ribbit', owl: 'hoot', bear: 'growl' };
       const WN_LETTER = { A: 'has slanted sides', B: 'has two round bumps', H: 'has a bar too', V: 'has sides that meet at the bottom', P: 'has just one bump', D: 'has just one bump' };
@@ -376,7 +377,10 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
           if (WN_MARKS.test(e.name) || WN_MARKS.test(e.why)) off('line has a colon, semicolon, dash or quotation mark');
           // The name and the start of the why, from the choice's own token.
           const item = /^item:([a-z]+)-([a-z]+)(?:-([a-z]+))?(?:#\d+)?$/.exec(c); const pic = /^(?:pic|icon):([a-z]+)(?:#\d+)?$/.exec(c); const dots = /^dots:(\d+)$/.exec(c);
-          const face = /^face:([a-z]+)$/.exec(c); const swatch = /^swatch:([a-z]+)$/.exec(c); const shape = /^shape:([a-z]+)(?:~([a-z]+))?$/.exec(c);
+          const face = /^face:([a-z]+)$/.exec(c); const swatch = /^swatch:([a-z]+)$/.exec(c); const shape = /^shape:([a-z]+)(?:~([a-z]+))?(?:#\d+)?$/.exec(c);
+          const art = /^(?:art|solid):([a-z]+)(?:#\d+)?$/.exec(c); const look = /^look:(dots|circles)-(\d)-(long|close|big|little)$/.exec(c);
+          if (art && !wnHas(e.name, art[1])) off('name is not its own picture');
+          if (look) { const lookSaid = { long: 'long', close: 'close', big: 'big', little: 'little' }[look[3]]; if (!wnHas(e.name, WN_NUM[Number(look[2])]) || !wnHas(e.name, lookSaid)) off('name is not its own group and look'); }
           const sized = /^shape:([a-z]+):(big|medium|small)$/.exec(c); const bar = /^(bar|tower):(\d+)$/.exec(c);
           const firstColor = (e.why.match(/\b(red|blue|yellow|green)\b/) || [])[1];
           if (item && /^p3-odd-/.test(genId)) { if (e.name !== 'This one') off('name names a shape or color its lesson does not teach'); }
@@ -397,7 +401,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
             const gw = /^goes with ([^,.]+)/.exec(e.why); const felt = /I feel (happy|sad|mad|scared)/.exec(c); if (gw && felt && gw[1] !== GOES[felt[1]]) off('why gives the tapped feeling another sign');
             const friend = /a (sad|scared) friend(?: has|'s) ([^,.]+)/.exec(e.why); if (friend && !((friend[1] === 'sad' && friend[2] === 'a tear rolling out') || (friend[1] === 'scared' && friend[2] === 'eyes open wide'))) off('why gives a friend another sign'); }
           if (/^(Happy|Sad|Mad|Scared)$/.test(c)) { const m = /would show ([^,.]+)/.exec(e.why); if (m && m[1] !== WN_SIGN[c.toLowerCase()]) off('why gives the named feeling another sign'); }
-          if (shape) { if (!wnHas(e.name, shape[1]) || (shape[2] && WN_LOOK[shape[2]] && !wnHas(e.name, WN_LOOK[shape[2]]))) off('name is not its own shape and look'); if (!e.why.startsWith(WN_SHAPE[shape[1]])) off('why gives the shape another look'); }
+          if (shape) { if (!wnHas(e.name, shape[1]) || (shape[2] && WN_LOOK[shape[2]] && !wnHas(e.name, WN_LOOK[shape[2]]))) off('name is not its own shape and look'); if (!(WN_SHAPE[shape[1]] || []).some((s) => e.why.startsWith(s))) off('why gives the shape another look'); }
           if (sized) { const rank = { small: 1, medium: 2, big: 3 }; const others = q.choices.filter((x) => x !== c).map((x) => rank[x.split(':')[2]]);
             const size = /^p4-/.test(genId) ? (others.every((r) => r > rank[sized[2]]) ? 'smaller' : 'bigger') : { big: 'big', medium: 'middle', small: 'little' }[sized[2]];
             if (!wnHas(e.name, sized[1]) || !wnHas(e.name, size)) off('name is not its own shape and size'); }
@@ -407,7 +411,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
           if (/^[A-Z]$/.test(c)) { if (e.name !== (['A', 'B', 'H', 'P'].includes(c) ? `The letter ${c}` : 'This letter')) off('name is not its own letter'); if (!e.why.startsWith(WN_LETTER[c] || 'is not ')) off('why gives the letter another look'); }
           if (/^(red|blue|yellow|green|circle|square|triangle|Happy|Sad|Mad|Scared|meow|quack|buzz|ribbit|hoot|growl)$/.test(c) && !wnHas(e.name, c)) off('name is not its own word');
           if (/^(Yes|No|More|Fewer)$/.test(c) && e.name !== c) off('name is not its own word');
-          if (/^[12]$/.test(c) && e.name !== ['One', 'Two'][Number(c) - 1]) off('name is not its own number');
+          if (/^[123]$/.test(c) && e.name !== ['One', 'Two', 'Three'][Number(c) - 1]) off('name is not its own number');
         }
       }
       if (!Array.isArray(q.alsoRight) || q.alsoRight.length > 3) wnp.push('alsoRight is not a list of up to three sentences');
@@ -438,10 +442,22 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'pm-land-ears') { const k = (q.prompt.match(/^Which one (.+)\?$/) || [])[1]; if (q.answer !== 'pic:' + luEars[k]) problems.push('ears wrong'); if (k === 'has pointy ears' && ['pic:cat', 'pic:rabbit'].some((c) => q.choices.includes(c))) problems.push('another pointy-eared animal offered as wrong'); if (k === 'has round ears' && q.choices.includes('pic:rabbit')) problems.push('the rabbit offered against round ears'); }
     const luCorners = { 'has three corners': 'triangle', 'has no corners': 'circle', 'has four sides that are all the same length': 'square', 'has two long sides and two short sides': 'rectangle' };
     if (genId === 'pm-shape-corners' && q.answer !== 'shape:' + luCorners[(q.prompt.match(/^Which shape (.+)\?$/) || [])[1]]) problems.push('corners wrong');
+    // Wrong choices a child could fairly call right, kept out since pass ML (the lesson checks): an unripe or dry color for a fruit
+    // or the grass, a toy car for the track and the drawn train for the road, a flower for wings, a butterfly or a robot for a
+    // string, and the snail, whose feelers stand up like ears, for long ears.
+    const luUnripe = { 'a strawberry': ['green'], 'a blueberry': ['green'], 'a banana': ['green'], 'a lemon': ['green'], 'the grass': ['yellow'], 'a pickle': ['yellow'] };
+    if (genId === 'pc-colour-of-thing' && (luUnripe[(q.prompt.match(/^What color is (.+)\?$/) || [])[1]] || []).some((c) => q.choices.includes(c))) problems.push('an unripe or dry color offered as wrong');
+    if (genId === 'pm-vehicle-where') { const k = (q.prompt.match(/^Which one (.+)\?$/) || [])[1]; if (k === 'runs on a track' && q.choices.includes('art:car')) problems.push('a car offered against the track'); if (k === 'drives on the road' && q.choices.includes('art:train')) problems.push('the drawn train offered against the road'); }
+    if (genId === 'pm-thing-part') { const k = (q.prompt.match(/^Which one (.+)\?$/) || [])[1]; if (k === 'has wings' && q.choices.includes('art:flower')) problems.push('a flower offered against wings'); if (k === 'has a string' && ['art:butterfly', 'art:robot'].some((c) => q.choices.includes(c))) problems.push('a butterfly or a robot offered against a string'); }
+    if (genId === 'pm-land-ears' && /^Which one has long ears\?$/.test(q.prompt) && q.choices.includes('pic:snail')) problems.push('the snail offered against long ears');
     const luLike = { 'a can': 'cylinder', 'an ice cream cone': 'cone', 'a ball': 'sphere', 'a block': 'cube' };
     if (genId === 'pm-solid-like' && q.answer !== 'solid:' + luLike[(q.prompt.match(/^Which shape is like (.+)\?$/) || [])[1]]) problems.push('solid like wrong');
     if (genId === 'pm-solid-do' && (q.answer !== (/roll/.test(q.prompt) ? 'solid:sphere' : 'solid:cube') || q.choices.some((c) => !['solid:sphere', 'solid:cube'].includes(c)))) problems.push('solid do wrong');
-    if (genId === 'pm-water-facts' && (q.answer !== 'pic:whale' || q.choices.some((c) => !['pic:whale', 'pic:fish'].includes(c)))) problems.push('water fact wrong');
+    if (genId === 'pm-water-facts') { const want = /breathes air|bigger/.test(q.prompt) ? 'pic:whale' : /under the water|smaller/.test(q.prompt) ? 'pic:fish' : null; if (q.answer !== want || q.choices.some((c) => !['pic:whale', 'pic:fish'].includes(c))) problems.push('water fact wrong'); }
+    // A group that looks like more (pass ML, A7): the answer is the group with more, or fewer, by count alone, whatever it looks like.
+    if (genId === 'p4-looks-like-more') { const cnt = (t) => Number((/^look:(?:dots|circles)-(\d)-/.exec(t) || [])[1]); const looks = q.choices.map((t) => (/-(long|close|big|little)$/.exec(t) || [])[1]).sort().join();
+      const want = /with more\.$/.test(q.prompt) ? q.choices.find((t) => cnt(t) === Math.max(...q.choices.map(cnt))) : /with fewer\.$/.test(q.prompt) ? q.choices.find((t) => cnt(t) === Math.min(...q.choices.map(cnt))) : null;
+      if (q.choices.length !== 2 || cnt(q.choices[0]) === cnt(q.choices[1]) || !['close,long', 'big,little'].includes(looks) || q.answer !== want) problems.push('looks like more wrong'); }
     if (['pm-tap-vehicle', 'pm-tap-water', 'pm-tap-shape'].includes(genId)) { const nm = (q.prompt.match(/^Tap the (\w+)\.$/) || [])[1]; if (String(q.answer).split(':')[1] !== nm) problems.push('tapped the wrong picture'); if (nm === 'rectangle' && q.choices.includes('shape:square')) problems.push('a square offered as wrong for a rectangle'); }
     const luN = (c) => Number(String(c).split(':')[1]); const luTwo = () => Array.isArray(q.choices) && q.choices.length === 2 && luN(q.choices[0]) !== luN(q.choices[1]) && q.choices.every((c) => luN(c) >= 1 && luN(c) <= 5);
     if (genId === 'p4-tap-more-5' && !(luTwo() && q.choices.every((c) => luN(c) <= luN(q.answer)))) problems.push('more up to five wrong');
@@ -451,19 +467,24 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     // First Steps part two (pass LV): re-derived from the words with tables the generators do not share.
     const lvSize = { bee: 1, snail: 1, cat: 2, rabbit: 2, duck: 2, owl: 2, fox: 2, bear: 3, whale: 3 };
     const lvPics = () => (q.choices || []).map((c) => String(c).replace(/^pic:/, ''));
-    const lvNamed = () => (String(q.story || '').match(/\b(bee|snail|cat|rabbit|duck|owl|fox|bear|whale)\b/g) || []);
+    const lvNamed = () => (`${q.story || ''} ${q.prompt || ''}`.match(/\b(bee|snail|cat|rabbit|duck|owl|fox|bear|whale)\b/g) || []);   // named in the question itself since pass ML
     if (genId === 'p4-real-bigger') { const p = lvPics(); const want = /bigger/.test(q.prompt) ? (lvSize[p[0]] > lvSize[p[1]] ? p[0] : p[1]) : (lvSize[p[0]] < lvSize[p[1]] ? p[0] : p[1]); if (p.length !== 2 || lvSize[p[0]] === lvSize[p[1]] || q.answer !== 'pic:' + want || lvNamed().join() !== [...p].sort().join()) problems.push('real bigger wrong'); }
     if (genId === 'p4-real-biggest') { const p = lvPics(); const want = p.find((x) => lvSize[x] === (/biggest/.test(q.prompt) ? 3 : 1)); if (p.length !== 3 || new Set(p.map((x) => lvSize[x])).size !== 3 || q.answer !== 'pic:' + want || lvNamed().join() !== [...p].sort().join()) problems.push('real biggest wrong'); }
     if (genId === 'p4-real-middle') { const p = lvPics(); if (p.length !== 3 || new Set(p.map((x) => lvSize[x])).size !== 3 || q.answer !== 'pic:' + p.find((x) => lvSize[x] === 2) || lvNamed().join() !== [...p].sort().join()) problems.push('real middle wrong'); }
     if (genId === 'p4-how-many-3') { const n = q.visual.kind === 'dots' ? q.visual.count : q.visual.items.length; if (q.answer !== String(n) || n < 1 || n > 3 || q.choices.join() !== '1,2,3') problems.push('how many to three wrong'); }
-    const lvTurns = { 'Ana goes down the slide, and then Sam goes down.': 'Taking turns', 'Sam swings while Ana waits, and then Ana swings.': 'Taking turns', 'Sam reads the book first, and then Ana reads it.': 'Taking turns', 'Ana plays the drum, and then she hands it to Sam to play.': 'Taking turns', 'Ana and Sam build one tower together at the same time.': 'Sharing', 'Ana and Sam color with one box of crayons at the same time.': 'Sharing', 'Two friends eat from one bowl of grapes at snack time.': 'Sharing' };
+    const lvTurns = { 'Ana goes down the slide, and then Sam goes down.': 'Taking turns', 'Sam swings while Ana waits, and then Ana swings.': 'Taking turns', 'Sam reads the book first, and then Ana reads it.': 'Taking turns', 'Ana plays the drum, and then she hands it to Sam to play.': 'Taking turns', 'Ana and Sam build one tower together at the same time.': 'Sharing', 'Ana and Sam color with one box of crayons at the same time.': 'Sharing', 'Two friends eat crackers from one bowl at the same time.': 'Sharing' };
     if (genId === 'pk-turn-or-share' && q.answer !== lvTurns[q.story]) problems.push('turns or sharing wrong');
     const lvWaitGood = ['Take a slow breath', 'Count to ten', 'Cheer for your friend'];
     if (genId === 'pk-while-waiting' && !(lvWaitGood.includes(q.answer) && q.choices.length === 2 && q.choices.filter((c) => lvWaitGood.includes(c)).length === 1)) problems.push('while waiting wrong');
     const lvWorks = { 'Who works at a fire station?': 'Firefighter', "Who works at a doctor's office or a hospital?": 'Doctor', 'Who works at a school?': 'Teacher', 'Who works at the post office?': 'Mail carrier', 'Who works at a police station?': 'Police officer' };
     if (genId === 'pk-helper-where' && (q.answer !== lvWorks[q.prompt] || new Set(q.choices).size !== 3)) problems.push('helper place wrong');
-    const lvScene = { 'Who comes to put out the fire?': 'Firefighter', 'Who rides on the fire truck?': 'Firefighter', 'Who helps you get well?': 'Doctor', 'Who checks it and helps it heal?': 'Doctor', 'Who helps you learn?': 'Teacher', 'Who reads it to the class?': 'Teacher', 'Who brings it to your home?': 'Mail carrier', 'Who brings the package?': 'Mail carrier', 'Who helps keep them safe?': 'Police officer' };
+    const lvScene = { 'Who comes to put out the fire when smoke and flames are coming from a house?': 'Firefighter', 'Who rides on a fire truck that rushes down the street with its siren on?': 'Firefighter', 'Who helps you get well when you are sick with a fever?': 'Doctor', 'Who checks your arm and helps it heal when you hurt it?': 'Doctor', 'Who helps you learn your letters at school?': 'Teacher', 'Who reads a story to your class?': 'Teacher', 'Who brings the birthday card Grandma sent you to your home?': 'Mail carrier', 'Who brings a package to your house?': 'Mail carrier', 'Who helps keep people and cars safe on a busy street?': 'Police officer' };
     if (genId === 'pk-helper-scene' && (q.answer !== lvScene[q.prompt] || new Set(q.choices).size !== 3)) problems.push('helper scene wrong');
+    // A firefighter is never the wrong one where the lessons say a firefighter does it too: keeping people safe, and the sick or
+    // hurt, which most fire calls are (pass ML, the lesson check).
+    if (['pk-helper-scene', 'pk-helper-where', 'ck-which-helper', 'ck-job-tool'].includes(genId) && q.answer !== 'Firefighter' && q.choices.includes('Firefighter') && /safe|sick|hurt|well|heal|stethoscope/.test(q.prompt)) problems.push('a firefighter offered as wrong where firefighters help too');
+    // A square is a rectangle too (pass JW), so a matching question never sets the two side by side (pass ML).
+    if (['pm-same-shape', 'pm-different-shape'].includes(genId) && q.choices.some((c) => /^shape:square/.test(c)) && q.choices.some((c) => /^shape:rectangle/.test(c))) problems.push('a square set against a rectangle');
     if (genId === 'p3-tap-more' && !q.choices.every((c) => lnDots(c) <= lnDots(q.answer))) problems.push('more dots wrong');
     if (genId === 'p3-tap-fewer' && !q.choices.every((c) => lnDots(c) >= lnDots(q.answer))) problems.push('fewer dots wrong');
     if (genId === 'p3-tap-colour-item' && String(q.answer).split('-')[1] !== q.prompt.match(/Tap the (\w+) one/)[1]) problems.push('colour item wrong');
@@ -489,6 +510,10 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
       if (rows.some((v) => !(v.items.length >= 1 && v.items.length <= 5 && !v.items.includes('?')))) problems.push('counted row the screen cannot draw');
       if (ev.some((h) => h && h.kind === 'dots') && ev.some((h) => h && h.kind === 'pattern' && h.size && h.size !== 34)) problems.push('counted row off its dots'); }
     if (genId === 'pm-same-animals' && !/, and they look just alike\.$/.test(q.explain)) problems.push('same animals explanation gives no reason');
+    if (/^pm-same-(vehicles|things|water|land|shape|solid)$/.test(genId) && !/, just the same, so they match\.$/.test(q.explain)) problems.push('same explanation gives no reason');
+    if (/^pm-different-(vehicles|things|water|land|shape|solid)$/.test(genId) && !/ is not the same as the \w+, so it is different\.$/.test(q.explain)) problems.push('different explanation gives no reason');
+    // One sentence (EARMARKS L11, pass ML): First Steps' situation and matching questions carry no setup line.
+    if (/^(pc-same-colour|pc-different-colour|ps-find-match|ps-odd-one-out|ps-same-colour-shape|pm-same-\w+|pm-different-\w+|p4-more-close|p4-fewer-close|p4-real-bigger|p4-real-biggest|p4-real-middle|pk-while-waiting|pk-helper-scene|ck-good-choice)$/.test(genId) && (q.story !== null || !/^[A-Z][^.?!]*[.?]$/.test(q.prompt))) problems.push('a merged question kept a setup line or is not one sentence');
     if (genId === 'pm-different-animals' && !/ is not the same as the \w+, so it is the odd one out\.$/.test(q.explain)) problems.push('odd animal explanation gives no reason');
     // Grade 1 equations and word problems (pass LB), re-derived by working out each side of the number sentence in the words.
     const sideValue = (t) => { const toks = t.trim().split(/\s+/); let v = Number(toks[0]); for (let i = 1; i < toks.length; i += 2) v = toks[i] === '+' ? v + Number(toks[i + 1]) : v - Number(toks[i + 1]); return v; };
@@ -670,8 +695,8 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'ps-bigger' && spec(q.answer)[2] !== 'big') problems.push('bigger wrong');
     if (genId === 'ps-smaller' && spec(q.answer)[2] !== 'small') problems.push('smaller wrong');
     if (genId === 'pp-what-next') { const it = q.visual.items; if (spec(q.answer)[0] !== it[it.length % 2 === 0 ? 0 : 1]) problems.push('what next wrong'); }
-    if (genId === 'pp-which-repeats') { const it = q.visual.items; const repeats = it.every((x, i) => x === it[i % 2]); if (q.answer !== (repeats ? 'Yes' : 'No')) problems.push('repeats wrong'); }
-    if (genId === 'pp-missing') { const it = q.visual.items; const i = it.indexOf('?'); if (spec(q.answer)[0] !== it[i % 2 === 0 ? 0 : 1]) problems.push('missing wrong'); }
+    if (genId === 'pp-which-repeats') { const it = q.visual.items; const repeats = [2, 3].some((p) => it.every((x, i) => x === it[i % p])); if (q.answer !== (repeats ? 'Yes' : 'No')) problems.push('repeats wrong'); }
+    if (genId === 'pp-missing') { const it = q.visual.items; const i = it.indexOf('?'); if (spec(q.answer)[0] !== it.find((x, j) => j % 2 === i % 2 && x !== '?')) problems.push('missing wrong'); }
     if (genId === 'p3-how-many' && Number(q.answer) !== (q.visual.counting ? q.visual.items.length : q.visual.count)) problems.push('pre-K how many wrong'); // dots or a counting row (pass HS)
     if (genId === 'p3-tap-group' && dotCount(q.answer) !== Number(q.prompt.match(/Tap (?:the group of )?(\d)/)[1])) problems.push('pre-K tap group wrong');
     if (genId === 'p3-tap-one' && dotCount(q.answer) !== 1) problems.push('tap one wrong');
@@ -1108,7 +1133,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
 }
 // Why each wrong answer does not fit (pass MH): the pre-K 3 checks above, on a line of their own, over every choice kind the
 // two pre-K 3 courses use (70 when pass MH wrote them; the two tracing kinds have no choices).
-ok(`every pre-K 3 choice question says why each wrong choice does not fit, with more right examples (${WN_KINDS.size} kinds, 300 seeds each)`, WN_BAD.length === 0 && WN_KINDS.size >= 70, WN_BAD.slice(0, 3).join(' | '));
+ok(`every pre-K 3 and First Steps choice question says why each wrong choice does not fit, with more right examples (${WN_KINDS.size} kinds, 300 seeds each)`, WN_BAD.length === 0 && WN_KINDS.size >= 125, WN_BAD.slice(0, 3).join(' | '));
 { // More Info's smart words (pass MH, Mikey: "Maybe the explanation text can be "smart text" and show that it knows which wrong
   // answer was selected.  In a future visit to the module it can slightly change to "which you've chosen once before""). The words
   // follow what was tapped now and how often the same wrong answer to the same question was tapped on earlier visits.
@@ -1179,6 +1204,42 @@ ok(`every pre-K 3 choice question says why each wrong choice does not fit, with 
     { const looks = { type: 'choice', prompt: 'Tap the one that is different.', choices: ['shape:triangle~thin', 'shape:triangle~turned', 'shape:square'], answer: 'shape:square', whyNot: { 'shape:triangle~thin': { name: 'This one', why: 'is a triangle, just like the other one.' }, 'shape:triangle~turned': { name: 'This one', why: 'is a triangle, just like the other one.' } } };
       ok('two triangles that differ only by their look are twins: a tap on one hears the plain invitation while the other is open', L.preReaderWrongWords(looks, 'shape:triangle~thin', ['shape:triangle~thin']) === 'Not that one. Have another try.' && L.preReaderWrongWords(looks, 'shape:triangle~turned', ['shape:triangle~thin', 'shape:triangle~turned']).startsWith('This one is a triangle')); }
     ok('so after tapping one of the two alike animals the child hears the plain invitation, and the reason waits in More Info', twin.choices.length === 3 && L.preReaderWrongWords(twin, rabbit, [rabbit]) === 'Not that one. Have another try.' && L.whyNotNamesOpenWrong(twin, rabbit, twin.choices.filter((c) => c !== rabbit)) === true); }
+  // A question that names every picture it shows ("Which is the smallest in real life, a cat, a snail or a whale?") has said every
+  // name, so whyNotNamesAnswer lets a reason name the answer, and the reason then tells it by its sign ("and a snail is tiny");
+  // pass ML's second lesson read heard 120 such lines. In every read-aloud kind, a question of three or more pictures it names
+  // never hears the answer named while two are open (the leak check above reads only the other wrong pictures).
+  { const said = (t) => ' ' + String(t).toLowerCase().replace(/[^a-z0-9]+/g, ' ') + ' ';
+    const nameOf = (c) => { const m = String(c).split('#')[0].match(/^(?:pic|icon):(.+)$/); return m ? m[1].replace(/-/g, ' ').toLowerCase() : null; };
+    const gens = [...new Set(L.COURSES.filter((c) => c.readAloud).flatMap((c) => c.modules.flatMap((m) => m.generators || [])))];
+    const leaks = []; let read = 0;
+    for (const g of gens) for (let sd = 1; sd <= 120; sd++) {
+      let q; try { q = L.generateQuestion(g, sd); } catch (e) { continue; }
+      if (!q || q.type !== 'choice' || !q.whyNot || (q.choices || []).length < 3) continue;
+      const asked = said((q.story || '') + ' ' + (q.prompt || '')); const names = q.choices.map(nameOf);
+      if (names.some((n) => !n || !asked.includes(' ' + n + ' '))) continue;
+      const ans = nameOf(q.answer);
+      for (const w of q.choices.filter((c) => c !== q.answer)) { const heard = said(L.preReaderWrongWords(q, w, [w])); read += 1; if ([ans, ans + 's'].some((n) => heard.includes(' ' + n + ' '))) leaks.push(`${g}#${sd} ${w}`); }
+    }
+    ok('a question that names every picture it shows never hears the answer named in a reason while two are open (a cat, a snail or a whale)', read > 100 && leaks.length === 0, `${read} taps; ${leaks.slice(0, 5).join('; ')}`); }
+  // A square is a rectangle (TEKS K.6A), so no First Steps sentence says a rectangle has two long sides; the one the lessons show is
+  // the long rectangle (pass ML, the second lesson read: an explanation and two More Info rows still said it).
+  { const fs = L.COURSES.find((c) => c.id === 'first-steps-pk'); const bad = [];
+    for (const g of [...new Set(fs.modules.flatMap((m) => m.generators || []))]) for (let sd = 1; sd <= 300; sd++) {
+      let q; try { q = L.generateQuestion(g, sd); } catch (e) { continue; } if (!q) continue;
+      const texts = [q.explain || '', ...(q.alsoRight || []), ...Object.values(q.whyNot || {}).map((w) => L.whyNotSentence(w))];
+      for (const t of texts) if (/\ba rectangle has two long/i.test(t)) { bad.push(`${g}#${sd}: ${t}`); break; } }
+    ok('no First Steps explanation or More Info row says a rectangle has two long sides (a square is a rectangle too)', bad.length === 0, bad.slice(0, 3).join(' | ')); }
+  // The groups that look like more as they are drawn (pass ML, the code check's second read): both rows of dots at one size, the
+  // long row longer than the close bunch, the big circles at least 1.4 times as wide as the little ones, and every group within
+  // a phone's 250-unit button, so no row shrinks and the other not.
+  { const wide = (v) => v.kind === 'dots' ? v.frame * v.size + (v.frame - 1) * v.gap : v.frame * v.size + (v.frame - 1) * (v.gap || 8); const bad = [];
+    for (let n = 2; n <= 5; n++) for (let m = 2; m <= 5; m++) { if (n === m) continue;
+      const lg = L.lookVisual(`look:dots-${n}-long`); const cl = L.lookVisual(`look:dots-${m}-close`); const bg = L.lookVisual(`look:circles-${n}-big`); const li = L.lookVisual(`look:circles-${m}-little`);
+      if (!(lg.size && lg.size === cl.size)) bad.push(`dots ${n},${m}: sizes ${lg.size} and ${cl.size}`);
+      if (!(wide(lg) > wide(cl))) bad.push(`dots ${n},${m}: long ${wide(lg)} not longer than close ${wide(cl)}`);
+      if (!(bg.size >= 1.4 * li.size)) bad.push(`circles ${n},${m}: big ${bg.size} against little ${li.size}`);
+      for (const [k, v] of [['long', lg], ['close', cl], ['big', bg], ['little', li]]) if (wide(v) > 250) bad.push(`${k} ${n},${m}: ${wide(v)} wide`); }
+    ok('the groups that look like more keep one dot size, the long row longer, big circles 1.4 times the little ones, and fit a 250-unit button', bad.length === 0, bad.slice(0, 4).join('; ')); }
   { const named = (answer, picked, why) => L.whyNotNamesAnswer({ type: 'choice', choices: [answer, picked], answer, prompt: 'Tap one.', whyNot: { [picked]: { name: 'That one', why } } }, picked);
     ok('the answer is named by a number word, a size word or a plural just as by its own word, and a word both choices share names nothing',
       named('dots:4', 'dots:3', 'is fewer than four dots.') && named('shape:circle:big', 'shape:circle:small', 'is smaller than the bigger one.') && named('item:square-blue', 'item:circle-blue', 'is round, and these are squares.')
@@ -1641,6 +1702,18 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
     const sized = /\b(?:small|smaller|little|tiny|mini)\s+(?:\w+\s+)?(?:blocks?|cubes?|toys?|balls?|rocks?|stones?|shapes?|pieces?|cars?|animals?)\b/i;   // small things must say they are too big to swallow (pass MF, the second read)
     const bad = L.experimentsFor('PK3').filter((e) => { const t = [e.title, e.ask, e.do, e.see, e.tell].filter(Boolean).join(' '); return choke.test(t) || (sized.test(t) && !(/too big to swallow|nothing small enough to swallow/i.test(t) && /toilet-paper tube/i.test(t))); }).map((e) => e.title);
     ok('no pre-K 3 experiment uses something a three-year-old can choke on (pass MB; AAP, CPSC)', L.experimentsFor('PK3').length >= 20 && bad.length === 0, bad.join(', ')); }
+  // One listing for each idea (EARMARKS A12): pre-K 4 listed Rain in a Jar twice, in two wordings, until pass ML kept one. No
+  // grade lists an experiment idea twice, by title or by question, but the repeats pass ML found in other grades, which wait for
+  // their grades' reviews; the list only falls, so a repeat that is fixed and still listed fails too.
+  { const WAITING = ['2:what does rain do to a hill?', '4:electromagnet', '4:water filter', '4:what did the owl eat?', '9:transpiration bags', '9:can you see dna?', '10:electrolysis of water', '10:conservation of mass', '10:which solutions conduct?', '11:projectile range', "11:hooke's law", '11:how fast is sound?', '12:half-life with coins', '12:star brightness and distance', '12:why do far stars look dim?'];
+    const twice = []; for (const [g, list] of Object.entries(L.EXPERIMENTS)) for (const f of ['title', 'ask']) { const seen = new Set(); for (const e of list) { const k = `${g}:${e[f].toLowerCase()}`; if (seen.has(k) && !twice.includes(k)) twice.push(k); seen.add(k); } }
+    ok('no grade lists one experiment idea twice, by title or by question, but the repeats waiting for their grades\' reviews, a list that only falls (EARMARKS A12)', twice.every((k) => WAITING.includes(k)) && WAITING.every((k) => twice.includes(k)) && L.experimentsFor('PK4').filter((e) => e.title === 'Rain in a jar').length === 1, twice.filter((k) => !WAITING.includes(k)).concat(WAITING.filter((k) => !twice.includes(k)).map((k) => 'fixed: ' + k)).join(', '));
+    // Near repeats found by reading (pass ML, the final read): one idea under two titles with two questions, which the exact
+    // match above cannot see. They wait for their grades' reviews too, and the list only falls: once one of a pair is gone,
+    // take the pair off the list.
+    const NEAR = [['10', 'Reaction rate and surface area', 'Rate and surface area'], ['11', "Ohm's law on the table", "Ohm's law"], ['12', 'Albedo test', 'Albedo']];
+    const gone = NEAR.filter(([g, a, b]) => !(L.EXPERIMENTS[g] || []).some((e) => e.title === a) || !(L.EXPERIMENTS[g] || []).some((e) => e.title === b));
+    ok('the near repeats found by reading, one idea under two titles, wait for their grades\' reviews, a second list that only falls (EARMARKS A12)', gone.length === 0, gone.map(([g, a, b]) => `fixed: ${g} ${a} / ${b}`).join(', ')); }
   // Red against green, every pre-K 3 kind (pass MB, the alignment read's second read): where only the color tells a wrong choice
   // from the answer, the two are never red and green, the most common color vision deficiency (MedlinePlus). Every pre-K 3
   // generator is sampled, so a new kind is held too; a question that asks for a color by its name is exempt (RULES-AUDIT 6).
@@ -1651,6 +1724,14 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
       const a = String(q.answer); const ac = (a.match(/red|green/) || [])[0]; if (!ac) continue;
       if ((q.choices || []).some((w) => w !== a && strip(w) === strip(a) && /red|green/.test(w) && !w.includes(ac))) return true; } return false; });
     ok('no pre-K 3 kind sets red against green where color alone decides (pass MB; asking for a color by its name is exempt)', gens.length >= 40 && bad.length === 0, bad.join(', ')); }
+  { const strip = (x) => String(x).replace(/red|green|blue|yellow/g, 'C').split('#')[0];
+    const NAMING = ['pc-tap-colour', 'pc-name-colour', 'pc-colour-of-thing']; const BY_COLOR = ['pc-same-colour', 'pc-different-colour'];
+    const gens = [...new Set(L.COURSES.filter((c) => c.grade === 'PK4').flatMap((c) => c.modules).flatMap((m) => m.generators))].filter((g) => !NAMING.includes(g));
+    const bad = gens.filter((g) => { for (let s = 1; s <= 3000; s += 1) { const q = L.generateQuestion(g, s); const a = String(q.answer); const cs = (q.choices || []).map(String);
+      if (BY_COLOR.includes(g)) { const cols = cs.map((w) => (w.match(/red|green|blue|yellow/) || [])[0]); if (cols.includes('red') && cols.includes('green')) return true; continue; }
+      const ac = (a.match(/red|green/) || [])[0]; if (!ac) continue;
+      if (cs.some((w) => w !== a && strip(w) === strip(a) && /red|green/.test(w) && !w.includes(ac))) return true; } return false; });
+    ok('no pre-K 4 kind sets red against green where color alone decides (EARMARKS A11, pass ML; asking for a color by its name is exempt)', gens.length >= 40 && bad.length === 0, bad.join(', ')); }
   ok('an elective is never recommended, only offered under other courses', !L.recommendedCourseIds([L.makeCoursesEnabledEvent([], 't')], 'elementary').some((id) => L.getCourse(id).elective) && L.COURSES.some((c) => c.elective));
   ok('a high school student starts on the grade 9 courses', JSON.stringify(L.recommendedCourseIds([L.makeCoursesEnabledEvent([], 't')], 'high')) === '["history-9","math-9","reading-9","science-9","writing-9"]');
   ok('the letters course and now the counting course both have a touch module', L.courseNeedsTouch('letters-k') === true && L.courseNeedsTouch('counting-k') === true && L.courseNeedsTouch('fractions-intro') === false);
@@ -2229,6 +2310,17 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   // list never puts two of a kind side by side, and older students' games are spread so the kinds take turns.
   const close = Object.entries(L.DOT_SHAPES).map(([k, pts]) => [k, L.dotsTooClose(pts)]).filter(([, bad]) => bad.length);
   ok('no connect-the-dots picture has two dots closer than the gap', close.length === 0, close.map(([k, bad]) => `${k}:${JSON.stringify(bad)}`).join(' '));
+  // The lessons' and questions' numbered dot pictures too (pass ML, the lesson check: the fish put dots 3 and 6 on one point, so
+  // their numbers printed over each other): every TRACE_LETTERS picture with dots, its closing point left out.
+  { const traced = Object.entries(L.TRACE_LETTERS).filter(([, d]) => d.dots).map(([k, d]) => { const pts = d.strokes[0]; const open = pts.length > 1 && pts[0][0] === pts[pts.length - 1][0] && pts[0][1] === pts[pts.length - 1][1] ? pts.slice(0, -1) : pts; return [k, L.dotsTooClose(open)]; }).filter(([, bad]) => bad.length);
+    ok('no numbered dot picture in a lesson or question has two dots closer than the gap (pass ML)', traced.length === 0, traced.map(([k, bad]) => `${k}:${JSON.stringify(bad)}`).join(' ')); }
+  // Patterns that no cue answers (pass ML, the lesson check): what comes next and what is missing are not always the row's first
+  // shape, and rows that repeat and rows that do not each come with two kinds of shape and with three.
+  { const first = { next: new Set(), missing: new Set() }; const kinds = { Yes: new Set(), No: new Set() }; const noStart = new Set();
+    for (let s = 1; s <= 400; s++) { const n = L.generateQuestion('pp-what-next', s); first.next.add(String(n.answer).split('-')[0].replace('item:', '') === n.visual.items[0]);
+      const m = L.generateQuestion('pp-missing', s); const it = m.visual.items; first.missing.add(String(m.answer).split('-')[0].replace('item:', '') === (it[0] === '?' ? it[1] : it[0]));
+      const r = L.generateQuestion('pp-which-repeats', s); kinds[r.answer].add(new Set(r.visual.items).size); if (r.answer === 'No' && new Set(r.visual.items).size === 2) noStart.add(r.visual.items[0] === r.visual.items[1]); }
+    ok('a pattern question cannot be passed by the row\'s first shape or by its kinds of shape (pass ML)', first.next.size === 2 && first.missing.size === 2 && kinds.Yes.has(2) && kinds.Yes.has(3) && kinds.No.has(2) && kinds.No.has(3) && noStart.size === 2, JSON.stringify({ next: [...first.next], missing: [...first.missing], yes: [...kinds.Yes], no: [...kinds.No], twoShapeNoStartsWithTwoAlike: [...noStart] })); }
   const dotGames = L.GAMES.filter((g) => g.kind === 'dots');
   ok('every dots game draws a listed picture and none is the name', dotGames.every((g) => L.DOT_SHAPES[g.shape]) && !dotGames.some((g) => g.shape === 'name'));
   const counts = dotGames.map((g) => L.DOT_SHAPES[g.shape].length);
@@ -2368,6 +2460,23 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   ok('every course has a game students can see today, not only a map waiting for its painting', L.COURSES.every((c) => L.COURSE_GAMES[c.id].some((id) => kindOf(id) !== 'map')));
   const twoOfAKind = L.COURSES.filter((c) => new Set(L.COURSE_GAMES[c.id].map(kindOf)).size < L.COURSE_GAMES[c.id].length).length;
   ok('no course holds two games of one kind (the element pairs left physics for the periodic table, 2026-09-25)', twoOfAKind === 0, `${twoOfAKind}`);
+  // Look Closely (pass ML, the game check; Find the Match until its second read): every picture it deals is one a First Steps lesson line draws, every board of
+  // three pairs holds two of each of three pictures, one couple of them almost alike (a fox and a cat, or a whale and a
+  // fish), never a square with a rectangle, and the course's game is it.
+  {
+    const deck = L.PAIR_PICS['first-steps']; const drawn = new Set();
+    const walk = (v) => { if (!v || typeof v !== 'object') return; if (Array.isArray(v)) { v.forEach(walk); return; } if (v.kind && v.name) drawn.add(`${v.kind}:${v.name}`); Object.values(v).forEach(walk); };
+    L.getCourse('first-steps-pk').modules.forEach((m) => (L.MODULES.find((x) => x.id === m.id).lesson.script || []).forEach((line) => walk(line.show)));
+    const undrawn = deck.pics.filter((t) => !drawn.has(t));
+    let bad = 0; const couples = new Set();
+    for (let r = 0; r < 400; r++) {
+      const cards = L.pairPicsBoard('first-steps', r, 3); const kinds = [...new Set(cards)];
+      const couple = deck.almost.find(([a, b]) => kinds.includes(a) && kinds.includes(b)); if (couple) couples.add(couple.join('+'));
+      if (cards.length !== 6 || kinds.length !== 3 || !kinds.every((t) => cards.filter((c) => c === t).length === 2 && deck.pics.includes(t)) || !couple || (kinds.includes('shape:square') && kinds.includes('shape:rectangle'))) bad++;
+    }
+    const game = L.GAMES.find((g) => g.id === 'pairs-first-steps');
+    ok('Look Closely deals only pictures First Steps\' lines draw, and every board holds an almost-alike couple (a fox and a cat, or a whale and a fish)', undrawn.length === 0 && bad === 0 && couples.size === 2 && game && game.young && !game.deck && L.COURSE_GAMES['first-steps-pk'].join() === 'pairs-first-steps', `undrawn ${undrawn.join(',')}; bad boards ${bad}; couples ${[...couples].join(' ')}`);
+  }
   let repeats = 0; for (const gr of L.GRADES) { const ks = L.COURSES.filter((c) => c.grade === gr).flatMap((c) => L.COURSE_GAMES[c.id].map(kindOf)); repeats += ks.length - new Set(ks).size; }
   ok('kinds repeated inside a grade stay at or under 10 (new kinds, timelines, the periodic table and find the evidence, 2026-09-25; world capitals in world geography, 2026-10-02)', repeats <= 10, `${repeats}`);
   // Since pass MC the first game on the list opens on day one only when its course owns another game on the list (or it is a
@@ -2412,11 +2521,20 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
     ok('in a sign word the asked letter is sometimes first, sometimes not, for A and for B, and no word sounds like a letter', at.A.size >= 2 && at.B.size >= 2 && at.A.has(0) && at.B.has(0) && ![...said].some((w) => NAME_SOUNDS.includes(w)) && said.size >= 12, JSON.stringify({ A: [...at.A], B: [...at.B], said: [...said] })); }
   // A Head Start progression is quoted or its parts named, never retold as what it means for three-year-olds (pass MK, the lesson
   // check: the last such paraphrases, "which for three-year-olds means", were Listen and Point's, and one dropped the second half
-  // of P-LC 1). It reads that one wording; other retellings are the lesson brief's to find. Seven Very First Steps citations still
-  // name their progressions' parts, cite a goal whole, or retell part of one, without quoting it (Find the Match, Match the Animals,
-  // One and Two, More and Fewer, One More and One Fewer, Three Dots, Please and Thank You; EARMARKS E12).
+  // of P-LC 1). It reads that one wording; other retellings are the lesson brief's to find. The seven Very First Steps citations
+  // that still named their progressions' parts without quoting them (Find the Match, Match the Animals, One and Two, More and
+  // Fewer, One More and One Fewer, Three Dots, Please and Thank You; EARMARKS E12) quote them since pass ML.
   { const said = L.MODULES.flatMap((m) => (m.sources || []).map((s) => [m.id, s])).filter(([, s]) => /Head Start/.test(s) && /for (?:three|four|five)-year-olds,? (?:it |which )?(?:means|begins)\b/.test(s));
     ok('no Head Start citation retells a progression as what it means for three-year-olds (a paraphrase)', said.length === 0, said.map(([id]) => id).join(', ')); }
+  // A pre-K 4 citation quotes its 48 to 60 month progression (pass ML, First Steps' review): every Head Start goal a reviewed
+  // pre-K 4 lesson cites names that band, the one its children are in (pass MK's First Steps named it in none of its twenty,
+  // ten of them bare codes such as "Goal P-MATH 8.", which round four's read found the first version missed). First Sounds and
+  // Letters joins the list when its review is done.
+  { const REVIEWED_PK4 = ['first-steps-pk']; const missing = []; let goals = 0;
+    for (const cid of REVIEWED_PK4) for (const m of L.getCourse(cid).modules) { const mod = L.MODULES.find((x) => x.id === m.id);
+      for (const s of (mod.sources || []).filter((x) => /Head Start/.test(x))) { const cited = [...s.matchAll(/(P-[A-Z]+ \d+)\b/g)];   // a bare code too (Goal P-MATH 8.)
+        cited.forEach((g, i) => { goals += 1; const part = s.slice(g.index, i + 1 < cited.length ? cited[i + 1].index : s.length); if (!/48 to 60 month/.test(part)) missing.push(`${m.id} ${g[1]}`); }); } }
+    ok(`every Head Start goal a reviewed pre-K 4 lesson cites names its 48 to 60 month progression (${goals} citations)`, goals >= 20 && missing.length === 0, missing.join(', ')); }
   // Let's Play as a child sees it (pass MC, from Mikey's answer on the day-one game: "I think that's a good setup as long as the
   // rest of the courses unlock a new game."). playList is the list the screen draws. For every course, enrolled alone and with
   // its whole grade, as the young learner or older student who takes it: every game the course owns is on the list once its map
@@ -2474,7 +2592,18 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
       const urlCompare = toolFiles.filter((f) => /import\.meta\.url\s*===\s*`file:\/\/\$\{process\.argv\[1\]\}`/.test(readFileSync(new URL(f, toolDir), 'utf8')));
       const alone = toolFiles.filter((f) => /process\.argv\[1\]/.test(readFileSync(new URL(f, toolDir), 'utf8')));
       const wrongName = alone.filter((f) => !readFileSync(new URL(f, toolDir), 'utf8').includes(`process.argv[1].endsWith('${f}')`));
-      ok('every tool that runs on its own checks its own name with endsWith, never import.meta.url against the path', urlCompare.length === 0 && wrongName.length === 0 && alone.length >= 4, [...urlCompare, ...wrongName].join(', ')); }
+      ok('every tool that runs on its own checks its own name with endsWith, never import.meta.url against the path', urlCompare.length === 0 && wrongName.length === 0 && alone.length >= 4, [...urlCompare, ...wrongName].join(', '));
+      // A tool with a --write flag writes only when it is the file being run (pass ML, the code check): tools/prompts-csv.mjs
+      // imports tools/coloring-levels.mjs, whose writer ran on any --write in the command line.
+      const writers = toolFiles.filter((f) => /process\.argv\.includes\('--write'\)/.test(readFileSync(new URL(f, toolDir), 'utf8')));
+      // The flag must sit on the guard's own line or inside the block the guard opens, not merely somewhere in the file (round
+      // four's read): a tool that guarded its printing but wrote on any --write would have passed the first version.
+      const insideGuard = (src, f) => { const guard = `process.argv[1].endsWith('${f}')`; const blocks = [];
+        for (let g = src.indexOf(guard); g >= 0; g = src.indexOf(guard, g + 1)) { const open = src.indexOf('{', g); let depth = 0;
+          for (let k = open; k >= 0 && k < src.length; k++) { if (src[k] === '{') depth += 1; else if (src[k] === '}') { depth -= 1; if (depth === 0) { blocks.push([g, k]); break; } } } }
+        return [...src.matchAll(/process\.argv\.includes\('--write'\)/g)].every((m) => blocks.some(([a, b]) => a < m.index && m.index < b) || src.slice(src.lastIndexOf('\n', m.index) + 1, src.indexOf('\n', m.index)).includes(guard)); };
+      const unguarded = writers.filter((f) => !insideGuard(readFileSync(new URL(f, toolDir), 'utf8'), f));
+      ok('a tool with a --write flag writes only when it is the file being run, never when another tool imports it', writers.length >= 2 && unguarded.length === 0, unguarded.join(', ')); }
     ok('a game once played stays open, even when it no longer leads the list', L.unlockedGameIds([L.makePlayedEvent('maze-small', '2026-10-01T10:00:00Z')], k2).has('maze-small') && !L.unlockedGameIds([], k2).has('maze-small'));
     // Every game's best badge says what it counts (the code check: timed games read "best 42"). Each game's onScore call in
     // ui.jsx decides its unit: ticks are seconds, so the kind must be in BEST_SECONDS; another low count takes a word or no badge.
@@ -3029,9 +3158,9 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
 // and long story, and sixty questions of every bank a lesson uses are read; a plate, bowl, pile, basket or jar that is big or
 // little and has more counts too (the code check). Pre-K 4's More and Fewer and One, Two, Three still say it and are fixed when the sweep
 // reaches them (docs/EARMARKS.md A7); the waiting list may only shrink, and the check fails once a waiting lesson is fixed and
-// still listed.
+// still listed. Pass ML fixed both, so the list is empty.
 {
-  const WAITING = new Set(['more-and-fewer-5', 'count-to-3']);
+  const WAITING = new Set([]);
   // The claims themselves (more means the bigger group, the bigger group of berries has more), not every use of the words: grade 1
   // counting on (one count for each one in the smaller group) compares numbers already counted, which is fine.
   const SAYS_BIGGER_GROUP = /\b(bigger|smaller) group( of \w+)? (has|is|had|was) (more|fewer)\b|\b(more|fewer) (means|is) the (bigger|smaller) group\b|\b(big|bigger|larger|little|small|smaller) (group|pile|plate|bowl|basket|jar)s?( of \w+)? (has|have|had) (more|fewer)\b/i;
@@ -3046,7 +3175,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   for (const [cid, cs] of Object.entries(MA_COURSE_STORIES)) if (SAYS_BIGGER_GROUP.test((cs.words || []).join(' '))) bad.add(`long story of ${cid}`);
   for (const [cid, cs] of Object.entries(MA_NEXT_STORIES)) if (SAYS_BIGGER_GROUP.test((cs.words || []).join(' '))) bad.add(`next long story of ${cid}`);   // pass MH
   const unexpected = [...bad].filter((id) => !WAITING.has(id)); const fixed = [...WAITING].filter((id) => !bad.has(id));
-  ok('no lesson or explanation calls the group with more the bigger group (pre-K 4 waits for its pass)', unexpected.length === 0 && fixed.length === 0, `new: ${unexpected.join(', ')}; fixed, so take off the list: ${fixed.join(', ')}`);
+  ok('no lesson or explanation calls the group with more the bigger group (pre-K 4 since pass ML)', unexpected.length === 0 && fixed.length === 0, `new: ${unexpected.join(', ')}; fixed, so take off the list: ${fixed.join(', ')}`);
 }
 
 // Words on a gold fill (pass MF, the screen checks: Celebrate! was white on the light theme's gold, 3.24 to 1): onGold is read from

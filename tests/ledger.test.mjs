@@ -112,7 +112,8 @@ ok('the ledger has no rows the app does not use', orphans.length === 0, orphans.
 // each said the way Google's guide for the model advises (what the picture is, never what it is not), the character-sheet note
 // moves to its own column, and docs/LEONARDO-PROMPTS.csv is what the tool writes today.
 {
-  const { foldPrompt, ledgerRows, csvText, hasPerson, replanSerials, saysNot, REFERENCE_NAMES, CAST_ORDER, MODEL } = await import('../tools/prompts-csv.mjs');
+  const { foldPrompt, ledgerRows, csvText, hasPerson, replanSerials, saysNot, REFERENCE_NAMES, CAST_ORDER, MODEL, modelFor, COLORING_MODEL, COLORING_TRIAL, TRIAL_PAGES, TRIAL_GROUP, coloringKind, onLucid, gradeOfWhere, sceneWords, SCENE_WORDS_BAN, SCENE_WORDS_FROM } = await import('../tools/prompts-csv.mjs');
+  const { GRADES } = await import('../src/logic.mjs');
   const earmarks = readFileSync('docs/EARMARKS.md', 'utf8');
   const all = ledgerRows(ledger); const unknown = new Set(); const noteLeft = []; const sheetsLost = []; const unwritten = []; const negative = [];
   for (const [serial, , , prompt, bans] of all) {
@@ -129,19 +130,20 @@ ok('the ledger has no rows the app does not use', orphans.length === 0, orphans.
   ok('every ban in the ledger folds into its prompt as a sentence of its own, for a model with no negative prompt', all.length >= 4700 && unknown.size === 0 && unwritten.length === 0, [...unknown, ...unwritten.slice(0, 5)].join(','));
   ok('every folded sentence says what the picture is, never what it is not (Google: "Describe what you want, not what you don\'t want")', negative.length === 0, negative.slice(0, 6).join(','));
   // The ledger's own prompts still say what a picture is not in some rows (pass MC counted them when the fold arrived); the number
-  // may only fall, and a new row says what the picture is (EARMARKS A13).
-  const NOT_PROMPT_LIMIT = 110; const saying = all.filter((r) => saysNot(r[3]));
+  // may only fall, and a new row says what the picture is (EARMARKS A13). 92 since pass ML (110 before, when 95 rows said it): First Steps' P17, S1421 and S1433
+  // say what they show.
+  const NOT_PROMPT_LIMIT = 92; const saying = all.filter((r) => saysNot(r[3]));
   ok(`ledger prompts that say what the picture is not stay at or under ${NOT_PROMPT_LIMIT} and only fall (${saying.length} now)`, saying.length <= NOT_PROMPT_LIMIT && saysNot('A ball, no flowers') === 'no flowers' && saysNot('A ball among plain green leaves') === null, saying.slice(0, 3).map((r) => r[0]).join(','));
   ok('a character-sheet note leaves the folded prompt, and its sheets reach their column when the scene shows a person', noteLeft.length === 0 && sheetsLost.length === 0, [...noteLeft, ...sheetsLost].slice(0, 6).join(','));
   // Hands and skin are said only where a person is drawn: a clock's hands, a fox's face, a cube's flat face, a mother duck or a
   // class garden is not a person, and the model draws what the words name (the accuracy check, pass MC). These rows were wrong
   // once, both ways.
   const by = Object.fromEntries(all.map((r) => [r[0], r]));
-  const noOne = ['P18', 'P85', 'S874', 'S1188', 'S1706', 'S1707', 'S3826', 'S2', 'S31', 'P11', 'P75', 'S484', 'S1373', 'S2358', 'S96', 'S168', 'S1427', 'S3107', 'S2015', 'S1430', 'CS540', 'P81', 'S3807', 'S570', 'S3175', 'S3556', 'S3241', 'S1715', 'S3362', 'CS389', 'CS518', 'CS375', 'P127', 'S3653', 'CS280'];
+  const noOne = ['P111', 'P18', 'P85', 'S874', 'S1188', 'S1706', 'S1707', 'S3826', 'S2', 'S31', 'P11', 'P75', 'S484', 'S1373', 'S2358', 'S96', 'S168', 'S1427', 'S3107', 'S2015', 'S1430', 'CS540', 'P81', 'S3807', 'S570', 'S3175', 'S3556', 'S3241', 'S1715', 'S3362', 'CS389', 'CS518', 'CS375', 'P127', 'S3653', 'CS280'];
   const someone = ['S273', 'S442', 'S1450', 'P59', 'S57', 'S804', 'S2402', 'S1500', 'S1695', 'S1605', 'S2903', 'S2545', 'S1773', 'P46', 'S958', 'S40', 'CS412', 'CS477', 'CS583', 'S1208', 'S1418'];
   const handed = (s) => / Hands have five fingers/.test(foldPrompt(by[s][3], by[s][4]).prompt);
   const wrong = [...noOne.filter((s) => !by[s] || handed(s)), ...someone.filter((s) => !by[s] || !handed(s))];
-  ok('hands and skin are said where a person is drawn and nowhere else (clock hands, animal faces, solid faces, a class garden, a grown-up\'s shoe)', wrong.length === 0 && hasPerson('a crossing guard waving') && !hasPerson('the long hand on the 3') && !hasPerson('A clock with hands pointing to 3') && !hasPerson("a grown-up's big shoe") && hasPerson("a little boy's toes"), wrong.join(','));
+  ok('hands and skin are said where a person is drawn and nowhere else (clock hands, animal faces, solid faces, a class garden, a grown-up\'s shoe)', wrong.length === 0 && hasPerson('a crossing guard waving') && !hasPerson('the long hand on the 3') && !hasPerson('A clock with hands pointing to 3') && !hasPerson('a round clock with a plain white face, its only marks two black hands') && !hasPerson("a grown-up's big shoe") && hasPerson("a little boy's toes"), wrong.join(','));
   // A picture EARMARKS A6 lists asks for drawn writing its bans forbid, so its row waits to be re-planned.
   const replan = replanSerials(earmarks); const csv = readFileSync('docs/LEONARDO-PROMPTS.csv', 'utf8').trim(); const want = csvText(ledger, earmarks);
   const waiting = want.split('\n').filter((l) => l.endsWith(',"Re-plan first (A6)"')).length;
@@ -155,22 +157,75 @@ ok('the ledger has no rows the app does not use', orphans.length === 0, orphans.
   { const parse = (line) => [...line.matchAll(/"((?:[^"]|"")*)"/g)].map((m) => m[1].replace(/""/g, '"'));
     const lines = want.split('\n').slice(1).map(parse); const head = parse(want.split('\n')[0]); const col = (n) => head.indexOf(n);
     const groups = []; for (const l of lines) if (groups[groups.length - 1] !== l[col('group')]) groups.push(l[col('group')]);
-    const castGroups = CAST_ORDER.flatMap((p) => [`${p}: references`, p]).filter((g) => groups.includes(g));
-    const gradeGroups = groups.slice(castGroups.length + (groups.includes('Two or more of the cast') ? 1 : 0));
+    // Since pass ML (Mikey's answer to Q44, "run the trial, then move them if they pass"): while the trial waits, its five pages
+    // come first, each on both models, and the coloring pages painted on Lucid Origin come last, after what has no grade.
+    const waiting = Object.values(COLORING_TRIAL).includes('waiting'); const moved = Object.values(COLORING_TRIAL).some((s) => s !== 'failed');
+    const trialGroup = waiting ? groups[0] : null; const colorGroup = moved ? groups[groups.length - 1] : null;
+    const middle = groups.slice(waiting ? 1 : 0, moved ? -1 : undefined);
+    const castGroups = CAST_ORDER.flatMap((p) => [`${p}: references`, p]).filter((g) => middle.includes(g));
+    const gradeGroups = middle.slice(castGroups.length + (middle.includes('Two or more of the cast') ? 1 : 0));
     const names = Object.values(REFERENCE_NAMES);
-    ok('the spreadsheet runs in Mikey\'s painting order: each person\'s references and then their pictures, person by person, then two or more of the cast, then by grade from pre-K 3, then what has no grade, numbered from 1, each group once',
-      lines.every((l, k) => Number(l[col('order')]) === k + 1) && groups.length === new Set(groups).size && groups.slice(0, castGroups.length).join() === castGroups.join() && castGroups[0] === 'Mike: references' && gradeGroups[0] === 'Pre-K 3' && gradeGroups[gradeGroups.length - 1].startsWith('No grade'),
+    ok('the spreadsheet runs in Mikey\'s painting order: the coloring trial first while it waits, then each person\'s references and then their pictures, person by person, then two or more of the cast, then by grade from pre-K 3, then what has no grade, then the coloring pages on Lucid Origin, numbered from 1, each group once',
+      lines.every((l, k) => Number(l[col('order')]) === k + 1) && groups.length === new Set(groups).size && middle.slice(0, castGroups.length).join() === castGroups.join() && castGroups[0] === 'Mike: references' && gradeGroups[0] === 'Pre-K 3' && gradeGroups[gradeGroups.length - 1].startsWith('No grade')
+      && (!waiting || trialGroup === TRIAL_GROUP) && (!moved || /on Lucid Origin, painted last/.test(colorGroup)),
       groups.join(' | '));
-    ok('every row names its model, Nano Banana 2.1, and its settings; every character sheet has a reference name of its own, and a picture names each reference it needs',
-      MODEL === 'Nano Banana 2.1' && lines.every((l) => l[col('model')] === MODEL && l[col('settings')].length > 20) && sheetsListed.every((s) => REFERENCE_NAMES[s]) && new Set(names).size === names.length
-      && lines.filter((l) => l[col('references to attach')]).every((l) => l[col('references to attach')].split(', ').every((x) => /^[A-Z][a-z]+ - \d \(C\d+\)$/.test(x))), names.join(', ')); }
+    // Every row names its model: Nano Banana 2.1 for every painting, reference and map, and for a coloring page the model its
+    // kind's trial gives it (Lucid Origin, said with its fallback while the trial waits); the trial's rows name one model each.
+    const trialLines = lines.filter((l) => l[col('group')] === TRIAL_GROUP);
+    ok('every row names its model and its settings: Nano Banana 2.1 for every painting, reference and map, and for a coloring page the model its trial gives it; every character sheet has a reference name of its own, and a picture names each reference it needs',
+      MODEL === 'Nano Banana 2.1' && COLORING_MODEL === 'Lucid Origin' && lines.every((l) => l[col('settings')].length > 20) && sheetsListed.every((s) => REFERENCE_NAMES[s]) && new Set(names).size === names.length
+      && lines.filter((l) => l[col('group')] !== TRIAL_GROUP).every((l) => l[col('model')] === modelFor(l[col('serial')]) && (coloringKind(l[col('serial')]) || l[col('model')] === MODEL))
+      && lines.filter((l) => coloringKind(l[col('serial')]) && l[col('group')] !== TRIAL_GROUP).every((l) => (l[col('group')] === colorGroup) === onLucid(l[col('serial')]) && /Lucid Origin/.test(l[col('model')]) === onLucid(l[col('serial')]))
+      && lines.filter((l) => l[col('references to attach')]).every((l) => l[col('references to attach')].split(', ').every((x) => /^[A-Z][a-z]+ - \d \(C\d+\)$/.test(x))), names.join(', '));
+    // The trial (Q44): five pages, one each of pre-K 3, pre-K 4, kindergarten and grade 2 and one letter page, each painted on
+    // Nano Banana 2.1 and then on Lucid Origin with no reference, and none of them listed again later while the trial waits.
+    const trialSerials = TRIAL_PAGES.filter((s) => COLORING_TRIAL[coloringKind(s)] === 'waiting');
+    ok('the coloring trial lists each of its five pages twice, on Nano Banana 2.1 and then on Lucid Origin, with no reference, and not again later while it waits (Q44)',
+      TRIAL_PAGES.length === 5 && TRIAL_PAGES.every((s) => coloringKind(s)) && TRIAL_PAGES.some((s) => coloringKind(s) === 'letters')
+      && trialLines.length === 2 * trialSerials.length && trialSerials.every((s, i) => trialLines[2 * i][col('serial')] === s && trialLines[2 * i + 1][col('serial')] === s && trialLines[2 * i][col('model')] === MODEL && trialLines[2 * i + 1][col('model')] === COLORING_MODEL)
+      && trialLines.every((l) => /no reference, so the two models are compared on the words alone/.test(l[col('settings')]) && l[col('status')] === 'Trial')
+      && lines.filter((l) => trialSerials.includes(l[col('serial')])).length === trialLines.length,
+      trialLines.map((l) => `${l[col('serial')]}:${l[col('model')]}`).join(','));
+    // A coloring page on Lucid Origin attaches its level's approved trial page as a Style Reference, so a level's outlines stay alike.
+    ok('every coloring page on Lucid Origin attaches its level\'s approved page as a Style Reference (Q44)',
+      lines.filter((l) => l[col('group')] === colorGroup).every((l) => /as a Style Reference at Mid/.test(l[col('settings')])) && (!moved || lines.filter((l) => l[col('group')] === colorGroup).length >= 25),
+      String(lines.filter((l) => l[col('group')] === colorGroup).length));
+    // Leonardo's page for Lucid Origin takes a prompt of up to 2,000 characters, so every coloring page's folded prompt fits it.
+    const long = lines.filter((l) => coloringKind(l[col('serial')]) && l[col('prompt (bans folded in)')].length >= 2000).map((l) => l[col('serial')]);
+    ok('every coloring page\'s folded prompt fits Lucid Origin\'s 2,000 characters (Q44)', long.length === 0 && lines.some((l) => coloringKind(l[col('serial')])), long.join(',')); }
+  // Scene words (Mikey's answer to Q42, pass ML: "relax it for scene words only, from grade 3 up."): a row may show words only
+  // when its bans say SCENE_WORDS_BAN, and then only in a story scene, a long story's scene or a lesson painting for grade 3 or
+  // older; its prompt quotes one or two short words or phrases (letters, spaces and apostrophes, under 26 characters, never a
+  // lone letter or a numeral, which a question could ask for), its check note spells each one out to be read letter by letter,
+  // and the fold names them as the only writing. A quote in any other prompt fails, since only scene words are ever quoted.
+  {
+    const from = GRADES.indexOf(SCENE_WORDS_FROM); const bad = []; let rowsWithWords = 0;
+    const fine = (w) => w.length >= 2 && w.length <= 25 && /^[A-Za-z][A-Za-z' ]*[A-Za-z]$/.test(w) && w.split(' ').some((x) => x.length >= 2);
+    for (const [serial, where, scene, prompt, bans] of all) {
+      const quoted = sceneWords(prompt); const banned = String(bans).split(',').map((x) => x.trim()).includes(SCENE_WORDS_BAN);
+      if (!quoted.length && !banned) continue;
+      rowsWithWords++;
+      const g = GRADES.indexOf(String(gradeOfWhere(where))); const f = foldPrompt(prompt, bans);
+      const okRow = banned && quoted.length >= 1 && quoted.length <= 2 && /^(S|CS|P)\d/.test(serial) && g >= from && quoted.every(fine)
+        && /\(check: [^)]*letter by letter[^)]*\)/.test(scene) && quoted.every((w) => scene.includes(w))
+        && f.prompt.includes(`The only writing in the picture is ${quoted.map((w) => `"${w}"`).join(' and ')}, spelled exactly so`) && !/\btext, words, letters\b/.test(bans);
+      if (!okRow) bad.push(serial);
+    }
+    // The rule is proven on its near misses: a grade 2 row, a numeral, a lone letter and a coloring page all fail, and the fold
+    // of a good row names its words.
+    const near = (s, w, p) => { const g = GRADES.indexOf(String(gradeOfWhere(w))); return /^(S|CS|P)\d/.test(s) && g >= from && sceneWords(p).every(fine); };
+    const proven = !near('S401', 'vowel-teams', 'a sign that reads "RAIN"') && !near('S2844', 'the-true-cost-of-credit', 'a sign that reads "OPEN 24"') && !near('S2844', 'the-true-cost-of-credit', 'a sign that reads "B"') && !near('D140', 'lesson-hundreds-tens-ones', 'a jar that reads "PENNIES"') && near('S2844', 'the-true-cost-of-credit', 'a sign that reads "CASH TODAY"')
+      && foldPrompt('A shop whose sign reads "OPEN", a bus stop. Style: x.', `${SCENE_WORDS_BAN}, labels`).prompt.includes('The only writing in the picture is "OPEN", spelled exactly so');
+    ok('scene words show only from grade 3 up, in story scenes and lesson paintings, quoted short and spelled out in the check note, and the fold names them as the only writing (Q42)', rowsWithWords >= 1 && bad.length === 0 && proven, bad.slice(0, 6).join(','));
+  }
   // A sheet attached to a picture that never writes its character out paints whoever is there with that face, at the age the
   // sheet was drawn (the alignment read, pass MG: CS400's grocer would take Savanah's C7; EARMARKS A22). The look words are the
   // cast list's in docs/LEONARDO-BRIEF.md; the count may only fall, as A13's does.
   const LOOK = { Mike: ['brown eyes', 'sturdy', 'half-smile', 'shaved', 'bald', 'beard', 'black ring', 'rolled'], Chloe: ['wavy dark hair', 'patterned', 'paint'], Frederick: ['neat dark hair', 'glasses', 'gray hair', 'handlebar', 'mustache', 'lab coat'], Georgette: ['auburn', 'red button-front coat', 'red coat', 'knowing smile'], Savanah: ['copper-red', 'copper red', 'high bun', 'freckles', 'tattoo', 'tortoiseshell'], Jaxon: ['sandy', 'checkered', 'sly'], Harlow: ['blonde', 'pigtails', 'sage-green', 'blue eyes'] };
   const sheetOf = Object.fromEntries(sheetsListed.map((s) => [s, Object.keys(LOOK).find((n) => by[s][2].startsWith(n))]));
-  // 121 since pass MK (124 before): Mike's three rows in The ball that rolled away write him out now.
-  const UNWRITTEN_SHEET_LIMIT = 121; let attached = 0; const unwrittenSheets = [];
+  // 121 since pass MK (124 before): Mike's three rows in The ball that rolled away write him out now. 118 since pass ML: Three
+  // stones' S1, S29 and S1448 write him out too.
+  const UNWRITTEN_SHEET_LIMIT = 118; let attached = 0; const unwrittenSheets = [];
   for (const [serial, , , prompt, bans] of all) {
     const f = foldPrompt(prompt, bans); const body = f.prompt.toLowerCase();
     for (const s of (f.sheets || '').split(/[,\s]+/).filter(Boolean)) { attached++; const who = sheetOf[s]; if (!who || !LOOK[who].some((w) => body.includes(w))) unwrittenSheets.push(`${serial}:${s}`); }

@@ -1601,7 +1601,7 @@ export const GAMES = [
   { id: 'sense-psychology-k', kind: 'sense', title: 'Which Sense', sense: 'things', young: true, minGrade: 'K' },   // psychology K to 2 (pass GP): each thing belongs to one sense
   { id: 'turn-speech-k', kind: 'turn', title: 'Whose Turn Next', turn: 'friends', young: true, minGrade: 'K' },   // speech K to 2 (pass GT): the circle is the rule
   { id: 'spot-arts-k', kind: 'spot', title: 'Spot It', spot: 'scenes', young: true, minGrade: 'K' },   // art and music K to 2 (pass GE): find the line, shape or color a voice asks for   // economics K to 2 (pass FV): count out the exact price   // computer science K to 2 (pass FS): the child programs the robot
-  { id: 'jigsaw-4', kind: 'jigsaw', title: 'Puzzle', side: 2 },
+  { id: 'pairs-first-steps', kind: 'pairs', title: 'Look Closely', pairs: 3, pics: 'first-steps', young: true },   // First Steps (pass ML): matching is the rule, dealt from its own lessons' pictures
   { id: 'dots-boat', kind: 'dots', title: 'Boat', shape: 'boat' },
   { id: 'pairs-more', kind: 'pairs', title: 'More Pairs', pairs: 4 },
   { id: 'sort-color', kind: 'sort', title: 'Red and Blue', by: 'color' },
@@ -2115,6 +2115,24 @@ export function insidePolygon(points, x, y) {
   let inside = false;
   for (let i = 0, j = points.length - 1; i < points.length; j = i, i += 1) { const [xi, yi] = points[i]; const [xj, yj] = points[j]; if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) inside = !inside; }
   return inside;
+}
+// Look Closely (pass ML, First Steps' game; named for the lessons' "Look closely, because some things are almost alike"). In plain terms: picture cards for a young memory game, every picture one that a
+// First Steps lesson line draws (the matching lessons' animals, two flat shapes and the four solids), so the game's rule is the
+// course's biggest idea, matching. A board of three pairs always holds one couple the lessons call almost alike, a fox and a
+// cat (both have pointy ears) or a whale and a fish (both swim), so a child has to look closely, as the lessons say. A square
+// and a rectangle never meet, since a square is a rectangle (pass JW). pairPicsBoard deals one board with its own seeded
+// random numbers (makeRng), the same board for the same round on every device; the rules test deals hundreds of them.
+export const PAIR_PICS = {
+  'first-steps': {
+    pics: ['pic:whale', 'pic:fish', 'pic:turtle', 'pic:frog', 'pic:duck', 'pic:bear', 'pic:fox', 'pic:rabbit', 'pic:cat', 'pic:snail', 'pic:owl', 'pic:bee', 'shape:triangle', 'shape:circle', 'solid:cube', 'solid:sphere', 'solid:cone', 'solid:cylinder'],
+    almost: [['pic:fox', 'pic:cat'], ['pic:whale', 'pic:fish']],
+  },
+};
+export function pairPicsBoard(set, round, pairs = 3) {
+  const deck = PAIR_PICS[set]; const rng = makeRng(round * 7919 + 13);
+  const couple = deck.almost[Math.floor(rng() * deck.almost.length)];
+  const others = shuffle(rng, deck.pics.filter((p) => !couple.includes(p))).slice(0, Math.max(0, pairs - couple.length));
+  return shuffle(rng, [...couple, ...others].flatMap((p) => [p, p]));
 }
 // Decks for the text pairs games: each entry is a pair of cards that belong together.
 export const PAIR_DECKS = {
@@ -3839,7 +3857,7 @@ function PREK3_MODULES() { return [
         { say: 'Look around you. Can you find something red? Can you find something blue?', show: { kind: 'pair', a: { kind: 'swatch', colour: 'red' }, b: { kind: 'swatch', colour: 'blue' } } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different) and Head Start ELOF Goals P-SCI 1 (observes and describes observable phenomena, which the goal lists as objects, materials, organisms, and events), whose 36 to 48 month progression reads "Uses the five senses to observe objects, materials, organisms, and events. Provides simple verbal or signed descriptions. With adult support, represents observable phenomena, such as draws a picture.", in part, since the lesson observes by sight, while the other senses, the descriptions, which are the child\'s own talk, and the drawing wait (EARMARKS E12), and P-SCI 3 (compares and categorizes observable phenomena), in part, since the lesson teaches the first sentence of its 36 to 48 month progression, "Sorts objects into groups based on simple attributes, such as color.", while its second, using measurement tools to compare, waits (EARMARKS E12).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different) and Head Start ELOF Goals P-SCI 1 (observes and describes observable phenomena (objects, materials, organisms, and events)), whose 36 to 48 month progression reads "Uses the five senses to observe objects, materials, organisms, and events. Provides simple verbal or signed descriptions. With adult support, represents observable phenomena, such as draws a picture.", in part, since the lesson observes by sight, while the other senses, the descriptions, which are the child\'s own talk, and the drawing wait (EARMARKS E12), and P-SCI 3 (compares and categorizes observable phenomena), in part, since the lesson teaches the first sentence of its 36 to 48 month progression, "Sorts objects into groups based on simple attributes, such as color.", while its second, using measurement tools to compare, waits (EARMARKS E12).'],
     generators: ['p3-tap-red-blue', 'p3-which-colour', 'p3-sort-red-blue', 'p3-which-colour', 'p3-tap-red-blue'],
   },
   {
@@ -3864,7 +3882,7 @@ function PREK3_MODULES() { return [
         { say: 'Socks come in pairs. Two socks match when they have the same color and the same stripes or spots.', show: { kind: 'pair', a: { kind: 'icon', name: 'sock' }, b: { kind: 'icon', name: 'sock' } } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different) and Head Start ELOF Goal P-SCI 3 (compares and categorizes observable phenomena), in part, since the lesson compares what things look like, while its 36 to 48 month progression also names using measurement tools to compare, which waits (EARMARKS E12).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different) and Head Start ELOF Goal P-SCI 3 (compares and categorizes observable phenomena), in part, since the lesson teaches the first sentence of its 36 to 48 month progression, "Sorts objects into groups based on simple attributes, such as color.", sorting by shape and color, while its second, using measurement tools to compare, waits (EARMARKS E12).'],
     generators: ['p3-find-match', 'p3-find-match', 'p3-find-match', 'p3-find-match', 'p3-find-match'],
   },
   {
@@ -3888,7 +3906,7 @@ function PREK3_MODULES() { return [
         { say: 'At the zoo you might see two zebras and one lion. The zebras both have stripes and the lion has none, so the lion is the odd one out.', show: null },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different) and Head Start ELOF Goal P-SCI 3 (compares and categorizes observable phenomena), in part, since the lesson compares what things look like, while its 36 to 48 month progression also names using measurement tools to compare, which waits (EARMARKS E12).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different) and Head Start ELOF Goal P-SCI 3 (compares and categorizes observable phenomena), in part, since the lesson teaches the first sentence of its 36 to 48 month progression, "Sorts objects into groups based on simple attributes, such as color.", grouping animals that look alike and finding the one that does not, while its second, using measurement tools to compare, waits (EARMARKS E12).'],
     generators: ['pm-same-animals', 'pm-different-animals', 'pm-same-animals', 'pm-different-animals', 'pm-same-animals'],
   },
   {
@@ -3914,7 +3932,7 @@ function PREK3_MODULES() { return [
         { say: 'Lines can be long or short. Start two lines at the same place. The one that reaches farther is longer.', show: { kind: 'bars', lengths: [7, 4] } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.D.1 (understands that lengths of objects can vary and be compared) and Head Start ELOF Goal P-MATH 8 (measures objects by their various attributes using standard and non-standard measurement, and uses differences in attributes to make comparisons), whose 36 to 48 month progression reads "With adult support, begins to understand that attributes can be compared, such as one child can be taller than another child."'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.D.1 (understands that lengths of objects can vary and be compared) and Head Start ELOF Goal P-MATH 8 (measures objects by their various attributes using standard and non-standard measurement. Uses differences in attributes to make comparisons.), whose 36 to 48 month progression reads "With adult support, begins to understand that attributes can be compared, such as one child can be taller than another child."'],
     generators: ['p4-tap-bigger', 'p4-tap-smaller', 'kl-taller', 'kl-longer', 'p4-tap-bigger'],
   },
   {
@@ -3937,7 +3955,7 @@ function PREK3_MODULES() { return [
         { say: 'Most people have two eyes and two ears, but only one nose. Two eyes, one, two.', show: { kind: 'dots', count: 2 } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.A.2 (counts up to 5 objects with one-to-one correspondence), V.A.3 (counts up to 5 items and demonstrates cardinality by communicating that the last number indicates how many items are in the set) and V.A.5 (recognizes numerals 0-5), each in part, since this lesson counts one and two and shows 1 and 2, and Head Start ELOF Goals P-MATH 1 (knows number names and the count sequence), in part, since the lesson says one and two and its 36 to 48 month progression says number words up to 10, and P-MATH 3 (understands the relationship between numbers and quantities).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.A.2 (counts up to 5 objects with one-to-one correspondence), V.A.3 (counts up to 5 items and demonstrates cardinality by communicating that the last number indicates how many items are in the set) and V.A.5 (recognizes numerals 0-5), each in part, since this lesson counts one and two and shows 1 and 2, and Head Start ELOF Goals P-MATH 1 (knows number names and the count sequence), in part, since the first sentence of its 36 to 48 month progression, "Says or signs some number words in sequence (up to 10), starting with one.", goes past the lesson\'s one and two (More and fewer and One more and one fewer count to five, and six to ten wait, EARMARKS E12), while its second, "Understands that counting words are separate words, such as "one," "two," "three" versus "onetwothree".", is shown by touching one dot for each counting word, and P-MATH 3 (understands the relationship between numbers and quantities), whose 36 to 48 month progression reads "Begins to coordinate verbal counting with objects by pointing to or moving objects for small groups of objects laid in a line (referred to as one-to-one correspondence). Begins to understand that the last number represents how many objects are in a group (referred to as "cardinality")."'],
     generators: ['p3-tap-count', 'p3-how-many', 'p3-tap-count', 'p3-how-many', 'p3-tap-count'],
   },
   {
@@ -3972,7 +3990,7 @@ function PREK3_MODULES() { return [
         { say: 'At snack time, count the crackers on two plates. The plate with more crackers has more crackers to share.', show: null },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.A.8 (compares sets of objects up to 5 using comparative language, for example more than, less than, same number of), V.A.2 (counts up to 5 objects with one-to-one correspondence) and V.A.3 (counts up to 5 items and demonstrates cardinality by communicating that the last number indicates how many items are in the set), and Head Start ELOF Goals P-MATH 4 (compares numbers), in part, since its 36 to 48 month progression\'s first and second objects in a sequence are taught in Animal sounds, P-MATH 1 (knows number names and the count sequence), in part, since the lesson counts to five and the progression says number words up to 10, and P-MATH 3 (understands the relationship between numbers and quantities).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.A.8 (compares sets of objects up to 5 using comparative language, for example more than, less than, same number of), V.A.2 (counts up to 5 objects with one-to-one correspondence) and V.A.3 (counts up to 5 items and demonstrates cardinality by communicating that the last number indicates how many items are in the set), and Head Start ELOF Goals P-MATH 4 (compares numbers), in part, since the lesson teaches the first sentence of its 36 to 48 month progression, "Begins to accurately count and compare objects that are about the same size and are in small groups with adult assistance, such as counts a pile of two blocks and a pile of four, and determines whether the piles have the same or different numbers of blocks.", and, with its three big circles and five little ones, the first sentence of its 48 to 60 month progression, "Counts to determine and compare number amounts even when the larger group\'s objects are smaller in size, such as buttons, compared with the smaller group\'s objects that are larger in size, such as markers.", while the second sentence of its 36 to 48 month progression, "Identifies the first and second objects in a sequence.", is taught in Animal sounds (EARMARKS E12), P-MATH 1 (knows number names and the count sequence), in part, since the first sentence of its 36 to 48 month progression, "Says or signs some number words in sequence (up to 10), starting with one.", goes past the lesson\'s count to five (six to ten wait, EARMARKS E12), while its second, "Understands that counting words are separate words, such as "one," "two," "three" versus "onetwothree".", is shown by touching each thing once as it is counted, and P-MATH 3 (understands the relationship between numbers and quantities), whose 36 to 48 month progression reads "Begins to coordinate verbal counting with objects by pointing to or moving objects for small groups of objects laid in a line (referred to as one-to-one correspondence). Begins to understand that the last number represents how many objects are in a group (referred to as "cardinality")."'],
     generators: ['p3-tap-more', 'p3-same-number', 'p3-tap-fewer', 'p3-tap-more', 'p3-tap-fewer'],
   },
   {
@@ -4018,7 +4036,7 @@ function PREK3_MODULES() { return [
         { say: 'Dots in order make many pictures, such as a triangle, a square, a boat or a cup. Count as you go.', show: { kind: 'trace', text: 'boat' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines IX.B.1 (experiments with a variety of fine motor tasks but may lack strength and control), IX.B.2 (shows emerging proficiency in tasks requiring eye-hand coordination) and V.A.5 (recognizes numerals 0-5), in part, since the dots carry the numerals 1 to 4, and Head Start ELOF Goal P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), in part, since its 36 to 48 month progression also names cutting paper with scissors, which is a grown-up\'s to guide (EARMARKS E12).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines IX.B.1 (experiments with a variety of fine motor tasks but may lack strength and control), IX.B.2 (shows emerging proficiency in tasks requiring eye-hand coordination) and V.A.5 (recognizes numerals 0-5), in part, since the dots carry the numerals 1 to 4, and Head Start ELOF Goal P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), in part, since its 36 to 48 month progression, "Performs simple hand-eye tasks, such as drawing simple shapes like circles and cutting paper with scissors. May demonstrate limited precision and control in more complex tasks.", names cutting paper with scissors, which is a grown-up\'s to guide (EARMARKS E12).'],
     generators: ['p3-connect-few', 'p3-connect-few', 'p3-connect-few', 'p3-connect-few', 'p3-connect-few'],
   },
   {
@@ -4044,7 +4062,7 @@ function PREK3_MODULES() { return [
         { say: 'Let\'s sort by color. The yellow things go together, and the green things go together.', show: { kind: 'pair', stack: true, a: { kind: 'pattern', items: ['circle', 'triangle'], colour: 'yellow' }, b: { kind: 'pattern', items: ['square', 'circle'], colour: 'green' } } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different) and Head Start ELOF Goals P-SCI 1 (observes and describes observable phenomena, which the goal lists as objects, materials, organisms, and events), whose 36 to 48 month progression reads "Uses the five senses to observe objects, materials, organisms, and events. Provides simple verbal or signed descriptions. With adult support, represents observable phenomena, such as draws a picture.", in part, since the lesson observes by sight, while the other senses, the descriptions, which are the child\'s own talk, and the drawing wait (EARMARKS E12), and P-SCI 3 (compares and categorizes observable phenomena), in part, since the lesson teaches the first sentence of its 36 to 48 month progression, "Sorts objects into groups based on simple attributes, such as color.", while its second, using measurement tools to compare, waits (EARMARKS E12).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different) and Head Start ELOF Goals P-SCI 1 (observes and describes observable phenomena (objects, materials, organisms, and events)), whose 36 to 48 month progression reads "Uses the five senses to observe objects, materials, organisms, and events. Provides simple verbal or signed descriptions. With adult support, represents observable phenomena, such as draws a picture.", in part, since the lesson observes by sight, while the other senses, the descriptions, which are the child\'s own talk, and the drawing wait (EARMARKS E12), and P-SCI 3 (compares and categorizes observable phenomena), in part, since the lesson teaches the first sentence of its 36 to 48 month progression, "Sorts objects into groups based on simple attributes, such as color.", while its second, using measurement tools to compare, waits (EARMARKS E12).'],
     generators: ['p3-tap-yellow-green', 'p3-which-colour-four', 'p3-tap-colour-item', 'p3-sort-yellow-green', 'p3-tap-any-colour'],
   },
   {
@@ -4094,7 +4112,7 @@ function PREK3_MODULES() { return [
         { say: 'To find the biggest circle, look for the one that takes up the most room. To find the littlest circle, look for the one that takes up the least room.', show: { kind: 'row', items: [{ kind: 'shape', name: 'circle', size: 'medium' }, { kind: 'shape', name: 'circle', size: 'big' }, { kind: 'shape', name: 'circle', size: 'small' }] } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines II.D.1 (understands (receptive) and uses (expressive) expected words to label and describe common objects, people, places, actions, and events), in part, its receptive half for the size words big, middle-size, little, biggest and littlest, while their expressive half waits (EARMARKS E12), and Head Start ELOF Goal P-MATH 8 (measures objects by their various attributes using standard and non-standard measurement, and uses differences in attributes to make comparisons), whose 36 to 48 month progression reads "With adult support, begins to understand that attributes can be compared, such as one child can be taller than another child." The Texas Prekindergarten Guidelines name no pre-K 3 outcome for size as the room a thing takes up; lengths (V.D.1) are taught in Big and Small.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines II.D.1 (understands (receptive) and uses (expressive) expected words to label and describe common objects, people, places, actions, and events), in part, its receptive half for the size words big, middle-size, little, biggest and littlest, while their expressive half waits (EARMARKS E12), and Head Start ELOF Goal P-MATH 8 (measures objects by their various attributes using standard and non-standard measurement. Uses differences in attributes to make comparisons.), whose 36 to 48 month progression reads "With adult support, begins to understand that attributes can be compared, such as one child can be taller than another child." The Texas Prekindergarten Guidelines name no pre-K 3 outcome for size as the room a thing takes up; lengths (V.D.1) are taught in Big and Small.'],
     generators: ['pk3-tap-big', 'pk3-tap-middle', 'pk3-tap-little', 'pk3-tap-biggest', 'pk3-tap-littlest'],
   },
   {
@@ -4118,7 +4136,7 @@ function PREK3_MODULES() { return [
         { say: 'Taking turns works with lots of things, like the slide, the swing and a new book.', show: { kind: 'icon', name: 'slide' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines I.C.1 (forms positive relationships with adults and peers) and II.B.4 (begins to use appropriate language for different situations), and Head Start ELOF Goals P-SE 2 (engages in prosocial and cooperative behavior with adults), whose indicators include using respectful language or greetings, in part, since its 36 to 48 month progression\'s responding to adult requests and directions is a grown-up\'s to guide (EARMARKS E12), and P-SE 5 (uses basic problem-solving skills to resolve conflicts with other children), whose indicators include sharing and taking turns.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines I.C.1 (forms positive relationships with adults and peers) and II.B.4 (begins to use appropriate language for different situations), and Head Start ELOF Goals P-SE 2 (engages in prosocial and cooperative behavior with adults), one of whose indicators reads "Engages in prosocial behaviors with adults, such as using respectful language or greetings.", in part, since the lesson teaches saying please and thank you, prosocial behavior of the kind the first sentence of its 36 to 48 month progression names, "Sometimes engages in prosocial behavior with adults, such as greeting the teacher or saying goodbye, and responds to adult requests and directions that may include assistance or prompting.", while responding to adult requests and directions is a grown-up\'s to guide, and its second sentence, "Sometimes demonstrates uncooperative behavior with familiar adults, such as saying "No" to requests, but these moments are typically resolved with support from adults.", is a grown-up\'s to resolve (EARMARKS E12), P-SE 3 (engages in and maintains positive interactions and relationships with other children), in part, since the lesson teaches sharing and taking turns with materials from the second sentence of its 36 to 48 month progression, "May spontaneously engage in prosocial behaviors with other children, such as sharing and taking turns with materials and in conversations, or may engage in these with prompting from adults.", while taking turns in conversations, and its first sentence, "Sometimes engages in and maintains interactions with other children without support from an adult, or demonstrates skills in doing this when prompted by an adult.", are play and talk with other children, a grown-up\'s or the classroom\'s (EARMARKS E12), and P-SE 5 (uses basic problem-solving skills to resolve conflicts with other children), one of whose indicators reads "Uses basic strategies for dealing with common conflicts, such as sharing, taking turns, and compromising.", in part, since the lesson teaches the second sentence of its 36 to 48 month progression, "Suggests solutions to conflicts with adult guidance and support.", taking turns or sharing when two friends want one thing, while its first, "Begins to recognize and describe social problems.", is taught in Helping a friend.'],
     generators: ['pk3-magic-word', 'pk-turn-choice', 'pk3-magic-word', 'pk3-magic-word', 'pk-turn-choice'],
   },
   // Pass MD, earmark E12 part one (the feelings outcomes of the 2022 Texas Prekindergarten Guidelines, PK3 Domain I, read in
@@ -4176,7 +4194,7 @@ function PREK3_MODULES() { return [
         { say: 'Helping a friend can make you both feel happy. Asking a grown-up for help is a smart thing to do, too.', show: { kind: 'face', feeling: 'happy' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines I.C.5 (seeks adult help when experiencing conflicts with another child), I.C.6 (responds with concern when a child or adult is distressed), in part, since the lesson teaches noticing a friend who is distressed and the kind words and acts to offer, and not yet a grown-up who is distressed, and I.D.1 (shows interest in other people and their feelings), in part, since the lesson teaches noticing a friend\'s feelings and asking about them, and not yet interest in other people beyond their feelings, and Head Start ELOF Goals P-SE 7 (expresses care and concern toward others), whose 36 to 48 month progression reads "Often pays attention when others are distressed, but attention and response to this distress may be brief. May seek out adult support to help another child who is distressed.", P-SE 6 (expresses a broad range of emotions and recognizes these emotions in self and others), in part, since the lesson teaches reading sad and scared on a friend\'s face, while expressing one\'s own feelings is taught in Happy, sad, mad and scared, and P-SE 5 (uses basic problem-solving skills to resolve conflicts with other children), whose 36 to 48 month progression reads "Begins to recognize and describe social problems. Suggests solutions to conflicts with adult guidance and support."'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines I.C.5 (seeks adult help when experiencing conflicts with another child), I.C.6 (responds with concern when a child or adult is distressed), in part, since the lesson teaches noticing a friend who is distressed and the kind words and acts to offer, and not yet a grown-up who is distressed, and I.D.1 (shows interest in other people and their feelings), in part, since the lesson teaches noticing a friend\'s feelings and asking about them, and not yet interest in other people beyond their feelings, and Head Start ELOF Goals P-SE 7 (expresses care and concern toward others), whose 36 to 48 month progression reads "Often pays attention when others are distressed, but attention and response to this distress may be brief. May seek out adult support to help another child who is distressed.", P-SE 6 (expresses a broad range of emotions and recognizes these emotions in self and others), in part, since the lesson teaches reading sad and scared on a friend\'s face, while expressing one\'s own feelings is taught in Happy, sad, mad and scared, P-SE 5 (uses basic problem-solving skills to resolve conflicts with other children), whose 36 to 48 month progression reads "Begins to recognize and describe social problems. Suggests solutions to conflicts with adult guidance and support.", and P-SE 1 (engages in and maintains positive relationships and interactions with adults), in part, since the lesson teaches the third sentence of its 36 to 48 month progression, "Uses adults as a resource to solve problems.", getting a grown-up when a friend is hurt or a fight starts, while its first two, "Engages in positive interactions with adults, such as by demonstrating affection or talking about ideas. Is able to separate from trusted adults when in familiar settings.", are the child\'s own time with grown-ups (EARMARKS E12).'],
     generators: ['p3-help-who', 'p3-help-kind', 'p3-help-grownup', 'p3-help-ball', 'p3-help-yesno'],
   },
   // Earmark E12 part two (pass ME): adding one and taking one away, the PK3 joining and separating outcomes, with the dots on
@@ -4209,7 +4227,7 @@ function PREK3_MODULES() { return [
         { say: 'You eat one cracker. Crunch! Now there are fewer crackers on your plate.', show: null },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.B.1 (uses objects to demonstrate that adding one or more objects to a set will increase the number of objects in the set) and V.B.2 (uses objects to demonstrate that taking away one or more objects from a set will decrease the number of objects in the set), with the dots on the screen as the objects (one more, one away, and then two more and two away, so the standard\'s one or more is taught) and the crackers at snack time the child is asked to try with a grown-up, and V.A.2 (counts up to 5 objects with one-to-one correspondence) and V.A.3 (counts up to 5 items and demonstrates cardinality by communicating that the last number indicates how many items are in the set), since the groups are counted to find how many now, touching each dot once, with the last number telling how many, and Head Start ELOF Goal P-MATH 6 (understands addition as adding to and understands subtraction as taking away from), whose 36 to 48 month progression opens with "Begins to add and subtract very small collections of objects with adult support." and goes on with an example of three and one more counted out to four (the ELOF\'s example uses grapes; the lesson uses crackers, since the AAP keeps whole grapes from children under four), with P-MATH 1 (knows number names and the count sequence), in part, since the lesson counts to five and its 36 to 48 month progression says number words up to 10, and P-MATH 3 (understands the relationship between numbers and quantities) for the counting.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.B.1 (uses objects to demonstrate that adding one or more objects to a set will increase the number of objects in the set) and V.B.2 (uses objects to demonstrate that taking away one or more objects from a set will decrease the number of objects in the set), with the dots on the screen as the objects (one more, one away, and then two more and two away, so the standard\'s one or more is taught) and the crackers at snack time the child is asked to try with a grown-up, and V.A.2 (counts up to 5 objects with one-to-one correspondence) and V.A.3 (counts up to 5 items and demonstrates cardinality by communicating that the last number indicates how many items are in the set), since the groups are counted to find how many now, touching each dot once, with the last number telling how many, and Head Start ELOF Goal P-MATH 6 (understands addition as adding to and understands subtraction as taking away from), whose 36 to 48 month progression reads "Begins to add and subtract very small collections of objects with adult support. For example, the teacher says, "You have three grapes and get one more. How many in all?" Child counts out three, then counts out one more, then counts all four: "One, two, three, four. I have four!"" (the lesson\'s snack uses crackers, since the AAP keeps whole grapes from children under four), with P-MATH 1 (knows number names and the count sequence), in part, since the first sentence of its 36 to 48 month progression, "Says or signs some number words in sequence (up to 10), starting with one.", goes past the lesson\'s count to five (six to ten wait, EARMARKS E12), while its second, "Understands that counting words are separate words, such as "one," "two," "three" versus "onetwothree".", is shown by touching each dot once as it is counted, and P-MATH 3 (understands the relationship between numbers and quantities) for the counting, whose 36 to 48 month progression reads "Begins to coordinate verbal counting with objects by pointing to or moving objects for small groups of objects laid in a line (referred to as one-to-one correspondence). Begins to understand that the last number represents how many objects are in a group (referred to as "cardinality")."'],
     generators: ['p3-add-one', 'p3-take-one', 'p3-more-or-fewer-now', 'p3-one-more-group', 'p3-one-fewer-group'],
   },
 ]; }
@@ -4337,7 +4355,7 @@ function PREK3_READING_MODULES() { return [
         { say: 'In a bowl of green apples, one red apple is different, because its color is not the same.', show: null },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different), and Head Start ELOF Goals P-SCI 3 (compares and categorizes observable phenomena), in part, since the lesson teaches the first sentence of its 36 to 48 month progression, "Sorts objects into groups based on simple attributes, such as color.", while its second, using measurement tools to compare, waits (EARMARKS E12), and P-MATH 8 (measures objects by their various attributes using standard and non-standard measurement, and uses differences in attributes to make comparisons), whose 36 to 48 month progression reads "With adult support, begins to understand that attributes can be compared, such as one child can be taller than another child."'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different), and Head Start ELOF Goals P-SCI 3 (compares and categorizes observable phenomena), in part, since the lesson teaches the first sentence of its 36 to 48 month progression, "Sorts objects into groups based on simple attributes, such as color.", while its second, using measurement tools to compare, waits (EARMARKS E12), and P-MATH 8 (measures objects by their various attributes using standard and non-standard measurement. Uses differences in attributes to make comparisons.), whose 36 to 48 month progression reads "With adult support, begins to understand that attributes can be compared, such as one child can be taller than another child."'],
     generators: ['p3-odd-one', 'p3-odd-color', 'p3-odd-shape', 'p3-odd-size', 'p3-sort-out'],
   },
   {
@@ -4402,7 +4420,7 @@ function PREK3_READING_MODULES() { return [
         { say: 'On a farm you might hear a duck quack and a dog woof at the same time. Real animals make lots of sounds, so listen closely to tell them apart.', show: { kind: 'pair', a: { kind: 'pic', name: 'duck' }, b: { kind: 'icon', name: 'dog' } } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines II.D.1 (understands, receptive, and uses, expressive, expected words to label and describe common objects, people, places, actions, and events), in part, since a child here understands the names of six animals and the words for their sounds and is not asked to say them, and Head Start ELOF Goal P-SCI 1 (observes and describes observable phenomena, which the goal lists as objects, materials, organisms, and events), whose 36 to 48 month progression reads "Uses the five senses to observe objects, materials, organisms, and events. Provides simple verbal or signed descriptions. With adult support, represents observable phenomena, such as draws a picture.", in part, since the lesson observes by hearing, a sound telling which animal is near, while the other senses, the descriptions, which are the child\'s own talk, and the drawing wait (EARMARKS E12).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines II.D.1 (understands, receptive, and uses, expressive, expected words to label and describe common objects, people, places, actions, and events), in part, since a child here understands the names of six animals and the words for their sounds and is not asked to say them, and Head Start ELOF Goal P-SCI 1 (observes and describes observable phenomena (objects, materials, organisms, and events)), whose 36 to 48 month progression reads "Uses the five senses to observe objects, materials, organisms, and events. Provides simple verbal or signed descriptions. With adult support, represents observable phenomena, such as draws a picture.", in part, since the lesson observes by hearing, a sound telling which animal is near, while the other senses, the descriptions, which are the child\'s own talk, and the drawing wait (EARMARKS E12).'],
     generators: ['p3-animal-sound', 'p3-animal-says', 'p3-animal-order', 'p3-two-at-once', 'p3-animal-sound'],
   },
 ]; }
@@ -4845,22 +4863,25 @@ function PREK_MODULES() { return [
     title: 'Colors',
     tagline: 'Red, blue, yellow, green',
     lesson: {
-      pictures: [{ serial: 'P102', alt: 'A ripe red strawberry on a white plate', step: 0 }, { serial: 'P103', alt: 'A clear blue sky with one small white cloud', step: 1 }, { serial: 'P104', alt: 'A yellow banana on a kitchen table', step: 2 }, { serial: 'P105', alt: 'Green grass in a sunny yard', step: 3 }],
-      paragraphs: ['Every color has a name. Red is like a strawberry, blue is like the sky, yellow is like a banana, and green is like the grass.', 'Lots of other things have these colors too. A stop sign is red, a blueberry is blue, a lemon is yellow, and a pickle is green.', 'Two things can be the same color even when their shapes are different, like a red circle and a red square. Naming colors helps us sort, so all the red blocks can go together, and it helps us tell things apart. Look at your clothes and name the colors you are wearing.'],
+      // Pass ML (the lesson check): the four further things each have a line and a picture of their own, the sky is the sky on a
+      // sunny day as the question says it, the sorting line shows two groups of two, and the clothes line shows a coat.
+      pictures: [{ serial: 'P102', alt: 'A ripe red strawberry on a white plate', step: 0 }, { serial: 'P103', alt: 'A clear blue sky with one small white cloud', step: 1 }, { serial: 'P104', alt: 'A yellow banana on a kitchen table', step: 2 }, { serial: 'P105', alt: 'Green grass in a sunny yard', step: 3 }, { serial: 'P135', alt: 'A plain red stop sign beside a bowl of blueberries', step: 4 }, { serial: 'P136', alt: 'A yellow lemon beside a green pickle on a plate', step: 5 }],
+      paragraphs: ['Every color has a name. Red is like a strawberry, blue is like the sky on a sunny day, yellow is like a banana, and green is like the grass.', 'Lots of other things have these colors too. A stop sign is red, and a blueberry is blue. A lemon is yellow, and a pickle is green.', 'Two things can be the same color even when their shapes are different, like a red circle and a red square. Naming colors helps us sort, so all the red blocks can go together, and it helps us tell things apart. Look at your clothes and name the colors you are wearing.'],
       keyIdea: 'Every color has a name, and two things can match by color alone.',
       example: { kind: 'swatch', colour: 'red', caption: 'Red.' },
       script: [
         { say: 'This color is red, like a strawberry.', show: { kind: 'swatch', colour: 'red' } },
-        { say: 'This color is blue, like the sky.', show: { kind: 'swatch', colour: 'blue' } },
+        { say: 'This color is blue, like the sky on a sunny day.', show: { kind: 'swatch', colour: 'blue' } },
         { say: 'This color is yellow, like a banana.', show: { kind: 'swatch', colour: 'yellow' } },
         { say: 'This color is green, like the grass.', show: { kind: 'swatch', colour: 'green' } },
-        { say: 'Lots of other things have these colors too. A stop sign is red, a blueberry is blue, a lemon is yellow, and a pickle is green.', show: null },
+        { say: 'Lots of other things have these colors too. A stop sign is red, and a blueberry is blue.', show: { kind: 'pair', a: { kind: 'swatch', colour: 'red' }, b: { kind: 'swatch', colour: 'blue' } } },
+        { say: 'A lemon is yellow, and a pickle is green.', show: { kind: 'pair', a: { kind: 'swatch', colour: 'yellow' }, b: { kind: 'swatch', colour: 'green' } } },
         { say: 'A red circle and a red square are the same color, even though their shapes are different.', show: { kind: 'pair', a: { kind: 'item', shape: 'circle', colour: 'red' }, b: { kind: 'item', shape: 'square', colour: 'red' } } },
-        { say: 'Colors help us sort. All the red blocks can go together, and all the blue blocks can go together.', show: { kind: 'pair', a: { kind: 'item', shape: 'square', colour: 'red' }, b: { kind: 'item', shape: 'square', colour: 'blue' } } },
-        { say: 'Look at your clothes. Can you name a color you are wearing today?', show: null },
+        { say: 'Colors help us sort. All the red blocks can go together, and all the blue blocks can go together.', show: { kind: 'pair', stack: true, a: { kind: 'pattern', items: ['square', 'square'], colour: 'red' }, b: { kind: 'pattern', items: ['square', 'square'], colour: 'blue' } } },
+        { say: 'Look at your clothes. Can you name a color you are wearing today?', show: { kind: 'icon', name: 'coat' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups and uses language to describe how the groups are similar and different) and Head Start ELOF Goal P-SCI 1 (observes and describes observable phenomena).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups and uses language to describe how the groups are similar and different), in part, since the lesson finds the things that are the same color and the one that is a different color, and sorts the red blocks from the blue ones, while using language to describe how the groups are similar and different is the child\'s own talk, for a grown-up to hear (EARMARKS E13), and II.D.1 (understands (receptive) and uses (expressive) a wide variety of words to label, describe and make connections among objects, people, places, actions, and events), in part, its receptive half for the color words red, blue, yellow and green, while their expressive half waits (EARMARKS E13) and the rest of its wide variety of words is First Sounds and Letters\', and Head Start ELOF Goal P-SCI 1 (observes and describes observable phenomena (objects, materials, organisms, and events)), whose 48 to 60 month progression reads "Makes increasingly complex observations of objects, materials, organisms, and events. Provides greater detail in descriptions. Represents observable phenomena in more complex ways, such as pictures that include more detail.", in part, since the lesson observes the colors of things by sight, while the greater detail in descriptions, which is the child\'s own talk, and the more detailed pictures wait (EARMARKS E13).'],
     generators: ['pc-tap-colour', 'pc-name-colour', 'pc-same-colour', 'pc-different-colour', 'pc-colour-of-thing'],
   },
   {
@@ -4870,21 +4891,23 @@ function PREK_MODULES() { return [
     title: 'Same and different',
     tagline: 'Find the match',
     lesson: {
-      pictures: [{ serial: 'P106', alt: 'A pair of matching striped socks beside one sock with dots', step: 4 }],
-      paragraphs: ['Two things are the same when they are alike in every way, the same shape, the same color and the same size. They are different when even one of those is not alike.', 'To find a match, check all three. A green circle and a green square share a color but not a shape, and two triangles can share a shape but not a size.', 'Matching is everywhere. Two socks match when they are the same color with the same stripes, two red crayons from one box match, and at cleanup time the blocks that match go together.'],
+      // Pass ML (the lesson check): the room words the bigger and smaller questions say are said on the triangles' line, the socks
+      // are drawn, and the crayons have a painting of their own.
+      pictures: [{ serial: 'P106', alt: 'A pair of matching striped socks beside one sock with dots', step: 4 }, { serial: 'P137', alt: 'Two red crayons from one box lying side by side, the same size', step: 5 }],
+      paragraphs: ['Two things are the same when they are alike in every way, the same shape, the same color and the same size. They are different when even one of those is not alike.', 'To find a match, check all three. A green circle and a green square share a color but not a shape, and two triangles can share a shape but not a size. The bigger one takes up more room, and the smaller one takes up less room.', 'Matching is everywhere. Two socks match when they are the same color with the same stripes, two red crayons from one box match, and at cleanup time the blocks that match go together.'],
       keyIdea: 'The same means alike in shape, color and size. Different means at least one is not alike.',
       example: { kind: 'pair', a: { shape: 'circle', colour: 'green' }, b: { shape: 'circle', colour: 'green' }, caption: 'Two circles are the same.' },
       script: [
         { say: 'Here are two green circles. They are the same shape, the same color and the same size.', show: { kind: 'pair', a: { shape: 'circle', colour: 'green' }, b: { shape: 'circle', colour: 'green' } } },
         { say: 'A green circle and a green square are the same color, but they are different shapes.', show: { kind: 'pair', a: { shape: 'circle', colour: 'green' }, b: { shape: 'square', colour: 'green' } } },
-        { say: 'These two triangles are the same shape, but one is bigger and one is smaller.', show: { kind: 'pair', a: { kind: 'shape', name: 'triangle', size: 'big' }, b: { kind: 'shape', name: 'triangle', size: 'small' } } },
+        { say: 'These two triangles are the same shape, but one is bigger and one is smaller. The bigger one takes up more room, and the smaller one takes up less room.', show: { kind: 'pair', a: { kind: 'shape', name: 'triangle', size: 'big' }, b: { kind: 'shape', name: 'triangle', size: 'small' } } },
         { say: 'To match, two things must be alike in every way, like these two blue triangles.', show: { kind: 'pair', a: { shape: 'triangle', colour: 'blue' }, b: { shape: 'triangle', colour: 'blue' } } },
-        { say: 'Socks come in pairs. Two socks match when they are the same color and the same size, with the same stripes.', show: null },
-        { say: 'Two red crayons from the same box match. They are the same color, the same shape and the same size.', show: null },
+        { say: 'Socks come in pairs. Two socks match when they are the same color and the same size, with the same stripes.', show: { kind: 'pair', a: { kind: 'icon', name: 'sock' }, b: { kind: 'icon', name: 'sock' } } },
+        { say: 'Two red crayons from the same box match. They are the same color, the same shape and the same size.', show: { kind: 'pair', a: { kind: 'icon', name: 'crayon' }, b: { kind: 'icon', name: 'crayon' } } },
         { say: 'At cleanup time, check all three, the shape, the color and the size. These two blue squares match, so they go together.', show: { kind: 'pair', a: { shape: 'square', colour: 'blue' }, b: { shape: 'square', colour: 'blue' } } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups and uses language to describe how the groups are similar and different) and Head Start ELOF Goal P-MATH 8.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups and uses language to describe how the groups are similar and different), in part, since the lesson finds the match, alike in shape, color and size, and the one that is different, while using language to describe how the groups are similar and different is the child\'s own talk, for a grown-up to hear (EARMARKS E13), and Head Start ELOF Goal P-MATH 8 (measures objects by their various attributes using standard and non-standard measurement. Uses differences in attributes to make comparisons.), whose 48 to 60 month progression reads "With some adult support, uses measurable attributes to make comparisons, such as identifies objects as the same/different and more/less."'],
     generators: ['ps-find-match', 'ps-odd-one-out', 'ps-same-colour-shape', 'ps-bigger', 'ps-smaller'],
   },
   {
@@ -4895,8 +4918,10 @@ function PREK_MODULES() { return [
     tagline: 'Cars, trains, boats',
     requires: ['same-and-different'],
     lesson: {
-      pictures: [{ serial: 'P107', alt: 'A boat on the water and a rocket rising into the sky', step: 4 }],
-      paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Vehicles carry people and things. A car drives on the road, a train runs on a track, a boat goes on the water, and a rocket goes up into space. To match them, look at their parts, like wheels.', 'Outside, two cars match when they have the same color and the same shape.'],
+      // Pass ML (the lesson check): where each vehicle goes is two lines, each showing the two it names, and the cars outside are
+      // seen with a grown-up.
+      pictures: [{ serial: 'P107', alt: 'A boat on the water and a rocket rising into the sky', step: 5 }],
+      paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Vehicles carry people and things. A car drives on the road, and a train runs on a track. A boat goes on the water, and a rocket goes up into space. To match them, look at their parts, like wheels.', 'When you are out with a grown-up, two cars match when they have the same color and the same shape.'],
       keyIdea: 'The same means just alike. Look at the shape, the color and the parts.',
       example: { kind: 'pair', a: { kind: 'art', name: 'car' }, b: { kind: 'art', name: 'car' }, caption: 'Two cars. They are the same.' },
       script: [
@@ -4904,11 +4929,12 @@ function PREK_MODULES() { return [
         { say: 'Here is another car, just the same. The two cars match.', show: { kind: 'pair', a: { kind: 'art', name: 'car' }, b: { kind: 'art', name: 'car' } } },
         { say: 'This is a train. It is not the same as the car, so it is different.', show: { kind: 'pair', a: { kind: 'art', name: 'car' }, b: { kind: 'art', name: 'train' } } },
         { say: 'To match, look at the parts. A car has wheels, and a boat has none.', show: { kind: 'pair', a: { kind: 'art', name: 'car' }, b: { kind: 'art', name: 'boat' } } },
-        { say: 'A car drives on the road, and a train runs on a track. A boat goes on the water, and a rocket goes up into space.', show: { kind: 'pair', a: { kind: 'art', name: 'boat' }, b: { kind: 'art', name: 'rocket' } } },
-        { say: 'When you see two cars outside, look at their color and their shape. Do they match?', show: { kind: 'pair', a: { kind: 'art', name: 'car' }, b: { kind: 'art', name: 'car' } } },
+        { say: 'A car drives on the road, and a train runs on a track.', show: { kind: 'pair', a: { kind: 'art', name: 'car' }, b: { kind: 'art', name: 'train' } } },
+        { say: 'A boat goes on the water, and a rocket goes up into space.', show: { kind: 'pair', a: { kind: 'art', name: 'boat' }, b: { kind: 'art', name: 'rocket' } } },
+        { say: 'When you are out with a grown-up and see two cars, look at their color and their shape. Do they match?', show: { kind: 'pair', a: { kind: 'art', name: 'car' }, b: { kind: 'art', name: 'car' } } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups) and Head Start ELOF Goal P-MATH 8.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups and uses language to describe how the groups are similar and different), in part, since the lesson finds the vehicle that is the same and the one that is different, by its shape and its parts, while using language to describe how the groups are similar and different is the child\'s own talk, for a grown-up to hear (EARMARKS E13), and Head Start ELOF Goal P-SCI 3 (compares and categorizes observable phenomena), whose 48 to 60 month progression reads "With increasing independence, sorts objects into groups based on more complex attributes, such as weight, sound, or texture. Uses measurement tools to assess the properties of and compare observable phenomena.", in part, since the lesson sorts vehicles by their parts and by where they go, while using measurement tools waits (EARMARKS E13).'],
     generators: ['pm-same-vehicles', 'pm-different-vehicles', 'pm-vehicle-where', 'pm-tap-vehicle', 'pm-same-vehicles'],
   },
   {
@@ -4919,20 +4945,22 @@ function PREK_MODULES() { return [
     tagline: 'Balls, balloons, robots',
     requires: ['match-the-vehicles'],
     lesson: {
+      // Pass ML (the lesson check): a balloon is light, not heavy, the way a lamp's light is not meant, and the robot is this robot,
+      // since not every robot has arms and legs.
       pictures: [{ serial: 'P108', alt: 'A real butterfly with open wings beside a small toy robot with two arms and two legs', step: 4 }],
-      paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Some things are almost alike. A ball and a balloon are both round, but a balloon is light and has a string. A star has points, a butterfly has wings, a flower has petals, and a robot has arms and legs.', 'You have two arms and two legs, and so does the robot.'],
+      paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Some things are almost alike. A ball and a balloon are both round, but a balloon is light, not heavy, and has a string. A star has points, a butterfly has wings, a flower has petals, and this robot has arms and legs.', 'You have two arms and two legs, and so does this robot.'],
       keyIdea: 'The same means just alike. Look closely, because some things are almost alike.',
       example: { kind: 'pair', a: { kind: 'art', name: 'ball' }, b: { kind: 'art', name: 'ball' }, caption: 'Two balls. They are the same.' },
       script: [
         { say: 'Look at this ball. See its round shape.', show: { kind: 'art', name: 'ball' } },
         { say: 'Here is another ball, just the same. The two balls match.', show: { kind: 'pair', a: { kind: 'art', name: 'ball' }, b: { kind: 'art', name: 'ball' } } },
-        { say: 'This is a balloon. It is light and has a string, so it is different from the ball.', show: { kind: 'pair', a: { kind: 'art', name: 'ball' }, b: { kind: 'art', name: 'balloon' } } },
+        { say: 'This is a balloon. It is light, not heavy, and it has a string, so it is different from the ball.', show: { kind: 'pair', a: { kind: 'art', name: 'ball' }, b: { kind: 'art', name: 'balloon' } } },
         { say: 'Look closely, because some things are almost alike. A star has points, and a flower has petals.', show: { kind: 'pair', a: { kind: 'art', name: 'star' }, b: { kind: 'art', name: 'flower' } } },
-        { say: 'A butterfly has wings, and a robot has arms and legs.', show: { kind: 'pair', a: { kind: 'art', name: 'butterfly' }, b: { kind: 'art', name: 'robot' } } },
-        { say: 'You have two arms and two legs, and so does the robot. Can you wiggle yours?', show: { kind: 'art', name: 'robot' } },
+        { say: 'A butterfly has wings, and this robot has arms and legs.', show: { kind: 'pair', a: { kind: 'art', name: 'butterfly' }, b: { kind: 'art', name: 'robot' } } },
+        { say: 'You have two arms and two legs, and so does this robot. Can you wiggle yours?', show: { kind: 'art', name: 'robot' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups) and Head Start ELOF Goal P-MATH 8.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups and uses language to describe how the groups are similar and different), in part, since the lesson finds the thing that is the same and the one that is different, by its parts, while using language to describe how the groups are similar and different is the child\'s own talk, for a grown-up to hear (EARMARKS E13), and VI.A.1 (observes, investigates, describes, and discusses characteristics of common objects), in part, since the lesson observes and names what common things have, a ball\'s round shape, a balloon\'s string, a star\'s points and a flower\'s petals, while investigating and discussing them is the child\'s own, with a grown-up (EARMARKS E13), and Head Start ELOF Goal P-SCI 3 (compares and categorizes observable phenomena), whose 48 to 60 month progression reads "With increasing independence, sorts objects into groups based on more complex attributes, such as weight, sound, or texture. Uses measurement tools to assess the properties of and compare observable phenomena.", in part, since the lesson sorts things by their parts, points, petals, wings, arms and legs and a string, and tells a light balloon from a ball, while using measurement tools waits (EARMARKS E13).'],
     generators: ['pm-same-things', 'pm-different-things', 'pm-thing-part', 'pm-same-things', 'pm-thing-part'],
   },
   {
@@ -4943,21 +4971,25 @@ function PREK_MODULES() { return [
     tagline: 'Whales, fish, turtles',
     requires: ['match-the-things'],
     lesson: {
-      pictures: [{ serial: 'P109', alt: 'A huge whale swimming beside a tiny fish in the ocean', step: 4 }],
-      paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Water animals live in or near water. A whale and a fish both swim, but a whale breathes air, so they are different, and in real life a whale is much, much bigger than most fish. A turtle, a duck and a frog live in and near the water too.'],
+      // Pass ML (the lesson check): how a whale breathes is said where the question asks it, the painting of a huge whale beside a
+      // tiny fish has a line of its own, after the line that says the pictures can be the same size, and many turtles live in and
+      // near the water, not all (Texas has box turtles that live on dry land).
+      pictures: [{ serial: 'P109', alt: 'A huge whale swimming beside a tiny fish in the ocean', step: 5 }],
+      paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Water animals live in or near water. A whale and a fish both swim, but they are different. A whale comes up to the top of the water to breathe air, and a fish breathes under the water. In real life a whale is much, much bigger than most fish, even when their pictures are the same size. Many turtles and frogs live in and near the water too, and a duck swims on top of it.'],
       keyIdea: 'The same means just alike. Animals that look a little alike can still be different.',
       example: { kind: 'pair', a: { kind: 'pic', name: 'whale' }, b: { kind: 'pic', name: 'whale' }, caption: 'Two whales. They are the same.' },
       script: [
         { say: 'Look at this whale. See its shape and its color.', show: { kind: 'pic', name: 'whale' } },
         { say: 'Here is another whale, just the same. The two whales match.', show: { kind: 'pair', a: { kind: 'pic', name: 'whale' }, b: { kind: 'pic', name: 'whale' } } },
         { say: 'This is a fish. It is not the same as the whale, so it is different.', show: { kind: 'pair', a: { kind: 'pic', name: 'whale' }, b: { kind: 'pic', name: 'fish' } } },
-        { say: 'A whale and a fish both swim, but a whale breathes air. Look closely before you match.', show: { kind: 'pair', a: { kind: 'pic', name: 'whale' }, b: { kind: 'pic', name: 'fish' } } },
+        { say: 'A whale and a fish both swim. A whale comes up to the top of the water to breathe air, and a fish breathes under the water.', show: { kind: 'pair', a: { kind: 'pic', name: 'whale' }, b: { kind: 'pic', name: 'fish' } } },
         { say: 'In real life, a whale is much, much bigger than most fish, even when their pictures are the same size.', show: { kind: 'pair', a: { kind: 'pic', name: 'whale' }, b: { kind: 'pic', name: 'fish' } } },
-        { say: 'A turtle and a frog live in and near the water too.', show: { kind: 'pair', a: { kind: 'pic', name: 'turtle' }, b: { kind: 'pic', name: 'frog' } } },
+        { say: 'Side by side in the ocean, a whale is huge, and a fish is tiny.', show: { kind: 'pair', a: { kind: 'pic', name: 'whale', size: 120 }, b: { kind: 'pic', name: 'fish', size: 34 } } },
+        { say: 'Many turtles and frogs live in and near the water too.', show: { kind: 'pair', a: { kind: 'pic', name: 'turtle' }, b: { kind: 'pic', name: 'frog' } } },
         { say: 'A duck lives near the water and swims on top of it.', show: { kind: 'pic', name: 'duck' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups) and Head Start ELOF Goal P-MATH 8.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups and uses language to describe how the groups are similar and different), in part, since the lesson finds the animal that is the same and the one that is different, while using language to describe how the groups are similar and different is the child\'s own talk, for a grown-up to hear (EARMARKS E13), and VI.B.1 (observes, investigates, describes, and discusses the characteristics of organisms), in part, since the lesson observes that a whale breathes air and is much, much bigger than most fish, and that many turtles, frogs and ducks live in and near the water, while investigating, describing and discussing are the child\'s own (EARMARKS E13), and Head Start ELOF Goal P-MATH 8 (measures objects by their various attributes using standard and non-standard measurement. Uses differences in attributes to make comparisons.), whose 48 to 60 month progression reads "With some adult support, uses measurable attributes to make comparisons, such as identifies objects as the same/different and more/less."'],
     generators: ['pm-same-water', 'pm-different-water', 'pm-tap-water', 'pm-water-facts', 'pm-same-water'],
   },
   {
@@ -4968,8 +5000,8 @@ function PREK_MODULES() { return [
     tagline: 'Foxes, bears, rabbits',
     requires: ['match-the-water-animals'],
     lesson: {
-      pictures: [{ serial: 'P110', alt: 'A brown bear with round ears, a rabbit with long ears and a red fox with pointy ears', step: 3 }],
-      paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Land animals live on land. A bear has round ears, a rabbit has long ears, and a fox has pointy ears, so ears help tell them apart. A cat has pointy ears too, so look at the face and the color as well.', 'A snail has no legs and slides along on one flat foot. An owl has big round eyes, and most owls hunt at night.'],
+      pictures: [{ serial: 'P110', alt: 'A brown bear with round ears beside a white rabbit with long ears', step: 3 }],
+      paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Land animals live on land. A bear has round ears, a rabbit has long ears, and a fox has pointy ears, so ears help tell them apart. A cat has pointy ears too, so look at the face and the color as well.', 'A snail has no ears and no legs, and it slides along on one flat foot. An owl has big round eyes, and most owls hunt at night.'],
       keyIdea: 'The same means just alike. Look at the ears, the face and the color.',
       example: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'bear' }, caption: 'Two bears. They are the same.' },
       script: [
@@ -4978,11 +5010,11 @@ function PREK_MODULES() { return [
         { say: 'This is a fox. It is not the same as the bear, so it is different.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'fox' } } },
         { say: 'Ears help tell animals apart. A bear has round ears, and a rabbit has long ears.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
         { say: 'A fox has pointy ears, and so does a cat, so look at the face and the color too.', show: { kind: 'pair', a: { kind: 'pic', name: 'fox' }, b: { kind: 'pic', name: 'cat' } } },
-        { say: 'A snail has no legs at all. It slides along slowly on one flat foot.', show: { kind: 'pic', name: 'snail' } },
+        { say: 'A snail has no ears and no legs at all. It slides along slowly on one flat foot.', show: { kind: 'pic', name: 'snail' } },
         { say: 'An owl has big round eyes, and most owls hunt at night.', show: { kind: 'pic', name: 'owl' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups) and Head Start ELOF Goal P-MATH 8.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups and uses language to describe how the groups are similar and different), in part, since the lesson finds the animal that is the same and the one that is different, by its ears, its face and its color, while using language to describe how the groups are similar and different is the child\'s own talk, for a grown-up to hear (EARMARKS E13), and VI.B.1 (observes, investigates, describes, and discusses the characteristics of organisms), in part, since the lesson observes a bear\'s round ears, a rabbit\'s long ears, the pointy ears of a fox and a cat, a snail\'s one flat foot and an owl\'s big round eyes, while investigating, describing and discussing are the child\'s own (EARMARKS E13), and Head Start ELOF Goal P-SCI 3 (compares and categorizes observable phenomena), whose 48 to 60 month progression reads "With increasing independence, sorts objects into groups based on more complex attributes, such as weight, sound, or texture. Uses measurement tools to assess the properties of and compare observable phenomena.", in part, since the lesson sorts animals by their ears, faces and color, while using measurement tools waits (EARMARKS E13).'],
     generators: ['pm-same-land', 'pm-different-land', 'pm-land-ears', 'pm-same-land', 'pm-land-ears'],
   },
   {
@@ -4993,20 +5025,22 @@ function PREK_MODULES() { return [
     tagline: 'Circles, squares, triangles',
     requires: ['match-the-land-animals'],
     lesson: {
+      // Pass ML (the lesson check): a square is a rectangle too (pass JW), so the lesson's rectangle is a long one, with two long
+      // sides and two short ones, and the circle's no corners is said aloud.
       pictures: [{ serial: 'P111', alt: 'A wooden door, a square window and a round clock on the wall of a house', step: 4 }],
-      paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Count the corners to tell shapes apart. A triangle has three, a square and a rectangle have four, and a circle has none. A square has four sides the same length, and a rectangle has two long sides and two short ones.', 'Shapes are all around the house. Most doors are rectangles, a window can be a square, and a clock can be a circle.'],
+      paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Count the corners to tell shapes apart. A triangle has three, a square and a rectangle have four, and a circle has none. A square has four sides that are all the same length, and a long rectangle has two long sides and two short ones.', 'Shapes are all around the house. Most doors are rectangles, a window can be a square, and a clock can be a circle.'],
       keyIdea: 'The same means just alike. Count the corners and look at the sides.',
       example: { kind: 'pair', a: { kind: 'shape', name: 'triangle' }, b: { kind: 'shape', name: 'triangle' }, caption: 'Two triangles. They are the same.' },
       script: [
         { say: 'Look at this triangle. It has three corners.', show: { kind: 'shape', name: 'triangle' } },
         { say: 'Here is another triangle, just the same. The two triangles match.', show: { kind: 'pair', a: { kind: 'shape', name: 'triangle' }, b: { kind: 'shape', name: 'triangle' } } },
-        { say: 'This is a circle. It is not the same as the triangle, so it is different.', show: { kind: 'pair', a: { kind: 'shape', name: 'triangle' }, b: { kind: 'shape', name: 'circle' } } },
-        { say: 'A square and a rectangle both have four corners. A square\'s sides are all the same, and a rectangle has two long sides and two short ones.', show: { kind: 'pair', a: { kind: 'shape', name: 'square' }, b: { kind: 'shape', name: 'rectangle' } } },
-        { say: 'Look for shapes at home. Most doors are rectangles, a window can be a square, and a clock can be a circle.', show: { kind: 'pair', a: { kind: 'shape', name: 'rectangle' }, b: { kind: 'shape', name: 'circle' } } },
+        { say: 'This is a circle. It has no corners, so it is not the same as the triangle. It is different.', show: { kind: 'pair', a: { kind: 'shape', name: 'triangle' }, b: { kind: 'shape', name: 'circle' } } },
+        { say: 'A square and a rectangle both have four corners. A square\'s four sides are all the same length. This rectangle is long, with two long sides and two short ones.', show: { kind: 'pair', a: { kind: 'shape', name: 'square' }, b: { kind: 'shape', name: 'rectangle' } } },
+        { say: 'Look for shapes at home. Most doors are rectangles, a window can be a square, and a clock can be a circle.', show: { kind: 'row', items: [{ kind: 'shape', name: 'rectangle' }, { kind: 'shape', name: 'square' }, { kind: 'shape', name: 'circle' }] } },
         { say: 'Draw a triangle in the air with your finger. One, two, three corners!', show: { kind: 'shape', name: 'triangle' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups) and Head Start ELOF Goal P-MATH 8.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.C.1 (names and describes common 2D shapes and names at least 1 solid 3D shape), in part, since the lesson names and describes the circle, the square, the triangle and the rectangle by their corners and sides, while naming a solid shape is taught in Match the solids, and V.E.1 (sorts objects that are the same and different into groups and uses language to describe how the groups are similar and different), in part, since the lesson finds the shape that is the same and the one that is different, while using language to describe how the groups are similar and different is the child\'s own talk, for a grown-up to hear (EARMARKS E13), and Head Start ELOF Goal P-MATH 9 (identifies, describes, compares, and composes shapes), whose 48 to 60 month progression reads "Recognizes and compares a greater number of shapes of different sizes and orientations. Begins to identify sides and angles as distinct parts of shapes.", in part, since the lesson compares four shapes by their corners and sides, while shapes of different sizes and orientations wait (EARMARKS E13).'],
     generators: ['pm-same-shape', 'pm-different-shape', 'pm-shape-corners', 'pm-tap-shape', 'pm-same-shape'],
   },
   {
@@ -5017,21 +5051,22 @@ function PREK_MODULES() { return [
     tagline: 'Blocks, balls, cones',
     requires: ['match-the-shapes'],
     lesson: {
-      pictures: [{ serial: 'P17', alt: 'A wooden block, a ball, an ice cream cone and a can in a row', step: 3 }],
-      paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Solid shapes are all around us. A cube is like a block, a sphere is like a ball, a cone is like an ice cream cone, and a cylinder is like a can. Spheres roll, and cubes stack.', 'A cylinder rolls on its curved side and stands still on its flat end. Try it at home with a ball and two blocks.'],
+      // Pass ML (the lesson check): round all over, the reason the questions give for a sphere, is said where the sphere comes in.
+      pictures: [{ serial: 'P17', alt: 'A wooden block, a ball, an ice cream cone lying on its side and a can in a row', step: 3 }],
+      paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Solid shapes are all around us. A cube is like a block, a sphere is like a ball, a cone is like an ice cream cone, and a cylinder is like a can. A sphere is round all over, so it rolls, and a cube has flat sides, so it stacks.', 'A cylinder rolls on its curved side and stands still on its flat end. Try it at home with a ball and two blocks.'],
       keyIdea: 'The same means just alike. Every solid shape looks like something we use.',
       example: { kind: 'pair', a: { kind: 'solid', name: 'cube' }, b: { kind: 'solid', name: 'cube' }, caption: 'Two cubes. They are the same.' },
       script: [
         { say: 'Look at this cube. It has flat sides and corners.', show: { kind: 'solid', name: 'cube' } },
         { say: 'Here is another cube, just the same. The two cubes match.', show: { kind: 'pair', a: { kind: 'solid', name: 'cube' }, b: { kind: 'solid', name: 'cube' } } },
-        { say: 'This is a sphere. It is not the same as the cube, so it is different.', show: { kind: 'pair', a: { kind: 'solid', name: 'cube' }, b: { kind: 'solid', name: 'sphere' } } },
+        { say: 'This is a sphere. It is round all over, so it is not the same as the cube. It is different.', show: { kind: 'pair', a: { kind: 'solid', name: 'cube' }, b: { kind: 'solid', name: 'sphere' } } },
         { say: 'A cube is like a block, a sphere is like a ball, a cone is like an ice cream cone, and a cylinder is like a can.', show: { kind: 'pair', a: { kind: 'solid', name: 'cone' }, b: { kind: 'solid', name: 'cylinder' } } },
         { say: 'Spheres roll, and cubes stack. The shape tells you what a thing can do.', show: { kind: 'pair', a: { kind: 'solid', name: 'cube' }, b: { kind: 'solid', name: 'sphere' } } },
         { say: 'A cylinder rolls on its curved side, and it stands still on its flat end.', show: { kind: 'solid', name: 'cylinder' } },
         { say: 'Try it at home. Roll a ball, then stack two blocks.', show: { kind: 'pair', a: { kind: 'solid', name: 'sphere' }, b: { kind: 'solid', name: 'cube' } } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.C.1 (names and describes common 2D shapes and names at least 1 solid 3D shape) and Head Start ELOF Goal P-MATH 9.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.C.1 (names and describes common 2D shapes and names at least 1 solid 3D shape), in part, since the lesson names four solid shapes, the cube, the sphere, the cone and the cylinder, while naming and describing flat shapes is taught in Match the shapes, V.E.1 (sorts objects that are the same and different into groups and uses language to describe how the groups are similar and different), in part, since the lesson finds the solid that is the same and the one that is different, while using language to describe how the groups are similar and different is the child\'s own talk, for a grown-up to hear (EARMARKS E13), and VI.A.2 (observes, investigates, describes, and discusses position and motion of objects), in part, since the lesson observes that spheres roll, cubes stack and a cylinder rolls on its curved side and stands still on its flat end, while investigating, describing and discussing are the child\'s own, with a grown-up (EARMARKS E13), and Head Start ELOF Goal P-MATH 9 (identifies, describes, compares, and composes shapes), whose 48 to 60 month progression reads "Recognizes and compares a greater number of shapes of different sizes and orientations. Begins to identify sides and angles as distinct parts of shapes.", in part, since the lesson recognizes and compares four solid shapes and names a cube\'s flat sides and corners, while shapes of different sizes and orientations wait (EARMARKS E13).'],
     generators: ['pm-same-solid', 'pm-different-solid', 'pm-solid-like', 'pm-solid-do', 'pm-same-solid'],
   },
   {
@@ -5042,22 +5077,30 @@ function PREK_MODULES() { return [
     tagline: 'Up to five',
     requires: ['count-to-3'],
     lesson: {
-      pictures: [{ serial: 'P112', alt: 'Two plates of strawberries, one with a big group and one with only a few', step: 5 }],
-      paragraphs: ['Look at both groups. The bigger group has more, and the smaller group has fewer.', 'When two groups look close in size, like four and three, count each one. The group with the bigger number has more.', 'Your hands can help, five fingers on one hand and two on the other. At snack time, the plate with the bigger group has more. You can also line two groups up, one with one, and the group with some left over has more.'],
-      keyIdea: 'More is the bigger group. Fewer is the smaller group.',
-      example: { kind: 'pair', a: { kind: 'dots', count: 5 }, b: { kind: 'dots', count: 2 }, caption: 'Five dots and two dots. Five is more.' },
+      // EARMARKS A7 (pass ML, the lesson check): more and fewer are found by counting each group, never as the bigger group, and
+      // the two traps are taught before they are asked, a long row that looks like more and big things that look like more (the
+      // lines and pictures of pre-K 3's More and Fewer, at pre-K 4's Head Start progression, which counts across sizes). Every pair
+      // is stacked, so each dot sits over its partner and every dot is one size; only the two trap pictures differ.
+      pictures: [{ serial: 'P112', alt: 'Two plates of the same size, three big strawberries on one and five little strawberries on the other', step: 10 }],
+      paragraphs: ['To compare two groups, count each one, touching each thing once. The last number you say tells how many. Five dots are more than two dots, because you count past two to get to five. Two dots are fewer than five dots, and fewer means not as many.', 'When two groups are almost the same, like four and three, count each one carefully. You can also line the groups up, one with one, and the group with some left over has more.', 'A long row can look like more, and big things can look like more too. Three dots spread far apart are still fewer than four dots close together, and five little circles are more than three big ones. Big is not the same as more, so count to be sure.', 'Your hands can help, five fingers on one hand and two on the other. At snack time, count the strawberries on two plates.'],
+      keyIdea: 'Count each group to find which has more. A long row or big things can look like more, so count to be sure.',
+      example: { kind: 'pair', stack: true, a: { kind: 'dots', count: 5 }, b: { kind: 'dots', count: 2 }, caption: 'Five dots are more than two dots.' },
       script: [
-        { say: 'Here are five dots, and here are two dots.', show: { kind: 'pair', a: { kind: 'dots', count: 5 }, b: { kind: 'dots', count: 2 } } },
-        { say: 'Five is more than two. This group has more.', show: { kind: 'pair', a: { kind: 'dots', count: 5 }, b: { kind: 'dots', count: 2 } } },
-        { say: 'Two is fewer than five. This group has fewer.', show: { kind: 'pair', a: { kind: 'dots', count: 2 }, b: { kind: 'dots', count: 5 } } },
-        { say: 'When two groups are close, like four and three, count each one. The bigger number has more.', show: { kind: 'pair', a: { kind: 'dots', count: 4 }, b: { kind: 'dots', count: 3 } } },
-        { say: 'Use your hands. Hold up five fingers on one hand and two on the other. Five is more than two.', show: { kind: 'pair', a: { kind: 'dots', count: 5 }, b: { kind: 'dots', count: 2 } } },
-        { say: 'At snack time, look at two plates. The plate with the bigger group of strawberries has more.', show: null },
-        { say: 'Another way to compare is to line the groups up, one with one. The group with some left over has more.', show: { kind: 'pair', a: { kind: 'dots', count: 4 }, b: { kind: 'dots', count: 3 } } },
+        { say: 'Here are five dots, and here are two dots. Let\'s count each group. One, two, three, four, five, and one, two. The last number tells how many.', show: { kind: 'pair', stack: true, a: { kind: 'dots', count: 5 }, b: { kind: 'dots', count: 2 } } },
+        { say: 'We count past two to get to five, so five dots are more than two dots.', show: { kind: 'pair', stack: true, a: { kind: 'dots', count: 5 }, b: { kind: 'dots', count: 2 } } },
+        { say: 'Two dots are fewer than five dots. Fewer means not as many.', show: { kind: 'pair', stack: true, a: { kind: 'dots', count: 2 }, b: { kind: 'dots', count: 5 } } },
+        { say: 'When two groups are almost the same, like four and three, count each one carefully, touching each dot once. One, two, three, four, and one, two, three. Four dots are more than three dots.', show: { kind: 'pair', stack: true, a: { kind: 'dots', count: 4 }, b: { kind: 'dots', count: 3 } } },
+        { say: 'Another way to compare is to line the groups up, one with one. The group with some left over has more.', show: { kind: 'pair', stack: true, a: { kind: 'dots', count: 4 }, b: { kind: 'dots', count: 3 } } },
+        { say: 'Three dots, when spread far apart, make a row that looks long. Four dots, when close together, make a row that looks short. The long row looks like more. Is it more?', show: { kind: 'pair', stack: true, a: { kind: 'dots', count: 3, gap: 74 }, b: { kind: 'dots', count: 4, gap: 3 } } },
+        { say: 'Count each group. One, two, three, and one, two, three, four. Four dots are more than three dots, so the long row only looked like more.', show: { kind: 'pair', stack: true, a: { kind: 'dots', count: 3, gap: 74 }, b: { kind: 'dots', count: 4, gap: 3 } } },
+        { say: 'Three circles, when drawn big, take up lots of room. Five circles, when drawn little, take up only a little room. The big circles look like more. Are they more?', show: { kind: 'pair', stack: true, a: { kind: 'pattern', items: ['circle', 'circle', 'circle'], colour: 'blue', counting: true, size: 80, frame: 3 }, b: { kind: 'pattern', items: ['circle', 'circle', 'circle', 'circle', 'circle'], colour: 'blue', counting: true, size: 30, gap: 27 } } },
+        { say: 'Count each group. One, two, three, and one, two, three, four, five. Five little circles are more than three big circles. Big is not the same as more.', show: { kind: 'pair', stack: true, a: { kind: 'pattern', items: ['circle', 'circle', 'circle'], colour: 'blue', counting: true, size: 80, frame: 3 }, b: { kind: 'pattern', items: ['circle', 'circle', 'circle', 'circle', 'circle'], colour: 'blue', counting: true, size: 30, gap: 27 } } },
+        { say: 'Use your hands. Hold up five fingers on one hand and two on the other. Count them. Five fingers are more than two fingers.', show: { kind: 'pair', stack: true, a: { kind: 'dots', count: 5 }, b: { kind: 'dots', count: 2 } } },
+        { say: 'At snack time, count the strawberries on two plates. Five little strawberries are more strawberries than three big ones, even though the big ones take up more room.', show: null },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.A.8 (compares sets of objects up to 10 using comparative language) and Head Start ELOF Goal P-MATH 4.'],
-    generators: ['p4-tap-more-5', 'p4-tap-fewer-5', 'p4-more-close', 'p4-fewer-close', 'p4-tap-more-5'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.A.8 (compares sets of objects up to 10 using comparative language (e.g., greater/more than, less/fewer than, equal to/same number of)), in part, since the lesson compares sets up to five with more than and fewer than, while six to ten and equal to, the same number of, wait (EARMARKS E13), and V.A.2 (counts up to 10 objects with one-to-one correspondence) and V.A.3 (counts up to 10 items and demonstrates cardinality by communicating that the last number indicates how many items are in the set), each in part, since the groups are counted up to five, touching each dot once, the last number telling how many, while groups of six to ten wait (EARMARKS E13), and Head Start ELOF Goals P-MATH 4 (compares numbers), whose 48 to 60 month progression reads "Counts to determine and compare number amounts even when the larger group\'s objects are smaller in size, such as buttons, compared with the smaller group\'s objects that are larger in size, such as markers. Uses numbers related to order or position.", in part, since the lesson teaches its first sentence, counting five little circles as more than three big ones, while its second, numbers for order or position, is taught in Which came first? and Second and last (First Sounds and Letters), and P-MATH 3 (understands the relationship between numbers and quantities), whose 48 to 60 month progression reads "Understands that number words refer to quantity. May point to or move objects while counting objects to 10 and beyond (one-to-one correspondence). Understands that the last number represents how many objects are in a group (cardinality).", in part, since the lesson counts to five, while counting objects to 10 and beyond waits (EARMARKS E13).'],
+    generators: ['p4-tap-more-5', 'p4-tap-fewer-5', 'p4-more-close', 'p4-fewer-close', 'p4-looks-like-more'],
   },
   {
     id: 'bigger-and-smaller',
@@ -5067,23 +5110,29 @@ function PREK_MODULES() { return [
     tagline: 'Two of the same shape',
     requires: ['big-bigger-biggest'],
     lesson: {
-      pictures: [{ serial: 'P113', alt: 'A mouse, a cat and a horse side by side', step: 3 }, { serial: 'P114', alt: 'Two children standing back to back to see who is taller', step: 6 }],
-      paragraphs: ['Here are two of the same shape. The one that takes up more room is bigger, and the one that takes up less room is smaller.', 'Bigger and smaller always compare two things. A cat is bigger than a mouse but smaller than a horse, so the same cat can be bigger or smaller, depending on what is next to it.', 'Size has helper words too. A tower that reaches higher is taller, and a line that reaches farther is longer. To compare, start them at the same place, the way two friends stand back to back to see who is taller.', 'Pictures can be any size, so think about real life. A bee and a snail are tiny, a cat, a rabbit, a duck, an owl and a fox are middle-sized, and a bear and a whale are huge, even when a picture shows them all the same size.'],
+      // Pass ML (the lesson check): shorter, which the towers' and lines' reasons say, is said on their lines; every shape gets
+      // bigger and smaller, the triangle as well; and each size group of real animals has a line and a row of its own.
+      pictures: [{ serial: 'P113', alt: 'A mouse, a cat and a horse side by side', step: 4 }, { serial: 'P114', alt: 'Two children standing back to back to see who is taller', step: 7 }],
+      paragraphs: ['Here are two of the same shape. The one that takes up more room is bigger, and the one that takes up less room is smaller. It works for every shape, a square, a circle or a triangle.', 'Bigger and smaller always compare two things. A cat is bigger than a mouse but smaller than a horse, so the same cat can be bigger or smaller, depending on what is next to it.', 'Size has helper words too. A tower that reaches higher is taller, and a line that reaches farther is longer, and the other one is shorter. To compare, start them at the same place, the way two friends stand back to back to see who is taller.', 'Pictures can be any size, so think about real life. A bee and a snail are tiny, a cat, a rabbit, a duck, an owl and a fox are middle-sized, and a bear and a whale are huge, even when a picture shows them all the same size.'],
       keyIdea: 'Bigger things take up more room and smaller things take up less. Taller reaches higher, and longer reaches farther.',
       example: { kind: 'pair', a: { kind: 'shape', name: 'square', size: 'big' }, b: { kind: 'shape', name: 'square', size: 'small' }, caption: 'A big square and a small square.' },
       script: [
         { say: 'Here is a big square, and here is a small square.', show: { kind: 'pair', a: { kind: 'shape', name: 'square', size: 'big' }, b: { kind: 'shape', name: 'square', size: 'small' } } },
         { say: 'The big square takes up more room, so it is bigger.', show: { kind: 'pair', a: { kind: 'shape', name: 'square', size: 'big' }, b: { kind: 'shape', name: 'square', size: 'small' } } },
         { say: 'The small circle takes up less room, so it is smaller than the big circle.', show: { kind: 'pair', a: { kind: 'shape', name: 'circle', size: 'small' }, b: { kind: 'shape', name: 'circle', size: 'big' } } },
+        { say: 'It works for every shape. The small triangle is smaller than the big triangle.', show: { kind: 'pair', a: { kind: 'shape', name: 'triangle', size: 'small' }, b: { kind: 'shape', name: 'triangle', size: 'big' } } },
         { say: 'Bigger and smaller compare two things. A cat is bigger than a mouse, but smaller than a horse.', show: { kind: 'pic', name: 'cat' } },
-        { say: 'When one tower reaches higher than another, it is taller. Both towers stand on the same floor.', show: { kind: 'bars', lengths: [6, 3], vertical: true } },
-        { say: 'When one line reaches farther than another, it is longer. Both lines start at the same place.', show: { kind: 'bars', lengths: [7, 4] } },
+        { say: 'When one tower reaches higher than another, it is taller, and the other is shorter. Both towers stand on the same floor.', show: { kind: 'bars', lengths: [6, 3], vertical: true } },
+        { say: 'When one line reaches farther than another, it is longer, and the other is shorter. Both lines start at the same place.', show: { kind: 'bars', lengths: [7, 4] } },
         { say: 'Stand back to back with a friend or a grown-up. The one whose head reaches higher is taller.', show: null },
         { say: 'In real life, a bear is much bigger than a bee, even when a picture shows them the same size.', show: { kind: 'pair', a: { kind: 'pic', name: 'bee' }, b: { kind: 'pic', name: 'bear' } } },
-        { say: 'A bee and a snail are tiny. A cat, a rabbit and a fox are middle-sized, and so are a duck and an owl. A bear and a whale are huge.', show: null },
+        { say: 'A bee and a snail are tiny.', show: { kind: 'row', items: [{ kind: 'pic', name: 'bee' }, { kind: 'pic', name: 'snail' }] } },
+        { say: 'A cat, a rabbit and a fox are middle-sized.', show: { kind: 'row', items: [{ kind: 'pic', name: 'cat' }, { kind: 'pic', name: 'rabbit' }, { kind: 'pic', name: 'fox' }] } },
+        { say: 'A duck and an owl are middle-sized too.', show: { kind: 'row', items: [{ kind: 'pic', name: 'duck' }, { kind: 'pic', name: 'owl' }] } },
+        { say: 'A bear and a whale are huge.', show: { kind: 'row', items: [{ kind: 'pic', name: 'bear' }, { kind: 'pic', name: 'whale' }] } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.D.1 (recognizes and compares heights or lengths of people or objects) and Head Start ELOF Goal P-MATH 8 (uses differences in attributes to make comparisons).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.D.1 (recognizes and compares heights or lengths of people or objects) and Head Start ELOF Goal P-MATH 8 (measures objects by their various attributes using standard and non-standard measurement. Uses differences in attributes to make comparisons.), whose 48 to 60 month progression reads "With some adult support, uses measurable attributes to make comparisons, such as identifies objects as the same/different and more/less." The Texas Prekindergarten Guidelines name no PK4 outcome for size as the room a thing takes up; V.D.1 is taught in the towers, the lines and two people standing back to back.'],
     generators: ['p4-tap-bigger', 'p4-tap-smaller', 'kl-taller', 'kl-longer', 'p4-real-bigger'],
   },
   {
@@ -5094,22 +5143,28 @@ function PREK_MODULES() { return [
     tagline: 'What comes next?',
     requires: ['same-and-different'],
     lesson: {
-      pictures: [{ serial: 'P117', alt: 'A string of beads in a red, blue, red, blue pattern', step: 6 }],
-      paragraphs: ['A pattern repeats the same way again and again. Circle, square, circle, square, so a circle comes next.', 'Say the pattern out loud, and your voice tells you what comes next or what is missing. A row that keeps changing its order is not a pattern, because it does not repeat.', 'You can make a pattern with your body, clap, stomp, clap, stomp, or with beads on a string, red, blue, red, blue. Then make your own, and ask a grown-up to guess what comes next.'],
-      keyIdea: 'A pattern repeats. Say it out loud to find what comes next.',
+      // Pass ML (the lesson check): every pattern the questions show is taught first, a row that starts either way, a pattern of
+      // three shapes, a gap in the first place or the second, and a row of two shapes that is not a pattern, so no question can be
+      // passed by tapping the row's first shape or by counting its kinds of shape.
+      pictures: [{ serial: 'P138', alt: 'A small child clapping and stomping in a pattern while a grown-up claps along', step: 8 }, { serial: 'P117', alt: 'A string of beads in a red, blue, red, blue pattern', step: 9 }],
+      paragraphs: ['A pattern repeats the same way each time. Circle, square, circle, square, so a circle comes next. A pattern can start with either shape, and it can have three shapes too, circle, square, triangle, circle, square, triangle.', 'Say the pattern out loud, and your voice tells you what comes next or what is missing, wherever the gap is. A row that keeps changing its order is not a pattern, even with only two shapes, because it does not repeat.', 'You can make a pattern with your body, clap, stomp, clap, stomp, or with beads on a string, red, blue, red, blue. Then make your own, and ask a grown-up to guess what comes next.'],
+      keyIdea: 'A pattern repeats the same way each time. Say it out loud to find what comes next.',
       example: { kind: 'pattern', items: ['circle', 'square', 'circle', 'square'], caption: 'Circle, square, circle, square.' },
       script: [
-        { say: 'Circle, square, circle, square. This pattern repeats.', show: { kind: 'pattern', items: ['circle', 'square', 'circle', 'square'] } },
+        { say: 'Circle, square, circle, square. This pattern repeats the same way each time.', show: { kind: 'pattern', items: ['circle', 'square', 'circle', 'square'] } },
         { say: 'What comes next? Say it out loud. Circle, square, circle, square, circle. A circle comes next.', show: { kind: 'pattern', items: ['circle', 'square', 'circle', 'square', 'circle'] } },
-        { say: 'When one is missing, say the pattern and listen for the gap. Circle, square, circle, square. The missing one is a circle.', show: { kind: 'pattern', items: ['circle', 'square', '?', 'square'] } },
-        { say: 'Triangle, square, circle, triangle, circle, square. The order keeps changing, so this is not a pattern.', show: { kind: 'pattern', items: ['triangle', 'square', 'circle', 'triangle', 'circle', 'square'] } },
-        { say: 'Patterns are all around us, in songs, in beads and in the days of the week.', show: { kind: 'pattern', items: ['triangle', 'circle', 'triangle', 'circle'] } },
+        { say: 'Square, circle, square. What comes next? Say it out loud. Square, circle, square, circle. A circle comes next.', show: { kind: 'pattern', items: ['square', 'circle', 'square', 'circle'] } },
+        { say: 'A pattern can have three shapes too. Circle, square, triangle, circle, square, triangle. It repeats the same way each time.', show: { kind: 'pattern', items: ['circle', 'square', 'triangle', 'circle', 'square', 'triangle'] } },
+        { say: 'When one is missing, say the pattern and listen for the gap. Here the gap comes first. Circle, square, circle, square. The missing one is a circle.', show: { kind: 'pattern', items: ['?', 'square', 'circle', 'square'] } },
+        { say: 'Here the gap comes second. Say it out loud. Circle, square, circle, square. The missing one is a square.', show: { kind: 'pattern', items: ['circle', '?', 'circle', 'square'] } },
+        { say: 'Circle, circle, square, circle, square, square. The order keeps changing, so this is not a pattern.', show: { kind: 'pattern', items: ['circle', 'circle', 'square', 'circle', 'square', 'square'] } },
+        { say: 'Patterns are all around us, in songs and in beads.', show: { kind: 'pattern', items: ['triangle', 'circle', 'triangle', 'circle'] } },
         { say: 'You can make a pattern with your body too. Clap, stomp, clap, stomp. What comes next? A clap!', show: null },
         { say: 'Beads on a string can make a pattern. Red, blue, red, blue, so a red bead comes next.', show: null },
-        { say: 'Make your own pattern with blocks or crayons, and ask a grown-up to guess what comes next.', show: null },
+        { say: 'Make your own pattern with blocks or crayons, and ask a grown-up to guess what comes next.', show: { kind: 'pattern', items: ['square', 'triangle', 'square', 'triangle'] } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.3 (recognizes, duplicates, extends, and creates patterns) and Head Start ELOF Goal P-MATH 7.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.3 (recognizes, duplicates, extends, and creates patterns), in part, since the lesson teaches recognizing and extending a pattern, while duplicating one waits and creating one, which the lesson invites, is a grown-up\'s to see (EARMARKS E13), and Head Start ELOF Goal P-MATH 7 (understands simple patterns), whose 48 to 60 month progression reads "Creates, identifies, extends, and duplicates simple repeating patterns in different forms, such as with objects, numbers, sounds, and movements.", in part, since the lesson identifies and extends repeating patterns of shapes, beads, claps and stomps, while duplicating a pattern and patterns of numbers wait and creating one is a grown-up\'s to see (EARMARKS E13).'],
     generators: ['pp-what-next', 'pp-what-next', 'pp-which-repeats', 'pp-missing', 'pp-what-next'],
   },
   {
@@ -5119,7 +5174,9 @@ function PREK_MODULES() { return [
     title: 'One, two, three',
     tagline: 'First counting',
     lesson: {
-      paragraphs: ['Touch each dot as you count it, and say one number for each dot. One, two, three.', 'The last number you say tells how many. Count one, two, three, and there are three dots.', 'Count anything, not just dots. Hold up three fingers, one, two, three, or clap three times. Things can sit in a row or in a pile, and you still count each one once.'],
+      // EARMARKS A7 (pass ML, the lesson check): which group has more is found by counting, said on its own line with the two groups
+      // stacked, and the numerals the questions offer as answers are shown first.
+      paragraphs: ['Touch each dot as you count it, and say one number for each dot. One, two, three.', 'The last number you say tells how many. Count one, two, three, and there are three dots in the group. We write one, two and three as 1, 2 and 3.', 'To find which group has more, count each group. Three dots are more than one dot, because you count past one to get to three.', 'Count anything, not just dots. Hold up three fingers, one, two, three, or clap three times. Things can sit in a row or in a pile, and you still count each one once.'],
       keyIdea: 'Touch and count, one number for each dot. The last number tells how many.',
       example: { kind: 'dots', count: 3, caption: 'One, two, three.' },
       script: [
@@ -5127,13 +5184,15 @@ function PREK_MODULES() { return [
         { say: 'Here comes one more. One, two. Now there are two dots.', show: { kind: 'dots', count: 2 } },
         { say: 'One more again. One, two, three. Now there are three dots.', show: { kind: 'dots', count: 3 } },
         { say: 'Touch each dot as you count it, and say one number for each dot.', show: { kind: 'dots', count: 3 } },
-        { say: 'The last number you say tells how many. One, two, three. There are three dots.', show: { kind: 'dots', count: 3 } },
+        { say: 'The last number you say tells how many. One, two, three. There are three dots in this group.', show: { kind: 'dots', count: 3 } },
+        { say: 'This is how we write 1, 2 and 3.', show: { kind: 'letters', text: '1 2 3' } },
+        { say: 'Here are three dots and one dot. Count each group. One, two, three, and one. We count past one to get to three, so three dots are more than one dot.', show: { kind: 'pair', stack: true, a: { kind: 'dots', count: 3 }, b: { kind: 'dots', count: 1 } } },
         { say: 'Hold up one finger. Now two. Now three! One, two, three fingers.', show: { kind: 'dots', count: 3 } },
         { say: 'Clap three times with me. One, two, three claps.', show: { kind: 'dots', count: 3 } },
         { say: 'Things can sit in a row or in a pile. Count each one once, and the last number tells how many.', show: { kind: 'dots', count: 3 } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.A.2 and V.A.3 (counting with one-to-one correspondence and cardinality) and Head Start ELOF Goals P-MATH 1 (knows number names and the count sequence) and P-MATH 3 (understands the relationship between numbers and quantities).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.A.2 (counts up to 10 objects with one-to-one correspondence) and V.A.3 (counts up to 10 items and demonstrates cardinality by communicating that the last number indicates how many items are in the set), each in part, since this lesson counts groups of one, two and three, while groups up to ten wait (EARMARKS E13), V.A.8 (compares sets of objects up to 10 using comparative language (e.g., greater/more than, less/fewer than, equal to/same number of)), in part, since the lesson compares groups up to three with more than, while fewer than is taught in More and fewer, and six to ten and equal to, the same number of, wait (EARMARKS E13), and V.A.5 (recognizes numerals 0-10), in part, since the lesson shows 1, 2 and 3, while 0, and a numeral recognized on its own, wait (EARMARKS E13), and Head Start ELOF Goals P-MATH 1 (knows number names and the count sequence), whose 48 to 60 month progression reads "Says or signs more number words in sequence.", in part, since the lesson says one, two and three, while more number words are said in Connect the dots and those past ten wait (EARMARKS E13), P-MATH 3 (understands the relationship between numbers and quantities), whose 48 to 60 month progression reads "Understands that number words refer to quantity. May point to or move objects while counting objects to 10 and beyond (one-to-one correspondence). Understands that the last number represents how many objects are in a group (cardinality).", in part, since counting objects to 10 and beyond waits (EARMARKS E13), and P-MATH 5 (associates a quantity with written numerals up to 5 and begins to write numbers), whose 48 to 60 month progression reads "Understands that written numbers represent quantities of objects, and uses information symbols, such as a tally, to represent numerals. With adult support, writes some numerals up to 10.", in part, since the lesson shows 1, 2 and 3 for groups of one, two and three and asks for them as counts, while tallies and writing numerals wait (EARMARKS E13).'],
     generators: ['p3-how-many', 'p3-tap-group', 'p3-tap-one', 'p3-more', 'p4-how-many-3'],
   },
   {
@@ -5144,20 +5203,23 @@ function PREK_MODULES() { return [
     tagline: 'Lines, waves and circles',
     needsTouch: true,
     lesson: {
-      pictures: [{ serial: 'P118', alt: 'A zigzag bolt of lightning in a dark stormy sky', step: 3 }],
-      paragraphs: ['Hold the stylus like a crayon, or use your finger. Start at the dot and draw along the line.', 'Lines can go down, across, in a wave, in a zigzag, or round and round. Every letter is made of lines like these.', 'Lines are all around you. Rain falls in lines down, the top of a table is a line across, waves on water go up and down, and lightning makes a zigzag in a storm.'],
+      // Pass ML (the lesson check): where each line starts is said, the top and the left, as pre-K 3's First Marks says it; a wavy
+      // line and a circle are named as the questions name them; and the lightning painting sits on a line of its own, so the zigzag
+      // the questions ask for is never hidden behind it.
+      pictures: [{ serial: 'P118', alt: 'A zigzag bolt of lightning in a dark stormy sky', step: 5 }],
+      paragraphs: ['Hold the stylus like a crayon, or use your finger. Start at the dot and draw along the line, down from the top or across from the left.', 'Lines can go down, across, in a wave, in a zigzag, or round and round. Every letter is made of lines like these.', 'Lines are all around you. Rain falls in lines down, the top of a table is a line across, waves on water go up and down, and lightning makes a zigzag in a storm.'],
       keyIdea: 'Start at the dot and follow the line.',
       example: { kind: 'trace', text: 'line-wave', caption: 'Start at the dot and draw along the wave.' },
       script: [
-        { say: 'Watch the line. Start at the dot and draw a line down.', show: { kind: 'trace', text: 'line-down' } },
-        { say: 'Watch again. Start at the dot and draw a line across.', show: { kind: 'trace', text: 'line-across' } },
-        { say: 'A wave goes up and down, smooth and curvy, like water.', show: { kind: 'trace', text: 'line-wave' } },
-        { say: 'A zigzag goes up and down too, but with sharp points, like a lightning bolt.', show: { kind: 'trace', text: 'line-zigzag' } },
-        { say: 'One more. Start at the dot and go round and round.', show: { kind: 'trace', text: 'line-circle' } },
-        { say: 'Lines are everywhere. Rain falls in lines down, and the top of a table is a line across.', show: null },
+        { say: 'Watch the line. Start at the dot at the top and draw a line down.', show: { kind: 'trace', text: 'line-down' } },
+        { say: 'Watch again. Start at the dot on the left and draw a line across.', show: { kind: 'trace', text: 'line-across' } },
+        { say: 'A wavy line goes up and down, smooth and curvy.', show: { kind: 'trace', text: 'line-wave' } },
+        { say: 'A zigzag goes up and down too, but with sharp points.', show: { kind: 'trace', text: 'line-zigzag' } },
+        { say: 'One more. Start at the dot and go all the way around. That is a circle.', show: { kind: 'trace', text: 'line-circle' } },
+        { say: 'Lines are everywhere. Rain falls in lines down, the top of a table is a line across, and lightning makes a zigzag in a storm.', show: null },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines IX.B.2 (shows increasing control of tasks that require eye-hand coordination) and Head Start ELOF Goal P-PMP 3.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines IX.B.2 (shows increasing control of tasks that require eye-hand coordination) and IV.C.4 (uses appropriate directionality when writing (e.g., top to bottom, left to right)), in part, since the lesson draws a line down from the top and a line across from the left, while writing itself is First Sounds and Letters\', and Head Start ELOF Goal P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws the lines, waves, zigzags and circles that letters are made of, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13) and letters are traced in First Sounds and Letters.'],
     generators: ['pd-trace-line', 'pd-trace-line', 'pd-trace-line', 'pd-trace-line', 'pd-trace-line'],
   },
   {
@@ -5168,8 +5230,10 @@ function PREK_MODULES() { return [
     tagline: 'Draw from 1 to 2 to 3',
     needsTouch: true,
     lesson: {
-      pictures: [{ serial: 'P119', alt: 'Bright stars in a night sky joined by soft lines into a picture', step: 5 }],
-      paragraphs: ['Start at dot 1, draw to dot 2, then to dot 3, and keep going in order.', 'The numbers show the order. Go in order, and when you reach the last dot, a picture appears. Skip a dot, and the picture comes out wrong.', 'Say each number out loud as you reach its dot, and you will always know where to go next. Long ago, people looked at the stars at night and joined them with lines they imagined, to make pictures in the sky.'],
+      // Pass ML (the lesson check): the numerals past five that the bigger pictures carry are said in order before they are asked,
+      // and the house is counted to its fifth dot.
+      pictures: [{ serial: 'P119', alt: 'Bright stars in a night sky joined by soft lines into a picture', step: 7 }],
+      paragraphs: ['Start at dot 1, draw to dot 2, then to dot 3, and keep going in order.', 'The numbers show the order. Go in order, and when you reach the last dot, a picture appears. Skip a dot, and the picture comes out wrong. Some pictures have more dots, and after five come six, seven, eight, nine and ten. A star has ten dots.', 'Say each number out loud as you reach its dot, and you will always know where to go next. Long ago, people looked at the stars at night and joined them with lines they imagined, to make pictures in the sky.'],
       keyIdea: 'Start at 1 and draw to each dot in order.',
       example: { kind: 'trace', text: 'house', caption: 'Go in order, and a picture appears.' },
       script: [
@@ -5177,11 +5241,13 @@ function PREK_MODULES() { return [
         { say: 'It draws a line to dot number 2, then keeps going in order.', show: { kind: 'trace', text: 'house' } },
         { say: 'At the last dot, a picture appears. It is a house.', show: { kind: 'trace', text: 'house' } },
         { say: 'The numbers show the order. Skip a dot, and the picture comes out wrong.', show: { kind: 'trace', text: 'house' } },
-        { say: 'Say each number out loud as you reach its dot. One, two, three, four. The numbers tell you where to go next.', show: { kind: 'trace', text: 'house' } },
+        { say: 'Say each number out loud as you reach its dot. One, two, three, four, five, and back to one. The numbers tell you where to go next.', show: { kind: 'trace', text: 'house' } },
+        { say: 'Some pictures have more dots. After five come six, seven, eight, nine and ten. A star has ten dots.', show: { kind: 'trace', text: 'star' } },
+        { say: 'Dots in order make many pictures, such as a kite, a fish, a cup, a boat, a tree or a star.', show: { kind: 'trace', text: 'fish' } },
         { say: 'Long ago, people joined the stars at night with lines they imagined, to make pictures in the sky.', show: null },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines IX.B.2 (shows increasing control of tasks that require eye-hand coordination) and Head Start ELOF Goal P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines IX.B.2 (shows increasing control of tasks that require eye-hand coordination) and V.A.5 (recognizes numerals 0-10), in part, since the dots carry the numerals 1 to 10, while 0, and a numeral recognized on its own, wait (EARMARKS E13), and Head Start ELOF Goals P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws straight lines from dot to dot in order, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13) and letter-like forms are traced in First Sounds and Letters, and P-MATH 1 (knows number names and the count sequence), whose 48 to 60 month progression reads "Says or signs more number words in sequence.", in part, since the lesson says one to ten in order as each dot is reached, while number words past ten wait (EARMARKS E13).'],
     generators: ['pd-connect-dots', 'pd-connect-dots', 'pd-connect-dots', 'pd-connect-dots', 'pd-connect-dots'],
   },
   {
@@ -5192,19 +5258,21 @@ function PREK_MODULES() { return [
     tagline: 'A circle, a square, a triangle',
     needsTouch: true,
     lesson: {
+      // Pass ML (the lesson check): the square's four corners are counted aloud, and the shapes found at home have a painting.
+      pictures: [{ serial: 'P139', alt: 'A round button, a square cracker and a card with a heart on it on a table', step: 5 }],
       paragraphs: ['A shape is a line that comes back to where it started. Start at the dot and go all the way around.', 'A circle goes round, a square has four corners, and a triangle has three. A star has five points and a heart has a point at the bottom, and every one of them ends back at the dot.', 'You can find these shapes all around you. A button is round, a cracker can be square, a slice of pizza can be a triangle, and a heart can be on a card.'],
       keyIdea: 'Start at the dot and go all the way around.',
       example: { kind: 'trace', text: 'shape-circle', caption: 'Round and round. That is a circle.' },
       script: [
         { say: 'Watch the line. Start at the dot and go all the way around the circle.', show: { kind: 'trace', text: 'shape-circle' } },
-        { say: 'Watch again. Start at the dot. Turn at every corner. That is a square.', show: { kind: 'trace', text: 'shape-square' } },
-        { say: 'One more. Three corners, and back to the dot. That is a triangle.', show: { kind: 'trace', text: 'shape-triangle' } },
+        { say: 'Watch again. Start at the dot. Turn at every corner, one, two, three, four corners. That is a square.', show: { kind: 'trace', text: 'shape-square' } },
+        { say: 'Here is a triangle. Turn at three corners, and come back to the dot.', show: { kind: 'trace', text: 'shape-triangle' } },
         { say: 'Watch a star. It has five points, and the line still comes back to the dot.', show: { kind: 'trace', text: 'shape-star' } },
         { say: 'A heart has two round bumps and a point. Go all the way around the heart, back to the dot.', show: { kind: 'trace', text: 'shape-heart' } },
         { say: 'Look for these shapes around you. A button is round, a cracker can be square, and a heart can be on a card.', show: null },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines IX.B.2 (shows increasing control of tasks that require eye-hand coordination) and Head Start ELOF Goals P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles) and P-MATH 9 (identifies, describes, compares, and composes shapes).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines IX.B.2 (shows increasing control of tasks that require eye-hand coordination) and V.C.1 (names and describes common 2D shapes and names at least 1 solid 3D shape), in part, since the lesson names a circle, a square, a triangle, a star and a heart and describes their corners and points, while a solid is named in Match the solids, and Head Start ELOF Goals P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws five closed shapes all the way around, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13) and letter-like forms are traced in First Sounds and Letters, and P-MATH 9 (identifies, describes, compares, and composes shapes), whose 48 to 60 month progression reads "Recognizes and compares a greater number of shapes of different sizes and orientations. Begins to identify sides and angles as distinct parts of shapes.", in part, since the lesson recognizes five shapes and counts their corners, while shapes of different sizes and orientations wait (EARMARKS E13), and sides are taught in Match the shapes.'],
     generators: ["kn-trace-shape", "kn-trace-shape", "kn-trace-shape", "kn-trace-shape", "kn-trace-shape"],
   },
   {
@@ -5214,22 +5282,25 @@ function PREK_MODULES() { return [
     title: 'Taking turns',
     tagline: 'Wait, then it is your turn',
     lesson: {
-      pictures: [{ serial: 'P120', alt: 'Two children at a swing, one swinging while the other waits for a turn', step: 1 }],
-      paragraphs: ['When two people want the same thing, they can take turns. One goes first while the other waits, and then they swap, so both get a turn.', 'Sharing is different. When friends share, they both use the thing at the same time. Good choices like these help everyone get along.', 'Waiting for a turn can feel hard, and that is okay. While you wait, you can take a slow breath, count to ten or cheer for your friend, and soon it is your turn.'],
-      keyIdea: 'Wait, and then it is your turn. Taking turns and sharing are fair to everyone.',
+      // Pass ML (the lesson check): the kind thing to do, each good choice's reason and each way to wait's reason are said on the
+      // lines, as the questions say them, and every line has a picture.
+      pictures: [{ serial: 'P120', alt: 'Two children at a swing, one swinging while the other waits for a turn on a bench well away from it', step: 1 }, { serial: 'P142', alt: 'A small child listening while a friend is talking', step: 4 }, { serial: 'P143', alt: 'A small child dropping a snack wrapper into a trash can', step: 5 }, { serial: 'P144', alt: 'A small child helping a friend pick up dropped crayons', step: 6 }, { serial: 'P145', alt: 'A small child on a bench taking a slow, calm breath while waiting for a turn', step: 7 }],
+      paragraphs: ['When two people want the same thing, they can take turns. That is the kind thing to do. One goes first while the other waits, and then they swap, so both get a turn.', 'Sharing is different. When friends share, they both use the thing at the same time. Good choices like these help everyone get along. When someone is talking, listen, because it shows you care what they say. When you finish a snack, throw away the wrapper, so the room stays clean for everyone. When a friend drops their crayons, help pick them up.', 'Waiting for a turn can feel hard, and that is okay. A slow breath helps you feel calm, counting to ten helps the wait go by, and cheering for your friend is kind. Soon it is your turn.'],
+      keyIdea: 'Wait, and then it is your turn. Taking turns and sharing are kind to everyone.',
       example: { kind: 'pair', a: { kind: 'pic', name: 'frog' }, b: { kind: 'pic', name: 'turtle' }, caption: 'Two friends, one swing. Take turns.' },
       script: [
         { say: 'Two friends both want one swing. If they both pull, nobody gets to swing.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
-        { say: 'So they take turns. First one friend swings while the other waits.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
+        { say: 'So they take turns. That is the kind thing to do. First one friend swings while the other waits.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
         { say: 'Then they swap, and it is the other friend\'s turn. Sam has a turn, and then it is Ana\'s turn.', show: { kind: 'pair', a: { kind: 'pic', name: 'rabbit' }, b: { kind: 'pic', name: 'bear' } } },
         { say: 'Sharing is different. Two friends can share one ball and both play at the same time. Share it!', show: { kind: 'art', name: 'ball' } },
-        { say: 'Good choices help everyone. When someone is talking, listen. When you finish a snack, throw away the wrapper.', show: null },
-        { say: 'When a friend drops their crayons, help pick them up.', show: null },
-        { say: 'Waiting for a turn can feel hard, and that is okay. Take a slow breath in, and let it out.', show: null },
-        { say: 'While you wait, you can count to ten, or cheer for your friend. Then it is your turn!', show: null },
+        { say: 'Good choices help everyone. When someone is talking, listen, because it shows you care what they say.', show: null },
+        { say: 'When you finish a snack, throw away the wrapper, so the room stays clean for everyone.', show: null },
+        { say: 'When a friend drops their crayons, help pick them up, because it helps your friend.', show: null },
+        { say: 'Waiting for a turn can feel hard, and that is okay. Take a slow breath in, and let it out. A slow breath helps you feel calm.', show: null },
+        { say: 'While you wait, you can count to ten, which helps the wait go by, or cheer for your friend. Then it is your turn!', show: { kind: 'dots', count: 10 } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines I.C.4 (interacts with peers during cooperative play scenarios that share a common plan and goal) and Head Start ELOF Goal P-SE 3 (engages in and maintains positive interactions and relationships with other children).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines I.C.5 (initiates problem-solving strategies when experiencing conflicts with others and seeks adult support when necessary), in part, since the lesson teaches taking turns and sharing when two friends want one thing, while seeking a grown-up\'s support waits (EARMARKS E13), I.B.1.a (follows classroom rules and routines with occasional reminders from adults), in part, since the lesson teaches two routines, listening when someone talks and throwing away a wrapper, while following them day to day is the classroom\'s (EARMARKS E13), I.C.6 (demonstrates empathy and caring for others), in part, since the lesson teaches helping a friend pick up dropped crayons, while empathy beyond that act waits (EARMARKS E13), and I.B.2.c (is able to manage intensity of emotions more consistently, although adult guidance is sometimes necessary), in part, since the lesson teaches three ways to calm a hard feeling while waiting, a slow breath, counting to ten and cheering for a friend, while managing feelings day to day, with a grown-up\'s guidance, is the child\'s own (EARMARKS E13), and Head Start ELOF Goals P-SE 5 (uses basic problem-solving skills to resolve conflicts with other children), whose 48 to 60 month progression reads "Often recognizes and describes social problems, suggests solutions to conflicts, and compromises when working or playing in a group. Although simple conflicts may be resolved without adult assistance, may seek out or need adult support in more challenging moments.", in part, since the lesson teaches taking turns and sharing as solutions, while describing the problem is the child\'s own talk and a grown-up\'s support waits (EARMARKS E13), P-SE 3 (engages in and maintains positive interactions and relationships with other children), whose 48 to 60 month progression reads "Sustains interactions with other children more often and for increasing periods of time. Demonstrates prosocial behaviors with other children with and without prompting from adults. Likely to show at least some preference for playing with particular children.", in part, for its prosocial behaviors, taking turns, sharing and helping a friend pick up crayons, while sustained play and preferred friends are the child\'s own (EARMARKS E13), P-SE 8 (manages emotions with increasing independence), whose 48 to 60 month progression reads "Has an expanding range of strategies for managing emotions, both less intense emotions and those that cause greater distress. Sometimes looks to adults for support in managing the most intense emotions, but shows increasing skill in managing emotions independently.", in part, for three strategies for waiting, a slow breath, counting to ten and cheering for your friend, while greater distress and a grown-up\'s support wait (EARMARKS E13), and P-SE 7 (expresses care and concern toward others), whose 48 to 60 month progression reads "Consistently pays attention when others are distressed and often responds with care, either by seeking out adult support or providing reassurance or support themselves.", in part, since the lesson teaches helping a friend who drops their crayons, while paying attention when others are distressed and seeking a grown-up\'s support wait (EARMARKS E13).'],
     generators: ['pk-turn-choice', 'ck-good-choice', 'pk-whose-turn', 'pk-turn-or-share', 'pk-while-waiting'],
   },
   {
@@ -5239,21 +5310,30 @@ function PREK_MODULES() { return [
     title: 'Big, bigger, biggest',
     tagline: 'Three sizes in a row',
     lesson: {
-      pictures: [{ serial: 'P115', alt: 'Three snowmen in a row, big, bigger and biggest', step: 4 }, { serial: 'P116', alt: 'A tiny bee, a middle-sized cat and a huge bear in a meadow', step: 5 }],
-      paragraphs: ['Three circles in a row. One is small, one is middle-sized, and one is the biggest of all.', 'Biggest and smallest compare three or more things. The middle-sized circle is bigger than the small one, but smaller than the biggest.', 'Say it as you point: big, bigger, biggest. Each one is bigger than the one before, and the last is the biggest of all.', 'Real animals come in sizes too. A bee and a snail are tiny, a cat, a rabbit, a duck, an owl and a fox are middle-sized, and a bear and a whale are huge. A picture can show them all the same size, so think about real life.'],
+      // Pass ML (the lesson check): the three sizes the questions show together are shown together first, the smallest takes up
+      // the least room as its question says, the snowmen are named, and the real animals' line shows a tiny, a middle-sized and a
+      // huge one.
+      pictures: [{ serial: 'P115', alt: 'Three snowmen in a row, big, bigger and biggest', step: 6 }, { serial: 'P116', alt: 'A tiny bee, a middle-sized cat and a huge bear in a meadow', step: 12 }],
+      paragraphs: ['Three circles in a row. One is small and takes up the least room, one is middle-sized, and one is the biggest of all and takes up the most room.', 'Biggest and smallest compare three or more things. The middle-sized circle is bigger than the small one, but smaller than the biggest.', 'Say it as you point: big, bigger, biggest, like three snowmen in a row. Each one is bigger than the one before, and the last is the biggest of all.', 'Real animals come in sizes too. A bee and a snail are tiny, a cat, a rabbit, a duck, an owl and a fox are middle-sized, and a bear and a whale are huge. A picture can show them all the same size, so think about real life.'],
       keyIdea: 'Big, bigger, biggest: each one is bigger than the one before, and the biggest takes up the most room.',
       example: { kind: 'pair', a: { kind: 'shape', name: 'circle' }, b: { kind: 'shape', name: 'circle', size: 'big' }, caption: 'A middle-sized circle and the biggest circle.' },
       script: [
-        { say: 'Here is a small circle. It is the smallest.', show: { kind: 'shape', name: 'circle', size: 'small' } },
+        { say: 'Here is a small circle. It takes up the least room, so it is the smallest.', show: { kind: 'shape', name: 'circle', size: 'small' } },
         { say: 'Here is a middle-sized circle. Not little, and not big.', show: { kind: 'shape', name: 'circle' } },
         { say: 'Here is the biggest circle of all. It takes up the most room.', show: { kind: 'shape', name: 'circle', size: 'big' } },
+        { say: 'Here are all three circles, small, middle-sized and biggest.', show: { kind: 'row', items: [{ kind: 'shape', name: 'circle', size: 'small' }, { kind: 'shape', name: 'circle' }, { kind: 'shape', name: 'circle', size: 'big' }] } },
         { say: 'The middle-sized circle is bigger than the small one, but smaller than the biggest circle.', show: { kind: 'pair', a: { kind: 'shape', name: 'circle' }, b: { kind: 'shape', name: 'circle', size: 'big' } } },
-        { say: 'Big, bigger, biggest. Each one is bigger than the one before, and the last is the biggest of all.', show: null },
-        { say: 'Real animals come in sizes too. A bee and a snail are tiny. A cat, a rabbit and a fox are middle-sized, and so are a duck and an owl. A bear and a whale are huge.', show: null },
+        { say: 'Big, bigger, biggest, like these three circles. Each one is bigger than the one before, and the last is the biggest of all.', show: { kind: 'row', items: [{ kind: 'shape', name: 'circle', size: 'small' }, { kind: 'shape', name: 'circle' }, { kind: 'shape', name: 'circle', size: 'big' }] } },
+        { say: 'Three snowmen in a row can be big, bigger and biggest too.', show: null },
+        { say: 'Real animals come in sizes too. A bee and a snail are tiny.', show: { kind: 'row', items: [{ kind: 'pic', name: 'bee' }, { kind: 'pic', name: 'snail' }] } },
+        { say: 'A cat, a rabbit and a fox are middle-sized.', show: { kind: 'row', items: [{ kind: 'pic', name: 'cat' }, { kind: 'pic', name: 'rabbit' }, { kind: 'pic', name: 'fox' }] } },
+        { say: 'A duck and an owl are middle-sized too.', show: { kind: 'row', items: [{ kind: 'pic', name: 'duck' }, { kind: 'pic', name: 'owl' }] } },
+        { say: 'A bear and a whale are huge.', show: { kind: 'row', items: [{ kind: 'pic', name: 'bear' }, { kind: 'pic', name: 'whale' }] } },
         { say: 'Pictures can fool you, because a book may show a bee and a bear the same size. In real life, the bear is huge.', show: { kind: 'pair', a: { kind: 'pic', name: 'bee' }, b: { kind: 'pic', name: 'bear' } } },
+        { say: 'In real life, a bee is tiny, a cat is middle-sized, and a bear is huge.', show: { kind: 'row', items: [{ kind: 'pic', name: 'bee', size: 34 }, { kind: 'pic', name: 'cat', size: 70 }, { kind: 'pic', name: 'bear', size: 110 }] } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.D.1 (recognizes and compares heights or lengths of people or objects) and Head Start ELOF Goal P-MATH 8 (measures objects by their attributes).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines II.D.1 (understands (receptive) and uses (expressive) a wide variety of words to label, describe and make connections among objects, people, places, actions, and events), in part, its receptive half for the size words smallest, middle-sized, biggest, tiny and huge, while their expressive half is the child\'s own talk (EARMARKS E13) and the rest of its wide variety of words is First Sounds and Letters\', and Head Start ELOF Goal P-MATH 8 (measures objects by their various attributes using standard and non-standard measurement. Uses differences in attributes to make comparisons.), whose 48 to 60 month progression reads "With some adult support, uses measurable attributes to make comparisons, such as identifies objects as the same/different and more/less." The Texas Prekindergarten Guidelines name no PK4 outcome for size as the room a thing takes up, and heights and lengths (V.D.1) are taught in Bigger and smaller.'],
     generators: ['pk4-tap-biggest', 'pk4-tap-smallest', 'pk4-tap-middle', 'p4-real-biggest', 'p4-real-middle'],
   },
   {
@@ -5263,23 +5343,25 @@ function PREK_MODULES() { return [
     title: 'Helpers all around',
     tagline: 'Who helps, and how',
     lesson: {
-      pictures: [{ serial: 'P121', alt: 'A friendly doctor listening to a child\'s heart with a stethoscope', step: 1 }, { serial: 'P122', alt: 'A teacher reading a story to a class on a rug, a clean whiteboard behind her', step: 2 }, { serial: 'P123', alt: 'A mail carrier with a bag of letters beside a mail truck', step: 3 }, { serial: 'P124', alt: 'A police officer beside a police car, waving to children on the sidewalk', step: 4 }],
-      paragraphs: ['Helpers are all around us, and every helper has a job. A firefighter puts out fires with a hose and rides a fire truck to get there fast. A doctor helps you when you are sick or hurt and listens to your heart with a stethoscope.', 'A teacher teaches you at school, reads stories to the class and writes on a whiteboard. A mail carrier brings letters, cards and packages in a mail truck. A police officer keeps people and cars safe on the street.', 'Helpers work in many places. Firefighters work at a fire station, doctors at a doctor\'s office or a hospital, teachers at a school, mail carriers at the post office, and police officers at a police station. You can be a helper too, at home and at school.'],
+      // Pass ML (the lesson check): every reason the questions give is said on a line first, each helper's tool and where they
+      // work, and every line has a picture.
+      pictures: [{ serial: 'P121', alt: 'A friendly doctor listening to a child\'s heart with a stethoscope', step: 1 }, { serial: 'P122', alt: 'A teacher reading a story to a class on a rug, a clean whiteboard behind her', step: 2 }, { serial: 'P123', alt: 'A mail carrier with a bag of letters beside a mail truck', step: 3 }, { serial: 'P124', alt: 'A police officer beside a police car, waving to children on the sidewalk', step: 4 }, { serial: 'P140', alt: 'A fire station with its big doors open beside a school', step: 5 }, { serial: 'P141', alt: 'A hospital, a post office and a police station along one street', step: 6 }],
+      paragraphs: ['Helpers are all around us, and every helper has a job. A firefighter puts out fires by spraying water from a hose, rides a fire truck to get there fast and helps keep people safe. A doctor helps sick and hurt people get well and listens to your heart and lungs with a stethoscope.', 'A teacher helps you learn at school, reads stories to the class and writes on a whiteboard so the whole class can see. A mail carrier brings letters, cards and packages to every home, often in a mail truck. A police officer keeps people and cars safe on the street and helps everyone follow the rules.', 'Helpers work in many places. Firefighters work at a fire station, doctors at a doctor\'s office or a hospital, teachers at a school, mail carriers at the post office, and police officers at a police station. You can be a helper too, at home and at school.'],
       keyIdea: 'Helpers are all around. Every helper has a job, and tools to help do it.',
       example: { kind: 'flow', steps: ['firefighter', 'doctor', 'teacher'], caption: 'Firefighter, doctor, teacher. Every helper has a job.' },
       script: [
-        { say: 'A firefighter is a helper. Firefighters put out fires with a hose, and they ride a fire truck to get there fast.', show: { kind: 'icon', name: 'fire' } },
-        { say: 'A doctor helps when you are sick or hurt, and listens to your heart with a stethoscope.', show: null },
-        { say: 'A teacher teaches you at school, reads stories to the class and writes on a whiteboard.', show: null },
-        { say: 'A mail carrier brings letters, cards and packages in a mail truck.', show: null },
-        { say: 'A police officer keeps people and cars safe on the street.', show: null },
+        { say: 'A firefighter is a helper. Firefighters put out fires by spraying water from a hose, and they ride a fire truck to get there fast. They help keep people safe.', show: { kind: 'icon', name: 'fire' } },
+        { say: 'A doctor helps sick and hurt people get well, and listens to your heart and lungs with a stethoscope.', show: { kind: 'icon', name: 'doctor' } },
+        { say: 'A teacher helps you learn at school, reads stories to the class and writes on a whiteboard so the whole class can see.', show: { kind: 'icon', name: 'board' } },
+        { say: 'A mail carrier brings letters, cards and packages to every home, often in a mail truck.', show: null },
+        { say: 'A police officer keeps people and cars safe on the street, and helps everyone follow the rules.', show: null },
         { say: 'Helpers work in many places. Firefighters work at a fire station, and teachers work at a school.', show: null },
         { say: 'Doctors work at a doctor\'s office or a hospital, mail carriers work at the post office, and police officers work at a police station.', show: null },
-        { say: 'Every helper has a job, and every job helps us all.', show: null },
-        { say: 'You can be a helper too. Set the table, put away your toys, or help a friend who drops their crayons.', show: null },
+        { say: 'Every helper has a job, and every job helps us all.', show: { kind: 'row', items: [{ kind: 'icon', name: 'fire' }, { kind: 'icon', name: 'doctor' }, { kind: 'icon', name: 'board' }] } },
+        { say: 'You can be a helper too. Set the table, put away your toys, or help a friend who drops their crayons.', show: { kind: 'row', items: [{ kind: 'icon', name: 'plate' }, { kind: 'icon', name: 'spoon' }, { kind: 'icon', name: 'teddy' }] } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines VII.B.3 (discusses the roles and responsibilities of family, school, and community helpers) and Head Start ELOF Goal P-SE 11 (has a sense of belonging to family, community, and other groups).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines VII.B.3 (discusses the roles and responsibilities of family, school, and community helpers), in part, since the lesson teaches the jobs, tools and workplaces of a teacher, a firefighter, a doctor, a mail carrier and a police officer, and a child\'s own jobs at home and at school, while family members\' roles and the discussing, which only a grown-up can hear, wait (EARMARKS E13). The Head Start ELOF names no preschool goal for community helpers\' roles.'],
     generators: ['ck-which-helper', 'ck-job-tool', 'pk-helper-where', 'pk-helper-scene', 'ck-which-helper'],
   },
 ]; }
@@ -10513,7 +10595,7 @@ function KINDER_CIVICS_MODULES() { return [
     lesson: {
       // Full standard (pass JZ): rules keep us safe and make things fair (TEKS K.7A, K.7B), grown-ups help us follow them (K.8A),
       // the five helpers its questions ask about, and the good choices its questions ask, each said aloud before it is asked.
-      paragraphs: ['A rule tells us what to do. Rules keep us safe, like stopping at a red light to let the other cars go and walking in the hall so nobody bumps or falls. Rules also make things fair, like waiting our turn.', 'Grown-ups help us follow rules, like a parent at home, a teacher at school and a police officer in town. When a rule is broken, the grown-up in charge enforces it, which means making sure the rule is followed. A teacher reminds you of the rule, stops the unsafe thing, and may give a consequence, like sitting out of the game for a minute.', 'Helpers do jobs for everyone. A firefighter puts out fires, a doctor helps when you are sick, a teacher helps you learn, a mail carrier brings the mail, and a police officer keeps people safe on the street. We help too, with good choices like listening, throwing away our trash and helping a friend.'],
+      paragraphs: ['A rule tells us what to do. Rules keep us safe, like stopping at a red light to let the other cars go and walking in the hall so nobody bumps or falls. Rules also make things fair, like waiting our turn.', 'Grown-ups help us follow rules, like a parent at home, a teacher at school and a police officer in town. When a rule is broken, the grown-up in charge enforces it, which means making sure the rule is followed. A teacher reminds you of the rule, stops the unsafe thing, and may give a consequence, like sitting out of the game for a minute.', 'Helpers do jobs for everyone. A firefighter puts out fires, a doctor helps when you are sick, a teacher helps you learn, a mail carrier brings letters and packages, and a police officer keeps people safe on the street. We help too, with good choices like listening, throwing away our trash and helping a friend.'],
       keyIdea: 'Rules keep us safe and make things fair. Helpers do jobs for everyone.',
       example: { kind: 'sign', text: 'STOP', color: '#D9534F', caption: 'A red sign means stop. Rules keep everyone safe.', formula: 'STOP' },
       script: [
@@ -10524,7 +10606,7 @@ function KINDER_CIVICS_MODULES() { return [
         // Earmark E3, pass KM (TEKS K.8B): how an authority figure enforces a rule, in a five-year-old's words.
         { say: 'When a rule is broken, the grown-up in charge enforces it, which means making sure the rule is followed. A teacher reminds you of the rule, stops the unsafe thing, and may give a consequence, like sitting out of the game for a minute.', show: null },
         { say: 'Helpers do jobs for everyone. A firefighter puts out the fire.', show: { kind: 'icon', name: 'fire' } },
-        { say: 'A doctor helps when you are sick, a teacher helps you learn, a mail carrier brings the mail, and a police officer keeps people safe on the street.', show: null },
+        { say: 'A doctor helps when you are sick, a teacher helps you learn, a mail carrier brings letters and packages, and a police officer keeps people safe on the street.', show: null },
         { say: 'We help too, with good choices. We listen when someone talks, throw away our trash, and help a friend who drops something.', show: null },
       ],
     },
@@ -10589,14 +10671,14 @@ function KINDER_CIVICS_MODULES() { return [
     lesson: {
       // Full standard (pass JZ): why people work (TEKS K.6B), jobs at home, at school and in town (K.6A), and every tool its
       // questions ask about, the mail truck included, which the old lesson never said.
-      paragraphs: ['Grown-ups go to work to earn money, and that money pays for needs, like food, clothes and a home. Many jobs help other people too.', 'Every job has its tools. A firefighter sprays water from a hose, a doctor listens to your heart with a stethoscope, a teacher writes on a whiteboard, and a mail carrier drives a mail truck and brings the mail.', 'Jobs happen in town, at school and at home. A police officer keeps people safe in town, a teacher teaches at school, and at home a family cooks, cleans and cares for one another.'],
+      paragraphs: ['Grown-ups go to work to earn money, and that money pays for needs, like food, clothes and a home. Many jobs help other people too.', 'Every job has its tools. A firefighter sprays water from a hose, a doctor listens to your heart with a stethoscope, a teacher writes on a whiteboard, and a mail carrier often drives a mail truck and brings letters and packages.', 'Jobs happen in town, at school and at home. A police officer keeps people safe in town, a teacher teaches at school, and at home a family cooks, cleans and cares for one another.'],
       keyIdea: 'People work to earn money for needs, and many jobs help others too. Every job has its tools.',
       example: { kind: 'icon', name: 'fire', caption: 'A firefighter fights the fire with a hose.' },
       script: [
         { say: 'Grown-ups go to work to earn money. That money pays for needs, like food and a home.', show: null },
         { say: 'Many jobs help other people too. A firefighter fights the fire with a hose.', show: { kind: 'icon', name: 'fire' } },
         { say: 'A doctor listens to your heart with a stethoscope. A teacher writes on a whiteboard.', show: null },
-        { say: 'A mail carrier drives a mail truck and brings the mail. A police officer keeps people safe.', show: null },
+        { say: 'A mail carrier often drives a mail truck and brings letters and packages. A police officer keeps people safe.', show: null },
         { say: 'There are jobs at home too, like cooking and cleaning, and jobs at school, like teaching. Every job has its tools.', show: null },
       ],
     },
@@ -17073,32 +17155,42 @@ const singular = (word) => word.slice(0, -1); // "slices" -> "slice"
 // What the themed matching modules match. 'pic' is a sign-in animal; 'art' is a coloring outline.
 export const MATCH_THEMES = {
   animals: { kind: 'pic', items: ['fox', 'owl', 'frog', 'bee', 'cat', 'turtle', 'rabbit', 'bear', 'duck', 'snail'], same: 'and they look just alike', odd: true, notes: true },   // why, said aloud in the lesson's own words (pass MA); notes: why each wrong choice does not fit (pass MH)
-  vehicles: { kind: 'art', items: ['car', 'train', 'boat', 'rocket'] },
-  things: { kind: 'art', items: ['ball', 'balloon', 'robot', 'butterfly', 'star', 'flower'] },
-  water: { kind: 'pic', items: ['whale', 'fish', 'turtle', 'duck', 'frog'] },
-  land: { kind: 'pic', items: ['fox', 'bear', 'rabbit', 'cat', 'owl', 'snail'] },
-  shapes: { kind: 'shape', items: ['circle', 'square', 'triangle', 'rectangle'] },
-  solids: { kind: 'solid', items: ['cube', 'sphere', 'cone', 'cylinder'] },
+  // Every First Steps theme has notes since pass ML (EARMARKS L10): a reason for each wrong choice from its own lesson (sameWhy
+  // and oddWhy, below the themes), and more right examples.
+  vehicles: { kind: 'art', items: ['car', 'train', 'boat', 'rocket'], notes: true, more: ['Two cars match when they have the same color and the same shape.', 'A car has wheels and a boat has none, so they are different.'] },
+  things: { kind: 'art', items: ['ball', 'balloon', 'robot', 'butterfly', 'star', 'flower'], notes: true, more: ['Two balls that look just alike match.', 'A ball and a balloon are both round, but a balloon has a string, so they are different.'] },
+  water: { kind: 'pic', items: ['whale', 'fish', 'turtle', 'duck', 'frog'], notes: true, more: ['Two whales that look just alike match.', 'A whale and a fish both swim, but a whale breathes air, so they are different.'] },
+  land: { kind: 'pic', items: ['fox', 'bear', 'rabbit', 'cat', 'owl', 'snail'], notes: true, more: ['Two bears that look just alike match.', 'A fox and a cat both have pointy ears, so look at the face and the color too.'] },
+  shapes: { kind: 'shape', items: ['circle', 'square', 'triangle', 'rectangle'], apart: [['square', 'rectangle']], notes: true, more: ['Two triangles that look just alike match.', 'A square and a long rectangle both have four corners, but their sides are not the same.'] },   // a square is a rectangle too (pass JW), so the two never meet (pass ML)
+  solids: { kind: 'solid', items: ['cube', 'sphere', 'cone', 'cylinder'], notes: true, more: ['Two cubes that look just alike match.', 'A sphere rolls and a cube stacks, so they are different.'] },
 };
 // A theme with notes (pass MH, the animals Very First Steps matches) also says why each wrong choice does not fit, in the
 // Match the Animals lesson's words (same means just alike; the two alike go together and the other is the odd one out),
 // with one more example of the idea from the lessons.
+// Two items a theme never sets side by side (pass ML): a square is a rectangle too, so neither is the different one.
+const themeApart = (theme, a, b) => (theme.apart || []).some((p) => p.includes(a) && p.includes(b));
+// Why a wrong choice is not the same as the asked picture, and why one of the two alike is not the different one, from each
+// theme's lesson (pass ML): where a vehicle goes, what a thing has, a shape's corners and a solid's look; an animal is a different
+// animal, in Match the Animals' own words.
+const themeSameWhy = (theme, x, a) => (theme === MATCH_THEMES.vehicles ? `${FS_VEH_DOES[x]}, so it is not the same as the ${a}.` : theme === MATCH_THEMES.things ? `${FS_THING_HAS[x]}, so it is not the same as the ${a}.`
+  : theme === MATCH_THEMES.shapes ? fsShapeWhy(x, a) : theme === MATCH_THEMES.solids ? `${FS_SOLID_LIKE[x]}, and a ${a} ${FS_SOLID_LIKE[a]}.` : `is a different animal, and it does not look just like the ${a}.`);
+const themeOddWhy = (theme, x) => (theme === MATCH_THEMES.shapes ? `${FS_CORNERS[x]}, just like the other ${x}, so those two match.` : theme === MATCH_THEMES.solids ? `${FS_SOLID_LIKE[x]}, just like the other ${x}, so those two match.` : `looks just like the other ${x}, so those two go together.`);
+const themeName = (theme, t) => (theme.kind === 'shape' ? `The ${p3ShapeOf(t)}` : theme.kind === 'solid' ? FS_SOLID_NAME(t) : p3PicName(t));
 const themedSame = (theme) => (rng) => {
-  const a = pick(rng, theme.items); const b = pick(rng, theme.items.filter((x) => x !== a)); const sameWhy = theme.same ? ', ' + theme.same : '';
+  const a = pick(rng, theme.items); const b = pick(rng, theme.items.filter((x) => x !== a && !themeApart(theme, a, x))); const sameWhy = theme.same ? ', ' + theme.same : ', just the same, so they match';
   const choices = shuffle(rng, [`${theme.kind}:${a}`, `${theme.kind}:${b}`]); const answer = `${theme.kind}:${a}`;
-  // A theme read at the refined standard (notes, pass MH) asks in one sentence (pass MJ, the lesson check: Tap the one that is the
-  // same as this bear.); the others keep their setup until their grade's review (EARMARKS L11).
-  const merged = !!theme.notes;
-  return { type: 'choice', story: merged ? null : `This is ${aOrAn(a)} ${a}.`, prompt: merged ? 'Tap the one that is the same as this ' + a + '.' : 'Tap the one that is the same.', choices, answer,
+  // Every theme asks in one sentence since pass ML (pass MJ's lesson check for the animals: Tap the one that is the same as this
+  // bear.; EARMARKS L11), and gives the lesson's reason: the same means just alike, so they match.
+  return { type: 'choice', story: null, prompt: 'Tap the one that is the same as this ' + a + '.', choices, answer,
     explain: `Both are ${pluralOf(a)}${sameWhy}.`, visual: { kind: theme.kind, name: a }, explainVisual: { kind: 'pair', a: { kind: theme.kind, name: a }, b: { kind: theme.kind, name: a } },
-    ...(theme.notes ? { whyNot: p3WhyNot(choices, answer, (t) => ({ name: p3PicName(t), why: `is a different animal, and it does not look just like the ${a}.` })), alsoRight: ['Two socks from one pair look just alike, so they are the same too.'] } : {}) };
+    ...(theme.notes ? { whyNot: p3WhyNot(choices, answer, (t) => ({ name: themeName(theme, t), why: themeSameWhy(theme, String(t).split(':')[1].split('#')[0], a) })), alsoRight: theme.more ? [theme.more[0]] : ['Two socks from one pair look just alike, so they are the same too.'] } : {}) };
 };
 const themedDifferent = (theme) => (rng) => {
-  const a = pick(rng, theme.items); const b = pick(rng, theme.items.filter((x) => x !== a));
+  const a = pick(rng, theme.items); const b = pick(rng, theme.items.filter((x) => x !== a && !themeApart(theme, a, x)));
   const choices = shuffle(rng, [`${theme.kind}:${a}#0`, `${theme.kind}:${a}#1`, `${theme.kind}:${b}#2`]); const answer = choices.find((x) => x.startsWith(`${theme.kind}:${b}#`));
-  return { type: 'choice', story: 'Two are the same.', prompt: 'Tap the one that is different.', choices, answer,
-    explain: theme.odd ? `The ${b} is not the same as the ${pluralOf(a)}, so it is the odd one out.` : `The ${b} is different from the ${pluralOf(a)}.`, visual: null, explainVisual: { kind: 'pair', a: { kind: theme.kind, name: a }, b: { kind: theme.kind, name: b } },
-    ...(theme.notes ? { whyNot: p3WhyNot(choices, answer, (t) => ({ name: p3PicName(t), why: `looks just like the other ${p3PicWord(t)}, so those two go together.` })), alsoRight: ['Two zebras both have stripes and a lion has none, so the lion is the odd one out.'] } : {}) };
+  return { type: 'choice', story: null, prompt: 'Find the two that are the same, then tap the one that is different.', choices, answer,
+    explain: theme.odd ? `The ${b} is not the same as the ${pluralOf(a)}, so it is the odd one out.` : `The ${b} is not the same as the ${pluralOf(a)}, so it is different.`, visual: null, explainVisual: { kind: 'pair', a: { kind: theme.kind, name: a }, b: { kind: theme.kind, name: b } },
+    ...(theme.notes ? { whyNot: p3WhyNot(choices, answer, (t) => ({ name: themeName(theme, t), why: themeOddWhy(theme, String(t).split(':')[1].split('#')[0]) })), alsoRight: theme.more ? [theme.more[1]] : ['Two zebras both have stripes and a lion has none, so the lion is the odd one out.'] } : {}) };
 };
 export const GENERATORS = {
   // ---------- Module 1: what a fraction means ----------
@@ -17368,93 +17460,136 @@ export const GENERATORS = {
 const COLOURS = ['red', 'blue', 'yellow', 'green'];
 const pickColor = (rng) => COLOURS[randInt(rng, 0, COLOURS.length - 1)];
 const otherColors = (rng, not, n) => shuffle(rng, COLOURS.filter((c) => c !== not)).slice(0, n);
+// Red against green (EARMARKS A11, pass ML): where only the color tells a wrong choice from the answer, the two are never red
+// and green, the most common color vision deficiency (MedlinePlus), as pre-K 3's kinds have kept them apart since pass MB.
+const redOrGreen = (x) => x === 'red' || x === 'green';
+const clearOtherColor = (rng, c) => pick(rng, COLOURS.filter((x) => x !== c && !(redOrGreen(x) && redOrGreen(c))));
 const PATTERN_SHAPES = ['circle', 'square', 'triangle'];
 Object.assign(GENERATORS, {
   'pc-tap-colour': (rng) => {
     const c = pickColor(rng);
-    return { type: 'choice', story: null, prompt: `Tap the ${c} one.`, choices: shuffle(rng, [c, ...otherColors(rng, c, 2)].map((x) => `swatch:${x}`)), answer: `swatch:${c}`,
-      explain: `This one is ${c}${EARLY_COLOR_LIKE[c] ? ', ' + EARLY_COLOR_LIKE[c] : ''}.`, visual: null, explainVisual: null };
+    const choices = shuffle(rng, [c, ...otherColors(rng, c, 2)].map((x) => `swatch:${x}`));
+    return { type: 'choice', story: null, prompt: `Tap the ${c} one.`, choices, answer: `swatch:${c}`,
+      explain: `This one is ${c}${EARLY_COLOR_LIKE[c] ? ', ' + EARLY_COLOR_LIKE[c] : ''}.`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, `swatch:${c}`, (x) => ({ name: `The ${p3SwatchColour(x)} one`, why: `is ${p3ColorNot(p3SwatchColour(x), c)}.` })), alsoRight: [FS_COLOR_MORE[c]] };
   },
   'pc-name-colour': (rng) => {
-    const c = pickColor(rng);
-    return { type: 'choice', story: null, prompt: 'What color is this?', choices: shuffle(rng, [c, ...otherColors(rng, c, 2)]), answer: c,
-      explain: `It is ${c}${EARLY_COLOR_LIKE[c] ? ', ' + EARLY_COLOR_LIKE[c] : ''}.`, visual: { kind: 'swatch', colour: c }, explainVisual: null };
+    const c = pickColor(rng); const choices = shuffle(rng, [c, ...otherColors(rng, c, 2)]);
+    return { type: 'choice', story: null, prompt: 'What color is this?', choices, answer: c,
+      explain: `It is ${c}${EARLY_COLOR_LIKE[c] ? ', ' + EARLY_COLOR_LIKE[c] : ''}.`, visual: { kind: 'swatch', colour: c }, explainVisual: null,
+      whyNot: p3WhyNot(choices, c, (w) => ({ name: capFirst(w), why: `is ${P3_COLOR_OF[w]}, and this one is ${c} ${EARLY_COLOR_LIKE[c]}.` })), alsoRight: [FS_COLOR_MORE[c]] };
   },
+  // One sentence each (EARMARKS L11, pass ML), the picture named in it as pre-K 3's matching questions name theirs, and the other
+  // color never green against red or red against green (A11).
   'pc-same-colour': (rng) => {
-    const c = pickColor(rng); const other = otherColors(rng, c, 1)[0];
-    const shapeA = pick(rng, PATTERN_SHAPES); const shapeB = pick(rng, PATTERN_SHAPES);
-    return { type: 'choice', story: `This color is ${c}.`, prompt: 'Tap the one that is the same color.', choices: shuffle(rng, [`item:${shapeA}-${c}`, `item:${shapeB}-${other}`]), answer: `item:${shapeA}-${c}`,
-      explain: `Both are ${c}. To be the same color, only the color has to match, not the shape.`, visual: { kind: 'swatch', colour: c }, explainVisual: null };
+    const c = pickColor(rng); const other = clearOtherColor(rng, c);
+    const shapeA = pick(rng, PATTERN_SHAPES); const shapeB = pick(rng, PATTERN_SHAPES); const choices = shuffle(rng, [`item:${shapeA}-${c}`, `item:${shapeB}-${other}`]);
+    return { type: 'choice', story: null, prompt: `Tap the one that is the same color as this ${c} one.`, choices, answer: `item:${shapeA}-${c}`,
+      explain: `Both are ${c}. To be the same color, only the color has to match, not the shape.`, visual: { kind: 'swatch', colour: c }, explainVisual: null,
+      whyNot: p3WhyNot(choices, `item:${shapeA}-${c}`, (x) => ({ name: p3ItemName(x), why: `is ${p3ColorNot(p3Item(x).colour, c)}.` })), alsoRight: ['A red circle and a red square are the same color.'] };
   },
   'pc-different-colour': (rng) => {
-    const c = pickColor(rng); const other = otherColors(rng, c, 1)[0];
+    const c = pickColor(rng); const other = clearOtherColor(rng, c);
     const choices = shuffle(rng, [`item:circle-${c}#0`, `item:circle-${c}#1`, `item:circle-${other}#2`]);
-    return { type: 'choice', story: 'Two are the same color.', prompt: 'Tap the one that is different.', choices, answer: choices.find((x) => x.includes(`-${other}#`)),
-      explain: `Two are ${c}, and this one is ${other}, so it is different.`, visual: null, explainVisual: null };
+    const answer = choices.find((x) => x.includes(`-${other}#`));
+    return { type: 'choice', story: null, prompt: 'Find the two that are the same color, then tap the one that is different.', choices, answer,
+      explain: `Two are ${c}, and this one is ${other}, so it is different.`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, answer, (x) => ({ name: p3ItemName(x), why: `matches the other ${c} circle, so those two are the same color.` })), alsoRight: ['A stop sign and a blueberry are different colors, red and blue.'] };
   },
   'ps-find-match': (rng) => {
     const sh = pick(rng, PATTERN_SHAPES); const c = pickColor(rng);
-    const other = pick(rng, PATTERN_SHAPES.filter((x) => x !== sh)); const oc = otherColors(rng, c, 1)[0];
-    return { type: 'choice', story: `Here is a ${c} ${sh}.`, prompt: 'Tap the one that matches this.', choices: shuffle(rng, [`item:${sh}-${c}`, `item:${other}-${c}`, `item:${sh}-${oc}`]), answer: `item:${sh}-${c}`,
-      explain: `It is the same shape and the same color, so it matches.`, visual: { kind: 'item', shape: sh, colour: c }, explainVisual: null };
+    const other = pick(rng, PATTERN_SHAPES.filter((x) => x !== sh)); const oc = clearOtherColor(rng, c); const choices = shuffle(rng, [`item:${sh}-${c}`, `item:${other}-${c}`, `item:${sh}-${oc}`]);
+    return { type: 'choice', story: null, prompt: `Tap the one that matches this ${c} ${sh}.`, choices, answer: `item:${sh}-${c}`,
+      explain: 'It is the same shape, the same color and the same size, so it matches.', visual: { kind: 'item', shape: sh, colour: c }, explainVisual: null,
+      whyNot: p3WhyNot(choices, `item:${sh}-${c}`, (x) => { const w = p3Item(x); return { name: p3ItemName(x), why: w.shape === sh ? `is the same shape, but it is ${w.colour}, not ${c}.` : `is the same color, but it is a ${w.shape}, not a ${sh}.` }; }),
+      alsoRight: ['Two socks match when they are the same color and the same size, with the same stripes.'] };
   },
   'ps-odd-one-out': (rng) => {
     const sh = pick(rng, PATTERN_SHAPES); const c = pickColor(rng);
     const other = pick(rng, PATTERN_SHAPES.filter((x) => x !== sh));
     const choices = shuffle(rng, [`item:${sh}-${c}#0`, `item:${sh}-${c}#1`, `item:${other}-${c}#2`]);
-    return { type: 'choice', story: 'Two are the same.', prompt: 'Tap the one that is different.', choices, answer: choices.find((x) => x.startsWith(`item:${other}-`)),
-      explain: `Two are ${sh}s, and this one is a ${other}, so it is different.`, visual: null, explainVisual: null };
+    const answer = choices.find((x) => x.startsWith(`item:${other}-`));
+    return { type: 'choice', story: null, prompt: 'Find the two that are the same, then tap the one that is different.', choices, answer,
+      explain: `Two are ${sh}s, and this one is a ${other}, so it is different.`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, answer, (x) => ({ name: p3ItemName(x), why: `is just like the other ${c} ${sh}, the same shape, color and size.` })),
+      alsoRight: ['A green circle and a green square share a color but not a shape, so they are different.'] };
   },
   'ps-same-colour-shape': (rng) => {
-    const sh = pick(rng, PATTERN_SHAPES); const c = pickColor(rng); const oc = otherColors(rng, c, 1)[0];
-    return { type: 'choice', story: `Here is a ${c} ${sh}.`, prompt: 'Which one is exactly the same as this?', choices: shuffle(rng, [`item:${sh}-${c}`, `item:${sh}-${oc}`]), answer: `item:${sh}-${c}`,
-      explain: `It is a ${c} ${sh} too, the same shape and the same color, so it is exactly the same.`, visual: { kind: 'item', shape: sh, colour: c }, explainVisual: null };
+    const sh = pick(rng, PATTERN_SHAPES); const c = pickColor(rng); const oc = clearOtherColor(rng, c); const choices = shuffle(rng, [`item:${sh}-${c}`, `item:${sh}-${oc}`]);
+    return { type: 'choice', story: null, prompt: `Which one is exactly the same as this ${c} ${sh}?`, choices, answer: `item:${sh}-${c}`,
+      explain: `It is a ${c} ${sh} too, the same shape, the same color and the same size, so it is exactly the same.`, visual: { kind: 'item', shape: sh, colour: c }, explainVisual: null,
+      whyNot: p3WhyNot(choices, `item:${sh}-${c}`, () => ({ name: p3ItemName(`item:${sh}-${oc}`), why: `is the same shape, but it is ${oc}, not ${c}.` })),
+      alsoRight: ['Two red crayons from the same box match, the same color, shape and size.'] };
   },
   'ps-bigger': (rng) => {
     const sh = pick(rng, PATTERN_SHAPES); const c = pickColor(rng);
-    return { type: 'choice', story: null, prompt: 'Tap the bigger one.', choices: shuffle(rng, [`item:${sh}-${c}-big`, `item:${sh}-${c}-small`]), answer: `item:${sh}-${c}-big`,
-      explain: 'This one takes up more room, so it is bigger.', visual: null, explainVisual: null };
+    const choices = shuffle(rng, [`item:${sh}-${c}-big`, `item:${sh}-${c}-small`]);
+    return { type: 'choice', story: null, prompt: 'Tap the bigger one.', choices, answer: `item:${sh}-${c}-big`,
+      explain: 'This one takes up more room, so it is bigger.', visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, `item:${sh}-${c}-big`, (x) => ({ name: p3ItemName(x), why: 'takes up less room, so it is not the bigger one.' })),
+      alsoRight: ['A cat is bigger than a mouse, because it takes up more room.'] };
   },
   'ps-smaller': (rng) => {
     const sh = pick(rng, PATTERN_SHAPES); const c = pickColor(rng);
-    return { type: 'choice', story: null, prompt: 'Tap the smaller one.', choices: shuffle(rng, [`item:${sh}-${c}-big`, `item:${sh}-${c}-small`]), answer: `item:${sh}-${c}-small`,
-      explain: 'This one takes up less room, so it is smaller.', visual: null, explainVisual: null };
+    const choices = shuffle(rng, [`item:${sh}-${c}-big`, `item:${sh}-${c}-small`]);
+    return { type: 'choice', story: null, prompt: 'Tap the smaller one.', choices, answer: `item:${sh}-${c}-small`,
+      explain: 'This one takes up less room, so it is smaller.', visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, `item:${sh}-${c}-small`, (x) => ({ name: p3ItemName(x), why: 'takes up more room, so it is not the smaller one.' })),
+      alsoRight: ['A mouse is smaller than a cat, because it takes up less room.'] };
   },
+  // Patterns (pass ML, the lesson check): a row of three, four or five shapes that starts either way, so what comes next is the
+  // row's first shape only when the row is even; a gap anywhere in a row of six; and rows that repeat and rows that do not, each
+  // with two shapes or three, so neither the first shape nor the number of shapes gives the answer. Every row is one the lesson
+  // shows first (Square, circle, square; a pattern of three shapes; the gap second; two shapes that keep changing their order).
   'pp-what-next': (rng) => {
     const [a, b] = shuffle(rng, PATTERN_SHAPES).slice(0, 2); const c = pickColor(rng);
-    const items = [a, b, a, b]; const next = a; const wrong = b;
-    return { type: 'choice', story: null, prompt: 'What comes next?', choices: shuffle(rng, [`item:${next}-${c}`, `item:${wrong}-${c}`]), answer: `item:${next}-${c}`,
-      explain: `${capFirst(a)}, ${b}, ${a}, ${b}. Next comes ${a}.`, visual: { kind: 'pattern', items, colour: c }, explainVisual: null };
+    const len = pick(rng, [3, 4, 5]); const items = Array.from({ length: len }, (_, i) => (i % 2 === 0 ? a : b));
+    const next = len % 2 === 0 ? a : b; const wrong = next === a ? b : a; const last = items[items.length - 1]; const choices = shuffle(rng, [`item:${next}-${c}`, `item:${wrong}-${c}`]);
+    return { type: 'choice', story: null, prompt: 'What comes next?', choices, answer: `item:${next}-${c}`,
+      explain: `Say it out loud. ${capFirst([...items, next].join(', '))}. The pattern repeats, so ${aOrAn(next)} ${next} comes next.`, visual: { kind: 'pattern', items, colour: c }, explainVisual: null,
+      whyNot: p3WhyNot(choices, `item:${next}-${c}`, (x) => ({ name: p3ItemName(x), why: `would not repeat the same way each time, because ${aOrAn(next)} ${next} comes after ${aOrAn(last)} ${last}.` })),
+      alsoRight: ['Clap, stomp, clap, stomp, so a clap comes next.'] };
   },
   'pp-which-repeats': (rng) => {
     const [a, b, d] = shuffle(rng, PATTERN_SHAPES); const c = pickColor(rng);
-    const yes = randInt(rng, 0, 1) === 1;
-    const items = yes ? [a, b, a, b, a, b] : [a, b, d, a, d, b];
+    const yes = randInt(rng, 0, 1) === 1; const three = randInt(rng, 0, 1) === 1;
+    const items = yes ? (three ? [a, b, d, a, b, d] : [a, b, a, b, a, b]) : (three ? pick(rng, [[a, b, d, a, d, b], [a, a, b, d, b, d]]) : pick(rng, [[a, a, b, a, b, b], [a, b, b, a, b, a], [a, b, a, a, b, b]]));
     return { type: 'choice', story: null, prompt: 'Does this repeat the same way each time?', choices: ['Yes', 'No'], answer: yes ? 'Yes' : 'No',
-      explain: yes ? `${capFirst(a)}, ${b}, ${a}, ${b}. It repeats.` : 'The order keeps changing. It does not repeat.', visual: { kind: 'pattern', items, colour: c }, explainVisual: null };
+      explain: yes ? `${capFirst(items.join(', '))}. It repeats the same way each time, so it is a pattern.` : 'The order keeps changing, so it is not a pattern.', visual: { kind: 'pattern', items, colour: c }, explainVisual: null,
+      whyNot: p3WhyNot(['Yes', 'No'], yes ? 'Yes' : 'No', (w) => ({ name: w, why: w === 'No' ? 'would mean the order keeps changing, but this row repeats the same way each time.' : 'would mean it repeats, but the order keeps changing, so it is not a pattern.' })),
+      alsoRight: [yes ? 'Clap, stomp, clap, stomp repeats the same way each time.' : 'Circle, circle, square, circle, square, square keeps changing, so it is not a pattern.'] };
   },
   'pp-missing': (rng) => {
     const [a, b] = shuffle(rng, PATTERN_SHAPES).slice(0, 2); const c = pickColor(rng);
-    const items = [a, b, '?', b, a, b]; const missing = a;
-    return { type: 'choice', story: null, prompt: 'Which one is missing?', choices: shuffle(rng, [`item:${missing}-${c}`, `item:${b}-${c}`]), answer: `item:${missing}-${c}`,
-      explain: `${capFirst(a)}, ${b}, ${a}, ${b}. The missing one is ${a}.`, visual: { kind: 'pattern', items, colour: c }, explainVisual: null };
+    const full = [a, b, a, b, a, b]; const gap = randInt(rng, 0, 5); const missing = full[gap]; const wrong = missing === a ? b : a;
+    const items = full.map((x, i) => (i === gap ? '?' : x)); const choices = shuffle(rng, [`item:${missing}-${c}`, `item:${wrong}-${c}`]);
+    return { type: 'choice', story: null, prompt: 'Which one is missing?', choices, answer: `item:${missing}-${c}`,
+      explain: `Say it out loud and listen for the gap. ${capFirst(full.join(', '))}. The missing one is ${aOrAn(missing)} ${missing}.`, visual: { kind: 'pattern', items, colour: c }, explainVisual: null,
+      whyNot: p3WhyNot(choices, `item:${missing}-${c}`, (x) => ({ name: p3ItemName(x), why: `would not repeat the same way each time, because the gap needs ${aOrAn(missing)} ${missing}.` })),
+      alsoRight: ['Red, blue, red, blue, so a red bead comes next.'] };
   },
 
 
   'p3-tap-group': (rng) => {
-    const n = randInt(rng, 1, 3);
-    return { type: 'choice', story: null, prompt: `Tap the group of ${n}.`, choices: shuffle(rng, [1, 2, 3].map((c) => `dots:${c}`)), answer: `dots:${n}`,
-      explain: n === 1 ? 'This group has one dot, just one.' : `This group has ${NUMBER_WORDS[n - 1]} dots. Count them, ${countUp(n)}.`, visual: null, explainVisual: null };
+    const n = randInt(rng, 1, 3); const choices = shuffle(rng, [1, 2, 3].map((c) => `dots:${c}`));
+    return { type: 'choice', story: null, prompt: `Tap the group of ${n}.`, choices, answer: `dots:${n}`,
+      explain: n === 1 ? 'This group has one dot, just one.' : `This group has ${NUMBER_WORDS[n - 1]} dots. Count them, ${countUp(n)}.`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, `dots:${n}`, (x) => { const k = p3DotCount(x); return { name: p3DotsName(k), why: k > n ? `${k === 1 ? 'is' : 'are'} too many, because you want ${fsCount(n)} ${n === 1 ? 'dot' : 'dots'}.` : `${k === 1 ? 'is' : 'are'} not enough, because you want ${fsCount(n)} dots, ${countUp(n)}.` }; }),
+      alsoRight: [['Hold up one finger, just one.', 'Hold up two fingers, one, two.', 'Hold up three fingers, one, two, three.'][n - 1]] };
   },
   'p3-tap-one': (rng) => {
-    const other = randInt(rng, 2, 3);
-    return { type: 'choice', story: null, prompt: 'Tap the group with just one dot.', choices: shuffle(rng, ['dots:1', `dots:${other}`]), answer: 'dots:1',
-      explain: 'This group has just one dot.', visual: null, explainVisual: null };
+    const other = randInt(rng, 2, 3); const choices = shuffle(rng, ['dots:1', `dots:${other}`]);
+    return { type: 'choice', story: null, prompt: 'Tap the group with just one dot.', choices, answer: 'dots:1',
+      explain: 'This group has just one dot.', visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, 'dots:1', (x) => ({ name: p3DotsName(p3DotCount(x)), why: 'are too many, because you want just one dot.' })), alsoRight: ['Most people have just one nose.'] };
   },
+  // More by counting (EARMARKS A7, pass ML): the reason is said in counting words, as the lesson's own line says it, never as the
+  // bigger group, and the two groups are drawn stacked, each dot over its partner.
   'p3-more': (rng) => {
-    const [a, b] = shuffle(rng, [1, 2, 3]).slice(0, 2);
-    return { type: 'choice', story: null, prompt: 'Which has more?', choices: shuffle(rng, [`dots:${a}`, `dots:${b}`]), answer: `dots:${Math.max(a, b)}`,
-      explain: `${capFirst(NUMBER_WORDS[Math.max(a, b) - 1])} dots are more than ${NUMBER_WORDS[Math.min(a, b) - 1]} ${Math.min(a, b) === 1 ? 'dot' : 'dots'}. The bigger group has more.`, visual: null, explainVisual: null };
+    const [a, b] = shuffle(rng, [1, 2, 3]).slice(0, 2); const big = Math.max(a, b); const small = Math.min(a, b); const choices = shuffle(rng, [`dots:${a}`, `dots:${b}`]);
+    return { type: 'choice', story: null, prompt: 'Tap the group with more dots.', choices, answer: `dots:${big}`,
+      whyNot: p3WhyNot(choices, `dots:${big}`, () => ({ name: p3DotsName(small), why: `${small === 1 ? 'is' : 'are'} not more than ${fsCount(big)} dots, because you count past ${fsCount(small)} to get to ${fsCount(big)}.` })), alsoRight: ['Three claps are more than one clap.'],
+      explain: `${capFirst(NUMBER_WORDS[big - 1])} dots are more than ${NUMBER_WORDS[small - 1]} ${small === 1 ? 'dot' : 'dots'}, because you count past ${NUMBER_WORDS[small - 1]} to get to ${NUMBER_WORDS[big - 1]}.`, visual: null, explainVisual: { kind: 'pair', stack: true, a: { kind: 'dots', count: big }, b: { kind: 'dots', count: small } } };
   },
 });
 
@@ -18008,6 +18143,39 @@ const p3ColorNot = (shown, asked) => `${shown} ${EARLY_COLOR_LIKE[shown]}, not $
 const P3_SHAPE_HAS = { circle: 'is round, with no corners', square: 'has four corners', triangle: 'has three corners' };
 // Circle and Square's own further examples, for each of its two shapes.
 const CS_MORE = { circle: ['Many plates are round like a circle.', 'A ball is round like a circle, so it rolls.'], square: ['Some windows are square, with four corners.', 'A square turned on its corner is still a square.'] };
+// First Steps' More Info (pass ML, EARMARKS L10). In plain terms: every pre-K 4 choice question now carries whyNot and alsoRight
+// the way pre-K 3's do, each reason told with its lesson's own facts and each name built from the picture's own token. The tables:
+// the four further things of the Colors lesson; where each vehicle goes and what each thing has (Match the vehicles, Match the
+// things); each shape by its corners, and the square and the long rectangle by their sides (Match the shapes; a square is a
+// rectangle too, so a long rectangle is said); what each solid is like and does; the real sizes; and each helper's job.
+const FS_COLOR_MORE = { red: 'A stop sign is red too.', blue: 'A blueberry is blue too.', yellow: 'A lemon is yellow too.', green: 'A pickle is green too.' };
+const FS_VEH_DOES = { car: 'drives on the road', train: 'runs on a track', boat: 'goes on the water', rocket: 'goes up into space' };
+const FS_THING_HAS = { ball: 'is round and has no string', balloon: 'is light and has a string', star: 'has points', butterfly: 'has wings', flower: 'has petals', robot: 'has arms and legs' };
+const FS_CORNERS = { circle: 'is round, with no corners', triangle: 'has three corners', square: 'has four corners', rectangle: 'has four corners' };
+const FS_SIDES = { square: 'has four sides that are all the same length', rectangle: 'is long, with two long sides and two short ones' };
+const FS_ASKED = { triangle: 'has three corners', circle: 'has no corners', square: 'has four sides the same length', rectangle: 'has two long and two short sides' };
+// A shape against the asked one: by its sides where both have four corners, else by its corners.
+const fsShapeWhy = (x, a, said = FS_CORNERS[a]) => { const named = a === 'rectangle' && said === FS_ASKED.rectangle ? 'a long rectangle' : 'a ' + a;   // the rectangle the lessons show is long (pass ML)
+  return (x === 'square' && a === 'rectangle') || (x === 'rectangle' && a === 'square') ? `${FS_SIDES[x]}.` : `${FS_CORNERS[x]}, and ${named} ${said}.`; };
+const FS_SOLID_LIKE = { cube: 'is like a block', sphere: 'is like a ball', cone: 'is like an ice cream cone', cylinder: 'is like a can' };
+const FS_SOLID_NAME = (t) => `The ${String(t).replace(/^solid:/, '').split('#')[0]}`;
+const FS_REAL = { bee: 'tiny', snail: 'tiny', cat: 'middle-sized', rabbit: 'middle-sized', duck: 'middle-sized', owl: 'middle-sized', fox: 'middle-sized', bear: 'huge', whale: 'huge' };
+const fsRealWhy = (x, a) => `is ${FS_REAL[x]} in real life, and ${aOrAn(a)} ${a} is ${FS_REAL[a]}.`;
+// The same reason for a question that names every animal it shows (pass ML, the lesson check): the tapped animal by its own size and
+// what it is not, so a pre-reader who still has two to choose from never hears the answer named.
+const fsRealNot = (x, what) => `is ${FS_REAL[x]} in real life, so it is not ${what}.`;
+const FS_REAL_MORE = ['In real life, a bear is much bigger than a bee, even when a picture shows them the same size.'];
+const FS_SIZE_SAID = { big: 'big', medium: 'middle-sized', small: 'little' };
+const fsSizeName = (token) => { const [, shape, size] = String(token).split(':'); return `The ${FS_SIZE_SAID[size]} ${shape}`; };
+const FS_HELPER_DOES = { Firefighter: 'puts out fires', Doctor: 'helps sick and hurt people get well', Teacher: 'helps you learn at school', 'Mail carrier': 'brings letters and packages to every home', 'Police officer': 'keeps people safe on the street' };
+const fsHelperName = (h) => `${aOrAn(h) === 'an' ? 'An' : 'A'} ${h.toLowerCase()}`;
+const fsHelperWhy = (h) => `${FS_HELPER_DOES[h]}, which is a different job.`;
+const FS_WORKS_AT = { Firefighter: 'works at a fire station', Doctor: 'works at a doctor\'s office or a hospital', Teacher: 'works at a school', 'Mail carrier': 'works at the post office', 'Police officer': 'works at a police station' };
+// A group as the counting questions name it, and a group that looks like more by its look.
+const fsCount = (k) => NUMBER_NAMES[k];
+const fsLookName = (token) => { const [, kind, n, look] = /^look:(dots|circles)-(\d)-(\w+)$/.exec(String(token)) || []; const k = fsCount(Number(n));
+  return kind === 'dots' ? (look === 'long' ? `The long row of ${k} dots` : `The ${k} dots close together`) : `The ${k} ${look} circles`; };
+const fsLookCount = (token) => Number((/^look:(?:dots|circles)-(\d)-/.exec(String(token)) || [])[1]);
 // The animal each sound belongs to, and A and B by the looks the A and B lesson teaches, with each look-alike's own look.
 const P3_SAYS = Object.fromEntries(P3_ANIMAL_SOUNDS);
 const P3_LETTER_LOOK = { A: 'has slanted sides that meet at the top', B: 'has two round bumps' };
@@ -18224,7 +18392,7 @@ Object.assign(GENERATORS, {
       explain: `This ${shape} takes up more room than the other one, so it is bigger.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'shape', name: shape, size: a }, b: { kind: 'shape', name: shape, size: b } },
       // Two of three sizes are shown, so each is named against the other one, never by a size word the pair does not show (pass MH).
       whyNot: p3WhyNot(choices, answer, (t) => ({ name: `The smaller ${p3ShapeOf(t)}`, why: 'takes up less room than the other one, so it is not the bigger one.' })),
-      alsoRight: ['An elephant is bigger than a mouse, because it takes up much more room.'] };
+      alsoRight: ['It works for every shape, so the big triangle is bigger than the small triangle.'] };
   },
   'p4-tap-smaller': (rng) => {
     const shape = pick(rng, ['square', 'circle', 'triangle']); const [a, b] = pick(rng, [['big', 'small'], ['big', 'medium'], ['medium', 'small']]);
@@ -18232,17 +18400,23 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt: 'Tap the smaller one.', choices, answer,
       explain: `This ${shape} takes up less room than the other one, so it is smaller.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'shape', name: shape, size: b }, b: { kind: 'shape', name: shape, size: a } },
       whyNot: p3WhyNot(choices, answer, (t) => ({ name: `The bigger ${p3ShapeOf(t)}`, why: 'takes up more room than the other one, so it is not the smaller one.' })),
-      alsoRight: ['A mouse is smaller than an elephant, because it takes up much less room.'] };
+      alsoRight: ['It works for every shape, so the small triangle is smaller than the big triangle.'] };
   },
+  // More and fewer by counting (EARMARKS A7, pass ML): the reason is said in counting words, never as the bigger or smaller group,
+  // and the two groups are drawn stacked, as the lesson draws them.
   'p4-tap-more-5': (rng) => {
     const small = randInt(rng, 1, 4); const big = randInt(rng, small + 1, 5);   // every pair up to five (pass LU)
-    return { type: 'choice', story: null, prompt: 'Tap the one with more dots.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${big}`,
-      explain: `${NUMBER_NAMES[big].charAt(0).toUpperCase() + NUMBER_NAMES[big].slice(1)} dots are more than ${NUMBER_NAMES[small]} ${small === 1 ? 'dot' : 'dots'}. The bigger group has more.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: big }, b: { kind: 'dots', count: small } } };
+    const choices = shuffle(rng, [`dots:${big}`, `dots:${small}`]);
+    return { type: 'choice', story: null, prompt: 'Tap the one with more dots.', choices, answer: `dots:${big}`,
+      whyNot: p3WhyNot(choices, `dots:${big}`, () => ({ name: p3DotsName(small), why: `${small === 1 ? 'is' : 'are'} fewer than ${fsCount(big)} dots, because you count past ${fsCount(small)} to get to ${fsCount(big)}.` })), alsoRight: ['Five fingers are more than two fingers.'],
+      explain: `${capFirst(NUMBER_NAMES[big])} dots are more than ${NUMBER_NAMES[small]} ${small === 1 ? 'dot' : 'dots'}, because you count past ${NUMBER_NAMES[small]} to get to ${NUMBER_NAMES[big]}.`, visual: null, explainVisual: { kind: 'pair', stack: true, a: { kind: 'dots', count: big }, b: { kind: 'dots', count: small } } };
   },
   'p4-tap-fewer-5': (rng) => {
     const small = randInt(rng, 1, 4); const big = randInt(rng, small + 1, 5);   // every pair up to five (pass LU)
-    return { type: 'choice', story: null, prompt: 'Tap the one with fewer dots.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${small}`,
-      explain: `${NUMBER_NAMES[small].charAt(0).toUpperCase() + NUMBER_NAMES[small].slice(1)} ${small === 1 ? 'dot is' : 'dots are'} fewer than ${NUMBER_NAMES[big]} dots. The smaller group has fewer.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: small }, b: { kind: 'dots', count: big } } };
+    const choices = shuffle(rng, [`dots:${big}`, `dots:${small}`]);
+    return { type: 'choice', story: null, prompt: 'Tap the one with fewer dots.', choices, answer: `dots:${small}`,
+      whyNot: p3WhyNot(choices, `dots:${small}`, () => ({ name: p3DotsName(big), why: `are more than ${fsCount(small)} ${small === 1 ? 'dot' : 'dots'}, because you count past ${fsCount(small)} to get to ${fsCount(big)}.` })), alsoRight: ['Two fingers are fewer than five fingers.'],
+      explain: `${capFirst(NUMBER_NAMES[small])} ${small === 1 ? 'dot is' : 'dots are'} fewer than ${NUMBER_NAMES[big]} dots. You count past ${NUMBER_NAMES[small]} to get to ${NUMBER_NAMES[big]}, so ${NUMBER_NAMES[small]} ${small === 1 ? 'is' : 'are'} not as many.`, visual: null, explainVisual: { kind: 'pair', stack: true, a: { kind: 'dots', count: small }, b: { kind: 'dots', count: big } } };
   },
   'p3-tap-more': (rng) => {
     // Up to five dots (pass MA): PK3.V.A.8 compares sets of objects up to 5, and the lesson counts each group, so the reason is
@@ -18495,9 +18669,11 @@ Object.assign(GENERATORS, {
 // and the rules test re-derives each answer from the words with tables of its own. A wrong choice never shares the asked
 // property (a cat is never the wrong answer for pointy ears, a square never the wrong answer for a rectangle).
 const LU_THING_COLOURS = [['a strawberry', 'red'], ['a stop sign', 'red'], ['the sky on a sunny day', 'blue'], ['a blueberry', 'blue'], ['a banana', 'yellow'], ['a lemon', 'yellow'], ['the grass', 'green'], ['a pickle', 'green']];
+const LU_THING_UNRIPE = { 'a strawberry': ['green'], 'a blueberry': ['green'], 'a banana': ['green'], 'a lemon': ['green'], 'the grass': ['yellow'], 'a pickle': ['yellow'] };
 const LU_VEHICLE_WHERE = [['goes on the water', 'boat'], ['goes up into space', 'rocket'], ['runs on a track', 'train'], ['drives on the road', 'car']];
-const LU_THING_PARTS = [['has wings', 'butterfly', ['ball', 'balloon', 'star', 'flower', 'robot']], ['has petals', 'flower', ['ball', 'balloon', 'star', 'butterfly', 'robot']], ['has points', 'star', ['ball', 'balloon', 'butterfly', 'robot']], ['has arms and legs', 'robot', ['ball', 'balloon', 'star', 'flower']], ['has a string', 'balloon', ['ball', 'star', 'flower', 'butterfly', 'robot']]];
-const LU_EARS = [['has long ears', 'rabbit', ['bear', 'fox', 'cat', 'snail'], 'A rabbit has long ears.'], ['has round ears', 'bear', ['fox', 'cat', 'snail'], 'A bear has round ears.'], ['has pointy ears', 'fox', ['bear', 'snail', 'owl'], 'A fox has pointy ears.'], ['has no legs and slides along on one foot', 'snail', ['bear', 'fox', 'rabbit', 'cat'], 'A snail has no legs. It slides along on one flat foot.']];
+const LU_VEHICLE_NOT = { train: ['car'], car: ['train'] };   // a toy car can run on a track, and the drawn train stands on a line like the car's road (pass ML)
+const LU_THING_PARTS = [['has wings', 'butterfly', ['ball', 'balloon', 'star', 'robot']], ['has petals', 'flower', ['ball', 'balloon', 'star', 'butterfly', 'robot']], ['has points', 'star', ['ball', 'balloon', 'butterfly', 'robot']], ['has arms and legs', 'robot', ['ball', 'balloon', 'star', 'flower']], ['has a string', 'balloon', ['ball', 'star', 'flower']]];
+const LU_EARS = [['has long ears', 'rabbit', ['bear', 'fox', 'cat'], 'A rabbit has long ears.'], ['has round ears', 'bear', ['fox', 'cat', 'snail'], 'A bear has round ears.'], ['has pointy ears', 'fox', ['bear', 'snail', 'owl'], 'A fox has pointy ears.'], ['has no legs and slides along on one foot', 'snail', ['bear', 'fox', 'rabbit', 'cat'], 'A snail has no legs. It slides along on one flat foot.']];
 const LU_CORNERS = [['has three corners', 'triangle', ['circle', 'square', 'rectangle']], ['has no corners', 'circle', ['triangle', 'square', 'rectangle']], ['has four sides that are all the same length', 'square', ['triangle', 'circle', 'rectangle']], ['has two long sides and two short sides', 'rectangle', ['triangle', 'circle', 'square']]];
 const LU_SOLID_LIKE = [['a can', 'cylinder'], ['an ice cream cone', 'cone'], ['a ball', 'sphere'], ['a block', 'cube']];
 const luCap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -18514,57 +18690,123 @@ const luFindBy = (rng, rows, kind, ask) => {
 };
 Object.assign(GENERATORS, {
   'pc-colour-of-thing': (rng) => {
-    const [thing, c] = pick(rng, LU_THING_COLOURS);
-    return { type: 'choice', story: null, prompt: `What color is ${thing}?`, choices: shuffle(rng, [c, ...otherColors(rng, c, 2)]), answer: c,
-      explain: `${luCap(thing)} is ${c}.`, visual: null, explainVisual: null };
+    const [thing, c] = pick(rng, LU_THING_COLOURS); const unripe = LU_THING_UNRIPE[thing] || [];
+    const anchor = { red: 'a strawberry', blue: 'the sky on a sunny day', yellow: 'a banana', green: 'the grass' }[c] === thing;
+    const choices = shuffle(rng, [c, ...shuffle(rng, COLOURS.filter((x) => x !== c && !unripe.includes(x))).slice(0, 2)]);
+    return { type: 'choice', story: null, prompt: `What color is ${thing}?`, choices, answer: c,
+      explain: anchor ? `${luCap(thing)} is ${c}.` : `${luCap(thing)} is ${c}, ${EARLY_COLOR_LIKE[c]}.`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, c, (w) => ({ name: capFirst(w), why: `is ${P3_COLOR_OF[w]}, and ${thing} is ${c}.` })),
+      alsoRight: LU_THING_COLOURS.filter(([t, col]) => col === c && t !== thing).map(([t]) => `${luCap(t)} is ${c} too.`) };
   },
   'pm-vehicle-where': (rng) => {
-    const [where, v] = pick(rng, LU_VEHICLE_WHERE); const others = shuffle(rng, LU_VEHICLE_WHERE.filter((x) => x[1] !== v)).slice(0, 2).map((x) => x[1]);
-    return { type: 'choice', story: null, prompt: `Which one ${where}?`, choices: shuffle(rng, [v, ...others].map((x) => `art:${x}`)), answer: `art:${v}`,
-      explain: `A ${v} ${where}.`, visual: null, explainVisual: null };
+    const [where, v] = pick(rng, LU_VEHICLE_WHERE); const others = shuffle(rng, LU_VEHICLE_WHERE.filter((x) => x[1] !== v && !(LU_VEHICLE_NOT[v] || []).includes(x[1]))).slice(0, 2).map((x) => x[1]);
+    const choices = shuffle(rng, [v, ...others].map((x) => `art:${x}`));
+    return { type: 'choice', story: null, prompt: `Which one ${where}?`, choices, answer: `art:${v}`,
+      explain: `A ${v} ${where}.`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, `art:${v}`, (t) => ({ name: p3PicName(t), why: `${FS_VEH_DOES[p3PicWord(t)]}, and a ${v} ${where}.` })), alsoRight: [] };
   },
-  'pm-tap-vehicle': (rng) => luTapThemed(rng, MATCH_THEMES.vehicles),
+  'pm-tap-vehicle': (rng) => { const q = luTapThemed(rng, MATCH_THEMES.vehicles); const a = p3PicWord(q.answer);
+    return { ...q, whyNot: p3WhyNot(q.choices, q.answer, (t) => ({ name: p3PicName(t), why: `${FS_VEH_DOES[p3PicWord(t)]}, and a ${a} ${FS_VEH_DOES[a]}.` })), alsoRight: [] }; },
   'pm-thing-part': (rng) => {
     const f = luFindBy(rng, LU_THING_PARTS, 'art', 'Which one');
-    return { type: 'choice', story: null, prompt: f.prompt, choices: f.choices, answer: f.answer, explain: `The ${f.a} ${f.has}.`, visual: null, explainVisual: null };
+    return { type: 'choice', story: null, prompt: f.prompt, choices: f.choices, answer: f.answer, explain: `The ${f.a} ${f.has}.`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(f.choices, f.answer, (t) => ({ name: p3PicName(t), why: `${FS_THING_HAS[p3PicWord(t)]}, and the ${f.a} ${f.has}.` })), alsoRight: [] };
   },
-  'pm-tap-water': (rng) => luTapThemed(rng, MATCH_THEMES.water),
+  'pm-tap-water': (rng) => { const q = luTapThemed(rng, MATCH_THEMES.water); const a = p3PicWord(q.answer);
+    return { ...q, whyNot: p3WhyNot(q.choices, q.answer, (t) => ({ name: p3PicName(t), why: `does not look like ${aOrAn(a)} ${a}.` })), alsoRight: [] }; },
   'pm-water-facts': (rng) => {
-    const air = rng() < 0.5;
-    return { type: 'choice', story: null, prompt: air ? 'Which one breathes air, the whale or the fish?' : 'Which one is much bigger in real life?', choices: shuffle(rng, ['pic:whale', 'pic:fish']), answer: 'pic:whale',
-      explain: air ? 'A whale breathes air. It comes up to the top of the water to breathe, and a fish breathes under the water.' : 'A whale is much, much bigger than most fish.', visual: null, explainVisual: { kind: 'pic', name: 'whale' } };
+    const [prompt, a, explain, wrongWhy] = pick(rng, [
+      ['Which one breathes air, the whale or the fish?', 'whale', 'A whale breathes air. It comes up to the top of the water to breathe, and a fish breathes under the water.', 'breathes under the water, and a whale comes up to breathe air.'],
+      ['Which one breathes under the water, the whale or the fish?', 'fish', 'A fish breathes under the water, and a whale comes up to the top of the water to breathe air.', 'comes up to the top of the water to breathe air.'],
+      ['Which one is much bigger in real life, the whale or the fish?', 'whale', 'A whale is much, much bigger than most fish.', 'is much, much smaller than a whale in real life.'],
+      ['Which one is much smaller in real life, the whale or the fish?', 'fish', 'Most fish are much, much smaller than a whale.', 'is much, much bigger than most fish in real life.'],
+    ]);
+    const choices = shuffle(rng, ['pic:whale', 'pic:fish']);
+    return { type: 'choice', story: null, prompt, choices, answer: `pic:${a}`, explain, visual: null, explainVisual: { kind: 'pic', name: a },
+      whyNot: p3WhyNot(choices, `pic:${a}`, (t) => ({ name: p3PicName(t), why: wrongWhy })), alsoRight: [] };
   },
   'pm-land-ears': (rng) => {
-    const [has, a, wrong, why] = pick(rng, LU_EARS); const others = shuffle(rng, wrong).slice(0, 2);
-    return { type: 'choice', story: null, prompt: `Which one ${has}?`, choices: shuffle(rng, [a, ...others].map((x) => `pic:${x}`)), answer: `pic:${a}`,
-      explain: why, visual: null, explainVisual: { kind: 'pic', name: a } };
+    const [has, a, wrong, why] = pick(rng, LU_EARS); const others = shuffle(rng, wrong).slice(0, 2); const choices = shuffle(rng, [a, ...others].map((x) => `pic:${x}`));
+    // Each wrong animal by its own ears, from the lesson (an owl by its big round eyes, and a snail, which has no ears at all), or,
+    // where the snail is asked for, by its legs.
+    const EARS = { bear: 'has round ears', rabbit: 'has long ears', fox: 'has pointy ears', cat: 'has pointy ears', owl: 'has big round eyes', snail: 'has no ears and no legs' };
+    return { type: 'choice', story: null, prompt: `Which one ${has}?`, choices, answer: `pic:${a}`,
+      explain: why, visual: null, explainVisual: { kind: 'pic', name: a },
+      whyNot: p3WhyNot(choices, `pic:${a}`, (t) => { const x = p3PicWord(t); return { name: p3PicName(t), why: a === 'snail' ? 'has four legs, and a snail has no legs and slides along on one flat foot.' : `${EARS[x]}, and a ${a} ${has}.` }; }), alsoRight: [] };
   },
   'pm-shape-corners': (rng) => {
-    const f = luFindBy(rng, LU_CORNERS, 'shape', 'Which shape');
-    return { type: 'choice', story: null, prompt: f.prompt, choices: f.choices, answer: f.answer, explain: `A ${f.a} ${f.has}.`, visual: null, explainVisual: null };
+    const f = luFindBy(rng, LU_CORNERS, 'shape', 'Which shape'); const lead = f.a === 'rectangle' ? 'A long rectangle' : 'A ' + f.a;
+    return { type: 'choice', story: null, prompt: f.prompt, choices: f.choices, answer: f.answer, explain: `${lead} ${f.has}.`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(f.choices, f.answer, (t) => ({ name: `The ${p3ShapeOf(t)}`, why: fsShapeWhy(p3ShapeOf(t), f.a, FS_ASKED[f.a]) })), alsoRight: [] };
   },
-  'pm-tap-shape': (rng) => luTapThemed(rng, MATCH_THEMES.shapes, { rectangle: ['square'] }),
+  'pm-tap-shape': (rng) => { const q = luTapThemed(rng, MATCH_THEMES.shapes, { rectangle: ['square'] }); const a = p3ShapeOf(q.answer);
+    return { ...q, whyNot: p3WhyNot(q.choices, q.answer, (t) => ({ name: `The ${p3ShapeOf(t)}`, why: fsShapeWhy(p3ShapeOf(t), a) })), alsoRight: [] }; },
   'pm-solid-like': (rng) => {
-    const [thing, s] = pick(rng, LU_SOLID_LIKE); const others = shuffle(rng, LU_SOLID_LIKE.filter((x) => x[1] !== s)).slice(0, 2).map((x) => x[1]);
-    return { type: 'choice', story: null, prompt: `Which shape is like ${thing}?`, choices: shuffle(rng, [s, ...others].map((x) => `solid:${x}`)), answer: `solid:${s}`,
-      explain: `A ${s} is like ${thing}.`, visual: null, explainVisual: null };
+    const [thing, s] = pick(rng, LU_SOLID_LIKE); const others = shuffle(rng, LU_SOLID_LIKE.filter((x) => x[1] !== s)).slice(0, 2).map((x) => x[1]); const choices = shuffle(rng, [s, ...others].map((x) => `solid:${x}`));
+    return { type: 'choice', story: null, prompt: `Which shape is like ${thing}?`, choices, answer: `solid:${s}`,
+      explain: `A ${s} is like ${thing}.`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, `solid:${s}`, (t) => { const x = String(t).slice(6); return { name: FS_SOLID_NAME(t), why: `${FS_SOLID_LIKE[x]}, and a ${s} ${FS_SOLID_LIKE[s]}.` }; }), alsoRight: [] };
   },
   'pm-solid-do': (rng) => {
-    const roll = rng() < 0.5;
-    return { type: 'choice', story: null, prompt: roll ? 'Which one can roll?' : 'Which one can you stack?', choices: shuffle(rng, ['solid:sphere', 'solid:cube']), answer: roll ? 'solid:sphere' : 'solid:cube',
-      explain: roll ? 'A sphere is round all over, so it rolls.' : 'A cube has flat sides, so it stacks.', visual: null, explainVisual: null };
+    const roll = rng() < 0.5; const choices = shuffle(rng, ['solid:sphere', 'solid:cube']);
+    return { type: 'choice', story: null, prompt: roll ? 'Which one can roll?' : 'Which one can you stack?', choices, answer: roll ? 'solid:sphere' : 'solid:cube',
+      explain: roll ? 'A sphere is round all over, so it rolls.' : 'A cube has flat sides, so it stacks.', visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, roll ? 'solid:sphere' : 'solid:cube', (t) => ({ name: FS_SOLID_NAME(t), why: roll ? 'has flat sides, so it stacks instead of rolling.' : 'is round all over, so it rolls instead of stacking.' })),
+      alsoRight: [roll ? 'A cylinder rolls on its curved side too.' : 'A cylinder stands still on its flat end, so it can stack too.'] };
   },
+  // Two groups almost the same (pass ML): one sentence (L11), almost the same rather than close, which a child can hear as near
+  // each other, and groups that have more or fewer, never numbers that do (pass JW: numbers are bigger or smaller).
   'p4-more-close': (rng) => {
     const small = randInt(rng, 1, 4); const big = small + 1;
-    return { type: 'choice', story: 'These groups are close. Count each one.', prompt: 'Tap the group with more.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${big}`,
-      explain: `${luCap(NUMBER_NAMES[big])} is more than ${NUMBER_NAMES[small]}, so this group has more.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: big }, b: { kind: 'dots', count: small } } };
+    const choices = shuffle(rng, [`dots:${big}`, `dots:${small}`]);
+    return { type: 'choice', story: null, prompt: 'Count each group, because these two are almost the same, then tap the group with more.', choices, answer: `dots:${big}`,
+      whyNot: p3WhyNot(choices, `dots:${big}`, () => ({ name: p3DotsName(small), why: `${small === 1 ? 'is' : 'are'} fewer than ${fsCount(big)} dots, because you count past ${fsCount(small)} to get to ${fsCount(big)}.` })), alsoRight: ['Line the groups up, one with one, and the group with some left over has more.'],
+      explain: `Count each group, ${countUp(big)}, and ${countUp(small)}. ${luCap(NUMBER_NAMES[big])} dots are more than ${NUMBER_NAMES[small]} ${small === 1 ? 'dot' : 'dots'}.`, visual: null, explainVisual: { kind: 'pair', stack: true, a: { kind: 'dots', count: big }, b: { kind: 'dots', count: small } } };
   },
   'p4-fewer-close': (rng) => {
     const small = randInt(rng, 1, 4); const big = small + 1;
-    return { type: 'choice', story: 'These groups are close. Count each one.', prompt: 'Tap the group with fewer.', choices: shuffle(rng, [`dots:${big}`, `dots:${small}`]), answer: `dots:${small}`,
-      explain: `${luCap(NUMBER_NAMES[small])} is fewer than ${NUMBER_NAMES[big]}, so this group has fewer.`, visual: null, explainVisual: { kind: 'pair', a: { kind: 'dots', count: small }, b: { kind: 'dots', count: big } } };
+    const choices = shuffle(rng, [`dots:${big}`, `dots:${small}`]);
+    return { type: 'choice', story: null, prompt: 'Count each group, because these two are almost the same, then tap the group with fewer.', choices, answer: `dots:${small}`,
+      whyNot: p3WhyNot(choices, `dots:${small}`, () => ({ name: p3DotsName(big), why: `are more than ${fsCount(small)} ${small === 1 ? 'dot' : 'dots'}, because you count past ${fsCount(small)} to get to ${fsCount(big)}.` })), alsoRight: ['Line the groups up, one with one, and the group with some left over has more.'],
+      explain: `Count each group, ${countUp(small)}, and ${countUp(big)}. ${luCap(NUMBER_NAMES[small])} ${small === 1 ? 'dot is' : 'dots are'} fewer than ${NUMBER_NAMES[big]} dots.`, visual: null, explainVisual: { kind: 'pair', stack: true, a: { kind: 'dots', count: small }, b: { kind: 'dots', count: big } } };
+  },
+  // A group that looks like more (EARMARKS A7, pass ML; Head Start's 48 to 60 month progression for P-MATH 4, "Counts to determine
+  // and compare number amounts even when the larger group's objects are smaller in size"): the two traps the lesson teaches, a
+  // long row against a close bunch and big circles against little ones, each group in a frame of its own, stacked as full-width
+  // choices. The look rides on the token (look:dots-3-long), since here the look is the task. In half the questions the long row
+  // or the big circles have more, so only counting decides, and the reason counts both groups aloud.
+  'p4-looks-like-more': (rng) => {
+    const row = rng() < 0.5; const more = rng() < 0.5;
+    const [n, m] = shuffle(rng, [2, 3, 4, 5]).slice(0, 2);   // n for the long row or the big circles, m for the close bunch or the little ones
+    const tA = row ? `look:dots-${n}-long` : `look:circles-${n}-big`; const tB = row ? `look:dots-${m}-close` : `look:circles-${m}-little`;
+    const want = more ? (n > m ? tA : tB) : (n < m ? tA : tB);
+    const what = row ? 'dots' : 'circles'; const hi = Math.max(n, m); const lo = Math.min(n, m);
+    const hiName = row ? (hi === n ? 'dots in the long row' : 'dots close together') : (hi === n ? 'big circles' : 'little circles');
+    const loName = row ? (lo === n ? 'dots in the long row' : 'dots close together') : (lo === n ? 'big circles' : 'little circles');
+    const close = n > m ? (row ? 'This time the long row really has more, so count to be sure every time.' : 'This time the big circles really are more, so count to be sure every time.') : (row ? 'The long row only looked like more.' : 'Big is not the same as more.');
+    const choices = shuffle(rng, [tA, tB]);
+    // The comparison says fewer when fewer was asked (pass ML, the lesson check's second read).
+    const compare = more ? luCap(NUMBER_NAMES[hi]) + ' ' + hiName + ' are more than ' + NUMBER_NAMES[lo] + ' ' + loName : luCap(NUMBER_NAMES[lo]) + ' ' + loName + ' are fewer than ' + NUMBER_NAMES[hi] + ' ' + hiName;
+    return { type: 'choice', story: null, prompt: `Count each group, then tap the group with ${more ? 'more' : 'fewer'}.`, choices, answer: want,
+      whyNot: p3WhyNot(choices, want, (t) => { const k = fsLookCount(t); const K = fsLookCount(want); const verb = /^look:dots-\d-long$/.test(t) ? 'has' : 'have';
+        return { name: fsLookName(t), why: `${verb} ${k < K ? 'fewer' : 'more'}, because you count past ${fsCount(Math.min(k, K))} to get to ${fsCount(Math.max(k, K))}.` }; }),
+      alsoRight: [row ? 'A long row can look like more, so count to be sure.' : 'Big is not the same as more, so count to be sure.'],
+      explain: `Count each group, ${countUp(n)}, and ${countUp(m)}. ${compare}. ${close}`, visual: null,
+      explainVisual: { kind: 'pair', stack: true, a: lookVisual(tA), b: lookVisual(tB) } };
   },
 });
+// The groups that look like more (pass ML, A7): a long row of dots spread far apart, a bunch close together, big circles in a
+// frame of three and little circles spread out, the same drawings as the lesson's trap lines.
+export function lookVisual(token) {
+  const [, kind, count, look] = /^look:(dots|circles)-(\d)-(long|close|big|little)$/.exec(String(token)) || [];
+  const n = Number(count);
+  // Both rows of dots are drawn at 28 (size), the long row spread to 200 units and the close bunch 3 apart (152 at most), so a
+  // phone's 250-unit button never shrinks one row's dots and not the other's (pass ML, the second reads: the long row had been
+  // spaced for 28 but drawn at 34, and shrank). The circles keep to 250 too: big ones as wide as five fit, little ones 25 apart.
+  if (kind === 'dots') return { kind: 'dots', count: n, frame: n, size: 28, gap: look === 'long' ? Math.min(120, Math.round((200 - n * 28) / Math.max(1, n - 1))) : 3 };
+  const items = Array.from({ length: n }, () => 'circle');
+  return look === 'big' ? { kind: 'pattern', items, colour: 'blue', counting: true, size: Math.min(80, Math.floor((250 - (n - 1) * 8) / n)), frame: n } : { kind: 'pattern', items, colour: 'blue', counting: true, size: 30, gap: 25, frame: 5 };
+}
 // First Steps part two at the refined standard (pass LV). In plain terms: question kinds that apply each lesson's facts, each
 // said aloud in its lesson first and re-derived in the rules test from tables of its own. Real sizes come in the three groups
 // the size lessons name: tiny (a bee, a snail), middle-sized (a cat, a rabbit, a duck, an owl, a fox) and huge (a bear, a
@@ -18575,47 +18817,73 @@ const lvGroup = (a) => (LV_TINY.includes(a) ? 1 : LV_MIDDLE.includes(a) ? 2 : 3)
 // The setup line a child hears first, naming the animals in alphabetical order ("A bear and a bee.", "A fox, a snail and a
 // whale."); the pictures are shuffled on their own, so one set of animals is one question however its pictures fall.
 const lvList = (names) => names.length === 2 ? `${luCap(aOrAn(names[0]))} ${names[0]} and ${aOrAn(names[1])} ${names[1]}.` : `${luCap(aOrAn(names[0]))} ${names[0]}, ${aOrAn(names[1])} ${names[1]} and ${aOrAn(names[2])} ${names[2]}.`;
-const LV_TURN_OR_SHARE = [['Ana goes down the slide, and then Sam goes down.', 'Taking turns'], ['Sam swings while Ana waits, and then Ana swings.', 'Taking turns'], ['Sam reads the book first, and then Ana reads it.', 'Taking turns'], ['Ana plays the drum, and then she hands it to Sam to play.', 'Taking turns'], ['Ana and Sam build one tower together at the same time.', 'Sharing'], ['Ana and Sam color with one box of crayons at the same time.', 'Sharing'], ['Two friends eat from one bowl of grapes at snack time.', 'Sharing']];
+// The same animals named inside the question since pass ML (one sentence, EARMARKS L11): a bee or a whale; a cat, a snail or a whale.
+const lvOr = (names) => names.length === 2 ? `${aOrAn(names[0])} ${names[0]} or ${aOrAn(names[1])} ${names[1]}` : `${aOrAn(names[0])} ${names[0]}, ${aOrAn(names[1])} ${names[1]} or ${aOrAn(names[2])} ${names[2]}`;
+// Each moment with what its friends do, said in the reason (pass ML, the lesson check; crackers, not grapes, which the AAP keeps
+// whole from children under four, and the bowl shared at the same time, as sharing is taught).
+const LV_TURN_OR_SHARE = [['Ana goes down the slide, and then Sam goes down.', 'Taking turns', 'Ana goes first and then Sam'], ['Sam swings while Ana waits, and then Ana swings.', 'Taking turns', 'Sam swings first and then Ana'], ['Sam reads the book first, and then Ana reads it.', 'Taking turns', 'Sam reads first and then Ana'], ['Ana plays the drum, and then she hands it to Sam to play.', 'Taking turns', 'Ana plays first and then Sam'], ['Ana and Sam build one tower together at the same time.', 'Sharing', 'They both build the tower at the same time'], ['Ana and Sam color with one box of crayons at the same time.', 'Sharing', 'They both use the crayons at the same time'], ['Two friends eat crackers from one bowl at the same time.', 'Sharing', 'They both eat from the bowl at the same time']];
 const LV_WAIT_RIGHT = [['Take a slow breath', 'A slow breath in and out helps you feel calm while you wait.'], ['Count to ten', 'Counting to ten helps the wait go by, and then it is your turn.'], ['Cheer for your friend', 'Cheering for your friend is kind, and your turn comes next.']];
 const LV_WAIT_WRONG = ['Push your friend', 'Grab it away', 'Yell and stomp'];
+const LV_WAIT_WRONG_WHY = { 'Push your friend': ['Pushing your friend', 'can hurt your friend, so it is not kind.'], 'Grab it away': ['Grabbing it away', 'takes your friend\'s turn away, so it is not kind.'], 'Yell and stomp': ['Yelling and stomping', 'is not a calm way to wait, and your turn still comes next.'] };
+const LV_WAIT_MORE = { 'Take a slow breath': 'Counting to ten helps the wait go by too.', 'Count to ten': 'A slow breath helps you feel calm too.', 'Cheer for your friend': 'A slow breath helps you feel calm too.' };
 const LV_WAIT_PLACES = ['the swing', 'the slide', 'the red crayon'];
 const LV_HELPER_PLACES = [['Who works at a fire station?', 'Firefighter', 'Firefighters work at a fire station, where the fire trucks wait until someone needs help.'], ["Who works at a doctor's office or a hospital?", 'Doctor', "Doctors work at a doctor's office or a hospital, where sick or hurt people go to get well."], ['Who works at a school?', 'Teacher', 'Teachers work at a school, where children learn.'], ['Who works at the post office?', 'Mail carrier', 'Mail carriers work at the post office, where they pick up the mail to bring to every home.'], ['Who works at a police station?', 'Police officer', 'Police officers work at a police station, and they go out to keep people safe on the street.']];
-const LV_HELPER_SCENES = [['Smoke and flames are coming from a house.', 'Who comes to put out the fire?', 'Firefighter', 'Firefighters put out fires with water from a hose.'], ['A fire truck rushes down the street with its siren on.', 'Who rides on the fire truck?', 'Firefighter', 'Firefighters ride the fire truck to get to a fire fast.'], ['You are sick with a fever.', 'Who helps you get well?', 'Doctor', 'A doctor helps sick people get well.'], ['You hurt your arm, and it needs to be checked.', 'Who checks it and helps it heal?', 'Doctor', 'A doctor checks a hurt arm and helps it heal.'], ['You want to learn your letters at school.', 'Who helps you learn?', 'Teacher', 'A teacher helps you learn at school.'], ['Your class sits down for a story.', 'Who reads it to the class?', 'Teacher', 'A teacher reads stories to the class and helps everyone learn.'], ['Grandma mailed you a birthday card.', 'Who brings it to your home?', 'Mail carrier', 'A mail carrier brings letters and cards to every home.'], ['A package is on its way to your house.', 'Who brings the package?', 'Mail carrier', 'A mail carrier brings packages as well as letters.'], ['People and cars need to stay safe on a busy street.', 'Who helps keep them safe?', 'Police officer', 'A police officer keeps people and cars safe on the street.']];
+const LV_HELPER_SCENES = [['Who comes to put out the fire when smoke and flames are coming from a house?', 'Firefighter', 'Firefighters put out fires with water from a hose.'], ['Who rides on a fire truck that rushes down the street with its siren on?', 'Firefighter', 'Firefighters ride the fire truck to get to a fire fast.'], ['Who helps you get well when you are sick with a fever?', 'Doctor', 'A doctor helps sick people get well.'], ['Who checks your arm and helps it heal when you hurt it?', 'Doctor', 'A doctor checks a hurt arm and helps it heal.'], ['Who helps you learn your letters at school?', 'Teacher', 'A teacher helps you learn at school.'], ['Who reads a story to your class?', 'Teacher', 'A teacher reads stories to the class and helps everyone learn.'], ['Who brings the birthday card Grandma sent you to your home?', 'Mail carrier', 'A mail carrier brings letters and cards to every home.'], ['Who brings a package to your house?', 'Mail carrier', 'A mail carrier brings packages as well as letters.'], ['Who helps keep people and cars safe on a busy street?', 'Police officer', 'A police officer keeps people and cars safe on the street.']];
+// A helper never offered as the wrong one where the lessons say that helper does it too (pass ML, the lesson check).
+const helperChoices = (rng, answer, ask) => shuffle(rng, [answer, ...shuffle(rng, CIV_HELPER_NAMES.filter((x) => x !== answer && !(x === 'Firefighter' && /safe|sick|hurt|well|heal|stethoscope/.test(ask)))).slice(0, 2)]);
 Object.assign(GENERATORS, {
   'p4-real-bigger': (rng) => {
     const [ga, gb] = pick(rng, [[LV_TINY, LV_MIDDLE], [LV_TINY, LV_HUGE], [LV_MIDDLE, LV_HUGE]]);
     const small = pick(rng, ga); const big = pick(rng, gb); const names = [small, big].sort(); const bigger = rng() < 0.5;
-    return { type: 'choice', story: lvList(names), prompt: bigger ? 'Which one is bigger in real life?' : 'Which one is smaller in real life?', choices: shuffle(rng, names.map((x) => `pic:${x}`)), answer: `pic:${bigger ? big : small}`,
+    const choices = shuffle(rng, names.map((x) => `pic:${x}`)); const want = bigger ? big : small;
+    return { type: 'choice', story: null, prompt: `Which is ${bigger ? 'bigger' : 'smaller'} in real life, ${lvOr(names)}?`, choices, answer: `pic:${want}`,
+      whyNot: p3WhyNot(choices, `pic:${want}`, (t) => ({ name: p3PicName(t), why: fsRealWhy(p3PicWord(t), want) })), alsoRight: FS_REAL_MORE,
       explain: bigger ? `In real life ${aOrAn(big)} ${big} is much bigger than ${aOrAn(small)} ${small}, even when their pictures are the same size.` : `In real life ${aOrAn(small)} ${small} is much smaller than ${aOrAn(big)} ${big}, even when their pictures are the same size.`, visual: null, explainVisual: null };
   },
   'p4-real-biggest': (rng) => {
     const names = [pick(rng, LV_TINY), pick(rng, LV_MIDDLE), pick(rng, LV_HUGE)].sort(); const biggest = rng() < 0.5;
     const want = names.find((x) => lvGroup(x) === (biggest ? 3 : 1));
-    return { type: 'choice', story: lvList(names), prompt: biggest ? 'Which one is the biggest in real life?' : 'Which one is the smallest in real life?', choices: shuffle(rng, names.map((x) => `pic:${x}`)), answer: `pic:${want}`,
+    const choices = shuffle(rng, names.map((x) => `pic:${x}`));
+    return { type: 'choice', story: null, prompt: `Which is the ${biggest ? 'biggest' : 'smallest'} in real life, ${lvOr(names)}?`, choices, answer: `pic:${want}`,
+      whyNot: p3WhyNot(choices, `pic:${want}`, (t) => ({ name: p3PicName(t), why: fsRealNot(p3PicWord(t), biggest ? 'the biggest' : 'the smallest') })), alsoRight: FS_REAL_MORE,
       explain: biggest ? `In real life ${aOrAn(want)} ${want} is huge, so it is the biggest of the three.` : `In real life ${aOrAn(want)} ${want} is tiny, so it is the smallest of the three.`, visual: null, explainVisual: null };
   },
   'p4-real-middle': (rng) => {
     const names = [pick(rng, LV_TINY), pick(rng, LV_MIDDLE), pick(rng, LV_HUGE)].sort();
     const tiny = names.find((x) => lvGroup(x) === 1); const want = names.find((x) => lvGroup(x) === 2); const huge = names.find((x) => lvGroup(x) === 3);
-    return { type: 'choice', story: lvList(names), prompt: 'Which one is middle-sized in real life?', choices: shuffle(rng, names.map((x) => `pic:${x}`)), answer: `pic:${want}`,
+    const choices = shuffle(rng, names.map((x) => `pic:${x}`));
+    return { type: 'choice', story: null, prompt: `Which is middle-sized in real life, ${lvOr(names)}?`, choices, answer: `pic:${want}`,
+      whyNot: p3WhyNot(choices, `pic:${want}`, (t) => ({ name: p3PicName(t), why: fsRealNot(p3PicWord(t), 'middle-sized') })), alsoRight: FS_REAL_MORE,
       explain: `In real life ${aOrAn(want)} ${want} is bigger than ${aOrAn(tiny)} ${tiny} and smaller than ${aOrAn(huge)} ${huge}, so it is middle-sized.`, visual: null, explainVisual: null };
   },
   'p4-how-many-3': (rng) => {
     // One, two or three (pass LV): the lesson counts to three, and the older kind asked only one or two.
     const n = randInt(rng, 1, 3);
+    // A wrong count is too many or not enough for what is drawn, counted aloud (pass ML, More Info).
+    const notes = (thing) => (w) => { const k = Number(w); const many = n === 1 ? `there is just one ${thing}` : `there are ${NUMBER_NAMES[n]} ${thing}s, ${countUp(n)}`; return { name: capFirst(NUMBER_NAMES[k]), why: `is ${k > n ? 'too many' : 'not enough'}, because ${many}.` }; };
+    const more = [['Hold up one finger, just one.', 'Hold up two fingers, one, two.', 'Clap three times, one, two, three.'][n - 1]];
     if (rng() < 0.6) { const shape = pick(rng, PATTERN_SHAPES); const colour = pick(rng, ['red', 'blue', 'green']);
-      return { type: 'choice', story: null, prompt: `How many ${shape}s?`, choices: ['1', '2', '3'], answer: String(n), explain: n === 1 ? `There is one ${shape}, just one.` : `Count them, ${countUp(n)}. There are ${NUMBER_NAMES[n]} ${shape}s.`, visual: { kind: 'pattern', items: Array.from({ length: n }, () => shape), colour, counting: true }, explainVisual: null }; }
-    return { type: 'choice', story: null, prompt: 'How many dots?', choices: ['1', '2', '3'], answer: String(n), explain: n === 1 ? 'There is one dot, just one.' : `Count them, ${countUp(n)}. There are ${NUMBER_NAMES[n]} dots.`, visual: { kind: 'dots', count: n }, explainVisual: null };
+      return { type: 'choice', story: null, prompt: `How many ${shape}s?`, choices: ['1', '2', '3'], answer: String(n), explain: n === 1 ? `There is one ${shape}, just one.` : `Count them, ${countUp(n)}. There are ${NUMBER_NAMES[n]} ${shape}s.`, visual: { kind: 'pattern', items: Array.from({ length: n }, () => shape), colour, counting: true }, explainVisual: null,
+        whyNot: p3WhyNot(['1', '2', '3'], String(n), notes(shape)), alsoRight: more }; }
+    return { type: 'choice', story: null, prompt: 'How many dots?', choices: ['1', '2', '3'], answer: String(n), explain: n === 1 ? 'There is one dot, just one.' : `Count them, ${countUp(n)}. There are ${NUMBER_NAMES[n]} dots.`, visual: { kind: 'dots', count: n }, explainVisual: null,
+      whyNot: p3WhyNot(['1', '2', '3'], String(n), notes('dot')), alsoRight: more };
   },
-  'pk-turn-or-share': (rng) => { const [story, answer] = pick(rng, LV_TURN_OR_SHARE);
+  'pk-turn-or-share': (rng) => { const [story, answer, act] = pick(rng, LV_TURN_OR_SHARE);
     return { type: 'choice', story, prompt: 'Is this taking turns or sharing?', choices: ['Taking turns', 'Sharing'], answer,
-      explain: answer === 'Taking turns' ? 'One goes first and then the other, so this is taking turns.' : 'They both use it at the same time, so this is sharing.', visual: null, explainVisual: null }; },
+      explain: `${act}, so this is ${answer === 'Taking turns' ? 'taking turns' : 'sharing'}.`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(['Taking turns', 'Sharing'], answer, (w) => ({ name: w, why: w === 'Sharing' ? 'would mean both use it at the same time, but here one goes first.' : 'would mean one goes first, but here both use it at the same time.' })),
+      alsoRight: [answer === 'Taking turns' ? 'Taking turns works with the swing and a new book too.' : 'Two friends can share one ball and both play at the same time.'] }; },
+  // One sentence (EARMARKS L11, pass ML): the moment is said inside the question.
   'pk-while-waiting': (rng) => { const place = pick(rng, LV_WAIT_PLACES); const [answer, why] = pick(rng, LV_WAIT_RIGHT); const wrong = pick(rng, LV_WAIT_WRONG);
-    return { type: 'choice', story: `Your friend has a turn with ${place}, and you are waiting.`, prompt: 'What can you do while you wait?', choices: shuffle(rng, [answer, wrong]), answer, explain: why, visual: null, explainVisual: null }; },
-  'pk-helper-where': (rng) => { const [prompt, answer, explain] = pick(rng, LV_HELPER_PLACES);
-    return { type: 'choice', story: null, prompt, choices: twoOf(rng, CIV_HELPER_NAMES, answer), answer, explain, visual: null, explainVisual: null }; },
-  'pk-helper-scene': (rng) => { const [story, prompt, answer, explain] = pick(rng, LV_HELPER_SCENES);
-    return { type: 'choice', story, prompt, choices: twoOf(rng, CIV_HELPER_NAMES, answer), answer, explain, visual: null, explainVisual: null }; },
+    const choices = shuffle(rng, [answer, wrong]);
+    return { type: 'choice', story: null, prompt: `What can you do while your friend has a turn ${place === 'the red crayon' ? 'with' : 'on'} ${place} and you wait?`, choices, answer, explain: why, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, answer, (w) => ({ name: LV_WAIT_WRONG_WHY[w][0], why: LV_WAIT_WRONG_WHY[w][1] })), alsoRight: [LV_WAIT_MORE[answer]] }; },
+  'pk-helper-where': (rng) => { const [prompt, answer, explain] = pick(rng, LV_HELPER_PLACES); const choices = helperChoices(rng, answer, prompt);
+    return { type: 'choice', story: null, prompt, choices, answer, explain, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, answer, (h) => ({ name: fsHelperName(h), why: `${FS_WORKS_AT[h]}.` })), alsoRight: [CIV_HELPER_WHY[answer]] }; },
+  'pk-helper-scene': (rng) => { const [prompt, answer, explain] = pick(rng, LV_HELPER_SCENES); const choices = helperChoices(rng, answer, prompt);
+    return { type: 'choice', story: null, prompt, choices, answer, explain, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, answer, (h) => ({ name: fsHelperName(h), why: fsHelperWhy(h) })), alsoRight: CIV_TOOL_WHY[answer] ? [CIV_TOOL_WHY[answer]] : [] }; },
 });
 Object.assign(GENERATORS, {
   'pl-tap-letter': (rng) => {
@@ -26491,18 +26759,20 @@ Object.assign(GENERATORS, {
 });
 
 // ---- Kindergarten to grade 3 community and civics generators.
-const CIV_HELPERS = [['Who puts out fires?', 'Firefighter'], ['Who helps you when you are sick?', 'Doctor'], ['Who teaches you at school?', 'Teacher'], ['Who brings the mail?', 'Mail carrier'], ['Who keeps people safe on the street?', 'Police officer']];
+const CIV_HELPERS = [['Who puts out fires?', 'Firefighter'], ['Who helps you when you are sick?', 'Doctor'], ['Who teaches you at school?', 'Teacher'], ['Who brings letters and packages to your home?', 'Mail carrier'], ['Who keeps people safe on the street?', 'Police officer']];
 const CIV_HELPER_NAMES = CIV_HELPERS.map((h) => h[1]);
 const CIV_RULE_WHYS = [['Why do we stop at a red light?', 'To let the other cars go'], ['Why do we wait our turn?', 'So it is fair for everyone'], ['Why do we walk in the hall?', 'So nobody bumps or falls']];
 // Each good choice carries its own reason (pass JS), so the explanation says why it helps.
 const CIV_GOOD_CHOICES = [['A friend drops their crayons.', 'Help pick them up', 'Walk away', 'Helping pick them up is the good choice, because it helps your friend.'], ['Someone is talking.', 'Listen', 'Talk over them', 'Listening is the good choice, because it shows you care what they say.'], ['You finish your snack.', 'Throw away the wrapper', 'Leave it on the floor', 'Throwing away the wrapper is the good choice, because it keeps the room clean for everyone.']];
+// Why each wrong good-choice answer does not fit, and one more good choice (pass ML, More Info; true in kindergarten too).
+const CIV_GOOD_NOT = { 'Walk away': ['Walking away', 'leaves your friend to pick up every crayon alone.', 'You can be a helper at home too, and set the table.'], 'Talk over them': ['Talking over them', 'means they cannot be heard, so it does not show you care.', 'Taking turns to talk lets everyone be heard.'], 'Leave it on the floor': ['Leaving it on the floor', 'makes a mess that someone else has to clean up.', 'Putting away your toys keeps the room clean too.'] };
 const CIV_NEED_WANT = [['Water', 'Need'], ['A home', 'Need'], ['A warm coat', 'Need'], ['An apple', 'Need'], ['A toy car', 'Want'], ['Candy', 'Want'], ['A video game', 'Want'], ['A balloon', 'Want']];
 const CIV_FLAG_COUNTS = [['How many stars are on our flag?', 50], ['How many stripes are on our flag?', 13]];
 const CIV_HOLIDAYS = [['Which holiday do we celebrate on July 4?', 'Independence Day', "July 4 is Independence Day, our country's birthday, when many people watch parades and fireworks."], ['Which November holiday is for giving thanks?', 'Thanksgiving', 'Thanksgiving comes in November. It is a day for giving thanks and sharing a meal.'], ['Which holiday comes on the third Monday of January?', 'Martin Luther King Jr. Day', 'Martin Luther King Jr. Day is the third Monday of January. It honors Dr. King, who worked so that people of every color would be treated fairly.']];
 // Why each answer is right, in the kindergarten lessons' own words (pass JZ): an explanation says what a helper does or why a
 // thing is a need, never the question back (Who teaches you at school? A teacher teaches you at school).
 const CIV_HELPER_WHY = { Firefighter: 'A firefighter puts out fires and helps keep people safe.', Doctor: 'A doctor helps sick people get well.', Teacher: 'A teacher helps you learn at school.', 'Mail carrier': 'A mail carrier brings letters and packages to every home.', 'Police officer': 'A police officer keeps people safe on the street and helps everyone follow the rules.' };
-const CIV_TOOL_WHY = { Firefighter: 'A firefighter sprays water from a hose to put out fires.', Doctor: 'A doctor uses a stethoscope to listen to your heart and lungs.', Teacher: 'A teacher writes on a whiteboard so the whole class can see.', 'Mail carrier': 'A mail carrier drives a mail truck full of letters and packages.' };
+const CIV_TOOL_WHY = { Firefighter: 'A firefighter sprays water from a hose to put out fires.', Doctor: 'A doctor uses a stethoscope to listen to your heart and lungs.', Teacher: 'A teacher writes on a whiteboard so the whole class can see.', 'Mail carrier': 'A mail carrier often drives a mail truck full of letters and packages.' };
 const CIV_NEED_WHY = { Water: 'Water is a need. Your body must have water to live.', 'A home': 'A home is a need. It keeps you safe, dry and warm.', 'A warm coat': 'A warm coat is a need. Clothes keep you warm when it is cold.', 'An apple': 'An apple is food, and food is a need. Your body must have food to live and grow.', 'A toy car': 'A toy car is a want. It is fun, but you can live without it.', Candy: 'Candy is a want. It tastes good, but your body does not need it.', 'A video game': 'A video game is a want. It is fun, but you can live without it.', 'A balloon': 'A balloon is a want. It is fun, but you can live without it.' }; // whole questions, each with its own explanation (pass ID)
 const CIV_LEADERS = [['Who leads a city?', 'Mayor'], ['Who leads a state?', 'Governor'], ['Who leads the whole country?', 'President']];
 const CIV_WORKPLACES = [['Who works in the White House?', 'President'], ['Who works in the state capitol in Austin?', 'Governor'], ['Who works at city hall?', 'Mayor']];
@@ -26659,12 +26929,16 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: 'Two of these rhyme.', prompt: 'Tap the one that does not rhyme.', choices, answer: odd[1], explain: `${capFirst(a[0])} and ${b[0]} rhyme. ${capFirst(odd[0])} does not sound the same at the end, so it does not rhyme with them.`, visual: null, explainVisual: null,
       whyNot: p3WhyNot(choices, odd[1], (t) => { const [w, x] = t === a[1] ? [a, b] : [b, a]; return { name: capFirst(w[0]), why: `rhymes with ${x[0]}, because they sound the same at the end.` }; }),
       alsoRight: [`${capFirst(odd[0])} rhymes with ${p3RhymePartner(odd)[0]}, not with ${a[0]} and ${b[0]}.`] }; },
-  'pk4-tap-biggest': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']);
-    return { type: 'choice', story: null, prompt: 'Tap the biggest one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:medium`, `shape:${sh}:small`]), answer: `shape:${sh}:big`, explain: `That ${sh} takes up the most room, so it is the biggest.`, visual: null, explainVisual: null }; },
-  'pk4-tap-smallest': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']);
-    return { type: 'choice', story: null, prompt: 'Tap the smallest one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:medium`, `shape:${sh}:small`]), answer: `shape:${sh}:small`, explain: `That ${sh} takes up the least room, so it is the smallest.`, visual: null, explainVisual: null }; },
-  'pk4-tap-middle': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']);
-    return { type: 'choice', story: null, prompt: 'Tap the middle-sized one.', choices: shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:medium`, `shape:${sh}:small`]), answer: `shape:${sh}:medium`, explain: `That is the middle-sized ${sh}, not little and not big.`, visual: null, explainVisual: null }; },
+  // Three sizes (pass ML, More Info): each wrong one by the room it takes up, as Big, Bigger, Biggest says it.
+  'pk4-tap-biggest': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']); const choices = shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:medium`, `shape:${sh}:small`]);
+    return { type: 'choice', story: null, prompt: 'Tap the biggest one.', choices, answer: `shape:${sh}:big`, explain: `That ${sh} takes up the most room, so it is the biggest.`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, `shape:${sh}:big`, (t) => ({ name: fsSizeName(t), why: /:medium$/.test(t) ? 'takes up less room than the big one, so it is not the biggest.' : 'takes up the least room, so it is the smallest, not the biggest.' })), alsoRight: ['In real life a bear is the biggest of a bee, a cat and a bear.'] }; },
+  'pk4-tap-smallest': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']); const choices = shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:medium`, `shape:${sh}:small`]);
+    return { type: 'choice', story: null, prompt: 'Tap the smallest one.', choices, answer: `shape:${sh}:small`, explain: `That ${sh} takes up the least room, so it is the smallest.`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, `shape:${sh}:small`, (t) => ({ name: fsSizeName(t), why: /:medium$/.test(t) ? 'takes up more room than the little one, so it is not the smallest.' : 'takes up the most room, so it is the biggest, not the smallest.' })), alsoRight: ['In real life a bee is the smallest of a bee, a cat and a bear.'] }; },
+  'pk4-tap-middle': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']); const choices = shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:medium`, `shape:${sh}:small`]);
+    return { type: 'choice', story: null, prompt: 'Tap the middle-sized one.', choices, answer: `shape:${sh}:medium`, explain: `That is the middle-sized ${sh}, not little and not big.`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, `shape:${sh}:medium`, (t) => ({ name: fsSizeName(t), why: /:big$/.test(t) ? 'takes up the most room, so it is the biggest.' : 'takes up the least room, so it is the smallest.' })), alsoRight: ['In real life a cat is middle-sized, bigger than a bee and smaller than a bear.'] }; },
   // The four feelings (pass MD, earmark E12: PK3 I.B.2.a and I.B.2.b, ELOF P-SE 6), each face told by the one sign the lesson
   // names. A wrong face is any of the other three, which the drawings keep apart.
   // A wrong face by its own sign against the asked one's (pass MH). A name-it question never names the face shown, so its
@@ -26737,7 +27011,8 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt: `What is the kind thing to do when ${c[0]}?`, choices, answer: c[1], explain: c[3], visual: null, explainVisual: null,
       whyNot: p3WhyNot(choices, c[1], () => ({ name: c[4], why: c[5] })), alsoRight: [c[6]] }; },
   'pk-whose-turn': (rng) => { const first = randInt(rng, 0, 1) === 1; const done = first ? 'Sam' : 'Ana'; const next = first ? 'Ana' : 'Sam';
-    return { type: 'choice', story: null, prompt: `${done} had a turn and is done, so whose turn is next?`, choices: ['Sam', 'Ana'], answer: next, explain: `${done} had a turn, so ${next} is next.`, visual: null, explainVisual: null }; },
+    return { type: 'choice', story: null, prompt: `${done} had a turn and is done, so whose turn is next?`, choices: ['Sam', 'Ana'], answer: next, explain: `${done} had a turn, so ${next} is next.`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(['Sam', 'Ana'], next, (w) => ({ name: w, why: 'just had a turn, so now it is the other friend\'s turn.' })), alsoRight: ['First one friend swings while the other waits, and then they swap.'] }; },
   'ck-which-flag': (rng) => { const tx = randInt(rng, 0, 1) === 1;
     return { type: 'choice', story: tx ? 'A flag with one big star.' : 'A flag with 50 stars.', prompt: 'Which flag is this?', choices: ['The Texas flag', 'The United States flag'], answer: tx ? 'The Texas flag' : 'The United States flag', explain: tx ? 'One big star means the Texas flag, the flag of our state. Texas is called the Lone Star State.' : 'Fifty stars means the United States flag, one star for each state.', visual: null, explainVisual: null }; },
   'ck-lone-star': (rng) => ({ type: 'choice', story: null, prompt: 'How many stars does the Texas flag have?', choices: shuffle(rng, ['One', 'Fifty', 'Thirteen']), answer: 'One', explain: 'The Texas flag has one big star. That is why Texas is called the Lone Star State.', visual: null, explainVisual: null }),
@@ -26752,7 +27027,9 @@ Object.assign(GENERATORS, {
     ]);
     return { type: 'choice', story: c[0], prompt: c[1], choices: shuffle(rng, c[2]), answer: c[3], explain: c[4], visual: null, explainVisual: null }; },
   'ck-job-tool': (rng) => { const c = pick(rng, [['Who uses a hose?', 'Firefighter'], ['Who uses a stethoscope?', 'Doctor'], ['Who writes on a whiteboard?', 'Teacher'], ['Who drives a mail truck?', 'Mail carrier']]);
-    return { type: 'choice', story: null, prompt: c[0], choices: twoOf(rng, CIV_HELPER_NAMES, c[1]), answer: c[1], explain: CIV_TOOL_WHY[c[1]], visual: null, explainVisual: null }; },
+    const choices = helperChoices(rng, c[1], c[0]);
+    return { type: 'choice', story: null, prompt: c[0], choices, answer: c[1], explain: CIV_TOOL_WHY[c[1]], visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, c[1], (h) => ({ name: fsHelperName(h), why: fsHelperWhy(h) })), alsoRight: [CIV_HELPER_WHY[c[1]]] }; },
   'ck-why-work': (rng) => { const c = pick(rng, [
       ['Why do grown-ups go to work?', 'To earn money for needs', ['Because school is closed', 'To stay away from home'], 'Grown-ups work to earn money, and that money pays for needs like food, clothes and a home.'],
       ['Why do people have jobs?', 'To earn money and help others', ['Because it is Monday', 'To get out of the rain'], 'People work to earn money for their needs, and many jobs help other people too.'],
@@ -26988,8 +27265,13 @@ Object.assign(GENERATORS, {
   },
   'ck-why-rule': (rng) => { const c = pick(rng, CIV_RULE_WHYS); const others = CIV_RULE_WHYS.filter((x) => x !== c).map((x) => x[1]);
     return { type: 'choice', story: null, prompt: c[0], choices: shuffle(rng, [c[1], ...others]), answer: c[1], explain: `We ${c[0].replace(/^Why do we /, '').replace(/\?$/, '')} ${c[1].charAt(0).toLowerCase() + c[1].slice(1)}.`, visual: null, explainVisual: null }; },
-  'ck-which-helper': (rng) => { const c = pick(rng, CIV_HELPERS); return { type: 'choice', story: null, prompt: c[0], choices: twoOf(rng, CIV_HELPER_NAMES, c[1]), answer: c[1], explain: CIV_HELPER_WHY[c[1]], visual: null, explainVisual: null }; },
-  'ck-good-choice': (rng) => { const c = pick(rng, CIV_GOOD_CHOICES); return { type: 'choice', story: c[0], prompt: 'What is the good choice?', choices: shuffle(rng, [c[1], c[2]]), answer: c[1], explain: c[3], visual: null, explainVisual: null }; },
+  'ck-which-helper': (rng) => { const c = pick(rng, CIV_HELPERS); const choices = helperChoices(rng, c[1], c[0]);
+    return { type: 'choice', story: null, prompt: c[0], choices, answer: c[1], explain: CIV_HELPER_WHY[c[1]], visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, c[1], (h) => ({ name: fsHelperName(h), why: fsHelperWhy(h) })), alsoRight: CIV_TOOL_WHY[c[1]] ? [CIV_TOOL_WHY[c[1]]] : [] }; },
+  // One sentence (EARMARKS L11, pass ML): What is the good choice when someone is talking?
+  'ck-good-choice': (rng) => { const c = pick(rng, CIV_GOOD_CHOICES); const choices = shuffle(rng, [c[1], c[2]]);
+    return { type: 'choice', story: null, prompt: `What is the good choice when ${c[0].charAt(0).toLowerCase()}${c[0].slice(1).replace(/\.$/, '')}?`, choices, answer: c[1], explain: c[3], visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, c[1], (w) => ({ name: CIV_GOOD_NOT[w][0], why: CIV_GOOD_NOT[w][1] })), alsoRight: [CIV_GOOD_NOT[c[2]][2]] }; },
   'ck-need-or-want': (rng) => { const c = pick(rng, CIV_NEED_WANT); return { type: 'choice', story: null, prompt: `Is ${c[0].charAt(0).toLowerCase() + c[0].slice(1)} a need or a want?`, choices: ['Need', 'Want'], answer: c[1], explain: CIV_NEED_WHY[c[0]], visual: null, explainVisual: null }; },
   'ck-which-is-need': (rng) => { const need = pick(rng, CIV_NEED_WANT.filter((x) => x[1] === 'Need'))[0]; const wants = shuffle(rng, CIV_NEED_WANT.filter((x) => x[1] === 'Want')).slice(0, 2).map((x) => x[0]);
     return { type: 'choice', story: null, prompt: 'Which one is a need?', choices: shuffle(rng, [need, ...wants]), answer: need, explain: `${CIV_NEED_WHY[need]} The other two are wants, nice to have but not needed to live.`, visual: null, explainVisual: null }; },
@@ -29391,7 +29673,7 @@ export const TRACE_LETTERS = {
   'line-down': { strokes: [[[50, 15], [50, 85]]], line: true },
   'line-across': { strokes: [[[15, 50], [85, 50]]], line: true },
   'line-wave': { strokes: [wavePts(12, 84, 50, 18, 48, 12)], line: true, curve: [[]] },
-  'line-zigzag': { strokes: [[[12, 70], [30, 30], [48, 70], [66, 30], [84, 70]]], line: true },
+  'line-zigzag': { strokes: [[[12, 30], [30, 70], [48, 30], [66, 70], [84, 30]]], line: true },   // from the top left since pass ML, as the dot zigzag goes
   'line-circle': { strokes: [ringPts(50, 50, 32, 32, -90, -450, 16)], line: true, curve: [[]] },
   // Numbers 0 to 9, for kindergarten counting.
   0: { strokes: [ringPts(50, 50, 26, 35, -90, -450, 16)], curve: [[]] },
@@ -29423,7 +29705,7 @@ export const TRACE_LETTERS = {
   zigzag: { strokes: [[[12, 30], [32, 70], [52, 30], [72, 70], [92, 30]]], dots: true },
   boat: { strokes: [[[16, 62], [84, 62], [70, 84], [30, 84], [16, 62]]], dots: true },
   kite: { strokes: [[[50, 12], [80, 45], [50, 84], [20, 45], [50, 12]]], dots: true },
-  fish: { strokes: [[[20, 50], [45, 25], [70, 50], [88, 30], [88, 70], [70, 50], [45, 75], [20, 50]]], dots: true },
+  fish: { strokes: [[[20, 50], [45, 25], [66, 42], [88, 28], [88, 72], [66, 58], [45, 75], [20, 50]]], dots: true },   // dots 3 and 6 met at one point until pass ML
   tree: { strokes: [[[50, 12], [78, 50], [62, 50], [62, 86], [38, 86], [38, 50], [22, 50], [50, 12]]], dots: true },
   cup: { strokes: [[[26, 30], [74, 30], [66, 84], [34, 84], [26, 30]]], dots: true },
   W: { strokes: [[[15, 15], [32, 85], [50, 40], [68, 85], [85, 15]]] },
@@ -30186,16 +30468,16 @@ export const WONDER = [
     simple: [
       { voice: 'A scientist says', says: 'From what scientists know, your eyes see a color, and your brain decides how it makes you feel.' },
       { voice: 'An artist says', says: 'To me, a favorite color is like a hug you can see.' },
-      { voice: 'A grandparent of faith says', says: 'Red has always made me happiest. That is why I wear my red coat everywhere!' },
+      { voice: 'A grandparent of faith says', says: 'I am thankful for every color, and red makes me happiest. That is why I wear my red coat everywhere!' },
       { voice: 'A skeptic says', says: 'My favorite color changes all the time. I wonder if yours will change too.' },
     ],
     perspectives: [
-      { voice: 'A scientist', says: 'Colors are light bouncing off things into your eyes. Every person sees them a little differently, so the color that makes you happiest might look a little different to someone else.' },
-      { voice: 'An artist', says: 'Painters spend their whole lives choosing colors. There is no wrong favorite. The one you picked can be the start of your very first painting.' },
-      { voice: 'A grandparent of faith', says: 'Many people see the colors of the world as a gift to be enjoyed. Whatever you believe, it is a fine thing to stop and notice a color you love.' },
-      { voice: 'A skeptic', says: 'Would you pick the same color tomorrow? It might change, and that is interesting. Try asking yourself again next week and see.' },
+      { voice: 'A scientist', says: 'Technically, the colors you see start as light. Light bounces off a strawberry and into your eyes. Tiny cells at the back of your eyes, called cones, catch that light, and your brain turns their signals into the red you see. Scientists who study favorite colors have found that people tend to like the colors of things they like, such as a clear blue sky. So when a color makes me happy, I ask what it reminds me of.' },
+      { voice: 'An artist', says: 'To me, colors are feelings you can see. When I want a painting to feel happy, I reach for my brightest yellow, and when I want it to feel calm and quiet, I mix a soft blue. I think no favorite is ever wrong, because a color can make you happy for reasons that are all your own. Try painting something in your color, and notice how the picture makes you feel.' },
+      { voice: 'A grandparent of faith', says: 'I believe the colors of the world are a gift, and I try to say thank you for them, like the green of new grass after a spring rain. Red has made me happiest for as long as I can remember, which is why my red coat goes nearly everywhere with me. Whatever you believe, it is a fine thing to stop and notice a color you love.' },
+      { voice: 'A skeptic', says: 'My favorite color keeps changing, so I hold my answer loosely. When I was little, red was my favorite, and these days it is blue, at least this week. Here is a test you can try. Pick your color again tomorrow and next week, and keep track. If your answer changes, you have not failed the test. You found out something new about yourself, and that is what a test is for.' },
     ],
-    closing: 'What is one thing that is your favorite color?',
+    closing: 'Can you name something that is your favorite color?',
   },
   {
     id: 'w-biggest-number',
@@ -37424,13 +37706,12 @@ export const EXPERIMENTS = {
     { title: 'Celery in colored water', ask: 'Where does the water go?', do: 'A celery stalk in a glass of water with food coloring, left overnight.', see: 'The leaves turn color. Plants drink through their stems.' },
     { title: 'Static balloon', ask: 'Can a balloon pick things up?', do: 'A grown-up blows up a balloon and ties it. Rub it on your hair and hold it near tiny bits of paper. If it pops, a grown-up picks up every piece.', see: 'The paper jumps to the balloon. That is static.' },
     { title: 'Which is heavier?', ask: 'Can you guess by feel?', do: 'Two closed boxes, one with rocks and one with cotton. Guess, then open.', see: 'Size does not tell weight.' },
-    { title: 'Rain in a jar', ask: 'Where does the rain come from?', do: 'A grown-up pours hot tap water into a jar and sets a plate of ice on top.', see: 'Drops form under the plate and fall. That is how rain forms.' },
+    { title: 'Rain in a jar', ask: 'Where does rain come from?', do: 'A grown-up pours hot tap water into a jar, sets a plate of ice on top and keeps the jar out of reach of small hands. Watch for a few minutes without touching the warm jar.', see: 'Drops form under the cold plate and fall. Rain forms much the same way, when warm, wet air cools.' },
     { title: 'Butter shaking', ask: 'Can you make butter?', do: 'Heavy cream in a plastic jar with a tight lid; shake for ten minutes. Check first that no one who will taste it has a milk allergy.', see: 'The cream turns to butter and buttermilk.' },
     { title: 'Salt or sugar?', ask: 'Which one disappears faster in water?', do: 'A spoon of each in two cups of warm water, stirred the same.', see: 'Both dissolve; one takes longer.' },
     { title: 'Living things need water', ask: 'What happens to a plant without water?', do: 'Two leafy potted plants, one watered, one not, for a week.', see: 'The dry one droops. Plants need water.' },
     { title: 'Magnet fishing', ask: 'Which fish will the magnet catch?', do: 'Paper fish, some with paper clips, on a string with a big fridge magnet. A grown-up counts the paper clips back and puts the string away after.', see: 'Only the fish with metal get caught.' },
     { title: 'Sound through the table', ask: 'Can you hear through wood?', do: 'Put your ear on the table while a friend taps the far end.', see: 'Sound travels through wood, and loudly.' },
-    { title: "Rain in a jar", ask: "Where does rain come from?", do: "A grown-up pours hot tap water into a jar and sets a plate of ice on top. Wait.", see: "Drops form under the plate and fall. Warm wet air meets cold and rains." },
     { title: "Seeds in the dark", ask: "Do seeds need light to start?", do: "Two wet paper towels with beans, one in a dark cupboard, one in the light. Beans for planting are not for eating.", see: "Both sprout. Seeds need water first; light comes later." },
     { title: "Salt and pepper", ask: "Can a balloon pick up pepper?", do: "Mix salt and pepper on a plate. A grown-up blows up a balloon and ties it. Rub it on your hair and hold it just above the plate, and keep the pepper away from your eyes. If it pops, a grown-up picks up every piece.", see: "The pepper jumps up. Static pulls the light grains." },
     { title: "Sound through a string", ask: "Can sound travel down a string?", do: "A grown-up pokes a hole in two cups and knots a long string through them. Pull it tight; one talks, one listens. Put the string away after.", see: "The voice travels along the tight string to the other cup." },
@@ -39258,7 +39539,7 @@ export const COURSE_GAMES = {
   'tech-7': ['sprint-tech-7'],
   'civics-3': ['map-continents', 'sprint-civics-3'],
   'science-2': ['pairs-more'],
-  'first-steps-pk': ['jigsaw-4'],
+  'first-steps-pk': ['pairs-first-steps'],
   'first-sounds-pk': ['dots-fish'],
   'counting-k': ['maze-small'],
   'letters-k': ['pairs-shapes'],

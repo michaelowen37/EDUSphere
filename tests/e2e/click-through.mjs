@@ -1245,6 +1245,31 @@ await page.waitForTimeout(200);
 }
 await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Look Closely (pass ML, First Steps' game, Find the Match until its second read): the grid carries the dealt pictures; a wrong
+// pair stays up with a clay edge, then turns back over; a tap during that wait turns the pair back and opens the tapped card; and
+// three true pairs stay up and bring the star. Each count is read right after the taps too, so dropped taps cannot pass it (the
+// code check's second read).
+await page.evaluate(() => window.__eduTest.openColoring('play:pairs-first-steps'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(200);
+{ const deal = ((await page.locator('[data-pairs-cards]').getAttribute('data-pairs-cards')) || '').split(',');
+  const cardsOf = page.locator('[data-pairs-cards] button'); const faceDown = () => page.getByRole('button', { name: 'Card', exact: true }).count();
+  ok('Look Closely opens with six cards face down, three pictures twice', deal.length === 6 && new Set(deal).size === 3 && (await faceDown()) === 6);
+  const a = 0; const b = deal.findIndex((t) => t !== deal[0]); const twin = deal.findIndex((t, k) => k !== a && t === deal[a]);
+  await cardsOf.nth(a).click(); await cardsOf.nth(b).click();
+  const upNow = await faceDown(); const marked = await page.locator('[data-pairs-miss]').count();
+  // The held wrong pair's edge is dashed as well as clay, so it differs from a found pair's gold by more than color (round three).
+  const dashed = await page.evaluate(() => [...document.querySelectorAll('[data-pairs-cards] button')].filter((b) => getComputedStyle(b).borderTopStyle === 'dashed').length);
+  await page.waitForTimeout(1350);
+  ok('a wrong pair in Look Closely stays up, marked with a dashed edge, and then turns back over', upNow === 4 && marked === 1 && dashed === 2 && (await faceDown()) === 6, `${upNow} face down at once, ${marked} marked, ${dashed} dashed`);
+  await cardsOf.nth(a).click(); await cardsOf.nth(b).click(); await cardsOf.nth(twin).click();
+  const afterTap = await faceDown(); await cardsOf.nth(a).click();
+  ok('a tap during the wait turns the wrong pair back and opens the tapped card, which can then be matched', afterTap === 5 && (await faceDown()) === 4, `${afterTap} face down after the tap`);
+  for (const t of [...new Set(deal)].filter((t) => t !== deal[a])) { const [i, j] = deal.map((x, k) => (x === t ? k : -1)).filter((k) => k >= 0); await cardsOf.nth(i).click(); await cardsOf.nth(j).click(); await page.waitForTimeout(150); }
+  ok('three true pairs in Look Closely stay up and bring the star', (await faceDown()) === 0 && (await page.getByRole('img', { name: 'Done' }).count()) === 1);
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
 // Share the Cookies (pass GL, philosophy K to 2): the board carries how many each plate should hold.
 await page.evaluate(() => window.__eduTest.openColoring('play:share-philosophy-k'));
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');

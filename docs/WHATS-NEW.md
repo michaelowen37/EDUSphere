@@ -9,6 +9,13 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## October 19, 2026 (First Steps, read again from the start)
+
+- We read First Steps, the first course for four-year-olds, again from the start. Its lessons now teach more and fewer by counting, because a long row or a few big things can look like more, and a new question asks children to count past that look.
+- In First Steps, the More Info button now explains why each wrong choice doesn't fit, after every question with pictures to tap. Several questions ask in one sentence too, like "Find the two that are the same, then tap the one that is different."
+- First Steps has a new matching game, Look Closely, made from the pictures in its own lessons. Some pictures are almost alike, like a fox and a cat, so children have to look closely, just as the lessons teach.
+- When every star in First Steps is earned, children now hear a new story, The Shadow on the Tent, about a backyard sleepout and a big shadow that looked like a rabbit.
+
 ## October 18, 2026 (Listen and Point, read again from the start)
 
 - We read Listen and Point, the second course for three-year-olds, again from the start. A few questions now ask in one sentence, like "Tap the one that does not go with these.", and a few story lines read more smoothly.

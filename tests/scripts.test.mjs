@@ -301,5 +301,14 @@ ok('every lesson picture matches the words spoken over it', mismatches.length ==
 { const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8'); const body = (ui.match(/function bestLine\(game, kept\) \{[\s\S]*?\n\}/) || [''])[0]; const chip = (ui.match(/function SvgChip\([\s\S]*?\n\}/) || [''])[0];
   ok("a young path game's Let's Play tile shows no seconds", /if \(game\.kind === 'path' && game\.young\) return null;[\s\S]*BEST_SECONDS\.has/.test(body));
   ok('every shape chip on a game board wears a thin dark outline', /const edge = \{ stroke: '#2E2E2E', strokeWidth: 0\.6 \}/.test(chip) && (chip.match(/\{\.\.\.edge\}/g) || []).length === 4); }
+// A connect-the-dots demo draws its numbers after the ink, each with a halo, so a finished picture shows every number its line
+// counts (pass ML, the code check's second read: the finished house had hidden its 4 and 5, the star its 2, 5, 7 and 10).
+{ const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8'); const at = ui.indexOf('function TraceDemo('); const td = ui.slice(at, ui.indexOf('\n}\n', at));
+  const ink = td.indexOf('className="edu-trace-draw"'); const nums = td.indexOf('key={`num-${i}`}');
+  ok('a connect-the-dots demo draws its numbers after the ink, with a halo of the card\'s color', at > 0 && ink > 0 && nums > ink && /key=\{`num-\$\{i\}`\}[^\n]*stroke=\{C\.surface\}/.test(td)); }
+// Look Closely's own tile (pass ML, round three): GameThumb draws a pics game as two cards with the fox and the cat, so a
+// pre-reader can tell it from kindergarten's Pairs, whose tile is the cards alone.
+{ const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8'); const at = ui.indexOf('function GameThumb('); const body = ui.slice(at, ui.indexOf('\n}\n', at));
+  ok('a pics game has a tile of its own, two cards with the fox and the cat', /game\.kind === 'pairs' && game\.pics\) return <svg data-pics-thumb=""/.test(body) && /\['fox', \d+\], \['cat', \d+\]/.test(body) && /<StudentPicture name=\{n\}/.test(body)); }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

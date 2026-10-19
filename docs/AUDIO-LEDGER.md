@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-18 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 9129 clips, 1,536,515 characters in all; the longest clip is 520 characters and the longest whole story 3,420, far under Eleven v4's 10,000 a request. 196 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-19 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 9198 clips, 1,545,399 characters in all; the longest clip is 520 characters and the longest whole story 3,420, far under Eleven v4's 10,000 a request. 197 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,7 +17,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 5073 | 583,755 |
+| Pre-K to grade 2 | 5142 | 592,639 |
 | Grades 3 to 5 | 1263 | 278,665 |
 | Grades 6 to 8 | 1138 | 272,478 |
 | Grades 9 to college | 1655 | 401,617 |
@@ -41,11 +41,11 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 |---|---|
 | story title | 662 |
 | story | 4261 |
-| lesson line | 3235 |
+| lesson line | 3292 |
 | long story title | 105 |
 | long story | 846 |
-| next long story title | 2 |
-| next long story | 18 |
+| next long story title | 3 |
+| next long story | 29 |
 
 ## Stories with hand-written tags
 
@@ -53,11 +53,11 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 - S1-1: [cheerful] Mike's class went to the park, and his teacher gave everyone a job. [clearly] Bring back three stones, she said, just three, for the counting jar.
 - S1-2: [excited] Mike found smooth stones, round stones and stones that sparkled. [eagerly] He scooped up a whole handful and set the pile on a flat rock by his teacher.
-- S1-3: [curious] How many is that? asked his teacher. [slowly, counting] Mike started to count the pile. One, two, three, four, [puzzled] but he was not sure which ones he had counted already.
-- S1-4: [gently] Touch each stone as you count it, said his teacher, [slowly] and count each one once.
+- S1-3: [curious] Is that three? asked his teacher. [slowly, counting] Mike started to count the pile. One, two, three, four, [puzzled] but he was not sure which ones he had counted already.
+- S1-4: [gently] Touch each stone as you count it, said his teacher, and count each one once.
 - S1-5: [slowly, counting] So Mike touched one stone and slid it into a row. One. He touched the next and slid it over. Two. Then one more. [proud] Three!
-- S1-6: [pleased] He stopped right there. [warmly] The last number you say tells how many, said his teacher. [delighted] You said three, so you have three stones!
-- S1-7: [gently] Mike put the rest back on the path where he found them. [happily] Back in class, he dropped his three in the counting jar. [stones dropping into a glass jar] Plink, plink, plink.
+- S1-6: [pleased] He stopped right there. [warmly] The last number you say tells how many, said his teacher. [delighted] You said three, so there are three stones in your row!
+- S1-7: [gently] Mike put all the rest back on the path, right where he had found them. [happily] Back in class, he dropped his three in the counting jar. [stones dropping into a glass jar] Plink, plink, plink.
 - S1-8: [slowly, warmly] Touch each one and count it once. The last number you say tells how many.
 
 ### Five ducklings (S2, count-to-5)
@@ -427,7 +427,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S95-3: [warmly] Time to tidy up, said Mia's mom. [puzzled] Mia looked at the jumble and scratched her head. Which balls are mine? she asked.
 - S95-4: [thoughtful] She picked up one ball and felt it, and then another. [slowly] They were the same size and the same shape, and they felt the same.
 - S95-5: [gently] Colors help us tell things apart, said Mia's mom. [curious] Mia looked again, [delighted] and she grinned. Mine are the red ones! she said.
-- S95-6: [proud] Mia put the red ones together in her bucket, [happy] and Sam put the blue ones together in his.
+- S95-6: [proud] Mia put the red ones together in her bucket, and Sam put the blue ones together in his.
 - S95-7: [slowly, warmly] Red and blue are colors. Colors help us tell things apart and sort them into groups.
 
 ### One small bed (S98, big-and-small)
@@ -437,7 +437,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S98-3: [curious] There was one bed, and it was a small bed. [playful] Both dogs wanted it.
 - S98-4: [playful] Max tried it first. [straining] His nose was at one end, but his tail reached far past the other end. [laughs] His legs hung off too, and he did not fit.
 - S98-5: [softly] Bean tried it. She curled up until her nose touched her tail, and she fit with room left over. [pleased] Just right.
-- S98-6: [sighs] Max sighed and lay down on the big rug, [whispers] and both dogs fell asleep.
+- S98-6: [sighs] Max sighed and lay down on the big rug, and both dogs fell asleep.
 - S98-7: [slowly, warmly] Bigger things take up more room. Taller things reach higher, and longer things reach farther.
 
 ### Splash (S101, one-and-two)
@@ -468,7 +468,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S3882-2: [distant thunder rumbling] Boom! [nervously] The thunder rumbled far away, and Nia's heart beat fast. [quickly] She pulled the blanket over her head.
 - S3882-3: [hushed] Under the blanket it was dark, and the scared feeling grew bigger and bigger. [whispers] Nia did not say a word.
 - S3882-4: [thoughtful] Then Nia remembered what Dad always said. [gently] Feelings have names, like happy, sad, mad or scared. Say your feeling's name, and when it is big, call me.
-- S3882-5: [brave] Nia peeked out and called, Dad, I feel scared! [warmly] Dad came right away and sat on her bed for a hug. It is okay to feel scared, he said.
+- S3882-5: [brave] Nia peeked out and called, Dad, I feel scared! [warmly] Dad came right away and sat on her bed to give her a big, warm hug. It is okay to feel scared, he said.
 - S3882-6: [calm] Let's take a slow breath together, said Dad. [slowly] Pretend to smell a flower. [inhales] Nia breathed in slowly. Now pretend to blow out a birthday candle, said Dad. [exhales] Nia breathed out slowly.
 - S3882-7: [relieved] They did it again, and again. [softly] The storm still rumbled far away, but Nia's heart slowed down, and the scared feeling got smaller.
 - S3882-8: [slowly, warmly] Happy, sad, mad or scared, every feeling is okay. Say its name, and when it is big, take a slow breath with your grown-up.
@@ -478,11 +478,11 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S3886-1: [cheerful] Owen and Tess both wanted the red ball at playtime. [rushed] Owen grabbed one side, and Tess grabbed the other.
 - S3886-2: [loudly] Mine! said Owen. Mine! said Tess. [straining] They pulled and pulled, and the ball slipped away.
 - S3886-3: [thud] Bump! Tess fell on the grass. [sadly] Her mouth turned down, and a tear rolled down her cheek.
-- S3886-4: [hesitant] Owen wanted to grab the ball and run off. [softly] But then he looked at Tess's face. [concerned] She looked sad, and a little scared.
+- S3886-4: [hesitant] Owen wanted to grab the ball and run off to play. [softly] But then he looked at Tess's face. [concerned] She looked sad, and a little scared.
 - S3886-5: [gently] So Owen knelt down beside her on the grass. Are you okay? he asked. [sniffles] Tess shook her head. My hand hurts, she said, and held it up to show him.
 - S3886-6: [urgently] Owen ran to get Miss Rae, their teacher. [breathless] We both pulled, and Tess fell, he said. Her hand hurts.
 - S3886-7: [kindly] Miss Rae looked at Tess's hand, and it was only a little sore, so she hugged Tess. [warmly] When a friend is hurt, or you start to fight, get a grown-up, she told them.
-- S3886-8: [cheerful] Then she helped them take turns with the red ball, Tess first and Owen next. [happy] Soon both friends were smiling.
+- S3886-8: [cheerful] Then she helped them take turns with the ball, Tess first and Owen next. [happy] Soon both friends were smiling.
 - S3886-9: [slowly, warmly] Look at a friend's face, and ask, are you okay? When a friend is hurt, or you start to fight, get a grown-up.
 
 ### One more cracker (S3890, one-more-one-fewer)
@@ -509,37 +509,37 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 ### The red circle (S107, colours)
 
-- S107-1: [cheerful] It was cleanup time, and foam shapes were all over the floor. [brightly] Dad set out four bins, red, blue, yellow and green.
-- S107-2: [playful] Lena put the red squares in the red bin, red like a strawberry. [happily] The blue ones went in the blue bin, blue like the sky.
+- S107-1: [cheerful] It was cleanup time. Foam shapes were all over the floor, [brightly] so Dad set out four bins, red, blue, yellow and green.
+- S107-2: [playful] Lena put the red squares in the red bin, red like a strawberry. The blue ones went in the blue bin, blue like the sky.
 - S107-3: [sing-song] Yellow ones went in, yellow like a banana, and green ones, green like the grass. [curious] Then Lena picked up a red circle.
 - S107-4: [slowly] She stopped and looked. [puzzled] The red bin was full of squares, and this shape was a circle. [wondering] Did it go somewhere else?
 - S107-5: [gently] Look at the color, said Dad. [slowly] A red circle and a red square are the same color, even though their shapes are different.
-- S107-6: [delighted] So in it went with the red squares. [proud] Soon every shape was in a bin, and each bin held just one color.
+- S107-6: [delighted] So it goes with the red ones! said Lena. [proud] Soon every shape was in a bin, and each bin held just one color.
 - S107-7: [curious] Then Lena looked down at her shirt, yellow like a banana. [giggles] Do I go in the yellow bin? she asked, [laughs] and Dad laughed.
 - S107-8: [slowly, warmly] Colors help us sort. Look at the color, and things of one color go together.
 
 ### Red, blue, red, blue (S110, patterns)
 
-- S110-1: [cheerful] Eli was making a necklace for Mom. [softly] He had a bowl of red beads, a bowl of blue beads and a long string.
+- S110-1: [cheerful] Eli was making a necklace for Mom. [softly] He had a bowl of big red beads, a bowl of big blue beads and a long string.
 - S110-2: [sing-song] Red, blue, red, blue. [carefully] He threaded them on one at a time and said each color out loud.
-- S110-3: [playful] Then his friend Bea wanted to help. [rushed] She grabbed beads from both bowls and pushed them on fast. Red, red, blue, red, blue, blue.
-- S110-4: [slowly] Eli said all the colors out loud, one by one, and they sounded wrong. [puzzled] The order kept changing, so it was not a pattern anymore.
-- S110-5: [patiently] They slid Bea's beads off and started again. [gently] This time Eli said the colors, and Bea listened. [sing-song] Red, blue, red, blue.
-- S110-6: [curious] What comes next? asked Eli. [sing-song] Bea said the pattern with him, red, blue, red, blue. [excited] Red! she shouted, and she was right.
+- S110-3: [playful] Then his friend Lucy wanted to help. [rushed] She grabbed beads from both bowls and pushed them on fast. Red, red, blue, red, blue, blue.
+- S110-4: [slowly] Eli said all the colors out loud, one by one, and they sounded wrong. [puzzled] The order keeps changing, he said, so it is not a pattern.
+- S110-5: [patiently] They slid Lucy's beads off and started again. [gently] This time Eli said the colors, and Lucy listened. [sing-song] Red, blue, red, blue.
+- S110-6: [curious] What comes next? asked Eli. [sing-song] Lucy said the pattern with him, red, blue, red, blue. [excited] Red! she shouted, and she was right.
 - S110-7: [happy] Together they went on, red, blue, red, blue, all the way to the end. [warmly] Mom put the necklace on and smiled.
-- S110-8: [playful] Then Bea made a pattern of her own. [clapping and stomping] Clap, stomp, clap, stomp, she went, [laughs] and everyone joined in.
+- S110-8: [playful] Then Lucy made a pattern of her own. [clapping and stomping] Clap, stomp, clap, stomp, she went, [laughs] and everyone joined in.
 - S110-9: [slowly, warmly] A pattern repeats. Say it out loud to hear what comes next.
 
 ### Count to ten (S113, taking-turns)
 
-- S113-1: [playful] There was one swing, and Sam and Ana both wanted it. [rushed] They both grabbed the ropes at once. [shouting] Mine! Mine!
+- S113-1: [playful] At playtime there was one swing, and Sam and Ana both wanted it. [rushed] They both grabbed the ropes at once. [shouting] Mine! Mine!
 - S113-2: [straining] Sam pulled one way, and Ana pulled the other. [frustrated] The swing just twisted, and nobody could swing at all.
 - S113-3: [calmly] Let's take turns, said Ana. You go first, and I will wait. [gently] She let go, and Sam sat down.
-- S113-4: [excited] Sam swung up high, and Ana waited on the bench. [sighs] Waiting felt hard. [restless] Her hands wanted the ropes, and her feet wanted to kick.
+- S113-4: [excited] Sam swung up high, and Ana waited on the bench by their teacher. [sighs] Waiting felt hard. [restless] Her hands wanted the ropes, and her feet wanted to kick.
 - S113-5: [slowly] So Ana took a slow breath in and let it out. [cheering] Then she cheered for her friend, go, Sam, go, [counting] and counted to ten.
 - S113-6: [excited] Ten! [carefully] Sam let the swing slow down and climbed off. [warmly] Your turn, he said, and held it still for her.
-- S113-7: [delighted] Now Ana swung, and Sam counted for her. [playful] Later they found a big red ball and played with it together, both at once. [warmly] That was sharing.
-- S113-8: [slowly, warmly] Wait, and then it is your turn. Taking turns and sharing are fair to everyone.
+- S113-7: [delighted] Now Ana swung, and Sam counted for her. [playful] Later they found a big red ball and played with it together, both at once. [warmly] That is sharing, said their teacher.
+- S113-8: [slowly, warmly] Wait, and then it is your turn. When friends share, they both play at the same time.
 
 ### Cat, mat, hat (S116, listen-for-rhymes)
 
@@ -558,13 +558,13 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S119-3: [rushed] Leo tipped the basket over, and out came mittens and gloves of every kind. [amazed] Blue ones, black ones and striped ones.
 - S119-4: [thoughtful] He held up a blue mitten, the same shape as his, but not the same color. [curious] Then he found a red glove with fingers. [disappointed] Same color, but not the same shape!
 - S119-5: [gasps] At last he saw it, a red mitten, just like the first. He put them side by side, the same shape and the same color. [delighted] A match!
-- S119-6: [happy] Two red mittens meant two warm hands, [excited] and Leo ran out to play in the snow with Dad.
+- S119-6: [happy] Two red mittens meant two warm hands, and Leo ran out to play in the snow with Dad.
 - S119-7: [slowly, warmly] The same means just alike, the same shape and the same color.
 
 ### There you are! (S122, match-the-animals)
 
 - S122-1: [softly] Little Fox and her brother lived in a den under a big tree. [warmly] They had the same pointy ears, the same eyes and the same orange color.
-- S122-2: [curious] One evening, her brother ran off after a leaf, [worried] and Little Fox went to look for him.
+- S122-2: [worried] One evening, her brother ran off after a leaf, and Little Fox went to look for him.
 - S122-3: [whispers] Two eyes looked at her from the top of an old stump. [delighted] There you are! said Little Fox.
 - S122-4: [surprised] But these eyes were big and round, and there were no pointy ears. [amused] It was a brown owl.
 - S122-5: [gasps] Then a bush wiggled, [excited] and out came a little fox. It had the same pointy ears, the same eyes and the same orange color. [delighted] It was her brother!
@@ -573,7 +573,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 ### Two plates (S125, more-or-fewer)
 
-- S125-1: [cheerful] Mom set two plates on the table at snack time, [warmly] and both had crackers, crunchy and square.
+- S125-1: [cheerful] Mom set two plates on the table at snack time, and both had crackers, crunchy and square.
 - S125-2: [curious] On one plate, the crackers were big. [thoughtful] On the other plate, the crackers were little.
 - S125-3: [excited] That one has more! said Ana, and she pointed at the big crackers. [playful] She wanted the plate with more crackers.
 - S125-4: [gently] Are you sure? said Mom. [kindly] Big is not the same as more. [encouraging] Let's count each plate, and touch each cracker once.
@@ -661,7 +661,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S149-2: [thoughtful] Mia looked at them. [slowly] Three apples were red, with the same color and the same shine. [surprised] One was green, not like the others.
 - S149-3: [excited] That one! said Mia, and she pointed at the green apple. Different! [warmly] Dad nodded and smiled.
 - S149-4: [playful] Then Dad made it harder. He took the green apple away and put down a new red one. [mysterious] Now all four were red.
-- S149-5: [slowly] Mia looked, and looked. [puzzled] Same color, same shine, same round shape. [whispers] Were they all the same, every one?
+- S149-5: [slowly] Mia looked and looked, from one apple to the next. [puzzled] Same color, same shine, same round shape. [whispers] Were they all the same, every one?
 - S149-6: [gasps] No! said Mia. [delighted] That one is small, much smaller than the other three! [warmly] Different can be size, too, said Dad.
 - S149-7: [playful] Then Dad put the green apple back, and Mia sorted them by color. [proud] All the red apples went in one bowl, even the small one. [pleased] The green apple got a bowl all its own.
 - S149-8: [slowly, warmly] Different means not alike. When we sort by color, things that are the same color go together.
@@ -691,22 +691,22 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 ### The tiny sock (S158, same-and-different)
 
-- S158-1: [cheerful] Finn was getting dressed, and he needed two socks. [curious] In the laundry basket he found one, blue with white stripes.
+- S158-1: [cheerful] Finn needed two socks, so he dug in the laundry basket and found one, blue with white stripes.
 - S158-2: [rushed] He dug some more and found another, blue with white stripes. [delighted] Same color, same stripes, a match! said Finn.
-- S158-3: Finn pulled it on, [surprised] but it stopped at his toes. [straining] He tugged and tugged, and it would not go any farther.
-- S158-4: [laughs] Mom laughed. [playful] That sock is your baby sister's, she said. [gently] Did you check the size?
-- S158-5: [thoughtful] Finn held the two socks side by side. Same color and same stripes, [slowly] but one was big and one was tiny.
+- S158-3: He pulled it on. [surprised] But it stopped at his toes! [straining] He tugged and tugged, and it would not go any farther.
+- S158-4: [gently] Mom smiled. Did you check the size? she asked.
+- S158-5: [thoughtful] Finn held the two socks side by side. Same color and same stripes, [slowly] but one was big and one was tiny. [giggles] This one is my baby sister's! said Finn.
 - S158-6: [determined] So he dug in the basket again. [slowly] This sock had the same color, the same stripes and the same size. [relieved] Now both feet were warm.
-- S158-7: [warmly] His baby sister got her tiny sock back, [giggles] and she waved it like a little flag.
+- S158-7: [warmly] His baby sister got her tiny sock back, and she waved it like a little flag.
 - S158-8: [slowly, warmly] To match, two things must be alike in every way. Check the shape, the color and the size.
 
 ### Two red cars (S161, match-the-vehicles)
 
 - S161-1: [excited] Omar wanted to race his little red car down the road on his play mat. [thoughtful] But for a race, he needed two cars.
-- S161-2: [rushed] He dug in the toy box and pulled out something red. [delighted] Red like my car, he said. [proudly] A match!
-- S161-3: [gently] Grandpa smiled. Look at the shape and the wheels, he said. [surprised] It was a long red train, with lots of wheels.
-- S161-4: [thoughtful] It was red, [slowly] but it was not the same shape, so it did not match. [gently] A train runs on a track, said Grandpa, not on the road.
-- S161-5: [curious] Next came a boat, with no wheels at all, [playful] and then a rocket. [warmly] A boat goes on the water, said Grandpa, and a rocket goes up into space.
+- S161-2: [rushed] He dug in the toy box and pulled out something red. [delighted] Red like my car, a match! said Omar.
+- S161-3: [gently] Look at the shape and the wheels, said Grandpa with a smile. [curious] So Omar looked again, [surprised] and now he could see it, a long red train with lots of wheels!
+- S161-4: [thoughtful] It is red, said Omar, [slowly] but it is not the same shape. It does not match! [gently] A train runs on a track, said Grandpa, not on the road.
+- S161-5: [curious] Next came a boat with no wheels at all. [playful] Then came a rocket. [warmly] A boat goes on the water, said Grandpa, and a rocket goes up into space.
 - S161-6: [slowly] At the very bottom of the box, [gasps] Omar found another red car. [excited] It had the same shape, the same color and the same wheels as his.
 - S161-7: [delighted] Now they matched! [playful] Vroom, vroom, the two red cars raced down the road side by side.
 - S161-8: [slowly, warmly] To match, look at the color, the shape and the parts. Two red cars are the same, and a red train is different.
@@ -715,11 +715,11 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 - S164-1: [cheerful] At Ivy's party, every child got a red ball to play catch. [surprised] Then Ivy's ball [a ball bouncing] bounced away under the table.
 - S164-2: [curious] She looked under the chairs and saw something red and round. [excited] There it is! she said, [rushed] and she grabbed it.
-- S164-3: [surprised] But it was light, much too light, [puzzled] and it had a long string. [gasps] A red balloon!
+- S164-3: [surprised] But it was light, much too light, [puzzled] and it had a long string. [gasps] A red balloon! said Ivy.
 - S164-4: [gently] Look closely, said Mom. [warmly] A balloon is light and has a string, so it is not the same as a ball.
-- S164-5: [thoughtful] Ivy tied the balloon to her chair and looked again. [delighted] There, under the table, sat her ball.
-- S164-6: [pleased] It was round and red, with no string at all. [happy] It was just like her friend's ball, so the two balls matched.
-- S164-7: [playful] Ivy threw it, her friend caught it, [giggles] and the red balloon waited, tied to her chair.
+- S164-5: [thoughtful] Mom tied the balloon to Ivy's chair, and Ivy looked again. [delighted] There, under the table, sat her ball.
+- S164-6: [pleased] It was round and red, with no string at all. It was just like her friend's ball, so the two balls matched.
+- S164-7: [playful] Ivy threw it, her friend caught it, and the red balloon waited, tied to her chair.
 - S164-8: [slowly, warmly] Some things are almost alike. Look closely before you say two things are the same.
 
 ### The whale card (S167, match-the-water-animals)
@@ -728,8 +728,8 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S167-2: [curious] Leo turned over a whale, and then a fish. [excited] They both swim, he said, so they match!
 - S167-3: [gently] Look closely, said Grandpa. [slowly] They both swim, but a whale breathes air, like you do.
 - S167-4: [thoughtful] Leo looked again. A whale and a fish were not the same. [whispers] He turned them back over and tried to remember where the whale was.
-- S167-5: [curious] Grandpa turned over a turtle and a duck, [sighs] but no twins yet. [playful] Then it was Leo's turn, [gasps] and he turned over another whale!
-- S167-6: [carefully] He knew where the first whale was, so he turned it over too. [delighted] Side by side, they were just the same. [proud] Two whales, a match!
+- S167-5: [curious] Grandpa flipped over a turtle and a duck. [sighs] No twins yet! [playful] Then it was Leo's turn, [gasps] and up came another whale!
+- S167-6: [carefully] He knew where the first whale was, so he turned it over too. [delighted] Side by side, they were just the same. [proud] Two whales, a match! said Leo.
 - S167-7: [warmly] The cards are the same size, said Grandpa. [amazed] But in real life, a whale is much, much bigger than most fish.
 - S167-8: [playful] Leo stretched his arms out wide. Bigger than this? he asked. [laughs] Much bigger! said Grandpa, and they both laughed.
 - S167-9: [slowly, warmly] Look closely before you match. Two whales are the same, but a whale and a fish are different.
@@ -739,23 +739,23 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S170-1: [softly] It was getting dark, and Nora was waiting at the window. [worried] Her gray cat, Muffin, was late for supper.
 - S170-2: [whispers] Something came along the fence, with two pointy ears. [excited] There she is! said Nora.
 - S170-3: [calmly] Dad came to look and turned on the porch light. Pointy ears, he said, [slowly] but look at the face and the color too.
-- S170-4: [curious] This animal was orange, with a long, pointy face. [gasps] It was a fox!
+- S170-4: [curious] This animal was orange, with a long, pointy face. [gasps] It is not Muffin, it is a fox! said Nora.
 - S170-5: [thoughtful] A fox has pointy ears, said Dad, and so does a cat. [slowly] The ears matched, but the animals did not.
 - S170-6: [softly] Nora watched from inside as the fox ran off into the dark. [hopeful] Then a gray cat jumped up on the fence.
 - S170-7: [slowly] Pointy ears, a round face and gray fur. [delighted] It was Muffin at last! [relieved] Dad opened the door, and Nora let her in.
-- S170-8: [whispers] Out in the yard, an owl opened its big round eyes. [softly] Most owls hunt at night, said Dad, so it was just waking up.
+- S170-8: [whispers] Out in the yard, an owl opened its big round eyes. Most owls hunt at night, said Dad, so it was just waking up.
 - S170-9: [slowly, warmly] Ears help tell animals apart. When the ears match, look at the face and the color too.
 
 ### The right hole (S173, match-the-shapes)
 
 - S173-1: [cheerful] Diego had a box with three holes, a round one, a square one and a triangle one. [playful] He had some blocks to put in.
-- S173-2: [curious] He picked up a block whose top was a triangle, with three corners. [straining] He tried the round hole and pushed, [disappointed] but it would not go in.
+- S173-2: [curious] First he picked up a block whose top was a triangle, with three corners. [straining] He tried the round hole and pushed, [disappointed] but it would not go in.
 - S173-3: [straining] He tried the square hole and pushed harder, but it would not go in there either. [frustrated] Diego was getting grumpy.
 - S173-4: [gently] Look at the block, said Mom, and then look at the hole. [curious] Are they the same shape?
 - S173-5: [slowly, counting] Diego counted. Three corners on top of the block, and three corners on the triangle hole. [excited] The same! In it went, [a wooden block dropping into a box] plop.
 - S173-6: [confident] Then Diego picked up a round block, and he knew which hole it wanted. [proudly] The round one, of course. [a wooden block dropping into a box] Plop!
-- S173-7: [playful] He drew a triangle in the air with his finger, [slowly, counting] one, two, three corners, [laughs] and laughed.
-- S173-8: [slowly, warmly] The same means just alike. Same shape, same hole.
+- S173-7: He drew a triangle in the air with his finger, [slowly, counting] one, two, three corners, and laughed.
+- S173-8: [slowly, warmly] Count the corners and look at the sides. Same shape, same hole.
 
 ### The can that stood up (S176, match-the-solids)
 
@@ -763,8 +763,8 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S176-2: [curious] Next she tried a sphere, round like a ball. [nervous] It wobbled on top, [a wooden ball rolling away] and then it rolled right off. [chuckles] Spheres roll, said Grandpa.
 - S176-3: [curious] Then she picked up a cylinder, shaped like a can. She laid it on its side on the cubes, [surprised] and away it rolled too.
 - S176-4: [disappointed] It rolls like the ball, said Mia, so it will not stack. [warmly] Grandpa picked it up with a smile.
-- S176-5: [slowly] A cylinder rolls on its curved side, he said, but it stands still on its flat end. [encouraging] Try it.
-- S176-6: [carefully] So Mia stood the cylinder up on its flat end, right on top of the cubes. [whispers] It did not roll. [delighted] It stood still!
+- S176-5: [warmly] Look at its ends, said Grandpa. [curious] Mia looked closely. [delighted] They are flat, like the top of a cube! she said.
+- S176-6: [carefully] So Mia took the cylinder and stood it up on a flat end, on top of the cubes. [whispers] It did not roll! [slowly] A cylinder rolls on its curved side, said Grandpa, but it stands still on its flat end.
 - S176-7: [playful] Last of all came a cone, like an ice cream cone. [proud] Mia set it on top, and her tower had a pointy roof.
 - S176-8: [slowly, warmly] The shape tells you what a thing can do. Spheres roll, cubes stack, and a cylinder can roll or stand still.
 
@@ -772,10 +772,10 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 - S179-1: [cheerful] At snack time, Mom gave Theo and his sister June some strawberries.
 - S179-2: [playful] Theo spread his out in a long row across his plate. [softly] June kept hers close together in a little bunch.
-- S179-3: [proudly] Mine go all the way across, said Theo, so I have more! [disappointed] June looked at her bunch and frowned.
-- S179-4: [gently] Line them up, one with one, said Mom, [curious] and see who has some left over.
-- S179-5: [carefully] So they did. [slowly, counting] One strawberry with one, two with two, and three with three. [surprised] June had one left over!
-- S179-6: [slowly, counting] They counted too. Theo had three, and June had four. [thoughtful] Four is more than three, said Mom, so June has more.
+- S179-3: [proudly] Mine go all the way across, said Theo, so I have more strawberries! [disappointed] June looked at her little bunch and frowned.
+- S179-4: [gently] Line them up, one with one, said Mom, and see who has some left over.
+- S179-5: [carefully] So they did. [slowly, counting] One strawberry with one, two with two, and three with three. [surprised] Look, I have one left over! said June.
+- S179-6: [slowly, counting] They counted too. Theo had three, and June had four. [thoughtful] Four strawberries are more than three strawberries, said Mom. [amazed] So June has more, said Theo, and my long row has fewer.
 - S179-7: [warmly] June smiled and gave Theo her extra strawberry. They lined them up again, [delighted] and now Theo had one left over.
 - S179-8: [slowly, warmly] To find out who has more, count each group, or line them up one with one. The group with some left over has more.
 
@@ -795,10 +795,10 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S185-1: [softly] It was raining hard, and the window was foggy. [curious] Zoe pressed a dot at the top with her finger and pulled a line straight down.
 - S185-2: [delighted] A line down, just like the rain! [playful] She drew more lines down, side by side, until the window was full of rain.
 - S185-3: [carefully] Next she drew a line across for the windowsill, flat and straight, like the top of a table.
-- S185-4: [softly] Far away, the sky flashed white, and then [thunder rumbling] the thunder rumbled. [excited] Zoe drew the lightning, up and down, smooth and curvy.
+- S185-4: [softly] Last night there had been a storm, with lightning far away. [excited] Zoe tried to draw the lightning, up and down, smooth and curvy.
 - S185-5: [gently] Mom came to look and smiled. [warmly] That looks like a wave, she said, smooth and curvy like water, [slowly] but lightning has sharp points.
 - S185-6: [determined] So Zoe drew it again, up and down, with sharp points this time. [delighted] A zigzag! Now it looked like lightning.
-- S185-7: [brightly] When the storm was over, the sun came out. [happily] Zoe drew it round and round, right in the middle of the glass.
+- S185-7: [brightly] When the rain stopped, the sun came out. [happily] Zoe drew it round and round, right in the middle of the glass.
 - S185-8: [slowly, warmly] Start at the dot and follow the line. A wave is smooth, and a zigzag has sharp points.
 
 ### The lopsided house (S188, connect-the-dots)
@@ -806,24 +806,24 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S188-1: [curious] Ravi had a page of dots, and each dot had a number beside it. [whispers] Something was hiding in there, and he wanted to find it.
 - S188-2: [excited] He started at dot one and went fast. [rushed] One, two, three, and then his crayon jumped right to five.
 - S188-3: [slowly] He finished the lines and looked. [puzzled] It was a lopsided shape, with one long line slanting across the page.
-- S188-4: [disappointed] It does not look like anything, said Ravi. [gently] Dad pointed at the numbers and said they show the order. [warmly] You skipped four, he said.
-- S188-5: [encouraging] Say each number out loud as you reach its dot, said Dad, and you will not skip one.
+- S188-4: [disappointed] It does not look like anything, said Ravi. [gently] Dad pointed at the numbers. [warmly] They show the order, he said, so say each one out loud.
+- S188-5: [slowly, counting] Ravi said the numbers along his lines, one, two, three, five. [gasps] He had skipped four!
 - S188-6: [determined] So Ravi began on a new page. [slowly, counting] One, two, three, four, five, he said, and back to one.
 - S188-7: [delighted] There it was, a house with a pointy roof! [amazed] The dots had been a house all along.
-- S188-8: [softly] That night Dad showed him the stars. [in awe] Long ago, he said, people joined stars with pretend lines to make pictures in the sky.
+- S188-8: [softly] That night Dad showed him the stars. Long ago, he said, people joined stars with pretend lines to make pictures in the sky.
 - S188-9: [curious] Ravi pointed his finger and joined three stars with pretend lines. [proud] A triangle, he said, a picture in the sky.
 - S188-10: [slowly, warmly] Start at one and go in order. Say each number, and the picture comes out right.
 
 ### Back to the dot (S191, draw-the-shapes)
 
-- S191-1: [cheerful] Ada was making a birthday card for Grandma, and she wanted a big heart on the front. [warmly] Her teacher made a little dot to start from.
-- S191-2: [eagerly] She put her crayon on the dot and started. [quickly] One round bump, then the second round bump, then down to the point.
+- S191-1: [cheerful] Ada was making a birthday card for Grandma, and she wanted a big heart on the front. [warmly] Her teacher made a little dot where the point of the heart would go.
+- S191-2: [eagerly] She put her crayon on the dot and started. [quickly] One round bump, then the second round bump, then down toward the point.
 - S191-3: [rushed] But she was in a hurry, and she stopped too soon. [disappointed] There was a gap, like a door left open. It was not a heart yet.
-- S191-4: [gently] Almost, said her teacher. [encouraging] Go all the way around, back to the dot.
-- S191-5: [slowly] So Ada went around again, slowly this time. Bump, bump, point, and back to the dot. [delighted] The gap closed. A heart!
-- S191-6: [proud] Then she made a new dot and drew a star beside the heart, with five points. [pleased] Its line came back to the dot too, and the star was closed.
+- S191-4: [gently, encouraging] Almost, said her teacher. Go all the way around, back to the dot.
+- S191-5: [slowly] So Ada went around again, slowly this time. Bump, bump, and all the way down to the dot. [delighted] The gap closed. A heart!
+- S191-6: [proud] Then she made a new dot and drew a star beside the heart, with five points. [pleased] Its line came back to the dot too, so the star had no gap.
 - S191-7: [warmly] On her birthday, Grandma held the card up and traced the heart with her finger. [softly] All the way around, she said. Just right.
-- S191-8: [slowly, warmly] Start at the dot. Go all the way around and back to the dot, and the shape is closed.
+- S191-8: [slowly, warmly] Start at the dot and go all the way around, back to the dot.
 
 ### The animal book (S194, big-bigger-biggest)
 
@@ -832,18 +832,18 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S194-3: [softly] In the zoo garden, [a bee buzzing] a bee buzzed on a flower. [whispers] It was tiny, smaller than Iris's thumb.
 - S194-4: [curious] Next they saw a fox, bigger than the bee, curled up by a log. [gently] A fox is middle-sized, like a cat, said her teacher.
 - S194-5: [gasps] Then, behind thick glass, a bear stood up on its back legs. [amazed] It was huge, much bigger than Iris, and much bigger than her teacher too.
-- S194-6: [thoughtful] Iris opened her book again. On the page, all three looked the same size. [slowly] In real life, they were not.
-- S194-7: [happily] That night she drew them in a row, a tiny bee, a middle-sized fox and a huge bear. [proudly] Big, bigger, biggest!
+- S194-6: [thoughtful] Iris opened her book again. On the page, all three looked the same size. [slowly] But not in real life! she said.
+- S194-7: [happily] That night she drew them in a row, a tiny bee, a middle-sized fox and a huge bear. [proudly] The bear took up the most room on her page. Big, bigger, biggest!
 - S194-8: [slowly, warmly] Big, bigger, biggest, each one bigger than the one before. A picture can fool you, but in real life a bear is huge and a bee is tiny.
 
 ### A helper too (S197, helpers-all-around)
 
 - S197-1: [cheerful] On the way to school with Dad, Milo saw helpers all around. [admiring] A police officer held up her hand, and the cars stopped so people could cross.
-- S197-2: [excited] A mail carrier hopped out of her truck with a big package. [amazed] Then a big red fire truck rolled by. It was going home to the fire station.
-- S197-3: [warmly] At school, Milo's teacher read the class a story about helpers. [gently] Every helper has a job, she said, and every job helps us all.
-- S197-4: [sighs] Milo turned to his teacher and sighed. [sadly] I want to be a helper, he said, but I do not have a truck or a hose.
-- S197-5: [surprised] Just then his friend Jade bumped the table, [rushed] and her crayons rolled all over the floor.
-- S197-6: [kindly] Milo knelt down and picked them up, one by one, [carefully] and put them all back in her box.
+- S197-2: [excited] A mail carrier hopped out of her truck with a package. [amazed] Then a big red fire truck rolled by on its way home to the fire station.
+- S197-3: [warmly] At school, Milo's teacher read the class a story about helpers. Every helper has a job, she said, and every job helps us all.
+- S197-4: [sighs] Milo turned to his teacher and sighed. I want to be a helper, he said, but I do not have a truck or a hose.
+- S197-5: [surprised] Just then his friend Jade bumped the table, and her crayons rolled all over the floor.
+- S197-6: [kindly] Milo knelt down and picked them up, one by one, and put them all back in her box.
 - S197-7: [grateful] Thank you, said Jade. [warmly] Then the teacher smiled at Milo. You did not need a truck or a hose, she said. [proudly] You are a helper too.
 - S197-8: [happily] That night Milo set the table, a fork and a spoon at every place. [pleased] Another way to help!
 - S197-9: [slowly, warmly] Helpers are all around, and every helper has a job. You can be a helper too.

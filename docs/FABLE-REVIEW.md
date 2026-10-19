@@ -200,6 +200,17 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A sample built by hand to look like a real screen drifts: the LI tour sample missed the Merge link and the Wonder pill and was laid out differently, and Mikey saw all three at a glance. Feed made-up data through the real component instead, with taps switched off, and the sample can never differ from the page.
 - Count a daily allowance against the day as it started, not as it stands: finishing the first review shrinks the queue, and a rule that rechecked the live queue would cancel the second review the backlog asked for.
 
+## Learned in pass ML (First Steps read again through every layer)
+
+- A pre-K 4 citation quotes the Head Start 48 to 60 month progression, the band its children are in, and names what waits; the plan rows follow the citations both ways, and a code a sentence only mentions is not cited.
+- A wrong choice is wrong in the child's world too: a banana can be green and a lawn yellow, a toy car runs on a track, and a snail's feelers stand up like ears, so none of them is offered as the wrong answer where it is half right.
+- A trap a story springs is taught on a line of its own first, followed by its count: a long row and big things can look like more, so count to be sure.
+- A question that says every picture's name has given the answer's name too, so its reasons say only what the tapped picture is not, never what the answer is.
+- A painting replaces its line's drawing, so a line whose drawing and painting would differ gets a line of its own for the painting.
+- A check's own fixes can make a new flaw (round one's story fixes made three even stretches across a break), so the tools run again after every round, and a second read reads the fixes, not only the findings.
+- A name a voice says like a word the course teaches is renamed (Bea, heard as bee, the course's tiny animal and the letter B's name).
+- A young game is dealt from the pictures its course's lines draw, with a near pair the lessons call almost alike, so the game asks for the looking the lessons teach, and a wrong pair stays up long enough to see why it is wrong.
+
 ## Learned in pass MK (Listen and Point read again through every layer)
 
 - A reason for a picture that has a twin rules the twin out too, whatever its words, so it waits while the twin is open.

@@ -47,5 +47,28 @@ for (const c of L.COURSES) for (const fw of ['TEKS', 'CCSS']) {
 const repeats = [];
 for (const plan of CURRICULUM) { const seen = new Set(); for (const st of plan.standards) { const key = `${st.framework}:${st.code}`; if (seen.has(key)) repeats.push(`${plan.grade} ${plan.subject} ${key}`); seen.add(key); } }
 ok('no plan repeats a code', repeats.length === 0, repeats.join(', '));
+// Plans follow the citations (pass ML, First Steps' review): in a pre-K course reviewed at the refined standard, every Texas
+// Prekindergarten Guidelines outcome and Head Start goal a lesson cites, written as a code and then its words in parentheses
+// ("V.E.1 (sorts objects ...)", "Goal P-MATH 8 (measures ...)"), is a plan row for its grade that names the lesson, and every plan
+// row that names the lesson is one it cites, so the standards map and the transcript never claim what a lesson does not teach.
+// A code only mentioned ("heights and lengths (V.D.1) are taught in Bigger and smaller") is not a citation. First Sounds and
+// Letters joins the list when its review comes.
+{
+  const REVIEWED_PREK = ['very-first-steps-pk3', 'listen-and-point-pk3', 'first-steps-pk'];
+  const cited = (mod) => { const txt = (mod.sources || []).join(' '); const out = new Set();
+    for (const m of txt.matchAll(/\b((?:IX|IV|V?I{0,3}|X)\.[A-F]\.\d+(?:\.[a-c])?) \(/g)) if (/^[IVX]+\./.test(m[1])) out.add(m[1]);
+    for (const m of txt.matchAll(/\bP-([A-Z]+) (\d+) \(/g)) out.add(`P-${m[1]}.${m[2]}`);
+    return out; };
+  const off = [];
+  for (const cid of REVIEWED_PREK) {
+    const c = L.getCourse(cid); const planned = new Map();
+    for (const p of CURRICULUM.filter((x) => x.grade === c.grade)) for (const st of p.standards) for (const mid of st.moduleIds) { if (!planned.has(mid)) planned.set(mid, new Set()); planned.get(mid).add(st.code.replace(/^PK[34]\./, '').replace(/^ELOF\./, '')); }
+    for (const m of c.modules) { const cs = cited(L.MODULES.find((x) => x.id === m.id)); const ps = planned.get(m.id) || new Set();
+      for (const code of cs) if (!ps.has(code)) off.push(`${m.id} cites ${code}, which no plan row gives it`);
+      for (const code of ps) if (!cs.has(code)) off.push(`${m.id} is planned for ${code}, which it does not cite`); }
+  }
+  ok('every reviewed pre-K lesson\'s citations and its plan rows agree both ways (pass ML)', off.length === 0);
+  if (off.length) console.log(off.slice(0, 6).join('\n'));
+}
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

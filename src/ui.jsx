@@ -365,7 +365,8 @@ function TracePad({ letter, paths, onChange, disabled = false, tone = null }) {
 // A stroke that draws itself, for the tracing lessons. The guide sits in gray with the start dot
 // and the arrow of the first move, exactly as on the practice pad, and green ink draws each
 // stroke in turn, rests, and draws again. A dots picture shows its numbered dots and joins them.
-// Under reduced motion the finished shape simply sits there.
+// Under reduced motion the ink still draws itself (pass ML, the alignment read): its inline animation outranks the reduced-motion
+// rule on purpose, since the stroke order it shows is the lesson, and only the gold pen, which is decoration, is left out.
 const prefersReducedMotion = () => typeof window !== 'undefined' && !!window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const PACES = [26, 40, 65]; // units per second: slower on request, the pre-K pace, and the grade 1 pace
 function TraceDemo({ letter, animKey = 0, pace = 'slow', nudge = 0 }) {
@@ -390,13 +391,14 @@ function TraceDemo({ letter, animKey = 0, pace = 'slow', nudge = 0 }) {
       style={{ width: '100%', maxWidth: 230, aspectRatio: '1 / 1', display: 'block', margin: '0 auto', background: C.surface, border: `2px solid ${C.line}`, borderRadius: 16 }}>
       <TraceShape letter={letter} def={TRACE_LETTERS[letter]} />
       <style>{css}</style>
-      {def.dots && strokes[0].map((pt, i) => (i === strokes[0].length - 1 && pt.join() === strokes[0][0].join() ? null : (
-        <g key={`dot-${i}`}><circle cx={pt[0]} cy={pt[1]} r="5" fill={C.gold} /><text x={pt[0]} y={pt[1] - 7} fontSize="7" textAnchor="middle" fill={C.ink} fontFamily={FONT}>{i + 1}</text></g>
-      )))}
+      {def.dots && strokes[0].map((pt, i) => (i === strokes[0].length - 1 && pt.join() === strokes[0][0].join() ? null : <circle key={`dot-${i}`} cx={pt[0]} cy={pt[1]} r="5" fill={C.gold} />))}
       {!def.dots && strokes.map((st, i) => <path key={`guide-${i}`} d={strokeD(st, cornersOf(def, i))} fill="none" stroke={C.line} strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" />)}
       {strokes.map((st, i) => <path key={`ink-${i}`} className="edu-trace-draw" d={strokeD(st, cornersOf(def, i))} fill="none" stroke={C.green} strokeWidth="6" strokeLinecap="round" strokeLinejoin="round"
         style={{ strokeDasharray: lengths[i], strokeDashoffset: 0, animation: `${id}-${i} ${cycle.toFixed(2)}s linear infinite` }} />)}
       <circle cx={a[0]} cy={a[1]} r="4.5" fill={C.green} />
+      {/* The dots' numbers are drawn after the ink, each with a halo of the card's color, so a finished picture still shows every
+          number its line counts (pass ML, the code check's second read: the house hid its 4 and 5, the star its 2, 5, 7 and 10). */}
+      {def.dots && strokes[0].map((pt, i) => (i === strokes[0].length - 1 && pt.join() === strokes[0][0].join() ? null : <text key={`num-${i}`} x={pt[0]} y={pt[1] - 7} fontSize="7" textAnchor="middle" fill={C.ink} stroke={C.surface} strokeWidth="2.4" paintOrder="stroke" fontFamily={FONT}>{i + 1}</text>))}
       {!def.dots && <polygon data-trace-arrow points={`${wing(1).join(',')} ${tip.join(',')} ${wing(-1).join(',')}`} fill={C.green} />}
       {/* The pen: a gold dot that rides the tip of the ink. SVG motion, so it needs no script, and it is
           left out entirely when the device asks for reduced motion. */}
@@ -551,26 +553,26 @@ function BarPic({ length, vertical = false, size = 22 }) {
 // Solid shapes, drawn with a little shading so they read as things rather than outlines.
 // Drawn with gradients rather than a 3D library: the light sits upper left, a soft
 // shadow sits beneath, and the whole thing weighs nothing and renders on every device.
-function SolidPic({ name, size = 90 }) {
+function SolidPic({ name, size = 90, color = C.green }) {   // color: B.green on game paper (pass ML)
   const clean = String(name).split('#')[0];
-  const uid = `s${clean}`;
+  const uid = `s${clean}${color === C.green ? '' : String(color).replace(/[^0-9a-z]/gi, '')}`;
   const defs = (
     <defs>
-      <radialGradient id={`${uid}-ball`} cx="35%" cy="32%" r="70%"><stop offset="0%" stopColor="#9CC7B0" /><stop offset="45%" stopColor={C.green} /><stop offset="100%" stopColor="#1F3B31" /></radialGradient>
+      <radialGradient id={`${uid}-ball`} cx="35%" cy="32%" r="70%"><stop offset="0%" stopColor="#9CC7B0" /><stop offset="45%" stopColor={color} /><stop offset="100%" stopColor="#1F3B31" /></radialGradient>
       <linearGradient id={`${uid}-side`} x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor="#6FA189" /><stop offset="100%" stopColor="#2A4E42" /></linearGradient>
       <linearGradient id={`${uid}-top`} x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stopColor="#A9D2BD" /><stop offset="100%" stopColor="#5E8F7A" /></linearGradient>
-      <linearGradient id={`${uid}-cone`} x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor="#7FB09A" /><stop offset="55%" stopColor={C.green} /><stop offset="100%" stopColor="#1F3B31" /></linearGradient>
+      <linearGradient id={`${uid}-cone`} x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stopColor="#7FB09A" /><stop offset="55%" stopColor={color} /><stop offset="100%" stopColor="#1F3B31" /></linearGradient>
       <radialGradient id={`${uid}-shadow`} cx="50%" cy="50%" r="50%"><stop offset="0%" stopColor="#000" stopOpacity="0.22" /><stop offset="100%" stopColor="#000" stopOpacity="0" /></radialGradient>
     </defs>
   );
   const shadow = <ellipse cx="52" cy="88" rx="30" ry="6" fill={`url(#${uid}-shadow)`} />;
   const body = clean === 'sphere' ? <g>{shadow}<circle cx="50" cy="48" r="36" fill={`url(#${uid}-ball)`} /><ellipse cx="36" cy="34" rx="9" ry="6" fill="#fff" opacity="0.45" /></g>
-    : clean === 'cube' ? <g>{shadow}<path d="M22 34 L54 22 L82 34 L50 46 Z" fill={`url(#${uid}-top)`} /><path d="M22 34 L50 46 L50 84 L22 72 Z" fill={C.green} /><path d="M50 46 L82 34 L82 72 L50 84 Z" fill={`url(#${uid}-side)`} /></g>
+    : clean === 'cube' ? <g>{shadow}<path d="M22 34 L54 22 L82 34 L50 46 Z" fill={`url(#${uid}-top)`} /><path d="M22 34 L50 46 L50 84 L22 72 Z" fill={color} /><path d="M50 46 L82 34 L82 72 L50 84 Z" fill={`url(#${uid}-side)`} /></g>
     : clean === 'cylinder' ? <g>{shadow}<rect x="24" y="24" width="52" height="52" fill={`url(#${uid}-cone)`} /><ellipse cx="50" cy="76" rx="26" ry="10" fill="#2A4E42" /><ellipse cx="50" cy="24" rx="26" ry="10" fill={`url(#${uid}-top)`} /></g>
     // A rectangular prism (pass KY, TEKS 1.6E), drawn as a box longer than it is tall, so it reads as a box and not a cube.
-    : clean === 'box' ? <g>{shadow}<path d="M10 38 L32 22 L90 22 L68 38 Z" fill={`url(#${uid}-top)`} /><path d="M10 38 L68 38 L68 82 L10 82 Z" fill={C.green} /><path d="M68 38 L90 22 L90 66 L68 82 Z" fill={`url(#${uid}-side)`} /></g>
+    : clean === 'box' ? <g>{shadow}<path d="M10 38 L32 22 L90 22 L68 38 Z" fill={`url(#${uid}-top)`} /><path d="M10 38 L68 38 L68 82 L10 82 Z" fill={color} /><path d="M68 38 L90 22 L90 66 L68 82 Z" fill={`url(#${uid}-side)`} /></g>
     // A triangular prism (pass KY): a triangle in front and the same triangle behind, joined by three rectangles, like a tent.
-    : clean === 'prism' ? <g>{shadow}<path d="M44 24 L66 10 L96 66 L74 80 Z" fill={`url(#${uid}-side)`} /><path d="M14 80 L44 24 L74 80 Z" fill={C.green} /><path d="M74 80 L96 66" stroke="#1F3B31" strokeWidth="1.5" /></g>
+    : clean === 'prism' ? <g>{shadow}<path d="M44 24 L66 10 L96 66 L74 80 Z" fill={`url(#${uid}-side)`} /><path d="M14 80 L44 24 L74 80 Z" fill={color} /><path d="M74 80 L96 66" stroke="#1F3B31" strokeWidth="1.5" /></g>
     : <g>{shadow}<path d="M50 12 L22 74 L78 74 Z" fill={`url(#${uid}-cone)`} /><ellipse cx="50" cy="74" rx="28" ry="10" fill="#2A4E42" /></g>;
   return <svg viewBox="0 0 100 100" width={size} height={size} role="img" aria-label={clean} style={{ display: 'block', margin: '0 auto' }}>{defs}{body}</svg>;
 }
@@ -741,6 +743,10 @@ function IconPic({ name, size = 90 }) {
     phone: <g><rect x="32" y="8" width="36" height="84" rx="8" fill="#2E2E2E" stroke="#1a1a1a" strokeWidth="2" /><rect x="36" y="16" width="28" height="60" rx="3" fill="#8EC5EA" /><circle cx="50" cy="84" r="3.5" fill="#B9C2C9" /><rect x="44" y="11" width="12" height="2.5" rx="1" fill="#B9C2C9" /></g>,
     tablet: <g><rect x="12" y="20" width="76" height="60" rx="7" fill="#2E2E2E" stroke="#1a1a1a" strokeWidth="2" /><rect x="18" y="26" width="64" height="48" rx="3" fill="#CFEAF7" /><circle cx="50" cy="50" r="9" fill={green} /><path d="M30 64 L70 64" stroke={gold} strokeWidth="4" strokeLinecap="round" /></g>,
     pencil: <g transform="rotate(-45 50 50)"><rect x="22" y="42" width="48" height="16" fill="#F2C14E" stroke="#8A6A1F" strokeWidth="2.5" /><path d="M70 42 L84 50 L70 58 Z" fill="#E2B97A" stroke="#8A6A1F" strokeWidth="2.5" strokeLinejoin="round" /><path d="M79 47 L84 50 L79 53 Z" fill="#2E2E2E" /><rect x="14" y="42" width="8" height="16" fill="#E88A8A" stroke="#8A6A1F" strokeWidth="2.5" /><path d="M30 50 L66 50" stroke="#D99A2B" strokeWidth="2" /></g>,
+    // A red crayon (pass ML, the lesson check's second read): a red body in its paper wrapper, two thin bands on the wrapper and a
+    // blunt cone tip, at the pencil's slant, so two of them can stand for "Two red crayons from the same box match" until P137
+    // is painted. Fixed art colors on paper, the same in both themes.
+    crayon: <g transform="rotate(-45 50 50)"><rect x="14" y="42" width="58" height="16" rx="3" fill="#D9473B" stroke="#7A2620" strokeWidth="2.5" /><rect x="24" y="42" width="38" height="16" fill="#B5352B" stroke="#7A2620" strokeWidth="2" /><path d="M27 46.5 L59 46.5 M27 53.5 L59 53.5" stroke="#F2C9C2" strokeWidth="1.8" /><path d="M72 43.5 L85 48.5 Q87.5 50 85 51.5 L72 56.5 Z" fill="#D9473B" stroke="#7A2620" strokeWidth="2.5" strokeLinejoin="round" /></g>,
     // Pass KM (kindergarten social studies): a bird over a table and a cat under it, a ball near a tree with a house far up a
     // hill, a folded map with a river and a park, and a globe on its stand with land shapes that only suggest continents.
     table: <g><rect x="20" y="52" width="60" height="6" rx="2" fill={brown} /><rect x="26" y="58" width="6" height="26" fill={brown} /><rect x="68" y="58" width="6" height="26" fill={brown} /><ellipse cx="50" cy="34" rx="12" ry="8" fill={grey} /><circle cx="61" cy="28" r="5" fill={grey} /><path d="M66 28l6 2-6 2z" fill={gold} /><path d="M44 32q6-10 14-4" fill="none" stroke="#6B716A" strokeWidth="3" strokeLinecap="round" /><ellipse cx="50" cy="76" rx="12" ry="8" fill="#B07838" /><circle cx="40" cy="72" r="6" fill="#B07838" /><path d="M36 67l2-5 3 4M41 67l3-5 2 5z" fill="#B07838" /><circle cx="38" cy="72" r="1.2" fill="#2E2E2E" /><circle cx="42" cy="72" r="1.2" fill="#2E2E2E" /><path d="M62 76q8-6 6-14" fill="none" stroke="#B07838" strokeWidth="3" strokeLinecap="round" /></g>,
@@ -947,6 +953,14 @@ function JoinedPic({ figure = 'square-2tri', size = 120 }) {
   );
 }
 
+// A group that looks like more (pass ML, EARMARKS A7): a long row against a close bunch, or big circles against little ones,
+// each drawn in a frame of its own by lookVisual, so a choice keeps its look and only counting tells which has more.
+function LookGroup({ token, k = 1 }) {
+  const v = lookVisual(token);
+  return v.kind === 'dots'
+    ? <DotGroup count={v.count} size={Math.round(28 * k)} frame={v.frame} gap={Math.round(v.gap * k)} />
+    : <CountRow items={v.items} colour={v.colour} cell={Math.round(v.size * k)} frame={v.frame} gap={Math.round((v.gap || 8) * k)} />;
+}
 function DotGroup({ count, size = 34, animate = false, animKey = 0, frame = 5, snap = false, gap = 8 }) {
   // gap is the space between dots: 8 for every group, wider for the long row of the long-row picture (pass MA), narrower for
   // the five close together beneath it.
@@ -1119,14 +1133,15 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1 }
   const at = (n) => Math.round(n * k);   // a size, scaled for a question's or a lesson's own picture (k is 1 everywhere else)
   // Dots to count grow a little more than other pictures (60 pixels on a laptop, 40 on a phone), so a row of two or three fills
   // the paper the way a counting picture should (pass MH).
-  if (visual.kind === 'dots') return <div style={{ padding: '6px 0' }}><DotGroup count={visual.count} size={k > 1 ? (k >= 1.4 ? 60 : 40) : 34} frame={visual.frame || 5} snap={!!visual.snap} gap={visual.gap || 8} animate={animate} animKey={animKey} /></div>;
+  if (visual.kind === 'dots') return <div style={{ padding: '6px 0' }}><DotGroup count={visual.count} size={visual.size || (k > 1 ? (k >= 1.4 ? 60 : 40) : 34)} frame={visual.frame || 5} snap={!!visual.snap} gap={visual.gap || 8} animate={animate} animKey={animKey} /></div>;
   if (visual.kind === 'trace') return <div style={{ padding: '6px 0' }}><TraceDemo letter={visual.text} animKey={animKey} pace={visual.pace} nudge={nudge} /></div>;
   if (DIAGRAMS[visual.kind]) { const D = DIAGRAMS[visual.kind]; return <div key={animKey} style={{ padding: '6px 0' }}><D {...visual} /></div>; }
   if (visual.kind === 'numberline' && visual.from !== undefined) return <div key={animKey} style={{ padding: '6px 0' }}><NumberLinePic from={visual.from} to={visual.to} mark={visual.mark ?? null} marks={visual.marks || []} /></div>;
   if (visual.kind === 'tri') return <div key={animKey} style={{ padding: '6px 0' }}><TriPic base={visual.base} height={visual.height} area={visual.area} /></div>;
   if (visual.kind === 'para') return <div key={animKey} style={{ padding: '6px 0' }}><ParaPic base={visual.base} height={visual.height} side={visual.side} /></div>;
   if (visual.kind === 'periodic') return <div key={animKey} style={{ padding: '6px 0' }}><PeriodicPic highlight={visual.highlight || []} period={visual.period || null} group={visual.group || null} /></div>;
-  if (visual.kind === 'pic') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0', display: 'flex', justifyContent: 'center' }}><StudentPicture name={visual.name} size={at(110)} /></div>;
+  // A pic may carry a number size (pass ML): a huge whale beside a tiny fish, or a tiny bee, a middle-sized cat and a huge bear.
+  if (visual.kind === 'pic') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0', display: 'flex', justifyContent: 'center' }}><StudentPicture name={visual.name} size={at(typeof visual.size === 'number' ? visual.size : 110)} /></div>;
   if (visual.kind === 'art') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0', display: 'flex', justifyContent: 'center' }}><ColorThumb picture={visual.name} size={at(120)} thing /></div>;
   if (visual.kind === 'icon') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><IconPic name={visual.name} size={at(110)} /></div>;
   // A feeling face, or a grid of two to four of them two to a row (pass MD), each face its own drawing (FeelingFace).
@@ -1165,8 +1180,14 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1 }
     // says to look at. Every other pair still shares its frame. (Since pass MG the trap's little row names its gap, so the trap
     // takes the spaced branch above, where each half keeps its own frame; both rows fill their frames, so it draws the same.)
     const [first, second] = spaced ? [own(visual.a), own(visual.b)] : frame ? [{ ...visual.a, frame: visual.a.frame || frame, snap: stack }, { ...visual.b, frame: visual.b.frame || frame, snap: stack }] : [visual.a, visual.b];
-    const half = (v, i) => (v.kind ? <div key={`${animKey}-${i}`} className={animate ? 'edu-drift' : undefined} style={{ animationDelay: `${i * 0.5}s`, maxWidth: stack ? '100%' : '46%', transform: stack ? undefined : 'scale(0.85)' }}><Picture visual={v} note={false} bare /></div> : <Item key={i} spec={`${v.shape}-${v.colour}`} size={96} />);
-    return <div style={{ padding: '6px 0', display: 'flex', flexDirection: stack ? 'column' : 'row', justifyContent: 'center', alignItems: 'center', gap: stack ? 10 : 28 }}>{half(first, 0)}{half(second, 1)}</div>;
+    // A stacked pair whose halves keep their own spacing (the long row over a close bunch, big circles over little ones) scales
+    // as one picture (pass ML, the code check's second read): each half takes a share of the width in proportion to its drawn
+    // width, the way the row kind sizes its cells, so a narrow card (a 320-pixel phone) shrinks both rows alike and never draws
+    // one row's dots smaller than the other's. A drawn width is the group's own dot or cell size times its frame, plus its gaps.
+    const natural = (v) => { const f = v && v.kind === 'dots' ? v.count : v && v.kind === 'pattern' && v.size ? Math.max(v.frame || 5, v.items.length) : 0; return f ? f * (v.size || 34) + (f - 1) * (v.gap || 8) : 0; };
+    const together = stack && spaced && natural(first) > 0 && natural(second) > 0; const widest = Math.max(natural(first), natural(second));
+    const half = (v, i) => (v.kind ? <div key={`${animKey}-${i}`} className={animate ? 'edu-drift' : undefined} style={{ animationDelay: `${i * 0.5}s`, maxWidth: stack ? '100%' : '46%', transform: stack ? undefined : 'scale(0.85)', ...(together ? { width: `${(natural(v) / widest) * 100}%` } : null) }}><Picture visual={v} note={false} bare /></div> : <Item key={i} spec={`${v.shape}-${v.colour}`} size={96} />);
+    return <div style={{ padding: '6px 0', display: 'flex', flexDirection: stack ? 'column' : 'row', justifyContent: 'center', alignItems: 'center', gap: stack ? 10 : 28, ...(together ? { width: '100%', maxWidth: widest, margin: '0 auto' } : null) }}>{half(first, 0)}{half(second, 1)}</div>;
   }
   // A row of up to three pictures (pass MA): two owls and a fox, or a big, a middle-size and a little circle, so a line that names
   // three things shows all three. Each cell takes the same share of the width and each picture a share of its cell in proportion
@@ -1175,7 +1196,7 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1 }
   // the row already sits on the paper, and a paper card around each item would eat a little circle whole.
   if (visual.kind === 'row') {
     const items = (visual.items || []).slice(0, 3);
-    const nominal = (v) => at(v.kind === 'shape' ? (v.size === 'big' ? 140 : v.size === 'small' ? 54 : 92) : 110);   // the questions' 88, 58 and 34, scaled (and by k for a question's or a lesson's own row, pass MH)
+    const nominal = (v) => at(v.kind === 'shape' ? (v.size === 'big' ? 140 : v.size === 'small' ? 54 : 92) : typeof v.size === 'number' ? v.size : 110);   // the questions' 88, 58 and 34, scaled (and by k for a question's or a lesson's own row, pass MH)
     const most = Math.max(...items.map(nominal));
     return <div className="edu-row-pic" style={{ padding: '6px 0', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '2%' }}>{items.map((v, i) => <div key={`${animKey}-${i}`} className={animate ? 'edu-drift' : undefined} style={{ width: '31%', display: 'flex', justifyContent: 'center', animationDelay: `${i * 0.4}s` }}><div style={{ width: `${Math.round((nominal(v) / most) * 100)}%`, maxWidth: nominal(v) }}><PictureInner visual={v} /></div></div>)}</div>;
   }
@@ -1519,7 +1540,8 @@ function MoreInfoSheet({ insight, face, onClose, visual = null, young = false })
   // row is a sentence alone, so Gas never sits in a box while Solid and Liquid do not.
   const worded = [insight.answer, ...insight.wrong.map((w) => w.choice)].some((c) => typeof face(c) === 'string' && String(c).length > 3);
   const drawn = (c) => typeof face(c) !== 'string' || !worded;
-  const row = (c) => ({ display: 'grid', gridTemplateColumns: drawn(c) ? '64px 1fr' : '1fr', gap: 12, alignItems: 'center', padding: '10px 0', borderTop: `1px solid ${C.line}` });
+  const wide = (c) => /^look:/.test(String(c));   // a group that looks like more keeps its row's length and its dots' size (pass ML)
+  const row = (c) => ({ display: 'grid', gridTemplateColumns: drawn(c) && !wide(c) ? '64px 1fr' : '1fr', gap: wide(c) ? 6 : 12, alignItems: 'center', padding: '10px 0', borderTop: `1px solid ${C.line}` });
   useEffect(() => {
     const back = typeof document !== 'undefined' ? document.activeElement : null;
     const got = typeof document !== 'undefined' ? document.querySelector('[data-more-info-close] button') : null;
@@ -2138,7 +2160,7 @@ html[data-theme="dark"] .edu-slide-in { background-image: linear-gradient(90deg,
   .edu-land-star { animation: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .edu-glow, .edu-breathe, .edu-slide-in, .edu-pulse, .edu-zoom-back, .edu-stress, .edu-twinkle-star, .edu-trace-draw, .edu-rainbow, .edu-colorwash, .edu-colorwash-soft, .edu-sparkle, .edu-side path { animation: none; }
+  .edu-glow, .edu-breathe, .edu-slide-in, .edu-pulse, .edu-zoom-back, .edu-stress, .edu-twinkle-star, .edu-rainbow, .edu-colorwash, .edu-colorwash-soft, .edu-sparkle, .edu-side path { animation: none; }
   .edu-side path { stroke-dasharray: none; }
   .edu-halo, .edu-drift, .edu-cheer, .edu-wobble, .edu-wobble-chip, .edu-burst, .edu-rise, .edu-sway, .edu-star-twinkle, .edu-grow, .edu-draw, .edu-settle, .edu-settle-late, .edu-note-in { animation: none; }
   /* The stars of a right answer fly out and fade, so with motion off none shows (pass LW: a still star sat on the explanation picture). */
@@ -3852,17 +3874,39 @@ function DotsGame({ game, round }) {
     </div>
   );
 }
+// A Look Closely card's face (pass ML): the picture a First Steps lesson line draws, an animal, a flat shape (on paper in the
+// paper green, as every uncolored shape is) or a solid, sized to the card like the icons of the other picture pairs.
+function PairPicFace({ token, card = 88 }) {
+  // Each picture grows with its card (pass ML, the game check: from 768 pixels wide a card is 157 across and a 70-pixel animal
+  // filled 45 percent of it), keeping the phone's look on an 88-pixel card.
+  const k = card / 88; const [kind, name] = token.split(':');
+  if (kind === 'pic') return <StudentPicture name={name} size={Math.round(70 * k)} />;
+  if (kind === 'shape') return <ShapePic name={name} size={Math.round(58 * k)} color={B.green} />;
+  return <SolidPic name={name} size={Math.round(64 * k)} color={B.green} />;
+}
 // Pairs: cards face down, two turn over at a time, a match stays.
 function PairsGame({ game, round }) {
-  // Picture pairs for the youngest; text pairs (a fraction and its twin, a symbol and its element) for older students.
-  const cards = useMemo(() => { const rnd = lcg(round * 7919 + 13); if (game.deck) { const pairs = shuffle(rnd, PAIR_DECKS[game.deck]).slice(0, game.pairs); return shuffle(rnd, pairs.flatMap((pr, k) => [{ key: k, text: pr[0] }, { key: k, text: pr[1] }])); } const icons = shuffle(rnd, PAIR_ICONS).slice(0, game.pairs); return shuffle(rnd, icons.flatMap((ic) => [ic, ic])); }, [game, round]);
-  const [up, setUp] = useState([]); const [found, setFound] = useState([]);
-  useEffect(() => { setUp([]); setFound([]); }, [round]);
+  // Picture pairs for the youngest; text pairs (a fraction and its twin, a symbol and its element) for older students; and since
+  // pass ML a pics game's own pictures (Look Closely), dealt by pairPicsBoard in logic, from a round moved by a number drawn once
+  // each time the game opens, so the first board is not the same every visit, which a memory game would reward remembering.
+  const [opening] = useState(() => Math.floor(Math.random() * 997));
+  const cards = useMemo(() => { const rnd = lcg(round * 7919 + 13); if (game.pics) return pairPicsBoard(game.pics, round + opening, game.pairs); if (game.deck) { const pairs = shuffle(rnd, PAIR_DECKS[game.deck]).slice(0, game.pairs); return shuffle(rnd, pairs.flatMap((pr, k) => [{ key: k, text: pr[0] }, { key: k, text: pr[1] }])); } const icons = shuffle(rnd, PAIR_ICONS).slice(0, game.pairs); return shuffle(rnd, icons.flatMap((ic) => [ic, ic])); }, [game, round]);
+  const [up, setUp] = useState([]); const [found, setFound] = useState([]); const [miss, setMiss] = useState(false); const missTimer = useRef(null);
+  // The cards' width, measured, so a pics game's pictures grow with them (PairPicFace's card).
+  const gridRef = useRef(null); const [cardW, setCardW] = useState(88);
+  useEffect(() => { setUp([]); setFound([]); setMiss(false); clearTimeout(missTimer.current); }, [round]);
+  useEffect(() => () => clearTimeout(missTimer.current), []);
+  useEffect(() => { const el = gridRef.current && gridRef.current.firstElementChild; if (!el || typeof ResizeObserver === 'undefined') return undefined; const ro = new ResizeObserver(() => setCardW(el.offsetWidth || 88)); ro.observe(el); return () => ro.disconnect(); }, [cards]);
+  // A wrong pair stays up 700 ms, and on a pics board 1,200 ms with a clay edge, dashed since round three so it differs from a
+  // found pair's gold by more than color (pass ML, the game check: in 700 ms a fox and a
+  // cat looked just like a found pair); a tap during that wait on a pics board turns the two back and opens the tapped card.
   const flip = (i) => {
-    if (found.includes(i) || up.includes(i) || up.length === 2) return;
+    if (found.includes(i)) return;
+    if (up.length === 2) { if (!game.pics || !miss) return; clearTimeout(missTimer.current); setMiss(false); setUp(up.includes(i) ? [] : [i]); return; }
+    if (up.includes(i)) return;
     const pair = [...up, i]; setUp(pair);
     const same = (a, b) => (typeof a === 'string' ? a === b : a.key === b.key);
-    if (pair.length === 2) { if (same(cards[pair[0]], cards[pair[1]])) { setFound([...found, ...pair]); setUp([]); } else setTimeout(() => setUp([]), 700); }
+    if (pair.length === 2) { if (same(cards[pair[0]], cards[pair[1]])) { setFound([...found, ...pair]); setUp([]); } else { if (game.pics) setMiss(true); missTimer.current = setTimeout(() => { setUp([]); setMiss(false); }, game.pics ? 1200 : 700); } }
   };
   // The columns are pinned (2026-09-23, Mikey): a 1fr column still grows to its longest word, so four columns of
   // long cards overflowed the box once a pair turned over. minmax(0, 1fr) holds the width and a card grows taller
@@ -3870,11 +3914,11 @@ function PairsGame({ game, round }) {
   const cols = game.pairs <= 3 ? 3 : 4;
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 12 }}>
-      <div className={`edu-pairs-grid${cols === 3 ? ' edu-pairs-three' : ''}${game.deck ? ' edu-pairs-text' : ''}`} style={{ display: 'grid', gap: 10 }}>
+      <div ref={gridRef} className={`edu-pairs-grid${cols === 3 ? ' edu-pairs-three' : ''}${game.deck ? ' edu-pairs-text' : ''}`} data-pairs-cards={game.pics ? cards.join(',') : undefined} data-pairs-miss={game.pics && miss ? up.join(',') : undefined} style={{ display: 'grid', gap: 10 }}>
         {cards.map((ic, i) => { const shown = up.includes(i) || found.includes(i); return (
-          <button key={i} type="button" onClick={() => flip(i)} aria-label={shown ? (typeof ic === 'string' ? ic : ic.text) : 'Card'} className="edu-press"
-            style={{ aspectRatio: '1 / 1', minWidth: 0, minHeight: 64, borderRadius: 12, border: `2px solid ${shown ? B.green : B.ink}`, background: shown ? '#FFFFFF' : B.greenSoft, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 4, overflowWrap: 'anywhere' }}>
-            {shown ? (typeof ic === 'string' ? <IconPic name={ic} size={60} /> : <span lang="en" style={{ fontFamily: FONT, fontSize: Math.max(...ic.text.split(/\s+/).map((w) => w.length)) > 9 ? 12 : ic.text.length > 10 ? 13 : 16, fontWeight: 700, color: B.ink, padding: 2, textAlign: 'center', lineHeight: 1.2, overflowWrap: 'anywhere', hyphens: 'auto', WebkitHyphens: 'auto', minWidth: 0, maxWidth: '100%' }}>{ic.text}</span>) : <span style={{ width: 26, height: 26, borderRadius: 13, background: B.green, opacity: 0.35 }} />}
+          <button key={i} type="button" onClick={() => flip(i)} aria-label={shown ? (typeof ic === 'string' ? (game.pics ? ic.split(':')[1] : ic) : ic.text) : 'Card'} className="edu-press"
+            style={{ aspectRatio: '1 / 1', minWidth: 0, minHeight: 64, borderRadius: 12, border: `${game.pics && shown && (found.includes(i) || (miss && up.includes(i))) ? 3 : 2}px ${game.pics && miss && up.includes(i) ? 'dashed' : 'solid'} ${!shown ? B.ink : game.pics && miss && up.includes(i) ? B.clay : game.pics && found.includes(i) ? B.gold : B.green}`, background: shown ? '#FFFFFF' : B.greenSoft, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 4, overflowWrap: 'anywhere' }}>
+            {shown ? (typeof ic === 'string' ? (game.pics ? <PairPicFace token={ic} card={cardW} /> : <IconPic name={ic} size={60} />) : <span lang="en" style={{ fontFamily: FONT, fontSize: Math.max(...ic.text.split(/\s+/).map((w) => w.length)) > 9 ? 12 : ic.text.length > 10 ? 13 : 16, fontWeight: 700, color: B.ink, padding: 2, textAlign: 'center', lineHeight: 1.2, overflowWrap: 'anywhere', hyphens: 'auto', WebkitHyphens: 'auto', minWidth: 0, maxWidth: '100%' }}>{ic.text}</span>) : <span style={{ width: 26, height: 26, borderRadius: 13, background: B.green, opacity: 0.35 }} />}
           </button>); })}
       </div>
       <Done show={found.length === cards.length} />
@@ -6632,6 +6676,7 @@ function gameInstructions(game) {
   if (game.kind === 'mix') return 'A color is named at the top. Tap two paint pots to pour them into the bowl and see what they make. The right color brings its rule and Next; a wrong mix shows what it made, then clears for another try. Five colors, and the clock counts up.';
   if (game.kind === 'build') return 'Tap the words in order to build the sentence. Tap a word in the sentence to take it back, with every word after it. First the short sentence, then a longer one that says more. Three of each, and the clock counts up.';
   if (game.kind === 'fix') return 'Each sentence has one mistake: a word, a capital or a mark. Tap it to fix it, read the rule, then tap Next sentence. Five sentences; the clock counts up and stops while you read.';
+  if (game.pics) return 'Tap two cards. When the two pictures are just the same, they match and stay up. Look closely, because some pictures are almost alike!';
   if (game.deck) {
     const byDeck = { fractions: 'Every card has a twin that says the same amount another way: 1/2 and 2/4.', roots: 'Match each root to what it means: port and carry.', elements: 'Match each symbol to its element: Na and sodium.', dates: 'Match each year to what happened then.', formulas: 'Match each formula to what it finds: F = ma and force.', times: 'Match each multiplication to its answer: 6 × 7 and 42.', vocabulary: 'Match each word to its meaning.', capitals: 'Match each place to its capital.' };
     return `${byDeck[game.deck] || (String(game.deck).startsWith('science-') ? 'Match each science word to what it means: density and mass over volume.' : 'Match each card to the one that belongs with it.')} Tap two cards. A true pair stays up; a wrong pair turns back over. Find every pair.`;
@@ -6792,6 +6837,10 @@ function GameThumb({ kind, game = null }) {
   // Sort by color (pass MJ, the game check: every sort tile drew the size game's big and small green circles): a red circle and
   // a blue one of the same size over a red box and a blue box.
   if (game && game.kind === 'sort' && game.by === 'color') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><circle cx="12" cy="16" r="7" fill={SWATCH.red} /><circle cx="28" cy="16" r="7" fill={SWATCH.blue} /><rect x="3" y="28" width="15" height="8" rx="2" fill="none" stroke={SWATCH.red} strokeWidth="1.6" strokeDasharray="3 2" /><rect x="22" y="28" width="15" height="8" rx="2" fill="none" stroke={SWATCH.blue} strokeWidth="1.6" strokeDasharray="3 2" /></svg>;
+  // Look Closely's tile (pass ML, the alignment read): two cards turned up, the fox and the cat, the near pair the game asks a
+  // child to tell apart, so a pre-reader can find it by its picture beside kindergarten's Pairs, whose tile is the cards alone.
+  // The cards' white faces and the animals' colors are the game board's own, the same in both themes.
+  if (game && game.kind === 'pairs' && game.pics) return <svg data-pics-thumb="" viewBox="0 0 40 40" width="100%" height="100%" aria-hidden="true">{[['fox', 4], ['cat', 21]].map(([n, x]) => <g key={n}><rect x={x} y="8" width="15" height="24" rx="2.5" fill="#FFFFFF" stroke={k} strokeWidth="1.2" /><g transform={`translate(${x + 0.5} 12.5)`}><StudentPicture name={n} size={14} /></g></g>)}</svg>;
   if (game && game.deck) { const label = { fractions: '½', roots: 'port', elements: 'Na', dates: '1776', formulas: 'F=ma', times: '6×7', vocabulary: 'Aa', capitals: 'TX' }[game.deck] || 'Aa'; return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="6" width="14" height="18" rx="2" fill={C.paperBoard} stroke={k} strokeWidth="1.5" /><rect x="22" y="16" width="14" height="18" rx="2" fill={B.greenSoft} stroke={k} strokeWidth="1.5" /><text x="11" y="18" fontFamily={FONT} fontSize={label.length > 3 ? 5 : 8} fontWeight="700" textAnchor="middle" fill={B.ink}>{label}</text></svg>; }
   const body = {
     dots: <g><polyline points="8,32 20,8 32,32 6,17 34,17 8,32" fill="none" stroke={B.green} strokeWidth="2" strokeLinejoin="round" />{[[8, 32], [20, 8], [32, 32], [6, 17], [34, 17]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r="3" fill={i === 0 ? B.gold : C.paperBoard} stroke={k} strokeWidth="1" />)}</g>,
@@ -10609,7 +10658,7 @@ function EduSphereScreens() {
     const dotFrame = q.type === 'choice' && Array.isArray(q.choices) && q.choices.length > 0 && q.choices.every((x) => /^dots:\d+$/.test(x)) ? Math.min(5, Math.max(...q.choices.map((x) => Number(x.split(':')[1])))) : 0;
     const shownVisual = q.visual && dotFrame && q.visual.kind === 'pattern' && q.visual.size ? { ...q.visual, frame: dotFrame, snap: true } : q.visual;
     // How a choice is drawn, in its button and, smaller, in the More Info sheet (pass MH): one function, so the two never differ.
-    const choiceFace = (c, k = 1) => (/^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={Math.round(28 * k)} frame={dotFrame || 5} snap={dotFrame > 0} /> : /^shape:/.test(c) ? <ShapePic name={c.split(':')[1]} size={Math.round((c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64) * k)} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={Math.round(14 * k)} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={Math.round(18 * k)} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={Math.round(14 * k)} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6).split('#')[0]} size={Math.round(64 * k)} /> : /^shares:/.test(c) ? <SharesPic shape={c.split(':')[1]} cut={c.split(':')[2]} shaded={Number(c.split(':')[3] || 0)} size={Math.round(72 * k)} /> : /^dice:/.test(c) ? <DicePic pips={Number(c.split(':')[1].split('#')[0])} size={Math.round(64 * k)} /> : /^pic:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><StudentPicture name={c.slice(4).split('#')[0]} size={Math.round(72 * k)} /></span> : /^art:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><ColorThumb picture={c.slice(4).split('#')[0]} size={Math.round(84 * k)} thing /></span> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={Math.round(64 * k)} /> : /^face:/.test(c) ? <FeelingFace feeling={c.slice(5).split('#')[0]} size={Math.round(84 * k)} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={Math.round(64 * k)} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={Math.round(64 * k)} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={Math.round(80 * k)} /> : /^digital:/.test(c) ? <DigitalPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={Math.round(96 * k)} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={Math.round(12 * k)} /> : c);
+    const choiceFace = (c, k = 1) => (/^look:/.test(c) ? <LookGroup token={c} k={k} /> : /^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={Math.round(28 * k)} frame={dotFrame || 5} snap={dotFrame > 0} /> : /^shape:/.test(c) ? <ShapePic name={c.split(':')[1]} size={Math.round((c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64) * k)} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={Math.round(14 * k)} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={Math.round(18 * k)} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={Math.round(14 * k)} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6).split('#')[0]} size={Math.round(64 * k)} /> : /^shares:/.test(c) ? <SharesPic shape={c.split(':')[1]} cut={c.split(':')[2]} shaded={Number(c.split(':')[3] || 0)} size={Math.round(72 * k)} /> : /^dice:/.test(c) ? <DicePic pips={Number(c.split(':')[1].split('#')[0])} size={Math.round(64 * k)} /> : /^pic:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><StudentPicture name={c.slice(4).split('#')[0]} size={Math.round(72 * k)} /></span> : /^art:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><ColorThumb picture={c.slice(4).split('#')[0]} size={Math.round(84 * k)} thing /></span> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={Math.round(64 * k)} /> : /^face:/.test(c) ? <FeelingFace feeling={c.slice(5).split('#')[0]} size={Math.round(84 * k)} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={Math.round(64 * k)} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={Math.round(64 * k)} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={Math.round(80 * k)} /> : /^digital:/.test(c) ? <DigitalPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={Math.round(96 * k)} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={Math.round(12 * k)} /> : c);
     // More Info (pass MH): why each wrong choice does not fit, the one picked now first, in words that remember earlier rounds.
     const pickedNow = checked ? (readAloud ? [...wrongPicks, ...(wasCorrect ? [] : [String(given)])] : (wasCorrect ? [] : [String(given)])) : [];
     const insight = q.type === 'choice' ? choiceInsight(q, pickedNow, qHistory) : null;
@@ -10781,7 +10830,7 @@ function EduSphereScreens() {
         {/* For a pre-reader, More Info waits under the next button after the right tap (pass MH, the alignment read): it is for the
             grown-up beside the child, so it never pushes the child's own button down. */}
         {readAloud && checked && wasCorrect && insight && insight.any && <p style={{ margin: '10px 0 0', textAlign: 'center' }}><button type="button" data-more-info-link="" onClick={() => setMoreInfo(true)} style={{ ...linkBtn, fontSize: 14 }}>More Info</button></p>}
-        {readAloud && checked && <ScrollCue target="[data-practice-next]" whole watch={`${qIndex}-${wasCorrect}-${misses}`} />}
+        {readAloud && (checked || given !== '') && <ScrollCue target="[data-practice-next]" whole watch={`${qIndex}-${checked}-${wasCorrect}-${misses}`} />}
         {record.preview && <div style={{ marginTop: 10 }}><Btn full kind="secondary" onClick={() => { setChecked(false); setGiven(''); setOrderPicked([]); if (qIndex + 1 < questions.length) { setQIndex(qIndex + 1); setQShownAt(Date.now()); } else { setScreen('overview'); } }}>Skip (walk-through)</Btn></div>}
         <SilentNote shown={heardNote} />
       </div></div>

@@ -274,9 +274,10 @@ await page.getByRole('button', { name: /S-56$/ }).first().click(); await page.wa
 // The result says the whole course is done; the lesson's own story comes first, as the round's reward; then the course-finished
 // page, with its confetti and star, its spoken line, the big gold book and the way home (pass MF, Mikey's answer to Q22: "Home
 // and it can be a button that says Return Home"), since pass MG one wide button across the bottom with no drawing (Mikey: "No
-// home icon, just a home button across the bottom"); the book reads the course's story aloud on the self-reading page, and that
-// page's button goes home, where the next course's open lesson waits. Afterwards the shelf offers the course's story
-// again, and a round on a lesson that already had its star celebrates nothing.
+// home icon, just a home button across the bottom"); the book reads the course's story aloud on the self-reading page (since
+// pass ML its next story, The shadow on the tent, since this is the last star's celebration), and that page's button goes home,
+// where the next course's open lesson waits. Afterwards the shelf offers both long stories, and a round on a lesson that
+// already had its star celebrates nothing.
 { await page.evaluate(() => window.__eduTest.goHome()); await screenIs('educator-pick'); await page.waitForTimeout(400); await tapIf('Got it');
   await page.getByRole('button', { name: 'Add someone new' }).first().click(); await page.waitForTimeout(300);
   await page.fill('input[placeholder="School-issued ID"]', 'S-57'); await page.getByRole('button', { name: /^Early years/ }).first().click(); await page.waitForTimeout(200);
@@ -295,9 +296,10 @@ await page.getByRole('button', { name: /S-56$/ }).first().click(); await page.wa
   const cheer = await page.evaluate(() => ({ confetti: document.querySelectorAll('.edu-confetti').length, star: !!document.querySelector('.edu-land-star'), labels: [...document.querySelectorAll('button')].map((b) => b.getAttribute('aria-label')).filter(Boolean), said: window.__spoken.join(' '), words: document.querySelector('[data-course-done]') ? document.querySelector('[data-course-done]').textContent : '', page: document.body.innerText.replace(/\s+/g, ' ') }));
   await snap('4-course-done');
   // Since pass MH the last star is the second celebration: a child who hears it hears every star (the first, every lesson passed,
-  // came on an earlier day in the seeded history, with no story read, so the book's line is the plain one).
-  const cheerSaid = `Hooray! You earned every star in ${courseTitle}! Here is its story. Tap the gold book to hear it, or tap the green button at the bottom to go home.`;
-  ok('the course-finished page shows its confetti and star, names the course aloud as it opens and says what the two taps do, and offers the big gold book and the way home, with only Back and the speaker beside them', cheer.confetti >= 24 && cheer.star && cheer.said.includes(cheerSaid) && cheer.labels.join('|') === `Back|Say it again|Hear the story of ${courseTitle}|Return Home` && cheer.words.includes(`Hooray! You earned every star in ${courseTitle}!`) && cheer.words.includes('Here is its story.'), cheer);
+  // came on an earlier day in the seeded history). Since pass ML First Steps has its next long story (The shadow on the tent), so
+  // this celebration opens it, said as a new story (celebrationStory), and its book is the next story of First Steps.
+  const cheerSaid = `Hooray! You earned every star in ${courseTitle}! Here is a new story. Tap the gold book to hear it, or tap the green button at the bottom to go home.`;
+  ok('the course-finished page shows its confetti and star, names the course aloud as it opens and says what the two taps do, and offers the big gold book of the next story and the way home, with only Back and the speaker beside them', cheer.confetti >= 24 && cheer.star && cheer.said.includes(cheerSaid) && cheer.labels.join('|') === `Back|Say it again|Hear the next story of ${courseTitle}|Return Home` && cheer.words.includes(`Hooray! You earned every star in ${courseTitle}!`) && cheer.words.includes('Here is a new story.'), cheer);
   ok('the book wears Hear the story under it and the way home says Return Home (Mikey, Q22: a button that says Return Home)', cheer.page.includes('Hear the story') && cheer.page.includes('Return Home') && !cheer.labels.includes('Keep going'), cheer.page.slice(0, 300));
   // The way home (pass MG, Mikey: "No home icon, just a home button across the bottom"): one wide button, words and no drawing,
   // the page's last control, under the book and across the card's width; the book stays the prominent round tap above it.
@@ -306,7 +308,7 @@ await page.getByRole('button', { name: /S-56$/ }).first().click(); await page.wa
   await page.evaluate(() => { window.__spoken = []; });
   await page.locator('[data-course-story-book]').click(); await screenIs('course-story'); await page.waitForTimeout(1200);
   const saidCs = await page.evaluate(() => window.__spoken.slice());
-  ok("the book opens the course's story, which reads itself aloud from its title on the self-reading page, with the same way home and no arrow", saidCs[0] === `${ST.COURSE_STORIES[FINISH].title}.` && (await page.locator('[data-read-aloud-story="reward"][data-course-story-page]').count()) === 1 && (await page.getByLabel('Return Home').count()) === 1 && (await page.getByLabel('Keep going').count()) === 0 && (await page.getByRole('button', { name: 'Back to my courses' }).count()) === 0, saidCs.slice(0, 2));
+  ok("the book opens the course's next story, which reads itself aloud from its title on the self-reading page, with the same way home and no arrow", saidCs[0] === `${ST.MASTERY_STORIES[FINISH].title}.` && (await page.locator('[data-read-aloud-story="reward"][data-course-story-page]').count()) === 1 && (await page.getByLabel('Return Home').count()) === 1 && (await page.getByLabel('Keep going').count()) === 0 && (await page.getByRole('button', { name: 'Back to my courses' }).count()) === 0, saidCs.slice(0, 2));
   await settle(); await page.getByLabel('Return Home').click(); await page.waitForTimeout(900);
   const after = await screen();
   // The celebration ends at home (pass MF, Mikey's answer to Q22), where the course the result named (Next: First Sounds and
@@ -319,8 +321,8 @@ await page.getByRole('button', { name: /S-56$/ }).first().click(); await page.wa
   await page.evaluate(() => window.__eduTest.goTo('overview')); await page.waitForTimeout(600);
   const fold3 = page.getByRole('button', { name: "Let's Read", exact: true });
   if ((await fold3.count()) && (await fold3.first().getAttribute('aria-expanded')) !== 'true') { await fold3.first().click(); await page.waitForTimeout(400); }
-  const shelf = await page.locator('[data-course-story-book], [data-heard-story] button').evaluateAll((bs) => bs.map((b) => b.getAttribute('aria-label')));
-  ok("afterwards the shelf offers the course's story again as a gold book, and the reward story heard today is the newest lesson story", shelf[0] === hearAgain && shelf[1] === `Hear ${L.titleCase(ST.STORIES[almost.lastLesson].title)} again`, shelf);
+  const shelf = await page.locator('[data-course-story-book], [data-mastery-story-book], [data-heard-story] button').evaluateAll((bs) => bs.map((b) => b.getAttribute('aria-label')));
+  ok("afterwards the shelf offers both long stories as gold books, the first not yet heard and the next one again, and the reward story heard today is the newest lesson story", shelf[0] === hearIt && shelf[1] === `Hear ${L.titleCase(ST.MASTERY_STORIES[FINISH].title)} again` && shelf[2] === `Hear ${L.titleCase(ST.STORIES[almost.lastLesson].title)} again`, shelf);
   await passRound(almost.lastLesson);
   const again = await text();
   ok('a round on a lesson that already had its star shows a plain well done, and its arrow goes on without a second celebration', !again.includes('whole course') && (await page.getByLabel('Keep going').count()) === 1, again.slice(0, 120));

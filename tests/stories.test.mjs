@@ -277,9 +277,10 @@ for (const [, cs, id] of LONG_ENTRIES) {
 // refined standard, leave no paragraph untagged and close on [slowly, warmly] alone; elsewhere the untagged paragraphs (55) and the
 // early-years morals that are not [slowly, warmly] alone (14) may only fall, as each course is read. Since pass MK both pre-K 3
 // courses are held (Listen and Point's next long story closed on [slowly, warmly] and then [gently]), and the morals are 13.
+// Since pass ML First Steps is held the same way (the alignment read).
 { const UNTAGGED_LIMIT = 55; const MORALS_LIMIT = 13; const EARLY = new Set(['PK3', 'PK4', 'K', '1', '2']);
   const gradeOf = (id) => { const c = L.COURSES.find((x) => x.id === id || x.modules.some((m) => m.id === id)); return c ? c.grade : null; };
-  const vfs = new Set(['very-first-steps-pk3', 'listen-and-point-pk3'].flatMap((cid) => [`course:${cid}`, `mastery:${cid}`, ...((L.COURSES.find((c) => c.id === cid) || { modules: [] }).modules.map((m) => m.id))]));
+  const vfs = new Set(['very-first-steps-pk3', 'listen-and-point-pk3', 'first-steps-pk'].flatMap((cid) => [`course:${cid}`, `mastery:${cid}`, ...((L.COURSES.find((c) => c.id === cid) || { modules: [] }).modules.map((m) => m.id))]));
   const all = [...Object.entries(STORIES).map(([id, s]) => [id, s, gradeOf(id)]), ...Object.entries(COURSE_STORIES).map(([id, s]) => [`course:${id}`, s, gradeOf(id)]), ...Object.entries(MASTERY_STORIES).map(([id, s]) => [`mastery:${id}`, s, gradeOf(id)])];
   const over = []; const untagged = []; const morals = []; const vfsBad = [];
   for (const [id, s, g] of all) {
@@ -287,18 +288,51 @@ for (const [, cs, id] of LONG_ENTRIES) {
     a.forEach((p, i) => { const n = (p.match(/\[[^\]]+\]/g) || []).length; if (n > 4) over.push(`${id} ${i}`); if (n === 0) { untagged.push(`${id} ${i}`); if (vfs.has(id)) vfsBad.push(`${id} ${i} untagged`); } });
     if (EARLY.has(g)) { const last = a[a.length - 1]; const tags = last.match(/\[[^\]]+\]/g) || []; if (!(tags.length === 1 && last.startsWith('[slowly, warmly]'))) { morals.push(id); if (vfs.has(id)) vfsBad.push(`${id} moral`); } }
   }
-  ok('no story paragraph carries more than four tags, and pre-K 3\'s two courses leave none untagged and close on [slowly, warmly] alone', over.length === 0 && vfsBad.length === 0, [...over, ...vfsBad].slice(0, 6).join('; '));
+  ok('no story paragraph carries more than four tags, and the reviewed pre-K courses (pre-K 3\'s two and, since pass ML, First Steps) leave none untagged and close on [slowly, warmly] alone', over.length === 0 && vfsBad.length === 0, [...over, ...vfsBad].slice(0, 6).join('; '));
   ok(`untagged paragraphs (${untagged.length}) and early-years morals not [slowly, warmly] alone (${morals.length}) stay at ${UNTAGGED_LIMIT} and ${MORALS_LIMIT} or fewer, falling as each course is read`, untagged.length <= UNTAGGED_LIMIT && morals.length <= MORALS_LIMIT, morals.slice(0, 6).join('; ')); }
 
+// The tag floor's one beat (pass ML, the alignment read): "a paragraph of one beat, one sentence or one action and the line it
+// leads to, takes one" (RULES-AUDIT section 4), and round two had read a sentence that turns at its and as two beats, so ten
+// paragraphs of the reviewed pre-K courses carried two tags. In those courses a paragraph of one sentence, the moral aside,
+// carries one tag at most; an action and the line it leads to is the story brief's to read.
+{ const { sentencesOf } = await import('../tools/story-flow.mjs');
+  const held = new Set(['very-first-steps-pk3', 'listen-and-point-pk3', 'first-steps-pk'].flatMap((cid) => [`course:${cid}`, `mastery:${cid}`, ...((L.COURSES.find((c) => c.id === cid) || { modules: [] }).modules.map((m) => m.id))]));
+  const all = [...Object.entries(STORIES), ...Object.entries(COURSE_STORIES).map(([id, s]) => [`course:${id}`, s]), ...Object.entries(MASTERY_STORIES).map(([id, s]) => [`mastery:${id}`, s])];
+  const twoTags = []; let read = 0;
+  for (const [id, s] of all) { if (!held.has(id) || !s.audio) continue; const a = [].concat(s.audio);
+    s.words.forEach((w, i) => { if (i === s.words.length - 1 || sentencesOf(w).length !== 1) return; read += 1; if (((a[i] || '').match(/\[[^\]]+\]/g) || []).length > 1) twoTags.push(`${id} ${i + 1}`); }); }
+  ok(`in the reviewed pre-K courses a paragraph of one sentence takes one tag, the tag floor's one beat (${read} read)`, read >= 10 && twoTags.length === 0, twoTags.join('; ')); }
+// A one-off name a voice says like a letter's name (pass ML, the story check: Bea, heard as bee, the course's tiny animal, and as
+// B, became Lucy in First Steps' Patterns). No early-years story names a child Bea, Dee, Jay, Kay, Elle, Vee or Zee.
+{ const EARLY = new Set(['PK3', 'PK4', 'K', '1', '2']); const LETTERISH = /\b(Bea|Dee|Jay|Kay|Elle|Vee|Zee)\b/;
+  const gradeOf = (id) => { const c = L.COURSES.find((x) => x.id === id || x.modules.some((m) => m.id === id)); return c ? c.grade : null; };
+  const all = [...Object.entries(STORIES), ...Object.entries(COURSE_STORIES), ...Object.entries(MASTERY_STORIES)];
+  const early = all.filter(([id]) => EARLY.has(gradeOf(id)));
+  const named = early.filter(([, s]) => LETTERISH.test([s.title, s.about, ...(s.words || [])].join(' '))).map(([id]) => id);
+  ok(`no early-years story names a child with a letter's name (Bea, Dee, Jay, Kay, Elle, Vee, Zee; ${early.length} read)`, early.length >= 200 && named.length === 0, named.join(', ')); }
 // Short runs across a paragraph break (pass MK, the story check): the flow rules read inside a paragraph, so three short sentences
 // could still run across a break. crossBreakRuns (tools/story-flow.mjs) finds them with the flow tool's own rules; pre-K 3 has
-// none, and the early years' 15 may only fall (node tools/story-flow-audit.mjs lists them).
-{ const { crossBreakRuns } = await import('../tools/story-flow.mjs'); const RUNS_LIMIT = 15; const EARLY = new Set(['PK3', 'PK4', 'K', '1', '2']);
+// none, and the early years' 15 may only fall (node tools/story-flow-audit.mjs lists them). 14 since pass ML (First Steps' read).
+{ const { crossBreakRuns } = await import('../tools/story-flow.mjs'); const RUNS_LIMIT = 14; const EARLY = new Set(['PK3', 'PK4', 'K', '1', '2']);
   const gradeOf = (id) => { const c = L.COURSES.find((x) => x.id === id || x.modules.some((m) => m.id === id)); return c ? c.grade : null; };
   const all = [...Object.entries(STORIES).map(([id, s]) => [id, s]), ...Object.entries(COURSE_STORIES).map(([id, s]) => [id, s, `course:${id}`]), ...Object.entries(MASTERY_STORIES).map(([id, s]) => [id, s, `mastery:${id}`])];
   const runs = []; for (const [id, s, label] of all) { const g = gradeOf(id); if (EARLY.has(g)) for (const r of crossBreakRuns(s.words)) runs.push([g, `${label || id} ${r.map((i) => i + 1).join('-')}`]); }
   const pk3 = runs.filter(([g]) => g === 'PK3');
   ok(`short runs across a paragraph break: pre-K 3 has none, and the early years' ${runs.length} stay at ${RUNS_LIMIT} or fewer`, pk3.length === 0 && runs.length <= RUNS_LIMIT, [...pk3, ...runs].slice(0, 6).map(([g, x]) => `${g} ${x}`).join('; ')); }
+// Even stretches and Then after Then across a paragraph break (pass ML, the story check's second read): the brief reads all three
+// flow rules across a break, and crossBreakEven (tools/story-flow.mjs) is the tool for the other two. A course reviewed at the
+// refined standard joins REVIEWED_FLOW and holds none; the rest of the early years stay under EVEN_LIMIT, which only falls.
+{ const { crossBreakEven } = await import('../tools/story-flow.mjs'); const EVEN_LIMIT = 66; const EARLY = new Set(['PK3', 'PK4', 'K', '1', '2']);
+  const REVIEWED_FLOW = new Set(['very-first-steps-pk3', 'listen-and-point-pk3', 'first-steps-pk']);
+  const courseOf = (id) => L.COURSES.find((x) => x.id === id || x.modules.some((m) => m.id === id));
+  const all = [...Object.entries(STORIES).map(([id, s]) => [id, s]), ...Object.entries(COURSE_STORIES).map(([id, s]) => [id, s, `course:${id}`]), ...Object.entries(MASTERY_STORIES).map(([id, s]) => [id, s, `mastery:${id}`])];
+  const even = []; const held = [];
+  for (const [id, s, label] of all) { const c = courseOf(id); if (!c || !EARLY.has(c.grade)) continue; for (const e of crossBreakEven(s.words)) { const row = `${label || id} ${e.rule} ${e.paras.map((i) => i + 1).join('-')}`; even.push(row); if (REVIEWED_FLOW.has(c.id)) held.push(row); } }
+  ok(`even stretches and Then after Then across a paragraph break: the reviewed pre-K courses have none, and the early years' ${even.length} stay at ${EVEN_LIMIT} or fewer`, held.length === 0 && even.length <= EVEN_LIMIT, [...held, ...even].slice(0, 6).join('; '));
+  // The tool's own near misses: the stretch round two found, and the same paragraphs once a sentence of the four is lengthened.
+  const near = ['One.', 'The last number you say tells how many, said his teacher. You said three, so there are three stones in your row!', 'Mike put the rest back on the path where he found them. Back in class, he dropped his three in the counting jar.', 'Moral.'];
+  const fixed = ['One.', near[1], 'Mike put all the rest back on the path, right where he had found them. Back in class, he dropped his three in the counting jar.', 'Moral.'];
+  ok('crossBreakEven finds a stretch that crosses a break, and none once one sentence of it is lengthened', crossBreakEven(near).length === 1 && crossBreakEven(fixed).length === 0 && crossBreakEven(['Then we ran.', 'Then we sat down.', 'Moral.']).length === 1); }
 
 // No two stories share a title (pass MJ, the story check: pre-K 3's Two buckets shared kindergarten's, so the Story Log and the book
 // listed two stories one name). Seven shared titles remain (EARMARKS A24); the number may only fall, and a renamed story comes off.

@@ -6,7 +6,7 @@
 // the voice direction for its age band. Every clip, and every whole story, stays far under Eleven v4's 10,000 characters.
 // Run: node tools/audio-ledger.mjs > docs/AUDIO-LEDGER.md   (it also writes docs/AUDIO-LEDGER.csv, which tools/audio-generate.mjs reads)
 import { writeFileSync } from 'node:fs';
-import { COURSES, readAloudScript } from '../src/logic.mjs';
+import { COURSES, readAloudScript, SENTENCE_BREAK } from '../src/logic.mjs';
 import { STORIES, COURSE_STORIES, MASTERY_STORIES } from '../src/stories.mjs';
 
 // Voices by age (Mikey, pass JH). The directions are short on purpose: one opens every clip, and ElevenLabs counts tags as characters.
@@ -21,7 +21,7 @@ export const DIRECTION = {
   title: '[warm]',
   question: '[warm, pleasant, mildly upbeat]',
 };
-const sentencesOf = (t) => String(t || '').split(/(?<=[.!?])\s+/).filter(Boolean);   // the same split the app uses (src/ui.jsx)
+const sentencesOf = (t) => String(t || '').split(SENTENCE_BREAK).filter(Boolean);   // the same split the app uses (src/ui.jsx, SENTENCE_BREAK since pass MN)
 const rows = [];
 const add = (key, kind, source, grade, text, plain, group) => rows.push({ key, kind, source, grade: String(grade), voice: band(grade) === 'early' ? 'young' : 'main', text, plain, group });
 // Pre-K first, then up (the review's order), so the ledger reads in the order the review tags it.
@@ -45,12 +45,17 @@ for (const c of courses) {
   }
 }
 const csv = (v) => `"${String(v).replace(/"/g, '""')}"`;
-writeFileSync(new URL('../docs/AUDIO-LEDGER.csv', import.meta.url), ['key,kind,source,grade,voice,group,characters,text', ...rows.map((r) => [r.key, r.kind, r.source, r.grade, r.voice, r.group, r.text.length, r.text].map(csv).join(','))].join('\n') + '\n');
+// The CSV this tool writes, exported so the docs sync test can hold docs/AUDIO-LEDGER.csv to the code (pass MN, round three: round
+// one's words stayed in it after the lessons changed, and tools/audio-generate.mjs records from it). It writes only when run alone,
+// read by its own name with endsWith, so a folder with a space in its path still works and an import writes nothing.
+export const LEDGER_CSV = ['key,kind,source,grade,voice,group,characters,text', ...rows.map((r) => [r.key, r.kind, r.source, r.grade, r.voice, r.group, r.text.length, r.text].map(csv).join(','))].join('\n') + '\n';
+const runAlone = !!process.argv[1] && process.argv[1].endsWith('audio-ledger.mjs');
+if (runAlone) writeFileSync(new URL('../docs/AUDIO-LEDGER.csv', import.meta.url), LEDGER_CSV);
 const longest = Math.max(...rows.map((r) => r.text.length));
 const groups = new Map(); for (const r of rows) groups.set(r.group, (groups.get(r.group) || 0) + r.text.length);
 const tagged = Object.values(STORIES).filter((s) => s.audio).length + Object.values(COURSE_STORIES).filter((s) => s.audio).length + Object.values(MASTERY_STORIES).filter((s) => s.audio).length;
 const chars = rows.reduce((a, r) => a + r.text.length, 0);
-console.log(`# Audio ledger
+if (runAlone) console.log(`# Audio ledger
 
 Generated ${new Date().toISOString().slice(0, 10)} by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. ${rows.length} clips, ${chars.toLocaleString('en-US')} characters in all; the longest clip is ${longest} characters and the longest whole story ${Math.max(...groups.values()).toLocaleString('en-US')}, far under Eleven v4's 10,000 a request. ${tagged} stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 

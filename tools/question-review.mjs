@@ -40,7 +40,7 @@ function articleFor(numberText) {
 export function wordingFlags(q) {
   const flags = [];
   const prompt = String(q.prompt || '');
-  const lastSentence = prompt.split(/(?<=[.?!])\s+(?=[A-Z0-9"'(])/).pop().trim();
+  const lastSentence = prompt.split(/(?<=[.?!])(?<!\b(?:Mr|Mrs|Ms|Dr|Jr)\.)(?<!\b[A-Z][a-z]+ [A-Z]\.)(?<!\b[A-Z]\. [A-Z]\.)(?!(?<=(?:^|[\s("“])[A-Z]\.)\s+[A-Z]\.(?:\s|$))\s+(?=[A-Z0-9"'(])/).pop().trim();   // a title before a name never ends one (pass MN)
   const lastWords = lastSentence.replace(/[?.!,;:]/g, ' ').trim().split(/\s+/).filter(Boolean);
   const wholeAsk = lastWords.length >= 3 && /\b(what|how|where|whom|why)\?$/i.test(lastSentence);
   if (q.type !== 'writing' && q.type !== 'trace' && /\?$/.test(lastSentence) && !/=/.test(prompt) && !wholeAsk && lastWords.length <= 4 && !VERBS.test(lastSentence) && !/^(who|what|which|where|when|why|how)\b/i.test(lastSentence)) flags.push('fragment');

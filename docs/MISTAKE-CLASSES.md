@@ -8,7 +8,7 @@ How to use it: the trust pyramid (RULES-AUDIT section 9) puts a new rule first i
 
 | Class, in rank order | Passes | Strongest check in pass ML | Machine? | Proposed check | Since pass MM |
 |---|---|---|---|---|---|
-| 1. Unsafe scene or experiment for a young child | 10: all but MI, MK | test for pre-K 3 experiments only (tests/logic.test.mjs) and Wonder outdoors; stories, pictures: brief | partly | Read the experiments' choking list in every pre-K story paragraph and ledger row; fail a hit SAFETY_READ does not list with a reason. Prototype: 8 story hits, all already read. Near misses: "big red beads" (listed); a ball "as big as an orange". FP low; a broad hazard list hit 159 benign paragraphs. | Since pass MM, for choking: the stories test reads its list in every pre-K story and picture row, and a hit passes only with its reason in SAFETY_READ, and since round two every pre-K lesson's own lines too. Water, height, roads and night stay the briefs'. |
+| 1. Unsafe scene or experiment for a young child | 10: all but MI, MK (12 of 14 with MM and MN) | test for pre-K 3 experiments only (tests/logic.test.mjs) and Wonder outdoors; stories, pictures: brief | partly | Read the experiments' choking list in every pre-K story paragraph and ledger row; fail a hit SAFETY_READ does not list with a reason. Prototype: 8 story hits, all already read. Near misses: "big red beads" (listed); a ball "as big as an orange". FP low; a broad hazard list hit 159 benign paragraphs. | Since pass MM, for choking: the stories test reads its list in every pre-K story and picture row, and a hit passes only with its reason in SAFETY_READ, and since round two every pre-K lesson's own lines too. Since pass MN, for pictures: the stories test reads every early-years picture row for a child near a height, water or a road with no grown-up in the prompt, passing a hit only with its reason in HEIGHT_READ (kindergarten to grade 2's 31 wait by name, EARMARKS A38). Water, height, roads and night in a story's words, and night in a picture, stay the briefs'. |
 | 2. Wrong or overgeneralized fact | 9: all but ME, MI, MK | brief | partly | List unhedged generic sentences ("A bird has wings, so it can fly") in early lines and short voices; fail one not signed off with its source. Prototype: 200 in early lesson lines, 23 in reviewed courses. Near misses: "Many frogs are green"; "A triangle has three sides". A reading list, not a verdict. | Waiting. |
 | 3. Record misstates its source (count, claim, quote) | 12: all | test, partial (tests/docs-sync.test.mjs) | yes for counts; partly for quotes | Fill every number and heading pass in HANDOFF, NEW-CHAT, RULES-AUDIT and EARMARKS from code, as tools/audit-sentences.mjs does (final reads corrected A22's hand-written count in MH, MK and ML); quote Mikey only from his saved messages. DECISIONS history is never regenerated. | Waiting. |
 | 4. A fix broke something else | 12: all | brief (second reads) | partly | tools/field-diff.mjs: every data field changed since the frozen copy must be declared by the pass (MH dropped 40 long voices; MB nearly lost 144 rows); rerun every falling ceiling after each round. Near misses: a declared rewrite; a regenerated CSV. | Since pass MM, in part: tools/content-snapshot.mjs and tools/content-diff.mjs list every keyed item a pass changed since the frozen copy, outside its scope first, and the final read starts from that list (every bank read to 6,400 seeds, or to 76,800 for one of fewer than 1,000 questions). A declared list that a test holds waits. |
@@ -26,10 +26,10 @@ How to use it: the trust pyramid (RULES-AUDIT section 9) puts a new rule first i
 
 ## (b) The other classes
 
-- Words a child hears wrongly or was never taught (8: MC MD ME MF MG MH MJ ML; tests/logic.test.mjs; tests/stories.test.mjs): one lexicon over all early heard text.
+- Words a child hears wrongly or was never taught (8: MC MD ME MF MG MH MJ ML, and MN since; tests/logic.test.mjs; tests/stories.test.mjs): one lexicon over all early heard text. Since pass MN the stories test fails almost or nearly before a past verb in an early-years story ("Gabe almost giggled" came back from pass MD), safe-online-k waiting.
 - Wonder voice off its person or repeating another (8: MA MB MF MG MH MJ MK ML; tests/logic.test.mjs): flag shared content and borrowed frames (prototype: 7 pairs, 3 borrowings, about half real).
 - Layout that does not fit (9: MA MB MD ME MF MG MH MI ML; tests/e2e/question-screens.mjs): one overflow and next-control sweep at four sizes.
-- Checked in one condition only (7: MB MC ME MG MH MI MK; brief): one browser harness across theme, motion and width, with a voice that reports speaking. Since pass MM the lesson cue's check reads both themes (written for the light one first, it passed the old code, since the lines it was wrong on were the dark theme's), Find the Letter's waits are checked with a voice that never ends a line, and the checks have been run from a folder with a space in its path.
+- Checked in one condition only (7: MB MC ME MG MH MI MK, and MN since; brief): one browser harness across theme, motion and width, with a voice that reports speaking. Since pass MM the lesson cue's check reads both themes (written for the light one first, it passed the old code, since the lines it was wrong on were the dark theme's), Find the Letter's waits are checked with a voice that never ends a line, and the checks have been run from a folder with a space in its path. Since pass MN the trace checks sway along the drawn curve, since jitter on the line through a shape's points (one condition of a finger) passed a forward trace a sway cleared.
 - A person's look missing or changing (7: MD MF MG MH MJ MK ML; tests/ledger.test.mjs): a LOOKS table per story, held verbatim in each row.
 - Folded prompt says the wrong thing (7: MC ME MF MG MJ MK ML; tests/ledger.test.mjs): an explicit people field per row.
 - Even, clipped or repeated runs (7: MA MB MC MD ME MK ML; tests/stories.test.mjs): add repeated first words.
@@ -175,7 +175,7 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MJ (line 3790): "says a tear sometimes rolls out, never that every sad face has one"
 - ML (line 3876): "Texas Parks and Wildlife calls the box turtle a dry-land turtle"
 
-### C14 words a young child hears wrongly or was never taught (8 passes)
+### C14 words a young child hears wrongly or was never taught (9 passes; MN since the review)
 - MC (line 3217): "TEA and SEA, which sound like the letters T and C, left the sign words"
 - MD (line 3269): ""almost grabbed the ball and ran off" heard as running off"
 - ME (line 3309): ""found more. Moon and spoon." heard as a spoon found on the path"
@@ -184,6 +184,7 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MH (line 3695): "bee, heard as the letter B, taken out of A and B"
 - MJ (line 3792): ""at recess" is "at playtime" (a pre-K word)"
 - ML (line 3879): "Bea became Lucy (a voice says Bea as bee"
+- MN (line 4046): "Gabe "wanted to giggle", where "almost giggled" is heard as giggling at an embarrassed friend"
 
 ### C15 more settled by look, in words or drawings (6 passes)
 - MA (line 3060): "More and Fewer taught more as the bigger group"
@@ -216,7 +217,7 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MK (line 3824): "Where is the cloud?'s picture cards are drawings only"
 - ML (line 3888): "P111's "two black hands" read as a person's"
 
-### C19 an unsafe scene or experiment for a young child (10 passes)
+### C19 an unsafe scene or experiment for a young child (12 passes; MM and MN since the review)
 - MA (line 3068): "three three-year-olds were alone in a park"
 - MB (line 3139): "a three-year-old alone with her eyes shut by a pond"
 - MC (line 3189): "an acorn fits the CPSC small-parts cylinder"
@@ -227,6 +228,8 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MH (line 3703): "a careful parent keeps a three-year-old out of long grass, where ticks wait"
 - MJ (line 3790): "judged a choking hazard by whether a thing is "too big to swallow""
 - ML (line 3887): "no grown-up had been placed with three four-year-olds at night"
+- MM (line 3958): "a grown-up beside every child at the beach and the porch"
+- MN (line 4047): "S3908 and S3910 put a four-year-old at and on a tall slide with no grown-up"
 
 ### C20 a Wonder voice off its person, or repeating another (8 passes)
 - MA (line 3064): "w-big-or-small's scientist declared a right answer"
@@ -268,7 +271,7 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MI (line 3760): "the ship's count running into its ships"
 - ML (line 3890): "an animal had filled 45 percent of a laptop's card"
 
-### C24 checked in one condition only (width, motion, voice, frame, cap) (7 passes)
+### C24 checked in one condition only (width, motion, voice, frame, cap) (8 passes; MN since the review)
 - MB (line 3115): "every check of it ran at phone width"
 - MC (line 3217): "the pass's own screenshots used reduced motion, which holds the wash at its yellow end"
 - ME (line 3312): "the celebration skipped on a two-review day"
@@ -276,6 +279,7 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MH (line 3534): "The screen check measured contrast, the fold and overlaps, mostly at phone width"
 - MI (line 3747): "The test page's voice never reported speaking, so no test had seen it"
 - MK (line 3836): "round one's screenshots were all taken with motion off"
+- MN (line 4065): "since jitter on the line through a stroke's points never cuts a corner"
 
 ### C25 a rule decided on the screen instead of in logic (5 passes)
 - MC (line 3193): "The Let's Play filter in ui.jsx kept only the kinds older lists had before pass FS"

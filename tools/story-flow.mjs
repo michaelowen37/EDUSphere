@@ -1,6 +1,8 @@
 // The story flow rules (2026-09-28, Mikey): what makes a paragraph read robotic. Shared by tools/story-flow-audit.mjs,
 // which reports on every story, and tests/stories.test.mjs, which holds the early years at zero.
-export const sentencesOf = (text) => text.replace(/\s+/g, ' ').trim().split(/(?<=[.!?])\s+(?=[A-Z"'(])/).map((s) => s.trim()).filter(Boolean);
+// A title before a name never ends a sentence (pass MN, round one's story flow check: "his teacher, Mr. Beto, sat down" was heard
+// here as two sentences of four and eight words, where a listener hears one of twelve; SENTENCE_BREAK in logic holds the app to it).
+export const sentencesOf = (text) => text.replace(/\s+/g, ' ').trim().split(/(?<=[.!?])(?<!\b(?:Mr|Mrs|Ms|Dr|Jr)\.)(?<!\b[A-Z][a-z]+ [A-Z]\.)(?<!\b[A-Z]\. [A-Z]\.)(?!(?<=(?:^|[\s("“])[A-Z]\.)\s+[A-Z]\.(?:\s|$))\s+(?=[A-Z"'(])/).map((s) => s.trim()).filter(Boolean);
 const wc = (s) => s.split(/\s+/).filter((w) => /[A-Za-z0-9]/.test(w)).length;
 // Short runs across a paragraph break (pass MK, the story check): the choppy rule reads one paragraph at a time, so three short
 // sentences could still run across a break (Quack, it said again. The duck! | She closed her eyes once more. Ribbit! Who said

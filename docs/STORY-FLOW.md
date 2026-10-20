@@ -1,13 +1,13 @@
 # Story flow audit
 
-Generated 2026-10-20. 136 of 772 stories have at least one paragraph that reads robotic (choppy: three or more sentences in a row of six words or fewer; monotone: four or more sentences in a row within three words of one length; then, then: two sentences in a row starting with Then). A story's closing moral, a short refrain by design, is exempt from the choppy rule, and single-word sentences (a sound, a shout, a beat) do not count toward it. Pre-K 3 to grade 2 are held at zero by a rule test. Grades 3 and up were read by hand on 2026-09-28 (pass FQ): the flags that remain there are deliberate short sentences, lists, dialogue or step sequences, kept on purpose, so a flag from grade 3 up is a prompt to read, not an order to rewrite.
+Generated 2026-10-20. 136 of 776 stories have at least one paragraph that reads robotic (choppy: three or more sentences in a row of six words or fewer; monotone: four or more sentences in a row within three words of one length; then, then: two sentences in a row starting with Then). A story's closing moral, a short refrain by design, is exempt from the choppy rule, and single-word sentences (a sound, a shout, a beat) do not count toward it. Pre-K 3 to grade 2 are held at zero by a rule test. Grades 3 and up were read by hand on 2026-09-28 (pass FQ): the flags that remain there are deliberate short sentences, lists, dialogue or step sequences, kept on purpose, so a flag from grade 3 up is a prompt to read, not an order to rewrite.
 
 ## By grade
 
 | Grade | Stories | Flagged | Paragraphs flagged |
 |---|---|---|---|
-| PK3 | 25 | 0 | 0 |
-| PK4 | 30 | 0 | 0 |
+| PK3 | 26 | 0 | 0 |
+| PK4 | 33 | 0 | 0 |
 | K | 113 | 0 | 0 |
 | 1 | 39 | 0 | 0 |
 | 2 | 23 | 0 | 0 |
@@ -72,7 +72,7 @@ Generated 2026-10-20. 136 of 772 stories have at least one paragraph that reads 
 | 4 | story | circuits | 6 of 7 | choppy | 18, 5, 2, 2 |
 | 4 | story | equivalent-and-decimals | 6 of 7 | monotone | 6, 6, 9, 6, 5, 8, 4 |
 | 4 | story | factors-and-multiples | 3 of 7 | choppy, monotone | 7, 4, 4, 4, 4, 4, 4, 12 |
-| 4 | story | food-webs-4 | 1 of 7 | choppy | 1, 14, 18, 3, 3, 3, 7, 3 |
+| 4 | story | food-webs-4 | 1 of 7 | choppy | 15, 18, 3, 3, 3, 7, 3 |
 | 4 | story | food-webs-4 | 3 of 7 | monotone | 7, 6, 8, 5, 7, 2 |
 | 4 | story | long-division | 2 of 7 | choppy | 6, 4, 4, 1, 11, 8 |
 | 4 | story | long-division | 4 of 7 | choppy | 12, 9, 5, 7, 6, 2, 4, 7 |

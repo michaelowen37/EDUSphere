@@ -200,6 +200,34 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A sample built by hand to look like a real screen drifts: the LI tour sample missed the Merge link and the Wonder pill and was laid out differently, and Mikey saw all three at a glance. Feed made-up data through the real component instead, with taps switched off, and the sample can never differ from the page.
 - Count a daily allowance against the day as it started, not as it stands: finishing the first review shrinks the queue, and a rule that rechecked the live queue would cancel the second review the backlog asked for.
 
+## Learned in pass MN (Domain I of pre-K 3's and pre-K 4's earmarks, built side by side)
+
+- A wrong choice is wrong in a child's own words too: "grab a block" is how a three-year-old says "get a block", which the lesson calls right, so the unkind choice is "Grab their blocks".
+- A friend's feeling is reasoned from what the friend is said to like or not like: liking pizza is not disliking cake, so a question that keys sad says the dislike outright (Repacholi and Gopnik, 1997).
+- New feelings are set against each other as well as against the old ones, or a child passes by tapping the newest face; and two faces whose signs blur at a button's size (wide white eyes) are never set against each other.
+- A painting shows the sign its lesson teaches for the feeling: pink cheeks and a smile are the happy face's signs, so an embarrassed child's eyes look down.
+- A young child near a height, water or a road has a grown-up in the picture's prompt, since a check note paints nobody; children stand beside a slide's ladder, never at its foot, where a child lands.
+- "Almost" before a past verb is heard as done ("Gabe almost giggled" as giggling at an embarrassed friend); a story says the wish.
+- Asking is a kind way to join a game, not the only one: young children's direct bids are often refused (Corsaro, 2003), which watching first and a plan for not now allow for. And a child asks before holding a friend's hand or giving a hug, as kindergarten teaches, so pre-K never teaches the other way.
+- A sentence never ends after a title before a name: "Mr. Beto" split the voice's pieces, the read-along's light and a lesson's printed lines, and the flow rules' counts; one rule now splits them all (SENTENCE_BREAK).
+- A frequency word (often, consistently) does not by itself make a citation in part; what a child does on their own, independently or day to day does, where the code names it. A code's without a grown-up is cited whole where the lesson says when none is needed, and expressing a feeling is taught where a lesson teaches its words and signs, read the same way at every age (pre-K 3 and pre-K 4 had read P-SE 6 two ways).
+- What a question asks, a line says first, in the question's own words: "no grown-up needed" was asked by two rows and said by none, and a cake line reversed the line before it ("But maybe your friend does not like cake" after "your friend likes cake").
+- A split line keeps every word that made it true: "Then blow out a candle" lost its "pretend" when one sentence became two.
+- A safety fact holds in every row that says it: "go down the little slide together" invited two children down at once, where the story and the AAP say one after the other; asking first lets a friend say yes or no, not only yes.
+- A moment of conflict, fright or embarrassment names each face in its prompt and is gentle and warm, never cheerful and neat, or a painter may give the grab a smile.
+- A guide a child must follow is drawn on top of the child's own ink, and its words fit every way a child can go wrong: an O traced the other way from its dot did start at the dot, so the words name the arrow.
+- Two questions of one round never ask the same thing two ways, or the second is answered by the first (a letter heard, then the same letter by its lines), and a round never traces one letter twice in a row while another can come.
+- Two faces a child can fairly take for each other are never set against each other, either way round: the worried face shares the sad face's eyebrows and has no smile, so Sad is a fair answer there too; and the scared face raises its eyebrows as worried does, while one moment, a slide a friend thinks too tall, is named both ways (round four).
+- A reason given as true holds for children, or it becomes a plainer one: holding hands showed no significant calming effect in a 2023 study of children, so it "shows your friend you care".
+- A line that says when a grown-up is not needed still leaves getting one allowed: "you do not need to get a grown-up", in the words of the questions that ask it.
+- A middle initial after a name ends no sentence (Stephen F. Austin), nor does an initial in a run (B. F. Skinner), as a title before a name ends none; and every place the rule joins two pieces at an initial is a name someone has read.
+- A file a tool records from is held to the code by a test: the audio ledger kept round one's words while the lessons changed, and a clip is found by its line's number.
+- A check of a child's drawing follows the curve the child sees, with a sway that cuts corners; jitter point by point on the line through a shape's points could not see a cleared forward trace.
+- A line in an earlier grade is read against what a later grade teaches about the same act: kindergarten says people ask before a hug, even from someone they know, so pre-K 3's line for a sad grown-up asks first, "can I give you a hug?", where it had said "A hug can help." (round four).
+- A rule held for a round is held in every builder that deals questions: a Quick Review traced "k i t t k" after rounds no longer could (round four).
+- An explanation More Info shows keeps each sentence to about eighteen words, the guideline a story's sentences keep (Mikey, pass LE); five ran to 19 to 25 and are two sentences now (round four), and six older pre-K banks, with more of kindergarten's, wait for their courses' next reads.
+- A grown-up in a lesson's story does what the lesson teaches the child: Miss Rae asks, "Can I hug you?", before she hugs Tess (round five).
+
 ## Learned in pass MM (First Sounds and Letters read again through every layer, and the workflow read against the trust pyramid)
 
 - A letter a question asks for by name is never printed where a child can match it: for a pre-reader a printed capital is a shape, so "Tap the letter E." above E, S and B is answered by matching, and the screen prints "Tap the letter you hear." while the voice says the letter.

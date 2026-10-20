@@ -249,5 +249,18 @@ ok('the ledger has no rows the app does not use', orphans.length === 0, orphans.
   }
   ok(`attached character sheets whose picture never writes the character out stay at or under ${UNWRITTEN_SHEET_LIMIT} and only fall (${unwrittenSheets.length} of ${attached} now, EARMARKS A22)`, attached >= 170 && unwrittenSheets.length <= UNWRITTEN_SHEET_LIMIT && !unwrittenSheets.includes('CS473:C8'), unwrittenSheets.slice(0, 6).join(','));
 }
+// A lesson picture's alt is its ledger scene word for word, the check note aside (pass MN, round one's picture check: P150's alt said
+// "a worried face" where its line, scene and prompt said scared, wide-open eyes, and a screen reader reads the alt). The 26 older
+// paintings whose alt says the same scene in more or fewer words wait by name for their courses' reviews, and the list only falls.
+{
+  const ALT_WAITING = ['P24', 'P25', 'P27', 'P28', 'P30', 'P31', 'P32', 'P33', 'P34', 'P35', 'P36', 'P37', 'P38', 'P39', 'P40', 'P41', 'P42', 'P48', 'P49', 'P50', 'P51', 'P53', 'P56', 'P66', 'P67', 'P70'];
+  const sceneOf = {}; for (const m of ledger.matchAll(/^\| (P\d+) \| [^|]+ \| ([^|]+) \|/gm)) sceneOf[m[1]] = m[2].trim().replace(/ \(check: [^)]*\)$/, '');
+  const pics = MODULES.flatMap((m) => (m.lesson && m.lesson.pictures) || []);
+  const differ = pics.filter((p) => sceneOf[p.serial] !== p.alt).map((p) => p.serial);
+  const unlisted = differ.filter((s) => !ALT_WAITING.includes(s)); const stale = ALT_WAITING.filter((s) => !differ.includes(s));
+  // Its near misses: the alt P150 had, which fails, and the alt it has.
+  const p150 = pics.find((p) => p.serial === 'P150'); const near = (alt) => sceneOf.P150 === alt;
+  ok(`a lesson picture's alt is its ledger scene word for word (${pics.length} read; ${ALT_WAITING.length} older ones wait by name and only fall)`, pics.length >= 150 && unlisted.length === 0 && stale.length === 0 && !near('Two small children at the bottom of a tall playground slide, one grinning and one looking up at it with a worried face') && !!p150 && near(p150.alt), `differ: ${unlisted.join(', ')}; listed but matching: ${stale.join(', ')}`);
+}
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

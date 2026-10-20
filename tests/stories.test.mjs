@@ -102,7 +102,7 @@ for (const [, cs, id] of LONG_ENTRIES) {
   const early = new Set(['PK3', 'PK4', 'K', '1', '2']);
   const bad = [];
   for (const m of L.MODULES) { const st = STORIES[m.id]; const c = L.getCourse(m.courseId); if (!st || !c || !early.has(c.grade)) continue;
-    for (const par of st.words) for (const sent of par.split(/(?<=[.!?])\s+/)) { const ws = sent.split(/\s+/).filter(Boolean); if (ws.length > 18) bad.push(`${m.id}: ${ws.length} words`); } }
+    for (const par of st.words) for (const sent of par.split(L.SENTENCE_BREAK)) { const ws = sent.split(/\s+/).filter(Boolean); if (ws.length > 18) bad.push(`${m.id}: ${ws.length} words`); } }
   // Since pass LE (Mikey) the eighteen-word sentence and the three-syllable word are guidelines, kept when a longer sentence or
   // word carries educational value or another rule needs it, so this reports rather than fails; the writer judges each one.
   // Since pass LY (Mikey: "The three syllables rule is really not a big deal") syllables are no longer counted; words are
@@ -322,7 +322,7 @@ for (const [, cs, id] of LONG_ENTRIES) {
 // Even stretches and Then after Then across a paragraph break (pass ML, the story check's second read): the brief reads all three
 // flow rules across a break, and crossBreakEven (tools/story-flow.mjs) is the tool for the other two. A course reviewed at the
 // refined standard joins REVIEWED_FLOW and holds none; the rest of the early years stay under EVEN_LIMIT, which only falls.
-{ const { crossBreakEven } = await import('../tools/story-flow.mjs'); const EVEN_LIMIT = 65; const EARLY = new Set(['PK3', 'PK4', 'K', '1', '2']);
+{ const { crossBreakEven, sentencesOf } = await import('../tools/story-flow.mjs'); const EVEN_LIMIT = 65; const EARLY = new Set(['PK3', 'PK4', 'K', '1', '2']);
   const REVIEWED_FLOW = new Set(['very-first-steps-pk3', 'listen-and-point-pk3', 'first-steps-pk', 'first-sounds-pk']);
   const courseOf = (id) => L.COURSES.find((x) => x.id === id || x.modules.some((m) => m.id === id));
   const all = [...Object.entries(STORIES).map(([id, s]) => [id, s]), ...Object.entries(COURSE_STORIES).map(([id, s]) => [id, s, `course:${id}`]), ...Object.entries(MASTERY_STORIES).map(([id, s]) => [id, s, `mastery:${id}`])];
@@ -332,7 +332,10 @@ for (const [, cs, id] of LONG_ENTRIES) {
   // The tool's own near misses: the stretch round two found, and the same paragraphs once a sentence of the four is lengthened.
   const near = ['One.', 'The last number you say tells how many, said his teacher. You said three, so there are three stones in your row!', 'Mike put the rest back on the path where he found them. Back in class, he dropped his three in the counting jar.', 'Moral.'];
   const fixed = ['One.', near[1], 'Mike put all the rest back on the path, right where he had found them. Back in class, he dropped his three in the counting jar.', 'Moral.'];
-  ok('crossBreakEven finds a stretch that crosses a break, and none once one sentence of it is lengthened', crossBreakEven(near).length === 1 && crossBreakEven(fixed).length === 0 && crossBreakEven(['Then we ran.', 'Then we sat down.', 'Moral.']).length === 1); }
+  ok('crossBreakEven finds a stretch that crosses a break, and none once one sentence of it is lengthened', crossBreakEven(near).length === 1 && crossBreakEven(fixed).length === 0 && crossBreakEven(['Then we ran.', 'Then we sat down.', 'Moral.']).length === 1);
+  // A title before a name never ends a sentence (pass MN, round one's story flow check): "Mr. Beto" was read as a break, so Can I play
+  // too?'s twelve-word sentence counted as four and eight and hid an even stretch across its paragraph break.
+  ok('the flow rules read "his teacher, Mr. Beto, sat down" as one sentence, and "I saw Mr. Beto. He waved." as two', sentencesOf('But his teacher, Mr. Beto, sat down beside him on the rug.').length === 1 && sentencesOf('I saw Mr. Beto. He waved.').length === 2 && sentencesOf('Ms. Reyes said the rule. Dr. King spoke.').length === 2); }
 
 // No two stories share a title (pass MJ, the story check: pre-K 3's Two buckets shared kindergarten's, so the Story Log and the book
 // listed two stories one name). Seven shared titles remain (EARMARKS A24); the number may only fall, and a renamed story comes off.
@@ -422,6 +425,55 @@ for (const [, cs, id] of LONG_ENTRIES) {
   const stale = Object.keys(SAFETY_READ).filter((k) => !hits.has(k));
   ok(`no pre-K story, lesson or picture puts a choking hazard within reach unless its scene was read and its reason listed (${stories} stories, ${lessons} lessons, ${rows} picture rows, ${hits.size} hits read)`, stories >= 50 && lessons >= 45 && rows >= 300 && unread.length === 0 && stale.length === 0,
     `unread: ${unread.join(', ')}; listed but no longer there: ${stale.join(', ')}`); }
+
+// A young child near a height, water or a road has a grown-up nearby, in pictures as in stories (FABLE-REVIEW; the picture brief's
+// rule 7). Pass MN, round one: S3908 and S3910 put a four-year-old at and on a tall slide with no grown-up, and D244 two children at
+// a slide's foot, the unsafe-scene class's twelfth pass in fourteen (docs/MISTAKE-CLASSES.md, rank 1; round two's story check found D60's
+// child swinging high with no grown-up, whose reason covered only the slide behind, so D60 has a teacher on the bench since). Every early-years picture
+// row, a story's, a lesson painting's, a long story's or a coloring page's, that names a child and a height, water or a road, and
+// no grown-up in its prompt (what is painted: a check note's grown-up paints nobody), passes only when HEIGHT_READ gives the reason
+// it is safe in that scene; kindergarten's to grade 2's wait by name for
+// their courses' reviews, and both lists only fall.
+{ const { readFileSync } = await import('node:fs');
+  const RISK = /\b(slides?|ladders?|climb\w*|jungle gym|monkey bars|tree ?house|branch|pool|lake|river|pond|ocean|beach|creek|stream|waves?|road|street|crosswalk|parking lot|curb|cliff|rooftop|stairs)\b/i;
+  const CHILD = /\b(child|children|boy|girl|kids?|baby|toddler)\b/i;
+  const ADULT = /\b(grown-ups?|woman|man|teacher|mom|mother|dad|father|grandpa|grandma|grandmother|grandfather|parent|lifeguard|adult|aunt|uncle|coach|librarian|crossing guard)\b/i;
+  const HEIGHT_READ = {
+    S161: 'a road printed on a play mat, a toy on the playroom floor',
+    S3859: 'a beach ball, a toy, on the playroom floor',
+    S1462: 'climbing onto a swing seat a friend holds still, at no height',
+    CS652: 'a river seen far below through a train window, the girl inside the train',
+  };
+  const WAITING_K2 = ['S222', 'S239', 'S263', 'S275', 'S314', 'S338', 'S380', 'S401', 'S407', 'S434', 'S1593', 'S1644', 'S1681', 'S1718', 'S2784', 'S2891', 'S3245', 'S3659', 'S3699', 'S3701', 'S3702', 'S3765', 'S3774', 'D78', 'D99', 'D114', 'D168', 'D176', 'D212', 'D235', 'P69'];
+  const courseOf = (id) => L.COURSES.find((c) => c.id === id || c.modules.some((m) => m.id === id));
+  const hits = []; let rows = 0;
+  for (const line of readFileSync(new URL('../docs/ART-REQUESTS.md', import.meta.url), 'utf8').split('\n')) {
+    const m = /^\| ([A-Z]+\d+) \| ([\w:-]+) \| ([^|]*) \| ([^|]*) \|/.exec(line); if (!m) continue; const c = courseOf(m[2].replace(/^lesson-/, ''));
+    // The drawing pages D1 to D27 name no course and are colored by the youngest too, so they are read with the early years (round three's story check).
+    const drawingPage = /^D(?:[1-9]|1\d|2[0-7])$/.test(m[1]);
+    if (!drawingPage && (!c || !['PK3', 'PK4', 'K', '1', '2'].includes(c.grade))) continue; rows += 1; const prompt = m[4].split('Style:')[0]; const text = `${m[3]} ${prompt}`;
+    if (RISK.test(text) && CHILD.test(text) && !ADULT.test(prompt)) hits.push(m[1]); }
+  const unread = hits.filter((s) => !HEIGHT_READ[s] && !WAITING_K2.includes(s)); const stale = [...Object.keys(HEIGHT_READ), ...WAITING_K2].filter((s) => !hits.includes(s));
+  // Its near misses: S3910 as round one found it, and as it is now, with his mom on the bench.
+  const nearMiss = (t) => RISK.test(t) && CHILD.test(t) && !ADULT.test(t);
+  const proven = nearMiss('A small girl cheering on the grass, well to one side of the slide, while a small boy zooms down a tall playground slide, cheerful and neat.') && !nearMiss('A small girl cheering on the grass while a small boy zooms down a tall playground slide, a woman watching from a park bench nearby.');
+  ok(`a young child near a height, water or a road has a grown-up nearby in every early-years picture row, or its reason is read (${rows} rows read; ${Object.keys(HEIGHT_READ).length} pre-K reasons; ${WAITING_K2.length} of kindergarten to grade 2 waiting)`, rows >= 1400 && proven && unread.length === 0 && stale.length === 0, `unread: ${unread.join(', ')}; listed but no longer hit: ${stale.join(', ')}`); }
+
+// "Almost" before a past-tense verb in an early-years story is heard as the act done (docs/MISTAKE-CLASSES.md, C14: pass MD's
+// "almost grabbed the ball and ran off" was heard as running off, and pass MN's "Gabe almost giggled too" as giggling at an
+// embarrassed friend, the act the lesson calls unkind; the story check, round one). A wish says it ("Gabe wanted to giggle too").
+// Since round two's story check nearly is read with almost, and the past verbs that do not end in -ed a story tells (hid, sat, saw;
+// since round three did, found, won, held, knew and felt), while a word that only ends in -ed (red, bed, seed) is not a verb.
+// Kindergarten's Safe and kind online waits for its review ("Omar almost said it"), and the list only falls.
+{ const ALMOST = /\b(?:almost|nearly) (?!(?:red|bed|shed|sled|seed|need|weed|speed|feed)\b)(?:[a-z]+ed|said|ran|took|fell|hit|went|threw|ate|broke|bit|got|gave|made|let|caught|slid|forgot|left|lost|tore|told|hid|sat|saw|had|came|stood|swung|did|found|won|held|knew|felt)\b/i;
+  const ALMOST_WAITING = ['safe-online-k'];
+  const EARLY = new Set(['PK3', 'PK4', 'K', '1', '2']); const courseOf = (id) => L.COURSES.find((c) => c.id === id || c.modules.some((m) => m.id === id));
+  const hits = []; let read = 0;
+  for (const [label, table] of [['', STORIES], ['course:', COURSE_STORIES], ['mastery:', MASTERY_STORIES]]) for (const [id, s] of Object.entries(table)) {
+    const c = courseOf(id); if (!c || !EARLY.has(c.grade)) continue; read += 1; if (s.words.some((p) => ALMOST.test(p))) hits.push(label + id); }
+  const unlisted = hits.filter((h) => !ALMOST_WAITING.includes(h)); const stale = ALMOST_WAITING.filter((h) => !hits.includes(h));
+  const proven = ALMOST.test('Leo almost grabbed the ball and ran off.') && ALMOST.test('Gabe almost giggled too.') && ALMOST.test('Gabe nearly giggled too.') && ALMOST.test('Omar almost hid it.') && ALMOST.test('Kim almost found it.') && ['almost alike', 'nearly done', 'nearly time to go', 'almost red', 'almost bedtime', 'almost done', 'almost a triangle', 'almost all of them', 'almost the same', 'almost four', 'almost agreeing'].every((t) => !ALMOST.test(t));
+  ok(`no early-years story says almost before a past-tense verb, which a young child hears as done (${read} stories read; ${ALMOST_WAITING.length} waiting for its course's review)`, read >= 220 && proven && unlisted.length === 0 && stale.length === 0, `says it: ${unlisted.join(', ')}; listed but clean: ${stale.join(', ')}`); }
 
 // One to three sound effects a story (ELEVEN-V4-AUDIO-TAGS and RULES-AUDIT section 4; pass MM, round two's story check found four
 // in Growl, then quack and five in The Rhyme Train). A sound effect is counted as a tag that names a thing making its sound, an

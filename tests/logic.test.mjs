@@ -45,7 +45,16 @@ const sizeOf = { biggest: 'big', smallest: 'small', 'middle-sized': 'medium', bi
 const lineOf = { 'a line across': 'line-across', 'a line down': 'line-down', 'a circle': 'line-circle', 'a zigzag': 'line-zigzag', 'a wavy line': 'line-wave' };
 const sameAs = (q) => { const m = /^Tap the one that is the same as this (\w+)\.$/.exec(q.prompt); return m && q.visual && q.visual.name === m[1] ? onlyOne(q.choices.filter((c) => c === q.visual.kind + ':' + q.visual.name)) : null; };
 const oddOne = (q) => (q.prompt === 'Find the two that are the same, then tap the one that is different.' ? onlyOne(q.choices.filter((c) => q.choices.filter((d) => d.split('#')[0] === c.split('#')[0]).length === 1)) : null);
+// The tracing lessons' letters and each letter's lines as their spoken lines say them (pass MN, Q50), this test's own table.
+const TRACED_P4 = { first: ['L', 'T', 'O'], more: ['I', 'H', 'E'], ltf: ['L', 'T', 'F'] };
+const LINES_P4 = { L: 'goes down, then across the bottom', T: 'goes down the middle, then one line across the top', O: 'goes around to the left, all the way back to where it started', I: 'is one line, straight down', H: 'is two lines down, then a bridge across the middle', E: 'has a line down and three lines across', F: 'is a line down, then two lines across' };
 const PREK_DERIVE = {
+  // Q50 (pass MN): the letter heard is the one the voice names, and a letter by its lines is the one letter of the lesson's three
+  // whose lines the question says; both ask among exactly the lesson's three letters.
+  ...Object.fromEntries(Object.entries(TRACED_P4).flatMap(([k, ls]) => [
+    [`pl-hear-${k}`, (q) => { const m = /^Tap the letter ([A-Z])\.$/.exec(q.prompt); return m && ls.includes(m[1]) && q.choices.length === 3 && ls.every((x) => q.choices.includes(x)) && q.printed === 'Tap the letter you hear.' ? m[1] : null; }],
+    [`pl-lines-${k}`, (q) => { const m = /^Which letter (.+)\?$/.exec(q.prompt); const hit = m ? ls.filter((x) => LINES_P4[x] === m[1]) : []; return hit.length === 1 && q.choices.length === 3 && ls.every((x) => q.choices.includes(x)) ? hit[0] : null; }],
+  ])),
   'p3-tap-red-blue': (q) => { const m = /^Tap the (red|blue) (\w+)\.$/.exec(q.prompt); return !m ? null : m[2] === 'one' ? 'swatch:' + m[1] : 'item:' + m[2] + '-' + m[1]; },
   'p3-which-colour': (q) => { const m = /^What color is this( (\w+))?\?$/.exec(q.prompt); return m && q.visual && (m[2] ? q.visual.kind === 'item' && q.visual.shape === m[2] : q.visual.kind === 'swatch') ? q.visual.colour : null; },
   'p3-which-colour-four': (q) => (q.prompt === 'What color is this?' && q.visual && q.visual.kind === 'swatch' ? q.visual.colour : null),
@@ -60,6 +69,9 @@ const PREK_DERIVE = {
   ...Object.fromEntries(['p3-trace-mark', 'pd-trace-line'].map((g) => [g, (q) => { const m = /^Draw (a line across|a line down|a circle|a zigzag|a wavy line)\. Start at the dot\.$/.exec(q.prompt); return m ? lineOf[m[1]] : null; }])),
   ...Object.fromEntries(['animals', 'vehicles', 'things', 'water', 'land', 'shape', 'solid'].flatMap((s) => [['pm-same-' + s, sameAs], ['pm-different-' + s, oddOne]])),
 };
+// Every explanation that holds a capital initial, kept as the main loop reads each bank, for the sentence rule's reviewed names
+// (round four's code read, pass MN).
+const INITIAL_EXPLAINS = new Set();
 for (const [genId, gen] of Object.entries(L.GENERATORS)) {
   let bad = [];
   // A question's layout never makes it a new question (pass MA): questions that ask the same thing, with the same answer and
@@ -166,7 +178,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     else if (q.visual && q.visual.kind === 'picto') { if (!(Array.isArray(q.visual.rows) && q.visual.rows.length >= 2 && q.visual.rows.length <= 3 && q.visual.rows.every((r) => typeof r.icon === 'string' && Number.isInteger(r.count) && r.count >= 0 && r.count <= 6))) problems.push('picture graph out of range'); }   // pass KL: two or three rows of up to six pictures
     else if (q.visual && q.visual.kind === 'icon') { if (!['sun', 'moon', 'cloud', 'rain', 'snow', 'plant', 'tree', 'flower', 'fish', 'bird', 'rock', 'drop', 'ice', 'fire', 'magnet', 'clip', 'nail', 'cup', 'bus', 'dog', 'hat', 'bed', 'fan', 'soil', 'ball', 'block', 'teddy', 'sock', 'spoon', 'log', 'book', 'glass', 'flashlight', 'lamp', 'shadow', 'pebble', 'boulder', 'speckled', 'flatrock', 'penny', 'wall', 'gravel', 'bricks', 'window', 'nickel', 'dime', 'quarter', 'table', 'hill', 'map', 'globe', 'mountain', 'river', 'lake', 'ocean', 'cactus', 'coat', 'candle', 'cake', 'fridge', 'washer', 'phone', 'tablet', 'pencil', 'doctor', 'shot', 'comb', 'mosquito', 'plate', 'peanut', 'helmet', 'booster', 'belt', 'bubble', 'stop', 'slide', 'knife', 'scissors', 'screwdriver', 'house', 'bottle', 'cigarette', 'camera', 'music', 'search', 'keyboard', 'space', 'backspace', 'save', 'printer', 'chair', 'bulb', 'board', 'star', 'door'].includes(q.visual.name)) problems.push('unknown icon'); }
     else if (q.visual && (q.visual.kind === 'pic' || q.visual.kind === 'art')) { if (!q.visual.name) problems.push('picture incomplete'); }
-    else if (q.visual && q.visual.kind === 'face') { if (!['happy', 'sad', 'mad', 'scared'].includes(q.visual.feeling)) problems.push('a face with a feeling the screen cannot draw'); }   // pass MD
+    else if (q.visual && q.visual.kind === 'face') { if (!['happy', 'sad', 'mad', 'scared', 'worried', 'embarrassed'].includes(q.visual.feeling)) problems.push('a face with a feeling the screen cannot draw'); }   // pass MD; worried and embarrassed since pass MN
     else if (q.visual && q.visual.kind === 'numberline') { if (!(q.visual.from < q.visual.to && (q.visual.marks || [q.visual.mark]).every((v) => v === null || v === undefined || (v >= q.visual.from && v <= q.visual.to)))) problems.push('number line out of range'); }
     else if (q.visual && (q.visual.kind === 'tri' || q.visual.kind === 'para')) { if (!(q.visual.base > 0 && (q.visual.height === '?' || q.visual.height > 0))) problems.push('shape measures missing'); }
     else if (q.visual && q.visual.kind === 'cell') { if (typeof q.visual.highlight !== 'string') problems.push('cell visual needs a highlight'); }
@@ -179,8 +191,10 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     else if (q.visual && q.visual.kind === 'periodic') { if (!((q.visual.highlight || []).every((s) => typeof s === 'string' && s.length) && (q.visual.period === null || q.visual.period === undefined || (q.visual.period >= 1 && q.visual.period <= 7)) && (q.visual.group === null || q.visual.group === undefined || (q.visual.group >= 1 && q.visual.group <= 18)))) problems.push('periodic visual out of range'); }
     else if (q.visual && q.visual.kind === 'plot') { if (!(q.visual.fn !== 'point' || (q.visual.px >= 0 && q.visual.px <= 6 && q.visual.py >= 0 && q.visual.py <= 6))) problems.push('plot point out of range'); }
     else if (q.visual && !(q.visual.shaded >= 0 && q.visual.shaded <= q.visual.parts)) problems.push('visual out of range');
-    // A face choice (pass MD) is one of the four feelings FeelingFace draws.
-    if ((q.choices || []).some((c) => /^face:/.test(String(c)) && !['happy', 'sad', 'mad', 'scared'].includes(String(c).slice(5)))) problems.push('a face choice names a feeling the screen cannot draw');
+    // A face choice (pass MD) is one of the feelings FeelingFace draws (four, and since pass MN worried and embarrassed), and a
+    // pair of faces shows two of them.
+    if ((q.choices || []).some((c) => /^face:/.test(String(c)) && !['happy', 'sad', 'mad', 'scared', 'worried', 'embarrassed'].includes(String(c).slice(5)))) problems.push('a face choice names a feeling the screen cannot draw');
+    if (q.visual && q.visual.kind === 'pair' && [q.visual.a, q.visual.b].some((h) => h && h.kind === 'face' && !['happy', 'sad', 'mad', 'scared', 'worried', 'embarrassed'].includes(h.feeling))) problems.push('a pair shows a face the screen cannot draw');
     // Independent checks for the counting questions (a 'dots:N' choice is a picture of N things)
     const dotCount = (c) => Number((/^dots:(\d+)$/.exec(c) || [])[1]);
     if (/^k(5|10)-how-many$/.test(genId) && String(q.visual.count) !== q.answer) problems.push('how-many answer does not match the picture');
@@ -300,7 +314,63 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
       // The ball (the lesson check, pass MD): stop, please answers a grab, a grown-up answers a fight, and a grown-up helps you
       // both get to play by helping you take turns. Since pass MH each moment is said inside its question.
       if (genId === 'p3-help-ball') { const want = /^What can you say when .*\bgrab/.test(q.prompt) ? 'Stop, please' : /^How can a grown-up help you both get to play when /.test(q.prompt) ? 'Help you take turns' : /^What can you do when .*(fight starts|grabs)/.test(q.prompt) ? 'Get a grown-up' : null; if (!want || q.answer !== want || mdOthers.length !== 1 || q.story !== null) problems.push('ball fight wrong'); }
-      if (genId === 'p3-help-yesno') { const want = /^Is it kind to (ask a sad friend if they are okay|sit beside a friend who is sad)\?$/.test(q.prompt) || q.prompt === 'Should you get a grown-up when a friend is hurt?' ? 'Yes' : /^Is it kind to laugh at a friend who falls and gets hurt\?$|^Is it okay to push when you both want one ball\?$/.test(q.prompt) ? 'No' : null; if (!want || q.answer !== want) problems.push('kind or not wrong'); }
+      if (genId === 'p3-help-yesno') { const want = /^Is it kind to (ask a sad friend if they are okay|sit beside a friend who is sad|ask your sad grown-up, can I give you a hug)\?$/.test(q.prompt) || q.prompt === 'Should you get a grown-up when a friend is hurt?' ? 'Yes' : /^Is it kind to laugh at a friend who falls and gets hurt\?$|^Is it kind to laugh at a friend who is scared\?$|^Is it okay to push when you both want one ball\?$/.test(q.prompt) ? 'No' : null; if (!want || q.answer !== want) problems.push('kind or not wrong'); }
+    }
+    // Domain I of pre-K 3 and pre-K 4 (pass MN, earmarks E12 and E13 side by side): every bank re-derived from its words and
+    // pictures with tables of this test's own, never the generator's. A kind act is one the lessons say, and the wrong one an act
+    // they call unkind or a thing that does not fit the game; a yes or a no comes from what the question asks; a feeling comes
+    // from the moment's words, and its wrong face is one the moment could not fairly show; a turn is the one who did not just go;
+    // a friend's feeling comes from what the friend likes or thinks, never from what you like.
+    { const fe = (c) => (/^face:([a-z]+)$/.exec(String(c)) || [])[1]; const others = (q.choices || []).filter((c) => c !== q.answer); const one = others.length === 1 ? others[0] : null;
+      const MN_KIND = { 'p3-join-how': [['Watch the game', 'Can I play too?', 'icon:block', 'Listen to the idea', 'Do you want to play with me?'], ['Grab their blocks', 'Move over!', 'icon:ball', 'Say, my way only!', 'Go away']],
+        'p3-join-not-now': [['Play something else', 'Ask again', 'Find another friend'], ['Knock their tower down', 'Grab their blocks', 'Push your friends']],
+        'p4-feel-calm': [['A slow breath', 'Count to five', 'icon:teddy', 'Your grown-up', 'Your words', 'icon:flower', 'icon:candle'], ['Throwing a toy', 'Hit a friend', 'icon:ball', 'Nobody', 'A toy to throw', 'icon:candle', 'icon:flower']],
+        'p4-kind-words': [['It is okay. I spill too.', 'I will play with you.', 'Are you okay?'], ['Ha ha, you spilled!', 'Go away.', 'Stop crying!', 'Ha ha, you fell!']],
+        'p4-help-friend': [['Help wipe it up', 'Ask, can I hold your hand?', 'Sit beside your friend'], ['Point and laugh', 'Walk away', 'Laugh at your friend']],
+        'p4-fix-problem': [['Take turns choosing', 'Find a game you both like', 'We want different games', 'A grown-up'], ['Grab the ball', 'Only you choose', 'Say, you are not my friend', 'You are mean', 'Nobody']] };
+      if (MN_KIND[genId]) { const [good, bad] = MN_KIND[genId]; if (!good.includes(q.answer) || !one || !bad.includes(one) || q.story !== null) problems.push('kind act wrong'); }
+      // The pretend breath: in with the flower, out with the candle; and the ask for a problem friends cannot fix is a grown-up.
+      if (genId === 'p4-feel-calm' && /breathe (in|out) slowly\?$/.test(q.prompt) && q.answer !== (/breathe in/.test(q.prompt) ? 'icon:flower' : 'icon:candle')) problems.push('breath wrong');
+      if (genId === 'p4-fix-problem' && (/cannot fix it\. Who can help\?$/.test(q.prompt) !== (q.answer === 'A grown-up') || /say what the problem is\?$/.test(q.prompt) !== (q.answer === 'We want different games'))) problems.push('problem fix wrong');
+      const MN_YES = { 'p3-join-yesno': [/can I play too\?$|^Is it okay when your friends say, not now\?$|do you want to play with me\?$|^Should you watch the game first /, /knock down your friends|grab your friends|is a ball a good thing to bring\?$/],
+        'p4-feel-okay': [/^Is it okay to feel (mad|scared)\?$|^Is it okay to cry when you feel sad\?$|^Is it okay to ask for a hug /, /^Is it okay to (hit|throw a toy|push a friend) when you feel mad\?$/],
+        'p4-friends-yesno': [/^Can two friends feel different |^Is it okay to feel (worried|embarrassed)\?$|^Can you ask a friend how they feel\?$/, /^Do friends always (like|feel) the same |^Does a piece of cake make every friend happy\?$/],
+        'p4-when-grownup': [/ when (your friend falls and gets hurt|a fight starts and you cannot stop it|your friend is very sad and cannot stop crying)\?$/, / when you and your friend can (take turns choosing the game|find a game you both like)\?$/],
+        'p4-good-yesno': [/^Is it kind to (say, it is okay|ask a worried friend, can I hold your hand|say what the problem is)/, /^Is it kind to laugh |^Is it fair if only you choose /] };
+      if (MN_YES[genId]) { const [yes, no] = MN_YES[genId]; const want = yes.test(q.prompt) ? 'Yes' : no.test(q.prompt) ? 'No' : null; if (!want || q.answer !== want || [...q.choices].sort().join() !== 'No,Yes') problems.push('yes or no wrong'); }
+      // Each moment's feeling and the wrong faces fair to offer with it.
+      const MN_MOMENT = { 'p3-join-face': [[/knocks down their tower/, 'sad', ['happy']], [/grabs their blocks/, 'mad', ['scared', 'happy']], [/say, yes, come and play/, 'happy', ['mad', 'sad']], [/nobody will play with/, 'sad', ['happy']], [/listen to her idea/, 'happy', ['sad', 'mad']]],
+        'p4-feel-tells': [[/jumps and claps/, 'happy', ['sad']], [/stomps his feet/, 'mad', ['scared', 'happy']], [/hides and holds on tight/, 'scared', ['mad', 'happy']], [/cries and wants a hug/, 'sad', ['happy']], [/gives his friend a high five/, 'happy', ['scared', 'sad', 'mad']], [/make tight fists/, 'mad', ['sad', 'happy']], [/hides from a loud noise/, 'scared', ['happy']], [/cries because he lost his teddy/, 'sad', ['happy']]],
+        'p4-new-feeling-moment': [[/first day at a new school/, 'worried', ['mad']], [/spill your milk/, 'embarrassed', ['happy']], [/Grandma by mistake/, 'embarrassed', ['worried']], [/go to the doctor/, 'worried', ['embarrassed']], [/grown-up is late/, 'worried', ['embarrassed']], [/falls down in front of the class/, 'embarrassed', ['happy']]] };
+      if (MN_MOMENT[genId]) { const hit = MN_MOMENT[genId].filter(([re]) => re.test(q.prompt)); if (hit.length !== 1 || fe(q.answer) !== hit[0][1] || !one || !hit[0][2].includes(fe(one))) problems.push('feeling moment wrong'); }
+      // What a feeling can make you do: the act's own feeling, said on the lesson's first four lines, and a wrong act of another.
+      if (genId === 'p4-feel-does') { const ACT = { 'Jump and clap': 'happy', Smile: 'happy', 'Want a hug': 'sad', Cry: 'sad', 'Stomp your feet': 'mad', 'Stomp his feet': 'mad', 'Make tight fists': 'mad', 'Hold on tight': 'scared', Hide: 'scared' };
+        const f = (/feels? (happy|sad|mad|scared)\?$/.exec(q.prompt) || [])[1]; if (!f || ACT[q.answer] !== f || !one || !ACT[one] || ACT[one] === f) problems.push('feeling act wrong'); }
+      // A feeling's name for the face shown, which the words never say.
+      if (genId === 'p4-feel-say') { const f = q.visual && q.visual.kind === 'face' ? q.visual.feeling : null; if (!f || q.answer !== `I feel ${f}` || !one || !/^I feel (happy|sad|mad|scared)$/.test(one) || one === q.answer || /\b(happy|sad|mad|scared)\b/.test(q.prompt)) problems.push('feeling name wrong'); }
+      // Worried and embarrassed by the face: tap the face named, or name the face shown.
+      if (genId === 'p4-new-feeling-face') { const tap = (/^Tap the (\w+) face\.$/.exec(q.prompt) || [])[1]; const shown = q.visual && q.visual.kind === 'face' ? q.visual.feeling : null;
+        const want = tap ? `face:${tap}` : q.prompt === 'How does this face feel?' && shown ? shown[0].toUpperCase() + shown.slice(1) : null; if (!want || q.answer !== want || !one || one === want) problems.push('new feeling face wrong');
+        // Two faces a child can fairly take for each other are never set against each other (the test's own pairs, rounds one to four).
+        const NEAR = [['scared', 'embarrassed'], ['sad', 'embarrassed'], ['sad', 'worried'], ['scared', 'worried']]; const fa = tap || shown; const fw = fe(one) || String(one || '').toLowerCase();
+        if (NEAR.some((p) => p.includes(fa) && p.includes(fw))) problems.push('two faces a child can fairly confuse set against each other'); }
+      // Two feelings the same or different, read from the words, with the two faces drawn as the words say them.
+      if (genId === 'p4-same-or-different') { const m = /^You feel (\w+), and your friend feels (\w+)\. Are your feelings the same, or different\?$/.exec(q.prompt) || [];
+        if (!m[1] || q.answer !== (m[1] === m[2] ? 'The same' : 'Different') || !q.visual || q.visual.a.feeling !== m[1] || q.visual.b.feeling !== m[2]) problems.push('same or different wrong'); }
+      // A friend's own feeling: what the friend likes and gets, or how the friend sees the big slide, never what you like.
+      // Since round one a friend's dislike is said outright (liking pizza is not disliking cake), and only a stated like or dislike
+      // decides the feeling.
+      if (genId === 'p4-friend-feels') { const likes = (/your friend likes (\w+)/.exec(q.prompt) || [])[1]; const dislikes = (/your friend does not like (\w+)/.exec(q.prompt) || [])[1]; const gets = (/Your friend gets (?:a piece of |to pet a )?(\w+)/.exec(q.prompt) || [])[1]; const puppy = gets === 'puppy' ? 'dogs' : gets;
+        const want = /your friend thinks it is too tall/.test(q.prompt) ? 'scared' : /^Your friend loves the big slide/.test(q.prompt) ? 'happy' : likes && puppy && likes === puppy ? 'happy' : dislikes && puppy && dislikes === puppy ? 'sad' : null;
+        if (!want || fe(q.answer) !== want || !one || fe(one) === want) problems.push('friend feeling wrong'); }
+      // A yes or no explanation leads with its own answer, and a face's explanation says the sign the test's own table gives it (round
+      // one's code check: a face look swapped for another face's, or a Yes explained with No, passed).
+      if (['p3-join-yesno', 'p3-help-yesno', 'p4-feel-okay', 'p4-friends-yesno', 'p4-when-grownup', 'p4-good-yesno'].includes(genId) && !(q.answer === 'Yes' ? /^Yes\b/ : /^No\b/).test(q.explain || '')) problems.push('yes or no explanation leads with the other answer');
+      { const LOOK_T = { happy: 'It has a big smile.', sad: 'A tear rolls out.', mad: 'Its eyebrows squeeze down.', scared: 'Its eyes open wide.', worried: 'It has a wiggly mouth.', embarrassed: 'Its eyes look down.' };
+        const shownFace = genId === 'p4-feel-say' && q.visual ? q.visual.feeling : genId === 'p4-new-feeling-face' ? (q.visual ? q.visual.feeling : (/^Tap the (\w+) face\.$/.exec(q.prompt) || [])[1]) : null;
+        if (shownFace && !(q.explain || '').includes(LOOK_T[shownFace])) problems.push('a face explained by another face\'s sign'); }
+      // Whose turn now: the one who did not just go.
+      if (genId === 'p3-join-turn') { const want = /, and your friend just /.test(q.prompt) ? 'Your turn' : /, and you just /.test(q.prompt) ? "Your friend's turn" : null; if (!want || q.answer !== want || [...q.choices].sort().join() !== "Your friend's turn,Your turn") problems.push('turn wrong'); }
     }
     // One more and one fewer (pass ME, earmark E12 part two): the count in the words plus or minus one, re-derived with the test's
     // own number words; the picture shows the count before the change, and a wrong group is never the answer's count.
@@ -398,7 +468,9 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
       const wnHas = (name, w) => new RegExp(`\\b${w}\\b`, 'i').test(name);
       const WN_NUM = ['zero', 'one', 'two', 'three', 'four', 'five'];
       // Sad by its tear (the lesson check, pass MH): the mad face's mouth turns down too, so the mouth never tells sad from mad.
-      const WN_SIGN = { happy: 'a big smile', sad: 'a tear rolling out', mad: 'eyebrows that squeeze down', scared: 'wide-open eyes' };
+      // Worried by its wiggly mouth and embarrassed by its eyes that look down (pass MN): the sad face's eyebrows rise in the middle
+      // as the worried face's do, and the happy face has pink cheeks as the embarrassed face does.
+      const WN_SIGN = { happy: 'a big smile', sad: 'a tear rolling out', mad: 'eyebrows that squeeze down', scared: 'wide-open eyes', worried: 'a wiggly mouth', embarrassed: 'eyes that look down' };
       const WN_FACE = Object.fromEntries(Object.entries(WN_SIGN).map(([f, sign]) => [f, `has ${sign}`]));
       // A shape's why opens on its corners, or, for a square or a long rectangle beside the other, on its sides (pass ML).
       const WN_SHAPE = { circle: ['is round, with no corners'], square: ['has four corners', 'has four sides'], triangle: ['has three corners'], rectangle: ['has four corners', 'is long'] };
@@ -406,7 +478,8 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
       const WN_SAYS = { cat: 'meow', duck: 'quack', bee: 'buzz', frog: 'ribbit', owl: 'hoot', bear: 'growl' };
       const WN_LETTER = { A: 'has slanted sides', B: 'has two round bumps', H: 'has a bar too', V: 'has sides that meet at the bottom', P: 'has just one bump', D: 'has just one bump' };
       // Pre-K 4's seven letters, each by the words its Big letters line gives it (pass MM).
-      const WN_LETTER_P4 = { A: 'has two slanted sides and a bar across the middle', B: 'has two round bumps', C: 'is curved, like a cookie with a bite out of it', D: 'has a straight line and one big curve', E: 'has a line down and three lines across', M: 'has two pointy hills', S: 'is curvy, like a snake' };
+      // Since pass MN (Q50) the tracing lessons' six letters too, each by its lines as the tracing lessons and Find the Letter say them.
+      const WN_LETTER_P4 = { A: 'has two slanted sides and a bar across the middle', B: 'has two round bumps', C: 'is curved, like a cookie with a bite out of it', D: 'has a straight line and one big curve', E: 'has a line down and three lines across', M: 'has two pointy hills', S: 'is curvy, like a snake', L: 'goes down, then across the bottom', T: 'goes down the middle, then one line across the top', O: 'goes around to the left, all the way back to where it started', I: 'is one line, straight down', H: 'is two lines down, then a bridge across the middle', F: 'is a line down, then two lines across' };
       if (!wn || typeof wn !== 'object') wnp.push('a pre-K 3 choice question has no whyNot');
       else {
         if (Object.prototype.hasOwnProperty.call(wn, q.answer)) wnp.push('whyNot has an entry for the answer');
@@ -435,16 +508,16 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
           if (pic) { if (!wnHas(e.name, pic[1])) off('name is not its own picture'); if (/^p3-(animal-sound|animal-order|two-at-once)$/.test(genId) && !e.why.startsWith(`says ${WN_SAYS[pic[1]]}`)) off('why gives the animal another sound'); }
           if (dots) { const n = Number(dots[1]); if (!wnHas(e.name, WN_NUM[n]) || !wnHas(e.name, n === 1 ? 'dot' : 'dots')) off('name is not its own count'); }
           if (face) { if (!wnHas(e.name, face[1])) off('name is not its own feeling'); if (!e.why.startsWith(WN_FACE[face[1]])) off('why gives the face another sign'); }
-          for (const m of e.why.matchAll(/\ba (happy|sad|mad|scared) face has ([^,.]+)/g)) if (m[2] !== WN_SIGN[m[1]]) off(`why gives a ${m[1]} face another sign`);
+          for (const m of e.why.matchAll(/\b(?:a|the) (happy|sad|mad|scared|worried|embarrassed) face has ([^,.]+)/g)) if (m[2] !== WN_SIGN[m[1]]) off(`why gives a ${m[1]} face another sign`);
           // The face shown is the question's own picture where it has one (the calm rows say I feel sad, so the answer cannot
           // name it; the code check's second read), else a feeling-word answer; a "goes with" part names the tapped feeling's sign,
           // and a friend's look its own sign (the lesson check's second read: the mouth crept back into two places unseen).
-          { const shown = q.visual && q.visual.kind === 'face' ? q.visual.feeling : /^(happy|sad|mad|scared)$/i.test(String(q.answer)) ? String(q.answer).toLowerCase() : null; const m = /this face has ([^,.]+)/.exec(e.why);
+          { const shown = q.visual && q.visual.kind === 'face' ? q.visual.feeling : /^(happy|sad|mad|scared|worried|embarrassed)$/i.test(String(q.answer)) ? String(q.answer).toLowerCase() : null; const m = /this face has ([^,.]+)/.exec(e.why);
             if (m && shown && m[1] !== WN_SIGN[shown] && !(shown === 'sad' && m[1] === 'a tear')) off('why gives the face shown another sign');
             const GOES = { happy: 'a big smile', sad: 'a tear', mad: 'eyebrows that squeeze down', scared: 'wide-open eyes' };
             const gw = /^goes with ([^,.]+)/.exec(e.why); const felt = /I feel (happy|sad|mad|scared)/.exec(c); if (gw && felt && gw[1] !== GOES[felt[1]]) off('why gives the tapped feeling another sign');
             const friend = /a (sad|scared) friend(?: has|'s) ([^,.]+)/.exec(e.why); if (friend && !((friend[1] === 'sad' && friend[2] === 'a tear rolling out') || (friend[1] === 'scared' && friend[2] === 'eyes open wide'))) off('why gives a friend another sign'); }
-          if (/^(Happy|Sad|Mad|Scared)$/.test(c)) { const m = /would show ([^,.]+)/.exec(e.why); if (m && m[1] !== WN_SIGN[c.toLowerCase()]) off('why gives the named feeling another sign'); }
+          if (/^(Happy|Sad|Mad|Scared|Worried|Embarrassed)$/.test(c)) { const m = /(?:would|can) show ([^,.]+)/.exec(e.why); if (m && m[1] !== WN_SIGN[c.toLowerCase()]) off('why gives the named feeling another sign'); }
           if (shape) { if (!wnHas(e.name, shape[1]) || (shape[2] && WN_LOOK[shape[2]] && !wnHas(e.name, WN_LOOK[shape[2]]))) off('name is not its own shape and look'); if (!(WN_SHAPE[shape[1]] || []).some((s) => e.why.startsWith(s))) off('why gives the shape another look'); }
           if (sized) { const rank = { small: 1, medium: 2, big: 3 }; const others = q.choices.filter((x) => x !== c).map((x) => rank[x.split(':')[2]]);
             const size = /^p4-/.test(genId) ? (others.every((r) => r > rank[sized[2]]) ? 'smaller' : 'bigger') : { big: 'big', medium: 'middle', small: 'little' }[sized[2]];
@@ -457,7 +530,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
           // Is this the letter named? Yes means the named letter, and the reason gives the shown letter's own sign; No means
           // another letter, and the reason gives the named letter's sign (pass MM, in plain words since round two).
           if (genId === 'pl-is-letter') { const asked = (q.prompt.match(/^Is this the letter ([A-Z])\?$/) || [])[1]; const want = c === 'Yes' ? `means it is ${asked}, but it ${WN_LETTER_P4[q.visual.text]}.` : `means another letter, but it ${WN_LETTER_P4[asked]}.`; if (e.why !== want) off('why is not the shown letter\'s own sign'); }
-          if (/^(red|blue|yellow|green|circle|square|triangle|Happy|Sad|Mad|Scared|meow|quack|buzz|ribbit|hoot|growl)$/.test(c) && !wnHas(e.name, c)) off('name is not its own word');
+          if (/^(red|blue|yellow|green|circle|square|triangle|Happy|Sad|Mad|Scared|Worried|Embarrassed|meow|quack|buzz|ribbit|hoot|growl)$/.test(c) && !wnHas(e.name, c)) off('name is not its own word');
           if (/^(Yes|No|More|Fewer)$/.test(c) && e.name !== c) off('name is not its own word');
           if (/^[123]$/.test(c) && e.name !== ['One', 'Two', 'Three'][Number(c) - 1]) off('name is not its own number');
         }
@@ -988,7 +1061,12 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     if (genId === 'c2-earlier-year') { const [a, b] = q.choices.map(Number); if (Number(q.answer) !== Math.min(a, b)) problems.push('earlier year wrong'); }
     if (genId === 'c1-count-coins') { const n = ['two', 'three', 'four', 'five'].indexOf(q.story.match(/^(\w+) /)[1].toLowerCase()) + 2; const cents = /dime/.test(q.story) ? 10 : /nickel/.test(q.story) ? 5 : 1; if (Number(q.answer) !== n * cents) problems.push('coins wrong'); }   // pass KW: the setup now reads Here are three dimes
     // Explanations read cleanly too: no sentence runs past 45 words, a run-on guard (pass JG) (the second run-on check).
-    for (const sent of String(q.explain || '').replace(/\[\[|\]\]|\*\*/g, '').split(/(?<=[.!?])\s+|\n/)) { if (sent.trim().split(/\s+/).filter(Boolean).length > 45) problems.push(`explanation sentence over 32 words: ${sent.trim().slice(0, 40)}`); }
+    for (const sent of String(q.explain || '').replace(/\[\[|\]\]|\*\*/g, '').split('\n').flatMap((x) => x.split(L.SENTENCE_BREAK))) { if (sent.trim().split(/\s+/).filter(Boolean).length > 45) problems.push(`explanation sentence over 32 words: ${sent.trim().slice(0, 40)}`); }
+    // Nor does one end at a person's initial, a middle one or one of a run, which the screen would print on a line of its own (round
+    // four's code read, pass MN: ps-learn's explanation printed "B.", "F." and "Skinner showed it..." on three lines).
+    for (const said of [q.explain, q.story, q.prompt, ...(Array.isArray(q.alsoRight) ? q.alsoRight : []), ...Object.values(q.whyNot || {}).map((w) => w && w.why)].filter((x) => typeof x === 'string')) { const ps = said.replace(/\[\[|\]\]|\*\*/g, '').split('\n').flatMap((x) => x.split(L.SENTENCE_BREAK)).map((x) => x.trim()).filter(Boolean);
+      if (ps.some((p, i) => i + 1 < ps.length && (/\b[A-Z][a-z]+ [A-Z]\.$|\b[A-Z]\. [A-Z]\.$/.test(p) || (/(?:^|[\s("“])[A-Z]\.$/.test(p) && /^[A-Z]\.(?:\s|$)/.test(ps[i + 1]))))) problems.push('a sentence the voice can say ends at an initial');
+      if (live && /\b[A-Z]\.\s/.test(said)) INITIAL_EXPLAINS.add(said); }
     // Science facts carry a story after the answer (the story rule, applied centrally)
     if (L.SCIENCE_WHY_GENERATORS.includes(genId) && !q.explain.includes('\n')) problems.push('science fact has no story');
     // Grades 6, 7 and 9 social studies, re-derived from the story
@@ -1524,7 +1602,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('approve all approves everything not removed', L.approveAllWonder(L.emptyWonderReview()).approved.length === L.WONDER.length);
   ok('approve all leaves removed questions removed', L.approveAllWonder(hiddenState).approved.includes('w-one-thing') === false);
   ok('un-approve all sends everything back to awaiting review and keeps removals', L.unapproveAllWonder(allApproved).approved.length === 0 && L.unapproveAllWonder(hiddenState).hidden.includes('w-one-thing'));
-  { const done = ['colours', 'same-and-different', 'match-the-vehicles', 'match-the-things', 'match-the-water-animals', 'match-the-land-animals', 'match-the-shapes', 'match-the-solids', 'more-and-fewer-5', 'bigger-and-smaller', 'patterns', 'count-to-3', 'first-strokes', 'connect-the-dots', 'draw-the-shapes', 'taking-turns', 'big-bigger-biggest', 'helpers-all-around'].map((id, i) => ({ type: 'attempt_completed', at: `u${i}`, startedAt: 'u', moduleId: id, seed: 1, core: [], review: null, coreCorrect: 5, coreTotal: 5 }));
+  { const done = ['colours', 'same-and-different', 'match-the-vehicles', 'match-the-things', 'match-the-water-animals', 'match-the-land-animals', 'match-the-shapes', 'match-the-solids', 'more-and-fewer-5', 'bigger-and-smaller', 'patterns', 'count-to-3', 'first-strokes', 'connect-the-dots', 'draw-the-shapes', 'taking-turns', 'big-bigger-biggest', 'helpers-all-around', 'feelings-show', 'how-friends-feel', 'good-friend'].map((id, i) => ({ type: 'attempt_completed', at: `u${i}`, startedAt: 'u', moduleId: id, seed: 1, core: [], review: null, coreCorrect: 5, coreTotal: 5 }));
     ok('finishing a course unlocks the next course up in that subject', JSON.stringify(L.coursesToUnlock([L.makeCoursesEnabledEvent(['first-steps-pk'], 't'), ...done])) === '["counting-k"]');
     ok('nothing unlocks while a course is unfinished', L.coursesToUnlock([L.makeCoursesEnabledEvent(['first-steps-pk'], 't'), ...done.slice(0, 2)]).length === 0); }
   // The cadence: one reflection after every two mastered modules, rotating through the pool
@@ -1866,6 +1944,185 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('a high school student starts on the grade 9 courses', JSON.stringify(L.recommendedCourseIds([L.makeCoursesEnabledEvent([], 't')], 'high')) === '["history-9","math-9","reading-9","science-9","writing-9"]');
   ok('the letters course and now the counting course both have a touch module', L.courseNeedsTouch('letters-k') === true && L.courseNeedsTouch('counting-k') === true && L.courseNeedsTouch('fractions-intro') === false);
   ok('a wobbly hand passes, a wrong letter and a scribble do not', L.traceMatches('L', [[[34, 16], [31, 42], [28, 63], [33, 84]], [[31, 88], [52, 83], [74, 86]]]) && !L.traceMatches('L', [[[30, 15], [75, 15]], [[50, 15], [50, 85]]]) && !L.traceMatches('L', [Array.from({ length: 80 }, (_, i) => [(i * 37) % 100, (i * 53) % 100])]));
+  // Q49, Mikey's answer in pass MN ("Q49 - Your recommendation "): one line's dot and arrow at a time everywhere, and from kindergarten
+  // up a line traced from its end back to its start is cleared and does not count. Every shape is traced the ways a child traces it,
+  // finger points 1.5 units apart and rounded as the pad keeps them, with a slow wobble of 0, 3 and 5 units (a finger off its guide):
+  // forward line by line, the whole shape in one stroke of the finger, the next line begun by going back along the last as n, m and
+  // h go back up their stem, the lines in another order, a line begun before its dot and run past its end, and a line colored back
+  // and forth; none may ever be cleared or fail. Each line traced from its end alone (with no wobble, where the reading is exact)
+  // must be cleared, wherever the line is long enough to judge.
+  { const pts = (st) => { const out = [st[0].slice()]; for (let i = 1; i < st.length; i++) { const [a, b] = [st[i - 1], st[i]]; const n = Math.max(2, Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) / 1.5)); for (let k = 1; k <= n; k++) out.push([a[0] + ((b[0] - a[0]) * k) / n, a[1] + ((b[1] - a[1]) * k) / n]); } return out; };
+    const wob = (p, amp, ph) => p.map(([x, y], i) => [Math.round(x + amp * Math.sin(i / 7 + ph)), Math.round(y + amp * Math.sin(i / 9 + 2 * ph))]);
+    const line = (a, b) => pts([a, b]).slice(1, -1);
+    const shapes = Object.keys(L.TRACE_LETTERS).filter((k) => !L.TRACE_LETTERS[k].dots);
+    const lifts = (k, paths) => { const kept = []; for (const p of paths) { const st = L.traceDirections(k, [...kept, p]); if (st.lastLineBackward) return false; kept.push(p); } return !L.traceDirections(k, kept).backwardOnly.some(Boolean); };
+    const cleared = []; const missed = []; let tried = 0;
+    for (const k of shapes) {
+      const def = L.TRACE_LETTERS[k]; const fw = def.strokes.map(pts);
+      const startsOn = (i) => i > 0 && fw[i - 1].some((q) => Math.hypot(q[0] - fw[i][0][0], q[1] - fw[i][0][1]) < 3);
+      const back = (i) => { const prev = fw[i - 1]; let at = 0; prev.forEach((q, j) => { if (Math.hypot(q[0] - fw[i][0][0], q[1] - fw[i][0][1]) < Math.hypot(prev[at][0] - fw[i][0][0], prev[at][1] - fw[i][0][1])) at = j; }); return prev.slice(at).reverse(); };
+      for (const [amp, ph] of [[0, 0], [3, 0.4], [3, 2.1], [5, 1.3], [5, 4.0]]) {
+        const ways = { separate: fw, otherOrder: fw.slice().reverse(), overshoot: fw.map((p) => { const e = (a, b) => [a[0] + (a[0] - b[0]) * 1.2, a[1] + (a[1] - b[1]) * 1.2]; return [e(p[0], p[Math.min(3, p.length - 1)]), ...p, e(p[p.length - 1], p[Math.max(0, p.length - 4)])]; }), backAndForth: fw.map((p) => [...p, ...p.slice().reverse(), ...p]) };
+        if (fw.length > 1) { const one = []; fw.forEach((p) => { if (one.length) one.push(...line(one[one.length - 1], p[0])); one.push(...p); }); ways.oneStroke = [one];
+          const ret = fw.map((p, i) => (startsOn(i) ? [...back(i), ...p] : p)); ways.retrace = ret; ways.retraceOneStroke = [ret.flat()]; }
+        for (const [way, paths] of Object.entries(ways)) { tried++; if (!lifts(k, paths.map((p) => wob(p, amp, ph)))) cleared.push(`${k} ${way} ${amp}`); }
+      }
+      // each line reversed alone, the lines before it traced forward: the reversed line, and only it, is cleared as its finger lifts
+      def.strokes.forEach((_, r) => { const rev = fw.map((p, i) => (i === r ? p.slice().reverse() : p)).map((p) => wob(p, 0, 0)); const kept = []; let at = -1;
+        for (let i = 0; i < rev.length; i++) { if (L.traceDirections(k, [...kept, rev[i]]).lastLineBackward) { at = i; break; } kept.push(rev[i]); }
+        const want = /^(i|j) line 2$|^u line 2$/.test(`${k} line ${r + 1}`) ? -1 : r; if (at !== want) missed.push(`${k} line ${r + 1}: ${at < 0 ? 'not cleared' : `cleared line ${at + 1}`}`); });
+    }
+    ok(`Q49: no forward trace of any shape is ever cleared or fails, in seven ways and five wobbles (${tried} traces of ${shapes.length} shapes)`, tried > 1500 && cleared.length === 0, cleared.slice(0, 8).join(', '));
+    // A line too short to judge (the dot of i or j) and u's second line, whose judged part is the 5 units below where it runs back over
+    // its first, are never judged; every other line traced from its end is.
+    ok('Q49: every line long enough to judge, traced from its end back to its start, is cleared as the finger lifts, and no other (the dot of i and j and the end of u never are)', missed.length === 0, missed.slice(0, 10).join(', '));
+    ok('Q49: the words a cleared line hears, which name the arrow, since a closed line traced the other way starts at its dot (round one\'s screen check)', L.TRACE_BACK_WORDS === 'Start at the green dot and follow the arrow.');
+    // One line's dot at a time: the pad shows the first line not yet traced, and none once all are.
+    const order = shapes.every((k) => { const fw = L.TRACE_LETTERS[k].strokes.map(pts); if (L.traceLineState(k, []).next !== 0) return false; for (let i = 0; i < fw.length; i++) if (L.traceLineState(k, fw.slice(0, i + 1)).next !== (i + 1 < fw.length ? i + 1 : -1)) return false; return true; });
+    ok('Q49: the pad shows the first line not yet traced, line by line, and no dot once every line is traced', order);
+    // T traced with its stem from the bottom: pre-K's check passes it (the order and direction are guided, never failed), a
+    // kindergarten check does not; the connect-the-dots rule is untouched.
+    const tUp = [pts([[50, 85], [50, 15]]), pts([[20, 15], [80, 15]])];
+    ok('Q49: a line traced only from its end fails from kindergarten up and passes in pre-K', L.traceMatches('T', tUp) && !L.traceMatches('T', tUp, 14, { direction: true }) && L.traceMatches('T', [pts([[50, 15], [50, 85]]), pts([[20, 15], [80, 15]])], 14, { direction: true }));
+    // The rule goes by the module a question comes from: Draw the shapes (pre-K 4) and Tracing shapes (kindergarten) share their bank.
+    const pk = L.buildAttempt('draw-the-shapes', 3, []).core; const kk = L.buildAttempt('tracing-shapes', 3, []).core; const g1 = L.buildAttempt('writing-numbers', 3, []).core; const dots = L.buildAttempt('connect-the-dots', 3, []).core;
+    const flagged = (core) => core.filter((q) => q.type === 'trace').every((q) => q.checkDirection === true);
+    ok('Q49: a trace from kindergarten up carries the direction rule, and a pre-K trace or a connect-the-dots picture does not, whichever bank it comes from', flagged(kk) && flagged(g1) && pk.every((q) => !q.checkDirection) && dots.every((q) => !q.checkDirection) && L.traceChecksDirection('tracing-letters') && !L.traceChecksDirection('first-letter-tracing'));
+    const kq = kk.find((q) => q.answer === 'shape-square') || L.moduleQuestion('kn-trace-shape', 1, 'tracing-shapes'); const sq = L.TRACE_LETTERS[kq.answer].strokes.map(pts);
+    ok('Q49: checkAnswer reads the question\'s own rule: a shape traced the other way round fails from kindergarten up and passes in pre-K', L.checkAnswer(kq, JSON.stringify(sq)) && !L.checkAnswer(kq, JSON.stringify(sq.map((p) => p.slice().reverse()))) && L.checkAnswer({ ...kq, checkDirection: undefined }, JSON.stringify(sq.map((p) => p.slice().reverse()))));
+    // And every builder makes its questions as their module asks them: a memory check, a Quick Review and a checkpoint from a
+    // kindergarten tracing lesson carry the rule too.
+    const lr = L.buildLightReview([], 5, { moduleId: 'tracing-letters', stage: 'first', missedKinds: [] });
+    ok('Q49: a Quick Review of a kindergarten tracing lesson carries the rule on every trace', lr && lr.core.filter((q) => q.type === 'trace').length >= 2 && flagged(lr.core)); }
+  // Q49 at a finger's paces (pass MN, round one's code check). The pad keeps a finger's points as they come: about 1.5 units apart when
+  // a child goes slowly, 3 at an ordinary pace (about 480 pixels a second on a 320-pixel pad) and 12 or more on a flick, and a finger
+  // jitters point by point rather than in one smooth sway. At one pace with a smooth sway the checks above passed three faults: one
+  // lap of a closed shape could read as no lap at all (O traced round and back over itself was cleared, and failed), a line traced
+  // from its end at an ordinary pace or a flick passed (k's slant at 3 units, z's top line at 5, T's stem flicked upward), and the
+  // pad's next dot stuck on eleven shapes (E showed its top bar's dot after each of its lines). Every shape is traced again at four
+  // paces, each point jittered by up to two units from a seeded draw, line by line and there and back.
+  { const seeded = (n) => { let s = n >>> 0; return () => { s = (Math.imul(s, 1103515245) + 12345) >>> 0; return s / 4294967296; }; };
+    const at = (st, sp) => { const out = [st[0].slice()]; for (let i = 1; i < st.length; i++) { const [a, b] = [st[i - 1], st[i]]; const n = Math.max(2, Math.ceil(Math.hypot(b[0] - a[0], b[1] - a[1]) / sp)); for (let k = 1; k <= n; k++) out.push([a[0] + ((b[0] - a[0]) * k) / n, a[1] + ((b[1] - a[1]) * k) / n]); } return out; };
+    const jit = (p, amp, rnd) => p.map(([x, y]) => [Math.round(x + (rnd() * 2 - 1) * amp), Math.round(y + (rnd() * 2 - 1) * amp)]);
+    const exact = (p) => p.map(([x, y]) => [Math.round(x), Math.round(y)]);
+    const shapes = Object.keys(L.TRACE_LETTERS).filter((k) => !L.TRACE_LETTERS[k].dots);
+    const lifts = (k, paths) => { const kept = []; for (const p of paths) { if (L.traceDirections(k, [...kept, p]).lastLineBackward) return false; kept.push(p); } return !L.traceDirections(k, kept).backwardOnly.some(Boolean); };
+    const cleared = []; let tried = 0;
+    for (const k of shapes) for (const sp of [1.5, 3, 5, 8]) for (let t = 0; t < 3; t++) { const rnd = seeded(7919 * Math.round(sp * 10) + 31 * t + k.charCodeAt(0)); const fw = L.TRACE_LETTERS[k].strokes.map((st) => at(st, sp));
+      for (const [way, paths] of Object.entries({ separate: fw, thereAndBack: fw.map((p) => [...p, ...p.slice().reverse()]) })) { tried++; if (!lifts(k, paths.map((p) => jit(p, 2, rnd)))) cleared.push(`${k} ${way} ${sp}`); } }
+    ok(`Q49 at four paces: no forward trace, line by line or there and back with every point jittered, is ever cleared or fails (${tried} traces of ${shapes.length} shapes at 1.5, 3, 5 and 8 units a point)`, tried >= 1700 && cleared.length === 0, cleared.slice(0, 8).join(', '));
+    const missed = [];
+    for (const sp of [1.5, 3, 5, 13]) for (const k of shapes) { const def = L.TRACE_LETTERS[k]; const fw = def.strokes.map((st) => exact(at(st, sp)));
+      def.strokes.forEach((_, r) => { const rev = fw.map((p, i) => (i === r ? p.slice().reverse() : p)); const kept = []; let hit = -1;
+        for (let i = 0; i < rev.length; i++) { if (L.traceDirections(k, [...kept, rev[i]]).lastLineBackward) { hit = i; break; } kept.push(rev[i]); }
+        const want = /^(i|j) line 2$|^u line 2$/.test(`${k} line ${r + 1}`) ? -1 : r; if (hit !== want) missed.push(`${sp}: ${k} line ${r + 1}`); }); }
+    ok('Q49 at four paces: every line long enough to judge, traced from its end at 1.5, 3, 5 or 13 units a point, is cleared as the finger lifts, and no other line is', missed.length === 0, missed.slice(0, 10).join(', '));
+    const stuck = [];
+    for (const sp of [1.5, 3, 4, 8]) for (const k of shapes) { const fw = L.TRACE_LETTERS[k].strokes.map((st) => exact(at(st, sp)));
+      for (let i = 0; i < fw.length; i++) if (L.traceLineState(k, fw.slice(0, i + 1)).next !== (i + 1 < fw.length ? i + 1 : -1)) { stuck.push(`${sp}: ${k} after line ${i + 1}`); break; } }
+    ok("Q49 at four paces: the pad's next dot moves on as each line is traced, at 1.5, 3, 4 and 8 units a point", stuck.length === 0, stuck.slice(0, 10).join(', '));
+    // A smooth sway across the line, as a child's finger moves along the guide it sees (round two's code check: per-point jitter on
+    // the line through a stroke's points never cuts a corner, and it passed even at 16 units, while a sway of four or five units along
+    // the drawn curve, at a star's or a W's sharp corners, split a forward line into pieces none of which reached half, so it was
+    // cleared; and without tracePieces' whole-run hand-over a flick there and back on 4 or p was cleared). The guide is the pad's own
+    // curve (strokeSegments), walked at a pace, swayed, and rounded as the pad keeps a finger's points.
+    const sway = (p, amp, period, phase) => { let s = 0; return p.map(([x, y], i) => { if (i > 0) s += Math.hypot(x - p[i - 1][0], y - p[i - 1][1]); const a = p[Math.max(0, i - 1)]; const b = p[Math.min(p.length - 1, i + 1)]; const len = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1; const off = amp * Math.sin(phase + (2 * Math.PI * s) / period); return [x - ((b[1] - a[1]) / len) * off, y + ((b[0] - a[0]) / len) * off]; }); };
+    const guidePts = (k, i, sp) => { const def = L.TRACE_LETTERS[k]; const dense = [def.strokes[i][0].slice()];
+      for (const [p0, c1, c2, p1] of L.strokeSegments(def.strokes[i], L.cornersOf(def, i))) { const n = Math.max(4, Math.ceil(Math.hypot(p1[0] - p0[0], p1[1] - p0[1]) * 5));
+        for (let j = 1; j <= n; j++) { const t = j / n; const u = 1 - t; dense.push(c1 ? [0, 1].map((d) => u * u * u * p0[d] + 3 * u * u * t * c1[d] + 3 * u * t * t * c2[d] + t * t * t * p1[d]) : [p0[0] + (p1[0] - p0[0]) * t, p0[1] + (p1[1] - p0[1]) * t]); } }
+      const out = [dense[0]]; let acc = 0; for (let j = 1; j < dense.length; j++) { acc += Math.hypot(dense[j][0] - dense[j - 1][0], dense[j][1] - dense[j - 1][1]); if (acc >= sp) { out.push(dense[j]); acc = 0; } } if (acc > 0) out.push(dense[dense.length - 1]); return out; };
+    const swayed = []; let swTried = 0;
+    for (const [amp, jitter, paces] of [[5, 0, [1.5, 3, 5, 8, 12, 16]], [4, 2, [8, 12, 16]]]) for (const k of shapes) for (const sp of paces) for (let t = 0; t < 4; t++) {
+      const rnd = seeded(104729 * Math.round(sp * 10) + 97 * t + k.charCodeAt(0) * 13 + (k.length > 1 ? k.charCodeAt(1) : 0)); const jr = seeded(7 + t * 31 + Math.round(sp * 7));
+      const fw = L.TRACE_LETTERS[k].strokes.map((_, i) => guidePts(k, i, sp)); const period = 25 + Math.floor(rnd() * 40); const phase = rnd() * Math.PI * 2;
+      const ways = { thereAndBack: fw.map((p) => [...p, ...p.slice().reverse()]), backAndForth: fw.map((p) => { const n = p.length; return [...p.slice(0, Math.max(2, Math.round(n * 0.7))), ...p.slice(Math.round(n * 0.15), Math.round(n * 0.7)).reverse(), ...p.slice(Math.round(n * 0.15))]; }) };
+      for (const [way, paths] of Object.entries(ways)) { swTried++; if (!lifts(k, paths.map((p) => sway(p, amp, period, phase).map(([x, y]) => [Math.round(x + (jr() * 2 - 1) * jitter), Math.round(y + (jr() * 2 - 1) * jitter)])))) swayed.push(`${k} ${way} ${sp} sway ${amp}`); } }
+    ok(`Q49 with a child's sway along the drawn guide: no forward trace, there and back or colored back and forth, swaying five units (or four with jitter at a quick finger's pace), is ever cleared or fails (${swTried} traces at 1.5 to 16 units a point)`, swTried >= 5000 && swayed.length === 0, swayed.slice(0, 8).join(', '));
+    const stuckSway = [];
+    for (const sp of [8, 12, 16]) for (const k of shapes) for (let t = 0; t < 5; t++) { const rnd = seeded(15485863 + 101 * t + 7 * sp + k.charCodeAt(0) * 7 + (k.length > 1 ? k.charCodeAt(1) : 0)); const period = 25 + Math.floor(rnd() * 40); const phase = rnd() * Math.PI * 2;
+      const fw = L.TRACE_LETTERS[k].strokes.map((st) => sway(at(st, sp), 3, period, phase).map(([x, y]) => [Math.round(x), Math.round(y)]));
+      for (let i = 0; i < fw.length; i++) if (L.traceLineState(k, fw.slice(0, i + 1)).next !== (i + 1 < fw.length ? i + 1 : -1)) { stuckSway.push(`${sp}: ${k} after line ${i + 1}`); break; } }
+    ok("Q49 with a child's sway: the pad's next dot moves on as each line is traced with a three-unit sway at 8, 12 and 16 units a point", stuckSway.length === 0, stuckSway.slice(0, 10).join(', '));
+    // A finger that rests on its touch-down repeats its first point, and the lines that share the dot are told apart by its first move
+    // past the rest (round four's code read: 4's stem, there and back at 18 units a point from the dot it shares with the slant, was
+    // read as the slant and cleared once the first point came twice).
+    { const rested = []; let restTried = 0;
+      // ...and a rest a unit over, which the pad's whole units can report (round five's code read: 4's stem went to its slant again).
+      const RESTS = [[], [[0, 0]], [[0, 0], [0, 0]], [[0, 0], [0, 0], [0, 0], [0, 0]], ...[[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1], [2, 0], [-2, -1], [2, -2], [1, -3]].map((o) => [[0, 0], o])];   // a unit over, and since round six two or three (a rule cut at 1.5 or 2 units passed one-unit rests)
+      for (const k of ['4', 'E', 'F', 'A', 'N', 'M', 'B', 'D', 'P', 'R', 'p']) for (const sp of [14, 16, 18, 20, 24]) for (const [ri, rest] of RESTS.entries()) { restTried++;
+        const paths = L.TRACE_LETTERS[k].strokes.map((st) => { const p = exact(at(st, sp)); const tb = [...p, ...p.slice().reverse().slice(1)]; return [...rest.map(([dx, dy]) => [tb[0][0] + dx, tb[0][1] + dy]), ...tb]; }); if (!lifts(k, paths)) rested.push(`${k} ${sp} rest ${ri}`); }
+      ok(`Q49: a touch-down on a dot two lines share goes to the line the finger moves along past a rest (${restTried} traces: 11 shapes there and back at 14 to 24 units a point, resting 0 to 4 points or one to three units over)`, restTried === 880 && rested.length === 0, rested.slice(0, 6).join(', ')); }
+    // A closed line's stretches are counted once a lap: O traced the other way a third of the way or so, off the line and back over
+    // the same stretch, is under half and stays (round four's code read: it read 0.55 to 0.65 and was cleared), while a whole lap the
+    // other way still clears.
+    { let kept = 0; let laps = 0; let tried = 0; const out = (p, r) => { const nn = Math.hypot(p[0] - 50, p[1] - 50) || 1; return [p[0] + ((p[0] - 50) / nn) * r, p[1] + ((p[1] - 50) / nn) * r]; };
+      // Five paces, each point jittered by up to two units (round five's code read: one pace with no jitter read too little).
+      for (const sp of [1.5, 3, 5, 8, 13]) { const g = guidePts('O', 0, sp); const n = g.length; const rnd = seeded(31337 + Math.round(sp * 10)); const jt = (p) => p.map(([x, y]) => [Math.round(x + (rnd() * 2 - 1) * 2), Math.round(y + (rnd() * 2 - 1) * 2)]);
+        for (const [b, c, d] of [[0.4, 0.9, 0.65], [0.3, 0.95, 0.7], [0.35, 0.85, 0.6]]) { tried++; const back = g.slice().reverse().slice(0, Math.round(n * b)); const re = g[Math.round(n * c)];
+          const path = jt([...back, out(back[back.length - 1], 12), out(back[back.length - 1], 25), out(re, 25), out(re, 12), ...g.slice(Math.round(n * d), Math.round(n * c) + 1).reverse()]); if (!L.traceDirections('O', [path]).lastLineBackward) kept++; }
+        if (L.traceDirections('O', [jt(g.slice().reverse())]).lastLineBackward) laps++; }
+      ok(`Q49: a closed line's stretches count once a lap, so O traced the other way a third of the way or so, off the line and back, stays, and a whole lap the other way clears (${kept} of ${tried} kept, ${laps} of 5 laps cleared, at five paces with jitter)`, tried === 15 && kept === 15 && laps === 5); }
+    // The rule goes by each trace's own module in every builder, both ways round (round one's code check: only the Quick Review was
+    // asserted, and a memory check, a checkpoint, a placement probe or a quick check made another way still passed).
+    const memo = (mid, mastered) => Array.from({ length: 20 }, (_, i) => L.buildAttempt(mid, i + 1, mastered)).flatMap((a) => [a.review, a.review2]).filter((r) => r && r.question.type === 'trace');
+    const kFromPk = memo('tracing-letters', ['draw-the-shapes']); const pkFromK = memo('draw-the-shapes', ['tracing-shapes']);
+    const passed = (id, i) => ({ type: 'attempt_completed', at: `2026-10-0${1 + (i % 9)}T10:00:00.000Z`, startedAt: 'u', moduleId: id, seed: 1, core: [], review: null, coreCorrect: 5, coreTotal: 5 });
+    const events = ['tracing-letters', 'draw-the-shapes', 'tracing-shapes', 'first-letter-tracing'].map(passed);
+    const ruleOk = (qs) => { const tr = qs.filter((q) => q.type === 'trace'); return tr.length > 0 && tr.every((q) => !!q.checkDirection === L.traceChecksDirection(q.fromModuleId)); };
+    const cps = Array.from({ length: 20 }, (_, s) => L.buildCheckpoint(events, s + 1)).filter(Boolean).flatMap((c) => c.core);
+    const kc = L.getCourse('letters-k'); const pc = L.getCourse('first-sounds-pk');
+    const probes = [...Array.from({ length: 20 }, (_, s) => L.buildPlacementProbe(kc.subject, 'K', s + 1)), ...Array.from({ length: 20 }, (_, s) => L.buildPlacementProbe(pc.subject, 'PK4', s + 1))].filter(Boolean).flatMap((c) => c.core);
+    const quick = [...Array.from({ length: 5 }, (_, s) => L.buildQuickCheck('tracing-letters', s + 1)), ...Array.from({ length: 5 }, (_, s) => L.buildQuickCheck('first-letter-tracing', s + 1))].flatMap((c) => c.core);
+    const marks = Array.from({ length: 10 }, (_, s) => L.buildAttempt('first-marks', s + 1, []).core).flat();
+    ok('Q49: a memory check, a checkpoint, a placement probe and a quick check make every trace as its own module asks it, both ways round, and pre-K 3 keeps any direction', kFromPk.length > 0 && kFromPk.every((r) => !r.question.checkDirection) && pkFromK.length > 0 && pkFromK.every((r) => r.question.checkDirection === true) && ruleOk(cps) && ruleOk(probes) && ruleOk(quick) && !L.traceChecksDirection('first-marks') && marks.some((q) => q.type === 'trace') && marks.every((q) => !q.checkDirection), `memory ${kFromPk.length} and ${pkFromK.length}; checkpoint ${ruleOk(cps)}, probe ${ruleOk(probes)}, quick ${ruleOk(quick)}`); }
+  // Q50, Mikey's answer in pass MN ("Q50 - Your recommendation "): each of First Sounds and Letters' three tracing rounds traces every
+  // letter of its lesson once and asks two choice questions among the same three letters, the letter heard and the letter by its lines;
+  // and every tracing round traces each letter, mark or shape its lesson teaches before any comes again (kindergarten's too).
+  { const LESSONS = { 'first-letter-tracing': ['L', 'T', 'O'], 'more-big-letters': ['I', 'H', 'E'], 'trace-straight-letters': ['L', 'T', 'F'] }; const off = [];
+    for (const [mid, ls] of Object.entries(LESSONS)) for (let seed = 1; seed <= 200; seed++) { const core = L.buildAttempt(mid, seed, []).core; const traced = core.filter((q) => q.type === 'trace').map((q) => q.answer).sort().join('');
+      const hear = core.filter((q) => /^Tap the letter [A-Z]\.$/.test(q.prompt)); const lines = core.filter((q) => /^Which letter /.test(q.prompt));
+      if (core.length !== 5 || traced !== ls.slice().sort().join('') || hear.length !== 1 || lines.length !== 1) off.push(`${mid} ${seed}: ${core.map((q) => q.answer).join(' ')}`); }
+    ok('Q50: every round of the three tracing lessons traces each of its three letters once and asks the letter heard and the letter by its lines (600 rounds)', off.length === 0, off.slice(0, 4).join(' | '));
+    // The letter heard and the letter by its lines are two different letters (round one's screen check: 212 of its 600 rounds, and 177
+    // of this test's 600, asked one letter twice, the second answered by the first), in a round and in a Quick Review.
+    const echo = []; for (const mid of Object.keys(LESSONS)) for (let seed = 1; seed <= 200; seed++) { const ch = L.buildAttempt(mid, seed, []).core.filter((q) => q.type !== 'trace'); if (ch.length !== 2 || ch[0].answer === ch[1].answer) echo.push(`${mid} ${seed}: ${ch.map((q) => q.answer).join(' ')}`);
+      const lr = L.buildLightReview([], seed, { moduleId: mid, stage: 'first', missedKinds: [] }); const lc = lr ? lr.core.filter((q) => q.type !== 'trace') : []; if (lc.length !== 2 || lc[0].answer === lc[1].answer) echo.push(`review ${mid} ${seed}: ${lc.map((q) => q.answer).join(' ')}`); }
+    ok('Q50: a tracing round and its Quick Review ask their two choice questions about two different letters (600 rounds, 600 reviews)', echo.length === 0, echo.slice(0, 4).join(' | '));
+    const banks = Object.keys(LESSONS).map((mid) => { const m = L.MODULES.find((x) => x.id === mid); const keys = new Set(); for (const g of new Set(m.generators)) for (let s = 1; s <= 300; s++) keys.add(L.questionKey(L.generateQuestion(g, s))); return keys.size; });
+    ok('Q50: each tracing lesson holds nine distinct questions, three traces and three of each choice kind', banks.every((n) => n === 9), banks.join(','));
+    // Every tracing round elsewhere: no trace twice while its bank has another the round has not traced.
+    const repeats = [];
+    for (const m of L.MODULES) { const tg = [...new Set(m.generators)].filter((g) => L.generateQuestion(g, 1).type === 'trace'); if (!tg.length) continue;
+      const pool = new Set(tg.flatMap((g) => Array.from({ length: 300 }, (_, s) => L.generateQuestion(g, s + 1).answer)));
+      for (let seed = 1; seed <= 40; seed++) { const traced = L.buildAttempt(m.id, seed, []).core.filter((q) => q.type === 'trace').map((q) => q.answer); const twice = traced.filter((a, i) => traced.indexOf(a) !== i);
+        if (twice.length && new Set(traced).size < Math.min(traced.length, pool.size)) { repeats.push(`${m.id} ${seed}: ${traced.join(' ')}`); break; } } }
+    ok('Q50: no tracing round traces a letter, mark or shape twice while one it has not traced remains (every tracing lesson, 40 rounds each)', repeats.length === 0, repeats.slice(0, 4).join(' | '));
+    // Nor one letter twice in a row, in a round, a triple dose or a Quick Review, while its lesson has another (round two's code check:
+    // a new set opened with the letter just traced, "i k t t i", in 136 of 1,000 rounds and 474 of 1,000 triple doses; round four's
+    // alignment read: a Quick Review had no sets, "k i t t k", in 188 of 1,000 reviews).
+    const inRow = []; let rowsRead = 0; const reviewRow = []; let reviewsRead = 0;
+    for (const m of L.MODULES) { const tg = [...new Set(m.generators)].filter((g) => L.generateQuestion(g, 1).type === 'trace'); if (!tg.length) continue;
+      const pool = new Set(tg.flatMap((g) => Array.from({ length: 300 }, (_, s) => L.generateQuestion(g, s + 1).answer))); if (pool.size < 2) continue;
+      for (let seed = 1; seed <= 40; seed++) { for (const dose of [1, 3]) { rowsRead++; const tr = L.buildAttempt(m.id, seed, [], dose > 1 ? { dose } : {}).core.filter((q) => q.type === 'trace').map((q) => q.answer);
+          if (tr.some((a, i) => i > 0 && a === tr[i - 1])) { inRow.push(`${m.id} ${seed}${dose > 1 ? ' x3' : ''}: ${tr.join(' ')}`); } }
+        const lr = L.buildLightReview([], seed, { moduleId: m.id, stage: 'first', missedKinds: [] }); if (lr) { reviewsRead++; const rt = lr.core.filter((q) => q.type === 'trace').map((q) => q.answer); if (rt.some((a, i) => i > 0 && a === rt[i - 1]) || (() => { let set = new Set(); return rt.some((a) => { if (set.has(a)) { if (set.size < pool.size) return true; set = new Set(); } set.add(a); return false; }); })()) reviewRow.push(`${m.id} ${seed}: ${rt.join(' ')}`); } } }
+    ok(`Q50: no tracing round or triple dose traces one letter twice in a row while its lesson has another (${rowsRead} rounds)`, rowsRead >= 1000 && inRow.length === 0, inRow.slice(0, 4).join(' | '));
+    // (and since round five's code read every letter before any comes again: a review of a lesson whose letters are split across
+    // banks traced "r m k z r", since its exhausted bank never handed its turn to the others; since round six set by set, as a round
+    // is read, since a count of letters let "i t i k t" pass)
+    ok(`Q50: no Quick Review of a tracing lesson traces one letter twice in a row, or one again while another is untraced, while its lesson has another (${reviewsRead} reviews)`, reviewsRead >= 1000 && reviewRow.length === 0, reviewRow.slice(0, 4).join(' | '));
+    // A Quick Review keeps a round's share, three traces of the three letters and two choices, over 30 seeds of each lesson, missed kinds
+    // first or not (round one: one seed was read, and the reviews traced one letter or two of five, since each kind came once in turn);
+    // and a triple dose keeps its nine traces, three sets of the three letters (round one's code check: past the first set its letters
+    // came at random).
+    const qr = []; const dose = [];
+    for (const [mid, ls] of Object.entries(LESSONS)) for (let seed = 1; seed <= 30; seed++) { const missedKinds = seed % 3 === 0 ? [L.MODULES.find((x) => x.id === mid).generators[3]] : seed % 3 === 1 ? [L.MODULES.find((x) => x.id === mid).generators[0]] : [];
+      const lr = L.buildLightReview([], seed, { moduleId: mid, stage: 'first', missedKinds }); const lt = lr ? lr.core.filter((q) => q.type === 'trace').map((q) => q.answer).sort().join('') : '';
+      if (!lr || lr.core.length !== 5 || lt !== ls.slice().sort().join('')) qr.push(`${mid} ${seed}: ${lr ? lr.core.map((q) => q.answer).join(' ') : 'none'}`);
+      const core = L.buildAttempt(mid, seed, [], { dose: 3 }).core; const tr = core.filter((q) => q.type === 'trace').map((q) => q.answer);
+      if (core.length !== 15 || tr.length !== 9 || [0, 3, 6].some((i) => tr.slice(i, i + 3).sort().join('') !== ls.slice().sort().join(''))) dose.push(`${mid} ${seed}: ${tr.join(' ')}`); }
+    ok('Q50: a Quick Review of a tracing lesson traces its three letters once each and asks two choices (90 reviews, missed kinds first or not)', qr.length === 0, qr.slice(0, 4).join(' | '));
+    ok('Q50: a triple dose of a tracing lesson keeps nine traces, three sets of its three letters, among fifteen questions (90 rounds)', dose.length === 0, dose.slice(0, 4).join(' | ')); }
 }
 
 // ---- 11. Resetting one module without touching the others ----
@@ -2713,6 +2970,35 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
     const unit = L.heldSoundSpoken('mmm', 'at') === 'm'.repeat(44) + 'at' && L.heardForm('Mmm-at.') === 'Mat.' && L.heardForm('Sss-huh.') === 'Sss sun-huh.' && L.speechPieces('Mmm-at.').length === 1 && L.speechPieces('Mmm-at.')[0].text.endsWith('mat')
       && L.speechPieces('Sss-huh.').length === 2 && L.speechPieces('Sss-huh.')[1].text.startsWith('-h');
     ok(`a word said slowly runs into its own letters, never into a carrier word (${split} split sounds in ${texts.length} lines; ${apart} kept apart)`, unit && split >= 8 && apart <= 1 && broken.length === 0, broken.slice(0, 5).join(' | ')); }
+  // A title before a name never ends a sentence (pass MN, round one's story flow check, and the code it led to): every split of the
+  // app's words into sentences keeps Mr., Mrs., Ms., Dr. and Jr. inside their sentence (SENTENCE_BREAK). Until then a kindergarten
+  // lesson printed "we honor Dr." on a line of its own, the voice was handed "Ms." alone as a held word at play, and the read-along
+  // lit "Mr." as a sentence. Every story and every lesson's words, key idea and script, as spoken (speechPieces) and as printed
+  // (formatTeachingText), and the read-along's and the audio ledger's splits, read from their source.
+  { const S4 = await import('../src/stories.mjs'); const texts = [];
+    for (const table of [S4.STORIES, S4.COURSE_STORIES, S4.MASTERY_STORIES]) for (const st of Object.values(table)) for (const w of [].concat(st.words || [])) texts.push(w);
+    for (const m of L.MODULES) { const ls = m.lesson || {}; for (const t of [...(ls.paragraphs || []), ls.keyIdea || '', ...(ls.script || []).map((x) => x.say || '')]) texts.push(t); }
+    // A title, since round two's code check a middle initial (Stephen F.), and since round four's code read two initials of a run
+    // (B. F.), or a lone initial before a piece that starts with one (B. then F.).
+    const TITLE_END = /\b(?:Mr|Mrs|Ms|Dr|Jr)\.$|\b[A-Z][a-z]+ [A-Z]\.$|\b[A-Z]\. [A-Z]\.$/;
+    const runCut = (parts) => parts.some((p, i) => i + 1 < parts.length && /(?:^|[\s("“])[A-Z]\.$/.test(p.trim()) && /^[A-Z]\.(?:\s|$)/.test(parts[i + 1].trim()));
+    const cut = texts.filter((t) => { const sp = L.speechPieces(t).map((p) => p.text); const ln = String(L.formatTeachingText(t)).split('\n'); return sp.some((p) => TITLE_END.test(p.trim())) || ln.some((line) => TITLE_END.test(line.trim())) || runCut(sp) || runCut(ln); });
+    const titled = texts.filter((t) => /\b(?:Mr|Mrs|Ms|Dr|Jr)\. [A-Z]/.test(t)).length;
+    const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8'); const ledger = readFileSync(new URL('../tools/audio-ledger.mjs', import.meta.url), 'utf8');
+    const unit = L.speechPieces('Ms. Reyes held up a jar. But his teacher, Mr. Beto, sat down.').length === 2 && L.speechPieces('I saw Mr. Beto. He waved.').length === 2 && !L.formatTeachingText('We honor Dr. King. He worked hard.').includes('Dr.\n')
+      && L.speechPieces('We remember Christopher Columbus, Stephen F. Austin and José Antonio Navarro. They shaped Texas.').length === 2 && !L.formatTeachingText('The city is named for Stephen F. Austin, the Father of Texas. Many people live there.').includes('F.\n') && 'Start with B. Next he tried H.'.split(L.SENTENCE_BREAK).length === 2
+      && L.speechPieces('Behaviorism, extended by B. F. Skinner\'s work, led for decades. Then minds came back.').length === 2 && !/(B|F)\.\n/.test(L.formatTeachingText('Operant conditioning follows it: B. F. Skinner showed it from the 1930s. Rewards grow a behavior.'))
+      && 'W. E. B. Du Bois wrote it. He was first.'.split(L.SENTENCE_BREAK).length === 2 && 'He read "W. E. B. Du Bois" aloud. Then he sat.'.split(L.SENTENCE_BREAK).length === 2 && 'E. Li. Jah.'.split(L.SENTENCE_BREAK).length === 3;
+    const tools = ['story-flow', 'cast-ages', 'question-review'].every((t) => readFileSync(new URL(`../tools/${t}.mjs`, import.meta.url), 'utf8').includes('(?<!\\b(?:Mr|Mrs|Ms|Dr|Jr)\\.)(?<!\\b[A-Z][a-z]+ [A-Z]\\.)(?<!\\b[A-Z]\\. [A-Z]\\.)(?!(?<=(?:^|[\\s("“])[A-Z]\\.)\\s+[A-Z]\\.(?:\\s|$))'));
+    // Every place the rule joins two pieces at an initial lies inside a name on this reviewed list, so a capital and a period that end a
+    // real sentence ("Big A. Small a.") never join two sentences unnoticed (round four's code read); add a name only once it is read.
+    const NAMES = ['Stephen F. Austin', 'John B. Watson', 'Edward T. Hall', 'B. F. Skinner'];
+    const G = new RegExp(L.SENTENCE_BREAK.source, 'g'); const strays = []; let joins = 0;
+    for (const t of [...texts, ...INITIAL_EXPLAINS]) { const real = new Set([...t.matchAll(G)].map((m) => m.index));
+      const inName = (i) => NAMES.some((n) => { for (let at = t.indexOf(n); at >= 0; at = t.indexOf(n, at + 1)) if (at < i && i < at + n.length) return true; return false; });
+      for (const m of t.matchAll(/(?<=[.!?])\s+/g)) { if (real.has(m.index) || /\b(?:Mr|Mrs|Ms|Dr|Jr)\.$/.test(t.slice(0, m.index))) continue; joins++; if (!inName(m.index)) strays.push(t.slice(Math.max(0, m.index - 30), m.index + 20)); } }
+    ok(`every place the sentence rule joins at an initial is inside a reviewed name (${joins} joins read, ${INITIAL_EXPLAINS.size} question texts with an initial among them)`, joins >= 30 && INITIAL_EXPLAINS.size >= 400 && strays.length === 0, strays.slice(0, 4).join(' | '));
+    ok(`a title before a name, a middle initial or a run of initials never ends a sentence, spoken, printed or lit, here and in the tools' copies of the rule (${titled} lines with a title read)`, unit && tools && titled >= 15 && cut.length === 0 && /function sentencesOf\(text\) \{ return String\(text \|\| ''\)\.split\(SENTENCE_BREAK\)/.test(ui) && /split\(SENTENCE_BREAK\)/.test(ledger), cut.slice(0, 4).map((t) => t.slice(0, 60)).join(' | ')); }
   // A tapped answer says itself for a pre-reader only when hearing it gives nothing away (pass MC, the lesson check: tapping each
   // letter until a voice said A passed "Tap the letter A" by ear, and the first try still counted). Every read-aloud bank is
   // sampled: no single letter or picture speaks, a word answer still does, and whether a choice speaks never depends on which
@@ -3251,7 +3537,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   const otherPair = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']);
   const otherPriv = await crypto.subtle.exportKey('jwk', otherPair.privateKey);
   ok('a code signed with any other key is refused', (await L.checkLicenseCode(await L.makeLicenseCode(otherPriv, { id: 'X', name: 'Y', year: '2026-27', until: '2027-07-31' }), new Date('2026-10-01'))).ok === false);
-  ok('pre-K 3, pre-K 4 and kindergarten courses are free, grade 1 and up are not', L.COURSES.filter(L.courseIsFree).length > 0 && L.COURSES.every((c) => L.courseIsFree(c) === ['PK3', 'PK4', 'K'].includes(c.grade)) && L.COURSES.filter(L.courseIsFree).reduce((n, c) => n + c.modules.length, 0) === 152);   // 86 plus computer science (FS), economics (FV), art and music (GE), philosophy (GL), psychology (GP) and speech (GT), four modules each, plus the five kindergarten science modules of earmark E1 (pass KK) the two Counting modules of earmark E2 (pass KL) the seven Me and my community modules of earmark E3 (passes KM and KN) the seven Taking care of me modules of earmark E4 (passes KO and KP) the four Tell, show, step and repeat modules of earmark E5 (passes KQ and KR) and the five Letters tracing modules of earmark E6 (pass KS), plus the two Very First Steps feelings modules of earmark E12 (pass MD) and its One more and one fewer and Listen and Point's Words that rhyme (pass ME)
+  ok('pre-K 3, pre-K 4 and kindergarten courses are free, grade 1 and up are not', L.COURSES.filter(L.courseIsFree).length > 0 && L.COURSES.every((c) => L.courseIsFree(c) === ['PK3', 'PK4', 'K'].includes(c.grade)) && L.COURSES.filter(L.courseIsFree).reduce((n, c) => n + c.modules.length, 0) === 156);   // 86 plus computer science (FS), economics (FV), art and music (GE), philosophy (GL), psychology (GP) and speech (GT), four modules each, plus the five kindergarten science modules of earmark E1 (pass KK) the two Counting modules of earmark E2 (pass KL) the seven Me and my community modules of earmark E3 (passes KM and KN) the seven Taking care of me modules of earmark E4 (passes KO and KP) the four Tell, show, step and repeat modules of earmark E5 (passes KQ and KR) and the five Letters tracing modules of earmark E6 (pass KS), plus the two Very First Steps feelings modules of earmark E12 (pass MD) and its One more and one fewer and Listen and Point's Words that rhyme (pass ME), plus Very First Steps' Can I play too? and First Steps' three feelings lessons of earmarks E12 and E13 (pass MN)
   const mixed = ['counting-k', 'reading-3', 'letters-k'];
   ok('without a license only the free courses open; with one, all of them do', JSON.stringify(L.openCourseIds(mixed, false)) === JSON.stringify(['counting-k', 'letters-k']) && L.openCourseIds(mixed, true).length === 3);
   ok('the app carries a public key only, marked as the development key until launch', !('d' in L.LICENSE_PUBLIC_KEY) && L.LICENSE_KEY_IS_DEVELOPMENT === true);

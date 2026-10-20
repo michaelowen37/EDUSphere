@@ -47,7 +47,7 @@ const BY_CONTEXT = [
   new RegExp(`\\ba (boy|girl|man|woman|teenager|teen|child|kid) of ${NUMW}\\b(?!-)${NOT_AN_AGE}`, 'gi'),
 ];
 function nameBefore(text) {
-  const sentences = text.split(/(?<=[.!?])\s+/);
+  const sentences = text.split(/(?<=[.!?])(?<!\b(?:Mr|Mrs|Ms|Dr|Jr)\.)(?<!\b[A-Z][a-z]+ [A-Z]\.)(?<!\b[A-Z]\. [A-Z]\.)(?!(?<=(?:^|[\s("“])[A-Z]\.)\s+[A-Z]\.(?:\s|$))\s+/);   // a title before a name never ends one (pass MN)
   for (let i = sentences.length - 1; i >= 0; i -= 1) {
     const words = [...sentences[i].matchAll(/\b[A-Z][a-z]+\b/g)];
     for (let j = words.length - 1; j >= 0; j -= 1) {

@@ -60,7 +60,7 @@ export const CURRICULUM = [
     // and the Head Start ELOF preschool goals on headstart.gov, and is quoted word for word. The old V.E.1 line quoted the
     // pre-K 4 wording ("into groups and uses language to describe"), which is not the PK3 outcome.
     grade: 'PK3', subject: 'Math', status: 'ready',
-    source: 'Texas Prekindergarten Guidelines (2022), PK3 outcomes in Domains I, II, IV, V and IX, read in full in the PK3 Streamlined Version (TEA) in pass MA, Domain I again in pass MD and Domain V (B. Joining and Separating) again in pass ME; Head Start Early Learning Outcomes Framework, preschool goals for Mathematics, Scientific Reasoning, Social and Emotional, and Perceptual, Motor, and Physical Development, with their 36 to 48 month progressions (P-MATH 6 read on headstart.gov in pass ME)',
+    source: 'Texas Prekindergarten Guidelines (2022), PK3 outcomes in Domains I, II, IV, V and IX, read in full in the PK3 Streamlined Version (TEA) in pass MA, Domain I again in pass MD and pass MN and Domain V (B. Joining and Separating) again in pass ME; Head Start Early Learning Outcomes Framework, preschool goals for Mathematics, Scientific Reasoning, Social and Emotional, and Perceptual, Motor, and Physical Development, with their 36 to 48 month progressions (P-MATH 6 read on headstart.gov in pass ME)',
     standards: [
       { framework: 'TEKS', code: 'PK3.V.E.1', text: 'Child sorts objects that are the same and different.', moduleIds: ['red-and-blue', 'find-the-match', 'yellow-and-green', 'match-the-animals'] },
       { framework: 'TEKS', code: 'PK3.V.A.2', text: 'Child counts up to 5 objects with one-to-one correspondence.', moduleIds: ['one-and-two', 'more-or-fewer', 'one-more-one-fewer'] },
@@ -91,10 +91,15 @@ export const CURRICULUM = [
       { framework: 'CCSS', code: 'ELOF.P-SE.5', text: 'Uses basic problem-solving skills to resolve conflicts with other children.', moduleIds: ['please-and-thank-you', 'help-a-friend'] },
       // Pass ML, earmark E12's unplaced goals read on headstart.gov and placed: P-SE 3's sharing and taking turns with materials
       // (Please and thank you) and P-SE 1's "Uses adults as a resource to solve problems." (Helping a friend), each in part.
-      { framework: 'CCSS', code: 'ELOF.P-SE.3', text: 'Engages in and maintains positive interactions and relationships with other children.', moduleIds: ['please-and-thank-you'] },
+      { framework: 'CCSS', code: 'ELOF.P-SE.3', text: 'Engages in and maintains positive interactions and relationships with other children.', moduleIds: ['please-and-thank-you', 'join-in-play'] },
       { framework: 'CCSS', code: 'ELOF.P-SE.1', text: 'Engages in and maintains positive relationships and interactions with adults.', moduleIds: ['help-a-friend'] },
+      // Pass MN, earmarks E12 and E13 side by side, Domain I: joining other children's play, each read in TEA's PK3 Streamlined
+      // Version and on headstart.gov and held word for word to docs/standards; both taught whole since pass MN's third read (the lesson's
+      // sources say how), and P-SE 3, above, in part, whose first sentence's skills and taking turns with materials Can I play too? teaches.
+      { framework: 'TEKS', code: 'PK3.I.C.3', text: 'Child shows interest in peer play but may be less skilled in initiating and joining a group.', moduleIds: ['join-in-play'] },
+      { framework: 'CCSS', code: 'ELOF.P-SE.4', text: 'Engages in cooperative play with other children.', moduleIds: ['join-in-play'] },
       // Pass MD, earmark E12 part one: the feelings outcomes, each read in full in TEA's PK3 Streamlined Version (Domain I) and the
-      // ELOF goals on headstart.gov, quoted word for word. I.C.6, I.D.1 and P-SE 8 are taught in part (each lesson's sources say how).
+      // ELOF goals on headstart.gov, quoted word for word. I.D.1 and P-SE 8 are taught in part, P-SE 6 since pass MN's second read (expressing feelings across contexts is the child's own), and I.C.6 whole since pass MN (each lesson's sources say how).
       { framework: 'TEKS', code: 'PK3.I.B.2.a', text: 'Child recognizes and expresses a range of emotions.', moduleIds: ['four-feelings'] },
       { framework: 'TEKS', code: 'PK3.I.B.2.b', text: 'Child is familiar with basic feeling words (e.g., happy, sad, mad, scared).', moduleIds: ['four-feelings'] },
       { framework: 'TEKS', code: 'PK3.I.B.2.c', text: 'Child manages intensity of emotions with adult assistance.', moduleIds: ['four-feelings'] },
@@ -192,7 +197,7 @@ export const CURRICULUM = [
   },
   {
     grade: 'PK4', subject: 'Math', status: 'ready',
-    source: 'Texas Prekindergarten Guidelines (2022), PK4 outcomes, read in full in pass ML (First Steps teaches Domains I, II, IV, V, VI, VII and IX in part, and since pass MM First Sounds and Letters\' Which came first? and Second and last teach P-MATH 4\'s order sentence and II.D.1\'s order words in part); Head Start Early Learning Outcomes Framework, preschool goals with their 48 to 60 month progressions',
+    source: 'Texas Prekindergarten Guidelines (2022), PK4 outcomes, read in full in pass ML (First Steps teaches Domains I, II, IV, V, VI, VII and IX in part, and since pass MM First Sounds and Letters\' Which came first? and Second and last teach P-MATH 4\'s order sentence and II.D.1\'s order words in part, and Domain I was read again in pass MN for First Steps\' three feelings lessons); Head Start Early Learning Outcomes Framework, preschool goals with their 48 to 60 month progressions',
     standards: [
       { framework: 'TEKS', code: 'PK4.V.A.2', text: 'Child counts up to 10 objects with one-to-one correspondence.', moduleIds: ['count-to-3', 'more-and-fewer-5'] },
       { framework: 'TEKS', code: 'PK4.V.A.3', text: 'Child counts up to 10 items and demonstrates cardinality by communicating that the last number indicates how many items are in the set.', moduleIds: ['count-to-3', 'more-and-fewer-5'] },
@@ -218,13 +223,22 @@ export const CURRICULUM = [
       { framework: 'CCSS', code: 'ELOF.P-SCI.1', text: 'Observes and describes observable phenomena (objects, materials, organisms, and events).', moduleIds: ['colours'] },
       { framework: 'CCSS', code: 'ELOF.P-SCI.3', text: 'Compares and categorizes observable phenomena.', moduleIds: ['match-the-vehicles', 'match-the-things', 'match-the-land-animals'] },
       { framework: 'TEKS', code: 'PK4.I.B.1.a', text: 'Child follows classroom rules and routines with occasional reminders from adults.', moduleIds: ['taking-turns'] },
-      { framework: 'TEKS', code: 'PK4.I.B.2.c', text: 'Child is able to manage intensity of emotions more consistently, although adult guidance is sometimes necessary.', moduleIds: ['taking-turns'] },
-      { framework: 'TEKS', code: 'PK4.I.C.5', text: 'Child initiates problem-solving strategies when experiencing conflicts with others and seeks adult support when necessary.', moduleIds: ['taking-turns'] },
-      { framework: 'TEKS', code: 'PK4.I.C.6', text: 'Child demonstrates empathy and caring for others.', moduleIds: ['taking-turns'] },
+      { framework: 'TEKS', code: 'PK4.I.B.2.c', text: 'Child is able to manage intensity of emotions more consistently, although adult guidance is sometimes necessary.', moduleIds: ['taking-turns', 'feelings-show'] },
+      { framework: 'TEKS', code: 'PK4.I.C.5', text: 'Child initiates problem-solving strategies when experiencing conflicts with others and seeks adult support when necessary.', moduleIds: ['taking-turns', 'good-friend'] },
+      { framework: 'TEKS', code: 'PK4.I.C.6', text: 'Child demonstrates empathy and caring for others.', moduleIds: ['taking-turns', 'good-friend'] },
       { framework: 'CCSS', code: 'ELOF.P-SE.3', text: 'Engages in and maintains positive interactions and relationships with other children.', moduleIds: ['taking-turns'] },
-      { framework: 'CCSS', code: 'ELOF.P-SE.5', text: 'Uses basic problem-solving skills to resolve conflicts with other children.', moduleIds: ['taking-turns'] },
-      { framework: 'CCSS', code: 'ELOF.P-SE.7', text: 'Expresses care and concern toward others.', moduleIds: ['taking-turns'] },
-      { framework: 'CCSS', code: 'ELOF.P-SE.8', text: 'Manages emotions with increasing independence.', moduleIds: ['taking-turns'] },
+      { framework: 'CCSS', code: 'ELOF.P-SE.5', text: 'Uses basic problem-solving skills to resolve conflicts with other children.', moduleIds: ['taking-turns', 'good-friend'] },
+      { framework: 'CCSS', code: 'ELOF.P-SE.7', text: 'Expresses care and concern toward others.', moduleIds: ['taking-turns', 'good-friend'] },
+      { framework: 'CCSS', code: 'ELOF.P-SE.8', text: 'Manages emotions with increasing independence.', moduleIds: ['taking-turns', 'feelings-show'] },
+      // Pass MN, earmarks E12 and E13 side by side, Domain I: pre-K 4's feelings lessons, each code read in TEA's 2022 PK4 column
+      // and on headstart.gov and held word for word to docs/standards.
+      { framework: 'TEKS', code: 'PK4.I.B.2.a', text: 'Child begins to understand the connection between emotions and behaviors.', moduleIds: ['feelings-show'] },
+      { framework: 'TEKS', code: 'PK4.I.B.2.b', text: 'Child uses verbal and nonverbal communication to communicate basic emotions and feelings.', moduleIds: ['feelings-show'] },
+      { framework: 'TEKS', code: 'PK4.I.D.1', text: 'Child demonstrates an understanding that others have perspectives and feelings that are similar and/or different from her own.', moduleIds: ['how-friends-feel'] },
+      { framework: 'CCSS', code: 'ELOF.P-SE.6', text: 'Expresses a broad range of emotions and recognizes these emotions in self and others.', moduleIds: ['feelings-show', 'how-friends-feel'] },
+      // Being a good friend's taking turns choosing and finding a game both friends like are the plans of P-SE 4's second sentence (the
+      // lesson check, pass MN round one).
+      { framework: 'CCSS', code: 'ELOF.P-SE.4', text: 'Engages in cooperative play with other children.', moduleIds: ['good-friend'] },
       { framework: 'TEKS', code: 'PK4.VII.B.3', text: 'Child discusses the roles and responsibilities of family, school, and community helpers.', moduleIds: ['helpers-all-around'] },
     ],
   },
@@ -237,9 +251,9 @@ export const CURRICULUM = [
       { framework: 'CCSS', code: 'ELOF.P-LC.1', text: 'Attends to communication and language from others.', moduleIds: ['which-came-first', 'which-came-second'] },
       { framework: 'TEKS', code: 'PK4.II.A.1', text: 'Child shows understanding by responding appropriately to what has been communicated by adults and peers.', moduleIds: ['which-came-first', 'which-came-second'] },
       { framework: 'CCSS', code: 'ELOF.P-ATL.8', text: 'Holds information in mind and manipulates it to perform tasks.', moduleIds: ['which-came-first', 'which-came-second'] },
-      { framework: 'TEKS', code: 'PK4.III.C.1', text: 'Child recognizes and names at least 20 letters (upper- or lower-case letters).', moduleIds: ['big-letters'] },
+      { framework: 'TEKS', code: 'PK4.III.C.1', text: 'Child recognizes and names at least 20 letters (upper- or lower-case letters).', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
       { framework: 'CCSS', code: 'ELOF.P-LIT.1', text: 'Demonstrates awareness that spoken language is composed of smaller segments of sound.', moduleIds: ['listen-for-rhymes', 'first-sounds'] },
-      { framework: 'CCSS', code: 'ELOF.P-LIT.3', text: 'Identifies letters of the alphabet and produces correct sounds associated with letters.', moduleIds: ['big-letters'] },
+      { framework: 'CCSS', code: 'ELOF.P-LIT.3', text: 'Identifies letters of the alphabet and produces correct sounds associated with letters.', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
       { framework: 'TEKS', code: 'PK4.IV.C.2', text: 'Child progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate.', moduleIds: ['first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
       { framework: 'TEKS', code: 'PK4.IV.C.4', text: 'Child uses appropriate directionality when writing (e.g., top to bottom, left to right).', moduleIds: ['first-strokes', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
     ],

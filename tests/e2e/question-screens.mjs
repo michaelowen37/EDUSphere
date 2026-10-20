@@ -51,7 +51,8 @@ for (const n of ['Skip tour', 'Later', 'Got it']) await tapIf(n);
 const walk = async (label) => {
   await page.evaluate(() => window.__eduTest.goTo('educator-pick')); await page.waitForTimeout(300); for (const n of ['Skip tour', 'Later', 'Got it']) await tapIf(n);
   await page.getByLabel(label).first().click({ force: true }); await screenIs('overview'); await page.waitForTimeout(300); };
-const show = async (gen, seed) => { await page.evaluate(([g, s]) => window.__eduTest.showQuestion(g, s), [gen, seed]); await screenIs('practice'); await page.waitForTimeout(600); return page.evaluate(() => window.__eduTest.question); };
+// A question shown as its module asks it (pass MN: a trace from kindergarten up carries the direction rule, so the module is named).
+const show = async (gen, seed, mod = null) => { await page.evaluate(([g, s, m]) => window.__eduTest.showQuestion(g, s, m), [gen, seed, mod]); await screenIs('practice'); await page.waitForTimeout(600); return page.evaluate(() => window.__eduTest.question); };
 await walk('Walk through early years');
 
 
@@ -441,10 +442,46 @@ const ponder = () => page.evaluate(() => {
   const q1 = await show('pl-tap-letter', 3); const noVoice = await qt();
   await page.evaluate(() => Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: window.__savedSS }));
   ok('with no voice a letter question prints whole, for a grown-up to read', noVoice === q1.prompt && /letter [A-Z]\.$/.test(noVoice), noVoice);
+  // Q49 (pass MN, Mikey: "Q49 - Your recommendation "): one line's dot and arrow at a time, on top of every guide, the next line's
+  // once a line is traced; in pre-K a line traced backward stays and nothing is said, and from kindergarten up it clears as the finger
+  // lifts and the line under the pad and the voice say TRACE_BACK_WORDS until the finger starts the next line. A finger is drawn on
+  // the real pad, point by point, as a child's would be. Since round one's screen check: the next line's dot sits on top of the ink
+  // where that line starts on one already traced (L's foot at the end of its stem), and a closed line traced the other way from its
+  // dot clears with words that name the arrow (the child did start at the dot).
+  const padDots = () => page.evaluate(() => [...document.querySelectorAll('g[data-trace-start]')].map((g) => { const c = g.querySelector('circle'); const r = c.getBoundingClientRect(); const top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return { line: g.getAttribute('data-trace-start'), onTop: !!top && (top === c || top.closest('g[data-trace-start]') === g) }; }));
+  const padState = async () => ({ dots: await padDots(), ink: await page.locator('svg[aria-label^="Trace"] polyline').count(), note: (await page.locator('[data-trace-note]').first().textContent()).trim(), said: await page.evaluate(() => (window.__spoken || []).slice()) });
+  const drawPts = async (pts) => { const b = await page.locator('svg[aria-label^="Trace"]').first().boundingBox(); const at = ([x, y]) => [b.x + (x / 100) * b.width, b.y + (y / 100) * b.height]; const [x0, y0] = at(pts[0]); await page.mouse.move(x0, y0); await page.mouse.down(); for (let i = 1; i < pts.length; i++) for (let k = 1; k <= 4; k++) { const [x, y] = at([pts[i - 1][0] + ((pts[i][0] - pts[i - 1][0]) * k) / 4, pts[i - 1][1] + ((pts[i][1] - pts[i - 1][1]) * k) / 4]); await page.mouse.move(x, y); } await page.mouse.up(); await page.waitForTimeout(300); };
+  const drawLine = async (from, to) => { const b = await page.locator('svg[aria-label^="Trace"]').first().boundingBox(); const at = ([x, y]) => [b.x + (x / 100) * b.width, b.y + (y / 100) * b.height]; const [x0, y0] = at(from); await page.mouse.move(x0, y0); await page.mouse.down(); for (let k = 1; k <= 24; k++) { const [x, y] = at([from[0] + ((to[0] - from[0]) * k) / 24, from[1] + ((to[1] - from[1]) * k) / 24]); await page.mouse.move(x, y); } await page.mouse.up(); await page.waitForTimeout(300); };
   let seedT = 0; for (let s = 1; s < 300 && !seedT; s++) if (DL.generateQuestion('pl-trace-first', s).answer === 'T') seedT = s;
-  await show('pl-trace-first', seedT);
-  const dots = await page.evaluate(() => [...document.querySelectorAll('g[data-trace-start] circle')].map((c) => { const r = c.getBoundingClientRect(); const top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return !!top && (top === c || top.closest('g[data-trace-start]') === c.parentNode); }));
-  ok("the tracing pad shows every stroke's starting dot on top, T's stem and its bar", seedT > 0 && dots.length === 2 && dots.every(Boolean), { seedT, dots }); }
+  // A stand-in voice of its own for both halves, which records every line, reports speaking and pending as a device voice does and
+  // ends a line fast, put back when the check is done (pass MM's rule: a test that swaps the page's voice puts the page's own back).
+  // Since round one's code check it is in place before the pre-K half, whose "nothing said" read an older recorder and could not fail.
+  await page.evaluate(() => { window.__voiceBeforeTrace = window.speechSynthesis; window.__spoken = []; const q = []; let cur = null;
+    let timer = null; const next = () => { cur = q.shift() || null; if (!cur) return; const u = cur; window.__spoken.push(u.text); if (u.onstart) u.onstart({}); timer = setTimeout(() => { timer = null; cur = null; if (u.onend) u.onend({}); next(); }, 20); };
+    Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { get speaking() { return !!cur; }, get pending() { return q.length > 0; }, cancel() { q.length = 0; cur = null; if (timer) { clearTimeout(timer); timer = null; } }, getVoices() { return []; }, speak(u) { q.push(u); if (!cur) next(); } } }); });
+  await show('pl-trace-first', seedT, 'first-letter-tracing'); await page.waitForTimeout(600); await page.evaluate(() => { window.__spoken = []; }); const p0 = await padState();
+  await drawLine([50, 15], [50, 85]); const p1 = await padState();
+  await drawLine([80, 15], [20, 15]); const p2 = await padState();
+  ok("Q49: pre-K's pad shows T's stem's dot alone, on top, then the bar's once the stem is traced, and keeps a bar traced backward with nothing said", seedT > 0 && JSON.stringify(p0.dots) === '[{"line":"0","onTop":true}]' && JSON.stringify(p1.dots) === '[{"line":"1","onTop":true}]' && p2.dots.length === 0 && p2.ink === 2 && p2.note === '' && !p2.said.includes(DL.TRACE_BACK_WORDS), { p0, p1, p2 });
+  let seedL = 0; for (let s = 1; s < 300 && !seedL; s++) if (DL.generateQuestion('pl-trace-first', s).answer === 'L') seedL = s;
+  await show('pl-trace-first', seedL, 'first-letter-tracing'); await page.waitForTimeout(300);
+  const lStem = DL.TRACE_LETTERS.L.strokes[0]; await drawLine(lStem[0], lStem[lStem.length - 1]); const l1 = await padState();
+  ok("Q49: once L's stem is traced, the foot's dot, at the stem's end under the child's ink, is drawn on top of the ink (round one's screen check: only a rim showed)", seedL > 0 && JSON.stringify(l1.dots) === '[{"line":"1","onTop":true}]' && l1.ink === 1, l1);
+  let seedK = 0; for (let s = 1; s < 300 && !seedK; s++) if (DL.generateQuestion('rt-trace-easy', s).answer === 'T') seedK = s;
+  const kq = await show('rt-trace-easy', seedK, 'tracing-letters'); await page.waitForTimeout(600); await page.evaluate(() => { window.__spoken = []; });
+  await drawLine([50, 85], [50, 15]); const k1 = await padState();
+  await drawLine([50, 15], [50, 85]); const k2 = await padState();
+  await drawLine([20, 15], [80, 15]); const k3 = await padState();
+  await page.getByRole('button', { name: 'Check answer' }).click({ force: true }); await page.waitForTimeout(500);
+  const verdict = await page.evaluate(() => (document.querySelector('#root').innerText.match(/Correct|Let's trace it again/) || [''])[0]);
+  await page.waitForTimeout(1000); const kLater = await padState();   // past speak()'s 700 ms retry
+  let seedO = 0; for (let s = 1; s < 300 && !seedO; s++) if (DL.generateQuestion('rt-trace-round', s).answer === 'O') seedO = s;
+  await show('rt-trace-round', seedO, 'tracing-letters'); await page.waitForTimeout(300); await page.evaluate(() => { window.__spoken = []; });
+  const ring = DL.TRACE_LETTERS.O.strokes[0]; await drawPts(ring.slice().reverse()); const o1 = await padState();
+  await drawPts(ring); await page.waitForTimeout(1000); const o2 = await padState();   // past speak()'s 700 ms retry
+  await page.evaluate(() => Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: window.__voiceBeforeTrace }));
+  ok('Q49: from kindergarten up an O traced the other way from its dot clears, and the words shown and said name the arrow; traced along the arrow it stays (round one\'s screen check)', seedO > 0 && o1.ink === 0 && o1.note === DL.TRACE_BACK_WORDS && /follow the arrow/.test(o1.note) && o1.said.filter((t) => t === DL.TRACE_BACK_WORDS).length === 1 && o2.said.filter((t) => t === DL.TRACE_BACK_WORDS).length === 1 && o2.ink === 1 && o2.note === '' && o2.dots.length === 0, { o1, o2 });
+  ok('Q49: from kindergarten up a stem traced from the bottom clears as the finger lifts, its words show and are said, and go when the next line starts; traced from its dots, T is right', kq.checkDirection === true && k1.ink === 0 && k1.note === DL.TRACE_BACK_WORDS && k1.said.filter((t) => t === DL.TRACE_BACK_WORDS).length === 1 && kLater.said.filter((t) => t === DL.TRACE_BACK_WORDS).length === 1 && JSON.stringify(k1.dots) === '[{"line":"0","onTop":true}]' && k2.note === '' && JSON.stringify(k2.dots) === '[{"line":"1","onTop":true}]' && k3.dots.length === 0 && k3.ink === 2 && verdict === 'Correct', { k1, k2, k3, verdict }); }
 
 //    f. A pre-reader's answer stays plain after a wrong tap, until the child gets it (round two's screen check, pass MM: it turned
 //       green before the retry, so the retry could be answered by color), and at 320 pixels the lesson keeps Next on the screen,

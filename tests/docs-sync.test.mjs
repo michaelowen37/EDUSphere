@@ -108,7 +108,7 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   const files = [];
   // Since the second read of the late fixes: every doc but DECISIONS, the README, and the skills' and agents' briefs too.
   for (const [dir, ext] of [['../docs/', '.md'], ['../src/', ''], ['../tools/', '.mjs'], ['./', '.mjs'], ['./e2e/', '.mjs'], ['../.claude/agents/', '.md']]) {
-    for (const f of readdirSync(new URL(dir, import.meta.url))) if (f.endsWith(ext) && !['DECISIONS.md', 'CLAUDE-HISTORY.md', 'NEW-CHAT-HISTORY.md'].includes(f) && !/\.(csv|json|png|svg)$/.test(f) && (ext || /\.(mjs|jsx)$/.test(f))) files.push(new URL(dir + f, import.meta.url));
+    for (const f of readdirSync(new URL(dir, import.meta.url))) if (f.endsWith(ext) && !['DECISIONS.md', 'CLAUDE-HISTORY.md', 'NEW-CHAT-HISTORY.md', 'RULES-AUDIT-HISTORY.md'].includes(f) && !/\.(csv|json|png|svg)$/.test(f) && (ext || /\.(mjs|jsx)$/.test(f))) files.push(new URL(dir + f, import.meta.url));
   }
   files.push(new URL('../README.md', import.meta.url));
   // Since pass MM CLAUDE.md is the short manual with no replaced lines, so it is read too; its old lines live in the history.
@@ -121,6 +121,22 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
     for (const m of t.matchAll(/\(?Q(\d+) asks\b|until (?:Mikey )?answers Q(\d+)|until Q(\d+) is answered|waiting (?:on|for) Q(\d+)|(?:keeps its look|is frozen|still does[^.;,]{0,30}),? \(?Q(\d+)\b/g)) { const n = Number(m[1] || m[2] || m[3] || m[4] || m[5]); if (answeredNums.has(n)) stale.push(`${u.pathname.split('/').slice(-2).join('/')}: ${m[0]}`); }
   }
   ok('no doc, source, test or tool still calls an answered question open', answeredNums.size >= 30 && stale.length === 0, stale.slice(0, 8).join('; '));
+}
+// The answered questions' history (pass MN, Mikey's answer to Q52, "Q52 - B"): every answered question of section 11 moved word
+// for word to docs/RULES-AUDIT-HISTORY.md, whose text between its markers must hash to the digest below, so nothing moved can be
+// lost or edited; section 11 keeps one line for each answered question (its number, Mikey's answer word for word and where its
+// rule now lives, never the question as it stood), and every answered number there has its full text in the history.
+{
+  const { createHash } = await import('node:crypto');
+  const hist = readFileSync(new URL('../docs/RULES-AUDIT-HISTORY.md', import.meta.url), 'utf8');
+  const open = "<!-- RULES-AUDIT section 11's answered questions through pass MN, word for word: begin -->\n"; const a = hist.indexOf(open); const b = hist.indexOf("<!-- RULES-AUDIT section 11's answered questions through pass MN, word for word: end -->");
+  const block = a >= 0 && b > a ? hist.slice(a + open.length, b) : '';
+  ok('docs/RULES-AUDIT-HISTORY.md keeps the answered questions section 11 held through pass MN, every line unchanged (pass MN)', createHash('sha256').update(block, 'utf8').digest('hex') === '686371a5c62de1a76bbb7a0350d2a465d657f4c27f38d3582fc159064f09c781');
+  const s = audit.indexOf('## 11. Open items that need Mikey'); const e = audit.indexOf('\n## ', s + 5); const sec = audit.slice(s, e < 0 ? audit.length : e);
+  const answeredLines = sec.split('\n').filter((l) => /^- Q\d+\. Answered in pass /.test(l));
+  const long = answeredLines.filter((l) => !/^- Q\d+\. Answered in pass \w+ \(Mikey: .+\)\. Its rule lives in [^\n]+\.$/.test(l) || /The question as it stood/.test(l));
+  const missing = answeredLines.map((l) => Number(l.match(/^- Q(\d+)\./)[1])).filter((n) => !new RegExp(`^- Q${n}\\. Answered in pass `, 'm').test(hist));
+  ok('section 11 keeps one line for each answered question, and each has its full text in docs/RULES-AUDIT-HISTORY.md (pass MN, Q52)', answeredLines.length >= 52 && long.length === 0 && missing.length === 0, `long: ${long.map((l) => l.slice(0, 12)).join(',')}; missing: ${missing.join(',')}`);
 }
 // CLAUDE.md is the short manual every session loads (pass MM, Mikey: "If you can run the entire vision, rules, decisions,
 // claude.md etc through these ideas to improve our workflow, please do."). The whole file as it stood through pass ML is kept
@@ -136,8 +152,18 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   const manual = readFileSync(new URL('../CLAUDE.md', import.meta.url), 'utf8');
   const at = manual.indexOf('## Lines a coder needs most'); const keptLines = at < 0 ? [] : manual.slice(at).split('\n').filter((l) => l.startsWith('- '));
   const blockLines = new Set(block.split('\n'));
-  const notCopied = keptLines.filter((l) => !blockLines.has(l));
-  ok('every dated line CLAUDE.md keeps is word for word a line of the history, and the manual stays under 40,000 bytes (pass MM)', keptLines.length >= 40 && notCopied.length === 0 && Buffer.byteLength(manual, 'utf8') < 40000, `${keptLines.length} kept; ${Buffer.byteLength(manual, 'utf8')} bytes; not copied: ${notCopied.map((l) => l.slice(0, 50)).join(' | ')}`);
+  // Since pass MN (Mikey's answer to Q53, "Q53 - B") a kept line gone stale is corrected in place once RULES-AUDIT section 9's
+  // row names it: a dated line that is not word for word a line of the history must be named in that row (its label, the words
+  // before its first colon, followed there by a comma, a semicolon or " and"), and the history must keep a line with that label.
+  const s9 = audit.slice(audit.indexOf('## 9. Process'), audit.indexOf('\n## 10.'));
+  const row = (s9.split('\n').find((l) => l.startsWith('| **Section 11 keeps one line for each answered question')) || '');
+  const esc = (t) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const notCopied = keptLines.filter((l) => !blockLines.has(l)).filter((l) => { const m = /^- ([^:]+):/.exec(l); const label = m ? m[1] : null;
+    return !label || !new RegExp(`${esc(label)}(?=,|;| and )`).test(row) || ![...blockLines].some((h) => h.startsWith(`- ${label}:`)); });
+  ok('every dated line CLAUDE.md keeps is word for word a line of the history or corrected in place as RULES-AUDIT section 9 names it, and the manual stays under 40,000 bytes (passes MM and MN)', keptLines.length >= 40 && notCopied.length === 0 && Buffer.byteLength(manual, 'utf8') < 40000, `${keptLines.length} kept; ${Buffer.byteLength(manual, 'utf8')} bytes; neither copied nor named: ${notCopied.map((l) => l.slice(0, 50)).join(' | ')}`);
+  // Near misses: a corrected line the row does not name, and a label the row names only as the start of a longer one.
+  { const nearRow = 'and the dated lines Themes (2026-09-24, Mikey), and more;'; const named = (label) => new RegExp(`${esc(label)}(?=,|;| and )`).test(nearRow);
+    ok('a corrected line counts only when the row names its whole label (Themes (2026-09-24) is not Themes (2026-09-24, Mikey))', !named('Themes (2026-09-24)') && named('Themes (2026-09-24, Mikey)') && !named('Running check.sh (2026-09-28)')); }
 }
 // NEW-CHAT.md's history (pass MM): the state bullets of passes JE to MJ, the earlier chats' "When to start" paragraphs and the
 // chain of earlier preview links moved, word for word, to docs/NEW-CHAT-HISTORY.md, whose text between its markers must hash to
@@ -159,5 +185,12 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   const xs = (t, q) => ((t.match(new RegExp(`zip -qr .+? \\. -x((?: ${q}[^${q}\\n]+${q})+)`)) || [])[1] || '');   // the -x list alone, never a comment or prose
   ok("the browser tests' picture folder is left out of git and of every zip, and the delivery command leaves the checkpoint folder out (pass MF)", /^tests\/e2e\/art\/$/m.test(gi) && xs(cz, '"').includes('"tests/e2e/art/*"') && xs(cz, '"').includes('"CHECKPOINT/*"') && xs(cp, '"').includes('"tests/e2e/art/*"') && xs(del, "'").includes("'tests/e2e/art/*'") && xs(del, "'").includes("'CHECKPOINT/*'"));
 }
+// The audio ledger is current (pass MN, round three's lesson and story checks): tools/audio-generate.mjs records each clip from
+// docs/AUDIO-LEDGER.csv, and clips are found by line number, so round one's words left in it after round two's lessons changed
+// would have put "get a grown-up" over the line "you do not need to get a grown-up". The file must be what the tool makes from the
+// code today (run node tools/audio-ledger.mjs > docs/AUDIO-LEDGER.md after a change to a story or a read-aloud line).
+{ const { LEDGER_CSV } = await import('../tools/audio-ledger.mjs'); const file = readFileSync(new URL('../docs/AUDIO-LEDGER.csv', import.meta.url), 'utf8');
+  const have = file.split('\n'); const want = LEDGER_CSV.split('\n'); const first = want.findIndex((l, i) => l !== have[i]);
+  ok(`docs/AUDIO-LEDGER.csv is what tools/audio-ledger.mjs makes from the code today (${want.length - 2} clips)`, want.length > 9000 && file === LEDGER_CSV, first < 0 ? `lengths ${have.length} and ${want.length}` : `first difference at line ${first + 1}: ${String(have[first]).slice(0, 120)}`); }
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exitCode = failed ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (CLAUDE.md, 2026-09-23)

@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-20 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 9257 clips, 1,557,645 characters in all; the longest clip is 520 characters and the longest whole story 3,471, far under Eleven v4's 10,000 a request. 199 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-20 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 9399 clips, 1,573,475 characters in all; the longest clip is 520 characters and the longest whole story 3,471, far under Eleven v4's 10,000 a request. 203 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,7 +17,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 5201 | 604,885 |
+| Pre-K to grade 2 | 5343 | 620,715 |
 | Grades 3 to 5 | 1263 | 278,665 |
 | Grades 6 to 8 | 1138 | 272,478 |
 | Grades 9 to college | 1655 | 401,617 |
@@ -39,9 +39,9 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 | Kind | Clips |
 |---|---|
-| story title | 662 |
-| story | 4261 |
-| lesson line | 3325 |
+| story title | 666 |
+| story | 4299 |
+| lesson line | 3425 |
 | long story title | 106 |
 | long story | 858 |
 | next long story title | 4 |
@@ -481,9 +481,21 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S3886-4: [hesitant] Owen wanted to grab the ball and run off to play. [softly] But then he looked at Tess's face. [concerned] She looked sad, and a little scared.
 - S3886-5: [gently] So Owen knelt down beside her on the grass. Are you okay? he asked. [sniffles] Tess shook her head. My hand hurts, she said, and held it up to show him.
 - S3886-6: [urgently] Owen ran to get Miss Rae, their teacher. [breathless] We both pulled, and Tess fell, he said. Her hand hurts.
-- S3886-7: [kindly] Miss Rae looked at Tess's hand, and it was only a little sore, so she hugged Tess. [warmly] When a friend is hurt, or you start to fight, get a grown-up, she told them.
+- S3886-7: [kindly] Miss Rae saw it was a little sore. [gently] Can I hug you? she asked. Tess nodded. [warmly] When a friend is hurt, or you start to fight, get a grown-up, Miss Rae told them.
 - S3886-8: [cheerful] Then she helped them take turns with the ball, Tess first and Owen next. [happy] Soon both friends were smiling.
 - S3886-9: [slowly, warmly] Look at a friend's face, and ask, are you okay? When a friend is hurt, or you start to fight, get a grown-up.
+
+### Arlo's turn (S3899, join-in-play)
+
+- S3899-1: [cheerful] At playtime, Esme and Jude were building a tower of blocks on the rug. [eager] Arlo wanted to play too.
+- S3899-2: [rushed] So he ran over and grabbed a big blue block from their pile. [indignant] Hey, that's ours! said Esme, and she took it back.
+- S3899-3: [frustrated] Arlo's face felt hot. He wanted to knock their tower down. [calmly] But his teacher, Mr. Beto, sat down beside him on the rug.
+- S3899-4: [softly] Watch first, Mr. Beto said softly. See what they are playing, and then ask. [quietly] So Arlo sat still and watched.
+- S3899-5: [thoughtful] Esme set a block on top, and then Jude set one on top. [noticing] Arlo saw that they were taking turns, and they wanted to make the tower tall.
+- S3899-6: [hopeful] Arlo found a block in the box by his feet. [shyly] Can I play too? he asked. I have a block for your tower.
+- S3899-7: [warmly] Esme looked over at Jude, and Jude gave a big nod. [happy] Yes, you can go right after me, he said.
+- S3899-8: [playful] Esme, then Jude, then Arlo. [blocks clicking] Click, click went the blocks, [excited] and the tower grew taller and taller until all three of them cheered.
+- S3899-9: [slowly, warmly] When you want to play, watch first, then ask, can I play too?
 
 ### One more cracker (S3890, one-more-one-fewer)
 
@@ -540,6 +552,44 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S113-6: [excited] Ten! [carefully] Sam let the swing slow down and climbed off. [warmly] Your turn, he said, and held it still for her.
 - S113-7: [delighted] Now Ana swung, and Sam counted for her. [playful] Later they found a big red ball and played with it together, both at once. [warmly] That is sharing, said their teacher.
 - S113-8: [slowly, warmly] Wait, and then it is your turn. When friends share, they both play at the same time.
+
+### The purple dragon (S3903, feelings-show)
+
+- S3903-1: [cheerful] Yara drew a big purple dragon for Grandpa, with green spikes all the way down its back.
+- S3903-2: [rushed] Then her brother Remy ran past the table, and his cup of juice tipped over. [a cup splashing] Splash! [dismayed] Juice ran all over the dragon.
+- S3903-3: [angry] Yara's face felt hot. [frustrated] She stomped her feet, made tight fists and wanted to shout at Remy.
+- S3903-4: [gently] Grandpa saw her stomping. You are stomping your feet and making fists, he said gently. How do you feel, Yara? [loudly] I feel mad, she said.
+- S3903-5: [calmly] Every feeling is okay, said Grandpa, but we can choose what we do with it. [softly] Let's take a slow breath together.
+- S3903-6: [slowly] They breathed in slowly, like smelling a flower, [exhales] and out slowly, like blowing out a candle. [relieved] The hot feeling got smaller.
+- S3903-7: [steady] Yara turned to Remy and used her words. [firmly] I feel mad, she said, because your juice spilled on my dragon.
+- S3903-8: [sniffles] Remy's lip shook. [quietly] I'm sorry, he said, and he helped her wipe up the juice.
+- S3903-9: [happy] After that they drew a new dragon side by side, and Yara gave Remy a high five.
+- S3903-10: [slowly, warmly] Feelings show in what we do, and we can choose kind ways to show them.
+
+### The big slide (S3907, how-friends-feel)
+
+- S3907-1: [cheerful] At the park, Rafi's mom sat down on a bench nearby. [excited] Rafi raced to the big slide with his friend Talia. [proudly] It was the tallest slide in the whole park, and his favorite.
+- S3907-2: [eagerly] Come on, Talia, it's so fun! he called, and he pulled her by the hand toward the ladder.
+- S3907-3: [nervously] But Talia's feet stopped. Her eyebrows went up in the middle, and her mouth went wiggly.
+- S3907-4: [insistent] Rafi pulled harder. It's fun, I promise! he said. [quietly] But Talia shook her head and would not climb.
+- S3907-5: [calmly] Rafi's mom was watching from her bench, and she called to him, ask Talia how she feels. [thoughtful] So Rafi let go of Talia's hand and looked at her face.
+- S3907-6: [kindly] How do you feel? he asked. [worried] I feel worried, said Talia, because it's so tall and I might fall.
+- S3907-7: [surprised] Rafi felt happy at the big slide, and Talia felt worried. [warmly] That's okay, said Rafi. We can feel different.
+- S3907-8: [cheerful] So they found a little slide and went down it, one after the other, laughing. [excited] Then Talia cheered while Rafi zoomed down the big one.
+- S3907-9: [slowly, warmly] Ask your friend how they feel. Their feelings can be the same as yours, or different.
+
+### Spilled milk (S3911, good-friend)
+
+- S3911-1: [cheerful] At lunch, Gabe sat beside his friend Maren. [surprised] She reached for her cup of milk, and bump, it tipped over.
+- S3911-2: [dismayed] Milk ran across the table. [uneasy] Everyone looked, and a few kids giggled.
+- S3911-3: [softly] Maren's cheeks turned pink. She looked down at her lap, and she wanted to hide her face.
+- S3911-4: [amused] Gabe wanted to giggle too, because the milk made a funny puddle. [thoughtful] But then he looked at Maren's face.
+- S3911-5: [gently] Her cheeks were pink. Her eyes looked down. [kindly] Gabe could tell she felt embarrassed, so he did not laugh.
+- S3911-6: [warmly] He grabbed a stack of napkins and said, it's okay, I spill too, all the time. [cheerful] Let's wipe it up together.
+- S3911-7: [relieved] They wiped the table, and Maren peeked up and smiled a little. [calmly] Soon the other kids went back to their lunches.
+- S3911-8: [happy] At playtime, Maren ran straight to Gabe. [grateful] Thanks for helping me, she said, and she asked him to play tag. [uncertain] But Gabe wanted to play ball.
+- S3911-9: [thoughtful] We want different games, said Gabe, so let's take turns choosing. [cheerful] They played tag on the grass first, and then ball.
+- S3911-10: [slowly, warmly] Notice how your friend feels, and help. Say what the problem is, and find a fair way to fix it.
 
 ### Cat, mat, hat (S116, listen-for-rhymes)
 

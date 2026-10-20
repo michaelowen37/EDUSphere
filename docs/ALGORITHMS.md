@@ -136,11 +136,77 @@ weights are judgements, chosen so a stuck student always outranks an idle one.
 
 ## Tracing
 
-A letter is a list of strokes, each a list of points on a 100 by 100 grid. A drawing
-matches when, for every stroke in order, every sampled point along it has a drawn
-point within 14 grid units, and at least 70 percent of the drawn points lie within 20
-units of the letter. The first rule forgives wobble but not a wrong shape; the second
-rejects a scribble that happens to cover everything.
+A letter is a list of strokes (its lines), each a list of points on a 100 by 100 grid. A
+drawing matches when every sampled point along every stroke has a drawn point within 14
+grid units, and at least 70 percent of the drawn points lie within 20 units of the
+letter. The first rule forgives wobble but not a wrong shape; the second rejects a
+scribble that happens to cover everything. A numbered dot picture must also be joined in
+order: dot 1 reached before dot 2, and so on.
+
+One line at a time (pass MN, Mikey's answer to Q49, Claude's (d)). The pad shows one
+line's starting dot and arrow at a time, in the order the lesson's demo draws them, and
+the next line's dot and arrow appear once a line is traced (traceLineState). Each point
+of ink belongs to the line it is tracing: a finger touching down goes with the line whose
+dot is nearest, and it stays with that line through a wobble where two lines meet,
+handing over only when another line has been nearer by more than 4 units for 3 points in
+a row. Without that, small a's circle would cover its short stem, which lies within 14
+units of it, and the pad would never show the stem's dot. In pre-K the order is guided
+and nothing fails. From kindergarten up, a line traced only from its end back to its
+start does not count: the pad clears it the moment the finger lifts and the voice says
+"Start at the green dot and follow the arrow." (a closed line traced the other way starts
+at its dot, so the words name the arrow too). traceMatches holds the same rule for a lift
+the pad never heard. The order of the lines is never failed, at any grade.
+
+How a line's direction is read (traceDirections). The finger's places along a line,
+smoothed over five points (fewer at a run's two ends), are split into pieces wherever the
+finger turns back more than 10 units along it; less is a wobble. A place that leaps more
+than 12 units along the line beyond the finger's own step starts a new piece, and when the
+finger goes over to another line, the points at the end of its run that were already
+nearer the new line go with it. A line counts as traced one way once the pieces that run
+that way in one stroke of the finger cover half of its judged length together (since
+round two's code check: a sway at a sharp corner cut a forward line into pieces, none of
+which reached half alone), a closed line's stretches counted once a lap (since round
+four's code read: O traced the other way a third of the way, off the line and back over
+the same stretch, had counted twice and read as over half). A finger that touches down on
+a dot two lines share is taken to the line it moves along next: its first point more than
+4 units from the dot, past any rest or one-unit wobble there (rounds four and five: a
+resting finger repeats its first point, and the pad keeps whole units). A stretch of a line within 4 units of another line is not judged, since
+either line could be meant there, and a line with less than 12 judged units (the dot of
+i) is never judged. A piece that turns straight back along the line the finger just went
+forward on is a retrace, the way n, m and h go back up their stem to start a hump, never a
+line traced from its end. A line is cleared only when it was traced backward and never
+forward. These numbers were tried on every shape with traces drawn forward, reversed, in
+one stroke of the finger, with handwriting's retraces, overshooting a dot, colored back
+and forth and wobbling up to 5 units, and no forward trace was ever cleared; since round
+one's code check also at a finger's paces (3 units a point is an ordinary pace, 12 or more
+a flick). At one pace the first version cleared a closed shape traced there and back,
+passed a line traced quickly from its end, and stuck the pad's next dot on eleven shapes;
+the rules test holds all three at four paces each: forward traces with every point
+jittered, line by line and there and back, at 1.5, 3, 5 and 8 units a point; every judged
+line traced from its end at 1.5, 3, 5 and 13; and the next dot at 1.5, 3, 4 and 8. Jitter
+point by point never cuts a corner, so since round two's code check the rules test also
+traces the curve the pad draws (strokeSegments, in logic) with a smooth sway, as a child's
+finger moves: five units at 1.5, 3, 5, 8, 12 and 16 units a point, four with every point
+jittered at 8, 12 and 16, and the next dot with a three-unit sway at 8, 12 and 16. A few
+lines traced from their end with a three- to four-unit wobble still pass (q's and a's
+short stems, z, A), since telling them from a wobble would fail forward traces.
+
+Rounds (pass MN, Mikey's answer to Q50, Claude's (b)). A round traces every letter, mark
+or shape its lesson teaches before any comes again, where before each trace picked its
+letter at random, and a longer round traces them once a set (a triple dose of three
+letters, three sets). A Quick Review of a lesson that mixes traces and choices keeps a
+round's share, three traces and two choices. Each of First Sounds and Letters' three tracing rounds is three traces,
+one of each of its lesson's letters, and two choice questions among the same three: the
+letter the voice says, and the letter found by its lines ("Which letter goes down, then
+across the bottom?"). The two ask about two different letters while they can, in a round
+and in its Quick Review, so the second is never answered by the first (round one's screen
+check: 212 of its 600 rounds, and 177 of the rules test's 600, asked one letter twice);
+every other lesson draws as before. A new set of traces never opens with the letter just
+traced, so one letter never comes twice in a row while another can, in a round, a triple
+dose or a Quick Review, which traces in sets the same way (round two's code check: "i k t
+t i" in a round; round four's alignment read: "k i t t k" in a Quick Review); and, as in a
+round, a Quick Review's trace bank with nothing new hands its turn to the lesson's other
+trace banks (round five's code read: "r m k z r").
 
 ## Backups
 

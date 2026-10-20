@@ -2403,7 +2403,7 @@ export function letterSpotRound(seed) {
 // (pass MM), heard after every trace: "goes straight down" fitted the first line of L, T and F too, two of which are on every
 // board, and F's paragraph words are written, never heard (F's stop before "at the top and the middle", so the line after a
 // second miss stays within 24 words). The rules test finds every one in those words.
-const TRACED_SHAPE = { L: 'goes down, then across the bottom', T: 'goes down the middle, then across the top', O: 'goes around to the left, all the way back to where it started', I: 'is one line, straight down', H: 'is two lines down, then a bridge across the middle', F: 'is a line down, then two lines across' };
+const TRACED_SHAPE = { L: 'goes down, then across the bottom', T: 'goes down the middle, then one line across the top', O: 'goes around to the left, all the way back to where it started', I: 'is one line, straight down', H: 'is two lines down, then a bridge across the middle', F: 'is a line down, then two lines across' };
 export function letterShapeWords(x) { return LETTER_NOT[x] || TRACED_SHAPE[x] || null; }
 // The lines, by moment: the ask; a right tap ("Yes" opens it, as Big Letters says "Is this the letter M? Yes."); a wrong tap, which
 // names the letter tapped and asks again; and from the second miss on one ask, the asked letter's shape words too. "The letter"
@@ -4191,7 +4191,7 @@ function PREK3_MODULES() { return [
         { say: 'Taking turns works with lots of things, like the slide, the swing and a new book.', show: { kind: 'icon', name: 'slide' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines I.C.1 (forms positive relationships with adults and peers) and II.B.4 (begins to use appropriate language for different situations), and Head Start ELOF Goals P-SE 2 (engages in prosocial and cooperative behavior with adults), one of whose indicators reads "Engages in prosocial behaviors with adults, such as using respectful language or greetings.", in part, since the lesson teaches saying please and thank you, prosocial behavior of the kind the first sentence of its 36 to 48 month progression names, "Sometimes engages in prosocial behavior with adults, such as greeting the teacher or saying goodbye, and responds to adult requests and directions that may include assistance or prompting.", while responding to adult requests and directions is a grown-up\'s to guide, and its second sentence, "Sometimes demonstrates uncooperative behavior with familiar adults, such as saying "No" to requests, but these moments are typically resolved with support from adults.", is a grown-up\'s to resolve (EARMARKS E12), P-SE 3 (engages in and maintains positive interactions and relationships with other children), in part, since the lesson teaches sharing and taking turns with materials from the second sentence of its 36 to 48 month progression, "May spontaneously engage in prosocial behaviors with other children, such as sharing and taking turns with materials and in conversations, or may engage in these with prompting from adults.", while taking turns in conversations, and its first sentence, "Sometimes engages in and maintains interactions with other children without support from an adult, or demonstrates skills in doing this when prompted by an adult.", are play and talk with other children, a grown-up\'s or the classroom\'s (EARMARKS E12), and P-SE 5 (uses basic problem-solving skills to resolve conflicts with other children), one of whose indicators reads "Uses basic strategies for dealing with common conflicts, such as sharing, taking turns, and compromising.", in part, since the lesson teaches the second sentence of its 36 to 48 month progression, "Suggests solutions to conflicts with adult guidance and support.", taking turns or sharing when two friends want one thing, while its first, "Begins to recognize and describe social problems.", is taught in Helping a friend.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines I.C.1 (forms positive relationships with adults and peers) and II.B.4 (begins to use appropriate language for different situations), and Head Start ELOF Goals P-SE 2 (engages in prosocial and cooperative behavior with adults), one of whose indicators reads "Engages in prosocial behaviors with adults, such as using respectful language or greetings.", in part, since the lesson teaches saying please and thank you, prosocial behavior of the kind the first sentence of its 36 to 48 month progression names, "Sometimes engages in prosocial behavior with adults, such as greeting the teacher or saying goodbye, and responds to adult requests and directions that may include assistance or prompting.", while responding to adult requests and directions is a grown-up\'s to guide, and its second sentence, "Sometimes demonstrates uncooperative behavior with familiar adults, such as saying "No" to requests, but these moments are typically resolved with support from adults.", is a grown-up\'s to resolve (EARMARKS E12), P-SE 3 (engages in and maintains positive interactions and relationships with other children), in part, since the lesson teaches sharing and taking turns with materials from the second sentence of its 36 to 48 month progression, "May spontaneously engage in prosocial behaviors with other children, such as sharing and taking turns with materials and in conversations, or may engage in these with prompting from adults.", while the skills of its first sentence, "Sometimes engages in and maintains interactions with other children without support from an adult, or demonstrates skills in doing this when prompted by an adult.", are taught in Can I play too?, doing them without a grown-up, or spontaneously, is the child\'s own, and taking turns in conversations is talk with other children, a grown-up\'s or the classroom\'s (EARMARKS E12), and P-SE 5 (uses basic problem-solving skills to resolve conflicts with other children), one of whose indicators reads "Uses basic strategies for dealing with common conflicts, such as sharing, taking turns, and compromising.", in part, since the lesson teaches the second sentence of its 36 to 48 month progression, "Suggests solutions to conflicts with adult guidance and support.", taking turns or sharing when two friends want one thing, while its first, "Begins to recognize and describe social problems.", is taught in Helping a friend.'],
     generators: ['pk3-magic-word', 'pk-turn-choice', 'pk3-magic-word', 'pk3-magic-word', 'pk-turn-choice'],
   },
   // Pass MD, earmark E12 part one (the feelings outcomes of the 2022 Texas Prekindergarten Guidelines, PK3 Domain I, read in
@@ -4221,7 +4221,7 @@ function PREK3_MODULES() { return [
         { say: 'Pretend to smell a flower, and breathe in slowly. Pretend to blow out a candle, and breathe out slowly.', show: { kind: 'pair', a: { kind: 'icon', name: 'flower' }, b: { kind: 'icon', name: 'candle' } } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines I.B.2.a (recognizes and expresses a range of emotions), I.B.2.b (is familiar with basic feeling words (e.g., happy, sad, mad, scared)) and I.B.2.c (manages intensity of emotions with adult assistance), and Head Start ELOF Goals P-SE 6 (expresses a broad range of emotions and recognizes these emotions in self and others), whose 36 to 48 month progression reads "Expresses a broad range of emotions across contexts, such as during play and in interactions with adults. Notices when strong emotions are exhibited by others and begins to use words to describe some of these emotions, such as happy, sad, or mad.", and P-SE 8 (manages emotions with increasing independence), whose 36 to 48 month progression reads "Manages less intense emotions, such as mild frustration, independently. May require adult support to manage more intense emotions.", in part, since the lesson teaches a grown-up\'s help for a big feeling and, for a smaller one, only saying its name and using your words.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines I.B.2.a (recognizes and expresses a range of emotions), I.B.2.b (is familiar with basic feeling words (e.g., happy, sad, mad, scared)) and I.B.2.c (manages intensity of emotions with adult assistance), and Head Start ELOF Goals P-SE 6 (expresses a broad range of emotions and recognizes these emotions in self and others), whose 36 to 48 month progression reads "Expresses a broad range of emotions across contexts, such as during play and in interactions with adults. Notices when strong emotions are exhibited by others and begins to use words to describe some of these emotions, such as happy, sad, or mad.", in part, since the lesson teaches the four feelings\' names, how each shows on a face, and mad and scared in the body too, in yourself and in others, and saying your feeling\'s name, while expressing them across contexts, such as during play and in interactions with adults, is the child\'s own (EARMARKS E12), and P-SE 8 (manages emotions with increasing independence), whose 36 to 48 month progression reads "Manages less intense emotions, such as mild frustration, independently. May require adult support to manage more intense emotions.", in part, since the lesson teaches a grown-up\'s help for a big feeling and, for a smaller one, saying its name and using your words, while managing a less intense feeling independently is the child\'s own (EARMARKS E12).'],
     generators: ['p3-feel-tap-face', 'p3-feel-name-face', 'p3-feel-moment', 'p3-feel-okay', 'p3-feel-calm'],
   },
   {
@@ -4232,14 +4232,19 @@ function PREK3_MODULES() { return [
     title: 'Helping a friend',
     tagline: 'Kind words and a grown-up',
     lesson: {
-      paragraphs: ['Faces can show feelings. When a friend\'s face looks sad or scared, be kind. Ask, are you okay? Sit beside your friend, or bring a teddy to hug.', 'When a friend falls and gets hurt, or is very sad, get a grown-up. Grown-ups know how to help. Laughing at a hurt or scared friend is not kind. It can make your friend feel sad.', 'Sometimes two friends both want one ball, and a fight starts. Grabbing and pushing are not okay. Keep your hands to yourself, and say, stop, please. Then get a grown-up to help you both. A grown-up can help you take turns, so you both get to play.'],
+      paragraphs: ['Faces can show feelings. When a friend\'s face looks sad or scared, be kind. Ask, are you okay? Sit beside your friend, or bring a teddy to hug. Grown-ups have feelings too. When your grown-up looks sad, ask, are you okay? You can also ask, can I give you a hug?', 'When a friend falls and gets hurt, or is very sad, get a grown-up. Grown-ups know how to help. Laughing at a hurt or scared friend is not kind. It can make your friend feel sad.', 'Sometimes two friends both want one ball, and a fight starts. Grabbing and pushing are not okay. Keep your hands to yourself, and say, stop, please. Then get a grown-up to help you both. A grown-up can help you take turns, so you both get to play.'],
       keyIdea: 'When a friend looks sad or scared, be kind and ask, are you okay? When a friend is hurt, or you start to fight, get a grown-up.',
       example: { kind: 'face', feeling: 'sad', caption: 'Are you okay?' },
-      pictures: [{ serial: 'P130', alt: 'A small child leading a grown-up by the hand to a friend who fell on the grass', step: 3 }, { serial: 'P131', alt: 'A grown-up kneeling beside two small children who take turns rolling one red ball', step: 7 }],
+      // Pass MN (earmark E12: I.C.6's distressed grown-up): line 4 is new, so the two paintings move down one line with their lines,
+      // and P154 paints the new line (the lesson check: three sad faces had come in a row).
+      pictures: [{ serial: 'P154', alt: 'A small child hugging a grown-up who looks a little sad and hugs the child back', step: 3 }, { serial: 'P130', alt: 'A small child leading a grown-up by the hand to a friend who fell on the grass', step: 4 }, { serial: 'P131', alt: 'A grown-up kneeling beside two small children who take turns rolling one red ball', step: 8 }],
       script: [
         { say: 'Faces can show feelings. When your friend\'s face looks like this, your friend may be sad.', show: { kind: 'face', feeling: 'sad' } },
         { say: 'When a friend looks sad or scared, you can be kind. Ask, are you okay?', show: { kind: 'pair', a: { kind: 'face', feeling: 'sad' }, b: { kind: 'face', feeling: 'scared' } } },
         { say: 'You can sit beside your friend, or bring a teddy to hug.', show: { kind: 'icon', name: 'teddy' } },
+        // Since round four of pass MN a child asks before giving a hug, a grown-up's too, as kindergarten's My space and my no teaches
+        // ("People ask before a hug"), where this line had said "A hug can help." (the alignment and final reads).
+        { say: 'Grown-ups have feelings too. When your grown-up looks sad, you can ask, are you okay? You can also ask, can I give you a hug?', show: { kind: 'face', feeling: 'sad' } },
         { say: 'When a friend falls and gets hurt, or is very sad, get a grown-up. Grown-ups know how to help.', show: { kind: 'face', feeling: 'sad' } },
         // Pass MJ (the lesson check, then the alignment read: one idea a line for a three-year-old): taught before its yes or no question.
         { say: 'Laughing at a hurt or scared friend is not kind. It can make your friend feel sad.', show: { kind: 'face', feeling: 'sad' } },
@@ -4249,7 +4254,7 @@ function PREK3_MODULES() { return [
         { say: 'Helping a friend can make you both feel happy. Asking a grown-up for help is a smart thing to do, too.', show: { kind: 'face', feeling: 'happy' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines I.C.5 (seeks adult help when experiencing conflicts with another child), I.C.6 (responds with concern when a child or adult is distressed), in part, since the lesson teaches noticing a friend who is distressed and the kind words and acts to offer, and not yet a grown-up who is distressed, and I.D.1 (shows interest in other people and their feelings), in part, since the lesson teaches noticing a friend\'s feelings and asking about them, and not yet interest in other people beyond their feelings, and Head Start ELOF Goals P-SE 7 (expresses care and concern toward others), whose 36 to 48 month progression reads "Often pays attention when others are distressed, but attention and response to this distress may be brief. May seek out adult support to help another child who is distressed.", P-SE 6 (expresses a broad range of emotions and recognizes these emotions in self and others), in part, since the lesson teaches reading sad and scared on a friend\'s face, while expressing one\'s own feelings is taught in Happy, sad, mad and scared, P-SE 5 (uses basic problem-solving skills to resolve conflicts with other children), whose 36 to 48 month progression reads "Begins to recognize and describe social problems. Suggests solutions to conflicts with adult guidance and support.", and P-SE 1 (engages in and maintains positive relationships and interactions with adults), in part, since the lesson teaches the third sentence of its 36 to 48 month progression, "Uses adults as a resource to solve problems.", getting a grown-up when a friend is hurt or a fight starts, while its first two, "Engages in positive interactions with adults, such as by demonstrating affection or talking about ideas. Is able to separate from trusted adults when in familiar settings.", are the child\'s own time with grown-ups (EARMARKS E12).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines I.C.5 (seeks adult help when experiencing conflicts with another child), I.C.6 (responds with concern when a child or adult is distressed), since the lesson teaches noticing a friend or a grown-up who is distressed and the kind words and acts to offer, and I.D.1 (shows interest in other people and their feelings), in part, since the lesson teaches noticing a friend\'s or a grown-up\'s feelings and asking about them, and not yet interest in other people beyond their feelings, and Head Start ELOF Goals P-SE 7 (expresses care and concern toward others), whose 36 to 48 month progression reads "Often pays attention when others are distressed, but attention and response to this distress may be brief. May seek out adult support to help another child who is distressed.", P-SE 6 (expresses a broad range of emotions and recognizes these emotions in self and others), in part, since the lesson teaches reading sad and scared on a friend\'s face, and sad on a grown-up\'s, while expressing one\'s own feelings is taught in Happy, sad, mad and scared, and expressing them across contexts is the child\'s own (EARMARKS E12), P-SE 5 (uses basic problem-solving skills to resolve conflicts with other children), whose 36 to 48 month progression reads "Begins to recognize and describe social problems. Suggests solutions to conflicts with adult guidance and support.", and P-SE 1 (engages in and maintains positive relationships and interactions with adults), in part, since the lesson teaches the third sentence of its 36 to 48 month progression, "Uses adults as a resource to solve problems.", getting a grown-up when a friend is hurt or a fight starts, and the affection its first sentence names, a kind question and a hug, asked for first, for a grown-up who looks sad, while talking about ideas, from that sentence, "Engages in positive interactions with adults, such as by demonstrating affection or talking about ideas.", and its second, "Is able to separate from trusted adults when in familiar settings.", are the child\'s own time with grown-ups (EARMARKS E12).'],
     generators: ['p3-help-who', 'p3-help-kind', 'p3-help-grownup', 'p3-help-ball', 'p3-help-yesno'],
   },
   // Earmark E12 part two (pass ME): adding one and taking one away, the PK3 joining and separating outcomes, with the dots on
@@ -4284,6 +4289,42 @@ function PREK3_MODULES() { return [
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines V.B.1 (uses objects to demonstrate that adding one or more objects to a set will increase the number of objects in the set) and V.B.2 (uses objects to demonstrate that taking away one or more objects from a set will decrease the number of objects in the set), with the dots on the screen as the objects (one more, one away, and then two more and two away, so the standard\'s one or more is taught) and the crackers at snack time the child is asked to try with a grown-up, and V.A.2 (counts up to 5 objects with one-to-one correspondence) and V.A.3 (counts up to 5 items and demonstrates cardinality by communicating that the last number indicates how many items are in the set), since the groups are counted to find how many now, touching each dot once, with the last number telling how many, and Head Start ELOF Goal P-MATH 6 (understands addition as adding to and understands subtraction as taking away from), whose 36 to 48 month progression reads "Begins to add and subtract very small collections of objects with adult support. For example, the teacher says, "You have three grapes and get one more. How many in all?" Child counts out three, then counts out one more, then counts all four: "One, two, three, four. I have four!"" (the lesson\'s snack uses crackers, since the AAP keeps whole grapes from children under four), with P-MATH 1 (knows number names and the count sequence), in part, since the first sentence of its 36 to 48 month progression, "Says or signs some number words in sequence (up to 10), starting with one.", goes past the lesson\'s count to five (six to ten wait, EARMARKS E12), while its second, "Understands that counting words are separate words, such as "one," "two," "three" versus "onetwothree".", is shown by touching each dot once as it is counted, and P-MATH 3 (understands the relationship between numbers and quantities) for the counting, whose 36 to 48 month progression reads "Begins to coordinate verbal counting with objects by pointing to or moving objects for small groups of objects laid in a line (referred to as one-to-one correspondence). Begins to understand that the last number represents how many objects are in a group (referred to as "cardinality")."'],
     generators: ['p3-add-one', 'p3-take-one', 'p3-more-or-fewer-now', 'p3-one-more-group', 'p3-one-fewer-group'],
+  },
+  // Pass MN, earmarks E12 and E13 built together, side by side by domain (Mikey's answer to Q48), Domain I first: joining other
+  // children's play, from the 2022 Texas Prekindergarten Guidelines' PK3 I.C.3 and the Head Start ELOF goals P-SE 3 and P-SE 4 with
+  // their 36 to 48 month progressions (docs/standards). A three-year-old learns a way in that works (watch the game first, then ask,
+  // or bring something that fits the game), what to do with a not now, and how to play together once in, one idea a line, with
+  // every answer the bank asks said on a line first. The faces are the feelings lesson's, so it comes after Happy, sad, mad and scared.
+  {
+    id: 'join-in-play',
+    skill: 'Getting along',
+    order: 16,
+    requires: ['four-feelings'],
+    title: 'Can I play too?',
+    tagline: 'Watch, then ask',
+    lesson: {
+      paragraphs: ['Some friends are building a tower with blocks, and you want to play too. First, watch the game, so you see what your friends are doing and how they play. Then ask, can I play too? Asking is a kind way to join a game. You can bring something for the game, like a block for the tower, but not a ball, which can knock the tower down.', 'Grabbing your friends\' blocks is not kind, and knocking down their tower is not kind. It can make your friends sad or mad.', 'When your friends say yes, play together. Say your idea, like let\'s make it tall, and listen to your friend\'s idea too. Take turns adding blocks, and take turns rolling a ball, going down the slide and swinging on the swing, too. Playing together can make everyone happy, and listening to a friend\'s idea can make your friend happy.', 'Sometimes friends say, not now. That is okay. You can play something else, like the slide, and ask again later, or find another friend to play with. Having nobody to play with can make a friend sad. When a friend is playing alone, ask, do you want to play with me?'],
+      keyIdea: 'When you want to play, watch first, then ask, can I play too? Bring something for the game, and play together kindly.',
+      example: { kind: 'row', items: [{ kind: 'icon', name: 'block' }, { kind: 'icon', name: 'block' }, { kind: 'icon', name: 'block' }], caption: 'Watch first, then ask, can I play too?' },
+      pictures: [{ serial: 'P146', alt: 'Two small children building a block tower on a rug while a third small child sits nearby to watch their game', step: 1 }, { serial: 'P147', alt: 'Three small children taking turns adding blocks to one tall tower on a rug', step: 6 }],
+      script: [
+        { say: 'Two friends are building a tower with blocks. You want to play too. What can you do?', show: { kind: 'row', items: [{ kind: 'icon', name: 'block' }, { kind: 'icon', name: 'block' }, { kind: 'icon', name: 'block' }] } },
+        { say: 'First, watch the game. Look at what your friends are doing, so you know how they play.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
+        { say: 'Then ask, can I play too? Asking is a kind way to join a game.', show: { kind: 'pair', a: { kind: 'pic', name: 'rabbit' }, b: { kind: 'pic', name: 'bear' } } },
+        { say: 'You can bring something for the game, like a block for the tower. A ball is not for a tower game, because it can knock the tower down.', show: { kind: 'pair', a: { kind: 'icon', name: 'block' }, b: { kind: 'icon', name: 'ball' } } },
+        { say: 'Grabbing your friends\' blocks is not kind. Knocking down their tower is not kind. It can make your friends sad or mad.', show: { kind: 'pair', a: { kind: 'face', feeling: 'sad' }, b: { kind: 'face', feeling: 'mad' } } },
+        { say: 'When your friends say yes, play together. Say your idea, like let\'s make it tall, and listen to your friend\'s idea too.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
+        { say: 'Take turns adding blocks. Your friend adds one, and then it is your turn. You add one, and then it is your friend\'s turn.', show: { kind: 'row', items: [{ kind: 'icon', name: 'block' }, { kind: 'icon', name: 'block' }, { kind: 'icon', name: 'block' }] } },
+        { say: 'You can take turns rolling a ball, going down the slide and swinging on the swing, too.', show: { kind: 'pair', a: { kind: 'icon', name: 'ball' }, b: { kind: 'icon', name: 'slide' } } },
+        { say: 'Playing together can make everyone happy. Listening to a friend\'s idea can make your friend happy.', show: { kind: 'face', feeling: 'happy' } },
+        { say: 'Sometimes friends say, not now. That is okay. You can play something else, like the slide, and ask again later.', show: { kind: 'icon', name: 'slide' } },
+        { say: 'You can find another friend to play with, too.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
+        { say: 'Having nobody to play with can make a friend sad. When a friend is playing alone, ask, do you want to play with me?', show: { kind: 'pic', name: 'rabbit' } },
+        { say: 'When you want to play, watch first, then ask, can I play too?', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines I.C.3 (shows interest in peer play but may be less skilled in initiating and joining a group), since the lesson teaches showing interest in a game by watching it first, and ways to join a group at play, asking, can I play too?, and bringing something that fits the game, what to do when the answer is not now, and starting play by asking a friend who plays alone, and Head Start ELOF Goals P-SE 3 (engages in and maintains positive interactions and relationships with other children), in part, since the lesson teaches the skills the first sentence of its 36 to 48 month progression names, "Sometimes engages in and maintains interactions with other children without support from an adult, or demonstrates skills in doing this when prompted by an adult.", joining a game and asking a friend who plays alone to play, and taking turns with materials, from its second sentence, adding blocks and rolling a ball, while doing it without a grown-up, or spontaneously, is the child\'s own (EARMARKS E12), sharing is taught in Please and thank you, and taking turns in conversations is talk with other children, a grown-up\'s or the classroom\'s (EARMARKS E12), and P-SE 4 (engages in cooperative play with other children), whose 36 to 48 month progression reads "Often plays cooperatively with other children. For at least short periods during this play, works with other children to plan and enact this play in a coordinated way.", since the lesson teaches playing together, saying an idea for the game, listening to a friend\'s and taking turns to build it.'],
+    generators: ['p3-join-how', 'p3-join-yesno', 'p3-join-not-now', 'p3-join-face', 'p3-join-turn'],
   },
 ]; }
 
@@ -5355,7 +5396,7 @@ function PREK_MODULES() { return [
         { say: 'While you wait, you can count to ten, which helps the wait go by, or cheer for your friend. Then it is your turn!', show: { kind: 'dots', count: 10 } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines I.C.5 (initiates problem-solving strategies when experiencing conflicts with others and seeks adult support when necessary), in part, since the lesson teaches taking turns and sharing when two friends want one thing, while seeking a grown-up\'s support waits (EARMARKS E13), I.B.1.a (follows classroom rules and routines with occasional reminders from adults), in part, since the lesson teaches two routines, listening when someone talks and throwing away a wrapper, while following them day to day is the classroom\'s (EARMARKS E13), I.C.6 (demonstrates empathy and caring for others), in part, since the lesson teaches helping a friend pick up dropped crayons, while empathy beyond that act waits (EARMARKS E13), and I.B.2.c (is able to manage intensity of emotions more consistently, although adult guidance is sometimes necessary), in part, since the lesson teaches three ways to calm a hard feeling while waiting, a slow breath, counting to ten and cheering for a friend, while managing feelings day to day, with a grown-up\'s guidance, is the child\'s own (EARMARKS E13), and Head Start ELOF Goals P-SE 5 (uses basic problem-solving skills to resolve conflicts with other children), whose 48 to 60 month progression reads "Often recognizes and describes social problems, suggests solutions to conflicts, and compromises when working or playing in a group. Although simple conflicts may be resolved without adult assistance, may seek out or need adult support in more challenging moments.", in part, since the lesson teaches taking turns and sharing as solutions, while describing the problem is the child\'s own talk and a grown-up\'s support waits (EARMARKS E13), P-SE 3 (engages in and maintains positive interactions and relationships with other children), whose 48 to 60 month progression reads "Sustains interactions with other children more often and for increasing periods of time. Demonstrates prosocial behaviors with other children with and without prompting from adults. Likely to show at least some preference for playing with particular children.", in part, for its prosocial behaviors, taking turns, sharing and helping a friend pick up crayons, while sustained play and preferred friends are the child\'s own (EARMARKS E13), P-SE 8 (manages emotions with increasing independence), whose 48 to 60 month progression reads "Has an expanding range of strategies for managing emotions, both less intense emotions and those that cause greater distress. Sometimes looks to adults for support in managing the most intense emotions, but shows increasing skill in managing emotions independently.", in part, for three strategies for waiting, a slow breath, counting to ten and cheering for your friend, while greater distress and a grown-up\'s support wait (EARMARKS E13), and P-SE 7 (expresses care and concern toward others), whose 48 to 60 month progression reads "Consistently pays attention when others are distressed and often responds with care, either by seeking out adult support or providing reassurance or support themselves.", in part, since the lesson teaches helping a friend who drops their crayons, while paying attention when others are distressed and seeking a grown-up\'s support wait (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines I.C.5 (initiates problem-solving strategies when experiencing conflicts with others and seeks adult support when necessary), in part, since the lesson teaches taking turns and sharing when two friends want one thing, while seeking a grown-up\'s support is taught in Being a good friend, I.B.1.a (follows classroom rules and routines with occasional reminders from adults), in part, since the lesson teaches two routines, listening when someone talks and throwing away a wrapper, while following them day to day is the classroom\'s (EARMARKS E13), I.C.6 (demonstrates empathy and caring for others), in part, since the lesson teaches helping a friend pick up dropped crayons, while empathy beyond that act is taught in Being a good friend, and I.B.2.c (is able to manage intensity of emotions more consistently, although adult guidance is sometimes necessary), in part, since the lesson teaches three ways to calm a hard feeling while waiting, a slow breath, counting to ten and cheering for a friend, while the ways to calm the biggest feelings, with a grown-up\'s guidance, are taught in Feelings and what we do, and Head Start ELOF Goals P-SE 5 (uses basic problem-solving skills to resolve conflicts with other children), whose 48 to 60 month progression reads "Often recognizes and describes social problems, suggests solutions to conflicts, and compromises when working or playing in a group. Although simple conflicts may be resolved without adult assistance, may seek out or need adult support in more challenging moments.", in part, since the lesson teaches taking turns and sharing as solutions, while describing the problem, and when a grown-up\'s support is needed and when it is not, are taught in Being a good friend, P-SE 3 (engages in and maintains positive interactions and relationships with other children), whose 48 to 60 month progression reads "Sustains interactions with other children more often and for increasing periods of time. Demonstrates prosocial behaviors with other children with and without prompting from adults. Likely to show at least some preference for playing with particular children.", in part, for its prosocial behaviors, taking turns, sharing and helping a friend pick up crayons, while sustained play, these behaviors without prompting from adults, and preferred friends are the child\'s own (EARMARKS E13), P-SE 8 (manages emotions with increasing independence), whose 48 to 60 month progression reads "Has an expanding range of strategies for managing emotions, both less intense emotions and those that cause greater distress. Sometimes looks to adults for support in managing the most intense emotions, but shows increasing skill in managing emotions independently.", in part, for three strategies for waiting, a slow breath, counting to ten and cheering for your friend, while greater distress and a grown-up\'s support are taught in Feelings and what we do, and the growing skill in managing emotions independently is the child\'s own (EARMARKS E13), and P-SE 7 (expresses care and concern toward others), whose 48 to 60 month progression reads "Consistently pays attention when others are distressed and often responds with care, either by seeking out adult support or providing reassurance or support themselves.", in part, since the lesson teaches helping a friend who drops their crayons, while paying attention when others are distressed and seeking a grown-up\'s support are taught in Being a good friend.'],
     generators: ['pk-turn-choice', 'ck-good-choice', 'pk-whose-turn', 'pk-turn-or-share', 'pk-while-waiting'],
   },
   {
@@ -5418,6 +5459,105 @@ function PREK_MODULES() { return [
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines VII.B.3 (discusses the roles and responsibilities of family, school, and community helpers), in part, since the lesson teaches the jobs, tools and workplaces of a teacher, a firefighter, a doctor, a mail carrier and a police officer, and a child\'s own jobs at home and at school, while family members\' roles and the discussing, which only a grown-up can hear, wait (EARMARKS E13). The Head Start ELOF names no preschool goal for community helpers\' roles.'],
     generators: ['ck-which-helper', 'ck-job-tool', 'pk-helper-where', 'pk-helper-scene', 'ck-which-helper'],
+  },
+  // Pass MN, earmarks E12 and E13 built together, side by side by domain (Mikey's answer to Q48), Domain I first: pre-K 4's
+  // feelings, from the 2022 Texas Prekindergarten Guidelines' PK4 I.B.2, I.C.5, I.C.6 and I.D.1 and the Head Start ELOF goals P-SE 5
+  // to P-SE 8 with their 48 to 60 month progressions (docs/standards), in three short lessons a four-year-old can hold, one idea a
+  // line: what a feeling makes us do and the kind ways we choose to show it; how a friend can feel and like things the same as us
+  // or differently, with worried and embarrassed; and caring for a friend and fixing a problem together, with a grown-up when needed.
+  {
+    id: 'feelings-show',
+    skill: 'Feelings',
+    order: 19,
+    title: 'Feelings and what we do',
+    tagline: 'Feelings show, and we choose',
+    lesson: {
+      paragraphs: ['Feelings show in what we do. When you feel happy, you might smile a big smile, jump and clap. When you feel sad, a tear may roll out. You might cry or want a hug, and that is okay. When you feel mad, your eyebrows may squeeze down. You might stomp your feet, make tight fists or want to shout. When you feel scared, your eyes may open wide. You might hide or hold on tight to your grown-up.', 'So what someone does can tell you how they may feel. A friend who stomps may feel mad, and a friend who hides may feel scared. Use your words to say how you feel. You can say, I feel happy, I feel sad, I feel mad or I feel scared.', 'Every feeling is okay to have, even mad, but hitting, pushing and throwing things are not okay, because they can hurt someone. You can choose a kind way to show a feeling. When you feel mad, say, I feel mad, and tell what is wrong.', 'A slow breath helps a big feeling get smaller. Pretend to smell a flower as you breathe in slowly. Then pretend to blow out a candle as you breathe out slowly. You can also count to five, or hug your soft teddy, until you feel calm. When a feeling is very big, get your grown-up, because grown-ups can help with the biggest feelings. Happy feelings show too, in a big smile or a high five.'],
+      keyIdea: 'Feelings show in what we do. Every feeling is okay, and we can choose kind ways to show them, like using our words and taking a slow breath.',
+      example: { kind: 'pair', a: { kind: 'face', feeling: 'happy' }, b: { kind: 'face', feeling: 'mad' }, caption: 'Happy can make you jump and clap, and mad can make you stomp your feet.' },
+      pictures: [{ serial: 'P148', alt: 'A small child jumping with a big smile and clapping her hands', step: 0 }, { serial: 'P149', alt: 'A grown-up kneeling to hug a small child who is upset, the two of them breathing slowly together', step: 10 }],
+      script: [
+        { say: 'Feelings show in what we do. When you feel happy, you might smile a big smile, jump and clap.', show: { kind: 'face', feeling: 'happy' } },
+        { say: 'When you feel sad, a tear may roll out. You might cry or want a hug, and that is okay.', show: { kind: 'face', feeling: 'sad' } },
+        { say: 'When you feel mad, your eyebrows may squeeze down. You might stomp your feet, make tight fists or want to shout.', show: { kind: 'face', feeling: 'mad' } },
+        { say: 'When you feel scared, your eyes may open wide. You might hide or hold on tight to your grown-up.', show: { kind: 'face', feeling: 'scared' } },
+        { say: 'So what someone does can tell you how they may feel. A friend who stomps may feel mad, and a friend who hides may feel scared.', show: { kind: 'pair', a: { kind: 'face', feeling: 'mad' }, b: { kind: 'face', feeling: 'scared' } } },
+        { say: 'Use your words to say how you feel. You can say, I feel happy, I feel sad, I feel mad or I feel scared.', show: { kind: 'faces', feelings: ['happy', 'sad', 'mad', 'scared'] } },
+        { say: 'Every feeling is okay to have, even mad. But hitting, pushing and throwing things are not okay, because they can hurt someone.', show: { kind: 'face', feeling: 'mad' } },
+        { say: 'You can choose a kind way to show a feeling. When you feel mad, say, I feel mad, and tell what is wrong.', show: { kind: 'face', feeling: 'mad' } },
+        { say: 'A slow breath helps a big feeling get smaller. Pretend to smell a flower as you breathe in slowly. Then pretend to blow out a candle as you breathe out slowly.', show: { kind: 'pair', a: { kind: 'icon', name: 'flower' }, b: { kind: 'icon', name: 'candle' } } },
+        { say: 'You can also count to five, or hug your soft teddy, until you feel calm.', show: { kind: 'icon', name: 'teddy' } },
+        { say: 'When a feeling is very big, get your grown-up. Grown-ups can help with the biggest feelings, and a hug from your grown-up can help too.', show: null },
+        { say: 'Happy feelings show too. You can share a happy feeling with a big smile or a high five.', show: { kind: 'face', feeling: 'happy' } },
+        { say: 'Feelings like happy, sad, mad and scared show in what we do, and we can choose kind ways to show them.', show: { kind: 'faces', feelings: ['happy', 'sad', 'mad', 'scared'] } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines I.B.2.a (begins to understand the connection between emotions and behaviors), since the lesson teaches what each of four feelings can make a person do, that what someone does can tell how they may feel, and that we choose how to act on a feeling, I.B.2.b (uses verbal and nonverbal communication to communicate basic emotions and feelings), since the lesson teaches the words to say a feeling, I feel happy, I feel sad, I feel mad or I feel scared, and the ways a face and a body show one, a big smile, a tear, a stomp, tight fists or a high five, and I.B.2.c (is able to manage intensity of emotions more consistently, although adult guidance is sometimes necessary), since the lesson teaches ways to calm a big feeling, a slow breath, counting to five and hugging a soft teddy, and getting a grown-up for the biggest feelings, and Head Start ELOF Goals P-SE 8 (manages emotions with increasing independence), whose 48 to 60 month progression reads "Has an expanding range of strategies for managing emotions, both less intense emotions and those that cause greater distress. Sometimes looks to adults for support in managing the most intense emotions, but shows increasing skill in managing emotions independently.", in part, since the lesson teaches strategies for a feeling that causes greater distress and looking to a grown-up for the most intense ones, while the growing skill in managing emotions independently is the child\'s own (EARMARKS E13), and the strategies for waiting are taught in Taking turns, and P-SE 6 (expresses a broad range of emotions and recognizes these emotions in self and others), in part, since the lesson teaches what the second sentence of its 48 to 60 month progression names, "Uses words to describe own feelings when prompted, and may at times use these words without prompting, such as saying "Don\'t be mad" when engaged in play with other children.", saying a feeling\'s name when asked, and the expressing its first sentence names, the words, faces and acts that show four feelings, while using these words without prompting, as in play, is the child\'s own (EARMARKS E13), and the lesson How do friends feel? teaches the more subtle feelings of its first sentence.'],
+    generators: ['p4-feel-does', 'p4-feel-tells', 'p4-feel-say', 'p4-feel-okay', 'p4-feel-calm'],
+  },
+  {
+    id: 'how-friends-feel',
+    skill: 'Feelings',
+    order: 20,
+    requires: ['feelings-show'],
+    title: 'How do friends feel?',
+    tagline: 'The same, or different',
+    lesson: {
+      paragraphs: ['Friends can feel the same as you, or different. At a birthday party, you feel happy, and your friend feels happy too, the same feeling. At the big slide, you feel happy, and your friend feels scared, different feelings about the same slide.', 'Friends can like different things, too. You like cats, and your friend likes dogs, and that is okay. Think about what your friend likes. You like pizza, and your friend likes cake, so a piece of cake can make your friend happy. What if you like cake, but your friend does not like cake? Then cake may make your friend a little sad, even when it makes you happy. To know how a friend feels, look at their face, happy, sad or mad, and ask, how do you feel?', 'Worried is a feeling too. You may feel worried when you think something bad might happen, like on the first day at a new school. A worried face can have a wiggly mouth, and eyebrows that go up in the middle.', 'Embarrassed is a feeling too. You may feel embarrassed when you spill, fall or make a mistake, and everyone looks at you. An embarrassed face can have eyes that look down and pink cheeks, and you may want to hide your face. Everyone feels worried or embarrassed sometimes, and that is okay. You can say, I feel worried, or I feel embarrassed.'],
+      keyIdea: 'Friends can feel the same as you, or different, and they can like different things. Look at a friend\'s face, and ask, how do you feel?',
+      example: { kind: 'pair', a: { kind: 'face', feeling: 'happy' }, b: { kind: 'face', feeling: 'scared' }, caption: 'Happy and scared at the same slide.' },
+      pictures: [{ serial: 'P150', alt: 'Two small children beside the ladder of a tall, empty playground slide, one grinning and one looking up at it with scared, wide-open eyes', step: 1 }, { serial: 'P151', alt: 'A small child at a lunch table with pink cheeks, looking down after a spill as other children look over', step: 8 }],
+      script: [
+        { say: 'Friends can feel the same as you, or different. At a birthday party, you feel happy, and your friend feels happy too. The same feeling!', show: { kind: 'pair', a: { kind: 'face', feeling: 'happy' }, b: { kind: 'face', feeling: 'happy' } } },
+        { say: 'At the big slide, you feel happy, and your friend feels scared. Different feelings about the same slide!', show: { kind: 'pair', a: { kind: 'face', feeling: 'happy' }, b: { kind: 'face', feeling: 'scared' } } },
+        { say: 'Friends can like different things, too. You like cats, and your friend likes dogs. That is okay.', show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'icon', name: 'dog' } } },
+        { say: 'Think about what your friend likes. You like pizza, and your friend likes cake, so a piece of cake can make your friend happy.', show: { kind: 'pair', a: { kind: 'icon', name: 'pizza' }, b: { kind: 'icon', name: 'cake' } } },
+        // Pass MN (the lesson and accuracy checks): what a friend does not like, said before its question asks it.
+        { say: 'What if you like cake, but your friend does not like cake? Then cake may make your friend a little sad, even when it makes you happy.', show: { kind: 'face', feeling: 'sad' } },
+        { say: 'To know how a friend feels, look at their face. Is it happy, sad or mad? Then ask, how do you feel?', show: { kind: 'faces', feelings: ['happy', 'sad', 'mad'] } },
+        { say: 'Worried is a feeling too. You may feel worried when you think something bad might happen, like on the first day at a new school.', show: { kind: 'face', feeling: 'worried' } },
+        { say: 'A worried face can have a wiggly mouth, and eyebrows that go up in the middle.', show: { kind: 'face', feeling: 'worried' } },
+        { say: 'Embarrassed is a feeling too. You may feel embarrassed when you spill, fall or make a mistake, and everyone looks at you.', show: { kind: 'face', feeling: 'embarrassed' } },
+        { say: 'An embarrassed face can have eyes that look down and pink cheeks, and you may want to hide your face.', show: { kind: 'face', feeling: 'embarrassed' } },
+        { say: 'Everyone feels worried or embarrassed sometimes, and that is okay. You can say, I feel worried, or I feel embarrassed.', show: { kind: 'pair', a: { kind: 'face', feeling: 'worried' }, b: { kind: 'face', feeling: 'embarrassed' } } },
+        { say: 'Ask your friend how they feel. Their feelings can be the same as yours, or different.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines I.D.1 (demonstrates an understanding that others have perspectives and feelings that are similar and/or different from her own), since the lesson teaches that a friend can feel the same as you or differently about the same thing, that a friend can like different things and see the same slide another way, and to think about what a friend likes and ask how a friend feels, and Head Start ELOF Goal P-SE 6 (expresses a broad range of emotions and recognizes these emotions in self and others), in part, since the lesson teaches what the first sentence of its 48 to 60 month progression names, "Expresses a broad range of emotions and begins to notice more subtle or complex emotions in self and others, such as embarrassed or worried.", noticing worried and embarrassed on a face and in a moment, in yourself and in a friend, and expressing them, saying I feel worried or I feel embarrassed, while using words for one\'s own feelings when prompted is also taught in Feelings and what we do, and using them without prompting is the child\'s own (EARMARKS E13).'],
+    generators: ['p4-same-or-different', 'p4-friend-feels', 'p4-new-feeling-moment', 'p4-new-feeling-face', 'p4-friends-yesno'],
+  },
+  {
+    id: 'good-friend',
+    skill: 'Getting along',
+    order: 21,
+    requires: ['how-friends-feel'],
+    title: 'Being a good friend',
+    tagline: 'Help, and fix it together',
+    lesson: {
+      paragraphs: ['Good friends notice how others feel. When a friend feels sad, worried or embarrassed, you can help. You can sit beside your friend, or say kind words. Ask, are you okay? Or say, I will play with you.', 'When a friend spills a little milk and feels embarrassed, say, it is okay, I spill too, and help wipe it up together. Laughing at a friend who feels embarrassed is not kind, because it can make your friend feel worse. When a friend feels worried on the first day at school, ask, can I hold your hand? And say, I will play with you. When a friend falls and gets hurt, or is very sad and cannot stop crying, get a grown-up, because grown-ups know how to help.', 'Sometimes friends want different things. You want to play blocks, and your friend wants to play ball, and that is a problem. Say what the problem is, like, we want different games, and find a fair way to fix it. You can take turns choosing, first blocks and then ball, or find a game you both like. Only you choosing every time is not fair, because your friend wants a turn to choose too. When you and your friend can fix a problem together, you do not need to get a grown-up. When you cannot fix a problem together, get a grown-up. When a fight starts and you cannot stop it, get a grown-up too.'],
+      keyIdea: 'Notice how your friend feels, and help. Say what a problem is and find a fair way to fix it, and when you cannot fix it together, get a grown-up.',
+      example: { kind: 'pair', a: { kind: 'icon', name: 'block' }, b: { kind: 'icon', name: 'ball' }, caption: 'Blocks first, then ball. Take turns choosing.' },
+      pictures: [{ serial: 'P152', alt: 'A small child helping a friend with pink cheeks and eyes that look down wipe up spilled milk at a lunch table', step: 2 }, { serial: 'P153', alt: 'Two small children rolling a ball to each other, the block tower they built first standing well off to one side', step: 8 }],
+      script: [
+        { say: 'Good friends notice how others feel. When a friend feels sad, worried or embarrassed, you can help.', show: { kind: 'faces', feelings: ['sad', 'worried', 'embarrassed'] } },
+        { say: 'You can sit beside your friend, or say kind words. Ask, are you okay? Or say, I will play with you.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
+        { say: 'When a friend spills a little milk and feels embarrassed, say, it is okay, I spill too, and help wipe it up together.', show: { kind: 'face', feeling: 'embarrassed' } },
+        { say: 'Laughing at a friend who feels embarrassed is not kind. It can make your friend feel worse.', show: { kind: 'face', feeling: 'embarrassed' } },
+        { say: 'When a friend feels worried on the first day at school, ask, can I hold your hand? And say, I will play with you.', show: { kind: 'face', feeling: 'worried' } },
+        { say: 'When a friend falls and gets hurt, or is very sad and cannot stop crying, get a grown-up. Grown-ups know how to help.', show: { kind: 'face', feeling: 'sad' } },
+        { say: 'Sometimes friends want different things. You want to play blocks, and your friend wants to play ball. That is a problem.', show: { kind: 'pair', a: { kind: 'icon', name: 'block' }, b: { kind: 'icon', name: 'ball' } } },
+        { say: 'Say what the problem is, like, we want different games. Then find a fair way to fix it.', show: { kind: 'pair', a: { kind: 'icon', name: 'block' }, b: { kind: 'icon', name: 'ball' } } },
+        { say: 'You can take turns choosing, first blocks and then ball, or find a game you both like.', show: { kind: 'pair', a: { kind: 'icon', name: 'block' }, b: { kind: 'icon', name: 'ball' } } },
+        { say: 'Only you choosing every time is not fair, because your friend wants a turn to choose too.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
+        // Pass MN round two (the second read): P4_WHEN_GROWNUP's two No rows ask this, and P-SE 5's "simple conflicts may be resolved
+        // without adult assistance" is cited whole for it.
+        { say: 'When you and your friend can fix a problem together, you do not need to get a grown-up.', show: { kind: 'pair', a: { kind: 'icon', name: 'block' }, b: { kind: 'icon', name: 'ball' } } },
+        { say: 'When you cannot fix a problem together, get a grown-up. When a fight starts and you cannot stop it, get a grown-up too.', show: { kind: 'icon', name: 'stop' } },
+        { say: 'Notice how your friend feels, and help. When you cannot fix a problem together, get a grown-up.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines I.C.6 (demonstrates empathy and caring for others), since the lesson teaches noticing how a friend feels, kind words and acts for a friend who feels sad, worried or embarrassed, and getting a grown-up when a friend is hurt or very sad (helping a friend pick up dropped crayons is taught in Taking turns), and I.C.5 (initiates problem-solving strategies when experiencing conflicts with others and seeks adult support when necessary), since the lesson teaches saying what the problem is, taking turns choosing and finding a game both friends like, and getting a grown-up when friends cannot fix a problem together or a fight starts that they cannot stop, and not for a simple problem friends can fix themselves (taking turns and sharing are taught in Taking turns), and Head Start ELOF Goals P-SE 7 (expresses care and concern toward others), whose 48 to 60 month progression reads "Consistently pays attention when others are distressed and often responds with care, either by seeking out adult support or providing reassurance or support themselves.", and P-SE 5 (uses basic problem-solving skills to resolve conflicts with other children), whose 48 to 60 month progression reads "Often recognizes and describes social problems, suggests solutions to conflicts, and compromises when working or playing in a group. Although simple conflicts may be resolved without adult assistance, may seek out or need adult support in more challenging moments.", and P-SE 4 (engages in cooperative play with other children), in part, since the lesson teaches what the second sentence of its 48 to 60 month progression names, "Works with other children to make plans for what and how they will play together.", taking turns choosing and finding a game both friends like, while its first, "Cooperatively plays with other children in an increasingly coordinated way.", waits for a lesson after Can I play too?, and its third, "When given the opportunity, these coordinated play periods get longer.", is the child\'s own play (EARMARKS E13).'],
+    generators: ['p4-kind-words', 'p4-help-friend', 'p4-when-grownup', 'p4-fix-problem', 'p4-good-yesno'],
   },
 ]; }
 
@@ -5547,7 +5687,7 @@ function PREK_READING_MODULES() { return [
         { say: 'Find the letter when you hear its name. Every letter has one, A, B, C, D, E, M and S.', show: { kind: 'letters', text: 'A   B   C   D   E   M   S' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines III.C.1 (recognizes and names at least 20 letters (upper- or lower-case letters)), in part, since the lesson teaches seven capital letters, A, B, C, D, E, M and S, each by its name and its shape, and asks the child to find each one when its name is heard, to say whether a letter is the one named and to find one by its shape, while naming them aloud is the child\'s own talk, for a grown-up to hear, and thirteen more letters wait (EARMARKS E13), and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson teaches seven letters by name and shape, while naming them aloud is the child\'s own talk, for a grown-up to hear, and six more letters to make half of the alphabet, letters met often in the environment and the sounds of letters wait (EARMARKS E13), and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines III.C.1 (recognizes and names at least 20 letters (upper- or lower-case letters)), in part, since the lesson teaches seven capital letters, A, B, C, D, E, M and S, each by its name and its shape, and asks the child to find each one when its name is heard, to say whether a letter is the one named and to find one by its shape, while naming them aloud is the child\'s own talk, for a grown-up to hear, and with the tracing lessons\' six more, L, T, O, I, H and F, the course asks thirteen letters by name, so seven more wait (EARMARKS E13), and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson teaches seven letters by name and shape, and with the tracing lessons\' six more the course asks thirteen by name, half of the alphabet, while naming them aloud is the child\'s own talk, for a grown-up to hear, and letters met often in the environment and the sounds of letters wait (EARMARKS E13), and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show.'],
     generators: ['pl-tap-letter', 'pl-is-letter', 'pl-letter-look', 'pl-tap-letter', 'pl-is-letter'],
   },
   {
@@ -5559,18 +5699,19 @@ function PREK_READING_MODULES() { return [
     requires: ['big-letters'],
     needsTouch: true,
     lesson: {
-      paragraphs: ['Big letters are made of lines. Start at the dot and follow the arrow.', 'L goes down, then across the bottom. T goes down the middle, then across the top. O goes around to the left, all the way back to where it started. Starting at the dot every time teaches your hand to make each letter the same way.'],
+      paragraphs: ['Big letters are made of lines. Start at the dot and follow the arrow.', 'L goes down, then across the bottom. T goes down the middle, then one line across the top. O goes around to the left, all the way back to where it started. Starting at the dot every time teaches your hand to make each letter the same way.'],
       keyIdea: 'Start at the dot. Follow the arrow.',
       example: { kind: 'trace', text: 'L', caption: 'Down, then across the bottom. That is L.' },
       script: [
         { say: 'Start at the dot. Go down, then across the bottom. That is L.', show: { kind: 'trace', text: 'L' } },
-        { say: 'Start at the dot at the top and go straight down the middle. Then lift your finger and go across the top. That is T.', show: { kind: 'trace', text: 'T' } },
+        { say: 'Start at the dot at the top and go straight down the middle. Then lift your finger and make one line across the top. That is T.', show: { kind: 'trace', text: 'T' } },
         { say: 'Start at the dot at the top. Go around to the left, all the way back to the dot. That is O.', show: { kind: 'trace', text: 'O' } },
         { say: 'Start at the dot and follow the arrow every time, so your hand learns to make each letter the same way.', show: { kind: 'trace', text: 'O' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines IV.C.2 (progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate), in part, since the lesson forms the letters L, T and O along a guide, while forming letters without a guide, letter strings and writing as a way to communicate are the child\'s own, with a grown-up (EARMARKS E13), IV.C.4 (uses appropriate directionality when writing (e.g., top to bottom, left to right)), in part, since every letter starts at the top, each line down goes from top to bottom, each line across goes from left to right and O goes around to the left, while writing letters and words from left to right along a line waits (EARMARKS E13), and IX.B.2 (shows increasing control of tasks that require eye-hand coordination), and Head Start ELOF Goal P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws letters along their lines with moderate precision, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13).'],
-    generators: ['pl-trace-first', 'pl-trace-first', 'pl-trace-first', 'pl-trace-first', 'pl-trace-first'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines III.C.1 (recognizes and names at least 20 letters (upper- or lower-case letters)), in part, since the lesson asks the child to tap L, T and O when each is heard and to find each by its lines, which with Big letters\' seven and the other tracing lessons\' letters makes thirteen letters the course asks by name, while naming them aloud is the child\'s own talk, for a grown-up to hear, and seven more letters wait (EARMARKS E13), IV.C.2 (progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate), in part, since the lesson forms the letters L, T and O along a guide, while forming letters without a guide, letter strings and writing as a way to communicate are the child\'s own, with a grown-up (EARMARKS E13), IV.C.4 (uses appropriate directionality when writing (e.g., top to bottom, left to right)), in part, since every letter starts at the top, each line down goes from top to bottom, each line across goes from left to right and O goes around to the left, while writing letters and words from left to right along a line waits (EARMARKS E13), and IX.B.2 (shows increasing control of tasks that require eye-hand coordination), and Head Start ELOF Goals P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson asks for L, T and O by name and by their lines, and with Big letters\' seven and the other tracing lessons\' letters the course asks thirteen by name, half of the alphabet, while naming them aloud is the child\'s own talk, for a grown-up to hear, and letters met often in the environment and the sounds of letters wait (EARMARKS E13), and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show, and P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws letters along their lines with moderate precision, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13).'],
+    // Three traces, one of each letter, and two choices, the letter heard and the letter by its lines (pass MN, Q50).
+    generators: ['pl-trace-first', 'pl-trace-first', 'pl-trace-first', 'pl-hear-first', 'pl-lines-first'],
   },
   {
     id: 'more-big-letters',
@@ -5591,8 +5732,9 @@ function PREK_READING_MODULES() { return [
         { say: 'For H, lift your finger after each line, then start the next one at its dot and follow the arrow.', show: { kind: 'trace', text: 'H' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines IV.C.2 (progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate), in part, since the lesson forms the letters I, H and E along a guide, while forming letters without a guide, letter strings and writing as a way to communicate are the child\'s own, with a grown-up (EARMARKS E13), IV.C.4 (uses appropriate directionality when writing (e.g., top to bottom, left to right)), in part, since every letter starts at the top, each line down goes from top to bottom and each line across goes from left to right, while writing letters and words from left to right along a line waits (EARMARKS E13), and IX.B.2 (shows increasing control of tasks that require eye-hand coordination), and Head Start ELOF Goal P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws letters along their lines with moderate precision, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13).'],
-    generators: ['pl-trace-more', 'pl-trace-more', 'pl-trace-more', 'pl-trace-more', 'pl-trace-more'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines III.C.1 (recognizes and names at least 20 letters (upper- or lower-case letters)), in part, since the lesson asks the child to tap I, H and E when each is heard and to find each by its lines, which with Big letters\' seven and the other tracing lessons\' letters makes thirteen letters the course asks by name, while naming them aloud is the child\'s own talk, for a grown-up to hear, and seven more letters wait (EARMARKS E13), IV.C.2 (progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate), in part, since the lesson forms the letters I, H and E along a guide, while forming letters without a guide, letter strings and writing as a way to communicate are the child\'s own, with a grown-up (EARMARKS E13), IV.C.4 (uses appropriate directionality when writing (e.g., top to bottom, left to right)), in part, since every letter starts at the top, each line down goes from top to bottom and each line across goes from left to right, while writing letters and words from left to right along a line waits (EARMARKS E13), and IX.B.2 (shows increasing control of tasks that require eye-hand coordination), and Head Start ELOF Goals P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson asks for I, H and E by name and by their lines, and with Big letters\' seven and the other tracing lessons\' letters the course asks thirteen by name, half of the alphabet, while naming them aloud is the child\'s own talk, for a grown-up to hear, and letters met often in the environment and the sounds of letters wait (EARMARKS E13), and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show, and P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws letters along their lines with moderate precision, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13).'],
+    // Three traces, one of each letter, and two choices, the letter heard and the letter by its lines (pass MN, Q50).
+    generators: ['pl-trace-more', 'pl-trace-more', 'pl-trace-more', 'pl-hear-more', 'pl-lines-more'],
   },
   {
     id: 'trace-straight-letters',
@@ -5603,18 +5745,19 @@ function PREK_READING_MODULES() { return [
     requires: ['more-big-letters'],
     needsTouch: true,
     lesson: {
-      paragraphs: ['L, T and F are made of straight lines. You traced L and T before, and F is new. Start at the dot and follow the arrow.', 'L goes down and then across the bottom. T goes down the middle and then across the top. F is one line down and two across, at the top and the middle. All three use the same two moves, down and then across, in different places.'],
+      paragraphs: ['L, T and F are made of straight lines. You traced L and T before, and F is new. Start at the dot and follow the arrow.', 'L goes down and then across the bottom. T goes down the middle and then one line across the top. F is one line down and two across, at the top and the middle. All three use the same two moves, down and then across, in different places.'],
       keyIdea: 'Down, then across. Start at the dot.',
       example: { kind: 'trace', text: 'L', caption: 'Down, then across the bottom. That is L.' },
       script: [
         { say: 'Start at the dot. Go down, then across the bottom. That is L.', show: { kind: 'trace', text: 'L' } },
-        { say: 'Start at the dot. Straight down the middle, then lift and go across the top. That is T.', show: { kind: 'trace', text: 'T' } },
+        { say: 'Start at the dot. Straight down the middle, then lift and make one line across the top. That is T.', show: { kind: 'trace', text: 'T' } },
         { say: 'Start at the dot. Down, then two lines across, at the top and the middle. That is F.', show: { kind: 'trace', text: 'F' } },
         { say: 'L, T and F use the same two moves, down and then across, in different places. Start at the dot and follow the arrow.', show: { kind: 'letters', text: 'L   T   F' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines IV.C.2 (progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate), in part, since the lesson forms the letters L, T and F along a guide, while forming letters without a guide, letter strings and writing as a way to communicate are the child\'s own, with a grown-up (EARMARKS E13), IV.C.4 (uses appropriate directionality when writing (e.g., top to bottom, left to right)), in part, since every letter starts at the top, each line down goes from top to bottom and each line across goes from left to right, while writing letters and words from left to right along a line waits (EARMARKS E13), and IX.B.2 (shows increasing control of tasks that require eye-hand coordination), and Head Start ELOF Goal P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws letters along their lines with moderate precision, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13).'],
-    generators: ['pl-trace-ltf', 'pl-trace-ltf', 'pl-trace-ltf', 'pl-trace-ltf', 'pl-trace-ltf'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines III.C.1 (recognizes and names at least 20 letters (upper- or lower-case letters)), in part, since the lesson asks the child to tap L, T and F when each is heard and to find each by its lines, which with Big letters\' seven and the other tracing lessons\' letters makes thirteen letters the course asks by name, while naming them aloud is the child\'s own talk, for a grown-up to hear, and seven more letters wait (EARMARKS E13), IV.C.2 (progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate), in part, since the lesson forms the letters L, T and F along a guide, while forming letters without a guide, letter strings and writing as a way to communicate are the child\'s own, with a grown-up (EARMARKS E13), IV.C.4 (uses appropriate directionality when writing (e.g., top to bottom, left to right)), in part, since every letter starts at the top, each line down goes from top to bottom and each line across goes from left to right, while writing letters and words from left to right along a line waits (EARMARKS E13), and IX.B.2 (shows increasing control of tasks that require eye-hand coordination), and Head Start ELOF Goals P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson asks for L, T and F by name and by their lines, and with Big letters\' seven and the other tracing lessons\' letters the course asks thirteen by name, half of the alphabet, while naming them aloud is the child\'s own talk, for a grown-up to hear, and letters met often in the environment and the sounds of letters wait (EARMARKS E13), and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show, and P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws letters along their lines with moderate precision, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13).'],
+    // Three traces, one of each letter, and two choices, the letter heard and the letter by its lines (pass MN, Q50).
+    generators: ['pl-trace-ltf', 'pl-trace-ltf', 'pl-trace-ltf', 'pl-hear-ltf', 'pl-lines-ltf'],
   },
 ]; }
 
@@ -18216,7 +18359,9 @@ const p3PicName = (token) => (p3PicWord(token) === 'pizza' ? 'The slice of pizza
 // A feeling face ('face:sad'), each face's one sign as the feelings lesson names it, and the lesson's moment for each feeling.
 const p3FaceName = (token) => `The ${String(token).replace(/^face:/, '')} face`;
 // Sad by its tear (the lesson check, pass MH): the mad face's mouth turns down too, so only the tear tells sad from mad.
-const P3_FACE_SIGN = { happy: 'a big smile', sad: 'a tear rolling out', mad: 'eyebrows that squeeze down', scared: 'wide-open eyes' };
+// Pre-K 4's two more (pass MN, How do friends feel?): worried by its wiggly mouth, since its eyebrows rise in the middle as the sad
+// face's do, and embarrassed by its eyes that look down, since the happy face has pink cheeks too.
+const P3_FACE_SIGN = { happy: 'a big smile', sad: 'a tear rolling out', mad: 'eyebrows that squeeze down', scared: 'wide-open eyes', worried: 'a wiggly mouth', embarrassed: 'eyes that look down' };
 const P3_FEEL_WHEN = { happy: 'You might feel happy when you play with a friend.', sad: 'You might feel sad when your balloon floats away.', mad: 'You might feel mad when someone grabs your toy.', scared: 'You might feel scared when you hear a big boom of thunder.' };
 // The four colors, each tied to the thing its lesson names, and each color lesson's further examples, word for word.
 const P3_COLOR_OF = { red: 'the color of a strawberry', blue: 'the color of the sky', yellow: 'the color of a banana', green: 'the color of the grass' };
@@ -18997,6 +19142,26 @@ Object.assign(GENERATORS, {
       whyNot: p3WhyNot(choices, L, (x) => ({ name: `The letter ${x}`, why: `${LETTER_NOT[x]}.` })), alsoRight: L === 'A' ? ['Apple starts with A.'] : [] };
   },
 });
+
+// -----------------------------------------------------------------------------------------------------------------
+// Q50, Mikey's answer in pass MN ("Q50 - Your recommendation ", Claude's (b)): each of First Sounds and Letters' three tracing
+// rounds is three traces, one of each of its lesson's letters (buildAttempt traces every letter before any comes again), and two
+// choice questions among the same three letters, so a child ties each letter's shape to its name both ways: "Tap the letter you
+// hear." (the letter said by the voice, never printed while the voice can say it) and a letter found by its lines ("Which letter
+// goes down, then across the bottom?"). The lines are each letter's words in the lesson and in Find the Letter (letterShapeWords:
+// TRACED_SHAPE's six and E's from Big Letters), and every wrong letter's reason gives that letter's own lines. Each lesson's three
+// letters are told apart by those words: among L, T and F only L goes across the bottom, only T goes down the middle, with one
+// line across, and only F has two lines across (one line since round one's lesson check, pass MN).
+const TRACED_LESSON_LETTERS = { first: ['L', 'T', 'O'], more: ['I', 'H', 'E'], ltf: ['L', 'T', 'F'] };
+function tracedLetterChoice(letters, byLines) {
+  return (rng) => {
+    const L = pick(rng, letters); const choices = shuffle(rng, letters.slice());
+    return { type: 'choice', story: null, prompt: byLines ? `Which letter ${letterShapeWords(L)}?` : `Tap the letter ${L}.`, ...(byLines ? {} : { printed: 'Tap the letter you hear.' }), choices, answer: L,
+      explain: `This is ${L}. It ${letterShapeWords(L)}.`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, L, (x) => ({ name: `The letter ${x}`, why: `${letterShapeWords(x)}.` })), alsoRight: [] };
+  };
+}
+Object.assign(GENERATORS, Object.fromEntries(Object.entries(TRACED_LESSON_LETTERS).flatMap(([key, letters]) => [[`pl-hear-${key}`, tracedLetterChoice(letters, false)], [`pl-lines-${key}`, tracedLetterChoice(letters, true)]])));
 
 // Counting questions. A choice written as 'dots:4' means "a picture of 4 dots";
 // the screen draws it. The learner taps a picture or a big number, never types.
@@ -26922,8 +27087,8 @@ const P3_FEEL_CALM = [
   ['When your face looks like this, what can you say?', 'I feel sad', 'I feel mad', 'That face is sad, with a tear. You can say your feeling\'s name, I feel sad. Saying the name can help.', 'sad', 'goes with eyebrows that squeeze down, and this face has a tear.', 'You can say the name of other feelings too, like I feel mad or I feel scared.'],
   ['When your face looks like this, what can you say?', 'I feel mad', 'I feel scared', 'That face is mad, with its eyebrows squeezed down. You can say your feeling\'s name, I feel mad. Saying the name can help.', 'mad', 'goes with wide-open eyes, and this face has eyebrows that squeeze down.', 'You can say the name of other feelings too, like I feel sad or I feel scared.'],
   ['When your face looks like this, what can you say?', 'I feel scared', 'I feel sad', 'That face is scared, with its eyes open wide. You can say your feeling\'s name, I feel scared. Saying the name can help.', 'scared', 'goes with a tear, and this face has wide-open eyes.', 'You can say the name of other feelings too, like I feel sad or I feel mad.'],
-  ['What do you pretend to smell as you breathe in slowly?', 'icon:flower', 'icon:candle', 'You smell a flower by breathing in, so you pretend to smell one as you breathe in slowly. After that, you pretend to blow out a candle.', null, 'is what you pretend to blow out as you breathe out, not in.', 'Pretend to smell the flower as you breathe in, then pretend to blow out the candle as you breathe out.'],
-  ['What do you pretend to blow out as you breathe out slowly?', 'icon:candle', 'icon:flower', 'You blow out a candle by breathing out, so you pretend to blow one out as you breathe out slowly. Before that, you pretend to smell a flower.', null, 'is what you pretend to smell as you breathe in, not out.', 'Pretend to smell the flower as you breathe in, then pretend to blow out the candle as you breathe out.'],
+  ['What do you pretend to smell as you breathe in slowly?', 'icon:flower', 'icon:candle', 'You smell a flower by breathing in, so you pretend to smell one as you breathe in slowly. After that, you pretend to blow out a candle.', null, 'is what you pretend to blow out as you breathe out, not in.', 'Pretend to smell the flower as you breathe in. Then pretend to blow out the candle as you breathe out.'],
+  ['What do you pretend to blow out as you breathe out slowly?', 'icon:candle', 'icon:flower', 'You blow out a candle by breathing out. So you pretend to blow one out as you breathe out slowly. Before that, you pretend to smell a flower.', null, 'is what you pretend to smell as you breathe in, not out.', 'Pretend to smell the flower as you breathe in. Then pretend to blow out the candle as you breathe out.'],
 ];
 // The friend who may need help: each row adds one more example. A wrong face is told by its own sign, against the asked
 // friend's look (pass MH).
@@ -26941,6 +27106,8 @@ const P3_HELP_KIND = [
   ['What is a kind thing to say when your friend is crying?', 'Are you okay?', 'Go away', 'Asking your friend if they are okay is kind. It shows you care how your friend feels.', 'Saying go away', 'is not kind, because it leaves your crying friend alone and sad.', 'You can also sit beside your friend, or bring a teddy to hug.'],
   ['What is a kind thing to do when your friend looks sad?', 'Sit beside your friend', 'Walk away', 'Sitting beside your friend is kind. It shows you care how your friend feels.', 'Walking away', 'leaves your friend alone and still sad, so it is not kind.', 'You can also ask if your friend is okay, or bring a teddy to hug.'],
   ['What is a kind thing to do when your friend looks scared?', 'Bring a teddy to hug', 'Laugh at your friend', 'Bringing a teddy to hug is kind. It shows you care how your friend feels.', 'Laughing at your friend', 'can make a scared friend feel sad too, so it is not kind.', 'You can also sit beside your friend and ask if your friend is okay.'],
+  // A grown-up who is distressed (pass MN, earmark E12: PK3 I.C.6, "responds with concern when a child or adult is distressed").
+  ['What is a kind thing to say when your grown-up looks sad?', 'Are you okay?', 'Go away', 'Asking your grown-up if they are okay is kind. Grown-ups have feelings too.', 'Saying go away', 'is not kind, because it leaves your sad grown-up alone.', 'You can also ask if you can give your grown-up a hug.'],
 ];
 const P3_HELP_GROWNUP = [
   ['Who can help when your friend falls down and hurts a knee?', 'A toy', 'Get a grown-up. Grown-ups know how to help when someone gets hurt, and a toy cannot.', 'cannot help a hurt knee, so get a grown-up, who knows how to help.'],
@@ -26960,7 +27127,192 @@ const P3_HELP_YESNO = [
   ['Is it kind to laugh at a friend who falls and gets hurt?', 'No', 'No, it is not kind, because laughing can make a hurt friend feel sad. Ask if your friend is okay, and get a grown-up.', 'would mean laughing is kind, but laughing can make a hurt friend feel sad.', 'Asking if your friend is okay is kind, and so is getting a grown-up.'],
   ['Is it okay to push when you both want one ball?', 'No', 'No, it is not. Pushing is not okay, because it hurts. You can take turns, or get a grown-up to help you both.', 'would mean pushing is okay, but pushing is not okay, because it hurts.', 'Taking turns with the ball is kind, and a grown-up can help you both.'],
   ['Should you get a grown-up when a friend is hurt?', 'Yes', 'Yes, you should. Grown-ups know how to help when someone gets hurt.', 'would mean your hurt friend gets no help, so get a grown-up, who knows how to help.', 'A grown-up can help when a friend is very sad, too.'],
+  ['Is it kind to ask your sad grown-up, can I give you a hug?', 'Yes', 'Yes, it is kind. Grown-ups have feelings too, and asking to give a hug shows you care.', 'would mean asking is not kind, but asking to give a hug shows your grown-up you care.', 'Asking your grown-up if they are okay is kind too.'],
+  ['Is it kind to laugh at a friend who is scared?', 'No', 'No, it is not kind, because laughing can make a scared friend feel sad. Ask if your friend is okay.', 'would mean laughing is kind, but laughing can make a scared friend feel sad.', 'Sitting beside a scared friend shows you care.'],
 ];
+// Can I play too? (pass MN, earmarks E12 and E13 side by side, Domain I: PK3 I.C.3 and ELOF P-SE 4 whole, P-SE 3 in part). The
+// lesson's ways to join a game, the kind and unkind things a joiner can do, what to do with a not now, the feelings a game can
+// bring, and taking turns once in. A row of the ways to join or of a not now is the whole question, the answer, the wrong choice,
+// the explanation, how a person says the wrong choice (none for a drawn thing, which is named from its own token), why it does
+// not fit, and one more right thing, as Helping a friend's rows are; a yes or no row is the question, the answer, the
+// explanation, what the wrong answer would mean and one more right thing; a feelings row is the question, the feeling, the wrong
+// face, the explanation, what the moment says about the feeling (said after the wrong face's own sign) and one more example.
+const P3_JOIN_HOW = [
+  ['What can you do first when your friends are building a tower and you want to play too?', 'Watch the game', 'Grab their blocks', 'Watch the game first, so you see what your friends are doing and how they play. Then you can ask, can I play too?', 'Grabbing their blocks', 'is not kind, because your friends are using those blocks.', 'After you watch, you can bring a block for the tower.'],
+  ['What can you say when you want to play with your friends?', 'Can I play too?', 'Move over!', 'Asking if you can play too is a kind way to join a game. Your friends can say yes.', 'Saying move over', 'does not ask, and asking is a kind way to join a game.', 'You can bring something for the game, like a block for the tower.'],
+  ['What can you bring when your friends are building a tower and you want to play too?', 'icon:block', 'icon:ball', 'A block is for building, so it fits a tower game. Your friends can add it to their tower.', null, 'can knock the tower down, so it is not for a tower game.', 'You can ask your friends if you can play too as you bring it.'],
+  ['What can you do when your friend has an idea for the game?', 'Listen to the idea', 'Say, my way only!', 'Listen to your friend\'s idea, because it matters too. Then you can say your idea, like let\'s make it tall.', 'Saying my way only', 'is not kind, because your friend\'s idea matters too.', 'You can take turns adding blocks, too.'],
+  ['What can you ask a friend who is playing alone?', 'Do you want to play with me?', 'Go away', 'Asking a friend who plays alone to play with you is a kind way to start playing together.', 'Saying go away', 'is not kind, because having nobody to play with can make a friend sad.', 'You can also ask friends who play together if you can play too.'],
+];
+const P3_JOIN_YESNO = [
+  ['Is it kind to ask your friends, can I play too?', 'Yes', 'Yes, it is kind. Asking is a kind way to join a game.', 'would mean asking is not kind, but asking is a kind way to join a game.', 'Watching the game first helps you know how your friends play.'],
+  ['Is it kind to knock down your friends\' tower?', 'No', 'No, it is not kind. Knocking down their tower can make your friends sad or mad.', 'would mean knocking it down is kind, but it can make your friends sad or mad.', 'Bringing a block for the tower is kind.'],
+  ['Is it kind to grab your friends\' blocks?', 'No', 'No, it is not kind, because your friends are using those blocks. You can ask, can I play too?', 'would mean grabbing is kind, but your friends are using those blocks.', 'Asking to play is a kind way to join.'],
+  ['Is it okay when your friends say, not now?', 'Yes', 'Yes, it is okay. You can play something else, and ask again later.', 'would mean friends must always say yes, but not now is okay too.', 'You can find another friend to play with, too.'],
+  ['Is it kind to ask a friend who plays alone, do you want to play with me?', 'Yes', 'Yes, it is kind. Asking can start a new game together.', 'would mean asking is not kind, but asking can start a new game together.', 'Playing together can make everyone happy.'],
+  ['Should you watch the game first when you want to play?', 'Yes', 'Yes. Watching first shows you what your friends are doing, so you know how they play.', 'would mean you should not watch, but watching shows you how your friends play.', 'Then you can ask your friends if you can play too.'],
+  ['When your friends are building a tower, is a ball a good thing to bring?', 'No', 'No. A ball can knock their tower down, so a block is a better thing to bring.', 'would mean a ball fits their game, but a ball can knock their tower down.', 'A block is a good thing to bring.'],
+];
+const P3_JOIN_NOT_NOW = [
+  ['What can you do when your friends say, not now?', 'Play something else', 'Knock their tower down', 'Not now is okay. You can play something else, and ask again later.', 'Knocking their tower down', 'is not kind, and it can make your friends sad or mad.', 'You can find another friend to play with, too.'],
+  ['What can you do a little later, after your friends say, not now?', 'Ask again', 'Grab their blocks', 'You can ask again later, can I play too? Maybe then they will say yes.', 'Grabbing their blocks', 'is not kind, because your friends are using those blocks.', 'While you wait, you can play something else.'],
+  ['What else can you do when your friends say, not now?', 'Find another friend', 'Push your friends', 'You can find another friend to play with. Not now is okay.', 'Pushing your friends', 'is not okay, because it hurts.', 'You can ask a friend who plays alone if they want to play with you.'],
+];
+// The wrong face changes with the moment and is never one a child could fairly feel there: a knocked-down tower or a friend
+// with nobody to play with can make a child sad or mad, so those offer happy; happy is the wrong face in two moments of five.
+const P3_JOIN_FACE = [
+  ['How might your friends feel when someone knocks down their tower?', 'sad', 'happy', 'Their tower fell down, so your friends might feel sad. They might feel mad, too.', 'a tower knocked down can make your friends sad', 'Asking to play kindly helps everyone stay happy.'],
+  ['How might your friends feel when someone grabs their blocks?', 'mad', 'scared', 'Someone grabbed their blocks, so your friends might feel mad. Asking to play is a kind way to join.', 'grabbing can make your friends feel mad', 'Bringing a block for the tower is kind.'],
+  ['How might you feel when your friends say, yes, come and play?', 'happy', 'mad', 'Your friends said yes, so you might feel happy. Playing together can make everyone happy.', 'playing together can make you happy', 'Adding a block to the tower together can feel happy too.'],
+  ['How might a friend feel when nobody will play with him?', 'sad', 'happy', 'Nobody will play with him, so he might feel sad. You can ask, do you want to play with me?', 'having nobody to play with can make someone sad', 'Asking a friend to play with you is kind.'],
+  ['How might your friend feel when you listen to her idea for the game?', 'happy', 'sad', 'You listened to her idea, so your friend might feel happy. Her idea matters too.', 'being listened to can make a friend happy', 'Taking turns adding blocks can make everyone happy too.'],
+];
+// Taking turns once you are in: the four games the pre-K 3 lessons take turns in, each with what a turn is.
+const P3_JOIN_GAMES = [['adding blocks to the tower', 'added a block'], ['rolling a ball', 'rolled the ball'], ['going down the slide', 'went down the slide'], ['swinging on the swing', 'swung on the swing']];
+// Feelings and what we do (pass MN, earmark E13: PK4 I.B.2.a, I.B.2.b and I.B.2.c whole, ELOF P-SE 6 and P-SE 8 in part).
+// What each feeling can make a person do, as the lesson's first four lines say it, and each wrong choice another feeling's own act.
+const P4_FEEL_DOES = [
+  ['What might you do when you feel happy?', 'Jump and clap', 'Stomp your feet', 'When you feel happy, you might smile a big smile, jump and clap.', 'Stomping your feet', 'is what you might do when you feel mad, not happy.', 'You can share a happy feeling with a high five, too.'],
+  ['What might your friend do when she feels happy?', 'Smile', 'Hide', 'When your friend feels happy, she might smile a big smile.', 'Hiding', 'is what she might do when she feels scared, not happy.', 'She might jump and clap, too.'],
+  ['What might you do when you feel sad?', 'Want a hug', 'Jump and clap', 'When you feel sad, you might cry, or want a hug.', 'Jumping and clapping', 'is what you might do when you feel happy, not sad.', 'A tear may roll out when you feel sad, and that is okay.'],
+  ['What might your friend do when he feels sad?', 'Cry', 'Stomp his feet', 'When your friend feels sad, a tear may roll out, and he might cry.', 'Stomping his feet', 'is what he might do when he feels mad, not sad.', 'He might want a hug, too.'],
+  ['What might you do when you feel mad?', 'Stomp your feet', 'Hide', 'When you feel mad, you might stomp your feet, make tight fists or want to shout.', 'Hiding', 'is what you might do when you feel scared, not mad.', 'You can choose a kind way and say, I feel mad.'],
+  ['What might your friend do when she feels mad?', 'Make tight fists', 'Jump and clap', 'When your friend feels mad, she might make tight fists or want to shout.', 'Jumping and clapping', 'is what she might do when she feels happy, not mad.', 'She can choose a kind way and use her words.'],
+  ['What might you do when you feel scared?', 'Hold on tight', 'Jump and clap', 'When you feel scared, you might hide, or hold on tight to your grown-up.', 'Jumping and clapping', 'is what you might do when you feel happy, not scared.', 'Your eyes may open wide when you feel scared.'],
+  ['What might your friend do when he feels scared?', 'Hide', 'Stomp his feet', 'When your friend feels scared, he might hide, or hold on tight to his grown-up.', 'Stomping his feet', 'is what he might do when he feels mad, not scared.', 'His eyes may open wide, too.'],
+];
+// What someone does tells how they may feel, answered with a face; the wrong face is never one the act could fairly show (crying
+// can come with mad as well as sad, so a crying friend offers happy).
+const P4_FEEL_TELLS = [
+  ['How might Ana feel when she jumps and claps?', 'happy', 'sad', 'Jumping and clapping can show you feel happy, so Ana might feel happy.', 'jumping and clapping can show you feel happy', 'A big smile can show a happy feeling, too.'],
+  ['How might Sam feel when he stomps his feet and wants to shout?', 'mad', 'scared', 'Stomping and wanting to shout can show you feel mad, so Sam might feel mad.', 'stomping can show you feel mad', 'Tight fists can show a mad feeling, too.'],
+  ['How might Mia feel when she hides and holds on tight to her grown-up?', 'scared', 'mad', 'Hiding and holding on tight can show you feel scared, so Mia might feel scared.', 'holding on tight can show you feel scared', 'Wide-open eyes can show a scared feeling, too.'],
+  ['How might Kai feel when he cries and wants a hug?', 'sad', 'happy', 'Crying and wanting a hug can show you feel sad, so Kai might feel sad.', 'crying can show you feel sad', 'A tear rolling out can show a sad feeling, too.'],
+  ['How might Leo feel when he gives his friend a high five?', 'happy', 'scared', 'A high five can show you feel happy, so Leo might feel happy.', 'a high five can show you feel happy', 'Jumping and clapping can show a happy feeling, too.'],
+  ['How might Rosa feel when her hands make tight fists?', 'mad', 'sad', 'Tight fists can show you feel mad, so Rosa might feel mad.', 'tight fists can show you feel mad', 'Stomping your feet can show a mad feeling, too.'],
+  ['How might Nia feel when she hides from a loud noise?', 'scared', 'happy', 'Hiding from a loud noise can show you feel scared, so Nia might feel scared.', 'hiding from a loud noise can show you feel scared', 'Holding on tight to a grown-up can show a scared feeling, too.'],
+  ['How might Omar feel when he cries because he lost his teddy?', 'sad', 'happy', 'Crying about a lost teddy can show you feel sad, so Omar might feel sad.', 'crying about a lost teddy can show you feel sad', 'A tear rolling out can show a sad feeling, too.'],
+];
+// Saying a feeling's name: the moment and the face shown, never the feeling said, so the face is read (the moment alone could
+// fit two feelings, a fallen tower sad or mad); the wrong name is another feeling, told by its own sign against the face's.
+const P4_FEEL_SAY = [
+  ['When your tower falls down and your face looks like this, what can you say?', 'sad', 'mad'],
+  ['When your friend takes your crayon and your face looks like this, what can you say?', 'mad', 'sad'],
+  ['When a big dog barks loudly and your face looks like this, what can you say?', 'scared', 'mad'],
+  ['When Grandma comes to visit and your face looks like this, what can you say?', 'happy', 'scared'],
+  ['When you lose your teddy and your face looks like this, what can you say?', 'sad', 'scared'],
+  ['When thunder booms and your face looks like this, what can you say?', 'scared', 'sad'],
+  ['When someone grabs your toy and your face looks like this, what can you say?', 'mad', 'scared'],
+  ['When you see your best friend and your face looks like this, what can you say?', 'happy', 'sad'],
+];
+// What goes with each named feeling, said against the face shown (the feelings lesson's signs, a tear for sad).
+const P4_GOES = { happy: 'a big smile', sad: 'a tear', mad: 'eyebrows that squeeze down', scared: 'wide-open eyes' };
+const P4_FEEL_OKAY = [
+  ['Is it okay to feel mad?', 'Yes', 'Yes, it is okay. Every feeling is okay to have, and you can choose a kind way to show it.', 'would mean feeling mad is not okay, but every feeling is okay to have.', 'You can say, I feel mad, and tell what is wrong.'],
+  ['Is it okay to hit when you feel mad?', 'No', 'No, it is not. Hitting is not okay, because it can hurt someone. You can say, I feel mad.', 'would mean hitting is okay, but hitting can hurt someone.', 'A slow breath can help a mad feeling get smaller.'],
+  ['Is it okay to throw a toy when you feel mad?', 'No', 'No, it is not. Throwing things is not okay, because it can hurt someone.', 'would mean throwing is okay, but throwing things can hurt someone.', 'You can count to five until you feel calm.'],
+  ['Is it okay to cry when you feel sad?', 'Yes', 'Yes, it is okay to cry when you feel sad. You can ask for a hug, too.', 'would mean crying is not okay, but it is okay to cry when you feel sad.', 'Every feeling is okay to have.'],
+  ['Is it okay to push a friend when you feel mad?', 'No', 'No, it is not. Pushing is not okay, because it can hurt your friend.', 'would mean pushing is okay, but pushing can hurt your friend.', 'You can use your words and say, I feel mad.'],
+  ['Is it okay to ask for a hug when you feel scared?', 'Yes', 'Yes, it is okay. A hug from your grown-up can help a scared feeling get smaller.', 'would mean asking is not okay, but a hug can help a scared feeling get smaller.', 'Holding on tight to your grown-up can help, too.'],
+  ['Is it okay to feel scared?', 'Yes', 'Yes, it is okay. Every feeling is okay to have, and your grown-up can help.', 'would mean feeling scared is not okay, but every feeling is okay to have.', 'You can say, I feel scared.'],
+];
+// Ways to help a big feeling get smaller, each said on a line of the lesson, against a way that hurts or does not help.
+const P4_FEEL_CALM = [
+  ['What can help a big mad feeling get smaller?', 'A slow breath', 'Throwing a toy', 'A slow breath in and out helps your body calm down, so a big feeling can get smaller.', 'Throwing a toy', 'can hurt someone, and it does not help a big feeling get smaller.', 'Counting to five can help, too.'],
+  ['What can you do until you feel calm?', 'Count to five', 'Hit a friend', 'Counting to five slowly gives a big feeling time to get smaller.', 'Hitting a friend', 'is not okay, because it hurts.', 'A slow breath can help, too.'],
+  ['What can you hug until you feel calm?', 'icon:teddy', 'icon:ball', 'Hugging your soft teddy can help a big feeling get smaller.', null, 'is for rolling and playing, and your soft teddy is for hugging.', 'A hug from your grown-up can help, too.'],
+  ['Who can you get when a feeling is very big?', 'Your grown-up', 'Nobody', 'Get your grown-up. Grown-ups can help with the biggest feelings.', null, 'means no one helps you, and your grown-up can help with the biggest feelings.', 'A hug from your grown-up can help, too.'],
+  ['What can you use to show you feel mad, instead of hitting?', 'Your words', 'A toy to throw', 'Use your words. Say, I feel mad, and tell what is wrong.', null, 'can hurt someone, and your words can tell what is wrong.', 'A slow breath can help, too.'],
+  ['What do you pretend to smell as you breathe in slowly?', 'icon:flower', 'icon:candle', 'You smell a flower by breathing in, so you pretend to smell one as you breathe in slowly. Then you pretend to blow out a candle.', null, 'is what you pretend to blow out as you breathe out, not in.', 'Pretend to smell the flower as you breathe in. Then pretend to blow out the candle as you breathe out.'],
+  ['What do you pretend to blow out as you breathe out slowly?', 'icon:candle', 'icon:flower', 'You blow out a candle by breathing out. So you pretend to blow one out as you breathe out slowly. First you pretend to smell a flower.', null, 'is what you pretend to smell as you breathe in, not out.', 'Pretend to smell the flower as you breathe in. Then pretend to blow out the candle as you breathe out.'],
+];
+// How do friends feel? (pass MN, earmark E13: PK4 I.D.1 whole, ELOF P-SE 6 in part): six feelings, the four of Feelings and what
+// we do and the two this lesson adds, each face told by its own sign.
+const P4_FEELINGS6 = ['happy', 'sad', 'mad', 'scared', 'worried', 'embarrassed'];
+const P4_FACE_LOOK = { happy: 'It has a big smile.', sad: 'A tear rolls out.', mad: 'Its eyebrows squeeze down.', scared: 'Its eyes open wide.', worried: 'It has a wiggly mouth.', embarrassed: 'Its eyes look down.' };
+// What a friend likes or thinks, and how the friend may feel: the answer is the friend's own feeling, and the wrong face is how
+// you would feel, so a child who answers for themselves picks it (the lesson's slide and its pizza and cake).
+const P4_FRIEND_FEELS = [
+  ['You like pizza, and your friend likes cake. Your friend gets a piece of cake. How might your friend feel?', 'happy', 'sad', 'Your friend likes cake, so a piece of cake can make your friend feel happy.', 'your friend likes cake', 'Think about what your friend likes.'],
+  ['You like cake, but your friend does not like cake. Your friend gets a piece of cake. How might your friend feel?', 'sad', 'happy', 'Your friend does not like cake, so cake might make your friend feel a little sad. But you would feel happy.', 'your friend does not like cake', 'Think about what your friend likes, not what you like.'],
+  ['You like cats, and your friend likes dogs. Your friend gets to pet a puppy. How might your friend feel?', 'happy', 'sad', 'Your friend likes dogs, so petting a puppy can make your friend feel happy.', 'your friend likes dogs', 'Friends can like different things, and that is okay.'],
+  ['You love the big slide, but your friend thinks it is too tall. How might your friend feel at the big slide?', 'scared', 'happy', 'Your friend thinks the slide is too tall, so your friend might feel scared. Your friend\'s feelings can be different from yours.', 'your friend thinks the slide is too tall', 'You can both go down the little slide, one after the other.'],
+  ['Your friend loves the big slide, but you think it is too tall. How might your friend feel at the big slide?', 'happy', 'scared', 'Your friend loves the big slide, so your friend might feel happy, even though you feel scared.', 'your friend loves the big slide', 'Friends can feel different about the same slide.'],
+];
+// Worried and embarrassed in moments a child knows: the wrong face is never a fair one there (a doctor's visit can make a child
+// scared and a fall can make a child sad, and a spill can make a child mad, so those offer the other new face or happy). Three rows
+// set worried and embarrassed against each other, so a child cannot pass by tapping the newest face (the lesson check, pass MN).
+const P4_NEW_MOMENTS = [
+  ['How might you feel on your first day at a new school, when you do not know anyone yet?', 'worried', 'mad', 'A new school with new people can make you feel worried, and that is okay.', 'a new school can make you feel worried', 'You can tell your grown-up, I feel worried.'],
+  ['How might you feel when you spill your milk at lunch and everyone looks at you?', 'embarrassed', 'happy', 'Spilling when everyone looks can make you feel embarrassed. Everyone spills sometimes.', 'spilling when everyone looks can make you feel embarrassed', 'Your cheeks can turn pink, and you may want to hide your face.'],
+  ['How might you feel when you call your teacher Grandma by mistake and your friends giggle?', 'embarrassed', 'worried', 'Saying the wrong name when everyone hears can make you feel embarrassed, and that is okay.', 'a mistake everyone hears can make you feel embarrassed', 'Everyone makes mistakes like that sometimes.'],
+  ['How might you feel the night before you go to the doctor, when you wonder if it will hurt?', 'worried', 'embarrassed', 'Thinking something bad might happen can make you feel worried, and that is okay.', 'wondering if it will hurt can make you worried', 'You can tell your grown-up, I feel worried.'],
+  ['How might your friend feel when her grown-up is late, and she wonders where they are?', 'worried', 'embarrassed', 'Your friend thinks something might be wrong, so she might feel worried.', 'wondering where your grown-up is can make you worried', 'You can stay with your friend and say, it is okay.'],
+  ['How might your friend feel when he falls down in front of the class and everyone looks?', 'embarrassed', 'happy', 'Falling when everyone looks can make you feel embarrassed. He might want to hide his face.', 'falling when everyone looks can make you feel embarrassed', 'You can ask your friend if he is okay.'],
+];
+const P4_FRIENDS_YESNO = [
+  ['Can two friends feel different about the same slide?', 'Yes', 'Yes. One friend can feel happy on the big slide while another feels scared.', 'would mean friends always feel the same, but they can feel different.', 'Two friends can both feel happy at a party, too.'],
+  ['Do friends always like the same things as you?', 'No', 'No. Friends can like different things, like cats or dogs, and that is okay.', 'would mean friends always like what you like, but friends can like different things.', 'Think about what your friend likes.'],
+  ['Is it okay to feel worried?', 'Yes', 'Yes, it is okay. Everyone feels worried sometimes, and you can say, I feel worried.', 'would mean feeling worried is not okay, but everyone feels worried sometimes.', 'You can tell your grown-up, I feel worried.'],
+  ['Is it okay to feel embarrassed?', 'Yes', 'Yes, it is okay. Everyone feels embarrassed sometimes, like when they spill.', 'would mean feeling embarrassed is not okay, but everyone feels embarrassed sometimes.', 'You can say, I feel embarrassed.'],
+  ['Do friends always feel the same as you?', 'No', 'No. Friends can feel the same as you, or different, so ask them how they feel.', 'would mean friends always feel the same, but they can feel different.', 'You can ask your friend how they feel.'],
+  ['Can you ask a friend how they feel?', 'Yes', 'Yes. Asking your friend how they feel helps you know.', 'would mean you cannot ask, but asking helps you know how your friend feels.', 'Looking at your friend\'s face can help, too.'],
+  ['Does a piece of cake make every friend happy?', 'No', 'No. A friend who does not like cake may feel a little sad.', 'would mean every friend likes cake, but some friends do not like cake.', 'Think about what your friend likes.'],
+];
+// Being a good friend (pass MN, earmark E13: PK4 I.C.6, I.C.5, ELOF P-SE 7 and P-SE 5 whole, P-SE 4 in part): kind words and acts for a friend who
+// feels sad, worried or embarrassed, when to get a grown-up and when friends can fix it themselves, and fixing a problem when
+// friends want different things.
+const P4_KIND_WORDS = [
+  ['What is a kind thing to say when your friend spills milk and feels embarrassed?', 'It is okay. I spill too.', 'Ha ha, you spilled!', 'Saying it is okay, and that you spill too, helps your friend feel better. Everyone spills sometimes.', 'Laughing at your friend', 'can make an embarrassed friend feel worse, so it is not kind.', 'You can help your friend wipe up the milk, too.'],
+  ['What is a kind thing to say when your friend feels worried on the first day at school?', 'I will play with you.', 'Go away.', 'Saying, I will play with you, can help a worried friend feel better.', 'Saying go away', 'leaves your worried friend alone, so it is not kind.', 'You can ask to hold your friend\'s hand, too.'],
+  ['What is a kind thing to say when your friend looks sad?', 'Are you okay?', 'Stop crying!', 'Asking your friend if they are okay shows you care how your friend feels.', 'Saying stop crying', 'is not kind, because every feeling is okay to have.', 'You can sit beside your friend, too.'],
+  ['What is a kind thing to say when your friend falls in front of the class?', 'Are you okay?', 'Ha ha, you fell!', 'Asking your friend if they are okay shows you care, and laughing can make your friend feel embarrassed.', 'Laughing at your friend', 'can make your friend feel embarrassed, so it is not kind.', 'When your friend is hurt, get a grown-up.'],
+];
+const P4_HELP_FRIEND = [
+  ['What can you do when your friend spills milk?', 'Help wipe it up', 'Point and laugh', 'Helping wipe it up is kind, and it helps your friend feel better.', 'Pointing and laughing', 'can make your friend feel embarrassed, so it is not kind.', 'You can say, it is okay, I spill too.'],
+  ['What can you do when your friend feels worried on the first day at school?', 'Ask, can I hold your hand?', 'Walk away', 'Asking first lets your friend say yes or no. Holding hands shows your friend you care.', 'Walking away', 'leaves your worried friend alone, so it is not kind.', 'You can say, I will play with you.'],
+  ['What can you do when your friend looks sad?', 'Sit beside your friend', 'Laugh at your friend', 'Sitting beside your friend shows you care how your friend feels.', 'Laughing at your friend', 'can make a sad friend feel worse, so it is not kind.', 'You can ask your friend if they are okay.'],
+];
+// When to get a grown-up, and when friends can fix it themselves, each frame (Should you get, Do you need) asked both ways, so its
+// opening words never give the answer (the code check, pass MN round one) (P-SE 5 at 48 to 60 months: "Although simple conflicts may be
+// resolved without adult assistance, may seek out or need adult support in more challenging moments.").
+const P4_WHEN_GROWNUP = [
+  ['Should you get a grown-up when your friend falls and gets hurt?', 'Yes', 'Yes. Get a grown-up, because grown-ups know how to help when someone is hurt.', 'would mean your hurt friend gets no help, but grown-ups know how to help.', 'You can ask your friend if they are okay, too.'],
+  ['Do you need a grown-up when a fight starts and you cannot stop it?', 'Yes', 'Yes. A grown-up can help you both stop the fight and fix the problem.', 'would mean nobody helps stop the fight, but a grown-up can help you both.', 'You can say what the problem is, too.'],
+  ['Should you get a grown-up when your friend is very sad and cannot stop crying?', 'Yes', 'Yes. Grown-ups can help with the biggest feelings.', 'would mean your friend gets no help, but grown-ups can help with the biggest feelings.', 'You can sit beside your friend, too.'],
+  ['Do you need a grown-up when you and your friend can take turns choosing the game?', 'No', 'No. You can fix it yourselves by taking turns choosing.', 'would mean you cannot fix it, but taking turns choosing fixes it.', 'A grown-up can help when you cannot fix a problem together.'],
+  ['Should you get a grown-up when you and your friend can find a game you both like?', 'No', 'No. You can fix it yourselves by finding a game you both like.', 'would mean you cannot fix it, but finding a game you both like fixes it.', 'Get a grown-up when someone is hurt.'],
+];
+const P4_FIX_PROBLEM = [
+  ['You want to play blocks, and your friend wants to play ball. What can you do?', 'Take turns choosing', 'Grab the ball', 'Take turns choosing. First blocks, then ball, so you both get to play your game.', 'Grabbing the ball', 'is not kind, and it does not fix the problem.', 'You can find a game you both like, too.'],
+  ['You and your friend both want to choose the game. What is fair?', 'Take turns choosing', 'Only you choose', 'Taking turns choosing is fair, so you both get a turn to pick.', 'Only you choosing', 'is not fair, because your friend wants a turn too.', 'You can find a game you both like, too.'],
+  ['Your friend does not like your game, and you do not like your friend\'s game. What can you do?', 'Find a game you both like', 'Say, you are not my friend', 'Find a game you both like, and you can play together.', 'Saying you are not my friend', 'is not kind, and it does not fix the problem.', 'You can take turns choosing, too.'],
+  ['You want to play blocks, and your friend wants to play ball. How can you say what the problem is?', 'We want different games', 'You are mean', 'Saying, we want different games, tells the problem kindly, so you can fix it together.', 'Saying you are mean', 'calls your friend a name, and it does not say the problem.', 'Then you can take turns choosing.'],
+  ['You and your friend are fighting, and you cannot fix it. Who can help?', 'A grown-up', 'Nobody', 'Get a grown-up. A grown-up can help you both fix the problem.', null, 'means no one helps you, and a grown-up can help you both.', 'You can say what the problem is, too.'],
+];
+const P4_GOOD_YESNO = [
+  ['Is it kind to laugh when a friend spills milk?', 'No', 'No, it is not kind. Laughing can make your friend feel embarrassed and worse.', 'would mean laughing is kind, but it can make your friend feel worse.', 'You can say, it is okay, I spill too.'],
+  ['Is it kind to say, it is okay, I spill too?', 'Yes', 'Yes, it is kind. It helps your friend feel better.', 'would mean those words are not kind, but they help your friend feel better.', 'Helping wipe up the milk is kind, too.'],
+  ['Is it kind to ask a worried friend, can I hold your hand?', 'Yes', 'Yes, it is kind. Asking first lets your friend say yes or no. Holding hands shows your friend you care.', 'would mean asking is not kind, but asking first lets your friend choose.', 'You can say, I will play with you.'],
+  ['Is it fair if only you choose the game every time?', 'No', 'No, it is not fair. Taking turns choosing lets you both pick.', 'would mean it is fair, but your friend wants a turn to choose too.', 'You can find a game you both like, too.'],
+  ['Is it kind to say what the problem is, like, we want different games?', 'Yes', 'Yes. Saying what the problem is kindly helps you fix it together.', 'would mean those words are not kind, but saying the problem helps you fix it together.', 'Then you can take turns choosing.'],
+];
+// Two faces a young child can fairly take for each other, never set against each other in pre-K 4's face questions (p4-new-feeling-face).
+export const P4_NEAR_FACES = [['scared', 'embarrassed'], ['sad', 'embarrassed'], ['sad', 'worried'], ['scared', 'worried']];
+// One more moment for each of the six feelings, each a moment pre-K 4's feelings lessons or their questions name.
+const P4_FEEL_WHEN = { happy: 'You might feel happy when you see your best friend.', sad: 'You might feel sad when you lose your teddy.', mad: 'You might feel mad when someone grabs your toy.', scared: 'You might feel scared when thunder booms.', worried: 'You might feel worried on the first day at a new school.', embarrassed: 'You might feel embarrassed when you spill your milk and everyone looks.' };
+// The three shapes of question these lessons share (pass MN). A row of a kind thing to do or say: the whole question, the answer
+// against one wrong choice, the wrong one named as a person says it (or, for a drawn thing, by its own name) with why it does not
+// fit, and one more right thing. A yes or no row: what the wrong answer would mean. A feelings row: the feeling as a face against
+// one wrong face, told by that face's own sign and what the moment says.
+const socialRow = ([prompt, answer, wrong, why, wrongName, notWhy, more], rng) => { const choices = shuffle(rng, [answer, wrong]);
+  return { type: 'choice', story: null, prompt, choices, answer, explain: why, visual: null, explainVisual: null,
+    whyNot: p3WhyNot(choices, answer, (w) => ({ name: wrongName || (/^(?:icon|pic):/.test(w) ? p3PicName(w) : w), why: notWhy })), alsoRight: [more] }; };
+const socialYesNo = ([prompt, answer, why, notWhy, more], rng) => { const choices = yesNo(rng);
+  return { type: 'choice', story: null, prompt, choices, answer, explain: why, visual: null, explainVisual: null, whyNot: p3WhyNot(choices, answer, (w) => ({ name: w, why: notWhy })), alsoRight: [more] }; };
+const socialFace = ([prompt, f, wrong, why, clause, more], rng) => { const choices = shuffle(rng, [`face:${f}`, `face:${wrong}`]);
+  return { type: 'choice', story: null, prompt, choices, answer: `face:${f}`, explain: why, visual: null, explainVisual: null,
+    whyNot: p3WhyNot(choices, `face:${f}`, (t) => ({ name: p3FaceName(t), why: `has ${P3_FACE_SIGN[t.slice(5)]}, and ${clause}.` })), alsoRight: [more] }; };
 // One more and one fewer (pass ME, earmark E12 part two: PK3 V.B.1 and V.B.2, ELOF P-MATH 6): every answer is the count in the
 // words plus or minus one, said in counting words, and a wrong group is never that count, so a child who counts always finds it.
 const P3_NUM = ['zero', 'one', 'two', 'three', 'four', 'five'];
@@ -27149,6 +27501,57 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt, choices, answer, explain: why, visual: null, explainVisual: null, whyNot: p3WhyNot(choices, answer, () => ({ name: wrongName, why: notWhy })), alsoRight: [more] }; },
   'p3-help-yesno': (rng) => { const [prompt, answer, why, notWhy, more] = pick(rng, P3_HELP_YESNO); const choices = yesNo(rng);
     return { type: 'choice', story: null, prompt, choices, answer, explain: why, visual: null, explainVisual: null, whyNot: p3WhyNot(choices, answer, (w) => ({ name: w, why: notWhy })), alsoRight: [more] }; },
+  // Can I play too? (pass MN, earmark E12: PK3 I.C.3, ELOF P-SE 3 and P-SE 4): the ways to join a game, the kind and unkind, a
+  // not now, the feelings a game can bring and the turns once in, each row read whole as one question.
+  'p3-join-how': (rng) => socialRow(pick(rng, P3_JOIN_HOW), rng),
+  'p3-join-yesno': (rng) => socialYesNo(pick(rng, P3_JOIN_YESNO), rng),
+  'p3-join-not-now': (rng) => socialRow(pick(rng, P3_JOIN_NOT_NOW), rng),
+  'p3-join-face': (rng) => socialFace(pick(rng, P3_JOIN_FACE), rng),
+  // Whose turn now: the one who did not just go, in the four games the pre-K 3 lessons take turns in.
+  'p3-join-turn': (rng) => { const [game, did] = pick(rng, P3_JOIN_GAMES); const friendWent = rng() < 0.5; const choices = shuffle(rng, ['Your turn', 'Your friend\'s turn']); const answer = friendWent ? 'Your turn' : 'Your friend\'s turn'; const who = friendWent ? 'your friend' : 'you';
+    return { type: 'choice', story: null, prompt: `You and your friend are taking turns ${game}, and ${who} just ${did}, so whose turn is it now?`, choices, answer,
+      explain: friendWent ? `Your friend just ${did}, so now it is your turn.` : `You just ${did}, so now it is your friend's turn.`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, answer, (w) => ({ name: w, why: `is over, because ${who} just ${did}.` })), alsoRight: ['Taking turns lets you both get to play.'] }; },
+  // Feelings and what we do (pass MN, earmark E13: PK4 I.B.2.a, I.B.2.b, I.B.2.c, ELOF P-SE 6 and P-SE 8): what a feeling can make
+  // you do, what someone does telling how they may feel, a feeling's name for the face shown, what is okay to do, and what helps.
+  'p4-feel-does': (rng) => socialRow(pick(rng, P4_FEEL_DOES), rng),
+  'p4-feel-tells': (rng) => socialFace(pick(rng, P4_FEEL_TELLS), rng),
+  'p4-feel-say': (rng) => { const [prompt, f, w] = pick(rng, P4_FEEL_SAY); const choices = shuffle(rng, [`I feel ${f}`, `I feel ${w}`]); const others = ['happy', 'sad', 'mad', 'scared'].filter((x) => x !== f && x !== w);
+    return { type: 'choice', story: null, prompt, choices, answer: `I feel ${f}`, explain: `That face is ${f}. ${P4_FACE_LOOK[f]} You can say your feeling's name, I feel ${f}.`, visual: { kind: 'face', feeling: f }, explainVisual: null,
+      whyNot: p3WhyNot(choices, `I feel ${f}`, (x) => ({ name: `Saying ${x}`, why: `goes with ${P4_GOES[x.slice(7)]}, and this face has ${P3_FACE_SIGN[f]}.` })),
+      alsoRight: [`You can say the name of other feelings too, like I feel ${others[0]} or I feel ${others[1]}.`] }; },
+  'p4-feel-okay': (rng) => socialYesNo(pick(rng, P4_FEEL_OKAY), rng),
+  'p4-feel-calm': (rng) => socialRow(pick(rng, P4_FEEL_CALM), rng),
+  // How do friends feel? (pass MN, earmark E13: PK4 I.D.1, ELOF P-SE 6): two feelings the same or different, a friend's own
+  // feeling from what the friend likes or thinks, worried and embarrassed in moments and on faces, and yes or no.
+  'p4-same-or-different': (rng) => { const a = pick(rng, P4_FEELINGS6); const same = rng() < 0.5; const b = same ? a : pick(rng, P4_FEELINGS6.filter((x) => x !== a)); const choices = shuffle(rng, ['The same', 'Different']); const answer = same ? 'The same' : 'Different';
+    return { type: 'choice', story: null, prompt: `You feel ${a}, and your friend feels ${b}. Are your feelings the same, or different?`, choices, answer,
+      explain: same ? `You both feel ${a}, so your feelings are the same.` : `You feel ${a}, and your friend feels ${b}, so your feelings are different. That is okay.`,
+      visual: { kind: 'pair', a: { kind: 'face', feeling: a }, b: { kind: 'face', feeling: b } }, explainVisual: null,
+      whyNot: p3WhyNot(choices, answer, (w) => ({ name: w, why: same ? `would mean your friend feels another way, but you both feel ${a}.` : `would mean you both feel ${a}, but your friend feels ${b}.` })),
+      alsoRight: [same ? 'At a birthday party, you and your friend can both feel happy.' : 'At the big slide, one friend can feel happy while another feels scared.'] }; },
+  'p4-friend-feels': (rng) => socialFace(pick(rng, P4_FRIEND_FEELS), rng),
+  'p4-new-feeling-moment': (rng) => socialFace(pick(rng, P4_NEW_MOMENTS), rng),
+  // A face by its feeling, or a feeling for the face shown: worried and embarrassed half the time, any of the six otherwise. Two faces a
+  // child can fairly take for each other are never set against each other, either way round (P4_NEAR_FACES): scared and embarrassed,
+  // whose faces both draw wide eyes (the lesson check, pass MN), sad and embarrassed, eyes down and no smile (round two's second read),
+  // sad and worried, which share their raised inner eyebrows and have no smile (round three's), and scared and worried, whose
+  // eyebrows both rise and which one moment can bring, a slide a friend thinks too tall (round four's).
+  'p4-new-feeling-face': (rng) => { const f = rng() < 0.5 ? pick(rng, ['worried', 'embarrassed']) : pick(rng, P4_FEELINGS6); const other = pick(rng, P4_FEELINGS6.filter((x) => x !== f && !P4_NEAR_FACES.some((p) => p.includes(f) && p.includes(x))));
+    if (rng() < 0.5) { const choices = shuffle(rng, [`face:${f}`, `face:${other}`]);
+      return { type: 'choice', story: null, prompt: `Tap the ${f} face.`, choices, answer: `face:${f}`, explain: `That is the ${f} face. ${P4_FACE_LOOK[f]}`, visual: null, explainVisual: null,
+        whyNot: p3WhyNot(choices, `face:${f}`, (t) => ({ name: p3FaceName(t), why: `has ${P3_FACE_SIGN[t.slice(5)]}, and the ${f} face has ${P3_FACE_SIGN[f]}.` })), alsoRight: [P4_FEEL_WHEN[f]] }; }
+    const choices = shuffle(rng, [capFirst(f), capFirst(other)]);
+    return { type: 'choice', story: null, prompt: 'How does this face feel?', choices, answer: capFirst(f), explain: `This face is ${f}. ${P4_FACE_LOOK[f]}`, visual: { kind: 'face', feeling: f }, explainVisual: null,
+      whyNot: p3WhyNot(choices, capFirst(f), (w) => ({ name: w, why: `can show ${P3_FACE_SIGN[w.toLowerCase()]}, but this face has ${P3_FACE_SIGN[f]}.` })), alsoRight: [P4_FEEL_WHEN[f]] }; },
+  'p4-friends-yesno': (rng) => socialYesNo(pick(rng, P4_FRIENDS_YESNO), rng),
+  // Being a good friend (pass MN, earmark E13: PK4 I.C.6, I.C.5, ELOF P-SE 7 and P-SE 5 whole, P-SE 4 in part): kind words, kind acts, when a grown-up is
+  // needed and when friends can fix it, fixing a problem when friends want different things, and yes or no.
+  'p4-kind-words': (rng) => socialRow(pick(rng, P4_KIND_WORDS), rng),
+  'p4-help-friend': (rng) => socialRow(pick(rng, P4_HELP_FRIEND), rng),
+  'p4-when-grownup': (rng) => socialYesNo(pick(rng, P4_WHEN_GROWNUP), rng),
+  'p4-fix-problem': (rng) => socialRow(pick(rng, P4_FIX_PROBLEM), rng),
+  'p4-good-yesno': (rng) => socialYesNo(pick(rng, P4_GOOD_YESNO), rng),
   // Please and thank you in four everyday moments (pass JP), each explained with its reason. Each moment is said inside its
   // question (pass MH, Mikey: one conversational sentence), and each wrong word is told by what it does not do.
   'pk3-magic-word': (rng) => { const c = pick(rng, [
@@ -30000,10 +30403,10 @@ const TRACE_SMALL_CURLS = ['s', 'j', 'y'];
 
 // Was the traced path close enough? Every stroke must be covered: for each point along a
 // stroke, some drawn point must lie within `tolerance` grid units. This forgives a wobbly
-// hand but not a letter drawn in the wrong shape. It does not read the order or direction
-// of a letter's lines (Q49 asks whether it should); a numbered dot picture, below, must be
-// joined in order.
-export function traceMatches(letter, paths, tolerance = 14) {
+// hand but not a letter drawn in the wrong shape. The order of the lines is guided on the pad, one line at a time, and never
+// failed; from kindergarten up (options.direction, Mikey's answer to Q49 in pass MN) a line traced only from its end back to
+// its start does not count either (traceDirections, below). A numbered dot picture, below, must be joined in order.
+export function traceMatches(letter, paths, tolerance = 14, options = {}) {
   const def = TRACE_LETTERS[letter];
   if (!def || !Array.isArray(paths) || paths.length === 0) return false;
   const drawn = paths.flat();
@@ -30030,7 +30433,278 @@ export function traceMatches(letter, paths, tolerance = 14) {
   // from the letter. Most drawn points should be near some stroke.
   const strokePoints = def.strokes.flatMap((st) => st.flatMap((p, i) => (i === 0 ? [p] : sample(st[i - 1], p, 8))));
   const onLetter = drawn.filter(([x, y]) => strokePoints.some((p) => Math.hypot(x - p[0], y - p[1]) <= tolerance + 6)).length;
-  return onLetter / drawn.length >= 0.7;
+  if (onLetter / drawn.length < 0.7) return false;
+  // From kindergarten up, every line must have been traced from its own dot at least once (Q49, pass MN): a line covered only by
+  // a trace from its end back to its start does not count. The pad clears such a line the moment the finger lifts, so this
+  // holds the rule in the logic too, for a lift the pad never heard.
+  return !(options.direction && !def.dots && traceDirections(letter, paths, tolerance).backwardOnly.some(Boolean));
+}
+
+// -----------------------------------------------------------------------------------------------------------------
+// Q49, Mikey's answer in pass MN ("Q49 - Your recommendation ", Claude's (d)): every tracing pad shows one line's starting dot and
+// arrow at a time, in the order the lesson's demo draws them, and the next line's appear once a line is traced; in pre-K that
+// guides the order and fails nothing, and from kindergarten up a line traced from its end back to its start does not count:
+// the pad clears it and the voice says TRACE_BACK_WORDS, so the child starts again at the dot. The order is never failed, at
+// any grade, and the connect-the-dots pictures keep their own rule (joined in order, traceMatches above).
+// -----------------------------------------------------------------------------------------------------------------
+export const TRACE_BACK_WORDS = 'Start at the green dot and follow the arrow.';
+
+// Which lines of a shape the child has traced, and the first line not yet traced, whose dot and arrow the pad shows (-1 once every
+// line is). A line is traced when every sampled point of it has ink within reach, as traceMatches covers it, counting only ink drawn
+// along that line: each point of ink belongs to the line it is tracing (the nearest line, kept through a wobble where two lines meet
+// as tracePieces keeps it, below). Without that, small a's circle would cover its short stem, u's first line its second, and j's
+// stem its dot, since all lie within the 14 units traceMatches allows, and the pad would never show those lines' dots; the check
+// itself stays as lenient as it always was.
+export function traceLineState(letter, paths, tolerance = 14) {
+  const def = TRACE_LETTERS[letter];
+  if (!def) return { covered: [], next: -1 };
+  const segDist = (x, y, st) => { let best = Infinity; for (let i = 1; i < st.length; i++) { const [ax, ay] = st[i - 1]; const [bx, by] = st[i]; const dx = bx - ax; const dy = by - ay; const len2 = dx * dx + dy * dy; const u = len2 ? Math.max(0, Math.min(1, ((x - ax) * dx + (y - ay) * dy) / len2)) : 0; best = Math.min(best, Math.hypot(x - (ax + u * dx), y - (ay + u * dy))); } return best; };
+  const mine = def.strokes.map(() => []);
+  for (const path of Array.isArray(paths) ? paths : []) {
+    let cur = -1; let challenger = -1; let count = 0; let run = [];
+    (path || []).forEach(([x, y], k) => {
+      const d = def.strokes.map((st) => segDist(x, y, st)); const best = d.indexOf(Math.min(...d));
+      if (d[best] > tolerance) { cur = -1; run = []; return; }
+      let s = best;
+      if (cur < 0 && k === 0) { const starts = def.strokes.map((st, i) => ({ i, at: Math.hypot(st[0][0] - x, st[0][1] - y) })).filter((o) => o.at <= tolerance && d[o.i] <= tolerance); if (starts.length) s = starts.reduce((a, b) => (b.at < a.at ? b : a)).i; }
+      else if (cur >= 0 && d[cur] <= tolerance) { if (d[cur] <= d[best] + TRACE_DIR.SLACK) { s = cur; challenger = -1; count = 0; } else { if (challenger === best) count++; else { challenger = best; count = 1; } s = count >= TRACE_DIR.SWITCH_AFTER ? best : cur; } }
+      // A finger going over to another line takes with it the ink at the end of its run that was already nearer that line, and the
+      // whole run when every point of it is about as near (a touch-down on a dot two lines share, as E's stem and top bar do), as
+      // tracePieces does, so a line traced at a quick pace still counts as traced and the next line's dot appears (pass MN, the code check).
+      if (cur >= 0 && s !== cur && run.length) {
+        const at = (p, i) => segDist(p[0], p[1], def.strokes[i]);
+        let n = 0; while (n < run.length && at(run[run.length - 1 - n], s) < at(run[run.length - 1 - n], cur)) n++;
+        const moved = run.slice(0, run.length - n).every((p) => at(p, s) <= at(p, cur) + TRACE_DIR.SLACK) ? run : run.slice(run.length - n);
+        mine[cur].splice(mine[cur].length - moved.length, moved.length); mine[s].push(...moved); run = moved.slice();
+      } else if (s !== cur) run = [];
+      cur = s; mine[s].push([x, y]); run.push([x, y]);
+    });
+  }
+  const covered = def.strokes.map((st, s) => { const ink = mine[s]; for (let i = 1; i < st.length; i++) for (let k = 0; k <= 6; k++) { const p = [st[i - 1][0] + ((st[i][0] - st[i - 1][0]) * k) / 6, st[i - 1][1] + ((st[i][1] - st[i - 1][1]) * k) / 6]; if (!ink.some(([x, y]) => Math.hypot(x - p[0], y - p[1]) <= tolerance)) return false; } return true; });
+  return { covered, next: covered.indexOf(false) };
+}
+
+// How a drawing ran along each line, forward (from its dot) or backward (from its end), for Q49's rule. The numbers are choices,
+// each tried on every shape in TRACE_LETTERS with traces drawn forward, reversed, in one stroke of the finger, with the retraces
+// handwriting makes (n, m and h go back up their stem to start a hump), overshooting a dot, colored back and forth and wobbling
+// up to five units (a finger off its guide), and none of the forward kinds was ever cleared (pass MN; the rules test holds it); since
+// round one's code check also at a finger's ordinary and quick paces, its points 1.5 to 13 units apart, each point jittered, and
+// traced there and back, where a closed shape's one lap had read as no lap at all and a quick backward line had passed.
+const TRACE_DIR = {
+  OVERLAP: 4,        // a stretch of a line within 4 units of another line (where two lines meet, or u's second line running back over
+                     // its first) could belong to either, so a finger's direction there says nothing about this line
+  MIN_JUDGED: 12,    // a line with less than 12 units it can be judged on (the dot of i, the end of u) is never judged
+  HALF: 0.5,         // a piece counts once it runs along half the line's judged length
+  SLACK: 4,          // a finger stays with the line it is on while that line is within 4 units of the nearest line
+  SWITCH_AFTER: 3,   // and goes over to another line only after that line has been nearer for 3 points in a row
+  EQUAL: 2.5,        // two places on one line about this near the finger (a crossing, a corner) are told apart by where it just was
+  JUMP: 12,          // a place that leaps further than this along a line, beyond the finger's own step, ends the piece (the finger was read
+                     // on the wrong branch); a quick finger's points fall far apart, so its own step is allowed (pass MN, the code check)
+  TURN_BACK: 10,     // a finger that goes back this far along a line has turned; less is a wobble
+  SMOOTH: 2,         // turns are read on a centred moving average of five points, narrowing to fewer at a run's two ends, so a short run
+                     // keeps its full length (pass MN, the code check: a quick finger's short run never reached TURN_BACK)
+  MERGE_GAP: 25,     // a piece that carries on the same way after a brief stop on another line, or turns back where the last piece
+  BRIEF: 0.25,       // ended, is joined to it, or is a retrace; a stop is brief under a quarter of that line
+};
+// Each line of a shape as dense samples about one unit apart, with its place along the line and whether it can be judged, built
+// once per shape.
+const TRACE_SAMPLES = {};
+function traceSamples(letter) {
+  if (TRACE_SAMPLES[letter]) return TRACE_SAMPLES[letter];
+  const def = TRACE_LETTERS[letter];
+  const ds = def.strokes.map((stroke) => {
+    const pts = [{ x: stroke[0][0], y: stroke[0][1], t: 0 }]; let t = 0;
+    for (let i = 1; i < stroke.length; i++) {
+      const [ax, ay] = stroke[i - 1]; const [bx, by] = stroke[i]; const len = Math.hypot(bx - ax, by - ay); const n = Math.max(1, Math.ceil(len));
+      for (let k = 1; k <= n; k++) pts.push({ x: ax + ((bx - ax) * k) / n, y: ay + ((by - ay) * k) / n, t: t + (len * k) / n });
+      t += len;
+    }
+    const last = stroke[stroke.length - 1];
+    return { pts, len: t, closed: Math.hypot(stroke[0][0] - last[0], stroke[0][1] - last[1]) < 0.5 };
+  });
+  ds.forEach((d, s) => {
+    for (const p of d.pts) p.judged = ds.every((o, j) => j === s || o.pts.every((q) => Math.hypot(q.x - p.x, q.y - p.y) > TRACE_DIR.OVERLAP));
+    let acc = 0; d.pts.forEach((p, i) => { if (i > 0 && p.judged && d.pts[i - 1].judged) acc += p.t - d.pts[i - 1].t; p.acc = acc; });
+    d.judgedLen = acc;
+  });
+  TRACE_SAMPLES[letter] = ds;
+  return ds;
+}
+// The judged length of a line between two places along it (a closed line's places may run past its ends).
+function traceJudgedBetween(d, a, b) {
+  if (a > b) [a, b] = [b, a];
+  if (d.closed && b - a >= d.len - 1e-6) return d.judgedLen;
+  const at = (t) => { let k = 0; while (k < d.pts.length - 1 && d.pts[k + 1].t <= t) k++; return d.pts[k].acc; };
+  if (!d.closed) return at(Math.min(d.len, Math.max(0, b))) - at(Math.min(d.len, Math.max(0, a)));
+  const wrap = (t) => ((t % d.len) + d.len) % d.len; const wa = wrap(a); const wb = wrap(b);
+  return wa <= wb ? at(wb) - at(wa) : d.judgedLen - at(wa) + at(wb);
+}
+// How far apart two places are along a line, the short way round on a closed one.
+const traceAlong = (a, b, d) => { const diff = Math.abs(a - b); return d.closed ? Math.min(diff % d.len, d.len - (diff % d.len)) : diff; };
+// The places on a line nearest a point, each a dip in distance along the line, within reach.
+function traceDips(d, x, y, reach) {
+  const dist = d.pts.map((p) => Math.hypot(p.x - x, p.y - y)); const n = dist.length; const out = [];
+  for (let i = 0; i < n; i++) {
+    if (dist[i] > reach) continue;
+    const prev = i > 0 ? dist[i - 1] : d.closed ? dist[n - 2] : Infinity; const next = i < n - 1 ? dist[i + 1] : d.closed ? dist[1] : Infinity;
+    if (dist[i] <= prev && dist[i] <= next) out.push({ t: d.pts[i].t, dd: dist[i], judged: d.pts[i].judged });
+  }
+  return out;
+}
+// A run of places along one line, split where the finger turns back further than a wobble; each piece runs from its start to
+// its turn, and its share is the judged stretch its raw places span over the line's judged length.
+function traceRunPieces(run, d, path) {
+  const raw = run.ts; const k = TRACE_DIR.SMOOTH;
+  const sm = raw.map((_, i) => { const m = Math.min(k, i, raw.length - 1 - i); let sum = 0; for (let j = i - m; j <= i + m; j++) sum += raw[j]; return sum / (2 * m + 1); });
+  const cuts = []; let start = 0; let ext = 0; let dir = 0;
+  for (let i = 1; i < sm.length; i++) {
+    if (dir === 0) { if (Math.abs(sm[i] - sm[start]) >= TRACE_DIR.TURN_BACK) { dir = Math.sign(sm[i] - sm[start]); ext = i; } continue; }
+    if ((sm[i] - sm[ext]) * dir > 0) ext = i;
+    else if ((sm[ext] - sm[i]) * dir > TRACE_DIR.TURN_BACK) { cuts.push([start, ext, dir]); start = ext; ext = i; dir = -dir; }
+  }
+  if (dir !== 0) cuts.push([start, sm.length - 1, dir]);
+  return cuts.map(([a, b, way]) => {
+    const span = raw.slice(a, b + 1);
+    const lo = span.length ? Math.min(...span) : raw[a]; const hi = span.length ? Math.max(...span) : raw[a];
+    const cover = span.length < 2 || d.judgedLen < TRACE_DIR.MIN_JUDGED ? 0 : Math.min(1, traceJudgedBetween(d, lo, hi) / d.judgedLen);
+    return { stroke: run.s, path, dir: way, cover, tA: way > 0 ? lo : hi, tB: way > 0 ? hi : lo };
+  });
+}
+// Every piece of every drawn path along a line. A finger touching down goes with the line whose dot is nearest, among the lines
+// about as near the finger as the nearest one, if a dot is within reach (a line begins at its dot); it stays with the line it is on
+// until another has been nearer by more than SLACK for SWITCH_AFTER points in a row (a wobble where two lines meet does not hand it
+// over), and when it goes over, the points at the end of its run that were already nearer the new line go with it, all of them when
+// the whole run lies about as near the new line (pass MN, the code check: a quick finger kept too little of a short line); and its
+// place along a line is the nearest dip, or, where two are about as near, the one nearest its last place (a line that crosses
+// itself, as 8 does, is followed through the crossing). Then, within one path, a piece that carries on the same way after a brief stop on another line is
+// joined to the piece before it, and a piece that turns straight back along the line the path just went forward along is a
+// retrace, the way n, m and h go back up their stem to start a hump, never a line traced from its end.
+function tracePieces(letter, paths, tol) {
+  const def = TRACE_LETTERS[letter]; const ds = traceSamples(letter);
+  const pieces = [];
+  paths.forEach((path, pi) => {
+    let cur = null; let challenger = null; let count = 0;
+    const close = () => { if (cur && cur.ts.length > 1) pieces.push(...traceRunPieces(cur, ds[cur.s], pi)); cur = null; };
+    const fresh = (s) => ({ s, ts: [], judged: [], pts: [], last: null });
+    const ddOn = (s, x, y) => { const q = traceDips(ds[s], x, y, tol + TRACE_DIR.SLACK); return q.length ? Math.min(...q.map((v) => v.dd)) : Infinity; };
+    // One point onto the current run's line: its nearest place, or of two about as near the one nearest the last place; a leap along
+    // the line beyond the finger's own step ends the run.
+    const place = (x, y, step) => {
+      const d = ds[cur.s];
+      const cand = traceDips(d, x, y, tol + TRACE_DIR.SLACK);
+      let pick = cand[0] || { t: 0, judged: false };
+      for (const q of cand) if (q.dd < pick.dd) pick = q;
+      if (cur.last !== null) for (const q of cand) if (q.dd <= pick.dd + TRACE_DIR.EQUAL && traceAlong(q.t, cur.last, d) < traceAlong(pick.t, cur.last, d)) pick = q;
+      let t = pick.t;
+      if (d.closed && cur.last !== null) { while (t - cur.last > d.len / 2) t -= d.len; while (cur.last - t > d.len / 2) t += d.len; }
+      if (cur.last !== null && Math.abs(t - cur.last) > TRACE_DIR.JUMP + step) { const s = cur.s; close(); cur = fresh(s); t = pick.t; }
+      cur.ts.push(t); cur.judged.push(pick.judged); cur.pts.push([x, y]); cur.last = t;
+    };
+    (path || []).forEach(([x, y], k) => {
+      const step = k > 0 ? Math.hypot(x - path[k - 1][0], y - path[k - 1][1]) : 0;
+      const near = ds.map((d, s) => { const q = traceDips(d, x, y, tol); return q.length ? { s, dd: Math.min(...q.map((v) => v.dd)) } : null; }).filter(Boolean);
+      if (!near.length) { close(); challenger = null; count = 0; return; }
+      const best = near.reduce((a, b) => (b.dd < a.dd ? b : a));
+      let s = best.s;
+      if (!cur && k === 0) { const starts = near.filter((n) => n.dd <= best.dd + TRACE_DIR.SLACK).map((n) => ({ s: n.s, at: Math.hypot(def.strokes[n.s][0][0] - x, def.strokes[n.s][0][1] - y) })).filter((n) => n.at <= tol); if (starts.length) s = starts.reduce((a, b) => (b.at < a.at ? b : a)).s;
+        // Lines that share this dot are told apart by where the finger goes next (pass MN round two's code check: 4's stem at a flick),
+        // its first move past any rest on the touch-down (round four's code read: a resting finger repeats its first point, and 4's stem
+        // traced there and back at 18 units a point was read as its slant and cleared), a wobble of a unit or so included, since the pad
+        // keeps whole units (round five's code read: a rest one unit over still sent 4's stem to its slant), so the first point more
+        // than SLACK units from the dot.
+        const tied = starts.filter((n) => n.at <= Math.min(...starts.map((m) => m.at)) + 0.5); const nx = path.slice(1).find(([px, py]) => Math.hypot(px - x, py - y) > TRACE_DIR.SLACK);
+        if (tied.length > 1 && nx) { const dn = (sIdx) => ddOn(sIdx, nx[0], nx[1]); s = tied.reduce((a, b) => (dn(b.s) < dn(a.s) ? b : a)).s; } }
+      if (cur) {
+        const mine = near.find((n) => n.s === cur.s);
+        if (mine && (best.s === cur.s || mine.dd <= best.dd + TRACE_DIR.SLACK)) { s = cur.s; challenger = null; count = 0; }
+        else if (mine) { if (challenger === best.s) count++; else { challenger = best.s; count = 1; } s = count >= TRACE_DIR.SWITCH_AFTER ? best.s : cur.s; }
+      }
+      if (!cur || cur.s !== s) {
+        // A finger going over to another line takes with it the points at the end of the run that were already nearer the new
+        // line, and the whole run so far when every point of it lies about as near the new line (a touch-down where the two lines
+        // meet), so a short line traced from a point it shares with another keeps its full length (pass MN, the code check).
+        let carry = [];
+        if (cur) {
+          let n = 0; while (n < cur.pts.length && ddOn(s, ...cur.pts[cur.pts.length - 1 - n]) < ddOn(cur.s, ...cur.pts[cur.pts.length - 1 - n])) n++;
+          carry = cur.pts.splice(cur.pts.length - n); cur.ts.splice(cur.ts.length - n); cur.judged.splice(cur.judged.length - n);
+          if (cur.pts.every(([px, py]) => ddOn(s, px, py) <= ddOn(cur.s, px, py) + TRACE_DIR.SLACK)) { carry = [...cur.pts, ...carry]; cur.pts = []; cur.ts = []; cur.judged = []; }
+        }
+        close(); cur = fresh(s); challenger = null; count = 0;
+        carry.forEach(([px, py], c) => place(px, py, c > 0 ? Math.hypot(px - carry[c - 1][0], py - carry[c - 1][1]) : 0));
+      }
+      place(x, y, step);
+    });
+    close();
+  });
+  const out = [];
+  for (const p of pieces) {
+    let joined = false;
+    for (let i = out.length - 1; i >= 0; i--) {
+      const q = out[i]; if (q.path !== p.path) break;
+      if (q.stroke !== p.stroke) { if (q.cover >= TRACE_DIR.BRIEF) break; continue; }
+      if (q.dir === p.dir && Math.abs(p.tA - q.tB) <= TRACE_DIR.MERGE_GAP) {
+        const d = ds[p.stroke]; const lo = Math.min(q.tA, q.tB, p.tA, p.tB); const hi = Math.max(q.tA, q.tB, p.tA, p.tB);
+        out[i] = { ...q, tB: p.tB, cover: d.judgedLen < TRACE_DIR.MIN_JUDGED ? 0 : Math.min(1, traceJudgedBetween(d, lo, hi) / d.judgedLen) }; joined = true;
+      } else if (q.dir > 0 && p.dir < 0 && q.cover >= TRACE_DIR.BRIEF && Math.abs(p.tA - q.tB) <= TRACE_DIR.MERGE_GAP) p.retrace = true;
+      break;
+    }
+    if (!joined) out.push(p);
+  }
+  return out;
+}
+// Per line: forward (some piece along half of it from its dot), backward (some piece along half of it from its end that is not a
+// retrace), backwardOnly (backward and never forward), and lastLineBackward, whether the newest path is such a backward line, which
+// the pad clears from kindergarten up. A connect-the-dots picture is never read here.
+export function traceDirections(letter, paths, tolerance = 14) {
+  const def = TRACE_LETTERS[letter];
+  if (!def || def.dots || !Array.isArray(paths) || !paths.length) return { forward: [], backward: [], backwardOnly: [], lastLineBackward: false };
+  const pieces = tracePieces(letter, paths, tolerance); const ds = traceSamples(letter);
+  // A line's share run one way in one stroke of the finger is the union of its pieces that way (retraces left out going back), so a
+  // line cut into pieces at a corner, a wiggle or a quick finger's leap still counts as a whole (pass MN round two's code check: a
+  // child's sway at a star's or a W's sharp corners split a forward line into pieces none of which reached half, and it was cleared).
+  // A closed line's places run past its ends (a lap unwrapped), so each stretch is folded into one lap before the union, or two runs
+  // over one stretch would count twice (round four's code read: O traced the other way 30 to 40 percent, off the line and back over
+  // the same stretch, read 0.55 to 0.65 and was cleared).
+  const fold = (d, a, b) => { if (!d.closed) return [[a, b]]; if (b - a >= d.len - 1e-6) return [[0, d.len]]; const w = ((a % d.len) + d.len) % d.len; const e = w + (b - a); return e <= d.len ? [[w, e]] : [[w, d.len], [0, e - d.len]]; };
+  const share = (s, way, pi) => { const d = ds[s]; if (d.judgedLen < TRACE_DIR.MIN_JUDGED) return 0;
+    const iv = pieces.filter((p) => p.stroke === s && p.path === pi && p.dir === way && !(way < 0 && p.retrace) && p.cover > 0).flatMap((p) => fold(d, Math.min(p.tA, p.tB), Math.max(p.tA, p.tB))).sort((a, b) => a[0] - b[0]);
+    if (!iv.length) return 0; const m = [iv[0].slice()]; for (const [a, b] of iv.slice(1)) { const top = m[m.length - 1]; if (a <= top[1]) top[1] = Math.max(top[1], b); else m.push([a, b]); }
+    return Math.min(1, m.reduce((acc, [a, b]) => acc + traceJudgedBetween(d, a, b), 0) / d.judgedLen); };
+  const any = (s, way) => paths.some((_, pi) => share(s, way, pi) >= TRACE_DIR.HALF);
+  const forward = def.strokes.map((_, s) => any(s, 1));
+  const backward = def.strokes.map((_, s) => any(s, -1));
+  const last = paths.length - 1;
+  return { forward, backward, backwardOnly: backward.map((b, s) => b && !forward[s]), lastLineBackward: def.strokes.some((_, s) => !forward[s] && share(s, -1, last) >= TRACE_DIR.HALF) };
+}
+// Round strokes drawn round (pass KA, Mikey's phone screenshot of First marks). The points of a stroke are where a finger must
+// pass, and straight lines joined them, so the circle showed eight corners and the wave looked like a zigzag. A stroke that
+// TRACE_LETTERS marks in `curve` is drawn as a smooth Catmull-Rom curve through the same points, sharp only at the corners it
+// lists (a closed loop with none joins smoothly where it starts). Straight strokes draw exactly as before.
+// Since pass MN it lives here, beside the reading of a trace, so the rules test traces the curve a child sees (ui.jsx draws it).
+export const cornersOf = (def, i) => (def && def.curve && def.curve[i]) || null;
+export function strokeSegments(st, corners) {
+  const n = st.length; const out = [];
+  if (!corners) { for (let i = 0; i < n - 1; i++) out.push([st[i], null, null, st[i + 1]]); return out; }
+  const closed = n > 3 && corners.length === 0 && st[0][0] === st[n - 1][0] && st[0][1] === st[n - 1][1];
+  const sharp = (i) => (i === 0 || i === n - 1 ? !closed : corners.includes(i));
+  const at = (i) => (closed ? st[(((i % (n - 1)) + (n - 1)) % (n - 1))] : st[Math.max(0, Math.min(n - 1, i))]);
+  for (let i = 0; i < n - 1; i++) {
+    const p0 = st[i]; const p1 = st[i + 1]; const prev = sharp(i) ? p0 : at(i - 1); const next = sharp(i + 1) ? p1 : at(i + 2);
+    out.push([p0, [p0[0] + (p1[0] - prev[0]) / 6, p0[1] + (p1[1] - prev[1]) / 6], [p1[0] - (next[0] - p0[0]) / 6, p1[1] - (next[1] - p0[1]) / 6], p1]);
+  }
+  return out;
+}
+// Whether a module's traces count a line's direction: from kindergarten up (Q49's (c)), never in pre-K (its (b)).
+export function traceChecksDirection(moduleId) {
+  const m = getModule(moduleId); const c = m && getCourse(m.courseId);
+  return !!c && c.grade !== 'PK3' && c.grade !== 'PK4';
+}
+// A question as its own module asks it: a trace from a kindergarten-up module carries checkDirection, which checkAnswer and the
+// pad read. Every builder of a round, a memory check, a Quick Review, a quick check, a checkpoint or a placement probe makes its
+// questions through this, so the rule goes by the module a question comes from, wherever it is asked.
+export function moduleQuestion(genId, seed, moduleId) {
+  const q = generateQuestion(genId, seed);
+  return q && q.type === 'trace' && q.traceKind !== 'dots' && traceChecksDirection(moduleId) ? { ...q, checkDirection: true } : q;
 }
 
 // A tracing question. The answer is the letter; the screen checks the finger path with traceMatches.
@@ -30424,13 +31098,24 @@ export const SOUND_CARRIERS = { mmm: 'moon', nnn: 'nut', sss: 'sun', fff: 'fish'
 export const HELD_SOUND = /\b(mmm|nnn|sss|fff|zzz|rrr|lll)(?:-(?!h)([a-z]+))?\b/gi;
 export function heldSoundSpoken(sound, rest) { const s = String(sound).toLowerCase(); return s[0].repeat(44) + (rest ? String(rest).toLowerCase() : SOUND_CARRIERS[s].slice(1)); }
 export function heardForm(text) { return String(text == null ? '' : text).replace(HELD_SOUND, (all, s, rest) => (rest ? `${s[0]}${rest}` : `${s} ${SOUND_CARRIERS[s.toLowerCase()]}`)); }
+// Where one sentence ends and the next begins, the one rule every split of the app's words uses (pass MN, round one's story flow
+// check): after . ! or ? and a space, but never after a title that comes before a name (Mr., Mrs., Ms. and Dr.) or after Jr.,
+// which the content only ever writes inside a sentence (Martin Luther King Jr. Day). Until pass MN every split cut "Dr. King" in
+// two: a kindergarten lesson printed "we honor Dr." on one line and "King, who worked..." on the next, the voice was handed "Ms."
+// alone, held slowly and a little higher as a word at play, and the read-along lit "Mr." as a sentence of its own. Nor does a middle
+// initial after a name (round two's code check: kindergarten's civics line was spoken as "...Stephen F." and "Austin and José
+// Antonio Navarro.", and ck-figure printed "Stephen F." on a line of its own), nor inside a run of initials (round four's code read:
+// two college and grade 9 lessons printed "extended by B.", "F." and "Skinner's work" on three lines, and W. E. B. Du Bois would have
+// split twice), an initial just after an opening quote too (round five); "start with B. Next he tried H." and a syllables story's
+// "E. Li. Jah." still split.
+export const SENTENCE_BREAK = /(?<=[.!?])(?<!\b(?:Mr|Mrs|Ms|Dr|Jr)\.)(?<!\b[A-Z][a-z]+ [A-Z]\.)(?<!\b[A-Z]\. [A-Z]\.)(?!(?<=(?:^|[\s("“])[A-Z]\.)\s+[A-Z]\.(?:\s|$))\s+/;
 // What a device voice is handed for a line, in pieces (moved here from ui.jsx in pass MM, round three, so the rules test reads the
 // speech itself): ordinary words at the normal pace, and each held sound as its own slow, stretched utterance, so "mmm" is held
 // rather than clipped. Each sentence takes a shape the screens turn into a rate and a pitch (SPEECH_SHAPES in ui.jsx): a one-word
 // sentence is the word at play, held slowly and a little higher; a question lifts at the end; everything else rolls along at an
 // easy pace. A piece that is only punctuation would be read aloud as a word, so it is dropped.
 export function speechPieces(text) {
-  const sentences = String(text).split(/(?<=[.!?])\s+/).filter((x) => x.trim());
+  const sentences = String(text).split(SENTENCE_BREAK).filter((x) => x.trim());
   const pieces = [];
   for (const [si, sentence] of sentences.entries()) {
     const words = sentence.replace(/[.!?]+$/, '').trim().split(/\s+/).filter(Boolean);
@@ -37145,12 +37830,34 @@ export function buildAttempt(moduleId, seed, masteredIds, options = {}) {
   const order = shuffle(rng, mod.generators);
   const core = [];
   const howMany = moduleRules(moduleId).questions * dose;
-  // Tracing and dot-to-dot tasks are motor practice with no answer to give away, so tracing a letter twice is allowed.
-  const same = (q, taken) => { if (q.type === 'trace') return false; const k = questionKey(q); return taken.some((c) => questionKey(c) === k); };
-  const fresh = (gen, taken) => {
-    // Not one from the last rounds if another can be found, and many tries for one not yet in this round.
-    let q = generateQuestion(gen, randInt(rng, 1, 2147483646));
-    for (let tries = 0; tries < 40 && (same(q, taken) || (tries < 10 && avoid.has(q.prompt))); tries++) q = generateQuestion(gen, randInt(rng, 1, 2147483646));
+  // A repeated question gives its answer away, so a round never repeats one (same, below). Tracing and dot-to-dot tasks are motor
+  // practice with no answer to give away, so a trace may come again, but only once its bank has nothing new: since pass MN (Mikey's
+  // answer to Q50) a round traces every letter, mark or shape its lesson teaches before any comes again, where until then each
+  // trace picked its letter at random (two rounds in five of Trace a big letter never traced one of its three letters).
+  const taken = (q, list) => { const k = questionKey(q); return list.some((c) => questionKey(c) === k); };
+  const same = (q, list) => q.type !== 'trace' && taken(q, list);
+  // A trace is weighed against the traces of its set: once a trace has to come again (every letter of the set traced), a new set
+  // starts with it, so a longer round traces each letter once a set (the lesson and code checks, pass MN round one: past its first
+  // three traces a triple dose drew its letters at random, T O L T T T T T T on one seed).
+  let setStart = 0;
+  const pool = (q, list) => (q.type === 'trace' && list === core ? core.slice(setStart) : list);
+  // A lesson that mixes traces with choice questions (First Sounds and Letters' three tracing lessons since Q50) asks its choice
+  // questions about different letters while it can, so the second is never answered by the first (round one's screen check, pass MN:
+  // 212 of its 600 rounds, and 177 of the rules test's 600, asked the letter heard and the letter by its lines about one letter). Every
+  // other lesson draws as before.
+  const isTraceBank = (g) => generateQuestion(g, 1).type === 'trace';
+  const mixed = mod.generators.some(isTraceBank) && !mod.generators.every(isTraceBank);
+  const echoes = (q, list) => mixed && list === core && q.type !== 'trace' && list.some((c) => c.type !== 'trace' && c.answer === q.answer);
+  // Every question is made as its own module asks it (moduleQuestion: from kindergarten up a trace counts a line's direction, Q49).
+  const fresh = (gen, list, from = mod.id) => {
+    // Not one from the last rounds if another can be found, and many tries for one not yet in this round (more for a trace, whose
+    // bank of three letters must reach its last letter on the third trace).
+    let q = moduleQuestion(gen, randInt(rng, 1, 2147483646), from);
+    const tries = q.type === 'trace' ? 120 : 40;
+    for (let t = 0; t < tries && (taken(q, pool(q, list)) || (t < 10 && avoid.has(q.prompt)) || (t < 20 && echoes(q, list))); t++) q = moduleQuestion(gen, randInt(rng, 1, 2147483646), from);
+    // A trace that has to open a new set (every one of this set traced) is drawn against the trace just made, so one letter never
+    // comes twice in a row while another can come (round two's code check, pass MN: 136 of 1,000 rounds of the tracing lessons did).
+    if (q.type === 'trace' && list === core && taken(q, pool(q, list))) { const last = [...core].reverse().find((c) => c.type === 'trace'); for (let t = 0; t < 40 && last && questionKey(q) === questionKey(last); t++) q = moduleQuestion(gen, randInt(rng, 1, 2147483646), from); }
     return q;
   };
   // Never the same question twice in one round (2026-10-01, pass HR, Mikey). In plain terms: when a bank has no new
@@ -37159,8 +37866,11 @@ export function buildAttempt(moduleId, seed, masteredIds, options = {}) {
   const banks = [...new Set(mod.generators)];
   for (let i = 0; i < howMany; i++) {
     let q = fresh(order[i % order.length], core);
-    for (const g of banks) { if (!same(q, core)) break; q = fresh(g, core); }
+    // A bank with nothing new hands its turn to the module's other banks; a trace's turn goes only to another trace's bank, so a
+    // tracing lesson's round never takes a choice question in a trace's place.
+    for (const g of banks) { if (!(q.type === 'trace' ? taken(q, pool(q, core)) : same(q, core))) break; const alt = fresh(g, core); if (q.type !== 'trace' || alt.type === 'trace') q = alt; }
     if (same(q, core)) break;
+    if (q.type === 'trace' && taken(q, core.slice(setStart))) setStart = core.length;   // a trace that comes again begins the next set
     core.push(q);
   }
   let review = null;
@@ -37179,13 +37889,13 @@ export function buildAttempt(moduleId, seed, masteredIds, options = {}) {
   let review2 = null;
   if (CONFIG.REVIEW_QUESTIONS_PER_ATTEMPT > 0 && earlierMastered.length > 0) {
     const rm = pick(rng, earlierMastered);
-    review = { moduleId: rm.id, question: fresh(pick(rng, rm.generators), []) };
+    review = { moduleId: rm.id, question: fresh(pick(rng, rm.generators), [], rm.id) };
     // A second check, from a different passed module when there is one, so two old skills
     // resurface in every round rather than one.
     const others = anywhere.filter((m) => m.id !== rm.id);
     if (CONFIG.REVIEW_QUESTIONS_PER_ATTEMPT > 1 && others.length > 0) {
       const rm2 = pick(rng, others);
-      review2 = { moduleId: rm2.id, question: fresh(pick(rng, rm2.generators), []) };
+      review2 = { moduleId: rm2.id, question: fresh(pick(rng, rm2.generators), [], rm2.id) };
     }
   }
   return { moduleId, seed, core, review, review2, dose };
@@ -37206,7 +37916,7 @@ export function recentPrompts(events, moduleId, rounds = 2) {
 // Decides whether a typed or tapped answer is right.
 export function checkAnswer(question, given) {
   if (question.type === 'trace') {
-    try { return traceMatches(question.answer, typeof given === 'string' ? JSON.parse(given) : given); } catch (e) { return false; }
+    try { return traceMatches(question.answer, typeof given === 'string' ? JSON.parse(given) : given, 14, { direction: !!question.checkDirection }); } catch (e) { return false; }
   }
   if (given === null || given === undefined) return false;
   const g = String(given).trim();
@@ -37379,8 +38089,8 @@ export function buildCheckpoint(events, seed) {
   const core = [];
   for (let i = 0; i < CHECKPOINT_QUESTIONS; i++) {
     const m = order[i % order.length];
-    let q = generateQuestion(pick(rng, m.generators), randInt(rng, 1, 2147483646));
-    for (let tries = 0; tries < 40 && core.some((c) => questionKey(c) === questionKey(q)); tries++) q = generateQuestion(pick(rng, m.generators), randInt(rng, 1, 2147483646));
+    let q = moduleQuestion(pick(rng, m.generators), randInt(rng, 1, 2147483646), m.id);
+    for (let tries = 0; tries < 40 && core.some((c) => questionKey(c) === questionKey(q)); tries++) q = moduleQuestion(pick(rng, m.generators), randInt(rng, 1, 2147483646), m.id);
     if (core.some((c) => questionKey(c) === questionKey(q))) continue; // never a repeat (pass HR): skip the slot instead
     core.push({ ...q, fromModuleId: m.id });
   }
@@ -37516,13 +38226,33 @@ export function buildLightReview(events, seed, due) {
   const rng = makeRng(seed);
   const banks = [...new Set(mod.generators)];
   const first = (due.missedKinds || []).filter((g) => banks.includes(g));
-  const order = [...first, ...shuffle(rng, banks.filter((g) => !first.includes(g)))];
+  // Each kind once in turn; but a lesson that mixes traces with choice questions (First Sounds and Letters' three tracing lessons since
+  // Q50) walks its own weighted list, so its review keeps a round's three traces and two choices (the lesson check, pass MN round one:
+  // its reviews had traced one letter or two of five, where before Q50 they traced five).
+  const isTrace = (g) => generateQuestion(g, 1).type === 'trace';
+  const mixed = banks.some(isTrace) && !banks.every(isTrace);
+  const rest = (mixed ? mod.generators : banks).slice(); for (const g of first) { const at = rest.indexOf(g); if (at >= 0) rest.splice(at, 1); }
+  const order = [...first, ...shuffle(rng, rest)];
   const core = [];
-  const same = (q) => q.type !== 'trace' && core.some((c) => questionKey(c) === questionKey(q));
+  // As in a round (buildAttempt): no question twice, and a trace again only once its set has nothing new (pass MN, Q50), a trace
+  // weighed against the traces since its set began; each question made as its module asks it (Q49).
+  let setStart = 0;
+  const taken = (q) => (q.type === 'trace' ? core.slice(setStart) : core).some((c) => questionKey(c) === questionKey(q));
+  const same = (q) => q.type !== 'trace' && taken(q);
+  // And as in a round, a tracing lesson's choice questions ask different letters while they can (round one's screen check).
+  const echoes = (q) => mixed && q.type !== 'trace' && core.some((c) => c.type !== 'trace' && c.answer === q.answer);
   for (let i = 0; core.length < LIGHT_REVIEW_QUESTIONS && i < LIGHT_REVIEW_QUESTIONS * 6; i++) {
     const gen = order[i % order.length];
-    let q = generateQuestion(gen, randInt(rng, 1, 2147483646));
-    for (let tries = 0; tries < 40 && same(q); tries++) q = generateQuestion(gen, randInt(rng, 1, 2147483646));
+    let q = moduleQuestion(gen, randInt(rng, 1, 2147483646), mod.id);
+    for (let tries = 0; tries < (q.type === 'trace' ? 120 : 40) && (taken(q) || (tries < 20 && echoes(q))); tries++) q = moduleQuestion(gen, randInt(rng, 1, 2147483646), mod.id);
+    // A trace bank with nothing new in this set hands its turn to the lesson's other trace banks first, as in a round, so a lesson whose
+    // letters are split across banks traces every one before any comes again (round five's code read, pass MN: tracing-more-small-
+    // letters' review traced "r m k z r", 12 of 1,000 reviews, while its rounds never did).
+    if (q.type === 'trace' && taken(q)) for (const g of banks.filter((b) => b !== gen && isTrace(b))) { let alt = moduleQuestion(g, randInt(rng, 1, 2147483646), mod.id); for (let t = 0; t < 120 && taken(alt); t++) alt = moduleQuestion(g, randInt(rng, 1, 2147483646), mod.id); if (!taken(alt)) { q = alt; break; } }
+    // A trace that has to open a new set (every one of this set traced) is drawn against the trace just made, as in a round, so one
+    // letter never comes twice in a row while another can (round four's alignment read, pass MN: 188 of 1,000 Quick Reviews of the
+    // tracing lessons did, "k i t t k").
+    if (q.type === 'trace' && taken(q)) { const last = [...core].reverse().find((c) => c.type === 'trace'); for (let t = 0; t < 40 && last && questionKey(q) === questionKey(last); t++) q = moduleQuestion(gen, randInt(rng, 1, 2147483646), mod.id); setStart = core.length; }
     if (same(q)) continue;
     core.push(q);
   }
@@ -37735,8 +38465,8 @@ export function buildPlacementProbe(subject, grade, seed) {
   const core = [];
   for (let i = 0; i < PLACEMENT_PROBE; i++) {
     const m = order[i % order.length];
-    let q = generateQuestion(pick(rng, m.generators), randInt(rng, 1, 2147483646));
-    for (let tries = 0; tries < 40 && core.some((c) => questionKey(c) === questionKey(q)); tries++) q = generateQuestion(pick(rng, m.generators), randInt(rng, 1, 2147483646));
+    let q = moduleQuestion(pick(rng, m.generators), randInt(rng, 1, 2147483646), m.id);
+    for (let tries = 0; tries < 40 && core.some((c) => questionKey(c) === questionKey(q)); tries++) q = moduleQuestion(pick(rng, m.generators), randInt(rng, 1, 2147483646), m.id);
     if (core.some((c) => questionKey(c) === questionKey(q))) continue; // never a repeat (pass HR): skip the slot instead
     core.push({ ...q, fromModuleId: m.id });
   }
@@ -37785,8 +38515,8 @@ export function buildQuickCheck(moduleId, seed) {
   const core = [];
   for (let i = 0; i < QUICK_CHECK_QUESTIONS; i++) {
     const genId = m.generators[i % m.generators.length];
-    let q = generateQuestion(genId, randInt(rng, 1, 2147483646));
-    for (let tries = 0; tries < 12 && core.some((c) => questionKey(c) === questionKey(q)); tries++) q = generateQuestion(genId, randInt(rng, 1, 2147483646));
+    let q = moduleQuestion(genId, randInt(rng, 1, 2147483646), m.id);
+    for (let tries = 0; tries < 12 && core.some((c) => questionKey(c) === questionKey(q)); tries++) q = moduleQuestion(genId, randInt(rng, 1, 2147483646), m.id);
     core.push({ ...q, fromModuleId: m.id });
   }
   return { quickCheck: true, moduleId: m.id, seed, core, review: null, review2: null };
@@ -38706,7 +39436,7 @@ export function taughtLine(moduleId, answer) {
   const m = getModule(moduleId); if (!m || typeof answer !== 'string' || /\d/.test(answer) || /^[a-z]+:/.test(answer)) return null;
   const want = answer.toLowerCase().replace(/[.!]$/, '');
   const pool = [...m.lesson.paragraphs, m.lesson.keyIdea, ...(m.lesson.script || []).map((x) => x.say)].join(' ').replace(/\[\[|\]\]|\*\*/g, '');
-  return pool.split(/(?<=[.!?])\s+/).find((sent) => sent.toLowerCase().includes(want)) || null;
+  return pool.split(SENTENCE_BREAK).find((sent) => sent.toLowerCase().includes(want)) || null;
 }
 // A grade is complete when every module of every course the student was given in that grade is
 // mastered, placed past, or passed on its quick check. Courses never switched on are not required,
@@ -39197,7 +39927,8 @@ const EQUATION_RE = /(\(?-?[\d.]+[a-z]?\)?(?:\s*[-+×÷*\/]\s*\(?-?[\d.]+[a-z]?\
 export function formatTeachingText(text) {
   const src = String(text || '');
   if (!src.trim() || src.includes('\n') || src.includes('[[') || src.includes('**')) return src;
-  const sentences = src.split(/(?<=[.!?])\s+(?=[A-Z0-9"(\[])/).map((x) => x.trim()).filter(Boolean);
+  // SENTENCE_BREAK's rule, before a capital, a digit or an opening mark (pass MN: "Dr. King" stays on one line).
+  const sentences = src.split(/(?<=[.!?])(?<!\b(?:Mr|Mrs|Ms|Dr|Jr)\.)(?<!\b[A-Z][a-z]+ [A-Z]\.)(?<!\b[A-Z]\. [A-Z]\.)(?!(?<=(?:^|[\s("“])[A-Z]\.)\s+[A-Z]\.(?:\s|$))\s+(?=[A-Z0-9"(\[])/).map((x) => x.trim()).filter(Boolean);
   const out = [];
   for (const sentence of sentences) {
     const equations = sentence.match(EQUATION_RE) || [];

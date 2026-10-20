@@ -9,6 +9,13 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## October 20, 2026 (feelings and friends for three- and four-year-olds, and tracing one line at a time)
+
+- Three-year-olds have a new lesson, Can I Play Too?, about joining a game kindly. They learn to watch first and then ask, to bring something that fits the game and to take turns, and when friends say "not now," to play something else and ask again later. Helping a Friend now teaches that grown-ups have feelings too, and a child can ask a sad grown-up, "Are you okay?" and "Can I give you a hug?"
+- Four-year-olds have three new lessons in First Steps, each with its own story: Feelings and What We Do (how happy, sad, mad and scared show in what we do, and kind ways to show them), How Do Friends Feel? (a friend can feel the same as you or differently, with two new faces, worried and embarrassed) and Being a Good Friend (notice how a friend feels and help, fix a problem together when you can, and get a grown-up when you can't).
+- Tracing pads now show one line's green starting dot at a time, in the order the lesson draws them. From kindergarten up, a line traced from its end back to its start is cleared and the voice says, "Start at the green dot and follow the arrow." Pre-K children see the same dots, and a line they trace backward is never cleared. At no grade is a child marked wrong for the order of the lines.
+- First Sounds and Letters' three tracing lessons now trace each of their three letters every round and add two quick letter questions, one heard and one found by its lines, so children tie each letter's shape to its name.
+
 ## October 19, 2026 (First Sounds and Letters, read again from the start)
 
 - We read First Sounds and Letters, the second course for four-year-olds, again from the start. Rhyme Time and First Sounds now ask about words a child hears and pictures a child can tap, rather than printed words a child could match letter by letter, and two new stories, The Rhyme Train and The Paper-Cup Telephone, wait at the course's celebrations. Letter questions say the letter aloud and print "the letter you hear", so a child listens for its name instead of matching the printed shape.

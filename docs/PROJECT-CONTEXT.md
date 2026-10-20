@@ -1,6 +1,6 @@
 # Project Context
 
-For the claude.ai Project "The Wise Human". Written in pass MM (October 19, 2026). This is the short, slow-changing picture every chat in the Project should start with. The project zip is the source of truth: if anything here disagrees with the zip, the zip wins, and Claude says so. Claude tells Mikey when this file needs an update (a change to the vision, the roles, the plan or a standing preference); the state of the work lives in the zip, never here, so this file does not go stale between passes.
+For the claude.ai Project "The Wise Human". Written in pass MM (October 19, 2026), and updated in pass MN (October 20, 2026) for where the answered questions now live and how the pre-K earmarks are built. This is the short, slow-changing picture every chat in the Project should start with. The project zip is the source of truth: if anything here disagrees with the zip, the zip wins, and Claude says so. Claude tells Mikey when this file needs an update (a change to the vision, the roles, the plan or a standing preference); the state of the work lives in the zip, never here, so this file does not go stale between passes.
 
 ## 1. What we are building
 
@@ -71,9 +71,9 @@ The idea behind it, from the paper Mikey shared (Gu, Kemeny, Yelin and Lukin, Oc
 
 ## 10. Where things live in the zip
 
-- CLAUDE.md: the short manual every session loads (layout, commands, invariants, how to find a rule). docs/CLAUDE-HISTORY.md and docs/NEW-CHAT-HISTORY.md keep, word for word, the history those two files carried until pass MM.
+- CLAUDE.md: the short manual every session loads (layout, commands, invariants, how to find a rule). docs/CLAUDE-HISTORY.md and docs/NEW-CHAT-HISTORY.md keep, word for word, the history those two files carried until pass MM, and docs/RULES-AUDIT-HISTORY.md every question section 11 had answered through pass MN, in full.
 - docs/NEW-CHAT.md: start here; the state of the work, the open questions in full, the next step.
-- docs/RULES-AUDIT.md: every standing rule, where it is written and what enforces it; section 11 holds every question for Mikey with his answers.
+- docs/RULES-AUDIT.md: every standing rule, where it is written and what enforces it; section 11 holds every open question for Mikey in full and, since pass MN (Mikey's answer to Q52), one line for each answered one: its number, his answer word for word and where its rule now lives.
 - docs/EARMARKS.md: every standard and program item still to build.
 - docs/DECISIONS.md: one entry per pass, with Mikey's words, what each check found, and what changed for future passes.
 - docs/INDEPENDENT-CHECKS.md: the briefs for every checker.
@@ -84,7 +84,7 @@ The idea behind it, from the paper Mikey shared (Gu, Kemeny, Yelin and Lukin, Oc
 ## 11. The plan, in Mikey's order
 
 1. Review everything that exists at the refined standard, course by course from pre-K 3 up, through every layer of checks, earmarking every gap.
-2. After each grade's review, build that grade's earmarks (pre-K 3's and pre-K 4's together, after First Sounds and Letters; Mikey's answer to Q48).
+2. After each grade's review, build that grade's earmarks (pre-K 3's and pre-K 4's together, side by side by domain, after First Sounds and Letters; Mikey's answer to Q48). They are built a domain or two a pass, in TEA's order, and docs/EARMARKS.md's table of domains says which are done and which comes next.
 3. New courses, stories, Wonder questions and games across all grades, at the full standard from the start.
 4. Cross-check everything against the newest editions of every framework.
 5. The illustrations, the ElevenLabs audio, the Texas page, licensing and the final checks.

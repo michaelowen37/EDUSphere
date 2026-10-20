@@ -275,23 +275,8 @@ function FractionBar({ parts, shaded, color = C.green, height = 44 }) {
 // green starting dot and a small arrow on each. The finger's path is collected in the
 // pad's own 100 by 100 coordinates, so a check can be done by arithmetic regardless of
 // screen size. Works with a mouse too, but it is built for glass.
-// Round strokes drawn round (pass KA, Mikey's phone screenshot of First marks). The points of a stroke are where a finger must
-// pass, and straight lines joined them, so the circle showed eight corners and the wave looked like a zigzag. A stroke that
-// TRACE_LETTERS marks in `curve` is drawn as a smooth Catmull-Rom curve through the same points, sharp only at the corners it
-// lists (a closed loop with none joins smoothly where it starts). Straight strokes draw exactly as before.
-const cornersOf = (def, i) => (def && def.curve && def.curve[i]) || null;
-function strokeSegments(st, corners) {
-  const n = st.length; const out = [];
-  if (!corners) { for (let i = 0; i < n - 1; i++) out.push([st[i], null, null, st[i + 1]]); return out; }
-  const closed = n > 3 && corners.length === 0 && st[0][0] === st[n - 1][0] && st[0][1] === st[n - 1][1];
-  const sharp = (i) => (i === 0 || i === n - 1 ? !closed : corners.includes(i));
-  const at = (i) => (closed ? st[(((i % (n - 1)) + (n - 1)) % (n - 1))] : st[Math.max(0, Math.min(n - 1, i))]);
-  for (let i = 0; i < n - 1; i++) {
-    const p0 = st[i]; const p1 = st[i + 1]; const prev = sharp(i) ? p0 : at(i - 1); const next = sharp(i + 1) ? p1 : at(i + 2);
-    out.push([p0, [p0[0] + (p1[0] - prev[0]) / 6, p0[1] + (p1[1] - prev[1]) / 6], [p1[0] - (next[0] - p0[0]) / 6, p1[1] - (next[1] - p0[1]) / 6], p1]);
-  }
-  return out;
-}
+// The guide's curve, cornersOf and strokeSegments, lives in logic.mjs since pass MN (round two's code check), so the rules test
+// traces the curve a child sees; the pad and the demo draw it from there.
 function strokeD(st, corners) {
   const f = (v) => +v.toFixed(2);
   return `M ${f(st[0][0])} ${f(st[0][1])} ` + strokeSegments(st, corners).map(([, c1, c2, p1]) => (c1 ? `C ${f(c1[0])} ${f(c1[1])} ${f(c2[0])} ${f(c2[1])} ${f(p1[0])} ${f(p1[1])}` : `L ${f(p1[0])} ${f(p1[1])}`)).join(' ');
@@ -330,17 +315,30 @@ function TraceShape({ letter, def }) {
   const s = (bottom - top) / (g.box[3] - g.box[1]); const cx = (Math.min(...pts.map((q) => q[0])) + Math.max(...pts.map((q) => q[0]))) / 2;
   return <path d={g.d} transform={`translate(${(cx - ((g.box[0] + g.box[2]) / 2) * s).toFixed(2)} ${(bottom + g.box[1] * s).toFixed(2)}) scale(${s.toFixed(4)} ${(-s).toFixed(4)})`} fill="#E3E9DE" stroke="#C4CEBE" strokeWidth={1.4 / s} pointerEvents="none" />;
 }
-function TracePad({ letter, paths, onChange, disabled = false, tone = null }) {
+// One line at a time (pass MN, Mikey's answer to Q49): only the first line not yet traced shows its starting dot and arrow, the way
+// the lesson's demo draws the lines, and the next line's appear once that line is traced (traceLineState in logic decides which).
+// From kindergarten up (checkDirection, which the question carries from its module) a line traced from its end back to its start
+// is cleared the moment the finger lifts and onBackward is told, so the screen can say TRACE_BACK_WORDS, "Start at the green dot and
+// follow the arrow." (traceDirections decides). In pre-K nothing is cleared: the dots guide the order and fail nothing. live keeps the newest paths between renders, so
+// a lift that comes before React has drawn the last move still reads every point the finger made.
+function TracePad({ letter, paths, onChange, disabled = false, tone = null, checkDirection = false, onBackward = null }) {
   const ref = useRef(null);
   const drawing = useRef(false);
+  const live = useRef(paths); live.current = drawing.current ? live.current : paths;
   const def = TRACE_LETTERS[letter];
+  const { next: nextLine } = useMemo(() => traceLineState(letter, paths), [letter, paths]);
   const toLocal = (e) => {
     const box = ref.current.getBoundingClientRect();
     return [Math.round(((e.clientX - box.left) / box.width) * 100), Math.round(((e.clientY - box.top) / box.height) * 100)];
   };
-  const start = (e) => { if (disabled) return; drawing.current = true; grabPointer(e.currentTarget, e); onChange([...paths, [toLocal(e)]]); };
-  const move = (e) => { if (!drawing.current || disabled) return; const next = paths.slice(); next[next.length - 1] = [...next[next.length - 1], toLocal(e)]; onChange(next); };
-  const end = () => { drawing.current = false; };
+  const send = (next) => { live.current = next; onChange(next); };
+  const start = (e) => { if (disabled) return; drawing.current = true; grabPointer(e.currentTarget, e); send([...live.current, [toLocal(e)]]); };
+  const move = (e) => { if (!drawing.current || disabled) return; const next = live.current.slice(); next[next.length - 1] = [...next[next.length - 1], toLocal(e)]; send(next); };
+  const end = () => {
+    if (!drawing.current) return;
+    drawing.current = false;
+    if (checkDirection && !disabled && live.current.length && traceDirections(letter, live.current).lastLineBackward) { send(live.current.slice(0, -1)); if (onBackward) onBackward(); }
+  };
   const ink = tone === 'good' ? C.green : tone === 'bad' ? C.clay : C.ink;
   return (
     <svg ref={ref} viewBox="0 0 100 100" role="img" aria-label={def && def.dots ? `Connect the dots to make a ${letter}` : def && def.line ? 'Draw along the line' : `Trace ${letter}`}
@@ -350,19 +348,22 @@ function TracePad({ letter, paths, onChange, disabled = false, tone = null }) {
         <g key={`dot-${i}`}><circle cx={p[0]} cy={p[1]} r="5" fill={C.gold} /><text x={p[0]} y={p[1] - 7} fontSize="7" textAnchor="middle" fill={C.ink} fontFamily={FONT}>{i + 1}</text></g>
       )))}
       <TraceShape letter={letter} def={def} />
-      {/* Every guide first, then every starting dot and arrow (pass MM, round two's lesson check): drawn stroke by stroke, a
-          later stroke's guide covered an earlier stroke's dot, so T's bar hid the dot of T's stem, which comes first. */}
+      {/* Every guide first, then the starting dot and arrow (pass MM, round two's lesson check): drawn stroke by stroke, a later
+          stroke's guide covered an earlier stroke's dot, so T's bar hid the dot of T's stem, which comes first. Since pass MN only
+          the line to trace next shows its dot and arrow (Q49), and none shows once every line is traced; and since round one's
+          screen check they are drawn after the child's ink too, since a next line often starts on a line already traced (L's foot
+          at the end of its stem, E's bars on its stem), where the ink left only a rim of the one guide the pad shows. */}
       {def && !def.dots && def.strokes.map((st, i) => <path key={`guide-${i}`} d={strokeD(st, cornersOf(def, i))} fill="none" stroke={C.line} strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" />)}
-      {def && !def.dots && def.strokes.map((st, i) => (
+      {paths.map((path, i) => path.length > 1
+        ? <polyline key={i} points={path.map((p) => p.join(',')).join(' ')} fill="none" stroke={ink} strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+        : <circle key={i} cx={path[0][0]} cy={path[0][1]} r="3" fill={ink} />)}
+      {def && !def.dots && def.strokes.map((st, i) => i !== nextLine ? null : (
         <g key={`start-${i}`} data-trace-start={i}>
           {/* the starting dot and the direction of the first move */}
           <circle cx={st[0][0]} cy={st[0][1]} r="4.5" fill={C.green} />
           {(() => { const { tip, ux, uy } = arrowOnStroke(st, cornersOf(def, i)); const l = [tip[0] - ux * 5 - uy * 3.5, tip[1] - uy * 5 + ux * 3.5]; const r = [tip[0] - ux * 5 + uy * 3.5, tip[1] - uy * 5 - ux * 3.5]; return <polygon points={`${tip.join(',')} ${l.join(',')} ${r.join(',')}`} fill={C.green} />; })()}
         </g>
       ))}
-      {paths.map((path, i) => path.length > 1
-        ? <polyline key={i} points={path.map((p) => p.join(',')).join(' ')} fill="none" stroke={ink} strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
-        : <circle key={i} cx={path[0][0]} cy={path[0][1]} r="3" fill={ink} />)}
     </svg>
   );
 }
@@ -1008,27 +1009,40 @@ function DotGroup({ count, size = 34, animate = false, animKey = 0, frame = 5, s
 // together and a wide open mouth (the picture check, pass MD: arched eyebrows over a round O read as surprised). A round
 // yellow face, so no child's own skin is the one drawn; drawn for paper with the light palette's ink, like every lesson picture.
 // It scales down inside a pair or a grid and in an answer button, and it names its feeling for a screen reader, as the dots do.
+// Pass MN (earmark E13, Head Start P-SE 6 at 48 to 60 months: "more subtle or complex emotions in self and others, such as
+// embarrassed or worried"): two more faces for pre-K 4, each told by the one sign its line names. Worried keeps its eyebrows up in
+// the middle and has a wiggly mouth, the sign no other face shares (the sad face's eyebrows rise in the middle too, so they never
+// tell worried from sad); embarrassed looks down and away, the dark of each eye low and to one side, over a small tight mouth and
+// pink cheeks with blush marks (looking down is its sign, since the happy face has pink cheeks too; drawn with lids, the eyes read
+// as a pleased face, so they look away instead).
 function FeelingFace({ feeling, size = 130 }) {
   const ink = B.ink;
   const brows = feeling === 'mad' ? <><path d="M26 30 L43 40" /><path d="M74 30 L57 40" /></>
     : feeling === 'sad' ? <><path d="M27 37 L42 30" /><path d="M73 37 L58 30" /></>
     : feeling === 'scared' ? <><path d="M24 31 Q32 29 42 22" /><path d="M76 31 Q68 29 58 22" /></>
+    : feeling === 'worried' ? <><path d="M25 37 Q33 34 42 27" /><path d="M75 37 Q67 34 58 27" /></>
+    : feeling === 'embarrassed' ? <><path d="M27 36 L41 31" /><path d="M73 36 L59 31" /></>
     : null;   // happy: its smiling eyes are enough
   const eyes = feeling === 'happy'
     ? <g fill="none" stroke={ink} strokeWidth="4.5" strokeLinecap="round"><path d="M28 48 Q35 39 42 48" /><path d="M58 48 Q65 39 72 48" /></g>
     : feeling === 'scared'
     ? <><circle cx="35" cy="46" r="8.5" fill="#FFFFFF" stroke={ink} strokeWidth="2.5" /><circle cx="65" cy="46" r="8.5" fill="#FFFFFF" stroke={ink} strokeWidth="2.5" /><circle cx="35" cy="46" r="3" fill={ink} /><circle cx="65" cy="46" r="3" fill={ink} /></>
+    : feeling === 'embarrassed'
+    ? <>{[35, 65].map((x) => <g key={x}><circle cx={x} cy="47" r="7.5" fill="#FFFFFF" stroke={ink} strokeWidth="2.2" /><circle cx={x - 3} cy="51" r="3.4" fill={ink} /></g>)}</>
     : <><circle cx="35" cy="46" r="4.5" fill={ink} /><circle cx="65" cy="46" r="4.5" fill={ink} /></>;
   const mouth = feeling === 'happy' ? <path d="M30 59 Q50 81 70 59" fill="none" stroke={ink} strokeWidth="4.5" strokeLinecap="round" />
     : feeling === 'sad' ? <path d="M33 74 Q50 59 67 74" fill="none" stroke={ink} strokeWidth="4.5" strokeLinecap="round" />
     : feeling === 'mad' ? <path d="M36 71 Q50 64 64 71" fill="none" stroke={ink} strokeWidth="5" strokeLinecap="round" />
+    : feeling === 'worried' ? <path d="M32 71 q4.5 -5.5 9 0 t9 0 t9 0 t9 0" fill="none" stroke={ink} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
+    : feeling === 'embarrassed' ? <path d="M45 71 Q50 69 55 71" fill="none" stroke={ink} strokeWidth="4" strokeLinecap="round" />
     : <><ellipse cx="50" cy="72" rx="13" ry="8" fill={ink} /><path d="M39.5 67.5 Q50 64.6 60.5 67.5 L59 70 Q50 67.6 41 70 Z" fill="#FFFFFF" /></>;
   return (
-    <svg viewBox="0 0 100 100" width={size} height={size} role="img" aria-label={`A ${feeling} face`} data-face={feeling} style={{ display: 'block', margin: '0 auto', maxWidth: '100%', height: 'auto' }}>
+    <svg viewBox="0 0 100 100" width={size} height={size} role="img" aria-label={`${/^[aeiou]/.test(feeling) ? 'An' : 'A'} ${feeling} face`} data-face={feeling} style={{ display: 'block', margin: '0 auto', maxWidth: '100%', height: 'auto' }}>
       <circle cx="50" cy="52" r="42" fill="#FFD45C" stroke={ink} strokeWidth="3" />
       <g fill="none" stroke={ink} strokeWidth="4" strokeLinecap="round">{brows}</g>
       {eyes}{mouth}
       {feeling === 'happy' && <><circle cx="24" cy="60" r="6" fill="#F4A3A3" opacity="0.85" /><circle cx="76" cy="60" r="6" fill="#F4A3A3" opacity="0.85" /></>}
+      {feeling === 'embarrassed' && <>{[23, 77].map((x) => <g key={x}><ellipse cx={x} cy="61" rx="8.5" ry="5.5" fill="#EE8A8A" opacity="0.9" /><path d={`M${x - 4.5} 58.5 l-1.8 5 M${x} 58.5 l-1.8 5 M${x + 4.5} 58.5 l-1.8 5`} stroke="#C0504D" strokeWidth="1.6" strokeLinecap="round" /></g>)}</>}
       {feeling === 'sad' && <path d="M33 54 Q26 64 33 67 Q40 64 33 54 Z" fill="#4A90D9" stroke={ink} strokeWidth="1.2" />}
     </svg>
   );
@@ -1143,7 +1157,7 @@ function Picture(props) {
 // short phone (under 720 pixels tall, an iPhone SE's 667) none, so Check answer stays above the fold (the screen check), and
 // nor does a phone held sideways (wide but under 600 tall; the code check's second read).
 function bigScale() { if (typeof window === 'undefined') return 1; const w = window.innerWidth; const h = window.innerHeight; return w >= 700 ? (h >= 600 ? 1.45 : 1) : h >= 720 ? 1.12 : 1; }
-function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1 }) {
+function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1, lesson = false }) {
   if (!visual) return null;
   const at = (n) => Math.round(n * k);   // a size, scaled for a question's or a lesson's own picture (k is 1 everywhere else)
   // Dots to count grow a little more than other pictures (60 pixels on a laptop, 40 on a phone), so a row of two or three fills
@@ -1201,7 +1215,16 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1 }
     // one row's dots smaller than the other's. A drawn width is the group's own dot or cell size times its frame, plus its gaps.
     const natural = (v) => { const f = v && v.kind === 'dots' ? v.count : v && v.kind === 'pattern' && v.size ? Math.max(v.frame || 5, v.items.length) : 0; return f ? f * (v.size || 34) + (f - 1) * (v.gap || 8) : 0; };
     const together = stack && spaced && natural(first) > 0 && natural(second) > 0; const widest = Math.max(natural(first), natural(second));
-    const half = (v, i) => (v.kind ? <div key={`${animKey}-${i}`} className={animate ? 'edu-drift' : undefined} style={{ animationDelay: `${i * 0.5}s`, maxWidth: stack ? '100%' : '46%', transform: stack ? undefined : 'scale(0.85)', ...(together ? { width: `${(natural(v) / widest) * 100}%` } : null) }}><Picture visual={v} note={false} bare /></div> : <Item key={i} spec={`${v.shape}-${v.colour}`} size={96} />);
+    // Two drawings side by side (two faces, two animals, a flower and a candle) grow on a wide screen as one drawing does (Mikey,
+    // pass MH: "The shapes are pretty small and separated by a lot of space on my wide screen"), where each half kept a phone's
+    // size in a laptop's picture (round one's screen check, pass MN: a rabbit 55 pixels wide beside a face of 219). Only in a
+    // lesson (lesson, from the lesson's own Picture), where Next has room and a scroll cue, never in a question, where a grown pair
+    // put Check answer below a 720-pixel laptop's fold (Mikey, pass MH: "enlarge the lesson images instead"); only on a wide
+    // screen (k from bigScale, 1.45); and only when both halves are drawings that scale alike, so a phone, a counted pair and a
+    // pair with words keep their sizes.
+    const grows = (v) => !!v && ['pic', 'icon', 'face', 'shape', 'art', 'solid', 'swatch', 'item'].includes(v.kind);
+    const wide = lesson && k >= 1.4 && !stack && grows(first) && grows(second);
+    const half = (v, i) => (v.kind ? <div key={`${animKey}-${i}`} className={animate ? 'edu-drift' : undefined} style={{ animationDelay: `${i * 0.5}s`, maxWidth: stack ? '100%' : '46%', transform: stack ? undefined : 'scale(0.85)', ...(together ? { width: `${(natural(v) / widest) * 100}%` } : null) }}><Picture visual={v} note={false} bare big={wide} /></div> : <Item key={i} spec={`${v.shape}-${v.colour}`} size={96} />);
     return <div style={{ padding: '6px 0', display: 'flex', flexDirection: stack ? 'column' : 'row', justifyContent: 'center', alignItems: 'center', gap: stack ? 10 : 28, ...(together ? { width: '100%', maxWidth: widest, margin: '0 auto' } : null) }}>{half(first, 0)}{half(second, 1)}</div>;
   }
   // A row of up to three pictures (pass MA): two owls and a fox, or a big, a middle-size and a little circle, so a line that names
@@ -1373,8 +1396,9 @@ function inlineInfoStyle(open) {
 // The picture for a way is its own when it has one, else the lesson's example drawing.
 function wayText(w) { return typeof w === 'string' ? w : (w && w.text) || ''; }
 function wayVisual(example, at) { const w = at > 0 ? [].concat(example.another || [])[at - 1] : null; return w && typeof w === 'object' && w.visual ? { ...w.visual, caption: example.caption } : example; }
-// A line split into its sentences, for reading along.
-function sentencesOf(text) { return String(text || '').split(/(?<=[.!?])\s+/).filter(Boolean); }
+// A line split into its sentences, for reading along, by the one rule speechPieces uses too (SENTENCE_BREAK in logic, pass MN), so
+// the sentence the voice is on is the sentence lit.
+function sentencesOf(text) { return String(text || '').split(SENTENCE_BREAK).filter(Boolean); }
 // Speaks a list of texts one after another and reports which one is playing, so a page can
 // light the paragraph being read. Returns a stop function. Uses the same ticket as speak().
 // Purchased audio: when the build lists a clip for a key (audio/<key>.mp3, keys like S7-0 for a story's
@@ -3612,8 +3636,8 @@ function LessonStepArt({ pic, visual, animKey }) {
   const present = typeof window !== 'undefined' && Array.isArray(window.__eduArt) && window.__eduArt.includes(pic.serial);
   const [missing, setMissing] = useState(!present);
   if (!missing) return <img data-lesson-picture={pic.serial} src={`art/stories/${pic.serial}.webp`} alt={pic.alt} onError={() => setMissing(true)} style={{ display: 'block', width: '100%', maxWidth: 420, maxHeight: 300, objectFit: 'contain', margin: '0 auto', borderRadius: 12 }} />;
-  if (!visual) return <div data-lesson-picture={pic.serial}><StoryArt serial={pic.serial} alt={pic.alt} /></div>;
-  return <div data-lesson-picture={pic.serial}><Picture visual={visual} animate animKey={animKey} note big /><p style={{ margin: '4px 0 0', fontSize: 12, color: C.muted }}>Illustration {pic.serial} to come</p></div>;
+  if (!visual) return <div data-lesson-picture={pic.serial} style={{ maxWidth: 400, margin: '0 auto' }}><StoryArt serial={pic.serial} alt={pic.alt} /></div>;   // the painting's own size, 400 by 300 (round one's screen check, pass MN)
+  return <div data-lesson-picture={pic.serial}><Picture visual={visual} animate animKey={animKey} note big lesson /><p style={{ margin: '4px 0 0', fontSize: 12, color: C.muted }}>Illustration {pic.serial} to come</p></div>;
 }
 // The story page body: title, pictures where they fall in the text, the words, one speaker.
 // The snail and the hare (2026-09-23, Mikey): an early-years story is read at three quarters speed on the snail and at the
@@ -8816,6 +8840,7 @@ function EduSphereScreens() {
   let renderModuleCard = null;
   const [wonderVoiceStep, setWonderVoiceStep] = useState(0);   // which spoken voice a young child is on
   const [tracePaths, setTracePaths] = useState([]);
+  const [traceNote, setTraceNote] = useState('');   // TRACE_BACK_WORDS after a backward line is cleared, from kindergarten up (Q49, pass MN)
   const [replays, setReplays] = useState(0);                          // "Say it again" replays the lesson picture too
   const [paceNudge, setPaceNudge] = useState(0);                      // Slower / Faster on a tracing demonstration: -1, 0 or 1 from the lesson's own pace
   const [noteInput, setNoteInput] = useState('');                     // a teacher note being written on the report
@@ -9145,9 +9170,9 @@ function EduSphereScreens() {
     setScreen('practice');
   }
 
-  // A backup file straight to the downloads folder, or into the one file an educator chose to keep
-  // up to date. Never during a walk-through. `changed` is set by every saved event and cleared here,
-  // so a sign-out with nothing new to save downloads nothing.
+  // A backup file straight to the downloads folder (the one file an educator could once choose to keep up to date,
+  // keepOneFile, is gone; pass MN corrected this comment). Never during a walk-through. `changed` is set by every saved
+  // event and cleared here, so a sign-out with nothing new to save downloads nothing.
   const changedSinceBackup = useRef(false);
   async function autoBackup(reason = 'course') {
     const rec = recordRef.current || record;
@@ -9282,7 +9307,7 @@ function EduSphereScreens() {
   // Clears the feedback so the child can have another go at the same question.
   function tryAgain() {
     setOrderPicked([]); setMoreInfo(false);
-    setGiven(''); setChecked(false); setTracePaths([]); setQShownAt(Date.now());
+    setGiven(''); setChecked(false); setTracePaths([]); setTraceNote(''); setQShownAt(Date.now());
     // A pre-reader tries again from the top of the question, its picture and speaker in view, even after the scroll cue took the
     // page down to the button (the code check's second read of the late fixes).
     if (readAloud) scrollToTop(false);
@@ -9493,7 +9518,7 @@ function EduSphereScreens() {
   }, [touchOnly]);
   // Whatever route brought a question on screen, it starts clean: nothing picked, nothing counted.
   const questionKey = attempt ? `${attempt.seed}-${qIndex}` : '';
-  useEffect(() => { setGiven(''); setChecked(false); setMisses(0); setWrongPicks([]); setTracePaths([]); setMoreInfo(false); }, [questionKey]);
+  useEffect(() => { setGiven(''); setChecked(false); setMisses(0); setWrongPicks([]); setTracePaths([]); setTraceNote(''); setMoreInfo(false); }, [questionKey]);
   // Each line of a pre-reader lesson is spoken as it appears, without waiting to be asked.
   const lessonLines = mod && readAloud ? (mod.lesson.script || []).map((x) => x.say) : [];
   const currentLessonLine = lessonLines[Math.min(lessonStep, Math.max(0, lessonLines.length - 1))] || '';
@@ -9748,7 +9773,7 @@ function EduSphereScreens() {
     // walk can pass a round whose memory check reaches into a tracing lesson (a finished course has those among its stars).
     traceWell: () => { const def = q && q.type === 'trace' ? TRACE_LETTERS[q.answer] : null; if (!def) return false; const paths = def.strokes.map((s) => s.flatMap((p, i) => (i === 0 ? [p] : Array.from({ length: 8 }, (_, k) => [s[i - 1][0] + ((p[0] - s[i - 1][0]) * (k + 1)) / 8, s[i - 1][1] + ((p[1] - s[i - 1][1]) * (k + 1)) / 8])))); setTracePaths(paths); setGiven(JSON.stringify(paths)); return true; }, openColoring: (pic) => { setColoring(pic); setScreen('coloring'); }, openCertificate: (id, grade) => { setCertFor({ id, grade }); setCertTemplate('classic'); setCertName(''); setCertPhotos([]); setScreen('certificate'); }, visibleModuleIds: () => visibleModules.map((m) => m.id), openStory: (id) => { noteStoryOpen(id, 'shelf'); setModuleId(id); setScreen('story'); }, openCourseStory: (id, part = 'course') => { noteStoryOpen(`${part}:${id}`, 'shelf'); setCourseStoryId(id); setCourseStoryPart(part); setScreen('course-story'); }, openWonderVoices: (id, mid) => { if (mid) setModuleId(mid); setWonder(WONDER.find((w) => w.id === id) || null); setWonderVoiceStep(0); setScreen('wonder-voices'); }, openWonder: (id, mid) => { if (mid) setModuleId(mid); setWonder(WONDER.find((w) => w.id === id) || null); setWonderText(''); setWonderPick(''); setWonderStartedAt(Date.now()); setScreen('wonder'); },
     // Test-only (pass MH): one round of a single named question, so a browser check can look at any kind of question on screen.
-    showQuestion: (genId, seed = 1) => { const home = COURSES.flatMap((c) => c.modules).find((m) => (m.generators || []).includes(genId)); if (!home) return false; setModuleId(home.id); setAttempt({ moduleId: home.id, seed, core: [generateQuestion(genId, seed)], review: null, review2: null }); setQIndex(0); setGiven(''); setChecked(false); setMisses(0); setCoreResults([]); setOrderPicked([]); setReviewResult(null); setReview2Result(null); setStartedAt(new Date().toISOString()); setQShownAt(Date.now()); setScreen('practice'); return true; }, reviewWonder: (id) => { setReviewing(id); setOpenVoices([]); setScreen('wonder-review'); }, crash: () => setBoom(true), goTo: (name, arg) => {
+    showQuestion: (genId, seed = 1, fromModule = null) => { const home = (fromModule && getModule(fromModule)) || COURSES.flatMap((c) => c.modules).find((m) => (m.generators || []).includes(genId)); if (!home) return false; setModuleId(home.id); setAttempt({ moduleId: home.id, seed, core: [moduleQuestion(genId, seed, home.id)], review: null, review2: null }); setQIndex(0); setGiven(''); setChecked(false); setMisses(0); setWrongPicks([]); setTracePaths([]); setTraceNote(''); setMoreInfo(false); setCoreResults([]); setOrderPicked([]); setReviewResult(null); setReview2Result(null); setStartedAt(new Date().toISOString()); setQShownAt(Date.now()); setScreen('practice'); return true; }, reviewWonder: (id) => { setReviewing(id); setOpenVoices([]); setScreen('wonder-review'); }, crash: () => setBoom(true), goTo: (name, arg) => {
     // Test-only: land on a screen with enough state for it to render, so the back-button sweep can press back from every screen.
     if (name === 'story' || name === 'lesson') { if (!moduleId && visibleModules[0]) setModuleId(visibleModules[0].id); }
     if (name === 'course-story') { const c = COURSES.find((x) => courseStoryFor(x.id)); if (c) setCourseStoryId(c.id); }
@@ -10522,7 +10547,7 @@ function EduSphereScreens() {
           <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke={C.green} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </button>
         <div key={lessonStep} className="edu-rise" style={{ ...card, textAlign: 'center', padding: '20px 18px' }}>
-          {stepArt ? <LessonStepArt pic={stepArt} visual={step.show} animKey={`${lessonStep}-${replays}`} /> : <Picture visual={step.show} animate animKey={`${lessonStep}-${replays}`} big />}
+          {stepArt ? <LessonStepArt pic={stepArt} visual={step.show} animKey={`${lessonStep}-${replays}`} /> : <Picture visual={step.show} animate animKey={`${lessonStep}-${replays}`} big lesson />}
 
           <p style={{ fontSize: 22, lineHeight: 1.5, margin: '18px 0 0' }}>{sentencesOf(line).map((sentence, i) => <React.Fragment key={i}><span data-read-lit={litSentence === i ? '' : undefined} style={litSentence === i ? { ...readLit(), ...LIT_WORDS } : { background: 'transparent', transition: 'background 150ms' }}>{sentence}</span>{i < sentencesOf(line).length - 1 ? ' ' : ''}</React.Fragment>)}</p>
         </div>
@@ -10736,7 +10761,7 @@ function EduSphereScreens() {
           {/* Lesson pictures (pass JO): where a real picture teaches better than words, like the Liberty Bell's crack or the plant parts we eat. P serials live in art/stories with the story art. */}
           {(mod.lesson.pictures || []).length > 0 && <div data-lesson-pictures="" style={{ display: 'grid', gridTemplateColumns: `repeat(auto-fit, minmax(${mod.lesson.pictures.length > 1 ? 150 : 220}px, 1fr))`, gap: 10, margin: '2px 0 12px' }}>{mod.lesson.pictures.map((pic) => <StoryArt key={pic.serial} serial={pic.serial} alt={pic.alt} />)}</div>}
           <div style={{ background: C.greenSoft, borderRadius: 10, padding: 14 }}>
-            <Picture visual={wayVisual(mod.lesson.example, anotherWay)} big />
+            <Picture visual={wayVisual(mod.lesson.example, anotherWay)} big lesson />
             {mod.lesson.example.formula && <p style={{ margin: '10px 0 0', fontSize: 17, fontWeight: 700, textAlign: 'center' }}>{mod.lesson.example.formula}</p>}
             {(() => {
               const ways = [mod.lesson.example.caption, ...[].concat(mod.lesson.example.another || []).map((w) => (typeof w === 'string' ? w : w.text))].filter(Boolean).slice(0, 4); const at = Math.min(anotherWay, ways.length - 1);
@@ -10919,10 +10944,16 @@ function EduSphereScreens() {
                   <p style={{ margin: '6px 0 0', fontSize: 16, textAlign: 'center' }}>Watch first. Then trace it.</p>
                 </div>
               )}
-              <TracePad letter={q.answer} paths={tracePaths} disabled={checked} tone={checked ? (wasCorrect ? 'good' : 'bad') : null}
-                onChange={(next) => { setTracePaths(next); setGiven(JSON.stringify(next)); }} />
+              {/* From kindergarten up a line traced from its end back to its start clears as the finger lifts, and the line under the
+                  pad and the voice say "Start at the green dot and follow the arrow." (pass MN, Mikey's answer to Q49; the arrow since round
+                  one's screen check, since a closed line traced the other way did start at its dot) until the finger starts the next line;
+                  the line is always there, its words changing, so a screen reader announces it. */}
+              <TracePad letter={q.answer} paths={tracePaths} disabled={checked} tone={checked ? (wasCorrect ? 'good' : 'bad') : null} checkDirection={!!q.checkDirection}
+                onBackward={() => { setTraceNote(TRACE_BACK_WORDS); if (readAloud) speak(TRACE_BACK_WORDS); }}
+                onChange={(next) => { if (next.length > tracePaths.length) setTraceNote(''); setTracePaths(next); setGiven(next.length ? JSON.stringify(next) : ''); }} />
+              <p role="status" data-trace-note="" style={{ margin: traceNote && !checked ? '8px 0 0' : 0, fontSize: 16, fontWeight: 600, textAlign: 'center', color: C.ink }}>{!checked ? traceNote : ''}</p>
               {!checked && tracePaths.length > 0 && (
-                <div style={{ textAlign: 'center', marginTop: 8 }}><button type="button" style={{ ...linkBtn }} onClick={() => { setTracePaths([]); setGiven(''); }}>Start again</button></div>
+                <div style={{ textAlign: 'center', marginTop: 8 }}><button type="button" style={{ ...linkBtn }} onClick={() => { setTracePaths([]); setGiven(''); setTraceNote(''); }}>Start again</button></div>
               )}
             </div>
           ) : (

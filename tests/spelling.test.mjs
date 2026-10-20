@@ -55,7 +55,7 @@ const strip = (t) => t.replace(/\*\*/g, '');
 const isEquation = (t) => /[=<>×÷+]/.test(t) || /^\d+[\/.]\d+/.test(t) || /^[^a-z]*$/.test(t);
 const runOn = [], noEnd = [], lower = [];
 for (const m of L.MODULES) {
-  for (const sentence of strip(m.lesson.keyIdea || '').replace(/\[\[|\]\]/g, '').split(/(?<=[.!?])\s+|\n/)) {
+  for (const sentence of strip(m.lesson.keyIdea || '').replace(/\[\[|\]\]/g, '').split('\n').flatMap((x) => x.split(L.SENTENCE_BREAK))) {
     if (sentence.trim().split(/\s+/).length > 28) runOn.push(`${m.id}: ${sentence.trim().slice(0, 50)}`);
   }
   for (const paragraph of m.lesson.paragraphs || []) for (const raw of paragraph.split('\n')) {

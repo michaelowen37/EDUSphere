@@ -1,0 +1,132 @@
+# Source: 2022 Texas Prekindergarten Guidelines, PK3 Streamlined Version
+# URL: https://tea.texas.gov/sites/default/files/2022-texas-prekindergarten-guidelines-pk3-streamlined.pdf
+# Publisher: Texas Education Agency
+# Edition: 2022, PK3 outcomes
+# Read: 2026-10-19, outcome by outcome with WebFetch
+# Notes: The cover prints "2022 Texas Prekindergarten Guidelines" over "PK3 Streamlined Version". The PDF itself names no publisher, date or copyright; it is on tea.texas.gov. TEA's educator page (https://tea.texas.gov/educators/early-childhood-education/educator-resources/texas-prekindergarten-guidelines) links it as "2022 TX Prekindergarten Guidelines PK3 Streamlined" at https://tea.texas.gov/curriculum-and-instruction/curriculum-standards/2022-texas-prekindergarten-guidelines-pk3.pdf, which serves the same text (same misprints, en dash, Science comma and IV.C.4, V.C.4 and III.C.2 wording checked there). That page also says implementation of the 2022 guidelines began in the 2023 to 2024 school year (paraphrased, read once). | Format: each outcome is printed as a bullet "PK3.<code> Child ..."; codes here drop "PK3." and each line holds the text after the word "Child". The exception is II.C.1, which opens with the possessive "Child's", so that line keeps the whole sentence. | Code misprints in the PDF: II.C.1 printed "PK3.II. C.1"; V.C.2 printed "PK3.V.C 2"; IV.C.5 printed "PK.3.IV.C.5". | Domain titles as printed: "I. Social and Emotional Development Domain", "II. Emergent Literacy: Language and Communication Domain", "III. Emergent Literacy: Reading Domain", "IV. Emergent Literacy: Writing Domain", "V. Mathematics Domain", "VI. Science Domain", "VII. Social Studies Domain", "VIII. Fine Arts Domain", "IX. Physical Development Domain", "X. Technology" (no "Domain"). Skill headings are printed "A. Self-Concept" and so on. The three I.B sub-headings are printed with a trailing colon ("1. Behavior Control:", "2. Emotional Control:", "3. Control of Attention:"), and the colon is left off the ## lines. No other skill has sub-headings. | Codes with no PK3 outcome, each printed as a note (shown between asterisks, no period): III.B.4 "Three-year olds do not typically develop word manipulation skills, so no outcome is included"; III.B.9 "Three-year olds do not typically develop phonemic awareness, so no outcome is included"; IV.C.5 and V.A.7 "There is not enough research to support the inclusion of a PK3 outcome". | VII Social Studies and VIII Fine Arts print "There are no PK3 outcomes for this domain of learning."; VI Science prints the same words but ends with a comma, "...domain of learning,"; X Technology prints "There are no outcomes for this domain of learning." | The IX overview reads "The Physical Development Domain of the Texas Prekindergarten Guidelines is divided into the following skills: gross motor development, fine motor development, and personal safety and health.", but the body prints only A and B. There is no personal safety and health heading, outcome or note for PK3. | Characters: I.B.3.b "10–15" uses an en dash (U+2013, no spaces); V.A.5 "0-5" uses a hyphen; II.C.1 uses a straight apostrophe. Other spellings as printed: "fingerplay" (one word) in II.C.2 and III.B.6, "read alouds" (two words, no hyphen) in III.B.7, "2D" in V.C.1, "his name" in III.C.2 and III.C.3. | Counts: 88 outcomes (I 20, II 15, III 20, IV 9, V 20, IX 4), or 92 codes with the four notes. The per-skill code counts were confirmed by a separate count read. Some running page headers name the wrong domain (a layout error in the PDF), so the bulleted codes were followed. | Method: each outcome was quoted whole with its code, then read again in different words ("what exact words follow the code"). Outcomes over 120 characters were read in two parts both times; the second time as first and last N words that overlap, joined exactly. A direct download of the PDF was refused by the network proxy, so no comparison against the PDF's text layer was possible.
+## I Social and Emotional Development Domain
+## I.A Self-Concept
+I.A.1	is building competence in controlling own body movements.
+I.A.2	can identify own physical attributes and indicate some likes and dislikes when prompted.
+I.A.3	begins to show awareness of own abilities.
+I.A.4	shows initiative in trying new activities but may not persist when obstacles or challenges arise.
+## I.B Self-Regulation
+## I.B.1 Behavior Control
+I.B.1.a	follows simple rules and routines when assisted by adults.
+I.B.1.b	takes care of and manages classroom materials with adult assistance.
+I.B.1.c	manages own behavior with adult guidance and assistance.
+## I.B.2 Emotional Control
+I.B.2.a	recognizes and expresses a range of emotions.
+I.B.2.b	is familiar with basic feeling words (e.g., happy, sad, mad, scared).
+I.B.2.c	manages intensity of emotions with adult assistance.
+## I.B.3 Control of Attention
+I.B.3.a	focuses attention on one task at a time but may not stay with it to completion.
+I.B.3.b	remains focused on engaging, teacher-led group activities for up to 10–15 minutes at a time.
+## I.C Relationships with Others
+I.C.1	forms positive relationships with adults and peers.
+I.C.2	assumes roles and responsibilities as part of the classroom community with adult assistance.
+I.C.3	shows interest in peer play but may be less skilled in initiating and joining a group.
+I.C.4	enjoys parallel and associative play with peers.
+I.C.5	seeks adult help when experiencing conflicts with another child.
+I.C.6	responds with concern when a child or adult is distressed.
+I.C.7	interacts with peers and may have preferred friends.
+## I.D Social Awareness
+I.D.1	shows interest in other people and their feelings.
+## II Emergent Literacy: Language and Communication Domain
+## II.A Listening Comprehension
+II.A.1	responds to situations in ways that demonstrate an understanding of what has been communicated.
+II.A.2	shows understanding by following two-step verbal directions.
+## II.B Speaking (Conversation)
+II.B.1	uses language to communicate basic needs and wants.
+II.B.2	begins to use appropriate language, style, and nonverbal cues during communication with familiar adults and peers.
+II.B.3	is able to communicate basic information in familiar social settings.
+II.B.4	begins to use appropriate language for different situations.
+## II.C Articulation
+II.C.1	Child's speech is understood by familiar adults and peers.
+II.C.2	begins to mimic intonation of language through songs and fingerplay.
+## II.D Vocabulary
+II.D.1	understands (receptive) and uses (expressive) expected words to label and describe common objects, people, places, actions, and events.
+II.D.2	understands (receptive) the instructional language of the classroom.
+II.D.3	shows a steady increase in understanding (receptive) and using (expressive) language learned from books, conversations, and play.
+## II.E Sentences and Structure
+II.E.1	typically uses simple sentences of three to four words, usually in correct word order.
+II.E.2	begins to use regular plurals and regular past tense correctly.
+II.E.3	uses simple sentence structures with at least one idea.
+II.E.4	understands increasingly longer sentences that combine two ideas.
+## III Emergent Literacy: Reading Domain
+## III.A Motivation to Read
+III.A.1	demonstrates an interest in pictures, text, and stories read aloud.
+III.A.2	tells a story by looking at pictures or from memory.
+III.A.3	notices and connects meaning to environmental print.
+## III.B Phonological Awareness
+III.B.1	recognizes when a word in a spoken sentence is changed.
+III.B.2	begins to distinguish differences between similar-sounding words.
+III.B.3	recognizes the individual words in a compound word.
+III.B.5	participates in oral syllabication activities.
+III.B.6	uses rhyming words through playful activities such as songs, nursery rhymes, and fingerplay.
+III.B.7	uses alliteration through playful activities such as songs and read alouds.
+III.B.8	participates in onset-rime blending activities (in English only).
+## III.C Alphabet Knowledge
+III.C.1	shows awareness of letters by singing alphabet songs and recognizing some frequently encountered letters (e.g., first letter of name or letters in environmental print).
+III.C.2	identifies the letter associated with the sound of the first letter of his name.
+III.C.3	produces the correct sound for the first letter of his name.
+## III.D Comprehension of Text
+III.D.1	re-enacts a story after it has been read aloud.
+III.D.2	makes personal connections to books read aloud.
+III.D.3	asks and answers age-appropriate questions about a book.
+III.D.4	attempts to make predictions by looking at the cover of a book or the pictures within a story.
+## III.E Concepts of Print
+III.E.1	can distinguish between pictures and print.
+III.E.2	handles books with increasing skill and imitates reading with awareness of directionality (e.g., imitates reading text across a page).
+III.E.3	begins to notice the basic features of print (e.g., repeating words, space between words, punctuation vs. letters).
+## IV Emergent Literacy: Writing Domain
+## IV.A Motivation to Write
+IV.A.1	engages in free-choice drawing and writing activities.
+IV.A.2	attempts to draw and write for many purposes and begins to explore different writing tools.
+## IV.B Writing as a Process
+IV.B.1	discusses and contributes ideas for drafts composed in whole/small group writing activities with adult prompting.
+IV.B.2	observes and discusses ideas for revising (add, take out, change) drawings and/or written words in whole/small group writing activities.
+IV.B.3	shares written products with others.
+## IV.C Conventions in Writing
+IV.C.1	attempts to write some letters of own name (usually beginning with the first letter).
+IV.C.2	uses drawings, scribbles, and mock letters to communicate ideas.
+IV.C.3	begins to write using letter-like forms.
+IV.C.4	begins to show understanding of directionality (e.g., attempts to write top to bottom, left to right), but may still start at random places on a page.
+## V Mathematics Domain
+## V.A Number Sense
+V.A.1	rote counts from 1 to 10.
+V.A.2	counts up to 5 objects with one-to-one correspondence.
+V.A.3	counts up to 5 items and demonstrates cardinality by communicating that the last number indicates how many items are in the set.
+V.A.4	instantly recognizes the quantity of up to 3 objects without counting (subitizes).
+V.A.5	recognizes numerals 0-5.
+V.A.6	represents quantities up to 5.
+V.A.8	compares sets of objects up to 5 using comparative language (e.g., more than, less than, same number of).
+## V.B Joining and Separating
+V.B.1	uses objects to demonstrate that adding one or more objects to a set will increase the number of objects in the set.
+V.B.2	uses objects to demonstrate that taking away one or more objects from a set will decrease the number of objects in the set.
+## V.C Geometry and Spatial Sense
+V.C.1	names and describes common 2D shapes.
+V.C.2	attempts to create shapes using materials and/or manipulatives.
+V.C.3	begins to use language to describe position of objects.
+V.C.4	recognizes common shapes, regardless of size.
+## V.D Measurement
+V.D.1	understands that lengths of objects can vary and be compared.
+V.D.2	begins to recognize capacity based on how much space exists within an object.
+V.D.3	understands that weights of objects can vary and be compared.
+V.D.4	shows awareness of the passage of time within a day.
+## V.E Classification and Patterns
+V.E.1	sorts objects that are the same and different.
+V.E.2	participates in group activities of collecting data and organizing it into graphic representations.
+V.E.3	recognizes and duplicates patterns.
+## VI Science Domain
+## VII Social Studies Domain
+## VIII Fine Arts Domain
+## IX Physical Development Domain
+## IX.A Gross Motor Development
+IX.A.1	masters basic skills of running, jumping, climbing, and pedaling.
+IX.A.2	engages in movement sequences with adult support.
+## IX.B Fine Motor Development
+IX.B.1	experiments with a variety of fine motor tasks but may lack strength and control.
+IX.B.2	shows emerging proficiency in tasks requiring eye-hand coordination.
+## X Technology
+# Unsure: All 88 outcome lines, every heading, the domain titles and the per-skill counts matched on at least two reads; nothing in the wording is unconfirmed. Caveats at the level of single characters, which WebFetch reads from extracted text and cannot prove from the PDF's bytes: (1) the en dash in I.B.3.b (reported as an en dash in 3 reads); (2) the hyphen in V.A.5 (hyphen in 2 reads); (3) the straight apostrophe in II.C.1's "Child's" (straight in every read; one reader said other possessives in the PDF use a curly apostrophe). (4) V.C.2's printed code was "PK3.V.C 2" in 3 reads and "PK3.V C 2" in 2 (the code here is V.C.2 either way). (5) The comma ending the Science statement showed in 4 reads, including a side-by-side with Social Studies and Fine Arts; 1 bulk read showed a period. (6) The asterisks around the four no-outcome notes may be WebFetch's rendering of italics, not printed asterisks.

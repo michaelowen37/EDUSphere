@@ -1,6 +1,6 @@
 // Licensing in the browser (2026-09-25): a new elementary student sees nothing until the educator saves a code that checks
 // out, a bad code is refused in plain words, and the saved code opens grade 1 and up. Runs on page-licensed.html.
-import { createRequire } from 'node:module'; import { pathToFileURL } from 'node:url'; import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module'; import { readFileSync } from 'node:fs';
 import { makeLicenseCode, COURSES, courseIsFree } from '../../src/logic.mjs';
 const paidModules = new Set(COURSES.filter((c) => !courseIsFree(c)).flatMap((c) => c.modules.map((m) => m.id))); // grade 1 and up
 const require = createRequire(import.meta.url);
@@ -10,7 +10,7 @@ const devKey = JSON.parse(readFileSync(new URL('../fixtures/dev-license-private.
 const code = await makeLicenseCode(devKey, { id: 'TX-E2E-1', name: 'S-3001', year: '2026-27', until: '2099-07-31' });
 const browser = await chromium.launch(); const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
 const text = () => page.evaluate(() => document.body.innerText);
-await page.goto(pathToFileURL(new URL('./page-licensed.html', import.meta.url).pathname).href);
+await page.goto(new URL('./page-licensed.html', import.meta.url).href);
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'welcome');
 await page.getByRole('button', { name: 'Create account' }).click(); await page.waitForTimeout(300);
 await page.fill('input[placeholder="PIN"]', '2468'); await page.fill('input[placeholder="PIN again"]', '2468');

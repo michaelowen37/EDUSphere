@@ -200,6 +200,21 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A sample built by hand to look like a real screen drifts: the LI tour sample missed the Merge link and the Wonder pill and was laid out differently, and Mikey saw all three at a glance. Feed made-up data through the real component instead, with taps switched off, and the sample can never differ from the page.
 - Count a daily allowance against the day as it started, not as it stands: finishing the first review shrinks the queue, and a rule that rechecked the live queue would cancel the second review the backlog asked for.
 
+## Learned in pass MM (First Sounds and Letters read again through every layer, and the workflow read against the trust pyramid)
+
+- A letter a question asks for by name is never printed where a child can match it: for a pre-reader a printed capital is a shape, so "Tap the letter E." above E, S and B is answered by matching, and the screen prints "Tap the letter you hear." while the voice says the letter.
+- A line is judged as the voice says it, not as it is written: a held sound is said with a word on its end ("mmm" as the start of moon), so a reason that says mmm can name the moon a child is choosing.
+- A sound a child is asked to hear is a plain one: train and track begin with the blend tr, which some young children say does not begin with t, and spell with ch, so a story says they "start the same way"; tuh and duh differ only in voicing, so a picture bank keeps them apart, as it keeps near rhymes apart ("red and pen" rest on a last sound alone).
+- A stroke order is the handwriting programs' (Spalding, NSW Education, Learning Without Tears, Zaner-Bloser): T goes down the middle first, then across the top; when a check reads an order the other way, the lesson is read against the programs before either moves.
+- In a story the child in it answers, with a speaker in the words, since the printed book has no tags: an answer on a line of its own after narration is the narrator's.
+- One to three sound effects a story, each a sound the words name; a train rolling in is motion, and its tag is the reader's delivery.
+- A picture's style is its course's subject's: a Reading course's long story is imaginative and expressive, with character-focused, dreamy lighting, whoever the cast.
+- A look opened by a comma is closed by one, or the next person runs into it; a grown-up has two hands, so three children hold hands in a line.
+- A game that asks for a name prints no name, ends its waits when the child asks to hear again, stops its voice when it closes, and says something warm at the end, for a child who cannot read the end line; and it takes no tap on a new board until the board's first ask is on its way (round four), nor after Hear it again (round five).
+- A word said slowly is one word to the ear: "Mmm-at" runs into its letters, so a line is checked through the speech the voice is handed, never as written (round three); and what the screen prints after a wrong tap is read too, since a printed letter is a shape a child can match.
+- A thing a child holds is followed through the whole story: Chloe set her cup down, picked it up to listen, and ran with it again until round three set it down once more; and a thing set down is gone back for before it is held again (round four: she picked up a cup she had left behind when she ran to the bat).
+- A check that reads a whole population (every pre-K question with each wrong key, every moral, every scene for small things, every bank's answer place) ends its class; one that matches a wording moves it to the next wording (docs/MISTAKE-CLASSES.md).
+
 ## Learned in pass ML (First Steps read again through every layer)
 
 - A pre-K 4 citation quotes the Head Start 48 to 60 month progression, the band its children are in, and names what waits; the plan rows follow the citations both ways, and a code a sentence only mentions is not cited.

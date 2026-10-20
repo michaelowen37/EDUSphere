@@ -164,7 +164,9 @@ export function foldPrompt(prompt, negative) {
   // A continent keeps its islands (National Geographic: a continent usually includes the islands associated with it), so the
   // sentence names the natural features rather than calling the land unbroken (the accuracy check's second read, pass MC).
   if (MAP_BANS.some(has)) out.push('The land shows only natural features, such as coastlines, islands, mountains, lakes and rivers.');
-  if (has('sun')) out.push('The sunlight comes from beyond the edge of the picture.');
+  // A scene after sunset keeps its sun set, where "beyond the edge" could light it as day (round five's record read, pass MM: CS660's
+  // sky glows "just after sunset, the sun already down").
+  if (has('sun')) out.push(/after sunset|sun already down|after the sun (?:has )?set/i.test(subject) ? 'The sun has already set below the edge of the picture, and only its glow lights the sky.' : 'The sunlight comes from beyond the edge of the picture.');
   for (const [ban, sentence] of Object.entries(ONE_PAGE)) if (has(ban) && sentence) out.push(sentence);
   // Anything else, word for word.
   const rest = bans.filter((x) => !KNOWN.has(x));

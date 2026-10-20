@@ -4,11 +4,11 @@
 // mobile emulation would lay it out 980 pixels wide) through the educator's walk-through and checks that three
 // pulsing arrows show at the bottom while the row is out of sight, that a tap brings the row on screen, and that the arrows
 // then go away; then that they come back when the next line starts at the top.
-import { createRequire } from 'node:module'; import { pathToFileURL } from 'node:url';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
 let passed = 0, failed = 0; const ok = (name, cond, info) => { if (cond) { passed++; console.log('PASS - ' + name); } else { failed++; console.log('FAIL - ' + name + (info ? '  ' + JSON.stringify(info) : '')); } };
-const pageUrl = pathToFileURL(new URL('./page.html', import.meta.url).pathname).href;
+const pageUrl = new URL('./page.html', import.meta.url).href;
 const browser = await chromium.launch();
 const context = await browser.newContext({ viewport: { width: 360, height: 480 }, hasTouch: true });
 const page = await context.newPage();
@@ -105,8 +105,13 @@ ok('every start arrow in the tracing lessons sits on its stroke, curves included
     await page.evaluate(() => window.__eduTest.goTo('course-done')); await page.waitForFunction(() => window.__eduTest.screen === 'course-done'); await page.waitForTimeout(1500);
     h = await home(); ok(`at ${w} by ${tall} the cue shows exactly when Return Home is below the screen`, h.book && h.cue === want && (h.top > h.H - 24) === want, h);
   }
+  // The course is the first read-aloud course with no long story, read from the stories themselves (pass MM: First Sounds and
+  // Letters, the course this check used, gained two, so its page shows a book now).
+  const L0 = await import('../../src/logic.mjs'); const S0 = await import('../../src/stories.mjs');
+  const bare = (L0.COURSES.find((c) => c.readAloud && !S0.COURSE_STORIES[c.id] && !S0.MASTERY_STORIES[c.id]) || {}).id;
+  ok('a read-aloud course with no long story is left for this check (retire it once every course has one)', !!bare, bare);
   await page.setViewportSize({ width: 375, height: 667 }); await page.evaluate(() => { window.__spoken = []; window.__eduTest.goTo('overview'); }); await page.waitForTimeout(300);
-  await page.evaluate(() => window.__eduTest.goTo('course-done', 'first-sounds-pk')); await page.waitForFunction(() => window.__eduTest.screen === 'course-done'); await page.waitForTimeout(1500);
+  await page.evaluate((id) => window.__eduTest.goTo('course-done', id), bare); await page.waitForFunction(() => window.__eduTest.screen === 'course-done'); await page.waitForTimeout(1500);
   h = await home(); const said = await page.evaluate(() => (window.__spoken || []).join(' '));
   ok('a course with no long story shows Return Home on a short phone with no cue, and its guide names no place', !h.book && !h.cue && h.bottom <= h.H && said.includes('Tap the green button to go home.') && !said.includes('at the bottom'), { h, said }); }
 await browser.close();

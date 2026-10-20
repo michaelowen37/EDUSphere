@@ -1270,6 +1270,172 @@ await page.waitForTimeout(200);
 }
 await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Find the Letter (pass MM, First Sounds and Letters' game): five letters on round cards, an ask, a button to hear it again and
+// four board dots. With a voice that takes its time (250 ms a line, reporting speaking and pending as a device does): a wrong
+// tap rings its card in dashed clay, names the letter tapped and asks again, and the ring is gone 700 ms later, with no focus box
+// from the tap; a second miss adds the asked letter's shape words; a right tap rings its card in green and says Yes and its
+// shape, a tap while that is said does nothing, and the next ask follows; three right letters bring the next board. Then with
+// the page's quick voice, the Enter key takes a letter too, and four boards bring the star and the end line.
+// The page's own voice is kept and put back after the Fish (round two's code check: the stand-ins below record no rates, so the
+// snail's slower story further on read an empty list and failed).
+await page.evaluate(() => { window.__pageVoice = window.speechSynthesis; });
+await page.evaluate(() => window.__eduTest.openColoring('play:spot-first-sounds'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(300);
+{ const DL = await import('../../src/logic.mjs');
+  const cards = page.locator('g[data-letter]'); const askOf = async () => (await page.locator('[data-spot-ask]').getAttribute('data-spot-ask')) || '';
+  const lettersNow = () => cards.evaluateAll((gs) => gs.map((g) => g.getAttribute('data-letter')));
+  const boardNow = async () => Number(await page.locator('[data-letter-board]').getAttribute('data-letter-board'));
+  const released = () => page.waitForFunction(() => { const a = document.querySelector('[data-spot-ask]'); return !document.querySelector('[data-letter-hold]') && a && a.getAttribute('data-spot-ask'); }, null, { timeout: 8000 });
+  const spoken = () => page.evaluate(() => window.__spoken.join(' '));
+  // The heading names no letter while the voice can say it (round two's checks): a printed capital is a shape to match.
+  ok('Find the Letter opens with five letters on round cards, an ask its heading does not print, a button to hear it again and four board dots', (await cards.count()) === 5 && /^[A-Z]$/.test(await askOf()) && (await text()).includes('Find the letter you hear.') && !(await text()).includes(`Find the letter ${await askOf()}.`) && (await page.getByRole('button', { name: 'Hear it again' }).count()) === 1 && (await page.getByRole('img', { name: 'Board 1 of 4' }).count()) === 1);
+  await page.evaluate(() => { const q = []; let cur = null; let timer = null; window.__spoken = [];
+    const next = () => { cur = q.shift() || null; if (!cur) return; const mine = cur; timer = setTimeout(() => { if (cur !== mine) return; cur = null; if (mine.onend) mine.onend({}); if (!cur) next(); }, 250); };
+    Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { get speaking() { return !!cur; }, get pending() { return q.length > 0; }, cancel() { q.length = 0; if (timer) clearTimeout(timer); cur = null; }, getVoices() { return []; }, speak(u) { window.__spoken.push(u.text); q.push(u); if (!cur) next(); } } }); });
+  const ask = await askOf(); const letters = await lettersNow();
+  const wrongAt = letters.findIndex((x) => x !== ask); const wrong2At = letters.findIndex((x, i) => x !== ask && i !== wrongAt);
+  await cards.nth(wrongAt).click(); await page.waitForTimeout(120);
+  const ringed = await cards.nth(wrongAt).evaluate((g) => g.hasAttribute('data-miss') && g.querySelector('circle').getAttribute('stroke-dasharray') === '3 2');
+  const noBox = await cards.nth(wrongAt).evaluate((g) => document.activeElement !== g || getComputedStyle(g).outlineStyle === 'none');
+  await page.waitForTimeout(900);
+  const ringGone = await cards.nth(wrongAt).evaluate((g) => !g.hasAttribute('data-miss')); const said1 = await spoken();
+  if (!ringed || !ringGone || !noBox) console.log('  (Find the Letter wrong tap: ringed', ringed, 'ring gone', ringGone, 'no focus box', noBox, 'said', JSON.stringify(said1), ')');
+  ok('a wrong letter in Find the Letter rings in dashed clay for a moment, names itself and asks again, and the tap leaves no focus box', ringed && ringGone && noBox && said1.includes(`That one is the letter ${letters[wrongAt]}.`) && said1.includes(`Find the letter ${ask}.`));
+  await page.evaluate(() => { window.__spoken = []; });
+  await cards.nth(wrong2At).click(); await page.waitForTimeout(1500);
+  const said2 = await spoken();
+  ok("a second miss on the same ask adds the asked letter's shape words", said2.includes(`That one is the letter ${letters[wrong2At]}.`) && said2.includes(`It ${DL.letterShapeWords(ask)}.`));
+  await page.evaluate(() => { window.__spoken = []; });
+  const rightAt = letters.indexOf(ask); const during = letters.findIndex((x, i) => i !== rightAt);
+  await cards.nth(rightAt).click(); await page.waitForTimeout(60);
+  const heldNow = (await page.locator('[data-letter-hold]').count()) === 1; const foundNow = await cards.nth(rightAt).evaluate((g) => g.hasAttribute('data-found'));
+  await cards.nth(during).click(); await page.waitForTimeout(80);
+  const ignored = await cards.nth(during).evaluate((g) => !g.hasAttribute('data-miss') && !g.hasAttribute('data-found')); const saidDuring = await spoken();
+  await released(); const nextAsk = await askOf(); const saidRight = await spoken();
+  if (!heldNow || !foundNow || !ignored) console.log('  (Find the Letter right tap: held', heldNow, 'found', foundNow, 'tap during the line ignored', ignored, 'said', JSON.stringify(saidRight), ')');
+  ok('a right letter rings in green and says Yes and its shape, a tap while that is said does nothing, and the next ask follows', heldNow && foundNow && ignored && !saidDuring.includes('That one is') && saidRight.includes(`Yes, that is the letter ${ask}.`) && saidRight.includes(`It ${DL.letterShapeWords(ask)}.`) && /^[A-Z]$/.test(nextAsk) && nextAsk !== ask && saidRight.includes(`Find the letter ${nextAsk}.`));
+  for (let n = 0; n < 2; n++) { const want = await askOf(); const ls = await lettersNow(); await cards.nth(ls.indexOf(want)).click(); await page.waitForTimeout(80); if (n === 0) await released(); }
+  await page.waitForFunction(() => { const b = document.querySelector('[data-letter-board]'); return b && b.getAttribute('data-letter-board') === '1'; }, null, { timeout: 10000 });
+  ok('three right letters bring the next board, five new cards and none ringed', (await boardNow()) === 1 && (await cards.count()) === 5 && (await page.getByRole('img', { name: 'Board 2 of 4' }).count()) === 1 && (await page.locator('g[data-found]').count()) === 0);
+  // Hear it again during a right letter's line (round two's game check: the button cut the line short, so only the fallback
+  // timer let go of the wait, about six seconds of dead taps): the wait ends once its ask is on its way (120 ms while a line is
+  // said, since round five's code read), and the letter it asks for is taken, its ask said first.
+  { await released(); const want = await askOf(); const ls = await lettersNow(); await cards.nth(ls.indexOf(want)).click(); await page.waitForTimeout(60);
+    const heldThen = (await page.locator('[data-letter-hold]').count()) === 1;
+    await page.getByRole('button', { name: 'Hear it again' }).click(); await page.waitForTimeout(200);
+    const freed = (await page.locator('[data-letter-hold]').count()) === 0; const next2 = await askOf(); const ls2 = await lettersNow();
+    await cards.nth(ls2.indexOf(next2)).click(); await page.waitForTimeout(80);
+    const taken = await cards.nth(ls2.indexOf(next2)).evaluate((g) => g.hasAttribute('data-found'));
+    await page.waitForFunction((l) => window.__spoken.join(' ').includes(`Yes, that is the letter ${l}.`), next2, { timeout: 3000 }).catch(() => {});
+    const s2 = await spoken(); const askedFirst = s2.indexOf(`Find the letter ${next2}.`) >= 0 && s2.indexOf(`Find the letter ${next2}.`) < s2.indexOf(`Yes, that is the letter ${next2}.`);
+    if (!heldThen || !freed || !taken || !askedFirst) console.log('  (Find the Letter, Hear it again: held', heldThen, 'freed', freed, 'next letter taken', taken, 'its ask first', askedFirst, ')');
+    ok('Hear it again while a right letter is said lets go of the wait once its ask is on its way, so the letter it asks for is taken, its ask said first', heldThen && freed && taken && askedFirst); }
+  await page.evaluate(() => Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { cancel() {}, getVoices() { return []; }, speak(u) { window.__spoken.push(u.text); setTimeout(() => { if (u.onend) u.onend({}); }, 30); } } }));
+  let byKey = false;
+  for (let guard = 0; guard < 40 && !(await page.getByRole('img', { name: 'Done' }).count()); guard++) {
+    await released().catch(() => {}); const want = await askOf(); if (!want) { await page.waitForTimeout(250); continue; }
+    const ls = await lettersNow(); const at = ls.indexOf(want);
+    if (!byKey) { await cards.nth(at).focus(); await page.keyboard.press('Enter'); byKey = await cards.nth(at).evaluate((g) => g.hasAttribute('data-found')); } else await cards.nth(at).click();
+    await page.waitForTimeout(150);
+  }
+  await page.waitForTimeout(400);
+  ok('the Enter key takes a letter, and four boards of three bring the star, the end line and "You found them all!"', byKey && (await page.getByRole('img', { name: 'Done' }).count()) === 1 && (await text()).includes('Twelve letters found.') && (await spoken()).includes('You found them all!'));
+  // A voice that keeps reporting it speaks (round four's code read, pass MM): speak() stops such a voice and sends the next line 80
+  // ms later, so a tap at once took a letter whose ask was never said, and the right letter's line dropped the ask for good. A new
+  // round's and a new board's first ask now hold the taps 120 ms, as the backstop has since round three, when it says the ask
+  // first and lifts the wait 120 ms later, and since round five Hear it again while a line is said. This voice never ends a line:
+  // a tap goes in, in the page, the moment a new round or board asks (or 10 ms after Hear it again), and another the moment that
+  // wait lifts, watched from the first tap on, so a wait too short for its ask is seen; each ask must be said before its letter
+  // is taken.
+  { await page.evaluate(() => { let busy = false; window.__spoken = [];
+      Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { get speaking() { return busy; }, get pending() { return false; }, cancel() { busy = false; }, getVoices() { return []; }, speak(u) { window.__spoken.push(u.text); busy = true; } } });
+      window.speechSynthesis.speak({ text: '(a line still being said)' }); });
+    // Arms one tap: on board n's first ask ('board'), or as a wait inside a board lifts ('lift'); armed() waits for its result.
+    const arm = (mode, n) => page.evaluate(([how, want]) => { window.__armed = new Promise((done) => { let obs = null; let gone = null;
+      const fire = () => { const svg = document.querySelector('[data-letter-board]'); const head = document.querySelector('[data-spot-ask]'); const ask = head && head.getAttribute('data-spot-ask');
+        if (!svg || !ask) return; if (how === 'board' && (svg.getAttribute('data-letter-board') !== String(want) || svg.querySelector('g[data-found]'))) return; if (how === 'lift' && svg.hasAttribute('data-letter-hold')) return;
+        obs.disconnect(); clearTimeout(gone); const g = svg.querySelector(`g[data-letter="${ask}"]`); g.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+        setTimeout(() => done({ ask, taken: g.hasAttribute('data-found') }), 40); };
+      obs = new MutationObserver(fire); obs.observe(document.body, { attributes: true, subtree: true, childList: true });
+      gone = setTimeout(() => { obs.disconnect(); done({ ask: null, taken: null }); }, 15000); }); }, [mode, n]);
+    const armed = () => page.evaluate(() => window.__armed);
+    // Whether letter x's ask was said before its right line, read once that line is sent (80 ms after the tap, the voice being busy),
+    // from line `from` on, since a letter asked in one round can come again in the next.
+    const saidFirst = async (x, from = 0) => { await page.waitForFunction(([l, f]) => window.__spoken.slice(f).some((t) => t.startsWith(`Yes, that is the letter ${l}.`)), [x, from], { timeout: 3000 }).catch(() => {});
+      return page.evaluate(([l, f]) => { const s = window.__spoken.slice(f); const a = s.indexOf(`Find the letter ${l}.`); const r = s.findIndex((t) => t.startsWith(`Yes, that is the letter ${l}.`)); return a >= 0 && r > a; }, [x, from]); };
+    // Arms two taps in the page: the first the moment board n asks for its first letter ('board') or 10 ms after Hear it again
+    // ('again', which presses it), the second the moment the wait after the first lifts; two() waits for both.
+    const arm2 = (how, n) => page.evaluate(([mode, want]) => { window.__two = new Promise((done) => {
+      const svg = () => document.querySelector('[data-letter-board]'); const askNow = () => { const h = document.querySelector('[data-spot-ask]'); return h ? h.getAttribute('data-spot-ask') : ''; };
+      const tapAsked = () => { const ask = askNow(); const g = svg() && ask ? svg().querySelector(`g[data-letter="${ask}"]`) : null; if (g) g.dispatchEvent(new MouseEvent('click', { bubbles: true })); return { ask, g }; };
+      let first = null; let second = null; let obs = null;
+      const gone = setTimeout(() => { if (obs) obs.disconnect(); done({ first: first ? { ask: first.ask, taken: !!first.taken } : null, second: null }); }, 15000);
+      const lift = () => { if (second || !first || !svg() || svg().hasAttribute('data-letter-hold')) return;
+        first.taken = !!first.g && first.g.hasAttribute('data-found'); second = tapAsked(); obs.disconnect(); clearTimeout(gone);
+        setTimeout(() => done({ first: { ask: first.ask, taken: first.taken }, second: { ask: second.ask, taken: !!second.g && second.g.hasAttribute('data-found') } }), 40); };
+      obs = new MutationObserver(() => { if (first) { lift(); return; } if (mode !== 'board') return; const s = svg();
+        if (!s || !askNow() || s.getAttribute('data-letter-board') !== String(want) || s.querySelector('g[data-found]')) return; first = tapAsked(); setTimeout(lift, 0); });
+      obs.observe(document.body, { attributes: true, subtree: true, childList: true });
+      if (mode === 'again') { const btn = [...document.querySelectorAll('button')].find((b) => b.getAttribute('aria-label') === 'Hear it again'); if (btn) btn.click(); setTimeout(() => { first = tapAsked(); setTimeout(lift, 0); }, 10); } }); }, [how, n]);
+    const two = () => page.evaluate(() => window.__two);
+    const ofTwo = async (r, from = 0) => !!r && !!r.first && !!r.second && r.first.taken === false && r.second.taken === true && r.second.ask === r.first.ask && await saidFirst(r.second.ask, from);
+    await arm2('board', 0); await page.getByRole('button', { name: 'Play again' }).click(); const start = await two(); const startOk = await ofTwo(start);
+    await arm('lift', 0); const lifted = await armed(); const liftSaid = lifted.ask ? await saidFirst(lifted.ask) : false;
+    const markAgain = await page.evaluate(() => window.__spoken.length); await arm2('again', 0); const again1 = await two(); const againOk = await ofTwo(again1, markAgain);
+    await arm2('board', 1); const board2 = await two(); const board2Ok = await ofTwo(board2);
+    if (!startOk || lifted.taken !== true || !liftSaid || !againOk || !board2Ok) console.log('  (Find the Letter with a voice still speaking: the round', JSON.stringify(start), '; the backstop', JSON.stringify(lifted), liftSaid, '; Hear it again', JSON.stringify(again1), '; board 2', JSON.stringify(board2), '; said', JSON.stringify(await page.evaluate(() => window.__spoken)), ')');
+    ok("with a voice still speaking, a tap at once on a new round's or board's first letter takes nothing, and a tap the moment its wait lifts takes it, its ask said first", startOk && board2Ok);
+    ok('with a voice that never ends a line, the backstop says the next ask before it lifts the wait, so a tap the moment it lifts takes a letter whose ask was said', lifted.taken === true && liftSaid);
+    ok('with a voice still speaking, Hear it again holds the taps until its ask is on its way: a tap 10 ms after it takes nothing, and a tap the moment the wait lifts takes the letter, its ask said first', againOk);
+    // Play again on a first board still open, its wait over: the new letters are drawn before the effect that resets the round, and
+    // a tap in that moment reads the wait as it stands (holdNow), so it takes nothing and the ask comes first.
+    await page.getByRole('button', { name: 'Play again' }).click(); await page.waitForTimeout(400);
+    const mark = await page.evaluate(() => window.__spoken.length); await arm2('board', 0); await page.getByRole('button', { name: 'Play again' }).click(); const open1 = await two(); const open1Ok = await ofTwo(open1, mark);
+    if (!open1Ok) console.log('  (Find the Letter, Play again on an open first board:', JSON.stringify(open1), '; said', JSON.stringify(await page.evaluate((f) => window.__spoken.slice(f), mark)), ')');
+    ok('with a voice still speaking, Play again on a first board still open takes no tap at once either, and a tap the moment its wait lifts takes the letter, its ask said first', open1Ok);
+    await page.evaluate(() => Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { cancel() {}, getVoices() { return []; }, speak(u) { window.__spoken.push(u.text); setTimeout(() => { if (u.onend) u.onend({}); }, 30); } } })); }
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Closing the board while a line is said stops the voice (round two's game check: with a slow voice the next ask was said over
+// the overview, a four-year-old asked to find a letter on a screen with none).
+await page.evaluate(() => window.__eduTest.openColoring('play:spot-first-sounds'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(300);
+{ await page.evaluate(() => { const q = []; let cur = null; let timer = null; window.__spoken = []; window.__cancels = 0;
+    const next = () => { cur = q.shift() || null; if (!cur) return; const mine = cur; timer = setTimeout(() => { if (cur !== mine) return; cur = null; if (mine.onend) mine.onend({}); if (!cur) next(); }, 250); };
+    Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { get speaking() { return !!cur; }, get pending() { return q.length > 0; }, cancel() { window.__cancels += 1; q.length = 0; if (timer) clearTimeout(timer); cur = null; }, getVoices() { return []; }, speak(u) { window.__spoken.push(u.text); q.push(u); if (!cur) next(); } } }); });
+  const cards = page.locator('g[data-letter]'); const ask = (await page.locator('[data-spot-ask]').getAttribute('data-spot-ask')) || '';
+  const ls = await cards.evaluateAll((gs) => gs.map((g) => g.getAttribute('data-letter')));
+  await cards.nth(ls.indexOf(ask)).click(); await page.waitForTimeout(60);
+  const at = await page.evaluate(() => [window.__spoken.length, window.__cancels]);
+  await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+  await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview'); await page.waitForTimeout(1800);
+  const after = await page.evaluate(([n]) => window.__spoken.slice(n), at); const cancels = await page.evaluate(() => window.__cancels);
+  if (after.length || cancels <= at[1]) console.log('  (Find the Letter closed mid-line: said after', JSON.stringify(after), 'cancels', at[1], '->', cancels, ')');
+  ok('closing Find the Letter while a line is said stops the voice, and no ask is said over the overview', ask && after.length === 0 && cancels > at[1]);
+  // The quick voice again, and the board open again, as the checks after this one expect.
+  await page.evaluate(() => Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { cancel() {}, getVoices() { return []; }, speak(u) { window.__spoken.push(u.text); setTimeout(() => { if (u.onend) u.onend({}); }, 30); } } }));
+  await page.evaluate(() => window.__eduTest.openColoring('play:spot-first-sounds'));
+  await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring'); await page.waitForTimeout(300); }
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// The Fish (First Steps' since pass MM, ten dots): joining the tenth dot says "ten", then "A fish!", and an eye appears.
+await page.evaluate(() => window.__eduTest.openColoring('play:dots-fish'));
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+await page.waitForTimeout(300);
+{ await page.waitForFunction(() => !window.__eduSettleUntil || Date.now() >= window.__eduSettleUntil);
+  const box = await page.locator('[data-dots-board="dots-fish"]').boundingBox(); const DL = await import('../../src/logic.mjs');
+  await page.evaluate(() => { window.__spoken = []; });
+  for (const [x, y] of DL.DOT_SHAPES.fish) { await page.touchscreen.tap(box.x + (x / 100) * box.width, box.y + (y / 100) * box.height); await page.waitForTimeout(200); }
+  const eyeAtTen = await page.locator('[data-fish-eye]').count(); await page.waitForTimeout(1300);
+  const said = await page.evaluate(() => window.__spoken.slice());
+  ok('the Fish counts its ten dots, then says A fish! and shows its eye', said.join(' ') === 'one two three four five six seven eight nine ten A fish!' && eyeAtTen === 1 && (await page.getByRole('img', { name: 'Done' }).count()) === 1);
+}
+await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+await page.evaluate(() => Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: window.__pageVoice }));
 // Share the Cookies (pass GL, philosophy K to 2): the board carries how many each plate should hold.
 await page.evaluate(() => window.__eduTest.openColoring('play:share-philosophy-k'));
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');

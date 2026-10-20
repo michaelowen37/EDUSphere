@@ -1,0 +1,15 @@
+# Source: Social Preschool -- Domain: Social and Emotional Development (HeadStart.gov page carrying the preschool goals and indicators of the Head Start Early Learning Outcomes Framework; the page itself does not print the framework title)
+# URL: https://headstart.gov/school-readiness/article/social-preschool
+# Publisher: HeadStart.gov; page footer prints "An official website of the Administration for Children and Families" (no author or office line on the page itself)
+# Edition: no edition or year printed on the page; it prints "Last Updated: March 5, 2025" (the 2015 ELOF PDF itself could not be read, see Notes)
+# Read: 2026-10-19, indicator by indicator with WebFetch
+# Notes: Read from the HTML page because WebFetch returned ROBOTS_DISALLOWED for the framework PDF (sites/default/files/pdf/elof-ohs-framework.pdf on headstart.gov, www.headstart.gov and eclkc.ohs.acf.hhs.gov), so the 2015 printed PDF wording was not compared; the Interactive ELOF page loads goals by script and showed no indicator text; no third-party copy was used. Indicators are the items in the page's "Indicators" column headed "By 60 Months"; the same table has a "Developmental Progression" column (36 to 48 Months, 48 to 60 Months) of prose that is not indicators and is left out. Each goal has 4 indicators (counted twice). Every indicator was read at least twice with differently worded prompts and the reads agreed; the two over 100 characters (P-SE 5 first indicator, 210 characters; P-SE 5 second indicator, 105 characters) were read in pieces split at different words in the two passes and joined at the overlaps. Surprising: the first P-SE 5 indicator is long, has "such as" twice, and ends with the quoted example question "Why do you think your friend might be sad?" with the question mark inside the quotes and no period after them; two reads reported straight ASCII double quotes (U+0022). A raw-HTML download for a character-level check was not possible in this session, so quote style and spacing rest on WebFetch's view of the page.
+P-SE 2	INDICATOR	Engages in prosocial behaviors with adults, such as using respectful language or greetings.
+P-SE 2	INDICATOR	Attends to an adult when asked.
+P-SE 2	INDICATOR	Follows adult guidelines and expectations for appropriate behavior.
+P-SE 2	INDICATOR	Asks or waits for adult permission before doing something when they are unsure.
+P-SE 5	INDICATOR	Recognizes and describes basic social problems in books or pictures, such as both children wanting the same toy, and during interactions with other children, such as "Why do you think your friend might be sad?"
+P-SE 5	INDICATOR	Uses basic strategies for dealing with common conflicts, such as sharing, taking turns, and compromising.
+P-SE 5	INDICATOR	Expresses feelings, needs, and opinions in conflict situations.
+P-SE 5	INDICATOR	Seeks adult help when needed to resolve conflicts.
+# Unsure: none by the two-read rule; one caveat: the straight (not curly) quote marks around the question in the first P-SE 5 indicator rest on WebFetch only, not on the raw HTML

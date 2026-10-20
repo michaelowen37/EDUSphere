@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-19 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 9198 clips, 1,545,399 characters in all; the longest clip is 520 characters and the longest whole story 3,420, far under Eleven v4's 10,000 a request. 197 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-20 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 9257 clips, 1,557,645 characters in all; the longest clip is 520 characters and the longest whole story 3,471, far under Eleven v4's 10,000 a request. 199 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,7 +17,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 5142 | 592,639 |
+| Pre-K to grade 2 | 5201 | 604,885 |
 | Grades 3 to 5 | 1263 | 278,665 |
 | Grades 6 to 8 | 1138 | 272,478 |
 | Grades 9 to college | 1655 | 401,617 |
@@ -41,11 +41,11 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 |---|---|
 | story title | 662 |
 | story | 4261 |
-| lesson line | 3292 |
-| long story title | 105 |
-| long story | 846 |
-| next long story title | 3 |
-| next long story | 29 |
+| lesson line | 3325 |
+| long story title | 106 |
+| long story | 858 |
+| next long story title | 4 |
+| next long story | 41 |
 
 ## Stories with hand-written tags
 
@@ -543,13 +543,13 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 ### Cat, mat, hat (S116, listen-for-rhymes)
 
-- S116-1: [softly, a bedtime voice] At bedtime, Mom read a rhyme about a cat that sat on a mat. [giggles] Rosa giggled. [playful, rhyming] Cat, mat.
-- S116-2: [gently] Hear it? said Mom. Rosa listened. Cat and mat ended the same way, [slowly, stretching the sounds] at and at.
-- S116-3: The cat put on a hat. [delighted] Hat! Rosa said it. Cat, mat, hat, all the same at the end.
-- S116-4: What else? said Mom, and Rosa thought. [thoughtful] She thought hard.
-- S116-5: [excited] Bat! [wings fluttering past a window] A bat flew past the window. Cat, mat, hat, bat, four words with one ending.
-- S116-6: They made up more, rat and sat and fat. [whispers] Rosa was still saying them when she fell asleep.
-- S116-7: [slowly, warmly] Rhymes end the same way. Listen for the ending.
+- S116-1: [softly, a bedtime voice] At bedtime, Mom read a rhyme about a cat that sat on a mat, [giggles] and Rosa giggled. [playful] Cat, mat!
+- S116-2: [gently] Hear it? said Mom. So Rosa listened to the end of each word. [delighted, stretching the sounds] Cat and mat both end in at! she said.
+- S116-3: [warmly] They rhyme, said Mom. [curious] Can you think of another word that rhymes with cat? [thoughtful] Rosa thought of another pet. [proudly] Dog! she said.
+- S116-4: [gently] Listen to the end of each word, said Mom. [slowly, stretching the sounds] So Rosa said them slowly, cat, at, and dog, og. [surprised] One ends in at, and the other ends in og, she said. They do not rhyme!
+- S116-5: [thoughtful] Now Rosa listened for words that end in at. [gasps] Just then a little bat flew past the dark window. [excited] Bat! said Rosa. Cat, mat and bat all end in at!
+- S116-6: [sleepily] They made up more, hat and sat and fat. [whispers] Rosa was still saying them when she fell asleep.
+- S116-7: [slowly, warmly] Listen to the end of each word. If the ends sound the same, the words rhyme.
 
 ### The other mitten (S119, find-the-match)
 
@@ -850,73 +850,73 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 ### Buh and sss (S200, first-sounds)
 
-- S200-1: [warm, classroom chatter in the background] Ben, said the teacher, what does Ben start with? Ben pressed his lips together, [slowly, stressing the first sound] buh, and there it was. Ben starts with buh.
-- S200-2: Sam, said the teacher. Sam thought, and then he said his name slowly. [slowly, drawing out the s] Sss-am.
-- S200-3: [a playful hiss] Sss! Like a snake. Sam starts with sss, and he hissed, [children laughing] and everyone laughed.
-- S200-4: Mia, said the teacher, and Mia closed her lips and hummed. [humming] Mmm. Mia starts with mmm.
-- S200-5: [slowly, stressing each first sound] Buh like ball, sss like sun, and mmm like moon. Every name had a first sound.
-- S200-6: They pointed at each other. [playful] Buh! Sss! Mmm! They did it all the way to snack time.
-- S200-7: [slowly, warmly] Listen to the start of the word. That is the first sound.
+- S200-1: [warmly] Ben, said the teacher, what sound does your name start with? [concentrating] He pressed his lips together and popped out the sound. [slowly, stressing the first sound] Buh! [proud] I start with buh, said Ben.
+- S200-2: [playful] Sam, said the teacher, what does Sam start with? [cheerful] Sam! said Sam, [children giggling] and everyone giggled.
+- S200-3: [gently] Say it slowly, said the teacher, and listen to how it starts. [slowly, drawing out the s] Sss-am, said Sam slowly. [a playful hiss] Sss! he said, and he hissed like a snake. [children laughing] Everyone laughed.
+- S200-4: [softly] Then it was Mia's turn, so she closed her lips and hummed. [humming] Mmm-ia. [delighted] I start with mmm! she said.
+- S200-5: [slowly, stressing each first sound] Buh like ball, sss like sun, and mmm like moon, said the teacher. [warmly] Every name has a first sound.
+- S200-6: [playful] They pointed at each other. Buh! Sss! Mmm! [laughing] They did it all the way to snack time.
+- S200-7: [slowly, warmly] Say each word slowly and listen to how it starts.
 
-### The roar came first (S203, which-came-first)
+### Growl, then quack (S203, which-came-first)
 
-- S203-1: Leo was at the zoo. [a lion roaring] Roar! [a parrot squawking] Then, squawk! [curious] Two sounds, but which one came first?
-- S203-2: [thoughtful] Leo had to think back, so he closed his eyes. What had he heard first?
-- S203-3: [slowly] The roar, and that was the lion. It came first. Then the squawk, so the parrot came after.
-- S203-4: Dad tried again with two new sounds. [a duck quacking] Quack! [a cow mooing] Then, moo! Which came first?
-- S203-5: Leo held the first sound in his head. [slowly] Quack. The duck came first, and the cow came after.
-- S203-6: [playful] All day, Leo played the game, first sound and then the next. He never mixed them up.
-- S203-7: [slowly, warmly] Hold the first sound in your head while you hear the rest.
+- S203-1: [cheerful] Leo and Dad were at the zoo. [a bear growling, then a duck quacking] Growl! went a big brown bear behind its fence. Then quack! went a duck on the pond.
+- S203-2: [curious] Which came first? asked Dad. [confident] The duck! said Leo, because quack was still in his ears.
+- S203-3: [gently] Listen again, said Dad. Hold the first sound in your head while you hear the second. [softly] Leo closed his eyes.
+- S203-4: [a bear growling, then a duck quacking] Growl! went the bear again, and then quack! went the duck. [slowly] Leo held the growl in his head while the quack came. [excited] The bear came first! he said.
+- S203-5: [a frog croaking, then a bee buzzing] By a little pond, a frog said ribbit, and then a bee went buzz past the flowers. [curious] Which came first? asked Dad. [thoughtful] Leo held the first sound in his head. [proud] Ribbit came first, he said, so the frog came first!
+- S203-6: [playful] All day, Leo played the game, first sound and then the next. [happily] He never mixed them up again.
+- S203-7: [slowly, warmly] Hold the first sound in your head while you hear the second. Then you can tell which came first.
 
-### Whistle, tick, woof (S206, which-came-second)
+### Hoot, buzz, ribbit (S206, which-came-second)
 
-- S206-1: [a kettle whistling, a clock ticking, a dog barking once] In the kitchen there were three sounds, a whistle, a tick and a woof. The kettle, the clock and the dog.
-- S206-2: [warm, grandfatherly] Which came second? asked Grandpa. Not the first and not the last, but the middle one.
-- S206-3: Ana thought. Whistle was first and woof was last, [excited] so the middle was tick, the clock!
-- S206-4: Which came last? Ana knew that one. Woof, the dog, [a dog barking] and it was still barking.
-- S206-5: She held up three fingers and said them in a row. [slowly, counting] First whistle, second tick, last woof.
-- S206-6: [a clap, a stomp, a snap] Grandpa made new sounds, a clap, a stomp and a snap. [proud] Ana found the second one every time.
-- S206-7: [slowly, warmly] Keep the sounds in a row in your head. Then point to the one you want.
+- S206-1: [warmly] On a rainy afternoon, Grandpa played a game with Ana in the kitchen. [playful] He made three animal sounds, one after another. [hooting, buzzing, then croaking like a frog] Hoot like an owl, buzz like a bee, and ribbit like a frog!
+- S206-2: [curious] Which came second? asked Grandpa. [quickly] Hoot! said Ana.
+- S206-3: [gently, smiling] Hoot came first, said Grandpa with a smile. [slowly] The second sound is the middle one, not the first and not the last.
+- S206-4: [thoughtful] So Ana held up one finger for each sound. [slowly, counting] Hoot was first, she said, buzz was in the middle, and ribbit was last. [excited] Buzz! The bee came second!
+- S206-5: [playful] Which came last? asked Grandpa, and Ana pointed to her last finger. [proud] Ribbit, the frog! she said.
+- S206-6: [cheerful] Then Grandpa made three new sounds, meow, quack and growl. [proudly] Ana found the second one, quack, the duck, and they played until supper.
+- S206-7: [slowly, warmly] The second sound is the middle one, not the first and not the last.
 
-### B, U, S (S209, big-letters)
+### A cookie with a bite (S209, big-letters)
 
-- S209-1: [a school bus pulling up] The bus came, yellow and big, with big letters on its side. Sam looked up.
-- S209-2: [curious] He did not know them yet. There were three shapes, one with two bumps, one like a cup and one all curves.
-- S209-3: His sister pointed. That one is B, she said, and its name is bee. Sam said bee.
-- S209-4: That one is U, and its name sounds like you. And that one, all curves like a snake, is S.
-- S209-5: B, U, S. Sam said their names, bee, you, ess. Those letters spell bus, said his sister. Bus!
-- S209-6: [proud] Every day after that, Sam named the letters on the bus, B, U, S, for everyone.
-- S209-7: [slowly, warmly] Every letter has a name. Say it when you see it.
+- S209-1: [warmly] Asha and Dad sat on the porch steps with a snack of round cookies. [playful] Let's play a letter game, said Dad. Can you find a C?
+- S209-2: [curious] Asha looked around the yard. The green hose lay on the grass, bending one way and then the other. [excited] I found a C! she said.
+- S209-3: [gently, smiling] Dad smiled. That hose is curvy like a snake, he said, so it looks like S. [slowly] C is curved like a cookie with a bite out of it.
+- S209-4: [thoughtful] Asha looked at her round cookie. [playful] Then she took a big bite. [delighted] My cookie is a C! she said, [laughing] and Dad laughed.
+- S209-5: [curious] Then Dad pointed past the fence at two pointy hills. What about those? he asked, and Asha knew at once. [proudly] M! she said. It has two pointy hills!
+- S209-6: [happily] All afternoon, Asha found more letters, like an S in a vine that curved like a snake. [giggles] Her last cookie became one more C.
+- S209-7: [slowly, warmly] Letters have names. You can find a letter by its shape too.
 
 ### A letter in the sand (S212, first-letter-tracing)
 
-- S212-1: [waves rolling in, gulls calling] Diego had a stick, and the sand was wet. Dad made a dot and said to start there.
-- S212-2: Diego pushed the stick, and it went wiggly. It went the wrong way. [a little frustrated] That was not a letter.
-- S212-3: [sand brushing] He smoothed the sand flat, found the dot again, and tried again.
-- S212-4: [gently] Follow the arrow, said Dad. Down, in a straight line. Lift the stick, and now go across the top.
-- S212-5: [proud] A letter! A big T stood in the sand, and Diego stood over it. He had made it.
-- S212-6: [a wave washing over sand] Then a wave came and washed the T away. [laughs] Diego laughed and made another one.
-- S212-7: [slowly, warmly] Start at the dot. Follow the arrow. Lift, then go again.
+- S212-1: [cheerful] Diego had a stick, and the sand was wet and smooth. [gently] Dad made a dot, drew a little arrow beside it, and said to start there.
+- S212-2: [playful] But Diego pushed the stick wherever it wanted to go. [a little frustrated] The line went wiggly. It was not a letter at all!
+- S212-3: [patiently] He smoothed the sand flat again, and Dad made a new dot and a new arrow.
+- S212-4: [gently] Start at the dot and go straight down the middle, said Dad. [encouraging] Now lift the stick, and go across the top.
+- S212-5: [slowly, carefully] Diego did it, down and then across. [proud] A big T stood in the sand, and he grinned over it. [delighted] He had made it!
+- S212-6: [waves washing over sand] Later the waves crept higher, so Diego and Dad watched from the dry sand. [laughs] The water washed the T away, and Diego laughed, because he could make another one.
+- S212-7: [slowly, warmly] Start at the dot and follow the arrow every time, so your hand learns to make each letter the same way.
 
-### Sticks Make Letters (S215, more-big-letters)
+### Sticks make letters (S215, more-big-letters)
 
-- S215-1: [curious] Mia had a pile of sticks, flat ones and colored ones. Could sticks make letters?
-- S215-2: One stick stood straight up and down. [delighted] An I! Mia clapped.
-- S215-3: [thoughtful] Could she make more? She laid two sticks down, side by side, with a gap between them.
-- S215-4: Then one stick went across the middle, like a little bridge. [excited] An H!
-- S215-5: One stick down, then three across, at the top, the middle and the bottom. [proudly] An E!
-- S215-6: [happily] I, H, E, three letters in a row, all made of straight sticks.
-- S215-7: [slowly, warmly] Straight lines make letters. Start at the dot.
+- S215-1: [curious] Luca tipped a pile of craft sticks onto the table, plain ones and colored ones. Could sticks make letters? he asked Mom.
+- S215-2: [carefully] He stood one stick straight up and down. [delighted] The letter I! said Mom, [clapping] and Luca clapped his hands.
+- S215-3: [thoughtful] Next he tried H. He laid two sticks side by side and put the third one across the top. [gently, puzzled] Hmm, said Mom, that looks like a gate. Is it an H?
+- S215-4: [gently] H goes down, down again, and then across the middle, said Mom. [slowly] So Luca slid the third stick down to the middle, like a little bridge. [excited] An H! said Luca.
+- S215-5: [warmly] Then Mom drew three dots on paper, each with a little arrow. [carefully] Luca traced his H with one finger. He lifted it after each line and started the next one at its dot.
+- S215-6: [proudly] Last came E, one stick down and three across, at the top, the middle and the bottom. [happily] Luca made all three letters with sticks, then traced every one.
+- S215-7: [slowly, warmly] For H, lift your finger after each line, then start the next one at its dot and follow the arrow.
 
 ### Down, then across (S218, trace-straight-letters)
 
-- S218-1: [slowly, tracing] Down, then across. Kai traced it, down the line and across the bottom. An L.
-- S218-2: That was easy. [curious] But his teacher asked what would happen if across went on top.
-- S218-3: Kai tried it, down and then across the top. [delighted] A T! [giggles] A hat on a stick.
-- S218-4: Now across the top, and across the middle too, two acrosses. [excited] An F!
-- S218-5: [amazed] Down, then across, made three letters from one move. Kai traced them all again.
-- S218-6: [playful, slowly] L for lamp, T for tree, F for fish. He said them as he went.
-- S218-7: [slowly, warmly] Down, then across. Start at the dot.
+- S218-1: [slowly, tracing] Down, then across. Kai traced it with a fat crayon, down the line and across the bottom. [pleased] An L!
+- S218-2: [playful] Now make a T, said his teacher. [carefully] So Kai went down, then across the bottom again. [surprised] That is another L! said Kai.
+- S218-3: [gently] For T, the line across goes on top, said his teacher. [slowly] Start at the dot, go straight down the middle, and then go across the top.
+- S218-4: [determined] Kai tried again, down the middle and across the top. [delighted, giggles] That is a T, like a hat on a stick! said Kai.
+- S218-5: [curious] Then F, she said. [carefully] Kai went down, then across the top, and across the middle too. [excited] An F!
+- S218-6: [warmly] The same two moves made all three letters, said his teacher. [playful, slowly] Kai traced them again, L, T and F, and said the moves as he went.
+- S218-7: [slowly, warmly] L, T and F use the same two moves, down and then across, in different places. Start at the dot and follow the arrow.
 
 ### One at a time (S221, rules-and-helpers)
 
@@ -1162,8 +1162,8 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 - S293-1: [a finger squeaking on a foggy window] The window was foggy, and Diego pressed a finger on it to make a line. He wanted to make a T, like the one on his cup.
 - S293-2: He drew a line across, and then another line across. [puzzled] That looked like an equals sign, not a T.
-- S293-3: His mom put a dot at the top of the glass. [gently] Start here, she said. Go across the top, lift your finger, and then go down the middle.
-- S293-4: Diego put his finger on the dot. [slowly] Across the top, lift, then down the middle. [delighted] A T, dripping a little!
+- S293-3: His mom put a dot at the top of the glass. [gently] Start here, she said. Go down the middle, lift your finger, and then go across the top.
+- S293-4: Diego put his finger on the dot. [slowly] Down the middle, lift, then across the top. [delighted] A T, dripping a little!
 - S293-5: [playful] He made another one next to it. Then he made an L, down and across the bottom, and an I, which was just down.
 - S293-6: By the time the fog cleared, the window was full of letters. [softly, a little wistful] Then the sun came out, and they all faded away.
 - S293-7: [slowly, warmly] Start at the dot. Follow the arrow. Lift your finger between lines.

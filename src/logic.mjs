@@ -1538,6 +1538,14 @@ export function choiceSpeaks(q, c) {
   if (/^[A-Za-z]$/.test(x)) return ((q && q.choices) || []).some((o) => !String(o).includes(':') && String(o).length > 1);
   return true;
 }
+// What the question screen prints (pass MM, round two's lesson check B and game check): a read-aloud question that asks for a
+// letter by its name prints its words without the letter while the device can speak ("Tap the letter you hear."), and the voice
+// still says the letter, since a printed capital above the letters to tap lets a child who knows no name match the shape (the
+// shortcut round one took out of "What letter is this?"). With no voice the whole question prints, for a grown-up to read.
+export function printedQuestion(q, voice = true) {
+  if (!q) return { story: null, prompt: '' };
+  return { story: voice && q.printedStory ? q.printedStory : q.story || null, prompt: voice && q.printed ? q.printed : q.prompt };
+}
 export function readAloudScript(mod) {
   if (!mod || !mod.lesson) return [];
   if (Array.isArray(mod.lesson.script) && mod.lesson.script.length) return mod.lesson.script;
@@ -1684,7 +1692,8 @@ export const GAMES = [
   { id: 'order-timeline', kind: 'order', title: 'In order: timeline', minGrade: '5', deck: 'timeline' },
   { id: 'order-math', kind: 'order', title: 'In order: the math way', minGrade: '5', deck: 'mathsteps' },
   ...['3', '4', '5', '6', '7', '8', '9', '10', '11', '12'].map((g) => ({ id: `pairs-science-${g}`, kind: 'pairs', title: `Grade ${g} science words`, pairs: 6, minGrade: g, deck: `science-${g}`, courseId: `science-${g}` })),
-  { id: 'dots-fish', kind: 'dots', title: 'Fish', shape: 'fish' },
+  { id: 'spot-first-sounds', kind: 'spot', title: 'Find the Letter', spot: 'letters', young: true },   // First Sounds and Letters (pass MM): find the letter whose name you hear
+  { id: 'dots-fish', kind: 'dots', title: 'Fish', shape: 'fish' },   // First Steps since pass MM, with ten dots (it was First Sounds and Letters', with eleven)
   { id: 'jump-differences', kind: 'jump', title: 'Frog Jumps: Take Away', jump: 'differences', young: true, minGrade: '2' },
   { id: 'maze-huge', kind: 'maze', title: 'Huge Maze', cells: 12, minGrade: '2' },
   { id: 'dots-rocket', kind: 'dots', title: 'Rocket', shape: 'rocket' },
@@ -2362,6 +2371,52 @@ export const SPOT_SCENES = [
   { parts: [['square', 'green', 24, 26, 12], ['curve', 'blue', 72, 26, 13], ['circle', 'yellow', 50, 52, 12], ['straight', 'red', 26, 76, 14], ['triangle', 'orange', 74, 76, 13]], asks: [{ say: 'Tap the red line', color: 'red' }, { say: 'Tap the circle', kind: 'circle' }, { say: 'Tap the curved line', kind: 'curve' }] },
 ];
 export function spotMatches(part, ask) { return (!ask.kind || part[0] === ask.kind) && (!ask.color || part[1] === ask.color); }
+// Find the Letter (pass MM, First Sounds and Letters' game, from round one's game check): a voice names a letter and the child
+// finds it among five, as the Big Letters lesson's last line says, "Find the letter when you hear its name." Only the thirteen
+// capitals the course's lessons show and name are dealt: Big Letters' A, B, C, D, E, M and S, and the tracing lessons' L, T,
+// O, I, H and F. Every board holds exactly two of L, T and F, which "use the same two moves, down and then across, in
+// different places", so a child looks closely, the way Look Closely always deals an almost-alike couple; and since round two's
+// lesson check (pass MM) E sits beside F on any board that asks for either, the two that are one line across apart, which the
+// paper-cup telephone tells apart by counting (they had shared a board one time in five). letterSpotRound deals a round's four boards, five letters and three asks each, no letter asked twice in a round,
+// from its own seeded random numbers (makeRng), so the same round comes on every device; the rules test deals hundreds.
+export const SPOT_LETTERS = ['A', 'B', 'C', 'D', 'E', 'M', 'S', 'L', 'T', 'O', 'I', 'H', 'F'];
+export const SPOT_LETTERS_ALIKE = ['L', 'T', 'F'];
+export const LETTER_SPOT_BOARDS = 4;
+export function letterSpotRound(seed) {
+  const rng = makeRng(seed * 7919 + 29); const alike = SPOT_LETTERS_ALIKE;
+  let order = shuffle(rng, SPOT_LETTERS).slice(0, LETTER_SPOT_BOARDS * 3);
+  // A board asks for two of L, T and F at the most, so it can hold exactly two of them, and a board that asks for E with L and T
+  // could not hold F too, so either deal is dealt again.
+  const clash = (asks) => asks.filter((x) => alike.includes(x)).length > 2 || (asks.includes('E') && asks.includes('L') && asks.includes('T'));
+  for (let tries = 0; tries < 60 && [0, 1, 2, 3].some((b) => clash(order.slice(b * 3, b * 3 + 3))); tries++) order = shuffle(rng, SPOT_LETTERS).slice(0, LETTER_SPOT_BOARDS * 3);
+  return Array.from({ length: LETTER_SPOT_BOARDS }, (_, b) => {
+    const asks = order.slice(b * 3, b * 3 + 3); const askedAlike = asks.filter((x) => alike.includes(x)).length;
+    const needF = asks.includes('E') && !asks.includes('F'); const needE = asks.includes('F') && !asks.includes('E');
+    const moreAlike = [...(needF ? ['F'] : []), ...shuffle(rng, alike.filter((x) => !asks.includes(x) && !(needF && x === 'F')))].slice(0, Math.max(0, 2 - askedAlike));
+    const others = [...(needE ? ['E'] : []), ...shuffle(rng, SPOT_LETTERS.filter((x) => !alike.includes(x) && !asks.includes(x) && !(needE && x === 'E')))].slice(0, 5 - asks.length - moreAlike.length);
+    return { letters: shuffle(rng, [...asks, ...moreAlike, ...others]), asks };
+  });
+}
+// What the voice says about each letter's shape, in the course's own words: Big Letters' seven as its More Info reasons say them
+// (LETTER_NOT, which also names the shape a wrong answer lacks), and the tracing lessons' six as their lines, paragraphs or
+// explanations say them, with no dot to start at, since the board has none. I and F are the explanations' words since round two
+// (pass MM), heard after every trace: "goes straight down" fitted the first line of L, T and F too, two of which are on every
+// board, and F's paragraph words are written, never heard (F's stop before "at the top and the middle", so the line after a
+// second miss stays within 24 words). The rules test finds every one in those words.
+const TRACED_SHAPE = { L: 'goes down, then across the bottom', T: 'goes down the middle, then across the top', O: 'goes around to the left, all the way back to where it started', I: 'is one line, straight down', H: 'is two lines down, then a bridge across the middle', F: 'is a line down, then two lines across' };
+export function letterShapeWords(x) { return LETTER_NOT[x] || TRACED_SHAPE[x] || null; }
+// The lines, by moment: the ask; a right tap ("Yes" opens it, as Big Letters says "Is this the letter M? Yes."); a wrong tap, which
+// names the letter tapped and asks again; and from the second miss on one ask, the asked letter's shape words too. "The letter"
+// comes before every name, so the voice never reads A as the word "a".
+export function letterSpotLine(moment, letter, tapped = null) {
+  const ask = `Find the letter ${letter}.`; const shape = `It ${letterShapeWords(letter)}.`;
+  if (moment === 'ask') return ask;
+  if (moment === 'hint') return `${ask} ${shape}`;
+  if (moment === 'right') return `Yes, that is the letter ${letter}. ${shape}`;
+  if (moment === 'wrong') return `That one is the letter ${tapped}. ${ask}`;
+  if (moment === 'wrong-again') return `That one is the letter ${tapped}. ${ask} ${shape}`;
+  return null;
+}
 // What Comes Next (2026-09-29, pass GF, art and music 3 to 5): a row of pieces that repeats in a form, AB, ABA or abac,
 // shown twice and then cut off, and three pieces to choose the next from. The form is the rule of the game: repetition
 // in a picture and form in a song are the same idea, a part that comes back. Rounds come from the round number.
@@ -3242,7 +3297,7 @@ export const DOT_SHAPES = {
   boat: [[20, 62], [32, 84], [68, 84], [80, 62], [52, 62], [52, 14], [80, 48], [56, 48]],
   house: [[15, 50], [50, 18], [85, 50], [85, 88], [62, 88], [62, 64], [48, 64], [48, 88], [15, 88]],   // the door runs from dot 5 to dot 8
   star: [[50, 8], [61, 38], [93, 38], [67, 57], [77, 88], [50, 70], [23, 88], [33, 57], [7, 38], [39, 38]],
-  fish: [[12, 50], [28, 30], [52, 24], [72, 32], [84, 44], [92, 30], [94, 70], [84, 56], [72, 68], [52, 76], [28, 70]],
+  fish: [[12, 50], [28, 30], [52, 24], [72, 32], [84, 44], [92, 30], [94, 70], [84, 56], [66, 70], [36, 74]],   // ten since pass MM (First Steps counts to ten); it had eleven
   rocket: [[50, 6], [62, 22], [68, 44], [68, 66], [80, 84], [62, 78], [50, 92], [38, 78], [20, 84], [32, 66], [32, 44], [38, 22]],
 };
 export function dotsTooClose(points, gap = DOT_GAP) {
@@ -3521,7 +3576,7 @@ function LETTER_MODULES() { return [
       example: { kind: 'trace', text: 'L', caption: 'A line down, then a line across the bottom. That is L.' },
       script: [
         { say: 'Every letter is made of a few lines. L is a line down, then a line across the bottom.', show: { kind: 'trace', text: 'L' } },
-        { say: 'T is a line across the top, then a line down the middle.', show: { kind: 'trace', text: 'T' } },
+        { say: 'T is a line down the middle, then a line across the top.', show: { kind: 'trace', text: 'T' } },
         { say: 'I is just one line, straight down.', show: { kind: 'trace', text: 'I' } },
         { say: 'H is two lines down, then a bridge across the middle.', show: { kind: 'trace', text: 'H' } },
         { say: 'E is a line down, then three lines across, at the top, the middle and the bottom.', show: { kind: 'trace', text: 'E' } },
@@ -3990,7 +4045,7 @@ function PREK3_MODULES() { return [
         { say: 'At snack time, count the crackers on two plates. The plate with more crackers has more crackers to share.', show: null },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.A.8 (compares sets of objects up to 5 using comparative language, for example more than, less than, same number of), V.A.2 (counts up to 5 objects with one-to-one correspondence) and V.A.3 (counts up to 5 items and demonstrates cardinality by communicating that the last number indicates how many items are in the set), and Head Start ELOF Goals P-MATH 4 (compares numbers), in part, since the lesson teaches the first sentence of its 36 to 48 month progression, "Begins to accurately count and compare objects that are about the same size and are in small groups with adult assistance, such as counts a pile of two blocks and a pile of four, and determines whether the piles have the same or different numbers of blocks.", and, with its three big circles and five little ones, the first sentence of its 48 to 60 month progression, "Counts to determine and compare number amounts even when the larger group\'s objects are smaller in size, such as buttons, compared with the smaller group\'s objects that are larger in size, such as markers.", while the second sentence of its 36 to 48 month progression, "Identifies the first and second objects in a sequence.", is taught in Animal sounds (EARMARKS E12), P-MATH 1 (knows number names and the count sequence), in part, since the first sentence of its 36 to 48 month progression, "Says or signs some number words in sequence (up to 10), starting with one.", goes past the lesson\'s count to five (six to ten wait, EARMARKS E12), while its second, "Understands that counting words are separate words, such as "one," "two," "three" versus "onetwothree".", is shown by touching each thing once as it is counted, and P-MATH 3 (understands the relationship between numbers and quantities), whose 36 to 48 month progression reads "Begins to coordinate verbal counting with objects by pointing to or moving objects for small groups of objects laid in a line (referred to as one-to-one correspondence). Begins to understand that the last number represents how many objects are in a group (referred to as "cardinality")."'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.A.8 (compares sets of objects up to 5 using comparative language (e.g., more than, less than, same number of)), V.A.2 (counts up to 5 objects with one-to-one correspondence) and V.A.3 (counts up to 5 items and demonstrates cardinality by communicating that the last number indicates how many items are in the set), and Head Start ELOF Goals P-MATH 4 (compares numbers), in part, since the lesson teaches the first sentence of its 36 to 48 month progression, "Begins to accurately count and compare objects that are about the same size and are in small groups with adult assistance, such as counts a pile of two blocks and a pile of four, and determines whether the piles have the same or different numbers of blocks.", and, with its three big circles and five little ones, the first sentence of its 48 to 60 month progression, "Counts to determine and compare number amounts even when the larger group\'s objects are smaller in size, such as buttons, compared with the smaller group\'s objects that are larger in size, such as markers.", while the second sentence of its 36 to 48 month progression, "Identifies the first and second objects in a sequence.", is taught in Animal sounds (EARMARKS E12), P-MATH 1 (knows number names and the count sequence), in part, since the first sentence of its 36 to 48 month progression, "Says or signs some number words in sequence (up to 10), starting with one.", goes past the lesson\'s count to five (six to ten wait, EARMARKS E12), while its second, "Understands that counting words are separate words, such as "one," "two," "three" versus "onetwothree".", is shown by touching each thing once as it is counted, and P-MATH 3 (understands the relationship between numbers and quantities), whose 36 to 48 month progression reads "Begins to coordinate verbal counting with objects by pointing to or moving objects for small groups of objects laid in a line (referred to as one-to-one correspondence). Begins to understand that the last number represents how many objects are in a group (referred to as "cardinality")."'],
     generators: ['p3-tap-more', 'p3-same-number', 'p3-tap-fewer', 'p3-tap-more', 'p3-tap-fewer'],
   },
   {
@@ -4013,7 +4068,7 @@ function PREK3_MODULES() { return [
         { say: 'This ball is round. Draw round and round, and you make a circle.', show: { kind: 'icon', name: 'ball' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines IX.B.1 (experiments with a variety of fine motor tasks but may lack strength and control), IX.B.2 (shows emerging proficiency in tasks requiring eye-hand coordination) and IV.C.4 (begins to show understanding of directionality, for example attempts to write top to bottom, left to right, but may still start at random places on a page), and Head Start ELOF Goal P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), in part, since its 36 to 48 month progression, "Performs simple hand-eye tasks, such as drawing simple shapes like circles and cutting paper with scissors. May demonstrate limited precision and control in more complex tasks.", names cutting paper with scissors, which is a grown-up\'s to guide (EARMARKS E12).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines IX.B.1 (experiments with a variety of fine motor tasks but may lack strength and control), IX.B.2 (shows emerging proficiency in tasks requiring eye-hand coordination) and IV.C.4 (begins to show understanding of directionality (e.g., attempts to write top to bottom, left to right), but may still start at random places on a page), and Head Start ELOF Goal P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), in part, since its 36 to 48 month progression, "Performs simple hand-eye tasks, such as drawing simple shapes like circles and cutting paper with scissors. May demonstrate limited precision and control in more complex tasks.", names cutting paper with scissors, which is a grown-up\'s to guide (EARMARKS E12).'],
     generators: ['p3-trace-mark', 'p3-trace-mark', 'p3-trace-mark', 'p3-trace-mark', 'p3-trace-mark'],
   },
   {
@@ -4166,7 +4221,7 @@ function PREK3_MODULES() { return [
         { say: 'Pretend to smell a flower, and breathe in slowly. Pretend to blow out a candle, and breathe out slowly.', show: { kind: 'pair', a: { kind: 'icon', name: 'flower' }, b: { kind: 'icon', name: 'candle' } } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines I.B.2.a (recognizes and expresses a range of emotions), I.B.2.b (is familiar with basic feeling words, for example happy, sad, mad, scared) and I.B.2.c (manages intensity of emotions with adult assistance), and Head Start ELOF Goals P-SE 6 (expresses a broad range of emotions and recognizes these emotions in self and others), whose 36 to 48 month progression reads "Expresses a broad range of emotions across contexts, such as during play and in interactions with adults. Notices when strong emotions are exhibited by others and begins to use words to describe some of these emotions, such as happy, sad, or mad.", and P-SE 8 (manages emotions with increasing independence), whose 36 to 48 month progression reads "Manages less intense emotions, such as mild frustration, independently. May require adult support to manage more intense emotions.", in part, since the lesson teaches a grown-up\'s help for a big feeling and, for a smaller one, only saying its name and using your words.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines I.B.2.a (recognizes and expresses a range of emotions), I.B.2.b (is familiar with basic feeling words (e.g., happy, sad, mad, scared)) and I.B.2.c (manages intensity of emotions with adult assistance), and Head Start ELOF Goals P-SE 6 (expresses a broad range of emotions and recognizes these emotions in self and others), whose 36 to 48 month progression reads "Expresses a broad range of emotions across contexts, such as during play and in interactions with adults. Notices when strong emotions are exhibited by others and begins to use words to describe some of these emotions, such as happy, sad, or mad.", and P-SE 8 (manages emotions with increasing independence), whose 36 to 48 month progression reads "Manages less intense emotions, such as mild frustration, independently. May require adult support to manage more intense emotions.", in part, since the lesson teaches a grown-up\'s help for a big feeling and, for a smaller one, only saying its name and using your words.'],
     generators: ['p3-feel-tap-face', 'p3-feel-name-face', 'p3-feel-moment', 'p3-feel-okay', 'p3-feel-calm'],
   },
   {
@@ -4326,7 +4381,7 @@ function PREK3_READING_MODULES() { return [
         { say: 'A and B are the first two letters of the alphabet, so the alphabet song starts with them. Sing it with your grown-up. A, B, C!', show: { kind: 'letters', text: 'A   B   C' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines III.C.1 (shows awareness of letters by singing alphabet songs and recognizing some frequently encountered letters, for example first letter of name or letters in environmental print), in part, since this lesson recognizes A and B, tells them from letters that look a little like them, and looks for them on signs and in books, while the singing it invites is the grown-up\'s to hear, and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), in part, since the app keeps no names, the ABC song it invites is a grown-up\'s to hear, and this lesson names letters rather than their sounds; for three-year-olds it reads "Shows an awareness of alphabet letters, such as singing the ABC song, recognizing letters from one\'s name, or naming some letters that are encountered often."'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines III.C.1 (shows awareness of letters by singing alphabet songs and recognizing some frequently encountered letters (e.g., first letter of name or letters in environmental print)), in part, since this lesson recognizes A and B, tells them from letters that look a little like them, and looks for them on signs and in books, while the singing it invites is the grown-up\'s to hear, and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), in part, since the app keeps no names, the ABC song it invites is a grown-up\'s to hear, and this lesson names letters rather than their sounds; for three-year-olds it reads "Shows an awareness of alphabet letters, such as singing the ABC song, recognizing letters from one\'s name, or naming some letters that are encountered often."'],
     generators: ['p3-tap-ab', 'p3-name-ab', 'p3-ab-by-look', 'p3-ab-in-word', 'p3-ab-look-alike'],
   },
   {
@@ -4389,7 +4444,7 @@ function PREK3_READING_MODULES() { return [
         { say: 'When you practice, listen to the word, then find its picture and tap it.', show: { kind: 'row', items: [{ kind: 'icon', name: 'cup' }, { kind: 'icon', name: 'bird' }, { kind: 'icon', name: 'flower' }] } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines II.A.1 (responds to situations in ways that demonstrate an understanding of what has been communicated) and II.D.1 (understands, receptive, and uses, expressive, expected words to label and describe common objects, people, places, actions, and events), in part, since a child here understands words for things, places and actions and is not asked to say them, and Head Start ELOF Goals P-LC 1 (attends to communication and language from others), whose 36 to 48 month progression reads "Shows acknowledgment of comments or questions and is able to attend to conversations, either spoken or signed.", in part, since the lesson teaches acknowledging a question by tapping its answer, while attending to conversations needs a partner to talk with, which the app cannot be (EARMARKS E12), and P-LC 6 (understands and uses a wide variety of words for a variety of purposes), whose 36 to 48 month progression reads "Shows a rapid increase in acquisition of new vocabulary words that describe actions, emotions, things, or ideas that are meaningful within the everyday environment. Uses new vocabulary words to describe relations among things or ideas. Shows repetition of new words offered by adults.", in part, since the lesson teaches new words for things and actions, while using them to describe relations and repeating them are the child\'s own talk (EARMARKS E12).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines II.A.1 (responds to situations in ways that demonstrate an understanding of what has been communicated) and II.D.1 (understands (receptive) and uses (expressive) expected words to label and describe common objects, people, places, actions, and events), in part, since a child here understands words for things, places and actions and is not asked to say them, and Head Start ELOF Goals P-LC 1 (attends to communication and language from others), whose 36 to 48 month progression reads "Shows acknowledgment of comments or questions and is able to attend to conversations, either spoken or signed.", in part, since the lesson teaches acknowledging a question by tapping its answer, while attending to conversations needs a partner to talk with, which the app cannot be (EARMARKS E12), and P-LC 6 (understands and uses a wide variety of words for a variety of purposes), whose 36 to 48 month progression reads "Shows a rapid increase in acquisition of new vocabulary words that describe actions, emotions, things, or ideas that are meaningful within the everyday environment. Uses new vocabulary words to describe relations among things or ideas. Shows repetition of new words offered by adults.", in part, since the lesson teaches new words for things and actions, while using them to describe relations and repeating them are the child\'s own talk (EARMARKS E12).'],
     generators: ['p3-tap-picture', 'p3-tap-by-clue', 'p3-tap-picture', 'p3-up-or-down', 'p3-tap-by-clue'],
   },
   {
@@ -4420,7 +4475,7 @@ function PREK3_READING_MODULES() { return [
         { say: 'On a farm you might hear a duck quack and a dog woof at the same time. Real animals make lots of sounds, so listen closely to tell them apart.', show: { kind: 'pair', a: { kind: 'pic', name: 'duck' }, b: { kind: 'icon', name: 'dog' } } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines II.D.1 (understands, receptive, and uses, expressive, expected words to label and describe common objects, people, places, actions, and events), in part, since a child here understands the names of six animals and the words for their sounds and is not asked to say them, and Head Start ELOF Goal P-SCI 1 (observes and describes observable phenomena (objects, materials, organisms, and events)), whose 36 to 48 month progression reads "Uses the five senses to observe objects, materials, organisms, and events. Provides simple verbal or signed descriptions. With adult support, represents observable phenomena, such as draws a picture.", in part, since the lesson observes by hearing, a sound telling which animal is near, while the other senses, the descriptions, which are the child\'s own talk, and the drawing wait (EARMARKS E12).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines II.D.1 (understands (receptive) and uses (expressive) expected words to label and describe common objects, people, places, actions, and events), in part, since a child here understands the names of six animals and the words for their sounds and is not asked to say them, and Head Start ELOF Goal P-SCI 1 (observes and describes observable phenomena (objects, materials, organisms, and events)), whose 36 to 48 month progression reads "Uses the five senses to observe objects, materials, organisms, and events. Provides simple verbal or signed descriptions. With adult support, represents observable phenomena, such as draws a picture.", in part, since the lesson observes by hearing, a sound telling which animal is near, while the other senses, the descriptions, which are the child\'s own talk, and the drawing wait (EARMARKS E12).'],
     generators: ['p3-animal-sound', 'p3-animal-says', 'p3-animal-order', 'p3-two-at-once', 'p3-animal-sound'],
   },
 ]; }
@@ -4881,7 +4936,7 @@ function PREK_MODULES() { return [
         { say: 'Look at your clothes. Can you name a color you are wearing today?', show: { kind: 'icon', name: 'coat' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups and uses language to describe how the groups are similar and different), in part, since the lesson finds the things that are the same color and the one that is a different color, and sorts the red blocks from the blue ones, while using language to describe how the groups are similar and different is the child\'s own talk, for a grown-up to hear (EARMARKS E13), and II.D.1 (understands (receptive) and uses (expressive) a wide variety of words to label, describe and make connections among objects, people, places, actions, and events), in part, its receptive half for the color words red, blue, yellow and green, while their expressive half waits (EARMARKS E13) and the rest of its wide variety of words is First Sounds and Letters\', and Head Start ELOF Goal P-SCI 1 (observes and describes observable phenomena (objects, materials, organisms, and events)), whose 48 to 60 month progression reads "Makes increasingly complex observations of objects, materials, organisms, and events. Provides greater detail in descriptions. Represents observable phenomena in more complex ways, such as pictures that include more detail.", in part, since the lesson observes the colors of things by sight, while the greater detail in descriptions, which is the child\'s own talk, and the more detailed pictures wait (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups and uses language to describe how the groups are similar and different), in part, since the lesson finds the things that are the same color and the one that is a different color, and sorts the red blocks from the blue ones, while using language to describe how the groups are similar and different is the child\'s own talk, for a grown-up to hear (EARMARKS E13), and II.D.1 (understands (receptive) and uses (expressive) a wide variety of words to label, describe and make connections among objects, people, places, actions, and events), in part, its receptive half for the color words red, blue, yellow and green, while their expressive half waits (EARMARKS E13), the receptive half of the order words first, then, second, middle and last is taught in First Sounds and Letters\' Which came first? and Second and last, and the rest of its wide variety of words waits (EARMARKS E13), and Head Start ELOF Goal P-SCI 1 (observes and describes observable phenomena (objects, materials, organisms, and events)), whose 48 to 60 month progression reads "Makes increasingly complex observations of objects, materials, organisms, and events. Provides greater detail in descriptions. Represents observable phenomena in more complex ways, such as pictures that include more detail.", in part, since the lesson observes the colors of things by sight, while the greater detail in descriptions, which is the child\'s own talk, and the more detailed pictures wait (EARMARKS E13).'],
     generators: ['pc-tap-colour', 'pc-name-colour', 'pc-same-colour', 'pc-different-colour', 'pc-colour-of-thing'],
   },
   {
@@ -5099,7 +5154,7 @@ function PREK_MODULES() { return [
         { say: 'At snack time, count the strawberries on two plates. Five little strawberries are more strawberries than three big ones, even though the big ones take up more room.', show: null },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines V.A.8 (compares sets of objects up to 10 using comparative language (e.g., greater/more than, less/fewer than, equal to/same number of)), in part, since the lesson compares sets up to five with more than and fewer than, while six to ten and equal to, the same number of, wait (EARMARKS E13), and V.A.2 (counts up to 10 objects with one-to-one correspondence) and V.A.3 (counts up to 10 items and demonstrates cardinality by communicating that the last number indicates how many items are in the set), each in part, since the groups are counted up to five, touching each dot once, the last number telling how many, while groups of six to ten wait (EARMARKS E13), and Head Start ELOF Goals P-MATH 4 (compares numbers), whose 48 to 60 month progression reads "Counts to determine and compare number amounts even when the larger group\'s objects are smaller in size, such as buttons, compared with the smaller group\'s objects that are larger in size, such as markers. Uses numbers related to order or position.", in part, since the lesson teaches its first sentence, counting five little circles as more than three big ones, while its second, numbers for order or position, is taught in Which came first? and Second and last (First Sounds and Letters), and P-MATH 3 (understands the relationship between numbers and quantities), whose 48 to 60 month progression reads "Understands that number words refer to quantity. May point to or move objects while counting objects to 10 and beyond (one-to-one correspondence). Understands that the last number represents how many objects are in a group (cardinality).", in part, since the lesson counts to five, while counting objects to 10 and beyond waits (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines V.A.8 (compares sets of objects up to 10 using comparative language (e.g., greater/more than, less/fewer than, equal to/same number of)), in part, since the lesson compares sets up to five with more than and fewer than, while six to ten and equal to, the same number of, wait (EARMARKS E13), and V.A.2 (counts up to 10 objects with one-to-one correspondence) and V.A.3 (counts up to 10 items and demonstrates cardinality by communicating that the last number indicates how many items are in the set), each in part, since the groups are counted up to five, touching each dot once, the last number telling how many, while groups of six to ten wait (EARMARKS E13), and Head Start ELOF Goals P-MATH 4 (compares numbers), whose 48 to 60 month progression reads "Counts to determine and compare number amounts even when the larger group\'s objects are smaller in size, such as buttons, compared with the smaller group\'s objects that are larger in size, such as markers. Uses numbers related to order or position.", in part, since the lesson teaches its first sentence, counting five little circles as more than three big ones, while its second, numbers for order or position, is taught in part in Which came first? and Second and last (First Sounds and Letters), where order words past second, such as third, wait (EARMARKS E13), and P-MATH 3 (understands the relationship between numbers and quantities), whose 48 to 60 month progression reads "Understands that number words refer to quantity. May point to or move objects while counting objects to 10 and beyond (one-to-one correspondence). Understands that the last number represents how many objects are in a group (cardinality).", in part, since the lesson counts to five, while counting objects to 10 and beyond waits (EARMARKS E13).'],
     generators: ['p4-tap-more-5', 'p4-tap-fewer-5', 'p4-more-close', 'p4-fewer-close', 'p4-looks-like-more'],
   },
   {
@@ -5146,8 +5201,8 @@ function PREK_MODULES() { return [
       // Pass ML (the lesson check): every pattern the questions show is taught first, a row that starts either way, a pattern of
       // three shapes, a gap in the first place or the second, and a row of two shapes that is not a pattern, so no question can be
       // passed by tapping the row's first shape or by counting its kinds of shape.
-      pictures: [{ serial: 'P138', alt: 'A small child clapping and stomping in a pattern while a grown-up claps along', step: 8 }, { serial: 'P117', alt: 'A string of beads in a red, blue, red, blue pattern', step: 9 }],
-      paragraphs: ['A pattern repeats the same way each time. Circle, square, circle, square, so a circle comes next. A pattern can start with either shape, and it can have three shapes too, circle, square, triangle, circle, square, triangle.', 'Say the pattern out loud, and your voice tells you what comes next or what is missing, wherever the gap is. A row that keeps changing its order is not a pattern, even with only two shapes, because it does not repeat.', 'You can make a pattern with your body, clap, stomp, clap, stomp, or with beads on a string, red, blue, red, blue. Then make your own, and ask a grown-up to guess what comes next.'],
+      pictures: [{ serial: 'P138', alt: 'A small child clapping and stomping in a pattern while a grown-up claps along', step: 8 }, { serial: 'P117', alt: 'A string of big beads in a red, blue, red, blue pattern', step: 9 }],
+      paragraphs: ['A pattern repeats the same way each time. Circle, square, circle, square, so a circle comes next. A pattern can start with either shape, and it can have three shapes too, circle, square, triangle, circle, square, triangle.', 'Say the pattern out loud, and your voice tells you what comes next or what is missing, wherever the gap is. A row that keeps changing its order is not a pattern, even with only two shapes, because it does not repeat.', 'You can make a pattern with your body, clap, stomp, clap, stomp, or with big beads on a string, red, blue, red, blue. Then make your own, and ask a grown-up to guess what comes next.'],
       keyIdea: 'A pattern repeats the same way each time. Say it out loud to find what comes next.',
       example: { kind: 'pattern', items: ['circle', 'square', 'circle', 'square'], caption: 'Circle, square, circle, square.' },
       script: [
@@ -5160,7 +5215,7 @@ function PREK_MODULES() { return [
         { say: 'Circle, circle, square, circle, square, square. The order keeps changing, so this is not a pattern.', show: { kind: 'pattern', items: ['circle', 'circle', 'square', 'circle', 'square', 'square'] } },
         { say: 'Patterns are all around us, in songs and in beads.', show: { kind: 'pattern', items: ['triangle', 'circle', 'triangle', 'circle'] } },
         { say: 'You can make a pattern with your body too. Clap, stomp, clap, stomp. What comes next? A clap!', show: null },
-        { say: 'Beads on a string can make a pattern. Red, blue, red, blue, so a red bead comes next.', show: null },
+        { say: 'Big beads on a string can make a pattern. Red, blue, red, blue, so a red bead comes next.', show: null },
         { say: 'Make your own pattern with blocks or crayons, and ask a grown-up to guess what comes next.', show: { kind: 'pattern', items: ['square', 'triangle', 'square', 'triangle'] } },
       ],
     },
@@ -5219,7 +5274,7 @@ function PREK_MODULES() { return [
         { say: 'Lines are everywhere. Rain falls in lines down, the top of a table is a line across, and lightning makes a zigzag in a storm.', show: null },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines IX.B.2 (shows increasing control of tasks that require eye-hand coordination) and IV.C.4 (uses appropriate directionality when writing (e.g., top to bottom, left to right)), in part, since the lesson draws a line down from the top and a line across from the left, while writing itself is First Sounds and Letters\', and Head Start ELOF Goal P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws the lines, waves, zigzags and circles that letters are made of, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13) and letters are traced in First Sounds and Letters.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines IX.B.2 (shows increasing control of tasks that require eye-hand coordination) and IV.C.4 (uses appropriate directionality when writing (e.g., top to bottom, left to right)), in part, since the lesson draws a line down from the top and a line across from the left, while the letters are traced from the top in First Sounds and Letters, and writing letters and words from left to right along a line waits (EARMARKS E13), and Head Start ELOF Goal P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws the lines, waves, zigzags and circles that letters are made of, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13) and letters are traced in First Sounds and Letters.'],
     generators: ['pd-trace-line', 'pd-trace-line', 'pd-trace-line', 'pd-trace-line', 'pd-trace-line'],
   },
   {
@@ -5333,7 +5388,7 @@ function PREK_MODULES() { return [
         { say: 'In real life, a bee is tiny, a cat is middle-sized, and a bear is huge.', show: { kind: 'row', items: [{ kind: 'pic', name: 'bee', size: 34 }, { kind: 'pic', name: 'cat', size: 70 }, { kind: 'pic', name: 'bear', size: 110 }] } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines II.D.1 (understands (receptive) and uses (expressive) a wide variety of words to label, describe and make connections among objects, people, places, actions, and events), in part, its receptive half for the size words smallest, middle-sized, biggest, tiny and huge, while their expressive half is the child\'s own talk (EARMARKS E13) and the rest of its wide variety of words is First Sounds and Letters\', and Head Start ELOF Goal P-MATH 8 (measures objects by their various attributes using standard and non-standard measurement. Uses differences in attributes to make comparisons.), whose 48 to 60 month progression reads "With some adult support, uses measurable attributes to make comparisons, such as identifies objects as the same/different and more/less." The Texas Prekindergarten Guidelines name no PK4 outcome for size as the room a thing takes up, and heights and lengths (V.D.1) are taught in Bigger and smaller.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines II.D.1 (understands (receptive) and uses (expressive) a wide variety of words to label, describe and make connections among objects, people, places, actions, and events), in part, its receptive half for the size words smallest, middle-sized, biggest, tiny and huge, while their expressive half is the child\'s own talk (EARMARKS E13), the receptive half of the order words first, then, second, middle and last is taught in First Sounds and Letters\' Which came first? and Second and last, and the rest of its wide variety of words waits (EARMARKS E13), and Head Start ELOF Goal P-MATH 8 (measures objects by their various attributes using standard and non-standard measurement. Uses differences in attributes to make comparisons.), whose 48 to 60 month progression reads "With some adult support, uses measurable attributes to make comparisons, such as identifies objects as the same/different and more/less." The Texas Prekindergarten Guidelines name no PK4 outcome for size as the room a thing takes up, and heights and lengths (V.D.1) are taught in Bigger and smaller.'],
     generators: ['pk4-tap-biggest', 'pk4-tap-smallest', 'pk4-tap-middle', 'p4-real-biggest', 'p4-real-middle'],
   },
   {
@@ -5382,12 +5437,21 @@ function PREK_READING_MODULES() { return [
       script: [
         { say: 'Cat. Hat. These two words end with the same sound, at. They rhyme.', show: { kind: 'letters', text: 'cat hat', highlight: 'at' } },
         { say: 'Dog. Log. Both end in og, so dog and log rhyme too.', show: { kind: 'letters', text: 'dog log', highlight: 'og' } },
+        { say: 'Sun and fun both end with un, and pig and wig both end with ig.', show: { kind: 'letters', text: 'sun fun pig wig' } },
+        { say: 'Hen and ten both end with en, and cup and pup both end with up.', show: { kind: 'letters', text: 'hen ten cup pup' } },
+        { say: 'Bed and red both end with ed, and top and hop both end with op.', show: { kind: 'letters', text: 'bed red top hop' } },
         { say: 'Cat and dog do not rhyme. One ends in at, and the other ends in og.', show: { kind: 'letters', text: 'cat dog' } },
+        { say: 'Ball and wall rhyme. They end the same way.', show: { kind: 'pair', a: { kind: 'icon', name: 'ball' }, b: { kind: 'icon', name: 'wall' } } },
+        { say: 'Dog, log and frog all rhyme.', show: { kind: 'row', items: [{ kind: 'icon', name: 'dog' }, { kind: 'icon', name: 'log' }, { kind: 'pic', name: 'frog' }] } },
+        { say: 'Moon and spoon rhyme.', show: { kind: 'pair', a: { kind: 'icon', name: 'moon' }, b: { kind: 'icon', name: 'spoon' } } },
+        { say: 'Bear and chair rhyme.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'icon', name: 'chair' } } },
+        { say: 'Sock, block and rock all rhyme.', show: { kind: 'row', items: [{ kind: 'icon', name: 'sock' }, { kind: 'icon', name: 'block' }, { kind: 'icon', name: 'rock' }] } },
+        { say: 'Hat, cat, log. Hat and cat rhyme, and log does not rhyme with them.', show: { kind: 'row', items: [{ kind: 'icon', name: 'hat' }, { kind: 'pic', name: 'cat' }, { kind: 'icon', name: 'log' }] } },
         { say: 'Listen to the end of each word. If the ends sound the same, the words rhyme.', show: { kind: 'letters', text: 'cat hat', highlight: 'at' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines III.B.6 (identifies rhyming words) and Head Start ELOF Goal P-LIT 1.'],
-    generators: ['rr-does-rhyme', 'rr-pick-rhyme', 'rr-does-rhyme', 'rr-pick-rhyme', 'rr-does-rhyme'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines III.B.6 (identifies rhyming words), and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches rhyme recognition, whether two words rhyme, which picture rhymes with another and which of three, such as hat, cat and log, does not rhyme, while the first sound in spoken words is taught in First sounds, and recognizing phonemic changes in words, counting syllables and the other sounds in a word wait (EARMARKS E13).'],
+    generators: ['p4-does-rhyme', 'p4-rhyme-pic', 'p4-rhyme-three', 'p4-does-rhyme', 'p4-rhyme-pic'],
   },
   {
     id: 'first-sounds',
@@ -5403,12 +5467,18 @@ function PREK_READING_MODULES() { return [
         { say: 'Moon. Mmm. The word moon starts with the sound mmm.', show: { kind: 'letters', text: 'moon', highlight: 'm' } },
         { say: 'Sun. Sss. The word sun starts with the sound sss.', show: { kind: 'letters', text: 'sun', highlight: 's' } },
         { say: 'Tap and top both start with the same sound, tuh. They begin alike.', show: { kind: 'letters', text: 'tap top', highlight: 'first' } },
-        { say: 'Fan starts with fff, so it begins differently from tap and top.', show: { kind: 'letters', text: 'fan', highlight: 'first' } },
+        { say: 'Fan starts with fff, so it begins differently from tap and top.', show: { kind: 'letters', text: 'tap top fan', highlight: 'first' } },
+        { say: 'Moon and map both start with mmm.', show: { kind: 'pair', a: { kind: 'icon', name: 'moon' }, b: { kind: 'icon', name: 'map' } } },
+        { say: 'Sun and sock both start with sss.', show: { kind: 'pair', a: { kind: 'icon', name: 'sun' }, b: { kind: 'icon', name: 'sock' } } },
+        { say: 'Fish, fan and fox all start with fff.', show: { kind: 'row', items: [{ kind: 'pic', name: 'fish' }, { kind: 'icon', name: 'fan' }, { kind: 'pic', name: 'fox' }] } },
+        { say: 'Ball, bed and bear all start with buh.', show: { kind: 'row', items: [{ kind: 'icon', name: 'ball' }, { kind: 'icon', name: 'bed' }, { kind: 'pic', name: 'bear' }] } },
+        { say: 'Dog, duck and door all start with duh.', show: { kind: 'row', items: [{ kind: 'icon', name: 'dog' }, { kind: 'pic', name: 'duck' }, { kind: 'icon', name: 'door' }] } },
+        { say: 'Moon, map and sun. Moon and map start with mmm, and sun starts with sss, so sun starts differently.', show: { kind: 'row', items: [{ kind: 'icon', name: 'moon' }, { kind: 'icon', name: 'map' }, { kind: 'icon', name: 'sun' }] } },
         { say: 'Say each word slowly and listen to how it starts.', show: { kind: 'letters', text: 'moon sun', highlight: 'first' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines III.B.7 (identifies alliterative words with pictorial support) and Head Start ELOF Goal P-LIT 1.'],
-    generators: ['rs-same-start', 'rs-odd-start', 'rs-same-start', 'rs-odd-start', 'rs-same-start'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines III.B.7 (identifies alliterative words with pictorial support), and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches one sound in spoken words, the first, finding the pictures whose names start the same way and the one of three that starts with a different sound, while rhyme recognition is taught in Rhyme time, and recognizing phonemic changes in words, counting syllables and the other sounds in a word wait (EARMARKS E13).'],
+    generators: ['p4-start-pic', 'p4-start-odd-pic', 'p4-start-pic', 'p4-start-odd-pic', 'p4-start-pic'],
   },
   {
     id: 'which-came-first',
@@ -5423,12 +5493,14 @@ function PREK_READING_MODULES() { return [
       example: { kind: 'pair', a: { kind: 'pic', name: 'owl' }, b: { kind: 'pic', name: 'bee' }, caption: 'Hoot, then buzz. The owl came first.' },
       script: [
         { say: 'The cat says meow. The duck says quack.', show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'pic', name: 'duck' } } },
-        { say: 'Listen. Meow, then quack. The cat came first, because meow came first.', show: { kind: 'pic', name: 'cat' } },
+        { say: 'The bee says buzz, and the frog says ribbit.', show: { kind: 'pair', a: { kind: 'pic', name: 'bee' }, b: { kind: 'pic', name: 'frog' } } },
+        { say: 'The owl says hoot, and the bear says growl.', show: { kind: 'pair', a: { kind: 'pic', name: 'owl' }, b: { kind: 'pic', name: 'bear' } } },
+        { say: 'Listen. Meow, then quack. The cat came first, because meow came first, and the duck came second.', show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'pic', name: 'duck' } } },
         { say: 'Listen again. Quack, then meow. Now the duck came first.', show: { kind: 'pic', name: 'duck' } },
         { say: 'Hold the first sound in your head while you hear the second. Then you can tell which came first.', show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'pic', name: 'duck' } } },
       ],
     },
-    sources: ['Aligned with Head Start ELOF Goal P-LC 1 (attends to communication and language from others).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines II.A.1 (shows understanding by responding appropriately to what has been communicated by adults and peers), in part, since the child shows understanding of a spoken question about two sounds by tapping the animal that made the first, while responding to peers is the child\'s own, with other children (EARMARKS E13), and II.D.1 (understands (receptive) and uses (expressive) a wide variety of words to label, describe and make connections among objects, people, places, actions, and events), in part, its receptive half for the order words first, then and second, while their expressive half is the child\'s own talk and the rest of its wide variety of words waits (EARMARKS E13), and Head Start ELOF Goals P-ATL 8 (holds information in mind and manipulates it to perform tasks), whose 48 to 60 month progression reads "Holds an increasing amount of information in mind in order to successfully complete tasks.", in part, since the lesson holds two sounds in mind, while three are held in Second and last, P-MATH 4 (compares numbers), whose 48 to 60 month progression reads "Counts to determine and compare number amounts even when the larger group\'s objects are smaller in size, such as buttons, compared with the smaller group\'s objects that are larger in size, such as markers. Uses numbers related to order or position.", in part, for its second sentence, first and second for two sounds in a row, while its first sentence is taught in More and fewer (First Steps), the places in a row of three in Second and last, and order words past second, such as third, wait (EARMARKS E13), and P-LC 1 (attends to communication and language from others), whose 48 to 60 month progression reads "Shows acknowledgment of complex comments or questions. Is able to attend to longer, multi-turn conversations, either spoken or signed.", in part, since the lesson teaches acknowledging a question of two parts, two sounds and then which came first, by tapping its answer, while attending to longer, multi-turn conversations needs a partner to talk with, which the app cannot be (EARMARKS E13).'],
     generators: ['p4-which-came-first', 'p4-which-came-first', 'p4-which-came-first', 'p4-which-came-first', 'p4-which-came-first'],
   },
   {
@@ -5441,15 +5513,16 @@ function PREK_READING_MODULES() { return [
     lesson: {
       paragraphs: ['With three sounds, keep all three in a row in your head, first, second and last.', 'The owl says hoot. The bee says buzz. The frog says ribbit. Hoot, buzz, ribbit. The bee came second, and the frog came last.'],
       keyIdea: 'Keep the sounds in a row in your head, then point to the place.',
-      example: { kind: 'pair', a: { kind: 'pic', name: 'bee' }, b: { kind: 'pic', name: 'frog' }, caption: 'Hoot, buzz, ribbit. The bee was second. The frog was last.' },
+      example: { kind: 'row', items: [{ kind: 'pic', name: 'owl' }, { kind: 'pic', name: 'bee' }, { kind: 'pic', name: 'frog' }], caption: 'Hoot, buzz, ribbit. The bee was second. The frog was last.' },
       script: [
+        { say: 'The cat says meow, the duck says quack, and the bear says growl.', show: { kind: 'row', items: [{ kind: 'pic', name: 'cat' }, { kind: 'pic', name: 'duck' }, { kind: 'pic', name: 'bear' }] } },
         { say: 'The owl says hoot. The bee says buzz.', show: { kind: 'pair', a: { kind: 'pic', name: 'owl' }, b: { kind: 'pic', name: 'bee' } } },
-        { say: 'The frog says ribbit. Hoot, buzz, ribbit. The bee came second.', show: { kind: 'pair', a: { kind: 'pic', name: 'bee' }, b: { kind: 'pic', name: 'frog' } } },
+        { say: 'The frog says ribbit. Hoot, buzz, ribbit. The bee came second.', show: { kind: 'row', items: [{ kind: 'pic', name: 'owl' }, { kind: 'pic', name: 'bee' }, { kind: 'pic', name: 'frog' }] } },
         { say: 'Hoot, buzz, ribbit. The frog came last.', show: { kind: 'pic', name: 'frog' } },
-        { say: 'The second sound is the middle one, not the first and not the last.', show: { kind: 'pair', a: { kind: 'pic', name: 'bee' }, b: { kind: 'pic', name: 'frog' } } },
+        { say: 'The second sound is the middle one, not the first and not the last.', show: { kind: 'row', items: [{ kind: 'pic', name: 'owl' }, { kind: 'pic', name: 'bee' }, { kind: 'pic', name: 'frog' }] } },
       ],
     },
-    sources: ['Aligned with Head Start ELOF Goal P-LC 1 (attends to communication and language from others).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines II.A.1 (shows understanding by responding appropriately to what has been communicated by adults and peers), in part, since the child shows understanding of a spoken question about three sounds by tapping the animal in the place it asks for, while responding to peers is the child\'s own, with other children (EARMARKS E13), and II.D.1 (understands (receptive) and uses (expressive) a wide variety of words to label, describe and make connections among objects, people, places, actions, and events), in part, its receptive half for the order words first, second, middle and last, while their expressive half is the child\'s own talk and the rest of its wide variety of words waits (EARMARKS E13), and Head Start ELOF Goals P-ATL 8 (holds information in mind and manipulates it to perform tasks), whose 48 to 60 month progression reads "Holds an increasing amount of information in mind in order to successfully complete tasks.", since the lesson holds three sounds in mind, one more than Which came first?, P-MATH 4 (compares numbers), whose 48 to 60 month progression reads "Counts to determine and compare number amounts even when the larger group\'s objects are smaller in size, such as buttons, compared with the smaller group\'s objects that are larger in size, such as markers. Uses numbers related to order or position.", in part, for its second sentence, first, second and last in a row of three sounds, while order words past second, such as third, wait (EARMARKS E13), and its first sentence is taught in More and fewer (First Steps), and P-LC 1 (attends to communication and language from others), whose 48 to 60 month progression reads "Shows acknowledgment of complex comments or questions. Is able to attend to longer, multi-turn conversations, either spoken or signed.", in part, since the lesson teaches acknowledging a question of three sounds and then which came second or last, by tapping its answer, while attending to longer, multi-turn conversations needs a partner to talk with, which the app cannot be (EARMARKS E13).'],
     generators: ['p4-which-came-second', 'p4-which-came-second', 'p4-which-came-second', 'p4-which-came-second', 'p4-which-came-second'],
   },
   {
@@ -5459,19 +5532,23 @@ function PREK_READING_MODULES() { return [
     title: 'Big letters',
     tagline: 'A, B, C',
     lesson: {
-      paragraphs: ['Every letter has a name and a shape of its own. A is tall and pointy, B has two round bumps, and C is curved.', 'D is a straight line and a big curve, E has a line down and three across, M has two pointy hills, and S is curvy like a snake. When you hear a name, find the letter that goes with it.'],
+      paragraphs: ['Every letter has a name and a shape of its own. A has two slanted sides that meet at the top, with a bar across the middle. B has two round bumps, and C is curved.', 'D is a straight line and one big curve, E has a line down and three across, M has two pointy hills, and S is curvy like a snake. When you hear a name, find the letter that goes with it, and you can find a letter by its shape too.'],
       keyIdea: 'Every letter has a name and a shape of its own.',
       example: { kind: 'letters', text: 'A B C D E M S', caption: 'A, B, C, D, E, M and S.' },
       script: [
-        { say: 'Letters have names. This is the letter A, tall and pointy, and apple starts with A.', show: { kind: 'letters', text: 'A' } },
+        { say: 'Letters have names. This is the letter A. Its two slanted sides meet at the top, with a bar across the middle.', show: { kind: 'letters', text: 'A' } },
+        { say: 'Apple starts with A.', show: { kind: 'letters', text: 'Apple', highlight: 'first' } },
         { say: 'This is B, with two round bumps, and this is C, curved like a cookie with a bite out of it.', show: { kind: 'letters', text: 'B   C' } },
-        { say: 'This is D, a straight line and a big curve. This is E, a line down and three lines across.', show: { kind: 'letters', text: 'D   E' } },
+        { say: 'This is D, a straight line and one big curve. This is E, a line down and three lines across.', show: { kind: 'letters', text: 'D   E' } },
         { say: 'This is M, with two pointy hills, and this is S, curvy like a snake.', show: { kind: 'letters', text: 'M   S' } },
+        { say: 'Is this the letter M? Yes. It has two pointy hills, so it is M.', show: { kind: 'letters', text: 'M' } },
+        { say: 'Is this the letter M too? No. It has two round bumps, so it is B.', show: { kind: 'letters', text: 'B' } },
+        { say: 'You can find a letter by its shape too. Which one has two round bumps? It is the letter B.', show: { kind: 'letters', text: 'A   B   C', highlight: 'B' } },
         { say: 'Find the letter when you hear its name. Every letter has one, A, B, C, D, E, M and S.', show: { kind: 'letters', text: 'A   B   C   D   E   M   S' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines III.C.1 (recognizes and names at least 20 letters) and Head Start ELOF Goal P-LIT 3.'],
-    generators: ['pl-tap-letter', 'pl-name-letter', 'pl-tap-letter', 'pl-name-letter', 'pl-tap-letter'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines III.C.1 (recognizes and names at least 20 letters (upper- or lower-case letters)), in part, since the lesson teaches seven capital letters, A, B, C, D, E, M and S, each by its name and its shape, and asks the child to find each one when its name is heard, to say whether a letter is the one named and to find one by its shape, while naming them aloud is the child\'s own talk, for a grown-up to hear, and thirteen more letters wait (EARMARKS E13), and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson teaches seven letters by name and shape, while naming them aloud is the child\'s own talk, for a grown-up to hear, and six more letters to make half of the alphabet, letters met often in the environment and the sounds of letters wait (EARMARKS E13), and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show.'],
+    generators: ['pl-tap-letter', 'pl-is-letter', 'pl-letter-look', 'pl-tap-letter', 'pl-is-letter'],
   },
   {
     id: 'first-letter-tracing',
@@ -5482,17 +5559,17 @@ function PREK_READING_MODULES() { return [
     requires: ['big-letters'],
     needsTouch: true,
     lesson: {
-      paragraphs: ['Big letters are made of lines. Start at the dot and follow the arrow.', 'L goes down, then across. T goes across, then down. O goes round. Starting at the dot every time teaches your hand to make each letter the same way.'],
+      paragraphs: ['Big letters are made of lines. Start at the dot and follow the arrow.', 'L goes down, then across the bottom. T goes down the middle, then across the top. O goes around to the left, all the way back to where it started. Starting at the dot every time teaches your hand to make each letter the same way.'],
       keyIdea: 'Start at the dot. Follow the arrow.',
-      example: { kind: 'trace', text: 'L', caption: 'Down, then across. That is L.' },
+      example: { kind: 'trace', text: 'L', caption: 'Down, then across the bottom. That is L.' },
       script: [
-        { say: 'Start at the dot. Go down, then across. That is L.', show: { kind: 'trace', text: 'L' } },
-        { say: 'Start at the dot. Go across, then down. That is T.', show: { kind: 'trace', text: 'T' } },
-        { say: 'Start at the dot. Go round and round. That is O.', show: { kind: 'trace', text: 'O' } },
-        { say: 'Start at the dot every time, so your hand learns to make each letter the same way.', show: { kind: 'trace', text: 'O' } },
+        { say: 'Start at the dot. Go down, then across the bottom. That is L.', show: { kind: 'trace', text: 'L' } },
+        { say: 'Start at the dot at the top and go straight down the middle. Then lift your finger and go across the top. That is T.', show: { kind: 'trace', text: 'T' } },
+        { say: 'Start at the dot at the top. Go around to the left, all the way back to the dot. That is O.', show: { kind: 'trace', text: 'O' } },
+        { say: 'Start at the dot and follow the arrow every time, so your hand learns to make each letter the same way.', show: { kind: 'trace', text: 'O' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines IV.C.1 (writes first name using legible letters in the proper sequence) and Head Start ELOF Goal P-LIT 6 (writes for a variety of purposes using increasingly sophisticated marks).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines IV.C.2 (progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate), in part, since the lesson forms the letters L, T and O along a guide, while forming letters without a guide, letter strings and writing as a way to communicate are the child\'s own, with a grown-up (EARMARKS E13), IV.C.4 (uses appropriate directionality when writing (e.g., top to bottom, left to right)), in part, since every letter starts at the top, each line down goes from top to bottom, each line across goes from left to right and O goes around to the left, while writing letters and words from left to right along a line waits (EARMARKS E13), and IX.B.2 (shows increasing control of tasks that require eye-hand coordination), and Head Start ELOF Goal P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws letters along their lines with moderate precision, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13).'],
     generators: ['pl-trace-first', 'pl-trace-first', 'pl-trace-first', 'pl-trace-first', 'pl-trace-first'],
   },
   {
@@ -5504,17 +5581,17 @@ function PREK_READING_MODULES() { return [
     requires: ['first-letter-tracing'],
     needsTouch: true,
     lesson: {
-      paragraphs: ['These big letters are all straight lines. Start at the dot and follow the arrow.', 'I goes straight down. H is two lines down and one across. E is one line down and three across. Lift your finger after each line, then start the next one.'],
+      paragraphs: ['These big letters are all straight lines. Start at the dot and follow the arrow.', 'I goes straight down. H is two lines down, then a bridge across the middle. E is one line down and three across, at the top, the middle and the bottom. Lift your finger after each line, then start the next one at its dot.'],
       keyIdea: 'Straight lines make letters. Start at the dot.',
       example: { kind: 'trace', text: 'I', caption: 'Straight down. That is I.' },
       script: [
         { say: 'Start at the dot. Go straight down. That is I.', show: { kind: 'trace', text: 'I' } },
-        { say: 'Start at the dot. Down, down again, then across the middle. That is H.', show: { kind: 'trace', text: 'H' } },
-        { say: 'Start at the dot. Down, then three lines across. That is E.', show: { kind: 'trace', text: 'E' } },
-        { say: 'For H, lift your finger after each line, then start the next one at its dot.', show: { kind: 'trace', text: 'H' } },
+        { say: 'Start at the dot. Go down, then down again, then make a bridge across the middle. That is H.', show: { kind: 'trace', text: 'H' } },
+        { say: 'Start at the dot. Down, then three lines across, at the top, the middle and the bottom. That is E.', show: { kind: 'trace', text: 'E' } },
+        { say: 'For H, lift your finger after each line, then start the next one at its dot and follow the arrow.', show: { kind: 'trace', text: 'H' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines IV.C.1 (writes first name using legible letters) and Head Start ELOF Goal P-LIT 6 (writes for a variety of purposes using increasingly sophisticated marks).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines IV.C.2 (progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate), in part, since the lesson forms the letters I, H and E along a guide, while forming letters without a guide, letter strings and writing as a way to communicate are the child\'s own, with a grown-up (EARMARKS E13), IV.C.4 (uses appropriate directionality when writing (e.g., top to bottom, left to right)), in part, since every letter starts at the top, each line down goes from top to bottom and each line across goes from left to right, while writing letters and words from left to right along a line waits (EARMARKS E13), and IX.B.2 (shows increasing control of tasks that require eye-hand coordination), and Head Start ELOF Goal P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws letters along their lines with moderate precision, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13).'],
     generators: ['pl-trace-more', 'pl-trace-more', 'pl-trace-more', 'pl-trace-more', 'pl-trace-more'],
   },
   {
@@ -5522,21 +5599,21 @@ function PREK_READING_MODULES() { return [
     skill: 'Letters',
     order: 6,
     title: 'Trace L, T and F',
-    tagline: 'Three more straight letters',
+    tagline: 'Down, then across',
     requires: ['more-big-letters'],
     needsTouch: true,
     lesson: {
-      paragraphs: ['Three more letters made of straight lines. Start at the dot and follow the arrow.', 'L goes down and then across the bottom. T is one line across the top and one down. F is one line down and two across. All three use the same two moves, down and across, in different places.'],
+      paragraphs: ['L, T and F are made of straight lines. You traced L and T before, and F is new. Start at the dot and follow the arrow.', 'L goes down and then across the bottom. T goes down the middle and then across the top. F is one line down and two across, at the top and the middle. All three use the same two moves, down and then across, in different places.'],
       keyIdea: 'Down, then across. Start at the dot.',
       example: { kind: 'trace', text: 'L', caption: 'Down, then across the bottom. That is L.' },
       script: [
         { say: 'Start at the dot. Go down, then across the bottom. That is L.', show: { kind: 'trace', text: 'L' } },
-        { say: 'Start at the dot. Across the top, then straight down the middle. That is T.', show: { kind: 'trace', text: 'T' } },
-        { say: 'Start at the dot. Down, then two lines across. That is F.', show: { kind: 'trace', text: 'F' } },
-        { say: 'L, T and F use the same two moves, down and across, in different places.', show: { kind: 'trace', text: 'F' } },
+        { say: 'Start at the dot. Straight down the middle, then lift and go across the top. That is T.', show: { kind: 'trace', text: 'T' } },
+        { say: 'Start at the dot. Down, then two lines across, at the top and the middle. That is F.', show: { kind: 'trace', text: 'F' } },
+        { say: 'L, T and F use the same two moves, down and then across, in different places. Start at the dot and follow the arrow.', show: { kind: 'letters', text: 'L   T   F' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines IV.C.1 (writes first name using legible letters) and Head Start ELOF Goal P-LIT 6 (writes for a variety of purposes using increasingly sophisticated marks).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines IV.C.2 (progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate), in part, since the lesson forms the letters L, T and F along a guide, while forming letters without a guide, letter strings and writing as a way to communicate are the child\'s own, with a grown-up (EARMARKS E13), IV.C.4 (uses appropriate directionality when writing (e.g., top to bottom, left to right)), in part, since every letter starts at the top, each line down goes from top to bottom and each line across goes from left to right, while writing letters and words from left to right along a line waits (EARMARKS E13), and IX.B.2 (shows increasing control of tasks that require eye-hand coordination), and Head Start ELOF Goal P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws letters along their lines with moderate precision, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13).'],
     generators: ['pl-trace-ltf', 'pl-trace-ltf', 'pl-trace-ltf', 'pl-trace-ltf', 'pl-trace-ltf'],
   },
 ]; }
@@ -17596,7 +17673,14 @@ Object.assign(GENERATORS, {
 // Pre-K letters: only the first few, big and spoken.
 const PREK_LETTERS = ['A', 'B', 'C', 'D', 'E', 'M', 'S'];
 // What each pre-K letter looks like, as its lesson says it (pass JT), so an explanation names the shape as well as the letter.
-const LETTER_LOOKS = { A: 'It is tall and pointy, with a bar across the middle.', B: 'It has two round bumps.', C: 'It is curved, like a cookie with a bite out of it.', D: 'It has a straight line and a big curve.', E: 'It has a line down and three lines across.', M: 'It has two pointy hills.', S: 'It is curvy, like a snake.' };
+// Since pass MM, A is its two slanted sides and its bar (pre-K 3's words), since "tall and pointy" fits M too, and D has "one big curve".
+const LETTER_LOOKS = { A: 'Its two slanted sides meet at the top, with a bar across the middle.', B: 'It has two round bumps.', C: 'It is curved, like a cookie with a bite out of it.', D: 'It has a straight line and one big curve.', E: 'It has a line down and three lines across.', M: 'It has two pointy hills.', S: 'It is curvy, like a snake.' };
+// A letter's own sign in a reason heard after a wrong tap (pass MM, EARMARKS L10): only the look the lesson's lines give it,
+// so a reason never borrows another letter's sign, and short enough that every reason stays at eighteen words or fewer.
+const LETTER_NOT = { A: 'has two slanted sides and a bar across the middle', B: 'has two round bumps', C: 'is curved, like a cookie with a bite out of it', D: 'has a straight line and one big curve', E: 'has a line down and three lines across', M: 'has two pointy hills', S: 'is curvy, like a snake' };
+// Letters a child could fairly say share a look, kept apart when one is asked by its look (pass MM, the lesson check): A and
+// M both come to points; B, C, D and S all curve.
+const LETTER_LOOK_ALIKE = { A: ['M'], B: ['D', 'S'], C: ['B', 'D', 'S'], D: ['B', 'C', 'S'], E: [], M: ['A'], S: ['B', 'C', 'D'] };
 Object.assign(GENERATORS, {
   'sk-day-or-night': (rng) => {
     // Full standard (pass JY): every scene is answered by the lesson's clues (the sun makes the sky bright, a dark sky means
@@ -17926,7 +18010,7 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt: 'When can you see the stars?', choices: shuffle(rng, ['At night', 'At midday']), answer: 'At night', explain: 'Stars show at night, when the sky is dark. In the day the bright sun hides them, but they are still there.', visual: { kind: 'icon', name: 'star' }, explainVisual: null };
   },
   's1-look-sun': (rng) => {
-    return { type: 'choice', story: null, prompt: 'Is it safe to look straight at the sun?', choices: ['Yes', 'No'], answer: 'No',
+    return { type: 'choice', story: null, prompt: 'Is it safe to look straight at the sun?', choices: yesNo(rng), answer: 'No',   // shuffled since pass MM, so No is not always the second button
       explain: 'The light of the sun is strong enough to hurt your eyes, so never look straight at it. Look at the sky around it instead.', visual: { kind: 'icon', name: 'sun' }, explainVisual: null };
   },
   's1-heat-or-cold': (rng) => {
@@ -17972,7 +18056,7 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt: 'What dries wet clothes in a clothes dryer?', choices: shuffle(rng, ['Hot air', 'Cold water']), answer: 'Hot air', explain: 'A clothes dryer blows hot air, and the heat dries the wet clothes, the same way the sun dries a puddle.', visual: null, explainVisual: null };
   },
   's1-same-water': (rng) => {
-    return { type: 'choice', story: 'Ice, water and steam.', prompt: 'Are they all the same stuff?', choices: ['Yes', 'No'], answer: 'Yes',
+    return { type: 'choice', story: 'Ice, water and steam.', prompt: 'Are they all the same stuff?', choices: yesNo(rng), answer: 'Yes',   // shuffled since pass MM
       explain: 'Ice, water and steam are all the same water, only colder or hotter. Heat and cold change it from one to another and back.', visual: { kind: 'icon', name: 'ice' }, explainVisual: null };
   },
   's1-where-it-lives': (rng) => {
@@ -18048,7 +18132,7 @@ Object.assign(GENERATORS, {
   },
   's2-magnet-pulls': (rng) => {
     const t = pick(rng, [{ n: 'rock', pulls: false }, { n: 'flower', pulls: false }, { n: 'plant', pulls: false }, { n: 'ice', pulls: false }]);
-    return { type: 'choice', story: null, prompt: `Look at the ${t.n}. Does a magnet pull it?`, choices: ['Yes', 'No'], answer: 'No',
+    return { type: 'choice', story: null, prompt: `Look at the ${t.n}. Does a magnet pull it?`, choices: yesNo(rng), answer: 'No',   // shuffled since pass MM; its answer is always No (the rules test's waiting list)
       explain: `A magnet does not pull the ${t.n}. It pulls iron and steel.`, visual: { kind: 'icon', name: t.n }, explainVisual: null };
   },
   's2-tap-not-pulled': (rng) => {
@@ -18327,19 +18411,21 @@ Object.assign(GENERATORS, {
       whyNot: p3WhyNot(choices, String(n), notes('dot')), alsoRight: more };
   },
 
-  'p4-which-came-first': (rng) => {
-    const SOUNDS = [['cat', 'meow'], ['duck', 'quack'], ['bee', 'buzz'], ['frog', 'ribbit'], ['owl', 'hoot'], ['bear', 'growl']];
-    const [a, sa] = pick(rng, SOUNDS); const [b, sb] = pick(rng, SOUNDS.filter((x) => x[0] !== a));
-    return { type: 'choice', story: null, prompt: `Listen. ${capFirst(sa)}, then ${sb}. Which animal came first?`, choices: shuffle(rng, [`pic:${a}`, `pic:${b}`]), answer: `pic:${a}`,
-      explain: `${sa.charAt(0).toUpperCase() + sa.slice(1)} came first. That is the ${a}.`, visual: null, explainVisual: { kind: 'pic', name: a } };
-  },
-  'p4-which-came-second': (rng) => {
-    const SOUNDS = [['cat', 'meow'], ['duck', 'quack'], ['bee', 'buzz'], ['frog', 'ribbit'], ['owl', 'hoot'], ['bear', 'growl']];
-    const three = shuffle(rng, SOUNDS).slice(0, 3); const [a, b, c] = three; const askLast = rng() < 0.5;
-    const want = askLast ? c : b; const word = askLast ? 'last' : 'second';
-    return { type: 'choice', story: null, prompt: `Listen. ${capFirst(a[1])}, then ${b[1]}, then ${c[1]}. Which animal came ${word}?`, choices: shuffle(rng, three.map((x) => `pic:${x[0]}`)), answer: `pic:${want[0]}`,
-      explain: `${want[1].charAt(0).toUpperCase() + want[1].slice(1)} came ${word}. That is the ${want[0]}.`, visual: null, explainVisual: { kind: 'pic', name: want[0] } };
-  },
+  // Which came first?, with More Info (L10): the other animal by its sound and when it came, and one more order with two others.
+  'p4-which-came-first': (rng) => { const [a, sa] = pick(rng, P3_ANIMAL_SOUNDS); const [b, sb] = pick(rng, P3_ANIMAL_SOUNDS.filter((x) => x[0] !== a)); const choices = shuffle(rng, [`pic:${a}`, `pic:${b}`]);
+    const [[c, sc], [d, sd]] = shuffle(rng, P3_ANIMAL_SOUNDS.filter((x) => ![a, b].includes(x[0]))).slice(0, 2);
+    return { type: 'choice', story: null, prompt: `Listen. ${capFirst(sa)}, then ${sb}. Which animal came first?`, choices, answer: `pic:${a}`,
+      explain: `${capFirst(sa)} came first. That is the ${a}.`, visual: null, explainVisual: { kind: 'pic', name: a },
+      whyNot: p3WhyNot(choices, `pic:${a}`, () => ({ name: `The ${b}`, why: `says ${sb}, and ${sb} came second, after ${sa}.` })),
+      alsoRight: [`If you hear ${sc}, then ${sd}, the ${c} came first and the ${d} came second.`] }; },
+  // Second and last, with More Info: each wrong animal by its sound and its own place, never the answer's.
+  'p4-which-came-second': (rng) => { const three = shuffle(rng, P3_ANIMAL_SOUNDS).slice(0, 3); const [a, b, c] = three; const askLast = rng() < 0.5;
+    const want = askLast ? c : b; const word = askLast ? 'last' : 'second'; const choices = shuffle(rng, three.map((x) => `pic:${x[0]}`));
+    const [x1, x2, x3] = P3_ANIMAL_SOUNDS.filter((x) => !three.includes(x));
+    return { type: 'choice', story: null, prompt: `Listen. ${capFirst(a[1])}, then ${b[1]}, then ${c[1]}. Which animal came ${word}?`, choices, answer: `pic:${want[0]}`,
+      explain: `${capFirst(want[1])} came ${word}. That is the ${want[0]}.`, visual: null, explainVisual: { kind: 'pic', name: want[0] },
+      whyNot: p3WhyNot(choices, `pic:${want[0]}`, (t) => { const x = three.find((y) => `pic:${y[0]}` === t); const place = x === a ? 'first' : x === b ? 'second' : 'last'; return { name: `The ${x[0]}`, why: `says ${x[1]}, and ${x[1]} came ${place}, not ${word}.` }; }),
+      alsoRight: [`If you hear ${x1[1]}, then ${x2[1]}, then ${x3[1]}, the ${x2[0]} came second and the ${x3[0]} came last.`] }; },
   'sk-last-sound': (rng) => {
     const WORDS = [['cat', 'T', 'pic:cat'], ['bus', 'S', 'icon:bus'], ['sun', 'N', 'icon:sun'], ['dog', 'G', 'icon:dog'], ['cup', 'P', 'icon:cup'], ['hat', 'T', 'icon:hat'], ['bed', 'D', 'icon:bed'], ['fan', 'N', 'icon:fan']];
     const [word, letter] = pick(rng, WORDS); const others = shuffle(rng, ['B', 'D', 'G', 'M', 'N', 'P', 'S', 'T'].filter((x) => x !== letter)).slice(0, 2);
@@ -18560,7 +18646,7 @@ Object.assign(GENERATORS, {
   },
   'p3-tap-ab': (rng) => {
     const L = pick(rng, ['A', 'B']); const other = L === 'A' ? 'B' : 'A'; const choices = shuffle(rng, [L, other]);
-    return { type: 'choice', story: null, prompt: `Tap the letter ${L}.`, choices, answer: L,
+    return { type: 'choice', story: null, prompt: `Tap the letter ${L}.`, printed: 'Tap the letter you hear.', choices, answer: L,
       explain: `This is ${L}. ${L === 'A' ? 'Its two slanted sides meet at the top, with a bar across.' : 'It has two round bumps on one side.'}`, visual: null, explainVisual: null,
       whyNot: p3WhyNot(choices, L, (o) => ({ name: p3LetterName(o), why: p3LetterWhy(o, L) })), alsoRight: [p3AbMore(L)] };
   },
@@ -18596,7 +18682,7 @@ Object.assign(GENERATORS, {
     const [word, L] = pick(rng, P3_SIGN_WORDS); const choices = word.split('');
     // Each other letter of the word by name, and by its look where the lesson teaches it (pass MH); two more sign words with the letter.
     const [x, y] = [...new Set(P3_SIGN_WORDS.filter(([w, l]) => l === L && w !== word).map(([w]) => w.toLowerCase()))];
-    return { type: 'choice', story: `Here is the word ${word.toLowerCase()}, the way a sign shows it.`, prompt: `Tap the letter ${L}.`, choices, answer: L,
+    return { type: 'choice', story: `Here is the word ${word.toLowerCase()}, the way a sign shows it.`, prompt: `Tap the letter ${L}.`, printed: 'Tap the letter you hear.', choices, answer: L,
       explain: [`This is the letter ${L}, in the word ${word.toLowerCase()}. `, L === 'A' ? 'Its two slanted sides meet at the top, with a bar across.' : 'It has two round bumps on one side.'].join(''), visual: { kind: 'letters', text: word }, explainVisual: null,
       whyNot: p3WhyNot(choices, L, (o) => ({ name: p3LetterName(o), why: p3LetterWhy(o, L) })), alsoRight: [`You can find ${L} in ${x} and ${y} too.`] };
   },
@@ -18609,7 +18695,7 @@ Object.assign(GENERATORS, {
     const L = pick(rng, ['A', 'B']); const twin = pick(rng, L === 'A' ? ['H', 'V'] : ['P', 'D']);
     const why = { H: 'The other letter has a bar too, but its sides stand up straight and never meet.', V: 'The sides of the other letter meet at the bottom, and it has no bar.', P: 'The other letter has just one bump.', D: 'The other letter has just one bump.' }[twin];
     const choices = shuffle(rng, [L, twin]);
-    return { type: 'choice', story: `One of these is the letter ${L}, and the other only looks a little like it.`, prompt: `Tap the letter ${L}.`, choices, answer: L,
+    return { type: 'choice', story: `One of these is the letter ${L}, and the other only looks a little like it.`, prompt: `Tap the letter ${L}.`, printedStory: 'One of these is the letter you hear, and the other only looks a little like it.', printed: 'Tap the letter you hear.', choices, answer: L,
       explain: [`This is ${L}. `, L === 'A' ? 'Its two slanted sides meet at the top, with a bar across. ' : 'It has two round bumps on one side. ', why].join(''), visual: null, explainVisual: null,
       whyNot: p3WhyNot(choices, L, (o) => ({ name: p3LetterName(o), why: p3LetterWhy(o, L) })), alsoRight: [p3AbMore(L)] };
   },
@@ -18887,14 +18973,28 @@ Object.assign(GENERATORS, {
 });
 Object.assign(GENERATORS, {
   'pl-tap-letter': (rng) => {
-    const L = pick(rng, PREK_LETTERS);
-    return { type: 'choice', story: null, prompt: `Tap the letter ${L}.`, choices: shuffle(rng, [L, ...shuffle(rng, PREK_LETTERS.filter((x) => x !== L)).slice(0, 2)]), answer: L,
-      explain: `This is ${L}. ${LETTER_LOOKS[L] || ''}`.trim(), visual: null, explainVisual: null };
+    const L = pick(rng, PREK_LETTERS); const choices = shuffle(rng, [L, ...shuffle(rng, PREK_LETTERS.filter((x) => x !== L)).slice(0, 2)]);
+    return { type: 'choice', story: null, prompt: `Tap the letter ${L}.`, printed: 'Tap the letter you hear.', choices, answer: L,
+      explain: `This is ${L}. ${LETTER_LOOKS[L] || ''}`.trim(), visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, L, (x) => ({ name: `The letter ${x}`, why: `${LETTER_NOT[x]}.` })), alsoRight: L === 'A' ? ['Apple starts with A.'] : [] };
   },
-  'pl-name-letter': (rng) => {
-    const L = pick(rng, PREK_LETTERS);
-    return { type: 'choice', story: null, prompt: 'What letter is this?', choices: shuffle(rng, [L, ...shuffle(rng, PREK_LETTERS.filter((x) => x !== L)).slice(0, 2)]), answer: L,
-      explain: `It is ${L}. ${LETTER_LOOKS[L] || ''}`.trim(), visual: { kind: 'letters', text: L }, explainVisual: null };
+  // Is this the letter named? (pass MM, the lesson check: "What letter is this?" showed E among the choices E, S and B, drawn in
+  // one font, so a child who knew no letter's name matched the shape and passed.) One letter is shown and one is named, the same
+  // letter half the time: 7 Yes questions and 42 No.
+  'pl-is-letter': (rng) => {
+    const shown = pick(rng, PREK_LETTERS); const yes = rng() < 0.5; const asked = yes ? shown : pick(rng, PREK_LETTERS.filter((x) => x !== shown));
+    return { type: 'choice', story: null, prompt: `Is this the letter ${asked}?`, printed: 'Is this the letter you hear?', choices: ['Yes', 'No'], answer: yes ? 'Yes' : 'No',
+      explain: yes ? `Yes, this is ${asked}. ${LETTER_LOOKS[asked]}` : `No, this is ${shown}, not ${asked}. ${LETTER_LOOKS[shown]}`, visual: { kind: 'letters', text: shown }, explainVisual: null,
+      // In plain words since round two (pass MM): "No would mean not C" was the stiffest line a child heard here.
+      whyNot: yes ? { No: { name: 'No', why: `means another letter, but it ${LETTER_NOT[asked]}.` } } : { Yes: { name: 'Yes', why: `means it is ${asked}, but it ${LETTER_NOT[shown]}.` } },
+      alsoRight: shown === 'A' ? ['Apple starts with A.'] : [] };
+  },
+  // A letter found by its look (pass MM): the question says one letter's sign, and the other two letters share none of it.
+  'pl-letter-look': (rng) => {
+    const L = pick(rng, PREK_LETTERS); const others = shuffle(rng, PREK_LETTERS.filter((x) => x !== L && !LETTER_LOOK_ALIKE[L].includes(x))).slice(0, 2); const choices = shuffle(rng, [L, ...others]);
+    return { type: 'choice', story: null, prompt: `Which letter ${LETTER_NOT[L]}?`, choices, answer: L,
+      explain: `This is ${L}. ${LETTER_LOOKS[L]}`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, L, (x) => ({ name: `The letter ${x}`, why: `${LETTER_NOT[x]}.` })), alsoRight: L === 'A' ? ['Apple starts with A.'] : [] };
   },
 });
 
@@ -25392,7 +25492,7 @@ Object.assign(GENERATORS, {
   },
   's6-warm-to-cool': (rng) => {
     const a = randInt(rng, 60, 90); const b = randInt(rng, 10, 40);
-    return { type: 'choice', story: `A ${a}-degree stone is placed in ${b}-degree water.`, prompt: 'Which way does the heat move?', choices: ['From the stone into the water', 'From the water into the stone'], answer: 'From the stone into the water',
+    return { type: 'choice', story: `A ${a}-degree stone is placed in ${b}-degree water.`, prompt: 'Which way does the heat move?', choices: shuffle(rng, ['From the stone into the water', 'From the water into the stone']), answer: 'From the stone into the water',   // shuffled since pass MM
       explain: 'Heat always moves from warmer to cooler. The stone cools and the water warms until they match.', visual: null, explainVisual: null };
   },
   's6-boundary-result': (rng) => {
@@ -26888,6 +26988,28 @@ const p3RhymeMore = (fam, a, b) => { const third = fam.find((e) => e !== a && e 
   const f2 = P3_RHYME_FAMILIES[(P3_RHYME_FAMILIES.indexOf(fam) + 1) % P3_RHYME_FAMILIES.length]; return `${capFirst(f2[0][0])} and ${f2[1][0]} rhyme too.`; };
 // The word a rhyme picture's token stands for, and a word's rhyming partner from its own family.
 const p3RhymePartner = (e) => P3_RHYME_FAMILIES.find((f) => f.includes(e)).find((x) => x !== e);
+// Rhyme time's picture families: pre-K 3's, without bee and tree (in a letters course a voice says bee like the letter B's name,
+// which Big letters teaches), each named on a line of the lesson before a question shows it.
+const P4_RHYME_PICS = P3_RHYME_FAMILIES.slice(0, 6);
+const p4RhymePic = ([, c]) => (c.startsWith('pic:') ? { kind: 'pic', name: c.slice(4) } : { kind: 'icon', name: c.slice(5) });
+// Two families never meet when pre-K 3 keeps them apart (dog and sock sound close to many Texas speakers; wall and rock look alike).
+const p4Near = (f, g) => { const i = P3_RHYME_FAMILIES.indexOf(f); const k = P3_RHYME_FAMILIES.indexOf(g); return P3_RHYME_NEAR.some(([a, b]) => (a === i && b === k) || (a === k && b === i)); };
+// "the moon" and "the sun", "this ball": how a question names the picture it shows (round two's lesson check, pass MM). A rhyme's
+// more right line names a third word of the family, or else a family none of whose words the question shows (shown).
+const p4ThisName = (w) => (w === 'moon' || w === 'sun' ? 'the ' + w : 'this ' + w);
+const p4RhymeMore = (fam, a, b, shown = []) => { const third = fam.find((e) => e !== a && e !== b); if (third) return `${capFirst(third[0])} rhymes with ${a[0]} and ${b[0]} too.`;
+  const at = P4_RHYME_PICS.indexOf(fam); const f2 = [1, 2, 3, 4, 5].map((k) => P4_RHYME_PICS[(at + k) % P4_RHYME_PICS.length]).find((f) => !f.some((e) => shown.includes(e[1]))); return `${capFirst(f2[0][0])} and ${f2[1][0]} rhyme too.`; };
+// First sounds' pictures: things the app draws whose names start with one clear sound a child hears, no blend (no tree, plate or
+// flower) and no picture a child could fairly call by another name that starts another way (no teddy, which is a bear; no bus,
+// which is a school bus; no penny, which is a coin; no pizza, which pre-K 3 calls a slice of pizza), each named on a line first.
+// Since round two's lesson check (pass MM) no table, which the app draws with a bird over it and a cat under it, and no tuh family
+// beside duh, since the two differ only in voicing, which preschoolers misjudge more often (Treiman and others, 1998).
+const P4_START_PICS = [['mmm', ['icon:moon', 'icon:map']], ['sss', ['icon:sun', 'icon:sock']], ['fff', ['pic:fish', 'icon:fan', 'pic:fox']], ['buh', ['icon:ball', 'icon:bed', 'pic:bear']], ['duh', ['icon:dog', 'pic:duck', 'icon:door']]];
+const p4StartWord = (t) => String(t).replace(/^(?:pic|icon):/, '');
+const p4SoundOf = (t) => P4_START_PICS.find(([, ts]) => ts.includes(t))[0];
+const p4StartPic = (t) => (t.startsWith('pic:') ? { kind: 'pic', name: p4StartWord(t) } : { kind: 'icon', name: p4StartWord(t) });
+// More right examples, one pair of everyday words for each sound (no blend, no family word).
+const P4_START_MORE = { mmm: 'Milk and mitten start with mmm too.', sss: 'Soap and seven start with sss too.', fff: 'Fork and five start with fff too.', buh: 'Boat and banana start with buh too.', duh: 'Dinner and dinosaur start with duh too.' };
 const twoOf = (rng, list, answer) => shuffle(rng, [answer, ...shuffle(rng, [...new Set(list.filter((x) => x !== answer))]).slice(0, 2)]);
 Object.assign(GENERATORS, {
   // One more and one fewer (pass ME). The picture shows the group before the change, so the child works out the new count;
@@ -26921,14 +27043,64 @@ Object.assign(GENERATORS, {
   'p3-rhyme-listen': (rng) => { const fam = pick(rng, P3_RHYME_FAMILIES); const [a, b] = shuffle(rng, fam).slice(0, 2); const odd = p3RhymeOdd(rng, fam); const choices = shuffle(rng, [b[1], odd[1]]);
     return { type: 'choice', story: null, prompt: `Listen. ${capFirst(a[0])}. Tap the one that rhymes with ${a[0]}.`, choices, answer: b[1], explain: `${capFirst(a[0])} and ${b[0]} rhyme. They sound the same at the end. ${capFirst(odd[0])} does not rhyme with ${a[0]}.`, visual: null, explainVisual: null,
       whyNot: p3WhyNot(choices, b[1], () => ({ name: capFirst(odd[0]), why: `does not sound the same as ${a[0]} at the end, so they do not rhyme.` })), alsoRight: [p3RhymeMore(fam, a, b)] }; },
+  // Is it a rhyme, heard (round three's lesson check, pass MM): the two words are said over their two pictures and printed as
+  // "these two" while the voice can say them (printedQuestion), since printed, their endings spelled alike let 208 of 210 be
+  // answered by matching letters.
   'p3-rhyme-yesno': (rng) => { const fam = pick(rng, P3_RHYME_FAMILIES); const [a, b] = shuffle(rng, fam).slice(0, 2); const yes = rng() < 0.5; const c = yes ? b : p3RhymeOdd(rng, fam); const choices = yesNo(rng); const answer = yes ? 'Yes' : 'No';
-    return { type: 'choice', story: null, prompt: `Do ${a[0]} and ${c[0]} rhyme?`, choices, answer, explain: yes ? `Yes, they rhyme. ${capFirst(a[0])} and ${c[0]} sound the same at the end.` : `No, they do not rhyme. ${capFirst(a[0])} and ${c[0]} do not sound the same at the end.`, visual: { kind: 'pair', a: p3RhymePic(a), b: p3RhymePic(c) }, explainVisual: null,
+    return { type: 'choice', story: null, prompt: `Do ${a[0]} and ${c[0]} rhyme?`, printed: 'Do these two rhyme?', choices, answer, explain: yes ? `Yes, they rhyme. ${capFirst(a[0])} and ${c[0]} sound the same at the end.` : `No, they do not rhyme. ${capFirst(a[0])} and ${c[0]} do not sound the same at the end.`, visual: { kind: 'pair', a: p3RhymePic(a), b: p3RhymePic(c) }, explainVisual: null,
       whyNot: p3WhyNot(choices, answer, (w) => ({ name: w, why: yes ? `would mean they do not rhyme, but ${a[0]} and ${c[0]} sound the same at the end.` : `would mean they rhyme, but ${a[0]} and ${c[0]} do not sound the same at the end.` })),
       alsoRight: [yes ? p3RhymeMore(fam, a, c) : `${capFirst(a[0])} rhymes with ${b[0]}, and ${c[0]} rhymes with ${p3RhymePartner(c)[0]}.`] }; },
   'p3-rhyme-odd': (rng) => { const fam = pick(rng, P3_RHYME_FAMILIES); const [a, b] = shuffle(rng, fam).slice(0, 2); const odd = p3RhymeOdd(rng, fam); const choices = shuffle(rng, [a[1], b[1], odd[1]]);
     return { type: 'choice', story: 'Two of these rhyme.', prompt: 'Tap the one that does not rhyme.', choices, answer: odd[1], explain: `${capFirst(a[0])} and ${b[0]} rhyme. ${capFirst(odd[0])} does not sound the same at the end, so it does not rhyme with them.`, visual: null, explainVisual: null,
       whyNot: p3WhyNot(choices, odd[1], (t) => { const [w, x] = t === a[1] ? [a, b] : [b, a]; return { name: capFirst(w[0]), why: `rhymes with ${x[0]}, because they sound the same at the end.` }; }),
       alsoRight: [`${capFirst(odd[0])} rhymes with ${p3RhymePartner(odd)[0]}, not with ${a[0]} and ${b[0]}.`] }; },
+  // Rhyme time, heard: two words and Yes or No, nothing shown (TEA's guide: "give a thumbs up if two words rhyme or thumbs down if
+  // they do not"). The words are heard, never shown, so no letter answers it; the eight endings are each said on a line first.
+  // Since round two's lesson check (pass MM) a No pair never shares its vowel (red and pen, pup and fun, top and dog would rest on
+  // a last sound alone, the near rhyme pre-K 3 keeps apart), and "up" is never asked ("Do up and hop rhyme?" is heard as "do up").
+  'p4-does-rhyme': (rng) => { const fam = pick(rng, RHYME_FAMILIES); const asked = fam.filter((w) => w !== 'up'); const [a, b] = shuffle(rng, asked).slice(0, 2); const yes = rng() < 0.5;
+    const c = yes ? b : pick(rng, pick(rng, RHYME_FAMILIES.filter((f) => f !== fam && rimeOf(f[0])[0] !== rimeOf(fam[0])[0])).filter((w) => w !== 'up')); const choices = yesNo(rng); const answer = yes ? 'Yes' : 'No';
+    const third = fam.find((x) => x !== a && x !== c);
+    // The words are heard and never printed while the voice can say them (round three's lesson check, pass MM: printed, their
+    // endings spelled alike answered all 740 by matching letters), so the screen prints printed instead (printedQuestion).
+    return { type: 'choice', story: null, prompt: `Listen. Do ${a} and ${c} rhyme?`, printed: 'Listen. Do these two words rhyme?', choices, answer,
+      explain: yes ? `${capFirst(a)} and ${c} both end with ${rimeOf(a)}, so they rhyme.` : `${capFirst(a)} ends with ${rimeOf(a)} and ${c} ends with ${rimeOf(c)}, so they do not rhyme.`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, answer, (w) => ({ name: w, why: yes ? `would mean they do not rhyme, but ${a} and ${c} both end with ${rimeOf(a)}.` : `would mean they rhyme, but ${a} ends with ${rimeOf(a)} and ${c} ends with ${rimeOf(c)}.` })),
+      alsoRight: [yes ? (third === 'up' ? `Up rhymes with ${a} and ${c} too.` : `${capFirst(third)} ends with ${rimeOf(a)} too, so it rhymes with ${a} and ${c}.`) : `${capFirst(a)} rhymes with ${b}, because both end with ${rimeOf(a)}.`] }; },
+  // Rhyme time, with pictures (TEA: "pair pictures or objects that rhyme"): the asked word shown and named, three quiet pictures.
+  'p4-rhyme-pic': (rng) => { const fam = pick(rng, P4_RHYME_PICS); const [a, b] = shuffle(rng, fam).slice(0, 2);
+    const others = shuffle(rng, P4_RHYME_PICS.filter((f) => f !== fam && !p4Near(fam, f))).slice(0, 2).map((f) => pick(rng, f));
+    const choices = shuffle(rng, [b[1], ...others.map((o) => o[1])]);
+    return { type: 'choice', story: null, prompt: `Tap the one that rhymes with ${p4ThisName(a[0])}.`, choices, answer: b[1],
+      explain: `${capFirst(a[0])} and ${b[0]} rhyme. They end the same way.`, visual: p4RhymePic(a), explainVisual: { kind: 'pair', a: p4RhymePic(a), b: p4RhymePic(b) },
+      whyNot: p3WhyNot(choices, b[1], (t) => { const o = others.find((x) => x[1] === t); return { name: capFirst(o[0]), why: `does not end the same way as ${a[0]}, so they do not rhyme.` }; }),
+      alsoRight: [p4RhymeMore(fam, a, b, choices)] }; },
+  // Rhyme time, three pictures (Head Start P-LIT 1 at 48 to 60 months: "identifying which words rhyme from a group of three: hat,
+  // cat, log"; TEA: "state which word does not rhyme when listening to a list of three words"). A reason names the tapped one's
+  // partner, an open wrong picture, so whyNotNamesOpenWrong holds it for More Info while two are open.
+  'p4-rhyme-three': (rng) => { const fam = pick(rng, P4_RHYME_PICS); const [a, b] = shuffle(rng, fam).slice(0, 2); const odd = pick(rng, pick(rng, P4_RHYME_PICS.filter((f) => f !== fam && !p4Near(fam, f))));
+    const choices = shuffle(rng, [a[1], b[1], odd[1]]);
+    return { type: 'choice', story: null, prompt: 'Tap the one that does not rhyme with the other two.', choices, answer: odd[1],
+      explain: `${capFirst(a[0])} and ${b[0]} rhyme, because they end the same way. ${capFirst(odd[0])} does not rhyme with them.`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, odd[1], (t) => { const [w, x] = t === a[1] ? [a, b] : [b, a]; return { name: capFirst(w[0]), why: `rhymes with ${x[0]}, so it is one of the two that rhyme.` }; }),
+      alsoRight: [`${capFirst(odd[0])} rhymes with ${P4_RHYME_PICS.find((f) => f.includes(odd)).find((e) => e !== odd)[0]}, not with ${a[0]} and ${b[0]}.`] }; },
+  // First sounds, with pictures (TEA III.B.7 "with pictorial support"; the guide: "pair pictures or sort objects into groups by
+  // beginning sound"): the asked picture shown and named, three quiet pictures, the two wrong ones with two other first sounds.
+  'p4-start-pic': (rng) => { const [sound, ts] = pick(rng, P4_START_PICS); const [w, twin] = shuffle(rng, ts).slice(0, 2);
+    const others = shuffle(rng, P4_START_PICS.filter(([s]) => s !== sound)).slice(0, 2).map(([, xs]) => pick(rng, xs));
+    const choices = shuffle(rng, [twin, ...others]); const ww = p4StartWord(w);
+    return { type: 'choice', story: null, prompt: `Tap the one that starts the same way as ${p4ThisName(ww)}.`, choices, answer: twin,
+      explain: `${capFirst(ww)} and ${p4StartWord(twin)} both start with ${sound}.`, visual: p4StartPic(w), explainVisual: { kind: 'pair', a: p4StartPic(w), b: p4StartPic(twin) },
+      whyNot: p3WhyNot(choices, twin, (t) => ({ name: capFirst(p4StartWord(t)), why: `starts with ${p4SoundOf(t)}, and ${ww} starts with ${sound}.` })),
+      alsoRight: [P4_START_MORE[sound]] }; },
+  // First sounds, the one of three that starts differently (pictures). A reason names the tapped one's partner, an open wrong
+  // picture, so it waits in More Info while two are open.
+  'p4-start-odd-pic': (rng) => { const [sound, ts] = pick(rng, P4_START_PICS); const [w, twin] = shuffle(rng, ts).slice(0, 2);
+    const [oSound, os] = pick(rng, P4_START_PICS.filter(([s]) => s !== sound)); const odd = pick(rng, os); const choices = shuffle(rng, [w, twin, odd]);
+    return { type: 'choice', story: null, prompt: 'Tap the one that starts with a different sound from the other two.', choices, answer: odd,
+      explain: `${capFirst(p4StartWord(w))} and ${p4StartWord(twin)} start with ${sound}. ${capFirst(p4StartWord(odd))} starts with ${oSound}.`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, odd, (t) => { const x = t === w ? twin : w; return { name: capFirst(p4StartWord(t)), why: `starts with ${sound}, just like ${p4StartWord(x)}, so it is not the one that starts differently.` }; }),
+      alsoRight: [P4_START_MORE[oSound]] }; },
   // Three sizes (pass ML, More Info): each wrong one by the room it takes up, as Big, Bigger, Biggest says it.
   'pk4-tap-biggest': (rng) => { const sh = pick(rng, ['circle', 'square', 'triangle']); const choices = shuffle(rng, [`shape:${sh}:big`, `shape:${sh}:medium`, `shape:${sh}:small`]);
     return { type: 'choice', story: null, prompt: 'Tap the biggest one.', choices, answer: `shape:${sh}:big`, explain: `That ${sh} takes up the most room, so it is the biggest.`, visual: null, explainVisual: null,
@@ -27217,8 +27389,9 @@ Object.assign(GENERATORS, {
       ['hill', 'Look at the picture. Where is the house?', ['Far from the tree', 'Near the tree'], 'Far from the tree', 'The house is far from the tree, way up the hill. Far means a long way off.'],
       ['table', 'Look at the picture. Which one is higher up?', ['The bird', 'The cat'], 'The bird', 'The bird is over the table, so it is higher up. The cat is under it.'],
       ['hill', 'Look at the picture. Which one is a long way off?', ['The house', 'The ball'], 'The house', 'The house is far from the tree, a long way off up the hill. The ball is near.']];
+    // Each entry lists its answer first, so the choices are shuffled (pass MM: until then the answer was always the first button).
     const [name, prompt, choices, answer, explain] = pick(rng, Q);
-    return { type: 'choice', story: null, prompt, choices: [...choices], answer, explain, visual: { kind: 'icon', name }, explainVisual: null };
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, choices), answer, explain, visual: { kind: 'icon', name }, explainVisual: null };
   },
   'ck-tap-side': (rng) => {
     // The two pictures are shown in this order, so left is the first choice and right is the second.
@@ -27357,7 +27530,7 @@ Object.assign(GENERATORS, {
   'c3-rule-or-law': (rng) => { const c = pick(rng, CIV_RULE_LAW); return { type: 'choice', story: `${c[0]}.`, prompt: 'Is this a rule or a law?', choices: ['Rule', 'Law'], answer: c[1], explain: c[1] === 'Rule' ? 'A rule is for one family, class or team.' : 'A law is for everyone in the city, state or country.', visual: null, explainVisual: null }; },
   'c3-branch-job': (rng) => { const c = pick(rng, CIV_BRANCH_JOBS); return { type: 'choice', story: `${c[0]}.`, prompt: 'Who does this job?', choices: shuffle(rng, CIV_BRANCH_JOBS.map((x) => x[1])), answer: c[1], explain: `${c[1]}: ${c[0].toLowerCase()}.`, visual: null, explainVisual: null }; },
   'c3-vote-winner': (rng) => { const total = pick(rng, [20, 24, 30]); const a = randInt(rng, Math.floor(total / 2) + 1, total - 3); const b = total - a; const zooFirst = randInt(rng, 0, 1) === 1;
-    return { type: 'choice', story: zooFirst ? `A class of ${total} votes: ${a} for the zoo, ${b} for the museum.` : `A class of ${total} votes: ${b} for the museum, ${a} for the zoo.`, prompt: 'Which wins?', choices: ['The zoo', 'The museum'], answer: 'The zoo', explain: `${a} is more than half of ${total}, so the zoo wins. That is majority rule.`, visual: null, explainVisual: null }; },
+    return { type: 'choice', story: zooFirst ? `A class of ${total} votes: ${a} for the zoo, ${b} for the museum.` : `A class of ${total} votes: ${b} for the museum, ${a} for the zoo.`, prompt: 'Which wins?', choices: shuffle(rng, ['The zoo', 'The museum']), answer: 'The zoo', explain: `${a} is more than half of ${total}, so the zoo wins. That is majority rule.`, visual: null, explainVisual: null }; },
   'c3-vote-margin': (rng) => { const total = pick(rng, [20, 24, 30]); const a = randInt(rng, Math.floor(total / 2) + 1, total - 3); const b = total - a;
     return { type: 'number', story: `${a} vote for the zoo and ${b} for the museum.`, prompt: 'By how many votes does the zoo win?', answer: String(a - b), explain: `Take the smaller from the bigger.\n[[${a} − ${b} = ${a - b}]]`, visual: null, explainVisual: null }; },
   'c3-can-afford': (rng) => { const have = pick(rng, [10, 15, 20]); const a = randInt(rng, 3, 9); const b = randInt(rng, 3, 9); const both = a + b <= have;
@@ -28767,13 +28940,14 @@ Object.assign(GENERATORS, {
     const p = randInt(rng, 1, 6); const others = shuffle(rng, [1, 2, 3, 4, 5, 6].filter((x) => x !== p)).slice(0, 2);
     return { type: 'choice', story: null, prompt: `Tap the dice that shows ${countWords(p)}.`, choices: shuffle(rng, [p, ...others].map((x) => `dice:${x}`)), answer: `dice:${p}`, explain: `On a dice, ${DICE_WORDS[p]}.`, visual: null, explainVisual: null };
   },
-  'ql1-fact': (rng) => pick(rng, [
+  // The choices are shuffled since pass MM: each list ran in order with its answer in the middle, every time.
+  'ql1-fact': (rng) => { const f = pick(rng, [
     { type: 'choice', story: null, prompt: 'On a dice, six dots make two rows of how many?', choices: ['Two', 'Three', 'Four'], answer: 'Three', explain: 'Six on a dice is two rows of three. Three and three make six.', visual: { kind: 'dice', pips: 6 }, explainVisual: null },
     { type: 'choice', story: null, prompt: 'Which number on a dice has one dot in every corner and one in the middle?', choices: ['Four', 'Five', 'Six'], answer: 'Five', explain: 'Five is four corners and one in the middle. Four is the corners alone.', visual: null, explainVisual: null },
     { type: 'choice', story: null, prompt: 'A full row on a ten frame holds how many?', choices: ['Three', 'Five', 'Ten'], answer: 'Five', explain: 'A ten frame has two rows of five. A full row is five, and both rows full make ten.', visual: { kind: 'tenframe', filled: 5 }, explainVisual: null },
     { type: 'choice', story: null, prompt: 'How many counters fill a whole ten frame?', choices: ['Five', 'Ten', 'Twelve'], answer: 'Ten', explain: 'Both rows full is ten, five and five. That is why it is called a ten frame.', visual: { kind: 'tenframe', filled: 10 }, explainVisual: null },
     { type: 'choice', story: null, prompt: 'One open hand shows how many fingers at a glance?', choices: ['Four', 'Five', 'Ten'], answer: 'Five', explain: 'One open hand is five, and both hands are ten, without counting each finger.', visual: null, explainVisual: null },
-  ]),
+  ]); return { ...f, choices: shuffle(rng, f.choices) }; },
   'ql1-faster': (rng) => ({ type: 'choice', story: null, prompt: 'What is the quick way to know how many dots are on a dice?', choices: shuffle(rng, ['See the pattern', 'Count every dot one by one', 'Shake the dice again']), answer: 'See the pattern', explain: 'The quick way is to see the pattern. Five is four corners and one in the middle, and you know it at a glance.', visual: { kind: 'dice', pips: 5 }, explainVisual: null }),
 });
 
@@ -28857,7 +29031,8 @@ Object.assign(GENERATORS, {
   },
   'ol1-greater-of-two': (rng) => {
     const a = randInt(rng, 10, 118); const b = a + randInt(rng, 1, 30 > 120 - a ? 120 - a : 30); const t = tensBelow(a); const top = Math.min(120, tensBelow(b) + 10);
-    return { type: 'choice', story: `${a} is to the left of ${b} on the number line.`, prompt: 'Which number is greater?', choices: [String(a), String(b)], answer: String(b), explain: `${b} is to the right of ${a}, and the number farther to the right is greater.`, visual: { kind: 'openline', from: t, to: top, labels: Array.from({ length: (top - t) / 10 + 1 }, (_, i) => t + i * 10), dots: [{ at: a, name: String(a) }, { at: b, name: String(b) }] }, explainVisual: null };
+    // The choices are shuffled since pass MM: the greater number was always the second button.
+    return { type: 'choice', story: `${a} is to the left of ${b} on the number line.`, prompt: 'Which number is greater?', choices: shuffle(rng, [String(a), String(b)]), answer: String(b), explain: `${b} is to the right of ${a}, and the number farther to the right is greater.`, visual: { kind: 'openline', from: t, to: top, labels: Array.from({ length: (top - t) / 10 + 1 }, (_, i) => t + i * 10), dots: [{ at: a, name: String(a) }, { at: b, name: String(b) }] }, explainVisual: null };
   },
 });
 
@@ -29657,7 +29832,7 @@ const wavePts = (x0, x1, y, amp, period, n) => Array.from({ length: n + 1 }, (_,
 // for a straight stroke); the app draws the rest as a smooth curve through the same points. Checking a trace is unchanged.
 export const TRACE_LETTERS = {
   L: { strokes: [[[30, 15], [30, 85]], [[30, 85], [75, 85]]] },
-  T: { strokes: [[[20, 15], [80, 15]], [[50, 15], [50, 85]]] },
+  T: { strokes: [[[50, 15], [50, 85]], [[20, 15], [80, 15]]] },   // down the middle first, then across the top (pass MM: Spalding, NSW Education, Learning Without Tears)
   I: { strokes: [[[50, 15], [50, 85]]] },
   H: { strokes: [[[25, 15], [25, 85]], [[75, 15], [75, 85]], [[25, 50], [75, 50]]] },
   E: { strokes: [[[30, 15], [30, 85]], [[30, 15], [75, 15]], [[30, 50], [65, 50]], [[30, 85], [75, 85]]] },
@@ -29761,7 +29936,7 @@ const TRACE_ROUND = ['O', 'C'];
 const TRACE_FIRST = [...TRACE_EASY, ...TRACE_ROUND];
 // How each letter is made, in the order TRACE_LETTERS draws it, so a missed trace hears the strokes (pass JV).
 const TRACE_HOW = {
-  L: 'L is a line down, then a line across the bottom.', T: 'T is a line across the top, then a line down the middle.', I: 'I is one line, straight down.',
+  L: 'L is a line down, then a line across the bottom.', T: 'T is a line down the middle, then a line across the top.', I: 'I is one line, straight down.',
   H: 'H is two lines down, then a bridge across the middle.', E: 'E is a line down, then three lines across, at the top, the middle and the bottom.', F: 'F is a line down, then two lines across, at the top and the middle.',
   O: 'O starts at the top and goes around to the left, all the way back to the dot.', C: 'C goes around like O, but it stops before it closes.',
   K: 'K is a line down, then two slants that meet it in the middle.', W: 'W zigzags, slanting down, up, down and up.', X: 'X is two slanted lines that cross in the middle.',
@@ -29823,9 +29998,11 @@ const TRACE_SMALL_CIRCLES = ['a', 'd', 'g', 'q'];
 const TRACE_SMALL_STICK_BUMPS = ['b', 'p', 'e', 'f'];
 const TRACE_SMALL_CURLS = ['s', 'j', 'y'];
 
-// Was the traced path close enough? Every stroke must be visited in order: for each
-// point along a stroke, some drawn point must lie within `tolerance` grid units. This
-// forgives a wobbly hand but not a letter drawn in the wrong shape.
+// Was the traced path close enough? Every stroke must be covered: for each point along a
+// stroke, some drawn point must lie within `tolerance` grid units. This forgives a wobbly
+// hand but not a letter drawn in the wrong shape. It does not read the order or direction
+// of a letter's lines (Q49 asks whether it should); a numbered dot picture, below, must be
+// joined in order.
 export function traceMatches(letter, paths, tolerance = 14) {
   const def = TRACE_LETTERS[letter];
   if (!def || !Array.isArray(paths) || paths.length === 0) return false;
@@ -29882,16 +30059,9 @@ Object.assign(GENERATORS, {
     return { type: 'trace', traceKind: 'dots', story: null, prompt: `Connect the dots to make a ${name}.`, choices: [], answer: name,
       explain: `That makes a ${name}. Start at 1 and go in order.`, visual: null, explainVisual: null };
   },
-  'pl-trace-first': (rng) => {
-    const L = pick(rng, ['L', 'T', 'O']);
-    return { type: 'trace', story: null, prompt: `Trace the letter ${L}.`, choices: [], answer: L,
-      explain: `That is ${L}. Start at the dot and follow the arrow.`, visual: { kind: 'letters', text: L }, explainVisual: null };
-  },
-  'pl-trace-more': (rng) => {
-    const L = pick(rng, ['I', 'H', 'E']);
-    return { type: 'trace', story: null, prompt: `Trace the letter ${L}.`, choices: [], answer: L,
-      explain: `That is ${L}. Straight lines, start at the dot.`, visual: { kind: 'letters', text: L }, explainVisual: null };
-  },
+  // Pre-K 4's three tracing kinds say each letter's strokes in TRACE_HOW's words (pass MM, the lesson check), as kindergarten's do.
+  'pl-trace-first': traceQuestion(['L', 'T', 'O']),
+  'pl-trace-more': traceQuestion(['I', 'H', 'E']),
   'p1-trace-nur': (rng) => {
     const L = pick(rng, ['n', 'u', 'r']);
     return { type: 'trace', story: null, prompt: `Trace the small letter ${L}.`, choices: [], answer: L,
@@ -29912,11 +30082,7 @@ Object.assign(GENERATORS, {
     return { type: 'trace', story: null, prompt: `Trace the letter ${L}.`, choices: [], answer: L,
       explain: `${TRACE_HOW[L]} Start at the dot and follow the arrow.`, visual: { kind: 'letters', text: L }, explainVisual: null };
   },
-  'pl-trace-ltf': (rng) => {
-    const L = pick(rng, ['L', 'T', 'F']);
-    return { type: 'trace', story: null, prompt: `Trace the letter ${L}.`, choices: [], answer: L,
-      explain: `That is ${L}. Down and across, start at the dot.`, visual: { kind: 'letters', text: L }, explainVisual: null };
-  },
+  'pl-trace-ltf': traceQuestion(['L', 'T', 'F']),
   'pm-same-animals': themedSame(MATCH_THEMES.animals),
   'pm-different-animals': themedDifferent(MATCH_THEMES.animals),
   'pm-same-vehicles': themedSame(MATCH_THEMES.vehicles),
@@ -30245,11 +30411,48 @@ function heardWords(choice) {
 // True when the reason a pre-reader would hear names something that tells the right answer from the choice just tapped and
 // that the question's own words (its setup line and prompt) have not said already. A letter is read by its capital, since the
 // little word a is no letter (the code and lesson checks' second reads: "A has slanted sides" was said while B's line was held).
+// The words a device voice adds to a held sound (pass MM, round two's screen check): a voice reads "mmm" as letters, so the screens
+// say each held sound as the stretched start of a word it knows, mmm as the start of moon, sss of sun, fff of fish. So a line is
+// heard with those words in it, and the guards below read it as it is heard (heardForm): "and map starts with mmm" was heard as
+// "mmm...moon" and named the moon, the answer, while it was still open.
+export const SOUND_CARRIERS = { mmm: 'moon', nnn: 'nut', sss: 'sun', fff: 'fish', zzz: 'zip', rrr: 'run', lll: 'lion' };
+// A held sound joined by a hyphen to the rest of its word, the way a story says a word slowly ("Mmm-at", "Sss-am", "Mmm-ia"),
+// runs into its own letters, mmm...mat, never into its carrier word (round three's alignment read, pass MM: "Mmm-at" was heard as
+// "moon ... at" just before "Mat!", the telephone story's turn). A rest that starts with h keeps the sound apart, since grade 1's
+// "Sss-huh" says s and h one by one, which joined would be heard as sh. HELD_SOUND finds both forms; heldSoundSpoken is what the
+// voice is handed (the sound's letter held, then the carrier's rest or the word's own letters); heardForm reads a line as heard.
+export const HELD_SOUND = /\b(mmm|nnn|sss|fff|zzz|rrr|lll)(?:-(?!h)([a-z]+))?\b/gi;
+export function heldSoundSpoken(sound, rest) { const s = String(sound).toLowerCase(); return s[0].repeat(44) + (rest ? String(rest).toLowerCase() : SOUND_CARRIERS[s].slice(1)); }
+export function heardForm(text) { return String(text == null ? '' : text).replace(HELD_SOUND, (all, s, rest) => (rest ? `${s[0]}${rest}` : `${s} ${SOUND_CARRIERS[s.toLowerCase()]}`)); }
+// What a device voice is handed for a line, in pieces (moved here from ui.jsx in pass MM, round three, so the rules test reads the
+// speech itself): ordinary words at the normal pace, and each held sound as its own slow, stretched utterance, so "mmm" is held
+// rather than clipped. Each sentence takes a shape the screens turn into a rate and a pitch (SPEECH_SHAPES in ui.jsx): a one-word
+// sentence is the word at play, held slowly and a little higher; a question lifts at the end; everything else rolls along at an
+// easy pace. A piece that is only punctuation would be read aloud as a word, so it is dropped.
+export function speechPieces(text) {
+  const sentences = String(text).split(/(?<=[.!?])\s+/).filter((x) => x.trim());
+  const pieces = [];
+  for (const [si, sentence] of sentences.entries()) {
+    const words = sentence.replace(/[.!?]+$/, '').trim().split(/\s+/).filter(Boolean);
+    const shape = words.length === 1 && !/\d/.test(words[0]) ? 'key' : /\?$/.test(sentence.trim()) ? 'question' : 'plain';
+    let last = 0;
+    for (const m of sentence.matchAll(HELD_SOUND)) {
+      if (m.index > last) pieces.push({ text: sentence.slice(last, m.index), shape, sentence: si });
+      pieces.push({ text: heldSoundSpoken(m[1], m[2]), shape: 'sound', sentence: si });
+      last = m.index + m[0].length;
+    }
+    if (last < sentence.length) pieces.push({ text: sentence.slice(last), shape, sentence: si });
+  }
+  return pieces.filter((p) => /[A-Za-z0-9]/.test(p.text));
+}
 export function whyNotNamesAnswer(q, picked) {
   const entry = q && q.whyNot && q.whyNot[picked]; if (!entry) return false;
-  const sentence = whyNotSentence(entry);
-  const question = `${q.story || ''} ${q.prompt || ''}`;
-  if (/^[A-Z]$/.test(String(q.answer))) { const letter = new RegExp(`\\b${q.answer}\\b`); return letter.test(sentence.slice(1)) && !letter.test(question); }
+  const sentence = heardForm(whyNotSentence(entry));
+  const question = heardForm(`${q.story || ''} ${q.prompt || ''}`);
+  // A letter the question says but the screen does not print counts as named too, since the line after a wrong tap is printed for
+  // the grown-up (round three's lesson check, pass MM: "This letter is not B, and B has two round bumps." printed the B that
+  // printedQuestion hides, a capital to match among T, U and B).
+  if (/^[A-Z]$/.test(String(q.answer))) { const letter = new RegExp(`\\b${q.answer}\\b`); const p = printedQuestion(q, true); return letter.test(sentence.slice(1)) && (!letter.test(question) || !letter.test(`${p.story || ''} ${p.prompt || ''}`)); }
   const said = new Set(sentence.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean));
   // A word the question says counts with its kin both ways, so "Tap the biggest one." has already said big.
   const asked = new Set(); for (const w of question.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean)) { asked.add(w); for (const k of heardWords(w)) asked.add(k); for (const [base, kin] of Object.entries(HEARD_KIN)) if (kin.includes(w)) { asked.add(base); kin.forEach((x) => asked.add(x)); } }
@@ -30264,7 +30467,7 @@ function pictureName(choice) { const raw = String(choice).split('#')[0]; const m
 export function whyNotNamesOpenWrong(q, picked, open) {
   const entry = q && q.whyNot && q.whyNot[picked]; if (!entry) return false;
   const words = (t) => ' ' + String(t).toLowerCase().replace(/[^a-z0-9]+/g, ' ') + ' ';
-  const said = words(whyNotSentence(entry)); const asked = words((q.story || '') + ' ' + (q.prompt || ''));
+  const said = words(heardForm(whyNotSentence(entry))); const asked = words(heardForm((q.story || '') + ' ' + (q.prompt || '')));
   const answerName = pictureName(q.answer);
   const names = (t, name) => [name, name + 's', name + 'es'].some((n) => t.includes(' ' + n + ' '));
   // A twin of the tapped picture (the same token before its # tag or its look after ~) is ruled out by any reason the tapped one
@@ -30274,7 +30477,10 @@ export function whyNotNamesOpenWrong(q, picked, open) {
   return (open || []).map(String).filter((c) => c !== String(q.answer)).some((c) => { if (twinOf(c) === twinOf(picked)) return true; const name = pictureName(c); return !!name && name !== answerName && names(said, name) && !names(asked, name); });
 }
 // ruledOut: the choices already tapped wrong in this question, the one just tapped included; the screen dims them.
+// A trace has no choice to rule out, so a wrong one hears an invitation to trace again (round two's screen check, pass MM).
 export function preReaderWrongWords(q, picked, ruledOut = []) {
+  // A numbered picture starts at dot number 1, as its lessons say (round three's lesson check).
+  if (q && q.type === 'trace') return q.traceKind === 'dots' ? "Let's try it again. Start at dot number 1." : "Let's trace it again. Start at the dot.";
   const entry = q && q.whyNot && q.whyNot[picked];
   if (!entry) return 'Not that one. Have another try.';
   const out = new Set([String(picked), ...(ruledOut || []).map(String)]);
@@ -33030,20 +33236,20 @@ export const WONDER = [
     courseIds: ['first-sounds-pk'],
     answerMode: 'pick',
     prompt: 'What is the quietest sound you can hear right now?',
-    options: ['My breath', 'The wind', 'Not sure'],
+    options: ['My breath', 'A sound far away', 'Not sure'],
     simple: [
       { voice: 'A scientist says', says: 'Here is something amazing. Your ears keep working all the time, even when you are not listening.' },
       { voice: 'An artist says', says: 'Quiet sounds are my favorite music, like a clock ticking or a cat breathing.' },
-      { voice: 'A grandparent of faith says', says: 'When I want quiet, I sit by my round window with my tea and just listen.' },
-      { voice: 'A skeptic says', says: 'I wonder if there is ever total silence. Maybe there is always some tiny sound.' },
+      { voice: 'A grandparent of faith says', says: 'When I want quiet, I sit by my round window with my tea. I listen, and I feel thankful.' },
+      { voice: 'A skeptic says', says: 'I wonder if a room is ever all the way quiet. Every time I check, I hear one more tiny sound.' },
     ],
     perspectives: [
-      { voice: 'A scientist', says: 'Your ears are always working, even when you are not listening. Close your eyes for a moment and the small sounds come forward: a clock, a bird, your own breath. They were there all along, waiting under the louder ones.' },
-      { voice: 'An artist', says: 'Musicians practice listening for the quietest sounds, because that is where a song gets its feeling. Try sitting still for the time it takes to count to ten and see how many sounds you can find.' },
-      { voice: 'A grandparent of faith', says: 'Many traditions make room for quiet on purpose, a moment before a meal or at the end of the day. Quiet is not an empty thing. It is where people notice what they were too busy to hear.' },
-      { voice: 'A skeptic', says: 'Is there such a thing as total silence? People who sit in a room built to be perfectly quiet say they can hear their own heartbeat. So maybe there is no silence, only sounds we have stopped noticing.' },
+      { voice: 'A scientist', says: 'Technically, your ears never switch off, not even while you sleep. Your brain does something clever, though. It gets used to steady sounds, like the hum of a fridge, and stops pointing them out to you. A loud sound can cover up a soft one too. Here is an experiment I like. Cup your hands behind your ears and listen again. The sounds in front of you get a little louder, because your hands catch more of them.' },
+      { voice: 'An artist', says: 'To me, quiet sounds are a kind of music. In 1952 a composer named John Cage wrote a piece with no notes in it. The first time it was played, a piano player sat at the piano for four minutes and thirty-three seconds and played nothing at all. The music was whatever the room gave, the wind outside, rain on the roof, people talking. When I paint outside, I listen that way first, and soft sounds make me reach for soft colors.' },
+      { voice: 'A grandparent of faith', says: 'I believe quiet is a gift, so I make room for it on purpose. When I was a girl, my grandmother kept a quiet moment before supper to say thank you. I still keep that moment, at my round window with a cup of tea. In that hush I can hear the clock and the birds, and my busy thoughts slow down. You do not have to believe what I believe to try a quiet minute and notice the small good things around you.' },
+      { voice: 'A skeptic', says: 'I used to think my room went totally silent at night, until I tested it. I lay very still and listened, and there was always something, a car far away, the house creaking, my own breathing. People have even built rooms that soak up almost every sound, and visitors who sit in them say they start to hear their own heartbeat. So now I never say a room is silent. I say it is very quiet, and I keep listening, in case I am wrong.' },
     ],
-    closing: 'Close your eyes and count the sounds you can hear. How many did you find?',
+    closing: 'Close your eyes and listen. How many sounds can you count?',
   },
   {
     id: 'w-ants-elephant',
@@ -36195,6 +36401,16 @@ export function wonderCardSpoken(card) {
 export function wonderSpokenParts(w) {
   const options = (w && w.options) || ['Yes', 'No'];
   return [w.prompt, ...options.map((o, i) => `${options.length > 1 && i === options.length - 1 ? 'Or ' : ''}${o}.`)];
+}
+// A color square beside a Wonder answer that names a color (pass MM, Mikey's answer to Q46, "your recommendation"): "Which color
+// makes you happiest?" asks a four-year-old to pick Red, Blue, Yellow or Green, and a child who cannot read had to wait for the
+// lit reading to find blue. Each such answer now shows the same square the color lessons show (Swatch's colors), beside the
+// word, which stays, so a child with red-green color vision deficiency still has the word and the reading. Only the four
+// colors the lessons teach as squares carry one; any other answer returns null.
+export const WONDER_SWATCH_COLOURS = ['red', 'blue', 'yellow', 'green'];
+export function optionSwatch(option) {
+  const key = String(option || '').trim().toLowerCase();
+  return WONDER_SWATCH_COLOURS.includes(key) ? key : null;
 }
 
 // ---------------------------------------------------------------------
@@ -39539,8 +39755,8 @@ export const COURSE_GAMES = {
   'tech-7': ['sprint-tech-7'],
   'civics-3': ['map-continents', 'sprint-civics-3'],
   'science-2': ['pairs-more'],
-  'first-steps-pk': ['pairs-first-steps'],
-  'first-sounds-pk': ['dots-fish'],
+  'first-steps-pk': ['pairs-first-steps', 'dots-fish'],   // the Fish since pass MM: ten dots, as Connect the Dots counts to ten and names a fish
+  'first-sounds-pk': ['spot-first-sounds'],   // Find the Letter since pass MM (the Fish counted, which this course does not teach)
   'counting-k': ['maze-small'],
   'letters-k': ['pairs-shapes'],
 };
@@ -39585,13 +39801,34 @@ export function playList({ courses = [], young = false, preview = false, mapArt 
   const ordered = young ? listed : spreadKinds(listed);
   return funFirst(ordered, (g) => canOpenOnDayOne(g, ordered));
 }
+// When a course's own games open (pass MM, Mikey's answer to Q45, "Q45 - yes C"): from pre-K 3 to grade 2, the early years, at
+// the course's first celebration, when every lesson is passed once and its first long story opens, since a young child feels a
+// wait of days far more than an older student and these games practice the course's own idea; from grade 3 up, when every
+// lesson has its star, so the game stays a reward for mastery. Until pass MM every course waited for every star (pass CO).
+export function gameOpensAtFirstPass(course) { return !!course && stageForGrade(course.grade) === 'early'; }
+export function courseGameOpen(progress, course) {
+  if (!progress || !course || !course.modules || !course.modules.length) return false;
+  return gameOpensAtFirstPass(course) ? isCourseCompleted(progress.passedIds, course) : isCourseFinished(progress.masteredIds, course);
+}
 // Which games on a student's list are open: the starters, the list's first game when it may open on day one, every game of a
-// finished course, and since pass MC every game the student has played (a played event), so a game open on day one never locks
-// again when a new course moves a more playful game to the front.
+// course whose games are open (courseGameOpen above), and since pass MC every game the student has played (a played event), so a
+// game open on day one never locks again when a new course moves a more playful game to the front.
 export function unlockedGameIds(events, list = []) {
-  const per = deriveProgress(events).perModule;
+  const progress = deriveProgress(events);
   const open = new Set(STARTER_GAMES); if (list[0] && canOpenOnDayOne(list[0], list)) open.add(list[0].id);
   for (const e of activeEvents(events)) if (e.type === 'played' && e.game) open.add(e.game);
-  for (const c of COURSES) if (c.modules.length > 0 && c.modules.every((m) => (per[m.id] || {}).mastered)) for (const id of COURSE_GAMES[c.id] || []) open.add(id);
+  for (const c of COURSES) if (courseGameOpen(progress, c)) for (const id of COURSE_GAMES[c.id] || []) open.add(id);
   return open;
+}
+// The line a reader sees above Let's Play's tiles while one is locked (pass MC; worded by stage since pass MM, with Q45): it says
+// what opens the locked tiles. An early-years course opens its game when every module is passed once, the moment Mikey's Let's
+// Read line calls finishing every module ("Finishing every module within a course unlocks a story which ties all of the
+// concepts together."); from grade 3 up a course's game waits for every star, which a reader's lessons call Mastered. Null
+// when nothing on the list is locked behind a course.
+export function playLockedNote(locked = []) {
+  const stages = (locked || []).map((g) => getCourse(gameCourse(g.id))).filter(Boolean).map(gameOpensAtFirstPass);
+  if (!stages.length) return null;
+  if (stages.every(Boolean)) return 'Finishing every module within a course unlocks a new game.';
+  if (!stages.some(Boolean)) return 'Mastering every module within a course unlocks a new game.';
+  return 'Finishing every module within a course unlocks a new game. From grade 3 up, a course\'s game waits until every module is mastered.';
 }

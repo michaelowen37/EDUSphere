@@ -1,0 +1,122 @@
+# Source: 2015 and 2022 Texas Prekindergarten Guidelines: Side by Side—PK4 Outcomes
+# URL: https://tea.texas.gov/sites/default/files/pkg-2015-2022-side-by-side-pk4.pdf
+# Publisher: Texas Education Agency
+# Edition: 2022 column
+# Read: 2026-10-19, outcome by outcome with WebFetch
+# Notes: (1) How it was read: this session cannot download from tea.texas.gov directly (the proxy refuses it, curl 403), so the PDF was read through WebFetch's text layer, one outcome per question. The colour change marks cannot be seen that way. The legend reads "Additions are shown in green font with underlines." and "Deletions are shown in red font with strike throughs." (moved text is purple). The 2022 cells carry no struck-through words (checked on I.B.1.a, which has no "teacher"). Every change note below comes from quoting the 2015 column ("Current 2015 Texas PK4 Outcomes") word for word and comparing it with the 2022 column ("Revised 2022 Texas PK4 Outcomes"). (2) Checks: every 2022 outcome was quoted on its own from the side-by-side. The 14 outcomes of 119 characters or more with their code (I.A.4, I.B.2.c, I.C.5, I.D.1, V.A.3, V.A.7, V.A.8, V.B.2, V.E.1, VI.A.4, VII.A.1, VII.D.2, VIII.B.1, X.A.3) were read a second time in different words, asking for the ending from a later word, and the parts were joined at the overlap. All 81 outcomes and all heading lines were then read again from TEA's "2022 Texas Prekindergarten Guidelines, PK4 Streamlined Version" (https://tea.texas.gov/sites/default/files/2022-texas-prekindergarten-guidelines-pk4-streamlined.pdf), which prints the same 81 codes (I 20, V 21, VI 11, VII 11, VIII 6, IX 7, X 5) with a "PK4." prefix (PK4.I.A.1). 79 outcomes agreed word for word. The two that did not, I.B.3.a and VII.D.3, are under Unsure. (3) The word Child: all 81 outcomes begin with "Child" in the side-by-side's 2022 column. (4) Characters are kept as WebFetch returned them, which was the same from both TEA PDFs. Three outcomes use U+2010 HYPHEN instead of ASCII "-": I.C.5 problem‐solving, VII.D.3 decision‐making and VIII.A.2 self‐expression. Every other hyphen is ASCII, including "0-10" in V.A.5 and V.A.7 (the 2015 column used en dashes, "1–10" and "0–9"). "2D" and "3D" have no hyphen. Changing U+2010 to "-" changes no word. (5) Headings: the domain titles print the same in both columns: "I. Social and Emotional Development Domain", "V. Mathematics Domain", "VI. Science Domain", "VII. Social Studies Domain", "VIII. Fine Arts Domain", "IX. Physical Development Domain" and "X. Technology Domain". Skill headings print as "A. Self-Concept" and so on. Every 2015 skill heading in these domains except I.C and X.A ended in "Skills" (2015 I.A was "Self-Concept Skills"), and the 2022 headings drop it. Four were also renamed: V.A Counting Skills became Number Sense, V.B Adding To/Taking Away Skills became Joining and Separating, VII.B Economic Skills became Economics, and IX.B Fine-Motor Development Skills became Fine Motor Development. "C. Relationships with Others", the I.B sub-headings ("1. Behavior Control", "2. Emotional Control", "3. Control of Attention") and "A. Technology and Devices" print the same in both columns. The Streamlined Version prints five heading lines differently from the side-by-side: "E. Classification and Patterns", "C. Earth and Space Science", "A. People Past and Present" (no comma), "X. Technology Applications Domain", and the I.B sub-headings with a colon ("1. Behavior Control:"). This file keeps the side-by-side's forms. (6) Code style: the 2015 column prints the I.B sub-items as I.B.1(a), and the 2022 column prints them as I.B.1.a. (7) Changed since 2015 (only the 2022 text is recorded): I.A.2, I.A.4, I.B.1.a, I.B.1.c, I.B.2.a, I.B.2.b, I.B.2.c, I.B.3.b, I.C.1, I.C.2, I.C.4, I.C.5, I.C.7, I.D.1, V.A.1, V.A.2, V.A.3, V.A.4, V.A.5, V.B.1, V.B.2, V.C.1, V.C.2, V.C.3, V.C.4, V.D.2, V.D.3, V.D.4, V.E.3, VI.A.1, VI.A.3, VI.B.2, VI.B.3, VI.C.2, VI.C.4, VII.A.1, VII.B.1, VII.B.2, VII.C.1, VII.D.1, VII.D.2, VII.D.3, VIII.A.1, IX.A.1, X.A.1, X.A.2, X.A.3, X.A.4 (48). New in 2022, with a blank 2015 cell: V.A.6, V.A.7, V.A.8. (8) Wording unchanged since 2015: I.A.1, I.A.3, I.B.1.b, I.B.3.a, I.C.3, I.C.6, V.D.1, V.E.1, V.E.2, VI.A.2, VI.A.4, VI.B.1, VI.C.1, VI.C.3, VII.A.2, VII.A.3, VII.B.3, VII.C.2, VIII.A.2, VIII.A.3, VIII.B.1, VIII.B.2, VIII.C.1, IX.A.2, IX.B.1, IX.B.2, IX.C.1, IX.C.2, IX.C.3, X.A.5 (30). (9) Same code, different skill (V.A): 2022 V.A.1, V.A.2, V.A.3, V.A.4 and V.A.5 sit in the rows of 2015 V.A.2, V.A.3, V.A.5, V.A.8 and V.A.9, and all five are reworded. The 2015 V.A.1 (objects, or parts of an object, can be counted), V.A.4 (the counting order is always the same), V.A.6 (items can be counted in any order) and V.A.7 (verbal ordinal terms) have blank 2022 cells, so those four codes now name different skills. Match old material by its words, not its code. WebFetch said it matched these rows by their line position in the text, since it cannot see the table grid. Every other code in Domains I and V to X stays in its own row. (10) Domain X is in both columns. The 2015 column has its own X.A.1 to X.A.5 under "X. Technology Domain" and "A. Technology and Devices" (the codes X.A.1 and X.A.3 each occur twice in the text, once with the 2015 wording). So this document does not show Domain X as new in 2022. What changed in 2022 is the wording of X.A.1 to X.A.4. (11) As printed, not typos: I.A.3 and VII.A.3 say "his", VII.A.1 says "himself", and I.D.1 says "her own". VII.D.1 ends with the singular "Texas flag." (read twice, and the same in the Streamlined Version; 2015 said "flags of the United States and Texas"). VI.C.1 has a comma before "and their properties and uses". VI.A.1 has no "the" before "characteristics", but VI.B.1 has one. V.C.1 uses the numeral in "at least 1 solid 3D shape". (12) This side-by-side is a comparison made by TEA staff. Its page footers read "*Created by TEA staff revised 2022 Prekindergarten 4 Outcomes - page N". Domains I and V to X have no [ELL] lines, footnotes or asterisks in either column.
+## I Social and Emotional Development Domain
+## I.A Self-Concept
+I.A.1	is aware of where own body is in space and respects personal boundaries.
+I.A.2	shows self-awareness of physical attributes, personal preferences, and own abilities.
+I.A.3	shows reasonable opinion of his own abilities and limitations.
+I.A.4	shows initiative in trying new activities and demonstrates perseverance when attempting to overcome obstacles or challenges.
+## I.B Self-Regulation
+## I.B.1 Behavior Control
+I.B.1.a	follows classroom rules and routines with occasional reminders from adults.
+I.B.1.b	takes care of and manages classroom materials.
+I.B.1.c	regulates own behavior with occasional reminders or assistance from adults.
+## I.B.2 Emotional Control
+I.B.2.a	begins to understand the connection between emotions and behaviors.
+I.B.2.b	uses verbal and nonverbal communication to communicate basic emotions and feelings.
+I.B.2.c	is able to manage intensity of emotions more consistently, although adult guidance is sometimes necessary.
+## I.B.3 Control of Attention
+I.B.3.a	sustains attention to personally chosen or routine (teacher-directed) tasks until completed.
+I.B.3.b	remains focused on engaging, teacher-led group activities for up to 20 minutes.
+## I.C Relationships with Others
+I.C.1	uses effective verbal and nonverbal communication skills to build relationships with adults and peers.
+I.C.2	assumes various roles and responsibilities as part of the classroom community.
+I.C.3	shows competence in initiating social interactions.
+I.C.4	increasingly interacts with peers during cooperative play scenarios that share a common plan and goal.
+I.C.5	initiates problem‐solving strategies when experiencing conflicts with others and seeks adult support when necessary.
+I.C.6	demonstrates empathy and caring for others.
+I.C.7	interacts with peers and has preferred friends.
+## I.D Social Awareness
+I.D.1	demonstrates an understanding that others have perspectives and feelings that are similar and/or different from her own.
+## V Mathematics Domain
+## V.A Number Sense
+V.A.1	rote counts from 1 to 30.
+V.A.2	counts up to 10 objects with one-to-one correspondence.
+V.A.3	counts up to 10 items and demonstrates cardinality by communicating that the last number indicates how many items are in the set.
+V.A.4	instantly recognizes the quantity of up to 6 objects without counting (subitizes).
+V.A.5	recognizes numerals 0-10.
+V.A.6	represents quantities up to 10.
+V.A.7	begins to understand that numbers 0-10 can be composed and decomposed in various ways to represent a quantity.
+V.A.8	compares sets of objects up to 10 using comparative language (e.g., greater/more than, less/fewer than, equal to/same number of).
+## V.B Joining and Separating
+V.B.1	uses objects, pictorial models, and/or a verbal word problem to represent adding up to 5 objects.
+V.B.2	uses objects, pictorial models, and/or a verbal word problem to represent subtracting objects from a set of 5.
+## V.C Geometry and Spatial Sense
+V.C.1	names and describes common 2D shapes and names at least 1 solid 3D shape.
+V.C.2	creates shapes using materials and/or manipulatives.
+V.C.3	demonstrates use of position words.
+V.C.4	recognizes common shapes, regardless of orientation and size.
+## V.D Measurement
+V.D.1	recognizes and compares heights or lengths of people or objects.
+V.D.2	recognizes and compares capacity based on how much space exists within an object.
+V.D.3	recognizes and compares weights of objects.
+V.D.4	uses language to describe concepts associated with the passing of time within a day.
+## V.E Classification & Patterns
+V.E.1	sorts objects that are the same and different into groups and uses language to describe how the groups are similar and different.
+V.E.2	collects data and organizes it in a graphic representation.
+V.E.3	recognizes, duplicates, extends, and creates patterns.
+## VI Science Domain
+## VI.A Physical Science
+VI.A.1	observes, investigates, describes, and discusses characteristics of common objects.
+VI.A.2	observes, investigates, describes, and discusses position and motion of objects.
+VI.A.3	uses simple scientific tools to learn about objects.
+VI.A.4	observes, investigates, describes, and discusses sources of energy including light, heat, and electricity.
+## VI.B Life Science
+VI.B.1	observes, investigates, describes, and discusses the characteristics of organisms.
+VI.B.2	observes, describes, and discusses the life cycles of organisms.
+VI.B.3	observes, investigates, describes, and discusses the relationship of organisms in their environments.
+## VI.C Earth & Space Science
+VI.C.1	observes, investigates, describes, and discusses earth materials, and their properties and uses.
+VI.C.2	identifies, observes, describes, and discusses objects in the sky.
+VI.C.3	observes and describes what happens during changes in the earth and sky.
+VI.C.4	demonstrates an understanding of the importance of caring for our environment and our planet.
+## VII Social Studies Domain
+## VII.A People, Past and Present
+VII.A.1	identifies similarities and differences between himself, classmates, and other people through specific characteristics and cultural influences.
+VII.A.2	identifies similarities and differences in characteristics of families.
+VII.A.3	connects his life to events, time, and routines.
+## VII.B Economics
+VII.B.1	demonstrates an understanding that all people need food, clothing, and shelter.
+VII.B.2	demonstrates an understanding of what it means to be a consumer.
+VII.B.3	discusses the roles and responsibilities of family, school, and community helpers.
+## VII.C Geography
+VII.C.1	identifies and creates common geographic features.
+VII.C.2	explores geography tools and resources.
+## VII.D Citizenship
+VII.D.1	identifies the United States and Texas flag.
+VII.D.2	recites the Pledge of Allegiance to the United States flag and the Texas flag and observes a moment of silence.
+VII.D.3	engages in voting as a method for group decision‐making.
+## VIII Fine Arts Domain
+## VIII.A Art
+VIII.A.1	uses a variety of art materials for sensory experiences and exploration.
+VIII.A.2	uses art as a form of creative self‐expression and representation.
+VIII.A.3	demonstrates interest in and shows appreciation for the creative work of others.
+## VIII.B Music
+VIII.B.1	participates in classroom music activities including singing, playing musical instruments, and moving to rhythms.
+VIII.B.2	responds to different musical styles through movement and play.
+## VIII.C Dramatic Expression
+VIII.C.1	creates or recreates stories, moods, or experiences through dramatic representations.
+## IX Physical Development Domain
+## IX.A Gross Motor Development
+IX.A.1	demonstrates coordination and balance in isolation.
+IX.A.2	coordinates sequence of movements to perform tasks.
+## IX.B Fine Motor Development
+IX.B.1	shows control of tasks that require small-muscle strength and control.
+IX.B.2	shows increasing control of tasks that require eye-hand coordination.
+## IX.C Personal Safety and Health
+IX.C.1	practices good habits of personal safety.
+IX.C.2	practices good habits of personal health and hygiene.
+IX.C.3	identifies good habits of nutrition and exercise.
+## X Technology Domain
+## X.A Technology and Devices
+X.A.1	opens and navigates through digital learning applications and programs, when appropriate.
+X.A.2	uses and names a variety of digital tools that support and enhance learning.
+X.A.3	uses digital learning applications to contribute to class-made digital products that express own ideas, as appropriate.
+X.A.4	uses technology to access appropriate information, with adult assistance.
+X.A.5	practices safe behavior while using digital tools and resources.
+# Dropped since 2015: V.A.9, V.B.3. The words of V.A.9 ("Child recognizes one‐digit numerals, 0–9.") continue, reworded, as 2022 V.A.5. V.B.3 ("Child uses informal strategies to separate up to 10 items into equal groups.") has no 2022 counterpart: the 2022 V.B has only V.B.1 and V.B.2, which the Streamlined Version confirms. The words of 2015 V.A.1, V.A.4, V.A.6 and V.A.7 are also gone, but their codes are reused (Notes 9). Domains I, VI, VII, VIII, IX and X dropped no codes.
+# Unsure: (a) I.B.3.a, the hyphen in "(teacher-directed)": WebFetch's text of the side-by-side gives "(teacherdirected)" with no hyphen in both columns (asked twice). The Streamlined Version prints "(teacher-directed)" with a hyphen (asked twice). WebFetch cannot see a soft hyphen or a hyphen lost at a line end, and "teacherdirected" is not a word, so this file records "teacher-directed". A look at the side-by-side's page would settle it. (b) VII.D.3, the first words: the side-by-side's 2022 column reads "VII.D.3 Child engages in voting as a method for group decision‐making." (asked twice; its 2015 cell begins "The child engages"). The Streamlined Version reads "PK4.VII.D.3 The child engages in voting as a method for group decision‐making." (asked twice). The words after "child" are the same in both, and this file records the side-by-side's 2022 column as asked. A lesson that quotes the whole sentence should say which TEA document it quotes. Nothing else is unsure: the other 79 outcomes agreed in every reading of both TEA PDFs, and each side-by-side heading read the same every time it was asked (the five heading lines the Streamlined Version prints differently are listed in Notes 5).

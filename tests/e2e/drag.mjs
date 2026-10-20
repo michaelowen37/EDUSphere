@@ -2,7 +2,7 @@
 // would). A mouse drag moves a piece; it still moves when the browser refuses pointer capture, as Safari can; and the
 // browser's own drag of anything inside a game board is stopped, so it cannot cancel the game's drag. Since pass MK it also
 // plays Step on the Circles: a wrong step, its wobble inside the cell, a tap two cells away and a cut corner.
-import { createRequire } from 'node:module'; import { pathToFileURL } from 'node:url';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
 let passed = 0, failed = 0; const ok = (name, cond) => { if (cond) { passed++; console.log('PASS - ' + name); } else { failed++; console.log('FAIL - ' + name); } };
@@ -14,7 +14,7 @@ async function setup(refuseCapture) {
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
   if (refuseCapture) await page.addInitScript(() => { Element.prototype.setPointerCapture = function () { throw new Error('refused'); }; });
   settleTaps(page);
-  await page.goto(pathToFileURL(new URL('./page.html', import.meta.url).pathname).href);
+  await page.goto(new URL('./page.html', import.meta.url).href);
   await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'welcome');
   await page.getByRole('button', { name: 'Create account' }).click(); await page.waitForTimeout(300);
   await page.fill('input[placeholder="PIN"]', '2468'); await page.fill('input[placeholder="PIN again"]', '2468');
@@ -58,7 +58,7 @@ ok('a drag still works when the browser refuses pointer capture, as Safari can',
 // mouse, move it below the others, and let go: the order changes and stays.
 {
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
-  await page.goto(pathToFileURL(new URL('./page.html', import.meta.url).pathname).href);
+  await page.goto(new URL('./page.html', import.meta.url).href);
   await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'welcome');
   await page.getByRole('button', { name: 'Create account' }).click(); await page.waitForTimeout(300);
   await page.fill('input[placeholder="PIN"]', '2468'); await page.fill('input[placeholder="PIN again"]', '2468');

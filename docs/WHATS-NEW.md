@@ -9,6 +9,13 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## October 19, 2026 (First Sounds and Letters, read again from the start)
+
+- We read First Sounds and Letters, the second course for four-year-olds, again from the start. Rhyme Time and First Sounds now ask about words a child hears and pictures a child can tap, rather than printed words a child could match letter by letter, and two new stories, The Rhyme Train and The Paper-Cup Telephone, wait at the course's celebrations. Letter questions say the letter aloud and print "the letter you hear", so a child listens for its name instead of matching the printed shape.
+- First Sounds and Letters has a new game, Find the Letter. A voice names a letter, the child finds it among five big cards, and the voice says something about its shape in the lessons' own words, like "It has two round bumps." for B. The Fish dot-to-dot moved to First Steps, which teaches counting to ten, and it now has ten dots.
+- From pre-K through grade 2, a course's own game now opens at the course's first celebration, once every lesson has been passed, instead of waiting for every star. Young children get to play sooner, and the stars are still there to earn.
+- In the Wonder question "Which color makes you happiest?", each color's name now has a small square of that color beside it, so a child who can't read yet can find the color they love. The word stays for children who see colors differently.
+
 ## October 19, 2026 (First Steps, read again from the start)
 
 - We read First Steps, the first course for four-year-olds, again from the start. Its lessons now teach more and fewer by counting, because a long row or a few big things can look like more, and a new question asks children to count past that look.

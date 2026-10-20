@@ -4,12 +4,12 @@
 // also checks that the backup reminder is never put on the page before the tour, that the classroom is at its top after the
 // tour and after Later, that a lesson opens at its top with its title in title case, and that inside a frame as tall as the
 // page (some previews work that way) the page around the frame is brought back to the top and card 9 sits on screen.
-import { createRequire } from 'node:module'; import { pathToFileURL } from 'node:url'; import { writeFileSync } from 'node:fs';
+import { createRequire } from 'node:module'; import { writeFileSync } from 'node:fs';
 import * as L from '../../src/logic.mjs';
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
 let passed = 0, failed = 0; const ok = (name, cond, info) => { if (cond) { passed++; console.log('PASS - ' + name); } else { failed++; console.log('FAIL - ' + name + (info ? '  ' + JSON.stringify(info) : '')); } };
-const pageUrl = pathToFileURL(new URL('./page.html', import.meta.url).pathname).href;
+const pageUrl = new URL('./page.html', import.meta.url).href;
 const browser = await chromium.launch();
 const overlap = (a, b) => !!(a && b) && Math.min(a.right, b.right) - Math.max(a.left, b.left) > 0 && Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top) > 0;
 const near = (a, b, d) => Math.abs(a - b) <= d;

@@ -22,8 +22,8 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 |---|---|---|
 | PK3 | Very first steps | Kite (dots), Red and Blue (sort) |
 | PK3 | Listen and point | Step on the Circles (path) |
-| PK4 | First steps | Look Closely (pairs) |
-| PK4 | First sounds and letters | Fish (dots) |
+| PK4 | First steps | Look Closely (pairs), Fish (dots) |
+| PK4 | First sounds and letters | Find the Letter (spot) |
 | K | Looking at the world | Catch the Circles (catch) |
 | K | Me and my community | Big and Small (sort) |
 | K | Taking care of me | Rocket (dots) |

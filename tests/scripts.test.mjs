@@ -12,7 +12,7 @@ const fragments = []; const mismatches = [];
 // Lines whose start-with words wait for their grade's pass (EARMARKS A27): pre-K 4's Big letters says apple starts with A over
 // the letter A alone, and kindergarten's Letter names says Jam starts with J over JAM with nothing lit. The list may only shrink,
 // and a line fixed comes off it.
-const START_WAITS = ['big-letters 0', 'letter-names 4']; const startWaited = [];
+const START_WAITS = ['letter-names 4']; const startWaited = [];   // Big letters' apple has a line of its own since pass MM
 for (const mod of L.MODULES) {
   for (const line of mod.lesson.script || []) {
     // Natural speech: at least one real sentence of four or more words, unless the line only names letters or counts aloud.
@@ -300,6 +300,11 @@ ok('every lesson picture matches the words spoken over it', mismatches.length ==
 // that did not exist).
 { const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8'); const body = (ui.match(/function bestLine\(game, kept\) \{[\s\S]*?\n\}/) || [''])[0]; const chip = (ui.match(/function SvgChip\([\s\S]*?\n\}/) || [''])[0];
   ok("a young path game's Let's Play tile shows no seconds", /if \(game\.kind === 'path' && game\.young\) return null;[\s\S]*BEST_SECONDS\.has/.test(body));
+  // Find the Letter (pass MM) keeps no score, so its tile shows none, though Spot It's tile keeps its seconds; it plays on a board
+  // of its own, chosen where the game opens, and has a tile of its own; and the Fish, like the kite, says its name at the end.
+  ok("Find the Letter's tile shows no best, its own board and tile are chosen for it, and the Fish says its name when its last dot joins", /if \(game\.kind === 'spot' && game\.spot === 'letters'\) return null;[\s\S]*BEST_SECONDS\.has/.test(body)
+    && /const Game = game\.kind === 'spot' && game\.spot === 'letters' \? FindLetterGame : GAME_OF\[game\.kind\];/.test(ui) && /if \(game && game\.kind === 'spot' && game\.spot === 'letters'\) return <svg/.test(ui)
+    && /const DOT_PICTURE_NAMES = \{ kite: 'A kite!', fish: 'A fish!' \};/.test(ui) && /done && game\.shape === 'fish' && <g data-fish-eye/.test(ui));
   ok('every shape chip on a game board wears a thin dark outline', /const edge = \{ stroke: '#2E2E2E', strokeWidth: 0\.6 \}/.test(chip) && (chip.match(/\{\.\.\.edge\}/g) || []).length === 4); }
 // A connect-the-dots demo draws its numbers after the ink, each with a halo, so a finished picture shows every number its line
 // counts (pass ML, the code check's second read: the finished house had hidden its 4 and 5, the star its 2, 5, 7 and 10).

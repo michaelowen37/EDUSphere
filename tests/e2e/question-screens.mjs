@@ -8,14 +8,14 @@
 // not the whole paragraph, in a light green that reads in the dark theme. Since the checks' second reads it also proves what a
 // pre-reader hears after a wrong tap, the space under the Wonder cards, and a short phone's More Info opening at its top.
 // Run: node tests/e2e/make-page.mjs && node tests/e2e/question-screens.mjs
-import { createRequire } from 'node:module'; import { pathToFileURL } from 'node:url'; import { execSync } from 'node:child_process';
+import { createRequire } from 'node:module'; import { execSync } from 'node:child_process';
 const G = execSync('npm root -g').toString().trim(); const { chromium } = createRequire(import.meta.url)(`${G}/playwright`);
 const L = await import('../../src/logic.mjs');
 let passed = 0, failed = 0; const ok = (name, cond, info) => { if (cond) { passed++; console.log('PASS - ' + name); } else { failed++; console.log('FAIL - ' + name + (info !== undefined ? '  ' + JSON.stringify(info).slice(0, 500) : '')); } };
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1280, height: 900 }, hasTouch: true, reducedMotion: 'reduce' });
 const errors = []; page.on('pageerror', (e) => errors.push(String(e).slice(0, 200)));
-await page.goto(pathToFileURL(new URL('./page.html', import.meta.url).pathname).href);
+await page.goto(new URL('./page.html', import.meta.url).href);
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'welcome');
 const screen = () => page.evaluate(() => window.__eduTest && window.__eduTest.screen);
 const screenIs = (n) => page.waitForFunction((x) => window.__eduTest && window.__eduTest.screen === x, n, { timeout: 15000 });
@@ -427,6 +427,85 @@ const ponder = () => page.evaluate(() => {
   // Exactly 0.85 of the voice's own pace: the story read before this put its snail back when it closed (the second read).
   ok('an early learner hears More Info a little slower: every line at 0.85 of its pace, with no story pace left over', lines.length >= parts && lines.every((l) => base.some((b) => Math.abs(l.rate - b * 0.85) < 0.002)), lines.map((l) => l.rate));
   await page.getByRole('button', { name: 'Got it', exact: true }).first().click(); await page.waitForTimeout(300); }
+
+//    e. Letters and tracing (pass MM, round two's lesson check B and game check): a letter question prints no letter while the
+//       voice can say it ("Tap the letter E." over E, S and B let a child match the printed capital), and the whole question with
+//       no voice, for a grown-up to read; and the tracing pad shows every stroke's starting dot on top, T's stem included, which
+//       the bar's guide had covered once the stem came first.
+{ const DL = await import('../../src/logic.mjs');
+  const qt = async () => (await page.locator('[data-question-text]').first().innerText()).trim();
+  await show('pl-tap-letter', 1); const tapText = await qt();
+  await show('pl-is-letter', 2); const isText = await qt();
+  ok('a letter question prints "Tap the letter you hear." or "Is this the letter you hear?" while the voice can say the letter', tapText === 'Tap the letter you hear.' && isText === 'Is this the letter you hear?', [tapText, isText]);
+  await page.evaluate(() => { window.__savedSS = window.speechSynthesis; Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: undefined }); });
+  const q1 = await show('pl-tap-letter', 3); const noVoice = await qt();
+  await page.evaluate(() => Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: window.__savedSS }));
+  ok('with no voice a letter question prints whole, for a grown-up to read', noVoice === q1.prompt && /letter [A-Z]\.$/.test(noVoice), noVoice);
+  let seedT = 0; for (let s = 1; s < 300 && !seedT; s++) if (DL.generateQuestion('pl-trace-first', s).answer === 'T') seedT = s;
+  await show('pl-trace-first', seedT);
+  const dots = await page.evaluate(() => [...document.querySelectorAll('g[data-trace-start] circle')].map((c) => { const r = c.getBoundingClientRect(); const top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return !!top && (top === c || top.closest('g[data-trace-start]') === c.parentNode); }));
+  ok("the tracing pad shows every stroke's starting dot on top, T's stem and its bar", seedT > 0 && dots.length === 2 && dots.every(Boolean), { seedT, dots }); }
+
+//    f. A pre-reader's answer stays plain after a wrong tap, until the child gets it (round two's screen check, pass MM: it turned
+//       green before the retry, so the retry could be answered by color), and at 320 pixels the lesson keeps Next on the screen,
+//       its dots wrapping (thirteen pushed it past the edge).
+{ const q = await show('p4-rhyme-pic', 1); const wrong = q.choices.find((c) => c !== q.answer);
+  const borderOf = (c) => page.locator(`button[data-choice="${c}"]`).first().evaluate((b) => getComputedStyle(b).borderTopColor);
+  await settle(); await page.locator(`button[data-choice="${wrong}"]`).first().click(); await page.getByRole('button', { name: 'Check answer' }).click(); await page.waitForTimeout(500);
+  const answerAfterWrong = await borderOf(q.answer); const wrongAfter = await borderOf(wrong);
+  await page.getByRole('button', { name: 'Try again' }).first().click(); await page.waitForTimeout(400);
+  await page.locator(`button[data-choice="${q.answer}"]`).first().click(); await page.getByRole('button', { name: 'Check answer' }).click(); await page.waitForTimeout(500);
+  const answerAfterRight = await borderOf(q.answer);
+  // The right tap's border differs from the wrong tap's too (round three's screen check: with the answer never turning green, the
+  // check passed, since a retry's red-brown differs from plain as well).
+  ok("after a pre-reader's wrong tap the answer's button stays plain, and turns green once the child taps it", answerAfterWrong !== answerAfterRight && wrongAfter !== answerAfterWrong && answerAfterRight !== wrongAfter, { answerAfterWrong, wrongAfter, answerAfterRight });
+  await page.setViewportSize({ width: 320, height: 568 });
+  await page.evaluate(() => window.__eduTest.openModule('listen-for-rhymes')); await page.waitForFunction(() => window.__eduTest.screen === 'lesson'); await page.waitForTimeout(700);
+  const nav = await page.evaluate(() => { const n = document.querySelector('[data-lesson-nav]'); const rs = [...n.children].map((c) => c.getBoundingClientRect()); return { right: Math.round(Math.max(...rs.map((r) => r.right))), vw: window.innerWidth, dots: document.querySelectorAll('[data-lesson-dots] span').length }; });
+  ok('at 320 pixels the lesson keeps Next on the screen, its thirteen dots wrapping', nav.dots >= 12 && nav.right <= nav.vw, nav);
+  // g. A run of single letters balances its rows (round three's alignment read: Big letters' last line, "A   B   C   D   E   M   S",
+  //    left S alone on a row at 390 and at 768 pixels), and a lesson's Next half below a short phone's fold gets its scroll cue
+  //    (the screen check: Trace a Big Letter's second line showed 24 to 32 of Next's 66 pixels at 375 by 667, with no cue).
+  const rows = [];
+  for (const w of [390, 768, 320]) {
+    await page.setViewportSize({ width: w, height: 844 }); await page.evaluate(() => window.__eduTest.openModule('big-letters')); await page.waitForFunction(() => window.__eduTest.screen === 'lesson'); await page.waitForTimeout(500);
+    for (let i = 0; i < 8; i++) { await page.getByRole('button', { name: 'Next' }).first().click(); await page.waitForTimeout(120); }
+    await page.waitForTimeout(900);
+    // The page runs with motion off, so no letter is measured mid-swell (a swell grows its box).
+    rows.push(await page.evaluate((width) => { const p = [...document.querySelectorAll('p')].find((x) => x.textContent.replace(/\s/g, '') === 'ABCDEMS'); if (!p) return { width, missing: true };
+      const box = p.getBoundingClientRect(); const mid = box.left + box.width / 2; const per = {};
+      for (const s of [...p.querySelectorAll('span')].filter((x) => x.textContent.trim())) { const r = s.getBoundingClientRect(); const t = Math.round(r.top); const row = per[t] || (per[t] = { n: 0, l: 1e9, r: -1e9 }); row.n += 1; row.l = Math.min(row.l, r.left); row.r = Math.max(row.r, r.right); }
+      return { width, rows: Object.values(per).map((x) => x.n), off: +Math.max(...Object.values(per).map((x) => Math.abs((x.l + x.r) / 2 - mid))).toFixed(1) }; }, w)); }
+  ok('a run of single letters never leaves one alone on a row (Big letters\' last line at 390, 768 and 320 pixels)', rows.every((r) => !r.missing && r.rows.every((n) => n > 1)), rows);
+  // And every row of it is centred (round four's code read: non-breaking spaces stayed at a row's ends, so a second row sat about
+  // 25 pixels off centre); a letter's own spacing after it leaves each row 3 pixels to the right at most.
+  ok("every row of a run of single letters is centred (Big letters' last line at 390, 768 and 320 pixels)", rows.every((r) => !r.missing && r.rows.length >= 2 && r.off <= 4), rows);
+  await page.setViewportSize({ width: 375, height: 667 }); await page.evaluate(() => window.__eduTest.openModule('first-letter-tracing')); await page.waitForFunction(() => window.__eduTest.screen === 'lesson'); await page.waitForTimeout(500);
+  await page.getByRole('button', { name: 'Next' }).first().click(); await page.waitForTimeout(400); await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(1500);
+  const cue = await page.evaluate(() => { const n = document.querySelector('[data-lesson-nav]').getBoundingClientRect(); return { navBottom: Math.round(n.bottom), vh: window.innerHeight, cue: !!document.querySelector('[data-scroll-cue]') }; });
+  ok("a lesson's Next half below a short phone's fold gets the scroll cue (375 by 667)", cue.navBottom <= cue.vh || cue.cue, cue);
+  // h. The cue shows while a third of the lesson's row or more is below the fold, so it never sits on a Next that is nearly whole
+  //    (round four's code read: shown for any part of the row, it covered the Next of More big letters' second line, 57 of whose 66
+  //    pixels showed, and a tap there scrolled instead of moving on). Every line of the three tracing lessons, from the top, in both
+  //    themes, since those lines are the dark theme's (the light theme's show 65 of 66 pixels); and since round five's code read
+  //    Very First Steps' four feelings, whose eighth line hides 22.5 of 66 pixels in the dark and 17 in the light, so a cue at half
+  //    the row or at a quarter fails too. Next is asked for by its exact name, since the cue's own label holds "next".
+  const lines = [];
+  for (const theme of ['light', 'dark']) {
+  if (theme === 'dark') { await page.evaluate(() => window.__eduTest.goTo('educator-pick')); await page.waitForTimeout(300); for (const n of ['Skip tour', 'Later', 'Got it']) await tapIf(n);
+    await page.getByLabel('Dark theme').first().click({ force: true }); await page.waitForTimeout(400); await walk('Walk through early years'); }
+  for (const mod of ['first-letter-tracing', 'more-big-letters', 'trace-straight-letters', 'four-feelings']) {
+    await page.evaluate((m) => window.__eduTest.openModule(m), mod); await page.waitForFunction(() => window.__eduTest.screen === 'lesson'); await page.waitForTimeout(500);
+    for (let step = 0; step < 12; step++) {
+      await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(1000);
+      const at = await page.evaluate(() => { const nav = document.querySelector('[data-lesson-nav]'); if (!nav) return null; const r = nav.getBoundingClientRect(); const next = [...nav.querySelectorAll('button')].pop(); const nr = next.getBoundingClientRect();
+        const low = Math.min(nr.bottom, window.innerHeight) - 2; const hit = nr.top < window.innerHeight ? document.elementFromPoint(nr.left + nr.width / 2, (nr.top + low) / 2) : null;
+        return { hidden: r.bottom - window.innerHeight, height: r.height, cue: !!document.querySelector('[data-scroll-cue]'), nextHit: !!hit && next.contains(hit) }; });
+      if (!at) break; lines.push({ theme, mod, step, ...at, hidden: Math.round(at.hidden * 10) / 10 });
+      if (!(await page.getByRole('button', { name: 'Next', exact: true }).count())) break; await page.getByRole('button', { name: 'Next', exact: true }).first().click(); await page.waitForTimeout(300); } } }
+  const wrongCue = lines.filter((l) => l.cue !== (l.hidden > l.height / 3)); const covered = lines.filter((l) => !l.cue && l.hidden > 0 && !l.nextHit);
+  ok("a lesson's scroll cue shows while a third of its row is below a short phone's fold, and never sits on a Next that is nearly whole (375 by 667)", lines.length >= 40 && wrongCue.length === 0 && covered.length === 0 && lines.some((l) => l.hidden > 4 && !l.cue) && lines.some((l) => l.hidden / l.height > 0.25 && l.hidden / l.height < 1 / 3 && !l.cue) && lines.some((l) => l.hidden / l.height > 1 / 3 && l.hidden / l.height < 0.5 && l.cue), { lines: lines.length, wrongCue, covered, partHidden: lines.filter((l) => l.hidden > 0).map((l) => `${l.theme} ${l.mod} ${l.step}: ${l.hidden} of ${l.height}${l.cue ? ' cue' : ''}`) });
+  await page.setViewportSize({ width: 1280, height: 900 }); await page.waitForTimeout(300); }
 
 ok('no page errors along the way', errors.length === 0, errors);
 await browser.close();

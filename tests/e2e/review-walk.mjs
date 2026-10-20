@@ -1,13 +1,13 @@
 // The quick look back and Action Items, walked in the real page (pass LM; Mikey asked for the feature to be tested as a
 // student in every outcome and as an educator). In plain terms: a made-up educator adds two students, a test-only hook gives
 // them weeks of history, and the walk then signs in as each side and clicks through what a real person would see.
-import { createRequire } from 'node:module'; import { pathToFileURL } from 'node:url'; import { execSync } from 'node:child_process';
+import { createRequire } from 'node:module'; import { execSync } from 'node:child_process';
 const G = execSync('npm root -g').toString().trim(); const { chromium } = createRequire(import.meta.url)(`${G}/playwright`);
 let passed = 0, failed = 0; const ok = (name, cond, info) => { if (cond) { passed++; console.log('PASS - ' + name); } else { failed++; console.log('FAIL - ' + name + (info ? '  ' + JSON.stringify(info).slice(0, 300) : '')); } };
 const shots = process.argv[2] || null;
 const browser = await chromium.launch(); const page = await browser.newPage({ viewport: { width: 390, height: 844 }, hasTouch: true, reducedMotion: 'reduce' });
 const errors = []; page.on('pageerror', (e) => errors.push(String(e).slice(0, 200)));
-await page.goto(pathToFileURL(new URL('./page.html', import.meta.url).pathname).href);
+await page.goto(new URL('./page.html', import.meta.url).href);
 const screen = () => page.evaluate(() => window.__eduTest && window.__eduTest.screen);
 const screenIs = (n) => page.waitForFunction((x) => window.__eduTest && window.__eduTest.screen === x, n, { timeout: 15000 });
 const text = async () => (await page.evaluate(() => document.body.innerText)).replace(/\s+/g, ' ');

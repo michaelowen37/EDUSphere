@@ -1,0 +1,27 @@
+# The standards, as their publishers print them
+
+These files hold the standards the app's pre-K lessons cite, transcribed word for word from the agencies' own published texts, so a test can hold every quote in a citation to them. A citation quotes a standard's words (docs/RULES-AUDIT.md, the citation rows), and until pass MM only a reader checked those quotes against the agency's text online; pass MM's first machine read found six misquotes in pre-K 3's lessons that the reads of passes MJ to ML had missed. Since pass MM, tests/coverage.test.mjs reads these files.
+
+## The files
+
+- tea-pk3-2022-all-domains.txt: the 2022 Texas Prekindergarten Guidelines, PK3 Streamlined Version (Texas Education Agency), all 88 PK3 outcomes and their domain and skill headings.
+- tea-pk4-2022-domains-2-4.txt: the 2022 PK4 outcomes of Domains II to IV (Language and Communication, Reading, Writing), 47 outcomes, from TEA's "2015 and 2022 Texas Prekindergarten Guidelines: Side by Side, PK4 Outcomes" (its 2022 column), every one checked again in TEA's PK4 Streamlined Version.
+- tea-pk4-2022-domains-1-5-10.txt: the 2022 PK4 outcomes of Domains I and V to X, 81 outcomes, from the same two TEA documents.
+- elof-preschool-lc-lit-atl-pmp.txt: the Head Start Early Learning Outcomes Framework's preschool goals (36 to 60 months) for Language and Communication, Literacy, Approaches to Learning, and Perceptual, Motor and Physical Development, 32 goals, each with its 36 to 48 and 48 to 60 month progressions (headstart.gov pages last updated May 21, 2024).
+- elof-preschool-math-sci-se.txt: the same for Mathematics Development and Scientific Reasoning (pages last updated May 21, 2024) and Social and Emotional Development (March 5, 2025), 27 goals.
+- elof-preschool-indicators-se.txt: the "By 60 Months" indicators of goals P-SE 2 and P-SE 5, four each, from the same Social and Emotional Development page (its Indicators column), the two goals whose indicators a lesson quotes (pre-K 3's Please and thank you). Head Start's site keeps its 2015 framework PDF from the reading tool, so the printed PDF was not compared.
+
+Each file opens with its source, its URL, its edition, the date it was read and notes on how it was read, what changed since the 2015 edition and anything unsure. A Texas line is a code, a tab and the outcome's words after "Child" (II.C.1, which begins with the possessive "Child's", is the one exception, and each file's notes say how it is kept). A Head Start line is the goal's code, a tab, GOAL, 36-48 or 48-60, a tab and the text.
+
+## How they were read
+
+In pass MM (October 19, 2026) five readers, none of whom had seen the lessons' citations, read every outcome and every sentence at least twice with differently worded questions, a long one in halves split at different words; TEA's outcomes were read a third time in a second TEA document. The proxy this work runs behind refuses direct downloads from tea.texas.gov, so the PDFs were read through a web reader's text layer; the notes say which characters that cannot prove (a hyphen kind, an apostrophe's shape).
+
+Their first use was a cross-check: the 208 quotes in the citations of pre-K 3 and First Steps (two of them indicators, held to their file once it was transcribed), written in passes MJ to ML from the same documents (pre-K 3's in MJ and MK, First Steps' in ML), agreed with these independent transcriptions everywhere once pass MM had fixed the six misquotes (", for example" for "(e.g., ...)" four times, ", receptive," for "(receptive)" twice); First Sounds and Letters' four short quotes, of its eleven, were rewritten in its review, and it cites 40 now.
+
+## The rules
+
+- Every quote in a pre-K lesson's citations is these words: a Texas outcome in parentheses after its code, whole; a Head Start goal in parentheses after its code, whole; a progression after "month progression reads" or named sentence by sentence ("its second, "..."") as the whole cell or a run of its sentences. tests/coverage.test.mjs fails on any other quote, on a code these files do not have, and on a progression that is no run of its cell.
+- A quote of a Head Start indicator (a goal's "By 60 Months" indicators, which each domain page prints in a column beside its progressions) is held to elof-preschool-indicators-*.txt, and a quote of one not yet transcribed there is listed in the test's output until it is.
+- When a reading here is found wrong, the standard is read again in the agency's text, and the file and every citation change together, with the reason in docs/DECISIONS.md. A new edition gets a file of its own beside the old one, its edition in the name, and a citation names the edition it quotes.
+- Kindergarten's standards (the TEKS, 19 TAC Chapters 110 to 117 and 126, and the frameworks beside them) are transcribed here when kindergarten's review begins, and the check grows to them grade by grade.

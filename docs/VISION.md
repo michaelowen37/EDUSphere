@@ -21,6 +21,8 @@ Alpha School has shown this is possible with an AI tutor and roughly two hours a
 EduSphere is a version of that idea that a homeschooling family or a microschool can
 run on an iPad, with no account, no server, and no child's data leaving the room.
 
+Since pass MM (October 19, 2026), Mikey's words: "We don't need to lean too heavily in the 2 hour learning part of the vision; depth, quality of learning and student experience matter more." The two hours stay the bet, but a change is judged first by what it does for depth, the quality of the learning and the student's experience; time saved is a gain only when none of those pays for it.
+
 ## What the product must always do
 
 - **Master, then move.** A module opens only when everything it needs is mastered.

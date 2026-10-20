@@ -24,6 +24,9 @@
 // Two themes (2026-09-24, Mikey). Light is the palette the app always had. Dark is the night green of the logo, with
 // ivory words and brighter green, gold and clay so they still read on it. Every pair was contrast checked: body text
 // is at least 4.5 to 1 against what it sits on, in both themes. onAccent is the text on a green, gold or clay button.
+// clayInk (pass MM, Mikey's answer to Q47, "B") is the red-brown for words: a wrong answer's line on its pale pink strip, the
+// warnings, the review tag and the delete links. In the light theme it is darker than clay (#9A4F39, 4.80 to 1 on the strip,
+// where clay read 3.44); clay keeps the edges, fills, bars and drawings. In the dark theme the two are one color.
 // frame is the app's outer edge, paper the story pages, glass the see-through welcome card, tip the tip boxes, and
 // the logo words, orbit and tagline have their own colors so the dark logo matches the night design.
 // The tints are the soft colored cards (mint, sage, blue, rose and amber). In the dark theme each is a deep version of
@@ -41,7 +44,7 @@ const THEMES = {
   light: {
     mode: 'light', bg: '#F5F7F1', surface: '#FFFFFF', ink: '#24291F', muted: '#5C6355', line: '#DCE3D6',
     green: '#2F5D4F', greenSoft: '#E4EEE8', gold: '#B8862B', goldSoft: '#F7EAD1',
-    clay: '#B9634A', claySoft: '#F6E4DB', onAccent: '#FFFFFF', onGold: '#24291F', frame: '#2F5D4F',
+    clay: '#B9634A', claySoft: '#F6E4DB', clayInk: '#9A4F39', onAccent: '#FFFFFF', onGold: '#24291F', frame: '#2F5D4F',
     paper: '#FFF8E8', paperLine: '#F1E3BE', glass: 'rgba(249, 251, 247, 0.9)',
     tipBg: 'linear-gradient(135deg, #EAF2EC 0%, #F5F9F5 100%)', tipLine: '#DCE8DF',
     logoInk: '#2F5D4F', logoOrbit: '#2F5D4F', logoTag: '#8A6424', veil: 'rgba(255, 255, 255, 0.5)', panel: 'rgb(240, 248, 238)', panelLine: 'transparent', goldEdge: '#F7EAD1', cardEdge: '#DCE3D6', softEdge: '#E4EEE8', tabEdge: '#C9DCCF',
@@ -56,7 +59,7 @@ const THEMES = {
   dark: {
     mode: 'dark', bg: '#14231E', surface: '#1D302A', ink: '#F1EDE3', muted: '#B3C1B9', line: '#34503F',
     green: '#7CC3A6', greenSoft: '#22413A', gold: '#D9A441', goldSoft: '#233B31',
-    clay: '#E08A6E', claySoft: '#3D2620', onAccent: '#0E1A16', onGold: '#0E1A16', frame: '#2F5D4F',
+    clay: '#E08A6E', claySoft: '#3D2620', clayInk: '#E08A6E', onAccent: '#0E1A16', onGold: '#0E1A16', frame: '#2F5D4F',
     paper: '#1F2D27', paperLine: '#7CC3A6', glass: 'rgba(29, 48, 42, 0.92)',
     tipBg: 'linear-gradient(135deg, #1F3A31 0%, #1D302A 100%)', tipLine: '#34503F',
     logoInk: '#F1EDE3', logoOrbit: '#F1EDE3', logoTag: '#D9A441', veil: 'rgba(0, 0, 0, 0.18)', panel: '#2A4C40', panelLine: '#7CC3A6', goldEdge: '#7CC3A6', cardEdge: '#7CC3A6', softEdge: '#7CC3A6', tabEdge: '#2F5A48',
@@ -347,9 +350,11 @@ function TracePad({ letter, paths, onChange, disabled = false, tone = null }) {
         <g key={`dot-${i}`}><circle cx={p[0]} cy={p[1]} r="5" fill={C.gold} /><text x={p[0]} y={p[1] - 7} fontSize="7" textAnchor="middle" fill={C.ink} fontFamily={FONT}>{i + 1}</text></g>
       )))}
       <TraceShape letter={letter} def={def} />
+      {/* Every guide first, then every starting dot and arrow (pass MM, round two's lesson check): drawn stroke by stroke, a
+          later stroke's guide covered an earlier stroke's dot, so T's bar hid the dot of T's stem, which comes first. */}
+      {def && !def.dots && def.strokes.map((st, i) => <path key={`guide-${i}`} d={strokeD(st, cornersOf(def, i))} fill="none" stroke={C.line} strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" />)}
       {def && !def.dots && def.strokes.map((st, i) => (
-        <g key={i}>
-          <path d={strokeD(st, cornersOf(def, i))} fill="none" stroke={C.line} strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" />
+        <g key={`start-${i}`} data-trace-start={i}>
           {/* the starting dot and the direction of the first move */}
           <circle cx={st[0][0]} cy={st[0][1]} r="4.5" fill={C.green} />
           {(() => { const { tip, ux, uy } = arrowOnStroke(st, cornersOf(def, i)); const l = [tip[0] - ux * 5 - uy * 3.5, tip[1] - uy * 5 + ux * 3.5]; const r = [tip[0] - ux * 5 + uy * 3.5, tip[1] - uy * 5 - ux * 3.5]; return <polygon points={`${tip.join(',')} ${l.join(',')} ${r.join(',')}`} fill={C.green} />; })()}
@@ -416,6 +421,16 @@ function TraceDemo({ letter, animKey = 0, pace = 'slow', nudge = 0 }) {
 const SWATCH = { red: '#D9534F', blue: '#4A7FC1', yellow: '#F0C93A', green: '#5E9A62' };
 function Swatch({ colour, size = 90 }) {
   return <svg viewBox="0 0 100 100" width={size} height={size} role="img" aria-label={colour} style={{ display: 'block', margin: '0 auto' }}><rect x="10" y="10" width="80" height="80" rx="18" fill={SWATCH[colour] || C.line} /></svg>;
+}
+// The color lessons' square, small, beside the word of a Wonder answer that names a color (pass MM, Q46). The word beside it
+// says the color, so the square is hidden from screen readers. A thin darker edge keeps the yellow square visible on a white
+// button in the light theme, where the lessons' yellow on white would read 1.6 to 1.
+function OptionSwatch({ colour, size = 26 }) {
+  return (
+    <svg data-option-swatch={colour} viewBox="0 0 100 100" width={size} height={size} aria-hidden="true" style={{ flex: 'none', display: 'block' }}>
+      <rect x="8" y="8" width="84" height="84" rx="18" fill={SWATCH[colour]} stroke="rgba(0,0,0,0.28)" strokeWidth="5" />
+    </svg>
+  );
 }
 function Item({ spec, size = 80 }) {
   // spec looks like 'circle-red', 'square-blue-big', 'triangle-green-small', maybe with '#n' on the end
@@ -1221,8 +1236,8 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1 }
       return <p style={{ fontSize: 28, fontWeight: 700, margin: '6px 0', textAlign: 'center', color: B.green, lineHeight: 1.3, wordBreak: 'break-word' }}>{visual.text}</p>;
     }
     // Each letter swells as it is named, so a child who cannot read still knows which one
-    // is being talked about.
-    const parts = visual.text.split('');
+    // is being talked about. The pieces are the letters and, as one piece, each run of spaces between them.
+    const parts = visual.text.match(/ +|[^ ]/g) || [];
     // With a highlight, the named part of each word is emphasized as one piece: it turns gold,
     // sits a little larger, and swells together, word by word. The other letters stay quiet.
     if (visual.highlight) {
@@ -1244,14 +1259,20 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1 }
         </p>
       );
     }
+    // A run of single letters that wraps balances its rows (round three's alignment read, pass MM: Big letters' last line,
+    // "A   B   C   D   E   M   S", left S alone on a row at 390 and at 768 pixels). The gap between two letters is one ordinary
+    // space as wide as the text's run of spaces (its size and its spacing that many times a letter's), so a row may break there and
+    // the space drops away at a row's ends, and every row is centred (round four's code read: non-breaking spaces stayed at a row's
+    // ends, and a second row sat about 25 pixels off centre). A run on one row is drawn exactly as before, and the gap takes no
+    // height of its own (line height 0, set at the middle).
     return (
-      <p style={{ fontSize: 44, fontWeight: 700, letterSpacing: 6, margin: '6px 0', textAlign: 'center', color: B.green }}>
-        {parts.map((ch, i) => (
-          <span key={`${animKey}-${i}`} className={animate && ch.trim() ? 'edu-grow' : undefined}
-            style={animate && ch.trim() ? { display: 'inline-block', animationDelay: `${parts.slice(0, i).filter((x) => x.trim()).length * 0.75}s` } : undefined}>
-            {ch === ' ' ? '\u00A0' : ch}
-          </span>
-        ))}
+      <p style={{ fontSize: 44, fontWeight: 700, letterSpacing: 6, margin: '6px 0', textAlign: 'center', color: B.green, textWrap: 'balance' }}>
+        {parts.map((ch, i) => (ch[0] === ' '
+          ? <span key={`${animKey}-${i}`} style={{ fontSize: `${ch.length * 100}%`, letterSpacing: 6 * ch.length, lineHeight: 0, verticalAlign: 'middle' }}>{' '}</span>
+          : <span key={`${animKey}-${i}`} className={animate ? 'edu-grow' : undefined}
+            style={animate ? { display: 'inline-block', animationDelay: `${parts.slice(0, i).filter((x) => x.trim()).length * 0.75}s` } : undefined}>
+            {ch}
+          </span>))}
       </p>
     );
   }
@@ -1296,40 +1317,10 @@ function playTap() {
   } catch (e) { /* no sound is never a problem */ }
 }
 
-// Device voices read letters, not sounds: "mmm" comes out as em, em, em. These swaps
-// give each sustained sound a spelling the voice will hum or hiss instead. Recorded
-// audio, when it comes, replaces this for good.
-// "hmm" put an H in front of the M sound, which was wrong. Each sound is now spoken as the
-// stretched start of a word the voice knows how to say: mmmoon, sssun, fffish. The letters
-// run into the word, so the sound is held and the word confirms it. The screen keeps "mmm".
-const stretch = (letter, word) => letter.repeat(44) + word;
-const SOUND_SPEECH = [[/\bmmm\b/gi, stretch('m', 'oon')], [/\bnnn\b/gi, stretch('n', 'ut')], [/\bsss\b/gi, stretch('s', 'un')], [/\bfff\b/gi, stretch('f', 'ish')], [/\bzzz\b/gi, stretch('z', 'ip')], [/\brrr\b/gi, stretch('r', 'un')], [/\blll\b/gi, stretch('l', 'ion')]];
-const SOUND_TOKEN = /\b(mmm|nnn|sss|fff|zzz|rrr|lll)\b/gi;
-function speechFriendly(text) { let out = String(text); for (const [re, to] of SOUND_SPEECH) out = out.replace(re, to); return out; }
-// A line is spoken in pieces: ordinary words at the normal pace, and each sustained sound
-// as its own slow, stretched utterance, so "mmm" is held rather than clipped.
-// Speech is shaped sentence by sentence so it sounds like a person rather than a flat run:
-// a one-word sentence is the word at play, so it is held slowly and a little higher; a
-// question lifts at the end; everything else rolls along at an easy pace. Sustained sounds
-// stay their own long, slow pieces.
-function speechPieces(text) {
-  const src = String(text);
-  const sentences = src.split(/(?<=[.!?])\s+/).filter((x) => x.trim());
-  const pieces = [];
-  for (const [si, sentence] of sentences.entries()) {
-    const words = sentence.replace(/[.!?]+$/, '').trim().split(/\s+/).filter(Boolean);
-    const shape = words.length === 1 && !/\d/.test(words[0]) ? 'key' : /\?$/.test(sentence.trim()) ? 'question' : 'plain';
-    let last = 0;
-    for (const m of sentence.matchAll(SOUND_TOKEN)) {
-      if (m.index > last) pieces.push({ text: sentence.slice(last, m.index), shape, sentence: si });
-      pieces.push({ text: speechFriendly(m[0]), shape: 'sound', sentence: si });
-      last = m.index + m[0].length;
-    }
-    if (last < sentence.length) pieces.push({ text: sentence.slice(last), shape, sentence: si });
-  }
-  // A piece that is only punctuation would be read aloud as a word. Drop it.
-  return pieces.filter((p) => /[A-Za-z0-9]/.test(p.text));
-}
+// How a line is spoken, held sounds and all, is decided in logic.mjs since pass MM, round three (speechPieces, HELD_SOUND and
+// heldSoundSpoken, beside SOUND_CARRIERS), so the rules test reads the speech itself: a device voice reads "mmm" as letters, so
+// each held sound is said as the stretched start of a word it knows, and a word said slowly ("Mmm-at") runs into its own letters.
+// SPEECH_SHAPES below turns each piece's shape into a rate and a pitch.
 const SPEECH_SHAPES = { key: { rate: 0.6, pitch: 1.25 }, question: { rate: 0.9, pitch: 1.22 }, plain: { rate: 0.86, pitch: 1.15 }, sound: { rate: 0.1, pitch: 1.15 } };
 
 // Slower and Faster on a tracing lesson move the voice with the drawing: -1 slows every line to
@@ -1783,6 +1774,11 @@ const KID_ANIMATION = () => `
    px on a phone), so the page's wobble swung a Step on the Circles chip about 30 px, out of its cell (pass MK, the second read). */
 @keyframes edu-wobble-chip { 0%, 100% { transform: translateX(0) rotate(0deg); } 20% { transform: translateX(-1.6px) rotate(-8deg); } 40% { transform: translateX(1.6px) rotate(8deg); } 60% { transform: translateX(-1px) rotate(-4deg); } 80% { transform: translateX(1px) rotate(4deg); } }
 .edu-wobble-chip { animation: edu-wobble-chip 0.55s ease-in-out; }
+/* An SVG piece that takes taps keeps the browser's focus ring for the keyboard only (pass MM, Find the Letter in the real page):
+   Chrome drew a heavy black box around a tapped letter card, Spot It piece or robot's fruit, which reads to a child as a mistake. */
+g[role="button"]:focus:not(:focus-visible) { outline: none; }
+/* Nor a gray square on a phone where the finger lands (round two's game check), which reads as a mistake the same way. */
+g[role="button"] { -webkit-tap-highlight-color: transparent; }
 .edu-burst { animation: edu-burst 0.9s ease-out forwards; }
 .edu-rise { animation: edu-rise 0.5s ease-out both; }
 /* The Wise Human logo (2026-09-24): the sphere and orbit draw themselves, each word lands on the old logo's settle, and
@@ -1877,6 +1873,11 @@ const KID_ANIMATION = () => `
   /* The coloring title cycles through the crayon colors, so it catches a young eye. */
   @keyframes edu-rainbow { 0% { color: #E4572E; } 20% { color: #F4A259; } 40% { color: #5BA84A; } 60% { color: #3E7CB1; } 80% { color: #7D5BA6; } 100% { color: #E4572E; } }
   .edu-rainbow { animation: edu-rainbow 6s linear infinite; }
+  /* In the light theme the shimmer runs through a deeper orange and green (pass MM, Mikey's answer to Q47, "B"): on the page
+     the light orange dipped to 1.92 to 1 and the green to 2.72, under the 3 to 1 for big words; now its lowest moment is the red
+     at 3.41. The dark theme keeps the brighter colors, which read on its night green. */
+  @keyframes edu-rainbow-day { 0% { color: #E4572E; } 20% { color: #C46A1F; } 40% { color: #3F8F3A; } 60% { color: #3E7CB1; } 80% { color: #7D5BA6; } 100% { color: #E4572E; } }
+  html:not([data-theme="dark"]) .edu-rainbow { animation-name: edu-rainbow-day; }
   /* Story cards above 500px (2026-09-23, Mikey): picture on the left filling the height, words in the middle, Open centered on the right. */
   @media (min-width: 501px) {
     .edu-story-card { grid-template-columns: auto minmax(0, 1fr) auto !important; grid-template-rows: auto !important; align-items: center; }
@@ -2444,7 +2445,7 @@ function LicenseCard({ name, code, license, usedBy, onSave }) {
           <input value={draft} onChange={(e) => { setDraft(e.target.value); setNote(''); }} aria-label="License code" placeholder="Paste the license code"
             style={{ width: '100%', boxSizing: 'border-box', fontFamily: FONT, fontSize: 15, padding: '10px 12px', borderRadius: 10, border: `1px solid ${C.line}`, textAlign: 'center' }} />
           <div style={{ marginTop: 10 }}><Btn onClick={check} disabled={busy || !draft.trim()}>Check code</Btn></div>
-          {note && <p role="status" style={{ margin: '10px 0 0', color: C.clay, fontSize: 14 }}>{note}</p>}
+          {note && <p role="status" style={{ margin: '10px 0 0', color: C.clayInk, fontSize: 14 }}>{note}</p>}
         </>
       )}
     </div>
@@ -3492,12 +3493,16 @@ const BAND_STEP = 200; let bandWatch = null; const bandSeen = [];
 // the screen, and a tap scrolls the row into view. It sits in the bottom right corner, where the star appears, so it never
 // covers the speaker button in the middle or the words above it (pass KA). It watches the page and any box the app scrolls in (visibleBand), comes
 // back when a new line starts at the top, and holds still when the device asks for reduced motion.
-function ScrollCue({ target, watch, whole = false }) {
+// When the cue shows: by default while less than 24 pixels of the row show; with whole, while any of the row is below what shows
+// (a practice round's full-width buttons, of which the cue's corner covers only the end); with hidden, while that share of the
+// row is (a lesson's Next, which sits in the cue's own corner: a third, since round four's code read, pass MM, where a cue for any
+// part of it sat on a Next 57 of whose 66 pixels showed, and a tap there scrolled instead of moving on).
+function ScrollCue({ target, watch, whole = false, hidden = 0 }) {
   const [show, setShow] = useState(false);
   useEffect(() => {
     if (typeof window === 'undefined') return undefined;
     let frame = 0;
-    const check = () => { frame = 0; const el = document.querySelector(target); if (!el) { setShow(false); return; } const r = el.getBoundingClientRect(); const band = visibleBand(); setShow(whole ? r.bottom > band.bottom + 4 : r.top > band.bottom - 24); };
+    const check = () => { frame = 0; const el = document.querySelector(target); if (!el) { setShow(false); return; } const r = el.getBoundingClientRect(); const band = visibleBand(); setShow(hidden ? r.bottom - band.bottom > r.height * hidden : whole ? r.bottom > band.bottom + 4 : r.top > band.bottom - 24); };
     const soon = () => { if (!frame) frame = window.requestAnimationFrame(check); };
     const timers = [60, 450, 1200].map((ms) => setTimeout(check, ms));
     window.addEventListener('scroll', soon, true); window.addEventListener('resize', soon);
@@ -3841,6 +3846,8 @@ function Done({ show }) {
   );
 }
 // Join the dots in order. The next dot is gold; a wrong one wobbles; the last line closes the shape.
+// The pictures that say their names when the last dot joins (the kite since pass MJ, the fish since pass MM).
+const DOT_PICTURE_NAMES = { kite: 'A kite!', fish: 'A fish!' };
 function DotsGame({ game, round }) {
   const dots = useMemo(() => DOT_SHAPES[game.shape] || DOT_SHAPES.kite, [game]);
   const [next, setNext] = useState(0); const [wrong, setWrong] = useState(-1); const svgRef = useRef(null); const kiteTimer = useRef(null);
@@ -3848,12 +3855,15 @@ function DotsGame({ game, round }) {
   useEffect(() => { setNext(0); return () => clearTimeout(kiteTimer.current); }, [round]);
   const done = next >= dots.length;
   const small = 1;   // every picture keeps its dots DOT_GAP apart, so nothing needs to shrink
-  // A right tap joins the dot and says its number aloud, in words past ten too (the fish has eleven dots, the rocket twelve);
+  // A right tap joins the dot and says its number aloud, in words past ten too (the rocket has twelve dots);
   // a dot already joined does nothing; any other dot wobbles.
   // The kite (pass MJ, the game check: it finished as a bare diamond, though the instructions promise a picture): once its last
-  // dot joins, the voice says A kite! after the number, and a string with two bows hangs from its bottom dot.
-  const tap = (i) => { if (done || i < next) return; if (i === next) { setNext(next + 1); speak(NUMBER_NAMES[i + 1] || ['eleven', 'twelve'][i - 10] || String(i + 1)); if (game.shape === 'kite' && i === dots.length - 1) kiteTimer.current = setTimeout(() => speak('A kite!'), 900); } else { setWrong(i); setTimeout(() => setWrong(-1), 400); } };
-  // A tap on a drawn dot goes to that dot: the gold one joins, a joined one does nothing, any other wobbles. A tap that misses
+  // dot joins, the voice says A kite! after the number, and a string with two bows hangs from its bottom dot. The fish (pass MM,
+  // the game check, when it moved to First Steps with ten dots) gets an eye and A fish! the same way.
+  const named = DOT_PICTURE_NAMES[game.shape];
+  const tap = (i) => { if (done || i < next) return; if (i === next) { setNext(next + 1); speak(NUMBER_NAMES[i + 1] || ['eleven', 'twelve'][i - 10] || String(i + 1)); if (named && i === dots.length - 1) kiteTimer.current = setTimeout(() => speak(named), 900); } else { setWrong(i); setTimeout(() => setWrong(-1), 700); } };
+  // A tap on a drawn dot goes to that dot: the gold one joins, a joined one does nothing, any other wobbles and wears a red-brown
+  // ring for 700 ms, which shows with motion off too (round two's game check, pass MM). A tap that misses
   // every drawn dot still reaches the gold dot within 9 units (dots sit at least DOT_GAP, 11, apart), or else the nearest dot
   // within 9, so a small finger that lands just beside a dot still reaches it.
   const tapNear = (e) => { if (!svgRef.current || done) return; const [x, y] = boxPoint(svgRef.current, e); const far = ([dx, dy]) => Math.hypot(dx - x, dy - y); const on = dots.findIndex((d, i) => far(d) <= (i === next ? 5.2 : 4.2) * small); if (on >= 0) { tap(on); return; } if (far(dots[next]) < 9) { tap(next); return; } let best = -1; let gap = 9; dots.forEach((d, i) => { const r = far(d); if (r < gap) { gap = r; best = i; } }); if (best >= 0) tap(best); };
@@ -3863,6 +3873,7 @@ function DotsGame({ game, round }) {
       <svg ref={svgRef} onPointerDown={tapNear} data-dots-board={game.id} viewBox="0 0 100 100" width="100%" height="100%" style={{ display: 'block' }}>
         <polyline points={drawn.map((d) => d.join(',')).join(' ')} fill="none" stroke={B.green} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
         {done && game.shape === 'kite' && <g data-kite-tail=""><path d={`M${dots[2][0]} ${dots[2][1]} c-6 5 6 9 0 13 c-5 4 4 7 0 10`} fill="none" stroke={B.green} strokeWidth="1.2" strokeLinecap="round" />{[[dots[2][0] + 0.6, dots[2][1] + 7], [dots[2][0] + 0.3, dots[2][1] + 16]].map(([x, y], k) => <path key={k} d={`M${x - 4} ${y - 2.2}L${x} ${y}L${x - 4} ${y + 2.2}ZM${x + 4} ${y - 2.2}L${x} ${y}L${x + 4} ${y + 2.2}Z`} fill={SWATCH.red} stroke="#2E2E2E" strokeWidth="0.4" strokeLinejoin="round" />)}</g>}
+        {done && game.shape === 'fish' && <g data-fish-eye=""><circle cx="26" cy="45" r="3.4" fill="#2E2E2E" /><circle cx="27.1" cy="43.9" r="1.1" fill="#FFFFFF" /></g>}
         {dots.map(([x, y], i) => (
           <g key={i} style={{ cursor: 'pointer' }} className={wrong === i ? 'edu-wobble' : undefined}>
             <circle cx={x} cy={y} r={(i === next ? 5.2 : 4.2) * small} fill={i < next ? B.green : i === next ? B.gold : '#FFFFFF'} stroke={wrong === i ? B.clay : '#2E2E2E'} strokeWidth={wrong === i ? 1.6 : 0.9} />
@@ -5290,6 +5301,121 @@ function SpotGame({ game, round, onScore = null }) {
     </div>
   );
 }
+// Find the Letter (pass MM, First Sounds and Letters' game, from round one's game check). A voice names a letter and the child
+// finds it among five on the board, as Big Letters' last line says, "Find the letter when you hear its name." A right tap rings
+// the letter in green, and the voice says Yes, names it again and says its shape in the lessons' words; a wrong tap wobbles the
+// letter and rings it in dashed clay for 700 ms (the ring shows with motion off too), names the letter tapped and asks again,
+// and from the second miss on one ask the asked letter's shape words come too. While a right letter's line is said, taps wait,
+// so the next ask is heard before the next tap counts; with no voice on the device nothing waits. Three asks a board, four
+// boards a round, a row of four dots for how far along, and the star. No clock and no score: a four-year-old is learning
+// names, not racing. The letters fill the board (240 to 490 pixels across, so they stand about 55 to 110 tall), each on a
+// round card 31 units across, the centre card 10 units clear of the corner cards (pass MM, the real page: at 4 units they looked
+// as if they touched), since a letter's own ink is too thin to take a small finger's tap.
+// Everything sits on the paper board, so the hear-again button takes the light palette's gold too (SpeakButton's dark-theme
+// ivory would vanish on the paper).
+const LETTER_SPOTS = [[20, 22], [80, 22], [50, 50], [20, 78], [80, 78]];
+function FindLetterGame({ round }) {
+  const [opening] = useState(() => Math.floor(Math.random() * 997));   // so a visit does not always start on the same round
+  const boards = useMemo(() => letterSpotRound(round + opening), [round, opening]);
+  const [k, setK] = useState(0); const [a, setA] = useState(0); const [found, setFound] = useState([]); const [miss, setMiss] = useState(null);
+  const [misses, setMisses] = useState(0); const [hold, setHold] = useState(false); const [done, setDone] = useState(false);
+  // The wait as it stands this moment, which a tap reads (round four's code read, pass MM): Play again on a first board still open
+  // draws the new letters before the effect that resets the round, and a tap then, read against the render's wait, took a letter
+  // whose ask was never said. Every change of the wait goes through holdTo; hold itself only draws.
+  const holdNow = useRef(false); const holdTo = (v) => { holdNow.current = v; setHold(v); };
+  // live moves on with every new round and every board, so a line's end or a timer from before does nothing.
+  const timers = useRef([]); const live = useRef(0);
+  const later = (fn, ms) => { const mine = live.current; timers.current.push(setTimeout(() => { if (mine === live.current) fn(); }, ms)); };
+  const clear = () => { timers.current.forEach(clearTimeout); timers.current = []; };
+  // A backstop for a voice that never reports its end (a working voice ends each wait itself, as each line starts or ends); it
+  // was a real voice's pace until round two's code check found it cutting a slow voice's shape line short.
+  const backstop = (text) => 1200 + text.length * 100;
+  const holdId = useRef(0);   // each wait is numbered, so a timer lifts only its own
+  const boardRef = useRef(null); const refocus = useRef(false);   // a keyboard player keeps the board's focus at a new board
+  useEffect(() => { if (!refocus.current || !boardRef.current) return; refocus.current = false; const g = boardRef.current.querySelector('g[role="button"]'); if (g) g.focus(); }, [k]);
+  const board = boards[Math.min(k, boards.length - 1)];
+  const asked = !done && a < board.asks.length ? board.asks[a] : null;
+  // Closing the board moves live on too (round two's game check), so a line's end can never move to the next board or speak an
+  // ask over the overview; GamePad stops the voice itself.
+  // A round's first ask holds the taps 120 ms, as a new board's does (move, below) and the backstop's (round four's code read,
+  // pass MM): speak() sends a line 80 ms after it stops a voice still reporting it speaks, so a tap at once took a letter whose ask
+  // was never said, and the right letter's line then dropped the ask for good. With no voice on the device nothing waits.
+  useEffect(() => { live.current += 1; clear(); setK(0); setA(0); setFound([]); setMiss(null); setMisses(0); setDone(false);
+    const voice = canSpeak(); const myHold = ++holdId.current; holdTo(voice); speak(letterSpotLine('ask', boards[0].asks[0]));
+    if (voice) later(() => { if (myHold === holdId.current) holdTo(false); }, 120);
+    return () => { live.current += 1; clear(); }; }, [boards]);
+  const tap = (i) => {
+    if (holdNow.current || asked === null || found.includes(i)) return;
+    const letter = board.letters[i];
+    if (letter !== asked) {
+      const m = misses + 1; setMisses(m); setMiss(i); later(() => setMiss((x) => (x === i ? null : x)), 700);
+      speak(letterSpotLine(m >= 2 ? 'wrong-again' : 'wrong', asked, letter));
+      return;
+    }
+    setFound([...found, i]); setMisses(0); setMiss(null); setA(a + 1);
+    const right = letterSpotLine('right', letter); const voice = canSpeak(); const mine = live.current;
+    if (a + 1 < board.asks.length) {
+      const next = letterSpotLine('ask', board.asks[a + 1]);
+      if (!voice) return;
+      holdTo(true); const myHold = ++holdId.current; let asking = false;
+      const release = () => { if (myHold === holdId.current && mine === live.current) holdTo(false); };
+      speakSequence([right, next], (idx) => { if (idx >= 1) { asking = true; release(); } }, release);
+      // The backstop lifts this wait, and says the next ask if the voice never reached it, the ask first and the wait lifted 120 ms
+      // later (round three's screen check: speak() sends a line 80 ms after it cancels a voice still reporting it speaks, so a tap
+      // in that gap took a letter whose ask was never said).
+      later(() => { if (myHold !== holdId.current) return; if (!asking) { speak(next); later(release, 120); } else release(); }, backstop(right));
+      return;
+    }
+    // The board's last letter: its line, a breath, then the next board, or the star after the fourth, with "You found them all!"
+    // said for a child who cannot read the end line; a keyboard player's focus moves to the new board (refocus, above).
+    holdTo(true); holdId.current += 1; let moved = false;
+    const move = () => { if (moved || mine !== live.current) return; moved = true; live.current += 1; clear();
+      refocus.current = !!(boardRef.current && boardRef.current.contains(document.activeElement));
+      if (k + 1 >= boards.length) { holdTo(false); setDone(true); speak('You found them all!'); return; }
+      // The new board's first ask holds the taps 120 ms too, as the round's first does (above); with no voice nothing waits.
+      setK(k + 1); setA(0); setFound([]); setMisses(0); speak(letterSpotLine('ask', boards[k + 1].asks[0]));
+      if (voice) { const myHold = ++holdId.current; later(() => { if (myHold === holdId.current) holdTo(false); }, 120); } else holdTo(false); };
+    if (voice) speakSequence([right], () => {}, () => later(move, 700));
+    later(move, (voice ? backstop(right) : 0) + 700);
+  };
+  // Hear it again cuts a right letter's line short, so it lets go of the hold: the child asked to hear the ask, and may act on it
+  // once it is on its way (round five's code read, pass MM): while a line is still said, speak() sends the ask 80 ms after it stops
+  // the voice, so the board waits 120 ms then too, where a tap in that gap took a letter whose ask was never said.
+  const again = () => { if (asked === null) return; const ss = canSpeak() ? window.speechSynthesis : null; const busy = !!ss && (ss.speaking || ss.pending);
+    const myHold = ++holdId.current; holdTo(busy); speak(letterSpotLine(misses >= 2 ? 'hint' : 'ask', asked));
+    if (busy) later(() => { if (myHold === holdId.current) holdTo(false); }, 120); };
+  return (
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 12 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, minHeight: 44, marginBottom: 6 }}>
+        {/* The heading names no letter while the voice can (round two's checks): a printed capital above the cards is a shape to
+            match, and the game asks for a name. With no voice it names the letter, for a grown-up to read. */}
+        <p data-spot-ask={asked || ''} style={{ margin: 0, fontSize: 19, fontWeight: 700, color: B.ink, textAlign: 'center' }}>{done ? 'Twelve letters found. Tap the round arrow for more.' : asked === null ? 'All three found.' : canSpeak() ? 'Find the letter you hear.' : `Find the letter ${asked}.`}</p>
+        {asked !== null && canSpeak() && (
+          <button type="button" onClick={again} aria-label="Hear it again" title="Hear it again" className="edu-press" style={{ flex: '0 0 auto', width: 44, height: 44, borderRadius: 999, border: `3px solid ${B.gold}`, background: B.goldSoft, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" fill={B.ink} /><path d="M16 8.5a4.5 4.5 0 0 1 0 7M18.5 6a8 8 0 0 1 0 12" fill="none" stroke={B.ink} strokeWidth="1.8" strokeLinecap="round" /></svg>
+          </button>)}
+      </div>
+      {/* On a sideways phone the board is held to the height left under its heading and above its dots (round two's game check),
+          214 pixels since round three's screen check (pass MM): the heading can wrap to two lines there, and with 200 the row of
+          dots sat at 391 on a 390-pixel screen. */}
+      <svg ref={boardRef} viewBox="0 0 100 100" width="100%" style={{ display: 'block', width: 'min(100%, calc(100vh - 214px))', margin: '0 auto' }} role="group" aria-label="Five letters" data-letter-board={k} data-letter-hold={hold ? '' : undefined}>
+        {board.letters.map((x, i) => { const [cx, cy] = LETTER_SPOTS[i]; const hit = found.includes(i); const wrong = miss === i; return (
+          <g key={`${k}-${i}`} role="button" tabIndex={0} aria-label={`Letter ${x}`} data-letter={x} data-found={hit ? '' : undefined} data-miss={wrong ? '' : undefined}
+            className={wrong ? 'edu-wobble-chip' : undefined} style={{ transformBox: 'fill-box', transformOrigin: 'center', cursor: hit ? 'default' : 'pointer' }}
+            onClick={() => tap(i)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tap(i); } }}>
+            {/* A found card's ring sits a little outside the card (round two's game check: at 15.5 it touched the M). */}
+            <circle cx={cx} cy={cy} r={hit ? 16.8 : 15.5} fill={hit ? B.greenSoft : '#FFFFFF'} stroke={hit ? B.green : wrong ? B.clay : '#2E2E2E'} strokeWidth={hit ? 2.4 : wrong ? 2 : 0.8} strokeDasharray={wrong ? '3 2' : undefined} />
+            <text x={cx} y={cy + 1} fontSize="27" fontWeight="700" fontFamily={FONT} textAnchor="middle" dominantBaseline="central" fill={B.green} style={{ pointerEvents: 'none' }}>{x}</text>
+          </g>); })}
+      </svg>
+      <div role="img" aria-label={`Board ${Math.min(k + 1, boards.length)} of ${boards.length}`} style={{ display: 'flex', justifyContent: 'center', gap: 8, marginTop: 8 }}>
+        {/* The board in play is a filled gold dot (round two's screen check: a gold ring read 2.51 to 1 on the dark theme's paper). */}
+        {boards.map((_, b) => <span key={b} style={{ width: 12, height: 12, borderRadius: 6, boxSizing: 'border-box', background: b < k || done ? B.green : b === k ? B.gold : 'transparent', border: `2px solid ${b === k && !done ? B.gold : B.green}` }} />)}
+      </div>
+      <Done show={done} />
+    </div>
+  );
+}
 // What Comes Next (2026-09-29, pass GF, a new kind for art and music 3 to 5): a row of pieces that repeats in a form, AB,
 // ABA or abac, shown twice and cut off, and three pieces to choose the next from. Tap the right one and the row fills in
 // and the next round comes; tap a wrong one and it wobbles. Five rounds, and the clock counts up. The lesson's idea is the
@@ -6663,6 +6789,7 @@ function gameInstructions(game) {
   if (game.kind === 'search') return 'Thirty-two cards lie face down in order from smallest to largest, and a number to find is on one of them. Tap a card to turn it over; the board says whether the number is higher or lower. Halve what is left each time and six looks always find it. Four numbers; fewer looks is the better score.';
   if (game.kind === 'price') return 'A lemonade stand with twelve customers, each with a top price in mind you cannot see, a cost for the day and a cost per cup. Tap a price to try it: the people who will pay it step forward with a cup, and the profit shows as money in minus money out. Three tries a stand, then the best price is revealed. Four stands; more profit found is the better score.';
   if (game.kind === 'pay') return 'A thing to buy shows its price in coins, with a dot for every coin. Tap coins from the table into the tray until the total matches the price exactly; tap a tray coin to put it back. Too many and the tray empties for another try. Four things, and the clock counts up.';
+  if (game.kind === 'spot' && game.spot === 'letters') return 'Listen for the name of a letter, then find that letter and tap it. The right letter gets a green ring, and you hear about its shape. If you tap a different letter, a dashed ring shows around it and it tells you its name, so listen and try again. Find three, and new letters come.';
   if (game.kind === 'spot') return 'A picture made of lines and shapes in six colors, and a voice that asks for one piece at a time: the circle, the zigzag line, the blue shape. Tap the piece it asks for and it lights up; a wrong one wobbles. Three to find in every picture, four pictures, and the clock counts up.';
   if (game.kind === 'share') return 'A pile of cookies and two or three plates, and one fair rule: the same on every plate. Tap a plate to put a cookie on it, or tap it again to take one back, until the pile is empty and every plate matches, then tap Check. Four rounds, and the clock counts up.';
   if (game.kind === 'sense') return 'A thing you might meet, said out loud, and five senses: eyes, ears, nose, tongue and hand. Tap the sense that tells you about it. Five things a round, one for each sense, and the clock counts up. Drag the card onto its box, tap the box, or press its number.';
@@ -6693,7 +6820,7 @@ function gameInstructions(game) {
     if (game.kind === 'buckets') return `Drag each chip into its bucket: ${a.label} on the left, ${b.label} on the right. A chip in the wrong bucket bounces back.`;
   }
   if (game.kind === 'sort') return game.by === 'size' ? 'Drag each object to the side it belongs. When they are all sorted, you win!' : 'Drag each red shape to the red box and each blue shape to the blue box. When each one is sorted, you win!';
-  return { sprint: 'Sixty seconds. Questions from your own lessons come one after another; tap the answer and the next one appears. A right answer is a point, a wrong one takes a point away, and three right in a row starts a streak. Beat your best.', order: 'The steps are shuffled. Tap them in the order they happen, first to last. Tap a numbered step to take its number back. When every step has a number, a right order moves on and the first mistake comes loose to try again. On a timeline, the dates appear once the set is in order, and the clock waits while you read them. Three sets, and the clock counts up, so race yourself.', dots: 'Tap the dots in order, 1, 2, 3, and a picture appears. Count along as each dot says its number. The gold dot is the next one, and a wrong dot just wiggles.', pairs: 'Tap two cards. If the pictures match, they stay up. If not, they turn back over. Find every pair.', maze: 'Drag the dot to the star without crossing a wall.', jigsaw: 'Drag each piece to where it belongs until the picture is whole.', pong: 'Slide the paddle to hit the ball back. Miss, and the ball resets. See how many hits you can keep going.' }[game.kind] || 'Tap to play.';
+  return { sprint: 'Sixty seconds. Questions from your own lessons come one after another; tap the answer and the next one appears. A right answer is a point, a wrong one takes a point away, and three right in a row starts a streak. Beat your best.', order: 'The steps are shuffled. Tap them in the order they happen, first to last. Tap a numbered step to take its number back. When every step has a number, a right order moves on and the first mistake comes loose to try again. On a timeline, the dates appear once the set is in order, and the clock waits while you read them. Three sets, and the clock counts up, so race yourself.', dots: 'Tap the dots in order, 1, 2, 3, and a picture appears. Count along as each dot says its number. The gold dot is the next one, and a wrong dot gets a red-brown ring.', pairs: 'Tap two cards. If the pictures match, they stay up. If not, they turn back over. Find every pair.', maze: 'Drag the dot to the star without crossing a wall.', jigsaw: 'Drag each piece to where it belongs until the picture is whole.', pong: 'Slide the paddle to hit the ball back. Miss, and the ball resets. See how many hits you can keep going.' }[game.kind] || 'Tap to play.';
 }
 // The foot of an opened fold (pass IT, Mikey): a centered Collapse link, so a long open list can be closed from the bottom.
 // Closing brings the fold's own title back into view, so the student is not left somewhere unfamiliar.
@@ -6724,7 +6851,10 @@ function BeginCover({ onBegin }) {
 function GamePad({ game, name, secondsLeft, total, onClose, modules = [], onScore = null, best = null, young = false, grade = null }) {
   const [round, setRound] = useState(1);
   const [showHow, setShowHow] = useState(false);
-  const Game = GAME_OF[game.kind];
+  const Game = game.kind === 'spot' && game.spot === 'letters' ? FindLetterGame : GAME_OF[game.kind];   // Find the Letter (pass MM) has a board of its own
+  // Closing a game stops its voice (pass MM, round two's game check: Find the Letter's next ask, and Hear the instructions, ran on
+  // over the overview), the way SpeakButton stops its own.
+  useEffect(() => () => { speechTicket += 1; try { window.speechSynthesis.cancel(); } catch (e) { /* a broken voice must never stop a game */ } }, []);
   const [begun, setBegun] = useState(!MOVING_GAMES.has(game.kind));   // pass IU: moving games wait for Begin
   const iconBtn = { background: 'none', border: 'none', padding: 6, cursor: 'pointer', color: C.green, lineHeight: 0 };
   return (
@@ -6767,6 +6897,7 @@ const BEST_NONE = new Set(['loan', 'cpr', 'fund', 'price']);   // dollars (Set t
 function bestLine(game, kept) {
   // A young path board shows no clock, so its tile shows no seconds (pass MK, the game check: Step on the Circles' tile read 4s).
   if (game.kind === 'path' && game.young) return null;
+  if (game.kind === 'spot' && game.spot === 'letters') return null;   // Find the Letter keeps no score (pass MM)
   if (BEST_SECONDS.has(game.kind)) return `${kept.best}s`;
   if (BEST_WORDS[game.kind]) { const [one, many] = BEST_WORDS[game.kind]; return `${kept.best} ${kept.best === 1 ? one : many}`; }
   if (BEST_NONE.has(game.kind)) return null;
@@ -6778,7 +6909,7 @@ function GameThumb({ kind, game = null }) {
   const k = '#2E2E2E';
   // A connect-the-dots tile draws its own shape from the game's points; the name game shows a few dotted letters.
   const dotShape = game && game.kind === 'dots' ? (game.shape && DOT_SHAPES[game.shape] ? DOT_SHAPES[game.shape].map(([x, y]) => [4 + (x * 32) / 100, 4 + (y * 32) / 100]) : null) : null;
-  if (dotShape) return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><polyline points={[...dotShape, dotShape[0]].map((pt) => pt.join(',')).join(' ')} fill="none" stroke={B.green} strokeWidth="2" strokeLinejoin="round" />{dotShape.map(([x, y], i) => <circle key={i} cx={x} cy={y} r="2.6" fill={C.paperBoard} stroke={k} strokeWidth="1.4" />)}</svg>;
+  if (dotShape) return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><polyline points={[...dotShape, dotShape[0]].map((pt) => pt.join(',')).join(' ')} fill="none" stroke={B.green} strokeWidth="2" strokeLinejoin="round" />{dotShape.map(([x, y], i) => <circle key={i} cx={x} cy={y} r="2.6" fill={C.paperBoard} stroke={k} strokeWidth="1.4" />)}{game.shape === 'fish' && <circle cx={4 + (30 * 32) / 100} cy={4 + (48 * 32) / 100} r="1.5" fill={k} />}</svg>;   // the Fish's tile has its eye (round two's screen check), clear of its outline and its first dot since round three's (pass MM)
   if (game && game.kind === 'bits') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2, 3].map((i) => <g key={i}><rect x={4 + i * 8.6} y="9" width="6.4" height="20" rx="3.2" fill={i === 1 || i === 3 ? B.green : C.paperBoard} stroke={k} strokeWidth="1" /><circle cx={7.2 + i * 8.6} cy={i === 1 || i === 3 ? 13 : 25} r="2.3" fill="#fff" stroke={k} strokeWidth="0.8" /></g>)}<text x="20" y="37" fontSize="6.5" fontWeight="700" textAnchor="middle" fill={k} fontFamily="sans-serif">0101</text></svg>;
   if (game && game.kind === 'teach') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="3" y="3" width="34" height="34" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" />{[[11, 12], [17, 21], [10, 27]].map(([x, y], i) => <g key={`a${i}`}><circle cx={x} cy={y} r="4.4" fill="none" stroke="#D9534F" strokeWidth="1" strokeDasharray="1.6 1" /><circle cx={x} cy={y} r="2.3" fill="#D9534F" /></g>)}{[[27, 14], [30, 26], [22, 31]].map(([x, y], i) => <g key={`b${i}`}><circle cx={x} cy={y} r="4.4" fill="none" stroke="#E6B84B" strokeWidth="1" strokeDasharray="1.6 1" /><path d={`M ${x - 2.4} ${y - 1} q 2.4 3.4 4.8 0 q -2.3 1.6 -4.8 0 z`} fill="#F2C94C" /></g>)}</svg>;
   if (game && game.kind === 'search') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2, 3, 4, 5, 6, 7].map((i) => <rect key={i} x={3 + (i % 4) * 8.8} y={i < 4 ? 8 : 22} width="7.5" height="10" rx="1.5" fill={i === 5 ? B.green : C.paperBoard} stroke={k} strokeWidth="1" />)}<path d="M20 4v34" stroke={k} strokeWidth="1" strokeDasharray="2 2" /></svg>;
@@ -6816,6 +6947,7 @@ function GameThumb({ kind, game = null }) {
   if (game && game.kind === 'pattern') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><circle cx="8" cy="14" r="4.5" fill="#D9534F" stroke={k} strokeWidth="0.8" /><rect x="15.5" y="9.5" width="9" height="9" rx="2" fill="#4B6B8B" stroke={k} strokeWidth="0.8" /><circle cx="31" cy="14" r="4.5" fill="#D9534F" stroke={k} strokeWidth="0.8" /><rect x="3.5" y="24.5" width="9" height="9" rx="2" fill="#4B6B8B" stroke={k} strokeWidth="0.8" /><circle cx="20" cy="29" r="4.5" fill="#D9534F" stroke={k} strokeWidth="0.8" /><rect x="27" y="24.5" width="9" height="9" rx="2" fill="none" stroke={B.green} strokeWidth="1.2" strokeDasharray="2 1.5" /></svg>;
   if (game && game.kind === 'sense') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="3" y="5" width="34" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><path d="M8 18q12-10 24 0q-12 10-24 0z" fill="#fff" stroke={k} strokeWidth="1" /><circle cx="20" cy="18" r="4" fill="#4B6B8B" stroke={k} strokeWidth="0.8" /><circle cx="20" cy="18" r="1.6" fill={k} /><path d="M10 30h20" stroke={B.green} strokeWidth="1.5" strokeLinecap="round" /></svg>;
   if (game && game.kind === 'share') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><ellipse cx="12" cy="26" rx="10" ry="6" fill={C.paperBoard} stroke={k} strokeWidth="1" /><ellipse cx="28" cy="26" rx="10" ry="6" fill={C.paperBoard} stroke={k} strokeWidth="1" /><circle cx="9" cy="24" r="3" fill="#D9A441" stroke={k} strokeWidth="0.7" /><circle cx="15" cy="24" r="3" fill="#D9A441" stroke={k} strokeWidth="0.7" /><circle cx="25" cy="24" r="3" fill="#D9A441" stroke={k} strokeWidth="0.7" /><circle cx="31" cy="24" r="3" fill="#D9A441" stroke={k} strokeWidth="0.7" /><circle cx="20" cy="10" r="3" fill="#D9A441" stroke={k} strokeWidth="0.7" /></svg>;
+  if (game && game.kind === 'spot' && game.spot === 'letters') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="3" y="3" width="34" height="34" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" />{[['B', 13, true], ['T', 27, false]].map(([ch, x, ringed]) => <g key={ch}><circle cx={x} cy="20" r="7.6" fill={ringed ? B.greenSoft : '#FFFFFF'} stroke={ringed ? B.green : k} strokeWidth={ringed ? 1.8 : 0.8} /><text x={x} y="20.6" fontSize="12" fontWeight="700" fontFamily={FONT} textAnchor="middle" dominantBaseline="central" fill={B.green}>{ch}</text></g>)}</svg>;
   if (game && game.kind === 'spot') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="3" y="3" width="34" height="34" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><circle cx="13" cy="14" r="5" fill="#D9534F" stroke={k} strokeWidth="0.7" /><rect x="22" y="9" width="10" height="10" rx="1.5" fill="#4B6B8B" stroke={k} strokeWidth="0.7" /><polygon points="13,23 19,32 7,32" fill="#F2C94C" stroke={k} strokeWidth="0.7" /><polyline points="22,31 25,25 28,31 31,25 34,31" fill="none" stroke="#5BA84A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>;
   if (game && game.kind === 'pay') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="5" y="6" width="30" height="14" rx="3" fill="#fff" stroke={k} strokeWidth="1" />{[0, 1, 2, 3].map((i) => <circle key={i} cx={11 + i * 6} cy="13" r="2" fill={i < 2 ? B.green : '#DDE3DE'} stroke={k} strokeWidth="0.6" />)}<circle cx="13" cy="30" r="6" fill="#E6B84B" stroke="#9C7A1C" strokeWidth="1.2" /><circle cx="27" cy="30" r="4.6" fill="#D7DCDF" stroke="#7B8388" strokeWidth="1.2" /></svg>;
   if (game && game.kind === 'walk') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">{[0, 1, 2].map((r) => [0, 1, 2].map((c) => <rect key={`${r}${c}`} x={4.5 + c * 10.5} y={4.5 + r * 10.5} width="9.5" height="9.5" rx="1.5" fill={C.paperBoard} stroke={k} strokeWidth="1" />))}<rect x="6.5" y="6.5" width="5.5" height="5.5" rx="1.5" fill="#D9534F" stroke={k} strokeWidth="0.7" /><path d="M30.3 24.8l1.3 2.7 3.0 0.4-2.2 2.1 0.5 3.0-2.6-1.4-2.6 1.4 0.5-3.0-2.2-2.1 3.0-0.4z" fill={B.gold} stroke={k} strokeWidth="0.6" /><path d="M13.5 9.3h8.5M19 6.5l3 2.8-3 2.8M20 14v7M17.2 18l2.8 3 2.8-3" fill="none" stroke={k} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg>;
@@ -7575,7 +7707,7 @@ function CourseChoiceRow({ course, checked, onToggle, onPreview, onSave = null }
   const phone = narrowCourseRows();
   const touch = courseNeedsTouch(course.id);
   const touchButton = touch ? <InfoButton tone="warn" onClick={() => setTouchOpen(!touchOpen)} label={`Needs a touch screen: ${course.title}`} open={touchOpen} /> : null;
-  const touchNote = touch && touchOpen ? <p role="note" style={{ margin: '4px 0 0', fontSize: 13, color: C.clay, fontWeight: 600 }}>This course needs a touch screen. An iPad or another large tablet with a stylus is best.</p> : null;
+  const touchNote = touch && touchOpen ? <p role="note" style={{ margin: '4px 0 0', fontSize: 13, color: C.clayInk, fontWeight: 600 }}>This course needs a touch screen. An iPad or another large tablet with a stylus is best.</p> : null;
   // Save appears to the right of Preview once a course in the other lists is checked (2026-09-29, Mikey); it moves the course up to the assigned list.
   const link = <span style={{ display: 'inline-flex', gap: 14, alignItems: 'center' }}><button type="button" className="edu-no-print" onClick={onPreview} aria-label={`Preview ${course.title}`} style={{ ...linkBtn, padding: '2px 0', fontSize: 14, whiteSpace: 'nowrap' }}>Preview</button>{onSave && <button type="button" className="edu-no-print" onClick={onSave} aria-label={`Save ${course.title}`} style={{ ...linkBtn, padding: '2px 0', fontSize: 14, whiteSpace: 'nowrap' }}>Save</button>}</span>;
   const gradeText = `${course.elective && course.audience ? bandShort(course.audience, true) : gradeShort(course.grade)} - ${course.subject}`;
@@ -8228,7 +8360,7 @@ function PonderCard({ wonder, title, text, big = false, attrs = null }) {
 }
 
 function Tag({ children, tone }) {
-  const tones = { mastered: [C.goldSoft, C.gold], passed: [C.goldSoft, C.gold], available: [C.greenSoft, C.green], locked: [C.mode === 'dark' ? 'rgba(241, 237, 227, 0.1)' : '#EEF0EA', C.muted], review: [C.claySoft, C.clay] };
+  const tones = { mastered: [C.goldSoft, C.gold], passed: [C.goldSoft, C.gold], available: [C.greenSoft, C.green], locked: [C.mode === 'dark' ? 'rgba(241, 237, 227, 0.1)' : '#EEF0EA', C.muted], review: [C.claySoft, C.clayInk] };
   const [bg, fg] = tones[tone] || tones.locked;
   return <span style={{ display: 'inline-block', background: bg, color: fg, fontSize: 13, fontWeight: 600, lineHeight: '18px', padding: '4px 10px', borderRadius: 999, whiteSpace: 'nowrap', textAlign: 'center' }}>{children}</span>;
 }
@@ -9833,7 +9965,7 @@ function EduSphereScreens() {
               )}
             </>
           )}
-          {errorMsg && <p style={{ color: C.clay }}>{errorMsg}</p>}
+          {errorMsg && <p style={{ color: C.clayInk }}>{errorMsg}</p>}
         </div>
         <div className="edu-welcome-links" style={{ marginTop: 4, textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
           <div className="edu-login-btn" style={{ width: '100%', maxWidth: 320, marginBottom: 18 }}><Btn full onClick={() => { if (!educator) { startAccountSetup(); return; } if (lastActive && Date.now() - lastActive < EDUCATOR_IDLE_MS) { setScreen('educator-pick'); return; } setPinInput(''); bioAuto.current = true; setScreen('educator-pin'); }}>Educator Login</Btn></div>
@@ -9857,7 +9989,7 @@ function EduSphereScreens() {
               <p style={{ margin: '8px 0 12px', fontSize: 18, fontWeight: 600 }}>{keepTogether(st.label)}</p>
               <PinInput value={pinTry} onChange={setPinTry} placeholder="Your PIN"
                 style={{ fontFamily: FONT, fontSize: 24, letterSpacing: 8, textAlign: 'center', padding: '12px 14px', width: '100%', boxSizing: 'border-box', border: `2px solid ${pinWrong ? C.clay : C.line}`, borderRadius: 10, marginBottom: 10 }} />
-              {pinWrong && <p style={{ margin: '0 0 10px', fontSize: 14, color: C.clay }}>That is not the PIN. Try again.</p>}
+              {pinWrong && <p style={{ margin: '0 0 10px', fontSize: 14, color: C.clayInk }}>That is not the PIN. Try again.</p>}
               <div style={{ marginTop: 4 }}><button type="button" style={{ ...linkBtn }} onClick={() => setPinAsk(null)}>Not me</button></div>
             </div>
           </Overlay>
@@ -9979,15 +10111,15 @@ function EduSphereScreens() {
                             </div>
                             {youngLearner && st === 'passed' && <p style={{ color: C.muted, fontSize: 15, margin: '8px 0 0' }}>Passed once. Pass again to master.</p>}
                             {p.attempts > 0 && !isPreReader(course.id) && <p style={{ color: C.muted, fontSize: 14, margin: '10px 0 0' }}>Best score {p.bestCore} of {moduleRules(m.id).questions}{st === 'passed' ? '. Pass it again on another day to master it.' : ''}</p>}
-                            {refreshIds.includes(m.id) && <p style={{ color: C.clay, fontSize: 14, margin: '6px 0 0', fontWeight: 600 }}>Missed in the last checkpoint. A quick refresher round will help.</p>}
-                            {reopenedIds.includes(m.id) && <p style={{ color: C.clay, fontSize: 14, margin: '6px 0 0', fontWeight: 600 }} data-reviewing={m.id}>You've mastered this once before but one of your reviews prompted a refresher. Go through it once more, story and all, when you're ready.</p>}
+                            {refreshIds.includes(m.id) && <p style={{ color: C.clayInk, fontSize: 14, margin: '6px 0 0', fontWeight: 600 }}>Missed in the last checkpoint. A quick refresher round will help.</p>}
+                            {reopenedIds.includes(m.id) && <p style={{ color: C.clayInk, fontSize: 14, margin: '6px 0 0', fontWeight: 600 }} data-reviewing={m.id}>You've mastered this once before but one of your reviews prompted a refresher. Go through it once more, story and all, when you're ready.</p>}
                             {movedPastNow.includes(m.id) && <p style={{ color: C.muted, fontSize: 14, margin: '6px 0 0', fontWeight: 600 }} data-moved-past={m.id}>You moved on from this one for now. It will come back later for a fresh try.</p>}
                             {p.pendingWriting && <p style={{ color: C.gold, fontSize: 14, margin: '6px 0 0', fontWeight: 600 }}>Handed in. Waiting for your teacher to check it.</p>}
                             {locked ? (
                               !isPreReader(course.id) && <p style={{ color: C.muted, fontSize: 14, margin: '10px 0 0' }}>Finish the module before this one first.</p>
                             ) : m.needsTouch && !hasTouchScreen() ? (
                               <div style={{ marginTop: 12 }}>
-                                <p data-touch-note="" style={{ margin: 0, textAlign: 'center', fontSize: 14, fontWeight: 600, color: C.clay }}>This needs a touch screen. An iPad or another large tablet with a stylus is best.</p>
+                                <p data-touch-note="" style={{ margin: 0, textAlign: 'center', fontSize: 14, fontWeight: 600, color: C.clayInk }}>This needs a touch screen. An iPad or another large tablet with a stylus is best.</p>
                               </div>
                             ) : (
                               <div style={{ marginTop: 12 }}>
@@ -10273,7 +10405,8 @@ function EduSphereScreens() {
           const games = playList({ courses: visibleCourses, young: youngLearner, preview: !!record.preview, mapArt });
           if (!games.length) return null;
           // A game opens when its course is finished (2026-09-24, Mikey): each course has its own, so finishing one always brings
-          // something new, and the walk-through opens them all.
+          // something new, and the walk-through opens them all. Since pass MM (Q45) an early-years course's game opens when every
+          // lesson is passed once; logic decides it (courseGameOpen), and the note above the tiles says which (playLockedNote).
           const openIds = unlockedGameIds(record.events, games); const isOpen = (g) => record.preview || openIds.has(g.id); const open = openSubject === '__play';
           const restLeft = (g) => (record.preview ? 0 : Math.max(0, ((colorState[`play:${g.id}`] || {}).restUntil || 0) - colorNow));
           const anyReady = games.filter(isOpen).some((g) => restLeft(g) === 0);
@@ -10293,9 +10426,9 @@ function EduSphereScreens() {
               {/* A locked tile says nothing on its own (the code check, pass MC), so while one shows, a reader sees how a game opens,
                   in a strip like Let's Read's note: on the moving wash the words fell to 2.74 to 1 in the light theme (the screen
                   check). A young learner sees no sentence here, since a pre-reader's screens explain with pictures (DESIGN.md). */}
-              {open && !youngLearner && games.some((g) => !isOpen(g)) && (
+              {open && !youngLearner && playLockedNote(games.filter((g) => !isOpen(g))) && (
                 <div data-play-strip style={{ background: C.mode === 'dark' ? '#AAD8C5' : C.greenSoft, padding: '12px 16px' }}>
-                  <p data-play-note style={{ margin: 0, fontSize: 14, color: C.mode === 'dark' ? '#16201B' : C.ink, textAlign: 'center' }}>Finishing every module within a course unlocks a new game.</p>
+                  <p data-play-note style={{ margin: 0, fontSize: 14, color: C.mode === 'dark' ? '#16201B' : C.ink, textAlign: 'center' }}>{playLockedNote(games.filter((g) => !isOpen(g)))}</p>
                 </div>
               )}
               {open && (
@@ -10359,7 +10492,7 @@ function EduSphereScreens() {
           placementPending.length === 0 && <Btn kind="secondary" full onClick={() => setScreen('my-progress')}>My progress</Btn>
         )}
         {saveNote && <p style={{ color: C.muted, fontSize: 13, textAlign: 'center', marginTop: 32 }}>{saveNote}</p>}
-        {errorMsg && <p style={{ color: C.clay }}>{errorMsg}</p>}
+        {errorMsg && <p style={{ color: C.clayInk }}>{errorMsg}</p>}
         {/* A lesson that needs a touch screen, tapped on a laptop (pass MI): one pop-up that names it, for the grown-up. */}
         {touchOnly && getModule(touchOnly) && (
           <Overlay role="dialog" modal="true" label="Needs a touch screen" z={45} onClick={() => setTouchOnly(null)}>
@@ -10409,7 +10542,9 @@ function EduSphereScreens() {
         </div>
         <div data-lesson-nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <BigTap dir="back" label="Go back" disabled={lessonStep === 0} onClick={() => setLessonStep(Math.max(0, lessonStep - 1))} />
-          <div style={{ display: 'flex', gap: 6 }}>
+          {/* The dots wrap between the two buttons (round two's screen check, pass MM: at 320 pixels thirteen dots pushed Next past
+              the screen's edge). */}
+          <div data-lesson-dots style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 6, flex: '1 1 0', minWidth: 0, margin: '0 8px' }}>
             {script.map((_, i) => <span key={i} style={{ width: 9, height: 9, borderRadius: 999, background: i === lessonStep ? C.green : C.line }} />)}
           </div>
           {last ? (
@@ -10423,7 +10558,10 @@ function EduSphereScreens() {
             <BigTap dir="next" label="Next" onClick={() => setLessonStep(lessonStep + 1)} />
           )}
         </div>
-        <ScrollCue target="[data-lesson-nav]" watch={`${moduleId}-${lessonStep}`} />
+        {/* The cue shows while a third of the row or more is below the fold (round three's screen check, pass MM: on a 375 by 667
+            phone Trace a Big Letter's second line left 24 to 32 of Next's 66 pixels showing, and the cue waited until less than 24
+            did; round four's code read: shown for any part of the row, it sat on a Next 57 of whose 66 pixels showed). */}
+        <ScrollCue target="[data-lesson-nav]" watch={`${moduleId}-${lessonStep}`} hidden={1 / 3} />
       </div></div>
     );
   }
@@ -10687,8 +10825,9 @@ function EduSphereScreens() {
           {/* The setup line comes first and the question after it (pass MH, Mikey: "What is a kind thing to do?  New line Your friend
               looks sad."  Would reach much better like What is a kind thing to do when your friend looks sad?"), the order the voice
               has always read them in; until pass MH the question sat above its setup, so a reader met them backward. */}
-          {q.story && <div data-question-setup="" style={{ margin: '0 0 10px', color: C.ink }}><RichText text={q.story} size={17} center lineGap={8} /></div>}
-          <p data-question-text="" style={{ fontSize: 20, fontWeight: 600, margin: '0 0 14px', textAlign: 'center' }}>{q.prompt}</p>
+          {/* What prints is printedQuestion's (pass MM): a letter question shows no letter while the voice can say it. */}
+          {printedQuestion(q, canSpeak()).story && <div data-question-setup="" style={{ margin: '0 0 10px', color: C.ink }}><RichText text={printedQuestion(q, canSpeak()).story} size={17} center lineGap={8} /></div>}
+          <p data-question-text="" style={{ fontSize: 20, fontWeight: 600, margin: '0 0 14px', textAlign: 'center' }}>{printedQuestion(q, canSpeak()).prompt}</p>
           {/* The question's own picture draws bigger (pass MH, Mikey), except when its answers are pictures of the same kind (a
               turtle to match among animal answers), so the one that is the same never looks a different size from the answer. */}
           {q.visual && <div style={{ margin: '0 0 14px' }}><Picture visual={shownVisual} note={record.preview ? undefined : false} big={!(Array.isArray(q.choices) && q.choices.some((c) => String(c).startsWith(`${q.visual.kind}:`)))} /></div>}
@@ -10703,7 +10842,9 @@ function EduSphereScreens() {
                 // A ruled-out answer stays readable in the dark theme (2026-09-29, Mikey): a slightly lighter surface at
                 // seven-tenths, not the light grey that swallowed pale text; the light theme keeps its pale grey.
                 if (ruledOut) { bg = C.mode === 'dark' ? '#2C4238' : '#EDEFEA'; border = C.muted; }
-                if (checked && c === q.answer) { bg = C.greenSoft; border = C.green; }
+                // A pre-reader's answer turns green only when the child gets it (round two's screen check, pass MM: it turned green
+                // after a wrong tap, before the retry, so the retry could be answered by color); a reader sees it at once, as before.
+                if (checked && c === q.answer && (wasCorrect || !readAloud)) { bg = C.greenSoft; border = C.green; }
                 else if (checked && picked) { bg = C.claySoft; border = C.clay; }
                 else if (picked) { border = C.green; }
                 // In a walk-through (pass LW), a thing drawn in place of its coloring page says so in the button's corner, with
@@ -10770,7 +10911,7 @@ function EduSphereScreens() {
             </div>
           ) : q.type === 'trace' ? (
             <div>
-              {!hasTouchScreen() && <p style={{ margin: '0 0 8px', fontSize: 13, color: C.clay, textAlign: 'center', fontWeight: 600 }}>This needs a touch screen. An iPad or another large tablet with a stylus is best.</p>}
+              {!hasTouchScreen() && <p style={{ margin: '0 0 8px', fontSize: 13, color: C.clayInk, textAlign: 'center', fontWeight: 600 }}>This needs a touch screen. An iPad or another large tablet with a stylus is best.</p>}
               {/* Two misses on the same trace, and the stroke draws itself above the pad as a hint. */}
               {misses >= 2 && !checked && (
                 <div style={{ marginBottom: 12 }}>
@@ -10798,7 +10939,7 @@ function EduSphereScreens() {
           {checked && !(attempt.placement && !wasCorrect && given === '') && (
             <div key={cheer} className={wasCorrect ? 'edu-cheer' : 'edu-wobble'} style={{ position: 'relative', marginTop: 14, padding: 14, borderRadius: 10, background: wasCorrect ? C.greenSoft : C.claySoft }}>
               {wasCorrect && <StarBurst />}
-              <p style={{ margin: 0, fontWeight: 600, color: wasCorrect ? C.green : C.clay }}>{wasCorrect ? 'Correct' : readAloud ? preReaderWrongWords(q, String(given), wrongPicks) : `Not quite. The answer is ${describeChoice(q.answer)}.`}</p>
+              <p style={{ margin: 0, fontWeight: 600, color: wasCorrect ? C.green : C.clayInk }}>{wasCorrect ? 'Correct' : readAloud ? preReaderWrongWords(q, String(given), wrongPicks) : `Not quite. The answer is ${describeChoice(q.answer)}.`}</p>
               {(wasCorrect || !readAloud) && <div style={{ margin: '8px 0 0' }}><RichText text={formatTeachingText(q.explain)} size={15} lineGap={6} />{!wasCorrect && !readAloud && taughtLine(mod.id, q.answer) && <p style={{ margin: '8px 0 0', fontSize: 14, color: C.muted }}>From the lesson: “{taughtLine(mod.id, q.answer)}”</p>}{!wasCorrect && !readAloud && mod.lesson.example && mod.lesson.example.another && (wrongWay ? <div style={{ margin: '8px 0 0', padding: '10px 12px', borderRadius: 10, background: C.goldSoft }}><div style={{ maxWidth: 240, margin: '0 auto 8px' }}><Picture visual={wayVisual(mod.lesson.example, 1)} note={record.preview ? undefined : false} /></div><RichText text={wayText([].concat(mod.lesson.example.another)[0])} size={14} lineGap={6} /></div> : <p style={{ margin: '8px 0 0', textAlign: 'center' }}><button type="button" style={{ ...linkBtn, fontSize: 14 }} onClick={() => setWrongWay(true)}>Show me another way</button></p>)}{!wasCorrect && q.choiceNotes && q.choiceNotes[given] && !(insight && insight.any) && <p style={{ margin: '6px 0 0', fontSize: 15, color: C.muted }}>{q.choiceNotes[given]}</p>}</div>}
               {/* An explanation picture is a set of fraction bars, one group of dots, or (since pass LW) any picture kind below. */}
               {(wasCorrect || !readAloud) && Array.isArray(q.explainVisual) && q.explainVisual.map((b, i) => <LabeledBar key={i} parts={b.parts} shaded={b.shaded} label={b.label} color={wasCorrect ? C.green : C.clay} />)}
@@ -10814,7 +10955,9 @@ function EduSphereScreens() {
         {/* A pre-reader who got it wrong tries again. Nobody moves on from a wrong answer. The row is a scroll cue's target (pass
             MH, the alignment read): a pre-reader's reason after a wrong tap can push Try again below a short phone's screen, where a
             child who cannot read would never find it, and the explanation after a right tap can push Next question down the same
-            way, so the cue's arrows point at it while any of it is hidden, as on the lesson and story pages. */}
+            way, so the cue's arrows point at it while any of it is hidden (whole: the cue's corner covers only the end of a full-width
+            button; a lesson's round Next, in that corner, brings it while a third is hidden, and a story's button while less than 24 pixels
+            of it show). */}
         <div data-practice-next="" style={{ scrollMarginBottom: 56 }}>
         {checked && !wasCorrect && readAloud
           ? <Btn full halo onClick={tryAgain}>Try again</Btn>
@@ -11072,7 +11215,7 @@ function EduSphereScreens() {
           {(mastered || !loopBackTarget(record.events, mod.id)) && <Btn full kind="secondary" onClick={startPractice}>{mastered ? 'Practice this again' : 'Try a fresh set of questions'}</Btn>}
           <Btn full kind="secondary" onClick={() => setScreen('overview')}>Back to overview</Btn>
         </div>
-        {errorMsg && <p style={{ color: C.clay }}>{errorMsg}</p>}
+        {errorMsg && <p style={{ color: C.clayInk }}>{errorMsg}</p>}
       </div></div>
     );
   }
@@ -11111,8 +11254,8 @@ function EduSphereScreens() {
         <div style={{ display: 'grid', gap: 12, gridTemplateColumns: `repeat(${evenColumns(options.length)}, 1fr)` }}>
           {options.map((o, i) => (
             <button key={o} type="button" onClick={() => finish(o)} className="edu-press" data-wonder-lit={wonderLit === i ? '' : undefined}
-              style={{ fontFamily: FONT, fontSize: 20, fontWeight: 600, padding: '22px 10px', borderRadius: 14, background: wonderLit === i ? readLit().background : C.surface, border: `3px solid ${wonderLit === i ? '#AAD8C5' : C.green}`, color: wonderLit === i ? readLit().color : C.green, cursor: 'pointer', minHeight: 78, transform: wonderLit === i ? 'scale(1.04)' : 'none', transition: 'transform 200ms, background 200ms' }}>
-              {o}
+              style={{ fontFamily: FONT, fontSize: 20, fontWeight: 600, padding: '22px 10px', borderRadius: 14, background: wonderLit === i ? readLit().background : C.surface, border: `3px solid ${wonderLit === i ? '#AAD8C5' : C.green}`, color: wonderLit === i ? readLit().color : C.green, cursor: 'pointer', minHeight: 78, transform: wonderLit === i ? 'scale(1.04)' : 'none', ...(optionSwatch(o) ? { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 } : {}), transition: 'transform 200ms, background 200ms' }}>
+              {optionSwatch(o) && <OptionSwatch colour={optionSwatch(o)} size={30} />}{o}
             </button>
           ))}
         </div>
@@ -11188,7 +11331,7 @@ function EduSphereScreens() {
           {wonder.answerMode === 'pick' ? (
             <div style={{ display: 'grid', gap: 10 }}>
               {wonder.options.map((o) => (
-                <button key={o} type="button" onClick={() => setWonderPick(o)} style={{ fontFamily: FONT, fontSize: 20, padding: '12px 14px', borderRadius: 10, background: wonderPick === o ? C.greenSoft : C.surface, border: `2px solid ${wonderPick === o ? C.green : C.line}`, color: C.ink, cursor: 'pointer', minHeight: 48 }}>{o}</button>
+                <button key={o} type="button" onClick={() => setWonderPick(o)} style={{ fontFamily: FONT, fontSize: 20, padding: '12px 14px', borderRadius: 10, background: wonderPick === o ? C.greenSoft : C.surface, border: `2px solid ${wonderPick === o ? C.green : C.line}`, color: C.ink, cursor: 'pointer', minHeight: 48, ...(optionSwatch(o) ? { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 } : {}) }}>{optionSwatch(o) && <OptionSwatch colour={optionSwatch(o)} size={24} />}{o}</button>
               ))}
             </div>
           ) : (
@@ -11360,7 +11503,7 @@ function EduSphereScreens() {
                     <button type="button" onClick={() => setOpenMapGroups((list) => (list.includes(key) ? list.filter((x) => x !== key) : [...list, key]))} aria-expanded={open} aria-label={`${gradeLabel(entry.grade)} ${entry.subject}`}
                       style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: C.greenSoft, border: 'none', padding: 16, cursor: 'pointer', color: C.ink, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
                       <span style={{ fontSize: 17, fontWeight: 600 }}>{mapOrder === 'grade' ? entry.subject : gradeLabel(entry.grade)}</span>
-                      <span style={{ fontSize: 14, color: covered === rows.length ? C.green : entry.status === 'ready' ? C.clay : C.muted, whiteSpace: 'nowrap' }}>{covered} of {rows.length} covered {open ? '▴' : '▾'}</span>
+                      <span style={{ fontSize: 14, color: covered === rows.length ? C.green : entry.status === 'ready' ? C.clayInk : C.muted, whiteSpace: 'nowrap' }}>{covered} of {rows.length} covered {open ? '▴' : '▾'}</span>
                     </button>
                     {/* Rendered whether open or closed, and shown when printing, so a printed map is always complete. The body stays white. */}
                     <div className="edu-collapsible" style={{ display: open ? 'block' : 'none', padding: '10px 16px 12px', background: C.surface }}>
@@ -11368,7 +11511,7 @@ function EduSphereScreens() {
                       {rows.map((st) => (
                         <div key={st.code} style={{ padding: '8px 0', borderTop: `1px solid ${C.line}` }}>
                           <p style={{ margin: 0, fontSize: 15 }}><strong>{st.code}</strong> {st.text}</p>
-                          <p style={{ margin: '4px 0 0', fontSize: 14, color: st.moduleIds.length ? C.green : C.clay }}>
+                          <p style={{ margin: '4px 0 0', fontSize: 14, color: st.moduleIds.length ? C.green : C.clayInk }}>
                             {st.moduleIds.length ? `Covered by: ${st.moduleIds.map((id) => (getModule(id) ? titleCase(getModule(id).title) : id)).join(', ')}` : 'Not yet covered'}
                           </p>
                         </div>
@@ -11579,7 +11722,7 @@ function EduSphereScreens() {
                      (pass LY, Mikey's screenshot). */
                   <div data-answer-chips="" style={{ display: 'grid', gridTemplateColumns: `repeat(${chipColumns(reviewingQuestion.options)}, minmax(0, 1fr))`, gap: 8, marginTop: 4, maxWidth: 420, marginLeft: 'auto', marginRight: 'auto' }}>
                     {(reviewingQuestion.options || []).map((o) => (
-                      <span key={o} style={{ fontSize: 14, fontWeight: 600, color: C.green, background: C.surface, border: `2px solid ${C.line}`, borderRadius: 10, padding: '7px 10px', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{o}</span>
+                      <span key={o} style={{ fontSize: 14, fontWeight: 600, color: C.green, background: C.surface, border: `2px solid ${C.line}`, borderRadius: 10, padding: '7px 10px', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>{optionSwatch(o) && <OptionSwatch colour={optionSwatch(o)} size={18} />}{o}</span>
                     ))}
                   </div>
                 )}
@@ -11903,7 +12046,7 @@ function EduSphereScreens() {
           setLastActive(Date.now());
           setScreen('educator-pick');
         }}>Create account</Btn>
-        {setupError && <p style={{ color: C.clay, fontSize: 14 }}>{setupError}</p>}
+        {setupError && <p style={{ color: C.clayInk, fontSize: 14 }}>{setupError}</p>}
       </div></div>
     );
   }
@@ -11926,7 +12069,7 @@ function EduSphereScreens() {
           {/* A wrong try is counted when a full PIN is erased or entered: every fifth one rests the box for a while. */}
           {educator && <PinInput value={pinInput} onChange={(v) => { if (pinLockLeft(pinLock, pinClock)) return; if (pinInput.length >= 4 && v.length < pinInput.length && !ok) failPin(); setPinInput(v); }} placeholder="PIN" onEnter={() => { if (ok) goBackTo(); else if (pinInput.length >= 4) { failPin(); setPinInput(''); } }}
             style={{ fontFamily: FONT, fontSize: 18, padding: '12px 14px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 12, letterSpacing: 4 }} />}
-          {educator && pinLockLeft(pinLock, pinClock) > 0 && <p role="status" style={{ margin: '0 0 12px', textAlign: 'center', fontSize: 14, color: C.clay }}>Too many tries. Try again in {pinLockLeft(pinLock, pinClock)} seconds.</p>}
+          {educator && pinLockLeft(pinLock, pinClock) > 0 && <p role="status" style={{ margin: '0 0 12px', textAlign: 'center', fontSize: 14, color: C.clayInk }}>Too many tries. Try again in {pinLockLeft(pinLock, pinClock)} seconds.</p>}
           {educator && <div style={{ paddingBottom: 10 }}><Btn full onClick={goBackTo} disabled={!ok}>Open</Btn></div>}
           {educator && educator.biometric && biometricReady() && (
             <div style={{ paddingBottom: 16, textAlign: 'center' }}>
@@ -11960,7 +12103,7 @@ function EduSphereScreens() {
                   }}>Reset with this code</Btn>
                 </div>
               )}
-              {setupError && <p style={{ margin: '0 0 10px', fontSize: 14, color: C.clay }}>{setupError}</p>}
+              {setupError && <p style={{ margin: '0 0 10px', fontSize: 14, color: C.clayInk }}>{setupError}</p>}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, maxWidth: 360, margin: '0 auto' }}>
                 <label style={{ display: 'block' }}>
                   <span style={{ display: 'block', textAlign: 'center', fontFamily: FONT, fontSize: 15, fontWeight: 600, padding: '9px 14px', borderRadius: 10, background: C.green, color: C.onAccent, cursor: 'pointer' }}>Choose File</span>
@@ -11982,7 +12125,7 @@ function EduSphereScreens() {
               </div>
             </div>
           )}
-          {pinInput.length >= 4 && !ok && <p style={{ color: C.clay, fontSize: 14 }}>That PIN is not right.</p>}
+          {pinInput.length >= 4 && !ok && <p style={{ color: C.clayInk, fontSize: 14 }}>That PIN is not right.</p>}
         </div>
         </div>
         <p style={{ color: C.muted, fontSize: 13, textAlign: 'center', marginTop: 'auto', paddingTop: 80 }}>PIN numbers are easily reset. First, backup your classroom. Then, reset keys can be found within the backup file.</p>
@@ -12165,7 +12308,7 @@ function EduSphereScreens() {
                   <button key={t.id} type="button" onClick={() => setNewTint(t.id)} aria-label={t.id} aria-pressed={newTint === t.id}
                     style={{ width: 30, height: 30, borderRadius: 999, cursor: 'pointer', background: t.color, border: `3px solid ${newTint === t.id ? C.green : C.surface}`, boxShadow: `0 0 0 1px ${C.line}` }} />
                 ))}
-                {newPicture && pictureInUse(roster, newPicture, newTint, normalizeStudentId(rosterInput)) && <span style={{ fontSize: 13, color: C.clay }}>Another student has this one.</span>}
+                {newPicture && pictureInUse(roster, newPicture, newTint, normalizeStudentId(rosterInput)) && <span style={{ fontSize: 13, color: C.clayInk }}>Another student has this one.</span>}
               </div>
             </>
           )}
@@ -12194,7 +12337,7 @@ function EduSphereScreens() {
               setRosterInput(''); setNewLevel(''); setNewStartGrade(''); setNewPicture(''); setNewTint(''); setWizardPin(''); setWizardWonder(true); setShowWonderWhy(false); setAdding(false);
             }
           }}>Add</Btn>
-          {rosterError && <p style={{ color: C.clay, fontSize: 14, margin: '10px 0 0' }}>{rosterError}</p>}
+          {rosterError && <p style={{ color: C.clayInk, fontSize: 14, margin: '10px 0 0' }}>{rosterError}</p>}
             </div>
           </Overlay>
         )}
@@ -12340,7 +12483,7 @@ function EduSphereScreens() {
                         <button key={t.id} type="button" onClick={() => applyRoster(setStudentPicture(roster, st.id, st.picture || PICTURES[0], t.id))} aria-label={t.id}
                           style={{ width: 30, height: 30, borderRadius: 999, cursor: 'pointer', background: t.color, border: `3px solid ${st.tint === t.id ? C.green : C.surface}`, boxShadow: `0 0 0 1px ${C.line}` }} />
                       ))}
-                      {st.picture && pictureInUse(roster, st.picture, st.tint, st.id) && <span style={{ fontSize: 13, color: C.clay }}>Another student has this one.</span>}
+                      {st.picture && pictureInUse(roster, st.picture, st.tint, st.id) && <span style={{ fontSize: 13, color: C.clayInk }}>Another student has this one.</span>}
                       {st.picture && <button type="button" style={{ ...linkBtn }} onClick={async () => { await applyRoster(setStudentPicture(roster, st.id, null)); setPictureFor(null); }}>No picture</button>}
                       <button type="button" style={{ ...linkBtn }} onClick={() => setPictureFor(null)}>Done</button>
                     </div>
@@ -12367,7 +12510,7 @@ function EduSphereScreens() {
                 {!st.mergedInto && (
                   <span style={{ display: 'inline-flex', gap: 12, alignItems: 'center' }}>
                     <button type="button" onClick={() => applyRoster(setStudentActive(roster, st.id, true))} style={{ ...linkBtn }}>Show again</button>
-                    <button type="button" onClick={() => setConfirmDelete(st.id)} style={{ ...linkBtn, color: C.clay }}>Delete</button>
+                    <button type="button" onClick={() => setConfirmDelete(st.id)} style={{ ...linkBtn, color: C.clayInk }}>Delete</button>
                   </span>
                 )}
               </div>
@@ -12375,7 +12518,7 @@ function EduSphereScreens() {
             <p style={{ color: C.muted, fontSize: 13, margin: '8px 0 0', padding: '0 20px', textAlign: 'center' }}>Inactive students are those you've chosen to hide. All student progress is retained but they are hidden from the login screen. Deleting inactive students will remove all of their history and progress from this point forward but data can still be recovered from old backup files.</p>
             {hidden.filter((st) => !st.mergedInto).length > 1 && (
               <div style={{ textAlign: 'center', marginTop: 14 }}>
-                <button type="button" onClick={() => setConfirmDelete('__all__')} style={{ ...linkBtn, color: C.clay, fontSize: 15 }}>Delete all inactive students</button>
+                <button type="button" onClick={() => setConfirmDelete('__all__')} style={{ ...linkBtn, color: C.clayInk, fontSize: 15 }}>Delete all inactive students</button>
               </div>
             )}
           </div>
@@ -12992,7 +13135,7 @@ function EduSphereScreens() {
         {educator && (
           <p style={{ textAlign: 'center', margin: '0' }}>
             {startOverArmed
-              ? <span style={{ fontSize: 13, color: C.muted }}>Remove this educator account and keep every student? <button type="button" style={{ ...linkBtn, fontSize: 13, color: C.clay, marginLeft: 6 }} onClick={async () => { await storageDelete(EDUCATOR_KEY); setEducator(null); setStartOverArmed(false); setLastActive(0); setIdleWarning(false); setScreen('welcome'); }}>Yes, start over</button> <button type="button" style={{ ...linkBtn, fontSize: 13, marginLeft: 10 }} onClick={() => setStartOverArmed(false)}>No</button></span>
+              ? <span style={{ fontSize: 13, color: C.muted }}>Remove this educator account and keep every student? <button type="button" style={{ ...linkBtn, fontSize: 13, color: C.clayInk, marginLeft: 6 }} onClick={async () => { await storageDelete(EDUCATOR_KEY); setEducator(null); setStartOverArmed(false); setLastActive(0); setIdleWarning(false); setScreen('welcome'); }}>Yes, start over</button> <button type="button" style={{ ...linkBtn, fontSize: 13, marginLeft: 10 }} onClick={() => setStartOverArmed(false)}>No</button></span>
               : <button type="button" style={{ ...linkBtn, fontSize: 13, color: C.muted }} onClick={() => setStartOverArmed(true)}>Start over as a new educator</button>}
           </p>
         )}
@@ -13011,7 +13154,7 @@ function EduSphereScreens() {
                     <PinInput key={k} value={changePin[k]} onChange={(v) => setChangePin({ ...changePin, [k]: v, note: '' })} placeholder={label}
                       style={{ fontFamily: FONT, fontSize: 18, padding: '10px 14px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 8, letterSpacing: 4 }} />
                   ))}
-                  {changePin.note && <p role="status" style={{ margin: '2px 0 10px', fontSize: 14, color: C.clay }}>{changePin.note}</p>}
+                  {changePin.note && <p role="status" style={{ margin: '2px 0 10px', fontSize: 14, color: C.clayInk }}>{changePin.note}</p>}
                   <div style={{ display: 'flex', gap: 10, justifyContent: 'center', marginTop: 6 }}>
                     <Btn onClick={async () => {
                       const left = pinLockLeft(pinLock, Date.now());

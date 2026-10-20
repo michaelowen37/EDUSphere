@@ -1,0 +1,71 @@
+# Source: 2015 and 2022 Texas Prekindergarten Guidelines: Side by Side—PK4 Outcomes
+# URL: https://tea.texas.gov/sites/default/files/pkg-2015-2022-side-by-side-pk4.pdf
+# Publisher: Texas Education Agency
+# Edition: 2022 column
+# Read: 2026-10-19, outcome by outcome with WebFetch
+# Notes: (1) How it was read: this session cannot download from tea.texas.gov directly (the proxy refuses it), so the PDF was read through WebFetch's text layer. The document's colour change marks cannot be seen that way (green underline = added, red strikethrough = deleted, purple = moved). The change notes here come from comparing the words in the 2015 column ("Current 2015 Texas PK4 Outcomes") with the 2022 column ("Revised 2022 Texas PK4 Outcomes"). (2) Checks: every outcome was read twice, with the question worded differently each time. Outcomes over about 120 characters were read in two halves, split at different words in each pass. All 47 outcomes and all 16 heading lines were then matched a third time against TEA's full guidelines, "2022 Texas Prekindergarten Guidelines, PK4 Streamlined Version" (https://tea.texas.gov/sites/default/files/2022-texas-prekindergarten-guidelines-pk4-streamlined.pdf), which prints the same codes with a "PK4." prefix (PK4.II.A.1). Every reading agreed word for word. (3) The word Child: all 47 outcomes begin with it. II.C.1 begins with the possessive "Child’s" (apostrophe U+2019), so its line starts with "’s" and joins to Child with no space. (4) Characters are kept as WebFetch returned them. Five outcomes use U+2010 HYPHEN instead of ASCII "-": II.A.2 three‐step, II.E.2 subject‐verb, III.A.1 pre‐reading (its "story-related" is ASCII), III.A.2 self‐selects and pre‐reading, and III.D.1 re‐enacts. Every other hyphen is ASCII. WebFetch gave the same characters from both TEA PDFs. Changing U+2010 to "-" changes no word. (5) Headings: the 2022 domain titles print as "II. Emergent Literacy: Language and Communication Domain", "III. Emergent Literacy: Reading Domain" and "IV. Emergent Literacy: Writing Domain" (2015: "II. Language and Communication Domain", "III. Emergent Literacy Reading Domain", "IV. Emergent Literacy Writing Domain"). Skill headings print as "A. Listening Comprehension" and so on. The 2022 headings drop the word "Skills" (2015 II.A was "Listening Comprehension Skills"), and three were renamed: II.C Speech Production Skills became Articulation, III.D Comprehension of Text Read Aloud Skills became Comprehension of Text, and III.E Print Concepts became Concepts of Print. (6) Changed since 2015 (only the 2022 text is recorded): II.A.1, II.A.2, II.B.1, II.B.2, II.B.3, II.C.1, II.C.2, II.D.1, II.D.2, II.D.3, II.E.1, II.E.2, II.E.3, II.E.4, III.A.1, III.A.3, III.B.1 to III.B.9, III.C.1, III.C.2, III.C.3, III.D.1, III.D.4, III.E.2, IV.A.2, IV.B.2, IV.C.1, IV.C.2, IV.C.3, IV.C.4 (37). (7) Wording unchanged since 2015: III.A.2, III.D.2, III.D.3, III.E.1, III.E.3, IV.A.1, IV.B.1, IV.B.3, IV.C.5. II.B.4 has the same wording as 2015 II.B.6 but a new number. (8) Same code, different skill: 2022 II.B.4, II.C.2 and II.E.4 sit in the rows of 2015 II.B.6, II.C.3 and II.E.5. The 2015 text under II.B.4, II.C.2 and II.E.4 has a blank 2022 cell. WebFetch said it placed the II.C.2 and II.E.4 rows by text order. III.B.2 to III.B.4 also changed skill: in 2015 they were making a compound word, deleting a word from a compound word, and blending syllables; in 2022 they are similar-sounding words, forming a compound word, and manipulating compound words. Match old material by its words, not its code. (9) Dropped codes: II.B.6 continues word for word as 2022 II.B.4, and II.C.3 and II.E.5 continue reworded as 2022 II.C.2 and II.E.4. The other seven have blank 2022 cells. The words of 2015 II.B.4 (verbal conversational rules) and II.B.5 (nonverbal conversational rules) now appear together in 2022 II.B.2. The 2015 column had seven [ELL] lines in Domain II, under II.A.2, II.A.3, II.C.3, II.D.3, II.D.6, II.E.6 and II.E.7; the last three of those were [ELL] lines only. The 2022 column has no [ELL] lines in Domains II to IV. Domains III and IV dropped no codes. (10) As printed, not typos: II.D.1 has no comma after "describe" but has one before "and events"; III.B.3 ends "supports" and III.B.4 ends "support"; III.B.8 ends "(in English only)."; III.E.2 ends "with correct sweeping)." with the period after the parenthesis. (11) This side-by-side is a comparison made by TEA staff. The page footers for Domains II to IV (pages 3 to 7) read "*Created by TEA staff revised 2022 Prekindergarten 4 Outcomes - page N".
+## II Emergent Literacy: Language and Communication Domain
+## II.A Listening Comprehension
+II.A.1	shows understanding by responding appropriately to what has been communicated by adults and peers.
+II.A.2	shows understanding by following three‐step verbal directions.
+## II.B Speaking (Conversation)
+II.B.1	uses language for multiple purposes.
+II.B.2	engages in conversations in appropriate ways, demonstrating knowledge of verbal and nonverbal conversational rules.
+II.B.3	provides appropriate information in various settings.
+II.B.4	matches language to social contexts.
+## II.C Articulation
+II.C.1	’s speech is understood by both familiar and unfamiliar adults and peers.
+II.C.2	demonstrates growing understanding of the intonation of language.
+## II.D Vocabulary
+II.D.1	understands (receptive) and uses (expressive) a wide variety of words to label, describe and make connections among objects, people, places, actions, and events.
+II.D.2	understands (receptive) and uses (expressive) the instructional language of the classroom.
+II.D.3	consistently understands (receptive) and uses (expressive) new vocabulary acquired through books, conversations, and play.
+## II.E Sentences and Structure
+II.E.1	typically uses complete sentences of four or more words with age-appropriate grammatical complexity, usually in standard word order.
+II.E.2	correctly uses regular and irregular plurals, regular past tense, personal and possessive pronouns, and subject‐verb agreement.
+II.E.3	uses sentences that combine multiple phrases or ideas.
+II.E.4	uses sentences that provide many details, remains on topic, and clearly communicates intended meaning.
+## III Emergent Literacy: Reading Domain
+## III.A Motivation to Read
+III.A.1	engages in story-related pre‐reading activities.
+III.A.2	self‐selects books and other written materials to engage in pre‐reading behaviors.
+III.A.3	recognizes that all print carries meaning and serves as a means for communication.
+## III.B Phonological Awareness
+III.B.1	identifies the individual words in a spoken sentence.
+III.B.2	distinguishes differences between similar-sounding words.
+III.B.3	uses two familiar base words to form a compound word with pictorial or gestural supports.
+III.B.4	manipulates compound words with pictorial or gestural support.
+III.B.5	begins to blend and segment syllables in multisyllabic words.
+III.B.6	identifies rhyming words.
+III.B.7	identifies alliterative words with pictorial support.
+III.B.8	identifies a familiar one-syllable word that is segmented by onset and rime (in English only).
+III.B.9	blends and segments one-syllable words by phonemes with visual or gestural support.
+## III.C Alphabet Knowledge
+III.C.1	recognizes and names at least 20 letters (upper- or lower-case letters).
+III.C.2	recognizes at least 20 distinct letter-sound correspondences.
+III.C.3	produces at least 20 distinct letter-sound correspondences.
+## III.D Comprehension of Text
+III.D.1	retells or re‐enacts a story with a clear beginning, middle, and end.
+III.D.2	uses information learned from books by describing, relating, categorizing, or comparing and contrasting.
+III.D.3	asks and responds to questions relevant to the text read aloud.
+III.D.4	makes inferences and predictions about a text.
+## III.E Concepts of Print
+III.E.1	can distinguish between elements of print including letters, words, and pictures.
+III.E.2	holds books right side up and demonstrates understanding of print directionality (e.g., knows where a book starts and ends, turns pages, points to words left to right, top to bottom, with correct sweeping).
+III.E.3	can identify some conventional features of print that communicate meaning including end punctuation and case.
+## IV Emergent Literacy: Writing Domain
+## IV.A Motivation to Write
+IV.A.1	intentionally uses marks, letters, or symbols to record language and verbally shares meaning.
+IV.A.2	independently draws and writes for many purposes to communicate ideas, using a variety of writing tools.
+## IV.B Writing as a Process
+IV.B.1	discusses and contributes ideas for drafts composed in whole/small group writing activities.
+IV.B.2	interacts and provides suggestions for revisions (add, take out, change order) and edits (conventions) in whole/small group writing activities.
+IV.B.3	shares and celebrates class-made and individual written products.
+## IV.C Conventions in Writing
+IV.C.1	writes first name (or nickname) using legible letters in the proper sequence.
+IV.C.2	progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate.
+IV.C.3	begins to write familiar words using letter-sound correspondences, often using letters associated with beginning and/or ending sounds to write words.
+IV.C.4	uses appropriate directionality when writing (e.g., top to bottom, left to right).
+IV.C.5	begins to experiment with punctuation when writing.
+# Dropped since 2015: II.A.3, II.B.5, II.B.6, II.C.3, II.D.4, II.D.5, II.D.6, II.E.5, II.E.6, II.E.7
+# Unsure: none (all 47 outcomes and all 16 heading lines agreed in every reading: two passes of the side-by-side, one of the full 2022 guidelines)

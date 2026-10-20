@@ -1,13 +1,13 @@
 // Educator housekeeping on the backup page (2026-09-26, Mikey: a Change PIN link under Start over). A wrong current PIN
 // and mismatched new PINs are refused in plain words; a good change saves, and the new PIN opens the educator side.
-import { createRequire } from 'node:module'; import { pathToFileURL } from 'node:url';
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
 let passed = 0, failed = 0; const ok = (name, cond) => { if (cond) { passed++; console.log('PASS - ' + name); } else { failed++; console.log('FAIL - ' + name); } };
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
 const text = () => page.evaluate(() => document.body.innerText);
-await page.goto(pathToFileURL(new URL('./page.html', import.meta.url).pathname).href);
+await page.goto(new URL('./page.html', import.meta.url).href);
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'welcome');
 // The starter PIN is retired (pass HB, Mikey). With no educator account on the device, Educator Login goes straight to account
 // setup, and the PIN screen, if reached at all, has no PIN box: only the account's own PIN will ever open the educator side.

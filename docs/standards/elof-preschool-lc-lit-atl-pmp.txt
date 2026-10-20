@@ -1,0 +1,121 @@
+# Domain: Language and Communication
+# URL: https://headstart.gov/school-readiness/article/language-preschool
+# Last updated: May 21, 2024
+# Read: 2026-10-19, sentence by sentence with WebFetch
+P-LC 1	GOAL	Child attends to communication and language from others.
+P-LC 1	36-48	Shows acknowledgment of comments or questions and is able to attend to conversations, either spoken or signed.
+P-LC 1	48-60	Shows acknowledgment of complex comments or questions. Is able to attend to longer, multi-turn conversations, either spoken or signed.
+P-LC 2	GOAL	Child understands and responds to increasingly complex communication and language from others.
+P-LC 2	36-48	Understands and responds (verbally and non-verbally) to increasingly longer sentences, simple questions, and simple stories.
+P-LC 2	48-60	Shows an understanding of complex statements, questions, and stories containing multiple phrases and ideas, and responds appropriately.
+P-LC 3	GOAL	Child varies the amount of information provided to meet the demands of the situation.
+P-LC 3	36-48	Uses language, spoken or sign, for different purposes and is sometimes able to provide sufficient detail to get needs met from a variety of adults.
+P-LC 3	48-60	Uses language, spoken or sign, for a variety of purposes and can typically provide sufficient detail in order to get needs met from a variety of adults.
+P-LC 4	GOAL	Child understands, follows, and uses appropriate social and conversational rules.
+P-LC 4	36-48	Engages in conversations with adults, other children, or within the group setting lasting two or three conversational turns, and, with support, will sometimes use appropriate tone and volume for different situations.
+P-LC 4	48-60	Maintains multi-turn conversations with adults or other children by being responsive to the conversational partner in a variety of ways, such as by asking a question. With increasing independence, varies tone and volume of expression to match the social situation.
+P-LC 5	GOAL	Child expresses self in increasingly long, detailed, and sophisticated ways.
+P-LC 5	36-48	Communicates clearly enough to be understood by familiar adults, but may make some pronunciation and grammatical errors. Typically uses three- to five-word phrases/sentences when communicating. With some prompting, can offer multiple (two or three) pieces of information on a single topic.
+P-LC 5	48-60	Communicates clearly enough to be understood by familiar and unfamiliar adults, but may make some pronunciation errors and some isolated grammatical errors. Uses longer sentences, as well as sentences that are slightly more complex, such as "I need a pencil because this one broke." Can offer multiple pieces of information on a topic with increasing independence and answer simple questions.
+P-LC 6	GOAL	Child understands and uses a wide variety of words for a variety of purposes.
+P-LC 6	36-48	Shows a rapid increase in acquisition of new vocabulary words that describe actions, emotions, things, or ideas that are meaningful within the everyday environment. Uses new vocabulary words to describe relations among things or ideas. Shows repetition of new words offered by adults.
+P-LC 6	48-60	Shows a steady increase in vocabulary through the acquisition of words with increasing specificity and variety. Shows repetition of new words offered by adults and may ask about the meaning of unfamiliar words.
+P-LC 7	GOAL	Child shows understanding of word categories and relationships among words.
+P-LC 7	36-48	Typically uses known words in the correct context and, with support, shows an emerging understanding of how words are related to broader categories, such as sorting things by color.
+P-LC 7	48-60	Demonstrates an increasingly sophisticated understanding of words and word categories with support, such as listing multiple examples of a familiar category or identifying a synonym or antonym.
+# Notes: Page headings read "Goal P-LC 1." and so on; the code is recorded without the word "Goal". Sub-domains: Attending and Understanding (P-LC 1-2), Communicating and Speaking (P-LC 3-5), Vocabulary (P-LC 6-7). Each progression is a paragraph cell, not a bulleted list. The P-LC 5 48-60 example uses straight ASCII double quotes with the period inside the closing quote. No curly quotes, dashes or ellipses in these cells. The page also has a "By 60 Months" Indicators column, which was not transcribed.
+
+# Domain: Literacy
+# URL: https://headstart.gov/school-readiness/article/literacy-preschool
+# Last updated: May 21, 2024
+# Read: 2026-10-19, sentence by sentence with WebFetch
+P-LIT 1	GOAL	Child demonstrates awareness that spoken language is composed of smaller segments of sound.
+P-LIT 1	36-48	Shows rote imitation and enjoyment of rhyme and alliteration. With support, distinguishes when two words rhyme and when two words begin with the same sound.
+P-LIT 1	48-60	Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.
+P-LIT 2	GOAL	Child demonstrates an understanding of how print is used (functions of print) and the rules that govern how print works (conventions of print).
+P-LIT 2	36-48	Distinguishes print from pictures and shows an understanding that print is something meaningful, such as asking an adult "What does this say?" or "Read this."
+P-LIT 2	48-60	Begins to demonstrate an understanding of the connection between speech and print. Shows a growing awareness that print is a system that has rules and conventions, such as holding a book correctly or following a book left to right.
+P-LIT 3	GOAL	Child identifies letters of the alphabet and produces correct sounds associated with letters.
+P-LIT 3	36-48	Shows an awareness of alphabet letters, such as singing the ABC song, recognizing letters from one's name, or naming some letters that are encountered often.
+P-LIT 3	48-60	Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.
+P-LIT 4	GOAL	Child demonstrates an understanding of narrative structure through storytelling/re-telling.
+P-LIT 4	36-48	With support, may be able to tell one or two key events from a story or may act out a story with pictures or props.
+P-LIT 4	48-60	Retells two or three key events from a well-known story, typically in the right temporal order and using some simple sequencing terms, such as first … and then.
+P-LIT 5	GOAL	Child asks and answers questions about a book that was read aloud.
+P-LIT 5	36-48	Can answer basic questions about likes or dislikes in a book or story. Asks and answers questions about main characters or events in a familiar story. With modeling and support, makes predictions about events that might happen next.
+P-LIT 5	48-60	With support, provides basic answers to specific questions about details of a story, such as who, what, when, or where. With support, can answer inferential questions about stories, such as predictions or how/why something is happening in a particular moment.
+P-LIT 6	GOAL	Child writes for a variety of purposes using increasingly sophisticated marks.
+P-LIT 6	36-48	Engages in writing activities that consist largely of drawing and scribbling. Begins to convey meaning. With modeling and support, writes some letter-like forms and letters.
+P-LIT 6	48-60	Progressively uses drawing, scribbling, letter-like forms, and letters to intentionally convey meaning. With support, may use invented spelling consisting of salient or beginning sounds, such as L for elevator or B for bug.
+# Notes: Page headings read "Goal P-LIT 1." and so on. Sub-domains: Phonological Awareness (P-LIT 1), Print and Alphabet Knowledge (P-LIT 2-3), Comprehension and Text Structure (P-LIT 4-5), Writing (P-LIT 6). Each progression is a paragraph cell, not a bulleted list. The quoted examples in P-LIT 1 48-60 and P-LIT 2 36-48 use straight ASCII double quotes with periods inside the closing quotes, and there is no comma before "What does this say?". The page spells "McDonald" (not MacDonald). P-LIT 3 "one's" has a straight apostrophe. P-LIT 4 48-60 uses one ellipsis character (U+2026) with a space on each side; it is the only non-ASCII character in these cells. L and B in P-LIT 6 are plain text. The "By 60 Months" Indicators column was not transcribed.
+
+# Domain: Approaches to Learning
+# URL: https://headstart.gov/school-readiness/article/approaches-learning-preschool
+# Last updated: May 21, 2024
+# Read: 2026-10-19, sentence by sentence with WebFetch
+P-ATL 1	GOAL	Child manages emotions with increasing independence.
+P-ATL 1	36-48	Manages less intense emotions, such as mild frustration, independently. May require adult support to manage more intense emotions.
+P-ATL 1	48-60	Has an expanding range of strategies for managing emotions, both less intense emotions as well as those that cause greater distress. May still look to adults for support in managing the most intense emotions, but shows increasing skill in successfully using strategies suggested by adults.
+P-ATL 2	GOAL	Child follows classroom rules and routines with increasing independence.
+P-ATL 2	36-48	Follows simple rules and routines with assistance from adults, such as hanging up their coat or sitting at the table when asked by an adult.
+P-ATL 2	48-60	Usually follows classroom rules and routines with occasional reminders from adults, such as following an end-of-lunch routine that includes putting away their plate, washing hands, and lining up at the door to go outside.
+P-ATL 3	GOAL	Child appropriately handles and takes care of classroom materials.
+P-ATL 3	36-48	Handles classroom materials, such as putting them where they belong, with adult support.
+P-ATL 3	48-60	Usually handles, takes care of, and manages classroom materials, such as using them in appropriate ways and not throwing them from the sensory table onto the floor.
+P-ATL 4	GOAL	Child manages actions, words, and behavior with increasing independence.
+P-ATL 4	36-48	Manages own actions, words, and behavior with frequent support from adults, such as reminders to use gentle touches and friendly words.
+P-ATL 4	48-60	Manages own actions, words, and behavior with occasional support from adults.
+P-ATL 5	GOAL	Child demonstrates an increasing ability to control impulses.
+P-ATL 5	36-48	Frequently engages in impulsive behaviors, but inhibits them when directly supported by an adult.
+P-ATL 5	48-60	Sometimes controls impulses independently, while at other times needs support from an adult.
+P-ATL 6	GOAL	Child maintains focus and sustains attention with minimal adult support.
+P-ATL 6	36-48	With adult support, focuses attention on tasks and experiences for short periods of time, despite interruptions or distractions.
+P-ATL 6	48-60	With increasing independence, focuses attention on tasks and experiences for longer periods of time, despite interruptions or distractions.
+P-ATL 7	GOAL	Child persists in tasks.
+P-ATL 7	36-48	Persists on preferred tasks when presented with small challenges with or without adult support, such as continuing to try to build a tall tower with blocks, even when some pieces fall.
+P-ATL 7	48-60	Frequently persists on preferred tasks. Sometimes persists on less preferred activities with or without adult support, such as working to clean up an activity area.
+P-ATL 8	GOAL	Child holds information in mind and manipulates it to perform tasks.
+P-ATL 8	36-48	Holds small amounts of information in mind, such as two-step directions, to successfully complete simple tasks.
+P-ATL 8	48-60	Holds an increasing amount of information in mind in order to successfully complete tasks.
+P-ATL 9	GOAL	Child demonstrates flexibility in thinking and behavior.
+P-ATL 9	36-48	Demonstrates flexibility, or the ability to switch gears, in thinking and behavior when prompted by an adult, such as trying a new way to climb a structure when the first attempt does not work.
+P-ATL 9	48-60	Demonstrates flexibility in thinking and behavior without prompting at times. Also responds consistently to adult suggestions to show flexibility in approaching tasks or solving problems, such as taking turns to share toys when many children want to use them.
+P-ATL 10	GOAL	Child demonstrates initiative and independence.
+P-ATL 10	36-48	Regularly shows initiative, particularly in interactions with familiar adults. Works independently for brief periods of time without adult prompting.
+P-ATL 10	48-60	Frequently shows initiative, particularly when engaged in preferred activities. Demonstrates a willingness and capability to work independently for increasing amounts of time.
+P-ATL 11	GOAL	Child shows interest in and curiosity about the world around them.
+P-ATL 11	36-48	Seeks out new information and explores new play and tasks with adult support.
+P-ATL 11	48-60	Seeks out new information and explores new play and tasks both independently and with adult support.
+P-ATL 12	GOAL	Child expresses creativity in thinking and communication.
+P-ATL 12	36-48	Responds to adults' prompts to express creative ideas in words and/or actions.
+P-ATL 12	48-60	Communicates creative ideas and actions both with and without prompting from adults.
+P-ATL 13	GOAL	Child uses imagination in play and interactions with others.
+P-ATL 13	36-48	Consistently uses imagination in play and other creative works. Begins to communicate creative ideas to other children and adults.
+P-ATL 13	48-60	Develops more elaborate imaginary play, stories, and other creative works with children and adults.
+# Notes: Page headings read "Goal P-ATL 1." and so on. Sub-domains: Emotional and Behavioral Self-Regulation (P-ATL 1-4), Cognitive Self-Regulation (Executive Functioning) (P-ATL 5-9), Initiative and Curiosity (P-ATL 10-11), Creativity (P-ATL 12-13). Each progression is a paragraph cell, not a bulleted list. On the page the P-ATL 1 heading ends with an asterisk after the period ("...with increasing independence.*"), and a note under its table reads "* This is the same as P-SE Goal 8" (no final period). The asterisk is left out of the GOAL line above. P-ATL 12 "adults'" has a straight apostrophe. All characters in these cells are ASCII. The "By 60 Months" Indicators column was not transcribed.
+
+# Domain: Perceptual, Motor, and Physical Development
+# URL: https://headstart.gov/school-readiness/article/perceptual-preschool
+# Last updated: May 21, 2024
+# Read: 2026-10-19, sentence by sentence with WebFetch
+P-PMP 1	GOAL	Child demonstrates control, strength, and coordination of large muscles.
+P-PMP 1	36-48	Balances, such as on one leg or a beam, for short periods with some assistance. Performs some skills, such as jumping for height and hopping, but these skills may not be consistently demonstrated. Engages in physical activity that requires strength and stamina for at least brief periods.
+P-PMP 1	48-60	Balances, such as on one leg or on a beam, for longer periods of time both when standing still and when moving from one position to another. Demonstrates more coordinated movement when engaging in skills, such as jumping for height and distance, hopping, and running. Engages in more complex movements, such as riding a tricycle, with ease. Engages in physical activities of increasing levels of intensity for sustained periods of time.
+P-PMP 2	GOAL	Child uses perceptual information to guide motions and interactions with objects and other people.
+P-PMP 2	36-48	Somewhat aware of own body, space, and relationship to other objects. May have difficulty consistently coordinating motions and interactions with objects and other people.
+P-PMP 2	48-60	Shows increasing awareness of body, space, and relationship to other objects in ways that allow for more coordinated movements, actions, and interactions with others.
+P-PMP 3	GOAL	Child demonstrates increasing control, strength, and coordination of small muscles.
+P-PMP 3	36-48	Performs simple hand-eye tasks, such as drawing simple shapes like circles and cutting paper with scissors. May demonstrate limited precision and control in more complex tasks.
+P-PMP 3	48-60	Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.
+P-PMP 4	GOAL	Child demonstrates personal hygiene and self-care skills.
+P-PMP 4	36-48	Shows an awareness of personal hygiene and self-care skills, such as telling an adult it is important to wash hands before eating. May not complete or exhibit these skills regularly without adult guidance and supervision.
+P-PMP 4	48-60	Begins to take more responsibility for personal hygiene and self-care skills. Sometimes completes them without adult prompting.
+P-PMP 5	GOAL	Child develops knowledge and skills that help promote nutritious food choices and eating habits.
+P-PMP 5	36-48	Demonstrates a basic knowledge of the role of foods and nutrition in healthy development. Often requires adult guidance and supervision to make healthy eating choices.
+P-PMP 5	48-60	Demonstrates an increasing understanding of the ways in which foods and nutrition help the body grow and be healthy. Makes healthy eating choices both independently and with support.
+P-PMP 6	GOAL	Child demonstrates knowledge of personal safety practices and routines.
+P-PMP 6	36-48	Shows awareness of a growing number of personal safety practices and routines. Looks to adults for support in enacting these.
+P-PMP 6	48-60	Exhibits increasing independence in following basic personal safety practices and routines. Follows adult guidance around more complex practices.
+# Notes: Page headings read "Goal P-PMP 1." and so on. Sub-domains: Gross Motor (P-PMP 1-2), Fine Motor (P-PMP 3), Health, Safety, and Nutrition (P-PMP 4-6). Each progression is a paragraph cell, not a bulleted list. P-PMP 1 reads "or a beam" at 36-48 but "or on a beam" at 48-60, as published. No asterisks on this page; all characters in these cells are ASCII. The "By 60 Months" Indicators column was not transcribed.
+
+# Unsure: Nothing unconfirmed. Every goal statement and progression sentence above was read at least twice with differently worded WebFetch requests, using different segment breaks, and the reads agreed. Limits: (1) headstart.gov is blocked to direct download (proxy 403), so straight vs curly quote characters, the U+2026 ellipsis in P-LIT 4 and plain hyphens are as WebFetch reported them from the rendered text (asked twice, same answer each time), not checked against raw HTML bytes. (2) WebFetch at first withheld the P-LIT 1 example "Old McDonald had a charm." as possible song lyrics; it was then given word by word (Old / McDonald / had / a / charm) and later as the full sentence, and the two agree, including "McDonald" without the "a".

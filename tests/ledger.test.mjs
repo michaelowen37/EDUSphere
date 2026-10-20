@@ -148,6 +148,23 @@ ok('the ledger has no rows the app does not use', orphans.length === 0, orphans.
   const replan = replanSerials(earmarks); const csv = readFileSync('docs/LEONARDO-PROMPTS.csv', 'utf8').trim(); const want = csvText(ledger, earmarks);
   const waiting = want.split('\n').filter((l) => l.endsWith(',"Re-plan first (A6)"')).length;
   ok('every Needed picture EARMARKS A6 lists waits as Re-plan first (A6) in the spreadsheet', replan.size >= 150 && waiting === all.filter((r) => replan.has(r[0]) && r[5] === 'Needed').length && waiting > 0, `${replan.size} listed, ${waiting} waiting`);
+  // Pass MM (round two's picture check): a course reviewed at the refined standard plans every picture around things (the
+  // picture brief, item 3), so no picture of its own may still wait under A6. First Sounds and Letters' eleven were planned
+  // around things in its round one while the A6 list still named them, and the spreadsheet told Mikey to re-plan eleven
+  // finished prompts. The reviewed courses are the coverage test's REVIEWED_PREK, read from its source so the two never differ.
+  { const listed = (readFileSync('tests/coverage.test.mjs', 'utf8').match(/const REVIEWED_PREK = \[([^\]]*)\]/) || [, ''])[1];
+    const reviewed = [...listed.matchAll(/'([a-z0-9-]+)'/g)].map((m) => m[1]);
+    const coursesOf = (where) => new Set([...MODULES.filter((m) => m.id === where).map((m) => m.courseId), ...(MODULES.some((m) => m.courseId === where) ? [where] : [])]);
+    const stale = all.filter((r) => replan.has(r[0]) && [...coursesOf(r[1])].some((c) => reviewed.includes(c))).map((r) => r[0]);
+    ok(`no picture of a reviewed pre-K course still waits under EARMARKS A6 (${reviewed.length} courses read)`, reviewed.length >= 4 && stale.length === 0, stale.join(','));
+  }
+  // A scene after sunset folds its sun ban as a sun already set (round five's record read, pass MM: CS660's sky glows "just after
+  // sunset, the sun already down", and "The sunlight comes from beyond the edge of the picture." could light it as day); a daytime
+  // scene keeps the sunlight from beyond the edge.
+  { const dusk = all.filter(([, , , prompt, bans]) => /after sunset|sun already down/i.test(String(prompt).split(/\s*Style:/)[0]) && String(bans).split(',').map((x) => x.trim()).includes('sun'));
+    const wrong = dusk.filter(([, , , prompt, bans]) => !/The sun has already set below the edge of the picture/.test(foldPrompt(prompt, bans).prompt) || /The sunlight comes from beyond the edge/.test(foldPrompt(prompt, bans).prompt));
+    const day = foldPrompt('A sunny park at noon, a girl on a swing. Style: Clean 3D vector illustration.', 'sun').prompt;
+    ok(`a scene after sunset keeps its sun set in its folded prompt (${dusk.length} rows), and a daytime scene its sunlight from beyond the edge`, dusk.length >= 1 && wrong.length === 0 && /The sunlight comes from beyond the edge of the picture/.test(day), wrong.map((r) => r[0]).join(', ')); }
   // The character sheets are painted in the same sessions, so they are rows too (pass MC: the tool had read only six-column rows).
   const sheetsListed = all.filter((r) => r[1] === 'character sheet').map((r) => r[0]);
   ok('docs/LEONARDO-PROMPTS.csv is the folded spreadsheet the tool writes today (node tools/prompts-csv.mjs > docs/LEONARDO-PROMPTS.csv), character sheets included', csv === want && /"prompt \(bans folded in\)"/.test(csv.split('\n')[0]) && sheetsListed.length === (ledger.match(/^\| C\d+ \|/gm) || []).length && sheetsListed.length >= 14, `${csv.split('\n').length - 1} rows, ${want.split('\n').length - 1} from the ledger`);

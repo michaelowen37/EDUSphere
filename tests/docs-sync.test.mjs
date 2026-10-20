@@ -99,17 +99,20 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
 // An answered question is never called open again (pass MI, the alignment read: Q27, Q30, Q31 and Q32 were answered while
 // docs, comments and tests still said Q30 was waiting on Mikey or the light theme kept its gold until Q32 was settled, which a
 // new chat would believe). Every doc but
-// DECISIONS (history) and RULES-AUDIT section 11 (the questions themselves), the README, the skills and agents, and src, tests and tools are read. CLAUDE.md keeps
-// its lines as written (they change only with Mikey's approval), so a later line there settles them, and it is left out.
+// DECISIONS (history) and RULES-AUDIT section 11 (the questions themselves), the README, the skills and agents, and src, tests and tools are read. Until pass MM
+// CLAUDE.md was left out, since its old lines stood beside the later lines that settled them; since pass MM it is the short manual
+// and is read, and its old lines live in docs/CLAUDE-HISTORY.md, which is left out like DECISIONS (and docs/NEW-CHAT-HISTORY.md).
 { const { readdirSync } = await import('node:fs');
   const s11 = audit.indexOf('## 11. Open items that need Mikey'); const e11 = audit.indexOf('\n## ', s11 + 5);
   const answeredNums = new Set([...audit.slice(s11, e11 < 0 ? audit.length : e11).matchAll(/^- Q(\d+)\. Answered in pass/gm)].map((m) => Number(m[1])));
   const files = [];
   // Since the second read of the late fixes: every doc but DECISIONS, the README, and the skills' and agents' briefs too.
   for (const [dir, ext] of [['../docs/', '.md'], ['../src/', ''], ['../tools/', '.mjs'], ['./', '.mjs'], ['./e2e/', '.mjs'], ['../.claude/agents/', '.md']]) {
-    for (const f of readdirSync(new URL(dir, import.meta.url))) if (f.endsWith(ext) && f !== 'DECISIONS.md' && !/\.(csv|json|png|svg)$/.test(f) && (ext || /\.(mjs|jsx)$/.test(f))) files.push(new URL(dir + f, import.meta.url));
+    for (const f of readdirSync(new URL(dir, import.meta.url))) if (f.endsWith(ext) && !['DECISIONS.md', 'CLAUDE-HISTORY.md', 'NEW-CHAT-HISTORY.md'].includes(f) && !/\.(csv|json|png|svg)$/.test(f) && (ext || /\.(mjs|jsx)$/.test(f))) files.push(new URL(dir + f, import.meta.url));
   }
   files.push(new URL('../README.md', import.meta.url));
+  // Since pass MM CLAUDE.md is the short manual with no replaced lines, so it is read too; its old lines live in the history.
+  files.push(new URL('../CLAUDE.md', import.meta.url));
   for (const d of readdirSync(new URL('../.claude/skills/', import.meta.url))) { try { files.push(...readdirSync(new URL(`../.claude/skills/${d}/`, import.meta.url)).filter((f) => f.endsWith('.md')).map((f) => new URL(`../.claude/skills/${d}/${f}`, import.meta.url))); } catch (e) { /* a file, not a folder */ } }
   const stale = [];
   for (const u of files) {
@@ -118,6 +121,33 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
     for (const m of t.matchAll(/\(?Q(\d+) asks\b|until (?:Mikey )?answers Q(\d+)|until Q(\d+) is answered|waiting (?:on|for) Q(\d+)|(?:keeps its look|is frozen|still does[^.;,]{0,30}),? \(?Q(\d+)\b/g)) { const n = Number(m[1] || m[2] || m[3] || m[4] || m[5]); if (answeredNums.has(n)) stale.push(`${u.pathname.split('/').slice(-2).join('/')}: ${m[0]}`); }
   }
   ok('no doc, source, test or tool still calls an answered question open', answeredNums.size >= 30 && stale.length === 0, stale.slice(0, 8).join('; '));
+}
+// CLAUDE.md is the short manual every session loads (pass MM, Mikey: "If you can run the entire vision, rules, decisions,
+// claude.md etc through these ideas to improve our workflow, please do."). The whole file as it stood through pass ML is kept
+// word for word in docs/CLAUDE-HISTORY.md, between two markers whose text must hash to the digest below, so nothing moved can be
+// lost or edited; every dated line CLAUDE.md still carries is word for word one of the history's; and CLAUDE.md stays under
+// 40,000 bytes, so it never again grows into a history (186 KB and 383 dated lines by pass ML).
+{
+  const { createHash } = await import('node:crypto');
+  const hist = readFileSync(new URL('../docs/CLAUDE-HISTORY.md', import.meta.url), 'utf8');
+  const a = hist.indexOf('<!-- CLAUDE.md through pass ML, word for word: begin -->\n'); const b = hist.indexOf('<!-- CLAUDE.md through pass ML, word for word: end -->');
+  const block = a >= 0 && b > a ? hist.slice(a + '<!-- CLAUDE.md through pass ML, word for word: begin -->\n'.length, b) : '';
+  ok('docs/CLAUDE-HISTORY.md keeps CLAUDE.md as it stood through pass ML, every line unchanged (pass MM)', createHash('sha256').update(block, 'utf8').digest('hex') === 'd1358c8433a304e75b0cd2861e26df5d53f3c11785ad9638bebfa8ad7c2f798b');
+  const manual = readFileSync(new URL('../CLAUDE.md', import.meta.url), 'utf8');
+  const at = manual.indexOf('## Lines a coder needs most'); const keptLines = at < 0 ? [] : manual.slice(at).split('\n').filter((l) => l.startsWith('- '));
+  const blockLines = new Set(block.split('\n'));
+  const notCopied = keptLines.filter((l) => !blockLines.has(l));
+  ok('every dated line CLAUDE.md keeps is word for word a line of the history, and the manual stays under 40,000 bytes (pass MM)', keptLines.length >= 40 && notCopied.length === 0 && Buffer.byteLength(manual, 'utf8') < 40000, `${keptLines.length} kept; ${Buffer.byteLength(manual, 'utf8')} bytes; not copied: ${notCopied.map((l) => l.slice(0, 50)).join(' | ')}`);
+}
+// NEW-CHAT.md's history (pass MM): the state bullets of passes JE to MJ, the earlier chats' "When to start" paragraphs and the
+// chain of earlier preview links moved, word for word, to docs/NEW-CHAT-HISTORY.md, whose text between its markers must hash to
+// the digest below, so nothing moved can be lost or edited.
+{
+  const { createHash } = await import('node:crypto');
+  const hist = readFileSync(new URL('../docs/NEW-CHAT-HISTORY.md', import.meta.url), 'utf8');
+  const open = '<!-- NEW-CHAT history through pass ML, word for word: begin -->\n'; const a = hist.indexOf(open); const b = hist.indexOf('<!-- NEW-CHAT history through pass ML, word for word: end -->');
+  const block = a >= 0 && b > a ? hist.slice(hist.indexOf('\n\n', a + open.length) + 2, b) : '';
+  ok('docs/NEW-CHAT-HISTORY.md keeps the history NEW-CHAT.md held through pass ML, every line unchanged (pass MM)', createHash('sha256').update(block, 'utf8').digest('hex') === '09944cffc5de080b09d0ca0f9f4c599b9e415859fc7cb36f039e75efab0e3576');
 }
 // The pictures the browser tests write beside the page (tests/e2e/art; pass MF, the code check and the alignment read) never
 // ship: .gitignore, both zip tools and the delivery command in NEW-CHAT leave the folder out, and the command leaves a checkpoint

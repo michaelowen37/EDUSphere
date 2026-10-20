@@ -3,7 +3,7 @@
 // page scrolling sideways, the board wider or taller than the screen, any piece of the board drawn outside it, and any
 // words spilling out of the tile that holds them. Writes tests/e2e/out/game-layout.json and prints one line per problem.
 // Run: node tests/e2e/game-layout.mjs   (after check.sh has built tests/e2e/page.html)
-import { createRequire } from 'node:module'; import { pathToFileURL } from 'node:url'; import fs from 'node:fs';
+import { createRequire } from 'node:module'; import fs from 'node:fs';
 const require = createRequire(import.meta.url);
 const { chromium } = require('/home/claude/.npm-global/lib/node_modules/playwright');
 const L = await import(new URL('../../src/logic.mjs', import.meta.url).href);
@@ -12,7 +12,7 @@ const only = process.argv[2] ? new Set(process.argv[2].split(',')) : null;
 const games = L.GAMES.filter((g) => !only || only.has(g.id));
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce', hasTouch: true });
-await page.goto(pathToFileURL(new URL('./page.html', import.meta.url).pathname).href);
+await page.goto(new URL('./page.html', import.meta.url).href);
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'welcome');
 await page.getByRole('button', { name: 'Create account' }).click(); await page.waitForTimeout(300);
 await page.fill('input[placeholder="PIN"]', '2468'); await page.fill('input[placeholder="PIN again"]', '2468');

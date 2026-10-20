@@ -5,7 +5,7 @@
 // the educator's report: the coloring line, then the game line and the elective story line in Mikey's words, each under the
 // same short faint rule. The second read of the story waits the real STORY_REREAD_SECONDS, and since pass MF the walk takes
 // about three minutes (check.sh allows seven).
-import { createRequire } from 'node:module'; import { pathToFileURL, fileURLToPath } from 'node:url'; import { execSync } from 'node:child_process'; import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { createRequire } from 'node:module'; import { fileURLToPath } from 'node:url'; import { execSync } from 'node:child_process'; import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
 const G = execSync('npm root -g').toString().trim(); const { chromium } = createRequire(import.meta.url)(`${G}/playwright`);
 const L = await import('../../src/logic.mjs'); const ST = await import('../../src/stories.mjs');
 const FINISH = 'first-steps-pk';   // an Early years student's pre-K 4 course with a long story (pre-K 3's courses are not assigned at that level)
@@ -14,7 +14,7 @@ let passed = 0, failed = 0; const ok = (name, cond, info) => { if (cond) { passe
 const shots = process.argv[2] || null;
 const browser = await chromium.launch(); const page = await browser.newPage({ viewport: { width: 390, height: 844 }, hasTouch: true, reducedMotion: 'reduce' });
 const errors = []; page.on('pageerror', (e) => errors.push(String(e).slice(0, 200)));
-await page.goto(pathToFileURL(new URL('./page.html', import.meta.url).pathname).href);
+await page.goto(new URL('./page.html', import.meta.url).href);
 const screen = () => page.evaluate(() => window.__eduTest && window.__eduTest.screen);
 const screenIs = (n) => page.waitForFunction((x) => window.__eduTest && window.__eduTest.screen === x, n, { timeout: 15000 });
 const text = async () => (await page.evaluate(() => document.body.innerText)).replace(/\s+/g, ' ');
@@ -129,7 +129,9 @@ await page.getByRole('button', { name: /S-56$/ }).first().click(); await page.wa
     const lum = ([r, g, b]) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
     const fg = rgb(getComputedStyle(el).color); const bg = rgb(getComputedStyle(el.closest('[data-play-strip]')).backgroundColor);
     const a = lum(fg), b = lum(bg); return { text: el.textContent, ratio: (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05), inWash: !!el.closest('.edu-colorwash') }; }) : null;
-  ok('an Elementary student on day one sees the line under Let\'s Play, in its strip, off the wash, at 4.5 to 1 or better', seen && measured && measured.text === 'Finishing every module within a course unlocks a new game.' && !measured.inWash && measured.ratio >= 4.5, measured);
+  // Since pass MM (Q45) the line says what opens the locked tiles by stage: an Elementary student's courses are grade 3 and up,
+  // whose games wait for every star.
+  ok('an Elementary student on day one sees the line under Let\'s Play, in its strip, off the wash, at 4.5 to 1 or better, saying mastering opens her courses\' games', seen && measured && measured.text === 'Mastering every module within a course unlocks a new game.' && !measured.inWash && measured.ratio >= 4.5, measured);
   ok('Pong is open on her first day and her courses\' games wait', (await page.getByRole('button', { name: 'Play Pong' }).count()) === 1 && (await page.getByRole('button', { name: 'Locked game' }).count()) >= 3); }
 // Pass MD (Mikey: "They can play after the lesson as a reward like you mentioned."): a lesson story heard as a round's reward
 // waits in an early learner's Let's Read, after the course stories, newest first (round one of the checks), each a gold book
@@ -595,7 +597,7 @@ await page.getByRole('button', { name: /S-56$/ }).first().click(); await page.wa
 // own window never scrolls, so the page came back at its top after a book. A host page holds the app in a 5,000-pixel frame;
 // the page around it is scrolled so a heard story's book sits mid-screen, the book is pressed inside the frame, and the story's
 // arrow must bring the page around the frame back to the same place.
-{ writeFileSync('/tmp/edu-place-host.html', `<!doctype html><html><body style="margin:0;background:#111"><div style="height:120px;color:#ccc">Preview header</div><iframe id="app" src="${pathToFileURL(new URL('./page.html', import.meta.url).pathname).href}" style="border:0;width:100%;height:5000px;display:block"></iframe><div style="height:600px"></div></body></html>`);
+{ writeFileSync('/tmp/edu-place-host.html', `<!doctype html><html><body style="margin:0;background:#111"><div style="height:120px;color:#ccc">Preview header</div><iframe id="app" src="${new URL('./page.html', import.meta.url).href}" style="border:0;width:100%;height:5000px;display:block"></iframe><div style="height:600px"></div></body></html>`);
   const host = await browser.newPage({ viewport: { width: 1280, height: 800 }, hasTouch: true, reducedMotion: 'reduce' });
   await host.goto('file:///tmp/edu-place-host.html'); await host.waitForTimeout(800);
   const f = host.frames().find((x) => x.url().endsWith('page.html'));

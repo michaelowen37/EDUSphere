@@ -3,7 +3,7 @@
 import { readFileSync } from 'node:fs';
 import { STORIES, COURSE_STORIES, MASTERY_STORIES, COLOR_PAGES } from '../src/stories.mjs';
 import { stylesFor, ROW, TRY_ROW } from '../tools/coloring-levels.mjs';
-import { MAP_SERIALS, MODULES } from '../src/logic.mjs';
+import { MAP_SERIALS, MODULES, COURSES } from '../src/logic.mjs';
 let pass = 0; let fail = 0;
 const ok = (label, cond, detail = '') => { console.log((cond ? 'PASS' : 'FAIL') + ' - ' + label + (cond ? '' : '  ' + detail)); cond ? pass++ : fail++; };
 const ledger = readFileSync('docs/ART-REQUESTS.md', 'utf8');
@@ -261,6 +261,24 @@ ok('the ledger has no rows the app does not use', orphans.length === 0, orphans.
   // Its near misses: the alt P150 had, which fails, and the alt it has.
   const p150 = pics.find((p) => p.serial === 'P150'); const near = (alt) => sceneOf.P150 === alt;
   ok(`a lesson picture's alt is its ledger scene word for word (${pics.length} read; ${ALT_WAITING.length} older ones wait by name and only fall)`, pics.length >= 150 && unlisted.length === 0 && stale.length === 0 && !near('Two small children at the bottom of a tall playground slide, one grinning and one looking up at it with a worried face') && !!p150 && near(p150.alt), `differ: ${unlisted.join(', ')}; listed but matching: ${stale.join(', ')}`);
+}
+// A story picture takes its course subject's style (pass MO, round one's picture check: Listen and Point's and First Sounds and
+// Letters' twelve new rows took Math's "distinct geometric shapes" where their subject is Reading's "character-focused, dreamy
+// lighting", the slip pass MM made on the long stories' rows). The anchors are tools/stories/batch.py's MOD table, read from the
+// file, so the batches and this check share one source. Every pre-K story row ends its style on its subject's anchor; the rows of
+// kindergarten and up that do not wait as a count that only falls (141 in pass MO, kindergarten's and grade 1's), for their
+// courses' reviews. Proven failing on pass MO's frozen copy (the twelve) and on a row given another subject's anchor.
+{
+  const py = readFileSync(new URL('../tools/stories/batch.py', import.meta.url), 'utf8');
+  const modLine = py.split('\n').find((l) => l.startsWith('MOD = {')) || '';
+  const anchors = Object.fromEntries([...modLine.matchAll(/'([A-Za-z]+)': \('[^']+', '([^']+)'\)/g)].map((m) => [m[1], m[2]]));
+  const courseOf = {}; for (const c of COURSES) for (const m of c.modules) courseOf[m.id] = c;
+  const offRows = (text) => text.split('\n').filter((l) => /^\| S\d+ \|/.test(l)).map((l) => l.split(' | ')).filter((cols) => { const c = courseOf[(cols[1] || '').trim()]; const anchor = c && anchors[c.subject]; return anchor && !(cols[3] || '').includes(`uncluttered layout, ${anchor}.`); })
+    .map((cols) => ({ serial: cols[0].slice(2), grade: courseOf[cols[1].trim()].grade }));
+  const off = offRows(ledger); const early = off.filter((r) => r.grade === 'PK3' || r.grade === 'PK4'); const later = off.filter((r) => r.grade !== 'PK3' && r.grade !== 'PK4');
+  const swapped = ledger.replace(/(\| S3919 \|[^\n]*?)uncluttered layout, character-focused, dreamy lighting\./, '$1uncluttered layout, distinct geometric shapes.');
+  const caught = offRows(swapped).some((r) => r.serial === 'S3919');
+  ok(`every pre-K story picture takes its course subject's style anchor (${Object.keys(anchors).length} subjects read from batch.py; ${later.length} rows of kindergarten and up wait as a count that only falls)`, Object.keys(anchors).length >= 5 && early.length === 0 && later.length <= 141 && caught, `pre-K off: ${early.map((r) => r.serial).join(',')}; later ${later.length}`);
 }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

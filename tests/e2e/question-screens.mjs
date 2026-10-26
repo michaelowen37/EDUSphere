@@ -267,6 +267,42 @@ const ponder = () => page.evaluate(() => {
   ok('on a phone the six pictures sit inside the card too, two or three above the words and the rest below', !!phone && phone.n === 6 && phone.outside === 0 && phone.beside === 0 && phone.above >= 2 && phone.above <= 3 && phone.above + phone.below === 6, phone);
   await page.setViewportSize({ width: 1280, height: 900 }); await page.waitForTimeout(300); }
 
+// Round four's code check (pass MO): the Wonder's voice cards left mid-card by the device's back fall quiet (Frederick's card was
+// said on over the overview to its end), with a stand-in voice that says a sentence a second, as section 7's does.
+{ await page.evaluate(() => { const q = []; let cur = null; let timer = null; window.__spoken = [];
+    const next = () => { cur = q.shift() || null; if (!cur) return; const mine = cur; timer = setTimeout(() => { if (cur !== mine) return; cur = null; if (mine.onend) mine.onend({}); if (!cur) next(); }, 1000); };
+    window.__curText = () => (cur ? cur.text : null);
+    Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { get speaking() { return !!cur; }, get pending() { return q.length > 0; }, cancel() { q.length = 0; if (timer) clearTimeout(timer); cur = null; }, getVoices() { return []; }, speak(u) { window.__spoken.push(u.text); q.push(u); if (!cur) next(); } } }); });
+  await page.evaluate(() => window.__eduTest.openWonderVoices('w-big-or-small', 'big-and-little')); await screenIs('wonder-voices');
+  await page.waitForFunction(() => window.speechSynthesis.speaking, null, { timeout: 5000 }).catch(() => {});
+  const card = await page.evaluate(() => ({ said: window.__spoken.slice(), now: window.__curText() }));
+  await page.evaluate(() => history.back()); await page.waitForTimeout(300);
+  const after = await page.evaluate(() => ({ screen: window.__eduTest.screen, now: window.__curText() }));
+  ok("the Wonder's voice cards left by the device's back fall quiet at once", !!card.now && card.said.length > 0 && after.screen !== 'wonder-voices' && !(after.now && card.said.includes(after.now)), { card, after });
+  await page.waitForTimeout(300);
+  // Round five's code check: a letter coloring page says its letters as it opens, and Close coloring left them being said over the
+  // overview ("On the right is a lower case A." 0.8 seconds later).
+  await page.evaluate(() => window.__eduTest.openColoring('letter-a')); await screenIs('coloring');
+  await page.waitForFunction(() => window.speechSynthesis.speaking, null, { timeout: 5000 }).catch(() => {});
+  const page1 = await page.evaluate(() => ({ said: window.__spoken.slice(), now: window.__curText() }));
+  await page.getByRole('button', { name: 'Close coloring', exact: true }).click(); await page.waitForTimeout(300);
+  const page2 = await page.evaluate(() => ({ screen: window.__eduTest.screen, now: window.__curText() }));
+  ok('a letter coloring page closed falls quiet at once', !!page1.now && /lower case A/.test(page1.said.join(' ')) && page2.screen !== 'coloring' && !(page2.now && page1.said.includes(page2.now)), { page1, page2 });
+  await page.waitForTimeout(300);
+  // Round six's code check: a letter page whose time runs out while it talks falls quiet too (the page closes itself then, so a hush
+  // in Close coloring alone would leave its letters said over the overview); setColoringLeft brings the time's end near.
+  // Since round eight's read the tap comes first: the page's next one-second tick after setColoringLeft(1) closes it, and a tap
+  // that came after that tick would wait for a button that is gone.
+  await page.evaluate(() => window.__eduTest.openColoring('letter-b')); await screenIs('coloring'); await page.waitForTimeout(200);
+  await page.getByRole('button', { name: 'Say the letters again', exact: true }).click();
+  await page.evaluate(() => window.__eduTest.setColoringLeft(1));
+  await page.waitForFunction(() => window.__eduTest.screen !== 'coloring', null, { timeout: 8000 }).catch(() => {});
+  const page3 = await page.evaluate(() => ({ screen: window.__eduTest.screen, said: window.__spoken.slice() }));
+  await page.waitForTimeout(300);
+  const page4 = await page.evaluate(() => ({ screen: window.__eduTest.screen, now: window.__curText() }));
+  ok('a letter coloring page whose time runs out while it talks falls quiet at once', page3.screen !== 'coloring' && /lower case B/.test(page3.said.join(' ')) && page4.screen !== 'coloring' && !(page4.now && /capital B|lower case B/.test(page4.now)), { page3, page4 });
+  await page.waitForTimeout(300); }
+
 // 7. The read-along lights the sentence being read, not the paragraph (Mikey: "I meant just the words (how they were before) but
 //    the highlight color is supposed to make it easier to read.  It was hard to see before in dark theme"). A stand-in voice says
 //    one sentence at a time, a second each, so the light can be watched moving from the first sentence to the next.
@@ -301,6 +337,20 @@ const ponder = () => page.evaluate(() => {
   for (const w of [640, 700]) { await page.setViewportSize({ width: w, height: 900 }); await page.waitForTimeout(400);
     centred.push(await page.evaluate(() => { const h = document.querySelector('[data-story-head]'); const p = h && h.querySelector('p'); if (!p || !p.firstChild) return null; const r = document.createRange(); r.selectNodeContents(p); const t = r.getBoundingClientRect(); const c = h.getBoundingClientRect(); return { w: window.innerWidth, off: Math.round(Math.abs((t.left + t.right) / 2 - (c.left + c.right) / 2) * 10) / 10 }; })); }
   ok("the story's title stays centered in its card beside the speaker, the snail and the hare", centred.every((x) => x && x.off <= 2), centred);
+  // j. On a narrow phone the snail and the hare sit either side of the gold speaker (pass MO, Mikey: "On narrow phone screens, we
+  //    can move the snail and hair on both sides of the gold sound icon on top to create symmetry.  Keep the same on wider
+  //    screens"): at 390 and 360 pixels the snail, the speaker and the hare sit in that order on one line above the title, the
+  //    speaker centred on the card and the two the same distance from it; at 1280 the speaker, the snail and the hare stay to the
+  //    right of the title, in that order, level with it.
+  const heads = [];
+  for (const w of [390, 360, 1280]) { await page.setViewportSize({ width: w, height: 900 }); await page.waitForTimeout(400);
+    heads.push(await page.evaluate(() => { const h = document.querySelector('[data-story-head]'); if (!h) return null; const at = (el) => { const r = el.getBoundingClientRect(); return { l: r.left, r: r.right, t: r.top, b: r.bottom, c: (r.left + r.right) / 2, m: (r.top + r.bottom) / 2 }; };
+      const sp = [...h.querySelectorAll('button')].find((b) => /Read the story to me|Stop reading/.test(b.getAttribute('aria-label') || '')); const sn = h.querySelector('[data-pace="slow"]'); const ha = h.querySelector('[data-pace="normal"]'); const ti = h.querySelector('p');
+      if (!sp || !sn || !ha || !ti) return null; return { w: window.innerWidth, card: at(h), sp: at(sp), sn: at(sn), ha: at(ha), ti: at(ti) }; })); }
+  const narrowHead = (x) => !!x && x.sn.r <= x.sp.l && x.sp.r <= x.ha.l && Math.abs(x.sp.c - x.card.c) <= 2 && Math.abs((x.sp.l - x.sn.r) - (x.ha.l - x.sp.r)) <= 1 && Math.abs((x.sp.c - x.sn.c) - (x.ha.c - x.sp.c)) <= 2 && x.sp.b <= x.ti.t && Math.abs(x.sn.m - x.sp.m) <= 1 && Math.abs(x.ha.m - x.sp.m) <= 1;
+  const wideHead = (x) => !!x && x.sp.l >= x.ti.r - 2 && x.sp.r <= x.sn.l && x.sn.r <= x.ha.l && Math.abs(x.sp.m - x.ti.m) <= 12;
+  ok("on a narrow phone the story's snail and hare sit either side of the gold speaker, centred above the title; from 640 pixels they stay to the title's right", narrowHead(heads[0]) && narrowHead(heads[1]) && wideHead(heads[2]), heads);
+  await page.setViewportSize({ width: 1280, height: 900 }); await page.waitForTimeout(300);
   // The follow-scroll waits for the reader (Mikey: "The stories, as they are being read and words are highlighted, pulls me back
   // up the page when I scroll down and sit still."): on a phone, a wheel scroll down during the reading is never undone as the
   // voice moves on.
@@ -543,6 +593,243 @@ const ponder = () => page.evaluate(() => {
   const wrongCue = lines.filter((l) => l.cue !== (l.hidden > l.height / 3)); const covered = lines.filter((l) => !l.cue && l.hidden > 0 && !l.nextHit);
   ok("a lesson's scroll cue shows while a third of its row is below a short phone's fold, and never sits on a Next that is nearly whole (375 by 667)", lines.length >= 40 && wrongCue.length === 0 && covered.length === 0 && lines.some((l) => l.hidden > 4 && !l.cue) && lines.some((l) => l.hidden / l.height > 0.25 && l.hidden / l.height < 1 / 3 && !l.cue) && lines.some((l) => l.hidden / l.height > 1 / 3 && l.hidden / l.height < 0.5 && l.cue), { lines: lines.length, wrongCue, covered, partHidden: lines.filter((l) => l.hidden > 0).map((l) => `${l.theme} ${l.mod} ${l.step}: ${l.hidden} of ${l.height}${l.cue ? ' cue' : ''}`) });
   await page.setViewportSize({ width: 1280, height: 900 }); await page.waitForTimeout(300); }
+
+// i. The sounds a lesson says (pass MO, Mikey's notes on Q51: "Sun.Sss..." "Just keeps saying the letter s for what seems like 40
+//    times", fff the same, mmm "like moon", tuh "like the word two"). A stand-in voice that records every line it is handed, put in
+//    after the page has loaded, and the app's own sounds as they are asked for (window.__eduSounds): First sounds' first five lines
+//    ask for each sound in its place and hand the voice no sss, fff, mmm or tuh and no word after "start with" where a sound goes.
+{ await page.setViewportSize({ width: 390, height: 844 });
+  await page.evaluate(() => { window.__voiceBeforeSounds = window.speechSynthesis; const q = []; let cur = null; window.__spoken = []; window.__eduSounds = [];
+    const next = () => { cur = q.shift() || null; if (!cur) return; const u = cur; window.__spoken.push(u.text); if (u.onstart) u.onstart({}); setTimeout(() => { if (cur === u) cur = null; if (u.onend) u.onend({}); if (!cur) next(); }, 30); };
+    Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { get speaking() { return !!cur; }, get pending() { return q.length > 0; }, cancel() { q.length = 0; cur = null; }, getVoices() { return []; }, speak(u) { q.push(u); if (!cur) next(); } } }); });
+  await page.evaluate(() => window.__eduTest.openModule('first-sounds')); await page.waitForFunction(() => window.__eduTest.screen === 'lesson');
+  const heard = [];
+  for (let line = 0; line < 5; line++) {
+    await page.waitForTimeout(3500);
+    heard.push(await page.evaluate(() => ({ spoken: window.__spoken.slice(), sounds: (window.__eduSounds || []).slice() })));
+    await page.evaluate(() => { window.__spoken = []; window.__eduSounds = []; });
+    await page.getByRole('button', { name: 'Next', exact: true }).first().click({ force: true });
+  }
+  const want = [['m', 'm'], ['s', 's'], ['t'], ['f'], ['m']];
+  const handed = heard.flatMap((h) => h.spoken).join(' | ');
+  ok("First sounds' first five lines play each sound in its place and hand the voice no sss, fff, mmm, tuh or word where a sound goes (pass MO, Q51)", heard.every((h, i) => JSON.stringify(h.sounds) === JSON.stringify(want[i])) && !/\b(s{3,}|f{3,}|m{3,}|tuh)\b/i.test(handed) && !/(start with|starts with|the sound) (moon|sun|fish)/i.test(handed) && /Tap and top both start with the same sound/.test(handed), heard);
+  await page.evaluate(() => Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: window.__voiceBeforeSounds })); }
+// k. The rabbit and the candle are seen on the paper in both themes (pass MO, Mikey's answer to Q54, "your call as long as it looks
+//    visually appealing and sleek."): the rabbit's outline and the candle's, read from the drawings on the page, are 3 to 1 or more
+//    against the paper they sit on, in the light theme and the dark, where until pass MO the light theme's rabbit had none and the
+//    candle's read 1.8 to 1.
+{ const outline = () => page.evaluate(() => {
+    const parse = (s) => { const m = String(s).match(/rgba?\(([^)]+)\)/); if (m) { const p = m[1].split(/[\s,\/]+/).filter(Boolean).map(Number); return { r: p[0], g: p[1], b: p[2] }; } const h = String(s).match(/^#([0-9a-f]{6})$/i); return h ? { r: parseInt(h[1].slice(0, 2), 16), g: parseInt(h[1].slice(2, 4), 16), b: parseInt(h[1].slice(4, 6), 16) } : null; };
+    const lin = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; const lum = (c) => 0.2126 * lin(c.r) + 0.7152 * lin(c.g) + 0.0722 * lin(c.b);
+    const ratio = (a, b) => (Math.max(lum(a), lum(b)) + 0.05) / (Math.min(lum(a), lum(b)) + 0.05);
+    const ground = (el) => { let n = el; while (n && n.nodeType === 1) { const c = parse(getComputedStyle(n).backgroundColor); if (c && !/rgba\([^)]*,\s*0\)/.test(getComputedStyle(n).backgroundColor)) return c; n = n.parentElement; } return { r: 255, g: 255, b: 255 }; };
+    const out = {};
+    for (const [name, sel] of [['rabbit', 'svg[aria-label$="rabbit"] ellipse'], ['candle', 'svg rect[stroke]']]) {
+      const el = [...document.querySelectorAll(sel)].find((e) => (name === 'candle' ? e.getAttribute('height') === '46' : true)); if (!el) { out[name] = null; continue; }
+      const stroke = parse(el.getAttribute('stroke') || getComputedStyle(el).stroke); out[name] = stroke ? +ratio(stroke, ground(el.closest('svg'))).toFixed(2) : 0; }
+    return out; });
+  const seen = {};
+  for (const theme of ['light', 'dark']) {
+    await page.evaluate(() => window.__eduTest.goTo('educator-pick')); await page.waitForTimeout(300); for (const n of ['Skip tour', 'Later', 'Got it']) await tapIf(n);
+    const now = await page.evaluate(() => document.documentElement.getAttribute('data-theme') || 'light');
+    if (now !== theme) { await page.getByLabel(theme === 'dark' ? 'Dark theme' : 'Light theme').first().click({ force: true }); await page.waitForTimeout(400); }
+    await walk('Walk through early years');
+    await show('pm-same-animals', 1); const a = await outline();
+    await show('p4-feel-calm', 2); const b = await outline();
+    seen[theme] = { rabbit: a.rabbit || b.rabbit, candle: b.candle || a.candle };
+  }
+  ok('the rabbit\'s outline and the candle\'s read 3 to 1 or more on the paper in both themes (Q54)', ['light', 'dark'].every((t) => seen[t] && seen[t].rabbit >= 3 && seen[t].candle >= 3), seen); }
+
+// l. Follow the directions (pass MO, earmarks E12 and E13, Domain II): on a phone, a direction's pictures sit in a grid that fits
+//    the screen, two columns for four and three for three or six; each tap puts its number on the picture where it is, a tap on
+//    a numbered picture takes it back with every number after it, a tap past the last step does nothing, and Check waits for every
+//    step; a wrong order says the direction again, turns every tapped picture clay alike and Try again clears them; the right order
+//    is Correct. The gold badge's number reads on the gold in both themes.
+{ await page.evaluate(() => { window.__voiceBeforeSteps = window.speechSynthesis; const q = []; let cur = null; let timer = null; window.__spoken = [];
+    const next = () => { cur = q.shift() || null; if (!cur) return; const mine = cur; timer = setTimeout(() => { if (cur !== mine) return; cur = null; if (mine.onend) mine.onend({}); if (!cur) next(); }, 20); };
+    Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { get speaking() { return !!cur; }, get pending() { return q.length > 0; }, cancel() { q.length = 0; if (timer) clearTimeout(timer); cur = null; }, getVoices() { return []; }, speak(u) { window.__spoken.push(u.text); q.push(u); if (!cur) next(); } } }); });
+  const badges = () => page.evaluate(() => [...document.querySelectorAll('[data-steps] button')].map((b) => ({ c: b.getAttribute('data-choice'), n: b.getAttribute('data-step'), badge: (b.querySelector('[data-step-badge]') || {}).textContent || null })));
+  const checkOff = () => page.getByRole('button', { name: 'Check answer', exact: true }).isDisabled();
+  const grid = () => page.evaluate(() => { const g = document.querySelector('[data-steps]'); if (!g) return null; const bs = [...g.querySelectorAll('button')].map((b) => b.getBoundingClientRect()); return { tracks: getComputedStyle(g).gridTemplateColumns.split(' ').filter(Boolean).length, cols: new Set(bs.map((r) => Math.round(r.left))).size, n: bs.length, right: Math.max(...bs.map((r) => r.right)), wide: document.documentElement.scrollWidth, view: innerWidth }; });
+  const seen = {};
+  for (const theme of ['light', 'dark']) {
+    await page.evaluate(() => window.__eduTest.goTo('educator-pick')); await page.waitForTimeout(300); for (const n of ['Skip tour', 'Later', 'Got it']) await tapIf(n);
+    const now = await page.evaluate(() => document.documentElement.getAttribute('data-theme') || 'light');
+    if (now !== theme) { await page.getByLabel(theme === 'dark' ? 'Dark theme' : 'Light theme').first().click({ force: true }); await page.waitForTimeout(400); }
+    await walk('Walk through early years');
+    for (const w of [390, 360, 320]) {
+      await page.setViewportSize({ width: w, height: 844 }); await page.waitForTimeout(200);
+      for (const [gen, seed, cols] of [['p3-steps-things', 3, 2], ['p3-steps-colors', 2, 3], ['p4-steps-things', 3, 3]]) { await show(gen, seed); seen[`${theme} ${w} ${gen}`] = { ...(await grid()), want: cols }; }
+    }
+    await page.setViewportSize({ width: 390, height: 844 }); await page.waitForTimeout(200);
+    const q = await show('p3-steps-things', 3); const steps = q.answer.split(' | '); const others = q.items.filter((x) => !steps.includes(x));
+    const tap = (c) => page.locator(`[data-steps] button[data-choice="${c}"]`).click();
+    const r = { theme };
+    r.start = { off: await checkOff(), b: (await badges()).filter((x) => x.badge).length };
+    await tap(steps[0]); r.one = { off: await checkOff(), b: await badges() };
+    // A take-back of the second number keeps the first (round one's code check: a take-back that cleared every number passed).
+    await tap(others[0]); await tap(others[0]); r.retake2 = { off: await checkOff(), b: await badges() };
+    await tap(others[0]); await tap(others[1]); r.full = { off: await checkOff(), b: await badges() };
+    await tap(steps[0]); r.back = { off: await checkOff(), b: (await badges()).filter((x) => x.badge).length };
+    // The badge's number on its gold, measured while a badge shows.
+    await tap(steps[1]);
+    r.contrast = await page.evaluate(() => { const el = document.querySelector('[data-step-badge]'); if (!el) return 0; const parse = (s) => String(s).match(/\d+(\.\d+)?/g).slice(0, 3).map(Number); const lin = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; const lum = ([r, g, b]) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b); const cs = getComputedStyle(el); const a = lum(parse(cs.color)); const b = lum(parse(cs.backgroundColor)); return +((Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05)).toFixed(2); });
+    await tap(steps[0]);
+    r.placed = await page.evaluate(() => [...document.querySelectorAll('[data-steps] button[data-step]')].map((b) => getComputedStyle(b).borderTopColor));
+    await page.evaluate(() => { window.__spoken = []; });
+    await page.getByRole('button', { name: 'Check answer', exact: true }).click(); await page.waitForTimeout(600);
+    r.wrong = await page.evaluate(() => ({ text: (document.querySelector('.edu-wobble') || {}).textContent || '', tiles: [...document.querySelectorAll('[data-steps] button[data-step]')].map((b) => getComputedStyle(b).borderTopColor), said: window.__spoken.join(' ') }));
+    await tapIf('Try again'); await page.waitForTimeout(300);
+    r.again = { off: await checkOff(), b: (await badges()).filter((x) => x.badge).length };
+    for (const s of steps) await tap(s);
+    await page.getByRole('button', { name: 'Check answer', exact: true }).click(); await page.waitForTimeout(600);
+    r.right = await page.evaluate(() => (document.querySelector('.edu-cheer') || {}).textContent || '');
+    // Check waits for all three steps of a three-step direction (pinned at pick 3, round one's code check).
+    const q3 = await show('p4-steps-things', 3); const s3 = q3.answer.split(' | ');
+    await tap(s3[0]); await tap(s3[1]); r.three = { two: await checkOff() }; await tap(s3[2]); r.three.all = await checkOff();
+    seen[theme] = { r, q: { answer: q.answer, prompt: q.prompt } };
+  }
+  const sizes = Object.entries(seen).filter(([k]) => / \d+ /.test(k));
+  ok('a direction\'s pictures fit a phone: two columns for four, three for three or six, and the page never scrolls sideways (390, 360 and 320 pixels, the grid\'s own tracks as well as its tiles)', sizes.length === 18 && sizes.every(([, g]) => g && g.cols === g.want && g.tracks === g.want && g.right <= g.view && g.wide <= g.view), sizes);
+  for (const theme of ['light', 'dark']) { const { r, q } = seen[theme]; const s = q.answer.split(' | ');
+    ok(`${theme}: Check waits for every step, and a tap puts its number on the picture where it is`, r.start.off && r.start.b === 0 && r.one.off && r.one.b.find((x) => x.c === s[0]).badge === '1' && r.one.b.filter((x) => x.badge).length === 1, r);
+    ok(`${theme}: taking back the second number keeps the first, and Check waits for all three steps of a three-step direction`, r.retake2.off && r.retake2.b.filter((x) => x.badge).length === 1 && r.retake2.b.find((x) => x.c === s[0]).badge === '1' && r.three.two && !r.three.all, { retake2: r.retake2, three: r.three });
+    ok(`${theme}: once every step is tapped Check opens, a tap past the last step does nothing, and a numbered picture tapped again takes back its number and every one after it`, !r.full.off && r.full.b.filter((x) => x.badge).length === 2 && r.back.b === 0 && r.back.off, r);
+    ok(`${theme}: a wrong order says the direction again and turns every tapped picture clay alike, and Try again clears them`, r.wrong.text.includes(`Let's listen again. ${q.prompt}`) && r.wrong.said.includes(`Let's listen again. ${q.prompt}`) && r.wrong.tiles.length === 2 && new Set(r.wrong.tiles).size === 1 && r.placed.length === 2 && r.placed.every((c) => c !== r.wrong.tiles[0]) && r.again.off && r.again.b === 0, r.wrong);
+    ok(`${theme}: the steps in order are Correct, and the badge's number reads 4.5 to 1 on its gold`, /^Correct/.test(r.right) && r.contrast >= 4.5, { right: r.right, contrast: r.contrast }); }
+  // More Info's paper boxes in the dark theme (round two's code check: a shape there was drawn in the dark theme's mint, 1.6 to 1 on
+  // the paper; round three's code check: no check read them): every drawn shape 3 to 1 or more on its box (shape and solid tokens;
+  // a named color's own shape, Two ideas' looks kind, is Q56's).
+  { const mode = await page.evaluate(() => document.documentElement.getAttribute('data-theme') || 'light');
+    const qm = await show('p3-ideas-sizes', 1); await page.locator(`button[data-choice="${qm.answer}"]`).click(); await page.getByRole('button', { name: 'Check answer', exact: true }).click(); await page.waitForTimeout(600);
+    await page.locator('[data-more-info-link]').first().click(); await page.waitForTimeout(500);
+    const boxes = await page.evaluate(() => { const parse = (s) => (String(s).match(/\d+(\.\d+)?/g) || []).slice(0, 3).map(Number); const lin = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; const lum = ([r, g, b]) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b); const cr = (a, b) => { const x = lum(a); const y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+      const out = []; for (const box of document.querySelectorAll('[data-more-info-wrong] > div:first-child, [data-more-info-right] > div:first-child')) { const bg = parse(getComputedStyle(box).backgroundColor); let worst = 99; let read = 0;
+        for (const el of box.querySelectorAll('svg path, svg circle, svg rect, svg polygon, svg ellipse')) { const f = getComputedStyle(el).fill; if (!f || !/^rgb/.test(f)) continue; read += 1; worst = Math.min(worst, cr(parse(f), bg)); }
+        out.push({ read, worst: +worst.toFixed(2) }); }
+      return out; });
+    await tapIf('Got it'); await page.waitForTimeout(300);
+    ok('More Info\'s paper boxes draw each shape 3 to 1 or more on the dark theme\'s paper', mode === 'dark' && boxes.length >= 3 && boxes.every((x) => x.read >= 1 && x.worst >= 3), { mode, boxes }); }
+  // Round three's alignment read (pass MO): after two wrong orders the next step's picture wears the app's "go here" ring until it is
+  // tapped, then the next one does, so a child who cannot hold three steps is never left stuck; before then no picture wears one,
+  // and a wrong tap takes the ring away until it is taken back.
+  // Since round four's code check the ring is read where it shows, its computed ring and edge against a plain tile's (a mutant with
+  // the ring and the green edge removed passed, its attribute, class and name kept), in both themes.
+  for (const theme of ['light', 'dark']) {
+    await page.evaluate(() => window.__eduTest.goTo('educator-pick')); await page.waitForTimeout(300); for (const n of ['Skip tour', 'Later', 'Got it']) await tapIf(n);
+    const now = await page.evaluate(() => document.documentElement.getAttribute('data-theme') || 'light');
+    if (now !== theme) { await page.getByLabel(theme === 'dark' ? 'Dark theme' : 'Light theme').first().click({ force: true }); await page.waitForTimeout(400); }
+    await walk('Walk through early years');
+    const qh = await show('p4-steps-things', 3); const st = qh.answer.split(' | '); const wrongOrder = [st[1], st[0], st[2]];
+    const plainEdge = await page.evaluate(() => getComputedStyle(document.querySelector('[data-steps] button[data-choice]')).borderTopColor);
+    const ringed = () => page.evaluate(() => [...document.querySelectorAll('[data-steps] button[data-hint]')].map((b) => { const cs = getComputedStyle(b); return { c: b.getAttribute('data-choice'), cls: b.className || '', label: b.getAttribute('aria-label') || '', shadow: cs.boxShadow, edge: cs.borderTopColor }; }));
+    // Since round five's code check the ring is read by its color's strength and its spread, since a resting ring (alpha 0, 0 px),
+    // the app's own, passed as shown.
+    const ring = (s) => { const m = /rgba?\(\s*\d+,\s*\d+,\s*\d+(?:,\s*([\d.]+))?\)\s+0px\s+0px\s+0px\s+([\d.]+)px/.exec(s || ''); return !!m && (m[1] === undefined || Number(m[1]) >= 0.3) && Number(m[2]) >= 2; };
+    const shows = (x) => ring(x.shadow) && x.edge !== plainEdge;
+    const tapH = (c) => page.locator(`[data-steps] button[data-choice="${c}"]`).click();
+    const h = { start: await ringed(), steps: [] };
+    for (let k = 1; k <= 2; k++) { for (const c of wrongOrder) await tapH(c); await page.getByRole('button', { name: 'Check answer', exact: true }).click(); await page.waitForTimeout(500); h[`checked${k}`] = await ringed(); await tapIf('Try again'); await page.waitForTimeout(300); h[`again${k}`] = await ringed(); }
+    await tapH(st[2]); h.offTrack = await ringed(); await tapH(st[2]);
+    for (const c of st) { h.steps.push(await ringed()); await tapH(c); }
+    h.done = await ringed();
+    await page.getByRole('button', { name: 'Check answer', exact: true }).click(); await page.waitForTimeout(600);
+    h.right = await page.evaluate(() => (document.querySelector('.edu-cheer') || {}).textContent || '');
+    ok(`${theme}: after two wrong orders the next step's picture wears the "go here" ring, seen where it shows, until it is tapped, each step in turn, and none before then`, h.start.length === 0 && h.checked1.length === 0 && h.again1.length === 0 && h.checked2.length === 0 && h.again2.length === 1 && h.again2[0].c === st[0] && shows(h.again2[0]) && h.offTrack.length === 0
+      && h.steps.length === 3 && h.steps.every((x, i) => x.length === 1 && x[0].c === st[i] && /\bedu-breathe\b/.test(x[0].cls) && /the next one to tap$/.test(x[0].label) && shows(x[0])) && h.done.length === 0 && /^Correct/.test(h.right), { theme, plainEdge, h }); }
+  // Round one's screen check (pass MO): the badge sits on its picture's corner, clear of the drawing it numbers, at 320 and 390
+  // pixels; the scroll cue waits until every step is tapped, since after one tap it pointed at a Check answer still closed (320 by
+  // 568); a laptop keeps a direction's pictures together at a phone's size (Mikey's pass MH words: "small and separated by a lot of
+  // space"); and a screen reader hears each picture by its own name, a tapped one with its number.
+  const ink = () => page.evaluate(() => { const hits = []; let worst = 0;
+    for (const b of document.querySelectorAll('[data-steps] button[data-step]')) { const badge = b.querySelector('[data-step-badge]'); if (!badge) { hits.push(`${b.getAttribute('data-choice')}: no badge`); continue; }
+      const r = badge.getBoundingClientRect(); const cx = r.left + r.width / 2; const cy = r.top + r.height / 2; const rad = r.width / 2;
+      for (const el of b.querySelectorAll('svg path, svg circle, svg ellipse, svg rect, svg polygon, svg polyline, svg line, img')) { if (badge.contains(el)) continue; const e = el.getBoundingClientRect(); if (e.width < 1 && e.height < 1) continue;
+        const d = Math.hypot(Math.max(e.left - cx, 0, cx - e.right), Math.max(e.top - cy, 0, cy - e.bottom)); if (d < rad - 0.5) { worst = Math.max(worst, rad - d); hits.push(`${b.getAttribute('data-choice')} ${el.tagName}`); } } }
+    return { worst: +worst.toFixed(1), hits: [...new Set(hits)] }; });
+  const tapSteps = async (qq, n = 9) => { for (const s of qq.answer.split(' | ').slice(0, n)) await page.locator(`[data-steps] button[data-choice="${s}"]`).click(); };
+  const cleared = {};
+  for (const w of [320, 390]) { await page.setViewportSize({ width: w, height: 844 }); await page.waitForTimeout(200);
+    for (const [gen, seed] of [['p4-steps-things', 3], ['p4-steps-faces', 2], ['p3-steps-colors', 2], ['p4-steps-sounds', 1], ['p4-steps-shapes', 1], ['p3-steps-sizes', 1]]) { await tapSteps(await show(gen, seed)); cleared[`${w} ${gen}`] = await ink(); } }
+  ok('a direction\'s gold badge sits on its picture\'s corner, clear of the drawing it numbers (320 and 390 pixels)', Object.keys(cleared).length === 12 && Object.values(cleared).every((x) => x.hits.length === 0), cleared);
+  // The lesson lines that teach the numbers, read against the drawing's own ink: every point of the badge's disc tested against each
+  // shape's fill and stroke (round two's code check: no check read the lesson badges, and at a tile's padding of 4 a badge reached
+  // the book's corner on a 320-pixel phone).
+  const inkUnder = () => page.evaluate(() => { const out = [];
+    for (const badge of document.querySelectorAll('[data-step-badge]')) { const tile = badge.parentElement; const r = badge.getBoundingClientRect(); const cx = r.left + r.width / 2; const cy = r.top + r.height / 2; const rad = r.width / 2 - 0.5; let hits = 0;
+      for (const el of tile.querySelectorAll('svg path, svg circle, svg ellipse, svg rect, svg polygon, svg polyline, svg line')) { if (badge.contains(el)) continue; const cs = getComputedStyle(el); if (cs.display === 'none' || Number(cs.opacity) === 0) continue; const m = el.getScreenCTM(); if (!m) continue; const inv = m.inverse(); const fill = cs.fill !== 'none'; const stroke = cs.stroke !== 'none' && parseFloat(cs.strokeWidth) > 0;
+        for (let y = Math.floor(cy - rad); y <= cy + rad; y += 1) for (let x = Math.floor(cx - rad); x <= cx + rad; x += 1) { if (Math.hypot(x - cx, y - cy) > rad) continue; const p = new DOMPoint(x, y).matrixTransform(inv); if ((fill && el.isPointInFill(p)) || (stroke && el.isPointInStroke(p))) hits += 1; } }
+      out.push({ n: badge.textContent, hits }); }
+    return out; });
+  const lessonAt = async (mod, step) => { await page.evaluate((m) => window.__eduTest.openModule(m), mod); await page.waitForFunction(() => window.__eduTest.screen === 'lesson'); await page.waitForTimeout(400);
+    for (let i = 0; i < step; i++) { await page.getByRole('button', { name: 'Next', exact: true }).first().click(); await page.waitForTimeout(150); }
+    await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(600); };
+  const lessonBadges = {};
+  for (const w of [320, 390]) { await page.setViewportSize({ width: w, height: 844 }); await page.waitForTimeout(200);
+    for (const [mod, n] of [['two-steps', 2], ['three-steps', 3]]) { await lessonAt(mod, 6); lessonBadges[`${w} ${mod}`] = { want: n, badges: await inkUnder() }; } }
+  ok('a lesson line on the numbers shows its gold numbers clear of the drawings\' ink (320 and 390 pixels)', Object.keys(lessonBadges).length === 4 && Object.values(lessonBadges).every((x) => x.badges.length === x.want && x.badges.every((b) => b.hits === 0)), lessonBadges);
+  await page.setViewportSize({ width: 320, height: 568 }); await page.waitForTimeout(250);
+  const cueSeen = {};
+  // Read after every tap short of the whole (round two's code check: read after one tap and after all, a cue at two of three passed).
+  for (const [gen, seed] of [['p4-steps-faces', 2], ['p4-steps-sounds', 1]]) { const qq = await show(gen, seed); await page.evaluate(() => window.scrollTo(0, 0)); const st = qq.answer.split(' | '); const early = [];
+    for (const s of st.slice(0, -1)) { await page.locator(`[data-steps] button[data-choice="${s}"]`).click(); await page.waitForTimeout(1300); early.push(await page.evaluate(() => !!document.querySelector('[data-scroll-cue]'))); }
+    await page.locator(`[data-steps] button[data-choice="${st[st.length - 1]}"]`).click(); await page.waitForTimeout(1300);
+    cueSeen[gen] = { early, ...(await page.evaluate(() => { const row = document.querySelector('[data-practice-next]'); return { cue: !!document.querySelector('[data-scroll-cue]'), below: !!row && row.getBoundingClientRect().bottom > window.innerHeight + 4 }; })) }; }
+  ok('the scroll cue waits until every step is tapped, read after each tap, then shows while Check answer is below a short phone\'s fold (320 by 568)', Object.values(cueSeen).every((x) => x.early.length >= 2 && x.early.every((c) => !c) && x.cue === x.below) && Object.values(cueSeen).some((x) => x.below), cueSeen);
+  // Two ideas' four corners sit two by two, a phone's width, and every corner and Check answer fit a short phone (round two's code
+  // check: four full-width rows ended 30 pixels below a 375 by 667 phone's fold).
+  await page.setViewportSize({ width: 375, height: 667 }); await page.waitForTimeout(250);
+  const corners = {};
+  for (const [gen, seed] of [['p3-ideas-looks', 1], ['p3-ideas-looks', 2], ['p3-ideas-sizes', 1], ['p3-ideas-sizes', 3]]) { await show(gen, seed); await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(300);
+    corners[`${gen}#${seed}`] = await page.evaluate(() => { const bs = [...document.querySelectorAll('button[data-choice]')]; const g = bs[0] && bs[0].parentElement; const check = [...document.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Check answer');
+      return { n: bs.length, tracks: g ? getComputedStyle(g).gridTemplateColumns.split(' ').length : 0, lowest: Math.max(...bs.map((b) => b.getBoundingClientRect().bottom)), check: check ? check.getBoundingClientRect().bottom : 9999, vh: window.innerHeight }; }); }
+  ok('Two ideas\' four corners sit two by two, and every corner and Check answer fit a short phone (375 by 667)', Object.values(corners).every((x) => x.n === 4 && x.tracks === 2 && x.lowest <= x.vh && x.check <= x.vh), corners);
+  await page.setViewportSize({ width: 1280, height: 900 }); await page.waitForTimeout(250);
+  const cap = {};
+  for (const [gen, seed, most] of [['p4-steps-things', 3, 480], ['p3-steps-things', 3, 360]]) { await show(gen, seed); cap[gen] = { most, ...(await page.evaluate(() => { const g = document.querySelector('[data-steps]'); const r = g.getBoundingClientRect(); const p = g.parentElement.getBoundingClientRect(); const w = g.closest('.edu-wrap'); const z = (w && parseFloat(getComputedStyle(w).zoom)) || 1; return { zoom: z, width: Math.round(r.width / z), left: Math.round(r.left - p.left), right: Math.round(p.right - r.right) }; })) }; }
+  for (const [gen, seed] of [['p3-ideas-looks', 1], ['p3-ideas-sizes', 1]]) { await show(gen, seed); cap[gen] = { most: 360, ...(await page.evaluate(() => { const g = document.querySelector('button[data-choice]').parentElement; const r = g.getBoundingClientRect(); const p = g.parentElement.getBoundingClientRect(); const w = g.closest('.edu-wrap'); const z = (w && parseFloat(getComputedStyle(w).zoom)) || 1; return { zoom: z, width: Math.round(r.width / z), left: Math.round(r.left - p.left), right: Math.round(p.right - r.right) }; })) }; }
+  ok('on a laptop a direction\'s pictures and Two ideas\' four corners keep a phone\'s size, together and centred (1280 pixels, in the page\'s own zoomed units)', Object.keys(cap).length === 4 && Object.values(cap).every((x) => x.width <= x.most && Math.abs(x.left - x.right) <= 2), cap);
+  await page.setViewportSize({ width: 390, height: 844 }); await page.waitForTimeout(200);
+  const names = {};
+  for (const [gen, seed] of [['p3-steps-colors', 2], ['p3-steps-sizes', 1], ['p4-steps-things', 3]]) { await tapSteps(await show(gen, seed), 1); names[gen] = await page.evaluate(() => [...document.querySelectorAll('[data-steps] button')].map((b) => b.getAttribute('aria-label') || '')); }
+  for (const [gen, seed] of [['p3-ideas-looks', 1], ['p3-ideas-sizes', 1]]) { await show(gen, seed); names[gen] = await page.evaluate(() => [...document.querySelectorAll('button[data-choice]')].map((b) => b.getAttribute('aria-label') || '')); }
+  ok('a screen reader hears each picture by its own name, and a tapped one with its number', Object.keys(names).length === 5 && Object.entries(names).every(([g, ls]) => ls.length >= 3 && ls.every(Boolean) && new Set(ls).size === ls.length && (!/steps/.test(g) || ls.filter((l) => /, number 1$/.test(l)).length === 1)), names);
+  await page.evaluate(() => Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: window.__voiceBeforeSteps }));
+  await page.setViewportSize({ width: 1280, height: 900 }); await page.waitForTimeout(300); }
+
+// Round six's code check (pass MO): a lesson pair's two drawings stay apart in the dark theme at 320 pixels with motion on. Each half
+// draws at 85 percent, but its drift (an entrance animation that holds its last frame) took that size, and nine pairs touched or
+// overlapped by up to 1.8 pixels; the dark theme keeps the size on a wrapper the drift never reaches. Every pre-K lesson line that
+// shows a big and a small shape side by side is measured by its drawings' ink once the drift has settled.
+{ await page.evaluate(() => window.__eduTest.goTo('educator-pick')); await page.waitForTimeout(300); for (const n of ['Skip tour', 'Later', 'Got it']) await tapIf(n);
+  if ((await page.evaluate(() => document.documentElement.getAttribute('data-theme') || 'light')) !== 'dark') { await page.getByLabel('Dark theme').first().click({ force: true }); await page.waitForTimeout(400); }
+  await walk('Walk through early years');
+  await page.setViewportSize({ width: 320, height: 844 }); await page.emulateMedia({ reducedMotion: 'no-preference' }); await page.waitForTimeout(300);
+  const gapNow = () => page.evaluate(() => { const ink = (el) => { let box = null; for (const s of el.querySelectorAll('svg path, svg circle, svg rect, svg polygon, svg ellipse, svg polyline, svg line')) { const r = s.getBoundingClientRect(); if (!r.width && !r.height) continue; box = box ? { left: Math.min(box.left, r.left), right: Math.max(box.right, r.right) } : { left: r.left, right: r.right }; } return box; };
+    const pairs = [...document.querySelectorAll('[data-pair]')].filter((p) => p.children.length === 2 && [...p.children].every((c) => c.querySelector('svg')));
+    const gaps = [...pairs].map((p) => { const a = ink(p.children[0]); const b = ink(p.children[1]); return a && b ? Math.round((b.left - a.right) * 10) / 10 : null; }).filter((g) => g !== null);
+    return gaps.length ? Math.min(...gaps) : null; });
+  const LINES = { 'big-and-small': [0, 1, 2, 3], 'bigger-and-smaller': [0, 1, 2, 3], 'triangles-too': [5], 'big-and-little': [2], 'circle-and-square': [5], 'not-the-same': [4], 'same-and-different': [2], 'two-steps': [12], 'two-ideas': [6, 7, 8] };
+  const pairGaps = {};
+  for (const [mod, steps] of Object.entries(LINES)) {
+    await page.evaluate((m) => window.__eduTest.openModule(m), mod); await page.waitForFunction(() => window.__eduTest.screen === 'lesson').catch(() => {}); await page.waitForTimeout(400);
+    for (let i = 0; i <= Math.max(...steps); i++) { if (steps.includes(i)) { await page.waitForTimeout(1600); pairGaps[`${mod} ${i}`] = await gapNow(); } if (i < Math.max(...steps)) { await page.getByRole('button', { name: 'Next', exact: true }).first().click({ force: true }); await page.waitForTimeout(150); } } }
+  await page.emulateMedia({ reducedMotion: 'reduce' }); await page.setViewportSize({ width: 1280, height: 900 }); await page.waitForTimeout(300);
+  ok("in the dark theme at 320 pixels with motion on, every lesson pair of a big and a small shape keeps its drawings 6 pixels apart or more", Object.keys(pairGaps).length === 17 && Object.values(pairGaps).every((g) => g !== null && g >= 6), pairGaps);
+  // Since Mikey's answer to Q59 (pass MO: "Q59 your recommendation is good") the light theme keeps the pair's 85 percent with motion
+  // on too, so each drawing of a pair is the same width with motion on as with motion off (it had drawn about 18 percent wider).
+  await page.evaluate(() => window.__eduTest.goTo('educator-pick')); await page.waitForTimeout(300); for (const n of ['Skip tour', 'Later', 'Got it']) await tapIf(n);
+  if ((await page.evaluate(() => document.documentElement.getAttribute('data-theme') || 'light')) !== 'light') { await page.getByLabel('Light theme').first().click({ force: true }); await page.waitForTimeout(400); }
+  await walk('Walk through early years'); await page.setViewportSize({ width: 390, height: 844 }); await page.waitForTimeout(300);
+  const widthsNow = () => page.evaluate(() => [...document.querySelectorAll('[data-pair]')].filter((p) => p.children.length === 2).flatMap((p) => [...p.children].map((c) => { let l = Infinity; let r = -Infinity; for (const s of c.querySelectorAll('svg path, svg circle, svg rect, svg polygon, svg ellipse, svg polyline, svg line')) { const b = s.getBoundingClientRect(); if (!b.width && !b.height) continue; l = Math.min(l, b.left); r = Math.max(r, b.right); } return r > l ? Math.round((r - l) * 10) / 10 : null; })));
+  const SAME = [['big-and-small', 0], ['two-steps', 12], ['two-ideas', 8]]; const sized = {};
+  for (const motion of ['reduce', 'no-preference']) { await page.emulateMedia({ reducedMotion: motion }); await page.waitForTimeout(300);
+    for (const [mod, step] of SAME) { await page.evaluate((m) => window.__eduTest.openModule(m), mod); await page.waitForFunction(() => window.__eduTest.screen === 'lesson').catch(() => {}); await page.waitForTimeout(400);
+      for (let i = 0; i < step; i++) { await page.getByRole('button', { name: 'Next', exact: true }).first().click({ force: true }); await page.waitForTimeout(150); }
+      await page.waitForTimeout(1600); sized[`${mod} ${step} ${motion}`] = await widthsNow(); } }
+  await page.emulateMedia({ reducedMotion: 'reduce' }); await page.setViewportSize({ width: 1280, height: 900 }); await page.waitForTimeout(300);
+  const same = SAME.map(([mod, step]) => { const off = sized[`${mod} ${step} reduce`] || []; const on = sized[`${mod} ${step} no-preference`] || []; return off.length === 2 && on.length === 2 && off.every((w, k) => !!w && !!on[k] && Math.abs(on[k] / w - 1) <= 0.02); });
+  ok("in the light theme each drawing of a lesson pair is the same size with motion on as with motion off (Q59)", same.length === 3 && same.every(Boolean), sized); }
 
 ok('no page errors along the way', errors.length === 0, errors);
 await browser.close();

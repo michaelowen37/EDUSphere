@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-20 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 9399 clips, 1,573,475 characters in all; the longest clip is 520 characters and the longest whole story 3,471, far under Eleven v4's 10,000 a request. 203 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-26 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 9608 clips, 1,593,003 characters in all; the longest clip is 520 characters and the longest whole story 3,995, far under Eleven v4's 10,000 a request. 207 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,8 +17,8 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 5343 | 620,715 |
-| Grades 3 to 5 | 1263 | 278,665 |
+| Pre-K to grade 2 | 5552 | 640,145 |
+| Grades 3 to 5 | 1263 | 278,763 |
 | Grades 6 to 8 | 1138 | 272,478 |
 | Grades 9 to college | 1655 | 401,617 |
 
@@ -39,9 +39,9 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 | Kind | Clips |
 |---|---|
-| story title | 666 |
-| story | 4299 |
-| lesson line | 3425 |
+| story title | 670 |
+| story | 4336 |
+| lesson line | 3593 |
 | long story title | 106 |
 | long story | 858 |
 | next long story title | 4 |
@@ -497,6 +497,29 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S3899-8: [playful] Esme, then Jude, then Arlo. [blocks clicking] Click, click went the blocks, [excited] and the tower grew taller and taller until all three of them cheered.
 - S3899-9: [slowly, warmly] When you want to play, watch first, then ask, can I play too?
 
+### Coat, then door (S3919, two-steps)
+
+- S3919-1: [cheerful] It was a cold morning, and Grandma was coming soon. [clearly] Get your coat, and then go to the door, said Dad.
+- S3919-2: [eagerly] Arun ran and got his coat. [curious] But on the way to the door, he saw his toy train and sat down to play.
+- S3919-3: [playful] Choo, choo, went the train, around and around the rug, and Arun forgot all about the door.
+- S3919-4: [calling] Arun, called Dad, what was the second step? [puzzled] Arun looked at the coat in his hands. He did not know.
+- S3919-5: [gently] Listen to both steps before you start, said Dad, and say them to yourself. [slowly] Coat, door.
+- S3919-6: [proudly] So Arun said them out loud, coat, door! [quickly] He put on his coat, and then he ran to the door.
+- S3919-7: [a doorbell ringing] Ding-dong! [relieved] Grandma was at the door, just in time. [happily] Arun waved goodbye to Dad and took Grandma's hand.
+- S3919-8: [softly] That night, Dad said, put away your train, and then get into bed. [proudly] Train, bed! said Arun, and he did both.
+- S3919-9: [slowly, warmly] Listen to both steps, and then do them in order, first one and then the other.
+
+### Blue, and a yellow star (S3923, two-ideas)
+
+- S3923-1: [worried] After outside time, Suri could not find her hat. [clearly] My hat is blue, and it has a yellow star, she told her teacher.
+- S3923-2: [eagerly] Her friend Keoni dug through the lost and found box. [excited] He held up a hat and said, this one is blue!
+- S3923-3: [disappointed] But it had no star. [gently] That hat is blue, said Suri, but it is not mine.
+- S3923-4: [hopeful] Keoni held up another one. [puzzled] It had a big yellow star, but the hat was red.
+- S3923-5: [sighs] Not that one either, said Suri. [calmly] Listen for both ideas, said their teacher. [slowly] Blue, and a yellow star.
+- S3923-6: [thoughtful, whispering] So Keoni said them to himself, blue and a star, blue and a star, and looked again, slowly.
+- S3923-7: [curious] Under a pile of mittens, Keoni found a blue hat with a yellow star. [delighted] That's mine! cried Suri, and she put it on.
+- S3923-8: [slowly, warmly] Listen to both ideas, and then find the one that fits them both.
+
 ### One more cracker (S3890, one-more-one-fewer)
 
 - S3890-1: [cheerful] Zuri sat at the table at snack time. [warmly] Dad put two crackers on her plate, crunchy and square. [slowly] One, two, she counted.
@@ -590,6 +613,32 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S3911-8: [happy] At playtime, Maren ran straight to Gabe. [grateful] Thanks for helping me, she said, and she asked him to play tag. [uncertain] But Gabe wanted to play ball.
 - S3911-9: [thoughtful] We want different games, said Gabe, so let's take turns choosing. [cheerful] They played tag on the grass first, and then ball.
 - S3911-10: [slowly, warmly] Notice how your friend feels, and help. Say what the problem is, and find a fair way to fix it.
+
+### The block house (S3915, play-together)
+
+- S3915-1: [softly] It was Kian's first day at a new school, and he knew nobody yet.
+- S3915-2: [warmly] Good morning, Kian, said his teacher with a smile. [shyly] Kian smiled back and said, good morning.
+- S3915-3: [cheerful] On the rug, a girl named Lola was building with blocks. [rushed] Kian wanted to play, so he just grabbed one.
+- S3915-4: [upset] Hey, that's mine! said Lola, and she pulled her blocks close. [embarrassed] Kian's cheeks felt hot.
+- S3915-5: [gently] His teacher knelt beside him. [softly] Try a smile and a hi, she whispered, and ask about her game.
+- S3915-6: [carefully] So Kian put the block back, smiled and waved. [friendly] Hi, I'm Kian, he said. [curious] What are you making?
+- S3915-7: [cheerful] A house, said Lola, and she smiled. Want to help? [excited] They built at the same time, [blocks tumbling] and crash, two walls fell.
+- S3915-8: [thoughtful] Let's make a plan, said Lola. [brightly] You build the walls, and I build the roof.
+- S3915-9: [carefully] Kian built the walls, block by block, until they stood tall. [politely] Can you pass me a long one? asked Lola. [happily] Here you go, said Kian.
+- S3915-10: [proudly] Then Lola put the roof on top. [delighted] We did it! they cheered, and gave each other a high five.
+- S3915-11: [slowly, warmly] Smile and say hi to start playing. Then make a plan together, and each friend does a part.
+
+### Cup, napkin, table (S3927, three-steps)
+
+- S3927-1: [cheerful] At snack time, Anika's teacher held up three fingers. [clearly] Get a cup, get a napkin, and then sit at the table, he said.
+- S3927-2: [rushed] Anika grabbed a cup and hurried to the table. [worried] She poured her juice, but her napkin was still in the basket.
+- S3927-3: [juice dripping] Drip, drip. [dismayed] Juice ran down the side of her cup, and Anika had nothing to wipe it with.
+- S3927-4: [embarrassed] Oh no, I forgot a step, she said. [politely] Can you say it again, please?
+- S3927-5: [warmly] Her teacher smiled and said it again, slowly. [slowly] Cup, napkin, table. [determined] This time, Anika said the steps to herself.
+- S3927-6: [carefully] She got a napkin from the basket, sat back down and wiped up the drips. [proudly] Now she had done all three steps.
+- S3927-7: [cheerful] After snack, her teacher held up three fingers again. [clearly] Throw away your napkin, put your cup in the tub, and then line up at the door, he said.
+- S3927-8: [whispering] Napkin, cup, door, Anika whispered. [carefully] First the napkin, next the cup, and last the door. [delighted] She was first in line!
+- S3927-9: [slowly, warmly] Listen to all three steps, say them to yourself, and then do them in order, first, next and last.
 
 ### Cat, mat, hat (S116, listen-for-rhymes)
 

@@ -686,6 +686,10 @@ function IconPic({ name, size = 90 }) {
     // flat rock, a penny, a stone wall, a pile of gravel and a few bricks.
     ball: <g><circle cx="50" cy="50" r="34" fill={red} stroke="#8E3A27" strokeWidth="3" /><path d="M24 44 Q50 30 76 44" fill="none" stroke="#fff" strokeWidth="4" opacity="0.55" strokeLinecap="round" /><ellipse cx="36" cy="34" rx="7" ry="4.5" fill="#fff" opacity="0.5" /></g>,
     block: <g><path d="M24 36 L54 24 L80 32 L50 44 Z" fill="#E2B97A" stroke="#8B5A2B" strokeWidth="3" strokeLinejoin="round" /><path d="M24 36 L50 44 L50 84 L24 76 Z" fill="#C9955A" stroke="#8B5A2B" strokeWidth="3" strokeLinejoin="round" /><path d="M50 44 L80 32 L80 72 L50 84 Z" fill="#B07838" stroke="#8B5A2B" strokeWidth="3" strokeLinejoin="round" /><path d="M30 52 Q38 50 46 54 M30 64 Q38 62 46 66" fill="none" stroke="#8B5A2B" strokeWidth="1.8" opacity="0.6" /></g>,
+    // A tower of three of the blocks above (pass MO, round one's screen check: Let's play together's "I like your tower!" showed three
+    // blocks side by side). Each block sits 40 units above the one under it, the lowest drawn first, so a block's sides cover the top
+    // of the one below exactly, and the tower is scaled to stand in the box.
+    tower: <g transform="translate(17.2 41.2) scale(0.63)">{[0, -40, -80].map((dy) => <g key={dy} transform={`translate(0 ${dy})`}><path d="M24 36 L54 24 L80 32 L50 44 Z" fill="#E2B97A" stroke="#8B5A2B" strokeWidth="4.5" strokeLinejoin="round" /><path d="M24 36 L50 44 L50 84 L24 76 Z" fill="#C9955A" stroke="#8B5A2B" strokeWidth="4.5" strokeLinejoin="round" /><path d="M50 44 L80 32 L80 72 L50 84 Z" fill="#B07838" stroke="#8B5A2B" strokeWidth="4.5" strokeLinejoin="round" /><path d="M30 52 Q38 50 46 54 M30 64 Q38 62 46 66" fill="none" stroke="#8B5A2B" strokeWidth="2.6" opacity="0.6" /></g>)}</g>,
     teddy: <g><circle cx="30" cy="30" r="10" fill="#A9743F" /><circle cx="70" cy="30" r="10" fill="#A9743F" /><circle cx="50" cy="40" r="22" fill="#C48A48" /><ellipse cx="50" cy="48" rx="9" ry="7" fill="#E8C9A0" /><circle cx="42" cy="36" r="3" fill="#2E2E2E" /><circle cx="58" cy="36" r="3" fill="#2E2E2E" /><ellipse cx="50" cy="46" rx="3.5" ry="2.5" fill="#2E2E2E" /><ellipse cx="50" cy="76" rx="20" ry="16" fill="#C48A48" /><circle cx="26" cy="72" r="8" fill="#A9743F" /><circle cx="74" cy="72" r="8" fill="#A9743F" /><ellipse cx="50" cy="78" rx="9" ry="7" fill="#E8C9A0" /></g>,
     sock: <g><path d="M34 22 H60 V50 Q60 58 68 62 L78 68 Q86 74 80 84 Q72 92 60 86 L40 74 Q32 68 34 58 Z" fill="#4A86C5" stroke="#2F5F91" strokeWidth="3" strokeLinejoin="round" /><rect x="32" y="12" width="30" height="12" rx="3" fill="#DDEBF7" stroke="#2F5F91" strokeWidth="2.5" /><path d="M64 84 Q74 88 78 80" fill="none" stroke="#DDEBF7" strokeWidth="3" strokeLinecap="round" opacity="0.8" /></g>,
     spoon: <g><ellipse cx="50" cy="28" rx="15" ry="20" fill="#D8DEE2" stroke="#6F7A76" strokeWidth="3" /><ellipse cx="46" cy="22" rx="5" ry="8" fill="#fff" opacity="0.5" /><path d="M50 48 L50 88" stroke="#B8BFBA" strokeWidth="9" strokeLinecap="round" /><path d="M50 48 L50 88" stroke="#6F7A76" strokeWidth="11" strokeLinecap="round" opacity="0.25" /></g>,
@@ -706,7 +710,11 @@ function IconPic({ name, size = 90 }) {
     backspace: <g><path d="M34 26 L90 26 Q94 26 94 30 L94 70 Q94 74 90 74 L34 74 L10 50 Z" fill="#F4F6F7" stroke="#4A6A86" strokeWidth="3" strokeLinejoin="round" /><path d="M44 40 L64 60 M64 40 L44 60" stroke={red} strokeWidth="5" strokeLinecap="round" /></g>,
     save: <g><path d="M10 30 Q10 24 16 24 L36 24 L44 32 L84 32 Q90 32 90 38 L90 78 Q90 84 84 84 L16 84 Q10 84 10 78 Z" fill={gold} stroke="#8A6A1F" strokeWidth="3" strokeLinejoin="round" /><circle cx="64" cy="60" r="14" fill="#F4F6F7" stroke="#3E7D52" strokeWidth="3" /><path d="M56 60 L62 66 L72 54" fill="none" stroke="#3E7D52" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" /></g>,
     printer: <g><rect x="28" y="14" width="44" height="22" fill="#F4F6F7" stroke="#6F7A76" strokeWidth="2.5" /><rect x="12" y="36" width="76" height="34" rx="6" fill="#4A6A86" stroke="#2E4A62" strokeWidth="3" /><rect x="26" y="58" width="48" height="28" fill="#F4F6F7" stroke="#6F7A76" strokeWidth="2.5" /><path d="M34 68 L66 68 M34 76 L58 76" stroke="#B9C2C9" strokeWidth="2.5" strokeLinecap="round" /><circle cx="78" cy="46" r="3" fill={green} /></g>,
-    chair: <g><path d="M30 16 L30 60 L70 60 L70 36" fill="none" stroke="#8B5A2B" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" /><rect x="26" y="12" width="10" height="50" rx="4" fill="#B07838" /><rect x="26" y="56" width="50" height="10" rx="4" fill="#B07838" /><path d="M32 66 L32 90 M70 66 L70 90" stroke="#8B5A2B" strokeWidth="6" strokeLinecap="round" /></g>,
+    // The chair since pass MO (round one's picture check): seen from the front, a slatted back over a seat and four legs, since the
+    // side view's back post rising over the seat read as a capital H, a letter pre-K 4 traces before its Three steps lesson. Since round
+    // two's story check the back reaches down to the seat (it floated a hairline above it), and the front legs, strokes with no fill to
+    // carry them, are a lighter brown that reads 3.3 to 1 on the dark theme's answer tiles (the outline brown read 1.8).
+    chair: <g><rect x="30" y="8" width="40" height="46" rx="6" fill="#B07838" stroke="#6E4A26" strokeWidth="3" /><path d="M40 16 L40 44 M50 16 L50 44 M60 16 L60 44" stroke="#6E4A26" strokeWidth="3" strokeLinecap="round" opacity="0.45" /><path d="M22 54 L78 54 L72 66 L28 66 Z" fill="#C9955A" stroke="#6E4A26" strokeWidth="3" strokeLinejoin="round" /><path d="M30 66 L27 92 M70 66 L73 92" stroke="#A86F33" strokeWidth="6" strokeLinecap="round" /><path d="M36 64 L36 84 M64 64 L64 84" stroke="#A26B32" strokeWidth="5" strokeLinecap="round" /></g>,
     bulb: <g><path d="M50 10 Q24 10 24 36 Q24 50 36 60 L36 70 L64 70 L64 60 Q76 50 76 36 Q76 10 50 10 Z" fill={gold} stroke="#8A6A1F" strokeWidth="3" strokeLinejoin="round" /><rect x="38" y="72" width="24" height="7" rx="2" fill="#8A9086" /><rect x="40" y="81" width="20" height="7" rx="2" fill="#6F7A76" /><path d="M44 58 L46 44 L50 50 L54 44 L56 58" fill="none" stroke="#8A6A1F" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /><path d="M14 30 L8 28 M86 30 L92 28 M20 12 L16 8 M80 12 L84 8" stroke="#D99A2B" strokeWidth="3" strokeLinecap="round" /></g>,
     board: <g><rect x="6" y="30" width="26" height="40" rx="3" fill="#F4F6F7" stroke="#4A6A86" strokeWidth="2.5" /><rect x="37" y="30" width="26" height="40" rx="3" fill="#F4F6F7" stroke="#4A6A86" strokeWidth="2.5" /><rect x="68" y="30" width="26" height="40" rx="3" fill="#F4F6F7" stroke="#4A6A86" strokeWidth="2.5" /><circle cx="19" cy="48" r="7" fill="none" stroke={blue} strokeWidth="2.5" /><rect x="43" y="42" width="14" height="14" fill="none" stroke={green} strokeWidth="2.5" /><path d="M74 58 L81 40 L88 58 Z" fill="none" stroke={red} strokeWidth="2.5" strokeLinejoin="round" /></g>,
     // Pass KQ (kindergarten technology): a camera, a music note and a magnifier for searching.
@@ -752,7 +760,9 @@ function IconPic({ name, size = 90 }) {
     ocean: <g><rect x="4" y="12" width="92" height="30" fill="#CFEAF7" /><rect x="4" y="42" width="92" height="46" fill={blue} /><path d="M4 50 Q14 42 24 50 T44 50 T64 50 T84 50 T104 50" fill="none" stroke="#fff" strokeWidth="3" /><path d="M4 66 Q14 58 24 66 T44 66 T64 66 T84 66 T104 66" fill="none" stroke="#8EC5EA" strokeWidth="3" /><circle cx="78" cy="26" r="7" fill={gold} /></g>,
     cactus: <g><path d="M8 86 L92 86" stroke="#E2B97A" strokeWidth="6" strokeLinecap="round" /><rect x="42" y="18" width="16" height="68" rx="8" fill="#3E7D52" /><path d="M42 50 Q26 50 26 36 L26 28" fill="none" stroke="#3E7D52" strokeWidth="10" strokeLinecap="round" /><path d="M58 42 Q74 42 74 30 L74 24" fill="none" stroke="#3E7D52" strokeWidth="10" strokeLinecap="round" /><path d="M46 30 L48 36 M52 44 L54 50 M46 60 L48 66" stroke="#DCEBD3" strokeWidth="2" strokeLinecap="round" /></g>,
     coat: <g><path d="M34 22 L50 16 L66 22 L84 32 L78 52 L68 48 L68 88 L32 88 L32 48 L22 52 L16 32 Z" fill="#4A6A86" stroke="#2E4A62" strokeWidth="3" strokeLinejoin="round" /><path d="M50 16 L50 88" stroke="#2E4A62" strokeWidth="3" /><path d="M42 20 L50 30 L58 20" fill="none" stroke="#F4F6F7" strokeWidth="4" strokeLinejoin="round" /><circle cx="56" cy="44" r="2.5" fill="#F4F6F7" /><circle cx="56" cy="58" r="2.5" fill="#F4F6F7" /><circle cx="56" cy="72" r="2.5" fill="#F4F6F7" /></g>,
-    candle: <g><rect x="40" y="38" width="20" height="46" rx="4" fill="#F4F6F7" stroke="#B9C2C9" strokeWidth="2.5" /><rect x="30" y="84" width="40" height="6" rx="3" fill="#8A9086" /><path d="M50 36 L50 28" stroke="#2E2E2E" strokeWidth="2" /><path d="M50 10 Q60 22 50 30 Q40 22 50 10 Z" fill={gold} /><path d="M50 18 Q54 24 50 28 Q46 24 50 18 Z" fill="#fff" opacity="0.8" /></g>,
+    // The candle's body, white wax, takes a slate outline (pass MO, Mikey's answer to Q54): its pale gray one read 1.8 to 1 on white
+    // and 1.4 on the dark theme's paper, and #76828B reads 3.9 and 3.1, the 3 to 1 a drawing that carries meaning needs.
+    candle: <g><rect x="40" y="38" width="20" height="46" rx="4" fill="#F4F6F7" stroke="#76828B" strokeWidth="2.5" /><rect x="30" y="84" width="40" height="6" rx="3" fill="#8A9086" /><path d="M50 36 L50 28" stroke="#2E2E2E" strokeWidth="2" /><path d="M50 10 Q60 22 50 30 Q40 22 50 10 Z" fill={gold} /><path d="M50 18 Q54 24 50 28 Q46 24 50 18 Z" fill="#fff" opacity="0.8" /></g>,
     cake: <g><path d="M18 56 L82 56 L82 84 Q82 90 76 90 L24 90 Q18 90 18 84 Z" fill="#F2C14E" stroke="#8A6A1F" strokeWidth="3" strokeLinejoin="round" /><path d="M18 56 Q50 70 82 56" fill="none" stroke="#C9573E" strokeWidth="5" /><rect x="20" y="48" width="60" height="10" rx="4" fill="#C9573E" />{[32, 50, 68].map((x) => <g key={x}><rect x={x - 2} y="30" width="4" height="18" fill="#4A86C5" /><path d={`M${x} 18 Q${x + 5} 26 ${x} 30 Q${x - 5} 26 ${x} 18 Z`} fill={gold} /></g>)}</g>,
     fridge: <g><rect x="26" y="8" width="48" height="84" rx="5" fill="#E8EEF3" stroke="#4A6A86" strokeWidth="3" /><path d="M26 40 L74 40" stroke="#4A6A86" strokeWidth="3" /><rect x="64" y="18" width="4" height="14" rx="2" fill="#4A6A86" /><rect x="64" y="50" width="4" height="24" rx="2" fill="#4A6A86" /></g>,
     washer: <g><rect x="22" y="10" width="56" height="80" rx="6" fill="#E8EEF3" stroke="#4A6A86" strokeWidth="3" /><rect x="22" y="10" width="56" height="16" rx="6" fill="#DCE6EC" stroke="#4A6A86" strokeWidth="3" /><circle cx="66" cy="18" r="3" fill="#4A6A86" /><circle cx="56" cy="18" r="3" fill="#4A6A86" /><circle cx="50" cy="58" r="22" fill="#4A6A86" /><circle cx="50" cy="58" r="16" fill="#8EC5EA" /><path d="M38 60 Q50 50 62 60" fill="none" stroke="#fff" strokeWidth="3" opacity="0.8" /></g>,
@@ -1157,6 +1167,18 @@ function Picture(props) {
 // short phone (under 720 pixels tall, an iPhone SE's 667) none, so Check answer stays above the fold (the screen check), and
 // nor does a phone held sideways (wide but under 600 tall; the code check's second read).
 function bigScale() { if (typeof window === 'undefined') return 1; const w = window.innerWidth; const h = window.innerHeight; return w >= 700 ? (h >= 600 ? 1.45 : 1) : h >= 720 ? 1.12 : 1; }
+// The number a tapped picture wears in Follow the directions (pass MO): a gold disc with dark ink, sat on the picture's top left
+// corner and half off it, so it never covers the drawing it numbers (round one's screen check, pass MO: set inside the tile it hid
+// the chair's back and part of every face on a 320-pixel phone). A lesson line that teaches the numbers draws the same badge on
+// its pictures (a picture's step, in the pair and the row below), in the paper's palette (B), so the lesson shows what practice will.
+function StepBadge({ n, pal = C }) {
+  return <span data-step-badge="" aria-hidden="true" style={{ position: 'absolute', top: -8, left: -8, width: 30, height: 30, borderRadius: 999, background: pal.gold, color: pal.onGold, fontFamily: FONT, fontWeight: 800, fontSize: 18, lineHeight: '30px', textAlign: 'center' }}>{n}</span>;
+}
+// A lesson picture that carries a step sits in a tile, as a tapped picture does in practice (round two's story check, pass MO: with no
+// tile the badge sat on the corner of an invisible box, 20 pixels off the fish on a phone): a gold frame for a numbered picture, and a
+// faint one for a picture beside it with none, the frame and its padding the same width either way, so every picture keeps its size.
+// Its padding is practice's tile's (round two's code check: at 4 a badge reached the book's corner on a 320-pixel phone).
+const stepTile = (numbered) => ({ border: numbered ? `3px solid ${B.gold}` : `2px solid ${B.line}`, padding: numbered ? 8 : 9, borderRadius: 12, boxSizing: 'border-box' });
 function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1, lesson = false }) {
   if (!visual) return null;
   const at = (n) => Math.round(n * k);   // a size, scaled for a question's or a lesson's own picture (k is 1 everywhere else)
@@ -1224,19 +1246,32 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1, 
     // pair with words keep their sizes.
     const grows = (v) => !!v && ['pic', 'icon', 'face', 'shape', 'art', 'solid', 'swatch', 'item'].includes(v.kind);
     const wide = lesson && k >= 1.4 && !stack && grows(first) && grows(second);
-    const half = (v, i) => (v.kind ? <div key={`${animKey}-${i}`} className={animate ? 'edu-drift' : undefined} style={{ animationDelay: `${i * 0.5}s`, maxWidth: stack ? '100%' : '46%', transform: stack ? undefined : 'scale(0.85)', ...(together ? { width: `${(natural(v) / widest) * 100}%` } : null) }}><Picture visual={v} note={false} bare big={wide} /></div> : <Item key={i} spec={`${v.shape}-${v.colour}`} size={96} />);
-    return <div style={{ padding: '6px 0', display: 'flex', flexDirection: stack ? 'column' : 'row', justifyContent: 'center', alignItems: 'center', gap: stack ? 10 : 28, ...(together ? { width: '100%', maxWidth: widest, margin: '0 auto' } : null) }}>{half(first, 0)}{half(second, 1)}</div>;
+    // A half may carry its step (pass MO): Two steps' "each picture you tap gets a number" shows the fish with a gold 1 and the ball
+    // with a 2, as practice will draw them.
+    // Each half draws at 85 percent beside its partner. Its drift (motion on) is a transform too, and its last frame took the half's
+    // own transform's place, so with motion on every pair drew full size, and in the dark theme at 320 pixels, whose paper's wider
+    // sides leave less room, nine pairs touched or overlapped (round six's code check, pass MO). The 85 percent sits on a wrapper
+    // inside the half, where the drift never reaches, in the dark theme since round six and in both since Mikey's answer to Q59 ("Q59
+    // your recommendation is good"), so a pair is the same size with motion on or off. The row carries data-pair for the browser test.
+    const shrinkOf = (v) => !(stack || v.step);
+    const half = (v, i) => { if (!v.kind) return <Item key={i} spec={`${v.shape}-${v.colour}`} size={96} />;
+      return <div key={`${animKey}-${i}`} className={animate ? 'edu-drift' : undefined} style={{ position: 'relative', animationDelay: `${i * 0.5}s`, maxWidth: stack ? '100%' : '46%', ...(together ? { width: `${(natural(v) / widest) * 100}%` } : null), ...(v.step ? stepTile(true) : null) }}>{shrinkOf(v) ? <div style={{ transform: 'scale(0.85)' }}><Picture visual={v} note={false} bare big={wide} /></div> : <Picture visual={v} note={false} bare big={wide} />}{v.step ? <StepBadge n={v.step} pal={B} /> : null}</div>; };
+    return <div data-pair="" style={{ padding: '6px 0', display: 'flex', flexDirection: stack ? 'column' : 'row', justifyContent: 'center', alignItems: 'center', gap: stack ? 10 : 28, ...(together ? { width: '100%', maxWidth: widest, margin: '0 auto' } : null) }}>{half(first, 0)}{half(second, 1)}</div>;
   }
   // A row of up to three pictures (pass MA): two owls and a fox, or a big, a middle-size and a little circle, so a line that names
   // three things shows all three. Each cell takes the same share of the width and each picture a share of its cell in proportion
   // to its drawn size, so three sizes keep their sizes beside each other on every screen, each capped at its own size so a tablet
   // never draws a circle bigger than a lesson draws it alone. The items are drawn bare (PictureInner):
-  // the row already sits on the paper, and a paper card around each item would eat a little circle whole.
+  // the row already sits on the paper, and a paper card around each item would eat a little circle whole. An item may carry its step
+  // (pass MO), the gold number practice will put on it (Three steps' line on the numbers).
   if (visual.kind === 'row') {
     const items = (visual.items || []).slice(0, 3);
     const nominal = (v) => at(v.kind === 'shape' ? (v.size === 'big' ? 140 : v.size === 'small' ? 54 : 92) : typeof v.size === 'number' ? v.size : 110);   // the questions' 88, 58 and 34, scaled (and by k for a question's or a lesson's own row, pass MH)
     const most = Math.max(...items.map(nominal));
-    return <div className="edu-row-pic" style={{ padding: '6px 0', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '2%' }}>{items.map((v, i) => <div key={`${animKey}-${i}`} className={animate ? 'edu-drift' : undefined} style={{ width: '31%', display: 'flex', justifyContent: 'center', animationDelay: `${i * 0.4}s` }}><div style={{ width: `${Math.round((nominal(v) / most) * 100)}%`, maxWidth: nominal(v) }}><PictureInner visual={v} /></div></div>)}</div>;
+    // A row whose pictures carry steps draws each in a tile (stepTile) and spaces the tiles a little wider, since three framed tiles
+    // crowded a 320-pixel phone (round two's story check).
+    const tiled = items.some((v) => v.step);
+    return <div className="edu-row-pic" style={{ padding: '6px 0', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: tiled ? '4%' : '2%' }}>{items.map((v, i) => <div key={`${animKey}-${i}`} className={animate ? 'edu-drift' : undefined} style={{ width: tiled ? '30%' : '31%', display: 'flex', justifyContent: 'center', animationDelay: `${i * 0.4}s` }}><div style={{ position: 'relative', width: `${Math.round((nominal(v) / most) * 100)}%`, maxWidth: nominal(v), ...(tiled ? stepTile(!!v.step) : null) }}><PictureInner visual={v} />{v.step ? <StepBadge n={v.step} pal={B} /> : null}</div></div>)}</div>;
   }
   if (visual.kind === 'swatch') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><Swatch colour={visual.colour} size={at(120)} /></div>;
   // A thing to match can be drawn at its choices' size (size, pass MA), so the one that is the same is the same size too.
@@ -1340,11 +1375,54 @@ function playTap() {
   } catch (e) { /* no sound is never a problem */ }
 }
 
-// How a line is spoken, held sounds and all, is decided in logic.mjs since pass MM, round three (speechPieces, HELD_SOUND and
-// heldSoundSpoken, beside SOUND_CARRIERS), so the rules test reads the speech itself: a device voice reads "mmm" as letters, so
-// each held sound is said as the stretched start of a word it knows, and a word said slowly ("Mmm-at") runs into its own letters.
-// SPEECH_SHAPES below turns each piece's shape into a rate and a pitch.
+// How a line is spoken is decided in logic.mjs (speechPieces, since pass MM, round three), so the rules test reads the speech
+// itself: the voice's words, and since pass MO each speech sound a lesson asks for, which the app plays itself (soundClipWav),
+// since a device's voice spelled sss and fff as letters and ran mmm into moon on Mikey's phone (his notes on Q51). SPEECH_SHAPES
+// turns each spoken piece's shape into a rate and a pitch; sound is the shape of a sound the device can only say, never play.
 const SPEECH_SHAPES = { key: { rate: 0.6, pitch: 1.25 }, question: { rate: 0.9, pitch: 1.22 }, plain: { rate: 0.86, pitch: 1.15 }, sound: { rate: 0.1, pitch: 1.15 } };
+
+// ---------- The app's own speech sounds (pass MO, Mikey's notes on Q51) ----------
+// In plain terms: one audio element plays every sound, so the first tap anywhere can unlock it (a phone lets a page play sound only
+// once a tap has played something); each sound is made once a pace, from logic's numbers, and kept in memory as a small WAV file (a
+// blob: address, which the page's security policy allows). playSound plays one and calls back when it ends, at once if the device
+// cannot play it, and never holds a reading up longer than the longest sound and a little more. stopSound silences it. A test
+// reads window.__eduSounds, the sounds asked for in order.
+let soundAudio = null; let soundPlaying = false; let soundToken = 0; const soundUrls = {};
+const SOUND_LONGEST_MS = 1700;
+function soundPlayer() {
+  if (!soundAudio && typeof window !== 'undefined' && typeof window.Audio === 'function') { try { soundAudio = new window.Audio(); soundAudio.preload = 'auto'; } catch (e) { soundAudio = null; } }
+  return soundAudio;
+}
+function soundUrl(sound, slow) {
+  const key = `${sound}${slow ? '-slow' : ''}`;
+  if (!(key in soundUrls)) { try { soundUrls[key] = URL.createObjectURL(new Blob([soundClipWav(sound, { slow })], { type: 'audio/wav' })); } catch (e) { soundUrls[key] = null; } }
+  return soundUrls[key];
+}
+// The first tap, key or touch anywhere plays a twentieth of a second of silence, which unlocks the element for every sound after it.
+// A tap whose own stopSound cuts that silence short (the play's promise fails) leaves the flag down, so the next tap plays it again,
+// until one plays through (round one's screen check, pass MO: the comment said once); it is kept so, since a phone's browser may
+// decide at the play a tap starts or only once it truly plays, and a twentieth of a second of silence, never while a sound plays,
+// costs nothing.
+function unlockSounds() {
+  const a = soundPlayer(); if (!a || a.__eduUnlocked || soundPlaying) return;
+  const url = soundUrl('quiet', false); if (!url) return;
+  a.__eduUnlocked = true;
+  try { a.src = url; const p = a.play(); if (p && p.catch) p.catch(() => { a.__eduUnlocked = false; }); } catch (e) { a.__eduUnlocked = false; }
+}
+if (typeof window !== 'undefined' && window.addEventListener) ['pointerdown', 'touchend', 'keydown'].forEach((ev) => window.addEventListener(ev, unlockSounds, { capture: true, passive: true }));
+function playSound(sound, onEnd) {
+  const token = ++soundToken; let finished = false; let guard = null;
+  const finish = () => { if (finished) return; finished = true; if (guard) clearTimeout(guard); if (token === soundToken) { soundPlaying = false; onEnd(); } };
+  try { (window.__eduSounds = window.__eduSounds || []).push(sound); } catch (e) { /* only a test reads it */ }
+  const a = soundPlayer(); const url = soundUrl(sound, SPEECH_NUDGE < 0);
+  if (!a || !url) { setTimeout(finish, 0); return; }
+  soundPlaying = true; a.onended = finish; a.onerror = finish;
+  guard = setTimeout(finish, SOUND_LONGEST_MS);
+  try { a.src = url; const p = a.play(); if (p && p.catch) p.catch(finish); } catch (e) { finish(); }
+}
+function stopSound() { soundToken += 1; soundPlaying = false; if (soundAudio) { try { soundAudio.pause(); } catch (e) { /* nothing was playing */ } } }
+// Whether anything is still being said: the device voice speaking or waiting to, or one of the app's sounds playing.
+function voiceTalking() { const ss = typeof window !== 'undefined' ? window.speechSynthesis : null; return soundPlaying || (!!ss && !!(ss.speaking || ss.pending)); }
 
 // Slower and Faster on a tracing lesson move the voice with the drawing: -1 slows every line to
 // three quarters speed, +1 quickens it a little. Reset to 0 whenever a lesson opens.
@@ -1357,6 +1435,56 @@ function setSpeechNudge(n) { SPEECH_NUDGE = n; }
 // questions never plays the last question's words over the next one.
 let speechTicket = 0;
 let speechAlive = [];   // the utterances now speaking, held so the browser cannot collect them
+// Says pieces[from] onward, in order (pass MO): the voice's words go to the device voice together, up to the next sound, so they
+// flow as one line; the sound plays once the voice has finished them, and the words after it follow. alive() says nothing newer
+// has taken over; utter(u, piece) sets a spoken piece's voice, rate and pitch; onPiece(k) is told each piece as its turn comes, for
+// the read-along's light; onBegin says the voice or a sound has truly started. Every utterance is held (speechAlive) so the browser
+// cannot let it go before it ends.
+function sayPieces(pieces, from, hooks) {
+  const { alive, utter, onPiece = () => {}, onBegin = () => {}, onDone = () => {} } = hooks;
+  if (!alive()) return;
+  if (from >= pieces.length) { onDone(); return; }
+  if (pieces[from].sound) { onPiece(from); onBegin(); playSound(pieces[from].sound, () => { if (alive()) sayPieces(pieces, from + 1, hooks); }); return; }
+  let to = from; while (to < pieces.length && !pieces[to].sound) to += 1;
+  let left = to - from; const ss = window.speechSynthesis; const dones = []; const ended = []; let begun = false;
+  onPiece(from);
+  for (let k = from; k < to; k++) {
+    const u = new SpeechSynthesisUtterance(pieces[k].text); utter(u, pieces[k]); speechAlive.push(u);
+    let counted = false;
+    // The next piece is lit only while it is still in this batch (round three's code check: when an earlier end was lost, the last
+    // end's k + 1 named a piece past the batch, and speakSequence's onPiece threw). A voice says its queue in order, so a piece's end
+    // means every piece before it in the batch has ended too, though the voice lost an end, and a piece that starts is the one lit
+    // (round four's code check: a lost end inside a batch left the place on that piece, so a pace change said up to three sentences
+    // again, and the read-along's light stayed on it while the rest was said).
+    // A piece the voice would not take (speak threw) counts only itself, since the pieces before it are still queued and report
+    // their own ends (round five's code check: counting them too let the next sound play over them, "Sss" over "Sam"). Since round
+    // six's code check a thrown piece tells no one it began, and an end moves the light only once every piece before it has ended,
+    // to the next piece not yet ended: the catch had lit the next piece while the first was still being said, and a pace change
+    // then started past it ("Lena had six blocks." never said), and the first piece's end had lit the thrown one, never said.
+    const done = (cascade = true) => { if (counted) return; if (cascade) for (let j = 0; j < k - from; j++) dones[j](); counted = true; ended[k - from] = true; if (cascade) onBegin(); if (!alive()) return; left -= 1; if (left === 0) { sayPieces(pieces, to, hooks); return; } for (let j = 0; j < k - from; j++) if (!ended[j]) return; let n = k + 1; while (n < to && ended[n - from]) n += 1; if (n < to) onPiece(n); };
+    dones.push(done);
+    u.onstart = () => { begun = true; onBegin(); if (alive()) onPiece(k); }; u.onend = done; u.onerror = done;
+    try { ss.speak(u); } catch (e) { done(false); }
+  }
+  // A voice that never reports a batch's end (some devices drop the last end, as More Info's watcher knows) would leave the line
+  // stopped before its sound (round one's code check, pass MO: "Sun." and then silence): once the voice has been quiet for 1.2
+  // seconds after the batch began, or 1.5 seconds after it was sent if it never began, each word still waiting counts as said.
+  if (left > 0 && typeof setInterval === 'function') {
+    const sent = Date.now(); let quietSince = null;
+    const watch = setInterval(() => {
+      if (!alive() || left <= 0) { clearInterval(watch); return; }
+      if (ss.speaking || ss.pending) { quietSince = null; return; }
+      if (quietSince === null) quietSince = Date.now();
+      if (Date.now() - quietSince >= (begun ? 1200 : 1500) && Date.now() - sent >= 1500) { clearInterval(watch); for (const d of dones) d(); }
+    }, 250);
+  }
+}
+// A voice's rate and pitch for a piece, slower or quicker with the lesson's pace (SPEECH_NUDGE), times factor.
+function shapeVoice(u, piece, voice, factor = 1) {
+  if (voice) u.voice = voice;
+  const shape = SPEECH_SHAPES[piece.shape] || SPEECH_SHAPES.plain;
+  u.rate = shape.rate * (SPEECH_NUDGE < 0 ? 0.75 : SPEECH_NUDGE > 0 ? 1.1 : 1) * factor; u.pitch = shape.pitch;
+}
 function speak(text) {
   if (typeof window === 'undefined' || !window.speechSynthesis || !text) return;
   const ticket = ++speechTicket;
@@ -1366,26 +1494,31 @@ function speak(text) {
   // the retry below is for words the browser dropped, but a word as short as Blue can be said and finished inside the 700 ms the
   // retry waits, and the quiet that followed looked like a voice that never started, so the word was said again.
   let began = false;
+  // Each send is its own attempt (round two's code check, pass MO): the retry below retires the first one before its cancel can
+  // fire, since a first try the voice dropped, once sayPieces' watch counted its words said, played on beside the retry and said
+  // the rest of the line twice.
+  let attempt = 0;
   const send = () => {
     if (ticket !== speechTicket) return;
+    const mine = attempt;
     try {
-      const voice = pickVoice();
-      speechAlive = pieces.map((piece) => {
-        const u = new SpeechSynthesisUtterance(piece.text);
-        if (voice) u.voice = voice;
-        const shape = SPEECH_SHAPES[piece.shape] || SPEECH_SHAPES.plain;
-        u.rate = shape.rate * (SPEECH_NUDGE < 0 ? 0.75 : SPEECH_NUDGE > 0 ? 1.1 : 1); u.pitch = shape.pitch;
-        u.onstart = () => { began = true; }; u.onend = () => { began = true; };
-        return u;
-      });
-      speechAlive.forEach((u) => window.speechSynthesis.speak(u));
+      const voice = pickVoice(); speechAlive = [];
+      sayPieces(pieces, 0, { alive: () => ticket === speechTicket && mine === attempt, utter: (u, piece) => shapeVoice(u, piece, voice), onBegin: () => { began = true; } });
     } catch (e) { /* a broken voice must never stop a lesson */ }
   };
   const ss = window.speechSynthesis;
-  // A voice already talking is stopped first, and the new words follow a beat later; a quiet voice is spoken to at once.
-  if (ss.speaking || ss.pending) { try { ss.cancel(); } catch (e) { /* a broken voice must never stop a lesson */ } setTimeout(send, 80); } else send();
+  // A voice already talking, or a sound playing, is stopped first, and the new words follow a beat later; a quiet voice is spoken to at once.
+  if (ss.speaking || ss.pending || soundPlaying) { try { ss.cancel(); } catch (e) { /* a broken voice must never stop a lesson */ } stopSound(); setTimeout(send, 80); } else send();
   // One retry: a voice that never started is asked again; one that started, or already finished, is left alone.
-  setTimeout(() => { if (!began && ticket === speechTicket && ss.speaking === false && ss.pending === false) { try { ss.cancel(); } catch (e) { /* as above */ } setTimeout(send, 80); } }, 700);
+  setTimeout(() => { if (!began && ticket === speechTicket && ss.speaking === false && ss.pending === false && !soundPlaying) { attempt += 1; try { ss.cancel(); } catch (e) { /* as above */ } setTimeout(send, 80); } }, 700);
+}
+// Silences a round's words and sounds when the child leaves it (pass MO): its own ticket at once, so nothing the round began says
+// another word, and the voice's cancel a tick later, only if nothing newer has spoken since (round two's code check: a cancel in the
+// same tick as the next screen's speak() made that speak a cancel-then-speak, which a phone's browser drops). A newer speak() stops
+// the voice itself, a beat before it speaks; with nothing after it (the X to the overview), the voice still stops.
+function hushSpeech() {
+  const mine = ++speechTicket; stopSound();
+  setTimeout(() => { if (mine === speechTicket) { try { if (typeof window !== 'undefined' && window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) { /* a broken voice must never stop a screen */ } } }, 0);
 }
 
 // A small round i that sits inside a sentence, after the last word it explains.
@@ -1430,32 +1563,41 @@ function speakSequence(texts, onIndex, onDone, keys = [], opts = {}) {
   }
   if (!window.speechSynthesis) return () => {};
   const ticket = ++speechTicket; const ss = window.speechSynthesis;
-  // Where the voice is: the text it is reading and the sentence inside it, moved on as each sentence ends. A new pace starts a new
-  // run (run), so the sentences of a cancelled run say nothing when they report their end.
+  // Where the voice is: the text it is reading and the piece inside it, moved on as each piece's turn comes. A new pace starts a new
+  // run (run), so the pieces of a cancelled run say nothing when they report their end.
   const place = { i: 0, k: 0 }; let run = 0;
-  const stop = () => { if (ticket === speechTicket) speechTicket += 1; try { ss.cancel(); } catch (e) { /* a broken voice must never stop a story */ } onDone && onDone(); };
+  // Stopping hushes (round three's code check, pass MO): this reader's ticket and the sounds at once, and the voice's cancel a tick
+  // later only if nothing newer has spoken, since a lesson's Next, Start practice or a story left for a lesson sends the next words
+  // in the same tick, and a cancel just before them made a cancel-then-speak, the next line's first sentence lost. It is always a
+  // hush, so the X still quiets a "Say it again" that took a newer ticket.
+  const stop = () => { hushSpeech(); onDone && onDone(); };
+  // Whether the voice has begun this reading: as speak() does, a reading whose first words a voice dropped (the page's first words,
+  // on some phones) is asked once more, from where it is, if nothing began within 700 ms (round three's code check: a lesson line's
+  // first sentence was lost, and the watch moved on).
+  let began = false;
   const say = (i, from = 0) => {
     if (ticket !== speechTicket) return;
     if (i >= texts.length) { onDone && onDone(); return; }
     const pieces = speechPieces(texts[i]); if (from >= pieces.length) { onIndex(i, 0); say(i + 1); return; }
-    onIndex(i, pieces[from].sentence || 0); place.i = i; place.k = from;
-    const voice = pickVoice(); const mine = run; let left = pieces.length - from;
+    const voice = pickVoice(); const mine = run;
     speechAlive = [];   // held, as speak() holds its own, so the browser cannot let them go before they end (the code check, pass MI)
-    pieces.slice(from).forEach((piece, j) => {
-      const u = new SpeechSynthesisUtterance(piece.text); if (voice) u.voice = voice; speechAlive.push(u);
-      const shape = SPEECH_SHAPES[piece.shape] || SPEECH_SHAPES.plain; u.rate = shape.rate * (SPEECH_NUDGE < 0 ? 0.75 : SPEECH_NUDGE > 0 ? 1.1 : 1) * factor; u.pitch = shape.pitch;
-      const done = () => { if (mine !== run) return; left -= 1; place.k = from + j + 1; if (left === 0) { if (gap) setTimeout(() => { if (mine === run) say(i + 1); }, gap); else say(i + 1); } else onIndex(i, pieces[place.k].sentence || 0); };
-      u.onend = done; u.onerror = done;
-      try { ss.speak(u); } catch (e) { done(); }
+    sayPieces(pieces, from, {
+      alive: () => mine === run && ticket === speechTicket,
+      utter: (u, piece) => shapeVoice(u, piece, voice, factor),
+      onBegin: () => { began = true; },
+      onPiece: (k) => { place.i = i; place.k = k; onIndex(i, pieces[k].sentence || 0); },
+      onDone: () => { if (gap) setTimeout(() => { if (mine === run) say(i + 1); }, gap); else say(i + 1); },
     });
   };
   // Each delayed start checks that no newer pace has taken over in the meantime (the code and screen checks, pass MH: two pace
   // taps inside 80 ms once left two readings live, every later sentence said twice).
-  if (ss.speaking || ss.pending) { try { ss.cancel(); } catch (e) { /* as above */ } const first = run; setTimeout(() => { if (run === first) say(0); }, 80); } else say(0);
+  if (ss.speaking || ss.pending || soundPlaying) { try { ss.cancel(); } catch (e) { /* as above */ } stopSound(); const first = run; setTimeout(() => { if (run === first) say(0); }, 80); } else say(0);
+  setTimeout(() => { if (!began && ticket === speechTicket && ss.speaking === false && ss.pending === false && !soundPlaying) { run += 1; const again = run; const at = { ...place }; try { ss.cancel(); } catch (e) { /* as above */ } setTimeout(() => { if (again === run) say(at.i, at.k); }, 80); } }, 700);
   stop.setNudge = (n) => {
     setSpeechNudge(n); if (ticket !== speechTicket) return;
     run += 1; const mineRun = run; const at = { ...place };
     try { ss.cancel(); } catch (e) { /* as above */ }
+    stopSound();
     setTimeout(() => { if (mineRun === run) say(at.i, at.k); }, 80);
   };
   return stop;
@@ -1469,11 +1611,11 @@ let onSpoke = null;
 function SpeakButton({ text, label, full = false, corner = false, mini = false }) {
   // Tapping while it reads stops it; the button watches the voice so the label follows what is happening.
   const [reading, setReading] = useState(false);
-  useEffect(() => { if (!reading) return undefined; const t = setInterval(() => { if (!window.speechSynthesis.speaking && !window.speechSynthesis.pending) setReading(false); }, 300); return () => clearInterval(t); }, [reading]);
+  useEffect(() => { if (!reading) return undefined; const t = setInterval(() => { if (!voiceTalking()) setReading(false); }, 300); return () => clearInterval(t); }, [reading]);
   if (!canSpeak()) {
     return corner || mini ? null : <p style={{ margin: '0 0 12px', fontSize: 14, color: C.muted }}>Reading aloud is not available on this device or in this preview. The words are all on screen.</p>;
   }
-  const press = () => { if (reading) { speechTicket += 1; window.speechSynthesis.cancel(); setReading(false); return; } speak(text); setReading(true); if (onSpoke) onSpoke(); };
+  const press = () => { if (reading) { speechTicket += 1; window.speechSynthesis.cancel(); stopSound(); setReading(false); return; } speak(text); setReading(true); if (onSpoke) onSpoke(); };
   const shownLabel = reading ? 'Stop reading' : label;
   if (mini) {
     return (
@@ -1539,7 +1681,7 @@ function MoreInfoSheet({ insight, face, onClose, visual = null, young = false })
   useEffect(() => {
     if (!reading || typeof window === 'undefined' || !window.speechSynthesis) return undefined;
     let quietSince = null; const longest = (young ? MORE_INFO_GAP_YOUNG : MORE_INFO_GAP) + 1500;
-    const t = setInterval(() => { const ss = window.speechSynthesis; if (ss.speaking || ss.pending) { quietSince = null; return; } if (quietSince === null) quietSince = Date.now(); else if (Date.now() - quietSince > longest) { const stop = stopRef.current; stopRef.current = null; if (stop) stop(); setLit(null); setReading(false); } }, 300);
+    const t = setInterval(() => { if (voiceTalking()) { quietSince = null; return; } if (quietSince === null) quietSince = Date.now(); else if (Date.now() - quietSince > longest) { const stop = stopRef.current; stopRef.current = null; if (stop) stop(); setLit(null); setReading(false); } }, 300);
     return () => clearInterval(t);
   }, [reading]);
   const read = () => {
@@ -2159,12 +2301,16 @@ html[data-theme="dark"] .edu-slide-in { background-image: linear-gradient(90deg,
 /* The same in the light theme since pass MH (Q27): until then its title showed nothing from 700 pixels, since September 2026. */
 @media (min-width: 700px) { html:not([data-theme="dark"]) .edu-wrap h1.edu-slide-in { background: linear-gradient(90deg, #3A6B58, #A67A26, #3A6B58) 0 0 / 200% auto; -webkit-background-clip: text; background-clip: text; } }
 .edu-glow { animation: edu-glow 1.8s ease-in-out infinite; }
-/* A story's title row (pass MH): on a narrow card the speaker, the snail and the hare sit at the top right and the title centered
-   under them; from 640 pixels they share one row, the title truly centered between an empty column and the controls' column. */
+/* A story's title row (pass MH): from 640 pixels the speaker, the snail and the hare share one row with the title, the title truly
+   centered between an empty column and the controls' column. On a narrower card (pass MO, Mikey: "On narrow phone screens, we can
+   move the snail and hair on both sides of the gold sound icon on top to create symmetry.  Keep the same on wider screens") the
+   snail, the speaker and the hare sit centred above the title, the speaker in the middle; only the order on screen changes, so a
+   screen reader still meets the speaker first. */
 .edu-story-head { display: grid; grid-template-columns: 1fr; justify-items: center; gap: 8px; margin: 0 0 10px; }
-.edu-story-head .edu-story-tools { justify-self: end; order: -1; display: flex; gap: 6px; align-items: center; }
+.edu-story-head .edu-story-tools { justify-self: center; order: -1; display: flex; gap: 12px; align-items: center; }
+.edu-story-head .edu-story-tools [data-pace="slow"] { order: -1; }
 .edu-story-head .edu-story-head-spacer { display: none; }
-@media (min-width: 640px) { .edu-story-head { grid-template-columns: 152px 1fr 152px; align-items: center; } .edu-story-head .edu-story-tools { order: 0; } .edu-story-head .edu-story-head-spacer { display: block; } }
+@media (min-width: 640px) { .edu-story-head { grid-template-columns: 152px 1fr 152px; align-items: center; } .edu-story-head .edu-story-tools { order: 0; justify-self: end; gap: 6px; } .edu-story-head .edu-story-tools [data-pace="slow"] { order: 0; } .edu-story-head .edu-story-head-spacer { display: block; } }
 /* Pondering pictures around a Wonder question and its closing card (pass MH): each falls or slides in from its own side with a
    little bounce and settles at its own angle; the closing title pops in. Transform and opacity only; with motion off both are
    simply there. */
@@ -2232,9 +2378,14 @@ function WonderButton({ onClick, children }) {
 // Eight friendly faces, drawn here so nothing is ever uploaded. Simple enough to read at
 // thumbnail size, distinct enough that a five-year-old finds theirs at a glance.
 function StudentPicture({ name, tint = null, size = 56 }) {
-  // In the dark theme the rabbit wears a soft brown outline wherever it is drawn (pass MA): its pale fur all but vanishes on the
-  // almond paper of lessons and questions (1.1 to 1), and the owl's brown keeps the outline at 3.4 to 1. The light theme is unchanged.
-  const fur = C.mode === 'dark' ? { stroke: '#8C7A5B', strokeWidth: 1.5 } : {};
+  // The rabbit wears a soft brown outline wherever it is drawn, in both themes: in the dark theme since pass MA, where its pale fur
+  // all but vanished on the paper of lessons and questions (1.1 to 1), and in the light theme since pass MO (Mikey's answer to Q54,
+  // "your call as long as it looks visually appealing and sleek."), where the cream rabbit read 1.3 to 1 on white while it stands
+  // for a friend in pre-K's social lessons. Since round one's screen check (pass MO) the brown is a shade deeper than the owl's
+  // #8C7A5B, which read 2.9 to 1 on the lilac and berry tints of the name pictures: #857356 reads 3.2 or better on every tint, 4.6
+  // on white, 3.6 on the dark theme's paper and 3.0 on its tiles (the rules test reads it). Since pass MO its ears have soft pink
+  // insides too, drawn behind its head, so it reads as a rabbit at a glance at any size.
+  const fur = { stroke: '#857356', strokeWidth: 1.5 };
   const faces = {
     fox: <g><path d="M12 44 L18 14 L30 26 L42 14 L48 44 Z" fill="#D98B3D" /><circle cx="24" cy="34" r="2.6" fill="#24291F" /><circle cx="36" cy="34" r="2.6" fill="#24291F" /><path d="M27 41 L30 44 L33 41 Z" fill="#24291F" /></g>,
     owl: <g><ellipse cx="30" cy="34" rx="18" ry="20" fill="#8C7A5B" /><circle cx="22" cy="30" r="7" fill="#F5F1E6" /><circle cx="38" cy="30" r="7" fill="#F5F1E6" /><circle cx="22" cy="30" r="3" fill="#24291F" /><circle cx="38" cy="30" r="3" fill="#24291F" /><path d="M27 40 L30 46 L33 40 Z" fill="#C79A3D" /></g>,
@@ -2243,7 +2394,7 @@ function StudentPicture({ name, tint = null, size = 56 }) {
     bee: <g><ellipse cx="30" cy="36" rx="16" ry="12" fill="#E2B83A" /><rect x="22" y="26" width="5" height="20" fill="#24291F" /><rect x="34" y="26" width="5" height="20" fill="#24291F" /><ellipse cx="22" cy="20" rx="8" ry="5" fill="#DCE9F5" opacity="0.9" /><ellipse cx="38" cy="20" rx="8" ry="5" fill="#DCE9F5" opacity="0.9" /><circle cx="15" cy="34" r="2.2" fill="#24291F" /></g>,
     cat: <g><path d="M14 44 L14 18 L24 26 L36 26 L46 18 L46 44 Z" fill="#A9A19A" /><circle cx="24" cy="34" r="2.6" fill="#24291F" /><circle cx="36" cy="34" r="2.6" fill="#24291F" /><path d="M27 40 L30 43 L33 40 Z" fill="#B45A3C" /><path d="M8 40 L22 41 M8 46 L22 44 M52 40 L38 41 M52 46 L38 44" stroke="#24291F" strokeWidth="1.5" /></g>,
     turtle: <g><ellipse cx="30" cy="36" rx="18" ry="12" fill="#6A8F5B" /><circle cx="48" cy="34" r="6" fill="#8FB07E" /><circle cx="50" cy="33" r="1.8" fill="#24291F" /><path d="M18 32 L24 30 L30 32 L36 30 L42 32" fill="none" stroke="#4F6E44" strokeWidth="2" /></g>,
-    rabbit: <g><ellipse cx="30" cy="38" rx="14" ry="12" fill="#E8DFD3" {...fur} /><ellipse cx="23" cy="18" rx="5" ry="12" fill="#E8DFD3" {...fur} /><ellipse cx="37" cy="18" rx="5" ry="12" fill="#E8DFD3" {...fur} /><circle cx="25" cy="36" r="2.4" fill="#24291F" /><circle cx="35" cy="36" r="2.4" fill="#24291F" /><path d="M28 42 L30 44 L32 42 Z" fill="#D98B8B" /></g>,
+    rabbit: <g><ellipse cx="23" cy="18" rx="5" ry="12" fill="#E8DFD3" {...fur} /><ellipse cx="37" cy="18" rx="5" ry="12" fill="#E8DFD3" {...fur} /><ellipse cx="23" cy="19" rx="2.2" ry="8" fill="#EDB9B9" /><ellipse cx="37" cy="19" rx="2.2" ry="8" fill="#EDB9B9" /><ellipse cx="30" cy="38" rx="14" ry="12" fill="#E8DFD3" {...fur} /><circle cx="25" cy="36" r="2.4" fill="#24291F" /><circle cx="35" cy="36" r="2.4" fill="#24291F" /><path d="M28 42 L30 44 L32 42 Z" fill="#D98B8B" /></g>,
     bear: <g><circle cx="30" cy="34" r="16" fill="#8B6B4A" /><circle cx="18" cy="22" r="6" fill="#8B6B4A" /><circle cx="42" cy="22" r="6" fill="#8B6B4A" /><ellipse cx="30" cy="40" rx="7" ry="5" fill="#C9A98A" /><circle cx="24" cy="31" r="2.4" fill="#24291F" /><circle cx="36" cy="31" r="2.4" fill="#24291F" /><circle cx="30" cy="38" r="2.4" fill="#24291F" /></g>,
     fish: <g><path d="M10 34 Q26 16 44 34 Q26 52 10 34 Z" fill="#E28A5B" /><path d="M44 34 L54 24 L54 44 Z" fill="#E28A5B" /><circle cx="20" cy="32" r="2.6" fill="#24291F" /><path d="M26 26 Q30 34 26 42" fill="none" stroke="#C9704A" strokeWidth="2" /></g>,
     duck: <g><ellipse cx="32" cy="38" rx="17" ry="11" fill="#F0D45C" /><circle cx="20" cy="26" r="9" fill="#F0D45C" /><path d="M11 27 L4 30 L11 32 Z" fill="#E28A2B" /><circle cx="18" cy="24" r="2.2" fill="#24291F" /></g>,
@@ -3731,19 +3882,22 @@ function StoryBody({ story, pace: paceDefault = null, part = null, autoRead = fa
     return () => clearTimeout(t);
   }, [autoRead]);
   // A voice that never says it has ended (some devices drop the end of a long reading) must not leave the page reading forever,
-  // with Stop reading stuck and the arrow below resting: while the device voice reads, the page looks every second, and two
-  // quiet looks in a row (nothing speaking, nothing waiting) end the reading, as SpeakButton does (the screen check, pass MD).
+  // with Stop reading stuck and the arrow below resting: while the device voice reads, the page looks every quarter second, and two
+  // seconds of quiet in a row (nothing speaking, nothing waiting, no sound playing) end the reading (the screen check, pass MD; since
+  // round three's code check, pass MO, two seconds rather than two looks a second apart, which could straddle a sentence and end a
+  // reading while sayPieces' own watch, 1.2 to 1.5 seconds, was still moving a lost end on).
   // It sees only a voice that went quiet; a voice that stays stuck saying it is speaking is left alone, and the stop button
   // ends that. Bought clips report their own end.
   const [voiceWatch, setVoiceWatch] = useState(0);
   useEffect(() => {
     if (!voiceWatch || typeof window === 'undefined' || !window.speechSynthesis) return undefined;
-    let quiet = 0;
+    let quietSince = null;
     const t = setInterval(() => {
       const ss = window.speechSynthesis;
-      quiet = ss.speaking === false && ss.pending === false ? quiet + 1 : 0;
-      if (quiet >= 2 && stopRef.current) { stopRef.current(); stopRef.current = null; setReadingAt(-1); }
-    }, 1000);
+      if (ss.speaking !== false || ss.pending !== false || soundPlaying) { quietSince = null; return; }
+      if (quietSince === null) quietSince = Date.now();
+      if (Date.now() - quietSince >= 2000 && stopRef.current) { stopRef.current(); stopRef.current = null; setReadingAt(-1); }
+    }, 250);
     return () => clearInterval(t);
   }, [voiceWatch]);
   useEffect(() => {
@@ -3779,7 +3933,7 @@ function StoryBody({ story, pace: paceDefault = null, part = null, autoRead = fa
                 : <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={speakerInk()} /><path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12" fill="none" stroke={speakerInk()} strokeWidth="2" strokeLinecap="round" /></svg>}
             </button>
             {[['slow', 'Read slowly'], ['normal', 'Read at the usual speed']].map(([v, label]) => (
-              <button key={v} type="button" aria-label={label} aria-pressed={pace === v} onClick={() => choosePace(v)}
+              <button key={v} type="button" data-pace={v} aria-label={label} aria-pressed={pace === v} onClick={() => choosePace(v)}
                 style={{ width: 48, height: 40, borderRadius: 999, border: `2px solid ${C.green}`, background: pace === v ? C.green : C.surface, color: pace === v ? C.onAccent : C.green, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', padding: 0, flex: '0 0 48px' }}>
                 <PaceGlyph kind={v} />
               </button>
@@ -4730,9 +4884,16 @@ function BucketsGame({ game, round, onScore = null }) {
           <span style={{ position: 'absolute', left: 0, right: 0, top: -22, textAlign: 'center', fontSize: 13, fontWeight: 700, color: B.muted }}>{bin === 0 ? deck.a.label : deck.b.label}</span>
         </div>
       ))}
-      {chips.map((ch) => { const [x, y] = spot(ch); const stuck = placed[ch.id] !== undefined; return (
-        <div key={ch.id} onPointerDown={(e) => start(ch, e)} className={wrong === ch.id ? 'edu-wobble' : undefined} style={{ position: 'absolute', left: `${x}%`, top: `${y}%`, transform: 'translate(-50%, -50%)', cursor: stuck ? 'default' : 'grab', touchAction: 'none', padding: '5px 9px', borderRadius: 10, border: `2px solid ${stuck ? B.green : wrong === ch.id ? B.clay : B.ink}`, background: stuck ? B.greenSoft : '#FFFFFF', fontFamily: FONT, fontSize: 13, fontWeight: 700, whiteSpace: 'nowrap', userSelect: 'none', transition: drag && drag.id === ch.id ? 'none' : 'left 0.2s ease, top 0.2s ease', zIndex: drag && drag.id === ch.id ? 2 : 1 }}>
-          {chipIsShape(ch.t) ? <ShapePic name={ch.t.split(':')[1]} size={26} color={SWATCH[ch.t.split(':')[2]] || B.green} /> : ch.t}
+      {chips.map((ch) => {
+        // A chip is centred on its spot by its own transform, and a wrong bucket's wobble is a transform too, which takes the
+        // chip's own transform's place while it runs, so the chip shook half its size to the right of and below its spot (round
+        // eight's read, pass MO; older than the pass). The wobble sits on an inner box, so a chip dropped in the wrong bucket slides
+        // back to its spot and shakes there, for the same reason a lesson pair's 85 percent sits on a wrapper inside each half.
+        const [x, y] = spot(ch); const stuck = placed[ch.id] !== undefined; return (
+        <div key={ch.id} onPointerDown={(e) => start(ch, e)} style={{ position: 'absolute', left: `${x}%`, top: `${y}%`, transform: 'translate(-50%, -50%)', cursor: stuck ? 'default' : 'grab', touchAction: 'none', userSelect: 'none', transition: drag && drag.id === ch.id ? 'none' : 'left 0.2s ease, top 0.2s ease', zIndex: drag && drag.id === ch.id ? 2 : 1 }}>
+          <div className={wrong === ch.id ? 'edu-wobble' : undefined} style={{ padding: '5px 9px', borderRadius: 10, border: `2px solid ${stuck ? B.green : wrong === ch.id ? B.clay : B.ink}`, background: stuck ? B.greenSoft : '#FFFFFF', fontFamily: FONT, fontSize: 13, fontWeight: 700, whiteSpace: 'nowrap' }}>
+            {chipIsShape(ch.t) ? <ShapePic name={ch.t.split(':')[1]} size={26} color={SWATCH[ch.t.split(':')[2]] || B.green} /> : ch.t}
+          </div>
         </div>); })}
       <div style={{ position: 'absolute', top: 6, right: 10, fontSize: 13, color: B.muted }}>{ticks}s</div>
       <Done show={done} />
@@ -5405,7 +5566,7 @@ function FindLetterGame({ round }) {
   // Hear it again cuts a right letter's line short, so it lets go of the hold: the child asked to hear the ask, and may act on it
   // once it is on its way (round five's code read, pass MM): while a line is still said, speak() sends the ask 80 ms after it stops
   // the voice, so the board waits 120 ms then too, where a tap in that gap took a letter whose ask was never said.
-  const again = () => { if (asked === null) return; const ss = canSpeak() ? window.speechSynthesis : null; const busy = !!ss && (ss.speaking || ss.pending);
+  const again = () => { if (asked === null) return; const busy = canSpeak() && voiceTalking();
     const myHold = ++holdId.current; holdTo(busy); speak(letterSpotLine(misses >= 2 ? 'hint' : 'ask', asked));
     if (busy) later(() => { if (myHold === holdId.current) holdTo(false); }, 120); };
   return (
@@ -6878,7 +7039,7 @@ function GamePad({ game, name, secondsLeft, total, onClose, modules = [], onScor
   const Game = game.kind === 'spot' && game.spot === 'letters' ? FindLetterGame : GAME_OF[game.kind];   // Find the Letter (pass MM) has a board of its own
   // Closing a game stops its voice (pass MM, round two's game check: Find the Letter's next ask, and Hear the instructions, ran on
   // over the overview), the way SpeakButton stops its own.
-  useEffect(() => () => { speechTicket += 1; try { window.speechSynthesis.cancel(); } catch (e) { /* a broken voice must never stop a game */ } }, []);
+  useEffect(() => () => { speechTicket += 1; try { window.speechSynthesis.cancel(); } catch (e) { /* a broken voice must never stop a game */ } stopSound(); }, []);
   const [begun, setBegun] = useState(!MOVING_GAMES.has(game.kind));   // pass IU: moving games wait for Begin
   const iconBtn = { background: 'none', border: 'none', padding: 6, cursor: 'pointer', color: C.green, lineHeight: 0 };
   return (
@@ -9771,7 +9932,7 @@ function EduSphereScreens() {
   useEffect(() => { if (typeof window !== 'undefined') window.__eduTest = { seedHistory: (key, plan) => seedHistoryForTest(key, plan), screen, moduleId: moduleId || null, question: q || null, isReviewQ, openModule: (id) => openModule(id), startQuickCheck: (id) => startQuickCheck(id),
     // Test-only (pass ME): draws the current trace question along its own strokes, the way a steady hand would, so a browser
     // walk can pass a round whose memory check reaches into a tracing lesson (a finished course has those among its stars).
-    traceWell: () => { const def = q && q.type === 'trace' ? TRACE_LETTERS[q.answer] : null; if (!def) return false; const paths = def.strokes.map((s) => s.flatMap((p, i) => (i === 0 ? [p] : Array.from({ length: 8 }, (_, k) => [s[i - 1][0] + ((p[0] - s[i - 1][0]) * (k + 1)) / 8, s[i - 1][1] + ((p[1] - s[i - 1][1]) * (k + 1)) / 8])))); setTracePaths(paths); setGiven(JSON.stringify(paths)); return true; }, openColoring: (pic) => { setColoring(pic); setScreen('coloring'); }, openCertificate: (id, grade) => { setCertFor({ id, grade }); setCertTemplate('classic'); setCertName(''); setCertPhotos([]); setScreen('certificate'); }, visibleModuleIds: () => visibleModules.map((m) => m.id), openStory: (id) => { noteStoryOpen(id, 'shelf'); setModuleId(id); setScreen('story'); }, openCourseStory: (id, part = 'course') => { noteStoryOpen(`${part}:${id}`, 'shelf'); setCourseStoryId(id); setCourseStoryPart(part); setScreen('course-story'); }, openWonderVoices: (id, mid) => { if (mid) setModuleId(mid); setWonder(WONDER.find((w) => w.id === id) || null); setWonderVoiceStep(0); setScreen('wonder-voices'); }, openWonder: (id, mid) => { if (mid) setModuleId(mid); setWonder(WONDER.find((w) => w.id === id) || null); setWonderText(''); setWonderPick(''); setWonderStartedAt(Date.now()); setScreen('wonder'); },
+    traceWell: () => { const def = q && q.type === 'trace' ? TRACE_LETTERS[q.answer] : null; if (!def) return false; const paths = def.strokes.map((s) => s.flatMap((p, i) => (i === 0 ? [p] : Array.from({ length: 8 }, (_, k) => [s[i - 1][0] + ((p[0] - s[i - 1][0]) * (k + 1)) / 8, s[i - 1][1] + ((p[1] - s[i - 1][1]) * (k + 1)) / 8])))); setTracePaths(paths); setGiven(JSON.stringify(paths)); return true; }, openColoring: (pic) => { setColoring(pic); setScreen('coloring'); }, setColoringLeft: (n) => setColorLeft(n), openCertificate: (id, grade) => { setCertFor({ id, grade }); setCertTemplate('classic'); setCertName(''); setCertPhotos([]); setScreen('certificate'); }, visibleModuleIds: () => visibleModules.map((m) => m.id), openStory: (id) => { noteStoryOpen(id, 'shelf'); setModuleId(id); setScreen('story'); }, openCourseStory: (id, part = 'course') => { noteStoryOpen(`${part}:${id}`, 'shelf'); setCourseStoryId(id); setCourseStoryPart(part); setScreen('course-story'); }, openWonderVoices: (id, mid) => { if (mid) setModuleId(mid); setWonder(WONDER.find((w) => w.id === id) || null); setWonderVoiceStep(0); setScreen('wonder-voices'); }, openWonder: (id, mid) => { if (mid) setModuleId(mid); setWonder(WONDER.find((w) => w.id === id) || null); setWonderText(''); setWonderPick(''); setWonderStartedAt(Date.now()); setScreen('wonder'); },
     // Test-only (pass MH): one round of a single named question, so a browser check can look at any kind of question on screen.
     showQuestion: (genId, seed = 1, fromModule = null) => { const home = (fromModule && getModule(fromModule)) || COURSES.flatMap((c) => c.modules).find((m) => (m.generators || []).includes(genId)); if (!home) return false; setModuleId(home.id); setAttempt({ moduleId: home.id, seed, core: [moduleQuestion(genId, seed, home.id)], review: null, review2: null }); setQIndex(0); setGiven(''); setChecked(false); setMisses(0); setWrongPicks([]); setTracePaths([]); setTraceNote(''); setMoreInfo(false); setCoreResults([]); setOrderPicked([]); setReviewResult(null); setReview2Result(null); setStartedAt(new Date().toISOString()); setQShownAt(Date.now()); setScreen('practice'); return true; }, reviewWonder: (id) => { setReviewing(id); setOpenVoices([]); setScreen('wonder-review'); }, crash: () => setBoom(true), goTo: (name, arg) => {
     // Test-only: land on a screen with enough state for it to render, so the back-button sweep can press back from every screen.
@@ -9902,6 +10063,14 @@ function EduSphereScreens() {
   useEffect(() => { if (screen === 'coloring' && typeof window !== 'undefined') window.scrollTo(0, 0); }, [screen, coloring]);
   // The learner list can change during a session (a new learner just started), so refresh it whenever a picker screen opens.
   useEffect(() => { if (screen === 'welcome' || screen === 'educator-pick') loadRoster().then(setRoster); }, [screen]);
+  // Leaving a round stops its words and sounds (round one's code check, pass MO: the X left a question's line, and its sounds,
+  // playing over the overview), whichever way the round is left; the next screen's own words start after. Since round three's code
+  // check the result and a finished course's page are hushed as they are left too, since they speak as they open and their words
+  // ran on over the overview after Return home or Back. Since round four's code check the Wonder's voice cards are hushed too (the
+  // device's back said Frederick's card on over the overview, and Finish left the closing card's words playing over the result), and
+  // since round five's code check a coloring page, which says a letter page's letters as it opens (Close coloring and the device's back left
+  // "On the right is a lower case A." to be said over the overview).
+  useEffect(() => { if (!['practice', 'result', 'course-done', 'wonder-voices', 'coloring'].includes(screen)) return undefined; return () => hushSpeech(); }, [screen]);
   // The band under each name on the login screen, read from each student's own record.
   const [bands, setBands] = useState({});
   // Also on the classroom page (pass LM): the Action Items are read here, and an educator who opens or stays on My Classroom
@@ -10821,7 +10990,9 @@ function EduSphereScreens() {
     const dotFrame = q.type === 'choice' && Array.isArray(q.choices) && q.choices.length > 0 && q.choices.every((x) => /^dots:\d+$/.test(x)) ? Math.min(5, Math.max(...q.choices.map((x) => Number(x.split(':')[1])))) : 0;
     const shownVisual = q.visual && dotFrame && q.visual.kind === 'pattern' && q.visual.size ? { ...q.visual, frame: dotFrame, snap: true } : q.visual;
     // How a choice is drawn, in its button and, smaller, in the More Info sheet (pass MH): one function, so the two never differ.
-    const choiceFace = (c, k = 1) => (/^look:/.test(c) ? <LookGroup token={c} k={k} /> : /^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={Math.round(28 * k)} frame={dotFrame || 5} snap={dotFrame > 0} /> : /^shape:/.test(c) ? <ShapePic name={c.split(':')[1]} size={Math.round((c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64) * k)} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={Math.round(14 * k)} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={Math.round(18 * k)} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={Math.round(14 * k)} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6).split('#')[0]} size={Math.round(64 * k)} /> : /^shares:/.test(c) ? <SharesPic shape={c.split(':')[1]} cut={c.split(':')[2]} shaded={Number(c.split(':')[3] || 0)} size={Math.round(72 * k)} /> : /^dice:/.test(c) ? <DicePic pips={Number(c.split(':')[1].split('#')[0])} size={Math.round(64 * k)} /> : /^pic:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><StudentPicture name={c.slice(4).split('#')[0]} size={Math.round(72 * k)} /></span> : /^art:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><ColorThumb picture={c.slice(4).split('#')[0]} size={Math.round(84 * k)} thing /></span> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={Math.round(64 * k)} /> : /^face:/.test(c) ? <FeelingFace feeling={c.slice(5).split('#')[0]} size={Math.round(84 * k)} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={Math.round(64 * k)} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={Math.round(64 * k)} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={Math.round(80 * k)} /> : /^digital:/.test(c) ? <DigitalPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={Math.round(96 * k)} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={Math.round(12 * k)} /> : c);
+    // paper: drawn on a light paper box (More Info's), so a shape or a solid takes the paper's green, B, in both themes (round two's
+    // code check, pass MO: the dark theme's mint read 1.6 to 1 there).
+    const choiceFace = (c, k = 1, paper = false) => (/^look:/.test(c) ? <LookGroup token={c} k={k} /> : /^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={Math.round(28 * k)} frame={dotFrame || 5} snap={dotFrame > 0} /> : /^shape:/.test(c) ? <ShapePic name={c.split(':')[1]} color={paper ? B.green : undefined} size={Math.round((c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64) * k)} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={Math.round(14 * k)} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={Math.round(18 * k)} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={Math.round(14 * k)} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6).split('#')[0]} color={paper ? B.green : undefined} size={Math.round(64 * k)} /> : /^shares:/.test(c) ? <SharesPic shape={c.split(':')[1]} cut={c.split(':')[2]} shaded={Number(c.split(':')[3] || 0)} size={Math.round(72 * k)} /> : /^dice:/.test(c) ? <DicePic pips={Number(c.split(':')[1].split('#')[0])} size={Math.round(64 * k)} /> : /^pic:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><StudentPicture name={c.slice(4).split('#')[0]} size={Math.round(72 * k)} /></span> : /^art:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><ColorThumb picture={c.slice(4).split('#')[0]} size={Math.round(84 * k)} thing /></span> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={Math.round(64 * k)} /> : /^face:/.test(c) ? <FeelingFace feeling={c.slice(5).split('#')[0]} size={Math.round(84 * k)} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={Math.round(64 * k)} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={Math.round(64 * k)} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={Math.round(80 * k)} /> : /^digital:/.test(c) ? <DigitalPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={Math.round(96 * k)} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={Math.round(12 * k)} /> : c);
     // More Info (pass MH): why each wrong choice does not fit, the one picked now first, in words that remember earlier rounds.
     const pickedNow = checked ? (readAloud ? [...wrongPicks, ...(wasCorrect ? [] : [String(given)])] : (wasCorrect ? [] : [String(given)])) : [];
     const insight = q.type === 'choice' ? choiceInsight(q, pickedNow, qHistory) : null;
@@ -10859,7 +11030,9 @@ function EduSphereScreens() {
           {q.type === 'choice' ? (
             // Number answers never stack onto two lines (2026-09-23, Mikey): the columns are as wide as the longest one needs.
             // Towers stand side by side on one floor (pass MA): the explanation says both stand on the same floor, so the buttons do too.
-            <div style={{ display: 'grid', gap: 10, alignItems: q.choices.every((c) => /^tower:\d+$/.test(c)) ? 'end' : undefined, gridTemplateColumns: q.choices.every((c) => /^tower:\d+$/.test(c)) ? `repeat(${q.choices.length}, 1fr)` : q.choices.every((c) => /^(\d+|[A-Za-z])$/.test(c)) ? `repeat(auto-fit, minmax(${Math.max(70, Math.max(...q.choices.map((c) => c.length)) * 15 + 24)}px, 1fr))` : '1fr' }}>
+            // Two ideas' four corners (q.corners, pass MO) sit two by two, a phone's width on any screen, so the corners read as corners and
+            // the fourth and Check answer fit a short phone (round two's code check: four full-width rows ended 30 pixels below its fold).
+            <div style={{ display: 'grid', gap: 10, alignItems: q.choices.every((c) => /^tower:\d+$/.test(c)) ? 'end' : undefined, gridTemplateColumns: q.corners ? 'repeat(2, minmax(0, 1fr))' : q.choices.every((c) => /^tower:\d+$/.test(c)) ? `repeat(${q.choices.length}, 1fr)` : q.choices.every((c) => /^(\d+|[A-Za-z])$/.test(c)) ? `repeat(auto-fit, minmax(${Math.max(70, Math.max(...q.choices.map((c) => c.length)) * 15 + 24)}px, 1fr))` : '1fr', ...(q.corners ? { maxWidth: 360, margin: '0 auto' } : null) }}>
               {q.choices.map((c) => {
                 const picked = given === c;
                 let bg = C.surface; let border = C.line;
@@ -10875,10 +11048,14 @@ function EduSphereScreens() {
                 // In a walk-through (pass LW), a thing drawn in place of its coloring page says so in the button's corner, with
                 // room left under the drawing; a child answering never sees it, since a mark on one answer could point at it.
                 const standIn = !!(record && record.preview) && /^art:/.test(c) && thingStandIn(c.slice(4).split('#')[0]);
+                // A picture's name for a screen reader (pass MO, round one's screen check: the four corners of Two ideas read "square,
+                // circle, square, circle", since a drawn shape names its shape alone); a word choice is its own name. The app's voice
+                // still never says a picture choice.
+                const pictureName = describeChoice(c) !== c ? describeChoice(c) : undefined;
                 return (
                   // A word answer says itself for a child who cannot read; a picture answer never does, because naming it would
                   // hand over the answer, nor, since pass MC, a single letter (choiceSpeaks reads only the choice, never which one is right).
-                  <button key={c} type="button" data-choice={c} onClick={() => { if (!checked) { if (readAloud) { playTap(); if (choiceSpeaks(q, c)) speak(c); } setGiven(c); } }}
+                  <button key={c} type="button" data-choice={c} aria-label={pictureName} onClick={() => { if (!checked) { if (readAloud) { playTap(); if (choiceSpeaks(q, c)) speak(c); } setGiven(c); } }}
                     style={{ opacity: ruledOut && !checked ? (C.mode === 'dark' ? 0.72 : 0.5) : 1, fontFamily: FONT, fontSize: choiceFont(q.choices), textAlign: 'center', padding: standIn ? '12px 10px 34px' : '12px 10px', ...(standIn ? { position: 'relative' } : null), minWidth: 0, overflowWrap: /^-?[\d.,\/ ]+$/.test(c) ? 'normal' : 'anywhere', whiteSpace: /^-?[\d.,\/ ]+$/.test(c) ? 'nowrap' : 'normal', borderRadius: 10, background: bg, border: `2px solid ${border}`, color: C.ink, cursor: checked ? 'default' : 'pointer', minHeight: 48 }}>
                     {choiceFace(c)}
                     {standIn && <ReplaceNote pal={C} style={{ right: 8, bottom: 5 }} />}
@@ -10911,6 +11088,34 @@ function EduSphereScreens() {
                   </div>
                 </Overlay>
               )}
+            </div>
+          ) : q.type === 'order' && q.pick ? (
+            // Follow the directions (pass MO): the pictures stay where they are, and each tap puts its number in the picture's corner,
+            // one, two and three, in a gold badge with dark ink; a tap on a numbered picture takes it back, with every number after it,
+            // and once every step is tapped the other pictures wait. Four pictures sit in two columns and three or six in three, so a phone
+            // shows them all, and on a laptop the grid keeps a phone's size, centred (round one's screen check: a 69-pixel picture sat in a
+            // tile 363 pixels wide, the look Mikey called "small and separated by a lot of space" in pass MH). Each tile tells a screen
+            // reader its picture's name and, once tapped, its number (the badge is a drawing, hidden from it), since three squares of three
+            // colors all read "square". After two wrong orders the next step's picture wears the app's "go here" ring (edu-breathe, still
+            // and full with motion off) and a green edge until it is tapped, then the next one does, while the taps so far are the
+            // direction's own (round three's alignment read: a wrong choice greys out and a trace draws itself after two misses, but a
+            // wrong order only cleared, so a child who could not hold three steps could try for ever); mastery still counts the first try.
+            <div data-steps={q.pick} style={{ display: 'grid', gap: 10, gridTemplateColumns: `repeat(${q.items.length === 4 ? 2 : 3}, minmax(0, 1fr))`, maxWidth: q.items.length === 4 ? 360 : 480, margin: '0 auto' }}>
+              {q.items.map((c) => {
+                const at = orderPicked.indexOf(c); const placed = at >= 0;
+                const steps = q.answer.split(' | '); const nextStep = readAloud && misses >= 2 && !checked && orderPicked.every((x, i) => x === steps[i]) ? steps[orderPicked.length] : null;
+                const hint = !placed && c === nextStep;
+                let bg = C.surface; let border = placed ? C.gold : hint ? C.green : C.line;
+                if (checked && placed) { if (wasCorrect) { bg = C.greenSoft; border = C.green; } else { bg = C.claySoft; border = C.clay; } }
+                return (
+                  <button key={c} type="button" data-choice={c} data-step={placed ? at + 1 : undefined} data-hint={hint ? '' : undefined} className={hint ? 'edu-breathe' : undefined} aria-pressed={placed} aria-label={describeChoice(c) + (placed ? ', number ' + (at + 1) : hint ? ', the next one to tap' : '')}
+                    onClick={() => { if (checked) return; const next = placed ? orderPicked.slice(0, at) : orderPicked.length < q.pick ? [...orderPicked, c] : null; if (!next) return; if (readAloud && !placed) playTap(); setOrderPicked(next); setGiven(next.join(' | ')); }}
+                    style={{ position: 'relative', minWidth: 0, minHeight: 96, padding: '14px 8px', borderRadius: 12, background: bg, border: `${placed || hint ? 3 : 2}px solid ${border}`, color: C.ink, cursor: checked ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {choiceFace(c, q.items.length > 4 ? 0.85 : 1)}
+                    {placed && <StepBadge n={at + 1} />}
+                  </button>
+                );
+              })}
             </div>
           ) : q.type === 'order' ? (
             <div>
@@ -10970,7 +11175,7 @@ function EduSphereScreens() {
           {checked && !(attempt.placement && !wasCorrect && given === '') && (
             <div key={cheer} className={wasCorrect ? 'edu-cheer' : 'edu-wobble'} style={{ position: 'relative', marginTop: 14, padding: 14, borderRadius: 10, background: wasCorrect ? C.greenSoft : C.claySoft }}>
               {wasCorrect && <StarBurst />}
-              <p style={{ margin: 0, fontWeight: 600, color: wasCorrect ? C.green : C.clayInk }}>{wasCorrect ? 'Correct' : readAloud ? preReaderWrongWords(q, String(given), wrongPicks) : `Not quite. The answer is ${describeChoice(q.answer)}.`}</p>
+              <p style={{ margin: 0, fontWeight: 600, color: wasCorrect ? C.green : C.clayInk }}>{wasCorrect ? 'Correct' : readAloud ? preReaderWrongWords(q, String(given), wrongPicks) : `Not quite. The answer is ${describeAnswer(q)}.`}</p>
               {(wasCorrect || !readAloud) && <div style={{ margin: '8px 0 0' }}><RichText text={formatTeachingText(q.explain)} size={15} lineGap={6} />{!wasCorrect && !readAloud && taughtLine(mod.id, q.answer) && <p style={{ margin: '8px 0 0', fontSize: 14, color: C.muted }}>From the lesson: “{taughtLine(mod.id, q.answer)}”</p>}{!wasCorrect && !readAloud && mod.lesson.example && mod.lesson.example.another && (wrongWay ? <div style={{ margin: '8px 0 0', padding: '10px 12px', borderRadius: 10, background: C.goldSoft }}><div style={{ maxWidth: 240, margin: '0 auto 8px' }}><Picture visual={wayVisual(mod.lesson.example, 1)} note={record.preview ? undefined : false} /></div><RichText text={wayText([].concat(mod.lesson.example.another)[0])} size={14} lineGap={6} /></div> : <p style={{ margin: '8px 0 0', textAlign: 'center' }}><button type="button" style={{ ...linkBtn, fontSize: 14 }} onClick={() => setWrongWay(true)}>Show me another way</button></p>)}{!wasCorrect && q.choiceNotes && q.choiceNotes[given] && !(insight && insight.any) && <p style={{ margin: '6px 0 0', fontSize: 15, color: C.muted }}>{q.choiceNotes[given]}</p>}</div>}
               {/* An explanation picture is a set of fraction bars, one group of dots, or (since pass LW) any picture kind below. */}
               {(wasCorrect || !readAloud) && Array.isArray(q.explainVisual) && q.explainVisual.map((b, i) => <LabeledBar key={i} parts={b.parts} shaded={b.shaded} label={b.label} color={wasCorrect ? C.green : C.clay} />)}
@@ -10981,7 +11186,7 @@ function EduSphereScreens() {
               {!readAloud && insight && insight.any && <p style={{ margin: '8px 0 0', textAlign: 'center' }}><button type="button" data-more-info-link="" onClick={() => setMoreInfo(true)} style={{ ...linkBtn, fontSize: 14 }}>More Info</button></p>}
             </div>
           )}
-          {moreInfo && insight && insight.any && <MoreInfoSheet insight={insight} face={(c) => choiceFace(c, 0.6)} visual={q.visual || null} young={readAloud} onClose={() => setMoreInfo(false)} />}
+          {moreInfo && insight && insight.any && <MoreInfoSheet insight={insight} face={(c) => choiceFace(c, 0.6, true)} visual={q.visual || null} young={readAloud} onClose={() => setMoreInfo(false)} />}
         </div>
         {/* A pre-reader who got it wrong tries again. Nobody moves on from a wrong answer. The row is a scroll cue's target (pass
             MH, the alignment read): a pre-reader's reason after a wrong tap can push Try again below a short phone's screen, where a
@@ -10997,14 +11202,16 @@ function EduSphereScreens() {
             : q.type === 'writing'
               ? <Btn full halo={ticks.length === q.checklist.length} onClick={submitWriting} disabled={busy || ticks.length < q.checklist.length}>I have finished writing it</Btn>
               : <>
-                <Btn full halo={given !== ''} onClick={checkCurrent} disabled={given === '' || (q.type === 'order' && orderPicked.length < q.items.length)}>Check answer</Btn>
+                <Btn full halo={given !== ''} onClick={checkCurrent} disabled={given === '' || (q.type === 'order' && orderPicked.length < (q.pick || q.items.length))}>Check answer</Btn>
                 {attempt.placement && <div style={{ marginTop: 10 }}><Btn full kind="secondary" onClick={dontKnow}>I don't know</Btn></div>}
               </>}
         </div>
         {/* For a pre-reader, More Info waits under the next button after the right tap (pass MH, the alignment read): it is for the
             grown-up beside the child, so it never pushes the child's own button down. */}
         {readAloud && checked && wasCorrect && insight && insight.any && <p style={{ margin: '10px 0 0', textAlign: 'center' }}><button type="button" data-more-info-link="" onClick={() => setMoreInfo(true)} style={{ ...linkBtn, fontSize: 14 }}>More Info</button></p>}
-        {readAloud && (checked || given !== '') && <ScrollCue target="[data-practice-next]" whole watch={`${qIndex}-${checked}-${wasCorrect}-${misses}`} />}
+        {/* The cue waits for a whole direction (round one's screen check, pass MO: after the first tap it pointed at a Check answer
+            that stays closed until every step is tapped). */}
+        {readAloud && (checked || (given !== '' && !(q.type === 'order' && orderPicked.length < (q.pick || q.items.length)))) && <ScrollCue target="[data-practice-next]" whole watch={`${qIndex}-${checked}-${wasCorrect}-${misses}`} />}
         {record.preview && <div style={{ marginTop: 10 }}><Btn full kind="secondary" onClick={() => { setChecked(false); setGiven(''); setOrderPicked([]); if (qIndex + 1 < questions.length) { setQIndex(qIndex + 1); setQShownAt(Date.now()); } else { setScreen('overview'); } }}>Skip (walk-through)</Btn></div>}
         <SilentNote shown={heardNote} />
       </div></div>

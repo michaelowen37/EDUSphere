@@ -91,7 +91,10 @@ const slowVoice = () => page.evaluate(() => { const q = []; let cur = null; let 
 await readAgain(); await page.locator('[data-story-end]').scrollIntoViewIfNeeded(); await page.waitForTimeout(longEnough); await backToCourses();
 // Read again, stop the voice at once, and stay long enough without reaching the end: not counted. (Since pass ME the page reads
 // itself and follows the voice down the story, so a reading left to run reaches the end by itself, which is a read to the end.)
-await slowVoice(); await readAgain(); await page.waitForFunction(() => window.__spoken.length > 0, null, { timeout: 5000 }); await page.evaluate(() => window.speechSynthesis.cancel()); await page.waitForTimeout(2600);   // the page's voice watch ends a reading that went quiet; a tap on Stop reading would scroll the page to the button, under the last paragraph
+// Since pass MO the voice goes quiet for good here: the page reads a voice that stops once as words it dropped and asks again
+// (round one's watch for a lost end, round three's retry of dropped first words), so a stand-in stopped by one cancel read on to the
+// end and the read counted; check.sh at delivery found it.
+await slowVoice(); await readAgain(); await page.waitForFunction(() => window.__spoken.length > 0, null, { timeout: 5000 }); await page.evaluate(() => { const ss = window.speechSynthesis; ss.cancel(); ss.speak = (u) => { window.__spoken.push(u.text); }; }); await page.waitForTimeout(2600);   // the page's voice watch ends a reading that went quiet; a tap on Stop reading would scroll the page to the button, under the last paragraph
 const endShown = await page.evaluate(() => { const r = document.querySelector('[data-story-end]').getBoundingClientRect(); return r.top < window.innerHeight; });
 await page.waitForTimeout(longEnough); await backToCourses(); await fastVoice();
 // Read again to the end and leave at once: not counted.

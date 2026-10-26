@@ -260,3 +260,70 @@ Chips keep coming until the player's three ships are gone. Each chip falls a lit
 ## A quick check that completes a course (pass MI, Mikey's answer to Q37)
 
 A passed quick check places its lesson. When that lesson was the course's last one not yet passed, the course is completed, and the quick check's result offers the same celebration as a round, once, with the course's long story. A subject placement that clears whole grades does not celebrate, and a lesson passed before completes nothing new.
+
+## The app's own speech sounds (pass MO, Mikey's notes on Q51)
+
+A device's voice cannot say a speech sound alone: handed "sss" it may spell the letter, and handed "tuh" it may say "two", as it
+did on Mikey's phone. So the app makes the sounds a lesson asks a child to hear itself, and the voice says only the words around
+them. speechPieces(text) cuts a line into pieces, in order: the voice's words, each sound, and each rhyme ending a voice says badly
+alone. A sound is a held sound written as three or more of one of the letters m, n, s, f, z, r or l (mmm, Sss), or a crisp stop
+written tuh, puh, cuh or kuh; an all-capital run such as FFFFFF, a color, is never a sound. A word said slowly ("Mmm-at") is its
+held sound and then the whole word, Mat, since a voice handed the rest of a word alone says it as a word of its own; a rest that
+starts with h keeps its sounds apart (Sss-huh is sss and then huh, since s and h said together are heard as sh); a word stretched
+at its end (Busss) is the word and then its sound; and a run of sounds (Mmm-a-puh) is each part in turn. The rhyme endings: ig is
+handed to the voice as igg, and at is said as a word of its own where a line names it as an ending (after end or ends in or with,
+after "sound," or after a word that ends in at), so "look at the cat" keeps its little word. The voiced stops (buh, duh and guh),
+juh, huh, wuh and shh stay with the voice, which said buh and duh well on Mikey's phone. heardForm reads a line as a child hears
+it, the line's own words, and since pass MO no word is added to a sound.
+
+The sounds are made from numbers by soundClipSamples, 32,000 samples a second, the same on every device and every time: a seeded
+noise source for the hisses and the bursts, and for the voiced sounds a woman's voice near 210 cycles a second (falling 5 percent
+over the sound and wavering very slightly, five times a second, so it sounds breathed), shaped by the mouth's or the nose's
+resonances. A held sound lasts 0.85 seconds, or 1.1 on the snail's slower pace, rising over 0.07 seconds and falling over 0.16,
+so it never clicks. sss is a hiss above 3,600 cycles a second whose loudest part sits near 6,500 (its peak filter at 6,800), high
+in the range where an s peaks; fff is a softer, flatter hiss from about 1,300 to 9,000; zzz is the hiss pulsing with the voice's
+buzz, with a low hum under it; mmm and nnn are a hum through the nose, strongest near 280, with mmm's dip near 950 and nnn's near
+1,750, which is what tells them apart; lll and rrr are the voice held in their mouth shapes, rrr's third resonance low, near
+1,650, which is what makes an r sound like r. A crisp stop is 0.03 seconds of quiet, the burst as the tongue or lips let go (t
+high, near 5,200; p low, under about 1,200; k in the middle, near 2,100) and a short breath after it, 0.14 seconds in all (k 0.16).
+soundClipWav wraps a sound as a small WAV file (16-bit, one channel); 'quiet' is a twentieth of a second of silence. These are the
+app's own stand-ins until the sounds are recorded (EARMARKS A41).
+
+The screens play them (ui.jsx). One audio element plays every sound, and the first tap, key or touch anywhere plays the quiet one,
+which a phone needs before a page may play sound. sayPieces hands the voice its words together up to the next sound, so they flow
+as one line, plays the sound once the voice has finished them, and goes on with the words after it; a sound that cannot play ends
+at once, and none holds a reading up longer than 1.7 seconds. A newer line cancels the voice and stops the sound (speak,
+speakSequence), and voiceTalking counts a sound playing as the voice still talking, so the read-along's light and the voice's one
+retry wait for it. The rules test measures every sound against these numbers; tools/voice-check.mjs builds a page from the same
+code with 32 numbered rows for Mikey to hear on his phone (Q51). The retry asks once more when the voice never started, and since
+round two's code check each send is its own attempt, so the retry retires the try it replaces; a watch moves a line on when the
+voice drops a batch's end event (after 1.2 seconds of quiet, or 1.5 if it never began); and leaving a round hushes it through
+hushSpeech, whose cancel waits a tick and is skipped when a newer line has already spoken, so the next screen never speaks straight
+after a cancel. Since round three's code check every reader's stop is that hush, a reading whose first words the voice dropped is
+asked once more after 700 ms, sayPieces lights no piece past its batch, a story's watch waits for two seconds of quiet before it
+ends a reading, and the result and a finished course are hushed when they are left; since round four's code check the Wonder's
+voice cards are hushed too, a piece's end counts every piece before it in its batch as ended (a voice says its queue in order, though it may lose an end),
+a piece that starts is the one lit, and the voice check page asks a row once more as speak() does; since round five's code check a coloring page is hushed when
+it is left, and a piece the voice will not take counts only itself, since the pieces before it are still queued; since round six's code check it tells no one it began, and an end moves the light and the place only once every piece before it has ended, to the next piece not yet ended. The rules test runs this code in
+node:vm on a fake clock against a voice that drops what Chrome drops.
+
+## Following directions (pass MO, earmarks E12 and E13, Domain II)
+
+A direction is an order question with pick, the number of steps (stepsQuestion in logic.mjs): two steps in pre-K 3's Two steps,
+three in pre-K 4's Three steps. Its items are the steps' pictures and a few others, shuffled, but never with the steps first and in
+their own order, since a child who tapped from the left would then pass without listening; its answer is the steps joined in order
+with " | ", which checkAnswer compares with the taps, as for every order question. The screen draws the items in a grid that fits
+a phone, two columns for four pictures and three for three or six; each tap puts its number on the picture in a gold badge, a tap
+on a numbered picture takes back its number and every number after it, a tap past the last step does nothing, and Check answer
+waits until every step is tapped. A wrong order hears "Let's listen again." and the direction once more (preReaderWrongWords),
+turns every tapped picture clay alike, so the retry cannot be answered by color, and Try again clears the numbers; only the right
+order turns them green. The directions name things the lessons say (askedNames reads each step a direction names by its picture
+and holds the lesson to saying it), never red beside green, and a rectangle is asked for as the long rectangle, since a square is
+a rectangle too. Since round one's screen check the gold badge sits on the picture's corner, half off its tile, so it never covers the
+drawing (StepBadge, which also draws the numbers on a lesson line that teaches them); the scroll cue waits until every step is
+tapped; on a laptop the grid keeps a phone's size (360 pixels for four pictures, 480 for three or six); and each tile tells a screen
+reader its picture's name and, once tapped, its number. Since round three's alignment read a direction never leaves a child stuck:
+after two wrong orders (misses, which only a new question resets) the next step's picture wears the app's green "go here" ring
+(edu-breathe, still and full with motion off) and a green edge until it is tapped, then the next one does, while the taps so far are
+the direction's own; a wrong tap takes the ring away until it is taken back. Mastery is unchanged, since a pre-reader's result is
+right the first time or not.

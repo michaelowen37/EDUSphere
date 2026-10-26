@@ -49,6 +49,10 @@ ok('what was done survives a reload, because it lives in the browser', after.inc
 const createOffered = (await page.getByRole('button', { name: 'Create account' }).count()) > 0;
 ok('the account, device name and state are remembered too', !createOffered);
 ok('no browser errors on the standalone page', errors.length === 0);
+// The app's own speech sounds play from blob: addresses (pass MO), so the page's security policy must let media load from blob:;
+// without it every sound would end at once on its error and every other check would stay green (round one's code check).
+{ const page = readFileSync('index.html', 'utf8'); const csp = (page.match(/http-equiv="Content-Security-Policy" content="([^"]+)"/) || [])[1] || '';
+  ok('the standalone page\'s security policy lets the app\'s own sounds play (media-src keeps blob:)', /(?:^|;)\s*media-src [^;]*\bblob:/.test(csp), csp); }
 ok("the What's new pop-up opens on a phone with the newest block in short notes, at most four", !!wantNews && newsSeen.shown && newsSeen.text.includes(wantNews.date) && wantNews.brief.slice(0, 4).every((t) => newsSeen.text.includes(t)) && newsGone);
 ok('the backup reminder and What\'s new never open at the same time, so every button can be tapped', oneAtATime);
 ok("More Details opens a page with every note of the newest block in full, and closes the pop-up", details.link && wantNews.items.every((t) => details.text.includes(t)));

@@ -1507,14 +1507,21 @@ export function isPreReader(courseId) {
 // for B, so the lesson must have said them; a name every choice shares is not asked (Tap the red square, between a red
 // square and a blue one, asks for red), and a question that names nothing (Tap the one that is the same) asks for none.
 export function askedNames(q) {
-  if (!q || q.type !== 'choice' || typeof q.answer !== 'string') return [];
-  const asked = String(q.prompt || '').toLowerCase();
+  if (!q || typeof q.answer !== 'string') return [];
+  // A question's whole words are read, its setup line and its prompt (pass MO, round one's lesson and code checks: Two ideas named
+  // the answer's picture in the setup, "Listen. It is a triangle, and it is green.", under a prompt that names nothing, so its
+  // triangle, green, mad and scared were asked and never said in the lesson, and no check saw it).
+  const asked = `${q.story || ''} ${q.prompt || ''}`.toLowerCase();
   const named = (w) => new RegExp(`\\b${w}s?\\b`).test(asked);
   const parts = (x) => { const s = String(x).replace(/#\d+$/, ''); let m;
     if ((m = /^(?:icon|pic|art|shape|solid|face):([a-z]+)/.exec(s))) return [m[1]];   // face: pass MD
     if ((m = /^swatch:([a-z]+)$/.exec(s))) return [m[1]];
     if ((m = /^item:([a-z]+)-([a-z]+)/.exec(s))) return [m[1], m[2]];
     return null; };
+  // A direction of steps (pass MO) asks for each step by every name it says of it, read as a choice's parts are (Tap the cup, the
+  // big circle, the red one); a step told by its sound (the one that says meow) names no picture.
+  if (q.type === 'order' && q.pick) return [...new Set(q.answer.split(' | ').flatMap((s) => parts(s) || []).filter((w) => named(w)))];
+  if (q.type !== 'choice') return [];
   const mine = parts(q.answer);
   // A name said as "this <name>" labels the question's own picture, which the child sees (pass MJ: "Tap the one that is the same
   // as this rabbit." shows the rabbit, and the child matches it by look), so it is not asked for by name.
@@ -3719,14 +3726,14 @@ function LETTER_MODULES() { return [
     tagline: 'Pictures tell you',
     requires: ['sounding-out'],
     lesson: {
-      paragraphs: ['Many words name something, and a picture can show what a word names. When you meet a new word, look at the picture for a clue. If the word says circle and the picture shows a round shape with no corners, the word and the picture match.', 'Some words name flat shapes. A square has four sides that are all the same length, a triangle has three sides and three corners, and a rectangle has four sides, two long and two short.', 'Some words name solid things. A ball is round all over, a box has six flat sides like a block, a can has round ends and straight sides, and a cone is round at one end and comes to a point.', 'Number words tell how many. One, two, three, four, five and six each name a count, so three dots go with the word three.'],
+      paragraphs: ['Many words name something, and a picture can show what a word names. When you meet a new word, look at the picture for a clue. If the word says circle and the picture shows a round shape with no corners, the word and the picture match.', 'Some words name flat shapes. A square has four sides that are all the same length, a triangle has three sides and three corners, and a long rectangle has four sides, two long and two short.', 'Some words name solid things. A ball is round all over, a box has six flat sides like a block, a can has round ends and straight sides, and a cone is round at one end and comes to a point.', 'Number words tell how many. One, two, three, four, five and six each name a count, so three dots go with the word three.'],
       keyIdea: 'A picture can show what a word means. Check that the word and the picture name the same thing.',
       example: { kind: 'shape', name: 'circle', size: 'small', caption: 'Circle. The picture shows a circle.' },
       script: [
         { say: 'This word says circle, and the picture shows a circle, round with no corners. The word and the picture match.', show: { kind: 'shape', name: 'circle' } },
         { say: 'A square has four sides that are all the same length.', show: { kind: 'shape', name: 'square' } },
         { say: 'A triangle has three sides and three corners.', show: { kind: 'shape', name: 'triangle' } },
-        { say: 'A rectangle has four sides, two long and two short.', show: { kind: 'shape', name: 'rectangle' } },
+        { say: 'A long rectangle has four sides, two long and two short.', show: { kind: 'shape', name: 'rectangle' } },
         { say: 'Some words name solid things. A ball is round all over.', show: { kind: 'solid', name: 'sphere' } },
         { say: 'A box has six flat sides, like a block.', show: { kind: 'solid', name: 'cube' } },
         { say: 'A can has round ends and straight sides.', show: { kind: 'solid', name: 'cylinder' } },
@@ -4191,7 +4198,7 @@ function PREK3_MODULES() { return [
         { say: 'Taking turns works with lots of things, like the slide, the swing and a new book.', show: { kind: 'icon', name: 'slide' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines I.C.1 (forms positive relationships with adults and peers) and II.B.4 (begins to use appropriate language for different situations), and Head Start ELOF Goals P-SE 2 (engages in prosocial and cooperative behavior with adults), one of whose indicators reads "Engages in prosocial behaviors with adults, such as using respectful language or greetings.", in part, since the lesson teaches saying please and thank you, prosocial behavior of the kind the first sentence of its 36 to 48 month progression names, "Sometimes engages in prosocial behavior with adults, such as greeting the teacher or saying goodbye, and responds to adult requests and directions that may include assistance or prompting.", while responding to adult requests and directions is a grown-up\'s to guide, and its second sentence, "Sometimes demonstrates uncooperative behavior with familiar adults, such as saying "No" to requests, but these moments are typically resolved with support from adults.", is a grown-up\'s to resolve (EARMARKS E12), P-SE 3 (engages in and maintains positive interactions and relationships with other children), in part, since the lesson teaches sharing and taking turns with materials from the second sentence of its 36 to 48 month progression, "May spontaneously engage in prosocial behaviors with other children, such as sharing and taking turns with materials and in conversations, or may engage in these with prompting from adults.", while the skills of its first sentence, "Sometimes engages in and maintains interactions with other children without support from an adult, or demonstrates skills in doing this when prompted by an adult.", are taught in Can I play too?, doing them without a grown-up, or spontaneously, is the child\'s own, and taking turns in conversations is talk with other children, a grown-up\'s or the classroom\'s (EARMARKS E12), and P-SE 5 (uses basic problem-solving skills to resolve conflicts with other children), one of whose indicators reads "Uses basic strategies for dealing with common conflicts, such as sharing, taking turns, and compromising.", in part, since the lesson teaches the second sentence of its 36 to 48 month progression, "Suggests solutions to conflicts with adult guidance and support.", taking turns or sharing when two friends want one thing, while its first, "Begins to recognize and describe social problems.", is taught in Helping a friend.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines I.C.1 (forms positive relationships with adults and peers), since the lesson teaches the kind words that build them, please when asking and thank you when someone gives or helps, with grown-ups and friends alike, and taking turns or sharing with a friend, and II.B.4 (begins to use appropriate language for different situations), and Head Start ELOF Goals P-SE 2 (engages in prosocial and cooperative behavior with adults), one of whose indicators reads "Engages in prosocial behaviors with adults, such as using respectful language or greetings.", in part, since the lesson teaches saying please and thank you, prosocial behavior of the kind the first sentence of its 36 to 48 month progression names, "Sometimes engages in prosocial behavior with adults, such as greeting the teacher or saying goodbye, and responds to adult requests and directions that may include assistance or prompting.", while responding to adult requests and directions is taught in Two steps, and its second sentence, "Sometimes demonstrates uncooperative behavior with familiar adults, such as saying "No" to requests, but these moments are typically resolved with support from adults.", is a grown-up\'s to resolve (EARMARKS E12), P-SE 3 (engages in and maintains positive interactions and relationships with other children), in part, since the lesson teaches sharing and taking turns with materials from the second sentence of its 36 to 48 month progression, "May spontaneously engage in prosocial behaviors with other children, such as sharing and taking turns with materials and in conversations, or may engage in these with prompting from adults.", while the skills of its first sentence, "Sometimes engages in and maintains interactions with other children without support from an adult, or demonstrates skills in doing this when prompted by an adult.", are taught in Can I play too?, doing them without a grown-up, or spontaneously, is the child\'s own, and taking turns in conversations waits for a lesson (EARMARKS E12), and P-SE 5 (uses basic problem-solving skills to resolve conflicts with other children), one of whose indicators reads "Uses basic strategies for dealing with common conflicts, such as sharing, taking turns, and compromising.", in part, since the lesson teaches the second sentence of its 36 to 48 month progression, "Suggests solutions to conflicts with adult guidance and support.", taking turns or sharing when two friends want one thing, while its first, "Begins to recognize and describe social problems.", is taught in Helping a friend.'],
     generators: ['pk3-magic-word', 'pk-turn-choice', 'pk3-magic-word', 'pk3-magic-word', 'pk-turn-choice'],
   },
   // Pass MD, earmark E12 part one (the feelings outcomes of the 2022 Texas Prekindergarten Guidelines, PK3 Domain I, read in
@@ -4323,7 +4330,7 @@ function PREK3_MODULES() { return [
         { say: 'When you want to play, watch first, then ask, can I play too?', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines I.C.3 (shows interest in peer play but may be less skilled in initiating and joining a group), since the lesson teaches showing interest in a game by watching it first, and ways to join a group at play, asking, can I play too?, and bringing something that fits the game, what to do when the answer is not now, and starting play by asking a friend who plays alone, and Head Start ELOF Goals P-SE 3 (engages in and maintains positive interactions and relationships with other children), in part, since the lesson teaches the skills the first sentence of its 36 to 48 month progression names, "Sometimes engages in and maintains interactions with other children without support from an adult, or demonstrates skills in doing this when prompted by an adult.", joining a game and asking a friend who plays alone to play, and taking turns with materials, from its second sentence, adding blocks and rolling a ball, while doing it without a grown-up, or spontaneously, is the child\'s own (EARMARKS E12), sharing is taught in Please and thank you, and taking turns in conversations is talk with other children, a grown-up\'s or the classroom\'s (EARMARKS E12), and P-SE 4 (engages in cooperative play with other children), whose 36 to 48 month progression reads "Often plays cooperatively with other children. For at least short periods during this play, works with other children to plan and enact this play in a coordinated way.", since the lesson teaches playing together, saying an idea for the game, listening to a friend\'s and taking turns to build it.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines I.C.3 (shows interest in peer play but may be less skilled in initiating and joining a group), since the lesson teaches showing interest in a game by watching it first, and ways to join a group at play, asking, can I play too?, and bringing something that fits the game, what to do when the answer is not now, and starting play by asking a friend who plays alone, and Head Start ELOF Goals P-SE 3 (engages in and maintains positive interactions and relationships with other children), in part, since the lesson teaches the skills the first sentence of its 36 to 48 month progression names, "Sometimes engages in and maintains interactions with other children without support from an adult, or demonstrates skills in doing this when prompted by an adult.", joining a game and asking a friend who plays alone to play, and taking turns with materials, from its second sentence, adding blocks and rolling a ball, while doing it without a grown-up, or spontaneously, is the child\'s own (EARMARKS E12), sharing is taught in Please and thank you, and taking turns in conversations waits for a lesson (EARMARKS E12), and P-SE 4 (engages in cooperative play with other children), whose 36 to 48 month progression reads "Often plays cooperatively with other children. For at least short periods during this play, works with other children to plan and enact this play in a coordinated way.", since the lesson teaches playing together, saying an idea for the game, listening to a friend\'s and taking turns to build it.'],
     generators: ['p3-join-how', 'p3-join-yesno', 'p3-join-not-now', 'p3-join-face', 'p3-join-turn'],
   },
 ]; }
@@ -4518,6 +4525,90 @@ function PREK3_READING_MODULES() { return [
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines II.D.1 (understands (receptive) and uses (expressive) expected words to label and describe common objects, people, places, actions, and events), in part, since a child here understands the names of six animals and the words for their sounds and is not asked to say them, and Head Start ELOF Goal P-SCI 1 (observes and describes observable phenomena (objects, materials, organisms, and events)), whose 36 to 48 month progression reads "Uses the five senses to observe objects, materials, organisms, and events. Provides simple verbal or signed descriptions. With adult support, represents observable phenomena, such as draws a picture.", in part, since the lesson observes by hearing, a sound telling which animal is near, while the other senses, the descriptions, which are the child\'s own talk, and the drawing wait (EARMARKS E12).'],
     generators: ['p3-animal-sound', 'p3-animal-says', 'p3-animal-order', 'p3-two-at-once', 'p3-animal-sound'],
+  },
+  // Pass MO, earmark E12, Domain II part one: following two-step directions, from the 2022 Texas Prekindergarten Guidelines' PK3
+  // II.A.2 and the Head Start ELOF goal P-ATL 8 with its 36 to 48 month progression (docs/standards), whose own example is two-step
+  // directions. A three-year-old listens to both steps, says them to themself and taps the pictures in order, each tap numbered
+  // where it lands (stepsQuestion); the steps name things, animal sounds, colors, shapes and sizes the earlier pre-K 3 lessons
+  // teach, and a grown-up's directions at home. Every thing a direction names is named on a line here first.
+  {
+    id: 'two-steps',
+    skill: 'Listening',
+    order: 7,
+    requires: ['animal-sounds'],
+    title: 'Two steps',
+    tagline: 'First this, then that',
+    lesson: {
+      paragraphs: ['Some directions have two steps, like, get a cup, and then get a spoon. The first step is, get a cup, and the second step is, get a spoon. Listen to both steps before you start, and then do them in order, first one step, and then the other. Say the steps to yourself, cup, spoon, because saying them can help you remember both.', 'Words like first and then tell the order, like, first tap the moon, then tap the sun. When you practice, each picture you tap gets a number, one and then two, and to take a number back, tap the picture again. Steps can be things, like a ball, a fish and a tree, or animal sounds, like the cat\'s meow, the duck\'s quack, the bee\'s buzz, the frog\'s ribbit, the owl\'s hoot and the bear\'s growl, or colors, like red, blue, yellow and green, or shapes and sizes, like the big circle and the little square.', 'Grown-ups give two-step directions every day. Get your hat, and then go to the door. Get a book, and then sit in your chair. Get your teddy, and then get into bed. Play it with your grown-up, too. Touch your nose, and then clap your hands!'],
+      keyIdea: 'Listen to both steps, and then do them in order, first one and then the other.',
+      example: { kind: 'pair', a: { kind: 'icon', name: 'cup' }, b: { kind: 'icon', name: 'spoon' }, caption: 'Get a cup, and then get a spoon.' },
+      pictures: [{ serial: 'P157', alt: 'A small child touching her nose while her grown-up smiles, ready to say the next step, clap your hands', step: 16 }],
+      script: [
+        { say: 'Listen. Get a cup, and then get a spoon. That direction has two steps.', show: { kind: 'pair', a: { kind: 'icon', name: 'cup' }, b: { kind: 'icon', name: 'spoon' } } },
+        { say: 'The first step is, get a cup. The second step is, get a spoon.', show: { kind: 'pair', a: { kind: 'icon', name: 'cup' }, b: { kind: 'icon', name: 'spoon' } } },
+        { say: 'Listen to both steps before you start. Then do them in order, first one step, and then the other.', show: { kind: 'pair', a: { kind: 'icon', name: 'cup' }, b: { kind: 'icon', name: 'spoon' } } },
+        { say: 'Say the steps to yourself, cup, spoon. Saying them can help you remember both.', show: { kind: 'pair', a: { kind: 'icon', name: 'cup' }, b: { kind: 'icon', name: 'spoon' } } },
+        { say: 'Words like first and then tell the order. First tap the moon, then tap the sun.', show: { kind: 'pair', a: { kind: 'icon', name: 'moon' }, b: { kind: 'icon', name: 'sun' } } },
+        { say: 'Here are a ball, a fish and a tree. Tap the fish, and then tap the ball.', show: { kind: 'row', items: [{ kind: 'icon', name: 'ball' }, { kind: 'icon', name: 'fish' }, { kind: 'icon', name: 'tree' }] } },
+        { say: 'When you practice, each picture you tap gets a number, one and then two. The fish gets one, and the ball gets two. To take a number back, tap the picture again.', show: { kind: 'row', items: [{ kind: 'icon', name: 'ball', step: 2 }, { kind: 'icon', name: 'fish', step: 1 }, { kind: 'icon', name: 'tree' }] } },
+        { say: 'Steps can be animal sounds. The cat says meow, and the duck says quack. Tap the one that says meow, and then the one that says quack.', show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'pic', name: 'duck' } } },
+        { say: 'The bee says buzz, and the frog says ribbit.', show: { kind: 'pair', a: { kind: 'pic', name: 'bee' }, b: { kind: 'pic', name: 'frog' } } },
+        { say: 'The owl says hoot, and the bear says growl.', show: { kind: 'pair', a: { kind: 'pic', name: 'owl' }, b: { kind: 'pic', name: 'bear' } } },
+        { say: 'Steps can be colors. Tap the red one, and then tap the blue one.', show: { kind: 'pair', a: { kind: 'item', shape: 'circle', colour: 'red' }, b: { kind: 'item', shape: 'circle', colour: 'blue' } } },
+        { say: 'Yellow and green can be steps too. Tap the yellow one, and then tap the green one.', show: { kind: 'pair', a: { kind: 'item', shape: 'circle', colour: 'yellow' }, b: { kind: 'item', shape: 'circle', colour: 'green' } } },
+        { say: 'Steps can be shapes and sizes. Tap the big circle, and then tap the little square.', show: { kind: 'pair', a: { kind: 'shape', name: 'circle', size: 'big' }, b: { kind: 'shape', name: 'square', size: 'small' } } },
+        { say: 'Grown-ups give two-step directions every day. Get your hat, and then go to the door.', show: { kind: 'pair', a: { kind: 'icon', name: 'hat' }, b: { kind: 'icon', name: 'door' } } },
+        { say: 'Get a book, and then sit in your chair. First the book, and then the chair.', show: { kind: 'pair', a: { kind: 'icon', name: 'book' }, b: { kind: 'icon', name: 'chair' } } },
+        { say: 'Get your teddy, and then get into bed. First the teddy, and then the bed.', show: { kind: 'pair', a: { kind: 'icon', name: 'teddy' }, b: { kind: 'icon', name: 'bed' } } },
+        { say: 'Play it with your grown-up. Touch your nose, and then clap your hands!', show: null },
+        { say: 'Listen to both steps, and then do them in order, first one and then the other.', show: { kind: 'pair', a: { kind: 'icon', name: 'cup' }, b: { kind: 'icon', name: 'spoon' } } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines II.A.2 (shows understanding by following two-step verbal directions), since the lesson teaches listening to both steps before starting, saying them to yourself and doing them in order, first and then, with things, animal sounds, colors, shapes and sizes, and a grown-up\'s directions at home, and Head Start ELOF Goal P-ATL 8 (holds information in mind and manipulates it to perform tasks), whose 36 to 48 month progression reads "Holds small amounts of information in mind, such as two-step directions, to successfully complete simple tasks.", since the lesson holds two steps in mind, says them to help remember them and carries them out in order, and P-SE 2 (engages in prosocial and cooperative behavior with adults), in part, since the lesson teaches responding to a grown-up\'s directions, listening to both steps and doing them in order at home, from the first sentence of its 36 to 48 month progression, "Sometimes engages in prosocial behavior with adults, such as greeting the teacher or saying goodbye, and responds to adult requests and directions that may include assistance or prompting.", while its prosocial behavior is taught in Please and thank you, and its second sentence, "Sometimes demonstrates uncooperative behavior with familiar adults, such as saying "No" to requests, but these moments are typically resolved with support from adults.", is a grown-up\'s to resolve (EARMARKS E12).'],
+    generators: ['p3-steps-things', 'p3-steps-sounds', 'p3-steps-colors', 'p3-steps-sizes', 'p3-steps-routine'],
+  },
+  // Pass MO, earmark E12, Domain II part one: sentences that combine two ideas, from the 2022 Texas Prekindergarten Guidelines'
+  // PK3 II.E.4 and the Head Start ELOF goal P-LC 2 with its 36 to 48 month progression (docs/standards). A three-year-old hears one
+  // sentence that joins two ideas with and, and finds what fits both, or tells which idea goes with whom: a shape and its color, a
+  // shape and its size, which animal has which thing, how each of two friends feels and what each of two animals does.
+  {
+    id: 'two-ideas',
+    skill: 'Listening',
+    order: 8,
+    requires: ['two-steps'],
+    title: 'Two ideas',
+    tagline: 'Listen for both',
+    lesson: {
+      paragraphs: ['Some sentences have two ideas, joined by the word and, like, it is a square, and it is blue. The first idea is, it is a square, and the second idea is, it is blue, so a blue square fits both ideas. A blue circle is blue, but it is a circle, and a red square is a square, but it is red, so each fits only one idea. A red circle is not blue, and it is not a square, so it does not fit at all. It is a triangle, and it is yellow, so a yellow triangle fits both, and a green triangle fits only one. It is little, and it is a circle, so a little circle fits both. A big square is not little, and it is not a circle, so it does not fit at all.', 'Two ideas can tell about two animals, like, the cat has a ball, and the duck has a hat. The duck has the hat, and the cat has the ball. The bee can have a cup and the owl a spoon, or the frog a sock and the bear a block. Two ideas can tell how two friends feel, like, Mia feels happy, and Kai feels sad, or Sam feels mad, and Ana feels scared. They can tell what two animals do, like, the bear is sleeping, and the frog is eating, or the cat is playing, and the owl is hiding.', 'When you hear the word and, listen for both ideas, and keep them both in your mind. Then find the one that fits them both.'],
+      keyIdea: 'When you hear the word and, listen for both ideas, and find the one that fits them both.',
+      example: { kind: 'item', shape: 'square', colour: 'blue', caption: 'It is a square, and it is blue.' },
+      pictures: [{ serial: 'P159', alt: 'A friendly cat with its front paws on a red ball beside a duck wearing a little blue hat, on the grass', step: 9 }],
+      script: [
+        { say: 'Some sentences have two ideas, joined by the word and. Listen. It is a square, and it is blue.', show: { kind: 'item', shape: 'square', colour: 'blue' } },
+        { say: 'The first idea is, it is a square. The second idea is, it is blue. A blue square fits both ideas.', show: { kind: 'item', shape: 'square', colour: 'blue' } },
+        { say: 'A blue circle is blue, but it is a circle. It fits only one idea.', show: { kind: 'item', shape: 'circle', colour: 'blue' } },
+        { say: 'A red square is a square, but it is red. It fits only one idea too.', show: { kind: 'item', shape: 'square', colour: 'red' } },
+        { say: 'A red circle is not blue, and it is not a square. It does not fit at all.', show: { kind: 'item', shape: 'circle', colour: 'red' } },
+        { say: 'Listen. It is a triangle, and it is yellow. A yellow triangle fits both ideas, and a green triangle fits only one.', show: { kind: 'pair', a: { kind: 'item', shape: 'triangle', colour: 'yellow' }, b: { kind: 'item', shape: 'triangle', colour: 'green' } } },
+        { say: 'Listen. It is little, and it is a circle. A little circle fits both ideas.', show: { kind: 'pair', a: { kind: 'shape', name: 'circle', size: 'small' }, b: { kind: 'shape', name: 'circle', size: 'big' } } },
+        { say: 'A big circle is a circle, but it is big. A little square is little, but it is a square.', show: { kind: 'pair', a: { kind: 'shape', name: 'circle', size: 'big' }, b: { kind: 'shape', name: 'square', size: 'small' } } },
+        { say: 'A big square is not little, and it is not a circle. It does not fit at all.', show: { kind: 'pair', a: { kind: 'shape', name: 'square', size: 'big' }, b: { kind: 'shape', name: 'circle', size: 'small' } } },
+        { say: 'Two ideas can tell about two animals. Listen. The cat has a ball, and the duck has a hat.', show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'pic', name: 'duck' } } },
+        { say: 'Who has the hat? The duck has the hat. Who has the ball? The cat has the ball.', show: { kind: 'pair', a: { kind: 'pic', name: 'duck' }, b: { kind: 'pic', name: 'cat' } } },
+        { say: 'Listen. The bee has a cup, and the owl has a spoon. Who has the spoon? The owl has the spoon.', show: { kind: 'pair', a: { kind: 'pic', name: 'bee' }, b: { kind: 'pic', name: 'owl' } } },
+        { say: 'The frog has a sock, and the bear has a block. Who has the sock? The frog has the sock.', show: { kind: 'pair', a: { kind: 'pic', name: 'frog' }, b: { kind: 'pic', name: 'bear' } } },
+        { say: 'Two ideas can tell how two friends feel. Mia feels happy, and Kai feels sad.', show: { kind: 'pair', a: { kind: 'face', feeling: 'happy' }, b: { kind: 'face', feeling: 'sad' } } },
+        { say: 'How does Kai feel? Kai feels sad. How does Mia feel? Mia feels happy.', show: { kind: 'pair', a: { kind: 'face', feeling: 'sad' }, b: { kind: 'face', feeling: 'happy' } } },
+        { say: 'Friends can feel mad or scared too. Sam feels mad, and Ana feels scared.', show: { kind: 'pair', a: { kind: 'face', feeling: 'mad' }, b: { kind: 'face', feeling: 'scared' } } },
+        { say: 'Two ideas can tell what animals do. Listen. The bear is sleeping, and the frog is eating.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'frog' } } },
+        { say: 'Is the frog eating? Yes, the frog is eating. Is the bear eating? No, the bear is sleeping.', show: { kind: 'pair', a: { kind: 'pic', name: 'frog' }, b: { kind: 'pic', name: 'bear' } } },
+        { say: 'Animals can be playing or hiding too. The cat is playing, and the owl is hiding.', show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'pic', name: 'owl' } } },
+        { say: 'When you hear the word and, listen for both ideas. Keep them both in your mind, like square and blue.', show: { kind: 'pair', a: { kind: 'item', shape: 'square', colour: 'blue' }, b: { kind: 'item', shape: 'circle', colour: 'blue' } } },
+        { say: 'Listen to both ideas, and then find the one that fits them both.', show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'pic', name: 'duck' } } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines II.E.4 (understands increasingly longer sentences that combine two ideas), since the lesson teaches listening for both ideas a sentence joins with and, and finding what fits them both, a shape and its color, a shape and its size, which animal has which thing, how each of two friends feels and what each of two animals does, and Head Start ELOF Goal P-LC 2 (understands and responds to increasingly complex communication and language from others), whose 36 to 48 month progression reads "Understands and responds (verbally and non-verbally) to increasingly longer sentences, simple questions, and simple stories.", in part, since the lesson teaches understanding increasingly longer sentences and simple questions about them, who has the hat, how does Kai feel and is the bear eating, and responding without words, by tapping what fits, while responding in words is the child\'s own talk, and simple stories are practiced by every story rather than taught (EARMARKS E12).'],
+    generators: ['p3-ideas-looks', 'p3-ideas-sizes', 'p3-ideas-who-has', 'p3-ideas-feels', 'p3-ideas-yesno'],
   },
 ]; }
 
@@ -5556,8 +5647,50 @@ function PREK_MODULES() { return [
         { say: 'Notice how your friend feels, and help. When you cannot fix a problem together, get a grown-up.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines I.C.6 (demonstrates empathy and caring for others), since the lesson teaches noticing how a friend feels, kind words and acts for a friend who feels sad, worried or embarrassed, and getting a grown-up when a friend is hurt or very sad (helping a friend pick up dropped crayons is taught in Taking turns), and I.C.5 (initiates problem-solving strategies when experiencing conflicts with others and seeks adult support when necessary), since the lesson teaches saying what the problem is, taking turns choosing and finding a game both friends like, and getting a grown-up when friends cannot fix a problem together or a fight starts that they cannot stop, and not for a simple problem friends can fix themselves (taking turns and sharing are taught in Taking turns), and Head Start ELOF Goals P-SE 7 (expresses care and concern toward others), whose 48 to 60 month progression reads "Consistently pays attention when others are distressed and often responds with care, either by seeking out adult support or providing reassurance or support themselves.", and P-SE 5 (uses basic problem-solving skills to resolve conflicts with other children), whose 48 to 60 month progression reads "Often recognizes and describes social problems, suggests solutions to conflicts, and compromises when working or playing in a group. Although simple conflicts may be resolved without adult assistance, may seek out or need adult support in more challenging moments.", and P-SE 4 (engages in cooperative play with other children), in part, since the lesson teaches what the second sentence of its 48 to 60 month progression names, "Works with other children to make plans for what and how they will play together.", taking turns choosing and finding a game both friends like, while its first, "Cooperatively plays with other children in an increasingly coordinated way.", waits for a lesson after Can I play too?, and its third, "When given the opportunity, these coordinated play periods get longer.", is the child\'s own play (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines I.C.6 (demonstrates empathy and caring for others), since the lesson teaches noticing how a friend feels, kind words and acts for a friend who feels sad, worried or embarrassed, and getting a grown-up when a friend is hurt or very sad (helping a friend pick up dropped crayons is taught in Taking turns), and I.C.5 (initiates problem-solving strategies when experiencing conflicts with others and seeks adult support when necessary), since the lesson teaches saying what the problem is, taking turns choosing and finding a game both friends like, and getting a grown-up when friends cannot fix a problem together or a fight starts that they cannot stop, and not for a simple problem friends can fix themselves (taking turns and sharing are taught in Taking turns), and Head Start ELOF Goals P-SE 7 (expresses care and concern toward others), whose 48 to 60 month progression reads "Consistently pays attention when others are distressed and often responds with care, either by seeking out adult support or providing reassurance or support themselves.", and P-SE 5 (uses basic problem-solving skills to resolve conflicts with other children), whose 48 to 60 month progression reads "Often recognizes and describes social problems, suggests solutions to conflicts, and compromises when working or playing in a group. Although simple conflicts may be resolved without adult assistance, may seek out or need adult support in more challenging moments.", and P-SE 4 (engages in cooperative play with other children), in part, since the lesson teaches what the second sentence of its 48 to 60 month progression names, "Works with other children to make plans for what and how they will play together.", taking turns choosing and finding a game both friends like, while its first, "Cooperatively plays with other children in an increasingly coordinated way.", is taught in Let\'s play together, and its third, "When given the opportunity, these coordinated play periods get longer.", is the child\'s own play (EARMARKS E13).'],
     generators: ['p4-kind-words', 'p4-help-friend', 'p4-when-grownup', 'p4-fix-problem', 'p4-good-yesno'],
+  },
+  // Pass MO, earmark E13, Domain I's last pre-K 4 lesson: starting to talk and play with a new friend, and playing together with a
+  // plan, from the 2022 Texas Prekindergarten Guidelines' PK4 I.C.1, I.C.3 and I.C.4 and the Head Start ELOF goals P-SE 4 and P-SE 1
+  // with their 48 to 60 month progressions (docs/standards). I.C.1 and I.C.3 are read as pre-K 3 reads its I.C.1 and I.C.3: the
+  // skills a code names are taught, and its words of degree (effective, competence, increasingly) say how well a child uses them,
+  // which grows with practice and makes no part (RULES-AUDIT section 5's frequency row), so both are cited whole. One idea a line,
+  // and every answer the bank asks is said on a line first.
+  {
+    id: 'play-together',
+    skill: 'Getting along',
+    order: 22,
+    requires: ['good-friend'],
+    title: 'Let\'s play together',
+    tagline: 'Say hi, then make a plan',
+    lesson: {
+      paragraphs: ['You can start playing with a new friend. First, smile and wave, and then say hi. Tell your name, and ask your friend\'s name, like, hi, I am Ana. What is your name? When your new friend is building with blocks, ask about the game, what are you making? Or say something kind about it, like, I like your tower! Kind words help friends feel happy.', 'You can ask, do you want to play with me? Asking is a friendly way to start, and grabbing a friend\'s toy is not kind. If a friend says no thanks, that is okay. You can play on the slide, or ask another friend.', 'Your face and your body talk too. A smile, a wave or a high five can say, I am happy to play with you. When your friend talks, turn toward your friend and listen, and nod your head to show you are listening. Take turns talking, because shouting while your friend talks is not kind. You can talk with grown-ups you know, like your teacher. Say good morning, and tell about a picture you drew with crayons.', 'Playing together can be more fun with a plan. A plan says what you will make, and who does each part, like, let\'s build a house with blocks. You build the walls, and I build the roof. Each friend does a part. You do your part, and your friend does theirs, and together you make the whole house. Talk while you play. You might ask, can you pass me a block? Your friend might say, here you go! Pretend play can have a plan too, like a pizza shop where you make the pizza and your friend brings the plates. When you have a new idea, say it, and ask, is that okay? When the house is done, you can feel happy, because you made it together. Say, we did it, and give a high five.'],
+      keyIdea: 'Smile and say hi to start playing. Then make a plan together, and each friend does a part.',
+      example: { kind: 'pair', a: { kind: 'icon', name: 'house' }, b: { kind: 'icon', name: 'block' }, caption: 'You build the walls, and I build the roof.' },
+      pictures: [{ serial: 'P155', alt: 'A small child smiling and waving hi to a new friend on a classroom rug', step: 0 }, { serial: 'P156', alt: 'Two small children building a house of big plain blocks together on a rug, one building the walls while the other puts on the roof', step: 11 }],
+      script: [
+        { say: 'You can start playing with a new friend. First, smile and wave. Then say hi.', show: { kind: 'pair', a: { kind: 'pic', name: 'rabbit' }, b: { kind: 'pic', name: 'bear' } } },
+        { say: 'Tell your name, and ask your friend\'s name. Hi, I am Ana. What is your name?', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
+        { say: 'When your new friend is building with blocks, ask about the game. What are you making?', show: { kind: 'row', items: [{ kind: 'icon', name: 'block' }, { kind: 'icon', name: 'block' }, { kind: 'icon', name: 'block' }] } },
+        { say: 'Or say something kind about it, like, I like your tower! Kind words help friends feel happy.', show: { kind: 'icon', name: 'tower' } },
+        { say: 'You can ask, do you want to play with me? Asking is a friendly way to start. Grabbing a friend\'s toy is not kind.', show: { kind: 'pair', a: { kind: 'pic', name: 'rabbit' }, b: { kind: 'pic', name: 'bear' } } },
+        { say: 'If a friend says no thanks, that is okay. You can play on the slide, or ask another friend.', show: { kind: 'icon', name: 'slide' } },
+        { say: 'Your face and your body talk too. A smile, a wave or a high five can say, I am happy to play with you.', show: { kind: 'face', feeling: 'happy' } },
+        { say: 'When your friend talks, turn toward your friend and listen. You can nod your head to show you are listening.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
+        { say: 'Take turns talking. You talk, and then your friend talks. Shouting while your friend talks is not kind.', show: { kind: 'pair', a: { kind: 'pic', name: 'rabbit' }, b: { kind: 'pic', name: 'bear' } } },
+        { say: 'You can talk with grown-ups you know, like your teacher. Say good morning, and tell about a picture you drew with crayons.', show: { kind: 'icon', name: 'crayon' } },
+        { say: 'Playing together can be more fun with a plan. A plan says what you will make, and who does each part.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
+        { say: 'Let\'s build a house with blocks. You build the walls, and I build the roof. That is our plan.', show: { kind: 'pair', a: { kind: 'icon', name: 'house' }, b: { kind: 'icon', name: 'block' } } },
+        { say: 'Each friend does a part. You do your part, and your friend does theirs, and together you make the whole house.', show: { kind: 'icon', name: 'house' } },
+        { say: 'Talk while you play. You might ask, can you pass me a block? Your friend might say, here you go!', show: { kind: 'icon', name: 'block' } },
+        { say: 'Pretend play can have a plan too. Let\'s play pizza shop! You make the pizza, and I bring the plates.', show: { kind: 'icon', name: 'pizza' } },
+        { say: 'When you have a new idea, say it, and ask, is that okay? Then you and your friend agree on the new plan.', show: { kind: 'pair', a: { kind: 'pic', name: 'rabbit' }, b: { kind: 'pic', name: 'bear' } } },
+        { say: 'When the house is done, you can feel happy, because you made it together. Say, we did it, and give a high five.', show: { kind: 'face', feeling: 'happy' } },
+        { say: 'Smile and say hi to start playing. Then make a plan together, and each friend does a part.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines I.C.3 (shows competence in initiating social interactions), since the lesson teaches ways to start, a smile, a wave and a hi, telling your name and asking a new friend\'s, asking about a friend\'s game or saying something kind about it, and asking, do you want to play with me?, and what to do with a no thanks, I.C.1 (uses effective verbal and nonverbal communication skills to build relationships with adults and peers), since the lesson teaches the words and the signs that build them, kind words, asking and listening, taking turns talking, a smile, a wave, a nod and a high five, with a teacher as well as with friends, and I.C.4 (increasingly interacts with peers during cooperative play scenarios that share a common plan and goal), since the lesson teaches making a plan together, what to make and who does each part, each friend doing a part, talking while playing, agreeing on a change to the plan and finishing together, in block play and in pretend play, and II.B.2 (engages in conversations in appropriate ways, demonstrating knowledge of verbal and nonverbal conversational rules), since the lesson teaches the rules a talk with a friend keeps, taking turns talking, listening, asking about the friend\'s game and never shouting while a friend talks, and the signs that go with them, turning toward a friend, nodding and smiling, and Head Start ELOF Goals P-SE 4 (engages in cooperative play with other children), in part, since the lesson teaches the first two sentences of its 48 to 60 month progression, "Cooperatively plays with other children in an increasingly coordinated way. Works with other children to make plans for what and how they will play together.", playing together with a plan and each friend doing a part, while its third, "When given the opportunity, these coordinated play periods get longer.", is the child\'s own play (EARMARKS E13), and P-SE 1 (engages in and maintains positive relationships and interactions with adults), in part, since the lesson teaches starting a talk with a teacher, saying good morning and telling about a drawing, from the second sentence of its 48 to 60 month progression, "Initiates interactions with adults and participates in longer and more reciprocal interactions with both trusted and new adults.", while participating in longer and more reciprocal interactions with both trusted and new adults, and its first sentence, "Clearly shows enjoyment in interactions with trusted adults while also demonstrating skill in separating from these adults with minimal distress when in a familiar setting.", are the child\'s own (EARMARKS E13), P-SE 2 (engages in prosocial and cooperative behavior with adults), in part, since the lesson teaches prosocial behavior with adults, saying good morning to a teacher, from the first sentence of its 48 to 60 month progression, "Often engages in prosocial behavior with adults and usually responds appropriately to adult requests and directions without significant assistance or prompting.", while responding to adult requests and directions is taught in Three steps, doing so without significant assistance or prompting is the child\'s own, and its second sentence, "Uncooperative behavior with familiar adults is rare and the child is able to resolve minor conflicts with adults with support, such as being given reminders to use a quiet voice or follow directions.", is the child\'s own (EARMARKS E13), and P-LC 4 (understands, follows, and uses appropriate social and conversational rules), in part, since the lesson teaches the first sentence of its 48 to 60 month progression, "Maintains multi-turn conversations with adults or other children by being responsive to the conversational partner in a variety of ways, such as by asking a question.", taking turns talking, listening and asking a friend about the game, while its second, "With increasing independence, varies tone and volume of expression to match the social situation.", is the child\'s own (EARMARKS E13).'],
+    generators: ['p4-play-start', 'p4-play-body', 'p4-play-plan', 'p4-play-part', 'p4-play-yesno'],
   },
 ]; }
 
@@ -5758,6 +5891,45 @@ function PREK_READING_MODULES() { return [
     sources: ['Aligned with Texas Prekindergarten Guidelines III.C.1 (recognizes and names at least 20 letters (upper- or lower-case letters)), in part, since the lesson asks the child to tap L, T and F when each is heard and to find each by its lines, which with Big letters\' seven and the other tracing lessons\' letters makes thirteen letters the course asks by name, while naming them aloud is the child\'s own talk, for a grown-up to hear, and seven more letters wait (EARMARKS E13), IV.C.2 (progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate), in part, since the lesson forms the letters L, T and F along a guide, while forming letters without a guide, letter strings and writing as a way to communicate are the child\'s own, with a grown-up (EARMARKS E13), IV.C.4 (uses appropriate directionality when writing (e.g., top to bottom, left to right)), in part, since every letter starts at the top, each line down goes from top to bottom and each line across goes from left to right, while writing letters and words from left to right along a line waits (EARMARKS E13), and IX.B.2 (shows increasing control of tasks that require eye-hand coordination), and Head Start ELOF Goals P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson asks for L, T and F by name and by their lines, and with Big letters\' seven and the other tracing lessons\' letters the course asks thirteen by name, half of the alphabet, while naming them aloud is the child\'s own talk, for a grown-up to hear, and letters met often in the environment and the sounds of letters wait (EARMARKS E13), and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show, and P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws letters along their lines with moderate precision, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13).'],
     // Three traces, one of each letter, and two choices, the letter heard and the letter by its lines (pass MN, Q50).
     generators: ['pl-trace-ltf', 'pl-trace-ltf', 'pl-trace-ltf', 'pl-hear-ltf', 'pl-lines-ltf'],
+  },
+  // Pass MO, earmark E13, Domain II part one: following three-step directions, from the 2022 Texas Prekindergarten Guidelines' PK4
+  // II.A.2 and the Head Start ELOF goals P-ATL 8 and P-LC 2 with their 48 to 60 month progressions (docs/standards). A four-year-old
+  // listens to all three steps, says them to themself, asks for a direction again when a step is forgotten, and taps the pictures
+  // in order, first, next and last; after Second and last, which holds three sounds in mind.
+  {
+    id: 'three-steps',
+    skill: 'Listening',
+    order: 9,
+    requires: ['which-came-second'],
+    title: 'Three steps',
+    tagline: 'First, next, last',
+    lesson: {
+      paragraphs: ['Some directions have three steps, like, get a cup, get a spoon, and then sit in your chair. First the cup, next the spoon, and last the chair. The spoon is the second step, after the cup and before the chair. Listen to all three steps before you start, and say them to yourself, cup, spoon, chair, to help you remember them all. If you forget a step, just ask, can you say it again, please?', 'When you practice, each picture you tap gets a number, one, two and three, and to take a number back, tap the picture again. Steps can be things, such as the sun, the moon and a star, or a book, a ball and a hat. They can be feelings, the happy, sad, mad and scared faces, or shapes, a circle, a square, a triangle or a long rectangle, which has two long sides and two short sides, or animal sounds, such as meow, quack, buzz, ribbit, hoot and growl.', 'Grown-ups give three-step directions at school, at the park and at home. Put your block away, get your hat, and then go to the door. Get your hat, get your ball, and then go down the slide. Get your book, get your teddy, and then get into bed. Play it with your grown-up, too. Touch your nose, clap your hands, and then jump!'],
+      keyIdea: 'Listen to all three steps, say them to yourself, and then do them in order, first, next and last.',
+      example: { kind: 'row', items: [{ kind: 'icon', name: 'cup' }, { kind: 'icon', name: 'spoon' }, { kind: 'icon', name: 'chair' }], caption: 'First the cup, next the spoon, and last the chair.' },
+      pictures: [{ serial: 'P158', alt: 'A small child jumping for joy after clapping her hands, her grown-up smiling beside her', step: 15 }],
+      script: [
+        { say: 'Some directions have three steps. Listen. Get a cup, get a spoon, and then sit in your chair.', show: { kind: 'row', items: [{ kind: 'icon', name: 'cup' }, { kind: 'icon', name: 'spoon' }, { kind: 'icon', name: 'chair' }] } },
+        { say: 'First the cup, next the spoon, and last the chair. The spoon is the second step, after the cup and before the chair.', show: { kind: 'row', items: [{ kind: 'icon', name: 'cup' }, { kind: 'icon', name: 'spoon' }, { kind: 'icon', name: 'chair' }] } },
+        { say: 'Listen to all three steps before you start. Say them to yourself, cup, spoon, chair, to help you remember them all.', show: { kind: 'row', items: [{ kind: 'icon', name: 'cup' }, { kind: 'icon', name: 'spoon' }, { kind: 'icon', name: 'chair' }] } },
+        { say: 'If you forget a step, just ask, can you say it again, please?', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
+        { say: 'Here are the sun, the moon and a star. Tap the sun, then the moon, and then the star.', show: { kind: 'row', items: [{ kind: 'icon', name: 'sun' }, { kind: 'icon', name: 'moon' }, { kind: 'icon', name: 'star' }] } },
+        { say: 'Here are a book, a ball and a hat. Tap the hat, then the book, and then the ball.', show: { kind: 'row', items: [{ kind: 'icon', name: 'book' }, { kind: 'icon', name: 'ball' }, { kind: 'icon', name: 'hat' }] } },
+        { say: 'When you practice, each picture you tap gets a number, one, two and three. The hat gets one, the book gets two, and the ball gets three. To take a number back, tap the picture again.', show: { kind: 'row', items: [{ kind: 'icon', name: 'book', step: 2 }, { kind: 'icon', name: 'ball', step: 3 }, { kind: 'icon', name: 'hat', step: 1 }] } },
+        { say: 'Steps can be feelings. Tap the happy face, then the sad face, and then the mad face. The scared face can be a step too.', show: { kind: 'faces', feelings: ['happy', 'sad', 'mad', 'scared'] } },
+        { say: 'Steps can be shapes. Tap the circle, then the square, and then the triangle.', show: { kind: 'row', items: [{ kind: 'shape', name: 'circle' }, { kind: 'shape', name: 'square' }, { kind: 'shape', name: 'triangle' }] } },
+        { say: 'A long rectangle can be a step too. It has two long sides and two short sides. Tap the long rectangle, then the circle, and then the triangle.', show: { kind: 'row', items: [{ kind: 'shape', name: 'rectangle' }, { kind: 'shape', name: 'circle' }, { kind: 'shape', name: 'triangle' }] } },
+        { say: 'Steps can be animal sounds. Tap the one that says meow, then the one that says quack, and then the one that says buzz.', show: { kind: 'row', items: [{ kind: 'pic', name: 'cat' }, { kind: 'pic', name: 'duck' }, { kind: 'pic', name: 'bee' }] } },
+        { say: 'The frog says ribbit, the owl says hoot, and the bear says growl.', show: { kind: 'row', items: [{ kind: 'pic', name: 'frog' }, { kind: 'pic', name: 'owl' }, { kind: 'pic', name: 'bear' }] } },
+        { say: 'At school, you might hear, put your block away, get your hat, and then go to the door.', show: { kind: 'row', items: [{ kind: 'icon', name: 'block' }, { kind: 'icon', name: 'hat' }, { kind: 'icon', name: 'door' }] } },
+        { say: 'At the park, get your hat, get your ball, and then go down the slide.', show: { kind: 'row', items: [{ kind: 'icon', name: 'hat' }, { kind: 'icon', name: 'ball' }, { kind: 'icon', name: 'slide' }] } },
+        { say: 'At home, get your book, get your teddy, and then get into bed.', show: { kind: 'row', items: [{ kind: 'icon', name: 'book' }, { kind: 'icon', name: 'teddy' }, { kind: 'icon', name: 'bed' }] } },
+        { say: 'Play it with your grown-up. Touch your nose, clap your hands, and then jump!', show: null },
+        { say: 'Listen to all three steps, say them to yourself, and then do them in order, first, next and last.', show: { kind: 'row', items: [{ kind: 'icon', name: 'cup' }, { kind: 'icon', name: 'spoon' }, { kind: 'icon', name: 'chair' }] } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines II.A.2 (shows understanding by following three-step verbal directions), since the lesson teaches listening to all three steps before starting, saying them to yourself, asking for a direction again when a step is forgotten, and doing them in order, first, next and last, with things, feelings, shapes, animal sounds and a grown-up\'s directions at school and at home, and Head Start ELOF Goals P-ATL 8 (holds information in mind and manipulates it to perform tasks), whose 48 to 60 month progression reads "Holds an increasing amount of information in mind in order to successfully complete tasks.", since the lesson holds three steps in mind, one more than pre-K 3\'s two steps, as Second and last holds three sounds, and P-LC 2 (understands and responds to increasingly complex communication and language from others), whose 48 to 60 month progression reads "Shows an understanding of complex statements, questions, and stories containing multiple phrases and ideas, and responds appropriately.", in part, since the lesson teaches understanding a statement of three directions joined in one and responding by doing them in order, while complex questions and stories are practiced by every spoken question and story rather than taught (EARMARKS E13), and P-SE 2 (engages in prosocial and cooperative behavior with adults), in part, since the lesson teaches responding to a grown-up\'s directions, listening to all three steps and doing them in order at school, at the park and at home, from the first sentence of its 48 to 60 month progression, "Often engages in prosocial behavior with adults and usually responds appropriately to adult requests and directions without significant assistance or prompting.", while its prosocial behavior with adults is taught in Let\'s play together, doing so without significant assistance or prompting is the child\'s own, and its second sentence, "Uncooperative behavior with familiar adults is rare and the child is able to resolve minor conflicts with adults with support, such as being given reminders to use a quiet voice or follow directions.", is the child\'s own (EARMARKS E13).'],
+    generators: ['p4-steps-things', 'p4-steps-faces', 'p4-steps-shapes', 'p4-steps-sounds', 'p4-steps-routine'],
   },
 ]; }
 
@@ -6033,6 +6205,7 @@ function COUNTING_MODULES() { return [
       script: [
         { say: 'Sorting means putting things that are alike together. Circles go with circles, and squares go with squares.', show: { kind: 'pair', a: { kind: 'shape', name: 'circle' }, b: { kind: 'shape', name: 'square' } } },
         { say: 'Each group has a rule. In the triangle group, every one is a triangle, so a circle does not belong there.', show: { kind: 'pair', a: { kind: 'shape', name: 'triangle' }, b: { kind: 'shape', name: 'circle' } } },
+        { say: 'In the rectangle group, every one is a rectangle, so a circle does not belong there either.', show: { kind: 'pair', a: { kind: 'shape', name: 'rectangle' }, b: { kind: 'shape', name: 'circle' } } },
         { say: 'Then count each group. Here are four squares. One, two, three, four.', show: { kind: 'pattern', items: ['square', 'square', 'square', 'square'], colour: 'blue', counting: true } },
         { say: 'Count the circles too. One, two, three, four, five. Five is more than four, so the circle group has more.', show: { kind: 'pattern', items: ['circle', 'circle', 'circle', 'circle', 'circle'], colour: 'red', counting: true } },
         { say: 'To find how many groups there are, count the kinds. A circle, a square and a triangle make three groups.', show: { kind: 'pattern', items: ['circle', 'square', 'triangle'], colour: 'green' } },
@@ -13104,12 +13277,14 @@ function SPEECH3_MODULES() { return [
     id: 'listening-and-asking',
     order: 1,
     title: 'Listening and asking',
-    tagline: 'Eyes, hands and mind on the speaker, then a question that is about the topic',
+    tagline: 'Body and mind on the speaker, then a question that is about the topic',
     requires: [],
     lesson: {
-      paragraphs: ['Listening has three parts you can see and one you cannot. Eyes on the speaker. Hands still. Body turned toward them. And the part nobody can see: your mind on the words, not on what you want to say next. If your mind wanders, that is normal. Bring it back to the last thing you heard.', 'A good question is about the topic. If someone tells you about their trip to the beach, where did you swim is a relevant question. What are we having for lunch is not, even if you are hungry. A good comment is about the topic too: I went to a beach with big waves once, adds to the talk. I like pizza, does not.', 'When you listen to a story or a report, find the main idea, the one thing it is mostly about, and a few details that go with it. If a report is about how bees make honey, the main idea is honey, and the details are the flowers, the hive and the wax. Say the main idea back in your own words, and you will know whether you really heard it.'],
-      keyIdea: 'Eyes, hands, body and mind on the speaker. A relevant question or comment is about the topic. Find the main idea and a few details, and say the main idea back in your own words.',
-      example: { kind: 'flow', steps: ['eyes on the speaker', 'hands still', 'mind on the words', 'a question about the topic'], caption: 'What listening looks like.',
+      paragraphs: ['Listening has parts you can see and one you cannot. Your body turned toward the speaker. A quiet mouth until it is your turn. Hands to yourself, so others can listen too. And the part nobody can see: your mind on the words, not on what you want to say next. People listen in different ways. Some look at the speaker\'s face, some look down, and some listen best holding something in their hands, and every one of them is listening when the mind is on the words. If your mind wanders, that is normal. Bring it back to the last thing you heard.', 'A good question is about the topic. If someone tells you about their trip to the beach, where did you swim is a relevant question. What are we having for lunch is not, even if you are hungry. A good comment is about the topic too: I went to a beach with big waves once, adds to the talk. I like pizza, does not.', 'When you listen to a story or a report, find the main idea, the one thing it is mostly about, and a few details that go with it. If a report is about how bees make honey, the main idea is honey, and the details are the flowers, the hive and the wax. Say the main idea back in your own words, and you will know whether you really heard it.'],
+      keyIdea: 'Your body turned toward the speaker, and your mind on the words. A relevant question or comment is about the topic. Find the main idea and a few details, and say the main idea back in your own words.',
+      // Since round three's alignment read (pass MO): a body turned toward the speaker, never eyes on the speaker or hands still, the
+      // fixed rules pass KD dropped from kindergarten's listening lesson (Truesdale; Social Thinking's listening with brain and body).
+      example: { kind: 'flow', steps: ['body turned toward the speaker', 'a quiet mouth', 'mind on the words', 'a question about the topic'], caption: 'What listening looks like.',
         another: ['Your friend says their dog learned to sit. A relevant question: how did you teach it? A comment that adds: my cousin\'s dog took a month to learn that.',
           { text: 'Saying the main idea back is a check. Bees make honey from flowers, I said, and my teacher said yes. If she had said no, I would know what to listen for again.', visual: { kind: 'flow', steps: ['listen', 'say the main idea back', 'yes or listen again'] } },
           'Your mind will wander during a long story. Everyone\'s does. The trick is not to never wander; it is to notice and come back to the last thing you heard.'] },
@@ -17380,7 +17555,7 @@ export const MATCH_THEMES = {
   vehicles: { kind: 'art', items: ['car', 'train', 'boat', 'rocket'], notes: true, more: ['Two cars match when they have the same color and the same shape.', 'A car has wheels and a boat has none, so they are different.'] },
   things: { kind: 'art', items: ['ball', 'balloon', 'robot', 'butterfly', 'star', 'flower'], notes: true, more: ['Two balls that look just alike match.', 'A ball and a balloon are both round, but a balloon has a string, so they are different.'] },
   water: { kind: 'pic', items: ['whale', 'fish', 'turtle', 'duck', 'frog'], notes: true, more: ['Two whales that look just alike match.', 'A whale and a fish both swim, but a whale breathes air, so they are different.'] },
-  land: { kind: 'pic', items: ['fox', 'bear', 'rabbit', 'cat', 'owl', 'snail'], notes: true, more: ['Two bears that look just alike match.', 'A fox and a cat both have pointy ears, so look at the face and the color too.'] },
+  land: { kind: 'pic', items: ['fox', 'bear', 'rabbit', 'cat', 'owl', 'snail'], notes: true, more: ['Two bears that look just alike match.', 'A fox and a cat both have pointy ears, but their faces and colors are different.'] },
   shapes: { kind: 'shape', items: ['circle', 'square', 'triangle', 'rectangle'], apart: [['square', 'rectangle']], notes: true, more: ['Two triangles that look just alike match.', 'A square and a long rectangle both have four corners, but their sides are not the same.'] },   // a square is a rectangle too (pass JW), so the two never meet (pass ML)
   solids: { kind: 'solid', items: ['cube', 'sphere', 'cone', 'cylinder'], notes: true, more: ['Two cubes that look just alike match.', 'A sphere rolls and a cube stacks, so they are different.'] },
 };
@@ -18991,14 +19166,14 @@ Object.assign(GENERATORS, {
     const small = randInt(rng, 1, 4); const big = small + 1;
     const choices = shuffle(rng, [`dots:${big}`, `dots:${small}`]);
     return { type: 'choice', story: null, prompt: 'Count each group, because these two are almost the same, then tap the group with more.', choices, answer: `dots:${big}`,
-      whyNot: p3WhyNot(choices, `dots:${big}`, () => ({ name: p3DotsName(small), why: `${small === 1 ? 'is' : 'are'} fewer than ${fsCount(big)} dots, because you count past ${fsCount(small)} to get to ${fsCount(big)}.` })), alsoRight: ['Line the groups up, one with one, and the group with some left over has more.'],
+      whyNot: p3WhyNot(choices, `dots:${big}`, () => ({ name: p3DotsName(small), why: `${small === 1 ? 'is' : 'are'} fewer than ${fsCount(big)} dots, because you count past ${fsCount(small)} to get to ${fsCount(big)}.` })), alsoRight: ['Four dots lined up with three dots, one with one, have one left over, so four dots are more.'],
       explain: `Count each group, ${countUp(big)}, and ${countUp(small)}. ${luCap(NUMBER_NAMES[big])} dots are more than ${NUMBER_NAMES[small]} ${small === 1 ? 'dot' : 'dots'}.`, visual: null, explainVisual: { kind: 'pair', stack: true, a: { kind: 'dots', count: big }, b: { kind: 'dots', count: small } } };
   },
   'p4-fewer-close': (rng) => {
     const small = randInt(rng, 1, 4); const big = small + 1;
     const choices = shuffle(rng, [`dots:${big}`, `dots:${small}`]);
     return { type: 'choice', story: null, prompt: 'Count each group, because these two are almost the same, then tap the group with fewer.', choices, answer: `dots:${small}`,
-      whyNot: p3WhyNot(choices, `dots:${small}`, () => ({ name: p3DotsName(big), why: `are more than ${fsCount(small)} ${small === 1 ? 'dot' : 'dots'}, because you count past ${fsCount(small)} to get to ${fsCount(big)}.` })), alsoRight: ['Line the groups up, one with one, and the group with some left over has more.'],
+      whyNot: p3WhyNot(choices, `dots:${small}`, () => ({ name: p3DotsName(big), why: `are more than ${fsCount(small)} ${small === 1 ? 'dot' : 'dots'}, because you count past ${fsCount(small)} to get to ${fsCount(big)}.` })), alsoRight: ['Four dots lined up with three dots, one with one, have one left over, so three dots are fewer.'],
       explain: `Count each group, ${countUp(small)}, and ${countUp(big)}. ${luCap(NUMBER_NAMES[small])} ${small === 1 ? 'dot is' : 'dots are'} fewer than ${NUMBER_NAMES[big]} dots.`, visual: null, explainVisual: { kind: 'pair', stack: true, a: { kind: 'dots', count: small }, b: { kind: 'dots', count: big } } };
   },
   // A group that looks like more (EARMARKS A7, pass ML; Head Start's 48 to 60 month progression for P-MATH 4, "Counts to determine
@@ -19021,7 +19196,8 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt: `Count each group, then tap the group with ${more ? 'more' : 'fewer'}.`, choices, answer: want,
       whyNot: p3WhyNot(choices, want, (t) => { const k = fsLookCount(t); const K = fsLookCount(want); const verb = /^look:dots-\d-long$/.test(t) ? 'has' : 'have';
         return { name: fsLookName(t), why: `${verb} ${k < K ? 'fewer' : 'more'}, because you count past ${fsCount(Math.min(k, K))} to get to ${fsCount(Math.max(k, K))}.` }; }),
-      alsoRight: [row ? 'A long row can look like more, so count to be sure.' : 'Big is not the same as more, so count to be sure.'],
+      // More right answers are the lesson's own examples (round one's screen check, pass MO: "so count to be sure" was a tip).
+      alsoRight: [row ? 'Four dots close together are more than three dots in a long row.' : 'Five little strawberries are more than three big ones, even though the big ones take up more room.'],
       explain: `Count each group, ${countUp(n)}, and ${countUp(m)}. ${compare}. ${close}`, visual: null,
       explainVisual: { kind: 'pair', stack: true, a: lookVisual(tA), b: lookVisual(tB) } };
   },
@@ -19611,7 +19787,7 @@ Object.assign(GENERATORS, {
   },
   'r1-word-shape': (rng) => {
     const names = ['circle', 'square', 'triangle', 'rectangle']; const sh = pick(rng, names);
-    return { type: 'choice', story: null, prompt: 'Read the word. Tap that shape.', choices: shuffle(rng, [sh, ...shuffle(rng, names.filter((x) => x !== sh)).slice(0, 2)].map((x) => `shape:${x}`)), answer: `shape:${sh}`,
+    return { type: 'choice', story: null, prompt: 'Read the word. Tap that shape.', choices: shuffle(rng, [sh, ...shuffle(rng, names.filter((x) => x !== sh && !rectangleWordOnSquare(sh, x))).slice(0, 2)].map((x) => `shape:${x}`)), answer: `shape:${sh}`,
       explain: `The word says ${sh}, so the ${sh} is the shape to tap.`, visual: { kind: 'letters', text: sh }, explainVisual: null };
   },
   'r1-starts-with': (rng) => {
@@ -21886,7 +22062,7 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story, prompt, choices: shuffle(rng, [...choices]), answer, explain, visual: null, explainVisual: null };
   },
   's3-listen': (rng) => {
-    const Q = [['Which part of listening can nobody see?', ['your mind on the words', 'eyes on the speaker', 'hands still', 'body turned toward them'], 'your mind on the words', 'Not on what you want to say next.'],
+    const Q = [['Which part of listening can nobody see?', ['your mind on the words', 'body turned toward the speaker', 'a quiet mouth', 'hands to yourself'], 'your mind on the words', 'Not on what you want to say next.'],
       ['Your mind wanders during a story. What do you do?', ['bring it back to the last thing you heard', 'give up', 'talk instead', 'leave'], 'bring it back to the last thing you heard', 'That is normal.'],
       ['Someone tells you about the beach. Which question is relevant?', ['where did you swim', 'what are we having for lunch', 'is it Tuesday', 'do you like pizza'], 'where did you swim', 'A good question is about the topic.'],
       ['Which comment adds to a talk about the beach?', ['I went to a beach with big waves once', 'I like pizza', 'my shoe is untied', 'I am bored'], 'I went to a beach with big waves once', 'A good comment is about the topic too.'],
@@ -26789,6 +26965,144 @@ Object.assign(GENERATORS, {
   },
 });
 
+// ---------------------------------------------------------------------------------------------------------------------------------
+// Follow the directions (pass MO, earmarks E12 and E13, Domain II part one: PK3 and PK4 II.A.2, ELOF P-ATL 8). In plain terms: a
+// pre-reader hears a direction of two steps (pre-K 3) or three (pre-K 4), Tap the cup, and then tap the spoon, and taps those
+// pictures in that order among a few others; each tap puts its number on the picture where it is, and a tap on a numbered picture
+// takes it back. The answer is the steps' pictures in the order the words say them, joined with ' | ' as every order question's
+// is, so checkAnswer reads it the same way; pick says how many taps the direction takes, which the screen waits for. The pictures
+// are shuffled, never with the steps first and in order, so tapping from the top left never passes.
+// ---------------------------------------------------------------------------------------------------------------------------------
+function stepsQuestion(rng, { story = null, prompt, steps, others, explain }) {
+  // Never the steps first and in their own order, since a child who tapped from the start would pass without listening: a deal
+  // that comes out so is shuffled again (round one's lesson and code checks, pass MO: moving the steps to the end, as this did
+  // first, made steps-in-the-middle-then-last twice as likely as any other place).
+  let items = shuffle(rng, [...steps, ...others]);
+  for (let tries = 0; tries < 24 && items.slice(0, steps.length).join(' | ') === steps.join(' | '); tries += 1) items = shuffle(rng, items);
+  if (items.slice(0, steps.length).join(' | ') === steps.join(' | ')) items = [...items.slice(steps.length), ...items.slice(0, steps.length)];
+  return { type: 'order', pick: steps.length, story, prompt, items, choices: items, answer: steps.join(' | '), explain, visual: null, explainVisual: null };
+}
+// The things pre-K 3's steps name, each named on a line of Two steps, and pre-K 4's, each named on a line of Three steps.
+const STEPS_THINGS_P3 = ['cup', 'spoon', 'sun', 'moon', 'ball', 'fish', 'tree', 'hat'];
+const STEPS_THINGS_P4 = ['cup', 'spoon', 'chair', 'sun', 'moon', 'star', 'book', 'ball', 'hat'];
+// Each animal's sound, as Animal sounds (pre-K 3) and Which came first? (pre-K 4) teach them.
+const STEPS_SAYS = { cat: 'meow', duck: 'quack', bee: 'buzz', frog: 'ribbit', owl: 'hoot', bear: 'growl' };
+const STEPS_COLORS = ['red', 'blue', 'yellow', 'green'];
+// Three of the four colors that never put red beside green, so a child who mixes up red and green can still follow a direction.
+const STEPS_PALETTES = [['red', 'blue', 'yellow'], ['green', 'blue', 'yellow']];
+const STEPS_FEELINGS = ['happy', 'sad', 'mad', 'scared'];
+// The size words pre-K 3 says: big, and little for the small shape (Big and little).
+const STEPS_SIZE_WORD = { big: 'big', small: 'little' };
+// A grown-up's directions at home, at school and at the park, each step as its picture (pictures that read at a glance: the app's coat
+// has short sleeves and its plate carries My plate's food groups, so neither is a step), what doing it is called (More Info names a wrong picture
+// by it) and what a person does, every one said on a line of its lesson.
+const STEPS_ROUTINES_P3 = [
+  ['Get your hat, and then go to the door.', [['hat', 'Getting your hat', 'get your hat'], ['door', 'Going to the door', 'go to the door']]],
+  ['Get a book, and then sit in your chair.', [['book', 'Getting a book', 'get a book'], ['chair', 'Sitting in your chair', 'sit in your chair']]],
+  ['Get your teddy, and then get into bed.', [['teddy', 'Getting your teddy', 'get your teddy'], ['bed', 'Getting into bed', 'get into bed']]],
+  ['Get a cup, and then get a spoon.', [['cup', 'Getting a cup', 'get a cup'], ['spoon', 'Getting a spoon', 'get a spoon']]],
+];
+const STEPS_ROUTINES_P4 = [
+  ['Get a cup, get a spoon, and then sit in your chair.', [['cup', 'Getting a cup', 'get a cup'], ['spoon', 'Getting a spoon', 'get a spoon'], ['chair', 'Sitting in your chair', 'sit in your chair']]],
+  ['Put your block away, get your hat, and then go to the door.', [['block', 'Putting your block away', 'put your block away'], ['hat', 'Getting your hat', 'get your hat'], ['door', 'Going to the door', 'go to the door']]],
+  ['Get your hat, get your ball, and then go down the slide.', [['hat', 'Getting your hat', 'get your hat'], ['ball', 'Getting your ball', 'get your ball'], ['slide', 'Going down the slide', 'go down the slide']]],
+  ['Get your book, get your teddy, and then get into bed.', [['book', 'Getting your book', 'get your book'], ['teddy', 'Getting your teddy', 'get your teddy'], ['bed', 'Getting into bed', 'get into bed']]],
+];
+// Which step a direction puts first, second or last: the steps' pictures are the choices, the answer the step in the place the
+// question asks, and each wrong picture is named by what doing it is called and the place it really has.
+function stepsRoutine(rng, [said, steps], places) {
+  const k = Math.floor(rng() * steps.length); const answer = `icon:${steps[k][0]}`;
+  const whyNot = Object.fromEntries(steps.map((s, j) => [j, s]).filter(([j]) => j !== k).map(([j, s]) => [`icon:${s[0]}`, { name: s[1], why: `is the ${places[j]} step, not the ${places[k]}.` }]));
+  const explain = steps.length === 2 ? `First you ${steps[0][2]}, and then you ${steps[1][2]}.` : `First you ${steps[0][2]}, next you ${steps[1][2]}, and last you ${steps[2][2]}.`;
+  // No More right answers (an empty list): a direction has one step in each place (round one's screen check: its tip, "Listen to both steps, and
+  // then do them in order.", sat under the heading More right answers).
+  return { type: 'choice', story: `Listen. ${said}`, prompt: `What do you do ${places[k]}?`, choices: shuffle(rng, steps.map((s) => `icon:${s[0]}`)), answer, explain, visual: null, explainVisual: null, whyNot, alsoRight: [] };
+}
+// Two ideas (pass MO, earmark E12: PK3 II.E.4, ELOF P-LC 2 in part): one sentence joins two ideas with and. The shapes, colors and
+// sizes pre-K 3 knows (Circle and square, Triangles too, Red and blue, Yellow and green, Big and little), the six animals of
+// Animal sounds, the things of Words that rhyme, and four feelings and four things any animal can be doing, so no idea can be
+// answered from what is usually true.
+const IDEAS_SHAPES = ['circle', 'square', 'triangle'];
+const IDEAS_ANIMALS = ['cat', 'duck', 'bee', 'frog', 'owl', 'bear'];
+const IDEAS_THINGS = ['ball', 'hat', 'cup', 'spoon', 'sock', 'block'];
+const IDEAS_NAMES = ['Mia', 'Kai', 'Sam', 'Ana', 'Leo', 'Rosa'];
+const IDEAS_FEELINGS = ['happy', 'sad', 'mad', 'scared'];
+const IDEAS_ACTS = ['sleeping', 'eating', 'playing', 'hiding'];
+// Every word the directions' and the two ideas' kinds can say in a setup or a prompt: an animal and its sound, a thing, a color, a
+// feeling, a size word, a shape and a doing. A direction carries its answer in these words, so the scripts test holds each one a
+// question says to its lesson's spoken script (round two's lesson check, pass MO: deleting Two ideas' sock and block line, or a
+// sound line, passed every check, since askedNames names only answer pictures and a step told by its sound names none).
+// Since round three's content read, the routine kinds' place words and pictures, and long and face, are in the list too: "What do
+// you do second?" and "the long rectangle" passed with their lines gone.
+export const DIRECTION_WORDS = [...new Set([...Object.keys(STEPS_SAYS), ...Object.values(STEPS_SAYS), ...STEPS_THINGS_P3, ...STEPS_THINGS_P4, ...STEPS_COLORS, ...STEPS_FEELINGS, ...Object.values(STEPS_SIZE_WORD), ...IDEAS_SHAPES, 'rectangle', ...IDEAS_THINGS, ...IDEAS_FEELINGS, ...IDEAS_ACTS,
+  'first', 'second', 'last', 'long', 'face', ...[...STEPS_ROUTINES_P3, ...STEPS_ROUTINES_P4].flatMap(([, st]) => st.map(([n]) => n))])];
+// More right answers (round one's screen check, pass MO): a shape question's other right answers, a big one of the same color and
+// shape, or the same size and shape in blue, since the third thing never matters; who has what, how a friend feels and yes or no
+// have none, so their list is empty rather than a tip in its place.
+Object.assign(GENERATORS, {
+  'p3-steps-things': (rng) => { const [a, b, ...rest] = shuffle(rng, STEPS_THINGS_P3);
+    return stepsQuestion(rng, { prompt: `Tap the ${a}, and then tap the ${b}.`, steps: [`icon:${a}`, `icon:${b}`], others: rest.slice(0, 2).map((x) => `icon:${x}`), explain: `First the ${a}, and then the ${b}, just as the words said.` }); },
+  'p3-steps-sounds': (rng) => { const [a, b, ...rest] = shuffle(rng, Object.keys(STEPS_SAYS));
+    return stepsQuestion(rng, { prompt: `Tap the one that says ${STEPS_SAYS[a]}, and then tap the one that says ${STEPS_SAYS[b]}.`, steps: [`pic:${a}`, `pic:${b}`], others: rest.slice(0, 2).map((x) => `pic:${x}`), explain: `First the ${a}, which says ${STEPS_SAYS[a]}, and then the ${b}, which says ${STEPS_SAYS[b]}, just as the sounds said.` }); },
+  // Three colors, never red beside green (pass MB's pre-K rule: they are the pair the most common color vision deficiency mixes up).
+  'p3-steps-colors': (rng) => { const form = pick(rng, ['circle', 'square']); const [a, b, c] = shuffle(rng, pick(rng, STEPS_PALETTES));
+    return stepsQuestion(rng, { prompt: `Tap the ${a} one, and then tap the ${b} one.`, steps: [`item:${form}-${a}`, `item:${form}-${b}`], others: [`item:${form}-${c}`], explain: `First the ${a} ${form}, and then the ${b} ${form}, just as the words said.` }); },
+  'p3-steps-sizes': (rng) => { const all = ['circle', 'square'].flatMap((s) => ['big', 'small'].map((z) => [s, z])); const [a, b, ...rest] = shuffle(rng, all); const say = ([s, z]) => `${STEPS_SIZE_WORD[z]} ${s}`;
+    return stepsQuestion(rng, { prompt: `Tap the ${say(a)}, and then tap the ${say(b)}.`, steps: [a, b].map(([s, z]) => `shape:${s}:${z}`), others: rest.map(([s, z]) => `shape:${s}:${z}`), explain: `First the ${say(a)}, and then the ${say(b)}, just as the words said.` }); },
+  'p3-steps-routine': (rng) => stepsRoutine(rng, pick(rng, STEPS_ROUTINES_P3), ['first', 'second']),
+  'p4-steps-things': (rng) => { const [a, b, c, ...rest] = shuffle(rng, STEPS_THINGS_P4);
+    return stepsQuestion(rng, { prompt: `Tap the ${a}, then the ${b}, and then the ${c}.`, steps: [a, b, c].map((x) => `icon:${x}`), others: rest.slice(0, 3).map((x) => `icon:${x}`), explain: `First the ${a}, next the ${b}, and last the ${c}, just as the words said.` }); },
+  // Feelings, the four faces First Steps teaches first, none two a child could fairly take for each other (P4_NEAR_FACES); colors
+  // would always put red beside green, since three colors and one more are all four.
+  'p4-steps-faces': (rng) => { const [a, b, c, d] = shuffle(rng, STEPS_FEELINGS);
+    return stepsQuestion(rng, { prompt: `Tap the ${a} face, then the ${b} face, and then the ${c} face.`, steps: [a, b, c].map((x) => `face:${x}`), others: [`face:${d}`], explain: `First the ${a} face, next the ${b} face, and last the ${c} face, just as the words said.` }); },
+  // A square is a rectangle too (TEKS K.6A; the app's rule since pass JW), so the drawn rectangle is asked for as the long
+  // rectangle, as Match the Shapes names it (round one's accuracy check: "Tap the rectangle" over a square and a rectangle had two
+  // right answers).
+  'p4-steps-shapes': (rng) => { const [a, b, c, d] = shuffle(rng, ['circle', 'square', 'triangle', 'rectangle']); const said = (x) => (x === 'rectangle' ? 'long rectangle' : x);
+    return stepsQuestion(rng, { prompt: `Tap the ${said(a)}, then the ${said(b)}, and then the ${said(c)}.`, steps: [a, b, c].map((x) => `shape:${x}`), others: [`shape:${d}`], explain: `First the ${said(a)}, next the ${said(b)}, and last the ${said(c)}, just as the words said.` }); },
+  'p4-steps-sounds': (rng) => { const [a, b, c, d] = shuffle(rng, Object.keys(STEPS_SAYS));
+    return stepsQuestion(rng, { prompt: `Tap the one that says ${STEPS_SAYS[a]}, then the one that says ${STEPS_SAYS[b]}, and then the one that says ${STEPS_SAYS[c]}.`, steps: [a, b, c].map((x) => `pic:${x}`), others: [`pic:${d}`], explain: `First the ${a}, next the ${b}, and last the ${c}, just as the sounds said.` }); },
+  'p4-steps-routine': (rng) => stepsRoutine(rng, pick(rng, STEPS_ROUTINES_P4), ['first', 'second', 'last']),
+  // A shape and its color: the answer fits both ideas, one wrong choice only the color and one only the shape, never red beside green.
+  'p3-ideas-looks': (rng) => { const [form, other] = shuffle(rng, IDEAS_SHAPES); const colour = pick(rng, STEPS_COLORS); const formFirst = rng() < 0.5;
+    const otherColour = pick(rng, STEPS_COLORS.filter((c) => c !== colour && !(['red', 'green'].includes(c) && ['red', 'green'].includes(colour))));
+    const said = formFirst ? `It is a ${form}, and it is ${colour}.` : `It is ${colour}, and it is a ${form}.`;
+    // All four corners, the one with neither idea too, so the answer is never the one choice like each other one (round one's lesson
+    // check, pass MO: with three, it was on every seed, and a child could tap it by look alone).
+    const answer = `item:${form}-${colour}`; const sameColour = `item:${other}-${colour}`; const sameForm = `item:${form}-${otherColour}`; const neither = `item:${other}-${otherColour}`;
+    return { type: 'choice', story: `Listen. ${said}`, prompt: 'Tap the one that fits both ideas.', choices: shuffle(rng, [answer, sameColour, sameForm, neither]), answer, corners: true,
+      explain: `It is a ${form}, and it is ${colour}, so the ${colour} ${form} fits both ideas.`, visual: null, explainVisual: null,
+      whyNot: { [sameColour]: { name: `The ${colour} ${other}`, why: `is ${colour}, but it is a ${other}.` }, [sameForm]: { name: `The ${otherColour} ${form}`, why: `is a ${form}, but it is ${otherColour}.` }, [neither]: { name: `The ${otherColour} ${other}`, why: `is not ${colour}, and it is not a ${form}.` } },
+      alsoRight: [`A big ${colour} ${form} fits both ideas too.`] }; },
+  // A shape and its size, the same way, in the size words pre-K 3 says.
+  'p3-ideas-sizes': (rng) => { const [form, other] = shuffle(rng, IDEAS_SHAPES); const [size, otherSize] = shuffle(rng, ['big', 'small']); const formFirst = rng() < 0.5; const w = STEPS_SIZE_WORD;
+    const said = formFirst ? `It is a ${form}, and it is ${w[size]}.` : `It is ${w[size]}, and it is a ${form}.`;
+    const answer = `shape:${form}:${size}`; const sameSize = `shape:${other}:${size}`; const sameForm = `shape:${form}:${otherSize}`; const neither = `shape:${other}:${otherSize}`;
+    return { type: 'choice', story: `Listen. ${said}`, prompt: 'Tap the one that fits both ideas.', choices: shuffle(rng, [answer, sameSize, sameForm, neither]), answer, corners: true,
+      explain: `It is a ${form}, and it is ${w[size]}, so the ${w[size]} ${form} fits both ideas.`, visual: null, explainVisual: null,
+      whyNot: { [sameSize]: { name: `The ${w[size]} ${other}`, why: `is ${w[size]}, but it is a ${other}.` }, [sameForm]: { name: `The ${w[otherSize]} ${form}`, why: `is a ${form}, but it is ${w[otherSize]}.` }, [neither]: { name: `The ${w[otherSize]} ${other}`, why: `is not ${w[size]}, and it is not a ${form}.` } },
+      alsoRight: [`A ${w[size]} blue ${form} fits both ideas too.`] }; },
+  // Which animal has which thing: the question asks about either thing, and the wrong animal has the other one.
+  'p3-ideas-who-has': (rng) => { const [a, b] = shuffle(rng, IDEAS_ANIMALS); const [x, y] = shuffle(rng, IDEAS_THINGS); const askA = rng() < 0.5;
+    const [who, thing, other, otherThing] = askA ? [a, x, b, y] : [b, y, a, x];
+    return { type: 'choice', story: `Listen. The ${a} has a ${x}, and the ${b} has a ${y}.`, prompt: `Who has the ${thing}?`, choices: shuffle(rng, [`pic:${a}`, `pic:${b}`]), answer: `pic:${who}`,
+      explain: `The ${who} has the ${thing}, and the ${other} has the ${otherThing}.`, visual: null, explainVisual: null,
+      whyNot: { [`pic:${other}`]: { name: `The ${other}`, why: `has the ${otherThing}, and the ${who} has the ${thing}.` } }, alsoRight: [] }; },
+  // How each of two friends feels: the wrong face is the other friend's, told by its own sign.
+  'p3-ideas-feels': (rng) => { const [n1, n2] = shuffle(rng, IDEAS_NAMES); const [f1, f2] = shuffle(rng, IDEAS_FEELINGS); const ask1 = rng() < 0.5;
+    const [who, f, otherWho, otherF] = ask1 ? [n1, f1, n2, f2] : [n2, f2, n1, f1];
+    return { type: 'choice', story: `Listen. ${n1} feels ${f1}, and ${n2} feels ${f2}.`, prompt: `How does ${who} feel?`, choices: shuffle(rng, [`face:${f1}`, `face:${f2}`]), answer: `face:${f}`,
+      explain: `${who} feels ${f}, and ${otherWho} feels ${otherF}.`, visual: null, explainVisual: null,
+      whyNot: { [`face:${otherF}`]: { name: `The ${otherF} face`, why: `has ${P3_FACE_SIGN[otherF]}, and ${otherWho} feels ${otherF}, not ${who}.` } }, alsoRight: [] }; },
+  // What each of two animals is doing, asked as a yes or no: yes only when the animal and the doing go together in the sentence.
+  'p3-ideas-yesno': (rng) => { const [a, b] = shuffle(rng, IDEAS_ANIMALS); const [x, y] = shuffle(rng, IDEAS_ACTS); const who = rng() < 0.5 ? a : b; const act = rng() < 0.5 ? x : y;
+    const its = who === a ? x : y; const otherAnimal = who === a ? b : a; const yes = its === act; const choices = yesNo(rng); const answer = yes ? 'Yes' : 'No';
+    return { type: 'choice', story: `Listen. The ${a} is ${x}, and the ${b} is ${y}.`, prompt: `Is the ${who} ${act}?`, choices, answer,
+      explain: yes ? `Yes. The ${who} is ${act}.` : `No. The ${who} is ${its}, and the ${otherAnimal} is ${act}.`, visual: null, explainVisual: null,
+      whyNot: yes ? { No: { name: 'No', why: `would mean the ${who} is not ${act}, but it is.` } } : { Yes: { name: 'Yes', why: `would mean the ${who} is ${act}, but it is ${its}.` } }, alsoRight: [] }; },
+});
+
 // ---------------------------------------------------------------------
 // WRITING questions. There is no right answer: the student writes, checks a short list,
 // and the piece goes to the educator to mark. The event stores the writing itself; this is
@@ -27029,8 +27343,10 @@ const CIV_HELPER_NAMES = CIV_HELPERS.map((h) => h[1]);
 const CIV_RULE_WHYS = [['Why do we stop at a red light?', 'To let the other cars go'], ['Why do we wait our turn?', 'So it is fair for everyone'], ['Why do we walk in the hall?', 'So nobody bumps or falls']];
 // Each good choice carries its own reason (pass JS), so the explanation says why it helps.
 const CIV_GOOD_CHOICES = [['A friend drops their crayons.', 'Help pick them up', 'Walk away', 'Helping pick them up is the good choice, because it helps your friend.'], ['Someone is talking.', 'Listen', 'Talk over them', 'Listening is the good choice, because it shows you care what they say.'], ['You finish your snack.', 'Throw away the wrapper', 'Leave it on the floor', 'Throwing away the wrapper is the good choice, because it keeps the room clean for everyone.']];
-// Why each wrong good-choice answer does not fit, and one more good choice (pass ML, More Info; true in kindergarten too).
-const CIV_GOOD_NOT = { 'Walk away': ['Walking away', 'leaves your friend to pick up every crayon alone.', 'You can be a helper at home too, and set the table.'], 'Talk over them': ['Talking over them', 'means they cannot be heard, so it does not show you care.', 'Taking turns to talk lets everyone be heard.'], 'Leave it on the floor': ['Leaving it on the floor', 'makes a mess that someone else has to clean up.', 'Putting away your toys keeps the room clean too.'] };
+// Why each wrong good-choice answer does not fit, and one more good choice (pass ML, More Info; true in kindergarten too). Since pass
+// MO's round seven a row whose lessons give no other good choice for that moment has none (set the table and put away your toys
+// answered another moment than the dropped crayons and the snack, and neither lesson says taking turns to talk).
+const CIV_GOOD_NOT = { 'Walk away': ['Walking away', 'leaves your friend to pick up every crayon alone.', null], 'Talk over them': ['Talking over them', 'means they cannot be heard, so it does not show you care.', null], 'Leave it on the floor': ['Leaving it on the floor', 'makes a mess that someone else has to clean up.', null] };
 const CIV_NEED_WANT = [['Water', 'Need'], ['A home', 'Need'], ['A warm coat', 'Need'], ['An apple', 'Need'], ['A toy car', 'Want'], ['Candy', 'Want'], ['A video game', 'Want'], ['A balloon', 'Want']];
 const CIV_FLAG_COUNTS = [['How many stars are on our flag?', 50], ['How many stripes are on our flag?', 13]];
 const CIV_HOLIDAYS = [['Which holiday do we celebrate on July 4?', 'Independence Day', "July 4 is Independence Day, our country's birthday, when many people watch parades and fireworks."], ['Which November holiday is for giving thanks?', 'Thanksgiving', 'Thanksgiving comes in November. It is a day for giving thanks and sharing a meal.'], ['Which holiday comes on the third Monday of January?', 'Martin Luther King Jr. Day', 'Martin Luther King Jr. Day is the third Monday of January. It honors Dr. King, who worked so that people of every color would be treated fairly.']];
@@ -27073,20 +27389,20 @@ const P3_FEEL_MOMENTS = [
 ];
 // Each row: the question, the answer, the explanation, what the wrong answer would mean (pass MH), and one more example.
 const P3_FEEL_OKAY = [
-  ['Is it okay to feel sad?', 'Yes', 'Yes, it is okay. Every feeling is okay to have, and sad is a feeling.', 'would mean feeling sad is not okay, but every feeling is okay to have.', 'When you feel sad, you can say your feeling\'s name, like I feel sad.'],
-  ['Is it okay to feel mad?', 'Yes', 'Yes, it is okay. Every feeling is okay to have, and when you feel mad, you can use your words.', 'would mean feeling mad is not okay, but every feeling is okay to have, even mad.', 'When you feel mad, you can use your words and say, I feel mad.'],
-  ['Is it okay to feel scared?', 'Yes', 'Yes, it is okay. Every feeling is okay to have, and your grown-up can help when you feel scared.', 'would mean feeling scared is not okay, but every feeling is okay to have.', 'When a feeling is very big, you can find your grown-up.'],
-  ['Is it okay to hit when you feel mad?', 'No', 'No, it is not. Feeling mad is okay, but hitting is not okay, because it hurts. Use your words.', 'would mean hitting is okay, but hitting is not okay, because it hurts.', 'When you feel mad, you can use your words, like I feel mad.'],
-  ['Is it okay to push when you feel mad?', 'No', 'No, it is not. Feeling mad is okay, but pushing is not okay, because it hurts. Use your words.', 'would mean pushing is okay, but pushing is not okay, because it hurts.', 'When you feel mad, you can use your words, like I feel mad.'],
+  ['Is it okay to feel sad?', 'Yes', 'Yes, it is okay. Every feeling is okay to have, and sad is a feeling.', 'would mean feeling sad is not okay, but every feeling is okay to have.', 'You might feel sad when your balloon floats away, and that is okay.'],
+  ['Is it okay to feel mad?', 'Yes', 'Yes, it is okay. Every feeling is okay to have, and when you feel mad, you can use your words.', 'would mean feeling mad is not okay, but every feeling is okay to have, even mad.', 'You might feel mad when someone grabs your toy, and that is okay.'],
+  ['Is it okay to feel scared?', 'Yes', 'Yes, it is okay. Every feeling is okay to have, and your grown-up can help when you feel scared.', 'would mean feeling scared is not okay, but every feeling is okay to have.', 'You might feel scared when you hear a big boom of thunder, and that is okay.'],
+  ['Is it okay to hit when you feel mad?', 'No', 'No, it is not. Feeling mad is okay, but hitting is not okay, because it hurts. Use your words.', 'would mean hitting is okay, but hitting is not okay, because it hurts.', 'Pushing is not okay either, because it hurts.'],
+  ['Is it okay to push when you feel mad?', 'No', 'No, it is not. Feeling mad is okay, but pushing is not okay, because it hurts. Use your words.', 'would mean pushing is okay, but pushing is not okay, because it hurts.', 'Hitting is not okay either, because it hurts.'],
 ];
 // Each row: the question (the big feeling and the slow breath merged into it, pass MH), the answer, the wrong choice, the
 // explanation, the face shown (or none), why the wrong choice does not fit, and one more example.
 const P3_FEEL_CALM = [
-  ['Who can you find to help when your feeling is very big?', 'Your grown-up', 'Nobody', 'Find your grown-up. A hug and a slow breath together can help a big feeling get smaller.', null, 'means no one helps you, and your grown-up can help a big feeling get smaller.', 'A hug and a teddy to hold can help a big feeling get smaller too.'],
+  ['Who can you find to help when your feeling is very big?', 'Your grown-up', 'Nobody', 'Find your grown-up. A hug and a slow breath together can help a big feeling get smaller.', null, 'means no one helps you, and your grown-up can help a big feeling get smaller.', null],
   ['What can help your very big feeling get smaller?', 'A slow breath', 'Throwing a toy', 'A slow breath with your grown-up helps your body calm down, so a big feeling can get smaller. Throwing a toy is not okay, because it can hurt someone.', null, 'can hurt someone, and it does not help a big feeling get smaller.', 'A hug from your grown-up and a teddy to hold can help too.'],
-  ['When your face looks like this, what can you say?', 'I feel sad', 'I feel mad', 'That face is sad, with a tear. You can say your feeling\'s name, I feel sad. Saying the name can help.', 'sad', 'goes with eyebrows that squeeze down, and this face has a tear.', 'You can say the name of other feelings too, like I feel mad or I feel scared.'],
-  ['When your face looks like this, what can you say?', 'I feel mad', 'I feel scared', 'That face is mad, with its eyebrows squeezed down. You can say your feeling\'s name, I feel mad. Saying the name can help.', 'mad', 'goes with wide-open eyes, and this face has eyebrows that squeeze down.', 'You can say the name of other feelings too, like I feel sad or I feel scared.'],
-  ['When your face looks like this, what can you say?', 'I feel scared', 'I feel sad', 'That face is scared, with its eyes open wide. You can say your feeling\'s name, I feel scared. Saying the name can help.', 'scared', 'goes with a tear, and this face has wide-open eyes.', 'You can say the name of other feelings too, like I feel sad or I feel mad.'],
+  ['When your face looks like this, what can you say?', 'I feel sad', 'I feel mad', 'That face is sad, with a tear. You can say your feeling\'s name, I feel sad. Saying the name can help.', 'sad', 'goes with eyebrows that squeeze down, and this face has a tear.', 'You might feel sad when your balloon floats away.'],
+  ['When your face looks like this, what can you say?', 'I feel mad', 'I feel scared', 'That face is mad, with its eyebrows squeezed down. You can say your feeling\'s name, I feel mad. Saying the name can help.', 'mad', 'goes with wide-open eyes, and this face has eyebrows that squeeze down.', 'You might feel mad when someone grabs your toy.'],
+  ['When your face looks like this, what can you say?', 'I feel scared', 'I feel sad', 'That face is scared, with its eyes open wide. You can say your feeling\'s name, I feel scared. Saying the name can help.', 'scared', 'goes with a tear, and this face has wide-open eyes.', 'You might feel scared when you hear a big boom of thunder.'],
   ['What do you pretend to smell as you breathe in slowly?', 'icon:flower', 'icon:candle', 'You smell a flower by breathing in, so you pretend to smell one as you breathe in slowly. After that, you pretend to blow out a candle.', null, 'is what you pretend to blow out as you breathe out, not in.', 'Pretend to smell the flower as you breathe in. Then pretend to blow out the candle as you breathe out.'],
   ['What do you pretend to blow out as you breathe out slowly?', 'icon:candle', 'icon:flower', 'You blow out a candle by breathing out. So you pretend to blow one out as you breathe out slowly. Before that, you pretend to smell a flower.', null, 'is what you pretend to smell as you breathe in, not out.', 'Pretend to smell the flower as you breathe in. Then pretend to blow out the candle as you breathe out.'],
 ];
@@ -27095,15 +27411,15 @@ const P3_FEEL_CALM = [
 const P3_HELP_WHO = [
   ['Tap the friend who might need help.', 'sad', ['happy'], 'That friend looks sad and may need help. You can ask, are you okay?', 'A friend who falls and gets hurt may need help too.'],
   ['Tap the friend who might need help.', 'scared', ['happy'], 'That friend looks scared and may need help. You can ask, are you okay?', 'A friend who falls and gets hurt may need help too.'],
-  ['Tap the friend who looks sad.', 'sad', ['mad', 'scared'], 'That friend\'s mouth turns down, and a tear rolls out, so your friend looks sad.', 'You can ask a sad friend if they are okay.'],
-  ['Tap the friend who looks scared.', 'scared', ['sad', 'mad'], 'That friend\'s eyes are open wide, so your friend looks scared.', 'You can bring a scared friend a teddy to hug.'],
+  ['Tap the friend who looks sad.', 'sad', ['mad', 'scared'], 'That friend\'s mouth turns down, and a tear rolls out, so your friend looks sad.', 'A sad friend\'s mouth may turn down, and a tear may roll out.'],
+  ['Tap the friend who looks scared.', 'scared', ['sad', 'mad'], 'That friend\'s eyes are open wide, so your friend looks scared.', 'A scared friend\'s eyes may open wide.'],
 ];
 const P3_FRIEND_LOOK = { sad: 'a sad friend can have a tear rolling out',   // pass MJ: a tear sometimes, never every time (the alignment read)
   scared: 'a scared friend\'s eyes open wide' };
 // Kind things, the grown-up to get, and the ball (pass MH): each row is the whole question, the answer, the wrong choice, the
 // explanation, how a person says the wrong choice, what it does to the friend or why it is not okay, and one more right thing.
 const P3_HELP_KIND = [
-  ['What is a kind thing to say when your friend is crying?', 'Are you okay?', 'Go away', 'Asking your friend if they are okay is kind. It shows you care how your friend feels.', 'Saying go away', 'is not kind, because it leaves your crying friend alone and sad.', 'You can also sit beside your friend, or bring a teddy to hug.'],
+  ['What is a kind thing to say when your friend is crying?', 'Are you okay?', 'Go away', 'Asking your friend if they are okay is kind. It shows you care how your friend feels.', 'Saying go away', 'is not kind, because it leaves your crying friend alone and sad.', 'You can also ask if you can give your friend a hug.'],
   ['What is a kind thing to do when your friend looks sad?', 'Sit beside your friend', 'Walk away', 'Sitting beside your friend is kind. It shows you care how your friend feels.', 'Walking away', 'leaves your friend alone and still sad, so it is not kind.', 'You can also ask if your friend is okay, or bring a teddy to hug.'],
   ['What is a kind thing to do when your friend looks scared?', 'Bring a teddy to hug', 'Laugh at your friend', 'Bringing a teddy to hug is kind. It shows you care how your friend feels.', 'Laughing at your friend', 'can make a scared friend feel sad too, so it is not kind.', 'You can also sit beside your friend and ask if your friend is okay.'],
   // A grown-up who is distressed (pass MN, earmark E12: PK3 I.C.6, "responds with concern when a child or adult is distressed").
@@ -27115,7 +27431,7 @@ const P3_HELP_GROWNUP = [
   ['Who can help you and a friend when you both want one ball and a fight starts?', 'The ball', 'Get a grown-up. A grown-up can help you take turns, so you both get to play.', 'cannot stop a fight, so get a grown-up, who can help you take turns.'],
 ];
 const P3_HELP_BALL = [
-  ['What can you say when your friend tries to grab the ball from you?', 'Stop, please', 'Mine!', 'You can say, stop, please. Those kind words tell your friend that grabbing is not okay. Then get a grown-up to help you both.', 'Saying mine', 'is not a kind way to tell your friend to stop grabbing.', 'You can keep your hands to yourself, and then get a grown-up to help you both.'],
+  ['What can you say when your friend tries to grab the ball from you?', 'Stop, please', 'Mine!', 'You can say, stop, please. Those kind words tell your friend that grabbing is not okay. Then get a grown-up to help you both.', 'Saying mine', 'is not a kind way to tell your friend to stop grabbing.', null],
   ['What can you do when you and a friend both want one ball and a fight starts?', 'Get a grown-up', 'Grab the ball', 'Get a grown-up to help you both, because a grown-up can help you take turns. Grabbing is not okay.', 'Grabbing the ball', 'is not okay, and it can make the fight bigger, so get a grown-up.', 'You can also keep your hands to yourself, so nobody gets hurt.'],
   ['What can you do when a friend grabs the ball you were playing with?', 'Get a grown-up', 'Push your friend', 'Pushing is not okay, because it hurts. Keep your hands to yourself, and get a grown-up.', 'Pushing your friend', 'is not okay, because it hurts, so get a grown-up to help.', 'You can also say, stop, please, to tell your friend that grabbing is not okay.'],
   ['How can a grown-up help you both get to play when a fight starts over one ball?', 'Help you take turns', 'Take the ball away', 'A grown-up can help you take turns, so you both get to play.', 'Taking the ball away', 'stops the fight, but then nobody gets to play with the ball.', 'A grown-up can also help you share the ball, so you both play at the same time.'],
@@ -27124,11 +27440,11 @@ const P3_HELP_BALL = [
 const P3_HELP_YESNO = [
   ['Is it kind to ask a sad friend if they are okay?', 'Yes', 'Yes, it is kind. Asking if your friend is okay shows you care.', 'would mean asking is not kind, but asking if your friend is okay shows you care.', 'Sitting beside a sad friend shows you care too.'],
   ['Is it kind to sit beside a friend who is sad?', 'Yes', 'Yes, it is kind. Sitting beside a sad friend shows you care.', 'would mean sitting beside a sad friend is not kind, but it shows you care.', 'Bringing a teddy to hug shows you care too.'],
-  ['Is it kind to laugh at a friend who falls and gets hurt?', 'No', 'No, it is not kind, because laughing can make a hurt friend feel sad. Ask if your friend is okay, and get a grown-up.', 'would mean laughing is kind, but laughing can make a hurt friend feel sad.', 'Asking if your friend is okay is kind, and so is getting a grown-up.'],
-  ['Is it okay to push when you both want one ball?', 'No', 'No, it is not. Pushing is not okay, because it hurts. You can take turns, or get a grown-up to help you both.', 'would mean pushing is okay, but pushing is not okay, because it hurts.', 'Taking turns with the ball is kind, and a grown-up can help you both.'],
+  ['Is it kind to laugh at a friend who falls and gets hurt?', 'No', 'No, it is not kind, because laughing can make a hurt friend feel sad. Ask if your friend is okay, and get a grown-up.', 'would mean laughing is kind, but laughing can make a hurt friend feel sad.', 'Laughing at a scared friend is not kind, either.'],
+  ['Is it okay to push when you both want one ball?', 'No', 'No, it is not. Pushing is not okay, because it hurts. You can take turns, or get a grown-up to help you both.', 'would mean pushing is okay, but pushing is not okay, because it hurts.', 'Grabbing the ball is not okay, either.'],
   ['Should you get a grown-up when a friend is hurt?', 'Yes', 'Yes, you should. Grown-ups know how to help when someone gets hurt.', 'would mean your hurt friend gets no help, so get a grown-up, who knows how to help.', 'A grown-up can help when a friend is very sad, too.'],
   ['Is it kind to ask your sad grown-up, can I give you a hug?', 'Yes', 'Yes, it is kind. Grown-ups have feelings too, and asking to give a hug shows you care.', 'would mean asking is not kind, but asking to give a hug shows your grown-up you care.', 'Asking your grown-up if they are okay is kind too.'],
-  ['Is it kind to laugh at a friend who is scared?', 'No', 'No, it is not kind, because laughing can make a scared friend feel sad. Ask if your friend is okay.', 'would mean laughing is kind, but laughing can make a scared friend feel sad.', 'Sitting beside a scared friend shows you care.'],
+  ['Is it kind to laugh at a friend who is scared?', 'No', 'No, it is not kind, because laughing can make a scared friend feel sad. Ask if your friend is okay.', 'would mean laughing is kind, but laughing can make a scared friend feel sad.', 'Laughing at a hurt friend is not kind, either.'],
 ];
 // Can I play too? (pass MN, earmarks E12 and E13 side by side, Domain I: PK3 I.C.3 and ELOF P-SE 4 whole, P-SE 3 in part). The
 // lesson's ways to join a game, the kind and unkind things a joiner can do, what to do with a not now, the feelings a game can
@@ -27138,33 +27454,35 @@ const P3_HELP_YESNO = [
 // explanation, what the wrong answer would mean and one more right thing; a feelings row is the question, the feeling, the wrong
 // face, the explanation, what the moment says about the feeling (said after the wrong face's own sign) and one more example.
 const P3_JOIN_HOW = [
-  ['What can you do first when your friends are building a tower and you want to play too?', 'Watch the game', 'Grab their blocks', 'Watch the game first, so you see what your friends are doing and how they play. Then you can ask, can I play too?', 'Grabbing their blocks', 'is not kind, because your friends are using those blocks.', 'After you watch, you can bring a block for the tower.'],
-  ['What can you say when you want to play with your friends?', 'Can I play too?', 'Move over!', 'Asking if you can play too is a kind way to join a game. Your friends can say yes.', 'Saying move over', 'does not ask, and asking is a kind way to join a game.', 'You can bring something for the game, like a block for the tower.'],
-  ['What can you bring when your friends are building a tower and you want to play too?', 'icon:block', 'icon:ball', 'A block is for building, so it fits a tower game. Your friends can add it to their tower.', null, 'can knock the tower down, so it is not for a tower game.', 'You can ask your friends if you can play too as you bring it.'],
-  ['What can you do when your friend has an idea for the game?', 'Listen to the idea', 'Say, my way only!', 'Listen to your friend\'s idea, because it matters too. Then you can say your idea, like let\'s make it tall.', 'Saying my way only', 'is not kind, because your friend\'s idea matters too.', 'You can take turns adding blocks, too.'],
+  ['What can you do first when your friends are building a tower and you want to play too?', 'Watch the game', 'Grab their blocks', 'Watch the game first, so you see what your friends are doing and how they play. Then you can ask, can I play too?', 'Grabbing their blocks', 'is not kind, because your friends are using those blocks.', null],
+  ['What can you say when you want to play with your friends?', 'Can I play too?', 'Move over!', 'Asking if you can play too is a kind way to join a game. Your friends can say yes.', 'Saying move over', 'does not ask, and asking is a kind way to join a game.', null],
+  ['What can you bring when your friends are building a tower and you want to play too?', 'icon:block', 'icon:ball', 'A block is for building, so it fits a tower game. Your friends can add it to their tower.', null, 'can knock the tower down, so it is not for a tower game.', null],
+  ['What can you do when your friend has an idea for the game?', 'Listen to the idea', 'Say, my way only!', 'Listen to your friend\'s idea, because it matters too. Then you can say your idea, like let\'s make it tall.', 'Saying my way only', 'is not kind, because your friend\'s idea matters too.', null],
   ['What can you ask a friend who is playing alone?', 'Do you want to play with me?', 'Go away', 'Asking a friend who plays alone to play with you is a kind way to start playing together.', 'Saying go away', 'is not kind, because having nobody to play with can make a friend sad.', 'You can also ask friends who play together if you can play too.'],
 ];
 const P3_JOIN_YESNO = [
-  ['Is it kind to ask your friends, can I play too?', 'Yes', 'Yes, it is kind. Asking is a kind way to join a game.', 'would mean asking is not kind, but asking is a kind way to join a game.', 'Watching the game first helps you know how your friends play.'],
-  ['Is it kind to knock down your friends\' tower?', 'No', 'No, it is not kind. Knocking down their tower can make your friends sad or mad.', 'would mean knocking it down is kind, but it can make your friends sad or mad.', 'Bringing a block for the tower is kind.'],
-  ['Is it kind to grab your friends\' blocks?', 'No', 'No, it is not kind, because your friends are using those blocks. You can ask, can I play too?', 'would mean grabbing is kind, but your friends are using those blocks.', 'Asking to play is a kind way to join.'],
-  ['Is it okay when your friends say, not now?', 'Yes', 'Yes, it is okay. You can play something else, and ask again later.', 'would mean friends must always say yes, but not now is okay too.', 'You can find another friend to play with, too.'],
-  ['Is it kind to ask a friend who plays alone, do you want to play with me?', 'Yes', 'Yes, it is kind. Asking can start a new game together.', 'would mean asking is not kind, but asking can start a new game together.', 'Playing together can make everyone happy.'],
-  ['Should you watch the game first when you want to play?', 'Yes', 'Yes. Watching first shows you what your friends are doing, so you know how they play.', 'would mean you should not watch, but watching shows you how your friends play.', 'Then you can ask your friends if you can play too.'],
-  ['When your friends are building a tower, is a ball a good thing to bring?', 'No', 'No. A ball can knock their tower down, so a block is a better thing to bring.', 'would mean a ball fits their game, but a ball can knock their tower down.', 'A block is a good thing to bring.'],
+  ['Is it kind to ask your friends, can I play too?', 'Yes', 'Yes, it is kind. Asking is a kind way to join a game.', 'would mean asking is not kind, but asking is a kind way to join a game.', 'Bringing a block for the tower is a kind way to join, too.'],
+  ['Is it kind to knock down your friends\' tower?', 'No', 'No, it is not kind. Knocking down their tower can make your friends sad or mad.', 'would mean knocking it down is kind, but it can make your friends sad or mad.', 'Grabbing their blocks is not kind, either.'],
+  ['Is it kind to grab your friends\' blocks?', 'No', 'No, it is not kind, because your friends are using those blocks. You can ask, can I play too?', 'would mean grabbing is kind, but your friends are using those blocks.', 'Knocking down their tower is not kind, either.'],
+  ['Is it okay when your friends say, not now?', 'Yes', 'Yes, it is okay. You can play something else, and ask again later.', 'would mean friends must always say yes, but not now is okay too.', null],
+  ['Is it kind to ask a friend who plays alone, do you want to play with me?', 'Yes', 'Yes, it is kind. Asking can start a new game together.', 'would mean asking is not kind, but asking can start a new game together.', 'Asking your friends if you can play too is a kind way to join a game.'],
+  ['Should you watch the game first when you want to play?', 'Yes', 'Yes. Watching first shows you what your friends are doing, so you know how they play.', 'would mean you should not watch, but watching shows you how your friends play.', null],
+  ['When your friends are building a tower, is a ball a good thing to bring?', 'No', 'No. A ball can knock their tower down, so a block is a better thing to bring.', 'would mean a ball fits their game, but a ball can knock their tower down.', null],
 ];
 const P3_JOIN_NOT_NOW = [
   ['What can you do when your friends say, not now?', 'Play something else', 'Knock their tower down', 'Not now is okay. You can play something else, and ask again later.', 'Knocking their tower down', 'is not kind, and it can make your friends sad or mad.', 'You can find another friend to play with, too.'],
-  ['What can you do a little later, after your friends say, not now?', 'Ask again', 'Grab their blocks', 'You can ask again later, can I play too? Maybe then they will say yes.', 'Grabbing their blocks', 'is not kind, because your friends are using those blocks.', 'While you wait, you can play something else.'],
+  ['What can you do a little later, after your friends say, not now?', 'Ask again', 'Grab their blocks', 'You can ask again later, can I play too? Maybe then they will say yes.', 'Grabbing their blocks', 'is not kind, because your friends are using those blocks.', null],
   ['What else can you do when your friends say, not now?', 'Find another friend', 'Push your friends', 'You can find another friend to play with. Not now is okay.', 'Pushing your friends', 'is not okay, because it hurts.', 'You can ask a friend who plays alone if they want to play with you.'],
 ];
 // The wrong face changes with the moment and is never one a child could fairly feel there: a knocked-down tower or a friend
 // with nobody to play with can make a child sad or mad, so those offer happy; happy is the wrong face in two moments of five.
+// The last field is one more right answer (another feeling the lesson says the moment can bring) or a true example of the same
+// feeling, or null when the lesson has none (pass MO: the morals that stood there were neither).
 const P3_JOIN_FACE = [
-  ['How might your friends feel when someone knocks down their tower?', 'sad', 'happy', 'Their tower fell down, so your friends might feel sad. They might feel mad, too.', 'a tower knocked down can make your friends sad', 'Asking to play kindly helps everyone stay happy.'],
-  ['How might your friends feel when someone grabs their blocks?', 'mad', 'scared', 'Someone grabbed their blocks, so your friends might feel mad. Asking to play is a kind way to join.', 'grabbing can make your friends feel mad', 'Bringing a block for the tower is kind.'],
+  ['How might your friends feel when someone knocks down their tower?', 'sad', 'happy', 'Their tower fell down, so your friends might feel sad. They might feel mad, too.', 'a tower knocked down can make your friends sad', 'Knocking down their tower can make your friends mad, too.'],
+  ['How might your friends feel when someone grabs their blocks?', 'mad', 'scared', 'Someone grabbed their blocks, so your friends might feel mad. Asking to play is a kind way to join.', 'grabbing can make your friends feel mad', 'Grabbing their blocks can make your friends sad, too.'],
   ['How might you feel when your friends say, yes, come and play?', 'happy', 'mad', 'Your friends said yes, so you might feel happy. Playing together can make everyone happy.', 'playing together can make you happy', 'Adding a block to the tower together can feel happy too.'],
-  ['How might a friend feel when nobody will play with him?', 'sad', 'happy', 'Nobody will play with him, so he might feel sad. You can ask, do you want to play with me?', 'having nobody to play with can make someone sad', 'Asking a friend to play with you is kind.'],
+  ['How might a friend feel when nobody will play with him?', 'sad', 'happy', 'Nobody will play with him, so he might feel sad. You can ask, do you want to play with me?', 'having nobody to play with can make someone sad', null],
   ['How might your friend feel when you listen to her idea for the game?', 'happy', 'sad', 'You listened to her idea, so your friend might feel happy. Her idea matters too.', 'being listened to can make a friend happy', 'Taking turns adding blocks can make everyone happy too.'],
 ];
 // Taking turns once you are in: the four games the pre-K 3 lessons take turns in, each with what a turn is.
@@ -27172,12 +27490,12 @@ const P3_JOIN_GAMES = [['adding blocks to the tower', 'added a block'], ['rollin
 // Feelings and what we do (pass MN, earmark E13: PK4 I.B.2.a, I.B.2.b and I.B.2.c whole, ELOF P-SE 6 and P-SE 8 in part).
 // What each feeling can make a person do, as the lesson's first four lines say it, and each wrong choice another feeling's own act.
 const P4_FEEL_DOES = [
-  ['What might you do when you feel happy?', 'Jump and clap', 'Stomp your feet', 'When you feel happy, you might smile a big smile, jump and clap.', 'Stomping your feet', 'is what you might do when you feel mad, not happy.', 'You can share a happy feeling with a high five, too.'],
+  ['What might you do when you feel happy?', 'Jump and clap', 'Cry', 'When you feel happy, you might smile a big smile, jump and clap.', 'Crying', 'is what you might do when you feel sad, not happy.', 'You can share a happy feeling with a high five, too.'],
   ['What might your friend do when she feels happy?', 'Smile', 'Hide', 'When your friend feels happy, she might smile a big smile.', 'Hiding', 'is what she might do when she feels scared, not happy.', 'She might jump and clap, too.'],
   ['What might you do when you feel sad?', 'Want a hug', 'Jump and clap', 'When you feel sad, you might cry, or want a hug.', 'Jumping and clapping', 'is what you might do when you feel happy, not sad.', 'A tear may roll out when you feel sad, and that is okay.'],
   ['What might your friend do when he feels sad?', 'Cry', 'Stomp his feet', 'When your friend feels sad, a tear may roll out, and he might cry.', 'Stomping his feet', 'is what he might do when he feels mad, not sad.', 'He might want a hug, too.'],
-  ['What might you do when you feel mad?', 'Stomp your feet', 'Hide', 'When you feel mad, you might stomp your feet, make tight fists or want to shout.', 'Hiding', 'is what you might do when you feel scared, not mad.', 'You can choose a kind way and say, I feel mad.'],
-  ['What might your friend do when she feels mad?', 'Make tight fists', 'Jump and clap', 'When your friend feels mad, she might make tight fists or want to shout.', 'Jumping and clapping', 'is what she might do when she feels happy, not mad.', 'She can choose a kind way and use her words.'],
+  ['What might you do when you feel mad?', 'Stomp your feet', 'Hide', 'When you feel mad, you might stomp your feet, make tight fists or want to shout.', 'Hiding', 'is what you might do when you feel scared, not mad.', 'Your eyebrows may squeeze down when you feel mad.'],
+  ['What might your friend do when she feels mad?', 'Make tight fists', 'Jump and clap', 'When your friend feels mad, she might make tight fists or want to shout.', 'Jumping and clapping', 'is what she might do when she feels happy, not mad.', 'Her eyebrows may squeeze down, too.'],
   ['What might you do when you feel scared?', 'Hold on tight', 'Jump and clap', 'When you feel scared, you might hide, or hold on tight to your grown-up.', 'Jumping and clapping', 'is what you might do when you feel happy, not scared.', 'Your eyes may open wide when you feel scared.'],
   ['What might your friend do when he feels scared?', 'Hide', 'Stomp his feet', 'When your friend feels scared, he might hide, or hold on tight to his grown-up.', 'Stomping his feet', 'is what he might do when he feels mad, not scared.', 'His eyes may open wide, too.'],
 ];
@@ -27208,65 +27526,67 @@ const P4_FEEL_SAY = [
 // What goes with each named feeling, said against the face shown (the feelings lesson's signs, a tear for sad).
 const P4_GOES = { happy: 'a big smile', sad: 'a tear', mad: 'eyebrows that squeeze down', scared: 'wide-open eyes' };
 const P4_FEEL_OKAY = [
-  ['Is it okay to feel mad?', 'Yes', 'Yes, it is okay. Every feeling is okay to have, and you can choose a kind way to show it.', 'would mean feeling mad is not okay, but every feeling is okay to have.', 'You can say, I feel mad, and tell what is wrong.'],
-  ['Is it okay to hit when you feel mad?', 'No', 'No, it is not. Hitting is not okay, because it can hurt someone. You can say, I feel mad.', 'would mean hitting is okay, but hitting can hurt someone.', 'A slow breath can help a mad feeling get smaller.'],
-  ['Is it okay to throw a toy when you feel mad?', 'No', 'No, it is not. Throwing things is not okay, because it can hurt someone.', 'would mean throwing is okay, but throwing things can hurt someone.', 'You can count to five until you feel calm.'],
+  ['Is it okay to feel mad?', 'Yes', 'Yes, it is okay. Every feeling is okay to have, and you can choose a kind way to show it.', 'would mean feeling mad is not okay, but every feeling is okay to have.', 'Every feeling is okay to have, even mad.'],
+  ['Is it okay to hit when you feel mad?', 'No', 'No, it is not. Hitting is not okay, because it can hurt someone. You can say, I feel mad.', 'would mean hitting is okay, but hitting can hurt someone.', 'Pushing and throwing things are not okay either, because they can hurt someone.'],
+  ['Is it okay to throw a toy when you feel mad?', 'No', 'No, it is not. Throwing things is not okay, because it can hurt someone.', 'would mean throwing is okay, but throwing things can hurt someone.', 'Hitting and pushing are not okay either, because they can hurt someone.'],
   ['Is it okay to cry when you feel sad?', 'Yes', 'Yes, it is okay to cry when you feel sad. You can ask for a hug, too.', 'would mean crying is not okay, but it is okay to cry when you feel sad.', 'Every feeling is okay to have.'],
-  ['Is it okay to push a friend when you feel mad?', 'No', 'No, it is not. Pushing is not okay, because it can hurt your friend.', 'would mean pushing is okay, but pushing can hurt your friend.', 'You can use your words and say, I feel mad.'],
+  ['Is it okay to push a friend when you feel mad?', 'No', 'No, it is not. Pushing is not okay, because it can hurt your friend.', 'would mean pushing is okay, but pushing can hurt your friend.', 'Hitting and throwing things are not okay either, because they can hurt someone.'],
   ['Is it okay to ask for a hug when you feel scared?', 'Yes', 'Yes, it is okay. A hug from your grown-up can help a scared feeling get smaller.', 'would mean asking is not okay, but a hug can help a scared feeling get smaller.', 'Holding on tight to your grown-up can help, too.'],
-  ['Is it okay to feel scared?', 'Yes', 'Yes, it is okay. Every feeling is okay to have, and your grown-up can help.', 'would mean feeling scared is not okay, but every feeling is okay to have.', 'You can say, I feel scared.'],
+  ['Is it okay to feel scared?', 'Yes', 'Yes, it is okay. Every feeling is okay to have, and your grown-up can help.', 'would mean feeling scared is not okay, but every feeling is okay to have.', 'When you feel scared, you might hide or hold on tight to your grown-up, and that is okay.'],
 ];
 // Ways to help a big feeling get smaller, each said on a line of the lesson, against a way that hurts or does not help.
 const P4_FEEL_CALM = [
   ['What can help a big mad feeling get smaller?', 'A slow breath', 'Throwing a toy', 'A slow breath in and out helps your body calm down, so a big feeling can get smaller.', 'Throwing a toy', 'can hurt someone, and it does not help a big feeling get smaller.', 'Counting to five can help, too.'],
   ['What can you do until you feel calm?', 'Count to five', 'Hit a friend', 'Counting to five slowly gives a big feeling time to get smaller.', 'Hitting a friend', 'is not okay, because it hurts.', 'A slow breath can help, too.'],
   ['What can you hug until you feel calm?', 'icon:teddy', 'icon:ball', 'Hugging your soft teddy can help a big feeling get smaller.', null, 'is for rolling and playing, and your soft teddy is for hugging.', 'A hug from your grown-up can help, too.'],
-  ['Who can you get when a feeling is very big?', 'Your grown-up', 'Nobody', 'Get your grown-up. Grown-ups can help with the biggest feelings.', null, 'means no one helps you, and your grown-up can help with the biggest feelings.', 'A hug from your grown-up can help, too.'],
-  ['What can you use to show you feel mad, instead of hitting?', 'Your words', 'A toy to throw', 'Use your words. Say, I feel mad, and tell what is wrong.', null, 'can hurt someone, and your words can tell what is wrong.', 'A slow breath can help, too.'],
+  ['Who can you get when a feeling is very big?', 'Your grown-up', 'Nobody', 'Get your grown-up. Grown-ups can help with the biggest feelings.', null, 'means no one helps you, and your grown-up can help with the biggest feelings.', null],
+  ['What can you use to show you feel mad, instead of hitting?', 'Your words', 'A toy to throw', 'Use your words. Say, I feel mad, and tell what is wrong.', null, 'can hurt someone, and your words can tell what is wrong.', 'You can say, I feel mad, and tell what is wrong.'],
   ['What do you pretend to smell as you breathe in slowly?', 'icon:flower', 'icon:candle', 'You smell a flower by breathing in, so you pretend to smell one as you breathe in slowly. Then you pretend to blow out a candle.', null, 'is what you pretend to blow out as you breathe out, not in.', 'Pretend to smell the flower as you breathe in. Then pretend to blow out the candle as you breathe out.'],
   ['What do you pretend to blow out as you breathe out slowly?', 'icon:candle', 'icon:flower', 'You blow out a candle by breathing out. So you pretend to blow one out as you breathe out slowly. First you pretend to smell a flower.', null, 'is what you pretend to smell as you breathe in, not out.', 'Pretend to smell the flower as you breathe in. Then pretend to blow out the candle as you breathe out.'],
 ];
 // How do friends feel? (pass MN, earmark E13: PK4 I.D.1 whole, ELOF P-SE 6 in part): six feelings, the four of Feelings and what
 // we do and the two this lesson adds, each face told by its own sign.
 const P4_FEELINGS6 = ['happy', 'sad', 'mad', 'scared', 'worried', 'embarrassed'];
+// What each face shows, in Feelings and what we do's own lines, for More right answers under "what can you say?" (pass MO).
+const P4_SAY_MORE = { happy: 'When you feel happy, you might smile a big smile, jump and clap.', sad: 'When you feel sad, a tear may roll out.', mad: 'When you feel mad, your eyebrows may squeeze down.', scared: 'When you feel scared, your eyes may open wide.' };
 const P4_FACE_LOOK = { happy: 'It has a big smile.', sad: 'A tear rolls out.', mad: 'Its eyebrows squeeze down.', scared: 'Its eyes open wide.', worried: 'It has a wiggly mouth.', embarrassed: 'Its eyes look down.' };
 // What a friend likes or thinks, and how the friend may feel: the answer is the friend's own feeling, and the wrong face is how
 // you would feel, so a child who answers for themselves picks it (the lesson's slide and its pizza and cake).
 const P4_FRIEND_FEELS = [
-  ['You like pizza, and your friend likes cake. Your friend gets a piece of cake. How might your friend feel?', 'happy', 'sad', 'Your friend likes cake, so a piece of cake can make your friend feel happy.', 'your friend likes cake', 'Think about what your friend likes.'],
-  ['You like cake, but your friend does not like cake. Your friend gets a piece of cake. How might your friend feel?', 'sad', 'happy', 'Your friend does not like cake, so cake might make your friend feel a little sad. But you would feel happy.', 'your friend does not like cake', 'Think about what your friend likes, not what you like.'],
+  ['You like pizza, and your friend likes cake. Your friend gets a piece of cake. How might your friend feel?', 'happy', 'sad', 'Your friend likes cake, so a piece of cake can make your friend feel happy.', 'your friend likes cake', 'You like cats, and your friend likes dogs, so a dog can make your friend happy.'],
+  ['You like cake, but your friend does not like cake. Your friend gets a piece of cake. How might your friend feel?', 'sad', 'happy', 'Your friend does not like cake, so cake might make your friend feel a little sad. But you would feel happy.', 'your friend does not like cake', 'At the big slide, you can feel happy while your friend feels scared.'],
   ['You like cats, and your friend likes dogs. Your friend gets to pet a puppy. How might your friend feel?', 'happy', 'sad', 'Your friend likes dogs, so petting a puppy can make your friend feel happy.', 'your friend likes dogs', 'Friends can like different things, and that is okay.'],
-  ['You love the big slide, but your friend thinks it is too tall. How might your friend feel at the big slide?', 'scared', 'happy', 'Your friend thinks the slide is too tall, so your friend might feel scared. Your friend\'s feelings can be different from yours.', 'your friend thinks the slide is too tall', 'You can both go down the little slide, one after the other.'],
+  ['You love the big slide, but your friend thinks it is too tall. How might your friend feel at the big slide?', 'scared', 'happy', 'Your friend thinks the slide is too tall, so your friend might feel scared. Your friend\'s feelings can be different from yours.', 'your friend thinks the slide is too tall', 'A piece of cake can make you happy and your friend a little sad.'],
   ['Your friend loves the big slide, but you think it is too tall. How might your friend feel at the big slide?', 'happy', 'scared', 'Your friend loves the big slide, so your friend might feel happy, even though you feel scared.', 'your friend loves the big slide', 'Friends can feel different about the same slide.'],
 ];
 // Worried and embarrassed in moments a child knows: the wrong face is never a fair one there (a doctor's visit can make a child
 // scared and a fall can make a child sad, and a spill can make a child mad, so those offer the other new face or happy). Three rows
 // set worried and embarrassed against each other, so a child cannot pass by tapping the newest face (the lesson check, pass MN).
 const P4_NEW_MOMENTS = [
-  ['How might you feel on your first day at a new school, when you do not know anyone yet?', 'worried', 'mad', 'A new school with new people can make you feel worried, and that is okay.', 'a new school can make you feel worried', 'You can tell your grown-up, I feel worried.'],
+  ['How might you feel on your first day at a new school, when you do not know anyone yet?', 'worried', 'mad', 'A new school with new people can make you feel worried, and that is okay.', 'a new school can make you feel worried', 'You may feel worried when you think something bad might happen.'],
   ['How might you feel when you spill your milk at lunch and everyone looks at you?', 'embarrassed', 'happy', 'Spilling when everyone looks can make you feel embarrassed. Everyone spills sometimes.', 'spilling when everyone looks can make you feel embarrassed', 'Your cheeks can turn pink, and you may want to hide your face.'],
-  ['How might you feel when you call your teacher Grandma by mistake and your friends giggle?', 'embarrassed', 'worried', 'Saying the wrong name when everyone hears can make you feel embarrassed, and that is okay.', 'a mistake everyone hears can make you feel embarrassed', 'Everyone makes mistakes like that sometimes.'],
-  ['How might you feel the night before you go to the doctor, when you wonder if it will hurt?', 'worried', 'embarrassed', 'Thinking something bad might happen can make you feel worried, and that is okay.', 'wondering if it will hurt can make you worried', 'You can tell your grown-up, I feel worried.'],
-  ['How might your friend feel when her grown-up is late, and she wonders where they are?', 'worried', 'embarrassed', 'Your friend thinks something might be wrong, so she might feel worried.', 'wondering where your grown-up is can make you worried', 'You can stay with your friend and say, it is okay.'],
-  ['How might your friend feel when he falls down in front of the class and everyone looks?', 'embarrassed', 'happy', 'Falling when everyone looks can make you feel embarrassed. He might want to hide his face.', 'falling when everyone looks can make you feel embarrassed', 'You can ask your friend if he is okay.'],
+  ['How might you feel when you call your teacher Grandma by mistake and your friends giggle?', 'embarrassed', 'worried', 'Saying the wrong name when everyone hears can make you feel embarrassed, and that is okay.', 'a mistake everyone hears can make you feel embarrassed', 'You may feel embarrassed when you spill, fall or make a mistake, and everyone looks at you.'],
+  ['How might you feel the night before you go to the doctor, when you wonder if it will hurt?', 'worried', 'embarrassed', 'Thinking something bad might happen can make you feel worried, and that is okay.', 'wondering if it will hurt can make you worried', 'You may feel worried on the first day at a new school, too.'],
+  ['How might your friend feel when her grown-up is late, and she wonders where they are?', 'worried', 'embarrassed', 'Your friend thinks something might be wrong, so she might feel worried.', 'wondering where your grown-up is can make you worried', 'A worried face can have a wiggly mouth, and eyebrows that go up in the middle.'],
+  ['How might your friend feel when he falls down in front of the class and everyone looks?', 'embarrassed', 'happy', 'Falling when everyone looks can make you feel embarrassed. He might want to hide his face.', 'falling when everyone looks can make you feel embarrassed', 'An embarrassed face can have eyes that look down and pink cheeks.'],
 ];
 const P4_FRIENDS_YESNO = [
-  ['Can two friends feel different about the same slide?', 'Yes', 'Yes. One friend can feel happy on the big slide while another feels scared.', 'would mean friends always feel the same, but they can feel different.', 'Two friends can both feel happy at a party, too.'],
-  ['Do friends always like the same things as you?', 'No', 'No. Friends can like different things, like cats or dogs, and that is okay.', 'would mean friends always like what you like, but friends can like different things.', 'Think about what your friend likes.'],
-  ['Is it okay to feel worried?', 'Yes', 'Yes, it is okay. Everyone feels worried sometimes, and you can say, I feel worried.', 'would mean feeling worried is not okay, but everyone feels worried sometimes.', 'You can tell your grown-up, I feel worried.'],
-  ['Is it okay to feel embarrassed?', 'Yes', 'Yes, it is okay. Everyone feels embarrassed sometimes, like when they spill.', 'would mean feeling embarrassed is not okay, but everyone feels embarrassed sometimes.', 'You can say, I feel embarrassed.'],
-  ['Do friends always feel the same as you?', 'No', 'No. Friends can feel the same as you, or different, so ask them how they feel.', 'would mean friends always feel the same, but they can feel different.', 'You can ask your friend how they feel.'],
-  ['Can you ask a friend how they feel?', 'Yes', 'Yes. Asking your friend how they feel helps you know.', 'would mean you cannot ask, but asking helps you know how your friend feels.', 'Looking at your friend\'s face can help, too.'],
-  ['Does a piece of cake make every friend happy?', 'No', 'No. A friend who does not like cake may feel a little sad.', 'would mean every friend likes cake, but some friends do not like cake.', 'Think about what your friend likes.'],
+  ['Can two friends feel different about the same slide?', 'Yes', 'Yes. One friend can feel happy on the big slide while another feels scared.', 'would mean friends always feel the same, but they can feel different.', 'A piece of cake can make you happy and your friend a little sad.'],
+  ['Do friends always like the same things as you?', 'No', 'No. Friends can like different things, like cats or dogs, and that is okay.', 'would mean friends always like what you like, but friends can like different things.', 'You might like cats, and your friend might like dogs.'],
+  ['Is it okay to feel worried?', 'Yes', 'Yes, it is okay. Everyone feels worried sometimes, and you can say, I feel worried.', 'would mean feeling worried is not okay, but everyone feels worried sometimes.', 'Everyone feels worried or embarrassed sometimes, and that is okay.'],
+  ['Is it okay to feel embarrassed?', 'Yes', 'Yes, it is okay. Everyone feels embarrassed sometimes, like when they spill.', 'would mean feeling embarrassed is not okay, but everyone feels embarrassed sometimes.', 'Everyone feels worried or embarrassed sometimes, and that is okay.'],
+  ['Do friends always feel the same as you?', 'No', 'No. Friends can feel the same as you, or different, so ask them how they feel.', 'would mean friends always feel the same, but they can feel different.', 'At the big slide, you can feel happy while your friend feels scared.'],
+  ['Can you ask a friend how they feel?', 'Yes', 'Yes. Asking your friend how they feel helps you know.', 'would mean you cannot ask, but asking helps you know how your friend feels.', 'When your friend looks sad, you can ask how they feel.'],
+  ['Does a piece of cake make every friend happy?', 'No', 'No. A friend who does not like cake may feel a little sad.', 'would mean every friend likes cake, but some friends do not like cake.', 'The big slide can make one friend happy and another friend scared.'],
 ];
 // Being a good friend (pass MN, earmark E13: PK4 I.C.6, I.C.5, ELOF P-SE 7 and P-SE 5 whole, P-SE 4 in part): kind words and acts for a friend who
 // feels sad, worried or embarrassed, when to get a grown-up and when friends can fix it themselves, and fixing a problem when
 // friends want different things.
 const P4_KIND_WORDS = [
-  ['What is a kind thing to say when your friend spills milk and feels embarrassed?', 'It is okay. I spill too.', 'Ha ha, you spilled!', 'Saying it is okay, and that you spill too, helps your friend feel better. Everyone spills sometimes.', 'Laughing at your friend', 'can make an embarrassed friend feel worse, so it is not kind.', 'You can help your friend wipe up the milk, too.'],
+  ['What is a kind thing to say when your friend spills milk and feels embarrassed?', 'It is okay. I spill too.', 'Ha ha, you spilled!', 'Saying it is okay, and that you spill too, helps your friend feel better. Everyone spills sometimes.', 'Laughing at your friend', 'can make an embarrassed friend feel worse, so it is not kind.', 'You can also ask if your friend is okay.'],
   ['What is a kind thing to say when your friend feels worried on the first day at school?', 'I will play with you.', 'Go away.', 'Saying, I will play with you, can help a worried friend feel better.', 'Saying go away', 'leaves your worried friend alone, so it is not kind.', 'You can ask to hold your friend\'s hand, too.'],
-  ['What is a kind thing to say when your friend looks sad?', 'Are you okay?', 'Stop crying!', 'Asking your friend if they are okay shows you care how your friend feels.', 'Saying stop crying', 'is not kind, because every feeling is okay to have.', 'You can sit beside your friend, too.'],
-  ['What is a kind thing to say when your friend falls in front of the class?', 'Are you okay?', 'Ha ha, you fell!', 'Asking your friend if they are okay shows you care, and laughing can make your friend feel embarrassed.', 'Laughing at your friend', 'can make your friend feel embarrassed, so it is not kind.', 'When your friend is hurt, get a grown-up.'],
+  ['What is a kind thing to say when your friend looks sad?', 'Are you okay?', 'Stop crying!', 'Asking your friend if they are okay shows you care how your friend feels.', 'Saying stop crying', 'is not kind, because every feeling is okay to have.', 'You can also say, I will play with you.'],
+  ['What is a kind thing to say when your friend falls in front of the class?', 'Are you okay?', 'Ha ha, you fell!', 'Asking your friend if they are okay shows you care, and laughing can make your friend feel embarrassed.', 'Laughing at your friend', 'can make your friend feel embarrassed, so it is not kind.', 'You can also say, I will play with you.'],
 ];
 const P4_HELP_FRIEND = [
   ['What can you do when your friend spills milk?', 'Help wipe it up', 'Point and laugh', 'Helping wipe it up is kind, and it helps your friend feel better.', 'Pointing and laughing', 'can make your friend feel embarrassed, so it is not kind.', 'You can say, it is okay, I spill too.'],
@@ -27277,25 +27597,74 @@ const P4_HELP_FRIEND = [
 // opening words never give the answer (the code check, pass MN round one) (P-SE 5 at 48 to 60 months: "Although simple conflicts may be
 // resolved without adult assistance, may seek out or need adult support in more challenging moments.").
 const P4_WHEN_GROWNUP = [
-  ['Should you get a grown-up when your friend falls and gets hurt?', 'Yes', 'Yes. Get a grown-up, because grown-ups know how to help when someone is hurt.', 'would mean your hurt friend gets no help, but grown-ups know how to help.', 'You can ask your friend if they are okay, too.'],
-  ['Do you need a grown-up when a fight starts and you cannot stop it?', 'Yes', 'Yes. A grown-up can help you both stop the fight and fix the problem.', 'would mean nobody helps stop the fight, but a grown-up can help you both.', 'You can say what the problem is, too.'],
-  ['Should you get a grown-up when your friend is very sad and cannot stop crying?', 'Yes', 'Yes. Grown-ups can help with the biggest feelings.', 'would mean your friend gets no help, but grown-ups can help with the biggest feelings.', 'You can sit beside your friend, too.'],
-  ['Do you need a grown-up when you and your friend can take turns choosing the game?', 'No', 'No. You can fix it yourselves by taking turns choosing.', 'would mean you cannot fix it, but taking turns choosing fixes it.', 'A grown-up can help when you cannot fix a problem together.'],
-  ['Should you get a grown-up when you and your friend can find a game you both like?', 'No', 'No. You can fix it yourselves by finding a game you both like.', 'would mean you cannot fix it, but finding a game you both like fixes it.', 'Get a grown-up when someone is hurt.'],
+  ['Should you get a grown-up when your friend falls and gets hurt?', 'Yes', 'Yes. Get a grown-up, because grown-ups know how to help when someone is hurt.', 'would mean your hurt friend gets no help, but grown-ups know how to help.', 'A grown-up can help when a fight starts and you cannot stop it, too.'],
+  ['Do you need a grown-up when a fight starts and you cannot stop it?', 'Yes', 'Yes. A grown-up can help you both stop the fight and fix the problem.', 'would mean nobody helps stop the fight, but a grown-up can help you both.', 'A grown-up can help when a friend falls and gets hurt, too.'],
+  ['Should you get a grown-up when your friend is very sad and cannot stop crying?', 'Yes', 'Yes. Grown-ups can help with the biggest feelings.', 'would mean your friend gets no help, but grown-ups can help with the biggest feelings.', 'A grown-up can help when a friend falls and gets hurt, too.'],
+  ['Do you need a grown-up when you and your friend can take turns choosing the game?', 'No', 'No. You can fix it yourselves by taking turns choosing.', 'would mean you cannot fix it, but taking turns choosing fixes it.', 'When you and your friend can fix a problem together, you do not need to get a grown-up.'],
+  ['Should you get a grown-up when you and your friend can find a game you both like?', 'No', 'No. You can fix it yourselves by finding a game you both like.', 'would mean you cannot fix it, but finding a game you both like fixes it.', 'When you and your friend can fix a problem together, you do not need to get a grown-up.'],
 ];
 const P4_FIX_PROBLEM = [
   ['You want to play blocks, and your friend wants to play ball. What can you do?', 'Take turns choosing', 'Grab the ball', 'Take turns choosing. First blocks, then ball, so you both get to play your game.', 'Grabbing the ball', 'is not kind, and it does not fix the problem.', 'You can find a game you both like, too.'],
   ['You and your friend both want to choose the game. What is fair?', 'Take turns choosing', 'Only you choose', 'Taking turns choosing is fair, so you both get a turn to pick.', 'Only you choosing', 'is not fair, because your friend wants a turn too.', 'You can find a game you both like, too.'],
   ['Your friend does not like your game, and you do not like your friend\'s game. What can you do?', 'Find a game you both like', 'Say, you are not my friend', 'Find a game you both like, and you can play together.', 'Saying you are not my friend', 'is not kind, and it does not fix the problem.', 'You can take turns choosing, too.'],
-  ['You want to play blocks, and your friend wants to play ball. How can you say what the problem is?', 'We want different games', 'You are mean', 'Saying, we want different games, tells the problem kindly, so you can fix it together.', 'Saying you are mean', 'calls your friend a name, and it does not say the problem.', 'Then you can take turns choosing.'],
-  ['You and your friend are fighting, and you cannot fix it. Who can help?', 'A grown-up', 'Nobody', 'Get a grown-up. A grown-up can help you both fix the problem.', null, 'means no one helps you, and a grown-up can help you both.', 'You can say what the problem is, too.'],
+  ['You want to play blocks, and your friend wants to play ball. How can you say what the problem is?', 'We want different games', 'You are mean', 'Saying, we want different games, tells the problem kindly, so you can fix it together.', 'Saying you are mean', 'calls your friend a name, and it does not say the problem.', null],
+  ['You and your friend are fighting, and you cannot fix it. Who can help?', 'A grown-up', 'Nobody', 'Get a grown-up. A grown-up can help you both fix the problem.', null, 'means no one helps you, and a grown-up can help you both.', null],
 ];
 const P4_GOOD_YESNO = [
-  ['Is it kind to laugh when a friend spills milk?', 'No', 'No, it is not kind. Laughing can make your friend feel embarrassed and worse.', 'would mean laughing is kind, but it can make your friend feel worse.', 'You can say, it is okay, I spill too.'],
+  ['Is it kind to laugh when a friend spills milk?', 'No', 'No, it is not kind. Laughing can make your friend feel embarrassed and worse.', 'would mean laughing is kind, but it can make your friend feel worse.', null],
   ['Is it kind to say, it is okay, I spill too?', 'Yes', 'Yes, it is kind. It helps your friend feel better.', 'would mean those words are not kind, but they help your friend feel better.', 'Helping wipe up the milk is kind, too.'],
   ['Is it kind to ask a worried friend, can I hold your hand?', 'Yes', 'Yes, it is kind. Asking first lets your friend say yes or no. Holding hands shows your friend you care.', 'would mean asking is not kind, but asking first lets your friend choose.', 'You can say, I will play with you.'],
-  ['Is it fair if only you choose the game every time?', 'No', 'No, it is not fair. Taking turns choosing lets you both pick.', 'would mean it is fair, but your friend wants a turn to choose too.', 'You can find a game you both like, too.'],
-  ['Is it kind to say what the problem is, like, we want different games?', 'Yes', 'Yes. Saying what the problem is kindly helps you fix it together.', 'would mean those words are not kind, but saying the problem helps you fix it together.', 'Then you can take turns choosing.'],
+  ['Is it fair if only you choose the game every time?', 'No', 'No, it is not fair. Taking turns choosing lets you both pick.', 'would mean it is fair, but your friend wants a turn to choose too.', null],
+  ['Is it kind to say what the problem is, like, we want different games?', 'Yes', 'Yes. Saying what the problem is kindly helps you fix it together.', 'would mean those words are not kind, but saying the problem helps you fix it together.', null],
+];
+// Let's play together (pass MO, earmark E13: PK4 I.C.1, I.C.3 and I.C.4 whole, ELOF P-SE 4 and P-SE 1 in part). Ways to start
+// with a new friend, the words and signs that build a friendship, and playing together with a plan, each row in socialRow's shape
+// (the whole question, the answer, the wrong choice, the explanation, how a person says the wrong choice, why it does not fit and
+// one more right thing) or socialYesNo's, with every answer said on a line of the lesson. A wrong choice is an unkind or a bossy
+// way, never a shy one: hanging back is not wrong, and the lesson never says it is.
+const P4_PLAY_START = [
+  ['What can you do first to start playing with a new friend?', 'Smile and say hi', 'Grab their toy', 'A smile and a hi are a friendly way to start. Then you can ask, do you want to play with me?', 'Grabbing their toy', 'is not kind, and it does not start a game together.', 'You can wave, too.'],
+  ['Your new friend is building with blocks. What can you ask about the game?', 'What are you making?', 'Give me your blocks!', 'Asking what your friend is making shows you care about the game, and your friend can tell you.', 'Saying give me your blocks', 'is not a kind way to start a game together.', null],
+  ['What kind thing can you say about your friend\'s tower?', 'I like your tower!', 'My tower is better!', 'Saying, I like your tower, is kind. Kind words help friends feel happy.', 'Saying my tower is better', 'is not kind, because it can make your friend feel sad.', null],
+  ['What can you say to ask a new friend to play?', 'Do you want to play with me?', 'Play with me now!', 'Asking, do you want to play with me, is a friendly way to start, and your friend can say yes or no.', 'Saying play with me now', 'tells your friend what to do, and asking lets your friend choose.', null],
+  ['Ana wants to tell a new friend her name. What can she say?', 'Hi, I am Ana.', 'Go away.', 'Saying, hi, I am Ana, tells her new friend her name. Then she can ask, what is your name?', 'Saying go away', 'is not kind, and it does not start a friendship.', null],
+  ['Your new friend says, no thanks. What can you do?', 'Ask another friend', 'Grab the toy', 'No thanks is okay. You can ask another friend, or play something else.', 'Grabbing the toy', 'is not kind, and no thanks is okay.', 'You can play on the slide, too.'],
+  ['You get to school and see your teacher. What can you say?', 'Good morning!', 'Give me the crayons!', 'Saying good morning is a friendly way to start talking with your teacher.', 'Saying give me the crayons', 'tells your teacher what to do, and good morning is a friendly hello.', 'You can tell your teacher about a picture you drew, too.'],
+];
+const P4_PLAY_BODY = [
+  ['What can you do with your hand to say hi?', 'Wave', 'Push', 'A wave is a friendly way to say hi with your hand.', 'Pushing', 'can hurt, so it is not a way to say hi.', 'A high five can say, I am happy to play with you.'],
+  ['How can you show your friend you are listening?', 'Nod your head', 'Shout while your friend talks', 'Nodding your head shows your friend you are listening.', 'Shouting while your friend talks', 'means you are not listening, and your friend cannot finish.', 'Turn toward your friend while your friend talks.'],
+  ['What can you do when your friend talks?', 'Listen', 'Say, stop talking!', 'Turn toward your friend and listen. Listening shows you care what your friend says.', 'Saying stop talking', 'is not kind, and your friend cannot finish.', 'You can nod your head, too.'],
+  ['What can say, I am happy to play with you, without any words?', 'A smile', 'A push', 'A smile can say, I am happy to play with you, without any words.', 'A push', 'can hurt, so it does not say I am happy to play with you.', 'A high five can say it, too.'],
+  ['What can you and your friend do, so you both get a turn to talk?', 'Take turns talking', 'Only you talk', 'Take turns talking. You talk, and then your friend talks, so you both get a turn.', 'Only you talking', 'is not fair, because your friend wants a turn to talk too.', 'Listen while your friend talks.'],
+  ['When you and your friend finish the house together, how can you show you had fun?', 'Give a high five', 'Say, I did it all!', 'A high five shows you had fun together.', 'Saying I did it all', 'is not true, because you made it together.', 'You can say, we did it!'],
+];
+const P4_PLAY_PLAN = [
+  ['You and your friend want to build a house with blocks. What can you do first?', 'Make a plan', 'Grab all the blocks', 'Make a plan together. A plan says what you will make, and who does each part.', 'Grabbing all the blocks', 'leaves none for your friend, so it is not fair.', 'You can say, let\'s build a house with blocks, you build the walls, and I build the roof.'],
+  ['What does a plan say?', 'What you will make, and who does each part', 'Who gets all the blocks', 'A plan says what you will make, and who does each part, so each friend has a part.', 'Who gets all the blocks', 'is not a plan, because each friend needs blocks to do a part.', 'A plan can say, let\'s build a house with blocks, you build the walls, and I build the roof.'],
+  ['You have a new idea for the game. What can you do?', 'Say it, and ask, is that okay?', 'Knock the house down', 'Say your idea, and ask your friend, is that okay? Then you both agree on the new plan.', 'Knocking the house down', 'is not kind, and it can make your friend sad.', 'Listen to your friend\'s idea, too.'],
+  ['Your plan is to build a house, and your friend builds the roof. What can you do?', 'Do your part', 'Do every part yourself', 'Do your part of the plan. Each friend does a part, and together you make the whole house.', 'Doing every part yourself', 'leaves your friend with no part, so it is not playing together.', 'You can build the walls.'],
+  ['While you build, how can you ask your friend for a block?', 'Can you pass me a block?', 'Give me that!', 'Asking, can you pass me a block, is a kind way to ask while you play together.', 'Saying give me that', 'tells your friend what to do, and asking is kinder.', 'You can say, please pass me a block.'],
+];
+// Who does which part of a plan: each plan's two parts, yours and your friend's, each in its you form and its your friend form, so
+// the question can name them in either order and ask about either one; the answer is whoever the plan gives the asked part.
+const P4_PLAY_PARTS = [
+  ['You and your friend build a house with blocks.', ['build the walls', 'builds the walls'], ['build the roof', 'builds the roof']],
+  ['You and your friend play pizza shop.', ['make the pizza', 'makes the pizza'], ['bring the plates', 'brings the plates']],
+  ['You and your friend have a pretend tea party.', ['pour the tea', 'pours the tea'], ['pass the cups', 'passes the cups']],
+  ['You and your friend play bus.', ['drive the bus', 'drives the bus'], ['ring the bell', 'rings the bell']],
+  ['You and your friend make one big picture together.', ['draw the sun', 'draws the sun'], ['draw the tree', 'draws the tree']],
+  ['You and your friend play store.', ['sell the apples', 'sells the apples'], ['buy the apples', 'buys the apples']],
+];
+const P4_PLAY_YESNO = [
+  ['Is a smile and a hi a friendly way to start playing?', 'Yes', 'Yes. A smile and a hi are a friendly way to start, and then you can ask to play.', 'would mean a smile and a hi are not friendly, but they are.', 'You can wave, too.'],
+  ['Is it kind to grab a new friend\'s toy?', 'No', 'No, it is not kind, because your friend is using it. You can ask to play instead.', 'would mean grabbing is kind, but your friend is using that toy.', 'Shouting while your friend talks is not kind, either.'],
+  ['Is it okay when a new friend says, no thanks?', 'Yes', 'Yes, it is okay. You can play something else, or ask another friend.', 'would mean friends must always say yes, but no thanks is okay too.', null],
+  ['Can a plan say who does each part?', 'Yes', 'Yes. A plan says what you will make, and who does each part.', 'would mean a plan cannot say who does each part, but it can.', 'A plan can say, you build the walls, and I build the roof.'],
+  ['Is it kind to shout while your friend is talking?', 'No', 'No. Listen while your friend talks, and then it is your turn to talk.', 'would mean shouting is kind, but your friend cannot finish talking.', 'Grabbing a friend\'s toy is not kind, either.'],
+  ['Can you say good morning to your teacher?', 'Yes', 'Yes. You can talk with grown-ups too, like saying good morning to your teacher.', 'would mean you cannot talk with your teacher, but you can.', 'You can tell your teacher about a picture you drew.'],
+  ['Is it playing together if one friend does every part?', 'No', 'No. When you play together, each friend does a part of the plan.', 'would mean one friend can do it all, but each friend does a part.', null],
+  ['Can a wave say hi without any words?', 'Yes', 'Yes. Your body talks too, and a wave can say hi.', 'would mean a wave says nothing, but a wave can say hi.', 'A smile can say hi, too.'],
 ];
 // Two faces a young child can fairly take for each other, never set against each other in pre-K 4's face questions (p4-new-feeling-face).
 export const P4_NEAR_FACES = [['scared', 'embarrassed'], ['sad', 'embarrassed'], ['sad', 'worried'], ['scared', 'worried']];
@@ -27307,12 +27676,12 @@ const P4_FEEL_WHEN = { happy: 'You might feel happy when you see your best frien
 // one wrong face, told by that face's own sign and what the moment says.
 const socialRow = ([prompt, answer, wrong, why, wrongName, notWhy, more], rng) => { const choices = shuffle(rng, [answer, wrong]);
   return { type: 'choice', story: null, prompt, choices, answer, explain: why, visual: null, explainVisual: null,
-    whyNot: p3WhyNot(choices, answer, (w) => ({ name: wrongName || (/^(?:icon|pic):/.test(w) ? p3PicName(w) : w), why: notWhy })), alsoRight: [more] }; };
+    whyNot: p3WhyNot(choices, answer, (w) => ({ name: wrongName || (/^(?:icon|pic):/.test(w) ? p3PicName(w) : w), why: notWhy })), alsoRight: more ? [more] : [] }; };
 const socialYesNo = ([prompt, answer, why, notWhy, more], rng) => { const choices = yesNo(rng);
-  return { type: 'choice', story: null, prompt, choices, answer, explain: why, visual: null, explainVisual: null, whyNot: p3WhyNot(choices, answer, (w) => ({ name: w, why: notWhy })), alsoRight: [more] }; };
+  return { type: 'choice', story: null, prompt, choices, answer, explain: why, visual: null, explainVisual: null, whyNot: p3WhyNot(choices, answer, (w) => ({ name: w, why: notWhy })), alsoRight: more ? [more] : [] }; };
 const socialFace = ([prompt, f, wrong, why, clause, more], rng) => { const choices = shuffle(rng, [`face:${f}`, `face:${wrong}`]);
   return { type: 'choice', story: null, prompt, choices, answer: `face:${f}`, explain: why, visual: null, explainVisual: null,
-    whyNot: p3WhyNot(choices, `face:${f}`, (t) => ({ name: p3FaceName(t), why: `has ${P3_FACE_SIGN[t.slice(5)]}, and ${clause}.` })), alsoRight: [more] }; };
+    whyNot: p3WhyNot(choices, `face:${f}`, (t) => ({ name: p3FaceName(t), why: `has ${P3_FACE_SIGN[t.slice(5)]}, and ${clause}.` })), alsoRight: more ? [more] : [] }; };
 // One more and one fewer (pass ME, earmark E12 part two: PK3 V.B.1 and V.B.2, ELOF P-MATH 6): every answer is the count in the
 // words plus or minus one, said in counting words, and a wrong group is never that count, so a child who counts always finds it.
 const P3_NUM = ['zero', 'one', 'two', 'three', 'four', 'five'];
@@ -27478,29 +27847,29 @@ Object.assign(GENERATORS, {
   // when the answer is happy, so it is never a feeling a child could also fairly have there.
   'p3-feel-moment': (rng) => { const [prompt, f, wrong, why, moment, more] = pick(rng, P3_FEEL_MOMENTS); const choices = shuffle(rng, [`face:${f}`, `face:${wrong}`]);
     return { type: 'choice', story: null, prompt, choices, answer: `face:${f}`, explain: why, visual: null, explainVisual: null,
-      whyNot: p3WhyNot(choices, `face:${f}`, (t) => ({ name: p3FaceName(t), why: `has ${P3_FACE_SIGN[t.slice(5)]}, and ${moment}.` })), alsoRight: [more] }; },
+      whyNot: p3WhyNot(choices, `face:${f}`, (t) => ({ name: p3FaceName(t), why: `has ${P3_FACE_SIGN[t.slice(5)]}, and ${moment}.` })), alsoRight: more ? [more] : [] }; },
   'p3-feel-okay': (rng) => { const [prompt, answer, why, notWhy, more] = pick(rng, P3_FEEL_OKAY); const choices = yesNo(rng);
-    return { type: 'choice', story: null, prompt, choices, answer, explain: why, visual: null, explainVisual: null, whyNot: p3WhyNot(choices, answer, (w) => ({ name: w, why: notWhy })), alsoRight: [more] }; },
+    return { type: 'choice', story: null, prompt, choices, answer, explain: why, visual: null, explainVisual: null, whyNot: p3WhyNot(choices, answer, (w) => ({ name: w, why: notWhy })), alsoRight: more ? [more] : [] }; },
   // A big feeling and what helps (pass MD, PK3 I.B.2.c, ELOF P-SE 8 in part): find your grown-up, a slow breath, the feeling's
   // name for the face shown (never said, so the face is read), and the slow breath itself, a pretend flower to smell and a
   // pretend candle to blow out.
   'p3-feel-calm': (rng) => { const [prompt, answer, wrong, why, face, notWhy, more] = pick(rng, P3_FEEL_CALM); const choices = shuffle(rng, [answer, wrong]);
     return { type: 'choice', story: null, prompt, choices, answer, explain: why, visual: face ? { kind: 'face', feeling: face } : null, explainVisual: null,
-      whyNot: p3WhyNot(choices, answer, (w) => ({ name: /^icon:/.test(w) ? p3PicName(w) : /^I feel /.test(w) ? `Saying ${w}` : w, why: notWhy })), alsoRight: [more] }; },
+      whyNot: p3WhyNot(choices, answer, (w) => ({ name: /^icon:/.test(w) ? p3PicName(w) : /^I feel /.test(w) ? `Saying ${w}` : w, why: notWhy })), alsoRight: more ? [more] : [] }; },
   // Helping a friend (pass MD, PK3 I.C.5, I.C.6 and I.D.1, ELOF P-SE 5 and P-SE 7): the friend who may need help by the face,
   // the kind thing to say or do, the grown-up to get, and the fight over one ball, with the lesson's own words.
   'p3-help-who': (rng) => { const [prompt, f, foils, why, more] = pick(rng, P3_HELP_WHO); const other = pick(rng, foils); const choices = shuffle(rng, [`face:${f}`, `face:${other}`]); const needs = /might need help/.test(prompt);
     return { type: 'choice', story: null, prompt, choices, answer: `face:${f}`, explain: why, visual: null, explainVisual: null,
-      whyNot: p3WhyNot(choices, `face:${f}`, (t) => ({ name: p3FaceName(t), why: needs ? `has ${P3_FACE_SIGN[t.slice(5)]}, so that friend may not need help right now.` : `has ${P3_FACE_SIGN[t.slice(5)]}, and ${P3_FRIEND_LOOK[f]}.` })), alsoRight: [more] }; },
+      whyNot: p3WhyNot(choices, `face:${f}`, (t) => ({ name: p3FaceName(t), why: needs ? `has ${P3_FACE_SIGN[t.slice(5)]}, so that friend may not need help right now.` : `has ${P3_FACE_SIGN[t.slice(5)]}, and ${P3_FRIEND_LOOK[f]}.` })), alsoRight: more ? [more] : [] }; },
   'p3-help-kind': (rng) => { const [prompt, answer, wrong, why, wrongName, notWhy, more] = pick(rng, P3_HELP_KIND); const choices = shuffle(rng, [answer, wrong]);
-    return { type: 'choice', story: null, prompt, choices, answer, explain: why, visual: null, explainVisual: null, whyNot: p3WhyNot(choices, answer, () => ({ name: wrongName, why: notWhy })), alsoRight: [more] }; },
+    return { type: 'choice', story: null, prompt, choices, answer, explain: why, visual: null, explainVisual: null, whyNot: p3WhyNot(choices, answer, () => ({ name: wrongName, why: notWhy })), alsoRight: more ? [more] : [] }; },
   'p3-help-grownup': (rng) => { const [prompt, wrong, why, notWhy] = pick(rng, P3_HELP_GROWNUP); const choices = shuffle(rng, ['A grown-up', wrong]);
     return { type: 'choice', story: null, prompt, choices, answer: 'A grown-up', explain: why, visual: null, explainVisual: null, whyNot: p3WhyNot(choices, 'A grown-up', (w) => ({ name: w, why: notWhy })),
       alsoRight: ['A teacher is a grown-up who can help, and so is your grown-up at home.'] }; },
   'p3-help-ball': (rng) => { const [prompt, answer, wrong, why, wrongName, notWhy, more] = pick(rng, P3_HELP_BALL); const choices = shuffle(rng, [answer, wrong]);
-    return { type: 'choice', story: null, prompt, choices, answer, explain: why, visual: null, explainVisual: null, whyNot: p3WhyNot(choices, answer, () => ({ name: wrongName, why: notWhy })), alsoRight: [more] }; },
+    return { type: 'choice', story: null, prompt, choices, answer, explain: why, visual: null, explainVisual: null, whyNot: p3WhyNot(choices, answer, () => ({ name: wrongName, why: notWhy })), alsoRight: more ? [more] : [] }; },
   'p3-help-yesno': (rng) => { const [prompt, answer, why, notWhy, more] = pick(rng, P3_HELP_YESNO); const choices = yesNo(rng);
-    return { type: 'choice', story: null, prompt, choices, answer, explain: why, visual: null, explainVisual: null, whyNot: p3WhyNot(choices, answer, (w) => ({ name: w, why: notWhy })), alsoRight: [more] }; },
+    return { type: 'choice', story: null, prompt, choices, answer, explain: why, visual: null, explainVisual: null, whyNot: p3WhyNot(choices, answer, (w) => ({ name: w, why: notWhy })), alsoRight: more ? [more] : [] }; },
   // Can I play too? (pass MN, earmark E12: PK3 I.C.3, ELOF P-SE 3 and P-SE 4): the ways to join a game, the kind and unkind, a
   // not now, the feelings a game can bring and the turns once in, each row read whole as one question.
   'p3-join-how': (rng) => socialRow(pick(rng, P3_JOIN_HOW), rng),
@@ -27511,15 +27880,17 @@ Object.assign(GENERATORS, {
   'p3-join-turn': (rng) => { const [game, did] = pick(rng, P3_JOIN_GAMES); const friendWent = rng() < 0.5; const choices = shuffle(rng, ['Your turn', 'Your friend\'s turn']); const answer = friendWent ? 'Your turn' : 'Your friend\'s turn'; const who = friendWent ? 'your friend' : 'you';
     return { type: 'choice', story: null, prompt: `You and your friend are taking turns ${game}, and ${who} just ${did}, so whose turn is it now?`, choices, answer,
       explain: friendWent ? `Your friend just ${did}, so now it is your turn.` : `You just ${did}, so now it is your friend's turn.`, visual: null, explainVisual: null,
-      whyNot: p3WhyNot(choices, answer, (w) => ({ name: w, why: `is over, because ${who} just ${did}.` })), alsoRight: ['Taking turns lets you both get to play.'] }; },
+      whyNot: p3WhyNot(choices, answer, (w) => ({ name: w, why: `is over, because ${who} just ${did}.` })), alsoRight: [] }; },
   // Feelings and what we do (pass MN, earmark E13: PK4 I.B.2.a, I.B.2.b, I.B.2.c, ELOF P-SE 6 and P-SE 8): what a feeling can make
   // you do, what someone does telling how they may feel, a feeling's name for the face shown, what is okay to do, and what helps.
   'p4-feel-does': (rng) => socialRow(pick(rng, P4_FEEL_DOES), rng),
   'p4-feel-tells': (rng) => socialFace(pick(rng, P4_FEEL_TELLS), rng),
-  'p4-feel-say': (rng) => { const [prompt, f, w] = pick(rng, P4_FEEL_SAY); const choices = shuffle(rng, [`I feel ${f}`, `I feel ${w}`]); const others = ['happy', 'sad', 'mad', 'scared'].filter((x) => x !== f && x !== w);
+  // More right answers for each face shown, in the lesson's words (pass MO, round five's content read: "You can say the name of other
+  // feelings too, like I feel happy or I feel scared." under a taken crayon named feelings that do not fit the moment).
+  'p4-feel-say': (rng) => { const [prompt, f, w] = pick(rng, P4_FEEL_SAY); const choices = shuffle(rng, [`I feel ${f}`, `I feel ${w}`]); const more = P4_SAY_MORE[f];
     return { type: 'choice', story: null, prompt, choices, answer: `I feel ${f}`, explain: `That face is ${f}. ${P4_FACE_LOOK[f]} You can say your feeling's name, I feel ${f}.`, visual: { kind: 'face', feeling: f }, explainVisual: null,
       whyNot: p3WhyNot(choices, `I feel ${f}`, (x) => ({ name: `Saying ${x}`, why: `goes with ${P4_GOES[x.slice(7)]}, and this face has ${P3_FACE_SIGN[f]}.` })),
-      alsoRight: [`You can say the name of other feelings too, like I feel ${others[0]} or I feel ${others[1]}.`] }; },
+      alsoRight: [more] }; },
   'p4-feel-okay': (rng) => socialYesNo(pick(rng, P4_FEEL_OKAY), rng),
   'p4-feel-calm': (rng) => socialRow(pick(rng, P4_FEEL_CALM), rng),
   // How do friends feel? (pass MN, earmark E13: PK4 I.D.1, ELOF P-SE 6): two feelings the same or different, a friend's own
@@ -27552,6 +27923,22 @@ Object.assign(GENERATORS, {
   'p4-when-grownup': (rng) => socialYesNo(pick(rng, P4_WHEN_GROWNUP), rng),
   'p4-fix-problem': (rng) => socialRow(pick(rng, P4_FIX_PROBLEM), rng),
   'p4-good-yesno': (rng) => socialYesNo(pick(rng, P4_GOOD_YESNO), rng),
+  'p4-play-start': (rng) => socialRow(pick(rng, P4_PLAY_START), rng),
+  'p4-play-body': (rng) => socialRow(pick(rng, P4_PLAY_BODY), rng),
+  'p4-play-plan': (rng) => socialRow(pick(rng, P4_PLAY_PLAN), rng),
+  // Who does which part (pass MO): a plan's two parts named in either order, and either part asked; the wrong choice is the other
+  // player, told by the part the plan gives that player.
+  'p4-play-part': (rng) => {
+    const [scene, mine, theirs] = pick(rng, P4_PLAY_PARTS); const youFirst = rng() < 0.5; const askMine = rng() < 0.5;
+    const said = youFirst ? `You ${mine[0]}, and your friend ${theirs[1]}.` : `Your friend ${theirs[1]}, and you ${mine[0]}.`;
+    const answer = askMine ? 'You' : 'Your friend'; const choices = shuffle(rng, ['You', 'Your friend']);
+    const explain = askMine ? `The plan says you ${mine[0]}, and your friend ${theirs[1]}.` : `The plan says your friend ${theirs[1]}, and you ${mine[0]}.`;
+    const whyNot = askMine ? { 'Your friend': { name: 'Your friend', why: `${theirs[1]} in this plan, and you ${mine[0]}.` } } : { You: { name: 'You', why: `${mine[0]} in this plan, and your friend ${theirs[1]}.` } };
+    // Who does a part has one answer, so More right answers is empty (round three's alignment read: "Each friend does a part of the
+    // plan." stated the rule, as the who-has kind's tip had).
+    return { type: 'choice', story: `${scene} ${said}`, prompt: `Who ${askMine ? mine[1] : theirs[1]}?`, choices, answer, explain, visual: null, explainVisual: null, whyNot, alsoRight: [] };
+  },
+  'p4-play-yesno': (rng) => socialYesNo(pick(rng, P4_PLAY_YESNO), rng),
   // Please and thank you in four everyday moments (pass JP), each explained with its reason. Each moment is said inside its
   // question (pass MH, Mikey: one conversational sentence), and each wrong word is told by what it does not do.
   'pk3-magic-word': (rng) => { const c = pick(rng, [
@@ -27847,7 +28234,7 @@ Object.assign(GENERATORS, {
   // One sentence (EARMARKS L11, pass ML): What is the good choice when someone is talking?
   'ck-good-choice': (rng) => { const c = pick(rng, CIV_GOOD_CHOICES); const choices = shuffle(rng, [c[1], c[2]]);
     return { type: 'choice', story: null, prompt: `What is the good choice when ${c[0].charAt(0).toLowerCase()}${c[0].slice(1).replace(/\.$/, '')}?`, choices, answer: c[1], explain: c[3], visual: null, explainVisual: null,
-      whyNot: p3WhyNot(choices, c[1], (w) => ({ name: CIV_GOOD_NOT[w][0], why: CIV_GOOD_NOT[w][1] })), alsoRight: [CIV_GOOD_NOT[c[2]][2]] }; },
+      whyNot: p3WhyNot(choices, c[1], (w) => ({ name: CIV_GOOD_NOT[w][0], why: CIV_GOOD_NOT[w][1] })), alsoRight: CIV_GOOD_NOT[c[2]][2] ? [CIV_GOOD_NOT[c[2]][2]] : [] }; },
   'ck-need-or-want': (rng) => { const c = pick(rng, CIV_NEED_WANT); return { type: 'choice', story: null, prompt: `Is ${c[0].charAt(0).toLowerCase() + c[0].slice(1)} a need or a want?`, choices: ['Need', 'Want'], answer: c[1], explain: CIV_NEED_WHY[c[0]], visual: null, explainVisual: null }; },
   'ck-which-is-need': (rng) => { const need = pick(rng, CIV_NEED_WANT.filter((x) => x[1] === 'Need'))[0]; const wants = shuffle(rng, CIV_NEED_WANT.filter((x) => x[1] === 'Want')).slice(0, 2).map((x) => x[0]);
     return { type: 'choice', story: null, prompt: 'Which one is a need?', choices: shuffle(rng, [need, ...wants]), answer: need, explain: `${CIV_NEED_WHY[need]} The other two are wants, nice to have but not needed to live.`, visual: null, explainVisual: null }; },
@@ -29072,8 +29459,13 @@ Object.assign(GENERATORS, {
   },
   'j1-more-ways': (rng) => {
     const target = pick(rng, ['square', 'rectangle', 'hexagon']); const yes = labelsFor(target); const a = pick(rng, yes); const other = yes.find((l) => l !== a);
-    const wrongs = shuffle(rng, JOIN_LABELS.filter((l) => !yes.includes(l))).slice(0, 2);
-    return { type: 'choice', story: `A ${target} can be made in more than one way.`, prompt: `Which pieces can make a ${target}?`, choices: shuffle(rng, [a, ...wrongs]), answer: a,
+    // Pieces that make a square make a rectangle too (IS_ALSO), so they are never a wrong choice for a rectangle (round four's content
+    // read: four squares or four triangles were, on 924 of 4,000 seeds).
+    const also = (IS_ALSO[target] || []).flatMap(labelsFor); const wrongs = shuffle(rng, JOIN_LABELS.filter((l) => !yes.includes(l) && !also.includes(l))).slice(0, 2);
+    // It asks which pieces made the shape in the lesson (round five's content read: "Which pieces can make a rectangle?" offered six
+    // triangles, three triangles and two trapezoids as wrong, and each can make one, three of the lesson's two-triangle squares in a
+    // row or two right trapezoids; every label the lesson did not join into the shape truly did not).
+    return { type: 'choice', story: `A ${target} can be made in more than one way.`, prompt: `Which pieces made a ${target} in the lesson?`, choices: shuffle(rng, [a, ...wrongs]), answer: a,
       explain: `${a} can make a ${target}. ${other} can make one too, so a ${target} can be made in more than one way.`, visual: null, explainVisual: null };
   },
   'j1-can': (rng) => {
@@ -29798,7 +30190,7 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt: 'Which line is longer?', choices, answer,
       explain: 'Both lines start at the same place, and this one reaches farther, so it is longer.', visual: null, explainVisual: null,
       whyNot: p3WhyNot(choices, answer, () => ({ name: 'The shorter line', why: 'does not reach as far, and both start at the same place.' })),
-      alsoRight: ['Lay two crayons side by side from the same start, and the one that reaches farther is longer.'] };
+      alsoRight: ['When two crayons start at the same place, the one that reaches farther is longer.'] };
   },
   'kl-shorter': (rng) => {
     const [a, b] = distinctCounts(rng, 2, 9, randInt(rng, 2, 9));
@@ -29821,7 +30213,7 @@ Object.assign(GENERATORS, {
     return { type: 'choice', story: null, prompt: 'Which is taller?', choices, answer,
       explain: 'Both towers stand on the same floor, and this one reaches higher, so it is taller.', visual: null, explainVisual: null,
       whyNot: p3WhyNot(choices, answer, () => ({ name: 'The shorter tower', why: 'does not reach as high, and both stand on the same floor.' })),
-      alsoRight: ['Stand back to back with a friend, and the one whose head reaches higher is taller.'] };
+      alsoRight: ['When two friends stand back to back, the one whose head reaches higher is taller.'] };
   },
   'kl-holds-more': (rng) => {
     const [small, big] = HOLD_PAIRS[randInt(rng, 0, HOLD_PAIRS.length - 1)];
@@ -30176,6 +30568,10 @@ Object.assign(GENERATORS, {
 });
 
 // Word meanings from pictures. The pictures are the shapes and counts the child already knows.
+// A square is a rectangle too (TEKS K.6A; the app's rule since pass JW), so the word rectangle and a drawn square are never set
+// against each other, the one asked and the other offered, where both would be right (round three, pass MO: What a word means and
+// grade 1's Read the word did). A long rectangle beside the word square is a fair wrong choice, since it is not a square.
+function rectangleWordOnSquare(word, drawn) { return word === 'rectangle' && drawn === 'square'; }
 const MEANING_ITEMS = [
   { word: 'circle', visual: { kind: 'shape', name: 'circle' } }, { word: 'square', visual: { kind: 'shape', name: 'square' } },
   { word: 'triangle', visual: { kind: 'shape', name: 'triangle' } }, { word: 'rectangle', visual: { kind: 'shape', name: 'rectangle' } },
@@ -30189,20 +30585,21 @@ const NUMBER_NAMES = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'sev
 Object.assign(GENERATORS, {
   'rm-match-picture': (rng) => {
     const it = pick(rng, MEANING_ITEMS);
-    const others = shuffle(rng, MEANING_ITEMS.filter((x) => x.word !== it.word)).slice(0, 2);
+    const others = shuffle(rng, MEANING_ITEMS.filter((x) => x.word !== it.word && !rectangleWordOnSquare(x.word, it.word))).slice(0, 2);
     return { type: 'choice', story: null, prompt: 'Which word goes with the picture?', choices: shuffle(rng, [it.word, ...others.map((x) => x.word)]), answer: it.word,
       explain: `${MEANING_HOW[it.word]}, so the word is ${it.word}.`, visual: it.visual, explainVisual: null };
   },
   'rm-pick-word': (rng) => {
     const it = pick(rng, MEANING_ITEMS);
-    const others = shuffle(rng, MEANING_ITEMS.filter((x) => x.word !== it.word)).slice(0, 2);
+    const others = shuffle(rng, MEANING_ITEMS.filter((x) => x.word !== it.word && !rectangleWordOnSquare(it.word, x.word))).slice(0, 2);
     const key = (x) => `${x.visual.kind}:${x.visual.name}`;
     return { type: 'choice', story: `The word is ${it.word}.`, prompt: 'Tap the picture that matches.', choices: shuffle(rng, [it, ...others].map(key)), answer: key(it),
       explain: `This is ${aOrAn(it.word)} ${it.word}. ${MEANING_HOW[it.word]}.`, visual: null, explainVisual: null };
   },
   'rm-does-match': (rng) => {
     const it = pick(rng, MEANING_ITEMS); const yes = randInt(rng, 0, 1) === 1;
-    const shown = yes ? it : pick(rng, MEANING_ITEMS.filter((x) => x.word !== it.word));
+    // A drawn square matches the word rectangle (a square is a rectangle too), so it is never the picture that does not match.
+    const shown = yes ? it : pick(rng, MEANING_ITEMS.filter((x) => x.word !== it.word && !rectangleWordOnSquare(it.word, x.word)));
     return { type: 'choice', story: `The word says ${it.word}.`, prompt: 'Does the picture match?', choices: ['Yes', 'No'], answer: yes ? 'Yes' : 'No',
       explain: yes ? `The word says ${it.word}, and the picture shows ${aOrAn(it.word)} ${it.word}, so they match.` : `The word says ${it.word}, but the picture shows ${aOrAn(shown.word)} ${shown.word}, so they do not match.`, visual: shown.visual, explainVisual: null };
   },
@@ -30213,7 +30610,7 @@ Object.assign(GENERATORS, {
   },
   'rm-shape-word': (rng) => {
     const it = pick(rng, MEANING_ITEMS.slice(0, 4));
-    return { type: 'choice', story: `Read the word ${it.word}.`, prompt: 'Tap that shape.', choices: shuffle(rng, [it, ...shuffle(rng, MEANING_ITEMS.slice(0, 4).filter((x) => x.word !== it.word)).slice(0, 2)].map((x) => `shape:${x.visual.name}`)), answer: `shape:${it.visual.name}`,
+    return { type: 'choice', story: `Read the word ${it.word}.`, prompt: 'Tap that shape.', choices: shuffle(rng, [it, ...shuffle(rng, MEANING_ITEMS.slice(0, 4).filter((x) => x.word !== it.word && !rectangleWordOnSquare(it.word, x.word))).slice(0, 2)].map((x) => `shape:${x.visual.name}`)), answer: `shape:${it.visual.name}`,
       explain: `${MEANING_HOW[it.word]}, so this is the ${it.word}.`, visual: null, explainVisual: null };
   },
 });
@@ -30966,12 +31363,28 @@ function explainCommonDenominator(x, y, bigger) {
 
 // Turns a choice like 'dots:4' into words a child can hear: "the group with 4".
 export function describeChoice(choice) {
-  const m = /^dots:(\d+)$/.exec(choice);
+  const raw = String(choice).replace(/#\d+$/, '');
+  const m = /^dots:(\d+)$/.exec(raw);
   if (m) return `the group with ${m[1]}`;
-  const fc = /^face:([a-z]+)$/.exec(choice);   // a feeling face (pass MD)
+  const fc = /^face:([a-z]+)$/.exec(raw);   // a feeling face (pass MD)
   if (fc) return `the ${fc[1]} face`;
-  const sh = /^shape:([a-z]+):(big|medium|small)$/.exec(choice);
-  return sh ? `the ${sh[2] === 'big' ? 'big' : sh[2] === 'medium' ? 'middle-sized' : 'small'} ${sh[1]}` : choice;
+  const sh = /^shape:([a-z]+):(big|medium|small)$/.exec(raw);
+  // Little, as pre-K says it (round two's code check, pass MO: a reader read "the small square" where the question said little).
+  if (sh) return `the ${sh[2] === 'big' ? 'big' : sh[2] === 'medium' ? 'middle-sized' : 'little'} ${sh[1]}`;
+  // A picture, a colored shape or a color square, named in words (pass MO, round one's code check: a direction met in a reader's
+  // review printed "icon:hat | icon:ball").
+  // A drawn rectangle is the long rectangle, as the questions name it, since a square is a rectangle too (pass ML's rule; round two's
+  // code check, pass MO: a reader's answer said "the rectangle" where the direction said the long rectangle).
+  const pic = /^(?:icon|pic|art|shape|solid):([a-z]+)$/.exec(raw); if (pic) return raw === 'shape:rectangle' ? 'the long rectangle' : `the ${pic[1]}`;
+  const it = /^item:([a-z]+)-([a-z]+)$/.exec(raw); if (it) return `the ${it[2]} ${it[1]}`;
+  const sw = /^swatch:([a-z]+)$/.exec(raw); if (sw) return `the ${sw[1]} one`;
+  return choice;
+}
+// The answer in words for a reader's "Not quite. The answer is ..." (pass MO): an order's steps one after another, "the hat, then
+// the ball", and any other answer as describeChoice says it.
+export function describeAnswer(q) {
+  if (q && q.type === 'order' && typeof q.answer === 'string') return q.answer.split(' | ').map(describeChoice).join(', then ');
+  return describeChoice(q ? q.answer : '');
 }
 
 // -----------------------------------------------------------------------------------------------------------------
@@ -31082,22 +31495,75 @@ function heardWords(choice) {
   }
   return out;
 }
-// True when the reason a pre-reader would hear names something that tells the right answer from the choice just tapped and
-// that the question's own words (its setup line and prompt) have not said already. A letter is read by its capital, since the
-// little word a is no letter (the code and lesson checks' second reads: "A has slanted sides" was said while B's line was held).
-// The words a device voice adds to a held sound (pass MM, round two's screen check): a voice reads "mmm" as letters, so the screens
-// say each held sound as the stretched start of a word it knows, mmm as the start of moon, sss of sun, fff of fish. So a line is
-// heard with those words in it, and the guards below read it as it is heard (heardForm): "and map starts with mmm" was heard as
-// "mmm...moon" and named the moon, the answer, while it was still open.
-export const SOUND_CARRIERS = { mmm: 'moon', nnn: 'nut', sss: 'sun', fff: 'fish', zzz: 'zip', rrr: 'run', lll: 'lion' };
-// A held sound joined by a hyphen to the rest of its word, the way a story says a word slowly ("Mmm-at", "Sss-am", "Mmm-ia"),
-// runs into its own letters, mmm...mat, never into its carrier word (round three's alignment read, pass MM: "Mmm-at" was heard as
-// "moon ... at" just before "Mat!", the telephone story's turn). A rest that starts with h keeps the sound apart, since grade 1's
-// "Sss-huh" says s and h one by one, which joined would be heard as sh. HELD_SOUND finds both forms; heldSoundSpoken is what the
-// voice is handed (the sound's letter held, then the carrier's rest or the word's own letters); heardForm reads a line as heard.
-export const HELD_SOUND = /\b(mmm|nnn|sss|fff|zzz|rrr|lll)(?:-(?!h)([a-z]+))?\b/gi;
-export function heldSoundSpoken(sound, rest) { const s = String(sound).toLowerCase(); return s[0].repeat(44) + (rest ? String(rest).toLowerCase() : SOUND_CARRIERS[s].slice(1)); }
-export function heardForm(text) { return String(text == null ? '' : text).replace(HELD_SOUND, (all, s, rest) => (rest ? `${s[0]}${rest}` : `${s} ${SOUND_CARRIERS[s.toLowerCase()]}`)); }
+// ---------- The sounds a lesson says (pass MO, Mikey's notes on Q51) ----------
+// In plain terms: a lesson that teaches a sound must let the child hear the sound, and a device's voice cannot say a speech sound
+// on its own. Until pass MO the voice was handed each held sound as the stretched start of a word it knows (forty-four m's and
+// "oon", the start of moon), and on Mikey's phone "Sun. Sss." was said as the letter s "for what seems like 40 times", fff as the
+// letter f, "Moon and map both start with mmm." with, in his words, "Makes thr mmm sound like moon when pronounced", and tuh "like the
+// word two" (his Q51 notes). So the
+// app makes those sounds itself and plays each one between the voice's words (soundClipSamples, below; the screens play them): the
+// held sounds mmm, nnn, sss, fff, zzz, rrr and lll, and the three crisp stops t, p and k (written tuh, puh, cuh or kuh), which a
+// teacher says as a short puff of breath with no vowel after it. The voiced stops (buh, duh and guh), juh, huh and wuh stay with
+// the voice, which said buh and duh well on his phone. What the screen shows never changes.
+export const SPEECH_SOUNDS = { m: 'mmm', n: 'nnn', s: 'sss', f: 'fff', z: 'zzz', r: 'rrr', l: 'lll', t: 'tuh', p: 'puh', k: 'cuh' };
+// The sound a written sound names, or null: three or more of one held letter, in lower case or with a capital first (mmm, Sss; an
+// all-capital FFFFFF is a color code, never a sound), or a crisp stop's tuh, puh, cuh or kuh.
+export function soundOfNotation(word) {
+  const w = String(word); if (w.length > 1 && w === w.toUpperCase()) return null;
+  const low = w.toLowerCase(); if (/^([mnsfzrl])\1{2,}$/.test(low)) return low[0];
+  return ({ tuh: 't', puh: 'p', cuh: 'k', kuh: 'k' })[low] || null;
+}
+// A word, or a run of words joined by hyphens, as the app says it; null for ordinary words, which the voice says as they are. A word
+// said slowly ("Mmm-at", "Sss-am") is its first sound, held, and then the whole word ("mmm", then "Mat"), since a voice handed the
+// rest of a word alone says it as a word of its own (pass MM, round three's alignment read: "Mmm-at" was heard as "moon ... at"); a
+// rest that starts with h keeps its sounds apart ("Sss-huh" is sss and then huh, grade 1's s and h said one by one, which run
+// together would be heard as sh); a word whose last sound is held ("Busss") is the word and then its held sound; and a run of
+// sounds ("Mmm-a-puh", "cuh-uh-puh") is each part in turn, the app's sounds played and the rest said by the voice. Each part keeps
+// the words it stands for (text), which heardForm reads.
+const SAID_TOKEN = /[A-Za-z]+(?:-[A-Za-z]+)*/g;
+function sayToken(token) {
+  const segs = String(token).split('-');
+  if (segs.length === 1) {
+    const sound = soundOfNotation(token); if (sound) return [{ sound, text: token }];
+    // A word stretched at its end: a word with a vowel, then its last letter held (Bu, then s held: Busss is bus and then sss).
+    const end = String(token).match(/^([A-Za-z]*[aeiouy][A-Za-z]*?)([mnsfzrl])\2{2,}$/i);
+    if (end && token !== String(token).toUpperCase()) return [{ text: end[1] + end[2] }, { sound: end[2].toLowerCase(), text: end[2].repeat(3).toLowerCase() }];
+    return null;
+  }
+  if (!segs.some((s) => soundOfNotation(s))) return null;
+  const first = soundOfNotation(segs[0]);
+  if (segs.length === 2 && first && 'mnsfzrl'.includes(first) && !soundOfNotation(segs[1]) && !/^h/i.test(segs[1])) {
+    const head = segs[0][0] === segs[0][0].toUpperCase() ? first.toUpperCase() : first;
+    return [{ sound: first, text: segs[0] }, { text: head + segs[1].toLowerCase() }];
+  }
+  return segs.filter(Boolean).map((s) => { const sound = soundOfNotation(s); return sound ? { sound, text: s } : { text: s }; });
+}
+// Endings a voice says badly on their own (pass MO, Mikey's notes on Q51): in "pig and wig both end with ig" the voice spelled ig as
+// two letters (he heard it as "ip ... spelled out"), and in "One ends in at" it gave at the quick sound of the little word, "almost like
+// et", while un, og, en, up, ed and op came out right. An ending a rhyme names is said as a piece of its own, so the voice gives it
+// its full sound, and ig is handed as igg, which a voice reads as the sound (Eleven's pronunciation dictionary takes the same
+// respelling when the clips are recorded, EARMARKS A41). Ig is never a word, so it is an ending wherever it stands; at is an ending
+// only after end or ends in or with, after "sound," or after a word that ends in at ("cat, at"), so "look at the cat" keeps its
+// little word.
+export const RIME_SPOKEN = { at: 'at', ig: 'igg' };
+const RIME_AT_BEFORE = /(?:\b(?:end|ends|ended|ending)\s+(?:in|with)|\bsound,|\b(?!(?:th|wh)at,)[a-z]*at,)\s+$/i;   // never after that, or what, ("is that, at least")
+function rimePieces(text) {
+  const out = []; let last = 0; const s = String(text);
+  for (const m of s.matchAll(/\b(at|ig)\b/gi)) {
+    const rime = m[1].toLowerCase();
+    if (rime === 'at' && !RIME_AT_BEFORE.test(s.slice(0, m.index))) continue;
+    if (m.index > last) out.push({ text: s.slice(last, m.index) });
+    out.push({ text: RIME_SPOKEN[rime], rime: true }); last = m.index + m[0].length;
+  }
+  if (last < s.length) out.push({ text: s.slice(last) });
+  return out;
+}
+// The words a pre-reader hears for a line, read by the guards below (heardForm): the line's own words, a word said slowly heard as
+// its held sound and then the whole word ("Mmm Mat"), and a word whose last sound is held as the word and then the sound ("Bus sss").
+// Until pass MO the voice also said a carrier word after each held sound (mmm as the start of moon, sss of sun, fff of fish), and
+// the guards read those words too, since "and map starts with mmm" was heard as "mmm...moon" and named the moon, the answer, while
+// it was still open (pass MM, round two's screen check); since pass MO no word is added to a sound.
+export function heardForm(text) { return String(text == null ? '' : text).replace(SAID_TOKEN, (token) => { const parts = sayToken(token); return parts ? parts.map((x) => x.text).join(' ') : token; }); }
 // Where one sentence ends and the next begins, the one rule every split of the app's words uses (pass MN, round one's story flow
 // check): after . ! or ? and a space, but never after a title that comes before a name (Mr., Mrs., Ms. and Dr.) or after Jr.,
 // which the content only ever writes inside a sentence (Martin Luther King Jr. Day). Until pass MN every split cut "Dr. King" in
@@ -31110,26 +31576,122 @@ export function heardForm(text) { return String(text == null ? '' : text).replac
 // "E. Li. Jah." still split.
 export const SENTENCE_BREAK = /(?<=[.!?])(?<!\b(?:Mr|Mrs|Ms|Dr|Jr)\.)(?<!\b[A-Z][a-z]+ [A-Z]\.)(?<!\b[A-Z]\. [A-Z]\.)(?!(?<=(?:^|[\s("“])[A-Z]\.)\s+[A-Z]\.(?:\s|$))\s+/;
 // What a device voice is handed for a line, in pieces (moved here from ui.jsx in pass MM, round three, so the rules test reads the
-// speech itself): ordinary words at the normal pace, and each held sound as its own slow, stretched utterance, so "mmm" is held
-// rather than clipped. Each sentence takes a shape the screens turn into a rate and a pitch (SPEECH_SHAPES in ui.jsx): a one-word
-// sentence is the word at play, held slowly and a little higher; a question lifts at the end; everything else rolls along at an
-// easy pace. A piece that is only punctuation would be read aloud as a word, so it is dropped.
+// speech itself): the voice's words at the normal pace, each sound the app plays itself as a piece of its own ({ sound }, since pass
+// MO), and each ending a rhyme names that a voice says badly alone as a piece of its own (rime). Each sentence takes a shape the
+// screens turn into a rate and a pitch (SPEECH_SHAPES in ui.jsx): a one-word sentence is the word at play, held slowly and a
+// little higher; a question lifts at the end; everything else rolls along at an easy pace; the words of a word said slowly or
+// sounded out take the word-at-play shape. A piece that is only punctuation would be read aloud as a word, so it is dropped.
 export function speechPieces(text) {
   const sentences = String(text).split(SENTENCE_BREAK).filter((x) => x.trim());
   const pieces = [];
   for (const [si, sentence] of sentences.entries()) {
     const words = sentence.replace(/[.!?]+$/, '').trim().split(/\s+/).filter(Boolean);
     const shape = words.length === 1 && !/\d/.test(words[0]) ? 'key' : /\?$/.test(sentence.trim()) ? 'question' : 'plain';
+    const voice = (t) => { for (const r of rimePieces(t)) pieces.push(r.rime ? { text: r.text, shape, sentence: si, rime: true } : { text: r.text, shape, sentence: si }); };
     let last = 0;
-    for (const m of sentence.matchAll(HELD_SOUND)) {
-      if (m.index > last) pieces.push({ text: sentence.slice(last, m.index), shape, sentence: si });
-      pieces.push({ text: heldSoundSpoken(m[1], m[2]), shape: 'sound', sentence: si });
+    for (const m of sentence.matchAll(SAID_TOKEN)) {
+      const parts = sayToken(m[0]); if (!parts) continue;
+      voice(sentence.slice(last, m.index));
+      for (const x of parts) pieces.push(x.sound ? { sound: x.sound, text: x.text, shape: 'sound', sentence: si } : { text: x.text, shape: 'key', sentence: si });
       last = m.index + m[0].length;
     }
-    if (last < sentence.length) pieces.push({ text: sentence.slice(last), shape, sentence: si });
+    voice(sentence.slice(last));
   }
-  return pieces.filter((p) => /[A-Za-z0-9]/.test(p.text));
+  return pieces.filter((x) => x.sound || /[A-Za-z0-9]/.test(x.text));
 }
+// The sounds themselves (pass MO). Each is made from numbers, the same on every device and every time (a seeded noise source), at
+// 32,000 samples a second, so the app needs no recording and no download. A held sound lasts 0.85 seconds, or 1.1 on the snail's
+// slower pace, and rises and falls gently so it never clicks: sss is a hiss whose loudest part sits near 6,500 cycles a second (its
+// peak filter is set at 6,800), high in the range where an s peaks (a woman's higher than a man's); fff is a softer, flatter hiss; zzz is the hiss with the buzz of the voice under it; mmm and nnn are a hum of
+// the voice through the nose (strongest near 280 cycles a second, its high parts far quieter, with the dip that tells mmm from nnn
+// near 950 or 1,750); lll and rrr are the voice held in their mouth shapes (rrr's third resonance low, near 1,650, which is what
+// makes an r sound like r). A crisp stop is a moment of quiet, the burst as the tongue or lips let go (t high, near 5,000; p low
+// and spread out; k in the middle, near 2,100) and a short breath after it, about 0.14 seconds in all, k a little longer. The voice under zzz, mmm,
+// nnn, lll and rrr is a woman's, near 210 cycles a second, falling a little and wavering very slightly, five times a second, so it sounds breathed.
+// 'quiet' is a twentieth of a second of silence, which the screens play on a first tap so a phone lets the page play sound. The
+// rules test measures each sound against these numbers. These are the app's own stand-ins until Mikey records the sounds
+// (EARMARKS A41), as a drawing stands in until his painting arrives.
+export const SOUND_RATE = 32000;
+export const soundClipSamples = (() => {
+  const rng = (seed) => { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; };
+  // Noise with a bell-shaped spread (four uniform draws added), centred on zero.
+  const noise = (n, seed) => { const r = rng(seed); const x = new Float64Array(n); for (let i = 0; i < n; i++) x[i] = (r() + r() + r() + r() - 2) * 0.866; return x; };
+  // The standard two-pole filters (the audio cookbook's): low pass, high pass, band pass and a peak.
+  const biquad = (type, f, q, fs, gainDb = 0) => {
+    const w = (2 * Math.PI * f) / fs; const cw = Math.cos(w); const al = Math.sin(w) / (2 * q); const A = Math.pow(10, gainDb / 40);
+    const c = { lp: [(1 - cw) / 2, 1 - cw, (1 - cw) / 2, 1 + al, -2 * cw, 1 - al], hp: [(1 + cw) / 2, -(1 + cw), (1 + cw) / 2, 1 + al, -2 * cw, 1 - al], bp: [al, 0, -al, 1 + al, -2 * cw, 1 - al], peak: [1 + al * A, -2 * cw, 1 - al * A, 1 + al / A, -2 * cw, 1 - al / A] }[type];
+    return { b0: c[0] / c[3], b1: c[1] / c[3], b2: c[2] / c[3], a1: c[4] / c[3], a2: c[5] / c[3] };
+  };
+  const filter = (x, c) => { const y = new Float64Array(x.length); let x1 = 0, x2 = 0, y1 = 0, y2 = 0; for (let i = 0; i < x.length; i++) { const v = c.b0 * x[i] + c.b1 * x1 + c.b2 * x2 - c.a1 * y1 - c.a2 * y2; x2 = x1; x1 = x[i]; y2 = y1; y1 = v; y[i] = v; } return y; };
+  // One resonance of the mouth or nose (a formant, as a Klatt synthesizer makes it), and a dip, its inverse.
+  const coeffs = (f, bw, fs) => { const T = 1 / fs; const C = -Math.exp(-2 * Math.PI * bw * T); const B = 2 * Math.exp(-Math.PI * bw * T) * Math.cos(2 * Math.PI * f * T); return { A: 1 - B - C, B, C }; };
+  const reson = (x, f, bw, fs) => { const { A, B, C } = coeffs(f, bw, fs); const y = new Float64Array(x.length); let y1 = 0, y2 = 0; for (let i = 0; i < x.length; i++) { const v = A * x[i] + B * y1 + C * y2; y2 = y1; y1 = v; y[i] = v; } return y; };
+  const dip = (x, f, bw, fs) => { const { A, B, C } = coeffs(f, bw, fs); const y = new Float64Array(x.length); let x1 = 0, x2 = 0; for (let i = 0; i < x.length; i++) { const v = (x[i] - B * x1 - C * x2) / A; x2 = x1; x1 = x[i]; y[i] = v; } return y; };
+  // The buzz of the voice: the flow of air through the vocal folds as it changes over each cycle (the derivative of t^2 - t^3 over
+  // the open part of the cycle, KLGLOTT88), at a pitch that falls a little and wavers, then softened above 3,200 cycles a second.
+  const voicing = (n, fs, f0, seed) => {
+    const r = rng(seed); const x = new Float64Array(n); let period = fs / f0; let k = 0;
+    for (let i = 0; i < n; i++) {
+      const f = f0 * (1 - 0.05 * (i / n)) * (1 + 0.006 * Math.sin((2 * Math.PI * 5.1 * i) / fs));
+      if (k >= period) { k -= period; period = (fs / f) * (1 + (r() - 0.5) * 0.006); }
+      const open = period * 0.6; const u = k / open; x[i] = k < open ? 2 * u - 3 * u * u : 0; k += 1;
+    }
+    return filter(x, biquad('lp', 3200, 0.7, fs));
+  };
+  const rise = (n, fs, attack, release) => { const e = new Float64Array(n); const a = Math.max(1, Math.round(attack * fs)); const r = Math.max(1, Math.round(release * fs)); for (let i = 0; i < n; i++) { let g = 1; if (i < a) g = 0.5 - 0.5 * Math.cos((Math.PI * i) / a); if (i > n - r) g = Math.min(g, 0.5 - 0.5 * Math.cos((Math.PI * (n - i)) / r)); e[i] = g; } return e; };
+  // A slow wobble in loudness, a few percent a few times a second, so a held sound is breathed rather than machine-made.
+  const wobble = (n, fs, seed, depth) => { const r = rng(seed); const p1 = r() * 6.28; const p2 = r() * 6.28; const w = new Float64Array(n); for (let i = 0; i < n; i++) { const t = i / fs; w[i] = 1 + depth * (0.6 * Math.sin(2 * Math.PI * 3.1 * t + p1) + 0.4 * Math.sin(2 * Math.PI * 7.3 * t + p2)); } return w; };
+  const mul = (a, b) => a.map((v, i) => v * b[i]);
+  const add = (a, b, g) => a.map((v, i) => v + g * b[i]);
+  const scaleTo = (x, target) => { let s = 0; for (const v of x) s += v * v; const r = Math.sqrt(s / x.length) || 1; return x.map((v) => (v * target) / r); };
+  const hiss = (n, fs, seed) => filter(filter(filter(noise(n, seed), biquad('hp', 3600, 0.75, fs)), biquad('peak', 6800, 1.4, fs, 9)), biquad('lp', 12500, 0.7, fs));
+  const SEEDS = { s: 11, f: 12, z: 13, m: 21, n: 22, l: 23, r: 24, t: 31, p: 32, k: 33 };
+  return function soundClipSamples(sound, { slow = false } = {}) {
+    const fs = SOUND_RATE; const seed = SEEDS[sound];
+    if (sound === 'quiet') return new Float32Array(Math.round(0.05 * fs));
+    if ('mnsfzrl'.includes(sound) && sound.length === 1) {
+      const n = Math.round((slow ? 1.1 : 0.85) * fs); const env = rise(n, fs, 0.07, 0.16); let y;
+      if (sound === 's') y = scaleTo(mul(hiss(n, fs, seed), wobble(n, fs, seed, 0.08)), 0.11);
+      else if (sound === 'f') y = scaleTo(mul(filter(filter(noise(n, seed), biquad('hp', 1300, 0.6, fs)), biquad('lp', 9000, 0.6, fs)), wobble(n, fs, seed, 0.1)), 0.055);
+      else if (sound === 'z') { const v = voicing(n, fs, 210, seed); const vs = scaleTo(v, 1); const beat = vs.map((x) => 0.55 + 0.45 * Math.max(-1, Math.min(1, x))); const h = scaleTo(mul(hiss(n, fs, seed), beat), 0.075); y = add(h, scaleTo(reson(reson(v, 230, 80, fs), 230, 120, fs), 0.06), 1); }
+      else if (sound === 'm' || sound === 'n') { let x = reson(voicing(n, fs, 210, seed), 280, 100, fs); x = reson(x, sound === 'm' ? 1150 : 1500, 200, fs); x = reson(x, 2200, 300, fs); x = reson(x, 2900, 350, fs); x = dip(x, sound === 'm' ? 950 : 1750, 160, fs); y = scaleTo(mul(filter(x, biquad('lp', 2800, 0.6, fs)), wobble(n, fs, seed, 0.04)), 0.12); }
+      else if (sound === 'l') { let x = reson(voicing(n, fs, 210, seed), 360, 70, fs); x = reson(x, 1200, 110, fs); x = reson(x, 2750, 180, fs); x = reson(x, 3600, 250, fs); y = scaleTo(mul(x, wobble(n, fs, seed, 0.04)), 0.11); }
+      else { let x = reson(voicing(n, fs, 210, seed), 430, 80, fs); x = reson(x, 1150, 100, fs); x = reson(x, 1650, 120, fs); x = reson(x, 3300, 250, fs); y = scaleTo(mul(x, wobble(n, fs, seed, 0.04)), 0.11); }
+      const out = new Float32Array(n); for (let i = 0; i < n; i++) out[i] = y[i] * env[i]; return out;
+    }
+    if ('tpk'.includes(sound) && sound.length === 1) {
+      // A moment of quiet, the burst, and the breath after it: the shape of a relaxed mouth (its second, third and fourth
+      // resonances; the first is all but gone while the throat is open), and for t a little of the tongue's hiss as it leaves the
+      // ridge behind the teeth. Scaled by its loudest moment, since a burst is short and sharp.
+      const lead = Math.round(0.03 * fs); const burstN = Math.round((sound === 'k' ? 0.016 : 0.008) * fs); const aspN = Math.round((sound === 'k' ? 0.075 : 0.06) * fs); const n = lead + burstN + aspN + Math.round(0.04 * fs);
+      let b = noise(burstN, seed);
+      if (sound === 't') b = filter(filter(b, biquad('hp', 3200, 0.7, fs)), biquad('peak', 5200, 1.2, fs, 6));
+      else if (sound === 'p') b = filter(filter(b, biquad('lp', 1200, 0.7, fs)), biquad('hp', 300, 0.7, fs));
+      else b = filter(b, biquad('bp', 2100, 2.2, fs));
+      b = scaleTo(b.map((v, i) => v * Math.exp(-i / (burstN * 0.35)) * Math.min(1, i / 8)), 0.32);
+      let a = noise(aspN, seed + 7); a = reson(a, sound === 'p' ? 1150 : sound === 'k' ? 1900 : 1700, 220, fs); a = reson(a, 2650, 260, fs); a = reson(a, 3700, 320, fs);
+      if (sound === 't') a = add(a, filter(filter(noise(aspN, seed + 9), biquad('hp', 3800, 0.7, fs)), biquad('peak', 5500, 1.2, fs, 6)), 0.6);
+      a = scaleTo(a.map((v, i) => v * Math.min(1, i / (0.006 * fs)) * Math.pow(1 - i / aspN, 1.6)), 0.09);
+      const y = new Float64Array(n); for (let i = 0; i < burstN; i++) y[lead + i] += b[i]; for (let i = 0; i < aspN; i++) y[lead + Math.round(burstN * 0.6) + i] += a[i];
+      let peak = 0; for (const v of y) peak = Math.max(peak, Math.abs(v));
+      const out = new Float32Array(n); for (let i = 0; i < n; i++) out[i] = (y[i] * 0.55) / (peak || 1); return out;
+    }
+    return null;
+  };
+})();
+// The same sound as a small WAV file (16-bit, one channel), which a page can play from memory (a blob: address).
+export function soundClipWav(sound, opts = {}) {
+  const x = soundClipSamples(sound, opts); if (!x) return null;
+  const n = x.length; const buf = new ArrayBuffer(44 + n * 2); const v = new DataView(buf);
+  const tag = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+  tag(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); tag(8, 'WAVE'); tag(12, 'fmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+  v.setUint32(24, SOUND_RATE, true); v.setUint32(28, SOUND_RATE * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true); tag(36, 'data'); v.setUint32(40, n * 2, true);
+  for (let i = 0; i < n; i++) v.setInt16(44 + i * 2, Math.round(Math.max(-1, Math.min(1, x[i])) * 32767), true);
+  return new Uint8Array(buf);
+}
+// True when the reason a pre-reader would hear names something that tells the right answer from the choice just tapped and
+// that the question's own words (its setup line and prompt) have not said already. A letter is read by its capital, since the
+// little word a is no letter (the code and lesson checks' second reads: "A has slanted sides" was said while B's line was held).
 export function whyNotNamesAnswer(q, picked) {
   const entry = q && q.whyNot && q.whyNot[picked]; if (!entry) return false;
   const sentence = heardForm(whyNotSentence(entry));
@@ -31166,6 +31728,9 @@ export function whyNotNamesOpenWrong(q, picked, open) {
 export function preReaderWrongWords(q, picked, ruledOut = []) {
   // A numbered picture starts at dot number 1, as its lessons say (round three's lesson check).
   if (q && q.type === 'trace') return q.traceKind === 'dots' ? "Let's try it again. Start at dot number 1." : "Let's trace it again. Start at the dot.";
+  // A direction of steps (pass MO): the child hears the direction again, since it is the whole question and names nothing its words
+  // have not already said.
+  if (q && q.type === 'order' && q.pick) return `Let's listen again. ${[q.story, q.prompt].filter(Boolean).join(' ')}`;
   const entry = q && q.whyNot && q.whyNot[picked];
   if (!entry) return 'Not that one. Have another try.';
   const out = new Set([String(picked), ...(ruledOut || []).map(String)]);
@@ -38578,7 +39143,12 @@ export const READING_LISTS = {
   // rhyming I-spy. Left off: Five Little Monkeys Jumping on the Bed (Eileen Christelow, Clarion Books), one fewer each time,
   // whose board book is listed for ages 4 to 7, so it waits for pre-K 4's list.
   PK3: ['Goodnight Moon (Margaret Wise Brown)', 'The Very Hungry Caterpillar (Eric Carle)', 'Brown Bear, Brown Bear, What Do You See? (Bill Martin Jr.)', 'Polar Bear, Polar Bear, What Do You Hear? (Bill Martin Jr.)', 'Where Is the Green Sheep? (Mem Fox)', 'Dear Zoo (Rod Campbell)', 'Mouse Shapes (Ellen Stoll Walsh)', 'In My Heart: A Book of Feelings (Jo Witek)', 'My Very First Mother Goose (Iona Opie and Rosemary Wells)', 'Each Peach Pear Plum (Janet and Allan Ahlberg)'],
-  PK4: ['Where the Wild Things Are (Maurice Sendak)', 'Chicka Chicka Boom Boom (Bill Martin Jr. and John Archambault)', 'The Snowy Day (Ezra Jack Keats)', 'Corduroy (Don Freeman)', 'Blueberries for Sal (Robert McCloskey)', 'Llama Llama Red Pajama (Anna Dewdney)'],
+  // Pass MO, beside Let's play together (round three's alignment read, checked before it was added): Join In and Play (Cheri J.
+  // Meiners, illustrated by Meredith Johnson, Free Spirit Publishing's Learning to Get Along series; interest level ages 4 to 8 in
+  // Free Spirit's own sample and in Crown House's listing: asking before joining in, taking turns, playing fair and being a good
+  // sport; its notes for grown-ups name three guidelines, watch and listen, ask and invite, and play fair, and nothing in its
+  // sample asks for eye contact or a feeling vented out).
+  PK4: ['Where the Wild Things Are (Maurice Sendak)', 'Chicka Chicka Boom Boom (Bill Martin Jr. and John Archambault)', 'The Snowy Day (Ezra Jack Keats)', 'Corduroy (Don Freeman)', 'Blueberries for Sal (Robert McCloskey)', 'Llama Llama Red Pajama (Anna Dewdney)', 'Join In and Play (Cheri J. Meiners)'],
   K: ['Green Eggs and Ham (Dr. Seuss)', 'Frog and Toad Are Friends (Arnold Lobel)', 'The Little Engine That Could (Watty Piper)', 'Make Way for Ducklings (Robert McCloskey)', 'Owl Babies (Martin Waddell)', 'Elephant and Piggie: There Is a Bird on Your Head! (Mo Willems)',
     'The Snowy Day (Ezra Jack Keats)', 'Blueberries for Sal (Robert McCloskey)', 'The Velveteen Rabbit (Margery Williams)', 'Winnie-the-Pooh (A. A. Milne)', 'Mike Mulligan and the Steam Shovel (Virginia Lee Burton)', 'The Story of Ferdinand (Munro Leaf)', 'Aesop\'s Fables (Aesop)', 'Karl, Get Out of the Garden! (Anita Sanchez)', 'Strega Nona (Tomie dePaola)', 'Ox-Cart Man (Barbara Cooney)', 'Cinderella (Kinuko Y. Craft)', 'Little Red Riding Hood (Trina Schart Hyman)', 'Rumpelstiltskin (Paul O. Zelinsky)', 'The Story about Ping (Marjorie Flack)', 'The Legend of the Bluebonnet (Tomie dePaola)', 'Goldilocks and the Three Bears (Jan Brett)', 'King Midas and the Golden Touch (Kinuko Y. Craft)', 'The Story of Babar (Jean de Brunhoff)', 'Curious George (H. A. Rey)', 'Madeline (Ludwig Bemelmans)', 'Miss Rumphius (Barbara Cooney)', 'The Lion and the Mouse (Jerry Pinkney)', 'Corduroy (Don Freeman)', 'Ask Mr. Bear (Marjorie Flack)'],
   1: ['Henry and Mudge (Cynthia Rylant)', 'Little Bear (Else Holmelund Minarik)', 'Amelia Bedelia (Peggy Parish)', 'The Cat in the Hat (Dr. Seuss)', 'Fly Guy (Tedd Arnold)', 'Frog and Toad Together (Arnold Lobel)',

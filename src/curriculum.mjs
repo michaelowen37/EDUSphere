@@ -137,6 +137,14 @@ export const CURRICULUM = [
       { framework: 'TEKS', code: 'PK3.III.B.6', text: 'Child uses rhyming words through playful activities such as songs, nursery rhymes, and fingerplay.', moduleIds: ['rhymes-with-pictures'] },
       { framework: 'CCSS', code: 'ELOF.P-LIT.1', text: 'Demonstrates awareness that spoken language is composed of smaller segments of sound.', moduleIds: ['rhymes-with-pictures'] },
       { framework: 'CCSS', code: 'ELOF.P-SCI.1', text: 'Observes and describes observable phenomena (objects, materials, organisms, and events).', moduleIds: ['animal-sounds'] },
+      // Pass MO, earmark E12, Domain II part one: two-step directions and sentences that combine two ideas, read in TEA's PK3
+      // Streamlined Version and on headstart.gov and held word for word to docs/standards.
+      { framework: 'TEKS', code: 'PK3.II.A.2', text: 'Child shows understanding by following two-step verbal directions.', moduleIds: ['two-steps'] },
+      { framework: 'TEKS', code: 'PK3.II.E.4', text: 'Child understands increasingly longer sentences that combine two ideas.', moduleIds: ['two-ideas'] },
+      { framework: 'CCSS', code: 'ELOF.P-ATL.8', text: 'Holds information in mind and manipulates it to perform tasks.', moduleIds: ['two-steps'] },
+      { framework: 'CCSS', code: 'ELOF.P-LC.2', text: 'Understands and responds to increasingly complex communication and language from others.', moduleIds: ['two-ideas'] },
+      // Round one's lesson check (pass MO): following a grown-up's directions is part of P-SE 2's 36 to 48 month progression.
+      { framework: 'CCSS', code: 'ELOF.P-SE.2', text: 'Engages in prosocial and cooperative behavior with adults.', moduleIds: ['two-steps'] },
     ],
   },
   {
@@ -238,7 +246,17 @@ export const CURRICULUM = [
       { framework: 'CCSS', code: 'ELOF.P-SE.6', text: 'Expresses a broad range of emotions and recognizes these emotions in self and others.', moduleIds: ['feelings-show', 'how-friends-feel'] },
       // Being a good friend's taking turns choosing and finding a game both friends like are the plans of P-SE 4's second sentence (the
       // lesson check, pass MN round one).
-      { framework: 'CCSS', code: 'ELOF.P-SE.4', text: 'Engages in cooperative play with other children.', moduleIds: ['good-friend'] },
+      { framework: 'CCSS', code: 'ELOF.P-SE.4', text: 'Engages in cooperative play with other children.', moduleIds: ['good-friend', 'play-together'] },
+      // Pass MO, earmark E13: Domain I's last pre-K 4 lesson, each code read in TEA's 2022 PK4 column and on headstart.gov and held
+      // word for word to docs/standards; I.C.1, I.C.3 and I.C.4 read as pre-K 3 reads its I.C.1 and I.C.3.
+      { framework: 'TEKS', code: 'PK4.I.C.1', text: 'Child uses effective verbal and nonverbal communication skills to build relationships with adults and peers.', moduleIds: ['play-together'] },
+      { framework: 'TEKS', code: 'PK4.I.C.3', text: 'Child shows competence in initiating social interactions.', moduleIds: ['play-together'] },
+      { framework: 'TEKS', code: 'PK4.I.C.4', text: 'Child increasingly interacts with peers during cooperative play scenarios that share a common plan and goal.', moduleIds: ['play-together'] },
+      { framework: 'CCSS', code: 'ELOF.P-SE.1', text: 'Engages in and maintains positive relationships and interactions with adults.', moduleIds: ['play-together'] },
+      // Round one's lesson check (pass MO): the lesson teaches a talk's rules (II.B.2 and P-LC 4) and a good morning to a teacher (P-SE 2).
+      { framework: 'TEKS', code: 'PK4.II.B.2', text: 'Child engages in conversations in appropriate ways, demonstrating knowledge of verbal and nonverbal conversational rules.', moduleIds: ['play-together'] },
+      { framework: 'CCSS', code: 'ELOF.P-LC.4', text: 'Understands, follows, and uses appropriate social and conversational rules.', moduleIds: ['play-together'] },
+      { framework: 'CCSS', code: 'ELOF.P-SE.2', text: 'Engages in prosocial and cooperative behavior with adults.', moduleIds: ['play-together'] },
       { framework: 'TEKS', code: 'PK4.VII.B.3', text: 'Child discusses the roles and responsibilities of family, school, and community helpers.', moduleIds: ['helpers-all-around'] },
     ],
   },
@@ -250,7 +268,11 @@ export const CURRICULUM = [
       { framework: 'TEKS', code: 'PK4.III.B.7', text: 'Child identifies alliterative words with pictorial support.', moduleIds: ['first-sounds'] },
       { framework: 'CCSS', code: 'ELOF.P-LC.1', text: 'Attends to communication and language from others.', moduleIds: ['which-came-first', 'which-came-second'] },
       { framework: 'TEKS', code: 'PK4.II.A.1', text: 'Child shows understanding by responding appropriately to what has been communicated by adults and peers.', moduleIds: ['which-came-first', 'which-came-second'] },
-      { framework: 'CCSS', code: 'ELOF.P-ATL.8', text: 'Holds information in mind and manipulates it to perform tasks.', moduleIds: ['which-came-first', 'which-came-second'] },
+      { framework: 'CCSS', code: 'ELOF.P-ATL.8', text: 'Holds information in mind and manipulates it to perform tasks.', moduleIds: ['which-came-first', 'which-came-second', 'three-steps'] },
+      // Pass MO, earmark E13, Domain II part one: three-step directions, read in TEA's 2022 PK4 column and on headstart.gov.
+      { framework: 'TEKS', code: 'PK4.II.A.2', text: 'Child shows understanding by following three-step verbal directions.', moduleIds: ['three-steps'] },
+      { framework: 'CCSS', code: 'ELOF.P-LC.2', text: 'Understands and responds to increasingly complex communication and language from others.', moduleIds: ['three-steps'] },
+      { framework: 'CCSS', code: 'ELOF.P-SE.2', text: 'Engages in prosocial and cooperative behavior with adults.', moduleIds: ['three-steps'] },
       { framework: 'TEKS', code: 'PK4.III.C.1', text: 'Child recognizes and names at least 20 letters (upper- or lower-case letters).', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
       { framework: 'CCSS', code: 'ELOF.P-LIT.1', text: 'Demonstrates awareness that spoken language is composed of smaller segments of sound.', moduleIds: ['listen-for-rhymes', 'first-sounds'] },
       { framework: 'CCSS', code: 'ELOF.P-LIT.3', text: 'Identifies letters of the alphabet and produces correct sounds associated with letters.', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },

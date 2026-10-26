@@ -68,6 +68,9 @@ for (const m of c.modules) {
       // What the screen prints while the voice can speak, where it differs (round three's lesson check, pass MM).
       { const pr = typeof L.printedQuestion === 'function' ? L.printedQuestion(q, true) : null; if (pr && (pr.prompt !== q.prompt || (pr.story || null) !== (q.story || null))) p(`  Printed while the voice can speak: ${pr.story ? `[setup] ${pr.story} ` : ''}${pr.prompt}`); }
       if (q.choices) p(`  Choices: ${q.choices.map((ch) => `${desc(ch)}${String(ch) === String(q.answer) ? ' (ANSWER)' : ''}`).join(' / ')}`); else p(`  Answer: ${q.answer}`);
+      // A direction of steps (pass MO): its answer is its pictures tapped in order, which no choice is marked for, and a wrong order
+      // hears the direction again.
+      if (q.type === 'order') { p(`  Answer, tapped in order: ${String(q.answer).split(' | ').map(desc).join(', then ')}`); if (q.pick && typeof L.preReaderWrongWords === 'function') p(`  A wrong order hears: ${L.preReaderWrongWords(q, '')}`); }
       // What a pre-reader hears after a wrong trace, which no choice's reason carries (round four's content read, pass MM).
       if (q.type === 'trace' && typeof L.preReaderWrongWords === 'function') p(`  A wrong trace hears: ${L.preReaderWrongWords(q)}`);
       if (q.explain) p(`  Explanation: ${q.explain}${q.explainVisual ? `  [picture ${vis(q.explainVisual)}]` : ''}`);

@@ -9,6 +9,14 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## October 20, 2026 (following directions, playing together, and the app's own letter sounds)
+
+- Children can now follow directions inside the app. The voice says something like "Tap the hat, and then tap the ball," and the child taps the pictures in that order; each tap puts a gold number on the picture, and tapping a numbered picture again takes the number back. Three-year-olds have two new lessons in Listen and Point, Two Steps and Two Ideas ("It is a square, and it is blue": find the one that fits both), and four-year-olds have Three Steps in First Sounds and Letters, each with its own story. A child who misses the order twice sees a soft green ring on the next picture to tap, so nobody is left stuck.
+- Four-year-olds have one more lesson in First Steps, Let's Play Together: how to start playing with a new friend, talk and listen, take turns talking, make a plan together and each do a part.
+- Letter sounds now come from the app itself. When a lesson says the hiss at the start of sun or the hum at the start of moon, the app plays that sound, the same on every device, instead of asking the device's voice to say it, since some voices spelled the letter over and over. The rest of the sentence is still spoken by the voice.
+- Four older lessons were corrected along the way. Third grade's Listening and Asking now describes listening as a body turned toward the speaker, a quiet mouth and hands to yourself, and says some people listen best looking down, rather than asking for eyes on the speaker. Kindergarten's What a Word Means and first grade's Read the Word and Joining Shapes no longer treat a square as something other than a rectangle, since a square is a rectangle too. Joining Shapes also asks which pieces made a shape in the lesson, since other pieces can make the same shape another way.
+- In the sorting games where words are dragged into two buckets (from third grade), a word dropped in the wrong bucket now slides back to its place and shakes there. Before, it jumped half its own size down and to the right while it shook.
+
 ## October 20, 2026 (feelings and friends for three- and four-year-olds, and tracing one line at a time)
 
 - Three-year-olds have a new lesson, Can I Play Too?, about joining a game kindly. They learn to watch first and then ask, to bring something that fits the game and to take turns, and when friends say "not now," to play something else and ask again later. Helping a Friend now teaches that grown-ups have feelings too, and a child can ask a sad grown-up, "Are you okay?" and "Can I give you a hug?"

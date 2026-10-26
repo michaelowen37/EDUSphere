@@ -82,7 +82,9 @@ export async function snapshot(root) {
       if (q.type === 'choice' && Array.isArray(q.choices) && q.choices.length > 1) { const at = q.choices.findIndex((c) => String(c) === String(q.answer)); const tag = `${at} of ${q.choices.length}`; places.set(tag, (places.get(tag) || 0) + 1); }
       const rendering = plain({ type: q.type, choices: Array.isArray(q.choices) ? [...q.choices].sort() : q.choices || null, explain: q.explain || null, explainVisual: q.explainVisual || null, whyNot: q.whyNot || null, alsoRight: q.alsoRight || null, printed,
         // What a pre-reader hears after a wrong trace, which no choice's reason carries (round four's content read, pass MM).
-        wrongTrace: q.type === 'trace' && typeof L.preReaderWrongWords === 'function' ? L.preReaderWrongWords(q) : null });
+        wrongTrace: q.type === 'trace' && typeof L.preReaderWrongWords === 'function' ? L.preReaderWrongWords(q) : null,
+        // And what a wrong order of a direction hears (round one's code check, pass MO).
+        wrongOrder: q.type === 'order' && q.pick && typeof L.preReaderWrongWords === 'function' ? L.preReaderWrongWords(q) : null });
       if (!seen.has(key)) { seen.set(key, { first: seed, renderings: new Set() }); lastNew = seed; }
       seen.get(key).renderings.add(rendering);
       if (seed === limit && lastNew > limit / 2 && (limit < 6400 || (limit < 76800 && seen.size < 1000))) limit *= 2;

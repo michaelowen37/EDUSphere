@@ -140,12 +140,36 @@ ok('every lesson picture in a read-aloud course belongs to a spoken line that na
 // the full standard (docs/review-status.json); tools/untaught.mjs lists the rest for the passes still to come.
 const reviewedIds = Object.keys(JSON.parse(readFileSync(new URL('../docs/review-status.json', import.meta.url), 'utf8')).reviewed).filter((k) => k.startsWith('module:')).map((k) => k.slice(7));
 const namesBad = new Set();
+// Since pass MO (the proof of round one's checks: Two ideas with its triangle line removed passed, since the lesson's paragraphs
+// still named the triangle) a read-aloud lesson with a spoken script is read by what the child hears, the script alone, since its
+// paragraphs never reach a pre-reader (CLAUDE.md, spoken lessons). HEARD_WAITS lists the lessons whose script waits for their
+// grade's review (EARMARKS A44); the list may only shrink, and a lesson fixed comes off it.
+const HEARD_WAITS = ['big-and-small-letters']; const heardWaited = new Set();
 for (const id of reviewedIds) { const m = L.getModule(id); if (!m) continue;
-  const raw = [...m.lesson.paragraphs, m.lesson.keyIdea, (m.lesson.example || {}).caption || '', ...L.readAloudScript(m).map((s) => s.say)].join(' '); const low = raw.toLowerCase();
-  for (const g of new Set(m.generators)) for (let seed = 1; seed <= 60; seed++) for (const w of L.askedNames(L.generateQuestion(g, seed))) {
-    if (!(/^[A-Z]$/.test(w) ? new RegExp(`\\b${w}\\b`).test(raw) : new RegExp(`\\b${w}`).test(low))) namesBad.add(`${id}: ${w}`);
+  const course = L.COURSES.find((c) => c.modules.some((x) => x.id === id)); const heard = !!(course && course.readAloud && (m.lesson.script || []).length);
+  const oldRaw = [...m.lesson.paragraphs, m.lesson.keyIdea, (m.lesson.example || {}).caption || '', ...L.readAloudScript(m).map((s) => s.say)].join(' ');
+  const raw = heard ? L.readAloudScript(m).map((s) => s.say).join(' ') : oldRaw; const low = raw.toLowerCase();
+  // Whole words, a plural allowed, over 400 seeds since round two's lesson check (pass MO): a prefix let "bee" pass on "been", and 60
+  // seeds never dealt Letters' U and X.
+  for (const g of new Set(m.generators)) for (let seed = 1; seed <= 400; seed++) for (const w of L.askedNames(L.generateQuestion(g, seed))) {
+    // A waiting lesson is still read the old way, by its paragraphs and script, so a name said in neither fails (round two's code
+    // check, pass MO: the waits had skipped a waiting lesson whole).
+    const said = (text, lower) => (/^[A-Z]$/.test(w) ? new RegExp(`\\b${w}\\b`).test(text) : new RegExp(`\\b${w}(?:s|es)?\\b`).test(lower));
+    if (!said(raw, low)) { if (HEARD_WAITS.includes(id)) { heardWaited.add(id); if (!said(oldRaw, oldRaw.toLowerCase())) namesBad.add(`${id}: ${w}`); } else namesBad.add(`${id}: ${w}`); }
   } }
-ok('every picture or letter a reviewed lesson\'s questions ask for by name is said in that lesson', namesBad.size === 0, [...namesBad].join(', '));
+ok('every picture or letter a reviewed lesson\'s questions ask for by name is said in that lesson, in its spoken script for a pre-reader', namesBad.size === 0, [...namesBad].join(', '));
+ok('the lessons whose spoken script waits for their grade (EARMARKS A44) still wait, and come off the list once fixed', HEARD_WAITS.every((id) => heardWaited.has(id)), HEARD_WAITS.filter((id) => !heardWaited.has(id)).join(', '));
+// Since round two's lesson check (pass MO): a direction or a sentence of two ideas carries its answer in its words, so every word the
+// directions' and two ideas' kinds can say (DIRECTION_WORDS, from their own lists) that a question says in its setup or prompt is
+// said in its own lesson's spoken script, as a whole word, over 400 seeds; deleting Two ideas' sock and block line, or a sound
+// line, had passed every check.
+{ const bad = new Set(); const whole = (w, t) => new RegExp(`\\b${w}(?:s|es)?\\b`, 'i').test(t); let read = 0;
+  for (const id of reviewedIds) { const m = L.getModule(id); if (!m || !m.generators.some((g) => /-(?:steps|ideas)-/.test(g))) continue; read += 1;
+    const said = L.readAloudScript(m).map((s) => s.say).join(' ');
+    for (const g of new Set(m.generators)) for (let seed = 1; seed <= 400; seed++) { const q = L.generateQuestion(g, seed); const heard = `${q.story || ''} ${q.prompt || ''}`;
+      for (const w of L.DIRECTION_WORDS) if (whole(w, heard) && !whole(w, said)) bad.add(`${id}: ${w}`); } }
+  ok('every word a direction or a sentence of two ideas says is said in its own lesson\'s spoken script first', read === 3 && L.DIRECTION_WORDS.length >= 40 && bad.size === 0, [...bad].join(', '));
+}
 // Taught before asked, for tracing (pass JT): every line, shape or letter a reviewed lesson's questions ask a child to
 // trace is traced in that lesson first (First strokes once asked for waves and zigzags it never drew). Connect the dots
 // pictures are exempt: the skill there is the order of the numbers, which one picture teaches.
@@ -316,5 +340,100 @@ ok('every lesson picture matches the words spoken over it', mismatches.length ==
 // pre-reader can tell it from kindergarten's Pairs, whose tile is the cards alone.
 { const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8'); const at = ui.indexOf('function GameThumb('); const body = ui.slice(at, ui.indexOf('\n}\n', at));
   ok('a pics game has a tile of its own, two cards with the fox and the cat', /game\.kind === 'pairs' && game\.pics\) return <svg data-pics-thumb=""/.test(body) && /\['fox', \d+\], \['cat', \d+\]/.test(body) && /<StudentPicture name=\{n\}/.test(body)); }
+// Pass MO (round one's lesson and screen checks, and round two's story check): a lesson line that teaches a direction's numbers shows
+// them on the line before's own pictures, where that line's direction lands its taps, each step from one up once and in the order the
+// line before says them, every other picture without one, as practice draws it (StepBadge in a tile, in PictureInner's pair and row).
+{ const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8'); const bad = []; let read = 0;
+  for (const mod of L.MODULES) { const script = mod.lesson.script || []; script.forEach((line, k) => { if (!/gets a number/i.test(line.say)) return; read += 1;
+    const pics = (show) => (!show ? [] : show.kind === 'pair' ? [show.a, show.b] : show.kind === 'row' ? show.items || [] : []);
+    const items = pics(line.show); const before = k > 0 ? script[k - 1] : null; const said = before ? before.say.toLowerCase() : '';
+    // The direction is read from its first "tap", one step a name, and every step has its number (round three's content read: a
+    // name's first "the" anywhere passed numbers in listing order under "Here are the book, the ball and the hat.", and Three steps
+    // passed with its third number dropped); and the line's own words say which picture gets which number, as the row shows them.
+    const steps = items.filter((v) => v && v.step).sort((a, b) => a.step - b.step);
+    const from = said.search(/\btap\b/); const tapped = from < 0 ? [] : [...said.slice(from).matchAll(/\bthe (\w+)/g)].map((x) => x[1]);
+    const WORD = ['one', 'two', 'three', 'four'];
+    const inOrder = steps.length >= 2 && steps.length === tapped.length && steps.every((v, i) => v.step === i + 1 && v.name === tapped[i])
+      && steps.every((v) => new RegExp(`\\bthe ${v.name}(?: gets)? ${WORD[v.step - 1]}\\b`, 'i').test(line.say));
+    const samePictures = !!before && JSON.stringify(items.map((v) => v && v.name)) === JSON.stringify(pics(before.show).map((v) => v && v.name));
+    if (!inOrder || !samePictures) bad.push(`${mod.id} ${k}: "${line.say}"`); }); }
+  ok('a lesson line that teaches a direction\'s numbers shows them on the line before\'s pictures, where its taps land, in order', read >= 2 && bad.length === 0 && (ui.match(/\{v\.step \? <StepBadge n=\{v\.step\} pal=\{B\} \/> : null\}/g) || []).length === 2 && (ui.match(/stepTile\(/g) || []).length >= 2, bad.join(' | '));
+}
+// An animation's transform takes the place of an element's own while it runs (pass MO): round six's code check found a lesson
+// pair's 85 percent lost with motion on, its drift a transform, and round eight's read a Buckets chip that shook half its size off its
+// spot while it wobbled, its centring transform given way to the wobble's (older than the pass). This reads ui.jsx with TypeScript's
+// own parser (from npm root -g, the way the browser tests load Playwright): an element that wears an animation whose keyframes move
+// transform, by a class its className names or by its inline animation, sets no transform of its own (a style key or an SVG
+// attribute), unless every keyframes of that name starts and ends at that same transform (the read-along's lit letters rest at their
+// own scale(1.12)). It reads the animations an element's className or inline style names. It does not see a class set from a
+// variable, a transform in a spread or a style passed in, a rule whose selector list breaks across lines or reads a value before its
+// animation, or an element a rule reaches by a tag (.edu-boot-word span), and the screen brief reads for those (round nine's read).
+// The check runs on its own plants too.
+{ const { execSync } = await import('node:child_process'); const { createRequire } = await import('node:module');
+  const ts = createRequire(import.meta.url)(`${execSync('npm root -g').toString().trim()}/typescript`);
+  const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+  // A comma inside brackets (a cubic-bezier's) does not split a list of animations.
+  const splitTop = (s) => { const out = []; let d = 0; let cur = ''; for (const ch of s) { if (ch === '(') d += 1; if (ch === ')') d -= 1; if (ch === ',' && d === 0) { out.push(cur); cur = ''; } else cur += ch; } out.push(cur); return out; };
+  const animTransformProblems = (text) => {
+    const inner = (open) => { let d = 0; for (let i = open; i < text.length; i += 1) { if (text[i] === '{') d += 1; else if (text[i] === '}') { d -= 1; if (d === 0) return text.slice(open + 1, i); } } return ''; };
+    // Each keyframes that moves transform, with the transform it starts and ends at wherever it is written (null where a stop
+    // leaves transform out, which keeps the element's own).
+    const frames = new Map();
+    for (const m of text.matchAll(/@keyframes\s+([A-Za-z][\w-]*)\s*\{/g)) { const body = inner(m.index + m[0].length - 1); if (!/\btransform\s*:/.test(body)) continue;
+      const at = { start: null, end: null };
+      for (const s of body.matchAll(/([^{}]+)\{([^{}]*)\}/g)) { const stops = s[1].split(',').map((x) => x.trim()); const t = /\btransform\s*:\s*([^;]+)/.exec(s[2]); const v = t ? t[1].trim() : null;
+        if (stops.includes('0%') || stops.includes('from')) at.start = v; if (stops.includes('100%') || stops.includes('to')) at.end = v; }
+      frames.set(m[1], [...(frames.get(m[1]) || []), at]); }
+    // The classes whose rules run one, each read as the last class of a selector in the rule's list.
+    const runs = new Map();
+    for (const m of text.matchAll(/\{([^{}]*\banimation(?:-name)?\s*:[^{}]*)\}/g)) {
+      const a = /\banimation(?:-name)?\s*:\s*([^;]+)/.exec(m[1]); const names = splitTop(a[1]).map((part) => part.trim().split(/\s+/).find((w) => frames.has(w))).filter(Boolean); if (!names.length) continue;
+      const before = text.slice(0, m.index); const selector = before.slice(Math.max(before.lastIndexOf('}'), before.lastIndexOf('{'), before.lastIndexOf(';'), before.lastIndexOf('\n')) + 1);
+      for (const part of selector.split(',')) { const cs = [...part.matchAll(/\.([A-Za-z][\w-]*)/g)]; if (cs.length) { const c = cs[cs.length - 1][1]; runs.set(c, [...new Set([...(runs.get(c) || []), ...names])]); } } }
+    const byClass = [...runs].map(([c, ks]) => [new RegExp(`['"\`][^'"\`]*(?<![\\w-])${c}(?![\\w-])`), ks]);
+    // An inline animation, its name in a string anywhere in its value, so one set by a condition is read too (round nine's read:
+    // "animation: on ? 'edu-bob 2s' : 'none'" was not).
+    const byInline = [...frames.keys()].map((k) => [new RegExp(`\\banimation(?:Name)?\\s*:[^,}]*?['"\`][^'"\`]*?(?<![\\w-])${k}(?![\\w-])`), k]);
+    const sf = ts.createSourceFile('ui.jsx', text, ts.ScriptTarget.Latest, true, ts.ScriptKind.JSX);
+    const flat = (s) => String(s).replace(/\s+/g, '');
+    const bad = []; const kept = []; let worn = 0;
+    const visit = (n) => {
+      if (ts.isJsxOpeningElement(n) || ts.isJsxSelfClosingElement(n)) {
+        let cls = ''; let style = null; let attr = null; let plant = '';
+        for (const a of n.attributes.properties) { if (!ts.isJsxAttribute(a) || !a.initializer) continue; const k = a.name.getText(sf);
+          if (k === 'className') cls = a.initializer.getText(sf); else if (k === 'style') style = a.initializer; else if (k === 'transform') attr = a.initializer; else if (k === 'data-plant') plant = a.initializer.getText(sf).replace(/['"]/g, ''); }
+        const names = new Set(); const styleText = style ? style.getText(sf) : '';
+        for (const [re, ks] of byClass) if (re.test(cls)) ks.forEach((k) => names.add(k));
+        for (const [re, k] of byInline) if (re.test(styleText)) names.add(k);
+        if (names.size) { worn += 1; let has = false; let own;
+          const look = (e) => { if (ts.isPropertyAssignment(e) && e.name.getText(sf).replace(/['"]/g, '') === 'transform') { has = true; own = ts.isStringLiteral(e.initializer) || ts.isNoSubstitutionTemplateLiteral(e.initializer) ? e.initializer.text : undefined; } ts.forEachChild(e, look); };
+          if (style) look(style);
+          if (attr) { has = true; own = ts.isStringLiteral(attr) ? attr.text : undefined; }
+          if (has) { const rests = own !== undefined && [...names].every((k) => frames.get(k).every((f) => flat(f.start ?? own) === flat(own) && flat(f.end ?? own) === flat(own)));
+            (rests ? kept : bad).push(`line ${sf.getLineAndCharacterOfPosition(n.getStart(sf)).line + 1}${plant ? ` (${plant})` : ''}: <${n.tagName.getText(sf)}> wears ${[...names].join(', ')} and sets transform ${own === undefined ? '(not a plain string)' : own}`); } } }
+      ts.forEachChild(n, visit); };
+    visit(sf);
+    return { bad, kept, worn };
+  };
+  const live = animTransformProblems(ui);
+  ok('no element in ui.jsx wears an animation its className or inline style names that moves transform beside a transform of its own, unless the animation starts and ends at it (round six\'s lesson pairs, round eight\'s Buckets chip)', live.bad.length === 0 && live.worn >= 135 && live.kept.some((k) => /edu-stress/.test(k)), `${live.worn} worn, kept: ${live.kept.join(' | ')}; ${live.bad.join(' | ')}`);
+  // Its near misses, written as they were in the code: round six's pair half (its 85 percent beside its drift) and round eight's
+  // chip, a drawing turned by an SVG attribute and an inline animation must fail, and since round nine's read an inline animation
+  // set by a condition and a class in a template literal, by a string inside it and by its own text (40 of the elements read wear
+  // theirs so); the lit letter, a transform on a child and an animation that only fades must pass.
+  const PLANTS = [['catch', 'pair', `<div data-plant="pair" className={animate ? 'edu-drift' : undefined} style={{ position: 'relative', transform: shrink && !inner ? 'scale(0.85)' : undefined }} />`],
+    ['catch', 'chip', `<div data-plant="chip" className={wrong === ch.id ? 'edu-wobble' : undefined} style={{ position: 'absolute', transform: 'translate(-50%, -50%)', padding: '5px 9px' }} />`],
+    ['catch', 'svg', `<g data-plant="svg" className="edu-sway" transform="translate(4 6)" />`],
+    ['catch', 'inline', `<div data-plant="inline" style={{ animation: 'edu-bob 2s ease-in-out infinite', transform: 'scale(2)' }} />`],
+    ['catch', 'condinline', `<div data-plant="condinline" style={{ animation: on ? 'edu-bob 2s ease-in-out infinite' : 'none', transform: 'scale(2)' }} />`],
+    ['catch', 'template', `<div data-plant="template" className={\`edu-press\${bad ? ' edu-wobble' : ''}\`} style={{ position: 'absolute', transform: 'translate(-50%, -50%)' }} />`],
+    ['catch', 'backtick', `<div data-plant="backtick" className={\`edu-breathe\${on ? ' edu-press' : ''}\`} style={{ transform: 'scale(2)' }} />`],
+    ['keep', 'lit', `<span data-plant="lit" className={animate ? 'edu-stress' : undefined} style={{ display: 'inline-block', transform: 'scale(1.12)' }} />`],
+    ['keep', 'child', `<div data-plant="child" className="edu-wobble"><div style={{ transform: 'translate(-50%, -50%)' }} /></div>`],
+    ['keep', 'fade', `<div data-plant="fade" className="edu-note-in" style={{ transform: 'scale(2)' }} />`]];
+  const planted = animTransformProblems(`${ui}\nconst __plants = () => (<>${PLANTS.map((p) => p[2]).join('')}</>);\n`);
+  const wrongPlants = PLANTS.filter(([want, id]) => planted.bad.some((b) => b.includes(`(${id})`)) !== (want === 'catch')).map((p) => p[1]);
+  ok('the animation and transform check fails each of its planted near misses and passes each fair one (10 plants: seven near misses it must fail and three fair ones it must pass)', wrongPlants.length === 0 && planted.bad.length === live.bad.length + 7, `wrong: ${wrongPlants.join(', ')}; ${planted.bad.join(' | ')}`);
+}
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

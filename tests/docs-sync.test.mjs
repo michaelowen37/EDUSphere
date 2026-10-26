@@ -132,6 +132,17 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   const open = "<!-- RULES-AUDIT section 11's answered questions through pass MN, word for word: begin -->\n"; const a = hist.indexOf(open); const b = hist.indexOf("<!-- RULES-AUDIT section 11's answered questions through pass MN, word for word: end -->");
   const block = a >= 0 && b > a ? hist.slice(a + open.length, b) : '';
   ok('docs/RULES-AUDIT-HISTORY.md keeps the answered questions section 11 held through pass MN, every line unchanged (pass MN)', createHash('sha256').update(block, 'utf8').digest('hex') === '686371a5c62de1a76bbb7a0350d2a465d657f4c27f38d3582fc159064f09c781');
+  // A question answered in a later pass moves in a block of its own, held by a digest of its own (pass MO: Q54), so no earlier
+  // block's digest ever changes; a question answered later in the same pass joins that pass's block (pass MO: Q59), whose digest
+  // changes with it before the pass is delivered.
+  { const o = "<!-- RULES-AUDIT section 11's answered questions in pass MO, word for word: begin -->\n"; const ia = hist.indexOf(o); const ib = hist.indexOf("<!-- RULES-AUDIT section 11's answered questions in pass MO, word for word: end -->");
+    const mo = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
+    ok('docs/RULES-AUDIT-HISTORY.md keeps the questions answered in pass MO, every line unchanged (pass MO)', createHash('sha256').update(mo, 'utf8').digest('hex') === '02d8bf566576d5c8f52c6785ccc6b4d0902e5d94b4e3b18a7fd9409ee8e625e8'); }
+  // An open question whose text a pass brought up to date keeps its old text word for word in a block of its own (pass MO, round
+  // five's record read: Q51 as pass MN left it).
+  { const o = "<!-- RULES-AUDIT section 11's open questions as pass MN left them, before pass MO brought them up to date, word for word: begin -->\n"; const ia = hist.indexOf(o); const ib = hist.indexOf("<!-- RULES-AUDIT section 11's open questions as pass MN left them, before pass MO brought them up to date, word for word: end -->");
+    const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
+    ok("docs/RULES-AUDIT-HISTORY.md keeps Q51's text as pass MN left it, every word unchanged (pass MO)", /^- Q51\. /.test(kept) && createHash('sha256').update(kept, 'utf8').digest('hex') === 'b79d27373188850e802c1ea71ae68d36df437d42f5834a6e9185c305fb1d7531'); }
   const s = audit.indexOf('## 11. Open items that need Mikey'); const e = audit.indexOf('\n## ', s + 5); const sec = audit.slice(s, e < 0 ? audit.length : e);
   const answeredLines = sec.split('\n').filter((l) => /^- Q\d+\. Answered in pass /.test(l));
   const long = answeredLines.filter((l) => !/^- Q\d+\. Answered in pass \w+ \(Mikey: .+\)\. Its rule lives in [^\n]+\.$/.test(l) || /The question as it stood/.test(l));
@@ -192,5 +203,11 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
 { const { LEDGER_CSV } = await import('../tools/audio-ledger.mjs'); const file = readFileSync(new URL('../docs/AUDIO-LEDGER.csv', import.meta.url), 'utf8');
   const have = file.split('\n'); const want = LEDGER_CSV.split('\n'); const first = want.findIndex((l, i) => l !== have[i]);
   ok(`docs/AUDIO-LEDGER.csv is what tools/audio-ledger.mjs makes from the code today (${want.length - 2} clips)`, want.length > 9000 && file === LEDGER_CSV, first < 0 ? `lengths ${have.length} and ${want.length}` : `first difference at line ${first + 1}: ${String(have[first]).slice(0, 120)}`); }
+// HANDOFF's numbers name the ledger's last serials (round three's final read, pass MO: they were a pass behind, S3914, D245 and
+// P154, as pass LX found them once).
+{ const h = readFileSync(new URL('../docs/HANDOFF.md', import.meta.url), 'utf8'); const art = readFileSync(new URL('../docs/ART-REQUESTS.md', import.meta.url), 'utf8');
+  const top = (p) => Math.max(...[...art.matchAll(new RegExp('^\\| ' + p + '(\\d+) \\|', 'gm'))].map((m) => +m[1]));
+  const want = ['S1 to S' + top('S'), 'CS1 to CS' + top('CS'), 'D28 to D' + top('D'), 'P1 to P' + top('P'), 'C1 to C' + top('C')];
+  ok("HANDOFF's numbers name the ledger's last serials", want.every((w) => h.includes(w)), want.filter((w) => !h.includes(w)).join(', ')); }
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exitCode = failed ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (CLAUDE.md, 2026-09-23)

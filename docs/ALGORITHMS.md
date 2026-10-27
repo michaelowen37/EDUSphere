@@ -280,12 +280,21 @@ The sounds are made from numbers by soundClipSamples, 32,000 samples a second, t
 noise source for the hisses and the bursts, and for the voiced sounds a woman's voice near 210 cycles a second (falling 5 percent
 over the sound and wavering very slightly, five times a second, so it sounds breathed), shaped by the mouth's or the nose's
 resonances. A held sound lasts 0.85 seconds, or 1.1 on the snail's slower pace, rising over 0.07 seconds and falling over 0.16,
-so it never clicks. sss is a hiss above 3,600 cycles a second whose loudest part sits near 6,500 (its peak filter at 6,800), high
-in the range where an s peaks; fff is a softer, flatter hiss from about 1,300 to 9,000; zzz is the hiss pulsing with the voice's
-buzz, with a low hum under it; mmm and nnn are a hum through the nose, strongest near 280, with mmm's dip near 950 and nnn's near
+so it never clicks. Since pass MP sss, fff and zzz are instead two breaths of 0.32 seconds with 0.13 of quiet between (0.4 and 0.17
+on the snail), from Mikey's notes on Q51 ("fragments like sss sss sun"). sss is a hiss from about 4,000 to 9,500 cycles a second
+whose loudest part sits near 6,500, high in the range where an s peaks; fff is a softer, flatter hiss from about 1,500 to 7,500;
+zzz is the voice's buzz, a low hum near 230, with the hiss pulsing over it, more buzz than hiss since pass MP (he heard "static
+behind it"); mmm and nnn are a hum through the nose, strongest near 280, with mmm's dip near 950 and nnn's near
 1,750, which is what tells them apart; lll and rrr are the voice held in their mouth shapes, rrr's third resonance low, near
 1,650, which is what makes an r sound like r. A crisp stop is 0.03 seconds of quiet, the burst as the tongue or lips let go (t
-high, near 5,200; p low, under about 1,200; k in the middle, near 2,100) and a short breath after it, 0.14 seconds in all (k 0.16).
+high, near 5,200; p low, under about 1,200; k in the middle, near 2,100), a short breath after it and, since pass MP, a tenth of a
+second of a soft, voiced uh running out of the breath, softer than the burst, so the lessons' tuh, puh and cuh are heard rather
+than "a tap on the rim of a drum" (Mikey of row 8), about 0.19 seconds in all (k 0.20; 0.14 and 0.16 before the uh).
+Since pass MP the app also makes, for the voice check page alone until Mikey has heard them and chosen (TRIAL_SOUNDS, Q60), the
+five short vowels (0.42 seconds each, 0.55 on the snail), buh, duh, guh and juh (the voice's low hum while the lips or tongue are
+closed, the release and a short uh), and the endings ig, og and at made whole (the vowel gliding toward the closing consonant and
+its release, with no uh after it); each vowel's resonances follow measured American English vowels in a woman's voice, and how
+each is made is written beside it in logic.mjs.
 soundClipWav wraps a sound as a small WAV file (16-bit, one channel); 'quiet' is a twentieth of a second of silence. These are the
 app's own stand-ins until the sounds are recorded (EARMARKS A41).
 
@@ -295,7 +304,7 @@ as one line, plays the sound once the voice has finished them, and goes on with 
 at once, and none holds a reading up longer than 1.7 seconds. A newer line cancels the voice and stops the sound (speak,
 speakSequence), and voiceTalking counts a sound playing as the voice still talking, so the read-along's light and the voice's one
 retry wait for it. The rules test measures every sound against these numbers; tools/voice-check.mjs builds a page from the same
-code with 32 numbered rows for Mikey to hear on his phone (Q51). The retry asks once more when the voice never started, and since
+code with 50 numbered rows for Mikey to hear on his phone (Q51; since pass MP rows 33 to 50 hold the sounds made for the page alone, Q60). The retry asks once more when the voice never started, and since
 round two's code check each send is its own attempt, so the retry retires the try it replaces; a watch moves a line on when the
 voice drops a batch's end event (after 1.2 seconds of quiet, or 1.5 if it never began); and leaving a round hushes it through
 hushSpeech, whose cancel waits a tick and is skipped when a newer line has already spoken, so the next screen never speaks straight
@@ -325,5 +334,44 @@ tapped; on a laptop the grid keeps a phone's size (360 pixels for four pictures,
 reader its picture's name and, once tapped, its number. Since round three's alignment read a direction never leaves a child stuck:
 after two wrong orders (misses, which only a new question resets) the next step's picture wears the app's green "go here" ring
 (edu-breathe, still and full with motion off) and a green edge until it is tapped, then the next one does, while the taps so far are
-the direction's own; a wrong tap takes the ring away until it is taken back. Mastery is unchanged, since a pre-reader's result is
-right the first time or not.
+the direction's own; a wrong tap took the ring away until it was taken back, until pass MP: since Mikey's answer to Q58 ("Q58 - A")
+a tap on any other picture while the ring shows takes no number and wobbles a moment with a clay edge (0.6 seconds, shown with motion
+off too), and the ring stays where it is, so the child always finishes the direction; a numbered picture still takes its number
+back. Mastery is unchanged, since a pre-reader's result is right the first time or not.
+
+## A game's welcome and a story's breaths (pass MP, Mikey's game and story notes)
+
+A game's welcome (gameIntro in logic.mjs, GameIntro and makeDemoHands in ui.jsx) waits 450 ms for the board to settle, then says
+its lines one at a time while each line's act plays, the next line waiting for both and then 350 ms more (INTRO_GAP). A line no
+voice says (a muted device, a browser with no voice) stays up for about three words a second and never under 1.2 seconds
+(introReadMs), and a line a voice said quickly keeps its caption up for at least six tenths of that. The pointer glides to a tap in
+0.62 seconds and to a look in 0.65, carries a dragged piece at about 3 ms a pixel (0.42 to 1.3 seconds), waits 0.65 seconds beside a
+key it shows before pressing it, and waits up to 2.6 seconds for a board to mark its next move (4 seconds for the space shooter's chip);
+a target outside the part of the screen the pointer may use (above Skip's bar while it floats; in a page-tall frame, what the page
+around it shows) is scrolled to that part's middle first, and the pointer waits until the page has stopped (three frames at one
+place, 1.2 seconds at most) and 0.12 seconds more (0.06 with less motion asked for). When the pointer asks a game's question it
+waits for the game's voice to finish, 7 seconds at most. Once the welcome has gone, by itself or by any way out, Begin is brought
+back into what shows the same way (scrollShown): its cover's top 8 pixels under the top of what shows, or Begin itself centred when
+that would leave it below; and after Begin, the board's top, if it sits above what shows. Only a visit that had a welcome scrolls. As the welcome ends, a
+scroll its pointer started is stopped where the page is (an instant scroll to the same place ends a smooth one); GamePad then waits
+until what shows has stopped moving (three frames at one place, 1.2 seconds at most) before it reads, and while the Instructions
+pop-up is open it waits for the pop-up to close. The browser's scroll anchoring is off from the welcome's end until GamePad has read the
+board after Begin, so a board in play taller or shorter than its welcome's leaves the page where it was, and the board's top where
+Begin's was; in play it is back on, holding the answers still under a child's finger when a question above what shows changes
+length.
+
+The welcome plays a round of its own (demoRoundFor): a game's round number decides what it deals, so of rounds 500 to 1,499 the
+welcome takes the first whose answered items (one for each line that taps, drags or presses a key, three at most, demoItemCount)
+are none of the items the child meets in round 1, the child's first (its whole first board where a board shows all of itself at
+once, as Buckets and a deck's Pairs do); where none is clear, as for the smallest decks (Spot It's four pictures, In order:
+civilizations' three sets, Fraction twins' five pairs and the fractions scale's five amounts), it takes the round whose items the
+child meets latest, and Pay the Price takes a round whose first price shows the big coin its welcome names. The rounds are worked
+out ahead of time into DEMO_ROUNDS by node tools/demo-rounds.mjs, which the rules test holds to the search, so opening a game
+never searches. A deck dealt in
+steps deals set k of round r at r times its step plus k, round the deck (DEAL_STEP: 1 for In order and Sentence builder, 2 for
+Find the evidence and Spot It, 3 for Debug the robot, Fix it and Teach the Robot, 5 for Walk the Robot).
+
+A story read aloud breathes (storyGap and storyPause in ui.jsx): 0.65 seconds after its title (a full second on the snail), a
+quarter second between paragraphs (0.55 on the snail), and on the snail a third of a second between sentences; the snail reads at
+0.65 of the hare's pace (SNAIL_RATE; a recorded clip at 0.72), and two of the app's sounds in a row are 0.2 seconds apart
+(SOUND_GAP_MS). A finished game's gold star fades after 2.2 seconds (DONE_STAR_MS).

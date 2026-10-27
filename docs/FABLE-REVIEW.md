@@ -200,6 +200,29 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A sample built by hand to look like a real screen drifts: the LI tour sample missed the Merge link and the Wonder pill and was laid out differently, and Mikey saw all three at a glance. Feed made-up data through the real component instead, with taps switched off, and the sample can never differ from the page.
 - Count a daily allowance against the day as it started, not as it stands: finishing the first review shrinks the queue, and a rule that rechecked the live queue would cancel the second review the backlog asked for.
 
+## Learned in pass MP (every game's spoken welcome with a demonstration, the sound fixes from Mikey's Q51 notes, Q55 to Q58)
+
+- A game's welcome is a lesson said over a demonstration, so every line is read against the board's code and the course's lessons, and the written help with it: a welcome that restates the help inherits the help's errors (the soil jar's seventy percent sand, Pay the Price's "a dot for every coin", Ask the Right Question's "a question about you", Teach the Robot's "every guess change" and Cut the Fillers' line that "reads itself back" were all in the help text first).
+- A demonstration keeps clear of the answers the child is about to meet, as far as its deck allows. One seed for every game coincided with small decks dealt in steps (977 is one more than 16 times 61), so each game's round is chosen against what its board deals, and the boards deal through the same functions the check reads.
+- A count several screens share (a hush) is held once by its owner and given back once, whichever ending comes first; a step that outlives its owner never adds it back (a welcome ended mid-ask left every voice in the app silent until a reload).
+- A parent's ordinary effects run after its children's, so a hush that must come before a child's first words is taken in a layout effect (five boards said half their question before the welcome hushed them).
+- A pause added to a reader moves the reader's place on before it begins, and every new pause is run with a pace change, a stop and a lost end (a pace change in a story's new breaths said the last sentence again).
+- A check that something was said reads when it was said: the welcome's question check counted a question said before the welcome began, and passed with the pointer's press removed.
+- A phone layout is tested on a page with the real page's viewport line; a browser told it is a phone still lays a page without one out 980 pixels wide.
+- A part hidden from screen readers is made inert as well, or the Tab key walks into buttons no one can hear, and a guard there can hold the focus.
+- A sticky row never sticks in a page whose body is a scroll box of its own; what must stay in reach floats when its own place is out of the window.
+- A game teaches what its course teaches, so its example is read against the course's own lessons: Fraction twins sat under Multiplication and division, which teaches no fractions, and its two times games under Fractions.
+- A spoken example never gives away an item the board deals (one half and two fourths sat on every Fraction twins board).
+- Words for three-year-olds name what they see ("the box with the big circle"), never left and right.
+- A welcome on a device with no voice never points at a speaker that is not drawn.
+- A self-test reads what it tests by name: the voice check page's sounds were counted only as "a sound", so a page that played sss for every row passed.
+- Two fixes that move what a child sees are checked together: a control that floats at a short screen's foot and a scroll that brings a target only to that foot put the pointer under the control (round two). The welcome is played whole at a short size and every step's resting place read.
+- A button that newly invites the next tap pulses like every such button (Begin ends every welcome), and a ring drawn on a different surface takes that surface's ink: the dark theme's mint ring would have vanished on the pale game paper.
+- A spoken or written example is held to its deck by a test once the same slip comes back: the science help named a pair Science 6 deals, after round one had found two such examples by hand.
+- A rule a game's welcome states is taught in its course, or the lesson gains it (Teach the Robot's nearest fruit); a word for three-year-olds names the color the board shows (a clay edge is red-brown, not red), and a sign a line names shows with motion off too (a wobble stops when a device asks for less motion, so the path's line names its red-brown edge, and every button or card that would have wobbled wears a still edge there, Spot It's and Teach the Robot's pieces a ring).
+- A quote called Mikey's is traced to his own message, never to a record that retells it; and a never is read against the code's own exceptions.
+- A voice direction fits the learner's age: the youngest games' welcomes are playful, and from grade 3 up upbeat and engaging, since older learners hear a voice that never talks down.
+
 ## Learned in pass MO (Mikey's Q51 notes, Q54 and the story head; pre-K 4's last Domain I lesson; Domain II's first part at both ages)
 
 - A lesson that teaches a sound lets the child hear the sound: the app plays its own held sounds and crisp stops between the voice's words, so a line writes the sound as the sound (mmm, sss, tuh) and never asks the voice to say it; and a sounded-out run never leaves a vowel letter alone between two sounds ("Cuh, a, puh." is heard "cuh, ay, puh"), so a vowel is never handed to the voice alone (EARMARKS A42, Q57).

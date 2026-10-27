@@ -1,6 +1,6 @@
 # Review ledger
 
-Generated 2026-10-26 by tools/review-ledger.mjs. What Mikey wants from the review is in docs/FABLE-REVIEW.md; this file is the work list, in order. To mark an item reviewed, add its key to "reviewed" in docs/review-status.json with the pass that did it (keys look like module:saving-investing-and-risk, course-story:econ-9, game:dots-kite, wonder:w-grown-the-rumor), then run the tool again.
+Generated 2026-10-27 by tools/review-ledger.mjs. What Mikey wants from the review is in docs/FABLE-REVIEW.md; this file is the work list, in order. To mark an item reviewed, add its key to "reviewed" in docs/review-status.json with the pass that did it (keys look like module:saving-investing-and-risk, course-story:econ-9, game:dots-kite, wonder:w-grown-the-rumor), then run the tool again.
 
 Reviewed to the full standard so far: 220 of 1440 items; first pass only (accuracy, punctuation, audio tags): 0 (670 modules with their lessons, stories and question banks, 106 long stories, 4 next long stories, 160 games and 366 Wonder questions). Colons today: 2110 in lessons and 1261 in stories (times like 3:30 and ratios are not counted). Pictures are reviewed through docs/ART-REQUESTS.md as they are painted; a rewritten story keeps each picture beside the paragraph it shows.
 
@@ -960,7 +960,7 @@ Reviewed to the full standard so far: 220 of 1440 items; first pass only (accura
 |  | Big Puzzle (`jigsaw-9`) | jigsaw | reading-1 |
 |  | Many Pairs (`pairs-many`) | pairs | numbers-1 |
 |  | Step on the even numbers (`path-even`) | path | math-4 |
-|  | Catch the multiples of 3 (`catch-multiples-3`) | catch | fractions-intro |
+|  | Catch the multiples of 3 (`catch-multiples-3`) | catch | multiplication-3 |
 |  | Noun or verb (`buckets-noun-verb`) | buckets | writing-6 |
 |  | Catch the living things (`catch-living`) | catch | science-4 |
 |  | Step on the multiples of 4 (`path-multiples-4`) | path | math-5 |
@@ -997,11 +997,11 @@ Reviewed to the full standard so far: 220 of 1440 items; first pass only (accura
 |  | Where is it? South America (`map-south-america`) | map | history-college |
 |  | Balance the Scale (`balance-ten`) | balance | science-1 |
 | yes (MB: hexagons and rhombuses now fall as themselves (they fell as triangles); SvgChip draws every deck shape from one table of corners, which the rules test reads. Earlier: LC, full standard, new: Catch the Hexagons for Shapes, measuring and graphs; the hexagon is new in grade 1 (TEKS 1.6D), caught against triangles, rhombuses and circles in four colors) | Catch the Hexagons (`catch-hexagons`) | catch | shapes-1 |
-|  | Balance the scale: times (`balance-times`) | balance | fractions-intro |
+|  | Balance the scale: times (`balance-times`) | balance | multiplication-3 |
 |  | Balance the scale: fractions (`balance-fractions`) | balance | math-7 |
 |  | Balance the scale: expressions (`balance-expressions`) | balance | math-9 |
 |  | Acid or base (`buckets-acid-base`) | buckets | science-10 |
-|  | Fraction twins (`pairs-fractions`) | pairs | multiplication-3 |
+|  | Fraction twins (`pairs-fractions`) | pairs | fractions-intro |
 |  | Word meanings (`pairs-vocabulary`) | pairs | reading-7 |
 |  | Capitals (`pairs-capitals`) | pairs | history-9 |
 |  | Texas pairs (`pairs-texas`) | pairs | history-7 |

@@ -6,7 +6,7 @@
 // the voice direction for its age band. Every clip, and every whole story, stays far under Eleven v4's 10,000 characters.
 // Run: node tools/audio-ledger.mjs > docs/AUDIO-LEDGER.md   (it also writes docs/AUDIO-LEDGER.csv, which tools/audio-generate.mjs reads)
 import { writeFileSync } from 'node:fs';
-import { COURSES, readAloudScript, SENTENCE_BREAK } from '../src/logic.mjs';
+import { COURSES, readAloudScript, SENTENCE_BREAK, GAMES, gameIntro, gameBand } from '../src/logic.mjs';
 import { STORIES, COURSE_STORIES, MASTERY_STORIES } from '../src/stories.mjs';
 
 // Voices by age (Mikey, pass JH). The directions are short on purpose: one opens every clip, and ElevenLabs counts tags as characters.
@@ -15,11 +15,21 @@ import { STORIES, COURSE_STORIES, MASTERY_STORIES } from '../src/stories.mjs';
 const band = (g) => { const s = String(g); if (/^pk/i.test(s) || /^k$/i.test(s) || s === '1' || s === '2') return 'early'; if (['3', '4', '5'].includes(s)) return 'elementary'; if (['6', '7', '8'].includes(s)) return 'middle'; return 'older'; };
 export const DIRECTION = {
   early: '[warm and gentle, drawing out key words]',
+  // A story for the youngest (pass MP, Mikey: "Here is a video with great story telling cadence for early learners.  It's nice and calm
+  // and slow and she does a great job using different voices for different characters.", a picture book read aloud on the Story
+  // Time channel): calm and unhurried, and a voice of its own for each character who speaks; kept short, since every early story
+  // clip carries it (round one's accuracy check counted the longer first wording at about 50,000 more characters), and a story's
+  // own [pause] tags give the pauses.
+  earlyStory: '[calm and unhurried, a voice for each character]',
   elementary: '[warm and friendly]',
   middle: '[warm and natural]',
   older: '[warm, conversational]',
   title: '[warm]',
   question: '[warm, pleasant, mildly upbeat]',
+  game: '[warm, playful and upbeat]',
+  // A game's welcome from grade 3 up (round two's alignment read, pass MP): upbeat and engaging, as Mikey asked ("exciting and fun"),
+  // without the playful read the youngest hear, since older learners hear a voice that never talks down (pass JH).
+  gameMain: '[warm, upbeat and engaging]',
 };
 const sentencesOf = (t) => String(t || '').split(SENTENCE_BREAK).filter(Boolean);   // the same split the app uses (src/ui.jsx, SENTENCE_BREAK since pass MN)
 const rows = [];
@@ -32,7 +42,7 @@ for (const c of courses) {
     const st = STORIES[m.id];
     if (st) {
       add(`${st.art}-0`, 'story title', m.id, c.grade, `${DIRECTION.title} ${st.title}.`, `${st.title}.`, st.art);
-      st.words.forEach((p, i) => add(`${st.art}-${i + 1}`, 'story', m.id, c.grade, `${DIRECTION[band(c.grade)]} ${(st.audio && st.audio[i]) || p}`, p, st.art));
+      st.words.forEach((p, i) => add(`${st.art}-${i + 1}`, 'story', m.id, c.grade, `${band(c.grade) === 'early' ? DIRECTION.earlyStory : DIRECTION[band(c.grade)]} ${(st.audio && st.audio[i]) || p}`, p, st.art));
     }
     // A read-aloud lesson speaks readAloudScript's lines (pass JP: paragraphs too when it has no script), keyed by step as the app plays them.
     (c.readAloud ? readAloudScript(m) : (m.lesson && m.lesson.script ? m.lesson.script : [])).forEach((line, li) => sentencesOf(line.say).forEach((s, si) => add(`${m.id}-${li}-${si}`, 'lesson line', m.id, c.grade, `${DIRECTION.early} ${s}`, s, `${m.id}-lesson`)));
@@ -41,9 +51,16 @@ for (const c of courses) {
   for (const [cs, kind] of [[COURSE_STORIES[c.id], 'long story'], [MASTERY_STORIES[c.id], 'next long story']]) {
     if (!cs) continue;
     add(`${cs.art}-0`, `${kind} title`, c.id, c.grade, `${DIRECTION.title} ${cs.title}.`, `${cs.title}.`, cs.art);
-    (cs.words || []).forEach((p, i) => add(`${cs.art}-${i + 1}`, kind, c.id, c.grade, `${DIRECTION[band(c.grade)]} ${(cs.audio && cs.audio[i]) || p}`, p, cs.art));
+    (cs.words || []).forEach((p, i) => add(`${cs.art}-${i + 1}`, kind, c.id, c.grade, `${band(c.grade) === 'early' ? DIRECTION.earlyStory : DIRECTION[band(c.grade)]} ${(cs.audio && cs.audio[i]) || p}`, p, cs.art));
   }
 }
+// The games' welcomes (pass MP, Mikey: "With Eleven, we can make this game audio exciting and fun"): each line a clip, keyed by its
+// words and its voice (gameIntro), so a line many games share is one row and one recording, in the group of the first game that
+// says it (the group is what tools/audio-generate.mjs stitches a clip to its neighbors by, so a game's lines are told as one);
+// the youngest games' lines in the young voice with the playful direction, and the rest in the main voice, upbeat and engaging (since
+// round two's alignment read; every line shared by games of both voices is two rows, one in each). --only game makes them all.
+{ const seen = new Set();
+  for (const g of GAMES) for (const line of gameIntro(g)) { if (seen.has(line.key)) continue; seen.add(line.key); add(line.key, line.keys ? 'game welcome (keyboard)' : 'game welcome', g.id, gameBand(g) === 'early' ? 'K' : g.minGrade, `${gameBand(g) === 'early' ? DIRECTION.game : DIRECTION.gameMain} ${line.say}`, line.say, `game-${g.id}`); } }
 const csv = (v) => `"${String(v).replace(/"/g, '""')}"`;
 // The CSV this tool writes, exported so the docs sync test can hold docs/AUDIO-LEDGER.csv to the code (pass MN, round three: round
 // one's words stayed in it after the lessons changed, and tools/audio-generate.mjs records from it). It writes only when run alone,
@@ -81,11 +98,14 @@ ${['early', 'elementary', 'middle', 'older'].map((b) => { const rs = rows.filter
 | Who | Direction at the start of each clip |
 |---|---|
 | Pre-K to grade 2, and every pre-reader lesson line | ${DIRECTION.early} |
+| A story for pre-K to grade 2 (since pass MP) | ${DIRECTION.earlyStory} |
 | Grades 3 to 5 | ${DIRECTION.elementary} |
 | Grades 6 to 8 | ${DIRECTION.middle} |
 | Grades 9 to college | ${DIRECTION.older} |
 | Story titles | ${DIRECTION.title} |
 | Questions (when the app plays them; next in the audio work) | ${DIRECTION.question} |
+| Game welcomes for pre-K to grade 2 (since pass MP, in the young voice) | ${DIRECTION.game} |
+| Game welcomes from grade 3 up (since pass MP) | ${DIRECTION.gameMain} |
 
 Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learners hear words drawn out and stressed the way a favorite preschool teacher says them; older learners hear a warm, engaging voice that never talks down to them (Mikey, pass JH).
 

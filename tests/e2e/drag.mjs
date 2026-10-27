@@ -29,9 +29,13 @@ async function setup(refuseCapture) {
   await page.waitForTimeout(400);
   return page;
 }
+// Since pass MP a game opened from its tile plays its welcome first, its board playing itself and taking no hand of a child's: the
+// test skips it and taps Begin, as a child who knows the game would, then drags on the game's own board.
 async function openGame(page, title) {
   await page.getByRole('button', { name: "Let's Play" }).first().click({ force: true }); await page.waitForTimeout(400);
-  await page.getByRole('button', { name: title }).first().click({ force: true }); await page.waitForTimeout(1300);
+  await page.getByRole('button', { name: title }).first().click({ force: true }); await page.waitForTimeout(700);
+  const skip = page.getByRole('button', { name: 'Skip the instructions' }); if (await skip.count()) { await skip.first().click({ force: true }); await page.waitForTimeout(300); }
+  const begin = page.getByRole('button', { name: 'Begin', exact: true }); if (await begin.count()) { await begin.first().click({ force: true }); await page.waitForTimeout(600); }
 }
 async function dragFirst(page) {
   const box = page.locator('.edu-game-box').first(); const item = box.locator('[style*="cursor: grab"]').first();

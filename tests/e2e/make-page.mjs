@@ -43,7 +43,7 @@ window.storage = {
   list: async function (p) { var keys = []; for (var i = 0; i < localStorage.length; i++) { var key = localStorage.key(i); if (key.indexOf('fake:' + (p || '')) === 0) keys.push(key.slice(5)); } return { keys: keys, prefix: p, shared: false }; },
 };
 window.__spoken = [];
-Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { cancel: function(){}, getVoices: function(){ return []; }, speak: function (u) { window.__spoken.push(u.text); (window.__rates = window.__rates || []).push(u.rate); setTimeout(function () { if (u.onend) u.onend({}); }, 30); } } });
+Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { cancel: function(){}, getVoices: function(){ return []; }, speak: function (u) { window.__spoken.push(u.text); (window.__rates = window.__rates || []).push(u.rate); (window.__spokenAt = window.__spokenAt || []).push(Date.now()); setTimeout(function () { if (u.onend) u.onend({}); }, 30); } } });
 Object.defineProperty(window, 'SpeechSynthesisUtterance', { configurable: true, value: function (t) { this.text = t; } });
 </script>
 <script>${Object.entries(mods).map(([n, c]) => wrap(n, c)).join('\n')}</script>

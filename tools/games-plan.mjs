@@ -21,7 +21,7 @@ Starters, open from the first day: ${L.STARTER_GAMES.map((id) => (byId.get(id) |
 
 ## New kinds, in order
 
-Each new kind should make the course's idea the rule of the game, so playing is practicing. They replace quick fires and repeats first.
+Each new kind should make the course's idea the rule of the game, so playing is practicing. They replace quick fires and repeats first. Since pass MP each new kind is built with its spoken welcome (INTROS in src/logic.mjs) and its board's demo marks, which the rules and scripts tests require (Mikey: "Any new games would then be edited tp match these rules as they are created.").
 
 1. Sentence builder, for writing (built 2026-09-25): tap word tiles into a sentence that makes sense, then into one that says more. Held by ${holders('build').join(', ')}.
 2. Fix it, for writing (built 2026-09-25): tap the one word, capital or mark that is wrong in a sentence, then read the rule. Held by ${holders('fix').join(', ')}.

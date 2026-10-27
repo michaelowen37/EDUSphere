@@ -82,7 +82,8 @@ for (const mod of L.MODULES) {
       }
     }
     if (show.kind === 'shape' && !said.includes(show.name)) mismatches.push(`${mod.id}: "${line.say}" shows a ${show.name}`);
-    if (show.kind === 'icon' && !said.includes(show.name)) mismatches.push(`${mod.id}: "${line.say}" shows a ${show.name}`);
+    // An icon's look after a ~ (pass MP: plate~food, the plate with its food groups; block~wood) is the same thing drawn another way.
+    if (show.kind === 'icon' && !said.includes(String(show.name).split('~')[0])) mismatches.push(`${mod.id}: "${line.say}" shows a ${show.name}`);
     if (show.kind === 'solid' && !said.includes(show.name) && !said.includes({ sphere: 'ball', cube: 'block', cylinder: 'can', cone: 'cone', box: 'box', prism: 'prism' }[show.name])) mismatches.push(`${mod.id}: "${line.say}" shows a ${show.name}`);   // box and prism (pass KY)
     // Every sign-in animal the words name must be on screen too, so a line never mentions a creature the child cannot see.
     { const shownPics = (show.kind === 'pair' ? [show.a, show.b] : show.kind === 'row' ? show.items : [show]).filter((h) => h && h.kind === 'pic').map((h) => h.name);
@@ -111,7 +112,7 @@ for (const c of L.COURSES.filter((x) => x.readAloud)) for (const m of c.modules)
     if (v.kind === 'letters') { const words = v.text.split(' ').filter((w) => w !== '?'); const singles = words.every((w) => w.length === 1); fine = singles ? words.some((w) => /^[a-z0-9]$/i.test(w) && new RegExp(`\\b${w.toLowerCase()}\\b`).test(text)) : words.every((w) => text.includes(w.toLowerCase())); }   // a sign like + or = is never a word to find (pass LB)
     else if (v.kind === 'shape' || v.kind === 'solid') fine = text.includes(v.name) || (v.kind === 'solid' && text.includes(THING[v.name]));
     else if (v.kind === 'swatch') fine = text.includes(v.colour);
-    else if (v.kind === 'icon') fine = text.includes(v.name);
+    else if (v.kind === 'icon') fine = text.includes(String(v.name).split('~')[0]);
     else if (v.kind === 'dots') fine = text.includes(NUMBER_WORDS[v.count]) || text.includes(String(v.count)) || /how many|count/.test(text);
     else if (v.kind === 'tens') fine = text.includes(String(v.count * 10)) || /how many|count|tens/.test(text);
     else if (v.kind === 'tenframe') fine = /ten|frame|make 10|empty|spaces|left|more/.test(text) || text.includes(String(v.filled));
@@ -434,6 +435,140 @@ ok('every lesson picture matches the words spoken over it', mismatches.length ==
   const planted = animTransformProblems(`${ui}\nconst __plants = () => (<>${PLANTS.map((p) => p[2]).join('')}</>);\n`);
   const wrongPlants = PLANTS.filter(([want, id]) => planted.bad.some((b) => b.includes(`(${id})`)) !== (want === 'catch')).map((p) => p[1]);
   ok('the animation and transform check fails each of its planted near misses and passes each fair one (10 plants: seven near misses it must fail and three fair ones it must pass)', wrongPlants.length === 0 && planted.bad.length === live.bad.length + 7, `wrong: ${wrongPlants.join(', ')}; ${planted.bad.join(' | ')}`);
+}
+// Every game's welcome can play its own board (pass MP, Mikey: "an animation playing the game at the same time to show how it
+// works ... lining the animation up with the instructional audio"): read from each board's own source, every board takes the demo
+// prop, and marks what its welcome's acts need: a tap or taps a data-demo-tap (or a Btn's mark, data-demo-next, or the shooter's
+// data-demo-aim), a drag a data-demo-drag (its own, or DragCard's or SwipeCard's demo), a key data-demo-key, a follow
+// data-demo-axis and data-demo-follow, and a replay, or a line that asks the question first, a ReplaySpeaker or data-demo-replay;
+// and the pointer (makeDemoHands) handles every act the welcomes use. Its near misses beside it: Pairs with its tap mark taken out,
+// Which Sense with no demo prop, Catch with its follow marks taken out, and a pointer that forgot drag.
+{
+  const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+  const introMarkProblems = (src) => {
+    const go = src.slice(src.indexOf('const GAME_OF = {')); const ofKind = Object.fromEntries([...go.slice(0, go.indexOf('};')).matchAll(/(\w+): (\w+)/g)].map((m) => [m[1], m[2]]));
+    const body = (name) => { const a = src.indexOf(`\nfunction ${name}(`); if (a < 0) return null; const b = src.indexOf('\nfunction ', a + 10); return src.slice(a, b < 0 ? undefined : b); };
+    const hands = body('makeDemoHands') || ''; const bad = [];
+    const NEEDS = { tap: /data-demo-tap|mark=\{|data-demo-next|data-demo-aim/, taps: /data-demo-tap|mark=\{|data-demo-next/, drag: /data-demo-drag|<DragCard[^>]*\bdemo\b|<SwipeCard[^>]*\bdemo\b/, key: /data-demo-key/, follow: /data-demo-axis[\s\S]*data-demo-follow|data-demo-follow[\s\S]*data-demo-axis/, replay: /<ReplaySpeaker|data-demo-replay/ };
+    for (const act of L.GAME_INTRO_ACTS) if (act !== 'look' && !hands.includes(`act === '${act}'`) && !(act === 'look' && hands.includes("act === 'look'"))) bad.push(`the pointer does not know ${act}`);
+    for (const g of L.GAMES) {
+      const name = g.kind === 'spot' && g.spot === 'letters' ? 'FindLetterGame' : ofKind[g.kind]; const b = name && body(name);
+      if (!b) { bad.push(`${g.id}: no board`); continue; }
+      if (!/\bdemo = false\b/.test(b.split('\n')[1] || '')) bad.push(`${g.id}: ${name} takes no demo prop`);
+      for (const l of L.gameIntro(g)) {
+        if (NEEDS[l.act] && !NEEDS[l.act].test(b)) bad.push(`${g.id}: ${l.act} with nothing marked in ${name}`);
+        if (l.ask && !NEEDS.replay.test(b)) bad.push(`${g.id}: asks the question with no speaker beside it in ${name}`);
+      }
+    }
+    return [...new Set(bad)];
+  };
+  const real = introMarkProblems(ui);
+  const cut = (src, name, re) => { const a = src.indexOf(`\nfunction ${name}(`); const b = src.indexOf('\nfunction ', a + 10); return src.slice(0, a) + src.slice(a, b).replace(re, '') + src.slice(b); };
+  const plants = [
+    cut(ui, 'PairsGame', /data-demo-tap=\{[^}]*\}\}?|data-demo-tap/g),
+    cut(ui, 'SenseGame', /, demo = false/),
+    cut(ui, 'CatchGame', /data-demo-(axis|follow)/g),
+    (() => { const a = ui.indexOf('\nfunction makeDemoHands('); const b = ui.indexOf('\nfunction ', a + 10); return ui.slice(0, a) + ui.slice(a, b).replace("act === 'drag'", "act === 'dragged'") + ui.slice(b); })(),
+  ].map((src) => introMarkProblems(src).length > real.length);
+  ok(`every game's board marks what its welcome's pointer needs, and the pointer knows every act (${L.GAMES.length} games; each near miss caught)`, real.length === 0 && plants.every(Boolean), [...real.slice(0, 8), `near misses ${plants}`].join(' | '));
+}
+// How a board deals (pass MP, round one's code and game checks): every board that deals a run of items deals it through logic's
+// own functions (dealIndex, mixOrder, mapOrder, jumpQuestions, balanceTargets, searchBoardAt), which the welcome's choice of round
+// reads too (gameItems, demoRoundFor), and the welcome's board takes that round, so the rules test's check that the pointer's
+// answers are none of the child's first three reads what the boards really deal. Near misses: a board that deals by its own sum
+// again, and a welcome that plays one round for every game. Since round two's second read Buckets and Pairs deal here too (every
+// Buckets welcome had dragged a chip the child's first board held), with a third near miss, Buckets dealing by its own sum again.
+{
+  const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+  const BOARDS = { OrderGame: "dealIndex('order', round, k, deck.length)", EvidenceGame: "dealIndex('evidence', round, k, deck.length)", DebugGame: "dealIndex('debug', round, k, deck.length)", BuildGame: "dealIndex('build', round, k, deck.length)", FixGame: "dealIndex('fix', round, k, deck.length)", WalkGame: "dealIndex('walk', round, k, deck.length)", TeachGame: "dealIndex('teach', round, k, deck.length)", SpotGame: "dealIndex('spot', round, k, scenes.length)", MixGame: 'mixOrder(deck, round)', MapGame: 'mapOrder(map, round)', JumpGame: 'jumpQuestions(deck, round)', BalanceGame: 'balanceTargets(deck, round)', SearchGame: 'searchBoardAt(round, k, cards)', BucketsGame: 'bucketChips(deck, round)', PairsGame: 'pairCards(game, round)' };
+  const dealProblems = (src) => {
+    const bad = [];
+    for (const [name, call] of Object.entries(BOARDS)) {
+      const a = src.indexOf(`\nfunction ${name}(`); const b = a < 0 ? -1 : src.indexOf('\nfunction ', a + 10); const body = a < 0 ? '' : src.slice(a, b < 0 ? src.length : b);
+      if (!body) { bad.push(`${name} is gone`); continue; }
+      if (!body.includes(call)) bad.push(`${name} does not deal by ${call}`);
+      if (/\[\(round[^\]]*%[^\]]*\]|lcg\(round \* (29|104729|7919) \+ (7|41|29|61|11|13)\)|searchBoard\(round \* 4/.test(body)) bad.push(`${name} deals by a sum of its own`);
+    }
+    if (!/const gameProps = \{ game, name, round: demoRoundFor\(game\),/.test(src)) bad.push("the welcome's board does not take its game's own round");
+    return bad;
+  };
+  const real = dealProblems(ui);
+  const plants = [ui.replace("deck[dealIndex('debug', round, k, deck.length)]", 'deck[(round * 3 + k) % deck.length]'), ui.replace('round: demoRoundFor(game),', 'round: 977,'), ui.replace('bucketChips(deck, round).map(', 'shuffle(lcg(round * 104729 + 11), deck.a.items).map(')].map((src) => dealProblems(src).length > real.length);
+  ok(`every board that deals a run of items deals it by logic's own functions, and the welcome's board takes its game's own round (${Object.keys(BOARDS).length} boards; each near miss caught)`, real.length === 0 && plants.every(Boolean), [...real, `near misses ${plants}`].join(' | '));
+}
+// Q56 (Mikey's answer, pass MP, "Q56 - A"): every yellow shape and color square wears a thin darker edge in both themes, and the
+// lessons' green wears one on the dark theme's paper, each edge 3 to 1 or better on white and on that paper, read from the source;
+// the square and the shapes both draw it, and the fill stays the yellow the color lessons name. Since round one's screen check the
+// green's edge is for the paper alone, as Q56 asked: a choice on the dark theme's answer tile tells its color squares, items and
+// looks so (tile), where the green read 4.2 to 1 as it was and its edge 2.2. Near misses: an edge as pale as the yellow, a square
+// that forgets its edge, a green edge drawn on the tiles too, and a color square on a tile that does not say it is on one.
+{
+  const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+  const edgeProblems = (src) => {
+    const hex = (re) => (src.match(re) || [])[1];
+    const yellow = hex(/const SWATCH = \{[^}]*yellow: '(#[0-9A-F]{6})'/); const yEdge = hex(/const SWATCH_EDGE = \{ yellow: '(#[0-9A-F]{6})'/); const gEdge = hex(/const SWATCH_EDGE = \{[^}]*green: '(#[0-9A-F]{6})'/);
+    const paper = hex(/mode: 'dark',[\s\S]*?paperBoard: '(#[0-9A-F]{6})'/);
+    const lum = (h) => { const v = [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4)); return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2]; };
+    const cr = (a, b) => { const x = lum(a); const y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+    const bad = [];
+    if (!yellow || !yEdge || !gEdge || !paper) return ['a color is missing from the source'];
+    if (yellow !== '#F0C93A') bad.push(`the lessons' yellow changed to ${yellow}`);
+    for (const [name, edge, on] of [['yellow on white', yEdge, '#FFFFFF'], ['yellow on the dark paper', yEdge, paper], ['green on the dark paper', gEdge, paper]]) if (cr(edge, on) < 3) bad.push(`${name} ${cr(edge, on).toFixed(2)} to 1`);
+    if (!/function Swatch\([^)]*\) \{[^\n]*\n[^\n]*\{\.\.\.swatchEdge\(SWATCH\[colour\], 4, tile\)\}/.test(src)) bad.push('the color square draws no edge');
+    if (!/const edge = swatchEdge\(color, 4, tile\)/.test(src)) bad.push('the shapes draw no edge');
+    if (!/if \(fill === SWATCH\.green && C\.mode === 'dark' && !tile\)/.test(src)) bad.push("the dark theme's green wears its edge on the answer tiles too");
+    for (const part of ['<LookGroup token={c} k={k} tile={!paper} />', '<Swatch colour={c.slice(7)} size={Math.round(64 * k)} tile={!paper} />', '<Item spec={c.slice(5)} size={Math.round(64 * k)} tile={!paper} />']) if (!src.includes(part)) bad.push(`a choice on its tile does not say so: ${part.slice(0, 30)}`);
+    return bad;
+  };
+  const real = edgeProblems(ui);
+  const plants = [ui.replace(/(const SWATCH_EDGE = \{ yellow: ')#[0-9A-F]{6}/, '$1#E8C24A'), ui.replace('{...swatchEdge(SWATCH[colour], 4, tile)}', ''), ui.replace("C.mode === 'dark' && !tile)", "C.mode === 'dark')"), ui.replace('<Swatch colour={c.slice(7)} size={Math.round(64 * k)} tile={!paper} />', '<Swatch colour={c.slice(7)} size={Math.round(64 * k)} />')].map((src) => edgeProblems(src).length > real.length);
+  ok('Q56: every yellow shape and color square has its darker edge, and the dark theme\'s green on paper too, each 3 to 1 or better (each near miss caught)', real.length === 0 && plants.every(Boolean), [...real, `near misses ${plants}`].join(' | '));
+}
+// Pairs examples (round two's final read, pass MP): a Pairs game's welcome and its written help may give an example of a twin, but
+// never a pair its own deck deals, and an example is one the course that owns the game teaches. Round one found one half and two
+// fourths in Fraction twins' welcome (on every board) and port in the word roots' (on half of them); round two found the science
+// decks' help naming density and mass over volume, which Science 6's board deals in three boards of four. Every Pairs line is read
+// against its deck, written and said (1/2 as one half, 6 × 7 as six times seven), and every example in PAIR_EXAMPLES is held to its
+// lines and to its course's lessons. Near misses: the science help as it was, Fraction twins' example as it was, and an example no
+// lesson teaches.
+{
+  const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+  const ONES = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+  const TENS = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+  const word = (n) => (n < 20 ? ONES[n] : TENS[Math.floor(n / 10)] + (n % 10 ? `-${ONES[n % 10]}` : ''));
+  const PARTS = { 2: ['half', 'halves'], 3: ['third', 'thirds'], 4: ['fourth', 'fourths'], 6: ['sixth', 'sixths'], 8: ['eighth', 'eighths'] };
+  // A card as a voice says it: a fraction in words, a times fact with times, a whole number in words.
+  const said = (t) => String(t).replace(/\b(\d+)\/(\d+)\b/g, (m, a, b) => (PARTS[b] ? `${word(+a)} ${PARTS[b][+a === 1 ? 0 : 1]}` : m)).replace(/\s*×\s*/g, ' times ').replace(/\b\d{1,2}\b/g, (m) => word(+m));
+  const has = (text, term) => { const t = String(term).trim(); if (!t) return false; const esc = t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); return new RegExp(`(^|[^A-Za-z0-9/])${esc}($|[^A-Za-z0-9/])`, 'i').test(text); };
+  const pairsIn = (text, deck) => (L.PAIR_DECKS[deck] || []).filter(([a, b]) => (has(text, a) && has(text, b)) || (has(text, said(a)) && has(text, said(b))));
+  const helpOf = (src) => { const byDeck = (src.match(/const byDeck = \{([^\n]*)\};/) || [])[1] || ''; const science = (src.match(/startsWith\('science-'\) \? '([^']*)'/) || [])[1] || ''; return (deck) => { const m = new RegExp(`(?:^|[\\s,{])'?${deck}'?: '((?:[^'\\\\]|\\\\.)*)'`).exec(byDeck); return m ? m[1] : String(deck).startsWith('science-') ? science : 'Match each card to the one that belongs with it.'; }; };
+  const owners = (gameId) => Object.entries(L.COURSE_GAMES).filter(([, ids]) => ids.includes(gameId)).map(([c]) => L.COURSES.find((x) => x.id === c)).filter(Boolean);
+  const lessonText = (course) => JSON.stringify(course.modules.map((m) => m.lesson || {}));
+  const pairGames = L.GAMES.filter((g) => g.kind === 'pairs' && g.deck);
+  const problems = ({ src, welcome, examples }) => {
+    const help = helpOf(src); const out = [];
+    for (const g of pairGames) {
+      const h = help(g.deck); const w = welcome(g);
+      for (const [where, text] of [['help', h], ['welcome', w]]) for (const [a, b] of pairsIn(text, g.deck)) out.push(`${g.id}'s ${where} names ${a} and ${b}, a pair its deck deals`);
+      const ex = examples[g.deck];
+      if (ex) {
+        if ((L.PAIR_DECKS[g.deck] || []).some(([a, b]) => (a === ex.shown[0] && b === ex.shown[1]) || (a === ex.shown[1] && b === ex.shown[0]))) out.push(`${g.id}'s example ${ex.shown.join(' and ')} is a pair its deck deals`);
+        if (!ex.shown.every((t) => has(h, t))) out.push(`${g.id}'s help does not give its example ${ex.shown.join(' and ')}`);
+        if (!ex.said.every((t) => has(w, t))) out.push(`${g.id}'s welcome does not say its example ${ex.said.join(' and ')}`);
+        const courses = owners(g.id);
+        if (!courses.length || !courses.every((c) => ex.shown.every((t) => has(lessonText(c), t) || has(lessonText(c), said(t))))) out.push(`${g.id}'s example ${ex.shown.join(' and ')} is not taught in ${courses.map((c) => c.id).join(', ') || 'a course that owns it'}`);
+      }
+    }
+    return out;
+  };
+  const welcomeOf = (g) => L.gameIntro(g).map((l) => l.say).join(' ');
+  const real = problems({ src: ui, welcome: welcomeOf, examples: L.PAIR_EXAMPLES });
+  const plants = [
+    problems({ src: ui.replace("'Match each science word to what it means.'", "'Match each science word to what it means: density and mass over volume.'"), welcome: welcomeOf, examples: L.PAIR_EXAMPLES }),
+    problems({ src: ui, welcome: (g) => (g.deck === 'fractions' ? welcomeOf(g).replace('like one half and four eighths', 'like one half and two fourths') : welcomeOf(g)), examples: L.PAIR_EXAMPLES }),
+    problems({ src: ui.replace('as scope and see go together', 'as xylo and wood go together'), welcome: (g) => (g.deck === 'roots' ? welcomeOf(g).replace('like scope, which means see', 'like xylo, which means wood') : welcomeOf(g)), examples: { ...L.PAIR_EXAMPLES, roots: { shown: ['xylo', 'wood'], said: ['xylo', 'wood'] } } }),
+  ].map((p) => p.length > 0);
+  ok(`every Pairs welcome and help names no pair its deck deals, and each example (${Object.keys(L.PAIR_EXAMPLES).join(', ')}) is in its lines and taught by its course (${pairGames.length} games read; each near miss caught)`, real.length === 0 && pairGames.length >= 15 && plants.every(Boolean), [...real, `near misses ${plants}`].join(' | '));
 }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

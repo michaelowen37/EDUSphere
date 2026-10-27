@@ -965,6 +965,9 @@ await page.getByRole('button', { name: "Let's Play" }).click();
 ok('the walk-through shows every game unlocked', (await page.getByRole('button', { name: 'Locked game' }).count()) === 0 && (await page.getByRole('button', { name: /^Play / }).count()) >= 10);
 await page.getByRole('button', { name: 'Play Pairs' }).click();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
+// Since pass MP a game opened from its tile plays its welcome first (tests/e2e/game-intro.mjs walks it); Skip and Begin reach the board.
+ok('a game opened from its tile plays its welcome first, with a way to skip it', (await page.locator('[data-game-intro]').count()) === 1 && (await page.getByRole('button', { name: 'Skip the instructions' }).count()) === 1);
+await page.getByRole('button', { name: 'Skip the instructions' }).click(); await page.getByRole('button', { name: 'Begin' }).click({ force: true }); await page.waitForTimeout(200);   // Begin pulses, so it is never still: the tap is forced
 ok('a game opens with its cards face down and a close button', (await page.getByRole('button', { name: 'Card' }).count()) === 6 && (await page.getByRole('button', { name: 'Close game' }).count()) === 1);
 await page.getByRole('button', { name: 'Card' }).first().click();
 ok('a tapped card turns over', (await page.getByRole('button', { name: 'Card' }).count()) === 5);
@@ -1816,8 +1819,9 @@ ok('a switched-off course is hidden from the learner', !/what a fraction means/i
   ok('a read-aloud lesson story reads itself as it opens, title first', selfRead && (await page.evaluate(() => window.__spoken[0])) === `${story.title}.`);
   await page.evaluate(() => { window.__spoken = []; });
   if (await readBtn.count()) {
-    // The snail and the hare (2026-09-23): the snail reads at three quarters speed, the hare at the usual pace, and the choice sticks.
-    await page.getByRole('button', { name: 'Read slowly' }).click(); await page.evaluate(() => { window.__rates = []; });
+    // The snail and the hare (2026-09-23): the snail reads at 0.65 of the hare's pace (three quarters until pass MP, when Mikey heard
+    // it as "almost the same as the rabbit speed"), the hare at the usual pace, and the choice sticks.
+    await page.getByRole('button', { name: 'Read slowly' }).click(); await page.evaluate(() => { window.__rates = []; window.__spoken = []; window.__spokenAt = []; });
     // Tapping Read the story to me from the bottom of the story brings the page back to the title (2026-09-28, Mikey).
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
     await readBtn.click();
@@ -1827,15 +1831,25 @@ ok('a switched-off course is hidden from the learner', !/what a fraction means/i
     // The test page's voice ends each line in thirty milliseconds, so the whole story is spoken before the hare is tapped.
     await page.waitForFunction((n) => window.__spoken.length >= n && !!document.querySelector('button[aria-label="Read the story to me"]'), story.words.length + 1);
     const slowRates = await page.evaluate(() => (window.__rates || []).slice());
-    await page.getByRole('button', { name: 'Read at the usual speed' }).click(); await page.evaluate(() => { window.__rates = []; window.__spoken = []; });
+    const slowAt = await page.evaluate(() => (window.__spokenAt || []).slice());
+    await page.getByRole('button', { name: 'Read at the usual speed' }).click(); await page.evaluate(() => { window.__rates = []; window.__spoken = []; window.__spokenAt = []; });
     await readBtn.click();
     // Since pass MH the light is on the sentence being read (data-read-lit), never a whole paragraph; the old check matched any
     // tinted div, the page's style sheet included, so it could not fail (the code check).
     const lit = await page.waitForFunction(() => { const el = document.querySelector('[data-read-lit]'); return !!el && el.textContent.trim().length > 0 && getComputedStyle(el).backgroundColor !== 'rgba(0, 0, 0, 0)'; }, null, { timeout: 3000 }).then(() => true).catch(() => false);
-    await page.waitForTimeout(400);
+    // Since pass MP a story pauses after its title and between paragraphs, so the reading is waited out rather than given 400 ms.
+    await page.waitForFunction((n) => window.__spoken.length >= n && !!document.querySelector('button[aria-label="Read the story to me"]'), story.words.length + 1);
     const spoken = await page.evaluate(() => window.__spoken.slice());
     const normalRates = await page.evaluate(() => (window.__rates || []).slice());
-    ok('the snail reads an early story slower than the hare', slowRates.length > 0 && normalRates.length > 0 && slowRates[0] < normalRates[0] && Math.abs(slowRates[0] / normalRates[0] - 0.75) < 0.02, `${slowRates[0]} vs ${normalRates[0]}`);
+    const normalAt = await page.evaluate(() => (window.__spokenAt || []).slice());
+    // A story's breaths (pass MP, Mikey: "There should also be a slight delay between the spoken title and the first line of the
+    // story so it isn't blended together too quickly"): after the title a full second on the snail and 0.65 on the hare, and on the
+    // snail a third of a second at least between any two sentences, which the hare says one after another. The test voice ends each
+    // line 30 ms after it starts and stamps the moment each is handed over.
+    const steps = (at) => at.slice(1).map((t, k) => t - at[k]);
+    const slowSteps = steps(slowAt); const normalSteps = steps(normalAt);
+    ok('a story pauses after its title, longer on the snail, and the snail pauses between sentences', slowSteps.length > 3 && normalSteps.length > 3 && slowSteps[0] >= 1000 && normalSteps[0] >= 650 && normalSteps[0] < 1000 && Math.min(...slowSteps) >= 330 && Math.min(...normalSteps.slice(1)) < 100, { slow: slowSteps, normal: normalSteps });
+    ok('the snail reads an early story slower than the hare', slowRates.length > 0 && normalRates.length > 0 && slowRates[0] < normalRates[0] && Math.abs(slowRates[0] / normalRates[0] - 0.65) < 0.02, `${slowRates[0]} vs ${normalRates[0]}`);
     ok('the pace choice is remembered on the device', (await page.evaluate(() => { try { return window.localStorage.getItem('edusphere-story-pace'); } catch (e) { return 'n/a'; } })) === 'normal');
     // The voice takes a story one sentence at a time, so the sentences joined back up must equal the title and every paragraph in order.
     const tidy = (t) => t.replace(/\s+/g, ' ').trim();

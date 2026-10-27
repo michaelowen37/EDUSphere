@@ -260,7 +260,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     else if (q.visual && q.visual.kind === 'pattern') { if (!Array.isArray(q.visual.items) || (q.visual.counting ? q.visual.items.length < 1 : q.visual.items.length < 3)) problems.push('pattern too short'); } // a counting row (pass HS) may hold one shape
     else if (q.visual && q.visual.kind === 'clock') { if (!(q.visual.hour >= 1 && q.visual.hour <= 12 && [0, 15, 30, 45].includes(q.visual.minute))) problems.push('clock out of range'); }
     else if (q.visual && q.visual.kind === 'picto') { if (!(Array.isArray(q.visual.rows) && q.visual.rows.length >= 2 && q.visual.rows.length <= 3 && q.visual.rows.every((r) => typeof r.icon === 'string' && Number.isInteger(r.count) && r.count >= 0 && r.count <= 6))) problems.push('picture graph out of range'); }   // pass KL: two or three rows of up to six pictures
-    else if (q.visual && q.visual.kind === 'icon') { if (!['sun', 'moon', 'cloud', 'rain', 'snow', 'plant', 'tree', 'flower', 'fish', 'bird', 'rock', 'drop', 'ice', 'fire', 'magnet', 'clip', 'nail', 'cup', 'bus', 'dog', 'hat', 'bed', 'fan', 'soil', 'ball', 'block', 'teddy', 'sock', 'spoon', 'log', 'book', 'glass', 'flashlight', 'lamp', 'shadow', 'pebble', 'boulder', 'speckled', 'flatrock', 'penny', 'wall', 'gravel', 'bricks', 'window', 'nickel', 'dime', 'quarter', 'table', 'hill', 'map', 'globe', 'mountain', 'river', 'lake', 'ocean', 'cactus', 'coat', 'candle', 'cake', 'fridge', 'washer', 'phone', 'tablet', 'pencil', 'doctor', 'shot', 'comb', 'mosquito', 'plate', 'peanut', 'helmet', 'booster', 'belt', 'bubble', 'stop', 'slide', 'knife', 'scissors', 'screwdriver', 'house', 'bottle', 'cigarette', 'camera', 'music', 'search', 'keyboard', 'space', 'backspace', 'save', 'printer', 'chair', 'bulb', 'board', 'star', 'door'].includes(q.visual.name)) problems.push('unknown icon'); }
+    else if (q.visual && q.visual.kind === 'icon') { if (!['sun', 'moon', 'cloud', 'rain', 'snow', 'plant', 'tree', 'flower', 'fish', 'bird', 'rock', 'drop', 'ice', 'fire', 'magnet', 'clip', 'nail', 'cup', 'bus', 'dog', 'hat', 'bed', 'fan', 'soil', 'ball', 'block', 'teddy', 'sock', 'spoon', 'log', 'book', 'glass', 'flashlight', 'lamp', 'shadow', 'pebble', 'boulder', 'speckled', 'flatrock', 'penny', 'wall', 'gravel', 'bricks', 'window', 'nickel', 'dime', 'quarter', 'table', 'hill', 'map', 'globe', 'mountain', 'river', 'lake', 'ocean', 'cactus', 'coat', 'candle', 'cake', 'fridge', 'washer', 'phone', 'tablet', 'pencil', 'doctor', 'shot', 'comb', 'mosquito', 'plate', 'peanut', 'helmet', 'booster', 'belt', 'bubble', 'stop', 'slide', 'knife', 'scissors', 'screwdriver', 'house', 'bottle', 'cigarette', 'camera', 'music', 'search', 'keyboard', 'space', 'backspace', 'save', 'printer', 'chair', 'bulb', 'board', 'star', 'door'].includes(String(q.visual.name).split('~')[0])) problems.push('unknown icon'); }
     else if (q.visual && (q.visual.kind === 'pic' || q.visual.kind === 'art')) { if (!q.visual.name) problems.push('picture incomplete'); }
     else if (q.visual && q.visual.kind === 'face') { if (!['happy', 'sad', 'mad', 'scared', 'worried', 'embarrassed'].includes(q.visual.feeling)) problems.push('a face with a feeling the screen cannot draw'); }   // pass MD; worried and embarrassed since pass MN
     else if (q.visual && q.visual.kind === 'numberline') { if (!(q.visual.from < q.visual.to && (q.visual.marks || [q.visual.mark]).every((v) => v === null || v === undefined || (v >= q.visual.from && v <= q.visual.to)))) problems.push('number line out of range'); }
@@ -677,7 +677,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     const luHas = { 'has wings': 'butterfly', 'has petals': 'flower', 'has points': 'star', 'has arms and legs': 'robot', 'has a string': 'balloon' };
     if (genId === 'pm-thing-part') { const k = (q.prompt.match(/^Which one (.+)\?$/) || [])[1]; if (q.answer !== 'art:' + luHas[k]) problems.push('thing part wrong'); if (k === 'has points' && q.choices.includes('art:flower')) problems.push('a pointed flower offered against the star'); if (k === 'has arms and legs' && q.choices.includes('art:butterfly')) problems.push('a butterfly, which has legs, offered against the robot'); }
     const luEars = { 'has long ears': 'rabbit', 'has round ears': 'bear', 'has pointy ears': 'fox', 'has no legs and slides along on one foot': 'snail' };
-    if (genId === 'pm-land-ears') { const k = (q.prompt.match(/^Which one (.+)\?$/) || [])[1]; if (q.answer !== 'pic:' + luEars[k]) problems.push('ears wrong'); if (k === 'has pointy ears' && ['pic:cat', 'pic:rabbit'].some((c) => q.choices.includes(c))) problems.push('another pointy-eared animal offered as wrong'); if (k === 'has round ears' && q.choices.includes('pic:rabbit')) problems.push('the rabbit offered against round ears'); }
+    if (genId === 'pm-land-ears') { const k = (q.prompt.match(/^Which one (.+)\?$/) || [])[1]; if (q.answer !== 'pic:' + luEars[k]) problems.push('ears wrong'); if (k === 'has pointy ears' && ['pic:cat', 'pic:rabbit'].some((c) => q.choices.includes(c))) problems.push('another pointy-eared animal offered as wrong'); if (k === 'has pointy ears' && q.choices.includes('pic:owl')) problems.push('the owl, whose drawing wears ear tufts since pass MP, offered against pointy ears'); if (k === 'has round ears' && q.choices.includes('pic:rabbit')) problems.push('the rabbit offered against round ears'); }
     const luCorners = { 'has three corners': 'triangle', 'has no corners': 'circle', 'has four sides that are all the same length': 'square', 'has two long sides and two short sides': 'rectangle' };
     if (genId === 'pm-shape-corners' && q.answer !== 'shape:' + luCorners[(q.prompt.match(/^Which shape (.+)\?$/) || [])[1]]) problems.push('corners wrong');
     // Wrong choices a child could fairly call right, kept out since pass ML (the lesson checks): an unripe or dry color for a fruit
@@ -1861,7 +1861,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
     const iconBody = uiSrc.slice(uiSrc.indexOf('function IconPic('), uiSrc.indexOf('}[name] ||', uiSrc.indexOf('function IconPic(')));
     const drawn = new Set([...iconBody.matchAll(/^\s{4}([a-z]+): </gm)].map((m) => m[1])); const named = new Set();
     for (const m of logicSrc.matchAll(/icon:([a-z]+)/g)) named.add(m[1]); for (const m of logicSrc.matchAll(/kind: 'icon', name: '([a-z]+)'/g)) named.add(m[1]);
-    for (const id of Object.keys(L.GENERATORS)) for (let s = 1; s <= 30; s++) { let q; try { q = L.generateQuestion(id, s); } catch (e) { break; } for (const c of [...(q.choices || []), ...String(q.answer).split(' | ')]) if (typeof c === 'string' && c.startsWith('icon:')) named.add(c.slice(5).split(/[:#]/)[0]); for (const v of [q.visual, q.explainVisual]) if (v && v.kind === 'icon') named.add(v.name); }
+    for (const id of Object.keys(L.GENERATORS)) for (let s = 1; s <= 30; s++) { let q; try { q = L.generateQuestion(id, s); } catch (e) { break; } for (const c of [...(q.choices || []), ...String(q.answer).split(' | ')]) if (typeof c === 'string' && c.startsWith('icon:')) named.add(c.slice(5).split(/[:#~]/)[0]); for (const v of [q.visual, q.explainVisual]) if (v && v.kind === 'icon') named.add(String(v.name).split('~')[0]); }
     const missing = [...named].filter((n) => !drawn.has(n));
     ok('every icon a lesson or question names has a drawing', named.size > 10 && missing.length === 0, missing.join(', '));
     ok('the moon is drawn as a crescent, not two arcs that cancel out', /moon: <path d="M66 16A34 34 0 0 0 66 84A40 40 0 0 1 66 16Z"/.test(iconBody));
@@ -3003,6 +3003,100 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   ok('every course has at least one game, and every one of them exists', L.COURSES.every((c) => (L.COURSE_GAMES[c.id] || []).length > 0) && attached.every((id) => ids.has(id)));
   ok('every game belongs to exactly one course or is the starter', L.GAMES.every((g) => attached.filter((id) => id === g.id).length + (L.STARTER_GAMES.includes(g.id) ? 1 : 0) === 1));
   ok('a course only gets games its grade can play', L.COURSES.every((c) => L.COURSE_GAMES[c.id].every((id) => { const g = L.GAMES.find((x) => x.id === id); return !g.minGrade || L.GRADES.indexOf(g.minGrade) <= L.GRADES.indexOf(c.grade); })));
+  // Every game's welcome (pass MP, Mikey: "I think games can have the instruction audio play automatically when entering the page",
+  // in a conversational way, his Which Sense example, with "an animation playing the game at the same time to show how it works"):
+  // every game has one, opening "Welcome to" its title and closing with his line, the speaker named; each line's act is one the
+  // pointer knows (GAME_INTRO_ACTS), a keyboard line is a key act and only a key act needs a keyboard; the words keep the app's
+  // rules (whole sentences, no dash, colon or semicolon, no "click" on a touch screen, no "?!"); the speaker's words leave the
+  // keyboard lines out where there is no keyboard; and each line's clip key is its words and its voice, the same words in the same
+  // voice one key, and two different lines never one. Its near misses beside it: a welcome with an act the pointer does not know, a
+  // keyboard line that is not a key act, a line with a colon, and two lines given one key.
+  { const introProblems = (games, introOf) => { const bad = []; const keyOf = new Map();
+      for (const g of games) { const lines = introOf(g); const last = lines[lines.length - 1];
+        if (lines.length < 3) bad.push(`${g.id}: ${lines.length} lines`);
+        if (!lines[0] || !lines[0].say.startsWith(`Welcome to ${L.spokenTitle(g.title)}`)) bad.push(`${g.id}: does not open with its welcome`);
+        if (!last || last.say !== L.GAME_INTRO_CLOSING || last.act !== 'speaker') bad.push(`${g.id}: does not close with the speaker line`);
+        for (const l of lines) {
+          if (!L.GAME_INTRO_ACTS.includes(l.act)) bad.push(`${g.id}: unknown act ${l.act}`);
+          if (!!l.keys !== (l.act === 'key')) bad.push(`${g.id}: a keyboard line that is not a key act, or a key act that is not a keyboard line`);
+          if (/[—–:;]|\?!|\bclick/i.test(l.say) || /\s{2}/.test(l.say) || !/[.!?]$/.test(l.say)) bad.push(`${g.id}: ${l.say}`);
+          const was = keyOf.get(l.key); if (was && was !== l.say) bad.push(`${g.id}: two lines share the key ${l.key}`); keyOf.set(l.key, l.say);
+        }
+      }
+      return bad; };
+    const real = introProblems(L.GAMES, (g) => L.gameIntro(g));
+    const kinds = [...new Set(L.GAMES.map((g) => g.kind))].filter((k) => !L.GAME_INTRO_KINDS.includes(k));
+    const words = L.GAMES.every((g) => L.gameIntroWords(g) === L.gameIntro(g).filter((l) => !l.keys).map((l) => l.say).join(' ') && L.gameIntroWords(g, { keys: true }) === L.gameIntro(g).map((l) => l.say).join(' '));
+    const sense = L.GAMES.find((g) => g.id === 'sense-psychology-k'); const kite = L.GAMES.find((g) => g.id === 'dots-kite'); const pairs = L.GAMES.find((g) => g.id === 'pairs-shapes');
+    const shared = L.gameIntro(kite).at(-1).key === L.gameIntro(pairs).at(-1).key && L.gameIntro(kite).at(-1).key !== L.gameIntro(L.GAMES.find((g) => g.id === 'evidence-reading-3')).at(-1).key;
+    const plant = (change) => introProblems([sense], (g) => change(L.gameIntro(g).map((l) => ({ ...l })))).length > 0;
+    const caught = [plant((ls) => { ls[1].act = 'wave'; return ls; }), plant((ls) => { ls[2].keys = true; return ls; }), plant((ls) => { ls[1].say = 'Listen: then tap.'; return ls; }), plant((ls) => { ls[2].key = ls[1].key; return ls; })];
+    ok(`every game has a welcome: its own words, acts the pointer knows, the closing speaker line, and a clip key for each line by its words and voice (${L.GAMES.length} games; shared lines one key across games of a voice; each near miss caught)`, real.length === 0 && kinds.length === 0 && words && shared && caught.every(Boolean), [...real.slice(0, 6), kinds.join(', '), `words ${words}`, `shared ${shared}`, `near misses ${caught}`].join(' | ')); }
+  // The round a game's welcome plays (pass MP, round one's code and game checks): the pointer's answers are never among the first
+  // three items the child then meets in round 1, game by game, for every game whose round deals a run of items; a deck too small
+  // for that (a child plays all of it in a round or two) takes the round whose items the child meets latest, and those games are
+  // named here, so a new small deck is seen. The items are read through gameItems, which deals by the boards' own functions (the
+  // scripts test holds the boards to them). Proven on the round every game played before (977: fifty games' pointers answered one
+  // of the child's first three items, Debug the robot's very first program among them), and on round 1 itself, which every game
+  // with a run of items must fail, so a game whose items the check could not see would show. Since round two's second read a board
+  // that shows all of itself at once (Buckets' chips, a deck's Pairs) is held clear of the child's whole first board, not only its
+  // first three, and Fraction twins, whose five pairs are on every board, joins the small decks.
+  { const WHOLE = ['buckets', 'pairs'];
+    const firstOf = (g) => L.gameItems(g, 1, WHOLE.includes(g.kind) ? 99 : 3);
+    const leaks = (roundOf) => L.GAMES.filter((g) => { const first = firstOf(g); if (!first) return false; return L.gameItems(g, roundOf(g), Math.min(3, L.demoItemCount(g))).some((x) => first.includes(x)); }).map((g) => g.id);
+    const withItems = L.GAMES.filter((g) => L.gameItems(g, 1, 3));
+    const now = leaks((g) => L.demoRoundFor(g)); const SMALL = ['order-history-6', 'pairs-fractions', 'spot-arts-k'];
+    // A small deck's round is the best the search range offers: no round from DEMO_FROM on puts its items later in round 1.
+    const latest = (g, r) => { const all = L.gameItems(g, 1, 99); return Math.min(...L.gameItems(g, r, Math.min(3, L.demoItemCount(g))).map((x) => { const at = all.indexOf(x); return at < 0 ? Infinity : at; })); };
+    const bestOf = (g) => { let b = -1; for (let r = L.DEMO_FROM; r < L.DEMO_FROM + 1000; r++) b = Math.max(b, latest(g, r)); return b; };
+    const smallBest = SMALL.every((id) => { const g = L.GAMES.find((x) => x.id === id); return !!g && latest(g, L.demoRoundFor(g)) === bestOf(g); });
+    const old = leaks(() => 977); const self = leaks(() => 1);
+    const sure = ['debug-tech-3', 'walk-tech-k', 'fix-writing-7', 'order-history-4', 'mix-art-3', 'reason-philosophy-6', 'recall-psychology-6', 'teach-tech-6'].every((id) => old.includes(id));
+    const counts = L.demoItemCount(L.GAMES.find((g) => g.id === 'sense-psychology-k')) === 3 && L.demoItemCount(L.GAMES.find((g) => g.id === 'walk-tech-k')) === 1 && L.demoItemCount(L.GAMES.find((g) => g.id === 'share-philosophy-k')) === 1;
+    const wholeOld = ['buckets-noun-verb', 'buckets-mammals', 'buckets-need-want', 'pairs-science-6'].every((id) => old.includes(id) || leaks(() => 500).includes(id));
+    ok(`every game's welcome plays a round whose answers are none of the first three the child meets, or of the whole first board where it shows at once (${withItems.length} games deal items; the three smallest decks take the round whose items the child meets latest; caught on round 977, on round 500 and on round 1)`, JSON.stringify([...now].sort()) === JSON.stringify(SMALL) && smallBest && old.length >= 40 && sure && wholeOld && self.length === withItems.length && counts, { now, old: old.length, self: self.length, withItems: withItems.length, smallBest, sure, wholeOld, counts }); }
+  // The welcome's rounds as a table (round two's second read: the fractions scale searched all 1,000 rounds as the game opened, a
+  // 400 ms freeze): DEMO_ROUNDS holds every game's round as demoRoundSearch finds it, so a child's tap never searches; a game missing
+  // from it, or a round that differs, fails here until node tools/demo-rounds.mjs --write writes it again. Pay the Price's round shows
+  // the big coin its welcome names (a first price of five or more), and a near miss, a table one round off, is caught. demoRoundFor is
+  // held to the table too (round three's second read: with its table line taken out the check above still passed, and the fractions
+  // scale searched again as it opened): a round written into the table is the round it gives, and a game taken out of the table gets
+  // the search's round.
+  { const table = L.DEMO_ROUNDS; const ids = L.GAMES.map((g) => g.id);
+    const differs = (t) => ids.filter((id) => t[id] !== L.demoRoundSearch(L.GAMES.find((g) => g.id === id))).concat(Object.keys(t).filter((id) => !ids.includes(id)));
+    const real = differs(table); const plant = differs({ ...table, 'walk-tech-k': table['walk-tech-k'] + 1 }).length > 0;
+    const pay = L.GAMES.find((g) => g.id === 'pay-econ-k'); const showsCoin = L.payPrices(L.demoRoundFor(pay))[0].price >= 5;
+    const fr = L.GAMES.find((g) => g.id === 'balance-fractions'); const held = table[fr.id];
+    table[fr.id] = held + 7; const readsTable = L.demoRoundFor(fr) === held + 7;
+    delete table[fr.id]; const searchesMissing = L.demoRoundFor(fr) === L.demoRoundSearch(fr);
+    table[fr.id] = held;
+    ok(`every game's welcome round is in DEMO_ROUNDS, as the search finds it, and demoRoundFor reads it, so opening a game never searches (${ids.length} games; fix: node tools/demo-rounds.mjs --write; the near miss caught; a game missing from the table still gets the search's round), and Pay the Price's shows the big coin`, real.length === 0 && plant && showsCoin && readsTable && searchesMissing, JSON.stringify({ differs: real.slice(0, 8), plant, showsCoin, readsTable, searchesMissing })); }
+  // A welcome on a device with no voice (round two's second read, pass MP): a line that asks the child to listen, or names the voice,
+  // has a second wording for the caption (quiet) that asks for neither, since nothing will be said and the board shows the words;
+  // the speaker lines are left out there already. Near miss: Which Sense's listening line without its quiet wording.
+  { const listens = (t) => /\b(listen|voice)\b/i.test(t);
+    const quietProblems = (intro) => L.GAMES.flatMap((g) => intro(g).filter((l) => l.act !== 'speaker' && l.act !== 'replay' && listens(l.say) && !/listening/i.test(l.say) && (!l.quiet || listens(l.quiet) || /\bhear\b/i.test(l.quiet))).map((l) => `${g.id}: ${l.say}`));
+    const real = quietProblems(L.gameIntro); const plant = quietProblems((g) => L.gameIntro(g).map((l) => (/^Simply listen/.test(l.say) ? { ...l, quiet: undefined } : l))).length > real.length;
+    const counted = L.GAMES.flatMap((g) => L.gameIntro(g)).filter((l) => l.quiet).length;
+    ok(`every welcome line that asks a child to listen has a wording for a device with no voice that does not (${counted} lines across the games; the near miss caught)`, real.length === 0 && counted >= 5 && plant, real.slice(0, 5)); }
+  // The multiples of 3 that Times tables to 10 names (round two's second read added the line; round three's second read asked for its
+  // arithmetic to be checked, the code brief's item 3): the numbers it lists are 3 times 1 to 3 times 10, worked out here, and they are
+  // the multiples Catch the multiples of 3 deals, whose other numbers, 1 to 29, are none of them a multiple of 3. Near miss: the line
+  // with 21 left out.
+  { const tt = L.COURSES.flatMap((c) => c.modules).find((m) => m.id === 'times-tables');
+    const named = (text) => { const m = /The multiples of 3 in the table to 10 are ([\d, and]+)\./.exec(text); return m ? m[1].split(/,\s*|\s+and\s+/).map((x) => x.trim()).filter(Boolean).map(Number) : null; };
+    const said = tt ? named(tt.lesson.paragraphs.join(' ')) : null;
+    const times = Array.from({ length: 10 }, (_, k) => 3 * (k + 1));
+    const deck = L.ruleDeck('multiples-3');
+    const same = (a, b) => !!a && !!b && a.length === b.length && a.every((x, i) => x === b[i]);
+    const plant = !same(named('The multiples of 3 in the table to 10 are 3, 6, 9, 12, 15, 18, 24, 27 and 30.'), times);
+    const others = deck.b.items.map(Number);
+    ok('Times tables to 10 names the multiples of 3 as 3 times 1 to 3 times 10, the multiples Catch the multiples of 3 deals, and its other numbers, 1 to 29, hold none (the near miss caught)', same(said, times) && same(deck.a.items.map(Number), times) && others.every((n) => n % 3 !== 0) && Math.min(...others) === 1 && Math.max(...others) === 29 && plant, JSON.stringify({ said, deckA: deck.a.items, others: [Math.min(...others), Math.max(...others)], plant })); }
+  // Mikey's own words for Which Sense, kept as he wrote them where the app does what he said (his example: "Welcome to 'Which
+  // Sense!'  This game is designed to help you explore your five senses.  Simply listen to the question then select the sense that
+  // most accurately fits."), and the keyboard line only on a keyboard.
+  { const sense = L.GAMES.find((g) => g.id === 'sense-psychology-k'); const said = L.gameIntro(sense).map((l) => l.say);
+    ok('Which Sense welcomes in Mikey\'s words: his opening, his "Simply listen to the question" and his number line, which needs a keyboard', said[0] === 'Welcome to Which Sense! This game is designed to help you explore your five senses.' && said[1] === 'Simply listen to the question, then select the sense that most accurately fits.' && L.gameIntro(sense).some((l) => l.keys && /type a number from 1 to 5/.test(l.say)) && !L.gameIntroWords(sense).includes('number from 1 to 5')); }
   ok('every course has a game students can see today, not only a map waiting for its painting', L.COURSES.every((c) => L.COURSE_GAMES[c.id].some((id) => kindOf(id) !== 'map')));
   const twoOfAKind = L.COURSES.filter((c) => new Set(L.COURSE_GAMES[c.id].map(kindOf)).size < L.COURSE_GAMES[c.id].length).length;
   ok('no course holds two games of one kind (the element pairs left physics for the periodic table, 2026-09-25)', twoOfAKind === 0, `${twoOfAKind}`);
@@ -3157,12 +3251,37 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
       ['Then came bus. Busss. The last sound was sss, a hiss like a snake.', 'Then came bus.|Bus|[s]|The last sound was|[s]|, a hiss like a snake.'],
       ['Mmm-a-puh, mmm-a-puh, map!', '[m]|a|[p]|[m]|a|[p]|, map!'],
       ['C-U-P was cuh-uh-puh, cup.', 'C-U-P was|[k]|uh|[p]|, cup.'],
-      ['Ball, bed and bear all start with buh.', 'Ball, bed and bear all start with buh.'],
+      // Pass MP: a list of example words is said one word at a time (Mikey: "Ball, bed and bear should be spaced out a little
+      // more"), and a letter named before says or makes is a piece of its own (his note on row 32: "the letter a is just easily
+      // missed"); a list that is not about sounds, and a letter that labels something, are read as before.
+      ['Ball, bed and bear all start with buh.', 'Ball|bed|and bear|all start with buh.'],
+      ['Sock, block and rock all rhyme. Bear and chair rhyme.', 'Sock|block|and rock|all rhyme.|Bear and chair rhyme.'],
+      ['“Cat, mat and bat all end in at!” said Pat.', 'Cat|mat|and bat|all end in|at|!” said Pat.'],
+      ['Water, oxygen and warmth start a seed.', 'Water, oxygen and warmth start a seed.'],
+      ['In cap, the a says aa, but in cape, the a says its name, ay.', 'In cap,|the A|says aa, but in cape,|the A|says its name, ay.'],
+      ['C says cuh, a says the sound at the start of apple, and n says nnn.', 'C|says|[k]|A|says the sound at the start of apple, and|N|says|[n]'],
+      ['Dog ends with guh, the sound G makes.', 'Dog ends with guh, the sound|G|makes.'],
+      ['Here is what source B says, with source D\'s objection.', 'Here is what source B says, with source D\'s objection.'],
       ['Shh, said Mom. Hmmm, said Dad. FFFFFF is white on a well-known T-shirt.', 'Shh, said Mom.|Hmmm, said Dad.|FFFFFF is white on a well-known T-shirt.'],
-      ['L says lll, and r says rrr. Z says zzz, and n says nnn.', 'L says|[l]|, and r says|[r]|Z says|[z]|, and n says|[n]'],
+      ['L says lll, and r says rrr. Z says zzz, and n says nnn.', 'L|says|[l]|, and|R|says|[r]|Z|says|[z]|, and|N|says|[n]'],
       ['How many votes is that, at least?', 'How many votes is that, at least?'],
     ];
     const wrong = cases.filter(([t, want]) => say(t) !== want).map(([t, want]) => `${t} => ${say(t)} (want ${want})`);
+    // The listed words and the named letters take the word-at-play shape, held slowly and a little higher.
+    const keyed = L.speechPieces('Ball, bed and bear all start with buh.').slice(0, 3).every((p) => p.shape === 'key') && L.speechPieces('C says cuh, a says the sound at the start of apple.').filter((p) => /^[CA]$/.test(p.text)).every((p) => p.shape === 'key');
+    if (!keyed) wrong.push('a listed word or a named letter is not in the word-at-play shape');
+    // On trial (the voice check page's trial rows, pass MP): the app's buh, duh, guh and juh, its ig, og and at, and a vowel letter
+    // alone in a run of sounds as the app's short vowel; never in a lesson (the test above holds every lesson to SPEECH_SOUNDS).
+    const tryIt = (t) => L.speechPieces(t, { trial: true }).map((x) => (x.sound ? `[${x.sound}]` : x.text.trim())).join('|');
+    const trials = [
+      ['Ball, bed and bear all start with buh.', 'Ball|bed|and bear|all start with|[b]'],
+      ['Cat and dog do not rhyme. One ends in at, and the other ends in og.', 'Cat and dog do not rhyme.|One ends in|[at]|, and the other ends in|[og]'],
+      ['Read this word the same way. Cuh, a, nnn. Can.', 'Read this word the same way.|[k]|[a]|[n]|Can.'],
+      ['Mmm-a-puh, mmm-a-puh, map!', '[m]|[a]|[p]|[m]|[a]|[p]|, map!'],
+      ['Pig and wig both end with ig. Look at the cat.', 'Pig and wig both end with|[ig]|Look at the cat.'],
+    ];
+    for (const [t, want] of trials) if (tryIt(t) !== want) wrong.push(`on trial ${t} => ${tryIt(t)} (want ${want})`);
+    if (!Object.keys(L.TRIAL_SOUNDS).every((k) => L.soundClipSamples(k) && !L.SPEECH_SOUNDS[k])) wrong.push('a trial sound is not made, or is already a lesson\'s');
     const heard = L.heardForm('map starts with mmm.') === 'map starts with mmm.' && L.heardForm('Mmm-at.') === 'Mmm Mat.' && L.heardForm('Busss.') === 'Bus sss.' && L.heardForm('Sss-huh.') === 'Sss huh.' && L.heardForm('A well-known T-shirt.') === 'A well-known T-shirt.';
     ok('Mikey\'s Q51 lines are said in pieces: each sound the app\'s own with no word added, a word said slowly as its sound and then the word, ig as igg, an ending at alone, and the rest the voice\'s', wrong.length === 0 && heard, wrong.slice(0, 4).join(' || ')); }
   // A sounded-out run never hands the voice a vowel letter alone (pass MO, found while the app's sounds were built; CLAUDE.md's
@@ -3189,49 +3308,100 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   // The voice check page runs the app's own speech code (round one's code check, pass MO): its script, run in node:vm, holds every
   // function it calls, says each lesson row as the app does and plays the app's own sounds, so code that moves out of the page's
   // slices fails here rather than building a page that plays nothing.
+  // Since round one's code check (pass MP) each row's sounds are read by name, beside two planted pages it must catch: every sound
+  // row playing sss, and the trial rows playing duh for buh (each passed when a sound was read only as "a sound").
   { const VC = await import('../tools/voice-check.mjs'); const problems = await VC.voiceCheckSelfTest(L);
-    ok(`the voice check page runs the app's own speech code, its rows said as the app says them (${VC.VOICE_CHECK_ROWS.filter((r) => r.kind === 'line').length} lines)`, problems.length === 0, problems.join('; ')); }
+    const plantA = VC.VOICE_CHECK_SCRIPT.replace("playSound(row.sound, done)", "playSound('s', done)"); const plantB = VC.VOICE_CHECK_SCRIPT.replace("speechPieces(row.text, { trial: true })", "speechPieces(row.text, { trial: true }).map((p) => (p.sound === 'b' ? { ...p, sound: 'd' } : p))");
+    const caught = plantA !== VC.VOICE_CHECK_SCRIPT && plantB !== VC.VOICE_CHECK_SCRIPT && (await VC.voiceCheckSelfTest(L, plantA)).length > 0 && (await VC.voiceCheckSelfTest(L, plantB)).some((x) => /row 45/.test(x));
+    ok(`the voice check page runs the app's own speech code, its rows said as the app says them and each sound played by name (${VC.VOICE_CHECK_ROWS.filter((r) => r.kind === 'line').length} lines; two planted pages caught)`, problems.length === 0 && caught, problems.join('; ') || `plants caught ${caught}`); }
   // The sounds themselves (pass MO), measured: the same samples every time; a held sound 0.85 seconds (1.1 on the snail), a crisp
-  // stop under a fifth of a second; no click at either end; loud enough to hear and never clipped; and each one's energy where that
-  // sound's is (sss high, its loudest part near 6,500 cycles a second, fff spread out and softer, zzz a hiss over a buzz, mmm and nnn a low hum with
-  // their dips apart, rrr's low third resonance, and the bursts of t, p and k high, low and in the middle). The WAV file is 16-bit,
-  // one channel, 32,000 samples a second. Proven failing on copies with sss low-passed, a stop's burst swapped and a hold of 0.5.
+  // stop under a quarter of a second; no click at either end; loud enough to hear and never clipped; and each one's energy where
+  // that sound's is (sss high, its loudest part near 6,500 cycles a second, fff spread out and softer, zzz a hiss over a buzz, mmm and
+  // nnn a low hum with their dips apart, rrr's low third resonance, and the bursts of t, p and k high, low and in the middle). The WAV
+  // file is 16-bit, one channel, 32,000 samples a second. Proven failing on copies with sss low-passed, a stop's burst swapped and
+  // a hold of 0.5.
+  // Since pass MP (Mikey's notes on Q51 and his answer to Q57): sss, fff and zzz are two breaths of 0.32 seconds (0.4 on the snail)
+  // with a true quiet of 0.13 (0.17) between; t, p and k end in a short, soft uh, voiced, quieter than the burst; and the sounds made
+  // for the voice check page alone are measured too: the five short vowels 0.42 seconds (0.55 on the snail), each one's first two
+  // resonances within 160 cycles a second of its own (a 860 and 2,050; e 610 and 2,330; i 480 and 2,370; o 910 and 1,390; u 750
+  // and 1,430); buh, duh, guh and juh a low hum first, then the release, then an uh softer than the release; and ig, og and at a
+  // vowel with its own resonances, a closing quiet, then the release. The check is a function, run on the app's sounds and on
+  // planted near misses beside it (a held hiss with no gap, o's sound given for a, an uh louder than the t's burst, a b with no hum
+  // before it, an ig whose vowel is e's), each of which it must catch.
   { const fft = (re) => { const n = re.length; const im = new Float64Array(n); for (let i = 1, j = 0; i < n; i++) { let bit = n >> 1; for (; j & bit; bit >>= 1) j ^= bit; j ^= bit; if (i < j) { [re[i], re[j]] = [re[j], re[i]]; } }
       for (let len = 2; len <= n; len <<= 1) { const ang = (-2 * Math.PI) / len; for (let i = 0; i < n; i += len) for (let k = 0; k < len / 2; k++) { const wr = Math.cos(ang * k); const wi = Math.sin(ang * k); const a = i + k; const b2 = a + len / 2; const xr = re[b2] * wr - im[b2] * wi; const xi = re[b2] * wi + im[b2] * wr; re[b2] = re[a] - xr; im[b2] = im[a] - xi; re[a] += xr; im[a] += xi; } }
       return Array.from({ length: n / 2 }, (_, k) => re[k] * re[k] + im[k] * im[k]); };
     const R = L.SOUND_RATE;
     const spectrum = (x, from, len) => { const n = 8192; const re = new Float64Array(n); for (let i = 0; i < Math.min(len, n); i++) re[i] = x[from + i] || 0; const P = fft(re); const tot = P.reduce((a, v) => a + v, 0) || 1;
       const band = (lo, hi) => P.reduce((a, v, k) => { const f = (k * R) / n; return f >= lo && f < hi ? a + v : a; }, 0) / tot;
-      const sm = P.map((_, k) => { let s = 0; for (let j = Math.max(0, k - 15); j <= Math.min(P.length - 1, k + 15); j++) s += P[j]; return s; }); const peak = (sm.indexOf(Math.max(...sm)) * R) / n; return { band, peak }; };
-    const held = (s) => { const x = L.soundClipSamples(s); return { x, sp: spectrum(x, (x.length >> 1) - 4096, 8192) }; };
+      const sm = P.map((_, k) => { let s = 0; for (let j = Math.max(0, k - 15); j <= Math.min(P.length - 1, k + 15); j++) s += P[j]; return s; }); const peak = (sm.indexOf(Math.max(...sm)) * R) / n;
+      const peakIn = (lo, hi) => { let best = -1; let at = 0; for (let k = Math.ceil((lo * n) / R); k <= Math.floor((hi * n) / R); k++) if (sm[k] > best) { best = sm[k]; at = k; } return (at * R) / n; };
+      return { band, peak, peakIn }; };
     const rms = (x) => Math.sqrt(x.reduce((a, v) => a + v * v, 0) / x.length);
-    const S = Object.fromEntries(['s', 'f', 'z', 'm', 'n', 'l', 'r'].map((s) => [s, held(s)]));
-    const shape = [];
-    for (const s of ['m', 'n', 's', 'f', 'z', 'l', 'r', 't', 'p', 'k']) {
-      const x = L.soundClipSamples(s); const y = L.soundClipSamples(s); const slow = L.soundClipSamples(s, { slow: true });
-      const peak = Math.max(...x.map(Math.abs)); const ends = Math.max(...[...x.slice(0, 16), ...x.slice(-16)].map(Math.abs)); const secs = x.length / R;
-      const same = x.length === y.length && x.every((v, i) => v === y[i]);
-      const isHeld = 'mnsfzrl'.includes(s);
-      if (!same) shape.push(`${s} changes from one call to the next`);
-      if (isHeld ? Math.abs(secs - 0.85) > 0.001 || Math.abs(slow.length / R - 1.1) > 0.001 : secs < 0.1 || secs > 0.2) shape.push(`${s} lasts ${secs.toFixed(3)}s`);
-      if (peak > 0.9 || peak < 0.15) shape.push(`${s} peaks at ${peak.toFixed(2)}`);
-      if (ends > 0.02) shape.push(`${s} starts or ends with a click (${ends.toFixed(3)})`);
-      if (isHeld && rms(x) < 0.03) shape.push(`${s} is too quiet (${rms(x).toFixed(3)})`);
-    }
-    const stop = (s) => { const x = L.soundClipSamples(s); const lead = Math.round(0.03 * R); return { lead: Math.max(...x.slice(0, lead).map(Math.abs)), sp: spectrum(x, lead, Math.round((s === 'k' ? 0.016 : 0.008) * R)) }; };
-    const T = stop('t'); const P = stop('p'); const K = stop('k');
-    const where = [
-      ['sss high, in the range where an s peaks', S.s.sp.band(4000, 16000) >= 0.85 && S.s.sp.band(0, 2000) <= 0.02 && S.s.sp.peak >= 5500 && S.s.sp.peak <= 8000],
-      ['fff spread out, flat and softer than sss', S.f.sp.band(1500, 16000) >= 0.9 && [2000, 3000, 4000, 5000, 6000, 7000, 8000].every((lo) => S.f.sp.band(lo, lo + 1000) <= 0.2) && rms(S.f.x) < rms(S.s.x)],
-      ['zzz a hiss over a buzz', S.z.sp.band(0, 500) >= 0.2 && S.z.sp.band(4000, 16000) >= 0.4],
-      ['mmm and nnn a low hum, their dips apart', S.m.sp.band(0, 1000) >= 0.98 && S.n.sp.band(0, 1000) >= 0.98 && S.m.sp.band(800, 1100) < S.n.sp.band(800, 1100) && S.n.sp.band(1600, 1900) < S.m.sp.band(1600, 1900)],
-      ['lll and rrr voiced and low, rrr\'s third resonance low', S.l.sp.band(0, 1500) >= 0.98 && S.r.sp.band(0, 1500) >= 0.98 && S.r.sp.band(1400, 1900) > 3 * S.l.sp.band(1400, 1900)],
-      ['t, p and k a quiet moment, then a burst high, low and in the middle', T.lead === 0 && P.lead === 0 && K.lead === 0 && T.sp.band(4000, 16000) >= 0.8 && P.sp.band(0, 2000) >= 0.6 && T.sp.peak > 4000 && P.sp.peak < 1500 && K.sp.peak >= 1600 && K.sp.peak <= 2800],
-    ].filter(([, okay]) => !okay).map(([what]) => what);
+    const rmsOf = (x, from, to) => { let q = 0; for (let i = from; i < to; i++) q += x[i] * x[i]; return Math.sqrt(q / Math.max(1, to - from)); };
+    const frames = (x) => { const e = []; for (let i = 0; i + 160 <= x.length; i += 160) e.push(rmsOf(x, i, i + 160)); return e; };   // 5 ms each
+    const VOWEL_AT = { a: [860, 2050], e: [610, 2330], i: [480, 2370], o: [910, 1390], u: [750, 1430] };
+    const vowelOff = (sp, v) => { const [f1, f2] = VOWEL_AT[v]; const p1 = sp.peakIn(300, 1100); const p2 = sp.peakIn(1150, 2700); return Math.abs(p1 - f1) > 160 || Math.abs(p2 - f2) > 160 ? `${Math.round(p1)} and ${Math.round(p2)}` : null; };
+    const soundProblems = (get) => {
+      const held = (s) => { const x = get(s); return { x, sp: spectrum(x, s === 's' || s === 'f' || s === 'z' ? Math.round(0.05 * R) : (x.length >> 1) - 4096, 8192) }; };
+      const S = Object.fromEntries(['s', 'f', 'z', 'm', 'n', 'l', 'r'].map((s) => [s, held(s)]));
+      const shape = [];
+      for (const s of ['m', 'n', 's', 'f', 'z', 'l', 'r', 't', 'p', 'k', 'a', 'e', 'i', 'o', 'u', 'b', 'd', 'g', 'j', 'ig', 'og', 'at']) {
+        const x = get(s); const y = get(s); const slow = get(s, { slow: true });
+        if (!x) { shape.push(`${s} is not made`); continue; }
+        const peak = Math.max(...x.map(Math.abs)); const ends = Math.max(...[...x.slice(0, 16), ...x.slice(-16)].map(Math.abs)); const secs = x.length / R; const slowSecs = slow.length / R;
+        const same = x.length === y.length && x.every((v, i) => v === y[i]);
+        if (!same) shape.push(`${s} changes from one call to the next`);
+        const want = 'mnlr'.includes(s) ? [0.85, 1.1] : 'sfz'.includes(s) ? [0.77, 0.97] : 'aeiou'.includes(s) ? [0.42, 0.55] : null;
+        if (want ? Math.abs(secs - want[0]) > 0.001 || Math.abs(slowSecs - want[1]) > 0.001 : secs < 0.1 || secs > (s.length > 1 ? 0.45 : 0.3)) shape.push(`${s} lasts ${secs.toFixed(3)}s`);
+        if (peak > 0.9 || peak < 0.15) shape.push(`${s} peaks at ${peak.toFixed(2)}`);
+        if (ends > 0.02) shape.push(`${s} starts or ends with a click (${ends.toFixed(3)})`);
+        if (want && rms(x) < 0.03) shape.push(`${s} is too quiet (${rms(x).toFixed(3)})`);
+      }
+      // Two breaths with a true quiet between (Mikey: "split the sound into fragments like sss sss sun").
+      for (const s of ['s', 'f', 'z']) { const x = get(s); const one = Math.round(0.32 * R); const gap = Math.round(0.13 * R);
+        if (Math.max(...x.slice(one + 200, one + gap - 200).map(Math.abs)) > 0.005 || rmsOf(x, 2000, one - 2000) < 0.03 || rmsOf(x, one + gap + 2000, 2 * one + gap - 2000) < 0.03) shape.push(`${s} is not two breaths with a quiet between`); }
+      const stop = (s) => { const x = get(s); const lead = Math.round(0.03 * R); return { lead: Math.max(...x.slice(0, lead).map(Math.abs)), sp: spectrum(x, lead, Math.round((s === 'k' ? 0.016 : 0.008) * R)) }; };
+      const T = stop('t'); const P = stop('p'); const K = stop('k');
+      // The uh after a crisp stop: voiced (most of its energy under 1,000 cycles a second) and softer than the burst.
+      // The burst is the first loud moment after the quiet lead, the uh the loudest moment from 45 ms after it.
+      const uhAfter = (s) => { const x = get(s); const e = frames(x); const burst = Math.max(0, e.findIndex((v) => v > 0.05)); const from = burst + 9; const tail = e.slice(from); const at = from + tail.indexOf(Math.max(...tail)); return { burst: Math.max(...e.slice(burst, burst + 3)), uh: e[at], low: spectrum(x, at * 160, 1600).band(0, 1000) }; };
+      const uhs = ['t', 'p', 'k'].map(uhAfter);
+      // A voiced stop: a low hum first, then the release, then an uh softer than the release.
+      const voicedStop = (s) => { const x = get(s); const e = frames(x); const burst = e.indexOf(Math.max(...e)); const lead = spectrum(x, 0, Math.round(0.04 * R)); const tail = e.slice(burst + 3);
+        return burst >= 6 && rmsOf(x, 0, Math.round(0.03 * R)) > 0.005 && lead.band(0, 600) >= 0.9 && Math.max(...tail) < e[burst] * 0.8 && spectrum(x, (burst + 3 + tail.indexOf(Math.max(...tail))) * 160, 1600).band(0, 1000) >= 0.6; };
+      // A rime: its vowel's resonances, a closing quiet, then the release.
+      const rime = (s, v) => { const x = get(s); const sp = spectrum(x, Math.round(0.05 * R), Math.round(0.15 * R)); const e = frames(x); const quiet = e.slice(53, 60); const after = e.slice(60);
+        return !vowelOff(sp, v) && Math.max(...quiet) < 0.03 && Math.max(...after) > 0.1; };
+      const where = [
+        ['sss high, in the range where an s peaks', S.s.sp.band(4000, 16000) >= 0.85 && S.s.sp.band(0, 2000) <= 0.02 && S.s.sp.peak >= 5500 && S.s.sp.peak <= 8000],
+        ['fff spread out, flat and softer than sss', S.f.sp.band(1500, 16000) >= 0.9 && [2000, 3000, 4000, 5000, 6000, 7000, 8000].every((lo) => S.f.sp.band(lo, lo + 1000) <= 0.2) && rms(S.f.x) < rms(S.s.x)],
+        ['zzz a hiss over a buzz', S.z.sp.band(0, 500) >= 0.2 && S.z.sp.band(4000, 16000) >= 0.2],
+        ['mmm and nnn a low hum, their dips apart', S.m.sp.band(0, 1000) >= 0.98 && S.n.sp.band(0, 1000) >= 0.98 && S.m.sp.band(800, 1100) < S.n.sp.band(800, 1100) && S.n.sp.band(1600, 1900) < S.m.sp.band(1600, 1900)],
+        ['lll and rrr voiced and low, rrr\'s third resonance low', S.l.sp.band(0, 1500) >= 0.98 && S.r.sp.band(0, 1500) >= 0.98 && S.r.sp.band(1400, 1900) > 3 * S.l.sp.band(1400, 1900)],
+        ['t, p and k a quiet moment, then a burst high, low and in the middle', T.lead === 0 && P.lead === 0 && K.lead === 0 && T.sp.band(4000, 16000) >= 0.8 && P.sp.band(0, 2000) >= 0.6 && T.sp.peak > 4000 && P.sp.peak < 1500 && K.sp.peak >= 1600 && K.sp.peak <= 2800],
+        ['t, p and k end in a short, soft uh, voiced and quieter than the burst', uhs.every((u) => u.uh > 0.015 && u.uh < u.burst * 0.6 && u.low >= 0.5)],
+        ...['a', 'e', 'i', 'o', 'u'].map((v) => { const x = get(v); const off = vowelOff(spectrum(x, Math.round(0.08 * R), Math.round(0.26 * R)), v); return [`the vowel ${v} has its own resonances${off ? ` (found ${off})` : ''}`, !off]; }),
+        ...['b', 'd', 'g', 'j'].map((s) => [`${s} is a low hum, the release and a soft uh`, voicedStop(s)]),
+        ['ig, og and at are a vowel, a closing quiet and the release', rime('ig', 'i') && rime('og', 'o') && rime('at', 'a')],
+      ].filter(([, okay]) => !okay).map(([what]) => what);
+      return [...shape, ...where];
+    };
+    const real = soundProblems((s, o) => L.soundClipSamples(s, o));
+    // The near misses, each a copy of one sound changed the way a mistake would change it, and each must be caught.
+    const plant = (name, change) => soundProblems((s, o) => change(s, o) || L.soundClipSamples(s, o)).length > 0 ? null : name;
+    const loud = (x, from, g) => { const y = Float32Array.from(x); for (let i = from; i < y.length; i++) y[i] *= g; return y; };
+    const missed = [
+      plant('a held hiss with no gap', (s, o) => { if (s !== 's') return null; const x = Float32Array.from(L.soundClipSamples('s', o)); const one = Math.round((o && o.slow ? 0.4 : 0.32) * R); const gap = Math.round((o && o.slow ? 0.17 : 0.13) * R); for (let i = one; i < one + gap; i++) x[i] = x[i - gap]; return x; }),
+      plant('o\'s sound given for a', (s, o) => (s === 'a' ? L.soundClipSamples('o', o) : null)),
+      plant('an uh louder than the t\'s burst', (s, o) => (s === 't' ? loud(L.soundClipSamples('t', o), Math.round(0.065 * R), 6) : null)),
+      plant('a b with no hum before it', (s, o) => { if (s !== 'b') return null; const x = Float32Array.from(L.soundClipSamples('b', o)); for (let i = 0; i < Math.round(0.044 * R); i++) x[i] = 0; return x; }),
+      plant('an ig whose vowel is e\'s', (s, o) => { if (s !== 'ig') return null; const x = Float32Array.from(L.soundClipSamples('ig', o)); const e = L.soundClipSamples('e', o); for (let i = 0; i < Math.round(0.24 * R); i++) x[i] = e[i + Math.round(0.05 * R)]; return x; }),
+    ].filter(Boolean);
     const wav = L.soundClipWav('s'); const dv = new DataView(wav.buffer); const tag = (o) => String.fromCharCode(...wav.slice(o, o + 4));
     const file = tag(0) === 'RIFF' && tag(8) === 'WAVE' && dv.getUint16(22, true) === 1 && dv.getUint32(24, true) === R && dv.getUint16(34, true) === 16 && dv.getUint32(40, true) === L.soundClipSamples('s').length * 2;
     const quiet = L.soundClipSamples('quiet'); const nothing = L.soundClipSamples('buh') === null && L.soundClipWav('x') === null;
-    ok('the app\'s own sounds: the same every time, the right length, no click, never clipped, each one\'s energy where that sound\'s is, and a playable WAV', shape.length === 0 && where.length === 0 && file && quiet.length === Math.round(0.05 * R) && quiet.every((v) => v === 0) && nothing, [...shape, ...where].join('; ')); }
+    ok('the app\'s own sounds: the same every time, the right length, no click, never clipped, each one\'s energy where that sound\'s is, and a playable WAV; since pass MP sss, fff and zzz in two breaths, an uh after t, p and k, and the vowels, voiced stops and endings made for the voice check page, each near miss caught', real.length === 0 && missed.length === 0 && file && quiet.length === Math.round(0.05 * R) && quiet.every((v) => v === 0) && nothing, [...real, ...missed.map((m) => `missed: ${m}`)].join('; ')); }
   // A title before a name never ends a sentence (pass MN, round one's story flow check, and the code it led to): every split of the
   // app's words into sentences keeps Mr., Mrs., Ms., Dr. and Jr. inside their sentence (SENTENCE_BREAK). Until then a kindergarten
   // lesson printed "we honor Dr." on a line of its own, the voice was handed "Ms." alone as a held word at play, and the read-along
@@ -3566,6 +3736,9 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   { // Mean, Median, Mode (pass GM): every round's answer is the true statistic of its scores, whole, and sits among four distinct choices.
     const stat = (sc, ask) => { const so = [...sc].sort((a, b) => a - b); return ask === 'mean' ? sc.reduce((a, b) => a + b, 0) / sc.length : ask === 'median' ? so[2] : so.find((v, i) => so.indexOf(v) !== i); };
     ok('every stat round asks for a real average of its scores and offers four distinct choices with the answer among them', [1, 2, 3, 4, 5].every((r) => { const qs = L.statRounds(r); return qs.length === 6 && qs.every((q) => q.scores.length === 5 && Number.isInteger(q.answer) && stat(q.scores, q.ask) === q.answer && q.choices.length === 4 && new Set(q.choices).size === 4 && q.choices.includes(q.answer)); }) && new Set(L.statRounds(1).map((q) => q.ask)).size === 3);
+    // Since pass MP (round one's accuracy check: the repeated score was always the middle one, so the median was always the mode in
+    // all 18,000 rounds) the mean, the median and the mode of every round are three different numbers, so each rule gives its own.
+    ok('every stat round\'s mean, median and mode are three different numbers', Array.from({ length: 400 }, (_, r) => r).every((r) => L.statRounds(r).every((q) => new Set(['mean', 'median', 'mode'].map((a) => stat(q.scores, a))).size === 3)));
     ok('the stat game belongs to psychology 9 to 12 and names its scores with its own key', L.COURSE_GAMES['psychology-9'].includes('stat-psychology-9') && L.GAMES.find((g) => g.id === 'stat-psychology-9').stat === 'scores' && !L.GAMES.find((g) => g.id === 'stat-psychology-9').deck);
   }
   { // Hold It in Mind (pass GN): five distinct words shown, four distinct choices, and exactly one of them from the list.
@@ -4374,6 +4547,29 @@ const moreRightProblems = (L) => { const r = {};
   let staleTalking = null;
   const n1 = run(false, (api, later) => { const stop = seqOf(api, OLD); later(() => api.speak('No. It is not the same as yours.'), 2500); later(() => stop(), 2900); later(() => { staleTalking = api.voiceTalking(); }, 2910); }, 6000);
   ok("a reader's stop that is no longer the newest still hushes the words said since", !n1.error && staleTalking === false && !n1.log.some((x) => (x.say || x.sound) && x.at > 2900) && n1.log.some((x) => x.say === 'No.'), n1.error || JSON.stringify({ log: n1.log, staleTalking }));
+  // Pass MP's pauses (round one's code check): a story's breath between sentences on the snail (opts.pause), the gap after a title
+  // and after a paragraph (opts.gap, a function of the text just read), and a fifth of a second between two sounds (SOUND_GAP_MS).
+  // A pace change in any of them starts with what comes next, never the sentence, title or sound just said (the place still named
+  // it, and "Ana had a plate." and "Two Plates." were said twice); a stop in one says nothing more; a voice that loses an end
+  // before one goes on, each sentence said once; and the snail's breath falls beside a sound too ("Bus." then sss had come 5 ms apart).
+  const onceEach = (r, texts) => texts.every((t) => r.log.filter((x) => x.say === t).length === 1);
+  const LENA3 = ['Lena had six blocks.', 'She stacked them high.', 'The tower wobbled.'];
+  const q1 = run(false, (api, later) => { const stop = api.speakSequence([LENA], () => {}, () => {}, [], { pause: () => 330 }); later(() => stop.setNudge(-1), 450); }, 9000);
+  const q2 = run(false, (api, later) => { const stop = api.speakSequence(['Two Plates.', 'Ana had a plate.'], () => {}, () => {}, [], { gap: (i) => (i === 0 ? 650 : 250) }); later(() => stop.setNudge(-1), 400); }, 9000);
+  const q3 = run(false, (api, later) => { const stop = api.speakSequence(['Ana had a plate.', 'It was red.', 'She ate.'], () => {}, () => {}, [], { gap: () => 550, pause: () => 330 }); later(() => stop.setNudge(-1), 600); }, 9000);
+  const q4 = run(false, (api, later) => { const stop = api.speakSequence(['Buh! Sss! Mmm!'], () => {}, () => {}); later(() => stop.setNudge(-1), 550); }, 9000);
+  ok('a pace change in a pause, the gap after a title or a paragraph, or between two sounds says nothing already said again', !q1.error && !q2.error && !q3.error && !q4.error && onceEach(q1, LENA3) && onceEach(q2, ['Two Plates.', 'Ana had a plate.']) && onceEach(q3, ['Ana had a plate.', 'It was red.', 'She ate.']) && q4.log.filter((x) => x.sound).length === 2 && onceEach(q4, ['Buh!']), q1.error || q2.error || q3.error || q4.error || JSON.stringify({ q1: q1.log, q2: q2.log, q3: q3.log, q4: q4.log }).slice(0, 900));
+  const s1 = run(false, (api, later) => { const stop = api.speakSequence([LENA], () => {}, () => {}, [], { pause: () => 330 }); later(() => stop(), 450); }, 9000);
+  const s2 = run(false, (api, later) => { const stop = api.speakSequence(['Two Plates.', 'Ana had a plate.'], () => {}, () => {}, [], { gap: () => 650 }); later(() => stop(), 400); }, 9000);
+  const s3 = run(false, (api, later) => { const stop = api.speakSequence(['Buh! Sss! Mmm!'], () => {}, () => {}); later(() => stop(), 550); }, 9000);
+  ok('a stop in a pause, a gap or between two sounds says nothing more', !s1.error && !s2.error && !s3.error && !s1.log.some((x) => (x.say || x.sound) && x.at > 450) && !s2.log.some((x) => (x.say || x.sound) && x.at > 400) && !s3.log.some((x) => (x.say || x.sound) && x.at > 550), JSON.stringify({ s1: s1.log, s2: s2.log, s3: s3.log }).slice(0, 700));
+  const l1 = run(false, (api) => api.speakSequence([LENA], () => {}, () => {}, [], { pause: () => 330 }), 12000, { loseEnd: (t) => t === 'Lena had six blocks.' });
+  const l2 = run(false, (api) => api.speakSequence(['Two Plates.', 'Ana had a plate.'], () => {}, () => {}, [], { gap: () => 650 }), 12000, { loseEnd: (t) => t === 'Two Plates.' });
+  ok('a voice that loses an end before a pause or a gap goes on, each sentence said once', !l1.error && !l2.error && onceEach(l1, LENA3) && onceEach(l2, ['Two Plates.', 'Ana had a plate.']) && !l1.log.some((x) => x.threw), JSON.stringify({ l1: l1.log, l2: l2.log }).slice(0, 700));
+  const b1 = run(false, (api) => api.speakSequence(['Bus. Sss! Sun starts with sss.'], () => {}, () => {}, [], { pause: () => 330 }), 9000);
+  const busAt = (b1.log.find((x) => x.say === 'Bus.') || {}).at; const sounds = b1.log.filter((x) => x.sound).map((x) => x.at); const sunAt = (b1.log.find((x) => x.say === 'Sun starts with') || b1.log.find((x) => /^Sun starts with/.test(x.say || '')) || {}).at;
+  const g1 = run(false, (api) => api.speak('Buh! Sss! Mmm!'), 9000); const gs = g1.log.filter((x) => x.sound).map((x) => x.at);
+  ok("the snail's breath falls beside a sound too, and two sounds side by side wait a fifth of a second", !b1.error && !g1.error && typeof busAt === 'number' && sounds.length === 2 && typeof sunAt === 'number' && sounds[0] - (busAt + 120 + 8 * 'Bus.'.length) >= 330 && sunAt - (sounds[0] + 300) >= 330 && gs.length === 2 && gs[1] - (gs[0] + 300) >= 200, JSON.stringify({ b1: b1.log, g1: g1.log }).slice(0, 700));
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

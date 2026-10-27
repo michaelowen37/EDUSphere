@@ -6,7 +6,7 @@ Starters, open from the first day: Star (for the youngest) and Pong (from grade 
 
 ## New kinds, in order
 
-Each new kind should make the course's idea the rule of the game, so playing is practicing. They replace quick fires and repeats first.
+Each new kind should make the course's idea the rule of the game, so playing is practicing. They replace quick fires and repeats first. Since pass MP each new kind is built with its spoken welcome (INTROS in src/logic.mjs) and its board's demo marks, which the rules and scripts tests require (Mikey: "Any new games would then be edited tp match these rules as they are created.").
 
 1. Sentence builder, for writing (built 2026-09-25): tap word tiles into a sentence that makes sense, then into one that says more. Held by Writing paragraphs, Writing a paragraph, Writing several paragraphs.
 2. Fix it, for writing (built 2026-09-25): tap the one word, capital or mark that is wrong in a sentence, then read the rule. Held by Writing about what you read, Writing about texts and turns, Writing about texts.
@@ -48,11 +48,11 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 | 2 | Writing sentences | Boat (dots) |
 | 2 | Our community's story | Frog Jumps: Take Away (jump) |
 | 2 | Materials and habitats | More Pairs (pairs) |
-| 3 | Fractions | Catch the multiples of 3 (catch), Balance the scale: times (balance) |
+| 3 | Fractions | Fraction twins (pairs) |
 | 3 | Reading to understand | Find the evidence: stories and facts (evidence) |
 | 3 | How the world works | Space shooter: gases (ship), In order: how things happen (order), Grade 3 science words (pairs) |
 | 3 | Writing a paragraph | Build a sentence: say more (build) |
-| 3 | Multiplication and division | Fraction twins (pairs) |
+| 3 | Multiplication and division | Catch the multiples of 3 (catch), Balance the scale: times (balance) |
 | 3 | Looking and making | Color mixer: make new colors (mix) |
 | 3 | How computers think | Computer words (pairs), Debug the robot: arrows (debug) |
 | 3 | How your mind works | Name the Feeling (face) |

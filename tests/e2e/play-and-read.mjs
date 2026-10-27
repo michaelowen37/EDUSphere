@@ -165,18 +165,24 @@ await page.getByRole('button', { name: /S-56$/ }).first().click(); await page.wa
   ok('stopped, the arrow invites a tap, and the round speaker can read it again', (await pulsing()) && (await page.getByRole('button', { name: 'Read the story to me' }).count()) === 1);
   // The voice's own end brings the pulse back too (the screen check's second read: a stop tap proves nothing about the end a
   // voice reports), and so does a pace change in the middle of a reading.
-  await page.getByRole('button', { name: 'Read the story to me' }).click(); await page.waitForTimeout(600);
+  // Since pass MP the change is made while a sentence is in the voice's mouth: the story pauses after its title (a full second on
+  // the snail), and a pace change in a pause goes on with the next sentence, saying nothing twice (round one's code check), so the
+  // test waits for the first sentence after the title to begin, as a sentence in the middle of a reading.
+  const sentAtStart = await page.evaluate(() => window.__spoken.length);
+  await page.getByRole('button', { name: 'Read the story to me' }).click();
+  await page.waitForFunction((n) => window.__spoken.length >= n + 2, sentAtStart, { timeout: 8000 });
   const readingAgain = !(await pulsing()) && (await page.getByRole('button', { name: 'Stop reading' }).count()) === 1;
   const spokenBefore = await page.evaluate(() => window.__spoken.length);
   // A pre-K 3 story starts on the snail, and a tap on the pace already set does nothing (pass MH), so the other pace is tapped and
   // the sentence in the voice's mouth is said again at the new rate (the code check's second read).
   const slowNow = await page.evaluate(() => document.querySelector('button[aria-label="Read slowly"]').getAttribute('aria-pressed') === 'true');
-  await page.getByLabel(slowNow ? 'Read at the usual speed' : 'Read slowly').click(); await page.waitForTimeout(400);
-  // The sentence in the voice's mouth is said again from its start, three quarters as fast (the code check: no rate was read).
+  await page.getByLabel(slowNow ? 'Read at the usual speed' : 'Read slowly').click(); await page.waitForTimeout(700);
+  // The sentence in the voice's mouth is said again from its start, at 0.65 of the pace on the snail (three quarters until pass MP;
+  // the code check: no rate was read).
   const paced = await page.evaluate((n0) => { const s = window.__spoken; const r = window.__rates; const t = s[n0]; const k = s.indexOf(t); return { t, then: r[k], now: r[n0], k, n0 }; }, spokenBefore);
   // Since pass MH (Mikey: "the story should continue to read but the speed should adjust in real time.  Not stop the audio.") a
   // pace change in the middle of a reading goes on reading at the new pace: the arrow keeps resting and the speaker still stops.
-  ok('a pace change in the middle of a reading keeps reading at the new pace, the arrow still resting', readingAgain && !(await pulsing()) && (await page.getByRole('button', { name: 'Stop reading' }).count()) === 1 && !!paced.t && paced.k < paced.n0 && Math.abs(paced.now / paced.then - (slowNow ? 1 / 0.75 : 0.75)) < 0.02, paced);
+  ok('a pace change in the middle of a reading keeps reading at the new pace, the arrow still resting', readingAgain && !(await pulsing()) && (await page.getByRole('button', { name: 'Stop reading' }).count()) === 1 && !!paced.t && paced.k < paced.n0 && Math.abs(paced.now / paced.then - (slowNow ? 1 / 0.65 : 0.65)) < 0.02, paced);
   await page.getByRole('button', { name: 'Stop reading' }).click(); await page.waitForTimeout(400);
   await page.getByRole('button', { name: 'Read the story to me' }).click(); await page.waitForTimeout(600);
   const restsWhileReading = !(await pulsing());

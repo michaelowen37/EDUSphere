@@ -143,6 +143,14 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   { const o = "<!-- RULES-AUDIT section 11's open questions as pass MN left them, before pass MO brought them up to date, word for word: begin -->\n"; const ia = hist.indexOf(o); const ib = hist.indexOf("<!-- RULES-AUDIT section 11's open questions as pass MN left them, before pass MO brought them up to date, word for word: end -->");
     const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
     ok("docs/RULES-AUDIT-HISTORY.md keeps Q51's text as pass MN left it, every word unchanged (pass MO)", /^- Q51\. /.test(kept) && createHash('sha256').update(kept, 'utf8').digest('hex') === 'b79d27373188850e802c1ea71ae68d36df437d42f5834a6e9185c305fb1d7531'); }
+  // Pass MP's two blocks, each held the same way: the four questions Mikey answered in this pass (Q55 to Q58, "Q55 - A" and the
+  // rest), and Q51 as pass MO left it, before this pass brought it up to date from his notes on the voice check page's rows.
+  { const o = "<!-- RULES-AUDIT section 11's answered questions in pass MP, word for word: begin -->\n"; const ia = hist.indexOf(o); const ib = hist.indexOf("<!-- RULES-AUDIT section 11's answered questions in pass MP, word for word: end -->");
+    const mp = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
+    ok('docs/RULES-AUDIT-HISTORY.md keeps the questions answered in pass MP, every line unchanged (pass MP)', createHash('sha256').update(mp, 'utf8').digest('hex') === '923f9d82ee03ea7eed025a9cdd665a2bfd06650cf21698745edfbff80275dc02'); }
+  { const o = "<!-- RULES-AUDIT section 11's open questions as pass MO left them, before pass MP brought them up to date, word for word: begin -->\n"; const ia = hist.indexOf(o); const ib = hist.indexOf("<!-- RULES-AUDIT section 11's open questions as pass MO left them, before pass MP brought them up to date, word for word: end -->");
+    const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
+    ok("docs/RULES-AUDIT-HISTORY.md keeps Q51's text as pass MO left it, every word unchanged (pass MP)", /^- Q51\. /.test(kept) && createHash('sha256').update(kept, 'utf8').digest('hex') === 'b14f547e0a7f097fec22f1b966fc0da91e26026394059283152cc9b217de3e81'); }
   const s = audit.indexOf('## 11. Open items that need Mikey'); const e = audit.indexOf('\n## ', s + 5); const sec = audit.slice(s, e < 0 ? audit.length : e);
   const answeredLines = sec.split('\n').filter((l) => /^- Q\d+\. Answered in pass /.test(l));
   const long = answeredLines.filter((l) => !/^- Q\d+\. Answered in pass \w+ \(Mikey: .+\)\. Its rule lives in [^\n]+\.$/.test(l) || /The question as it stood/.test(l));

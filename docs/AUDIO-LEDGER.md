@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-26 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 9608 clips, 1,593,003 characters in all; the longest clip is 520 characters and the longest whole story 3,995, far under Eleven v4's 10,000 a request. 207 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-27 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 9952 clips, 1,645,515 characters in all; the longest clip is 520 characters and the longest whole story 3,995, far under Eleven v4's 10,000 a request. 207 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,21 +17,24 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 5552 | 640,145 |
-| Grades 3 to 5 | 1263 | 278,763 |
-| Grades 6 to 8 | 1138 | 272,478 |
-| Grades 9 to college | 1655 | 401,617 |
+| Pre-K to grade 2 | 5647 | 663,235 |
+| Grades 3 to 5 | 1375 | 291,834 |
+| Grades 6 to 8 | 1196 | 279,117 |
+| Grades 9 to college | 1734 | 411,329 |
 
 ## Voices
 
 | Who | Direction at the start of each clip |
 |---|---|
 | Pre-K to grade 2, and every pre-reader lesson line | [warm and gentle, drawing out key words] |
+| A story for pre-K to grade 2 (since pass MP) | [calm and unhurried, a voice for each character] |
 | Grades 3 to 5 | [warm and friendly] |
 | Grades 6 to 8 | [warm and natural] |
 | Grades 9 to college | [warm, conversational] |
 | Story titles | [warm] |
 | Questions (when the app plays them; next in the audio work) | [warm, pleasant, mildly upbeat] |
+| Game welcomes for pre-K to grade 2 (since pass MP, in the young voice) | [warm, playful and upbeat] |
+| Game welcomes from grade 3 up (since pass MP) | [warm, upbeat and engaging] |
 
 Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learners hear words drawn out and stressed the way a favorite preschool teacher says them; older learners hear a warm, engaging voice that never talks down to them (Mikey, pass JH).
 
@@ -41,11 +44,13 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 |---|---|
 | story title | 670 |
 | story | 4336 |
-| lesson line | 3593 |
+| lesson line | 3594 |
 | long story title | 106 |
 | long story | 858 |
 | next long story title | 4 |
 | next long story | 41 |
+| game welcome | 335 |
+| game welcome (keyboard) | 8 |
 
 ## Stories with hand-written tags
 

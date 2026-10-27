@@ -1835,7 +1835,10 @@ export const RULE_DECKS = {
   // gives the answer away and only the shape does, as the lesson teaches.
   'circle-square': { a: { label: 'Circles', items: shapesOf(['circle'], ['red', 'blue', 'green', 'yellow']) }, b: { label: 'Squares', items: shapesOf(['square'], ['red', 'blue', 'green', 'yellow']) } },
   'even-odd': { a: { label: 'Even numbers', items: numbersWhere((n) => n % 2 === 0, 2, 40) }, b: { label: 'Odd numbers', items: numbersWhere((n) => n % 2 === 1, 1, 39) } },
-  'multiples-3': { a: { label: 'Multiples of 3', items: numbersWhere((n) => n % 3 === 0, 3, 36) }, b: { label: 'Other numbers', items: numbersWhere((n) => n % 3 !== 0, 1, 40) } },
+  // Catch the multiples of 3, grade 3's Multiplication and division since pass MP (round two's second read): the course's times table
+  // stops at 10 x 10, so the multiples stop at 30 (33 and 36 had fallen) and the other numbers below it, and Times tables to 10
+  // names the multiples of 3 before the game.
+  'multiples-3': { a: { label: 'Multiples of 3', items: numbersWhere((n) => n % 3 === 0, 3, 30) }, b: { label: 'Other numbers', items: numbersWhere((n) => n % 3 !== 0, 1, 29) } },
   'multiples-4': { a: { label: 'Multiples of 4', items: numbersWhere((n) => n % 4 === 0, 4, 48) }, b: { label: 'Other numbers', items: numbersWhere((n) => n % 4 !== 0, 1, 50) } },
   'multiples-7': { a: { label: 'Multiples of 7', items: numbersWhere((n) => n % 7 === 0, 7, 84) }, b: { label: 'Other numbers', items: numbersWhere((n) => n % 7 !== 0, 1, 90) } },
   // Pass IO (2026-10-02): the last four games that did not match their course.
@@ -1863,6 +1866,722 @@ export const RULE_DECKS = {
   'acid-base': { a: { label: 'Acids', items: ['lemon', 'vinegar', 'soda', 'tomato', 'coffee', 'orange', 'lime', 'grapefruit'] }, b: { label: 'Bases', items: ['soap', 'bleach', 'ammonia', 'antacid', 'lye', 'egg white', 'seawater', 'toothpaste'] } },
 };
 export function ruleDeck(id) { return RULE_DECKS[id] || null; }
+// ---------- A game's spoken welcome, with a demonstration (pass MP, Mikey's notes of October 26, 2026) ----------
+// In plain terms: every game now opens by talking a child through it while a pointer plays a little of it on the real board,
+// and only then shows Begin. Mikey's words: "I think games can have the instruction audio play automatically when entering the
+// page." "With Eleven, we can make this game audio exciting and fun and perhaps we can change the instructions to be a bit more
+// explanatory but in a conversational way" and "While the instructions are automatically read, I wonder if we should also have an
+// animation playing the game at the same time to show how it works." The words live here, so the audio ledger can list each line
+// for ElevenLabs and the rules test can read them; how a pointer acts each line out lives in src/ui.jsx (GameIntro), which only draws.
+// A game's intro is a list of lines, each with what the pointer does while it is said (its act):
+//   look     points at the board's question or main piece, no press
+//   tap      makes the board's next right move with a tap; taps does it up to `times` times
+//   drag     makes the board's next right move by dragging (a card to its box, a chip to its bucket, a frog to its answer)
+//   key      presses the key a keyboard would (a number, an arrow or the space bar), shown as a key on the screen
+//   follow   steers a paddle or a basket under what is falling, for `ms` milliseconds
+//   replay   points at the speaker beside the question, which says the question again
+//   speaker  points at the speaker under the board, which says these words again
+//   wait     lets the board play on by itself for `ms` milliseconds (the words that hide in Hold It in Mind)
+// A line with quiet has a second wording, the caption's on a device with no voice (round two's second read, pass MP: "Simply listen
+// to the question" and four more asked a child to listen where nothing would be said, while the board shows the words to read).
+// A line marked keys is said only on a device with a keyboard and a mouse or trackpad, since a phone has no keys to press. A line
+// with ask: 'before' or 'after' has the pointer tap the speaker beside the game's question then, and the game's own voice says it,
+// so a child who cannot read the card hears what the pointer is about to answer. A line with every keeps a steady beat (every that
+// many milliseconds), as Push to the Beat's demonstration does at 110 a minute.
+// Mikey's own Which Sense welcome is kept as close to his words as the game allows (the speaker beside the question is a speaker,
+// so it is named one; the speaker at the bottom says the welcome again, as his later note asks; tap is said for click, since most
+// children play on a touch screen; and the numbers are said only where there is a keyboard). Since round two's alignment read the
+// rest of the changes are named too, each for a kindergartner's words: "the words" for "the text", the drag's line says where the
+// words go ("down to the picture of the sense"), "the picture of the sense that fits best" for "the image that displays the most
+// appropriate sense", and his one sentence of three ways to answer is three lines, each said while the pointer shows it.
+export const GAME_INTRO_ACTS = ['look', 'tap', 'taps', 'drag', 'key', 'follow', 'replay', 'speaker', 'wait'];
+export const GAME_INTRO_CLOSING = 'If you wish to hear these instructions again, simply tap the speaker near the bottom of the page. Have fun!';
+// The age a game is pitched at, from its own fields: the youngest games (young, or no grade at all, or kindergarten to grade 2) are
+// early, then elementary, middle and older, as the audio ledger's voices are.
+export function gameBand(game) {
+  const g = game && game.minGrade ? String(game.minGrade) : null;
+  if (!g || (game && game.young) || ['PK3', 'PK4', 'K', '1', '2'].includes(g)) return 'early';
+  if (['3', '4', '5'].includes(g)) return 'elementary';
+  if (['6', '7', '8'].includes(g)) return 'middle';
+  return 'older';
+}
+const introLow = (t) => String(t).charAt(0).toLowerCase() + String(t).slice(1);
+// A game's title as the welcome says it: a colon or a question mark inside it becomes a comma, which a voice hears as the same
+// pause and which keeps the spoken words free of colons ("Welcome to Frog Jumps, Sums!", "Welcome to Where is it, the continents!").
+export const spokenTitle = (t) => String(t).replace(/\?\s+The\b/, ', the').replace(/[:?]\s+/g, ', ').replace(/\?$/, '');   // "Will It Sprout?" is welcomed with no question mark before the !
+// What a Pairs deck's welcome says its twins are, with an example the course's lesson teaches and the deck never deals, so the
+// welcome gives away none of the board's pairs (round one's game check: one half and two fourths sat on every Fraction twins board,
+// and port on half of the word roots'); a deck with no line here says its twins plainly. The decks no game deals yet (elements,
+// formulas and times) give no example, since each example they had was a pair of their own deck (round two's final read: the
+// science decks' help named density and mass over volume, a pair Science 6's board deals).
+// PAIR_EXAMPLES names each example, shown as the written help gives it and said as the welcome says it, and the scripts test holds
+// every Pairs line, the welcome's and the help's, to its deck (no pair the deck deals) and each example to the course that owns the
+// game (both halves taught in its lessons).
+export const PAIR_EXAMPLES = { fractions: { shown: ['1/2', '4/8'], said: ['one half', 'four eighths'] }, roots: { shown: ['scope', 'see'], said: ['scope', 'see'] } };
+const introPairDeck = { fractions: 'Every card has a twin that says the same amount another way, like one half and four eighths.', roots: 'Every word root has a twin that says what it means, like scope, which means see.', elements: 'Every symbol has a twin that names its element.', dates: 'Every year has a twin that says what happened then.', formulas: 'Every formula has a twin that says what it finds.', stats: 'Every word has a twin that says what it means.', times: 'Every multiplication has a twin that holds its answer.', vocabulary: 'Every word has a twin that says what it means.', capitals: 'Every place has a twin that names its capital.', texas7: 'Every card has a twin that belongs with it.', music: 'Every music word has a twin that says what it means.', health: 'Every health word has a twin that says what it means.', technology: 'Every computer word has a twin that says what it means.' };
+// A sorting rule's two groups as a sentence says them, where the label on the screen is not a noun a sentence can use ("Not living",
+// "Equal to one half"); every other rule says its labels in lower case.
+const INTRO_RULE_SAID = { living: ['living things', 'things that are not living'], halves: ['fractions equal to one half', 'other fractions'], renewable: ['renewable resources', 'resources that are not renewable'], mammals: ['mammals', 'animals that are not mammals'], 'mitosis-meiosis': ['words about mitosis', 'words about meiosis'], 'gas-or-not': ['gases', 'things that are not gases'] };
+const introSaid = (g, d, side) => (INTRO_RULE_SAID[g.rule] ? INTRO_RULE_SAID[g.rule][side === 'a' ? 0 : 1] : introLow(d[side].label));
+const INTROS = {
+  dots: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you count in order.`, act: 'look' },
+    { say: 'Tap the dots one by one, one, two, three, and a picture appears.', act: 'taps', times: 3 },
+    { say: 'The gold dot is always the next one to tap.', act: 'look' },
+  ],
+  pairs: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! ${g.pics ? 'This game helps you look closely, because some pictures are almost alike.' : g.deck ? 'This game helps you remember what goes together.' : 'This game helps you remember where things are.'}`, act: 'look' },
+    ...(g.deck ? [{ say: introPairDeck[g.deck] || (String(g.deck).startsWith('science-') ? 'Every science word has a twin that says what it means.' : 'Every card has a twin that belongs with it.'), act: 'look' }] : []),
+    { say: 'Tap two cards to turn them over. When they match, they stay up.', act: 'taps', times: 2 },
+    { say: 'When they do not match, they turn back over, so remember where they were. Find every pair to win.', act: 'look' },
+  ],
+  sort: (g) => (g.by === 'size' ? [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you sort big things from small things.`, act: 'look' },
+    { say: 'Drag each big shape to the box with the big circle, and each small shape to the box with the little circle.', act: 'drag' },
+    { say: 'When every shape is sorted, you win!', act: 'look' },
+  ] : [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you sort by color.`, act: 'look' },
+    { say: 'Drag each red shape to the red box, and each blue shape to the blue box.', act: 'drag' },
+    { say: 'When every shape is sorted, you win!', act: 'look' },
+  ]),
+  catch: (g, d) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you spot ${introSaid(g, d, 'a')} fast.`, act: 'look' },
+    { say: `Things fall from the top. Slide the basket under the ${introSaid(g, d, 'a')} to catch them, and let the ${introSaid(g, d, 'b')} fall past.`, act: 'follow', ms: 4200 },
+    { say: 'Every right catch is a point, and catching something else takes a point away.', act: 'follow', ms: 2400 },
+  ],
+  maze: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you find your way.`, act: 'look' },
+    { say: 'Press the gold dot and drag it along the open paths to the star.', act: 'drag' },
+    { say: 'The walls stop the dot, so look for a way through.', act: 'look' },
+  ],
+  walk: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you give a robot steps to follow, the way a computer follows a program.`, act: 'look' },
+    { say: 'Tap the arrows to give the robot its steps, one at a time.', act: 'taps', times: 8 },
+    { say: 'Then tap Go, and watch the robot walk to the star.', act: 'tap', same: true },
+    { say: 'If it bumps into a rock or the edge, tap a step to take it back, with every step after it, and try again.', act: 'look' },
+  ],
+  pay: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you count out coins to pay just the right amount.`, act: 'look' },
+    { say: 'Each thing shows its price in dots. A small coin fills one dot, and a big coin fills five. Tap coins into the tray until every dot is filled.', act: 'taps', times: 5 },
+    { say: 'If you put in too many, the tray empties, and you can try again.', act: 'look' },
+  ],
+  share: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you share fairly, with the same on every plate.`, act: 'look' },
+    { say: 'Tap a plate to put a cookie on it.', act: 'taps', times: 12, ask: 'before' },
+    { say: 'When the pile is empty and every plate has the same, tap Check.', act: 'tap', same: true },
+    { say: 'Need to hear the question again? Tap the speaker next to the words.', act: 'replay' },
+  ],
+  sense: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game is designed to help you explore your five senses.`, act: 'look' },
+    { say: 'Simply listen to the question, then select the sense that most accurately fits.', quiet: 'Simply read the question, then select the sense that most accurately fits.', act: 'look', ask: 'after' },
+    { say: 'You can drag the words down to the picture of the sense.', act: 'drag' },
+    { say: 'You can tap the picture of the sense that fits best.', act: 'tap', ask: 'before' },
+    { say: 'Or even type a number from 1 to 5 to make a selection.', act: 'key', keys: true },
+    { say: 'Need to hear the question again? Tap the speaker next to the words.', act: 'replay' },
+  ],
+  turn: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you take turns when friends talk.`, act: 'look' },
+    { say: 'Four friends sit in a circle, and the friend with the talking stick is talking.', act: 'look' },
+    { say: 'Follow the arrow around the circle, and tap the friend whose turn is next.', act: 'tap' },
+  ],
+  spot: (g) => (g.spot === 'letters' ? [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you know your letters by their shapes.`, act: 'look' },
+    { say: 'Listen for the name of a letter.', quiet: 'Find the letter the words ask for.', act: 'look', ask: 'after' },
+    { say: 'Then find that letter, and tap it.', act: 'tap' },
+    { say: 'The right letter gets a green ring. A different letter tells you its name, so you can listen and try again.', quiet: 'The right letter gets a green ring. A different letter gets a dashed ring, so you can try again.', act: 'look' },
+    { say: 'Need to hear the letter again? Tap the speaker next to the words.', act: 'replay' },
+  ] : [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you find lines, shapes and colors in a picture.`, act: 'look' },
+    { say: 'Listen for the piece the voice asks for.', quiet: 'Find the piece the words ask for.', act: 'look', ask: 'after' },
+    { say: 'Then tap it in the picture.', act: 'tap' },
+    { say: 'A right piece lights up, and a wrong one wobbles.', act: 'look' },
+    { say: 'Need to hear it again? Tap the speaker next to the words.', act: 'replay' },
+  ]),
+  path: (g, d) => (g.young ? [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you tell ${introSaid(g, d, 'a')} from ${introSaid(g, d, 'b')}.`, act: 'look' },
+    { say: `Tap the ${introSaid(g, d, 'a')} one at a time to walk the gold dot to the star.`, act: 'taps', times: 2 },
+    { say: `A step on anything else gets a red-brown edge, and the dot stays put. You can drag the dot along the ${introSaid(g, d, 'a')} too.`, act: 'look' },
+  ] : [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you spot ${introSaid(g, d, 'a')} fast.`, act: 'look' },
+    { say: `Drag the gold dot from the top corner to the star, stepping only on ${introSaid(g, d, 'a')}.`, act: 'drag' },
+    { say: 'A wrong step gets a red-brown edge, and the dot stays put. The clock counts up, so try to beat your best.', act: 'look' },
+  ]),
+  jump: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you ${g.jump === 'differences' ? 'take away' : g.jump === 'sums' ? 'add' : 'work out answers'} with a number line.`, act: 'look' },
+    { say: `Read the question at the top. Then drag the frog along the number line, and let go on the answer.`, act: 'drag' },
+    { say: 'A right landing brings the next one. A wrong one sends the frog back to try again.', act: 'look' },
+  ],
+  jigsaw: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you put a picture back together.`, act: 'look' },
+    { say: 'Drag a piece to where it belongs, and it swaps places with the piece there.', act: 'drag' },
+    { say: 'You can also tap one piece and then another to swap them. Keep going until the picture is whole.', act: 'look' },
+  ],
+  buckets: (g, d) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you sort ${introSaid(g, d, 'a')} from ${introSaid(g, d, 'b')}.`, act: 'look' },
+    { say: `Drag each chip into its bucket, ${introSaid(g, d, 'a')} on the left and ${introSaid(g, d, 'b')} on the right.`, act: 'drag' },
+    { say: 'A chip in the wrong bucket bounces back, and the clock counts up, so try to beat your best.', act: 'look' },
+  ],
+  ship: (g, d) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you spot ${introSaid(g, d, 'a')} fast.`, act: 'look' },
+    { say: 'Tap where you want the ship to go. It glides there and fires straight up.', act: 'tap', times: 2 },
+    { say: `Hit the ${introSaid(g, d, 'a')} before they get past. You lose a ship when one of them gets past, or when you hit something else.`, act: 'tap' },
+    { say: 'You have three ships. Every ten hits brings one back, and everything falls a little faster as you go.', act: 'look' },
+    { say: 'On a keyboard, the arrow keys move the ship, and the space bar fires.', act: 'key', keys: true },
+  ],
+  map: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you find places on a map.`, act: 'look' },
+    { say: 'A place is named at the top. Find it on the map, and tap it.', act: 'tap' },
+    { say: 'A right tap turns the place green and plants a pin. A wrong tap turns the place you touched red for a moment.', act: 'look' },
+  ],
+  balance: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you make two sides equal.`, act: 'look' },
+    { say: `The left pan shows ${g.balance === 'times' ? 'a times fact' : g.balance === 'fractions' ? 'a fraction' : g.balance === 'expressions' ? 'an expression to work out' : 'a number'}. Drag weights from the tray onto the right pan until the scale is level.`, act: 'drag' },
+    { say: 'If the right pan gets too heavy, drag a weight back off.', act: 'look' },
+  ],
+  sprint: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you remember what your lessons taught, fast.`, act: 'look' },
+    { say: 'You have sixty seconds. Questions from your own lessons come one after another, so tap the answer, and the next one appears.', act: 'tap' },
+    { say: 'A right answer is a point, a wrong one takes a point away, and three right in a row starts a streak. Try to beat your best!', act: 'tap' },
+  ],
+  order: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you put things in the order they happen.`, act: 'look' },
+    { say: 'The steps are mixed up. Tap them in order, first to last, and each one takes its number.', act: 'taps', times: 2 },
+    { say: 'Tap a numbered step to take back its number and the ones after it. When every step has a number, a right order moves on, and the steps from the first mistake on come loose to try again.', act: 'look' },
+  ],
+  pong: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game is a quick break for your eyes and your hands.`, act: 'look' },
+    { say: 'Slide the paddle along the bottom to hit the ball back.', act: 'follow', ms: 4500 },
+    { say: 'Miss, and the ball starts again. See how many hits in a row you can make.', act: 'follow', ms: 2400 },
+  ],
+  evidence: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you find the sentence that proves an answer.`, act: 'look' },
+    { say: 'Read the question and the short passage under it. Then tap the one sentence that answers the question. That sentence is your evidence.', act: 'tap' },
+    { say: 'The reason shows under the passage, and the clock rests while you read it.', act: 'look' },
+  ],
+  ptable: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you find your way around the periodic table.`, act: 'look' },
+    { say: 'A question names an element by its name, its number of protons, its place or its family. Find it on the table, and tap it.', act: 'tap' },
+    { say: 'Groups run down the columns, periods run across the rows, and the small number on each element is its atomic number.', act: 'look' },
+  ],
+  debug: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you find and fix a bug in a robot's program.`, act: 'look' },
+    { say: 'The robot follows its steps in order. Tap Run to watch it go.', act: 'tap' },
+    { say: 'One step is wrong. Tap a step to change it, then run the robot again, until it reaches the star.', act: 'taps', times: 4, same: true },
+  ],
+  mix: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you learn which colors mix to make new ones.`, act: 'look' },
+    { say: 'A color is named at the top. Tap two paint pots to pour them into the bowl, and see what they make.', act: 'taps', times: 2 },
+    { say: 'A right color brings its rule and Next. A wrong mix shows what it made, then clears, so you can try another pair.', act: 'look' },
+  ],
+  build: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you build sentences that say more.`, act: 'look' },
+    { say: 'Tap the words in order to build the sentence.', act: 'taps', times: 3 },
+    { say: 'Tap a word in the sentence to take it back. First comes a short sentence, and then a longer one that says more.', act: 'look' },
+  ],
+  fix: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you catch and fix mistakes in writing.`, act: 'look' },
+    { say: 'Each sentence has one mistake, a word, a capital or a mark. Tap it to fix it.', act: 'tap' },
+    { say: 'Read the rule that shows, then tap Next sentence. The clock stops while you read.', act: 'look' },
+  ],
+  teach: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you see how a computer learns from examples.`, act: 'look' },
+    { say: 'The robot guesses each fruit from the nearest fruit it already knows. A red ring means it guesses apple, and a yellow ring means banana.', act: 'look' },
+    { say: 'Tap a fruit the robot got wrong to teach it, and watch the guesses near it change. Fewer lessons is the better score.', act: 'tap' },
+  ],
+  bits: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you see how a computer writes numbers with ones and zeros.`, act: 'look' },
+    { say: 'A number sits at the top, and eight switches sit below it, worth 128 down to 1. Tap the switches on and off until the lit places add up to the number.', act: 'taps', times: 4 },
+    { say: 'The sum shows as you go, and the clock counts up.', act: 'look' },
+  ],
+  price: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you find the price that earns the most profit.`, act: 'look' },
+    { say: 'Each customer has a top price in mind that you cannot see. Tap a price to try it, and the people who will pay it light up, each holding a cup.', act: 'tap' },
+    { say: 'The profit shows as money in minus money out. You get three tries a stand, and then the best price is shown.', act: 'look' },
+  ],
+  loan: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you see what a loan really costs.`, act: 'look' },
+    { say: 'Tap a payment. Each tap is a month. Interest is added on what is still owed, and then your payment comes off.', act: 'taps', times: 2 },
+    { say: 'Watch what the smallest payment costs over time. Less interest paid in all is the better score.', act: 'look' },
+  ],
+  fund: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you build an emergency fund.`, act: 'look' },
+    { say: 'Each tap is a month on your own. Your income comes in, the bills go out, and you choose how much of what is left goes into your fund.', act: 'taps', times: 2 },
+    { say: 'Some months bring a surprise bill. The fund pays what it can, and the rest is borrowed. Your score is the fund minus the loan after twelve months.', act: 'look' },
+  ],
+  search: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you search the way a computer does, by halving what is left.`, act: 'look' },
+    { say: 'The cards lie face down in order, smallest to largest. Tap a card to turn it over, and the board says whether your number is higher or lower.', act: 'taps', times: 3 },
+    { say: 'Start in the middle and halve what is left each time. Fewer looks is the better score.', act: 'look' },
+  ],
+  pattern: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you find the pattern and say what comes next.`, act: 'look' },
+    { say: 'A row of pieces repeats, and then it stops. Tap the piece that comes next.', act: 'tap' },
+    { say: 'The right one fills the row, and a wrong one wobbles.', act: 'look' },
+  ],
+  shape: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you read how loud music should be.`, act: 'look' },
+    { say: 'Six bars of loudness sit over the markings from the score. Tap the arrows to raise or lower each bar until it follows the markings.', act: 'taps', times: 3 },
+    { say: 'Soft bars sit low, loud bars sit high, a crescendo climbs and a decrescendo falls. Then check the line.', act: 'look' },
+  ],
+  chord: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you build chords on a keyboard.`, act: 'look' },
+    { say: 'A chord is named at the top. Tap the three keys that make it.', act: 'taps', times: 3 },
+    { say: 'A major triad climbs four half steps and then three, and a minor triad climbs three and then four. A key that belongs lights up, and one that does not wobbles.', act: 'look' },
+  ],
+  valid: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you tell a valid argument from one that only sounds right.`, act: 'look' },
+    { say: 'Ask whether the form guarantees the conclusion when the first lines are true. You can flick the card right for Valid, or left for Not valid.', act: 'drag' },
+    { say: 'You can tap a button too.', act: 'tap' },
+    { say: 'On a keyboard, you can press the left or right arrow key.', act: 'key', keys: true },
+  ],
+  reason: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you tell whether a reason really bears on a claim.`, act: 'look' },
+    { say: 'A reason can be true and still have nothing to do with the claim. Flick the card right for Supports it, or left for Does not.', act: 'drag' },
+    { say: 'You can tap a button too.', act: 'tap' },
+    { say: 'On a keyboard, you can press the left or right arrow key.', act: 'key', keys: true },
+  ],
+  because: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you tell a real reason from a fake one.`, act: 'look' },
+    { say: 'A claim comes with four becauses. Two are real reasons, about the thing and true. Tap the real ones.', act: 'taps', times: 2 },
+    { say: 'A fake one wobbles. It might be a headcount, an order, a wish, or something true about the wrong thing.', act: 'look' },
+  ],
+  stat: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you find the mean, the median and the mode.`, act: 'look' },
+    { say: 'You see five quiz scores and one average to find. Work it out, and tap the number.', act: 'tap' },
+    { say: 'For the mean, add them up and divide by five. For the median, put them in order and take the middle one. For the mode, find the score that appears most.', act: 'look' },
+  ],
+  recall: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game shows you how much your working memory can hold.`, act: 'look' },
+    { say: 'Five words appear for four seconds, and then they hide. Hold them in mind.', act: 'wait', ms: 4300, starts: true },
+    { say: 'Then tap the one of the four words that was on the list.', act: 'tap' },
+  ],
+  face: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you read how a face is feeling.`, act: 'look' },
+    { say: 'Look at the eyebrows, the eyes and the mouth. You can drag the face down to its feeling.', act: 'drag' },
+    { say: 'You can tap the word for the feeling.', act: 'tap' },
+    { say: 'Or press its number on the keyboard. The numbers sit under the words.', act: 'key', keys: true },
+  ],
+  filler: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you catch filler words.`, act: 'look' },
+    { say: 'A line from a talk has filler words in it, like um, like and you know. Tap every filler to strike it out.', act: 'taps', times: 2 },
+    { say: 'A real word wobbles. When the line is clean, it shows without its fillers, and the next one comes.', act: 'look' },
+  ],
+  room: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you choose the right words for the room you are in.`, act: 'look' },
+    { say: 'Something somebody said appears, with four rooms below. You can drag the card down to the room it fits.', act: 'drag' },
+    { say: 'You can tap the room.', act: 'tap' },
+    { say: 'Or press its number on the keyboard. The numbers sit under the rooms.', act: 'key', keys: true },
+  ],
+  ask: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you ask questions that show you are listening.`, act: 'look' },
+    { say: 'A friend says something, and four questions sit below. Tap the question that is about what they said.', act: 'tap' },
+    { say: 'A question about something else wobbles. The clock counts up, so try to beat your best.', act: 'look' },
+  ],
+  jar: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you read a soil jar test.`, act: 'look' },
+    { say: 'A jar of soil and water has settled, sand at the bottom, silt in the middle and clay on top. Tap the texture the layers show.', act: 'tap' },
+    { say: 'Eighty-five percent sand or more is sandy, forty percent clay or more is clay, and the jars in between are loams.', act: 'look' },
+  ],
+  relation: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you name how two living things affect each other.`, act: 'look' },
+    { say: 'A line about two living things on a farm appears. You can drag the card down to the word that fits.', act: 'drag' },
+    { say: 'You can tap the word.', act: 'tap' },
+    { say: 'Or press its number on the keyboard. The numbers sit under the words.', act: 'key', keys: true },
+  ],
+  sprout: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you learn what a seed needs to sprout.`, act: 'look' },
+    { say: 'A bean seed sits in a cup, with four facts about it. Decide whether it sprouts, and tap your answer.', act: 'tap' },
+    { say: 'A bean needs water, air and warmth to sprout. Light can wait until the shoot is up.', act: 'look' },
+  ],
+  grow: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you learn what a plant needs to grow.`, act: 'look' },
+    { say: 'Listen to what the plant looks like.', quiet: 'Read what the plant looks like.', act: 'look', ask: 'after' },
+    { say: 'Then tap what it needs, and the plant grows.', act: 'tap' },
+    { say: 'Need to hear it again? Tap the speaker next to the words.', act: 'replay' },
+  ],
+  breakeven: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you find where a business stops losing money.`, act: 'look' },
+    { say: 'The chart draws the money coming in and the total cost. Tap how many the business must sell to break even, where the lines cross.', act: 'tap' },
+    { say: 'The clock counts up, so try to beat your best.', act: 'look' },
+  ],
+  deal: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you find the better deal.`, act: 'look' },
+    { say: 'An item has a price tag and two coupons, a percent off and some dollars off. Work out what each one saves, and tap the coupon that saves more.', act: 'tap' },
+    { say: 'The clock counts up, so try to beat your best.', act: 'look' },
+  ],
+  savejar: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you plan how long saving takes.`, act: 'look' },
+    { say: 'Something to save for has a price, and some money goes in the jar each week. Tap how many weeks it takes to reach the goal.', act: 'tap' },
+    { say: 'Then watch the jar fill to the goal line, a stripe for every week.', act: 'look' },
+  ],
+  tool: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you learn the tools that workers use.`, act: 'look' },
+    { say: 'A job is named, and three tools appear.', act: 'look', ask: 'after' },
+    { say: 'You can drag the words down to the right tool.', act: 'drag' },
+    { say: 'You can tap the tool.', act: 'tap' },
+    { say: 'Or press its number on the keyboard. The numbers sit under the tools.', act: 'key', keys: true },
+    { say: 'Need to hear the job again? Tap the speaker next to the words.', act: 'replay' },
+  ],
+  ledger: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you build a balance sheet.`, act: 'look' },
+    { say: 'An account appears. You can drag it down to its place, assets, liabilities or equity.', act: 'drag' },
+    { say: 'You can tap the box.', act: 'tap' },
+    { say: 'Or press its number on the keyboard. The numbers sit under the boxes.', act: 'key', keys: true },
+  ],
+  label: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you read a food label.`, act: 'look' },
+    { say: 'Two labels for the same kind of food sit side by side. Read the row the question asks about, and tap the better label.', act: 'tap' },
+    { say: 'The clock counts up, so try to beat your best.', act: 'look' },
+  ],
+  cpr: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you feel the pace of chest compressions.`, act: 'look' },
+    { say: 'Tap Push at a steady pace, one hundred to one hundred twenty times a minute, with the ring as your guide.', act: 'taps', times: 7, every: 545 },
+    { say: 'After fifteen pushes, the game tells you whether you were too slow, just right or too fast.', act: 'look' },
+  ],
+  greenred: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you tell a healthy relationship from a warning sign.`, act: 'look' },
+    { say: 'A behavior appears. Flick the card right for a green flag, or left for a red flag.', act: 'drag' },
+    { say: 'You can tap a button too.', act: 'tap' },
+    { say: 'On a keyboard, you can press the left or right arrow key.', act: 'key', keys: true },
+  ],
+  cite: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you know when a speech needs a citation.`, act: 'look' },
+    { say: 'Something a speaker might use appears. Flick the card right for Cite it, or left for No citation needed.', act: 'drag' },
+    { say: 'You can tap a button too.', act: 'tap' },
+    { say: 'On a keyboard, you can press the left or right arrow key.', act: 'key', keys: true },
+  ],
+  gdp: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you decide what counts in GDP.`, act: 'look' },
+    { say: 'Something happens this year. Flick the card right for In GDP, or left for Not in GDP.', act: 'drag' },
+    { say: 'You can tap a button too.', act: 'tap' },
+    { say: 'On a keyboard, you can press the left or right arrow key.', act: 'key', keys: true },
+  ],
+  cause: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you tell an experiment from a correlation.`, act: 'look' },
+    { say: 'A study appears. Flick the card right for Experiment, where chance chose the groups, or left for Correlation, where things were only measured.', act: 'drag' },
+    { say: 'You can tap a button too.', act: 'tap' },
+    { say: 'On a keyboard, you can press the left or right arrow key.', act: 'key', keys: true },
+  ],
+  mythfact: (g) => [
+    { say: `Welcome to ${spokenTitle(g.title)}! This game helps you tell a myth from a fact.`, act: 'look' },
+    { say: 'A statement appears. Flick the card right for Fact, or left for Myth. Each answer shows its reason.', act: 'drag' },
+    { say: 'You can tap a button too.', act: 'tap' },
+    { say: 'On a keyboard, you can press the left or right arrow key.', act: 'key', keys: true },
+  ],
+};
+// The lines a game says as it opens, in order, its closing line last (Mikey's "If you wish to hear these instructions again" line,
+// with the speaker named, since his later note gives the speaker that job). Each line keeps its act; keys says the line needs a
+// keyboard. A game whose kind has no intro (none today, and the rules test holds every kind to one) gets its welcome and closing.
+// Each line's clip key (audio/<key>.mp3, docs/AUDIO-LEDGER.csv) is made from its words and its voice, the young voice for the
+// youngest games: a line many games share (the closing, Pairs' rules) is one recording, and a line whose words change gets a new
+// key, so an old recording of old words is never played over the new ones.
+const introClip = (say, young) => { let h = 2166136261; for (const ch of `${young ? 'young' : 'main'}|${say}`) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619) >>> 0; } return `game-${young ? 'young' : 'main'}-${h.toString(16).padStart(8, '0')}`; };
+export function gameIntro(game) {
+  if (!game) return [];
+  const make = INTROS[game.kind]; const deck = game.rule ? ruleDeck(game.rule) : null;
+  const lines = make ? make(game, deck) : [{ say: `Welcome to ${spokenTitle(game.title)}!`, act: 'look' }];
+  const young = gameBand(game) === 'early';
+  return [...lines, { say: GAME_INTRO_CLOSING, act: 'speaker' }].map((line) => ({ ...line, key: introClip(line.say, young) }));
+}
+// The words the speaker under a game says again (no pointer, no board moves), the keyboard lines only where there is a keyboard.
+export function gameIntroWords(game, { keys = false } = {}) { return gameIntro(game).filter((l) => keys || !l.keys).map((l) => l.say).join(' '); }
+// The kinds of game that have their own welcome lines (every kind, held by the rules test, so a new kind is seen without one).
+export const GAME_INTRO_KINDS = Object.keys(INTROS);
+// ---------- How a game deals, and the round its welcome plays (pass MP, round one's code and game checks) ----------
+// In plain terms: a game's round number decides what it deals, the same every time, so a test can read a round and a round can be
+// dealt again. A game's welcome plays a round of its own while the child watches, and the answers the pointer shows there must
+// never be the ones the child then meets first. One round for every game could not promise that: a deck dealt in steps (set k of
+// round r is set r times the step plus k, counted round the deck) deals the same sets for any two rounds a whole number of decks
+// apart, and the round the welcome first played, 977, was one more than a multiple of 4, 8, 16 and 61, so the pointer solved the
+// child's own first set in fourteen games (Debug the robot showed the very program the child then had to fix), and a round
+// generator's small pool can deal the same answer by chance (Hold It in Mind's garden). So each game takes its own round
+// (demoRoundFor): the first from 500 up whose answered items are none of the items the child meets in round 1; a deck too small for
+// that takes the round whose items the child meets latest. The boards deal through these same functions (dealIndex, mixOrder, mapOrder,
+// jumpQuestions, balanceTargets, searchBoardAt and the round generators), so what the welcome keeps clear of is what is dealt.
+export const DEAL_STEP = { order: 1, evidence: 2, debug: 3, build: 1, fix: 3, walk: 5, teach: 3, spot: 2 };
+export function dealIndex(kind, round, k, length) { return length > 0 ? (round * (DEAL_STEP[kind] || 1) + k) % length : 0; }
+export function mixOrder(deck, round) { return deck ? shuffle(lcgRandom(round * 29 + 7), deck.targets.slice()) : []; }
+export function mapOrder(map, round) { return map ? shuffle(lcgRandom(round * 104729 + 41), map.regions.map((r) => r.id)) : []; }
+export function jumpQuestions(deck, round) { const rnd = lcgRandom(round * 7919 + 29); const out = []; while (out.length < JUMPS_PER_ROUND) { const q = deck.make(rnd); if (!out.some((o) => o.ask === q.ask)) out.push(q); } return out; }
+export function balanceTargets(deck, round) { const rnd = lcgRandom(round * 7919 + 61); const out = []; let guard = 0; while (out.length < BALANCES_PER_ROUND && guard++ < 200) { const t = deck.make(rnd); if (balanceReachable(deck.weights, t.value) && !out.some((o) => o.show === t.show)) out.push(t); } return out; }
+export function searchBoardAt(round, k, cards = 32) { return searchBoard(round * 4 + k, cards); }
+// Buckets and Pairs deal here too since round two's second read (pass MP): their boards dealt by sums of their own, so the welcome's
+// round could not see them, and every Buckets welcome dragged a chip the child then met on the first board (Noun or verb's "swim"),
+// and 13 of 19 deck Pairs welcomes turned a pair the child's first board held. The sums are the boards' own, so no board changed.
+// A Buckets board is four chips of each kind, shuffled together; a Pairs board with a deck is that many pairs as text cards, and
+// one without (the youngest's) that many pictures, each twice (PAIR_ICONS, moved here from ui.jsx); a picture Pairs (pics) has its
+// own board, pairPicsBoard.
+export const PAIR_ICONS = ['sun', 'fish', 'tree', 'flower', 'moon', 'bird', 'cup', 'drop'];
+export function bucketChips(deck, round) { const rnd = lcgRandom(round * 104729 + 11); const take = (list, bin) => shuffle(rnd, list).slice(0, 4).map((t) => ({ t, bin })); return shuffle(rnd, [...take(deck.a.items, 0), ...take(deck.b.items, 1)]); }
+export function pairCards(game, round) { const rnd = lcgRandom(round * 7919 + 13); if (game.deck) { const pairs = shuffle(rnd, PAIR_DECKS[game.deck]).slice(0, game.pairs); return shuffle(rnd, pairs.flatMap((pr, k) => [{ key: k, text: pr[0] }, { key: k, text: pr[1] }])); } const icons = shuffle(rnd, PAIR_ICONS).slice(0, game.pairs); return shuffle(rnd, icons.flatMap((ic) => [ic, ic])); }
+// The items a game's round deals, in the order its board deals them, n of them (all of a small deck's), each as a short key: what
+// a child would carry from one round to the next (the set, the question, the thing asked about, and for Hold It in Mind the word
+// that was on the list). Null for a board whose round is a layout rather than a run of items (dots, picture pairs, sorting, a maze,
+// a jigsaw, the moving games, a path, Find the Letter), whose boards differ wherever their seeds do; Find the Letter and a picture
+// Pairs also start each visit at a chance round of their own. Since round two's second read Buckets gives its chips, in the order
+// the pointer drags them, and a Pairs with a deck its pairs, each as its two cards, in the order their first cards lie, since a
+// match there is the deck's knowledge; a board that shows all of itself at once is held clear of the child's whole first board.
+export function gameItems(game, round, n = 3) {
+  if (!game) return null;
+  const key = (v) => JSON.stringify(v);
+  const deckRun = (deck, kind) => (deck && deck.length ? Array.from({ length: Math.min(n, deck.length) }, (_, k) => key(deck[dealIndex(kind, round, k, deck.length)])) : []);
+  const from = (list, f = (q) => q) => (list || []).slice(0, n).map((q) => key(f(q)));
+  const each = (count, f) => Array.from({ length: count }, (_, k) => key(f(k)));
+  switch (game.kind) {
+    case 'order': return deckRun(ORDER_DECKS[game.deck], 'order');
+    case 'evidence': return deckRun(EVIDENCE_DECKS[game.deck], 'evidence');
+    case 'debug': return deckRun(ROBOT_DECKS[game.deck], 'debug');
+    case 'build': return deckRun(BUILD_DECKS[game.deck], 'build');
+    case 'fix': return deckRun(FIX_DECKS[game.deck], 'fix');
+    case 'walk': return deckRun(ROBOT_DECKS.walk, 'walk');
+    case 'teach': return deckRun(TEACH_DECKS[game.teach], 'teach');
+    case 'spot': return game.spot === 'letters' ? null : deckRun(SPOT_SCENES, 'spot');
+    case 'buckets': return ruleDeck(game.rule) ? from(bucketChips(ruleDeck(game.rule), round), (c) => c.t) : null;
+    case 'pairs': { if (!game.deck || !PAIR_DECKS[game.deck]) return null; const cards = pairCards(game, round); const keys = []; for (const c of cards) if (!keys.includes(c.key)) keys.push(c.key); return keys.slice(0, n).map((k) => key(cards.filter((c) => c.key === k).map((c) => c.text).sort())); }
+    case 'mix': return from(mixOrder(MIX_DECKS[game.deck], round));
+    case 'map': return from(mapOrder(mapFor(game.map), round));
+    case 'jump': return JUMP_DECKS[game.jump] ? from(jumpQuestions(JUMP_DECKS[game.jump], round), (q) => q.ask) : [];
+    case 'balance': return BALANCE_DECKS[game.balance] ? from(balanceTargets(BALANCE_DECKS[game.balance], round), (t) => t.show) : [];
+    case 'search': return each(n, (k) => searchBoardAt(round, k, game.search || 32));
+    case 'shape': return each(n, (k) => dynamicsPlan(round, k));
+    case 'fund': return [key(fundYear(round))];
+    case 'ptable': return from(ptableQuestions(round, 8), (q) => q.ask);
+    case 'bits': return from(bitsTargets(round, 6));
+    case 'pay': return from(payPrices(round));
+    case 'price': return from(priceStands(round));
+    case 'loan': return from(loanPlans(round), (q) => [q.thing, q.principal, q.rate]);
+    case 'pattern': return from(patternRounds(round), (q) => [q.form, q.shown]);
+    case 'chord': return from(chordRounds(round), (q) => [q.root, q.quality]);
+    case 'valid': return from(argumentRounds(round), (q) => q.lines);
+    case 'reason': return from(reasonRounds(round), (q) => [q.claim, q.reason]);
+    case 'because': return from(becauseRounds(round), (q) => q.claim);
+    case 'share': return from(shareRounds(round), (q) => [q.plates, q.cookies]);
+    case 'stat': return from(statRounds(round), (q) => [q.scores, q.ask]);
+    case 'recall': return from(recallRounds(round), (q) => q.answer);
+    case 'face': return from(feelingRounds(round), (q) => q.answer);
+    case 'sense': return from(senseRounds(round), (q) => q.thing);
+    case 'filler': return from(fillerRounds(round), (q) => q.tokens.map((t) => t.text).join(' '));
+    case 'room': return from(roomRounds(round), (q) => q.line);
+    case 'ask': return from(askRounds(round), (q) => q.said);
+    case 'turn': return from(turnRounds(round));
+    case 'jar': return from(jarRounds(round), (q) => [q.sand, q.silt, q.clay]);
+    case 'relation': return from(relationRounds(round), (q) => q.line);
+    case 'sprout': return from(sproutRounds(round));
+    case 'grow': return from(growRounds(round), (q) => [q.plant, q.need]);
+    case 'breakeven': return from(breakevenRounds(round), (q) => [q.what, q.fixed, q.price, q.cost]);
+    case 'deal': return from(dealRounds(round), (q) => [q.what, q.price, q.pct, q.off]);
+    case 'savejar': return from(savejarRounds(round), (q) => [q.what, q.goal, q.weekly]);
+    case 'tool': return from(toolRounds(round), (q) => q.job);
+    case 'ledger': return from(ledgerRounds(round), (q) => q.item);
+    case 'label': return from(labelRounds(round), (q) => [q.food, q.nutrient]);
+    case 'greenred': return from(greenredRounds(round), (q) => q.behavior);
+    case 'cite': case 'gdp': case 'cause': case 'mythfact': return from({ cite: citeRounds, gdp: gdpRounds, cause: causeRounds, mythfact: mythfactRounds }[game.kind](round), (q) => q.text);
+    default: return null;
+  }
+}
+// How many items a game's welcome answers: one for each line whose act answers one (a tap, taps, a drag or a key; a computer's
+// keyboard line counts, since a computer says it), except a line that goes on with the item the line before began (same: Check
+// after the cookies, the fix after Run, Go after the steps).
+export function demoItemCount(game) { return Math.max(1, gameIntro(game).filter((l) => ['tap', 'taps', 'drag', 'key'].includes(l.act) && !l.same).length); }
+// The round a game's welcome plays: from DEMO_FROM up, the first whose answered items (demoItemCount of them, three at most) are
+// none of the items the child meets in round 1, the child's first (all of round 1's run, or its whole board where a board shows all
+// of itself at once); where no round is clear (a deck the child meets whole in round 1: Spot It's four pictures, In order:
+// civilizations' three sets, Fraction twins' five pairs, the fractions scale's five amounts), the round whose answered items the
+// child meets latest, the earliest such round. A board with no run of items (gameItems is null) plays DEMO_FROM, whose layout differs
+// from round 1's wherever the seeds do. DEMO_SHOWS asks, where a kind's round allows it, for a round that shows what the welcome
+// says (round two's second read: Pay the Price's welcome round priced its first thing at 4, so the pointer paid four small coins
+// while the voice said a big coin fills five), a clear round first.
+// The search is run here, by the rules test, and by tools/demo-rounds.mjs, which writes its result into DEMO_ROUNDS below, so a
+// child's tap never searches (round two's second read: the fractions scale, whose five amounts round 1 deals whole, searched all
+// 1,000 rounds as the game opened, a 400 ms freeze in a desktop browser). The rules test fails when the table and the search differ,
+// and names the command that writes it again; a game missing from the table is searched when it opens.
+export const DEMO_FROM = 500; const DEMO_TRIES = 1000; const demoRoundMemo = new Map();
+const DEMO_SHOWS = { pay: (game, round) => payPrices(round)[0].price >= 5 };
+export function demoRoundSearch(game) {
+  if (!game) return DEMO_FROM;
+  const all = gameItems(game, 1, 99); let best = DEMO_FROM;
+  if (all && all.length) {
+    const n = Math.min(3, demoItemCount(game)); const shows = DEMO_SHOWS[game.kind];
+    const meets = (x) => { const at = all.indexOf(x); return at < 0 ? Infinity : at; };
+    let bestScore = -1; let bestShows = false;
+    for (let r = DEMO_FROM; r < DEMO_FROM + DEMO_TRIES; r++) {
+      const score = Math.min(...gameItems(game, r, n).map(meets)); const ok = !shows || shows(game, r);
+      if (score > bestScore || (score === bestScore && ok && !bestShows)) { bestScore = score; bestShows = ok; best = r; }
+      if (score === Infinity && ok) break;
+    }
+  }
+  return best;
+}
+// DEMO_ROUNDS:start (written by node tools/demo-rounds.mjs --write; the rules test holds it to demoRoundSearch)
+export const DEMO_ROUNDS = {
+  'dots-kite': 500,
+  'pairs-shapes': 500,
+  'sort-size': 500,
+  'catch-circles': 500,
+  'maze-small': 500,
+  'walk-tech-k': 500,
+  'pay-econ-k': 501,
+  'share-philosophy-k': 500,
+  'sense-psychology-k': 507,
+  'turn-speech-k': 500,
+  'spot-arts-k': 500,
+  'pairs-first-steps': 500,
+  'dots-boat': 500,
+  'pairs-more': 500,
+  'sort-color': 500,
+  'path-circles': 500,
+  'dots-house': 500,
+  'maze-big': 500,
+  'dots-star': 500,
+  'jump-sums': 500,
+  'jigsaw-9': 500,
+  'pairs-many': 500,
+  'path-even': 500,
+  'catch-multiples-3': 500,
+  'buckets-noun-verb': 501,
+  'catch-living': 500,
+  'path-multiples-4': 500,
+  'buckets-conductors': 501,
+  'catch-halves': 500,
+  'buckets-mammals': 501,
+  'buckets-adjective-adverb': 501,
+  'catch-multiples-7': 500,
+  'catch-renewable': 500,
+  'path-squares': 500,
+  'path-powers-2': 500,
+  'catch-primary-sources': 500,
+  'ship-even': 500,
+  'ship-gases': 500,
+  'ship-elements': 500,
+  'catch-igneous': 500,
+  'buckets-producer-consumer': 501,
+  'buckets-need-want': 501,
+  'catch-compound': 500,
+  'path-goods': 500,
+  'path-positive-sines': 500,
+  'buckets-cell-division': 501,
+  'jump-fractions': 500,
+  'jump-integers': 500,
+  'map-continents': 502,
+  'map-texas': 504,
+  'map-us-regions': 503,
+  'map-oceans': 503,
+  'map-hemispheres': 504,
+  'map-us-states': 531,
+  'map-europe': 508,
+  'map-asia': 508,
+  'map-africa': 508,
+  'map-south-america': 508,
+  'balance-ten': 500,
+  'catch-hexagons': 500,
+  'balance-times': 501,
+  'balance-fractions': 501,
+  'balance-expressions': 500,
+  'buckets-acid-base': 501,
+  'pairs-fractions': 501,
+  'pairs-vocabulary': 500,
+  'pairs-capitals': 500,
+  'pairs-texas': 501,
+  'pairs-roots': 500,
+  'pairs-formulas': 502,
+  'pairs-technology': 500,
+  'pairs-health': 500,
+  'pairs-music': 500,
+  'sprint-math': 500,
+  'sprint-science': 500,
+  'order-steps': 504,
+  'order-history-4': 500,
+  'order-history-6': 501,
+  'order-history-8': 500,
+  'order-history-10': 500,
+  'order-history-11': 500,
+  'order-government-12': 500,
+  'order-timeline': 500,
+  'order-math': 500,
+  'pairs-science-3': 502,
+  'pairs-science-4': 502,
+  'pairs-science-5': 502,
+  'pairs-science-6': 502,
+  'pairs-science-7': 502,
+  'pairs-science-8': 502,
+  'pairs-science-9': 502,
+  'pairs-science-10': 502,
+  'pairs-science-11': 502,
+  'pairs-science-12': 502,
+  'spot-first-sounds': 500,
+  'dots-fish': 500,
+  'jump-differences': 500,
+  'maze-huge': 500,
+  'dots-rocket': 500,
+  'pong': 500,
+  'evidence-reading-3': 501,
+  'evidence-reading-4': 501,
+  'evidence-reading-5': 501,
+  'evidence-reading-8': 501,
+  'evidence-reading-9': 501,
+  'evidence-reading-10': 501,
+  'evidence-reading-11': 501,
+  'evidence-reading-12': 501,
+  'evidence-reading-college': 501,
+  'ptable-science-10': 500,
+  'debug-tech-3': 502,
+  'debug-tech-5': 502,
+  'price-econ-3': 500,
+  'because-philosophy-3': 500,
+  'face-psychology-3': 508,
+  'pattern-arts-3': 500,
+  'shape-arts-6': 504,
+  'teach-tech-6': 502,
+  'search-tech-college': 500,
+  'loan-econ-6': 500,
+  'reason-philosophy-6': 500,
+  'recall-psychology-6': 500,
+  'fund-econ-9': 500,
+  'valid-philosophy-9': 501,
+  'stat-psychology-9': 500,
+  'filler-speech-9': 500,
+  'jar-agriculture-9': 500,
+  'breakeven-business-9': 500,
+  'tool-business-k': 526,
+  'ledger-business-college': 504,
+  'cause-psychology-college': 504,
+  'gdp-macroeconomics-college': 506,
+  'cite-speech-college': 507,
+  'label-health-6': 500,
+  'cpr-health-9': 500,
+  'greenred-sexual-health-6': 515,
+  'mythfact-sexual-health-9': 525,
+  'deal-business-6': 500,
+  'savejar-business-3': 500,
+  'relation-agriculture-6': 610,
+  'sprout-agriculture-3': 512,
+  'grow-agriculture-k': 505,
+  'room-speech-6': 501,
+  'ask-speech-3': 503,
+  'chord-arts-9': 505,
+  'bits-tech-9': 500,
+  'mix-art-3': 501,
+  'mix-art-4': 512,
+  'sprint-civics-3': 500,
+  'sprint-history-9': 500,
+  'sprint-history-college': 500,
+  'sprint-tech-7': 500,
+  'fix-writing-10': 502,
+  'sprint-writing-11': 500,
+  'sprint-writing-12': 500,
+  'build-writing-3': 500,
+  'build-writing-4': 500,
+  'build-writing-5': 500,
+  'fix-writing-9': 502,
+  'fix-writing-7': 502,
+};
+// DEMO_ROUNDS:end
+export function demoRoundFor(game) {
+  if (!game) return DEMO_FROM;
+  if (Object.prototype.hasOwnProperty.call(DEMO_ROUNDS, game.id)) return DEMO_ROUNDS[game.id];
+  if (!demoRoundMemo.has(game.id)) demoRoundMemo.set(game.id, demoRoundSearch(game));
+  return demoRoundMemo.get(game.id);
+}
 // The space shooter's rules (pass MI, Mikey: "let's make the objects being shot speed up gradually and keep going, even past the
 // 10 rounds it's set to now.  I want them to basically go until failure.  That said, we probably shouldn't have a correct object
 // immediately over an incorrect one because you have to wait for the incorrect one to pass then quickly tap to catch the right
@@ -2552,14 +3271,17 @@ export function shareRounds(round) {
 }
 // Mean, Median, Mode (2026-09-29, pass GM, psychology 9 to 12): a handful of scores and one of the three averages to
 // find, tapped from four numbers. Every round is built so the median is a whole score, the mode is single and the mean
-// comes out whole, which the rules test proves. Six rounds and the clock counts up.
+// comes out whole, which the rules test proves. Six rounds and the clock counts up. Since pass MP (round one's accuracy
+// check) the score that repeats sits at the low end or the high end, never in the middle: until then it was always the
+// middle score, so the median was always the mode and the game's two rules never gave different answers; the three are
+// now always three different numbers, which the rules test proves too.
 export function statRounds(round) {
   let x = (round * 16807 + 5) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
   const which = ['mean', 'median', 'mode'];
   return Array.from({ length: 6 }, (_, i) => {
     let scores;
-    do { const base = 50 + Math.floor(rnd() * 4) * 10; scores = [base, base + 10, base + 10, base + 20, base + 30 + Math.floor(rnd() * 3) * 10]; } while (scores.reduce((a, b) => a + b, 0) % 5 !== 0);
-    const sorted = [...scores].sort((a, b) => a - b); const mean = scores.reduce((a, b) => a + b, 0) / 5; const median = sorted[2]; const mode = sorted[1];
+    do { const base = 50 + Math.floor(rnd() * 4) * 10; scores = rnd() < 0.5 ? [base, base, base + 10, base + 20, base + 30 + Math.floor(rnd() * 3) * 10] : [base, base + 10, base + 20, base + 30, base + 30]; } while (scores.reduce((a, b) => a + b, 0) % 5 !== 0);
+    const sorted = [...scores].sort((a, b) => a - b); const mean = scores.reduce((a, b) => a + b, 0) / 5; const median = sorted[2]; const mode = sorted.find((v, j) => sorted.indexOf(v) !== j);
     const ask = which[(i + round) % 3]; const answer = { mean, median, mode }[ask];
     const pool = [...new Set([mean, median, mode, answer + 5, answer - 5, sorted[4]])].filter((v) => v !== answer).slice(0, 3);
     const order = [...scores]; for (let j = order.length - 1; j > 0; j--) { const k = Math.floor(rnd() * (j + 1)); [order[j], order[k]] = [order[k], order[j]]; }
@@ -2682,19 +3404,23 @@ export function turnRounds(round) {
 // Read the Jar (2026-09-30, pass GU, the agriculture game). In plain terms: shake soil in a jar of water and let it
 // settle; sand drops first, silt next, clay last, and the three layers show the soil's texture. The game draws a jar
 // with three layers and asks which texture it is. `jarRounds(round)` picks six samples for one game, each a mix of
-// sand, silt and clay adding to 100, and names the answer by one plain rule (`jarTexture`): 70 percent sand or more is
+// sand, silt and clay adding to 100, and names the answer by one plain rule (`jarTexture`): 85 percent sand or more is
 // sandy, 40 percent clay or more is clay, and anything else is loam. The screen reads answers from here, never decides
-// them, so the rules test can prove every answer follows the rule.
+// them, so the rules test can prove every answer follows the rule. Until pass MP sandy began at 70 percent, but by the USDA's
+// texture classes (the NRCS Soil Survey Manual, 2017) a soil of 70 percent sand and 10 percent clay is a sandy loam; sand and
+// loamy sand, the sandy soils, need 85 percent or more with this game's little clay (pass MP, round one's accuracy check), and
+// every jar the game draws now lands in the USDA class its answer names (the clay jars in the clay classes, the jars between
+// in the loams).
 // -----------------------------------------------------------------------------------------------------------------
 export const JAR_TEXTURES = ['sandy', 'loam', 'clay'];
-export function jarTexture(sand, silt, clay) { if (sand >= 70) return 'sandy'; if (clay >= 40) return 'clay'; return 'loam'; }
+export function jarTexture(sand, silt, clay) { if (sand >= 85) return 'sandy'; if (clay >= 40) return 'clay'; return 'loam'; }
 export function jarRounds(round) {
   let x = (round * 40503 + 13) >>> 0; const rnd = () => { x = (x * 1664525 + 1013904223) >>> 0; return x / 4294967296; };
   const rounds = [];
   while (rounds.length < 6) {
     const kind = rounds.length % 3; // spread the three answers across the round so no texture goes missing
     let sand; let clay;
-    if (kind === 0) { sand = 70 + Math.floor(rnd() * 21); clay = Math.floor(rnd() * Math.min(15, 100 - sand)); }
+    if (kind === 0) { sand = 85 + Math.floor(rnd() * 11); clay = Math.floor(rnd() * Math.min(15, 100 - sand)); }
     else if (kind === 2) { clay = 40 + Math.floor(rnd() * 31); sand = Math.floor(rnd() * Math.min(30, 100 - clay)); }
     else { sand = 20 + Math.floor(rnd() * 40); clay = 10 + Math.floor(rnd() * 25); }
     const silt = 100 - sand - clay; if (silt < 0) continue;
@@ -4745,12 +5471,12 @@ function K_SCIENCE_MODULES() { return [
       keyIdea: 'Shape, color, texture and material tell us what a thing is like. Sorting puts alike things in one group, and the same things can be sorted more than one way.',
       example: { kind: 'pair', a: { kind: 'icon', name: 'teddy' }, b: { kind: 'icon', name: 'rock' }, caption: 'The teddy bear is soft. The rock is hard.' },
       script: [
-        { say: 'We can tell what a thing is like by looking at it and touching it. This ball is round, and this block has corners. That is its shape, and we can sort by shape, the round things together.', show: { kind: 'pair', a: { kind: 'icon', name: 'ball' }, b: { kind: 'icon', name: 'block' } } },
+        { say: 'We can tell what a thing is like by looking at it and touching it. This ball is round, and this block has corners. That is its shape, and we can sort by shape, the round things together.', show: { kind: 'pair', a: { kind: 'icon', name: 'ball' }, b: { kind: 'icon', name: 'block~wood' } } },
         { say: 'Color is another way to sort. This ball is red, and this sock is blue.', show: { kind: 'pair', a: { kind: 'icon', name: 'ball' }, b: { kind: 'icon', name: 'sock' } } },
         { say: 'Touch a thing, and you can tell how it feels. This teddy bear is soft, and this rock is hard.', show: { kind: 'pair', a: { kind: 'icon', name: 'teddy' }, b: { kind: 'icon', name: 'rock' } } },
         { say: 'This log has rough, bumpy bark, and this window is smooth and flat. How a thing feels, soft or hard, smooth or rough, is called its texture.', show: { kind: 'pair', a: { kind: 'icon', name: 'log' }, b: { kind: 'icon', name: 'window' } } },
         { say: 'What a thing is made of is called its material. This spoon is made of metal, and it is cold and shiny.', show: { kind: 'icon', name: 'spoon' } },
-        { say: 'This block is made of wood, from a tree. This sock is made of cloth, and so is the teddy bear.', show: { kind: 'pair', a: { kind: 'icon', name: 'block' }, b: { kind: 'icon', name: 'sock' } } },
+        { say: 'This block is made of wood, from a tree. This sock is made of cloth, and so is the teddy bear.', show: { kind: 'pair', a: { kind: 'icon', name: 'block~wood' }, b: { kind: 'icon', name: 'sock' } } },
         { say: 'This book is made of paper. Paper is thin, and it tears. A window is made of glass, which you can see through.', show: { kind: 'icon', name: 'book' } },
         { say: 'Sorting means putting things that are alike in one group. Put every red thing in one pile and every blue thing in another. That is sorting by color.', show: { kind: 'pair', a: { kind: 'icon', name: 'ball' }, b: { kind: 'icon', name: 'sock' } } },
         { say: 'The same things can be sorted another way too. Put the soft things together, the teddy bear and the sock, and the hard things together, the rock and the spoon. That is sorting by how they feel.', show: { kind: 'pair', a: { kind: 'icon', name: 'teddy' }, b: { kind: 'icon', name: 'spoon' } } },
@@ -4778,7 +5504,7 @@ function K_SCIENCE_MODULES() { return [
         { say: 'This is a magnet. A magnet can pull some things toward it, even before it touches them.', show: { kind: 'icon', name: 'magnet' } },
         { say: 'Hold a magnet near a paper clip, and the paper clip jumps to the magnet. The paper clip is made of steel, and steel has iron in it. A magnet pulls iron.', show: { kind: 'icon', name: 'clip' } },
         { say: 'A nail is steel too, so a magnet pulls a nail.', show: { kind: 'icon', name: 'nail' } },
-        { say: 'A magnet does not pull a rock, a block of wood or a sock. They have no iron in them.', show: { kind: 'pair', a: { kind: 'icon', name: 'rock' }, b: { kind: 'icon', name: 'block' } } },
+        { say: 'A magnet does not pull a rock, a block of wood or a sock. They have no iron in them.', show: { kind: 'pair', a: { kind: 'icon', name: 'rock' }, b: { kind: 'icon', name: 'block~wood' } } },
         { say: 'A magnet does not pull every metal. This penny is metal, but it has no iron in it, so a magnet does not pull a penny.', show: { kind: 'icon', name: 'penny' } },
         { say: 'A magnet has two ends. Put two magnets end to end one way, and they pull together with a snap.', show: { kind: 'pair', a: { kind: 'icon', name: 'magnet' }, b: { kind: 'icon', name: 'magnet' } } },
         { say: 'Turn one magnet around, and now they push apart. You can feel the push in your hands. Magnets can pull, and magnets can push.', show: { kind: 'pair', a: { kind: 'icon', name: 'magnet' }, b: { kind: 'icon', name: 'magnet' } } },
@@ -5198,7 +5924,7 @@ function PREK_MODULES() { return [
         { say: 'Ears help tell animals apart. A bear has round ears, and a rabbit has long ears.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
         { say: 'A fox has pointy ears, and so does a cat, so look at the face and the color too.', show: { kind: 'pair', a: { kind: 'pic', name: 'fox' }, b: { kind: 'pic', name: 'cat' } } },
         { say: 'A snail has no ears and no legs at all. It slides along slowly on one flat foot.', show: { kind: 'pic', name: 'snail' } },
-        { say: 'An owl has big round eyes, and most owls hunt at night.', show: { kind: 'pic', name: 'owl' } },
+        { say: 'An owl has big round eyes, and most owls hunt at night. The tufts on top of its head are feathers, not ears.', show: { kind: 'pic', name: 'owl' } },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines V.E.1 (sorts objects that are the same and different into groups and uses language to describe how the groups are similar and different), in part, since the lesson finds the animal that is the same and the one that is different, by its ears, its face and its color, while using language to describe how the groups are similar and different is the child\'s own talk, for a grown-up to hear (EARMARKS E13), and VI.B.1 (observes, investigates, describes, and discusses the characteristics of organisms), in part, since the lesson observes a bear\'s round ears, a rabbit\'s long ears, the pointy ears of a fox and a cat, a snail\'s one flat foot and an owl\'s big round eyes, while investigating, describing and discussing are the child\'s own (EARMARKS E13), and Head Start ELOF Goal P-SCI 3 (compares and categorizes observable phenomena), whose 48 to 60 month progression reads "With increasing independence, sorts objects into groups based on more complex attributes, such as weight, sound, or texture. Uses measurement tools to assess the properties of and compare observable phenomena.", in part, since the lesson sorts animals by their ears, faces and color, while using measurement tools waits (EARMARKS E13).'],
@@ -11897,11 +12623,11 @@ function HEALTHK_MODULES() { return [
       // allergens and the usual signs of a reaction.
       paragraphs: ['A portion is how much you eat at one time. A child needs a child-sized portion, not a grown-up\'s. A good portion of grapes is about what fits in your two hands cupped together, and a good portion of chicken is about the size of your palm. Half your plate is fruits and vegetables, and the rest is grains and protein, with milk or water beside it.', 'Your tummy tells you when it is full. Eat slowly, and stop when you feel full, even if food is left. You can always have more later if you are still hungry.', 'Some bodies get very sick from one kind of food. That is called a food allergy. Peanuts, milk and eggs are common ones. For a friend with an allergy, one bite of the wrong food can make lips swell or make breathing hard, so we never share food at school, and we never trade snacks.', 'If a friend eats something and starts to swell, itch all over or breathe hard, tell a grown-up right away. Wash your hands after you eat, so crumbs do not travel to a friend. An allergy is not silly and it is not a choice, so we respect it and keep our friends safe.'],
       keyIdea: 'A portion is how much you eat at one time, and a child needs a child-sized one. Never share food with a friend who has an allergy, and tell a grown-up fast if a friend swells or breathes hard.',
-      example: { kind: 'icon', name: 'plate', caption: 'Half the plate is fruits and vegetables. The rest is grains and protein.' },
+      example: { kind: 'icon', name: 'plate~food', caption: 'Half the plate is fruits and vegetables. The rest is grains and protein.' },
       script: [
-        { say: 'A portion is how much you eat at one time. A child needs a child-sized portion on the plate, not a grown-up\'s.', show: { kind: 'icon', name: 'plate' } },
+        { say: 'A portion is how much you eat at one time. A child needs a child-sized portion on the plate, not a grown-up\'s.', show: { kind: 'icon', name: 'plate~food' } },
         { say: 'A good portion of grapes is about what fits in your two hands cupped together. A good portion of chicken is about the size of your palm.', show: null },
-        { say: 'Half your plate is fruits and vegetables, and the rest is grains and protein, with milk or water beside it.', show: { kind: 'icon', name: 'plate' } },
+        { say: 'Half your plate is fruits and vegetables, and the rest is grains and protein, with milk or water beside it.', show: { kind: 'icon', name: 'plate~food' } },
         { say: 'Your tummy tells you when it is full. Eat slowly, and stop when you feel full, even if food is left. You can always have more later if you are still hungry.', show: null },
         { say: 'Some bodies get very sick from one kind of food. That is called a food allergy. Peanuts, milk and eggs are common ones.', show: { kind: 'icon', name: 'peanut' } },
         { say: 'For a friend with an allergy, one bite of the wrong food, even one peanut, can make lips swell or make breathing hard. So we never share food at school, and we never trade snacks.', show: { kind: 'icon', name: 'peanut' } },
@@ -12371,7 +13097,7 @@ function TECH6_MODULES() { return [
     tagline: 'Patterns from examples, not rules from a person',
     requires: [],
     lesson: {
-      paragraphs: ['Most programs follow rules a person wrote: if the ball touches the paddle, bounce. Artificial intelligence, or AI, is different. Nobody writes the rule for telling a cat from a dog. Instead the program is shown thousands of examples, each labeled cat or dog, and it finds the patterns in them on its own. That is called learning from examples, and the result is called a model.', 'A model is a generalization. It keeps what the examples have in common, pointed ears and whiskers, and drops what is specific to one picture, like the sofa the cat sat on. When a new picture arrives, the model compares it with the patterns it kept and makes a guess: cat, 92 out of 100.', 'The same trick writes text. A language model has read an enormous pile of writing and learned which word tends to come next. Ask it a question and it builds an answer one likely word at a time. It is not looking the answer up. It is guessing, from patterns, what an answer usually looks like.'],
+      paragraphs: ['Most programs follow rules a person wrote: if the ball touches the paddle, bounce. Artificial intelligence, or AI, is different. Nobody writes the rule for telling a cat from a dog. Instead the program is shown thousands of examples, each labeled cat or dog, and it finds the patterns in them on its own. That is called learning from examples, and the result is called a model.', 'A model is a generalization. It keeps what the examples have in common, pointed ears and whiskers, and drops what is specific to one picture, like the sofa the cat sat on. When a new picture arrives, the model compares it with the patterns it kept and makes a guess: cat, 92 out of 100. One of the simplest learning programs keeps every labeled example instead of a pattern. A new thing gets the label of the known example most like it, its nearest neighbor. Teach it one more example, and the guesses near that example can change.', 'The same trick writes text. A language model has read an enormous pile of writing and learned which word tends to come next. Ask it a question and it builds an answer one likely word at a time. It is not looking the answer up. It is guessing, from patterns, what an answer usually looks like.'],
       keyIdea: 'AI is a program that finds patterns in many examples and guesses about new ones. The guess is a generalization, not a rule a person wrote.',
       example: { kind: 'flow', steps: ['thousands of labeled examples', 'find the patterns', 'a model', 'a guess about a new one'], caption: 'Examples in, patterns kept, a guess out. No rule was written by hand.',
         another: ['Think of how you learned to spot a dog. Nobody gave you a rule. You saw hundreds of dogs and your mind kept what they shared. A model does the same thing with numbers instead of a mind, and much less of everything else.',
@@ -14780,7 +15506,7 @@ function AGRI9_MODULES() { return [
       paragraphs: ['Soil is four things. By volume, a good topsoil is about 45 percent mineral particles, sand, silt and clay in some mix, about 5 percent organic matter from dead plants and animals, and about 25 percent water and 25 percent air in the spaces between. The mix of sand, silt and clay is its texture: sandy soil drains fast and holds few nutrients, clay holds water and nutrients but drains slowly, and loam, the balance of the three, is what farmers hope for. Soil pH, measured from 0 to 14, decides which nutrients a plant can take up; most crops want between 6 and 7.', 'Soil forms slowly. Rock weathers into particles; climate, living things, the slope of the land and time turn those particles into soil, and it takes centuries to build an inch. That is why erosion, which can strip an inch in a few storms from bare ground, is the farmer\'s oldest enemy.', 'A plant has four working parts: roots that anchor and drink, stems that carry water up and sugar down, leaves that make sugar from sunlight, water and carbon dioxide, and flowers that make seeds. A seed germinates when it has water, oxygen and the right temperature; light is not needed until the shoot is up. Plants reproduce by pollination, and breeders choose parents with the traits they want, higher yield, drought tolerance, disease resistance, and cross them over many seasons. The five crops that feed and clothe most of the world are corn, wheat, rice, soybeans and cotton.'],
       keyIdea: 'Soil is about 45 percent mineral, 5 percent organic matter, 25 percent water and 25 percent air. Texture is the sand, silt and clay mix, and most crops want a pH of 6 to 7. Soil takes centuries per inch. Roots, stems, leaves, flowers; a seed needs water, oxygen and warmth; breeders cross chosen parents.',
       example: { kind: 'flow', steps: ['rock weathers', 'climate, life, slope and time', 'an inch a century'], caption: 'How soil forms.',
-        another: ['Shake soil in a jar of water and let it settle: sand drops first, silt next, clay last and slowest. The layers show the texture, which the game after this course reads.',
+        another: ['Shake soil in a jar of water and let it settle: sand drops first, silt next, clay last and slowest. The layers show the texture. A soil of eighty-five percent sand or more, with little clay, is sandy, one of forty percent clay or more is a clay, and most mixes in between are loams. The game after this course reads the jars that way.',
           { text: 'Water, oxygen and warmth start a seed, and the shoot only needs light once it is up. That is why a seed can start in the dark of the soil.', visual: { kind: 'flow', steps: ['water', 'oxygen', 'warmth', 'a shoot', 'then light'] } },
           'A pH of 5 is ten times more acid than a pH of 6. Lime raises it; sulfur lowers it. A soil test before planting saves a season of guessing.'] },
     },
@@ -17284,7 +18010,7 @@ function MULTIPLICATION_MODULES() { return [
     lesson: {
       paragraphs: [
         'Once you know what multiplying means, the facts up to 10 x 10 are worth knowing by heart. They are the tools every bigger multiplication is built from.',
-        'There are patterns that help.\n[[Anything times 2 is the number doubled.]]\n[[Anything times 5 ends in 5 or 0.]]\n[[Anything times 10 gets a zero on the end.]]\nAnd every fact works both ways: if you know 7 x 8, you know 8 x 7.',
+        'There are patterns that help.\n[[Anything times 2 is the number doubled.]]\n[[Anything times 5 ends in 5 or 0.]]\n[[Anything times 10 gets a zero on the end.]]\nAnd every fact works both ways: if you know 7 x 8, you know 8 x 7. The answers in a number\'s table are its multiples. The multiples of 3 in the table to 10 are 3, 6, 9, 12, 15, 18, 21, 24, 27 and 30.',
         'Practice a few facts at a time. Speed comes with repeating, not with rushing.',
       ],
       keyIdea: 'The facts up to 10 x 10 are the tools every bigger multiplication uses.\nPatterns help, and every fact works both ways.',
@@ -18087,13 +18813,13 @@ Object.assign(GENERATORS, {
       ['log', 'Look at the log. Is its bark smooth or rough?', ['Smooth', 'Rough'], 'Rough', 'The bark on a log is rough and bumpy. Rough is how it feels, its texture.'],
       ['window', 'Look at the window. Is the glass smooth or rough?', ['Smooth', 'Rough'], 'Smooth', 'A window is smooth and flat. Your hand slides right across it.'],
       ['ball', 'Look at the ball. Is it smooth or rough?', ['Smooth', 'Rough'], 'Smooth', 'The ball is smooth, with no bumps. Smooth is how it feels, its texture.'],
-      ['block', 'Look at the block. Does it feel soft or hard?', ['Soft', 'Hard'], 'Hard', 'The block is hard. It is made of wood, from a tree.']];
+      ['block~wood', 'Look at the block. Does it feel soft or hard?', ['Soft', 'Hard'], 'Hard', 'The block is hard. It is made of wood, from a tree.']];
     const [name, prompt, choices, answer, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: [...choices], answer, explain, visual: { kind: 'icon', name }, explainVisual: null };
   },
   'sk-made-of': (rng) => {
     const Q = [['spoon', 'Look at the spoon. What is it made of?', ['Metal', 'Wood', 'Cloth'], 'Metal', 'The spoon is made of metal. Metal is cold and shiny.'],
-      ['block', 'Look at the block. What is it made of?', ['Wood', 'Metal', 'Paper'], 'Wood', 'The block is made of wood, which comes from a tree.'],
+      ['block~wood', 'Look at the block. What is it made of?', ['Wood', 'Metal', 'Paper'], 'Wood', 'The block is made of wood, which comes from a tree.'],
       ['sock', 'Look at the sock. What is it made of?', ['Cloth', 'Wood', 'Glass'], 'Cloth', 'The sock is made of cloth, which is soft.'],
       ['window', 'Look at the window. What is it made of?', ['Glass', 'Cloth', 'Wood'], 'Glass', 'The window is made of glass, which you can see through.'],
       ['book', 'Look at the book. What are its pages made of?', ['Paper', 'Metal', 'Glass'], 'Paper', 'The pages of a book are made of paper. Paper is thin, and it tears.'],
@@ -18105,11 +18831,11 @@ Object.assign(GENERATORS, {
     const Q = [['Tap the soft one.', 'teddy', 'rock', 'The teddy bear is soft, because it is made of cloth. The rock is hard.'],
       ['Tap the soft one.', 'sock', 'spoon', 'The sock is soft, because it is made of cloth. The spoon is hard metal.'],
       ['Tap the hard one.', 'rock', 'teddy', 'The rock is hard. It does not squash when you squeeze it, and the teddy bear does.'],
-      ['Tap the hard one.', 'block', 'sock', 'The block is hard, because it is made of wood. The sock is soft cloth.'],
-      ['Tap the one that is made of wood.', 'block', 'sock', 'The block is made of wood, from a tree. The sock is made of cloth.'],
+      ['Tap the hard one.', 'block~wood', 'sock', 'The block is hard, because it is made of wood. The sock is soft cloth.'],
+      ['Tap the one that is made of wood.', 'block~wood', 'sock', 'The block is made of wood, from a tree. The sock is made of cloth.'],
       ['Tap the one that is made of metal.', 'spoon', 'teddy', 'The spoon is made of metal, cold and shiny. The teddy bear is made of cloth.'],
-      ['Tap the round one.', 'ball', 'block', 'The ball is round. The block has corners. That is their shape.'],
-      ['Tap the one with corners.', 'block', 'ball', 'The block has corners. The ball is round, with no corners at all.'],
+      ['Tap the round one.', 'ball', 'block~wood', 'The ball is round. The block has corners. That is their shape.'],
+      ['Tap the one with corners.', 'block~wood', 'ball', 'The block has corners. The ball is round, with no corners at all.'],
       ['Tap the one that is rough.', 'log', 'window', 'The log has rough, bumpy bark. The window is smooth and flat.']];
     const [prompt, yes, no, explain] = pick(rng, Q);
     return { type: 'choice', story: null, prompt, choices: shuffle(rng, [`icon:${yes}`, `icon:${no}`]), answer: `icon:${yes}`, explain, visual: null, explainVisual: null };
@@ -18129,7 +18855,7 @@ Object.assign(GENERATORS, {
       ['nail', 'Look at the nail. Does a magnet pull it?', 'Yes', 'A magnet pulls the nail. The nail is steel, and steel has iron in it.'],
       ['rock', 'Look at the rock. Does a magnet pull it?', 'No', 'A magnet does not pull the rock. A rock has no iron in it.'],
       ['sock', 'Look at the sock. Does a magnet pull it?', 'No', 'A magnet does not pull the sock. Cloth has no iron in it.'],
-      ['block', 'Look at the block. Does a magnet pull it?', 'No', 'A magnet does not pull the block. Wood has no iron in it.'],
+      ['block~wood', 'Look at the block. Does a magnet pull it?', 'No', 'A magnet does not pull the block. Wood has no iron in it.'],
       ['penny', 'Look at the penny. Does a magnet pull it?', 'No', 'A magnet does not pull the penny. A penny is metal, but it has no iron in it, and a magnet pulls iron.'],
       ['flower', 'Look at the flower. Does a magnet pull it?', 'No', 'A magnet does not pull the flower. A flower has no iron in it.']];
     const [name, prompt, answer, explain] = pick(rng, Q);
@@ -18138,7 +18864,7 @@ Object.assign(GENERATORS, {
   'sk-tap-pulled': (rng) => {
     const Q = [['Tap what a magnet pulls.', 'clip', 'rock', 'A magnet pulls the paper clip, because it is steel, and steel has iron in it. A rock has no iron.'],
       ['Tap what a magnet pulls.', 'nail', 'sock', 'A magnet pulls the nail, because it is steel, and steel has iron in it. A sock is cloth, with no iron.'],
-      ['Tap what a magnet pulls.', 'clip', 'block', 'A magnet pulls the paper clip, because it is steel, and steel has iron in it. A block is wood, with no iron.'],
+      ['Tap what a magnet pulls.', 'clip', 'block~wood', 'A magnet pulls the paper clip, because it is steel, and steel has iron in it. A block is wood, with no iron.'],
       ['Tap what a magnet pulls.', 'nail', 'penny', 'A magnet pulls the nail, because it is steel, and steel has iron in it. A penny is metal with no iron in it.'],
       ['Tap what a magnet does not pull.', 'rock', 'clip', 'A magnet does not pull the rock, because a rock has no iron in it. It pulls the steel paper clip.'],
       ['Tap what a magnet does not pull.', 'sock', 'nail', 'A magnet does not pull the sock, because cloth has no iron in it. It pulls the steel nail.'],
@@ -18529,7 +19255,7 @@ const P3_SIZE_SAID = { big: 'big', medium: 'middle-size', small: 'little' };
 const p3SizeName = (token) => { const [, shape, size] = String(token).split(':'); return `The ${P3_SIZE_SAID[size]} ${shape}`; };
 // An animal or a thing the app draws ('pic:fox', 'icon:cup', with a '#n' tag sometimes): The fox, The cup, and The slice
 // of pizza, which is what the pizza drawing shows.
-const p3PicWord = (token) => String(token).replace(/^(?:pic|icon|art):/, '').split('#')[0];
+const p3PicWord = (token) => String(token).replace(/^(?:pic|icon|art):/, '').split(/[#~]/)[0];   // a look's name (block~wood) never reaches a reason (pass MP)
 const p3PicName = (token) => (p3PicWord(token) === 'pizza' ? 'The slice of pizza' : `The ${p3PicWord(token)}`);
 // A feeling face ('face:sad'), each face's one sign as the feelings lesson names it, and the lesson's moment for each feeling.
 const p3FaceName = (token) => `The ${String(token).replace(/^face:/, '')} face`;
@@ -19079,7 +19805,7 @@ const LU_THING_UNRIPE = { 'a strawberry': ['green'], 'a blueberry': ['green'], '
 const LU_VEHICLE_WHERE = [['goes on the water', 'boat'], ['goes up into space', 'rocket'], ['runs on a track', 'train'], ['drives on the road', 'car']];
 const LU_VEHICLE_NOT = { train: ['car'], car: ['train'] };   // a toy car can run on a track, and the drawn train stands on a line like the car's road (pass ML)
 const LU_THING_PARTS = [['has wings', 'butterfly', ['ball', 'balloon', 'star', 'robot']], ['has petals', 'flower', ['ball', 'balloon', 'star', 'butterfly', 'robot']], ['has points', 'star', ['ball', 'balloon', 'butterfly', 'robot']], ['has arms and legs', 'robot', ['ball', 'balloon', 'star', 'flower']], ['has a string', 'balloon', ['ball', 'star', 'flower']]];
-const LU_EARS = [['has long ears', 'rabbit', ['bear', 'fox', 'cat'], 'A rabbit has long ears.'], ['has round ears', 'bear', ['fox', 'cat', 'snail'], 'A bear has round ears.'], ['has pointy ears', 'fox', ['bear', 'snail', 'owl'], 'A fox has pointy ears.'], ['has no legs and slides along on one foot', 'snail', ['bear', 'fox', 'rabbit', 'cat'], 'A snail has no legs. It slides along on one flat foot.']];
+const LU_EARS = [['has long ears', 'rabbit', ['bear', 'fox', 'cat'], 'A rabbit has long ears.'], ['has round ears', 'bear', ['fox', 'cat', 'snail'], 'A bear has round ears.'], ['has pointy ears', 'fox', ['bear', 'snail'], 'A fox has pointy ears.'], ['has no legs and slides along on one foot', 'snail', ['bear', 'fox', 'rabbit', 'cat'], 'A snail has no legs. It slides along on one flat foot.']];
 const LU_CORNERS = [['has three corners', 'triangle', ['circle', 'square', 'rectangle']], ['has no corners', 'circle', ['triangle', 'square', 'rectangle']], ['has four sides that are all the same length', 'square', ['triangle', 'circle', 'rectangle']], ['has two long sides and two short sides', 'rectangle', ['triangle', 'circle', 'square']]];
 const LU_SOLID_LIKE = [['a can', 'cylinder'], ['an ice cream cone', 'cone'], ['a ball', 'sphere'], ['a block', 'cube']];
 const luCap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -19133,9 +19859,10 @@ Object.assign(GENERATORS, {
   },
   'pm-land-ears': (rng) => {
     const [has, a, wrong, why] = pick(rng, LU_EARS); const others = shuffle(rng, wrong).slice(0, 2); const choices = shuffle(rng, [a, ...others].map((x) => `pic:${x}`));
-    // Each wrong animal by its own ears, from the lesson (an owl by its big round eyes, and a snail, which has no ears at all), or,
-    // where the snail is asked for, by its legs.
-    const EARS = { bear: 'has round ears', rabbit: 'has long ears', fox: 'has pointy ears', cat: 'has pointy ears', owl: 'has big round eyes', snail: 'has no ears and no legs' };
+    // Each wrong animal by its own ears, from the lesson (a snail has no ears at all), or, where the snail is asked for, by its legs.
+    // The owl is never a wrong choice here since pass MP: its drawing wears ear tufts at Mikey's word ("can you add ears to the owl"),
+    // feathers a child could fairly call pointy ears, so a fox's pointy ears are asked against the bear and the snail alone.
+    const EARS = { bear: 'has round ears', rabbit: 'has long ears', fox: 'has pointy ears', cat: 'has pointy ears', snail: 'has no ears and no legs' };
     return { type: 'choice', story: null, prompt: `Which one ${has}?`, choices, answer: `pic:${a}`,
       explain: why, visual: null, explainVisual: { kind: 'pic', name: a },
       whyNot: p3WhyNot(choices, `pic:${a}`, (t) => { const x = p3PicWord(t); return { name: p3PicName(t), why: a === 'snail' ? 'has four legs, and a snail has no legs and slides along on one flat foot.' : `${EARS[x]}, and a ${a} ${has}.` }; }), alsoRight: [] };
@@ -31376,6 +32103,8 @@ export function describeChoice(choice) {
   // A drawn rectangle is the long rectangle, as the questions name it, since a square is a rectangle too (pass ML's rule; round two's
   // code check, pass MO: a reader's answer said "the rectangle" where the direction said the long rectangle).
   const pic = /^(?:icon|pic|art|shape|solid):([a-z]+)$/.exec(raw); if (pic) return raw === 'shape:rectangle' ? 'the long rectangle' : `the ${pic[1]}`;
+  // An icon's look after a tilde (pass MP: icon:block~wood, the wooden block) is the same thing, named as itself.
+  const looked = /^icon:([a-z]+)~[a-z]+$/.exec(raw); if (looked) return `the ${looked[1]}`;
   const it = /^item:([a-z]+)-([a-z]+)$/.exec(raw); if (it) return `the ${it[2]} ${it[1]}`;
   const sw = /^swatch:([a-z]+)$/.exec(raw); if (sw) return `the ${sw[1]} one`;
   return choice;
@@ -31506,12 +32235,19 @@ function heardWords(choice) {
 // teacher says as a short puff of breath with no vowel after it. The voiced stops (buh, duh and guh), juh, huh and wuh stay with
 // the voice, which said buh and duh well on his phone. What the screen shows never changes.
 export const SPEECH_SOUNDS = { m: 'mmm', n: 'nnn', s: 'sss', f: 'fff', z: 'zzz', r: 'rrr', l: 'lll', t: 'tuh', p: 'puh', k: 'cuh' };
+// The sounds the app has made since pass MP for the voice check page alone (Mikey's answer to Q57, "Q57 - A": "the app makes the five
+// short vowels itself ... with new rows on the voice check page for you to hear before any lesson uses them", and his rows 16 to 20
+// and 27 to 30 of Q51): the five short vowels, buh, duh, guh and juh, and the endings ig, og and at made whole. A line said on trial
+// (speechPieces(text, { trial: true })) plays them where a lesson hands them to the voice today; no lesson asks for a trial, so a
+// child hears none of them until Mikey has heard them and said so.
+export const TRIAL_SOUNDS = { a: 'the a of apple', e: 'the e of egg', i: 'the i of igloo', o: 'the o of octopus', u: 'the u of up', b: 'buh', d: 'duh', g: 'guh', j: 'juh', ig: 'ig', og: 'og', at: 'at' };
 // The sound a written sound names, or null: three or more of one held letter, in lower case or with a capital first (mmm, Sss; an
-// all-capital FFFFFF is a color code, never a sound), or a crisp stop's tuh, puh, cuh or kuh.
-export function soundOfNotation(word) {
+// all-capital FFFFFF is a color code, never a sound), or a crisp stop's tuh, puh, cuh or kuh; on trial, buh, duh, guh and juh too.
+export function soundOfNotation(word, trial = false) {
   const w = String(word); if (w.length > 1 && w === w.toUpperCase()) return null;
   const low = w.toLowerCase(); if (/^([mnsfzrl])\1{2,}$/.test(low)) return low[0];
-  return ({ tuh: 't', puh: 'p', cuh: 'k', kuh: 'k' })[low] || null;
+  const crisp = ({ tuh: 't', puh: 'p', cuh: 'k', kuh: 'k' })[low]; if (crisp) return crisp;
+  return (trial && ({ buh: 'b', duh: 'd', guh: 'g', juh: 'j' })[low]) || null;
 }
 // A word, or a run of words joined by hyphens, as the app says it; null for ordinary words, which the voice says as they are. A word
 // said slowly ("Mmm-at", "Sss-am") is its first sound, held, and then the whole word ("mmm", then "Mat"), since a voice handed the
@@ -31521,22 +32257,23 @@ export function soundOfNotation(word) {
 // sounds ("Mmm-a-puh", "cuh-uh-puh") is each part in turn, the app's sounds played and the rest said by the voice. Each part keeps
 // the words it stands for (text), which heardForm reads.
 const SAID_TOKEN = /[A-Za-z]+(?:-[A-Za-z]+)*/g;
-function sayToken(token) {
+function sayToken(token, trial = false) {
   const segs = String(token).split('-');
   if (segs.length === 1) {
-    const sound = soundOfNotation(token); if (sound) return [{ sound, text: token }];
+    const sound = soundOfNotation(token, trial); if (sound) return [{ sound, text: token }];
     // A word stretched at its end: a word with a vowel, then its last letter held (Bu, then s held: Busss is bus and then sss).
     const end = String(token).match(/^([A-Za-z]*[aeiouy][A-Za-z]*?)([mnsfzrl])\2{2,}$/i);
     if (end && token !== String(token).toUpperCase()) return [{ text: end[1] + end[2] }, { sound: end[2].toLowerCase(), text: end[2].repeat(3).toLowerCase() }];
     return null;
   }
-  if (!segs.some((s) => soundOfNotation(s))) return null;
-  const first = soundOfNotation(segs[0]);
-  if (segs.length === 2 && first && 'mnsfzrl'.includes(first) && !soundOfNotation(segs[1]) && !/^h/i.test(segs[1])) {
+  if (!segs.some((s) => soundOfNotation(s, trial))) return null;
+  const first = soundOfNotation(segs[0], trial);
+  if (segs.length === 2 && first && 'mnsfzrl'.includes(first) && !soundOfNotation(segs[1], trial) && !/^h/i.test(segs[1])) {
     const head = segs[0][0] === segs[0][0].toUpperCase() ? first.toUpperCase() : first;
     return [{ sound: first, text: segs[0] }, { text: head + segs[1].toLowerCase() }];
   }
-  return segs.filter(Boolean).map((s) => { const sound = soundOfNotation(s); return sound ? { sound, text: s } : { text: s }; });
+  // On trial, a vowel letter alone inside a run of sounds is its short sound, made by the app (Mmm-a-puh: mmm, the a of apple, puh).
+  return segs.filter(Boolean).map((s) => { const sound = soundOfNotation(s, trial) || (trial && /^[aeiou]$/i.test(s) ? s.toLowerCase() : null); return sound ? { sound, text: s } : { text: s }; });
 }
 // Endings a voice says badly on their own (pass MO, Mikey's notes on Q51): in "pig and wig both end with ig" the voice spelled ig as
 // two letters (he heard it as "ip ... spelled out"), and in "One ends in at" it gave at the quick sound of the little word, "almost like
@@ -31547,13 +32284,15 @@ function sayToken(token) {
 // little word.
 export const RIME_SPOKEN = { at: 'at', ig: 'igg' };
 const RIME_AT_BEFORE = /(?:\b(?:end|ends|ended|ending)\s+(?:in|with)|\bsound,|\b(?!(?:th|wh)at,)[a-z]*at,)\s+$/i;   // never after that, or what, ("is that, at least")
-function rimePieces(text) {
+// On trial (pass MP), ig, og and at are the app's own endings, made whole ({ sound }), where a lesson hands ig and at to the voice
+// and og to the voice inside its sentence today; og is never a word, so it is an ending wherever it stands.
+function rimePieces(text, trial = false) {
   const out = []; let last = 0; const s = String(text);
-  for (const m of s.matchAll(/\b(at|ig)\b/gi)) {
+  for (const m of s.matchAll(trial ? /\b(at|ig|og)\b/gi : /\b(at|ig)\b/gi)) {
     const rime = m[1].toLowerCase();
     if (rime === 'at' && !RIME_AT_BEFORE.test(s.slice(0, m.index))) continue;
     if (m.index > last) out.push({ text: s.slice(last, m.index) });
-    out.push({ text: RIME_SPOKEN[rime], rime: true }); last = m.index + m[0].length;
+    out.push(trial ? { sound: rime, text: m[1] } : { text: RIME_SPOKEN[rime], rime: true }); last = m.index + m[0].length;
   }
   if (last < s.length) out.push({ text: s.slice(last) });
   return out;
@@ -31581,17 +32320,45 @@ export const SENTENCE_BREAK = /(?<=[.!?])(?<!\b(?:Mr|Mrs|Ms|Dr|Jr)\.)(?<!\b[A-Z]
 // screens turn into a rate and a pitch (SPEECH_SHAPES in ui.jsx): a one-word sentence is the word at play, held slowly and a
 // little higher; a question lifts at the end; everything else rolls along at an easy pace; the words of a word said slowly or
 // sounded out take the word-at-play shape. A piece that is only punctuation would be read aloud as a word, so it is dropped.
-export function speechPieces(text) {
+// Since pass MP (Mikey's notes on Q51's rows 19, 20 and 32) two more kinds of words are pieces of their own, held slowly and a little
+// higher like a word at play: a letter named before says or makes ("a says the sound at the start of apple", "the a says its own
+// name"), handed as the capital letter with any "the" before it, since a voice read that a as the little word and so quickly, in his
+// words, "the letter a is just easily missed"; and the words of a list a lesson gives as examples of a sound ("Ball, bed and bear all
+// start with buh."), each in turn with "and" kept with the last, since "Ball, bed and bear should be spaced out a little more.  They are
+// spoken really quickly and not emphasized." A list is three words at the start of a sentence, before start or begin with or the same,
+// end with or in or the same, or rhyme, so "Water, oxygen and warmth start a seed" is read as before. With { trial: true }, the
+// voice check page's trial rows, the sounds of TRIAL_SOUNDS play where a lesson hands them to the voice today, a vowel letter alone
+// in a run of sounds ("Cuh, a, nnn.") among them.
+const LETTER_NAMED = /^\s+(?:says|makes)\b/;
+// A letter named in a lesson about sounds stands at the start of a sentence or after a comma, and, the, so, but, then, sound or
+// letter ("the sound G makes"); one that labels something ("what source B says") is read as before.
+const LETTER_BEFORE = /(?:^|[,;:(“"‘']\s*|\b(?:and|the|so|but|then|sound|letter)\s+)$/i;
+const SOUND_LIST = /^(\s*["“‘']?)([A-Z][a-z]+), ([a-z]+),? and ([a-z]+)(?= (?:all |both )?(?:(?:start|starts|begin|begins) (?:with|the same)|(?:end|ends) (?:with|in|the same)|rhyme))/;
+export function speechPieces(text, opts = {}) {
+  const trial = !!opts.trial;
   const sentences = String(text).split(SENTENCE_BREAK).filter((x) => x.trim());
   const pieces = [];
   for (const [si, sentence] of sentences.entries()) {
     const words = sentence.replace(/[.!?]+$/, '').trim().split(/\s+/).filter(Boolean);
     const shape = words.length === 1 && !/\d/.test(words[0]) ? 'key' : /\?$/.test(sentence.trim()) ? 'question' : 'plain';
-    const voice = (t) => { for (const r of rimePieces(t)) pieces.push(r.rime ? { text: r.text, shape, sentence: si, rime: true } : { text: r.text, shape, sentence: si }); };
+    const voice = (t) => { for (const r of rimePieces(t, trial)) pieces.push(r.sound ? { sound: r.sound, text: r.text, shape: 'sound', sentence: si } : r.rime ? { text: r.text, shape, sentence: si, rime: true } : { text: r.text, shape, sentence: si }); };
     let last = 0;
+    const list = SOUND_LIST.exec(sentence);
+    if (list) { for (const w of [list[2], list[3], `and ${list[4]}`]) pieces.push({ text: w, shape: 'key', sentence: si }); last = list[0].length; }
+    // On trial, a sentence that is only sounds and lone vowel letters ("Cuh, a, nnn.") is a run of sounds, its vowels the app's own.
+    const run = trial && words.length > 1 && words.every((w) => { const bare = w.replace(/[^A-Za-z]/g, ''); return !!soundOfNotation(bare, true) || /^[aeiou]$/i.test(bare); });
     for (const m of sentence.matchAll(SAID_TOKEN)) {
-      const parts = sayToken(m[0]); if (!parts) continue;
-      voice(sentence.slice(last, m.index));
+      if (m.index < last) continue;
+      let parts = sayToken(m[0], trial);
+      if (!parts && run && /^[aeiou]$/i.test(m[0])) parts = [{ sound: m[0].toLowerCase(), text: m[0] }];
+      let from = m.index;
+      if (!parts && /^[A-Za-z]$/.test(m[0]) && LETTER_NAMED.test(sentence.slice(m.index + 1)) && LETTER_BEFORE.test(sentence.slice(0, m.index))) {
+        const the = /\bthe\s+$/i.exec(sentence.slice(last, m.index));
+        if (the) from = last + the.index;
+        parts = [{ text: `${the ? sentence.slice(from, m.index) : ''}${m[0].toUpperCase()}` }];
+      }
+      if (!parts) continue;
+      voice(sentence.slice(last, from));
       for (const x of parts) pieces.push(x.sound ? { sound: x.sound, text: x.text, shape: 'sound', sentence: si } : { text: x.text, shape: 'key', sentence: si });
       last = m.index + m[0].length;
     }
@@ -31601,13 +32368,18 @@ export function speechPieces(text) {
 }
 // The sounds themselves (pass MO). Each is made from numbers, the same on every device and every time (a seeded noise source), at
 // 32,000 samples a second, so the app needs no recording and no download. A held sound lasts 0.85 seconds, or 1.1 on the snail's
-// slower pace, and rises and falls gently so it never clicks: sss is a hiss whose loudest part sits near 6,500 cycles a second (its
-// peak filter is set at 6,800), high in the range where an s peaks (a woman's higher than a man's); fff is a softer, flatter hiss; zzz is the hiss with the buzz of the voice under it; mmm and nnn are a hum of
-// the voice through the nose (strongest near 280 cycles a second, its high parts far quieter, with the dip that tells mmm from nnn
-// near 950 or 1,750); lll and rrr are the voice held in their mouth shapes (rrr's third resonance low, near 1,650, which is what
-// makes an r sound like r). A crisp stop is a moment of quiet, the burst as the tongue or lips let go (t high, near 5,000; p low
-// and spread out; k in the middle, near 2,100) and a short breath after it, about 0.14 seconds in all, k a little longer. The voice under zzz, mmm,
-// nnn, lll and rrr is a woman's, near 210 cycles a second, falling a little and wavering very slightly, five times a second, so it sounds breathed.
+// slower pace, and rises and falls gently so it never clicks; since pass MP sss, fff and zzz come as two breaths of 0.32 seconds
+// with 0.13 of quiet between (0.4 and 0.17 on the snail), Mikey's "sss sss sun". Sss is a hiss whose loudest part sits near 6,500
+// cycles a second, high in the range where an s peaks (a woman's higher than a man's), in a band from about 4,000 to 9,500 since
+// pass MP; fff is a softer, flatter hiss; zzz is the hiss with the buzz of the voice under it, more buzz than hiss since pass MP;
+// mmm and nnn are a hum of the voice through the nose (strongest near 280 cycles a second, its high parts far quieter, with the
+// dip that tells mmm from nnn near 950 or 1,750); lll and rrr are the voice held in their mouth shapes (rrr's third resonance low,
+// near 1,650, which is what makes an r sound like r). A crisp stop is a moment of quiet, the burst as the tongue or lips let go (t
+// high, near 5,000; p low and spread out; k in the middle, near 2,100), a short breath after it and, since pass MP, a short, soft
+// uh, about a fifth of a second in all. The voice under zzz, mmm, nnn, lll and rrr is a woman's, near 210 cycles a second, falling
+// a little and wavering very slightly, five times a second, so it sounds breathed. Since pass MP the app also makes, for the voice
+// check page alone until Mikey has heard them (TRIAL_SOUNDS), the five short vowels, buh, duh, guh and juh, and the endings ig, og
+// and at (their makings are described where they are made, below).
 // 'quiet' is a twentieth of a second of silence, which the screens play on a first tap so a phone lets the page play sound. The
 // rules test measures each sound against these numbers. These are the app's own stand-ins until Mikey records the sounds
 // (EARMARKS A41), as a drawing stands in until his painting arrives.
@@ -31644,17 +32416,87 @@ export const soundClipSamples = (() => {
   const mul = (a, b) => a.map((v, i) => v * b[i]);
   const add = (a, b, g) => a.map((v, i) => v + g * b[i]);
   const scaleTo = (x, target) => { let s = 0; for (const v of x) s += v * v; const r = Math.sqrt(s / x.length) || 1; return x.map((v) => (v * target) / r); };
-  const hiss = (n, fs, seed) => filter(filter(filter(noise(n, seed), biquad('hp', 3600, 0.75, fs)), biquad('peak', 6800, 1.4, fs, 9)), biquad('lp', 12500, 0.7, fs));
-  const SEEDS = { s: 11, f: 12, z: 13, m: 21, n: 22, l: 23, r: 24, t: 31, p: 32, k: 33 };
+  // The hiss of sss (pass MP: a band from about 4,000 to 9,500 cycles a second with its peak near 6,500, narrower than before, since
+  // Mikey heard the wider hiss as "a little like static").
+  const hiss = (n, fs, seed) => filter(filter(filter(noise(n, seed), biquad('hp', 4000, 0.9, fs)), biquad('peak', 6500, 1.6, fs, 10)), biquad('lp', 9500, 0.7, fs));
+  const SEEDS = { s: 11, f: 12, z: 13, m: 21, n: 22, l: 23, r: 24, t: 31, p: 32, k: 33, a: 41, e: 42, i: 43, o: 44, u: 45, b: 51, d: 52, g: 53, j: 54, ig: 61, og: 62, at: 63 };
+  // ---- Vowels and the vowel after a consonant (pass MP, Mikey's answer to Q57, "Q57 - A", and his notes on Q51's rows 8 to 10, 13
+  // and 27 to 31). A vowel is the voice's buzz through the mouth's resonances (formants); a consonant before it is heard mostly in
+  // how those resonances glide from where the lips or tongue were (the consonant's locus) to the vowel's own. The resonances are
+  // near the measurements of American English vowels in a woman's voice (Hillenbrand and others, 1995: the i of itch and the u of
+  // up), but for the a of apple and the e of egg, which follow the older measurements (Peterson and Barney, 1952), since the newer
+  // study's speakers said the a of apple raised toward the e of egg, a regional shift, and a made sound has no other cue to keep
+  // the two apart; and the o of octopus is set between the two studies' (910 and 1,390 cycles a second, where the newer study's
+  // women said 936 and 1,551 and the older one's 850 and 1,220), since the newer study's speakers fronted it too (pass MP, round one's
+  // accuracy check).
+  // The buzz with its pitch gliding from f0a to f0b, softened above lp cycles a second (a vowel keeps more of its highs than a hum),
+  // with a little breath in it, louder while the voice is open, so it sounds like a person rather than a reed.
+  const voiceGlide = (n, fs, f0a, f0b, seed, lp = 5200, breath = 0.05) => {
+    const r = rng(seed); const hush = noise(n, seed + 7); const x = new Float64Array(n); let period = fs / f0a; let k = 0;
+    for (let i = 0; i < n; i++) {
+      const f = (f0a + (f0b - f0a) * (i / n)) * (1 + 0.006 * Math.sin((2 * Math.PI * 5.1 * i) / fs));
+      if (k >= period) { k -= period; period = (fs / f) * (1 + (r() - 0.5) * 0.006); }
+      const open = period * 0.6; const u = k / open; x[i] = (k < open ? 2 * u - 3 * u * u : 0) + breath * hush[i] * (k < open ? 1 : 0.35); k += 1;
+    }
+    return filter(x, biquad('lp', lp, 0.7, fs));
+  };
+  // One resonance whose frequency glides along track (a function of the time, 0 to 1, giving [frequency, bandwidth]), its
+  // coefficients worked out again every 4 ms and its memory kept, so the glide is smooth.
+  const resonGlide = (x, track, fs) => {
+    const y = new Float64Array(x.length); let y1 = 0; let y2 = 0; let c = null;
+    for (let i = 0; i < x.length; i++) { if (i % 128 === 0) { const [f, bw] = track(i / x.length); c = coeffs(f, bw, fs); } const v = c.A * x[i] + c.B * y1 + c.C * y2; y2 = y1; y1 = v; y[i] = v; }
+    return y;
+  };
+  // The vowels' resonances, F1 to F3, for a woman's voice; F4 sits near 4,100 for all of them. a is the a of apple, e of egg, i of
+  // igloo (and itch), o of octopus (the American short o), u of up, and uh the quick vowel after a consonant said alone (tuh, buh).
+  const VOWEL_F = { a: [860, 2050, 2850], e: [610, 2330, 2990], i: [480, 2370, 3050], o: [910, 1390, 2810], u: [750, 1430, 2930], uh: [600, 1500, 2800] };
+  const VOWEL_B = [80, 100, 160, 260];
+  // Where a consonant leaves the resonances (its locus) as the vowel begins: the lips low (b, p), the ridge behind the teeth high
+  // (d, t, j), and the back of the tongue with F2 and F3 drawn together (g, k).
+  const LOCUS = { b: [260, 950, 2300], p: [300, 1000, 2350], d: [280, 1750, 2800], t: [320, 1750, 2800], j: [280, 1900, 2700], g: [280, 2100, 2200], k: [320, 2050, 2250] };
+  // The endings the app makes whole (pass MP): each a short vowel and the consonant that closes it.
+  const RIMES = { ig: ['i', 'g'], og: ['o', 'g'], at: ['a', 't'] };
+  // A vowel of n samples: from the locus (or straight in, with none) to the vowel over the first `lead` seconds, and, with `to`, from
+  // the vowel toward another locus over the last `tail` seconds (a rime's ending). Its loudness is set by scaleTo afterwards.
+  const vowelBody = (n, fs, v, seed, { from = null, lead = 0.045, to = null, tail = 0.07, f0a = 225, f0b = 195 } = {}) => {
+    const target = VOWEL_F[v]; const start = from ? LOCUS[from] : target; const end = to ? LOCUS[to] : target;
+    const leadF = Math.max(1e-6, (lead * fs) / n); const tailF = Math.max(1e-6, (tail * fs) / n);
+    const at = (k, t) => { if (t < leadF && from) { const q = t / leadF; return start[k] + (target[k] - start[k]) * q; } if (t > 1 - tailF && to) { const q = (t - (1 - tailF)) / tailF; return target[k] + (end[k] - target[k]) * q; } return target[k]; };
+    let x = voiceGlide(n, fs, f0a, f0b, seed);
+    for (let k = 0; k < 3; k++) x = resonGlide(x, (t) => [at(k, t), VOWEL_B[k]], fs);
+    x = reson(x, 4100, VOWEL_B[3], fs);
+    return x;
+  };
+  // A short burst of noise shaped like a consonant's release: high for d and t, low and spread for b and p, a compact middle for g
+  // and k; j is a burst and then a voiced hush (the sound in the middle of measure, said with the voice) for a twentieth of a second.
+  const burstOf = (c, n, fs, seed) => {
+    let b = noise(n, seed);
+    if (c === 'd' || c === 't' || c === 'j') b = filter(filter(b, biquad('hp', 3000, 0.7, fs)), biquad('peak', 4600, 1.2, fs, 6));
+    else if (c === 'b' || c === 'p') b = filter(filter(b, biquad('lp', 1300, 0.7, fs)), biquad('hp', 250, 0.7, fs));
+    else b = filter(b, biquad('bp', 2100, 2.2, fs));
+    return b.map((v, i) => v * Math.exp(-i / (n * 0.35)) * Math.min(1, i / 8));
+  };
   return function soundClipSamples(sound, { slow = false } = {}) {
     const fs = SOUND_RATE; const seed = SEEDS[sound];
     if (sound === 'quiet') return new Float32Array(Math.round(0.05 * fs));
-    if ('mnsfzrl'.includes(sound) && sound.length === 1) {
+    // sss, fff and zzz come as two short breaths with a little gap between, sss, sss (pass MP, Mikey: "Could be corrected if we
+    // perhaps split the sound into fragments like sss sss sun" and of fff "Would be better fractionalized instead of long fff"), each
+    // 0.32 seconds, or 0.4 on the snail's slower pace, with 0.13 (0.17) between; zzz keeps more of its buzz and less hiss, since he
+    // heard "static behind it". The others, which he heard as good, are held as before.
+    if ('sfz'.includes(sound) && sound.length === 1) {
+      const one = Math.round((slow ? 0.4 : 0.32) * fs); const gap = Math.round((slow ? 0.17 : 0.13) * fs); const out = new Float32Array(one * 2 + gap);
+      for (const [start, part] of [[0, 0], [one + gap, 1]]) {
+        const env = rise(one, fs, 0.035, 0.07); let y;
+        if (sound === 's') y = scaleTo(mul(hiss(one, fs, seed + part), wobble(one, fs, seed + part, 0.06)), 0.11);
+        else if (sound === 'f') y = scaleTo(mul(filter(filter(noise(one, seed + part), biquad('hp', 1500, 0.6, fs)), biquad('lp', 7500, 0.6, fs)), wobble(one, fs, seed + part, 0.08)), 0.05);
+        else { const v = voicing(one, fs, 210, seed + part); const vs = scaleTo(v, 1); const beat = vs.map((x) => 0.5 + 0.5 * Math.max(-1, Math.min(1, x))); const h = scaleTo(mul(hiss(one, fs, seed + part), beat), 0.05); y = add(h, scaleTo(reson(reson(v, 230, 80, fs), 230, 120, fs), 0.085), 1); }
+        for (let i = 0; i < one; i++) out[start + i] = y[i] * env[i];
+      }
+      return out;
+    }
+    if ('mnrl'.includes(sound) && sound.length === 1) {
       const n = Math.round((slow ? 1.1 : 0.85) * fs); const env = rise(n, fs, 0.07, 0.16); let y;
-      if (sound === 's') y = scaleTo(mul(hiss(n, fs, seed), wobble(n, fs, seed, 0.08)), 0.11);
-      else if (sound === 'f') y = scaleTo(mul(filter(filter(noise(n, seed), biquad('hp', 1300, 0.6, fs)), biquad('lp', 9000, 0.6, fs)), wobble(n, fs, seed, 0.1)), 0.055);
-      else if (sound === 'z') { const v = voicing(n, fs, 210, seed); const vs = scaleTo(v, 1); const beat = vs.map((x) => 0.55 + 0.45 * Math.max(-1, Math.min(1, x))); const h = scaleTo(mul(hiss(n, fs, seed), beat), 0.075); y = add(h, scaleTo(reson(reson(v, 230, 80, fs), 230, 120, fs), 0.06), 1); }
-      else if (sound === 'm' || sound === 'n') { let x = reson(voicing(n, fs, 210, seed), 280, 100, fs); x = reson(x, sound === 'm' ? 1150 : 1500, 200, fs); x = reson(x, 2200, 300, fs); x = reson(x, 2900, 350, fs); x = dip(x, sound === 'm' ? 950 : 1750, 160, fs); y = scaleTo(mul(filter(x, biquad('lp', 2800, 0.6, fs)), wobble(n, fs, seed, 0.04)), 0.12); }
+      if (sound === 'm' || sound === 'n') { let x = reson(voicing(n, fs, 210, seed), 280, 100, fs); x = reson(x, sound === 'm' ? 1150 : 1500, 200, fs); x = reson(x, 2200, 300, fs); x = reson(x, 2900, 350, fs); x = dip(x, sound === 'm' ? 950 : 1750, 160, fs); y = scaleTo(mul(filter(x, biquad('lp', 2800, 0.6, fs)), wobble(n, fs, seed, 0.04)), 0.12); }
       else if (sound === 'l') { let x = reson(voicing(n, fs, 210, seed), 360, 70, fs); x = reson(x, 1200, 110, fs); x = reson(x, 2750, 180, fs); x = reson(x, 3600, 250, fs); y = scaleTo(mul(x, wobble(n, fs, seed, 0.04)), 0.11); }
       else { let x = reson(voicing(n, fs, 210, seed), 430, 80, fs); x = reson(x, 1150, 100, fs); x = reson(x, 1650, 120, fs); x = reson(x, 3300, 250, fs); y = scaleTo(mul(x, wobble(n, fs, seed, 0.04)), 0.11); }
       const out = new Float32Array(n); for (let i = 0; i < n; i++) out[i] = y[i] * env[i]; return out;
@@ -31672,9 +32514,56 @@ export const soundClipSamples = (() => {
       let a = noise(aspN, seed + 7); a = reson(a, sound === 'p' ? 1150 : sound === 'k' ? 1900 : 1700, 220, fs); a = reson(a, 2650, 260, fs); a = reson(a, 3700, 320, fs);
       if (sound === 't') a = add(a, filter(filter(noise(aspN, seed + 9), biquad('hp', 3800, 0.7, fs)), biquad('peak', 5500, 1.2, fs, 6)), 0.6);
       a = scaleTo(a.map((v, i) => v * Math.min(1, i / (0.006 * fs)) * Math.pow(1 - i / aspN, 1.6)), 0.09);
-      const y = new Float64Array(n); for (let i = 0; i < burstN; i++) y[lead + i] += b[i]; for (let i = 0; i < aspN; i++) y[lead + Math.round(burstN * 0.6) + i] += a[i];
-      let peak = 0; for (const v of y) peak = Math.max(peak, Math.abs(v));
-      const out = new Float32Array(n); for (let i = 0; i < n; i++) out[i] = (y[i] * 0.55) / (peak || 1); return out;
+      // Then a short, soft uh (pass MP, Mikey of rows 8 to 10: "It kind of sounds like a tap on the rim of a drum", and of row 13,
+      // "Makes the drum tap sound rather than saying tuh"): the lessons write tuh, puh and cuh, so the breath runs into 90 ms of the
+      // voice's uh, gliding from the consonant's locus and fading fast, softer than the burst and about as loud as the breath before
+      // it, so the consonant leads and the uh never takes over (his note on the voice's duh: "You can hear an emphasis on the uh part
+      // more than the d").
+      const vN = Math.round(0.1 * fs); const vStart = lead + Math.round(burstN * 0.6) + Math.round(aspN * 0.6);
+      const vow = scaleTo(vowelBody(vN, fs, 'uh', seed + 3, { from: sound, lead: 0.035 }), 0.11);
+      const yy = new Float64Array(Math.max(n, vStart + vN + Math.round(0.02 * fs)));
+      for (let i = 0; i < burstN; i++) yy[lead + i] += b[i]; for (let i = 0; i < aspN; i++) yy[lead + Math.round(burstN * 0.6) + i] += a[i];
+      for (let i = 0; i < vN; i++) { const g = Math.min(1, i / (0.012 * fs)) * Math.pow(1 - i / vN, 1.2); yy[vStart + i] += vow[i] * g; }
+      let peak = 0; for (const v of yy) peak = Math.max(peak, Math.abs(v));
+      const out = new Float32Array(yy.length); for (let i = 0; i < yy.length; i++) out[i] = (yy[i] * 0.55) / (peak || 1); return out;
+    }
+    // The five short vowels (Mikey's answer to Q57, "Q57 - A"), each 0.42 seconds (0.55 on the snail's pace), its pitch falling a little
+    // as a statement's does, for the voice check page first and for no lesson until Mikey has heard them.
+    if (VOWEL_F[sound] && sound.length === 1) {
+      const n = Math.round((slow ? 0.55 : 0.42) * fs); const env = rise(n, fs, 0.035, 0.12);
+      const y = scaleTo(mul(vowelBody(n, fs, sound, seed), wobble(n, fs, seed, 0.03)), 0.12);
+      const out = new Float32Array(n); for (let i = 0; i < n; i++) out[i] = y[i] * env[i]; return out;
+    }
+    // buh, duh, guh and juh made by the app (pass MP, for Mikey's rows 27 to 30, where the phone's voice made buh "like boo" and gave
+    // the uh "more than the d"): the voice's low hum while the lips or tongue are closed, the release, and a short uh gliding from
+    // the consonant's locus, the uh short and soft; juh's release is a voiced hush. On the voice check page only, until he chooses.
+    if ('bdgj'.includes(sound) && sound.length === 1) {
+      const pre = Math.round(0.045 * fs); const burstN = Math.round((sound === 'g' ? 0.014 : 0.007) * fs); const hushN = sound === 'j' ? Math.round(0.065 * fs) : 0; const vN = Math.round(0.12 * fs);
+      const n = pre + burstN + hushN + vN + Math.round(0.03 * fs); const yy = new Float64Array(n);
+      const bar = scaleTo(filter(voiceGlide(pre, fs, 215, 210, seed, 900), biquad('lp', 380, 0.7, fs)), 0.025);
+      for (let i = 0; i < pre; i++) yy[i] += bar[i] * Math.min(1, i / (0.01 * fs));
+      const b = scaleTo(burstOf(sound, burstN, fs, seed + 1), sound === 'b' ? 0.12 : 0.2); for (let i = 0; i < burstN; i++) yy[pre + i] += b[i];
+      if (hushN) { const v = voicing(hushN, fs, 212, seed + 2); const beat = scaleTo(v, 1).map((x) => 0.5 + 0.5 * Math.max(-1, Math.min(1, x))); const h = scaleTo(mul(filter(filter(noise(hushN, seed + 4), biquad('hp', 2200, 0.8, fs)), biquad('peak', 3200, 1.4, fs, 8)), beat), 0.06); for (let i = 0; i < hushN; i++) yy[pre + burstN + i] += h[i] * Math.min(1, i / (0.008 * fs)) * Math.min(1, (hushN - i) / (0.012 * fs)); }
+      const vow = scaleTo(vowelBody(vN, fs, 'uh', seed + 3, { from: sound, lead: 0.04, f0a: 212, f0b: 190 }), 0.085);
+      for (let i = 0; i < vN; i++) { const g = Math.min(1, i / (0.01 * fs)) * Math.pow(1 - i / vN, 1.2); yy[pre + burstN + hushN + i] += vow[i] * g; }
+      let peak = 0; for (const v of yy) peak = Math.max(peak, Math.abs(v));
+      const out = new Float32Array(n); for (let i = 0; i < n; i++) out[i] = (yy[i] * 0.55) / (peak || 1); return out;
+    }
+    // ig, og and at made by the app (pass MP, for Mikey's rows 16 to 18 and 22 to 25, where his laptop's voice spelled igg, ihg and og
+    // letter by letter and said ig well, his phone in pass MN spelled ig, and said at "Almost like et"): the short vowel, gliding at
+    // its end toward where the last consonant closes, a moment closed (with the voice's low hum for g, silent for t), and the
+    // consonant's release, softer than a stop said alone and with no uh after it. On the voice check page only, until he chooses.
+    if (RIMES[sound]) {
+      const [v, c] = RIMES[sound]; const voiced = 'bdg'.includes(c);
+      const vN = Math.round(0.26 * fs); const close = Math.round((voiced ? 0.05 : 0.055) * fs); const burstN = Math.round((c === 'g' || c === 'k' ? 0.014 : 0.008) * fs); const aspN = voiced ? 0 : Math.round(0.035 * fs);
+      const n = vN + close + burstN + aspN + Math.round(0.05 * fs); const yy = new Float64Array(n);
+      const vow = scaleTo(vowelBody(vN, fs, v, seed, { to: c, tail: 0.075 }), 0.12); const envV = rise(vN, fs, 0.03, 0.025);
+      for (let i = 0; i < vN; i++) yy[i] += vow[i] * envV[i];
+      if (voiced) { const bar = scaleTo(filter(voiceGlide(close, fs, 200, 196, seed + 5, 900), biquad('lp', 380, 0.7, fs)), 0.02); for (let i = 0; i < close; i++) yy[vN + i] += bar[i]; }
+      const b = scaleTo(burstOf(c, burstN, fs, seed + 6), voiced ? 0.16 : 0.13); for (let i = 0; i < burstN; i++) yy[vN + close + i] += b[i];
+      if (aspN) { const a = scaleTo(filter(noise(aspN, seed + 8), biquad('hp', 2500, 0.7, fs)), 0.03); for (let i = 0; i < aspN; i++) yy[vN + close + burstN + i] += a[i] * Math.pow(1 - i / aspN, 2); }
+      let peak = 0; for (const x of yy) peak = Math.max(peak, Math.abs(x));
+      const out = new Float32Array(n); for (let i = 0; i < n; i++) out[i] = (yy[i] * 0.55) / (peak || 1); return out;
     }
     return null;
   };
@@ -31707,7 +32596,7 @@ export function whyNotNamesAnswer(q, picked) {
   return [...heardWords(q.answer)].filter((w) => !mine.has(w) && !asked.has(w)).some((w) => said.has(w) || said.has(`${w}s`) || said.has(`${w}es`));
 }
 // The name a picture choice is heard by: pic:rabbit#2 is a rabbit and icon:rock a rock (the # tag tells two alike pictures apart).
-function pictureName(choice) { const raw = String(choice).split('#')[0]; const m = raw.match(/^(?:pic|icon):(.+)$/); return m ? m[1].replace(/-/g, ' ').toLowerCase() : null; }
+function pictureName(choice) { const raw = String(choice).split('#')[0]; const m = raw.match(/^(?:pic|icon):(.+)$/); return m ? m[1].split('~')[0].replace(/-/g, ' ').toLowerCase() : null; }
 // True when the reason heard after a wrong tap names another wrong picture that is still open (pass MJ, the lesson check): "The
 // rabbit looks just like the other rabbit, so those two go together." ruled out the other rabbit and left only the answer, and
 // "Block rhymes with rock" did the same, though neither names the answer. A picture the question itself named does not count.
@@ -40938,7 +41827,7 @@ export function lessonColorPages(passedIds, hasArt, pages) {
 // replace), and a course's two games are different kinds. The starter is open from the first day, and so is the first
 // game on a student's list, so there is always something to play.
 export const COURSE_GAMES = {
-  'fractions-intro': ['catch-multiples-3', 'balance-times'],
+  'fractions-intro': ['pairs-fractions'],   // pass MP (round one): Fraction twins plays the equal fractions this course teaches, and the times games went to Multiplication and division, where they had been swapped
   'numbers-1': ['dots-house', 'pairs-many'],   // the house's nine dots (pass MA; it was pre-K 3's)
   'shapes-1': ['catch-hexagons'],
   'reading-1': ['jigsaw-9'],
@@ -40997,7 +41886,7 @@ export const COURSE_GAMES = {
   'economics-12': ['buckets-need-want'],
   'history-5': ['order-timeline'],
   'math-4': ['path-even'],
-  'multiplication-3': ['pairs-fractions'],
+  'multiplication-3': ['catch-multiples-3', 'balance-times'],   // pass MP (round one): multiples of 3 and times facts, which this course teaches
   'very-first-steps-pk3': ['dots-kite', 'sort-color'],   // four dots, as Three Dots teaches (pass MA; it was grade 1's); Red and Blue sorts by color, as the Red and Blue lesson says word for word (pass MB; it was Listen and Point's, which now has Step on the Circles)
   'listen-and-point-pk3': ['path-circles'],   // pass MB: circles and squares, as Circle and Square teaches
   'art-3': ['mix-art-3'],

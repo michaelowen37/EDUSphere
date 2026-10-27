@@ -711,8 +711,8 @@ const ponder = () => page.evaluate(() => {
     await tapIf('Got it'); await page.waitForTimeout(300);
     ok('More Info\'s paper boxes draw each shape 3 to 1 or more on the dark theme\'s paper', mode === 'dark' && boxes.length >= 3 && boxes.every((x) => x.read >= 1 && x.worst >= 3), { mode, boxes }); }
   // Round three's alignment read (pass MO): after two wrong orders the next step's picture wears the app's "go here" ring until it is
-  // tapped, then the next one does, so a child who cannot hold three steps is never left stuck; before then no picture wears one,
-  // and a wrong tap takes the ring away until it is taken back.
+  // tapped, then the next one does, so a child who cannot hold three steps is never left stuck; before then no picture wears one
+  // (until pass MP a wrong tap took the ring away until it was taken back; Q58, below).
   // Since round four's code check the ring is read where it shows, its computed ring and edge against a plain tile's (a mutant with
   // the ring and the green edge removed passed, its attribute, class and name kept), in both themes.
   for (const theme of ['light', 'dark']) {
@@ -730,13 +730,22 @@ const ponder = () => page.evaluate(() => {
     const tapH = (c) => page.locator(`[data-steps] button[data-choice="${c}"]`).click();
     const h = { start: await ringed(), steps: [] };
     for (let k = 1; k <= 2; k++) { for (const c of wrongOrder) await tapH(c); await page.getByRole('button', { name: 'Check answer', exact: true }).click(); await page.waitForTimeout(500); h[`checked${k}`] = await ringed(); await tapIf('Try again'); await page.waitForTimeout(300); h[`again${k}`] = await ringed(); }
-    await tapH(st[2]); h.offTrack = await ringed(); await tapH(st[2]);
+    // Since pass MP (Mikey's answer to Q58, "Q58 - A") a tap on another picture while the ring shows takes no number and gives it a
+    // little wobble with a clay edge, and the ring stays where it is (until then the tap took the next number and the ring went away).
+    await tapH(st[2]); h.offTrack = await ringed();
+    h.offTap = await page.evaluate((c) => { const b = document.querySelector(`[data-steps] button[data-choice="${c}"]`); return { step: b.getAttribute('data-step'), nudged: b.hasAttribute('data-nudged'), cls: b.className || '', edge: getComputedStyle(b).borderTopColor }; }, st[2]);
+    await page.waitForTimeout(700); h.settled = await page.evaluate((c) => document.querySelector(`[data-steps] button[data-choice="${c}"]`).hasAttribute('data-nudged'), st[2]);
     for (const c of st) { h.steps.push(await ringed()); await tapH(c); }
     h.done = await ringed();
     await page.getByRole('button', { name: 'Check answer', exact: true }).click(); await page.waitForTimeout(600);
     h.right = await page.evaluate(() => (document.querySelector('.edu-cheer') || {}).textContent || '');
-    ok(`${theme}: after two wrong orders the next step's picture wears the "go here" ring, seen where it shows, until it is tapped, each step in turn, and none before then`, h.start.length === 0 && h.checked1.length === 0 && h.again1.length === 0 && h.checked2.length === 0 && h.again2.length === 1 && h.again2[0].c === st[0] && shows(h.again2[0]) && h.offTrack.length === 0
-      && h.steps.length === 3 && h.steps.every((x, i) => x.length === 1 && x[0].c === st[i] && /\bedu-breathe\b/.test(x[0].cls) && /the next one to tap$/.test(x[0].label) && shows(x[0])) && h.done.length === 0 && /^Correct/.test(h.right), { theme, plainEdge, h }); }
+    ok(`${theme}: after two wrong orders the next step's picture wears the "go here" ring, seen where it shows, until it is tapped, each step in turn, and none before then; a tap on another picture takes no number, wobbles, and leaves the ring (Q58)`, h.start.length === 0 && h.checked1.length === 0 && h.again1.length === 0 && h.checked2.length === 0 && h.again2.length === 1 && h.again2[0].c === st[0] && shows(h.again2[0]) && h.offTrack.length === 1 && h.offTrack[0].c === st[0] && shows(h.offTrack[0]) && h.offTap.step === null && h.offTap.nudged && /\bedu-wobble\b/.test(h.offTap.cls) && h.offTap.edge !== plainEdge && !h.settled
+      && h.steps.length === 3 && h.steps.every((x, i) => x.length === 1 && x[0].c === st[i] && /\bedu-breathe\b/.test(x[0].cls) && /the next one to tap$/.test(x[0].label) && shows(x[0])) && h.done.length === 0 && /^Correct/.test(h.right), { theme, plainEdge, h });
+    // Q56 (Mikey's answer, pass MP, "Q56 - A"): the yellow square on a question's tile wears its darker edge, in both themes, and its
+    // fill is still the yellow the color lessons name.
+    await show('p3-tap-yellow-green', 1);
+    const yEdge = await page.evaluate(() => { const r = [...document.querySelectorAll('button[data-choice*="yellow"] svg path, button[data-choice*="yellow"] svg rect')].find((el) => (el.getAttribute('fill') || '').toUpperCase() === '#F0C93A'); return r ? { stroke: r.getAttribute('stroke'), width: Number(r.getAttribute('stroke-width')), fill: r.getAttribute('fill') } : null; });
+    ok(`${theme}: Q56's yellow square wears its darker edge on a question's tile, its yellow unchanged`, !!yEdge && yEdge.stroke === '#9C7A14' && yEdge.width >= 3 && yEdge.fill === '#F0C93A', yEdge); }
   // Round one's screen check (pass MO): the badge sits on its picture's corner, clear of the drawing it numbers, at 320 and 390
   // pixels; the scroll cue waits until every step is tapped, since after one tap it pointed at a Check answer still closed (320 by
   // 568); a laptop keeps a direction's pictures together at a phone's size (Mikey's pass MH words: "small and separated by a lot of

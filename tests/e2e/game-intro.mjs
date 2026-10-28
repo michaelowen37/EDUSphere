@@ -348,28 +348,30 @@ const beginThenBoard = async (fr, band) => {
 // pixels off it; an offset carried into every page had put targets half the floating Skip's bar too low, so the pointer rested under
 // it in Name the Feeling); and Pay It Off, whose board in play is taller than its welcome's, keeps its top in view after Begin (the
 // browser's scroll anchoring had moved the page to keep the links under the board still, the board's top 14 pixels above the window).
-for (const [w, h, id, more] of [[667, 375, 'sense-psychology-k', ['loan-econ-6']], [375, 667, 'walk-tech-k', []]]) {
-  const ctx = await browser.newContext({ viewport: { width: w, height: h }, hasTouch: true, isMobile: true });
+// Since pass MR a phone held sideways asks to be turned upright (Mikey's answer to Q71), so the short screen is a laptop's short window,
+// with a mouse, and the 375 by 667 phone stays a phone.
+for (const [w, h, id, more, touch] of [[667, 375, 'sense-psychology-k', ['loan-econ-6'], false], [375, 667, 'walk-tech-k', [], true]]) {
+  const ctx = await browser.newContext({ viewport: { width: w, height: h }, hasTouch: touch, isMobile: touch }); const where = touch ? 'phone' : 'short window';
   const page = await ctx.newPage(); page.on('pageerror', (e) => errors.push(String(e).slice(0, 300)));
   const { screenIs } = await signIn(page, `S-7${w}`, PHONE_PAGE.href);
   await page.evaluate((g) => window.__eduTest.openColoring('play:' + g, { intro: true }), id); await screenIs('coloring'); await page.waitForTimeout(1500);
   const skips = page.getByRole('button', { name: 'Skip the instructions' }); const n = await skips.count(); const box = n === 1 ? await skips.boundingBox() : null;
-  ok(`on a ${w} by ${h} phone (${id}), Skip stays in view while the welcome plays`, n === 1 && !!box && box.y >= 0 && box.y + box.height <= h, { n, box });
+  ok(`on a ${w} by ${h} ${where} (${id}), Skip stays in view while the welcome plays`, n === 1 && !!box && box.y >= 0 && box.y + box.height <= h, { n, box });
   if (n === 1) { await skips.click(); await page.waitForTimeout(400); }
-  ok(`on a ${w} by ${h} phone, the Skip in view ends the welcome`, (await pad(page)) === 'ready', await pad(page));
+  ok(`on a ${w} by ${h} ${where}, the Skip in view ends the welcome`, (await pad(page)) === 'ready', await pad(page));
   await page.getByRole('button', { name: 'Close game' }).click(); await screenIs('overview'); await page.waitForTimeout(300);
   await page.evaluate((g) => window.__eduTest.openColoring('play:' + g, { intro: true }), id); await screenIs('coloring');
   await introDone(page);
   const whole = await page.evaluate(() => window.__eduIntro);
-  ok(`on a ${w} by ${h} phone, every step of ${id}'s welcome comes to rest in view, never under the floating Skip or off the window`, !!whole && whole.done && whole.acts.length > 0 && whole.acts.every((a) => a.ok) && !(whole.hidden && whole.hidden.length), whole && { acts: whole.acts, hidden: whole.hidden });
+  ok(`on a ${w} by ${h} ${where}, every step of ${id}'s welcome comes to rest in view, never under the floating Skip or off the window`, !!whole && whole.done && whole.acts.length > 0 && whole.acts.every((a) => a.ok) && !(whole.hidden && whole.hidden.length), whole && { acts: whole.acts, hidden: whole.hidden });
   // Once the welcome has gone, Begin is wholly in view, and after Begin, pressed in the page so the test scrolls nothing first, so is
   // the board's top (round three's second read: the pointer had left the page scrolled to the closing line's speaker, and Begin sat
   // above the window after 15 welcomes on a phone held sideways, Share the Cookies' at -25 to 32).
   const shown = await beginThenBoard(page, async () => ({ top: 0, bottom: h }));
-  ok(`on a ${w} by ${h} phone, Begin is wholly in view once ${id}'s welcome has gone, and the board's top once Begin is pressed`, shown.ok, shown);
+  ok(`on a ${w} by ${h} ${where}, Begin is wholly in view once ${id}'s welcome has gone, and the board's top once Begin is pressed`, shown.ok, shown);
   // Each screen must have centred some targets, so its bound is never read over nothing (round five's second read).
   const centred = (whole && whole.centred) || [];
-  ok(`on a ${w} by ${h} phone, ${id}'s pointer centred targets, and every one lands within 4 pixels of the middle of the part it may use`, centred.length > 0 && centred.every((d) => Math.abs(d) <= 4), centred);
+  ok(`on a ${w} by ${h} ${where}, ${id}'s pointer centred targets, and every one lands within 4 pixels of the middle of the part it may use`, centred.length > 0 && centred.every((d) => Math.abs(d) <= 4), centred);
   for (const g of more) {
     await page.getByRole('button', { name: 'Close game' }).click({ force: true }); await screenIs('overview'); await page.waitForTimeout(300);
     await page.evaluate((x) => window.__eduTest.openColoring('play:' + x, { intro: true }), g); await screenIs('coloring');
@@ -378,7 +380,7 @@ for (const [w, h, id, more] of [[667, 375, 'sense-psychology-k', ['loan-econ-6']
     // Scroll anchoring is off only for the switch to play, and back on once the board has been read (round five's second read: in
     // play it holds the answers still under a child's finger).
     const anchor = await page.evaluate(() => document.documentElement.style.overflowAnchor);
-    ok(`on a ${w} by ${h} phone, ${g}'s board, taller in play than in its welcome, keeps its top in view after Begin, and scroll anchoring is back on in play`, placed.ok && anchor === '', { placed, anchor });
+    ok(`on a ${w} by ${h} ${where}, ${g}'s board, taller in play than in its welcome, keeps its top in view after Begin, and scroll anchoring is back on in play`, placed.ok && anchor === '', { placed, anchor });
   }
   await ctx.close();
 }
@@ -451,11 +453,12 @@ for (const [w, h, id, more] of [[667, 375, 'sense-psychology-k', ['loan-econ-6']
     const v2 = await band(); const begin = await fr.evaluate(() => { const b = document.querySelector('[data-begin-cover] button'); if (!b) return null; const q = b.getBoundingClientRect(); return { top: Math.round(q.top), bottom: Math.round(q.bottom) }; });
     ok('in the page-tall frame, Begin comes back into what shows once that pop-up is closed', !!begin && begin.top >= v2.top && begin.bottom <= v2.bottom, { begin, v2 }); }
   await ctx.close(); server.close(); }
-// ---- The spoken row on a small phone and a phone held sideways (pass MQ, round one's screen check, which found the answer boxes of
+// ---- The spoken row on a small phone and a short window (a phone held sideways until pass MR) (pass MQ, round one's screen check, which found the answer boxes of
 // Which Sense and Find the Tool moving about 30 pixels on four questions in five there, a right answer's line taking two lines, and
 // Find the Tool's stethoscope running 28 pixels past the board on a 320 phone; the row had been read on a computer only).
-for (const [w, h] of [[320, 568], [844, 390]]) {
-  const ctx = await browser.newContext({ viewport: { width: w, height: h }, hasTouch: true, isMobile: true });
+// Since pass MR (Q71) the short screen is a laptop's short window, with a mouse; a phone held sideways asks to be turned upright.
+for (const [w, h, touch] of [[320, 568, true], [844, 390, false]]) {
+  const ctx = await browser.newContext({ viewport: { width: w, height: h }, hasTouch: touch, isMobile: touch }); const where = touch ? 'phone' : 'short window';
   const page = await ctx.newPage(); page.on('pageerror', (e) => errors.push(String(e).slice(0, 300)));
   await signIn(page, `S-8${w}`, PHONE_PAGE.href);
   const open = async (id) => { await page.evaluate((x) => window.__eduTest.openColoring('play:' + x), id); await page.waitForTimeout(900); };
@@ -465,9 +468,11 @@ for (const [w, h] of [[320, 568], [844, 390]]) {
   const rowFine = (r) => !!r && Math.abs(r.off) <= 2 && !!r.speaker && r.speaker.left >= r.textRight - 1 && r.speaker.right <= r.boardRight && r.speaker.level <= 6;
   const rows = {};
   for (const id of ['sense-psychology-k', 'tool-business-k', 'spot-first-sounds', 'spot-arts-k', 'share-philosophy-k', 'grow-agriculture-k']) { await open(id); rows[id] = await rowOf(); await close(); }
-  ok(`on a ${w} by ${h} phone, the six games' spoken words sit in the middle of the board, the speaker to their right, level and inside the board`, Object.values(rows).length === 6 && Object.values(rows).every(rowFine), rows);
+  ok(`on a ${w} by ${h} ${where}, the six games' spoken words sit in the middle of the board, the speaker to their right, level and inside the board`, Object.values(rows).length === 6 && Object.values(rows).every(rowFine), rows);
   // A finger's tap at a box's middle, and where the first box sits within the board.
-  const tapAt = async (sel) => { const r = await page.locator(sel).first().boundingBox(); if (!r) return false; await page.touchscreen.tap(r.x + r.width / 2, r.y + r.height / 2); return true; };
+  // The box is brought into view first, as a player scrolls to it: on a short window a game whose head holds two lines from the
+  // first board (pass MR, round one's code check: HeadRoom, so the head never wraps mid-round) sets its lowest row below the fold.
+  const tapAt = async (sel) => { const loc = page.locator(sel).first(); await loc.scrollIntoViewIfNeeded().catch(() => {}); const r = await loc.boundingBox(); if (!r) return false; if (touch) await page.touchscreen.tap(r.x + r.width / 2, r.y + r.height / 2); else await page.mouse.click(r.x + r.width / 2, r.y + r.height / 2); return true; };
   const boxTop = () => page.evaluate(() => { const e = document.querySelector('[data-game-pad] .edu-game-box [data-bin]'); const bx = document.querySelector('[data-game-pad] .edu-game-box'); return e && bx ? Math.round(e.getBoundingClientRect().top - bx.getBoundingClientRect().top) : null; });
   const tiles = () => page.evaluate(() => { const bx = document.querySelector('[data-game-pad] .edu-game-box'); if (!bx) return null; const cs = getComputedStyle(bx); const r = bx.getBoundingClientRect(); const inL = r.left + parseFloat(cs.paddingLeft) + parseFloat(cs.borderLeftWidth); const inR = r.right - parseFloat(cs.paddingRight) - parseFloat(cs.borderRightWidth);
     // A tile past the board's inner edge, or a label whose ink runs past its tile's own inner edges (round three's screen read, pass MQ:
@@ -491,8 +496,8 @@ for (const [w, h] of [[320, 568], [844, 390]]) {
       }
     }
     const name = id === 'tool-business-k' ? `Find the Tool, ${rounds} rounds` : 'Which Sense, a whole round';
-    ok(`on a ${w} by ${h} phone, ${name}: the answer, once given, stays in the middle, and no answer box moves within the board`, top0 !== null && boards >= 5 * rounds && moved.length === 0 && answered.length === 0, { boards, top0, moved: moved.slice(0, 3), answered: answered.slice(0, 3) });
-    if (id === 'tool-business-k') ok(`on a ${w} by ${h} phone, every Find the Tool board dealt keeps its three tiles inside the board, the stethoscope among them, and a tap scrolls nothing`, boards >= 15 && dealt.has('stethoscope') && past.length === 0, { boards, dealt: [...dealt], past: past.slice(0, 3) });
+    ok(`on a ${w} by ${h} ${where}, ${name}: the answer, once given, stays in the middle, and no answer box moves within the board`, top0 !== null && boards >= 5 * rounds && moved.length === 0 && answered.length === 0, { boards, top0, moved: moved.slice(0, 3), answered: answered.slice(0, 3) });
+    if (id === 'tool-business-k') ok(`on a ${w} by ${h} ${where}, every Find the Tool board dealt keeps its three tiles inside the board, the stethoscope among them, and a tap scrolls nothing`, boards >= 15 && dealt.has('stethoscope') && past.length === 0, { boards, dealt: [...dealt], past: past.slice(0, 3) });
     await close();
   }
   // Grow the Plant, a whole round (round three's screen read, pass MQ): its words keep the round's tallest line and the line under

@@ -23,7 +23,8 @@ async function main() {
   const ids = named ? named.split(',') : args.includes('--all') ? L.GAMES.map((g) => g.id) : [...first.values()];
   const wide = args.includes('--wide'); const fine = args.includes('--mouse'); const dark = args.includes('--dark'); const sideways = args.includes('--sideways'); const older = args.includes('--older');
   const browser = await chromium.launch();
-  const ctx = await browser.newContext({ viewport: wide ? { width: 1280, height: 860 } : sideways ? { width: 667, height: 375 } : { width: 390, height: 844 }, hasTouch: !fine, isMobile: !fine && !wide });
+  // --sideways is a laptop's short window with a mouse since pass MR: a phone held sideways asks to be turned upright (Mikey's answer to Q71).
+  const ctx = await browser.newContext({ viewport: wide ? { width: 1280, height: 860 } : sideways ? { width: 667, height: 375 } : { width: 390, height: 844 }, hasTouch: !fine && !sideways, isMobile: !fine && !wide && !sideways });
   const page = await ctx.newPage();
   const errors = []; page.on('pageerror', (e) => errors.push(String(e).slice(0, 300)));
   // A phone loads the page with the viewport line the real page has (tools/build-site.mjs), as tests/e2e/game-intro.mjs does, since

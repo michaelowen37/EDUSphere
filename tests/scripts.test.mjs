@@ -181,13 +181,14 @@ ok('the lessons whose spoken script waits for their grade (EARMARKS A44) still w
 // Since round two's lesson check (pass MO): a direction or a sentence of two ideas carries its answer in its words, so every word the
 // directions' and two ideas' kinds can say (DIRECTION_WORDS, from their own lists) that a question says in its setup or prompt is
 // said in its own lesson's spoken script, as a whole word, over 400 seeds; deleting Two ideas' sock and block line, or a sound
-// line, had passed every check.
+// line, had passed every check. Six lessons are read since pass MR split three of them (Q70): Two steps, Two steps every day, Two
+// ideas, Who has what, Three steps and Three steps every day.
 { const bad = new Set(); const whole = (w, t) => new RegExp(`\\b${w}(?:s|es)?\\b`, 'i').test(t); let read = 0;
   for (const id of reviewedIds) { const m = L.getModule(id); if (!m || !m.generators.some((g) => /-(?:steps|ideas)-/.test(g))) continue; read += 1;
     const said = L.readAloudScript(m).map((s) => s.say).join(' ');
     for (const g of new Set(m.generators)) for (let seed = 1; seed <= 400; seed++) { const q = L.generateQuestion(g, seed); const heard = `${q.story || ''} ${q.prompt || ''}`;
       for (const w of L.DIRECTION_WORDS) if (whole(w, heard) && !whole(w, said)) bad.add(`${id}: ${w}`); } }
-  ok('every word a direction or a sentence of two ideas says is said in its own lesson\'s spoken script first', read === 3 && L.DIRECTION_WORDS.length >= 40 && bad.size === 0, [...bad].join(', '));
+  ok('every word a direction or a sentence of two ideas says is said in its own lesson\'s spoken script first', read === 6 && L.DIRECTION_WORDS.length >= 40 && bad.size === 0, [...bad].join(', '));
 }
 // Taught before asked, for tracing (pass JT): every line, shape or letter a reviewed lesson's questions ask a child to
 // trace is traced in that lesson first (First strokes once asked for waves and zigzags it never drew). Connect the dots
@@ -373,10 +374,12 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
     // passed with its third number dropped); and the line's own words say which picture gets which number, as the row shows them.
     const steps = items.filter((v) => v && v.step).sort((a, b) => a.step - b.step);
     const from = said.search(/\btap\b/); const tapped = from < 0 ? [] : [...said.slice(from).matchAll(/\bthe (\w+)/g)].map((x) => x[1]);
-    const WORD = ['one', 'two', 'three', 'four'];
-    const inOrder = steps.length >= 2 && steps.length === tapped.length && steps.every((v, i) => v.step === i + 1 && v.name === tapped[i])
-      && steps.every((v) => new RegExp(`\\bthe ${v.name}(?: gets)? ${WORD[v.step - 1]}\\b`, 'i').test(line.say));
-    const samePictures = !!before && JSON.stringify(items.map((v) => v && v.name)) === JSON.stringify(pics(before.show).map((v) => v && v.name));
+    // A colored thing is named by its color (pass MR, round one's lesson check: Two steps every day's red one and blue one), and
+    // a picture is told from another by its name, or its shape and color.
+    const WORD = ['one', 'two', 'three', 'four']; const nm = (v) => v && (v.name || v.colour); const key = (v) => v && (v.name || [v.shape, v.colour].filter(Boolean).join('-'));
+    const inOrder = steps.length >= 2 && steps.length === tapped.length && steps.every((v, i) => v.step === i + 1 && nm(v) === tapped[i])
+      && steps.every((v) => new RegExp(`\\bthe ${nm(v)}(?: one${v.shape ? `| ${v.shape}` : ''})?(?: gets)? ${WORD[v.step - 1]}\\b`, 'i').test(line.say));
+    const samePictures = !!before && JSON.stringify(items.map(key)) === JSON.stringify(pics(before.show).map(key));
     if (!inOrder || !samePictures) bad.push(`${mod.id} ${k}: "${line.say}"`); }); }
   ok('a lesson line that teaches a direction\'s numbers shows them on the line before\'s pictures, where its taps land, in order', read >= 2 && bad.length === 0 && (ui.match(/\{v\.step \? <StepBadge n=\{v\.step\} pal=\{B\} \/> : null\}/g) || []).length === 2 && (ui.match(/stepTile\(/g) || []).length >= 2, bad.join(' | '));
 }
@@ -590,5 +593,79 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   ].map((p) => p.length > 0);
   ok(`every Pairs welcome and help names no pair its deck deals, and each example (${Object.keys(L.PAIR_EXAMPLES).join(', ')}) is in its lines and taught by its course (${pairGames.length} games read; each near miss caught)`, real.length === 0 && pairGames.length >= 15 && plants.every(Boolean), [...real, `near misses ${plants}`].join(' | '));
 }
+// Say it with me (pass MR, Mikey's answer to Q67: "Q67 - B but let's make it fun.  When they say it with you, the voice should do
+// something silly like whisper it, say it slow, say it low four times in a silly voice, say it ultra fast three times, draw it out
+// the next time etc.  There can be variations between the events where this applies to keep it interesting and fun.  This page will
+// be very important to mark with our not final audio message"). Every cue is followed by its word said the cue's number of times
+// (sayWithMeWord), the two end their line, so the pause before Next is the child's turn, the word is said on the line before its cue,
+// no lesson gives two cues in a row the same style, every style is heard, and only Q67 (b)'s lessons (SAY_WITH_ME_LESSONS) say any.
+// The device voice gives each style its own shape and pace, the recorded voice's ledger row carries the style's tag, and a lesson
+// that says them shows the not-final note in a panel under its buttons. Each near miss below is caught.
+{ const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8'); const { LEDGER_CSV } = await import('../tools/audio-ledger.mjs');
+  const problems = (mods, lessons = L.SAY_WITH_ME_LESSONS) => { const bad = []; const styles = new Set(); let n = 0;
+    for (const m of mods) { let prev = null;
+      for (const [li, line] of (m.lesson.script || []).entries()) { const ss = String(line.say).split(L.SENTENCE_BREAK).filter(Boolean);
+        for (const [i, s] of ss.entries()) { const cue = L.sayWithMeCue(s); if (!cue) { if (/^Say (?!it\b|them\b)[a-z ]+ with me\b/.test(s)) bad.push(`${m.id} ${li}: "${s}" reads like a cue but is none`); continue; }   // older lines' "Say it with me, apple." are not cues
+          n++; styles.add(cue.style); const said = ss[i + 1];
+          if (!lessons.includes(m.id)) bad.push(`${m.id} ${li}: a cue outside Q67's lessons`);
+          if (said === undefined || said.trim() !== L.sayWithMeWord(cue.word, cue)) bad.push(`${m.id} ${li}: "${s}" is followed by "${said}", not "${L.sayWithMeWord(cue.word, cue)}"`);
+          if (i + 2 !== ss.length) bad.push(`${m.id} ${li}: "${s}" and its word do not end the line`);
+          if (!new RegExp(`\\b${cue.word}`, 'i').test(ss.slice(0, i).join(' '))) bad.push(`${m.id} ${li}: ${cue.word} is not said on the line before its cue`);
+          if (prev && prev.style === cue.style) bad.push(`${m.id} ${li}: ${cue.style} twice in a row (${prev.word}, ${cue.word})`);
+          if (!(L.sayWithMeParts(line.say)[i + 1] || {}).cue) bad.push(`${m.id} ${li}: sayWithMeParts misses ${cue.word}`);
+          const voiced = L.speechPieces(line.say).filter((p) => p.shape === cue.style && p.text.trim() === (said || '').trim());
+          if (voiced.length !== 1) bad.push(`${m.id} ${li}: the voice does not say ${cue.word} in the ${cue.style} shape`);
+          prev = cue; } } }
+    return { bad, styles, n }; };
+  const real = problems(L.MODULES);
+  const lessonsWith = L.MODULES.filter((m) => (m.lesson.script || []).some((l) => L.sayWithMeParts(l.say).some((p) => p.cue))).map((m) => m.id);
+  const swap = (id, fn) => L.MODULES.map((m) => (m.id === id ? { ...m, lesson: { ...m.lesson, script: fn(m.lesson.script) } } : m));
+  const plants = [
+    problems(swap('people-and-events', (s) => s.map((l) => ({ ...l, say: l.say.replace('Grandpa, grandpa, grandpa, grandpa!', 'Grandpa, grandpa, grandpa!') })))),
+    problems(swap('people-and-events', (s) => s.map((l) => ({ ...l, say: l.say.replace('Grandpa, grandpa, grandpa, grandpa!', 'Grandpa, grandpa, grandpa, grandpa! He is a grown-up.') })))),
+    problems(swap('words-go-together', (s) => s.map((l) => ({ ...l, say: l.say.replace('Say clothes with me in a tiny whisper. Clothes.', 'Say clothes with me like a happy cheer! Clothes!') })))),
+    problems(swap('count-and-sort-words', (s) => s.map((l) => ({ ...l, say: l.say.replace('Say side with me, and stretch it out long. Side.', 'Say edge with me, and stretch it out long. Edge.').replace('A side is a straight edge', 'A side is straight') })))),
+    problems(L.MODULES, L.SAY_WITH_ME_LESSONS.slice(1)),
+    problems(swap('more-learning-words', (s) => s.map((l) => ({ ...l, say: l.say.replace('Say trace with me, and stretch it out long.', 'Say trace with me, and stretch it out longer.') })))),
+  ].map((p) => p.bad.length > 0);
+  const shapes = /const SPEECH_SHAPES = \{([^;]+)\};/.exec(ui); const own = /const OWN_PACE_SHAPES = \[([^\]]+)\]/.exec(ui);
+  const shaped = L.SAY_WITH_ME.every((c) => shapes && new RegExp(`\\b${c.style}: \\{ rate: [0-9.]+, pitch: [0-9.]+`).test(shapes[1]) && own && own[1].includes(`'${c.style}'`));
+  const tagged = L.MODULES.every((m) => (m.lesson.script || []).every((l) => L.sayWithMeParts(l.say).every((p) => !p.cue || LEDGER_CSV.includes(`${p.cue.tag} ${p.sentence}`))));
+  const noted = /const playfulLesson = script\.some\(\(l\) => sayWithMeParts\(l\.say\)\.some\(\(p\) => p\.cue\)\);/.test(ui) && ui.includes('{playfulLesson ? <VoiceNote near keys={lineKeys} /> : <VoiceNote keys={lineKeys} />}');
+  ok(`every "Say it with me" cue is followed by its word in its own voice and ends its line, styles vary, and only Q67's lessons say them (${real.n} words in ${lessonsWith.length} lessons, ${real.styles.size} styles; each near miss caught)`,
+    real.bad.length === 0 && real.n >= 30 && real.styles.size === L.SAY_WITH_ME.length && L.SAY_WITH_ME_LESSONS.every((id) => lessonsWith.includes(id)) && plants.every(Boolean), [...real.bad.slice(0, 6), `plants ${plants}`, `lessons ${lessonsWith}`].join(' | '));
+  ok('each playful voice has its own shape and pace on the device, its tag in the recording ledger, and the lesson its not-final note in a panel under its buttons', shaped && tagged && noted, `shaped ${shaped}, tagged ${tagged}, noted ${noted}`);
+}
+// A story's title is said with its own end mark (pass MR, round one's story flow check): "Is it bedtime yet?" had been spoken as "Is it
+// bedtime yet?." in sixteen titles, a statement with no question lift. The story screen, a long story's read-along and the audio ledger
+// all say a title through storyTitleSpoken, and none adds its own period to a title.
+{ const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8'); const ledger = readFileSync(new URL('../tools/audio-ledger.mjs', import.meta.url), 'utf8');
+  const own = /\$\{(?:story|st|cs)\.title\}\./.test(ui + ledger);
+  const uses = (ui.match(/storyTitleSpoken\((?:story|st)\.title\)/g) || []).length === 2 && (ledger.match(/storyTitleSpoken\((?:st|cs)\.title\)/g) || []).length === 4;
+  const said = L.storyTitleSpoken('Is it bedtime yet?') === 'Is it bedtime yet?' && L.storyTitleSpoken('Hat, ball, slide') === 'Hat, ball, slide.' && L.storyTitleSpoken('Up we go!') === 'Up we go!' && L.storyTitleSpoken(' Two baskets ') === 'Two baskets.';
+  ok("a story's title is said with its own end mark, a question asked as a question, everywhere a title is said", !own && uses && said, `own period ${own}, uses ${uses}, said ${said}`); }
+// A pre-K course's frameworks are named as what they are on the transcript (pass MR, round one's standards check): pre-K has no TEKS or
+// Common Core, and its Texas codes are the 2027 recommendations', so "Texas Essential Knowledge and Skills" beside PK3.V.D.1 sent an
+// educator to an adopted outcome of another meaning.
+{ const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8'); const { frameworkName } = await import('../src/curriculum.mjs');
+  const named = frameworkName('TEKS', 'PK3') === 'Texas Prekindergarten Guidelines, 2027 recommendations, not yet adopted by TEA' && frameworkName('CCSS', 'PK4') === 'Head Start Early Learning Outcomes Framework' && frameworkName('TEKS', 'K') === 'Texas Essential Knowledge and Skills' && frameworkName('CCSS', '5') === 'Common Core State Standards';
+  ok("the transcript names a pre-K course's frameworks as the guidelines and Head Start's framework, and a grade's as TEKS or the Common Core", named && /<strong>Standards satisfied<\/strong> \(\{frameworkName\(frameworkForState\(stateCode \|\| 'CA'\), c\.grade\)\}\)/.test(ui)); }
+// A game head holds still through a board (round three of pass MR, the alignment read: Build the Fund's "Fund minus loan", the loan
+// game's "Interest paid", Split the Search's "Looks so far" and Teach the Robot's "Lessons" changed with every tap outside HeadRoom,
+// so on a narrow phone the head could wrap mid-round and drop the board, the fault HeadRoom was made for). Every value written in a
+// game head's line (className "edu-game-head") sits inside a HeadRoom, which holds the room of its widest form, unless it is one of
+// the values that change only between boards (ALGORITHMS: a sequence's title, a target, a stand's profit, a question's form). Its
+// near misses: a planted head with a bare count fails, and the same head with the count in a HeadRoom passes.
+{ const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+  const BETWEEN_BOARDS = new Set(['seq.title', 'target', 'found', "done ? '' : q.form"]);
+  const loose = (line) => { let t = line.replace(/<HeadRoom\b[^>]*>[\s\S]*?<\/HeadRoom>/g, '').replace(/<div className="edu-game-head" style=\{\{[^}]*\}\}>/, '');
+    t = t.replace(/ style=\{\{[^}]*\}\}/g, '').replace(/ data-[a-z-]+=\{[^}]*\}/g, '').replace(/ className=\{[^}]*\}/g, '');
+    return [...t.matchAll(/\{([^{}]*)\}/g)].map((m) => m[1].trim()).filter((e) => !e.startsWith('/*') && !BETWEEN_BOARDS.has(e)); };
+  const heads = ui.split('\n').map((line, i) => ({ line, at: i + 1 })).filter((h) => h.line.includes('className="edu-game-head"'));
+  const bare = heads.filter((h) => loose(h.line).length).map((h) => `line ${h.at}: ${loose(h.line).join(', ')}`);
+  const plant = '      <div className="edu-game-head" style={{ fontSize: 14 }}><span>Looks so far: {total}</span><span><HeadRoom most="888s">{ticks}s</HeadRoom></span></div>';
+  const held = plant.replace('{total}', '<HeadRoom start most="888">{total}</HeadRoom>');
+  ok(`every value in a game head that changes during a board holds its room in a HeadRoom (${heads.length} heads read), and a planted bare count fails while the same count held passes`,
+    heads.length >= 40 && bare.length === 0 && loose(plant).join() === 'total' && loose(held).length === 0, bare.join(' | ')); }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

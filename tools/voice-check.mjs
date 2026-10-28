@@ -78,6 +78,17 @@ export const VOICE_CHECK_ROWS = [
   { group: 'Lines on trial: a sounded-out word with the app\'s own short vowel' },
   { n: 49, kind: 'trial', text: 'Read this word the same way. C says cuh, a says the sound at the start of apple, and n says nnn. Cuh, a, nnn. Can.' },
   { n: 50, kind: 'trial', text: 'Read this one. D says duh, o says the sound at the start of octopus, and g says guh. Duh, o, guh. Dog.' },
+  // Pass MR (Mikey's answer to Q67: "Q67 - B but let's make it fun.  When they say it with you, the voice should do something silly
+  // like whisper it, say it slow, say it low four times in a silly voice, say it ultra fast three times, draw it out the next time
+  // etc."): one line of each silly voice, word for word as a lesson says it, so he can hear all seven in one place.
+  { group: 'Say it with me (Q67): each silly voice, as a lesson says it' },
+  { n: 51, kind: 'line', text: 'A red circle and a red circle are the same, so they match. Say same with me in a tiny whisper. Same.', note: 'New in pass MR: the whisper (Learning words).' },
+  { n: 52, kind: 'line', text: 'The red ones go in one group, and the blue ones go in another. Say sort with me, nice and slow. Sort.', note: 'New in pass MR: nice and slow (Count and sort).' },
+  { n: 53, kind: 'line', text: 'A cup and a ball are different. Say different with me four times, in a low, silly voice. Different, different, different, different!', note: 'New in pass MR: low and silly, four times (Learning words).' },
+  { n: 54, kind: 'line', text: 'One, two, three. Say count with me three times, super fast! Count, count, count!', note: 'New in pass MR: super fast, three times (Count and sort).' },
+  { n: 55, kind: 'line', text: 'A side is a straight edge, and a corner is where two sides meet. Say side with me, and stretch it out long. Side.', note: 'New in pass MR: stretched out long (Count and sort).' },
+  { n: 56, kind: 'line', text: 'These red shapes are a group, so a red triangle goes in it, and a blue triangle does not. Say group with me in a squeaky little voice. Group.', note: 'New in pass MR: squeaky and little (Count and sort).' },
+  { n: 57, kind: 'line', text: 'This cup matches this cup. Say match with me like a happy cheer! Match!', note: 'New in pass MR: a happy cheer (Learning words).' },
 ];
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -169,7 +180,7 @@ h2 { font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: 
 </style>
 <main>
 <h1>Voice check</h1>
-<p class="intro">Tap a row to hear it, with the sound on. The sounds in the first list and in the lists from row 33 are made by the app, so every phone plays the same ones. The words are your phone's own voice, a placeholder until the recorded voice. Tell Claude the numbers that sound wrong, and how, whenever you like. A green note under a row says what changed in pass MP or MQ.</p>
+<p class="intro">Tap a row to hear it, with the sound on. The sounds in the first list and in the lists from row 33 are made by the app, so every phone plays the same ones. The words are your phone's own voice, a placeholder until the recorded voice. Tell Claude the numbers that sound wrong, and how, whenever you like. A green note under a row says what changed in pass MP, MQ or MR.</p>
 <p class="voice" id="voice">Your phone's voice: finding it...</p>
 <p class="novoice" id="novoice" hidden>This browser has no voice, so only the app's own sounds play here: rows 1 to 10 and 33 to 44. To hear every row, open this page's link in Safari or Chrome rather than inside another app.</p>
 ${rowsHtml}
@@ -207,7 +218,7 @@ export async function voiceCheckSelfTest(L, script = VOICE_CHECK_SCRIPT) {
   const ctx = vm.createContext({ window: win, document: { getElementById: () => el(), querySelectorAll: () => [] }, console, setTimeout: (f, ms) => later(f, ms), clearTimeout: clear, setInterval: (f, ms) => later(f, ms, ms), clearInterval: clear, Date: { now: () => now },
     URL: { createObjectURL: () => `blob:${++blobs}` }, Blob: function Blob() {}, SpeechSynthesisUtterance, navigator: { userAgent: 'node' } });
   const problems = [];
-  try { vm.runInContext(`${script}\nglobalThis.__vc = { speechPieces, soundClipWav, sayPieces, playSound, stopSound, pickVoice, canSpeak, shapeVoice, play, SPEECH_SHAPES, YOUNG_RATE: typeof YOUNG_RATE === 'number' ? YOUNG_RATE : null, YOUNG_PAUSE_MS: typeof YOUNG_PAUSE_MS === 'number' ? YOUNG_PAUSE_MS : null, startsSentence: typeof startsSentence === 'function' ? startsSentence : null };`, ctx); }
+  try { vm.runInContext(`${script}\nglobalThis.__vc = { speechPieces, soundClipWav, sayPieces, playSound, stopSound, pickVoice, canSpeak, shapeVoice, play, SPEECH_SHAPES, YOUNG_RATE: typeof YOUNG_RATE === 'number' ? YOUNG_RATE : null, YOUNG_PAUSE_MS: typeof YOUNG_PAUSE_MS === 'number' ? YOUNG_PAUSE_MS : null, startsSentence: typeof startsSentence === 'function' ? startsSentence : null, OWN_PACE_SHAPES: typeof OWN_PACE_SHAPES !== 'undefined' ? OWN_PACE_SHAPES : null };`, ctx); }
   catch (e) { problems.push(`the page's script does not run: ${e && e.message}`); return problems; }
   const vc = ctx.__vc || {};
   for (const name of ['speechPieces', 'soundClipWav', 'sayPieces', 'playSound', 'stopSound', 'pickVoice', 'canSpeak', 'shapeVoice', 'play']) if (typeof vc[name] !== 'function') problems.push(`the page has no ${name}`);
@@ -236,8 +247,11 @@ export async function voiceCheckSelfTest(L, script = VOICE_CHECK_SCRIPT) {
       if (r.kind === 'say' && !(rates.length === 1 && Math.abs(rates[0] - 0.86) < 1e-9)) problems.push(`row ${r.n}${where} is said at the rate ${rates.join(', ')}, not the plain shape's 0.86`);
       // Since round four's code check a line row is said piece by piece at its own shape's rate, as a lesson says it (a page that said
       // every line in the plain shape passed, row 32's "Can." at 0.86 where a lesson says it at 0.6); since pass MQ in the young voice,
-      // every piece but a word at play a little slower (YOUNG_RATE), as a pre-reader's lesson says it.
-      if ((r.kind === 'line' || r.kind === 'trial') && vc.SPEECH_SHAPES) { const wantRates = piecesOf(r).filter((p) => !p.sound).map((p) => (vc.SPEECH_SHAPES[p.shape] || vc.SPEECH_SHAPES.plain).rate * (p.shape === 'key' ? 1 : vc.YOUNG_RATE || NaN));
+      // every piece but a word at play a little slower (YOUNG_RATE), as a pre-reader's lesson says it; since pass MR a piece in a
+      // shape with a pace of its own (OWN_PACE_SHAPES: a word at play and the say-it-with-me voices, a whisper or super fast) keeps
+      // that pace, as the app's shapeVoice does, and a page without the list fails rather than guess it.
+      if ((r.kind === 'line' || r.kind === 'trial') && vc.SPEECH_SHAPES) { if (!Array.isArray(vc.OWN_PACE_SHAPES)) { problems.push('the page has no OWN_PACE_SHAPES'); continue; }
+        const wantRates = piecesOf(r).filter((p) => !p.sound).map((p) => (vc.SPEECH_SHAPES[p.shape] || vc.SPEECH_SHAPES.plain).rate * (vc.OWN_PACE_SHAPES.includes(p.shape) ? 1 : vc.YOUNG_RATE || NaN));
         if (rates.length !== wantRates.length || rates.some((x, i) => Math.abs(x - wantRates[i]) > 1e-9)) problems.push(`row ${r.n}${where} is said at the rates ${rates.join(', ')}, not its pieces' ${wantRates.join(', ')}`); }
     }
     // And its rests (pass MQ, round one's code check: a page that handed sayPieces no pause passed every check above): played from

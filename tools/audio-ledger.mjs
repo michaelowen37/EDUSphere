@@ -6,7 +6,7 @@
 // the voice direction for its age band. Every clip, and every whole story, stays far under Eleven v4's 10,000 characters.
 // Run: node tools/audio-ledger.mjs > docs/AUDIO-LEDGER.md   (it also writes docs/AUDIO-LEDGER.csv, which tools/audio-generate.mjs reads)
 import { writeFileSync } from 'node:fs';
-import { COURSES, readAloudScript, SENTENCE_BREAK, GAMES, gameIntro, gameBand } from '../src/logic.mjs';
+import { COURSES, readAloudScript, SENTENCE_BREAK, GAMES, gameIntro, gameBand, cheerTagged, sayWithMeParts, storyTitleSpoken } from '../src/logic.mjs';
 import { STORIES, COURSE_STORIES, MASTERY_STORIES } from '../src/stories.mjs';
 
 // Voices by age (Mikey, pass JH). The directions are short on purpose: one opens every clip, and ElevenLabs counts tags as characters.
@@ -41,16 +41,18 @@ for (const c of courses) {
   for (const m of c.modules) {
     const st = STORIES[m.id];
     if (st) {
-      add(`${st.art}-0`, 'story title', m.id, c.grade, `${DIRECTION.title} ${st.title}.`, `${st.title}.`, st.art);
+      add(`${st.art}-0`, 'story title', m.id, c.grade, `${DIRECTION.title} ${storyTitleSpoken(st.title)}`, storyTitleSpoken(st.title), st.art);
       st.words.forEach((p, i) => add(`${st.art}-${i + 1}`, 'story', m.id, c.grade, `${band(c.grade) === 'early' ? DIRECTION.earlyStory : DIRECTION[band(c.grade)]} ${(st.audio && st.audio[i]) || p}`, p, st.art));
     }
     // A read-aloud lesson speaks readAloudScript's lines (pass JP: paragraphs too when it has no script), keyed by step as the app plays them.
-    (c.readAloud ? readAloudScript(m) : (m.lesson && m.lesson.script ? m.lesson.script : [])).forEach((line, li) => sentencesOf(line.say).forEach((s, si) => add(`${m.id}-${li}-${si}`, 'lesson line', m.id, c.grade, `${DIRECTION.early} ${s}`, s, `${m.id}-lesson`)));
+    // Since pass MR (Q67) the word said along with a "Say it with me" cue asks the recorded voice for the cue's own voice ([whispers],
+    // [in a deep, silly voice] and the rest, SAY_WITH_ME's tags), after the early direction.
+    (c.readAloud ? readAloudScript(m) : (m.lesson && m.lesson.script ? m.lesson.script : [])).forEach((line, li) => sayWithMeParts(line.say).forEach(({ sentence: s, cue }, si) => add(`${m.id}-${li}-${si}`, 'lesson line', m.id, c.grade, `${DIRECTION.early} ${cue ? `${cue.tag} ` : ''}${s}`, s, `${m.id}-lesson`)));
   }
   // A course's long story, and since pass MH its next one (MASTERY_STORIES), keyed by each story's own main picture serial.
   for (const [cs, kind] of [[COURSE_STORIES[c.id], 'long story'], [MASTERY_STORIES[c.id], 'next long story']]) {
     if (!cs) continue;
-    add(`${cs.art}-0`, `${kind} title`, c.id, c.grade, `${DIRECTION.title} ${cs.title}.`, `${cs.title}.`, cs.art);
+    add(`${cs.art}-0`, `${kind} title`, c.id, c.grade, `${DIRECTION.title} ${storyTitleSpoken(cs.title)}`, storyTitleSpoken(cs.title), cs.art);
     (cs.words || []).forEach((p, i) => add(`${cs.art}-${i + 1}`, kind, c.id, c.grade, `${band(c.grade) === 'early' ? DIRECTION.earlyStory : DIRECTION[band(c.grade)]} ${(cs.audio && cs.audio[i]) || p}`, p, cs.art));
   }
 }
@@ -64,7 +66,8 @@ for (const c of courses) {
 // beneficial.") a line of two or more sentences rests between them in the recording too, a [pause] tag where one sentence ends and
 // the next begins (the app rests between them itself on the device's voice, and between lines either way), since a recorded line is
 // one clip; the tag never reaches the screen, and the clip's key, made from its words, is unchanged.
-const restedLine = (say) => sentencesOf(say).join(' [pause] ');
+// Since pass MR a sentence that ends in a cheer, Mikey's "But most importantly, HAVE FUN!!!", asks for [excited] before the cheer (cheerTagged).
+const restedLine = (say) => sentencesOf(say).map(cheerTagged).join(' [pause] ');
 { const seen = new Set();
   for (const g of GAMES) for (const line of gameIntro(g)) { if (seen.has(line.key)) continue; seen.add(line.key); add(line.key, line.keys ? 'game welcome (keyboard)' : 'game welcome', g.id, gameBand(g) === 'early' ? 'K' : g.minGrade, `${gameBand(g) === 'early' ? DIRECTION.game : DIRECTION.gameMain} ${restedLine(line.say)}`, line.say, `game-${g.id}`); } }
 const csv = (v) => `"${String(v).replace(/"/g, '""')}"`;

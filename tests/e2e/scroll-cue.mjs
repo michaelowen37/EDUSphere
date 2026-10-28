@@ -29,7 +29,7 @@ const look = () => page.evaluate(() => {
   const nav = document.querySelector('[data-lesson-nav]'); const cue = document.querySelector('[data-scroll-cue]');
   const r = nav ? nav.getBoundingClientRect() : null;
   const badge = [...document.querySelectorAll('[role="status"]')].find((x) => /Walkthrough Mode/.test(x.textContent));
-  return { navTop: r ? Math.round(r.top) : null, navBottom: r ? Math.round(r.bottom) : null, H: window.innerHeight, cue: !!cue, arrows: cue ? cue.querySelectorAll('.edu-chevron').length : 0, cueBottom: cue ? Math.round(cue.getBoundingClientRect().bottom) : null, cueLeft: cue ? Math.round(cue.getBoundingClientRect().left) : null, W: window.innerWidth, badgeTop: badge ? Math.round(badge.getBoundingClientRect().top) : null };
+  return { navTop: r ? Math.round(r.top) : null, navBottom: r ? Math.round(r.bottom) : null, H: window.innerHeight, cue: !!cue, arrows: cue ? cue.querySelectorAll('.edu-chevron').length : 0, cueBottom: cue ? Math.round(cue.getBoundingClientRect().bottom) : null, cueLeft: cue ? Math.round(cue.getBoundingClientRect().left) : null, W: window.innerWidth, badgeTop: badge ? Math.round(badge.getBoundingClientRect().top) : null, badgeBottom: badge ? Math.round(badge.getBoundingClientRect().bottom) : null };
 });
 let m = await look();
 ok('on a phone the lesson opens with its Next row below the screen (the case Mikey photographed)', m.navTop !== null && m.navTop > m.H, m);
@@ -37,7 +37,7 @@ ok('the scroll cue shows at the bottom of the screen with three arrows', m.cue &
 ok('the cue sits in the bottom right corner, clear of the speaker button in the middle', m.cue && m.cueLeft > m.W / 2, m);
 await page.locator('[data-scroll-cue]').click({ force: true }); await page.waitForTimeout(1200);
 m = await look();
-ok('a tap on the cue brings the Next row on screen, above the Walkthrough Mode badge', m.navTop !== null && m.navBottom <= m.H + 1 && m.navTop >= 0 && m.badgeTop !== null && m.navBottom <= m.badgeTop, m);
+ok('a tap on the cue brings the Next row on screen, clear of the Walkthrough Mode tab hanging from the top of the frame (pass MR)', m.navTop !== null && m.navBottom <= m.H + 1 && m.navTop >= 0 && m.badgeTop !== null && m.badgeTop <= 1 && m.navTop >= m.badgeBottom, m);
 ok('the cue goes away once the Next row shows', !m.cue, m);
 await page.getByRole('button', { name: 'Next', exact: true }).first().click({ force: true }); await page.waitForTimeout(1500);
 m = await look();
@@ -92,12 +92,12 @@ ok('every start arrow in the tracing lessons sits on its stroke, curves included
 // The course-finished page on a short phone (pass MG, the screen check): at 375 by 667, an iPhone SE or 8, Return Home sits below
 // the screen while the voice says to tap the green button at the bottom, so the cue shows, and a tap brings the button into view.
 { await page.setViewportSize({ width: 375, height: 667 }); await page.evaluate(() => window.__eduTest.goTo('course-done')); await page.waitForFunction(() => window.__eduTest.screen === 'course-done'); await page.waitForTimeout(1500);
-  const home = () => page.evaluate(() => { const b = document.querySelector('[data-course-done-home]'); const r = b ? b.getBoundingClientRect() : null; const badge = [...document.querySelectorAll('[role="status"]')].find((x) => /Walkthrough Mode/.test(x.textContent)); return { top: r ? Math.round(r.top) : null, bottom: r ? Math.round(r.bottom) : null, H: window.innerHeight, cue: !!document.querySelector('[data-scroll-cue]'), book: !!document.querySelector('[data-course-story-book]'), badgeTop: badge ? Math.round(badge.getBoundingClientRect().top) : null }; });
+  const home = () => page.evaluate(() => { const b = document.querySelector('[data-course-done-home]'); const r = b ? b.getBoundingClientRect() : null; const badge = [...document.querySelectorAll('[role="status"]')].find((x) => /Walkthrough Mode/.test(x.textContent)); return { top: r ? Math.round(r.top) : null, bottom: r ? Math.round(r.bottom) : null, H: window.innerHeight, cue: !!document.querySelector('[data-scroll-cue]'), book: !!document.querySelector('[data-course-story-book]'), badgeTop: badge ? Math.round(badge.getBoundingClientRect().top) : null, badgeBottom: badge ? Math.round(badge.getBoundingClientRect().bottom) : null }; });
   let h = await home();
   ok('on a short phone the course-finished page opens with Return Home below the screen, and the scroll cue shows', h.book && h.top !== null && h.top > h.H - 24 && h.cue, h);
   if (h.cue) { await page.locator('[data-scroll-cue]').click({ force: true }); await page.waitForTimeout(1200); }
   h = await home();
-  ok('a tap on the cue brings Return Home into view, above the Walkthrough Mode badge, and the cue goes away', h.top !== null && h.top >= 0 && h.bottom <= h.H + 1 && !h.cue && h.badgeTop !== null && h.bottom <= h.badgeTop, h);
+  ok('a tap on the cue brings Return Home into view, clear of the Walkthrough Mode tab at the top (pass MR), and the cue goes away', h.top !== null && h.top >= 0 && h.bottom <= h.H + 1 && !h.cue && h.badgeTop !== null && h.badgeTop <= 1 && h.top >= h.badgeBottom, h);
   // The same at 360 by 640 and in a laptop's 1366 by 657 browser window, and never at 390 by 844, where the button shows; and a
   // course with no long story, whose button sits mid-page, shows no cue and its guide names no place (the screen check's second read).
   for (const [w, tall, want] of [[360, 640, true], [1366, 657, true], [390, 844, false]]) {

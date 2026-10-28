@@ -1,9 +1,10 @@
 // The first week tour, card by card (2026-10-03, pass JE, Mikey: "We have them nearly perfect then they all go out of whack").
-// In plain terms: walks all ten tour cards at tablet and laptop sizes and checks each card against Mikey's words for it (they
+// In plain terms: walks all eleven tour cards at tablet and laptop sizes and checks each card against Mikey's words for it (they
 // sit beside TOUR in src/ui.jsx), so a change anywhere in the app that moves a card fails here instead of on his screen. It
 // also checks that the backup reminder is never put on the page before the tour, that the classroom is at its top after the
-// tour and after Later, that a lesson opens at its top with its title in title case, and that inside a frame as tall as the
-// page (some previews work that way) the page around the frame is brought back to the top and card 9 sits on screen.
+// tour and after Later, that a lesson opens at its top with its title in title case, that inside a frame as tall as the
+// page (some previews work that way) the page around the frame is brought back to the top and card 9 sits on screen, and
+// (since round two of pass MR) that with less motion asked for, in both themes, every card's target still wears its gold ring.
 import { createRequire } from 'node:module'; import { writeFileSync } from 'node:fs';
 import * as L from '../../src/logic.mjs';
 const require = createRequire(import.meta.url);
@@ -163,6 +164,33 @@ for (const [W, H, box] of process.env.FRAME_ONLY ? [] : [[760, 900], [820, 1180]
   const after = { pt: await panelTop(), y: await f.evaluate(() => Math.round(window.scrollY + document.body.scrollTop)) };
   ok('in a frame cut short by its panel, Later shows the top of the classroom', after.pt === 0 && after.y === 0, after);
   await page.close();
+}
+{ // The gold ring with less motion asked for (round two of pass MR, the code check). The card the tour is on points at one
+  // thing on the page, which wears a gold ring while the card is up (.edu-tour-target in src/ui.jsx): a ring that breathes, or
+  // a still one where the device asks for less motion. The still ring lost to the shadow many of those things draw in their
+  // own style, so with less motion 8 of the tour's 11 targets showed no ring at all, in either theme, until the ring was made
+  // !important. Every card is walked here with less motion, in the light theme and the dark, and each thing wearing the ring is
+  // read for the ring's gold (230, 184, 75) in its shadow. Proven on the build before that fix, where cards 2 and 4 to 10 had
+  // no ring in either theme.
+  for (const theme of ['light', 'dark']) {
+    const context = await browser.newContext({ viewport: { width: 1280, height: 800 }, reducedMotion: 'reduce' });
+    await context.addInitScript((t) => { try { localStorage.setItem('edusphere_v1_theme', t); } catch (e) { /* storage off: the app starts dark */ } }, theme);
+    const page = await context.newPage(); await page.goto(pageUrl); await signUp(page);
+    // How many cards the tour has, from its own "1 of 11".
+    const total = Number(String(await page.locator('[aria-label="First week tour"] p').first().textContent()).split(' of ')[1]) || 0;
+    const cards = []; let last = null;
+    for (let step = 1; step <= total; step++) {
+      // The ring moves to this card's target once the card is placed (for some cards a sample screen opens first).
+      await page.waitForFunction((was) => { const el = document.querySelector('.edu-tour-target'); return !!el && el.dataset.tour !== was; }, last, { timeout: 5000 }).catch(() => {});
+      const targets = await page.evaluate(() => [...document.querySelectorAll('.edu-tour-target')].map((el) => ({ tour: el.dataset.tour, ring: /230, 184, 75/.test(getComputedStyle(el).boxShadow) })));
+      cards.push({ step, targets }); if (targets.length) last = targets[0].tour;
+      await page.getByRole('button', { name: step < total ? 'Next' : 'Done' }).first().click();
+    }
+    const dark = await page.evaluate(() => document.documentElement.dataset.theme === 'dark');
+    const without = cards.filter((c) => !c.targets.length || c.targets.some((t) => !t.ring)).map((c) => { const bare = c.targets.filter((t) => !t.ring); return `card ${c.step}: ${bare.length ? `${bare[0].tour}${c.targets.length > 1 ? ` (${bare.length} of ${c.targets.length})` : ''} has no ring` : 'nothing wears the ring'}`; });
+    ok(`with less motion, in the ${theme} theme, all ${total} cards of the tour put the gold ring on what they point at`, total >= 11 && dark === (theme === 'dark') && without.length === 0, { without, dark });
+    await context.close();
+  }
 }
 await browser.close();
 console.log(`\n${passed} passed, ${failed} failed`);

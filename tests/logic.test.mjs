@@ -55,12 +55,15 @@ const LINES_P4 = { L: 'goes down, then across the bottom', T: 'goes down the mid
 const MO_SAYS = { meow: 'cat', quack: 'duck', buzz: 'bee', ribbit: 'frog', hoot: 'owl', growl: 'bear' };
 const MO_ROUTINES = { 'Get your hat, and then go to the door.': ['hat', 'door'], 'Get a book, and then sit in your chair.': ['book', 'chair'], 'Get your teddy, and then get into bed.': ['teddy', 'bed'], 'Get a cup, and then get a spoon.': ['cup', 'spoon'],
   'Get a cup, get a spoon, and then sit in your chair.': ['cup', 'spoon', 'chair'], 'Put your block away, get your hat, and then go to the door.': ['block', 'hat', 'door'], 'Get your hat, get your ball, and then go down the slide.': ['hat', 'ball', 'slide'], 'Get your book, get your teddy, and then get into bed.': ['book', 'teddy', 'bed'] };
+// Two steps and Two steps every day's yes or no (pass MR, Q70), from the lessons' lines.
+const MR_STEPS_YESNO = { 'Do you listen to both steps before you start?': 'Yes', 'Can saying the steps to yourself help you remember them?': 'Yes', 'Get a cup, and then get a spoon. Is getting the spoon the first step?': 'No', 'Get a cup, and then get a spoon. Is getting the cup the first step?': 'Yes', 'Do words like first and then tell the order?': 'Yes', 'Tap the fish, and then tap the ball. Do you tap the ball first?': 'No' };
+const MR_STEPS_HOME_YESNO = { 'Do grown-ups give two-step directions every day?': 'Yes', 'Get your teddy, and then get into bed. Do you get into bed first?': 'No', 'Get a book, and then sit in your chair. Do you get the book first?': 'Yes', 'Get your hat, and then go to the door. Do you go to the door first?': 'No', 'Tap the red one, and then tap the blue one. Do you tap the red one first?': 'Yes', 'Tap the big circle, and then tap the little square. Do you tap the little square first?': 'No' };
 const moRoutine = (q, places) => { const steps = MO_ROUTINES[(q.story || '').replace(/^Listen\. /, '')]; const at = places.indexOf((/^What do you do (first|second|last)\?$/.exec(q.prompt) || [])[1]);
   return steps && at >= 0 && steps.length === places.length && q.choices.length === steps.length && steps.every((x) => q.choices.includes(`icon:${x}`)) ? `icon:${steps[at]}` : null; };
 // Domain II's vocabulary and pre-K 3's turns of a conversation (pass MQ, earmarks E12 and E13): the test's own tables, each written
 // from the lessons' lines, never read from logic.mjs.
 const MQ_PEOPLE = ['baby', 'teacher', 'doctor', 'grandma', 'grandpa'];
-const MQ_WHO = { 'Who is very little and drinks milk from a bottle?': 'baby', 'Who helps children learn at school?': 'teacher', 'Who helps you get well when you are sick?': 'doctor', 'Who is the mom of your mom or your dad?': 'grandma', 'Who is the dad of your mom or your dad?': 'grandpa' };
+const MQ_WHO = { 'Who is very little and can drink milk from a bottle?': 'baby', 'Who helps children learn at school?': 'teacher', 'Who helps you get well when you are sick?': 'doctor', 'Who is the mom of your mom or your dad?': 'grandma', 'Who is the dad of your mom or your dad?': 'grandpa' };
 const MQ_EVENT_WHAT = { 'What has candles to blow out at a birthday party?': 'cake', 'Where do you sleep at bedtime?': 'bed', 'What falls from the clouds on a rainy day?': 'rain', 'What falls on a snowy day?': 'snow', 'What does someone read to you at story time?': 'book', 'What can you play on at the park?': 'slide' };
 const MQ_EVENT_TAP = { 'a birthday party': 'cake', bedtime: 'bed', 'a rainy day': 'rain', 'a snowy day': 'snow', 'story time': 'book', 'the park': 'slide' };
 // Pictures a child could fairly tap for an event (pass MQ, round one's lesson check), so never offered as wrong: a bedtime story is
@@ -68,8 +71,13 @@ const MQ_EVENT_TAP = { 'a birthday party': 'cake', bedtime: 'bed', 'a rainy day'
 const MQ_EVENT_ALSO = { bed: ['book'], book: ['bed'], cake: ['book'], rain: ['snow'], snow: ['rain'] };
 const MQ_PEOPLE_YESNO = { 'Is a baby very little?': 'Yes', 'Is a baby a grown-up?': 'No', 'Is a grandma a grown-up?': 'Yes', 'Is a grandpa a grown-up?': 'Yes', 'Is a grandpa very little?': 'No', 'Does a doctor help you get well when you are sick?': 'Yes', 'Does a teacher help children learn at school?': 'Yes', 'Does a baby help children learn at school?': 'No' };
 const MQ_SIDES = { 'Which shape has three sides?': 'triangle', 'Which shape has three corners?': 'triangle', 'Which shape has four sides?': 'square', 'Which shape has four corners?': 'square', 'Which shape has no corners?': 'circle' };
-const MQ_TALK_LISTEN = { 'What can you do while your friend is talking?': 'Listen', 'Your friend is talking. When is it your turn to talk?': 'When your friend stops', 'How can you show your friend you are listening?': 'Nod and smile', 'Your friend is telling you about a puppy. What can you do?': 'Listen' };
+const MQ_TALK_LISTEN = { 'What can you do while your friend is talking?': 'Listen', 'Your friend is talking. When is it your turn to talk?': 'When your friend stops', 'How can you show your friend you are listening?': 'Nod and smile', 'Your friend is telling you a story. What can you do?': 'Listen' };
 const MQ_SAY_BACK = { 'Your friend says, I have a new puppy dog!': 'What is its name?', 'Your friend says, I made a tower!': 'I like your tower!', 'Your friend says, I went to the park!': 'What did you play?', 'Your friend says, I have a new hat!': 'I like your hat!' };
+// Talking with a friend's room and Talk about it (pass MR, Q70): copied from the lessons' lines, never read from the app's tables.
+const MR_TALK_ROOM = { 'How close can you stand when you talk with a friend?': 'Close enough to hear', 'Your friend is talking with you. Where is too close?': "Right in your friend's face" };
+const MR_TALK_TOPIC = { 'Your friend says, I have a new puppy dog!': 'icon:dog', 'Your friend says, I made a tower!': 'icon:tower', 'Your friend says, I have a new hat!': 'icon:hat' };
+const MR_TALK_ABOUT = { 'I have a new puppy dog!': ['the puppy', 'What is its name?'], 'I made a tower!': ['the tower', 'I like your tower!'], 'I went to the park!': ['the park', 'What did you play?'], 'I have a new hat!': ['the hat', 'I like your hat!'] };
+const mrTalkReply = (story) => { const m = /^Your friend says, (.+?!) You say, (.+)$/.exec(story || ''); return m && MR_TALK_ABOUT[m[1]] ? { topic: MR_TALK_ABOUT[m[1]][0], about: MR_TALK_ABOUT[m[1]][1] === m[2] } : null; };
 const MQ_TALK_YESNO = { 'Is it kind to talk at the same time as your friend?': 'No', 'Is it kind to wait until your friend stops talking?': 'Yes', 'Is it kind to listen while your friend talks?': 'Yes', 'Can you take turns talking with your teacher too?': 'Yes', "Is it kind to stand very close, right in your friend's face?": 'No', 'Is it kind to shout while your friend is talking?': 'No' };
 const MQ_RHYME_END = { cat: 'at', hat: 'at', dog: 'og', log: 'og', frog: 'og', moon: 'oon', spoon: 'oon', bear: 'air', chair: 'air', sock: 'ock', block: 'ock', rock: 'ock', ball: 'all', wall: 'all' };
 const MQ_MEANS = { 'Your teacher says, count the blocks.': 'Say one number for each block', 'Your teacher says, sort the blocks by color.': 'Put them into groups by color', 'Your teacher says, find a sock that matches.': 'Find a sock just like it', 'Your teacher says, trace the letter.': 'Go over its lines with your finger', 'Your teacher says, find a pair of socks.': 'Find two socks that match' };
@@ -90,6 +98,12 @@ const PREK_DERIVE = {
     if (!m || !s || m[2] !== s[1] || v.kind !== 'pattern' || !(v.items || []).every((x) => x === m[2])) return null; return ['one', 'two', 'three', 'four'].indexOf(m[1]) + 1 === v.items.length ? 'Yes' : 'No'; },
   'p3-learn-sort': (q) => { const m = /^Sort by color\. These (red|blue) ones are a group\.$/.exec(q.story || ''); return m && (q.visual || {}).colour === m[1] ? mqOne(q, (c) => new RegExp(`^item:[a-z]+-${m[1]}$`).test(c)) : null; },
   'p3-learn-sides': (q) => (MQ_SIDES[q.prompt] ? `shape:${MQ_SIDES[q.prompt]}` : null),
+  // Learning words and Count and sort (pass MR, Q70): from the pictures shown and the words said, with the lessons' own facts.
+  'p3-learn-same-yesno': (q) => { const v = q.visual || {}; if (q.prompt !== 'Are these two the same?' || v.kind !== 'pair') return null; const key = (h) => (h && h.kind === 'icon' ? `icon:${h.name}` : h && h.kind === 'item' ? `item:${h.shape}-${h.colour}` : null); const a = key(v.a); const b = key(v.b); return a && b ? (a === b ? 'Yes' : 'No') : null; },
+  'p3-learn-means': (q) => ({ 'What does same mean?': 'Just alike', 'What does different mean?': 'Not the same', 'What does match mean?': 'Find one that is the same' })[q.prompt] || null,
+  'p3-learn-why-not': (q) => { const v = q.visual || {}; if (q.prompt !== 'Why do these two not match?' || v.kind !== 'pair' || !v.a || !v.b) return null; const sameShape = v.a.shape === v.b.shape; const sameColour = v.a.colour === v.b.colour; return sameShape && !sameColour ? 'Not the same color' : sameColour && !sameShape ? 'Not the same shape' : null; },
+  'p3-learn-word-do': (q) => (q.prompt === 'What do you do?' ? ({ 'Your teacher says, sort the blocks by color.': 'Put them in groups by color', 'Your teacher says, count the cups.': 'Say one number for each cup', 'Your teacher says, count the stars.': 'Say one number for each star', 'Your teacher says, sort the shapes by color.': 'Put them in groups by color' })[q.story] || null : null),
+  'p3-learn-how-many': (q) => { const m = /^How many (sides|corners) does a (triangle|square) have\?$/.exec(q.prompt); return m && (q.visual || {}).name === m[2] ? `dots:${{ triangle: 3, square: 4 }[m[2]]}` : null; },
   // People and events (pre-K 3): a person by name and by what they do or are, an event's thing by what happens there and by the
   // event's name, yes or no about a person, and the one person among things.
   'p3-people-tap': (q) => { const m = /^Tap the (baby|teacher|doctor|grandma|grandpa)\.$/.exec(q.prompt); return m ? `icon:${m[1]}` : null; },
@@ -101,12 +115,33 @@ const PREK_DERIVE = {
   'p3-people-group': (q) => (q.prompt === 'Which one is a person?' ? mqOne(q, (c) => MQ_PEOPLE.includes(c.replace(/^icon:/, ''))) : null),
   // Talking with a friend (pre-K 3): what to do while a friend talks, whose turn by who just stopped, the reply about what was said,
   // hi or bye, and yes or no about each rule.
+  // Words for people and Things that happen (pass MR, Q70), from the lessons' own lines.
+  'p3-people-grownup': (q) => { if (q.prompt === 'Which one is very little?') return q.choices.includes('icon:baby') ? 'icon:baby' : null; if (q.prompt !== 'Which one is a grown-up?') return null; return mqOne(q, (c) => c === 'icon:grandma' || c === 'icon:grandpa'); },
+  'p3-event-yesno': (q) => ({ 'Do you sleep in your bed at bedtime?': 'Yes', 'Is a birthday party when you sleep in your bed?': 'No', 'Is a birthday party a happy day?': 'Yes', 'Does someone read you a book at story time?': 'Yes', 'Do you play on the slide at bedtime?': 'No', 'Can you play on the slide at the park?': 'Yes' })[q.prompt] || null,
+  'p3-event-name': (q) => ({ 'What is a happy day, often with a cake that has candles to blow out?': 'A birthday party', 'What is it called when you put on your pajamas and sleep in your bed?': 'Bedtime', 'What kind of day is it when rain falls from the clouds?': 'A rainy day', 'What kind of day is it when snow falls?': 'A snowy day', 'What is it called when someone reads you a book?': 'Story time' })[q.prompt] || null,
+  'p3-event-picture': (q) => (q.prompt === 'What does this picture go with?' && (q.visual || {}).kind === 'icon' ? ({ cake: 'A birthday party', bed: 'Bedtime', rain: 'A rainy day', snow: 'A snowy day', book: 'Story time', slide: 'The park' })[q.visual.name] || null : null),
+  // Let's play together and Play with a plan (pass MR, Q70), from the lessons' own lines.
+  'p4-play-face': (q) => { const f = q.prompt === 'You grab your friend\'s toy. Which face may your friend show?' ? 'face:mad' : ['Which face can say, I am happy to play with you?', 'You say, I like your tower! Which face shows how your friend may feel?', 'Which face can you show a new friend when you say hi?'].includes(q.prompt) ? 'face:happy' : null; return f && q.choices.includes(f) ? f : null; },
+  'p4-play-next': (q) => ({ 'You smiled and waved at a new friend. What can you do next?': 'Say hi', 'You said hi to a new friend. What can you do next?': 'Tell your name', 'Your new friend said no thanks. What can you do next?': 'Play on the slide' })[q.prompt] || null,
+  'p4-plan-yesno': (q) => ({ 'Can a plan say who does each part?': 'Yes', 'Is it playing together if one friend does every part?': 'No', 'Can pretend play have a plan too?': 'Yes', 'Can you talk while you play together?': 'Yes', 'When you have a new idea, can you ask, is that okay?': 'Yes' })[q.prompt] || null,
+  'p4-plan-together': (q) => ({ 'When you and your friend finish the house together, how can you show you had fun?': 'Give a high five', 'The house is done. What can you and your friend say?': 'We did it!', 'You ask, can you pass me a block? What is a kind thing your friend might say?': 'Here you go!' })[q.prompt] || null,
+  'p4-plan-what': (q) => { const w = ({ "You and your friend say, let's build a house with blocks. What will you make?": 'house', "You and your friend say, let's play pizza shop! What will you make?": 'pizza', 'You ask your friend, can you pass me a block? What will your friend pass you?': 'block' })[q.prompt]; return w && q.choices.includes(`icon:${w}`) ? `icon:${w}` : null; },
   'p3-talk-listen': (q) => MQ_TALK_LISTEN[q.prompt] || null,
   'p3-talk-turn': (q) => { const m = q.prompt === 'Whose turn is it now?' && /^You and (your friend|your teacher|Grandma) are taking turns talking, and (you|your friend|your teacher|Grandma) just stopped talking\.$/.exec(q.story || '');
     if (!m || !(m[2] === 'you' || m[2] === m[1])) return null; return m[2] === 'you' ? (m[1] === 'Grandma' ? "Grandma's turn" : `${m[1].charAt(0).toUpperCase()}${m[1].slice(1)}'s turn`) : 'Your turn'; },
   'p3-talk-say-back': (q) => (q.prompt === 'What can you say back?' ? MQ_SAY_BACK[q.story] || null : null),
   'p3-talk-hi-bye': (q) => ({ 'What can you say to start talking with a friend?': 'Hi!', 'What can you say when you are done talking?': 'Bye!' })[q.prompt] || null,
   'p3-talk-yesno': (q) => MQ_TALK_YESNO[q.prompt] || null,
+  'p3-talk-room': (q) => MR_TALK_ROOM[q.prompt] || null,
+  'p3-talk-topic': (q) => (q.prompt === 'What is your friend talking about?' ? MR_TALK_TOPIC[q.story] || null : null),
+  'p3-talk-about-yesno': (q) => { const r = mrTalkReply(q.story); return r && q.prompt === `Is that about ${r.topic}?` ? (r.about ? 'Yes' : 'No') : null; },
+  // Why a reply is a good one: the friend's words name the topic, and a reply that asks (a question) asks about it, while one that
+  // says something says something kind about it, the lesson's two ways; the reply must be the lesson's own for that topic.
+  'p3-talk-why': (q) => { if (q.prompt === 'Why do you say something about what your friend said?') return q.story === null ? 'So your friend knows you listened' : null;
+    const s = /^Your friend says, (.+!)$/.exec(q.story || ''); const p = /^Why can you (ask|say), (.+)\?$/.exec(q.prompt); const t = s && MR_TALK_ABOUT[s[1]];
+    if (!t || !p) return null; const back = t[1]; const asks = back.endsWith('?'); const words = asks ? back.charAt(0).toLowerCase() + back.slice(1, -1) : back.slice(0, -1);
+    return p[2] === words && p[1] === (asks ? 'ask' : 'say') ? (asks ? `To ask about ${t[0]}` : `To say something kind about ${t[0]}`) : null; },
+  'p3-talk-feel': (q) => { const r = mrTalkReply(q.story); return r && q.prompt === 'How may your friend feel?' ? (r.about ? 'face:happy' : 'face:sad') : null; },
   // More learning words (pre-K 4): the one that fits all three words, the one that rhymes with the group's word, what the teacher's
   // word asks, the one just like the picture shown, and the shape the lesson says has those sides or corners.
   'p4-learn-three': (q) => { const m = /^Tap the (small|big) (red|blue|yellow) (circle|square|triangle)\.$/.exec(q.prompt); return m ? `item:${m[3]}-${m[2]}-${m[1]}` : null; },
@@ -115,6 +150,12 @@ const PREK_DERIVE = {
   'p4-learn-means': (q) => (q.prompt === 'What do you do?' ? MQ_MEANS[q.story] || null : null),
   'p4-learn-pair': (q) => { const v = q.visual || {}; return q.prompt === 'Tap the one that makes a pair with this one.' && v.kind === 'item' ? `item:${v.shape}-${v.colour}` : null; },
   'p4-learn-shape-words': (q) => (MQ_SHAPE_WORDS[q.prompt] ? `shape:${MQ_SHAPE_WORDS[q.prompt]}` : null),
+  // More learning words and Rhymes and shapes (pass MR, Q70): from the direction's words, the shape shown and the lessons' facts.
+  'p4-learn-three-yesno': (q) => { const m = /^Your teacher says, tap the (small|big) (red|blue|yellow) (circle|square|triangle)\.$/.exec(q.story || ''); const v = q.visual || {}; if (!m || q.prompt !== 'Does this one fit all three words?' || v.kind !== 'item') return null; return v.scale === m[1] && v.colour === m[2] && v.shape === m[3] ? 'Yes' : 'No'; },
+  'p4-learn-which-word': (q) => ({ 'Which learning word means say one number for each one?': 'Count', 'Which learning word means put the ones that go together into groups?': 'Sort', 'Which learning word means find one just like it?': 'Match', 'Which learning word means go over the lines with your finger?': 'Trace' })[q.prompt] || null,
+  'p4-learn-not-rhyme': (q) => { const m = /^Which one goes in the other group, the ones that do not rhyme with (\w+)\?$/.exec(q.prompt); const end = m && MQ_RHYME_END[m[1]]; return end ? mqOne(q, (c) => MQ_RHYME_END[c.replace(/^(?:pic|icon):/, '')] !== end) : null; },
+  'p4-learn-shape-yesno': (q) => ({ 'Does a circle have corners?': 'No', 'Does a triangle have three corners?': 'Yes', 'Does a long rectangle have two long sides?': 'Yes', 'Are the four sides of a square all the same length?': 'Yes', 'Does a triangle have four corners?': 'No', 'Is a corner where two sides meet?': 'Yes' })[q.prompt] || null,
+  'p4-learn-corners': (q) => { const m = /^How many (corners|sides) does a (triangle|square|long rectangle) have\?$/.exec(q.prompt); const shape = m && m[2].replace('long ', ''); return m && (q.visual || {}).name === shape && !(shape === 'rectangle' && m[1] === 'sides') ? `dots:${{ triangle: 3, square: 4, rectangle: 4 }[shape]}` : null; },
   // Words that go together (pre-K 4): the one in the group asked, the one whose group the other three do not share, the opposite way,
   // the face or size a word means, and yes or no about two words.
   'p4-group-which': (q) => { const g = MQ_GROUP_ASK[q.prompt]; return g ? mqOne(q, (c) => MQ_GROUP[c] === g) : null; },
@@ -125,6 +166,12 @@ const PREK_DERIVE = {
   'p4-same-meaning': (q) => { const f = /^Tap the face that looks (glad|angry|afraid)\.$/.exec(q.prompt); if (f) return `face:${MQ_SAME_FACE[f[1]]}`;
     const s = /^Tap the large (circle|square|triangle)\.$/.exec(q.prompt); return s ? mqOne(q, (c) => c.startsWith(`item:${s[1]}-`) && c.endsWith('-big')) : null; },
   'p4-group-yesno': (q) => MQ_GROUP_YESNO[q.prompt] || null,
+  // Words that go together and Same and opposite (pass MR, Q70), from the pictures shown and the lessons' own words.
+  'p4-group-name': (q) => { const v = q.visual || {}; if (q.prompt !== 'What group are they all in?' || v.kind !== 'row') return null; const gs = new Set(v.items.map((h) => MQ_GROUP[`${h.kind}:${h.name}`])); const g = gs.size === 1 ? [...gs][0] : null; return g ? g[0].toUpperCase() + g.slice(1) : null; },
+  'p4-group-cleanup': (q) => { const v = q.visual || {}; const g = q.prompt === 'At cleanup time, where does this go?' && v.kind === 'icon' ? MQ_GROUP[`icon:${v.name}`] : null; return g === 'clothes' ? 'In the basket' : g === 'toys' ? 'In the toy box' : null; },
+  'p4-opposite-yesno': (q) => ({ 'Are hot and cold opposites?': 'Yes', 'Are glad and happy opposites?': 'No', 'Are fast and slow opposites?': 'Yes', 'Do large and big mean the same?': 'Yes', 'Are day and night opposites?': 'Yes', 'Do afraid and scared mean the same?': 'Yes', 'Is a snail fast?': 'No' })[q.prompt] || null,
+  'p4-opposite-of': (q) => { const w = (/^What is the opposite of (\w+)\?$/.exec(q.prompt) || [])[1]; const o = { hot: 'Cold', cold: 'Hot', fast: 'Slow', slow: 'Fast', day: 'Night', night: 'Day', big: 'Small', small: 'Big' }[w]; return o || null; },
+  'p4-same-word': (q) => ({ glad: 'Happy', angry: 'Mad', afraid: 'Scared', large: 'Big' })[(/^Which word means the same as (\w+)\?$/.exec(q.prompt) || [])[1]] || null,
   // Follow the directions and two ideas (pass MO, earmarks E12 and E13, Domain II part one): each answer from the words with this
   // test's own tables, the steps in the order the words say them, the step in the place a routine question asks, and what fits both
   // ideas of one sentence.
@@ -134,15 +181,39 @@ const PREK_DERIVE = {
     return m && form && q.items.every((x) => x.startsWith(`item:${form}-`)) && !(q.items.some((x) => x.endsWith('-red')) && q.items.some((x) => x.endsWith('-green'))) ? `item:${form}-${m[1]} | item:${form}-${m[2]}` : null; },
   'p3-steps-sizes': (q) => { const m = /^Tap the (big|little) (circle|square), and then tap the (big|little) (circle|square)\.$/.exec(q.prompt); const z = (w) => (w === 'little' ? 'small' : 'big'); return m ? `shape:${m[2]}:${z(m[1])} | shape:${m[4]}:${z(m[3])}` : null; },
   'p3-steps-routine': (q) => moRoutine(q, ['first', 'second']),
+  // Two steps and Two steps every day (pass MR, Q70): the steps' order from the direction's own words.
+  'p3-steps-say-them': (q) => { const m = /^Listen\. Tap the (\w+), and then tap the (\w+)\.$/.exec(q.story || ''); return m && q.prompt === 'What can you say to yourself, to help you remember?' ? `First ${m[1]}, then ${m[2]}` : null; },
+  'p3-steps-which': (q) => { const at = ['first', 'second'].indexOf((/^Which one do you tap (first|second)\?$/.exec(q.prompt) || [])[1]); if (at < 0) return null;
+    const t = /^Listen\. Tap the (\w+), and then tap the (\w+)\.$/.exec(q.story || ''); if (t) return `icon:${t[1 + at]}`;
+    const s = /^Listen\. Tap the one that says (\w+), and then tap the one that says (\w+)\.$/.exec(q.story || ''); return s && MO_SAYS[s[1]] && MO_SAYS[s[2]] ? `pic:${MO_SAYS[s[1 + at]]}` : null; },
+  'p3-steps-yesno': (q) => MR_STEPS_YESNO[q.prompt] || null,
+  'p3-steps-home': (q) => { const st = MO_ROUTINES[(q.story || '').replace(/^Listen\. /, '')]; return st && st.length === 2 && q.prompt === 'Tap the pictures in order.' ? st.map((x) => `icon:${x}`).join(' | ') : null; },
+  'p3-steps-home-yesno': (q) => MR_STEPS_HOME_YESNO[q.prompt] || null,
   'p4-steps-things': (q) => { const m = /^Tap the (\w+), then the (\w+), and then the (\w+)\.$/.exec(q.prompt); return m ? m.slice(1).map((x) => `icon:${x}`).join(' | ') : null; },
   'p4-steps-faces': (q) => { const m = /^Tap the (happy|sad|mad|scared) face, then the (happy|sad|mad|scared) face, and then the (happy|sad|mad|scared) face\.$/.exec(q.prompt); return m ? m.slice(1).map((x) => `face:${x}`).join(' | ') : null; },
   'p4-steps-shapes': (q) => { const m = /^Tap the (circle|square|triangle|long rectangle), then the (circle|square|triangle|long rectangle), and then the (circle|square|triangle|long rectangle)\.$/.exec(q.prompt); return m ? m.slice(1).map((x) => `shape:${x.replace('long ', '')}`).join(' | ') : null; },
   'p4-steps-sounds': (q) => { const m = /^Tap the one that says (\w+), then the one that says (\w+), and then the one that says (\w+)\.$/.exec(q.prompt); return m && m.slice(1).every((x) => MO_SAYS[x]) ? m.slice(1).map((x) => `pic:${MO_SAYS[x]}`).join(' | ') : null; },
   'p4-steps-routine': (q) => moRoutine(q, ['first', 'second', 'last']),
+  // Three steps and Three steps every day (pass MR, Q70): the order from the direction's own words.
+  'p4-steps-say-them': (q) => { const m = /^Listen\. Tap the (\w+), then the (\w+), and then the (\w+)\.$/.exec(q.story || ''); return m && q.prompt === 'What can you say to yourself, to help you remember?' ? `First ${m[1]}, next ${m[2]}, last ${m[3]}` : null; },
+  'p4-steps-which': (q) => { const m = /^Listen\. Tap the (\w+), then the (\w+), and then the (\w+)\.$/.exec(q.story || ''); const at = ['first', 'second', 'last'].indexOf((/^Which one do you tap (first|second|last)\?$/.exec(q.prompt) || [])[1]); return m && at >= 0 ? `icon:${m[1 + at]}` : null; },
+  'p4-steps-tips': (q) => ({ 'You forgot a step of a direction. What can you say?': 'Can you say it again, please?', 'What can you do before you start a three-step direction?': 'Listen to all three steps', 'What can help you remember all three steps?': 'Say them to yourself' })[q.prompt] || null,
+  'p4-steps-yesno': (q) => ({ 'Get a cup, get a spoon, and then sit in your chair. Is the spoon the second step?': 'Yes', 'Get a cup, get a spoon, and then sit in your chair. Is the chair the first step?': 'No', 'Can you ask for a direction again when you forget a step?': 'Yes', 'Do you listen to all three steps before you start?': 'Yes', 'Tap the sun, then the moon, and then the star. Is the star the last step?': 'Yes', 'Tap the hat, then the book, and then the ball. Is the ball the first step?': 'No' })[q.prompt] || null,
+  'p4-steps-places': (q) => { const st = MO_ROUTINES[(q.story || '').replace(/^Listen\. /, '')]; return st && st.length === 3 && q.prompt === 'Tap the pictures in order.' ? st.map((x) => `icon:${x}`).join(' | ') : null; },
   'p3-ideas-looks': (q) => { const m = /^Listen\. It is (?:a (circle|square|triangle), and it is (red|blue|yellow|green)|(red|blue|yellow|green), and it is a (circle|square|triangle))\.$/.exec(q.story || ''); return m ? `item:${m[1] || m[4]}-${m[2] || m[3]}` : null; },
   'p3-ideas-sizes': (q) => { const m = /^Listen\. It is (?:a (circle|square|triangle), and it is (big|little)|(big|little), and it is a (circle|square|triangle))\.$/.exec(q.story || ''); return m ? `shape:${m[1] || m[4]}:${(m[2] || m[3]) === 'little' ? 'small' : 'big'}` : null; },
   'p3-ideas-who-has': (q) => { const m = /^Listen\. The (\w+) has a (\w+), and the (\w+) has a (\w+)\.$/.exec(q.story || ''); const t = (/^Who has the (\w+)\?$/.exec(q.prompt) || [])[1]; return m && t && m[2] !== m[4] ? (t === m[2] ? `pic:${m[1]}` : t === m[4] ? `pic:${m[3]}` : null) : null; },
   'p3-ideas-feels': (q) => { const m = /^Listen\. (\w+) feels (\w+), and (\w+) feels (\w+)\.$/.exec(q.story || ''); const who = (/^How does (\w+) feel\?$/.exec(q.prompt) || [])[1]; return m && who && m[1] !== m[3] ? (who === m[1] ? `face:${m[2]}` : who === m[3] ? `face:${m[4]}` : null) : null; },
+  // Two ideas and Who has what (pass MR, Q70): re-derived from the sentence's own words and the shape shown.
+  'p3-ideas-fits': (q) => { const m = /^Listen\. It is (?:a (circle|square|triangle), and it is (red|blue|yellow|green)|(red|blue|yellow|green), and it is a (circle|square|triangle))\.$/.exec(q.story || ''); const v = q.visual || {};
+    if (!m || q.prompt !== 'Does this one fit both ideas?' || v.kind !== 'item') return null; return v.shape === (m[1] || m[4]) && v.colour === (m[2] || m[3]) ? 'Yes' : 'No'; },
+  'p3-ideas-fit-how': (q) => { const m = /^Listen\. It is (?:a (circle|square|triangle), and it is (red|blue|yellow|green)|(red|blue|yellow|green), and it is a (circle|square|triangle))\.$/.exec(q.story || ''); const v = q.visual || {};
+    if (!m || q.prompt !== 'How does this one fit?' || v.kind !== 'item') return null;
+    const n = (v.shape === (m[1] || m[4]) ? 1 : 0) + (v.colour === (m[2] || m[3]) ? 1 : 0); return ['It does not fit at all', 'It fits only one idea', 'It fits both ideas'][n]; },
+  'p3-ideas-first': (q) => { const m = /^Listen\. (It is (?:a )?\w+), and (it is (?:a )?\w+)\.$/.exec(q.story || ''); const at = ['first', 'second'].indexOf((/^What is the (first|second) idea\?$/.exec(q.prompt) || [])[1]);
+    if (!m || at < 0) return null; const ideas = [m[1], m[2][0].toUpperCase() + m[2].slice(1)]; return ideas[at]; },
+  'p3-ideas-what-has': (q) => { const m = /^Listen\. The (\w+) has a (\w+), and the (\w+) has a (\w+)\.$/.exec(q.story || ''); const w = (/^What does the (\w+) have\?$/.exec(q.prompt) || [])[1]; return m && w && m[1] !== m[3] ? (w === m[1] ? `icon:${m[2]}` : w === m[3] ? `icon:${m[4]}` : null) : null; },
+  'p3-ideas-who-feels': (q) => { const m = /^Listen\. (\w+) feels (\w+), and (\w+) feels (\w+)\.$/.exec(q.story || ''); const f = (/^Who feels (\w+)\?$/.exec(q.prompt) || [])[1]; return m && f && m[2] !== m[4] ? (f === m[2] ? m[1] : f === m[4] ? m[3] : null) : null; },
   'p3-ideas-yesno': (q) => { const m = /^Listen\. The (\w+) is (\w+), and the (\w+) is (\w+)\.$/.exec(q.story || ''); const a = /^Is the (\w+) (\w+)\?$/.exec(q.prompt); if (!m || !a || m[1] === m[3] || m[2] === m[4]) return null;
     const does = a[1] === m[1] ? m[2] : a[1] === m[3] ? m[4] : null; return does && [m[2], m[4]].includes(a[2]) ? (does === a[2] ? 'Yes' : 'No') : null; },
   // Q50 (pass MN): the letter heard is the one the voice names, and a letter by its lines is the one letter of the lesson's three
@@ -341,6 +412,9 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     else if (q.visual && q.visual.kind === 'beaker') { if (!(q.visual.moles > 0 && q.visual.liters > 0)) problems.push('beaker out of range'); }
     else if (q.visual && q.visual.kind === 'periodic') { if (!((q.visual.highlight || []).every((s) => typeof s === 'string' && s.length) && (q.visual.period === null || q.visual.period === undefined || (q.visual.period >= 1 && q.visual.period <= 7)) && (q.visual.group === null || q.visual.group === undefined || (q.visual.group >= 1 && q.visual.group <= 18)))) problems.push('periodic visual out of range'); }
     else if (q.visual && q.visual.kind === 'plot') { if (!(q.visual.fn !== 'point' || (q.visual.px >= 0 && q.visual.px <= 6 && q.visual.py >= 0 && q.visual.py <= 6))) problems.push('plot point out of range'); }
+    // A question's own row (pass MR, Q70: What group are they all in?) holds two or three named pictures, as a lesson line's
+    // row does (tests/scripts.test.mjs), and may hold the line drawings of things (art) the row also draws.
+    else if (q.visual && q.visual.kind === 'row') { if (!(Array.isArray(q.visual.items) && q.visual.items.length >= 2 && q.visual.items.length <= 3 && q.visual.items.every((h) => h && ['pic', 'shape', 'icon', 'art'].includes(h.kind) && typeof h.name === 'string' && h.name))) problems.push('row of pictures out of range'); }
     else if (q.visual && !(q.visual.shaded >= 0 && q.visual.shaded <= q.visual.parts)) problems.push('visual out of range');
     // A face choice (pass MD) is one of the feelings FeelingFace draws (four, and since pass MN worried and embarrassed), and a
     // pair of faces shows two of them.
@@ -518,7 +592,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
         if (!want || fe(q.answer) !== want || !one || fe(one) === want) problems.push('friend feeling wrong'); }
       // A yes or no explanation leads with its own answer, and a face's explanation says the sign the test's own table gives it (round
       // one's code check: a face look swapped for another face's, or a Yes explained with No, passed).
-      if (['p3-join-yesno', 'p3-help-yesno', 'p4-feel-okay', 'p4-friends-yesno', 'p4-when-grownup', 'p4-good-yesno', 'p4-play-yesno', 'p3-ideas-yesno'].includes(genId) && !(q.answer === 'Yes' ? /^Yes\b/ : /^No\b/).test(q.explain || '')) problems.push('yes or no explanation leads with the other answer');
+      if (['p3-join-yesno', 'p3-help-yesno', 'p4-feel-okay', 'p4-friends-yesno', 'p4-when-grownup', 'p4-good-yesno', 'p4-play-yesno', 'p3-ideas-yesno', 'p3-ideas-fits', 'p3-talk-about-yesno', 'p3-steps-yesno', 'p3-steps-home-yesno', 'p3-learn-same-yesno', 'p3-event-yesno', 'p4-plan-yesno', 'p4-steps-yesno', 'p4-learn-three-yesno', 'p4-learn-shape-yesno', 'p4-opposite-yesno'].includes(genId) && !(q.answer === 'Yes' ? /^Yes\b/ : /^No\b/).test(q.explain || '')) problems.push('yes or no explanation leads with the other answer');
       { const LOOK_T = { happy: 'It has a big smile.', sad: 'A tear rolls out.', mad: 'Its eyebrows squeeze down.', scared: 'Its eyes open wide.', worried: 'It has a wiggly mouth.', embarrassed: 'Its eyes look down.' };
         const shownFace = genId === 'p4-feel-say' && q.visual ? q.visual.feeling : genId === 'p4-new-feeling-face' ? (q.visual ? q.visual.feeling : (/^Tap the (\w+) face\.$/.exec(q.prompt) || [])[1]) : null;
         if (shownFace && !(q.explain || '').includes(LOOK_T[shownFace])) problems.push('a face explained by another face\'s sign'); }
@@ -1498,7 +1572,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
 // teacher too?". In Domain II's yes-or-no banks, what the wrong answer would mean names a word of the question it answers.
 { const STOP = new Set(['would', 'mean', 'they', 'that', 'this', 'with', 'your', 'then', 'there', 'does', 'have', 'what', 'when', 'were']);
   const words = (s) => (String(s).toLowerCase().match(/[a-z']{4,}/g) || []).filter((w) => !STOP.has(w)); const off = [];
-  for (const g of ['p3-people-yesno', 'p3-talk-yesno', 'p4-group-yesno']) for (let s = 1; s <= 300; s++) { const q = L.generateQuestion(g, s); const asked = new Set(words(q.prompt));
+  for (const g of ['p3-people-yesno', 'p3-event-yesno', 'p3-talk-yesno', 'p3-talk-about-yesno', 'p3-steps-yesno', 'p3-steps-home-yesno', 'p4-steps-yesno', 'p4-learn-three-yesno', 'p4-learn-shape-yesno', 'p4-group-yesno', 'p4-opposite-yesno']) for (let s = 1; s <= 300; s++) { const q = L.generateQuestion(g, s); const asked = new Set(words(q.prompt));
     for (const e of Object.values(q.whyNot || {})) if (!words(e.why).some((w) => asked.has(w))) off.push(`${g}: "${q.prompt}" ${e.name} ${e.why}`); }
   ok('a yes-or-no reason in Domain II\'s banks names a word of its own question (pass MQ)', off.length === 0, [...new Set(off)].slice(0, 3).join(' | ')); }
 // No bank keeps its answer in one place (pass MM, the workflow review): over 300 seeds no button holds the answer 95 percent of the
@@ -1836,7 +1910,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('approve all approves everything not removed', L.approveAllWonder(L.emptyWonderReview()).approved.length === L.WONDER.length);
   ok('approve all leaves removed questions removed', L.approveAllWonder(hiddenState).approved.includes('w-one-thing') === false);
   ok('un-approve all sends everything back to awaiting review and keeps removals', L.unapproveAllWonder(allApproved).approved.length === 0 && L.unapproveAllWonder(hiddenState).hidden.includes('w-one-thing'));
-  { const done = ['colours', 'same-and-different', 'match-the-vehicles', 'match-the-things', 'match-the-water-animals', 'match-the-land-animals', 'match-the-shapes', 'match-the-solids', 'more-and-fewer-5', 'bigger-and-smaller', 'patterns', 'count-to-3', 'first-strokes', 'connect-the-dots', 'draw-the-shapes', 'taking-turns', 'big-bigger-biggest', 'helpers-all-around', 'feelings-show', 'how-friends-feel', 'good-friend', 'play-together'].map((id, i) => ({ type: 'attempt_completed', at: `u${i}`, startedAt: 'u', moduleId: id, seed: 1, core: [], review: null, coreCorrect: 5, coreTotal: 5 }));
+  { const done = ['colours', 'same-and-different', 'match-the-vehicles', 'match-the-things', 'match-the-water-animals', 'match-the-land-animals', 'match-the-shapes', 'match-the-solids', 'more-and-fewer-5', 'bigger-and-smaller', 'patterns', 'count-to-3', 'first-strokes', 'connect-the-dots', 'draw-the-shapes', 'taking-turns', 'big-bigger-biggest', 'helpers-all-around', 'feelings-show', 'how-friends-feel', 'good-friend', 'play-together', 'play-with-a-plan'].map((id, i) => ({ type: 'attempt_completed', at: `u${i}`, startedAt: 'u', moduleId: id, seed: 1, core: [], review: null, coreCorrect: 5, coreTotal: 5 }));
     ok('finishing a course unlocks the next course up in that subject', JSON.stringify(L.coursesToUnlock([L.makeCoursesEnabledEvent(['first-steps-pk'], 't'), ...done])) === '["counting-k"]');
     ok('nothing unlocks while a course is unfinished', L.coursesToUnlock([L.makeCoursesEnabledEvent(['first-steps-pk'], 't'), ...done.slice(0, 2)]).length === 0); }
   // The cadence: one reflection after every two mastered modules, rotating through the pool
@@ -1936,9 +2010,10 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   { // Pass IT (Mikey's screenshots): every picture a lesson or a question names has a drawing, so none falls back to a grey circle.
     const uiSrc = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8'); const logicSrc = readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8');
     const iconBody = uiSrc.slice(uiSrc.indexOf('function IconPic('), uiSrc.indexOf('}[name] ||', uiSrc.indexOf('function IconPic(')));
-    const drawn = new Set([...iconBody.matchAll(/^\s{4}([a-z]+): </gm)].map((m) => m[1])); const named = new Set();
+    // A drawing on its own lines, in parentheses (pass MR's people), counts too.
+    const drawn = new Set([...iconBody.matchAll(/^\s{4}([a-z]+): (?:<|\(\s*\n\s*<)/gm)].map((m) => m[1])); const named = new Set();
     for (const m of logicSrc.matchAll(/icon:([a-z]+)/g)) named.add(m[1]); for (const m of logicSrc.matchAll(/kind: 'icon', name: '([a-z]+)'/g)) named.add(m[1]);
-    for (const id of Object.keys(L.GENERATORS)) for (let s = 1; s <= 30; s++) { let q; try { q = L.generateQuestion(id, s); } catch (e) { break; } for (const c of [...(q.choices || []), ...String(q.answer).split(' | ')]) if (typeof c === 'string' && c.startsWith('icon:')) named.add(c.slice(5).split(/[:#~]/)[0]); for (const v of [q.visual, q.explainVisual]) if (v && v.kind === 'icon') named.add(String(v.name).split('~')[0]); }
+    for (const id of Object.keys(L.GENERATORS)) for (let s = 1; s <= 30; s++) { let q; try { q = L.generateQuestion(id, s); } catch (e) { break; } for (const c of [...(q.choices || []), ...String(q.answer).split(' | ')]) if (typeof c === 'string' && c.startsWith('icon:')) named.add(c.slice(5).split(/[:#~]/)[0]); for (const v of [q.visual, q.explainVisual]) { if (v && v.kind === 'icon') named.add(String(v.name).split('~')[0]); if (v && v.kind === 'row') for (const h of v.items || []) if (h.kind === 'icon') named.add(String(h.name).split('~')[0]); } }
     const missing = [...named].filter((n) => !drawn.has(n));
     ok('every icon a lesson or question names has a drawing', named.size > 10 && missing.length === 0, missing.join(', '));
     ok('the moon is drawn as a crescent, not two arcs that cancel out', /moon: <path d="M66 16A34 34 0 0 0 66 84A40 40 0 0 1 66 16Z"/.test(iconBody));
@@ -4087,7 +4162,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   const otherPair = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']);
   const otherPriv = await crypto.subtle.exportKey('jwk', otherPair.privateKey);
   ok('a code signed with any other key is refused', (await L.checkLicenseCode(await L.makeLicenseCode(otherPriv, { id: 'X', name: 'Y', year: '2026-27', until: '2027-07-31' }), new Date('2026-10-01'))).ok === false);
-  ok('pre-K 3, pre-K 4 and kindergarten courses are free, grade 1 and up are not', L.COURSES.filter(L.courseIsFree).length > 0 && L.COURSES.every((c) => L.courseIsFree(c) === ['PK3', 'PK4', 'K'].includes(c.grade)) && L.COURSES.filter(L.courseIsFree).reduce((n, c) => n + c.modules.length, 0) === 165);   // 86 plus computer science (FS), economics (FV), art and music (GE), philosophy (GL), psychology (GP) and speech (GT), four modules each, plus the five kindergarten science modules of earmark E1 (pass KK) the two Counting modules of earmark E2 (pass KL) the seven Me and my community modules of earmark E3 (passes KM and KN) the seven Taking care of me modules of earmark E4 (passes KO and KP) the four Tell, show, step and repeat modules of earmark E5 (passes KQ and KR) and the five Letters tracing modules of earmark E6 (pass KS), plus the two Very First Steps feelings modules of earmark E12 (pass MD) and its One more and one fewer and Listen and Point's Words that rhyme (pass ME), plus Very First Steps' Can I play too? and First Steps' three feelings lessons of earmarks E12 and E13 (pass MN), plus First Steps' Let's play together of earmark E13 and Listen and Point's Two steps and Two ideas and First Sounds and Letters' Three steps of earmarks E12 and E13 (pass MO), plus Listen and Point's Learning words and People and events, Very First Steps' Talking with a friend, and First Sounds and Letters' More learning words and Words that go together of earmarks E12 and E13 (pass MQ)
+  ok('pre-K 3, pre-K 4 and kindergarten courses are free, grade 1 and up are not', L.COURSES.filter(L.courseIsFree).length > 0 && L.COURSES.every((c) => L.courseIsFree(c) === ['PK3', 'PK4', 'K'].includes(c.grade)) && L.COURSES.filter(L.courseIsFree).reduce((n, c) => n + c.modules.length, 0) === 174);   // 86 plus computer science (FS), economics (FV), art and music (GE), philosophy (GL), psychology (GP) and speech (GT), four modules each, plus the five kindergarten science modules of earmark E1 (pass KK) the two Counting modules of earmark E2 (pass KL) the seven Me and my community modules of earmark E3 (passes KM and KN) the seven Taking care of me modules of earmark E4 (passes KO and KP) the four Tell, show, step and repeat modules of earmark E5 (passes KQ and KR) and the five Letters tracing modules of earmark E6 (pass KS), plus the two Very First Steps feelings modules of earmark E12 (pass MD) and its One more and one fewer and Listen and Point's Words that rhyme (pass ME), plus Very First Steps' Can I play too? and First Steps' three feelings lessons of earmarks E12 and E13 (pass MN), plus First Steps' Let's play together of earmark E13 and Listen and Point's Two steps and Two ideas and First Sounds and Letters' Three steps of earmarks E12 and E13 (pass MO), plus Listen and Point's Learning words and People and events, Very First Steps' Talking with a friend, and First Sounds and Letters' More learning words and Words that go together of earmarks E12 and E13 (pass MQ), plus the nine second halves of Mikey's answer to Q70 (pass MR: four of pre-K 3's, five of pre-K 4's)
   const mixed = ['counting-k', 'reading-3', 'letters-k'];
   ok('without a license only the free courses open; with one, all of them do', JSON.stringify(L.openCourseIds(mixed, false)) === JSON.stringify(['counting-k', 'letters-k']) && L.openCourseIds(mixed, true).length === 3);
   ok('the app carries a public key only, marked as the development key until launch', !('d' in L.LICENSE_PUBLIC_KEY) && L.LICENSE_KEY_IS_DEVELOPMENT === true);
@@ -4853,6 +4928,30 @@ const moreRightProblems = (L) => { const r = {};
   const renamed = T.gameColors(T.RED_BROWN, readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8').replace('function BuildGame(', 'function BuildGameX('));
   const near = renamed.some((r) => r.kind === 'build' && !r.found);
   ok(`tools/game-colors.mjs finds every kind's component and Find the Letter's own board, counts every game once (${ids.length}), and finds red-brown in Build a sentence and Green Flag or Red Flag (pass MQ, round four's docs read)`, rows.every((r) => r.found) && ids.length === L.GAMES.length && new Set(ids).size === ids.length && [...kinds].every((k) => rows.some((r) => r.kind === k)) && rows.some((r) => r.comp === 'FindLetterGame' && r.games.length === 1) && red('build') && red('greenred') && near, JSON.stringify({ rows: rows.length, missing: rows.filter((r) => !r.found).map((r) => r.kind), games: ids.length, of: L.GAMES.length, near }));
+}
+
+// Every book on every reading list has its Details summary (pass MR, Mikey: "Maybe we can add a short conversational summary for each
+// book and it could be a popup that shows after somebody clicks "Details.""): keyed by the list entry exactly, every key a book on a
+// list, each a short paragraph of whole sentences (60 to 110 words; pass MR's 281 run 65 to 110) with no em or en dash and no sentence
+// over 45 words (the run-on guard explanations and stories have had since pass JG; round three of pass MR, the alignment read, found
+// four summaries past it, at 46 to 59), and every entry with an author in parentheses read by bookParts into its title and author.
+// The planted cases show the check sees each fault, and a 45-word sentence passes while a 46-word one fails.
+{ const entries = [...new Set(Object.values(L.READING_LISTS).flat())];
+  const faults = (notes, list) => {
+    const out = []; const keys = Object.keys(notes);
+    for (const e of list) if (!notes[e]) out.push(`no summary: ${e}`);
+    for (const k of keys) if (!list.includes(k)) out.push(`no book: ${k}`);
+    for (const k of keys) { const s = notes[k]; const n = s.split(/\s+/).length;
+      if (n < 60 || n > 110 || /[–—]/.test(s) || !/[.!?"]$/.test(s) || s !== s.trim() || /\s{2}/.test(s)) out.push(`shape: ${k}`);
+      if (s.split(L.SENTENCE_BREAK).some((x) => x.split(/\s+/).filter(Boolean).length > 45)) out.push(`run-on: ${k}`); }
+    for (const e of list) { const b = L.bookParts(e); if (!b.title || (/\([^()]+\)/.test(e) && !b.by)) out.push(`parts: ${e}`); }
+    return out; };
+  const real = faults(L.BOOK_NOTES, entries);
+  const one = entries[0]; const short = { ...L.BOOK_NOTES, [one]: 'Too short.' }; const dashed = { ...L.BOOK_NOTES, [one]: L.BOOK_NOTES[one].replace(' ', ' — ') };
+  const runOn = (n) => `${Array.from({ length: n }, () => 'word').join(' ')}. ${Array.from({ length: 4 }, () => 'Short words end here.').join(' ')}`;
+  const near = faults(short, entries).length === 1 && faults(dashed, entries).length === 1 && faults({ ...L.BOOK_NOTES, 'Nobody (No One)': L.BOOK_NOTES[one] }, entries).length === 1 && faults(L.BOOK_NOTES, [...entries, 'A New Book (Someone)']).length === 1
+    && faults({ ...L.BOOK_NOTES, [one]: runOn(46) }, entries).length === 1 && faults({ ...L.BOOK_NOTES, [one]: runOn(45) }, entries).length === 0;
+  ok(`every reading-list book (${entries.length}) has its Details summary, every summary is a listed book's, each a short paragraph of whole sentences (pass MR)`, real.length === 0 && near && entries.length > 250, real.slice(0, 4).join(' | ') + (near ? '' : ' | the planted faults were not all seen'));
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

@@ -24,7 +24,9 @@ echo "10/13 license codes in the browser"; timeout 120 node tests/e2e/license.mj
 echo "10/13 dragging with a desktop mouse"; timeout 150 node tests/e2e/drag.mjs 2>&1 | tail -1 | tee /tmp/edu_drag.txt; grep -q " 0 failed" /tmp/edu_drag.txt || fail=1
 echo "10/13 changing the educator PIN"; timeout 120 node tests/e2e/educator.mjs 2>&1 | tail -1 | tee /tmp/edu_educator.txt; grep -q " 0 failed" /tmp/edu_educator.txt || fail=1
 echo "10/13 the first week tour, card by card, and pages that open at the top"; timeout 300 node tests/e2e/tour.mjs 2>&1 | tail -1 | tee /tmp/edu_tour.txt; grep -q " 0 failed" /tmp/edu_tour.txt || fail=1
-echo "11/13 back button from every screen"; timeout 200 node tests/e2e/back-sweep.mjs 2>&1 | tail -1 | tee /tmp/edu_back.txt; grep -q " 0 failed" /tmp/edu_back.txt || fail=1
+# Since round three of pass MR the back sweep also reads every screen it lands on for words that spill or sit off center beside an
+# icon (tests/e2e/layout-check.mjs), the games being read in 13g.
+echo "11/13 back button from every screen, and the words in their boxes on every screen it lands on"; timeout 200 node tests/e2e/back-sweep.mjs 2>&1 | tail -1 | tee /tmp/edu_back.txt; grep -q " 0 failed" /tmp/edu_back.txt || fail=1
 echo "12/13 dark theme: every word readable, paper screens light"; timeout 200 node tests/e2e/dark-contrast.mjs 2>&1 | tail -1 | tee /tmp/edu_dark.txt; grep -q " 0 failed" /tmp/edu_dark.txt || fail=1
 echo "13/13 standalone page keeps its data"; timeout 120 node tests/site.test.mjs 2>&1 | tail -1 | tee /tmp/edu_site.txt; grep -q " 0 failed" /tmp/edu_site.txt || fail=1
 echo "13b/13 the scroll cue on a phone lesson"; timeout 120 node tests/e2e/scroll-cue.mjs 2>&1 | tail -1 | tee /tmp/edu_cue.txt; grep -q " 0 failed" /tmp/edu_cue.txt || fail=1
@@ -43,4 +45,21 @@ echo "13e/13 question pictures, More Info, the Wonder pictures and the read-alon
 # key press and numbers, and less motion; since round two two short screens played whole and the claude.ai preview's page-tall frame.
 # About eight minutes at the test's pace (6 min 53 s and 7 min 50 s in pass MQ's runs, with its rows and rounds); the timeout is fifteen.
 echo "13f/13 a game's welcome and its demonstration"; timeout 900 node tests/e2e/game-intro.mjs 2>&1 | tail -1 | tee /tmp/edu_intro.txt; grep -q " 0 failed" /tmp/edu_intro.txt || fail=1
+# Every game on the narrowest phone, in a typeface a tenth wider than the test browser's, and again after a wrong tap on every
+# board that names its answer (pass MR, from Mikey's answer to Q72: "I never want this to happen anywhere in the app and try to
+# correct every example I find."): a word that spills out of its box, or centered words an icon pushes off center, fails, and so
+# does a game that never opens, a missed planted fault (a spilled tile and an off-center row, planted in the first game) or a
+# wide typeface that is not really drawn. The games where no wrong tap can be made are listed, not failed. About four minutes;
+# the timeout is ten. The full sweep at eight sizes is tools/layout-sweep.mjs on its own (its header says how).
+echo "13g/13 every game on the narrowest phone, in a wider font, after a wrong tap"; timeout 600 node tools/layout-sweep.mjs --wide-font --wrong --sizes=320x568 > /tmp/edu_layout.log 2>&1; layout=$?; tail -1 /tmp/edu_layout.log | tee /tmp/edu_layout.txt; [ "$layout" = 0 ] && grep -q ": 0 problems" /tmp/edu_layout.txt || fail=1
+# Every word in every drawn picture, the question pictures in the app, every lesson picture and every different picture a question
+# bank draws over 300 seeds, in both themes (pass MR, the same answer of Mikey's): a word past its picture's edge, words on top of
+# each other, a line through a word, or a word too faint against what is under it fails, and so does a question's picture that shows
+# its own answer. About seven and a half minutes; the timeout is fifteen. It runs with tsx, since the lesson pictures are drawn from
+# the built file.
+echo "13h/13 every word in every drawn picture, in both themes"; timeout 900 npx tsx tests/e2e/diagram-words.mjs 2>&1 | tail -1 | tee /tmp/edu_words.txt; grep -q " 0 failed" /tmp/edu_words.txt || fail=1
+# The reading lists' Details (pass MR, Mikey's books): every list's books in order, each with its Details button and a short rule
+# between every two; one book a list opens exactly its summary under its title and author, and Got it, the dimmed page and Escape
+# each close it; nothing runs past the screen's edge. Both themes, about forty seconds.
+echo "13i/13 the reading lists' Details, in both themes"; timeout 240 node tests/e2e/book-details.mjs 2>&1 | tail -1 | tee /tmp/edu_books.txt; grep -q " 0 failed" /tmp/edu_books.txt || fail=1
 if [ "$fail" = 0 ]; then echo "ALL CHECKS PASSED"; else echo "CHECKS FAILED - read the lines above"; exit 1; fi

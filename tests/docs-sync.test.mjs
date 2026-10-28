@@ -156,6 +156,11 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   { const o = "<!-- RULES-AUDIT section 11's answered questions in pass MQ, word for word: begin -->\n"; const ia = hist.indexOf(o); const ib = hist.indexOf("<!-- RULES-AUDIT section 11's answered questions in pass MQ, word for word: end -->");
     const mq = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
     ok('docs/RULES-AUDIT-HISTORY.md keeps the questions answered in pass MQ, every line unchanged (pass MQ)', createHash('sha256').update(mq, 'utf8').digest('hex') === '95c8f25f2c29d249d0c0c1efc3e2d27188b91498ccfed1e67af945a3751e1607'); }
+  // Pass MR's block, held the same way: Q67 to Q72, which Mikey answered when he opened the pass ("Q67 - B but let's make it fun."
+  // and the rest).
+  { const o = "<!-- RULES-AUDIT section 11's answered questions in pass MR, word for word: begin -->\n"; const ia = hist.indexOf(o); const ib = hist.indexOf("<!-- RULES-AUDIT section 11's answered questions in pass MR, word for word: end -->");
+    const mr = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
+    ok('docs/RULES-AUDIT-HISTORY.md keeps the questions answered in pass MR, every line unchanged (pass MR)', createHash('sha256').update(mr, 'utf8').digest('hex') === '66ffc4e597d5ca471591175bf1e4d37d2452c636ee55e4ca86f17245637808e5'); }
   const s = audit.indexOf('## 11. Open items that need Mikey'); const e = audit.indexOf('\n## ', s + 5); const sec = audit.slice(s, e < 0 ? audit.length : e);
   const answeredLines = sec.split('\n').filter((l) => /^- Q\d+\. Answered in pass /.test(l));
   const long = answeredLines.filter((l) => !/^- Q\d+\. Answered in pass \w+ \(Mikey: .+\)\. Its rule lives in [^\n]+\.$/.test(l) || /The question as it stood/.test(l));

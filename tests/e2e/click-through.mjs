@@ -238,7 +238,7 @@ ok('a young student sees their coloured picture beside their name', (await page.
 ok('a discreet contact link is offered', (await page.getByRole('button', { name: 'Contact us' }).count()) === 1);
 await page.getByRole('button', { name: /S-2001$/ }).click();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
-{ const begin = page.getByRole('button', { name: 'Start at the beginning instead' }); let guard = 0; while ((await begin.count()) > 0 && guard < 5) { await begin.first().click(); await page.waitForTimeout(250); guard += 1; } }
+{ const begin = page.getByRole('button', { name: /^Start (?:[a-z ]+ )?at the beginning instead$/ }); let guard = 0; while ((await begin.count()) > 0 && guard < 5) { await begin.first().click(); await page.waitForTimeout(250); guard += 1; } }
 t = await text();
 ok('subjects are stacked alphabetically with nothing opened', t.indexOf('Math') < t.indexOf('Reading') && (t.match(/Ready|Locked/g) || []).length === 0);
 await page.getByRole('button', { name: /^Math/ }).click();
@@ -858,8 +858,10 @@ await page.getByRole('button', { name: /S-3003$/ }).click();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
 // A brand-new reader is offered a placement check in every subject, and sees nothing else until each is settled.
 t = await text();
-ok('a new reader is offered a placement check before any course shows', t.includes('Find your starting point in math') && !t.includes('My progress') && !t.includes('modules mastered') && (await page.getByRole('button', { name: /^Math/ }).count()) === 0);
-{ const begin = page.getByRole('button', { name: 'Start at the beginning instead' }); let guard = 0; while ((await begin.count()) > 0 && guard < 5) { await begin.first().click(); await page.waitForTimeout(250); guard += 1; } }
+// Since pass MR one card says once what the check is and names each subject on a row of its own (the paragraph had repeated in
+// every subject's card).
+ok('a new reader is offered a placement check before any course shows', t.includes('Find your starting point') && (t.match(/A short check to see where you are/g) || []).length === 1 && (await page.locator('[data-placement]').count()) >= 2 && !t.includes('My progress') && !t.includes('modules mastered') && (await page.getByRole('button', { name: /^Math/ }).count()) === 0);
+{ const begin = page.getByRole('button', { name: /^Start (?:[a-z ]+ )?at the beginning instead$/ }); let guard = 0; while ((await begin.count()) > 0 && guard < 5) { await begin.first().click(); await page.waitForTimeout(250); guard += 1; } }
 t = await text();
 ok('starting at the beginning settles the placement and reveals the courses', !t.includes('Find your starting point') && t.includes('My progress'));
 await tap('My progress');
@@ -1593,7 +1595,16 @@ await page.waitForTimeout(200);
   const need0 = await page.locator('[data-grow-need]').getAttribute('data-grow-need'); const wrongNeed = ['water', 'sunshine', 'soil'].find((n) => n !== need0);
   await page.getByRole('button', { name: `Give ${wrongNeed}`, exact: true }).click(); await page.waitForTimeout(150);
   ok('the wrong need does not fix the plant, and sends the child back to what it shows', (await page.locator('[data-grow-fixed]').getAttribute('data-grow-fixed')) === 'no' && (await text()).includes('Look again'));
-  for (let r = 0; r < 4; r++) { const need = await page.locator('[data-grow-need]').getAttribute('data-grow-need'); if (!need) break; await page.getByRole('button', { name: `Give ${need}`, exact: true }).click(); await page.waitForTimeout(1600); }
+  // The board's own attributes say where the round is (the page's text cannot: the app's script, inlined in the test page's
+  // body, holds the words "Four plants grown" from the start): a right tap turns data-grow-fixed to yes, and the next plant, or
+  // the round's end, changes data-grow-plant.
+  const board = () => page.evaluate(() => { const b = document.querySelector('[data-grow-fixed]'); return b ? { plant: b.getAttribute('data-grow-plant'), need: b.getAttribute('data-grow-need'), fixed: b.getAttribute('data-grow-fixed') } : null; });
+  let held = null;
+  for (let r = 0; r < 4; r++) { const was = await board(); if (!was || !was.need) break; await page.getByRole('button', { name: `Give ${was.need}`, exact: true }).click();
+    await page.waitForFunction(() => { const b = document.querySelector('[data-grow-fixed]'); return !!b && b.getAttribute('data-grow-fixed') === 'yes'; }, null, { timeout: 3000 });
+    if (r === 0) { await page.waitForTimeout(1600); held = (await board()).fixed; }
+    await page.waitForFunction((p) => { const b = document.querySelector('[data-grow-fixed]'); return !!b && b.getAttribute('data-grow-plant') !== p; }, was.plant, { timeout: 9000 }); }
+  ok('a grown plant stays on the screen for the whole praise and a beat, still grown 1.6 seconds after the tap (Q72: "It is way too fast of a transition")', held === 'yes', held);
   ok('the right need for each of four plants finishes the round', (await text()).includes('Four plants grown'));
 }
 await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });

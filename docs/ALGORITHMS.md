@@ -399,3 +399,24 @@ A game break (the report's "Game breaks taken" line, the weekly note and the cha
 once the child has tapped Begin (Mikey's answer to Q63, "Q63 - A"): every visit is logged when the game closes, with begun false
 when it closed during the welcome or on Begin's cover, and isGameBreak leaves those out; a visit logged before pass MQ has no begun
 and counts, as it did.
+
+## A right answer's beat, and a game head that holds still (pass MR, Mikey's answer to Q72)
+
+After a right answer in Grow the Plant, the child gets time to see what the answer did before the next question comes (Mikey: "It is
+way too fast of a transition."); every other game moves on in its own way, most after a fixed pause (0.65 to 2.6 seconds), some at a Next
+button the child taps (Pay the Price, Find the evidence, Fix it and others), Spot It with its next ask the moment a shape is found,
+and Find the Letter with its next letter about half a second after its praise, and whether the young games that speak their next
+question should hold the same way is Q75 (round three of pass MR, the alignment read: this line
+had said every game). afterSaid(text, done) says the praise when there is one and calls done once three
+things are true: the voice has finished the praise (read every 100 ms from voiceTalking()), a beat of NEXT_QUESTION_BEAT_MS (1000)
+has passed since it finished, and RIGHT_ANSWER_HOLD_MS (2200) have passed since the tap. A voice that never reports its end is let go
+at voiceBackstopMs(text) plus the beat, and with no voice the hold alone decides. afterSaid returns a cancel, which the game's effect
+cleanup calls, so closing or resetting a game during the hold never moves it on. The browser walk (tests/e2e/click-through.mjs) holds
+it end to end: 1.6 seconds after a right need in Grow the Plant, the grown plant is still on the screen.
+
+A game's head, its name at the left and its clock and count at the right, wraps onto a second line when the two do not fit on a
+narrow phone. So that it never wraps in the middle of a round, which would drop the board under the child's finger, every part of
+the head that changes during a round holds the room of its widest form from the first board (HeadRoom in src/ui.jsx): the clock
+holds "888s", the count holds the round's last count ("10 of 10"), and the streak holds "· 10 in a row" for a ten-board round,
+hidden until the streak reaches two. The head's digits are all one width (tabular-nums), so a clock going from 9 to 10 seconds
+moves nothing. A head whose words change with each board (a sequence's title, a target number) can still change between boards.

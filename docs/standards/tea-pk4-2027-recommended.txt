@@ -1,0 +1,204 @@
+# Source: 2027 Pre-K Guidelines Review Committee: Recommendations for the Texas Prekindergarten Guidelines, PK4 outcomes, in five documents by domain group (Positive Character Development and Physical Development; Language and Communication and Reading; Writing; Mathematics, Science and Technology; Social Studies and Fine Arts)
+# URL: TEA posted the five documents on tea.texas.gov for public feedback from September 15 to 30, 2026 (tpg-pcd-phys.pdf, tpg-lc-reading.pdf, tpg-literacy-writing_0.pdf, tpg-math-science-technology_0.pdf and tpg-ss-fine-arts.pdf); this session cannot download from tea.texas.gov, and Mikey attached the five PDFs on October 27, 2026 (pass MR)
+# Publisher: Texas Education Agency ("*Created by TEA staff" at the foot of every page)
+# Edition: the committee's recommended revisions of the 2022 guidelines ("2027 PK4 Outcome Recommendation" column), adopted by the app in pass MR at Mikey's word ("I think we should go ahead and implement the new recommendations from the 2027 Pre-K Guidelines Review Committee.  This app will take years to develop so we might as well adopt the new stuff now."); TEA has not adopted them as of this reading, and its guidelines page still names the 2022 guidelines
+# Read: 2026-10-27, from the PDFs themselves, character by character, then checked against every page rendered as an image
+# Notes: (1) How it was read: each document is a table of five columns, 2022 PK3, 2027 PK3 recommendation, 2022 PK4, 2027 PK4 recommendation and the committee's comments, with its change marks in color, per its own legend: additions in green with underlines, deletions in red with strike-throughs, text moved away in purple with strike-throughs and text moved here in purple with underlines. Each character's own fill color was read from the PDF (every shade of red a deletion, every green an addition, a purple bar across a character's middle a strike and along its foot an underline), and an outcome here is its recommendation cell with the deletions and moved-away text taken out and the additions and moved-here text kept. (2) Where a recommendation cell is empty and nothing in the row is struck, the 2022 outcome is read as carried over unchanged (the committee copies some unchanged outcomes into its column and leaves others blank; its comment beside PK3 II.E.2 says "Kept"). (3) Outcomes struck whole, placeholders ("*There is not enough research to support the inclusion of a PK3 outcome*") and the unmarked words "No PK3 outcomes for this domain of learning." (Social Studies' Economics, Geography and Citizenship at PK3) are not outcomes and are not listed. (4) A line is a code, a tab and the outcome's words after "Child", as in the 2022 files; II.C.1, which begins with the possessive "Child's", keeps it. (5) Codes are the recommendation's own, which renumber several skills (Mathematics' Geometry, Measurement and Classification move from C, D and E to B, C and D, and Science's Physical, Life and Earth sciences from A, B and C to B, C and D, beside new skills A Scientific Inquiry and E Engineering) and outcomes within them; the Mathematics, Science and Technology document prints codes with an age prefix (PK3.V.A.1), dropped here. (6) Where the committee's own editing left a slip, it is resolved and listed below, item by item, with what the marks give; slips that leave a readable outcome (a missing period, comma or word) are kept as printed and listed too, so that nobody takes them for typos. (7) Hyphens are the ordinary hyphen. (8) Two independent checks of pass MR read every outcome again, from the rendered pages and from the PDFs' own character colors, each with code of its own: they found no wrong words or codes and no missing or extra outcomes, and their findings on these notes are folded in.
+# Slip or reading: PK4 I.A.2: two periods where the struck words ended.
+# Slip or reading: PK4 I.B.2.c: the comma after the struck "consistently" is left unstruck; the recommendation prints no closing period.
+# Slip or reading: PK4 I.B.3.b: an added period after "time", before the kept parenthesis, and a brace where its closing parenthesis belongs, after the kept period of "minutes."; read as one sentence, so the period after "time" is dropped and the closing period stands after the parenthesis.
+# Slip or reading: PK4 V.A.7: the added words begin with a hyphen ("-up to", green and underlined) typed right after the struck "0" of "0-10"; read without it, as the sentence needs.
+# Slip or reading: PK4 V.B.1: the C of PK4.V.C.1 is struck and no letter is added; the outcome heads Geometry and Spatial Sense, renamed B, as PK3's V.B.1 does.
+# Slip or reading: PK4 VI.D.2: a second line stands under the outcome in its cell after a blank line, "Identifies and describes common objects in the sky", unmarked and in the outcome's own type, with no "Child" and no period; it is left out as no part of the outcome's sentence, though it may be an unmarked draft rewording (one that keeps "describes"), so this outcome's wording is the less certain one here.
+# Slip or reading: PK4 VIII.A.2: a line break inside "self-expression" in the PDF's text.
+# Slip or reading: PK4 II.B.2: no recommendation in its row and nothing struck, so carried over unchanged from 2022.
+# Slip or reading: PK4 III.C.2: no recommendation in its row and nothing struck, so carried over unchanged from 2022.
+# Slip or reading: PK4 I.C.5: the PDF's text writes this hyphen as Unicode's hyphen (U+2010); the page shows an ordinary hyphen, written so here.
+# Slip or reading: PK4 VII.D.3: the PDF's text writes this hyphen as Unicode's hyphen (U+2010); the page shows an ordinary hyphen, written so here.
+# Slip or reading: PK4 VIII.A.2: the PDF's text writes this hyphen as Unicode's hyphen (U+2010); the page shows an ordinary hyphen, written so here.
+# Slip or reading: PK4 IV.B.3: "individual written/or drawn products", with the 2022 slash kept before the added "or drawn", as printed.
+# Slip or reading: PK4 IV.C.4: "left to right) adult support as needed.", with no "with" before the added "adult support", as printed.
+# Slip or reading: PK4 V.D.2: "AB AAB, and ABB" with no comma after "AB", as printed (V.D.3 has "AB, AAB, or ABB").
+# Slip or reading: PK4 VII.A.2: no comma after the added "traditions" before the moved-here "cultural influences", as printed.
+## I Positive Character Development Domain
+## I.A Self-Concept
+I.A.1	is aware of where own body is in space and respects personal boundaries.
+I.A.2	describes their own attributes, and expresses personal preferences.
+I.A.3	demonstrates confidence in own strengths and awareness of limitations.
+I.A.4	shows initiative in trying new activities and demonstrates persistence when attempting to overcome obstacles or challenges.
+## I.B Self-Regulation
+## I.B.1 Behavior Control
+I.B.1.a	follows classroom expectations (rules, routines and procedures) with occasional reminders.
+I.B.1.b	uses, cares for and returns classroom materials with increasing independence.
+I.B.1.c	regulates own behavior with occasional reminders or assistance from adults.
+## I.B.2 Emotional Control
+I.B.2.a	describes or demonstrates the connection between emotions and behaviors.
+I.B.2.b	uses verbal and nonverbal communication to express emotions and feelings.
+I.B.2.c	uses calming strategies to regulate emotions with decreasing adult assistance
+## I.B.3 Control of Attention
+I.B.3.a	sustains attention on one task at a time working toward completion.
+I.B.3.b	remains focused on engaging, teacher-led group activities for increasing periods of time (up to 20 minutes).
+## I.C Relationships with Others
+I.C.1	uses effective verbal and nonverbal communication skills, home language, assistive communication, or other preferred methods to develop positive relationships with adults and peers.
+I.C.2	participates in roles and responsibilities as a member of the classroom community.
+I.C.3	initiates and/or responds to social interactions using verbal and non-verbal communication skills.
+I.C.4	engages in cooperative play with peers by contributing to a shared plan or goal.
+I.C.5	uses simple problem-solving strategies when experiencing conflicts with others and seeks adult support when necessary.
+I.C.6	responds with empathy and care for others.
+I.C.7	develops and maintains positive relationships with peers and has preferred friends.
+## I.D Social Awareness
+I.D.1	demonstrates respect for others' perspectives and feelings that are similar and/or different from their own.
+## II Emergent Literacy: Language and Communication Domain
+## II.A Listening Comprehension
+II.A.1	demonstrates understanding of spoken communication by responding appropriately to adults and peers through verbal or nonverbal behaviors.
+II.A.2	demonstrates understanding by following three-step verbal directions with support.
+## II.B Speaking (Conversation)
+II.B.1	uses language for multiple purposes and in various settings.
+II.B.2	engages in conversations in appropriate ways, demonstrating knowledge of verbal and nonverbal conversational rules.
+## II.C Articulation
+II.C.1	Child’s speech is generally intelligible to both familiar and unfamiliar adults and peers.
+II.C.2	uses intonation (changes in pitch or stress) to convey and interpret meaning in spoken language.
+## II.D Vocabulary
+II.D.1	understands (receptive) and uses (expressive) a growing variety of words to label, describe and make connections among objects, people, places, actions, and events.
+II.D.2	consistently understands (receptive) and uses (expressive) instructional and academic vocabulary.
+## II.E Sentence Structure
+II.E.1	typically uses complete sentences with increasing length and age-appropriate grammatical complexity, usually in standard word order.
+II.E.2	uses a variety of age-appropriate grammatical forms (e.g. plurals, past tense, pronouns, subject-verb agreement) in spoken language.
+II.E.3	uses sentences that combine multiple phrases or ideas, shares details, maintains a topic, and communicates ideas clearly.
+## III Emergent Literacy: Reading Domain
+## III.A Motivation to Read
+III.A.1	self-selects and interacts with books and other written materials for increasing periods of time.
+## III.B Phonological Awareness
+III.B.1	counts the number of words in a spoken sentence of increasing complexity.
+III.B.2	distinguishes when two words are the same or different.
+III.B.3	blends multisyllabic words with up to 3 syllables.
+III.B.4	segments multisyllabic words with up to three syllables.
+III.B.5	identifies rhyming words.
+III.B.6	produces rhyming words with adult assistance.
+III.B.7	identifies if words begin with the same sound.
+III.B.8	produces a word that begins with the same sound.
+III.B.9	identifies the onset in words (single letters and consonant blends) (in English only).
+III.B.10	blends onset-rime to form familiar one-syllable words (in English only).
+III.B.11	isolates initial phonemes.
+III.B.12	blends 2-3 phonemes with adult assistance.
+III.B.13	segments 2-3 phonemes with adult assistance.
+## III.C Alphabet Knowledge
+III.C.1	recognizes and names at least 18 uppercase letters and 15 lowercase letters.
+III.C.2	recognizes at least 20 distinct letter-sound correspondences.
+III.C.3	produces at least 15 distinct letter-sound correspondences.
+## III.D Comprehension of Text
+III.D.1	retells or re-enacts the main events of a story.
+III.D.2	makes connections between books read aloud and personal experiences or ideas from other texts with adult assistance.
+III.D.3	uses information learned from text to describe, relate, categorize, or compare and contrast with adult assistance.
+III.D.4	asks and responds to questions relevant to the text read aloud with adult assistance.
+III.D.5	makes predictions and attempts to make inferences about a text with adult assistance.
+## III.E Concepts of Print
+III.E.1	recognizes that all print carries meaning and serves as a means for communication.
+III.E.2	can distinguish between elements of print including letters, words, and pictures.
+III.E.3	holds books right side up and demonstrates understanding of print directionality.
+III.E.4	can identify some conventional features of print that communicate meaning including end punctuation and case.
+## IV Emergent Literacy: Writing Domain
+## IV.A Motivation to Write
+IV.A.1	intentionally uses drawings and marks, letters, or symbols to represent ideas and verbally shares intended meaning with an adult or peer.
+IV.A.2	independently draws and writes for many purposes to communicate ideas, using a variety of writing tools with support as needed.
+IV.A.3	draws and/or writes in response to shared reading with support as needed.
+## IV.B Writing as a Process
+IV.B.1	contributes ideas for shared writing/dictation in whole/small group settings with support as needed.
+IV.B.2	provides suggestions for revisions (add, take out, change order) and edits (conventions) during shared writing with support as needed.
+IV.B.3	shares and celebrates class-made and individual written/or drawn products by explaining meaning to others.
+## IV.C Conventions in Writing
+IV.C.1	writes first name using letters in the proper sequence with adult support as needed.
+IV.C.2	progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas.
+IV.C.3	writes familiar words using letter-sound correspondences, often using letters associated with beginning, medial and/or ending sounds to write words with adult support as needed.
+IV.C.4	demonstrates directionality when writing (e.g., top to bottom, left to right) adult support as needed.
+IV.C.5	demonstrates use of spacing in their writing with adult support as needed.
+IV.C.6	experiments with and uses punctuation when writing.
+## V Mathematics Domain
+## V.A Numbers and Operations
+V.A.1	rote counts from 1 to 30.
+V.A.2	instantly recognizes the quantity of up to 6 objects without counting (subitizes) in organized and random arrangements.
+V.A.3	counts up to 10 objects with one-to-one correspondence.
+V.A.4	counts up to 10 items and demonstrates cardinality by communicating that the last number indicates how many items are in the set.
+V.A.5	names numerals 0-10.
+V.A.6	represents quantities up to 10 by creating or showing sets using objects, fingers, or drawings.
+V.A.7	uses objects to represent how sets up to 10 can be composed and decomposed in at least two different compositions.
+V.A.8	compares two sets of up to 10 objects in each set using comparative language (e.g., greater/more than, less/fewer than, equal to/same number of).
+V.A.9	uses objects or pictorial models to represent real-world addition problems up to 5.
+V.A.10	uses objects or pictorial models to represent real-world subtraction problems from a set of 5.
+## V.B Geometry and Spatial Sense
+V.B.1	names two-dimensional shapes including circles, squares, rectangles, triangles, ovals, and rhombi regardless of size and orientation.
+V.B.2	recognizes three-dimensional shapes including spheres, cubes, cylinders, and cones.
+V.B.3	creates shapes including circles, squares, rectangles, triangles, ovals, and rhombi using materials and/or manipulatives.
+V.B.4	uses positional words including first, last, above, below, front, behind, next to, and between.
+## V.C Measurement
+V.C.1	recognizes and compares the attributes of heights or lengths of people or objects using language including longer, shorter, taller, higher, lower or same.
+V.C.2	recognizes and compares the capacity of containers through hands-on experiences with liquids and other materials and uses language including full, empty, more, less, or same amount.
+V.C.3	recognizes and compares the weights of objects through hands-on experiences using language including heavy, light, more, or less.
+V.C.4	describes concepts associated with the passing of time within a day using language including now, next, later, before, after, morning, or afternoon.
+## V.D Classification & Patterns
+V.D.1	sorts objects into groups based on shared attributes such as color, shape, or size and describes how the groups are similar and different.
+V.D.2	duplicates simple repeating AB AAB, and ABB patterns using objects, actions, or sounds.
+V.D.3	extends and creates simple repeating AB, AAB, or ABB patterns using objects, actions, or sounds with support.
+V.D.4	participates in group activities of collecting data, contributing to creating a simple graph or chart, and describing the results with adult support.
+## VI Science Domain
+## VI.A Scientific Inquiry
+VI.A.1	uses simple scientific tools to learn about objects.
+VI.A.2	asks questions based on observations.
+VI.A.3	makes predictions and conducts simple investigations with support.
+## VI.B Physical Science
+VI.B.1	identifies and compares observable properties of objects such as color, shape, texture, and size.
+VI.B.2	investigates cause and effect of push/pull/collision that makes objects start, stop, and change direction and position.
+VI.B.3	describes how the position of a light source or object affects shadows.
+## VI.C Life Science
+VI.C.1	describes the characteristics of living organisms.
+VI.C.2	recognizes the changes of living organisms over their lifespan.
+VI.C.3	recognizes how living organisms need water, food, air, and/or shelter to live and grow.
+## VI.D Earth & Space Science
+VI.D.1	recognizes properties of earth materials such as rocks, soil, sand, and water and their uses.
+VI.D.2	identifies common objects in the sky such as Sun, Moon, clouds, and stars.
+VI.D.3	recognizes patterns and changes in weather, day and night, and seasons.
+VI.D.4	participates in caring for the environment.
+## VI.E Engineering
+VI.E.1	selects and uses appropriate tools and materials to build or create.
+VI.E.2	plans, constructs, and tests simple structures to solve a problem.
+## VII Social Studies Domain
+## VII.A People, Past and Present
+VII.A.1	identifies and describes similarities and differences between self, classmates, families, and others, including personal characteristics.
+VII.A.2	identifies similarities and differences in characteristics of family traditions cultural influences, and community celebrations, including food, music, and clothing.
+VII.A.3	describes and sequences familiar daily events and routines using words related to time and chronology such as first, next, last, before, after, yesterday, today, and tomorrow.
+## VII.B Economics
+VII.B.1	identifies basic human needs, including water, food, clothing, and shelter.
+VII.B.2	identifies consumers as people who use or buy goods and services.
+VII.B.3	identifies and discusses the roles and responsibilities of family, school, and community helpers as people who work together to make the community a safer place for everyone.
+## VII.C Geography
+VII.C.1	identifies, describes, and represents familiar places and geographic features in the environment such as landforms, bodies of water, and landmarks through drawings, creation of models, and play.
+VII.C.2	explores and uses basic geography tools and resources such as maps, photographs, and classroom diagrams to locate or identify familiar places.
+## VII.D Citizenship
+VII.D.1	identifies the United States and Texas flag.
+VII.D.2	recites the Pledge of Allegiance to the United States flag and the Texas flag and observes a moment of silence.
+VII.D.3	engages in voting as a method for group decision-making and solving problems such as choosing a book, game, or snack.
+## VIII Fine Arts Domain
+## VIII.A Art
+VIII.A.1	uses a variety of art materials such as paint, clay, collage, drawing tools and loose parts for sensory experiences, fine motor development, and exploration.
+VIII.A.2	creates and describes artwork inspired by personal ideas, feelings, or experiences as a form of creative self-expression and representation.
+VIII.A.3	demonstrates interest in and shows appreciation for the creative work of others by looking, responding, or asking questions.
+## VIII.B Music
+VIII.B.1	participates in adult or student-led music activities including singing, playing musical instruments, and replicating rhythmic patterns.
+VIII.B.2	responds to different musical styles through coordinated movement and play.
+## VIII.C Dramatic Expression
+VIII.C.1	creates or reenacts stories, feelings, or experiences through pretend play or dramatic representations.
+## IX Physical Development Domain
+## IX.A Gross Motor Development
+IX.A.1	demonstrates coordination and balance while running, jumping, hopping, climbing, and pedaling.
+IX.A.2	performs a sequence of movements to perform tasks with control.
+## IX.B Fine Motor Development
+IX.B.1	demonstrates control, coordination, and increasing precision when using small muscles to complete tasks.
+IX.B.2	demonstrates control, coordination and increasing precision when completing tasks that require eye-hand coordination.
+## IX.C Personal Safety and Health
+IX.C.1	demonstrates safe behaviors by following school-wide and classroom rules.
+IX.C.2	independently follows personal health and hygiene routines with occasional reminders.
+IX.C.3	identifies and makes healthy food choices and physical activities that support well-being.
+## X Technology Applications Domain
+## X.A Technology Use
+X.A.1	explores how digital and non-digital technology helps people learn and solve problems with adult support.
+X.A.2	participates in shared technology experiences to access appropriate information with adult support.

@@ -9,6 +9,13 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## October 28, 2026 (a short summary for every book, shorter lessons for the youngest, and the 2027 pre-K recommendations)
+
+- Every book on the reading lists now has a Details button. Tap it to read a short summary of what the book is about and what it's trying to teach, so you can pick the right book for your class at a glance. The lists have new books about wonder and curiosity too, like If, Here We Are, Just Because, I Wonder and Q is for Question, beside long-time teacher favorites like Owl Moon, The Dot and The Three Questions.
+- Nine of the longest lessons for three- and four-year-olds are now two lessons each, every one with its own story, coloring page and questions, so each lesson is shorter for a young child. In the lessons about new words, the voice now asks children to say each new word along in a silly voice, whispering it, saying it slowly, saying it low four times or super fast three times, which helps a new word stick.
+- The pre-K lessons now follow the 2027 Pre-K Guidelines Review Committee's recommended revision of the Texas Prekindergarten Guidelines, which TEA has not adopted yet, and every lesson's standards and the student transcript say so.
+- A few touches across the app: a phone turned sideways asks to be turned upright so nothing gets squeezed, every game's welcome ends with "But most importantly, HAVE FUN!!!", the people in the pictures look more like real people, the placement page explains itself once, the words in every drawn picture fit cleanly inside it, a game's clock and score line hold still during a round, and a few science and social studies pictures were corrected, like the seesaw, the stars on the flag and the arrows around the cycles.
+
 ## October 27, 2026 (new words for three- and four-year-olds, and a gentler voice)
 
 - Three- and four-year-olds have five new lessons about words, each with its own story. Three-year-olds learn the words a teacher uses to say what to do, like match, count and sort, words for people and for things that happen, like a grandpa and bedtime, and how to take turns talking with a friend: say hi, listen while your friend talks, say something about what they said, and say bye. Four-year-olds learn to listen to every word of a direction, like "tap the small red square," and how words go together: groups like clothes and toys, opposites like hot and cold, and words that mean the same, like glad and happy. Four-year-olds' reading list adds Exactly the Opposite by Tana Hoban, photographs of opposites with no words, for a grown-up and a child to talk through together.

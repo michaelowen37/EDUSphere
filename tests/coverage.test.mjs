@@ -107,20 +107,24 @@ ok('no plan repeats a code', repeats.length === 0, repeats.join(', '));
 {
   const { readFileSync: read, readdirSync } = await import('node:fs');
   const dir = new URL('../docs/standards/', import.meta.url);
-  const tea = { PK3: new Map(), PK4: new Map() }; const elof = new Map();
-  for (const f of readdirSync(dir).filter((f) => /^(tea-pk[34]-2022|elof-preschool)-.*\.txt$/.test(f))) {
-    const grade = /^tea-pk3/.test(f) ? 'PK3' : /^tea-pk4/.test(f) ? 'PK4' : null;
+  // Two editions of the Texas guidelines (pass MR): the 2022 guidelines, and the 2027 Pre-K Guidelines Review Committee's
+  // recommendations, which Mikey adopted in pass MR. A citation names its edition ("Texas Prekindergarten Guidelines (2027
+  // recommendations)"), and its quotes are held to that edition's file; one that names none is read as 2022's.
+  const tea = { 2022: { PK3: new Map(), PK4: new Map() }, 2027: { PK3: new Map(), PK4: new Map() } }; const elof = new Map();
+  for (const f of readdirSync(dir).filter((f) => /^(tea-pk[34]-(?:2022|2027)|elof-preschool)-.*\.txt$/.test(f))) {
+    const grade = /^tea-pk3/.test(f) ? 'PK3' : /^tea-pk4/.test(f) ? 'PK4' : null; const ed = /^tea-pk[34]-2027-/.test(f) ? 2027 : 2022;
     for (const line of read(new URL(f, dir), 'utf8').split('\n')) { let m;
-      if (grade && (m = /^([IVX]+\.[A-Z]\.\d+(?:\.[a-z])?)\t(.+)$/.exec(line))) tea[grade].set(m[1], m[2]);
+      if (grade && (m = /^([IVX]+\.[A-Z]\.\d+(?:\.[a-z])?)\t(.+)$/.exec(line))) tea[ed][grade].set(m[1], m[2]);
       else if ((m = /^(P-[A-Z]+ \d+)\t(GOAL|36-48|48-60|INDICATOR)\t(.+)$/.exec(line))) { const k = `${m[1]}|${m[2]}`; elof.set(k, m[2] === 'INDICATOR' ? [...(elof.get(k) || []), m[3]] : m[3]); } } }
   const plain = (t) => String(t || '').replace(/[\u2010\u2011]/g, '-').replace(/[\u2018\u2019]/g, "'").replace(/\s+/g, ' ').trim();
   const bare = (t) => plain(t).replace(/^Child /, '').replace(/\.$/, '');
   const balanced = (s, i) => { let d = 0; for (let k = i; k < s.length; k++) { if (s[k] === '(') d += 1; else if (s[k] === ')') { d -= 1; if (d === 0) return s.slice(i + 1, k); } } return null; };
   const runsOf = (cell) => { const s = plain(cell).split(/(?<=\.)\s+(?=[A-Z])/); const out = []; for (let i = 0; i < s.length; i += 1) for (let j = i; j < s.length; j += 1) out.push(s.slice(i, j + 1).join(' ')); return out.sort((a, b) => b.length - a.length); };
   const off = []; const waiting = []; let quotes = 0;
-  const check = (grade, id, src) => {
-    for (const k of src.matchAll(/\b((?:I|II|III|IV|V|VI|VII|VIII|IX|X)\.[A-F]\.\d+(?:\.[a-z])?) \(/g)) { quotes += 1; const q = balanced(src, k.index + k[0].length - 1); const t = tea[grade].get(k[1]);
-      if (t === undefined) off.push(`${id}: ${k[1]} is no ${grade} outcome of the 2022 guidelines`); else if (bare(t) !== bare(q)) off.push(`${id}: ${k[1]} quotes "${q}" where TEA prints "${t}"`); }
+  const EDITION_2027 = 'Texas Prekindergarten Guidelines (2027 recommendations)';
+  const check = (grade, id, src) => { const ed = src.includes(EDITION_2027) ? 2027 : 2022; const named = ed === 2027 ? 'the 2027 recommendations' : 'the 2022 guidelines';
+    for (const k of src.matchAll(/\b((?:I|II|III|IV|V|VI|VII|VIII|IX|X)\.[A-F]\.\d+(?:\.[a-z])?) \(/g)) { quotes += 1; const q = balanced(src, k.index + k[0].length - 1); const t = tea[ed][grade].get(k[1]);
+      if (t === undefined) off.push(`${id}: ${k[1]} is no ${grade} outcome of ${named}`); else if (bare(t) !== bare(q)) off.push(`${id}: ${k[1]} quotes "${q}" where TEA prints, in ${named}, "${t}"`); }
     for (const k of src.matchAll(/\b(P-[A-Z]+ \d+) \(/g)) { quotes += 1; const q = balanced(src, k.index + k[0].length - 1); const t = elof.get(`${k[1]}|GOAL`);
       if (t === undefined) off.push(`${id}: ${k[1]} is no Head Start preschool goal`); else if (bare(t) !== bare(q)) off.push(`${id}: ${k[1]} quotes "${q}" where Head Start prints "${t}"`); }
     for (let p = src.indexOf('"'); p >= 0; p = src.indexOf('"', p + 1)) {
@@ -138,7 +142,12 @@ ok('no plan repeats a code', repeats.length === 0, repeats.join(', '));
       if (!hit) off.push(`${id}: ${g[1]}'s ${band} month progression is quoted "${src.slice(p + 1, p + 140)}..." where Head Start prints "${cell}"`); else p += hit.length + 1; }
   };
   for (const c of L.COURSES.filter((x) => x.grade === 'PK3' || x.grade === 'PK4')) for (const m of c.modules) check(c.grade, m.id, plain((L.MODULES.find((x) => x.id === m.id).sources || []).join(' ')));
-  ok(`every quote in a pre-K lesson's citations is the standard's own words as its publisher prints them, kept in docs/standards (pass MM; ${quotes} quotes)`, quotes >= 200 && tea.PK3.size === 88 && tea.PK4.size === 128 && off.length === 0, off.slice(0, 4).join(' | '));
+  ok(`every quote in a pre-K lesson's citations is the standard's own words as its publisher prints them, kept in docs/standards (pass MM; ${quotes} quotes)`, quotes >= 200 && tea[2022].PK3.size === 88 && tea[2022].PK4.size === 128 && tea[2027].PK3.size === 123 && tea[2027].PK4.size === 132 && off.length === 0, off.slice(0, 4).join(' | '));
+  // Mikey adopted the 2027 recommendations (pass MR: "I think we should go ahead and implement the new recommendations from the
+  // 2027 Pre-K Guidelines Review Committee."), so every pre-K lesson that quotes a Texas outcome names that edition.
+  const old = []; for (const c of L.COURSES.filter((x) => x.grade === 'PK3' || x.grade === 'PK4')) for (const m of c.modules) { const s = (L.MODULES.find((x) => x.id === m.id).sources || []).join(' ');
+    if (/\b(?:I|II|III|IV|V|VI|VII|VIII|IX|X)\.[A-F]\.\d+(?:\.[a-z])? \(/.test(s) && !s.includes(EDITION_2027)) old.push(m.id); }
+  ok('every pre-K lesson that cites a Texas outcome quotes the 2027 recommendations, which Mikey adopted (pass MR)', old.length === 0, old.join(', '));
   if (off.length) console.log(off.slice(0, 8).join('\n'));
   if (waiting.length) console.log(`NOTE - Head Start indicator quotes not yet held to a transcribed text: ${waiting.length} (${waiting.join('; ')})`);
   // Near misses: the check fails a quote one word off, a code the 2022 text lacks, a progression sentence reworded and a goal
@@ -151,6 +160,14 @@ ok('no plan repeats a code', repeats.length === 0, repeats.join(', '));
   const fails = off.length - before;
   const fine = off.length; check('PK3', 'near-5', q('Head Start ELOF Goal P-SCI 3 (compares and categorizes observable phenomena), in part, since the lesson teaches the first sentence of its 36 to 48 month progression, "Sorts objects into groups based on simple attributes, such as color.", while its second waits.'));
   ok('the published-words check fails a word off, a 2015 code, a reworded progression and a short goal, and passes a progression quoted by its sentences', fails === 4 && off.length === fine, `${fails} near misses failed`);
+  // The edition is read too (pass MR): under the 2027 label, a 2022 code that the committee renumbered, an outcome it deleted and
+  // an outcome quoted without the words it added each fail, and the renumbered code with its 2027 words passes.
+  const e27 = off.length; const lab = (t) => q(`Aligned with ${EDITION_2027} ${t}`);
+  check('PK4', 'near-6', lab('III.B.6 (identifies rhyming words)'));
+  check('PK3', 'near-7', lab('II.E.4 (understands increasingly longer sentences that combine two ideas)'));
+  check('PK3', 'near-8', lab('II.A.2 (shows understanding by following two-step verbal directions)'));
+  const fails27 = off.length - e27; const fine27 = off.length; check('PK4', 'near-9', lab('III.B.5 (identifies rhyming words)'));
+  ok('under the 2027 label the check fails a renumbered 2022 code, a deleted outcome and a quote missing the committee\'s words, and passes the 2027 words', fails27 === 3 && off.length === fine27, `${fails27} near misses failed`);
   off.length = before;
 }
 console.log(`\n${pass} passed, ${fail} failed`);

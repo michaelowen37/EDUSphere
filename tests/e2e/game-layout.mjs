@@ -7,7 +7,9 @@ import { createRequire } from 'node:module'; import fs from 'node:fs';
 const require = createRequire(import.meta.url);
 const { chromium } = require('/home/claude/.npm-global/lib/node_modules/playwright');
 const L = await import(new URL('../../src/logic.mjs', import.meta.url).href);
-const SIZES = [[320, 568, 'small phone'], [390, 844, 'phone'], [844, 390, 'phone sideways'], [768, 1024, 'tablet'], [1280, 800, 'laptop']];
+// 844 by 390 was a phone held sideways until pass MR, when a sideways phone began asking to be turned upright (Q71); it is read now as a
+// short window (this page keeps the screen it opened with, upright, so the ask never covers it).
+const SIZES = [[320, 568, 'small phone'], [390, 844, 'phone'], [844, 390, 'short window'], [768, 1024, 'tablet'], [1280, 800, 'laptop']];
 const only = process.argv[2] ? new Set(process.argv[2].split(',')) : null;
 const games = L.GAMES.filter((g) => !only || only.has(g.id));
 const browser = await chromium.launch();

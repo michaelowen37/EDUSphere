@@ -173,7 +173,9 @@ Every module maps to published standards, and that map is a test in the codebase
 that fails while any standard in a grade marked ready has no module. The frameworks:
 
 - **Texas**: the Texas Essential Knowledge and Skills (TEKS) for kindergarten to 12,
-  and the Texas Prekindergarten Guidelines for pre-K.
+  and the Texas Prekindergarten Guidelines for pre-K, quoted since pass MR as the 2027
+  Pre-K Guidelines Review Committee recommends them, ahead of TEA's adoption, since the
+  app will take years to build.
 - **Every other state and the District of Columbia**: the Common Core State Standards
   for kindergarten to 12, which most states adopted and some lightly revised. For
   pre-K, where there is no Common Core, the federal Head Start Early Learning

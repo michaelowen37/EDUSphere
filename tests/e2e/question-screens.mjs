@@ -11,6 +11,11 @@
 import { createRequire } from 'node:module'; import { execSync } from 'node:child_process';
 const G = execSync('npm root -g').toString().trim(); const { chromium } = createRequire(import.meta.url)(`${G}/playwright`);
 const L = await import('../../src/logic.mjs');
+// The lesson lines that show a big and a small shape side by side, read from the lessons themselves, so the pair checks below can
+// say plainly when a split or a new line moves one (pass MR: Q70's split moved Two steps' pair to Two steps every day, and the
+// walk timed out looking for a Next button that line 12 no longer had).
+const sizedPairs = (id) => { const m = L.COURSES.flatMap((c) => c.modules).find((x) => x.id === id); const s = (m && ((m.lesson && m.lesson.script) || m.script)) || [];
+  return s.map((ln, i) => (ln && ln.show && ln.show.kind === 'pair' && [ln.show.a, ln.show.b].every((v) => v && v.kind === 'shape') && [ln.show.a, ln.show.b].some((v) => v.size) ? i : -1)).filter((i) => i >= 0); };
 let passed = 0, failed = 0; const ok = (name, cond, info) => { if (cond) { passed++; console.log('PASS - ' + name); } else { failed++; console.log('FAIL - ' + name + (info !== undefined ? '  ' + JSON.stringify(info).slice(0, 500) : '')); } };
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1280, height: 900 }, hasTouch: true, reducedMotion: 'reduce' });
@@ -847,9 +852,11 @@ const ponder = () => page.evaluate(() => {
     const pairs = [...document.querySelectorAll('[data-pair]')].filter((p) => p.children.length === 2 && [...p.children].every((c) => c.querySelector('svg')));
     const gaps = [...pairs].map((p) => { const a = ink(p.children[0]); const b = ink(p.children[1]); return a && b ? Math.round((b.left - a.right) * 10) / 10 : null; }).filter((g) => g !== null);
     return gaps.length ? Math.min(...gaps) : null; });
-  const LINES = { 'big-and-small': [0, 1, 2, 3], 'bigger-and-smaller': [0, 1, 2, 3], 'triangles-too': [5], 'big-and-little': [2], 'circle-and-square': [5], 'not-the-same': [4], 'same-and-different': [2], 'two-steps': [12], 'two-ideas': [6, 7, 8] };
+  const LINES = { 'big-and-small': [0, 1, 2, 3], 'bigger-and-smaller': [0, 1, 2, 3], 'triangles-too': [5], 'big-and-little': [2], 'circle-and-square': [5], 'not-the-same': [4], 'same-and-different': [2], 'two-steps-more': [4], 'two-ideas': [6, 7, 8] };   // Two steps' line 12 is Two steps every day's line 4 since pass MR's split (Q70)
   const pairGaps = {};
-  for (const [mod, steps] of Object.entries(LINES)) {
+  const stranded = Object.entries(LINES).flatMap(([m, s]) => s.filter((i) => !sizedPairs(m).includes(i)).map((i) => `${m} ${i}`));
+  ok('every lesson line the pair checks walk still shows a big and a small shape (a split lesson cannot strand one)', stranded.length === 0, stranded);
+  for (const [mod, steps] of Object.entries(LINES).map(([m, s]) => [m, s.filter((i) => sizedPairs(m).includes(i))]).filter(([, s]) => s.length)) {
     await page.evaluate((m) => window.__eduTest.openModule(m), mod); await page.waitForFunction(() => window.__eduTest.screen === 'lesson').catch(() => {}); await page.waitForTimeout(400);
     for (let i = 0; i <= Math.max(...steps); i++) { if (steps.includes(i)) { await page.waitForTimeout(1600); pairGaps[`${mod} ${i}`] = await gapNow(); } if (i < Math.max(...steps)) { await page.getByRole('button', { name: 'Next', exact: true }).first().click({ force: true }); await page.waitForTimeout(150); } } }
   await page.emulateMedia({ reducedMotion: 'reduce' }); await page.setViewportSize({ width: 1280, height: 900 }); await page.waitForTimeout(300);
@@ -860,7 +867,7 @@ const ponder = () => page.evaluate(() => {
   if ((await page.evaluate(() => document.documentElement.getAttribute('data-theme') || 'light')) !== 'light') { await page.getByLabel('Light theme').first().click({ force: true }); await page.waitForTimeout(400); }
   await walk('Walk through early years'); await page.setViewportSize({ width: 390, height: 844 }); await page.waitForTimeout(300);
   const widthsNow = () => page.evaluate(() => [...document.querySelectorAll('[data-pair]')].filter((p) => p.children.length === 2).flatMap((p) => [...p.children].map((c) => { let l = Infinity; let r = -Infinity; for (const s of c.querySelectorAll('svg path, svg circle, svg rect, svg polygon, svg ellipse, svg polyline, svg line')) { const b = s.getBoundingClientRect(); if (!b.width && !b.height) continue; l = Math.min(l, b.left); r = Math.max(r, b.right); } return r > l ? Math.round((r - l) * 10) / 10 : null; })));
-  const SAME = [['big-and-small', 0], ['two-steps', 12], ['two-ideas', 8]]; const sized = {};
+  const SAME = [['big-and-small', 0], ['two-steps-more', 4], ['two-ideas', 8]].filter(([m, i]) => sizedPairs(m).includes(i)); const sized = {};
   for (const motion of ['reduce', 'no-preference']) { await page.emulateMedia({ reducedMotion: motion }); await page.waitForTimeout(300);
     for (const [mod, step] of SAME) { await page.evaluate((m) => window.__eduTest.openModule(m), mod); await page.waitForFunction(() => window.__eduTest.screen === 'lesson').catch(() => {}); await page.waitForTimeout(400);
       for (let i = 0; i < step; i++) { await page.getByRole('button', { name: 'Next', exact: true }).first().click({ force: true }); await page.waitForTimeout(150); }
@@ -885,6 +892,47 @@ const ponder = () => page.evaluate(() => {
   const seen = await page.evaluate(() => ({ said: window.__again.slice(0, 3), lit: (document.querySelector('[data-read-lit]') || {}).textContent || null }));
   ok("a lesson's Say it again reads the line again lit sentence by sentence, the first sentence lit as it is said (pass MQ, round two's code read)", readOnce && litAgain, { readOnce, litAgain, firstSentence, seen });
   await page.evaluate(() => window.speechSynthesis.cancel()); }
+
+// A practice page's title stays centered beside its speaker at every phone width, whatever the module's title (Mikey's Q72 rule, round
+// one's screen check, pass MR: the side columns were plain 1fr, so a long title's empty left column shrank to nothing while the speaker's
+// kept its width, and 94 of the 675 titles sat more than 3 pixels left of center at 390 pixels, by up to 22 at 320). Every module
+// title is put in the real row in turn; the planted fault puts the old columns back and must be caught.
+{ const L2 = await import('../../src/logic.mjs'); const titles = [...new Set(L2.COURSES.flatMap((c) => c.modules.map((m) => L2.titleCase(m.title))))];
+  const anyMod = L2.COURSES.flatMap((c) => c.modules).find((m) => m.generators && m.generators.length);
+  const readOff = (list) => page.evaluate((ts) => { const row = document.querySelector('[data-title-row]'); const p = row && row.querySelector('p'); if (!p) return null; const was = p.textContent; const rr = row.getBoundingClientRect(); const mid = (rr.left + rr.right) / 2; const bad = [];
+    for (const t of ts) { p.textContent = t; const rg = document.createRange(); rg.selectNodeContents(p); const rs = [...rg.getClientRects()]; const l = Math.min(...rs.map((r) => r.left)); const rgt = Math.max(...rs.map((r) => r.right)); const off = (l + rgt) / 2 - mid; if (Math.abs(off) > 3) bad.push([t, +off.toFixed(1)]); }
+    p.textContent = was; return { read: ts.length, bad: bad.length, first: bad.slice(0, 3) }; }, list);
+  const widths = [];
+  for (const [w, h] of [[320, 568], [375, 667], [390, 844]]) { await page.setViewportSize({ width: w, height: h }); await show(anyMod.generators[0], 3, anyMod.id); widths.push({ w, ...(await readOff(titles)) }); }
+  ok(`a practice page's title stays centered beside its speaker for every module title at 320, 375 and 390 pixels (${titles.length} titles)`, widths.every((x) => x.read === titles.length && x.bad === 0), widths);
+  await page.setViewportSize({ width: 320, height: 568 }); await show(anyMod.generators[0], 3, anyMod.id);
+  await page.evaluate(() => { document.querySelector('[data-title-row]').style.gridTemplateColumns = '1fr auto 1fr'; });
+  const planted = await readOff(titles);
+  ok('the read catches the old plain columns, which pushed long titles off center', planted && planted.bad > 0, planted);
+  await page.setViewportSize({ width: 1280, height: 900 });
+  // The layout read (tests/e2e/layout-check.mjs, check.sh 13g) sees words written straight into a centred row beside an icon: the
+  // planted row, words and a 30-pixel button in a centred flex row, as "Wonder Questions" sat beside its i, is an offset; the same
+  // words with the button hung outside them, as HeadWithInfo hangs it, are not.
+  const { LAYOUT_SOURCE } = await import('./layout-check.mjs');
+  const loose = await page.evaluate((src) => { const read = eval(`(${src})`); const host = document.createElement('div'); host.style.cssText = 'position:fixed;left:0;top:0;width:360px;background:#fff;z-index:99999'; document.body.appendChild(host);
+    host.innerHTML = '<div id="lp1"><h1 style="display:flex;align-items:center;justify-content:center;margin:0;font-size:24px">Wonder Questions <button style="width:30px;height:30px;padding:0" aria-label="i"><svg width="20" height="20"></svg></button></h1></div>'
+      + '<div id="lp2"><h1 style="text-align:center;margin:0;font-size:24px"><span style="position:relative;display:inline-block">Wonder Questions<span style="position:absolute;left:100%;top:50%;transform:translateY(-50%);margin-left:8px;line-height:0"><button style="width:30px;height:30px;padding:0" aria-label="i"><svg width="20" height="20"></svg></button></span></span></h1></div>';
+    const bad = read('#lp1').filter((x) => x.kind === 'offset'); const good = read('#lp2').filter((x) => x.kind === 'offset'); host.remove(); return { bad: bad.length, good: good.length }; }, LAYOUT_SOURCE);
+  ok('the layout read finds words written straight into a centred row pushed off center by an icon, and passes the same words with the icon hung outside them', loose.bad === 1 && loose.good === 0, loose);
+  // Since round three of pass MR it reads a plain centered block too, where an info button (InfoButton's one letter, i) shares a
+  // line with words: a link beside its i, as "Back to recommended courses" sat, and a paragraph whose last line ends in an i, as three
+  // of the educator's paragraphs did, are offsets; the same link with its i hung as HeadWithInfo hangs it, and the same paragraph
+  // with its i hung past the last word as EndInfo hangs it, are not.
+  const blocks = await page.evaluate((src) => { const read = eval(`(${src})`); const host = document.createElement('div'); host.style.cssText = 'position:fixed;left:0;top:0;width:360px;background:#fff;z-index:99999;font-size:14px'; document.body.appendChild(host);
+    const info = '<button style="width:18px;height:18px;padding:0;margin-left:8px;vertical-align:middle;border-radius:999px;font-size:12px;line-height:15px">i</button>';
+    const hung = (inner) => `<span style="position:relative;display:inline-block">${inner}<span style="position:absolute;left:100%;top:50%;transform:translateY(-50%);line-height:0">${info}</span></span>`;
+    const para = 'Order is chosen by student metrics. Stuck on a module? Frequent loop backs? Guessing or low confidence? To the top for';
+    host.innerHTML = `<p id="lb1" style="text-align:center;margin:0"><button style="border:0;background:none;padding:0;font-size:13px">Back to recommended courses</button>${info}</p>`
+      + `<p id="lb2" style="text-align:center;margin:0">${hung('<button style="border:0;background:none;padding:0;font-size:13px">Back to recommended courses</button>')}</p>`
+      + `<p id="lb3" style="text-align:center;margin:0;padding:0 26px">${para} you. ${info}</p>`
+      + `<p id="lb4" style="text-align:center;margin:0;padding:0 26px">${para} ${hung('you.')}</p>`;
+    const n = (sel) => read(sel).filter((x) => x.kind === 'offset').length; const r = { link: n('#lb1'), linkHung: n('#lb2'), para: n('#lb3'), paraHung: n('#lb4') }; host.remove(); return r; }, LAYOUT_SOURCE);
+  ok('the layout read finds a link and a paragraph\'s last line pushed off center by an i in a plain centered block, and passes both with the i hung outside them', blocks.link === 1 && blocks.linkHung === 0 && blocks.para === 1 && blocks.paraHung === 0, blocks); }
 
 ok('no page errors along the way', errors.length === 0, errors);
 await browser.close();

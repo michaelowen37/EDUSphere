@@ -53,6 +53,14 @@ export const STATES = [
 ].map(([code, name, framework]) => ({ code, name, framework }));
 export function stateFor(code) { return STATES.find((st) => st.code === code) || null; }
 export function frameworkForState(code) { const st = stateFor(code); return st ? st.framework : 'CCSS'; }
+// The name a framework goes by for one grade (pass MR, round one's standards check). Pre-K has no TEKS or Common Core, so for pre-K
+// those two keys stand for the Texas Prekindergarten Guidelines, quoted since pass MR from the 2027 review committee's recommendations
+// ahead of TEA's adoption, and for Head Start's Early Learning Outcomes Framework. The transcript names them, so an educator never
+// reads a pre-K code against the wrong book (in TEA's adopted 2022 text, PK3.V.D.1 is a different outcome).
+export function frameworkName(fw, grade) {
+  if (grade === 'PK3' || grade === 'PK4') return fw === 'TEKS' ? 'Texas Prekindergarten Guidelines, 2027 recommendations, not yet adopted by TEA' : 'Head Start Early Learning Outcomes Framework';
+  return (FRAMEWORKS[fw] || FRAMEWORKS.CCSS).name;
+}
 
 export const CURRICULUM = [
   {
@@ -60,33 +68,35 @@ export const CURRICULUM = [
     // and the Head Start ELOF preschool goals on headstart.gov, and is quoted word for word. The old V.E.1 line quoted the
     // pre-K 4 wording ("into groups and uses language to describe"), which is not the PK3 outcome.
     grade: 'PK3', subject: 'Math', status: 'ready',
-    source: 'Texas Prekindergarten Guidelines (2022), PK3 outcomes in Domains I, II, IV, V and IX, read in full in the PK3 Streamlined Version (TEA) in pass MA, Domain I again in pass MD and pass MN and Domain V (B. Joining and Separating) again in pass ME; Head Start Early Learning Outcomes Framework, preschool goals for Mathematics, Scientific Reasoning, Social and Emotional, and Perceptual, Motor, and Physical Development, with their 36 to 48 month progressions (P-MATH 6 read on headstart.gov in pass ME)',
+    source: 'Texas Prekindergarten Guidelines as the 2027 Pre-K Guidelines Review Committee recommends them (TEA, five documents posted for public feedback in September 2026, adopted by the app in pass MR at Mikey\'s word and read from them in pass MR, docs/standards/tea-pk3-2027-recommended.txt), PK3 outcomes; before pass MR, the Texas Prekindergarten Guidelines (2022), PK3 outcomes in Domains I, II, IV, V and IX, read in full in the PK3 Streamlined Version (TEA) in pass MA, Domain I again in pass MD and pass MN and Domain V (B. Joining and Separating) again in pass ME; Head Start Early Learning Outcomes Framework, preschool goals for Mathematics, Scientific Reasoning, Social and Emotional, and Perceptual, Motor, and Physical Development, with their 36 to 48 month progressions (P-MATH 6 read on headstart.gov in pass ME)',
     standards: [
-      { framework: 'TEKS', code: 'PK3.V.E.1', text: 'Child sorts objects that are the same and different.', moduleIds: ['red-and-blue', 'find-the-match', 'yellow-and-green', 'match-the-animals'] },
-      { framework: 'TEKS', code: 'PK3.V.A.2', text: 'Child counts up to 5 objects with one-to-one correspondence.', moduleIds: ['one-and-two', 'more-or-fewer', 'one-more-one-fewer'] },
-      { framework: 'TEKS', code: 'PK3.V.A.3', text: 'Child counts up to 5 items and demonstrates cardinality by communicating that the last number indicates how many items are in the set.', moduleIds: ['one-and-two', 'more-or-fewer', 'one-more-one-fewer'] },
+      { framework: 'TEKS', code: 'PK3.V.D.1', text: 'Child sorts objects based on one attribute such as color, shape, or size.', moduleIds: ['red-and-blue', 'find-the-match', 'yellow-and-green', 'match-the-animals'] },
+      { framework: 'TEKS', code: 'PK3.V.A.3', text: 'Child counts up to 5 objects with one-to-one correspondence.', moduleIds: ['one-and-two', 'more-or-fewer', 'one-more-one-fewer'] },
+      { framework: 'TEKS', code: 'PK3.V.A.4', text: 'Child counts up to 5 items and demonstrates cardinality by communicating that the last number indicates how many items are in the set.', moduleIds: ['one-and-two', 'more-or-fewer', 'one-more-one-fewer'] },
       { framework: 'TEKS', code: 'PK3.V.A.5', text: 'Child recognizes numerals 0-5.', moduleIds: ['one-and-two', 'three-dots'] },
-      { framework: 'TEKS', code: 'PK3.V.A.8', text: 'Child compares sets of objects up to 5 using comparative language (e.g., more than, less than, same number of).', moduleIds: ['more-or-fewer'] },
+      { framework: 'TEKS', code: 'PK3.V.A.8', text: 'Child compares two sets of up to 5 objects in each set using comparative language (e.g., more than, less than, same number of).', moduleIds: ['more-or-fewer'] },
       { framework: 'CCSS', code: 'ELOF.P-MATH.4', text: 'Compares numbers.', moduleIds: ['more-or-fewer'] },
       { framework: 'CCSS', code: 'ELOF.P-MATH.8', text: 'Measures objects by their various attributes using standard and non-standard measurement. Uses differences in attributes to make comparisons.', moduleIds: ['big-and-little', 'big-and-small'] },
       { framework: 'CCSS', code: 'ELOF.P-MATH.1', text: 'Knows number names and the count sequence.', moduleIds: ['one-and-two', 'more-or-fewer', 'one-more-one-fewer'] },
       { framework: 'CCSS', code: 'ELOF.P-MATH.3', text: 'Understands the relationship between numbers and quantities.', moduleIds: ['one-and-two', 'more-or-fewer', 'one-more-one-fewer'] },
       // Pass ME, earmark E12 part two: joining and separating, read in full in TEA's PK3 Streamlined Version (Domain V, B. Joining
       // and Separating) and on headstart.gov (P-MATH 6 with its 36 to 48 month progression), quoted word for word.
-      { framework: 'TEKS', code: 'PK3.V.B.1', text: 'Child uses objects to demonstrate that adding one or more objects to a set will increase the number of objects in the set.', moduleIds: ['one-more-one-fewer'] },
-      { framework: 'TEKS', code: 'PK3.V.B.2', text: 'Child uses objects to demonstrate that taking away one or more objects from a set will decrease the number of objects in the set.', moduleIds: ['one-more-one-fewer'] },
+      { framework: 'TEKS', code: 'PK3.V.A.9', text: 'Child uses objects or pictorial models to represent real world addition problems up to 5 with support.', moduleIds: ['one-more-one-fewer'] },
+      { framework: 'TEKS', code: 'PK3.V.A.10', text: 'Child uses objects or pictorial models to represent real world subtraction problems up to 5 with support.', moduleIds: ['one-more-one-fewer'] },
       { framework: 'CCSS', code: 'ELOF.P-MATH.6', text: 'Understands addition as adding to and understands subtraction as taking away from.', moduleIds: ['one-more-one-fewer'] },
       { framework: 'CCSS', code: 'ELOF.P-SCI.1', text: 'Observes and describes observable phenomena (objects, materials, organisms, and events).', moduleIds: ['red-and-blue', 'yellow-and-green'] },
       { framework: 'CCSS', code: 'ELOF.P-SCI.3', text: 'Compares and categorizes observable phenomena.', moduleIds: ['red-and-blue', 'yellow-and-green', 'find-the-match', 'match-the-animals'] },
-      { framework: 'TEKS', code: 'PK3.IX.B.1', text: 'Child experiments with a variety of fine motor tasks but may lack strength and control.', moduleIds: ['first-marks', 'three-dots'] },
-      { framework: 'TEKS', code: 'PK3.IX.B.2', text: 'Child shows emerging proficiency in tasks requiring eye-hand coordination.', moduleIds: ['first-marks', 'three-dots'] },
-      { framework: 'TEKS', code: 'PK3.IV.C.4', text: 'Child begins to show understanding of directionality (e.g., attempts to write top to bottom, left to right), but may still start at random places on a page.', moduleIds: ['first-marks'] },
+      { framework: 'TEKS', code: 'PK3.IX.B.1', text: 'Child participates in activities that develop small muscle strength and coordination with adult support.', moduleIds: ['first-marks', 'three-dots'] },
+      { framework: 'TEKS', code: 'PK3.IX.B.2', text: 'Child participates in activities that require eye-hand Coordination with adult support.', moduleIds: ['first-marks', 'three-dots'] },
+      { framework: 'TEKS', code: 'PK3.IV.C.4', text: 'Child demonstrates emerging directionality (e.g., top to bottom, left to right), though placement may be inconsistent.', moduleIds: ['first-marks'] },
       { framework: 'CCSS', code: 'ELOF.P-PMP.3', text: 'Demonstrates increasing control, strength, and coordination of small muscles.', moduleIds: ['first-marks', 'three-dots'] },
-      { framework: 'TEKS', code: 'PK3.V.C.1', text: 'Child names and describes common 2D shapes.', moduleIds: ['triangles-too'] },
-      { framework: 'TEKS', code: 'PK3.V.C.4', text: 'Child recognizes common shapes, regardless of size.', moduleIds: ['triangles-too'] },
-      { framework: 'TEKS', code: 'PK3.V.D.1', text: 'Child understands that lengths of objects can vary and be compared.', moduleIds: ['big-and-small'] },
-      { framework: 'TEKS', code: 'PK3.I.C.1', text: 'Child forms positive relationships with adults and peers.', moduleIds: ['please-and-thank-you'] },
-      { framework: 'TEKS', code: 'PK3.II.B.4', text: 'Child begins to use appropriate language for different situations.', moduleIds: ['please-and-thank-you'] },
+      { framework: 'TEKS', code: 'PK3.V.B.1', text: 'Child recognizes two-dimensional shapes including circles, squares, rectangles, and triangles regardless of size and orientation.', moduleIds: ['triangles-too'] },
+      { framework: 'TEKS', code: 'PK3.V.C.1', text: 'Child explores the heights or lengths of people or objects and uses language including bigger, smaller, longer, shorter, or taller with support.', moduleIds: ['big-and-small'] },
+      // Pass MR (round one's standards check): I.C.1's list is joined by "or", any of its ways, so its kind words (Please and thank you)
+      // and its nonverbal skills (Talking with a friend) teach it between them, each in part; I.A.1's personal boundaries, a friend's
+      // personal space, are Talking with a friend's, while where one's own body is in space as it moves waits (EARMARKS E12).
+      { framework: 'TEKS', code: 'PK3.I.C.1', text: 'Child begins to use effective verbal and nonverbal communication skills, home language, assistive communication, or other preferred methods to develop positive relationships with adults and peers.', moduleIds: ['please-and-thank-you', 'talk-with-a-friend'] },
+      { framework: 'TEKS', code: 'PK3.I.A.1', text: 'Child is building awareness of where own body is in space and an understanding of personal boundaries.', moduleIds: ['talk-with-a-friend'] },
       { framework: 'CCSS', code: 'ELOF.P-SE.2', text: 'Engages in prosocial and cooperative behavior with adults.', moduleIds: ['please-and-thank-you'] },
       { framework: 'CCSS', code: 'ELOF.P-SE.5', text: 'Uses basic problem-solving skills to resolve conflicts with other children.', moduleIds: ['please-and-thank-you', 'help-a-friend'] },
       // Pass ML, earmark E12's unplaced goals read on headstart.gov and placed: P-SE 3's sharing and taking turns with materials
@@ -96,24 +106,27 @@ export const CURRICULUM = [
       // Pass MN, earmarks E12 and E13 side by side, Domain I: joining other children's play, each read in TEA's PK3 Streamlined
       // Version and on headstart.gov and held word for word to docs/standards; both taught whole since pass MN's third read (the lesson's
       // sources say how), and P-SE 3, above, in part, whose first sentence's skills and taking turns with materials Can I play too? teaches.
-      { framework: 'TEKS', code: 'PK3.I.C.3', text: 'Child shows interest in peer play but may be less skilled in initiating and joining a group.', moduleIds: ['join-in-play'] },
+      { framework: 'TEKS', code: 'PK3.I.C.3', text: 'Child observes and/or engages in peer play but may be less skilled in initiating and joining a group.', moduleIds: ['join-in-play'] },
       // Pass MQ, earmark E12: pre-K 3's turns of a conversation (Talking with a friend), read one way with pre-K 4's Let's play
       // together; II.B.2 whole, P-SE 3 above and P-LC 4 in part (the lesson's sources say how), each held word for word to docs/standards.
-      { framework: 'TEKS', code: 'PK3.II.B.2', text: 'Child begins to use appropriate language, style, and nonverbal cues during communication with familiar adults and peers.', moduleIds: ['talk-with-a-friend'] },
-      { framework: 'CCSS', code: 'ELOF.P-LC.4', text: 'Understands, follows, and uses appropriate social and conversational rules.', moduleIds: ['talk-with-a-friend'] },
+      { framework: 'TEKS', code: 'PK3.II.B.2', text: 'Child begins to use appropriate language, style, and nonverbal cues during communication with familiar adults and peers.', moduleIds: ['please-and-thank-you', 'talk-with-a-friend', 'talk-about-it'] },
+      { framework: 'CCSS', code: 'ELOF.P-LC.4', text: 'Understands, follows, and uses appropriate social and conversational rules.', moduleIds: ['talk-with-a-friend', 'talk-about-it'] },
       { framework: 'CCSS', code: 'ELOF.P-SE.4', text: 'Engages in cooperative play with other children.', moduleIds: ['join-in-play'] },
       // Pass MD, earmark E12 part one: the feelings outcomes, each read in full in TEA's PK3 Streamlined Version (Domain I) and the
       // ELOF goals on headstart.gov, quoted word for word. I.D.1 and P-SE 8 are taught in part, P-SE 6 since pass MN's second read (expressing feelings across contexts is the child's own), and I.C.6 whole since pass MN (each lesson's sources say how).
-      { framework: 'TEKS', code: 'PK3.I.B.2.a', text: 'Child recognizes and expresses a range of emotions.', moduleIds: ['four-feelings'] },
-      { framework: 'TEKS', code: 'PK3.I.B.2.b', text: 'Child is familiar with basic feeling words (e.g., happy, sad, mad, scared).', moduleIds: ['four-feelings'] },
-      { framework: 'TEKS', code: 'PK3.I.B.2.c', text: 'Child manages intensity of emotions with adult assistance.', moduleIds: ['four-feelings'] },
-      { framework: 'TEKS', code: 'PK3.I.C.5', text: 'Child seeks adult help when experiencing conflicts with another child.', moduleIds: ['help-a-friend'] },
+      { framework: 'TEKS', code: 'PK3.I.B.2.a', text: 'Child recognizes and expresses some emotions.', moduleIds: ['four-feelings'] },
+      { framework: 'TEKS', code: 'PK3.I.B.2.b', text: 'Child begins to use verbal and nonverbal communication to express emotions and feelings.', moduleIds: ['four-feelings'] },
+      { framework: 'TEKS', code: 'PK3.I.B.2.c', text: 'Child begins to use calming strategies to regulate emotions with adult assistance.', moduleIds: ['four-feelings'] },
+      { framework: 'TEKS', code: 'PK3.I.C.5', text: 'Child seeks adult help when experiencing conflicts with peers.', moduleIds: ['help-a-friend'] },
       { framework: 'TEKS', code: 'PK3.I.C.6', text: 'Child responds with concern when a child or adult is distressed.', moduleIds: ['help-a-friend'] },
-      { framework: 'TEKS', code: 'PK3.I.D.1', text: 'Child shows interest in other people and their feelings.', moduleIds: ['help-a-friend'] },
+      { framework: 'TEKS', code: 'PK3.I.D.1', text: 'Child shows interest and curiosity in other people and their feelings.', moduleIds: ['help-a-friend'] },
       { framework: 'CCSS', code: 'ELOF.P-SE.6', text: 'Expresses a broad range of emotions and recognizes these emotions in self and others.', moduleIds: ['four-feelings', 'help-a-friend'] },
       { framework: 'CCSS', code: 'ELOF.P-SE.7', text: 'Expresses care and concern toward others.', moduleIds: ['help-a-friend'] },
       { framework: 'CCSS', code: 'ELOF.P-SE.8', text: 'Manages emotions with increasing independence.', moduleIds: ['four-feelings'] },
       { framework: 'CCSS', code: 'ELOF.P-MATH.9', text: 'Identifies, describes, compares, and composes shapes.', moduleIds: ['triangles-too'] },
+      // Pass MR (Mikey: "I think we should go ahead and implement the new recommendations from the 2027 Pre-K Guidelines Review
+      // Committee."): 2027 outcomes the lessons already teach, cited since the requote (docs/standards/tea-pk3-2027-recommended.txt).
+      { framework: 'TEKS', code: 'PK3.VI.B.1', text: 'Child explores observable properties of objects and materials using senses.', moduleIds: ['red-and-blue', 'yellow-and-green', 'big-and-little'] },
     ],
   },
   {
@@ -121,38 +134,43 @@ export const CURRICULUM = [
     // and the Head Start ELOF preschool goals on headstart.gov, and is quoted word for word. II.A.1 and III.C.1 had been
     // misquoted, V.E.1 carried the pre-K 4 wording, and P-MATH 8 was half quoted.
     grade: 'PK3', subject: 'Reading', status: 'ready',
-    source: 'Texas Prekindergarten Guidelines (2022), PK3 outcomes in Domains II, III and V, from the PK3 Streamlined Version (TEA), read in full in pass MA and again for Domains II and III, V.C and V.E in pass MB, and III.B again in pass ME; Head Start Early Learning Outcomes Framework, preschool goals for Language and Communication, Literacy, Mathematics and Scientific Reasoning, with their 36 to 48 month progressions (headstart.gov: Language and Communication and Literacy read in full in pass MB, the other two in pass MA, and the goals cited here again in pass MB)',
+    source: 'Texas Prekindergarten Guidelines as the 2027 Pre-K Guidelines Review Committee recommends them (TEA, five documents posted for public feedback in September 2026, adopted by the app in pass MR at Mikey\'s word and read from them in pass MR, docs/standards/tea-pk3-2027-recommended.txt), PK3 outcomes; before pass MR, the Texas Prekindergarten Guidelines (2022), PK3 outcomes in Domains II, III and V, from the PK3 Streamlined Version (TEA), read in full in pass MA and again for Domains II and III, V.C and V.E in pass MB, and III.B again in pass ME; Head Start Early Learning Outcomes Framework, preschool goals for Language and Communication, Literacy, Mathematics and Scientific Reasoning, with their 36 to 48 month progressions (headstart.gov: Language and Communication and Literacy read in full in pass MB, the other two in pass MA, and the goals cited here again in pass MB)',
     standards: [
-      { framework: 'TEKS', code: 'PK3.V.C.1', text: 'Child names and describes common 2D shapes.', moduleIds: ['circle-and-square'] },
-      { framework: 'TEKS', code: 'PK3.V.C.4', text: 'Child recognizes common shapes, regardless of size.', moduleIds: ['circle-and-square'] },
-      { framework: 'TEKS', code: 'PK3.III.C.1', text: 'Child shows awareness of letters by singing alphabet songs and recognizing some frequently encountered letters (e.g., first letter of name or letters in environmental print).', moduleIds: ['a-and-b'] },
-      { framework: 'TEKS', code: 'PK3.V.E.1', text: 'Child sorts objects that are the same and different.', moduleIds: ['not-the-same'] },
+      { framework: 'TEKS', code: 'PK3.V.B.1', text: 'Child recognizes two-dimensional shapes including circles, squares, rectangles, and triangles regardless of size and orientation.', moduleIds: ['circle-and-square'] },
+      { framework: 'TEKS', code: 'PK3.III.C.1', text: 'Child participates in alphabet activities and recognizes some frequently encountered letters with adult assistance.', moduleIds: ['a-and-b'] },
+      { framework: 'TEKS', code: 'PK3.V.D.1', text: 'Child sorts objects based on one attribute such as color, shape, or size.', moduleIds: ['not-the-same'] },
       { framework: 'CCSS', code: 'ELOF.P-MATH.9', text: 'Identifies, describes, compares, and composes shapes.', moduleIds: ['circle-and-square'] },
       { framework: 'CCSS', code: 'ELOF.P-LIT.3', text: 'Identifies letters of the alphabet and produces correct sounds associated with letters.', moduleIds: ['a-and-b'] },
       { framework: 'CCSS', code: 'ELOF.P-MATH.8', text: 'Measures objects by their various attributes using standard and non-standard measurement. Uses differences in attributes to make comparisons.', moduleIds: ['not-the-same'] },
       { framework: 'CCSS', code: 'ELOF.P-SCI.3', text: 'Compares and categorizes observable phenomena.', moduleIds: ['not-the-same'] },
-      { framework: 'TEKS', code: 'PK3.II.A.1', text: 'Child responds to situations in ways that demonstrate an understanding of what has been communicated.', moduleIds: ['listen-and-tap-pictures'] },
-      { framework: 'TEKS', code: 'PK3.II.D.1', text: 'Child understands (receptive) and uses (expressive) expected words to label and describe common objects, people, places, actions, and events.', moduleIds: ['listen-and-tap-pictures', 'animal-sounds', 'big-and-little', 'people-and-events'] },   // pass MJ: Big and Little's size words, the receptive half; pass MQ: People and events' people and events
+      { framework: 'TEKS', code: 'PK3.II.A.1', text: 'Child shows understanding of spoken communication by responding to adults and peers using verbal and nonverbal behaviors.', moduleIds: ['listen-and-tap-pictures', 'two-ideas', 'two-ideas-more'] },
+      { framework: 'TEKS', code: 'PK3.II.D.1', text: 'Child understands (receptive) and uses (expressive) words to label and describe common objects, people, places, actions, and events.', moduleIds: ['listen-and-tap-pictures', 'animal-sounds', 'big-and-little', 'people-and-events', 'things-that-happen'] },   // pass MJ: Big and Little's size words, the receptive half; pass MQ: People and events' people and events
       { framework: 'CCSS', code: 'ELOF.P-LC.1', text: 'Attends to communication and language from others.', moduleIds: ['listen-and-tap-pictures'] },
       { framework: 'CCSS', code: 'ELOF.P-LC.6', text: 'Understands and uses a wide variety of words for a variety of purposes.', moduleIds: ['listen-and-tap-pictures'] },
       // Pass ME, earmark E12 part two: rhymes, read in full in TEA's PK3 Streamlined Version (Domain III, B. Phonological
       // Awareness) and on headstart.gov (P-LIT 1 with its 36 to 48 month progression), quoted word for word; both taught in part
       // (the lesson's sources say how: rhymes used in a song, nursery rhyme or fingerplay and the child's own made-up rhymes wait, and words that begin alike are not yet taught).
-      { framework: 'TEKS', code: 'PK3.III.B.6', text: 'Child uses rhyming words through playful activities such as songs, nursery rhymes, and fingerplay.', moduleIds: ['rhymes-with-pictures'] },
+      { framework: 'TEKS', code: 'PK3.III.B.6', text: 'Child uses rhyming words through playful activities.', moduleIds: ['rhymes-with-pictures'] },
       { framework: 'CCSS', code: 'ELOF.P-LIT.1', text: 'Demonstrates awareness that spoken language is composed of smaller segments of sound.', moduleIds: ['rhymes-with-pictures'] },
       { framework: 'CCSS', code: 'ELOF.P-SCI.1', text: 'Observes and describes observable phenomena (objects, materials, organisms, and events).', moduleIds: ['animal-sounds'] },
       // Pass MO, earmark E12, Domain II part one: two-step directions and sentences that combine two ideas, read in TEA's PK3
       // Streamlined Version and on headstart.gov and held word for word to docs/standards.
-      { framework: 'TEKS', code: 'PK3.II.A.2', text: 'Child shows understanding by following two-step verbal directions.', moduleIds: ['two-steps'] },
-      { framework: 'TEKS', code: 'PK3.II.E.4', text: 'Child understands increasingly longer sentences that combine two ideas.', moduleIds: ['two-ideas'] },
-      { framework: 'CCSS', code: 'ELOF.P-ATL.8', text: 'Holds information in mind and manipulates it to perform tasks.', moduleIds: ['two-steps'] },
-      { framework: 'CCSS', code: 'ELOF.P-LC.2', text: 'Understands and responds to increasingly complex communication and language from others.', moduleIds: ['two-ideas'] },
+      { framework: 'TEKS', code: 'PK3.II.A.2', text: 'Child shows understanding by following two-step verbal directions with support.', moduleIds: ['two-steps', 'two-steps-more'] },
+      { framework: 'CCSS', code: 'ELOF.P-ATL.8', text: 'Holds information in mind and manipulates it to perform tasks.', moduleIds: ['two-steps', 'two-steps-more'] },
+      { framework: 'CCSS', code: 'ELOF.P-LC.2', text: 'Understands and responds to increasingly complex communication and language from others.', moduleIds: ['two-ideas', 'two-ideas-more'] },
       // Round one's lesson check (pass MO): following a grown-up's directions is part of P-SE 2's 36 to 48 month progression.
-      { framework: 'CCSS', code: 'ELOF.P-SE.2', text: 'Engages in prosocial and cooperative behavior with adults.', moduleIds: ['two-steps'] },
+      { framework: 'CCSS', code: 'ELOF.P-SE.2', text: 'Engages in prosocial and cooperative behavior with adults.', moduleIds: ['two-steps-more'] },
       // Pass MQ, earmark E12, Domain II's vocabulary: the classroom's instructional language (Learning words, in part) and a broader
       // category, people (People and events, P-LC 7 in part), each held word for word to docs/standards.
-      { framework: 'TEKS', code: 'PK3.II.D.2', text: 'Child understands (receptive) the instructional language of the classroom.', moduleIds: ['learning-words'] },
+      { framework: 'TEKS', code: 'PK3.II.D.2', text: 'Child shows a steady increase in understanding (receptive) and using (expressive) instructional and academic vocabulary.', moduleIds: ['learning-words', 'count-and-sort-words'] },
       { framework: 'CCSS', code: 'ELOF.P-LC.7', text: 'Shows understanding of word categories and relationships among words.', moduleIds: ['people-and-events'] },
+      // Pass MR (Mikey: "I think we should go ahead and implement the new recommendations from the 2027 Pre-K Guidelines Review
+      // Committee."): 2027 outcomes the lessons already teach, cited since the requote (docs/standards/tea-pk3-2027-recommended.txt).
+      { framework: 'TEKS', code: 'PK3.III.B.5', text: 'Child identifies rhyming words with adult assistance.', moduleIds: ['rhymes-with-pictures'] },
+      { framework: 'TEKS', code: 'PK3.VI.D.2', text: 'Child explores common objects in the sky such as Sun, Moon, clouds, and stars.', moduleIds: ['listen-and-tap-pictures'] },
+      { framework: 'TEKS', code: 'PK3.VI.C.1', text: 'Child explores the characteristics of living organisms.', moduleIds: ['animal-sounds'] },
+      { framework: 'TEKS', code: 'PK3.VII.B.3', text: 'Child identifies family, school, and community helpers.', moduleIds: ['people-and-events'] },
+      { framework: 'TEKS', code: 'PK3.VII.A.3', text: 'Child shows awareness of daily events and routines such as daily visual schedule and morning and bedtime routines.', moduleIds: ['things-that-happen'] },
     ],
   },
   {
@@ -213,16 +231,17 @@ export const CURRICULUM = [
   },
   {
     grade: 'PK4', subject: 'Math', status: 'ready',
-    source: 'Texas Prekindergarten Guidelines (2022), PK4 outcomes, read in full in pass ML (First Steps teaches Domains I, II, IV, V, VI, VII and IX in part, and since pass MM First Sounds and Letters\' Which came first? and Second and last teach P-MATH 4\'s order sentence and II.D.1\'s order words in part, and Domain I was read again in pass MN for First Steps\' three feelings lessons); Head Start Early Learning Outcomes Framework, preschool goals with their 48 to 60 month progressions',
+    source: 'Texas Prekindergarten Guidelines as the 2027 Pre-K Guidelines Review Committee recommends them (TEA, five documents posted for public feedback in September 2026, adopted by the app in pass MR at Mikey\'s word and read from them in pass MR, docs/standards/tea-pk4-2027-recommended.txt), PK4 outcomes; before pass MR, the Texas Prekindergarten Guidelines (2022), PK4 outcomes, read in full in pass ML (First Steps teaches Domains I, II, IV, V, VI, VII and IX in part, and since pass MM First Sounds and Letters\' Which came first? and Second and last teach P-MATH 4\'s order sentence and II.D.1\'s order words in part, and Domain I was read again in pass MN for First Steps\' three feelings lessons); Head Start Early Learning Outcomes Framework, preschool goals with their 48 to 60 month progressions',
     standards: [
-      { framework: 'TEKS', code: 'PK4.V.A.2', text: 'Child counts up to 10 objects with one-to-one correspondence.', moduleIds: ['count-to-3', 'more-and-fewer-5'] },
-      { framework: 'TEKS', code: 'PK4.V.A.3', text: 'Child counts up to 10 items and demonstrates cardinality by communicating that the last number indicates how many items are in the set.', moduleIds: ['count-to-3', 'more-and-fewer-5'] },
-      { framework: 'TEKS', code: 'PK4.V.A.5', text: 'Child recognizes numerals 0-10.', moduleIds: ['count-to-3', 'connect-the-dots'] },
-      { framework: 'TEKS', code: 'PK4.V.A.8', text: 'Child compares sets of objects up to 10 using comparative language (e.g., greater/more than, less/fewer than, equal to/same number of).', moduleIds: ['count-to-3', 'more-and-fewer-5'] },
-      { framework: 'TEKS', code: 'PK4.V.C.1', text: 'Child names and describes common 2D shapes and names at least 1 solid 3D shape.', moduleIds: ['match-the-shapes', 'match-the-solids', 'draw-the-shapes'] },
-      { framework: 'TEKS', code: 'PK4.V.D.1', text: 'Child recognizes and compares heights or lengths of people or objects.', moduleIds: ['bigger-and-smaller'] },
-      { framework: 'TEKS', code: 'PK4.V.E.1', text: 'Child sorts objects that are the same and different into groups and uses language to describe how the groups are similar and different.', moduleIds: ['colours', 'same-and-different', 'match-the-vehicles', 'match-the-things', 'match-the-water-animals', 'match-the-land-animals', 'match-the-shapes', 'match-the-solids'] },
-      { framework: 'TEKS', code: 'PK4.V.E.3', text: 'Child recognizes, duplicates, extends, and creates patterns.', moduleIds: ['patterns'] },
+      { framework: 'TEKS', code: 'PK4.V.A.3', text: 'Child counts up to 10 objects with one-to-one correspondence.', moduleIds: ['count-to-3', 'more-and-fewer-5'] },
+      { framework: 'TEKS', code: 'PK4.V.A.4', text: 'Child counts up to 10 items and demonstrates cardinality by communicating that the last number indicates how many items are in the set.', moduleIds: ['count-to-3', 'more-and-fewer-5'] },
+      { framework: 'TEKS', code: 'PK4.V.A.5', text: 'Child names numerals 0-10.', moduleIds: ['count-to-3', 'connect-the-dots'] },
+      { framework: 'TEKS', code: 'PK4.V.A.8', text: 'Child compares two sets of up to 10 objects in each set using comparative language (e.g., greater/more than, less/fewer than, equal to/same number of).', moduleIds: ['count-to-3', 'more-and-fewer-5'] },
+      { framework: 'TEKS', code: 'PK4.V.B.1', text: 'Child names two-dimensional shapes including circles, squares, rectangles, triangles, ovals, and rhombi regardless of size and orientation.', moduleIds: ['match-the-shapes', 'draw-the-shapes'] },
+      { framework: 'TEKS', code: 'PK4.V.B.2', text: 'Child recognizes three-dimensional shapes including spheres, cubes, cylinders, and cones.', moduleIds: ['match-the-solids'] },
+      { framework: 'TEKS', code: 'PK4.V.C.1', text: 'Child recognizes and compares the attributes of heights or lengths of people or objects using language including longer, shorter, taller, higher, lower or same.', moduleIds: ['bigger-and-smaller'] },
+      { framework: 'TEKS', code: 'PK4.V.D.1', text: 'Child sorts objects into groups based on shared attributes such as color, shape, or size and describes how the groups are similar and different.', moduleIds: ['colours', 'same-and-different', 'match-the-vehicles', 'match-the-things', 'match-the-water-animals', 'match-the-land-animals', 'match-the-shapes', 'match-the-solids'] },
+      { framework: 'TEKS', code: 'PK4.V.D.3', text: 'Child extends and creates simple repeating AB, AAB, or ABB patterns using objects, actions, or sounds with support.', moduleIds: ['patterns'] },
       { framework: 'CCSS', code: 'ELOF.P-MATH.1', text: 'Knows number names and the count sequence.', moduleIds: ['count-to-3', 'connect-the-dots'] },
       { framework: 'CCSS', code: 'ELOF.P-MATH.3', text: 'Understands the relationship between numbers and quantities.', moduleIds: ['count-to-3', 'more-and-fewer-5'] },
       { framework: 'CCSS', code: 'ELOF.P-MATH.4', text: 'Compares numbers.', moduleIds: ['more-and-fewer-5', 'which-came-first', 'which-came-second'] },
@@ -230,66 +249,68 @@ export const CURRICULUM = [
       { framework: 'CCSS', code: 'ELOF.P-MATH.7', text: 'Understands simple patterns.', moduleIds: ['patterns'] },
       { framework: 'CCSS', code: 'ELOF.P-MATH.8', text: 'Measures objects by their various attributes using standard and non-standard measurement. Uses differences in attributes to make comparisons.', moduleIds: ['same-and-different', 'match-the-water-animals', 'bigger-and-smaller', 'big-bigger-biggest'] },
       { framework: 'CCSS', code: 'ELOF.P-MATH.9', text: 'Identifies, describes, compares, and composes shapes.', moduleIds: ['match-the-shapes', 'match-the-solids', 'draw-the-shapes'] },
-      { framework: 'TEKS', code: 'PK4.IX.B.2', text: 'Child shows increasing control of tasks that require eye-hand coordination.', moduleIds: ['first-strokes', 'connect-the-dots', 'draw-the-shapes', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
+      { framework: 'TEKS', code: 'PK4.IX.B.2', text: 'Child demonstrates control, coordination and increasing precision when completing tasks that require eye-hand coordination.', moduleIds: ['first-strokes', 'connect-the-dots', 'draw-the-shapes', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
       { framework: 'CCSS', code: 'ELOF.P-PMP.3', text: 'Demonstrates increasing control, strength, and coordination of small muscles.', moduleIds: ['first-strokes', 'connect-the-dots', 'draw-the-shapes', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
-      { framework: 'TEKS', code: 'PK4.II.D.1', text: 'Child understands (receptive) and uses (expressive) a wide variety of words to label, describe and make connections among objects, people, places, actions, and events.', moduleIds: ['colours', 'big-bigger-biggest', 'which-came-first', 'which-came-second', 'words-go-together', 'helpers-all-around'] },
-      { framework: 'TEKS', code: 'PK4.VI.A.1', text: 'Child observes, investigates, describes, and discusses characteristics of common objects.', moduleIds: ['match-the-things'] },
-      { framework: 'TEKS', code: 'PK4.VI.A.2', text: 'Child observes, investigates, describes, and discusses position and motion of objects.', moduleIds: ['match-the-solids'] },
-      { framework: 'TEKS', code: 'PK4.VI.B.1', text: 'Child observes, investigates, describes, and discusses the characteristics of organisms.', moduleIds: ['match-the-water-animals', 'match-the-land-animals'] },
+      { framework: 'TEKS', code: 'PK4.II.D.1', text: 'Child understands (receptive) and uses (expressive) a growing variety of words to label, describe and make connections among objects, people, places, actions, and events.', moduleIds: ['colours', 'big-bigger-biggest', 'which-came-first', 'which-came-second', 'words-go-together', 'helpers-all-around', 'opposites-and-same'] },
+      { framework: 'TEKS', code: 'PK4.VI.B.1', text: 'Child identifies and compares observable properties of objects such as color, shape, texture, and size.', moduleIds: ['colours', 'same-and-different', 'match-the-things', 'match-the-solids', 'bigger-and-smaller', 'big-bigger-biggest'] },
+      { framework: 'TEKS', code: 'PK4.VI.C.1', text: 'Child describes the characteristics of living organisms.', moduleIds: ['match-the-water-animals', 'match-the-land-animals'] },
       { framework: 'CCSS', code: 'ELOF.P-SCI.1', text: 'Observes and describes observable phenomena (objects, materials, organisms, and events).', moduleIds: ['colours'] },
       { framework: 'CCSS', code: 'ELOF.P-SCI.3', text: 'Compares and categorizes observable phenomena.', moduleIds: ['match-the-vehicles', 'match-the-things', 'match-the-land-animals'] },
-      { framework: 'TEKS', code: 'PK4.I.B.1.a', text: 'Child follows classroom rules and routines with occasional reminders from adults.', moduleIds: ['taking-turns'] },
-      { framework: 'TEKS', code: 'PK4.I.B.2.c', text: 'Child is able to manage intensity of emotions more consistently, although adult guidance is sometimes necessary.', moduleIds: ['taking-turns', 'feelings-show'] },
-      { framework: 'TEKS', code: 'PK4.I.C.5', text: 'Child initiates problem-solving strategies when experiencing conflicts with others and seeks adult support when necessary.', moduleIds: ['taking-turns', 'good-friend'] },
-      { framework: 'TEKS', code: 'PK4.I.C.6', text: 'Child demonstrates empathy and caring for others.', moduleIds: ['taking-turns', 'good-friend'] },
+      { framework: 'TEKS', code: 'PK4.I.B.1.a', text: 'Child follows classroom expectations (rules, routines and procedures) with occasional reminders.', moduleIds: ['taking-turns'] },
+      { framework: 'TEKS', code: 'PK4.I.B.2.c', text: 'Child uses calming strategies to regulate emotions with decreasing adult assistance', moduleIds: ['taking-turns', 'feelings-show'] },
+      { framework: 'TEKS', code: 'PK4.I.C.5', text: 'Child uses simple problem-solving strategies when experiencing conflicts with others and seeks adult support when necessary.', moduleIds: ['taking-turns', 'good-friend'] },
+      { framework: 'TEKS', code: 'PK4.I.C.6', text: 'Child responds with empathy and care for others.', moduleIds: ['taking-turns', 'good-friend'] },
       { framework: 'CCSS', code: 'ELOF.P-SE.3', text: 'Engages in and maintains positive interactions and relationships with other children.', moduleIds: ['taking-turns'] },
       { framework: 'CCSS', code: 'ELOF.P-SE.5', text: 'Uses basic problem-solving skills to resolve conflicts with other children.', moduleIds: ['taking-turns', 'good-friend'] },
       { framework: 'CCSS', code: 'ELOF.P-SE.7', text: 'Expresses care and concern toward others.', moduleIds: ['taking-turns', 'good-friend'] },
       { framework: 'CCSS', code: 'ELOF.P-SE.8', text: 'Manages emotions with increasing independence.', moduleIds: ['taking-turns', 'feelings-show'] },
       // Pass MN, earmarks E12 and E13 side by side, Domain I: pre-K 4's feelings lessons, each code read in TEA's 2022 PK4 column
       // and on headstart.gov and held word for word to docs/standards.
-      { framework: 'TEKS', code: 'PK4.I.B.2.a', text: 'Child begins to understand the connection between emotions and behaviors.', moduleIds: ['feelings-show'] },
-      { framework: 'TEKS', code: 'PK4.I.B.2.b', text: 'Child uses verbal and nonverbal communication to communicate basic emotions and feelings.', moduleIds: ['feelings-show'] },
-      { framework: 'TEKS', code: 'PK4.I.D.1', text: 'Child demonstrates an understanding that others have perspectives and feelings that are similar and/or different from her own.', moduleIds: ['how-friends-feel'] },
+      { framework: 'TEKS', code: 'PK4.I.B.2.a', text: 'Child describes or demonstrates the connection between emotions and behaviors.', moduleIds: ['feelings-show'] },
+      { framework: 'TEKS', code: 'PK4.I.B.2.b', text: 'Child uses verbal and nonverbal communication to express emotions and feelings.', moduleIds: ['feelings-show'] },
+      { framework: 'TEKS', code: 'PK4.I.D.1', text: 'Child demonstrates respect for others\' perspectives and feelings that are similar and/or different from their own.', moduleIds: ['how-friends-feel'] },
       { framework: 'CCSS', code: 'ELOF.P-SE.6', text: 'Expresses a broad range of emotions and recognizes these emotions in self and others.', moduleIds: ['feelings-show', 'how-friends-feel'] },
       // Being a good friend's taking turns choosing and finding a game both friends like are the plans of P-SE 4's second sentence (the
       // lesson check, pass MN round one).
-      { framework: 'CCSS', code: 'ELOF.P-SE.4', text: 'Engages in cooperative play with other children.', moduleIds: ['good-friend', 'play-together'] },
+      { framework: 'CCSS', code: 'ELOF.P-SE.4', text: 'Engages in cooperative play with other children.', moduleIds: ['good-friend', 'play-with-a-plan'] },
       // Pass MO, earmark E13: Domain I's last pre-K 4 lesson, each code read in TEA's 2022 PK4 column and on headstart.gov and held
       // word for word to docs/standards; I.C.1, I.C.3 and I.C.4 read as pre-K 3 reads its I.C.1 and I.C.3.
-      { framework: 'TEKS', code: 'PK4.I.C.1', text: 'Child uses effective verbal and nonverbal communication skills to build relationships with adults and peers.', moduleIds: ['play-together'] },
-      { framework: 'TEKS', code: 'PK4.I.C.3', text: 'Child shows competence in initiating social interactions.', moduleIds: ['play-together'] },
-      { framework: 'TEKS', code: 'PK4.I.C.4', text: 'Child increasingly interacts with peers during cooperative play scenarios that share a common plan and goal.', moduleIds: ['play-together'] },
+      { framework: 'TEKS', code: 'PK4.I.C.1', text: 'Child uses effective verbal and nonverbal communication skills, home language, assistive communication, or other preferred methods to develop positive relationships with adults and peers.', moduleIds: ['play-together'] },
+      { framework: 'TEKS', code: 'PK4.I.C.3', text: 'Child initiates and/or responds to social interactions using verbal and non-verbal communication skills.', moduleIds: ['play-together'] },
+      { framework: 'TEKS', code: 'PK4.I.C.4', text: 'Child engages in cooperative play with peers by contributing to a shared plan or goal.', moduleIds: ['play-with-a-plan'] },
       { framework: 'CCSS', code: 'ELOF.P-SE.1', text: 'Engages in and maintains positive relationships and interactions with adults.', moduleIds: ['play-together'] },
       // Round one's lesson check (pass MO): the lesson teaches a talk's rules (II.B.2 and P-LC 4) and a good morning to a teacher (P-SE 2).
       { framework: 'TEKS', code: 'PK4.II.B.2', text: 'Child engages in conversations in appropriate ways, demonstrating knowledge of verbal and nonverbal conversational rules.', moduleIds: ['play-together'] },
       { framework: 'CCSS', code: 'ELOF.P-LC.4', text: 'Understands, follows, and uses appropriate social and conversational rules.', moduleIds: ['play-together'] },
       { framework: 'CCSS', code: 'ELOF.P-SE.2', text: 'Engages in prosocial and cooperative behavior with adults.', moduleIds: ['play-together'] },
-      { framework: 'TEKS', code: 'PK4.VII.B.3', text: 'Child discusses the roles and responsibilities of family, school, and community helpers.', moduleIds: ['helpers-all-around'] },
+      { framework: 'TEKS', code: 'PK4.VII.B.3', text: 'Child identifies and discusses the roles and responsibilities of family, school, and community helpers as people who work together to make the community a safer place for everyone.', moduleIds: ['helpers-all-around'] },
     ],
   },
   {
     grade: 'PK4', subject: 'Reading', status: 'ready',
-    source: 'Texas Prekindergarten Guidelines (2022), PK4 outcomes, Domains II to IV read in full in pass MM (II. Emergent Literacy: Language and Communication, III. Emergent Literacy: Reading, IV. Emergent Literacy: Writing); Head Start Early Learning Outcomes Framework, preschool goals with their 48 to 60 month progressions',
+    source: 'Texas Prekindergarten Guidelines as the 2027 Pre-K Guidelines Review Committee recommends them (TEA, five documents posted for public feedback in September 2026, adopted by the app in pass MR at Mikey\'s word and read from them in pass MR, docs/standards/tea-pk4-2027-recommended.txt), PK4 outcomes; before pass MR, the Texas Prekindergarten Guidelines (2022), PK4 outcomes, Domains II to IV read in full in pass MM (II. Emergent Literacy: Language and Communication, III. Emergent Literacy: Reading, IV. Emergent Literacy: Writing); Head Start Early Learning Outcomes Framework, preschool goals with their 48 to 60 month progressions',
     standards: [
-      { framework: 'TEKS', code: 'PK4.III.B.6', text: 'Child identifies rhyming words.', moduleIds: ['listen-for-rhymes'] },
-      { framework: 'TEKS', code: 'PK4.III.B.7', text: 'Child identifies alliterative words with pictorial support.', moduleIds: ['first-sounds'] },
+      { framework: 'TEKS', code: 'PK4.III.B.5', text: 'Child identifies rhyming words.', moduleIds: ['listen-for-rhymes'] },
+      { framework: 'TEKS', code: 'PK4.III.B.7', text: 'Child identifies if words begin with the same sound.', moduleIds: ['first-sounds'] },
       { framework: 'CCSS', code: 'ELOF.P-LC.1', text: 'Attends to communication and language from others.', moduleIds: ['which-came-first', 'which-came-second'] },
-      { framework: 'TEKS', code: 'PK4.II.A.1', text: 'Child shows understanding by responding appropriately to what has been communicated by adults and peers.', moduleIds: ['which-came-first', 'which-came-second'] },
-      { framework: 'CCSS', code: 'ELOF.P-ATL.8', text: 'Holds information in mind and manipulates it to perform tasks.', moduleIds: ['which-came-first', 'which-came-second', 'three-steps'] },
+      { framework: 'TEKS', code: 'PK4.II.A.1', text: 'Child demonstrates understanding of spoken communication by responding appropriately to adults and peers through verbal or nonverbal behaviors.', moduleIds: ['which-came-first', 'which-came-second'] },
+      { framework: 'CCSS', code: 'ELOF.P-ATL.8', text: 'Holds information in mind and manipulates it to perform tasks.', moduleIds: ['which-came-first', 'which-came-second', 'three-steps', 'three-steps-more'] },
       // Pass MO, earmark E13, Domain II part one: three-step directions, read in TEA's 2022 PK4 column and on headstart.gov.
-      { framework: 'TEKS', code: 'PK4.II.A.2', text: 'Child shows understanding by following three-step verbal directions.', moduleIds: ['three-steps'] },
-      { framework: 'CCSS', code: 'ELOF.P-LC.2', text: 'Understands and responds to increasingly complex communication and language from others.', moduleIds: ['three-steps'] },
-      { framework: 'CCSS', code: 'ELOF.P-SE.2', text: 'Engages in prosocial and cooperative behavior with adults.', moduleIds: ['three-steps'] },
+      { framework: 'TEKS', code: 'PK4.II.A.2', text: 'Child demonstrates understanding by following three-step verbal directions with support.', moduleIds: ['three-steps', 'three-steps-more'] },
+      { framework: 'CCSS', code: 'ELOF.P-LC.2', text: 'Understands and responds to increasingly complex communication and language from others.', moduleIds: ['three-steps', 'three-steps-more'] },
+      { framework: 'CCSS', code: 'ELOF.P-SE.2', text: 'Engages in prosocial and cooperative behavior with adults.', moduleIds: ['three-steps-more'] },
       // Pass MQ, earmark E13, Domain II's vocabulary: the classroom's instructional language (More learning words, its receptive half)
       // and word categories, opposites and words that mean the same (Words that go together, P-LC 7 in part).
-      { framework: 'TEKS', code: 'PK4.II.D.2', text: 'Child understands (receptive) and uses (expressive) the instructional language of the classroom.', moduleIds: ['more-learning-words'] },
-      { framework: 'CCSS', code: 'ELOF.P-LC.7', text: 'Shows understanding of word categories and relationships among words.', moduleIds: ['words-go-together'] },
-      { framework: 'TEKS', code: 'PK4.III.C.1', text: 'Child recognizes and names at least 20 letters (upper- or lower-case letters).', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
+      { framework: 'TEKS', code: 'PK4.II.D.2', text: 'Child consistently understands (receptive) and uses (expressive) instructional and academic vocabulary.', moduleIds: ['more-learning-words', 'sort-and-shape-words'] },
+      { framework: 'CCSS', code: 'ELOF.P-LC.7', text: 'Shows understanding of word categories and relationships among words.', moduleIds: ['words-go-together', 'opposites-and-same'] },
+      { framework: 'TEKS', code: 'PK4.III.C.1', text: 'Child recognizes and names at least 18 uppercase letters and 15 lowercase letters.', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
       { framework: 'CCSS', code: 'ELOF.P-LIT.1', text: 'Demonstrates awareness that spoken language is composed of smaller segments of sound.', moduleIds: ['listen-for-rhymes', 'first-sounds'] },
       { framework: 'CCSS', code: 'ELOF.P-LIT.3', text: 'Identifies letters of the alphabet and produces correct sounds associated with letters.', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
-      { framework: 'TEKS', code: 'PK4.IV.C.2', text: 'Child progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate.', moduleIds: ['first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
-      { framework: 'TEKS', code: 'PK4.IV.C.4', text: 'Child uses appropriate directionality when writing (e.g., top to bottom, left to right).', moduleIds: ['first-strokes', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
+      { framework: 'TEKS', code: 'PK4.IV.C.2', text: 'Child progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas.', moduleIds: ['first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
+      { framework: 'TEKS', code: 'PK4.IV.C.4', text: 'Child demonstrates directionality when writing (e.g., top to bottom, left to right) adult support as needed.', moduleIds: ['first-strokes', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
+      // Pass MR (Mikey: "I think we should go ahead and implement the new recommendations from the 2027 Pre-K Guidelines Review
+      // Committee."): 2027 outcomes the lessons already teach, cited since the requote (docs/standards/tea-pk4-2027-recommended.txt).
+      { framework: 'TEKS', code: 'PK4.VII.A.3', text: 'Child describes and sequences familiar daily events and routines using words related to time and chronology such as first, next, last, before, after, yesterday, today, and tomorrow.', moduleIds: ['three-steps-more'] },
     ],
   },
   {

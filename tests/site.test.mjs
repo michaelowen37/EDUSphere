@@ -160,6 +160,33 @@ ok("What's new stays closed after a reload, because Got it was remembered", news
   const after = await rp.getByRole('dialog', { name: "What's new" }).count();
   ok("a tour replayed while What's new waits keeps one pop-up at a time, and the news opens when it ends (pass MB)", overlap === 0 && after === 1, { overlap, after });
   await ctx.close(); }
+// A phone held sideways is asked to turn upright (Mikey, 2026-09-16; his answer to Q71, pass MR: "yeah, let's make users turn the
+// phone upright ... Let's make sure it stays too. I was wondering why it stopped one day"). It stopped because its stylesheet rules
+// sat inside a block with no selector, which the browser drops whole and silently, so the rule itself is read from the page's own
+// stylesheets, and the ask is read on a phone held sideways (shown, covering the screen, in his words), a phone upright, a short
+// laptop window and a tablet held sideways (none of them asked), and again on the phone after it is turned upright.
+{ const asked = async (p) => p.evaluate(() => { const el = document.getElementById('edu-rotate'); if (!el) return { there: false }; const cs = getComputedStyle(el); const r = el.getBoundingClientRect(); return { there: true, shown: cs.display !== 'none' && cs.visibility !== 'hidden', covers: r.left <= 0 && r.top <= 0 && r.right >= window.innerWidth && r.bottom >= window.innerHeight, words: el.textContent.trim(), z: Number(cs.zIndex) }; });
+  const ruleKept = async (p) => p.evaluate(() => { for (const sheet of document.styleSheets) { let rules = []; try { rules = [...sheet.cssRules]; } catch (e) { continue; } if (rules.some((r) => r.selectorText === '.edu-rotate.edu-rotate-on' && /flex/.test(r.style.display))) return true; } return false; });
+  const open = async (opts) => { const ctx = await b.newContext(opts); const p = await ctx.newPage(); await p.goto(url); await p.waitForTimeout(700); return { ctx, p }; };
+  const side = await open({ viewport: { width: 844, height: 390 }, screen: { width: 844, height: 390 }, hasTouch: true, isMobile: true });
+  const sideAsk = await asked(side.p); const kept = await ruleKept(side.p);
+  await side.p.setViewportSize({ width: 390, height: 844 }); await side.p.waitForTimeout(400);
+  const turned = await asked(side.p); await side.ctx.close();
+  const up = await open({ viewport: { width: 390, height: 844 }, screen: { width: 390, height: 844 }, hasTouch: true, isMobile: true }); const upAsk = await asked(up.p); await up.ctx.close();
+  const laptop = await open({ viewport: { width: 844, height: 390 }, screen: { width: 1440, height: 900 } }); const laptopAsk = await asked(laptop.p); await laptop.ctx.close();
+  const tablet = await open({ viewport: { width: 1024, height: 768 }, screen: { width: 1024, height: 768 }, hasTouch: true, isMobile: true }); const tabletAsk = await asked(tablet.p); await tablet.ctx.close();
+  // A short upright page on a touch screen whose browser calls the screen landscape (headless Chrome always does; pass MR, check.sh's
+  // scroll-cue test found the ask covering its 360 by 480 lesson) is never asked either: the page itself must be wider than tall.
+  const shortUp = await open({ viewport: { width: 360, height: 480 }, hasTouch: true }); const shortUpAsk = await asked(shortUp.p); const saysLandscape = await shortUp.p.evaluate(() => !!(screen.orientation && /landscape/.test(screen.orientation.type))); await shortUp.ctx.close();
+  // A tablet held sideways whose window a keyboard or split view shortens to 400 pixels is a tablet still, told by its screen's short
+  // side, and is never told to turn "your phone" (round one's code check, pass MR: the window's height had decided it).
+  const keyboard = await open({ viewport: { width: 1024, height: 400 }, screen: { width: 1024, height: 768 }, hasTouch: true, isMobile: true }); const keyboardAsk = await asked(keyboard.p); await keyboard.ctx.close();
+  ok('the ask to turn upright is a rule the browser keeps (read from the page\'s own stylesheets, Q71)', kept);
+  ok('a phone held sideways is covered by the ask to turn upright, in Mikey\'s words (Q71)', sideAsk.there && sideAsk.shown && sideAsk.covers && sideAsk.words === 'Please turn your phone upright.' && sideAsk.z >= 9999, sideAsk);
+  ok('turned upright, the ask goes and the app shows (Q71)', turned.there && !turned.shown, turned);
+  ok('a phone held upright, a short laptop window and a tablet held sideways are never asked (Q71)', upAsk.there && !upAsk.shown && laptopAsk.there && !laptopAsk.shown && tabletAsk.there && !tabletAsk.shown, { upAsk, laptopAsk, tabletAsk });
+  ok('a short upright touch page is never asked, even where the browser calls its screen landscape (pass MR)', saysLandscape && shortUpAsk.there && !shortUpAsk.shown, { saysLandscape, shortUpAsk });
+  ok('a tablet held sideways whose window a keyboard shortens is never asked to turn its phone (pass MR)', keyboardAsk.there && !keyboardAsk.shown, keyboardAsk); }
 await b.close();
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

@@ -38,8 +38,9 @@
 // and the Classroom's four feature cards are light playful colors (feat*) with dark words and no contrasting edge.
 // paperBoard is the paper that games, coloring pages and lesson pictures sit on: white in light, and in dark a very light green
 // (#D9E6DC) since pass MH (Mikey: "maybe a very light green to match the theme"), where it was almond (#EFE8DC).
-// Mikey (2026-09-24): the light theme stays exactly as it was before the dark theme; anything that changes a look for the
-// dark theme alone checks C.mode, and tabEdge is the Active Students tab's own edge (never gold).
+// Mikey (2026-09-24): the light theme stayed exactly as it was before the dark theme until pass MR, when he opened it to change as a
+// UI expert would ("You are free to edit the light theme now"); anything that changes a look for the dark theme alone checks C.mode,
+// and tabEdge is the Active Students tab's own edge (never gold).
 const THEMES = {
   light: {
     mode: 'light', bg: '#F5F7F1', surface: '#FFFFFF', ink: '#24291F', muted: '#5C6355', line: '#DCE3D6',
@@ -47,7 +48,7 @@ const THEMES = {
     clay: '#B9634A', claySoft: '#F6E4DB', clayInk: '#9A4F39', onAccent: '#FFFFFF', onGold: '#24291F', frame: '#2F5D4F',
     paper: '#FFF8E8', paperLine: '#F1E3BE', glass: 'rgba(249, 251, 247, 0.9)',
     tipBg: 'linear-gradient(135deg, #EAF2EC 0%, #F5F9F5 100%)', tipLine: '#DCE8DF',
-    logoInk: '#2F5D4F', logoOrbit: '#2F5D4F', logoTag: '#8A6424', veil: 'rgba(255, 255, 255, 0.5)', panel: 'rgb(240, 248, 238)', panelLine: 'transparent', goldEdge: '#F7EAD1', cardEdge: '#DCE3D6', softEdge: '#E4EEE8', tabEdge: '#C9DCCF',
+    logoInk: '#2F5D4F', logoOrbit: '#2F5D4F', logoTag: '#8A6424', veil: 'rgba(255, 255, 255, 0.5)', panel: 'rgb(240, 248, 238)', panelLine: 'transparent', goldEdge: '#F7EAD1', cardEdge: '#DCE3D6', softEdge: '#E4EEE8', tabEdge: '#C9DCCF', cardShadow: '0 1px 2px rgba(36, 41, 31, 0.05), 0 4px 14px rgba(36, 41, 31, 0.05)', pillHover: '#D6E6DB', bookRule: 'rgba(47, 93, 79, 0.20)',
     featWonder: 'linear-gradient(135deg, #DCEBE1 0%, #EEF5F0 100%)', featWonderLine: '#C9DCCF', featReading: 'linear-gradient(135deg, #E3E9F3 0%, #F1F4F9 100%)', featReadingLine: '#C9D3E3',
     featExperiments: 'linear-gradient(135deg, #F3DCD2 0%, #FAECE6 100%)', featExperimentsLine: '#E6C4B6', featLife: 'linear-gradient(135deg, #F3E7C9 0%, #FAF3E1 100%)', featLifeLine: '#E6D4A6', featInk: '#24291F',
     paperBoard: '#FFFFFF', transcriptFill: '#F7EAD1', transcriptLine: '#F7EAD1', transcriptInk: '#24291F', listBody: '#E4EEE8', scrim: 'rgba(36, 41, 31, 0.55)',
@@ -62,7 +63,7 @@ const THEMES = {
     clay: '#E08A6E', claySoft: '#3D2620', clayInk: '#E08A6E', onAccent: '#0E1A16', onGold: '#0E1A16', frame: '#2F5D4F',
     paper: '#1F2D27', paperLine: '#7CC3A6', glass: 'rgba(29, 48, 42, 0.92)',
     tipBg: 'linear-gradient(135deg, #1F3A31 0%, #1D302A 100%)', tipLine: '#34503F',
-    logoInk: '#F1EDE3', logoOrbit: '#F1EDE3', logoTag: '#D9A441', veil: 'rgba(0, 0, 0, 0.18)', panel: '#2A4C40', panelLine: '#7CC3A6', goldEdge: '#7CC3A6', cardEdge: '#7CC3A6', softEdge: '#7CC3A6', tabEdge: '#2F5A48',
+    logoInk: '#F1EDE3', logoOrbit: '#F1EDE3', logoTag: '#D9A441', veil: 'rgba(0, 0, 0, 0.18)', panel: '#2A4C40', panelLine: '#7CC3A6', goldEdge: '#7CC3A6', cardEdge: '#7CC3A6', cardShadow: 'none', pillHover: 'rgba(124, 195, 166, 0.14)', bookRule: 'rgba(124, 195, 166, 0.30)', softEdge: '#7CC3A6', tabEdge: '#2F5A48',
     featWonder: '#DCD1F5', featWonderLine: '#DCD1F5', featReading: '#C7DFF8', featReadingLine: '#C7DFF8',
     featExperiments: '#FAD1C2', featExperimentsLine: '#FAD1C2', featLife: '#F9EDC2', featLifeLine: '#F9EDC2', featInk: '#16201B',
     paperBoard: '#D9E6DC', transcriptFill: '#FAD1C2', transcriptLine: '#FAD1C2', transcriptInk: '#16201B', listBody: '#1A2B25', scrim: 'rgba(4, 10, 8, 0.72)',
@@ -238,7 +239,9 @@ const linkBtn = themed(() => ({ background: 'none', border: 'none', color: C.gre
 // Cards are solid, so stars show only in the open space between them and never behind text.
 const cardLink = themed(() => ({ ...linkBtn, marginRight: 12 }));
 // Cards carry the logo's gold edge in the dark theme (cardEdge) and the quiet line in the light theme.
-const card = themed(() => ({ background: C.surface, border: `1px solid ${C.cardEdge}`, borderRadius: 14, padding: 18, marginBottom: 14 }));
+// A card (pass MR, Mikey unfroze the light theme): white with a thin edge, and in the light theme a soft shadow under it, so cards
+// lift a little off the sage page the way a modern app's do; the dark theme keeps its edge alone (cardShadow is none there).
+const card = themed(() => ({ background: C.surface, border: `1px solid ${C.cardEdge}`, borderRadius: 14, padding: 18, marginBottom: 14, ...(C.cardShadow !== 'none' ? { boxShadow: C.cardShadow } : {}) }));
 
 // ---------- Small building blocks ----------
 function Btn({ children, onClick, kind = 'primary', disabled = false, full = false, halo = false, orbit = false, pal = null, style: extra = null, mark = false }) {
@@ -646,6 +649,8 @@ function RemembranceCard({ educator = false }) {
 
 function IconPic({ name, size = 90, tile = false }) {
   const [base, look] = String(name).split('#')[0].split('~');
+  // A unique id for this drawing's clip paths (the people's coats and faces, pass MR), so two of one person on a page never share one.
+  const uid = useId().replace(/:/g, '');
   const gold = C.gold; const green = C.green; const grey = '#8A9086'; const blue = '#4A86C5'; const red = '#C9573E'; const brown = '#8B5A2B';
   // In the dark theme alone, the coat's, the hat's and the cactus' fills are lightened to 3.6 to 1 or better on its answer tiles
   // (pass MQ, round two's lesson read: 2.45, 2.22 and 2.82 to 1), where each carries an answer; the light theme keeps its colors.
@@ -770,14 +775,333 @@ function IconPic({ name, size = 90, tile = false }) {
     cigarette: <g><rect x="24" y="46" width="52" height="10" rx="2" fill="#F4F6F7" stroke="#6F7A76" strokeWidth="2" /><rect x="66" y="46" width="10" height="10" fill="#E2B97A" stroke="#6F7A76" strokeWidth="2" /><path d="M24 44 Q28 36 24 30" fill="none" stroke="#8A9086" strokeWidth="2" strokeLinecap="round" /><circle cx="50" cy="50" r="38" fill="none" stroke={red} strokeWidth="6" /><path d="M24 24 L76 76" stroke={red} strokeWidth="6" strokeLinecap="round" /></g>,
     // Pass KO (kindergarten health): a doctor in a white coat, a shot, a fine comb, a mosquito, a child-sized plate half fruits
     // and vegetables, a peanut, a bike helmet, a booster seat and a seat belt across a seat.
-    doctor: <g transform="matrix(1.15 0 0 1.15 -7.5 -7.8)"><circle cx="50" cy="30" r="13" fill="#E8C9A0" /><path d="M37 26 Q50 12 63 26 Q58 22 50 22 Q42 22 37 26 Z" fill="#4A3B2A" /><path d="M26 88 Q26 54 50 50 Q74 54 74 88 Z" fill="#F4F6F7" stroke="#B9C2C9" strokeWidth="2.5" /><path d="M50 50 L50 88" stroke="#B9C2C9" strokeWidth="2" /><path d="M40 56 Q40 70 50 72 Q60 70 60 56" fill="none" stroke="#4A6A86" strokeWidth="3" strokeLinecap="round" /><circle cx="50" cy="74" r="4" fill="#4A6A86" /><circle cx="45" cy="29" r="1.6" fill="#2E2E2E" /><circle cx="55" cy="29" r="1.6" fill="#2E2E2E" /><path d="M45 35 Q50 39 55 35" fill="none" stroke="#2E2E2E" strokeWidth="1.6" strokeLinecap="round" /></g>,
+    // The doctor (pass MR, drawn to look like a real person): a woman with dark hair to her shoulders, in a white coat over light blue scrubs, a stethoscope around her neck.
+    doctor: (
+      <g>
+        <defs>
+          <clipPath id={`${uid}-body`}><path d="M50 57C42.5 57 37 59 31 61.6C23 64.6 15.6 67.4 13.6 75C12.2 80.6 11.6 90 13.2 101.6L50 101.6L86.8 101.6C88.4 90 87.8 80.6 86.4 75C84.4 67.4 77 64.6 69 61.6C63 59 57.5 57 50 57Z" /></clipPath>
+        </defs>
+        {/* Her dark hair, falling behind her to her shoulders */}
+        <path d="M31 30C30 17 38 8.6 50 8.6C62 8.6 70 17 69 30C70 41 70.6 52 72.6 60C66 62.6 34 62.6 27.4 60C29.4 52 30 41 31 30Z" fill="#4A3226" stroke="#2E1F17" strokeWidth="1.3" strokeLinejoin="round" />
+        <path d="M37 44L63 44L64 61.6L36 61.6Z" fill="#3A261C" />
+        {/* Her neck, and the shadow under her chin */}
+        <path d="M44.4 42C44.4 49 44 54 43 58.6L57 58.6C56 54 55.6 49 55.6 42Z" fill="#E8C9A0" />
+        <path d="M44.4 42L55.6 42L55.6 52.2Q50 57.2 44.4 52.2Z" fill="#D3AE80" />
+        {/* The white coat, its far side in shade */}
+        <path d="M50 57C42.5 57 37 59 31 61.6C23 64.6 15.6 67.4 13.6 75C12.2 80.6 11.6 90 13.2 101.6L50 101.6L86.8 101.6C88.4 90 87.8 80.6 86.4 75C84.4 67.4 77 64.6 69 61.6C63 59 57.5 57 50 57Z" fill="#F7F9FA" />
+        <g clipPath={`url(#${uid}-body)`}><path d="M70 60C81 62.2 89.6 70.6 90.6 78.6L92 101.6L80.2 101.6C80.4 90 80.6 80 82.31 72.6C80.46 67.6 74.6 63 70 60Z" fill="#DFE6EB" /></g>
+        <path d="M50 57C42.5 57 37 59 31 61.6C23 64.6 15.6 67.4 13.6 75C12.2 80.6 11.6 90 13.2 101.6L50 101.6L86.8 101.6C88.4 90 87.8 80.6 86.4 75C84.4 67.4 77 64.6 69 61.6C63 59 57.5 57 50 57Z" fill="none" stroke="#9AA7B1" strokeWidth="1.4" strokeLinejoin="round" />
+        {/* Light blue scrubs with a V neck, where the coat hangs open */}
+        <path d="M42.6 57.2L45.8 77L47 101.6L53 101.6L54.2 77L57.4 57.2Z" fill="#6FA8D6" />
+        <path d="M43.4 57.2L50 67.2L56.6 57.2Z" fill="#E8C9A0" />
+        <path d="M43.4 57.2L50 67.2L56.6 57.2" fill="none" stroke="#4F87B8" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M42.6 57.2L45.8 77L47 101.6" fill="none" stroke="#9AA7B1" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+        <g transform="matrix(-1 0 0 1 100 0)"><path d="M42.6 57.2L45.8 77L47 101.6" fill="none" stroke="#9AA7B1" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" /></g>
+        {/* The lapels, folded back */}
+        <path d="M42.6 57.2L45.8 77L39.6 67.6L41.2 65L36.4 60.4Z" fill="#EEF2F5" stroke="#9AA7B1" strokeWidth="1.2" strokeLinejoin="round" />
+        <g transform="matrix(-1 0 0 1 100 0)"><path d="M42.6 57.2L45.8 77L39.6 67.6L41.2 65L36.4 60.4Z" fill="#EEF2F5" stroke="#9AA7B1" strokeWidth="1.2" strokeLinejoin="round" /></g>
+        {/* Where the sleeves meet the coat */}
+        <path d="M24.4 77C25 84 25.4 92 25.4 101" fill="none" stroke="#9AA7B1" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+        <g transform="matrix(-1 0 0 1 100 0)"><path d="M24.4 77C25 84 25.4 92 25.4 101" fill="none" stroke="#9AA7B1" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" /></g>
+        {/* A pocket */}
+        <path d="M61.6 84.6L72.4 84.6L72.2 93.6Q67 95 61.8 93.6Z" fill="none" stroke="#9AA7B1" strokeWidth="1.2" strokeLinejoin="round" />
+        {/* The stethoscope around her neck, its round chest piece hanging on one side */}
+        <path d="M41.6 58.4C41.4 68 44.4 74.6 50 75.4C55.6 74.6 58.6 68 58.4 58.4" fill="none" stroke="#3F5F7D" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M41.8 64.6C39.4 70.4 38 76.4 38.8 82.6" fill="none" stroke="#3F5F7D" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx="39.2" cy="85.4" r="3.3" fill="#C9D3DB" stroke="#3F5F7D" strokeWidth="1.6" />
+        {/* Her ears and face */}
+        <g>
+          <path d="M36 28.6C31.8 27 30.2 31.2 31.4 34.4C32.2 36.4 33.8 37.8 36.2 37.2Z" fill="#E8C9A0" stroke="#B58D60" strokeWidth="1.2" strokeLinejoin="round" />
+          <path d="M34.8 31C32.8 30.8 32.4 33.4 33.8 35" fill="none" stroke="#D3AE80" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+        </g>
+        <g transform="matrix(-1 0 0 1 100 0)">
+          <g>
+            <path d="M36 28.6C31.8 27 30.2 31.2 31.4 34.4C32.2 36.4 33.8 37.8 36.2 37.2Z" fill="#E8C9A0" stroke="#B58D60" strokeWidth="1.2" strokeLinejoin="round" />
+            <path d="M34.8 31C32.8 30.8 32.4 33.4 33.8 35" fill="none" stroke="#D3AE80" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+          </g>
+        </g>
+        <path d="M50 11C41.24 11 35.4 18.5 35.4 28.5C35.4 37 37.6 42.5 41 46.2C44 49.6 47 51.2 50 51.2C53 51.2 56 49.6 59 46.2C62.4 42.5 64.6 37 64.6 28.5C64.6 18.5 58.76 11 50 11Z" fill="#E8C9A0" stroke="#B58D60" strokeWidth="1.1" />
+        {/* A soft shadow under her hairline */}
+        <path d="M35.2 30.6C37.2 23.6 40.2 19.2 43.4 16.4C46.4 17.8 51.2 18.2 55.8 19.4C60.8 20.8 64 24.6 64.8 30.6L64.7 31.8C63.6 26 60.6 22.2 55.7 20.8C51.1 19.6 46.6 19.2 43.7 17.9C40.8 20.4 38 24.8 35.4 31.8Z" fill="#D3AE80" opacity="0.75" />
+        {/* Her fringe, parted on one side, with a lighter sheen */}
+        <path d="M35 30.6C33 17 40 8.6 50 8.6C60 8.6 67 17 65 30.6C63.8 24.6 60.6 20.8 55.8 19.4C51.2 18.2 46.4 17.8 43.4 16.4C40.2 19.2 37.2 23.6 35 30.6Z" fill="#4A3226" stroke="#2E1F17" strokeWidth="1.2" strokeLinejoin="round" />
+        <path d="M45.6 12.4C50.6 11.2 56.4 12.4 60.4 15.6" fill="none" stroke="#6E4C38" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        {/* Eyes, brows, nose, cheeks and a smile */}
+        <g>
+          <ellipse cx="44" cy="32.4" rx="2.5" ry="1.75" fill="#3B2618" />
+          <path d="M46.63 32.1Q44 29.25 40.75 31.4" fill="none" stroke="#24170F" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="43.15" cy="31.75" r="0.75" fill="#FFFFFF" />
+        </g>
+        <g>
+          <ellipse cx="56" cy="32.4" rx="2.5" ry="1.75" fill="#3B2618" />
+          <path d="M53.38 32.1Q56 29.25 59.25 31.4" fill="none" stroke="#24170F" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="55.15" cy="31.75" r="0.75" fill="#FFFFFF" />
+        </g>
+        <path d="M47 27.6Q44 26.4 41 28.1" fill="none" stroke="#4A3226" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+        <g transform="matrix(-1 0 0 1 100 0)"><path d="M47 27.6Q44 26.4 41 28.1" fill="none" stroke="#4A3226" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" /></g>
+        <path d="M50.9 34.6Q52.7 38.4 50.7 40.1Q49.7 40.6 48.6 40" fill="none" stroke="#D3AE80" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+        <ellipse cx="40.6" cy="39.2" rx="3" ry="1.8" fill="#EE9A8A" opacity="0.45" />
+        <ellipse cx="59.4" cy="39.2" rx="3" ry="1.8" fill="#EE9A8A" opacity="0.45" />
+        <path d="M46.4 43.4Q50 44.3 53.6 43.4Q52.88 47.2 50 47.39Q47.12 47.2 46.4 43.4Z" fill="#8C3B36" />
+        <path d="M47.05 43.75Q50 44.55 52.95 43.75L52.66 44.85Q50 45.5 47.34 44.85Z" fill="#FFFFFF" />
+      </g>
+    ),
     // Pass MQ (pre-K 3's People and events): a baby holding up a bottle of milk, a teacher holding a book open toward us, a grandma
     // with her gray hair in a bun and small round glasses, and a grandpa with short gray hair, a gray mustache and glasses, drawn
     // as the doctor is, in four skin tones.
-    baby: <g transform="matrix(1.15 0 0 1.15 -7.5 -7.8)"><path d="M30 92 Q30 66 50 62 Q70 66 70 92 Z" fill="#F2D27A" stroke="#C9A646" strokeWidth="2" /><path d="M42 63 Q50 76 58 63 Z" fill="#FFFFFF" stroke="#D8D8D8" strokeWidth="1.5" /><circle cx="50" cy="42" r="18" fill="#F5CBA7" /><path d="M48 25 Q50 18 56 21 Q52 21 52 26" fill="none" stroke="#7A5230" strokeWidth="2.6" strokeLinecap="round" /><circle cx="43" cy="42" r="2" fill="#2E2E2E" /><circle cx="57" cy="42" r="2" fill="#2E2E2E" /><circle cx="39" cy="49" r="3.4" fill="#F29C9C" opacity="0.6" /><circle cx="61" cy="49" r="3.4" fill="#F29C9C" opacity="0.6" /><path d="M46 50 Q50 54 54 50" fill="none" stroke="#2E2E2E" strokeWidth="1.8" strokeLinecap="round" /><g transform="translate(72 58) rotate(20)"><rect x="-5" y="0" width="10" height="20" rx="3" fill="#FFFFFF" stroke="#9FB7C9" strokeWidth="1.8" /><rect x="-5" y="9" width="10" height="11" rx="2" fill="#F4F6F7" /><rect x="-6" y="-3" width="12" height="4" rx="1.5" fill="#7FB3D5" /><path d="M-3 -3 Q0 -11 3 -3 Z" fill="#E9C46A" /></g><path d="M63 75 L68.4 67.8" stroke="#F2D27A" strokeWidth="6" strokeLinecap="round" /><circle cx="68.6" cy="67.4" r="3.8" fill="#F5CBA7" stroke="#E0A98A" strokeWidth="1" /></g>,
-    teacher: <g transform="matrix(1.15 0 0 1.15 -7.5 -7.8)"><circle cx="50" cy="28" r="13" fill="#8D5524" /><path d="M36 30 Q34 12 50 13 Q66 12 64 30 Q62 21 50 20 Q38 21 36 30 Z" fill="#2B1D14" stroke="#7A5638" strokeWidth="1.5" strokeLinejoin="round" /><circle cx="45" cy="28" r="1.9" fill="#1E1A17" /><circle cx="55" cy="28" r="1.9" fill="#1E1A17" /><path d="M44.5 33.5 Q50 38.5 55.5 33.5" fill="none" stroke="#1E1A17" strokeWidth="2.3" strokeLinecap="round" /><path d="M26 88 Q26 52 50 48 Q74 52 74 88 Z" fill="#3E8E6E" stroke="#2C6A51" strokeWidth="2" /><path d="M44 49 L50 60 L56 49" fill="#F4F6F7" stroke="#D0D6DA" strokeWidth="1.5" /><path d="M33 64 L50 68 L67 64 L67 86 L50 90 L33 86 Z" fill="#FFFFFF" stroke="#B9634A" strokeWidth="2.4" strokeLinejoin="round" /><path d="M50 68 L50 90" stroke="#B9634A" strokeWidth="2" /><path d="M37 72 L46 74 M37 77 L46 79 M54 74 L63 72 M54 79 L63 77" stroke="#C9CED2" strokeWidth="1.6" strokeLinecap="round" /></g>,
-    grandma: <g transform="matrix(1.15 0 0 1.15 -7.5 -7.8)"><circle cx="50" cy="15" r="7" fill="#C9CCCF" /><circle cx="50" cy="31" r="13" fill="#C68642" /><path d="M36 33 Q34 16 50 17 Q66 16 64 33 Q61 23 50 23 Q39 23 36 33 Z" fill="#C9CCCF" /><circle cx="45" cy="31" r="4" fill="none" stroke="#5A5A5A" strokeWidth="1.4" /><circle cx="55" cy="31" r="4" fill="none" stroke="#5A5A5A" strokeWidth="1.4" /><path d="M49 31 L51 31" stroke="#5A5A5A" strokeWidth="1.4" /><circle cx="45" cy="31" r="1.4" fill="#2E2E2E" /><circle cx="55" cy="31" r="1.4" fill="#2E2E2E" /><path d="M45 37 Q50 41 55 37" fill="none" stroke="#2E2E2E" strokeWidth="1.8" strokeLinecap="round" /><path d="M26 88 Q26 54 50 50 Q74 54 74 88 Z" fill="#B39DDB" stroke="#8C76B8" strokeWidth="2" /><path d="M50 52 L50 88" stroke="#8C76B8" strokeWidth="1.6" /><circle cx="46" cy="62" r="1.6" fill="#F4F6F7" /><circle cx="46" cy="72" r="1.6" fill="#F4F6F7" /><circle cx="46" cy="82" r="1.6" fill="#F4F6F7" /></g>,
-    grandpa: <g transform="matrix(1.15 0 0 1.15 -7.5 -7.8)"><circle cx="50" cy="30" r="13" fill="#E0AC69" /><path d="M37 35 Q35 22 41 18 Q39 27 40 35 Z M63 35 Q65 22 59 18 Q61 27 60 35 Z" fill="#B9BEC3" /><path d="M42 18 Q50 13.5 58 18 Q50 16 42 18 Z" fill="#B9BEC3" /><circle cx="45" cy="29" r="4" fill="none" stroke="#5A5A5A" strokeWidth="1.4" /><circle cx="55" cy="29" r="4" fill="none" stroke="#5A5A5A" strokeWidth="1.4" /><path d="M49 29 L51 29" stroke="#5A5A5A" strokeWidth="1.4" /><circle cx="45" cy="29" r="1.4" fill="#2E2E2E" /><circle cx="55" cy="29" r="1.4" fill="#2E2E2E" /><path d="M40.5 36.5 Q44.5 31.2 50 33.6 Q55.5 31.2 59.5 36.5 Q55 39.6 50 37.4 Q45 39.6 40.5 36.5 Z" fill="#868C92" stroke="#6E747A" strokeWidth="0.8" strokeLinejoin="round" /><path d="M46.5 40.6 Q50 42.6 53.5 40.6" fill="none" stroke="#2E2E2E" strokeWidth="1.6" strokeLinecap="round" /><path d="M26 88 Q26 54 50 50 Q74 54 74 88 Z" fill="#4A6FA5" stroke="#36537D" strokeWidth="2" /><path d="M43 50 L50 58 L57 50 Z" fill="#F4F6F7" stroke="#D0D6DA" strokeWidth="1.5" /></g>,
+    // The baby (pass MR): a big round head with a curl of hair, round cheeks, a yellow onesie with a collar, holding up a bottle of milk.
+    baby: (
+      <g>
+        {/* A yellow onesie, its far side in shade, with a white collar and two snaps */}
+        <path d="M50 50C41 50 33.4 53.4 28.8 59.4C24.8 64.8 22.8 73.6 22.2 84C21.8 90 21.8 95 21.8 101.6L50 101.6L78.2 101.6C78.2 95 78.2 90 77.8 84C77.2 73.6 75.2 64.8 71.2 59.4C66.6 53.4 59 50 50 50Z" fill="#F2D27A" />
+        <path d="M71.2 59.4C75.2 64.8 77.2 73.6 77.8 84C78.2 90 78.2 95 78.2 101.6L72.6 101.6C72.6 88 72 75.6 68.6 66.4C67.6 63.6 69 61.2 71.2 59.4Z" fill="#E2B954" />
+        <path d="M50 50C41 50 33.4 53.4 28.8 59.4C24.8 64.8 22.8 73.6 22.2 84C21.8 90 21.8 95 21.8 101.6L50 101.6L78.2 101.6C78.2 95 78.2 90 77.8 84C77.2 73.6 75.2 64.8 71.2 59.4C66.6 53.4 59 50 50 50Z" fill="none" stroke="#C9A646" strokeWidth="1.4" strokeLinejoin="round" />
+        <circle cx="50" cy="70" r="1.3" fill="#FFFFFF" stroke="#C9A646" strokeWidth="0.9" />
+        <circle cx="50" cy="77" r="1.3" fill="#FFFFFF" stroke="#C9A646" strokeWidth="0.9" />
+        <path d="M50 56.6C46.4 58.4 41 58 37.8 55.6C36.6 58.8 38.6 62.6 42.8 63.2C46 63.6 48.8 61.6 50 58.6Z" fill="#FFFFFF" stroke="#D8D8D8" strokeWidth="1.1" strokeLinejoin="round" />
+        <g transform="matrix(-1 0 0 1 100 0)"><path d="M50 56.6C46.4 58.4 41 58 37.8 55.6C36.6 58.8 38.6 62.6 42.8 63.2C46 63.6 48.8 61.6 50 58.6Z" fill="#FFFFFF" stroke="#D8D8D8" strokeWidth="1.1" strokeLinejoin="round" /></g>
+        {/* Her ears and big round face */}
+        <g>
+          <path d="M30.8 33C26.78 31.48 25.26 35.47 26.4 38.51C27.16 40.41 28.68 41.74 31 41.17Z" fill="#F5CBA7" stroke="#D69A72" strokeWidth="1.2" strokeLinejoin="round" />
+          <path d="M29.63 35.28C27.73 35.09 27.35 37.56 28.68 39.08" fill="none" stroke="#E9B28B" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+        </g>
+        <g transform="matrix(-1 0 0 1 100 0)">
+          <g>
+            <path d="M30.8 33C26.78 31.48 25.26 35.47 26.4 38.51C27.16 40.41 28.68 41.74 31 41.17Z" fill="#F5CBA7" stroke="#D69A72" strokeWidth="1.2" strokeLinejoin="round" />
+            <path d="M29.63 35.28C27.73 35.09 27.35 37.56 28.68 39.08" fill="none" stroke="#E9B28B" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+          </g>
+        </g>
+        <path d="M50 12.4C38 12.4 28.4 21 28.4 33.6C28.4 41.4 31.6 47.6 36.8 51.2C40.6 53.8 45 54.8 50 54.8C55 54.8 59.4 53.8 63.2 51.2C68.4 47.6 71.6 41.4 71.6 33.6C71.6 21 62 12.4 50 12.4Z" fill="#F5CBA7" stroke="#D69A72" strokeWidth="1.1" />
+        {/* A little tuft of hair */}
+        <path d="M48.2 13.4C47 9.6 49.8 6.6 53.2 7.4C55.8 8 56.6 10.8 54.8 12.2C53.6 13 52 12.4 52.2 11.2" fill="none" stroke="#8A5A35" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M44.6 14.6Q45.4 12.2 47.4 11.6" fill="none" stroke="#8A5A35" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+        {/* Big eyes low on her face, light brows, a button nose, round cheeks and an open smile */}
+        <g>
+          <ellipse cx="42.4" cy="37.6" rx="2.6" ry="2.45" fill="#2E1F16" />
+          <circle cx="41.55" cy="36.95" r="0.95" fill="#FFFFFF" />
+        </g>
+        <g>
+          <ellipse cx="57.6" cy="37.6" rx="2.6" ry="2.45" fill="#2E1F16" />
+          <circle cx="56.75" cy="36.95" r="0.95" fill="#FFFFFF" />
+        </g>
+        <path d="M45 31.6Q42.4 30.7 39.8 32.1" fill="none" stroke="#C99A72" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+        <g transform="matrix(-1 0 0 1 100 0)"><path d="M45 31.6Q42.4 30.7 39.8 32.1" fill="none" stroke="#C99A72" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></g>
+        <ellipse cx="50.4" cy="42.6" rx="1.8" ry="1.1" fill="#E9B28B" />
+        <ellipse cx="38" cy="44" rx="3.8" ry="2.6" fill="#F4978E" opacity="0.5" />
+        <ellipse cx="62" cy="44" rx="3.8" ry="2.6" fill="#F4978E" opacity="0.5" />
+        <path d="M46.8 46.2Q50 47.2 53.2 46.2Q52.6 49.8 50 50Q47.4 49.8 46.8 46.2Z" fill="#B4534F" />
+        <path d="M47.8 48.6Q50 47.4 52.2 48.6Q51.2 49.9 50 49.9Q48.8 49.9 47.8 48.6Z" fill="#EE8E8E" />
+        {/* Her arm, bent up from the elbow to hold the bottle */}
+        <path d="M77.8 101.6C79.6 94 79.2 86.6 76.4 78.6L68.8 80.2C70.4 86.4 70.6 94.4 69.4 101.6Z" fill="#F2D27A" stroke="#C9A646" strokeWidth="1.3" strokeLinejoin="round" />
+        {/* The bottle: a teat on top, a blue ring, and milk inside */}
+        <g transform="rotate(10 72 70)">
+          <path d="M69.4 53.6Q72 48 74.6 53.6Z" fill="#F3C77E" stroke="#D6A55B" strokeWidth="1" strokeLinejoin="round" />
+          <rect x="66.8" y="53.4" width="10.4" height="4.2" rx="1.4" fill="#7FB3D5" stroke="#5C93BC" strokeWidth="1" />
+          <rect x="67.4" y="57.6" width="9.2" height="22" rx="3" fill="#EEF6FC" stroke="#8FAAC0" strokeWidth="1.2" />
+          <path d="M67.4 64.6L76.6 64.6L76.6 76.6Q76.6 79.6 73.6 79.6L70.4 79.6Q67.4 79.6 67.4 76.6Z" fill="#FFFFFF" stroke="#8FAAC0" strokeWidth="1.2" />
+          <path d="M69.6 60.4L69.6 62.4M69.6 67.6L69.6 74.4" fill="none" stroke="#FFFFFF" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" />
+        </g>
+        {/* Her chubby hand around the bottle, fingers curled over the front */}
+        <path d="M66.6 73.6C66.8 70.2 71.6 69 74.8 70.2C77.6 71.2 78 75.6 76.6 77.8C74.8 80.6 68.4 80.4 67 77.4Z" fill="#F5CBA7" stroke="#D69A72" strokeWidth="1.1" strokeLinejoin="round" />
+        <path d="M68.4 72.6Q71.4 71.6 74.8 72.6M68 75.2Q71.2 74.4 74.8 75.4M68.6 77.8Q71.2 77.2 73.8 77.8" fill="none" stroke="#E9B28B" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
+      </g>
+    ),
+    // The teacher (pass MR): a man with short dark hair, a green sweater over a white collar, holding a book open toward us.
+    teacher: (
+      <g>
+        <defs>
+          <clipPath id={`${uid}-body`}><path d="M50 56.6C42.5 56.6 37 58.6 31 61.6C23 64.6 14.8 67.4 12.8 75C11.4 80.6 10.8 90 11.6 101.6L50 101.6L88.4 101.6C89.2 90 88.6 80.6 87.2 75C85.2 67.4 77 64.6 69 61.6C63 58.6 57.5 56.6 50 56.6Z" /></clipPath>
+          <clipPath id={`${uid}-face`}><path d="M50 11C40.88 11 34.8 18.5 34.8 28.5C34.8 37 36.56 42.5 39.28 46.2C41.68 49.6 47 51.6 50 51.6C53 51.6 58.32 49.6 60.72 46.2C63.44 42.5 65.2 37 65.2 28.5C65.2 18.5 59.12 11 50 11Z" /></clipPath>
+        </defs>
+        {/* His neck, and the shadow under his chin */}
+        <path d="M43.6 42C43.6 49 43.2 54 42.2 58.4L57.8 58.4C56.8 54 56.4 49 56.4 42Z" fill="#8D5524" />
+        <path d="M43.6 42L56.4 42L56.4 52.2Q50 57.2 43.6 52.2Z" fill="#713F17" />
+        {/* A green sweater, its far side in shade, and the white collar of his shirt */}
+        <path d="M50 56.6C42.5 56.6 37 58.6 31 61.6C23 64.6 14.8 67.4 12.8 75C11.4 80.6 10.8 90 11.6 101.6L50 101.6L88.4 101.6C89.2 90 88.6 80.6 87.2 75C85.2 67.4 77 64.6 69 61.6C63 58.6 57.5 56.6 50 56.6Z" fill="#3E8E6E" />
+        <g clipPath={`url(#${uid}-body)`}><path d="M70 60C81 62.2 89.6 70.6 90.6 78.6L92 101.6L81.6 101.6C81.8 90 81.2 80 82.98 72.6C81.08 67.6 74.6 63 70 60Z" fill="#327459" /></g>
+        <path d="M50 56.6C42.5 56.6 37 58.6 31 61.6C23 64.6 14.8 67.4 12.8 75C11.4 80.6 10.8 90 11.6 101.6L50 101.6L88.4 101.6C89.2 90 88.6 80.6 87.2 75C85.2 67.4 77 64.6 69 61.6C63 58.6 57.5 56.6 50 56.6Z" fill="none" stroke="#2C6A51" strokeWidth="1.4" strokeLinejoin="round" />
+        <path d="M50 59.2L43.4 55.6L40.8 60.6L46.4 64.6Z" fill="#F4F6F7" stroke="#C9D0D5" strokeWidth="1.1" strokeLinejoin="round" />
+        <g transform="matrix(-1 0 0 1 100 0)"><path d="M50 59.2L43.4 55.6L40.8 60.6L46.4 64.6Z" fill="#F4F6F7" stroke="#C9D0D5" strokeWidth="1.1" strokeLinejoin="round" /></g>
+        {/* His ears and face */}
+        <g>
+          <path d="M35.6 28.6C31.4 27 29.8 31.2 31 34.4C31.8 36.4 33.4 37.8 35.8 37.2Z" fill="#8D5524" stroke="#5A3112" strokeWidth="1.2" strokeLinejoin="round" />
+          <path d="M34.4 31C32.4 30.8 32 33.4 33.4 35" fill="none" stroke="#713F17" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+        </g>
+        <g transform="matrix(-1 0 0 1 100 0)">
+          <g>
+            <path d="M35.6 28.6C31.4 27 29.8 31.2 31 34.4C31.8 36.4 33.4 37.8 35.8 37.2Z" fill="#8D5524" stroke="#5A3112" strokeWidth="1.2" strokeLinejoin="round" />
+            <path d="M34.4 31C32.4 30.8 32 33.4 33.4 35" fill="none" stroke="#713F17" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+          </g>
+        </g>
+        <path d="M50 11C40.88 11 34.8 18.5 34.8 28.5C34.8 37 36.56 42.5 39.28 46.2C41.68 49.6 47 51.6 50 51.6C53 51.6 58.32 49.6 60.72 46.2C63.44 42.5 65.2 37 65.2 28.5C65.2 18.5 59.12 11 50 11Z" fill="#8D5524" stroke="#5A3112" strokeWidth="1.1" />
+        {/* Short, close-curled hair, with a soft shadow under the hairline */}
+        <g clipPath={`url(#${uid}-face)`}><path d="M50 21.4C46.4 21.4 42.4 21 39.4 21.8C36.8 22.8 35.4 25.4 34.6 30.2C33 24.4 33.2 18 37 13.8C40 10.4 44.8 8.6 50 8.6C55.2 8.6 60 10.4 63 13.8C66.8 18 67 24.4 65.4 30.2C64.6 25.4 63.2 22.8 60.6 21.8C57.6 21 53.6 21.4 50 21.4Z" fill="#713F17" opacity="0.6" /></g>
+        <path d="M50 19.8C46.4 19.8 42.4 19.4 39.4 20.2C36.8 21.2 35.4 23.8 34.6 28.6C33 22.8 33.2 16.4 37 12.2C40 8.8 44.8 7 50 7C55.2 7 60 8.8 63 12.2C66.8 16.4 67 22.8 65.4 28.6C64.6 23.8 63.2 21.2 60.6 20.2C57.6 19.4 53.6 19.8 50 19.8Z" fill="#231610" stroke="#46301F" strokeWidth="1.2" strokeLinejoin="round" />
+        <path d="M40.2 13.6 q 1.4 -1.2 2.8 0M45 10.8 q 1.4 -1.2 2.8 0M51.4 10.4 q 1.4 -1.2 2.8 0M56.8 12.6 q 1.4 -1.2 2.8 0M37.8 18.4 q 1.2 -1.2 2.6 -0.4M59.6 18 q 1.4 -0.8 2.6 0.4M47.6 15 q 1.4 -1.2 2.8 0M53.4 15.6 q 1.4 -1.2 2.8 0M42.2 16.6 q 1.4 -1.2 2.8 0" fill="none" stroke="#4A3423" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" />
+        {/* Eyes, brows, nose and a wide smile */}
+        <g>
+          <ellipse cx="43.8" cy="32.6" rx="2.5" ry="1.75" fill="#1E120B" />
+          <path d="M46.43 32.3Q43.8 29.45 40.55 31.6" fill="none" stroke="#120B07" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="42.95" cy="31.95" r="0.75" fill="#FFFFFF" />
+        </g>
+        <g>
+          <ellipse cx="56.2" cy="32.6" rx="2.5" ry="1.75" fill="#1E120B" />
+          <path d="M53.58 32.3Q56.2 29.45 59.45 31.6" fill="none" stroke="#120B07" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="55.35" cy="31.95" r="0.75" fill="#FFFFFF" />
+        </g>
+        <path d="M46.8 27.8Q43.8 26.6 40.8 28.3" fill="none" stroke="#231610" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <g transform="matrix(-1 0 0 1 100 0)"><path d="M46.8 27.8Q43.8 26.6 40.8 28.3" fill="none" stroke="#231610" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></g>
+        <path d="M50.9 34.8Q52.7 38.6 50.7 40.3Q49.7 40.8 48.6 40.2" fill="none" stroke="#713F17" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M46 43.4Q50 44.3 54 43.4Q53.2 47.4 50 47.6Q46.8 47.4 46 43.4Z" fill="#4E1A14" />
+        <path d="M46.72 43.75Q50 44.55 53.28 43.75L52.96 44.85Q50 45.5 47.04 44.85Z" fill="#FFFFFF" />
+        {/* The book, open toward us, held in both hands */}
+        <path d="M27.6 75.2C24.2 74.6 21.6 77 21.6 81C21.6 85 23.8 88 27.2 88Z" fill="#8D5524" stroke="#5A3112" strokeWidth="1.1" strokeLinejoin="round" />
+        <g transform="matrix(-1 0 0 1 100 0)"><path d="M27.6 75.2C24.2 74.6 21.6 77 21.6 81C21.6 85 23.8 88 27.2 88Z" fill="#8D5524" stroke="#5A3112" strokeWidth="1.1" strokeLinejoin="round" /></g>
+        <path d="M26.6 68.8Q38.6 66 50 70Q61.4 66 73.4 68.8L74 94.8Q61.6 92.2 50 96.4Q38.4 92.2 26 94.8Z" fill="#B9634A" stroke="#8A3F2C" strokeWidth="1.3" strokeLinejoin="round" />
+        <path d="M29 69Q39.4 66.8 49.4 70.6L49.4 94.4Q39.4 90.8 28.6 92.6Z" fill="#FFFFFF" stroke="#D6CFC4" strokeWidth="1" strokeLinejoin="round" />
+        <g transform="matrix(-1 0 0 1 100 0)"><path d="M29 69Q39.4 66.8 49.4 70.6L49.4 94.4Q39.4 90.8 28.6 92.6Z" fill="#FFFFFF" stroke="#D6CFC4" strokeWidth="1" strokeLinejoin="round" /></g>
+        <path d="M32.6 74.8Q39.4 73.4 46.6 75.8M32.6 79Q39.4 77.6 46.6 80M32.6 83.2Q39.4 81.8 46.6 84.2M32.6 87.4Q37.4 86.4 42 87.4" fill="none" stroke="#BFC6CC" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+        <g transform="matrix(-1 0 0 1 100 0)"><path d="M32.6 74.8Q39.4 73.4 46.6 75.8M32.6 79Q39.4 77.6 46.6 80M32.6 83.2Q39.4 81.8 46.6 84.2M32.6 87.4Q37.4 86.4 42 87.4" fill="none" stroke="#BFC6CC" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></g>
+        <path d="M50 70.4L50 95.8" fill="none" stroke="#8A3F2C" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M27.4 79.4C29.6 78.4 32.4 78.2 34 79.2C35.4 80.2 35 82 33.4 82.4C31.4 82.8 29.4 82.8 27.6 83.4Z" fill="#8D5524" stroke="#5A3112" strokeWidth="1.1" strokeLinejoin="round" />
+        <g transform="matrix(-1 0 0 1 100 0)"><path d="M27.4 79.4C29.6 78.4 32.4 78.2 34 79.2C35.4 80.2 35 82 33.4 82.4C31.4 82.8 29.4 82.8 27.6 83.4Z" fill="#8D5524" stroke="#5A3112" strokeWidth="1.1" strokeLinejoin="round" /></g>
+      </g>
+    ),
+    // The grandma (pass MR): gray hair in a bun, small round glasses, a lilac cardigan with buttons over a white collar.
+    grandma: (
+      <g>
+        <defs>
+          <clipPath id={`${uid}-body`}><path d="M50 57C42.5 57 37 59 31 61.6C23 64.6 16.8 67.4 14.8 75C13.4 80.6 12.8 90 14.4 101.6L50 101.6L85.6 101.6C87.2 90 86.6 80.6 85.2 75C83.2 67.4 77 64.6 69 61.6C63 59 57.5 57 50 57Z" /></clipPath>
+          <clipPath id={`${uid}-face`}><path d="M50 11C41.24 11 35.4 18.5 35.4 28.5C35.4 37 37.6 42.5 41 46.2C44 49.6 47 51.2 50 51.2C53 51.2 56 49.6 59 46.2C62.4 42.5 64.6 37 64.6 28.5C64.6 18.5 58.76 11 50 11Z" /></clipPath>
+        </defs>
+        {/* Her bun, on top of her head */}
+        <circle cx="50" cy="10.2" r="6.6" fill="#D5D8DB" stroke="#9AA1A8" strokeWidth="1.2" />
+        <path d="M46 9.6Q49 5.8 53.6 8.4M46.4 12.8Q50.6 13.8 54 11.2" fill="none" stroke="#B5BAC0" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+        {/* Her neck, and the shadow under her chin */}
+        <path d="M44.4 42C44.4 49 44 54 43 58.6L57 58.6C56 54 55.6 49 55.6 42Z" fill="#C68642" />
+        <path d="M44.4 42L55.6 42L55.6 52.2Q50 57.2 44.4 52.2Z" fill="#A96E33" />
+        {/* A lilac cardigan, its far side in shade, over a white blouse with a round collar, three buttons down the front */}
+        <path d="M50 57C42.5 57 37 59 31 61.6C23 64.6 16.8 67.4 14.8 75C13.4 80.6 12.8 90 14.4 101.6L50 101.6L85.6 101.6C87.2 90 86.6 80.6 85.2 75C83.2 67.4 77 64.6 69 61.6C63 59 57.5 57 50 57Z" fill="#B39DDB" />
+        <g clipPath={`url(#${uid}-body)`}><path d="M70 60C81 62.2 89.6 70.6 90.6 78.6L92 101.6L79.2 101.6C79.4 90 79.6 80 81.23 72.6C79.44 67.6 74.6 63 70 60Z" fill="#9C84C8" /></g>
+        <path d="M50 57C42.5 57 37 59 31 61.6C23 64.6 16.8 67.4 14.8 75C13.4 80.6 12.8 90 14.4 101.6L50 101.6L85.6 101.6C87.2 90 86.6 80.6 85.2 75C83.2 67.4 77 64.6 69 61.6C63 59 57.5 57 50 57Z" fill="none" stroke="#7C64AC" strokeWidth="1.4" strokeLinejoin="round" />
+        <path d="M41.2 57.8L50 80L58.8 57.8Z" fill="#FAFAF8" />
+        <path d="M41.2 57.8L50 80L58.8 57.8M50 80L50 101" fill="none" stroke="#7C64AC" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M50 60.2C46.6 59.8 43.2 58.4 41.6 56.8C40.2 59.6 41.4 63.2 44.8 64C47.2 64.6 49.2 63.2 50 60.2Z" fill="#FFFFFF" stroke="#C9C6CF" strokeWidth="1.1" strokeLinejoin="round" />
+        <g transform="matrix(-1 0 0 1 100 0)"><path d="M50 60.2C46.6 59.8 43.2 58.4 41.6 56.8C40.2 59.6 41.4 63.2 44.8 64C47.2 64.6 49.2 63.2 50 60.2Z" fill="#FFFFFF" stroke="#C9C6CF" strokeWidth="1.1" strokeLinejoin="round" /></g>
+        <circle cx="50" cy="85" r="1.6" fill="#F7F2FF" stroke="#7C64AC" strokeWidth="0.9" />
+        <circle cx="50" cy="92" r="1.6" fill="#F7F2FF" stroke="#7C64AC" strokeWidth="0.9" />
+        <circle cx="50" cy="99" r="1.6" fill="#F7F2FF" stroke="#7C64AC" strokeWidth="0.9" />
+        {/* Her ears and face */}
+        <g>
+          <path d="M36 29.4C31.8 27.8 30.2 32 31.4 35.2C32.2 37.2 33.8 38.6 36.2 38Z" fill="#C68642" stroke="#8C5A27" strokeWidth="1.2" strokeLinejoin="round" />
+          <path d="M34.8 31.8C32.8 31.6 32.4 34.2 33.8 35.8" fill="none" stroke="#A96E33" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+        </g>
+        <g transform="matrix(-1 0 0 1 100 0)">
+          <g>
+            <path d="M36 29.4C31.8 27.8 30.2 32 31.4 35.2C32.2 37.2 33.8 38.6 36.2 38Z" fill="#C68642" stroke="#8C5A27" strokeWidth="1.2" strokeLinejoin="round" />
+            <path d="M34.8 31.8C32.8 31.6 32.4 34.2 33.8 35.8" fill="none" stroke="#A96E33" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+          </g>
+        </g>
+        <path d="M50 11C41.24 11 35.4 18.5 35.4 28.5C35.4 37 37.6 42.5 41 46.2C44 49.6 47 51.2 50 51.2C53 51.2 56 49.6 59 46.2C62.4 42.5 64.6 37 64.6 28.5C64.6 18.5 58.76 11 50 11Z" fill="#C68642" stroke="#8C5A27" strokeWidth="1.1" />
+        {/* Soft gray hair swept up from her face, with a shadow under the hairline */}
+        <g clipPath={`url(#${uid}-face)`}><path d="M50 21C43.6 21 37.4 24.6 34.8 33.8Q32.04 31.74 32.2 29Q30.91 25.97 32.6 23.2Q32.94 19.67 36 17.4Q37.79 14.19 41.6 13.2Q45.4 10.95 50 11.6Q54.6 10.95 58.4 13.2Q62.21 14.19 64 17.4Q67.06 19.67 67.4 23.2Q69.09 25.97 67.8 29Q67.96 31.74 65.2 33.8C62.6 24.6 56.4 21 50 21Z" fill="#A96E33" opacity="0.55" /></g>
+        <path d="M50 19.4C43.6 19.4 37.4 23 34.8 32.2Q32.04 30.14 32.2 27.4Q30.91 24.37 32.6 21.6Q32.94 18.07 36 15.8Q37.79 12.59 41.6 11.6Q45.4 9.35 50 10Q54.6 9.35 58.4 11.6Q62.21 12.59 64 15.8Q67.06 18.07 67.4 21.6Q69.09 24.37 67.8 27.4Q67.96 30.14 65.2 32.2C62.6 23 56.4 19.4 50 19.4Z" fill="#D5D8DB" stroke="#9AA1A8" strokeWidth="1.2" strokeLinejoin="round" />
+        <path d="M38.6 18.4C42 15.2 45.8 14 48.6 13.8M52.8 14C56.6 14.4 59.6 15.8 61.8 18.4M35.2 26C35.8 23.4 37 21.2 38.8 19.8M64.8 26C64.2 23.4 63 21.2 61.2 19.8" fill="none" stroke="#B5BAC0" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M44.6 12.2C47.4 11.4 50.6 11.2 53.4 11.8" fill="none" stroke="#EEF0F2" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+        {/* Eyes behind small round glasses, gray brows, the lines of her smile */}
+        <g>
+          <ellipse cx="44" cy="32.8" rx="2.2" ry="1.55" fill="#2C1A10" />
+          <path d="M46.31 32.5Q44 30.01 41.14 31.8" fill="none" stroke="#24170F" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="43.15" cy="32.15" r="0.65" fill="#FFFFFF" />
+        </g>
+        <g>
+          <ellipse cx="56" cy="32.8" rx="2.2" ry="1.55" fill="#2C1A10" />
+          <path d="M53.69 32.5Q56 30.01 58.86 31.8" fill="none" stroke="#24170F" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="55.15" cy="32.15" r="0.65" fill="#FFFFFF" />
+        </g>
+        <path d="M47 27.6Q44 26.4 41 28.1" fill="none" stroke="#9EA4AA" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <g transform="matrix(-1 0 0 1 100 0)"><path d="M47 27.6Q44 26.4 41 28.1" fill="none" stroke="#9EA4AA" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></g>
+        <circle cx="44" cy="32.8" r="4.3" fill="#FFFFFF" fillOpacity="0.18" stroke="#4E4440" strokeWidth="1.2" />
+        <g transform="matrix(-1 0 0 1 100 0)"><circle cx="44" cy="32.8" r="4.3" fill="#FFFFFF" fillOpacity="0.18" stroke="#4E4440" strokeWidth="1.2" /></g>
+        <path d="M48.3 32.4Q50 31.2 51.7 32.4" fill="none" stroke="#4E4440" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M39.7 32.2L36 31.2" fill="none" stroke="#4E4440" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+        <g transform="matrix(-1 0 0 1 100 0)"><path d="M39.7 32.2L36 31.2" fill="none" stroke="#4E4440" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" /></g>
+        <path d="M50.9 34.8Q52.7 38.6 50.7 40.3Q49.7 40.8 48.6 40.2" fill="none" stroke="#A96E33" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M45.4 40.8Q44.2 42.8 45.2 44.8" fill="none" stroke="#A96E33" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
+        <g transform="matrix(-1 0 0 1 100 0)"><path d="M45.4 40.8Q44.2 42.8 45.2 44.8" fill="none" stroke="#A96E33" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" /></g>
+        <ellipse cx="40.4" cy="39.4" rx="3" ry="1.8" fill="#E0806A" opacity="0.35" />
+        <ellipse cx="59.6" cy="39.4" rx="3" ry="1.8" fill="#E0806A" opacity="0.35" />
+        <path d="M46.4 44Q50 46.6 53.6 44Q52.6 47.6 50 47.8Q47.4 47.6 46.4 44Z" fill="#9A4A40" />
+        <path d="M46 43.8Q50 46.8 54 43.8" fill="none" stroke="#6E2E26" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+      </g>
+    ),
+    // The grandpa (pass MR): short gray hair, a gray mustache, glasses, a blue sweater over a white collar.
+    grandpa: (
+      <g>
+        <defs>
+          <clipPath id={`${uid}-body`}><path d="M50 56.6C42.5 56.6 37 58.6 31 61.6C23 64.6 14.8 67.4 12.8 75C11.4 80.6 10.8 90 11.6 101.6L50 101.6L88.4 101.6C89.2 90 88.6 80.6 87.2 75C85.2 67.4 77 64.6 69 61.6C63 58.6 57.5 56.6 50 56.6Z" /></clipPath>
+          <clipPath id={`${uid}-face`}><path d="M50 11C40.88 11 34.8 18.5 34.8 28.5C34.8 37 36.67 42.5 39.56 46.2C42.11 49.6 47 51.6 50 51.6C53 51.6 57.89 49.6 60.44 46.2C63.33 42.5 65.2 37 65.2 28.5C65.2 18.5 59.12 11 50 11Z" /></clipPath>
+        </defs>
+        {/* His neck, and the shadow under his chin */}
+        <path d="M43.6 42C43.6 49 43.2 54 42.2 58.4L57.8 58.4C56.8 54 56.4 49 56.4 42Z" fill="#E0AC69" />
+        <path d="M43.6 42L56.4 42L56.4 52.2Q50 57.2 43.6 52.2Z" fill="#C69050" />
+        {/* A blue V-neck sweater, its far side in shade, over a white collared shirt */}
+        <path d="M50 56.6C42.5 56.6 37 58.6 31 61.6C23 64.6 14.8 67.4 12.8 75C11.4 80.6 10.8 90 11.6 101.6L50 101.6L88.4 101.6C89.2 90 88.6 80.6 87.2 75C85.2 67.4 77 64.6 69 61.6C63 58.6 57.5 56.6 50 56.6Z" fill="#4A6FA5" />
+        <g clipPath={`url(#${uid}-body)`}><path d="M70 60C81 62.2 89.6 70.6 90.6 78.6L92 101.6L81.6 101.6C81.8 90 81.2 80 82.98 72.6C81.08 67.6 74.6 63 70 60Z" fill="#3C5D8E" /></g>
+        <path d="M50 56.6C42.5 56.6 37 58.6 31 61.6C23 64.6 14.8 67.4 12.8 75C11.4 80.6 10.8 90 11.6 101.6L50 101.6L88.4 101.6C89.2 90 88.6 80.6 87.2 75C85.2 67.4 77 64.6 69 61.6C63 58.6 57.5 56.6 50 56.6Z" fill="none" stroke="#2F4A73" strokeWidth="1.4" strokeLinejoin="round" />
+        <path d="M41.4 57.2L50 76L58.6 57.2Z" fill="#F2F4F6" />
+        <path d="M50 61L50 76" fill="none" stroke="#C3CBD2" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" />
+        <circle cx="50" cy="66.4" r="0.9" fill="#9AA6B2" />
+        <circle cx="50" cy="71.6" r="0.9" fill="#9AA6B2" />
+        <path d="M50 60.4L43.2 55.6L40.6 60.4L45.8 65.2Z" fill="#FFFFFF" stroke="#C3CBD2" strokeWidth="1.1" strokeLinejoin="round" />
+        <g transform="matrix(-1 0 0 1 100 0)"><path d="M50 60.4L43.2 55.6L40.6 60.4L45.8 65.2Z" fill="#FFFFFF" stroke="#C3CBD2" strokeWidth="1.1" strokeLinejoin="round" /></g>
+        <path d="M40.6 56.8L50 76.8L50 79.6L38.4 57.8Z" fill="#5B81B8" stroke="#2F4A73" strokeWidth="1.1" strokeLinejoin="round" />
+        <g transform="matrix(-1 0 0 1 100 0)"><path d="M40.6 56.8L50 76.8L50 79.6L38.4 57.8Z" fill="#5B81B8" stroke="#2F4A73" strokeWidth="1.1" strokeLinejoin="round" /></g>
+        {/* His ears and face */}
+        <g>
+          <path d="M35.6 28.4C31.04 26.64 29.28 31.26 30.6 34.78C31.48 36.98 33.24 38.52 35.8 37.86Z" fill="#E0AC69" stroke="#A57437" strokeWidth="1.2" strokeLinejoin="round" />
+          <path d="M34.34 31.04C32.14 30.82 31.7 33.68 33.24 35.44" fill="none" stroke="#C69050" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+        </g>
+        <g transform="matrix(-1 0 0 1 100 0)">
+          <g>
+            <path d="M35.6 28.4C31.04 26.64 29.28 31.26 30.6 34.78C31.48 36.98 33.24 38.52 35.8 37.86Z" fill="#E0AC69" stroke="#A57437" strokeWidth="1.2" strokeLinejoin="round" />
+            <path d="M34.34 31.04C32.14 30.82 31.7 33.68 33.24 35.44" fill="none" stroke="#C69050" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+          </g>
+        </g>
+        <path d="M50 11C40.88 11 34.8 18.5 34.8 28.5C34.8 37 36.67 42.5 39.56 46.2C42.11 49.6 47 51.6 50 51.6C53 51.6 57.89 49.6 60.44 46.2C63.33 42.5 65.2 37 65.2 28.5C65.2 18.5 59.12 11 50 11Z" fill="#E0AC69" stroke="#A57437" strokeWidth="1.1" />
+        {/* Short gray hair, combed to one side and a little high at the temples, with a soft shadow under the hairline */}
+        <g clipPath={`url(#${uid}-face)`}><path d="M50 19.8C47.6 19 43.4 18.8 40 20.4C37.8 21.8 36.4 25 36.2 29L36 33.2C35.2 33 34.4 32.4 34 31.4C32.4 26.2 33 19 37.2 14.6C40.2 11.4 44.8 10 50 10C55.2 10 59.8 11.4 62.8 14.6C67 19 67.6 26.2 66 31.4C65.6 32.4 64.8 33 64 33.2L63.8 29C63.6 25 62.2 21.8 60 20.4C56.6 18.8 52.4 19 50 19.8Z" fill="#C69050" opacity="0.55" /></g>
+        <path d="M50 18.2C47.6 17.4 43.4 17.2 40 18.8C37.8 20.2 36.4 23.4 36.2 27.4L36 31.6C35.2 31.4 34.4 30.8 34 29.8C32.4 24.6 33 17.4 37.2 13C40.2 9.8 44.8 8.4 50 8.4C55.2 8.4 59.8 9.8 62.8 13C67 17.4 67.6 24.6 66 29.8C65.6 30.8 64.8 31.4 64 31.6L63.8 27.4C63.6 23.4 62.2 20.2 60 18.8C56.6 17.2 52.4 17.4 50 18.2Z" fill="#C8CCD0" stroke="#959CA3" strokeWidth="1.2" strokeLinejoin="round" />
+        <path d="M42.4 17.4C44.4 14 48.6 11.8 53.6 11.6M46.6 17.6C49.2 15 53.2 13.8 58 14.2M52.4 18.6C55.4 17 59.2 17 62.2 18.6" fill="none" stroke="#A9AFB5" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M40.4 13.2C42.6 11.4 45.4 10.4 48.4 10.2" fill="none" stroke="#E2E5E8" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+        {/* A line of his years on his forehead */}
+        <path d="M45 23.6Q50 22.8 55 23.6" fill="none" stroke="#C69050" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
+        {/* Eyes behind glasses, bushy gray brows, a gray mustache and a smile */}
+        <g>
+          <ellipse cx="43.8" cy="33" rx="2.2" ry="1.55" fill="#2C1A10" />
+          <path d="M46.11 32.7Q43.8 30.21 40.94 32" fill="none" stroke="#24170F" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="42.95" cy="32.35" r="0.65" fill="#FFFFFF" />
+        </g>
+        <g>
+          <ellipse cx="56.2" cy="33" rx="2.2" ry="1.55" fill="#2C1A10" />
+          <path d="M53.89 32.7Q56.2 30.21 59.06 32" fill="none" stroke="#24170F" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="55.35" cy="32.35" r="0.65" fill="#FFFFFF" />
+        </g>
+        <path d="M47 27.8Q43.8 26.6 40.6 28.3" fill="none" stroke="#8E959C" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+        <g transform="matrix(-1 0 0 1 100 0)"><path d="M47 27.8Q43.8 26.6 40.6 28.3" fill="none" stroke="#8E959C" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></g>
+        <rect x="39.2" y="29.4" width="9.6" height="7" rx="2.6" fill="#FFFFFF" fillOpacity="0.18" stroke="#3F3A36" strokeWidth="1.25" />
+        <g transform="matrix(-1 0 0 1 100 0)"><rect x="39.2" y="29.4" width="9.6" height="7" rx="2.6" fill="#FFFFFF" fillOpacity="0.18" stroke="#3F3A36" strokeWidth="1.25" /></g>
+        <path d="M48.8 32.2Q50 31.2 51.2 32.2" fill="none" stroke="#3F3A36" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M39.2 31.6L35.6 30.8" fill="none" stroke="#3F3A36" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+        <g transform="matrix(-1 0 0 1 100 0)"><path d="M39.2 31.6L35.6 30.8" fill="none" stroke="#3F3A36" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" /></g>
+        <path d="M50.9 35Q52.7 38.8 50.7 40.5Q49.7 41 48.6 40.4" fill="none" stroke="#C69050" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+        <ellipse cx="40" cy="40" rx="3" ry="1.8" fill="#E8876E" opacity="0.35" />
+        <ellipse cx="60" cy="40" rx="3" ry="1.8" fill="#E8876E" opacity="0.35" />
+        <path d="M50 39.8C47.4 38.8 44 39.2 42.2 41.2C40.8 42.8 41 44.4 42.2 45.2C44 44.2 46.2 44 48 44.2C48.8 44.2 49.6 43.8 50 43.2C50.4 43.8 51.2 44.2 52 44.2C53.8 44 56 44.2 57.8 45.2C59 44.4 59.2 42.8 57.8 41.2C56 39.2 52.6 38.8 50 39.8Z" fill="#B3B8BD" stroke="#7E858C" strokeWidth="1.1" strokeLinejoin="round" />
+        <path d="M45 41.6L46.2 43.4M54.8 41.6L53.8 43.4" fill="none" stroke="#7E858C" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M46.6 46.2Q50 48.8 53.4 46.2Q52.4 49.2 50 49.4Q47.6 49.2 46.6 46.2Z" fill="#B0705A" />
+      </g>
+    ),
     shot: <g transform="rotate(-35 50 50)"><rect x="22" y="40" width="46" height="20" rx="4" fill="#E8EEF3" stroke="#4A6A86" strokeWidth="3" /><rect x="26" y="44" width="22" height="12" fill="#8EC5EA" /><rect x="14" y="36" width="8" height="28" rx="2" fill="#4A6A86" /><rect x="68" y="46" width="10" height="8" fill="#4A6A86" /><path d="M78 50 L92 50" stroke="#6F7A76" strokeWidth="3" strokeLinecap="round" /></g>,
     comb: <g><rect x="14" y="30" width="72" height="14" rx="4" fill="#4A86C5" stroke="#2F5F91" strokeWidth="2.5" />{[20, 26, 32, 38, 44, 50, 56, 62, 68, 74, 80].map((x) => <line key={x} x1={x} y1="44" x2={x} y2="70" stroke="#2F5F91" strokeWidth="2.6" strokeLinecap="round" />)}</g>,
     mosquito: <g><ellipse cx="50" cy="52" rx="7" ry="16" fill="#6B716A" /><circle cx="50" cy="32" r="5" fill="#6B716A" /><path d="M50 27 L50 16 M50 16 L40 8" fill="none" stroke="#6B716A" strokeWidth="2" strokeLinecap="round" /><ellipse cx="34" cy="44" rx="14" ry="6" fill="#CFEAF7" stroke="#8A9086" strokeWidth="1.5" transform="rotate(-25 34 44)" /><ellipse cx="66" cy="44" rx="14" ry="6" fill="#CFEAF7" stroke="#8A9086" strokeWidth="1.5" transform="rotate(25 66 44)" /><path d="M44 58 L28 70 M56 58 L72 70 M44 50 L26 52 M56 50 L74 52 M46 64 L36 80 M54 64 L64 80" fill="none" stroke="#6B716A" strokeWidth="2" strokeLinecap="round" /></g>,
@@ -1320,7 +1644,9 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1, 
     // A row whose pictures carry steps draws each in a tile (stepTile) and spaces the tiles a little wider, since three framed tiles
     // crowded a 320-pixel phone (round two's story check).
     const tiled = items.some((v) => v.step);
-    return <div className="edu-row-pic" style={{ padding: '6px 0', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: tiled ? '4%' : '2%' }}>{items.map((v, i) => <div key={`${animKey}-${i}`} className={animate ? 'edu-drift' : undefined} style={{ width: tiled ? '30%' : '31%', display: 'flex', justifyContent: 'center', animationDelay: `${i * 0.4}s` }}><div style={{ position: 'relative', width: `${Math.round((nominal(v) / most) * 100)}%`, maxWidth: nominal(v), ...(tiled ? stepTile(!!v.step) : null) }}><PictureInner visual={v} />{v.step ? <StepBadge n={v.step} pal={B} /> : null}</div></div>)}</div>;
+    // A row may stand its pictures on one floor (align: 'end', pass MR, round one's picture check), so a baby drawn smaller stands
+    // beside the grown-ups rather than floating at their middle.
+    return <div className="edu-row-pic" style={{ padding: '6px 0', display: 'flex', justifyContent: 'center', alignItems: visual.align === 'end' ? 'flex-end' : 'center', gap: tiled ? '4%' : '2%' }}>{items.map((v, i) => <div key={`${animKey}-${i}`} className={animate ? 'edu-drift' : undefined} style={{ width: tiled ? '30%' : '31%', display: 'flex', justifyContent: 'center', animationDelay: `${i * 0.4}s` }}><div style={{ position: 'relative', width: `${Math.round((nominal(v) / most) * 100)}%`, maxWidth: nominal(v), ...(tiled ? stepTile(!!v.step) : null) }}><PictureInner visual={v} />{v.step ? <StepBadge n={v.step} pal={B} /> : null}</div></div>)}</div>;
   }
   if (visual.kind === 'swatch') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><Swatch colour={visual.colour} size={at(120)} /></div>;
   // A thing to match can be drawn at its choices' size (size, pass MA), so the one that is the same is the same size too.
@@ -1428,7 +1754,15 @@ function playTap() {
 // itself: the voice's words, and since pass MO each speech sound a lesson asks for, which the app plays itself (soundClipWav),
 // since a device's voice spelled sss and fff as letters and ran mmm into moon on Mikey's phone (his notes on Q51). SPEECH_SHAPES
 // turns each spoken piece's shape into a rate and a pitch; sound is the shape of a sound the device can only say, never play.
-const SPEECH_SHAPES = { key: { rate: 0.6, pitch: 1.25 }, question: { rate: 0.9, pitch: 1.22 }, plain: { rate: 0.86, pitch: 1.15 }, sound: { rate: 0.1, pitch: 1.15 } };
+// cheer (pass MR): a run of capitals at a sentence's end, Mikey's "HAVE FUN!!!", lifted and a little quicker than the words before it.
+// The playful ways to say a word along with the child (pass MR, Mikey's answer to Q67; SAY_WITH_ME in logic): a whisper is quiet and
+// a little slow, slow is half speed, the low silly voice is deep, super fast is nearly twice the speed, stretched out is very slow,
+// and squeaky is high. A device voice cannot truly whisper, so it is said softly; the recorded voice whispers ([whispers]).
+const SPEECH_SHAPES = { key: { rate: 0.6, pitch: 1.25 }, question: { rate: 0.9, pitch: 1.22 }, plain: { rate: 0.86, pitch: 1.15 }, sound: { rate: 0.1, pitch: 1.15 }, cheer: { rate: 1.0, pitch: 1.45 },
+  whisper: { rate: 0.8, pitch: 1.1, volume: 0.35 }, slow: { rate: 0.48, pitch: 1.12 }, low: { rate: 0.82, pitch: 0.3 }, fast: { rate: 1.85, pitch: 1.2 }, drawn: { rate: 0.32, pitch: 1.05 }, squeaky: { rate: 1.0, pitch: 1.95 } };
+// The shapes that keep their own pace for a young learner (a word at play is already slow; a cheer is meant to bounce; a playful
+// voice is the pace its cue names).
+const OWN_PACE_SHAPES = ['key', 'cheer', 'whisper', 'slow', 'low', 'fast', 'drawn', 'squeaky'];
 
 // ---------- The app's own speech sounds (pass MO, Mikey's notes on Q51) ----------
 // In plain terms: one audio element plays every sound, so the first tap anywhere can unlock it (a phone lets a page play sound only
@@ -1575,7 +1909,8 @@ function sayPieces(pieces, from, hooks) {
 function shapeVoice(u, piece, voice, factor = 1, young = false) {
   if (voice) u.voice = voice;
   const shape = SPEECH_SHAPES[piece.shape] || SPEECH_SHAPES.plain;
-  u.rate = shape.rate * (SPEECH_NUDGE < 0 ? SNAIL_RATE : SPEECH_NUDGE > 0 ? 1.1 : 1) * factor * (young && piece.shape !== 'key' ? YOUNG_RATE : 1); u.pitch = shape.pitch;
+  u.rate = shape.rate * (SPEECH_NUDGE < 0 ? SNAIL_RATE : SPEECH_NUDGE > 0 ? 1.1 : 1) * factor * (young && !OWN_PACE_SHAPES.includes(piece.shape) ? YOUNG_RATE : 1); u.pitch = shape.pitch;
+  if (shape.volume !== undefined) u.volume = shape.volume;
 }
 // A rest before a piece only where the piece starts a sentence (round three's alignment read, pass MQ): the sentence rule also cuts
 // at a "?" that stands for a missing number and after "D.C." in a sentence that goes on, and the young voice's rest fell there, in
@@ -1645,6 +1980,32 @@ function sentencesOf(text) { return String(text || '').split(SENTENCE_BREAK).fil
 // round one's code check). Kept with the speech code since round two's code read (pass MQ), so the rules test reads it in node:vm:
 // in the game nothing held it.
 function voiceBackstopMs(text) { const t = String(text || ''); const young = speechYoung(); return 1200 + (t.length * 100) / (young ? YOUNG_RATE : 1) + (young ? YOUNG_PAUSE_MS * sentencesOf(t).length : 0); }
+// After a right answer in a game, the time a child gets before the next question (pass MR, Mikey of Grow the Plant: "When tapping the
+// correct answer the audio says very quickly "the plant is growing" then without a beat enters the next question.  It is way too fast
+// of a transition."): the praise is said to its end, then a beat of NEXT_QUESTION_BEAT_MS, and never less than RIGHT_ANSWER_HOLD_MS
+// from the tap, so the child sees what the right answer did. afterSaid(text, done) says the text (when given) and calls done once the
+// voice has finished it and the beat has passed, read every 100 ms from voiceTalking(), with voiceBackstopMs as the backstop for a voice
+// that never reports its end, and with no voice the hold alone; it returns a cancel, which a game's effect cleanup calls, so closing
+// or resetting the game never moves it on.
+const NEXT_QUESTION_BEAT_MS = 1000;
+const RIGHT_ANSWER_HOLD_MS = 2200;
+function afterSaid(text, done, opts = {}) {
+  const hold = opts.hold !== undefined ? opts.hold : RIGHT_ANSWER_HOLD_MS; const beat = opts.beat !== undefined ? opts.beat : NEXT_QUESTION_BEAT_MS;
+  const start = Date.now(); let quietSince = null; let over = false; let timer = null;
+  const voice = canSpeak() && demoMute === 0;
+  if (text && voice) speak(text);
+  const backstop = text && voice ? voiceBackstopMs(text) + beat : 0;
+  const tick = () => {
+    if (over) return;
+    const now = Date.now(); const talking = voice && !!text && voiceTalking();
+    if (talking) quietSince = null; else if (quietSince === null) quietSince = now;
+    const said = !text || !voice || (quietSince !== null && now - quietSince >= beat && now - start >= 400) || now - start >= backstop;
+    if (said && now - start >= hold) { over = true; done(); return; }
+    timer = setTimeout(tick, 100);
+  };
+  timer = setTimeout(tick, 100);
+  return () => { over = true; if (timer) clearTimeout(timer); };
+}
 // Speaks a list of texts one after another and reports which one is playing, so a page can
 // light the paragraph being read. Returns a stop function. Uses the same ticket as speak().
 // Purchased audio: when the build lists a clip for a key (audio/<key>.mp3, keys like S7-0 for a story's
@@ -1778,9 +2139,13 @@ function SpeakButton({ text, label, full = false, corner = false, mini = false, 
 // where nothing is heard. A page whose every line has a recorded clip once the ElevenLabs clips exist (keys, read by clipFor) shows
 // it no more, so it goes page by page as the recordings arrive (EARMARKS A41).
 const VOICE_NOTE = 'All spoken audio on this page will be updated during the final phases of development. What you hear now is merely a placeholder spoken by your device.';
-function VoiceNote({ keys = null }) {
+// near (pass MR, Mikey of the lessons that say new words in playful voices: "This page will be very important to mark with our not
+// final audio message"): on such a lesson the note sits right under the lesson card, on a soft panel with a small speaker, where it is
+// seen before the silly voices are heard, in place of its small place at the foot.
+function VoiceNote({ keys = null, near = false }) {
   if (!canSpeak()) return null;
   if (keys && keys.length && keys.every((k) => clipFor(k))) return null;
+  if (near) return <p data-voice-note="" data-voice-note-near="" className="edu-no-print" style={{ margin: '18px auto 0', maxWidth: 460, fontSize: 13.5, lineHeight: 1.5, color: C.ink, textAlign: 'center', background: C.panel, border: `1px solid ${C.mode === 'dark' ? C.panelLine : C.tintMintLine}`, borderRadius: 12, padding: '8px 14px' }}><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" style={{ display: 'block', margin: '0 auto 4px' }}><path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={C.muted} /><path d="M15.5 8.5a5 5 0 010 7" fill="none" stroke={C.muted} strokeWidth="2" strokeLinecap="round" /></svg>{VOICE_NOTE}</p>;
   return <p data-voice-note="" className="edu-no-print" style={{ margin: '22px auto 0', maxWidth: 460, fontSize: 13, lineHeight: 1.5, color: C.muted, textAlign: 'center' }}>{VOICE_NOTE}</p>;
 }
 // A story's clip keys, its title and then each paragraph (S7-0, S7-1 ...), as the audio ledger names them.
@@ -2089,7 +2454,11 @@ const KID_ANIMATION = () => `
    own, Spot It's a dashed ring and Teach the Robot's a solid one (edu-still-sign); the dots, the path's squares, the letters and the
    map a clay edge or fill in any case; and Catch and Jump the point lost and the frog sent back. With motion on the edge rides the
    wobble, since an outline moves with its element. */
-.edu-game-box .edu-wobble:not(g):not(polygon) { outline: 3px dashed #B9634A; outline-offset: 2px; }
+/* Since pass MR (Mikey's answer to Q69, "Q69 - C") a piece whose own border already turns red-brown on a wrong move (edu-own-edge: In
+   order, Find the evidence, The periodic table, Build a sentence, Fix it, the sort-into-two chips, Pay the Price's tray, and Big and
+   Small's and Red and Blue's ring) wears that edge alone, so no wrong piece shows two red-brown edges; its own edge stays still with
+   less motion asked for too. */
+.edu-game-box .edu-wobble:not(g):not(polygon):not(.edu-own-edge) { outline: 3px dashed #B9634A; outline-offset: 2px; }
 /* A chip on a game board wobbles in the board's own units: the board's SVG reads a px as one of its 100 units (about 3.6 screen
    px on a phone), so the page's wobble swung a Step on the Circles chip about 30 px, out of its cell (pass MK, the second read). */
 @keyframes edu-wobble-chip { 0%, 100% { transform: translateX(0) rotate(0deg); } 20% { transform: translateX(-1.6px) rotate(-8deg); } 40% { transform: translateX(1.6px) rotate(8deg); } 60% { transform: translateX(-1px) rotate(-4deg); } 80% { transform: translateX(1px) rotate(4deg); } }
@@ -2172,7 +2541,7 @@ g[role="button"] { -webkit-tap-highlight-color: transparent; }
   .edu-tour-target::after { content: ''; position: absolute; width: 11px; height: 11px; border-radius: 50%; background: #24291F; border: 2px solid #E6B84B; pointer-events: none; z-index: 5; animation: edu-tour-orbit 4s linear infinite; }
   @keyframes edu-tour-pulse { 0%, 100% { box-shadow: 0 0 0 4px #E6B84B, 0 0 14px 4px rgba(230, 184, 75, 0.45); } 50% { box-shadow: 0 0 0 6px #E6B84B, 0 0 26px 10px rgba(230, 184, 75, 0.75); } }
   @keyframes edu-tour-orbit { 0% { top: -8px; left: -8px; } 25% { top: -8px; left: calc(100% - 4px); } 50% { top: calc(100% - 4px); left: calc(100% - 4px); } 75% { top: calc(100% - 4px); left: -8px; } 100% { top: -8px; left: -8px; } }
-  @media (prefers-reduced-motion: reduce) { .edu-tour-target { animation: none; box-shadow: 0 0 0 5px #E6B84B, 0 0 18px 6px rgba(230, 184, 75, 0.55); } .edu-tour-target::after { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .edu-tour-target { animation: none; box-shadow: 0 0 0 5px #E6B84B, 0 0 18px 6px rgba(230, 184, 75, 0.55) !important; } .edu-tour-target::after { animation: none; } }
   .edu-recovery-code { font-size: 22px; }
   @media (max-width: 480px) { .edu-recovery-code { font-size: 17px; letter-spacing: 0.5px; } }
   /* The three lines of links center at every width (2026-09-23, Mikey), under the name on a phone and across the card on a laptop. */
@@ -2260,12 +2629,16 @@ g[role="button"] { -webkit-tap-highlight-color: transparent; }
   .edu-pad { max-width: 100%; }
   .edu-pad-col { width: min(100%, 46vh); }
   @media (min-width: 700px) { .edu-pad-col { width: min(72vw, calc(100vh - 302px)); } }
-  /* Upright only on a phone: sideways, everything is covered by a gentle ask to turn back. */
+  /* Upright only on a phone (Mikey, 2026-09-16, and his answer to Q71, pass MR: "yeah, let's make users turn the phone upright"):
+     sideways, everything is covered by a gentle ask to turn back, a phone that turns itself upright beside a curved arrow and his
+     words. Until pass MR these rules sat inside a stray pair of braces, a block with no selector that browsers drop whole, so the
+     ask never showed; tests/site.test.mjs now reads the rule from the page's own stylesheets and the ask on four screens. */
   .edu-rotate { display: none; }
-  {
-    .edu-rotate.edu-rotate-on { display: flex; position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 9999; background: ${C.paper || '#F5F7F1'}; color: ${C.green}; align-items: center; justify-content: center; text-align: center; padding: 24px; font-family: ${FONT}; }
-    .edu-rotate p { font-size: 20px; font-weight: 600; margin: 12px 0 0; color: ${C.ink}; }
-  }
+  .edu-rotate.edu-rotate-on { display: flex; position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 9999; background: ${C.bg}; color: ${C.green}; align-items: center; justify-content: center; text-align: center; padding: 24px; font-family: ${FONT}; }
+  .edu-rotate p { font-size: 20px; font-weight: 600; margin: 14px 0 0; color: ${C.ink}; }
+  .edu-rotate .edu-rotate-phone { transform-box: view-box; transform-origin: 34px 36px; animation: edu-rotate-turn 2.8s ease-in-out infinite; }
+  @keyframes edu-rotate-turn { 0%, 18% { transform: rotate(-90deg); } 48%, 88% { transform: rotate(0deg); } 100% { transform: rotate(-90deg); } }
+  @media (prefers-reduced-motion: reduce) { .edu-rotate .edu-rotate-phone { animation: none; } }
   .edu-wide-only { display: none; }
   /* A mouse becomes a paintbrush over a drawing picture, and only there; a finger or a stylus needs no cursor. */
   @media (hover: hover) and (pointer: fine) { .edu-pad:not(.edu-pad-fill) .edu-picture svg { cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><path d='M4 28l4-1 15-15-3-3L5 24z' fill='%23E4A23A' stroke='%232E2E2E' stroke-width='1.5' stroke-linejoin='round'/><path d='M21 8l3-3 3 3-3 3z' fill='%232F5D4F' stroke='%232E2E2E' stroke-width='1.5' stroke-linejoin='round'/></svg>") 4 28, crosshair; } }
@@ -2411,6 +2784,28 @@ html, body { overflow-x: hidden; }
 @media (prefers-reduced-motion: reduce) { .edu-tour-target[data-tour="action-demo"] { box-shadow: 0 0 0 5px #E6B84B, 0 0 18px 6px rgba(230, 184, 75, 0.55) !important; } .edu-action-link, .edu-alert-box { animation: none; } [data-action-card="1"] { animation: none; border-color: #D64541 !important; } }
 @keyframes edu-chevron { 0%, 55%, 100% { opacity: 0.22; } 22% { opacity: 1; } }
 .edu-chevron { animation: edu-chevron 1.2s ease-in-out infinite; opacity: 0.22; }
+/* The reading lists (pass MR): a short rule between two books, stopping short of both edges, and the Details pill at a row's right,
+   green on the list's green, 40 pixels tall so a finger finds it, with the gold focus ring for a keyboard. */
+.edu-book-rule { height: 1px; margin: 0 8%; background: ${C.bookRule}; }
+.edu-book-details { flex: 0 0 auto; font-family: ${FONT}; font-size: 14px; font-weight: 600; letter-spacing: 0.1px; color: ${C.green}; background: transparent; border: 1.5px solid ${C.green}; border-radius: 999px; padding: 0 16px; min-height: 46px; cursor: pointer; }
+@media (hover: hover) { .edu-book-details:hover { background: ${C.pillHover}; } }
+.edu-book-details:focus-visible { outline: 3px solid ${C.gold}; outline-offset: 2px; }
+/* A game's head row (pass MR, the layout sweep: on a 320 phone Mean, Median, Mode ran its name into its clock, "average1s"): the
+   name at the left and the clock at the right, a gap between them always, and the clock on a line of its own, still at the right,
+   when both do not fit. */
+.edu-game-head { display: flex; justify-content: space-between; flex-wrap: wrap; column-gap: 12px; row-gap: 2px; font-variant-numeric: tabular-nums; }
+.edu-room { display: inline-grid; justify-items: end; white-space: nowrap; }
+.edu-room[data-room-start] { justify-items: start; }
+.edu-room::before { content: attr(data-room); grid-area: 1 / 1; visibility: hidden; }
+.edu-room > span { grid-area: 1 / 1; }
+/* A status line that holds the room of its longest message (round three of pass MR, the alignment read: Pay the Price's price tag
+   went from two lines to one after an overpayment and back, and Build the Fund's month line from one line to three, so the coins
+   and the save buttons under them moved between a child's taps). The longest message is drawn unseen by the stylesheet in the same
+   cell, as HeadRoom's is, so it adds no words to the page; the line itself wraps as it always did. */
+.edu-room-lines { display: grid; }
+.edu-room-lines::before { content: attr(data-room); grid-area: 1 / 1; visibility: hidden; }
+.edu-room-lines > span { grid-area: 1 / 1; }
+.edu-game-head > :last-child:not(:first-child) { margin-left: auto; text-align: right; }
 @media (prefers-reduced-motion: reduce) { .edu-chevron { animation: none !important; opacity: 1 !important; } }
 /* The beat never stops: a card that is open simply turns it down to nothing with --beat, so it
    is still on the same stroke as every other card when it comes back. */
@@ -2868,7 +3263,20 @@ function TipText({ children }) { return <div style={{ ...tipStyle }}>{children}<
 // with its squares, a cell, two carts, two curves, an atom, a number line, the turning Earth.
 // Anything with labels on it is drawn here in code, never requested as art.
 const DIAGRAM_TEXT = { fontFamily: FONT, fontSize: 5.2, fontWeight: 600, fill: '#2E2E2E', textAnchor: 'middle' };
-function Arrow({ d, color = C.green }) { return <path d={d} fill="none" stroke={color} strokeWidth="1.6" strokeLinecap="round" markerEnd="url(#eduArrow)" />; }
+// Lays labels along one line so none covers the next and none passes either end (pass MR, the light-theme pass's read of every
+// lesson picture, which found names run off the edge and piled on each other). Each label wants the x of the thing it names;
+// `items` come sorted by that x, each with its width. A forward pass pushes each label clear of the one before it, and a
+// backward pass pulls labels back from the right end and from the next label, so a crowd at one end fans out toward the middle.
+// A caller whose labels cannot all fit in the room shrinks their words first.
+function spreadLabels(items, lo, hi, gap = 2) {
+  const c = items.map((it) => it.x);
+  for (let i = 0; i < c.length; i++) c[i] = Math.max(c[i], i ? c[i - 1] + (items[i - 1].w + items[i].w) / 2 + gap : lo + items[i].w / 2);
+  for (let i = c.length - 1; i >= 0; i--) c[i] = Math.min(c[i], i < c.length - 1 ? c[i + 1] - (items[i + 1].w + items[i].w) / 2 - gap : hi - items[i].w / 2);
+  return c;
+}
+// A drawn arrow (pictures sit on paper in both themes, so its default is the paper palette's green; until pass MR it was the live
+// palette's, a pale mint on the dark theme's light paper board).
+function Arrow({ d, color = B.green }) { return <path d={d} fill="none" stroke={color} strokeWidth="1.6" strokeLinecap="round" markerEnd="url(#eduArrow)" />; }
 function Diagram({ children, label }) {
   return (
     <svg viewBox="0 0 160 100" width="100%" role="img" aria-label={label} style={{ display: 'block', maxWidth: 560, margin: '0 auto' }}>
@@ -2884,7 +3292,7 @@ function CyclePic() {
       <ellipse cx="112" cy="26" rx="26" ry="11" fill="#FFFFFF" stroke="#A9B1AA" strokeWidth="1" /><ellipse cx="98" cy="30" rx="16" ry="9" fill="#FFFFFF" />
       <Arrow d="M60 78 C62 60 70 44 86 34" /><Arrow d="M124 38 C132 52 134 62 130 74" color="#3E7CB1" /><Arrow d="M128 88 C110 92 80 92 44 86" color="#3E7CB1" />
       {[[116, 46], [122, 56], [128, 66]].map(([x, y], i) => <path key={i} d={`M${x} ${y} q3 3 0 6 q-3 -3 0 -6`} fill="#3E7CB1" />)}
-      <text x="56" y="56" {...DIAGRAM_TEXT}>evaporation</text><text x="106" y="14" {...DIAGRAM_TEXT}>condensation</text><text x="146" y="60" {...DIAGRAM_TEXT}>rain</text><text x="80" y="98" {...DIAGRAM_TEXT}>collection</text>
+      <text x="55" y="58" {...DIAGRAM_TEXT} textAnchor="end">evaporation</text><text x="106" y="14" {...DIAGRAM_TEXT}>condensation</text><text x="146" y="60" {...DIAGRAM_TEXT}>rain</text><text x="80" y="98" {...DIAGRAM_TEXT}>collection</text>
     </Diagram>
   );
 }
@@ -2918,24 +3326,35 @@ function PythagPic() {
 function CellPic({ highlight = '' }) {
   const lit = (name) => highlight.includes(name);
   const edge = (name, base) => (lit(name) ? { stroke: B.gold, strokeWidth: 2.6 } : base);
+  // Every part is named outside the cell and joined to it by a thin line (pass MR, the light-theme pass): the names had sat on
+  // the cell's own lines, and "chloroplast" sat beside no chloroplast at all. The cell keeps its drawing, shrunk into the middle
+  // of the picture, which leaves a column for the names on each side and a line above for the nucleus. Since round one's screen check
+  // (pass MR) the cell is a little smaller (0.69) and the columns wider, so "mitochondrion" and "chloroplast" fit inside the picture
+  // in a font a tenth wider than the test machine's, as a phone's can be.
+  const name = (x, y, t, anchor) => <text x={x} y={y + 1.8} {...DIAGRAM_TEXT} textAnchor={anchor}>{t}</text>;
+  const lead = (x1, y1, x2, y2) => <line x1={x1} y1={y1} x2={x2} y2={y2} stroke="#5B6157" strokeWidth="0.5" />;
   return (
     <Diagram label="A plant cell">
+      <g transform="translate(28.44 15.54) scale(0.69)">
       <rect x="24" y="4" width="112" height="92" rx="18" fill="#DCE6CF" {...edge('wall', { stroke: '#6B8F5E', strokeWidth: 2.2 })} />
       <rect x="31" y="10" width="98" height="80" rx="15" fill="#E9F3DE" {...edge('membrane', { stroke: '#2E2E2E', strokeWidth: 1.2 })} />
       <ellipse cx="108" cy="66" rx="14" ry="10" fill="#D7EAF8" {...edge('vacuole', { stroke: '#8FC4E8', strokeWidth: 1 })} />
       <circle cx="72" cy="44" r="16" fill="#C9DDF5" {...edge('nucleus', { stroke: '#3E7CB1', strokeWidth: 1.2 })} /><circle cx="72" cy="44" r="4.5" fill="#3E7CB1" />
       {[[48, 24], [108, 26], [46, 70], [90, 82]].map(([x, y], i) => <ellipse key={i} cx={x} cy={y} rx="8" ry="4.5" fill="#5BA84A" {...edge('chloroplast', { stroke: '#2E2E2E', strokeWidth: 0.8 })} transform={`rotate(${i * 30} ${x} ${y})`} />)}
       {[[100, 46], [58, 80]].map(([x, y], i) => <ellipse key={`m${i}`} cx={x} cy={y} rx="6" ry="3.4" fill="#F4A259" {...edge('mitochond', { stroke: '#2E2E2E', strokeWidth: 0.8 })} transform={`rotate(${20 + i * 50} ${x} ${y})`} />)}
-      <text x="72" y="28" {...DIAGRAM_TEXT}>nucleus</text><text x="12" y="16" {...DIAGRAM_TEXT}>wall</text><text x="14" y="30" {...DIAGRAM_TEXT}>membrane</text>
-      <text x="146" y="90" {...DIAGRAM_TEXT}>chloroplast</text><text x="118" y="54" {...DIAGRAM_TEXT}>mitochondrion</text><text x="122" y="80" {...DIAGRAM_TEXT}>vacuole</text>
+      </g>
+      {lead(43.5, 34, 46.8, 34)}{name(42.5, 34, 'wall', 'end')}{lead(43.5, 46, 50.6, 46)}{name(42.5, 46, 'membrane', 'end')}
+      {lead(43.5, 76, 67.9, 73.4)}{name(42.5, 76, 'mitochondrion', 'end')}{lead(78.1, 11, 78.1, 34.4)}{name(78.1, 6.4, 'nucleus', 'middle')}
+      {lead(123, 31, 104.6, 33.4)}{name(124, 31, 'chloroplast', 'start')}{lead(123, 61.6, 112.4, 61.6)}{name(124, 61.6, 'vacuole', 'start')}
     </Diagram>
   );
 }
 function PercentGridPic({ shaded = 25 }) {
   return (
     <Diagram label={`${shaded} of 100 squares shaded`}>
-      {Array.from({ length: 100 }, (_, i) => <rect key={i} x={30 + (i % 10) * 10} y={2 + Math.floor(i / 10) * 9.6} width="9" height="8.6" rx="1" fill={i < shaded ? B.gold : '#FFFFFF'} stroke="#A9B1AA" strokeWidth="0.5" />)}
-      <text x="80" y="99" {...DIAGRAM_TEXT}>{shaded} of 100 = {shaded}%</text>
+      {/* Rows 9 units apart (pass MR): at 9.6 the last row reached 97 and the words under the grid, at 99, sat over it. */}
+      {Array.from({ length: 100 }, (_, i) => <rect key={i} x={34.5 + (i % 10) * 9.1} y={1.5 + Math.floor(i / 10) * 9} width="8.4" height="8.2" rx="1" fill={i < shaded ? B.gold : '#FFFFFF'} stroke="#A9B1AA" strokeWidth="0.5" />)}
+      <text x="80" y="97.6" {...DIAGRAM_TEXT}>{shaded} of 100 = {shaded}%</text>
     </Diagram>
   );
 }
@@ -2945,7 +3364,12 @@ function GroupsPic({ a = 2, b = 1, aLabel = '', bLabel = '' }) {
   return (
     <Diagram label={`${a} and ${b}`}>
       {row(a, 34, '#3E7CB1')}{row(b, 64, B.gold)}
-      <text x="18" y="36" {...DIAGRAM_TEXT}>{a}{aLabel ? ` ${aLabel}` : ''}</text><text x="18" y="66" {...DIAGRAM_TEXT}>{b}{bLabel ? ` ${bLabel}` : ''}</text>
+      {/* The row labels (pass MR, the light-theme pass) end just left of each row's first circle and are drawn larger than other
+          diagrams' words, since 2 blue and 1 yellow are what a reader reads first, and at a phone's width DIAGRAM_TEXT's 5.2
+          units drew them about 9 pixels tall. A long label (2 blue thirds, 160 do not) shrinks until it fits the room left of
+          the circles, which the centered label had overrun. */}
+      {[[34, [a, aLabel].filter((s) => s !== '').join(' ')], [64, [b, bLabel].filter((s) => s !== '').join(' ')]].map(([y, t]) => { const end = 46 - r - 3; const fs = Math.min(6.8, (end - 1) / (t.length * 0.58));
+        return <text key={y} x={end} y={y + fs * 0.36} {...DIAGRAM_TEXT} textAnchor="end" fontSize={fs.toFixed(2)}>{t}</text>; })}
       {(a > 12 || b > 12) && <text x="80" y="92" {...DIAGRAM_TEXT}>(twelve shown of each row at most)</text>}
     </Diagram>
   );
@@ -2953,11 +3377,26 @@ function GroupsPic({ a = 2, b = 1, aLabel = '', bLabel = '' }) {
 function AnglesPic({ type = 'vertical', given = 50, second = 60 }) {
   const rad = (d) => (d * Math.PI) / 180;
   if (type === 'triangle') {
-    const A = [20, 84]; const B = [140, 84]; const t = rad(given); const u = rad(second); const x = 20 + (120 * Math.sin(u) * Math.cos(t)) / Math.sin(t + u); const y = 84 - (120 * Math.sin(u) * Math.sin(t)) / Math.sin(t + u);
+    // Worked out for a base of one, then scaled and centered so all of it fits the picture (pass MR, round one's code check: on a
+    // fixed 120-unit base the top ran past the picture in 162 of the bank's 293 triangles, the "?" with it).
+    const t = rad(given); const u = rad(second); const k1 = Math.sin(u) / Math.sin(t + u); const ax = k1 * Math.cos(t); const ah = k1 * Math.sin(t);
+    const lo = Math.min(0, ax); const hi = Math.max(1, ax); const L = Math.min(120, 70 / ah, 136 / (hi - lo)); const x0 = 80 - (L * (lo + hi)) / 2;
+    const A = [x0, 84]; const B = [x0 + L, 84]; const x = x0 + L * ax; const y = 84 - L * ah;
     return (
       <Diagram label="A triangle with two given angles">
         <polygon points={`${A[0]},${A[1]} ${B[0]},${B[1]} ${x},${y}`} fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="1.4" strokeLinejoin="round" />
-        <text x={A[0] + 14} y={A[1] - 5} {...DIAGRAM_TEXT}>{given}°</text><text x={B[0] - 14} y={B[1] - 5} {...DIAGRAM_TEXT}>{second}°</text><text x={x} y={y + 9} {...DIAGRAM_TEXT}>?</text>
+        {/* Each angle's number sits on the line that halves it, far enough in to clear both sides: a narrow angle sends it
+            deeper (pass MR: a 20 degree angle's number sat on its own side). A number that would come too near the triangle's
+            center, or two base numbers that would touch, sit just outside their corner instead (round one's code check). */}
+        {(() => { const C3 = [x, y]; const len = (P, Q) => Math.hypot(P[0] - Q[0], P[1] - Q[1]); const a3 = len(B, C3); const b3 = len(A, C3); const c3 = len(A, B); const per = a3 + b3 + c3;
+          const I = [(a3 * A[0] + b3 * B[0] + c3 * C3[0]) / per, (a3 * A[1] + b3 * B[1] + c3 * C3[1]) / per];
+          const spots = [[A, B, C3, `${given}°`], [B, A, C3, `${second}°`], [C3, A, B, '?']].map(([P, Q, R, tx]) => { const un = (S) => { const dx = S[0] - P[0]; const dy = S[1] - P[1]; const l = Math.hypot(dx, dy) || 1; return [dx / l, dy / l]; };
+            const [a, b] = [un(Q), un(R)]; const m = Math.hypot(a[0] + b[0], a[1] + b[1]) || 1; const half = Math.acos(Math.max(-1, Math.min(1, a[0] * b[0] + a[1] * b[1]))) / 2; const want = Math.min(40, Math.max(12, 5 / Math.sin(half || 0.01) + 7));
+            return { P, dir: [(a[0] + b[0]) / m, (a[1] + b[1]) / m], tx, w: tx.length * 5.2 * 0.62, d: want <= 0.85 * len(P, I) ? want : -9 }; });
+          const at = (s) => [s.P[0] + s.dir[0] * s.d, s.P[1] + s.dir[1] * s.d];
+          const clash = (s, q) => { const [p1, p2] = [at(s), at(q)]; return Math.abs(p1[0] - p2[0]) < (s.w + q.w) / 2 + 2 && Math.abs(p1[1] - p2[1]) < 7; };
+          if (clash(spots[0], spots[1])) { spots[0].d = -9; spots[1].d = -9; }
+          return spots.map((sp) => { const [px, py] = at(sp); return <text key={sp.tx} x={px} y={py + 1.8} {...DIAGRAM_TEXT}>{sp.tx}</text>; }); })()}
       </Diagram>
     );
   }
@@ -2970,17 +3409,30 @@ function AnglesPic({ type = 'vertical', given = 50, second = 60 }) {
       <text x={cx + 22 * Math.cos(th / 2) + 8} y={cy - 22 * Math.sin(th / 2) + 2} {...DIAGRAM_TEXT}>{given}°</text>
       {type === 'vertical'
         ? <text x={cx - 22 * Math.cos(th / 2) - 8} y={cy + 22 * Math.sin(th / 2) + 4} {...DIAGRAM_TEXT}>?</text>
-        : <text x={cx - 24} y={cy - 10} {...DIAGRAM_TEXT}>?</text>}
+        : <text x={cx + 24 * Math.cos(rad((180 + given) / 2))} y={cy - 24 * Math.sin(rad((180 + given) / 2)) + 1.8} {...DIAGRAM_TEXT}>?</text>}
     </Diagram>
   );
 }
-function LightRayPic({ angle = 40 }) {
-  const th = (angle * Math.PI) / 180; const cx = 80; const cy = 78;
+// A ray of light meeting a mirror and bouncing off, each angle measured from the dashed straight-in line and marked by an arc
+// from that line to its ray. A question that asks for the angle out draws it as "?" (out false), since its number is the answer,
+// as the grid's point is drawn without its label (round three of pass MR, the alignment read: "54° out" had sat beside choices of
+// 54, 36 and 108 degrees). Each number sits in the angle it names, between the dashed line and its ray: below about 38 degrees
+// that angle is too narrow for the words, so they sit at the top, past the ray's end, still between the line and the ray's way
+// (round one's code check had moved them outside the rays, into the angle between ray and mirror, which is 90 minus the angle,
+// the bank's own wrong choice).
+function LightRayPic({ angle = 40, out = true }) {
+  const th = (angle * Math.PI) / 180; const cx = 80; const cy = 78; const r = 16;
+  const outWords = (out ? `${angle}°` : '?') + ' out';
   return (
     <Diagram label="A ray bouncing off a mirror">
       <rect x="20" y={cy} width="120" height="6" fill="#C9DDF5" stroke="#2E2E2E" strokeWidth="1" /><line x1={cx} y1={cy} x2={cx} y2="14" stroke={B.muted} strokeWidth="1" strokeDasharray="3 2" />
+      <path d={`M${cx} ${cy - r} A${r} ${r} 0 0 0 ${cx - r * Math.sin(th)} ${cy - r * Math.cos(th)}`} fill="none" stroke="#2E2E2E" strokeWidth="0.9" />
+      <path d={`M${cx} ${cy - r} A${r} ${r} 0 0 1 ${cx + r * Math.sin(th)} ${cy - r * Math.cos(th)}`} fill="none" stroke="#2E2E2E" strokeWidth="0.9" />
       <Arrow d={`M${cx - 66 * Math.sin(th)} ${cy - 66 * Math.cos(th)} L${cx} ${cy}`} color={B.gold} /><Arrow d={`M${cx} ${cy} L${cx + 66 * Math.sin(th)} ${cy - 66 * Math.cos(th)}`} color={B.gold} />
-      <text x={cx - 24} y="30" {...DIAGRAM_TEXT}>{angle}° in</text><text x={cx + 26} y="30" {...DIAGRAM_TEXT}>{angle}° out</text><text x="80" y="96" {...DIAGRAM_TEXT}>mirror</text>
+      {angle < 38
+        ? <><text x={cx - 3} y="7.5" {...DIAGRAM_TEXT} textAnchor="end">{angle}° in</text><text x={cx + 3} y="7.5" {...DIAGRAM_TEXT} textAnchor="start">{outWords}</text></>
+        : <><text x={cx - 24} y="30" {...DIAGRAM_TEXT}>{angle}° in</text><text x={cx + 26} y="30" {...DIAGRAM_TEXT}>{outWords}</text></>}
+      <text x="80" y="96" {...DIAGRAM_TEXT}>mirror</text>
     </Diagram>
   );
 }
@@ -3010,7 +3462,7 @@ function BeakerPic({ moles = 4, liters = 2 }) {
     <Diagram label={`${moles} moles in ${liters} liters`}>
       <path d={`M56 10 V${90} H104 V10`} fill="none" stroke="#2E2E2E" strokeWidth="1.6" /><rect x="57" y={90 - level} width="46" height={level} fill="#C9DDF5" opacity="0.9" />
       {Array.from({ length: Math.min(moles, 12) }, (_, i) => <circle key={i} cx={64 + (i % 4) * 11} cy={84 - Math.floor(i / 4) * 12} r="3" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.6" />)}
-      <text x="130" y="40" {...DIAGRAM_TEXT}>{moles} moles</text><text x="130" y="52" {...DIAGRAM_TEXT}>{liters} liters</text><text x="80" y="99" {...DIAGRAM_TEXT}>concentration = moles per liter</text>
+      <text x="130" y="40" {...DIAGRAM_TEXT}>{moles} moles</text><text x="130" y="52" {...DIAGRAM_TEXT}>{liters} liters</text><text x="80" y="97.6" {...DIAGRAM_TEXT}>concentration = moles per liter</text>
     </Diagram>
   );
 }
@@ -3021,7 +3473,7 @@ function ForcesPic() {
       <line x1="0" y1="46" x2="160" y2="46" stroke="#A9B1AA" strokeWidth="1" /><line x1="0" y1="92" x2="160" y2="92" stroke="#A9B1AA" strokeWidth="1" />
       {cart(40, 22, 30, 16, '#F7D154')}<Arrow d="M12 30 L36 30" color="#D9534F" /><text x="22" y="24" {...DIAGRAM_TEXT}>push</text><Arrow d="M76 30 L128 30" /><text x="102" y="24" {...DIAGRAM_TEXT}>fast</text>
       {cart(40, 60, 54, 24, '#8C6239')}<Arrow d="M12 72 L36 72" color="#D9534F" /><text x="22" y="66" {...DIAGRAM_TEXT}>push</text><Arrow d="M100 72 L118 72" /><text x="110" y="66" {...DIAGRAM_TEXT}>slow</text>
-      <text x="80" y="99" {...DIAGRAM_TEXT}>same force, more mass, less acceleration</text>
+      <text x="80" y="97.6" {...DIAGRAM_TEXT}>same force, more mass, less acceleration</text>
     </Diagram>
   );
 }
@@ -3031,7 +3483,8 @@ function CurvesPic() {
       <line x1="24" y1="10" x2="24" y2="84" stroke="#2E2E2E" strokeWidth="1.2" /><line x1="24" y1="84" x2="150" y2="84" stroke="#2E2E2E" strokeWidth="1.2" />
       <path d="M34 20 L134 76" fill="none" stroke="#D9534F" strokeWidth="2" /><path d="M34 76 L134 20" fill="none" stroke="#3E7CB1" strokeWidth="2" />
       <circle cx="84" cy="48" r="3.5" fill={B.gold} stroke="#2E2E2E" strokeWidth="1" /><line x1="24" y1="48" x2="84" y2="48" stroke={B.muted} strokeWidth="0.8" strokeDasharray="2 2" /><line x1="84" y1="48" x2="84" y2="84" stroke={B.muted} strokeWidth="0.8" strokeDasharray="2 2" />
-      <text x="140" y="80" {...DIAGRAM_TEXT} fill="#D9534F">demand</text><text x="140" y="18" {...DIAGRAM_TEXT} fill="#3E7CB1">supply</text><text x="108" y="44" {...DIAGRAM_TEXT}>equilibrium</text>
+      {/* Each name in open space (pass MR): "equilibrium" had sat on the supply line, and each curve's name on its line's end. */}
+      <text x="137" y="79" {...DIAGRAM_TEXT} textAnchor="start" fill="#D9534F">demand</text><text x="137" y="22" {...DIAGRAM_TEXT} textAnchor="start" fill="#3E7CB1">supply</text><text x="114" y="51" {...DIAGRAM_TEXT}>equilibrium</text>
       <text x="14" y="14" {...DIAGRAM_TEXT}>price</text><text x="120" y="94" {...DIAGRAM_TEXT}>amount</text>
     </Diagram>
   );
@@ -3050,11 +3503,23 @@ function AtomPic() {
 }
 function NumberLinePic({ from = -5, to = 5, mark = null, marks = [] }) {
   const n = to - from; const x = (v) => 14 + ((v - from) / n) * 132; const dots = mark === null ? marks : [mark, ...marks];
-  const every = n > 14 ? 2 : 1;
+  const every = n > 14 ? 2 : 1; const size = n > 14 ? 4.4 : 5.2;
+  // Which numbers are written under the line: the dots' own numbers first, then zero and the two ends, then every other number
+  // (or every number on a short line) that has room beside those already written (pass MR: a dot at -9 wrote its number between
+  // -10 and -8, and the three ran together as "-10-9-8"). A dot's number with no room under the line, beside the other dot's,
+  // is written above the line instead (round three of pass MR, the diagram read over every seed: -12 and -11 on the line from
+  // -12 to 12 were written on top of each other); only when there is no room above either does it stay under the line.
+  const wide = (v) => String(v).length * size * 0.62; const written = []; const above = [];
+  const room = (list, v) => list.every((w) => Math.abs(x(w) - x(v)) >= (wide(w) + wide(v)) / 2 + 1.5);
+  for (const v of [...dots, 0, from, to, ...Array.from({ length: n + 1 }, (_, i) => from + i).filter((v) => v % every === 0)]) {
+    if (v < from || v > to || written.includes(v) || above.includes(v)) continue;
+    if (room(written, v)) written.push(v);
+    else if (dots.includes(v)) (room(above, v) ? above : written).push(v);
+  }
   return (
     <Diagram label={`A number line from ${from} to ${to}`}>
       <line x1="8" y1="50" x2="152" y2="50" stroke="#2E2E2E" strokeWidth="1.4" />
-      {Array.from({ length: n + 1 }, (_, i) => from + i).map((v) => <g key={v}><line x1={x(v)} y1={v === 0 ? 40 : 44} x2={x(v)} y2={v === 0 ? 60 : 56} stroke="#2E2E2E" strokeWidth={v === 0 ? 1.6 : 1} />{(v % every === 0 || dots.includes(v)) && <text x={x(v)} y="70" {...DIAGRAM_TEXT} fontSize={n > 14 ? 4.4 : 5.2}>{v}</text>}</g>)}
+      {Array.from({ length: n + 1 }, (_, i) => from + i).map((v) => <g key={v}><line x1={x(v)} y1={v === 0 ? 40 : 44} x2={x(v)} y2={v === 0 ? 60 : 56} stroke="#2E2E2E" strokeWidth={v === 0 ? 1.6 : 1} />{written.includes(v) && <text x={x(v)} y="70" {...DIAGRAM_TEXT} fontSize={size}>{v}</text>}{above.includes(v) && <text x={x(v)} y="36" {...DIAGRAM_TEXT} fontSize={size}>{v}</text>}</g>)}
       {dots.map((v, i) => <circle key={i} cx={x(v)} cy="50" r="4" fill={i === 0 ? B.gold : '#3E7CB1'} stroke="#2E2E2E" strokeWidth="1" />)}
     </Diagram>
   );
@@ -3066,16 +3531,18 @@ function DayNightPic() {
       <circle cx="110" cy="50" r="28" fill="#8FC4E8" stroke="#2E2E2E" strokeWidth="1.2" /><path d="M110 22 A28 28 0 0 1 110 78 Z" fill="#2B4C8C" opacity="0.75" />
       <path d="M96 40 q8 -6 14 2 q-6 6 -14 -2" fill="#5BA84A" /><path d="M120 60 q6 6 -2 10 q-8 -2 2 -10" fill="#5BA84A" opacity="0.6" />
       <Arrow d="M100 8 C120 0 140 6 146 20" color={B.muted} />
-      <text x="88" y="92" {...DIAGRAM_TEXT}>day</text><text x="132" y="92" {...DIAGRAM_TEXT} fill="#FFFFFF" stroke="#2B4C8C" strokeWidth="0.3">night</text>
+      <text x="88" y="92" {...DIAGRAM_TEXT}>day</text><text x="132" y="92" {...DIAGRAM_TEXT} fill="#2B4C8C">night</text>
     </Diagram>
   );
 }
 function TriPic({ base, height, area }) {
+  // The height's name sits inside, right of the dashed height where the triangle is wide (pass MR, the light-theme pass's read
+  // for lines through words: at its old place the slanted side ran through it); the parallelogram's sits left of its height.
   return (
     <Diagram label="A triangle with its base and height">
       <polygon points="30,80 130,80 90,20" fill="#CFE7E5" stroke="#2E2E2E" strokeWidth="1.4" strokeLinejoin="round" />
       <line x1="90" y1="20" x2="90" y2="80" stroke="#D9534F" strokeWidth="1.2" strokeDasharray="3 2" /><rect x="90" y="74" width="5" height="6" fill="none" stroke="#D9534F" strokeWidth="0.8" />
-      <text x="80" y="92" {...DIAGRAM_TEXT}>base {base}</text><text x="108" y="50" {...DIAGRAM_TEXT} fill="#D9534F">height {height}</text>
+      <text x="80" y="92" {...DIAGRAM_TEXT}>base {base}</text><text x="107" y="69" {...DIAGRAM_TEXT} fill="#D9534F">height {height}</text>
       {area !== undefined && <text x="70" y="62" {...DIAGRAM_TEXT}>area {area}</text>}
     </Diagram>
   );
@@ -3085,7 +3552,7 @@ function ParaPic({ base, height, side }) {
     <Diagram label="A parallelogram with its base, height and slanted side">
       <polygon points="30,80 110,80 140,24 60,24" fill="#F9DDB7" stroke="#2E2E2E" strokeWidth="1.4" strokeLinejoin="round" />
       <line x1="110" y1="80" x2="110" y2="24" stroke="#D9534F" strokeWidth="1.2" strokeDasharray="3 2" /><rect x="105" y="74" width="5" height="6" fill="none" stroke="#D9534F" strokeWidth="0.8" />
-      <text x="70" y="92" {...DIAGRAM_TEXT}>base {base}</text><text x="128" y="56" {...DIAGRAM_TEXT} fill="#D9534F">height {height}</text><text x="36" y="50" {...DIAGRAM_TEXT}>side {side}</text>
+      <text x="70" y="92" {...DIAGRAM_TEXT}>base {base}</text><text x="95" y="52" {...DIAGRAM_TEXT} fill="#D9534F">height {height}</text><text x="36" y="50" {...DIAGRAM_TEXT}>side {side}</text>
     </Diagram>
   );
 }
@@ -3112,7 +3579,7 @@ function OpsPic({ add = 3, rows = 4, cols = 2 }) {
   return (
     <Diagram label={`${add} plus ${rows} times ${cols}`}>
       {Array.from({ length: add }, (_, i) => <circle key={i} cx={22 + i * 12} cy="44" r="4" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.6" />)}
-      <text x="70" y="47" {...DIAGRAM_TEXT}>+</text>
+      <text x="68" y="48.5" {...DIAGRAM_TEXT} fontSize="10">+</text>
       <rect x="80" y="14" width={cols * 14 + 6} height={rows * 14 + 6} rx="4" fill="none" stroke={B.green} strokeWidth="1.2" />
       {Array.from({ length: rows * cols }, (_, i) => <circle key={`a${i}`} cx={90 + (i % cols) * 14} cy={24 + Math.floor(i / cols) * 14} r="4" fill="#3E7CB1" stroke="#2E2E2E" strokeWidth="0.6" />)}
       <text x="80" y="94" {...DIAGRAM_TEXT}>{add} + {rows} × {cols} = {add + rows * cols}</text>
@@ -3141,6 +3608,23 @@ function BalancePic({ left = 'x + 5', right = '12' }) {
     </Diagram>
   );
 }
+// A seesaw in balance (pass MR, round one's picture check): the heavier grown-up sits near the pivot and the lighter child far out on the
+// other end, so the two sides balance; the picture is a plank on a pivot under its middle, with the two people drawn plainly, the
+// grown-up 15 units from the pivot and the child 60, so a grown-up four times the child's weight balances (round two's picture read).
+function SeesawPic() {
+  const person = (x, s, fill) => <g><circle cx={x} cy={62 - 24 * s} r={5.5 * s} fill="#F5CBA7" stroke="#2E2E2E" strokeWidth="0.8" /><rect x={x - 5 * s} y={62 - 18 * s} width={10 * s} height={18 * s} rx={3 * s} fill={fill} stroke="#2E2E2E" strokeWidth="0.8" /></g>;
+  return (
+    <Diagram label="A balanced seesaw: the grown-up sits near the middle and the child sits far out on the other end">
+      <line x1="6" y1="86" x2="154" y2="86" stroke="#2E2E2E" strokeWidth="1" />
+      <polygon points="82,64 72,86 92,86" fill={B.muted} stroke="#2E2E2E" strokeWidth="0.8" />
+      <rect x="12" y="62" width="140" height="3.4" rx="1.4" fill="#B07A45" stroke="#2E2E2E" strokeWidth="0.8" />
+      {person(22, 0.72, '#7FB3E0')}{person(97, 1.15, '#E59F6A')}
+      <text x="8" y="28" {...DIAGRAM_TEXT} textAnchor="start">child, far out</text>
+      <text x="97" y="20" {...DIAGRAM_TEXT}>grown-up, near the middle</text>
+      <text x="80" y="96" {...DIAGRAM_TEXT}>the heavier one sits nearer the middle</text>
+    </Diagram>
+  );
+}
 // A level balance for grade 1 (pass LB, TEKS 1.5E): what sits on one pan weighs the same as the other. No algebra caption.
 function PansPic({ left = '4 + 3', right = '7' }) {
   return (
@@ -3160,49 +3644,61 @@ function CirclePic({ d = 4 }) {
   );
 }
 function DoublingPic({ base = 2, times = 5, ask = false }) {
-  const counts = Array.from({ length: times + 1 }, (_, i) => base ** i);
+  // Exponents are written raised (2³), the way the lesson's own caption writes 2⁵, never with a caret (pass MR).
+  const counts = Array.from({ length: times + 1 }, (_, i) => base ** i); const up = (k) => String(k).split('').map((d) => '⁰¹²³⁴⁵⁶⁷⁸⁹'[Number(d)]).join('');
   return (
     <Diagram label={`Powers of ${base}`}>
-      {counts.map((n, k) => <g key={k}><text x={14 + k * 25} y="12" {...DIAGRAM_TEXT}>{k === 0 ? '1' : `${base}^${k}`}</text>{Array.from({ length: Math.min(n, 32) }, (_, i) => <circle key={i} cx={8 + k * 25 + (i % 4) * 5} cy={20 + Math.floor(i / 4) * 5} r="1.8" fill={B.gold} />)}<text x={14 + k * 25} y="74" {...DIAGRAM_TEXT}>{n}</text></g>)}
-      <text x="80" y="94" {...DIAGRAM_TEXT}>{ask ? `${base} to what power is ${counts[times]}? ${times}.` : `${base}^${times} = ${counts[times]}`}</text>
+      {counts.map((n, k) => <g key={k}><text x={14 + k * 25} y="12" {...DIAGRAM_TEXT}>{k === 0 ? '1' : `${base}${up(k)}`}</text>{Array.from({ length: Math.min(n, 32) }, (_, i) => <circle key={i} cx={8 + k * 25 + (i % 4) * 5} cy={20 + Math.floor(i / 4) * 5} r="1.8" fill={B.gold} />)}<text x={14 + k * 25} y="74" {...DIAGRAM_TEXT}>{n}</text></g>)}
+      <text x="80" y="94" {...DIAGRAM_TEXT}>{ask ? `${base} to what power is ${counts[times]}? ${times}.` : `${base}${up(times)} = ${counts[times]}`}</text>
     </Diagram>
   );
 }
 function GrowthBarsPic({ values = [100, 110, 121, 133], labels = [] }) {
-  const max = Math.max(...values); const w = Math.min(28, 120 / values.length);
+  // The bars share 136 units across the middle of the picture (pass MR: five bars at the old width ran the fifth off the right
+  // edge, its number and its name with it).
+  const max = Math.max(...values); const n = Math.max(1, values.length); const gap = 8; const w = Math.min(28, (136 - (n - 1) * gap) / n); const x0 = (160 - (n * w + (n - 1) * gap)) / 2;
   return (
     <Diagram label="Bars growing">
-      {values.map((v, i) => <g key={i}><rect x={20 + i * (w + 8)} y={80 - (v / max) * 60} width={w} height={(v / max) * 60} rx="3" fill={i % 2 ? B.gold : '#3E7CB1'} stroke="#2E2E2E" strokeWidth="0.8" /><text x={20 + i * (w + 8) + w / 2} y={76 - (v / max) * 60} {...DIAGRAM_TEXT} fontSize="4.6">{v}</text><text x={20 + i * (w + 8) + w / 2} y="92" {...DIAGRAM_TEXT} fontSize="4.6">{labels[i] || ''}</text></g>)}
+      {values.map((v, i) => <g key={i}><rect x={x0 + i * (w + gap)} y={80 - (v / max) * 60} width={w} height={(v / max) * 60} rx="3" fill={i % 2 ? B.gold : '#3E7CB1'} stroke="#2E2E2E" strokeWidth="0.8" /><text x={x0 + i * (w + gap) + w / 2} y={76 - (v / max) * 60} {...DIAGRAM_TEXT} fontSize="4.6">{v}</text><text x={x0 + i * (w + gap) + w / 2} y="92" {...DIAGRAM_TEXT} fontSize="4.6">{labels[i] || ''}</text></g>)}
     </Diagram>
   );
 }
-function PlotPic({ fn = 'line', point = null, px = null, py = null }) {
-  const X = (x) => 80 + x * 12; const Y = (y) => 52 - y * 8;
-  // A single point on the grid: 'point' with px across and py up, for the coordinate plane.
+function PlotPic({ fn = 'line', point = null, px = null, py = null, label = true }) {
+  // A line with a marked point reaches up to y = 8 (pass MR: the functions lesson's point, (3, 7), and its label sat above the
+  // picture's top edge, so the picture never showed the point its caption names); every other graph keeps y from -6 to 6.
+  const yTop = fn === 'line' && point !== null ? 8 : 6;
+  const X = (x) => 80 + x * 12; const Y = (y) => 52 - y * (48 / yTop);
+  // A single point on the grid: 'point' with px across and py up, for the coordinate plane. Since pass MR (the light-theme pass's
+  // read of every diagram for words past its edge) six steps each way with every grid line and number inside the picture: the
+  // x-axis numbers had sat at 104 of its 100 units, below the edge, so no reader saw them, and the grid had stopped at 5 while
+  // the numbers ran to 6. A question that asks for the point's coordinates draws it without its label (label false), since the
+  // label is the answer.
   if (fn === 'point') {
+    const gx = (k) => 30 + k * 16; const gy = (k) => 88 - k * 12.4;
     return (
-      <Diagram label={`The point (${px}, ${py})`}>
-        {[1, 2, 3, 4, 5].map((k) => <g key={k}><line x1={16 + k * 12.8} y1="8" x2={16 + k * 12.8} y2="96" stroke="#E2E6DE" strokeWidth="0.6" /><line x1="16" y1={96 - k * 14} x2="144" y2={96 - k * 14} stroke="#E2E6DE" strokeWidth="0.6" /></g>)}
-        <line x1="16" y1="96" x2="144" y2="96" stroke="#2E2E2E" strokeWidth="1" /><line x1="16" y1="8" x2="16" y2="96" stroke="#2E2E2E" strokeWidth="1" />
-        {[1, 2, 3, 4, 5, 6].map((k) => <text key={`x${k}`} x={16 + k * 12.8} y="104" {...DIAGRAM_TEXT} textAnchor="middle">{k}</text>)}
-        {[1, 2, 3, 4, 5, 6].map((k) => <text key={`y${k}`} x="9" y={99 - k * 14} {...DIAGRAM_TEXT} textAnchor="middle">{k}</text>)}
-        <line x1="16" y1={96 - py * 14} x2={16 + px * 12.8} y2={96 - py * 14} stroke={B.gold} strokeWidth="1.2" strokeDasharray="2 2" /><line x1={16 + px * 12.8} y1="96" x2={16 + px * 12.8} y2={96 - py * 14} stroke={B.gold} strokeWidth="1.2" strokeDasharray="2 2" />
-        <circle cx={16 + px * 12.8} cy={96 - py * 14} r="3.2" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.8" />
-        <text x={Math.min(16 + px * 12.8 + 6, 120)} y={96 - py * 14 - 6} {...DIAGRAM_TEXT}>({px}, {py})</text>
+      <Diagram label={label ? `The point (${px}, ${py})` : 'A point on a grid'}>
+        {[1, 2, 3, 4, 5, 6].map((k) => <g key={k}><line x1={gx(k)} y1={gy(6.5)} x2={gx(k)} y2={gy(0)} stroke="#E2E6DE" strokeWidth="0.6" /><line x1={gx(0)} y1={gy(k)} x2={gx(6.5)} y2={gy(k)} stroke="#E2E6DE" strokeWidth="0.6" /></g>)}
+        <line x1={gx(0)} y1={gy(0)} x2={gx(6.5)} y2={gy(0)} stroke="#2E2E2E" strokeWidth="1" /><line x1={gx(0)} y1={gy(6.5)} x2={gx(0)} y2={gy(0)} stroke="#2E2E2E" strokeWidth="1" />
+        {[1, 2, 3, 4, 5, 6].map((k) => <text key={`x${k}`} x={gx(k)} y={gy(0) + 8} {...DIAGRAM_TEXT}>{k}</text>)}
+        {[1, 2, 3, 4, 5, 6].map((k) => <text key={`y${k}`} x={gx(0) - 6} y={gy(k) + 1.9} {...DIAGRAM_TEXT}>{k}</text>)}
+        <line x1={gx(0)} y1={gy(py)} x2={gx(px)} y2={gy(py)} stroke={B.gold} strokeWidth="1.2" strokeDasharray="2 2" /><line x1={gx(px)} y1={gy(0)} x2={gx(px)} y2={gy(py)} stroke={B.gold} strokeWidth="1.2" strokeDasharray="2 2" />
+        <circle cx={gx(px)} cy={gy(py)} r="3.2" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.8" />
+        {label && <text x={Math.min(gx(px) + 9, 140)} y={gy(py) - 5} {...DIAGRAM_TEXT}>({px}, {py})</text>}
       </Diagram>
     );
   }
   const curves = { line: [(x) => 2 * x + 1], slope: [(x) => 2 * x], exp: [(x) => 2 ** x / 4], decay: [(x) => 5 * 0.5 ** (x + 2)], parabola: [(x) => (x * x) / 3 - 3], shift: [(x) => (x * x) / 3, (x) => ((x - 2) * (x - 2)) / 3 + 3], cubeneg: [(x) => -(x * x * x) / 12], steeper: [(x) => x, (x) => 2.5 * x], accel: [(x) => (x + 5) * 0.7], hubble: [(x) => 0.7 * x], cross: [(x) => x + 1, (x) => -x + 5], composite: [(x) => x + 1, (x) => x * x / 3] };
-  const path = (f) => { const pts = []; for (let x = -5; x <= 5; x += 0.25) { const y = f(x); if (Number.isFinite(y) && y > -6 && y < 6) pts.push(`${X(x).toFixed(1)},${Y(y).toFixed(1)}`); } return pts.join(' '); };
+  const path = (f) => { const pts = []; for (let x = -5; x <= 5; x += 0.25) { const y = f(x); if (Number.isFinite(y) && y > -yTop && y < yTop) pts.push(`${X(x).toFixed(1)},${Y(y).toFixed(1)}`); } return pts.join(' '); };
   return (
     <Diagram label="A graph">
       <line x1="16" y1="52" x2="144" y2="52" stroke="#2E2E2E" strokeWidth="1" /><line x1="80" y1="8" x2="80" y2="96" stroke="#2E2E2E" strokeWidth="1" />
       {(curves[fn] || curves.line).map((f, i) => <polyline key={i} points={path(f)} fill="none" stroke={i ? B.gold : '#3E7CB1'} strokeWidth="2" strokeLinejoin="round" />)}
       {fn === 'slope' && <g><line x1={X(1)} y1={Y(2)} x2={X(2)} y2={Y(2)} stroke={B.gold} strokeWidth="1.6" /><line x1={X(2)} y1={Y(2)} x2={X(2)} y2={Y(4)} stroke={B.gold} strokeWidth="1.6" /><text x={X(1.5)} y={Y(2) + 6} {...DIAGRAM_TEXT}>run 1</text><text x={X(2) + 10} y={Y(3)} {...DIAGRAM_TEXT}>rise 2</text></g>}
-      {fn === 'line' && point !== null && <g><circle cx={X(point)} cy={Y(2 * point + 1)} r="3" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.8" /><text x={X(point) + 16} y={Y(2 * point + 1) - 4} {...DIAGRAM_TEXT}>({point}, {2 * point + 1})</text></g>}
+      {fn === 'line' && point !== null && <g><circle cx={X(point)} cy={Y(2 * point + 1)} r="3" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.8" /><text x={X(point) + 15} y={Y(2 * point + 1) + 3} {...DIAGRAM_TEXT}>({point}, {2 * point + 1})</text></g>}
       {fn === 'cross' && <circle cx={X(2)} cy={Y(3)} r="3" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.8" />}
-      {fn === 'shift' && <text x="120" y="20" {...DIAGRAM_TEXT}>moved 2 right, 3 up</text>}
-      {fn === 'cubeneg' && <><text x="30" y="14" {...DIAGRAM_TEXT}>up on the left</text><text x="128" y="92" {...DIAGRAM_TEXT}>down on the right</text></>}
+      {/* Words in open space beside their curves (pass MR): both had sat on a curve. */}
+      {fn === 'shift' && <text x="118" y="68" {...DIAGRAM_TEXT}>moved 2 right, 3 up</text>}
+      {fn === 'cubeneg' && <><text x="4" y="44" {...DIAGRAM_TEXT} fontSize="4.8" textAnchor="start">up on the left</text><text x="158" y="62" {...DIAGRAM_TEXT} fontSize="4.8" textAnchor="end">down on the right</text></>}
     </Diagram>
   );
 }
@@ -3235,7 +3731,7 @@ function ReflectPic({ point = [2, 3] }) {
 }
 function UnitCirclePic({ deg = 45 }) {
   const a = (deg * Math.PI) / 180; const x = 80 + Math.cos(a) * 36; const y = 50 - Math.sin(a) * 36;
-  return <Diagram label="The unit circle"><circle cx="80" cy="50" r="36" fill="none" stroke="#2E2E2E" strokeWidth="1.2" /><line x1="36" y1="50" x2="124" y2="50" stroke={B.muted} strokeWidth="0.8" /><line x1="80" y1="6" x2="80" y2="94" stroke={B.muted} strokeWidth="0.8" /><line x1="80" y1="50" x2={x} y2={y} stroke={B.gold} strokeWidth="1.8" /><line x1={x} y1={y} x2={x} y2="50" stroke="#3E7CB1" strokeWidth="1.4" strokeDasharray="2 2" /><circle cx={x} cy={y} r="3" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.8" /><text x={x + 18} y={y - 4} {...DIAGRAM_TEXT}>(cos, sin)</text><text x={(80 + x) / 2} y="58" {...DIAGRAM_TEXT}>cos</text><text x={x + 10} y={(y + 50) / 2} {...DIAGRAM_TEXT}>sin</text><text x="80" y="96" {...DIAGRAM_TEXT}>radius 1, angle {deg}°</text></Diagram>;
+  return <Diagram label="The unit circle"><circle cx="80" cy="50" r="36" fill="none" stroke="#2E2E2E" strokeWidth="1.2" /><line x1="38" y1="50" x2="122" y2="50" stroke={B.muted} strokeWidth="0.8" /><line x1="80" y1="8" x2="80" y2="90" stroke={B.muted} strokeWidth="0.8" /><line x1="80" y1="50" x2={x} y2={y} stroke={B.gold} strokeWidth="1.8" /><line x1={x} y1={y} x2={x} y2="50" stroke="#3E7CB1" strokeWidth="1.4" strokeDasharray="2 2" /><circle cx={x} cy={y} r="3" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.8" /><text x={x + 18} y={y - 4} {...DIAGRAM_TEXT}>(cos, sin)</text><text x={(80 + x) / 2} y="58" {...DIAGRAM_TEXT}>cos</text><text x={x - 2.5} y={(y + 50) / 2 + 3} {...DIAGRAM_TEXT} textAnchor="end">sin</text><text x="80" y="96" {...DIAGRAM_TEXT}>radius 1, angle {deg}°</text></Diagram>;
 }
 function ScatterPic() {
   const rnd = lcg(11); const pts = Array.from({ length: 18 }, () => { const t = rnd(); return [20 + t * 120, 82 - t * 60 + (rnd() - 0.5) * 16]; });
@@ -3261,10 +3757,21 @@ function FlowPic({ steps = [] }) {
   const at = (i) => [gap + (i % per) * (w + gap), y0 + Math.floor(i / per) * 40];
   return <Diagram label={steps.join(', then ')}>{steps.map((t, i) => { const [x, y] = at(i); const nxt = i < steps.length - 1 ? at(i + 1) : null; return <g key={i}><Box x={x} y={y} w={w} h={24} text={t} fill={i === steps.length - 1 ? B.goldSoft : '#FFFFFF'} />{nxt && (nxt[1] === y ? <Arrow d={`M${x + w + 2} ${y + 12} L${nxt[0] - 2} ${y + 12}`} /> : <Arrow d={`M${x + w / 2} ${y + 26} C${x + w / 2} ${y + 40} ${nxt[0] + w / 2} ${y + 26} ${nxt[0] + w / 2} ${nxt[1] - 2}`} />)}</g>; })}</Diagram>;
 }
+// A loop of steps around a circle, each joined to the next by a curved arrow that runs from the edge of one step's box to the edge of
+// the next, its head touching the next box (round one's picture check, pass MR: each curve had run from center to center, so its
+// head sat under the next step's box and no loop showed which way it went). The curve is the same bow as before, trimmed to the part
+// outside both boxes (a quadratic curve's piece between two points is a quadratic curve too, its control point the blossom of the two),
+// and a loop of five or more steps sits on a wider circle, so its boxes leave room for the arrows between them.
 function LoopPic({ steps = [] }) {
-  const n = steps.length; const cx = 80; const cy = 50; const r = 34;
+  const n = steps.length; const cx = 80; const cy = 50; const r = n >= 5 ? 40 : 34;
+  const bez = (t, a, q, b) => [0, 1].map((j) => (1 - t) * (1 - t) * a[j] + 2 * (1 - t) * t * q[j] + t * t * b[j]);
+  const blossom = (s, t, a, q, b) => [0, 1].map((j) => (1 - s) * (1 - t) * a[j] + ((1 - s) * t + s * (1 - t)) * q[j] + s * t * b[j]);
+  const inBox = (p, c, pad) => Math.abs(p[0] - c[0]) <= 17 + pad && Math.abs(p[1] - c[1]) <= 7 + pad;
   const at = (i) => { const a = -Math.PI / 2 + (i / n) * Math.PI * 2; return [cx + Math.cos(a) * r, cy + Math.sin(a) * r]; };
-  return <Diagram label={steps.join(' around to ')}>{steps.map((t, i) => { const [x1, y1] = at(i); const [x2, y2] = at((i + 1) % n); const mx = (x1 + x2) / 2; const my = (y1 + y2) / 2; const dx = mx - cx; const dy = my - cy; const k = 1.25; return <path key={`a${i}`} d={`M${x1} ${y1} Q${cx + dx * k} ${cy + dy * k} ${x2} ${y2}`} fill="none" stroke={B.green} strokeWidth="1.4" markerEnd="url(#eduArrow)" />; })}{steps.map((t, i) => { const [x, y] = at(i); return <Box key={i} x={x - 17} y={y - 7} w={34} h={14} text={t} />; })}</Diagram>;
+  return <Diagram label={steps.join(' around to ')}>{steps.map((t, i) => { const [x1, y1] = at(i); const [x2, y2] = at((i + 1) % n); const mx = (x1 + x2) / 2; const my = (y1 + y2) / 2; const dx = mx - cx; const dy = my - cy; const k = 1.25; const A = [x1, y1]; const Q = [cx + dx * k, cy + dy * k]; const Z = [x2, y2];
+    let t0 = 0; while (t0 < 1 && inBox(bez(t0, A, Q, Z), A, 1.5)) t0 += 0.005; let t1 = 1; while (t1 > t0 && inBox(bez(t1, A, Q, Z), Z, 2.6)) t1 -= 0.005;
+    const [sx, sy] = bez(t0, A, Q, Z); const [ex, ey] = bez(t1, A, Q, Z); const [kx, ky] = blossom(t0, t1, A, Q, Z); const f = (v) => v.toFixed(2);
+    return <path key={`a${i}`} d={`M${f(sx)} ${f(sy)} Q${f(kx)} ${f(ky)} ${f(ex)} ${f(ey)}`} fill="none" stroke={B.green} strokeWidth="1.4" markerEnd="url(#eduArrow)" />; })}{steps.map((t, i) => { const [x, y] = at(i); return <Box key={i} x={x - 17} y={y - 7} w={34} h={14} text={t} />; })}</Diagram>;
 }
 function StatesPic() {
   const rnd = lcg(4); const panel = (x, label, mode) => <g><rect x={x} y="12" width="44" height="60" rx="5" fill="#EEF4FB" stroke="#2E2E2E" strokeWidth="1" />{Array.from({ length: mode === 'gas' ? 6 : 16 }, (_, i) => { const gx = mode === 'solid' ? x + 8 + (i % 4) * 9.5 : mode === 'liquid' ? x + 8 + (i % 4) * 9.5 + (rnd() - 0.5) * 4 : x + 6 + rnd() * 32; const gy = mode === 'solid' ? 20 + Math.floor(i / 4) * 12 : mode === 'liquid' ? 34 + Math.floor(i / 4) * 9 + (rnd() - 0.5) * 3 : 16 + rnd() * 50; return <circle key={i} cx={gx} cy={gy} r="3" fill="#3E7CB1" stroke="#2E2E2E" strokeWidth="0.5" />; })}<text x={x + 22} y="84" {...DIAGRAM_TEXT}>{label}</text></g>;
@@ -3285,21 +3792,27 @@ function OrbitsPic() {
 }
 function MixturePic() {
   const rnd = lcg(21);
-  return <Diagram label="A mixture and a solution"><path d="M24 14 V78 H72 V14" fill="none" stroke="#2E2E2E" strokeWidth="1.4" /><rect x="25" y="30" width="46" height="48" fill="#C9DDF5" />{Array.from({ length: 14 }, (_, i) => <circle key={i} cx={30 + rnd() * 36} cy={70 + rnd() * 6} r="1.8" fill="#8C6239" />)}<text x="48" y="90" {...DIAGRAM_TEXT}>sand settles: a mixture</text><path d="M88 14 V78 H136 V14" fill="none" stroke="#2E2E2E" strokeWidth="1.4" /><rect x="89" y="30" width="46" height="48" fill="#C9DDF5" />{Array.from({ length: 22 }, (_, i) => <circle key={`s${i}`} cx={94 + rnd() * 36} cy={34 + rnd() * 40} r="1.2" fill="#FFFFFF" stroke="#3E7CB1" strokeWidth="0.4" />)}<text x="112" y="90" {...DIAGRAM_TEXT}>salt spreads out: a solution</text></Diagram>;
+  return <Diagram label="A mixture and a solution"><path d="M24 14 V78 H72 V14" fill="none" stroke="#2E2E2E" strokeWidth="1.4" /><rect x="25" y="30" width="46" height="48" fill="#C9DDF5" />{Array.from({ length: 14 }, (_, i) => <circle key={i} cx={30 + rnd() * 36} cy={70 + rnd() * 6} r="1.8" fill="#8C6239" />)}<text x="48" y="88" {...DIAGRAM_TEXT}>sand settles:</text><text x="48" y="95" {...DIAGRAM_TEXT}>a mixture</text><path d="M88 14 V78 H136 V14" fill="none" stroke="#2E2E2E" strokeWidth="1.4" /><rect x="89" y="30" width="46" height="48" fill="#C9DDF5" />{Array.from({ length: 22 }, (_, i) => <circle key={`s${i}`} cx={94 + rnd() * 36} cy={34 + rnd() * 40} r="1.2" fill="#FFFFFF" stroke="#3E7CB1" strokeWidth="0.4" />)}<text x="112" y="88" {...DIAGRAM_TEXT}>salt spreads out:</text><text x="112" y="95" {...DIAGRAM_TEXT}>a solution</text></Diagram>;
 }
 function DensityPic() {
   const block = (x, n, label) => <g><rect x={x} y="22" width="44" height="44" rx="3" fill="#FFF3C8" stroke="#2E2E2E" strokeWidth="1.2" />{Array.from({ length: n }, (_, i) => <circle key={i} cx={x + 8 + (i % 5) * 7} cy={30 + Math.floor(i / 5) * 8} r="2.4" fill="#8C6239" />)}<text x={x + 22} y="80" {...DIAGRAM_TEXT}>{label}</text></g>;
   return <Diagram label="Two blocks the same size">{block(24, 8, 'light')}{block(92, 24, 'dense')}<text x="80" y="94" {...DIAGRAM_TEXT}>density = mass ÷ volume</text></Diagram>;
 }
 function PyramidPic({ levels = [1000, 100, 10, 1] }) {
-  return <Diagram label="An energy pyramid">{levels.map((v, i) => { const w = 130 - i * 30; return <g key={i}><rect x={80 - w / 2} y={78 - i * 18} width={w} height="16" fill={['#9ACD32', '#5BA84A', B.gold, '#D9534F'][i]} stroke="#2E2E2E" strokeWidth="0.8" /><text x="80" y={86 - i * 18 - 0.5} {...DIAGRAM_TEXT}>{v.toLocaleString('en-US')}</text></g>; })}<text x="80" y="98" {...DIAGRAM_TEXT}>about a tenth moves up each level</text></Diagram>;
+  return <Diagram label="An energy pyramid">{levels.map((v, i) => { const w = 130 - i * 30; return <g key={i}><rect x={80 - w / 2} y={72 - i * 18} width={w} height="16" fill={['#9ACD32', '#5BA84A', B.gold, '#D9534F'][i]} stroke="#2E2E2E" strokeWidth="0.8" /><text x="80" y={80 - i * 18 - 0.5} {...DIAGRAM_TEXT}>{v.toLocaleString('en-US')}</text></g>; })}<text x="80" y="96.5" {...DIAGRAM_TEXT}>about a tenth moves up each level</text></Diagram>;
 }
+// A water molecule: the two hydrogens touch the oxygen, 104.5 degrees apart, as the caption's "bonded" says (round one's picture
+// check, pass MR: they had stood apart from it).
 function MoleculePic({ formulaText = 'H₂O', masses = false }) {
-  return <Diagram label={formulaText}><circle cx="80" cy="44" r="16" fill="#D9534F" stroke="#2E2E2E" strokeWidth="1" /><circle cx="56" cy="62" r="10" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="1" /><circle cx="104" cy="62" r="10" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="1" /><text x="80" y="44" {...DIAGRAM_TEXT} fill="#FFFFFF" fontSize="7">O</text><text x="56" y="62" {...DIAGRAM_TEXT} fontSize="6">H</text><text x="104" y="62" {...DIAGRAM_TEXT} fontSize="6">H</text>{masses ? <text x="80" y="92" {...DIAGRAM_TEXT}>1 + 1 + 16 = 18 grams per mole</text> : <text x="80" y="92" {...DIAGRAM_TEXT}>{formulaText}: two hydrogens bonded to one oxygen</text>}</Diagram>;
+  return <Diagram label={formulaText}><circle cx="80" cy="44" r="16" fill="#D9534F" stroke="#2E2E2E" strokeWidth="1" /><circle cx="59.4" cy="59.9" r="10" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="1" /><circle cx="100.6" cy="59.9" r="10" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="1" /><text x="80" y="44" {...DIAGRAM_TEXT} fill="#FFFFFF" fontSize="7">O</text><text x="59.4" y="59.9" {...DIAGRAM_TEXT} fontSize="6">H</text><text x="100.6" y="59.9" {...DIAGRAM_TEXT} fontSize="6">H</text>{masses ? <text x="80" y="92" {...DIAGRAM_TEXT}>1 + 1 + 16 = 18 grams per mole</text> : <text x="80" y="92" {...DIAGRAM_TEXT}>{formulaText}: two hydrogens bonded to one oxygen</text>}</Diagram>;
 }
 function PlatesPic() {
-  const panel = (x, label, d1, d2) => <g><rect x={x} y="24" width="22" height="30" fill="#C9A227" stroke="#2E2E2E" strokeWidth="0.8" /><rect x={x + 24} y="24" width="22" height="30" fill="#E3D9A6" stroke="#2E2E2E" strokeWidth="0.8" /><Arrow d={d1} /><Arrow d={d2} /><text x={x + 23} y="70" {...DIAGRAM_TEXT}>{label}</text></g>;
-  return <Diagram label="Plates push, pull and slide">{panel(8, 'push', 'M2 40 L8 40', 'M60 40 L54 40')}{panel(60, 'pull', 'M80 40 L74 40', 'M88 40 L94 40')}{panel(112, 'slide', 'M114 18 L130 18', 'M156 60 L140 60')}<text x="80" y="92" {...DIAGRAM_TEXT}>mountains, rifts, earthquakes</text></Diagram>;
+  // Each plate carries its own arrow, drawn on the plate and the same length in every panel (pass MR, the light-theme pass: the
+  // push arrows were stubs, one at the picture's edge, and the pull arrows straddled the plates' edges). Plates that slide move
+  // along the line between them, one up and one down, as they do at a transform boundary seen from above.
+  const panel = (x, label, d1, d2) => <g><rect x={x} y="24" width="22" height="30" fill="#C9A227" stroke="#2E2E2E" strokeWidth="0.8" /><rect x={x + 24} y="24" width="22" height="30" fill="#E3D9A6" stroke="#2E2E2E" strokeWidth="0.8" /><Arrow d={d1} color="#2E2E2E" /><Arrow d={d2} color="#2E2E2E" /><text x={x + 23} y="70" {...DIAGRAM_TEXT}>{label}</text></g>;
+  const across = (x, dir) => (dir > 0 ? `M${x + 4} 39 L${x + 17} 39` : `M${x + 18} 39 L${x + 5} 39`); const along = (x, dir) => (dir > 0 ? `M${x + 11} 50 L${x + 11} 29` : `M${x + 11} 28 L${x + 11} 49`);
+  return <Diagram label="Plates push, pull and slide">{panel(8, 'push', across(8, 1), across(32, -1))}{panel(60, 'pull', across(60, -1), across(84, 1))}{panel(112, 'slide', along(112, 1), along(136, -1))}<text x="80" y="92" {...DIAGRAM_TEXT}>mountains, rifts, earthquakes</text></Diagram>;
 }
 function MothsPic() {
   const moth = (x, y, fill) => <g><ellipse cx={x - 6} cy={y} rx="7" ry="4" fill={fill} stroke="#2E2E2E" strokeWidth="0.6" transform={`rotate(-20 ${x - 6} ${y})`} /><ellipse cx={x + 6} cy={y} rx="7" ry="4" fill={fill} stroke="#2E2E2E" strokeWidth="0.6" transform={`rotate(20 ${x + 6} ${y})`} /><ellipse cx={x} cy={y} rx="2" ry="5" fill="#2E2E2E" /></g>;
@@ -3308,8 +3821,11 @@ function MothsPic() {
 function LayersPic() {
   return <Diagram label="Rock layers, deeper is older">{['#E3D9A6', '#C9A227', '#A6825B', '#8C6239'].map((f, i) => <rect key={i} x="24" y={16 + i * 17} width="112" height="17" fill={f} stroke="#2E2E2E" strokeWidth="0.6" />)}<path d="M96 66 q6 -8 12 0 q-6 4 -12 0" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="0.8" /><text x="140" y="28" {...DIAGRAM_TEXT} textAnchor="start">newest</text><text x="140" y="78" {...DIAGRAM_TEXT} textAnchor="start">oldest</text></Diagram>;
 }
+// Meiosis: one body cell of 46 chromosomes makes four sex cells of 23 each (round one's picture check, pass MR: the picture had shown
+// two, and meiosis makes four).
 function CellDivPic() {
-  return <Diagram label="One cell becomes two"><circle cx="40" cy="50" r="22" fill="#E9F3DE" stroke="#2E2E2E" strokeWidth="1.2" /><text x="40" y="50" {...DIAGRAM_TEXT}>46</text><Arrow d="M66 50 L86 50" /><circle cx="108" cy="36" r="14" fill="#E9F3DE" stroke="#2E2E2E" strokeWidth="1.2" /><circle cx="108" cy="66" r="14" fill="#E9F3DE" stroke="#2E2E2E" strokeWidth="1.2" /><text x="108" y="36" {...DIAGRAM_TEXT}>23</text><text x="108" y="66" {...DIAGRAM_TEXT}>23</text><text x="80" y="94" {...DIAGRAM_TEXT}>sex cells carry half</text></Diagram>;
+  const cell = (x, y) => <g key={`${x}-${y}`}><circle cx={x} cy={y} r="11" fill="#E9F3DE" stroke="#2E2E2E" strokeWidth="1.2" /><text x={x} y={y} {...DIAGRAM_TEXT}>23</text></g>;
+  return <Diagram label="One cell with 46 chromosomes becomes four sex cells with 23 each"><circle cx="36" cy="46" r="22" fill="#E9F3DE" stroke="#2E2E2E" strokeWidth="1.2" /><text x="36" y="46" {...DIAGRAM_TEXT}>46</text><Arrow d="M62 46 L82 46" />{cell(100, 32)}{cell(128, 32)}{cell(100, 60)}{cell(128, 60)}<text x="80" y="94" {...DIAGRAM_TEXT}>meiosis: four sex cells, each with half</text></Diagram>;
 }
 function BasePairsPic() {
   const pairs = [['A', 'T'], ['C', 'G'], ['T', 'A'], ['G', 'C']];
@@ -3320,14 +3836,21 @@ function HomologyPic() {
   return <Diagram label="An arm, a flipper, a wing">{limb(30, 'arm', 1)}{limb(80, 'flipper', 0.6)}{limb(128, 'wing', 1.4)}</Diagram>;
 }
 function TwoWayPic({ a = '', b = '', top = '', bottom = '' }) {
-  return <Diagram label={`${a} and ${b}, each way`}><Box x="6" y="38" w="56" h="24" text={a} /><Box x="98" y="38" w="56" h="24" text={b} /><Arrow d="M64 44 L96 44" /><Arrow d="M96 56 L64 56" color={B.gold} /><text x="80" y="32" {...DIAGRAM_TEXT}>{top}</text><text x="80" y="72" {...DIAGRAM_TEXT}>{bottom}</text></Diagram>;
+  // Words longer than a box's line break in two, after a colon when there is one (pass MR: "on the ground: 30 miles" had shrunk
+  // to a size no one could read), and each line keeps the size the longest line allows.
+  const lines = (t) => { const s = String(t); if (s.length <= 14) return [s]; const c = s.indexOf(': '); if (c > 0) return [s.slice(0, c + 1), s.slice(c + 2)]; const m = s.lastIndexOf(' ', Math.ceil(s.length / 2)); return m > 0 ? [s.slice(0, m), s.slice(m + 1)] : [s]; };
+  const box = (x, t) => { const ls = lines(t); const size = Math.min(5.2, 50 / (Math.max(...ls.map((l) => l.length)) * 0.6)); return <g><rect x={x} y="38" width="56" height="24" rx="6" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="1" />{ls.map((l, i) => <text key={i} x={x + 28} y={50 + 1.8 + (i - (ls.length - 1) / 2) * 6.2} {...DIAGRAM_TEXT} fontSize={size.toFixed(2)}>{l}</text>)}</g>; };
+  return <Diagram label={`${a} and ${b}, each way`}>{box(6, a)}{box(98, b)}<Arrow d="M64 44 L96 44" /><Arrow d="M96 56 L64 56" color={B.gold} /><text x="80" y="32" {...DIAGRAM_TEXT}>{top}</text><text x="80" y="72" {...DIAGRAM_TEXT}>{bottom}</text></Diagram>;
 }
 function PhScalePic() {
   return <Diagram label="The pH scale"><defs><linearGradient id="eduPh" x1="0" x2="1"><stop offset="0" stopColor="#D9534F" /><stop offset="0.5" stopColor="#5BA84A" /><stop offset="1" stopColor="#4B3A8F" /></linearGradient></defs><rect x="14" y="40" width="132" height="14" rx="4" fill="url(#eduPh)" stroke="#2E2E2E" strokeWidth="0.8" />{[0, 7, 14].map((v) => <text key={v} x={14 + (v / 14) * 132} y="66" {...DIAGRAM_TEXT}>{v}</text>)}<text x="34" y="30" {...DIAGRAM_TEXT}>acid</text><text x="80" y="30" {...DIAGRAM_TEXT}>neutral</text><text x="128" y="30" {...DIAGRAM_TEXT}>base</text><text x="80" y="88" {...DIAGRAM_TEXT}>lemon near 2, water at 7, soap near 10</text></Diagram>;
 }
 function ReactionPic({ left = [], right = [] }) {
-  const row = (items, x0, fill) => items.map((t, i) => <g key={t + i}><Box x={x0 + i * 32} y="36" w="26" h="20" text={t} fill={fill} />{i < items.length - 1 && <text x={x0 + i * 32 + 29} y="47" {...DIAGRAM_TEXT}>+</text>}</g>);
-  const lw = left.length * 32 - 6; const rw = right.length * 32 - 6; const x0 = Math.max(4, (150 - lw - rw - 24) / 2);
+  // Every box fits across the picture (pass MR: "ash + smoke + heat" ran its last box off the right edge): with five boxes or
+  // more, each box narrows so the whole reaction still fits, centered, and Box shrinks a long word to its box.
+  const step = Math.min(32, 138 / Math.max(1, left.length + right.length)); const bw = step - 6;
+  const row = (items, x0, fill) => items.map((t, i) => <g key={t + i}><Box x={x0 + i * step} y="36" w={bw} h="20" text={t} fill={fill} />{i < items.length - 1 && <text x={x0 + i * step + bw + 3} y="47" {...DIAGRAM_TEXT}>+</text>}</g>);
+  const lw = left.length * step - 6; const rw = right.length * step - 6; const x0 = Math.max(4, (160 - lw - rw - 26) / 2);
   return <Diagram label="A reaction">{row(left, x0, '#FFFFFF')}<Arrow d={`M${x0 + lw + 3} 46 L${x0 + lw + 22} 46`} />{row(right, x0 + lw + 26, B.goldSoft)}<text x="80" y="80" {...DIAGRAM_TEXT}>what goes in becomes what comes out</text></Diagram>;
 }
 function GasLawPic() {
@@ -3341,14 +3864,25 @@ function MomentumPic() {
   return <Diagram label="A bike and a truck at the same speed"><circle cx="40" cy="60" r="8" fill="#3E7CB1" stroke="#2E2E2E" strokeWidth="1" /><Arrow d="M52 60 L76 60" /><text x="40" y="82" {...DIAGRAM_TEXT}>small mass</text><rect x="90" y="40" width="40" height="30" rx="4" fill="#8C6239" stroke="#2E2E2E" strokeWidth="1" /><Arrow d="M134 55 L158 55" /><text x="110" y="82" {...DIAGRAM_TEXT}>big mass</text><text x="80" y="96" {...DIAGRAM_TEXT}>same speed, more mass, more momentum</text></Diagram>;
 }
 function WavePic({ wavelength = 40, amplitude = 14 }) {
-  const pts = []; for (let x = 10; x <= 150; x += 2) pts.push(`${x},${50 - Math.sin(((x - 10) / wavelength) * Math.PI * 2) * amplitude}`);
-  return <Diagram label="A wave"><line x1="10" y1="50" x2="150" y2="50" stroke={B.muted} strokeWidth="0.8" /><polyline points={pts.join(' ')} fill="none" stroke="#3E7CB1" strokeWidth="2" /><line x1="20" y1="22" x2="60" y2="22" stroke={B.gold} strokeWidth="1.4" /><text x="40" y="16" {...DIAGRAM_TEXT}>wavelength λ</text><line x1="130" y1="50" x2="130" y2={50 - amplitude} stroke={B.gold} strokeWidth="1.4" /><text x="140" y="40" {...DIAGRAM_TEXT}>amplitude</text></Diagram>;
+  // The gold bar spans one wavelength, crest to crest, with a dashed guide down to each crest, and the gold line stands at a
+  // crest, from the rest line to the top (pass MR, the light-theme pass: the bar was always 40 units, which matched only a
+  // 40-unit wave and covered a wave and two-thirds in the sound lesson's shorter one, and the line stood where the wave crossed
+  // its rest line, with "amplitude" written over the wave).
+  const pts = []; for (let x = 10; x <= 150; x += 1) pts.push(`${x},${(50 - Math.sin(((x - 10) / wavelength) * Math.PI * 2) * amplitude).toFixed(2)}`);
+  const crest = (k) => 10 + wavelength / 4 + k * wavelength; const last = crest(Math.floor((140 - crest(0)) / wavelength)); const top = 50 - amplitude;
+  const guide = (x) => <line x1={x} y1="22" x2={x} y2={top - 1.5} stroke={B.gold} strokeWidth="0.6" strokeDasharray="1.5 1.5" />;
+  return <Diagram label="A wave"><line x1="10" y1="50" x2="150" y2="50" stroke={B.muted} strokeWidth="0.8" /><polyline points={pts.join(' ')} fill="none" stroke="#3E7CB1" strokeWidth="2" />{guide(crest(0))}{guide(crest(1))}<line x1={crest(0)} y1="22" x2={crest(1)} y2="22" stroke={B.gold} strokeWidth="1.4" /><text x={(crest(0) + crest(1)) / 2} y="16" {...DIAGRAM_TEXT}>wavelength λ</text><line x1={last} y1="50" x2={last} y2={top} stroke={B.gold} strokeWidth="1.4" /><text x={last} y={top - 6} {...DIAGRAM_TEXT}>amplitude</text></Diagram>;
 }
 function WorkPic() {
   return <Diagram label="A push through a distance"><line x1="10" y1="70" x2="150" y2="70" stroke="#2E2E2E" strokeWidth="1" /><rect x="30" y="44" width="30" height="26" fill="#F7D154" stroke="#2E2E2E" strokeWidth="1" /><Arrow d="M8 57 L28 57" color="#D9534F" /><text x="18" y="50" {...DIAGRAM_TEXT}>F</text><rect x="100" y="44" width="30" height="26" fill="#F7D154" stroke="#2E2E2E" strokeWidth="1" opacity="0.45" /><line x1="45" y1="82" x2="115" y2="82" stroke={B.gold} strokeWidth="1.4" /><text x="80" y="92" {...DIAGRAM_TEXT}>distance d</text></Diagram>;
 }
 function EarthLayersPic() {
-  return <Diagram label="The Earth in layers"><circle cx="80" cy="50" r="44" fill="#8C6239" stroke="#2E2E2E" strokeWidth="1.2" /><circle cx="80" cy="50" r="40" fill="#E4572E" /><circle cx="80" cy="50" r="22" fill="#F4A259" /><circle cx="80" cy="50" r="11" fill="#FFF3C8" stroke="#2E2E2E" strokeWidth="0.6" /><text x="80" y="10" {...DIAGRAM_TEXT}>crust</text><text x="80" y="24" {...DIAGRAM_TEXT}>mantle</text><text x="80" y="38" {...DIAGRAM_TEXT}>outer core</text><text x="80" y="52" {...DIAGRAM_TEXT}>inner</text></Diagram>;
+  // Each layer is named to the right and joined to it by a thin line, the way a textbook labels a cut-away (pass MR, the
+  // light-theme pass: "crust" had sat on the crust's own outline, and the inner core's name was cut to "inner" to fit inside it).
+  const lead = (x2, y2, y) => <line x1="115" y1={y - 1.6} x2={x2} y2={y2} stroke="#5B6157" strokeWidth="0.5" />;
+  const name = (y, t) => <text x="117" y={y + 0.2} {...DIAGRAM_TEXT} textAnchor="start">{t}</text>;
+  return <Diagram label="The Earth in layers"><circle cx="64" cy="50" r="44" fill="#8C6239" stroke="#2E2E2E" strokeWidth="1.2" /><circle cx="64" cy="50" r="40" fill="#E4572E" /><circle cx="64" cy="50" r="22" fill="#F4A259" /><circle cx="64" cy="50" r="11" fill="#FFF3C8" stroke="#2E2E2E" strokeWidth="0.6" />
+    {lead(91, 17.8, 18)}{name(18, 'crust')}{lead(92, 37, 36)}{name(36, 'mantle')}{lead(80.5, 53, 60)}{name(60, 'outer core')}{lead(68.5, 52.5, 80)}{name(80, 'inner core')}</Diagram>;
 }
 function OceanPic() {
   return <Diagram label="Cold salty water sinking"><rect x="10" y="20" width="140" height="66" fill="#C9DDF5" /><rect x="10" y="20" width="140" height="8" fill="#FFFFFF" opacity="0.5" /><Arrow d="M30 30 C26 50 26 66 40 78" color="#2B4C8C" /><Arrow d="M50 80 L120 80" color="#2B4C8C" /><Arrow d="M130 72 C136 50 132 36 110 30" color="#D9534F" /><Arrow d="M100 28 L44 28" color="#D9534F" /><text x="34" y="16" {...DIAGRAM_TEXT}>cold, salty: sinks</text><text x="120" y="16" {...DIAGRAM_TEXT}>warm: rises</text></Diagram>;
@@ -3363,9 +3897,18 @@ function TimelinePic({ events = [] }) {
     <Diagram label={events.map((e) => `${label(e[0])} ${e[1]}`).join(', ')}>
       <line x1="10" y1="52" x2="150" y2="52" stroke="#2E2E2E" strokeWidth="1.4" /><polygon points="150,48 156,52 150,56" fill="#2E2E2E" />
       {(() => {
-        // Dots sit at their true years; labels spread out so close years do not pile up, joined by a thin leader.
-        let last = -100; const placed = events.map(([y, t], i) => { const x = X(y); const lx = Math.max(x, last + 22); last = lx; return { x, lx, y, t, up: i % 2 === 0 }; });
-        return placed.map(({ x, lx, y, t, up }, i) => <g key={i}><line x1={x} y1="46" x2={x} y2="58" stroke="#2E2E2E" strokeWidth="1.2" /><circle cx={x} cy="52" r="3" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.8" />{lx !== x && <line x1={x} y1={up ? 46 : 58} x2={lx} y2={up ? 44 : 64} stroke={B.muted} strokeWidth="0.6" />}<text x={lx} y={up ? 34 : 72} {...DIAGRAM_TEXT} fontSize="5.4" fontWeight="700">{label(y)}</text><text x={lx} y={up ? 42 : 80} {...DIAGRAM_TEXT} fontSize="4.4">{t}</text></g>);
+        // Dots sit at their true years. Names take turns above and below the line, and along each side they spread apart so none
+        // covers the next or passes the picture's edge, joined to their dot by a thin leader when moved (pass MR: a crowd of late
+        // years had pushed its last names off the right edge, "1991, the Web" among them). A side whose names cannot all fit
+        // shrinks its words together.
+        const placed = [0, 1].flatMap((side) => {
+          const row = events.map(([y, t], i) => ({ y, t, i, x: X(y) })).filter((e) => e.i % 2 === side).sort((a, b) => a.x - b.x);
+          const wide = (e) => Math.max(label(e.y).length * 5.4 * 0.6, String(e.t).length * 4.4 * 0.58) + 1;
+          const k = Math.min(1, (154 - 2 * Math.max(0, row.length - 1)) / Math.max(1, row.reduce((s, e) => s + wide(e), 0)));   // the gaps stay 2 (round one's code check)
+          const lx = spreadLabels(row.map((e) => ({ x: e.x, w: wide(e) * k })), 3, 157, 2);
+          return row.map((e, j) => ({ ...e, lx: lx[j], up: side === 0, k }));
+        });
+        return placed.map(({ x, lx, y, t, up, k, i }) => <g key={i}><line x1={x} y1="46" x2={x} y2="58" stroke="#2E2E2E" strokeWidth="1.2" /><circle cx={x} cy="52" r="3" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.8" />{Math.abs(lx - x) > 0.5 && <line x1={x} y1={up ? 46 : 58} x2={lx} y2={up ? 44 : 64} stroke={B.muted} strokeWidth="0.6" />}<text x={lx} y={up ? 34 : 72} {...DIAGRAM_TEXT} fontSize={(5.4 * k).toFixed(2)} fontWeight="700">{label(y)}</text><text x={lx} y={up ? 42 : 80} {...DIAGRAM_TEXT} fontSize={(4.4 * k).toFixed(2)}>{t}</text></g>);
       })()}
     </Diagram>
   );
@@ -3383,24 +3926,35 @@ function MapPic({ region = 'texas', spots = [] }) {
       {region === 'town' ? <g stroke="#FFFFFF" strokeWidth="6">{[20, 60, 100, 140].map((x) => <line key={`v${x}`} x1={x} y1="0" x2={x} y2="100" />)}{[16, 52, 88].map((y) => <line key={`h${y}`} x1="0" y1={y} x2="160" y2={y} />)}</g>
         : region === 'world' ? WORLD_SHAPES.map((pts, i) => <polygon key={i} points={pts.map((p) => p.join(',')).join(' ')} {...land} />)
         : <polygon points={MAP_SHAPES[region].map((p) => p.join(',')).join(' ')} {...land} />}
-      {spots.map(([x, y, t], i) => <g key={i}><circle cx={x} cy={y} r="3.4" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.9" /><text x={x} y={y - 6} {...DIAGRAM_TEXT} fontSize="4.6" fontWeight="700">{t}</text></g>)}
+      {/* A place's name sits above its dot (below it near the top edge), slides in from either edge so it is never cut off, and
+          wears a thin white outline so a coastline under it cannot hide a letter (pass MR: "Plymouth, 1620" and "Ring of Fire"
+          ran past the right edge, and "Rift Valley" sat on two coastlines). */}
+      {spots.map(([x, y, t], i) => { const w = String(t).length * 4.6 * 0.6 + 1; const lx = Math.min(Math.max(x, w / 2 + 1), 159 - w / 2); const ly = y - 6 < 6 ? y + 10 : y - 6;
+        return <g key={i}><circle cx={x} cy={y} r="3.4" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.9" /><text x={lx} y={ly} {...DIAGRAM_TEXT} fontSize="4.6" fontWeight="700" stroke="#FFFFFF" strokeWidth="1.3" strokeLinejoin="round" style={{ paintOrder: 'stroke' }}>{t}</text></g>; })}
     </Diagram>
   );
 }
 function BranchesPic({ checks = false }) {
-  return <Diagram label="Three branches of government"><Box x="6" y="36" w="44" h="26" text="Congress" fill="#C9DDF5" /><Box x="58" y="36" w="44" h="26" text="President" fill="#FFF3C8" /><Box x="110" y="36" w="44" h="26" text="Courts" fill="#DCEBD3" /><text x="28" y="76" {...DIAGRAM_TEXT}>makes laws</text><text x="80" y="76" {...DIAGRAM_TEXT}>carries out</text><text x="132" y="76" {...DIAGRAM_TEXT}>judges</text>{checks && <><Arrow d="M28 34 C40 12 68 12 80 34" color={B.gold} /><Arrow d="M80 64 C92 88 120 88 132 64" color={B.gold} /><Arrow d="M132 34 C110 6 50 6 28 34" color={B.gold} /><text x="80" y="10" {...DIAGRAM_TEXT}>each checks the others</text></>}</Diagram>;
+  return <Diagram label="Three branches of government"><Box x="6" y="36" w="44" h="26" text="Congress" fill="#C9DDF5" /><Box x="58" y="36" w="44" h="26" text="President" fill="#FFF3C8" /><Box x="110" y="36" w="44" h="26" text="Courts" fill="#DCEBD3" /><text x="28" y="76" {...DIAGRAM_TEXT}>makes laws</text><text x="80" y="76" {...DIAGRAM_TEXT}>carries out</text><text x="132" y="76" {...DIAGRAM_TEXT}>judges</text>{checks && <><Arrow d="M28 34 C40 12 68 12 80 34" color={B.gold} /><Arrow d="M97 63 C101 74 108 74 112 64" color={B.gold} /><Arrow d="M132 34 C110 6 50 6 28 34" color={B.gold} /><text x="80" y="10" {...DIAGRAM_TEXT}>each checks the others</text></>}</Diagram>;
 }
 function StackPic({ levels = [] }) {
   // Up to eight levels fit: the boxes shrink a little with each level and never go below 40 wide or off the bottom.
+  // When a level's words need more room than its narrowing box (about 3.5 units a letter keeps Box's words full size), every box
+  // takes the same width, enough for the longest words (pass MR: "personification: the wind whispered" had shrunk to a size no
+  // one could read).
   const n = Math.max(1, levels.length); const h = Math.min(20, Math.floor(88 / n) - 3); const gap = h + 3; const shrink = Math.min(20, Math.floor(60 / n));
-  return <Diagram label={levels.join(' over ')}>{levels.map((t, i) => <Box key={i} x={30 + i * (shrink / 2)} y={8 + i * gap} w={Math.max(40, 100 - i * shrink)} h={h} text={t} fill={['#C9DDF5', '#FFF3C8', '#DCEBD3', '#F6C9C4'][i % 4]} />)}</Diagram>;
+  const need = (t) => String(t).length * 3.5; const crowded = levels.some((t, i) => need(t) > Math.max(40, 100 - i * shrink)); const even = Math.min(150, Math.max(100, ...levels.map(need)));
+  const wOf = (i) => (crowded ? even : Math.max(40, 100 - i * shrink));
+  return <Diagram label={levels.join(' over ')}>{levels.map((t, i) => <Box key={i} x={80 - wOf(i) / 2} y={8 + i * gap} w={wOf(i)} h={h} text={t} fill={['#C9DDF5', '#FFF3C8', '#DCEBD3', '#F6C9C4'][i % 4]} />)}</Diagram>;
 }
 function CompassPic() {
   return <Diagram label="A compass rose"><circle cx="80" cy="50" r="34" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="1.2" /><polygon points="80,18 86,50 80,82 74,50" fill={B.gold} stroke="#2E2E2E" strokeWidth="0.8" /><polygon points="48,50 80,44 112,50 80,56" fill="#C9DDF5" stroke="#2E2E2E" strokeWidth="0.8" /><text x="80" y="10" {...DIAGRAM_TEXT} fontSize="7">N</text><text x="80" y="94" {...DIAGRAM_TEXT} fontSize="7">S</text><text x="122" y="52" {...DIAGRAM_TEXT} fontSize="7">E</text><text x="38" y="52" {...DIAGRAM_TEXT} fontSize="7">W</text></Diagram>;
 }
+// The two flags. The United States flag's fifty stars sit as on the real flag, in nine staggered rows, six and five by turns, on a
+// grid of twelve across and ten down the blue (round one's picture check, pass MR: they had been five rows of ten).
 function FlagPic({ stars = false, texas = false }) {
   if (texas) return <Diagram label="The Texas flag"><rect x="20" y="16" width="120" height="68" fill="#FFFFFF" stroke="#2E2E2E" strokeWidth="1" /><rect x="20" y="16" width="40" height="68" fill="#2B4C8C" /><rect x="60" y="50" width="80" height="34" fill="#D9534F" /><BigStarSmall x={40} y={50} /></Diagram>;
-  return <Diagram label="The United States flag">{Array.from({ length: 13 }, (_, i) => <rect key={i} x="20" y={16 + i * 5.2} width="120" height="5.2" fill={i % 2 ? '#FFFFFF' : '#D9534F'} />)}<rect x="20" y="16" width="48" height="36.4" fill="#2B4C8C" />{stars && Array.from({ length: 50 }, (_, i) => <circle key={`s${i}`} cx={24 + (i % 10) * 4.4} cy={19 + Math.floor(i / 10) * 7} r="1.1" fill="#FFFFFF" />)}<rect x="20" y="16" width="120" height="67.6" fill="none" stroke="#2E2E2E" strokeWidth="1" /><text x="80" y="94" {...DIAGRAM_TEXT}>{stars ? 'fifty stars, thirteen stripes' : 'thirteen stripes'}</text></Diagram>;
+  return <Diagram label="The United States flag">{Array.from({ length: 13 }, (_, i) => <rect key={i} x="20" y={16 + i * 5.2} width="120" height="5.2" fill={i % 2 ? '#FFFFFF' : '#D9534F'} />)}<rect x="20" y="16" width="48" height="36.4" fill="#2B4C8C" />{stars && [1, 2, 3, 4, 5, 6, 7, 8, 9].flatMap((m) => (m % 2 ? [1, 3, 5, 7, 9, 11] : [2, 4, 6, 8, 10]).map((k) => <circle key={`s${m}-${k}`} cx={20 + 4 * k} cy={16 + 3.64 * m} r="1.1" fill="#FFFFFF" />))}<rect x="20" y="16" width="120" height="67.6" fill="none" stroke="#2E2E2E" strokeWidth="1" /><text x="80" y="94" {...DIAGRAM_TEXT}>{stars ? 'fifty stars, thirteen stripes' : 'thirteen stripes'}</text></Diagram>;
 }
 function BigStarSmall({ x, y }) { const pts = Array.from({ length: 10 }, (_, i) => { const a = -Math.PI / 2 + (i * Math.PI) / 5; const r = i % 2 ? 5 : 12; return `${x + Math.cos(a) * r},${y + Math.sin(a) * r}`; }).join(' '); return <polygon points={pts} fill="#FFFFFF" />; }
 function SignPic({ text = 'STOP', color = '#D9534F' }) {
@@ -3408,7 +3962,10 @@ function SignPic({ text = 'STOP', color = '#D9534F' }) {
   // The grade 1 lesson tells signs by color and shape (pass MH: its SLOW sign was a rectangle while its words said "a point at the
   // top"): a stop sign has eight sides, a slow-down warning is a yellow diamond with its point at the top, with dark letters as on
   // the road, and the others are rectangles.
-  return <Diagram label={`A ${text} sign`}>{oct ? <polygon points="62,22 98,22 116,40 116,60 98,78 62,78 44,60 44,40" fill={color} stroke="#2E2E2E" strokeWidth="1.2" /> : diamond ? <polygon points="80,8 122,50 80,92 38,50" fill={color} stroke="#2E2E2E" strokeWidth="1.2" strokeLinejoin="round" /> : <rect x="44" y="30" width="72" height="40" rx="4" fill={color} stroke="#2E2E2E" strokeWidth="1.2" />}<text x="80" y="50" {...DIAGRAM_TEXT} fontSize="12" fontWeight="800" fill={diamond ? '#2E2E2E' : '#FFFFFF'}>{text}</text></Diagram>;
+  // A rectangle widens for long words, up to 150 of the picture's 160 units, and the words shrink only past that (pass MR:
+  // "cabin to candle" ran off both sides of its sign, white on the white page).
+  const w = oct || diamond ? 72 : Math.min(150, Math.max(72, text.length * 7.6 + 14)); const size = oct || diamond ? 12 : Math.min(12, (w - 12) / (text.length * 0.64));
+  return <Diagram label={`A ${text} sign`}>{oct ? <polygon points="62,22 98,22 116,40 116,60 98,78 62,78 44,60 44,40" fill={color} stroke="#2E2E2E" strokeWidth="1.2" /> : diamond ? <polygon points="80,8 122,50 80,92 38,50" fill={color} stroke="#2E2E2E" strokeWidth="1.2" strokeLinejoin="round" /> : <rect x={80 - w / 2} y="30" width={w} height="40" rx="4" fill={color} stroke="#2E2E2E" strokeWidth="1.2" />}<text x="80" y="50" {...DIAGRAM_TEXT} fontSize={size.toFixed(2)} fontWeight="800" fill={diamond ? '#2E2E2E' : '#FFFFFF'}>{text}</text></Diagram>;
 }
 // Grade 1 number sense (pass LA, earmark E7 part three): a dice face, a domino, sets of equal groups for skip counting, and
 // an open number line. Each carries a count or a position the question depends on, so each stays drawn (pass KL rule).
@@ -3461,11 +4018,19 @@ function OpenLinePic({ from = 0, to = 10, labels = [], dots = [] }) {
       <path d="M6 48 L14 43 L14 53 Z" fill="#2E2E2E" /><path d="M294 48 L286 43 L286 53 Z" fill="#2E2E2E" />
       {ticks.map((v) => <line key={`t${v}`} x1={xAt(v)} y1={labels.includes(v) ? 40 : 43} x2={xAt(v)} y2={labels.includes(v) ? 56 : 53} stroke="#2E2E2E" strokeWidth={labels.includes(v) ? 2.5 : 1.5} />)}
       {labels.map((v) => <text key={`l${v}`} x={xAt(v)} y="74" textAnchor="middle" fontSize="13" fontFamily={FONT} fill="#2E2E2E">{v}</text>)}
-      {dots.map((d, i) => { const near = i > 0 && Math.abs(xAt(d.at) - xAt(dots[i - 1].at)) < 26; return <g key={`d${i}`}><circle cx={xAt(d.at)} cy="48" r="6" fill={B.green} stroke="#2E2E2E" strokeWidth="1.5" />{d.name && <text x={xAt(d.at)} y={near ? 12 : 26} textAnchor="middle" fontSize="14" fontWeight="700" fontFamily={FONT} fill="#2E2E2E">{d.name}</text>}</g>; })}
+      {dots.map((d, i) => <circle key={`d${i}`} cx={xAt(d.at)} cy="48" r="6" fill={B.green} stroke="#2E2E2E" strokeWidth="1.5" />)}
+      {(() => {
+        // Each dot's name sits above it in one row; the names of close dots spread apart (never past either end), each joined to
+        // its dot by a short line when moved (pass MR: close dots had stacked their names in two rows that touched, 99 under
+        // 100, and the top row ran past the picture's top edge).
+        const named = dots.filter((d) => d.name).map((d) => ({ name: String(d.name), x: xAt(d.at) })).sort((a, b) => a.x - b.x);
+        const cx = spreadLabels(named.map((d) => ({ x: d.x, w: d.name.length * 14 * 0.62 + 2 })), 2, 298, 4);
+        return named.map((d, j) => <g key={`n${j}`}>{Math.abs(cx[j] - d.x) > 0.5 && <line x1={cx[j]} y1="29" x2={d.x} y2="41" stroke={B.muted} strokeWidth="1.2" />}<text x={cx[j]} y="25" textAnchor="middle" fontSize="14" fontWeight="700" fontFamily={FONT} fill="#2E2E2E">{d.name}</text></g>);
+      })()}
     </svg>
   );
 }
-const DIAGRAMS = { pans: PansPic, dice: DicePic, domino: DominoPic, sets: SetsPic, openline: OpenLinePic, shares: SharesPic, joined: JoinedPic, measure: MeasurePic, digital: DigitalPic, tally: TallyPic, bargraph: BarGraphPic, timeline: TimelinePic, map: MapPic, branches: BranchesPic, stack: StackPic, compass: CompassPic, flag: FlagPic, sign: SignPic, flow: FlowPic, loop: LoopPic, states: StatesPic, thermometer: ThermometerPic, circuit: CircuitPic, orbits: OrbitsPic, mixture: MixturePic, densitypic: DensityPic, pyramid: PyramidPic, molecule: MoleculePic, plates: PlatesPic, moths: MothsPic, layers: LayersPic, celldiv: CellDivPic, basepairs: BasePairsPic, homology: HomologyPic, twoway: TwoWayPic, phscale: PhScalePic, reaction: ReactionPic, gaslaw: GasLawPic, bonds: BondsPic, momentum: MomentumPic, wave: WavePic, work: WorkPic, earthlayers: EarthLayersPic, ocean: OceanPic, heat: HeatPic, equalgroups: EqualGroupsPic, fracgrid: FracGridPic, opspic: OpsPic, cuboid: CuboidPic, fracpieces: FracPiecesPic, balance: BalancePic, circlepic: CirclePic, doubling: DoublingPic, growthbars: GrowthBarsPic, plot: PlotPic, tiles: TilesPic, sector: SectorPic, trigtri: TrigTriPic, similar: SimilarPic, reflect: ReflectPic, unitcircle: UnitCirclePic, scatter: ScatterPic, dotplot: DotPlotPic, spinner: SpinnerPic, cycle: CyclePic, leaf: LeafPic, pythag: PythagPic, cell: CellPic, forces: ForcesPic, curves: CurvesPic, atom: AtomPic, daynight: DayNightPic, percentgrid: PercentGridPic, groups: GroupsPic, angles: AnglesPic, lightray: LightRayPic, punnett: PunnettPic, alleles: AllelesPic, beaker: BeakerPic };
+const DIAGRAMS = { pans: PansPic, dice: DicePic, domino: DominoPic, sets: SetsPic, openline: OpenLinePic, shares: SharesPic, joined: JoinedPic, measure: MeasurePic, digital: DigitalPic, tally: TallyPic, bargraph: BarGraphPic, timeline: TimelinePic, map: MapPic, branches: BranchesPic, stack: StackPic, compass: CompassPic, flag: FlagPic, sign: SignPic, flow: FlowPic, loop: LoopPic, states: StatesPic, thermometer: ThermometerPic, circuit: CircuitPic, orbits: OrbitsPic, mixture: MixturePic, densitypic: DensityPic, pyramid: PyramidPic, molecule: MoleculePic, plates: PlatesPic, moths: MothsPic, layers: LayersPic, celldiv: CellDivPic, basepairs: BasePairsPic, homology: HomologyPic, twoway: TwoWayPic, phscale: PhScalePic, reaction: ReactionPic, gaslaw: GasLawPic, bonds: BondsPic, momentum: MomentumPic, wave: WavePic, work: WorkPic, earthlayers: EarthLayersPic, ocean: OceanPic, heat: HeatPic, equalgroups: EqualGroupsPic, fracgrid: FracGridPic, opspic: OpsPic, cuboid: CuboidPic, fracpieces: FracPiecesPic, balance: BalancePic, seesaw: SeesawPic, circlepic: CirclePic, doubling: DoublingPic, growthbars: GrowthBarsPic, plot: PlotPic, tiles: TilesPic, sector: SectorPic, trigtri: TrigTriPic, similar: SimilarPic, reflect: ReflectPic, unitcircle: UnitCirclePic, scatter: ScatterPic, dotplot: DotPlotPic, spinner: SpinnerPic, cycle: CyclePic, leaf: LeafPic, pythag: PythagPic, cell: CellPic, forces: ForcesPic, curves: CurvesPic, atom: AtomPic, daynight: DayNightPic, percentgrid: PercentGridPic, groups: GroupsPic, angles: AnglesPic, lightray: LightRayPic, punnett: PunnettPic, alleles: AllelesPic, beaker: BeakerPic };
 // The periodic table, drawn here so a lesson can show it and a question can light up the element it
 // names. Cells are tinted by family; a highlighted element, period or group gets a gold edge.
 const PT_SYMBOLS = 'H He Li Be B C N O F Ne Na Mg Al Si P S Cl Ar K Ca Sc Ti V Cr Mn Fe Co Ni Cu Zn Ga Ge As Se Br Kr Rb Sr Y Zr Nb Mo Tc Ru Rh Pd Ag Cd In Sn Sb Te I Xe Cs Ba La Ce Pr Nd Pm Sm Eu Gd Tb Dy Ho Er Tm Yb Lu Hf Ta W Re Os Ir Pt Au Hg Tl Pb Bi Po At Rn Fr Ra Ac Th Pa U Np Pu Am Cm Bk Cf Es Fm Md No Lr Rf Db Sg Bh Hs Mt Ds Rg Cn Nh Fl Mc Lv Ts Og'.split(' ');
@@ -3484,6 +4049,8 @@ function ptFamily(z, row, col) {
   if (col >= 3 && col <= 12) return '#F3E8C8'; return '#DDE3EB';
 }
 function PeriodicPic({ highlight = [], period = null, group = null }) {
+  // Drawn in the paper palette (B), like every picture, since it sits on the paper board in both themes (pass MR: in the dark
+  // theme its symbols and legend took the live palette's cream ink, on pastel cells, and could not be read).
   const cell = 20; const gap = 1.4; const w = 18 * (cell + gap); const h = 10 * (cell + gap) + 6; const H = h + 26;
   return (
     <svg viewBox={`0 0 ${w} ${H}`} width="100%" role="img" aria-label="The periodic table" style={{ display: 'block', maxWidth: 720, margin: '0 auto' }}>
@@ -3492,13 +4059,13 @@ function PeriodicPic({ highlight = [], period = null, group = null }) {
         const lit = highlight.includes(sym) || (period && row === period) || (group && col === group && row <= 7);
         return (
           <g key={sym}>
-            <rect x={x} y={y} width={cell} height={cell} rx={2} fill={lit ? C.goldSoft : ptFamily(z, row, col)} stroke={lit ? C.gold : '#A9B1AA'} strokeWidth={lit ? 1.6 : 0.5} />
-            <text x={x + cell / 2} y={y + cell / 2 + 0.5} fontSize={sym.length > 2 ? 5.6 : 7} fontWeight={lit ? 800 : 600} fontFamily={FONT} textAnchor="middle" dominantBaseline="central" fill={C.ink}>{sym}</text>
+            <rect x={x} y={y} width={cell} height={cell} rx={2} fill={lit ? B.goldSoft : ptFamily(z, row, col)} stroke={lit ? B.gold : '#A9B1AA'} strokeWidth={lit ? 1.6 : 0.5} />
+            <text x={x + cell / 2} y={y + cell / 2 + 0.5} fontSize={sym.length > 2 ? 5.6 : 7} fontWeight={lit ? 800 : 600} fontFamily={FONT} textAnchor="middle" dominantBaseline="central" fill={B.ink}>{sym}</text>
           </g>
         );
       })}
       {/* The legend: the family colors, so the table itself says what a question asks. */}
-      {[['#F6C9C4', 'alkali metals'], ['#F9DDB7', 'alkaline earth'], ['#F3E8C8', 'transition metals'], ['#DDE3EB', 'other metals'], ['#E3E9C6', 'metalloids'], ['#DCEBD3', 'nonmetals'], ['#CFE7E5', 'halogens'], ['#C9DDF5', 'noble gases']].map(([fill, name], i) => <g key={name}><rect x={4 + (i % 4) * 96} y={h - 2 + Math.floor(i / 4) * 12} width="9" height="9" rx="1.5" fill={fill} stroke="#A9B1AA" strokeWidth="0.5" /><text x={16 + (i % 4) * 96} y={h + 5.5 + Math.floor(i / 4) * 12} fontSize="7" fontFamily={FONT} fill={C.ink}>{name}</text></g>)}
+      {[['#F6C9C4', 'alkali metals'], ['#F9DDB7', 'alkaline earth'], ['#F3E8C8', 'transition metals'], ['#DDE3EB', 'other metals'], ['#E3E9C6', 'metalloids'], ['#DCEBD3', 'nonmetals'], ['#CFE7E5', 'halogens'], ['#C9DDF5', 'noble gases']].map(([fill, name], i) => <g key={name}><rect x={4 + (i % 4) * 96} y={h - 2 + Math.floor(i / 4) * 12} width="9" height="9" rx="1.5" fill={fill} stroke="#A9B1AA" strokeWidth="0.5" /><text x={16 + (i % 4) * 96} y={h + 5.5 + Math.floor(i / 4) * 12} fontSize="7" fontFamily={FONT} fill={B.ink}>{name}</text></g>)}
     </svg>
   );
 }
@@ -4039,7 +4606,7 @@ function StoryBody({ story, pace: paceDefault = null, part = null, autoRead = fa
     if (card && typeof window !== 'undefined' && window.scrollTo) window.scrollTo({ top: Math.max(0, card.getBoundingClientRect().top + window.scrollY - 12), behavior: scrollWay() });
     if (onReadingChange) onReadingChange(true);
     const keys = storyClipKeys(story);
-    stopRef.current = speakSequence([`${story.title}.`, ...story.words], (i, si) => { setReadingAt(i - 1); setReadingSentence(si || 0); }, () => { stopRef.current = null; setReadingAt(-1); setVoiceWatch(0); if (onReadingChange) onReadingChange(false); }, keys, { gap: (i) => storyGap(i === 0), pause: storyPause, young: false });
+    stopRef.current = speakSequence([storyTitleSpoken(story.title), ...story.words], (i, si) => { setReadingAt(i - 1); setReadingSentence(si || 0); }, () => { stopRef.current = null; setReadingAt(-1); setVoiceWatch(0); if (onReadingChange) onReadingChange(false); }, keys, { gap: (i) => storyGap(i === 0), pause: storyPause, young: false });
     if (!keys.every((k) => clipFor(k))) setVoiceWatch((n) => n + 1);   // the device voice reads, so the page watches it
   };
   // A story that reads itself (pass MD): a read-aloud course's lesson story starts its voice a moment after the page opens,
@@ -4151,6 +4718,14 @@ function sinceLine(since) {
   return bits.join('; ');
 }
 function niceDateShort(iso) { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }); }
+// An info button at the end of a centered paragraph (round three of pass MR, the alignment read: in three centered paragraphs the
+// button sat in the last line, so that line's words sat 13 pixels left of center). It hangs just past the paragraph's last word,
+// taking no room in the line, so every line's words stay centered, and the paragraph keeps END_INFO_ROOM pixels at both sides, the
+// button's width and its gap, so the hung button never leaves the paragraph however its last line falls.
+const END_INFO_ROOM = 26;
+function EndInfo({ word, onClick, label, open }) {
+  return <span style={{ position: 'relative', display: 'inline-block' }}>{word}<span style={{ position: 'absolute', left: '100%', top: '50%', transform: 'translateY(-50%)', lineHeight: 0 }}><InfoButton onClick={onClick} label={label} open={open} /></span></span>;
+}
 function HeadWithInfo({ children, onClick, label, open }) {
   return <p style={{ margin: '0 0 8px', fontSize: 15, fontWeight: 600, textAlign: 'center' }}><span style={{ position: 'relative', display: 'inline-block' }}>{children}<span style={{ position: 'absolute', left: '100%', top: '50%', transform: 'translateY(-50%)', marginLeft: 8, lineHeight: 0 }}><InfoButton onClick={onClick} label={label} open={open} /></span></span></p>;
 }
@@ -4339,7 +4914,7 @@ function SortGame({ game, round, demo = false }) {
       {items.map((it) => { const [x, y] = spot(it); const stuck = placed[it.id] !== undefined; return (
         <div key={it.id} data-demo-drag={demoIt && demoIt.id === it.id ? '' : undefined} onPointerDown={(e) => start(it, e)} style={{ position: 'absolute', left: `${x}%`, top: `${y}%`, transform: 'translate(-50%, -50%)', cursor: stuck ? 'default' : 'grab', touchAction: 'none', lineHeight: 0, transition: drag && drag.id === it.id ? 'none' : 'left 0.2s ease, top 0.2s ease' }}>
           {/* A wrong drop wobbles, and wears a clay ring that shows even when motion is off (the second read). */}
-          <span className={shake === it.id ? 'edu-wobble' : undefined} style={{ display: 'inline-block', lineHeight: 0, borderRadius: 999, boxShadow: shake === it.id ? '0 0 0 3px ' + B.clay : 'none' }}><ShapePic name={it.shape} size={it.big ? 58 : byColour ? colourSize : 34} color={it.colour} /></span>
+          <span className={shake === it.id ? 'edu-wobble edu-own-edge' : undefined} style={{ display: 'inline-block', lineHeight: 0, borderRadius: 999, boxShadow: shake === it.id ? '0 0 0 3px ' + B.clay : 'none' }}><ShapePic name={it.shape} size={it.big ? 58 : byColour ? colourSize : 34} color={it.colour} /></span>
         </div>); })}
       <Done show={items.every((it) => placed[it.id] !== undefined)} />
     </div>
@@ -4521,7 +5096,7 @@ function SprintGame({ game, round, modules = [], onScore = null, best = null, de
   const answer = (choice) => { const ok = choice === q.answer; setFlash(ok ? 'right' : 'wrong'); setTimeout(() => setFlash(null), 250); asked.current = [...asked.current, q.prompt]; if (ok) { setPoints(points + 1); setRight(right + 1); setStreak(streak + 1); setBestStreak(Math.max(bestStreak, streak + 1)); } else { setPoints(Math.max(0, points - 1)); setStreak(0); } setI(i + 1); };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14, background: flash === 'right' ? '#EEF5F0' : flash === 'wrong' ? '#FAECE6' : '#fff', transition: 'background 200ms' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>{left}s</span><span>{points} {points === 1 ? 'point' : 'points'}{streak >= 3 ? ` · streak ${streak}` : ''}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span><HeadRoom start most="888s">{left}s</HeadRoom></span><span><HeadRoom most="88 points · streak 88">{points} {points === 1 ? 'point' : 'points'}{streak >= 3 ? ` · streak ${streak}` : ''}</HeadRoom></span></div>
       {q.story && <p style={{ margin: '0 0 4px', fontSize: 15, color: B.muted, textAlign: 'center' }}>{q.story}</p>}
       <p style={{ margin: '0 0 10px', fontSize: 17, fontWeight: 600, textAlign: 'center' }}>{q.prompt}</p>
       <div style={{ display: 'grid', gap: 8 }}>{q.choices.map((c) => <Btn pal={B} key={c} kind="secondary" mark={demo && c === q.answer} onClick={() => answer(c)} style={{ minHeight: 42, fontSize: 15 }}>{c}</Btn>)}</div>
@@ -4559,14 +5134,14 @@ function OrderGame({ game, round, onScore = null, demo = false }) {
   };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 6 }}><span data-demo-look={demo ? '' : undefined}>{seq.title}</span><span>{ticks}s · {Math.min(k + 1, sets)} of {sets}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 6 }}><span data-demo-look={demo ? '' : undefined}>{seq.title}</span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${sets} of ${sets}`}>{Math.min(k + 1, sets)} of {sets}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>All in order in {ticks} seconds. Tap the round arrow for a new set.</p> : (
         <div style={{ display: 'grid', gap: 8 }}>
           {/* The first step pulses gently until a step is placed (2026-09-30, pass HG, Mikey). In plain terms: a cycle such as a
               frog's life has no natural start, egg or adult, so the game shows where its chain begins and the student builds
               from there; the pulse comes back if a wrong answer sends every step loose again. */}
           {items.map((it) => { const at = placed.indexOf(it.idx); const isPlaced = at >= 0; const shake = wrong.includes(it.idx); const isStart = placed.length === 0 && it.idx === 0; return (
-            <button key={it.idx} type="button" data-demo-tap={demo && (!rest && !done && it.idx === placed.length) ? '' : undefined} onClick={() => tap(it)} aria-pressed={isPlaced} data-start-hint={isStart ? '' : undefined} className={`edu-press${shake ? ' edu-wobble' : ''}${isStart ? ' edu-start-hint' : ''}`} style={{ fontFamily: FONT, fontSize: 15, textAlign: 'left', padding: '10px 12px', borderRadius: 10, border: `2px solid ${isPlaced ? B.green : shake ? B.clay : B.line}`, background: isPlaced ? B.greenSoft : '#fff', color: B.ink, cursor: 'pointer', display: 'flex', gap: 10, alignItems: 'center' }}>
+            <button key={it.idx} type="button" data-demo-tap={demo && (!rest && !done && it.idx === placed.length) ? '' : undefined} onClick={() => tap(it)} aria-pressed={isPlaced} data-start-hint={isStart ? '' : undefined} className={`edu-press${shake ? ' edu-wobble edu-own-edge' : ''}${isStart ? ' edu-start-hint' : ''}`} style={{ fontFamily: FONT, fontSize: 15, textAlign: 'left', padding: '10px 12px', borderRadius: 10, border: `2px solid ${isPlaced ? B.green : shake ? B.clay : B.line}`, background: isPlaced ? B.greenSoft : '#fff', color: B.ink, cursor: 'pointer', display: 'flex', gap: 10, alignItems: 'center' }}>
               <span style={{ width: 24, height: 24, borderRadius: 12, background: isPlaced ? B.green : B.line, color: B.onAccent, fontSize: 13, fontWeight: 700, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flex: '0 0 24px' }}>{isPlaced ? at + 1 : ''}</span>{it.t}{rest && seq.when && <span style={{ marginLeft: 'auto', paddingLeft: 8, fontSize: 13, color: B.muted, whiteSpace: 'nowrap' }}>{seq.when[it.idx]}</span>}
             </button>); })}
         </div>
@@ -4589,15 +5164,17 @@ function EvidenceGame({ game, round, onScore = null, demo = false }) {
   const sets = Math.min(4, deck.length);
   const tap = (i) => { if (done || got) return; if (i === item.answer) { setGot(true); setStreak((n) => n + 1); } else { setShake(i); setStreak(0); } };
   const next = () => { if (k + 1 >= sets) setDone(true); else { setK(k + 1); setGot(false); } };
+  // The board names its answer, the evidence sentence, as every board that names one does, so the layout sweep can tap a wrong
+  // sentence and read the board after it (pass MR, round three).
   return (
-    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Find the evidence{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, sets)} of {sets}</span></div>
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-evidence-answer={done ? '' : item.text[item.answer]}>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Find the evidence<HeadRoom start most={`\u00a0· ${sets} in a row`} show={streak > 1}>{`\u00a0· ${streak} in a row`}</HeadRoom></span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${sets} of ${sets}`}>{Math.min(k + 1, sets)} of {sets}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>All the evidence found in {ticks} seconds. Tap the round arrow for new passages.</p> : (
         <div>
           <p style={{ margin: '0 0 10px', textAlign: 'center', fontSize: 16, fontWeight: 700, color: B.ink }}>{item.ask}</p>
           <div style={{ display: 'grid', gap: 6 }}>
             {item.text.map((s, i) => { const on = got && i === item.answer; const bad = shake === i; return (
-              <button key={i} type="button" data-demo-tap={demo && !got && i === item.answer ? '' : undefined} onClick={() => tap(i)} className={`edu-press${bad ? ' edu-wobble' : ''}`} style={{ fontFamily: FONT, fontSize: 15, lineHeight: 1.45, textAlign: 'left', padding: '8px 11px', borderRadius: 10, border: `2px solid ${on ? B.green : bad ? B.clay : B.line}`, background: on ? B.greenSoft : '#fff', color: B.ink, cursor: 'pointer' }}>{s}</button>); })}
+              <button key={i} type="button" data-demo-tap={demo && !got && i === item.answer ? '' : undefined} onClick={() => tap(i)} className={`edu-press${bad ? ' edu-wobble edu-own-edge' : ''}`} style={{ fontFamily: FONT, fontSize: 15, lineHeight: 1.45, textAlign: 'left', padding: '8px 11px', borderRadius: 10, border: `2px solid ${on ? B.green : bad ? B.clay : B.line}`, background: on ? B.greenSoft : '#fff', color: B.ink, cursor: 'pointer' }}>{s}</button>); })}
           </div>
           {got && (
             <div style={{ textAlign: 'center', marginTop: 10 }}>
@@ -4628,9 +5205,11 @@ function PtableGame({ round, onScore = null, demo = false }) {
   const cellAt = (g, per) => PTABLE.find((e) => e.group === g && e.period === per);
   const lit = found ? PTABLE.find((e) => e.z === found) : null;
   const small = { fontSize: 11, color: B.muted, textAlign: 'center', alignSelf: 'center' };
+  // The board names its answer, the element's name (each element's button says its name to a screen reader), as every board
+  // that names one does, so the layout sweep can tap a wrong element and read the board after it (pass MR, round three).
   return (
-    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 12 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Find it</span><span>{ticks}s · {Math.min(k + 1, qs.length)} of {qs.length}</span></div>
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 12 }} data-ptable-answer={done || !q ? '' : (PTABLE.find((e) => e.z === q.z) || {}).name}>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Find it</span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${qs.length} of ${qs.length}`}>{Math.min(k + 1, qs.length)} of {qs.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>All eight found in {ticks} seconds. Tap the round arrow for new questions.</p> : (
         <div>
           <p data-demo-look="" style={{ margin: '0 0 10px', textAlign: 'center', fontSize: 17, fontWeight: 700, color: B.ink }}>{q.ask}</p>
@@ -4640,8 +5219,9 @@ function PtableGame({ round, onScore = null, demo = false }) {
             {[1, 2, 3, 4, 5].map((per) => [
               <span key={`p${per}`} style={small}>{per}</span>,
               ...groups.map((g) => { const el = cellAt(g, per); if (!el) return <span key={`${g}-${per}`} />; const on = found === el.z; const bad = shake === el.z; return (
-                <button key={el.z} type="button" data-demo-tap={demo && !found && el.z === q.z ? '' : undefined} onClick={() => tap(el)} aria-label={el.name} className={`edu-press${bad ? ' edu-wobble' : ''}`} style={{ fontFamily: FONT, padding: '4px 0', borderRadius: 6, border: `2px solid ${on ? B.green : bad ? B.clay : B.line}`, background: on ? B.greenSoft : '#fff', color: B.ink, cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', lineHeight: 1.05, minWidth: 0 }}>
-                  <span style={{ fontSize: 9, color: B.muted }}>{el.z}</span><span style={{ fontSize: 15, fontWeight: 700 }}>{el.sym}</span>
+                <button key={el.z} type="button" data-demo-tap={demo && !found && el.z === q.z ? '' : undefined} onClick={() => tap(el)} aria-label={el.name} className={`edu-press${bad ? ' edu-wobble edu-own-edge' : ''}`} style={{ fontFamily: FONT, padding: '4px 0', borderRadius: 6, border: `2px solid ${on ? B.green : bad ? B.clay : B.line}`, background: on ? B.greenSoft : '#fff', color: B.ink, cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', lineHeight: 1.05, minWidth: 0 }}>
+                  {/* A symbol a little smaller on a narrow phone (pass MR, the layout sweep: Mg ran 1.4 pixels past its tile at 320). */}
+                  <span style={{ fontSize: 9, color: B.muted }}>{el.z}</span><span style={{ fontSize: 'min(15px, 3.9vw)', fontWeight: 700 }}>{el.sym}</span>
                 </button>); }),
             ])}
           </div>
@@ -4690,7 +5270,7 @@ function DebugGame({ game, round, onScore = null, demo = false }) {
     : 'The robot stopped away from the star. Tap a step to change it.';
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Find the bug</span><span>{ticks}s · {Math.min(k + 1, sets)} of {sets}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Find the bug</span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${sets} of ${sets}`}>{Math.min(k + 1, sets)} of {sets}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Every robot home in {ticks} seconds. Tap the round arrow for new ones.</p> : (
         <div style={{ textAlign: 'center' }}>
           <svg viewBox={`0 0 ${cell * 5 + pad * 2} ${cell * 5 + pad * 2}`} width="100%" style={{ maxWidth: 260, display: 'block', margin: '0 auto' }} role="img" aria-label="The robot's grid">
@@ -4747,7 +5327,7 @@ function MixGame({ game, round, onScore = null, demo = false }) {
   const said = made ? `${cap(picked[0])} and ${picked[1]} make ${made.name}.` : picked.length === 1 ? `${cap(picked[0])} and ...` : 'Tap two paints.';
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 10 }}><span>Make {target}</span><span>{ticks}s · {Math.min(k + 1, sets)} of {sets}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 10 }}><span>Make {target}</span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${sets} of ${sets}`}>{Math.min(k + 1, sets)} of {sets}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Every color made in {ticks} seconds. Tap the round arrow for new ones.</p> : (
         <div style={{ textAlign: 'center' }}>
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 28, marginBottom: 10 }}>
@@ -4802,7 +5382,7 @@ function BuildGame({ game, round, onScore = null, demo = false }) {
   const tileStyle = (on, bad) => ({ fontFamily: FONT, fontSize: 17, padding: '8px 11px', borderRadius: 10, border: `2px solid ${on ? B.green : bad ? B.clay : B.line}`, background: on ? B.greenSoft : '#fff', color: B.ink, cursor: 'pointer' });
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>{stage === 0 ? 'Build the sentence' : 'Now say more'}</span><span>{ticks}s · {Math.min(k + 1, sets)} of {sets}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span><HeadRoom start most="Build the sentence">{stage === 0 ? 'Build the sentence' : 'Now say more'}</HeadRoom></span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${sets} of ${sets}`}>{Math.min(k + 1, sets)} of {sets}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Every sentence built in {ticks} seconds. Tap the round arrow for new ones.</p> : (
         <div>
           {stage === 1 && <p style={{ margin: '0 0 8px', textAlign: 'center', fontSize: 15, color: B.muted }}>{set.base}</p>}
@@ -4810,7 +5390,7 @@ function BuildGame({ game, round, onScore = null, demo = false }) {
             {placed.map((i) => <button key={i} type="button" onClick={() => tap({ idx: i })} className="edu-press" style={tileStyle(true, false)}>{target[i]}</button>)}
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center' }}>
-            {tiles.filter((it) => !placed.includes(it.idx)).map((it) => <button key={it.idx} type="button" data-demo-tap={demo && (!good && !done && it.idx === placed.length) ? '' : undefined} onClick={() => tap(it)} className={`edu-press${wrong.includes(it.idx) ? ' edu-wobble' : ''}`} style={tileStyle(false, wrong.includes(it.idx))}>{it.t}</button>)}
+            {tiles.filter((it) => !placed.includes(it.idx)).map((it) => <button key={it.idx} type="button" data-demo-tap={demo && (!good && !done && it.idx === placed.length) ? '' : undefined} onClick={() => tap(it)} className={`edu-press${wrong.includes(it.idx) ? ' edu-wobble edu-own-edge' : ''}`} style={tileStyle(false, wrong.includes(it.idx))}>{it.t}</button>)}
           </div>
         </div>
       )}
@@ -4833,14 +5413,16 @@ function FixGame({ game, round, onScore = null, demo = false }) {
   const words = item.text.split(' ');
   const tap = (w, i) => { if (done || fixed) return; if (w === item.word) setFixed(true); else setShake(i); };
   const next = () => { if (k + 1 >= sets) setDone(true); else { setK(k + 1); setFixed(false); } };
+  // The board names its answer, the word with the mistake, as every board that names one does, so the layout sweep can tap a
+  // word with no mistake and read the board after it (pass MR, round three).
   return (
-    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 10 }}><span>Find the mistake</span><span>{ticks}s · {Math.min(k + 1, sets)} of {sets}</span></div>
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-fix-answer={done ? '' : item.word}>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 10 }}><span>Find the mistake</span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${sets} of ${sets}`}>{Math.min(k + 1, sets)} of {sets}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>All fixed in {ticks} seconds. Tap the round arrow for new sentences.</p> : (
         <div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, justifyContent: 'center', margin: '4px 0 12px' }}>
             {words.map((w, i) => { const isIt = w === item.word; const on = fixed && isIt; return (
-              <button key={i} type="button" data-demo-tap={demo && !fixed && isIt ? '' : undefined} onClick={() => tap(w, i)} className={`edu-press${shake === i ? ' edu-wobble' : ''}`} style={{ fontFamily: FONT, fontSize: 18, padding: '8px 10px', borderRadius: 10, border: `2px solid ${on ? B.green : shake === i ? B.clay : B.line}`, background: on ? B.greenSoft : '#fff', color: B.ink, cursor: 'pointer' }}>{on ? item.fixed : w}</button>); })}
+              <button key={i} type="button" data-demo-tap={demo && !fixed && isIt ? '' : undefined} onClick={() => tap(w, i)} className={`edu-press${shake === i ? ' edu-wobble edu-own-edge' : ''}`} style={{ fontFamily: FONT, fontSize: 18, padding: '8px 10px', borderRadius: 10, border: `2px solid ${on ? B.green : shake === i ? B.clay : B.line}`, background: on ? B.greenSoft : '#fff', color: B.ink, cursor: 'pointer' }}>{on ? item.fixed : w}</button>); })}
           </div>
           {fixed && (
             <div style={{ textAlign: 'center' }}>
@@ -5108,7 +5690,7 @@ function BucketsGame({ game, round, onScore = null, demo = false }) {
         // back to its spot and shakes there, for the same reason a lesson pair's 85 percent sits on a wrapper inside each half.
         const [x, y] = spot(ch); const stuck = placed[ch.id] !== undefined; return (
         <div key={ch.id} data-demo-drag={demoChip && demoChip.id === ch.id ? '' : undefined} onPointerDown={(e) => start(ch, e)} style={{ position: 'absolute', left: `${x}%`, top: `${y}%`, transform: 'translate(-50%, -50%)', cursor: stuck ? 'default' : 'grab', touchAction: 'none', userSelect: 'none', transition: drag && drag.id === ch.id ? 'none' : 'left 0.2s ease, top 0.2s ease', zIndex: drag && drag.id === ch.id ? 2 : 1 }}>
-          <div className={wrong === ch.id ? 'edu-wobble' : undefined} style={{ padding: '5px 9px', borderRadius: 10, border: `2px solid ${stuck ? B.green : wrong === ch.id ? B.clay : B.ink}`, background: stuck ? B.greenSoft : '#FFFFFF', fontFamily: FONT, fontSize: 13, fontWeight: 700, whiteSpace: 'nowrap' }}>
+          <div className={wrong === ch.id ? 'edu-wobble edu-own-edge' : undefined} style={{ padding: '5px 9px', borderRadius: 10, border: `2px solid ${stuck ? B.green : wrong === ch.id ? B.clay : B.ink}`, background: stuck ? B.greenSoft : '#FFFFFF', fontFamily: FONT, fontSize: 13, fontWeight: 700, whiteSpace: 'nowrap' }}>
             {chipIsShape(ch.t) ? <ShapePic name={ch.t.split(':')[1]} size={26} color={SWATCH[ch.t.split(':')[2]] || B.green} /> : ch.t}
           </div>
         </div>); })}
@@ -5312,7 +5894,7 @@ function WalkGame({ game, round, onScore = null, demo = false }) {
   const arrowBtn = { fontFamily: FONT, width: 56, height: 56, borderRadius: 14, border: `2px solid ${B.green}`, background: '#fff', color: B.green, fontSize: 28, fontWeight: 700, cursor: running || home ? 'default' : 'pointer', padding: 0, lineHeight: 1 };
   return (
     <div className="edu-game-box edu-walk-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Walk to the star</span><span>{ticks}s · {Math.min(k + 1, sets)} of {sets}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Walk to the star</span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${sets} of ${sets}`}>{Math.min(k + 1, sets)} of {sets}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Every robot home in {ticks} seconds. Tap the round arrow for new ones.</p> : (
         <div className="edu-walk" style={{ textAlign: 'center', display: 'flow-root' }}>
           <svg viewBox={`0 0 ${cell * 5 + pad * 2} ${cell * 5 + pad * 2}`} width="100%" className="edu-walk-grid" style={{ maxWidth: 'clamp(150px, calc(100vh - 370px), 260px)', display: 'block', margin: '0 auto' }} role="img" aria-label="The robot's grid">
@@ -5374,7 +5956,7 @@ function TeachGame({ game, round, onScore = null, demo = false }) {
   const said = boardDone ? (known.length === board.given.length ? 'Every guess was right from two examples.' : `Every ring is right. It took ${known.length - board.given.length} ${known.length - board.given.length === 1 ? 'lesson' : 'lessons'}.`) : `${wrong.length} ${wrong.length === 1 ? 'guess is' : 'guesses are'} wrong. Tap a fruit the robot got wrong to teach it.`;
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Lessons: {lessons}</span><span>{ticks}s · {Math.min(k + 1, sets)} of {sets}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Lessons: <HeadRoom start most="88">{lessons}</HeadRoom></span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${sets} of ${sets}`}>{Math.min(k + 1, sets)} of {sets}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Four boards taught in {lessons} {lessons === 1 ? 'lesson' : 'lessons'}. Tap the round arrow for new ones.</p> : (
         <div style={{ textAlign: 'center' }}>
           <svg viewBox="0 0 100 100" width="100%" style={{ maxWidth: 300, display: 'block', margin: '0 auto', background: '#F6F8F4', borderRadius: 12 }} role="img" aria-label="The robot's fruit map">
@@ -5429,7 +6011,7 @@ function BitsGame({ game, round, onScore = null, demo = false }) {
   const demoFlip = demo && !done && !hit ? places.findIndex((v, i) => ((target & v) ? 1 : 0) !== on[i]) : -1;   // a demonstration flips the switches the number needs (pass MP)
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Make the number</span><span>{ticks}s · {Math.min(k + 1, targets.length)} of {targets.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Make the number</span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${targets.length} of ${targets.length}`}>{Math.min(k + 1, targets.length)} of {targets.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six numbers in {ticks} seconds. Tap the round arrow for new ones.</p> : (
         <div style={{ textAlign: 'center' }}>
           <p style={{ margin: '4px 0 2px', fontSize: 15, color: B.muted }}>Target</p>
@@ -5472,20 +6054,21 @@ function PayGame({ game, round, onScore = null, demo = false }) {
   // A demonstration pays with as few coins as it can (pass MP): a five while a five still fits, then ones.
   const demoCoin = (() => { if (!demo || paid || done || over) return -1; const need = it.price - total; const free = coins.map((v, i) => i).filter((i) => !tray.includes(i)); return free.find((i) => coins[i] === 5 && need >= 5) ?? free.find((i) => coins[i] === 1 && need >= 1) ?? -1; })();
   const coinStyle = (v, dim) => ({ fontFamily: FONT, width: v === 5 ? 60 : 48, height: v === 5 ? 60 : 48, borderRadius: '50%', border: `3px solid ${v === 5 ? '#9C7A1C' : '#7B8388'}`, background: v === 5 ? '#E6B84B' : '#D7DCDF', color: B.ink, fontSize: v === 5 ? 24 : 20, fontWeight: 700, cursor: dim ? 'default' : 'pointer', opacity: dim ? 0.25 : 1, padding: 0, lineHeight: 1 });
-  const said = done ? '' : paid ? `Paid! ${it.item} is yours.` : over ? 'Too many. Try again.' : `${it.item.charAt(0).toUpperCase() + it.item.slice(1)} costs ${it.price} coins. Tap coins to pay.`;
+  const priceSaid = `${it.item.charAt(0).toUpperCase() + it.item.slice(1)} costs ${it.price} coins. Tap coins to pay.`;   // the longest of the tag's three lines
+  const said = done ? '' : paid ? `Paid! ${it.item} is yours.` : over ? 'Too many. Try again.' : priceSaid;
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Pay the price</span><span>{ticks}s · {Math.min(k + 1, items.length)} of {items.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Pay the price</span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${items.length} of ${items.length}`}>{Math.min(k + 1, items.length)} of {items.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Four things bought in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           {/* The price tag: dots the child can count, one for each small coin's worth (a big coin fills five), so the number is never
               the only way in. */}
           <div style={{ display: 'inline-flex', flexDirection: 'column', alignItems: 'center', gap: 6, padding: '10px 18px', borderRadius: 14, border: `2px solid ${B.line}`, background: '#fff', marginBottom: 10 }}>
-            <span style={{ fontSize: 15, color: B.ink }}>{said}</span>
+            <span className="edu-room-lines" data-room={priceSaid} style={{ fontSize: 15, color: B.ink }}><span>{said}</span></span>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4, justifyContent: 'center', maxWidth: 220 }} aria-hidden="true">{Array.from({ length: it.price }, (_, i) => <span key={i} style={{ width: 10, height: 10, borderRadius: 5, background: i < total ? B.green : '#DDE3DE', border: `1px solid ${B.line}` }} />)}</div>
           </div>
           {/* The tray: what has been paid so far; a tap puts a coin back on the table. */}
-          <div className={over ? 'edu-wobble' : undefined} style={{ minHeight: 70, display: 'flex', gap: 8, justifyContent: 'center', alignItems: 'center', padding: 8, borderRadius: 14, border: `3px dashed ${paid ? B.green : over ? B.clay : B.muted}`, marginBottom: 12 }} aria-label="The tray">
+          <div className={over ? 'edu-wobble edu-own-edge' : undefined} style={{ minHeight: 70, display: 'flex', gap: 8, justifyContent: 'center', alignItems: 'center', padding: 8, borderRadius: 14, border: `3px dashed ${paid ? B.green : over ? B.clay : B.muted}`, marginBottom: 12 }} aria-label="The tray">
             {tray.length === 0 ? <span style={{ fontSize: 13, color: B.muted }}>tray</span> : tray.map((i) => <button key={i} type="button" className="edu-press" aria-label={`Tray coin worth ${coins[i]}, tap to put it back`} onClick={() => back(i)} style={coinStyle(coins[i], false)}>{coins[i]}</button>)}
             <span style={{ fontSize: 16, fontWeight: 700, color: B.ink, marginLeft: 6 }}>= {total}</span>
           </div>
@@ -5525,7 +6108,7 @@ function PriceGame({ game, round, onScore = null, demo = false }) {
   const buying = last ? stand.tops.map((t) => t >= last.price) : stand.tops.map(() => null);
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Profit found: {found}</span><span>{ticks}s · stand {Math.min(k + 1, stands.length)} of {stands.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Profit found: {found}</span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · stand <HeadRoom most={`${stands.length} of ${stands.length}`}>{Math.min(k + 1, stands.length)} of {stands.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Four stands run, {found} dollars of profit found. Tap the round arrow for new customers.</p> : (
         <div style={{ textAlign: 'center' }}>
           {/* The customers: twelve people at the stand; after a try, the ones who bought hold a cup. */}
@@ -5576,7 +6159,7 @@ function LoanGame({ game, round, onScore = null, demo = false }) {
   const share = balance === null ? 0 : Math.max(0, Math.min(1, balance / plan.principal));
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Interest paid: {total + interest}</span><span>{ticks}s · loan {Math.min(k + 1, plans.length)} of {plans.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Interest paid: <HeadRoom start most="8888">{total + interest}</HeadRoom></span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · loan <HeadRoom most={`${plans.length} of ${plans.length}`}>{Math.min(k + 1, plans.length)} of {plans.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Four loans paid off, {total} dollars of interest in all. Tap the round arrow for new ones.</p> : (
         <div style={{ textAlign: 'center' }}>
           {/* What is still owed, as a bar that shrinks; interest pushes it back up before each payment takes it down. */}
@@ -5618,6 +6201,8 @@ function FundGame({ game, round, onScore = null, demo = false }) {
   };
   const fmt = (v) => v.toLocaleString('en-US');
   const said = last ? (last.surprise > 0 ? (last.short > 0 ? `Month ${last.n}: a ${last.what}, ${fmt(last.surprise)}. The fund was short by ${fmt(last.short)}, so that much was borrowed at 2 percent a month.` : `Month ${last.n}: a ${last.what}, ${fmt(last.surprise)}. The fund covered it.`) : `Month ${last.n}: no surprises. ${fmt(last.save)} saved, ${fmt(year.room - last.save)} spent.`) : `Income ${fmt(year.income)}, bills ${fmt(year.bills)}: ${fmt(year.room)} a month is yours to save or spend.`;
+  // The longest month line this year can show: a surprise the fund could not cover, with the year's longest name and largest bill.
+  const roomSaid = `Month 12: a ${year.months.reduce((w, mo) => (mo.what.length > w.length ? mo.what : w), '')}, ${fmt(Math.max(...year.months.map((mo) => mo.surprise)))}. The fund was short by ${fmt(Math.max(...year.months.map((mo) => mo.surprise)))}, so that much was borrowed at 2 percent a month.`;
   const maxBar = Math.max(1000, st.fund, st.loan, st.spent);
   const bar = (label, v, color) => (
     <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '4px 0' }}>
@@ -5627,9 +6212,9 @@ function FundGame({ game, round, onScore = null, demo = false }) {
     </div>);
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Fund minus loan: {fmt(score)}</span><span>{ticks}s · month {Math.min(m + 1, 12)} of 12</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Fund minus loan: <HeadRoom start most="-8,888">{fmt(score)}</HeadRoom></span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · month <HeadRoom most="12 of 12">{Math.min(m + 1, 12)} of 12</HeadRoom></span></div>
       {bar('fund', st.fund, B.green)}{bar('loan', st.loan, B.clay)}{bar('spent', st.spent, '#B9C2BC')}
-      <p style={{ margin: '10px 0 8px', fontSize: 15, color: B.ink, minHeight: 22, textAlign: 'center' }}>{said}</p>
+      <p className="edu-room-lines" data-room={said.length > roomSaid.length ? said : roomSaid} style={{ margin: '10px 0 8px', fontSize: 15, color: B.ink, minHeight: 22, textAlign: 'center' }}><span>{said}</span></p>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Year over: {fmt(st.fund)} in the fund, {fmt(st.loan)} owed. Tap the round arrow for a new year.</p> : (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, justifyContent: 'center' }}>
           {[0, 100, 200, 300, 400, 500].map((v) => <button key={v} type="button" className="edu-press" data-demo-tap={demo && (!done && v === 300) ? '' : undefined} aria-label={`Save ${v} this month`} onClick={() => choose(v)} style={{ fontFamily: FONT, minWidth: 64, height: 48, borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, fontSize: 16, fontWeight: 700, cursor: 'pointer', padding: '0 8px' }}>{v}</button>)}
@@ -5660,10 +6245,12 @@ function SearchGame({ game, round, onScore = null, demo = false }) {
   const said = found ? `Found in ${seen.length} ${seen.length === 1 ? 'look' : 'looks'}. Six is always enough on thirty-two cards.` : last >= 0 ? `Card ${last + 1} shows ${board.values[last]}. The number is ${board.values[last] < target ? 'higher' : 'lower'}.` : 'Tap a card. The cards are in order from smallest to largest.';
   // A demonstration halves what is left (pass MP): the middle card between the nearest cards seen below and above the number.
   const demoCard = (() => { if (!demo || found || done) return -1; let lo = 0; let hi = board.values.length - 1; for (const i of seen) { if (board.values[i] < target) lo = Math.max(lo, i + 1); else if (board.values[i] > target) hi = Math.min(hi, i - 1); } return Math.floor((lo + hi) / 2); })();
-  const tone = (i) => (i === board.target && seen.includes(i) ? B.green : seen.includes(i) ? (board.values[i] < target ? '#C7DFF8' : B.clay) : '#fff');
+  // An opened card shows where the number lies (pass MR, Q69 (c)): blue when the card is below it, lavender when above, green on it.
+  // Until pass MR a card above was red-brown, the wrong answer's color, though opening it is the search working as it should.
+  const tone = (i) => (i === board.target && seen.includes(i) ? B.green : seen.includes(i) ? (board.values[i] < target ? '#C7DFF8' : '#E3D7F5') : '#fff');
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Looks so far: {total}</span><span>{ticks}s · target {Math.min(k + 1, 4)} of 4</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Looks so far: <HeadRoom start most="888">{total}</HeadRoom></span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · target <HeadRoom most="4 of 4">{Math.min(k + 1, 4)} of 4</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Four numbers found in {total} looks. Tap the round arrow for new cards.</p> : (
         <div style={{ textAlign: 'center' }}>
           <p style={{ margin: '0 0 8px', fontSize: 20, fontWeight: 700, color: B.ink }}>Find {target}</p>
@@ -5709,7 +6296,7 @@ function SpotGame({ game, round, onScore = null, demo = false }) {
     return <line x1={x - h} y1={y} x2={x + h} y2={y} stroke={fill} strokeWidth="3.5" strokeLinecap="round" />; };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Spot it</span><span>{ticks}s · picture {Math.min(k + 1, 4)} of 4</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Spot it</span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · picture <HeadRoom most="4 of 4">{Math.min(k + 1, 4)} of 4</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Four pictures spotted in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <svg viewBox="0 0 100 100" width="100%" style={{ maxWidth: 300, display: 'block', margin: '0 auto', background: '#F6F8F4', borderRadius: 12 }} role="img" aria-label="A picture of lines and shapes">
@@ -5866,7 +6453,7 @@ function PatternGame({ game, round, onScore = null, demo = false }) {
   const pick = (name) => { if (got || done) return; if (name === q.answer) { setGot(true); setStreak((n) => n + 1); } else { setNudge(name); setStreak(0); } };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-pattern-answer={done ? '' : q.answer}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Form: {done ? '' : q.form}{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Form: {done ? '' : q.form}<HeadRoom start most={`\u00a0· ${rounds.length} in a row`} show={streak > 1}>{`\u00a0· ${streak} in a row`}</HeadRoom></span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Five patterns finished in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, justifyContent: 'center', alignItems: 'center', marginBottom: 12 }}>
@@ -5905,7 +6492,7 @@ function ShapeGame({ game, round, onScore = null, demo = false }) {
     setSaid(`Not yet: bar ${bad + 1} does not follow ${plan[bad]}.`); };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-dynamics-plan={done ? '' : plan.join(',')}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Shape the sound</span><span>{ticks}s · line {Math.min(k + 1, 4)} of 4</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Shape the sound</span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · line <HeadRoom most="4 of 4">{Math.min(k + 1, 4)} of 4</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Four lines shaped in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, minmax(0, 1fr))', gap: 6, alignItems: 'end', marginBottom: 6 }}>
@@ -5944,7 +6531,7 @@ function ChordGame({ game, round, onScore = null, demo = false }) {
   const tap = (note) => { if (done || finished || lit.includes(note)) return; if (c.notes.includes(note)) setLit([...lit, note]); else setNudge(note); };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-chord-notes={done ? '' : c.notes.join(' ')}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Build the chord</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Build the chord</span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Five chords built in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <p style={{ margin: '0 0 10px', fontSize: 20, fontWeight: 700, color: B.ink }}>{c.root} {c.quality}</p>
@@ -5995,7 +6582,7 @@ function ValidGame({ game, round, onScore = null, demo = false }) {
   const pick = (v) => { if (got || done) return; if (v === q.valid) { setGot(true); setStreak((n) => n + 1); } else { setNudge(v ? 'valid' : 'invalid'); setStreak(0); } };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-argument-valid={done ? '' : (q.valid ? 'yes' : 'no')} data-demo-key={demo && !got && !done ? (!q.valid ? 'ArrowLeft' : 'ArrowRight') : undefined}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Does the form hold?{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Does the form hold?<HeadRoom start most={`\u00a0· ${rounds.length} in a row`} show={streak > 1}>{`\u00a0· ${streak} in a row`}</HeadRoom></span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six arguments sorted in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <SwipeCard left={[false, 'Not valid', B.clay]} right={[true, 'Valid', B.green]} onPick={pick} off={got || done} demo={demo && !got && !done ? (!q.valid ? 'left' : 'right') : null}><div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '12px 14px', marginBottom: 12, textAlign: 'left' }}>
@@ -6003,8 +6590,8 @@ function ValidGame({ game, round, onScore = null, demo = false }) {
           </div></SwipeCard>
           <p style={{ margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 }}>{got ? `${q.valid ? 'Valid' : 'Not valid'}: ${q.form}.` : 'If the premises were true, would the conclusion have to be?'}</p>
           <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
-            <button type="button" className={`edu-press${nudge === 'invalid' ? ' edu-wobble' : ''}`} data-demo-tap={demo && !got && !q.valid ? '' : undefined} aria-label="Not valid" onClick={() => pick(false)} style={{ fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 22px', borderRadius: 12, border: `2px solid ${B.clay}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' }}>← Not valid</button>
-            <button type="button" className={`edu-press${nudge === 'valid' ? ' edu-wobble' : ''}`} data-demo-tap={demo && !got && q.valid ? '' : undefined} aria-label="Valid" onClick={() => pick(true)} style={{ fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 22px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' }}>Valid →</button>
+            <button type="button" className={`edu-press${nudge === 'invalid' ? ' edu-wobble' : ''}`} data-demo-tap={demo && !got && !q.valid ? '' : undefined} aria-label="Not valid" onClick={() => pick(false)} style={{ fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 22px', borderRadius: 12, border: `2px solid ${B.ink}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' }}>← Not valid</button>
+            <button type="button" className={`edu-press${nudge === 'valid' ? ' edu-wobble' : ''}`} data-demo-tap={demo && !got && q.valid ? '' : undefined} aria-label="Valid" onClick={() => pick(true)} style={{ fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 22px', borderRadius: 12, border: `2px solid ${B.ink}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' }}>Valid →</button>
           </div>
         </div>
       )}
@@ -6028,7 +6615,7 @@ function ReasonGame({ game, round, onScore = null, demo = false }) {
   const pick = (v) => { if (got || done) return; if (v === q.supports) { setGot(true); setStreak((n) => n + 1); } else { setNudge(v ? 'yes' : 'no'); setStreak(0); } };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-reason-supports={done ? '' : (q.supports ? 'yes' : 'no')} data-demo-key={demo && !got && !done ? (!q.supports ? 'ArrowLeft' : 'ArrowRight') : undefined}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Does the reason bear on the claim?{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Does the reason bear on the claim?<HeadRoom start most={`\u00a0· ${rounds.length} in a row`} show={streak > 1}>{`\u00a0· ${streak} in a row`}</HeadRoom></span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six reasons sorted in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <SwipeCard left={[false, 'Does not', B.clay]} right={[true, 'Supports it', B.green]} onPick={pick} off={got || done} demo={demo && !got && !done ? (!q.supports ? 'left' : 'right') : null}><div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '12px 14px', marginBottom: 12, textAlign: 'left' }}>
@@ -6039,8 +6626,8 @@ function ReasonGame({ game, round, onScore = null, demo = false }) {
           </div></SwipeCard>
           <p style={{ margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 }}>{got ? (q.supports ? 'Yes: relevant, and worth checking.' : 'No: true, maybe, and useless here.') : 'A good reason is relevant and true. Is this one relevant?'}</p>
           <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
-            <button type="button" className={`edu-press${nudge === 'no' ? ' edu-wobble' : ''}`} data-demo-tap={demo && !got && !q.supports ? '' : undefined} aria-label="Does not" onClick={() => pick(false)} style={{ fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 22px', borderRadius: 12, border: `2px solid ${B.clay}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' }}>← Does not</button>
-            <button type="button" className={`edu-press${nudge === 'yes' ? ' edu-wobble' : ''}`} data-demo-tap={demo && !got && q.supports ? '' : undefined} aria-label="Supports it" onClick={() => pick(true)} style={{ fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 22px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' }}>Supports it →</button>
+            <button type="button" className={`edu-press${nudge === 'no' ? ' edu-wobble' : ''}`} data-demo-tap={demo && !got && !q.supports ? '' : undefined} aria-label="Does not" onClick={() => pick(false)} style={{ fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 22px', borderRadius: 12, border: `2px solid ${B.ink}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' }}>← Does not</button>
+            <button type="button" className={`edu-press${nudge === 'yes' ? ' edu-wobble' : ''}`} data-demo-tap={demo && !got && q.supports ? '' : undefined} aria-label="Supports it" onClick={() => pick(true)} style={{ fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 22px', borderRadius: 12, border: `2px solid ${B.ink}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer' }}>Supports it →</button>
           </div>
         </div>
       )}
@@ -6066,7 +6653,7 @@ function BecauseGame({ game, round, onScore = null, demo = false }) {
   const tap = (i) => { if (done || complete || found.includes(i)) return; if (q.options[i].real) { setFound([...found, i]); setStreak((n) => n + 1); } else { setNudge(i); setStreak(0); } };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-because-real={done ? '' : q.options.filter((o) => o.real).map((o) => o.text).join(' | ')}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Tap the real reasons{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Tap the real reasons<HeadRoom start most={`\u00a0· ${rounds.length} in a row`} show={streak > 1}>{`\u00a0· ${streak} in a row`}</HeadRoom></span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Five claims sorted in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div>
           <div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '10px 14px', marginBottom: 10 }}>
@@ -6105,7 +6692,7 @@ function ShareGame({ game, round, onScore = null, demo = false }) {
   const cookie = (key) => <svg key={key} viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="#D9A441" stroke={B.ink} strokeWidth="1" /><circle cx="7" cy="8" r="1.4" fill="#6B3E1E" /><circle cx="12.5" cy="7" r="1.2" fill="#6B3E1E" /><circle cx="11" cy="12.5" r="1.4" fill="#6B3E1E" /><circle cx="6.5" cy="12.5" r="1" fill="#6B3E1E" /></svg>;
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-share-each={done ? '' : String(q.each)} data-share-plates={done ? '' : String(q.plates)}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Share the cookies</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Share the cookies</span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Four fair shares in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <SpokenRow margin="0 0 8px" speaker={!got && <ReplaySpeaker text={q.say} />}><p data-demo-look="" style={{ margin: 0, fontSize: 18, fontWeight: 700, color: B.ink, textAlign: 'center' }}>{q.say.replace(/(\d+) (cookies|plates)/g, '$1\u00A0$2').replace('The same', 'The\u00A0same').replace('every plate', 'every\u00A0plate')}</p></SpokenRow>
@@ -6139,10 +6726,12 @@ function StatGame({ game, round, onScore = null, demo = false }) {
   const pick = (v) => { if (got || done) return; if (v === q.answer) { setGot(true); setStreak((n) => n + 1); } else { setNudge(v); setStreak(0); } };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-stat-answer={done ? '' : String(q.answer)}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Three ways to say average{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Three ways to say average<HeadRoom start most={`\u00a0· ${rounds.length} in a row`} show={streak > 1}>{`\u00a0· ${streak} in a row`}</HeadRoom></span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six averages found in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
-          <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginBottom: 10 }}>{q.scores.map((v, i) => <span key={i} style={{ fontFamily: FONT, fontSize: 18, fontWeight: 700, color: B.ink, background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 10, padding: '6px 10px' }}>{v}</span>)}</div>
+          {/* The five scores wrap to a second line rather than run past the board (pass MR, the layout sweep: on a 320 phone the first
+              and last were cut off at the board's edges), and sit a little closer, so on most phones they still fit on one. */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, justifyContent: 'center', marginBottom: 10 }}>{q.scores.map((v, i) => <span key={i} style={{ fontFamily: FONT, fontSize: 17, fontWeight: 700, color: B.ink, background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 10, padding: '5px 8px' }}>{v}</span>)}</div>
           <p style={{ margin: '0 0 10px', fontSize: 18, fontWeight: 700, color: B.ink }}>What is the {q.ask}?</p>
           <p style={{ margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.muted, minHeight: 22, fontWeight: got ? 700 : 400 }}>{got ? how : q.ask === 'mean' ? 'Add them up and divide by how many.' : q.ask === 'median' ? 'Put them in order and take the middle one.' : 'Find the score that appears most.'}</p>
           <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -6176,7 +6765,7 @@ function RecallGame({ game, round, onScore = null, demo = false, demoGo = true }
   const pick = (w) => { if (got || done || showing) return; if (w === q.answer) setGot(true); else setNudge(w); };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-recall-answer={done || showing ? '' : q.answer}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Hold it in mind</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Hold it in mind</span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Five lists held in mind in {ticks} seconds. Tap the round arrow for more.</p> : showing ? (
         <div style={{ textAlign: 'center' }}>
           <p data-demo-look={demo ? '' : undefined} style={{ margin: '0 0 10px', fontSize: 15, color: B.muted }}>Look. The words hide in {left}.</p>
@@ -6194,6 +6783,138 @@ function RecallGame({ game, round, onScore = null, demo = false, demoGo = true }
     </div>
   );
 }
+// ---------- Children drawn as people (pass MR) ----------
+// Mikey: "Can we make the images of people look a little more realistic?  I know we will replace them eventually but do the best
+// you can with the placeholders." Until pass MR the four friends of Whose Turn Next and the face of Name the Feeling were circles
+// with dot eyes and a line for a smile. Now each is a child: a round face with ears, hair with volume and a second shade, eyes with
+// a white, a brown iris, a pupil and a catch-light, eyebrows, a small nose, warm cheeks, a neck with the chin's shadow and the
+// shoulders of a shirt, drawn in a 100 by 100 box. The outline is a darker shade of the skin, never black, as the five people in
+// IconPic are drawn (pass MR). A look (KID_LOOKS, KID_FEELING_FACE) names the skin and its shades, the hair behind the head
+// (back) and over the forehead (front), and the shirt; a feeling picks the eyebrows, eyes and mouth (Name the Feeling's six).
+const KID_HEAD = 'M50 20 C64.4 20 73.6 31 73.6 46 C73.6 59.4 67 69.6 57.6 73.4 C55.2 74.4 52.6 74.8 50 74.8 C47.4 74.8 44.8 74.4 42.4 73.4 C33 69.6 26.4 59.4 26.4 46 C26.4 31 35.6 20 50 20 Z';
+const kidMirror = (node) => <g transform="matrix(-1 0 0 1 100 0)">{node}</g>;
+// The shirt over two shoulders with its far side in shade and a ribbed neckline, and the neck with the shadow the chin throws on it.
+function KidShoulders({ k }) {
+  const body = 'M50 77 C41 77 35 79 29.4 82 C22 85.4 16.4 90.6 14.6 100 L85.4 100 C83.6 90.6 78 85.4 70.6 82 C65 79 59 77 50 77 Z';
+  return (
+    <g>
+      <path d="M42.4 66 C42.4 72 42 76 40.6 80.4 L59.4 80.4 C58 76 57.6 72 57.6 66 Z" fill={k.skin} />
+      <path d="M42.4 66 L57.6 66 L57.6 73 Q50 78.6 42.4 73 Z" fill={k.shade} />
+      <path d={body} fill={k.shirt} />
+      <path d="M66 80.2 C73 82.6 80.8 87.6 83 93.6 L85.4 100 L76 100 C76.6 93 75.6 86.6 66 80.2 Z" fill={k.shirtShade} />
+      <path d="M41 79 Q50 86.2 59 79" fill="none" stroke={k.shirtShade} strokeWidth="2.2" strokeLinecap="round" />
+    </g>
+  );
+}
+// Eyes with a white, a brown iris, a pupil and a catch-light, under a lid line that lifts at the outer corner; wide eyes (scared,
+// surprised) show white all round a smaller iris.
+function KidEyes({ wide = false }) {
+  const y = 48; const iris = '#4A2E1C'; const lid = '#2A1A10';
+  const one = (cx, s) => (
+    <g>
+      <ellipse cx={cx} cy={y} rx={wide ? 5.2 : 4.6} ry={wide ? 4.4 : 3.3} fill="#FFFFFF" />
+      <circle cx={cx + s * 0.3} cy={y + 0.2} r={wide ? 2.2 : 2.5} fill={iris} />
+      <circle cx={cx + s * 0.3} cy={y + 0.2} r={wide ? 1.1 : 1.3} fill="#140C07" />
+      <circle cx={cx - 0.9} cy={y - 1} r="0.9" fill="#FFFFFF" />
+      <path d={wide ? `M${cx - s * 5.6} ${y + 0.4} Q${cx} ${y - 6.4} ${cx + s * 5.8} ${y - 0.6}` : `M${cx - s * 5.2} ${y + 0.6} Q${cx} ${y - 5} ${cx + s * 5.6} ${y - 0.8}`} fill="none" stroke={lid} strokeWidth="1.5" strokeLinecap="round" />
+    </g>
+  );
+  return <g>{one(40, -1)}{one(60, 1)}</g>;
+}
+// Each feeling's eyebrows: relaxed arcs for happy and calm, inner ends raised for sad and higher and steeper for scared, high
+// arcs for surprised, and pulled down toward the nose for angry.
+function KidBrows({ k, feel }) {
+  const d = {
+    happy: 'M36 40.4 Q40.4 37.4 45.2 39.2', calm: 'M36 40.8 Q40.4 38.6 45.2 39.8',
+    sad: 'M35.6 41.8 Q40.6 41 45.6 37', scared: 'M35.4 40 Q40.4 38.6 45.8 32.8',
+    surprised: 'M35.8 37 Q40.4 32.2 45.4 35.2', angry: 'M35.4 37.4 Q40.6 38.6 46 42.6',
+  }[feel] || 'M36 40.4 Q40.4 37.4 45.2 39.2';
+  return <g fill="none" stroke={k.brow} strokeWidth={feel === 'angry' ? 2.6 : 2} strokeLinecap="round"><path d={d} />{kidMirror(<path d={d} />)}</g>;
+}
+// Each feeling's eyes: open for happy, wide for scared and surprised, the upper lid lowered for sad and narrowed for angry, and
+// closed in a soft curve for calm.
+function KidFeelingEyes({ k, feel }) {
+  if (feel === 'calm') return <g fill="none" stroke="#2A1A10" strokeWidth="1.8" strokeLinecap="round"><path d="M35.4 48 Q40 51.6 44.6 48" />{kidMirror(<path d="M35.4 48 Q40 51.6 44.6 48" />)}</g>;
+  const wide = feel === 'scared' || feel === 'surprised';
+  const drop = feel === 'sad' ? 2 : feel === 'angry' ? 2.6 : 0;
+  if (!drop) return <KidEyes wide={wide} />;
+  // A lowered lid: the skin over the top of the eye, and the lid's edge, straight across for angry and drooping for sad.
+  const edge = 44.7 + drop; const bend = feel === 'angry' ? 1.4 : -0.8;
+  const lid = <g><path d={`M34.4 43.6 L45.6 43.6 L45.6 ${edge} Q40 ${edge + bend} 34.4 ${edge} Z`} fill={k.skin} /><path d={`M34.6 ${edge} Q40 ${edge + bend} 45.4 ${edge}`} fill="none" stroke="#2A1A10" strokeWidth="1.5" strokeLinecap="round" /></g>;
+  return <g><KidEyes />{lid}{kidMirror(lid)}</g>;
+}
+// Each feeling's mouth: a wide open smile for happy, a soft closed smile for calm, turned down for sad, a tight frown for angry,
+// a tense mouth stretched wide with both rows of teeth for scared (so it never reads as a laugh), and a round O for surprised.
+function KidMouth({ k, feel }) {
+  if (feel === 'calm') return <path d="M44.2 62.4 Q50 66.2 55.8 62.4" fill="none" stroke={k.mouth} strokeWidth="2.2" strokeLinecap="round" />;
+  if (feel === 'sad') return <path d="M43.8 66 Q50 60.6 56.2 66" fill="none" stroke={k.mouth} strokeWidth="2.4" strokeLinecap="round" />;
+  if (feel === 'angry') return <path d="M43.2 65 Q50 61.6 56.8 65" fill="none" stroke={k.mouth} strokeWidth="2.8" strokeLinecap="round" />;
+  if (feel === 'scared') return <g><path d="M42 63.4 Q46 61.6 50 61.8 Q54 61.6 58 63.4 L57.4 66.6 Q50 69 42.6 66.6 Z" fill={k.mouth} /><path d="M43.2 63.4 Q46.4 62.2 50 62.4 Q53.6 62.2 56.8 63.4 L56.6 64.6 Q50 63.8 43.4 64.6 Z" fill="#FFFFFF" /><path d="M43.4 65.8 Q50 67 56.6 65.8 L56.4 66.6 Q50 68.4 43.6 66.6 Z" fill="#FFFFFF" /></g>;
+  if (feel === 'surprised') return <ellipse cx="50" cy="64.2" rx="3.4" ry="4.6" fill={k.mouth} />;
+  return <g><path d="M43.2 61.4 Q50 63 56.8 61.4 Q55.2 67.6 50 67.8 Q44.8 67.6 43.2 61.4 Z" fill={k.mouth} /><path d="M44.4 62 Q50 63.4 55.6 62 L55 63.8 Q50 65 45 63.8 Z" fill="#FFFFFF" /></g>;
+}
+// One child: hair behind, shoulders, ears, face, cheeks, the hair over the forehead, then the feeling's brows, eyes and mouth (a
+// sad face adds a tear). Without a feeling the child smiles, as the friends of Whose Turn Next do.
+function KidFace({ k, feel = 'happy' }) {
+  const ear = <g><path d="M28 44.4 C23.6 42.8 21.6 47.6 23 51.4 C24 54 26 55.6 28.8 55 Z" fill={k.skin} stroke={k.line} strokeWidth="1.2" strokeLinejoin="round" /><path d="M26.8 47.4 C24.8 47.4 24.6 50.4 26.2 52.2" fill="none" stroke={k.shade} strokeWidth="1.3" strokeLinecap="round" /></g>;
+  return (
+    <g>
+      {k.back}
+      <KidShoulders k={k} />
+      {ear}{kidMirror(ear)}
+      <path d={KID_HEAD} fill={k.skin} stroke={k.line} strokeWidth="1.2" />
+      <ellipse cx="36.6" cy="57" rx="4.6" ry="2.8" fill="#EE8F7E" opacity="0.38" />
+      <ellipse cx="63.4" cy="57" rx="4.6" ry="2.8" fill="#EE8F7E" opacity="0.38" />
+      {k.front}
+      <KidBrows k={k} feel={feel} />
+      <KidFeelingEyes k={k} feel={feel} />
+      <path d="M51.6 52 Q53.6 56 51 57.4 Q49.8 58 48.4 57.4" fill="none" stroke={k.shade} strokeWidth="1.5" strokeLinecap="round" />
+      <KidMouth k={k} feel={feel} />
+      {feel === 'sad' && <path d="M38.4 53.6 C37 56.4 36.4 58 37.6 59.2 C38.8 60.2 40.4 59.4 40.2 57.8 C40 56.6 39.2 55.2 38.4 53.6 Z" fill="#7FB6E8" stroke="#4E86BC" strokeWidth="0.8" />}
+    </g>
+  );
+}
+// The four friends of Whose Turn Next (TURN_FRIENDS, in seat order Ava, Ben, Cy, Dee), each a different look in the four skin
+// tones the game always had: Ava's long straight brown hair with a side part and an orange shirt, Ben's short dark curls and a
+// blue shirt, Cy's round full crown of tight coils and a green shirt, and Dee's two puffs with yellow ties and a purple shirt.
+const KID_LOOKS = [
+  { skin: '#F5CBA7', shade: '#E0A882', line: '#C98E68', brow: '#6B4026', mouth: '#B5524A', shirt: '#F08C4A', shirtShade: '#D6733A',
+    back: <path d="M50 12 C29 12 20 28 21 47 C21.6 60 20.4 72 24 82 C30 83 36 81 38.6 77 C33 66 30 54 31 42 L69 42 C70 54 67 66 61.4 77 C64 81 70 83 76 82 C79.6 72 78.4 60 79 47 C80 28 71 12 50 12 Z" fill="#7A4A2A" />,
+    front: <g>
+      <path d="M26.6 43 C26 28 36 16.6 51 16.4 C64.6 16.2 74.2 26.4 73.6 43 C70.2 35 63.4 29.6 55.2 27.8 C49 31.4 40.6 34.6 32.4 35.4 C30 37.4 28 40 26.6 43 Z" fill="#7A4A2A" />
+      <path d="M55.2 27.8 C49 31.4 40.6 34.6 32.4 35.4 C36.8 29.6 44.4 26.2 55.2 27.8 Z" fill="#5E3820" />
+      <path d="M58 20 C63.6 21.4 68.4 25.4 70.6 31" fill="none" stroke="#9A6440" strokeWidth="1.6" strokeLinecap="round" />
+    </g> },
+  { skin: '#C68642', shade: '#A86A30', line: '#8F5826', brow: '#2B1B12', mouth: '#8E3A30', shirt: '#4F96D6', shirtShade: '#3C7CB8',
+    back: null,
+    front: <g>
+      <path d="M26.8 44 C25 27 35 14.4 50.4 14.4 C65.6 14.4 75.4 27 73.2 44 C71.2 37 68 33.4 63.6 31.8 C57.6 33.4 43 33.6 36.4 31.8 C31.8 33.6 28.6 37.6 26.8 44 Z" fill="#2B1B12" />
+      <path d="M33 26 q1.8 -1.6 3.6 0 M40 20.6 q1.8 -1.6 3.6 0 M48 18 q1.8 -1.6 3.6 0 M56 20 q1.8 -1.6 3.6 0 M63 25 q1.8 -1.6 3.6 0 M36.6 30 q1.8 -1.6 3.6 0 M45 25.4 q1.8 -1.6 3.6 0 M53 26 q1.8 -1.6 3.6 0 M59.6 29.6 q1.8 -1.6 3.6 0 M29.8 34.6 q1.6 -1.4 3.2 0 M67 34.6 q1.6 -1.4 3.2 0" fill="none" stroke="#4A3022" strokeWidth="1.3" strokeLinecap="round" />
+    </g> },
+  { skin: '#8D5524', shade: '#6E3F17', line: '#5A3112', brow: '#1A0F09', mouth: '#5E2418', shirt: '#5BB36A', shirtShade: '#469756',
+    back: <path d="M50 6.4 C31 6.4 19.6 19.6 20.6 36 C21 41.4 22.6 45.4 25.6 48 L74.4 48 C77.4 45.4 79 41.4 79.4 36 C80.4 19.6 69 6.4 50 6.4 Z" fill="#1E1410" />,
+    front: <g>
+      <path d="M26.2 42 C24 30 30 19 40 16.4 C46.6 14.8 53.4 14.8 60 16.4 C70 19 76 30 73.8 42 C71 35.8 67.4 32.6 62.6 31.6 C55.6 30.6 44.4 30.6 37.4 31.6 C32.6 32.6 29 35.8 26.2 42 Z" fill="#1E1410" />
+      <path d="M33 17.4 a1.6 1.6 0 1 1 2.4 1.6 M41 12.6 a1.6 1.6 0 1 1 2.4 1.6 M50 11.2 a1.6 1.6 0 1 1 2.4 1.6 M59 12.8 a1.6 1.6 0 1 1 2.4 1.6 M66.6 17.6 a1.6 1.6 0 1 1 2.4 1.6 M27.6 25.2 a1.5 1.5 0 1 1 2.2 1.5 M37 20.2 a1.5 1.5 0 1 1 2.2 1.5 M46 17.8 a1.5 1.5 0 1 1 2.2 1.5 M55 18.2 a1.5 1.5 0 1 1 2.2 1.5 M63.4 21.8 a1.5 1.5 0 1 1 2.2 1.5 M71 26.2 a1.5 1.5 0 1 1 2.2 1.5 M32 28.6 a1.4 1.4 0 1 1 2 1.4 M42 25.6 a1.4 1.4 0 1 1 2 1.4 M51 25 a1.4 1.4 0 1 1 2 1.4 M60 26.6 a1.4 1.4 0 1 1 2 1.4 M67.6 30.6 a1.4 1.4 0 1 1 2 1.4" fill="none" stroke="#3A2A22" strokeWidth="1.2" strokeLinecap="round" />
+    </g> },
+  { skin: '#E0AC69', shade: '#C48E50', line: '#A87440', brow: '#3A2416', mouth: '#9C4434', shirt: '#A472C2', shirtShade: '#8A5BA8',
+    back: <g fill="#3A2416"><circle cx="22.6" cy="22.6" r="11.6" /><circle cx="77.4" cy="22.6" r="11.6" /></g>,
+    front: <g>
+      <path d="M26.8 43 C25.6 28 35.6 17 50 17 C64.4 17 74.4 28 73.2 43 C70.6 34.4 64.6 28.4 56 26.8 C53.6 28.8 52 31 50 31.4 C48 31 46.4 28.8 44 26.8 C35.4 28.4 29.4 34.4 26.8 43 Z" fill="#3A2416" />
+      <path d="M50 17.6 L50 30.6" fill="none" stroke="#6E4A32" strokeWidth="1.2" strokeLinecap="round" />
+      <path d="M16.4 18 q3 -3.4 7 -2.6 M14.6 25.6 q2.2 2.6 6 2.4 M83.6 18 q-3 -3.4 -7 -2.6 M85.4 25.6 q-2.2 2.6 -6 2.4" fill="none" stroke="#5A3C28" strokeWidth="1.3" strokeLinecap="round" />
+      <rect x="29.6" y="26.4" width="5.6" height="3.4" rx="1.6" fill="#F2C14E" transform="rotate(-38 32.4 28.1)" />
+      <rect x="64.8" y="26.4" width="5.6" height="3.4" rx="1.6" fill="#F2C14E" transform="rotate(38 67.6 28.1)" />
+    </g> },
+];
+// Name the Feeling's child: short brown hair swept to one side, in a teal shirt, in the skin tone the game always had.
+const KID_FEELING_FACE = { skin: '#F5CBA7', shade: '#E0A882', line: '#C98E68', brow: '#5A3A24', mouth: '#B5524A', shirt: '#6FB3A8', shirtShade: '#57998E',
+  back: null,
+  front: <g>
+    <path d="M26.8 42 C25.6 27 35.4 15.6 50.4 15.6 C65.4 15.6 74.8 27 73.2 42 C71.4 36.6 68.6 32.8 64.6 31 C59.6 33.6 51 34.2 45.6 32 C41.6 33.4 38 33.8 35.4 33.2 C31.4 35.2 28.6 38.2 26.8 42 Z" fill="#7A5232" />
+    <path d="M45.6 32 C51 34.2 59.6 33.6 64.6 31 C58.6 27.4 50.6 27.4 45.6 32 Z" fill="#5E3E25" />
+    <path d="M38 20.6 C42.4 18.2 47.6 17.6 52.4 18.2" fill="none" stroke="#9A6E48" strokeWidth="1.6" strokeLinecap="round" />
+  </g> };
 // Name the Feeling (2026-09-29, pass GO, a new kind for psychology 3 to 5): a face drawn from one of six expressions and
 // four feeling words; tap the one the face shows. The right word moves on, a wrong one wobbles. Six faces a round, every
 // feeling once, and the clock counts up. The lesson's first move, name the feeling, is the rule of the game. Drawn with B.
@@ -6207,26 +6928,12 @@ function FaceGame({ game, round, onScore = null, demo = false }) {
   useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
   useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 800); return () => clearTimeout(t); }, [got]);
   const pick = (v) => { if (got || done) return; if (v === q.answer) { setGot(true); setStreak((n) => n + 1); } else { setNudge(v); setStreak(0); } };
-  const face = (f) => {
-    const ink = B.ink; const skin = '#F5CBA7';
-    const brows = f === 'angry' ? <g><path d="M28 33l14 6" stroke={ink} strokeWidth="3" strokeLinecap="round" /><path d="M72 33l-14 6" stroke={ink} strokeWidth="3" strokeLinecap="round" /></g>
-      : f === 'sad' ? <g><path d="M28 39l14-5" stroke={ink} strokeWidth="3" strokeLinecap="round" /><path d="M72 39l-14-5" stroke={ink} strokeWidth="3" strokeLinecap="round" /></g>
-      : f === 'scared' || f === 'surprised' ? <g><path d="M28 30q7-6 14 0" fill="none" stroke={ink} strokeWidth="3" strokeLinecap="round" /><path d="M58 30q7-6 14 0" fill="none" stroke={ink} strokeWidth="3" strokeLinecap="round" /></g>
-      : <g><path d="M28 36q7-3 14 0" fill="none" stroke={ink} strokeWidth="3" strokeLinecap="round" /><path d="M58 36q7-3 14 0" fill="none" stroke={ink} strokeWidth="3" strokeLinecap="round" /></g>;
-    const eyes = f === 'scared' || f === 'surprised' ? <g><circle cx="35" cy="47" r="6" fill="#fff" stroke={ink} strokeWidth="2" /><circle cx="65" cy="47" r="6" fill="#fff" stroke={ink} strokeWidth="2" /><circle cx="35" cy="47" r="2.5" fill={ink} /><circle cx="65" cy="47" r="2.5" fill={ink} /></g>
-      : f === 'calm' ? <g><path d="M29 48q6 4 12 0" fill="none" stroke={ink} strokeWidth="3" strokeLinecap="round" /><path d="M59 48q6 4 12 0" fill="none" stroke={ink} strokeWidth="3" strokeLinecap="round" /></g>
-      : <g><circle cx="35" cy="47" r="3.5" fill={ink} /><circle cx="65" cy="47" r="3.5" fill={ink} /></g>;
-    const mouth = f === 'happy' ? <path d="M34 64q16 16 32 0" fill="none" stroke={ink} strokeWidth="3.5" strokeLinecap="round" />
-      : f === 'sad' ? <path d="M34 72q16-14 32 0" fill="none" stroke={ink} strokeWidth="3.5" strokeLinecap="round" />
-      : f === 'angry' ? <path d="M36 70h28" stroke={ink} strokeWidth="3.5" strokeLinecap="round" />
-      : f === 'scared' ? <ellipse cx="50" cy="68" rx="9" ry="6" fill={ink} />
-      : f === 'surprised' ? <ellipse cx="50" cy="68" rx="7" ry="9" fill={ink} />
-      : <path d="M38 67q12 6 24 0" fill="none" stroke={ink} strokeWidth="3" strokeLinecap="round" />;
-    return <svg viewBox="0 0 100 100" width="150" height="150" role="img" aria-label="A face" style={{ display: 'block', margin: '0 auto 10px' }}><circle cx="50" cy="52" r="40" fill={skin} stroke={ink} strokeWidth="2" />{brows}{eyes}{mouth}{f === 'sad' && <circle cx="30" cy="58" r="2.5" fill="#4B6B8B" />}</svg>;
-  };
+  // The face (pass MR): a child drawn as a person (KidFace), whose eyebrows, eyes and mouth show the feeling, in place of a circle
+  // with dot eyes; the same six feelings, each read by its own signs (see KidBrows, KidFeelingEyes and KidMouth).
+  const face = (f) => <svg viewBox="0 0 100 100" width="150" height="150" role="img" aria-label="A face" style={{ display: 'block', margin: '0 auto 10px' }}><KidFace k={KID_FEELING_FACE} feel={f} /></svg>;
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-feeling-answer={done ? '' : q.answer} data-demo-key={demo && !done && !got ? String(q.choices.indexOf(q.answer) + 1) : undefined}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Name the feeling{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Name the feeling<HeadRoom start most={`\u00a0· ${rounds.length} in a row`} show={streak > 1}>{`\u00a0· ${streak} in a row`}</HeadRoom></span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six feelings named in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <DragCard onDrop={pick} off={got || done} demo={demo}><div data-demo-look="" style={{ display: 'inline-block' }}>{face(q.answer)}</div></DragCard>
@@ -6293,16 +7000,28 @@ function ReplaySpeaker({ text, label = 'Hear the question again' }) {
 // the height they keep. Where the device can speak, the speaker's column keeps a speaker's 40 pixels while the speaker hides after a
 // right answer (round three's screen read: Share the Cookies' plates rose 13 pixels on a laptop, and Grow the Plant's tiles 16), and
 // the measuring copy keeps no height, so no code can scroll the board down into it.
+// Words in a game's head that change during a round, the clock, the count and the streak, hold the room of their widest form from
+// the first board, so the head never wraps in the middle of a round and the board never drops under the child's finger (pass MR,
+// round one's code check: "· 2 in a row" wrapped Which Sense's head on a 320 phone and dropped its answers 23 pixels, the way
+// Grow the Plant's hint had moved its tiles, Q72). The widest form is drawn by the stylesheet (.edu-room's ::before, from its
+// data-room), hidden, silent and out of the page's text, in the same grid cell as the live words, which sit over it at its right
+// edge (or its left, with start); the head's digits are all one width (tabular-nums). A part that is not shown yet (a streak
+// below two) holds its room with no words at all.
+function HeadRoom({ most, show = true, start = false, children }) {
+  return <span className="edu-room" data-room={most} data-room-start={start ? '' : undefined}><span>{show ? children : null}</span></span>;
+}
 function SpokenRow({ speaker = null, margin = 0, minHeight = 0, texts = null, sizeAs = null, children }) {
   const rowRef = useRef(null); const measureRef = useRef(null); const [tallest, setTallest] = useState(0);
   const measuring = !!(texts && texts.length && sizeAs); const textsKey = measuring ? texts.join('\n') : '';
   React.useLayoutEffect(() => {
     if (!measuring) { setTallest(0); return undefined; }
-    const measure = () => { const row = rowRef.current; const box = measureRef.current; if (!row || !box) return; box.style.width = `${Math.max(0, row.clientWidth - 84)}px`; let h = 0; for (const el of box.children) h = Math.max(h, el.getBoundingClientRect().height); setTallest(Math.ceil(h)); };
+    const measure = () => { const row = rowRef.current; const box = measureRef.current; if (!row || !box) return; box.style.width = `${Math.max(0, row.clientWidth - 92)}px`; let h = 0; for (const el of box.children) h = Math.max(h, el.getBoundingClientRect().height); setTallest(Math.ceil(h)); };
     measure(); window.addEventListener('resize', measure); return () => window.removeEventListener('resize', measure);
   }, [textsKey]);
   return (
-    <div ref={rowRef} data-spoken-row="" style={{ position: 'relative', display: 'grid', gridTemplateColumns: 'minmax(40px, 1fr) auto minmax(40px, 1fr)', alignItems: 'center', columnGap: 2, margin, marginLeft: -10, marginRight: -10, minHeight }}>
+    // Each side column is at least the speaker's own 44 pixels (pass MR, the layout sweep: at 40 a two-line question on a 320 phone
+    // left Find the Letter's speaker 2 pixels past the board's edge, cut off), so the words stay in the middle and the speaker inside.
+    <div ref={rowRef} data-spoken-row="" style={{ position: 'relative', display: 'grid', gridTemplateColumns: 'minmax(44px, 1fr) auto minmax(44px, 1fr)', alignItems: 'center', columnGap: 2, margin, marginLeft: -10, marginRight: -10, minHeight }}>
       <span aria-hidden="true" />
       <div data-spoken-words="" style={{ minWidth: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', textWrap: 'balance', minHeight: tallest || undefined }}>{children}</div>
       <div style={{ justifySelf: 'start', display: 'flex', alignItems: 'center', minHeight: canSpeak() ? 40 : 0 }}>{speaker}</div>
@@ -6314,6 +7033,33 @@ function SpokenRow({ speaker = null, margin = 0, minHeight = 0, texts = null, si
 // which number is assigned to what instead of guessing"): small and quiet under the box, and only where there is a keyboard and a
 // mouse or trackpad (.edu-key-hint, shown by a media query), since a phone has no keys to press.
 function KeyHint({ k }) { return <span className="edu-key-hint" aria-hidden="true">{k}</span>; }
+// A word that must stay inside its tile, in whatever font the device draws it (pass MR, Mikey: "see the screenshot for the word
+// sunshine bleeding out through a button ... I never want this to happen anywhere in the app"). The label is laid out on one line and
+// measured against the room its tile gives it (the parent's content box); while it is wider it steps down half a pixel at a time, to
+// min at the smallest, and only if it still does not fit may it break (a soft hyphen in the word, or between words). It measures again
+// whenever its tile changes size (a ResizeObserver, or the window's resize where there is none). A screen's own font can be wider than
+// the test browser's (Mikey's phone drew sunshine wider than the tests' font did, so a fix measured in the tests could still spill
+// there), so the fit is made on the device itself.
+function FitText({ children, size = 12, min = 9, style = null, className = undefined }) {
+  const ref = useRef(null); const [fs, setFs] = useState(size); const [wrap, setWrap] = useState(false);
+  React.useLayoutEffect(() => {
+    const el = ref.current; if (!el || !el.parentElement) return undefined;
+    const fit = () => {
+      const host = el.parentElement; const cs = getComputedStyle(host);
+      const room = host.clientWidth - (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0);
+      if (room <= 0) return;
+      el.style.whiteSpace = 'nowrap'; let f = size; el.style.fontSize = `${f}px`;
+      while (f > min && el.scrollWidth > room + 0.5) { f -= 0.5; el.style.fontSize = `${f}px`; }
+      const tooWide = el.scrollWidth > room + 0.5;
+      el.style.whiteSpace = tooWide ? 'normal' : 'nowrap';
+      setFs(f); setWrap(tooWide);
+    };
+    fit();
+    let ro = null; if (typeof ResizeObserver === 'function') { ro = new ResizeObserver(() => fit()); ro.observe(el.parentElement); } else window.addEventListener('resize', fit);
+    return () => { if (ro) ro.disconnect(); else window.removeEventListener('resize', fit); };
+  }, [children, size, min]);
+  return <span ref={ref} data-fit-text="" className={className} style={{ display: 'block', maxWidth: '100%', fontSize: fs, whiteSpace: wrap ? 'normal' : 'nowrap', overflowWrap: wrap ? 'anywhere' : 'normal', hyphens: wrap ? 'manual' : 'none', ...(style || {}) }}>{children}</span>;
+}
 function SenseGame({ game, round, onScore = null, demo = false }) {
   const rounds = useMemo(() => senseRounds(round), [round]);
   const [k, setK] = useState(0); const [got, setGot] = useState(false); const [nudge, setNudge] = useState(null); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false); const [streak, setStreak] = useState(0);
@@ -6337,7 +7083,7 @@ function SenseGame({ game, round, onScore = null, demo = false }) {
     return <g><path d="M13 34.5 C11.4 31.5 11 28.8 11.2 25.8 L7 21.4 Q5.6 19.8 7.2 18.7 Q8.8 17.8 10.3 19.3 L13.1 22.2 L13.1 10.6 Q13.1 8.5 15.1 8.5 Q17.1 8.5 17.1 10.6 L17.1 19.2 L17.5 19.2 L17.5 8.6 Q17.5 6.4 19.6 6.4 Q21.7 6.4 21.7 8.6 L21.7 19.2 L22.1 19.2 L22.1 9.8 Q22.1 7.7 24.1 7.7 Q26.1 7.7 26.1 9.8 L26.1 20 L26.5 20 L26.5 13.4 Q26.5 11.5 28.3 11.5 Q30.1 11.5 30.1 13.4 L30.1 25.5 C30.1 31 27.4 34.5 22.6 34.5 Z" fill={skin} stroke={k2} strokeWidth="1.5" strokeLinejoin="round" /><path d="M17.3 19.4 V23.2 M21.9 19.4 V23.4 M26.3 20.2 V23.6" stroke={k2} strokeWidth="1.1" strokeLinecap="round" /></g>; };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-sense-answer={done ? '' : q.sense} data-demo-key={demo && !done && !got ? String(SENSES.indexOf(q.sense) + 1) : undefined}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Which sense?{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Which sense?<HeadRoom start most={`\u00a0· ${rounds.length} in a row`} show={streak > 1}>{`\u00a0· ${streak} in a row`}</HeadRoom></span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Five senses found in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <SpokenRow margin="4px 0 12px" speaker={!got && <ReplaySpeaker text={`Which sense tells you about ${q.thing}?`} />} texts={rounds.flatMap((r) => [r.thing, `Yes: your ${word[r.sense].toLowerCase()}.`])} sizeAs={(t) => <div style={{ display: 'inline-block', border: '1.5px solid', borderRadius: 12, padding: '6px 14px' }}><p style={{ margin: 0, fontSize: 20, fontWeight: 700 }}>{t}</p></div>}>
@@ -6356,6 +7102,9 @@ function SenseGame({ game, round, onScore = null, demo = false }) {
 // it. Tap a filler and it is struck out; tap a real word and it wobbles. When every filler is gone the clean line is read
 // back and the next one comes. Five lines a round and the clock counts up. The lesson's rule, no filler, is the rule of
 // the game. Drawn with B on the paper board.
+// A filler struck out of the line (pass MR, Q69 (c)): cutting one is a right tap, so it is struck in a quiet grey (4.9 to 1 on its pale
+// ground) with a dashed edge, where until pass MR it took the wrong answer's red-brown.
+const FILLER_CUT = '#6B7068';
 function FillerGame({ game, round, onScore = null, demo = false }) {
   const rounds = useMemo(() => fillerRounds(round), [round]);
   const [k, setK] = useState(0); const [cut, setCut] = useState([]); const [nudge, setNudge] = useState(null); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false);
@@ -6370,12 +7119,12 @@ function FillerGame({ game, round, onScore = null, demo = false }) {
   const tap = (i) => { if (clean || done || cut.includes(i)) return; if (q.tokens[i].filler) setCut([...cut, i]); else setNudge(i); };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-filler-left={done ? '' : String(left)}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Cut the fillers</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Cut the fillers</span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Five lines cleaned in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, justifyContent: 'center', background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '12px 10px', marginBottom: 10 }}>
             {q.tokens.map((t, i) => { const gone = cut.includes(i); return (
-              <button key={i} type="button" className={`edu-press${nudge === i ? ' edu-wobble' : ''}`} data-filler={t.filler ? 'yes' : 'no'} data-demo-tap={demo && (!clean && !done && i === q.tokens.findIndex((x, j) => x.filler && !cut.includes(j))) ? '' : undefined} aria-label={gone ? `${t.text}, cut` : t.text} onClick={() => tap(i)} style={{ fontFamily: FONT, fontSize: 17, fontWeight: gone ? 400 : 600, padding: '6px 9px', borderRadius: 8, border: `1.5px solid ${gone ? B.clay : B.line}`, background: gone ? '#FBE9E4' : '#fff', color: gone ? B.clay : B.ink, textDecoration: gone ? 'line-through' : 'none', cursor: gone || clean ? 'default' : 'pointer' }}>{t.text}</button>); })}
+              <button key={i} type="button" className={`edu-press${nudge === i ? ' edu-wobble' : ''}`} data-filler={t.filler ? 'yes' : 'no'} data-demo-tap={demo && (!clean && !done && i === q.tokens.findIndex((x, j) => x.filler && !cut.includes(j))) ? '' : undefined} aria-label={gone ? `${t.text}, cut` : t.text} onClick={() => tap(i)} style={{ fontFamily: FONT, fontSize: 17, fontWeight: gone ? 400 : 600, padding: '6px 9px', borderRadius: 8, border: `1.5px dashed ${gone ? FILLER_CUT : B.line}`, background: gone ? '#F1F3F0' : '#fff', color: gone ? FILLER_CUT : B.ink, textDecoration: gone ? 'line-through' : 'none', cursor: gone || clean ? 'default' : 'pointer' }}>{t.text}</button>); })}
           </div>
           <p style={{ margin: 0, fontSize: 15, color: clean ? B.green : B.ink, minHeight: 22, fontWeight: clean ? 700 : 400 }}>{clean ? `Clean: ${q.tokens.filter((t) => !t.filler).map((t) => t.text).join(' ')}` : `${left} ${left === 1 ? 'filler' : 'fillers'} to cut. Tap the words that say nothing.`}</p>
         </div>
@@ -6400,7 +7149,7 @@ function RoomGame({ game, round, onScore = null, demo = false }) {
   const why = { friends: 'casual words and half sentences', class: 'full sentences and the words of the subject', 'a job interview': 'a formal opening and no slang', 'a text to a grandparent': 'warm, short and clear' };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-room-answer={done ? '' : q.answer} data-demo-key={demo && !done && !got ? String(q.choices.indexOf(q.answer) + 1) : undefined}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Fit the room{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Fit the room<HeadRoom start most={`\u00a0· ${rounds.length} in a row`} show={streak > 1}>{`\u00a0· ${streak} in a row`}</HeadRoom></span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six lines in their rooms in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <DragCard onDrop={pick} off={got || done} demo={demo}><div data-demo-look="" style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '14px 12px', marginBottom: 10, fontSize: 18, fontWeight: 600, color: B.ink, fontStyle: 'italic' }}>{q.line}</div></DragCard>
@@ -6429,7 +7178,7 @@ function AskGame({ game, round, onScore = null, demo = false }) {
   const pick = (v) => { if (got || done) return; if (v === q.answer) { setGot(true); setStreak((n) => n + 1); } else { setNudge(v); setStreak(0); } };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-ask-answer={done ? '' : q.answer}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Ask the right question{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Ask the right question<HeadRoom start most={`\u00a0· ${rounds.length} in a row`} show={streak > 1}>{`\u00a0· ${streak} in a row`}</HeadRoom></span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six questions on the topic in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '14px 12px', marginBottom: 10, fontSize: 18, fontWeight: 600, color: B.ink }}>Your friend says: {q.said}</div>
@@ -6459,6 +7208,7 @@ function TurnGame({ game, round, onScore = null, demo = false }) {
   const [nudge, setNudge] = useState(null); // the name of a wrong tap, so that friend wobbles
   const [ticks, setTicks] = useState(0); // seconds since the round started
   const [done, setDone] = useState(false); // true once all six are answered
+  const uid = useId().replace(/:/g, ''); // ties each seat's round frame to its own picture, so a demo board and a game never share ids
   const q = rounds[Math.min(k, rounds.length - 1)];
   useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]); // a new round starts fresh
   useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]); // the clock
@@ -6485,25 +7235,29 @@ function TurnGame({ game, round, onScore = null, demo = false }) {
   );
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-turn-answer={done ? '' : q.answer}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 6 }}><span>Whose turn next</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 6 }}><span>Whose turn next</span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six turns in order in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
-          <svg viewBox="0 0 200 200" width="220" height="220" role="img" aria-label={`Four friends in a circle. ${TURN_FRIENDS[q.holder]} holds the talking stick. The arrow in the middle shows the way turns go around the circle.`} style={{ display: 'block', margin: '0 auto 6px' }}>
+          <svg viewBox="0 0 200 200" width="220" height="220" role="img" aria-label={`Four friends in a circle. ${TURN_FRIENDS[q.holder]} holds the talking stick. Arrows around the circle show the way turns go.`} style={{ display: 'block', margin: '0 auto 6px' }}>
             <circle cx="100" cy="100" r="62" fill="none" stroke={B.line} strokeWidth="2" strokeDasharray="4 6" />
             {seats.map((st, i) => (
               <g key={st.name}>
-                <circle cx={st.x} cy={st.y} r="20" fill={skins[i]} stroke={B.ink} strokeWidth="1.5" />
-                <circle cx={st.x - 6} cy={st.y - 3} r="2.2" fill={B.ink} /><circle cx={st.x + 6} cy={st.y - 3} r="2.2" fill={B.ink} />
-                <path d={`M${st.x - 7} ${st.y + 6}q7 6 14 0`} fill="none" stroke={B.ink} strokeWidth="2" strokeLinecap="round" />
+                {/* The friend (pass MR): a child drawn as a person (KidFace, KID_LOOKS), clipped to a round frame with a warm paper
+                    behind, in place of a circle with dot eyes and a smile. */}
+                <defs><clipPath id={`${uid}-seat${i}`}><circle cx={st.x} cy={st.y} r="19.4" /></clipPath></defs>
+                <circle cx={st.x} cy={st.y} r="20" fill="#F4EFE6" />
+                <g clipPath={`url(#${uid}-seat${i})`}><g transform={`translate(${st.x - 20} ${st.y - 20}) scale(0.4)`}><KidFace k={KID_LOOKS[i]} /></g></g>
+                <circle cx={st.x} cy={st.y} r="20" fill="none" stroke={B.ink} strokeWidth="1.5" />
                 <text x={st.x} y={st.y + 34} textAnchor="middle" fontSize="12" fontWeight="700" fill={B.ink} fontFamily={FONT}>{st.name}</text>
                 {i === q.holder && stick(st, skins[i])}
               </g>
             ))}
-            {/* The way turns go, in the middle of the circle (pass MQ): an arrow curving clockwise over the top, so it shows the direction
-                without pointing at any friend (its head had sat on Ben's face from Ava's seat, pointing at the answer whenever Ava held
-                the stick). */}
-            <path d="M76 104 A24 24 0 1 1 124 104" fill="none" stroke={B.green} strokeWidth="3" strokeLinecap="round" markerEnd="url(#turn-arrow)" />
-            <defs><marker id="turn-arrow" markerWidth="4" markerHeight="4" refX="2" refY="2" orient="auto"><path d="M0 0L4 2L0 4z" fill={B.green} /></marker></defs>
+            {/* The way turns go (pass MR, round one's picture check): four short arrows on the circle of seats, one in each gap between
+                two friends, all turning clockwise, so the direction shows and no one arrow singles out a friend. Until pass MR one arrow
+                curved through the middle from beside Dee's seat to Ben's, and read as "Dee to Ben"; before pass MQ its head sat on Ben. */}
+            {[[308, 322], [40, 54], [118, 132], [218, 232]].map(([a, b]) => { const pt = (d) => [100 + 62 * Math.cos((d * Math.PI) / 180), 100 + 62 * Math.sin((d * Math.PI) / 180)]; const [x1, y1] = pt(a); const [x2, y2] = pt(b);
+              return <path key={a} data-turn-way="" d={`M${x1.toFixed(1)} ${y1.toFixed(1)} A62 62 0 0 1 ${x2.toFixed(1)} ${y2.toFixed(1)}`} fill="none" stroke={B.green} strokeWidth="2.4" strokeLinecap="round" markerEnd="url(#turn-arrow)" />; })}
+            <defs><marker id="turn-arrow" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0L7 3.5L0 7z" fill={B.green} /></marker></defs>
           </svg>
           <p style={{ margin: '0 0 10px', fontSize: 16, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 }}>{got ? `Yes: ${q.answer} is next around the circle.` : `${TURN_FRIENDS[q.holder]} has the stick. Who is next?`}</p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
@@ -6543,7 +7297,7 @@ function JarGame({ game, round, onScore = null, demo = false }) {
   const H = 120; const top = 30; const sandH = H * q.sand / 100; const siltH = H * q.silt / 100; const clayH = H * q.clay / 100;
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-jar-answer={done ? '' : q.answer}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 6 }}><span>Read the jar</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 6 }}><span>Read the jar</span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six jars read in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <svg viewBox="0 0 200 170" width="220" height="187" role="img" aria-label={`A settled jar: ${q.sand} percent sand, ${q.silt} percent silt, ${q.clay} percent clay`} style={{ display: 'block', margin: '0 auto 6px' }}>
@@ -6591,13 +7345,15 @@ function RelationGame({ game, round, onScore = null, demo = false }) {
   const why = { mutualism: 'both gain', parasitism: 'one gains and the other is harmed', commensalism: 'one gains and the other is unaffected', predation: 'one eats the other' };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-relation-answer={done ? '' : q.answer} data-demo-key={demo && !done && !got ? String(q.choices.indexOf(q.answer) + 1) : undefined}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Who gains{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Who gains<HeadRoom start most={`\u00a0· ${rounds.length} in a row`} show={streak > 1}>{`\u00a0· ${streak} in a row`}</HeadRoom></span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six relationships named in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <DragCard onDrop={pick} off={got || done} demo={demo}><div data-demo-look="" style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '14px 12px', marginBottom: 10, fontSize: 17, fontWeight: 600, color: B.ink }}>{q.line}</div></DragCard>
           <p style={{ margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 }}>{got ? `Yes: ${q.answer}, ${why[q.answer]}.` : 'Which relationship is this?'}</p>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-            {q.choices.map((v, n) => <div key={v} style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}><button type="button" className={`edu-press${nudge === v ? ' edu-wobble' : ''}`} data-bin={v} data-demo-tap={demo && !got && v === q.answer ? '' : undefined} data-demo-drop={demo && !got && v === q.answer ? '' : undefined} aria-label={`Relationship: ${v}`} onClick={() => pick(v)} style={{ fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 8px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', textTransform: 'capitalize' }}>{v}</button><KeyHint k={n + 1} /></div>)}
+          {/* Two columns that never grow past the board, each name fitted to its button (pass MR, the layout sweep in a wider font:
+              on a 320 phone "Commensalism" widened its column and pushed Parasitism and Predation 25 pixels past the board's edge). */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 8 }}>
+            {q.choices.map((v, n) => <div key={v} style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch', minWidth: 0 }}><button type="button" className={`edu-press${nudge === v ? ' edu-wobble' : ''}`} data-bin={v} data-demo-tap={demo && !got && v === q.answer ? '' : undefined} data-demo-drop={demo && !got && v === q.answer ? '' : undefined} aria-label={`Relationship: ${v}`} onClick={() => pick(v)} style={{ fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '10px 8px', borderRadius: 12, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', textTransform: 'capitalize', minWidth: 0 }}><FitText size={16} min={11} style={{ fontWeight: 700, textAlign: 'center' }}>{v}</FitText></button><KeyHint k={n + 1} /></div>)}
           </div>
         </div>
       )}
@@ -6639,7 +7395,7 @@ function SproutGame({ game, round, onScore = null, demo = false }) {
   const answers = [['yes', 'it sprouts', 'It sprouts'], ['no', 'it will not sprout', 'It will not sprout']];
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-sprout-answer={done ? '' : q.answer}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Will it sprout?</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Will it sprout?</span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six seeds judged in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <div style={{ display: 'flex', gap: 12, alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', marginBottom: 10 }}>
@@ -6689,7 +7445,10 @@ function GrowGame({ game, round, onScore = null, demo = false }) {
   useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
   useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]); // hand the time up; lower is better
   useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
-  useEffect(() => { if (!fixed) return undefined; if (typeof speak === 'function') speak(`The ${q.plant} is growing!`); const t = setTimeout(() => { if (k + 1 >= rounds.length) setDone(true); else { setK(k + 1); setFixed(false); setHint(''); } }, 1300); return () => clearTimeout(t); }, [fixed]);
+  // A right answer: the grown plant shows while "The X is growing!" is said to its end, then a beat, and only then the next plant
+  // (afterSaid; pass MR, Mikey: "It is way too fast of a transition."). Until pass MR the next plant came 1.3 seconds after the tap,
+  // cutting the line short or following it with no pause.
+  useEffect(() => { if (!fixed) return undefined; return afterSaid(`The ${q.plant} is growing!`, () => { if (k + 1 >= rounds.length) setDone(true); else { setK(k + 1); setFixed(false); setHint(''); } }); }, [fixed]);
   const tap = (item) => {
     if (done || fixed) return;
     if (item === q.need) { setFixed(true); setHint(''); return; }
@@ -6725,7 +7484,7 @@ function GrowGame({ game, round, onScore = null, demo = false }) {
   };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-grow-plant={done ? '' : q.plant} data-grow-need={done ? '' : q.need} data-grow-fixed={fixed ? 'yes' : 'no'}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 6 }}><span>Grow the plant</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 6 }}><span>Grow the plant</span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Four plants grown in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <svg viewBox="0 0 100 100" width="160" height="160" role="img" aria-label={`A ${q.plant} plant in a pot. ${fixed ? 'It is growing well.' : look.say.replace('This plant', 'It')}`} style={{ display: 'block', margin: '0 auto 6px' }}>
@@ -6740,17 +7499,21 @@ function GrowGame({ game, round, onScore = null, demo = false }) {
               pass MQ: 24 pixels on phones, 16 on a laptop, and up to 49 at 320 pixels, where "Tap what the sunflower needs." wraps). */}
           <SpokenRow margin="0 0 4px" texts={rounds.flatMap((r) => [GROW_PROBLEMS[r.need].say, `The ${r.plant} is growing!`])} sizeAs={(t) => <p style={{ margin: 0, fontSize: 16 }}>{t}</p>} speaker={!fixed && <ReplaySpeaker text={`${look.say.replace('This plant', `This ${q.plant} plant`)} Tap what it needs.`} />}><p data-demo-look="" style={{ margin: 0, fontSize: 16, color: ink, textAlign: 'center' }}>{fixed ? `The ${q.plant} is growing!` : look.say}</p></SpokenRow>
           <p style={{ margin: '0 0 10px', fontSize: 17, fontWeight: 700, color: ink, display: 'grid' }}><span style={{ gridArea: '1 / 1' }}>Tap what the {q.plant} needs.</span><span aria-hidden="true" style={{ gridArea: '1 / 1', visibility: 'hidden' }}>Tap what the {rounds.reduce((a, r) => (r.plant.length > a.length ? r.plant : a), '')} needs.</span></p>
-          {hint && !fixed && <p role="status" style={{ margin: '0 0 10px', fontSize: 15, color: B.clay }}>{hint}</p>}
+          {/* The hint after a wrong tap (Q72, Mikey's answer: "I like the location above the tiles and think that holding a place for it
+              is a good idea."): one status line, always there, whose words change, in the same grid cell as every hint the round can
+              give (each plant's clue and the toy's line), unseen, so the line is as tall as the tallest and the tiles never move under a
+              child's finger, on a wrong tap or the right one after it. Until pass MR the hint pushed the tiles down about 55 pixels on a
+              phone. */}
+          <p role="status" data-grow-hint="" style={{ margin: '0 0 10px', fontSize: 15, color: B.clay, display: 'grid' }}><span style={{ gridArea: '1 / 1' }}>{hint && !fixed ? hint : ''}</span>{[...new Set(rounds.map((r) => `Look again: ${GROW_PROBLEMS[r.need].clue}`)), 'A toy cannot help a plant grow.'].map((t) => <span key={t} aria-hidden="true" style={{ gridArea: '1 / 1', visibility: 'hidden' }}>{t}</span>)}</p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 4 }}>
             {q.items.map((item) => (
               <button key={item} type="button" data-demo-tap={demo && (!fixed && !done && item === q.need) ? '' : undefined} aria-label={`Give ${item}`} onClick={() => tap(item)} className={`edu-press${nudge === item ? ' edu-wobble' : ''}`}
                 style={{ fontFamily: FONT, background: B.surface, border: `2px solid ${B.line}`, borderRadius: 10, padding: '6px 0', cursor: done || fixed ? 'default' : 'pointer', minWidth: 0 }}>
                 <svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true" style={{ display: 'block', margin: '0 auto' }}>{icon(item)}</svg>
-                {/* A soft hyphen lets sunshine break as sun-shine where five tiles are narrow (pass MQ, the game layout audit: it spilled
-                    out of its tile on a 320-pixel phone and a phone held sideways, older than the pass). Since round one's screen check
-                    the tiles sit 4 pixels apart with no side padding, so the word reads whole from 375 pixels up and the tiles keep their
-                    height there; on a 360 or 320 phone and on one held sideways it breaks. */}
-                <span style={{ display: 'block', fontSize: 12, color: ink, lineHeight: 1.2 }}>{item === 'sunshine' ? 'sun\u00ADshine' : item}</span>
+                {/* The label fits its tile in the device's own font (FitText, pass MR: Mikey's phone showed sunshine spilling out of its
+                    tile, where the tests' font had it fit with 3 pixels to spare); it steps down from 12 pixels to 9.5 and breaks, at its
+                    soft hyphen, only below that. Since pass MQ's round one the tiles sit 4 pixels apart with no side padding. */}
+                <FitText size={12} min={9.5} style={{ color: ink, lineHeight: 1.2, padding: '0 2px' }}>{item === 'sunshine' ? 'sun\u00ADshine' : item}</FitText>
               </button>
             ))}
           </div>
@@ -6787,7 +7550,7 @@ function BreakEvenGame({ game, round, onScore = null, demo = false }) {
   const px = (u) => left + (u / X) * (W - left - 10); const py = (d) => bottom - (d / Y) * (bottom - 12);
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-breakeven-answer={done ? '' : String(q.answer)}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Break even</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Break even</span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six break-even points found in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '10px 12px', marginBottom: 8, fontSize: 15, color: B.ink, lineHeight: 1.5 }}>Selling {q.what}: fixed costs of ${q.fixed} a month. Each sells for ${q.price} and costs ${q.cost} to make.</div>
@@ -6818,6 +7581,9 @@ function BreakEvenGame({ game, round, onScore = null, demo = false }) {
 // and reacts: the six items, their offers and the answers come from dealRounds() in logic.mjs. The board carries the
 // answer in `data-deal-answer` so the browser test can play a round. Drawn with B (the paper palette).
 // -----------------------------------------------------------------------------------------------------------------
+// The Better Deal's two coupon colors (pass MR, Q69 (c)): neither a right answer's green nor a wrong answer's red-brown. Each reads 5.4
+// to 1 or better on white, where its 22-pixel bold label sits.
+const DEAL_BLUE = '#2F69A8'; const DEAL_VIOLET = '#74509E';
 function DealGame({ game, round, onScore = null, demo = false }) {
   const rounds = useMemo(() => dealRounds(round), [round]); // the six items for this round, fixed by the round number
   const [k, setK] = useState(0); // which item we are on
@@ -6842,7 +7608,7 @@ function DealGame({ game, round, onScore = null, demo = false }) {
   );
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-deal-answer={done ? '' : q.answer}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>The better deal{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>The better deal<HeadRoom start most={`\u00a0· ${rounds.length} in a row`} show={streak > 1}>{`\u00a0· ${streak} in a row`}</HeadRoom></span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six deals judged in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '10px 16px', marginBottom: 10 }}>
@@ -6851,8 +7617,10 @@ function DealGame({ game, round, onScore = null, demo = false }) {
           </div>
           <p style={{ margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 }}>{got ? `Yes: ${q.answer} saves more.` : 'Which coupon saves more?'}</p>
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-            {coupon(q.pctLabel, pctSaves, B.green)}
-            {coupon(q.offLabel, q.off, B.clay)}
+            {/* Q69 (c), pass MR: the dollars coupon was red-brown, the wrong answer's color, on boards where it is right about 3 times in
+                10, and the percent coupon green, the right answer's; both are coupon colors of their own now, blue and violet. */}
+            {coupon(q.pctLabel, pctSaves, DEAL_BLUE)}
+            {coupon(q.offLabel, q.off, DEAL_VIOLET)}
           </div>
         </div>
       )}
@@ -6885,7 +7653,7 @@ function SaveJarGame({ game, round, onScore = null, demo = false }) {
   const top = 34; const bottom = 132; const stripe = (bottom - top) / q.answer;
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-savejar-answer={done ? '' : String(q.answer)}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Fill the jar</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Fill the jar</span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six jars filled in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '10px 12px', marginBottom: 8, fontSize: 15, color: B.ink, lineHeight: 1.5 }}>Saving for {q.what}: the goal is ${q.goal}, and ${q.weekly} goes in the jar each week.</div>
@@ -6938,7 +7706,7 @@ function ToolGame({ game, round, onScore = null, demo = false }) {
   const ask = `Which tool does ${q.job} use?`;
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-tool-answer={done ? '' : q.answer} data-demo-key={demo && !done && !got ? String(q.choices.indexOf(q.answer) + 1) : undefined}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Find the tool{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Find the tool<HeadRoom start most={`\u00a0· ${rounds.length} in a row`} show={streak > 1}>{`\u00a0· ${streak} in a row`}</HeadRoom></span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six jobs, six tools, in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <SpokenRow margin="4px 0 12px" speaker={!got && <ReplaySpeaker text={ask} label="Hear it" />} texts={rounds.flatMap((r) => [`Which tool does ${r.job} use?`, `Yes: ${r.job} uses a ${r.answer}.`])} sizeAs={(t) => <p style={{ margin: 0, fontSize: 19, fontWeight: 700, border: '1.5px solid', borderRadius: 12, padding: '6px 12px' }}>{t}</p>}>
@@ -6979,7 +7747,7 @@ function LedgerGame({ game, round, onScore = null, demo = false }) {
   const why = { assets: 'something the firm owns, an asset', liabilities: 'something the firm owes, a liability', equity: 'part of the owners\' equity' }[q.answer];
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-ledger-answer={done ? '' : q.answer} data-demo-key={demo && !done && !got ? String(LEDGER_SIDES.indexOf(q.answer) + 1) : undefined}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Sort the ledger{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Sort the ledger<HeadRoom start most={`\u00a0· ${rounds.length} in a row`} show={streak > 1}>{`\u00a0· ${streak} in a row`}</HeadRoom></span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six accounts placed in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <p style={{ margin: '0 0 8px', fontSize: 14, color: B.muted, fontWeight: 600 }}>Assets = Liabilities + Equity</p>
@@ -7027,7 +7795,7 @@ function LabelGame({ game, round, onScore = null, demo = false }) {
   );
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-label-answer={done ? '' : q.answer}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Read the label{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Read the label<HeadRoom start most={`\u00a0· ${rounds.length} in a row`} show={streak > 1}>{`\u00a0· ${streak} in a row`}</HeadRoom></span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six labels read in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <p style={{ margin: '0 0 10px', fontSize: 16, fontWeight: 700, color: got ? B.green : B.ink, minHeight: 22 }}>{got ? `Yes: ${q.answer} has ${q.answer === 'A' ? q.a[q.nutrient] : q.b[q.nutrient]} ${q.unit} of ${q.nutrient}, against ${q.answer === 'A' ? q.b[q.nutrient] : q.a[q.nutrient]} ${q.unit}.` : ask}</p>
@@ -7063,7 +7831,7 @@ function CprGame({ game, round, onScore = null, demo = false }) {
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-cpr-rate={result ? String(result.rate) : ''} data-cpr-verdict={result ? result.verdict : ''}>
       <style>{'@keyframes eduCprBeat { 0% { transform: scale(1); opacity: 0.9; } 30% { transform: scale(1.18); opacity: 1; } 100% { transform: scale(1); opacity: 0.9; } } @media (prefers-reduced-motion: reduce) { .edu-cpr-ring { animation: none !important; } }'}</style>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Push to the beat</span><span>{Math.min(taps.length, PUSHES)} of {PUSHES}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Push to the beat</span><span><HeadRoom most={`${PUSHES} of ${PUSHES}`}>{Math.min(taps.length, PUSHES)} of {PUSHES}</HeadRoom></span></div>
       <p style={{ margin: '0 0 12px', textAlign: 'center', fontSize: 15, color: B.ink }}>Push hard and fast: 100 to 120 a minute. The ring shows the pace.</p>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 22, margin: '6px 0 12px' }}>
         <div className="edu-cpr-ring" aria-hidden="true" style={{ width: 54, height: 54, borderRadius: '50%', border: `4px solid ${B.clay}`, animation: 'eduCprBeat 0.545s ease-in-out infinite' }} />
@@ -7102,17 +7870,19 @@ function GreenRedGame({ game, round, onScore = null, demo = false }) {
   useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 1100); return () => clearTimeout(t); }, [got]);
   const pick = (flag) => { if (got || done) return; if (flag === q.answer) { setGot(true); setStreak((n) => n + 1); } else { setNudge(flag); setStreak(0); } };
   const why = q.answer === 'green' ? 'a green flag, a sign of a healthy relationship' : 'a red flag, a warning sign';
-  const flags = [['red', '← Red flag', B.clay], ['green', 'Green flag →', B.green]];   // red on the left and green on the right, the way the card flicks
+  // Red on the left and green on the right, the way the card flicks. Since pass MR (Q69 (c)) each button wears the board's ink edge and
+  // the flag's own color only in its swatch, the red flag a true red (#D33A3A), never the wrong answer's red-brown.
+  const flags = [['red', '← Red flag', '#D33A3A'], ['green', 'Green flag →', B.green]];
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-greenred-answer={done ? '' : q.answer} data-demo-key={demo && !got && !done ? (q.answer === 'red' ? 'ArrowLeft' : 'ArrowRight') : undefined}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Green flag or red flag{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Green flag or red flag<HeadRoom start most={`\u00a0· ${rounds.length} in a row`} show={streak > 1}>{`\u00a0· ${streak} in a row`}</HeadRoom></span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Eight behaviors sorted in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <p style={{ margin: '0 0 8px', fontSize: 14, color: B.muted }}>Someone who...</p>
           <SwipeCard left={['red', 'Red flag', B.clay]} right={['green', 'Green flag', B.green]} onPick={pick} off={got || done} demo={demo && !got && !done ? (q.answer === 'red' ? 'left' : 'right') : null}><div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '16px 12px', marginBottom: 8, fontSize: 19, fontWeight: 700, color: B.ink }}>{q.behavior}</div></SwipeCard>
           <p style={{ margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 }}>{got ? `Yes: that is ${why}.` : 'Healthy, or a warning sign?'}</p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-            {flags.map(([flag, label, ink]) => <button key={flag} type="button" className={`edu-press${nudge === flag ? ' edu-wobble' : ''}`} data-demo-tap={demo && !got && flag === q.answer ? '' : undefined} aria-label={`Flag: ${flag}`} onClick={() => pick(flag)} style={{ fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '12px 6px', borderRadius: 12, border: `2px solid ${ink}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}><span aria-hidden="true" style={{ width: 14, height: 14, borderRadius: 3, background: ink, display: 'inline-block' }} />{label}</button>)}
+            {flags.map(([flag, label, ink]) => <button key={flag} type="button" className={`edu-press${nudge === flag ? ' edu-wobble' : ''}`} data-demo-tap={demo && !got && flag === q.answer ? '' : undefined} aria-label={`Flag: ${flag}`} onClick={() => pick(flag)} style={{ fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '12px 6px', borderRadius: 12, border: `2px solid ${B.ink}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}><span aria-hidden="true" style={{ width: 14, height: 14, borderRadius: 3, background: ink, display: 'inline-block' }} />{label}</button>)}
           </div>
         </div>
       )}
@@ -7144,7 +7914,7 @@ function CiteGame({ game, round, onScore = null, demo = false }) {
   const pick = (ans) => { if (got || done) return; if (ans === q.answer) { setGot(true); setStreak((n) => n + 1); } else { setNudge(ans); setMisses((n) => n + 1); setStreak(0); } };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-cite-answer={done ? '' : q.answer} data-demo-key={demo && !got && !done ? (q.answer === 'free' ? 'ArrowLeft' : 'ArrowRight') : undefined}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Cite it or not{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Cite it or not<HeadRoom start most={`\u00a0· ${rounds.length} in a row`} show={streak > 1}>{`\u00a0· ${streak} in a row`}</HeadRoom></span><span><HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six items sorted{misses ? `, with ${misses} to look at again` : ', every one right'}. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <SwipeCard left={['free', 'No citation needed', B.clay]} right={['cite', 'Cite it', B.green]} onPick={pick} off={got || done} demo={demo && !got && !done ? (q.answer === 'free' ? 'left' : 'right') : null}><div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '16px 12px', marginBottom: 10, fontSize: 18, fontWeight: 700, color: B.ink, lineHeight: 1.4 }}>{q.text}</div></SwipeCard>
@@ -7182,7 +7952,7 @@ function GdpGame({ game, round, onScore = null, demo = false }) {
   const pick = (ans) => { if (got || done) return; if (ans === q.answer) { setGot(true); setStreak((n) => n + 1); } else { setNudge(ans); setMisses((n) => n + 1); setStreak(0); } };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-gdp-answer={done ? '' : q.answer} data-demo-key={demo && !got && !done ? (q.answer === 'out' ? 'ArrowLeft' : 'ArrowRight') : undefined}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>In GDP or not{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>In GDP or not<HeadRoom start most={`\u00a0· ${rounds.length} in a row`} show={streak > 1}>{`\u00a0· ${streak} in a row`}</HeadRoom></span><span><HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six cases sorted{misses ? `, with ${misses} to look at again` : ', every one right'}. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <SwipeCard left={['out', 'Not in GDP', B.clay]} right={['in', 'In GDP', B.green]} onPick={pick} off={got || done} demo={demo && !got && !done ? (q.answer === 'out' ? 'left' : 'right') : null}><div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '16px 12px', marginBottom: 10, fontSize: 18, fontWeight: 700, color: B.ink, lineHeight: 1.4 }}>{q.text}</div></SwipeCard>
@@ -7219,7 +7989,7 @@ function CauseGame({ game, round, onScore = null, demo = false }) {
   const pick = (ans) => { if (got || done) return; if (ans === q.answer) { setGot(true); setStreak((n) => n + 1); } else { setNudge(ans); setMisses((n) => n + 1); setStreak(0); } };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-cause-answer={done ? '' : q.answer} data-demo-key={demo && !got && !done ? (q.answer === 'correlation' ? 'ArrowLeft' : 'ArrowRight') : undefined}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Cause or correlation{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Cause or correlation<HeadRoom start most={`\u00a0· ${rounds.length} in a row`} show={streak > 1}>{`\u00a0· ${streak} in a row`}</HeadRoom></span><span><HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six studies sorted{misses ? `, with ${misses} to look at again` : ', every one right'}. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <SwipeCard left={['correlation', 'Correlation', B.clay]} right={['experiment', 'Experiment', B.green]} onPick={pick} off={got || done} demo={demo && !got && !done ? (q.answer === 'correlation' ? 'left' : 'right') : null}><div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '16px 12px', marginBottom: 10, fontSize: 18, fontWeight: 700, color: B.ink, lineHeight: 1.4 }}>{q.text}</div></SwipeCard>
@@ -7255,7 +8025,7 @@ function MythFactGame({ game, round, onScore = null, demo = false }) {
   const pick = (ans) => { if (got || done) return; if (ans === q.answer) { setGot(true); setStreak((n) => n + 1); } else { setNudge(ans); setMisses((n) => n + 1); setStreak(0); } };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-myth-answer={done ? '' : q.answer} data-demo-key={demo && !got && !done ? (q.answer === 'myth' ? 'ArrowLeft' : 'ArrowRight') : undefined}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Myth or fact{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
+      <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Myth or fact<HeadRoom start most={`\u00a0· ${rounds.length} in a row`} show={streak > 1}>{`\u00a0· ${streak} in a row`}</HeadRoom></span><span><HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six statements sorted{misses ? `, with ${misses} to look at again` : ', every one right'}. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <SwipeCard left={['myth', 'Myth', B.clay]} right={['fact', 'Fact', B.green]} onPick={pick} off={got || done} demo={demo && !got && !done ? (q.answer === 'myth' ? 'left' : 'right') : null}><div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '16px 12px', marginBottom: 10, fontSize: 18, fontWeight: 700, color: B.ink, lineHeight: 1.4 }}>{q.text}</div></SwipeCard>
@@ -9021,7 +9791,7 @@ function BookReader({ items, pace: paceDefault }) {
     followPaused.current = false;
     setSpeechNudge(paceDefault && pace === 'slow' ? -1 : 0);
     const texts = []; const owner = []; const titles = new Set();
-    items.forEach((st, i) => { titles.add(texts.length); [`${st.title}.`, ...st.words].forEach((t) => { texts.push(t); owner.push(i); }); });
+    items.forEach((st, i) => { titles.add(texts.length); [storyTitleSpoken(st.title), ...st.words].forEach((t) => { texts.push(t); owner.push(i); }); });
     // Each story's clips in the order its title and paragraphs are read (pass MQ), so the book plays the recordings once all exist.
     stopRef.current = speakSequence(texts, (i) => setAt(owner[i]), () => { stopRef.current = null; setAt(-1); }, items.flatMap(storyClipKeys), { gap: (i) => storyGap(titles.has(i)), pause: storyPause, young: false });
   };
@@ -9082,9 +9852,12 @@ function PageChrome({ idleWarning = false, stars = true, logoutIn = null, walkth
           Logging out in {logoutIn}
         </div>
       )}
-      {/* A walk-through says so in the same quiet way, bottom left, on every screen. */}
+      {/* A walk-through says so on every screen, as a small tab hanging from the top of the green frame, centred, in the frame's own
+          green (pass MR: at the bottom left it sat over a game's Instructions link in Mikey's screenshot, and over whatever else a short
+          page put there). At the top of a page it covers nothing, since every screen's content starts below it, and content that scrolls
+          passes under it as under a header. */}
       {walkthrough && (
-        <div role="status" className="edu-no-print" style={{ position: 'fixed', bottom: 12, left: 12, zIndex: 60, background: 'rgba(36, 41, 31, 0.72)', color: '#fff', borderRadius: 999, padding: '6px 12px', fontSize: 13, fontFamily: FONT }}>
+        <div role="status" data-walkthrough-tab="" className="edu-no-print" style={{ position: 'fixed', top: 0, left: '50%', transform: 'translateX(-50%)', zIndex: 60, background: C.frame, color: '#fff', borderRadius: '0 0 10px 10px', padding: '3px 12px 5px', fontSize: 12, fontWeight: 600, letterSpacing: 0.2, fontFamily: FONT, whiteSpace: 'nowrap', pointerEvents: 'none' }}>
           Walkthrough Mode
         </div>
       )}
@@ -9789,6 +10562,7 @@ function EduSphereScreens() {
   const [confirmDelete, setConfirmDelete] = useState(null);           // the hidden student whose deletion is being confirmed
   const [backupNudgeSeen, setBackupNudgeSeen] = useState(false);       // the first-backup popup shows once per session
   const [openResourceGrades, setOpenResourceGrades] = useState([]); // which grade folds are open on the resource pages
+  const [bookDetail, setBookDetail] = useState(null); // the reading-list entry whose Details pop-up is open (pass MR)
   const [placementWalk, setPlacementWalk] = useState(null);           // { subject, grades, cleared } while a placement check runs
   const [placementResult, setPlacementResult] = useState(null);       // what the last placement check decided
   const [quickResult, setQuickResult] = useState(null);               // what the last quick check decided
@@ -10592,6 +11366,17 @@ function EduSphereScreens() {
     closeTips(); setHeardNote(false);
     if (screen !== 'overview') setTouchOnly(null);   // the touch pop-up belongs to the overview it opened on (pass MI)
   }, [screen]);
+  // A book's Details pop-up (pass MR): Got it takes the focus, Escape closes it, and the Details button that opened it gets the focus
+  // back; it belongs to the reading lists, so leaving them closes it.
+  useEffect(() => {
+    if (!bookDetail || typeof window === 'undefined') return undefined;
+    const opener = document.activeElement;
+    const keys = (e) => { if (e.key === 'Escape') setBookDetail(null); };
+    window.addEventListener('keydown', keys);
+    const t = setTimeout(() => { const b = document.querySelector('[data-book-detail] button'); if (b) b.focus({ preventScroll: true }); }, 60);
+    return () => { window.removeEventListener('keydown', keys); clearTimeout(t); try { if (opener && opener.focus && document.contains(opener)) opener.focus({ preventScroll: true }); } catch (e) { /* the page moved on */ } };
+  }, [bookDetail]);
+  useEffect(() => { if (screen !== 'reading-lists') setBookDetail(null); }, [screen]);
   // The touch pop-up (pass MI, the code check): Got it takes the focus, and Escape closes it, as every other pop-up does.
   useEffect(() => {
     if (!touchOnly || typeof window === 'undefined') return undefined;
@@ -10770,10 +11555,17 @@ function EduSphereScreens() {
     const box = document.createElement('div');
     box.id = 'edu-rotate';
     box.className = 'edu-rotate';
-    box.innerHTML = '<div><svg viewBox="0 0 24 24" width="64" height="64" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 14a8 8 0 0 0 8 8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M4 14l-1 3 3 0.6z" fill="currentColor"/></svg><p>Please turn your phone upright.</p></div>';
+    // The drawing (pass MR): a phone with its screen and button, which turns from sideways to upright and rests there (still, upright,
+    // with less motion asked for), and a curved arrow over its corner that shows the turn. Mikey's words under it.
+    box.setAttribute('role', 'alert');
+    box.innerHTML = '<div><svg viewBox="0 0 64 64" width="96" height="96" aria-hidden="true"><path d="M8 36 A26 26 0 0 1 25.1 11.6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><path d="M20.3 10.3 L25.1 11.6 L22.2 15.7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><g class="edu-rotate-phone"><rect x="25" y="18" width="18" height="36" rx="4" fill="none" stroke="currentColor" stroke-width="2.6"/><rect x="28.5" y="23" width="11" height="24" rx="1.5" fill="currentColor" opacity="0.16"/><circle cx="34" cy="50.4" r="1.6" fill="currentColor"/></g></svg><p>Please turn your phone upright.</p></div>';
     document.body.appendChild(box);
-    // A keyboard shortens the viewport too, so the screen's own orientation decides, never the viewport's shape.
-    const check = () => { const coarse = window.matchMedia('(pointer: coarse)').matches; const sideways = window.screen.orientation ? /landscape/.test(window.screen.orientation.type) : window.screen.width > window.screen.height; box.classList.toggle('edu-rotate-on', coarse && sideways && window.innerHeight <= 540); };
+    // A keyboard shortens the viewport too, so the screen's own orientation decides, never the viewport's shape alone; and the page
+    // must be wider than tall as well (pass MR, check.sh's scroll-cue test), since a browser can report its screen as landscape while
+    // the page is upright (headless Chrome always does, and so can a desktop touch screen), and an upright page is never asked to turn.
+    // A phone is told by its screen's short side, 540 pixels or less, never by the window's height, so a tablet whose window a
+    // keyboard or split view shortens is never asked to turn "your phone" (round one's code check, pass MR).
+    const check = () => { const coarse = window.matchMedia('(pointer: coarse)').matches; const sideways = window.screen.orientation ? /landscape/.test(window.screen.orientation.type) : window.screen.width > window.screen.height; box.classList.toggle('edu-rotate-on', coarse && sideways && window.innerWidth > window.innerHeight && Math.min(window.screen.width, window.screen.height) <= 540); };
     check(); window.addEventListener('resize', check); window.addEventListener('orientationchange', check);
     return () => { window.removeEventListener('resize', check); window.removeEventListener('orientationchange', check); if (box.parentNode) box.parentNode.removeChild(box); };
   }, []);
@@ -11199,14 +11991,23 @@ function EduSphereScreens() {
         )}
         <p className="edu-overview-body" style={{ color: C.muted, margin: '0 0 22px', textAlign: 'center', fontSize: youngLearner ? 22 : 18, fontWeight: youngLearner ? 600 : 400 }}>{record.preview ? 'Walkthrough mode. Nothing here is recorded.' : `Hi ${displayName}, welcome back!`}</p>
         <RemembranceCard />
-        {!youngLearner && placementPending.map((subject) => (
-          <div key={subject} style={{ ...card, background: C.greenSoft, borderColor: C.green, textAlign: 'center', marginTop: 18 }}>
-            <p style={{ margin: '0 0 6px', fontSize: 18, fontWeight: 700 }}>Find your starting point in {subject.toLowerCase()}</p>
-            <p style={{ margin: '0 0 12px', fontSize: 15 }}>A short check to see where you are. For each grade, there are four questions and as you clear them, you move up. The first grade not cleared is where you'll land and you can build upon the knowledge you already have. Incorrect answers do not count against you in any way.</p>
-            <Btn onClick={() => startPlacement(subject)} disabled={busy}>Start the placement check</Btn>
-            <p style={{ margin: '10px 0 0', fontSize: 13 }}><button type="button" onClick={() => skipPlacement(subject)} style={{ ...linkBtn, fontSize: 13, padding: 0 }}>Start at the beginning instead</button></p>
+        {/* Placement (pass MR, the light-theme pass: the same seven-line paragraph had stood in every subject's card, three times
+            over for a new reader): one card says once what the check is, and each subject waiting for one has a row of its own
+            under it, its name, its button and its way to start at the beginning. */}
+        {!youngLearner && placementPending.length > 0 && (
+          <div data-placement-card="" style={{ ...card, background: C.greenSoft, borderColor: C.green, textAlign: 'center', marginTop: 18 }}>
+            <h2 style={{ margin: '0 0 6px', fontSize: 19, fontWeight: 700 }}>Find your starting point</h2>
+            <p style={{ margin: '0 0 2px', fontSize: 15 }}>A short check to see where you are. For each grade, there are four questions and as you clear them, you move up. The first grade not cleared is where you'll land and you can build upon the knowledge you already have. Incorrect answers do not count against you in any way.</p>
+            {placementPending.map((subject) => (
+              <div key={subject} data-placement={subject} style={{ borderTop: `1px solid ${C.line}`, marginTop: 14, paddingTop: 14 }}>
+                {/* Each button names its subject (round one's screen check, pass MR: three buttons had one name between them). */}
+                <h3 style={{ margin: '0 0 10px', fontSize: 17, fontWeight: 700 }}>{subject}</h3>
+                <Btn onClick={() => startPlacement(subject)} disabled={busy}>{`Check my ${subject.toLowerCase()}`}</Btn>
+                <p style={{ margin: '10px 0 0', fontSize: 13 }}><button type="button" onClick={() => skipPlacement(subject)} aria-label={`Start ${subject.toLowerCase()} at the beginning instead`} style={{ ...linkBtn, fontSize: 13, padding: 0 }}>Start at the beginning instead</button></p>
+              </div>
+            ))}
           </div>
-        ))}
+        )}
         {!youngLearner && !record.preview && checkpointDue(record.events) && (
           <div style={{ ...card, background: C.goldSoft, borderColor: C.gold, textAlign: 'center' }}>
             <p style={{ margin: '0 0 6px', fontSize: 18, fontWeight: 700 }}>Checkpoint</p>
@@ -11642,6 +12443,8 @@ function EduSphereScreens() {
     const line = step.say;
     const last = lessonStep >= script.length - 1;
     const stepArt = (mod.lesson.pictures || []).find((pic) => pic.step === Math.min(lessonStep, script.length - 1)) || null;   // a painting this line shows (pass JP)
+    const playfulLesson = script.some((l) => sayWithMeParts(l.say).some((p) => p.cue));   // a lesson that says new words in playful voices (Q67)
+    const lineKeys = sentencesOf(line).map((_, i) => `${mod.id}-${Math.min(lessonStep, script.length - 1)}-${i}`);
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <button type="button" onClick={() => setScreen('overview')} aria-label="Back" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
@@ -11688,7 +12491,9 @@ function EduSphereScreens() {
             phone Trace a Big Letter's second line left 24 to 32 of Next's 66 pixels showing, and the cue waited until less than 24
             did; round four's code read: shown for any part of the row, it sat on a Next 57 of whose 66 pixels showed). */}
         <ScrollCue target="[data-lesson-nav]" watch={`${moduleId}-${lessonStep}`} hidden={1 / 3} />
-        <VoiceNote keys={sentencesOf(line).map((_, i) => `${mod.id}-${Math.min(lessonStep, script.length - 1)}-${i}`)} />
+        {/* The note that the voice is not final (Q51; the playful lessons' panel, Q67) sits under the buttons, never between the line
+            and Next (round one's screen check, pass MR: above them it pushed Next below a phone's fold on most lines). */}
+        {playfulLesson ? <VoiceNote near keys={lineKeys} /> : <VoiceNote keys={lineKeys} />}
       </div></div>
     );
   }
@@ -11952,7 +12757,7 @@ function EduSphereScreens() {
             where it covered the end of a long question's first line. A review question has no title, so its speaker stands alone. */}
         {/* Truly centered (pass LS, Mikey): an empty column on the left as wide as the speaker's column on the right, so the
             title sits on the screen's center line with the speaker beside it. A review question has no title; its speaker stands alone. */}
-        <div data-title-row="" style={isReviewQ ? { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, margin: '8px 0 10px' } : { display: 'grid', gridTemplateColumns: '1fr auto 1fr', justifyItems: 'start', alignItems: 'center', gap: 8, margin: '10px 0 18px' }}>
+        <div data-title-row="" style={isReviewQ ? { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, margin: '8px 0 10px' } : { display: 'grid', gridTemplateColumns: 'minmax(44px, 1fr) auto minmax(44px, 1fr)', justifyItems: 'start', alignItems: 'center', gap: 8, margin: '10px 0 18px' }}>
           {!isReviewQ && <span aria-hidden="true" />}
           {!isReviewQ && <p style={{ margin: 0, fontSize: 18, fontWeight: 600, textAlign: 'center' }}>{titleCase(mod.title)}</p>}
           <SpeakButton mini text={questionText} label={readAloud ? 'Hear it again' : 'Read it to me'} />
@@ -12440,7 +13245,7 @@ function EduSphereScreens() {
         <div style={{ display: 'grid', gap: 12, gridTemplateColumns: `repeat(${evenColumns(options.length)}, 1fr)` }}>
           {options.map((o, i) => (
             <button key={o} type="button" onClick={() => finish(o)} className="edu-press" data-wonder-lit={wonderLit === i ? '' : undefined}
-              style={{ fontFamily: FONT, fontSize: 20, fontWeight: 600, padding: '22px 10px', borderRadius: 14, background: wonderLit === i ? readLit().background : C.surface, border: `3px solid ${wonderLit === i ? '#AAD8C5' : C.green}`, color: wonderLit === i ? readLit().color : C.green, cursor: 'pointer', minHeight: 78, transform: wonderLit === i ? 'scale(1.04)' : 'none', ...(optionSwatch(o) ? { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 } : {}), transition: 'transform 200ms, background 200ms' }}>
+              style={{ fontFamily: FONT, fontSize: 20, fontWeight: 600, padding: '22px 10px', borderRadius: 14, background: wonderLit === i ? readLit().background : C.surface, border: `3px solid ${wonderLit === i ? '#AAD8C5' : C.green}`, color: wonderLit === i ? readLit().color : C.green, cursor: 'pointer', minHeight: 78, transform: wonderLit === i ? 'scale(1.04)' : 'none', ...(optionSwatch(o) ? { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '14px 10px' } : {}), transition: 'transform 200ms, background 200ms' }}>
               {optionSwatch(o) && <OptionSwatch colour={optionSwatch(o)} size={30} />}{o}
             </button>
           ))}
@@ -12508,10 +13313,14 @@ function EduSphereScreens() {
     };
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
-        {/* The speaker sits to the right of the title here too (pass HG, Mikey). */}
-        <div data-title-row="" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, margin: '8px 0 4px' }}>
-          <h1 className="edu-slide-in" style={{ fontSize: 30, margin: 0, textAlign: 'center', color: C.green }}>Let's Wonder!</h1>
-          <SpeakButton mini text={wonder.prompt} label={readAloud ? 'Hear it again' : 'Read it to me'} />
+        {/* The speaker sits to the right of the title here too (pass HG, Mikey), in a column of its own as wide as an empty one on the
+            left, so the title stays centered on the page (pass MR, round one's screen check: it sat 27 pixels left of center). */}
+        <div data-title-row="" style={{ display: 'grid', gridTemplateColumns: 'minmax(44px, 1fr) auto minmax(44px, 1fr)', alignItems: 'center', gap: 10, margin: '8px 0 4px' }}>
+          <span aria-hidden="true" />
+          {/* A little smaller on a narrow phone, so the title stays on one line between its two side columns (pass MR, round two's
+              screen read: at 320 pixels it broke into "Let's" and "Wonder!"). */}
+          <h1 className="edu-slide-in" style={{ fontSize: 'clamp(24px, 7.5vw, 30px)', margin: 0, textAlign: 'center', color: C.green }}>Let's Wonder!</h1>
+          <span style={{ justifySelf: 'start' }}><SpeakButton mini text={wonder.prompt} label={readAloud ? 'Hear it again' : 'Read it to me'} /></span>
         </div>
         <p style={{ color: C.muted, fontSize: 14, margin: '0 0 10px', textAlign: 'center' }}>No right answer</p>
         <PonderFrame seed={seedOf(wonder.id)} attrs={{ 'data-wonder-question': '' }} style={{ ...card, margin: '0 0 14px' }}>
@@ -12519,7 +13328,7 @@ function EduSphereScreens() {
           {wonder.answerMode === 'pick' ? (
             <div style={{ display: 'grid', gap: 10 }}>
               {wonder.options.map((o) => (
-                <button key={o} type="button" onClick={() => setWonderPick(o)} style={{ fontFamily: FONT, fontSize: 20, padding: '12px 14px', borderRadius: 10, background: wonderPick === o ? C.greenSoft : C.surface, border: `2px solid ${wonderPick === o ? C.green : C.line}`, color: C.ink, cursor: 'pointer', minHeight: 48, ...(optionSwatch(o) ? { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 } : {}) }}>{optionSwatch(o) && <OptionSwatch colour={optionSwatch(o)} size={24} />}{o}</button>
+                <button key={o} type="button" onClick={() => setWonderPick(o)} style={{ fontFamily: FONT, fontSize: 20, padding: '12px 14px', borderRadius: 10, background: wonderPick === o ? C.greenSoft : C.surface, border: `2px solid ${wonderPick === o ? C.green : C.line}`, color: C.ink, cursor: 'pointer', minHeight: 48 }}>{optionSwatch(o) ? <span style={{ position: 'relative', display: 'inline-block' }}><span style={{ position: 'absolute', right: '100%', top: '50%', transform: 'translateY(-50%)', marginRight: 10, lineHeight: 0 }}><OptionSwatch colour={optionSwatch(o)} size={24} /></span>{o}</span> : o}</button>
               ))}
             </div>
           ) : (
@@ -12651,7 +13460,7 @@ function EduSphereScreens() {
         <button type="button" onClick={() => setScreen('educator-pick')} style={{ ...linkBtn }}>Back to Classroom</button>
         <h1 style={{ fontSize: 24, margin: '12px 0 4px', textAlign: 'center' }}>Standards map</h1>
         <p style={{ color: C.muted, marginTop: 0, fontSize: 15, textAlign: 'center' }}>
-          {stateCode && fw !== 'CCSS' ? `Every module, matched to ${stateFor(stateCode).name}'s standards (${FRAMEWORKS[fw].name}).` : `Every module, matched to ${FRAMEWORKS.CCSS.name}.`}<br />Print this page for a coverage record.
+          {stateCode && fw !== 'CCSS' ? `Every module, matched to ${stateFor(stateCode).name}'s standards (${FRAMEWORKS[fw].name}; pre-K's to the ${frameworkName(fw, 'PK4')}).` : `Every module, matched to ${FRAMEWORKS.CCSS.name} (pre-K's to the ${frameworkName('CCSS', 'PK4')}).`}<br />Print this page for a coverage record.
         </p>
         {/* Grouped by grade: each grade a heading, one light-green dropdown per subject. Pass JV (Mikey): the by-subject view is
             gone, so the only toggle on the page is core or elective. The list grows by itself, because it is read from the plan. */}
@@ -12678,9 +13487,9 @@ function EduSphereScreens() {
             return (
             <div key={group.key} style={{ marginBottom: 12 }}>
               <button type="button" onClick={() => setOpenMapHeads((list) => (list.includes(group.key) ? list.filter((x) => x !== group.key) : [...list, group.key]))} aria-expanded={headOpen}
-                style={{ fontFamily: FONT, width: '100%', background: headOpen ? C.green : C.surface, color: headOpen ? C.onAccent : C.green, border: `2px solid ${C.green}`, borderRadius: 12, padding: '12px 16px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, marginBottom: headOpen ? 8 : 0 }}>
+                style={{ fontFamily: FONT, width: '100%', background: headOpen ? C.green : C.surface, color: headOpen ? C.onAccent : C.green, border: `2px solid ${C.green}`, borderRadius: 12, padding: '12px 16px', cursor: 'pointer', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', columnGap: 10, rowGap: 2, marginBottom: headOpen ? 8 : 0 }}>
                 <span style={{ fontSize: 19, fontWeight: 700 }}>{group.title}</span>
-                <span style={{ fontSize: 14, fontWeight: 600, whiteSpace: 'nowrap' }}>{tally.covered} of {tally.total} covered {headOpen ? '▴' : '▾'}</span>
+                <span style={{ fontSize: 14, fontWeight: 600, whiteSpace: 'nowrap', marginLeft: 'auto', textAlign: 'right' }}>{tally.covered} of {tally.total} covered {headOpen ? '▴' : '▾'}</span>
               </button>
               <div className="edu-collapsible" style={{ display: headOpen ? 'block' : 'none' }}>
               {group.entries.map((entry) => {
@@ -12691,9 +13500,9 @@ function EduSphereScreens() {
                 return (
                   <div key={key} style={{ ...card, padding: 0, overflow: 'hidden', marginBottom: 10 }}>
                     <button type="button" onClick={() => setOpenMapGroups((list) => (list.includes(key) ? list.filter((x) => x !== key) : [...list, key]))} aria-expanded={open} aria-label={`${gradeLabel(entry.grade)} ${entry.subject}`}
-                      style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: C.greenSoft, border: 'none', padding: 16, cursor: 'pointer', color: C.ink, display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
+                      style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: C.greenSoft, border: 'none', padding: 16, cursor: 'pointer', color: C.ink, display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', columnGap: 10, rowGap: 2 }}>
                       <span style={{ fontSize: 17, fontWeight: 600 }}>{mapOrder === 'grade' ? entry.subject : gradeLabel(entry.grade)}</span>
-                      <span style={{ fontSize: 14, color: covered === rows.length ? C.green : entry.status === 'ready' ? C.clayInk : C.muted, whiteSpace: 'nowrap' }}>{covered} of {rows.length} covered {open ? '▴' : '▾'}</span>
+                      <span style={{ fontSize: 14, color: covered === rows.length ? C.green : entry.status === 'ready' ? C.clayInk : C.muted, whiteSpace: 'nowrap', marginLeft: 'auto', textAlign: 'right' }}>{covered} of {rows.length} covered {open ? '▴' : '▾'}</span>
                     </button>
                     {/* Rendered whether open or closed, and shown when printing, so a printed map is always complete. The body stays white. */}
                     <div className="edu-collapsible" style={{ display: open ? 'block' : 'none', padding: '10px 16px 12px', background: C.surface }}>
@@ -12748,7 +13557,25 @@ function EduSphereScreens() {
               </button>
               <div className="edu-collapsible" style={{ display: open ? 'block' : 'none', background: C.listBody, ...(C.mode === 'dark' ? { borderTop: `1px solid ${C.cardEdge}` } : {}), padding: '14px 18px' }}>
                 {lists
-                  ? <ul style={{ margin: 0, paddingLeft: 20, fontSize: 15 }}>{readingListFor(g).map((t) => <li key={t} style={{ margin: '3px 0' }}>{t}</li>)}</ul>
+                  ? (
+                    // One row a book (pass MR): the title, the author under it in muted ink, and a Details pill at the right, which opens
+                    // the book's summary; rows are parted by short rules that stop short of both edges (Mikey: "the incomplete
+                    // horizontal lines between books"), so each book reads as its own line without a heavy box around it.
+                    <div role="list" data-book-list={g}>
+                      {readingListFor(g).map((t, i) => { const b = bookParts(t); const note = bookNote(t); return (
+                        <div key={t} role="listitem" data-book={t}>
+                          {i > 0 && <div aria-hidden="true" className="edu-book-rule" />}
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 2px' }}>
+                            <div style={{ flex: '1 1 auto', minWidth: 0 }}>
+                              <p style={{ margin: 0, fontSize: 15.5, fontWeight: 600, lineHeight: 1.35, color: C.ink }}>{b.title}{b.note && <span style={{ marginLeft: 8, fontSize: 12, fontWeight: 700, color: C.muted, whiteSpace: 'nowrap' }}>{titleCase(b.note)}</span>}</p>
+                              {b.by && <p style={{ margin: '2px 0 0', fontSize: 13.5, color: C.muted, lineHeight: 1.35 }}>{b.by}</p>}
+                            </div>
+                            {note && <button type="button" className="edu-book-details edu-press edu-no-print" aria-label={`Details about ${b.title}`} onClick={() => setBookDetail(t)}>Details</button>}
+                          </div>
+                        </div>
+                      ); })}
+                    </div>
+                  )
                   : experimentsFor(g).map((x, k) => (
                     <div key={`${x.title}-${k}`} className="edu-experiment" style={C.mode === 'dark' ? { background: C.surface, border: `1px solid ${C.cardEdge}`, borderRadius: 12, padding: '12px 14px', margin: '0 0 12px' } : { borderTop: `1px solid rgba(26, 71, 58, 0.15)`, padding: '8px 0' }}>
                       {/* The title centered, and What you see on a panel of its own (pass MH, Mikey): the dark theme's light green with dark
@@ -12766,6 +13593,23 @@ function EduSphereScreens() {
           );
         })}
         <div className="edu-no-print" style={{ textAlign: 'center', marginTop: 12 }}><Btn kind="secondary" onClick={() => window.print()}>Print</Btn></div>
+        {/* A book's Details (pass MR): the title, the author, and a short summary of what the book is about and what it is trying to
+            do, read in the app's conversational voice; Got it, the backdrop and Escape close it. */}
+        {lists && bookDetail && bookNote(bookDetail) && (() => { const b = bookParts(bookDetail); return (
+          <Overlay role="dialog" modal="true" label={`About ${b.title}`} z={45} onClick={() => setBookDetail(null)} scroll className="edu-no-print">
+            {/* The card scrolls with the page on a short phone, and sits in the middle where there is room (round one's screen check,
+                pass MR: at 320 by 568 nearly every card began above the screen and could not be scrolled to); its close button sits
+                at the top right, as DESIGN asks of a pop-up that shows one item of a long list. */}
+            <div data-book-detail={bookDetail} onClick={(e) => e.stopPropagation()} style={{ ...card, position: 'relative', maxWidth: 460, width: '100%', margin: 'auto', textAlign: 'left', padding: '22px 22px 18px' }}>
+              <button type="button" aria-label="Close" onClick={() => setBookDetail(null)} style={{ position: 'absolute', top: 8, right: 10, background: 'none', border: 'none', width: 36, height: 36, fontSize: 28, lineHeight: '34px', cursor: 'pointer', color: C.muted, fontFamily: FONT, padding: 0 }}>×</button>
+              <p style={{ margin: 0, paddingRight: 30, fontSize: 20, fontWeight: 700, lineHeight: 1.3, color: C.ink }}>{b.title}</p>
+              {b.by && <p style={{ margin: '4px 0 0', fontSize: 14.5, color: C.muted }}>by {b.by}{b.note ? ` · ${titleCase(b.note)}` : ''}</p>}
+              <div aria-hidden="true" style={{ height: 3, width: 44, borderRadius: 2, background: C.gold, margin: '14px 0 14px' }} />
+              <p style={{ margin: '0 0 18px', fontSize: 16, lineHeight: 1.6, color: C.ink }}>{bookNote(bookDetail)}</p>
+              <div style={{ textAlign: 'center' }}><Btn onClick={() => setBookDetail(null)}>Got it</Btn></div>
+            </div>
+          </Overlay>
+        ); })()}
       </div></div>
     );
   }
@@ -12793,7 +13637,7 @@ function EduSphereScreens() {
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         <button type="button" onClick={() => setScreen('educator-pick')} style={{ ...linkBtn }}>Back to Classroom</button>
-        <h1 style={{ fontSize: 24, margin: '12px 0 4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Wonder Questions <InfoButton onClick={() => setShowWonderTip(!showWonderTip)} label="How reflection questions work" open={showWonderTip} /></h1>
+        <h1 style={{ fontSize: 24, margin: '12px 0 4px', textAlign: 'center' }}><span style={{ position: 'relative', display: 'inline-block' }}>Wonder Questions<span style={{ position: 'absolute', left: '100%', top: '50%', transform: 'translateY(-50%)', marginLeft: 8, lineHeight: 0 }}><InfoButton onClick={() => setShowWonderTip(!showWonderTip)} label="How reflection questions work" open={showWonderTip} /></span></span></h1>
         {showWonderTip && (
           <TipText>
             <p style={{ margin: '0 0 8px' }}>After every two practice rounds, whether it went well or not, a reflection question is introduced. Each question is written toward one of four aims: curiosity about the world, failure as the way learning happens, naming and handling feelings, and the idea that hard days are normal yet, we always get through them.</p>
@@ -12912,7 +13756,7 @@ function EduSphereScreens() {
                      (pass LY, Mikey's screenshot). */
                   <div data-answer-chips="" style={{ display: 'grid', gridTemplateColumns: `repeat(${chipColumns(reviewingQuestion.options)}, minmax(0, 1fr))`, gap: 8, marginTop: 4, maxWidth: 420, marginLeft: 'auto', marginRight: 'auto' }}>
                     {(reviewingQuestion.options || []).map((o) => (
-                      <span key={o} style={{ fontSize: 14, fontWeight: 600, color: C.green, background: C.surface, border: `2px solid ${C.line}`, borderRadius: 10, padding: '7px 10px', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>{optionSwatch(o) && <OptionSwatch colour={optionSwatch(o)} size={18} />}{o}</span>
+                      <span key={o} style={{ fontSize: 14, fontWeight: 600, color: C.green, background: C.surface, border: `2px solid ${C.line}`, borderRadius: 10, padding: '7px 10px', textAlign: 'center', display: 'flex', flexDirection: optionSwatch(o) ? 'column' : 'row', alignItems: 'center', justifyContent: 'center', gap: 4 }}>{optionSwatch(o) && <OptionSwatch colour={optionSwatch(o)} size={18} />}{o}</span>
                     ))}
                   </div>
                 )}
@@ -13084,7 +13928,7 @@ function EduSphereScreens() {
               {c.startedAt ? `Started ${fmtDate(c.startedAt)}` : ''}{c.completedAt ? ` · completed ${fmtDate(c.completedAt)}` : ''}
             </p>
             {c.completedAt && standardsSatisfied(c.id).length > 0 && (
-              <p style={{ margin: '0 0 8px', fontSize: 14, lineHeight: 1.6 }}><strong>Standards satisfied</strong> ({FRAMEWORKS[frameworkForState(stateCode || 'CA')].name}): {standardsSatisfied(c.id).join(', ')}</p>
+              <p style={{ margin: '0 0 8px', fontSize: 14, lineHeight: 1.6 }}><strong>Standards satisfied</strong> ({frameworkName(frameworkForState(stateCode || 'CA'), c.grade)}): {standardsSatisfied(c.id).join(', ')}</p>
             )}
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
               <tbody>
@@ -13113,7 +13957,7 @@ function EduSphereScreens() {
 
         {/* One explanation at the top, so the headings below can stand on their own. */}
         <div style={{ border: `1px solid ${C.line}`, borderRadius: 10, padding: 14, marginBottom: 18, background: C.surface }}>
-          <p style={{ margin: 0, fontSize: 15, lineHeight: 1.6, textAlign: 'center' }}>Courses are considered complete once every associated module is mastered. Completions remain on this record indefinitely. Currently assigned courses can appear or disappear depending on whether or not they are actively assigned. <InfoButton onClick={() => setShowPlacedTip(!showPlacedTip)} label="About placed and skipped modules" open={showPlacedTip} /></p>
+          <p style={{ margin: 0, padding: `0 ${END_INFO_ROOM}px`, fontSize: 15, lineHeight: 1.6, textAlign: 'center' }}>Courses are considered complete once every associated module is mastered. Completions remain on this record indefinitely. Currently assigned courses can appear or disappear depending on whether or not they are actively <EndInfo word="assigned." onClick={() => setShowPlacedTip(!showPlacedTip)} label="About placed and skipped modules" open={showPlacedTip} /></p>
                   {showPlacedTip && <TipText><strong>Placed Past</strong> means that a student has cleared a module by demonstrating their knowledge in a placement test.<br /><br /><strong>Skipped by quick-check</strong> means a student has cleared a module without entering the lesson by correctly answering five test questions.<br /><br />Neither of the above situations lead to a mastered status (stars still need to be earned) and students will continue to be exposed to questions from these modules at random (routed back for review if necessary).</TipText>}
         </div>
 
@@ -13411,10 +14255,9 @@ function EduSphereScreens() {
           </Overlay>
         )}
         <h1 style={{ fontSize: 24, margin: '26px 0 4px', textAlign: 'center' }}>My Classroom</h1>
-        <p className="edu-classroom-intro" style={{ color: C.muted, marginTop: 0, fontSize: 15, textAlign: 'center' }}>
-          Input student ID, add, then assign a nickname. Students log in by tapping their name, so there are no <span style={{ whiteSpace: 'nowrap' }}>typos.
-          <button type="button" onClick={() => setShowRosterTip(!showRosterTip)} aria-label="More about nicknames"
-            style={{ background: 'none', border: `1.5px solid ${C.green}`, color: C.green, fontFamily: FONT, fontSize: 12, fontWeight: 700, lineHeight: '15px', width: 18, height: 18, borderRadius: 999, cursor: 'pointer', padding: 0, marginLeft: 6, verticalAlign: 'middle' }}>i</button></span>
+        {/* The i hangs past the last word (EndInfo), so the last line stays centered (round three of pass MR: it sat 12 pixels left). */}
+        <p className="edu-classroom-intro" style={{ color: C.muted, marginTop: 0, padding: `0 ${END_INFO_ROOM}px`, fontSize: 15, textAlign: 'center' }}>
+          Input student ID, add, then assign a nickname. Students log in by tapping their name, so there are no <EndInfo word="typos." onClick={() => setShowRosterTip(!showRosterTip)} label="More about nicknames" open={showRosterTip} />
         </p>
         {showRosterTip && (
           <TipText>
@@ -13532,7 +14375,7 @@ function EduSphereScreens() {
           </Overlay>
         )}
 
-        {visible.length === 0 && tourStep !== TOUR.length - 1 && <div style={{ ...card, background: C.greenSoft, borderColor: C.softEdge, textAlign: 'center' }}><p style={{ margin: 0, color: C.muted }}>Nobody here yet. Add someone above.</p></div>}
+        {visible.length === 0 && tourStep !== TOUR.length - 1 && <div style={{ ...card, boxShadow: 'none', background: C.greenSoft, borderColor: C.softEdge, textAlign: 'center' }}><p style={{ margin: 0, color: C.muted }}>Nobody here yet. Add someone above.</p></div>}
         {shownStudents.length > 0 && (<div style={{ ...card, padding: 10, background: C.tintSage, borderColor: C.tintMintLine }}>
           <button type="button" className="edu-fold-head" onClick={() => setActiveOpen(!activeOpen)} aria-expanded={activeOpen}
             style={{ fontFamily: FONT, width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: C.tintHead, border: `1px solid ${C.tabEdge}`, borderRadius: 12, padding: '14px 16px', marginBottom: 10, cursor: 'pointer', color: C.ink }}>
@@ -13741,7 +14584,7 @@ function EduSphereScreens() {
         <div style={{ ...card, marginTop: 22, textAlign: 'center' }}>
           <div style={{ margin: '0 0 16px', padding: '12px 14px', borderRadius: 10, background: C.greenSoft, textAlign: 'center' }}>
             <p style={{ margin: '0 0 4px', fontWeight: 600 }}>Quick checks</p>
-            <p style={{ margin: '0 0 8px', fontSize: 14, color: C.muted, lineHeight: 1.5 }}>All new students (above grade 2) start by taking placement tests. Quick-Checks merely refine that further. <InfoButton onClick={() => setShowQuickTip(!showQuickTip)} label="About quick checks" open={showQuickTip} /></p>
+            <p style={{ margin: '0 0 8px', padding: `0 ${END_INFO_ROOM}px`, fontSize: 14, color: C.muted, lineHeight: 1.5 }}>All new students (above grade 2) start by taking placement tests. Quick-Checks merely refine that <EndInfo word="further." onClick={() => setShowQuickTip(!showQuickTip)} label="About quick checks" open={showQuickTip} /></p>
             {showQuickTip && <TipText>Generically placing a student into grade 3 math (after failing grade 4 in a placement test) is an over-simplification. They may already understand some of the grade 3 material. Quick-checks are opportunities for students to skip individual modules (in this case, grade 3 math modules) through five-question knowledge tests and allow for less wasted time.<br /><br /><strong>Note:</strong> Successful skips lead to a transcript status of "placed" rather than "mastered." If they answer too quickly, it doesn't count. Future memory checks will further test their level of understanding of these skipped modules by integrating the concepts into new material, ensuring that nothing slips through the cracks. If necessary, we route them backwards.</TipText>}
             <SegToggle options={[['on', 'On'], ['off', 'Off']]} value={quickChecks ? 'on' : 'off'} onChange={async (key) => { const next = key === 'on'; setQuickChecks(next); await saveQuickChecks(next); }} ariaLabel="Quick checks on or off" />
           </div>
@@ -14093,7 +14936,7 @@ function EduSphereScreens() {
             </div>
           );
         })}
-        {!noteSearch.trim() && <p style={{ fontSize: 13, color: C.muted, textAlign: 'center', padding: '0 24px' }}>Order is chosen by student metrics. Stuck on a module? Frequent loop backs? Guessing or low confidence? To the top for you. <InfoButton onClick={() => setShowOrderTip(!showOrderTip)} label="About the order" open={showOrderTip} /></p>}
+        {!noteSearch.trim() && <p style={{ fontSize: 13, color: C.muted, textAlign: 'center', padding: `0 ${END_INFO_ROOM}px` }}>Order is chosen by student metrics. Stuck on a module? Frequent loop backs? Guessing or low confidence? To the top for <EndInfo word="you." onClick={() => setShowOrderTip(!showOrderTip)} label="About the order" open={showOrderTip} /></p>}
         {!noteSearch.trim() && showOrderTip && <TipText>If students share an "on track" status, they are ordered by the number of attempts required to remain on track (more attempts on top).</TipText>}
         <div className="edu-no-print" style={{ textAlign: 'center', marginTop: 40 }}>
           <Btn onClick={() => { if (typeof window !== 'undefined' && window.print) window.print(); }}>Print this list</Btn>
@@ -14539,8 +15382,9 @@ function EduSphereScreens() {
             style={{ fontFamily: FONT, fontSize: 15, padding: '10px 12px', width: '100%', boxSizing: 'border-box', border: `2px solid ${C.line}`, borderRadius: 10, marginBottom: 10, background: C.surface, color: C.ink, WebkitTextFillColor: C.ink, caretColor: C.ink, textAlign: 'center' }} />
           {!courseQuery.trim() && (
             <p style={{ margin: '0 0 10px', fontSize: 13, textAlign: 'center' }}>
-              <button type="button" onClick={() => { const student = findStudent(roster, educatorRecord.name); const starter = recommendedCourseIds([makeCoursesEnabledEvent([], new Date().toISOString())], student ? student.level : null); const keep = COURSES.filter((c) => c.modules.some((m) => rep.modules.find((x) => x.id === m.id && x.attempts > 0))).map((c) => c.id); const unlocked = coursesToUnlock([...educatorRecord.events, makeCoursesEnabledEvent([...new Set([...starter, ...keep])], new Date().toISOString())]); const next = [...new Set([...starter, ...keep, ...unlocked])]; setEnabled(next); setRecommendedIds(next); setSavedCourseIds([]); setShowAllCourses(false); }} style={{ ...linkBtn, fontSize: 13, padding: 0 }}>Back to recommended courses</button>
-              <InfoButton onClick={() => setShowRecommendTip(!showRecommendTip)} label="About recommended courses" open={showRecommendTip} />
+              {/* The info button hangs just past the link, taking no room in the line, so the link's words sit in the middle as
+                  HeadWithInfo's heading does (round three of pass MR, the alignment read: beside it they sat 13 pixels left). */}
+              <span style={{ position: 'relative', display: 'inline-block' }}><button type="button" onClick={() => { const student = findStudent(roster, educatorRecord.name); const starter = recommendedCourseIds([makeCoursesEnabledEvent([], new Date().toISOString())], student ? student.level : null); const keep = COURSES.filter((c) => c.modules.some((m) => rep.modules.find((x) => x.id === m.id && x.attempts > 0))).map((c) => c.id); const unlocked = coursesToUnlock([...educatorRecord.events, makeCoursesEnabledEvent([...new Set([...starter, ...keep])], new Date().toISOString())]); const next = [...new Set([...starter, ...keep, ...unlocked])]; setEnabled(next); setRecommendedIds(next); setSavedCourseIds([]); setShowAllCourses(false); }} style={{ ...linkBtn, fontSize: 13, padding: 0 }}>Back to recommended courses</button><span style={{ position: 'absolute', left: '100%', top: '50%', transform: 'translateY(-50%)', lineHeight: 0 }}><InfoButton onClick={() => setShowRecommendTip(!showRecommendTip)} label="About recommended courses" open={showRecommendTip} /></span></span>
             </p>
           )}
           {!courseQuery.trim() && showRecommendTip && (
@@ -14579,7 +15423,7 @@ function EduSphereScreens() {
           </button></div>}
           {!courseQuery.trim() && showAllCourses && (
             <div className="edu-no-print" style={{ borderTop: `1px solid ${C.line}`, marginTop: 8, paddingTop: 8 }}>
-              <p style={{ margin: '0 0 10px', fontSize: 14, color: C.muted, textAlign: 'center' }}>Wish to stray from our recommendations? Select anything below for {shownName} to complete. <InfoButton onClick={() => setShowRecTip(!showRecTip)} label="About kindergarten and pre-K" open={showRecTip} /></p>
+              <p style={{ margin: '0 0 10px', padding: `0 ${END_INFO_ROOM}px`, fontSize: 14, color: C.muted, textAlign: 'center' }}>Wish to stray from our recommendations? Select anything below for {shownName} to <EndInfo word="complete." onClick={() => setShowRecTip(!showRecTip)} label="About kindergarten and pre-K" open={showRecTip} /></p>
               {showRecTip && <TipText>Kindergarten (and above) courses will not show for a student who has any pre-k courses activated. They must either complete the pre-k courses first or you must uncheck them.</TipText>}
               {/* Core courses or electives, then one closed dropdown per grade, so a long catalog stays quick to navigate. */}
               <SegToggle options={[['core', 'Core'], ['electives', 'Electives']]} value={otherKind} onChange={setOtherKind} ariaLabel="Core courses or electives" />
@@ -14634,7 +15478,7 @@ function EduSphereScreens() {
           {/* The whole bar opens the fold, not only the arrow (2026-09-29, Mikey); the info dot inside stops the tap from reaching it. */}
           <div className="edu-fold-head" role="button" tabIndex={0} aria-expanded={openProgress} aria-label="Progress by course" onClick={() => setOpenProgress(!openProgress)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpenProgress(!openProgress); } }}
             style={{ display: 'flex', alignItems: 'center', padding: '14px 16px', cursor: 'pointer', userSelect: 'none' }}>
-            <span className="edu-fold-title" style={{ fontSize: 17, fontWeight: 600, display: 'inline-flex', alignItems: 'center' }}>Progress by course<InfoButton onClick={(e) => { e.stopPropagation(); setShowProgressTip(!showProgressTip); }} label="About progress by course" open={showProgressTip} /></span>
+            <span className="edu-fold-title" style={{ fontSize: 17, fontWeight: 600, position: 'relative', display: 'inline-block' }}>Progress by course<span style={{ position: 'absolute', left: '100%', top: '50%', transform: 'translateY(-50%)', marginLeft: 8, lineHeight: 0 }}><InfoButton onClick={(e) => { e.stopPropagation(); setShowProgressTip(!showProgressTip); }} label="About progress by course" open={showProgressTip} /></span></span>
             <span className="edu-fold-meta" aria-hidden="true" style={{ color: C.muted, fontSize: 16 }}>{openProgress ? '▴' : '▾'}</span>
           </div>
           {showProgressTip && <div style={{ padding: '0 16px' }}><TipText>Once you assign a course above, you can view or reset the student's progression within said course. See how they're doing or allow them to start fresh.</TipText></div>}
@@ -14787,7 +15631,10 @@ function EduSphereScreens() {
         </div>
 
         <p style={{ fontSize: 14, color: C.muted, textAlign: 'center', margin: '0 0 14px' }}>
-          {stateCode && frameworkForState(stateCode) !== 'CCSS' ? `We measure against ${stateFor(stateCode).name}'s standards (${FRAMEWORKS[frameworkForState(stateCode)].name}).` : `We measure against ${FRAMEWORKS.CCSS.name}.`}<br />
+          {/* The standards a student's courses are measured against, pre-K's own named only when the student has a pre-K course (round
+              two's lesson read, pass MR: the line had named only the Texas Essential Knowledge and Skills). */}
+          {(() => { const fw = frameworkForState(stateCode || 'CA'); const own = stateCode && fw !== 'CCSS'; const preK = enabled.some((id) => /^PK/.test((getCourse(id) || {}).grade || '')) ? (own ? `; pre-K against the ${frameworkName(fw, 'PK4')}` : ` (pre-K against the ${frameworkName('CCSS', 'PK4')})`) : '';
+            return own ? `We measure against ${stateFor(stateCode).name}'s standards (${FRAMEWORKS[fw].name}${preK}).` : `We measure against ${FRAMEWORKS.CCSS.name}${preK}.`; })()}<br />
           {educator && <><button type="button" onClick={() => { rememberHere(); setStateDraft(stateCode || ''); setScreen('change-state'); }} style={{ ...linkBtn, fontSize: 14, padding: 0 }}>Change state</button>{' · '}</>}
           <button type="button" onClick={() => setScreen('standards-map')} style={{ ...linkBtn, fontSize: 14, padding: 0 }}>Standards map</button>
         </p>

@@ -295,6 +295,10 @@ five short vowels (0.42 seconds each, 0.55 on the snail), buh, duh, guh and juh 
 closed, the release and a short uh), and the endings ig, og and at made whole (the vowel gliding toward the closing consonant and
 its release, with no uh after it); each vowel's resonances follow measured American English vowels in a woman's voice, and how
 each is made is written beside it in logic.mjs.
+Since pass MQ (Mikey's answer to Q60, "Q60 - B", read as that choice's own example, "38 to 44 yes, the vowels not yet") the lessons
+play the app's buh, duh, guh and juh wherever a line writes them, and ig, og and at made whole: ig and og wherever they stand as
+words of their own (neither is an English word), at where a line names it as an ending, as above; huh, wuh and shh stay with the
+voice, and only the five short vowels wait on the voice check page's trial rows (EARMARKS A42).
 soundClipWav wraps a sound as a small WAV file (16-bit, one channel); 'quiet' is a twentieth of a second of silence. These are the
 app's own stand-ins until the sounds are recorded (EARMARKS A41).
 
@@ -342,7 +346,8 @@ back. Mastery is unchanged, since a pre-reader's result is right the first time 
 ## A game's welcome and a story's breaths (pass MP, Mikey's game and story notes)
 
 A game's welcome (gameIntro in logic.mjs, GameIntro and makeDemoHands in ui.jsx) waits 450 ms for the board to settle, then says
-its lines one at a time while each line's act plays, the next line waiting for both and then 350 ms more (INTRO_GAP). A line no
+its lines one at a time while each line's act plays, the next line waiting for both and then 700 ms more (INTRO_GAP; 350 until pass MQ); a line whose voice never reports its end goes on after
+three times its reading time (since pass MQ). A line no
 voice says (a muted device, a browser with no voice) stays up for about three words a second and never under 1.2 seconds
 (introReadMs), and a line a voice said quickly keeps its caption up for at least six tenths of that. The pointer glides to a tap in
 0.62 seconds and to a look in 0.65, carries a dragged piece at about 3 ms a pixel (0.42 to 1.3 seconds), waits 0.65 seconds beside a
@@ -375,3 +380,22 @@ A story read aloud breathes (storyGap and storyPause in ui.jsx): 0.65 seconds af
 quarter second between paragraphs (0.55 on the snail), and on the snail a third of a second between sentences; the snail reads at
 0.65 of the hare's pace (SNAIL_RATE; a recorded clip at 0.72), and two of the app's sounds in a row are 0.2 seconds apart
 (SOUND_GAP_MS). A finished game's gold star fades after 2.2 seconds (DONE_STAR_MS).
+
+## The young voice, a welcome's rests and a game break (pass MQ, Mikey's notes and answers)
+
+A young learner, one with early-years lessons not yet mastered, hears the device's voice at 0.9 of its pace (YOUNG_RATE) with a
+rest of 450 ms between one sentence and the next (YOUNG_PAUSE_MS) wherever it reads outside a story: a read-aloud course's lessons,
+questions, explanations, results, Wonder cards and celebrations, the early learner's overview and Let's Color, and every game the
+young learner opens (Mikey: "I think the speed of the sentences can slow a little bit with small pauses between sentences"). Each
+sentence goes to the voice on its own and the next waits 450 ms after it ends when it starts a sentence (a capital, a digit, a quotation mark or a bracket; startsSentence and restBefore since round three's alignment read, so "What number makes 7 + 2 = 2 + ? true?", which the sentence rule cuts at a "?" that stands for a number, has no rest inside it, and the voice check page rests by the same rule); a word at play (a one-word sentence, a letter named,
+an example word) keeps its own slow, lifted shape, the only stress a device's voice can give a word without cutting a sentence into
+pieces. Every game's welcome, for every age, rests 450 ms between the sentences of a line (INTRO_PAUSE_MS: "the cadence should be
+slow enough that a sentence can be properly absorbed before jumping into the next sentence"); a line no voice says stays up 450 ms
+longer for each sentence after its first (introReadMs), and the demonstration waits for each line, rests included. While the voice
+rests it counts as still talking (restUntil), so a speaker keeps showing it reads and a wait for the voice's end waits for the whole
+line; a hush or a newer line ends the rest. A story keeps its own pace, the snail's and the hare's.
+
+A game break (the report's "Game breaks taken" line, the weekly note and the changes since a report was seen) counts a game only
+once the child has tapped Begin (Mikey's answer to Q63, "Q63 - A"): every visit is logged when the game closes, with begun false
+when it closed during the welcome or on Begin's cover, and isGameBreak leaves those out; a visit logged before pass MQ has no begun
+and counts, as it did.

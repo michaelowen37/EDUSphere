@@ -268,9 +268,11 @@ const ponder = () => page.evaluate(() => {
   await page.setViewportSize({ width: 1280, height: 900 }); await page.waitForTimeout(300); }
 
 // Round four's code check (pass MO): the Wonder's voice cards left mid-card by the device's back fall quiet (Frederick's card was
-// said on over the overview to its end), with a stand-in voice that says a sentence a second, as section 7's does.
+// said on over the overview to its end), with a stand-in voice that says a sentence a second, as section 7's does. Since pass MQ
+// it takes two and a half seconds a sentence, since the young voice now rests between sentences (Mikey: "small pauses between
+// sentences"): the letter pages below are closed while their second sentence is being said, so the close lands in a sentence.
 { await page.evaluate(() => { const q = []; let cur = null; let timer = null; window.__spoken = [];
-    const next = () => { cur = q.shift() || null; if (!cur) return; const mine = cur; timer = setTimeout(() => { if (cur !== mine) return; cur = null; if (mine.onend) mine.onend({}); if (!cur) next(); }, 1000); };
+    const next = () => { cur = q.shift() || null; if (!cur) return; const mine = cur; timer = setTimeout(() => { if (cur !== mine) return; cur = null; if (mine.onend) mine.onend({}); if (!cur) next(); }, 2500); };
     window.__curText = () => (cur ? cur.text : null);
     Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { get speaking() { return !!cur; }, get pending() { return q.length > 0; }, cancel() { q.length = 0; if (timer) clearTimeout(timer); cur = null; }, getVoices() { return []; }, speak(u) { window.__spoken.push(u.text); q.push(u); if (!cur) next(); } } }); });
   await page.evaluate(() => window.__eduTest.openWonderVoices('w-big-or-small', 'big-and-little')); await screenIs('wonder-voices');
@@ -283,11 +285,24 @@ const ponder = () => page.evaluate(() => {
   // Round five's code check: a letter coloring page says its letters as it opens, and Close coloring left them being said over the
   // overview ("On the right is a lower case A." 0.8 seconds later).
   await page.evaluate(() => window.__eduTest.openColoring('letter-a')); await screenIs('coloring');
-  await page.waitForFunction(() => window.speechSynthesis.speaking, null, { timeout: 5000 }).catch(() => {});
+  // Its second sentence comes after the young voice's rest (pass MQ), so the page is closed once that sentence is being said.
+  await page.waitForFunction(() => /lower case A/.test(window.__curText() || ''), null, { timeout: 9000 }).catch(() => {});
   const page1 = await page.evaluate(() => ({ said: window.__spoken.slice(), now: window.__curText() }));
   await page.getByRole('button', { name: 'Close coloring', exact: true }).click(); await page.waitForTimeout(300);
   const page2 = await page.evaluate(() => ({ screen: window.__eduTest.screen, now: window.__curText() }));
   ok('a letter coloring page closed falls quiet at once', !!page1.now && /lower case A/.test(page1.said.join(' ')) && page2.screen !== 'coloring' && !(page2.now && page1.said.includes(page2.now)), { page1, page2 });
+  await page.waitForTimeout(300);
+  // Closed in the rest between its two sentences (pass MQ): the rest's timer finds the page gone and says nothing more, so the
+  // second sentence is never said over the overview.
+  await page.evaluate(() => { window.__spoken.length = 0; window.__eduTest.openColoring('letter-a'); }); await screenIs('coloring');
+  // The close is pressed inside the page the moment the rest is seen (round one's code check, pass MQ: a click sent from the test
+  // after it spotted the rest could land in the next sentence, and fail falsely).
+  const resting = await page.evaluate(() => new Promise((done) => { const t0 = Date.now(); const poll = setInterval(() => {
+    if (window.__spoken.length === 1 && !window.__curText() && /capital A/.test(window.__spoken[0])) { clearInterval(poll); const b = document.querySelector('button[aria-label="Close coloring"]'); if (b) b.click(); done(!!b); }
+    else if (Date.now() - t0 > 9000) { clearInterval(poll); done(false); } }, 10); }));
+  await page.waitForTimeout(1500);
+  const restClosed = await page.evaluate(() => ({ screen: window.__eduTest.screen, said: window.__spoken.slice(), now: window.__curText() }));
+  ok('a letter coloring page closed in the rest between its sentences never says the next one', resting && restClosed.screen !== 'coloring' && restClosed.said.length === 1 && !restClosed.now, { resting, restClosed });
   await page.waitForTimeout(300);
   // Round six's code check: a letter page whose time runs out while it talks falls quiet too (the page closes itself then, so a hush
   // in Close coloring alone would leave its letters said over the overview); setColoringLeft brings the time's end near.
@@ -295,6 +310,8 @@ const ponder = () => page.evaluate(() => {
   // that came after that tick would wait for a button that is gone.
   await page.evaluate(() => window.__eduTest.openColoring('letter-b')); await screenIs('coloring'); await page.waitForTimeout(200);
   await page.getByRole('button', { name: 'Say the letters again', exact: true }).click();
+  // The time runs out while the second sentence is being said (pass MQ: it follows the first after the young voice's rest).
+  await page.waitForFunction(() => /lower case B/.test(window.__curText() || ''), null, { timeout: 9000 }).catch(() => {});
   await page.evaluate(() => window.__eduTest.setColoringLeft(1));
   await page.waitForFunction(() => window.__eduTest.screen !== 'coloring', null, { timeout: 8000 }).catch(() => {});
   const page3 = await page.evaluate(() => ({ screen: window.__eduTest.screen, said: window.__spoken.slice() }));
@@ -432,7 +449,13 @@ const ponder = () => page.evaluate(() => {
 { await page.evaluate(() => { const q = []; let cur = null; let timer = null; window.__spoken = [];
     const next = () => { cur = q.shift() || null; if (!cur) return; const mine = cur; if (mine.onstart) mine.onstart({}); timer = setTimeout(() => { if (cur !== mine) return; cur = null; if (mine.onend) mine.onend({}); if (!cur) next(); }, 150); };
     Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { get speaking() { return !!cur; }, get pending() { return q.length > 0; }, cancel() { q.length = 0; if (timer) clearTimeout(timer); cur = null; }, getVoices() { return []; }, speak(u) { window.__spoken.push(u.text); (window.__ratesWord = window.__ratesWord || []).push(u.rate); q.push(u); if (!cur) next(); } } }); });
-  const q = await show('p3-which-colour-four', 3); await page.waitForTimeout(2500); await page.evaluate(() => { window.__spoken = []; window.__ratesWord = []; });
+  await page.evaluate(() => { window.__spoken = []; window.__ratesWord = []; });
+  const q = await show('p3-which-colour-four', 3); await page.waitForTimeout(2500);
+  // The question itself is said in the young voice (pass MQ, round one's code check: nothing read a pre-reader's practice rate, so
+  // taking practice out of the young voice's screens passed every browser test): its question shape's rate times YOUNG_RATE.
+  const asked = await page.evaluate(() => { const k = window.__spoken.findIndex((t) => t.trim() === 'What color is this?'); return k >= 0 ? window.__ratesWord[k] : null; });
+  ok('a pre-reader\'s question is said in the young voice, a little slower than the question shape\'s 0.9 (pass MQ)', typeof asked === 'number' && Math.abs(asked - 0.81) < 1e-6, asked);
+  await page.evaluate(() => { window.__spoken = []; window.__ratesWord = []; });
   const word = q.choices.find((c) => c !== q.answer);
   await settle(); await page.locator(`button[data-choice="${word}"]`).click(); await page.waitForTimeout(1600);
   const said = await page.evaluate(() => window.__spoken.slice());
@@ -462,6 +485,10 @@ const ponder = () => page.evaluate(() => {
     const next = () => { cur = q2.shift() || null; if (!cur) return; const mine = cur; const rec = { text: mine.text, rate: mine.rate, start: performance.now(), end: null }; window.__lines.push(rec); if (mine.onstart) mine.onstart({}); timer = setTimeout(() => { if (cur !== mine) return; cur = null; rec.end = performance.now(); if (mine.onend) mine.onend({}); if (!cur) next(); }, 300); };
     Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { get speaking() { return !!cur; }, get pending() { return q2.length > 0; }, cancel() { q2.length = 0; if (timer) clearTimeout(timer); cur = null; }, getVoices() { return []; }, speak(u) { q2.push(u); if (!cur) next(); } } }); });
   const parts = await page.locator('[data-more-info-words]').evaluateAll((els) => els.length);
+  // The question's own words may still be resting between sentences when More Info opens (the young voice, pass MQ), and a line said
+  // then is cut off by More Info's reading: wait for the quiet and a rest's length, and read only what More Info says.
+  await page.waitForFunction(() => !window.speechSynthesis.speaking && !window.speechSynthesis.pending, null, { timeout: 8000 }).catch(() => {}); await page.waitForTimeout(700);
+  await page.evaluate(() => { window.__lines = []; });
   await page.locator('[data-more-info-speaker]').click();
   await page.waitForFunction(() => !!document.querySelector('[data-more-info] [data-read-lit]'), null, { timeout: 5000 }).catch(() => {});
   const first = await page.evaluate(() => { const el = document.querySelector('[data-more-info] [data-read-lit]'); const rows = [...document.querySelectorAll('[data-more-info-words]')]; return el ? { row: rows.findIndex((r) => r.contains(el)), bg: getComputedStyle(el).backgroundColor } : null; });
@@ -473,7 +500,9 @@ const ponder = () => page.evaluate(() => {
   const lines = await page.evaluate(() => window.__lines);
   const gaps = lines.slice(1).map((l, k) => Math.round(l.start - lines[k].end));
   const pauses = gaps.filter((g) => g >= 900).length; const quick = gaps.filter((g) => g < 900);
-  ok(`a pause of about a second sits between one description and the next, and none inside one (${parts} descriptions)`, parts >= 3 && pauses === parts - 1 && quick.every((g) => g < 300), gaps);
+  // Inside one description, the young voice's short rest between its sentences (pass MQ, Mikey: "small pauses between sentences"),
+  // about half a second, never a second's pause and never none.
+  ok(`a pause of about a second sits between one description and the next, and a short rest between the sentences inside one (${parts} descriptions)`, parts >= 3 && pauses === parts - 1 && quick.every((g) => g >= 350 && g < 700), gaps);
   const base = [0.6, 0.9, 0.86, 0.1];
   // Exactly 0.85 of the voice's own pace: the story read before this put its snail back when it closed (the second read).
   ok('an early learner hears More Info a little slower: every line at 0.85 of its pace, with no story pace left over', lines.length >= parts && lines.every((l) => base.some((b) => Math.abs(l.rate - b * 0.85) < 0.002)), lines.map((l) => l.rate));
@@ -839,6 +868,23 @@ const ponder = () => page.evaluate(() => {
   await page.emulateMedia({ reducedMotion: 'reduce' }); await page.setViewportSize({ width: 1280, height: 900 }); await page.waitForTimeout(300);
   const same = SAME.map(([mod, step]) => { const off = sized[`${mod} ${step} reduce`] || []; const on = sized[`${mod} ${step} no-preference`] || []; return off.length === 2 && on.length === 2 && off.every((w, k) => !!w && !!on[k] && Math.abs(on[k] / w - 1) <= 0.02); });
   ok("in the light theme each drawing of a lesson pair is the same size with motion on as with motion off (Q59)", same.length === 3 && same.every(Boolean), sized); }
+
+// A lesson's Say it again (pass MQ, round two's code read: since round one it reads the line again through the lesson's own reading, lit
+// sentence by sentence and from its recording when there is one, and no test pressed it): a pre-reader's first line is read to its
+// end, Say it again is pressed, and the first sentence is lit while the stand-in voice says it again (the old speak(line) lit nothing).
+{ await page.setViewportSize({ width: 390, height: 844 });
+  await page.evaluate(() => { const q = []; let cur = null; let timer = null; window.__again = [];
+    const next = () => { cur = q.shift() || null; if (!cur) return; const mine = cur; window.__again.push(mine.text); if (mine.onstart) mine.onstart({}); timer = setTimeout(() => { if (cur !== mine) return; cur = null; if (mine.onend) mine.onend({}); if (!cur) next(); }, 700); };
+    Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { get speaking() { return !!cur; }, get pending() { return q.length > 0; }, cancel() { q.length = 0; if (timer) clearTimeout(timer); cur = null; }, getVoices() { return []; }, speak(u) { q.push(u); if (!cur) next(); } } }); });
+  await page.evaluate(() => window.__eduTest.openModule('learning-words')); await page.waitForFunction(() => window.__eduTest.screen === 'lesson');
+  const first = L.readAloudScript(L.MODULES.find((m) => m.id === 'learning-words'))[0].say; const firstSentence = L.SENTENCE_BREAK ? String(first).split(L.SENTENCE_BREAK).filter(Boolean)[0] : first;
+  const readOnce = await page.waitForFunction((s) => window.__again.some((t) => t.trim() === s.trim()) && !window.speechSynthesis.speaking && !window.speechSynthesis.pending && !document.querySelector('[data-read-lit]'), firstSentence, { timeout: 20000 }).then(() => true).catch(() => false);
+  await page.waitForTimeout(600); await page.evaluate(() => { window.__again = []; });
+  await page.getByRole('button', { name: 'Say it again' }).first().click({ force: true });
+  const litAgain = await page.waitForFunction((s) => { const el = document.querySelector('[data-read-lit]'); return !!el && el.textContent.trim() === s.trim() && window.__again.some((t) => t.trim() === s.trim()); }, firstSentence, { timeout: 6000 }).then(() => true).catch(() => false);
+  const seen = await page.evaluate(() => ({ said: window.__again.slice(0, 3), lit: (document.querySelector('[data-read-lit]') || {}).textContent || null }));
+  ok("a lesson's Say it again reads the line again lit sentence by sentence, the first sentence lit as it is said (pass MQ, round two's code read)", readOnce && litAgain, { readOnce, litAgain, firstSentence, seen });
+  await page.evaluate(() => window.speechSynthesis.cancel()); }
 
 ok('no page errors along the way', errors.length === 0, errors);
 await browser.close();

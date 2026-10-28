@@ -57,7 +57,74 @@ const MO_ROUTINES = { 'Get your hat, and then go to the door.': ['hat', 'door'],
   'Get a cup, get a spoon, and then sit in your chair.': ['cup', 'spoon', 'chair'], 'Put your block away, get your hat, and then go to the door.': ['block', 'hat', 'door'], 'Get your hat, get your ball, and then go down the slide.': ['hat', 'ball', 'slide'], 'Get your book, get your teddy, and then get into bed.': ['book', 'teddy', 'bed'] };
 const moRoutine = (q, places) => { const steps = MO_ROUTINES[(q.story || '').replace(/^Listen\. /, '')]; const at = places.indexOf((/^What do you do (first|second|last)\?$/.exec(q.prompt) || [])[1]);
   return steps && at >= 0 && steps.length === places.length && q.choices.length === steps.length && steps.every((x) => q.choices.includes(`icon:${x}`)) ? `icon:${steps[at]}` : null; };
+// Domain II's vocabulary and pre-K 3's turns of a conversation (pass MQ, earmarks E12 and E13): the test's own tables, each written
+// from the lessons' lines, never read from logic.mjs.
+const MQ_PEOPLE = ['baby', 'teacher', 'doctor', 'grandma', 'grandpa'];
+const MQ_WHO = { 'Who is very little and drinks milk from a bottle?': 'baby', 'Who helps children learn at school?': 'teacher', 'Who helps you get well when you are sick?': 'doctor', 'Who is the mom of your mom or your dad?': 'grandma', 'Who is the dad of your mom or your dad?': 'grandpa' };
+const MQ_EVENT_WHAT = { 'What has candles to blow out at a birthday party?': 'cake', 'Where do you sleep at bedtime?': 'bed', 'What falls from the clouds on a rainy day?': 'rain', 'What falls on a snowy day?': 'snow', 'What does someone read to you at story time?': 'book', 'What can you play on at the park?': 'slide' };
+const MQ_EVENT_TAP = { 'a birthday party': 'cake', bedtime: 'bed', 'a rainy day': 'rain', 'a snowy day': 'snow', 'story time': 'book', 'the park': 'slide' };
+// Pictures a child could fairly tap for an event (pass MQ, round one's lesson check), so never offered as wrong: a bedtime story is
+// read in bed, a book can be a birthday present, and rain and snow can fall in one storm.
+const MQ_EVENT_ALSO = { bed: ['book'], book: ['bed'], cake: ['book'], rain: ['snow'], snow: ['rain'] };
+const MQ_PEOPLE_YESNO = { 'Is a baby very little?': 'Yes', 'Is a baby a grown-up?': 'No', 'Is a grandma a grown-up?': 'Yes', 'Is a grandpa a grown-up?': 'Yes', 'Is a grandpa very little?': 'No', 'Does a doctor help you get well when you are sick?': 'Yes', 'Does a teacher help children learn at school?': 'Yes', 'Does a baby help children learn at school?': 'No' };
+const MQ_SIDES = { 'Which shape has three sides?': 'triangle', 'Which shape has three corners?': 'triangle', 'Which shape has four sides?': 'square', 'Which shape has four corners?': 'square', 'Which shape has no corners?': 'circle' };
+const MQ_TALK_LISTEN = { 'What can you do while your friend is talking?': 'Listen', 'Your friend is talking. When is it your turn to talk?': 'When your friend stops', 'How can you show your friend you are listening?': 'Nod and smile', 'Your friend is telling you about a puppy. What can you do?': 'Listen' };
+const MQ_SAY_BACK = { 'Your friend says, I have a new puppy dog!': 'What is its name?', 'Your friend says, I made a tower!': 'I like your tower!', 'Your friend says, I went to the park!': 'What did you play?', 'Your friend says, I have a new hat!': 'I like your hat!' };
+const MQ_TALK_YESNO = { 'Is it kind to talk at the same time as your friend?': 'No', 'Is it kind to wait until your friend stops talking?': 'Yes', 'Is it kind to listen while your friend talks?': 'Yes', 'Can you take turns talking with your teacher too?': 'Yes', "Is it kind to stand very close, right in your friend's face?": 'No', 'Is it kind to shout while your friend is talking?': 'No' };
+const MQ_RHYME_END = { cat: 'at', hat: 'at', dog: 'og', log: 'og', frog: 'og', moon: 'oon', spoon: 'oon', bear: 'air', chair: 'air', sock: 'ock', block: 'ock', rock: 'ock', ball: 'all', wall: 'all' };
+const MQ_MEANS = { 'Your teacher says, count the blocks.': 'Say one number for each block', 'Your teacher says, sort the blocks by color.': 'Put them into groups by color', 'Your teacher says, find a sock that matches.': 'Find a sock just like it', 'Your teacher says, trace the letter.': 'Go over its lines with your finger', 'Your teacher says, find a pair of socks.': 'Find two socks that match' };
+const MQ_SHAPE_WORDS = { 'Which shape has three corners?': 'triangle', 'Which shape has no corners?': 'circle', 'Which shape has two long sides and two short sides?': 'rectangle', 'Which shape has four sides that are all the same length?': 'square' };
+const MQ_GROUP = { 'pic:cat': 'animals', 'pic:duck': 'animals', 'pic:bear': 'animals', 'pic:owl': 'animals', 'pic:frog': 'animals', 'pic:fox': 'animals', 'icon:hat': 'clothes', 'icon:sock': 'clothes', 'icon:coat': 'clothes', 'icon:ball': 'toys', 'icon:teddy': 'toys', 'icon:block': 'toys', 'icon:tree': 'plants', 'icon:flower': 'plants', 'icon:cactus': 'plants', 'art:car': 'vehicles', 'art:train': 'vehicles', 'art:boat': 'vehicles', 'icon:bus': 'vehicles' };
+const MQ_GROUP_ASK = { 'Which one is an animal?': 'animals', 'Which one is clothes, something you wear?': 'clothes', 'Which one is a toy?': 'toys', 'Which one is a plant?': 'plants', 'Which one is a vehicle?': 'vehicles' };
+const MQ_OPPOSITE = { hot: 'cold', cold: 'hot', fast: 'slow', slow: 'fast', day: 'night' };
+const MQ_IS = { 'icon:ice': ['cold'], 'icon:snow': ['cold'], 'icon:fire': ['hot'], 'icon:sun': ['hot', 'day'], 'art:rocket': ['fast'], 'art:car': ['fast'], 'pic:snail': ['slow'], 'pic:turtle': ['slow'], 'icon:moon': ['night'] };
+const MQ_SAME_FACE = { glad: 'happy', angry: 'mad', afraid: 'scared' };
+const MQ_GROUP_YESNO = { 'Do a hat and a sock go in the same group?': 'Yes', 'Do a cat and a ball go in the same group?': 'No', 'Do a tree and a flower go in the same group?': 'Yes', 'Do a bus and a coat go in the same group?': 'No', 'Are hot and cold opposites?': 'Yes', 'Are glad and happy opposites?': 'No', 'Are fast and slow opposites?': 'Yes', 'Do large and big mean the same?': 'Yes' };
+const mqOne = (q, ok) => { const hits = (q.choices || []).filter(ok); return hits.length === 1 ? hits[0] : null; };
 const PREK_DERIVE = {
+  // Learning words (pre-K 3): the one just like the picture shown; the one not like the two alike; whether the counted row holds the
+  // number asked; the one in the group's color; and the shape the lesson says has those sides or corners.
+  'p3-learn-match': (q) => { const v = q.visual || {}; if (q.prompt !== 'Tap the one that matches this one.') return null; const want = v.kind === 'icon' ? `icon:${v.name}` : v.kind === 'item' ? `item:${v.shape}-${v.colour}` : null; return want && q.choices.includes(want) ? want : null; },
+  'p3-learn-different': (q) => { if (q.prompt !== 'Tap the one that is different.') return null; const base = (c) => c.split('#')[0]; return mqOne(q, (c) => q.choices.filter((d) => base(d) === base(c)).length === 1); },
+  'p3-learn-count': (q) => { const m = /^(?:Is|Are) there (one|two|three|four) (circle|square|triangle)s?\?$/.exec(q.prompt); const s = /^Count the (circle|square|triangle)s\.$/.exec(q.story || ''); const v = q.visual || {};
+    if (!m || !s || m[2] !== s[1] || v.kind !== 'pattern' || !(v.items || []).every((x) => x === m[2])) return null; return ['one', 'two', 'three', 'four'].indexOf(m[1]) + 1 === v.items.length ? 'Yes' : 'No'; },
+  'p3-learn-sort': (q) => { const m = /^Sort by color\. These (red|blue) ones are a group\.$/.exec(q.story || ''); return m && (q.visual || {}).colour === m[1] ? mqOne(q, (c) => new RegExp(`^item:[a-z]+-${m[1]}$`).test(c)) : null; },
+  'p3-learn-sides': (q) => (MQ_SIDES[q.prompt] ? `shape:${MQ_SIDES[q.prompt]}` : null),
+  // People and events (pre-K 3): a person by name and by what they do or are, an event's thing by what happens there and by the
+  // event's name, yes or no about a person, and the one person among things.
+  'p3-people-tap': (q) => { const m = /^Tap the (baby|teacher|doctor|grandma|grandpa)\.$/.exec(q.prompt); return m ? `icon:${m[1]}` : null; },
+  'p3-people-who': (q) => (MQ_WHO[q.prompt] ? `icon:${MQ_WHO[q.prompt]}` : null),
+  'p3-event-what': (q) => (MQ_EVENT_WHAT[q.prompt] ? `icon:${MQ_EVENT_WHAT[q.prompt]}` : null),
+  'p3-event-tap': (q) => { const m = /^Tap the picture for (.+)\.$/.exec(q.prompt); const a = m && MQ_EVENT_TAP[m[1]];
+    return a && !q.choices.some((c) => (MQ_EVENT_ALSO[a] || []).includes(c.replace(/^icon:/, ''))) ? `icon:${a}` : null; },
+  'p3-people-yesno': (q) => MQ_PEOPLE_YESNO[q.prompt] || null,
+  'p3-people-group': (q) => (q.prompt === 'Which one is a person?' ? mqOne(q, (c) => MQ_PEOPLE.includes(c.replace(/^icon:/, ''))) : null),
+  // Talking with a friend (pre-K 3): what to do while a friend talks, whose turn by who just stopped, the reply about what was said,
+  // hi or bye, and yes or no about each rule.
+  'p3-talk-listen': (q) => MQ_TALK_LISTEN[q.prompt] || null,
+  'p3-talk-turn': (q) => { const m = q.prompt === 'Whose turn is it now?' && /^You and (your friend|your teacher|Grandma) are taking turns talking, and (you|your friend|your teacher|Grandma) just stopped talking\.$/.exec(q.story || '');
+    if (!m || !(m[2] === 'you' || m[2] === m[1])) return null; return m[2] === 'you' ? (m[1] === 'Grandma' ? "Grandma's turn" : `${m[1].charAt(0).toUpperCase()}${m[1].slice(1)}'s turn`) : 'Your turn'; },
+  'p3-talk-say-back': (q) => (q.prompt === 'What can you say back?' ? MQ_SAY_BACK[q.story] || null : null),
+  'p3-talk-hi-bye': (q) => ({ 'What can you say to start talking with a friend?': 'Hi!', 'What can you say when you are done talking?': 'Bye!' })[q.prompt] || null,
+  'p3-talk-yesno': (q) => MQ_TALK_YESNO[q.prompt] || null,
+  // More learning words (pre-K 4): the one that fits all three words, the one that rhymes with the group's word, what the teacher's
+  // word asks, the one just like the picture shown, and the shape the lesson says has those sides or corners.
+  'p4-learn-three': (q) => { const m = /^Tap the (small|big) (red|blue|yellow) (circle|square|triangle)\.$/.exec(q.prompt); return m ? `item:${m[3]}-${m[2]}-${m[1]}` : null; },
+  'p4-learn-sort-rhyme': (q) => { const m = /^Which one goes in the group that rhymes with (\w+)\?$/.exec(q.prompt); const end = m && MQ_RHYME_END[m[1]]; const word = (c) => c.replace(/^(?:pic|icon):/, '');
+    return end && (q.story || '').includes(`rhyme with ${m[1]},`) ? mqOne(q, (c) => MQ_RHYME_END[word(c)] === end) : null; },
+  'p4-learn-means': (q) => (q.prompt === 'What do you do?' ? MQ_MEANS[q.story] || null : null),
+  'p4-learn-pair': (q) => { const v = q.visual || {}; return q.prompt === 'Tap the one that makes a pair with this one.' && v.kind === 'item' ? `item:${v.shape}-${v.colour}` : null; },
+  'p4-learn-shape-words': (q) => (MQ_SHAPE_WORDS[q.prompt] ? `shape:${MQ_SHAPE_WORDS[q.prompt]}` : null),
+  // Words that go together (pre-K 4): the one in the group asked, the one whose group the other three do not share, the opposite way,
+  // the face or size a word means, and yes or no about two words.
+  'p4-group-which': (q) => { const g = MQ_GROUP_ASK[q.prompt]; return g ? mqOne(q, (c) => MQ_GROUP[c] === g) : null; },
+  'p4-group-odd': (q) => (q.prompt === 'Which one does not go with the others?' && q.choices.length === 4 ? mqOne(q, (c) => q.choices.filter((d) => MQ_GROUP[d] === MQ_GROUP[c]).length === 1) : null),
+  'p4-opposite': (q) => { const m = /^Tap the one that is the opposite of (hot|cold|fast|slow|day|big|small)\.$/.exec(q.prompt); if (!m) return null;
+    if (m[1] === 'big' || m[1] === 'small') return mqOne(q, (c) => c.endsWith(m[1] === 'big' ? '-small' : '-big'));
+    return mqOne(q, (c) => (MQ_IS[c] || []).includes(MQ_OPPOSITE[m[1]])); },
+  'p4-same-meaning': (q) => { const f = /^Tap the face that looks (glad|angry|afraid)\.$/.exec(q.prompt); if (f) return `face:${MQ_SAME_FACE[f[1]]}`;
+    const s = /^Tap the large (circle|square|triangle)\.$/.exec(q.prompt); return s ? mqOne(q, (c) => c.startsWith(`item:${s[1]}-`) && c.endsWith('-big')) : null; },
+  'p4-group-yesno': (q) => MQ_GROUP_YESNO[q.prompt] || null,
   // Follow the directions and two ideas (pass MO, earmarks E12 and E13, Domain II part one): each answer from the words with this
   // test's own tables, the steps in the order the words say them, the step in the place a routine question asks, and what fits both
   // ideas of one sentence.
@@ -585,7 +652,9 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
       const WN_SIGN = { happy: 'a big smile', sad: 'a tear rolling out', mad: 'eyebrows that squeeze down', scared: 'wide-open eyes', worried: 'a wiggly mouth', embarrassed: 'eyes that look down' };
       const WN_FACE = Object.fromEntries(Object.entries(WN_SIGN).map(([f, sign]) => [f, `has ${sign}`]));
       // A shape's why opens on its corners, or, for a square or a long rectangle beside the other, on its sides (pass ML).
-      const WN_SHAPE = { circle: ['is round, with no corners'], square: ['has four corners', 'has four sides'], triangle: ['has three corners'], rectangle: ['has four corners', 'is long'] };
+      // Since pass MQ the vocabulary lessons' words for a shape too (Learning words, More learning words): a triangle "has three sides
+      // and three corners", a circle "is round, with no straight sides and no corners", a long rectangle "has two long sides".
+      const WN_SHAPE = { circle: ['is round, with no corners', 'is round, with no straight sides and no corners'], square: ['has four corners', 'has four sides'], triangle: ['has three corners', 'has three sides and three corners'], rectangle: ['has four corners', 'is long', 'has two long sides and two short sides'] };
       const WN_LOOK = { small: 'little', thin: 'thin', wide: null, turned: null };   // a square turned on its corner, an upside-down triangle; the lesson never says wide
       const WN_SAYS = { cat: 'meow', duck: 'quack', bee: 'buzz', frog: 'ribbit', owl: 'hoot', bear: 'growl' };
       const WN_LETTER = { A: 'has slanted sides', B: 'has two round bumps', H: 'has a bar too', V: 'has sides that meet at the bottom', P: 'has just one bump', D: 'has just one bump' };
@@ -1424,6 +1493,14 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
   { const split = [...tasks.values()].filter((keys) => keys.size > 1).length; if (split) bad.push(`${split} tasks drawn more than one way, so the bank counts layout as variety`); }
   ok(`${genId}: ${limit === 300 ? '300 seeds' : 'seeds 1 to ' + limit + ', until the last half made no new question,'} all valid and arithmetically correct`, bad.length === 0, bad.slice(0, 3).join(' | '));
 }
+// A yes-or-no reason fits its own question (pass MQ, round one's lesson check): "Yes would mean they do, but they do not." was heard
+// after "Are glad and happy opposites?", and "No would mean it is not, but it is." after "Can you take turns talking with your
+// teacher too?". In Domain II's yes-or-no banks, what the wrong answer would mean names a word of the question it answers.
+{ const STOP = new Set(['would', 'mean', 'they', 'that', 'this', 'with', 'your', 'then', 'there', 'does', 'have', 'what', 'when', 'were']);
+  const words = (s) => (String(s).toLowerCase().match(/[a-z']{4,}/g) || []).filter((w) => !STOP.has(w)); const off = [];
+  for (const g of ['p3-people-yesno', 'p3-talk-yesno', 'p4-group-yesno']) for (let s = 1; s <= 300; s++) { const q = L.generateQuestion(g, s); const asked = new Set(words(q.prompt));
+    for (const e of Object.values(q.whyNot || {})) if (!words(e.why).some((w) => asked.has(w))) off.push(`${g}: "${q.prompt}" ${e.name} ${e.why}`); }
+  ok('a yes-or-no reason in Domain II\'s banks names a word of its own question (pass MQ)', off.length === 0, [...new Set(off)].slice(0, 3).join(' | ')); }
 // No bank keeps its answer in one place (pass MM, the workflow review): over 300 seeds no button holds the answer 95 percent of the
 // time, or a child could pass by tapping it every time (grade 1's Which number is greater? always listed the greater number second).
 // And a bank of several different questions whose answer never changes teaches the answer, not the idea: those are kept by name
@@ -2043,7 +2120,20 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
     // A read-aloud round's reward story (pass MD) notes nothing: it is always the story's first read, so it clears the watch.
     { const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8'); const calls = [...ui.matchAll(/noteStoryOpen\(([^,]+), '(\w+)'\)/g)].map((m) => [m[1], m[2]]);
       ok("a lesson's View story notes its story as opened from the lesson, and every shelf as from a shelf", calls.filter(([, f]) => f === 'lesson').map(([id]) => id).join() === 'mod.id' && calls.filter(([, f]) => f === 'shelf').length >= 4 && calls.every(([, f]) => ['lesson', 'shelf'].includes(f)), calls); }
-    ok('the weekly note counts the games beside the coloring', /S-8 colored a picture\./.test(L.weeklyNote('S-8', base, t(18))) && /S-8 played 2 games\./.test(L.weeklyNote('S-8', base, t(18)))); }
+    ok('the weekly note counts the games beside the coloring', /S-8 colored a picture\./.test(L.weeklyNote('S-8', base, t(18))) && /S-8 played 2 games\./.test(L.weeklyNote('S-8', base, t(18))));
+    // A game watched only through its welcome (pass MQ, Mikey's answer to Q63: "Q63 - A"): a visit closed before Begin is logged
+    // with begun false, as a fact of the visit, and no count of game breaks takes it in: the report's line, Since you last looked
+    // and the weekly note. A visit logged before pass MQ has no begun and counts as it always did. The cases are sharp enough to
+    // catch the two near misses beside them: a count that ignores begun, and one that also drops the old visits that never had it.
+    { const welcomeOnly = [...base, L.makePlayedEvent('dots-kite', t(11), false)];
+      const oldVisit = [...base, { type: 'played', at: t(12), game: 'dots-house' }];
+      ok('a game closed before Begin is logged with begun false and counted in no game break (Q63)', welcomeOnly[welcomeOnly.length - 1].begun === false && L.makePlayedEvent('dots-kite', t(11)).begun === true
+        && L.gameBreaks(welcomeOnly) === 2 && L.buildReport('S-8', welcomeOnly).gameBreaks === 2 && L.changesSince(welcomeOnly, t(8)).played === 2 && /S-8 played 2 games\./.test(L.weeklyNote('S-8', welcomeOnly, t(18))),
+        { breaks: L.gameBreaks(welcomeOnly), since: L.changesSince(welcomeOnly, t(8)).played });
+      ok('a game visit logged before pass MQ, with no begun, still counts as a game break', L.gameBreaks(oldVisit) === 3 && L.buildReport('S-8', oldVisit).gameBreaks === 3 && L.changesSince(oldVisit, t(8)).played === 3 && /S-8 played 3 games\./.test(L.weeklyNote('S-8', oldVisit, t(18))));
+      const NEAR = { 'a count that ignores begun': (e) => !!e && e.type === 'played', 'a count that drops the old visits': (e) => !!e && e.type === 'played' && e.begun === true };
+      const caught = Object.entries(NEAR).filter(([, f]) => welcomeOnly.filter(f).length !== 2 || oldVisit.filter(f).length !== 3).map(([name]) => name);
+      ok('the game-break cases catch both near misses of the count, and the real count passes them', caught.length === 2 && welcomeOnly.filter(L.isGameBreak).length === 2 && oldVisit.filter(L.isGameBreak).length === 3, caught); } }
   // Pre-K is grouped by skill on the student's screen; every skill named is one the order knows.
   { const preK = L.COURSES.filter((c) => c.grade === 'PK3' || c.grade === 'PK4').flatMap((c) => c.modules);
     ok('every pre-K module names the skill it practises', preK.every((m) => m.skill && L.SKILL_ORDER.includes(m.skill)));
@@ -3003,6 +3093,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   ok('every course has at least one game, and every one of them exists', L.COURSES.every((c) => (L.COURSE_GAMES[c.id] || []).length > 0) && attached.every((id) => ids.has(id)));
   ok('every game belongs to exactly one course or is the starter', L.GAMES.every((g) => attached.filter((id) => id === g.id).length + (L.STARTER_GAMES.includes(g.id) ? 1 : 0) === 1));
   ok('a course only gets games its grade can play', L.COURSES.every((c) => L.COURSE_GAMES[c.id].every((id) => { const g = L.GAMES.find((x) => x.id === id); return !g.minGrade || L.GRADES.indexOf(g.minGrade) <= L.GRADES.indexOf(c.grade); })));
+  // Since pass MQ two more near misses: a young game closing with the older line, and a grade 3 game with the young one (Q65).
   // Every game's welcome (pass MP, Mikey: "I think games can have the instruction audio play automatically when entering the page",
   // in a conversational way, his Which Sense example, with "an animation playing the game at the same time to show how it works"):
   // every game has one, opening "Welcome to" its title and closing with his line, the speaker named; each line's act is one the
@@ -3015,7 +3106,10 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
       for (const g of games) { const lines = introOf(g); const last = lines[lines.length - 1];
         if (lines.length < 3) bad.push(`${g.id}: ${lines.length} lines`);
         if (!lines[0] || !lines[0].say.startsWith(`Welcome to ${L.spokenTitle(g.title)}`)) bad.push(`${g.id}: does not open with its welcome`);
-        if (!last || last.say !== L.GAME_INTRO_CLOSING || last.act !== 'speaker') bad.push(`${g.id}: does not close with the speaker line`);
+        // Since pass MQ (Mikey's answer to Q65, "Q65 - B") the youngest games close with "To hear this again, tap the speaker. Have
+        // fun!" and grade 3 up with his own line.
+        const closing = L.gameBand(g) === 'early' ? L.GAME_INTRO_CLOSING_YOUNG : L.GAME_INTRO_CLOSING;
+        if (!last || last.say !== closing || last.act !== 'speaker') bad.push(`${g.id}: does not close with the speaker line`);
         for (const l of lines) {
           if (!L.GAME_INTRO_ACTS.includes(l.act)) bad.push(`${g.id}: unknown act ${l.act}`);
           if (!!l.keys !== (l.act === 'key')) bad.push(`${g.id}: a keyboard line that is not a key act, or a key act that is not a keyboard line`);
@@ -3030,7 +3124,10 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
     const sense = L.GAMES.find((g) => g.id === 'sense-psychology-k'); const kite = L.GAMES.find((g) => g.id === 'dots-kite'); const pairs = L.GAMES.find((g) => g.id === 'pairs-shapes');
     const shared = L.gameIntro(kite).at(-1).key === L.gameIntro(pairs).at(-1).key && L.gameIntro(kite).at(-1).key !== L.gameIntro(L.GAMES.find((g) => g.id === 'evidence-reading-3')).at(-1).key;
     const plant = (change) => introProblems([sense], (g) => change(L.gameIntro(g).map((l) => ({ ...l })))).length > 0;
-    const caught = [plant((ls) => { ls[1].act = 'wave'; return ls; }), plant((ls) => { ls[2].keys = true; return ls; }), plant((ls) => { ls[1].say = 'Listen: then tap.'; return ls; }), plant((ls) => { ls[2].key = ls[1].key; return ls; })];
+    const older = L.GAMES.find((g) => g.id === 'evidence-reading-3');
+    const caught = [plant((ls) => { ls[1].act = 'wave'; return ls; }), plant((ls) => { ls[2].keys = true; return ls; }), plant((ls) => { ls[1].say = 'Listen: then tap.'; return ls; }), plant((ls) => { ls[2].key = ls[1].key; return ls; }),
+      plant((ls) => { ls[ls.length - 1].say = L.GAME_INTRO_CLOSING; return ls; }),
+      introProblems([older], (g) => { const ls = L.gameIntro(g).map((l) => ({ ...l })); ls[ls.length - 1].say = L.GAME_INTRO_CLOSING_YOUNG; return ls; }).length > 0];
     ok(`every game has a welcome: its own words, acts the pointer knows, the closing speaker line, and a clip key for each line by its words and voice (${L.GAMES.length} games; shared lines one key across games of a voice; each near miss caught)`, real.length === 0 && kinds.length === 0 && words && shared && caught.every(Boolean), [...real.slice(0, 6), kinds.join(', '), `words ${words}`, `shared ${shared}`, `near misses ${caught}`].join(' | ')); }
   // The round a game's welcome plays (pass MP, round one's code and game checks): the pointer's answers are never among the first
   // three items the child then meets in round 1, game by game, for every game whose round deals a run of items; a deck too small
@@ -3218,20 +3315,23 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
     for (const g of RA_GENS) for (let s = 1; s <= 60; s++) { let q; try { q = L.generateQuestion(g, s); } catch (e) { continue; } if (!q) continue;
       texts.push(q.story || '', q.prompt || '', q.explain || '', ...(q.alsoRight || []));
       for (const w of Object.keys(q.whyNot || {})) { texts.push(L.whyNotSentence(q.whyNot[w])); try { texts.push(L.preReaderWrongWords(q, w, [w])); } catch (e) { /* not a choice */ } } }
-    const bad = []; let sounds = 0; let igg = 0; const kinds = new Set();
+    // Since pass MQ (Mikey's answer to Q60, "Q60 - B") buh, duh, guh and juh, and the endings ig, og and at, are the app's own sounds
+    // in every lesson too, so neither reaches the voice (ig had been handed as igg, at alone, og inside its sentence).
+    const bad = []; let sounds = 0; let rimes = 0; const kinds = new Set();
     for (const t of texts) for (const x of L.speechPieces(t)) {
-      if (x.sound) { sounds += 1; kinds.add(x.sound); if (!L.SPEECH_SOUNDS[x.sound]) bad.push(`unknown sound ${x.sound}`); continue; }
-      if (x.text === 'igg' && x.rime) igg += 1;
+      if (x.sound) { sounds += 1; kinds.add(x.sound); if (['ig', 'og', 'at'].includes(x.sound)) rimes += 1; if (!L.SPEECH_SOUNDS[x.sound]) bad.push(`unknown sound ${x.sound}`); continue; }
       const said = String(x.text).split(/[^A-Za-z-]+/).flatMap((w) => w.split('-')).filter(Boolean);
       if (said.some((w) => L.soundOfNotation(w))) bad.push(`a sound handed to the voice: ${String(x.text).slice(0, 60)}`);
-      if (said.some((w) => /^ig$/i.test(w))) bad.push(`ig handed to the voice: ${String(x.text).slice(0, 60)}`);
+      if (said.some((w) => /^(?:ig|og|igg)$/i.test(w))) bad.push(`an ending handed to the voice: ${String(x.text).slice(0, 60)}`);
       if (/([A-Za-z])\1{3,}/.test(x.text) && !/[A-Z]{4,}/.test(x.text)) bad.push(`a run of one letter handed to the voice: ${String(x.text).slice(0, 60)}`);
     }
-    ok(`no held sound, crisp stop or ig reaches the device voice; each is the app's own sound or a respelled piece (${texts.length} texts, ${sounds} sounds of ${kinds.size} kinds, ${igg} ig endings)`, bad.length === 0 && sounds >= 300 && kinds.size >= 9 && igg >= 20, bad.slice(0, 6).join(' | ')); }
+    ok(`no held sound, crisp stop, voiced stop or rhyme ending reaches the device voice; each is the app's own sound (${texts.length} texts, ${sounds} sounds of ${kinds.size} kinds, ${rimes} endings)`, bad.length === 0 && sounds >= 300 && kinds.size >= 13 && rimes >= 20 && ['b', 'd', 'g', 'ig', 'og', 'at'].every((k) => kinds.has(k)), bad.slice(0, 6).join(' | ')); }
   // Mikey's Q51 lines, piece by piece (pass MO): a sound is a piece of its own and no word is added to it; a word said slowly is its
   // held sound and then the whole word; a word stretched at its end is the word and then its sound; a run of sounds is each part in
   // turn; ig is respelled; an at after "ends in" stands alone and "look at" keeps its little word; buh, duh, shh, hmm, a color code
-  // and ordinary hyphenated words are the voice's, untouched.
+  // and ordinary hyphenated words are the voice's, untouched. Since pass MQ (Mikey's answer to Q60) ig, og and an at that names an
+  // ending are the app's own sounds, and so are buh, duh, guh and juh; shh, hmm, huh, a color code and ordinary hyphenated words
+  // stay the voice's, and so does a vowel letter alone in a run, which waits on trial (EARMARKS A42).
   { const say = (t) => L.speechPieces(t).map((x) => (x.sound ? `[${x.sound}]` : x.text.trim())).join('|');
     const cases = [
       ['Sun. Sss. The word sun starts with the sound sss.', 'Sun.|[s]|The word sun starts with the sound|[s]'],
@@ -3239,11 +3339,11 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
       ['Tap and top both start with the same sound, tuh. They begin alike.', 'Tap and top both start with the same sound,|[t]|They begin alike.'],
       ['Fan starts with fff, so it begins differently from tap and top.', 'Fan starts with|[f]|, so it begins differently from tap and top.'],
       ['Moon and map both start with mmm.', 'Moon and map both start with|[m]'],
-      ['Sun and fun both end with un, and pig and wig both end with ig.', 'Sun and fun both end with un, and pig and wig both end with|igg'],
-      ['Cat and dog do not rhyme. One ends in at, and the other ends in og.', 'Cat and dog do not rhyme.|One ends in|at|, and the other ends in og.'],
-      ['Hat ends with at and sun ends with un, so they do not rhyme.', 'Hat ends with|at|and sun ends with un, so they do not rhyme.'],
-      ['So Rosa said them slowly, cat, at, and dog, og.', 'So Rosa said them slowly, cat,|at|, and dog, og.'],
-      ['These two words end with the same sound, at. They rhyme.', 'These two words end with the same sound,|at|They rhyme.'],
+      ['Sun and fun both end with un, and pig and wig both end with ig.', 'Sun and fun both end with un, and pig and wig both end with|[ig]'],
+      ['Cat and dog do not rhyme. One ends in at, and the other ends in og.', 'Cat and dog do not rhyme.|One ends in|[at]|, and the other ends in|[og]'],
+      ['Hat ends with at and sun ends with un, so they do not rhyme.', 'Hat ends with|[at]|and sun ends with un, so they do not rhyme.'],
+      ['So Rosa said them slowly, cat, at, and dog, og.', 'So Rosa said them slowly, cat,|[at]|, and dog,|[og]'],
+      ['These two words end with the same sound, at. They rhyme.', 'These two words end with the same sound,|[at]|They rhyme.'],
       ['Look at the cat. She sat at the table.', 'Look at the cat.|She sat at the table.'],
       ['Mmm-at. Mmm, like moon! she said. Mat!', '[m]|Mat|[m]|, like moon!|she said.|Mat!'],
       ['Sss-am, said Sam slowly. Sss! he said.', '[s]|Sam|, said Sam slowly.|[s]|he said.'],
@@ -3254,13 +3354,15 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
       // Pass MP: a list of example words is said one word at a time (Mikey: "Ball, bed and bear should be spaced out a little
       // more"), and a letter named before says or makes is a piece of its own (his note on row 32: "the letter a is just easily
       // missed"); a list that is not about sounds, and a letter that labels something, are read as before.
-      ['Ball, bed and bear all start with buh.', 'Ball|bed|and bear|all start with buh.'],
+      ['Ball, bed and bear all start with buh.', 'Ball|bed|and bear|all start with|[b]'],
       ['Sock, block and rock all rhyme. Bear and chair rhyme.', 'Sock|block|and rock|all rhyme.|Bear and chair rhyme.'],
-      ['“Cat, mat and bat all end in at!” said Pat.', 'Cat|mat|and bat|all end in|at|!” said Pat.'],
+      ['“Cat, mat and bat all end in at!” said Pat.', 'Cat|mat|and bat|all end in|[at]|!” said Pat.'],
       ['Water, oxygen and warmth start a seed.', 'Water, oxygen and warmth start a seed.'],
       ['In cap, the a says aa, but in cape, the a says its name, ay.', 'In cap,|the A|says aa, but in cape,|the A|says its name, ay.'],
       ['C says cuh, a says the sound at the start of apple, and n says nnn.', 'C|says|[k]|A|says the sound at the start of apple, and|N|says|[n]'],
-      ['Dog ends with guh, the sound G makes.', 'Dog ends with guh, the sound|G|makes.'],
+      ['Dog ends with guh, the sound G makes.', 'Dog ends with|[g]|, the sound|G|makes.'],
+      ['Jam starts with juh. H says huh.', 'Jam starts with|[j]|H|says huh.'],
+      ['Read this word the same way. Cuh, a, nnn. Can.', 'Read this word the same way.|[k]|, a,|[n]|Can.'],
       ['Here is what source B says, with source D\'s objection.', 'Here is what source B says, with source D\'s objection.'],
       ['Shh, said Mom. Hmmm, said Dad. FFFFFF is white on a well-known T-shirt.', 'Shh, said Mom.|Hmmm, said Dad.|FFFFFF is white on a well-known T-shirt.'],
       ['L says lll, and r says rrr. Z says zzz, and n says nnn.', 'L|says|[l]|, and|R|says|[r]|Z|says|[z]|, and|N|says|[n]'],
@@ -3272,6 +3374,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
     if (!keyed) wrong.push('a listed word or a named letter is not in the word-at-play shape');
     // On trial (the voice check page's trial rows, pass MP): the app's buh, duh, guh and juh, its ig, og and at, and a vowel letter
     // alone in a run of sounds as the app's short vowel; never in a lesson (the test above holds every lesson to SPEECH_SOUNDS).
+    // Since pass MQ the lessons take all of them but the vowels (Q60), so on trial only a lone vowel differs from a lesson.
     const tryIt = (t) => L.speechPieces(t, { trial: true }).map((x) => (x.sound ? `[${x.sound}]` : x.text.trim())).join('|');
     const trials = [
       ['Ball, bed and bear all start with buh.', 'Ball|bed|and bear|all start with|[b]'],
@@ -3283,7 +3386,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
     for (const [t, want] of trials) if (tryIt(t) !== want) wrong.push(`on trial ${t} => ${tryIt(t)} (want ${want})`);
     if (!Object.keys(L.TRIAL_SOUNDS).every((k) => L.soundClipSamples(k) && !L.SPEECH_SOUNDS[k])) wrong.push('a trial sound is not made, or is already a lesson\'s');
     const heard = L.heardForm('map starts with mmm.') === 'map starts with mmm.' && L.heardForm('Mmm-at.') === 'Mmm Mat.' && L.heardForm('Busss.') === 'Bus sss.' && L.heardForm('Sss-huh.') === 'Sss huh.' && L.heardForm('A well-known T-shirt.') === 'A well-known T-shirt.';
-    ok('Mikey\'s Q51 lines are said in pieces: each sound the app\'s own with no word added, a word said slowly as its sound and then the word, ig as igg, an ending at alone, and the rest the voice\'s', wrong.length === 0 && heard, wrong.slice(0, 4).join(' || ')); }
+    ok('Mikey\'s Q51 lines are said in pieces: each sound the app\'s own with no word added, a word said slowly as its sound and then the word, the endings ig, og and at and the voiced stops the app\'s own since Q60, and the rest the voice\'s', wrong.length === 0 && heard, wrong.slice(0, 4).join(' || ')); }
   // A sounded-out run never hands the voice a vowel letter alone (pass MO, found while the app's sounds were built; CLAUDE.md's
   // pass JV line: a voice reads a lone letter as its name, so "Cuh, a, puh." is heard "cuh, ay, puh", never the a of apple). Every
   // story and every read-aloud lesson line, sentence by sentence: a vowel letter set off by commas or hyphens beside a sound
@@ -3309,11 +3412,21 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   // function it calls, says each lesson row as the app does and plays the app's own sounds, so code that moves out of the page's
   // slices fails here rather than building a page that plays nothing.
   // Since round one's code check (pass MP) each row's sounds are read by name, beside two planted pages it must catch: every sound
-  // row playing sss, and the trial rows playing duh for buh (each passed when a sound was read only as "a sound").
+  // row playing sss, and the trial rows playing duh for buh (each passed when a sound was read only as "a sound"). Since pass MQ the
+  // lessons say buh (Q60), so the second plant has the lesson rows play duh for buh (rows 19 and 45 must be caught), and a third has
+  // the trial rows play the e of egg for the short a (row 49), and since round one's code check a fourth has no rests between sentences. Since p52 (pass MQ) a fifth plant hands the lesson rows the page's old
+  // pause, a rest before every new sentence piece, which row 21 must catch ("Sss! he said": no rest inside a sentence, as p48 rules), and since round five a sixth, a 200 ms rest there.
   { const VC = await import('../tools/voice-check.mjs'); const problems = await VC.voiceCheckSelfTest(L);
-    const plantA = VC.VOICE_CHECK_SCRIPT.replace("playSound(row.sound, done)", "playSound('s', done)"); const plantB = VC.VOICE_CHECK_SCRIPT.replace("speechPieces(row.text, { trial: true })", "speechPieces(row.text, { trial: true }).map((p) => (p.sound === 'b' ? { ...p, sound: 'd' } : p))");
-    const caught = plantA !== VC.VOICE_CHECK_SCRIPT && plantB !== VC.VOICE_CHECK_SCRIPT && (await VC.voiceCheckSelfTest(L, plantA)).length > 0 && (await VC.voiceCheckSelfTest(L, plantB)).some((x) => /row 45/.test(x));
-    ok(`the voice check page runs the app's own speech code, its rows said as the app says them and each sound played by name (${VC.VOICE_CHECK_ROWS.filter((r) => r.kind === 'line').length} lines; two planted pages caught)`, problems.length === 0 && caught, problems.join('; ') || `plants caught ${caught}`); }
+    const plantA = VC.VOICE_CHECK_SCRIPT.replace("playSound(row.sound, done)", "playSound('s', done)"); const plantB = VC.VOICE_CHECK_SCRIPT.replace("row.kind === 'line' ? speechPieces(row.text)", "row.kind === 'line' ? speechPieces(row.text).map((p) => (p.sound === 'b' ? { ...p, sound: 'd' } : p))");
+    const plantC = VC.VOICE_CHECK_SCRIPT.replace("speechPieces(row.text, { trial: true })", "speechPieces(row.text, { trial: true }).map((p) => (p.sound === 'a' ? { ...p, sound: 'e' } : p))");
+    const plantD = VC.VOICE_CHECK_SCRIPT.replace('pause: young ? restBefore(YOUNG_PAUSE_MS) : null', 'pause: null');   // no rests (pass MQ, round one's code check)
+    const plantE = VC.VOICE_CHECK_SCRIPT.replace('pause: young ? restBefore(YOUNG_PAUSE_MS) : null', 'pause: young ? () => YOUNG_PAUSE_MS : null');   // a rest inside a sentence (p52)
+    const plantF = VC.VOICE_CHECK_SCRIPT.replace('pause: young ? restBefore(YOUNG_PAUSE_MS) : null', 'pause: young ? (next) => (startsSentence(next) ? YOUNG_PAUSE_MS : 200) : null');   // a short rest inside one (round five)
+    const caughtB = plantB !== VC.VOICE_CHECK_SCRIPT ? await VC.voiceCheckSelfTest(L, plantB) : [];
+    const caught = plantA !== VC.VOICE_CHECK_SCRIPT && plantB !== VC.VOICE_CHECK_SCRIPT && plantC !== VC.VOICE_CHECK_SCRIPT && (await VC.voiceCheckSelfTest(L, plantA)).length > 0 && caughtB.some((x) => /row 45/.test(x)) && caughtB.some((x) => /row 19/.test(x)) && (await VC.voiceCheckSelfTest(L, plantC)).some((x) => /row 49/.test(x)) && plantD !== VC.VOICE_CHECK_SCRIPT && (await VC.voiceCheckSelfTest(L, plantD)).some((x) => / rests \d+ ms before /.test(x))
+      && plantE !== VC.VOICE_CHECK_SCRIPT && (await VC.voiceCheckSelfTest(L, plantE)).some((x) => /^row 21 rests \d+ ms before "he said, and he hissed like a snake\.", inside its sentence$/.test(x))
+      && plantF !== VC.VOICE_CHECK_SCRIPT && (await VC.voiceCheckSelfTest(L, plantF)).some((x) => /^row 21 rests \d+ ms before "he said, and he hissed like a snake\.", inside its sentence$/.test(x));
+    ok(`the voice check page runs the app's own speech code, its rows said as the app says them and each sound played by name (${VC.VOICE_CHECK_ROWS.filter((r) => r.kind === 'line').length} lines; six planted pages caught, the fourth with no rests between sentences, the fifth and sixth with a rest inside one, 450 and 200 ms)`, problems.length === 0 && caught, problems.join('; ') || `plants caught ${caught}`); }
   // The sounds themselves (pass MO), measured: the same samples every time; a held sound 0.85 seconds (1.1 on the snail), a crisp
   // stop under a quarter of a second; no click at either end; loud enough to hear and never clipped; and each one's energy where
   // that sound's is (sss high, its loudest part near 6,500 cycles a second, fff spread out and softer, zzz a hiss over a buzz, mmm and
@@ -3577,6 +3690,8 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
       const traceLines = String(pk.stdout).split('\n').filter((l) => l.startsWith('  A wrong trace hears: '));
       ok(`the course packet prints each lesson's example drawing and what a wrong trace hears (${exLines.length} drawings and ${traceLines.length} traces in First Sounds and Letters)`, pk.status === 0 && exLines.length >= 8 && exLines.every((l) => /"kind":"\w+"/.test(l)) && exLines.some((l) => /"owl".*"bee".*"frog"/.test(l)) && traceLines.length >= 3 && traceLines.every((l) => /Let's trace it again\. Start at the dot\.$/.test(l)), `${exLines.filter((l) => !/"kind":"\w+"/.test(l)).length} blank of ${exLines.length}; ${traceLines.length} trace lines`); }
     ok('a game once played stays open, even when it no longer leads the list', L.unlockedGameIds([L.makePlayedEvent('maze-small', '2026-10-01T10:00:00Z')], k2).has('maze-small') && !L.unlockedGameIds([], k2).has('maze-small'));
+    // Q63 changed what counts as a break, never what opens a game: a game opened and closed before Begin stays on the list as before.
+    ok('a game opened and closed before its Begin stays open on the list (Q63 counts breaks, not openings)', L.unlockedGameIds([L.makePlayedEvent('maze-small', '2026-10-01T10:00:00Z', false)], k2).has('maze-small'));
     // Every game's best badge says what it counts (the code check: timed games read "best 42"). Each game's onScore call in
     // ui.jsx decides its unit: ticks are seconds, so the kind must be in BEST_SECONDS; another low count takes a word or no badge.
     { const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8'); const lines = ui.split('\n'); let fn = null; const units = {};
@@ -3972,7 +4087,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   const otherPair = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']);
   const otherPriv = await crypto.subtle.exportKey('jwk', otherPair.privateKey);
   ok('a code signed with any other key is refused', (await L.checkLicenseCode(await L.makeLicenseCode(otherPriv, { id: 'X', name: 'Y', year: '2026-27', until: '2027-07-31' }), new Date('2026-10-01'))).ok === false);
-  ok('pre-K 3, pre-K 4 and kindergarten courses are free, grade 1 and up are not', L.COURSES.filter(L.courseIsFree).length > 0 && L.COURSES.every((c) => L.courseIsFree(c) === ['PK3', 'PK4', 'K'].includes(c.grade)) && L.COURSES.filter(L.courseIsFree).reduce((n, c) => n + c.modules.length, 0) === 160);   // 86 plus computer science (FS), economics (FV), art and music (GE), philosophy (GL), psychology (GP) and speech (GT), four modules each, plus the five kindergarten science modules of earmark E1 (pass KK) the two Counting modules of earmark E2 (pass KL) the seven Me and my community modules of earmark E3 (passes KM and KN) the seven Taking care of me modules of earmark E4 (passes KO and KP) the four Tell, show, step and repeat modules of earmark E5 (passes KQ and KR) and the five Letters tracing modules of earmark E6 (pass KS), plus the two Very First Steps feelings modules of earmark E12 (pass MD) and its One more and one fewer and Listen and Point's Words that rhyme (pass ME), plus Very First Steps' Can I play too? and First Steps' three feelings lessons of earmarks E12 and E13 (pass MN), plus First Steps' Let's play together of earmark E13 and Listen and Point's Two steps and Two ideas and First Sounds and Letters' Three steps of earmarks E12 and E13 (pass MO)
+  ok('pre-K 3, pre-K 4 and kindergarten courses are free, grade 1 and up are not', L.COURSES.filter(L.courseIsFree).length > 0 && L.COURSES.every((c) => L.courseIsFree(c) === ['PK3', 'PK4', 'K'].includes(c.grade)) && L.COURSES.filter(L.courseIsFree).reduce((n, c) => n + c.modules.length, 0) === 165);   // 86 plus computer science (FS), economics (FV), art and music (GE), philosophy (GL), psychology (GP) and speech (GT), four modules each, plus the five kindergarten science modules of earmark E1 (pass KK) the two Counting modules of earmark E2 (pass KL) the seven Me and my community modules of earmark E3 (passes KM and KN) the seven Taking care of me modules of earmark E4 (passes KO and KP) the four Tell, show, step and repeat modules of earmark E5 (passes KQ and KR) and the five Letters tracing modules of earmark E6 (pass KS), plus the two Very First Steps feelings modules of earmark E12 (pass MD) and its One more and one fewer and Listen and Point's Words that rhyme (pass ME), plus Very First Steps' Can I play too? and First Steps' three feelings lessons of earmarks E12 and E13 (pass MN), plus First Steps' Let's play together of earmark E13 and Listen and Point's Two steps and Two ideas and First Sounds and Letters' Three steps of earmarks E12 and E13 (pass MO), plus Listen and Point's Learning words and People and events, Very First Steps' Talking with a friend, and First Sounds and Letters' More learning words and Words that go together of earmarks E12 and E13 (pass MQ)
   const mixed = ['counting-k', 'reading-3', 'letters-k'];
   ok('without a license only the free courses open; with one, all of them do', JSON.stringify(L.openCourseIds(mixed, false)) === JSON.stringify(['counting-k', 'letters-k']) && L.openCourseIds(mixed, true).length === 3);
   ok('the app carries a public key only, marked as the development key until launch', !('d' in L.LICENSE_PUBLIC_KEY) && L.LICENSE_KEY_IS_DEVELOPMENT === true);
@@ -4441,6 +4556,35 @@ const moreRightProblems = (L) => { const r = {};
   const grounds = [['white', '#FFFFFF'], ...L.TINTS.map((t) => [t.id, t.color]), ['dark paper', tone('paperBoard')], ['dark tile', tone('surface')]];
   const low = fur ? grounds.map(([k, g]) => [k, g ? +ratio(fur, g).toFixed(2) : 0]).filter(([, r]) => r < 3) : [['no outline found', 0]];
   ok('the rabbit\'s outline reads 3 to 1 or better on white, on every name picture\'s tint and on the dark theme\'s paper and tiles', grounds.length === 9 && low.length === 0, JSON.stringify(low));
+  // Pass MQ (Mikey's answer to Q62, "Q62 - A"): the duck and the bee wear a deeper-gold outline, read the same way, on the duck's
+  // body and head and the bee's body and both wings; Q56's #9C7A14 and a drawing with no outline fail the same reading.
+  const lowFor = (c) => (c ? grounds.map(([k, g]) => [k, g ? +ratio(c, g).toFixed(2) : 0]).filter(([, r]) => r < 3) : [['no outline found', 0]]);
+  const gild = (ui.match(/const gild = \{ stroke: '(#[0-9A-Fa-f]{6})'/) || [])[1];
+  const animal = (name) => (ui.match(new RegExp(`\\n\\s+${name}: <g>(.*)\\n`)) || [])[1] || '';
+  // Counted on the shapes the label names, by their fills (round two's code read, pass MQ: counting the outline anywhere on the line
+  // let the head's outline move to the beak, or a wing's to a stripe): the duck's body and head, the bee's body and its two wings.
+  const on = (line, fill) => (line.match(new RegExp(`fill="${fill}" \\{\\.\\.\\.gild\\}`, 'g')) || []).length;
+  const worn = { duckBodyHead: on(animal('duck'), '#F0D45C'), beeBody: on(animal('bee'), '#E2B83A'), beeWings: on(animal('bee'), '#DCE9F5') };
+  const nearMisses = [lowFor('#9C7A14').length > 0, lowFor(null).length > 0];
+  // The coat's, the hat's and the cactus' fills (pass MQ, p45 and round three's screen read): the dark theme's lighter fills read 3 to 1
+  // or better on its answer tile, the light theme's on the dark theme's light paper, where lesson and More Info pictures sit (p45 had
+  // lightened them there too, the cactus to 2.93 and the hat's crown to 2.43); IconPic lightens only on a tile, and an answer's tile
+  // asks for it; and the rain's deeper grey and blue on that paper read 3 to 1 or better (2.54 and 2.96 before).
+  // Since round five's code read, on a resting, a right (greenSoft) and a wrong (claySoft) tile.
+  { const pairs = [...ui.matchAll(/\{dk \? '(#[0-9A-Fa-f]{6})' : '(#[0-9A-Fa-f]{6})'\}/g)].map((m) => ({ dark: m[1], light: m[2] }));
+    const tileLow = pairs.filter((p) => ['surface', 'greenSoft', 'claySoft'].some((k) => ratio(p.dark, tone(k)) < 3)); const paperLow = pairs.filter((p) => ratio(p.light, tone('paperBoard')) < 3);
+    const gated = /const dk = C\.mode === 'dark' && tile; const dkPaper = C\.mode === 'dark' && !tile;/.test(ui) && /\/\^icon:\/\.test\(c\) \? <IconPic name=\{c\.slice\(5\)\} size=\{Math\.round\(64 \* k\)\} tile=\{!paper\} \/>/.test(ui);
+    const rain = ui.match(/rain: <g>[^\n]*stroke=\{dkPaper \? '(#[0-9A-Fa-f]{6})' : grey\}[^\n]*stroke=\{dkPaper \? '(#[0-9A-Fa-f]{6})' : blue\}/) || [];
+    const rainOk = rain.length === 3 && ratio(rain[1], tone('paperBoard')) >= 3 && ratio(rain[2], tone('paperBoard')) >= 3;
+    // The cloud and the snow draw the rain's cloud, and take its colors on the dark paper (round five's code read).
+    const cloud = ui.match(/\n\s+cloud: <path[^\n]*stroke=\{dkPaper \? '(#[0-9A-Fa-f]{6})' : grey\}/) || []; const snow = ui.match(/\n\s+snow: <g>[^\n]*stroke=\{dkPaper \? '(#[0-9A-Fa-f]{6})' : grey\}[^\n]*stroke=\{dkPaper \? '(#[0-9A-Fa-f]{6})' : blue\}/) || [];
+    const twinsOk = cloud.length === 2 && snow.length === 3 && cloud[1] === rain[1] && snow[1] === rain[1] && snow[2] === rain[2];
+    ok('the coat, the hat and the cactus read 3 to 1 or better on the dark theme\'s answer tiles and on its light paper, lightened on a tile alone (on a resting, a right and a wrong tile), and the rain, the cloud and the snow on that paper too (pass MQ, rounds three and five)', pairs.length >= 4 && tileLow.length === 0 && paperLow.length === 0 && gated && rainOk && twinsOk, JSON.stringify({ pairs: pairs.length, tileLow, paperLow, gated, rain: rain.slice(1), cloud: cloud.slice(1), snow: snow.slice(1) })); }
+  // The spoken row (round three's screen read, pass MQ): where the device can speak, the speaker's column keeps a speaker's 40 pixels
+  // while the speaker hides after a right answer, so the row never drops (Share the Cookies' plates rose 13 pixels on a laptop, Grow
+  // the Plant's tiles 16), and the hidden copy that measures the round's lines keeps no height, so no code can scroll the board into it.
+  ok('a spoken row keeps a speaker\'s height while its speaker hides, and its measuring copy keeps none (pass MQ, round three\'s screen read)', /<div style=\{\{ justifySelf: 'start', display: 'flex', alignItems: 'center', minHeight: canSpeak\(\) \? 40 : 0 \}\}>\{speaker\}<\/div>/.test(ui) && /ref=\{measureRef\} aria-hidden="true" style=\{\{ position: 'absolute', left: 0, top: 0, height: 0, overflow: 'hidden',/.test(ui));
+  ok('the duck\'s and the bee\'s outline reads 3 to 1 or better on white, every name picture\'s tint and the dark theme\'s paper and tiles, on the duck\'s body and head and the bee\'s body and wings, and Q56\'s yellow edge or no outline would not pass (pass MQ, Q62)', grounds.length === 9 && lowFor(gild).length === 0 && worn.duckBodyHead === 2 && worn.beeBody === 1 && worn.beeWings === 2 && nearMisses.every(Boolean), JSON.stringify({ gild, low: lowFor(gild), worn, nearMisses }));
 }
 
 // Pass MO (round two's code check): the device voice from ui.jsx's own speech code, run in node:vm on a fake clock against a voice
@@ -4460,15 +4604,16 @@ const moreRightProblems = (L) => { const r = {};
     const clear = (id) => { const i = timers.findIndex((t) => t.id === id); if (i >= 0) timers.splice(i, 1); };
     // Each utterance is started once (round three: an end handler that queued the next words itself, as a reading's does, had the
     // stand-in start them twice, once from the new words and once after the handler).
-    const startNext = () => { const u = queue[0]; if (!u || u.__started) return; u.__started = true; later(() => { if (queue[0] !== u) return; log.push({ at: now, say: u.text }); if (u.onstart) u.onstart({}); later(() => { if (queue[0] !== u) return; queue.shift(); if (u.onend && !(opts.loseEnd && opts.loseEnd(u.text))) u.onend({}); startNext(); }, 120 + 8 * u.text.length); }, opts.startMs || 5); };
-    const ss = { get speaking() { return queue.length > 0; }, get pending() { return queue.length > 1; }, getVoices() { return []; },
+    const startNext = () => { const u = queue[0]; if (!u || u.__started) return; u.__started = true; later(() => { if (queue[0] !== u) return; u.__began = true; log.push({ at: now, say: u.text, rate: u.rate }); if (u.onstart) u.onstart({}); later(() => { if (queue[0] !== u) return; queue.shift(); if (u.onend && !(opts.loseEnd && opts.loseEnd(u.text))) u.onend({}); startNext(); }, 120 + 8 * u.text.length); }, opts.startMs || 5); };
+    // opts.lateSpeaking (pass MQ): a voice that reports neither speaking nor pending until an utterance truly starts.
+    const ss = { get speaking() { return opts.lateSpeaking ? queue.some((u) => u.__began) : queue.length > 0; }, get pending() { return opts.lateSpeaking ? false : queue.length > 1; }, getVoices() { return []; },
       cancel() { lastCancel = now; const old = queue; queue = []; for (const u of old) later(() => { if (u.onerror) u.onerror({ error: 'interrupted' }); }, 1); },
       speak(u) { if (opts.throwOn && opts.throwOn(u.text)) throw new Error('the voice would not take it'); spoke += 1; if ((dropFirst && spoke === 1) || now - lastCancel < 4) { log.push({ at: now, dropped: u.text }); return; } queue.push(u); if (queue.length === 1) startNext(); } };
     function Audio() { const a = { src: '', onended: null, onerror: null, t: 0, play() { log.push({ at: now, sound: a.src }); a.t = later(() => { if (a.onended) a.onended(); }, 300); return Promise.resolve(); }, pause() { clear(a.t); } }; return a; }
     const ctx = vm.createContext({ window: { speechSynthesis: ss, Audio, addEventListener() {} }, console, setTimeout: (f, ms) => later(f, ms), clearTimeout: clear, setInterval: (f, ms) => later(f, ms, ms), clearInterval: clear, Date: { now: () => now }, Math, JSON, Promise, Uint8Array, DataView, ArrayBuffer, Float64Array, Float32Array, Int16Array, SENTENCE_BREAK: L.SENTENCE_BREAK, URL: { createObjectURL: () => `blob:${++blobs}` }, Blob: function Blob() {}, SpeechSynthesisUtterance: function SpeechSynthesisUtterance(t) { this.text = t; } });
     let api = null;
-    try { vm.runInContext(`${src}\nglobalThis.__speech = { speak, hushSpeech, speechPieces, speakSequence, voiceTalking };`, ctx); api = ctx.__speech; } catch (e) { return { log, error: e.message, ss }; }
-    script(api, (fn, ms) => later(fn, ms));
+    try { vm.runInContext(`${src}\nglobalThis.__speech = { speak, hushSpeech, speechPieces, speakSequence, voiceTalking, setYoungVoice, speechYoung, YOUNG_RATE, YOUNG_PAUSE_MS, SPEECH_SHAPES, voiceBackstopMs, startsSentence };`, ctx); api = ctx.__speech; } catch (e) { return { log, error: e.message, ss }; }
+    script(api, (fn, ms) => later(fn, ms), () => now);   // the fake clock's time, for a script that notes when something came
     // An error thrown inside a timer is a fault of the code under test, kept in the log rather than stopping the run.
     while (timers.length) { timers.sort((x, y) => x.at - y.at || x.id - y.id); const t = timers[0]; if (t.at > until) break; now = t.at; if (t.every) t.at += t.every; else timers.shift(); try { t.fn(); } catch (e) { log.push({ at: now, threw: String(e && e.message) }); } }
     return { log, api, ss };
@@ -4557,19 +4702,157 @@ const moreRightProblems = (L) => { const r = {};
   const q1 = run(false, (api, later) => { const stop = api.speakSequence([LENA], () => {}, () => {}, [], { pause: () => 330 }); later(() => stop.setNudge(-1), 450); }, 9000);
   const q2 = run(false, (api, later) => { const stop = api.speakSequence(['Two Plates.', 'Ana had a plate.'], () => {}, () => {}, [], { gap: (i) => (i === 0 ? 650 : 250) }); later(() => stop.setNudge(-1), 400); }, 9000);
   const q3 = run(false, (api, later) => { const stop = api.speakSequence(['Ana had a plate.', 'It was red.', 'She ate.'], () => {}, () => {}, [], { gap: () => 550, pause: () => 330 }); later(() => stop.setNudge(-1), 600); }, 9000);
-  const q4 = run(false, (api, later) => { const stop = api.speakSequence(['Buh! Sss! Mmm!'], () => {}, () => {}); later(() => stop.setNudge(-1), 550); }, 9000);
-  ok('a pace change in a pause, the gap after a title or a paragraph, or between two sounds says nothing already said again', !q1.error && !q2.error && !q3.error && !q4.error && onceEach(q1, LENA3) && onceEach(q2, ['Two Plates.', 'Ana had a plate.']) && onceEach(q3, ['Ana had a plate.', 'It was red.', 'She ate.']) && q4.log.filter((x) => x.sound).length === 2 && onceEach(q4, ['Buh!']), q1.error || q2.error || q3.error || q4.error || JSON.stringify({ q1: q1.log, q2: q2.log, q3: q3.log, q4: q4.log }).slice(0, 900));
+  // Since pass MQ buh is the app's own sound too (Q60), so "Buh! Sss! Mmm!" is three sounds, and the pace change and the stop fall in
+  // the fifth of a second between the first two (buh plays from 0 to 300 ms on the stand-in, sss from 500).
+  const q4 = run(false, (api, later) => { const stop = api.speakSequence(['Buh! Sss! Mmm!'], () => {}, () => {}); later(() => stop.setNudge(-1), 400); }, 9000);
+  ok('a pace change in a pause, the gap after a title or a paragraph, or between two sounds says nothing already said again', !q1.error && !q2.error && !q3.error && !q4.error && onceEach(q1, LENA3) && onceEach(q2, ['Two Plates.', 'Ana had a plate.']) && onceEach(q3, ['Ana had a plate.', 'It was red.', 'She ate.']) && q4.log.filter((x) => x.sound).length === 3, q1.error || q2.error || q3.error || q4.error || JSON.stringify({ q1: q1.log, q2: q2.log, q3: q3.log, q4: q4.log }).slice(0, 900));
   const s1 = run(false, (api, later) => { const stop = api.speakSequence([LENA], () => {}, () => {}, [], { pause: () => 330 }); later(() => stop(), 450); }, 9000);
   const s2 = run(false, (api, later) => { const stop = api.speakSequence(['Two Plates.', 'Ana had a plate.'], () => {}, () => {}, [], { gap: () => 650 }); later(() => stop(), 400); }, 9000);
-  const s3 = run(false, (api, later) => { const stop = api.speakSequence(['Buh! Sss! Mmm!'], () => {}, () => {}); later(() => stop(), 550); }, 9000);
-  ok('a stop in a pause, a gap or between two sounds says nothing more', !s1.error && !s2.error && !s3.error && !s1.log.some((x) => (x.say || x.sound) && x.at > 450) && !s2.log.some((x) => (x.say || x.sound) && x.at > 400) && !s3.log.some((x) => (x.say || x.sound) && x.at > 550), JSON.stringify({ s1: s1.log, s2: s2.log, s3: s3.log }).slice(0, 700));
+  const s3 = run(false, (api, later) => { const stop = api.speakSequence(['Buh! Sss! Mmm!'], () => {}, () => {}); later(() => stop(), 400); }, 9000);
+  ok('a stop in a pause, a gap or between two sounds says nothing more', !s1.error && !s2.error && !s3.error && !s1.log.some((x) => (x.say || x.sound) && x.at > 450) && !s2.log.some((x) => (x.say || x.sound) && x.at > 400) && !s3.log.some((x) => (x.say || x.sound) && x.at > 400), JSON.stringify({ s1: s1.log, s2: s2.log, s3: s3.log }).slice(0, 700));
   const l1 = run(false, (api) => api.speakSequence([LENA], () => {}, () => {}, [], { pause: () => 330 }), 12000, { loseEnd: (t) => t === 'Lena had six blocks.' });
   const l2 = run(false, (api) => api.speakSequence(['Two Plates.', 'Ana had a plate.'], () => {}, () => {}, [], { gap: () => 650 }), 12000, { loseEnd: (t) => t === 'Two Plates.' });
   ok('a voice that loses an end before a pause or a gap goes on, each sentence said once', !l1.error && !l2.error && onceEach(l1, LENA3) && onceEach(l2, ['Two Plates.', 'Ana had a plate.']) && !l1.log.some((x) => x.threw), JSON.stringify({ l1: l1.log, l2: l2.log }).slice(0, 700));
   const b1 = run(false, (api) => api.speakSequence(['Bus. Sss! Sun starts with sss.'], () => {}, () => {}, [], { pause: () => 330 }), 9000);
   const busAt = (b1.log.find((x) => x.say === 'Bus.') || {}).at; const sounds = b1.log.filter((x) => x.sound).map((x) => x.at); const sunAt = (b1.log.find((x) => x.say === 'Sun starts with') || b1.log.find((x) => /^Sun starts with/.test(x.say || '')) || {}).at;
   const g1 = run(false, (api) => api.speak('Buh! Sss! Mmm!'), 9000); const gs = g1.log.filter((x) => x.sound).map((x) => x.at);
-  ok("the snail's breath falls beside a sound too, and two sounds side by side wait a fifth of a second", !b1.error && !g1.error && typeof busAt === 'number' && sounds.length === 2 && typeof sunAt === 'number' && sounds[0] - (busAt + 120 + 8 * 'Bus.'.length) >= 330 && sunAt - (sounds[0] + 300) >= 330 && gs.length === 2 && gs[1] - (gs[0] + 300) >= 200, JSON.stringify({ b1: b1.log, g1: g1.log }).slice(0, 700));
+  // The young voice (pass MQ, Mikey: "For the younger learners whose questions/lessons are spoken to them.   I think the speed of the
+  // sentences can slow a little bit with small pauses between sentences"): with the page asking for it, speak() says each sentence
+  // on its own, a rest of YOUNG_PAUSE_MS after the one before ends, at YOUNG_RATE of its shape's rate, while a word at play keeps its
+  // own; an open game's word comes first (a game for an older learner reads in the usual voice over a young page, and the page's
+  // choice comes back when the game closes); speakSequence rests between texts and between sentences too, unless the caller names its
+  // own rests or young false (a story); the voice counts as talking through a rest, and a hush ends it; and a pace change, a stop and
+  // a lost end in a young rest say nothing twice and nothing after the stop. Each case failed on pass MP's speech code, which had no
+  // young voice (proof in the pass's scratch folder).
+  const AN2 = ['Ana had a plate.', 'It was red.'];
+  const y1 = run(false, (api) => { api.setYoungVoice('page', true); api.speak('Ana had a plate. It was red.'); }, 6000);
+  const y1a = (y1.log.find((x) => x.say === AN2[0]) || {}); const y1b = (y1.log.find((x) => x.say === AN2[1]) || {});
+  const y1Shapes = y1.api ? y1.api.SPEECH_SHAPES : null; const young = y1.api ? y1.api.YOUNG_RATE : NaN; const rest = y1.api ? y1.api.YOUNG_PAUSE_MS : NaN;
+  const y1ok = !y1.error && typeof y1a.at === 'number' && typeof y1b.at === 'number' && y1b.at - (y1a.at + 120 + 8 * AN2[0].length) >= rest && y1Shapes && Math.abs(y1a.rate - y1Shapes.plain.rate * young) < 1e-9 && young < 1 && rest >= 300;
+  const y2 = run(false, (api) => { api.setYoungVoice('page', true); api.speak('Red! This is red.'); }, 6000);
+  const y2ok = !y2.error && y1Shapes && Math.abs(((y2.log.find((x) => x.say === 'Red!') || {}).rate) - y1Shapes.key.rate) < 1e-9 && Math.abs(((y2.log.find((x) => x.say === 'This is red.') || {}).rate) - y1Shapes.plain.rate * young) < 1e-9;
+  let owners = null;
+  const y3 = run(false, (api) => { api.setYoungVoice('page', true); const a = api.speechYoung(); api.setYoungVoice('game', false); const b = api.speechYoung(); api.setYoungVoice('game', null); const c = api.speechYoung(); api.setYoungVoice('page', false); api.setYoungVoice('game', true); const d = api.speechYoung(); api.setYoungVoice('game', null); owners = [a, b, c, d, api.speechYoung()]; api.speak('Ana had a plate. It was red.'); }, 6000);
+  const y3a = (y3.log.find((x) => x.say === AN2[0]) || null); const y3b = (y3.log.find((x) => x.say === AN2[1]) || null);
+  const y3ok = !y3.error && JSON.stringify(owners) === JSON.stringify([true, false, true, true, false]) && !!y3a && !!y3b && y1Shapes && Math.abs(y3a.rate - y1Shapes.plain.rate) < 1e-9 && y3b.at - (y3a.at + 120 + 8 * AN2[0].length) < 50;
+  const y4 = run(false, (api) => { api.setYoungVoice('page', true); api.speakSequence(AN2, () => {}, () => {}); }, 6000);
+  const y4a = (y4.log.find((x) => x.say === AN2[0]) || {}); const y4b = (y4.log.find((x) => x.say === AN2[1]) || {});
+  const y5 = run(false, (api) => { api.setYoungVoice('page', true); api.speakSequence(AN2, () => {}, () => {}, [], { young: false }); }, 6000);
+  const y5a = (y5.log.find((x) => x.say === AN2[0]) || {}); const y5b = (y5.log.find((x) => x.say === AN2[1]) || {});
+  const y45ok = !y4.error && !y5.error && y4b.at - (y4a.at + 120 + 8 * AN2[0].length) >= rest && y5b.at - (y5a.at + 120 + 8 * AN2[0].length) < 50 && Math.abs(y5a.rate - y1Shapes.plain.rate) < 1e-9;
+  let resting = null; let hushed = null;
+  const y6 = run(false, (api, later) => { api.setYoungVoice('page', true); api.speak('Ana had a plate. It was red.'); later(() => { resting = api.voiceTalking(); }, 5 + 120 + 8 * AN2[0].length + 100); later(() => { api.hushSpeech(); hushed = api.voiceTalking(); }, 5 + 120 + 8 * AN2[0].length + 150); }, 6000);
+  const y6ok = !y6.error && resting === true && hushed === false && !y6.log.some((x) => x.say === AN2[1]);
+  const pauseAt = 5 + 120 + 8 * AN2[0].length + 150;   // inside the rest after the first sentence
+  const y7 = run(false, (api, later) => { api.setYoungVoice('page', true); const stop = api.speakSequence(['Ana had a plate. It was red. She ate.'], () => {}, () => {}); later(() => stop.setNudge(-1), pauseAt); }, 9000);
+  const y8 = run(false, (api, later) => { api.setYoungVoice('page', true); const stop = api.speakSequence(['Ana had a plate. It was red. She ate.'], () => {}, () => {}); later(() => stop(), pauseAt); }, 9000);
+  const y9 = run(false, (api) => { api.setYoungVoice('page', true); api.speakSequence(['Ana had a plate. It was red. She ate.'], () => {}, () => {}); }, 12000, { loseEnd: (t) => t === 'Ana had a plate.' });
+  const AN3 = ['Ana had a plate.', 'It was red.', 'She ate.'];
+  const y789ok = !y7.error && !y8.error && !y9.error && onceEach(y7, AN3) && !y8.log.some((x) => (x.say || x.sound) && x.at > pauseAt) && onceEach(y9, AN3);
+  ok('the young voice: each sentence on its own after a rest, a little slower but a word at play, an open game\'s word first, the reading and its texts rested unless a caller says otherwise, talking through a rest, and a pace change, a stop and a lost end in a rest saying nothing twice', y1ok && y2ok && y3ok && y45ok && y6ok && y789ok,
+    JSON.stringify({ y1ok, y2ok, y3ok, y45ok, y6ok, y789ok, owners, y1: y1.log, y7: y7.log, y8: y8.log, y9: y9.log, err: y1.error || y2.error || y3.error || y4.error || y5.error || y6.error || y7.error || y8.error || y9.error }).slice(0, 900));
+  // The young voice's rests, read further (pass MQ, round one's code check, where each of these near misses passed the checks above):
+  // a gap between one text and the next counts as talking, and a young reading says it is done when its last text ends, never a rest
+  // later (a young game's welcome lines had been 1,150 ms apart, not INTRO_GAP's 700); a newer line clears an old rest, so a short
+  // word said in a rest leaves nothing talking once it ends; and a rest counts as talking for 60 ms past its end, so a voice that
+  // reports nothing until it truly starts the next sentence is not taken for silence at the rest's end.
+  let gapTalking = null; let doneAt = null; let afterNew = null; let atRestEnd = null;
+  const y10 = run(false, (api, later, clock) => { api.setYoungVoice('page', true); api.speakSequence(AN2, () => {}, () => { doneAt = clock(); }); later(() => { gapTalking = api.voiceTalking(); }, 5 + 120 + 8 * AN2[0].length + 100); }, 6000);
+  const y10b = y10.log.find((x) => x.say === AN2[1]) || {}; const y10end = typeof y10b.at === 'number' ? y10b.at + 120 + 8 * AN2[1].length : NaN;
+  const inRest = 5 + 120 + 8 * AN2[0].length + 100;
+  const y11 = run(false, (api, later) => { api.setYoungVoice('page', true); api.speak('Ana had a plate. It was red.'); later(() => api.speak('Blue.', { young: false }), inRest); later(() => { afterNew = api.voiceTalking(); }, inRest + 5 + 120 + 8 * 'Blue.'.length + 30); }, 6000);
+  const restEnd = 5 + 120 + 8 * AN2[0].length + 450;
+  const y12 = run(false, (api, later) => { api.setYoungVoice('page', true); api.speak('Ana had a plate. It was red.'); later(() => { atRestEnd = api.voiceTalking(); }, restEnd + 2); }, 6000, { lateSpeaking: true });
+  const y10ok = !y10.error && gapTalking === true && typeof doneAt === 'number' && doneAt - y10end >= 0 && doneAt - y10end < 50;
+  const y11ok = !y11.error && afterNew === false && !y11.log.some((x) => x.say === AN2[1]);
+  const y12ok = !y12.error && atRestEnd === true && onceEach(y12, AN2);
+  ok('the young voice\'s rests: a gap between texts counts as talking and none follows the last text, a newer line clears an old rest, and a rest counts as talking until the next sentence truly starts (pass MQ, round one\'s code check)', y10ok && y11ok && y12ok,
+    JSON.stringify({ y10ok, y11ok, y12ok, gapTalking, doneAt, y10end, afterNew, atRestEnd, err: y10.error || y11.error || y12.error }).slice(0, 600));
+  // Two more near misses of those rests (round two's code read, pass MQ, each passed the cases above): a newer reading clears an old
+  // rest as a newer line does (speakSequence without its own clear passed y11, which tries speak() alone); and the 60 ms slack is
+  // read on both sides, a voice that starts 40 ms late still talking 35 ms past the rest, and nothing talking 150 ms after the line's
+  // last sentence ends (a slack of 3 ms, or of 3,000 ms, passed y12, which reads 2 ms past the rest).
+  let seqAfter = null; let late35 = null; let afterEnd = null;
+  const y13 = run(false, (api, later) => { api.setYoungVoice('page', true); api.speak('Ana had a plate. It was red.'); later(() => api.speakSequence(['Blue.'], () => {}, () => {}, [], { young: false }), inRest); later(() => { seqAfter = api.voiceTalking(); }, inRest + 5 + 120 + 8 * 'Blue.'.length + 30); }, 6000);
+  const y14a = run(false, (api) => { api.setYoungVoice('page', true); api.speak('Ana had a plate. It was red.'); }, 6000, { lateSpeaking: true, startMs: 40 });
+  const y14first = y14a.log.find((x) => x.say === AN2[0]) || {}; const y14second = y14a.log.find((x) => x.say === AN2[1]) || {};
+  const restEnd40 = (y14first.at || 0) + 120 + 8 * AN2[0].length + rest; const lineEnd40 = (y14second.at || 0) + 120 + 8 * AN2[1].length;
+  const y14 = run(false, (api, later) => { api.setYoungVoice('page', true); api.speak('Ana had a plate. It was red.'); later(() => { late35 = api.voiceTalking(); }, restEnd40 + 35); later(() => { afterEnd = api.voiceTalking(); }, lineEnd40 + 150); }, 6000, { lateSpeaking: true, startMs: 40 });
+  const y13ok = !y13.error && seqAfter === false && !y13.log.some((x) => x.say === AN2[1]);
+  const y14ok = !y14a.error && !y14.error && typeof y14first.at === 'number' && typeof y14second.at === 'number' && late35 === true && afterEnd === false && onceEach(y14, AN2);
+  ok('a newer reading clears an old young rest too, and a rest counts as talking for a voice 40 ms late but not 150 ms after the line ends (pass MQ, round two\'s code read)', y13ok && y14ok,
+    JSON.stringify({ y13ok, y14ok, seqAfter, late35, afterEnd, restEnd40, lineEnd40, err: y13.error || y14a.error || y14.error }).slice(0, 600));
+  // Find the Letter's backstop (round two's code read, pass MQ: right in the game since round one, yet reverting it passed every test;
+  // pass MM's round two had found the same backstop cutting a slow voice's line short): read with the speech code, for every right
+  // letter's line the course deals. An older learner's is a real voice's pace, 1.2 seconds and 100 ms a letter; the young voice's
+  // covers each letter's share at YOUNG_RATE and a rest after each sentence. The old formula (the plain one, young or not) fails.
+  { let plainMs = null; let youngMs = null; const rights = L.SPOT_LETTERS.map((x) => L.letterSpotLine('right', x));
+    const bz = run(false, (api) => { plainMs = rights.map((t) => api.voiceBackstopMs(t)); api.setYoungVoice('page', true); youngMs = rights.map((t) => api.voiceBackstopMs(t)); }, 0);
+    const sents = (t) => String(t).split(L.SENTENCE_BREAK).filter(Boolean).length;
+    const plainOk = !!plainMs && plainMs.every((ms, i) => ms === 1200 + rights[i].length * 100);
+    const youngOk = !!youngMs && young < 1 && rest > 0 && youngMs.every((ms, i) => ms >= 1200 + (rights[i].length * 100) / young + rest * sents(rights[i]) - 1e-6 && sents(rights[i]) >= 2);
+    ok("Find the Letter's backstop is a real voice's pace for an older learner, and covers each right letter's line at the young voice's pace with its rests (pass MQ, round two's code read)", !bz.error && rights.length === 13 && rights.every((t) => /^Yes, that is the letter [A-Z]\. It /.test(t)) && plainOk && youngOk && /const backstop = voiceBackstopMs;/.test(ui),
+      JSON.stringify({ err: bz.error, plainOk, youngOk, plainMs: (plainMs || []).slice(0, 3), youngMs: (youngMs || []).slice(0, 3) })); }
+  // Which screens get the young voice (pass MQ, round one's code check: taking practice out of the screens' list passed every test,
+  // and the browser tests too): youngVoiceOn in logic, read part by part, and the page and an open game wired to it in ui.jsx.
+  { const ON = (screen, readAloud, youngLearner) => L.youngVoiceOn({ screen, readAloud, youngLearner });
+    const nine = ['lesson', 'practice', 'result', 'wonder', 'wonder-voices', 'course-done', 'light-review-result', 'checkpoint-result', 'quick-result'];
+    const parts = { list: JSON.stringify([...L.YOUNG_VOICE_SCREENS].sort()) === JSON.stringify([...nine].sort()), readAloud: nine.every((s) => ON(s, true, false) === true),
+      notReadAloud: nine.every((s) => ON(s, false, false) === false), stories: ['story', 'course-story', 'story-book', 'story-log'].every((s) => ON(s, true, true) === false),
+      early: ['overview', 'coloring'].every((s) => ON(s, false, true) === true && ON(s, true, false) === false),
+      page: /React\.useLayoutEffect\(\(\) => \{ setYoungVoice\('page', youngVoiceOn\(\{ screen, readAloud, youngLearner \}\)\); \}, \[readAloud, screen, youngLearner\]\);/.test(ui),
+      game: /React\.useLayoutEffect\(\(\) => \{ setYoungVoice\('game', !!young\); return \(\) => setYoungVoice\('game', null\); \}, \[young\]\);/.test(ui),
+      gameGetsLearner: /<GamePad key=\{coloring\}[^\n]*young=\{youngLearner\}/.test(ui) };
+    ok('the young voice reads on the nine screens of a read-aloud course and an early learner\'s overview and Let\'s Color, never a story\'s, and the page and an open game ask youngVoiceOn and the game\'s learner (pass MQ, round one\'s code check)', Object.values(parts).every(Boolean), JSON.stringify(parts)); }
+  // A welcome's rest between the sentences of a line (pass MQ, Mikey: "the cadence should be slow enough that a sentence can be
+  // properly absorbed before jumping into the next sentence"): GameIntro hands its line to speakSequence with a pause, every age.
+  const w1 = run(false, (api) => { api.speakSequence(['Welcome to Kite! This game helps you count in order.'], () => {}, () => {}, [], { intro: true, pause: () => 450 }); }, 6000);
+  const w1a = (w1.log.find((x) => x.say === 'Welcome to Kite!') || {}); const w1b = (w1.log.find((x) => x.say === 'This game helps you count in order.') || {});
+  // A rest only before a piece that starts a sentence (round three's alignment read, pass MQ: the young voice rested 450 ms inside
+  // "What number makes 7 + 2 = 2 + ? true?" and "7 + ? = 8", where the sentence rule cuts at a "?" that stands for a number): those
+  // halves run on, by speak() and by speakSequence(), and "Hi! And your friend says, hi!" keeps its rest before "And".
+  { const QN = 'What number makes 7 + 2 = 2 + ? true?'; const SUM = '7 + ? = 8'; const HI = 'Hi! And your friend says, hi!';
+    const gapIn = (r, a, b) => { const x = r.log.find((e) => e.say === a); const y = r.log.find((e) => e.say === b); return x && y ? y.at - (x.at + 120 + 8 * a.length) : null; };
+    const r1 = run(false, (api) => { api.setYoungVoice('page', true); api.speak(QN); }, 6000);
+    const r2 = run(false, (api) => { api.setYoungVoice('page', true); api.speakSequence([SUM], () => {}, () => {}); }, 6000);
+    const r3 = run(false, (api) => { api.setYoungVoice('page', true); api.speak(HI); }, 6000);
+    const r4 = run(false, (api) => { api.setYoungVoice('page', true); api.speakSequence([HI], () => {}, () => {}); }, 6000);
+    const g = { q: gapIn(r1, 'What number makes 7 + 2 = 2 + ?', 'true?'), sum: gapIn(r2, '7 + ?', '= 8'), hi: gapIn(r3, 'Hi!', 'And your friend says, hi!'), hiSeq: gapIn(r4, 'Hi!', 'And your friend says, hi!') };
+    // Every half of the rule (pass MQ, round four's code read): a sentence that starts with a digit or a bracket keeps its rest, as
+    // thousands of young explanations do ("Correct. 16 is a ten and 6 more.", an explanation's [[11 − 5 = 6]] line), and More Info's
+    // young reading hands its pause through restBefore; each half was planted out and passed every case above.
+    { const D16 = 'Correct. 16 is a ten and 6 more.'; const BR = 'Take the smaller from the bigger. [[11 − 5 = 6]]';
+      const r5 = run(false, (api) => { api.setYoungVoice('page', true); api.speak(D16); }, 6000);
+      const r6 = run(false, (api) => { api.setYoungVoice('page', true); api.speak(BR); }, 6000);
+      const h = { digit: gapIn(r5, 'Correct.', '16 is a ten and 6 more.'), bracket: gapIn(r6, 'Take the smaller from the bigger.', '[[11 − 5 = 6]]'), moreInfo: /young: false, \.\.\.\(young \? \{ pause: restBefore\(YOUNG_PAUSE_MS\) \} : \{\}\) \}\);/.test(ui) };
+      ok('the young voice keeps its rest before a sentence that starts with a digit or a bracket, and More Info\'s young reading rests by restBefore (pass MQ, round four\'s code read)', ![r5, r6].some((r) => r.error) && h.digit !== null && h.digit >= rest && h.bracket !== null && h.bracket >= rest && h.moreInfo, JSON.stringify(h)); }
+    // The Quick Review card's spoken line for a young learner (round four's code read, pass MQ): the lesson's name starts a sentence
+    // with its capital, so the rest before it holds; lowered, "...long ago. count to 5." ran on with no rest.
+    ok('the Quick Review card\'s spoken line starts the lesson\'s name with its capital, so the young voice rests before it (pass MQ, round four\'s code read)', /const lbSay = [^\n]*\(lbTwo \? lbList\[0\]\.title \+ ', then ' \+ lowerTitle\(lbList\[1\]\.title\) \+ '\. ' : lbMod\.title \+ '\. '\) \+ lbTail;/.test(ui));
+    // No read-aloud lesson line and no game's welcome line is cut by the sentence rule before a piece that does not start a sentence
+    // (round four's code read, pass MQ): a lesson reads each sentence as its own text and the young rest falls at every cut, and the
+    // audio ledger keys each piece as its own clip, so "Washington, D.C. is ..." in a lesson would rest in the middle of its sentence.
+    // There are none today; the planted lines show the check would see one. It reads by the app's own startsSentence.
+    { const r0 = run(false, () => {}, 0); const opens = r0.api && typeof r0.api.startsSentence === 'function' ? r0.api.startsSentence : () => true;
+      const cutsIn = (say) => { const parts = String(say || '').split(L.SENTENCE_BREAK).filter((x) => x.trim()); const out = []; for (let i = 1; i < parts.length; i++) { const first = L.speechPieces(parts[i])[0]; if (!opens(first || { text: parts[i] })) out.push(`${parts[i - 1].slice(-24)} | ${parts[i].slice(0, 24)}`); } return out; };
+      const cuts = []; for (const c of L.COURSES.filter((x) => x.readAloud)) for (const m of c.modules) for (const line of L.readAloudScript(m)) for (const x of cutsIn(line.say)) cuts.push(`${m.id}: ${x}`);
+      for (const g of L.GAMES) for (const line of L.gameIntro(g)) for (const x of cutsIn(line.say)) cuts.push(`welcome ${g.id}: ${x}`);
+      const near = !!(r0.api && r0.api.startsSentence) && cutsIn('Make a pair! two socks make one.').length === 1 && cutsIn('We live near Washington, D.C. and we like it there.').length === 1 && cutsIn('Make a pair! Two socks make one.').length === 0;
+      ok('no read-aloud lesson line or game welcome is cut by the sentence rule before a piece that does not start a sentence, where the young rest would fall inside it (pass MQ, round four\'s code read)', cuts.length === 0 && near, `${cuts.slice(0, 5).join('; ')}; near misses ${near}`); }
+    ok('the young voice rests only before a piece that starts a sentence: no rest inside a question cut at a missing number\'s "?", the rest kept before "And" (pass MQ, round three\'s alignment read)', ![r1, r2, r3, r4].some((r) => r.error) && g.q !== null && g.q < 60 && g.sum !== null && g.sum < 60 && g.hi !== null && g.hi >= rest && g.hiSeq !== null && g.hiSeq >= rest, JSON.stringify(g)); }
+  ok("a welcome's line rests between its sentences, for every age", !w1.error && typeof w1a.at === 'number' && w1b.at - (w1a.at + 120 + 8 * 'Welcome to Kite!'.length) >= 450 && /pause: restBefore\(INTRO_PAUSE_MS\)/.test(ui) && /const INTRO_PAUSE_MS = \d{3};/.test(ui) && /speak\(gameIntroWords\(game, \{ keys: hasKeyboard\(\) \}\), \{ pause: INTRO_PAUSE_MS \}\)/.test(ui), JSON.stringify(w1.log).slice(0, 400));
+  ok("the snail's breath falls beside a sound too, and two sounds side by side wait a fifth of a second", !b1.error && !g1.error && typeof busAt === 'number' && sounds.length === 2 && typeof sunAt === 'number' && sounds[0] - (busAt + 120 + 8 * 'Bus.'.length) >= 330 && sunAt - (sounds[0] + 300) >= 330 && gs.length === 3 && gs[1] - (gs[0] + 300) >= 200 && gs[2] - (gs[1] + 300) >= 200, JSON.stringify({ b1: b1.log, g1: g1.log }).slice(0, 700));
+}
+
+// Where a color shows in the games (pass MQ, round four's docs read): tools/game-colors.mjs takes a question's count of games from
+// the code, since counts made by hand came out narrower than the code in pass MP's Q66 and twice in pass MQ's Q69 (Build a sentence
+// and Green Flag or Red Flag were missed). It finds every kind's component and Find the Letter's own board, counts every game once,
+// finds red-brown in the two kinds the hand counts missed, and reports a renamed component as not found.
+{ const T = await import('../tools/game-colors.mjs'); const rows = T.gameColors(); const ids = rows.flatMap((r) => r.games.map((g) => g.id));
+  const kinds = new Set(L.GAMES.map((g) => g.kind)); const red = (k) => { const r = rows.find((x) => x.kind === k); return !!r && r.uses.length > 0; };
+  const renamed = T.gameColors(T.RED_BROWN, readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8').replace('function BuildGame(', 'function BuildGameX('));
+  const near = renamed.some((r) => r.kind === 'build' && !r.found);
+  ok(`tools/game-colors.mjs finds every kind's component and Find the Letter's own board, counts every game once (${ids.length}), and finds red-brown in Build a sentence and Green Flag or Red Flag (pass MQ, round four's docs read)`, rows.every((r) => r.found) && ids.length === L.GAMES.length && new Set(ids).size === ids.length && [...kinds].every((k) => rows.some((r) => r.kind === k)) && rows.some((r) => r.comp === 'FindLetterGame' && r.games.length === 1) && red('build') && red('greenred') && near, JSON.stringify({ rows: rows.length, missing: rows.filter((r) => !r.found).map((r) => r.kind), games: ids.length, of: L.GAMES.length, near }));
 }
 
 console.log(`\n${pass} passed, ${fail} failed`);

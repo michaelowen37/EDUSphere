@@ -266,10 +266,11 @@ console.log('DIAG before reload', JSON.stringify(await page.evaluate(() => ({ sc
 // the browser's localStorage, and Chromium commits a page's localStorage writes in batches. A probe run six times showed
 // two reloads opening with every key gone, the student's record included, though nothing had deleted them: the reload
 // had started before the newest batch was committed. Real storage is durable, so the test copies the store before the
-// reload and puts back any key that is missing, once, guarded by a token in window.name, which survives a reload.
+// reload and puts it back, once, guarded by a token in window.name, which survives a reload. Since pass MQ it is put back whole: a key
+// that differs is set again and a key the copy lacks taken out (a stale where note had stayed, and the reload opened the lesson).
 { const snap = await page.evaluate(() => { const o = {}; for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); o[k] = localStorage.getItem(k); } return o; });
   const token = 'edu-carry-' + Date.now();
-  await page.addInitScript(([store, tok]) => { try { if (window.name === tok) return; for (const k of Object.keys(store)) if (window.localStorage.getItem(k) === null) window.localStorage.setItem(k, store[k]); window.name = tok; } catch (e) { /* storage may be off */ } }, [snap, token]); }
+  await page.addInitScript(([store, tok]) => { try { if (window.name === tok) return; for (const k of Object.keys(window.localStorage)) if (!(k in store)) window.localStorage.removeItem(k); for (const k of Object.keys(store)) if (window.localStorage.getItem(k) !== store[k]) window.localStorage.setItem(k, store[k]); window.name = tok; } catch (e) { /* storage may be off */ } }, [snap, token]); }
 await page.reload();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen !== 'loading' && window.__eduTest.screen !== 'welcome' && /what a fraction means/i.test(document.body.textContent), null, { timeout: 15000 }).catch(() => {});
 { const diag = await page.evaluate(() => ({ screen: window.__eduTest && window.__eduTest.screen, where: (() => { try { return localStorage.getItem('edusphere_v1_where'); } catch (e) { return null; } })() })); if (diag.screen !== 'lesson') console.log('DIAG refresh landed on', JSON.stringify(diag)); }
@@ -501,7 +502,9 @@ t = await text();
 ok('a pre-reader sees a plain well done, not a score line', t.includes('Well done!') && !t.includes('of 5 correct'));
 ok('only one way forward is offered, a book the first time a lesson with a story is mastered', (await page.getByLabel('Hear your story').count()) === 1 && (await page.getByLabel('Keep going').count()) === 0 && (await page.getByRole('button', { name: 'Back to overview' }).count()) === 0 && t.includes('You earned a story!'));
 ok('a small back arrow still lets them leave', (await page.getByLabel('Back').count()) === 1);
-// The result says its words as it opens, the earned story named after them (pass MD, the code check's second read).
+// The result says its words as it opens, the earned story named after them (pass MD, the code check's second read). Since pass MQ
+// its two sentences come a rest apart, so the check waits for the second.
+await page.waitForFunction(() => window.__spoken.join(' ').includes('Well done! You earned a story!'), null, { timeout: 8000 }).catch(() => {});
 ok("the result speaks its line as it opens, naming the earned story", (await page.evaluate(() => window.__spoken.join(' '))).includes('Well done! You earned a story!'), await page.evaluate(() => window.__spoken.slice(-3).join(' | ')));
 // The book opens the lesson's story, which reads itself aloud from its title, with one big arrow to go on (the round speaker
 // and the snail and the hare stay for the grown-up beside the child).
@@ -536,6 +539,8 @@ ok('the fourth voice follows', (await page.getAttribute('[data-wonder-portrait]'
   await page.getByLabel('Next').click(); await page.waitForTimeout(400);
   // Since pass MH the card wears a rotating title above the closing line (PONDER_TITLES), so the line is read on its own.
   const closing = await page.evaluate(() => { const c = document.querySelector('[data-wonder-closing]'); const line = c ? [...c.querySelectorAll('p')].find((p) => !p.hasAttribute('data-ponder-title')) : null; return line ? line.textContent.trim() : null; });
+  // The card's words come a sentence at a time with the young voice's rest between (pass MQ), so the check waits for the line.
+  await page.waitForFunction((line) => window.__spoken.join(' ').replace(/\s+/g, ' ').includes(line), w ? w.closing.split('? ')[0] : '', { timeout: 8000 }).catch(() => {});
   const heard = (await page.evaluate(() => window.__spoken.join(' '))).replace(/\s+/g, ' ');
   ok("the closing line follows on its own card, spoken as it appears, and Finish waits there", !!w && closing === w.closing && heard.includes(w.closing.split('? ')[0]) && (await page.getByLabel('Finish').count()) === 1, { closing, heard });
   { const vp = page.viewportSize(); for (let k = 0; k < 3; k++) { await page.setViewportSize({ width: vp.width + 6, height: vp.height }); await page.waitForTimeout(150); await page.setViewportSize(vp); await page.waitForTimeout(150); }
@@ -878,14 +883,29 @@ ok('the quick check runs on the practice screen as a labeled five-question round
 { await page.waitForTimeout(2100); await answer(true);
   if (await page.getByRole('button', { name: /^Next/ }).count()) { await page.getByRole('button', { name: /^Next/ }).first().click(); }
   await page.waitForTimeout(500);
+  // The app's own note of the set, with the first answer, is written before the store is taken across the reload (pass MQ: once the
+  // store was taken first, and the reload found no set to return to).
+  const noted = await page.waitForFunction(() => { try { const w = JSON.parse(localStorage.getItem('edusphere_v1_where')); return !!(w && w.set && (w.set.coreResults || []).length === 1); } catch (e) { return false; } }, null, { timeout: 5000 }).then(() => true).catch(() => false);
   const q2 = await page.evaluate(() => window.__eduTest.question && window.__eduTest.question.prompt);
   const snap = await page.evaluate(() => { const o = {}; for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); o[k] = localStorage.getItem(k); } return o; });
   const token = 'edu-carry-set-' + Date.now();
-  await page.addInitScript(([store, tok]) => { try { if (window.name === tok) return; for (const k of Object.keys(store)) if (window.localStorage.getItem(k) === null) window.localStorage.setItem(k, store[k]); window.name = tok; } catch (e) { /* storage may be off */ } }, [snap, token]);
+  await page.addInitScript(([store, tok]) => { try { if (window.name === tok) return; for (const k of Object.keys(window.localStorage)) if (!(k in store)) window.localStorage.removeItem(k); for (const k of Object.keys(store)) if (window.localStorage.getItem(k) !== store[k]) window.localStorage.setItem(k, store[k]); window.name = tok; } catch (e) { /* storage may be off */ } }, [snap, token]);
   await page.reload();
-  await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'practice', null, { timeout: 15000 }).catch(() => {});
+  await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'practice' && !!window.__eduTest.question, null, { timeout: 45000 }).catch(() => {});   // a loaded machine takes longer to reload (pass MQ)
   const after = await page.evaluate(() => { let w = null; try { w = JSON.parse(localStorage.getItem('edusphere_v1_where')); } catch (e) { /* none */ } return { screen: window.__eduTest && window.__eduTest.screen, prompt: window.__eduTest && window.__eduTest.question && window.__eduTest.question.prompt, answered: w && w.set ? (w.set.coreResults || []).length : -1 }; });
-  ok('a refresh in the middle of practice returns to the next question with the answer kept', after.screen === 'practice' && after.prompt === q2 && after.answered === 1);
+  const landed = after.screen === 'practice' && after.prompt === q2 && after.answered === 1;
+  if (!landed) console.log('  refresh state:', JSON.stringify({ noted, q2, after }));
+  ok('a refresh in the middle of practice returns to the next question with the answer kept', landed);
+  // One failed refresh never hides the rest of the run (round two's code read, pass MQ: the next answer threw on a missing question,
+  // and the 163 checks after it never ran): the failure is reported above, the store is put back whole in the page and the page
+  // reloaded once more, and if that too lands elsewhere the run stops here with what it found.
+  if (!landed) {
+    await page.evaluate((store) => { for (const k of Object.keys(localStorage)) if (!(k in store)) localStorage.removeItem(k); for (const k of Object.keys(store)) localStorage.setItem(k, store[k]); }, snap);
+    await page.waitForTimeout(1500); await page.reload();
+    await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'practice' && !!window.__eduTest.question, null, { timeout: 45000 }).catch(() => {});
+    const again = await page.evaluate(() => ({ screen: window.__eduTest && window.__eduTest.screen, prompt: window.__eduTest && window.__eduTest.question && window.__eduTest.question.prompt }));
+    if (!(again.screen === 'practice' && again.prompt === q2)) throw new Error('the quick check could not be reached again after a failed refresh: ' + JSON.stringify(again));
+  }
 }
 for (let i = 1; i < 5; i++) { await page.waitForTimeout(2100); await answer(true); if (i < 4) await next(); } // the first was answered before the refresh
 await next();
@@ -1622,7 +1642,9 @@ await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen ===
 await page.evaluate(() => window.__eduTest.openColoring('play:tool-business-k'));
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
 await page.waitForTimeout(200);
-{ ok('the tool game opens with a job and three tools', (await page.getByRole('button', { name: /^Tool: / }).count()) === 3 && (await text()).includes('Which tool does'));
+// The job is read in the spoken words, since the page's text holds the hidden copy of every question of the round (round three's
+// screen read, pass MQ: read from the whole page, the check could no longer fail).
+{ ok('the tool game opens with a job and three tools', (await page.getByRole('button', { name: /^Tool: / }).count()) === 3 && ((await page.locator('[data-game-pad] [data-spoken-words]').first().textContent()) || '').includes('Which tool does'));
   for (let i = 0; i < 6; i++) { const ans = await page.locator('[data-tool-answer]').getAttribute('data-tool-answer'); if (!ans) break; await page.getByRole('button', { name: `Tool: ${ans}`, exact: true }).click(); await page.waitForFunction((n) => { const t = document.body.innerText; return t.includes(n + ' of 6') || t.includes('Six jobs, six tools'); }, i + 2, { timeout: 6000 }).catch(() => {}); }
   ok('six jobs matched finish the round', (await text()).includes('Six jobs, six tools'));
 }

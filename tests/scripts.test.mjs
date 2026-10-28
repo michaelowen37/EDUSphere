@@ -13,6 +13,12 @@ const fragments = []; const mismatches = [];
 // the letter A alone, and kindergarten's Letter names says Jam starts with J over JAM with nothing lit. The list may only shrink,
 // and a line fixed comes off it.
 const START_WAITS = ['letter-names 4']; const startWaited = [];   // Big letters' apple has a line of its own since pass MM
+// Drawn things inside a pair or a row that older lessons' lines never name (pass MQ; EARMARKS A49): each waits by module and name
+// until its course's review names it or shows what the line says. The list may only shrink. Since round two's lesson read it holds
+// the lone icon too, and the lines that open with an instruction word (Two steps' and Three steps' cups, spoons and chair on "Listen
+// to both steps", Colours' coat on "Look at your clothes.").
+const PAIR_PICTURE_WAITS = ['two-steps:cup', 'two-steps:spoon', 'three-steps:cup', 'three-steps:spoon', 'three-steps:chair', 'colours:coat', 'listen-and-tap-pictures:cup', 'listen-and-tap-pictures:bird', 'listen-and-tap-pictures:flower', 'two-steps:tree', 'sort-by-looks:ball', 'sort-by-looks:sock', 'kinds-of-rocks:flatrock', 'rocks-soil-and-water:drop', 'people-who-shaped-us:quarter', 'people-who-shaped-us:globe', 'land-water-and-weather:sun', 'land-water-and-weather:ocean', 'tools-that-help:fridge', 'tools-that-help:tablet', 'tools-that-help:ball', 'helpers-all-around:fire', 'helpers-all-around:doctor', 'helpers-all-around:whiteboard', 'helpers-all-around:plate', 'helpers-all-around:spoon', 'helpers-all-around:teddy', 'good-friend:block', 'good-friend:ball', 'longer-and-heavier:teacup'];
+const pairPictureWaited = new Set();
 for (const mod of L.MODULES) {
   for (const line of mod.lesson.script || []) {
     // Natural speech: at least one real sentence of four or more words, unless the line only names letters or counts aloud.
@@ -59,6 +65,17 @@ for (const mod of L.MODULES) {
     // counted rows (the code check's second read, pass MG: six little circles there passed every test).
     { const parts = show.kind === 'pair' ? [show.a, show.b] : [show]; const counted = parts.filter((h) => h && h.kind === 'pattern' && h.size);
       if (counted.some((h) => !(h.items.length >= 1 && h.items.length <= 5 && !h.items.includes('?')) || (parts.some((x) => x && x.kind === 'dots') && h.size !== 34))) mismatches.push(`${mod.id}: "${line.say}" shows a counted row the screen cannot line up`); }
+    // A drawn icon, alone or in a pair or a row, and a drawn picture in a pair or a row, is named by its line (pass MQ). This runs
+    // before the skip for instruction lines below (round two's lesson read, pass MQ: the skip came first, so "Listen for learning
+    // words." showed a teacher it never named, and an unnamed cup added to that line passed), since the skip keeps a reading lesson
+    // from speaking a printed word, and a drawn picture is never one. An older line waits by name (PAIR_PICTURE_WAITS, EARMARKS A49).
+    { const drawn = show.kind === 'icon' ? [show] : show.kind === 'pair' ? [show.a, show.b] : show.kind === 'row' ? (show.items || []) : [];
+      for (const h of drawn) {
+        if (!h || !(h.kind === 'icon' || h.kind === 'art')) continue;
+        const base = String(h.name).split('~')[0]; if (said.includes(base)) continue;
+        const key = `${mod.id}:${base}`;
+        if (PAIR_PICTURE_WAITS.includes(key)) pairPictureWaited.add(key); else mismatches.push(`${mod.id}: "${line.say}" shows a ${h.name} it never names`);
+      } }
     // An instruction ("Read this word", "Find the one that matches") shows the thing to act on,
     // which must not be spoken in a reading lesson. Only lines that describe what is shown are matched word for word.
     if (/^(read|find|look|listen|touch|say|tap|sound|count|start|try|watch|now|what)\b/i.test(line.say.trim())) continue;
@@ -82,8 +99,8 @@ for (const mod of L.MODULES) {
       }
     }
     if (show.kind === 'shape' && !said.includes(show.name)) mismatches.push(`${mod.id}: "${line.say}" shows a ${show.name}`);
-    // An icon's look after a ~ (pass MP: plate~food, the plate with its food groups; block~wood) is the same thing drawn another way.
-    if (show.kind === 'icon' && !said.includes(String(show.name).split('~')[0])) mismatches.push(`${mod.id}: "${line.say}" shows a ${show.name}`);
+    // An icon's look after a ~ (pass MP: plate~food, the plate with its food groups; block~wood) is the same thing drawn another way;
+    // the lone icon is read with the drawn pictures above the instruction skip (round two's lesson read, pass MQ).
     if (show.kind === 'solid' && !said.includes(show.name) && !said.includes({ sphere: 'ball', cube: 'block', cylinder: 'can', cone: 'cone', box: 'box', prism: 'prism' }[show.name])) mismatches.push(`${mod.id}: "${line.say}" shows a ${show.name}`);   // box and prism (pass KY)
     // Every sign-in animal the words name must be on screen too, so a line never mentions a creature the child cannot see.
     { const shownPics = (show.kind === 'pair' ? [show.a, show.b] : show.kind === 'row' ? show.items : [show]).filter((h) => h && h.kind === 'pic').map((h) => h.name);
@@ -96,6 +113,7 @@ for (const mod of L.MODULES) {
       if (h.kind === 'item' && !said.includes(h.shape) && !said.includes(h.colour)) mismatches.push(`${mod.id}: "${line.say}" shows a ${h.colour} ${h.shape}`);
       if (h.kind === 'dots' && !(said.includes(NUMBER_WORDS[h.count]) || said.includes(String(h.count)) || /count|one, two|more|less|fewer|away|left|dots|tap|group/.test(said))) mismatches.push(`${mod.id}: "${line.say}" shows ${h.count} dots`);
       if ((show.kind === 'pair' || show.kind === 'row') && h.kind === 'shape' && !said.includes(h.name)) mismatches.push(`${mod.id}: "${line.say}" shows a ${h.name}`);
+      // A drawn icon or picture inside a pair or a row is read above the instruction skip (pass MQ).
     }
   }
 }
@@ -191,6 +209,8 @@ ok('every round trace shape is drawn as a curve', flatRound.length === 0, flatRo
 ok('every spoken lesson line reads like a person talking', fragments.length === 0, '\n  ' + fragments.slice(0, 12).join('\n  '));
 ok('every young-learner question names or points at its picture', qbad.length === 0, '\n  ' + qbad.slice(0, 12).join('\n  '));
 ok('every lesson picture matches the words spoken over it', mismatches.length === 0, '\n  ' + mismatches.slice(0, 12).join('\n  '));
+// The waiting list only falls (pass MQ): every entry still waits on a line, so a fixed line takes its name off the list.
+ok('the drawn things older lessons show without naming them wait by name, on every line, and every name on the list still waits', PAIR_PICTURE_WAITS.every((k) => pairPictureWaited.has(k)), PAIR_PICTURE_WAITS.filter((k) => !pairPictureWaited.has(k)).join(', '));
 // A thing to look at is drawn (pass LU): every picture a lesson shows or a question offers as art has a line drawing in
 // src/ui.jsx, so while its Leonardo coloring page is on the way a lesson or a question draws it instead of a placeholder card.
 {

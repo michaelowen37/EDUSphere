@@ -21,6 +21,9 @@ const text = async () => (await page.evaluate(() => document.body.innerText)).re
 const snap = async (name) => { if (shots) await page.screenshot({ path: `${shots}/${name}.png`, fullPage: true }); };
 const tapIf = async (name) => { const b = page.getByRole('button', { name, exact: true }); if (await b.count()) { await b.first().click(); await page.waitForTimeout(300); return true; } return false; };
 const settle = () => page.waitForFunction(() => !window.__eduSettleUntil || Date.now() >= window.__eduSettleUntil, null, { timeout: 5000 }).catch(() => {});
+// A celebration's cheer, said to its last sentence (pass MQ): the young voice rests about half a second between sentences, so the
+// walk waits for the words that end every cheer rather than a fixed moment, and taps nothing while the cheer is still being said.
+const waitForCheer = () => page.waitForFunction(() => (window.__spoken || []).join(' ').includes('tap the green button at the bottom to go home.'), null, { timeout: 10000 }).then(() => page.waitForTimeout(300)).catch(() => {});
 // Opens a lesson and passes its round, answering by the page's own question object; a trace question (a memory check from a
 // tracing lesson a finished course has among its stars) is drawn along its strokes by the test hook (pass ME).
 const passRound = async (id) => {
@@ -104,6 +107,19 @@ await page.evaluate(() => window.__eduTest.openColoring('play:dots-house')); awa
 await page.getByRole('button', { name: 'Close game' }).click(); await screenIs('overview'); await page.waitForTimeout(400);
 await page.evaluate(() => window.__eduTest.openColoring('ball')); await screenIs('coloring'); await page.waitForTimeout(500);
 await page.getByRole('button', { name: 'Close coloring' }).click(); await screenIs('overview'); await page.waitForTimeout(400);
+// A game opened on its welcome and closed before Begin (pass MQ, Mikey's answer to Q63: "Q63 - A"): the visit is logged, marked
+// as not begun, and never counted, so the report below still says one game break.
+await page.evaluate(() => window.__eduTest.openColoring('play:dots-kite', { intro: true })); await screenIs('coloring'); await page.waitForTimeout(500);
+const welcomeOnlyPad = await page.evaluate(() => { const el = document.querySelector('[data-game-pad]'); return el ? el.getAttribute('data-game-pad') : null; });
+await page.getByRole('button', { name: 'Close game' }).click(); await screenIs('overview'); await page.waitForTimeout(400);
+// A game with nothing to play (round one's code check, pass MQ): a map not yet painted opens straight to its note, and the visit is
+// logged as not begun, so it is never counted either.
+await page.evaluate(() => window.__eduTest.openColoring('play:map-continents', { intro: true })); await screenIs('coloring'); await page.waitForTimeout(500);
+const mapNote = await page.evaluate(() => document.body.innerText.includes('This map is being painted.'));
+await page.getByRole('button', { name: 'Close game' }).click(); await screenIs('overview'); await page.waitForTimeout(400);
+// Both visits are in the student's stored record, each marked not begun (round one's code check: the count alone would pass a visit
+// never logged, though the rule logs it so the game stays open).
+const visits = await page.waitForFunction(() => { const out = {}; try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (!/edusphere_v1_learner_/.test(k)) continue; const r = JSON.parse(localStorage.getItem(k)); for (const e of (r && r.events) || []) if (e.type === 'played') (out[e.game] = out[e.game] || []).push(e.begun); } } catch (e) { return null; } return (out['dots-kite'] || []).includes(false) && (out['map-continents'] || []).includes(false) ? out : null; }, null, { timeout: 5000 }).then((h) => h.jsonValue()).catch(() => null);
 // The educator's report: the three lines, each under the short faint rule, in Mikey's words with the student's name.
 await page.evaluate(() => window.__eduTest.goHome()); await screenIs('educator-pick'); await page.waitForTimeout(500); await tapIf('Got it');
 await page.getByRole('button', { name: 'Open report' }).first().click(); await screenIs('educator-report'); await page.waitForTimeout(600);
@@ -112,6 +128,8 @@ await snap('2-report-summary');
 ok('the summary shows the coloring, game and story lines in that order', lines.map((x) => x.key).join() === 'coloring,games,stories', lines);
 ok('each line sits under the same short faint rule', lines.length === 3 && lines.every((x) => x.ruleAbove), lines);
 ok("the game line is Mikey's, with the count", (lines.find((x) => x.key === 'games') || {}).text === "Game breaks taken: 1. Playing is still learning as concepts are woven into objectives but these are never marked on a student's transcript.", lines);
+ok('a game closed during its welcome, before Begin, is logged as not begun and not counted as a game break (Q63)', welcomeOnlyPad === 'intro' && !!visits && String((lines.find((x) => x.key === 'games') || {}).text || '').startsWith('Game breaks taken: 1.'), { welcomeOnlyPad, visits, lines });
+ok('a map not yet painted opens to its note, and its visit is logged as not begun and never counted (Q63)', mapNote && !!visits && (visits['map-continents'] || []).every((b) => b === false) && String((lines.find((x) => x.key === 'games') || {}).text || '').startsWith('Game breaks taken: 1.'), { mapNote, visits });
 ok("the story line is Mikey's, counting one elective read by name (not the first read, a read that never reached the end, or one left at once)", !endShown && (lines.find((x) => x.key === 'stories') || {}).text === "Elective stories: 1. Every module pairs with a short story and every course with a long. After these stories unlock, they're available to re-read. 1 represents how many times S-55 has read through a story more times than required.", { endShown, lines });
 ok("the student's name never breaks at its hyphen", (lines.find((x) => x.key === 'stories') || {}).whole === true, lines);
 ok('the coloring line still reads as before', (lines.find((x) => x.key === 'coloring') || {}).text === 'Coloring breaks taken: 1. Coloring is play; it is never marked and never appears on the transcript.', lines);
@@ -302,7 +320,7 @@ await page.getByRole('button', { name: /S-56$/ }).first().click(); await page.wa
   const t2 = await text();
   ok('the round that earns the last star says the whole course is done, and its arrow is the book of the lesson story never heard', t2.includes('Well done! That was the whole course.') && t2.includes('Next: ') && (await page.getByLabel('Hear your story').count()) === 1, t2.slice(0, 200));
   await settle(); await page.getByLabel('Hear your story').click(); await screenIs('story'); await page.waitForTimeout(500); await settle();
-  await page.getByLabel('Keep going').click(); await screenIs('course-done'); await page.waitForTimeout(900);
+  await page.getByLabel('Keep going').click(); await screenIs('course-done'); await waitForCheer();
   const courseTitle = L.titleCase(L.getCourse(FINISH).title);
   const cheer = await page.evaluate(() => ({ confetti: document.querySelectorAll('.edu-confetti').length, star: !!document.querySelector('.edu-land-star'), labels: [...document.querySelectorAll('button')].map((b) => b.getAttribute('aria-label')).filter(Boolean), said: window.__spoken.join(' '), words: document.querySelector('[data-course-done]') ? document.querySelector('[data-course-done]').textContent : '', page: document.body.innerText.replace(/\s+/g, ' ') }));
   await snap('4-course-done');
@@ -514,7 +532,7 @@ await page.getByRole('button', { name: /S-56$/ }).first().click(); await page.wa
   const t1 = await text();
   ok('the round that passes the last unpassed lesson says that was every lesson, and names no next course yet', t1.includes('Well done! That was every lesson.') && !t1.includes('Next: ') && !t1.includes('whole course'), t1.slice(0, 200));
   if ((await page.getByLabel('Hear your story').count()) === 1) { await settle(); await page.getByLabel('Hear your story').click(); await screenIs('story'); await page.waitForTimeout(500); }
-  await settle(); await page.getByLabel('Keep going').click(); await screenIs('course-done'); await page.waitForTimeout(900);
+  await settle(); await page.getByLabel('Keep going').click(); await screenIs('course-done'); await waitForCheer();
   const courseTitle1 = L.titleCase(L.getCourse(FINISH).title);
   const first = await page.evaluate(() => ({ stage: (document.querySelector('[data-course-done]') || {}).getAttribute ? document.querySelector('[data-course-done]').getAttribute('data-course-done-stage') : null, said: window.__spoken.join(' '), kind: (document.querySelector('[data-course-story-book]') || { getAttribute: () => null }).getAttribute('data-course-story-kind') }));
   ok('the first celebration opens with every lesson said aloud and the course\'s first long story offered', first.stage === 'complete' && first.kind === 'course' && first.said.includes(`Hooray! You did every lesson in ${courseTitle1}! Here is its story. Tap the gold book to hear it, or tap the green button at the bottom to go home.`), first);

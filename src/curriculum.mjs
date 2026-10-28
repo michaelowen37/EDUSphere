@@ -91,12 +91,16 @@ export const CURRICULUM = [
       { framework: 'CCSS', code: 'ELOF.P-SE.5', text: 'Uses basic problem-solving skills to resolve conflicts with other children.', moduleIds: ['please-and-thank-you', 'help-a-friend'] },
       // Pass ML, earmark E12's unplaced goals read on headstart.gov and placed: P-SE 3's sharing and taking turns with materials
       // (Please and thank you) and P-SE 1's "Uses adults as a resource to solve problems." (Helping a friend), each in part.
-      { framework: 'CCSS', code: 'ELOF.P-SE.3', text: 'Engages in and maintains positive interactions and relationships with other children.', moduleIds: ['please-and-thank-you', 'join-in-play'] },
+      { framework: 'CCSS', code: 'ELOF.P-SE.3', text: 'Engages in and maintains positive interactions and relationships with other children.', moduleIds: ['please-and-thank-you', 'join-in-play', 'talk-with-a-friend'] },
       { framework: 'CCSS', code: 'ELOF.P-SE.1', text: 'Engages in and maintains positive relationships and interactions with adults.', moduleIds: ['help-a-friend'] },
       // Pass MN, earmarks E12 and E13 side by side, Domain I: joining other children's play, each read in TEA's PK3 Streamlined
       // Version and on headstart.gov and held word for word to docs/standards; both taught whole since pass MN's third read (the lesson's
       // sources say how), and P-SE 3, above, in part, whose first sentence's skills and taking turns with materials Can I play too? teaches.
       { framework: 'TEKS', code: 'PK3.I.C.3', text: 'Child shows interest in peer play but may be less skilled in initiating and joining a group.', moduleIds: ['join-in-play'] },
+      // Pass MQ, earmark E12: pre-K 3's turns of a conversation (Talking with a friend), read one way with pre-K 4's Let's play
+      // together; II.B.2 whole, P-SE 3 above and P-LC 4 in part (the lesson's sources say how), each held word for word to docs/standards.
+      { framework: 'TEKS', code: 'PK3.II.B.2', text: 'Child begins to use appropriate language, style, and nonverbal cues during communication with familiar adults and peers.', moduleIds: ['talk-with-a-friend'] },
+      { framework: 'CCSS', code: 'ELOF.P-LC.4', text: 'Understands, follows, and uses appropriate social and conversational rules.', moduleIds: ['talk-with-a-friend'] },
       { framework: 'CCSS', code: 'ELOF.P-SE.4', text: 'Engages in cooperative play with other children.', moduleIds: ['join-in-play'] },
       // Pass MD, earmark E12 part one: the feelings outcomes, each read in full in TEA's PK3 Streamlined Version (Domain I) and the
       // ELOF goals on headstart.gov, quoted word for word. I.D.1 and P-SE 8 are taught in part, P-SE 6 since pass MN's second read (expressing feelings across contexts is the child's own), and I.C.6 whole since pass MN (each lesson's sources say how).
@@ -128,7 +132,7 @@ export const CURRICULUM = [
       { framework: 'CCSS', code: 'ELOF.P-MATH.8', text: 'Measures objects by their various attributes using standard and non-standard measurement. Uses differences in attributes to make comparisons.', moduleIds: ['not-the-same'] },
       { framework: 'CCSS', code: 'ELOF.P-SCI.3', text: 'Compares and categorizes observable phenomena.', moduleIds: ['not-the-same'] },
       { framework: 'TEKS', code: 'PK3.II.A.1', text: 'Child responds to situations in ways that demonstrate an understanding of what has been communicated.', moduleIds: ['listen-and-tap-pictures'] },
-      { framework: 'TEKS', code: 'PK3.II.D.1', text: 'Child understands (receptive) and uses (expressive) expected words to label and describe common objects, people, places, actions, and events.', moduleIds: ['listen-and-tap-pictures', 'animal-sounds', 'big-and-little'] },   // pass MJ: Big and Little's size words, the receptive half
+      { framework: 'TEKS', code: 'PK3.II.D.1', text: 'Child understands (receptive) and uses (expressive) expected words to label and describe common objects, people, places, actions, and events.', moduleIds: ['listen-and-tap-pictures', 'animal-sounds', 'big-and-little', 'people-and-events'] },   // pass MJ: Big and Little's size words, the receptive half; pass MQ: People and events' people and events
       { framework: 'CCSS', code: 'ELOF.P-LC.1', text: 'Attends to communication and language from others.', moduleIds: ['listen-and-tap-pictures'] },
       { framework: 'CCSS', code: 'ELOF.P-LC.6', text: 'Understands and uses a wide variety of words for a variety of purposes.', moduleIds: ['listen-and-tap-pictures'] },
       // Pass ME, earmark E12 part two: rhymes, read in full in TEA's PK3 Streamlined Version (Domain III, B. Phonological
@@ -145,6 +149,10 @@ export const CURRICULUM = [
       { framework: 'CCSS', code: 'ELOF.P-LC.2', text: 'Understands and responds to increasingly complex communication and language from others.', moduleIds: ['two-ideas'] },
       // Round one's lesson check (pass MO): following a grown-up's directions is part of P-SE 2's 36 to 48 month progression.
       { framework: 'CCSS', code: 'ELOF.P-SE.2', text: 'Engages in prosocial and cooperative behavior with adults.', moduleIds: ['two-steps'] },
+      // Pass MQ, earmark E12, Domain II's vocabulary: the classroom's instructional language (Learning words, in part) and a broader
+      // category, people (People and events, P-LC 7 in part), each held word for word to docs/standards.
+      { framework: 'TEKS', code: 'PK3.II.D.2', text: 'Child understands (receptive) the instructional language of the classroom.', moduleIds: ['learning-words'] },
+      { framework: 'CCSS', code: 'ELOF.P-LC.7', text: 'Shows understanding of word categories and relationships among words.', moduleIds: ['people-and-events'] },
     ],
   },
   {
@@ -224,7 +232,7 @@ export const CURRICULUM = [
       { framework: 'CCSS', code: 'ELOF.P-MATH.9', text: 'Identifies, describes, compares, and composes shapes.', moduleIds: ['match-the-shapes', 'match-the-solids', 'draw-the-shapes'] },
       { framework: 'TEKS', code: 'PK4.IX.B.2', text: 'Child shows increasing control of tasks that require eye-hand coordination.', moduleIds: ['first-strokes', 'connect-the-dots', 'draw-the-shapes', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
       { framework: 'CCSS', code: 'ELOF.P-PMP.3', text: 'Demonstrates increasing control, strength, and coordination of small muscles.', moduleIds: ['first-strokes', 'connect-the-dots', 'draw-the-shapes', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
-      { framework: 'TEKS', code: 'PK4.II.D.1', text: 'Child understands (receptive) and uses (expressive) a wide variety of words to label, describe and make connections among objects, people, places, actions, and events.', moduleIds: ['colours', 'big-bigger-biggest', 'which-came-first', 'which-came-second'] },
+      { framework: 'TEKS', code: 'PK4.II.D.1', text: 'Child understands (receptive) and uses (expressive) a wide variety of words to label, describe and make connections among objects, people, places, actions, and events.', moduleIds: ['colours', 'big-bigger-biggest', 'which-came-first', 'which-came-second', 'words-go-together', 'helpers-all-around'] },
       { framework: 'TEKS', code: 'PK4.VI.A.1', text: 'Child observes, investigates, describes, and discusses characteristics of common objects.', moduleIds: ['match-the-things'] },
       { framework: 'TEKS', code: 'PK4.VI.A.2', text: 'Child observes, investigates, describes, and discusses position and motion of objects.', moduleIds: ['match-the-solids'] },
       { framework: 'TEKS', code: 'PK4.VI.B.1', text: 'Child observes, investigates, describes, and discusses the characteristics of organisms.', moduleIds: ['match-the-water-animals', 'match-the-land-animals'] },
@@ -273,6 +281,10 @@ export const CURRICULUM = [
       { framework: 'TEKS', code: 'PK4.II.A.2', text: 'Child shows understanding by following three-step verbal directions.', moduleIds: ['three-steps'] },
       { framework: 'CCSS', code: 'ELOF.P-LC.2', text: 'Understands and responds to increasingly complex communication and language from others.', moduleIds: ['three-steps'] },
       { framework: 'CCSS', code: 'ELOF.P-SE.2', text: 'Engages in prosocial and cooperative behavior with adults.', moduleIds: ['three-steps'] },
+      // Pass MQ, earmark E13, Domain II's vocabulary: the classroom's instructional language (More learning words, its receptive half)
+      // and word categories, opposites and words that mean the same (Words that go together, P-LC 7 in part).
+      { framework: 'TEKS', code: 'PK4.II.D.2', text: 'Child understands (receptive) and uses (expressive) the instructional language of the classroom.', moduleIds: ['more-learning-words'] },
+      { framework: 'CCSS', code: 'ELOF.P-LC.7', text: 'Shows understanding of word categories and relationships among words.', moduleIds: ['words-go-together'] },
       { framework: 'TEKS', code: 'PK4.III.C.1', text: 'Child recognizes and names at least 20 letters (upper- or lower-case letters).', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
       { framework: 'CCSS', code: 'ELOF.P-LIT.1', text: 'Demonstrates awareness that spoken language is composed of smaller segments of sound.', moduleIds: ['listen-for-rhymes', 'first-sounds'] },
       { framework: 'CCSS', code: 'ELOF.P-LIT.3', text: 'Identifies letters of the alphabet and produces correct sounds associated with letters.', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },

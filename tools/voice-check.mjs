@@ -7,6 +7,12 @@
 // pass MP (Mikey's answer to Q57 and his notes on Q51) a fourth list plays the sounds the app has made for no lesson yet (the five
 // short vowels, buh, duh, guh and juh, and the endings ig, og and at), and a fifth says lesson lines on trial, as a lesson would say
 // them with those sounds, so he hears them before any lesson uses them; a row he must hear again says so under its words.
+// Since pass MQ (Mikey's answer to Q60, "Q60 - B") the lessons say buh, duh, guh, juh, ig, og and at with the app's own sounds, so the
+// lesson rows play them and rows 38 to 48 are lesson rows, while the five vowels (rows 33 to 37, 49 and 50) stay on trial; Q51 is
+// closed until the recorded voice (Mikey: "let's just earmark this for later when we upload the eleven audio"), so the page names no
+// open question and stays as a reference, organized as he liked it ("I can reasonably listen within the artifact since you have it
+// nicely organized"). A lesson row is said in the young voice a pre-reader hears since pass MQ: a little slower, with a rest between
+// sentences.
 // Run: node tools/voice-check.mjs   (writes dist/voice-check.html, which is published as its own small page; dist stays out of git)
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 
@@ -16,7 +22,7 @@ const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
 // no longer matches the app.
 const slice = (text, from, to, name) => { const a = text.indexOf(from); const b = a < 0 ? -1 : text.indexOf(to, a); if (a < 0 || b < 0) throw new Error(`voice-check: ${name} has moved; update the markers`); return text.slice(a, b); };
 const speechLogic = slice(logic, '// ---------- The sounds a lesson says (pass MO', 'export function whyNotNamesAnswer', 'the speech logic').replace(/^export /gm, '');
-const speechScreens = slice(ui, '// Read text aloud with the browser\'s built-in voice.', '\nfunction speak(text) {', 'the speech screens');
+const speechScreens = slice(ui, '// Read text aloud with the browser\'s built-in voice.', '\nfunction speak(text, opts = {}) {', 'the speech screens');
 
 // The rows, numbered once and for good, so an answer such as "13 fine, 22 spelled" always means the same row.
 export const VOICE_CHECK_ROWS = [
@@ -34,38 +40,42 @@ export const VOICE_CHECK_ROWS = [
   { n: 13, kind: 'line', text: 'Tap and top both start with the same sound, tuh. They begin alike.', note: 'Hear again: the new tuh of row 8.' },
   { n: 14, kind: 'line', text: 'Fan starts with fff, so it begins differently from tap and top.', note: 'Hear again: the new fff of row 2.' },
   { n: 15, kind: 'line', text: 'Moon and map both start with mmm.' },
-  { n: 16, kind: 'line', text: 'Sun and fun both end with un, and pig and wig both end with ig.' },
-  { n: 17, kind: 'line', text: 'Cat and dog do not rhyme. One ends in at, and the other ends in og.' },
-  { n: 18, kind: 'line', text: 'Hat ends with at and big ends with ig, so they do not rhyme.' },
-  { n: 19, kind: 'line', text: 'Ball, bed and bear all start with buh.', note: 'New in pass MP: the three words said one by one, slowly. Buh is still the voice\'s; row 45 has the app\'s.' },
-  { n: 20, kind: 'line', text: 'Dog, duck and door all start with duh.', note: 'New in pass MP: the three words said one by one, slowly. Duh is still the voice\'s; row 46 has the app\'s.' },
+  { n: 16, kind: 'line', text: 'Sun and fun both end with un, and pig and wig both end with ig.', note: 'Since pass MQ: the app plays ig itself (row 42).' },
+  { n: 17, kind: 'line', text: 'Cat and dog do not rhyme. One ends in at, and the other ends in og.', note: 'Since pass MQ: the app plays at and og itself (rows 44 and 43).' },
+  { n: 18, kind: 'line', text: 'Hat ends with at and big ends with ig, so they do not rhyme.', note: 'Since pass MQ: the app plays at and ig itself.' },
+  { n: 19, kind: 'line', text: 'Ball, bed and bear all start with buh.', note: 'The three words said one by one, slowly (pass MP), and since pass MQ the app\'s own buh (row 38).' },
+  { n: 20, kind: 'line', text: 'Dog, duck and door all start with duh.', note: 'The three words said one by one, slowly (pass MP), and since pass MQ the app\'s own duh (row 39).' },
   { n: 21, kind: 'line', text: 'Say it slowly, said the teacher, and listen to how it starts. Sss-am, said Sam slowly. Sss! he said, and he hissed like a snake.' },
-  { group: 'Choices only your phone\'s voice can settle' },
-  { n: 22, kind: 'say', text: 'igg', label: 'ig, handed to the voice as igg (what the app does now)' },
+  { group: 'How a phone\'s voice says these on its own (no lesson hands them to it since pass MQ)' },
+  { n: 22, kind: 'say', text: 'igg', label: 'ig, handed to the voice as igg (what the app did until pass MQ)' },
   { n: 23, kind: 'say', text: 'ihg', label: 'ig, handed to the voice as ihg' },
   { n: 24, kind: 'say', text: 'ig', label: 'ig, as written (what spelled it out before)' },
   { n: 25, kind: 'say', text: 'One ends in at, and the other ends in og.', label: 'the at in the middle of the line, as before', note: 'Since pass MP the words said show here, above what the row is for.' },
-  { n: 26, kind: 'say', text: 'at', label: 'at, said as a word of its own (what the app does now)' },
+  { n: 26, kind: 'say', text: 'at', label: 'at, said as a word of its own (what the app did until pass MQ)' },
   { n: 27, kind: 'say', text: 'buh', label: 'buh, the voice\'s b' }, { n: 28, kind: 'say', text: 'duh', label: 'duh, the voice\'s d' },
   { n: 29, kind: 'say', text: 'guh', label: 'guh, the voice\'s g' }, { n: 30, kind: 'say', text: 'juh', label: 'juh, the voice\'s j' },
   { n: 31, kind: 'say', text: 'tuh', label: 'tuh as the voice says it (heard as "two" before)' },
   // Row 32 (round three's alignment read): a grade 1 line as a lesson says it today, its vowel handed to the voice alone (EARMARKS
   // A42), so it is heard before Q51 is called done; Mikey's answer to Q57, (a), brought the app's own vowels to rows 33 to 37 and 49.
-  { group: 'For Q51 and Q60: a grade 1 line, its vowel said by the phone\'s voice alone' },   // Q57 was answered in pass MP; this row waits on Q60 (round two's final read)
-  { n: 32, kind: 'line', text: 'Read this word the same way. C says cuh, a says the sound at the start of apple, and n says nnn. Cuh, a, nnn. Can.', note: 'New in pass MP: each letter named on its own, slowly (C, A, N), and the new cuh. Its vowel is still the voice\'s; row 49 has the app\'s.' },
-  // Pass MP (Mikey's answer to Q57, "Q57 - A", and his rows 16 to 20 and 27 to 30): sounds the app makes for no lesson yet.
-  { group: 'For Q60, new in pass MP: sounds the app makes, in no lesson yet' },
+  { group: 'A grade 1 line, its vowel said by the phone\'s voice alone' },   // the vowels stay on trial since Mikey's answer to Q60 (pass MQ; EARMARKS A42)
+  { n: 32, kind: 'line', text: 'Read this word the same way. C says cuh, a says the sound at the start of apple, and n says nnn. Cuh, a, nnn. Can.', note: 'Each letter named on its own, slowly (C, A, N), with the app\'s cuh (pass MP). Its vowel is still the voice\'s, since the vowels wait; row 49 has the app\'s.' },
+  // Pass MP (Mikey's answer to Q57, "Q57 - A", and his rows 16 to 20 and 27 to 30): sounds the app made for no lesson; since pass MQ
+  // (his answer to Q60) the lessons say rows 38 to 44, and the vowels wait.
+  { group: 'Short vowels the app makes, in no lesson yet' },
   { n: 33, kind: 'sound', sound: 'a', label: 'a, as in apple (the short a)' }, { n: 34, kind: 'sound', sound: 'e', label: 'e, as in egg' },
   { n: 35, kind: 'sound', sound: 'i', label: 'i, as in igloo' }, { n: 36, kind: 'sound', sound: 'o', label: 'o, as in octopus' },
-  { n: 37, kind: 'sound', sound: 'u', label: 'u, as in up' }, { n: 38, kind: 'sound', sound: 'b', label: 'buh, as in ball' },
+  { n: 37, kind: 'sound', sound: 'u', label: 'u, as in up' },
+  { group: 'Sounds the app makes, in the lessons since pass MQ' },
+  { n: 38, kind: 'sound', sound: 'b', label: 'buh, as in ball' },
   { n: 39, kind: 'sound', sound: 'd', label: 'duh, as in dog' }, { n: 40, kind: 'sound', sound: 'g', label: 'guh, as in goat' },
   { n: 41, kind: 'sound', sound: 'j', label: 'juh, as in jam' }, { n: 42, kind: 'sound', sound: 'ig', label: 'ig, as in pig' },
   { n: 43, kind: 'sound', sound: 'og', label: 'og, as in dog' }, { n: 44, kind: 'sound', sound: 'at', label: 'at, as in cat' },
-  { group: 'For Q60, lines on trial: as a lesson would say them with the sounds above' },
-  { n: 45, kind: 'trial', text: 'Ball, bed and bear all start with buh.' },
-  { n: 46, kind: 'trial', text: 'Dog, duck and door all start with duh.' },
-  { n: 47, kind: 'trial', text: 'Sun and fun both end with un, and pig and wig both end with ig.' },
-  { n: 48, kind: 'trial', text: 'Cat and dog do not rhyme. One ends in at, and the other ends in og.' },
+  { group: 'Lesson lines with those sounds, as a lesson says them since pass MQ' },
+  { n: 45, kind: 'line', text: 'Ball, bed and bear all start with buh.' },
+  { n: 46, kind: 'line', text: 'Dog, duck and door all start with duh.' },
+  { n: 47, kind: 'line', text: 'Sun and fun both end with un, and pig and wig both end with ig.' },
+  { n: 48, kind: 'line', text: 'Cat and dog do not rhyme. One ends in at, and the other ends in og.' },
+  { group: 'Lines on trial: a sounded-out word with the app\'s own short vowel' },
   { n: 49, kind: 'trial', text: 'Read this word the same way. C says cuh, a says the sound at the start of apple, and n says nnn. Cuh, a, nnn. Can.' },
   { n: 50, kind: 'trial', text: 'Read this one. D says duh, o says the sound at the start of octopus, and g says guh. Duh, o, guh. Dog.' },
 ];
@@ -116,7 +126,12 @@ const play = (row) => {
     const pieces = row.kind === 'line' ? speechPieces(row.text) : row.kind === 'trial' ? speechPieces(row.text, { trial: true }) : [{ text: row.text, shape: 'plain', sentence: 0 }];
     if (!canSpeak() && pieces.some((p) => !p.sound)) { began = true; done(); return; }
     const mine = attempt; speechAlive = []; const voice = pickVoice();
-    sayPieces(pieces, 0, { alive: () => ticket === speechTicket && mine === attempt, utter: (u, piece) => { shapeVoice(u, piece, voice); try { u.addEventListener('start', voiceAfterAll); } catch (e) { /* an utterance that cannot listen */ } }, onBegin: () => { began = true; }, onDone: done });
+    // A lesson row is said in the young voice a pre-reader hears since pass MQ (a little slower, a rest between sentences); a row of
+    // one word the voice is handed alone is said as before. The rest comes before a piece that starts a sentence, by the app's own
+    // restBefore (round three's alignment read, pass MQ), so row 21's "Sss! he said" runs on, as speak() says a line; a lesson reads
+    // each sentence as its own text and would rest there, so the rules test holds every lesson line to having no such cut.
+    const young = row.kind !== 'say';
+    sayPieces(pieces, 0, { alive: () => ticket === speechTicket && mine === attempt, utter: (u, piece) => { shapeVoice(u, piece, voice, 1, young); try { u.addEventListener('start', voiceAfterAll); } catch (e) { /* an utterance that cannot listen */ } }, onBegin: () => { began = true; }, onDone: done, pause: young ? restBefore(YOUNG_PAUSE_MS) : null });
   };
   if ((ss && (ss.speaking || ss.pending)) || soundPlaying) { try { if (ss) ss.cancel(); } catch (e) { /* nothing to stop */ } stopSound(); setTimeout(start, 80); } else start();
   setTimeout(() => { if (!began && ticket === speechTicket && ss && ss.speaking === false && ss.pending === false && !soundPlaying) { attempt += 1; try { ss.cancel(); } catch (e) { /* as above */ } setTimeout(start, 80);
@@ -154,7 +169,7 @@ h2 { font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: 
 </style>
 <main>
 <h1>Voice check</h1>
-<p class="intro">Tap a row to hear it, with the sound on. The sounds in the first list and in the list from row 33 are made by the app, so every phone plays the same ones. The words are your phone's own voice. Tell Claude the numbers that sound wrong, and how. A green note under a row says what changed in pass MP.</p>
+<p class="intro">Tap a row to hear it, with the sound on. The sounds in the first list and in the lists from row 33 are made by the app, so every phone plays the same ones. The words are your phone's own voice, a placeholder until the recorded voice. Tell Claude the numbers that sound wrong, and how, whenever you like. A green note under a row says what changed in pass MP or MQ.</p>
 <p class="voice" id="voice">Your phone's voice: finding it...</p>
 <p class="novoice" id="novoice" hidden>This browser has no voice, so only the app's own sounds play here: rows 1 to 10 and 33 to 44. To hear every row, open this page's link in Safari or Chrome rather than inside another app.</p>
 ${rowsHtml}
@@ -173,23 +188,26 @@ export async function voiceCheckSelfTest(L, script = VOICE_CHECK_SCRIPT) {
   // what it plays (round two's code check: the self-test never played a row, so a slice that lost soundUrl passed while the page's
   // first row threw).
   let now = 0; let seq = 0; const timers = []; const log = []; let queue = []; let blobs = 0; let lastCancel = -100; const rates = []; let deafUntil = -1;
+  // When each piece starts and ends, voice and sound alike, in the order they play (pass MQ, round one's code check), so a row's
+  // rests between sentences can be measured.
+  const marks = [];
   const later = (fn, ms, every = 0) => { const id = ++seq; timers.push({ id, at: now + Math.max(0, Number(ms) || 0), fn, every }); return id; };
   const clear = (id) => { const i = timers.findIndex((t) => t.id === id); if (i >= 0) timers.splice(i, 1); };
   const tick = (ms) => { const end = now + ms; while (timers.length) { timers.sort((x, y) => x.at - y.at || x.id - y.id); const t = timers[0]; if (t.at > end) break; now = t.at; if (t.every) t.at += t.every; else timers.shift(); t.fn(); } now = end; };
   // Each utterance is started once, though an end handler may queue the next words itself (round three's code check).
-  const startNext = () => { const u = queue[0]; if (!u || u.__started) return; u.__started = true; later(() => { if (queue[0] !== u) return; log.push(`say ${u.text}`); if (u.onstart) u.onstart({}); later(() => { if (queue[0] !== u) return; queue.shift(); if (u.onend) u.onend({}); startNext(); }, 50); }, 5); };
+  const startNext = () => { const u = queue[0]; if (!u || u.__started) return; u.__started = true; later(() => { if (queue[0] !== u) return; log.push(`say ${u.text}`); marks.push({ t: now, k: 's' }); if (u.onstart) u.onstart({}); later(() => { if (queue[0] !== u) return; queue.shift(); marks.push({ t: now, k: 'e' }); if (u.onend) u.onend({}); startNext(); }, 50); }, 5); };
   // As the rules test's voice does, what is spoken within 4 ms of a cancel is dropped, with no events (a phone's browser does so),
   // and, since round four, what is spoken before deafUntil (a voice not ready yet, which drops a page's first words).
   const ss = { get speaking() { return queue.length > 0; }, get pending() { return queue.length > 1; }, cancel() { lastCancel = now; const old = queue; queue = []; for (const u of old) later(() => { if (u.onerror) u.onerror({}); }, 1); },
     speak(u) { if (now - lastCancel < 4 || now < deafUntil) { log.push(`dropped ${u.text}`); return; } rates.push(u.rate); queue.push(u); if (queue.length === 1) startNext(); }, getVoices() { return []; } };
-  function Audio() { const a = { src: '', onended: null, onerror: null, t: 0, play() { log.push(`sound ${a.src}`); a.t = later(() => { if (a.onended) a.onended(); }, 100); return Promise.resolve(); }, pause() { clear(a.t); } }; return a; }
+  function Audio() { const a = { src: '', onended: null, onerror: null, t: 0, play() { log.push(`sound ${a.src}`); marks.push({ t: now, k: 's' }); a.t = later(() => { marks.push({ t: now, k: 'e' }); if (a.onended) a.onended(); }, 100); return Promise.resolve(); }, pause() { clear(a.t); } }; return a; }
   const el = () => ({ textContent: '', classList: { add() {}, remove() {} }, addEventListener() {}, dataset: {} });
   function SpeechSynthesisUtterance(t) { this.text = t; }
   const win = { speechSynthesis: ss, addEventListener() {}, Audio, SpeechSynthesisUtterance };
   const ctx = vm.createContext({ window: win, document: { getElementById: () => el(), querySelectorAll: () => [] }, console, setTimeout: (f, ms) => later(f, ms), clearTimeout: clear, setInterval: (f, ms) => later(f, ms, ms), clearInterval: clear, Date: { now: () => now },
     URL: { createObjectURL: () => `blob:${++blobs}` }, Blob: function Blob() {}, SpeechSynthesisUtterance, navigator: { userAgent: 'node' } });
   const problems = [];
-  try { vm.runInContext(`${script}\nglobalThis.__vc = { speechPieces, soundClipWav, sayPieces, playSound, stopSound, pickVoice, canSpeak, shapeVoice, play, SPEECH_SHAPES };`, ctx); }
+  try { vm.runInContext(`${script}\nglobalThis.__vc = { speechPieces, soundClipWav, sayPieces, playSound, stopSound, pickVoice, canSpeak, shapeVoice, play, SPEECH_SHAPES, YOUNG_RATE: typeof YOUNG_RATE === 'number' ? YOUNG_RATE : null, YOUNG_PAUSE_MS: typeof YOUNG_PAUSE_MS === 'number' ? YOUNG_PAUSE_MS : null, startsSentence: typeof startsSentence === 'function' ? startsSentence : null };`, ctx); }
   catch (e) { problems.push(`the page's script does not run: ${e && e.message}`); return problems; }
   const vc = ctx.__vc || {};
   for (const name of ['speechPieces', 'soundClipWav', 'sayPieces', 'playSound', 'stopSound', 'pickVoice', 'canSpeak', 'shapeVoice', 'play']) if (typeof vc[name] !== 'function') problems.push(`the page has no ${name}`);
@@ -206,7 +224,7 @@ export async function voiceCheckSelfTest(L, script = VOICE_CHECK_SCRIPT) {
     const rows = VOICE_CHECK_ROWS.filter((x) => !x.group); const row12 = rows.find((x) => x.n === 12); const row1 = rows.find((x) => x.n === 1);
     for (const r of rows) for (const [before, wait] of [[null, 0], [row12, 200], [row1, 50]]) {
       const where = before ? ` over row ${before.n}` : '';
-      try { if (before) { vc.play(before); tick(wait); } log.length = 0; rates.length = 0; win.__eduSounds = []; vc.play(r); tick(6000); } catch (e) { problems.push(`row ${r.n}${where} throws: ${e && e.message}`); continue; }
+      try { if (before) { vc.play(before); tick(wait); } log.length = 0; rates.length = 0; marks.length = 0; win.__eduSounds = []; vc.play(r); tick(9000); } catch (e) { problems.push(`row ${r.n}${where} throws: ${e && e.message}`); continue; }
       const piecesOf = (row) => L.speechPieces(row.text, row.kind === 'trial' ? { trial: true } : {});
       const want = r.kind === 'sound' ? ['sound'] : r.kind === 'line' || r.kind === 'trial' ? piecesOf(r).map((p) => (p.sound ? 'sound' : `say ${p.text}`)) : [`say ${r.text}`];
       const got = log.map((x) => (x.startsWith('sound blob:') ? 'sound' : x));
@@ -217,14 +235,30 @@ export async function voiceCheckSelfTest(L, script = VOICE_CHECK_SCRIPT) {
       if (JSON.stringify(win.__eduSounds || []) !== JSON.stringify(wantSounds)) problems.push(`row ${r.n}${where} plays the sounds ${JSON.stringify(win.__eduSounds)}, not ${JSON.stringify(wantSounds)}`);
       if (r.kind === 'say' && !(rates.length === 1 && Math.abs(rates[0] - 0.86) < 1e-9)) problems.push(`row ${r.n}${where} is said at the rate ${rates.join(', ')}, not the plain shape's 0.86`);
       // Since round four's code check a line row is said piece by piece at its own shape's rate, as a lesson says it (a page that said
-      // every line in the plain shape passed, row 32's "Can." at 0.86 where a lesson says it at 0.6).
-      if ((r.kind === 'line' || r.kind === 'trial') && vc.SPEECH_SHAPES) { const wantRates = piecesOf(r).filter((p) => !p.sound).map((p) => (vc.SPEECH_SHAPES[p.shape] || vc.SPEECH_SHAPES.plain).rate);
+      // every line in the plain shape passed, row 32's "Can." at 0.86 where a lesson says it at 0.6); since pass MQ in the young voice,
+      // every piece but a word at play a little slower (YOUNG_RATE), as a pre-reader's lesson says it.
+      if ((r.kind === 'line' || r.kind === 'trial') && vc.SPEECH_SHAPES) { const wantRates = piecesOf(r).filter((p) => !p.sound).map((p) => (vc.SPEECH_SHAPES[p.shape] || vc.SPEECH_SHAPES.plain).rate * (p.shape === 'key' ? 1 : vc.YOUNG_RATE || NaN));
         if (rates.length !== wantRates.length || rates.some((x, i) => Math.abs(x - wantRates[i]) > 1e-9)) problems.push(`row ${r.n}${where} is said at the rates ${rates.join(', ')}, not its pieces' ${wantRates.join(', ')}`); }
+    }
+    // And its rests (pass MQ, round one's code check: a page that handed sayPieces no pause passed every check above): played from
+    // quiet, a line or trial row waits at least YOUNG_PAUSE_MS after a piece before the next one when that one starts a new sentence,
+    // as a pre-reader's lesson does; and since round three's alignment read (p48) only when that piece starts a sentence by the app's
+    // own startsSentence, with no rest before a piece the sentence rule cut off inside one (row 21's "he said", after "Sss!").
+    for (const r of rows.filter((x) => x.kind === 'line' || x.kind === 'trial')) {
+      if (typeof vc.YOUNG_PAUSE_MS !== 'number') { problems.push('the page has no YOUNG_PAUSE_MS'); break; }
+      if (typeof vc.startsSentence !== 'function') { problems.push('the page has no startsSentence'); break; }
+      try { tick(2000); log.length = 0; marks.length = 0; vc.play(r); tick(11000); } catch (e) { problems.push(`row ${r.n}'s rests throw: ${e && e.message}`); continue; }
+      const ps = L.speechPieces(r.text, r.kind === 'trial' ? { trial: true } : {}); const starts = marks.filter((m) => m.k === 's').map((m) => m.t); const ends = marks.filter((m) => m.k === 'e').map((m) => m.t);
+      if (starts.length !== ps.length || ends.length !== ps.length) { problems.push(`row ${r.n} plays ${starts.length} pieces, not ${ps.length}`); continue; }
+      for (let i = 1; i < ps.length; i++) { if (ps[i].sentence === ps[i - 1].sentence) continue; const gap = starts[i] - ends[i - 1]; const opens = vc.startsSentence(ps[i]);
+        // No rest inside a sentence means none at all (round five's code read: a page resting 200 ms there passed a check for 450):
+        // pieces run on within a few milliseconds, two sounds side by side a fifth of a second apart.
+        if (opens ? !(gap >= vc.YOUNG_PAUSE_MS) : gap > (ps[i].sound && ps[i - 1].sound ? 250 : 100)) { problems.push(`row ${r.n} rests ${gap} ms before "${ps[i].text}", ${opens ? `not ${vc.YOUNG_PAUSE_MS}` : 'inside its sentence'}`); break; } }
     }
     // A voice not ready yet drops a row's first words (some phones drop a page's first words): the row is asked once more, and each
     // piece is said once (round four's code check: play() had no retry, where speak() has).
     for (const r of rows.filter((x) => x.kind !== 'sound')) {
-      try { tick(2000); log.length = 0; deafUntil = now + 50; vc.play(r); tick(8000); deafUntil = -1; } catch (e) { deafUntil = -1; problems.push(`row ${r.n} after dropped first words throws: ${e && e.message}`); continue; }
+      try { tick(2000); log.length = 0; deafUntil = now + 50; vc.play(r); tick(11000); deafUntil = -1; } catch (e) { deafUntil = -1; problems.push(`row ${r.n} after dropped first words throws: ${e && e.message}`); continue; }
       const want = r.kind === 'line' || r.kind === 'trial' ? L.speechPieces(r.text, r.kind === 'trial' ? { trial: true } : {}).map((p) => (p.sound ? 'sound' : `say ${p.text}`)) : [`say ${r.text}`];
       const got = log.filter((x) => !x.startsWith('dropped ')).map((x) => (x.startsWith('sound blob:') ? 'sound' : x));
       if (JSON.stringify(got) !== JSON.stringify(want)) problems.push(`row ${r.n} after dropped first words plays ${JSON.stringify(got)}, not ${JSON.stringify(want)}`);

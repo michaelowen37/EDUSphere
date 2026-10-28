@@ -291,6 +291,21 @@ for (const [, cs, id] of LONG_ENTRIES) {
   ok('no story paragraph carries more than four tags, and the reviewed pre-K courses (pre-K 3\'s two, since pass ML First Steps and since pass MM First Sounds and Letters) leave none untagged and close on [slowly, warmly] alone', over.length === 0 && vfsBad.length === 0, [...over, ...vfsBad].slice(0, 6).join('; '));
   ok(`untagged paragraphs (${untagged.length}) and early-years morals not [slowly, warmly] alone (${morals.length}) stay at ${UNTAGGED_LIMIT} and ${MORALS_LIMIT} or fewer, falling as each course is read`, untagged.length <= UNTAGGED_LIMIT && morals.length <= MORALS_LIMIT, morals.slice(0, 6).join('; ')); }
 
+// Voices and a turn's breath (pass MQ, round one's story flow check: the pass's five new stories were tagged with no voice for any
+// speaker and no [pause], though docs/ELEVEN-V4-AUDIO-TAGS.md has asked for both in every early-years story tagged since pass MP):
+// an early-years story first painted from S3931 on has a [pause] and gives a speaker a voice ("in a ... voice"). Proven failing on
+// round one's frozen copy, where all five had neither. Where the [pause] falls (at the turn) and that every speaker keeps a voice of
+// their own on every turn are the story brief's (round two's code read: this check reads neither; round two's story read found four
+// turns whose mood tag dropped the speaker's voice).
+{ const EARLY = new Set(['PK3', 'PK4', 'K', '1', '2']);
+  const gradeOf = (id) => { const c = L.COURSES.find((x) => x.modules.some((m) => m.id === id)); return c ? c.grade : null; };
+  const serial = (s) => Number(String(s.art || '').replace(/^S/, '')) || 0; const bad = []; let read = 0;
+  for (const [id, s] of Object.entries(STORIES)) {
+    if (!s.audio || serial(s) < 3931 || !EARLY.has(gradeOf(id))) continue; read += 1; const a = [].concat(s.audio).join(' ');
+    if (!/\[pause\]/.test(a)) bad.push(`${id} has no [pause]`); if (!/\[in an? [^\]]*voice/.test(a)) bad.push(`${id} gives no speaker a voice`);
+  }
+  ok(`an early-years story from S3931 on has a [pause] and gives a speaker a voice (${read} read)`, read >= 5 && bad.length === 0, bad.join(' | ')); }
+
 // The tag floor's one beat (pass ML, the alignment read): "a paragraph of one beat, one sentence or one action and the line it
 // leads to, takes one" (RULES-AUDIT section 4), and round two had read a sentence that turns at its and as two beats, so ten
 // paragraphs of the reviewed pre-K courses carried two tags. In those courses a paragraph of one sentence, the moral aside,

@@ -644,9 +644,17 @@ function RemembranceCard({ educator = false }) {
   );
 }
 
-function IconPic({ name, size = 90 }) {
+function IconPic({ name, size = 90, tile = false }) {
   const [base, look] = String(name).split('#')[0].split('~');
   const gold = C.gold; const green = C.green; const grey = '#8A9086'; const blue = '#4A86C5'; const red = '#C9573E'; const brown = '#8B5A2B';
+  // In the dark theme alone, the coat's, the hat's and the cactus' fills are lightened to 3.6 to 1 or better on its answer tiles
+  // (pass MQ, round two's lesson read: 2.45, 2.22 and 2.82 to 1), where each carries an answer; the light theme keeps its colors.
+  // Only on a tile (round three's screen read: lightened on the dark theme's light paper too, under lesson and More Info pictures, the
+  // cactus fell from 3.83 to 2.93 to 1 and the hat's crown from 3.65 to 2.43), and a shade lighter since round five's code read, so
+  // they read 3.1 to 1 or better on a right answer's green tile too (2.89 to 2.95 before) and 3.9 on a resting or wrong one. On that
+  // paper, where the rain's grey outline and blue drops read 2.54 and 2.96 to 1, the rain takes a deeper grey and blue (3.15 and
+  // 3.58), as People and events shows it, and so do the cloud and the snow, which draw the rain's cloud beside it.
+  const dk = C.mode === 'dark' && tile; const dkPaper = C.mode === 'dark' && !tile;
   const body = {
     // A slice of pizza (pass JV, Mikey): drawn beside a triangle where a lesson says a slice is almost a triangle. The point is
     // at the bottom and the crust is the curved top edge, so the three corners line up with the triangle's.
@@ -674,12 +682,12 @@ function IconPic({ name, size = 90 }) {
     cup: <g><path d="M38 14q-4 6 0 11M50 12q-4 7 0 13" fill="none" stroke="#B9C2C9" strokeWidth="3" strokeLinecap="round" /><path d="M68 40h6a10 10 0 0 1 0 20h-6" fill="none" stroke="#4A6A86" strokeWidth="5" strokeLinecap="round" /><path d="M24 32h44v30a18 18 0 0 1-18 18h-8a18 18 0 0 1-18-18z" fill="#E8EEF3" stroke="#4A6A86" strokeWidth="3" strokeLinejoin="round" /><path d="M28 41h36" stroke={blue} strokeWidth="4" strokeLinecap="round" /></g>,
     bus: <g><rect x="12" y="28" width="76" height="40" rx="8" fill="#F2B632" stroke="#8A5A12" strokeWidth="3" /><rect x="13" y="56" width="74" height="5" fill="#2E2E2E" />{[20, 36, 52].map((x) => <rect key={x} x={x} y="34" width="12" height="12" rx="2" fill="#CFE6F5" stroke="#8A5A12" strokeWidth="2" />)}<rect x="68" y="34" width="14" height="20" rx="2" fill="#CFE6F5" stroke="#8A5A12" strokeWidth="2" /><circle cx="28" cy="70" r="9" fill="#2E2E2E" stroke="#BFC5C9" strokeWidth="3" /><circle cx="72" cy="70" r="9" fill="#2E2E2E" stroke="#BFC5C9" strokeWidth="3" /></g>,
     dog: <g><ellipse cx="26" cy="48" rx="11" ry="20" fill="#7A4E2A" transform="rotate(18 26 48)" /><ellipse cx="74" cy="48" rx="11" ry="20" fill="#7A4E2A" transform="rotate(-18 74 48)" /><circle cx="50" cy="52" r="26" fill="#C98B52" /><ellipse cx="50" cy="66" rx="14" ry="10" fill="#F1D3B0" /><circle cx="40" cy="47" r="4" fill="#2E2E2E" /><circle cx="60" cy="47" r="4" fill="#2E2E2E" /><ellipse cx="50" cy="60" rx="6" ry="4.5" fill="#2E2E2E" /><path d="M50 64v5M44 71q6 5 12 0" fill="none" stroke="#2E2E2E" strokeWidth="2.5" strokeLinecap="round" /></g>,
-    hat: <g><ellipse cx="50" cy="66" rx="40" ry="10" fill="#3F5F9E" stroke="#22365E" strokeWidth="3" /><path d="M28 64V40a22 14 0 0 1 44 0v24" fill="#4E73B8" stroke="#22365E" strokeWidth="3" /><rect x="29.5" y="53" width="41" height="8" fill="#C9573E" /></g>,
+    hat: <g><ellipse cx="50" cy="66" rx="40" ry="10" fill={dk ? '#7088B7' : '#3F5F9E'} stroke="#22365E" strokeWidth="3" /><path d="M28 64V40a22 14 0 0 1 44 0v24" fill={dk ? '#7592C8' : '#4E73B8'} stroke="#22365E" strokeWidth="3" /><rect x="29.5" y="53" width="41" height="8" fill="#C9573E" /></g>,
     bed: <g><rect x="12" y="34" width="8" height="46" rx="2" fill={brown} /><rect x="80" y="50" width="8" height="30" rx="2" fill={brown} /><rect x="16" y="56" width="68" height="14" rx="3" fill="#8DB3DB" stroke="#2F66A8" strokeWidth="2" /><rect x="21" y="45" width="22" height="12" rx="5" fill="#F4F6F7" stroke="#B9C2C9" strokeWidth="2" /><path d="M44 57q18-9 40 0z" fill="#5E8FD0" /><rect x="16" y="70" width="68" height="6" fill={brown} /></g>,
     fan: <g><rect x="46" y="58" width="8" height="22" fill="#8A9086" /><rect x="30" y="78" width="40" height="8" rx="4" fill="#6B716A" /><circle cx="50" cy="40" r="28" fill="#DCE6EC" stroke="#6B716A" strokeWidth="3" />{[0, 120, 240].map((a) => { const x = 50 + 12 * Math.cos((a - 90) * Math.PI / 180); const y = 40 + 12 * Math.sin((a - 90) * Math.PI / 180); return <ellipse key={a} cx={x} cy={y} rx="7" ry="13" fill="#4A86C5" transform={`rotate(${a} ${x} ${y})`} />; })}<circle cx="50" cy="40" r="5" fill="#2E2E2E" /></g>,
-    cloud: <path d="M28 66a14 14 0 0 1 3-27 20 20 0 0 1 38-4 15 15 0 0 1 3 31z" fill="#D6DBD2" stroke={grey} strokeWidth="3" />,
-    rain: <g><path d="M28 52a14 14 0 0 1 3-27 20 20 0 0 1 38-4 15 15 0 0 1 3 31z" fill="#D6DBD2" stroke={grey} strokeWidth="3" />{[34, 50, 66].map((x) => <line key={x} x1={x} y1="62" x2={x - 6} y2="82" stroke={blue} strokeWidth="5" strokeLinecap="round" />)}</g>,
-    snow: <g><path d="M28 52a14 14 0 0 1 3-27 20 20 0 0 1 38-4 15 15 0 0 1 3 31z" fill="#D6DBD2" stroke={grey} strokeWidth="3" />{[34, 50, 66].map((x) => <circle key={x} cx={x} cy="74" r="5" fill="#fff" stroke={blue} strokeWidth="2" />)}</g>,
+    cloud: <path d="M28 66a14 14 0 0 1 3-27 20 20 0 0 1 38-4 15 15 0 0 1 3 31z" fill="#D6DBD2" stroke={dkPaper ? '#7A8076' : grey} strokeWidth="3" />,
+    rain: <g><path d="M28 52a14 14 0 0 1 3-27 20 20 0 0 1 38-4 15 15 0 0 1 3 31z" fill="#D6DBD2" stroke={dkPaper ? '#7A8076' : grey} strokeWidth="3" />{[34, 50, 66].map((x) => <line key={x} x1={x} y1="62" x2={x - 6} y2="82" stroke={dkPaper ? '#3F78B4' : blue} strokeWidth="5" strokeLinecap="round" />)}</g>,
+    snow: <g><path d="M28 52a14 14 0 0 1 3-27 20 20 0 0 1 38-4 15 15 0 0 1 3 31z" fill="#D6DBD2" stroke={dkPaper ? '#7A8076' : grey} strokeWidth="3" />{[34, 50, 66].map((x) => <circle key={x} cx={x} cy="74" r="5" fill="#fff" stroke={dkPaper ? '#3F78B4' : blue} strokeWidth="2" />)}</g>,
     plant: <g><defs><linearGradient id="eduLeafG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#6FAF7E" /><stop offset="1" stopColor="#245A3C" /></linearGradient></defs><rect x="30" y="72" width="40" height="16" rx="4" fill={brown} /><rect x="30" y="72" width="40" height="4" rx="2" fill="#A8743F" opacity="0.7" /><line x1="50" y1="72" x2="50" y2="34" stroke="#3E7D52" strokeWidth="5" strokeLinecap="round" /><ellipse cx="38" cy="48" rx="12" ry="7" fill="url(#eduLeafG)" transform="rotate(-30 38 48)" /><ellipse cx="62" cy="40" rx="12" ry="7" fill="url(#eduLeafG)" transform="rotate(30 62 40)" /></g>,
     tree: <g><defs><radialGradient id="eduTreeG" cx="38%" cy="32%" r="70%"><stop offset="0" stopColor="#7FB58E" /><stop offset="1" stopColor="#245A3C" /></radialGradient></defs><rect x="44" y="60" width="12" height="28" rx="3" fill={brown} /><rect x="47" y="60" width="3" height="28" fill="#A8743F" opacity="0.6" /><circle cx="50" cy="44" r="26" fill="url(#eduTreeG)" /><circle cx="38" cy="36" r="7" fill="#fff" opacity="0.18" /></g>,
     flower: <g><line x1="50" y1="88" x2="50" y2="50" stroke={green} strokeWidth="5" />{[0, 72, 144, 216, 288].map((a) => <ellipse key={a} cx={50 + 14 * Math.cos(a * Math.PI / 180)} cy={44 + 14 * Math.sin(a * Math.PI / 180)} rx="10" ry="7" fill={red} transform={`rotate(${a} ${50 + 14 * Math.cos(a * Math.PI / 180)} ${44 + 14 * Math.sin(a * Math.PI / 180)})`} />)}<circle cx="50" cy="44" r="8" fill={gold} /></g>,
@@ -733,6 +741,9 @@ function IconPic({ name, size = 90 }) {
     // carry them, are a lighter brown that reads 3.3 to 1 on the dark theme's answer tiles (the outline brown read 1.8).
     chair: <g><rect x="30" y="8" width="40" height="46" rx="6" fill="#B07838" stroke="#6E4A26" strokeWidth="3" /><path d="M40 16 L40 44 M50 16 L50 44 M60 16 L60 44" stroke="#6E4A26" strokeWidth="3" strokeLinecap="round" opacity="0.45" /><path d="M22 54 L78 54 L72 66 L28 66 Z" fill="#C9955A" stroke="#6E4A26" strokeWidth="3" strokeLinejoin="round" /><path d="M30 66 L27 92 M70 66 L73 92" stroke="#A86F33" strokeWidth="6" strokeLinecap="round" /><path d="M36 64 L36 84 M64 64 L64 84" stroke="#A26B32" strokeWidth="5" strokeLinecap="round" /></g>,
     bulb: <g><path d="M50 10 Q24 10 24 36 Q24 50 36 60 L36 70 L64 70 L64 60 Q76 50 76 36 Q76 10 50 10 Z" fill={gold} stroke="#8A6A1F" strokeWidth="3" strokeLinejoin="round" /><rect x="38" y="72" width="24" height="7" rx="2" fill="#8A9086" /><rect x="40" y="81" width="20" height="7" rx="2" fill="#6F7A76" /><path d="M44 58 L46 44 L50 50 L54 44 L56 58" fill="none" stroke="#8A6A1F" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /><path d="M14 30 L8 28 M86 30 L92 28 M20 12 L16 8 M80 12 L84 8" stroke="#D99A2B" strokeWidth="3" strokeLinecap="round" /></g>,
+    // A classroom whiteboard (pass MQ): one white board in a gray frame with a marker tray, a circle and a triangle drawn on it and
+    // a line of writing, so it never reads as the story board's three cards below.
+    whiteboard: <g><rect x="8" y="16" width="84" height="58" rx="3" fill="#FFFFFF" stroke="#6F7A76" strokeWidth="3" /><circle cx="30" cy="38" r="10" fill="none" stroke={blue} strokeWidth="3" /><path d="M54 48 L64 28 L74 48 Z" fill="none" stroke={red} strokeWidth="3" strokeLinejoin="round" /><path d="M20 62 Q26 58 32 62 T44 62 T56 62 T68 62 T80 62" fill="none" stroke="#4A6A86" strokeWidth="2.5" strokeLinecap="round" /><rect x="10" y="76" width="80" height="6" rx="2" fill="#A9B2B7" stroke="#6F7A76" strokeWidth="2" /><rect x="58" y="71" width="18" height="5" rx="2" fill={blue} /></g>,
     board: <g><rect x="6" y="30" width="26" height="40" rx="3" fill="#F4F6F7" stroke="#4A6A86" strokeWidth="2.5" /><rect x="37" y="30" width="26" height="40" rx="3" fill="#F4F6F7" stroke="#4A6A86" strokeWidth="2.5" /><rect x="68" y="30" width="26" height="40" rx="3" fill="#F4F6F7" stroke="#4A6A86" strokeWidth="2.5" /><circle cx="19" cy="48" r="7" fill="none" stroke={blue} strokeWidth="2.5" /><rect x="43" y="42" width="14" height="14" fill="none" stroke={green} strokeWidth="2.5" /><path d="M74 58 L81 40 L88 58 Z" fill="none" stroke={red} strokeWidth="2.5" strokeLinejoin="round" /></g>,
     // Pass KQ (kindergarten technology): a camera, a music note and a magnifier for searching.
     camera: <g><rect x="12" y="30" width="76" height="52" rx="8" fill="#4A6A86" stroke="#2E4A62" strokeWidth="3" /><rect x="34" y="20" width="22" height="12" rx="3" fill="#2E4A62" /><circle cx="50" cy="56" r="17" fill="#2E4A62" /><circle cx="50" cy="56" r="11" fill="#8EC5EA" /><circle cx="46" cy="52" r="3" fill="#fff" opacity="0.8" /><rect x="68" y="38" width="12" height="6" rx="2" fill={gold} /></g>,
@@ -759,7 +770,14 @@ function IconPic({ name, size = 90 }) {
     cigarette: <g><rect x="24" y="46" width="52" height="10" rx="2" fill="#F4F6F7" stroke="#6F7A76" strokeWidth="2" /><rect x="66" y="46" width="10" height="10" fill="#E2B97A" stroke="#6F7A76" strokeWidth="2" /><path d="M24 44 Q28 36 24 30" fill="none" stroke="#8A9086" strokeWidth="2" strokeLinecap="round" /><circle cx="50" cy="50" r="38" fill="none" stroke={red} strokeWidth="6" /><path d="M24 24 L76 76" stroke={red} strokeWidth="6" strokeLinecap="round" /></g>,
     // Pass KO (kindergarten health): a doctor in a white coat, a shot, a fine comb, a mosquito, a child-sized plate half fruits
     // and vegetables, a peanut, a bike helmet, a booster seat and a seat belt across a seat.
-    doctor: <g><circle cx="50" cy="30" r="13" fill="#E8C9A0" /><path d="M37 26 Q50 12 63 26 Q58 22 50 22 Q42 22 37 26 Z" fill="#4A3B2A" /><path d="M26 88 Q26 54 50 50 Q74 54 74 88 Z" fill="#F4F6F7" stroke="#B9C2C9" strokeWidth="2.5" /><path d="M50 50 L50 88" stroke="#B9C2C9" strokeWidth="2" /><path d="M40 56 Q40 70 50 72 Q60 70 60 56" fill="none" stroke="#4A6A86" strokeWidth="3" strokeLinecap="round" /><circle cx="50" cy="74" r="4" fill="#4A6A86" /><circle cx="45" cy="29" r="1.6" fill="#2E2E2E" /><circle cx="55" cy="29" r="1.6" fill="#2E2E2E" /><path d="M45 35 Q50 39 55 35" fill="none" stroke="#2E2E2E" strokeWidth="1.6" strokeLinecap="round" /></g>,
+    doctor: <g transform="matrix(1.15 0 0 1.15 -7.5 -7.8)"><circle cx="50" cy="30" r="13" fill="#E8C9A0" /><path d="M37 26 Q50 12 63 26 Q58 22 50 22 Q42 22 37 26 Z" fill="#4A3B2A" /><path d="M26 88 Q26 54 50 50 Q74 54 74 88 Z" fill="#F4F6F7" stroke="#B9C2C9" strokeWidth="2.5" /><path d="M50 50 L50 88" stroke="#B9C2C9" strokeWidth="2" /><path d="M40 56 Q40 70 50 72 Q60 70 60 56" fill="none" stroke="#4A6A86" strokeWidth="3" strokeLinecap="round" /><circle cx="50" cy="74" r="4" fill="#4A6A86" /><circle cx="45" cy="29" r="1.6" fill="#2E2E2E" /><circle cx="55" cy="29" r="1.6" fill="#2E2E2E" /><path d="M45 35 Q50 39 55 35" fill="none" stroke="#2E2E2E" strokeWidth="1.6" strokeLinecap="round" /></g>,
+    // Pass MQ (pre-K 3's People and events): a baby holding up a bottle of milk, a teacher holding a book open toward us, a grandma
+    // with her gray hair in a bun and small round glasses, and a grandpa with short gray hair, a gray mustache and glasses, drawn
+    // as the doctor is, in four skin tones.
+    baby: <g transform="matrix(1.15 0 0 1.15 -7.5 -7.8)"><path d="M30 92 Q30 66 50 62 Q70 66 70 92 Z" fill="#F2D27A" stroke="#C9A646" strokeWidth="2" /><path d="M42 63 Q50 76 58 63 Z" fill="#FFFFFF" stroke="#D8D8D8" strokeWidth="1.5" /><circle cx="50" cy="42" r="18" fill="#F5CBA7" /><path d="M48 25 Q50 18 56 21 Q52 21 52 26" fill="none" stroke="#7A5230" strokeWidth="2.6" strokeLinecap="round" /><circle cx="43" cy="42" r="2" fill="#2E2E2E" /><circle cx="57" cy="42" r="2" fill="#2E2E2E" /><circle cx="39" cy="49" r="3.4" fill="#F29C9C" opacity="0.6" /><circle cx="61" cy="49" r="3.4" fill="#F29C9C" opacity="0.6" /><path d="M46 50 Q50 54 54 50" fill="none" stroke="#2E2E2E" strokeWidth="1.8" strokeLinecap="round" /><g transform="translate(72 58) rotate(20)"><rect x="-5" y="0" width="10" height="20" rx="3" fill="#FFFFFF" stroke="#9FB7C9" strokeWidth="1.8" /><rect x="-5" y="9" width="10" height="11" rx="2" fill="#F4F6F7" /><rect x="-6" y="-3" width="12" height="4" rx="1.5" fill="#7FB3D5" /><path d="M-3 -3 Q0 -11 3 -3 Z" fill="#E9C46A" /></g><path d="M63 75 L68.4 67.8" stroke="#F2D27A" strokeWidth="6" strokeLinecap="round" /><circle cx="68.6" cy="67.4" r="3.8" fill="#F5CBA7" stroke="#E0A98A" strokeWidth="1" /></g>,
+    teacher: <g transform="matrix(1.15 0 0 1.15 -7.5 -7.8)"><circle cx="50" cy="28" r="13" fill="#8D5524" /><path d="M36 30 Q34 12 50 13 Q66 12 64 30 Q62 21 50 20 Q38 21 36 30 Z" fill="#2B1D14" stroke="#7A5638" strokeWidth="1.5" strokeLinejoin="round" /><circle cx="45" cy="28" r="1.9" fill="#1E1A17" /><circle cx="55" cy="28" r="1.9" fill="#1E1A17" /><path d="M44.5 33.5 Q50 38.5 55.5 33.5" fill="none" stroke="#1E1A17" strokeWidth="2.3" strokeLinecap="round" /><path d="M26 88 Q26 52 50 48 Q74 52 74 88 Z" fill="#3E8E6E" stroke="#2C6A51" strokeWidth="2" /><path d="M44 49 L50 60 L56 49" fill="#F4F6F7" stroke="#D0D6DA" strokeWidth="1.5" /><path d="M33 64 L50 68 L67 64 L67 86 L50 90 L33 86 Z" fill="#FFFFFF" stroke="#B9634A" strokeWidth="2.4" strokeLinejoin="round" /><path d="M50 68 L50 90" stroke="#B9634A" strokeWidth="2" /><path d="M37 72 L46 74 M37 77 L46 79 M54 74 L63 72 M54 79 L63 77" stroke="#C9CED2" strokeWidth="1.6" strokeLinecap="round" /></g>,
+    grandma: <g transform="matrix(1.15 0 0 1.15 -7.5 -7.8)"><circle cx="50" cy="15" r="7" fill="#C9CCCF" /><circle cx="50" cy="31" r="13" fill="#C68642" /><path d="M36 33 Q34 16 50 17 Q66 16 64 33 Q61 23 50 23 Q39 23 36 33 Z" fill="#C9CCCF" /><circle cx="45" cy="31" r="4" fill="none" stroke="#5A5A5A" strokeWidth="1.4" /><circle cx="55" cy="31" r="4" fill="none" stroke="#5A5A5A" strokeWidth="1.4" /><path d="M49 31 L51 31" stroke="#5A5A5A" strokeWidth="1.4" /><circle cx="45" cy="31" r="1.4" fill="#2E2E2E" /><circle cx="55" cy="31" r="1.4" fill="#2E2E2E" /><path d="M45 37 Q50 41 55 37" fill="none" stroke="#2E2E2E" strokeWidth="1.8" strokeLinecap="round" /><path d="M26 88 Q26 54 50 50 Q74 54 74 88 Z" fill="#B39DDB" stroke="#8C76B8" strokeWidth="2" /><path d="M50 52 L50 88" stroke="#8C76B8" strokeWidth="1.6" /><circle cx="46" cy="62" r="1.6" fill="#F4F6F7" /><circle cx="46" cy="72" r="1.6" fill="#F4F6F7" /><circle cx="46" cy="82" r="1.6" fill="#F4F6F7" /></g>,
+    grandpa: <g transform="matrix(1.15 0 0 1.15 -7.5 -7.8)"><circle cx="50" cy="30" r="13" fill="#E0AC69" /><path d="M37 35 Q35 22 41 18 Q39 27 40 35 Z M63 35 Q65 22 59 18 Q61 27 60 35 Z" fill="#B9BEC3" /><path d="M42 18 Q50 13.5 58 18 Q50 16 42 18 Z" fill="#B9BEC3" /><circle cx="45" cy="29" r="4" fill="none" stroke="#5A5A5A" strokeWidth="1.4" /><circle cx="55" cy="29" r="4" fill="none" stroke="#5A5A5A" strokeWidth="1.4" /><path d="M49 29 L51 29" stroke="#5A5A5A" strokeWidth="1.4" /><circle cx="45" cy="29" r="1.4" fill="#2E2E2E" /><circle cx="55" cy="29" r="1.4" fill="#2E2E2E" /><path d="M40.5 36.5 Q44.5 31.2 50 33.6 Q55.5 31.2 59.5 36.5 Q55 39.6 50 37.4 Q45 39.6 40.5 36.5 Z" fill="#868C92" stroke="#6E747A" strokeWidth="0.8" strokeLinejoin="round" /><path d="M46.5 40.6 Q50 42.6 53.5 40.6" fill="none" stroke="#2E2E2E" strokeWidth="1.6" strokeLinecap="round" /><path d="M26 88 Q26 54 50 50 Q74 54 74 88 Z" fill="#4A6FA5" stroke="#36537D" strokeWidth="2" /><path d="M43 50 L50 58 L57 50 Z" fill="#F4F6F7" stroke="#D0D6DA" strokeWidth="1.5" /></g>,
     shot: <g transform="rotate(-35 50 50)"><rect x="22" y="40" width="46" height="20" rx="4" fill="#E8EEF3" stroke="#4A6A86" strokeWidth="3" /><rect x="26" y="44" width="22" height="12" fill="#8EC5EA" /><rect x="14" y="36" width="8" height="28" rx="2" fill="#4A6A86" /><rect x="68" y="46" width="10" height="8" fill="#4A6A86" /><path d="M78 50 L92 50" stroke="#6F7A76" strokeWidth="3" strokeLinecap="round" /></g>,
     comb: <g><rect x="14" y="30" width="72" height="14" rx="4" fill="#4A86C5" stroke="#2F5F91" strokeWidth="2.5" />{[20, 26, 32, 38, 44, 50, 56, 62, 68, 74, 80].map((x) => <line key={x} x1={x} y1="44" x2={x} y2="70" stroke="#2F5F91" strokeWidth="2.6" strokeLinecap="round" />)}</g>,
     mosquito: <g><ellipse cx="50" cy="52" rx="7" ry="16" fill="#6B716A" /><circle cx="50" cy="32" r="5" fill="#6B716A" /><path d="M50 27 L50 16 M50 16 L40 8" fill="none" stroke="#6B716A" strokeWidth="2" strokeLinecap="round" /><ellipse cx="34" cy="44" rx="14" ry="6" fill="#CFEAF7" stroke="#8A9086" strokeWidth="1.5" transform="rotate(-25 34 44)" /><ellipse cx="66" cy="44" rx="14" ry="6" fill="#CFEAF7" stroke="#8A9086" strokeWidth="1.5" transform="rotate(25 66 44)" /><path d="M44 58 L28 70 M56 58 L72 70 M44 50 L26 52 M56 50 L74 52 M46 64 L36 80 M54 64 L64 80" fill="none" stroke="#6B716A" strokeWidth="2" strokeLinecap="round" /></g>,
@@ -778,8 +796,9 @@ function IconPic({ name, size = 90 }) {
     river: <g><rect x="4" y="10" width="92" height="80" rx="8" fill="#9CC98A" /><path d="M10 20 Q40 30 30 50 Q20 70 60 78 Q80 82 92 90" fill="none" stroke={blue} strokeWidth="12" strokeLinecap="round" /><path d="M10 20 Q40 30 30 50 Q20 70 60 78 Q80 82 92 90" fill="none" stroke="#8EC5EA" strokeWidth="5" strokeLinecap="round" opacity="0.8" /></g>,
     lake: <g><rect x="4" y="10" width="92" height="80" rx="8" fill="#9CC98A" /><path d="M22 50 Q24 28 50 30 Q78 30 80 52 Q78 72 50 72 Q22 72 22 50 Z" fill={blue} /><path d="M32 46 Q42 40 52 46 M44 58 Q54 52 64 58" fill="none" stroke="#8EC5EA" strokeWidth="3" strokeLinecap="round" /></g>,
     ocean: <g><rect x="4" y="12" width="92" height="30" fill="#CFEAF7" /><rect x="4" y="42" width="92" height="46" fill={blue} /><path d="M4 50 Q14 42 24 50 T44 50 T64 50 T84 50 T104 50" fill="none" stroke="#fff" strokeWidth="3" /><path d="M4 66 Q14 58 24 66 T44 66 T64 66 T84 66 T104 66" fill="none" stroke="#8EC5EA" strokeWidth="3" /><circle cx="78" cy="26" r="7" fill={gold} /></g>,
-    cactus: <g><path d="M8 86 L92 86" stroke="#E2B97A" strokeWidth="6" strokeLinecap="round" /><rect x="42" y="18" width="16" height="68" rx="8" fill="#3E7D52" /><path d="M42 50 Q26 50 26 36 L26 28" fill="none" stroke="#3E7D52" strokeWidth="10" strokeLinecap="round" /><path d="M58 42 Q74 42 74 30 L74 24" fill="none" stroke="#3E7D52" strokeWidth="10" strokeLinecap="round" /><path d="M46 30 L48 36 M52 44 L54 50 M46 60 L48 66" stroke="#DCEBD3" strokeWidth="2" strokeLinecap="round" /></g>,
-    coat: <g><path d="M34 22 L50 16 L66 22 L84 32 L78 52 L68 48 L68 88 L32 88 L32 48 L22 52 L16 32 Z" fill="#4A6A86" stroke="#2E4A62" strokeWidth="3" strokeLinejoin="round" /><path d="M50 16 L50 88" stroke="#2E4A62" strokeWidth="3" /><path d="M42 20 L50 30 L58 20" fill="none" stroke="#F4F6F7" strokeWidth="4" strokeLinejoin="round" /><circle cx="56" cy="44" r="2.5" fill="#F4F6F7" /><circle cx="56" cy="58" r="2.5" fill="#F4F6F7" /><circle cx="56" cy="72" r="2.5" fill="#F4F6F7" /></g>,
+    cactus: <g><path d="M8 86 L92 86" stroke="#E2B97A" strokeWidth="6" strokeLinecap="round" /><rect x="42" y="18" width="16" height="68" rx="8" fill={dk ? '#5C946E' : '#3E7D52'} /><path d="M42 50 Q26 50 26 36 L26 28" fill="none" stroke={dk ? '#5C946E' : '#3E7D52'} strokeWidth="10" strokeLinecap="round" /><path d="M58 42 Q74 42 74 30 L74 24" fill="none" stroke={dk ? '#5C946E' : '#3E7D52'} strokeWidth="10" strokeLinecap="round" /><path d="M46 30 L48 36 M52 44 L54 50 M46 60 L48 66" stroke="#DCEBD3" strokeWidth="2" strokeLinecap="round" /></g>,
+    // A coat (pass MQ, round one's lesson check: the old short sleeves drew a shirt): long sleeves to the wrists, buttons down the front.
+    coat: <g><path d="M34 20 L50 14 L66 20 L80 28 L88 80 L76 82 L68 46 L68 92 L32 92 L32 46 L24 82 L12 80 L20 28 Z" fill={dk ? '#728BA1' : '#4A6A86'} stroke="#2E4A62" strokeWidth="3" strokeLinejoin="round" /><path d="M50 14 L50 92" stroke="#2E4A62" strokeWidth="3" /><path d="M40 18 L50 30 L60 18" fill="none" stroke="#F4F6F7" strokeWidth="4" strokeLinejoin="round" /><circle cx="56" cy="44" r="2.5" fill="#F4F6F7" /><circle cx="56" cy="60" r="2.5" fill="#F4F6F7" /><circle cx="56" cy="76" r="2.5" fill="#F4F6F7" /></g>,
     // The candle's body, white wax, takes a slate outline (pass MO, Mikey's answer to Q54): its pale gray one read 1.8 to 1 on white
     // and 1.4 on the dark theme's paper, and #76828B reads 3.9 and 3.1, the 3 to 1 a drawing that carries meaning needs.
     candle: <g><rect x="40" y="38" width="20" height="46" rx="4" fill="#F4F6F7" stroke="#76828B" strokeWidth="2.5" /><rect x="30" y="84" width="40" height="6" rx="3" fill="#8A9086" /><path d="M50 36 L50 28" stroke="#2E2E2E" strokeWidth="2" /><path d="M50 10 Q60 22 50 30 Q40 22 50 10 Z" fill={gold} /><path d="M50 18 Q54 24 50 28 Q46 24 50 18 Z" fill="#fff" opacity="0.8" /></g>,
@@ -1452,7 +1471,7 @@ function playSound(sound, onEnd) {
 }
 function stopSound() { soundToken += 1; soundPlaying = false; if (soundAudio) { try { soundAudio.pause(); } catch (e) { /* nothing was playing */ } } }
 // Whether anything is still being said: the device voice speaking or waiting to, or one of the app's sounds playing.
-function voiceTalking() { const ss = typeof window !== 'undefined' ? window.speechSynthesis : null; return soundPlaying || (!!ss && !!(ss.speaking || ss.pending)); }
+function voiceTalking() { const ss = typeof window !== 'undefined' ? window.speechSynthesis : null; return soundPlaying || Date.now() < restUntil || (!!ss && !!(ss.speaking || ss.pending)); }
 
 // The reading pace: -1 is a story's snail and 0 the hare, set as a story or a book opens and back to 0 when it closes (+1, which
 // would quicken the voice a little, is set by nothing now; the tracing lessons' Slower and Faster, which once moved the voice with
@@ -1461,6 +1480,27 @@ function voiceTalking() { const ss = typeof window !== 'undefined' ? window.spee
 // quarters, and a clip at 0.8, until then).
 const SNAIL_RATE = 0.65; const SNAIL_CLIP_RATE = 0.72;
 let SPEECH_NUDGE = 0;
+// The young voice (pass MQ, Mikey: "For the younger learners whose questions/lessons are spoken to them.   I think the speed of the
+// sentences can slow a little bit with small pauses between sentences and emphasized words where there make sense.  Should be
+// spoken in a natural way."): wherever a young learner hears the device's voice outside a story (a read-aloud course's lessons,
+// questions, explanations, results, Wonder cards and celebration; an early learner's overview, Let's Color and games), it reads a
+// little slower, YOUNG_RATE of its pace, and rests YOUNG_PAUSE_MS between one sentence and the next. A word at play (a one-word
+// sentence, a letter named, an example word) keeps its own slow, lifted shape, which is how the device's voice stresses a word (it
+// cannot stress a word inside a sentence without cutting the sentence into pieces, which sounds choppier, not more natural; the
+// recorded voice's direction for a young lesson line already asks for key words drawn out, while a question, a result, a Wonder card
+// and a game's own question are not in the audio ledger yet, so they keep the device's even stress until they are recorded). A story keeps its own pace, the snail and the
+// hare (it reads with young false). The page asks for it by screen and an open game for its learner (setYoungVoice), the game's
+// word first, so the order in which their effects run never matters; speak() and speakSequence() read it when they are called,
+// and a caller may say young itself.
+const YOUNG_RATE = 0.9;
+const YOUNG_PAUSE_MS = 450;
+const youngVoice = { page: false, game: null };
+function setYoungVoice(owner, on) { youngVoice[owner] = on; }
+function speechYoung() { return youngVoice.game !== null ? !!youngVoice.game : !!youngVoice.page; }
+// While a reader rests between sentences (a young learner's pause, a story's breath, a welcome's), the voice counts as still talking
+// (voiceTalking), so a speaker button keeps showing that it reads and a wait for the voice's end waits for the whole line; a hush or
+// a newer line clears it.
+let restUntil = 0;
 function setSpeechNudge(n) { SPEECH_NUDGE = n; }
 // Speech is scheduled, never fired in the same tick as a cancel: Chrome drops an utterance queued
 // right after cancel(), and lets go of one that nothing holds a reference to. So every request
@@ -1489,9 +1529,9 @@ function sayPieces(pieces, from, hooks) {
   // where the commas and stops are a teacher's pauses.
   const goOn = (j) => {
     const next = pieces[j]; const prev = pieces[j - 1];
-    const rest = next && pause && next.sentence !== prev.sentence ? pause() || 0 : 0;
+    const rest = next && pause && next.sentence !== prev.sentence ? pause(next) || 0 : 0;
     const wait = Math.max(rest, next && next.sound && prev.sound ? SOUND_GAP_MS : 0);
-    if (wait > 0) { onRest(j); setTimeout(() => { if (alive()) sayPieces(pieces, j, hooks); }, wait); } else sayPieces(pieces, j, hooks);
+    if (wait > 0) { onRest(j); restUntil = Date.now() + wait + 60; setTimeout(() => { if (alive()) sayPieces(pieces, j, hooks); }, wait); } else sayPieces(pieces, j, hooks);
   };
   if (pieces[from].sound) { onPiece(from); onBegin(); playSound(pieces[from].sound, () => { if (alive()) goOn(from + 1); }); return; }
   const rest = pause ? pause() : 0;
@@ -1530,18 +1570,31 @@ function sayPieces(pieces, from, hooks) {
     }, 250);
   }
 }
-// A voice's rate and pitch for a piece, slower or quicker with the lesson's pace (SPEECH_NUDGE), times factor.
-function shapeVoice(u, piece, voice, factor = 1) {
+// A voice's rate and pitch for a piece, slower or quicker with the lesson's pace (SPEECH_NUDGE), times factor, and for a young
+// learner (young, pass MQ) a little slower again, except a word at play, which already has its own slow shape.
+function shapeVoice(u, piece, voice, factor = 1, young = false) {
   if (voice) u.voice = voice;
   const shape = SPEECH_SHAPES[piece.shape] || SPEECH_SHAPES.plain;
-  u.rate = shape.rate * (SPEECH_NUDGE < 0 ? SNAIL_RATE : SPEECH_NUDGE > 0 ? 1.1 : 1) * factor; u.pitch = shape.pitch;
+  u.rate = shape.rate * (SPEECH_NUDGE < 0 ? SNAIL_RATE : SPEECH_NUDGE > 0 ? 1.1 : 1) * factor * (young && piece.shape !== 'key' ? YOUNG_RATE : 1); u.pitch = shape.pitch;
 }
+// A rest before a piece only where the piece starts a sentence (round three's alignment read, pass MQ): the sentence rule also cuts
+// at a "?" that stands for a missing number and after "D.C." in a sentence that goes on, and the young voice's rest fell there, in
+// the middle of a sentence ("What number makes 7 + 2 = 2 + ?", then 450 ms, then "true?"). A sentence starts with a capital, a digit,
+// a quotation mark or a bracket; restBefore(ms) is the pause a reading hands sayPieces, ms before such a piece and none before another.
+// They sit above speak(), inside the part of the speech code the voice check page is built from (tools/voice-check.mjs), so the
+// page rests where speak() rests (pass MQ, after round three: the page had kept a rest before every new sentence piece).
+function startsSentence(piece) { const t = piece && typeof piece.text === 'string' ? piece.text.trim() : ''; return !t || /^[A-Z0-9"“'‘(\[]/.test(t); }
+function restBefore(ms) { return (next) => (startsSentence(next) ? ms : 0); }
 // While a game's welcome plays its board (pass MP, GameIntro), the board's own speak() and speakSequence() stay quiet.
 let demoMute = 0;
-function speak(text) {
+// opts (pass MQ): young, whether the young voice reads (else speechYoung() decides), and pause, a rest in milliseconds between one
+// sentence and the next (else YOUNG_PAUSE_MS for the young voice, and none otherwise).
+function speak(text, opts = {}) {
   if (typeof window === 'undefined' || !window.speechSynthesis || !text) return;
   if (demoMute > 0) return;   // a game's welcome is playing its board (pass MP): the board's own words wait, so they never cut the welcome off
-  const ticket = ++speechTicket;
+  const young = opts.young !== undefined ? !!opts.young : speechYoung();
+  const rest = opts.pause !== undefined ? Math.max(0, opts.pause || 0) : young ? YOUNG_PAUSE_MS : 0;
+  const ticket = ++speechTicket; restUntil = 0;
   const pieces = speechPieces(text);
   if (!pieces.length) return;
   // Whether the voice has begun this request (pass MI, Mikey: a tapped answer "is repeated twice.  "Blue, blue" and "red, red""):
@@ -1557,7 +1610,7 @@ function speak(text) {
     const mine = attempt;
     try {
       const voice = pickVoice(); speechAlive = [];
-      sayPieces(pieces, 0, { alive: () => ticket === speechTicket && mine === attempt, utter: (u, piece) => shapeVoice(u, piece, voice), onBegin: () => { began = true; } });
+      sayPieces(pieces, 0, { alive: () => ticket === speechTicket && mine === attempt, utter: (u, piece) => shapeVoice(u, piece, voice, 1, young), onBegin: () => { began = true; }, pause: rest > 0 ? restBefore(rest) : null });
     } catch (e) { /* a broken voice must never stop a lesson */ }
   };
   const ss = window.speechSynthesis;
@@ -1571,7 +1624,7 @@ function speak(text) {
 // same tick as the next screen's speak() made that speak a cancel-then-speak, which a phone's browser drops). A newer speak() stops
 // the voice itself, a beat before it speaks; with nothing after it (the X to the overview), the voice still stops.
 function hushSpeech() {
-  const mine = ++speechTicket; stopSound();
+  const mine = ++speechTicket; stopSound(); restUntil = 0;
   setTimeout(() => { if (mine === speechTicket) { try { if (typeof window !== 'undefined' && window.speechSynthesis) window.speechSynthesis.cancel(); } catch (e) { /* a broken voice must never stop a screen */ } } }, 0);
 }
 
@@ -1586,6 +1639,12 @@ function wayVisual(example, at) { const w = at > 0 ? [].concat(example.another |
 // A line split into its sentences, for reading along, by the one rule speechPieces uses too (SENTENCE_BREAK in logic, pass MN), so
 // the sentence the voice is on is the sentence lit.
 function sentencesOf(text) { return String(text || '').split(SENTENCE_BREAK).filter(Boolean); }
+// The longest a line may take on the device voice before a game goes on without its end (Find the Letter's backstop, for a voice that
+// never reports its end): a real voice's pace, 1.2 seconds and 100 ms a letter, since pass MM's round two found it cutting a slow
+// voice's line short; with the young voice each letter's share is slower by YOUNG_RATE and a rest follows each sentence (pass MQ,
+// round one's code check). Kept with the speech code since round two's code read (pass MQ), so the rules test reads it in node:vm:
+// in the game nothing held it.
+function voiceBackstopMs(text) { const t = String(text || ''); const young = speechYoung(); return 1200 + (t.length * 100) / (young ? YOUNG_RATE : 1) + (young ? YOUNG_PAUSE_MS * sentencesOf(t).length : 0); }
 // Speaks a list of texts one after another and reports which one is playing, so a page can
 // light the paragraph being read. Returns a stop function. Uses the same ticket as speak().
 // Purchased audio: when the build lists a clip for a key (audio/<key>.mp3, keys like S7-0 for a story's
@@ -1603,7 +1662,13 @@ function speakSequence(texts, onIndex, onDone, keys = [], opts = {}) {
   // While a game's welcome plays its board (pass MP), a board's own reading is skipped as if it were said, so a wait that hangs on its
   // end moves on; the welcome's own lines pass opts.intro.
   if (demoMute > 0 && !opts.intro) { if (onDone) setTimeout(onDone, 0); return () => {}; }
-  const gapAfter = (i) => Math.max(0, (typeof opts.gap === 'function' ? opts.gap(i) : opts.gap) || 0); const factor = opts.rate || 1;
+  // The young voice (pass MQ): a rest between texts and between sentences unless the caller gives its own, and a slower device voice;
+  // a recorded clip keeps its own pace (its playback rate never takes the young factor). The young rest falls between one text and the
+  // next, never after the last (round one's code check: a young reading said it was done a rest late, so a young game's welcome lines
+  // were 1,150 ms apart, not INTRO_GAP's 700).
+  const young = opts.young !== undefined ? !!opts.young : speechYoung();
+  const gapAfter = (i) => Math.max(0, (opts.gap === undefined ? (young && i + 1 < texts.length ? YOUNG_PAUSE_MS : 0) : typeof opts.gap === 'function' ? opts.gap(i) : opts.gap) || 0); const factor = opts.rate || 1;
+  const pauseOf = typeof opts.pause === 'function' ? opts.pause : young ? restBefore(YOUNG_PAUSE_MS) : null;
   // A clip plays a little slower on the snail (pass MH): the rate follows SPEECH_NUDGE, read again whenever the pace changes.
   const clipRate = () => (SPEECH_NUDGE < 0 ? SNAIL_CLIP_RATE : 1) * factor;
   if (keys.length && keys.every((k) => clipFor(k))) {
@@ -1621,7 +1686,7 @@ function speakSequence(texts, onIndex, onDone, keys = [], opts = {}) {
     return stopClips;
   }
   if (!window.speechSynthesis) return () => {};
-  const ticket = ++speechTicket; const ss = window.speechSynthesis;
+  const ticket = ++speechTicket; const ss = window.speechSynthesis; restUntil = 0;
   // Where the voice is: the text it is reading and the piece inside it, moved on as each piece's turn comes. A new pace starts a new
   // run (run), so the pieces of a cancelled run say nothing when they report their end.
   const place = { i: 0, k: 0 }; let run = 0;
@@ -1642,14 +1707,14 @@ function speakSequence(texts, onIndex, onDone, keys = [], opts = {}) {
     speechAlive = [];   // held, as speak() holds its own, so the browser cannot let them go before they end (the code check, pass MI)
     sayPieces(pieces, from, {
       alive: () => mine === run && ticket === speechTicket,
-      utter: (u, piece) => shapeVoice(u, piece, voice, factor),
+      utter: (u, piece) => shapeVoice(u, piece, voice, factor, young),
       onBegin: () => { began = true; },
       onPiece: (k) => { place.i = i; place.k = k; onIndex(i, pieces[k].sentence || 0); },
       // In a pause, and in the gap after a text (a title's, a paragraph's), the place is already the next piece or the next text, so
       // a pace change there starts with what comes next and says nothing twice (round one's code check, pass MP).
       onRest: (k) => { place.i = i; place.k = k; },
-      onDone: () => { const gap = gapAfter(i); if (gap) { place.i = i + 1; place.k = 0; setTimeout(() => { if (mine === run) say(i + 1); }, gap); } else say(i + 1); },
-      pause: typeof opts.pause === 'function' ? opts.pause : null,
+      onDone: () => { const gap = gapAfter(i); if (gap) { place.i = i + 1; place.k = 0; if (i + 1 < texts.length) restUntil = Date.now() + gap + 60; setTimeout(() => { if (mine === run) say(i + 1); }, gap); } else say(i + 1); },
+      pause: pauseOf,
     });
   };
   // Each delayed start checks that no newer pace has taken over in the meantime (the code and screen checks, pass MH: two pace
@@ -1671,7 +1736,7 @@ function speakSequence(texts, onIndex, onDone, keys = [], opts = {}) {
 // right of the card it sits in; otherwise it is a full button. The "on silent" note is
 // shown by the page, at its foot, once anything has been spoken.
 let onSpoke = null;
-function SpeakButton({ text, label, full = false, corner = false, mini = false, cue = 0 }) {
+function SpeakButton({ text, label, full = false, corner = false, mini = false, cue = 0, pause = undefined }) {
   // Tapping while it reads stops it; the button watches the voice so the label follows what is happening. cue (pass MP): its owner
   // started the reading itself (a game's speaker pressed during the welcome reads once the welcome has gone), so it shows reading.
   const [reading, setReading] = useState(false);
@@ -1680,7 +1745,7 @@ function SpeakButton({ text, label, full = false, corner = false, mini = false, 
   if (!canSpeak()) {
     return corner || mini ? null : <p style={{ margin: '0 0 12px', fontSize: 14, color: C.muted }}>Reading aloud is not available on this device or in this preview. The words are all on screen.</p>;
   }
-  const press = () => { if (reading) { speechTicket += 1; window.speechSynthesis.cancel(); stopSound(); setReading(false); return; } speak(text); setReading(true); if (onSpoke) onSpoke(); };
+  const press = () => { if (reading) { speechTicket += 1; restUntil = 0; window.speechSynthesis.cancel(); stopSound(); setReading(false); return; } speak(text, pause === undefined ? {} : { pause }); setReading(true); if (onSpoke) onSpoke(); };
   const shownLabel = reading ? 'Stop reading' : label;
   if (mini) {
     return (
@@ -1707,6 +1772,19 @@ function SpeakButton({ text, label, full = false, corner = false, mini = false, 
     </div>
   );
 }
+// The placeholder voice note (pass MQ, Mikey's words for the people testing the app now, with his answer to Q51): small and quiet at
+// the foot of every page that speaks with the device's voice (a lesson, practice, a read-aloud result, a story, the whole book, a
+// Wonder question, a course's celebration, a Quick Review's result, a game, a letter coloring page), never on a device with no voice,
+// where nothing is heard. A page whose every line has a recorded clip once the ElevenLabs clips exist (keys, read by clipFor) shows
+// it no more, so it goes page by page as the recordings arrive (EARMARKS A41).
+const VOICE_NOTE = 'All spoken audio on this page will be updated during the final phases of development. What you hear now is merely a placeholder spoken by your device.';
+function VoiceNote({ keys = null }) {
+  if (!canSpeak()) return null;
+  if (keys && keys.length && keys.every((k) => clipFor(k))) return null;
+  return <p data-voice-note="" className="edu-no-print" style={{ margin: '22px auto 0', maxWidth: 460, fontSize: 13, lineHeight: 1.5, color: C.muted, textAlign: 'center' }}>{VOICE_NOTE}</p>;
+}
+// A story's clip keys, its title and then each paragraph (S7-0, S7-1 ...), as the audio ledger names them.
+function storyClipKeys(story) { return story ? [`${story.art}-0`, ...(story.words || []).map((_, i) => `${story.art}-${i + 1}`)] : []; }
 function SilentNote({ shown }) {
   return shown && canSpeak() ? <p style={{ margin: '14px 0 0', fontSize: 13, color: C.muted, textAlign: 'center' }}>If you hear nothing, check that your device is not on silent.</p> : null;
 }
@@ -1752,7 +1830,7 @@ function MoreInfoSheet({ insight, face, onClose, visual = null, young = false })
   const read = () => {
     if (stopRef.current) { const stop = stopRef.current; stopRef.current = null; stop(); setLit(null); setReading(false); return; }
     setReading(true);
-    stopRef.current = speakSequence(parts.map(spokenWords), (i, s) => setLit({ i, s }), () => { stopRef.current = null; setLit(null); setReading(false); }, [], { gap: young ? MORE_INFO_GAP_YOUNG : MORE_INFO_GAP, rate: young ? MORE_INFO_RATE_YOUNG : 1 });
+    stopRef.current = speakSequence(parts.map(spokenWords), (i, s) => setLit({ i, s }), () => { stopRef.current = null; setLit(null); setReading(false); }, [], { gap: young ? MORE_INFO_GAP_YOUNG : MORE_INFO_GAP, rate: young ? MORE_INFO_RATE_YOUNG : 1, young: false, ...(young ? { pause: restBefore(YOUNG_PAUSE_MS) } : {}) });
     if (onSpoke) onSpoke();
   };
   const litAt = (i) => (lit && lit.i === i ? lit.s : null);
@@ -2005,9 +2083,13 @@ const KID_ANIMATION = () => `
 @media (hover: hover) and (pointer: fine) { .edu-key-hint { display: block; text-align: center; margin-top: 3px; font-size: 12px; font-weight: 700; line-height: 1; color: ${B.muted}; font-variant-numeric: tabular-nums; } }
 .edu-demo-held { filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.22)); }
 .edu-wobble { animation: edu-wobble 0.55s ease-in-out; }
-/* A wrong move's still sign, drawn only where less motion is asked for (the media rule below shows it): Spot It's dashed ring and
-   Teach the Robot's solid one. */
-.edu-still-sign { display: none; }
+/* A wrong move's still sign (pass MP with less motion asked for, round three's second read; since pass MQ with motion on too, beside
+   the wobble, at Mikey's word, his answer to Q66, "Q66 - A"): a button or a card in a game that wobbles wears a red-brown dashed edge
+   (B.clay) for the same moment, so every child sees one sign and every line can name it; a piece drawn in a board's SVG shows its
+   own, Spot It's a dashed ring and Teach the Robot's a solid one (edu-still-sign); the dots, the path's squares, the letters and the
+   map a clay edge or fill in any case; and Catch and Jump the point lost and the frog sent back. With motion on the edge rides the
+   wobble, since an outline moves with its element. */
+.edu-game-box .edu-wobble:not(g):not(polygon) { outline: 3px dashed #B9634A; outline-offset: 2px; }
 /* A chip on a game board wobbles in the board's own units: the board's SVG reads a px as one of its 100 units (about 3.6 screen
    px on a phone), so the page's wobble swung a Step on the Circles chip about 30 px, out of its cell (pass MK, the second read). */
 @keyframes edu-wobble-chip { 0%, 100% { transform: translateX(0) rotate(0deg); } 20% { transform: translateX(-1.6px) rotate(-8deg); } 40% { transform: translateX(1.6px) rotate(8deg); } 60% { transform: translateX(-1px) rotate(-4deg); } 80% { transform: translateX(1px) rotate(4deg); } }
@@ -2409,13 +2491,8 @@ html[data-theme="dark"] .edu-slide-in { background-image: linear-gradient(90deg,
   .edu-glow, .edu-breathe, .edu-slide-in, .edu-pulse, .edu-zoom-back, .edu-stress, .edu-twinkle-star, .edu-rainbow, .edu-colorwash, .edu-colorwash-soft, .edu-sparkle, .edu-side path { animation: none; }
   .edu-side path { stroke-dasharray: none; }
   .edu-halo, .edu-drift, .edu-cheer, .edu-wobble, .edu-wobble-chip, .edu-burst, .edu-rise, .edu-sway, .edu-star-twinkle, .edu-grow, .edu-draw, .edu-settle, .edu-settle-late, .edu-note-in { animation: none; }
-  /* A wrong move keeps a sign with motion off (pass MP, round three's second read; the game brief's rule since pass MK: a wrong move's
-     sign is readable with motion off too). A button or a card in a game that would have wobbled wears a red-brown dashed edge (B.clay)
-     for the same moment instead; it had shown nothing in thirty games. A piece drawn in a board's SVG shows its own: Spot It's a
-     dashed ring and Teach the Robot's a solid one (edu-still-sign); the dots, the path's squares, the letters and the map a clay edge or fill in
-     any case; and Catch and Jump the point lost and the frog sent back. */
-  .edu-game-box .edu-wobble:not(g):not(polygon) { outline: 3px dashed #B9634A; outline-offset: 2px; }
-  .edu-still-sign { display: inline; }
+  /* A wrong move keeps its sign with motion off (pass MP, round three's second read; the game brief's rule since pass MK): the
+     wobble stops, and the red-brown edge and the still rings above stay, as they show with motion on since pass MQ (Q66). */
   /* The stars of a right answer fly out and fade, so with motion off none shows (pass LW: a still star sat on the explanation picture). */
   .edu-burst { opacity: 0; }
   .edu-draw { stroke-dasharray: none; }
@@ -2469,18 +2546,24 @@ function StudentPicture({ name, tint = null, size = 56 }) {
   // on white, 3.6 on the dark theme's paper and 3.0 on its tiles (the rules test reads it). Since pass MO its ears have soft pink
   // insides too, drawn behind its head, so it reads as a rabbit at a glance at any size.
   const fur = { stroke: '#857356', strokeWidth: 1.5 };
+  // The duck and the bee wear a thin deeper-gold outline wherever they are drawn, in both themes (pass MQ, Mikey's answer to Q62,
+  // "Q62 - A"): the duck's yellow read 1.5 to 1 on a white answer tile and the bee's 1.9, the palest things on a pre-K screen, where a
+  // picture a child must see keeps 3 to 1. #94741A reads 3 to 1 or better on white, on every name picture's tint, and on the dark
+  // theme's paper and tiles, as the rabbit's brown does (Q56's #9C7A14 read 2.8 on the berry and lilac tints, which the name
+  // pictures sit on; the rules test reads it). The bee's pale wings take the same edge, since on white they read 1.2 to 1.
+  const gild = { stroke: '#94741A', strokeWidth: 1.5 };
   const faces = {
     fox: <g><path d="M12 44 L18 14 L30 26 L42 14 L48 44 Z" fill="#D98B3D" /><circle cx="24" cy="34" r="2.6" fill="#24291F" /><circle cx="36" cy="34" r="2.6" fill="#24291F" /><path d="M27 41 L30 44 L33 41 Z" fill="#24291F" /></g>,
     owl: <g><path d="M14.5 25 L13 8.5 L24 17 Z M45.5 25 L47 8.5 L36 17 Z" fill="#7A6A4D" strokeLinejoin="round" /><ellipse cx="30" cy="34" rx="18" ry="20" fill="#8C7A5B" /><path d="M14 38 Q15.5 47 22 51 M46 38 Q44.5 47 38 51" fill="none" stroke="#6E5F44" strokeWidth="2" strokeLinecap="round" /><ellipse cx="30" cy="47" rx="9" ry="6.5" fill="#B4A07A" /><circle cx="22" cy="30" r="8.6" fill="#A8946D" /><circle cx="38" cy="30" r="8.6" fill="#A8946D" /><circle cx="22" cy="30" r="7" fill="#F5F1E6" /><circle cx="38" cy="30" r="7" fill="#F5F1E6" /><circle cx="22" cy="30" r="3" fill="#24291F" /><circle cx="38" cy="30" r="3" fill="#24291F" /><path d="M27 40 L30 46 L33 40 Z" fill="#C79A3D" /></g>,
     frog: <g><ellipse cx="30" cy="36" rx="20" ry="14" fill="#5E9A62" /><circle cx="20" cy="22" r="7" fill="#5E9A62" /><circle cx="40" cy="22" r="7" fill="#5E9A62" /><circle cx="20" cy="22" r="3" fill="#24291F" /><circle cx="40" cy="22" r="3" fill="#24291F" /><path d="M20 40 Q30 47 40 40" fill="none" stroke="#24291F" strokeWidth="2.5" strokeLinecap="round" /></g>,
     whale: <g><path d="M8 34 Q30 12 52 34 Q30 52 8 34 Z" fill="#5A8EA3" /><path d="M46 20 L54 12 L52 24 Z" fill="#5A8EA3" /><circle cx="20" cy="32" r="2.6" fill="#24291F" /><path d="M14 38 Q20 42 26 38" fill="none" stroke="#24291F" strokeWidth="2" strokeLinecap="round" /></g>,
-    bee: <g><ellipse cx="30" cy="36" rx="16" ry="12" fill="#E2B83A" /><rect x="22" y="26" width="5" height="20" fill="#24291F" /><rect x="34" y="26" width="5" height="20" fill="#24291F" /><ellipse cx="22" cy="20" rx="8" ry="5" fill="#DCE9F5" opacity="0.9" /><ellipse cx="38" cy="20" rx="8" ry="5" fill="#DCE9F5" opacity="0.9" /><circle cx="15" cy="34" r="2.2" fill="#24291F" /></g>,
+    bee: <g><ellipse cx="30" cy="36" rx="16" ry="12" fill="#E2B83A" {...gild} /><rect x="22" y="26" width="5" height="20" fill="#24291F" /><rect x="34" y="26" width="5" height="20" fill="#24291F" /><ellipse cx="22" cy="20" rx="8" ry="5" fill="#DCE9F5" {...gild} /><ellipse cx="38" cy="20" rx="8" ry="5" fill="#DCE9F5" {...gild} /><circle cx="18" cy="34" r="2.2" fill="#24291F" /></g>,
     cat: <g><path d="M14 44 L14 18 L24 26 L36 26 L46 18 L46 44 Z" fill="#A9A19A" /><circle cx="24" cy="34" r="2.6" fill="#24291F" /><circle cx="36" cy="34" r="2.6" fill="#24291F" /><path d="M27 40 L30 43 L33 40 Z" fill="#B45A3C" /><path d="M8 40 L22 41 M8 46 L22 44 M52 40 L38 41 M52 46 L38 44" stroke="#24291F" strokeWidth="1.5" /></g>,
     turtle: <g><ellipse cx="30" cy="36" rx="18" ry="12" fill="#6A8F5B" /><circle cx="48" cy="34" r="6" fill="#8FB07E" /><circle cx="50" cy="33" r="1.8" fill="#24291F" /><path d="M18 32 L24 30 L30 32 L36 30 L42 32" fill="none" stroke="#4F6E44" strokeWidth="2" /></g>,
     rabbit: <g><ellipse cx="23" cy="18" rx="5" ry="12" fill="#E8DFD3" {...fur} /><ellipse cx="37" cy="18" rx="5" ry="12" fill="#E8DFD3" {...fur} /><ellipse cx="23" cy="19" rx="2.2" ry="8" fill="#EDB9B9" /><ellipse cx="37" cy="19" rx="2.2" ry="8" fill="#EDB9B9" /><ellipse cx="30" cy="38" rx="14" ry="12" fill="#E8DFD3" {...fur} /><circle cx="25" cy="36" r="2.4" fill="#24291F" /><circle cx="35" cy="36" r="2.4" fill="#24291F" /><path d="M28 42 L30 44 L32 42 Z" fill="#D98B8B" /></g>,
     bear: <g><circle cx="30" cy="34" r="16" fill="#8B6B4A" /><circle cx="18" cy="22" r="6" fill="#8B6B4A" /><circle cx="42" cy="22" r="6" fill="#8B6B4A" /><ellipse cx="30" cy="40" rx="7" ry="5" fill="#C9A98A" /><circle cx="24" cy="31" r="2.4" fill="#24291F" /><circle cx="36" cy="31" r="2.4" fill="#24291F" /><circle cx="30" cy="38" r="2.4" fill="#24291F" /></g>,
     fish: <g><path d="M10 34 Q26 16 44 34 Q26 52 10 34 Z" fill="#E28A5B" /><path d="M44 34 L54 24 L54 44 Z" fill="#E28A5B" /><circle cx="20" cy="32" r="2.6" fill="#24291F" /><path d="M26 26 Q30 34 26 42" fill="none" stroke="#C9704A" strokeWidth="2" /></g>,
-    duck: <g><ellipse cx="32" cy="38" rx="17" ry="11" fill="#F0D45C" /><circle cx="20" cy="26" r="9" fill="#F0D45C" /><path d="M11 27 L4 30 L11 32 Z" fill="#E28A2B" /><circle cx="18" cy="24" r="2.2" fill="#24291F" /></g>,
+    duck: <g><ellipse cx="32" cy="38" rx="17" ry="11" fill="#F0D45C" {...gild} /><path d="M14 26 L4 30 L14 32.5 Z" fill="#E28A2B" /><circle cx="20" cy="26" r="9" fill="#F0D45C" {...gild} /><circle cx="18" cy="24" r="2.2" fill="#24291F" /></g>,
     snail: <g><path d="M8 44 L40 44 Q46 44 46 38 L46 30" fill="none" stroke="#7A9B6C" strokeWidth="8" strokeLinecap="round" /><circle cx="28" cy="32" r="13" fill="#C98B5E" /><circle cx="28" cy="32" r="7" fill="none" stroke="#A96F45" strokeWidth="3" /><path d="M44 30 L42 20 M48 30 L50 20" stroke="#7A9B6C" strokeWidth="2.5" strokeLinecap="round" /><circle cx="42" cy="19" r="2" fill="#24291F" /><circle cx="50" cy="19" r="2" fill="#24291F" /></g>,
   };
   if (!faces[name]) return null;
@@ -3955,8 +4038,8 @@ function StoryBody({ story, pace: paceDefault = null, part = null, autoRead = fa
     const card = cardRef.current; followPaused.current = false; autoScrollUntil.current = Date.now() + 1200;
     if (card && typeof window !== 'undefined' && window.scrollTo) window.scrollTo({ top: Math.max(0, card.getBoundingClientRect().top + window.scrollY - 12), behavior: scrollWay() });
     if (onReadingChange) onReadingChange(true);
-    const keys = [`${story.art}-0`, ...story.words.map((_, i) => `${story.art}-${i + 1}`)];
-    stopRef.current = speakSequence([`${story.title}.`, ...story.words], (i, si) => { setReadingAt(i - 1); setReadingSentence(si || 0); }, () => { stopRef.current = null; setReadingAt(-1); setVoiceWatch(0); if (onReadingChange) onReadingChange(false); }, keys, { gap: (i) => storyGap(i === 0), pause: storyPause });
+    const keys = storyClipKeys(story);
+    stopRef.current = speakSequence([`${story.title}.`, ...story.words], (i, si) => { setReadingAt(i - 1); setReadingSentence(si || 0); }, () => { stopRef.current = null; setReadingAt(-1); setVoiceWatch(0); if (onReadingChange) onReadingChange(false); }, keys, { gap: (i) => storyGap(i === 0), pause: storyPause, young: false });
     if (!keys.every((k) => clipFor(k))) setVoiceWatch((n) => n + 1);   // the device voice reads, so the page watches it
   };
   // A story that reads itself (pass MD): a read-aloud course's lesson story starts its voice a moment after the page opens,
@@ -5298,9 +5381,10 @@ function TeachGame({ game, round, onScore = null, demo = false }) {
             {board.items.map(([x, y, kind], i) => { const isKnown = known.includes(i); const g = guesses[i]; const right = g === kind; return (
               <g key={i} role="button" tabIndex={0} data-demo-tap={demo && (!boardDone && i === wrong[0]) ? '' : undefined} aria-label={isKnown ? `${kind}: taught` : `${kind}: robot says ${g}`} onClick={() => teach(i)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); teach(i); } }} className={nudge === i ? 'edu-wobble' : undefined} style={{ cursor: isKnown || right ? 'default' : 'pointer' }}>
                 <circle cx={x} cy={y} r="6.6" fill="none" stroke={isKnown ? B.ink : ring(g)} strokeWidth={isKnown ? 1.6 : 1.3} strokeDasharray={isKnown ? undefined : '2.2 1.4'} />
-                {/* A fruit the robot already knows, or already gets right, wobbles when it is tapped; with less motion asked for it wears
-                    a red-brown ring for that moment instead, solid, since the board's own dashed rings say what the robot guesses
-                    (round five's second read: a dashed one read as "robot says apple", even on a banana). */}
+                {/* A fruit the robot already knows, or already gets right, wobbles when it is tapped and wears a red-brown ring for that
+                    moment (with motion on too since pass MQ, Q66; with less motion asked for, the ring alone), solid, since the board's
+                    own dashed rings say what the robot guesses (round five's second read: a dashed one read as "robot says apple", even
+                    on a banana). */}
                 {nudge === i && <circle className="edu-still-sign" cx={x} cy={y} r="8.4" fill="none" stroke={B.clay} strokeWidth="1.6" />}
                 {kind === 'apple' ? <g><circle cx={x} cy={y + 0.4} r="3.6" fill="#D9534F" stroke="#8E2E2A" strokeWidth="0.6" /><path d={`M ${x} ${y - 3.2} q 0.4 -1.6 1.4 -2.4`} fill="none" stroke="#5E4A2E" strokeWidth="0.8" strokeLinecap="round" /></g>
                   : <path d={`M ${x - 3.8} ${y - 1.6} q 3.8 5.6 7.6 0 q -3.6 2.6 -7.6 0 z`} fill="#F2C94C" stroke="#A8841C" strokeWidth="0.6" strokeLinejoin="round" />}
@@ -5349,7 +5433,9 @@ function BitsGame({ game, round, onScore = null, demo = false }) {
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six numbers in {ticks} seconds. Tap the round arrow for new ones.</p> : (
         <div style={{ textAlign: 'center' }}>
           <p style={{ margin: '4px 0 2px', fontSize: 15, color: B.muted }}>Target</p>
-          <p aria-live="polite" style={{ margin: '0 0 10px', fontSize: 40, fontWeight: 800, color: hit ? B.green : B.ink, lineHeight: 1 }}>{target}</p>
+          {/* The number's line is a little taller than the number (pass MQ, the game layout audit: at a line height of 1 its digits
+              reached 4 pixels past their line on every screen, older than the pass). */}
+          <p aria-live="polite" style={{ margin: '0 0 10px', fontSize: 40, fontWeight: 800, color: hit ? B.green : B.ink, lineHeight: 1.1 }}>{target}</p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(8, minmax(0, 1fr))', gap: 6, maxWidth: 420, margin: '0 auto 10px' }}>
             {places.map((v, i) => (
               <button key={v} type="button" data-demo-tap={demo && (i === demoFlip) ? '' : undefined} onClick={() => flip(i)} aria-pressed={!!on[i]} aria-label={`Switch worth ${v}, ${on[i] ? 'on' : 'off'}`} className="edu-press" style={{ fontFamily: FONT, padding: '8px 0 6px', borderRadius: 10, border: `2px solid ${on[i] ? B.green : B.line}`, background: on[i] ? B.greenSoft : '#fff', color: B.ink, cursor: done || hit ? 'default' : 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, minHeight: 64 }}>
@@ -5630,12 +5716,13 @@ function SpotGame({ game, round, onScore = null, demo = false }) {
             {sc.parts.map((part, i) => { const hit = found.includes(i); return (
               <g key={i} role="button" tabIndex={0} data-demo-tap={demo && (!pictureDone && !done && i === sc.parts.findIndex((pt, j) => !found.includes(j) && spotMatches(pt, ask))) ? '' : undefined} aria-label={`${part[1]} ${word[part[0]]}`} className={nudge === i ? 'edu-wobble' : undefined} onClick={() => tap(i)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tap(i); } }} style={{ cursor: hit ? 'default' : 'pointer' }}>
                 {hit && <circle cx={part[2]} cy={part[3]} r={part[4] * 0.9} fill="none" stroke={B.green} strokeWidth="1.6" strokeDasharray="2.5 1.5" />}
-                {/* A wrong piece wobbles; with less motion asked for it wears a red-brown dashed ring for that moment instead. */}
+                {/* A wrong piece wobbles and wears a red-brown dashed ring for that moment (with motion on too since pass MQ, Q66; with less
+                    motion asked for, the ring alone). */}
                 {nudge === i && <circle className="edu-still-sign" cx={part[2]} cy={part[3]} r={part[4] * 0.9} fill="none" stroke={B.clay} strokeWidth="1.6" strokeDasharray="2.5 1.5" />}
                 {piece(part)}
               </g>); })}
           </svg>
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 4, margin: '10px 0 8px' }}><p data-spot-ask={pictureDone ? '' : ask.say} data-demo-look="" style={{ margin: 0, fontSize: 18, fontWeight: 700, color: B.ink, minHeight: 26 }}>{pictureDone ? 'All three found.' : ask.say}</p>{!pictureDone && <ReplaySpeaker text={ask.say} label="Hear it again" />}</div>
+          <SpokenRow margin="10px 0 8px" speaker={!pictureDone && <ReplaySpeaker text={ask.say} label="Hear it again" />}><p data-spot-ask={pictureDone ? '' : ask.say} data-demo-look="" style={{ margin: 0, fontSize: 18, fontWeight: 700, color: B.ink, minHeight: 26, textAlign: 'center' }}>{pictureDone ? 'All three found.' : ask.say}</p></SpokenRow>
           {pictureDone ? <Btn pal={B} onClick={next}>{k + 1 >= 4 ? 'Finish' : 'Next picture'}</Btn> : <p style={{ margin: 0, fontSize: 13, color: B.muted }}>{sc.asks.length - a} to find</p>}
         </div>
       )}
@@ -5669,9 +5756,9 @@ function FindLetterGame({ round, demo = false }) {
   const timers = useRef([]); const live = useRef(0);
   const later = (fn, ms) => { const mine = live.current; timers.current.push(setTimeout(() => { if (mine === live.current) fn(); }, ms)); };
   const clear = () => { timers.current.forEach(clearTimeout); timers.current = []; };
-  // A backstop for a voice that never reports its end (a working voice ends each wait itself, as each line starts or ends); it
-  // was a real voice's pace until round two's code check found it cutting a slow voice's shape line short.
-  const backstop = (text) => 1200 + text.length * 100;
+  // A backstop for a voice that never reports its end (a working voice ends each wait itself, as each line starts or ends):
+  // voiceBackstopMs, with the speech code, a real voice's pace that grows with the young voice (pass MQ).
+  const backstop = voiceBackstopMs;
   const holdId = useRef(0);   // each wait is numbered, so a timer lifts only its own
   const boardRef = useRef(null); const refocus = useRef(false);   // a keyboard player keeps the board's focus at a new board
   useEffect(() => { if (!refocus.current || !boardRef.current) return; refocus.current = false; const g = boardRef.current.querySelector('g[role="button"]'); if (g) g.focus(); }, [k]);
@@ -5728,15 +5815,15 @@ function FindLetterGame({ round, demo = false }) {
     if (busy) later(() => { if (myHold === holdId.current) holdTo(false); }, 120); };
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 12 }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, minHeight: 44, marginBottom: 6 }}>
-        {/* The heading names no letter while the voice can (round two's checks): a printed capital above the cards is a shape to
-            match, and the game asks for a name. With no voice it names the letter, for a grown-up to read. */}
-        <p data-spot-ask={asked || ''} style={{ margin: 0, fontSize: 19, fontWeight: 700, color: B.ink, textAlign: 'center' }}>{done ? 'Twelve letters found. Tap the round arrow for more.' : asked === null ? 'All three found.' : canSpeak() ? 'Find the letter you hear.' : `Find the letter ${asked}.`}</p>
-        {asked !== null && canSpeak() && (
+      {/* The heading names no letter while the voice can (round two's checks): a printed capital above the cards is a shape to
+          match, and the game asks for a name. With no voice it names the letter, for a grown-up to read. Centred, with its speaker
+          to its right (SpokenRow, pass MQ). */}
+      <SpokenRow margin="0 0 6px" minHeight={44} speaker={asked !== null && canSpeak() && (
           <button type="button" data-demo-replay="" onClick={again} aria-label="Hear it again" title="Hear it again" className="edu-press" style={{ flex: '0 0 auto', width: 44, height: 44, borderRadius: 999, border: 'none', background: 'none', color: B.green, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill="currentColor" /><path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
-          </button>)}
-      </div>
+          </button>)}>
+        <p data-spot-ask={asked || ''} style={{ margin: 0, fontSize: 19, fontWeight: 700, color: B.ink, textAlign: 'center' }}>{done ? 'Twelve letters found. Tap the round arrow for more.' : asked === null ? 'All three found.' : canSpeak() ? 'Find the letter you hear.' : `Find the letter ${asked}.`}</p>
+      </SpokenRow>
       {/* On a sideways phone the board is held to the height left under its heading and above its dots (round two's game check),
           214 pixels since round three's screen check (pass MM): the heading can wrap to two lines there, and with 200 the row of
           dots sat at 391 on a 390-pixel screen. */}
@@ -6021,7 +6108,7 @@ function ShareGame({ game, round, onScore = null, demo = false }) {
       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Share the cookies</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Four fair shares in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 4, margin: '0 0 8px' }}><p data-demo-look="" style={{ margin: 0, fontSize: 18, fontWeight: 700, color: B.ink }}>{q.say}</p>{!got && <ReplaySpeaker text={q.say} />}</div>
+          <SpokenRow margin="0 0 8px" speaker={!got && <ReplaySpeaker text={q.say} />}><p data-demo-look="" style={{ margin: 0, fontSize: 18, fontWeight: 700, color: B.ink, textAlign: 'center' }}>{q.say.replace(/(\d+) (cookies|plates)/g, '$1\u00A0$2').replace('The same', 'The\u00A0same').replace('every plate', 'every\u00A0plate')}</p></SpokenRow>
           <div aria-label={`${left} cookies left in the pile`} style={{ display: 'flex', flexWrap: 'wrap', gap: 3, justifyContent: 'center', minHeight: 24, marginBottom: 10 }}>{Array.from({ length: left }, (_, i) => cookie(i))}</div>
           <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 10 }}>
             {plates.map((v, i) => <button key={i} type="button" className={`edu-press${nudge ? ' edu-wobble' : ''}`} data-demo-tap={demo && (!got && left > 0 && i === plates.indexOf(Math.min(...plates))) ? '' : undefined} aria-label={`Plate ${i + 1}: ${v} cookies`} onClick={() => tap(i)} style={{ fontFamily: FONT, width: 96, minHeight: 72, borderRadius: 48, border: `3px solid ${got ? B.green : B.line}`, background: '#fff', cursor: got ? 'default' : 'pointer', padding: 6, display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'center', justifyContent: 'center' }}>{v === 0 ? <span style={{ fontSize: 12, color: B.muted }}>Plate {i + 1}</span> : Array.from({ length: v }, (_, j) => cookie(j))}</button>)}
@@ -6188,6 +6275,41 @@ function ReplaySpeaker({ text, label = 'Hear the question again' }) {
     </button>
   );
 }
+// A spoken question and its speaker (pass MQ, Mikey, of Which Sense: "I think it is being pushed left by the speaker icon but the text
+// should be centered and the speaker icon should sit to the right of the text"): the words sit in the middle of three columns, so they
+// are centred on the board whatever the speaker's width, and the speaker sits in the column to their right, against the words; the
+// left column is as wide as the right, so the words never move when the speaker hides (after a right answer, or on a device with no
+// voice). Every game that asks a question beside a speaker uses it: Which Sense, Spot It, Share the Cookies, Grow the Plant, Find
+// the Tool and Find the Letter.
+// True centring costs the words a speaker's width on each side, so the row borrows ten pixels of the board's padding on each side
+// (every such board has 12 or 14) and keeps its side columns to the speaker's own width (40 pixels; Find the Letter's 44 sits 2 over
+// into the borrowed edge), and words that must wrap wrap in balanced lines (measured on a 390-pixel phone: Find the Letter's
+// heading, 219 pixels, and Which Sense's card, 246, wrapped in a row without the borrowed edge and fit one line in it).
+// texts and sizeAs (pass MQ, round one's screen check): every line the words can show this round and how each is drawn. The words
+// keep the height of the tallest of them at the widest room they can have (the row less the two 40-pixel columns and the gaps),
+// measured in a hidden copy as the row opens and again whenever the window's size changes, so a right answer's longer line ("Yes:
+// your nose.") never pushes the answer boxes down mid-round, and the next question never pulls them up (they had moved on four
+// questions in five in Which Sense and Find the Tool on a 320-pixel phone and on one held sideways). The words sit in the middle of
+// the height they keep. Where the device can speak, the speaker's column keeps a speaker's 40 pixels while the speaker hides after a
+// right answer (round three's screen read: Share the Cookies' plates rose 13 pixels on a laptop, and Grow the Plant's tiles 16), and
+// the measuring copy keeps no height, so no code can scroll the board down into it.
+function SpokenRow({ speaker = null, margin = 0, minHeight = 0, texts = null, sizeAs = null, children }) {
+  const rowRef = useRef(null); const measureRef = useRef(null); const [tallest, setTallest] = useState(0);
+  const measuring = !!(texts && texts.length && sizeAs); const textsKey = measuring ? texts.join('\n') : '';
+  React.useLayoutEffect(() => {
+    if (!measuring) { setTallest(0); return undefined; }
+    const measure = () => { const row = rowRef.current; const box = measureRef.current; if (!row || !box) return; box.style.width = `${Math.max(0, row.clientWidth - 84)}px`; let h = 0; for (const el of box.children) h = Math.max(h, el.getBoundingClientRect().height); setTallest(Math.ceil(h)); };
+    measure(); window.addEventListener('resize', measure); return () => window.removeEventListener('resize', measure);
+  }, [textsKey]);
+  return (
+    <div ref={rowRef} data-spoken-row="" style={{ position: 'relative', display: 'grid', gridTemplateColumns: 'minmax(40px, 1fr) auto minmax(40px, 1fr)', alignItems: 'center', columnGap: 2, margin, marginLeft: -10, marginRight: -10, minHeight }}>
+      <span aria-hidden="true" />
+      <div data-spoken-words="" style={{ minWidth: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', textWrap: 'balance', minHeight: tallest || undefined }}>{children}</div>
+      <div style={{ justifySelf: 'start', display: 'flex', alignItems: 'center', minHeight: canSpeak() ? 40 : 0 }}>{speaker}</div>
+      {measuring && <div ref={measureRef} aria-hidden="true" style={{ position: 'absolute', left: 0, top: 0, height: 0, overflow: 'hidden', visibility: 'hidden', pointerEvents: 'none', textWrap: 'balance' }}>{texts.map((t, i) => <div key={i} style={{ display: 'flex', justifyContent: 'center' }}><div>{sizeAs(t)}</div></div>)}</div>}
+    </div>
+  );
+}
 // The key a keyboard presses for a box (pass MP, Mikey: "It might be good to add discrete numbers below the senses so they will know
 // which number is assigned to what instead of guessing"): small and quiet under the box, and only where there is a keyboard and a
 // mouse or trackpad (.edu-key-hint, shown by a media query), since a phone has no keys to press.
@@ -6218,10 +6340,9 @@ function SenseGame({ game, round, onScore = null, demo = false }) {
       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Which sense?{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Five senses found in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 4, margin: '4px 0 12px' }}>
+          <SpokenRow margin="4px 0 12px" speaker={!got && <ReplaySpeaker text={`Which sense tells you about ${q.thing}?`} />} texts={rounds.flatMap((r) => [r.thing, `Yes: your ${word[r.sense].toLowerCase()}.`])} sizeAs={(t) => <div style={{ display: 'inline-block', border: '1.5px solid', borderRadius: 12, padding: '6px 14px' }}><p style={{ margin: 0, fontSize: 20, fontWeight: 700 }}>{t}</p></div>}>
             <DragCard onDrop={pick} off={got || done} demo={demo}><div data-demo-look="" style={{ display: 'inline-block', background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '6px 14px' }}><p style={{ margin: 0, fontSize: 20, fontWeight: 700, color: got ? B.green : B.ink }}>{got ? `Yes: your ${word[q.sense].toLowerCase()}.` : q.thing}</p></div></DragCard>
-            {!got && <ReplaySpeaker text={`Which sense tells you about ${q.thing}?`} />}
-          </div>
+          </SpokenRow>
           <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap' }}>
             {SENSES.map((v, n) => <div key={v} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}><button type="button" className={`edu-press${nudge === v ? ' edu-wobble' : ''}`} data-bin={v} data-demo-tap={demo && !got && v === q.sense ? '' : undefined} data-demo-drop={demo && !got && v === q.sense ? '' : undefined} aria-label={`Sense: ${v}`} onClick={() => pick(v)} style={{ fontFamily: FONT, width: 72, height: 78, borderRadius: 14, border: `2px solid ${B.green}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', padding: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2 }}><svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">{icon(v)}</svg><span style={{ fontSize: 12, fontWeight: 700 }}>{word[v]}</span></button><KeyHint k={n + 1} /></div>)}
           </div>
@@ -6326,7 +6447,7 @@ function AskGame({ game, round, onScore = null, demo = false }) {
 // Whose Turn Next (2026-09-30, pass GT, the kindergarten speech game). In plain terms: four friends sit in a circle,
 // one holds the talking stick, and the child taps the friend whose turn comes next, going around the circle. This
 // component only draws and reacts: the six rounds and every answer come from turnRounds() in logic.mjs, so the screen
-// cannot get an answer wrong on its own. Tapping the right friend moves on and says why; a wrong friend wobbles. The
+// cannot get an answer wrong on its own. Tapping the right friend moves on and says why; a wrong friend wobbles with a red-brown edge. The
 // clock counts up and the finished time is handed to onScore. The board carries the right name in `data-turn-answer`
 // so the browser test can play a round the way a child would. Everything is drawn with B (the paper palette) because
 // game boards sit on the almond paper board in both themes.
@@ -6345,28 +6466,44 @@ function TurnGame({ game, round, onScore = null, demo = false }) {
   useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]); // the wobble lasts half a second
   useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 900); return () => clearTimeout(t); }, [got]); // after praise, the next holder
   const pick = (name) => { if (got || done) return; if (name === q.answer) setGot(true); else setNudge(name); };
-  // Four seats around a circle, one per friend, with the talking stick drawn beside the current holder.
+  // Four seats around a circle, one per friend, with the talking stick in the current holder's hand.
   const seats = TURN_FRIENDS.map((name, i) => { const a = (-Math.PI / 2) + i * (Math.PI / 2); return { name, x: 100 + 62 * Math.cos(a), y: 100 + 62 * Math.sin(a) }; });
   const skins = ['#F5CBA7', '#C68642', '#8D5524', '#E0AC69'];
+  // The talking stick (pass MQ, Mikey: "See images for strange red line on game"): until then a clay line with a knob stood beside
+  // the holder's face and read as a stray red line. Now it is a wooden stick, a little tilted, with two bands of color and a round
+  // bead on top, held up in a small hand in the holder's own skin tone at the side of the face, so it reads as a stick being held.
+  // Drawn in the paper palette with the board's dark edge, the same in both themes.
+  const stick = (st, skin) => (
+    <g data-turn-stick="" transform={`translate(${st.x + 24} ${st.y - 4}) rotate(14)`}>
+      <rect x="-2.7" y="-22" width="5.4" height="40" rx="2.7" fill="#B07A45" stroke={B.ink} strokeWidth="1.3" />
+      <rect x="-2.7" y="-15" width="5.4" height="3.2" fill={B.gold} stroke={B.ink} strokeWidth="0.8" />
+      <rect x="-2.7" y="-9.6" width="5.4" height="3.2" fill={B.green} stroke={B.ink} strokeWidth="0.8" />
+      <circle cx="0" cy="-24.5" r="3.8" fill={B.gold} stroke={B.ink} strokeWidth="1.3" />
+      <circle cx="0" cy="11.5" r="5.4" fill={skin} stroke={B.ink} strokeWidth="1.3" />
+      <path d="M-3.6 10.2h7.2M-3.6 13h7.2" stroke={B.ink} strokeWidth="0.9" strokeLinecap="round" opacity="0.55" />
+    </g>
+  );
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-turn-answer={done ? '' : q.answer}>
       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 6 }}><span>Whose turn next</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six turns in order in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
-          <svg viewBox="0 0 200 200" width="220" height="220" role="img" aria-label="Four friends in a circle, one holding the talking stick" style={{ display: 'block', margin: '0 auto 6px' }}>
+          <svg viewBox="0 0 200 200" width="220" height="220" role="img" aria-label={`Four friends in a circle. ${TURN_FRIENDS[q.holder]} holds the talking stick. The arrow in the middle shows the way turns go around the circle.`} style={{ display: 'block', margin: '0 auto 6px' }}>
             <circle cx="100" cy="100" r="62" fill="none" stroke={B.line} strokeWidth="2" strokeDasharray="4 6" />
-            <path d="M92 118l16 14" stroke={B.clay} strokeWidth="3" strokeLinecap="round" opacity="0" />
             {seats.map((st, i) => (
               <g key={st.name}>
                 <circle cx={st.x} cy={st.y} r="20" fill={skins[i]} stroke={B.ink} strokeWidth="1.5" />
                 <circle cx={st.x - 6} cy={st.y - 3} r="2.2" fill={B.ink} /><circle cx={st.x + 6} cy={st.y - 3} r="2.2" fill={B.ink} />
                 <path d={`M${st.x - 7} ${st.y + 6}q7 6 14 0`} fill="none" stroke={B.ink} strokeWidth="2" strokeLinecap="round" />
                 <text x={st.x} y={st.y + 34} textAnchor="middle" fontSize="12" fontWeight="700" fill={B.ink} fontFamily={FONT}>{st.name}</text>
-                {i === q.holder && <g><line x1={st.x + 22} y1={st.y - 18} x2={st.x + 30} y2={st.y + 10} stroke={B.clay} strokeWidth="4" strokeLinecap="round" /><circle cx={st.x + 22} cy={st.y - 18} r="4" fill={B.clay} /></g>}
+                {i === q.holder && stick(st, skins[i])}
               </g>
             ))}
-            <path d="M100 30 A70 70 0 0 1 170 100" fill="none" stroke={B.green} strokeWidth="2" markerEnd="url(#turn-arrow)" opacity="0.7" />
-            <defs><marker id="turn-arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill={B.green} /></marker></defs>
+            {/* The way turns go, in the middle of the circle (pass MQ): an arrow curving clockwise over the top, so it shows the direction
+                without pointing at any friend (its head had sat on Ben's face from Ava's seat, pointing at the answer whenever Ava held
+                the stick). */}
+            <path d="M76 104 A24 24 0 1 1 124 104" fill="none" stroke={B.green} strokeWidth="3" strokeLinecap="round" markerEnd="url(#turn-arrow)" />
+            <defs><marker id="turn-arrow" markerWidth="4" markerHeight="4" refX="2" refY="2" orient="auto"><path d="M0 0L4 2L0 4z" fill={B.green} /></marker></defs>
           </svg>
           <p style={{ margin: '0 0 10px', fontSize: 16, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 }}>{got ? `Yes: ${q.answer} is next around the circle.` : `${TURN_FRIENDS[q.holder]} has the stick. Who is next?`}</p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
@@ -6598,15 +6735,22 @@ function GrowGame({ game, round, onScore = null, demo = false }) {
             {q.need === 'soil' && !fixed ? <g><ellipse cx="50" cy="70" rx="20" ry="3.5" fill="#3A2A20" opacity="0.35" />{plant()}<path d="M50 64q-5 5-9 8M50 64q0 6-1 11M50 64q5 5 10 7" stroke="#E8D9B5" strokeWidth="1.6" fill="none" strokeLinecap="round" /></g>
               : <g><ellipse cx="50" cy="70" rx="20" ry="3.5" fill={q.need === 'water' && !fixed ? '#C9B08A' : '#6B4A2F'} />{q.need === 'water' && !fixed && <path d="M40 70l3 1.5M55 69.5l-2 1.8M47 71l2-1.2" stroke="#8C6A4A" strokeWidth="0.8" />}</g>}
           </svg>
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 4, margin: '0 0 4px' }}><p data-demo-look="" style={{ margin: 0, fontSize: 16, color: ink }}>{fixed ? `The ${q.plant} is growing!` : look.say}</p>{!fixed && <ReplaySpeaker text={`${look.say.replace('This plant', `This ${q.plant} plant`)} Tap what it needs.`} />}</div>
-          <p style={{ margin: '0 0 10px', fontSize: 17, fontWeight: 700, color: ink }}>Tap what the {q.plant} needs.</p>
+          {/* The words keep the height of the round's tallest line, each problem said and each "is growing" line, and the line under
+              them the height of the round's longest plant name, so the tiles never move on a right answer (round three's screen read,
+              pass MQ: 24 pixels on phones, 16 on a laptop, and up to 49 at 320 pixels, where "Tap what the sunflower needs." wraps). */}
+          <SpokenRow margin="0 0 4px" texts={rounds.flatMap((r) => [GROW_PROBLEMS[r.need].say, `The ${r.plant} is growing!`])} sizeAs={(t) => <p style={{ margin: 0, fontSize: 16 }}>{t}</p>} speaker={!fixed && <ReplaySpeaker text={`${look.say.replace('This plant', `This ${q.plant} plant`)} Tap what it needs.`} />}><p data-demo-look="" style={{ margin: 0, fontSize: 16, color: ink, textAlign: 'center' }}>{fixed ? `The ${q.plant} is growing!` : look.say}</p></SpokenRow>
+          <p style={{ margin: '0 0 10px', fontSize: 17, fontWeight: 700, color: ink, display: 'grid' }}><span style={{ gridArea: '1 / 1' }}>Tap what the {q.plant} needs.</span><span aria-hidden="true" style={{ gridArea: '1 / 1', visibility: 'hidden' }}>Tap what the {rounds.reduce((a, r) => (r.plant.length > a.length ? r.plant : a), '')} needs.</span></p>
           {hint && !fixed && <p role="status" style={{ margin: '0 0 10px', fontSize: 15, color: B.clay }}>{hint}</p>}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 6 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 4 }}>
             {q.items.map((item) => (
               <button key={item} type="button" data-demo-tap={demo && (!fixed && !done && item === q.need) ? '' : undefined} aria-label={`Give ${item}`} onClick={() => tap(item)} className={`edu-press${nudge === item ? ' edu-wobble' : ''}`}
-                style={{ fontFamily: FONT, background: B.surface, border: `2px solid ${B.line}`, borderRadius: 10, padding: '6px 2px', cursor: done || fixed ? 'default' : 'pointer', minWidth: 0 }}>
+                style={{ fontFamily: FONT, background: B.surface, border: `2px solid ${B.line}`, borderRadius: 10, padding: '6px 0', cursor: done || fixed ? 'default' : 'pointer', minWidth: 0 }}>
                 <svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true" style={{ display: 'block', margin: '0 auto' }}>{icon(item)}</svg>
-                <span style={{ display: 'block', fontSize: 12, color: ink, lineHeight: 1.2 }}>{item}</span>
+                {/* A soft hyphen lets sunshine break as sun-shine where five tiles are narrow (pass MQ, the game layout audit: it spilled
+                    out of its tile on a 320-pixel phone and a phone held sideways, older than the pass). Since round one's screen check
+                    the tiles sit 4 pixels apart with no side padding, so the word reads whole from 375 pixels up and the tiles keep their
+                    height there; on a 360 or 320 phone and on one held sideways it breaks. */}
+                <span style={{ display: 'block', fontSize: 12, color: ink, lineHeight: 1.2 }}>{item === 'sunshine' ? 'sun\u00ADshine' : item}</span>
               </button>
             ))}
           </div>
@@ -6797,12 +6941,14 @@ function ToolGame({ game, round, onScore = null, demo = false }) {
       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Find the tool{streak > 1 ? ` · ${streak} in a row` : ''}</span><span>{ticks}s · {Math.min(k + 1, rounds.length)} of {rounds.length}</span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six jobs, six tools, in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, margin: '4px 0 12px' }}>
+          <SpokenRow margin="4px 0 12px" speaker={!got && <ReplaySpeaker text={ask} label="Hear it" />} texts={rounds.flatMap((r) => [`Which tool does ${r.job} use?`, `Yes: ${r.job} uses a ${r.answer}.`])} sizeAs={(t) => <p style={{ margin: 0, fontSize: 19, fontWeight: 700, border: '1.5px solid', borderRadius: 12, padding: '6px 12px' }}>{t}</p>}>
             <DragCard onDrop={pick} off={got || done} demo={demo}><p data-demo-look="" style={{ margin: 0, fontSize: 19, fontWeight: 700, color: got ? B.green : B.ink, background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '6px 12px' }}>{got ? `Yes: ${q.job} uses a ${q.answer}.` : ask}</p></DragCard>
-            {!got && <ReplaySpeaker text={ask} label="Hear it" />}
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
-            {q.choices.map((name, n) => <div key={name} style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}><button type="button" className={`edu-press${nudge === name ? ' edu-wobble' : ''}`} data-bin={name} data-demo-tap={demo && !got && name === q.answer ? '' : undefined} data-demo-drop={demo && !got && name === q.answer ? '' : undefined} aria-label={`Tool: ${name}`} onClick={() => pick(name)} style={{ fontFamily: FONT, background: '#fff', border: `2px solid ${got && name === q.answer ? B.green : B.line}`, borderRadius: 14, padding: '10px 4px 8px', cursor: got ? 'default' : 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, color: B.ink, fontSize: 14, fontWeight: 600 }}><ToolIcon name={name} />{name}</button><KeyHint k={n + 1} /></div>)}
+          </SpokenRow>
+          {/* Columns and tiles that may shrink, and stethoscope breaking as stetho-scope, so three tiles fit a 320-pixel phone and one
+              held sideways (pass MQ, round one's screen check: the third ran 28 pixels past the board on the boards that deal
+              stethoscope, and a tap on it scrolled the board sideways). */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 10 }}>
+            {q.choices.map((name, n) => <div key={name} style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch', minWidth: 0 }}><button type="button" className={`edu-press${nudge === name ? ' edu-wobble' : ''}`} data-bin={name} data-demo-tap={demo && !got && name === q.answer ? '' : undefined} data-demo-drop={demo && !got && name === q.answer ? '' : undefined} aria-label={`Tool: ${name}`} onClick={() => pick(name)} style={{ fontFamily: FONT, background: '#fff', border: `2px solid ${got && name === q.answer ? B.green : B.line}`, borderRadius: 14, padding: '10px 4px 8px', cursor: got ? 'default' : 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, color: B.ink, fontSize: 14, fontWeight: 600 }}><ToolIcon name={name} />{name === 'stethoscope' ? 'stetho\u00ADscope' : name}</button><KeyHint k={n + 1} /></div>)}
           </div>
         </div>
       )}
@@ -7124,8 +7270,14 @@ function MythFactGame({ game, round, onScore = null, demo = false }) {
   );
 }
 const GAME_OF = { ship: ShipGame, dots: DotsGame, pairs: PairsGame, sort: SortGame, maze: MazeGame, jigsaw: JigsawGame, pong: PongGame, sprint: SprintGame, order: OrderGame, build: BuildGame, fix: FixGame, mix: MixGame, debug: DebugGame, ptable: PtableGame, evidence: EvidenceGame, catch: CatchGame, path: PathGame, buckets: BucketsGame, jump: JumpGame, map: MapGame, balance: BalanceGame, walk: WalkGame, teach: TeachGame, bits: BitsGame, pay: PayGame, price: PriceGame, loan: LoanGame, fund: FundGame, search: SearchGame, spot: SpotGame, pattern: PatternGame, shape: ShapeGame, chord: ChordGame, valid: ValidGame, reason: ReasonGame, because: BecauseGame, share: ShareGame, stat: StatGame, recall: RecallGame, face: FaceGame, sense: SenseGame, filler: FillerGame, room: RoomGame, ask: AskGame, turn: TurnGame, jar: JarGame, relation: RelationGame, sprout: SproutGame, grow: GrowGame, breakeven: BreakEvenGame, deal: DealGame, savejar: SaveJarGame, tool: ToolGame, ledger: LedgerGame, label: LabelGame, cpr: CprGame, greenred: GreenRedGame, mythfact: MythFactGame, cause: CauseGame, gdp: GdpGame, cite: CiteGame };
-// How to play, in a line or two, by kind of game (and by deck for the matching games).
-function gameInstructions(game) {
+// How to play, in a line or two, by kind of game (and by deck for the matching games). On a screen with no keyboard (keys false,
+// pass MQ, round one's screen check: Which Sense's help ended "or press its number" on a phone, where no numbers show) the keys
+// are left out, as a game's welcome leaves them out: "tap the box, or press its number" becomes "or tap the box".
+function gameInstructions(game, { keys = true } = {}) {
+  const text = gameInstructionsAll(game);
+  return keys ? text : text.replace(/, ([^,.]+), or press (?:its number|an arrow key)\./g, ', or $1.').replace(/ On a keyboard, [^.]*\./g, '');
+}
+function gameInstructionsAll(game) {
   if (game.kind === 'bits') return 'A number sits at the top and eight switches below it, worth 128 down to 1. Tap the switches on and off until the lit places add up to the number; the sum shows as you go. Six numbers, and the clock counts up.';
   if (game.kind === 'teach') return 'Twelve fruits, apples and bananas. The robot has seen one of each and guesses the rest from its nearest known fruit: a red ring means it guesses apple, a yellow ring banana. Tap a fruit the robot got wrong to teach it, and watch the guesses near it change. Four boards; fewer lessons is the better score.';
   if (game.kind === 'loan') return 'You owe money on something at a rate per month. Tap a payment: each tap is a month, interest is added on what is still owed, and the payment comes off. Watch what the smallest payment costs over time. Four loans; less interest paid in all is the better score.';
@@ -7151,23 +7303,28 @@ function gameInstructions(game) {
   if (game.kind === 'relation') return 'A line about two living things on a farm and four names: mutualism, parasitism, commensalism, predation. Tap the one that fits. Six cases, and the clock counts up. Drag the card onto its box, tap the box, or press its number.';
   if (game.kind === 'jar') return 'A jar of soil and water has settled: sand at the bottom, silt in the middle, clay on top, drawn to the true percentages. Tap the texture the layers show: sandy at eighty-five percent sand or more, clay at forty percent clay or more, and loam for the jars in between. Six jars, and the clock counts up.';
   if (game.kind === 'turn') return 'Four friends sit in a circle and one holds the talking stick. Tap the friend whose turn is next, going around the circle the way the arrow points. Six turns, and the clock counts up.';
-  if (game.kind === 'ask') return 'Something a friend said and four questions. Tap the question that is about what they said; a question about something else wobbles. Six a round, and the clock counts up.';
+  if (game.kind === 'ask') return 'Something a friend said and four questions. Tap the question that is about what they said; a question about something else gets a red-brown edge. Six a round, and the clock counts up.';
   if (game.kind === 'room') return 'A line somebody said and four rooms: friends, class, a job interview, a text to a grandparent. Tap the room the line fits. Six lines a round, and the clock counts up. Drag the card onto its box, tap the box, or press its number.';
-  if (game.kind === 'filler') return 'A line from a talk with filler words dropped into it: um, like, you know and their cousins. Tap every filler to strike it out; a real word wobbles. When the line is clean, it shows without its fillers, and the next comes. Five lines, and the clock counts up.';
+  if (game.kind === 'filler') return 'A line from a talk with filler words dropped into it: um, like, you know and their cousins. Tap every filler to strike it out; a real word gets a red-brown edge. When the line is clean, it shows without its fillers, and the next comes. Five lines, and the clock counts up.';
   if (game.kind === 'face') return 'A face and four feeling words. Read the eyebrows, the eyes and the mouth, and tap the word for what the face is feeling. Six faces a round, every feeling once, and the clock counts up. Drag the face onto its feeling, tap the word, or press its number.';
   if (game.kind === 'recall') return 'Five words appear for four seconds and then hide. Hold them in mind, then tap the one of four that was on the list. Five lists, and the clock counts up.';
   if (game.kind === 'reason') return 'A claim and a reason. Ask whether the reason bears on the claim at all, because a reason can be true and still have nothing to do with it, and tap Supports it or Does not. Six pairs a round, and the clock counts up. Flick the card left or right, tap a button, or press an arrow key.';
-  if (game.kind === 'because') return 'A claim and four becauses. Two are real reasons, about the thing and true; two are a headcount, an order, a wish, or something true about the wrong thing. Tap the real ones; a fake one wobbles. Five claims a round, and the clock counts up.';
+  if (game.kind === 'because') return 'A claim and four becauses. Two are real reasons, about the thing and true; two are a headcount, an order, a wish, or something true about the wrong thing. Tap the real ones; a fake one gets a red-brown edge. Five claims a round, and the clock counts up.';
   if (game.kind === 'search') return 'Thirty-two cards lie face down in order from smallest to largest, and a number to find is on one of them. Tap a card to turn it over; the board says whether the number is higher or lower. Halve what is left each time and six looks always find it. Four numbers; fewer looks is the better score.';
   if (game.kind === 'price') return 'A lemonade stand with twelve customers, each with a top price in mind you cannot see, a cost for the day and a cost per cup. Tap a price to try it: the people who will pay it light up, each holding a cup, and the profit shows as money in minus money out. Three tries a stand, then the best price is revealed. Four stands; more profit found is the better score.';
   if (game.kind === 'pay') return 'A thing to buy shows its price in dots; a small coin fills one dot and a big coin fills five. Tap coins from the table into the tray until the total matches the price exactly; tap a tray coin to put it back. Too many and the tray empties for another try. Four things, and the clock counts up.';
   if (game.kind === 'spot' && game.spot === 'letters') return 'Listen for the name of a letter, then find that letter and tap it. The right letter gets a green ring, and you hear about its shape. If you tap a different letter, a dashed ring shows around it and it tells you its name, so listen and try again. Find three, and new letters come.';
-  if (game.kind === 'spot') return 'A picture made of lines and shapes in six colors, and a voice that asks for one piece at a time: the circle, the zigzag line, the blue shape. Tap the piece it asks for and it lights up; a wrong one wobbles. Three to find in every picture, four pictures, and the clock counts up.';
+  if (game.kind === 'spot') return 'A picture made of lines and shapes in six colors, and a voice that asks for one piece at a time: the circle, the zigzag line, the blue shape. Tap the piece it asks for and it lights up; a wrong one gets a red-brown ring. Three to find in every picture, four pictures, and the clock counts up.';
   if (game.kind === 'share') return 'A pile of cookies and two or three plates, and one fair rule: the same on every plate. Tap a plate to put a cookie on it, or tap it again to take one back, until the pile is empty and every plate matches, then tap Check. Four rounds, and the clock counts up.';
-  if (game.kind === 'sense') return 'A thing you might meet, said out loud, and five senses: eyes, ears, nose, tongue and hand. Tap the sense that tells you about it. Five things a round, one for each sense, and the clock counts up. Drag the card onto its box, tap the box, or press its number.';
-  if (game.kind === 'pattern') return 'A row of pieces repeats in a form, AB, ABA or abac, and then cuts off. Tap the piece that comes next from the three below; the right one fills the row and a wrong one wobbles. Five rounds, and the clock counts up.';
+  // Which Sense's instructions in plain words (pass MQ, Mikey: "the first part of the sentence and a couple of other sections kind of
+  // read in a confusing way.  "A thing you might meet" and "tap the sense that tells you about it" and "five things a round""): each
+  // question names an example, the child taps the sense they would use to notice it, a worked example shows how (a loud drum, which
+  // the game never deals, so it answers none of its questions; the lesson's own frame, your ears hear), and a round is said as five
+  // examples.
+  if (game.kind === 'sense') return 'Each question names an example of something you might see, hear, smell, taste or touch, and it is read out loud. Tap the sense you would use to notice it, your eyes, ears, nose, tongue or hand. For a loud drum, you would tap the ears. Each round has five examples, one for each sense, and the clock counts up. You can drag the words onto a sense, tap the sense, or press its number.';
+  if (game.kind === 'pattern') return 'A row of pieces repeats in a form, AB, ABA or abac, and then cuts off. Tap the piece that comes next from the three below; the right one fills the row and a wrong one gets a red-brown edge. Five rounds, and the clock counts up.';
   if (game.kind === 'shape') return 'Six bars of loudness sit over a line of markings from the score: piano, crescendo, forte, decrescendo. Tap the arrows to raise or lower each bar until the line follows the markings, soft bars low, loud bars high, a crescendo climbing and a decrescendo falling, then check it. Four lines, and the clock counts up.';
-  if (game.kind === 'chord') return 'Twelve keys from C to B and a chord named above them. Tap the three keys that make it: a major triad climbs four half steps and then three, a minor triad three and then four. A key that belongs lights up; one that does not wobbles. Five chords, and the clock counts up.';
+  if (game.kind === 'chord') return 'Twelve keys from C to B and a chord named above them. Tap the three keys that make it: a major triad climbs four half steps and then three, a minor triad three and then four. A key that belongs lights up; one that does not gets a red-brown edge. Five chords, and the clock counts up.';
   if (game.kind === 'walk') return 'Tap the arrows to give the robot its steps, one at a time, then tap Go and watch it follow them to the star. A bump into a rock or the edge stops it; tap a step to take it back, with every step after it, and try again. Four robots, and the clock counts up.';
   if (game.kind === 'evidence') return 'Read the short passage and the question above it. Tap the one sentence that answers the question: that sentence is your evidence. The reason shows under the passage, and the clock rests while you read it. Four passages, and the clock counts up.';
   if (game.kind === 'ptable') return 'A question names an element by its name, its number of protons, its place (group and period) or its family. Tap it on the table. Groups run down the columns and periods across the rows, and the small number on each element is its atomic number, the number of protons. Eight questions, and the clock rests while each answer shows.';
@@ -7258,9 +7415,18 @@ function BeginCover({ onBegin, moving = true, size = null }) {
 //   data-demo-replay   the speaker beside a spoken question
 // A hand points on a touch screen and an arrow where there is a mouse or trackpad (hasKeyboard).
 function hasKeyboard() { try { return typeof window !== 'undefined' && !!window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches; } catch (e) { return false; } }
-const INTRO_GAP = 350;                                   // a breath between one line and the next, in milliseconds
-// Reading time for a line no voice says: about three words a second, so a caption stays long enough to read.
-const introReadMs = (text) => Math.max(1200, Math.round((String(text).split(/\s+/).length / 3) * 1000));
+// The welcome's cadence (pass MQ, Mikey: "Even on the instructions for game play (all learners young and old), the cadence should be
+// slow enough that a sentence can be properly absorbed before jumping into the next sentence.   I noticed that the sentences are
+// spoken quickly back to back so a short pause, doesn't need to be too long, could be beneficial.  Of course this could affect the
+// demo timing too."): a rest of INTRO_PAUSE_MS between one sentence and the next inside a line, for every age, and a breath of
+// INTRO_GAP between one line and the next (350 ms until pass MQ), while the pointer moves on to its next act. A young learner's
+// welcome is also read by the young voice (a little slower), since an open game asks for it (GamePad). The demonstration keeps in
+// step, since each line waits for its words and its act both.
+const INTRO_PAUSE_MS = 450;
+const INTRO_GAP = 700;                                   // a breath between one line and the next, in milliseconds
+// Reading time for a line no voice says: about three words a second, and the same rest between sentences, so a caption stays long
+// enough to read.
+const introReadMs = (text) => Math.max(1200, Math.round((String(text).split(/\s+/).length / 3) * 1000) + (String(text).split(SENTENCE_BREAK).filter(Boolean).length - 1) * INTRO_PAUSE_MS);
 // A browser test may set window.__eduIntroPace to 0 to drop that floor (its stand-in voice ends each line at once), so a test plays
 // many welcomes in minutes; every act still plays at its own pace, and a page never sets it.
 const introPace = () => { try { const p = Number(window.__eduIntroPace); return Number.isFinite(p) && p >= 0 && p < 1 ? p : 1; } catch (e) { return 1; } };
@@ -7607,7 +7773,10 @@ function GameIntro({ game, Game, gameProps, onEnd, onSize = null }) {
         if (line.ask === 'before' && voiced) await hands.ask();
         if (!live) return;
         setAt(i); log.at = i; const started = Date.now();
-        const said = new Promise((done) => { if (!voiced) { setTimeout(done, introReadMs(line.quiet || line.say)); return; } stopVoice = speakSequence([line.say], () => {}, done, [line.key], { intro: true }); });
+        // A voice that never reports a line's end (round one's screen check, pass MQ) left the welcome on that line until Skip: after three
+        // times the line's reading time the welcome goes on as if it had ended. The tests' pace (introPace) stays out of it, since at
+        // the tests' pace of 0 the cap was 0 and every line ended at once, never waiting for the voice.
+        const said = new Promise((done) => { if (!voiced) { setTimeout(done, introReadMs(line.quiet || line.say)); return; } let over = false; const end = () => { if (!over) { over = true; done(); } }; stopVoice = speakSequence([line.say], () => {}, end, [line.key], { intro: true, pause: restBefore(INTRO_PAUSE_MS) }); setTimeout(end, introReadMs(line.say) * 3); });
         await Promise.all([said, hands(line, outside)]);
         const floor = introReadMs(line.say) * 0.6 * introPace() - (Date.now() - started); if (floor > 0) await new Promise((r) => setTimeout(r, floor));   // a voice that ended at once still leaves the caption up to be read
         if (!live) return;
@@ -7679,15 +7848,36 @@ function introPlayable(game, modules) {
 function GamePad({ game, name, secondsLeft, total, onClose, modules = [], onScore = null, best = null, young = false, grade = null, intro = true, onPhase = null }) {
   const [round, setRound] = useState(1);
   const [showHow, setShowHow] = useState(false);
+  // The Instructions pop-up (round three's screen read, pass MQ, older than the pass): Got it takes the focus and Escape closes it, as
+  // the touch pop-up does, and the box says it is modal; a keyboard had stayed on the link behind it, and Tab reached the speaker
+  // behind it before Got it. While it is open the board behind it takes no key (round five's code read: a 3 answered Which Sense
+  // behind it, as its words on a laptop ask; the games hear their keys on the window, so this listens first, in the capture phase),
+  // Got it keeps Enter and Space, and closing it gives the focus back to the Instructions link, as More Info gives it back to its own.
+  useEffect(() => {
+    if (!showHow || typeof window === 'undefined') return undefined;
+    const keys = (e) => { if (e.key === 'Escape') { setShowHow(false); return; } const tg = e.target; const own = !!(tg && tg.closest && tg.closest('[data-how-pop] button'));
+      if (/^[0-9]$/.test(e.key) || ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key) || ((e.key === ' ' || e.key === 'Enter') && !own)) e.stopImmediatePropagation(); };
+    window.addEventListener('keydown', keys, true);
+    const t = setTimeout(() => { const b = document.querySelector('[data-how-pop] button'); if (b) b.focus({ preventScroll: true }); }, 60);
+    return () => { window.removeEventListener('keydown', keys, true); clearTimeout(t); const link = document.querySelector('[data-how-link]'); if (link) link.focus({ preventScroll: true }); };
+  }, [showHow]);
   const Game = game.kind === 'spot' && game.spot === 'letters' ? FindLetterGame : GAME_OF[game.kind];   // Find the Letter (pass MM) has a board of its own
+  // While a game is open, its learner decides the young voice (pass MQ): a young learner hears its welcome and its spoken questions a
+  // little slower, with a rest between sentences; the page's own choice comes back when the game closes.
+  React.useLayoutEffect(() => { setYoungVoice('game', !!young); return () => setYoungVoice('game', null); }, [young]);
   // Closing a game stops its voice (pass MM, round two's game check: Find the Letter's next ask, and Hear the instructions, ran on
   // over the overview), the way SpeakButton stops its own.
-  useEffect(() => () => { speechTicket += 1; try { window.speechSynthesis.cancel(); } catch (e) { /* a broken voice must never stop a game */ } stopSound(); }, []);
+  // It clears a rest it was in too (round one's code check, pass MQ), as every other stop does, so nothing counts as still talking.
+  useEffect(() => () => { speechTicket += 1; restUntil = 0; try { window.speechSynthesis.cancel(); } catch (e) { /* a broken voice must never stop a game */ } stopSound(); }, []);
   // Where the game is (pass MP): its welcome (intro), the Begin cover (ready), or the game itself (play). Every visit opens on the
   // welcome; the browser tests that play a game open it straight to play (the way it opened before pass MP), and a moving game
   // still waits for Begin there. The play clock runs only in play (onPhase), so a welcome never eats into a child's five minutes.
-  const [phase, setPhase] = useState(intro && introPlayable(game, modules) ? 'intro' : MOVING_GAMES.has(game.kind) ? 'ready' : 'play');
-  useEffect(() => { if (onPhase) onPhase(phase); }, [phase]);
+  // A game with nothing to play (a map not yet painted, Quick fire with nothing to ask) opens straight to its board's note and is
+  // told to its owner as empty, never as play (round one's code check, pass MQ): a visit that saw only "This map is being painted."
+  // is no game break (Mikey's answer to Q63) and uses none of the play clock.
+  const playable = introPlayable(game, modules);
+  const [phase, setPhase] = useState(intro && playable ? 'intro' : MOVING_GAMES.has(game.kind) ? 'ready' : 'play');
+  useEffect(() => { if (onPhase) onPhase(phase === 'play' && !playable ? 'empty' : phase); }, [phase]);
   // Once the welcome has gone, by itself, by Skip or by any other way out, Begin is brought back into what shows, and after Begin the
   // board's top: the welcome's pointer may have scrolled the page to a target below the board (its closing line's speaker), and the
   // caption and Skip's row leave with the welcome (round three's second read, pass MP: Begin sat above what showed after 28 of 59
@@ -7737,7 +7927,7 @@ function GamePad({ game, name, secondsLeft, total, onClose, modules = [], onScor
   // in the same press, they met the welcome's hush, and its voice's stop as it ended (round one's game check heard nothing after a
   // press made by script); the button is told it is reading (readCue).
   const readAfterIntro = useRef(false); const [readCue, setReadCue] = useState(0);
-  useEffect(() => { if (phase !== 'intro' && readAfterIntro.current) { readAfterIntro.current = false; speak(gameIntroWords(game, { keys: hasKeyboard() })); setReadCue((n) => n + 1); } }, [phase]);
+  useEffect(() => { if (phase !== 'intro' && readAfterIntro.current) { readAfterIntro.current = false; speak(gameIntroWords(game, { keys: hasKeyboard() }), { pause: INTRO_PAUSE_MS }); setReadCue((n) => n + 1); } }, [phase]);
   const speakerInIntro = (e) => { if (phase !== 'intro') return; e.stopPropagation(); e.preventDefault(); readAfterIntro.current = true; endIntro(); };
   // The welcome's board size, so Begin covers the same space and the page does not jump between the welcome, Begin and play (round
   // one's screen check: a square Begin of 560 under a board 210 high moved the page about 350 pixels).
@@ -7767,16 +7957,16 @@ function GamePad({ game, name, secondsLeft, total, onClose, modules = [], onScor
         : phase === 'ready' ? <BeginCover onBegin={() => setPhase('play')} moving={MOVING_GAMES.has(game.kind)} size={boardSize.current} />
         : <Game game={game} name={name} round={round} modules={modules} onScore={onScore} best={best} grade={grade} />}
       {/* The Instructions link shows the written instructions, as it always has; in the welcome it ends the welcome first. */}
-      <p style={{ margin: '12px 0 0', textAlign: 'center' }}><button type="button" onClick={() => { endIntro(); setShowHow(true); }} style={{ background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, textDecoration: 'underline', cursor: 'pointer' }}>Instructions</button></p>
+      <p style={{ margin: '12px 0 0', textAlign: 'center' }}><button type="button" data-how-link="" onClick={() => { endIntro(); setShowHow(true); }} style={{ background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, textDecoration: 'underline', cursor: 'pointer' }}>Instructions</button></p>
       {/* The speaker says the welcome's words again, without the demonstration (Mikey: "Speaker icon can re-read the instructions but
           the demonstration requires a full exit and re-entrance"), for every game since pass MP (the youngest only, since 2026-09-23).
           In the welcome it ends the welcome, then speaks. */}
-      <div data-intro-speaker="" onClickCapture={speakerInIntro} style={{ display: 'flex', justifyContent: 'center', marginTop: 8 }}><SpeakButton mini text={gameIntroWords(game, { keys: hasKeyboard() })} label="Hear the instructions" cue={readCue} /></div>
+      <div data-intro-speaker="" onClickCapture={speakerInIntro} style={{ display: 'flex', justifyContent: 'center', marginTop: 8 }}><SpeakButton mini text={gameIntroWords(game, { keys: hasKeyboard() })} label="Hear the instructions" cue={readCue} pause={INTRO_PAUSE_MS} /></div>
       {showHow && (
         <Overlay z={120} onClick={(e) => { if (e.target === e.currentTarget) setShowHow(false); }}>
-          <div className="edu-rise" style={{ width: 'min(420px, 100%)', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: '20px 20px 18px', textAlign: 'center' }} role="dialog" aria-label="Instructions">
+          <div className="edu-rise" style={{ width: 'min(420px, 100%)', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: '20px 20px 18px', textAlign: 'center' }} role="dialog" aria-modal="true" aria-label="Instructions" data-how-pop="">
             <p style={{ margin: '0 0 8px', fontSize: 18, fontWeight: 700 }}>{game.title}</p>
-            <p style={{ margin: '0 0 16px', fontSize: 15, lineHeight: 1.6 }}>{gameInstructions(game)}</p>
+            <p style={{ margin: '0 0 16px', fontSize: 15, lineHeight: 1.6 }}>{gameInstructions(game, { keys: hasKeyboard() })}</p>
             <Btn onClick={() => setShowHow(false)}>Got it</Btn>
           </div>
         </Overlay>
@@ -7817,7 +8007,9 @@ function GameThumb({ kind, game = null }) {
   if (game && game.kind === 'filler') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="5" width="32" height="30" rx="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><path d="M9 14h8M21 14h10M9 21h6M9 28h14M27 28h4" stroke={k} strokeWidth="2.2" strokeLinecap="round" /><path d="M16 19l6 4M16 23l6-4" stroke={B.clay} strokeWidth="2" strokeLinecap="round" /></svg>;
   if (game && game.kind === 'room') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="4" y="6" width="14" height="12" rx="2" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="22" y="6" width="14" height="12" rx="2" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="4" y="22" width="14" height="12" rx="2" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="22" y="22" width="14" height="12" rx="2" fill={B.green} stroke={k} strokeWidth="1" /><path d="M25 28h8" stroke="#fff" strokeWidth="2" strokeLinecap="round" /></svg>;
   if (game && game.kind === 'ask') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><path d="M6 8h22a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H14l-6 5v-5H6a3 3 0 0 1-3-3V11a3 3 0 0 1 3-3z" fill={C.paperBoard} stroke={k} strokeWidth="1" /><text x="17" y="21" textAnchor="middle" fontSize="13" fontWeight="700" fill={k}>?</text><circle cx="33" cy="31" r="5" fill={B.green} /></svg>;
-  if (game && game.kind === 'turn') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><circle cx="20" cy="20" r="13" fill="none" stroke={k} strokeWidth="1" strokeDasharray="2 3" /><circle cx="20" cy="7" r="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><circle cx="33" cy="20" r="4" fill={B.green} stroke={k} strokeWidth="1" /><circle cx="20" cy="33" r="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><circle cx="7" cy="20" r="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><line x1="23" y1="3" x2="26" y2="10" stroke={B.clay} strokeWidth="2" strokeLinecap="round" /></svg>;
+  // Whose Turn Next's tile (since pass MQ): the talking stick as a small wooden stick with a gold bead beside the top friend, where a
+  // clay line had stood, and the arrow in the middle showing the way round to the friend in green.
+  if (game && game.kind === 'turn') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><circle cx="20" cy="20" r="13" fill="none" stroke={k} strokeWidth="1" strokeDasharray="2 3" /><circle cx="20" cy="7" r="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><circle cx="33" cy="20" r="4" fill={B.green} stroke={k} strokeWidth="1" /><circle cx="20" cy="33" r="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><circle cx="7" cy="20" r="4" fill={C.paperBoard} stroke={k} strokeWidth="1" /><path d="M25.2 11.2 L27.4 2.6" stroke={k} strokeWidth="3" strokeLinecap="round" /><path d="M25.2 11.2 L27.4 2.6" stroke="#B07A45" strokeWidth="1.8" strokeLinecap="round" /><circle cx="27.6" cy="2.4" r="1.5" fill={B.gold} stroke={k} strokeWidth="0.6" /><path d="M15 21.5 A5 5 0 1 1 25 21.5" fill="none" stroke={B.green} strokeWidth="1.4" strokeLinecap="round" /><path d="M23.1 21.2 L25.2 23.9 L26.6 20.6" fill="none" stroke={B.green} strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></svg>;
   if (game && game.kind === 'jar') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><rect x="12" y="8" width="16" height="28" rx="3" fill={C.paperBoard} stroke={k} strokeWidth="1" /><rect x="13" y="24" width="14" height="11" fill="#E3C27A" /><rect x="13" y="17" width="14" height="7" fill="#B9A58A" /><rect x="13" y="12" width="14" height="5" fill="#8C6A4A" /><rect x="14" y="4" width="12" height="4" rx="1" fill={k} /></svg>;
   if (game && game.kind === 'relation') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><circle cx="13" cy="20" r="8" fill={C.paperBoard} stroke={k} strokeWidth="1" /><circle cx="29" cy="20" r="6" fill={B.green} stroke={k} strokeWidth="1" /><path d="M21 16l4 0M21 24l4 0" stroke={k} strokeWidth="2" strokeLinecap="round" /><path d="M24 14l3 2-3 2M22 26l-3-2 3-2" fill="none" stroke={k} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>;
   if (game && game.kind === 'sprout') return <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true"><path d="M20 24 C20 18 20 14 20 10" stroke="#3E8E4F" strokeWidth="2" fill="none" /><path d="M20 15 C15 12 13 9 14 7 C17 8 19 11 20 15 Z" fill="#5DB36D" /><path d="M20 13 C25 10 27 7 26 5 C23 6 21 9 20 13 Z" fill="#5DB36D" /><path d="M9 24 L31 24 L28 37 L12 37 Z" fill="#C8734B" stroke={k} strokeWidth="1" /></svg>;
@@ -8830,7 +9022,8 @@ function BookReader({ items, pace: paceDefault }) {
     setSpeechNudge(paceDefault && pace === 'slow' ? -1 : 0);
     const texts = []; const owner = []; const titles = new Set();
     items.forEach((st, i) => { titles.add(texts.length); [`${st.title}.`, ...st.words].forEach((t) => { texts.push(t); owner.push(i); }); });
-    stopRef.current = speakSequence(texts, (i) => setAt(owner[i]), () => { stopRef.current = null; setAt(-1); }, [], { gap: (i) => storyGap(titles.has(i)), pause: storyPause });
+    // Each story's clips in the order its title and paragraphs are read (pass MQ), so the book plays the recordings once all exist.
+    stopRef.current = speakSequence(texts, (i) => setAt(owner[i]), () => { stopRef.current = null; setAt(-1); }, items.flatMap(storyClipKeys), { gap: (i) => storyGap(titles.has(i)), pause: storyPause, young: false });
   };
   if (!canSpeak()) return null;
   return (
@@ -9730,6 +9923,10 @@ function EduSphereScreens() {
   // A game's welcome and its Begin cover are not play (pass MP): the play clock waits until Begin, so a welcome never eats into the
   // five minutes. A game opens on its welcome when a child taps its tile; the browser tests open it straight to play (gameIntroNext).
   const playPaused = useRef(false); const gameIntroNext = useRef(true);
+  // Whether this visit to a game has reached play, Begin tapped or the game opened straight to play (pass MQ, Mikey's answer to Q63,
+  // "Q63 - A"): the played event records it (begun), so the report's game breaks and the weekly note count only the visits that
+  // played, never one that watched the welcome and left.
+  const gameBegun = useRef(false);
   useEffect(() => { if (!record || !record.name) return; loadColorState(record.name).then(setColorState); }, [record && record.name]);
   useEffect(() => { if (screen !== 'overview') return undefined; const id = setInterval(() => setColorNow(Date.now()), 5000); return () => clearInterval(id); }, [screen]);
   useEffect(() => {
@@ -9745,7 +9942,7 @@ function EduSphereScreens() {
         // The five minutes are up: the picture rests, and next time it starts blank again.
         const latest = colorStateNow.current; const state = { ...latest, [coloring]: { ...(latest[coloring] || {}), left: playSecs, restUntil: Date.now() + restMins * 60000, art: null } };
         setColorState(state); saveColorState(record.name, state);
-        if (!record.preview) addEvent(coloring.startsWith('play:') ? makePlayedEvent(coloring.slice(5), new Date().toISOString()) : makeColoredEvent(coloring, new Date().toISOString()));
+        if (!record.preview) addEvent(coloring.startsWith('play:') ? makePlayedEvent(coloring.slice(5), new Date().toISOString(), gameBegun.current) : makeColoredEvent(coloring, new Date().toISOString()));
         setColoring(null); setScreen('overview'); return playSecs;
       }
       if (next % 5 === 0) { const latest = colorStateNow.current; const state = { ...latest, [coloring]: { ...(latest[coloring] || {}), left: next, art: colorArt.current } }; setColorState(state); colorStateNow.current = state; saveColorState(record.name, state); }
@@ -9755,7 +9952,7 @@ function EduSphereScreens() {
   }, [screen, coloring]);
   // The game pad holds the clock while its welcome or Begin shows (onPhase, pass MP); a new picture or screen lets go of it, before the
   // new pad says where it is (React clears the old effects first), and a game opened later opens on its welcome again.
-  useEffect(() => () => { playPaused.current = false; }, [screen, coloring]);
+  useEffect(() => () => { playPaused.current = false; gameBegun.current = false; }, [screen, coloring]);
   useEffect(() => { if (screen !== 'coloring') gameIntroNext.current = true; }, [screen]);
   // Leaving early keeps the time that is left, so the picture is not handed back a fresh five minutes.
   const leaveColoring = () => {
@@ -9763,7 +9960,7 @@ function EduSphereScreens() {
       const state = { ...colorState, [coloring]: { ...(colorState[coloring] || {}), left: colorLeft, art: colorArt.current } };
       setColorState(state); saveColorState(record.name, state);
       // A game session is a game break and a picture a coloring break (pass MB): both are play, never marked.
-      if (!record.preview) addEvent(coloring.startsWith('play:') ? makePlayedEvent(coloring.slice(5), new Date().toISOString()) : makeColoredEvent(coloring, new Date().toISOString()));
+      if (!record.preview) addEvent(coloring.startsWith('play:') ? makePlayedEvent(coloring.slice(5), new Date().toISOString(), gameBegun.current) : makeColoredEvent(coloring, new Date().toISOString()));
     }
     // Back to the overview where the student left it (2026-09-23, Mikey): the fold stays open and the page scrolls back to the tiles.
     pendingScroll.current = { screen: 'overview', place: overviewScroll.current }; setColoring(null); setScreen('overview');
@@ -10285,6 +10482,10 @@ function EduSphereScreens() {
   const mod = currentFrom ? getModule(currentFrom) : moduleId ? getModule(moduleId) : null;
   const course = mod ? getCourse(mod.courseId) : null;
   const readAloud = !!(course && course.readAloud);
+  // The young voice for a pre-reader's lesson, questions, results, Wonder cards and celebration, and an early learner's overview and
+  // Let's Color (pass MQ): speak() and speakSequence() read it when they are called, in a layout effect, so it is set before any
+  // effect of the same render speaks (the practice question below). A story keeps its own pace; an open game sets its own (GamePad).
+  React.useLayoutEffect(() => { setYoungVoice('page', youngVoiceOn({ screen, readAloud, youngLearner })); }, [readAloud, screen, youngLearner]);   // the rule lives in logic (youngVoiceOn)
   // What comes after a finished round in a read-aloud course (pass MD): one thing at a time, never a menu. The result screen's
   // arrow and a reward story's arrow both call this, so a story given as a reward carries on exactly where the round left off:
   // a Wonder question that is due, then the next lesson, the next course or home after a pass, and back through the lesson (or
@@ -10403,7 +10604,10 @@ function EduSphereScreens() {
   const questionKey = attempt ? `${attempt.seed}-${qIndex}` : '';
   useEffect(() => { setGiven(''); setChecked(false); setMisses(0); setWrongPicks([]); setTracePaths([]); setTraceNote(''); setMoreInfo(false); }, [questionKey]);
   // Each line of a pre-reader lesson is spoken as it appears, without waiting to be asked.
-  const lessonLines = mod && readAloud ? (mod.lesson.script || []).map((x) => x.say) : [];
+  // The lines the read-aloud lesson screen shows (readAloudScript: the script, its example, or its paragraphs), so the reading and
+  // the screen never read different lists (round two's code read, pass MQ: a read-aloud lesson with no script of its own showed its
+  // lines and was never read, nor on Say it again).
+  const lessonLines = mod && readAloud ? readAloudScript(mod).map((x) => x.say) : [];
   const currentLessonLine = lessonLines[Math.min(lessonStep, Math.max(0, lessonLines.length - 1))] || '';
   const [litSentence, setLitSentence] = useState(-1);               // which sentence of a read-aloud line the voice is on
   useEffect(() => {
@@ -10411,7 +10615,7 @@ function EduSphereScreens() {
     const parts = sentencesOf(currentLessonLine); setLitSentence(-1);
     const stop = speakSequence(parts, (i) => setLitSentence(i), () => setLitSentence(-1), parts.map((_, i) => `${mod ? mod.id : 'lesson'}-${lessonStep}-${i}`));
     return () => { stop(); };
-  }, [screen, readAloud, currentLessonLine]);
+  }, [screen, readAloud, currentLessonLine, replays]);   // Say it again (replays) reads the line again this same way (pass MQ)
   useEffect(() => { setStoryOpen(false); setAnotherWay(0); }, [screen === 'lesson' ? (mod && mod.id) : null]);
   // A reward story belongs to the visit that earned it (pass MD): leaving the story screen by any way, the back button included,
   // ends it, so the same story opened later from Let's Read goes home rather than on to that round's next step.
@@ -10917,7 +11121,7 @@ function EduSphereScreens() {
   if (screen === 'coloring' && coloring) {
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap edu-wrap-wide" style={{ ...wrap }}>
-        {coloring.startsWith('play:') ? <GamePad key={coloring} game={GAMES.find((g) => `play:${g.id}` === coloring) || GAMES[0]} modules={visibleModules} best={(colorState[coloring] || {}).best === undefined ? null : colorState[coloring].best} young={youngLearner} grade={topGrade(visibleCourses)} intro={gameIntroNext.current} onPhase={(ph) => { playPaused.current = ph !== 'play'; }} onScore={(value, better, extra = null) => {
+        {coloring.startsWith('play:') ? <GamePad key={coloring} game={GAMES.find((g) => `play:${g.id}` === coloring) || GAMES[0]} modules={visibleModules} best={(colorState[coloring] || {}).best === undefined ? null : colorState[coloring].best} young={youngLearner} grade={topGrade(visibleCourses)} intro={gameIntroNext.current} onPhase={(ph) => { playPaused.current = ph !== 'play'; if (ph === 'play') gameBegun.current = true; }} onScore={(value, better, extra = null) => {
           // The best score is kept per game on this device; Quick fire also keeps its most right and longest streak (2026-09-23).
           const latest = colorStateNow.current; const cur = latest[coloring] || {}; const isBest = cur.best === undefined || (better === 'high' ? value > cur.best : value < cur.best);
           const next = { ...cur, ...(isBest ? { best: value } : {}) };
@@ -10927,6 +11131,7 @@ function EduSphereScreens() {
           <ColoringPad key={`${coloring}-${displayName}`} picture={coloring} name={displayName} secondsLeft={colorLeft} total={playSecondsFor(visibleCourses.reduce((best, c) => (GRADES.indexOf(c.grade) > GRADES.indexOf(best) ? c.grade : best), 'PK3'))} saved={(colorState[coloring] || {}).art} onArt={(art) => { colorArt.current = art; }} onClose={leaveColoring} />
         )}
 
+        {(coloring.startsWith('play:') || coloring.startsWith('letter-')) && <VoiceNote />}
       </div></div>
     );
   }
@@ -10963,7 +11168,10 @@ function EduSphereScreens() {
       const lbHead = lbAgain ? 'One More Quick Review' : 'First, A Quick Review';   // Mikey's titles (pass LP)
       const lbBody = lbTwo ? "Five quick review questions from each of two modules you've mastered long ago." : lookBack.stage === 'fresh' ? "Five quick review questions from a module you moved on from a while ago, for a fresh try." : "Five quick review questions from a module you've mastered long ago.";
       const lbTail = 'Your lessons come right after!';
-      const lbSay = lbHead + '. ' + lbBody + ' ' + (lbTwo ? lowerTitle(lbList[0].title) + ', then ' + lowerTitle(lbList[1].title) + '. ' : lowerTitle(lbMod.title) + '. ') + lbTail;
+      // The card's spoken line for a young learner: the lesson's name starts a sentence, so it keeps its capital (round four's code
+      // read, pass MQ: lowered, "count to 5." took no rest before it, since a rest comes only before a piece that starts a sentence),
+      // while the second of two names, inside the sentence, is lowered.
+      const lbSay = lbHead + '. ' + lbBody + ' ' + (lbTwo ? lbList[0].title + ', then ' + lowerTitle(lbList[1].title) + '. ' : lbMod.title + '. ') + lbTail;
       return (
         <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={false} /><div className="edu-wrap" style={{ ...wrap }}>
           <div className="edu-rise" style={{ ...card, textAlign: 'center', marginTop: 36 }} data-light-review-card={lookBack.moduleId} data-light-review-count={lbList.length}>
@@ -10976,6 +11184,7 @@ function EduSphereScreens() {
             <Btn full onClick={() => startLightReview(lookBack)} style={{ width: 'min(320px, 100%)' }}>Start</Btn>
             <div style={{ marginTop: 14 }}><button type="button" onClick={async () => { if (record && record.preview) { setRecord(null); setScreen('educator-pick'); } else { await autoBackup('sign-out'); setScreen('welcome'); } }} style={{ position: 'absolute', top: 10, right: 14, background: 'none', border: 'none', color: C.green, fontFamily: FONT, fontSize: 15, cursor: 'pointer' }} aria-label="Exit"><span aria-hidden="true" style={{ fontSize: 22, lineHeight: 1 }}>×</span></button></div>
           </div>
+          {youngLearner && <VoiceNote />}
         </div></div>
       );
     }
@@ -11419,6 +11628,7 @@ function EduSphereScreens() {
             </div>
           </Overlay>
         )}
+        {youngLearner && <VoiceNote />}
       </div></div>
     );
   }
@@ -11445,7 +11655,7 @@ function EduSphereScreens() {
         {/* One tap repeats the line, in case they missed it. */}
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
           {canSpeak() ? (
-            <button type="button" onClick={() => { speak(line); setReplays((n) => n + 1); }} aria-label="Say it again" className="edu-press edu-sway"
+            <button type="button" onClick={() => setReplays((n) => n + 1)} aria-label="Say it again" className="edu-press edu-sway"
               style={{ width: 66, height: 66, borderRadius: 999, border: `3px solid ${C.gold}`, background: C.goldSoft, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
                 <path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={speakerInk()} />
@@ -11478,6 +11688,7 @@ function EduSphereScreens() {
             phone Trace a Big Letter's second line left 24 to 32 of Next's 66 pixels showing, and the cue waited until less than 24
             did; round four's code read: shown for any part of the row, it sat on a Next 57 of whose 66 pixels showed). */}
         <ScrollCue target="[data-lesson-nav]" watch={`${moduleId}-${lessonStep}`} hidden={1 / 3} />
+        <VoiceNote keys={sentencesOf(line).map((_, i) => `${mod.id}-${Math.min(lessonStep, script.length - 1)}-${i}`)} />
       </div></div>
     );
   }
@@ -11543,6 +11754,7 @@ function EduSphereScreens() {
         {/* On a short screen (an iPhone SE, a laptop's browser window) the button sits below what shows while the voice names it,
             so the scroll cue points at it, as it does on the story page (the screen check). */}
         <ScrollCue target="[data-course-done-home]" watch={cc.id} />
+        <VoiceNote />
       </div></div>
     );
   }
@@ -11571,6 +11783,7 @@ function EduSphereScreens() {
           <HomeButton onClick={onward} disabled={busy} invite={!storyVoiceOn} />
         </div>
         {!storyVoiceOn && <ScrollCue target="[data-story-next]" watch={`${cc.id}-${storyVoiceOn}`} />}
+        <VoiceNote keys={storyClipKeys(cs)} />
       </div></div>
     );
   }
@@ -11596,6 +11809,7 @@ function EduSphereScreens() {
         {reward
           ? <div className="edu-no-print" style={{ margin: '18px 0 8px' }}><HomeButton onClick={back} attrs={{ 'data-reader-story-home': '' }} /></div>
           : <p className="edu-no-print" style={{ textAlign: 'center', margin: '18px 0 6px' }}><button type="button" onClick={back} style={{ ...linkBtn, fontSize: 15 }}>{backWords}</button></p>}
+        <VoiceNote keys={storyClipKeys(cs)} />
       </div></div>
     );
   }
@@ -11625,6 +11839,7 @@ function EduSphereScreens() {
           </span>
         </div>
         {!storyVoiceOn && <ScrollCue target="[data-story-next]" watch={`${mod.id}-${storyVoiceOn}`} />}
+        <VoiceNote keys={storyClipKeys(storyFor(mod.id))} />
       </div></div>
     );
   }
@@ -11638,6 +11853,7 @@ function EduSphereScreens() {
         <div className="edu-story-sheet"><StoryBody story={storyFor(mod.id)} pace={storyPaceFor(mod)} /></div>
         <div data-story-end="" aria-hidden="true" style={{ height: 1 }} />
         <div style={{ marginTop: 16 }}><Btn full onClick={startPractice}>Practice this</Btn></div>
+        <VoiceNote keys={storyClipKeys(storyFor(mod.id))} />
       </div></div>
     );
   }
@@ -11700,6 +11916,7 @@ function EduSphereScreens() {
           : <Btn full onClick={startPractice}>Practice this</Btn>}
         <p style={{ color: C.muted, fontSize: 13, marginTop: 48, textAlign: 'center' }}>Source: {mod.sources.join(' ')}</p>
         {tourPopup}
+        <VoiceNote />
       </div></div>
     );
   }
@@ -11715,7 +11932,7 @@ function EduSphereScreens() {
     // paper: drawn on a light paper box (More Info's), so a shape or a solid takes the paper's green, B, in both themes (round two's
     // code check, pass MO: the dark theme's mint read 1.6 to 1 there). Without it a choice sits on its answer tile, and its color
     // squares and colored shapes are told so (tile), so the dark theme's green keeps its edge for the paper alone (Q56).
-    const choiceFace = (c, k = 1, paper = false) => (/^look:/.test(c) ? <LookGroup token={c} k={k} tile={!paper} /> : /^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={Math.round(28 * k)} frame={dotFrame || 5} snap={dotFrame > 0} /> : /^shape:/.test(c) ? <ShapePic name={c.split(':')[1]} color={paper ? B.green : undefined} size={Math.round((c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64) * k)} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={Math.round(14 * k)} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={Math.round(18 * k)} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={Math.round(14 * k)} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6).split('#')[0]} color={paper ? B.green : undefined} size={Math.round(64 * k)} /> : /^shares:/.test(c) ? <SharesPic shape={c.split(':')[1]} cut={c.split(':')[2]} shaded={Number(c.split(':')[3] || 0)} size={Math.round(72 * k)} /> : /^dice:/.test(c) ? <DicePic pips={Number(c.split(':')[1].split('#')[0])} size={Math.round(64 * k)} /> : /^pic:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><StudentPicture name={c.slice(4).split('#')[0]} size={Math.round(72 * k)} /></span> : /^art:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><ColorThumb picture={c.slice(4).split('#')[0]} size={Math.round(84 * k)} thing /></span> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={Math.round(64 * k)} /> : /^face:/.test(c) ? <FeelingFace feeling={c.slice(5).split('#')[0]} size={Math.round(84 * k)} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={Math.round(64 * k)} tile={!paper} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={Math.round(64 * k)} tile={!paper} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={Math.round(80 * k)} /> : /^digital:/.test(c) ? <DigitalPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={Math.round(96 * k)} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={Math.round(12 * k)} /> : c);
+    const choiceFace = (c, k = 1, paper = false) => (/^look:/.test(c) ? <LookGroup token={c} k={k} tile={!paper} /> : /^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={Math.round(28 * k)} frame={dotFrame || 5} snap={dotFrame > 0} /> : /^shape:/.test(c) ? <ShapePic name={c.split(':')[1]} color={paper ? B.green : undefined} size={Math.round((c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64) * k)} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={Math.round(14 * k)} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={Math.round(18 * k)} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={Math.round(14 * k)} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6).split('#')[0]} color={paper ? B.green : undefined} size={Math.round(64 * k)} /> : /^shares:/.test(c) ? <SharesPic shape={c.split(':')[1]} cut={c.split(':')[2]} shaded={Number(c.split(':')[3] || 0)} size={Math.round(72 * k)} /> : /^dice:/.test(c) ? <DicePic pips={Number(c.split(':')[1].split('#')[0])} size={Math.round(64 * k)} /> : /^pic:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><StudentPicture name={c.slice(4).split('#')[0]} size={Math.round(72 * k)} /></span> : /^art:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><ColorThumb picture={c.slice(4).split('#')[0]} size={Math.round(84 * k)} thing /></span> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={Math.round(64 * k)} tile={!paper} /> : /^face:/.test(c) ? <FeelingFace feeling={c.slice(5).split('#')[0]} size={Math.round(84 * k)} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={Math.round(64 * k)} tile={!paper} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={Math.round(64 * k)} tile={!paper} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={Math.round(80 * k)} /> : /^digital:/.test(c) ? <DigitalPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={Math.round(96 * k)} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={Math.round(12 * k)} /> : c);
     // More Info (pass MH): why each wrong choice does not fit, the one picked now first, in words that remember earlier rounds.
     const pickedNow = checked ? (readAloud ? [...wrongPicks, ...(wasCorrect ? [] : [String(given)])] : (wasCorrect ? [] : [String(given)])) : [];
     const insight = q.type === 'choice' ? choiceInsight(q, pickedNow, qHistory) : null;
@@ -11942,6 +12159,7 @@ function EduSphereScreens() {
         {readAloud && (checked || (given !== '' && !(q.type === 'order' && orderPicked.length < (q.pick || q.items.length)))) && <ScrollCue target="[data-practice-next]" whole watch={`${qIndex}-${checked}-${wasCorrect}-${misses}`} />}
         {record.preview && <div style={{ marginTop: 10 }}><Btn full kind="secondary" onClick={() => { setChecked(false); setGiven(''); setOrderPicked([]); if (qIndex + 1 < questions.length) { setQIndex(qIndex + 1); setQShownAt(Date.now()); } else { setScreen('overview'); } }}>Skip (walk-through)</Btn></div>}
         <SilentNote shown={heardNote} />
+        <VoiceNote />
       </div></div>
     );
   }
@@ -12042,6 +12260,7 @@ function EduSphereScreens() {
             </>) : own;
           })()}
         </div>
+        {youngLearner && <VoiceNote />}
       </div></div>
     );
   }
@@ -12137,6 +12356,7 @@ function EduSphereScreens() {
             )}
           </span>
         </div>
+        <VoiceNote />
       </div></div>
     );
   }
@@ -12225,6 +12445,7 @@ function EduSphereScreens() {
             </button>
           ))}
         </div>
+        <VoiceNote />
       </div></div>
     );
   }
@@ -12271,6 +12492,7 @@ function EduSphereScreens() {
             ? <BigTap dir="next" label="Finish" onClick={() => setScreen('result')} />
             : <BigTap dir="next" label="Next" onClick={() => setWonderVoiceStep(step + 1)} />}
         </div>
+        <VoiceNote />
       </div></div>
     );
   }
@@ -12310,6 +12532,7 @@ function EduSphereScreens() {
           <Btn full onClick={finish} disabled={!canContinue || busy}>See how others think</Btn>
           <Btn full kind="secondary" onClick={() => setScreen('overview')}>Skip for now</Btn>
         </div>
+        <VoiceNote />
       </div></div>
     );
   }
@@ -12335,6 +12558,7 @@ function EduSphereScreens() {
         ))}
         <PonderCard wonder={wonder} title={ponderTitle(wonder, wonderAnswered)} text={wonder.closing} attrs={{ 'data-wonder-closing': '' }} />
         <Btn full onClick={() => setScreen('overview')}>Back to overview</Btn>
+        <VoiceNote />
       </div></div>
     );
   }
@@ -13704,6 +13928,7 @@ function EduSphereScreens() {
                 </p>
               )}
               <StoryBody story={openStory} pace={isLongStoryId(openStoryId) ? null : storyPaceFor(getModule(openStoryId))} />
+              <VoiceNote keys={storyClipKeys(openStory)} />
             </div>
           </Overlay>
         )}
@@ -13732,6 +13957,7 @@ function EduSphereScreens() {
   if (screen === 'story-book' && bookCourseId && getCourse(bookCourseId)) {
     const c = getCourse(bookCourseId); const cs = courseStoryFor(c.id); const ms = masteryStoryFor(c.id);   // pass MH: the next long story, where there is one
     const chapters = c.modules.map((m) => ({ m, st: storyFor(m.id) })).filter((x) => x.st);
+    const bookItems = [...chapters.map((ch) => ch.st), ...(cs ? [cs] : []), ...(ms ? [ms] : [])];   // what the whole book reads, in order
     // Printed pages (2026-09-24, Mikey): short stories go three to a page, close enough to read as one book and far enough
     // apart to read as three stories; a long story keeps a page of its own, and so does any story whose painting has arrived,
     // since a picture is half a page and the pictures print by default.
@@ -13762,7 +13988,7 @@ function EduSphereScreens() {
           <button type="button" onClick={() => setScreen('story-log')} style={{ ...linkBtn }}>Back to Story Log</button>
           <button type="button" onClick={printBook} style={{ ...linkBtn }}>Print or Save</button>
         </div>
-        <BookReader items={[...chapters.map((ch) => ch.st), ...(cs ? [cs] : []), ...(ms ? [ms] : [])]} pace={storyPaceFor(chapters[0] ? chapters[0].m : null)} />
+        <BookReader items={bookItems} pace={storyPaceFor(chapters[0] ? chapters[0].m : null)} />
         <div className="edu-book-sheet">
           <div className="edu-book-group edu-book-cover-group"><div className="edu-book-cover" style={{ ...card, textAlign: 'center', padding: '48px 22px', position: 'relative', overflow: 'hidden' }}>
             <CoverArt />
@@ -13812,6 +14038,7 @@ function EduSphereScreens() {
             </div>
           ))}
         </div>
+        <VoiceNote keys={bookItems.flatMap(storyClipKeys)} />
       </div></div>
     );
   }

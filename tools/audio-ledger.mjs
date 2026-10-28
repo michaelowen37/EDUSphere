@@ -59,8 +59,14 @@ for (const c of courses) {
 // says it (the group is what tools/audio-generate.mjs stitches a clip to its neighbors by, so a game's lines are told as one);
 // the youngest games' lines in the young voice with the playful direction, and the rest in the main voice, upbeat and engaging (since
 // round two's alignment read; every line shared by games of both voices is two rows, one in each). --only game makes them all.
+// Since pass MQ (Mikey: "the cadence should be slow enough that a sentence can be properly absorbed before jumping into the next
+// sentence.   I noticed that the sentences are spoken quickly back to back so a short pause, doesn't need to be too long, could be
+// beneficial.") a line of two or more sentences rests between them in the recording too, a [pause] tag where one sentence ends and
+// the next begins (the app rests between them itself on the device's voice, and between lines either way), since a recorded line is
+// one clip; the tag never reaches the screen, and the clip's key, made from its words, is unchanged.
+const restedLine = (say) => sentencesOf(say).join(' [pause] ');
 { const seen = new Set();
-  for (const g of GAMES) for (const line of gameIntro(g)) { if (seen.has(line.key)) continue; seen.add(line.key); add(line.key, line.keys ? 'game welcome (keyboard)' : 'game welcome', g.id, gameBand(g) === 'early' ? 'K' : g.minGrade, `${gameBand(g) === 'early' ? DIRECTION.game : DIRECTION.gameMain} ${line.say}`, line.say, `game-${g.id}`); } }
+  for (const g of GAMES) for (const line of gameIntro(g)) { if (seen.has(line.key)) continue; seen.add(line.key); add(line.key, line.keys ? 'game welcome (keyboard)' : 'game welcome', g.id, gameBand(g) === 'early' ? 'K' : g.minGrade, `${gameBand(g) === 'early' ? DIRECTION.game : DIRECTION.gameMain} ${restedLine(line.say)}`, line.say, `game-${g.id}`); } }
 const csv = (v) => `"${String(v).replace(/"/g, '""')}"`;
 // The CSV this tool writes, exported so the docs sync test can hold docs/AUDIO-LEDGER.csv to the code (pass MN, round three: round
 // one's words stayed in it after the lessons changed, and tools/audio-generate.mjs records from it). It writes only when run alone,

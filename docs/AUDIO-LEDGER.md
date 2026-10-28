@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-27 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 9952 clips, 1,645,515 characters in all; the longest clip is 520 characters and the longest whole story 3,995, far under Eleven v4's 10,000 a request. 207 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-27 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 10173 clips, 1,671,800 characters in all; the longest clip is 520 characters and the longest whole story 3,995, far under Eleven v4's 10,000 a request. 212 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,10 +17,10 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 5647 | 663,235 |
-| Grades 3 to 5 | 1375 | 291,834 |
-| Grades 6 to 8 | 1196 | 279,117 |
-| Grades 9 to college | 1734 | 411,329 |
+| Pre-K to grade 2 | 5868 | 687,754 |
+| Grades 3 to 5 | 1375 | 292,620 |
+| Grades 6 to 8 | 1196 | 279,509 |
+| Grades 9 to college | 1734 | 411,917 |
 
 ## Voices
 
@@ -42,9 +42,9 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 | Kind | Clips |
 |---|---|
-| story title | 670 |
-| story | 4336 |
-| lesson line | 3594 |
+| story title | 675 |
+| story | 4379 |
+| lesson line | 3767 |
 | long story title | 106 |
 | long story | 858 |
 | next long story title | 4 |
@@ -644,6 +644,64 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S3927-7: [cheerful] After snack, her teacher held up three fingers again. [clearly] Throw away your napkin, put your cup in the tub, and then line up at the door, he said.
 - S3927-8: [whispering] Napkin, cup, door, Anika whispered. [carefully] First the napkin, next the cup, and last the door. [delighted] She was first in line!
 - S3927-9: [slowly, warmly] Listen to all three steps, say them to yourself, and then do them in order, first, next and last.
+
+### Sort the blocks (S3931, learning-words)
+
+- S3931-1: [cheerful] On the rug at school, Malik's teacher tipped out a basket of red and blue blocks. [in a warm, clear teacher's voice] Please sort the blocks by color, she said.
+- S3931-2: [puzzled] Malik did not know the word sort. [proudly] So he stacked the blocks up high, red, blue, red, blue, into one tall tower.
+- S3931-3: [in a warm, clear teacher's voice, delighted] What a tall tower! said his teacher with a smile. [pause] [in a warm, clear teacher's voice, gently] But sort means something else. Sort means put things that go together in a group.
+- S3931-4: [in a warm, clear teacher's voice] The red ones go together, she said, and the blue ones go together. That makes two groups.
+- S3931-5: [carefully] Malik took his tower apart, one block at a time. [thoughtful] He put the red blocks in one pile and the blue blocks in another.
+- S3931-6: [in a warm, clear teacher's voice, encouraging] Now count the red ones, said his teacher. Count means say one number for each thing.
+- S3931-7: [carefully] Malik touched each red block as he counted. [in a small, bright voice, slowly] One, two, three! [in a small, bright voice, proudly] Three red blocks, he said, and then he counted the blue ones all by himself.
+- S3931-8: [slowly, warmly] Listen for the learning words your teacher uses. Words like match, count and sort tell you what to do.
+
+### Who am I? (S3935, people-and-events)
+
+- S3935-1: [gloomy] It was a rainy day, so Noor could not go to the park. [sighs] She pressed her nose to the window and sighed.
+- S3935-2: [in a slow, warm grandpa voice, playfully] Let's play a game, said Grandpa. I tell you what someone does, and you tell me who it is.
+- S3935-3: [mysteriously] Grandpa began with a clue. [in a slow, warm grandpa voice] I help children, he said, but Noor jumped up too soon. [in a small, bright voice, excited] A doctor! she said.
+- S3935-4: [in a slow, warm grandpa voice, gently] Listen to all my words, said Grandpa, and he said the whole clue, slowly. [in a slow, warm grandpa voice, slowly] I help children learn, at school. [pause] [in a small, bright voice, delighted] A teacher! said Noor, and Grandpa nodded.
+- S3935-5: [playfully] Then Grandpa gave her another clue. [in a slow, warm grandpa voice, softly] I am very little, and I drink milk from a bottle.
+- S3935-6: [curious] Noor looked at her little brother, Nico, in his high chair. [in a small, bright voice, giggling] Nico is a baby! she said, and he waved his bottle and giggled.
+- S3935-7: [in a slow, warm grandpa voice, mysteriously] Now something that happens, said Grandpa. It is a happy day, with a cake and candles to blow out. [in a small, bright voice, excited] A birthday party! said Noor happily, because Grandpa's birthday was next week.
+- S3935-8: [softly] They played the game until bedtime. Then Noor put on her pajamas, and Grandpa tucked her into bed.
+- S3935-9: [slowly, warmly] Some words name people, like baby and grandpa, and some name things that happen, like bedtime.
+
+### Your turn, my turn (S3939, talk-with-a-friend)
+
+- S3939-1: [cheerful] On the rug at school, Pia had big news. [in a small, bright voice, excited] I have a new puppy! she said. [eagerly] But Kofi was talking too. [in a small, eager voice] I made a tower! he said.
+- S3939-2: [frustrated] They both talked at the same time, louder and louder. [sighs] Pia could not hear Kofi, and Kofi could not hear Pia.
+- S3939-3: [calmly] Their teacher sat down beside them on the rug with a ball. [pause] [in a warm, clear teacher's voice, gently] Talking is like rolling a ball, she said. The one with the ball talks, and the other one listens.
+- S3939-4: [softly] She rolled the ball to Pia, and Pia held it. [in a small, bright voice, excited] I have a new puppy! she said. [warmly] Kofi turned toward her and listened.
+- S3939-5: [curious] Pia rolled the ball to Kofi. [in a small, eager voice, curious] What is its name? he asked, and he rolled it back.
+- S3939-6: [in a small, bright voice, laughing] Biscuit! said Pia, and they laughed. [warmly] She rolled the ball to Kofi, and it was his turn again.
+- S3939-7: [in a small, eager voice, proudly] I made a tower, said Kofi, and he rolled it to Pia. [in a small, bright voice, warmly] I like your tower! said Pia.
+- S3939-8: [cheerful] Back and forth went the ball, and back and forth went the talking, until their grown-ups came. [in a small, bright voice, warmly] Bye, Kofi! said Pia. [in a small, eager voice, warmly] Bye, Pia! said Kofi.
+- S3939-9: [slowly, warmly] When you talk with a friend, take turns. Listen while your friend talks, and then it is your turn.
+
+### Two baskets (S3943, more-learning-words)
+
+- S3943-1: [cheerful] Mateo's teacher gave him a pile of picture cards and two baskets. [in a warm, clear teacher's voice, clearly] Sort them into two groups, she said, the ones that rhyme with cat and the ones that do not.
+- S3943-2: [confident] Mateo knew the word sort. [proudly] So he sorted the cards by color, blue cards in one basket and yellow cards in the other.
+- S3943-3: [thoughtful] His teacher looked in the baskets. [pause] [in a warm, clear teacher's voice, gently] That is a good way to sort, she said, but listen to every word of the direction. [in a warm, clear teacher's voice, slowly] The ones that rhyme with cat.
+- S3943-4: [curious] Mateo emptied both baskets and picked up a card with a hat on it. [in a small, bright voice, slowly] Hat, cat, he said, [in a small, bright voice, delighted] they rhyme! He put the hat in the rhyme basket.
+- S3943-5: [thoughtful] Next he picked up a card with a ball on it. [in a small, bright voice, slowly] Ball, cat, he said, those don't rhyme. [carefully] So he put the ball in the other basket.
+- S3943-6: [happily] A dog and a moon went in the other basket too. [proudly] Soon every card was in its basket, the hat in one and the rest in the other.
+- S3943-7: [in a warm, clear teacher's voice, warmly] Hat and cat rhyme, said his teacher, and you did just what I said. [happily] Mateo smiled at his two baskets.
+- S3943-8: [slowly, warmly] Listen to every word of a direction, and then do just what it says.
+
+### Clothes in the basket (S3947, words-go-together)
+
+- S3947-1: [cheerful] It was cleanup time in Hana's room. [in a warm, easy dad voice] Put the clothes in the basket, said Dad, and the toys in the toy box.
+- S3947-2: [softly] Hana picked up her brown teddy bear and dropped it in the basket, next to her brown coat. [in a small, bright voice, proudly] They are both brown! she said.
+- S3947-3: [laughing] Dad laughed. [pause] [in a warm, easy dad voice, playfully] Can you wear a teddy bear? he asked. [in a warm, easy dad voice, gently] Clothes are things you wear, like a hat, a sock and a coat.
+- S3947-4: [giggling] Hana giggled. [in a small, bright voice] A teddy bear is a toy! she said, and she moved it to the toy box, next to her ball.
+- S3947-5: [happily] Then her hat and her socks went in the basket, and her blocks went in the toy box.
+- S3947-6: [playfully] When the room was clean, Dad said, [in a warm, easy dad voice] let's play the opposite game. I say hot, and you say the opposite. [in a small, bright voice, excited] Cold! said Hana.
+- S3947-7: [in a warm, easy dad voice, playfully] Fast, said Dad. [in a small, bright voice, slowly] Slow! said Hana, and she crept along like a snail. [in a warm, easy dad voice, playfully] Big, said Dad, and Hana curled up small.
+- S3947-8: [in a warm, easy dad voice, warmly] Cleaning your room was a large job, said Dad. Large means big. [happily] Hana grinned and gave him a big hug.
+- S3947-9: [slowly, warmly] Words go together. Some name a group, some are opposites, and some mean the same.
 
 ### Cat, mat, hat (S116, listen-for-rhymes)
 

@@ -20,7 +20,12 @@
 // (the test page with a phone's viewport line), Skip in view on a phone held sideways. Since round two: Begin's pulse, every step at rest
 // in view on two short screens and in the claude.ai preview's page-tall frame, and the ways out pressed in the ask's own frame. Since
 // round three: Begin and then the board's top back in what shows once the welcome has gone, Begin's ring seen at its strength and
-// still with less motion, a wrong tap's still sign with less motion, and a device with no voice. About five minutes.
+// still with less motion, a wrong tap's still sign with less motion, and a device with no voice. Since pass MQ: the note about the
+// placeholder voice under a game (none with no voice), Which Sense's question centred with its speaker to its right, and a wrong
+// tap's edge with motion on too (Q66); since round one's screen check the six games' spoken rows on a small phone and one held
+// sideways, the answer boxes still through rounds of Which Sense and Find the Tool, and Find the Tool's tiles inside every board
+// dealt; since round three's screen read a whole round of Grow the Plant, and since round five the Instructions pop-up with a
+// keyboard. About eight minutes.
 import { createRequire } from 'node:module'; import { execSync } from 'node:child_process'; import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 const G = execSync('npm root -g').toString().trim(); const { chromium } = createRequire(import.meta.url)(`${G}/playwright`);
 const L = await import('../../src/logic.mjs');
@@ -63,6 +68,8 @@ const left = (page) => page.evaluate(() => { const el = document.querySelector('
 const until = (page, fn, arg, ms = 60000) => page.waitForFunction(fn, arg, { timeout: ms }).then(() => true).catch(() => false);
 // The voice is handed a line a sentence at a time (speechPieces), so what it said is read joined up.
 const flat = (t) => String(t).replace(/\s+/g, ' ').trim();
+// Mikey's note for the pages a voice speaks on (pass MQ), as the page shows it.
+const VOICE_NOTE_WORDS = 'All spoken audio on this page will be updated during the final phases of development. What you hear now is merely a placeholder spoken by your device.';
 const heardAll = (said, line) => flat(said.join(' ')).includes(flat(line));
 const introDone = (page) => until(page, () => { const el = document.querySelector('[data-game-pad]'); return !!el && el.getAttribute('data-game-pad') !== 'intro'; }, null, 90000);
 // Presses a button, found by its name, in the very frame the pointer's ask has the game's question said, and says whether it did:
@@ -119,6 +126,11 @@ const pressDuringAsk = (page, name, ms = 30000) => page.evaluate(([n, limit]) =>
   ok('Begin starts the game itself on a fresh board', (await pad(page)) === 'play' && (await page.locator('[data-dots-board]').count()) === 1 && (await page.locator('[data-demo-tap]').count()) === 0);
   await page.waitForTimeout(2300);
   ok('the play clock runs once the game begins', (await left(page)) < leftAtBegin, { leftAtBegin, now: await left(page) });
+  // The note on every page with a spoken voice (pass MQ, Mikey: "Maybe you can just place a small discrete note on the pages
+  // containing this audio ... We can do this even for game audio discretely toward the bottom of the page."): one note, under the
+  // game, small, in his words.
+  const note = await page.evaluate(() => { const n = document.querySelectorAll('[data-voice-note]'); const box = document.querySelector('[data-game-pad]'); if (n.length !== 1 || !box) return { count: n.length, box: !!box }; const a = n[0].getBoundingClientRect(); const b = box.getBoundingClientRect(); return { count: 1, text: n[0].textContent, below: a.top >= b.bottom - 1, size: parseFloat(getComputedStyle(n[0]).fontSize), shown: a.height > 0 }; });
+  ok('the note about the placeholder voice sits under the game, small, in Mikey\'s words', note.count === 1 && note.shown && note.below && note.size <= 13 && note.text === VOICE_NOTE_WORDS, note);
   // 5. The round arrow only resets the game: no welcome comes back.
   await page.getByRole('button', { name: 'Play again' }).click(); await page.waitForTimeout(500);
   ok('the round arrow resets the game and never plays the welcome again (Mikey: "only resets game")', (await pad(page)) === 'play' && (await page.locator('[data-game-intro]').count()) === 0);
@@ -220,6 +232,11 @@ const pressDuringAsk = (page, name, ms = 30000) => page.evaluate(([n, limit]) =>
   await page.getByRole('button', { name: 'Begin' }).click({ force: true }); await page.waitForTimeout(400);
   const hints = await page.locator('.edu-key-hint').evaluateAll((els) => els.map((e) => ({ shown: getComputedStyle(e).display !== 'none', text: e.textContent.trim() })));
   ok('on a computer the numbers 1 to 5 sit under the five senses', hints.length === 5 && hints.every((h, i) => h.shown && h.text === String(i + 1)), hints);
+  // The question in the middle of the board, its speaker to the right (pass MQ, Mikey: "the text should be centered and the speaker
+  // icon should sit to the right of the text"): the card's middle is the board's middle, and the speaker starts where the card ends,
+  // level with it.
+  const row = await page.evaluate(() => { const r = document.querySelector('[data-game-pad="play"] .edu-game-box [data-spoken-row]'); if (!r) return null; const card = r.querySelector('[data-spoken-words] [data-demo-look]') || r.querySelector('[data-spoken-words]'); const sp = r.children[2] ? r.children[2].querySelector('button') : null; if (!card || !sp) return { card: !!card, speaker: !!sp }; const c = card.getBoundingClientRect(); const b = r.closest('.edu-game-box').getBoundingClientRect(); const s = sp.getBoundingClientRect(); return { cardMid: Math.round(c.left + c.width / 2), boardMid: Math.round(b.left + b.width / 2), cardRight: Math.round(c.right), speakerLeft: Math.round(s.left), level: Math.round(Math.abs((s.top + s.height / 2) - (c.top + c.height / 2))) }; });
+  ok('Which Sense\'s question sits in the middle of the board, its speaker to the right of it and level with it', !!row && row.cardMid !== undefined && Math.abs(row.cardMid - row.boardMid) <= 2 && row.speakerLeft >= row.cardRight && row.level <= 6, row);
   // Close, and the round arrow, while the pointer has the question said: the game's voice still works afterwards (Skip is read on
   // the phone above), for the next game and after Begin.
   await closeGame(); await openGame('sense-psychology-k');
@@ -282,6 +299,12 @@ const pressDuringAsk = (page, name, ms = 30000) => page.evaluate(([n, limit]) =>
   await closeGame(); await openGame('turn-speech-k', false);
   const stillSign = await page.evaluate(() => { const box = document.querySelector('[data-turn-answer]'); if (!box) return null; const answer = box.getAttribute('data-turn-answer'); const wrong = [...box.querySelectorAll('button')].find((b) => b.getAttribute('aria-label') && !b.getAttribute('aria-label').includes(answer) && !/speaker|hear/i.test(b.getAttribute('aria-label'))); if (!wrong) return null; wrong.click(); return new Promise((done) => requestAnimationFrame(() => { const cs = getComputedStyle(wrong); done({ label: wrong.getAttribute('aria-label'), answer, wobble: wrong.classList.contains('edu-wobble'), style: cs.outlineStyle, color: cs.outlineColor, width: cs.outlineWidth }); })); });
   ok('with less motion asked for, a wrong tap wears a red-brown dashed edge where it would have wobbled', !!stillSign && stillSign.wobble && stillSign.style === 'dashed' && stillSign.color === 'rgb(185, 99, 74)' && stillSign.width === '3px', stillSign);
+  // With motion on, the same edge beside the wobble (pass MQ, Mikey's answer to Q66: "Q66 - A"), and the wobble itself running, so
+  // the case is read with motion truly on.
+  await page.emulateMedia({ reducedMotion: 'no-preference' }); await page.waitForTimeout(800);
+  const movingSign = await page.evaluate(() => { const box = document.querySelector('[data-turn-answer]'); if (!box) return null; const answer = box.getAttribute('data-turn-answer'); const wrong = [...box.querySelectorAll('button')].find((b) => b.getAttribute('aria-label') && !b.getAttribute('aria-label').includes(answer) && !/speaker|hear/i.test(b.getAttribute('aria-label'))); if (!wrong) return null; wrong.click(); return new Promise((done) => requestAnimationFrame(() => { const cs = getComputedStyle(wrong); done({ label: wrong.getAttribute('aria-label'), answer, wobble: wrong.classList.contains('edu-wobble'), anim: cs.animationName, style: cs.outlineStyle, color: cs.outlineColor, width: cs.outlineWidth }); })); });
+  ok('with motion on, a wrong tap wobbles and wears the same red-brown dashed edge (Q66)', !!movingSign && movingSign.wobble && movingSign.anim === 'edu-wobble' && movingSign.style === 'dashed' && movingSign.color === 'rgb(185, 99, 74)' && movingSign.width === '3px', movingSign);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   await ctx.close();
 }
 
@@ -301,6 +324,7 @@ const pressDuringAsk = (page, name, ms = 30000) => page.evaluate(([n, limit]) =>
   await introDone(page);
   const quietLog = await page.evaluate(() => window.__eduIntro);
   ok('with no voice, Which Sense\'s caption asks the child to read the question, and the welcome leaves out the ask and both speakers', sawQuiet && !!quietLog && quietLog.done && quietLog.acts.every((a) => a.ok) && !quietLog.acts.some((a) => ['ask', 'replay', 'speaker'].includes(a.act)) && (await pad(page)) === 'ready', { sawQuiet, quietLine, acts: quietLog && quietLog.acts });
+  ok('with no voice, the page carries no note about the placeholder voice (pass MQ)', (await page.locator('[data-voice-note]').count()) === 0);
   await ctx.close();
 }
 
@@ -427,6 +451,109 @@ for (const [w, h, id, more] of [[667, 375, 'sense-psychology-k', ['loan-econ-6']
     const v2 = await band(); const begin = await fr.evaluate(() => { const b = document.querySelector('[data-begin-cover] button'); if (!b) return null; const q = b.getBoundingClientRect(); return { top: Math.round(q.top), bottom: Math.round(q.bottom) }; });
     ok('in the page-tall frame, Begin comes back into what shows once that pop-up is closed', !!begin && begin.top >= v2.top && begin.bottom <= v2.bottom, { begin, v2 }); }
   await ctx.close(); server.close(); }
+// ---- The spoken row on a small phone and a phone held sideways (pass MQ, round one's screen check, which found the answer boxes of
+// Which Sense and Find the Tool moving about 30 pixels on four questions in five there, a right answer's line taking two lines, and
+// Find the Tool's stethoscope running 28 pixels past the board on a 320 phone; the row had been read on a computer only).
+for (const [w, h] of [[320, 568], [844, 390]]) {
+  const ctx = await browser.newContext({ viewport: { width: w, height: h }, hasTouch: true, isMobile: true });
+  const page = await ctx.newPage(); page.on('pageerror', (e) => errors.push(String(e).slice(0, 300)));
+  await signIn(page, `S-8${w}`, PHONE_PAGE.href);
+  const open = async (id) => { await page.evaluate((x) => window.__eduTest.openColoring('play:' + x), id); await page.waitForTimeout(900); };
+  const close = async () => { const c = page.getByRole('button', { name: 'Close game' }); if (await c.count()) { await c.first().click({ force: true }); await page.waitForTimeout(500); } };
+  const rowOf = () => page.evaluate(() => { const r = document.querySelector('[data-game-pad] .edu-game-box [data-spoken-row]'); if (!r) return null; const words = r.querySelector('[data-spoken-words]'); const rg = document.createRange(); rg.selectNodeContents(words); const t = rg.getBoundingClientRect(); const b = r.closest('.edu-game-box').getBoundingClientRect(); const sp = r.children[2] ? r.children[2].querySelector('button') : null; const s = sp ? sp.getBoundingClientRect() : null;
+    return { text: words.textContent.trim(), off: +((t.left + t.right) / 2 - (b.left + b.right) / 2).toFixed(1), textRight: Math.round(t.right), boardRight: Math.round(b.right), speaker: s ? { left: Math.round(s.left), right: Math.round(s.right), level: Math.round(Math.abs((s.top + s.bottom) / 2 - (t.top + t.bottom) / 2)) } : null }; });
+  const rowFine = (r) => !!r && Math.abs(r.off) <= 2 && !!r.speaker && r.speaker.left >= r.textRight - 1 && r.speaker.right <= r.boardRight && r.speaker.level <= 6;
+  const rows = {};
+  for (const id of ['sense-psychology-k', 'tool-business-k', 'spot-first-sounds', 'spot-arts-k', 'share-philosophy-k', 'grow-agriculture-k']) { await open(id); rows[id] = await rowOf(); await close(); }
+  ok(`on a ${w} by ${h} phone, the six games' spoken words sit in the middle of the board, the speaker to their right, level and inside the board`, Object.values(rows).length === 6 && Object.values(rows).every(rowFine), rows);
+  // A finger's tap at a box's middle, and where the first box sits within the board.
+  const tapAt = async (sel) => { const r = await page.locator(sel).first().boundingBox(); if (!r) return false; await page.touchscreen.tap(r.x + r.width / 2, r.y + r.height / 2); return true; };
+  const boxTop = () => page.evaluate(() => { const e = document.querySelector('[data-game-pad] .edu-game-box [data-bin]'); const bx = document.querySelector('[data-game-pad] .edu-game-box'); return e && bx ? Math.round(e.getBoundingClientRect().top - bx.getBoundingClientRect().top) : null; });
+  const tiles = () => page.evaluate(() => { const bx = document.querySelector('[data-game-pad] .edu-game-box'); if (!bx) return null; const cs = getComputedStyle(bx); const r = bx.getBoundingClientRect(); const inL = r.left + parseFloat(cs.paddingLeft) + parseFloat(cs.borderLeftWidth); const inR = r.right - parseFloat(cs.paddingRight) - parseFloat(cs.borderRightWidth);
+    // A tile past the board's inner edge, or a label whose ink runs past its tile's own inner edges (round three's screen read, pass MQ:
+    // with the tiles' minimum width kept, "stethoscope" ran past its tile on 8 of 24 boards, and a check of the tiles alone passed).
+    const inkPast = (b) => { const q = b.getBoundingClientRect(); const s = getComputedStyle(b); const tL = q.left + parseFloat(s.borderLeftWidth) + parseFloat(s.paddingLeft); const tR = q.right - parseFloat(s.borderRightWidth) - parseFloat(s.paddingRight);
+      const txt = [...b.childNodes].find((n) => n.nodeType === 3); if (!txt) return false; const rg = document.createRange(); rg.selectNodeContents(txt); return [...rg.getClientRects()].filter((r) => r.width > 0.5).some((r) => r.left < tL - 0.5 || r.right > tR + 0.5); };
+    const out = [...bx.querySelectorAll('[data-bin]')].filter((b) => { const q = b.getBoundingClientRect(); return q.left < inL - 0.5 || q.right > inR + 0.5 || inkPast(b); }).map((b) => b.getAttribute('data-bin'));
+    return { n: bx.querySelectorAll('[data-bin]').length, out, names: [...bx.querySelectorAll('[data-bin]')].map((b) => b.getAttribute('data-bin')), scroll: bx.scrollLeft, page: Math.round(window.scrollX), wide: document.documentElement.scrollWidth > window.innerWidth }; });
+  for (const [id, attr, rounds] of [['sense-psychology-k', 'data-sense-answer', 1], ['tool-business-k', 'data-tool-answer', 3]]) {
+    await open(id); const top0 = await boxTop(); const moved = []; const answered = []; const past = []; let boards = 0; const dealt = new Set();
+    for (let round = 0; round < rounds; round++) {
+      if (round > 0) { await page.getByRole('button', { name: 'Play again' }).first().click({ force: true }); await page.waitForTimeout(700); }
+      for (let i = 0; i < 6; i++) {
+        const ans = await page.evaluate((a) => { const e = document.querySelector(`[${a}]`); return e ? e.getAttribute(a) : ''; }, attr); if (!ans) break;
+        boards += 1; if (id === 'tool-business-k') { const t = await tiles(); (t ? t.names : []).forEach((n) => dealt.add(n)); if (!t || t.n !== 3 || t.out.length || t.scroll || t.page || t.wide) past.push({ round, i, t }); }
+        await tapAt(`[data-bin="${ans}"]`); await page.waitForTimeout(250);
+        const r = await rowOf(); if (!(r && Math.abs(r.off) <= 2 && /^Yes/.test(r.text))) answered.push({ round, i, r });
+        const t1 = await boxTop(); await page.waitForTimeout(1300); const t2 = await boxTop();
+        if (t1 !== top0 || (t2 !== null && t2 !== top0)) moved.push({ round, i, top0, t1, t2 });
+        if (id === 'tool-business-k') { const t = await tiles(); if (t && (t.scroll || t.page || t.wide)) past.push({ round, i, afterTap: t }); }
+      }
+    }
+    const name = id === 'tool-business-k' ? `Find the Tool, ${rounds} rounds` : 'Which Sense, a whole round';
+    ok(`on a ${w} by ${h} phone, ${name}: the answer, once given, stays in the middle, and no answer box moves within the board`, top0 !== null && boards >= 5 * rounds && moved.length === 0 && answered.length === 0, { boards, top0, moved: moved.slice(0, 3), answered: answered.slice(0, 3) });
+    if (id === 'tool-business-k') ok(`on a ${w} by ${h} phone, every Find the Tool board dealt keeps its three tiles inside the board, the stethoscope among them, and a tap scrolls nothing`, boards >= 15 && dealt.has('stethoscope') && past.length === 0, { boards, dealt: [...dealt], past: past.slice(0, 3) });
+    await close();
+  }
+  // Grow the Plant, a whole round (round three's screen read, pass MQ): its words keep the round's tallest line and the line under
+  // them its longest plant's height, so no tile moves within the board on a right answer.
+  { await open('grow-agriculture-k'); const growTop = () => page.evaluate(() => { const e = document.querySelector('[data-game-pad] .edu-game-box button[aria-label^="Give "]'); const bx = document.querySelector('[data-game-pad] .edu-game-box'); return e && bx ? Math.round(e.getBoundingClientRect().top - bx.getBoundingClientRect().top) : null; });
+    const top0 = await growTop(); const moved = []; let plants = 0;
+    for (let i = 0; i < 4; i++) {
+      const need = await page.evaluate(() => { const e = document.querySelector('[data-grow-need]'); return e ? e.getAttribute('data-grow-need') : ''; }); if (!need) break;
+      // Sideways the tiles sit below the window, where a finger's tap lands on nothing (round five's code read: the case passed with no
+      // right answer given, the planted build too); the page is brought to them first, which leaves their place within the board alone,
+      // and a plant counts only once its right answer has landed.
+      await page.locator(`button[aria-label="Give ${need}"]`).first().scrollIntoViewIfNeeded(); await page.waitForTimeout(200);
+      await tapAt(`button[aria-label="Give ${need}"]`); await page.waitForTimeout(250); const t1 = await growTop();
+      if ((await page.evaluate(() => { const e = document.querySelector('[data-grow-fixed]'); return e ? e.getAttribute('data-grow-fixed') : ''; })) === 'yes') plants += 1;
+      await page.waitForTimeout(2600); const t2 = await growTop();
+      if (t1 !== top0 || (t2 !== null && t2 !== top0)) moved.push({ i, need, top0, t1, t2 });
+    }
+    ok(`on a ${w} by ${h} phone, Grow the Plant, a whole round: no tile moves within the board on a right answer`, top0 !== null && plants >= 4 && moved.length === 0, { plants, top0, moved });
+    await close(); }
+  await ctx.close();
+}
+// ---- The Instructions pop-up with a keyboard (pass MQ, rounds three and five): Got it takes the focus as it opens, a number key
+// reaches no answer behind it (a 3 had answered Which Sense, whose words on a laptop say "or press its number"), Escape closes it,
+// and the focus comes back to the Instructions link.
+{ const ctx = await browser.newContext({ viewport: { width: 1280, height: 860 } });
+  const page = await ctx.newPage(); page.on('pageerror', (e) => errors.push(String(e).slice(0, 300)));
+  await signIn(page, 'S-97', undefined, false);
+  await page.evaluate(() => window.__eduTest.openColoring('play:sense-psychology-k')); await page.waitForTimeout(900);
+  // The right answer's own key, so the check cannot pass on a wrong key by luck; pressed again once the pop-up has closed, it answers.
+  const answer = await page.evaluate(() => { const e = document.querySelector('[data-sense-answer]'); return e ? e.getAttribute('data-sense-answer') : ''; });
+  const key = String(L.SENSES.indexOf(answer) + 1);
+  const said = () => page.evaluate(() => { const w = document.querySelector('[data-game-pad] [data-spoken-words]'); return w ? /^Yes/.test(w.textContent.trim()) : null; });
+  await page.locator('[data-how-link]').first().focus(); await page.keyboard.press('Enter'); await page.waitForTimeout(400);
+  const focus1 = await page.evaluate(() => (document.activeElement ? document.activeElement.textContent.trim() : ''));
+  await page.keyboard.press(key); await page.waitForTimeout(500); const answered = await said();
+  await page.keyboard.press('Escape'); await page.waitForTimeout(400);
+  const open = await page.locator('[data-how-pop]').count(); const back = await page.evaluate(() => !!document.activeElement && document.activeElement.hasAttribute('data-how-link'));
+  await page.keyboard.press(key); await page.waitForTimeout(500); const answeredAfter = await said();
+  ok('with a keyboard, the Instructions pop-up takes the focus on Got it, the right answer\'s key answers nothing behind it, Escape closes it, the focus returns to its link, and the key answers once it has closed (pass MQ, round five)', !!answer && focus1 === 'Got it' && answered === false && open === 0 && back && answeredAfter === true, { answer, key, focus1, answered, open, back, answeredAfter });
+  await ctx.close(); }
+// ---- A voice that never reports a line's end (pass MQ, round one's screen check: the welcome waited on its first line until Skip):
+// the welcome goes on once three times the line's reading time has passed, and not before (at the tests' pace the first cap was 0,
+// so no welcome in this test ever waited for its voice). The voice here starts each line and never ends one.
+{ const ctx = await browser.newContext({ viewport: { width: 1280, height: 860 } });
+  const page = await ctx.newPage(); page.on('pageerror', (e) => errors.push(String(e).slice(0, 300)));
+  await signIn(page, 'S-95', undefined, false);
+  await page.evaluate(() => { window.__eduIntroPace = 0; let talking = false; window.__mute = [];
+    Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { get speaking() { return talking; }, get pending() { return false; }, getVoices() { return []; }, speak(u) { talking = true; window.__mute.push(u.text); if (u.onstart) u.onstart({}); }, cancel() { talking = false; } } });
+    window.__ats = []; setInterval(() => { const l = window.__eduIntro; const a = l ? l.at : null; const last = window.__ats[window.__ats.length - 1]; if (a !== null && a !== undefined && (!last || last.at !== a)) window.__ats.push({ at: a, t: performance.now() }); }, 50); });
+  await page.evaluate(() => window.__eduTest.openColoring('play:sense-psychology-k', { intro: true }));
+  const first = L.gameIntro(L.GAMES.find((g) => g.id === 'sense-psychology-k'))[0].say;
+  const words = first.split(/\s+/).length; const sentences = first.split(L.SENTENCE_BREAK).filter(Boolean).length;
+  const cap = 3 * Math.max(1200, Math.round((words / 3) * 1000) + (sentences - 1) * 450);
+  await page.waitForTimeout(Math.round(cap / 2));
+  const half = await page.evaluate(() => (window.__eduIntro ? window.__eduIntro.at : null));
+  const moved = await until(page, () => !!window.__eduIntro && window.__eduIntro.at >= 1, null, cap + 6000);
+  await page.waitForTimeout(300);   // the page's watcher notes a new line every 50 ms
+  const ats = await page.evaluate(() => window.__ats.slice(0, 3));
+  const gap = ats.length >= 2 ? Math.round(ats[1].t - ats[0].t) : null;
+  ok('a welcome whose voice never reports a line\'s end stays on that line for three times its reading time, then goes on (pass MQ)', half === 0 && moved && gap !== null && gap >= cap - 300 && gap <= cap + 4000, { cap, half, moved, gap, ats });
+  await ctx.close(); }
 ok('no browser errors during the walk', errors.length === 0, errors.slice(0, 4));
 await browser.close();
 console.log(`\n${passed} passed, ${failed} failed`);

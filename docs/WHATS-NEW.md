@@ -9,6 +9,13 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## October 27, 2026 (new words for three- and four-year-olds, and a gentler voice)
+
+- Three- and four-year-olds have five new lessons about words, each with its own story. Three-year-olds learn the words a teacher uses to say what to do, like match, count and sort, words for people and for things that happen, like a grandpa and bedtime, and how to take turns talking with a friend: say hi, listen while your friend talks, say something about what they said, and say bye. Four-year-olds learn to listen to every word of a direction, like "tap the small red square," and how words go together: groups like clothes and toys, opposites like hot and cold, and words that mean the same, like glad and happy. Four-year-olds' reading list adds Exactly the Opposite by Tana Hoban, photographs of opposites with no words, for a grown-up and a child to talk through together.
+- The voice reads a little more slowly for young learners and rests between sentences, and every game's spoken welcome rests between its sentences too, so each sentence can sink in before the next one starts. Pages that speak now carry a small note that the voice is a placeholder from your device; recorded voices come later.
+- "Game breaks taken" on the report now counts a game only once the child has tapped Begin, so a child who watched a game's welcome and then left isn't counted as taking a break.
+- A few touches in the games: a wrong answer now shows a red-brown edge on every device, beside its little wobble, the duck and the bee have a thin outline so they stand out on white, Which Sense's question sits in the middle with its speaker just to the right, and Whose Turn Next shows the talking stick in a child's hand.
+
 ## October 26, 2026 (every game shows how to play, and calmer reading and clearer letter sounds)
 
 - Every game now opens with a spoken welcome while the game plays itself under a pointer, a hand on a tablet or an arrow on a computer, so a child sees how to play before playing: the pointer drags, taps or presses a key just as the voice says to, and the words show under the board for a muted device. Then a Begin button, which pulses gently, starts the game itself; when the welcome ends, the page comes back to Begin if it had scrolled away. Skip ends the welcome at any time, and on a short screen it floats at the bottom with the words being said beside it. The speaker under the game says the instructions again, and the welcome plays again the next time the game is opened. The game's five minutes wait until Begin.

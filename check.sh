@@ -41,6 +41,6 @@ echo "13e/13 question pictures, More Info, the Wonder pictures and the read-alon
 # A game's spoken welcome and its demonstration (pass MP, Mikey's notes of October 26, 2026): a tile opens on it, a child's own taps
 # wait, the play clock waits, Begin, Skip, the round arrow, the Instructions link, the speaker, a visit after leaving, a computer's
 # key press and numbers, and less motion; since round two two short screens played whole and the claude.ai preview's page-tall frame.
-# About four minutes at the test's pace; the timeout is fifteen.
+# About eight minutes at the test's pace (6 min 53 s and 7 min 50 s in pass MQ's runs, with its rows and rounds); the timeout is fifteen.
 echo "13f/13 a game's welcome and its demonstration"; timeout 900 node tests/e2e/game-intro.mjs 2>&1 | tail -1 | tee /tmp/edu_intro.txt; grep -q " 0 failed" /tmp/edu_intro.txt || fail=1
 if [ "$fail" = 0 ]; then echo "ALL CHECKS PASSED"; else echo "CHECKS FAILED - read the lines above"; exit 1; fi

@@ -62,7 +62,364 @@ export function frameworkName(fw, grade) {
   return (FRAMEWORKS[fw] || FRAMEWORKS.CCSS).name;
 }
 
-export const CURRICULUM = [
+// ---------- Pre-K, counted against every outcome (pass MS, Mikey's answer to Q76, "Q76 - C") ----------
+// In plain terms: until pass MS the pre-K plans listed only the outcomes their lessons teach, so the standards map read "36 of 36
+// covered" for pre-K 3 while its lessons taught 34 of the 123 outcomes in the 2027 recommendations. Mikey chose (c): "list every outcome
+// of the 2027 recommendations in the pre-K plans, the untaught ones shown as not yet covered, and mark pre-K as still being written
+// until every one is taught." So the pre-K plans are built here from every outcome (PREK_OUTCOMES, copied from docs/standards by
+// tools/prek-outcomes.mjs and held to those files by the coverage test) and the lessons each row names (PREK_TAUGHT, the plans as
+// they stood through pass MR, kept word for word with their review notes); the same is done for Head Start's preschool goals, which
+// the map shows every state but Texas, since a printed record should never read as complete for them either (Claude's reading of
+// Mikey's reason, told to him in pass MS). The other grades' plans still list the standards their lessons cite, until each grade's
+// review transcribes its standards whole (Q76).
+// PREK_OUTCOMES:start (written by node tools/prek-outcomes.mjs --write from docs/standards; the coverage test holds it to them)
+export const PREK_OUTCOMES = {
+  TEKS_DOMAINS: [
+    ['I', 'Positive Character Development'],
+    ['II', 'Emergent Literacy: Language and Communication'],
+    ['III', 'Emergent Literacy: Reading'],
+    ['IV', 'Emergent Literacy: Writing'],
+    ['V', 'Mathematics'],
+    ['VI', 'Science'],
+    ['VII', 'Social Studies'],
+    ['VIII', 'Fine Arts'],
+    ['IX', 'Physical Development'],
+    ['X', 'Technology Applications'],
+  ],
+  ELOF_DOMAINS: [
+    ['P-ATL', 'Approaches to Learning'],
+    ['P-SE', 'Social and Emotional Development'],
+    ['P-LC', 'Language and Communication'],
+    ['P-LIT', 'Literacy'],
+    ['P-MATH', 'Mathematics Development'],
+    ['P-SCI', 'Scientific Reasoning'],
+    ['P-PMP', 'Perceptual, Motor, and Physical Development'],
+  ],
+  PK3: [
+    ['I.A.1', 'is building awareness of where own body is in space and an understanding of personal boundaries.'],
+    ['I.A.2', 'can identify some of their own physical attributes and indicate some personal preferences when prompted.'],
+    ['I.A.3', 'begins to identify own strengths.'],
+    ['I.A.4', 'shows initiative in trying new activities but may not persist when obstacles or challenges arise.'],
+    ['I.B.1.a', 'follows classroom expectations (rules, routines and procedures) with frequent reminders.'],
+    ['I.B.1.b', 'uses, cares for and returns classroom materials with assistance.'],
+    ['I.B.1.c', 'begins to regulate own behavior with adult guidance and assistance.'],
+    ['I.B.2.a', 'recognizes and expresses some emotions.'],
+    ['I.B.2.b', 'begins to use verbal and nonverbal communication to express emotions and feelings.'],
+    ['I.B.2.c', 'begins to use calming strategies to regulate emotions with adult assistance.'],
+    ['I.B.3.a', 'focuses attention on one task at a time but may not stay with it to completion.'],
+    ['I.B.3.b', 'remains focused on engaging, teacher-led group activities for short periods of time (up to 10 minutes)'],
+    ['I.C.1', 'begins to use effective verbal and nonverbal communication skills, home language, assistive communication, or other preferred methods to develop positive relationships with adults and peers.'],
+    ['I.C.2', 'participates in roles and responsibilities as a member of the classroom community with adult assistance.'],
+    ['I.C.3', 'observes and/or engages in peer play but may be less skilled in initiating and joining a group.'],
+    ['I.C.4', 'engages in parallel and associative play with peers.'],
+    ['I.C.5', 'seeks adult help when experiencing conflicts with peers.'],
+    ['I.C.6', 'responds with concern when a child or adult is distressed.'],
+    ['I.C.7', 'engages in simple interactions with peers and may have preferred friends.'],
+    ['I.D.1', 'shows interest and curiosity in other people and their feelings.'],
+    ['II.A.1', 'shows understanding of spoken communication by responding to adults and peers using verbal and nonverbal behaviors.'],
+    ['II.A.2', 'shows understanding by following two-step verbal directions with support.'],
+    ['II.B.1', 'uses language to communicate basic information, needs, and wants.'],
+    ['II.B.2', 'begins to use appropriate language, style, and nonverbal cues during communication with familiar adults and peers.'],
+    ['II.C.1', 'Child\'s speech is understood by familiar adults and peers.'],
+    ['II.C.2', 'mimics and begins to use intonation (changes in pitch or stress) in spoken language'],
+    ['II.D.1', 'understands (receptive) and uses (expressive) words to label and describe common objects, people, places, actions, and events.'],
+    ['II.D.2', 'shows a steady increase in understanding (receptive) and using (expressive) instructional and academic vocabulary.'],
+    ['II.E.1', 'typically uses simple sentences of three to four words, usually in correct word order.'],
+    ['II.E.2', 'begins to use regular plurals and regular past tense correctly.'],
+    ['II.E.3', 'uses simple sentence structures to share ideas using some details.'],
+    ['III.A.1', 'demonstrates an interest in pictures, text, environmental print, and stories read aloud.'],
+    ['III.B.1', 'counts the number of words in a simple spoken sentence with adult assistance.'],
+    ['III.B.2', 'distinguishes differences between similar-sounding words with adult assistance.'],
+    ['III.B.3', 'blends words to form compound words with adult assistance.'],
+    ['III.B.4', 'segments compound words to form individual words with adult assistance.'],
+    ['III.B.5', 'identifies rhyming words with adult assistance.'],
+    ['III.B.6', 'uses rhyming words through playful activities.'],
+    ['III.B.7', 'identifies if two words begin with the same sound with adult assistance.'],
+    ['III.B.8', 'produces a word that begins with the same sound with adult assistance.'],
+    ['III.B.9', 'identifies the onset in words (single letters and consonant blends) with adult assistance (in English only).'],
+    ['III.B.10', 'is exposed to onset-rime blending activities (in English only)'],
+    ['III.B.11', 'participates in activities to isolate initial phonemes with adult assistance.'],
+    ['III.B.12', 'participates in activities to blend phonemes with adult assistance.'],
+    ['III.B.13', 'participates in activities to segment phonemes with adult assistance.'],
+    ['III.C.1', 'participates in alphabet activities and recognizes some frequently encountered letters with adult assistance.'],
+    ['III.C.2', 'recognizes some distinct letter-sound correspondences with adult assistance.'],
+    ['III.C.3', 'produces some distinct letter-sound correspondences with adult assistance.'],
+    ['III.D.1', 're-enacts a story after it has been read aloud.'],
+    ['III.D.2', 'makes personal connections to books read aloud with adult assistance.'],
+    ['III.D.3', 'uses information learned from text to describe and categorize with adult assistance.'],
+    ['III.D.4', 'responds to questions relevant to the text read aloud with adult assistance.'],
+    ['III.D.5', 'attempts to make predictions about a text with adult assistance'],
+    ['III.E.1', 'notices and connects meaning to environmental print.'],
+    ['III.E.2', 'can distinguish between pictures and print.'],
+    ['III.E.3', 'handles books with increasing skill and imitates reading with awareness of directionality.'],
+    ['III.E.4', 'begins to notice the basic features of print.'],
+    ['IV.A.1', 'engages in free-choice playful drawing and writing activities and verbally shares meaning with peers and/or adults.'],
+    ['IV.A.2', 'draws and writes for different purposes to communicate ideas, using a variety of writing tools with adult modeling.'],
+    ['IV.A.3', 'draws in response to shared reading with adult prompting.'],
+    ['IV.B.1', 'contributes ideas for shared writing/dictation in whole/small group settings with adult prompting.'],
+    ['IV.B.2', 'suggests simple revisions (add, take out, change) to drawings and/or written words during shared writing with adult guidance.'],
+    ['IV.B.3', 'shares written products and drawings by explaining meaning to others with adult prompting.'],
+    ['IV.C.1', 'attempts to write letters of own name (usually beginning with the first letter) using a model when needed.'],
+    ['IV.C.2', 'uses drawings, scribbles, and mock letters to communicate ideas.'],
+    ['IV.C.3', 'uses letter like forms when writing and begins to include recognizable letters with a model and adult guidance.'],
+    ['IV.C.4', 'demonstrates emerging directionality (e.g., top to bottom, left to right), though placement may be inconsistent.'],
+    ['IV.C.5', 'demonstrates emerging use of spacing in their writing attempts with adult support.'],
+    ['V.A.1', 'rote counts from 1 to 10.'],
+    ['V.A.2', 'instantly recognizes the quantity of up to 3 objects without counting (subitizes) in organized and random arrangements.'],
+    ['V.A.3', 'counts up to 5 objects with one-to-one correspondence.'],
+    ['V.A.4', 'counts up to 5 items and demonstrates cardinality by communicating that the last number indicates how many items are in the set.'],
+    ['V.A.5', 'recognizes numerals 0-5.'],
+    ['V.A.6', 'represents quantities up to 5 by creating or showing sets using objects, fingers, or drawings.'],
+    ['V.A.7', 'explores composing and decomposing sets of objects up to 5 with support.'],
+    ['V.A.8', 'compares two sets of up to 5 objects in each set using comparative language (e.g., more than, less than, same number of).'],
+    ['V.A.9', 'uses objects or pictorial models to represent real world addition problems up to 5 with support.'],
+    ['V.A.10', 'uses objects or pictorial models to represent real world subtraction problems up to 5 with support.'],
+    ['V.B.1', 'recognizes two-dimensional shapes including circles, squares, rectangles, and triangles regardless of size and orientation.'],
+    ['V.B.2', 'explores three-dimensional shapes including spheres, cubes, cylinders, and cones through hands-on experiences with real objects.'],
+    ['V.B.3', 'creates shapes including circles, squares, rectangles, and triangles using materials and/or manipulatives with support.'],
+    ['V.B.4', 'uses positional words including in, on, and under with support.'],
+    ['V.C.1', 'explores the heights or lengths of people or objects and uses language including bigger, smaller, longer, shorter, or taller with support.'],
+    ['V.C.2', 'explores the capacity of containers through hands-on experiences with liquids and other materials and uses language including full or empty with support.'],
+    ['V.C.3', 'explores the weights of objects through hands-on experiences using language including heavy or light with support.'],
+    ['V.C.4', 'recognizes the passage of time within a day using language including now, next, or later with support.'],
+    ['V.D.1', 'sorts objects based on one attribute such as color, shape, or size.'],
+    ['V.D.2', 'duplicates simple repeating AB patterns using objects, actions, or sounds.'],
+    ['V.D.4', 'participates in group activities of collecting data and contributing to creating a simple graph or chart with adult support.'],
+    ['VI.A.1', 'explores simple scientific tools to learn about objects.'],
+    ['VI.A.2', 'displays curiosity by asking questions.'],
+    ['VI.A.3', 'participates in simple investigations with adult support.'],
+    ['VI.B.1', 'explores observable properties of objects and materials using senses.'],
+    ['VI.B.2', 'explores the movement of objects.'],
+    ['VI.B.3', 'explores light and shadows through play.'],
+    ['VI.C.1', 'explores the characteristics of living organisms.'],
+    ['VI.C.2', 'explores how living organisms change and grow.'],
+    ['VI.C.3', 'explores caring for plants or animals with adult support.'],
+    ['VI.D.1', 'explores earth materials such as rocks, soil, sand, and water through their senses.'],
+    ['VI.D.2', 'explores common objects in the sky such as Sun, Moon, clouds, and stars.'],
+    ['VI.D.3', 'observes changes in weather, day and night, and seasons with support.'],
+    ['VI.D.4', 'explores ways to care for the environment with support.'],
+    ['VI.E.1', 'explores a variety of materials to build or create.'],
+    ['VI.E.2', 'recognizes problems and explores various solutions.'],
+    ['VII.A.1', 'recognizes self and familiar people by stating their own name, naming others, or identifying self and others in photos.'],
+    ['VII.A.2', 'recognizes characteristics of family traditions, cultural influences, and community celebrations, including food, music, and clothing.'],
+    ['VII.A.3', 'shows awareness of daily events and routines such as daily visual schedule and morning and bedtime routines.'],
+    ['VII.B.2', 'explores the concepts of being a customer.'],
+    ['VII.B.3', 'identifies family, school, and community helpers.'],
+    ['VII.C.2', 'begins to recognize familiar places within their school environment.'],
+    ['VIII.A.1', 'explores art materials through sensory experiences such as touching, molding, painting, and manipulating.'],
+    ['VIII.A.2', 'creates simple artwork that begins to express ideas, feelings, or experiences.'],
+    ['VIII.A.3', 'exhibits curiosity in and pays attention to the creative work of others by looking, pointing, or responding.'],
+    ['VIII.B.1', 'participates in adult-led music activities by singing or playing simple instruments with support.'],
+    ['VIII.B.2', 'responds to different musical styles through movement and play.'],
+    ['VIII.C.1', 'engages in pretend play by imitating actions, roles, or experiences with support.'],
+    ['IX.A.1', 'demonstrates emerging control of basic skills of running, jumping with both feet, climbing, and pedaling.'],
+    ['IX.A.2', 'follows and performs simple movement sequences with support.'],
+    ['IX.B.1', 'participates in activities that develop small muscle strength and coordination with adult support.'],
+    ['IX.B.2', 'participates in activities that require eye-hand Coordination with adult support.'],
+    ['IX.C.1', 'demonstrates safe behaviors by following classroom and playground rules with adult guidance.'],
+    ['IX.C.2', 'follows personal health and hygiene routines with adult support.'],
+    ['IX.C.3', 'identifies healthy food choices and physical activities that support well-being.'],
+  ],
+  PK4: [
+    ['I.A.1', 'is aware of where own body is in space and respects personal boundaries.'],
+    ['I.A.2', 'describes their own attributes, and expresses personal preferences.'],
+    ['I.A.3', 'demonstrates confidence in own strengths and awareness of limitations.'],
+    ['I.A.4', 'shows initiative in trying new activities and demonstrates persistence when attempting to overcome obstacles or challenges.'],
+    ['I.B.1.a', 'follows classroom expectations (rules, routines and procedures) with occasional reminders.'],
+    ['I.B.1.b', 'uses, cares for and returns classroom materials with increasing independence.'],
+    ['I.B.1.c', 'regulates own behavior with occasional reminders or assistance from adults.'],
+    ['I.B.2.a', 'describes or demonstrates the connection between emotions and behaviors.'],
+    ['I.B.2.b', 'uses verbal and nonverbal communication to express emotions and feelings.'],
+    ['I.B.2.c', 'uses calming strategies to regulate emotions with decreasing adult assistance'],
+    ['I.B.3.a', 'sustains attention on one task at a time working toward completion.'],
+    ['I.B.3.b', 'remains focused on engaging, teacher-led group activities for increasing periods of time (up to 20 minutes).'],
+    ['I.C.1', 'uses effective verbal and nonverbal communication skills, home language, assistive communication, or other preferred methods to develop positive relationships with adults and peers.'],
+    ['I.C.2', 'participates in roles and responsibilities as a member of the classroom community.'],
+    ['I.C.3', 'initiates and/or responds to social interactions using verbal and non-verbal communication skills.'],
+    ['I.C.4', 'engages in cooperative play with peers by contributing to a shared plan or goal.'],
+    ['I.C.5', 'uses simple problem-solving strategies when experiencing conflicts with others and seeks adult support when necessary.'],
+    ['I.C.6', 'responds with empathy and care for others.'],
+    ['I.C.7', 'develops and maintains positive relationships with peers and has preferred friends.'],
+    ['I.D.1', 'demonstrates respect for others\' perspectives and feelings that are similar and/or different from their own.'],
+    ['II.A.1', 'demonstrates understanding of spoken communication by responding appropriately to adults and peers through verbal or nonverbal behaviors.'],
+    ['II.A.2', 'demonstrates understanding by following three-step verbal directions with support.'],
+    ['II.B.1', 'uses language for multiple purposes and in various settings.'],
+    ['II.B.2', 'engages in conversations in appropriate ways, demonstrating knowledge of verbal and nonverbal conversational rules.'],
+    ['II.C.1', 'Child’s speech is generally intelligible to both familiar and unfamiliar adults and peers.'],
+    ['II.C.2', 'uses intonation (changes in pitch or stress) to convey and interpret meaning in spoken language.'],
+    ['II.D.1', 'understands (receptive) and uses (expressive) a growing variety of words to label, describe and make connections among objects, people, places, actions, and events.'],
+    ['II.D.2', 'consistently understands (receptive) and uses (expressive) instructional and academic vocabulary.'],
+    ['II.E.1', 'typically uses complete sentences with increasing length and age-appropriate grammatical complexity, usually in standard word order.'],
+    ['II.E.2', 'uses a variety of age-appropriate grammatical forms (e.g. plurals, past tense, pronouns, subject-verb agreement) in spoken language.'],
+    ['II.E.3', 'uses sentences that combine multiple phrases or ideas, shares details, maintains a topic, and communicates ideas clearly.'],
+    ['III.A.1', 'self-selects and interacts with books and other written materials for increasing periods of time.'],
+    ['III.B.1', 'counts the number of words in a spoken sentence of increasing complexity.'],
+    ['III.B.2', 'distinguishes when two words are the same or different.'],
+    ['III.B.3', 'blends multisyllabic words with up to 3 syllables.'],
+    ['III.B.4', 'segments multisyllabic words with up to three syllables.'],
+    ['III.B.5', 'identifies rhyming words.'],
+    ['III.B.6', 'produces rhyming words with adult assistance.'],
+    ['III.B.7', 'identifies if words begin with the same sound.'],
+    ['III.B.8', 'produces a word that begins with the same sound.'],
+    ['III.B.9', 'identifies the onset in words (single letters and consonant blends) (in English only).'],
+    ['III.B.10', 'blends onset-rime to form familiar one-syllable words (in English only).'],
+    ['III.B.11', 'isolates initial phonemes.'],
+    ['III.B.12', 'blends 2-3 phonemes with adult assistance.'],
+    ['III.B.13', 'segments 2-3 phonemes with adult assistance.'],
+    ['III.C.1', 'recognizes and names at least 18 uppercase letters and 15 lowercase letters.'],
+    ['III.C.2', 'recognizes at least 20 distinct letter-sound correspondences.'],
+    ['III.C.3', 'produces at least 15 distinct letter-sound correspondences.'],
+    ['III.D.1', 'retells or re-enacts the main events of a story.'],
+    ['III.D.2', 'makes connections between books read aloud and personal experiences or ideas from other texts with adult assistance.'],
+    ['III.D.3', 'uses information learned from text to describe, relate, categorize, or compare and contrast with adult assistance.'],
+    ['III.D.4', 'asks and responds to questions relevant to the text read aloud with adult assistance.'],
+    ['III.D.5', 'makes predictions and attempts to make inferences about a text with adult assistance.'],
+    ['III.E.1', 'recognizes that all print carries meaning and serves as a means for communication.'],
+    ['III.E.2', 'can distinguish between elements of print including letters, words, and pictures.'],
+    ['III.E.3', 'holds books right side up and demonstrates understanding of print directionality.'],
+    ['III.E.4', 'can identify some conventional features of print that communicate meaning including end punctuation and case.'],
+    ['IV.A.1', 'intentionally uses drawings and marks, letters, or symbols to represent ideas and verbally shares intended meaning with an adult or peer.'],
+    ['IV.A.2', 'independently draws and writes for many purposes to communicate ideas, using a variety of writing tools with support as needed.'],
+    ['IV.A.3', 'draws and/or writes in response to shared reading with support as needed.'],
+    ['IV.B.1', 'contributes ideas for shared writing/dictation in whole/small group settings with support as needed.'],
+    ['IV.B.2', 'provides suggestions for revisions (add, take out, change order) and edits (conventions) during shared writing with support as needed.'],
+    ['IV.B.3', 'shares and celebrates class-made and individual written/or drawn products by explaining meaning to others.'],
+    ['IV.C.1', 'writes first name using letters in the proper sequence with adult support as needed.'],
+    ['IV.C.2', 'progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas.'],
+    ['IV.C.3', 'writes familiar words using letter-sound correspondences, often using letters associated with beginning, medial and/or ending sounds to write words with adult support as needed.'],
+    ['IV.C.4', 'demonstrates directionality when writing (e.g., top to bottom, left to right) adult support as needed.'],
+    ['IV.C.5', 'demonstrates use of spacing in their writing with adult support as needed.'],
+    ['IV.C.6', 'experiments with and uses punctuation when writing.'],
+    ['V.A.1', 'rote counts from 1 to 30.'],
+    ['V.A.2', 'instantly recognizes the quantity of up to 6 objects without counting (subitizes) in organized and random arrangements.'],
+    ['V.A.3', 'counts up to 10 objects with one-to-one correspondence.'],
+    ['V.A.4', 'counts up to 10 items and demonstrates cardinality by communicating that the last number indicates how many items are in the set.'],
+    ['V.A.5', 'names numerals 0-10.'],
+    ['V.A.6', 'represents quantities up to 10 by creating or showing sets using objects, fingers, or drawings.'],
+    ['V.A.7', 'uses objects to represent how sets up to 10 can be composed and decomposed in at least two different compositions.'],
+    ['V.A.8', 'compares two sets of up to 10 objects in each set using comparative language (e.g., greater/more than, less/fewer than, equal to/same number of).'],
+    ['V.A.9', 'uses objects or pictorial models to represent real-world addition problems up to 5.'],
+    ['V.A.10', 'uses objects or pictorial models to represent real-world subtraction problems from a set of 5.'],
+    ['V.B.1', 'names two-dimensional shapes including circles, squares, rectangles, triangles, ovals, and rhombi regardless of size and orientation.'],
+    ['V.B.2', 'recognizes three-dimensional shapes including spheres, cubes, cylinders, and cones.'],
+    ['V.B.3', 'creates shapes including circles, squares, rectangles, triangles, ovals, and rhombi using materials and/or manipulatives.'],
+    ['V.B.4', 'uses positional words including first, last, above, below, front, behind, next to, and between.'],
+    ['V.C.1', 'recognizes and compares the attributes of heights or lengths of people or objects using language including longer, shorter, taller, higher, lower or same.'],
+    ['V.C.2', 'recognizes and compares the capacity of containers through hands-on experiences with liquids and other materials and uses language including full, empty, more, less, or same amount.'],
+    ['V.C.3', 'recognizes and compares the weights of objects through hands-on experiences using language including heavy, light, more, or less.'],
+    ['V.C.4', 'describes concepts associated with the passing of time within a day using language including now, next, later, before, after, morning, or afternoon.'],
+    ['V.D.1', 'sorts objects into groups based on shared attributes such as color, shape, or size and describes how the groups are similar and different.'],
+    ['V.D.2', 'duplicates simple repeating AB AAB, and ABB patterns using objects, actions, or sounds.'],
+    ['V.D.3', 'extends and creates simple repeating AB, AAB, or ABB patterns using objects, actions, or sounds with support.'],
+    ['V.D.4', 'participates in group activities of collecting data, contributing to creating a simple graph or chart, and describing the results with adult support.'],
+    ['VI.A.1', 'uses simple scientific tools to learn about objects.'],
+    ['VI.A.2', 'asks questions based on observations.'],
+    ['VI.A.3', 'makes predictions and conducts simple investigations with support.'],
+    ['VI.B.1', 'identifies and compares observable properties of objects such as color, shape, texture, and size.'],
+    ['VI.B.2', 'investigates cause and effect of push/pull/collision that makes objects start, stop, and change direction and position.'],
+    ['VI.B.3', 'describes how the position of a light source or object affects shadows.'],
+    ['VI.C.1', 'describes the characteristics of living organisms.'],
+    ['VI.C.2', 'recognizes the changes of living organisms over their lifespan.'],
+    ['VI.C.3', 'recognizes how living organisms need water, food, air, and/or shelter to live and grow.'],
+    ['VI.D.1', 'recognizes properties of earth materials such as rocks, soil, sand, and water and their uses.'],
+    ['VI.D.2', 'identifies common objects in the sky such as Sun, Moon, clouds, and stars.'],
+    ['VI.D.3', 'recognizes patterns and changes in weather, day and night, and seasons.'],
+    ['VI.D.4', 'participates in caring for the environment.'],
+    ['VI.E.1', 'selects and uses appropriate tools and materials to build or create.'],
+    ['VI.E.2', 'plans, constructs, and tests simple structures to solve a problem.'],
+    ['VII.A.1', 'identifies and describes similarities and differences between self, classmates, families, and others, including personal characteristics.'],
+    ['VII.A.2', 'identifies similarities and differences in characteristics of family traditions cultural influences, and community celebrations, including food, music, and clothing.'],
+    ['VII.A.3', 'describes and sequences familiar daily events and routines using words related to time and chronology such as first, next, last, before, after, yesterday, today, and tomorrow.'],
+    ['VII.B.1', 'identifies basic human needs, including water, food, clothing, and shelter.'],
+    ['VII.B.2', 'identifies consumers as people who use or buy goods and services.'],
+    ['VII.B.3', 'identifies and discusses the roles and responsibilities of family, school, and community helpers as people who work together to make the community a safer place for everyone.'],
+    ['VII.C.1', 'identifies, describes, and represents familiar places and geographic features in the environment such as landforms, bodies of water, and landmarks through drawings, creation of models, and play.'],
+    ['VII.C.2', 'explores and uses basic geography tools and resources such as maps, photographs, and classroom diagrams to locate or identify familiar places.'],
+    ['VII.D.1', 'identifies the United States and Texas flag.'],
+    ['VII.D.2', 'recites the Pledge of Allegiance to the United States flag and the Texas flag and observes a moment of silence.'],
+    ['VII.D.3', 'engages in voting as a method for group decision-making and solving problems such as choosing a book, game, or snack.'],
+    ['VIII.A.1', 'uses a variety of art materials such as paint, clay, collage, drawing tools and loose parts for sensory experiences, fine motor development, and exploration.'],
+    ['VIII.A.2', 'creates and describes artwork inspired by personal ideas, feelings, or experiences as a form of creative self-expression and representation.'],
+    ['VIII.A.3', 'demonstrates interest in and shows appreciation for the creative work of others by looking, responding, or asking questions.'],
+    ['VIII.B.1', 'participates in adult or student-led music activities including singing, playing musical instruments, and replicating rhythmic patterns.'],
+    ['VIII.B.2', 'responds to different musical styles through coordinated movement and play.'],
+    ['VIII.C.1', 'creates or reenacts stories, feelings, or experiences through pretend play or dramatic representations.'],
+    ['IX.A.1', 'demonstrates coordination and balance while running, jumping, hopping, climbing, and pedaling.'],
+    ['IX.A.2', 'performs a sequence of movements to perform tasks with control.'],
+    ['IX.B.1', 'demonstrates control, coordination, and increasing precision when using small muscles to complete tasks.'],
+    ['IX.B.2', 'demonstrates control, coordination and increasing precision when completing tasks that require eye-hand coordination.'],
+    ['IX.C.1', 'demonstrates safe behaviors by following school-wide and classroom rules.'],
+    ['IX.C.2', 'independently follows personal health and hygiene routines with occasional reminders.'],
+    ['IX.C.3', 'identifies and makes healthy food choices and physical activities that support well-being.'],
+    ['X.A.1', 'explores how digital and non-digital technology helps people learn and solve problems with adult support.'],
+    ['X.A.2', 'participates in shared technology experiences to access appropriate information with adult support.'],
+  ],
+  ELOF: [
+    ['P-ATL 1', 'Child manages emotions with increasing independence.'],
+    ['P-ATL 2', 'Child follows classroom rules and routines with increasing independence.'],
+    ['P-ATL 3', 'Child appropriately handles and takes care of classroom materials.'],
+    ['P-ATL 4', 'Child manages actions, words, and behavior with increasing independence.'],
+    ['P-ATL 5', 'Child demonstrates an increasing ability to control impulses.'],
+    ['P-ATL 6', 'Child maintains focus and sustains attention with minimal adult support.'],
+    ['P-ATL 7', 'Child persists in tasks.'],
+    ['P-ATL 8', 'Child holds information in mind and manipulates it to perform tasks.'],
+    ['P-ATL 9', 'Child demonstrates flexibility in thinking and behavior.'],
+    ['P-ATL 10', 'Child demonstrates initiative and independence.'],
+    ['P-ATL 11', 'Child shows interest in and curiosity about the world around them.'],
+    ['P-ATL 12', 'Child expresses creativity in thinking and communication.'],
+    ['P-ATL 13', 'Child uses imagination in play and interactions with others.'],
+    ['P-SE 1', 'Child engages in and maintains positive relationships and interactions with adults.'],
+    ['P-SE 2', 'Child engages in prosocial and cooperative behavior with adults.'],
+    ['P-SE 3', 'Child engages in and maintains positive interactions and relationships with other children.'],
+    ['P-SE 4', 'Child engages in cooperative play with other children.'],
+    ['P-SE 5', 'Child uses basic problem-solving skills to resolve conflicts with other children.'],
+    ['P-SE 6', 'Child expresses a broad range of emotions and recognizes these emotions in self and others.'],
+    ['P-SE 7', 'Child expresses care and concern toward others.'],
+    ['P-SE 8', 'Child manages emotions with increasing independence.'],
+    ['P-SE 9', 'Child recognizes self as a unique individual having own abilities, characteristics, emotions, and interests.'],
+    ['P-SE 10', 'Child expresses confidence in own skills and positive feelings about self.'],
+    ['P-SE 11', 'Child has sense of belonging to family, community, and other groups.'],
+    ['P-LC 1', 'Child attends to communication and language from others.'],
+    ['P-LC 2', 'Child understands and responds to increasingly complex communication and language from others.'],
+    ['P-LC 3', 'Child varies the amount of information provided to meet the demands of the situation.'],
+    ['P-LC 4', 'Child understands, follows, and uses appropriate social and conversational rules.'],
+    ['P-LC 5', 'Child expresses self in increasingly long, detailed, and sophisticated ways.'],
+    ['P-LC 6', 'Child understands and uses a wide variety of words for a variety of purposes.'],
+    ['P-LC 7', 'Child shows understanding of word categories and relationships among words.'],
+    ['P-LIT 1', 'Child demonstrates awareness that spoken language is composed of smaller segments of sound.'],
+    ['P-LIT 2', 'Child demonstrates an understanding of how print is used (functions of print) and the rules that govern how print works (conventions of print).'],
+    ['P-LIT 3', 'Child identifies letters of the alphabet and produces correct sounds associated with letters.'],
+    ['P-LIT 4', 'Child demonstrates an understanding of narrative structure through storytelling/re-telling.'],
+    ['P-LIT 5', 'Child asks and answers questions about a book that was read aloud.'],
+    ['P-LIT 6', 'Child writes for a variety of purposes using increasingly sophisticated marks.'],
+    ['P-MATH 1', 'Child knows number names and the count sequence.'],
+    ['P-MATH 2', 'Child recognizes the number of objects in a small set.'],
+    ['P-MATH 3', 'Child understands the relationship between numbers and quantities.'],
+    ['P-MATH 4', 'Child compares numbers.'],
+    ['P-MATH 5', 'Child associates a quantity with written numerals up to 5 and begins to write numbers.'],
+    ['P-MATH 6', 'Child understands addition as adding to and understands subtraction as taking away from.'],
+    ['P-MATH 7', 'Child understands simple patterns.'],
+    ['P-MATH 8', 'Child measures objects by their various attributes using standard and non-standard measurement. Uses differences in attributes to make comparisons.'],
+    ['P-MATH 9', 'Child identifies, describes, compares, and composes shapes.'],
+    ['P-MATH 10', 'Child explores the positions of objects in space.'],
+    ['P-SCI 1', 'Child observes and describes observable phenomena (objects, materials, organisms, and events).'],
+    ['P-SCI 2', 'Child engages in scientific talk.'],
+    ['P-SCI 3', 'Child compares and categorizes observable phenomena.'],
+    ['P-SCI 4', 'Child asks a question, gathers information, and makes predictions.'],
+    ['P-SCI 5', 'Child plans and conducts investigations and experiments.'],
+    ['P-SCI 6', 'Child analyzes results, draws conclusions, and communicates results.'],
+    ['P-PMP 1', 'Child demonstrates control, strength, and coordination of large muscles.'],
+    ['P-PMP 2', 'Child uses perceptual information to guide motions and interactions with objects and other people.'],
+    ['P-PMP 3', 'Child demonstrates increasing control, strength, and coordination of small muscles.'],
+    ['P-PMP 4', 'Child demonstrates personal hygiene and self-care skills.'],
+    ['P-PMP 5', 'Child develops knowledge and skills that help promote nutritious food choices and eating habits.'],
+    ['P-PMP 6', 'Child demonstrates knowledge of personal safety practices and routines.'],
+  ],
+};
+// PREK_OUTCOMES:end
+// The pre-K rows the lessons teach, as the plans held them through pass MR (four plans, Math and Reading for each age); prekPlans,
+// below, reads the lessons from them, so every lesson a row named stays named.
+const PREK_TAUGHT = [
   {
     // Pass MA: every code below was read in full in the 2022 Texas Prekindergarten Guidelines, PK3 Streamlined Version (TEA),
     // and the Head Start ELOF preschool goals on headstart.gov, and is quoted word for word. The old V.E.1 line quoted the
@@ -109,6 +466,9 @@ export const CURRICULUM = [
       { framework: 'TEKS', code: 'PK3.I.C.3', text: 'Child observes and/or engages in peer play but may be less skilled in initiating and joining a group.', moduleIds: ['join-in-play'] },
       // Pass MQ, earmark E12: pre-K 3's turns of a conversation (Talking with a friend), read one way with pre-K 4's Let's play
       // together; II.B.2 whole, P-SE 3 above and P-LC 4 in part (the lesson's sources say how), each held word for word to docs/standards.
+      // Pass MS: Say what you need, II.B.1 and Head Start's P-LC 3 (EARMARKS E12, the standards review of Domain II).
+      { framework: 'TEKS', code: 'PK3.II.B.1', text: 'Child uses language to communicate basic information, needs, and wants.', moduleIds: ['say-what-you-need'] },
+      { framework: 'CCSS', code: 'ELOF.P-LC.3', text: 'Varies the amount of information provided to meet the demands of the situation.', moduleIds: ['say-what-you-need'] },
       { framework: 'TEKS', code: 'PK3.II.B.2', text: 'Child begins to use appropriate language, style, and nonverbal cues during communication with familiar adults and peers.', moduleIds: ['please-and-thank-you', 'talk-with-a-friend', 'talk-about-it'] },
       { framework: 'CCSS', code: 'ELOF.P-LC.4', text: 'Understands, follows, and uses appropriate social and conversational rules.', moduleIds: ['talk-with-a-friend', 'talk-about-it'] },
       { framework: 'CCSS', code: 'ELOF.P-SE.4', text: 'Engages in cooperative play with other children.', moduleIds: ['join-in-play'] },
@@ -174,6 +534,137 @@ export const CURRICULUM = [
     ],
   },
   {
+    grade: 'PK4', subject: 'Math', status: 'ready',
+    source: 'Texas Prekindergarten Guidelines as the 2027 Pre-K Guidelines Review Committee recommends them (TEA, five documents posted for public feedback in September 2026, adopted by the app in pass MR at Mikey\'s word and read from them in pass MR, docs/standards/tea-pk4-2027-recommended.txt), PK4 outcomes; before pass MR, the Texas Prekindergarten Guidelines (2022), PK4 outcomes, read in full in pass ML (First Steps teaches Domains I, II, IV, V, VI, VII and IX in part, and since pass MM First Sounds and Letters\' Which came first? and Second and last teach P-MATH 4\'s order sentence and II.D.1\'s order words in part, and Domain I was read again in pass MN for First Steps\' three feelings lessons); Head Start Early Learning Outcomes Framework, preschool goals with their 48 to 60 month progressions',
+    standards: [
+      { framework: 'TEKS', code: 'PK4.V.A.3', text: 'Child counts up to 10 objects with one-to-one correspondence.', moduleIds: ['count-to-3', 'more-and-fewer-5'] },
+      { framework: 'TEKS', code: 'PK4.V.A.4', text: 'Child counts up to 10 items and demonstrates cardinality by communicating that the last number indicates how many items are in the set.', moduleIds: ['count-to-3', 'more-and-fewer-5'] },
+      { framework: 'TEKS', code: 'PK4.V.A.5', text: 'Child names numerals 0-10.', moduleIds: ['count-to-3', 'connect-the-dots'] },
+      { framework: 'TEKS', code: 'PK4.V.A.8', text: 'Child compares two sets of up to 10 objects in each set using comparative language (e.g., greater/more than, less/fewer than, equal to/same number of).', moduleIds: ['count-to-3', 'more-and-fewer-5'] },
+      { framework: 'TEKS', code: 'PK4.V.B.1', text: 'Child names two-dimensional shapes including circles, squares, rectangles, triangles, ovals, and rhombi regardless of size and orientation.', moduleIds: ['match-the-shapes', 'draw-the-shapes'] },
+      { framework: 'TEKS', code: 'PK4.V.B.2', text: 'Child recognizes three-dimensional shapes including spheres, cubes, cylinders, and cones.', moduleIds: ['match-the-solids'] },
+      { framework: 'TEKS', code: 'PK4.V.C.1', text: 'Child recognizes and compares the attributes of heights or lengths of people or objects using language including longer, shorter, taller, higher, lower or same.', moduleIds: ['bigger-and-smaller'] },
+      { framework: 'TEKS', code: 'PK4.V.D.1', text: 'Child sorts objects into groups based on shared attributes such as color, shape, or size and describes how the groups are similar and different.', moduleIds: ['colours', 'same-and-different', 'match-the-vehicles', 'match-the-things', 'match-the-water-animals', 'match-the-land-animals', 'match-the-shapes', 'match-the-solids'] },
+      { framework: 'TEKS', code: 'PK4.V.D.3', text: 'Child extends and creates simple repeating AB, AAB, or ABB patterns using objects, actions, or sounds with support.', moduleIds: ['patterns'] },
+      { framework: 'CCSS', code: 'ELOF.P-MATH.1', text: 'Knows number names and the count sequence.', moduleIds: ['count-to-3', 'connect-the-dots'] },
+      { framework: 'CCSS', code: 'ELOF.P-MATH.3', text: 'Understands the relationship between numbers and quantities.', moduleIds: ['count-to-3', 'more-and-fewer-5'] },
+      { framework: 'CCSS', code: 'ELOF.P-MATH.4', text: 'Compares numbers.', moduleIds: ['more-and-fewer-5', 'which-came-first', 'which-came-second'] },
+      { framework: 'CCSS', code: 'ELOF.P-MATH.5', text: 'Associates a quantity with written numerals up to 5 and begins to write numbers.', moduleIds: ['count-to-3'] },
+      { framework: 'CCSS', code: 'ELOF.P-MATH.7', text: 'Understands simple patterns.', moduleIds: ['patterns'] },
+      { framework: 'CCSS', code: 'ELOF.P-MATH.8', text: 'Measures objects by their various attributes using standard and non-standard measurement. Uses differences in attributes to make comparisons.', moduleIds: ['same-and-different', 'match-the-water-animals', 'bigger-and-smaller', 'big-bigger-biggest'] },
+      { framework: 'CCSS', code: 'ELOF.P-MATH.9', text: 'Identifies, describes, compares, and composes shapes.', moduleIds: ['match-the-shapes', 'match-the-solids', 'draw-the-shapes'] },
+      { framework: 'TEKS', code: 'PK4.IX.B.2', text: 'Child demonstrates control, coordination and increasing precision when completing tasks that require eye-hand coordination.', moduleIds: ['first-strokes', 'connect-the-dots', 'draw-the-shapes', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
+      { framework: 'CCSS', code: 'ELOF.P-PMP.3', text: 'Demonstrates increasing control, strength, and coordination of small muscles.', moduleIds: ['first-strokes', 'connect-the-dots', 'draw-the-shapes', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
+      { framework: 'TEKS', code: 'PK4.II.D.1', text: 'Child understands (receptive) and uses (expressive) a growing variety of words to label, describe and make connections among objects, people, places, actions, and events.', moduleIds: ['colours', 'big-bigger-biggest', 'which-came-first', 'which-came-second', 'words-go-together', 'helpers-all-around', 'opposites-and-same', 'things-we-do'] },
+      { framework: 'TEKS', code: 'PK4.VI.B.1', text: 'Child identifies and compares observable properties of objects such as color, shape, texture, and size.', moduleIds: ['colours', 'same-and-different', 'match-the-things', 'match-the-solids', 'bigger-and-smaller', 'big-bigger-biggest'] },
+      { framework: 'TEKS', code: 'PK4.VI.C.1', text: 'Child describes the characteristics of living organisms.', moduleIds: ['match-the-water-animals', 'match-the-land-animals'] },
+      { framework: 'CCSS', code: 'ELOF.P-SCI.1', text: 'Observes and describes observable phenomena (objects, materials, organisms, and events).', moduleIds: ['colours'] },
+      { framework: 'CCSS', code: 'ELOF.P-SCI.3', text: 'Compares and categorizes observable phenomena.', moduleIds: ['match-the-vehicles', 'match-the-things', 'match-the-land-animals'] },
+      { framework: 'TEKS', code: 'PK4.I.B.1.a', text: 'Child follows classroom expectations (rules, routines and procedures) with occasional reminders.', moduleIds: ['taking-turns'] },
+      { framework: 'TEKS', code: 'PK4.I.B.2.c', text: 'Child uses calming strategies to regulate emotions with decreasing adult assistance', moduleIds: ['taking-turns', 'feelings-show'] },
+      { framework: 'TEKS', code: 'PK4.I.C.5', text: 'Child uses simple problem-solving strategies when experiencing conflicts with others and seeks adult support when necessary.', moduleIds: ['taking-turns', 'good-friend'] },
+      { framework: 'TEKS', code: 'PK4.I.C.6', text: 'Child responds with empathy and care for others.', moduleIds: ['taking-turns', 'good-friend'] },
+      { framework: 'CCSS', code: 'ELOF.P-SE.3', text: 'Engages in and maintains positive interactions and relationships with other children.', moduleIds: ['taking-turns'] },
+      { framework: 'CCSS', code: 'ELOF.P-SE.5', text: 'Uses basic problem-solving skills to resolve conflicts with other children.', moduleIds: ['taking-turns', 'good-friend'] },
+      { framework: 'CCSS', code: 'ELOF.P-SE.7', text: 'Expresses care and concern toward others.', moduleIds: ['taking-turns', 'good-friend'] },
+      { framework: 'CCSS', code: 'ELOF.P-SE.8', text: 'Manages emotions with increasing independence.', moduleIds: ['taking-turns', 'feelings-show'] },
+      // Pass MN, earmarks E12 and E13 side by side, Domain I: pre-K 4's feelings lessons, each code read in TEA's 2022 PK4 column
+      // and on headstart.gov and held word for word to docs/standards.
+      { framework: 'TEKS', code: 'PK4.I.B.2.a', text: 'Child describes or demonstrates the connection between emotions and behaviors.', moduleIds: ['feelings-show'] },
+      { framework: 'TEKS', code: 'PK4.I.B.2.b', text: 'Child uses verbal and nonverbal communication to express emotions and feelings.', moduleIds: ['feelings-show'] },
+      { framework: 'TEKS', code: 'PK4.I.D.1', text: 'Child demonstrates respect for others\' perspectives and feelings that are similar and/or different from their own.', moduleIds: ['how-friends-feel'] },
+      { framework: 'CCSS', code: 'ELOF.P-SE.6', text: 'Expresses a broad range of emotions and recognizes these emotions in self and others.', moduleIds: ['feelings-show', 'how-friends-feel'] },
+      // Being a good friend's taking turns choosing and finding a game both friends like are the plans of P-SE 4's second sentence (the
+      // lesson check, pass MN round one).
+      { framework: 'CCSS', code: 'ELOF.P-SE.4', text: 'Engages in cooperative play with other children.', moduleIds: ['good-friend', 'play-with-a-plan'] },
+      // Pass MO, earmark E13: Domain I's last pre-K 4 lesson, each code read in TEA's 2022 PK4 column and on headstart.gov and held
+      // word for word to docs/standards; I.C.1, I.C.3 and I.C.4 read as pre-K 3 reads its I.C.1 and I.C.3.
+      { framework: 'TEKS', code: 'PK4.I.C.1', text: 'Child uses effective verbal and nonverbal communication skills, home language, assistive communication, or other preferred methods to develop positive relationships with adults and peers.', moduleIds: ['play-together'] },
+      { framework: 'TEKS', code: 'PK4.I.C.3', text: 'Child initiates and/or responds to social interactions using verbal and non-verbal communication skills.', moduleIds: ['play-together'] },
+      { framework: 'TEKS', code: 'PK4.I.C.4', text: 'Child engages in cooperative play with peers by contributing to a shared plan or goal.', moduleIds: ['play-with-a-plan'] },
+      { framework: 'CCSS', code: 'ELOF.P-SE.1', text: 'Engages in and maintains positive relationships and interactions with adults.', moduleIds: ['play-together'] },
+      // Round one's lesson check (pass MO): the lesson teaches a talk's rules (II.B.2 and P-LC 4) and a good morning to a teacher (P-SE 2).
+      // Pass MS: Say it to fit, II.B.1, Head Start's P-LC 3 and P-LC 4's second sentence (EARMARKS E13, the standards review of Domain II).
+      { framework: 'TEKS', code: 'PK4.II.B.1', text: 'Child uses language for multiple purposes and in various settings.', moduleIds: ['say-it-to-fit'] },
+      { framework: 'CCSS', code: 'ELOF.P-LC.3', text: 'Varies the amount of information provided to meet the demands of the situation.', moduleIds: ['say-it-to-fit'] },
+      { framework: 'TEKS', code: 'PK4.II.B.2', text: 'Child engages in conversations in appropriate ways, demonstrating knowledge of verbal and nonverbal conversational rules.', moduleIds: ['play-together'] },
+      { framework: 'CCSS', code: 'ELOF.P-LC.4', text: 'Understands, follows, and uses appropriate social and conversational rules.', moduleIds: ['play-together', 'say-it-to-fit'] },
+      { framework: 'CCSS', code: 'ELOF.P-SE.2', text: 'Engages in prosocial and cooperative behavior with adults.', moduleIds: ['play-together'] },
+      { framework: 'TEKS', code: 'PK4.VII.B.3', text: 'Child identifies and discusses the roles and responsibilities of family, school, and community helpers as people who work together to make the community a safer place for everyone.', moduleIds: ['helpers-all-around'] },
+    ],
+  },
+  {
+    grade: 'PK4', subject: 'Reading', status: 'ready',
+    source: 'Texas Prekindergarten Guidelines as the 2027 Pre-K Guidelines Review Committee recommends them (TEA, five documents posted for public feedback in September 2026, adopted by the app in pass MR at Mikey\'s word and read from them in pass MR, docs/standards/tea-pk4-2027-recommended.txt), PK4 outcomes; before pass MR, the Texas Prekindergarten Guidelines (2022), PK4 outcomes, Domains II to IV read in full in pass MM (II. Emergent Literacy: Language and Communication, III. Emergent Literacy: Reading, IV. Emergent Literacy: Writing); Head Start Early Learning Outcomes Framework, preschool goals with their 48 to 60 month progressions',
+    standards: [
+      { framework: 'TEKS', code: 'PK4.III.B.5', text: 'Child identifies rhyming words.', moduleIds: ['listen-for-rhymes'] },
+      { framework: 'TEKS', code: 'PK4.III.B.7', text: 'Child identifies if words begin with the same sound.', moduleIds: ['first-sounds'] },
+      { framework: 'CCSS', code: 'ELOF.P-LC.1', text: 'Attends to communication and language from others.', moduleIds: ['which-came-first', 'which-came-second'] },
+      { framework: 'TEKS', code: 'PK4.II.A.1', text: 'Child demonstrates understanding of spoken communication by responding appropriately to adults and peers through verbal or nonverbal behaviors.', moduleIds: ['which-came-first', 'which-came-second'] },
+      { framework: 'CCSS', code: 'ELOF.P-ATL.8', text: 'Holds information in mind and manipulates it to perform tasks.', moduleIds: ['which-came-first', 'which-came-second', 'three-steps', 'three-steps-more'] },
+      // Pass MO, earmark E13, Domain II part one: three-step directions, read in TEA's 2022 PK4 column and on headstart.gov.
+      { framework: 'TEKS', code: 'PK4.II.A.2', text: 'Child demonstrates understanding by following three-step verbal directions with support.', moduleIds: ['three-steps', 'three-steps-more'] },
+      { framework: 'CCSS', code: 'ELOF.P-LC.2', text: 'Understands and responds to increasingly complex communication and language from others.', moduleIds: ['three-steps', 'three-steps-more'] },
+      { framework: 'CCSS', code: 'ELOF.P-SE.2', text: 'Engages in prosocial and cooperative behavior with adults.', moduleIds: ['three-steps-more'] },
+      // Pass MQ, earmark E13, Domain II's vocabulary: the classroom's instructional language (More learning words, its receptive half)
+      // and word categories, opposites and words that mean the same (Words that go together, P-LC 7 in part).
+      { framework: 'TEKS', code: 'PK4.II.D.2', text: 'Child consistently understands (receptive) and uses (expressive) instructional and academic vocabulary.', moduleIds: ['more-learning-words', 'sort-and-shape-words'] },
+      { framework: 'CCSS', code: 'ELOF.P-LC.7', text: 'Shows understanding of word categories and relationships among words.', moduleIds: ['words-go-together', 'opposites-and-same'] },
+      // Pass MS: Things we do, Head Start's P-LC 6 for four-year-olds (EARMARKS E13).
+      { framework: 'CCSS', code: 'ELOF.P-LC.6', text: 'Understands and uses a wide variety of words for a variety of purposes.', moduleIds: ['things-we-do'] },
+      { framework: 'TEKS', code: 'PK4.III.C.1', text: 'Child recognizes and names at least 18 uppercase letters and 15 lowercase letters.', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
+      { framework: 'CCSS', code: 'ELOF.P-LIT.1', text: 'Demonstrates awareness that spoken language is composed of smaller segments of sound.', moduleIds: ['listen-for-rhymes', 'first-sounds'] },
+      { framework: 'CCSS', code: 'ELOF.P-LIT.3', text: 'Identifies letters of the alphabet and produces correct sounds associated with letters.', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
+      { framework: 'TEKS', code: 'PK4.IV.C.2', text: 'Child progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas.', moduleIds: ['first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
+      { framework: 'TEKS', code: 'PK4.IV.C.4', text: 'Child demonstrates directionality when writing (e.g., top to bottom, left to right) adult support as needed.', moduleIds: ['first-strokes', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
+      // Pass MR (Mikey: "I think we should go ahead and implement the new recommendations from the 2027 Pre-K Guidelines Review
+      // Committee."): 2027 outcomes the lessons already teach, cited since the requote (docs/standards/tea-pk4-2027-recommended.txt).
+      { framework: 'TEKS', code: 'PK4.VII.A.3', text: 'Child describes and sequences familiar daily events and routines using words related to time and chronology such as first, next, last, before, after, yesterday, today, and tomorrow.', moduleIds: ['three-steps-more'] },
+    ],
+  },
+];
+// The rows as they stood, for the coverage test, which holds every lesson they named to the plans built from them.
+export const PREK_TAUGHT_FOR_TEST = PREK_TAUGHT;
+// A Head Start goal as the plans have always written it: the words after "Child", from a capital ("Compares numbers."); and a Texas
+// outcome as they have always written it, "Child" and the words the file keeps after it ("Child sorts objects ..."), or the file's
+// own words where they begin with Child's (II.C.1).
+function elofWords(t) { const s = String(t).replace(/^Child /, ''); return s.charAt(0).toUpperCase() + s.slice(1); }
+function texasWords(t) { const s = String(t); return /^Child\b/.test(s) ? s : `Child ${s}`; }
+// The pre-K plans the map, the coverage check and the transcript read (pass MS, Q76 (c)): for each pre-K age, one plan for each of the
+// guidelines' domains (I Positive Character Development to X Technology Applications) listing every 2027 outcome of that age, and one
+// for each of Head Start's preschool domains listing every goal; each row names the lessons that teach it, gathered from PREK_TAUGHT
+// (a code two of the old plans gave, such as PK3.V.B.1 in Math and in Reading, keeps every lesson from both), or none, which the map
+// shows as "Not yet covered". A plan is still being written (planned) while any of its rows waits for a lesson, so the map and its
+// printout never read as complete while pre-K is not, and it turns ready by itself when its last row is taught. Each plan carries one
+// framework, the guidelines' or Head Start's (the map shows a Texas educator the first and everyone else the second), and order keeps
+// the domains in each framework's own order on the map.
+// A plan's source is printed on the educator's map and its printout, so it names the published document and nothing of how the app
+// was built (pass MS, round one's screen check: these sources said "adopted by the app in pass MR at Mikey's word" and a repository
+// path, on every pre-K domain's list). Where the words were read stays here: the 2027 outcomes from the five documents TEA posted for
+// public feedback in September 2026, which the app adopted in pass MR at Mikey's word (docs/standards/tea-pk3-2027-recommended.txt
+// and tea-pk4-2027-recommended.txt), and Head Start's goals from headstart.gov (docs/standards/elof-preschool-*.txt).
+function prekPlans(taught) {
+  const out = [];
+  const texasSource = (grade, name) => `Texas Prekindergarten Guidelines, as the 2027 Pre-K Guidelines Review Committee recommends them (posted by TEA for public feedback, September 2026), ${grade === 'PK3' ? 'pre-K 3' : 'pre-K 4'} outcomes, ${name} domain: every outcome, word for word.`;
+  const elofSource = (name) => `Head Start Early Learning Outcomes Framework (ELOF), preschool goals, ${name} domain: every goal, word for word.`;
+  for (const grade of ['PK3', 'PK4']) {
+    const rows = taught.filter((p) => p.grade === grade).flatMap((p) => p.standards);
+    const lessons = (fw, code) => [...new Set(rows.filter((st) => st.framework === fw && st.code === code).flatMap((st) => st.moduleIds))];
+    const plan = (subject, order, source, standards) => ({ grade, subject, order, status: standards.every((st) => st.moduleIds.length) ? 'ready' : 'planned', source, standards });
+    (PREK_OUTCOMES.TEKS_DOMAINS || []).forEach(([num, name], k) => {
+      const list = (PREK_OUTCOMES[grade] || []).filter(([code]) => code.split('.')[0] === num); if (!list.length) return;
+      out.push(plan(name, k, texasSource(grade, name), list.map(([code, text]) => ({ framework: 'TEKS', code: `${grade}.${code}`, text: texasWords(text), moduleIds: lessons('TEKS', `${grade}.${code}`) }))));
+    });
+    (PREK_OUTCOMES.ELOF_DOMAINS || []).forEach(([key, name], k) => {
+      const list = (PREK_OUTCOMES.ELOF || []).filter(([code]) => code.split(' ')[0] === key); if (!list.length) return;
+      out.push(plan(name, 100 + k, elofSource(name), list.map(([code, text]) => { const id = `ELOF.${code.replace(' ', '.')}`; return { framework: 'CCSS', code: id, text: elofWords(text), moduleIds: lessons('CCSS', id) }; })));
+    });
+  }
+  return out;
+}
+export const CURRICULUM = [
+  ...prekPlans(PREK_TAUGHT),
+  {
     grade: 'K', subject: 'Science', status: 'ready',
     source: 'Texas Essential Knowledge and Skills, Science, Kindergarten (2021); Next Generation Science Standards, Kindergarten',
     standards: [
@@ -203,7 +694,9 @@ export const CURRICULUM = [
   },
   {
     grade: '1', subject: 'Science', status: 'ready',
-    source: 'Texas Essential Knowledge and Skills, Science, Grade 1 (19 TAC §112.3, Adopted 2021, read in full in pass KV; the 2021 grade 1 standard has no Sun and Moon expectation, and the codes no lesson teaches are earmark E9 in docs/EARMARKS.md); Next Generation Science Standards, Grade 1',
+    // The map prints the source, so how it was read stays here (pass MS, round one's screen check): read in full in pass KV; the codes
+    // no lesson teaches are earmark E9 in docs/EARMARKS.md.
+    source: 'Texas Essential Knowledge and Skills, Science, Grade 1 (19 TAC §112.3, Adopted 2021; the 2021 grade 1 standard has no Sun and Moon expectation); Next Generation Science Standards, Grade 1',
     standards: [
       { framework: 'TEKS', code: '1.5A', text: 'Identify and use patterns to describe phenomena or design solutions.', moduleIds: ['sun-moon-patterns'] },
       { framework: 'TEKS', code: '1.6B', text: 'Explain and predict changes in materials caused by heating and cooling.', moduleIds: ['water-changes'] },
@@ -230,92 +723,9 @@ export const CURRICULUM = [
     ],
   },
   {
-    grade: 'PK4', subject: 'Math', status: 'ready',
-    source: 'Texas Prekindergarten Guidelines as the 2027 Pre-K Guidelines Review Committee recommends them (TEA, five documents posted for public feedback in September 2026, adopted by the app in pass MR at Mikey\'s word and read from them in pass MR, docs/standards/tea-pk4-2027-recommended.txt), PK4 outcomes; before pass MR, the Texas Prekindergarten Guidelines (2022), PK4 outcomes, read in full in pass ML (First Steps teaches Domains I, II, IV, V, VI, VII and IX in part, and since pass MM First Sounds and Letters\' Which came first? and Second and last teach P-MATH 4\'s order sentence and II.D.1\'s order words in part, and Domain I was read again in pass MN for First Steps\' three feelings lessons); Head Start Early Learning Outcomes Framework, preschool goals with their 48 to 60 month progressions',
-    standards: [
-      { framework: 'TEKS', code: 'PK4.V.A.3', text: 'Child counts up to 10 objects with one-to-one correspondence.', moduleIds: ['count-to-3', 'more-and-fewer-5'] },
-      { framework: 'TEKS', code: 'PK4.V.A.4', text: 'Child counts up to 10 items and demonstrates cardinality by communicating that the last number indicates how many items are in the set.', moduleIds: ['count-to-3', 'more-and-fewer-5'] },
-      { framework: 'TEKS', code: 'PK4.V.A.5', text: 'Child names numerals 0-10.', moduleIds: ['count-to-3', 'connect-the-dots'] },
-      { framework: 'TEKS', code: 'PK4.V.A.8', text: 'Child compares two sets of up to 10 objects in each set using comparative language (e.g., greater/more than, less/fewer than, equal to/same number of).', moduleIds: ['count-to-3', 'more-and-fewer-5'] },
-      { framework: 'TEKS', code: 'PK4.V.B.1', text: 'Child names two-dimensional shapes including circles, squares, rectangles, triangles, ovals, and rhombi regardless of size and orientation.', moduleIds: ['match-the-shapes', 'draw-the-shapes'] },
-      { framework: 'TEKS', code: 'PK4.V.B.2', text: 'Child recognizes three-dimensional shapes including spheres, cubes, cylinders, and cones.', moduleIds: ['match-the-solids'] },
-      { framework: 'TEKS', code: 'PK4.V.C.1', text: 'Child recognizes and compares the attributes of heights or lengths of people or objects using language including longer, shorter, taller, higher, lower or same.', moduleIds: ['bigger-and-smaller'] },
-      { framework: 'TEKS', code: 'PK4.V.D.1', text: 'Child sorts objects into groups based on shared attributes such as color, shape, or size and describes how the groups are similar and different.', moduleIds: ['colours', 'same-and-different', 'match-the-vehicles', 'match-the-things', 'match-the-water-animals', 'match-the-land-animals', 'match-the-shapes', 'match-the-solids'] },
-      { framework: 'TEKS', code: 'PK4.V.D.3', text: 'Child extends and creates simple repeating AB, AAB, or ABB patterns using objects, actions, or sounds with support.', moduleIds: ['patterns'] },
-      { framework: 'CCSS', code: 'ELOF.P-MATH.1', text: 'Knows number names and the count sequence.', moduleIds: ['count-to-3', 'connect-the-dots'] },
-      { framework: 'CCSS', code: 'ELOF.P-MATH.3', text: 'Understands the relationship between numbers and quantities.', moduleIds: ['count-to-3', 'more-and-fewer-5'] },
-      { framework: 'CCSS', code: 'ELOF.P-MATH.4', text: 'Compares numbers.', moduleIds: ['more-and-fewer-5', 'which-came-first', 'which-came-second'] },
-      { framework: 'CCSS', code: 'ELOF.P-MATH.5', text: 'Associates a quantity with written numerals up to 5 and begins to write numbers.', moduleIds: ['count-to-3'] },
-      { framework: 'CCSS', code: 'ELOF.P-MATH.7', text: 'Understands simple patterns.', moduleIds: ['patterns'] },
-      { framework: 'CCSS', code: 'ELOF.P-MATH.8', text: 'Measures objects by their various attributes using standard and non-standard measurement. Uses differences in attributes to make comparisons.', moduleIds: ['same-and-different', 'match-the-water-animals', 'bigger-and-smaller', 'big-bigger-biggest'] },
-      { framework: 'CCSS', code: 'ELOF.P-MATH.9', text: 'Identifies, describes, compares, and composes shapes.', moduleIds: ['match-the-shapes', 'match-the-solids', 'draw-the-shapes'] },
-      { framework: 'TEKS', code: 'PK4.IX.B.2', text: 'Child demonstrates control, coordination and increasing precision when completing tasks that require eye-hand coordination.', moduleIds: ['first-strokes', 'connect-the-dots', 'draw-the-shapes', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
-      { framework: 'CCSS', code: 'ELOF.P-PMP.3', text: 'Demonstrates increasing control, strength, and coordination of small muscles.', moduleIds: ['first-strokes', 'connect-the-dots', 'draw-the-shapes', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
-      { framework: 'TEKS', code: 'PK4.II.D.1', text: 'Child understands (receptive) and uses (expressive) a growing variety of words to label, describe and make connections among objects, people, places, actions, and events.', moduleIds: ['colours', 'big-bigger-biggest', 'which-came-first', 'which-came-second', 'words-go-together', 'helpers-all-around', 'opposites-and-same'] },
-      { framework: 'TEKS', code: 'PK4.VI.B.1', text: 'Child identifies and compares observable properties of objects such as color, shape, texture, and size.', moduleIds: ['colours', 'same-and-different', 'match-the-things', 'match-the-solids', 'bigger-and-smaller', 'big-bigger-biggest'] },
-      { framework: 'TEKS', code: 'PK4.VI.C.1', text: 'Child describes the characteristics of living organisms.', moduleIds: ['match-the-water-animals', 'match-the-land-animals'] },
-      { framework: 'CCSS', code: 'ELOF.P-SCI.1', text: 'Observes and describes observable phenomena (objects, materials, organisms, and events).', moduleIds: ['colours'] },
-      { framework: 'CCSS', code: 'ELOF.P-SCI.3', text: 'Compares and categorizes observable phenomena.', moduleIds: ['match-the-vehicles', 'match-the-things', 'match-the-land-animals'] },
-      { framework: 'TEKS', code: 'PK4.I.B.1.a', text: 'Child follows classroom expectations (rules, routines and procedures) with occasional reminders.', moduleIds: ['taking-turns'] },
-      { framework: 'TEKS', code: 'PK4.I.B.2.c', text: 'Child uses calming strategies to regulate emotions with decreasing adult assistance', moduleIds: ['taking-turns', 'feelings-show'] },
-      { framework: 'TEKS', code: 'PK4.I.C.5', text: 'Child uses simple problem-solving strategies when experiencing conflicts with others and seeks adult support when necessary.', moduleIds: ['taking-turns', 'good-friend'] },
-      { framework: 'TEKS', code: 'PK4.I.C.6', text: 'Child responds with empathy and care for others.', moduleIds: ['taking-turns', 'good-friend'] },
-      { framework: 'CCSS', code: 'ELOF.P-SE.3', text: 'Engages in and maintains positive interactions and relationships with other children.', moduleIds: ['taking-turns'] },
-      { framework: 'CCSS', code: 'ELOF.P-SE.5', text: 'Uses basic problem-solving skills to resolve conflicts with other children.', moduleIds: ['taking-turns', 'good-friend'] },
-      { framework: 'CCSS', code: 'ELOF.P-SE.7', text: 'Expresses care and concern toward others.', moduleIds: ['taking-turns', 'good-friend'] },
-      { framework: 'CCSS', code: 'ELOF.P-SE.8', text: 'Manages emotions with increasing independence.', moduleIds: ['taking-turns', 'feelings-show'] },
-      // Pass MN, earmarks E12 and E13 side by side, Domain I: pre-K 4's feelings lessons, each code read in TEA's 2022 PK4 column
-      // and on headstart.gov and held word for word to docs/standards.
-      { framework: 'TEKS', code: 'PK4.I.B.2.a', text: 'Child describes or demonstrates the connection between emotions and behaviors.', moduleIds: ['feelings-show'] },
-      { framework: 'TEKS', code: 'PK4.I.B.2.b', text: 'Child uses verbal and nonverbal communication to express emotions and feelings.', moduleIds: ['feelings-show'] },
-      { framework: 'TEKS', code: 'PK4.I.D.1', text: 'Child demonstrates respect for others\' perspectives and feelings that are similar and/or different from their own.', moduleIds: ['how-friends-feel'] },
-      { framework: 'CCSS', code: 'ELOF.P-SE.6', text: 'Expresses a broad range of emotions and recognizes these emotions in self and others.', moduleIds: ['feelings-show', 'how-friends-feel'] },
-      // Being a good friend's taking turns choosing and finding a game both friends like are the plans of P-SE 4's second sentence (the
-      // lesson check, pass MN round one).
-      { framework: 'CCSS', code: 'ELOF.P-SE.4', text: 'Engages in cooperative play with other children.', moduleIds: ['good-friend', 'play-with-a-plan'] },
-      // Pass MO, earmark E13: Domain I's last pre-K 4 lesson, each code read in TEA's 2022 PK4 column and on headstart.gov and held
-      // word for word to docs/standards; I.C.1, I.C.3 and I.C.4 read as pre-K 3 reads its I.C.1 and I.C.3.
-      { framework: 'TEKS', code: 'PK4.I.C.1', text: 'Child uses effective verbal and nonverbal communication skills, home language, assistive communication, or other preferred methods to develop positive relationships with adults and peers.', moduleIds: ['play-together'] },
-      { framework: 'TEKS', code: 'PK4.I.C.3', text: 'Child initiates and/or responds to social interactions using verbal and non-verbal communication skills.', moduleIds: ['play-together'] },
-      { framework: 'TEKS', code: 'PK4.I.C.4', text: 'Child engages in cooperative play with peers by contributing to a shared plan or goal.', moduleIds: ['play-with-a-plan'] },
-      { framework: 'CCSS', code: 'ELOF.P-SE.1', text: 'Engages in and maintains positive relationships and interactions with adults.', moduleIds: ['play-together'] },
-      // Round one's lesson check (pass MO): the lesson teaches a talk's rules (II.B.2 and P-LC 4) and a good morning to a teacher (P-SE 2).
-      { framework: 'TEKS', code: 'PK4.II.B.2', text: 'Child engages in conversations in appropriate ways, demonstrating knowledge of verbal and nonverbal conversational rules.', moduleIds: ['play-together'] },
-      { framework: 'CCSS', code: 'ELOF.P-LC.4', text: 'Understands, follows, and uses appropriate social and conversational rules.', moduleIds: ['play-together'] },
-      { framework: 'CCSS', code: 'ELOF.P-SE.2', text: 'Engages in prosocial and cooperative behavior with adults.', moduleIds: ['play-together'] },
-      { framework: 'TEKS', code: 'PK4.VII.B.3', text: 'Child identifies and discusses the roles and responsibilities of family, school, and community helpers as people who work together to make the community a safer place for everyone.', moduleIds: ['helpers-all-around'] },
-    ],
-  },
-  {
-    grade: 'PK4', subject: 'Reading', status: 'ready',
-    source: 'Texas Prekindergarten Guidelines as the 2027 Pre-K Guidelines Review Committee recommends them (TEA, five documents posted for public feedback in September 2026, adopted by the app in pass MR at Mikey\'s word and read from them in pass MR, docs/standards/tea-pk4-2027-recommended.txt), PK4 outcomes; before pass MR, the Texas Prekindergarten Guidelines (2022), PK4 outcomes, Domains II to IV read in full in pass MM (II. Emergent Literacy: Language and Communication, III. Emergent Literacy: Reading, IV. Emergent Literacy: Writing); Head Start Early Learning Outcomes Framework, preschool goals with their 48 to 60 month progressions',
-    standards: [
-      { framework: 'TEKS', code: 'PK4.III.B.5', text: 'Child identifies rhyming words.', moduleIds: ['listen-for-rhymes'] },
-      { framework: 'TEKS', code: 'PK4.III.B.7', text: 'Child identifies if words begin with the same sound.', moduleIds: ['first-sounds'] },
-      { framework: 'CCSS', code: 'ELOF.P-LC.1', text: 'Attends to communication and language from others.', moduleIds: ['which-came-first', 'which-came-second'] },
-      { framework: 'TEKS', code: 'PK4.II.A.1', text: 'Child demonstrates understanding of spoken communication by responding appropriately to adults and peers through verbal or nonverbal behaviors.', moduleIds: ['which-came-first', 'which-came-second'] },
-      { framework: 'CCSS', code: 'ELOF.P-ATL.8', text: 'Holds information in mind and manipulates it to perform tasks.', moduleIds: ['which-came-first', 'which-came-second', 'three-steps', 'three-steps-more'] },
-      // Pass MO, earmark E13, Domain II part one: three-step directions, read in TEA's 2022 PK4 column and on headstart.gov.
-      { framework: 'TEKS', code: 'PK4.II.A.2', text: 'Child demonstrates understanding by following three-step verbal directions with support.', moduleIds: ['three-steps', 'three-steps-more'] },
-      { framework: 'CCSS', code: 'ELOF.P-LC.2', text: 'Understands and responds to increasingly complex communication and language from others.', moduleIds: ['three-steps', 'three-steps-more'] },
-      { framework: 'CCSS', code: 'ELOF.P-SE.2', text: 'Engages in prosocial and cooperative behavior with adults.', moduleIds: ['three-steps-more'] },
-      // Pass MQ, earmark E13, Domain II's vocabulary: the classroom's instructional language (More learning words, its receptive half)
-      // and word categories, opposites and words that mean the same (Words that go together, P-LC 7 in part).
-      { framework: 'TEKS', code: 'PK4.II.D.2', text: 'Child consistently understands (receptive) and uses (expressive) instructional and academic vocabulary.', moduleIds: ['more-learning-words', 'sort-and-shape-words'] },
-      { framework: 'CCSS', code: 'ELOF.P-LC.7', text: 'Shows understanding of word categories and relationships among words.', moduleIds: ['words-go-together', 'opposites-and-same'] },
-      { framework: 'TEKS', code: 'PK4.III.C.1', text: 'Child recognizes and names at least 18 uppercase letters and 15 lowercase letters.', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
-      { framework: 'CCSS', code: 'ELOF.P-LIT.1', text: 'Demonstrates awareness that spoken language is composed of smaller segments of sound.', moduleIds: ['listen-for-rhymes', 'first-sounds'] },
-      { framework: 'CCSS', code: 'ELOF.P-LIT.3', text: 'Identifies letters of the alphabet and produces correct sounds associated with letters.', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
-      { framework: 'TEKS', code: 'PK4.IV.C.2', text: 'Child progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas.', moduleIds: ['first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
-      { framework: 'TEKS', code: 'PK4.IV.C.4', text: 'Child demonstrates directionality when writing (e.g., top to bottom, left to right) adult support as needed.', moduleIds: ['first-strokes', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
-      // Pass MR (Mikey: "I think we should go ahead and implement the new recommendations from the 2027 Pre-K Guidelines Review
-      // Committee."): 2027 outcomes the lessons already teach, cited since the requote (docs/standards/tea-pk4-2027-recommended.txt).
-      { framework: 'TEKS', code: 'PK4.VII.A.3', text: 'Child describes and sequences familiar daily events and routines using words related to time and chronology such as first, next, last, before, after, yesterday, today, and tomorrow.', moduleIds: ['three-steps-more'] },
-    ],
-  },
-  {
     grade: 'K', subject: 'Math', status: 'ready', // every TEKS standard has a module; CCSS K.NBT.A.1 (teen numbers as ten and some more) is the one open item
-    source: 'Texas Essential Knowledge and Skills, Kindergarten Mathematics (TEKS §111.2, Adopted 2012, read in full in pass KL); Common Core Kindergarten Mathematics',
+    // The map prints the source, so how it was read stays here (pass MS, round one's screen check): read in full in pass KL.
+    source: 'Texas Essential Knowledge and Skills, Kindergarten Mathematics (TEKS §111.2, Adopted 2012); Common Core Kindergarten Mathematics',
     standards: [
       { framework: 'TEKS', code: 'K.2A', text: 'Count forward and backward to at least 20 with and without objects.', moduleIds: ['count-to-5', 'count-to-10', 'one-more-one-less'] },
       { framework: 'TEKS', code: 'K.2B', text: 'Read, write, and represent whole numbers from 0 to at least 20 with and without objects or pictures.', moduleIds: ['count-to-5', 'count-to-10', 'tracing-numbers'] },
@@ -394,7 +804,9 @@ export const CURRICULUM = [
   },
   {
     grade: '1', subject: 'Math', status: 'ready',
-    source: 'Texas Essential Knowledge and Skills, Grade 1 Mathematics (19 TAC §111.3, Adopted 2012, read in full in passes KT, KY, KZ, LA and LB; every grade 1 code is taught, earmark E7 closed, across the two courses Numbers to 120 and Shapes, measuring and graphs); Common Core Grade 1 Mathematics',
+    // The map prints the source, so how it was read stays here (pass MS, round one's screen check): read in full in passes KT, KY, KZ,
+    // LA and LB; earmark E7 closed.
+    source: 'Texas Essential Knowledge and Skills, Grade 1 Mathematics (19 TAC §111.3, Adopted 2012; every grade 1 code is taught, across the two courses Numbers to 120 and Shapes, measuring and graphs); Common Core Grade 1 Mathematics',
     standards: [
       { framework: 'TEKS', code: '1.2B', text: 'Use concrete and pictorial models to compose and decompose numbers up to 120 in more than one way as so many hundreds, so many tens, and so many ones.', moduleIds: ['teen-numbers', 'tens-and-ones'] },
       { framework: 'TEKS', code: '1.2C', text: 'Use objects, pictures, and expanded and standard forms to represent numbers up to 120.', moduleIds: ['tens-and-ones', 'writing-numbers'] },
@@ -458,7 +870,9 @@ export const CURRICULUM = [
   },
   {
     grade: '1', subject: 'Reading', status: 'ready',
-    source: 'Texas Essential Knowledge and Skills, Grade 1 English Language Arts and Reading (19 TAC §110.3, Adopted 2017, read in full in pass KU; the codes not yet taught are earmark E8 in docs/EARMARKS.md); Common Core Grade 1 Reading: Foundational Skills, Literature and Language',
+    // The map prints the source, so how it was read stays here (pass MS, round one's screen check): read in full in pass KU; the codes
+    // not yet taught are earmark E8 in docs/EARMARKS.md.
+    source: 'Texas Essential Knowledge and Skills, Grade 1 English Language Arts and Reading (19 TAC §110.3, Adopted 2017); Common Core Grade 1 Reading: Foundational Skills, Literature and Language',
     standards: [
       { framework: 'TEKS', code: '1.2A.iii', text: 'Distinguishing between long and short vowel sounds in one-syllable words.', moduleIds: ['silent-e'] },
       { framework: 'TEKS', code: '1.2B.i', text: 'Decoding words in isolation and in context by applying common letter sound correspondences.', moduleIds: ['read-the-word', 'read-the-sentence'] },
@@ -1336,7 +1750,9 @@ export const CURRICULUM = [
   },
   {
     grade: '1', subject: 'History', status: 'ready',
-    source: 'Texas Essential Knowledge and Skills, Social Studies, Grade 1 (19 TAC §113.12, Adopted 2022, implemented from 2024-2025, read in full in pass KW; the codes no lesson teaches are earmark E10 in docs/EARMARKS.md); National Council for the Social Studies, National Curriculum Standards themes',
+    // The map prints the source, so how it was read stays here (pass MS, round one's screen check): read in full in pass KW; the codes
+    // no lesson teaches are earmark E10 in docs/EARMARKS.md.
+    source: 'Texas Essential Knowledge and Skills, Social Studies, Grade 1 (19 TAC §113.12, Adopted 2022, implemented from 2024-2025); National Council for the Social Studies, National Curriculum Standards themes',
     standards: [
       { framework: 'TEKS', code: '1.3B', text: 'Locate places using the four cardinal directions.', moduleIds: ['maps-of-my-world'] },
       { framework: 'TEKS', code: '1.4B', text: 'Locate and explore the community, Texas, and the United States on maps and globes.', moduleIds: ['maps-of-my-world'] },
@@ -1372,7 +1788,9 @@ export const CURRICULUM = [
   },
   {
     grade: '1', subject: 'Music', status: 'ready',
-    source: 'Texas Essential Knowledge and Skills, Fine Arts, Music, Grade 1 (19 TAC §117.106, Adopted 2013, read in full in pass KX; the expectations no lesson teaches are earmark E11 in docs/EARMARKS.md); National Core Arts Standards, Music (NCAS), shown in the Common Core column.',
+    // The map prints the source, so how it was read stays here (pass MS, round one's screen check): read in full in pass KX; the
+    // expectations no lesson teaches are earmark E11 in docs/EARMARKS.md.
+    source: 'Texas Essential Knowledge and Skills, Fine Arts, Music, Grade 1 (19 TAC §117.106, Adopted 2013); National Core Arts Standards, Music (NCAS), shown in the Common Core column.',
     standards: [
       { framework: 'TEKS', code: '117.106(b)(1)(C)', text: 'Use basic music terminology in describing changes in tempo, including allegro/largo, and dynamics, including forte/piano.', moduleIds: ['the-steady-beat', 'loud-and-soft'] },
       { framework: 'TEKS', code: '117.106(b)(5)(B)', text: 'Identify steady beat in short musical excerpts from various periods or times in history and diverse cultures.', moduleIds: ['the-steady-beat'] },
@@ -1532,7 +1950,8 @@ export const CURRICULUM = [
   },
   {
     grade: '9', subject: 'Health', status: 'ready',
-    source: 'Texas Essential Knowledge and Skills for Health Education, Health I (One-Half Credit), Adopted 2020 (§115.38), read in full in the Texas Administrative Code; this elective teaches five of its six strands, and cites only expectations whose published wording was read complete. The reproductive and sexual health strand is left to districts and families, as the standard itself affirms local control and a parent\'s right to review the instruction and remove a child from it (Texas Education Code §28.004). The National Health Education Standards are the national framework, shown in the Common Core column.',
+    // The map prints the source, so how it was read stays here (pass MS, round three's screen read): read in full in the Texas Administrative Code, and it cites only expectations whose published wording was read complete.
+    source: 'Texas Essential Knowledge and Skills for Health Education, Health I (One-Half Credit), Adopted 2020 (§115.38), in the Texas Administrative Code; this elective teaches five of its six strands, and cites 27 of their expectations, each in its published wording. The reproductive and sexual health strand is left to districts and families, as the standard itself affirms local control and a parent\'s right to review the instruction and remove a child from it (Texas Education Code §28.004). The National Health Education Standards are the national framework, shown in the Common Core column.',
     standards: [
       { framework: 'TEKS', code: '115.38(c)(1)(A)', text: 'Analyze health information based on health-related standards.', moduleIds: ['health-literacy-9'] },
       { framework: 'TEKS', code: '115.38(c)(1)(B)', text: 'Develop and analyze strategies to prevent communicable and non-communicable diseases.', moduleIds: ['health-literacy-9'] },
@@ -1570,7 +1989,8 @@ export const CURRICULUM = [
   },
   {
     grade: '9', subject: 'Health', status: 'ready', courseId: 'sexual-health-9',
-    source: 'Texas Essential Knowledge and Skills for Health Education, Health I (One-Half Credit), Adopted 2020 (§115.38), the reproductive and sexual health strand, read in full in the Texas Administrative Code; the plan cites only the 16 expectations whose published wording was read complete. An elective that appears only when an educator assigns it, after confirming a parent\'s written consent (Texas Education Code §28.004(i-2)). The National Health Education Standards are the national framework, shown in the Common Core column.',
+    // The map prints the source, so how it was read stays here (pass MS, round three's screen read): read in full in the Texas Administrative Code, and the plan cites only the 16 expectations whose published wording was read complete.
+    source: 'Texas Essential Knowledge and Skills for Health Education, Health I (One-Half Credit), Adopted 2020 (§115.38), the reproductive and sexual health strand, in the Texas Administrative Code; the plan cites 16 of its expectations, each in its published wording. An elective that appears only when an educator assigns it, after confirming a parent\'s written consent (Texas Education Code §28.004(i-2)). The National Health Education Standards are the national framework, shown in the Common Core column.',
     standards: [
       { framework: 'TEKS', code: '115.38(c)(18)(A)', text: 'Analyze how friendships provide a foundation for healthy dating/romantic relationships.', moduleIds: ['healthy-relationships-9'] },
       { framework: 'TEKS', code: '115.38(c)(18)(B)', text: 'Identify character traits that promote healthy dating/romantic relationships and marriage.', moduleIds: ['healthy-relationships-9'] },
@@ -1596,7 +2016,8 @@ export const CURRICULUM = [
   },
   {
     grade: '6', subject: 'Health', status: 'ready', courseId: 'sexual-health-6',
-    source: 'Texas Essential Knowledge and Skills for Health Education, Grade 6, Adopted 2020 (§115.26), the reproductive and sexual health strand, (b)(20) to (23), read in full in the Texas Administrative Code. An elective that appears for a student only when an educator assigns it; the standard itself affirms local control over human sexuality instruction, a parent\'s right to review it and to remove a child from it, and the centrality of abstinence education (Texas Education Code §28.004). The National Health Education Standards are the national framework, shown in the Common Core column.',
+    // The map prints the source, so how it was read stays here (pass MS, round three's screen read): read in full in the Texas Administrative Code.
+    source: 'Texas Essential Knowledge and Skills for Health Education, Grade 6, Adopted 2020 (§115.26), the reproductive and sexual health strand, (b)(20) to (23), in the Texas Administrative Code. An elective that appears for a student only when an educator assigns it; the standard itself affirms local control over human sexuality instruction, a parent\'s right to review it and to remove a child from it, and the centrality of abstinence education (Texas Education Code §28.004). The National Health Education Standards are the national framework, shown in the Common Core column.',
     standards: [
       { framework: 'TEKS', code: '115.26(b)(20)(A)', text: 'Define and distinguish between friendship, infatuation, dating/romantic relationships, and marriage.', moduleIds: ['healthy-relationships-6'] },
       { framework: 'TEKS', code: '115.26(b)(20)(B)', text: 'Describe how friendships provide a foundation for healthy dating/romantic relationships.', moduleIds: ['healthy-relationships-6'] },
@@ -1632,7 +2053,8 @@ export const CURRICULUM = [
   },
   {
     grade: '6', subject: 'Health', status: 'ready',
-    source: 'Texas Essential Knowledge and Skills for Health Education, Grade 6, Adopted 2020 (§115.26, in effect since August 1, 2022), read in full; this elective teaches four of its six strands. The reproductive and sexual health strand is left to districts and families, as the Texas Education Code (§28.004) places it under local control with parental notice and choice, and the standards on eating disorders, suicide, abuse and trafficking are left to school counselors. The National Health Education Standards, second edition (Joint Committee on National Health Education Standards, 2007), are the national framework, shown in the Common Core column.',
+    // The map prints the source, so how it was read stays here (pass MS, round three's screen read): read in full.
+    source: 'Texas Essential Knowledge and Skills for Health Education, Grade 6, Adopted 2020 (§115.26, in effect since August 1, 2022); this elective teaches four of its six strands. The reproductive and sexual health strand is left to districts and families, as the Texas Education Code (§28.004) places it under local control with parental notice and choice, and the standards on eating disorders, suicide, abuse and trafficking are left to school counselors. The National Health Education Standards, second edition (Joint Committee on National Health Education Standards, 2007), are the national framework, shown in the Common Core column.',
     standards: [
       { framework: 'TEKS', code: '115.26(b)(1)', text: 'Explain how to maintain the healthy status of body systems.', moduleIds: ['body-and-hygiene-6'] },
       { framework: 'TEKS', code: '115.26(b)(2)(A)', text: 'Compare immediate and long-term effects of personal health care choices such as personal and dental hygiene.', moduleIds: ['body-and-hygiene-6'] },

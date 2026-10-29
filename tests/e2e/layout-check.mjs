@@ -7,6 +7,7 @@
 //   spill   a run of words drawn past the edge of the box that holds it: the nearest button, or the nearest element with its own
 //           border, background or clipping, or the root itself (the game board, the screen); a word clipped inside a box that hides
 //           its overflow counts too, since it is cut off rather than shown;
+//   overlap two runs of words drawn over each other (since round four of pass MS, on a game's board, when asked);
 //   offset  words set to sit in the middle (text-align: center, or a flex or grid cell that centres its content) inside a row that
 //           also holds an icon or a button with no words (a speaker, a star, a pace snail) or an info button (its one letter, i),
 //           whose middle sits more than 3 pixels from the row's own middle, as Grow the Plant's question did beside its speaker
@@ -17,7 +18,7 @@
 // only text) is skipped, and so is text inside an element marked data-layout-free (a ticker that scrolls on purpose, a long word in a
 // table a person scrolls sideways). Each problem names its words, the box, and how many pixels it is out by.
 export const layoutProblems = function (rootSelector, opts) {
-  const o = Object.assign({ spillPx: 0.75, offsetPx: 3 }, opts || {});
+  const o = Object.assign({ spillPx: 0.75, offsetPx: 3, overlap: false }, opts || {});
   const root = typeof rootSelector === 'string' ? document.querySelector(rootSelector) : (rootSelector || document.body);
   if (!root) return [{ kind: 'missing', text: String(rootSelector) }];
   const out = [];
@@ -63,6 +64,18 @@ export const layoutProblems = function (rootSelector, opts) {
     // Clipped: a box that hides its overflow and holds words wider than itself.
     if (box !== root && box.scrollWidth > box.clientWidth + 1 && (bcs.overflowX === 'hidden' || bcs.overflowX === 'clip')) { const key = `clip|${label(box)}`; if (!seen.has(key)) { seen.add(key); out.push({ kind: 'clipped', text: text.slice(0, 60), box: label(box), by: box.scrollWidth - box.clientWidth }); } }
   }
+  // Overlap (round four's screen read, pass MS): two runs of words drawn over each other, as two "decresc." side by side were on
+  // Shape the Sound's board at 320, each still inside the board, so no spill showed. Every visible text node's lines are read, and
+  // two lines of different nodes that cross by more than a pixel across and by more than half the shorter one's height down are
+  // reported once (lines stacked a little tight in a paragraph cross by far less than half a line). It reads a game's board when
+  // asked (opts.overlap, the game sweep): on the screens a floating notice crosses the page by design ("Logging out in"), and the
+  // certificate's small wordmark stacks its words, so the screens' read waits for its own pass (EARMARKS L18).
+  if (o.overlap) { const runs = []; const tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    for (let node = tw.nextNode(); node; node = tw.nextNode()) { if (!words(node.nodeValue || '')) continue; const el = node.parentElement; if (!el || hidden(el)) continue;
+      const rg = document.createRange(); rg.selectNodeContents(node); for (const r of rg.getClientRects()) if (r.width > 0 && r.height > 0) runs.push({ node, r }); }
+    for (let i = 0; i < runs.length; i++) for (let j = i + 1; j < runs.length; j++) { const a = runs[i]; const b = runs[j]; if (a.node === b.node) continue;
+      const dx = Math.min(a.r.right, b.r.right) - Math.max(a.r.left, b.r.left); const dy = Math.min(a.r.bottom, b.r.bottom) - Math.max(a.r.top, b.r.top);
+      if (dx > 1 && dy > 0.5 * Math.min(a.r.height, b.r.height)) { const key = `overlap|${words(a.node.nodeValue)}|${words(b.node.nodeValue)}`; if (!seen.has(key)) { seen.add(key); out.push({ kind: 'overlap', text: `${words(a.node.nodeValue).slice(0, 30)} / ${words(b.node.nodeValue).slice(0, 30)}`, box: label(a.node.parentElement), by: +dx.toFixed(1) }); } } } }
   // Offset: a row holding centred words beside an icon with no words.
   // An info button (InfoButton in ui.jsx: a small round button whose one letter is i) is an icon too (round three of pass MR).
   const iconLike = (el) => { if (hidden(el)) return false; const r = el.getBoundingClientRect(); if (r.width === 0 || r.width > 72) return false; const txt = words(el.textContent || ''); if (el.tagName === 'BUTTON' && txt === 'i' && r.width <= 24) return true; return !txt && (el.querySelector('svg') || el.tagName === 'BUTTON' || el.tagName.toLowerCase() === 'svg'); };

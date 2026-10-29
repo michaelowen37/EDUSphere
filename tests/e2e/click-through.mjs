@@ -844,7 +844,37 @@ await page.getByRole('button', { name: /^Kindergarten \d+ of \d+ covered/ }).cli
 ok('opening a grade shows one closed dropdown per subject', await page.getByRole('button', { name: /^Kindergarten Math/ }).first().isVisible());
 await page.getByRole('button', { name: /^Kindergarten Math/ }).click();
 ok('opening a grade lists its standards with codes and the modules covering them', await page.getByText('K.2A').first().isVisible());
+// Pre-K is counted against every outcome (pass MS, Mikey's answer to Q76, "Q76 - C"): for a Texas educator its row counts all 123 of
+// pre-K 3's 2027 outcomes and says it is still being written, its plans are the guidelines' domains, and an untaught outcome shows as
+// not yet covered.
+{ const head = page.getByRole('button', { name: /^Pre-K 3 \d+ of 123 covered/ });
+  const writing = (await head.count()) === 1 && /Still being written/.test(await head.first().textContent());
+  await head.first().click(); await page.waitForTimeout(200);
+  await page.getByRole('button', { name: 'Pre-K 3 Fine Arts', exact: true }).click(); await page.waitForTimeout(200);
+  const open = await page.evaluate(() => { const b = [...document.querySelectorAll('button')].find((x) => x.getAttribute('aria-label') === 'Pre-K 3 Fine Arts'); const box = b && b.nextElementSibling; return box ? { code: box.textContent.includes('PK3.VIII.A.1'), notYet: box.textContent.includes('Not yet covered') } : null; });
+  ok('pre-K 3 is counted against all 123 of its outcomes, still being written, its domains listed and an untaught outcome not yet covered (Q76)', writing && !!open && open.code && open.notYet, { writing, open }); }
 ok('a print button sits at the foot of the map', (await page.getByRole('button', { name: 'Print standards map' }).count()) === 1);
+// The electives' rows each have a name of their own (round three's screen read, pass MS: grade 6's and grade 9's health and their
+// sexual health electives shared one key and one name, "Grade 6 Health", so a tap opened both, and grade 3's two Art courses the
+// same); twin rows are named by their courses.
+{ const rowNames = () => page.evaluate(() => [...document.querySelectorAll('button[aria-expanded][aria-label]')].map((b) => b.getAttribute('aria-label')).filter((n) => /^(Pre-K|Kindergarten|Grade|College)/.test(n)));
+  const coreNames = await rowNames();
+  const kind = page.getByRole('group', { name: 'Core courses or electives' }).getByRole('button', { name: 'Electives', exact: true });
+  if (await kind.count()) { await kind.first().click(); await page.waitForTimeout(250); }
+  const names = await rowNames();
+  const twice = [...names.filter((n, i) => names.indexOf(n) !== i), ...coreNames.filter((n, i) => coreNames.indexOf(n) !== i)];
+  if (!(coreNames.length >= 20 && names.length >= 10 && twice.length === 0 && names.includes('Grade 6 Health: Growing up Healthy') && names.includes('Grade 6 Health: Healthy Choices'))) console.log('  (elective rows:', JSON.stringify({ count: names.length, twice, some: names.slice(0, 40) }), ')');
+  ok('every row on the map, core and elective, has a name of its own, so a tap opens one (pass MS, round three\'s screen read)', coreNames.length >= 20 && names.length >= 10 && twice.length === 0 && names.includes('Grade 6 Health: Growing up Healthy') && names.includes('Grade 6 Health: Healthy Choices'), JSON.stringify({ count: names.length, twice }));
+  const core = page.getByRole('group', { name: 'Core courses or electives' }).getByRole('button', { name: 'Core', exact: true });
+  if (await core.count()) { await core.first().click(); await page.waitForTimeout(250); } }
+// Printed on a letter sheet the map carries no page stars (round one's screen check, pass MS: the screen's speckle printed on every
+// sheet), the sources it prints name no pass, and no word keeps the screen's backing (the dark theme printed Back to Classroom as dark
+// words on a dark bar).
+{ const was = page.viewportSize(); await page.setViewportSize({ width: 816, height: 1056 }); await page.emulateMedia({ media: 'print' }); await page.waitForTimeout(150);
+  const printed = await page.evaluate(() => ({ stars: [...document.querySelectorAll('.edu-page-stars')].map((s) => getComputedStyle(s).display), notes: /\bpass [A-Z]{2}\b|docs\//.test(document.querySelector('#root').innerText), sources: document.querySelector('#root').innerText.split('\n').filter((l) => /word for word|Adopted/.test(l)).length, back: (() => { const x = [...document.querySelectorAll('button, a')].find((y) => y.textContent.trim() === 'Back to Classroom'); return x ? getComputedStyle(x).backgroundColor : null; })(), theme: document.documentElement.getAttribute('data-theme') }));
+  await page.emulateMedia({ media: 'screen' }); if (was) await page.setViewportSize(was); await page.waitForTimeout(150);
+  if (!(printed.stars.length > 0 && printed.stars.every((d) => d === 'none') && !printed.notes && printed.sources > 10 && /^rgba\(0, 0, 0, 0\)$/.test(printed.back || ''))) console.log('  (printed map:', JSON.stringify(printed), ')');
+  ok('the printed map carries no page stars, its sources name no pass, and its link keeps no dark backing (pass MS, round one\'s screen check)', printed.stars.length > 0 && printed.stars.every((d) => d === 'none') && !printed.notes && printed.sources > 10 && /^rgba\(0, 0, 0, 0\)$/.test(printed.back || '')); }
 await tap('Back to Classroom');
 // An Elementary student with no early-years work gets the regular progress page
 await tap('Add someone new');
@@ -1193,13 +1223,22 @@ await page.evaluate(() => window.__eduTest.openColoring('play:spot-arts-k'));
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
 await page.waitForTimeout(200);
 { ok('the spot game opens with five pieces and an ask', (await page.locator('g[role="button"]').count()) === 5 && /Tap the /.test(await text()));
+  // Since pass MS (Mikey's answer to Q75, "Q75 - B") a right piece holds as Grow the Plant's does: its praise ("Yes, the blue
+  // square.") is shown and said, and the next ask waits a beat after it, never less than 2.2 seconds after the tap.
+  let heldSpot = null; let spotFor = null; let tapAt = 0;
   for (let i = 0; i < 3; i++) {
     const askText = ((await page.locator('[data-spot-ask]').getAttribute('data-spot-ask')) || '').replace(/^Tap the /, '');
     const want = askText.trim().replace(/\s+(shape|line)$/, (m0, w) => (w === 'shape' ? '' : ' ' + w)).trim();
     const pieces = page.locator('g[role="button"]'); const n = await pieces.count(); let clicked = false;
-    for (let j = 0; j < n && !clicked; j++) { const label = await pieces.nth(j).getAttribute('aria-label'); if (askText.endsWith('shape') ? label.startsWith(want) : label.endsWith(want)) { await pieces.nth(j).click({ force: true }); clicked = true; } }
-    await page.waitForTimeout(150);
+    for (let j = 0; j < n && !clicked; j++) { const label = await pieces.nth(j).getAttribute('aria-label'); if (askText.endsWith('shape') ? label.startsWith(want) : label.endsWith(want)) { await pieces.nth(j).click({ force: true }); clicked = true; tapAt = Date.now(); } }
+    // The count counts the found piece while its praise holds (round three's screen read: it had read 3 to find under the praise).
+    if (i === 0) { await page.waitForTimeout(1600); heldSpot = await page.evaluate(() => { const b = document.querySelector('[data-right-hold]'); const p = document.querySelector('[data-spot-ask]'); const left = document.querySelector('[data-spot-left]'); return !!b && !!p && /^Yes, the \w+ [\w ]+\.$/.test(p.textContent.trim()) && !!left && left.textContent.trim() === '2 to find' ? p.textContent.trim() : null; }); }
+    await page.waitForFunction(() => !document.querySelector('[data-right-hold]'), null, { timeout: 9000 }).catch(() => {});
+    if (i === 0) spotFor = Date.now() - tapAt;
   }
+  // Let go no sooner than 2.1 seconds after the tap (round one's screen check, pass MS: a 1.7-second hold passed the 1.6-second look).
+  if (!(!!heldSpot && spotFor >= 2100)) console.log('  (Spot It hold:', JSON.stringify({ heldSpot, spotFor }), ')');
+  ok('a right piece in Spot It holds its praise, still shown 1.6 seconds after the tap with 2 to find under it, and let go no sooner than 2.1 (Q75)', !!heldSpot && spotFor >= 2100);
   ok('tapping the three asked pieces finishes the picture', (await text()).includes('All three found') && (await page.getByRole('button', { name: 'Next picture' }).count()) === 1);
 }
 await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
@@ -1333,11 +1372,18 @@ await page.waitForTimeout(300);
   ok("a second miss on the same ask adds the asked letter's shape words", said2.includes(`That one is the letter ${letters[wrong2At]}.`) && said2.includes(`It ${DL.letterShapeWords(ask)}.`));
   await page.evaluate(() => { window.__spoken = []; });
   const rightAt = letters.indexOf(ask); const during = letters.findIndex((x, i) => i !== rightAt);
-  await cards.nth(rightAt).click(); await page.waitForTimeout(60);
+  await cards.nth(rightAt).click(); const tappedAt = Date.now(); await page.waitForTimeout(60);
   const heldNow = (await page.locator('[data-letter-hold]').count()) === 1; const foundNow = await cards.nth(rightAt).evaluate((g) => g.hasAttribute('data-found'));
   await cards.nth(during).click(); await page.waitForTimeout(80);
   const ignored = await cards.nth(during).evaluate((g) => !g.hasAttribute('data-miss') && !g.hasAttribute('data-found')); const saidDuring = await spoken();
-  await released(); const nextAsk = await askOf(); const saidRight = await spoken();
+  // The hold after a right letter (Q75 (b), since round one's code check, pass MS): still held 1.6 seconds after the tap, where the
+  // old hold let go about half a second after the stand-in voice's line, which ends in 250 ms.
+  await page.waitForTimeout(Math.max(0, 1600 - (Date.now() - tappedAt))); const heldLate = (await page.locator('[data-letter-hold]').count()) === 1;
+  // And it lets go no sooner than 2.1 seconds after the tap (round two's code check: the old hold let go 1,480 ms after it with this
+  // stand-in voice, 120 ms from the 1.6-second mark, so a slow run could have passed the old code).
+  await released(); const heldFor = Date.now() - tappedAt;
+  if (!(heldLate && heldFor >= 2100)) console.log('  (Find the Letter hold: held at 1.6 s', heldLate, 'let go after', heldFor, 'ms)');
+  ok('a right letter in Find the Letter holds its praise, still held 1.6 seconds after the tap and let go no sooner than 2.1 (Q75)', heldLate && heldFor >= 2100); const nextAsk = await askOf(); const saidRight = await spoken();
   if (!heldNow || !foundNow || !ignored) console.log('  (Find the Letter right tap: held', heldNow, 'found', foundNow, 'tap during the line ignored', ignored, 'said', JSON.stringify(saidRight), ')');
   ok('a right letter rings in green and says Yes and its shape, a tap while that is said does nothing, and the next ask follows', heldNow && foundNow && ignored && !saidDuring.includes('That one is') && saidRight.includes(`Yes, that is the letter ${ask}.`) && saidRight.includes(`It ${DL.letterShapeWords(ask)}.`) && /^[A-Z]$/.test(nextAsk) && nextAsk !== ask && saidRight.includes(`Find the letter ${nextAsk}.`));
   for (let n = 0; n < 2; n++) { const want = await askOf(); const ls = await lettersNow(); await cards.nth(ls.indexOf(want)).click(); await page.waitForTimeout(80); if (n === 0) await released(); }
@@ -1446,6 +1492,40 @@ await page.waitForTimeout(300);
   await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring'); await page.waitForTimeout(300); }
 await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+// Find the Letter with no voice on the device (round one's screen check, pass MS): its heading names the letter for a grown-up, and
+// a right letter holds the board as the other young games do, its praise in the heading ("Yes, that is the letter B."), still held
+// 1.6 seconds after the tap and let go no sooner than 2.1, then the next ask, the cards never moving (until then the next ask showed
+// at the tap). Since round three's code read it runs at 320 pixels, where every praise wraps onto a second line (at 360 only a wide
+// letter's did, so the check could pass with the heading's room taken out), and reads the board's own top, since the found card's
+// ring lifts that card's top 3 pixels while the board stays put (the check had failed correct code about one run in five).
+{ const wasSize = page.viewportSize(); await page.setViewportSize({ width: 320, height: 780 }); await page.waitForTimeout(250);
+  await page.evaluate(() => { window.__voiceBeforeQuiet = window.speechSynthesis; Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: undefined }); });
+  await page.evaluate(() => window.__eduTest.openColoring('play:spot-first-sounds'));
+  await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring'); await page.waitForTimeout(300);
+  const heading = () => page.evaluate(() => { const p = document.querySelector('[data-spot-ask]'); return p ? p.textContent.trim() : ''; });
+  const cards = page.locator('g[data-letter]'); const first = await heading(); const ask = (/^Find the letter ([A-Z])\.$/.exec(first) || [])[1];
+  const ls = await cards.evaluateAll((gs) => gs.map((g) => g.getAttribute('data-letter')));
+  const top = () => page.locator('[data-letter-board]').evaluate((s) => Math.round(s.getBoundingClientRect().top));
+  const before = await top();
+  const headColor = () => page.evaluate(() => { const p = document.querySelector('[data-spot-ask]'); return p ? getComputedStyle(p).color : ''; }); const askColor = await headColor();
+  if (ask) await cards.nth(ls.indexOf(ask)).click(); const tapAt = Date.now(); await page.waitForTimeout(150);
+  const praised = await heading(); const praisedColor = await headColor(); const heldEarly = (await page.locator('[data-letter-hold]').count()) === 1;
+  await page.waitForTimeout(Math.max(0, 1600 - (Date.now() - tapAt))); const heldLate = (await page.locator('[data-letter-hold]').count()) === 1; const during = await top();
+  await page.waitForFunction(() => !document.querySelector('[data-letter-hold]'), null, { timeout: 8000 }).catch(() => {}); const heldFor = Date.now() - tapAt;
+  const nextAsk = await heading(); const after = await top();
+  // The board's third letter is praised in the heading in green too (round four's screen read: it had shown "All three found." in
+  // ink, so with no voice it was never praised): the second asked letter, its hold, then the third, read while it holds.
+  const tapAsked = async () => { const l = (/^Find the letter ([A-Z])\.$/.exec(await heading()) || [])[1]; if (!l) return null; const now = await cards.evaluateAll((gs) => gs.map((g) => g.getAttribute('data-letter'))); await cards.nth(now.indexOf(l)).click(); return l; };
+  await tapAsked(); await page.waitForTimeout(150); await page.waitForFunction(() => !document.querySelector('[data-letter-hold]'), null, { timeout: 8000 }).catch(() => {});
+  const third = await tapAsked(); await page.waitForTimeout(300); const thirdSaid = await heading(); const thirdColor = await headColor(); const thirdTop = await top();
+  const good = !!ask && praised === `Yes, that is the letter ${ask}.` && heldEarly && heldLate && heldFor >= 2100 && /^Find the letter [A-Z]\.$/.test(nextAsk) && nextAsk !== first && before === during && during === after
+    && !!third && thirdSaid === `Yes, that is the letter ${third}.` && thirdColor === praisedColor && praisedColor !== askColor && thirdTop === before;
+  if (!good) console.log('  (Find the Letter with no voice:', JSON.stringify({ first, praised, heldEarly, heldLate, heldFor, nextAsk, before, during, after, third, thirdSaid, askColor, praisedColor, thirdColor, thirdTop }), ')');
+  ok('with no voice, a right letter in Find the Letter holds the board with its praise in the heading, let go no sooner than 2.1 seconds, then the next ask, the cards never moving, and the board\'s third letter is praised in green as well (pass MS, round one\'s screen check and round four\'s screen read)', good);
+  await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
+  await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'overview');
+  await page.evaluate(() => Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: window.__voiceBeforeQuiet }));
+  if (wasSize) await page.setViewportSize(wasSize); await page.waitForTimeout(250); }
 // The Fish (First Steps' since pass MM, ten dots): joining the tenth dot says "ten", then "A fish!", and an eye appears.
 await page.evaluate(() => window.__eduTest.openColoring('play:dots-fish'));
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
@@ -1466,9 +1546,14 @@ await page.evaluate(() => window.__eduTest.openColoring('play:share-philosophy-k
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
 await page.waitForTimeout(200);
 { ok('the share game opens with a pile of cookies, plates and a Check button', (await page.getByRole('button', { name: /^Plate \d+/ }).count()) >= 2 && (await page.getByRole('button', { name: 'Check', exact: true }).count()) === 1);
+  let heldShare = null; let shareFor = null;
   for (let r = 0; r < 4; r++) { const each = Number(await page.locator('[data-share-each]').getAttribute('data-share-each')); const n = Number(await page.locator('[data-share-plates]').getAttribute('data-share-plates')); if (!each || !n) break;
     for (let i = 0; i < n; i++) for (let j = 0; j < each; j++) { await page.getByRole('button', { name: new RegExp(`^Plate ${i + 1}:`) }).click(); await page.waitForTimeout(40); }
-    await page.getByRole('button', { name: 'Check', exact: true }).click(); await page.waitForTimeout(1050); }
+    await page.getByRole('button', { name: 'Check', exact: true }).click(); const tapAt = Date.now();
+    if (r === 0) { await page.waitForTimeout(1600); heldShare = await page.evaluate(() => !!document.querySelector('[data-right-hold]') && [...document.querySelectorAll('[data-game-pad] p')].some((p) => p.textContent.trim() === 'Every plate has the same. That is fair.' && p.offsetParent !== null && getComputedStyle(p).visibility !== 'hidden')); }
+    await page.waitForFunction(() => !document.querySelector('[data-right-hold]'), null, { timeout: 9000 }).catch(() => {}); if (r === 0) shareFor = Date.now() - tapAt; await page.waitForTimeout(100); }
+  if (!(heldShare === true && shareFor >= 2100)) console.log('  (Share the Cookies hold:', JSON.stringify({ heldShare, shareFor }), ')');
+  ok('a fair share holds its praise, still shown 1.6 seconds after Check and let go no sooner than 2.1 (Q75)', heldShare === true && shareFor >= 2100);
   ok('four even shares finish the round', (await text()).includes('Four fair shares'));
 }
 await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
@@ -1508,7 +1593,12 @@ await page.evaluate(() => window.__eduTest.openColoring('play:sense-psychology-k
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'coloring');
 await page.waitForTimeout(200);
 { ok('the sense game opens with a thing and five senses', (await page.getByRole('button', { name: /^Sense: / }).count()) === 5 && (await page.locator('[data-sense-answer]').count()) === 1);
-  for (let i = 0; i < 5; i++) { const ans = await page.locator('[data-sense-answer]').getAttribute('data-sense-answer'); if (!ans) break; await page.getByRole('button', { name: `Sense: ${ans}`, exact: true }).click(); await page.waitForTimeout(1050); }
+  let heldSense = null; let senseFor = null;
+  for (let i = 0; i < 5; i++) { const ans = await page.locator('[data-sense-answer]').getAttribute('data-sense-answer'); if (!ans) break; await page.getByRole('button', { name: `Sense: ${ans}`, exact: true }).click(); const tapAt = Date.now();
+    if (i === 0) { await page.waitForTimeout(1600); heldSense = await page.evaluate(() => !!document.querySelector('[data-right-hold]') && [...document.querySelectorAll('[data-game-pad] p')].some((p) => /^Yes: your \w+\.$/.test(p.textContent.trim()) && p.offsetParent !== null && getComputedStyle(p).visibility !== 'hidden')); }
+    await page.waitForFunction(() => !document.querySelector('[data-right-hold]'), null, { timeout: 9000 }).catch(() => {}); if (i === 0) senseFor = Date.now() - tapAt; await page.waitForTimeout(100); }
+  if (!(heldSense === true && senseFor >= 2100)) console.log('  (Which Sense hold:', JSON.stringify({ heldSense, senseFor }), ')');
+  ok('a right sense holds its praise, still shown 1.6 seconds after the tap and let go no sooner than 2.1 (Q75)', heldSense === true && senseFor >= 2100);
   ok('five right senses finish the round', (await text()).includes('Five senses found'));
 }
 await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });
@@ -1599,12 +1689,13 @@ await page.waitForTimeout(200);
   // body, holds the words "Four plants grown" from the start): a right tap turns data-grow-fixed to yes, and the next plant, or
   // the round's end, changes data-grow-plant.
   const board = () => page.evaluate(() => { const b = document.querySelector('[data-grow-fixed]'); return b ? { plant: b.getAttribute('data-grow-plant'), need: b.getAttribute('data-grow-need'), fixed: b.getAttribute('data-grow-fixed') } : null; });
-  let held = null;
-  for (let r = 0; r < 4; r++) { const was = await board(); if (!was || !was.need) break; await page.getByRole('button', { name: `Give ${was.need}`, exact: true }).click();
+  let held = null; let grownFor = null;
+  for (let r = 0; r < 4; r++) { const was = await board(); if (!was || !was.need) break; await page.getByRole('button', { name: `Give ${was.need}`, exact: true }).click(); const tapAt = Date.now();
     await page.waitForFunction(() => { const b = document.querySelector('[data-grow-fixed]'); return !!b && b.getAttribute('data-grow-fixed') === 'yes'; }, null, { timeout: 3000 });
     if (r === 0) { await page.waitForTimeout(1600); held = (await board()).fixed; }
-    await page.waitForFunction((p) => { const b = document.querySelector('[data-grow-fixed]'); return !!b && b.getAttribute('data-grow-plant') !== p; }, was.plant, { timeout: 9000 }); }
-  ok('a grown plant stays on the screen for the whole praise and a beat, still grown 1.6 seconds after the tap (Q72: "It is way too fast of a transition")', held === 'yes', held);
+    await page.waitForFunction((p) => { const b = document.querySelector('[data-grow-fixed]'); return !!b && b.getAttribute('data-grow-plant') !== p; }, was.plant, { timeout: 9000 }); if (r === 0) grownFor = Date.now() - tapAt; }
+  if (!(held === 'yes' && grownFor >= 2100)) console.log('  (Grow the Plant hold:', JSON.stringify({ held, grownFor }), ')');
+  ok('a grown plant stays on the screen for the whole praise and a beat, still grown 1.6 seconds after the tap and the next plant no sooner than 2.1 (Q72: "It is way too fast of a transition")', held === 'yes' && grownFor >= 2100);
   ok('the right need for each of four plants finishes the round', (await text()).includes('Four plants grown'));
 }
 await page.getByRole('button', { name: 'Close game' }).first().click({ force: true });

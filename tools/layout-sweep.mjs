@@ -88,14 +88,16 @@ if (process.argv[1] && process.argv[1].endsWith('layout-sweep.mjs')) {
   const pagePath = fileURLToPath(new URL('../tests/e2e/out/page-phone.html', import.meta.url));
   mkdirSync(fileURLToPath(new URL('../tests/e2e/out/', import.meta.url)), { recursive: true });
   writeFileSync(pagePath, readFileSync(new URL('../tests/e2e/page.html', import.meta.url), 'utf8').replace('<head>', '<head><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">'));
-  // The two planted faults, put at the top of the game page, read with the rest of it, and taken out again: a tile whose words
-  // run wider than the tile, and words in a centered row pushed off center by an icon beside them (the row question-screens.mjs
-  // plants). Both must be reported, at every size.
+  // The three planted faults, put at the top of the game page, read with the rest of it, and taken out again: a tile whose words
+  // run wider than the tile, words in a centered row pushed off center by an icon beside them (the row question-screens.mjs
+  // plants), and, since round four of pass MS, two markings in a row of narrow columns drawn over each other (Shape the Sound's two
+  // "decresc." as they were). All three must be reported, at every size.
   const PLANT = `(() => { const pad = document.querySelector('[data-game-pad]'); if (!pad) return null; const host = document.createElement('div');
     host.innerHTML = '<button type="button" style="width:56px;padding:0;white-space:nowrap;font-size:16px">sunshine sunshine</button>'
-      + '<h2 style="display:flex;align-items:center;justify-content:center;margin:8px 0 0;font-size:18px">Wonder Questions <button type="button" aria-label="i" style="width:30px;height:30px;padding:0"><svg width="20" height="20"></svg></button></h2>';
-    pad.prepend(host); const found = (${LAYOUT_SOURCE})('[data-game-pad]'); host.remove();
-    return { spill: found.some((p) => p.kind === 'spill' && p.text === 'sunshine sunshine'), offset: found.some((p) => p.kind === 'offset' && p.text === 'Wonder Questions') }; })()`;
+      + '<h2 style="display:flex;align-items:center;justify-content:center;margin:8px 0 0;font-size:18px">Wonder Questions <button type="button" aria-label="i" style="width:30px;height:30px;padding:0"><svg width="20" height="20"></svg></button></h2>'
+      + '<div style="display:grid;grid-template-columns:repeat(2,20px);gap:2px"><div style="display:flex;flex-direction:column;align-items:center"><span style="font-size:13px;font-style:italic;font-weight:700;white-space:nowrap">decresc.</span></div><div style="display:flex;flex-direction:column;align-items:center"><span style="font-size:13px;font-style:italic;font-weight:700;white-space:nowrap">decresc!</span></div></div>';
+    pad.prepend(host); const found = (${LAYOUT_SOURCE})('[data-game-pad]', { overlap: true }); host.remove();
+    return { spill: found.some((p) => p.kind === 'spill' && p.text === 'sunshine sunshine'), offset: found.some((p) => p.kind === 'offset' && p.text === 'Wonder Questions'), overlap: found.some((p) => p.kind === 'overlap' && /decresc/.test(p.text)) }; })()`;
   const browser = await chromium.launch();
   const problems = []; let opened = 0; const noWrongTap = new Map(); let wrongRead = 0;
   for (const [w, h, kind] of sizes) {
@@ -125,12 +127,12 @@ if (process.argv[1] && process.argv[1].endsWith('layout-sweep.mjs')) {
       await page.evaluate((id) => window.__eduTest.openColoring('play:' + id), g.id); await page.waitForTimeout(650);
       // A moving game opens behind Begin; pressing it lets the board show, as a child sees it.
       await page.evaluate(() => { const b = document.querySelector('[data-begin-cover] button'); if (b) b.click(); }); await page.waitForTimeout(250);
-      const found = await page.evaluate(`(${LAYOUT_SOURCE})('[data-game-pad]')`);
+      const found = await page.evaluate(`(${LAYOUT_SOURCE})('[data-game-pad]', { overlap: true })`);
       for (const p of found) problems.push({ size: `${w}x${h}`, game: g.id, state: 'rest', ...p });
       if (g === games[0]) {
         const planted = await page.evaluate(PLANT);
-        if (!planted || !planted.spill || !planted.offset) problems.push({ size: `${w}x${h}`, game: g.id, kind: 'planted fault missed', text: `the read did not report ${!planted ? 'either planted fault (no game page)' : [!planted.spill && "the tile's spilled words", !planted.offset && 'the off-center row'].filter(Boolean).join(' or ')}` });
-        else console.log(`PLANTED ${g.id} at ${w}x${h}: the read reported the tile's spilled words and the off-center row`);
+        if (!planted || !planted.spill || !planted.offset || !planted.overlap) problems.push({ size: `${w}x${h}`, game: g.id, kind: 'planted fault missed', text: `the read did not report ${!planted ? 'any planted fault (no game page)' : [!planted.spill && "the tile's spilled words", !planted.offset && 'the off-center row', !planted.overlap && 'the markings drawn over each other'].filter(Boolean).join(' or ')}` });
+        else console.log(`PLANTED ${g.id} at ${w}x${h}: the read reported the tile's spilled words, the off-center row and the markings over each other`);
       }
       if (wrong) {
         // Hold It in Mind shows its words first and names its answer only once they hide, so an empty answer is waited for.
@@ -140,7 +142,7 @@ if (process.argv[1] && process.argv[1].endsWith('layout-sweep.mjs')) {
         const shown = pick.tapped ? await page.waitForFunction(wrongSign, null, { timeout: 2000 }).then(() => true).catch(() => false) : false;
         if (shown) {
           wrongRead += 1;
-          const after = await page.evaluate(`(${LAYOUT_SOURCE})('[data-game-pad]')`);
+          const after = await page.evaluate(`(${LAYOUT_SOURCE})('[data-game-pad]', { overlap: true })`);
           for (const p of after) problems.push({ size: `${w}x${h}`, game: g.id, state: 'after a wrong tap', ...p });
         } else {
           const why = pick.tapped ? `tapped "${pick.tapped}" (${pick.how}), and no wrong sign showed` : pick.why;

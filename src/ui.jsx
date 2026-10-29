@@ -1755,14 +1755,16 @@ function playTap() {
 // since a device's voice spelled sss and fff as letters and ran mmm into moon on Mikey's phone (his notes on Q51). SPEECH_SHAPES
 // turns each spoken piece's shape into a rate and a pitch; sound is the shape of a sound the device can only say, never play.
 // cheer (pass MR): a run of capitals at a sentence's end, Mikey's "HAVE FUN!!!", lifted and a little quicker than the words before it.
-// The playful ways to say a word along with the child (pass MR, Mikey's answer to Q67; SAY_WITH_ME in logic): a whisper is quiet and
-// a little slow, slow is half speed, the low silly voice is deep, super fast is nearly twice the speed, stretched out is very slow,
-// and squeaky is high. A device voice cannot truly whisper, so it is said softly; the recorded voice whispers ([whispers]).
-const SPEECH_SHAPES = { key: { rate: 0.6, pitch: 1.25 }, question: { rate: 0.9, pitch: 1.22 }, plain: { rate: 0.86, pitch: 1.15 }, sound: { rate: 0.1, pitch: 1.15 }, cheer: { rate: 1.0, pitch: 1.45 },
-  whisper: { rate: 0.8, pitch: 1.1, volume: 0.35 }, slow: { rate: 0.48, pitch: 1.12 }, low: { rate: 0.82, pitch: 0.3 }, fast: { rate: 1.85, pitch: 1.2 }, drawn: { rate: 0.32, pitch: 1.05 }, squeaky: { rate: 1.0, pitch: 1.95 } };
-// The shapes that keep their own pace for a young learner (a word at play is already slow; a cheer is meant to bounce; a playful
-// voice is the pace its cue names).
-const OWN_PACE_SHAPES = ['key', 'cheer', 'whisper', 'slow', 'low', 'fast', 'drawn', 'squeaky'];
+// The silly voices of the say-along (pass MS, Mikey's note on Q67; SAY_ALONG_VOICES in logic, where each voice's rate, pitch and
+// volume live, so logic times the child's turn from the same pace): whisper is soft and a little slow, slow is half speed, low and
+// silly is deep, super fast is nearly twice the speed, stretched out is very slow, way up high is squeaky, the slide steps down over
+// three sayings (slide1, slide2, slide3), the chant is a bright cheer, and the clear one an ordinary voice. A device voice cannot
+// truly whisper, so it is said softly; the recorded voice whispers ([whispers]).
+const SAY_ALONG_SHAPES = Object.fromEntries(SAY_ALONG_VOICES.flatMap((v) => (v.device.length === 1 ? [[v.style, v.device[0]]] : v.device.map((d, k) => [`${v.style}${k + 1}`, d]))));
+const SPEECH_SHAPES = { key: { rate: 0.6, pitch: 1.25 }, question: { rate: 0.9, pitch: 1.22 }, plain: { rate: 0.86, pitch: 1.15 }, sound: { rate: 0.1, pitch: 1.15 }, cheer: { rate: 1.0, pitch: 1.45 }, ...SAY_ALONG_SHAPES };
+// The shapes that keep their own pace for a young learner (a word at play is already slow; a cheer is meant to bounce; a silly voice
+// is the pace its call names).
+const OWN_PACE_SHAPES = ['key', 'cheer', ...Object.keys(SAY_ALONG_SHAPES)];
 
 // ---------- The app's own speech sounds (pass MO, Mikey's notes on Q51) ----------
 // In plain terms: one audio element plays every sound, so the first tap anywhere can unlock it (a phone lets a page play sound only
@@ -1835,6 +1837,9 @@ function speechYoung() { return youngVoice.game !== null ? !!youngVoice.game : !
 // (voiceTalking), so a speaker button keeps showing that it reads and a wait for the voice's end waits for the whole line; a hush or
 // a newer line clears it.
 let restUntil = 0;
+// When the device voice last reported that a piece started or ended (pass MS, round three's code read), so a wait for a voice that
+// keeps saying it is speaking counts from the voice's last sign of life rather than from when the wait began (afterSaid).
+let voiceEventAt = 0;
 function setSpeechNudge(n) { SPEECH_NUDGE = n; }
 // Speech is scheduled, never fired in the same tick as a cancel: Chrome drops an utterance queued
 // right after cancel(), and lets go of one that nothing holds a reference to. So every request
@@ -1853,8 +1858,14 @@ let speechAlive = [];   // the utterances now speaking, held so the browser cann
 // check: a sound beside a sentence's end had no pause, "Bus." then sss at once). onRest(k) is told the piece a pause leads to
 // before the pause begins, so a reader's place is already there and a pace changed in the pause starts at that piece, never at the
 // sentence just said (round one's code check: "Ana had a plate." was said twice).
+// onPieceEnd(k) (pass MS) is told when piece k has been said, for the say-along's light, which follows the voice through a word; and
+// onPiece's second word says whether the voice has begun the piece (round one's screen check, pass MS): false when the piece is queued
+// or its turn comes, true when the voice reports its start or a sound plays, so the light waits for the voice (a network voice can
+// take 400 ms to begin, and the light had run through a short word before it was heard).
+// A say-along form's sayings keep together (inForm: no sentence rest between the chant's sayings or the slide's steps), and the
+// piece that ends a form carries the child's turn (echo, in ms), waited after it before the next words.
 function sayPieces(pieces, from, hooks) {
-  const { alive, utter, onPiece = () => {}, onBegin = () => {}, onDone = () => {}, pause = null, onRest = () => {} } = hooks;
+  const { alive, utter, onPiece = () => {}, onBegin = () => {}, onDone = () => {}, pause = null, onRest = () => {}, onPieceEnd = () => {} } = hooks;
   if (!alive()) return;
   if (from >= pieces.length) { onDone(); return; }
   // Goes on to piece j: after the pace's pause when j starts a new sentence, and a sound straight after a sound waits a fifth of a
@@ -1863,16 +1874,18 @@ function sayPieces(pieces, from, hooks) {
   // where the commas and stops are a teacher's pauses.
   const goOn = (j) => {
     const next = pieces[j]; const prev = pieces[j - 1];
-    const rest = next && pause && next.sentence !== prev.sentence ? pause(next) || 0 : 0;
-    const wait = Math.max(rest, next && next.sound && prev.sound ? SOUND_GAP_MS : 0);
+    const together = !!(next && prev && prev.inForm !== undefined && next.inForm === prev.inForm);
+    const rest = next && pause && next.sentence !== prev.sentence && !together ? pause(next) || 0 : 0;
+    const echo = next && prev && prev.echo && !together ? prev.echo : 0;
+    const wait = Math.max(rest, echo, next && next.sound && prev.sound ? SOUND_GAP_MS : 0);
     if (wait > 0) { onRest(j); restUntil = Date.now() + wait + 60; setTimeout(() => { if (alive()) sayPieces(pieces, j, hooks); }, wait); } else sayPieces(pieces, j, hooks);
   };
-  if (pieces[from].sound) { onPiece(from); onBegin(); playSound(pieces[from].sound, () => { if (alive()) goOn(from + 1); }); return; }
+  if (pieces[from].sound) { onPiece(from, true); onBegin(); playSound(pieces[from].sound, () => { if (alive()) { onPieceEnd(from); goOn(from + 1); } }); return; }
   const rest = pause ? pause() : 0;
   let to = from; while (to < pieces.length && !pieces[to].sound && !(rest > 0 && to > from && pieces[to].sentence !== pieces[to - 1].sentence)) to += 1;
   const after = () => goOn(to);
   let left = to - from; const ss = window.speechSynthesis; const dones = []; const ended = []; let begun = false;
-  onPiece(from);
+  onPiece(from, false);
   for (let k = from; k < to; k++) {
     const u = new SpeechSynthesisUtterance(pieces[k].text); utter(u, pieces[k]); speechAlive.push(u);
     let counted = false;
@@ -1886,9 +1899,11 @@ function sayPieces(pieces, from, hooks) {
     // six's code check a thrown piece tells no one it began, and an end moves the light only once every piece before it has ended,
     // to the next piece not yet ended: the catch had lit the next piece while the first was still being said, and a pace change
     // then started past it ("Lena had six blocks." never said), and the first piece's end had lit the thrown one, never said.
-    const done = (cascade = true) => { if (counted) return; if (cascade) for (let j = 0; j < k - from; j++) dones[j](); counted = true; ended[k - from] = true; if (cascade) onBegin(); if (!alive()) return; left -= 1; if (left === 0) { after(); return; } for (let j = 0; j < k - from; j++) if (!ended[j]) return; let n = k + 1; while (n < to && ended[n - from]) n += 1; if (n < to) onPiece(n); };
+    // Only a line still being said marks the voice's sign of life (voiceEventAt; round four's code read, pass MS): a cancelled line's
+    // pieces report their errors as the next line begins, which had moved the next wait's backstop as if that line were heard.
+    const done = (cascade = true) => { if (counted) return; if (cascade) for (let j = 0; j < k - from; j++) dones[j](); counted = true; ended[k - from] = true; if (cascade) onBegin(); if (!alive()) return; voiceEventAt = Date.now(); onPieceEnd(k); left -= 1; if (left === 0) { after(); return; } for (let j = 0; j < k - from; j++) if (!ended[j]) return; let n = k + 1; while (n < to && ended[n - from]) n += 1; if (n < to) onPiece(n, false); };
     dones.push(done);
-    u.onstart = () => { begun = true; onBegin(); if (alive()) onPiece(k); }; u.onend = done; u.onerror = done;
+    u.onstart = () => { begun = true; onBegin(); if (alive()) { voiceEventAt = Date.now(); onPiece(k, true); } }; u.onend = done; u.onerror = done;
     try { ss.speak(u); } catch (e) { done(false); }
   }
   // A voice that never reports a batch's end (some devices drop the last end, as More Info's watcher knows) would leave the line
@@ -1922,8 +1937,13 @@ function startsSentence(piece) { const t = piece && typeof piece.text === 'strin
 function restBefore(ms) { return (next) => (startsSentence(next) ? ms : 0); }
 // While a game's welcome plays its board (pass MP, GameIntro), the board's own speak() and speakSequence() stay quiet.
 let demoMute = 0;
+// Whether this visit chose Keep going sideways on the ask to turn the phone upright (pass MS, Q74 (b)); memory only, so closing the
+// app forgets it.
+let rotateKept = false;
 // opts (pass MQ): young, whether the young voice reads (else speechYoung() decides), and pause, a rest in milliseconds between one
-// sentence and the next (else YOUNG_PAUSE_MS for the young voice, and none otherwise).
+// sentence and the next (else YOUNG_PAUSE_MS for the young voice, and none otherwise). Since round four's code read (pass MS) onDone
+// is told when the voice has said the whole line, its last piece ended (or counted said by sayPieces' watch), never for a line
+// cancelled or replaced before then, so a wait can tell a line that is over from a voice that still says it is speaking (afterSaid).
 function speak(text, opts = {}) {
   if (typeof window === 'undefined' || !window.speechSynthesis || !text) return;
   if (demoMute > 0) return;   // a game's welcome is playing its board (pass MP): the board's own words wait, so they never cut the welcome off
@@ -1945,7 +1965,7 @@ function speak(text, opts = {}) {
     const mine = attempt;
     try {
       const voice = pickVoice(); speechAlive = [];
-      sayPieces(pieces, 0, { alive: () => ticket === speechTicket && mine === attempt, utter: (u, piece) => shapeVoice(u, piece, voice, 1, young), onBegin: () => { began = true; }, pause: rest > 0 ? restBefore(rest) : null });
+      sayPieces(pieces, 0, { alive: () => ticket === speechTicket && mine === attempt, utter: (u, piece) => shapeVoice(u, piece, voice, 1, young), onBegin: () => { began = true; }, onDone: () => { if (opts.onDone) opts.onDone(); }, pause: rest > 0 ? restBefore(rest) : null });
     } catch (e) { /* a broken voice must never stop a lesson */ }
   };
   const ss = window.speechSynthesis;
@@ -1986,20 +2006,34 @@ function voiceBackstopMs(text) { const t = String(text || ''); const young = spe
 // from the tap, so the child sees what the right answer did. afterSaid(text, done) says the text (when given) and calls done once the
 // voice has finished it and the beat has passed, read every 100 ms from voiceTalking(), with voiceBackstopMs as the backstop for a voice
 // that never reports its end, and with no voice the hold alone; it returns a cancel, which a game's effect cleanup calls, so closing
-// or resetting the game never moves it on.
+// or resetting the game never moves it on. Since pass MS (Mikey's answer to Q75, "Q75 - B") the other young games that speak their
+// next question hold the same way after a right answer, each saying its praise first: Which Sense ("Yes: your nose."), Share the
+// Cookies ("Every plate has the same. That is fair."), Spot It ("Yes, the blue square.") and Find the Letter (its "Yes, that is the
+// letter B." and the letter's shape), each board marked data-right-hold while it holds (Find the Letter by its own data-letter-hold).
 const NEXT_QUESTION_BEAT_MS = 1000;
 const RIGHT_ANSWER_HOLD_MS = 2200;
+// The backstop counts from the voice's last sign of life (pass MS: in round one's screen check, with a voice at half a phone's pace,
+// the backstop counted from the tap let the next question cut off Share the Cookies' "That is fair.", Spot It's praise, Find the
+// Letter's shape sentence and Grow the Plant's praise, Mikey's Q72 complaint again; round one's fix, twice the backstop for a voice
+// once heard, made a stuck device wait up to 27 seconds a letter, round three's code read found). So the praise is said to its end
+// however slowly the device says it, then the beat. Since round four's code read the line's own end decides for a voice that says
+// it is speaking: once the voice has said the whole line (speak's onDone), the wait goes a beat after it, however long the voice
+// goes on saying it speaks. While the line is still being said, a voice heard since the tap is let go two backstops after its last
+// start or end (voiceEventAt), room for a slow device's one-piece praise, since a piece reports nothing between its start and its
+// end: round three's one backstop had cut Spot It's "Yes, the green straight line." about six seconds after the tap, before its
+// end, on a slow stand-in voice, with no beat before the next question. A voice that has reported nothing since the tap, yet says
+// it is speaking, goes one backstop after the tap; and a voice never heard at all is quiet from the first tick, so it goes at the hold.
 function afterSaid(text, done, opts = {}) {
   const hold = opts.hold !== undefined ? opts.hold : RIGHT_ANSWER_HOLD_MS; const beat = opts.beat !== undefined ? opts.beat : NEXT_QUESTION_BEAT_MS;
-  const start = Date.now(); let quietSince = null; let over = false; let timer = null;
+  const start = Date.now(); let quietSince = null; let over = false; let timer = null; let lineDone = null;
   const voice = canSpeak() && demoMute === 0;
-  if (text && voice) speak(text);
+  if (text && voice) speak(text, { onDone: () => { lineDone = Date.now(); } });
   const backstop = text && voice ? voiceBackstopMs(text) + beat : 0;
   const tick = () => {
     if (over) return;
-    const now = Date.now(); const talking = voice && !!text && voiceTalking();
+    const now = Date.now(); const talking = voice && !!text && voiceTalking(); const heard = voiceEventAt > start;
     if (talking) quietSince = null; else if (quietSince === null) quietSince = now;
-    const said = !text || !voice || (quietSince !== null && now - quietSince >= beat && now - start >= 400) || now - start >= backstop;
+    const said = !text || !voice || (quietSince !== null && now - quietSince >= beat && now - start >= 400) || (lineDone !== null && now - lineDone >= beat) || now - Math.max(start, voiceEventAt) >= (heard ? 2 : 1) * backstop;
     if (said && now - start >= hold) { over = true; done(); return; }
     timer = setTimeout(tick, 100);
   };
@@ -2018,6 +2052,10 @@ function clipFor(key) { return typeof window !== 'undefined' && Array.isArray(wi
 // opts (pass MI, for More Info): gap, a pause in milliseconds between one text and the next, and rate, a factor on every rate.
 // Since pass MP (for stories) gap may be a function of the text just read, and pause, a function, a pause between one sentence
 // and the next inside a text (none when it gives 0), both read as each comes, so a pace changed mid-story changes them too.
+// Since pass MS (the say-along): together, the texts are one line's sentences, read with each other (a say-along's voices are read
+// from the whole line); onIndex is told the piece too, and whether the voice has begun it (since round one's screen check), and
+// onPieceEnd(i, k, piece) when a piece has been said; a say-along form's
+// sayings keep together across texts, and the child's turn after a form is waited before the next text.
 function speakSequence(texts, onIndex, onDone, keys = [], opts = {}) {
   if (typeof window === 'undefined' || !texts.length) return () => {};
   // While a game's welcome plays its board (pass MP), a board's own reading is skipped as if it were said, so a wait that hangs on its
@@ -2060,21 +2098,25 @@ function speakSequence(texts, onIndex, onDone, keys = [], opts = {}) {
   // on some phones) is asked once more, from where it is, if nothing began within 700 ms (round three's code check: a lesson line's
   // first sentence was lost, and the watch moved on).
   let began = false;
+  const piecesOf = texts.map((t, k) => speechPieces(t, opts.together ? { line: texts, at: k } : {}));
   const say = (i, from = 0) => {
     if (ticket !== speechTicket) return;
     if (i >= texts.length) { onDone && onDone(); return; }
-    const pieces = speechPieces(texts[i]); if (from >= pieces.length) { onIndex(i, 0); say(i + 1); return; }
+    const pieces = piecesOf[i]; if (from >= pieces.length) { onIndex(i, 0); say(i + 1); return; }
     const voice = pickVoice(); const mine = run;
     speechAlive = [];   // held, as speak() holds its own, so the browser cannot let them go before they end (the code check, pass MI)
     sayPieces(pieces, from, {
       alive: () => mine === run && ticket === speechTicket,
       utter: (u, piece) => shapeVoice(u, piece, voice, factor, young),
       onBegin: () => { began = true; },
-      onPiece: (k) => { place.i = i; place.k = k; onIndex(i, pieces[k].sentence || 0); },
+      onPiece: (k, begun) => { place.i = i; place.k = k; onIndex(i, pieces[k].sentence || 0, pieces[k], begun); },
+      onPieceEnd: (k) => { if (opts.onPieceEnd && mine === run) opts.onPieceEnd(i, k, pieces[k]); },
       // In a pause, and in the gap after a text (a title's, a paragraph's), the place is already the next piece or the next text, so
       // a pace change there starts with what comes next and says nothing twice (round one's code check, pass MP).
       onRest: (k) => { place.i = i; place.k = k; },
-      onDone: () => { const gap = gapAfter(i); if (gap) { place.i = i + 1; place.k = 0; if (i + 1 < texts.length) restUntil = Date.now() + gap + 60; setTimeout(() => { if (mine === run) say(i + 1); }, gap); } else say(i + 1); },
+      onDone: () => { const lastPc = pieces[pieces.length - 1]; const nextPc = (piecesOf[i + 1] || [])[0];
+        const together = !!(lastPc && nextPc && lastPc.inForm !== undefined && nextPc.inForm === lastPc.inForm);
+        const gap = together ? 0 : Math.max(gapAfter(i), lastPc && lastPc.echo && i + 1 < texts.length ? lastPc.echo : 0); if (gap) { place.i = i + 1; place.k = 0; if (i + 1 < texts.length) restUntil = Date.now() + gap + 60; setTimeout(() => { if (mine === run) say(i + 1); }, gap); } else say(i + 1); },
       pause: pauseOf,
     });
   };
@@ -2147,6 +2189,106 @@ function VoiceNote({ keys = null, near = false }) {
   if (keys && keys.length && keys.every((k) => clipFor(k))) return null;
   if (near) return <p data-voice-note="" data-voice-note-near="" className="edu-no-print" style={{ margin: '18px auto 0', maxWidth: 460, fontSize: 13.5, lineHeight: 1.5, color: C.ink, textAlign: 'center', background: C.panel, border: `1px solid ${C.mode === 'dark' ? C.panelLine : C.tintMintLine}`, borderRadius: 12, padding: '8px 14px' }}><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" style={{ display: 'block', margin: '0 auto 4px' }}><path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={C.muted} /><path d="M15.5 8.5a5 5 0 010 7" fill="none" stroke={C.muted} strokeWidth="2" strokeLinecap="round" /></svg>{VOICE_NOTE}</p>;
   return <p data-voice-note="" className="edu-no-print" style={{ margin: '22px auto 0', maxWidth: 460, fontSize: 13, lineHeight: 1.5, color: C.muted, textAlign: 'center' }}>{VOICE_NOTE}</p>;
+}
+// ---------- The say-along strip (pass MS, Mikey's note on his answer to Q67) ----------
+// In plain terms: under a young vocabulary line that ends in a say-along game, the new word sits big on a line of its own, and as the
+// voice says it in each silly way the syllable being said lights, in the read-along's light green (Mikey: "it would be nice to see
+// just the letters that are being pronounced be highlighted during this part so they can follow along easier"); above it, small and
+// muted, the call of the voice being played ("Whisper it."), and under it, for a way said more than once, a ring for each saying, the
+// one being said filled. The device voice tells when a piece starts and ends, never where it is inside a word, so the light moves by
+// logic's guess of the voice's pace (sayAlongTimeline) from the voice's own start of each saying (a piece each since round one's
+// screen check), corrected as the visit goes by how long the voice really took, and a piece's end puts the light out for the child's
+// turn; once the recordings arrive, their own timings will move it (EARMARKS L12). A word of one syllable lights whole. With no voice
+// on the device the strip shows the cue and every call in order, one to a line, for a grown-up to lead. The lesson tells the strip
+// what the voice is doing through sayAlongBus, so a syllable lighting redraws the strip alone.
+const sayAlongBus = { listeners: new Set(), emit(ev) { for (const f of [...this.listeners]) f(ev); } };
+// How much slower (above 1) or quicker than logic's guess the device voice says a say-along word, kept for the visit, so each line's
+// light starts from what the voice did on the lines before; logic's sayAlongPaceNext moves it after each form.
+let sayAlongPace = 1;
+// Whether the device voice has reported the start of a say-along saying on this visit (round three's code read): once it has, a queued
+// saying waits for its own start, and the 700 ms guess is never armed again.
+let sayAlongStartsHeard = false;
+function SayAlongStrip({ parts, lit }) {
+  const open = parts.find((x) => x.role === 'open');
+  const [sweep, setSweep] = useState(null);   // { syllable, rep } while a form is being said
+  const timers = useRef([]); const started = useRef(null);
+  // The lesson works the line's parts out afresh on every redraw, and it redraws as the voice moves on, so the listener reads the
+  // latest parts from a ref and is set up again only for a new line (its sentences): set up again on every redraw, its cleanup
+  // cleared the light's timers just after they were set, and the light stayed on a word's first syllable (pass MS, seen in the page).
+  const partsNow = useRef(parts); partsNow.current = parts;
+  const lineKey = parts.map((x) => x.sentence).join('\n');
+  useEffect(() => {
+    const clear = () => { timers.current.forEach(clearTimeout); timers.current = []; };
+    const on = (ev) => {
+      if (ev.type === 'stop') { clear(); started.current = null; setSweep(null); return; }
+      const part = partsNow.current[ev.i]; const sa = ev.piece && ev.piece.sayAlong;
+      if (ev.type === 'start') {
+        clear(); started.current = null;
+        if (!part || part.role !== 'form' || (ev.piece && !sa)) { setSweep(null); return; }
+        // Every piece is one saying (round one's screen check, pass MS: four times low and three times fast are a piece a saying).
+        const v = part.voice; const rep = sa ? sa.rep : 0; const est = sayAlongEstimateMs(part.syllables, v, rep, false);
+        // heard: the light runs from the voice's own start, so the time the saying took can teach the pace; a run the 700 ms fallback
+        // starts is a guess and teaches nothing (round three's code read: it had set begun and taught the pace from a guessed start).
+        const run = (heard) => { clear(); started.current = { at: Date.now(), est, i: ev.i, rep, heard, syllables: part.syllables }; const k = sayAlongPace;
+          for (const x of sayAlongTimeline(part.syllables, v, rep)) { const go = () => setSweep({ syllable: x.syllable, rep: x.rep }); if (x.at === 0) go(); else timers.current.push(setTimeout(go, x.at * k)); } };
+        if (ev.begun === true) sayAlongStartsHeard = true;
+        if (ev.begun !== false) { run(true); return; }
+        // Queued, and the voice not yet begun (round one's screen check: the light ran from here, and with a network voice's 400 ms it
+        // went through all of "dif-fer-ent" before the word was heard): the saying's first syllable and its dot wait lit, and the light
+        // moves on from the voice's own start; a voice that never reports a start is followed from 700 ms on, but only until a voice has
+        // reported a start this visit, since one that does waits for its own (round three's code read: a voice slow to begin had seen
+        // the guessed light run ahead and start again).
+        started.current = { at: null, est, i: ev.i, rep, heard: false, syllables: part.syllables };
+        setSweep({ syllable: 0, rep }); if (!sayAlongStartsHeard) timers.current.push(setTimeout(() => run(false), 700));
+        return;
+      }
+      if (ev.type === 'end' && sa && started.current && started.current.i === ev.i && started.current.rep === sa.rep) {
+        // logic's rule (pass MS, round one's code check), which a saying of one syllable leaves alone (round three's screen read)
+        if (started.current.heard) { const took = Date.now() - started.current.at;
+          sayAlongPace = sayAlongPaceNext(sayAlongPace, took, started.current.est, started.current.syllables); }
+        clear(); started.current = null; setSweep(null);
+      }
+    };
+    sayAlongBus.listeners.add(on);
+    return () => { sayAlongBus.listeners.delete(on); clear(); };
+  }, [lineKey]);
+  if (!open) return null;
+  const now = lit >= 0 ? parts[lit] : null;
+  const call = now && (now.role === 'call' || now.role === 'form') ? parts.find((x) => x.role === 'call' && x.form === now.form) : null;
+  const voiced = canSpeak();
+  const calls = parts.filter((x) => x.role === 'call');
+  const times = call ? call.voice.times : 1;
+  // The label above the word keeps the height of its tallest text (round one's screen check, pass MS: at 320 pixels the cue took two
+  // lines and every call one, so Back, the dots and Next jumped 19 pixels as the first call showed and dropped again at the line's end):
+  // the cue and every call of the line sit in one grid cell, the one shown visible and the rest hidden, from the screen reader too.
+  const shownLabel = voiced && call ? call.sentence : open.sentence;
+  const labels = voiced ? [open.sentence, ...calls.map((x) => x.sentence)] : [open.sentence];
+  return (
+    <div data-say-along={open.word} data-say-along-call={call ? call.voice.style : ''} data-say-along-lit={sweep ? String(sweep.syllable) : ''} data-say-along-rep={sweep ? String(sweep.rep) : ''} style={{ margin: '16px auto 0', maxWidth: 460 }}>
+      <div data-say-along-label={shownLabel} style={{ display: 'grid', margin: '0 0 6px', fontSize: 14, lineHeight: 1.4, color: C.muted }}>
+        {/* Each sits at the cell's foot, right over the word, so where the cue takes two lines (at 320 pixels) a one-line call does not
+            float a line above the word (round three's screen read, pass MS). */}
+        {labels.map((t, k) => <p key={k} aria-hidden={t === shownLabel ? undefined : 'true'} style={{ gridArea: '1 / 1', alignSelf: 'end', margin: 0, visibility: t === shownLabel ? 'visible' : 'hidden' }}>{t}</p>)}
+      </div>
+      {/* The big word, its syllables hidden from a screen reader one by one, is named whole as a picture of the word (round one's code
+          check, pass MS: a paragraph may not carry a name of its own, so the word went unread). */}
+      <p role="img" aria-label={open.word} style={{ margin: 0, fontSize: 32, lineHeight: 1.3, fontWeight: 800, letterSpacing: '0.02em', color: C.ink }}>
+        {open.syllables.map((s, k) => <span key={k} aria-hidden="true" data-say-along-syllable={k} style={sweep && sweep.syllable === k ? { ...readLit(), ...LIT_WORDS, margin: 0, padding: '0 1px' } : { background: 'transparent', transition: 'background 120ms', padding: '0 1px' }}>{s === ' ' ? ' ' : s}</span>)}
+      </p>
+      {/* The dots' row keeps its height for a way said once too, so the card never grows and shrinks under the child's finger while
+          the game plays (pass MS, seen in the page: the Next button moved down and up with each way). */}
+      {/* A saying's mark is a ring, the one being said filled green (round one's screen check, pass MS: plain dots in C.line read 1.31
+          to 1 on the card, under the 3 to 1 a mark needs, and looked just like the lesson's own dots below them). */}
+      {voiced && (
+        <div data-say-along-dots={times > 1 ? times : 0} aria-hidden="true" style={{ display: 'flex', justifyContent: 'center', gap: 7, marginTop: 8, height: 10 }}>
+          {times > 1 && Array.from({ length: times }, (_, r) => <span key={r} data-say-along-dot={sweep && sweep.rep === r ? 'now' : ''} style={{ boxSizing: 'border-box', width: 10, height: 10, borderRadius: 999, border: `2px solid ${sweep && sweep.rep === r ? C.green : C.muted}`, background: sweep && sweep.rep === r ? C.green : 'transparent' }} />)}
+        </div>
+      )}
+      {/* With no voice the calls are steps for a grown-up to lead, one to a line (round one's screen check: joined by dots they broke
+          mid-call, "Cheer it like a big / game!"). */}
+      {!voiced && <p data-say-along-calls="" style={{ margin: '8px 0 0', fontSize: 14, lineHeight: 1.5, color: C.muted }}>{calls.map((x, k) => <span key={k} data-say-along-step="" style={{ display: 'block' }}>{x.sentence}</span>)}</p>}
+    </div>
+  );
 }
 // A story's clip keys, its title and then each paragraph (S7-0, S7-1 ...), as the audio ledger names them.
 function storyClipKeys(story) { return story ? [`${story.art}-0`, ...(story.words || []).map((_, i) => `${story.art}-${i + 1}`)] : []; }
@@ -2343,6 +2485,14 @@ function Logo({ width = 250, animate = false, tagline = false }) {
 const PRINT_STYLES = () => `
 .edu-print-only { display: none; }
 @media print {
+  /* The page's stars are the screen's alone: a printed report or map carried them on every sheet (round one's screen check, pass MS);
+     a story book and a single story keep their sky (below; round three's screen and code reads found a single story's printout had
+     lost it with the first wording of this rule). */
+  body:not(.edu-book-mode):not(.edu-story-mode) .edu-page-stars { display: none !important; }
+  /* The backing the screen gives loose words over its stars is the screen's too, so a printed page drops it (pass MS, round one's look
+     at the printed map: in the dark theme Back to Classroom printed as dark words on a dark bar); a story book and a single story keep
+     it over their sky. */
+  body:not(.edu-book-mode):not(.edu-story-mode) .edu-wrap :is(p, h1, h2, h3, li, label), body:not(.edu-book-mode):not(.edu-story-mode) .edu-wrap :is(button, a)[style*="background: none"] { background: transparent !important; }
   /* On the certificate screen only the sheet prints, on a sideways page. */
   body.edu-cert-mode * { visibility: hidden; }
   body.edu-cert-mode .edu-cert-sheet, body.edu-cert-mode .edu-cert-sheet * { visibility: visible; }
@@ -2604,7 +2754,11 @@ g[role="button"] { -webkit-tap-highlight-color: transparent; }
   /* With motion off, the soft wash behind Let's Color's and Let's Play's tiles shows all its jewel tones at once, as the bright
      wash does (pass MH), rather than freezing on its first, olive end. The light theme keeps its look. */
   @media (prefers-reduced-motion: reduce) { html[data-theme="dark"] .edu-colorwash-soft { background-size: 100% 100%; background-position: 50% 50%; } }
-  @media print { html[data-theme="dark"] body { background: #FFFFFF !important; } html[data-theme="dark"] body * { color: #24291F !important; background-color: transparent !important; } }
+  /* The dark theme prints as ink on white paper. Since round three's screen read (pass MS) a gradient goes too, which a background
+     color rule leaves: with background graphics on, the report's Key Words card printed Practiced, Mastered and "Confidence, scored 1
+     to 5" in ink on dark green, and the reading list's grade bars ink on dark green at 1.42 to 1; a story book and a single story keep
+     their look. */
+  @media print { html[data-theme="dark"] body { background: #FFFFFF !important; } html[data-theme="dark"] body * { color: #24291F !important; background-color: transparent !important; } html[data-theme="dark"] body:not(.edu-book-mode):not(.edu-story-mode) * { background-image: none !important; } }
   /* A picture ready to color: the drawing stays black and white, the square behind it drifts through
      the crayons, paler than the fold so the outline still reads. */
   .edu-colorwash-soft { background: linear-gradient(120deg, #FDF0C9, #FBE0C6, #F8D2C6, #E6D9F0, #CFE0EF, #D4EBCF, #FDF0C9); background-size: 400% 400%; animation: edu-colorwash 11s ease-in-out infinite; }
@@ -2636,6 +2790,11 @@ g[role="button"] { -webkit-tap-highlight-color: transparent; }
   .edu-rotate { display: none; }
   .edu-rotate.edu-rotate-on { display: flex; position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 9999; background: ${C.bg}; color: ${C.green}; align-items: center; justify-content: center; text-align: center; padding: 24px; font-family: ${FONT}; }
   .edu-rotate p { font-size: 20px; font-weight: 600; margin: 14px 0 0; color: ${C.ink}; }
+  .edu-rotate .edu-rotate-keep { display: inline-block; margin-top: 18px; min-height: 44px; padding: 10px 16px; background: none; border: none; color: ${C.green}; font-family: ${FONT}; font-size: 16px; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+  /* The link takes the focus as the ask appears, so a page opened sideways shows it focused before any tap: a rounded ring in the
+     link's own green, where Chrome's default drew a square black box (white in the dark theme) that made the quiet link look like a
+     boxed button (round three's screen read, pass MS). */
+  .edu-rotate .edu-rotate-keep:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; border-radius: 10px; }
   .edu-rotate .edu-rotate-phone { transform-box: view-box; transform-origin: 34px 36px; animation: edu-rotate-turn 2.8s ease-in-out infinite; }
   @keyframes edu-rotate-turn { 0%, 18% { transform: rotate(-90deg); } 48%, 88% { transform: rotate(0deg); } 100% { transform: rotate(-90deg); } }
   @media (prefers-reduced-motion: reduce) { .edu-rotate .edu-rotate-phone { animation: none; } }
@@ -4902,17 +5061,23 @@ function SortGame({ game, round, demo = false }) {
     setDrag(null);
   };
   const inBin = (bin) => items.filter((it) => placed[it.id] === bin);
-  const demoIt = demo ? items.find((it) => placed[it.id] === undefined) : null;   // a demonstration sorts the first shape not yet sorted (pass MP)
+  // A demonstration (pass MP) drags, since pass MS, the shape its words name (Mikey: "when it said to drag the red shape, the demo
+  // showed dragging the blue shape"): each box's first shape not yet sorted is marked with what it is (data-demo-what: red or blue, big
+  // or small), and its box with the same, so the welcome's line, which names red and then blue (picks), drags a red shape into the red
+  // box and then a blue one into the blue box.
+  const sortWhat = (bin) => (byColour ? (bin === 0 ? 'red' : 'blue') : bin === 0 ? 'big' : 'small');
+  const demoNext = demo ? [0, 1].map((bin) => items.find((it) => placed[it.id] === undefined && it.bin === bin) || null) : [null, null];
+  const demoMarked = (it) => !!demoNext[it.bin] && demoNext[it.bin].id === it.id;
   const spot = (it) => { const p = placed[it.id]; if (p !== undefined) return [(p === 0 ? 12 : 60) + inBin(p).indexOf(it) * (byColour ? 14.5 : 12), 84]; if (drag && drag.id === it.id) return [drag.x, drag.y]; return [it.x, it.y]; };
   return (
     <div ref={boxRef} className="edu-game-box" style={{ ...GAME_BOX }} onPointerMove={move} onPointerUp={drop} onPointerCancel={drop}>
       {[0, 1].map((bin) => (
-        <div key={bin} data-sort-bin={byColour ? (bin === 0 ? 'red' : 'blue') : bin} data-demo-drop={demoIt && demoIt.bin === bin ? '' : undefined} style={{ position: 'absolute', left: bin === 0 ? '4%' : '52%', top: '66%', width: '44%', height: '30%', border: `3px dashed ${binColour(bin)}`, background: binWash(bin), borderRadius: 14, boxSizing: 'border-box' }}>
+        <div key={bin} data-sort-bin={byColour ? (bin === 0 ? 'red' : 'blue') : bin} data-demo-drop={demoNext[bin] ? '' : undefined} data-demo-what={demo ? sortWhat(bin) : undefined} style={{ position: 'absolute', left: bin === 0 ? '4%' : '52%', top: '66%', width: '44%', height: '30%', border: `3px dashed ${binColour(bin)}`, background: binWash(bin), borderRadius: 14, boxSizing: 'border-box' }}>
           <span style={{ position: 'absolute', left: 6, top: 4, opacity: byColour ? 1 : 0.55, lineHeight: 0 }}>{game.by === 'size' ? <ShapePic name="circle" size={bin === 0 ? 30 : 16} color={B.muted} /> : <Swatch colour={bin === 0 ? 'red' : 'blue'} size={22} />}</span>
         </div>
       ))}
       {items.map((it) => { const [x, y] = spot(it); const stuck = placed[it.id] !== undefined; return (
-        <div key={it.id} data-demo-drag={demoIt && demoIt.id === it.id ? '' : undefined} onPointerDown={(e) => start(it, e)} style={{ position: 'absolute', left: `${x}%`, top: `${y}%`, transform: 'translate(-50%, -50%)', cursor: stuck ? 'default' : 'grab', touchAction: 'none', lineHeight: 0, transition: drag && drag.id === it.id ? 'none' : 'left 0.2s ease, top 0.2s ease' }}>
+        <div key={it.id} data-demo-drag={demoMarked(it) ? '' : undefined} data-demo-what={demoMarked(it) ? sortWhat(it.bin) : undefined} onPointerDown={(e) => start(it, e)} style={{ position: 'absolute', left: `${x}%`, top: `${y}%`, transform: 'translate(-50%, -50%)', cursor: stuck ? 'default' : 'grab', touchAction: 'none', lineHeight: 0, transition: drag && drag.id === it.id ? 'none' : 'left 0.2s ease, top 0.2s ease' }}>
           {/* A wrong drop wobbles, and wears a clay ring that shows even when motion is off (the second read). */}
           <span className={shake === it.id ? 'edu-wobble edu-own-edge' : undefined} style={{ display: 'inline-block', lineHeight: 0, borderRadius: 999, boxShadow: shake === it.id ? '0 0 0 3px ' + B.clay : 'none' }}><ShapePic name={it.shape} size={it.big ? 58 : byColour ? colourSize : 34} color={it.colour} /></span>
         </div>); })}
@@ -4955,7 +5120,8 @@ function MazeGame({ game, round, demo = false }) {
     <div ref={boxRef} className="edu-game-box" style={{ ...GAME_BOX }} onPointerDown={(e) => { grabPointer(boxRef.current, e); move(e); }} onPointerMove={move}>
       <svg viewBox="0 0 100 100" width="100%" height="100%" style={{ display: 'block' }}>
         {/* A small gold star marks the way out (2026-09-23, Mikey): the instructions always said star, and now there is one. */}
-        <g transform={`translate(${(n - 1) * s + s / 2} ${(n - 1) * s + s / 2}) scale(${(s / 24) * 0.78})`}><path d="M0-9.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L0 5.4l-5.9 3.1 1.2-6.5L-9.5-2.6l6.6-.9z" fill={B.gold} stroke="#2E2E2E" strokeWidth="1.4" strokeLinejoin="round" /></g>
+        {/* In a welcome the star is marked (data-demo-star), so the browser test can see that it shows while the words name it. */}
+        <g data-demo-star={demo ? '' : undefined} transform={`translate(${(n - 1) * s + s / 2} ${(n - 1) * s + s / 2}) scale(${(s / 24) * 0.78})`}><path d="M0-9.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L0 5.4l-5.9 3.1 1.2-6.5L-9.5-2.6l6.6-.9z" fill={B.gold} stroke="#2E2E2E" strokeWidth="1.4" strokeLinejoin="round" /></g>
         {cells.map((row, r) => row.map((cell, c) => (
           <g key={`${r}-${c}`} stroke="#2E2E2E" strokeWidth={n > 9 ? 1 : 1.4} strokeLinecap="round">
             {cell.t && <line x1={c * s} y1={r * s} x2={(c + 1) * s} y2={r * s} />}
@@ -5132,8 +5298,11 @@ function OrderGame({ game, round, onScore = null, demo = false }) {
     else if (firstWrong < 0) { setPlaced(next); if (k + 1 >= sets) setDone(true); else setTimeout(() => { setK(k + 1); setPlaced([]); }, 700); }
     else { setWrong(next.slice(firstWrong)); setPlaced(next.slice(0, firstWrong)); }
   };
+  // In a welcome the board marks the first set's steps alone, so the pointer numbers that whole set, first to last, as the words
+  // say, and never runs on into the next (pass MS, round three's final read); the board is marked data-demo-reached once that set
+  // is in order (every step numbered only when the order is right), for the browser test.
   return (
-    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-demo-reached={demo && (k > 0 || done || placed.length === seq.steps.length) ? '' : undefined}>
       <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 6 }}><span data-demo-look={demo ? '' : undefined}>{seq.title}</span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${sets} of ${sets}`}>{Math.min(k + 1, sets)} of {sets}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>All in order in {ticks} seconds. Tap the round arrow for a new set.</p> : (
         <div style={{ display: 'grid', gap: 8 }}>
@@ -5141,8 +5310,12 @@ function OrderGame({ game, round, onScore = null, demo = false }) {
               frog's life has no natural start, egg or adult, so the game shows where its chain begins and the student builds
               from there; the pulse comes back if a wrong answer sends every step loose again. */}
           {items.map((it) => { const at = placed.indexOf(it.idx); const isPlaced = at >= 0; const shake = wrong.includes(it.idx); const isStart = placed.length === 0 && it.idx === 0; return (
-            <button key={it.idx} type="button" data-demo-tap={demo && (!rest && !done && it.idx === placed.length) ? '' : undefined} onClick={() => tap(it)} aria-pressed={isPlaced} data-start-hint={isStart ? '' : undefined} className={`edu-press${shake ? ' edu-wobble edu-own-edge' : ''}${isStart ? ' edu-start-hint' : ''}`} style={{ fontFamily: FONT, fontSize: 15, textAlign: 'left', padding: '10px 12px', borderRadius: 10, border: `2px solid ${isPlaced ? B.green : shake ? B.clay : B.line}`, background: isPlaced ? B.greenSoft : '#fff', color: B.ink, cursor: 'pointer', display: 'flex', gap: 10, alignItems: 'center' }}>
-              <span style={{ width: 24, height: 24, borderRadius: 12, background: isPlaced ? B.green : B.line, color: B.onAccent, fontSize: 13, fontWeight: 700, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flex: '0 0 24px' }}>{isPlaced ? at + 1 : ''}</span>{it.t}{rest && seq.when && <span style={{ marginLeft: 'auto', paddingLeft: 8, fontSize: 13, color: B.muted, whiteSpace: 'nowrap' }}>{seq.when[it.idx]}</span>}
+            <button key={it.idx} type="button" data-demo-tap={demo && (k === 0 && !rest && !done && it.idx === placed.length) ? '' : undefined} onClick={() => tap(it)} aria-pressed={isPlaced} data-start-hint={isStart ? '' : undefined} className={`edu-press${shake ? ' edu-wobble edu-own-edge' : ''}${isStart ? ' edu-start-hint' : ''}`} style={{ fontFamily: FONT, fontSize: 15, textAlign: 'left', padding: '10px 12px', borderRadius: 10, border: `2px solid ${isPlaced ? B.green : shake ? B.clay : B.line}`, background: isPlaced ? B.greenSoft : '#fff', color: B.ink, cursor: 'pointer', display: 'flex', gap: 10, alignItems: 'center' }}>
+              <span style={{ width: 24, height: 24, borderRadius: 12, background: isPlaced ? B.green : B.line, color: B.onAccent, fontSize: 13, fontWeight: 700, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flex: '0 0 24px' }}>{isPlaced ? at + 1 : ''}</span>
+              {/* A timeline's date sits under its step, on a line held from the first board, so the set never grows when the dates show
+                  (round four's screen read, pass MS: beside the step, a date that does not wrap squeezed it to a word or two a line, and
+                  at 320 the solved set grew from 401 to 667 pixels for its 2.6 seconds, its last steps under the floating Skip). */}
+              <span style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}><span>{it.t}</span>{seq.when && <span style={{ fontSize: 13, color: B.muted, minHeight: 17, lineHeight: '17px' }}>{rest ? seq.when[it.idx] : ''}</span>}</span>
             </button>); })}
         </div>
       )}
@@ -5380,8 +5553,11 @@ function BuildGame({ game, round, onScore = null, demo = false }) {
     } else { setWrong(next.slice(firstWrong)); setPlaced(next.slice(0, firstWrong)); }
   };
   const tileStyle = (on, bad) => ({ fontFamily: FONT, fontSize: 17, padding: '8px 11px', borderRadius: 10, border: `2px solid ${on ? B.green : bad ? B.clay : B.line}`, background: on ? B.greenSoft : '#fff', color: B.ink, cursor: 'pointer' });
+  // In a welcome the board marks the first sentence's words alone, so the pointer builds that whole sentence, as the words say, and
+  // never runs on into Now say more (pass MS, round three's final read: three taps had left a word in the tray); the board is marked
+  // data-demo-reached once that sentence is built, for the browser test.
   return (
-    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-demo-reached={demo && (k > 0 || stage > 0 || good || done) ? '' : undefined}>
       <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span><HeadRoom start most="Build the sentence">{stage === 0 ? 'Build the sentence' : 'Now say more'}</HeadRoom></span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${sets} of ${sets}`}>{Math.min(k + 1, sets)} of {sets}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Every sentence built in {ticks} seconds. Tap the round arrow for new ones.</p> : (
         <div>
@@ -5390,7 +5566,7 @@ function BuildGame({ game, round, onScore = null, demo = false }) {
             {placed.map((i) => <button key={i} type="button" onClick={() => tap({ idx: i })} className="edu-press" style={tileStyle(true, false)}>{target[i]}</button>)}
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, justifyContent: 'center' }}>
-            {tiles.filter((it) => !placed.includes(it.idx)).map((it) => <button key={it.idx} type="button" data-demo-tap={demo && (!good && !done && it.idx === placed.length) ? '' : undefined} onClick={() => tap(it)} className={`edu-press${wrong.includes(it.idx) ? ' edu-wobble edu-own-edge' : ''}`} style={tileStyle(false, wrong.includes(it.idx))}>{it.t}</button>)}
+            {tiles.filter((it) => !placed.includes(it.idx)).map((it) => <button key={it.idx} type="button" data-demo-tap={demo && (k === 0 && stage === 0 && !good && !done && it.idx === placed.length) ? '' : undefined} onClick={() => tap(it)} className={`edu-press${wrong.includes(it.idx) ? ' edu-wobble edu-own-edge' : ''}`} style={tileStyle(false, wrong.includes(it.idx))}>{it.t}</button>)}
           </div>
         </div>
       )}
@@ -5607,8 +5783,8 @@ function makePath(deck, n, seed) {
   return onPath.map((row) => row.map((on) => ({ yes: on, text: on ? yes[yi++ % yes.length] : no[ni++ % no.length] })));
 }
 function PathGame({ game, round, onScore = null, demo = false }) {
-  const deck = ruleDeck(game.rule); const longest = Math.max(...deck.a.items.concat(deck.b.items).map((t) => (chipIsShape(t) ? 1 : t.length)));
-  const n = longest > 6 ? 4 : 5; const cells = useMemo(() => makePath(deck, n, round * 31 + n), [deck, n, round]);
+  const deck = ruleDeck(game.rule);
+  const n = pathSize(deck); const cells = useMemo(() => makePath(deck, n, round * 31 + n), [deck, n, round]);   // the side, by logic's one rule
   const [trail, setTrail] = useState([[0, 0]]); const [bad, setBad] = useState(null); const [ticks, setTicks] = useState(0); const boxRef = useRef(null);
   // The cell the finger was over a moment ago in this press, so a corner is cut only by a finger that came from the dot or a
   // corner cell beside it (pass MK, the second read: a tap on a circle two steps away moved the dot two cells).
@@ -5637,21 +5813,22 @@ function PathGame({ game, round, onScore = null, demo = false }) {
     if (cells[r][c].yes) setTrail([...trail, [r, c]]); else setBad([r, c]);
   };
   const stepped = (r, c) => trail.some(([tr, tc]) => tr === r && tc === c);
-  // A demonstration walks the way to the star over the cells that fit (pass MP), found from where the dot is.
+  // A demonstration walks the way to the star over the cells that fit (pass MP), found from where the dot is; a drag follows every
+  // cell of it, to the star, as the welcome's words say (pass MS, round three's final read: it had stopped after six of eight).
   const demoWay = useMemo(() => { if (!demo || done) return []; const key = (r, c) => r * n + c; const prev = { [key(pr, pc)]: null }; const queue = [[pr, pc]];
     while (queue.length) { const [r, c] = queue.shift(); if (r === n - 1 && c === n - 1) break; for (const [dr, dc] of [[0, 1], [1, 0], [0, -1], [-1, 0]]) { const nr = r + dr; const nc = c + dc; if (nr < 0 || nc < 0 || nr >= n || nc >= n || !cells[nr][nc].yes || key(nr, nc) in prev) continue; prev[key(nr, nc)] = [r, c]; queue.push([nr, nc]); } }
     if (!(key(n - 1, n - 1) in prev)) return []; const way = []; for (let at = [n - 1, n - 1]; at; at = prev[key(at[0], at[1])]) way.unshift(at); return way.slice(1); }, [demo, done, pr, pc, cells]);
   return (
-    <div ref={boxRef} className="edu-game-box" style={{ ...GAME_BOX }} onPointerDown={(e) => { lastCell.current = null; grabPointer(boxRef.current, e); move(e); }} onPointerMove={move}>
+    <div ref={boxRef} className="edu-game-box" style={{ ...GAME_BOX }} data-demo-reached={demo && done ? '' : undefined} onPointerDown={(e) => { lastCell.current = null; grabPointer(boxRef.current, e); move(e); }} onPointerMove={move}>
       <svg viewBox="0 0 100 100" width="100%" height="100%" style={{ display: 'block' }}>
         {cells.map((row, r) => row.map((cell, c) => (
           <g key={`${r}-${c}`}>
             <rect data-demo-tap={demoWay.length && demoWay[0][0] === r && demoWay[0][1] === c ? '' : undefined} x={left + c * s + 0.6} y={top + r * s + 0.6} width={s - 1.2} height={s - 1.2} rx="2" fill={isBad(r, c) ? '#F3C9BC' : stepped(r, c) ? B.greenSoft : '#F6F8F4'} stroke={isBad(r, c) ? B.clay : B.line} strokeWidth={isBad(r, c) ? 1.6 : 0.5} />
-            {r === n - 1 && c === n - 1 ? <g transform={`translate(${mid(c)} ${midY(r)}) scale(${(s / 24) * 0.7})`}><path d="M0-9.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L0 5.4l-5.9 3.1 1.2-6.5L-9.5-2.6l6.6-.9z" fill={B.gold} stroke="#2E2E2E" strokeWidth="1.4" strokeLinejoin="round" /></g> : <g className={isBad(r, c) ? 'edu-wobble-chip' : undefined} style={{ transformBox: 'fill-box', transformOrigin: 'center' }}><SvgChip text={cell.text} x={mid(c)} y={midY(r)} tone={stepped(r, c) ? B.greenSoft : null} /></g>}
+            {r === n - 1 && c === n - 1 ? <g data-demo-star={demo ? '' : undefined} transform={`translate(${mid(c)} ${midY(r)}) scale(${(s / 24) * 0.7})`}><path d="M0-9.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L0 5.4l-5.9 3.1 1.2-6.5L-9.5-2.6l6.6-.9z" fill={B.gold} stroke="#2E2E2E" strokeWidth="1.4" strokeLinejoin="round" /></g> : <g className={isBad(r, c) ? 'edu-wobble-chip' : undefined} style={{ transformBox: 'fill-box', transformOrigin: 'center' }}><SvgChip text={cell.text} x={mid(c)} y={midY(r)} tone={stepped(r, c) ? B.greenSoft : null} /></g>}
           </g>
         )))}
         <polyline points={trail.map(([r, c]) => `${mid(c)},${midY(r)}`).join(' ')} fill="none" stroke={B.green} strokeWidth={s * 0.14} strokeOpacity="0.5" strokeLinecap="round" strokeLinejoin="round" />
-        <circle cx={mid(pc)} cy={midY(pr)} r={s * 0.17} fill={B.gold} stroke="#2E2E2E" strokeWidth="0.9" data-demo-drag={demoWay.length ? '' : undefined} data-demo-path={demoWay.length ? demoWay.slice(0, 6).map(([r, c]) => `${mid(c).toFixed(1)},${midY(r).toFixed(1)}`).join(' ') : undefined} />
+        <circle cx={mid(pc)} cy={midY(pr)} r={s * 0.17} fill={B.gold} stroke="#2E2E2E" strokeWidth="0.9" data-demo-drag={demoWay.length ? '' : undefined} data-demo-path={demoWay.length ? demoWay.map(([r, c]) => `${mid(c).toFixed(1)},${midY(r).toFixed(1)}`).join(' ') : undefined} />
         {!game.young && <text x="98" y="3.6" fontSize="3" fontFamily={FONT} fill={B.muted} textAnchor="end" dominantBaseline="central">{ticks}s</text>}
         <text x="2" y="3.6" fontSize="3" fontFamily={FONT} fill={B.muted} dominantBaseline="central">{deck.a.label}</text>
       </svg>
@@ -5674,12 +5851,18 @@ function BucketsGame({ game, round, onScore = null, demo = false }) {
   const move = (e) => { if (!drag) return; const [x, y] = boxPoint(boxRef.current, e); setDrag({ ...drag, x, y }); };
   const drop = () => { if (!drag) return; const ch = chips.find((c) => c.id === drag.id); const bin = drag.y > 62 ? (drag.x < 50 ? 0 : 1) : -1; if (bin === ch.bin) setPlaced({ ...placed, [ch.id]: bin }); else if (bin >= 0) setWrong(ch.id); setDrag(null); };
   const inBin = (bin) => chips.filter((ch) => placed[ch.id] === bin);
-  const demoChip = demo ? chips.find((ch) => placed[ch.id] === undefined) : null;   // a demonstration sorts the first chip not yet sorted (pass MP)
+  // A demonstration (pass MP) drags, since pass MS, a chip of the group its words name first and then one of the second (picks a and b,
+  // the left bucket's group and the right's), each chip and its bucket marked with which (data-demo-what), as Sort does; the two marked
+  // are bucketDemoOrder's first two in logic, so the welcome's round is chosen by the chips it really drags; since round one's code
+  // check the board marks them from bucketDemoOrder itself, over the chips not yet sorted, so one rule decides both.
+  const demoOrder = demo ? bucketDemoOrder(chips.filter((ch) => placed[ch.id] === undefined)) : [];
+  const demoNext = [0, 1].map((bin) => demoOrder.find((ch) => ch.bin === bin) || null);
+  const demoMarked = (ch) => !!demoNext[ch.bin] && demoNext[ch.bin].id === ch.id;
   const spot = (ch) => { const p = placed[ch.id]; if (p !== undefined) { const k = inBin(p).indexOf(ch); return [(p === 0 ? 15 : 63) + (k % 2) * 20, 79 + Math.floor(k / 2) * 11]; } if (drag && drag.id === ch.id) return [drag.x, drag.y]; return [ch.x, ch.y]; };
   return (
     <div ref={boxRef} className="edu-game-box" style={{ ...GAME_BOX }} onPointerMove={move} onPointerUp={drop} onPointerCancel={drop}>
       {[0, 1].map((bin) => (
-        <div key={bin} data-demo-drop={demoChip && demoChip.bin === bin ? '' : undefined} style={{ position: 'absolute', left: bin === 0 ? '3%' : '52%', top: '66%', width: '45%', height: '31%', border: `3px dashed ${B.muted}`, borderRadius: 14, boxSizing: 'border-box' }}>
+        <div key={bin} data-demo-drop={demoNext[bin] ? '' : undefined} data-demo-what={demo ? (bin === 0 ? 'a' : 'b') : undefined} style={{ position: 'absolute', left: bin === 0 ? '3%' : '52%', top: '66%', width: '45%', height: '31%', border: `3px dashed ${B.muted}`, borderRadius: 14, boxSizing: 'border-box' }}>
           <span style={{ position: 'absolute', left: 0, right: 0, top: -22, textAlign: 'center', fontSize: 13, fontWeight: 700, color: B.muted }}>{bin === 0 ? deck.a.label : deck.b.label}</span>
         </div>
       ))}
@@ -5689,7 +5872,7 @@ function BucketsGame({ game, round, onScore = null, demo = false }) {
         // eight's read, pass MO; older than the pass). The wobble sits on an inner box, so a chip dropped in the wrong bucket slides
         // back to its spot and shakes there, for the same reason a lesson pair's 85 percent sits on a wrapper inside each half.
         const [x, y] = spot(ch); const stuck = placed[ch.id] !== undefined; return (
-        <div key={ch.id} data-demo-drag={demoChip && demoChip.id === ch.id ? '' : undefined} onPointerDown={(e) => start(ch, e)} style={{ position: 'absolute', left: `${x}%`, top: `${y}%`, transform: 'translate(-50%, -50%)', cursor: stuck ? 'default' : 'grab', touchAction: 'none', userSelect: 'none', transition: drag && drag.id === ch.id ? 'none' : 'left 0.2s ease, top 0.2s ease', zIndex: drag && drag.id === ch.id ? 2 : 1 }}>
+        <div key={ch.id} data-demo-drag={demoMarked(ch) ? '' : undefined} data-demo-what={demoMarked(ch) ? (ch.bin === 0 ? 'a' : 'b') : undefined} onPointerDown={(e) => start(ch, e)} style={{ position: 'absolute', left: `${x}%`, top: `${y}%`, transform: 'translate(-50%, -50%)', cursor: stuck ? 'default' : 'grab', touchAction: 'none', userSelect: 'none', transition: drag && drag.id === ch.id ? 'none' : 'left 0.2s ease, top 0.2s ease', zIndex: drag && drag.id === ch.id ? 2 : 1 }}>
           <div className={wrong === ch.id ? 'edu-wobble edu-own-edge' : undefined} style={{ padding: '5px 9px', borderRadius: 10, border: `2px solid ${stuck ? B.green : wrong === ch.id ? B.clay : B.ink}`, background: stuck ? B.greenSoft : '#FFFFFF', fontFamily: FONT, fontSize: 13, fontWeight: 700, whiteSpace: 'nowrap' }}>
             {chipIsShape(ch.t) ? <ShapePic name={ch.t.split(':')[1]} size={26} color={SWATCH[ch.t.split(':')[2]] || B.green} /> : ch.t}
           </div>
@@ -5822,9 +6005,10 @@ function BalanceGame({ game, round, onScore = null, demo = false }) {
   const start = (k, e) => { if (done || level) return; grabPointer(boxRef.current, e); const [x, y] = boxPoint(boxRef.current, e); setDrag({ k, x, y, from: onPan.includes(k) ? 'pan' : 'tray' }); };
   const move = (e) => { if (!drag) return; const [x, y] = boxPoint(boxRef.current, e); setDrag({ ...drag, x, y }); };
   const drop = () => { if (!drag) return; const overPan = drag.x > 52 && drag.y < 72; if (overPan && drag.from === 'tray') setOnPan([...onPan, drag.k]); if (!overPan && drag.from === 'pan') setOnPan(onPan.filter((k) => k !== drag.k)); setDrag(null); };
-  // A demonstration drags on a weight from a set that makes the number (pass MP), found among the weights still in the tray.
-  const demoWeight = (() => { if (!demo || !t || level) return -1; const free = deck.weights.map((w, k) => k).filter((k) => !onPan.includes(k)); const need = t.value - right; if (need <= 1e-9) return -1;
-    for (let m = 1; m < 1 << free.length; m++) { let sum = 0; const take = []; for (let b = 0; b < free.length; b++) if (m & (1 << b)) { sum += deck.weights[free[b]].value; take.push(free[b]); } if (Math.abs(sum - need) < 1e-9) return take[0]; } return -1; })();
+  // A demonstration drags on a weight from a set that makes the number (pass MP), found among the weights still in the tray; since
+  // pass MS the fewest that make it (balanceFewest in logic), one at a time, and the welcome drags as many as its first amount takes,
+  // so the scale ends level as the words say (one weight had been dragged and the scale left tipped).
+  const demoWeight = (() => { if (!demo || !t || level) return -1; const need = t.value - right; if (need <= 1e-9) return -1; const set = balanceFewest(deck.weights, need, onPan); return set ? set[0] : -1; })();
   const chip = (k, x, y, key, faded) => <div key={key} data-demo-drag={k === demoWeight && !onPan.includes(k) ? '' : undefined} onPointerDown={(e) => start(k, e)} style={{ position: 'absolute', left: `${x}%`, top: `${y}%`, transform: 'translate(-50%, -50%)', width: 36, height: 30, borderRadius: 8, border: `2px solid ${B.ink}`, background: faded ? '#EEF1EC' : B.goldSoft, color: faded ? B.muted : B.ink, fontFamily: FONT, fontSize: 15, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'grab', touchAction: 'none', userSelect: 'none', transition: drag && drag.k === k ? 'none' : 'left 0.2s ease, top 0.2s ease', zIndex: drag && drag.k === k ? 3 : 2 }}>{deck.weights[k].label}</div>;
   if (done) return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 16, textAlign: 'center' }}>
@@ -6274,18 +6458,26 @@ function SearchGame({ game, round, onScore = null, demo = false }) {
 function SpotGame({ game, round, onScore = null, demo = false }) {
   const scenes = SPOT_SCENES;
   const [k, setK] = useState(0); const [a, setA] = useState(0); const [found, setFound] = useState([]); const [nudge, setNudge] = useState(null); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false);
+  // The praise while a right piece holds (Q75 (b), pass MS): said to its end, then a beat, never less than 2.2 seconds from the tap,
+  // and only then the next ask (afterSaid), where the next ask had come the moment the piece was tapped; taps wait meanwhile.
+  const [cheer, setCheer] = useState(null);
   const sc = scenes[dealIndex('spot', round, k, scenes.length)];   // dealt by logic's one rule (pass MP)
   const ask = sc.asks[Math.min(a, sc.asks.length - 1)];
   const pictureDone = a >= sc.asks.length;
-  useEffect(() => { setK(0); setA(0); setFound([]); setTicks(0); setDone(false); }, [round]);
-  useEffect(() => { setA(0); setFound([]); }, [sc]);
+  useEffect(() => { setK(0); setA(0); setFound([]); setTicks(0); setDone(false); setCheer(null); }, [round]);
+  useEffect(() => { setA(0); setFound([]); setCheer(null); }, [sc]);
   useEffect(() => { if (!done && !pictureDone && typeof speak === 'function') speak(ask.say); }, [ask, pictureDone, done]);
-  useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
+  useEffect(() => { if (!cheer) return undefined; return afterSaid(cheer, () => { setCheer(null); setA((n) => n + 1); }); }, [cheer]);
+  // The clock stops while a right answer holds (pass MS, round one's code check): the praise and its beat are the app's time, not
+  // the child's, so a best time from before the holds can still be beaten. The interval reads the hold from a ref, never the
+  // render that started it.
+  const holding = useRef(false); holding.current = !!cheer;
+  useEffect(() => { if (done) return undefined; const t = setInterval(() => { if (!holding.current) setTicks((n) => n + 1); }, 1000); return () => clearInterval(t); }, [done]);
   useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
   useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
   const tint = { red: '#D9534F', yellow: '#F2C94C', blue: '#4B6B8B', green: '#5BA84A', orange: '#F4A259', purple: '#7D5BA6' };
-  const word = { circle: 'circle', square: 'square', triangle: 'triangle', zigzag: 'zigzag line', curve: 'curved line', straight: 'straight line' };
-  const tap = (i) => { if (done || pictureDone) return; if (spotMatches(sc.parts[i], ask)) { setFound([...found, i]); setA(a + 1); } else setNudge(i); };
+  const word = SPOT_PIECE_WORDS;
+  const tap = (i) => { if (done || pictureDone || cheer) return; if (spotMatches(sc.parts[i], ask)) { setFound([...found, i]); setCheer(spotPraise(sc.parts[i])); } else setNudge(i); };
   const next = () => { if (k + 1 >= 4) setDone(true); else setK(k + 1); };
   const piece = ([kind, color, x, y, size]) => { const h = size / 2; const fill = tint[color]; const stroke = B.ink;
     if (kind === 'circle') return <circle cx={x} cy={y} r={h} fill={fill} stroke={stroke} strokeWidth="0.8" />;
@@ -6295,13 +6487,13 @@ function SpotGame({ game, round, onScore = null, demo = false }) {
     if (kind === 'curve') return <path d={`M ${x - h} ${y + h / 2} Q ${x} ${y - h * 1.4} ${x + h} ${y + h / 2}`} fill="none" stroke={fill} strokeWidth="3.5" strokeLinecap="round" />;
     return <line x1={x - h} y1={y} x2={x + h} y2={y} stroke={fill} strokeWidth="3.5" strokeLinecap="round" />; };
   return (
-    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }}>
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-right-hold={cheer ? '' : undefined}>
       <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Spot it</span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · picture <HeadRoom most="4 of 4">{Math.min(k + 1, 4)} of 4</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Four pictures spotted in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <svg viewBox="0 0 100 100" width="100%" style={{ maxWidth: 300, display: 'block', margin: '0 auto', background: '#F6F8F4', borderRadius: 12 }} role="img" aria-label="A picture of lines and shapes">
             {sc.parts.map((part, i) => { const hit = found.includes(i); return (
-              <g key={i} role="button" tabIndex={0} data-demo-tap={demo && (!pictureDone && !done && i === sc.parts.findIndex((pt, j) => !found.includes(j) && spotMatches(pt, ask))) ? '' : undefined} aria-label={`${part[1]} ${word[part[0]]}`} className={nudge === i ? 'edu-wobble' : undefined} onClick={() => tap(i)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tap(i); } }} style={{ cursor: hit ? 'default' : 'pointer' }}>
+              <g key={i} role="button" tabIndex={0} data-demo-tap={demo && (!pictureDone && !done && !cheer && i === sc.parts.findIndex((pt, j) => !found.includes(j) && spotMatches(pt, ask))) ? '' : undefined} aria-label={`${part[1]} ${word[part[0]]}`} className={nudge === i ? 'edu-wobble' : undefined} onClick={() => tap(i)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tap(i); } }} style={{ cursor: hit ? 'default' : 'pointer' }}>
                 {hit && <circle cx={part[2]} cy={part[3]} r={part[4] * 0.9} fill="none" stroke={B.green} strokeWidth="1.6" strokeDasharray="2.5 1.5" />}
                 {/* A wrong piece wobbles and wears a red-brown dashed ring for that moment (with motion on too since pass MQ, Q66; with less
                     motion asked for, the ring alone). */}
@@ -6309,8 +6501,11 @@ function SpotGame({ game, round, onScore = null, demo = false }) {
                 {piece(part)}
               </g>); })}
           </svg>
-          <SpokenRow margin="10px 0 8px" speaker={!pictureDone && <ReplaySpeaker text={ask.say} label="Hear it again" />}><p data-spot-ask={pictureDone ? '' : ask.say} data-demo-look="" style={{ margin: 0, fontSize: 18, fontWeight: 700, color: B.ink, minHeight: 26, textAlign: 'center' }}>{pictureDone ? 'All three found.' : ask.say}</p></SpokenRow>
-          {pictureDone ? <Btn pal={B} onClick={next}>{k + 1 >= 4 ? 'Finish' : 'Next picture'}</Btn> : <p style={{ margin: 0, fontSize: 13, color: B.muted }}>{sc.asks.length - a} to find</p>}
+          <SpokenRow margin="10px 0 8px" speaker={!pictureDone && !cheer && <ReplaySpeaker text={ask.say} label="Hear it again" />}><p data-spot-ask={pictureDone ? '' : ask.say} data-demo-look="" style={{ margin: 0, fontSize: 18, fontWeight: 700, color: cheer ? B.green : B.ink, minHeight: 26, textAlign: 'center' }}>{pictureDone ? 'All three found.' : cheer || ask.say}</p></SpokenRow>
+          {/* The count counts a piece found at its tap, while its praise holds (round three's screen read, pass MS: since the hold it
+              had stayed a piece behind for 2.2 to 5.9 seconds, "3 to find" under "Yes, the purple triangle."), and reads All found
+              while the last one's praise holds, before Next picture shows. */}
+          {pictureDone ? <Btn pal={B} onClick={next}>{k + 1 >= 4 ? 'Finish' : 'Next picture'}</Btn> : <p data-spot-left={sc.asks.length - a - (cheer ? 1 : 0)} style={{ margin: 0, fontSize: 13, color: B.muted }}>{sc.asks.length - a - (cheer ? 1 : 0) > 0 ? `${sc.asks.length - a - (cheer ? 1 : 0)} to find` : 'All found'}</p>}
         </div>
       )}
       <Done show={done} />
@@ -6335,6 +6530,7 @@ function FindLetterGame({ round, demo = false }) {
   const boards = useMemo(() => letterSpotRound(round + opening), [round, opening]);
   const [k, setK] = useState(0); const [a, setA] = useState(0); const [found, setFound] = useState([]); const [miss, setMiss] = useState(null);
   const [misses, setMisses] = useState(0); const [hold, setHold] = useState(false); const [done, setDone] = useState(false);
+  const [praise, setPraise] = useState(null);   // with no voice, the right letter's words in the heading while the board holds
   // The wait as it stands this moment, which a tap reads (round four's code read, pass MM): Play again on a first board still open
   // draws the new letters before the effect that resets the round, and a tap then, read against the render's wait, took a letter
   // whose ask was never said. Every change of the wait goes through holdTo; hold itself only draws.
@@ -6342,10 +6538,12 @@ function FindLetterGame({ round, demo = false }) {
   // live moves on with every new round and every board, so a line's end or a timer from before does nothing.
   const timers = useRef([]); const live = useRef(0);
   const later = (fn, ms) => { const mine = live.current; timers.current.push(setTimeout(() => { if (mine === live.current) fn(); }, ms)); };
-  const clear = () => { timers.current.forEach(clearTimeout); timers.current = []; };
+  // A right letter's hold (Q75 (b), pass MS) is afterSaid's, kept here so a new round, a new board or closing the game cancels it.
+  const afters = useRef([]);
+  const clear = () => { timers.current.forEach(clearTimeout); timers.current = []; afters.current.forEach((c) => c()); afters.current = []; };
   // A backstop for a voice that never reports its end (a working voice ends each wait itself, as each line starts or ends):
-  // voiceBackstopMs, with the speech code, a real voice's pace that grows with the young voice (pass MQ).
-  const backstop = voiceBackstopMs;
+  // voiceBackstopMs, with the speech code, a real voice's pace that grows with the young voice (pass MQ), since pass MS read by
+  // afterSaid, the young games' shared hold after a right answer.
   const holdId = useRef(0);   // each wait is numbered, so a timer lifts only its own
   const boardRef = useRef(null); const refocus = useRef(false);   // a keyboard player keeps the board's focus at a new board
   useEffect(() => { if (!refocus.current || !boardRef.current) return; refocus.current = false; const g = boardRef.current.querySelector('g[role="button"]'); if (g) g.focus(); }, [k]);
@@ -6356,7 +6554,7 @@ function FindLetterGame({ round, demo = false }) {
   // A round's first ask holds the taps 120 ms, as a new board's does (move, below) and the backstop's (round four's code read,
   // pass MM): speak() sends a line 80 ms after it stops a voice still reporting it speaks, so a tap at once took a letter whose ask
   // was never said, and the right letter's line then dropped the ask for good. With no voice on the device nothing waits.
-  useEffect(() => { live.current += 1; clear(); setK(0); setA(0); setFound([]); setMiss(null); setMisses(0); setDone(false);
+  useEffect(() => { live.current += 1; clear(); setK(0); setA(0); setFound([]); setMiss(null); setMisses(0); setDone(false); setPraise(null);
     const voice = canSpeak(); const myHold = ++holdId.current; holdTo(voice); speak(letterSpotLine('ask', boards[0].asks[0]));
     if (voice) later(() => { if (myHold === holdId.current) holdTo(false); }, 120);
     return () => { live.current += 1; clear(); }; }, [boards]);
@@ -6372,27 +6570,33 @@ function FindLetterGame({ round, demo = false }) {
     const right = letterSpotLine('right', letter); const voice = canSpeak(); const mine = live.current;
     if (a + 1 < board.asks.length) {
       const next = letterSpotLine('ask', board.asks[a + 1]);
-      if (!voice) return;
-      holdTo(true); const myHold = ++holdId.current; let asking = false;
+      holdTo(true); const myHold = ++holdId.current;
       const release = () => { if (myHold === holdId.current && mine === live.current) holdTo(false); };
-      speakSequence([right, next], (idx) => { if (idx >= 1) { asking = true; release(); } }, release);
-      // The backstop lifts this wait, and says the next ask if the voice never reached it, the ask first and the wait lifted 120 ms
+      // With no voice the board holds as well (round one's screen check, pass MS: it showed the next ask at the tap, where the other
+      // four games and its own last letter hold 2.2 seconds): the right letter's first sentence in the heading for a grown-up to
+      // read, then the next ask.
+      if (!voice) { setPraise(sentencesOf(right)[0]); afters.current.push(afterSaid('', () => { if (myHold !== holdId.current || mine !== live.current) return; setPraise(null); release(); })); return; }
+      // Since pass MS (Q75 (b)) the right letter's line is said to its end, then a beat, never less than 2.2 seconds from the tap
+      // (afterSaid, with its backstop for a voice that never reports its end), and only then the next ask, the wait lifted 120 ms
       // later (round three's screen check: speak() sends a line 80 ms after it cancels a voice still reporting it speaks, so a tap
-      // in that gap took a letter whose ask was never said).
-      later(() => { if (myHold !== holdId.current) return; if (!asking) { speak(next); later(release, 120); } else release(); }, backstop(right));
+      // in that gap took a letter whose ask was never said). Until pass MS the ask came about half a second after the line.
+      afters.current.push(afterSaid(right, () => { if (myHold !== holdId.current || mine !== live.current) return; speak(next); later(release, 120); }));
       return;
     }
     // The board's last letter: its line, a breath, then the next board, or the star after the fourth, with "You found them all!"
     // said for a child who cannot read the end line; a keyboard player's focus moves to the new board (refocus, above).
-    holdTo(true); holdId.current += 1; let moved = false;
+    // With no voice its praise shows in the heading in green while it holds, as the board's first two letters' does (round four's
+    // screen read: the third letter had shown "All three found." in ink, so a child with no voice never saw it praised).
+    holdTo(true); holdId.current += 1; let moved = false; if (!voice) setPraise(sentencesOf(right)[0]);
     const move = () => { if (moved || mine !== live.current) return; moved = true; live.current += 1; clear();
       refocus.current = !!(boardRef.current && boardRef.current.contains(document.activeElement));
-      if (k + 1 >= boards.length) { holdTo(false); setDone(true); speak('You found them all!'); return; }
+      if (k + 1 >= boards.length) { holdTo(false); setPraise(null); setDone(true); speak('You found them all!'); return; }
       // The new board's first ask holds the taps 120 ms too, as the round's first does (above); with no voice nothing waits.
-      setK(k + 1); setA(0); setFound([]); setMisses(0); speak(letterSpotLine('ask', boards[k + 1].asks[0]));
+      setK(k + 1); setA(0); setFound([]); setMisses(0); setPraise(null); speak(letterSpotLine('ask', boards[k + 1].asks[0]));
       if (voice) { const myHold = ++holdId.current; later(() => { if (myHold === holdId.current) holdTo(false); }, 120); } else holdTo(false); };
-    if (voice) speakSequence([right], () => {}, () => later(move, 700));
-    later(move, (voice ? backstop(right) : 0) + 700);
+    // Since pass MS (Q75 (b)) the board's last letter holds the same way, its line, a beat and at least 2.2 seconds (until then a
+    // breath of 700 ms after the line); with no voice the hold alone.
+    afters.current.push(afterSaid(voice ? right : '', move));
   };
   // Hear it again cuts a right letter's line short, so it lets go of the hold: the child asked to hear the ask, and may act on it
   // once it is on its way (round five's code read, pass MM): while a line is still said, speak() sends the ask 80 ms after it stops
@@ -6403,13 +6607,17 @@ function FindLetterGame({ round, demo = false }) {
   return (
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 12 }}>
       {/* The heading names no letter while the voice can (round two's checks): a printed capital above the cards is a shape to
-          match, and the game asks for a name. With no voice it names the letter, for a grown-up to read. Centred, with its speaker
-          to its right (SpokenRow, pass MQ). */}
-      <SpokenRow margin="0 0 6px" minHeight={44} speaker={asked !== null && canSpeak() && (
+          match, and the game asks for a name. With no voice it names the letter, for a grown-up to read, and after a right letter says
+          so while the board holds (pass MS). Centred, with its speaker to its right (SpokenRow, pass MQ). */}
+      {/* With no voice the row is as tall as its tallest heading, an ask or a right letter's praise, so the cards never move (round
+          one's screen check, pass MS); the two end lines, between boards and at the end, are left out of its sizing, since nothing is
+          tapped while they show, and the longest of them had held 114 pixels at 320 where the praise needs 57 (round three's code and
+          screen reads). The praise is green, as Spot It's and Which Sense's are. */}
+      <SpokenRow margin="0 0 6px" minHeight={44} texts={canSpeak() ? null : boards.flatMap((b) => b.asks.flatMap((x) => [`Find the letter ${x}.`, sentencesOf(letterSpotLine('right', x))[0]]))} sizeAs={(s) => <p style={{ margin: 0, fontSize: 19, fontWeight: 700, textAlign: 'center' }}>{s}</p>} speaker={asked !== null && canSpeak() && (
           <button type="button" data-demo-replay="" onClick={again} aria-label="Hear it again" title="Hear it again" className="edu-press" style={{ flex: '0 0 auto', width: 44, height: 44, borderRadius: 999, border: 'none', background: 'none', color: B.green, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill="currentColor" /><path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" /></svg>
           </button>)}>
-        <p data-spot-ask={asked || ''} style={{ margin: 0, fontSize: 19, fontWeight: 700, color: B.ink, textAlign: 'center' }}>{done ? 'Twelve letters found. Tap the round arrow for more.' : asked === null ? 'All three found.' : canSpeak() ? 'Find the letter you hear.' : `Find the letter ${asked}.`}</p>
+        <p data-spot-ask={praise ? '' : asked || ''} style={{ margin: 0, fontSize: 19, fontWeight: 700, color: praise ? B.green : B.ink, textAlign: 'center' }}>{done ? 'Twelve letters found. Tap the round arrow for more.' : praise || (asked === null ? 'All three found.' : canSpeak() ? 'Find the letter you hear.' : `Find the letter ${asked}.`)}</p>
       </SpokenRow>
       {/* On a sideways phone the board is held to the height left under its heading and above its dots (round two's game check),
           214 pixels since round three's screen check (pass MM): the heading can wrap to two lines there, and with 200 the row of
@@ -6476,22 +6684,24 @@ function PatternGame({ game, round, onScore = null, demo = false }) {
 // counts up. The lesson's idea is the rule of the game: dynamics markings are instructions, and a line of loudness can be
 // read. Drawn with B on the paper board.
 function ShapeGame({ game, round, onScore = null, demo = false }) {
-  const [k, setK] = useState(0); const [levels, setLevels] = useState([3, 3, 3, 3, 3, 3]); const [said, setSaid] = useState(''); const [got, setGot] = useState(false); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false);
+  const [k, setK] = useState(0); const [levels, setLevels] = useState(DYNAMICS_START); const [said, setSaid] = useState(''); const [got, setGot] = useState(false); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false);
   const plan = dynamicsPlan(round, k);
-  useEffect(() => { setK(0); setLevels([3, 3, 3, 3, 3, 3]); setSaid(''); setGot(false); setTicks(0); setDone(false); }, [round]);
+  useEffect(() => { setK(0); setLevels(DYNAMICS_START); setSaid(''); setGot(false); setTicks(0); setDone(false); }, [round]);
   useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
   useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
-  useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); setSaid(''); setLevels([3, 3, 3, 3, 3, 3]); if (k + 1 >= 4) setDone(true); else setK(k + 1); }, 800); return () => clearTimeout(t); }, [got]);
+  useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); setSaid(''); setLevels(DYNAMICS_START); if (k + 1 >= 4) setDone(true); else setK(k + 1); }, 800); return () => clearTimeout(t); }, [got]);
   const short = { piano: 'p', forte: 'f', crescendo: 'cresc.', decrescendo: 'decresc.' };
-  // A demonstration moves the bars toward the nearest line that follows the markings (pass MP), one arrow at a time, then checks.
-  const demoGoal = (() => { if (!demo || got || done) return null; let best = null; let bestCost = Infinity; const walk = (i, acc, cost) => { if (cost >= bestCost) return; if (i === plan.length) { if (dynamicsMatch(acc, plan)) { best = acc.slice(); bestCost = cost; } return; } for (let v = 1; v <= 6; v++) { acc.push(v); if (dynamicsMatch(acc, plan.slice(0, i + 1))) walk(i + 1, acc, cost + Math.abs(v - levels[i])); acc.pop(); } }; walk(0, [], 0); return best; })();
+  // A demonstration moves the bars toward the nearest line that follows the markings (pass MP), one arrow at a time, then checks;
+  // the nearest line is logic's (dynamicsNearest), which the welcome's round is chosen by too, so its nudges finish the first line
+  // (pass MS, round three's final read), and the board is marked data-demo-reached once the bars follow the markings.
+  const demoGoal = !demo || got || done ? null : dynamicsNearest(levels, plan).goal;
   const demoBar = demoGoal ? levels.findIndex((v, i) => v !== demoGoal[i]) : -1;
   const nudge = (i, d) => { if (got || done) return; setLevels(levels.map((v, j) => (j === i ? Math.max(1, Math.min(6, v + d)) : v))); setSaid(''); };
   const check = () => { if (got || done) return; if (dynamicsMatch(levels, plan)) { setSaid('Matches the score.'); setGot(true); return; }
     const bad = plan.findIndex((m, i) => !dynamicsMatch(levels.slice(0, i + 1), plan.slice(0, i + 1)));
     setSaid(`Not yet: bar ${bad + 1} does not follow ${plan[bad]}.`); };
   return (
-    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-dynamics-plan={done ? '' : plan.join(',')}>
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-dynamics-plan={done ? '' : plan.join(',')} data-demo-reached={demo && (k > 0 || done || got || dynamicsMatch(levels, plan)) ? '' : undefined}>
       <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Shape the sound</span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · line <HeadRoom most="4 of 4">{Math.min(k + 1, 4)} of 4</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Four lines shaped in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
@@ -6501,7 +6711,9 @@ function ShapeGame({ game, round, onScore = null, demo = false }) {
                 <button type="button" className="edu-press" data-demo-tap={demo && (i === demoBar && demoGoal[i] > levels[i]) ? '' : undefined} aria-label={`Bar ${i + 1} louder`} onClick={() => nudge(i, 1)} disabled={got} style={{ fontFamily: FONT, width: '100%', maxWidth: 34, height: 28, borderRadius: 8, border: `1.5px solid ${B.green}`, background: '#fff', color: B.green, fontWeight: 700, cursor: 'pointer', padding: 0 }}>▲</button>
                 <div style={{ width: '100%', height: 96, display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}><div style={{ width: '70%', height: `${(v / 6) * 100}%`, background: got ? B.green : plan[i] === 'forte' ? B.clay : plan[i] === 'piano' ? '#C7DFF8' : B.gold, borderRadius: '6px 6px 2px 2px', border: `1.5px solid ${B.ink}` }} /></div>
                 <button type="button" className="edu-press" data-demo-tap={demo && (i === demoBar && demoGoal[i] < levels[i]) ? '' : undefined} aria-label={`Bar ${i + 1} softer`} onClick={() => nudge(i, -1)} disabled={got} style={{ fontFamily: FONT, width: '100%', maxWidth: 34, height: 28, borderRadius: 8, border: `1.5px solid ${B.green}`, background: '#fff', color: B.green, fontWeight: 700, cursor: 'pointer', padding: 0 }}>▼</button>
-                <span style={{ fontSize: 13, fontStyle: 'italic', fontWeight: 700, color: B.ink }}>{short[plan[i]]}</span>
+                {/* Each marking is fitted to its own column, as a tile's word is (round four's screen read, pass MS: two "decresc." side
+                    by side overlapped by 14.4 pixels at 320, in two lines of every five dealt). */}
+                <FitText size={13} min={8} style={{ fontStyle: 'italic', fontWeight: 700, color: B.ink, textAlign: 'center' }}>{short[plan[i]]}</FitText>
               </div>
             ))}
           </div>
@@ -6581,11 +6793,11 @@ function ValidGame({ game, round, onScore = null, demo = false }) {
   useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 900); return () => clearTimeout(t); }, [got]);
   const pick = (v) => { if (got || done) return; if (v === q.valid) { setGot(true); setStreak((n) => n + 1); } else { setNudge(v ? 'valid' : 'invalid'); setStreak(0); } };
   return (
-    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-argument-valid={done ? '' : (q.valid ? 'yes' : 'no')} data-demo-key={demo && !got && !done ? (!q.valid ? 'ArrowLeft' : 'ArrowRight') : undefined}>
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-argument-valid={done ? '' : (q.valid ? 'yes' : 'no')} data-demo-key={demo && !got && !done ? (swipeSide('valid', q) === 'left' ? 'ArrowLeft' : 'ArrowRight') : undefined}>
       <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Does the form hold?<HeadRoom start most={`\u00a0· ${rounds.length} in a row`} show={streak > 1}>{`\u00a0· ${streak} in a row`}</HeadRoom></span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six arguments sorted in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
-          <SwipeCard left={[false, 'Not valid', B.clay]} right={[true, 'Valid', B.green]} onPick={pick} off={got || done} demo={demo && !got && !done ? (!q.valid ? 'left' : 'right') : null}><div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '12px 14px', marginBottom: 12, textAlign: 'left' }}>
+          <SwipeCard left={[false, 'Not valid', B.clay]} right={[true, 'Valid', B.green]} onPick={pick} off={got || done} demo={demo && !got && !done ? swipeSide('valid', q) : null}><div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '12px 14px', marginBottom: 12, textAlign: 'left' }}>
             {q.lines.map((line, i) => <p key={i} style={{ margin: i ? '6px 0 0' : 0, fontSize: 16, color: B.ink, fontWeight: i === 2 ? 700 : 400 }}>{line}</p>)}
           </div></SwipeCard>
           <p style={{ margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 }}>{got ? `${q.valid ? 'Valid' : 'Not valid'}: ${q.form}.` : 'If the premises were true, would the conclusion have to be?'}</p>
@@ -6614,11 +6826,11 @@ function ReasonGame({ game, round, onScore = null, demo = false }) {
   useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 900); return () => clearTimeout(t); }, [got]);
   const pick = (v) => { if (got || done) return; if (v === q.supports) { setGot(true); setStreak((n) => n + 1); } else { setNudge(v ? 'yes' : 'no'); setStreak(0); } };
   return (
-    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-reason-supports={done ? '' : (q.supports ? 'yes' : 'no')} data-demo-key={demo && !got && !done ? (!q.supports ? 'ArrowLeft' : 'ArrowRight') : undefined}>
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-reason-supports={done ? '' : (q.supports ? 'yes' : 'no')} data-demo-key={demo && !got && !done ? (swipeSide('reason', q) === 'left' ? 'ArrowLeft' : 'ArrowRight') : undefined}>
       <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Does the reason bear on the claim?<HeadRoom start most={`\u00a0· ${rounds.length} in a row`} show={streak > 1}>{`\u00a0· ${streak} in a row`}</HeadRoom></span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six reasons sorted in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
-          <SwipeCard left={[false, 'Does not', B.clay]} right={[true, 'Supports it', B.green]} onPick={pick} off={got || done} demo={demo && !got && !done ? (!q.supports ? 'left' : 'right') : null}><div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '12px 14px', marginBottom: 12, textAlign: 'left' }}>
+          <SwipeCard left={[false, 'Does not', B.clay]} right={[true, 'Supports it', B.green]} onPick={pick} off={got || done} demo={demo && !got && !done ? swipeSide('reason', q) : null}><div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '12px 14px', marginBottom: 12, textAlign: 'left' }}>
             <p style={{ margin: 0, fontSize: 13, color: B.muted, textTransform: 'uppercase', letterSpacing: 0.5 }}>Claim</p>
             <p style={{ margin: '2px 0 8px', fontSize: 17, color: B.ink, fontWeight: 700 }}>{q.claim}</p>
             <p style={{ margin: 0, fontSize: 13, color: B.muted, textTransform: 'uppercase', letterSpacing: 0.5 }}>Reason</p>
@@ -6675,6 +6887,8 @@ function BecauseGame({ game, round, onScore = null, demo = false }) {
 // and one fair rule, the same on every plate. Tap a plate to put a cookie on it; tap it again to take one back. When the
 // pile is empty and every plate holds the same, Check says so and the next round comes; a wrong share wobbles. Four
 // rounds and the clock counts up. The lesson's idea is the rule of the game: equal shares. Drawn with B on the paper board.
+// What a fair share is told, shown and said alike (pass MS).
+const SHARE_FAIR = 'Every plate has the same. That is fair.';   // a whole sentence since round one's lesson check (pass MS)
 function ShareGame({ game, round, onScore = null, demo = false }) {
   const rounds = useMemo(() => shareRounds(round), [round]);
   const [k, setK] = useState(0); const [plates, setPlates] = useState([]); const [got, setGot] = useState(false); const [nudge, setNudge] = useState(false); const [ticks, setTicks] = useState(0); const [done, setDone] = useState(false);
@@ -6682,16 +6896,22 @@ function ShareGame({ game, round, onScore = null, demo = false }) {
   useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); }, [round]);
   useEffect(() => { setPlates(Array.from({ length: q.plates }, () => 0)); setGot(false); }, [q]);
   useEffect(() => { if (typeof speak === 'function' && !done) speak(q.say); }, [q, done]);
-  useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
+  // The clock stops while a right answer holds (pass MS, round one's code check): the praise and its beat are the app's time, not
+  // the child's, so a best time from before the holds can still be beaten. The interval reads the hold from a ref, never the
+  // render that started it.
+  const holding = useRef(false); holding.current = !!got;
+  useEffect(() => { if (done) return undefined; const t = setInterval(() => { if (!holding.current) setTicks((n) => n + 1); }, 1000); return () => clearInterval(t); }, [done]);
   useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
   useEffect(() => { if (!nudge) return undefined; const t = setTimeout(() => setNudge(false), 500); return () => clearTimeout(t); }, [nudge]);
-  useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 900); return () => clearTimeout(t); }, [got]);
+  // A fair share holds (Q75 (b), pass MS): "Every plate has the same. That is fair." is said to its end, then a beat, and the next pile
+  // never comes sooner than 2.2 seconds after Check (afterSaid), where it had come 0.9 seconds after.
+  useEffect(() => { if (!got) return undefined; return afterSaid(SHARE_FAIR, () => { if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }); }, [got]);
   const used = plates.reduce((a, b) => a + b, 0); const left = q.cookies - used;
   const tap = (i) => { if (got || done) return; const next = [...plates]; if (left > 0) next[i] += 1; else if (next[i] > 0) next[i] -= 1; setPlates(next); if (typeof playTap === 'function') playTap(); };
   const check = () => { if (got || done) return; if (left === 0 && plates.every((v) => v === q.each)) setGot(true); else setNudge(true); };
   const cookie = (key) => <svg key={key} viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="#D9A441" stroke={B.ink} strokeWidth="1" /><circle cx="7" cy="8" r="1.4" fill="#6B3E1E" /><circle cx="12.5" cy="7" r="1.2" fill="#6B3E1E" /><circle cx="11" cy="12.5" r="1.4" fill="#6B3E1E" /><circle cx="6.5" cy="12.5" r="1" fill="#6B3E1E" /></svg>;
   return (
-    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-share-each={done ? '' : String(q.each)} data-share-plates={done ? '' : String(q.plates)}>
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-share-each={done ? '' : String(q.each)} data-share-plates={done ? '' : String(q.plates)} data-right-hold={got ? '' : undefined}>
       <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Share the cookies</span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Four fair shares in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
@@ -6700,7 +6920,7 @@ function ShareGame({ game, round, onScore = null, demo = false }) {
           <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 10 }}>
             {plates.map((v, i) => <button key={i} type="button" className={`edu-press${nudge ? ' edu-wobble' : ''}`} data-demo-tap={demo && (!got && left > 0 && i === plates.indexOf(Math.min(...plates))) ? '' : undefined} aria-label={`Plate ${i + 1}: ${v} cookies`} onClick={() => tap(i)} style={{ fontFamily: FONT, width: 96, minHeight: 72, borderRadius: 48, border: `3px solid ${got ? B.green : B.line}`, background: '#fff', cursor: got ? 'default' : 'pointer', padding: 6, display: 'flex', flexWrap: 'wrap', gap: 2, alignItems: 'center', justifyContent: 'center' }}>{v === 0 ? <span style={{ fontSize: 12, color: B.muted }}>Plate {i + 1}</span> : Array.from({ length: v }, (_, j) => cookie(j))}</button>)}
           </div>
-          <p style={{ margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 }}>{got ? 'Every plate the same. That is fair.' : left > 0 ? 'Tap a plate to put a cookie on it.' : 'Is every plate the same? Tap Check.'}</p>
+          <p style={{ margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 }}>{got ? SHARE_FAIR : left > 0 ? 'Tap a plate to put a cookie on it.' : 'Is every plate the same? Tap Check.'}</p>
           <Btn pal={B} mark={demo && !got && left === 0 ? 'next' : false} onClick={check}>Check</Btn>
         </div>
       )}
@@ -7066,12 +7286,18 @@ function SenseGame({ game, round, onScore = null, demo = false }) {
   const q = rounds[Math.min(k, rounds.length - 1)];
   useEffect(() => { setK(0); setGot(false); setTicks(0); setDone(false); setStreak(0); }, [round]);
   useEffect(() => { if (typeof speak === 'function' && !done && !got) speak(`Which sense tells you about ${q.thing}?`); }, [q, done]);
-  useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
+  // The clock stops while a right answer holds (pass MS, round one's code check): the praise and its beat are the app's time, not
+  // the child's, so a best time from before the holds can still be beaten. The interval reads the hold from a ref, never the
+  // render that started it.
+  const holding = useRef(false); holding.current = !!got;
+  useEffect(() => { if (done) return undefined; const t = setInterval(() => { if (!holding.current) setTicks((n) => n + 1); }, 1000); return () => clearInterval(t); }, [done]);
   useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]);
   useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
-  useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 900); return () => clearTimeout(t); }, [got]);
   const pick = (v) => { if (got || done) return; if (v === q.sense) { setGot(true); setStreak((n) => n + 1); } else { setNudge(v); setStreak(0); } };
   const word = { see: 'Eyes', hear: 'Ears', smell: 'Nose', taste: 'Tongue', touch: 'Hand' };
+  // A right sense holds (Q75 (b), pass MS): "Yes: your nose." is said to its end, then a beat, and the next question never comes
+  // sooner than 2.2 seconds after the tap (afterSaid), where it had come 0.9 seconds after the tap.
+  useEffect(() => { if (!got) return undefined; return afterSaid(`Yes: your ${word[q.sense].toLowerCase()}.`, () => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }); }, [got]);
   // The five senses drawn simply (pass MP, Mikey: "the hand, tongue and nose should be drawn better"): an eye, an ear, a nose seen from
   // the front with its round tip and two nostrils, a smiling mouth with its pink tongue out, and an open hand with four fingers and a
   // thumb, all in one skin tone with the board's dark edge.
@@ -7082,7 +7308,7 @@ function SenseGame({ game, round, onScore = null, demo = false }) {
     if (v === 'taste') return <g><path d="M5.5 13.5 Q20 21 34.5 13.5 Q32.5 26.5 20 27.5 Q7.5 26.5 5.5 13.5 Z" fill="#7A2E2A" stroke={k2} strokeWidth="1.5" strokeLinejoin="round" /><path d="M5.5 13.5 Q20 19.5 34.5 13.5" fill="none" stroke="#fff" strokeWidth="2.4" /><path d="M12.6 21.5 Q12.4 35.4 20 35.4 Q27.6 35.4 27.4 21.5 Q20 25.2 12.6 21.5 Z" fill="#EC8A9B" stroke={k2} strokeWidth="1.4" strokeLinejoin="round" /><path d="M20 24.4 V31.6" stroke="#C9566C" strokeWidth="1.3" strokeLinecap="round" /></g>;
     return <g><path d="M13 34.5 C11.4 31.5 11 28.8 11.2 25.8 L7 21.4 Q5.6 19.8 7.2 18.7 Q8.8 17.8 10.3 19.3 L13.1 22.2 L13.1 10.6 Q13.1 8.5 15.1 8.5 Q17.1 8.5 17.1 10.6 L17.1 19.2 L17.5 19.2 L17.5 8.6 Q17.5 6.4 19.6 6.4 Q21.7 6.4 21.7 8.6 L21.7 19.2 L22.1 19.2 L22.1 9.8 Q22.1 7.7 24.1 7.7 Q26.1 7.7 26.1 9.8 L26.1 20 L26.5 20 L26.5 13.4 Q26.5 11.5 28.3 11.5 Q30.1 11.5 30.1 13.4 L30.1 25.5 C30.1 31 27.4 34.5 22.6 34.5 Z" fill={skin} stroke={k2} strokeWidth="1.5" strokeLinejoin="round" /><path d="M17.3 19.4 V23.2 M21.9 19.4 V23.4 M26.3 20.2 V23.6" stroke={k2} strokeWidth="1.1" strokeLinecap="round" /></g>; };
   return (
-    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-sense-answer={done ? '' : q.sense} data-demo-key={demo && !done && !got ? String(SENSES.indexOf(q.sense) + 1) : undefined}>
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-sense-answer={done ? '' : q.sense} data-right-hold={got ? '' : undefined} data-demo-key={demo && !done && !got ? String(SENSES.indexOf(q.sense) + 1) : undefined}>
       <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Which sense?<HeadRoom start most={`\u00a0· ${rounds.length} in a row`} show={streak > 1}>{`\u00a0· ${streak} in a row`}</HeadRoom></span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Five senses found in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
@@ -7442,7 +7668,11 @@ function GrowGame({ game, round, onScore = null, demo = false }) {
   const look = GROW_PROBLEMS[q.need];
   useEffect(() => { setK(0); setFixed(false); setHint(''); setTicks(0); setDone(false); }, [round]); // a new round starts fresh
   useEffect(() => { if (typeof speak === 'function' && !done) speak(`${look.say.replace('This plant', `This ${q.plant} plant`)} Tap what it needs.`); }, [q, done]);
-  useEffect(() => { if (done) return undefined; const t = setInterval(() => setTicks((n) => n + 1), 1000); return () => clearInterval(t); }, [done]);
+  // The clock stops while a right answer holds (pass MS, round one's code check): the praise and its beat are the app's time, not
+  // the child's, so a best time from before the holds can still be beaten. The interval reads the hold from a ref, never the
+  // render that started it.
+  const holding = useRef(false); holding.current = !!fixed;
+  useEffect(() => { if (done) return undefined; const t = setInterval(() => { if (!holding.current) setTicks((n) => n + 1); }, 1000); return () => clearInterval(t); }, [done]);
   useEffect(() => { if (done && onScore) onScore(ticks, 'low'); }, [done]); // hand the time up; lower is better
   useEffect(() => { if (nudge === null) return undefined; const t = setTimeout(() => setNudge(null), 500); return () => clearTimeout(t); }, [nudge]);
   // A right answer: the grown plant shows while "The X is growing!" is said to its end, then a beat, and only then the next plant
@@ -7874,12 +8104,12 @@ function GreenRedGame({ game, round, onScore = null, demo = false }) {
   // the flag's own color only in its swatch, the red flag a true red (#D33A3A), never the wrong answer's red-brown.
   const flags = [['red', '← Red flag', '#D33A3A'], ['green', 'Green flag →', B.green]];
   return (
-    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-greenred-answer={done ? '' : q.answer} data-demo-key={demo && !got && !done ? (q.answer === 'red' ? 'ArrowLeft' : 'ArrowRight') : undefined}>
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-greenred-answer={done ? '' : q.answer} data-demo-key={demo && !got && !done ? (swipeSide('greenred', q) === 'left' ? 'ArrowLeft' : 'ArrowRight') : undefined}>
       <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Green flag or red flag<HeadRoom start most={`\u00a0· ${rounds.length} in a row`} show={streak > 1}>{`\u00a0· ${streak} in a row`}</HeadRoom></span><span><HeadRoom most="888s">{ticks}s</HeadRoom> · <HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Eight behaviors sorted in {ticks} seconds. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
           <p style={{ margin: '0 0 8px', fontSize: 14, color: B.muted }}>Someone who...</p>
-          <SwipeCard left={['red', 'Red flag', B.clay]} right={['green', 'Green flag', B.green]} onPick={pick} off={got || done} demo={demo && !got && !done ? (q.answer === 'red' ? 'left' : 'right') : null}><div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '16px 12px', marginBottom: 8, fontSize: 19, fontWeight: 700, color: B.ink }}>{q.behavior}</div></SwipeCard>
+          <SwipeCard left={['red', 'Red flag', B.clay]} right={['green', 'Green flag', B.green]} onPick={pick} off={got || done} demo={demo && !got && !done ? swipeSide('greenred', q) : null}><div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '16px 12px', marginBottom: 8, fontSize: 19, fontWeight: 700, color: B.ink }}>{q.behavior}</div></SwipeCard>
           <p style={{ margin: '0 0 10px', fontSize: 15, color: got ? B.green : B.ink, minHeight: 22, fontWeight: got ? 700 : 400 }}>{got ? `Yes: that is ${why}.` : 'Healthy, or a warning sign?'}</p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
             {flags.map(([flag, label, ink]) => <button key={flag} type="button" className={`edu-press${nudge === flag ? ' edu-wobble' : ''}`} data-demo-tap={demo && !got && flag === q.answer ? '' : undefined} aria-label={`Flag: ${flag}`} onClick={() => pick(flag)} style={{ fontFamily: FONT, fontSize: 16, fontWeight: 700, padding: '12px 6px', borderRadius: 12, border: `2px solid ${B.ink}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}><span aria-hidden="true" style={{ width: 14, height: 14, borderRadius: 3, background: ink, display: 'inline-block' }} />{label}</button>)}
@@ -7913,11 +8143,11 @@ function CiteGame({ game, round, onScore = null, demo = false }) {
   useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 1300); return () => clearTimeout(t); }, [got]);
   const pick = (ans) => { if (got || done) return; if (ans === q.answer) { setGot(true); setStreak((n) => n + 1); } else { setNudge(ans); setMisses((n) => n + 1); setStreak(0); } };
   return (
-    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-cite-answer={done ? '' : q.answer} data-demo-key={demo && !got && !done ? (q.answer === 'free' ? 'ArrowLeft' : 'ArrowRight') : undefined}>
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-cite-answer={done ? '' : q.answer} data-demo-key={demo && !got && !done ? (swipeSide('cite', q) === 'left' ? 'ArrowLeft' : 'ArrowRight') : undefined}>
       <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Cite it or not<HeadRoom start most={`\u00a0· ${rounds.length} in a row`} show={streak > 1}>{`\u00a0· ${streak} in a row`}</HeadRoom></span><span><HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six items sorted{misses ? `, with ${misses} to look at again` : ', every one right'}. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
-          <SwipeCard left={['free', 'No citation needed', B.clay]} right={['cite', 'Cite it', B.green]} onPick={pick} off={got || done} demo={demo && !got && !done ? (q.answer === 'free' ? 'left' : 'right') : null}><div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '16px 12px', marginBottom: 10, fontSize: 18, fontWeight: 700, color: B.ink, lineHeight: 1.4 }}>{q.text}</div></SwipeCard>
+          <SwipeCard left={['free', 'No citation needed', B.clay]} right={['cite', 'Cite it', B.green]} onPick={pick} off={got || done} demo={demo && !got && !done ? swipeSide('cite', q) : null}><div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '16px 12px', marginBottom: 10, fontSize: 18, fontWeight: 700, color: B.ink, lineHeight: 1.4 }}>{q.text}</div></SwipeCard>
           <p style={{ margin: '0 0 10px', fontSize: 15, minHeight: 22, color: got ? B.green : nudge ? B.clay : B.ink, fontWeight: got ? 700 : 400 }}>{got || nudge ? `${q.answer === 'free' ? 'No citation needed' : 'Cite it'}: ${q.why}` : 'Cite it or not?'}</p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
             {['free', 'cite'].map((ans) => <button key={ans} type="button" className={`edu-press${nudge === ans ? ' edu-wobble' : ''}`} data-demo-tap={demo && !got && ans === q.answer ? '' : undefined} aria-label={`Answer: ${ans}`} onClick={() => pick(ans)} style={{ fontFamily: FONT, fontSize: 17, fontWeight: 700, padding: '12px 4px', borderRadius: 12, border: `2px solid ${got && ans === q.answer ? B.green : B.line}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', textTransform: 'capitalize' }}>{ans === 'free' ? '← No citation' : 'Cite it →'}</button>)}
@@ -7951,11 +8181,11 @@ function GdpGame({ game, round, onScore = null, demo = false }) {
   useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 1300); return () => clearTimeout(t); }, [got]);
   const pick = (ans) => { if (got || done) return; if (ans === q.answer) { setGot(true); setStreak((n) => n + 1); } else { setNudge(ans); setMisses((n) => n + 1); setStreak(0); } };
   return (
-    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-gdp-answer={done ? '' : q.answer} data-demo-key={demo && !got && !done ? (q.answer === 'out' ? 'ArrowLeft' : 'ArrowRight') : undefined}>
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-gdp-answer={done ? '' : q.answer} data-demo-key={demo && !got && !done ? (swipeSide('gdp', q) === 'left' ? 'ArrowLeft' : 'ArrowRight') : undefined}>
       <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>In GDP or not<HeadRoom start most={`\u00a0· ${rounds.length} in a row`} show={streak > 1}>{`\u00a0· ${streak} in a row`}</HeadRoom></span><span><HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six cases sorted{misses ? `, with ${misses} to look at again` : ', every one right'}. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
-          <SwipeCard left={['out', 'Not in GDP', B.clay]} right={['in', 'In GDP', B.green]} onPick={pick} off={got || done} demo={demo && !got && !done ? (q.answer === 'out' ? 'left' : 'right') : null}><div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '16px 12px', marginBottom: 10, fontSize: 18, fontWeight: 700, color: B.ink, lineHeight: 1.4 }}>{q.text}</div></SwipeCard>
+          <SwipeCard left={['out', 'Not in GDP', B.clay]} right={['in', 'In GDP', B.green]} onPick={pick} off={got || done} demo={demo && !got && !done ? swipeSide('gdp', q) : null}><div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '16px 12px', marginBottom: 10, fontSize: 18, fontWeight: 700, color: B.ink, lineHeight: 1.4 }}>{q.text}</div></SwipeCard>
           <p style={{ margin: '0 0 10px', fontSize: 15, minHeight: 22, color: got ? B.green : nudge ? B.clay : B.ink, fontWeight: got ? 700 : 400 }}>{got || nudge ? `${q.answer === 'out' ? 'Not in GDP' : 'In GDP'}: ${q.why}` : 'In GDP or not?'}</p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
             {['out', 'in'].map((ans) => <button key={ans} type="button" className={`edu-press${nudge === ans ? ' edu-wobble' : ''}`} data-demo-tap={demo && !got && ans === q.answer ? '' : undefined} aria-label={`Answer: ${ans}`} onClick={() => pick(ans)} style={{ fontFamily: FONT, fontSize: 17, fontWeight: 700, padding: '12px 4px', borderRadius: 12, border: `2px solid ${got && ans === q.answer ? B.green : B.line}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', textTransform: 'capitalize' }}>{ans === 'out' ? '← Not in GDP' : 'In GDP →'}</button>)}
@@ -7988,11 +8218,11 @@ function CauseGame({ game, round, onScore = null, demo = false }) {
   useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 1300); return () => clearTimeout(t); }, [got]);
   const pick = (ans) => { if (got || done) return; if (ans === q.answer) { setGot(true); setStreak((n) => n + 1); } else { setNudge(ans); setMisses((n) => n + 1); setStreak(0); } };
   return (
-    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-cause-answer={done ? '' : q.answer} data-demo-key={demo && !got && !done ? (q.answer === 'correlation' ? 'ArrowLeft' : 'ArrowRight') : undefined}>
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-cause-answer={done ? '' : q.answer} data-demo-key={demo && !got && !done ? (swipeSide('cause', q) === 'left' ? 'ArrowLeft' : 'ArrowRight') : undefined}>
       <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Cause or correlation<HeadRoom start most={`\u00a0· ${rounds.length} in a row`} show={streak > 1}>{`\u00a0· ${streak} in a row`}</HeadRoom></span><span><HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six studies sorted{misses ? `, with ${misses} to look at again` : ', every one right'}. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
-          <SwipeCard left={['correlation', 'Correlation', B.clay]} right={['experiment', 'Experiment', B.green]} onPick={pick} off={got || done} demo={demo && !got && !done ? (q.answer === 'correlation' ? 'left' : 'right') : null}><div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '16px 12px', marginBottom: 10, fontSize: 18, fontWeight: 700, color: B.ink, lineHeight: 1.4 }}>{q.text}</div></SwipeCard>
+          <SwipeCard left={['correlation', 'Correlation', B.clay]} right={['experiment', 'Experiment', B.green]} onPick={pick} off={got || done} demo={demo && !got && !done ? swipeSide('cause', q) : null}><div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '16px 12px', marginBottom: 10, fontSize: 18, fontWeight: 700, color: B.ink, lineHeight: 1.4 }}>{q.text}</div></SwipeCard>
           <p style={{ margin: '0 0 10px', fontSize: 15, minHeight: 22, color: got ? B.green : nudge ? B.clay : B.ink, fontWeight: got ? 700 : 400 }}>{got || nudge ? `${q.answer === 'correlation' ? 'Correlation' : 'Experiment'}: ${q.why}` : 'Experiment or correlation?'}</p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
             {['correlation', 'experiment'].map((ans) => <button key={ans} type="button" className={`edu-press${nudge === ans ? ' edu-wobble' : ''}`} data-demo-tap={demo && !got && ans === q.answer ? '' : undefined} aria-label={`Answer: ${ans}`} onClick={() => pick(ans)} style={{ fontFamily: FONT, fontSize: 17, fontWeight: 700, padding: '12px 4px', borderRadius: 12, border: `2px solid ${got && ans === q.answer ? B.green : B.line}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', textTransform: 'capitalize' }}>{ans === 'correlation' ? '← Correlation' : 'Experiment →'}</button>)}
@@ -8024,11 +8254,11 @@ function MythFactGame({ game, round, onScore = null, demo = false }) {
   useEffect(() => { if (!got) return undefined; const t = setTimeout(() => { setGot(false); if (k + 1 >= rounds.length) setDone(true); else setK(k + 1); }, 1300); return () => clearTimeout(t); }, [got]);
   const pick = (ans) => { if (got || done) return; if (ans === q.answer) { setGot(true); setStreak((n) => n + 1); } else { setNudge(ans); setMisses((n) => n + 1); setStreak(0); } };
   return (
-    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-myth-answer={done ? '' : q.answer} data-demo-key={demo && !got && !done ? (q.answer === 'myth' ? 'ArrowLeft' : 'ArrowRight') : undefined}>
+    <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 14 }} data-myth-answer={done ? '' : q.answer} data-demo-key={demo && !got && !done ? (swipeSide('mythfact', q) === 'left' ? 'ArrowLeft' : 'ArrowRight') : undefined}>
       <div className="edu-game-head" style={{ fontSize: 14, color: B.muted, marginBottom: 8 }}><span>Myth or fact<HeadRoom start most={`\u00a0· ${rounds.length} in a row`} show={streak > 1}>{`\u00a0· ${streak} in a row`}</HeadRoom></span><span><HeadRoom most={`${rounds.length} of ${rounds.length}`}>{Math.min(k + 1, rounds.length)} of {rounds.length}</HeadRoom></span></div>
       {done ? <p style={{ margin: '8px 0', textAlign: 'center', fontSize: 18, fontWeight: 700 }}>Six statements sorted{misses ? `, with ${misses} to look at again` : ', every one right'}. Tap the round arrow for more.</p> : (
         <div style={{ textAlign: 'center' }}>
-          <SwipeCard left={['myth', 'Myth', B.clay]} right={['fact', 'Fact', B.green]} onPick={pick} off={got || done} demo={demo && !got && !done ? (q.answer === 'myth' ? 'left' : 'right') : null}><div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '16px 12px', marginBottom: 10, fontSize: 18, fontWeight: 700, color: B.ink, lineHeight: 1.4 }}>{q.text}</div></SwipeCard>
+          <SwipeCard left={['myth', 'Myth', B.clay]} right={['fact', 'Fact', B.green]} onPick={pick} off={got || done} demo={demo && !got && !done ? swipeSide('mythfact', q) : null}><div style={{ background: '#fff', border: `1.5px solid ${B.line}`, borderRadius: 12, padding: '16px 12px', marginBottom: 10, fontSize: 18, fontWeight: 700, color: B.ink, lineHeight: 1.4 }}>{q.text}</div></SwipeCard>
           <p style={{ margin: '0 0 10px', fontSize: 15, minHeight: 22, color: got ? B.green : nudge ? B.clay : B.ink, fontWeight: got ? 700 : 400 }}>{got || nudge ? `${q.answer === 'myth' ? 'Myth' : 'Fact'}: ${q.why}` : 'Is it a myth or a fact?'}</p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
             {['myth', 'fact'].map((ans) => <button key={ans} type="button" className={`edu-press${nudge === ans ? ' edu-wobble' : ''}`} data-demo-tap={demo && !got && ans === q.answer ? '' : undefined} aria-label={`Answer: ${ans}`} onClick={() => pick(ans)} style={{ fontFamily: FONT, fontSize: 17, fontWeight: 700, padding: '12px 4px', borderRadius: 12, border: `2px solid ${got && ans === q.answer ? B.green : B.line}`, background: '#fff', color: B.ink, cursor: got ? 'default' : 'pointer', textTransform: 'capitalize' }}>{ans === 'myth' ? '← Myth' : 'Fact →'}</button>)}
@@ -8179,6 +8409,8 @@ function BeginCover({ onBegin, moving = true, size = null }) {
 //   data-demo-tap      the element a tap answers with now (a choice, a dot, a coin, a step)
 //   data-demo-drag     the element a drag starts on now (a card, a chip, the frog, the dot), and data-demo-drop where it goes; a drag
 //                      can instead carry data-demo-path (points across the board, in percent) or data-demo-flick (left or right)
+//   data-demo-what     since pass MS, what a marked piece is and which place takes it (red, blue, big, small; a and b), where a board
+//                      marks one piece of each kind for a line that names them in turn (picks)
 //   data-demo-key      on the board: the key that answers now (a number, ArrowLeft, ArrowRight or a space)
 //   data-demo-look     what a look points at (the question, or the piece that is next)
 //   data-demo-follow   what a paddle or a basket follows (the ball, the chips that fit), with data-demo-axis="x" on the paddle
@@ -8214,7 +8446,8 @@ function DemoPointer({ hand, innerRef, ringRef }) {
 // A key drawn on the screen, pressed while the board answers to it, since no one can see a keyboard being used.
 const KEY_FACE = { ArrowLeft: '←', ArrowRight: '→', ArrowUp: '↑', ArrowDown: '↓', ' ': 'Space' };
 // The demonstration's hands: each act of an intro line, done on the board inside stage. alive() turns false the moment the welcome
-// ends, so nothing waits on a board that has gone. say(act, ok, why) records each act for the browser test (window.__eduIntro).
+// ends, so nothing waits on a board that has gone. note(act, ok, why, what) records each act for the browser test (window.__eduIntro),
+// since pass MS with what a drag moved.
 // What of the page shows, for the welcome (pass MP, round two's second read): the window, or, in a frame as tall as the page (the
 // claude.ai preview on a laptop), the part of the frame the page around it shows (visibleBand), where the window itself is never
 // short and never scrolls, so Skip had sat below what showed for a whole welcome and the pointer had left it.
@@ -8289,7 +8522,9 @@ function makeDemoHands(stage, pointer, ring, keycap, alive, note, hush) {
     if (under || x < 0 || y < v.top || x > vw || y > v.bottom) { try { const log = window.__eduIntro; if (log) (log.hidden = log.hidden || []).push([Math.round(x), Math.round(y), under ? 'under Skip' : 'off the window']); } catch (e) { /* only a test reads it */ } }
   };
   const glide = async (x, y, ms, onStep = null) => {
-    if (!at) { const b = box().getBoundingClientRect(); place(b.left + b.width * 0.82, b.top + b.height * 0.9); }
+    // It first appears low on the board's right, inside the part of the screen it may use (round four's screen read, pass MS: on a
+    // short screen it had glided in from under the floating Skip).
+    if (!at) { const b = box().getBoundingClientRect(); const u = usable(); place(b.left + b.width * 0.82, Math.max(u.top + 16, Math.min(b.top + b.height * 0.9, u.bottom - 16))); }
     if (prefersReducedMotion()) { place(x, y); if (onStep) onStep(x, y); await wait(ms); rested(x, y); return; }
     const [x0, y0] = at; const t0 = performance.now();
     while (alive()) { const t = Math.min(1, (performance.now() - t0) / ms); const k = ease(t); const px = x0 + (x - x0) * k; const py = y0 + (y - y0) * k; place(px, py); if (onStep) onStep(px, py); if (t >= 1) break; await frame(); }
@@ -8374,18 +8609,52 @@ function makeDemoHands(stage, pointer, ring, keycap, alive, note, hush) {
     await wait(250); return true;
   };
   // A drag: press the marked piece, move it slowly to where it goes (or along its path, or a flick to one side), and let go there.
-  const drag = async () => {
-    const el = await waitFor('[data-demo-drag]'); if (!el) return false;
-    const landing = el.hasAttribute('data-demo-path') || el.hasAttribute('data-demo-flick') ? null : find('[data-demo-drop]');
-    await bring(landing ? [el, landing] : [el], landing); if (!alive()) return false;
+  // Since pass MS a line may name what it drags (pick, from the line's picks: red, then blue): the piece marked with that what
+  // (data-demo-what) is dragged, and a piece with a what always goes to the place marked with the same, so the pointer drags what the
+  // voice names into its own box (Mikey: "when it said to drag the red shape, the demo showed dragging the blue shape"). dragged
+  // keeps what each drag moved (its what, or a flick's side) for the browser test.
+  let dragged = null;
+  const drag = async (pick = null) => {
+    dragged = null;
+    const el = await waitFor(pick ? `[data-demo-drag][data-demo-what="${pick}"]` : '[data-demo-drag]'); if (!el) return false;
+    const what = el.getAttribute('data-demo-what'); const dropAt = what ? `[data-demo-drop][data-demo-what="${what}"]` : '[data-demo-drop]';
+    const landing = el.hasAttribute('data-demo-path') || el.hasAttribute('data-demo-flick') ? null : find(dropAt);
+    // A path's drag brings the dot with its whole board, so the way and its star show as the drag starts, or the dot where the board
+    // cannot fit (round four's screen read: only the dot was brought, and the star lay under Skip); a drag to a place brings both.
+    await bring(el.hasAttribute('data-demo-path') ? [el, box()] : landing ? [el, landing] : [el], landing || el); if (!alive()) return false;
     const [sx, sy] = centre(el); await glide(sx, sy, 600); if (!alive()) return false; await wait(160);
-    const b = box().getBoundingClientRect(); let points;
-    if (el.hasAttribute('data-demo-path')) points = el.getAttribute('data-demo-path').trim().split(/\s+/).map((p) => p.split(',').map(Number)).map(([px, py]) => [b.left + (px / 100) * b.width, b.top + (py / 100) * b.height]);
+    // A path's points are kept as the board gives them (percent of the board) and placed on the screen as each comes, since a long
+    // way may need the page to move partway (pass MS, round three: an older path's drag now follows the whole way to the star, and in a
+    // short window the way's foot lay under the floating Skip). Where the next point lies outside the part the pointer may use, the
+    // pointer lets go, the page brings the rest of the way into view (or as much of it as fits, the next point at its foot), and the
+    // pointer presses the dot again where it now is and goes on, as a child lifts a finger and carries on; the board takes a press on
+    // the dot itself as no step. Where the page could not move (at its end, or at the foot of a page-tall frame), the pointer carries
+    // on held from then on (round four's code read: it had lifted and pressed again at every point left, about 0.7 seconds each).
+    const b = box().getBoundingClientRect(); let points; let pathPts = null; let held = false;
+    const onScreen = ([px, py]) => { const r = box().getBoundingClientRect(); return [r.left + (px / 100) * r.width, r.top + (py / 100) * r.height]; };
+    if (el.hasAttribute('data-demo-path')) { pathPts = el.getAttribute('data-demo-path').trim().split(/\s+/).map((p) => p.split(',').map(Number)); points = pathPts.map(([px, py]) => [b.left + (px / 100) * b.width, b.top + (py / 100) * b.height]); }
     else if (el.hasAttribute('data-demo-flick')) { const w = el.getBoundingClientRect().width; points = [[sx + (el.getAttribute('data-demo-flick') === 'left' ? -1 : 1) * w * 0.48, sy]]; }
-    else { const to = find('[data-demo-drop]'); if (!to) return false; points = [centre(to)]; }
+    else { const to = find(dropAt); if (!to) return false; points = [centre(to)]; }
     flash(); el.dispatchEvent(pointerEvent('pointerdown', sx, sy, 1)); el.classList.add('edu-demo-held');
-    for (const [px, py] of points) { await glide(px, py, Math.max(420, Math.min(1300, Math.hypot(px - at[0], py - at[1]) * 3.2)), (mx, my) => el.dispatchEvent(pointerEvent('pointermove', mx, my, 1))); if (!alive()) { el.classList.remove('edu-demo-held'); return false; } }
-    await wait(140); el.dispatchEvent(pointerEvent('pointerup', at[0], at[1], 0)); el.classList.remove('edu-demo-held'); return true;
+    for (let i = 0; i < points.length; i++) {
+      let [px, py] = pathPts ? onScreen(pathPts[i]) : points[i];
+      if (pathPts && !held) { const u = usable(); if (py < u.top + 8 || py > u.bottom - 8) {
+        el.dispatchEvent(pointerEvent('pointerup', at[0], at[1], 0)); el.classList.remove('edu-demo-held');
+        const ys = pathPts.slice(i).map((q) => onScreen(q)[1]).concat(centre(el)[1]); const top = Math.min(...ys); const bottom = Math.max(...ys); const room = u.bottom - u.top;
+        const dy = bottom - top <= room - 32 ? (top + bottom) / 2 - (u.top + u.bottom) / 2 : py > u.bottom - 8 ? py - (u.bottom - 24) : py - (u.top + 24);
+        // whether what shows moved: the board against the top of what shows (in a page-tall frame the page around it scrolls)
+        const shownAt = () => box().getBoundingClientRect().top - usable().top; const was = shownAt();
+        await scrollPage(el, dy); if (!alive()) return false;
+        if (Math.abs(shownAt() - was) < 1) held = true;
+        try { const log = window.__eduIntro; if (log) log.lifts = (log.lifts || 0) + 1; } catch (e) { /* the log is the browser test's alone */ }
+        const [dx2, dy2] = centre(el); await glide(dx2, dy2, 420); if (!alive()) return false; await wait(120);
+        flash(); el.dispatchEvent(pointerEvent('pointerdown', dx2, dy2, 1)); el.classList.add('edu-demo-held');
+        [px, py] = onScreen(pathPts[i]);
+      } }
+      await glide(px, py, Math.max(420, Math.min(1300, Math.hypot(px - at[0], py - at[1]) * 3.2)), (mx, my) => el.dispatchEvent(pointerEvent('pointermove', mx, my, 1))); if (!alive()) { el.classList.remove('edu-demo-held'); return false; }
+    }
+    await wait(140); el.dispatchEvent(pointerEvent('pointerup', at[0], at[1], 0)); el.classList.remove('edu-demo-held');
+    dragged = what || el.getAttribute('data-demo-flick') || ''; return true;
   };
   // A key: the key appears on the screen, goes down as the board takes it, and leaves. A board marks its key only while a question
   // waits, so the key looks again for a while, as waitFor does (round one's code check: a board still showing its last answer for a
@@ -8408,7 +8677,13 @@ function makeDemoHands(stage, pointer, ring, keycap, alive, note, hush) {
   // (round one's screen check: resting on the middle, the hand hid "use" in "Which tool does a mail carrier use?"), or, with
   // nothing marked, on the middle of the board.
   const look = async (sel = '[data-demo-look]') => {
-    const el = find(sel); if (el) await bring(el); else await bringPoint(box(), 0.45, 12); if (!alive()) return false;
+    // With nothing marked, the whole board is brought into view where it fits the part the pointer may use, so a short screen shows
+    // the goal a line names, a path's or a maze's star (round four's screen read, pass MS: only the board's middle was brought, and
+    // the floating Skip covered the star while the words said to walk to it); a board taller than that part shows its middle.
+    const el = find(sel);
+    if (el) await bring(el);
+    else { const r = box().getBoundingClientRect(); const u = usable(); if (r.height <= u.bottom - u.top - 16) await bring(box()); else await bringPoint(box(), 0.45, 12); }
+    if (!alive()) return false;
     const b = box().getBoundingClientRect(); const vw = window.innerWidth || document.documentElement.clientWidth || 0;
     let x; let y;
     if (el) { const r = el.getBoundingClientRect(); x = Math.min(r.right + 8, (vw || r.right + 40) - 34); y = r.top + r.height / 2 + 4; } else { x = b.left + b.width / 2 + 10; y = b.top + b.height * 0.45 + 12; }
@@ -8430,9 +8705,11 @@ function makeDemoHands(stage, pointer, ring, keycap, alive, note, hush) {
     return true;
   };
   const point = async (el) => { if (!el) return false; await bring(el); if (!alive()) return false; const [x, y] = centre(el); await glide(x + 6, y + 8, 700); if (!alive()) return false; flash(); return true; };
-  // Every act, by its name in the intro line; taps repeats tap while the board still marks a move, up to times.
+  // Every act, by its name in the intro line; taps repeats tap while the board still marks a move, up to times. A drag with picks
+  // (pass MS) drags one of each, in the words' order; a drag with times drags again while the board still marks a piece; what the
+  // drags moved is noted with the act.
   const act = async (line, outside) => {
-    let ok = false; const act = line.act;
+    let ok = false; const act = line.act; let what;
     try {
       if (act === 'look') ok = await look();
       else if (act === 'tap') { ok = await tap(); for (let n = 1; ok && n < (line.times || 1) && alive(); n++) { await wait(420); if (!(await tap())) break; } }
@@ -8441,14 +8718,18 @@ function makeDemoHands(stage, pointer, ring, keycap, alive, note, hush) {
         const el = await waitFor('[data-demo-tap]'); if (el) { await bring(el); const [x, y] = centre(el); await glide(x, y, 600); for (let n = 0; n < (line.times || 1) && alive(); n++) { press(el, x, y); await wait(line.every); } ok = true; }
       }
       else if (act === 'taps') { ok = await tap(); for (let n = 1; ok && n < (line.times || 1) && alive(); n++) { await wait(380); if (!(await waitFor('[data-demo-tap]', 1600))) break; if (!(await tap())) break; } }
-      else if (act === 'drag') ok = await drag();
+      else if (act === 'drag') {
+        const picks = line.picks || Array.from({ length: line.times || 1 }, () => null); what = [];
+        ok = await drag(picks[0]); if (ok) what.push(dragged);
+        for (let n = 1; ok && n < picks.length && alive(); n++) { await wait(300); if (!picks[n] && !(await waitFor('[data-demo-drag]', 1600))) break; ok = await drag(picks[n]); if (ok) what.push(dragged); }
+      }
       else if (act === 'key') ok = await key();
       else if (act === 'follow') ok = await follow(line.ms || 3000);
       else if (act === 'replay') ok = await point(await waitFor('[data-demo-replay]'));   // a board may hide its speaker while it moves on
       else if (act === 'speaker') ok = await point(outside('[data-intro-speaker]'));
       else if (act === 'wait') { await wait(line.ms || 1000); ok = true; }
-    } catch (e) { ok = false; note(act, false, String(e && e.message)); return; }
-    note(act, ok, ok ? '' : 'nothing marked');
+    } catch (e) { ok = false; note(act, false, String(e && e.message), what); return; }
+    note(act, ok, ok ? '' : 'nothing marked', what);
   };
   act.ask = async () => { const ok = await ask(); note('ask', ok, ok ? '' : 'no speaker by the question'); return ok; };
   return act;
@@ -8534,7 +8815,7 @@ function GameIntro({ game, Game, gameProps, onEnd, onSize = null }) {
     try { window.__eduIntro = log; } catch (e) { /* only a test reads it */ }
     const alive = () => live;
     const outside = (sel) => { const pad = stageRef.current && stageRef.current.closest('[data-game-pad]'); return pad ? pad.querySelector(sel) : null; };
-    const hands = makeDemoHands(stageRef.current, pointerRef.current, ringRef.current, keyRef.current, alive, (act, ok, why) => log.acts.push({ act, ok, why }), hush);
+    const hands = makeDemoHands(stageRef.current, pointerRef.current, ringRef.current, keyRef.current, alive, (act, ok, why, what) => log.acts.push(what === undefined ? { act, ok, why } : { act, ok, why, what }), hush);
     const voiced = canSpeak();
     const run = async () => {
       await new Promise((r) => setTimeout(r, 450));   // the board settles first
@@ -11398,7 +11679,9 @@ function EduSphereScreens() {
   useEffect(() => {
     if (!(screen === 'lesson' && readAloud && currentLessonLine)) { setLitSentence(-1); return undefined; }
     const parts = sentencesOf(currentLessonLine); setLitSentence(-1);
-    const stop = speakSequence(parts, (i) => setLitSentence(i), () => setLitSentence(-1), parts.map((_, i) => `${mod ? mod.id : 'lesson'}-${lessonStep}-${i}`));
+    // The line's sentences are read together (pass MS), so a say-along's silly voices are read from the whole line, and the strip
+    // under the line (SayAlongStrip) is told each piece's start and end, for the light that follows the voice through the word.
+    const stop = speakSequence(parts, (i, s, piece, begun) => { setLitSentence(i); sayAlongBus.emit({ type: 'start', i, piece, begun }); }, () => { setLitSentence(-1); sayAlongBus.emit({ type: 'stop' }); }, parts.map((_, i) => `${mod ? mod.id : 'lesson'}-${lessonStep}-${i}`), { together: true, onPieceEnd: (i, k, piece) => sayAlongBus.emit({ type: 'end', i, piece }) });
     return () => { stop(); };
   }, [screen, readAloud, currentLessonLine, replays]);   // Say it again (replays) reads the line again this same way (pass MQ)
   useEffect(() => { setStoryOpen(false); setAnotherWay(0); }, [screen === 'lesson' ? (mod && mod.id) : null]);
@@ -11550,6 +11833,10 @@ function EduSphereScreens() {
   // hunting for its card, so a browser check can go straight to a lesson.
   // A phone held sideways is asked to turn upright rather than shown a squeezed layout. Tablets and
   // laptops are unaffected: the ask only appears on a short, wide screen that is touched, not clicked.
+  // Keep going sideways (pass MS, Mikey's answer to Q74, "Q74 - B"): a small link under the words lets a student who cannot turn the
+  // phone (one clamped sideways to a wheelchair tray or a desk mount) carry on, and hides the ask until the app is closed; it is kept
+  // in memory only (rotateKept), so a reload, or the app opened again, asks again, and every other phone still sees the ask. The
+  // accessibility rule schools are asked to meet (WCAG 2.1, 1.3.4 Orientation) says a page must not work in only one orientation.
   useEffect(() => {
     if (typeof document === 'undefined' || document.getElementById('edu-rotate')) return undefined;
     const box = document.createElement('div');
@@ -11557,17 +11844,25 @@ function EduSphereScreens() {
     box.className = 'edu-rotate';
     // The drawing (pass MR): a phone with its screen and button, which turns from sideways to upright and rests there (still, upright,
     // with less motion asked for), and a curved arrow over its corner that shows the turn. Mikey's words under it.
-    box.setAttribute('role', 'alert');
-    box.innerHTML = '<div><svg viewBox="0 0 64 64" width="96" height="96" aria-hidden="true"><path d="M8 36 A26 26 0 0 1 25.1 11.6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><path d="M20.3 10.3 L25.1 11.6 L22.2 15.7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><g class="edu-rotate-phone"><rect x="25" y="18" width="18" height="36" rx="4" fill="none" stroke="currentColor" stroke-width="2.6"/><rect x="28.5" y="23" width="11" height="24" rx="1.5" fill="currentColor" opacity="0.16"/><circle cx="34" cy="50.4" r="1.6" fill="currentColor"/></g></svg><p>Please turn your phone upright.</p></div>';
+    // An alert dialog named by its words (round three's screen read, pass MS: as an alert, the link took the focus and a screen reader
+    // read the link alone), so the focus on the link reads the ask first.
+    box.setAttribute('role', 'alertdialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-labelledby', 'edu-rotate-words');
+    box.innerHTML = '<div><svg viewBox="0 0 64 64" width="96" height="96" aria-hidden="true"><path d="M8 36 A26 26 0 0 1 25.1 11.6" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><path d="M20.3 10.3 L25.1 11.6 L22.2 15.7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><g class="edu-rotate-phone"><rect x="25" y="18" width="18" height="36" rx="4" fill="none" stroke="currentColor" stroke-width="2.6"/><rect x="28.5" y="23" width="11" height="24" rx="1.5" fill="currentColor" opacity="0.16"/><circle cx="34" cy="50.4" r="1.6" fill="currentColor"/></g></svg><p id="edu-rotate-words">Please turn your phone upright.</p><button type="button" class="edu-rotate-keep">Keep going sideways</button></div>';
     document.body.appendChild(box);
     // A keyboard shortens the viewport too, so the screen's own orientation decides, never the viewport's shape alone; and the page
     // must be wider than tall as well (pass MR, check.sh's scroll-cue test), since a browser can report its screen as landscape while
     // the page is upright (headless Chrome always does, and so can a desktop touch screen), and an upright page is never asked to turn.
     // A phone is told by its screen's short side, 540 pixels or less, never by the window's height, so a tablet whose window a
     // keyboard or split view shortens is never asked to turn "your phone" (round one's code check, pass MR).
-    const check = () => { const coarse = window.matchMedia('(pointer: coarse)').matches; const sideways = window.screen.orientation ? /landscape/.test(window.screen.orientation.type) : window.screen.width > window.screen.height; box.classList.toggle('edu-rotate-on', coarse && sideways && window.innerWidth > window.innerHeight && Math.min(window.screen.width, window.screen.height) <= 540); };
+    // While the ask shows, the app under it is out of reach and hidden from a screen reader, and the link takes the focus as the ask
+    // appears (round one's screen check, pass MS: a keyboard or switch user tabbed through five hidden controls before the link).
+    const keep = box.querySelector('.edu-rotate-keep');
+    const reach = (on, was) => { const root = document.getElementById('root'); if (!root) return;
+      if (on) { root.setAttribute('inert', ''); root.setAttribute('aria-hidden', 'true'); if (!was && keep) keep.focus(); } else if (was) { root.removeAttribute('inert'); root.removeAttribute('aria-hidden'); } };
+    const check = () => { const was = box.classList.contains('edu-rotate-on'); const coarse = window.matchMedia('(pointer: coarse)').matches; const sideways = window.screen.orientation ? /landscape/.test(window.screen.orientation.type) : window.screen.width > window.screen.height; box.classList.toggle('edu-rotate-on', !rotateKept && coarse && sideways && window.innerWidth > window.innerHeight && Math.min(window.screen.width, window.screen.height) <= 540); reach(box.classList.contains('edu-rotate-on'), was); };
+    if (keep) keep.addEventListener('click', () => { rotateKept = true; check(); });
     check(); window.addEventListener('resize', check); window.addEventListener('orientationchange', check);
-    return () => { window.removeEventListener('resize', check); window.removeEventListener('orientationchange', check); if (box.parentNode) box.parentNode.removeChild(box); };
+    return () => { window.removeEventListener('resize', check); window.removeEventListener('orientationchange', check); reach(false, box.classList.contains('edu-rotate-on')); if (box.parentNode) box.parentNode.removeChild(box); };
   }, []);
   // Test only (pass LM): give a student weeks of history, so a browser test can walk the quick look back, the stuck path and
   // Action Items, which a real student reaches only after three weeks. It appends dated events and changes nothing else.
@@ -12443,7 +12738,8 @@ function EduSphereScreens() {
     const line = step.say;
     const last = lessonStep >= script.length - 1;
     const stepArt = (mod.lesson.pictures || []).find((pic) => pic.step === Math.min(lessonStep, script.length - 1)) || null;   // a painting this line shows (pass JP)
-    const playfulLesson = script.some((l) => sayWithMeParts(l.say).some((p) => p.cue));   // a lesson that says new words in playful voices (Q67)
+    const playfulLesson = script.some((l) => sayAlongParts(l.say).some((p) => p.role === 'open'));   // a lesson that plays the say-along with its new words (Q67, pass MS)
+    const lineParts = sayAlongParts(sentencesOf(line));   // which sentences are the line's own words and which the say-along's (pass MS)
     const lineKeys = sentencesOf(line).map((_, i) => `${mod.id}-${Math.min(lessonStep, script.length - 1)}-${i}`);
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
@@ -12453,7 +12749,10 @@ function EduSphereScreens() {
         <div key={lessonStep} className="edu-rise" style={{ ...card, textAlign: 'center', padding: '20px 18px' }}>
           {stepArt ? <LessonStepArt pic={stepArt} visual={step.show} animKey={`${lessonStep}-${replays}`} /> : <Picture visual={step.show} animate animKey={`${lessonStep}-${replays}`} big lesson />}
 
-          <p style={{ fontSize: 22, lineHeight: 1.5, margin: '18px 0 0' }}>{sentencesOf(line).map((sentence, i) => <React.Fragment key={i}><span data-read-lit={litSentence === i ? '' : undefined} style={litSentence === i ? { ...readLit(), ...LIT_WORDS } : { background: 'transparent', transition: 'background 150ms' }}>{sentence}</span>{i < sentencesOf(line).length - 1 ? ' ' : ''}</React.Fragment>)}</p>
+          {/* The line's own words, its sentence being read lit; a say-along's cue, calls and silly sayings are shown in its strip
+              instead (pass MS), the word big and lit a syllable at a time, so the paragraph never fills with "Different, different". */}
+          <p style={{ fontSize: 22, lineHeight: 1.5, margin: '18px 0 0' }}>{(() => { const own = sentencesOf(line).map((sentence, i) => ({ sentence, i })).filter(({ i }) => !lineParts[i] || lineParts[i].role === 'say'); return own.map(({ sentence, i }, n) => <React.Fragment key={i}><span data-read-lit={litSentence === i ? '' : undefined} style={litSentence === i ? { ...readLit(), ...LIT_WORDS } : { background: 'transparent', transition: 'background 150ms' }}>{sentence}</span>{n < own.length - 1 ? ' ' : ''}</React.Fragment>); })()}</p>
+          {lineParts.some((x) => x.role === 'open') && <SayAlongStrip key={`${lessonStep}-${replays}`} parts={lineParts} lit={litSentence} />}
         </div>
         {/* One tap repeats the line, in case they missed it. */}
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
@@ -12472,9 +12771,10 @@ function EduSphereScreens() {
         <div data-lesson-nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <BigTap dir="back" label="Go back" disabled={lessonStep === 0} onClick={() => setLessonStep(Math.max(0, lessonStep - 1))} />
           {/* The dots wrap between the two buttons (round two's screen check, pass MM: at 320 pixels thirteen dots pushed Next past
-              the screen's edge). */}
-          <div data-lesson-dots style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 6, flex: '1 1 0', minWidth: 0, margin: '0 8px' }}>
-            {script.map((_, i) => <span key={i} style={{ width: 9, height: 9, borderRadius: 999, background: i === lessonStep ? C.green : C.line }} />)}
+              the screen's edge), in rows the browser balances (pass MS, round one's screen check: at 320 Learning words' nine dots
+              left one alone on a second row), each dot a small block in a line of its own kind, 6 pixels apart each way. */}
+          <div data-lesson-dots style={{ display: 'block', textAlign: 'center', textWrap: 'balance', fontSize: 0, lineHeight: '15px', flex: '1 1 0', minWidth: 0, margin: '0 5px' }}>
+            {script.map((_, i) => <span key={i} style={{ display: 'inline-block', verticalAlign: 'middle', width: 9, height: 9, margin: '0 3px', borderRadius: 999, background: i === lessonStep ? C.green : C.line }} />)}
           </div>
           {last ? (
             <span style={{ position: 'relative', display: 'inline-flex' }}>
@@ -13470,7 +13770,8 @@ function EduSphereScreens() {
           const electiveEntry = (entry) => { const ids = [...new Set(entry.standards.flatMap((st) => st.moduleIds))]; return ids.length > 0 && ids.every((id) => { const m = getModule(id); const c = m && getCourse(m.courseId); return !!(c && c.elective); }); };
           const anyElectives = plan.some(electiveEntry);
           const shown = mapOrder === 'grade' && anyElectives ? plan.filter((entry) => (mapKind === 'electives' ? electiveEntry(entry) : !electiveEntry(entry))) : plan;
-          const sorted = [...shown].sort((a, b) => GRADES.indexOf(a.grade) - GRADES.indexOf(b.grade) || subjectOrder.indexOf(a.subject) - subjectOrder.indexOf(b.subject));
+          // Pre-K's plans (pass MS, Q76 (c)) are its frameworks' domains, kept in each framework's own order (order), the rest by subject.
+          const sorted = [...shown].sort((a, b) => GRADES.indexOf(a.grade) - GRADES.indexOf(b.grade) || (a.order !== undefined && b.order !== undefined ? a.order - b.order : subjectOrder.indexOf(a.subject) - subjectOrder.indexOf(b.subject)));
           const groups = mapOrder === 'grade'
             ? (mapKind === 'electives' && anyElectives
               ? GRADES.filter((g) => sorted.some((e) => electiveBand(e.grade).key === g)).map((g) => ({ key: g, title: electiveBand(g).title, entries: sorted.filter((e) => electiveBand(e.grade).key === g) }))   // electives fold by band (pass GY)
@@ -13489,20 +13790,30 @@ function EduSphereScreens() {
               <button type="button" onClick={() => setOpenMapHeads((list) => (list.includes(group.key) ? list.filter((x) => x !== group.key) : [...list, group.key]))} aria-expanded={headOpen}
                 style={{ fontFamily: FONT, width: '100%', background: headOpen ? C.green : C.surface, color: headOpen ? C.onAccent : C.green, border: `2px solid ${C.green}`, borderRadius: 12, padding: '12px 16px', cursor: 'pointer', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', columnGap: 10, rowGap: 2, marginBottom: headOpen ? 8 : 0 }}>
                 <span style={{ fontSize: 19, fontWeight: 700 }}>{group.title}</span>
-                <span style={{ fontSize: 14, fontWeight: 600, whiteSpace: 'nowrap', marginLeft: 'auto', textAlign: 'right' }}>{tally.covered} of {tally.total} covered {headOpen ? '▴' : '▾'}</span>
+                {/* The fold arrows are the screen's: the map prints every fold open, so they stay off paper (round four's screen read, pass
+                    MS: 109 arrows printed, each saying closed beside a list that was printed open). */}
+                <span style={{ fontSize: 14, fontWeight: 600, whiteSpace: 'nowrap', marginLeft: 'auto', textAlign: 'right' }}>{tally.covered} of {tally.total} covered<span className="edu-no-print"> {headOpen ? '▴' : '▾'}</span></span>
+                {/* A grade whose plans list outcomes no lesson teaches yet says so under its name (pass MS, Mikey's answer to Q76: "mark pre-K
+                    as still being written until every one is taught"), on the screen and the printout alike. */}
+                {group.entries.some((e) => e.status === 'planned' && e.standards.some((st) => st.framework === fw && !st.moduleIds.length)) && <span data-map-writing="" style={{ flexBasis: '100%', fontSize: 13, fontWeight: 600, opacity: 0.9, textAlign: 'left' }}>Still being written</span>}
               </button>
               <div className="edu-collapsible" style={{ display: headOpen ? 'block' : 'none' }}>
               {group.entries.map((entry) => {
-                const key = `${entry.grade}-${entry.subject}`;
+                // A grade can hold two plans of one subject, so such a row is keyed and named by its course too (round three's screen
+                // read, pass MS: each pair shared one key and one name, and a tap opened both); logic's planRowName decides it (round
+                // four's code read moved the rule there from this screen, where only the browser test read it). Under an electives band,
+                // which holds several grades, a row shows its grade too (round four's screen read: grade 4 Art read plain "Art" between
+                // grade 3's two Art rows).
+                const { key, named, bySubject, spoken } = planRowName(entry, group.entries);
                 const open = openMapGroups.includes(key);
                 const rows = entry.standards.filter((st) => st.framework === fw);
                 const covered = rows.filter((st) => st.moduleIds.length).length;
                 return (
                   <div key={key} style={{ ...card, padding: 0, overflow: 'hidden', marginBottom: 10 }}>
-                    <button type="button" onClick={() => setOpenMapGroups((list) => (list.includes(key) ? list.filter((x) => x !== key) : [...list, key]))} aria-expanded={open} aria-label={`${gradeLabel(entry.grade)} ${entry.subject}`}
+                    <button type="button" onClick={() => setOpenMapGroups((list) => (list.includes(key) ? list.filter((x) => x !== key) : [...list, key]))} aria-expanded={open} aria-label={spoken}
                       style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: C.greenSoft, border: 'none', padding: 16, cursor: 'pointer', color: C.ink, display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', columnGap: 10, rowGap: 2 }}>
-                      <span style={{ fontSize: 17, fontWeight: 600 }}>{mapOrder === 'grade' ? entry.subject : gradeLabel(entry.grade)}</span>
-                      <span style={{ fontSize: 14, color: covered === rows.length ? C.green : entry.status === 'ready' ? C.clayInk : C.muted, whiteSpace: 'nowrap', marginLeft: 'auto', textAlign: 'right' }}>{covered} of {rows.length} covered {open ? '▴' : '▾'}</span>
+                      <span style={{ fontSize: 17, fontWeight: 600 }}>{mapOrder !== 'grade' ? bySubject : mapKind === 'electives' && anyElectives ? spoken : named}</span>
+                      <span style={{ fontSize: 14, color: covered === rows.length ? C.green : entry.status === 'ready' ? C.clayInk : C.muted, whiteSpace: 'nowrap', marginLeft: 'auto', textAlign: 'right' }}>{covered} of {rows.length} covered<span className="edu-no-print"> {open ? '▴' : '▾'}</span></span>
                     </button>
                     {/* Rendered whether open or closed, and shown when printing, so a printed map is always complete. The body stays white. */}
                     <div className="edu-collapsible" style={{ display: open ? 'block' : 'none', padding: '10px 16px 12px', background: C.surface }}>
@@ -15297,10 +15608,11 @@ function EduSphereScreens() {
             <div style={{ ...card, padding: 0, overflow: 'hidden' }} data-tour="summary">
               <button type="button" className="edu-fold-head" onClick={() => setOpenSummary(!openSummary)} aria-expanded={openSummary}
                 style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: 'transparent', border: 'none', padding: 16, cursor: 'pointer', color: C.ink, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span className="edu-fold-title" style={{ fontSize: 17, fontWeight: 600 }}>Summary</span><span className="edu-fold-meta" style={{ color: C.muted }}>{openSummary ? '▴' : '▾'}</span>
+                <span className="edu-fold-title" style={{ fontSize: 17, fontWeight: 600 }}>Summary</span><span className="edu-fold-meta edu-no-print" style={{ color: C.muted }}>{openSummary ? '▴' : '▾'}</span>
               </button>
-              {openSummary && (
-                <div style={{ padding: '0 16px 16px' }}>
+              {/* Rendered when closed too, hidden on the screen and opened for the printer, as every fold on the report is (round four's
+                  screen read, pass MS: a closed Summary printed nothing under its title). */}
+              <div className="edu-collapsible" style={{ display: openSummary ? 'block' : 'none', padding: '0 16px 16px' }}>
                   <p style={{ margin: '0 0 6px', fontSize: 16, lineHeight: 1.6, textAlign: 'center' }}>{parts.lead}</p>
                   {/* Centered bullets (2026-09-30, pass GW, Mikey): the tinted box stays full width, and the list inside it shrinks to the width of its longest line
                       and sits in the middle, so the bullets line up on the left while the block stays close to the centered sentences above and below. On a
@@ -15336,7 +15648,6 @@ function EduSphereScreens() {
                     </div>
                   )}
                 </div>
-              )}
             </div>
           );
         })()}
@@ -15479,7 +15790,7 @@ function EduSphereScreens() {
           <div className="edu-fold-head" role="button" tabIndex={0} aria-expanded={openProgress} aria-label="Progress by course" onClick={() => setOpenProgress(!openProgress)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpenProgress(!openProgress); } }}
             style={{ display: 'flex', alignItems: 'center', padding: '14px 16px', cursor: 'pointer', userSelect: 'none' }}>
             <span className="edu-fold-title" style={{ fontSize: 17, fontWeight: 600, position: 'relative', display: 'inline-block' }}>Progress by course<span style={{ position: 'absolute', left: '100%', top: '50%', transform: 'translateY(-50%)', marginLeft: 8, lineHeight: 0 }}><InfoButton onClick={(e) => { e.stopPropagation(); setShowProgressTip(!showProgressTip); }} label="About progress by course" open={showProgressTip} /></span></span>
-            <span className="edu-fold-meta" aria-hidden="true" style={{ color: C.muted, fontSize: 16 }}>{openProgress ? '▴' : '▾'}</span>
+            <span className="edu-fold-meta edu-no-print" aria-hidden="true" style={{ color: C.muted, fontSize: 16 }}>{openProgress ? '▴' : '▾'}</span>
           </div>
           {showProgressTip && <div style={{ padding: '0 16px' }}><TipText>Once you assign a course above, you can view or reset the student's progression within said course. See how they're doing or allow them to start fresh.</TipText></div>}
         </div>
@@ -15621,9 +15932,13 @@ function EduSphereScreens() {
               <div key={x.term} style={{ borderTop: i === 0 ? 'none' : '1px solid rgba(58, 107, 88, 0.18)' }}>
                 <button type="button" onClick={() => setOpenTerms((list) => (list.includes(x.term) ? list.filter((t) => t !== x.term) : [...list, x.term]))} aria-expanded={open}
                   style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: 'transparent', border: 'none', padding: '6px 0', cursor: 'pointer', color: C.ink, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontWeight: 600, fontSize: 15 }}>{x.term}</span><span style={{ color: C.muted }}>{open ? '▴' : '▾'}</span>
+                  {/* The fold's arrow is the screen's: the page prints every fold open, so an arrow that says closed stays off the paper
+                      (round three's screen read, pass MS: in the light theme the eight key words' arrows printed at 4.05 to 1 on the tint). */}
+                  <span style={{ fontWeight: 600, fontSize: 15 }}>{x.term}</span><span className="edu-no-print" style={{ color: C.muted }}>{open ? '▴' : '▾'}</span>
                 </button>
-                {open && <p style={{ margin: '0 0 6px', fontSize: 15 }}>{x.plain}</p>}
+                {/* Each definition is rendered closed too and prints open (round four's screen read, pass MS: on paper the eight key words
+                    had printed with none of their definitions, since only an open one was rendered). */}
+                <p className="edu-collapsible" style={{ display: open ? 'block' : 'none', margin: '0 0 6px', fontSize: 15 }}>{x.plain}</p>
               </div>
             );
           })}

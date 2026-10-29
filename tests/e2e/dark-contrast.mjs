@@ -122,6 +122,31 @@ for (const s of screens.filter((x) => !studentScreens.has(x) && !paper.has(x))) 
   if (await opened(s)) await check(`${s} at 1280`); else ok(`${s} at 1280 opened from goTo within three seconds`, false);
   await page.evaluate(() => window.__eduTest.goTo('educator-pick')); await page.waitForTimeout(200); await skipTour();
 }
+// Printed (pass MS, round three's screen read): the report and the standards map, on a letter sheet, in both themes, every word
+// measured against what it sits on as printed, a gradient's every color included. With background graphics on, the dark theme's
+// report had printed its Key Words card's words in ink on a dark green gradient, which a rule clearing background colors left, and
+// the printed map's dark backing behind Back to Classroom was found the same way in round one.
+// Since round four's screen read the printed report is read for its Key Words' definitions too, every one of EXPLANATIONS on paper:
+// only an open definition was drawn, so the eight words printed with none, while the report's folds had been said to print open.
+const { EXPLANATIONS } = await import(new URL('../../src/logic.mjs', import.meta.url).href);
+const squash = (t) => String(t || '').replace(/\s+/g, ' ').trim();
+const printedWords = async (theme) => {
+  for (const s of ['educator-report', 'standards-map']) {
+    await keepAlive(); await page.evaluate((name) => window.__eduTest.goTo(name), s);
+    if (!(await opened(s))) { ok(`${s} opened to be printed in the ${theme} theme`, false); continue; }
+    await page.setViewportSize({ width: 816, height: 1056 }); await page.emulateMedia({ media: 'print' }); await page.waitForTimeout(200);
+    const fails = await audit(); const onPaper = squash(await page.evaluate(() => document.body.innerText));
+    await page.emulateMedia({ media: 'screen' }); await page.setViewportSize({ width: 1280, height: 900 }); await page.waitForTimeout(150);
+    ok(`${s} printed in the ${theme} theme: every word reads on what it is printed on`, (await themeNow()) === theme && fails.length === 0, `${fails.length} low: ${fails.slice(0, 12).join(' | ')}`);
+    if (s === 'educator-report') { const missing = EXPLANATIONS.filter((x) => !onPaper.includes(squash(x.plain))).map((x) => x.term);
+      ok(`the report printed in the ${theme} theme carries every Key Word's definition (${EXPLANATIONS.length})`, EXPLANATIONS.length >= 8 && missing.length === 0, `missing: ${missing.join(', ')}`); }
+    await page.evaluate(() => window.__eduTest.goTo('educator-pick')); await page.waitForTimeout(200); await skipTour();
+  } };
+await printedWords('dark');
+await page.getByRole('button', { name: 'Light theme' }).first().click(); await page.waitForTimeout(250);
+await printedWords('light');
+await page.getByRole('button', { name: 'Dark theme' }).first().click(); await page.waitForTimeout(250);
+ok('the Classroom page is dark again after the printed light theme', (await themeNow()) === 'dark');
 await page.setViewportSize({ width: 360, height: 780 }); await page.waitForTimeout(250);
 await walkInto('Walk through elementary');
 await page.evaluate(() => window.__eduTest.openModule(window.__eduTest.visibleModuleIds()[0])); await page.waitForTimeout(400);

@@ -6,7 +6,7 @@
 // the voice direction for its age band. Every clip, and every whole story, stays far under Eleven v4's 10,000 characters.
 // Run: node tools/audio-ledger.mjs > docs/AUDIO-LEDGER.md   (it also writes docs/AUDIO-LEDGER.csv, which tools/audio-generate.mjs reads)
 import { writeFileSync } from 'node:fs';
-import { COURSES, readAloudScript, SENTENCE_BREAK, GAMES, gameIntro, gameBand, cheerTagged, sayWithMeParts, storyTitleSpoken } from '../src/logic.mjs';
+import { COURSES, readAloudScript, SENTENCE_BREAK, GAMES, gameIntro, gameBand, cheerTagged, sayAlongParts, storyTitleSpoken } from '../src/logic.mjs';
 import { STORIES, COURSE_STORIES, MASTERY_STORIES } from '../src/stories.mjs';
 
 // Voices by age (Mikey, pass JH). The directions are short on purpose: one opens every clip, and ElevenLabs counts tags as characters.
@@ -45,9 +45,11 @@ for (const c of courses) {
       st.words.forEach((p, i) => add(`${st.art}-${i + 1}`, 'story', m.id, c.grade, `${band(c.grade) === 'early' ? DIRECTION.earlyStory : DIRECTION[band(c.grade)]} ${(st.audio && st.audio[i]) || p}`, p, st.art));
     }
     // A read-aloud lesson speaks readAloudScript's lines (pass JP: paragraphs too when it has no script), keyed by step as the app plays them.
-    // Since pass MR (Q67) the word said along with a "Say it with me" cue asks the recorded voice for the cue's own voice ([whispers],
-    // [in a deep, silly voice] and the rest, SAY_WITH_ME's tags), after the early direction.
-    (c.readAloud ? readAloudScript(m) : (m.lesson && m.lesson.script ? m.lesson.script : [])).forEach((line, li) => sayWithMeParts(line.say).forEach(({ sentence: s, cue }, si) => add(`${m.id}-${li}-${si}`, 'lesson line', m.id, c.grade, `${DIRECTION.early} ${cue ? `${cue.tag} ` : ''}${s}`, s, `${m.id}-lesson`)));
+    // Since pass MS (Mikey's note on Q67) each saying of a say-along word is a clip of its own, asked for in its own voice alone
+    // ([whispers], [in a deep, silly voice] and the rest, SAY_ALONG_VOICES' tags), with no early direction beside it, since a clip that
+    // is only the word said one way has no other words to draw out (EARMARKS A55, which pass MR's cue at a line's end had raised); the
+    // chant's claps are the app's own, played between its sayings. The calls and the cue keep the early direction.
+    (c.readAloud ? readAloudScript(m) : (m.lesson && m.lesson.script ? m.lesson.script : [])).forEach((line, li) => sayAlongParts(sentencesOf(line.say)).forEach((part, si) => add(`${m.id}-${li}-${si}`, 'lesson line', m.id, c.grade, `${part.role === 'form' ? part.voice.tag : DIRECTION.early} ${part.sentence}`, part.sentence, `${m.id}-lesson`)));
   }
   // A course's long story, and since pass MH its next one (MASTERY_STORIES), keyed by each story's own main picture serial.
   for (const [cs, kind] of [[COURSE_STORIES[c.id], 'long story'], [MASTERY_STORIES[c.id], 'next long story']]) {

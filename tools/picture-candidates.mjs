@@ -16,9 +16,11 @@ for (const c of L.COURSES.filter((x) => EARLY.includes(x.grade))) {
     const lines = c.readAloud ? L.readAloudScript(m).map((s) => s.say) : (m.lesson.paragraphs || []);
     const steps = new Set((m.lesson.pictures || []).map((p) => p.step));
     lines.forEach((text, i) => {
-      // "Almost the same" says two groups are close in number, not that an idea is like a real thing (pass ML), and "like a happy
-      // cheer" is how a lesson asks the child to say a word along (Q67's cue, pass MR), not a comparison.
-      const hits = [...String(text).matchAll(COMPARE)].map((x) => x[0]).filter((h) => !/^almost the same\b/i.test(h) && !/^like a happy cheer\b/i.test(h));
+      // "Almost the same" says two groups are close in number, not that an idea is like a real thing (pass ML), and a say-along's
+      // calls ("Way up high, like a mouse!", "Cheer it like a big game!") ask the child to say a word along (Q67, pass MS), so only a
+      // line's own sentences are read (pass MR's cue, "like a happy cheer", was skipped by its words).
+      const own = L.sayAlongParts(text).filter((x) => x.role === 'say').map((x) => x.sentence).join(' ');
+      const hits = [...own.matchAll(COMPARE)].map((x) => x[0]).filter((h) => !/^almost the same\b/i.test(h));
       if (!hits.length) return;
       const pictured = c.readAloud ? steps.has(i) : steps.size > 0;
       rows.push({ grade: c.grade, course: c.title, module: m.title, id: m.id, line: i, hits, text, pictured });

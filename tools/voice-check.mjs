@@ -12,7 +12,9 @@
 // closed until the recorded voice (Mikey: "let's just earmark this for later when we upload the eleven audio"), so the page names no
 // open question and stays as a reference, organized as he liked it ("I can reasonably listen within the artifact since you have it
 // nicely organized"). A lesson row is said in the young voice a pre-reader hears since pass MQ: a little slower, with a rest between
-// sentences.
+// sentences. Since pass MS (Mikey's note on his answer to Q67: all the silly voices go to one word, the last saying clear) the say-it-
+// with-me rows say a whole say-along, one word in many voices, with the child's turn after each way and a clap between a chant's
+// cheers; rows 51 to 57, pass MR's one voice a word, are retired, and their numbers are not used again.
 // Run: node tools/voice-check.mjs   (writes dist/voice-check.html, which is published as its own small page; dist stays out of git)
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 
@@ -78,17 +80,19 @@ export const VOICE_CHECK_ROWS = [
   { group: 'Lines on trial: a sounded-out word with the app\'s own short vowel' },
   { n: 49, kind: 'trial', text: 'Read this word the same way. C says cuh, a says the sound at the start of apple, and n says nnn. Cuh, a, nnn. Can.' },
   { n: 50, kind: 'trial', text: 'Read this one. D says duh, o says the sound at the start of octopus, and g says guh. Duh, o, guh. Dog.' },
-  // Pass MR (Mikey's answer to Q67: "Q67 - B but let's make it fun.  When they say it with you, the voice should do something silly
-  // like whisper it, say it slow, say it low four times in a silly voice, say it ultra fast three times, draw it out the next time
-  // etc."): one line of each silly voice, word for word as a lesson says it, so he can hear all seven in one place.
-  { group: 'Say it with me (Q67): each silly voice, as a lesson says it' },
-  { n: 51, kind: 'line', text: 'A red circle and a red circle are the same, so they match. Say same with me in a tiny whisper. Same.', note: 'New in pass MR: the whisper (Learning words).' },
-  { n: 52, kind: 'line', text: 'The red ones go in one group, and the blue ones go in another. Say sort with me, nice and slow. Sort.', note: 'New in pass MR: nice and slow (Count and sort).' },
-  { n: 53, kind: 'line', text: 'A cup and a ball are different. Say different with me four times, in a low, silly voice. Different, different, different, different!', note: 'New in pass MR: low and silly, four times (Learning words).' },
-  { n: 54, kind: 'line', text: 'One, two, three. Say count with me three times, super fast! Count, count, count!', note: 'New in pass MR: super fast, three times (Count and sort).' },
-  { n: 55, kind: 'line', text: 'A side is a straight edge, and a corner is where two sides meet. Say side with me, and stretch it out long. Side.', note: 'New in pass MR: stretched out long (Count and sort).' },
-  { n: 56, kind: 'line', text: 'These red shapes are a group, so a red triangle goes in it, and a blue triangle does not. Say group with me in a squeaky little voice. Group.', note: 'New in pass MR: squeaky and little (Count and sort).' },
-  { n: 57, kind: 'line', text: 'This cup matches this cup. Say match with me like a happy cheer! Match!', note: 'New in pass MR: a happy cheer (Learning words).' },
+  // Pass MS (Mikey: "I was talking about applying all of that to a single spoken word ... After the description "A cup and a ball
+  // are different" you can add the various ways of saying different ... The very last pronunciation can be a clearer more normal
+  // version."): six lesson lines word for word, each one word in several silly voices and then clear, so every voice of the eight
+  // is heard at least twice (the slide and the chant in rows 59, 60 and 62), and the clap a chant plays between its cheers. Rows 51
+  // to 57 (pass MR, one voice a word) are retired with the lines they said.
+  { group: 'Say it with me (Q67, pass MS): one word, many silly voices, as a lesson says it' },
+  { n: 58, kind: 'line', text: 'Different means not the same. A cup and a ball are different. Say different with me, in silly voices! Whisper it. Different. Say it slowly. Different. Four times, low and silly! Different, different, different, different! Three times, super fast! Different, different, different! Stretch it out long. Different. Now say it nice and clear. Different.', note: 'New in pass MS: your example, five silly ways and then clear (Learning words).' },
+  { n: 59, kind: 'line', text: 'Same means just alike. A red circle and a red circle are the same, so they match. Say same with me, in silly voices! Slide it down, from high to low. Same, same, same. Stretch it out long. Same. Four times, low and silly! Same, same, same, same! Now say it nice and clear. Same.', note: 'New in pass MS: the slide, high to low over three sayings (Learning words).' },
+  { n: 60, kind: 'line', text: 'Match means find one that is the same. This cup matches this cup. Say match with me, in silly voices! Cheer it like a big game! Match! Match! Match! Whisper it. Match. Way up high, like a mouse! Match! Three times, super fast! Match, match, match! Now say it nice and clear. Match.', note: 'New in pass MS: the chant, a clap between its cheers, and way up high (Learning words).' },
+  { n: 61, kind: 'line', text: 'This is a grandpa. A grandpa is the dad of your mom or your dad. A grandpa can help take care of you too. Say grandpa with me, in silly voices! Four times, low and silly! Grandpa, grandpa, grandpa, grandpa! Say it slowly. Grandpa. Way up high, like a mouse! Grandpa! Three times, super fast! Grandpa, grandpa, grandpa! Now say it nice and clear. Grandpa.', note: 'New in pass MS: a word of two syllables, grand and pa (Words for people).' },
+  { n: 62, kind: 'line', text: 'A birthday party is a happy day, often with a cake that has candles to blow out. Say birthday party with me, in silly voices! Cheer it like a big game! Birthday party! Birthday party! Birthday party! Way up high, like a mouse! Birthday party! Three times, super fast! Birthday party, birthday party, birthday party! Slide it down, from high to low. Birthday party, birthday party, birthday party. Now say it nice and clear. Birthday party.', note: 'New in pass MS: two words said as one, birthday party (Things that happen).' },
+  { n: 63, kind: 'line', text: 'At bedtime, you put on your pajamas and sleep in your bed. Say bedtime with me, in silly voices! Whisper it. Bedtime. Stretch it out long. Bedtime. Four times, low and silly! Bedtime, bedtime, bedtime, bedtime! Say it slowly. Bedtime. Now say it nice and clear. Bedtime.', note: 'New in pass MS: a quiet word, whispered, stretched and slow (Things that happen).' },
+  { n: 64, kind: 'sound', sound: 'clap', label: 'a clap, two quick claps between a chant\'s cheers', note: 'New in pass MS: made by the app, so every phone plays the same one.' },
 ];
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -180,9 +184,9 @@ h2 { font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: 
 </style>
 <main>
 <h1>Voice check</h1>
-<p class="intro">Tap a row to hear it, with the sound on. The sounds in the first list and in the lists from row 33 are made by the app, so every phone plays the same ones. The words are your phone's own voice, a placeholder until the recorded voice. Tell Claude the numbers that sound wrong, and how, whenever you like. A green note under a row says what changed in pass MP, MQ or MR.</p>
+<p class="intro">Tap a row to hear it, with the sound on. The sounds in the first list and in the lists from row 33 are made by the app, so every phone plays the same ones. The words are your phone's own voice, a placeholder until the recorded voice. Tell Claude the numbers that sound wrong, and how, whenever you like. A green note under a row says what changed in pass MP, MQ, MR or MS.</p>
 <p class="voice" id="voice">Your phone's voice: finding it...</p>
-<p class="novoice" id="novoice" hidden>This browser has no voice, so only the app's own sounds play here: rows 1 to 10 and 33 to 44. To hear every row, open this page's link in Safari or Chrome rather than inside another app.</p>
+<p class="novoice" id="novoice" hidden>This browser has no voice, so only the app's own sounds play here: rows 1 to 10, 33 to 44 and 64. To hear every row, open this page's link in Safari or Chrome rather than inside another app.</p>
 ${rowsHtml}
 <p class="foot">Built from the app's own speech code, so a lesson says each line the way this page does.</p>
 </main>
@@ -227,7 +231,7 @@ export async function voiceCheckSelfTest(L, script = VOICE_CHECK_SCRIPT) {
     // Every sound a row plays is one the app makes (pass MP: the trial rows' sounds, and the new sound rows', are made, never silent).
     for (const r of VOICE_CHECK_ROWS.filter((x) => x.kind === 'sound')) { const w = vc.soundClipWav(r.sound); if (!w || w.length < 1000) problems.push(`row ${r.n}'s sound ${r.sound} is not made`); }
     for (const r of VOICE_CHECK_ROWS.filter((x) => x.kind === 'trial')) for (const p of L.speechPieces(r.text, { trial: true })) if (p.sound && !vc.soundClipWav(p.sound)) problems.push(`row ${r.n}'s sound ${p.sound} is not made`);
-    for (const s of ['s', 'm', 't']) { const a = vc.soundClipWav(s); const b = L.soundClipWav(s); if (!a || !b || a.length !== b.length || a.some((v, i) => v !== b[i])) problems.push(`the page's ${s} is not the app's`); }
+    for (const s of ['s', 'm', 't', 'clap']) { const a = vc.soundClipWav(s); const b = L.soundClipWav(s); if (!a || !b || a.length !== b.length || a.some((v, i) => v !== b[i])) problems.push(`the page's ${s} is not the app's`); }
     // Every row played, as a tap plays it: a sound row plays one of the app's clips, a line row hands the voice the line's words with
     // its sounds between them, in order, and a single row hands it its own text.
     // Each row from quiet, over a line still playing (row 12, 200 ms in) and over a sound still playing (row 1, 50 ms in), as a tap
@@ -235,7 +239,7 @@ export async function voiceCheckSelfTest(L, script = VOICE_CHECK_SCRIPT) {
     const rows = VOICE_CHECK_ROWS.filter((x) => !x.group); const row12 = rows.find((x) => x.n === 12); const row1 = rows.find((x) => x.n === 1);
     for (const r of rows) for (const [before, wait] of [[null, 0], [row12, 200], [row1, 50]]) {
       const where = before ? ` over row ${before.n}` : '';
-      try { if (before) { vc.play(before); tick(wait); } log.length = 0; rates.length = 0; marks.length = 0; win.__eduSounds = []; vc.play(r); tick(9000); } catch (e) { problems.push(`row ${r.n}${where} throws: ${e && e.message}`); continue; }
+      try { if (before) { vc.play(before); tick(wait); } log.length = 0; rates.length = 0; marks.length = 0; win.__eduSounds = []; vc.play(r); tick(40000); } catch (e) { problems.push(`row ${r.n}${where} throws: ${e && e.message}`); continue; }
       const piecesOf = (row) => L.speechPieces(row.text, row.kind === 'trial' ? { trial: true } : {});
       const want = r.kind === 'sound' ? ['sound'] : r.kind === 'line' || r.kind === 'trial' ? piecesOf(r).map((p) => (p.sound ? 'sound' : `say ${p.text}`)) : [`say ${r.text}`];
       const got = log.map((x) => (x.startsWith('sound blob:') ? 'sound' : x));
@@ -261,10 +265,15 @@ export async function voiceCheckSelfTest(L, script = VOICE_CHECK_SCRIPT) {
     for (const r of rows.filter((x) => x.kind === 'line' || x.kind === 'trial')) {
       if (typeof vc.YOUNG_PAUSE_MS !== 'number') { problems.push('the page has no YOUNG_PAUSE_MS'); break; }
       if (typeof vc.startsSentence !== 'function') { problems.push('the page has no startsSentence'); break; }
-      try { tick(2000); log.length = 0; marks.length = 0; vc.play(r); tick(11000); } catch (e) { problems.push(`row ${r.n}'s rests throw: ${e && e.message}`); continue; }
+      try { tick(2000); log.length = 0; marks.length = 0; vc.play(r); tick(40000); } catch (e) { problems.push(`row ${r.n}'s rests throw: ${e && e.message}`); continue; }
       const ps = L.speechPieces(r.text, r.kind === 'trial' ? { trial: true } : {}); const starts = marks.filter((m) => m.k === 's').map((m) => m.t); const ends = marks.filter((m) => m.k === 'e').map((m) => m.t);
       if (starts.length !== ps.length || ends.length !== ps.length) { problems.push(`row ${r.n} plays ${starts.length} pieces, not ${ps.length}`); continue; }
-      for (let i = 1; i < ps.length; i++) { if (ps[i].sentence === ps[i - 1].sentence) continue; const gap = starts[i] - ends[i - 1]; const opens = vc.startsSentence(ps[i]);
+      for (let i = 1; i < ps.length; i++) { const gap = starts[i] - ends[i - 1];
+        // A say-along (pass MS): a form's sayings keep together, the chant's cheers and claps and the slide's steps a few
+        // milliseconds apart, and the piece that ends a form is followed by the child's turn (its echo) at least.
+        if (ps[i - 1].inForm !== undefined && ps[i].inForm === ps[i - 1].inForm) { if (gap > 100) { problems.push(`row ${r.n} rests ${gap} ms before "${ps[i].text}", inside a say-along's sayings`); break; } continue; }
+        if (ps[i - 1].echo) { if (!(gap >= ps[i - 1].echo)) { problems.push(`row ${r.n} waits ${gap} ms after "${ps[i - 1].text}", not the child's turn of ${ps[i - 1].echo} ms`); break; } continue; }
+        if (ps[i].sentence === ps[i - 1].sentence) continue; const opens = vc.startsSentence(ps[i]);
         // No rest inside a sentence means none at all (round five's code read: a page resting 200 ms there passed a check for 450):
         // pieces run on within a few milliseconds, two sounds side by side a fifth of a second apart.
         if (opens ? !(gap >= vc.YOUNG_PAUSE_MS) : gap > (ps[i].sound && ps[i - 1].sound ? 250 : 100)) { problems.push(`row ${r.n} rests ${gap} ms before "${ps[i].text}", ${opens ? `not ${vc.YOUNG_PAUSE_MS}` : 'inside its sentence'}`); break; } }
@@ -272,7 +281,7 @@ export async function voiceCheckSelfTest(L, script = VOICE_CHECK_SCRIPT) {
     // A voice not ready yet drops a row's first words (some phones drop a page's first words): the row is asked once more, and each
     // piece is said once (round four's code check: play() had no retry, where speak() has).
     for (const r of rows.filter((x) => x.kind !== 'sound')) {
-      try { tick(2000); log.length = 0; deafUntil = now + 50; vc.play(r); tick(11000); deafUntil = -1; } catch (e) { deafUntil = -1; problems.push(`row ${r.n} after dropped first words throws: ${e && e.message}`); continue; }
+      try { tick(2000); log.length = 0; deafUntil = now + 50; vc.play(r); tick(40000); deafUntil = -1; } catch (e) { deafUntil = -1; problems.push(`row ${r.n} after dropped first words throws: ${e && e.message}`); continue; }
       const want = r.kind === 'line' || r.kind === 'trial' ? L.speechPieces(r.text, r.kind === 'trial' ? { trial: true } : {}).map((p) => (p.sound ? 'sound' : `say ${p.text}`)) : [`say ${r.text}`];
       const got = log.filter((x) => !x.startsWith('dropped ')).map((x) => (x.startsWith('sound blob:') ? 'sound' : x));
       if (JSON.stringify(got) !== JSON.stringify(want)) problems.push(`row ${r.n} after dropped first words plays ${JSON.stringify(got)}, not ${JSON.stringify(want)}`);

@@ -559,6 +559,109 @@ for (const [w, h, touch] of [[320, 568, true], [844, 390, false]]) {
   const gap = ats.length >= 2 ? Math.round(ats[1].t - ats[0].t) : null;
   ok('a welcome whose voice never reports a line\'s end stays on that line for three times its reading time, then goes on (pass MQ)', half === 0 && moved && gap !== null && gap >= cap - 300 && gap <= cap + 4000, { cap, half, moved, gap, ats });
   await ctx.close(); }
+// ---- What the pointer drags is what the words name (pass MS, Mikey: "when it said to drag the red shape, the demo showed dragging the
+// blue shape.   These small details should be accurate too."): each welcome played in the page, and what each drag really moved read
+// from the welcome's log: Red and Blue drags a red shape and then a blue one, Big and Small a big one and then a small one, Noun or
+// verb a noun and then a verb (the left bucket's group, a, then the right's, b), the two swipe welcomes that had flicked their first
+// card left now flick it right, the way their words name first, and the balance drags two weights, the fewest that level its first
+// amount.
+{ const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+  const page = await ctx.newPage(); page.on('pageerror', (e) => errors.push(String(e).slice(0, 300)));
+  await signIn(page, 'S-93', PHONE_PAGE.href);
+  const WANT = { 'sort-color': ['red', 'blue'], 'sort-size': ['big', 'small'], 'buckets-noun-verb': ['a', 'b'], 'cause-psychology-college': ['right'], 'cite-speech-college': ['right'], 'balance-ten': ['', ''] };
+  const got = {}; const seen = {};
+  // What the pointer really pressed and where it let go, read from outside the board's own marks (round one's screen check, pass MS:
+  // the check read only data-demo-what, the board's mark): the pressed shape's color and size, and the box under the pointer as it let
+  // go (data-sort-bin, the box itself, found by its place on the screen, since the welcome's stage is inert and hit tests pass it by).
+  await page.evaluate(() => { if (window.__dragWatch) return; window.__dragWatch = true; window.__dragSeen = [];
+    document.addEventListener('pointerdown', (e) => { const svg = e.target && e.target.querySelector ? e.target.querySelector('svg') : null; if (!svg) return; const shape = svg.querySelector('[fill]:not([fill="none"])'); const c = shape ? getComputedStyle(shape).fill : ''; window.__dragSeen.push({ fill: c, w: Math.round(svg.getBoundingClientRect().width) }); }, true);
+    document.addEventListener('pointerup', (e) => { const last = window.__dragSeen[window.__dragSeen.length - 1]; if (!last || 'bin' in last) return; const hit = [...document.querySelectorAll('[data-sort-bin]')].find((x) => { const r = x.getBoundingClientRect(); return e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom; }); last.bin = hit ? hit.getAttribute('data-sort-bin') : null; }, true); });
+  for (const id of Object.keys(WANT)) {
+    await page.evaluate(() => { window.__dragSeen = []; });
+    await page.evaluate((g) => window.__eduTest.openColoring('play:' + g, { intro: true }), id); await page.waitForTimeout(300);
+    await introDone(page);
+    const log = await page.evaluate(() => window.__eduIntro);
+    got[id] = log && log.done ? log.acts.filter((a) => a.act === 'drag').map((a) => ({ ok: a.ok, what: a.what })) : null;
+    seen[id] = await page.evaluate(() => window.__dragSeen.slice());
+  }
+  const matched = Object.entries(WANT).every(([id, want]) => Array.isArray(got[id]) && got[id].length === 1 && got[id][0].ok && JSON.stringify(got[id][0].what) === JSON.stringify(want));
+  ok('each welcome\'s pointer drags what its words name, in their order: red then blue, big then small, a noun then a verb, the swipe card the way named first, and two weights to level the balance (pass MS)', matched, got);
+  // The shapes themselves: a red shape let go over the red box and then a blue one over the blue box; a big shape over the big box
+  // (the first) and then a smaller one over the small box.
+  const rgb = (s) => (String(s).match(/\d+/g) || []).map(Number); const hue = (s) => { const [r, g, b2] = rgb(s); return r > b2 + 40 ? 'red' : b2 > r + 40 ? 'blue' : 'other'; };
+  const colors = (seen['sort-color'] || []).map((x) => `${hue(x.fill)}>${x.bin}`); const sizes = seen['sort-size'] || [];
+  const really = JSON.stringify(colors) === JSON.stringify(['red>red', 'blue>blue']) && sizes.length === 2 && sizes[0].w > sizes[1].w && sizes[0].bin === '0' && sizes[1].bin === '1';
+  ok('in Red and Blue the pointer really lets a red shape go over the red box and then a blue one over the blue box, and in Big and Small a big shape over the big box and then a smaller one over the small box (pass MS, round one\'s screen check)', really, { colors, sizes, sortColor: seen['sort-color'] });
+  await ctx.close(); }
+// ---- A walk reaches what its words promise (pass MS, round three's final read, Mikey: "These small details should be accurate
+// too."): each welcome played in the page while a watcher reads the board every 50 ms, and the board must mark that it reached its
+// goal (data-demo-reached) before the welcome ends: a young path's dot on the star, on a five-cell board and a four-cell one, an older
+// path's drag at the star, In order's first set numbered first to last (five steps, the timeline's six with its dates, and the math
+// way's four), Build a sentence's first sentence built, and Shape the Sound's bars following the markings. Before the fix each stopped
+// short: two taps of a path, six cells of eight, two steps of a set, three words of four and three nudges of seven.
+{ const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+  const page = await ctx.newPage(); page.on('pageerror', (e) => errors.push(String(e).slice(0, 300)));
+  await signIn(page, 'S-91', PHONE_PAGE.href);
+  const REACH = ['path-circles', 'path-goods', 'path-even', 'order-steps', 'order-timeline', 'order-math', 'build-writing-3', 'shape-arts-6'];
+  const reached = {};
+  for (const id of REACH) {
+    // Shape the Sound's welcome presses Check the line too, so its board says "Matches the score." (round four's screen read: the
+    // check was said and never pressed).
+    await page.evaluate(() => { window.__reachedSeen = false; window.__matchedSeen = false; clearInterval(window.__reachWatch); window.__reachWatch = setInterval(() => { if (document.querySelector('[data-demo-reached]')) window.__reachedSeen = true;
+      if ([...document.querySelectorAll('.edu-game-box p')].some((x) => x.textContent.trim() === 'Matches the score.' && x.offsetParent !== null)) window.__matchedSeen = true; }, 50); });
+    await page.evaluate((g) => window.__eduTest.openColoring('play:' + g, { intro: true }), id); await page.waitForTimeout(300);
+    await introDone(page);
+    const log = await page.evaluate(() => window.__eduIntro);
+    reached[id] = { seen: await page.evaluate(() => window.__reachedSeen), done: !!(log && log.done), acts: log ? log.acts.filter((a) => a.act === 'taps' || a.act === 'drag' || a.act === 'tap').map((a) => a.ok) : null };
+    if (id === 'shape-arts-6') reached[id].matched = await page.evaluate(() => window.__matchedSeen);
+    await page.evaluate(() => clearInterval(window.__reachWatch));
+  }
+  await ctx.close();
+  // And in a short laptop window (667 by 375), where an older path's way runs past the part of the window the pointer may use: the
+  // pointer lets go, the page brings the rest of the way into view, and the drag goes on to the star, never resting out of sight
+  // (without the lift, four of its rests lay under the floating Skip).
+  // Since round four's screen read the star a walk heads for shows, clear of the floating Skip, while its first two lines are said
+  // (the board brought whole into view where it fits): the bar had covered the board's bottom row, the star with it, in all three
+  // mazes and the seven paths, while the words said to go to the star. Read every 50 ms on Big Maze, Step on the Circles and an
+  // older path.
+  const ctx2 = await browser.newContext({ viewport: { width: 667, height: 375 } });
+  const page2 = await ctx2.newPage(); page2.on('pageerror', (e) => errors.push(String(e).slice(0, 300)));
+  await signIn(page2, 'S-90');
+  const starSeen = {}; let log2 = null;
+  for (const id of ['path-even', 'maze-big', 'path-circles']) {
+    await page2.evaluate(() => { window.__reachedSeen = false; window.__star = { looked: 0, hidden: 0, where: null, t0: 0 }; clearInterval(window.__reachWatch);
+      window.__reachWatch = setInterval(() => { if (document.querySelector('[data-demo-reached]')) window.__reachedSeen = true;
+        const log = window.__eduIntro; const star = document.querySelector('[data-demo-star]'); if (!log || log.done || log.at > 1 || !star) return;
+        // the first look's scroll is given a moment and a half to bring the board up before the star is read
+        if (!window.__star.t0) window.__star.t0 = performance.now(); if (performance.now() - window.__star.t0 < 1500) return;
+        const r = star.getBoundingClientRect(); const bar = document.querySelector('[data-intro-float-bar]'); const b = bar ? bar.getBoundingClientRect() : null;
+        const x = r.left + r.width / 2; const y = r.top + r.height / 2; window.__star.looked += 1;
+        if (y < 0 || y > window.innerHeight || x < 0 || x > window.innerWidth || (b && b.height > 0 && r.bottom > b.top && x >= b.left && x <= b.right)) { window.__star.hidden += 1; window.__star.where = [Math.round(r.top), Math.round(r.bottom), b ? Math.round(b.top) : null]; } }, 50); });
+    await page2.evaluate((g) => window.__eduTest.openColoring('play:' + g, { intro: true }), id); await page2.waitForTimeout(300);
+    await introDone(page2);
+    const log = await page2.evaluate(() => window.__eduIntro); if (id === 'path-even') log2 = log;
+    starSeen[id] = await page2.evaluate(() => window.__star);
+    if (id === 'path-even') reached['path-even, 667 by 375'] = { seen: await page2.evaluate(() => window.__reachedSeen), done: !!(log && log.done), acts: log ? log.acts.filter((a) => a.act === 'drag').map((a) => a.ok) : null, hidden: log && log.hidden ? log.hidden.length : 0 };
+    await page2.evaluate(() => clearInterval(window.__reachWatch));
+  }
+  const lifted = log2 && log2.lifts ? log2.lifts : 0;
+  await ctx2.close();
+  // And where the page cannot move at all (at its end, or at the foot of a page-tall frame; here every way to scroll does nothing):
+  // the pointer lets go once, finds the page still, and carries the drag on held to the star (round four's code read: it had let go
+  // and pressed again at every point left, about 0.7 seconds each, resting under Skip each time).
+  const ctx3 = await browser.newContext({ viewport: { width: 667, height: 375 } });
+  const page3 = await ctx3.newPage(); page3.on('pageerror', (e) => errors.push(String(e).slice(0, 300)));
+  await signIn(page3, 'S-89');
+  await page3.evaluate(() => { const still = () => {}; window.scrollBy = still; window.scrollTo = still; Element.prototype.scrollBy = still; Element.prototype.scrollTo = still; Element.prototype.scrollIntoView = still;
+    window.__reachedSeen = false; window.__reachWatch = setInterval(() => { if (document.querySelector('[data-demo-reached]')) window.__reachedSeen = true; }, 50); });
+  await page3.evaluate(() => window.__eduTest.openColoring('play:path-even', { intro: true })); await page3.waitForTimeout(300);
+  await introDone(page3);
+  const log3 = await page3.evaluate(() => window.__eduIntro);
+  const stillPage = { seen: await page3.evaluate(() => window.__reachedSeen), done: !!(log3 && log3.done), acts: log3 ? log3.acts.filter((a) => a.act === 'drag').map((a) => a.ok) : null, lifts: log3 && log3.lifts ? log3.lifts : 0 };
+  await ctx3.close();
+  ok("each welcome's walk reaches what its words promise: a path's dot the star, In order's first set every step, Build a sentence's whole first sentence and Shape the Sound's bars the markings, and an older path's drag in a short window too (pass MS, round three's final read)", Object.values(reached).length === REACH.length + 1 && Object.values(reached).every((x) => x.seen && x.done && x.acts && x.acts.length && x.acts.every(Boolean) && !x.hidden) && reached['shape-arts-6'] && reached['shape-arts-6'].matched === true, { reached, lifted });
+  ok("in a short window the star a walk heads for shows, clear of the floating Skip, while its first two lines are said: Big Maze, Step on the Circles and an older path (pass MS, round four's screen read)", Object.values(starSeen).length === 3 && Object.values(starSeen).every((x) => x && x.looked > 20 && x.hidden === 0), starSeen);
+  ok("where the page cannot move, an older path's drag lets go once and carries on held to the star (pass MS, round four's code read)", stillPage.seen && stillPage.done && stillPage.acts && stillPage.acts.length && stillPage.acts.every(Boolean) && stillPage.lifts === 1, stillPage); }
 ok('no browser errors during the walk', errors.length === 0, errors.slice(0, 4));
 await browser.close();
 console.log(`\n${passed} passed, ${failed} failed`);

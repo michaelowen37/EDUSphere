@@ -247,7 +247,7 @@ newest version by opening the address.
   (`npm install -g typescript react react-dom`), plus `playwright` for the browser
   tests.
 
-Read `CLAUDE.md` before changing anything. Decisions and the phase 1 plan are in
+Read `CLAUDE.md` and its second part, `CLAUDE-PART-2.md`, before changing anything. Decisions and the phase 1 plan are in
 `docs/DECISIONS.md`. Design rules are in `docs/DESIGN.md`. What to do when something
 breaks is in `docs/RUNBOOK.md`.
 
@@ -269,7 +269,8 @@ several devices to share one view, and will not begin before an education privac
 attorney has reviewed the plan.
 
 If you are a developer, or a model, picking this up cold: `CLAUDE.md` lists the files
-to read and the order to read them in.
+to read and the order to read them in; since pass MS it has a second part, `CLAUDE-PART-2.md`,
+which it imports and which is read with it.
 
 Questions or problems: michaelowen37@gmail.com
 

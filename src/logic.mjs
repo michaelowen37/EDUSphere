@@ -95,6 +95,23 @@ export function electiveBand(grade) {
   if (n <= 8) return { key: '6', title: 'Grades 6 to 8' };
   return { key: '9', title: 'Grades 9 to 12' };
 }
+// How the standards map keys and names a plan's row (pass MS: round three's screen read built it in the screen, and round four's code
+// read moved it here, where the coverage test reads every plan by it). A grade can hold two plans of one subject: a course's own
+// beside its elective (grade 6's and grade 9's health and their sexual health electives), or two courses' (grade 3's Looking and
+// making and Looking closer, listening longer, both Art), and each pair had shared one key and one name, so a tap opened both. Such a
+// row, and every elective's own plan, is keyed and named by its course: the plan's own (courseId), or else the one course its lessons
+// belong to. entries is the list the row is drawn among; the result is { key, named, bySubject, spoken, course }: named is the row's
+// words under a grade, bySubject its words under a subject (the grade, and the course where it has one), spoken the name a screen
+// reader hears in either order (the grade and named), and course null for a row named by its subject alone.
+export function planRowName(entry, entries) {
+  const twin = entries.some((x) => x !== entry && x.grade === entry.grade && x.subject === entry.subject);
+  const ids = [...new Set(entry.standards.flatMap((st) => st.moduleIds).map((id) => (getModule(id) || {}).courseId).filter(Boolean))];
+  const own = entry.courseId ? getCourse(entry.courseId) : ids.length === 1 ? getCourse(ids[0]) : null;
+  const course = (entry.courseId || twin) && own ? own : null;
+  const named = course ? `${entry.subject}: ${titleCase(course.title)}` : entry.subject;
+  const bySubject = course ? `${gradeLabel(entry.grade)}: ${titleCase(course.title)}` : gradeLabel(entry.grade);
+  return { key: `${entry.grade}-${entry.subject}${course ? '-' + course.id : ''}`, named, bySubject, spoken: `${gradeLabel(entry.grade)} ${named}`, course };
+}
 // One line for a course anywhere it appears in a list.
 export function courseLabel(course) { return `${course.title} (${course.elective && course.audience ? bandShort(course.audience, true) : gradeShort(course.grade)} - ${course.subject})`; }
 
@@ -1866,6 +1883,10 @@ export const RULE_DECKS = {
   'acid-base': { a: { label: 'Acids', items: ['lemon', 'vinegar', 'soda', 'tomato', 'coffee', 'orange', 'lime', 'grapefruit'] }, b: { label: 'Bases', items: ['soap', 'bleach', 'ammonia', 'antacid', 'lye', 'egg white', 'seawater', 'toothpaste'] } },
 };
 export function ruleDeck(id) { return RULE_DECKS[id] || null; }
+// How many cells a side a path board has (pass MS, round three's final read, so the board and the welcome's check read one rule):
+// five, or four when a chip's longest word runs past six letters (a shape counts as one letter), so long words still fit their
+// cells. The fitting chips' path runs only right and down, so the way to the star is 2 * (side - 1) steps.
+export function pathSize(deck) { const longest = Math.max(...deck.a.items.concat(deck.b.items).map((t) => (/^shape:/.test(t) ? 1 : t.length))); return longest > 6 ? 4 : 5; }
 // ---------- A game's spoken welcome, with a demonstration (pass MP, Mikey's notes of October 26, 2026) ----------
 // In plain terms: every game now opens by talking a child through it while a pointer plays a little of it on the real board,
 // and only then shows Begin. Mikey's words: "I think games can have the instruction audio play automatically when entering the
@@ -1895,6 +1916,13 @@ export function ruleDeck(id) { return RULE_DECKS[id] || null; }
 // words go ("down to the picture of the sense"), "the picture of the sense that fits best" for "the image that displays the most
 // appropriate sense", and his one sentence of three ways to answer is three lines, each said while the pointer shows it.
 export const GAME_INTRO_ACTS = ['look', 'tap', 'taps', 'drag', 'key', 'follow', 'replay', 'speaker', 'wait'];
+// What the pointer shows matches what the words say (pass MS, Mikey: "A while back I saw a game demo talking about putting the red and
+// blue shapes into the appropriate boxes but when it said to drag the red shape, the demo showed dragging the blue shape.   These
+// small details should be accurate too."). A line that names the things it drags, one and then the other, carries picks, the same
+// things in the words' order (red and then blue; big and then small; a Buckets rule's first group and then its second, a and b), and
+// the pointer drags one of each in that order, each to its own place; a drag line with times drags again while the board still marks
+// a piece (the balance's weights, until the scale is level). The rules test holds each pick to the words, and the browser test reads
+// what the pointer really dragged.
 // Since pass MR every welcome ends with Mikey's own words (his note: "Let's edit the game "Have fun" text to something that sounds more
 // exciting and fun.  "But most importantly, HAVE FUN!!!""), capitals and all, which the voice says as a cheer (CHEER_RUN, below).
 export const GAME_INTRO_CLOSING = 'If you wish to hear these instructions again, simply tap the speaker near the bottom of the page. But most importantly, HAVE FUN!!!';
@@ -1931,9 +1959,11 @@ const introPairDeck = { fractions: 'Every card has a twin that says the same amo
 const INTRO_RULE_SAID = { living: ['living things', 'things that are not living'], halves: ['fractions equal to one half', 'other fractions'], renewable: ['renewable resources', 'resources that are not renewable'], mammals: ['mammals', 'animals that are not mammals'], 'mitosis-meiosis': ['words about mitosis', 'words about meiosis'], 'gas-or-not': ['gases', 'things that are not gases'] };
 const introSaid = (g, d, side) => (INTRO_RULE_SAID[g.rule] ? INTRO_RULE_SAID[g.rule][side === 'a' ? 0 : 1] : introLow(d[side].label));
 const INTROS = {
+  // Since pass MS the dots line says the picture comes at the last dot: the pointer taps three, and with "one, two, three, and a
+  // picture appears" the child heard the picture promised after three taps that drew none.
   dots: (g) => [
     { say: `Welcome to ${spokenTitle(g.title)}! This game helps you count in order.`, act: 'look' },
-    { say: 'Tap the dots one by one, one, two, three, and a picture appears.', act: 'taps', times: 3 },
+    { say: 'Tap the dots in order, one, two, three, and keep going. When you tap the last dot, a picture appears.', act: 'taps', times: 3 },
     { say: 'The gold dot is always the next one to tap.', act: 'look' },
   ],
   pairs: (g) => [
@@ -1944,11 +1974,11 @@ const INTROS = {
   ],
   sort: (g) => (g.by === 'size' ? [
     { say: `Welcome to ${spokenTitle(g.title)}! This game helps you sort big things from small things.`, act: 'look' },
-    { say: 'Drag each big shape to the box with the big circle, and each small shape to the box with the little circle.', act: 'drag' },
+    { say: 'Drag each big shape to the box with the big circle, and each small shape to the box with the little circle.', act: 'drag', picks: ['big', 'small'] },
     { say: 'When every shape is sorted, you win!', act: 'look' },
   ] : [
     { say: `Welcome to ${spokenTitle(g.title)}! This game helps you sort by color.`, act: 'look' },
-    { say: 'Drag each red shape to the red box, and each blue shape to the blue box.', act: 'drag' },
+    { say: 'Drag each red shape to the red box, and each blue shape to the blue box.', act: 'drag', picks: ['red', 'blue'] },
     { say: 'When every shape is sorted, you win!', act: 'look' },
   ]),
   catch: (g, d) => [
@@ -1956,9 +1986,11 @@ const INTROS = {
     { say: `Things fall from the top. Slide the basket under the ${introSaid(g, d, 'a')} to catch them, and let the ${introSaid(g, d, 'b')} fall past.`, act: 'follow', ms: 4200 },
     { say: 'Every right catch is a point, and catching something else takes a point away.', act: 'follow', ms: 2400 },
   ],
+  // The maze's pointer drags the dot the first eight cells of the way (a whole maze is 24 to 32), so its words say toward the star
+  // (pass MS, round three's final read: they had said to the star, which the pointer never reaches).
   maze: (g) => [
     { say: `Welcome to ${spokenTitle(g.title)}! This game helps you find your way.`, act: 'look' },
-    { say: 'Press the gold dot and drag it along the open paths to the star.', act: 'drag' },
+    { say: 'Press the gold dot and drag it along the open paths, toward the star.', act: 'drag' },
     { say: 'The walls stop the dot, so look for a way through.', act: 'look' },
   ],
   walk: (g) => [
@@ -2004,9 +2036,13 @@ const INTROS = {
     { say: 'A right piece lights up, and a wrong one gets a red-brown ring.', act: 'look' },
     { say: 'Need to hear it again? Tap the speaker next to the words.', act: 'replay' },
   ]),
+  // A path's pointer goes the whole way to the star, as its words say (pass MS, round three's final read: it had stopped after two
+  // steps, or six cells of an older board's eight): a young board's eight taps are the way on the largest board (pathSize, five
+  // a side, so eight steps), and a board marks no step once the dot is on the star, so a smaller board's walk ends there; an older
+  // board's drag follows every cell of the way (PathGame).
   path: (g, d) => (g.young ? [
     { say: `Welcome to ${spokenTitle(g.title)}! This game helps you tell ${introSaid(g, d, 'a')} from ${introSaid(g, d, 'b')}.`, act: 'look' },
-    { say: `Tap the ${introSaid(g, d, 'a')} one at a time to walk the gold dot to the star.`, act: 'taps', times: 2 },
+    { say: `Tap the ${introSaid(g, d, 'a')} one at a time to walk the gold dot to the star.`, act: 'taps', times: 8 },
     { say: `A step on anything else gets a red-brown edge, and the dot stays put. You can drag the dot along the ${introSaid(g, d, 'a')} too.`, act: 'look' },
   ] : [
     { say: `Welcome to ${spokenTitle(g.title)}! This game helps you spot ${introSaid(g, d, 'a')} fast.`, act: 'look' },
@@ -2025,7 +2061,7 @@ const INTROS = {
   ],
   buckets: (g, d) => [
     { say: `Welcome to ${spokenTitle(g.title)}! This game helps you sort ${introSaid(g, d, 'a')} from ${introSaid(g, d, 'b')}.`, act: 'look' },
-    { say: `Drag each chip into its bucket, ${introSaid(g, d, 'a')} on the left and ${introSaid(g, d, 'b')} on the right.`, act: 'drag' },
+    { say: `Drag each chip into its bucket, ${introSaid(g, d, 'a')} on the left and ${introSaid(g, d, 'b')} on the right.`, act: 'drag', picks: ['a', 'b'] },
     { say: 'A chip in the wrong bucket bounces back, and the clock counts up, so try to beat your best.', act: 'look' },
   ],
   ship: (g, d) => [
@@ -2042,7 +2078,7 @@ const INTROS = {
   ],
   balance: (g) => [
     { say: `Welcome to ${spokenTitle(g.title)}! This game helps you make two sides equal.`, act: 'look' },
-    { say: `The left pan shows ${g.balance === 'times' ? 'a times fact' : g.balance === 'fractions' ? 'a fraction' : g.balance === 'expressions' ? 'an expression to work out' : 'a number'}. Drag weights from the tray onto the right pan until the scale is level.`, act: 'drag' },
+    { say: `The left pan shows ${g.balance === 'times' ? 'a times fact' : g.balance === 'fractions' ? 'a fraction' : g.balance === 'expressions' ? 'an expression to work out' : 'a number'}. Drag weights from the tray onto the right pan until the scale is level.`, act: 'drag', times: 2 },
     { say: 'If the right pan gets too heavy, drag a weight back off.', act: 'look' },
   ],
   sprint: (g) => [
@@ -2050,9 +2086,12 @@ const INTROS = {
     { say: 'You have sixty seconds. Questions from your own lessons come one after another, so tap the answer, and the next one appears.', act: 'tap' },
     { say: 'A right answer is a point, a wrong one takes a point away, and three right in a row starts a streak. Try to beat your best!', act: 'tap' },
   ],
+  // The pointer numbers every step of the first set, first to last, as the words say (pass MS, round three's final read: it had
+  // numbered two of four to six): six taps are the longest set, and in a welcome the board marks the first set's steps alone
+  // (OrderGame), so a shorter set's walk ends at its last step and never runs on into the next set.
   order: (g) => [
     { say: `Welcome to ${spokenTitle(g.title)}! This game helps you put things in the order they happen.`, act: 'look' },
-    { say: 'The steps are mixed up. Tap them in order, first to last, and each one takes its number.', act: 'taps', times: 2 },
+    { say: 'The steps are mixed up. Tap them in order, first to last, and each one takes its number.', act: 'taps', times: 6 },
     { say: 'Tap a numbered step to take back its number and the ones after it. When every step has a number, a right order moves on, and the steps from the first mistake on come loose to try again.', act: 'look' },
   ],
   pong: (g) => [
@@ -2080,9 +2119,12 @@ const INTROS = {
     { say: 'A color is named at the top. Tap two paint pots to pour them into the bowl, and see what they make.', act: 'taps', times: 2 },
     { say: 'A right color brings its rule and Next. A wrong mix shows what it made, then clears, so you can try another pair.', act: 'look' },
   ],
+  // The pointer builds the whole first sentence, as the words say (pass MS, round three's final read: three taps had left "home."
+  // and "swim." in the tray): five taps are the longest first sentence, and in a welcome the board marks the first sentence's words
+  // alone (BuildGame), so the walk ends there and never runs on into Now say more.
   build: (g) => [
     { say: `Welcome to ${spokenTitle(g.title)}! This game helps you build sentences that say more.`, act: 'look' },
-    { say: 'Tap the words in order to build the sentence.', act: 'taps', times: 3 },
+    { say: 'Tap the words in order to build the sentence.', act: 'taps', times: 5 },
     { say: 'Tap a word in the sentence to take it back. First comes a short sentence, and then a longer one that says more.', act: 'look' },
   ],
   fix: (g) => [
@@ -2125,10 +2167,16 @@ const INTROS = {
     { say: 'A row of pieces repeats, and then it stops. Tap the piece that comes next.', act: 'tap' },
     { say: 'The right one fills the row, and a wrong one gets a red-brown edge.', act: 'look' },
   ],
+  // The pointer nudges the bars until they follow the markings, as the words say (pass MS, round three's final read: three nudges
+  // had left a line that needs seven): seven nudges, the most any line takes from the bars' start (dynamicsNearest), and DEMO_SHOWS
+  // and the rules test hold the welcome round's first line to them; the board marks no arrow once the bars follow the markings. Since
+  // round four's screen read the pointer then presses Check the line, as its own line says, so the board says "Matches the score."
+  // (the check had been said over a pointer resting on the bars, and nothing was pressed).
   shape: (g) => [
     { say: `Welcome to ${spokenTitle(g.title)}! This game helps you read how loud music should be.`, act: 'look' },
-    { say: 'Six bars of loudness sit over the markings from the score. Tap the arrows to raise or lower each bar until it follows the markings.', act: 'taps', times: 3 },
-    { say: 'Soft bars sit low, loud bars sit high, a crescendo climbs and a decrescendo falls. Then check the line.', act: 'look' },
+    { say: 'Six bars of loudness sit over the markings from the score. Tap the arrows to raise or lower each bar until it follows the markings.', act: 'taps', times: 7 },
+    { say: 'Soft bars sit low, loud bars sit high, a crescendo climbs and a decrescendo falls.', act: 'look' },
+    { say: 'Then check the line.', act: 'tap' },
   ],
   chord: (g) => [
     { say: `Welcome to ${spokenTitle(g.title)}! This game helps you build chords on a keyboard.`, act: 'look' },
@@ -2320,6 +2368,9 @@ export function searchBoardAt(round, k, cards = 32) { return searchBoard(round *
 // one without (the youngest's) that many pictures, each twice (PAIR_ICONS, moved here from ui.jsx); a picture Pairs (pics) has its
 // own board, pairPicsBoard.
 export const PAIR_ICONS = ['sun', 'fish', 'tree', 'flower', 'moon', 'bird', 'cup', 'drop'];
+// The chips in the order a welcome's pointer drags them (pass MS): the first of the first group, then the first of the second, as its
+// words name them, then the rest as dealt; BucketsGame marks the same two.
+export function bucketDemoOrder(chips) { const a = chips.find((c) => c.bin === 0); const b = chips.find((c) => c.bin === 1); return [a, b, ...chips.filter((c) => c !== a && c !== b)].filter(Boolean); }
 export function bucketChips(deck, round) { const rnd = lcgRandom(round * 104729 + 11); const take = (list, bin) => shuffle(rnd, list).slice(0, 4).map((t) => ({ t, bin })); return shuffle(rnd, [...take(deck.a.items, 0), ...take(deck.b.items, 1)]); }
 export function pairCards(game, round) { const rnd = lcgRandom(round * 7919 + 13); if (game.deck) { const pairs = shuffle(rnd, PAIR_DECKS[game.deck]).slice(0, game.pairs); return shuffle(rnd, pairs.flatMap((pr, k) => [{ key: k, text: pr[0] }, { key: k, text: pr[1] }])); } const icons = shuffle(rnd, PAIR_ICONS).slice(0, game.pairs); return shuffle(rnd, icons.flatMap((ic) => [ic, ic])); }
 // The items a game's round deals, in the order its board deals them, n of them (all of a small deck's), each as a short key: what
@@ -2344,7 +2395,7 @@ export function gameItems(game, round, n = 3) {
     case 'walk': return deckRun(ROBOT_DECKS.walk, 'walk');
     case 'teach': return deckRun(TEACH_DECKS[game.teach], 'teach');
     case 'spot': return game.spot === 'letters' ? null : deckRun(SPOT_SCENES, 'spot');
-    case 'buckets': return ruleDeck(game.rule) ? from(bucketChips(ruleDeck(game.rule), round), (c) => c.t) : null;
+    case 'buckets': return ruleDeck(game.rule) ? from(bucketDemoOrder(bucketChips(ruleDeck(game.rule), round)), (c) => c.t) : null;
     case 'pairs': { if (!game.deck || !PAIR_DECKS[game.deck]) return null; const cards = pairCards(game, round); const keys = []; for (const c of cards) if (!keys.includes(c.key)) keys.push(c.key); return keys.slice(0, n).map((k) => key(cards.filter((c) => c.key === k).map((c) => c.text).sort())); }
     case 'mix': return from(mixOrder(MIX_DECKS[game.deck], round));
     case 'map': return from(mapOrder(mapFor(game.map), round));
@@ -2390,7 +2441,8 @@ export function gameItems(game, round, n = 3) {
 // How many items a game's welcome answers: one for each line whose act answers one (a tap, taps, a drag or a key; a computer's
 // keyboard line counts, since a computer says it), except a line that goes on with the item the line before began (same: Check
 // after the cookies, the fix after Run, Go after the steps).
-export function demoItemCount(game) { return Math.max(1, gameIntro(game).filter((l) => ['tap', 'taps', 'drag', 'key'].includes(l.act) && !l.same).length); }
+// Since pass MS a line with picks answers one item for each pick (Buckets drags a chip of each group).
+export function demoItemCount(game) { return Math.max(1, gameIntro(game).filter((l) => ['tap', 'taps', 'drag', 'key'].includes(l.act) && !l.same).reduce((n, l) => n + (l.picks ? l.picks.length : 1), 0)); }
 // The round a game's welcome plays: from DEMO_FROM up, the first whose answered items (demoItemCount of them, three at most) are
 // none of the items the child meets in round 1, the child's first (all of round 1's run, or its whole board where a board shows all
 // of itself at once); where no round is clear (a deck the child meets whole in round 1: Spot It's four pictures, In order:
@@ -2404,7 +2456,28 @@ export function demoItemCount(game) { return Math.max(1, gameIntro(game).filter(
 // 1,000 rounds as the game opened, a 400 ms freeze in a desktop browser). The rules test fails when the table and the search differ,
 // and names the command that writes it again; a game missing from the table is searched when it opens.
 export const DEMO_FROM = 500; const DEMO_TRIES = 1000; const demoRoundMemo = new Map();
-const DEMO_SHOWS = { pay: (game, round) => payPrices(round)[0].price >= 5 };
+// Since pass MS (Mikey: "These small details should be accurate too") three more: a swipe card's welcome flicks its first card the
+// way its words name first, right (Experiment, Cite it), where two welcomes flicked the first card left; Binary Switches' first number
+// needs no more switches than the pointer flips, so it shows the lit places adding up to the number as the words say; and the balance's
+// first amount takes as many weights as the pointer drags, the fewest that make it, so the scale ends level, where one weight had been
+// dragged and the scale left tipped. Since round three's final read Shape the Sound's first line is one the pointer's nudges finish,
+// so the bars end following the markings. Since round four's code read Cut the Fillers' first line holds no more fillers than the
+// pointer taps, so "Tap every filler" leaves the line clean (a line deals two or three, and the welcome's round had dealt two by luck).
+const SWIPE_RIGHT = { valid: (q) => !!q.valid, reason: (q) => !!q.supports, greenred: (q) => q.answer === 'green', cite: (q) => q.answer === 'cite', gdp: (q) => q.answer === 'in', cause: (q) => q.answer === 'experiment', mythfact: (q) => q.answer === 'fact' };
+const SWIPE_ROUNDS = { valid: argumentRounds, reason: reasonRounds, greenred: greenredRounds, cite: citeRounds, gdp: gdpRounds, cause: causeRounds, mythfact: mythfactRounds };
+// The side a swipe card's answer lies on, which its board flicks it to and its arrow key presses (one rule for the seven boards).
+export function swipeSide(kind, q) { return SWIPE_RIGHT[kind] && q && SWIPE_RIGHT[kind](q) ? 'right' : 'left'; }
+// How many times a welcome's line for this act repeats its act (its times, else once), for DEMO_SHOWS: the number of switches the
+// pointer flips or weights it drags, which the first round must match.
+const introActTimes = (game, act) => { const l = gameIntro(game).find((x) => x.act === act); return l ? l.times || 1 : 1; };
+const DEMO_SHOWS = {
+  pay: (game, round) => payPrices(round)[0].price >= 5,
+  bits: (game, round) => { const ones = bitsTargets(round, 6)[0].toString(2).replace(/0/g, '').length; return ones >= 1 && ones <= introActTimes(game, 'taps'); },
+  balance: (game, round) => { const deck = BALANCE_DECKS[game.balance]; const t = deck ? balanceTargets(deck, round)[0] : null; const set = t ? balanceFewest(deck.weights, t.value) : null; return !!set && set.length === introActTimes(game, 'drag'); },
+  shape: (game, round) => dynamicsNearest(DYNAMICS_START, dynamicsPlan(round, 0)).cost <= introActTimes(game, 'taps'),
+  filler: (game, round) => fillerRounds(round)[0].fillers <= introActTimes(game, 'taps'),
+  ...Object.fromEntries(Object.keys(SWIPE_ROUNDS).map((kind) => [kind, (game, round) => swipeSide(kind, SWIPE_ROUNDS[kind](round)[0]) === 'right'])),
+};
 export function demoRoundSearch(game) {
   if (!game) return DEMO_FROM;
   const all = gameItems(game, 1, 99); let best = DEMO_FROM;
@@ -2446,13 +2519,13 @@ export const DEMO_ROUNDS = {
   'pairs-many': 500,
   'path-even': 500,
   'catch-multiples-3': 500,
-  'buckets-noun-verb': 501,
+  'buckets-noun-verb': 504,
   'catch-living': 500,
   'path-multiples-4': 500,
   'buckets-conductors': 501,
   'catch-halves': 500,
-  'buckets-mammals': 501,
-  'buckets-adjective-adverb': 501,
+  'buckets-mammals': 504,
+  'buckets-adjective-adverb': 504,
   'catch-multiples-7': 500,
   'catch-renewable': 500,
   'path-squares': 500,
@@ -2467,7 +2540,7 @@ export const DEMO_ROUNDS = {
   'catch-compound': 500,
   'path-goods': 500,
   'path-positive-sines': 500,
-  'buckets-cell-division': 501,
+  'buckets-cell-division': 511,
   'jump-fractions': 500,
   'jump-integers': 500,
   'map-continents': 502,
@@ -2482,7 +2555,7 @@ export const DEMO_ROUNDS = {
   'map-south-america': 508,
   'balance-ten': 500,
   'catch-hexagons': 500,
-  'balance-times': 501,
+  'balance-times': 503,
   'balance-fractions': 501,
   'balance-expressions': 500,
   'buckets-acid-base': 501,
@@ -2538,7 +2611,7 @@ export const DEMO_ROUNDS = {
   'because-philosophy-3': 500,
   'face-psychology-3': 508,
   'pattern-arts-3': 500,
-  'shape-arts-6': 504,
+  'shape-arts-6': 502,
   'teach-tech-6': 502,
   'search-tech-college': 500,
   'loan-econ-6': 500,
@@ -2552,9 +2625,9 @@ export const DEMO_ROUNDS = {
   'breakeven-business-9': 500,
   'tool-business-k': 526,
   'ledger-business-college': 504,
-  'cause-psychology-college': 504,
+  'cause-psychology-college': 525,
   'gdp-macroeconomics-college': 506,
-  'cite-speech-college': 507,
+  'cite-speech-college': 510,
   'label-health-6': 500,
   'cpr-health-9': 500,
   'greenred-sexual-health-6': 515,
@@ -2847,6 +2920,14 @@ export const BALANCE_DECKS = {
   expressions: { title: 'Expressions', weights: [W('1', 1), W('2', 2), W('4', 4), W('5', 5), W('10', 10), W('20', 20), W('25', 25), W('50', 50)], make: (rng) => { const k = randInt(rng, 0, 3); const a = randInt(rng, 2, 6); const b = randInt(rng, 2, 9); return k === 0 ? { show: `${a} × (${b} + 2)`, value: a * (b + 2) } : k === 1 ? { show: `${a}² + ${b}`, value: a * a + b } : k === 2 ? { show: `${a * 10} − ${b}`, value: a * 10 - b } : { show: `${a} × ${b} + ${a}`, value: a * b + a }; } },
 };
 export const BALANCES_PER_ROUND = 6;
+// The fewest weights from a tray that make an amount exactly, as indices into weights, those in skip left out, or null (pass MS):
+// the welcome's pointer drags these, one at a time (BalanceGame), and DEMO_SHOWS reads how many, so the scale ends level.
+export function balanceFewest(weights, need, skip = []) {
+  const free = weights.map((w, k) => k).filter((k) => !skip.includes(k)); let best = null;
+  for (let m = 1; m < 1 << free.length; m++) { let sum = 0; const take = []; for (let b = 0; b < free.length; b++) if (m & (1 << b)) { sum += weights[free[b]].value; take.push(free[b]); }
+    if (Math.abs(sum - need) < 1e-9 && (!best || take.length < best.length)) best = take; }
+  return best;
+}
 // Can these weights make the target at all? The game asks only targets its tray can balance.
 export function balanceReachable(weights, target) {
   const sums = new Set([0]);
@@ -3105,6 +3186,10 @@ export const SPOT_SCENES = [
   { parts: [['square', 'green', 24, 26, 12], ['curve', 'blue', 72, 26, 13], ['circle', 'yellow', 50, 52, 12], ['straight', 'red', 26, 76, 14], ['triangle', 'orange', 74, 76, 13]], asks: [{ say: 'Tap the red line', color: 'red' }, { say: 'Tap the circle', kind: 'circle' }, { say: 'Tap the curved line', kind: 'curve' }] },
 ];
 export function spotMatches(part, ask) { return (!ask.kind || part[0] === ask.kind) && (!ask.color || part[1] === ask.color); }
+// A Spot It piece in words (its aria label and its praise share them), and the praise a right piece is given (pass MS, Mikey's answer to
+// Q75, "Q75 - B": the game says it to its end, then a beat, before the next ask, as Grow the Plant does): "Yes, the blue square."
+export const SPOT_PIECE_WORDS = { circle: 'circle', square: 'square', triangle: 'triangle', zigzag: 'zigzag line', curve: 'curved line', straight: 'straight line' };
+export function spotPraise(part) { return `Yes, the ${part[1]} ${SPOT_PIECE_WORDS[part[0]]}.`; }
 // Find the Letter (pass MM, First Sounds and Letters' game, from round one's game check): a voice names a letter and the child
 // finds it among five, as the Big Letters lesson's last line says, "Find the letter when you hear its name." Only the thirteen
 // capitals the course's lessons show and name are dealt: Big Letters' A, B, C, D, E, M and S, and the tracing lessons' L, T,
@@ -3183,6 +3268,17 @@ export function dynamicsMatch(levels, plan) {
   return plan.every((mark, i) => { const v = levels[i]; const prev = i > 0 ? levels[i - 1] : null;
     if (mark === 'piano') return v <= 2; if (mark === 'forte') return v >= 5;
     if (mark === 'crescendo') return prev !== null ? v > prev : v >= 2; return prev !== null ? v < prev : v <= 5; });
+}
+// Where every line's six bars start (the middle level), and the line that follows the markings in the fewest nudges from bars at
+// levels, with that count (cost): a nudge moves one bar one level. The welcome's pointer walks the bars to it, and DEMO_SHOWS asks
+// for a first line the welcome's nudges finish (pass MS, round three's final read). The search tries each bar's levels in turn and
+// drops a start that already costs as much as the best line found.
+export const DYNAMICS_START = [3, 3, 3, 3, 3, 3];
+export function dynamicsNearest(levels, plan) {
+  let goal = null; let cost = Infinity;
+  const walk = (i, acc, spent) => { if (spent >= cost) return; if (i === plan.length) { if (dynamicsMatch(acc, plan)) { goal = acc.slice(); cost = spent; } return; }
+    for (let v = 1; v <= 6; v++) { acc.push(v); if (dynamicsMatch(acc, plan.slice(0, i + 1))) walk(i + 1, acc, spent + Math.abs(v - levels[i])); acc.pop(); } };
+  walk(0, [], 0); return { goal, cost };
 }
 // Build the Chord (2026-09-29, pass GH, art and music 9 to 12): twelve keys from C to B, a chord named, and three keys to
 // tap. A major triad is four half steps and then three; a minor triad is three and then four. The rule of the game is the
@@ -5107,7 +5203,7 @@ function PREK3_MODULES() { return [
         { say: 'When you talk with a friend, take turns. Listen while your friend talks, and then it is your turn.', show: { kind: 'pair', a: { kind: 'pic', name: 'rabbit' }, b: { kind: 'pic', name: 'bear' } } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) I.A.1 (is building awareness of where own body is in space and an understanding of personal boundaries), in part, since the lesson teaches a friend\'s personal space, a bubble of room around each of you, never right in a friend\'s face, while awareness of where one\'s own body is in space as it moves waits (EARMARKS E12), I.C.1 (begins to use effective verbal and nonverbal communication skills, home language, assistive communication, or other preferred methods to develop positive relationships with adults and peers), in part, since the lesson teaches turning toward a friend, a nod and a smile, and hi and bye, while the kind words of asking and thanking are taught in Please and thank you, II.B.2 (begins to use appropriate language, style, and nonverbal cues during communication with familiar adults and peers), in part, since the lesson teaches saying hi to start and bye when you are done, taking turns talking, waiting until a friend stops, turning toward a friend, a nod and a smile, giving a friend some room and not shouting while a friend talks, with friends and with grown-ups you know, while saying something about what a friend said is taught in Talk about it and the language of asking and thanking, please and thank you, in Please and thank you, and Head Start ELOF Goals P-SE 3 (engages in and maintains positive interactions and relationships with other children), in part, since the lesson teaches taking turns in conversations, from the second sentence of its 36 to 48 month progression, "May spontaneously engage in prosocial behaviors with other children, such as sharing and taking turns with materials and in conversations, or may engage in these with prompting from adults.", while the skills of its first sentence are taught in Can I play too?, sharing in Please and thank you, taking turns with materials in Please and thank you and Can I play too?, and doing them without a grown-up, or spontaneously, is the child\'s own (EARMARKS E12), and P-LC 4 (understands, follows, and uses appropriate social and conversational rules), whose 36 to 48 month progression reads "Engages in conversations with adults, other children, or within the group setting lasting two or three conversational turns, and, with support, will sometimes use appropriate tone and volume for different situations.", in part, since the lesson teaches the turns of a conversation with friends and with grown-ups, a hi, a turn each and a bye, and one rule of volume, no shouting while a friend talks, while saying something about what the other one said, which keeps a conversation going for another turn, is taught in Talk about it, and using an appropriate tone and volume for different situations is the child\'s own talk (EARMARKS E12).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) I.A.1 (is building awareness of where own body is in space and an understanding of personal boundaries), in part, since the lesson teaches a friend\'s personal space, a bubble of room around each of you, never right in a friend\'s face, while awareness of where one\'s own body is in space as it moves waits (EARMARKS E12), I.C.1 (begins to use effective verbal and nonverbal communication skills, home language, assistive communication, or other preferred methods to develop positive relationships with adults and peers), in part, since the lesson teaches turning toward a friend, a nod and a smile, and hi and bye, while the kind words of asking and thanking are taught in Please and thank you, II.B.2 (begins to use appropriate language, style, and nonverbal cues during communication with familiar adults and peers), in part, since the lesson teaches saying hi to start and bye when you are done, taking turns talking, waiting until a friend stops, turning toward a friend, a nod and a smile, giving a friend some room and not shouting while a friend talks, with friends and with grown-ups you know, while saying something about what a friend said is taught in Talk about it and the language of asking and thanking, please and thank you, in Please and thank you, and Head Start ELOF Goals P-SE 3 (engages in and maintains positive interactions and relationships with other children), in part, since the lesson teaches taking turns in conversations, from the second sentence of its 36 to 48 month progression, "May spontaneously engage in prosocial behaviors with other children, such as sharing and taking turns with materials and in conversations, or may engage in these with prompting from adults.", while the skills of its first sentence are taught in Can I play too?, sharing in Please and thank you, taking turns with materials in Please and thank you and Can I play too?, and doing them without a grown-up, or spontaneously, is the child\'s own (EARMARKS E12), and P-LC 4 (understands, follows, and uses appropriate social and conversational rules), whose 36 to 48 month progression reads "Engages in conversations with adults, other children, or within the group setting lasting two or three conversational turns, and, with support, will sometimes use appropriate tone and volume for different situations.", in part, since the lesson teaches the turns of a conversation with friends and with grown-ups, a hi, a turn each and a bye, and one rule of volume, no shouting while a friend talks, while saying something about what the other one said, which keeps a conversation going for another turn, is taught in Talk about it, and using an appropriate tone and volume for different situations waits for a lesson, as pre-K 4\'s Say it to fit teaches it since pass MS (EARMARKS E12).'],
     generators: ['p3-talk-listen', 'p3-talk-turn', 'p3-talk-hi-bye', 'p3-talk-yesno', 'p3-talk-room'],
   },
   // Talk about it (pass MR, Mikey's answer to Q70, "Q70 - C"): the second half of Talking with a friend, saying something about what
@@ -5141,8 +5237,43 @@ function PREK3_MODULES() { return [
         { say: 'When it is your turn, say something about what your friend said. Then your friend knows you listened, and feels happy.', show: { kind: 'face', feeling: 'happy' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.B.2 (begins to use appropriate language, style, and nonverbal cues during communication with familiar adults and peers), in part, since the lesson teaches saying something about what a friend or a grown-up you know said, by asking about it or saying something kind about it, and not talking about something else, while hi and bye, taking turns talking, waiting until a friend stops, turning toward a friend, a nod and a smile, giving a friend some room and not shouting while a friend talks are taught in Talking with a friend and the language of asking and thanking, please and thank you, in Please and thank you, and Head Start ELOF Goal P-LC 4 (understands, follows, and uses appropriate social and conversational rules), in part, since the lesson teaches one conversational rule, saying something about what the other one said, which keeps a conversation going for two or three turns, as its 36 to 48 month progression reads "Engages in conversations with adults, other children, or within the group setting lasting two or three conversational turns, and, with support, will sometimes use appropriate tone and volume for different situations.", while a hi, a turn each, a bye and no shouting are taught in Talking with a friend, and using an appropriate tone and volume for different situations is the child\'s own talk (EARMARKS E12).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.B.2 (begins to use appropriate language, style, and nonverbal cues during communication with familiar adults and peers), in part, since the lesson teaches saying something about what a friend or a grown-up you know said, by asking about it or saying something kind about it, and not talking about something else, while hi and bye, taking turns talking, waiting until a friend stops, turning toward a friend, a nod and a smile, giving a friend some room and not shouting while a friend talks are taught in Talking with a friend and the language of asking and thanking, please and thank you, in Please and thank you, and Head Start ELOF Goal P-LC 4 (understands, follows, and uses appropriate social and conversational rules), in part, since the lesson teaches one conversational rule, saying something about what the other one said, which keeps a conversation going for two or three turns, as its 36 to 48 month progression reads "Engages in conversations with adults, other children, or within the group setting lasting two or three conversational turns, and, with support, will sometimes use appropriate tone and volume for different situations.", while a hi, a turn each, a bye and no shouting are taught in Talking with a friend, and using an appropriate tone and volume for different situations waits for a lesson, as pre-K 4\'s Say it to fit teaches it since pass MS (EARMARKS E12).'],
     generators: ['p3-talk-say-back', 'p3-talk-topic', 'p3-talk-about-yesno', 'p3-talk-why', 'p3-talk-feel'],
+  },
+  // Say what you need (pass MS, earmark E12, the standards review of Domain II): PK3 II.B.1 ("uses language to communicate basic
+  // information, needs, and wants.", the 2027 recommendation) and Head Start's P-LC 3 for three-year-olds (language for different
+  // purposes, and sometimes enough detail to get needs met from a variety of adults). A three-year-old hears what to say to a
+  // grown-up when thirsty, still hungry or cold, when a teddy bear is lost or a book is out of reach, how to ask for a turn and how to
+  // tell what happened, and that saying just what is wrong lets a grown-up help, where help or uh oh alone does not, and who can help:
+  // a grown-up they know, not a baby or a teddy bear. Saying it is the child's own talk, with the grown-ups around them.
+  {
+    id: 'say-what-you-need',
+    skill: 'Getting along',
+    order: 19,
+    requires: ['please-and-thank-you'],
+    title: 'Say what you need',
+    tagline: 'Water, a coat and a turn',
+    lesson: {
+      paragraphs: ['When you need something, use words to tell a grown-up, like your teacher, your grandma or your grandpa. If you are thirsty, you can say, I am thirsty. May I have a glass of water, please? If you are still hungry at lunch, hold up your plate and say, may I have some more, please? If you are cold, you can say, I am cold. May I have my coat, please?', 'But if you just say uh oh, or I cannot find it, your teacher does not know just what is wrong. So say just what is wrong, like, I cannot find my teddy bear, or, I cannot reach my book. Then your teacher knows just how to help. You can tell what happened too, like, my cup spilled. When you want a turn, you can ask, may I have a turn on the slide, please?', 'A grown-up you know can help. A baby is very little, and a teddy bear is a toy, so they cannot help.'],
+      keyIdea: 'Use words to tell a grown-up what you need. Say just what it is, so they know how to help.',
+      example: { kind: 'pair', a: { kind: 'icon', name: 'glass' }, b: { kind: 'icon', name: 'coat' }, caption: 'May I have a glass of water, please? May I have my coat, please?' },
+      pictures: [{ serial: 'P167', alt: 'A small child at a classroom table asking a smiling teacher for a glass of water, the teacher holding the glass out to the child', step: 1 }],
+      script: [
+        { say: 'When you need something, use words to tell a grown-up, like your teacher, your grandma or your grandpa.', show: { kind: 'row', items: [{ kind: 'icon', name: 'teacher' }, { kind: 'icon', name: 'grandma' }, { kind: 'icon', name: 'grandpa' }] } },
+        { say: 'If you are thirsty, you can say, I am thirsty. May I have a glass of water, please?', show: { kind: 'icon', name: 'glass' } },
+        { say: 'If you are still hungry at lunch, hold up your plate and say, may I have some more, please?', show: { kind: 'icon', name: 'plate' } },
+        { say: 'If you are cold, you can say, I am cold. May I have my coat, please?', show: { kind: 'icon', name: 'coat' } },
+        { say: 'But if you just say uh oh, or I cannot find it, your teacher does not know just what is wrong.', show: { kind: 'icon', name: 'teacher' } },
+        { say: 'So say just what is wrong, like, I cannot find my teddy bear.', show: { kind: 'icon', name: 'teddy' } },
+        { say: 'Or say, I cannot reach my book. Then your teacher knows just how to help.', show: { kind: 'icon', name: 'book' } },
+        { say: 'You can tell what happened too, like, my cup spilled.', show: { kind: 'icon', name: 'cup' } },
+        { say: 'When you want a turn, you can ask, may I have a turn on the slide, please?', show: { kind: 'icon', name: 'slide' } },
+        { say: 'A grown-up you know can help, like your teacher or your grandpa. A baby is very little, and a teddy bear is a toy, so they cannot help.', show: { kind: 'row', items: [{ kind: 'icon', name: 'teacher' }, { kind: 'icon', name: 'baby' }, { kind: 'icon', name: 'teddy' }] } },
+        { say: 'Use words to tell a grown-up what you need, a glass of water, your coat or your teddy bear. Say just what it is, so they know how to help.', show: { kind: 'row', items: [{ kind: 'icon', name: 'glass' }, { kind: 'icon', name: 'coat' }, { kind: 'icon', name: 'teddy' }] } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.B.1 (uses language to communicate basic information, needs, and wants), since the lesson teaches the words a child can use to tell a grown-up each of them, a need, being thirsty, still hungry or cold, a lost teddy bear and a book out of reach, a want, a turn on the slide, and basic information, what happened, my cup spilled, and a child using them with the grown-ups around them is the lesson at work, and Head Start ELOF Goal P-LC 3 (varies the amount of information provided to meet the demands of the situation), whose 36 to 48 month progression reads "Uses language, spoken or sign, for different purposes and is sometimes able to provide sufficient detail to get needs met from a variety of adults.", since the lesson teaches language for different purposes, asking for what you need and what you want and telling what happened, and that saying just what is wrong, I cannot find my teddy bear, gives a grown-up the detail to help where uh oh, or I cannot find it, does not, with a variety of adults, a teacher, a grandma and a grandpa, while sometimes says how often a child does so, which makes no part.'],
+    generators: ['p3-need-say', 'p3-need-pic', 'p3-need-enough', 'p3-need-who', 'p3-need-yesno'],
   },
 ]; }
 
@@ -5497,11 +5628,11 @@ function PREK3_READING_MODULES() { return [
       pictures: [],
       script: [
         { say: 'Teachers use learning words to tell you what to do, at the board and on the rug. When you know these words, you know just what to do.', show: { kind: 'icon', name: 'teacher' } },
-        { say: 'Match means find one that is the same. This cup matches this cup. Say match with me like a happy cheer! Match!', show: { kind: 'pair', a: { kind: 'icon', name: 'cup' }, b: { kind: 'icon', name: 'cup' } } },
-        { say: 'Same means just alike. A red circle and a red circle are the same, so they match. Say same with me in a tiny whisper. Same.', show: { kind: 'pair', a: { kind: 'item', shape: 'circle', colour: 'red' }, b: { kind: 'item', shape: 'circle', colour: 'red' } } },
+        { say: 'Match means find one that is the same. This cup matches this cup. ' + sayAlong('match', ['chant', 'whisper', 'high', 'fast']), show: { kind: 'pair', a: { kind: 'icon', name: 'cup' }, b: { kind: 'icon', name: 'cup' } } },
+        { say: 'Same means just alike. A red circle and a red circle are the same, so they match. ' + sayAlong('same', ['slide', 'drawn', 'low']), show: { kind: 'pair', a: { kind: 'item', shape: 'circle', colour: 'red' }, b: { kind: 'item', shape: 'circle', colour: 'red' } } },
         { say: 'A blue circle has the same shape, but not the same color, so it does not match the red circle.', show: { kind: 'pair', a: { kind: 'item', shape: 'circle', colour: 'red' }, b: { kind: 'item', shape: 'circle', colour: 'blue' } } },
         { say: 'A red square has the same color, but not the same shape, so it does not match the red circle either.', show: { kind: 'pair', a: { kind: 'item', shape: 'circle', colour: 'red' }, b: { kind: 'item', shape: 'square', colour: 'red' } } },
-        { say: 'Different means not the same. A cup and a ball are different. Say different with me four times, in a low, silly voice. Different, different, different, different!', show: { kind: 'pair', a: { kind: 'icon', name: 'cup' }, b: { kind: 'icon', name: 'ball' } } },
+        { say: 'Different means not the same. A cup and a ball are different. ' + sayAlong('different', ['whisper', 'slow', 'low', 'fast', 'drawn']), show: { kind: 'pair', a: { kind: 'icon', name: 'cup' }, b: { kind: 'icon', name: 'ball' } } },
         { say: 'Find the one that is different. Ball, ball, star. The star is different.', show: { kind: 'row', items: [{ kind: 'icon', name: 'ball' }, { kind: 'icon', name: 'ball' }, { kind: 'icon', name: 'star' }] } },
         { say: 'At home, you can match your socks. When two socks are just alike, they match.', show: { kind: 'pair', a: { kind: 'icon', name: 'sock' }, b: { kind: 'icon', name: 'sock' } } },
         { say: 'Listen for the learning words your teacher uses. Match means find one that is the same, and different means not the same.', show: { kind: 'icon', name: 'teacher' } },
@@ -5527,14 +5658,14 @@ function PREK3_READING_MODULES() { return [
       pictures: [{ serial: 'P160', alt: 'A teacher on a classroom rug pointing to two piles of big blocks, red blocks in one pile and blue blocks in the other, while small children watch', step: 6 }],
       script: [
         { say: 'Teachers use learning words to tell you what to do, like match and different. Here are some more learning words.', show: { kind: 'icon', name: 'teacher' } },
-        { say: 'Count means say one number for each thing. Count the stars with me. One, two, three. Say count with me three times, super fast! Count, count, count!', show: { kind: 'row', items: [{ kind: 'icon', name: 'star' }, { kind: 'icon', name: 'star' }, { kind: 'icon', name: 'star' }] } },
+        { say: 'Count means say one number for each thing. Count the stars with me. One, two, three. ' + sayAlong('count', ['fast', 'chant', 'whisper']), show: { kind: 'row', items: [{ kind: 'icon', name: 'star' }, { kind: 'icon', name: 'star' }, { kind: 'icon', name: 'star' }] } },
         { say: 'When someone asks how many, you count. The last number you say tells how many. One, two, three, so there are three stars.', show: { kind: 'row', items: [{ kind: 'icon', name: 'star' }, { kind: 'icon', name: 'star' }, { kind: 'icon', name: 'star' }] } },
         { say: 'Count the circles. One, two, three, four. There are four circles, not three.', show: { kind: 'pattern', items: ['circle', 'circle', 'circle', 'circle'], colour: 'blue', counting: true } },
-        { say: 'Sort means put things that go together in a group. The red ones go in one group, and the blue ones go in another. Say sort with me, nice and slow. Sort.', show: { kind: 'pair', stack: true, a: { kind: 'pattern', items: ['circle', 'square', 'triangle'], colour: 'red' }, b: { kind: 'pattern', items: ['square', 'triangle', 'circle'], colour: 'blue' } } },
-        { say: 'A group is things that go together. These red shapes are a group, so a red triangle goes in it, and a blue triangle does not. Say group with me in a squeaky little voice. Group.', show: { kind: 'pattern', items: ['circle', 'square', 'triangle'], colour: 'red' } },
+        { say: 'Sort means put things that go together in a group. The red ones go in one group, and the blue ones go in another. ' + sayAlong('sort', ['slow', 'high', 'low']), show: { kind: 'pair', stack: true, a: { kind: 'pattern', items: ['circle', 'square', 'triangle'], colour: 'red' }, b: { kind: 'pattern', items: ['square', 'triangle', 'circle'], colour: 'blue' } } },
+        { say: 'A group is things that go together. These red shapes are a group, so a red triangle goes in it, and a blue triangle does not. ' + sayAlong('group', ['chant', 'drawn', 'slide']), show: { kind: 'pattern', items: ['circle', 'square', 'triangle'], colour: 'red' } },
         { say: 'In class, your teacher might say, sort the blocks by color, or count the cups.', show: null },
-        { say: 'Shapes have sides and corners, like this triangle. A side is a straight edge, and a corner is where two sides meet. Say side with me, and stretch it out long. Side.', show: { kind: 'shape', name: 'triangle' } },
-        { say: 'How many sides does a triangle have? Count them. One, two, three. A triangle has three sides and three corners. Say corner with me in a tiny whisper. Corner.', show: { kind: 'pair', a: { kind: 'shape', name: 'triangle' }, b: { kind: 'dots', count: 3 } } },
+        { say: 'Shapes have sides and corners, like this triangle. A side is a straight edge, and a corner is where two sides meet. ' + sayAlong('side', ['drawn', 'whisper', 'fast', 'high']), show: { kind: 'shape', name: 'triangle' } },
+        { say: 'How many sides does a triangle have? Count them. One, two, three. A triangle has three sides and three corners. ' + sayAlong('corner', ['slide', 'low', 'slow']), show: { kind: 'pair', a: { kind: 'shape', name: 'triangle' }, b: { kind: 'dots', count: 3 } } },
         { say: 'A square has four sides and four corners. Count them. One, two, three, four.', show: { kind: 'pair', a: { kind: 'shape', name: 'square' }, b: { kind: 'dots', count: 4 } } },
         { say: 'A circle is round, with no straight sides and no corners.', show: { kind: 'shape', name: 'circle' } },
         { say: 'Listen for the learning words your teacher uses. Words like count, sort and group tell you what to do.', show: { kind: 'icon', name: 'teacher' } },
@@ -5543,8 +5674,9 @@ function PREK3_READING_MODULES() { return [
     sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.D.2 (shows a steady increase in understanding (receptive) and using (expressive) instructional and academic vocabulary), in part, its receptive half for the instructional and academic words a teacher uses to say what to do and to ask about what children learn, count, how many, sort, group, side and corner, and following directions given in them, while match, same and different are taught in Learning words, using the words, its expressive half, is the child\'s own talk, and the steady increase, the rest of a classroom\'s instructional and academic vocabulary, the words of its own routines and of what it studies next, is the classroom\'s to teach day by day (EARMARKS E12).'],
     generators: ['p3-learn-count', 'p3-learn-sort', 'p3-learn-sides', 'p3-learn-word-do', 'p3-learn-how-many'],
   },
-  // Pass MQ, earmark E12, Domain II's vocabulary: the people and events of II.D.1 (PK3 II.D.1 "understands (receptive) and uses
-  // (expressive) expected words to label and describe common objects, people, places, actions, and events.", whose things, places,
+  // Pass MQ, earmark E12, Domain II's vocabulary: the people and events of II.D.1 (PK3 II.D.1 in the 2022 guidelines' words, "understands
+  // (receptive) and uses (expressive) expected words to label and describe common objects, people, places, actions, and events.", which
+  // the 2027 recommendation, the app's since pass MR, says without "expected"; its things, places,
   // actions, animals and sizes earlier lessons teach), with the Head Start ELOF goal P-LC 7's broader category, people. A
   // three-year-old learns five people the app draws, a baby, a teacher, a doctor, a grandma and a grandpa, what each does or is, and
   // six everyday events, each with the thing that goes with it; the expressive half, using the words, is the child's own talk.
@@ -5561,13 +5693,13 @@ function PREK3_READING_MODULES() { return [
       example: { kind: 'pair', a: { kind: 'icon', name: 'grandma' }, b: { kind: 'icon', name: 'grandpa' }, caption: 'A grandma and a grandpa are people.' },
       pictures: [{ serial: 'P161', alt: 'A family at home, a grandpa reading a picture book to a small child while a grandma holds a baby', step: 8 }],
       script: [
-        { say: 'Some words name people. This is a baby. A baby is very little, and can drink milk from a bottle. Say baby with me in a tiny whisper. Baby.', show: { kind: 'icon', name: 'baby' } },
-        { say: 'This is a teacher. A teacher helps children learn at school, and reads stories to the class. Say teacher with me, nice and slow. Teacher.', show: { kind: 'icon', name: 'teacher' } },
-        { say: 'This is a doctor. A doctor helps you get well when you are sick. Say doctor with me, and stretch it out long. Doctor.', show: { kind: 'icon', name: 'doctor' } },
-        { say: 'This is a grandma. A grandma is the mom of your mom or your dad. A grandma can help take care of you. Say grandma with me like a happy cheer! Grandma!', show: { kind: 'icon', name: 'grandma' } },
-        { say: 'This is a grandpa. A grandpa is the dad of your mom or your dad. A grandpa can help take care of you too. Say grandpa with me four times, in a low, silly voice. Grandpa, grandpa, grandpa, grandpa!', show: { kind: 'icon', name: 'grandpa' } },
+        { say: 'Some words name people. This is a baby. A baby is very little, and can drink milk from a bottle. ' + sayAlong('baby', ['whisper', 'high', 'slow']), show: { kind: 'icon', name: 'baby' } },
+        { say: 'This is a teacher. A teacher helps children learn at school, and reads stories to the class. ' + sayAlong('teacher', ['slow', 'chant', 'drawn']), show: { kind: 'icon', name: 'teacher' } },
+        { say: 'This is a doctor. A doctor helps you get well when you are sick. ' + sayAlong('doctor', ['drawn', 'low', 'fast']), show: { kind: 'icon', name: 'doctor' } },
+        { say: 'This is a grandma. A grandma is the mom of your mom or your dad. A grandma can help take care of you. ' + sayAlong('grandma', ['chant', 'slide', 'whisper']), show: { kind: 'icon', name: 'grandma' } },
+        { say: 'This is a grandpa. A grandpa is the dad of your mom or your dad. A grandpa can help take care of you too. ' + sayAlong('grandpa', ['low', 'slow', 'high', 'fast']), show: { kind: 'icon', name: 'grandpa' } },
         { say: 'A teacher, a doctor, a grandma and a grandpa are all helpers.', show: { kind: 'row', items: [{ kind: 'icon', name: 'teacher' }, { kind: 'icon', name: 'doctor' }, { kind: 'icon', name: 'grandma' }] } },
-        { say: 'A baby is little, and a grandma and a grandpa are grown-ups. Babies, teachers, doctors, grandmas and grandpas are all people. Each one is a person. Say people with me three times, super fast! People, people, people!', show: { kind: 'row', align: 'end', items: [{ kind: 'icon', name: 'baby', size: 74 }, { kind: 'icon', name: 'grandma' }, { kind: 'icon', name: 'grandpa' }] } },
+        { say: 'A baby is little, and a grandma and a grandpa are grown-ups. Babies, teachers, doctors, grandmas and grandpas are all people. Each one is a person. ' + sayAlong('people', ['fast', 'drawn', 'slide']), show: { kind: 'row', align: 'end', items: [{ kind: 'icon', name: 'baby', size: 74 }, { kind: 'icon', name: 'grandma' }, { kind: 'icon', name: 'grandpa' }] } },
         { say: 'A book, a bed and a cake are not people. They are things.', show: { kind: 'row', items: [{ kind: 'icon', name: 'book' }, { kind: 'icon', name: 'bed' }, { kind: 'icon', name: 'cake' }] } },
         { say: 'A family can have all kinds of people, like a baby, a grandma and a grandpa.', show: null },
         { say: 'Listen for words that name people, like teacher and grandma. Then find their pictures.', show: { kind: 'pair', a: { kind: 'icon', name: 'teacher' }, b: { kind: 'icon', name: 'grandma' } } },
@@ -5594,8 +5726,8 @@ function PREK3_READING_MODULES() { return [
       pictures: [],
       script: [
         { say: 'Some words name people, like baby and grandpa. Other words name things that happen, called events.', show: { kind: 'pair', a: { kind: 'icon', name: 'baby' }, b: { kind: 'icon', name: 'grandpa' } } },
-        { say: 'A birthday party is a happy day, often with a cake that has candles to blow out. Say birthday party with me like a happy cheer! Birthday party!', show: { kind: 'icon', name: 'cake' } },
-        { say: 'At bedtime, you put on your pajamas and sleep in your bed. Say bedtime with me in a tiny whisper. Bedtime.', show: { kind: 'icon', name: 'bed' } },
+        { say: 'A birthday party is a happy day, often with a cake that has candles to blow out. ' + sayAlong('birthday party', ['chant', 'high', 'fast', 'slide']), show: { kind: 'icon', name: 'cake' } },
+        { say: 'At bedtime, you put on your pajamas and sleep in your bed. ' + sayAlong('bedtime', ['whisper', 'drawn', 'low', 'slow']), show: { kind: 'icon', name: 'bed' } },
         { say: 'On a rainy day, rain falls from the clouds. On a snowy day, snow falls. Rain goes with a rainy day, and snow goes with a snowy day.', show: { kind: 'pair', a: { kind: 'icon', name: 'rain' }, b: { kind: 'icon', name: 'snow' } } },
         { say: 'At story time, someone reads you a book.', show: { kind: 'icon', name: 'book' } },
         { say: 'At the park, you can play on the slide.', show: { kind: 'icon', name: 'slide' } },
@@ -6065,7 +6197,7 @@ function PREK_MODULES() { return [
         { say: 'Look at your clothes. Can you name a color you are wearing today?', show: { kind: 'icon', name: 'coat' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) V.D.1 (sorts objects into groups based on shared attributes such as color, shape, or size and describes how the groups are similar and different), in part, since the lesson finds the things that are the same color and the one that is a different color, and sorts the red blocks from the blue ones, while describing how the groups are similar and different is the child\'s own talk, for a grown-up to hear (EARMARKS E13), II.D.1 (understands (receptive) and uses (expressive) a growing variety of words to label, describe and make connections among objects, people, places, actions, and events), in part, its receptive half for the color words red, blue, yellow and green, while their expressive half is the child\'s own talk (EARMARKS E13), the receptive half of the order words first, then, second, middle and last is taught in First Sounds and Letters\' Which came first? and Second and last, its connections are taught in Words that go together and Same and opposite, its words for people and places and the actions and tools of each helper\'s job in Helpers all around, and its words for events, and for actions beyond the helpers\' jobs, wait (EARMARKS E13), and VI.B.1 (identifies and compares observable properties of objects such as color, shape, texture, and size), since the lesson identifies the colors of things and compares them, the same color and a different one, and Head Start ELOF Goal P-SCI 1 (observes and describes observable phenomena (objects, materials, organisms, and events)), whose 48 to 60 month progression reads "Makes increasingly complex observations of objects, materials, organisms, and events. Provides greater detail in descriptions. Represents observable phenomena in more complex ways, such as pictures that include more detail.", in part, since the lesson observes the colors of things by sight, while the greater detail in descriptions, which is the child\'s own talk, and the more detailed pictures wait (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) V.D.1 (sorts objects into groups based on shared attributes such as color, shape, or size and describes how the groups are similar and different), in part, since the lesson finds the things that are the same color and the one that is a different color, and sorts the red blocks from the blue ones, while describing how the groups are similar and different is the child\'s own talk, for a grown-up to hear (EARMARKS E13), II.D.1 (understands (receptive) and uses (expressive) a growing variety of words to label, describe and make connections among objects, people, places, actions, and events), in part, its receptive half for the color words red, blue, yellow and green, while their expressive half is the child\'s own talk (EARMARKS E13), the receptive half of the order words first, then, second, middle and last is taught in First Sounds and Letters\' Which came first? and Second and last, its connections are taught in Words that go together and Same and opposite, its words for people and places and the actions and tools of each helper\'s job in Helpers all around, and its words for actions and events in Things we do, and VI.B.1 (identifies and compares observable properties of objects such as color, shape, texture, and size), since the lesson identifies the colors of things and compares them, the same color and a different one, and Head Start ELOF Goal P-SCI 1 (observes and describes observable phenomena (objects, materials, organisms, and events)), whose 48 to 60 month progression reads "Makes increasingly complex observations of objects, materials, organisms, and events. Provides greater detail in descriptions. Represents observable phenomena in more complex ways, such as pictures that include more detail.", in part, since the lesson observes the colors of things by sight, while the greater detail in descriptions, which is the child\'s own talk, and the more detailed pictures wait (EARMARKS E13).'],
     generators: ['pc-tap-colour', 'pc-name-colour', 'pc-same-colour', 'pc-different-colour', 'pc-colour-of-thing'],
   },
   {
@@ -6517,7 +6649,7 @@ function PREK_MODULES() { return [
         { say: 'In real life, a bee is tiny, a cat is middle-sized, and a bear is huge.', show: { kind: 'row', items: [{ kind: 'pic', name: 'bee', size: 34 }, { kind: 'pic', name: 'cat', size: 70 }, { kind: 'pic', name: 'bear', size: 110 }] } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.D.1 (understands (receptive) and uses (expressive) a growing variety of words to label, describe and make connections among objects, people, places, actions, and events), in part, its receptive half for the size words smallest, middle-sized, biggest, tiny and huge, while their expressive half is the child\'s own talk (EARMARKS E13), the receptive half of the order words first, then, second, middle and last is taught in First Sounds and Letters\' Which came first? and Second and last, its connections are taught in Words that go together and Same and opposite, its words for people and places and the actions and tools of each helper\'s job in Helpers all around, and its words for events, and for actions beyond the helpers\' jobs, wait (EARMARKS E13), and VI.B.1 (identifies and compares observable properties of objects such as color, shape, texture, and size), since the lesson compares sizes, smallest, middle-sized and biggest, tiny and huge, and Head Start ELOF Goal P-MATH 8 (measures objects by their various attributes using standard and non-standard measurement. Uses differences in attributes to make comparisons.), whose 48 to 60 month progression reads "With some adult support, uses measurable attributes to make comparisons, such as identifies objects as the same/different and more/less." Heights and lengths (V.C.1) are taught in Bigger and smaller.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.D.1 (understands (receptive) and uses (expressive) a growing variety of words to label, describe and make connections among objects, people, places, actions, and events), in part, its receptive half for the size words smallest, middle-sized, biggest, tiny and huge, while their expressive half is the child\'s own talk (EARMARKS E13), the receptive half of the order words first, then, second, middle and last is taught in First Sounds and Letters\' Which came first? and Second and last, its connections are taught in Words that go together and Same and opposite, its words for people and places and the actions and tools of each helper\'s job in Helpers all around, and its words for actions and events in Things we do, and VI.B.1 (identifies and compares observable properties of objects such as color, shape, texture, and size), since the lesson compares sizes, smallest, middle-sized and biggest, tiny and huge, and Head Start ELOF Goal P-MATH 8 (measures objects by their various attributes using standard and non-standard measurement. Uses differences in attributes to make comparisons.), whose 48 to 60 month progression reads "With some adult support, uses measurable attributes to make comparisons, such as identifies objects as the same/different and more/less." Heights and lengths (V.C.1) are taught in Bigger and smaller.'],
     generators: ['pk4-tap-biggest', 'pk4-tap-smallest', 'pk4-tap-middle', 'p4-real-biggest', 'p4-real-middle'],
   },
   {
@@ -6545,7 +6677,7 @@ function PREK_MODULES() { return [
         { say: 'You can be a helper too. Set the table, put away your toys, or help a friend who drops their crayons.', show: { kind: 'row', items: [{ kind: 'icon', name: 'plate' }, { kind: 'icon', name: 'spoon' }, { kind: 'icon', name: 'teddy' }] } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) VII.B.3 (identifies and discusses the roles and responsibilities of family, school, and community helpers as people who work together to make the community a safer place for everyone), in part, since the lesson teaches the jobs, tools and workplaces of a teacher, a firefighter, a doctor, a mail carrier and a police officer, that firefighters and police officers keep people safe and that every helper\'s job helps us all, and a child\'s own jobs at home and at school, while family members\' roles, the discussing, which only a grown-up can hear, and how helpers work together to make the community safer for everyone wait (EARMARKS E13), and II.D.1 (understands (receptive) and uses (expressive) a growing variety of words to label, describe and make connections among objects, people, places, actions, and events), in part, its receptive half for words that label people and places and make connections among them and the actions and tools of each job, a teacher, a firefighter, a doctor, a mail carrier and a police officer, a school, a fire station, a doctor\'s office, a hospital, a post office and a police station, and what each helper does and uses, puts out fires by spraying water from a hose, listens to your heart with a stethoscope, reads stories and writes on a whiteboard, and brings letters in a mail truck, while using them, its expressive half, is the child\'s own talk, and its words for events, and for actions beyond the helpers\' jobs, wait (EARMARKS E13). The Head Start ELOF names no preschool goal for community helpers\' roles.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) VII.B.3 (identifies and discusses the roles and responsibilities of family, school, and community helpers as people who work together to make the community a safer place for everyone), in part, since the lesson teaches the jobs, tools and workplaces of a teacher, a firefighter, a doctor, a mail carrier and a police officer, that firefighters and police officers keep people safe and that every helper\'s job helps us all, and a child\'s own jobs at home and at school, while family members\' roles, the discussing, which only a grown-up can hear, and how helpers work together to make the community safer for everyone wait (EARMARKS E13), and II.D.1 (understands (receptive) and uses (expressive) a growing variety of words to label, describe and make connections among objects, people, places, actions, and events), in part, its receptive half for words that label people and places and make connections among them and the actions and tools of each job, a teacher, a firefighter, a doctor, a mail carrier and a police officer, a school, a fire station, a doctor\'s office, a hospital, a post office and a police station, and what each helper does and uses, puts out fires by spraying water from a hose, listens to your heart with a stethoscope, reads stories and writes on a whiteboard, and brings letters in a mail truck, while using them, its expressive half, is the child\'s own talk (EARMARKS E13), and its words for events, and for actions beyond the helpers\' jobs, are taught in Things we do. The Head Start ELOF names no preschool goal for community helpers\' roles.'],
     generators: ['ck-which-helper', 'ck-job-tool', 'pk-helper-where', 'pk-helper-scene', 'ck-which-helper'],
   },
   // Pass MN, earmarks E12 and E13 built together, side by side by domain (Mikey's answer to Q48), Domain I first: pre-K 4's
@@ -6681,7 +6813,7 @@ function PREK_MODULES() { return [
         { say: 'Smile and say hi to start playing, and ask about your friend\'s game.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'pic', name: 'rabbit' } } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) I.C.3 (initiates and/or responds to social interactions using verbal and non-verbal communication skills), since the lesson teaches ways to start, a smile, a wave and a hi, telling your name and asking a new friend\'s, asking about a friend\'s game or saying something kind about it, and asking, do you want to play with me?, and what to do with a no thanks, I.C.1 (uses effective verbal and nonverbal communication skills, home language, assistive communication, or other preferred methods to develop positive relationships with adults and peers), since the lesson teaches the words and the signs that build them, kind words, asking and listening, taking turns talking, a smile, a wave, a nod and a high five, with a teacher as well as with friends, and II.B.2 (engages in conversations in appropriate ways, demonstrating knowledge of verbal and nonverbal conversational rules), since the lesson teaches the rules a talk with a friend keeps, taking turns talking, listening, asking about the friend\'s game and never shouting while a friend talks, and the signs that go with them, turning toward a friend, nodding and smiling, and Head Start ELOF Goals P-SE 1 (engages in and maintains positive relationships and interactions with adults), in part, since the lesson teaches starting a talk with a teacher, saying good morning and telling about a drawing, from the second sentence of its 48 to 60 month progression, "Initiates interactions with adults and participates in longer and more reciprocal interactions with both trusted and new adults.", while participating in longer and more reciprocal interactions with both trusted and new adults, and its first sentence, "Clearly shows enjoyment in interactions with trusted adults while also demonstrating skill in separating from these adults with minimal distress when in a familiar setting.", are the child\'s own (EARMARKS E13), P-SE 2 (engages in prosocial and cooperative behavior with adults), in part, since the lesson teaches prosocial behavior with adults, saying good morning to a teacher, from the first sentence of its 48 to 60 month progression, "Often engages in prosocial behavior with adults and usually responds appropriately to adult requests and directions without significant assistance or prompting.", while responding to adult requests and directions is taught in Three steps every day, doing so without significant assistance or prompting is the child\'s own, and its second sentence, "Uncooperative behavior with familiar adults is rare and the child is able to resolve minor conflicts with adults with support, such as being given reminders to use a quiet voice or follow directions.", is the child\'s own (EARMARKS E13), and P-LC 4 (understands, follows, and uses appropriate social and conversational rules), in part, since the lesson teaches the first sentence of its 48 to 60 month progression, "Maintains multi-turn conversations with adults or other children by being responsive to the conversational partner in a variety of ways, such as by asking a question.", taking turns talking, listening and asking a friend about the game, while its second, "With increasing independence, varies tone and volume of expression to match the social situation.", is the child\'s own (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) I.C.3 (initiates and/or responds to social interactions using verbal and non-verbal communication skills), since the lesson teaches ways to start, a smile, a wave and a hi, telling your name and asking a new friend\'s, asking about a friend\'s game or saying something kind about it, and asking, do you want to play with me?, and what to do with a no thanks, I.C.1 (uses effective verbal and nonverbal communication skills, home language, assistive communication, or other preferred methods to develop positive relationships with adults and peers), since the lesson teaches the words and the signs that build them, kind words, asking and listening, taking turns talking, a smile, a wave, a nod and a high five, with a teacher as well as with friends, and II.B.2 (engages in conversations in appropriate ways, demonstrating knowledge of verbal and nonverbal conversational rules), since the lesson teaches the rules a talk with a friend keeps, taking turns talking, listening, asking about the friend\'s game and never shouting while a friend talks, and the signs that go with them, turning toward a friend, nodding and smiling, and Head Start ELOF Goals P-SE 1 (engages in and maintains positive relationships and interactions with adults), in part, since the lesson teaches starting a talk with a teacher, saying good morning and telling about a drawing, from the second sentence of its 48 to 60 month progression, "Initiates interactions with adults and participates in longer and more reciprocal interactions with both trusted and new adults.", while participating in longer and more reciprocal interactions with both trusted and new adults, and its first sentence, "Clearly shows enjoyment in interactions with trusted adults while also demonstrating skill in separating from these adults with minimal distress when in a familiar setting.", are the child\'s own (EARMARKS E13), P-SE 2 (engages in prosocial and cooperative behavior with adults), in part, since the lesson teaches prosocial behavior with adults, saying good morning to a teacher, from the first sentence of its 48 to 60 month progression, "Often engages in prosocial behavior with adults and usually responds appropriately to adult requests and directions without significant assistance or prompting.", while responding to adult requests and directions is taught in Three steps every day, doing so without significant assistance or prompting is the child\'s own, and its second sentence, "Uncooperative behavior with familiar adults is rare and the child is able to resolve minor conflicts with adults with support, such as being given reminders to use a quiet voice or follow directions.", is the child\'s own (EARMARKS E13), and P-LC 4 (understands, follows, and uses appropriate social and conversational rules), in part, since the lesson teaches the first sentence of its 48 to 60 month progression, "Maintains multi-turn conversations with adults or other children by being responsive to the conversational partner in a variety of ways, such as by asking a question.", taking turns talking, listening and asking a friend about the game, while its second, "With increasing independence, varies tone and volume of expression to match the social situation.", is taught in part in Say it to fit, the volume that matches each setting and a kind, soft voice for a friend who is sad, and varying them with increasing independence is the child\'s own (EARMARKS E13).'],
     generators: ['p4-play-start', 'p4-play-body', 'p4-play-yesno', 'p4-play-face', 'p4-play-next'],
   },
   // Play with a plan (pass MR, Mikey's answer to Q70, "Q70 - C"): the second half of Let's play together, playing together with a
@@ -6714,6 +6846,44 @@ function PREK_MODULES() { return [
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) I.C.4 (engages in cooperative play with peers by contributing to a shared plan or goal), since the lesson teaches making a plan together, what to make and who does each part, each friend doing a part, talking while playing, agreeing on a change to the plan and finishing together, in block play and in pretend play, and Head Start ELOF Goal P-SE 4 (engages in cooperative play with other children), in part, since the lesson teaches the first two sentences of its 48 to 60 month progression, "Cooperatively plays with other children in an increasingly coordinated way. Works with other children to make plans for what and how they will play together.", playing together with a plan and each friend doing a part, while its third, "When given the opportunity, these coordinated play periods get longer.", is the child\'s own play (EARMARKS E13).'],
     generators: ['p4-play-plan', 'p4-play-part', 'p4-plan-yesno', 'p4-plan-together', 'p4-plan-what'],
+  },
+  // Say it to fit (pass MS, earmark E13, the standards review of Domain II): PK4 II.B.1 ("uses language for multiple purposes and in
+  // various settings.", the 2027 recommendation), Head Start's P-LC 3 for four-year-olds (a variety of purposes, and enough detail to
+  // get needs met from a variety of adults) and the second sentence of P-LC 4's (tone and volume to match the social situation),
+  // whose first Let's play together teaches. A four-year-old hears four reasons to use words, each with words to say, the voice that
+  // fits the library, a sleeping baby, the classroom, the doctor's office and the playground, a kind, soft voice for a friend who is
+  // sad, and how much to tell a grown-up so they can help; pre-K 3's Say what you need is its younger half. Saying it is the child's
+  // own talk.
+  {
+    id: 'say-it-to-fit',
+    skill: 'Getting along',
+    order: 24,
+    requires: ['play-with-a-plan'],
+    title: 'Say it to fit',
+    tagline: 'Ask, tell, and a voice for each place',
+    lesson: {
+      paragraphs: ['We use words for many reasons. To ask for something, you can say, please pass the red crayon. Or, please pass the cup. To tell what happened, you can say, I made a tall tower! To ask a question, you can say, where does rain come from? Or, what is your name? And to say how you feel, you can say, I feel happy! Or, I feel sad.', 'Your voice can change to fit the place. In the library, use a whisper, so others can read their books. When a baby is sleeping, use a whisper too. In the classroom and at the doctor\'s office, use an inside voice, not too loud and not too soft. On the playground, you can use a big outside voice, so a friend far away can hear you. A whisper or an inside voice is too soft for a friend far away. A kind, soft voice fits when a friend is sad.', 'Tell a grown-up enough, so they can help. If you just say, it hurts, they do not know where, and if you just say uh oh, they do not know what happened. Say, my knee hurts. I fell on the slide. And tell the doctor just what is wrong, like, my ear hurts.'],
+      keyIdea: 'We use words to ask for things, to tell, to ask questions and to say how we feel. Make your voice fit the place.',
+      example: { kind: 'pair', a: { kind: 'icon', name: 'book' }, b: { kind: 'icon', name: 'slide' }, caption: 'A whisper in the library, and a big outside voice on the playground.' },
+      pictures: [{ serial: 'P168', alt: 'A small child by a slide calling to another child far away by the sandbox, hands cupped around the mouth', step: 8 }],
+      script: [
+        { say: 'We use words for many reasons. To ask for something, you can say, please pass the red crayon. Or, please pass the cup.', show: { kind: 'icon', name: 'crayon' } },
+        { say: 'To tell what happened, you can say, I made a tall tower!', show: { kind: 'icon', name: 'tower' } },
+        { say: 'To ask a question, you can say, where does rain come from? Or, what is your name?', show: { kind: 'icon', name: 'rain' } },
+        { say: 'And to say how you feel, you can say, I feel happy! Or, I feel sad.', show: { kind: 'pair', a: { kind: 'face', feeling: 'happy' }, b: { kind: 'face', feeling: 'sad' } } },
+        { say: 'Your voice can change to fit the place. In the library, use a whisper, so others can read their books.', show: { kind: 'icon', name: 'book' } },
+        { say: 'When a baby is sleeping, use a whisper too, so the baby keeps sleeping.', show: { kind: 'icon', name: 'baby' } },
+        { say: 'In the classroom, use an inside voice, not too loud and not too soft, when you talk with your teacher.', show: { kind: 'icon', name: 'teacher' } },
+        { say: 'At the doctor\'s office, use an inside voice too. Tell the doctor just what is wrong, like, my ear hurts.', show: { kind: 'icon', name: 'doctor' } },
+        { say: 'On the playground by the slide, you can use a big outside voice, like, over here! Then a friend far away can hear you, and a whisper or an inside voice is too soft.', show: { kind: 'icon', name: 'slide' } },
+        { say: 'A kind, soft voice fits when a friend is sad. You can say, are you okay?', show: { kind: 'face', feeling: 'sad' } },
+        { say: 'Tell a grown-up enough, so they can help, like your teacher, your grandma or your grandpa. If you just say, it hurts, they do not know where. And if you just say uh oh, they do not know what happened.', show: { kind: 'icon', name: 'teacher' } },
+        { say: 'Say, my knee hurts. I fell on the slide. Then your teacher knows just what happened.', show: { kind: 'icon', name: 'slide' } },
+        { say: 'We use words to ask for things, to tell, to ask questions and to say how we feel. Make your voice fit the place, a whisper when the baby sleeps, and a big outside voice by the slide.', show: { kind: 'pair', a: { kind: 'icon', name: 'baby' }, b: { kind: 'icon', name: 'slide' } } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.B.1 (uses language for multiple purposes and in various settings), since the lesson teaches four purposes for words, asking for something, telling what happened, asking a question and saying how you feel, each with words a child can use, and a voice to fit each setting, a whisper in the library and when a baby is sleeping, an inside voice in the classroom and at the doctor\'s office, and a big outside voice on the playground, and a child using them is the lesson at work, and Head Start ELOF Goals P-LC 3 (varies the amount of information provided to meet the demands of the situation), whose 48 to 60 month progression reads "Uses language, spoken or sign, for a variety of purposes and can typically provide sufficient detail in order to get needs met from a variety of adults.", since the lesson teaches language for a variety of purposes and the detail that gets a need met from a variety of adults, a teacher, a doctor, a grandma and a grandpa, my ear hurts and not just it hurts, while typically says how often a child does so, which makes no part, and P-LC 4 (understands, follows, and uses appropriate social and conversational rules), in part, for the second sentence of its 48 to 60 month progression, "With increasing independence, varies tone and volume of expression to match the social situation.", since the lesson teaches the volume that matches each setting and a kind, soft voice for a friend who is sad, while varying them with increasing independence is the child\'s own (EARMARKS E13), and its first sentence is taught in Let\'s play together.'],
+    generators: ['p4-fit-voice', 'p4-fit-why', 'p4-fit-say', 'p4-fit-enough', 'p4-fit-yesno'],
   },
 ]; }
 
@@ -6796,7 +6966,7 @@ function PREK_READING_MODULES() { return [
         { say: 'Hold the first sound in your head while you hear the second. Then you can tell which came first.', show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'pic', name: 'duck' } } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.A.1 (demonstrates understanding of spoken communication by responding appropriately to adults and peers through verbal or nonverbal behaviors), in part, since the child shows understanding of a spoken question about two sounds by tapping the animal that made the first, while responding to peers is the child\'s own, with other children (EARMARKS E13), and II.D.1 (understands (receptive) and uses (expressive) a growing variety of words to label, describe and make connections among objects, people, places, actions, and events), in part, its receptive half for the order words first, then and second, while their expressive half is the child\'s own talk, its connections are taught in Words that go together and Same and opposite, its words for people and places and the actions and tools of each helper\'s job in Helpers all around, and its words for events, and for actions beyond the helpers\' jobs, wait (EARMARKS E13), and Head Start ELOF Goals P-ATL 8 (holds information in mind and manipulates it to perform tasks), whose 48 to 60 month progression reads "Holds an increasing amount of information in mind in order to successfully complete tasks.", in part, since the lesson holds two sounds in mind, while three are held in Second and last, P-MATH 4 (compares numbers), whose 48 to 60 month progression reads "Counts to determine and compare number amounts even when the larger group\'s objects are smaller in size, such as buttons, compared with the smaller group\'s objects that are larger in size, such as markers. Uses numbers related to order or position.", in part, for its second sentence, first and second for two sounds in a row, while its first sentence is taught in More and fewer (First Steps), the places in a row of three in Second and last, and order words past second, such as third, wait (EARMARKS E13), and P-LC 1 (attends to communication and language from others), whose 48 to 60 month progression reads "Shows acknowledgment of complex comments or questions. Is able to attend to longer, multi-turn conversations, either spoken or signed.", in part, since the lesson teaches acknowledging a question of two parts, two sounds and then which came first, by tapping its answer, while attending to longer, multi-turn conversations needs a partner to talk with, which the app cannot be (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.A.1 (demonstrates understanding of spoken communication by responding appropriately to adults and peers through verbal or nonverbal behaviors), in part, since the child shows understanding of a spoken question about two sounds by tapping the animal that made the first, while responding to peers is the child\'s own, with other children (EARMARKS E13), and II.D.1 (understands (receptive) and uses (expressive) a growing variety of words to label, describe and make connections among objects, people, places, actions, and events), in part, its receptive half for the order words first, then and second, while their expressive half is the child\'s own talk, its connections are taught in Words that go together and Same and opposite, its words for people and places and the actions and tools of each helper\'s job in Helpers all around, and its words for actions and events in Things we do, and Head Start ELOF Goals P-ATL 8 (holds information in mind and manipulates it to perform tasks), whose 48 to 60 month progression reads "Holds an increasing amount of information in mind in order to successfully complete tasks.", in part, since the lesson holds two sounds in mind, while three are held in Second and last, P-MATH 4 (compares numbers), whose 48 to 60 month progression reads "Counts to determine and compare number amounts even when the larger group\'s objects are smaller in size, such as buttons, compared with the smaller group\'s objects that are larger in size, such as markers. Uses numbers related to order or position.", in part, for its second sentence, first and second for two sounds in a row, while its first sentence is taught in More and fewer (First Steps), the places in a row of three in Second and last, and order words past second, such as third, wait (EARMARKS E13), and P-LC 1 (attends to communication and language from others), whose 48 to 60 month progression reads "Shows acknowledgment of complex comments or questions. Is able to attend to longer, multi-turn conversations, either spoken or signed.", in part, since the lesson teaches acknowledging a question of two parts, two sounds and then which came first, by tapping its answer, while attending to longer, multi-turn conversations needs a partner to talk with, which the app cannot be (EARMARKS E13).'],
     generators: ['p4-which-came-first', 'p4-which-came-first', 'p4-which-came-first', 'p4-which-came-first', 'p4-which-came-first'],
   },
   {
@@ -6818,7 +6988,7 @@ function PREK_READING_MODULES() { return [
         { say: 'The second sound is the middle one, not the first and not the last.', show: { kind: 'row', items: [{ kind: 'pic', name: 'owl' }, { kind: 'pic', name: 'bee' }, { kind: 'pic', name: 'frog' }] } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.A.1 (demonstrates understanding of spoken communication by responding appropriately to adults and peers through verbal or nonverbal behaviors), in part, since the child shows understanding of a spoken question about three sounds by tapping the animal in the place it asks for, while responding to peers is the child\'s own, with other children (EARMARKS E13), and II.D.1 (understands (receptive) and uses (expressive) a growing variety of words to label, describe and make connections among objects, people, places, actions, and events), in part, its receptive half for the order words first, second, middle and last, while their expressive half is the child\'s own talk, its connections are taught in Words that go together and Same and opposite, its words for people and places and the actions and tools of each helper\'s job in Helpers all around, and its words for events, and for actions beyond the helpers\' jobs, wait (EARMARKS E13), and Head Start ELOF Goals P-ATL 8 (holds information in mind and manipulates it to perform tasks), whose 48 to 60 month progression reads "Holds an increasing amount of information in mind in order to successfully complete tasks.", since the lesson holds three sounds in mind, one more than Which came first?, P-MATH 4 (compares numbers), whose 48 to 60 month progression reads "Counts to determine and compare number amounts even when the larger group\'s objects are smaller in size, such as buttons, compared with the smaller group\'s objects that are larger in size, such as markers. Uses numbers related to order or position.", in part, for its second sentence, first, second and last in a row of three sounds, while order words past second, such as third, wait (EARMARKS E13), and its first sentence is taught in More and fewer (First Steps), and P-LC 1 (attends to communication and language from others), whose 48 to 60 month progression reads "Shows acknowledgment of complex comments or questions. Is able to attend to longer, multi-turn conversations, either spoken or signed.", in part, since the lesson teaches acknowledging a question of three sounds and then which came second or last, by tapping its answer, while attending to longer, multi-turn conversations needs a partner to talk with, which the app cannot be (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.A.1 (demonstrates understanding of spoken communication by responding appropriately to adults and peers through verbal or nonverbal behaviors), in part, since the child shows understanding of a spoken question about three sounds by tapping the animal in the place it asks for, while responding to peers is the child\'s own, with other children (EARMARKS E13), and II.D.1 (understands (receptive) and uses (expressive) a growing variety of words to label, describe and make connections among objects, people, places, actions, and events), in part, its receptive half for the order words first, second, middle and last, while their expressive half is the child\'s own talk, its connections are taught in Words that go together and Same and opposite, its words for people and places and the actions and tools of each helper\'s job in Helpers all around, and its words for actions and events in Things we do, and Head Start ELOF Goals P-ATL 8 (holds information in mind and manipulates it to perform tasks), whose 48 to 60 month progression reads "Holds an increasing amount of information in mind in order to successfully complete tasks.", since the lesson holds three sounds in mind, one more than Which came first?, P-MATH 4 (compares numbers), whose 48 to 60 month progression reads "Counts to determine and compare number amounts even when the larger group\'s objects are smaller in size, such as buttons, compared with the smaller group\'s objects that are larger in size, such as markers. Uses numbers related to order or position.", in part, for its second sentence, first, second and last in a row of three sounds, while order words past second, such as third, wait (EARMARKS E13), and its first sentence is taught in More and fewer (First Steps), and P-LC 1 (attends to communication and language from others), whose 48 to 60 month progression reads "Shows acknowledgment of complex comments or questions. Is able to attend to longer, multi-turn conversations, either spoken or signed.", in part, since the lesson teaches acknowledging a question of three sounds and then which came second or last, by tapping its answer, while attending to longer, multi-turn conversations needs a partner to talk with, which the app cannot be (EARMARKS E13).'],
     generators: ['p4-which-came-second', 'p4-which-came-second', 'p4-which-came-second', 'p4-which-came-second', 'p4-which-came-second'],
   },
   {
@@ -7002,11 +7172,11 @@ function PREK_READING_MODULES() { return [
       example: { kind: 'item', shape: 'square', colour: 'red', scale: 'small', caption: 'The small red square fits all three words.' },
       pictures: [],
       script: [
-        { say: 'Teachers use learning words to tell you what to do. Count means say one number for each one. One, two, three blocks. Say count with me, nice and slow. Count.', show: { kind: 'row', items: [{ kind: 'icon', name: 'block' }, { kind: 'icon', name: 'block' }, { kind: 'icon', name: 'block' }] } },
-        { say: 'Sort means put the ones that go together into groups, like red squares in one group and blue squares in another. Say sort with me in a squeaky little voice. Sort.', show: { kind: 'pair', stack: true, a: { kind: 'pattern', items: ['square', 'square', 'square'], colour: 'red' }, b: { kind: 'pattern', items: ['square', 'square', 'square'], colour: 'blue' } } },
-        { say: 'Match means find one just like it. Two that match make a pair. These two socks are just alike, so they make a pair. Say match with me in a tiny whisper. Match.', show: { kind: 'pair', a: { kind: 'icon', name: 'sock' }, b: { kind: 'icon', name: 'sock' } } },
-        { say: 'This red triangle and this red triangle are just alike, so they make a pair. A blue triangle or a red circle would not. Say pair with me four times, in a low, silly voice. Pair, pair, pair, pair!', show: { kind: 'pair', a: { kind: 'item', shape: 'triangle', colour: 'red' }, b: { kind: 'item', shape: 'triangle', colour: 'red' } } },
-        { say: 'Trace means go over the lines with your finger. This is how you trace the letter L. Say trace with me, and stretch it out long. Trace.', show: { kind: 'trace', text: 'L' } },
+        { say: 'Teachers use learning words to tell you what to do. Count means say one number for each one. One, two, three blocks. ' + sayAlong('count', ['slow', 'fast', 'chant']), show: { kind: 'row', items: [{ kind: 'icon', name: 'block' }, { kind: 'icon', name: 'block' }, { kind: 'icon', name: 'block' }] } },
+        { say: 'Sort means put the ones that go together into groups, like red squares in one group and blue squares in another. ' + sayAlong('sort', ['high', 'whisper', 'low']), show: { kind: 'pair', stack: true, a: { kind: 'pattern', items: ['square', 'square', 'square'], colour: 'red' }, b: { kind: 'pattern', items: ['square', 'square', 'square'], colour: 'blue' } } },
+        { say: 'Match means find one just like it. Two that match make a pair. These two socks are just alike, so they make a pair. ' + sayAlong('match', ['whisper', 'slide', 'drawn']), show: { kind: 'pair', a: { kind: 'icon', name: 'sock' }, b: { kind: 'icon', name: 'sock' } } },
+        { say: 'This red triangle and this red triangle are just alike, so they make a pair. A blue triangle or a red circle would not. ' + sayAlong('pair', ['low', 'chant', 'high', 'slow']), show: { kind: 'pair', a: { kind: 'item', shape: 'triangle', colour: 'red' }, b: { kind: 'item', shape: 'triangle', colour: 'red' } } },
+        { say: 'Trace means go over the lines with your finger. This is how you trace the letter L. ' + sayAlong('trace', ['drawn', 'fast', 'slide']), show: { kind: 'trace', text: 'L' } },
         { say: 'Some directions use three describing words. Your teacher might say, tap the small red square.', show: { kind: 'item', shape: 'square', colour: 'red', scale: 'small' } },
         { say: 'Small is its size, red is its color, and square is its shape. The small red square fits all three words.', show: { kind: 'item', shape: 'square', colour: 'red', scale: 'small' } },
         { say: 'A big red square is red and a square, but it is big. A small blue square is small and a square, but it is blue.', show: { kind: 'pair', a: { kind: 'item', shape: 'square', colour: 'red', scale: 'big' }, b: { kind: 'item', shape: 'square', colour: 'blue', scale: 'small' } } },
@@ -7043,8 +7213,8 @@ function PREK_READING_MODULES() { return [
         { say: 'Bear and chair rhyme.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'icon', name: 'chair' } } },
         { say: 'Sock, block and rock rhyme.', show: { kind: 'row', items: [{ kind: 'icon', name: 'sock' }, { kind: 'icon', name: 'block' }, { kind: 'icon', name: 'rock' }] } },
         { say: 'Ball and wall rhyme. They end the same way.', show: { kind: 'pair', a: { kind: 'icon', name: 'ball' }, b: { kind: 'icon', name: 'wall' } } },
-        { say: 'Teachers ask about shapes with learning words too. A corner is where two sides meet. A triangle has three sides and three corners, and a circle is round, with no corners. Say corner with me in a squeaky little voice. Corner.', show: { kind: 'pair', a: { kind: 'shape', name: 'triangle' }, b: { kind: 'shape', name: 'circle' } } },
-        { say: 'A long rectangle has four corners, two long sides and two short sides. A square has four corners, and four sides that are all the same length. Say side with me, nice and slow. Side.', show: { kind: 'pair', a: { kind: 'shape', name: 'rectangle' }, b: { kind: 'shape', name: 'square' } } },
+        { say: 'Teachers ask about shapes with learning words too. A corner is where two sides meet. A triangle has three sides and three corners, and a circle is round, with no corners. ' + sayAlong('corner', ['high', 'slide', 'whisper', 'fast']), show: { kind: 'pair', a: { kind: 'shape', name: 'triangle' }, b: { kind: 'shape', name: 'circle' } } },
+        { say: 'A long rectangle has four corners, two long sides and two short sides. A square has four corners, and four sides that are all the same length. ' + sayAlong('side', ['slow', 'chant', 'low', 'drawn']), show: { kind: 'pair', a: { kind: 'shape', name: 'rectangle' }, b: { kind: 'shape', name: 'square' } } },
         { say: 'How many corners does a triangle have? Count them. One, two, three.', show: { kind: 'pair', a: { kind: 'shape', name: 'triangle' }, b: { kind: 'dots', count: 3 } } },
         { say: 'How many corners does a square have? Count them. One, two, three, four.', show: { kind: 'pair', a: { kind: 'shape', name: 'square' }, b: { kind: 'dots', count: 4 } } },
         { say: 'Hat rhymes with cat, so the hat goes in the rhyme group. Listen to every word of a direction, and then do just what it says.', show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'icon', name: 'hat' } } },
@@ -7053,8 +7223,9 @@ function PREK_READING_MODULES() { return [
     sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.D.2 (consistently understands (receptive) and uses (expressive) instructional and academic vocabulary), in part, its receptive half for sorting pictures into two groups by a rule, the ones that rhyme with a word and the ones that do not, and the words a teacher uses to ask about shapes, corner and side, while count, sort, match, a pair, trace and a direction of three describing words are taught in More learning words, using the words, its expressive half, is the child\'s own talk, and the rest of a classroom\'s instructional and academic vocabulary, the words of its own routines and of what it studies next, is the classroom\'s to teach day by day (EARMARKS E13).'],
     generators: ['p4-learn-sort-rhyme', 'p4-learn-shape-words', 'p4-learn-not-rhyme', 'p4-learn-shape-yesno', 'p4-learn-corners'],
   },
-  // Pass MQ, earmark E13, Domain II's vocabulary: the connections of PK4 II.D.1 ("understands (receptive) and uses (expressive) a
-  // wide variety of words to label, describe and make connections among objects, people, places, actions, and events.") and the
+  // Pass MQ, earmark E13, Domain II's vocabulary: the connections of PK4 II.D.1 (in the 2022 guidelines' words, "understands (receptive)
+  // and uses (expressive) a wide variety of words to label, describe and make connections among objects, people, places, actions, and
+  // events.", which the 2027 recommendation, the app's since pass MR, says as "a growing variety") and the
   // Head Start ELOF goal P-LC 7, read with the guidelines' own child behaviors (TEA's 2022 comprehensive guide: "use descriptive
   // language to compare, contrast, and categorize objects, people, and actions" and "provide opposites (antonyms) or words with
   // similar meaning (synonyms)"). A four-year-old learns words for five groups and what belongs in each, opposites and words that
@@ -7068,24 +7239,24 @@ function PREK_READING_MODULES() { return [
     title: 'Words that go together',
     tagline: 'Animals, clothes, toys and more',
     lesson: {
-      paragraphs: ['Some words name a group, and many things can go in it. A cat, a duck, a bear, an owl, a frog and a fox are all animals. A hat, a sock and a coat are clothes, things you wear. A ball, a teddy bear and a block are toys. A tree, a flower and a cactus are plants. A car, a train, a boat and a bus are vehicles, things that carry people from place to place.', 'At cleanup time, the clothes go in the basket, and the toys go in the toy box. Cat, duck and hat: the hat does not go with the others, because a hat is clothes, not an animal.'],
+      paragraphs: ['Some words name a group, and many things can go in it. A cat, a duck, a bear, an owl, a frog and a fox are all animals. A hat, a sock and a coat are clothes, things you wear. A ball, a teddy bear and a block are toys. A tree, a flower and a cactus are plants. A car, a train, a boat and a bus are vehicles, things that carry people from place to place.', 'At cleanup time, the clothes go in the basket, and the toys go in the toy box. Cat, duck and hat. The hat does not go with the others, because a hat is clothes, not an animal.'],
       keyIdea: 'Words go together. Some name a group, like animals or clothes.',
       example: { kind: 'row', items: [{ kind: 'icon', name: 'hat' }, { kind: 'icon', name: 'sock' }, { kind: 'icon', name: 'coat' }], caption: 'A hat, a sock and a coat are all clothes.' },
       pictures: [{ serial: 'P164', alt: 'A small child at cleanup time putting a hat into a laundry basket, a toy box with a ball and a teddy bear beside it', step: 7 }],
       script: [
-        { say: 'Some words name a group, and many things can go in it. A cat, a duck and a bear are all animals. Say animals with me like a happy cheer! Animals!', show: { kind: 'row', items: [{ kind: 'pic', name: 'cat' }, { kind: 'pic', name: 'duck' }, { kind: 'pic', name: 'bear' }] } },
+        { say: 'Some words name a group, and many things can go in it. A cat, a duck and a bear are all animals. ' + sayAlong('animals', ['chant', 'low', 'high']), show: { kind: 'row', items: [{ kind: 'pic', name: 'cat' }, { kind: 'pic', name: 'duck' }, { kind: 'pic', name: 'bear' }] } },
         { say: 'An owl, a frog and a fox are animals too.', show: { kind: 'row', items: [{ kind: 'pic', name: 'owl' }, { kind: 'pic', name: 'frog' }, { kind: 'pic', name: 'fox' }] } },
-        { say: 'A hat, a sock and a coat are clothes, things you wear. Say clothes with me in a tiny whisper. Clothes.', show: { kind: 'row', items: [{ kind: 'icon', name: 'hat' }, { kind: 'icon', name: 'sock' }, { kind: 'icon', name: 'coat' }] } },
-        { say: 'A ball, a teddy bear and a block are toys. A teddy bear is a toy, not a real animal. Say toys with me in a squeaky little voice. Toys.', show: { kind: 'row', items: [{ kind: 'icon', name: 'ball' }, { kind: 'icon', name: 'teddy' }, { kind: 'icon', name: 'block' }] } },
-        { say: 'A tree, a flower and a cactus are plants. Say plants with me, nice and slow. Plants.', show: { kind: 'row', items: [{ kind: 'icon', name: 'tree' }, { kind: 'icon', name: 'flower' }, { kind: 'icon', name: 'cactus' }] } },
-        { say: 'A car and a train are vehicles, things that carry people from place to place. Say vehicles with me four times, in a low, silly voice. Vehicles, vehicles, vehicles, vehicles!', show: { kind: 'pair', a: { kind: 'art', name: 'car' }, b: { kind: 'art', name: 'train' } } },
+        { say: 'A hat, a sock and a coat are clothes, things you wear. ' + sayAlong('clothes', ['whisper', 'slow', 'slide']), show: { kind: 'row', items: [{ kind: 'icon', name: 'hat' }, { kind: 'icon', name: 'sock' }, { kind: 'icon', name: 'coat' }] } },
+        { say: 'A ball, a teddy bear and a block are toys. A teddy bear is a toy, not a real animal. ' + sayAlong('toys', ['high', 'fast', 'drawn']), show: { kind: 'row', items: [{ kind: 'icon', name: 'ball' }, { kind: 'icon', name: 'teddy' }, { kind: 'icon', name: 'block' }] } },
+        { say: 'A tree, a flower and a cactus are plants. ' + sayAlong('plants', ['slow', 'whisper', 'chant']), show: { kind: 'row', items: [{ kind: 'icon', name: 'tree' }, { kind: 'icon', name: 'flower' }, { kind: 'icon', name: 'cactus' }] } },
+        { say: 'A car and a train are vehicles, things that carry people from place to place. ' + sayAlong('vehicles', ['low', 'fast', 'slide', 'drawn']), show: { kind: 'pair', a: { kind: 'art', name: 'car' }, b: { kind: 'art', name: 'train' } } },
         { say: 'A boat and a bus are vehicles too.', show: { kind: 'pair', a: { kind: 'art', name: 'boat' }, b: { kind: 'icon', name: 'bus' } } },
         { say: 'At cleanup time, the clothes go in the basket, and the toys go in the toy box.', show: null },
         { say: 'Cat, duck and hat. The hat does not go with the others, because a hat is clothes, not an animal.', show: { kind: 'row', items: [{ kind: 'pic', name: 'cat' }, { kind: 'pic', name: 'duck' }, { kind: 'icon', name: 'hat' }] } },
         { say: 'Words go together. Some name a group, like animals or clothes. A hat, a sock and a coat are all clothes.', show: { kind: 'row', items: [{ kind: 'icon', name: 'hat' }, { kind: 'icon', name: 'sock' }, { kind: 'icon', name: 'coat' }] } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.D.1 (understands (receptive) and uses (expressive) a growing variety of words to label, describe and make connections among objects, people, places, actions, and events), in part, its receptive half for words that make connections, the groups animals, clothes, toys, plants and vehicles, while opposites and words that mean the same are taught in Same and opposite, using them, its expressive half, is the child\'s own talk, words that label people and places and connect them to the actions and tools of each job are taught in Helpers all around, and its words for events, and for actions beyond the helpers\' jobs, wait (EARMARKS E13), and Head Start ELOF Goal P-LC 7 (shows understanding of word categories and relationships among words), whose 48 to 60 month progression reads "Demonstrates an increasingly sophisticated understanding of words and word categories with support, such as listing multiple examples of a familiar category or identifying a synonym or antonym.", in part, since the lesson teaches word categories with several examples of each, while finding a word that means the same and a word that is its opposite is taught in Same and opposite, and listing examples aloud is the child\'s own talk (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.D.1 (understands (receptive) and uses (expressive) a growing variety of words to label, describe and make connections among objects, people, places, actions, and events), in part, its receptive half for words that make connections, the groups animals, clothes, toys, plants and vehicles, while opposites and words that mean the same are taught in Same and opposite, using them, its expressive half, is the child\'s own talk (EARMARKS E13), words that label people and places and connect them to the actions and tools of each job are taught in Helpers all around, and its words for events, and for actions beyond the helpers\' jobs, in Things we do, and Head Start ELOF Goal P-LC 7 (shows understanding of word categories and relationships among words), whose 48 to 60 month progression reads "Demonstrates an increasingly sophisticated understanding of words and word categories with support, such as listing multiple examples of a familiar category or identifying a synonym or antonym.", in part, since the lesson teaches word categories with several examples of each, while finding a word that means the same and a word that is its opposite is taught in Same and opposite, and listing examples aloud is the child\'s own talk (EARMARKS E13).'],
     generators: ['p4-group-which', 'p4-group-odd', 'p4-group-yesno', 'p4-group-name', 'p4-group-cleanup'],
   },
   // Same and opposite (pass MR, Mikey's answer to Q70, "Q70 - C"): the second half of Words that go together, II.D.1's connections
@@ -7099,25 +7270,64 @@ function PREK_READING_MODULES() { return [
     title: 'Same and opposite',
     tagline: 'Glad and happy, hot and cold',
     lesson: {
-      paragraphs: ['Some words are opposites, as different as can be. Hot and cold are opposites. Fire is hot, and the sun is hot, and ice is cold, and snow is cold. Fast and slow are opposites. A rocket is fast, and a car is fast, and a snail is slow, and a turtle is slow. Day and night are opposites. We see the sun in the day, and we often see the moon at night. Big and small are opposites too.', 'Some words mean the same as another word. Glad means happy, with a big smile. Angry means mad, with eyebrows that squeeze down. Afraid means scared, with wide-open eyes. Large means big, and small means little.'],
+      paragraphs: ['Some words are opposites, as different as can be. Hot and cold are opposites. Fire is hot, and the sun is hot, and ice is cold, and snow is cold. Fast and slow are opposites. A rocket is fast, and a car is fast, and a snail is slow, and a turtle is slow. Day and night are opposites. We see the sun in the day, and we often see the moon at night. Big and small are opposites too.', 'Some words mean the same as another word. Angry means mad, with eyebrows that squeeze down, and afraid means scared, with wide-open eyes. Glad means happy, with a big smile. Large means big, and small means little.'],
       keyIdea: 'Words go together. Some are opposites, like hot and cold, and some mean the same, like glad and happy.',
       example: { kind: 'pair', a: { kind: 'icon', name: 'fire' }, b: { kind: 'icon', name: 'ice' }, caption: 'Hot and cold are opposites. Fire is hot, and ice is cold.' },
       pictures: [],
       script: [
         { say: 'Some words name a group, like animals or clothes. Words can go together in other ways too.', show: { kind: 'row', items: [{ kind: 'pic', name: 'cat' }, { kind: 'pic', name: 'duck' }, { kind: 'pic', name: 'bear' }] } },
-        { say: 'Some words are opposites, as different as can be. Hot and cold are opposites. Fire is hot, and ice is cold. Say opposites with me, and stretch it out long. Opposites.', show: { kind: 'pair', a: { kind: 'icon', name: 'fire' }, b: { kind: 'icon', name: 'ice' } } },
+        { say: 'Some words are opposites, as different as can be. Hot and cold are opposites. Fire is hot, and ice is cold. ' + sayAlong('opposites', ['drawn', 'slide', 'fast']), show: { kind: 'pair', a: { kind: 'icon', name: 'fire' }, b: { kind: 'icon', name: 'ice' } } },
         { say: 'The sun is hot too, and snow is cold too.', show: { kind: 'pair', a: { kind: 'icon', name: 'sun' }, b: { kind: 'icon', name: 'snow' } } },
         { say: 'Fast and slow are opposites. A rocket is fast, and a car is fast.', show: { kind: 'pair', a: { kind: 'art', name: 'rocket' }, b: { kind: 'art', name: 'car' } } },
         { say: 'A snail is slow, and a turtle is slow.', show: { kind: 'pair', a: { kind: 'pic', name: 'snail' }, b: { kind: 'pic', name: 'turtle' } } },
         { say: 'Day and night are opposites. We see the sun in the day, and we often see the moon at night.', show: { kind: 'pair', a: { kind: 'icon', name: 'sun' }, b: { kind: 'icon', name: 'moon' } } },
         { say: 'Big and small are opposites too. This blue circle is big, and this blue circle is small.', show: { kind: 'pair', a: { kind: 'item', shape: 'circle', colour: 'blue', scale: 'big' }, b: { kind: 'item', shape: 'circle', colour: 'blue', scale: 'small' } } },
-        { say: 'Some words mean the same as another word. Glad means happy, with a big smile. Angry means mad, with eyebrows that squeeze down, and afraid means scared, with wide-open eyes. Say glad with me like a happy cheer! Glad!', show: { kind: 'faces', feelings: ['happy', 'mad', 'scared'] } },
-        { say: 'Large means big, and small means little. The large red square is the big one. Say large with me four times, in a low, silly voice. Large, large, large, large!', show: { kind: 'pair', a: { kind: 'item', shape: 'square', colour: 'red', scale: 'big' }, b: { kind: 'item', shape: 'square', colour: 'red', scale: 'small' } } },
+        { say: 'Some words mean the same as another word. Angry means mad, with eyebrows that squeeze down, and afraid means scared, with wide-open eyes. Glad means happy, with a big smile. ' + sayAlong('glad', ['chant', 'high', 'whisper', 'slow']), show: { kind: 'faces', feelings: ['mad', 'scared', 'happy'] } },
+        { say: 'Large means big, and small means little. The large red square is the big one. ' + sayAlong('large', ['low', 'drawn', 'chant']), show: { kind: 'pair', a: { kind: 'item', shape: 'square', colour: 'red', scale: 'big' }, b: { kind: 'item', shape: 'square', colour: 'red', scale: 'small' } } },
         { say: 'Words go together. Some are opposites, like hot and cold, and some mean the same, like glad and happy. Fire is hot, and ice is cold.', show: { kind: 'pair', a: { kind: 'icon', name: 'fire' }, b: { kind: 'icon', name: 'ice' } } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.D.1 (understands (receptive) and uses (expressive) a growing variety of words to label, describe and make connections among objects, people, places, actions, and events), in part, its receptive half for words that make connections, the opposites hot and cold, fast and slow, day and night, and big and small, and words that mean the same, glad and happy, angry and mad, afraid and scared, large and big, and small and little, while the groups animals, clothes, toys, plants and vehicles are taught in Words that go together, using them, its expressive half, is the child\'s own talk, words that label people and places and connect them to the actions and tools of each job are taught in Helpers all around, and its words for events, and for actions beyond the helpers\' jobs, wait (EARMARKS E13), and Head Start ELOF Goal P-LC 7 (shows understanding of word categories and relationships among words), whose 48 to 60 month progression reads "Demonstrates an increasingly sophisticated understanding of words and word categories with support, such as listing multiple examples of a familiar category or identifying a synonym or antonym.", in part, since the lesson teaches finding a word that means the same and a word that is its opposite, while word categories with several examples of each are taught in Words that go together, and listing examples aloud is the child\'s own talk (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.D.1 (understands (receptive) and uses (expressive) a growing variety of words to label, describe and make connections among objects, people, places, actions, and events), in part, its receptive half for words that make connections, the opposites hot and cold, fast and slow, day and night, and big and small, and words that mean the same, glad and happy, angry and mad, afraid and scared, large and big, and small and little, while the groups animals, clothes, toys, plants and vehicles are taught in Words that go together, using them, its expressive half, is the child\'s own talk (EARMARKS E13), words that label people and places and connect them to the actions and tools of each job are taught in Helpers all around, and its words for events, and for actions beyond the helpers\' jobs, in Things we do, and Head Start ELOF Goal P-LC 7 (shows understanding of word categories and relationships among words), whose 48 to 60 month progression reads "Demonstrates an increasingly sophisticated understanding of words and word categories with support, such as listing multiple examples of a familiar category or identifying a synonym or antonym.", in part, since the lesson teaches finding a word that means the same and a word that is its opposite, while word categories with several examples of each are taught in Words that go together, and listing examples aloud is the child\'s own talk (EARMARKS E13).'],
     generators: ['p4-opposite', 'p4-same-meaning', 'p4-opposite-yesno', 'p4-opposite-of', 'p4-same-word'],
+  },
+  // Things we do (pass MS, earmark E13, the standards review of Domain II): the rest of PK4 II.D.1 ("understands (receptive) and
+  // uses (expressive) a growing variety of words to label, describe and make connections among objects, people, places, actions, and
+  // events.", the 2027 recommendation), its words for actions beyond the helpers' jobs and for events, each connected to the thing it
+  // goes with, the time of day it comes at and a place, and Head Start's P-LC 6 for four-year-olds (words of increasing specificity
+  // and variety, and new words repeated after an adult). A four-year-old hears eight action words, each with its thing, four times
+  // of the day with their actions, the park, and two silly questions to laugh at; three new words are said along in silly voices, as
+  // in pre-K 4's other vocabulary lessons (Q67; that a new vocabulary lesson joins them is Claude's reading of Mikey's answer, raised
+  // with him as Q77 in pass MS).
+  {
+    id: 'things-we-do',
+    skill: 'Listening',
+    order: 15,
+    requires: ['opposites-and-same'],
+    title: 'Things we do',
+    tagline: 'Read, cut, kick and sleep',
+    lesson: {
+      paragraphs: ['Some words tell what we do. We call them action words. You read a book, you kick a ball, and you sleep in a bed. You cut paper with scissors, and you draw with a crayon. And you eat soup with a spoon, you drink from a cup, and you can ride a bus to school.', 'An action goes with a thing, and actions go with times of the day and places too. At lunchtime, you eat with a spoon from a plate, and you drink from a cup. You draw and cut at art time. At story time, you read a book together, and at bedtime, you sleep in your bed. At the park, you can kick a ball and go down the slide.', 'Some questions are silly. Do you sleep in a cup? No! A cup is for drinking, and you sleep in a bed.'],
+      keyIdea: 'Action words tell what we do. Read goes with a book, cut goes with scissors, and kick goes with a ball.',
+      example: { kind: 'pair', a: { kind: 'icon', name: 'book' }, b: { kind: 'icon', name: 'scissors' }, caption: 'You read a book, and you cut paper with scissors.' },
+      pictures: [{ serial: 'P166', alt: 'A small child at a classroom table at art time, drawing with a crayon, a pair of scissors and a sheet of paper beside them', step: 6 }],
+      script: [
+        { say: 'Some words tell what we do. We call them action words. You read a book, you kick a ball, and you sleep in a bed. ' + sayAlong('action', ['slide', 'whisper', 'chant']), show: { kind: 'row', items: [{ kind: 'icon', name: 'book' }, { kind: 'icon', name: 'ball' }, { kind: 'icon', name: 'bed' }] } },
+        { say: 'You cut paper with scissors, and you draw with a crayon. ' + sayAlong('scissors', ['low', 'fast', 'high']), show: { kind: 'pair', a: { kind: 'icon', name: 'scissors' }, b: { kind: 'icon', name: 'crayon' } } },
+        { say: 'You eat soup with a spoon, and you drink from a cup.', show: { kind: 'pair', a: { kind: 'icon', name: 'spoon' }, b: { kind: 'icon', name: 'cup' } } },
+        { say: 'You can ride a bus to school. Read, kick, sleep, cut, draw, eat, drink and ride are all action words.', show: { kind: 'icon', name: 'bus' } },
+        { say: 'An action goes with a thing. What do you do with a book? You read it! What do you do with a ball? You kick it!', show: { kind: 'pair', a: { kind: 'icon', name: 'book' }, b: { kind: 'icon', name: 'ball' } } },
+        { say: 'Actions go with times of the day too. At lunchtime, you eat with a spoon from a plate, and you drink from a cup. ' + sayAlong('lunchtime', ['drawn', 'fast', 'slow', 'whisper']), show: { kind: 'row', items: [{ kind: 'icon', name: 'spoon' }, { kind: 'icon', name: 'plate' }, { kind: 'icon', name: 'cup' }] } },
+        { say: 'At art time, you draw with a crayon, and you cut paper with scissors.', show: { kind: 'pair', a: { kind: 'icon', name: 'crayon' }, b: { kind: 'icon', name: 'scissors' } } },
+        { say: 'At story time, you read a book together, and at bedtime, you sleep in your bed.', show: { kind: 'pair', a: { kind: 'icon', name: 'book' }, b: { kind: 'icon', name: 'bed' } } },
+        { say: 'Actions go with places too. At the park, you can kick a ball and go down the slide.', show: { kind: 'pair', a: { kind: 'icon', name: 'ball' }, b: { kind: 'icon', name: 'slide' } } },
+        { say: 'Some questions are silly. Do you sleep in a cup? No! A cup is for drinking, and you sleep in a bed.', show: { kind: 'pair', a: { kind: 'icon', name: 'cup' }, b: { kind: 'icon', name: 'bed' } } },
+        { say: 'Do you kick a book? No! You read a book, and you kick a ball. Silly questions can make you laugh.', show: { kind: 'pair', a: { kind: 'icon', name: 'book' }, b: { kind: 'icon', name: 'ball' } } },
+        { say: 'When you practice, listen for the action word, like cut, eat or ride. Then find the thing that goes with it, scissors, a spoon or a bus.', show: { kind: 'row', items: [{ kind: 'icon', name: 'scissors' }, { kind: 'icon', name: 'spoon' }, { kind: 'icon', name: 'bus' }] } },
+        { say: 'Action words tell what we do. Read goes with a book, cut goes with scissors, and kick goes with a ball.', show: { kind: 'row', items: [{ kind: 'icon', name: 'book' }, { kind: 'icon', name: 'scissors' }, { kind: 'icon', name: 'ball' }] } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.D.1 (understands (receptive) and uses (expressive) a growing variety of words to label, describe and make connections among objects, people, places, actions, and events), in part, its receptive half for words for actions, read, kick, sleep, cut, draw, eat, drink and ride, and for events, lunchtime, art time, story time and bedtime, and the connections among them, the thing each action goes with, a book, a ball, a bed, scissors, a crayon, a spoon, a cup and a bus, and the actions that go with each event and with a place, the park, while using them, its expressive half, is the child\'s own talk (EARMARKS E13), its groups, opposites and words that mean the same are taught in Words that go together and Same and opposite, and its words for people and places and the actions and tools of each helper\'s job in Helpers all around, and Head Start ELOF Goal P-LC 6 (understands and uses a wide variety of words for a variety of purposes), whose 48 to 60 month progression reads "Shows a steady increase in vocabulary through the acquisition of words with increasing specificity and variety. Shows repetition of new words offered by adults and may ask about the meaning of unfamiliar words.", in part, since the lesson teaches words of increasing specificity and variety, eight action words and four times of the day, and offers three new words for the child to say after the voice, action, scissors and lunchtime, each in silly voices, while saying them, and asking about the meaning of unfamiliar words, are the child\'s own talk (EARMARKS E13).'],
+    generators: ['p4-act-thing', 'p4-act-word', 'p4-act-when', 'p4-act-yesno', 'p4-act-use'],
   },
 ]; }
 
@@ -28934,6 +29144,197 @@ Object.assign(GENERATORS, {
   },
 });
 
+// -----------------------------------------------------------------------------------------------------------------
+// Domain II's last teachable outcomes for both ages (pass MS, earmarks E12 and E13). In plain terms: three lessons' questions.
+// Pre-K 4's Things we do (action words, the thing each goes with, the times of the day and the place they go with, and silly
+// questions; PK4 II.D.1's actions and events, Head Start's P-LC 6); pre-K 3's Say what you need (what to say to a grown-up for a
+// need or a want, just what is wrong beside uh oh or I cannot find it, and who can help; PK3 II.B.1, P-LC 3); and pre-K 4's Say it to fit (four
+// reasons to use words, the voice that fits each place and moment, and just what is wrong for each grown-up; PK4 II.B.1, P-LC 3 and
+// P-LC 4). Every fact a question asks is said first on a line of its lesson's spoken script, every answer is re-derived by the rules
+// test from tables of its own (PREK_DERIVE), and each wrong choice's reason talks about the choice tapped, never the answer.
+// -----------------------------------------------------------------------------------------------------------------
+// Things we do (pre-K 4): each action word, the thing it goes with, the question that asks for the thing, and the lesson's sentence.
+const TW_ACTIONS = [['read', 'book', 'What do you read?', 'You read a book.'], ['cut', 'scissors', 'What do you cut paper with?', 'You cut paper with scissors.'], ['draw', 'crayon', 'What do you draw with?', 'You draw with a crayon.'], ['kick', 'ball', 'What do you kick?', 'You kick a ball.'], ['eat', 'spoon', 'What do you eat soup with?', 'You eat soup with a spoon.'], ['drink', 'cup', 'What do you drink from?', 'You drink from a cup.'], ['sleep', 'bed', 'Where do you sleep?', 'You sleep in a bed.'], ['ride', 'bus', 'What can you ride to school?', 'You can ride a bus to school.']];
+// What each thing is for, as a wrong tap hears it about the picture tapped ("The scissors are what you cut paper with."), and what
+// each action word is done with, as a wrong word is told.
+const TW_THING_IS = { book: 'is what you read.', scissors: 'are what you cut paper with.', crayon: 'is what you draw with.', ball: 'is what you kick.', spoon: 'is what you eat soup with.', cup: 'is what you drink from.', bed: 'is where you sleep.', bus: 'is what you can ride to school.' };
+const TW_DOES = { read: 'is what you do with a book.', cut: 'is what you do with scissors.', draw: 'is what you do with a crayon.', kick: 'is what you do with a ball.', eat: 'is what you do with a spoon.', drink: 'is what you do with a cup.', sleep: 'is what you do in a bed.', ride: 'is what you do on a bus.' };
+// Things never offered against an action, and actions never offered against a thing, because a child could fairly pick them: you
+// can sleep on a bus, and read, draw, eat or drink on one (since round one's lesson check, pass MS, which read the reason against its
+// list), eat soup from a cup, sip from a spoon, and read in bed.
+const TW_THING_FAIR = { sleep: ['bus'], eat: ['cup'], drink: ['spoon'] };
+const TW_WORD_FAIR = { bus: ['sleep', 'read', 'draw', 'eat', 'drink'], cup: ['eat'], spoon: ['drink'], bed: ['read'] };
+// The times of the day and the place the lesson names: each with its actions, its things and its own sentence.
+const TW_TIMES = [['lunchtime', ['eat', 'drink'], ['spoon', 'plate', 'cup'], 'At lunchtime, you eat with a spoon from a plate, and you drink from a cup.'], ['art time', ['draw', 'cut'], ['crayon', 'scissors'], 'At art time, you draw with a crayon, and you cut paper with scissors.'], ['story time', ['read'], ['book'], 'At story time, you read a book together.'], ['bedtime', ['sleep'], ['bed'], 'At bedtime, you sleep in your bed.'], ['the park', ['kick'], ['ball', 'slide'], 'At the park, you can kick a ball and go down the slide.']];
+// Never offered as wrong at a time or the place, because a child could fairly do or use them there: cutting food, a book and kitchen
+// scissors at lunchtime; a bedtime story, a drink of water and a bedtime snack at bedtime; a nap, a drawing and the bed at story time; a cup of water
+// for a brush and a paper plate of paint at art time; a bedtime snack's plate and spoon at bedtime (round two); and at the park a picnic, a book on a bench, a bike ride, a chalk drawing and
+// the bus that takes you there.
+const TW_TIME_FAIR_DO = { lunchtime: ['cut', 'read'], bedtime: ['read', 'drink', 'eat'], 'story time': ['sleep', 'draw'], 'the park': ['eat', 'drink', 'read', 'ride', 'draw'] };
+const TW_TIME_FAIR_USE = { lunchtime: ['scissors', 'book'], 'art time': ['cup', 'plate'], bedtime: ['book', 'cup', 'plate', 'spoon'], 'story time': ['bed', 'crayon'], 'the park': ['cup', 'spoon', 'plate', 'book', 'bus', 'crayon'] };
+const TW_THINGS = ['book', 'scissors', 'crayon', 'ball', 'spoon', 'cup', 'bed', 'bus', 'plate', 'slide'];
+// The time or the place each action and each thing goes with, for a wrong choice's reason; riding goes with the bus itself.
+const TW_DOES_WHEN = { read: 'is what you do at story time.', cut: 'is what you do at art time.', draw: 'is what you do at art time.', kick: 'is what you can do at the park.', eat: 'is what you do at lunchtime.', drink: 'is what you do at lunchtime.', sleep: 'is what you do at bedtime.', ride: 'is what you do on a bus.' };
+const TW_THING_WHEN = { book: 'goes with story time.', scissors: 'go with art time.', crayon: 'goes with art time.', ball: 'goes with the park.', slide: 'goes with the park.', spoon: 'goes with lunchtime.', plate: 'goes with lunchtime.', cup: 'goes with lunchtime.', bed: 'goes with bedtime.', bus: 'is what you can ride to school.' };
+// The other right action at lunchtime and at art time, said as More right answers.
+const TW_ALSO = { eat: 'Drink. At lunchtime, you drink from a cup too.', drink: 'Eat. At lunchtime, you eat with a spoon too.', draw: 'Cut. At art time, you cut paper with scissors too.', cut: 'Draw. At art time, you draw with a crayon too.' };
+// Yes or no about the actions, the silly ones among them, with what the wrong answer would mean for that one question.
+const TW_YESNO = [['Do you read a book?', 'Yes', 'Yes. You read a book.', 'would mean you do not read a book, but you do.'], ['Do you kick a ball?', 'Yes', 'Yes. You kick a ball.', 'would mean you do not kick a ball, but you do.'], ['Do you drink from a cup?', 'Yes', 'Yes. You drink from a cup.', 'would mean you do not drink from a cup, but you do.'], ['At bedtime, do you sleep in your bed?', 'Yes', 'Yes. At bedtime, you sleep in your bed.', 'would mean you do not sleep at bedtime, but you do.'], ['At art time, do you draw with a crayon?', 'Yes', 'Yes. At art time, you draw with a crayon.', 'would mean you do not draw at art time, but you do.'], ['At the park, can you go down the slide?', 'Yes', 'Yes. At the park, you can kick a ball and go down the slide.', 'would mean you cannot go down the slide at the park, but you can.'], ['Do you sleep in a cup?', 'No', 'No. That is silly! You drink from a cup, and you sleep in a bed.', 'would mean you sleep in a cup, but a cup is for drinking.'], ['Do you kick a book?', 'No', 'No. That is silly! You read a book, and you kick a ball.', 'would mean you kick a book, but you read a book.'], ['Do you eat soup with scissors?', 'No', 'No. That is silly! You cut paper with scissors, and you eat soup with a spoon.', 'would mean you eat soup with scissors, but you cut paper with scissors.'], ['Do you ride a crayon?', 'No', 'No. That is silly! You draw with a crayon, and you can ride a bus.', 'would mean you ride a crayon, but you draw with a crayon.'], ['Do you draw with a spoon?', 'No', 'No. That is silly! You eat soup with a spoon, and you draw with a crayon.', 'would mean you draw with a spoon, but you eat soup with a spoon.'], ['At story time, do you kick a ball?', 'No', 'No. At story time, you read a book together. You kick a ball at the park.', 'would mean you kick a ball at story time, but at story time you read.']];
+// Say what you need (pre-K 3): a need or a want, what to say for it and its picture, each said on a line of the lesson, and the
+// lesson's sentence for each.
+const NW_ASK = [['You are thirsty.', 'May I have a glass of water, please?', 'glass', 'That tells a grown-up you are thirsty.'], ['You are still hungry at lunch.', 'May I have some more, please?', 'plate', 'That tells a grown-up you are still hungry.'], ['You are cold.', 'May I have my coat, please?', 'coat', 'That tells a grown-up you are cold.'], ['You want a turn on the slide.', 'May I have a turn on the slide, please?', 'slide', 'That asks for just what you want.']];
+// The asks a child could fairly give for the other's need: a thirsty child may hold up a cup and ask for some more (round one's lesson
+// check, pass MS), so the water and the more are never offered against each other.
+const NW_ASK_FAIR = { 'May I have a glass of water, please?': ['May I have some more, please?'], 'May I have some more, please?': ['May I have a glass of water, please?'] };
+// The asks the kind with no picture asks for: never the turn on the slide, whose want named the answer's own words ("You want a turn on
+// the slide." beside "May I have a turn on the slide, please?"); there it stays a wrong choice, the picture kind asks it by its
+// picture alone, and the yes or no kind asks it too.
+const NW_ASKED = NW_ASK.filter((r) => r[2] !== 'slide');
+const NW_FOR = { 'May I have a glass of water, please?': 'is for when you are thirsty.', 'May I have some more, please?': 'is for when you are still hungry.', 'May I have my coat, please?': 'is for when you are cold.', 'May I have a turn on the slide, please?': 'is for when you want a turn.' };
+// The setup line each picture is shown under, then "What can you say?": this, a glass of water or the coat; the plate when you are
+// still hungry, held up as the lesson says; and this, the slide you want a turn on (round one's lesson check, pass MS: "You want more
+// of this." named the answer's more, and "You want a turn on this." its turn; round two's: "go down" was never said in the lesson,
+// and a prompt is one sentence, its situation on the setup line above it).
+const NW_PIC_SETUP = { glass: 'You need this.', plate: 'You are still hungry, so you hold up your plate.', coat: 'You need this.', slide: 'You want this.' };
+// Just what is wrong, each said on a line of the lesson, beside saying only uh oh, or I cannot find it, each with why it does not
+// tell (since round one's lesson check, pass MS: help was here, taught as the wrong thing to say, and a young child is taught to call
+// for help).
+const NW_CLEAR = ['I am thirsty.', 'I am cold.', 'I cannot find my teddy bear.', 'I cannot reach my book.', 'My cup spilled.'];
+const NW_VAGUE = [['Uh oh!', 'does not tell what is wrong, so your teacher does not know how to help.'], ['I cannot find it.', 'does not say what you cannot find.']];
+// Who can help: a grown-up the lesson names, never a grandma beside a grandpa, and the baby and the teddy bear, who cannot. The
+// needs asked here are the lesson's own, never the teddy bear's, so the teddy bear is never the thing lost.
+const NW_GROWNUPS = ['teacher', 'grandma', 'grandpa'];
+const NW_HELP_STORIES = ['You are thirsty.', 'You are cold.', 'You cannot reach your book.', 'Your cup spilled.'];
+// Yes or no about what to say and who can help, with what the wrong answer would mean for that one question.
+const NW_YESNO = [['Can you use words to tell a grown-up you are thirsty?', 'Yes', 'Yes. You can say, I am thirsty. May I have a glass of water, please?', 'would mean you cannot use words to tell a grown-up, but you can.'], ['If you just say uh oh, does your teacher know just what is wrong?', 'No', 'No. Say just what is wrong, like, I cannot find my teddy bear.', 'would mean your teacher knows what is wrong, but just saying uh oh does not tell.'], ['Can a baby help you find your teddy bear?', 'No', 'No. A baby is very little, so a baby cannot help. A grown-up you know can.', 'would mean a baby can help, but a baby is very little.'], ['Can you ask, may I have a turn on the slide, please?', 'Yes', 'Yes. When you want a turn, you can ask, may I have a turn on the slide, please?', 'would mean you cannot ask for a turn, but you can.'], ['Your cup spilled. Can you tell a grown-up what happened?', 'Yes', 'Yes. You can tell what happened, like, my cup spilled.', 'would mean you cannot tell what happened, but you can.'], ['When you are cold, do you ask for a glass of water?', 'No', 'No. When you are cold, you can say, may I have my coat, please? Water is for when you are thirsty.', 'would mean you ask for water when you are cold, but you ask for your coat.'], ['Can a teddy bear help you reach your book?', 'No', 'No. A teddy bear is a toy, so it cannot help. A grown-up you know can.', 'would mean a teddy bear can help, but it is a toy.'], ['Can your teacher help when you need something?', 'Yes', 'Yes. A grown-up you know can help, like your teacher, your grandma or your grandpa.', 'would mean your teacher cannot help, but your teacher can.']];
+// A sentence said back inside a reason ("Saying, may I have my coat, please"), lowered at its first letter unless it opens with I.
+const msSaid = (s) => { const t = String(s).replace(/[.!?]+$/, ''); return /^I\b/.test(t) ? t : t.charAt(0).toLowerCase() + t.slice(1); };
+// Say it to fit (pre-K 4): each place or moment the lesson names, the voice that fits it, the one that does not, what the lesson
+// says of the right one, and why the other does not fit there.
+const FV_VOICE = [['You are in the library, where others read their books.', 'A whisper', 'A big outside voice', 'A whisper, so others can read their books.', 'is for the playground, and too loud for the library.'], ['A baby is sleeping.', 'A whisper', 'A big outside voice', 'A whisper, so the baby keeps sleeping.', 'is too loud while the baby is sleeping.'], ['You are talking with your teacher in the classroom.', 'An inside voice', 'A big outside voice', 'An inside voice, not too loud and not too soft.', 'is for the playground, and too loud for the classroom.'], ["You are at the doctor's office.", 'An inside voice', 'A big outside voice', 'An inside voice. Then tell the doctor just what is wrong.', "is for the playground, and too loud for the doctor's office."], ['Your friend is far away on the playground.', 'A big outside voice', 'A whisper', 'A big outside voice, so your friend far away can hear you.', 'is too soft for a friend far away to hear.'], ['Your friend is sad.', 'A kind, soft voice', 'A big outside voice', 'A kind, soft voice. You can say, are you okay?', 'is not kind and soft, and your friend is sad.']];
+// A second voice that does not fit a moment, offered in turn with the first, so a child meets more than one wrong voice: an inside voice
+// is too soft for a friend far away (round two's lesson check: round one's whisper for the classroom was a voice a child may fairly
+// use with a teacher, at rest time or work time).
+const FV_VOICE_ALSO = { 'Your friend is far away on the playground.': ['An inside voice', 'is too soft for a friend far away to hear.'] };
+// What words are for: the lesson's four reasons, and sentences for each, with what each sentence does; a question is never offered
+// against asking for something, nor asking for something against a question, since an ask can be said as a question.
+const FV_PURPOSES = ['To ask for something', 'To tell what happened', 'To ask a question', 'To say how you feel'];
+const FV_SAID = [['Please pass the red crayon.', 'To ask for something', 'You ask for the red crayon.'], ['Please pass the cup.', 'To ask for something', 'You ask for the cup.'], ['I made a tall tower!', 'To tell what happened', 'You tell about the tower you made.'], ['I fell on the slide.', 'To tell what happened', 'You tell what happened on the slide.'], ['Where does rain come from?', 'To ask a question', 'You ask where rain comes from.'], ['What is your name?', 'To ask a question', "You ask your friend's name."], ['I feel happy!', 'To say how you feel', 'You feel happy, and you say so.'], ['I feel sad.', 'To say how you feel', 'You feel sad, and you say so.']];
+const FV_APART = { 'To ask for something': ['To ask a question'], 'To ask a question': ['To ask for something'] };
+const FV_PURPOSE_EX = { 'To ask for something': 'is for asking for a thing, like the red crayon.', 'To tell what happened': 'is for telling what happened, like the tall tower you made.', 'To ask a question': 'is for questions, like where rain comes from.', 'To say how you feel': 'is for telling how you feel, like happy or sad.' };
+const FV_WANT = { 'To ask for something': 'You want to ask for something. What can you say?', 'To tell what happened': 'You want to tell what happened. What can you say?', 'To ask a question': 'You want to ask a question. What can you say?', 'To say how you feel': 'You want to say how you feel. What can you say?' };
+const FV_DOES = { 'To ask for something': 'asks for something.', 'To tell what happened': 'tells what happened.', 'To ask a question': 'asks a question.', 'To say how you feel': 'says how you feel.' };
+// A sentence kept apart from reasons a child could fairly hear in it (round one's lesson check, pass MS): I fell on the slide, told to a
+// teacher so she can help, may fairly be heard as asking for something, and beside saying how you feel, fell sounds like feel.
+const FV_SAID_APART = { 'I fell on the slide.': ['To ask for something', 'To say how you feel'] };
+// Just what is wrong, for each grown-up the lesson names, beside words that leave it out, and what those words leave out, each pair
+// said on the lesson's own lines (round one's lesson check, pass MS: three rows used a lost crayon, a book on a shelf and spilled
+// milk, which pre-K 4's lesson never says); since round two each knee row is offered beside uh oh too, which the script says tells
+// nothing of what happened, so the kind's wrong choice is not one sentence every time.
+const FV_ENOUGH = [['the doctor', 'My ear hurts.', 'It hurts.', 'does not say where it hurts.'], ['your teacher', 'My knee hurts. I fell on the slide.', 'It hurts.', 'does not say where it hurts.'], ['your grandma', 'My knee hurts. I fell on the slide.', 'It hurts.', 'does not say where it hurts.'], ['your grandpa', 'My ear hurts.', 'It hurts.', 'does not say where it hurts.'], ['your teacher', 'My knee hurts. I fell on the slide.', 'Uh oh.', 'does not say what happened.'], ['your grandma', 'My knee hurts. I fell on the slide.', 'Uh oh.', 'does not say what happened.']];
+// Yes or no about the voice for each place and moment, and about telling enough, with what the wrong answer would mean for that one question.
+const FV_YESNO = [['Do you use a big outside voice in the library?', 'No', 'No. In the library, use a whisper, so others can read their books.', 'would mean a big outside voice fits the library, but it is too loud there.'], ['When a baby is sleeping, can you use a whisper?', 'Yes', 'Yes. Use a whisper, so the baby keeps sleeping.', 'would mean you cannot whisper while a baby is sleeping, but a whisper fits.'], ['On the playground, can you use a big outside voice?', 'Yes', 'Yes. On the playground, you can use a big outside voice, so a friend far away can hear you.', 'would mean you cannot use a big outside voice on the playground, but you can.'], ['Can you use words to say how you feel?', 'Yes', 'Yes. You can say, I feel happy!', 'would mean you cannot use words to say how you feel, but you can.'], ['Does saying it hurts tell the doctor just where it hurts?', 'No', 'No. Say just where, like, my ear hurts. Then the doctor knows what is wrong.', 'would mean the doctor knows where it hurts, but it hurts does not say where.'], ['In the classroom, do you use a big outside voice?', 'No', 'No. In the classroom, use an inside voice, not too loud and not too soft.', 'would mean a big outside voice fits the classroom, but it is too loud there.'], ['When a friend is sad, does a kind, soft voice fit?', 'Yes', 'Yes. A kind, soft voice fits when a friend is sad. You can say, are you okay?', 'would mean a kind, soft voice does not fit, but it does.'], ['When a baby is sleeping, do you use a big outside voice?', 'No', 'No. When a baby is sleeping, use a whisper, so the baby keeps sleeping.', 'would mean a big outside voice fits while a baby sleeps, but it is too loud.']];
+Object.assign(GENERATORS, {
+  // Things we do: the thing an action goes with, by its picture.
+  'p4-act-thing': (rng) => {
+    const [act, thing, ask, says] = pick(rng, TW_ACTIONS); const fair = TW_THING_FAIR[act] || [];
+    const others = shuffle(rng, TW_ACTIONS.map((r) => r[1]).filter((t) => t !== thing && !fair.includes(t))).slice(0, 2); const choices = shuffle(rng, [thing, ...others].map((t) => `icon:${t}`));
+    return { type: 'choice', story: null, prompt: ask, choices, answer: `icon:${thing}`, explain: says, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, `icon:${thing}`, (t) => ({ name: p3PicName(t), why: TW_THING_IS[p3PicWord(t)] })), alsoRight: [] };
+  },
+  // Things we do: the action word for the thing shown.
+  'p4-act-word': (rng) => {
+    const [act, thing, , says] = pick(rng, TW_ACTIONS); const fair = TW_WORD_FAIR[thing] || [];
+    const others = shuffle(rng, TW_ACTIONS.map((r) => r[0]).filter((a) => a !== act && !fair.includes(a))).slice(0, 2);
+    return { type: 'choice', story: null, prompt: 'What do you do with this?', choices: shuffle(rng, [act, ...others].map(capFirst)), answer: capFirst(act), explain: `${capFirst(act)}. ${says}`, visual: { kind: 'icon', name: thing }, explainVisual: null,
+      whyNot: Object.fromEntries(others.map((a) => [capFirst(a), { name: capFirst(a), why: TW_DOES[a] }])), alsoRight: [] };
+  },
+  // Things we do: what you do at a time of the day or at the park, as a word.
+  'p4-act-when': (rng) => {
+    const [time, acts, , says] = pick(rng, TW_TIMES); const a = pick(rng, acts); const fair = TW_TIME_FAIR_DO[time] || [];
+    const others = shuffle(rng, TW_ACTIONS.map((r) => r[0]).filter((x) => !acts.includes(x) && !fair.includes(x))).slice(0, 2);
+    return { type: 'choice', story: null, prompt: time === 'the park' ? 'At the park, what can you do?' : `At ${time}, what do you do?`, choices: shuffle(rng, [a, ...others].map(capFirst)), answer: capFirst(a), explain: `${capFirst(a)}. ${says}`, visual: null, explainVisual: null,
+      whyNot: Object.fromEntries(others.map((x) => [capFirst(x), { name: capFirst(x), why: TW_DOES_WHEN[x] }])), alsoRight: acts.length > 1 ? [TW_ALSO[a]] : [] };
+  },
+  // Things we do: yes or no about the actions, the silly ones among them.
+  'p4-act-yesno': (rng) => {
+    const [ask, answer, explain, why] = pick(rng, TW_YESNO); const wrong = answer === 'Yes' ? 'No' : 'Yes';
+    return { type: 'choice', story: null, prompt: ask, choices: yesNo(rng), answer, explain, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why } }, alsoRight: [] };
+  },
+  // Things we do: the thing that goes with a time of the day or the park, by its picture.
+  'p4-act-use': (rng) => {
+    const [time, , things, says] = pick(rng, TW_TIMES); const t = pick(rng, things); const fair = TW_TIME_FAIR_USE[time] || [];
+    const others = shuffle(rng, TW_THINGS.filter((x) => !things.includes(x) && !fair.includes(x))).slice(0, 2); const choices = shuffle(rng, [t, ...others].map((x) => `icon:${x}`));
+    return { type: 'choice', story: null, prompt: `Which one goes with ${time}?`, choices, answer: `icon:${t}`, explain: `${p3PicName(`icon:${t}`)}. ${says}`, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, `icon:${t}`, (x) => ({ name: p3PicName(x), why: TW_THING_WHEN[p3PicWord(x)] })), alsoRight: [] };
+  },
+  // Say what you need: what to say for a need or a want.
+  'p3-need-say': (rng) => {
+    const [story, right, , says] = pick(rng, NW_ASKED); const fair = NW_ASK_FAIR[right] || []; const wrong = pick(rng, NW_ASK.filter((r) => r[1] !== right && !fair.includes(r[1])))[1];
+    return { type: 'choice', story, prompt: 'What can you say?', choices: shuffle(rng, [right, wrong]), answer: right, explain: `${right} ${says}`, visual: null, explainVisual: null,
+      whyNot: { [wrong]: { name: `Saying, ${msSaid(wrong)}`, why: NW_FOR[wrong] } }, alsoRight: [] };
+  },
+  // Say what you need: what to say for the thing shown, a glass of water, the plate when you are still hungry, the coat or the slide.
+  'p3-need-pic': (rng) => {
+    const [, right, thing, says] = pick(rng, NW_ASK); const fair = NW_ASK_FAIR[right] || []; const wrong = pick(rng, NW_ASK.filter((r) => r[1] !== right && !fair.includes(r[1])))[1];
+    return { type: 'choice', story: NW_PIC_SETUP[thing], prompt: 'What can you say?', choices: shuffle(rng, [right, wrong]), answer: right, explain: `${right} ${says}`, visual: { kind: 'icon', name: thing }, explainVisual: null,
+      whyNot: { [wrong]: { name: `Saying, ${msSaid(wrong)}`, why: NW_FOR[wrong] } }, alsoRight: [] };
+  },
+  // Say what you need: just what is wrong, beside saying only uh oh, or I cannot find it (Head Start's P-LC 3, enough detail to get
+  // needs met).
+  'p3-need-enough': (rng) => {
+    const right = pick(rng, NW_CLEAR); const [vague, vagueWhy] = pick(rng, NW_VAGUE);
+    return { type: 'choice', story: null, prompt: 'Which one tells your teacher just what is wrong?', choices: shuffle(rng, [right, vague]), answer: right,
+      explain: `${right} That tells your teacher just what is wrong, so your teacher knows how to help.`, visual: null, explainVisual: null,
+      whyNot: { [vague]: { name: `Saying, ${msSaid(vague)}`, why: vagueWhy } }, alsoRight: [] };
+  },
+  // Say what you need: who can help, a grown-up you know, and not a baby or a teddy bear.
+  'p3-need-who': (rng) => {
+    const story = pick(rng, NW_HELP_STORIES); const g = pick(rng, NW_GROWNUPS); const choices = shuffle(rng, [`icon:${g}`, 'icon:baby', 'icon:teddy']);
+    return { type: 'choice', story, prompt: 'Who can help you?', choices, answer: `icon:${g}`, explain: `Your ${g}. A grown-up you know can help, like your teacher, your grandma or your grandpa.`, visual: null, explainVisual: null,
+      whyNot: { 'icon:baby': { name: 'The baby', why: 'is very little, so a baby cannot help.' }, 'icon:teddy': { name: 'The teddy bear', why: 'is a toy, so it cannot help.' } }, alsoRight: [] };
+  },
+  // Say what you need: yes or no about asking, telling and who can help.
+  'p3-need-yesno': (rng) => {
+    const [ask, answer, explain, why] = pick(rng, NW_YESNO); const wrong = answer === 'Yes' ? 'No' : 'Yes';
+    return { type: 'choice', story: null, prompt: ask, choices: yesNo(rng), answer, explain, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why } }, alsoRight: [] };
+  },
+  // Say it to fit: the voice that fits a place or a moment.
+  'p4-fit-voice': (rng) => {
+    const [story, right, first, explain, firstWhy] = pick(rng, FV_VOICE); const also = FV_VOICE_ALSO[story];
+    const [wrong, why] = also && rng() < 0.5 ? also : [first, firstWhy];
+    return { type: 'choice', story, prompt: 'Which voice fits?', choices: shuffle(rng, [right, wrong]), answer: right, explain, visual: null, explainVisual: null,
+      whyNot: { [wrong]: { name: wrong, why } }, alsoRight: [] };
+  },
+  // Say it to fit: why you say something, one of the lesson's four reasons.
+  'p4-fit-why': (rng) => {
+    const [said, right, says] = pick(rng, FV_SAID); const apart = [...(FV_APART[right] || []), ...(FV_SAID_APART[said] || [])];
+    const others = shuffle(rng, FV_PURPOSES.filter((p) => p !== right && !apart.includes(p))).slice(0, 2);
+    return { type: 'choice', story: `You say, ${msSaid(said)}${/[?!]$/.test(said) ? said.slice(-1) : '.'}`, prompt: 'Why do you say it?', choices: shuffle(rng, [right, ...others]), answer: right, explain: `${right}. ${says}`, visual: null, explainVisual: null,
+      whyNot: Object.fromEntries(others.map((p) => [p, { name: p, why: FV_PURPOSE_EX[p] }])), alsoRight: [] };
+  },
+  // Say it to fit: what you can say for one of the four reasons, one sentence of each of two other reasons beside it.
+  'p4-fit-say': (rng) => {
+    const purpose = pick(rng, FV_PURPOSES); const right = pick(rng, FV_SAID.filter((r) => r[1] === purpose));
+    const apart = FV_APART[purpose] || []; const kinds = shuffle(rng, FV_PURPOSES.filter((p) => p !== purpose && !apart.includes(p))).slice(0, 2);
+    const wrongs = kinds.map((k) => pick(rng, FV_SAID.filter((r) => r[1] === k && !(FV_SAID_APART[r[0]] || []).includes(purpose))));
+    return { type: 'choice', story: null, prompt: FV_WANT[purpose], choices: shuffle(rng, [right[0], ...wrongs.map((w) => w[0])]), answer: right[0], explain: `${right[0]} ${right[2]}`, visual: null, explainVisual: null,
+      whyNot: Object.fromEntries(wrongs.map((w) => [w[0], { name: `Saying, ${msSaid(w[0])}`, why: FV_DOES[w[1]] }])), alsoRight: [] };
+  },
+  // Say it to fit: just what is wrong, told to one of the grown-ups the lesson names.
+  'p4-fit-enough': (rng) => {
+    const [who, right, vague, why] = pick(rng, FV_ENOUGH);
+    return { type: 'choice', story: null, prompt: `Which one tells ${who} just what is wrong?`, choices: shuffle(rng, [right, vague]), answer: right, explain: `${right} That tells ${who} just what is wrong, so ${who} can help.`, visual: null, explainVisual: null,
+      whyNot: { [vague]: { name: `Saying, ${msSaid(vague)}`, why } }, alsoRight: [] };
+  },
+  // Say it to fit: yes or no about the voice for each place and moment, and about telling enough.
+  'p4-fit-yesno': (rng) => {
+    const [ask, answer, explain, why] = pick(rng, FV_YESNO); const wrong = answer === 'Yes' ? 'No' : 'Yes';
+    return { type: 'choice', story: null, prompt: ask, choices: yesNo(rng), answer, explain, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why } }, alsoRight: [] };
+  },
+});
+
+
 // ---------------------------------------------------------------------
 // WRITING questions. There is no right answer: the student writes, checks a short list,
 // and the piece goes to the educator to mark. The event stores the writing itself; this is
@@ -33493,37 +33894,152 @@ const LETTER_NAMED = /^\s+(?:says|makes)\b/;
 // letter ("the sound G makes"); one that labels something ("what source B says") is read as before.
 const LETTER_BEFORE = /(?:^|[,;:(“"‘']\s*|\b(?:and|the|so|but|then|sound|letter)\s+)$/i;
 const SOUND_LIST = /^(\s*["“‘']?)([A-Z][a-z]+), ([a-z]+),? and ([a-z]+)(?= (?:all |both )?(?:(?:start|starts|begin|begins) (?:with|the same)|(?:end|ends) (?:with|in|the same)|rhyme))/;
-// Say it with me (pass MR, Mikey's answer to Q67: "Q67 - B but let's make it fun.  When they say it with you, the voice should do
-// something silly like whisper it, say it slow, say it low four times in a silly voice, say it ultra fast three times, draw it out the
-// next time etc.  There can be variations between the events where this applies to keep it interesting and fun."). A lesson that
-// brings in a new word ends its line with a cue that names the word, then the word said the cue's number of times in the cue's own
-// voice, so the child says it along (Beck and McKeown's Text Talk had children repeat each new word, "so they had a phonological
-// representation of what they were learning", Q67), and the pause before Next is the child's turn: "Say grandpa with me four times,
-// in a low, silly voice. Grandpa, grandpa, grandpa, grandpa!" The cue names its word, since after a definition "say it" could mean
-// the last thing said. Nothing is recorded or heard by the app; read-aloud stays output only. The shape is the device voice's
-// (SPEECH_SHAPES in ui.jsx) and the tag the recorded voice's (tools/audio-ledger.mjs). The scripts test holds every cue to its word
-// said just after it, the word to its line, a cue to the end of its line, and a lesson to a new style each time.
-export const SAY_WITH_ME = [
-  { style: 'whisper', how: ' in a tiny whisper.', times: 1, tag: '[whispers]' },
-  { style: 'slow', how: ', nice and slow.', times: 1, tag: '[very slowly]' },
-  { style: 'low', how: ' four times, in a low, silly voice.', times: 4, tag: '[in a deep, silly voice]' },
-  { style: 'fast', how: ' three times, super fast!', times: 3, tag: '[very fast]' },
-  { style: 'drawn', how: ', and stretch it out long.', times: 1, tag: '[drawn out, very slowly]' },
-  { style: 'squeaky', how: ' in a squeaky little voice.', times: 1, tag: '[in a high, squeaky voice]' },
-  { style: 'cheer', how: ' like a happy cheer!', times: 1, tag: '[excited]' },
-];
-// The lessons that say their new words this way: Q67 (b)'s four (Learning words, People and events, now Words for people, More
-// learning words and Words that go together, the trial Mikey chose) and, since Q70 split each in two, their second halves (Count
-// and sort, Things that happen, Rhymes and shapes and Same and opposite), eight in all; the scripts test holds the cues to these
-// lessons, so the trial spreads only by a choice.
-export const SAY_WITH_ME_LESSONS = ['learning-words', 'count-and-sort-words', 'people-and-events', 'things-that-happen', 'more-learning-words', 'sort-and-shape-words', 'words-go-together', 'opposites-and-same'];
-// The cue a sentence is ("Say grandpa with me four times, in a low, silly voice."), with the word it names, or null.
-export function sayWithMeCue(sentence) { const m = /^Say ([a-z][a-z ]*?) with me(.*)$/.exec(String(sentence || '').trim()); if (!m) return null; const x = SAY_WITH_ME.find((c) => c.how === m[2]); return x ? { ...x, word: m[1] } : null; }
-// The sentences of a line, each with the cue it follows when it is that cue's word said playfully (else null), split as the screen
-// and the audio ledger split them (sentencesOf), so the sentence numbers agree.
-export function sayWithMeParts(line) { const ss = String(line || '').split(SENTENCE_BREAK).filter(Boolean); return ss.map((s, i) => { const cue = i > 0 ? sayWithMeCue(ss[i - 1]) : null; return { sentence: s, cue: cue && s.trim() === sayWithMeWord(cue.word, cue) ? cue : null }; }); }
-// The word itself, said the cue's number of times: "Grandpa, grandpa, grandpa, grandpa!" for four, "Grandpa." for one.
-export function sayWithMeWord(word, cue) { const w = String(word); const n = cue.times; const head = w.charAt(0).toUpperCase() + w.slice(1); const rest = Array.from({ length: n - 1 }, () => w.toLowerCase()); const end = cue.style === 'cheer' || cue.style === 'fast' || n > 1 ? '!' : '.'; return `${[head, ...rest].join(', ')}${end}`; }
+// Say it with me, in silly voices (pass MS). Pass MR built Mikey's answer to Q67 ("Q67 - B but let's make it fun.  When they say it
+// with you, the voice should do something silly like whisper it, say it slow, say it low four times in a silly voice, say it ultra fast
+// three times, draw it out the next time etc.") as one voice a word, the voices spread across a lesson's words. Mikey meant them for
+// one word (pass MS, word for word in DECISIONS MS): "When I mentioned that saying the words out loud should be fun such as a a
+// whisper, then slow, then four times in a low silly voice, ultra fast three times amd drawn out for the last time in a silly yet clear
+// voice, I was talking about applying all of that to a single spoken word.  Not really one word as a whisper, another later fast,
+// another later slow etc." ... "The very last pronunciation can be a clearer more normal version.  Other variation ideas that are
+// silly could be very high pitched, a changing pitch where it starts high and ends low, a chant as if you were at a sporting event
+// etc." In plain terms: a young vocabulary lesson brings in a new word and then plays a little game with that one word. A cue names
+// the word ("Say different with me, in silly voices!"), and the voice says the same word three to five silly ways, each called first
+// in a few words so the child knows how to join in ("Whisper it." and then "Different."; "Four times, low and silly!" and then
+// "Different, different, different, different!"), and last of all "Now say it nice and clear." and the word in a clear, ordinary
+// voice. After each way the voice waits a moment (sayAlongEcho), the child's turn, to say it along or a short way back, so the child
+// hears one word said many ways and says it many ways (Beck and McKeown's Text Talk had children repeat each new word, Q67). Each word
+// of a lesson gets a mix and an order of its own. Nothing is recorded or heard by the app; read-aloud stays output only.
+// A voice: its style, the call that names it, how many times the word is said, the mark the word ends with, apart (each saying a
+// sentence of its own, with two claps between them, the chant), the recorded voice's tag (tools/audio-ledger.mjs) and the device
+// voice's rate, pitch and volume (ui.jsx's SPEECH_SHAPES take them from here). A device voice holds one pitch for a whole word, so
+// slide steps down over three sayings, high, middle and low, where the recorded voice is asked to slide within the word.
+// Written as a function, so a lesson's words can call it wherever they sit in the file (sayAlong, below).
+function sayAlongVoices() {
+  return [
+    { style: 'whisper', call: 'Whisper it.', times: 1, end: '.', tag: '[whispers]', device: [{ rate: 0.8, pitch: 1.1, volume: 0.45 }] },
+    { style: 'slow', call: 'Say it slowly.', times: 1, end: '.', tag: '[very slowly]', device: [{ rate: 0.48, pitch: 1.12 }] },
+    { style: 'low', call: 'Four times, low and silly!', times: 4, end: '!', tag: '[in a deep, silly voice]', device: [{ rate: 0.82, pitch: 0.3 }] },
+    { style: 'fast', call: 'Three times, super fast!', times: 3, end: '!', tag: '[very fast]', device: [{ rate: 1.85, pitch: 1.2 }] },
+    { style: 'drawn', call: 'Stretch it out long.', times: 1, end: '.', tag: '[drawn out, very slowly]', device: [{ rate: 0.32, pitch: 1.05 }] },
+    { style: 'high', call: 'Way up high, like a mouse!', times: 1, end: '!', tag: '[in a very high, squeaky voice]', device: [{ rate: 1.0, pitch: 1.95 }] },
+    { style: 'slide', call: 'Slide it down, from high to low.', times: 3, end: '.', tag: '[starting very high and sliding down low]', device: [{ rate: 0.95, pitch: 1.9 }, { rate: 0.95, pitch: 1.25 }, { rate: 0.95, pitch: 0.55 }] },
+    { style: 'chant', call: 'Cheer it like a big game!', times: 3, end: '!', apart: true, tag: '[chanting like a crowd at a ball game]', device: [{ rate: 1.05, pitch: 1.5 }] },
+    { style: 'clear', call: 'Now say it nice and clear.', times: 1, end: '.', tag: '[clearly and warmly]', device: [{ rate: 0.78, pitch: 1.12 }], last: true },
+  ];
+}
+export const SAY_ALONG_VOICES = sayAlongVoices();
+// The cue that opens the game for a word, written as a function for the same reason; sayAlongParts finds a cue by these words.
+export function sayAlongCue(word) { return `Say ${word} with me, in silly voices!`; }
+// Each say-along word in its written syllables, the dictionary's (Merriam-Webster's division), for the light that follows the voice
+// through the word (Mikey: "it would be nice to see just the letters that are being pronounced be highlighted during this part so
+// they can follow along easier"). A word of one syllable lights whole, since inside a syllable a letter and a sound do not always
+// pair (the e of same says nothing of its own). A space stands between two words, as in birthday party.
+function sayAlongSyllables() {
+  return {
+    different: ['dif', 'fer', 'ent'], same: ['same'], match: ['match'], count: ['count'], sort: ['sort'], group: ['group'], side: ['side'], corner: ['cor', 'ner'],
+    baby: ['ba', 'by'], teacher: ['teach', 'er'], doctor: ['doc', 'tor'], grandma: ['grand', 'ma'], grandpa: ['grand', 'pa'], people: ['peo', 'ple'],
+    'birthday party': ['birth', 'day', ' ', 'par', 'ty'], bedtime: ['bed', 'time'], pair: ['pair'], trace: ['trace'],
+    animals: ['an', 'i', 'mals'], clothes: ['clothes'], toys: ['toys'], plants: ['plants'], vehicles: ['ve', 'hi', 'cles'], opposites: ['op', 'po', 'sites'], glad: ['glad'], large: ['large'],
+    action: ['ac', 'tion'], scissors: ['scis', 'sors'], lunchtime: ['lunch', 'time'],
+  };
+}
+export const SAY_ALONG_SYLLABLES = sayAlongSyllables();
+// The lessons that play it: Q67 (b)'s four (Learning words, People and events, now Words for people, More learning words and Words
+// that go together) and, since Q70 split each in two, their second halves (Count and sort, Things that happen, Rhymes and shapes and
+// Same and opposite), eight in all, and since pass MS pre-K 4's newest vocabulary lesson, Things we do (Claude's reading of Mikey's
+// answer to Q67 for a new vocabulary lesson, raised with him as Q77); the scripts test holds the say-alongs to these lessons, so it
+// spreads only by a choice.
+export const SAY_ALONG_LESSONS = ['learning-words', 'count-and-sort-words', 'people-and-events', 'things-that-happen', 'more-learning-words', 'sort-and-shape-words', 'words-go-together', 'opposites-and-same', 'things-we-do'];
+// The word said one way: "Different, different, different, different!" four times low; "Different! Different! Different!" for the
+// chant, three sentences; "Different." for one saying.
+export function sayAlongForm(word, voice) {
+  const w = String(word); const head = w.charAt(0).toUpperCase() + w.slice(1);
+  if (voice.apart) return Array.from({ length: voice.times }, () => `${head}${voice.end}`).join(' ');
+  return `${[head, ...Array.from({ length: voice.times - 1 }, () => w.toLowerCase())].join(', ')}${voice.end}`;
+}
+// The whole game for one word, as a lesson line ends with it: the cue, each style's call and the word said that way, then the clear
+// one. styles names the silly voices in their order; the clear one is always last. A lesson writes sayAlong('different', ['whisper',
+// 'slow', 'low', 'fast', 'drawn']) after the sentences that bring the word in.
+export function sayAlong(word, styles) {
+  const voices = sayAlongVoices(); const pick = (s) => voices.find((v) => v.style === s);
+  const parts = [sayAlongCue(word)];
+  for (const s of [...styles, 'clear']) { const v = pick(s); if (!v) throw new Error(`sayAlong: no voice ${s}`); parts.push(v.call, sayAlongForm(word, v)); }
+  return parts.join(' ');
+}
+// The part each sentence of a line plays (sentences, or a line to split): 'say' for the line's own words, 'open' for the cue, 'call'
+// for a voice's call, and 'form' for the word said that way, each with its word, its voice, which saying it is (rep, for the chant's
+// sentences) and which form of the game it belongs to (form, counted from 0). A cue whose game does not run through in order, every
+// call followed by its form and the clear one last, is read as the line's own words, and the scripts test names it.
+export function sayAlongParts(line) {
+  const ss = Array.isArray(line) ? line.map(String) : String(line || '').split(SENTENCE_BREAK).filter((x) => x.trim());
+  const out = ss.map((sentence) => ({ sentence, role: 'say' }));
+  const voices = SAY_ALONG_VOICES;
+  for (let o = 0; o < ss.length; o++) {
+    const m = /^Say ([a-z][a-z ]*?) with me, in silly voices!$/.exec(ss[o].trim()); if (!m || sayAlongCue(m[1]) !== ss[o].trim()) continue;
+    const word = m[1]; const syllables = SAY_ALONG_SYLLABLES[word] || [word]; const marks = [{ at: o, sentence: ss[o], role: 'open', word, syllables }];
+    let j = o + 1; let form = 0; let done = false;
+    while (j < ss.length) {
+      const v = voices.find((x) => x.call === ss[j].trim()); if (!v) break;
+      const said = sayAlongForm(word, v).split(SENTENCE_BREAK).filter((x) => x.trim());
+      if (!said.every((x, k) => ss[j + 1 + k] !== undefined && ss[j + 1 + k].trim() === x)) break;
+      marks.push({ at: j, sentence: ss[j], role: 'call', word, syllables, voice: v, form });
+      said.forEach((x, k) => marks.push({ at: j + 1 + k, sentence: ss[j + 1 + k], role: 'form', word, syllables, voice: v, form, rep: v.apart ? k : 0 }));
+      j += 1 + said.length; form += 1;
+      if (v.last) { done = true; break; }
+    }
+    if (!done || form < 4) continue;
+    for (const mk of marks) out[mk.at] = mk;
+    o = j - 1;
+  }
+  return out;
+}
+// How long the device voice takes, about, to say one form (whole, as the child's turn reads it) or one saying of it (whole false, a
+// piece, as the light reads it: since round one's screen check, pass MS, every saying of a form said more than once is a piece of
+// its own), from the voice's pace: a syllable is about 210 ms at a rate of 1, a comma's breath 150, both stretched by a slower rate
+// (a phone's voice says a lone three-syllable word in a little over half a second at its own pace; the screen corrects the guess by
+// the voice's own starts and ends as it goes, SayAlongStrip in ui.jsx). The light through the word and the child's turn after it are
+// timed from this (the device voice tells when a piece starts and ends, never where it is inside a word); a recorded clip's own
+// timings take over once the recordings arrive (EARMARKS L12).
+export const SAY_ALONG_SYLLABLE_MS = 210;
+export const SAY_ALONG_COMMA_MS = 150;
+const sayAlongWeights = (syllables) => syllables.map((s) => (s === ' ' ? 1.2 : s.length + 1));
+export function sayAlongEstimateMs(syllables, voice, rep = 0, whole = !voice.apart && voice.device.length === 1) {
+  const d = voice.device[Math.min(rep, voice.device.length - 1)]; const one = syllables.filter((s) => s !== ' ').length * SAY_ALONG_SYLLABLE_MS;
+  const times = whole ? voice.times : 1;
+  return Math.round((times * one + (times - 1) * SAY_ALONG_COMMA_MS) / d.rate);
+}
+// How much slower (above 1) or quicker than the guess the device voice says a say-along word, learned as it goes (round one's code
+// check, pass MS: the rule lived in the screen, where no test read it): when a form took longer than 150 ms, the pace moves two fifths
+// of the way to what that form took over its guess, and stays between half and 2.2 times the guess, so one odd saying never throws
+// the light far off; a form too short to measure, or with no guess, leaves the pace as it was. Since round three's screen read a
+// saying of one syllable (match, same, toys), given its syllables, leaves it too: the word is lit whole, so it teaches the light
+// nothing, and the voice takes far longer on one short word than its letters guess ("Match," 321 ms against 113), which had pushed
+// the pace toward its ceiling, so the next long word lit too slowly and the voice ended first (whisper and slow "Different." after
+// match and same, three sayings of 277).
+export const SAY_ALONG_PACE_MIN = 0.5;
+export const SAY_ALONG_PACE_MAX = 2.2;
+export function sayAlongPaceNext(pace, tookMs, estMs, syllables = null) {
+  if (!(tookMs > 150) || !(estMs > 0)) return pace;
+  if (Array.isArray(syllables) && syllables.filter((s) => s !== ' ').length < 2) return pace;
+  return Math.max(SAY_ALONG_PACE_MIN, Math.min(SAY_ALONG_PACE_MAX, 0.6 * pace + 0.4 * (tookMs / estMs)));
+}
+// When each syllable lights, in ms from the start of the piece the voice is saying. Every piece is one saying (since round one's screen
+// check, pass MS): a form said once (whisper, slow, drawn, high, clear) or one saying of a form said more than once (four times low,
+// three times fast, the slide, the chant), rep naming which; each syllable's share of a saying is its letters and one more, a space
+// between two words a little. Until then four times low and three times fast lit all their sayings on one timeline from one start.
+export function sayAlongTimeline(syllables, voice, rep = 0) {
+  const d = voice.device[Math.min(rep, voice.device.length - 1)];
+  const w = sayAlongWeights(syllables); const sum = w.reduce((a, b) => a + b, 0); const sayMs = (syllables.filter((s) => s !== ' ').length * SAY_ALONG_SYLLABLE_MS) / d.rate;
+  const out = []; let at = 0;
+  w.forEach((x, k) => { out.push({ rep, syllable: k, at: Math.round(at), until: Math.round(at + (x / sum) * sayMs) }); at += (x / sum) * sayMs; });
+  return out.filter((x) => syllables[x.syllable] !== ' ');
+}
+// The child's turn after a form: about as long as the voice took to say it, three fifths of it and 400 ms more, at least 700 ms and at
+// most 1.8 seconds, so a child who says it back has the time and a child who said it along does not wait long.
+export function sayAlongEcho(syllables, voice) {
+  const total = voice.apart || voice.device.length > 1 ? Array.from({ length: voice.times }, (_, r) => sayAlongEstimateMs(syllables, voice, r, false)).reduce((a, b) => a + b, 0) : sayAlongEstimateMs(syllables, voice);
+  return Math.max(700, Math.min(1800, Math.round(total * 0.6 + 400)));
+}
 // A cheer (pass MR): a sentence that ends in a run of two or more words written all in capitals and an exclamation mark ("But most
 // importantly, HAVE FUN!!!", Mikey's words for every game's welcome) says that run as a piece of its own in the cheer shape, lifted
 // and a little quicker, the way a teacher's voice jumps up on the words a child should feel; the recorded voice is asked for
@@ -33533,11 +34049,37 @@ export function cheerTagged(sentence) { const m = CHEER_RUN.exec(String(sentence
 export function speechPieces(text, opts = {}) {
   const trial = !!opts.trial;
   const sentences = String(text).split(SENTENCE_BREAK).filter((x) => x.trim());
+  // The say-along part each sentence plays, read in its whole line (opts.line, the line's texts, this text being opts.at of them),
+  // since the lesson screen hands the voice one sentence at a time (pass MS: pass MR's cue was read inside one text only, so its
+  // voices never reached a lesson's voice, only the voice check page, which hands it a line whole).
+  const split = (t) => String(t).split(SENTENCE_BREAK).filter((x) => x.trim());
+  const lineTexts = Array.isArray(opts.line) ? opts.line : null; const at = lineTexts ? Math.max(0, opts.at || 0) : 0;
+  const offset = lineTexts ? lineTexts.slice(0, at).reduce((n, t) => n + split(t).length, 0) : 0;
+  const roles = lineTexts ? sayAlongParts(lineTexts.flatMap(split)).slice(offset, offset + sentences.length) : sayAlongParts(sentences);
   const pieces = [];
   for (const [si, sentence] of sentences.entries()) {
     const words = sentence.replace(/[.!?]+$/, '').trim().split(/\s+/).filter(Boolean);
-    const cue = si > 0 ? sayWithMeCue(sentences[si - 1]) : null; const playful = cue && sentence.trim() === sayWithMeWord(cue.word, cue) ? cue : null;   // a word said along in a cue's playful voice (Q67)
-    const shape = playful ? playful.style : words.length === 1 && !/\d/.test(words[0]) ? 'key' : /\?$/.test(sentence.trim()) ? 'question' : 'plain';
+    // A form of the say-along (pass MS): the word in its voice's shape, a saying at a time for the chant (with two claps after every
+    // saying but the last) and the slide (stepping down), each piece carrying what the light needs (sayAlong) and the form's last piece
+    // the child's turn (echo); pieces of one form keep together, with no rest between them (inForm). Since round one's screen check
+    // four times low and three times fast are said a saying at a time too, each piece in the voice's one shape: said as one piece, each
+    // ran on one guessed timeline that fell behind the voice, the light going out before the fourth low saying in all fourteen lines
+    // that play it, and a piece of its own lights each saying from the voice's own start to its own end and fills its own dot.
+    const role = roles[si];
+    if (role && role.role === 'form') {
+      const v = role.voice; const sa = { word: role.word, syllables: role.syllables, style: v.style, times: v.times, form: role.form };
+      const key = `${role.form}-${role.word}`; const echo = sayAlongEcho(role.syllables, v); const t = sentence.trim();
+      if (v.apart) {
+        pieces.push({ text: t, shape: v.style, sentence: si, sayAlong: { ...sa, rep: role.rep }, inForm: key });
+        if (role.rep < v.times - 1) pieces.push({ sound: 'clap', text: 'clap', shape: 'sound', sentence: si, inForm: key }); else pieces[pieces.length - 1].echo = echo;
+      } else if (v.times > 1) {
+        const said = t.replace(/[.!?]+$/, '').split(/,\s*/);
+        said.forEach((x, k) => pieces.push({ text: `${x}${k < said.length - 1 ? ',' : v.end}`, shape: v.device.length > 1 ? `${v.style}${k + 1}` : v.style, sentence: si, sayAlong: { ...sa, rep: k }, inForm: key }));
+        pieces[pieces.length - 1].echo = echo;
+      } else pieces.push({ text: t, shape: v.style, sentence: si, sayAlong: { ...sa, rep: 0 }, inForm: key, echo });
+      continue;
+    }
+    const shape = words.length === 1 && !/\d/.test(words[0]) ? 'key' : /\?$/.test(sentence.trim()) ? 'question' : 'plain';
     const voice = (t) => { for (const r of rimePieces(t)) pieces.push(r.sound ? { sound: r.sound, text: r.text, shape: 'sound', sentence: si } : { text: r.text, shape, sentence: si }); };
     let last = 0;
     const list = SOUND_LIST.exec(sentence);
@@ -33617,7 +34159,7 @@ export const soundClipSamples = (() => {
   // The hiss of sss (pass MP: a band from about 4,000 to 9,500 cycles a second with its peak near 6,500, narrower than before, since
   // Mikey heard the wider hiss as "a little like static").
   const hiss = (n, fs, seed) => filter(filter(filter(noise(n, seed), biquad('hp', 4000, 0.9, fs)), biquad('peak', 6500, 1.6, fs, 10)), biquad('lp', 9500, 0.7, fs));
-  const SEEDS = { s: 11, f: 12, z: 13, m: 21, n: 22, l: 23, r: 24, t: 31, p: 32, k: 33, a: 41, e: 42, i: 43, o: 44, u: 45, b: 51, d: 52, g: 53, j: 54, ig: 61, og: 62, at: 63 };
+  const SEEDS = { s: 11, f: 12, z: 13, m: 21, n: 22, l: 23, r: 24, t: 31, p: 32, k: 33, a: 41, e: 42, i: 43, o: 44, u: 45, b: 51, d: 52, g: 53, j: 54, ig: 61, og: 62, at: 63, clap: 71 };
   // ---- Vowels and the vowel after a consonant (pass MP, Mikey's answer to Q57, "Q57 - A", and his notes on Q51's rows 8 to 10, 13
   // and 27 to 31). A vowel is the voice's buzz through the mouth's resonances (formants); a consonant before it is heard mostly in
   // how those resonances glide from where the lips or tongue were (the consonant's locus) to the vowel's own. The resonances are
@@ -33677,6 +34219,19 @@ export const soundClipSamples = (() => {
   return function soundClipSamples(sound, { slow = false } = {}) {
     const fs = SOUND_RATE; const seed = SEEDS[sound];
     if (sound === 'quiet') return new Float32Array(Math.round(0.05 * fs));
+    // Two claps for the say-along's chant (pass MS, Mikey: "a chant as if you were at a sporting event"), played between its sayings,
+    // "Different! (clap, clap) Different!", the way a crowd claps between its words. A clap is the hands meeting: three bursts of noise
+    // within ten milliseconds, each falling away in about six, in the band a clap's energy sits in (about 700 to 4,200 cycles a
+    // second); the second clap comes 0.2 seconds after the first, and the whole is 0.42 seconds, quiet at both ends.
+    if (sound === 'clap') {
+      const n = Math.round(0.42 * fs); const yy = new Float64Array(n);
+      for (const [t0, c] of [[0, 0], [0.2, 1]]) for (const [dt, amp, k] of [[0, 1, 0], [0.004, 0.7, 1], [0.0095, 0.45, 2]]) {
+        const len = Math.round(0.03 * fs); const b = filter(filter(noise(len, seed + c * 10 + k), biquad('hp', 700, 0.7, fs)), biquad('lp', 4200, 0.7, fs)); const start = Math.round((t0 + 0.012 + dt) * fs);
+        for (let i = 0; i < len && start + i < n; i++) yy[start + i] += b[i] * amp * Math.exp(-i / (0.006 * fs)) * Math.min(1, i / 6);
+      }
+      let peak = 0; for (const v of yy) peak = Math.max(peak, Math.abs(v));
+      const out = new Float32Array(n); for (let i = 0; i < n; i++) out[i] = (yy[i] * 0.5) / (peak || 1); return out;
+    }
     // sss, fff and zzz come as two short breaths with a little gap between, sss, sss (pass MP, Mikey: "Could be corrected if we
     // perhaps split the sound into fragments like sss sss sun" and of fff "Would be better fractionalized instead of long fff"), each
     // 0.32 seconds, or 0.4 on the snail's slower pace, with 0.13 (0.17) between; zzz keeps more of its buzz and less hiss, since he

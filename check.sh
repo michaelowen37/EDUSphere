@@ -43,8 +43,10 @@ echo "13e/13 question pictures, More Info, the Wonder pictures and the read-alon
 # A game's spoken welcome and its demonstration (pass MP, Mikey's notes of October 26, 2026): a tile opens on it, a child's own taps
 # wait, the play clock waits, Begin, Skip, the round arrow, the Instructions link, the speaker, a visit after leaving, a computer's
 # key press and numbers, and less motion; since round two two short screens played whole and the claude.ai preview's page-tall frame.
-# About eight minutes at the test's pace (6 min 53 s and 7 min 50 s in pass MQ's runs, with its rows and rounds); the timeout is fifteen.
-echo "13f/13 a game's welcome and its demonstration"; timeout 900 node tests/e2e/game-intro.mjs 2>&1 | tail -1 | tee /tmp/edu_intro.txt; grep -q " 0 failed" /tmp/edu_intro.txt || fail=1
+# About eight minutes at the test's pace (6 min 53 s and 7 min 50 s in pass MQ's runs, with its rows and rounds); since pass MS about
+# twelve (9 min 52 s in its round two's run, and round three's block that watches eight walks reach their goals about two and a half
+# more), so the timeout is twenty, to catch a hang rather than a slow machine (pass KU's rule).
+echo "13f/13 a game's welcome and its demonstration"; timeout 1200 node tests/e2e/game-intro.mjs 2>&1 | tail -1 | tee /tmp/edu_intro.txt; grep -q " 0 failed" /tmp/edu_intro.txt || fail=1
 # Every game on the narrowest phone, in a typeface a tenth wider than the test browser's, and again after a wrong tap on every
 # board that names its answer (pass MR, from Mikey's answer to Q72: "I never want this to happen anywhere in the app and try to
 # correct every example I find."): a word that spills out of its box, or centered words an icon pushes off center, fails, and so

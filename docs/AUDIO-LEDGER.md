@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-28 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 10381 clips, 1,695,571 characters in all; the longest clip is 520 characters and the longest whole story 3,567, far under Eleven v4's 10,000 a request. 221 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-29 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 10779 clips, 1,720,799 characters in all; the longest clip is 520 characters and the longest whole story 5,088, far under Eleven v4's 10,000 a request. 224 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,9 +17,9 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 6076 | 711,496 |
+| Pre-K to grade 2 | 6473 | 736,705 |
 | Grades 3 to 5 | 1375 | 292,652 |
-| Grades 6 to 8 | 1196 | 279,507 |
+| Grades 6 to 8 | 1197 | 279,526 |
 | Grades 9 to college | 1734 | 411,916 |
 
 ## Voices
@@ -42,14 +42,14 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 | Kind | Clips |
 |---|---|
-| story title | 684 |
-| story | 4446 |
-| lesson line | 3899 |
+| story title | 687 |
+| story | 4470 |
+| lesson line | 4269 |
 | long story title | 106 |
 | long story | 858 |
 | next long story title | 4 |
 | next long story | 41 |
-| game welcome | 335 |
+| game welcome | 336 |
 | game welcome (keyboard) | 8 |
 
 ## Stories with hand-written tags
@@ -796,6 +796,39 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S3983-6: [eagerly] Zane ran to the closet and dragged out the biggest box of all. [delighted] The blanket slid right in.
 - S3983-7: [in a small, proud voice] Large means big, said Zane proudly, and big is the opposite of small!
 - S3983-8: [slowly, warmly] Words go together. Some mean the same, like large and big, and some are opposites, like big and small.
+
+### A cup is not a hat (S3987, things-we-do)
+
+- S3987-1: [cheerful] Omar's baby cousin Lulu was almost two, and she did not know many words yet.
+- S3987-2: [amused] At lunchtime, while her mom set the table, Lulu put her cup on her head, like a hat.
+- S3987-3: [laughs] Omar laughed. [in a bright, small boy voice] A cup is not a hat, he said. You drink from a cup! [warmly] He took a big sip from his own cup to show her.
+- S3987-4: [calmly] After lunch, Lulu's mom rested on the couch. [surprised] Lulu tried to kick her picture book across the floor. [playfully] Thump!
+- S3987-5: [gently] Omar sat down beside her. [in a bright, small boy voice] You read a book, he said, [softly] and he pointed to the pictures, one by one.
+- S3987-6: [puzzled] Lulu stared at the book. Then she toddled away, and Omar wondered if she had been listening at all.
+- S3987-7: [pause] [delighted] She came back with her red ball, dropped it at his feet and said her very first action word. [in a tiny, proud toddler voice] Kick! [joyfully] So Omar gave it a gentle kick, and Lulu clapped.
+- S3987-8: [slowly, warmly] Action words tell what we do, and each one goes with a thing.
+
+### Tilly is cold (S3991, say-what-you-need)
+
+- S3991-1: [gently] On a chilly morning at the playground, the wind blew, and Tilly shivered.
+- S3991-2: [worried] She ran to her teacher and tugged her hand. [in a small, bright girl voice, shivering] Help! [softly] said Tilly, in a tiny, shivery voice.
+- S3991-3: [in a warm, kind teacher voice] Are you hurt? [softly] asked her teacher, kneeling down beside her. Tilly shook her head.
+- S3991-4: [in a warm, kind teacher voice] Do you need a drink of water? [softly] Tilly shook her head again. [in a warm, kind teacher voice] Do you want a turn on the slide, or a hug, or your teddy bear? [softly] Tilly shook her head one more time.
+- S3991-5: [puzzled] Her teacher looked puzzled. She wanted to help, but she did not know what was wrong.
+- S3991-6: [pause] [brave] Tilly took a big breath and said just what she needed. [in a small, bright girl voice, bravely] I am cold. May I have my coat, please?
+- S3991-7: [in a warm, kind teacher voice, relieved] Oh! [warmly] said her teacher, and she got Tilly's red coat from the bench and zipped her into it. Tilly felt as warm as toast.
+- S3991-8: [slowly, warmly] When you say just what you need, a grown-up knows just how to help.
+
+### A whisper and a call (S3995, say-it-to-fit)
+
+- S3995-1: [cheerful] Hugo loved dinosaurs, and at the library he found the biggest dinosaur book of all.
+- S3995-2: [in a small, excited boy voice, very loudly] I found it! [amused] Hugo shouted, so loud that everyone looked up from their books.
+- S3995-3: [gently] The librarian smiled and put a finger to her lips. [in a soft, kind librarian voice, whispering] In the library, we use a whisper, she whispered, so everyone can read.
+- S3995-4: [softly] So Hugo whispered, [in a small, excited boy voice, whispering] I found the dinosaur book. [warmly] His voice was soft and small, like a mouse.
+- S3995-5: [cheerful] Hugo's mom borrowed the dinosaur book, and he carried it under his arm out to the playground. [softly] She sat on a bench, and Hugo saw his friend Kira far away by the slide.
+- S3995-6: [in a small, excited boy voice, whispering] Kira, come see my book! [softly] Hugo whispered. [disappointed] But Kira did not hear him at all.
+- S3995-7: [pause] [giggling] Hugo giggled. The playground was not the library! He cupped his hands and called in a big outside voice. [in a small, excited boy voice, calling loudly] Kira, over here! [delighted] And Kira came running.
+- S3995-8: [slowly, warmly] A voice can be big or small. Make your voice fit the place.
 
 ### Cat, mat, hat (S116, listen-for-rhymes)
 

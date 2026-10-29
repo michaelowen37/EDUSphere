@@ -613,7 +613,8 @@ await page.getByRole('button', { name: /S-56$/ }).first().click(); await page.wa
       const s = await screen();
       if (s === 'result') { const book = (await page.getByLabel('Hear your story').count()) > 0; seen.push(`${id}:${book ? 'book' : 'arrow'}`); await settle(); await (book ? page.getByLabel('Hear your story') : page.getByLabel(/Keep going|Go again/)).click(); }
       else if (s === 'story') { seen.push(`${id}:story`); await page.waitForTimeout(500); await settle(); await page.getByLabel('Keep going').click(); }
-      else if (s === 'wonder') { seen.push(`${id}:wonder`); await settle(); await page.locator('button').filter({ hasText: /\S/ }).last().click(); }
+      // the last worded button that shows (pass MS: the turn-upright ask's Keep going sideways link sits hidden at the page's end)
+      else if (s === 'wonder') { seen.push(`${id}:wonder`); await settle(); await page.locator('button:visible').filter({ hasText: /\S/ }).last().click(); }
       else if (s === 'wonder-voices') { for (let k = 0; k < 4; k++) { await settle(); if (await page.getByLabel('Finish').count()) { await page.getByLabel('Finish').click(); break; } await page.getByLabel('Next').click(); } }
       else break;
       await page.waitForTimeout(350);

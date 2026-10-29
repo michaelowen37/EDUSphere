@@ -165,13 +165,30 @@ ok("What's new stays closed after a reload, because Got it was remembered", news
 // sat inside a block with no selector, which the browser drops whole and silently, so the rule itself is read from the page's own
 // stylesheets, and the ask is read on a phone held sideways (shown, covering the screen, in his words), a phone upright, a short
 // laptop window and a tablet held sideways (none of them asked), and again on the phone after it is turned upright.
-{ const asked = async (p) => p.evaluate(() => { const el = document.getElementById('edu-rotate'); if (!el) return { there: false }; const cs = getComputedStyle(el); const r = el.getBoundingClientRect(); return { there: true, shown: cs.display !== 'none' && cs.visibility !== 'hidden', covers: r.left <= 0 && r.top <= 0 && r.right >= window.innerWidth && r.bottom >= window.innerHeight, words: el.textContent.trim(), z: Number(cs.zIndex) }; });
+{ const asked = async (p) => p.evaluate(() => { const el = document.getElementById('edu-rotate'); if (!el) return { there: false }; const cs = getComputedStyle(el); const r = el.getBoundingClientRect(); const w = el.querySelector('p'); const k = el.querySelector('button'); const kr = k ? k.getBoundingClientRect() : null; return { there: true, shown: cs.display !== 'none' && cs.visibility !== 'hidden', covers: r.left <= 0 && r.top <= 0 && r.right >= window.innerWidth && r.bottom >= window.innerHeight, words: w ? w.textContent.trim() : '', keep: k ? k.textContent.trim() : null, keepTall: kr ? Math.round(kr.height) : 0, z: Number(cs.zIndex), inert: !!(document.getElementById('root') && document.getElementById('root').hasAttribute('inert')), hidden: !!(document.getElementById('root') && document.getElementById('root').getAttribute('aria-hidden') === 'true'), focused: !!k && document.activeElement === k }; });
   const ruleKept = async (p) => p.evaluate(() => { for (const sheet of document.styleSheets) { let rules = []; try { rules = [...sheet.cssRules]; } catch (e) { continue; } if (rules.some((r) => r.selectorText === '.edu-rotate.edu-rotate-on' && /flex/.test(r.style.display))) return true; } return false; });
   const open = async (opts) => { const ctx = await b.newContext(opts); const p = await ctx.newPage(); await p.goto(url); await p.waitForTimeout(700); return { ctx, p }; };
   const side = await open({ viewport: { width: 844, height: 390 }, screen: { width: 844, height: 390 }, hasTouch: true, isMobile: true });
   const sideAsk = await asked(side.p); const kept = await ruleKept(side.p);
+  // A screen reader hears the ask with its link, and a keyboard sees where the link is (round three's screen read, pass MS: the ask
+  // was a plain box, so a screen reader met the link with no words before it, and the link took the focus inside Chrome's square
+  // black box). The ask is read as the browser's accessibility tree names it, and the link's ring with the focus-visible state forced,
+  // since a focus a script moves only sometimes counts as a keyboard's: a rounded ring in the link's own green.
+  const heard = await side.p.getByRole('alertdialog', { name: 'Please turn your phone upright.', exact: true }).count();
+  const ringOf = async (p) => { const cdp = await p.context().newCDPSession(p); await cdp.send('DOM.enable'); await cdp.send('CSS.enable'); const { root } = await cdp.send('DOM.getDocument');
+    const { nodeId } = await cdp.send('DOM.querySelector', { nodeId: root.nodeId, selector: '#edu-rotate .edu-rotate-keep' }); if (!nodeId) return null;
+    await cdp.send('CSS.forcePseudoState', { nodeId, forcedPseudoClasses: ['focus-visible'] });
+    const ring = await p.evaluate(() => { const k = document.querySelector('#edu-rotate .edu-rotate-keep'); const s = getComputedStyle(k); return { style: s.outlineStyle, width: s.outlineWidth, radius: s.borderTopLeftRadius, color: s.outlineColor, ink: s.color }; });
+    await cdp.send('CSS.forcePseudoState', { nodeId, forcedPseudoClasses: [] }); await cdp.detach(); return ring; };
+  const ring = await ringOf(side.p);
   await side.p.setViewportSize({ width: 390, height: 844 }); await side.p.waitForTimeout(400);
   const turned = await asked(side.p); await side.ctx.close();
+  // Keep going sideways (pass MS, Q74 (b)): a tap on the link under the words hides the ask, which stays hidden as the phone turns
+  // and turns back, until the app is closed: a reload asks again.
+  const stay = await open({ viewport: { width: 844, height: 390 }, screen: { width: 844, height: 390 }, hasTouch: true, isMobile: true });
+  const beforeKeep = await asked(stay.p); await stay.p.getByRole('button', { name: 'Keep going sideways', exact: true }).tap(); await stay.p.waitForTimeout(300);
+  const afterKeep = await asked(stay.p); await stay.p.setViewportSize({ width: 390, height: 844 }); await stay.p.waitForTimeout(300); await stay.p.setViewportSize({ width: 844, height: 390 }); await stay.p.waitForTimeout(400);
+  const turnedBack = await asked(stay.p); await stay.p.reload(); await stay.p.waitForTimeout(700); const reloaded = await asked(stay.p); await stay.ctx.close();
   const up = await open({ viewport: { width: 390, height: 844 }, screen: { width: 390, height: 844 }, hasTouch: true, isMobile: true }); const upAsk = await asked(up.p); await up.ctx.close();
   const laptop = await open({ viewport: { width: 844, height: 390 }, screen: { width: 1440, height: 900 } }); const laptopAsk = await asked(laptop.p); await laptop.ctx.close();
   const tablet = await open({ viewport: { width: 1024, height: 768 }, screen: { width: 1024, height: 768 }, hasTouch: true, isMobile: true }); const tabletAsk = await asked(tablet.p); await tablet.ctx.close();
@@ -183,6 +200,12 @@ ok("What's new stays closed after a reload, because Got it was remembered", news
   const keyboard = await open({ viewport: { width: 1024, height: 400 }, screen: { width: 1024, height: 768 }, hasTouch: true, isMobile: true }); const keyboardAsk = await asked(keyboard.p); await keyboard.ctx.close();
   ok('the ask to turn upright is a rule the browser keeps (read from the page\'s own stylesheets, Q71)', kept);
   ok('a phone held sideways is covered by the ask to turn upright, in Mikey\'s words (Q71)', sideAsk.there && sideAsk.shown && sideAsk.covers && sideAsk.words === 'Please turn your phone upright.' && sideAsk.z >= 9999, sideAsk);
+  ok('the ask has a Keep going sideways link a finger can tap, which hides it as the phone turns and turns back, and a reload asks again (Q74)', beforeKeep.shown && beforeKeep.keep === 'Keep going sideways' && beforeKeep.keepTall >= 44 && !afterKeep.shown && !turnedBack.shown && reloaded.shown, { beforeKeep, afterKeep, turnedBack, reloaded });
+  // While the ask shows, the app under it is inert and hidden from a screen reader and the link holds the focus; once the ask goes, by
+  // the link or by turning upright, the app is back in reach (round one's screen check, pass MS: a keyboard or switch user tabbed
+  // through five hidden controls before reaching the link).
+  ok('while the ask shows the app under it is out of reach and the link has the focus, and the app comes back when the ask goes (pass MS)', sideAsk.inert && sideAsk.hidden && sideAsk.focused && beforeKeep.inert && beforeKeep.focused && !afterKeep.inert && !afterKeep.hidden && !turnedBack.inert && reloaded.inert && !turned.inert && !turned.hidden && !upAsk.inert, { sideAsk, beforeKeep, afterKeep, turnedBack, reloaded, turned, upAsk });
+  ok('the ask is an alert dialog named by its words, and its link\'s keyboard ring is rounded and in its own green (round three\'s screen read, pass MS)', heard === 1 && !!ring && ring.style === 'solid' && ring.width === '2px' && parseFloat(ring.radius) >= 8 && ring.color === ring.ink, { heard, ring });
   ok('turned upright, the ask goes and the app shows (Q71)', turned.there && !turned.shown, turned);
   ok('a phone held upright, a short laptop window and a tablet held sideways are never asked (Q71)', upAsk.there && !upAsk.shown && laptopAsk.there && !laptopAsk.shown && tabletAsk.there && !tabletAsk.shown, { upAsk, laptopAsk, tabletAsk });
   ok('a short upright touch page is never asked, even where the browser calls its screen landscape (pass MR)', saysLandscape && shortUpAsk.there && !shortUpAsk.shown, { saysLandscape, shortUpAsk });

@@ -406,13 +406,39 @@ After a right answer in Grow the Plant, the child gets time to see what the answ
 way too fast of a transition."); every other game moves on in its own way, most after a fixed pause (0.65 to 2.6 seconds), some at a Next
 button the child taps (Pay the Price, Find the evidence, Fix it and others), Spot It with its next ask the moment a shape is found,
 and Find the Letter with its next letter about half a second after its praise, and whether the young games that speak their next
-question should hold the same way is Q75 (round three of pass MR, the alignment read: this line
-had said every game). afterSaid(text, done) says the praise when there is one and calls done once three
+question should hold the same way was Q75 (round three of pass MR, the alignment read: this line
+had said every game). Since pass MS (Mikey's answer to Q75, "Q75 - B") those four hold the same way, each saying its praise first:
+Which Sense ("Yes: your nose."), Share the Cookies ("Every plate has the same. That is fair."), Spot It ("Yes, the blue square.", a cheer
+it never said before; spotPraise in logic) and Find the Letter, whose praise names the letter and shows its shape, its next letter
+asked once the hold is over; each board is marked data-right-hold while it holds (Find the Letter by its own data-letter-hold), and
+the browser walk taps each one's right answer and finds its praise still on the board 1.6 seconds later (Find the Letter: the hold
+on the board, and the next letter asked only once it ends). afterSaid(text, done) says the praise when there is one and calls done once three
 things are true: the voice has finished the praise (read every 100 ms from voiceTalking()), a beat of NEXT_QUESTION_BEAT_MS (1000)
 has passed since it finished, and RIGHT_ANSWER_HOLD_MS (2200) have passed since the tap. A voice that never reports its end is let go
-at voiceBackstopMs(text) plus the beat, and with no voice the hold alone decides. afterSaid returns a cancel, which the game's effect
+at voiceBackstopMs(text) plus the beat, and with no voice the hold alone decides. Since pass MS the backstop counts from the voice's
+last sign of life, the last time it reported a piece of the line starting or ending (voiceEventAt), rather than from the tap, so the
+praise is said to its end however slowly the device says it, then the beat (with a voice at half a phone's pace the backstop, counted
+from the tap, had let the next question cut the praise off in four of the five games, Mikey's Q72 complaint again, round one's screen
+check found; round one's fix, twice the backstop from the tap once the voice was heard, made a stuck device wait up to 27 seconds a
+letter in Find the Letter, round three's code read found). Since round four's code read the line's own end decides for a voice that
+says it is still speaking: once the voice has said the whole line (speak's onDone), the hold goes a beat after its last end, however
+long the voice goes on saying it speaks. While the line is being said, a voice heard since the tap gets two backstops from its last
+start or end, since a piece reports nothing between its start and its end (round three's one backstop had cut Spot It's "Yes, the
+green straight line." about six seconds after the tap, before its end, on a slow stand-in voice, with no beat before the next
+question); a voice that has reported nothing since the tap, yet says it is speaking, goes one backstop after the tap; and a cancelled
+line's errors, which arrive as the next line begins, mark no sign of life. A voice never heard at all is quiet from the first tick,
+so it goes at the hold. Find the
+Letter holds with no voice too, its heading showing the right letter's first sentence meanwhile ("Yes, that is the letter B."), as
+the other games hold 2.2 seconds with none; since round four's screen read the board's third letter shows its praise too, in green
+(it had read "All three found." in ink). afterSaid returns a cancel, which the game's effect
 cleanup calls, so closing or resetting a game during the hold never moves it on. The browser walk (tests/e2e/click-through.mjs) holds
-it end to end: 1.6 seconds after a right need in Grow the Plant, the grown plant is still on the screen.
+it end to end: 1.6 seconds after a right need in Grow the Plant, the grown plant is still on the screen. Since round one of pass MS
+(the code check) the four that keep a clock, Grow the Plant, Which Sense, Share the Cookies and Spot It, stop it while they hold
+(the clock skips a second while the hold is on), since a best time from before the holds was out of reach, by 26 seconds in Spot It's
+twelve holds: the praise and its beat are the app's time, not the child's. Since round one's screen check the browser walk measures
+each of the five holds let go no sooner than 2.1 seconds after the tap, and the rules test reads afterSaid on the speech code with a
+slow voice, a voice stuck speaking and one never heard, and holds the 2.2 seconds and the one-second beat themselves, and since
+round four Spot It's longest praise, one piece, on a voice at 240 ms a letter.
 
 A game's head, its name at the left and its clock and count at the right, wraps onto a second line when the two do not fit on a
 narrow phone. So that it never wraps in the middle of a round, which would drop the board under the child's finger, every part of
@@ -420,3 +446,85 @@ the head that changes during a round holds the room of its widest form from the 
 holds "888s", the count holds the round's last count ("10 of 10"), and the streak holds "· 10 in a row" for a ten-board round,
 hidden until the streak reaches two. The head's digits are all one width (tabular-nums), so a clock going from 9 to 10 seconds
 moves nothing. A head whose words change with each board (a sequence's title, a target number) can still change between boards.
+
+## Say it with me: one word in many silly voices (pass MS, Mikey's correction of Q67)
+
+A young vocabulary lesson brings in a new word and then plays a little game with that one word (Mikey: "I was talking about applying
+all of that to a single spoken word.  Not really one word as a whisper, another later fast, another later slow etc."). The line says
+the word first, then a cue names it ("Say different with me, in silly voices!"), then three to five silly ways follow, each its call
+and then the word said that way (SAY_ALONG_VOICES: a whisper, slowly, four times low and silly, three times super fast, stretched out
+long, way up high, sliding down from high to low over three sayings, and cheered three times like a big game with a clap between),
+and last "Now say it nice and clear." and the word in a clear voice. sayAlong(word, styles) writes the game into a lesson line;
+sayAlongParts reads a line back into its parts, the cue, each call and each form with its voice and which saying it is; and
+speechPieces hands each form to the device voice in its voice's shape (SAY_ALONG_SHAPES in ui.jsx, from the voices' own rate, pitch and
+volume: one piece in one shape, the slide three pieces stepping down in pitch, since a device voice holds one pitch for a whole word,
+and the chant a piece for each cheer with the clap sound between, and since round one's screen check of pass MS four times low and three
+times fast a piece for each saying too, so the light starts each saying on the voice's own start and puts it out at its own end, where
+said as one piece their light fell behind the voice and went out before the last saying), with the child's turn after each form's last piece (sayAlongEcho:
+three fifths of the time the voice took and 400 ms more, held between 700 ms and 1.8 seconds). The child says the word with the voice
+(the line's cue is "Say different with me, in silly voices!", Mikey's Q67: "When they say it with you"), so the turn is for a child a
+beat behind, never the whole saying again: four times low takes the voice about 3.6 seconds, and a child who waited and said it back
+would be talked over at 1.8 (round three's alignment read of pass MS). The lesson screen hands the voice a
+line's sentences together (speakSequence's together), so each sentence is read inside its whole line: pass MR handed them one at a
+time, so its voices never reached a lesson. A lesson plays all eight silly ways across its words, no two words play the same
+ways in the same order, and no word plays its two slow ways, stretched out and slowly, side by side (round one of pass MS: the one
+flat moment in lunchtime and bedtime).
+
+Under the line a strip shows the word large with the call above it and lights the syllable being said (SAY_ALONG_SYLLABLES,
+Merriam-Webster's division; a word of one syllable lights whole, since inside a syllable a letter and a sound do not always pair),
+with a ring for each saying of a call said more than once, the one being said filled (plain dots, which read 1.31 to 1 in the light
+theme, until round one's screen check); the label above the word keeps the height of its tallest text, the cue and every call
+stacked in one cell with only the current one showing, so nothing under the child's finger moves at 320 pixels, where the cue takes
+two lines. The device voice tells when a piece starts and ends, never where it is
+inside a word, so the light follows sayAlongTimeline's guess of the pace (a syllable about 210 ms at a rate of 1, SAY_ALONG_SYLLABLE_MS,
+a comma's breath 150, SAY_ALONG_COMMA_MS, both divided by the voice's rate, and each syllable's share of a saying its letters and one
+more), corrected by the voice's own starts and ends as it goes: when a form took longer than 150 ms, sayAlongPaceNext moves the pace two
+fifths of the way to what that form took over its guess, kept between half and 2.2 times the guess (since round one's code check the
+rule is logic's, read by the scripts test); since round three of pass MS a one-syllable saying leaves the pace alone, since it is lit
+whole and a voice says one short word far slower than its letters guess ("Match," 321 ms against a guess of 113 had pushed the pace
+toward its ceiling and left three later sayings unlit at their end), and only a saying whose start the voice reported teaches it; a
+recorded clip's own timings take over once the recordings arrive
+(EARMARKS L12). Since round one's screen check the light waits for the voice to begin each saying: sayPieces tells the strip whether
+the voice has begun a piece, so a saying queued lights its first syllable and waits, the voice's own start runs the light, and a voice
+that never reports a start is followed from 700 ms on, until a voice has reported a start this visit (a network voice can take 400 ms
+to begin, and the light had run through a short word before it was heard). With no voice the strip lists the calls, one to a line since round one's screen check, and lights
+nothing. The strip's listener is keyed by the line's sentences,
+not by a new array each drawing, so its timers live as long as the line (round one of pass MS's own look found the light stuck on a
+word's first syllable when every redraw cleared them).
+
+## A demonstration does what its words say (pass MS, Mikey)
+
+"A while back I saw a game demo talking about putting the red and blue shapes into the appropriate boxes but when it said to drag the
+red shape, the demo showed dragging the blue shape.   These small details should be accurate too." A welcome line that names what it
+drags names its picks (Sort's Red and Blue: red first, then blue; Big and Small: big, then small; every Buckets game: one of each
+group in the order its words name them), and the board marks one piece of each pick with data-demo-what and the place it goes with
+the same; the pointer drags the named piece to its own place (makeDemoHands' drag(pick)), so it never drags a blue shape while the
+words say red, and the welcome's log records what it dragged. Where a demonstration would otherwise do something its words do not,
+the board deals or acts by logic: the seven swipe games flick their first card to the side their words name first (DEMO_SHOWS, and
+swipeSide, one rule for a card's flick and its key); Balance the Scale drags the fewest weights that level the scale, its words
+saying "until the scale is level" (balanceFewest, shared by the board and the search, the line's drags counted twice); Binary
+Switches completes its number in the taps it makes; Buckets drags one chip of each group first (bucketDemoOrder); and a line
+promises nothing its act does not show (Connect the Dots: "Tap the dots in order, one, two, three, and keep going. When you tap the
+last dot, a picture appears."). DEMO_ROUNDS was worked out again with each demonstration's own count of items (demoItemCount counts
+the picks), so a welcome still never shows the answers to the child's first items.
+
+Since round three's final read a walk that promises its goal reaches it, read by where each demonstration stops on its board: 22
+games had stopped short. A young path's line says to walk the dot to the star, and its eight taps are the way on the largest board
+(pathSize gives a side of five, or four for long words, and the fitting chips' path runs only right and down, so the way is
+2 x (side - 1) steps); the board marks no step once the dot is on the star. An older path's drag follows every cell of the way, and
+where the next cell lies outside the part of the window the pointer may use (a short laptop window), the pointer lets go, the page
+brings the rest of the way into view, and the pointer presses the dot again and carries on, as a child lifts a finger; where the page
+cannot move (at its end, or at the foot of a page-tall frame), it lets go once and carries on held from then on (round four's code
+read: it had let go and pressed again at every point left, about 0.7 seconds each). In order's six
+taps and Build a sentence's five are caps, the longest set and the longest first sentence, and in a welcome each board marks only its
+first set or sentence, so the pointer numbers every step of that set, or builds that whole sentence, and never runs on into the next.
+Shape the Sound gives seven nudges, the most any line takes from the bars' start, to the line dynamicsNearest finds (the fewest
+nudges, one rule for the board and DEMO_SHOWS). A maze's pointer drags only the first eight cells of a way of 24 to 32, so its words
+say toward the star. Each board marks data-demo-reached once the welcome's goal is reached, which the welcome browser test reads.
+Since round four's code read Cut the Fillers' welcome round deals a first line of two fillers, the two its pointer taps, so "Tap every
+filler to strike it out." leaves the line clean (DEMO_SHOWS; a line deals two or three, and the round had dealt two by luck). Since
+round four's screen read the goal a line names shows while it is named: a look with nothing marked brings the whole board into the
+part of the screen the pointer may use where it fits (else its middle, as before), a path's drag brings its dot with the board (the
+dot first where the board cannot fit), and the pointer first appears inside that part, so on a short screen the floating Skip no
+longer covers the star a walk heads for; and a line that says to press something presses it, so Shape the Sound's "Then check the
+line." is a tap of its own after its nudges, and the board says "Matches the score."

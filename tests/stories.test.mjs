@@ -448,32 +448,63 @@ for (const [, cs, id] of LONG_ENTRIES) {
 // row, a story's, a lesson painting's, a long story's or a coloring page's, that names a child and a height, water or a road, and
 // no grown-up in its prompt (what is painted: a check note's grown-up paints nobody), passes only when HEIGHT_READ gives the reason
 // it is safe in that scene; kindergarten's to grade 2's wait by name for
-// their courses' reviews, and both lists only fall.
+// their courses' reviews, and both lists only fall. Since pass MS (round three's alignment read) the row's background is read too,
+// the Style part's "minimalist ... background", which the check had cut off ("a boy trying to lift the rock" on a creek background,
+// S1520, and 20 more rows of kindergarten to grade 2, all 21 now waiting by name), and a police officer is a grown-up (P124 waves to children
+// on a neighborhood sidewalk).
 { const { readFileSync } = await import('node:fs');
   const RISK = /\b(slides?|ladders?|climb\w*|jungle gym|monkey bars|tree ?house|branch|pool|lake|river|pond|ocean|beach|creek|stream|waves?|road|street|crosswalk|parking lot|curb|cliff|rooftop|stairs)\b/i;
   const CHILD = /\b(child|children|boy|girl|kids?|baby|toddler)\b/i;
-  const ADULT = /\b(grown-ups?|woman|man|teacher|mom|mother|dad|father|grandpa|grandma|grandmother|grandfather|parent|lifeguard|adult|aunt|uncle|coach|librarian|crossing guard)\b/i;
+  const ADULT = /\b(grown-ups?|woman|man|teacher|mom|mother|dad|father|grandpa|grandma|grandmother|grandfather|parent|lifeguard|adult|aunt|uncle|coach|librarian|crossing guard|police officer)\b/i;
   const HEIGHT_READ = {
     S161: 'a road printed on a play mat, a toy on the playroom floor',
     S3859: 'a beach ball, a toy, on the playroom floor',
     S1462: 'climbing onto a swing seat a friend holds still, at no height',
     CS652: 'a river seen far below through a train window, the girl inside the train',
   };
-  const WAITING_K2 = ['S222', 'S239', 'S263', 'S275', 'S314', 'S338', 'S380', 'S401', 'S407', 'S434', 'S1593', 'S1644', 'S1681', 'S1718', 'S2784', 'S2891', 'S3245', 'S3659', 'S3699', 'S3701', 'S3702', 'S3765', 'S3774', 'D78', 'D99', 'D114', 'D168', 'D176', 'D212', 'D235', 'P69'];
+  const WAITING_K2 = ['S222', 'S239', 'S263', 'S275', 'S314', 'S338', 'S380', 'S401', 'S407', 'S434', 'S1593', 'S1644', 'S1681', 'S1718', 'S2784', 'S2891', 'S3245', 'S3659', 'S3699', 'S3701', 'S3702', 'S3765', 'S3774', 'D78', 'D99', 'D114', 'D168', 'D176', 'D212', 'D235', 'P69',
+    // Since round three's alignment read, the rows whose background holds the street, the creek or the beach.
+    'S374', 'S375', 'S408', 'S1520', 'S1522', 'S1534', 'S1576', 'S1602', 'S1680', 'S1686', 'S1687', 'S1699', 'S1719', 'S1256', 'CS391', 'CS392', 'CS394', 'CS395', 'CS396', 'CS563', 'CS564'];
   const courseOf = (id) => L.COURSES.find((c) => c.id === id || c.modules.some((m) => m.id === id));
   const hits = []; let rows = 0;
   for (const line of readFileSync(new URL('../docs/ART-REQUESTS.md', import.meta.url), 'utf8').split('\n')) {
     const m = /^\| ([A-Z]+\d+) \| ([\w:-]+) \| ([^|]*) \| ([^|]*) \|/.exec(line); if (!m) continue; const c = courseOf(m[2].replace(/^lesson-/, ''));
     // The drawing pages D1 to D27 name no course and are colored by the youngest too, so they are read with the early years (round three's story check).
     const drawingPage = /^D(?:[1-9]|1\d|2[0-7])$/.test(m[1]);
-    if (!drawingPage && (!c || !['PK3', 'PK4', 'K', '1', '2'].includes(c.grade))) continue; rows += 1; const prompt = m[4].split('Style:')[0]; const text = `${m[3]} ${prompt}`;
-    if (RISK.test(text) && CHILD.test(text) && !ADULT.test(prompt)) hits.push(m[1]); }
+    if (!drawingPage && (!c || !['PK3', 'PK4', 'K', '1', '2'].includes(c.grade))) continue; rows += 1; const [prompt, style = ''] = m[4].split('Style:');
+    const background = (/minimalist ([^,.]+?) background/.exec(style) || [])[1] || ''; const text = `${m[3]} ${prompt}`;
+    if (RISK.test(`${text} ${background}`) && CHILD.test(text) && !ADULT.test(prompt)) hits.push(m[1]); }
   const unread = hits.filter((s) => !HEIGHT_READ[s] && !WAITING_K2.includes(s)); const stale = [...Object.keys(HEIGHT_READ), ...WAITING_K2].filter((s) => !hits.includes(s));
   // Its near misses: S3910 as round one found it, and as it is now, with his mom on the bench.
   const nearMiss = (t) => RISK.test(t) && CHILD.test(t) && !ADULT.test(t);
-  const proven = nearMiss('A small girl cheering on the grass, well to one side of the slide, while a small boy zooms down a tall playground slide, cheerful and neat.') && !nearMiss('A small girl cheering on the grass while a small boy zooms down a tall playground slide, a woman watching from a park bench nearby.');
+  const proven = nearMiss('A small girl cheering on the grass, well to one side of the slide, while a small boy zooms down a tall playground slide, cheerful and neat.') && !nearMiss('A small girl cheering on the grass while a small boy zooms down a tall playground slide, a woman watching from a park bench nearby.')
+    && hits.includes('S1520') && !hits.includes('P124');   // the creek only in its background, and the police officer a grown-up
   ok(`a young child near a height, water or a road has a grown-up nearby in every early-years picture row, or its reason is read (${rows} rows read; ${Object.keys(HEIGHT_READ).length} pre-K reasons; ${WAITING_K2.length} of kindergarten to grade 2 waiting)`, rows >= 1400 && proven && unread.length === 0 && stale.length === 0, `unread: ${unread.join(', ')}; listed but no longer hit: ${stale.join(', ')}`); }
 
+// A baby or a toddler has a grown-up near in every early-years picture (pass MS, round three's alignment read, the lesson brief's
+// item 14 made a test: the pass found it twice, round one in S3987 and D264 and round two in S3988 to S3990, after round one's own fix
+// dropped D264's grown-up). Every early-years picture row, read as the height check reads them, that names a baby, a toddler or an
+// infant (a baby doll, a baby animal or baby teeth are not one) and no grown-up in its prompt passes only with its reason in BABY_READ;
+// kindergarten's to grade 2's wait by name for their courses' reviews, and both lists only fall. S3865, the baby with only her
+// brother in pre-K 4's The tiny sock, has their mom on the bed since. Near misses: S3865 as it was, caught; a baby duck, passed.
+{ const { readFileSync } = await import('node:fs');
+  const YOUNG = /\b(toddlers?|bab(y|ies)|infants?|newborns?)\b/i;
+  const NOT_ONE = /\bbaby (doll|bottle|chick|duck|goat|animal|bird|turtle|elephant|bear|deer|seal|owl|fox|teeth|tooth|carrots?|spinach|shower)s?\b/gi;
+  const ADULT = /\b(grown-ups?|woman|man|teacher|mom|mother|dad|father|grandpa|grandma|grandmother|grandfather|parent|lifeguard|adult|aunt|uncle|coach|librarian|crossing guard|police officer)\b/i;
+  const BABY_READ = {};
+  const WAITING_K2 = ['S3158', 'S1256'];
+  const courseOf = (id) => L.COURSES.find((c) => c.id === id || c.modules.some((m) => m.id === id));
+  const flagged = (scene, prompt) => YOUNG.test(`${scene} ${prompt}`.replace(NOT_ONE, '')) && !ADULT.test(prompt);
+  const hits = []; let rows = 0;
+  for (const line of readFileSync(new URL('../docs/ART-REQUESTS.md', import.meta.url), 'utf8').split('\n')) {
+    const m = /^\| ([A-Z]+\d+) \| ([\w:-]+) \| ([^|]*) \| ([^|]*) \|/.exec(line); if (!m) continue; const c = courseOf(m[2].replace(/^lesson-/, ''));
+    const drawingPage = /^D(?:[1-9]|1\d|2[0-7])$/.test(m[1]);
+    if (!drawingPage && (!c || !['PK3', 'PK4', 'K', '1', '2'].includes(c.grade))) continue; rows += 1;
+    if (flagged(m[3], m[4].split('Style:')[0])) hits.push(m[1]); }
+  const unread = hits.filter((s) => !BABY_READ[s] && !WAITING_K2.includes(s)); const stale = [...Object.keys(BABY_READ), ...WAITING_K2].filter((s) => !hits.includes(s));
+  const old3865 = 'A baby girl with a tuft of brown hair in a pink onesie waving a tiny blue sock with white stripes, her big brother, a small boy with straight brown hair in orange pajamas, smiling beside her in two matching blue socks with white stripes, cheerful and neat.';
+  const proven = flagged('A baby waving a tiny blue striped sock, her brother smiling in two matching socks', old3865) && !flagged('A baby duck paddling after its mother', 'A fluffy yellow baby duck paddling on a pond, cheerful and neat.');
+  ok(`a baby or a toddler has a grown-up near in every early-years picture row, or its reason is read (${rows} rows read; ${Object.keys(BABY_READ).length} pre-K reasons; ${WAITING_K2.length} of kindergarten to grade 2 waiting; both near misses read)`, rows >= 1400 && proven && unread.length === 0 && stale.length === 0, `unread: ${unread.join(', ')}; listed but no longer hit: ${stale.join(', ')}`); }
 // "Almost" before a past-tense verb in an early-years story is heard as the act done (docs/MISTAKE-CLASSES.md, C14: pass MD's
 // "almost grabbed the ball and ran off" was heard as running off, and pass MN's "Gabe almost giggled too" as giggling at an
 // embarrassed friend, the act the lesson calls unkind; the story check, round one). A wish says it ("Gabe wanted to giggle too").

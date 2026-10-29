@@ -7,16 +7,38 @@ const ok = (name, cond) => { if (cond) { pass++; console.log('PASS -', name); } 
 
 const { rows, orphans } = coverageReport(L.MODULES);
 
-ok('every plan names its published sources', CURRICULUM.every((p) => /TEKS|Texas/.test(p.source) && /Common Core|Head Start|Next Generation Science|National Council for the Social Studies|American Psychological Association|Council for Economic Education|National Communication Association/.test(p.source)));
+// Since pass MS a pre-K plan is one framework's domain (Q76 (c)), so a plan names the publisher of each framework it carries.
+const carries = (p, fw) => p.standards.some((st) => st.framework === fw);
+ok('every plan names its published sources', CURRICULUM.every((p) => (carries(p, 'TEKS') || carries(p, 'CCSS')) && (!carries(p, 'TEKS') || /TEKS|Texas/.test(p.source)) && (!carries(p, 'CCSS') || /Common Core|Head Start|Next Generation Science|National Council for the Social Studies|American Psychological Association|Council for Economic Education|National Communication Association/.test(p.source))));
+// A plan's source is printed on the educator's map and its printout, so it names the published document and nothing of how the app
+// was built: no pass, no person, no file or earmark (pass MS, round one's screen check: every pre-K domain's list opened with "adopted
+// by the app in pass MR at Mikey's word" and a repository path, and five older sources named their pass and docs/EARMARKS.md). Two
+// near misses, the sources as round one's check found them, must fail it.
+// Since round three's screen read the names are read as they are written (a pass as two capitals, a file by its lowercase ending), so
+// a standard's code (K.MD.A.1) or a course that asks a student to pass an exam is no build note, and how a standard was read ("read in
+// full", "read complete") is a note too, kept in the plan's comment; "as printed in" a catalog stays, a citation of where to find it.
+const buildNote = (s) => /\bpass(?:es)? [A-Z]{2}\b|\bMikey\b|\bClaude\b|docs\/|\.(?:md|txt|mjs|json)\b|RULES-AUDIT/.test(s) || /\bearmarks?\b|\bread in full\b|\bread complete\b/i.test(s);
+const notesIn = (sources) => sources.filter((s) => buildNote(s));
+const notNotes = ['Common Core State Standards, Kindergarten, Measurement and Data (K.MD.A.1)', 'a course that prepares a student to pass an exam'];
+const SOURCE_NEAR = ["Texas Prekindergarten Guidelines as the 2027 Pre-K Guidelines Review Committee recommends them (TEA, five documents posted for public feedback in September 2026, adopted by the app in pass MR at Mikey's word), PK3 outcomes, Mathematics Domain: every outcome, word for word (docs/standards/tea-pk3-2027-recommended.txt).",
+  'Texas Essential Knowledge and Skills, Science, Grade 1 (19 TAC §112.3, Adopted 2021, read in full in pass KV; the 2021 grade 1 standard has no Sun and Moon expectation, and the codes no lesson teaches are earmark E9 in docs/EARMARKS.md); Next Generation Science Standards, Grade 1',
+  'Texas Essential Knowledge and Skills for Health Education, Grade 6, Adopted 2020 (§115.26), the reproductive and sexual health strand, (b)(20) to (23), read in full in the Texas Administrative Code.'];
+ok('no plan source the map prints names a pass, a person, a file, an earmark or how it was read, the three old sources fail it, and a code or a pass an exam does not (pass MS)', notesIn(CURRICULUM.map((p) => p.source || '')).length === 0 && notesIn(SOURCE_NEAR).length === 3 && notesIn(notNotes).length === 0, notesIn(CURRICULUM.map((p) => p.source || '')).map((s) => s.slice(0, 120)).join(' | '));
 ok('every standard names a framework the platform knows', CURRICULUM.every((p) => p.standards.every((st) => FRAMEWORKS[st.framework])));
 ok('every state and the District of Columbia are listed with a framework', STATES.length === 51 && STATES.every((st) => FRAMEWORKS[st.framework]));
 ok('Texas builds to TEKS and California to Common Core', frameworkForState('TX') === 'TEKS' && frameworkForState('CA') === 'CCSS');
-ok('every plan carries both frameworks', CURRICULUM.every((p) => p.standards.some((st) => st.framework === 'TEKS') && p.standards.some((st) => st.framework === 'CCSS')));
+// Every plan carries both frameworks, except pre-K's since pass MS (Q76 (c)): each pre-K plan is one domain of the Texas guidelines or
+// of Head Start's framework and carries that one, and each pre-K grade carries both.
+const PREK = (p) => p.grade === 'PK3' || p.grade === 'PK4';
+ok('every plan carries both frameworks, and every pre-K grade both across its domain plans', CURRICULUM.every((p) => (PREK(p) ? carries(p, 'TEKS') !== carries(p, 'CCSS') : carries(p, 'TEKS') && carries(p, 'CCSS'))) && ['PK3', 'PK4'].every((g) => ['TEKS', 'CCSS'].every((fw) => CURRICULUM.some((p) => p.grade === g && carries(p, fw)))));
 ok('every module a plan names really exists', rows.every((r) => r.unknown.length === 0));
 ok('every module belongs to at least one standard', orphans.length === 0);
 ok('no prerequisite is missing and no chain loops back on itself', L.checkPrerequisiteGraph().length === 0);
 for (const fw of Object.keys(FRAMEWORKS)) {
   for (const r of coverageReport(L.MODULES, fw).rows) {
+    // A pre-K plan carries one framework since pass MS (above), so the other framework's report lists it with nothing in it; a
+    // note there ("TEKS Pre-K 3 Approaches to Learning: 0 of 0") would name a domain that framework does not have, so it is skipped.
+    if (r.total === 0 && (r.grade === 'PK3' || r.grade === 'PK4')) continue;
     const label = `${fw} ${L.gradeLabel(r.grade)} ${r.subject}: ${r.covered} of ${r.total} standards covered`;
     // Ready is enforced against TEKS, the first framework we build to; Common Core gaps are reported.
     if (r.status === 'ready' && fw === 'TEKS') ok(label + ' (marked ready, so all must be)', r.missing.length === 0);
@@ -43,6 +65,40 @@ for (const c of L.COURSES) for (const fw of ['TEKS', 'CCSS']) {
   ok(`${c.id} has standards satisfied to show on a transcript (${fw})`, codes.length > 0);
 }
 
+// Pre-K, counted against every outcome (pass MS, Mikey's answer to Q76, "Q76 - C": "list every outcome of the 2027 recommendations
+// in the pre-K plans, the untaught ones shown as not yet covered, and mark pre-K as still being written until every one is taught"):
+// the copy of the outcomes in src/curriculum.mjs is the standards files' (tools/prek-outcomes.mjs writes it); each pre-K grade lists
+// every 2027 outcome of its age (123 and 132) and every Head Start preschool goal (59) once, in its domain's plan, in the files'
+// words; every lesson the plans named before pass MS is still named on its row; and a plan is still being written (planned) while
+// any row has no lesson, ready only when every row has one. Near misses: a copy one word off, a lesson dropped, a planned plan marked
+// ready.
+{ const PO = await import('../tools/prek-outcomes.mjs'); const { readFileSync: rd } = await import('node:fs'); const CUR = await import('../src/curriculum.mjs');
+  const held = PO.heldBlock(rd(new URL('../src/curriculum.mjs', import.meta.url), 'utf8')); const block = PO.prekOutcomesBlock(); const files = PO.prekOutcomesFromFiles();
+  const prekProblems = (plans, outcomes) => { const bad = [];
+    for (const g of ['PK3', 'PK4']) {
+      const rows = plans.filter((p) => p.grade === g).flatMap((p) => p.standards.map((st) => ({ ...st, plan: p })));
+      const want = [...outcomes[g].map(([code, text]) => ({ fw: 'TEKS', code: `${g}.${code}`, text })), ...outcomes.ELOF.map(([code, text]) => ({ fw: 'CCSS', code: `ELOF.${code.replace(' ', '.')}`, text }))];
+      for (const w of want) { const hit = rows.filter((r) => r.framework === w.fw && r.code === w.code);
+        const words = (t) => String(t).replace(/^Child /, '').replace(/^./, (ch) => ch.toLowerCase());
+        if (hit.length !== 1) bad.push(`${g} ${w.code} listed ${hit.length} times`); else if (words(hit[0].text) !== words(w.text)) bad.push(`${g} ${w.code} is not the file's words`); }
+      if (rows.length !== want.length) bad.push(`${g} lists ${rows.length} rows, not ${want.length}`);
+      for (const p of plans.filter((x) => x.grade === g)) { const full = p.standards.every((st) => st.moduleIds.length); if (p.status !== (full ? 'ready' : 'planned')) bad.push(`${g} ${p.subject} is ${p.status} with ${full ? 'every' : 'not every'} row taught`); }
+    }
+    return bad; };
+  // Every row the plans held before pass MS reads the same on the map (its words exactly) and keeps every lesson it named.
+  const taughtBefore = (plans) => { const bad = []; for (const p of CUR.PREK_TAUGHT_FOR_TEST) for (const st of p.standards) { const row = plans.filter((x) => x.grade === p.grade).flatMap((x) => x.standards).find((r) => r.framework === st.framework && r.code === st.code); if (!row || st.moduleIds.some((id) => !row.moduleIds.includes(id))) bad.push(`${p.grade} ${st.code} lost a lesson`); else if (row.text !== st.text) bad.push(`${p.grade} ${st.code} reads "${row.text}", not "${st.text}"`); } return bad; };
+  const prekPlans = CURRICULUM.filter(PREK);
+  const real = [...prekProblems(prekPlans, files), ...taughtBefore(prekPlans)];
+  const counts = files.PK3.length === 123 && files.PK4.length === 132 && files.ELOF.length === 59 && files.TEKS_DOMAINS.length === 10 && files.ELOF_DOMAINS.length === 7;
+  const tally = (g, fw) => { const rows = prekPlans.filter((p) => p.grade === g).flatMap((p) => p.standards).filter((st) => st.framework === fw); return `${rows.filter((st) => st.moduleIds.length).length} of ${rows.length}`; };
+  const plants = [
+    prekProblems(prekPlans, { ...files, PK3: files.PK3.map(([c, t], i) => (i === 0 ? [c, t.replace(/\.$/, ' too.')] : [c, t])) }).length > 0,
+    taughtBefore(prekPlans.map((p) => ({ ...p, standards: p.standards.map((st) => (st.code === 'PK3.V.D.1' ? { ...st, moduleIds: st.moduleIds.slice(1) } : st)) }))).length > 0,
+    prekProblems(prekPlans.map((p) => (p.status === 'planned' && p.grade === 'PK4' ? { ...p, status: 'ready' } : p)), files).length > 0,
+  ];
+  ok(`pre-K is counted against every outcome: the copy is the standards files', each grade lists all ${files.PK3.length} and ${files.PK4.length} outcomes and ${files.ELOF.length} Head Start goals once in their words, every lesson named before is kept, and a plan is still being written while a row waits (Texas ${tally('PK3', 'TEKS')} and ${tally('PK4', 'TEKS')}, Head Start ${tally('PK3', 'CCSS')} and ${tally('PK4', 'CCSS')}; near misses caught)`,
+    held === block && counts && real.length === 0 && plants.every(Boolean));
+  if (real.length || held !== block) console.log(held !== block ? 'the copy differs: run node tools/prek-outcomes.mjs --write' : '', real.slice(0, 6).join('\n'), `plants ${plants}`); }
 // A plan never repeats a code: two lines with one code print twice on the map and split the modules that satisfy it.
 const repeats = [];
 for (const plan of CURRICULUM) { const seen = new Set(); for (const st of plan.standards) { const key = `${st.framework}:${st.code}`; if (seen.has(key)) repeats.push(`${plan.grade} ${plan.subject} ${key}`); seen.add(key); } }
@@ -169,6 +225,23 @@ ok('no plan repeats a code', repeats.length === 0, repeats.join(', '));
   const fails27 = off.length - e27; const fine27 = off.length; check('PK4', 'near-9', lab('III.B.5 (identifies rhyming words)'));
   ok('under the 2027 label the check fails a renumbered 2022 code, a deleted outcome and a quote missing the committee\'s words, and passes the 2027 words', fails27 === 3 && off.length === fine27, `${fails27} near misses failed`);
   off.length = before;
+}
+// The standards map's rows, keyed and named by logic's planRowName (pass MS: round three's screen read found grade 3's two Art plans,
+// and grade 6's and grade 9's health beside their electives, sharing one key and one name, so a tap opened both; round four's code
+// read moved the rule from the screen to logic, where this test reads it). Every framework's plan is read as one list, the most any
+// view of the map draws together: each row's key is its own, its name under its grade is its own, and its words under its subject
+// are its own, and the twins are named by their course. Near misses: the rule without its read of a row's twin (grade 3's Art plans
+// share a key), and grade 3's two Art plans each given lessons from both Art courses, so neither has one course to be named by.
+{ const rowsOf = (plan, ctx = () => plan) => plan.map((e) => ({ e, ...L.planRowName(e, ctx(e)) }));
+  const clash = (rows) => { const seen = new Set(); const out = []; for (const r of rows) for (const k of [`key ${r.key}`, `grade ${r.e.grade}: ${r.named}`, `subject ${r.e.subject}: ${r.bySubject}`]) { if (seen.has(k)) out.push(k); seen.add(k); } return out; };
+  const plans = Object.keys(FRAMEWORKS).map((fw) => CURRICULUM.filter((e) => e.standards.some((st) => st.framework === fw)));
+  const real = plans.flatMap((plan) => clash(rowsOf(plan)));
+  const twinsNamed = plans.every((plan) => rowsOf(plan).filter((r) => r.course && !r.e.courseId).length >= 4);
+  const noTwin = plans.flatMap((plan) => clash(rowsOf(plan, (e) => [e])));
+  const art = CURRICULUM.filter((e) => e.grade === '3' && e.subject === 'Art'); const artIds = [...new Set(art.flatMap((e) => e.standards.flatMap((st) => st.moduleIds)))];
+  const mixed = plans.flatMap((plan) => clash(rowsOf(plan.map((e) => (art.includes(e) ? { ...e, standards: e.standards.map((st, i) => (i === 0 ? { ...st, moduleIds: artIds } : st)) } : e)))));
+  if (real.length) console.log('  clashes:', real.slice(0, 6).join('; '));
+  ok(`every row of the standards map has a key, a name under its grade and words under its subject of its own, twins named by their course (${plans.map((p) => p.length).join(' and ')} plans; two near misses caught)`, real.length === 0 && twinsNamed && noTwin.length > 0 && mixed.length > 0 && art.length === 2);
 }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

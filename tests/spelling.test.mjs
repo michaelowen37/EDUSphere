@@ -34,7 +34,7 @@ for (const file of ['src/logic.mjs', 'src/ui.jsx']) {
   const src = readFileSync(file, 'utf8');
   // Comments are for developers and may quote anything; strip them so only prose is checked.
   // Identifiers are code, not prose: strip id fields, module id lists and requires lists before scanning.
-  const code = src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:'"`])\/\/.*$/gm, '$1').replace(/\b(id|courseId|moduleId|toModuleId): '[^']*'/g, '').replace(/\b(requires|moduleIds|courseIds|generators): \[[^\]]*\]/g, '');
+  const code = src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:'"`])\/\/.*$/gm, '$1').replace(/\b(id|courseId|moduleId|toModuleId): '[^']*'/g, '').replace(/\b(requires|moduleIds|courseIds|generators): \[[^\]]*\]/g, '').replace(/\bSAY_ALONG_(?:LESSONS|WAITS) = \[[^\]]*\]/g, '');   // the say-along's module id lists (pass MT)
   const strings = proseStrings(code);
   for (const [pattern, american, detect] of BRITISH) {
     const hits = strings.filter((t) => detect.test(t.replace(/\$\{[^}]*\}/g, 'X'))).slice(0, 3);

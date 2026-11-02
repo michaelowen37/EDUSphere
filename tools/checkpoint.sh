@@ -13,14 +13,20 @@
 #     label            a short name for the file, such as md-3-second-reads
 #     output-dir       where edusphere-checkpoint-<label>.zip is written
 #     scratch-folder   folders whose files are copied into CHECKPOINT/work (reports, patch scripts, packets)
-#   bash tools/checkpoint.sh --clean     removes the CHECKPOINT folder before a delivery
+#   bash tools/checkpoint.sh --clean     removes the CHECKPOINT folder before a delivery, and refuses while a placeholder is
+#                                        left in a doc (node tools/placeholders.mjs, since pass MT)
 # It stops unless CHECKPOINT/CHECKPOINT.md exists and was written in the last two hours, so a checkpoint never ships
 # a stale account of where the work stands.
 # -----------------------------------------------------------------------------------------------------------------
 set -eu
 HERE="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$HERE"
-if [ "${1:-}" = "--clean" ]; then rm -rf CHECKPOINT; echo "CHECKPOINT folder removed"; exit 0; fi
+# The step just before the delivery zip: no placeholder may be left in a doc (pass MT, round one's final read: a name in capitals a
+# pass fills at the end, such as the minutes check.sh took, could ship in a hurried delivery), then the folder goes.
+if [ "${1:-}" = "--clean" ]; then
+  node tools/placeholders.mjs || { echo "fill the placeholders above, then clean again"; exit 1; }
+  rm -rf CHECKPOINT; echo "CHECKPOINT folder removed"; exit 0
+fi
 if [ -z "${1:-}" ] || [ -z "${2:-}" ]; then echo "usage: bash tools/checkpoint.sh <label> <output-dir> [scratch-folder ...]   or   bash tools/checkpoint.sh --clean"; exit 1; fi
 LABEL="$1"; OUT="$2"; shift 2
 NOTE="CHECKPOINT/CHECKPOINT.md"

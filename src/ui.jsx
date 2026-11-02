@@ -100,8 +100,9 @@ const paperMuted = () => (C.mode === 'dark' ? '#3A4A40' : B.muted);
 // 1.12 to 1 on a story card at the size of a sentence; the green reads 1.57 to 1 on white, the words on it 10.6 to 1.
 const readLit = () => ({ background: '#AAD8C5', color: '#16201B' });
 // The shape of a lit sentence (pass MH): a highlight hugging the words, rounded at each line's ends, its padding taken back by
-// a negative margin so the words never move as the light passes over them.
-const LIT_WORDS = { borderRadius: 5, padding: '1px 2px', margin: '0 -2px', boxDecorationBreak: 'clone', WebkitBoxDecorationBreak: 'clone', transition: 'background 150ms' };
+// a negative margin so the words never move as the light passes over them. No fade (round one's lesson check, pass MT): a word's ink
+// turns at once, so a fill that faded in or out left it dark on the dark card, or pale on green, for a moment at every change.
+const LIT_WORDS = { borderRadius: 5, padding: '1px 2px', margin: '0 -2px', boxDecorationBreak: 'clone', WebkitBoxDecorationBreak: 'clone' };
 // Style objects shared across screens copy colors from C when they are made, so each is made from a recipe that
 // applyTheme runs again after a switch.
 const THEMED = [];
@@ -1755,12 +1756,15 @@ function playTap() {
 // since a device's voice spelled sss and fff as letters and ran mmm into moon on Mikey's phone (his notes on Q51). SPEECH_SHAPES
 // turns each spoken piece's shape into a rate and a pitch; sound is the shape of a sound the device can only say, never play.
 // cheer (pass MR): a run of capitals at a sentence's end, Mikey's "HAVE FUN!!!", lifted and a little quicker than the words before it.
-// The silly voices of the say-along (pass MS, Mikey's note on Q67; SAY_ALONG_VOICES in logic, where each voice's rate, pitch and
-// volume live, so logic times the child's turn from the same pace): whisper is soft and a little slow, slow is half speed, low and
-// silly is deep, super fast is nearly twice the speed, stretched out is very slow, way up high is squeaky, the slide steps down over
-// three sayings (slide1, slide2, slide3), the chant is a bright cheer, and the clear one an ordinary voice. A device voice cannot
-// truly whisper, so it is said softly; the recorded voice whispers ([whispers]).
-const SAY_ALONG_SHAPES = Object.fromEntries(SAY_ALONG_VOICES.flatMap((v) => (v.device.length === 1 ? [[v.style, v.device[0]]] : v.device.map((d, k) => [`${v.style}${k + 1}`, d]))));
+// The ways of the say-along (pass MS; since pass MT Mikey's game, his answer to Q77; SAY_ALONG_VOICES in logic, where each way's
+// rate, pitch and volume live, so logic times the child's turn from the same pace): slowly at a third of pass MS's slow pace, like a
+// sleepy giant (slow and low), whispered twice (soft and slowish), squeaked twice like a tiny mouse (very high), four silly voices
+// (silly1 to silly4: high and quick, low and drawn out, a little high and slow, a little low and quick), slid down from high to low
+// (slide1 to slide3), bounced high and low (bounce1 to bounce4), cheered (bright), three times super fast in one breath, stretched out
+// and stretched like play dough (slow), and the clear one an ordinary voice; the opener, "Let's say it together!", excited and
+// emphasized (sayOpen, SAY_ALONG_OPEN_SHAPE). A device voice cannot truly whisper, take an accent or slide inside a word, so it says a
+// whisper softly, pitches the four silly voices apart and steps the slide; the recorded voice does each by its tag.
+const SAY_ALONG_SHAPES = { sayOpen: SAY_ALONG_OPEN_SHAPE, ...Object.fromEntries(SAY_ALONG_VOICES.flatMap((v) => (v.device.length === 1 ? [[v.style, v.device[0]]] : v.device.map((d, k) => [`${v.style}${k + 1}`, d])))) };
 const SPEECH_SHAPES = { key: { rate: 0.6, pitch: 1.25 }, question: { rate: 0.9, pitch: 1.22 }, plain: { rate: 0.86, pitch: 1.15 }, sound: { rate: 0.1, pitch: 1.15 }, cheer: { rate: 1.0, pitch: 1.45 }, ...SAY_ALONG_SHAPES };
 // The shapes that keep their own pace for a young learner (a word at play is already slow; a cheer is meant to bounce; a silly voice
 // is the pace its call names).
@@ -1773,7 +1777,7 @@ const OWN_PACE_SHAPES = ['key', 'cheer', ...Object.keys(SAY_ALONG_SHAPES)];
 // cannot play it, and never holds a reading up longer than the longest sound and a little more. stopSound silences it. A test
 // reads window.__eduSounds, the sounds asked for in order.
 let soundAudio = null; let soundPlaying = false; let soundToken = 0; const soundUrls = {};
-const SOUND_LONGEST_MS = 1700; const SOUND_GAP_MS = 200;
+const SOUND_LONGEST_MS = 1900; const SOUND_GAP_MS = 200;   // the guard: the crowd (1.5 s, pass MT) and 400 ms more; the rules test holds every sound 300 ms under it
 function soundPlayer() {
   if (!soundAudio && typeof window !== 'undefined' && typeof window.Audio === 'function') { try { soundAudio = new window.Audio(); soundAudio.preload = 'auto'; } catch (e) { soundAudio = null; } }
   return soundAudio;
@@ -1877,12 +1881,15 @@ function sayPieces(pieces, from, hooks) {
     const together = !!(next && prev && prev.inForm !== undefined && next.inForm === prev.inForm);
     const rest = next && pause && next.sentence !== prev.sentence && !together ? pause(next) || 0 : 0;
     const echo = next && prev && prev.echo && !together ? prev.echo : 0;
-    const wait = Math.max(rest, echo, next && next.sound && prev.sound ? SOUND_GAP_MS : 0);
+    // A say-along way's brief pause between its sayings (pass MT, Mikey: "the four times in a row should have brief pauses between each
+    // one too"): a piece that asks for one ends its batch, and the next saying waits that long.
+    const brief = next && prev && together && prev.pauseAfter ? prev.pauseAfter : 0;
+    const wait = Math.max(rest, echo, brief, next && next.sound && prev.sound ? SOUND_GAP_MS : 0);
     if (wait > 0) { onRest(j); restUntil = Date.now() + wait + 60; setTimeout(() => { if (alive()) sayPieces(pieces, j, hooks); }, wait); } else sayPieces(pieces, j, hooks);
   };
   if (pieces[from].sound) { onPiece(from, true); onBegin(); playSound(pieces[from].sound, () => { if (alive()) { onPieceEnd(from); goOn(from + 1); } }); return; }
   const rest = pause ? pause() : 0;
-  let to = from; while (to < pieces.length && !pieces[to].sound && !(rest > 0 && to > from && pieces[to].sentence !== pieces[to - 1].sentence)) to += 1;
+  let to = from; while (to < pieces.length && !pieces[to].sound && !(to > from && pieces[to - 1].pauseAfter) && !(rest > 0 && to > from && pieces[to].sentence !== pieces[to - 1].sentence)) to += 1;
   const after = () => goOn(to);
   let left = to - from; const ss = window.speechSynthesis; const dones = []; const ended = []; let begun = false;
   onPiece(from, false);
@@ -2116,7 +2123,7 @@ function speakSequence(texts, onIndex, onDone, keys = [], opts = {}) {
       onRest: (k) => { place.i = i; place.k = k; },
       onDone: () => { const lastPc = pieces[pieces.length - 1]; const nextPc = (piecesOf[i + 1] || [])[0];
         const together = !!(lastPc && nextPc && lastPc.inForm !== undefined && nextPc.inForm === lastPc.inForm);
-        const gap = together ? 0 : Math.max(gapAfter(i), lastPc && lastPc.echo && i + 1 < texts.length ? lastPc.echo : 0); if (gap) { place.i = i + 1; place.k = 0; if (i + 1 < texts.length) restUntil = Date.now() + gap + 60; setTimeout(() => { if (mine === run) say(i + 1); }, gap); } else say(i + 1); },
+        const gap = together ? (lastPc.pauseAfter || 0) : Math.max(gapAfter(i), lastPc && lastPc.echo && i + 1 < texts.length ? lastPc.echo : 0); if (gap) { place.i = i + 1; place.k = 0; if (i + 1 < texts.length) restUntil = Date.now() + gap + 60; setTimeout(() => { if (mine === run) say(i + 1); }, gap); } else say(i + 1); },
       pause: pauseOf,
     });
   };
@@ -2192,19 +2199,22 @@ function VoiceNote({ keys = null, near = false }) {
 }
 // ---------- The say-along strip (pass MS, Mikey's note on his answer to Q67) ----------
 // In plain terms: under a young vocabulary line that ends in a say-along game, the new word sits big on a line of its own, and as the
-// voice says it in each silly way the syllable being said lights, in the read-along's light green (Mikey: "it would be nice to see
-// just the letters that are being pronounced be highlighted during this part so they can follow along easier"); above it, small and
-// muted, the call of the voice being played ("Whisper it."), and under it, for a way said more than once, a ring for each saying, the
-// one being said filled. The device voice tells when a piece starts and ends, never where it is inside a word, so the light moves by
+// voice says it in each way the syllable being said lights, in the read-along's light green (Mikey: "it would be nice to see just the
+// letters that are being pronounced be highlighted during this part so they can follow along easier"); above it, small and muted, the
+// call of the way being played ("Now, let's whisper it twice.", since pass MT), "Great job!" while it is said, and under it, for a way
+// said more than once, a ring for each saying, the one being said filled (three times super fast is one breath since pass MT, its
+// rings filled in turn by logic's guess inside it). The device voice tells when a piece starts and ends, never where it is inside a word, so the light moves by
 // logic's guess of the voice's pace (sayAlongTimeline) from the voice's own start of each saying (a piece each since round one's
 // screen check), corrected as the visit goes by how long the voice really took, and a piece's end puts the light out for the child's
 // turn; once the recordings arrive, their own timings will move it (EARMARKS L12). A word of one syllable lights whole. With no voice
-// on the device the strip shows the cue and every call in order, one to a line, for a grown-up to lead. The lesson tells the strip
+// on the device the strip shows the opener and every call in order, with "Great job!", one to a line, for a grown-up to lead. The lesson tells the strip
 // what the voice is doing through sayAlongBus, so a syllable lighting redraws the strip alone.
 const sayAlongBus = { listeners: new Set(), emit(ev) { for (const f of [...this.listeners]) f(ev); } };
 // How much slower (above 1) or quicker than logic's guess the device voice says a say-along word, kept for the visit, so each line's
-// light starts from what the voice did on the lines before; logic's sayAlongPaceNext moves it after each form.
-let sayAlongPace = 1;
+// light starts from what the voice did on the lines before; logic's sayAlongLearn moves it after each heard saying, for the saying's
+// own shape and, from a rate a phone says as asked, for all of them (pass MT: a phone may hold the very slow way at a floor or super
+// fast at a ceiling, which would have thrown every other way's light off).
+let sayAlongPaces = {};
 // Whether the device voice has reported the start of a say-along saying on this visit (round three's code read): once it has, a queued
 // saying waits for its own start, and the 700 ms guess is never armed again.
 let sayAlongStartsHeard = false;
@@ -2226,10 +2236,11 @@ function SayAlongStrip({ parts, lit }) {
         clear(); started.current = null;
         if (!part || part.role !== 'form' || (ev.piece && !sa)) { setSweep(null); return; }
         // Every piece is one saying (round one's screen check, pass MS: four times low and three times fast are a piece a saying).
-        const v = part.voice; const rep = sa ? sa.rep : 0; const est = sayAlongEstimateMs(part.syllables, v, rep, false);
+        const v = part.voice; const rep = sa ? sa.rep : 0; const est = sayAlongEstimateMs(part.syllables, v, rep);
+        const { shape, rate } = sayAlongShapeOf(ev.piece, v, rep);   // logic's rule (round one's code check, pass MT)
         // heard: the light runs from the voice's own start, so the time the saying took can teach the pace; a run the 700 ms fallback
         // starts is a guess and teaches nothing (round three's code read: it had set begun and taught the pace from a guessed start).
-        const run = (heard) => { clear(); started.current = { at: Date.now(), est, i: ev.i, rep, heard, syllables: part.syllables }; const k = sayAlongPace;
+        const run = (heard) => { clear(); started.current = { at: Date.now(), est, i: ev.i, rep, heard, syllables: part.syllables, shape, rate }; const k = sayAlongPaceOf(sayAlongPaces, shape);
           for (const x of sayAlongTimeline(part.syllables, v, rep)) { const go = () => setSweep({ syllable: x.syllable, rep: x.rep }); if (x.at === 0) go(); else timers.current.push(setTimeout(go, x.at * k)); } };
         if (ev.begun === true) sayAlongStartsHeard = true;
         if (ev.begun !== false) { run(true); return; }
@@ -2238,14 +2249,15 @@ function SayAlongStrip({ parts, lit }) {
         // moves on from the voice's own start; a voice that never reports a start is followed from 700 ms on, but only until a voice has
         // reported a start this visit, since one that does waits for its own (round three's code read: a voice slow to begin had seen
         // the guessed light run ahead and start again).
-        started.current = { at: null, est, i: ev.i, rep, heard: false, syllables: part.syllables };
+        started.current = { at: null, est, i: ev.i, rep, heard: false, syllables: part.syllables, shape, rate };
         setSweep({ syllable: 0, rep }); if (!sayAlongStartsHeard) timers.current.push(setTimeout(() => run(false), 700));
         return;
       }
       if (ev.type === 'end' && sa && started.current && started.current.i === ev.i && started.current.rep === sa.rep) {
-        // logic's rule (pass MS, round one's code check), which a saying of one syllable leaves alone (round three's screen read)
+        // logic's rule (pass MS, round one's code check), which a saying of one syllable leaves alone (round three's screen read), kept
+        // for the saying's shape and, from a rate a phone says as asked, for all (pass MT)
         if (started.current.heard) { const took = Date.now() - started.current.at;
-          sayAlongPace = sayAlongPaceNext(sayAlongPace, took, started.current.est, started.current.syllables); }
+          sayAlongPaces = sayAlongLearn(sayAlongPaces, started.current.shape, started.current.rate, took, started.current.est, started.current.syllables); }
         clear(); started.current = null; setSweep(null);
       }
     };
@@ -2255,25 +2267,30 @@ function SayAlongStrip({ parts, lit }) {
   if (!open) return null;
   const now = lit >= 0 ? parts[lit] : null;
   const call = now && (now.role === 'call' || now.role === 'form') ? parts.find((x) => x.role === 'call' && x.form === now.form) : null;
+  const praise = now && now.role === 'praise' ? now : null;   // "Great job!" while it is said (pass MT)
+  const said = parts.find((x) => x.role === 'praise');
   const voiced = canSpeak();
   const calls = parts.filter((x) => x.role === 'call');
   const times = call ? call.voice.times : 1;
   // The label above the word keeps the height of its tallest text (round one's screen check, pass MS: at 320 pixels the cue took two
   // lines and every call one, so Back, the dots and Next jumped 19 pixels as the first call showed and dropped again at the line's end):
   // the cue and every call of the line sit in one grid cell, the one shown visible and the rest hidden, from the screen reader too.
-  const shownLabel = voiced && call ? call.sentence : open.sentence;
-  const labels = voiced ? [open.sentence, ...calls.map((x) => x.sentence)] : [open.sentence];
+  const shownLabel = voiced && call ? call.sentence : voiced && praise ? praise.sentence : open.sentence;
+  const labels = voiced ? [open.sentence, ...calls.map((x) => x.sentence), ...(said ? [said.sentence] : [])] : [open.sentence];
   return (
-    <div data-say-along={open.word} data-say-along-call={call ? call.voice.style : ''} data-say-along-lit={sweep ? String(sweep.syllable) : ''} data-say-along-rep={sweep ? String(sweep.rep) : ''} style={{ margin: '16px auto 0', maxWidth: 460 }}>
-      <div data-say-along-label={shownLabel} style={{ display: 'grid', margin: '0 0 6px', fontSize: 14, lineHeight: 1.4, color: C.muted }}>
+    <div data-say-along={open.word} data-say-along-call={call ? call.voice.style : praise ? 'praise' : ''} data-say-along-lit={sweep ? String(sweep.syllable) : ''} data-say-along-rep={sweep ? String(sweep.rep) : ''} style={{ margin: '16px auto 0', maxWidth: 460 }}>
+      <div data-say-along-label={shownLabel} style={{ display: 'grid', margin: '0 0 6px', fontSize: 14, lineHeight: 1.4, color: C.muted, textWrap: 'balance' }}>
         {/* Each sits at the cell's foot, right over the word, so where the cue takes two lines (at 320 pixels) a one-line call does not
             float a line above the word (round three's screen read, pass MS). */}
         {labels.map((t, k) => <p key={k} aria-hidden={t === shownLabel ? undefined : 'true'} style={{ gridArea: '1 / 1', alignSelf: 'end', margin: 0, visibility: t === shownLabel ? 'visible' : 'hidden' }}>{t}</p>)}
       </div>
       {/* The big word, its syllables hidden from a screen reader one by one, is named whole as a picture of the word (round one's code
-          check, pass MS: a paragraph may not carry a name of its own, so the word went unread). */}
-      <p role="img" aria-label={open.word} style={{ margin: 0, fontSize: 32, lineHeight: 1.3, fontWeight: 800, letterSpacing: '0.02em', color: C.ink }}>
-        {open.syllables.map((s, k) => <span key={k} aria-hidden="true" data-say-along-syllable={k} style={sweep && sweep.syllable === k ? { ...readLit(), ...LIT_WORDS, margin: 0, padding: '0 1px' } : { background: 'transparent', transition: 'background 120ms', padding: '0 1px' }}>{s === ' ' ? ' ' : s}</span>)}
+          check, pass MS: a paragraph may not carry a name of its own, so the word went unread). A syllable's light comes and goes in the
+          same frame as its ink, with no fade (pass MT: a 150 ms fade never lit super fast's 80 ms syllables, and in the dark theme any fade
+          left a syllable dark on the dark card for a moment, round one's lesson check). The word shrinks to its box on a narrow phone
+          (birthday party ran 12 pixels past it at 320, its two words never parting). */}
+      <p role="img" aria-label={open.word} style={{ margin: 0, fontSize: 'min(32px, 9vw)', lineHeight: 1.3, fontWeight: 800, letterSpacing: '0.02em', color: C.ink }}>
+        {open.syllables.map((s, k) => <span key={k} aria-hidden="true" data-say-along-syllable={k} style={sweep && sweep.syllable === k ? { ...readLit(), ...LIT_WORDS, transition: 'none', margin: 0, padding: '0 1px' } : { background: 'transparent', transition: 'none', padding: '0 1px' }}>{s === ' ' ? ' ' : s}</span>)}
       </p>
       {/* The dots' row keeps its height for a way said once too, so the card never grows and shrinks under the child's finger while
           the game plays (pass MS, seen in the page: the Next button moved down and up with each way). */}
@@ -2286,7 +2303,9 @@ function SayAlongStrip({ parts, lit }) {
       )}
       {/* With no voice the calls are steps for a grown-up to lead, one to a line (round one's screen check: joined by dots they broke
           mid-call, "Cheer it like a big / game!"). */}
-      {!voiced && <p data-say-along-calls="" style={{ margin: '8px 0 0', fontSize: 14, lineHeight: 1.5, color: C.muted }}>{calls.map((x, k) => <span key={k} data-say-along-step="" style={{ display: 'block' }}>{x.sentence}</span>)}</p>}
+      {/* Since pass MT the list keeps "Great job!" in its place, before the clear one, so a grown-up leading it says Mikey's whole game
+          (round one's code and lesson checks). */}
+      {!voiced && <p data-say-along-calls="" style={{ margin: '8px 0 0', fontSize: 14, lineHeight: 1.5, color: C.muted }}>{parts.filter((x) => x.role === 'call' || x.role === 'praise').map((x, k) => <span key={k} data-say-along-step="" style={{ display: 'block' }}>{x.sentence}</span>)}</p>}
     </div>
   );
 }
@@ -3362,7 +3381,7 @@ function RichText({ text, size = 17, color = null, center = false, lineGap = 10,
         const centered = /^\[\[.*\]\]$/.test(trimmed);
         if (centered) return <p key={i} style={{ margin: '14px 0', fontSize: size + 3, fontWeight: 700, textAlign: 'center', letterSpacing: 0.3, color: color || C.ink }}>{litLine === i ? <span data-read-lit="" style={{ ...readLit(), ...LIT_WORDS }}>{inlineRich(trimmed.slice(2, -2).trim(), i)}</span> : inlineRich(trimmed.slice(2, -2).trim(), i)}</p>;
         if (lit !== null && lines.length === 1) { const ss = sentencesOf(trimmed);
-          return <p key={i} style={{ margin: `0 0 ${lineGap}px`, fontSize: size, lineHeight: 1.6, textAlign: center ? 'center' : 'left', color: color || undefined }}>{ss.map((sen, j) => <React.Fragment key={j}><span data-read-lit={j === lit ? '' : undefined} style={j === lit ? { ...readLit(), ...LIT_WORDS } : { transition: 'background 150ms' }}>{inlineRich(sen, `${i}-${j}`)}</span>{j < ss.length - 1 ? ' ' : ''}</React.Fragment>)}</p>; }
+          return <p key={i} style={{ margin: `0 0 ${lineGap}px`, fontSize: size, lineHeight: 1.6, textAlign: center ? 'center' : 'left', color: color || undefined }}>{ss.map((sen, j) => <React.Fragment key={j}><span data-read-lit={j === lit ? '' : undefined} style={j === lit ? { ...readLit(), ...LIT_WORDS } : {}}>{inlineRich(sen, `${i}-${j}`)}</span>{j < ss.length - 1 ? ' ' : ''}</React.Fragment>)}</p>; }
         return <p key={i} style={{ margin: `0 0 ${lineGap}px`, fontSize: size, lineHeight: 1.6, textAlign: center ? 'center' : 'left', color: color || undefined }}>{litLine === i ? <span data-read-lit="" style={{ ...readLit(), ...LIT_WORDS }}>{inlineRich(trimmed, i)}</span> : inlineRich(trimmed, i)}</p>;
       })}
     </>
@@ -12749,9 +12768,9 @@ function EduSphereScreens() {
         <div key={lessonStep} className="edu-rise" style={{ ...card, textAlign: 'center', padding: '20px 18px' }}>
           {stepArt ? <LessonStepArt pic={stepArt} visual={step.show} animKey={`${lessonStep}-${replays}`} /> : <Picture visual={step.show} animate animKey={`${lessonStep}-${replays}`} big lesson />}
 
-          {/* The line's own words, its sentence being read lit; a say-along's cue, calls and silly sayings are shown in its strip
+          {/* The line's own words, its sentence being read lit; a say-along's opener, calls, praise and silly sayings are shown in its strip
               instead (pass MS), the word big and lit a syllable at a time, so the paragraph never fills with "Different, different". */}
-          <p style={{ fontSize: 22, lineHeight: 1.5, margin: '18px 0 0' }}>{(() => { const own = sentencesOf(line).map((sentence, i) => ({ sentence, i })).filter(({ i }) => !lineParts[i] || lineParts[i].role === 'say'); return own.map(({ sentence, i }, n) => <React.Fragment key={i}><span data-read-lit={litSentence === i ? '' : undefined} style={litSentence === i ? { ...readLit(), ...LIT_WORDS } : { background: 'transparent', transition: 'background 150ms' }}>{sentence}</span>{n < own.length - 1 ? ' ' : ''}</React.Fragment>); })()}</p>
+          <p style={{ fontSize: 22, lineHeight: 1.5, margin: '18px 0 0' }}>{(() => { const own = sentencesOf(line).map((sentence, i) => ({ sentence, i })).filter(({ i }) => !lineParts[i] || lineParts[i].role === 'say'); return own.map(({ sentence, i }, n) => <React.Fragment key={i}><span data-read-lit={litSentence === i ? '' : undefined} style={litSentence === i ? { ...readLit(), ...LIT_WORDS } : { background: 'transparent' }}>{sentence}</span>{n < own.length - 1 ? ' ' : ''}</React.Fragment>); })()}</p>
           {lineParts.some((x) => x.role === 'open') && <SayAlongStrip key={`${lessonStep}-${replays}`} parts={lineParts} lit={litSentence} />}
         </div>
         {/* One tap repeats the line, in case they missed it. */}
@@ -13541,11 +13560,14 @@ function EduSphereScreens() {
           )}
         </div>
         {/* Big tap targets. The question and then each choice are read aloud in turn, and the choice being read lights up,
-            so a child who cannot read yet knows what each button says (pass IS: before it, the choices were never spoken). */}
+            so a child who cannot read yet knows what each button says (pass IS: before it, the choices were never spoken). Its fill
+            changes in the same frame as its ink, with no fade (pass MT, the second read of round one: a 200 ms fade left a dark word on
+            the dark card, or a green one on the pale fill, for a moment at every change, as the read-along's lights did); the press
+            still grows in 200 ms. */}
         <div style={{ display: 'grid', gap: 12, gridTemplateColumns: `repeat(${evenColumns(options.length)}, 1fr)` }}>
           {options.map((o, i) => (
             <button key={o} type="button" onClick={() => finish(o)} className="edu-press" data-wonder-lit={wonderLit === i ? '' : undefined}
-              style={{ fontFamily: FONT, fontSize: 20, fontWeight: 600, padding: '22px 10px', borderRadius: 14, background: wonderLit === i ? readLit().background : C.surface, border: `3px solid ${wonderLit === i ? '#AAD8C5' : C.green}`, color: wonderLit === i ? readLit().color : C.green, cursor: 'pointer', minHeight: 78, transform: wonderLit === i ? 'scale(1.04)' : 'none', ...(optionSwatch(o) ? { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '14px 10px' } : {}), transition: 'transform 200ms, background 200ms' }}>
+              style={{ fontFamily: FONT, fontSize: 20, fontWeight: 600, padding: '22px 10px', borderRadius: 14, background: wonderLit === i ? readLit().background : C.surface, border: `3px solid ${wonderLit === i ? '#AAD8C5' : C.green}`, color: wonderLit === i ? readLit().color : C.green, cursor: 'pointer', minHeight: 78, transform: wonderLit === i ? 'scale(1.04)' : 'none', ...(optionSwatch(o) ? { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '14px 10px' } : {}), transition: 'transform 200ms' }}>
               {optionSwatch(o) && <OptionSwatch colour={optionSwatch(o)} size={30} />}{o}
             </button>
           ))}

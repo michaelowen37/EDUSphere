@@ -906,7 +906,11 @@ const ponder = () => page.evaluate(() => {
 // and the strip the word; the voice says every sentence of the line in order, each form in its silly voice's own rate and pitch, none
 // slowed by the young voice, and the calls in the young voice; the child's turn follows each form (sayAlongEcho); the light visits each
 // syllable of a saying in order, the dot of each saying of four filled in turn. On its "match" line the chant plays the app's clap
-// between its cheers. With no voice on the device the strip lists the calls for a grown-up to lead. Since round one's screen check the
+// between its cheers. With no voice on the device the strip lists the calls for a grown-up to lead. Since pass MT the line is Mikey's
+// own game (his answer to Q77): "Let's say it together!" said excited (sayOpen), five ways in his words, "Great job!" as a cheer and the
+// clear one; each saying of the four silly voices in its own rate and pitch with a brief pause between, whispered twice with its pause,
+// super fast one breath whose three sayings light in turn; and the match line's cheer plays a fan's whistle between its sayings and the
+// crowd after the last. Since round one's screen check the
 // voice takes 400 ms to begin each utterance, as a network voice can, and the light must wait for it (no syllable past a saying's
 // first before the voice begins it); every saying of four times low and three times fast is lit through, the calls with no voice
 // are one to a line, and at 320 pixels the strip's height and Next's place hold through the whole game.
@@ -922,8 +926,15 @@ const ponder = () => page.evaluate(() => {
     const read = () => { const s = document.querySelector('[data-say-along]'); if (!s) return; const d = s.querySelector('[data-say-along-dots]'); const nx = document.querySelector('button[aria-label="Next"]'); const v = { t: Date.now(), word: s.getAttribute('data-say-along'), call: s.getAttribute('data-say-along-call'), lit: s.getAttribute('data-say-along-lit'), rep: s.getAttribute('data-say-along-rep'), dots: d ? d.getAttribute('data-say-along-dots') : null, h: Math.round(s.getBoundingClientRect().height), next: nx ? Math.round(nx.parentElement.getBoundingClientRect().top + window.scrollY) : null };
       const last = window.__lits[window.__lits.length - 1]; if (!last || ['word', 'call', 'lit', 'rep', 'dots'].some((f) => last[f] !== v[f])) window.__lits.push(v); };
     if (window.__saWatch) window.__saWatch.disconnect(); window.__saWatch = new MutationObserver(read); window.__saWatch.observe(document.body, { attributes: true, childList: true, subtree: true }); });
-  const toStep = async (mod, step) => { await page.evaluate((m) => window.__eduTest.openModule(m), mod); await page.waitForFunction(() => window.__eduTest.screen === 'lesson');
-    for (let i = 0; i < step; i++) { await page.getByRole('button', { name: 'Next', exact: true }).first().click({ force: true }); await page.waitForTimeout(120); } };
+  // From the overview, so the wait for the lesson screen waits for this opening (pass MT: opened from a lesson already showing, the
+  // first Next could land before the step went back to 0, and at 320 pixels the walk stopped a line short).
+  const toStep = async (mod, step) => { await page.evaluate(() => window.__eduTest.goTo('overview')); await page.waitForFunction(() => window.__eduTest.screen === 'overview'); await page.evaluate((m) => window.__eduTest.openModule(m), mod); await page.waitForFunction(() => window.__eduTest.screen === 'lesson'); await page.waitForTimeout(150);
+    // Each Next is pressed as the element itself and waits for the line to change (pass MT: at 320 by 640 pixels a say-along line's
+    // strip puts Next across the fold, where the lesson's scroll cue sits over it, and a click at Next's place landed on the cue, so the
+    // walk stopped a line short; pressing what the walk names, not a point on the screen, keeps the walk about the strip).
+    const lineNow = () => page.evaluate(() => { const p = [...document.querySelectorAll('p')].find((x) => x.textContent.trim().length > 20 && !x.closest('[data-say-along]')); return p ? p.textContent.trim() : ''; });
+    for (let i = 0; i < step; i++) { const was = await lineNow(); await page.getByRole('button', { name: 'Next', exact: true }).first().evaluate((b) => b.click());
+      await page.waitForFunction((w) => { const p = [...document.querySelectorAll('p')].find((x) => x.textContent.trim().length > 20 && !x.closest('[data-say-along]')); return !!p && p.textContent.trim() !== w; }, was, { timeout: 4000 }).catch(() => {}); await page.waitForTimeout(120); } };
   const lineOf = (mod, step) => L.readAloudScript(L.MODULES.find((m) => m.id === mod))[step].say;
   // Played to its end: as many utterances from the line's first sentence on as the line has spoken pieces, the last one ended and the
   // voice quiet (a word said in several ways ends many utterances, so the last words alone would be met at the first way's end).
@@ -936,33 +947,41 @@ const ponder = () => page.evaluate(() => {
   const D = await playOut('learning-words', 5);
   const pieces = L.speechPieces(D.line).filter((x) => !x.sound); const forms = pieces.filter((x) => x.sayAlong);
   const voiceOf = (style) => L.SAY_ALONG_VOICES.find((v) => v.style === style);
+  const deviceOf = (f) => { const v = voiceOf(f.sayAlong.style); return v.device[Math.min(f.sayAlong.rep, v.device.length - 1)]; };
   const near = (a, b) => typeof a === 'number' && Math.abs(a - b) < 1e-6;
   const said = D.sa.map((x) => x.text.trim());
   const inOrder = JSON.stringify(said) === JSON.stringify(pieces.map((x) => x.text.trim()));
-  const shaped = forms.every((f) => { const u = D.sa[pieces.indexOf(f)]; const d = voiceOf(f.sayAlong.style).device[0]; return !!u && near(u.rate, d.rate) && near(u.pitch, d.pitch) && (d.volume === undefined || near(u.volume, d.volume)); });
+  const shaped = forms.every((f) => { const u = D.sa[pieces.indexOf(f)]; const d = deviceOf(f); return !!u && near(u.rate, d.rate) && near(u.pitch, d.pitch) && (d.volume === undefined || near(u.volume, d.volume)); })
+    && pieces.filter((x) => x.shape === 'sayOpen' || x.shape === 'cheer').length === 2 && pieces.filter((x) => x.shape === 'sayOpen' || x.shape === 'cheer').every((p) => { const u = D.sa[pieces.indexOf(p)]; const d = p.shape === 'sayOpen' ? L.SAY_ALONG_OPEN_SHAPE : { rate: 1.0, pitch: 1.45 }; return !!u && near(u.rate, d.rate) && near(u.pitch, d.pitch); });
+  // The brief pauses between sayings (pass MT, Mikey: "the four times in a row should have brief pauses between each one too"): each
+  // saying that asks for one is followed by the next no sooner than its pause, less 60 ms for the timers.
+  const paused = pieces.filter((f) => f.pauseAfter).map((f) => { const k = pieces.indexOf(f); const u = D.sa[k]; const nx = D.sa[k + 1]; return nx && u && u.end ? { style: f.sayAlong.style, wait: nx.at - u.end, want: f.pauseAfter } : { style: f.sayAlong.style, wait: null, want: f.pauseAfter }; });
+  const pausedOk = paused.length === 4 && paused.every((x) => x.wait !== null && x.wait >= x.want - 60 && x.wait <= x.want + 450);
   const calls = pieces.filter((x) => !x.sayAlong && x.shape === 'plain').every((p) => { const u = D.sa[pieces.indexOf(p)]; return !!u && near(u.rate, 0.86 * 0.9); });
   // The child's turn: after each form's last saying, the next words wait sayAlongEcho, less 60 ms for the timers.
   const turns = forms.filter((f) => f.echo).map((f) => { const k = pieces.indexOf(f); const u = D.sa[k]; const nx = D.sa[k + 1]; return nx && u && u.end ? { form: f.sayAlong.style, wait: nx.at - u.end, want: f.echo } : { form: f.sayAlong.style, wait: null, want: f.echo }; });
   const turned = turns.length === 6 && turns.slice(0, -1).every((x) => x.wait !== null && x.wait >= x.want - 60);
   // The light: each saying's syllables in order; the low voice's four sayings each lit with its dot.
   const lit = (call) => D.lits.filter((x) => x.word === 'different' && x.call === call && x.lit !== '').map((x) => `${x.rep}:${x.lit}`);
-  const whisperLit = lit('whisper'); const lowLit = lit('low'); const fastLit = lit('fast');
+  const slowLit = lit('slow'); const whisperLit = lit('whisper'); const sillyLit = lit('silly'); const fastLit = lit('fast');
   const through = (n) => Array.from({ length: n }, (_, r) => [0, 1, 2].map((y) => `${r}:${y}`)).flat();
-  const swept = JSON.stringify(whisperLit) === JSON.stringify(through(1)) && JSON.stringify(lowLit) === JSON.stringify(through(4)) && JSON.stringify(fastLit) === JSON.stringify(through(3))
-    && D.lits.filter((x) => x.call === 'low').every((x) => x.dots === '4') && D.lits.filter((x) => x.call === 'whisper').every((x) => x.dots === '0');
+  const swept = JSON.stringify(slowLit) === JSON.stringify(through(1)) && JSON.stringify(whisperLit) === JSON.stringify(through(2)) && JSON.stringify(sillyLit) === JSON.stringify(through(4)) && JSON.stringify(fastLit) === JSON.stringify(through(3))
+    && D.lits.filter((x) => x.call === 'silly').every((x) => x.dots === '4') && D.lits.filter((x) => x.call === 'fast').every((x) => x.dots === '3') && D.lits.filter((x) => x.call === 'slow').every((x) => x.dots === '0')
+    && D.lits.some((x) => x.call === 'praise');
   // No syllable past a saying's first lights before the voice begins that saying (round one's screen check: the light ran from the
   // moment a saying was queued, through all of a short word before a slow-to-start voice said it).
   const early = []; forms.forEach((fm) => { const u = D.sa[pieces.indexOf(fm)]; if (!u || !u.began) { early.push(`${fm.sayAlong.style} ${fm.sayAlong.rep} never began`); return; }
     for (const x of D.lits) if (x.word === 'different' && x.call === fm.sayAlong.style && x.rep === String(fm.sayAlong.rep) && x.lit !== '' && x.lit !== '0' && x.t < u.began - 20 && x.t >= u.at) early.push(`${fm.sayAlong.style} ${x.rep}:${x.lit} at ${x.t - u.began} ms`); });
-  ok("a say-along line shows its own words in the paragraph and the word in the strip; the voice says it in order, each silly way at its own rate and pitch and the calls in the young voice; the child's turn follows each way; and the light walks each syllable of each saying (pass MS)",
-    D.done && shown.word === 'different' && shown.para === 'Different means not the same. A cup and a ball are different.' && inOrder && shaped && calls && turned && swept && early.length === 0,
-    { done: D.done, shown, inOrder, said: said.slice(0, 18), shaped, calls, turns, whisperLit, lowLit, fastLit, early: early.slice(0, 6) });
-  // The chant: three cheers with two claps between, the app's own clap.
+  ok("a say-along line shows its own words in the paragraph and the word in the strip; the voice says Mikey's game in order, the opener excited, each way at its own rate and pitch, the silly voices and the whisper with their brief pauses, the calls in the young voice and the praise as a cheer; the child's turn follows each way; and the light walks each syllable of each saying, super fast's three in one breath (pass MS; pass MT)",
+    D.done && shown.word === 'different' && shown.para === 'Different means not the same. A cup and a ball are different.' && inOrder && shaped && pausedOk && calls && turned && swept && early.length === 0,
+    { shaped, pausedOk, calls, turned, swept, early: early.slice(0, 6), done: D.done, shown, inOrder, paused, turns, slowLit, whisperLit, sillyLit, fastLit, said: said.slice(0, 18) });   // the yes-or-no parts first, so a cut detail still shows which (round one's code check)
+  // The cheer (pass MT, in place of pass MS's chant and its clap): three cheers, a fan's whistle after each of the first two and the
+  // crowd after the last, the app's own sounds.
   await install(); await toStep('learning-words', 1);
   const M = await playOut('learning-words', 1);
-  const cheers = M.sa.map((x) => x.text.trim()); const at = cheers.indexOf('Cheer it like a big game!');
-  const chant = at >= 0 && cheers.slice(at + 1, at + 4).every((x) => x === 'Match!') && M.sounds.filter((s) => s === 'clap').length === 2;
-  ok('a say-along chant cheers its word three times with the app\'s clap between the cheers (pass MS)', M.done && chant, { done: M.done, cheers: cheers.slice(at, at + 5), sounds: M.sounds });
+  const cheers = M.sa.map((x) => x.text.trim()); const at = cheers.indexOf("Now let's cheer it like we're at a big game!");
+  const chant = at >= 0 && cheers.slice(at + 1, at + 4).every((x) => x === 'Match!') && JSON.stringify(M.sounds.filter((s) => s === 'whistle' || s === 'applause')) === JSON.stringify(['whistle', 'whistle', 'applause']);
+  ok('a say-along cheer cheers its word three times with a fan\'s whistle between the cheers and the crowd after, the app\'s own sounds (pass MT)', M.done && chant, { done: M.done, cheers: cheers.slice(at, at + 5), sounds: M.sounds });
   // At 320 pixels the strip keeps its height and Next its place through the whole game (round one's screen check, pass MS: the cue took
   // two lines there and every call one, so Back, the dots and Next jumped 19 pixels as the first call showed, in 11 of the 34 lines).
   await page.setViewportSize({ width: 320, height: 640 }); await install(); await toStep('learning-words', 5);
@@ -975,9 +994,15 @@ const ponder = () => page.evaluate(() => {
   await page.evaluate(() => { if (window.__saWatch) window.__saWatch.disconnect(); Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: undefined }); });
   await toStep('learning-words', 5); await page.waitForTimeout(300);
   const quiet = await page.evaluate(() => { const s = document.querySelector('[data-say-along]'); const steps = s ? [...s.querySelectorAll('[data-say-along-step]')] : []; return { calls: steps.map((x) => x.textContent), lines: steps.map((x) => Math.round(x.getBoundingClientRect().top)), dots: !!(s && s.querySelector('[data-say-along-dots]')) }; });
-  const wantCalls = L.sayAlongParts(lineOf('learning-words', 5)).filter((x) => x.role === 'call').map((x) => x.sentence);
+  const wantCalls = L.sayAlongParts(lineOf('learning-words', 5)).filter((x) => x.role === 'call' || x.role === 'praise').map((x) => x.sentence);   // "Great job!" in its place since round one (pass MT)
   // One call to a line (round one's screen check: joined by dots, a call broke across two lines), each below the one before.
   ok('with no voice on the device, a say-along strip lists its calls in order, one to a line, for a grown-up to lead (pass MS)', JSON.stringify(quiet.calls) === JSON.stringify(wantCalls) && quiet.lines.every((y, k) => k === 0 || y > quiet.lines[k - 1]) && !quiet.dots, { quiet, wantCalls });
+  // No fade on the light (round one's lesson check, pass MT): every syllable of the strip, and the lesson's sentences, carry no transition,
+  // so ink and fill change in one frame in the dark theme too; a page given a 40 ms fade by a planted style fails.
+  { const fadeless = () => page.evaluate(() => [...document.querySelectorAll('[data-say-along-syllable], [data-read-lit]')].every((x) => getComputedStyle(x).transitionDuration.split(',').every((d) => parseFloat(d) === 0)));
+    const now = await fadeless(); await page.evaluate(() => { const st = document.createElement('style'); st.id = '__fadePlant'; st.textContent = '[data-say-along-syllable]{transition: background 40ms !important}'; document.head.appendChild(st); });
+    const planted = await fadeless(); await page.evaluate(() => document.getElementById('__fadePlant').remove());
+    ok('no syllable of a say-along strip fades in or out, so its ink and its fill change in one frame (pass MT; a planted 40 ms fade caught)', now && !planted, { now, planted }); }
   // The big word is named whole for a screen reader (round one's code check: an aria-label on a paragraph went unread; round two's:
   // nothing held it), as a picture of the word, its syllables hidden one by one.
   { const named = await page.locator('[data-say-along]').getByRole('img', { name: 'different', exact: true }).count();

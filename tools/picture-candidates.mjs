@@ -17,8 +17,9 @@ for (const c of L.COURSES.filter((x) => EARLY.includes(x.grade))) {
     const steps = new Set((m.lesson.pictures || []).map((p) => p.step));
     lines.forEach((text, i) => {
       // "Almost the same" says two groups are close in number, not that an idea is like a real thing (pass ML), and a say-along's
-      // calls ("Way up high, like a mouse!", "Cheer it like a big game!") ask the child to say a word along (Q67, pass MS), so only a
-      // line's own sentences are read (pass MR's cue, "like a happy cheer", was skipped by its words).
+      // calls ("Now, let's squeak it twice, like a tiny mouse!", "Now let's cheer it like we're at a big game!", since pass MT) ask the
+      // child to say a word along (Q67, pass MS), so only a line's own sentences are read (pass MR's cue, "like a happy cheer", was
+      // skipped by its words).
       const own = L.sayAlongParts(text).filter((x) => x.role === 'say').map((x) => x.sentence).join(' ');
       const hits = [...own.matchAll(COMPARE)].map((x) => x[0]).filter((h) => !/^almost the same\b/i.test(h));
       if (!hits.length) return;

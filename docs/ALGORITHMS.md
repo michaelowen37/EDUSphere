@@ -305,10 +305,10 @@ app's own stand-ins until the sounds are recorded (EARMARKS A41).
 The screens play them (ui.jsx). One audio element plays every sound, and the first tap, key or touch anywhere plays the quiet one,
 which a phone needs before a page may play sound. sayPieces hands the voice its words together up to the next sound, so they flow
 as one line, plays the sound once the voice has finished them, and goes on with the words after it; a sound that cannot play ends
-at once, and none holds a reading up longer than 1.7 seconds. A newer line cancels the voice and stops the sound (speak,
+at once, and none holds a reading up longer than 1.9 seconds (1.7 until pass MT's crowd, a second and a half; since round one of pass MT the rules test holds every sound 300 ms under it). Since pass MT the cheer's sounds are made the same way: a fan's whistle, half a second, a tone that swoops up in its first tenth of a second from about 1,900 cycles a second to 2,700, holds there with a quick wobble (seven times a second, a little over one percent) and slides to about 2,450 as it ends, at about the level of the app's speech sounds (about 6 dB under its first build since round one); and the crowd, a second and a half of 320 claps, each a short burst around a pitch of its own between 900 and 2,600 cycles a second, thickest from a tenth of a second in and thinning over its last half, a hush of voices under them and a softer whistle (about 2,000 up to 2,900 and down to 2,600) from 0.18 seconds for a little over half a second. The rules test measures the whistle's tone and level and the crowd's onsets, thickness, band, whistle and quiet end. A newer line cancels the voice and stops the sound (speak,
 speakSequence), and voiceTalking counts a sound playing as the voice still talking, so the read-along's light and the voice's one
 retry wait for it. The rules test measures every sound against these numbers; tools/voice-check.mjs builds a page from the same
-code with 50 numbered rows for Mikey to hear on his phone (Q51; since pass MP rows 33 to 50 hold the sounds made for the page alone, Q60). The retry asks once more when the voice never started, and since
+code with numbered rows for Mikey to hear on his phone (Q51; since pass MP rows 33 to 50 hold the sounds made for the page alone, Q60; since pass MT rows 65 and 66 the whistle and the crowd and rows 67 to 72 his say-along game, rows 51 to 64 retired). The retry asks once more when the voice never started, and since
 round two's code check each send is its own attempt, so the retry retires the try it replaces; a watch moves a line on when the
 voice drops a batch's end event (after 1.2 seconds of quiet, or 1.5 if it never began); and leaving a round hushes it through
 hushSpeech, whose cancel waits a tick and is skipped when a newer line has already spoken, so the next screen never speaks straight
@@ -447,50 +447,70 @@ holds "888s", the count holds the round's last count ("10 of 10"), and the strea
 hidden until the streak reaches two. The head's digits are all one width (tabular-nums), so a clock going from 9 to 10 seconds
 moves nothing. A head whose words change with each board (a sequence's title, a target number) can still change between boards.
 
-## Say it with me: one word in many silly voices (pass MS, Mikey's correction of Q67)
+## Say it together: Mikey's game on one word (pass MT, his answer to Q77; pass MS before it)
 
-A young vocabulary lesson brings in a new word and then plays a little game with that one word (Mikey: "I was talking about applying
-all of that to a single spoken word.  Not really one word as a whisper, another later fast, another later slow etc."). The line says
-the word first, then a cue names it ("Say different with me, in silly voices!"), then three to five silly ways follow, each its call
-and then the word said that way (SAY_ALONG_VOICES: a whisper, slowly, four times low and silly, three times super fast, stretched out
-long, way up high, sliding down from high to low over three sayings, and cheered three times like a big game with a clap between),
-and last "Now say it nice and clear." and the word in a clear voice. sayAlong(word, styles) writes the game into a lesson line;
-sayAlongParts reads a line back into its parts, the cue, each call and each form with its voice and which saying it is; and
-speechPieces hands each form to the device voice in its voice's shape (SAY_ALONG_SHAPES in ui.jsx, from the voices' own rate, pitch and
-volume: one piece in one shape, the slide three pieces stepping down in pitch, since a device voice holds one pitch for a whole word,
-and the chant a piece for each cheer with the clap sound between, and since round one's screen check of pass MS four times low and three
-times fast a piece for each saying too, so the light starts each saying on the voice's own start and puts it out at its own end, where
-said as one piece their light fell behind the voice and went out before the last saying), with the child's turn after each form's last piece (sayAlongEcho:
-three fifths of the time the voice took and 400 ms more, held between 700 ms and 1.8 seconds). The child says the word with the voice
-(the line's cue is "Say different with me, in silly voices!", Mikey's Q67: "When they say it with you"), so the turn is for a child a
-beat behind, never the whole saying again: four times low takes the voice about 3.6 seconds, and a child who waited and said it back
-would be talked over at 1.8 (round three's alignment read of pass MS). The lesson screen hands the voice a
-line's sentences together (speakSequence's together), so each sentence is read inside its whole line: pass MR handed them one at a
-time, so its voices never reached a lesson. A lesson plays all eight silly ways across its words, no two words play the same
-ways in the same order, and no word plays its two slow ways, stretched out and slowly, side by side (round one of pass MS: the one
-flat moment in lunchtime and bedtime).
+A young vocabulary lesson brings in a new word, its own words ending on it ("Our word is match.", since round one of pass MT), and then
+plays Mikey's game with that one word, word for word as he wrote it on different (pass MT), and on the other words in his shape and
+openings with flavors Claude chose: "Let's say it together!", said excited and emphasized; five steps, each called in his openings and then the word
+said that way ("First, let's say it slowly.", "Now, let's whisper it twice.", "Now let's say it four times using silly voices.", "Now
+let's say it three times super fast!", "Okay, let's try stretching it out now."); "Great job!"; and "One last time, nice and clear." and
+the word at the young voice's ordinary pace. Every game keeps that shape; each step takes one of a few flavors of the same use,
+Claude's, at his "Make the other versions of this similar" (SAY_ALONG_VOICES' slot): the first slowly or like a big, sleepy giant, the second whispered twice or squeaked twice like a tiny mouse,
+the third four silly voices, slid down from high to low, bounced up high and down low, or cheered like a crowd, the fourth three times
+super fast, and the fifth stretched out or stretched out like play dough. sayAlong(word, styles) writes the game into a lesson line
+(five ways, one a step, thrown out at build time if a way sits at the wrong step); sayAlongParts reads a line back into its parts, the
+opener, each call and each form with its way and which saying it is, the praise, and the clear one, the word read from the first
+step's saying. speechPieces hands each part to the device voice: the opener in its own shape (SAY_ALONG_OPEN_SHAPE, rate 0.92 and pitch
+1.5), the praise as a cheer, the calls in the young voice, and each form as its way's pieces (SAY_ALONG_SHAPES in ui.jsx, from the ways'
+own rate, pitch and volume): one piece for a way said once; a piece a saying for a way said twice or more, each in its own shape where
+the sayings differ (silly1 to silly4; bounce1 to bounce4; the slide stepping down, since a device voice holds one pitch for a word);
+three times super fast as one piece, every saying in one breath (joined), since a saying a piece left the voice's own gap between
+them; and a cheer's sayings with a fan's whistle after each but the last and the crowd after the last, the app's own sounds. A way that
+asks for a brief pause after each saying but the last (pauseAfter: the four silly voices 350 ms, his "brief pauses between each one";
+the bounce 200; whispered and squeaked twice 250) gets it, in a lesson across sentences (speakSequence) and inside one (sayPieces ends
+its batch there); other pieces of a form run on, with no young rest between them. The rates follow his words (slowly's is his number, the
+others Claude's reading of them): slowly 0.16, a third of pass MS's 0.48 ("three times as drawn out"); whispered 0.45, slower than pass
+MS's whisper and quicker than slowly; super fast 2.2 in one breath ("faster than it is now"); the four silly voices four pitches and
+paces (low and drawn out, high and quick, a little low and quick, a little high and slow; begun low since round one, so a tiny mouse's
+two squeaks are never followed by a third); the clear one 0.78, the young voice's ordinary pace. A device voice cannot whisper, take an accent or slide inside
+a word; the recordings do each by their tags (the four silly voices low, high, Australian and British "in the same voice"). The child's
+turn follows each form's last piece (sayAlongEcho: three fifths of the time the voice took, pauses included, and 400 ms more, held
+between 700 ms and 1.8 seconds); the child says the word with the voice ("Let's say it together!"), so the turn is a breath for a child a
+beat behind, never the whole saying again. A lesson's games differ: no two words play the same five ways, and a lesson of two games or
+more plays both flavors of the first, second and fifth steps and as many silly thirds as it has games, up to all four. Only the lessons
+SAY_ALONG_LESSONS names play it, and since Mikey's answer to Q77, "Q77 - A", every new pre-K lesson that cites a vocabulary outcome (the
+2027 II.D.1 or II.D.2, or Head Start's P-LC 6 or P-LC 7) joins them; SAY_ALONG_WAITS names the eight older ones built without it, held
+to those eight (Q81 asks about them). On a phone's voice a game takes about 30 to 55 seconds by the voice's pace, about twice pass
+MS's (Q80 asks about the longest lessons; the model is kept in the pass's scratch).
 
-Under the line a strip shows the word large with the call above it and lights the syllable being said (SAY_ALONG_SYLLABLES,
-Merriam-Webster's division; a word of one syllable lights whole, since inside a syllable a letter and a sound do not always pair),
-with a ring for each saying of a call said more than once, the one being said filled (plain dots, which read 1.31 to 1 in the light
-theme, until round one's screen check); the label above the word keeps the height of its tallest text, the cue and every call
-stacked in one cell with only the current one showing, so nothing under the child's finger moves at 320 pixels, where the cue takes
-two lines. The device voice tells when a piece starts and ends, never where it is
-inside a word, so the light follows sayAlongTimeline's guess of the pace (a syllable about 210 ms at a rate of 1, SAY_ALONG_SYLLABLE_MS,
-a comma's breath 150, SAY_ALONG_COMMA_MS, both divided by the voice's rate, and each syllable's share of a saying its letters and one
-more), corrected by the voice's own starts and ends as it goes: when a form took longer than 150 ms, sayAlongPaceNext moves the pace two
-fifths of the way to what that form took over its guess, kept between half and 2.2 times the guess (since round one's code check the
-rule is logic's, read by the scripts test); since round three of pass MS a one-syllable saying leaves the pace alone, since it is lit
-whole and a voice says one short word far slower than its letters guess ("Match," 321 ms against a guess of 113 had pushed the pace
-toward its ceiling and left three later sayings unlit at their end), and only a saying whose start the voice reported teaches it; a
-recorded clip's own timings take over once the recordings arrive
-(EARMARKS L12). Since round one's screen check the light waits for the voice to begin each saying: sayPieces tells the strip whether
-the voice has begun a piece, so a saying queued lights its first syllable and waits, the voice's own start runs the light, and a voice
-that never reports a start is followed from 700 ms on, until a voice has reported a start this visit (a network voice can take 400 ms
-to begin, and the light had run through a short word before it was heard). With no voice the strip lists the calls, one to a line since round one's screen check, and lights
-nothing. The strip's listener is keyed by the line's sentences,
-not by a new array each drawing, so its timers live as long as the line (round one of pass MS's own look found the light stuck on a
-word's first syllable when every redraw cleared them).
+Under the line a strip shows the word large with the call above it ("Great job!" while it is said) and lights the syllable being said
+(SAY_ALONG_SYLLABLES, Merriam-Webster's division; a word of one syllable lights whole, since inside a syllable a letter and a sound do not
+always pair), with no fade, its fill coming and going in the same frame as its ink (pass MT: super fast's syllables last about 80 ms,
+and the read-along's 150 ms fade never let one light fully; in the dark theme any fade left a syllable dark on the dark card for a
+moment, so the read-along's lit sentences lost their fade too), with a ring
+for each saying of a way said more than once, the one being said filled; the label above the word keeps the height of its tallest text,
+the opener, every call and the praise stacked in one cell with only the current one showing, so nothing under the child's finger moves
+at 320 pixels. The device voice tells when a piece starts and ends, never where it is inside a word, so the light follows
+sayAlongTimeline's guess of the pace (a syllable about 210 ms at a rate of 1, SAY_ALONG_SYLLABLE_MS, divided by the voice's rate, and each
+syllable's share of a saying its letters and one more; super fast's three sayings walked in turn inside its one piece at 85 percent of
+the guess, SAY_ALONG_JOINED_LEAD, since run together they carry one guess's error three times over), corrected by the voice's own starts
+and ends as it goes. Since pass MT the pace is kept for each of the voice's shapes and for all (sayAlongLearn): a shape's first heard
+saying of two syllables or more sets its own pace outright, each later one moves it two fifths of the way, between a quarter and four
+times the guess, and only a saying at a rate a phone says as asked (0.4 to 1.6) moves the pace of all, by sayAlongPaceNext's rule (two
+fifths of the way, between half and 2.2 times, a one-syllable saying teaching nothing); a shape not yet heard starts at the pace of all.
+A phone may hold a very slow or a very fast rate at a floor or a ceiling, and the slow ways (0.16 to 0.28) are slower than any way
+before them (slowly and the giant far slower), slowly itself three times as slow as pass MS's slowly, so one way's pace would have
+thrown another's light off: over every say-along line in order, on a phone that says every rate and on one
+that holds rates between 0.5 and 2, every saying's last syllable lights before the voice ends it, but a shape's first on the visit,
+where pass MS's one pace leaves the slow ways short about half the time on the second phone (31, 31 and 27 of their 68 sayings at
+the three paces). Logic says which shape and rate a piece's light learns by (sayAlongShapeOf), and the screen and the test both ask
+it. On such a phone a visit's first slow saying can still light only part of the word, since a shape's first heard saying sets its
+own pace (recorded in pass MT: starting it at a rate a phone says as asked would run the light ahead on every phone that says the
+slow rates). The light waits for the voice to begin each
+saying (sayPieces tells the strip whether the voice has begun a piece; a voice that never reports a start is followed from 700 ms on,
+until a voice has reported one this visit); a recorded clip's own timings take over once the recordings arrive (EARMARKS L12). With no
+voice the strip lists the calls and "Great job!", one to a line, for a grown-up to lead, and lights nothing. The strip's listener is keyed by the line's
+sentences, so its timers live as long as the line (pass MS).
 
 ## A demonstration does what its words say (pass MS, Mikey)
 

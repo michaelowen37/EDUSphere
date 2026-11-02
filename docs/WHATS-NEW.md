@@ -9,6 +9,12 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## October 29, 2026 (a new word said together, five silly ways)
+
+- In nine lessons about new words for three- and four-year-olds, the voice now plays a game with each new word: "Let's say it together!", then the word said slowly (really drawn out), whispered or squeaked twice, in four silly voices or another silly way like a slide, a bounce or a cheer, three times super fast, and stretched out, then "Great job!" and one last time, nice and clear. A child hears one new word many ways and says it along each time, and the strip under the line lights each part of the word as it is said.
+- When a word is cheered like at a big game, a fan's whistle now plays between the cheers and the crowd claps and whistles after, in place of the clap that played before.
+- Every new lesson about new words for three- and four-year-olds will play the game too.
+
 ## October 28, 2026 (one word in many silly voices, demonstrations that do what they say, and three new lessons for the youngest)
 
 - In the lessons about new words, the voice now plays a little game with one word at a time: it says the word three to five silly ways in a row, such as a whisper, slowly, low and silly four times, super fast three times, stretched out long, way up high, sliding from high to low or cheered like at a big game, and then nice and clear. A child hears the same word many ways and says it along with the voice, and the part of the word being said lights up, so a child can follow along.

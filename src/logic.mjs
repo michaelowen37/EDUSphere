@@ -5628,11 +5628,11 @@ function PREK3_READING_MODULES() { return [
       pictures: [],
       script: [
         { say: 'Teachers use learning words to tell you what to do, at the board and on the rug. When you know these words, you know just what to do.', show: { kind: 'icon', name: 'teacher' } },
-        { say: 'Match means find one that is the same. This cup matches this cup. ' + sayAlong('match', ['chant', 'whisper', 'high', 'fast']), show: { kind: 'pair', a: { kind: 'icon', name: 'cup' }, b: { kind: 'icon', name: 'cup' } } },
-        { say: 'Same means just alike. A red circle and a red circle are the same, so they match. ' + sayAlong('same', ['slide', 'drawn', 'low']), show: { kind: 'pair', a: { kind: 'item', shape: 'circle', colour: 'red' }, b: { kind: 'item', shape: 'circle', colour: 'red' } } },
+        { say: 'Match means find one that is the same. This cup matches this cup. Our word is match. ' + sayAlong('match', ['giant', 'mouse', 'chant', 'fast', 'dough']), show: { kind: 'pair', a: { kind: 'icon', name: 'cup' }, b: { kind: 'icon', name: 'cup' } } },
+        { say: 'Same means just alike. A red circle and a red circle are the same, so they match. Our word is same. ' + sayAlong('same', ['slow', 'mouse', 'slide', 'fast', 'stretch']), show: { kind: 'pair', a: { kind: 'item', shape: 'circle', colour: 'red' }, b: { kind: 'item', shape: 'circle', colour: 'red' } } },
         { say: 'A blue circle has the same shape, but not the same color, so it does not match the red circle.', show: { kind: 'pair', a: { kind: 'item', shape: 'circle', colour: 'red' }, b: { kind: 'item', shape: 'circle', colour: 'blue' } } },
         { say: 'A red square has the same color, but not the same shape, so it does not match the red circle either.', show: { kind: 'pair', a: { kind: 'item', shape: 'circle', colour: 'red' }, b: { kind: 'item', shape: 'square', colour: 'red' } } },
-        { say: 'Different means not the same. A cup and a ball are different. ' + sayAlong('different', ['whisper', 'slow', 'low', 'fast', 'drawn']), show: { kind: 'pair', a: { kind: 'icon', name: 'cup' }, b: { kind: 'icon', name: 'ball' } } },
+        { say: 'Different means not the same. A cup and a ball are different. ' + sayAlong('different', ['slow', 'whisper', 'silly', 'fast', 'stretch']), show: { kind: 'pair', a: { kind: 'icon', name: 'cup' }, b: { kind: 'icon', name: 'ball' } } },
         { say: 'Find the one that is different. Ball, ball, star. The star is different.', show: { kind: 'row', items: [{ kind: 'icon', name: 'ball' }, { kind: 'icon', name: 'ball' }, { kind: 'icon', name: 'star' }] } },
         { say: 'At home, you can match your socks. When two socks are just alike, they match.', show: { kind: 'pair', a: { kind: 'icon', name: 'sock' }, b: { kind: 'icon', name: 'sock' } } },
         { say: 'Listen for the learning words your teacher uses. Match means find one that is the same, and different means not the same.', show: { kind: 'icon', name: 'teacher' } },
@@ -5658,14 +5658,14 @@ function PREK3_READING_MODULES() { return [
       pictures: [{ serial: 'P160', alt: 'A teacher on a classroom rug pointing to two piles of big blocks, red blocks in one pile and blue blocks in the other, while small children watch', step: 6 }],
       script: [
         { say: 'Teachers use learning words to tell you what to do, like match and different. Here are some more learning words.', show: { kind: 'icon', name: 'teacher' } },
-        { say: 'Count means say one number for each thing. Count the stars with me. One, two, three. ' + sayAlong('count', ['fast', 'chant', 'whisper']), show: { kind: 'row', items: [{ kind: 'icon', name: 'star' }, { kind: 'icon', name: 'star' }, { kind: 'icon', name: 'star' }] } },
+        { say: 'Count means say one number for each thing. Count the stars with me, one, two, three, and that is how we count. ' + sayAlong('count', ['slow', 'whisper', 'chant', 'fast', 'dough']), show: { kind: 'row', items: [{ kind: 'icon', name: 'star' }, { kind: 'icon', name: 'star' }, { kind: 'icon', name: 'star' }] } },
         { say: 'When someone asks how many, you count. The last number you say tells how many. One, two, three, so there are three stars.', show: { kind: 'row', items: [{ kind: 'icon', name: 'star' }, { kind: 'icon', name: 'star' }, { kind: 'icon', name: 'star' }] } },
         { say: 'Count the circles. One, two, three, four. There are four circles, not three.', show: { kind: 'pattern', items: ['circle', 'circle', 'circle', 'circle'], colour: 'blue', counting: true } },
-        { say: 'Sort means put things that go together in a group. The red ones go in one group, and the blue ones go in another. ' + sayAlong('sort', ['slow', 'high', 'low']), show: { kind: 'pair', stack: true, a: { kind: 'pattern', items: ['circle', 'square', 'triangle'], colour: 'red' }, b: { kind: 'pattern', items: ['square', 'triangle', 'circle'], colour: 'blue' } } },
-        { say: 'A group is things that go together. These red shapes are a group, so a red triangle goes in it, and a blue triangle does not. ' + sayAlong('group', ['chant', 'drawn', 'slide']), show: { kind: 'pattern', items: ['circle', 'square', 'triangle'], colour: 'red' } },
+        { say: 'Sort means put things that go together in a group. The red ones go in one group, and the blue ones go in another. Our word is sort. ' + sayAlong('sort', ['giant', 'mouse', 'silly', 'fast', 'stretch']), show: { kind: 'pair', stack: true, a: { kind: 'pattern', items: ['circle', 'square', 'triangle'], colour: 'red' }, b: { kind: 'pattern', items: ['square', 'triangle', 'circle'], colour: 'blue' } } },
+        { say: 'A group is things that go together. These red shapes are a group, so a red triangle goes in it, and a blue triangle does not. Our word is group. ' + sayAlong('group', ['slow', 'mouse', 'bounce', 'fast', 'dough']), show: { kind: 'pattern', items: ['circle', 'square', 'triangle'], colour: 'red' } },
         { say: 'In class, your teacher might say, sort the blocks by color, or count the cups.', show: null },
-        { say: 'Shapes have sides and corners, like this triangle. A side is a straight edge, and a corner is where two sides meet. ' + sayAlong('side', ['drawn', 'whisper', 'fast', 'high']), show: { kind: 'shape', name: 'triangle' } },
-        { say: 'How many sides does a triangle have? Count them. One, two, three. A triangle has three sides and three corners. ' + sayAlong('corner', ['slide', 'low', 'slow']), show: { kind: 'pair', a: { kind: 'shape', name: 'triangle' }, b: { kind: 'dots', count: 3 } } },
+        { say: 'Shapes have sides and corners, like this triangle. A side is a straight edge, and a corner is where two sides meet. Our word is side. ' + sayAlong('side', ['giant', 'whisper', 'slide', 'fast', 'stretch']), show: { kind: 'shape', name: 'triangle' } },
+        { say: 'How many sides does a triangle have? Count them. One, two, three. A triangle has three sides and three corners. Our word is corner. ' + sayAlong('corner', ['slow', 'whisper', 'silly', 'fast', 'dough']), show: { kind: 'pair', a: { kind: 'shape', name: 'triangle' }, b: { kind: 'dots', count: 3 } } },
         { say: 'A square has four sides and four corners. Count them. One, two, three, four.', show: { kind: 'pair', a: { kind: 'shape', name: 'square' }, b: { kind: 'dots', count: 4 } } },
         { say: 'A circle is round, with no straight sides and no corners.', show: { kind: 'shape', name: 'circle' } },
         { say: 'Listen for the learning words your teacher uses. Words like count, sort and group tell you what to do.', show: { kind: 'icon', name: 'teacher' } },
@@ -5693,13 +5693,13 @@ function PREK3_READING_MODULES() { return [
       example: { kind: 'pair', a: { kind: 'icon', name: 'grandma' }, b: { kind: 'icon', name: 'grandpa' }, caption: 'A grandma and a grandpa are people.' },
       pictures: [{ serial: 'P161', alt: 'A family at home, a grandpa reading a picture book to a small child while a grandma holds a baby', step: 8 }],
       script: [
-        { say: 'Some words name people. This is a baby. A baby is very little, and can drink milk from a bottle. ' + sayAlong('baby', ['whisper', 'high', 'slow']), show: { kind: 'icon', name: 'baby' } },
-        { say: 'This is a teacher. A teacher helps children learn at school, and reads stories to the class. ' + sayAlong('teacher', ['slow', 'chant', 'drawn']), show: { kind: 'icon', name: 'teacher' } },
-        { say: 'This is a doctor. A doctor helps you get well when you are sick. ' + sayAlong('doctor', ['drawn', 'low', 'fast']), show: { kind: 'icon', name: 'doctor' } },
-        { say: 'This is a grandma. A grandma is the mom of your mom or your dad. A grandma can help take care of you. ' + sayAlong('grandma', ['chant', 'slide', 'whisper']), show: { kind: 'icon', name: 'grandma' } },
-        { say: 'This is a grandpa. A grandpa is the dad of your mom or your dad. A grandpa can help take care of you too. ' + sayAlong('grandpa', ['low', 'slow', 'high', 'fast']), show: { kind: 'icon', name: 'grandpa' } },
+        { say: 'Some words name people. This is a baby. A baby is very little, and can drink milk from a bottle. Our word is baby. ' + sayAlong('baby', ['slow', 'whisper', 'slide', 'fast', 'dough']), show: { kind: 'icon', name: 'baby' } },
+        { say: 'This is a teacher. A teacher helps children learn at school, and reads stories to the class. Our word is teacher. ' + sayAlong('teacher', ['giant', 'mouse', 'chant', 'fast', 'stretch']), show: { kind: 'icon', name: 'teacher' } },
+        { say: 'This is a doctor. A doctor helps you get well when you are sick. Our word is doctor. ' + sayAlong('doctor', ['slow', 'mouse', 'silly', 'fast', 'dough']), show: { kind: 'icon', name: 'doctor' } },
+        { say: 'This is a grandma. A grandma is the mom of your mom or your dad. A grandma can help take care of you. Our word is grandma. ' + sayAlong('grandma', ['giant', 'whisper', 'bounce', 'fast', 'dough']), show: { kind: 'icon', name: 'grandma' } },
+        { say: 'This is a grandpa. A grandpa is the dad of your mom or your dad. A grandpa can help take care of you too. Our word is grandpa. ' + sayAlong('grandpa', ['giant', 'whisper', 'silly', 'fast', 'stretch']), show: { kind: 'icon', name: 'grandpa' } },
         { say: 'A teacher, a doctor, a grandma and a grandpa are all helpers.', show: { kind: 'row', items: [{ kind: 'icon', name: 'teacher' }, { kind: 'icon', name: 'doctor' }, { kind: 'icon', name: 'grandma' }] } },
-        { say: 'A baby is little, and a grandma and a grandpa are grown-ups. Babies, teachers, doctors, grandmas and grandpas are all people. Each one is a person. ' + sayAlong('people', ['fast', 'drawn', 'slide']), show: { kind: 'row', align: 'end', items: [{ kind: 'icon', name: 'baby', size: 74 }, { kind: 'icon', name: 'grandma' }, { kind: 'icon', name: 'grandpa' }] } },
+        { say: 'A baby is little, and a grandma and a grandpa are grown-ups. Babies, teachers, doctors, grandmas and grandpas are all people. Each one is a person. Our word is people. ' + sayAlong('people', ['slow', 'mouse', 'chant', 'fast', 'stretch']), show: { kind: 'row', align: 'end', items: [{ kind: 'icon', name: 'baby', size: 74 }, { kind: 'icon', name: 'grandma' }, { kind: 'icon', name: 'grandpa' }] } },
         { say: 'A book, a bed and a cake are not people. They are things.', show: { kind: 'row', items: [{ kind: 'icon', name: 'book' }, { kind: 'icon', name: 'bed' }, { kind: 'icon', name: 'cake' }] } },
         { say: 'A family can have all kinds of people, like a baby, a grandma and a grandpa.', show: null },
         { say: 'Listen for words that name people, like teacher and grandma. Then find their pictures.', show: { kind: 'pair', a: { kind: 'icon', name: 'teacher' }, b: { kind: 'icon', name: 'grandma' } } },
@@ -5726,8 +5726,8 @@ function PREK3_READING_MODULES() { return [
       pictures: [],
       script: [
         { say: 'Some words name people, like baby and grandpa. Other words name things that happen, called events.', show: { kind: 'pair', a: { kind: 'icon', name: 'baby' }, b: { kind: 'icon', name: 'grandpa' } } },
-        { say: 'A birthday party is a happy day, often with a cake that has candles to blow out. ' + sayAlong('birthday party', ['chant', 'high', 'fast', 'slide']), show: { kind: 'icon', name: 'cake' } },
-        { say: 'At bedtime, you put on your pajamas and sleep in your bed. ' + sayAlong('bedtime', ['whisper', 'drawn', 'low', 'slow']), show: { kind: 'icon', name: 'bed' } },
+        { say: 'A birthday party is a happy day, often with a cake that has candles to blow out. Our word is birthday party. ' + sayAlong('birthday party', ['slow', 'mouse', 'chant', 'fast', 'dough']), show: { kind: 'icon', name: 'cake' } },
+        { say: 'At bedtime, you put on your pajamas and sleep in your bed. Our word is bedtime. ' + sayAlong('bedtime', ['giant', 'whisper', 'slide', 'fast', 'stretch']), show: { kind: 'icon', name: 'bed' } },
         { say: 'On a rainy day, rain falls from the clouds. On a snowy day, snow falls. Rain goes with a rainy day, and snow goes with a snowy day.', show: { kind: 'pair', a: { kind: 'icon', name: 'rain' }, b: { kind: 'icon', name: 'snow' } } },
         { say: 'At story time, someone reads you a book.', show: { kind: 'icon', name: 'book' } },
         { say: 'At the park, you can play on the slide.', show: { kind: 'icon', name: 'slide' } },
@@ -7172,11 +7172,11 @@ function PREK_READING_MODULES() { return [
       example: { kind: 'item', shape: 'square', colour: 'red', scale: 'small', caption: 'The small red square fits all three words.' },
       pictures: [],
       script: [
-        { say: 'Teachers use learning words to tell you what to do. Count means say one number for each one. One, two, three blocks. ' + sayAlong('count', ['slow', 'fast', 'chant']), show: { kind: 'row', items: [{ kind: 'icon', name: 'block' }, { kind: 'icon', name: 'block' }, { kind: 'icon', name: 'block' }] } },
-        { say: 'Sort means put the ones that go together into groups, like red squares in one group and blue squares in another. ' + sayAlong('sort', ['high', 'whisper', 'low']), show: { kind: 'pair', stack: true, a: { kind: 'pattern', items: ['square', 'square', 'square'], colour: 'red' }, b: { kind: 'pattern', items: ['square', 'square', 'square'], colour: 'blue' } } },
-        { say: 'Match means find one just like it. Two that match make a pair. These two socks are just alike, so they make a pair. ' + sayAlong('match', ['whisper', 'slide', 'drawn']), show: { kind: 'pair', a: { kind: 'icon', name: 'sock' }, b: { kind: 'icon', name: 'sock' } } },
-        { say: 'This red triangle and this red triangle are just alike, so they make a pair. A blue triangle or a red circle would not. ' + sayAlong('pair', ['low', 'chant', 'high', 'slow']), show: { kind: 'pair', a: { kind: 'item', shape: 'triangle', colour: 'red' }, b: { kind: 'item', shape: 'triangle', colour: 'red' } } },
-        { say: 'Trace means go over the lines with your finger. This is how you trace the letter L. ' + sayAlong('trace', ['drawn', 'fast', 'slide']), show: { kind: 'trace', text: 'L' } },
+        { say: 'Teachers use learning words to tell you what to do. Count means say one number for each one. One, two, three blocks. Our word is count. ' + sayAlong('count', ['giant', 'whisper', 'bounce', 'fast', 'stretch']), show: { kind: 'row', items: [{ kind: 'icon', name: 'block' }, { kind: 'icon', name: 'block' }, { kind: 'icon', name: 'block' }] } },
+        { say: 'Sort means put the ones that go together into groups, like red squares in one group and blue squares in another. Our word is sort. ' + sayAlong('sort', ['slow', 'whisper', 'chant', 'fast', 'dough']), show: { kind: 'pair', stack: true, a: { kind: 'pattern', items: ['square', 'square', 'square'], colour: 'red' }, b: { kind: 'pattern', items: ['square', 'square', 'square'], colour: 'blue' } } },
+        { say: 'Match means find one just like it. Two that match make a pair. These two socks are just alike, so they make a pair. Our word is match. ' + sayAlong('match', ['slow', 'mouse', 'silly', 'fast', 'stretch']), show: { kind: 'pair', a: { kind: 'icon', name: 'sock' }, b: { kind: 'icon', name: 'sock' } } },
+        { say: 'This red triangle and this red triangle are just alike, so they make a pair. A blue triangle or a red circle would not. Our word is pair. ' + sayAlong('pair', ['giant', 'mouse', 'slide', 'fast', 'dough']), show: { kind: 'pair', a: { kind: 'item', shape: 'triangle', colour: 'red' }, b: { kind: 'item', shape: 'triangle', colour: 'red' } } },
+        { say: 'Trace means go over the lines with your finger. This is how you trace the letter L. Our word is trace. ' + sayAlong('trace', ['giant', 'whisper', 'silly', 'fast', 'dough']), show: { kind: 'trace', text: 'L' } },
         { say: 'Some directions use three describing words. Your teacher might say, tap the small red square.', show: { kind: 'item', shape: 'square', colour: 'red', scale: 'small' } },
         { say: 'Small is its size, red is its color, and square is its shape. The small red square fits all three words.', show: { kind: 'item', shape: 'square', colour: 'red', scale: 'small' } },
         { say: 'A big red square is red and a square, but it is big. A small blue square is small and a square, but it is blue.', show: { kind: 'pair', a: { kind: 'item', shape: 'square', colour: 'red', scale: 'big' }, b: { kind: 'item', shape: 'square', colour: 'blue', scale: 'small' } } },
@@ -7213,8 +7213,8 @@ function PREK_READING_MODULES() { return [
         { say: 'Bear and chair rhyme.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'icon', name: 'chair' } } },
         { say: 'Sock, block and rock rhyme.', show: { kind: 'row', items: [{ kind: 'icon', name: 'sock' }, { kind: 'icon', name: 'block' }, { kind: 'icon', name: 'rock' }] } },
         { say: 'Ball and wall rhyme. They end the same way.', show: { kind: 'pair', a: { kind: 'icon', name: 'ball' }, b: { kind: 'icon', name: 'wall' } } },
-        { say: 'Teachers ask about shapes with learning words too. A corner is where two sides meet. A triangle has three sides and three corners, and a circle is round, with no corners. ' + sayAlong('corner', ['high', 'slide', 'whisper', 'fast']), show: { kind: 'pair', a: { kind: 'shape', name: 'triangle' }, b: { kind: 'shape', name: 'circle' } } },
-        { say: 'A long rectangle has four corners, two long sides and two short sides. A square has four corners, and four sides that are all the same length. ' + sayAlong('side', ['slow', 'chant', 'low', 'drawn']), show: { kind: 'pair', a: { kind: 'shape', name: 'rectangle' }, b: { kind: 'shape', name: 'square' } } },
+        { say: 'Teachers ask about shapes with learning words too. A corner is where two sides meet. A triangle has three sides and three corners, and a circle is round, with no corners. Our word is corner. ' + sayAlong('corner', ['giant', 'mouse', 'bounce', 'fast', 'stretch']), show: { kind: 'pair', a: { kind: 'shape', name: 'triangle' }, b: { kind: 'shape', name: 'circle' } } },
+        { say: 'A long rectangle has four corners, two long sides and two short sides. A square has four corners, and four sides that are all the same length. Our word is side. ' + sayAlong('side', ['slow', 'whisper', 'chant', 'fast', 'dough']), show: { kind: 'pair', a: { kind: 'shape', name: 'rectangle' }, b: { kind: 'shape', name: 'square' } } },
         { say: 'How many corners does a triangle have? Count them. One, two, three.', show: { kind: 'pair', a: { kind: 'shape', name: 'triangle' }, b: { kind: 'dots', count: 3 } } },
         { say: 'How many corners does a square have? Count them. One, two, three, four.', show: { kind: 'pair', a: { kind: 'shape', name: 'square' }, b: { kind: 'dots', count: 4 } } },
         { say: 'Hat rhymes with cat, so the hat goes in the rhyme group. Listen to every word of a direction, and then do just what it says.', show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'icon', name: 'hat' } } },
@@ -7244,12 +7244,12 @@ function PREK_READING_MODULES() { return [
       example: { kind: 'row', items: [{ kind: 'icon', name: 'hat' }, { kind: 'icon', name: 'sock' }, { kind: 'icon', name: 'coat' }], caption: 'A hat, a sock and a coat are all clothes.' },
       pictures: [{ serial: 'P164', alt: 'A small child at cleanup time putting a hat into a laundry basket, a toy box with a ball and a teddy bear beside it', step: 7 }],
       script: [
-        { say: 'Some words name a group, and many things can go in it. A cat, a duck and a bear are all animals. ' + sayAlong('animals', ['chant', 'low', 'high']), show: { kind: 'row', items: [{ kind: 'pic', name: 'cat' }, { kind: 'pic', name: 'duck' }, { kind: 'pic', name: 'bear' }] } },
+        { say: 'Some words name a group, and many things can go in it. A cat, a duck and a bear are all animals. ' + sayAlong('animals', ['slow', 'mouse', 'chant', 'fast', 'stretch']), show: { kind: 'row', items: [{ kind: 'pic', name: 'cat' }, { kind: 'pic', name: 'duck' }, { kind: 'pic', name: 'bear' }] } },
         { say: 'An owl, a frog and a fox are animals too.', show: { kind: 'row', items: [{ kind: 'pic', name: 'owl' }, { kind: 'pic', name: 'frog' }, { kind: 'pic', name: 'fox' }] } },
-        { say: 'A hat, a sock and a coat are clothes, things you wear. ' + sayAlong('clothes', ['whisper', 'slow', 'slide']), show: { kind: 'row', items: [{ kind: 'icon', name: 'hat' }, { kind: 'icon', name: 'sock' }, { kind: 'icon', name: 'coat' }] } },
-        { say: 'A ball, a teddy bear and a block are toys. A teddy bear is a toy, not a real animal. ' + sayAlong('toys', ['high', 'fast', 'drawn']), show: { kind: 'row', items: [{ kind: 'icon', name: 'ball' }, { kind: 'icon', name: 'teddy' }, { kind: 'icon', name: 'block' }] } },
-        { say: 'A tree, a flower and a cactus are plants. ' + sayAlong('plants', ['slow', 'whisper', 'chant']), show: { kind: 'row', items: [{ kind: 'icon', name: 'tree' }, { kind: 'icon', name: 'flower' }, { kind: 'icon', name: 'cactus' }] } },
-        { say: 'A car and a train are vehicles, things that carry people from place to place. ' + sayAlong('vehicles', ['low', 'fast', 'slide', 'drawn']), show: { kind: 'pair', a: { kind: 'art', name: 'car' }, b: { kind: 'art', name: 'train' } } },
+        { say: 'A hat, a sock and a coat are clothes, things you wear. Our word is clothes. ' + sayAlong('clothes', ['giant', 'whisper', 'slide', 'fast', 'dough']), show: { kind: 'row', items: [{ kind: 'icon', name: 'hat' }, { kind: 'icon', name: 'sock' }, { kind: 'icon', name: 'coat' }] } },
+        { say: 'A ball, a teddy bear and a block are toys. A teddy bear is a toy, not a real animal. Our word is toys. ' + sayAlong('toys', ['slow', 'mouse', 'bounce', 'fast', 'dough']), show: { kind: 'row', items: [{ kind: 'icon', name: 'ball' }, { kind: 'icon', name: 'teddy' }, { kind: 'icon', name: 'block' }] } },
+        { say: 'A tree, a flower and a cactus are plants. ' + sayAlong('plants', ['giant', 'whisper', 'silly', 'fast', 'stretch']), show: { kind: 'row', items: [{ kind: 'icon', name: 'tree' }, { kind: 'icon', name: 'flower' }, { kind: 'icon', name: 'cactus' }] } },
+        { say: 'A car and a train are vehicles, things that carry people from place to place. Our word is vehicles. ' + sayAlong('vehicles', ['giant', 'mouse', 'slide', 'fast', 'stretch']), show: { kind: 'pair', a: { kind: 'art', name: 'car' }, b: { kind: 'art', name: 'train' } } },
         { say: 'A boat and a bus are vehicles too.', show: { kind: 'pair', a: { kind: 'art', name: 'boat' }, b: { kind: 'icon', name: 'bus' } } },
         { say: 'At cleanup time, the clothes go in the basket, and the toys go in the toy box.', show: null },
         { say: 'Cat, duck and hat. The hat does not go with the others, because a hat is clothes, not an animal.', show: { kind: 'row', items: [{ kind: 'pic', name: 'cat' }, { kind: 'pic', name: 'duck' }, { kind: 'icon', name: 'hat' }] } },
@@ -7276,14 +7276,14 @@ function PREK_READING_MODULES() { return [
       pictures: [],
       script: [
         { say: 'Some words name a group, like animals or clothes. Words can go together in other ways too.', show: { kind: 'row', items: [{ kind: 'pic', name: 'cat' }, { kind: 'pic', name: 'duck' }, { kind: 'pic', name: 'bear' }] } },
-        { say: 'Some words are opposites, as different as can be. Hot and cold are opposites. Fire is hot, and ice is cold. ' + sayAlong('opposites', ['drawn', 'slide', 'fast']), show: { kind: 'pair', a: { kind: 'icon', name: 'fire' }, b: { kind: 'icon', name: 'ice' } } },
+        { say: 'Some words are opposites, as different as can be. Hot and cold are opposites. Fire is hot, and ice is cold. Our word is opposites. ' + sayAlong('opposites', ['slow', 'mouse', 'slide', 'fast', 'dough']), show: { kind: 'pair', a: { kind: 'icon', name: 'fire' }, b: { kind: 'icon', name: 'ice' } } },
         { say: 'The sun is hot too, and snow is cold too.', show: { kind: 'pair', a: { kind: 'icon', name: 'sun' }, b: { kind: 'icon', name: 'snow' } } },
         { say: 'Fast and slow are opposites. A rocket is fast, and a car is fast.', show: { kind: 'pair', a: { kind: 'art', name: 'rocket' }, b: { kind: 'art', name: 'car' } } },
         { say: 'A snail is slow, and a turtle is slow.', show: { kind: 'pair', a: { kind: 'pic', name: 'snail' }, b: { kind: 'pic', name: 'turtle' } } },
         { say: 'Day and night are opposites. We see the sun in the day, and we often see the moon at night.', show: { kind: 'pair', a: { kind: 'icon', name: 'sun' }, b: { kind: 'icon', name: 'moon' } } },
         { say: 'Big and small are opposites too. This blue circle is big, and this blue circle is small.', show: { kind: 'pair', a: { kind: 'item', shape: 'circle', colour: 'blue', scale: 'big' }, b: { kind: 'item', shape: 'circle', colour: 'blue', scale: 'small' } } },
-        { say: 'Some words mean the same as another word. Angry means mad, with eyebrows that squeeze down, and afraid means scared, with wide-open eyes. Glad means happy, with a big smile. ' + sayAlong('glad', ['chant', 'high', 'whisper', 'slow']), show: { kind: 'faces', feelings: ['mad', 'scared', 'happy'] } },
-        { say: 'Large means big, and small means little. The large red square is the big one. ' + sayAlong('large', ['low', 'drawn', 'chant']), show: { kind: 'pair', a: { kind: 'item', shape: 'square', colour: 'red', scale: 'big' }, b: { kind: 'item', shape: 'square', colour: 'red', scale: 'small' } } },
+        { say: 'Some words mean the same as another word. Angry means mad, with eyebrows that squeeze down, and afraid means scared, with wide-open eyes. Glad means happy, with a big smile. Our word is glad. ' + sayAlong('glad', ['slow', 'whisper', 'chant', 'fast', 'stretch']), show: { kind: 'faces', feelings: ['mad', 'scared', 'happy'] } },
+        { say: 'Large means big, and small means little. The large red square is the big one. Our word is large. ' + sayAlong('large', ['giant', 'whisper', 'silly', 'fast', 'dough']), show: { kind: 'pair', a: { kind: 'item', shape: 'square', colour: 'red', scale: 'big' }, b: { kind: 'item', shape: 'square', colour: 'red', scale: 'small' } } },
         { say: 'Words go together. Some are opposites, like hot and cold, and some mean the same, like glad and happy. Fire is hot, and ice is cold.', show: { kind: 'pair', a: { kind: 'icon', name: 'fire' }, b: { kind: 'icon', name: 'ice' } } },
       ],
     },
@@ -7295,9 +7295,9 @@ function PREK_READING_MODULES() { return [
   // events.", the 2027 recommendation), its words for actions beyond the helpers' jobs and for events, each connected to the thing it
   // goes with, the time of day it comes at and a place, and Head Start's P-LC 6 for four-year-olds (words of increasing specificity
   // and variety, and new words repeated after an adult). A four-year-old hears eight action words, each with its thing, four times
-  // of the day with their actions, the park, and two silly questions to laugh at; three new words are said along in silly voices, as
-  // in pre-K 4's other vocabulary lessons (Q67; that a new vocabulary lesson joins them is Claude's reading of Mikey's answer, raised
-  // with him as Q77 in pass MS).
+  // of the day with their actions, the park, and two silly questions to laugh at; three new words are said together in silly ways, as
+  // in pre-K 4's other vocabulary lessons (Q67; that a new vocabulary lesson joins them was Claude's reading in pass MS, and Mikey
+  // kept it in pass MT, Q77 (a): every new young vocabulary lesson plays the game).
   {
     id: 'things-we-do',
     skill: 'Listening',
@@ -7311,12 +7311,12 @@ function PREK_READING_MODULES() { return [
       example: { kind: 'pair', a: { kind: 'icon', name: 'book' }, b: { kind: 'icon', name: 'scissors' }, caption: 'You read a book, and you cut paper with scissors.' },
       pictures: [{ serial: 'P166', alt: 'A small child at a classroom table at art time, drawing with a crayon, a pair of scissors and a sheet of paper beside them', step: 6 }],
       script: [
-        { say: 'Some words tell what we do. We call them action words. You read a book, you kick a ball, and you sleep in a bed. ' + sayAlong('action', ['slide', 'whisper', 'chant']), show: { kind: 'row', items: [{ kind: 'icon', name: 'book' }, { kind: 'icon', name: 'ball' }, { kind: 'icon', name: 'bed' }] } },
-        { say: 'You cut paper with scissors, and you draw with a crayon. ' + sayAlong('scissors', ['low', 'fast', 'high']), show: { kind: 'pair', a: { kind: 'icon', name: 'scissors' }, b: { kind: 'icon', name: 'crayon' } } },
+        { say: 'Some words tell what we do. We call them action words. You read a book, you kick a ball, and you sleep in a bed. Our word is action. ' + sayAlong('action', ['slow', 'mouse', 'chant', 'fast', 'stretch']), show: { kind: 'row', items: [{ kind: 'icon', name: 'book' }, { kind: 'icon', name: 'ball' }, { kind: 'icon', name: 'bed' }] } },
+        { say: 'You cut paper with scissors, and you draw with a crayon. Our word is scissors. ' + sayAlong('scissors', ['slow', 'whisper', 'bounce', 'fast', 'dough']), show: { kind: 'pair', a: { kind: 'icon', name: 'scissors' }, b: { kind: 'icon', name: 'crayon' } } },
         { say: 'You eat soup with a spoon, and you drink from a cup.', show: { kind: 'pair', a: { kind: 'icon', name: 'spoon' }, b: { kind: 'icon', name: 'cup' } } },
         { say: 'You can ride a bus to school. Read, kick, sleep, cut, draw, eat, drink and ride are all action words.', show: { kind: 'icon', name: 'bus' } },
         { say: 'An action goes with a thing. What do you do with a book? You read it! What do you do with a ball? You kick it!', show: { kind: 'pair', a: { kind: 'icon', name: 'book' }, b: { kind: 'icon', name: 'ball' } } },
-        { say: 'Actions go with times of the day too. At lunchtime, you eat with a spoon from a plate, and you drink from a cup. ' + sayAlong('lunchtime', ['drawn', 'fast', 'slow', 'whisper']), show: { kind: 'row', items: [{ kind: 'icon', name: 'spoon' }, { kind: 'icon', name: 'plate' }, { kind: 'icon', name: 'cup' }] } },
+        { say: 'Actions go with times of the day too. At lunchtime, you eat with a spoon from a plate, and you drink from a cup. Our word is lunchtime. ' + sayAlong('lunchtime', ['giant', 'mouse', 'silly', 'fast', 'stretch']), show: { kind: 'row', items: [{ kind: 'icon', name: 'spoon' }, { kind: 'icon', name: 'plate' }, { kind: 'icon', name: 'cup' }] } },
         { say: 'At art time, you draw with a crayon, and you cut paper with scissors.', show: { kind: 'pair', a: { kind: 'icon', name: 'crayon' }, b: { kind: 'icon', name: 'scissors' } } },
         { say: 'At story time, you read a book together, and at bedtime, you sleep in your bed.', show: { kind: 'pair', a: { kind: 'icon', name: 'book' }, b: { kind: 'icon', name: 'bed' } } },
         { say: 'Actions go with places too. At the park, you can kick a ball and go down the slide.', show: { kind: 'pair', a: { kind: 'icon', name: 'ball' }, b: { kind: 'icon', name: 'slide' } } },
@@ -33894,45 +33894,92 @@ const LETTER_NAMED = /^\s+(?:says|makes)\b/;
 // letter ("the sound G makes"); one that labels something ("what source B says") is read as before.
 const LETTER_BEFORE = /(?:^|[,;:(“"‘']\s*|\b(?:and|the|so|but|then|sound|letter)\s+)$/i;
 const SOUND_LIST = /^(\s*["“‘']?)([A-Z][a-z]+), ([a-z]+),? and ([a-z]+)(?= (?:all |both )?(?:(?:start|starts|begin|begins) (?:with|the same)|(?:end|ends) (?:with|in|the same)|rhyme))/;
-// Say it with me, in silly voices (pass MS). Pass MR built Mikey's answer to Q67 ("Q67 - B but let's make it fun.  When they say it
-// with you, the voice should do something silly like whisper it, say it slow, say it low four times in a silly voice, say it ultra fast
-// three times, draw it out the next time etc.") as one voice a word, the voices spread across a lesson's words. Mikey meant them for
-// one word (pass MS, word for word in DECISIONS MS): "When I mentioned that saying the words out loud should be fun such as a a
-// whisper, then slow, then four times in a low silly voice, ultra fast three times amd drawn out for the last time in a silly yet clear
-// voice, I was talking about applying all of that to a single spoken word.  Not really one word as a whisper, another later fast,
-// another later slow etc." ... "The very last pronunciation can be a clearer more normal version.  Other variation ideas that are
-// silly could be very high pitched, a changing pitch where it starts high and ends low, a chant as if you were at a sporting event
-// etc." In plain terms: a young vocabulary lesson brings in a new word and then plays a little game with that one word. A cue names
-// the word ("Say different with me, in silly voices!"), and the voice says the same word three to five silly ways, each called first
-// in a few words so the child knows how to join in ("Whisper it." and then "Different."; "Four times, low and silly!" and then
-// "Different, different, different, different!"), and last of all "Now say it nice and clear." and the word in a clear, ordinary
-// voice. After each way the voice waits a moment (sayAlongEcho), the child's turn, to say it along or a short way back, so the child
-// hears one word said many ways and says it many ways (Beck and McKeown's Text Talk had children repeat each new word, Q67). Each word
-// of a lesson gets a mix and an order of its own. Nothing is recorded or heard by the app; read-aloud stays output only.
-// A voice: its style, the call that names it, how many times the word is said, the mark the word ends with, apart (each saying a
-// sentence of its own, with two claps between them, the chant), the recorded voice's tag (tools/audio-ledger.mjs) and the device
-// voice's rate, pitch and volume (ui.jsx's SPEECH_SHAPES take them from here). A device voice holds one pitch for a whole word, so
-// slide steps down over three sayings, high, middle and low, where the recorded voice is asked to slide within the word.
-// Written as a function, so a lesson's words can call it wherever they sit in the file (sayAlong, below).
+// Say it together (pass MT, Mikey's answer to Q77, "Q77 - A - it is valuable to learning and will sound better with Eleven when we
+// add playful, interesting and silly audio tags."). Pass MR built his answer to Q67 as one silly voice a word; pass MS put all the
+// silly voices on one word, as his note on Q67 asked, behind a cue that named the word ("Say different with me, in silly voices!").
+// In pass MT he wrote the game out as he wants it, word for word (DECISIONS MT): "Instead of "Say different with me" we can change it
+// to Let's say it together!  (In an excited and emphasized voice).  First, let's say it slowly (and draw it out way more slowly).
+// Now, let's whisper it twice (this whisper should also say it slowly but not as slow as the first slow one).  Now let's say it four
+// times using silly voices (each of the four should use a different pitch, some high, some low, some in different accents like British
+// or Australian but sounding like it's still from the same person and drawn out in various durations).  Now let's say it three times
+// super fast!  (Make it faster than it is now).  Okay, let's try stretching it out now (another version of slow but really emphasizing
+// each part of the word more).  Great job!  One last time, nice and clear.  (This last one is normal speed. - The "say it slowly"
+// should be three times as drawn out as it is now and the four times in a row should have brief pauses between each one too).  Make
+// the other versions of this similar in playful conversational tone and just as silly yet useful."
+// In plain terms: after a young vocabulary line brings in a new word, the voice says, excited, "Let's say it together!", and the
+// child and the voice say that one word five ways, each called first in a few friendly words so the child knows how to join in: a slow
+// way first, then a quiet or a small one, then a silly one, then three times super fast, and last a stretched one; then "Great job!",
+// and "One last time, nice and clear." and the word in an ordinary voice. Every game keeps that shape, its steps in that order with the
+// same openings (First, Now, Now, Now, and Okay, let's try), so a young child learns the routine; what changes from word to word is
+// the flavor of a step, its slot below: the first step slowly or like a big, sleepy giant; the second whispered twice or squeaked twice
+// like a tiny mouse; the silly third in four silly voices, slid down from high to low, bounced up high and down low, or cheered like a
+// crowd at a big game, a fan's whistle between the cheers and the crowd clapping after (Mikey, pass MT: "maybe a longer session of
+// claps or cheers with whistling in place of the claps would work"); the fourth always three times super fast; and the fifth stretched
+// out, or stretched out like play dough, the way a preschool teacher has children stretch a word to hear each part (not bubble
+// gum, a choking hazard the stories test keeps out of pre-K). Learning words
+// plays Mikey's own version on different, word for word. Each step has a use besides the giggle: the slow and the stretched ways let a
+// child hear every part of the word, the silly voices let a child hear one word in many voices, the quick one is a word said
+// fluently, and the clear one last is the model to keep. After each way the voice waits a moment (sayAlongEcho), the child's turn.
+// Nothing is recorded or heard by the app; read-aloud stays output only.
+// A way: its style, its slot (0 to 4, the step it may be), the words that call it (base after "First, let's" or "Now, let's", doing
+// after "Okay, let's try"), the call's end mark, how many times the word is said and the mark the word ends with, apart (each saying a
+// sentence of its own, so a recording can give each its own voice), joined (every saying in one breath, one piece for the device
+// voice), pause (a brief rest after each saying but the last, in ms), between and after (a sound the app plays between sayings and after
+// the last, the cheer's whistles and its crowd), the recorded voice's tag (tags: one a saying, for a way whose sayings differ;
+// tools/audio-ledger.mjs), and the device voice's rate, pitch and volume (ui.jsx's SPEECH_SHAPES take them from here), one a saying where
+// the sayings differ. The four silly voices go low, high, low and high (round one's lesson check, pass MT: begun high, they made three
+// squeaks in a row after a tiny mouse's two), and a cheer asks the recording for one excited fan, since the crowd is the app's own sound
+// (round one: "chanting like a crowd" asked one voice to be a crowd). The flavors of each step are Claude's, at Mikey's "Make the other
+// versions of this similar"; his own words are the opener, the five calls on different, the praise and the clear one. A device voice cannot whisper, change its accent or slide inside a word, so it says a whisper softly, gives the
+// four silly voices four pitches and paces, and steps a slide down over three sayings; the recordings will whisper, take the accents
+// and slide, by their tags. The slow way is three times as drawn out as pass MS's (its rate 0.48 then, 0.16 now, as Mikey asked), the
+// whisper slower than pass MS's but quicker than the slow way, and super fast one breath at 2.2, where pass MS's 1.85 came a saying at a
+// time with the voice's own gap between each. Written as a function, so a lesson's words can call it wherever they sit in the file.
 function sayAlongVoices() {
   return [
-    { style: 'whisper', call: 'Whisper it.', times: 1, end: '.', tag: '[whispers]', device: [{ rate: 0.8, pitch: 1.1, volume: 0.45 }] },
-    { style: 'slow', call: 'Say it slowly.', times: 1, end: '.', tag: '[very slowly]', device: [{ rate: 0.48, pitch: 1.12 }] },
-    { style: 'low', call: 'Four times, low and silly!', times: 4, end: '!', tag: '[in a deep, silly voice]', device: [{ rate: 0.82, pitch: 0.3 }] },
-    { style: 'fast', call: 'Three times, super fast!', times: 3, end: '!', tag: '[very fast]', device: [{ rate: 1.85, pitch: 1.2 }] },
-    { style: 'drawn', call: 'Stretch it out long.', times: 1, end: '.', tag: '[drawn out, very slowly]', device: [{ rate: 0.32, pitch: 1.05 }] },
-    { style: 'high', call: 'Way up high, like a mouse!', times: 1, end: '!', tag: '[in a very high, squeaky voice]', device: [{ rate: 1.0, pitch: 1.95 }] },
-    { style: 'slide', call: 'Slide it down, from high to low.', times: 3, end: '.', tag: '[starting very high and sliding down low]', device: [{ rate: 0.95, pitch: 1.9 }, { rate: 0.95, pitch: 1.25 }, { rate: 0.95, pitch: 0.55 }] },
-    { style: 'chant', call: 'Cheer it like a big game!', times: 3, end: '!', apart: true, tag: '[chanting like a crowd at a ball game]', device: [{ rate: 1.05, pitch: 1.5 }] },
-    { style: 'clear', call: 'Now say it nice and clear.', times: 1, end: '.', tag: '[clearly and warmly]', device: [{ rate: 0.78, pitch: 1.12 }], last: true },
+    { style: 'slow', slot: 0, base: 'say it slowly', doing: 'saying it slowly', callEnd: '.', times: 1, end: '.', tag: '[very, very slowly, drawing the whole word way out]', device: [{ rate: 0.16, pitch: 1.12 }] },
+    { style: 'giant', slot: 0, base: 'say it like a big, sleepy giant', doing: 'saying it like a big, sleepy giant', callEnd: '.', times: 1, end: '.', tag: '[with a big yawn, then in a big, deep, sleepy giant voice, very slowly]', device: [{ rate: 0.2, pitch: 0.35 }] },
+    { style: 'whisper', slot: 1, base: 'whisper it twice', doing: 'whispering it twice', callEnd: '.', times: 2, end: '.', pause: 250, tag: '[whispers, slowly]', device: [{ rate: 0.45, pitch: 1.1, volume: 0.45 }] },
+    { style: 'mouse', slot: 1, base: 'squeak it twice, like a tiny mouse', doing: 'squeaking it twice, like a tiny mouse', callEnd: '!', times: 2, end: '!', pause: 250, tag: '[in a tiny, squeaky mouse voice]', device: [{ rate: 0.75, pitch: 1.95 }] },
+    { style: 'silly', slot: 2, base: 'say it four times using silly voices', doing: 'saying it four times using silly voices', callEnd: '.', times: 4, end: '!', apart: true, pause: 350,
+      tags: ['[in a deep, low, silly voice, drawn out long]', '[in a squeaky, very high voice, quick]', '[in a playful Australian accent, the same voice, a little low and bouncy]', '[in a playful British accent, the same voice, a little high and slow]'],
+      device: [{ rate: 0.5, pitch: 0.3 }, { rate: 1.05, pitch: 1.95 }, { rate: 1.25, pitch: 0.75 }, { rate: 0.7, pitch: 1.45 }] },
+    { style: 'slide', slot: 2, base: 'slide it down, from high to low', doing: 'sliding it down, from high to low', callEnd: '.', times: 3, end: '.', tag: '[sliding from very high down to very low, a little lower each time]', device: [{ rate: 0.95, pitch: 1.9 }, { rate: 0.95, pitch: 1.25 }, { rate: 0.95, pitch: 0.55 }] },
+    { style: 'bounce', slot: 2, base: 'bounce it, up high and down low', doing: 'bouncing it, up high and down low', callEnd: '!', times: 4, end: '!', apart: true, pause: 200,
+      tags: ['[in a bouncy voice, way up high]', '[in a bouncy voice, way down low]', '[in a bouncy voice, way up high]', '[in a bouncy voice, way down low]'],
+      device: [{ rate: 1.0, pitch: 1.9 }, { rate: 1.0, pitch: 0.45 }, { rate: 1.0, pitch: 1.9 }, { rate: 1.0, pitch: 0.45 }] },
+    { style: 'chant', slot: 2, base: "cheer it like we're at a big game", doing: "cheering it like we're at a big game", callEnd: '!', times: 3, end: '!', apart: true, between: 'whistle', after: 'applause', tag: '[cheering like an excited fan at a ball game]', device: [{ rate: 1.05, pitch: 1.5 }] },
+    { style: 'fast', slot: 3, base: 'say it three times super fast', doing: 'saying it three times super fast', callEnd: '!', times: 3, end: '!', joined: true, tag: '[super fast, all three in one breath]', device: [{ rate: 2.2, pitch: 1.2 }] },
+    { style: 'stretch', slot: 4, base: 'stretch it out', doing: 'stretching it out', callEnd: '.', times: 1, end: '.', tag: '[stretching the word out slowly, stressing each part of it]', device: [{ rate: 0.28, pitch: 1.05 }] },
+    { style: 'dough', slot: 4, base: 'stretch it out like play dough', doing: 'stretching it out like play dough', callEnd: '.', times: 1, end: '.', tag: '[stretching the word out like play dough, stressing each part, playful]', device: [{ rate: 0.26, pitch: 1.2 }] },
+    { style: 'clear', call: 'One last time, nice and clear.', times: 1, end: '.', tag: '[clearly and warmly, at a normal pace]', device: [{ rate: 0.78, pitch: 1.12 }], last: true },
   ];
 }
 export const SAY_ALONG_VOICES = sayAlongVoices();
-// The cue that opens the game for a word, written as a function for the same reason; sayAlongParts finds a cue by these words.
-export function sayAlongCue(word) { return `Say ${word} with me, in silly voices!`; }
+// The words that open the game, Mikey's, said excited and emphasized (SAY_ALONG_OPEN_SHAPE, a little higher and brighter than the
+// young voice's plain words; the recording's [excited, with big emphasis]), and the praise before the clear saying, said as a cheer.
+// Functions for the same reason as the ways; sayAlongParts finds the game by these words.
+function sayAlongOpen() { return "Let's say it together!"; }
+function sayAlongPraise() { return 'Great job!'; }
+export const SAY_ALONG_OPEN = sayAlongOpen();
+export const SAY_ALONG_PRAISE = sayAlongPraise();
+export const SAY_ALONG_OPEN_SHAPE = { rate: 0.92, pitch: 1.5 };
+export const SAY_ALONG_STEPS = 5;
+// The call for a way at its step, in Mikey's openings: "First, let's say it slowly.", "Now, let's whisper it twice.", "Now let's say
+// it four times using silly voices.", "Now let's say it three times super fast!" and "Okay, let's try stretching it out now.", and the
+// clear one's own words.
+export function sayAlongCall(voice, at) {
+  if (voice.last) return voice.call;
+  if (at === 0) return `First, let's ${voice.base}${voice.callEnd}`;
+  if (at === 1) return `Now, let's ${voice.base}${voice.callEnd}`;
+  if (at === sayAlongStepCount() - 1) return `Okay, let's try ${voice.doing} now${voice.callEnd}`;
+  return `Now let's ${voice.base}${voice.callEnd}`;
+}
+// The game's five steps, as a function for the lessons' sake (above).
+function sayAlongStepCount() { return 5; }
 // Each say-along word in its written syllables, the dictionary's (Merriam-Webster's division), for the light that follows the voice
-// through the word (Mikey: "it would be nice to see just the letters that are being pronounced be highlighted during this part so
-// they can follow along easier"). A word of one syllable lights whole, since inside a syllable a letter and a sound do not always
+// through the word (Mikey, pass MS: "it would be nice to see just the letters that are being pronounced be highlighted during this part
+// so they can follow along easier"). A word of one syllable lights whole, since inside a syllable a letter and a sound do not always
 // pair (the e of same says nothing of its own). A space stands between two words, as in birthday party.
 function sayAlongSyllables() {
   return {
@@ -33946,76 +33993,86 @@ function sayAlongSyllables() {
 export const SAY_ALONG_SYLLABLES = sayAlongSyllables();
 // The lessons that play it: Q67 (b)'s four (Learning words, People and events, now Words for people, More learning words and Words
 // that go together) and, since Q70 split each in two, their second halves (Count and sort, Things that happen, Rhymes and shapes and
-// Same and opposite), eight in all, and since pass MS pre-K 4's newest vocabulary lesson, Things we do (Claude's reading of Mikey's
-// answer to Q67 for a new vocabulary lesson, raised with him as Q77); the scripts test holds the say-alongs to these lessons, so it
-// spreads only by a choice.
+// Same and opposite), eight in all, and pre-K 4's Things we do, which pass MS gave it by Claude's reading and Mikey kept in pass MT
+// (Q77 (a): "keep the game in Things we do, and give it to every new young vocabulary lesson from now on"); the scripts test holds the
+// say-alongs to these lessons and holds every new pre-K vocabulary lesson, one that cites the 2027 II.D.1 or II.D.2 or Head Start's
+// P-LC 6 or P-LC 7 (ELOF's vocabulary goals), to one (SAY_ALONG_WAITS names the older ones, and the test holds it to those eight).
 export const SAY_ALONG_LESSONS = ['learning-words', 'count-and-sort-words', 'people-and-events', 'things-that-happen', 'more-learning-words', 'sort-and-shape-words', 'words-go-together', 'opposites-and-same', 'things-we-do'];
-// The word said one way: "Different, different, different, different!" four times low; "Different! Different! Different!" for the
-// chant, three sentences; "Different." for one saying.
+// The pre-K lessons that cite a vocabulary outcome (the 2027 II.D.1 or II.D.2, or Head Start's P-LC 6 or P-LC 7) and were built before Mikey's
+// answer to Q77 without the game; (a) gives it to every new young vocabulary lesson "from now on", so these keep their lines as they
+// are, named here so no new lesson slips past the scripts test's check.
+export const SAY_ALONG_WAITS = ['big-and-little', 'listen-and-tap-pictures', 'animal-sounds', 'colours', 'big-bigger-biggest', 'helpers-all-around', 'which-came-first', 'which-came-second'];
+// The word said one way: "Different! Different! Different! Different!" for a way said apart, a sentence a saying; "Different, different,
+// different!" for three times super fast and "Different, different." for whispered twice; "Different." for one saying.
 export function sayAlongForm(word, voice) {
   const w = String(word); const head = w.charAt(0).toUpperCase() + w.slice(1);
   if (voice.apart) return Array.from({ length: voice.times }, () => `${head}${voice.end}`).join(' ');
   return `${[head, ...Array.from({ length: voice.times - 1 }, () => w.toLowerCase())].join(', ')}${voice.end}`;
 }
-// The whole game for one word, as a lesson line ends with it: the cue, each style's call and the word said that way, then the clear
-// one. styles names the silly voices in their order; the clear one is always last. A lesson writes sayAlong('different', ['whisper',
-// 'slow', 'low', 'fast', 'drawn']) after the sentences that bring the word in.
+// The whole game for one word, as a lesson line ends with it: the opener, each step's call and the word said that way, the praise, and
+// the clear one. styles names the five ways in their steps' order, one a slot; a lesson writes sayAlong('different', ['slow', 'whisper',
+// 'silly', 'fast', 'stretch']) after the sentences that bring the word in, Mikey's own version.
 export function sayAlong(word, styles) {
   const voices = sayAlongVoices(); const pick = (s) => voices.find((v) => v.style === s);
-  const parts = [sayAlongCue(word)];
-  for (const s of [...styles, 'clear']) { const v = pick(s); if (!v) throw new Error(`sayAlong: no voice ${s}`); parts.push(v.call, sayAlongForm(word, v)); }
+  if (!Array.isArray(styles) || styles.length !== sayAlongStepCount()) throw new Error(`sayAlong: ${word} needs five ways, one a step`);
+  const parts = [sayAlongOpen()];
+  styles.forEach((s, at) => { const v = pick(s); if (!v || v.last || v.slot !== at) throw new Error(`sayAlong: ${s} cannot be step ${at + 1} of ${word}`); parts.push(sayAlongCall(v, at), sayAlongForm(word, v)); });
+  const clear = voices.find((v) => v.last);
+  parts.push(sayAlongPraise(), sayAlongCall(clear, sayAlongStepCount()), sayAlongForm(word, clear));
   return parts.join(' ');
 }
-// The part each sentence of a line plays (sentences, or a line to split): 'say' for the line's own words, 'open' for the cue, 'call'
-// for a voice's call, and 'form' for the word said that way, each with its word, its voice, which saying it is (rep, for the chant's
-// sentences) and which form of the game it belongs to (form, counted from 0). A cue whose game does not run through in order, every
-// call followed by its form and the clear one last, is read as the line's own words, and the scripts test names it.
+// The part each sentence of a line plays (sentences, or a line to split): 'say' for the line's own words, 'open' for the opener, 'call'
+// for a step's call, 'form' for the word said that way, and 'praise' for "Great job!", each with its word, its voice, which saying it is
+// (rep, for a way said apart) and which step of the game it belongs to (form, counted from 0; the clear one is 5). The word is read from
+// the first step's saying. An opener whose game does not run through in order, every step's call followed by its form, the praise and
+// the clear one last, is read as the line's own words, and the scripts test names it.
 export function sayAlongParts(line) {
   const ss = Array.isArray(line) ? line.map(String) : String(line || '').split(SENTENCE_BREAK).filter((x) => x.trim());
   const out = ss.map((sentence) => ({ sentence, role: 'say' }));
   const voices = SAY_ALONG_VOICES;
   for (let o = 0; o < ss.length; o++) {
-    const m = /^Say ([a-z][a-z ]*?) with me, in silly voices!$/.exec(ss[o].trim()); if (!m || sayAlongCue(m[1]) !== ss[o].trim()) continue;
-    const word = m[1]; const syllables = SAY_ALONG_SYLLABLES[word] || [word]; const marks = [{ at: o, sentence: ss[o], role: 'open', word, syllables }];
-    let j = o + 1; let form = 0; let done = false;
+    if (ss[o].trim() !== SAY_ALONG_OPEN) continue;
+    const marks = [{ at: o, sentence: ss[o], role: 'open' }];
+    let j = o + 1; let form = 0; let done = false; let word = null; let praised = false;
     while (j < ss.length) {
-      const v = voices.find((x) => x.call === ss[j].trim()); if (!v) break;
-      const said = sayAlongForm(word, v).split(SENTENCE_BREAK).filter((x) => x.trim());
+      const s = ss[j].trim();
+      if (!praised && form === SAY_ALONG_STEPS && s === SAY_ALONG_PRAISE) { marks.push({ at: j, sentence: ss[j], role: 'praise' }); praised = true; j += 1; continue; }
+      const v = voices.find((x) => (x.last ? praised && form === SAY_ALONG_STEPS : !praised && x.slot === form) && sayAlongCall(x, form) === s); if (!v) break;
+      const w = word || String(ss[j + 1] || '').trim().replace(/[.!?]+$/, '').split(/,\s*/)[0].toLowerCase(); if (!w) break;
+      const said = sayAlongForm(w, v).split(SENTENCE_BREAK).filter((x) => x.trim());
       if (!said.every((x, k) => ss[j + 1 + k] !== undefined && ss[j + 1 + k].trim() === x)) break;
-      marks.push({ at: j, sentence: ss[j], role: 'call', word, syllables, voice: v, form });
-      said.forEach((x, k) => marks.push({ at: j + 1 + k, sentence: ss[j + 1 + k], role: 'form', word, syllables, voice: v, form, rep: v.apart ? k : 0 }));
+      word = w;
+      marks.push({ at: j, sentence: ss[j], role: 'call', voice: v, form });
+      said.forEach((x, k) => marks.push({ at: j + 1 + k, sentence: ss[j + 1 + k], role: 'form', voice: v, form, rep: v.apart ? k : 0 }));
       j += 1 + said.length; form += 1;
       if (v.last) { done = true; break; }
     }
-    if (!done || form < 4) continue;
-    for (const mk of marks) out[mk.at] = mk;
+    if (!done) continue;
+    const syllables = SAY_ALONG_SYLLABLES[word] || [word];
+    for (const mk of marks) out[mk.at] = { ...mk, word, syllables };
     o = j - 1;
   }
   return out;
 }
-// How long the device voice takes, about, to say one form (whole, as the child's turn reads it) or one saying of it (whole false, a
-// piece, as the light reads it: since round one's screen check, pass MS, every saying of a form said more than once is a piece of
-// its own), from the voice's pace: a syllable is about 210 ms at a rate of 1, a comma's breath 150, both stretched by a slower rate
-// (a phone's voice says a lone three-syllable word in a little over half a second at its own pace; the screen corrects the guess by
-// the voice's own starts and ends as it goes, SayAlongStrip in ui.jsx). The light through the word and the child's turn after it are
-// timed from this (the device voice tells when a piece starts and ends, never where it is inside a word); a recorded clip's own
-// timings take over once the recordings arrive (EARMARKS L12).
+// How long the device voice takes, about, to say one piece of a form: one saying, or for a way said in one breath (joined, three times
+// super fast) all its sayings; from the voice's pace: a syllable is about 210 ms at a rate of 1, stretched by a slower rate (a phone's
+// voice says a lone three-syllable word in a little over half a second at its own pace; the screen corrects the guess by the voice's own
+// starts and ends as it goes, SayAlongStrip in ui.jsx). The light through the word and the child's turn after it are timed from this
+// (the device voice tells when a piece starts and ends, never where it is inside a word); a recorded clip's own timings take over once
+// the recordings arrive (EARMARKS L12).
 export const SAY_ALONG_SYLLABLE_MS = 210;
-export const SAY_ALONG_COMMA_MS = 150;
 const sayAlongWeights = (syllables) => syllables.map((s) => (s === ' ' ? 1.2 : s.length + 1));
-export function sayAlongEstimateMs(syllables, voice, rep = 0, whole = !voice.apart && voice.device.length === 1) {
-  const d = voice.device[Math.min(rep, voice.device.length - 1)]; const one = syllables.filter((s) => s !== ' ').length * SAY_ALONG_SYLLABLE_MS;
-  const times = whole ? voice.times : 1;
-  return Math.round((times * one + (times - 1) * SAY_ALONG_COMMA_MS) / d.rate);
+const sayAlongCount = (syllables) => syllables.filter((s) => s !== ' ').length;
+export function sayAlongEstimateMs(syllables, voice, rep = 0) {
+  const d = voice.device[Math.min(rep, voice.device.length - 1)];
+  return Math.round(((voice.joined ? voice.times : 1) * sayAlongCount(syllables) * SAY_ALONG_SYLLABLE_MS) / d.rate);
 }
-// How much slower (above 1) or quicker than the guess the device voice says a say-along word, learned as it goes (round one's code
-// check, pass MS: the rule lived in the screen, where no test read it): when a form took longer than 150 ms, the pace moves two fifths
-// of the way to what that form took over its guess, and stays between half and 2.2 times the guess, so one odd saying never throws
-// the light far off; a form too short to measure, or with no guess, leaves the pace as it was. Since round three's screen read a
-// saying of one syllable (match, same, toys), given its syllables, leaves it too: the word is lit whole, so it teaches the light
-// nothing, and the voice takes far longer on one short word than its letters guess ("Match," 321 ms against 113), which had pushed
-// the pace toward its ceiling, so the next long word lit too slowly and the voice ended first (whisper and slow "Different." after
-// match and same, three sayings of 277).
+// How much slower (above 1) or quicker than the guess the device voice says a say-along word, learned as it goes (pass MS, round one's
+// code check: the rule lived in the screen, where no test read it): when a piece took longer than 150 ms, the pace moves two fifths of
+// the way to what that piece took over its guess, and stays between half and 2.2 times the guess, so one odd saying never throws the
+// light far off; a piece too short to measure, or with no guess, leaves the pace as it was. Since round three's screen read a saying of
+// one syllable (match, same, toys), given its syllables, leaves it too: the word is lit whole, so it teaches the light nothing, and the
+// voice takes far longer on one short word than its letters guess ("Match," 321 ms against 113).
 export const SAY_ALONG_PACE_MIN = 0.5;
 export const SAY_ALONG_PACE_MAX = 2.2;
 export function sayAlongPaceNext(pace, tookMs, estMs, syllables = null) {
@@ -34023,21 +34080,48 @@ export function sayAlongPaceNext(pace, tookMs, estMs, syllables = null) {
   if (Array.isArray(syllables) && syllables.filter((s) => s !== ' ').length < 2) return pace;
   return Math.max(SAY_ALONG_PACE_MIN, Math.min(SAY_ALONG_PACE_MAX, 0.6 * pace + 0.4 * (tookMs / estMs)));
 }
-// When each syllable lights, in ms from the start of the piece the voice is saying. Every piece is one saying (since round one's screen
-// check, pass MS): a form said once (whisper, slow, drawn, high, clear) or one saying of a form said more than once (four times low,
-// three times fast, the slide, the chant), rep naming which; each syllable's share of a saying is its letters and one more, a space
-// between two words a little. Until then four times low and three times fast lit all their sayings on one timeline from one start.
+// Since pass MT the pace is kept for each of the device voice's shapes as well as for all of them (paces, a plain object: one entry a
+// shape, and all): a phone may not say a very slow or a very fast rate as asked (some hold a rate at a floor or a ceiling), and the
+// slow ways (0.16 to 0.28) are slower than any way before them (slowly and the giant far slower), so what a shape's sayings took teaches that shape's light, and only a saying
+// at a rate a phone says as asked (0.4 to 1.6) teaches the pace of all, by sayAlongPaceNext's rule. A shape's first heard saying of two
+// syllables or more sets its pace outright (the guess before it was only the pace of all), and each later one moves it two fifths of
+// the way, between a quarter and four times the guess, since a phone that holds the slow way at a floor says it in a third of its
+// guess. A shape not yet heard on this visit starts at the pace of all, and that at 1.
+export const SAY_ALONG_TRUE_RATES = [0.4, 1.6];
+export const SAY_ALONG_SHAPE_PACE = [0.25, 4];
+// The shape a piece is said in and the rate its light's pace is learned by: the piece's own shape (silly1 to silly4 and the rest), else
+// its way's style, and the rate of the saying the piece says (rep).
+export function sayAlongShapeOf(piece, voice, rep = 0) {
+  return { shape: (piece && piece.shape) || voice.style, rate: voice.device[Math.min(rep, voice.device.length - 1)].rate };
+}
+export function sayAlongPaceOf(paces, shape) { return paces && paces[shape] > 0 ? paces[shape] : paces && paces.all > 0 ? paces.all : 1; }
+export function sayAlongLearn(paces, shape, rate, tookMs, estMs, syllables = null) {
+  const next = { ...(paces || {}) };
+  const counts = tookMs > 150 && estMs > 0 && !(Array.isArray(syllables) && syllables.filter((s) => s !== ' ').length < 2);
+  if (counts) { const seen = paces && paces[shape] > 0; const to = tookMs / estMs; next[shape] = Math.max(SAY_ALONG_SHAPE_PACE[0], Math.min(SAY_ALONG_SHAPE_PACE[1], seen ? 0.6 * paces[shape] + 0.4 * to : to)); }
+  if (rate >= SAY_ALONG_TRUE_RATES[0] && rate <= SAY_ALONG_TRUE_RATES[1]) next.all = sayAlongPaceNext(paces && paces.all > 0 ? paces.all : 1, tookMs, estMs, syllables);
+  return next;
+}
+// When each syllable lights, in ms from the start of the piece the voice is saying: one saying (rep names which), or for a way said in
+// one breath every saying in turn, each with its rep; each syllable's share of a saying is its letters and one more, a space between two
+// words a little. A way said in one breath walks its sayings in 85 percent of the guessed time (SAY_ALONG_JOINED_LEAD, pass MT): run
+// together, three sayings carry one guess's error three times over, and a word with few letters to its syllables (baby, animals) is
+// said quicker than its syllables guess, so walked at the full guess its last syllable came after the voice had ended, while a light a
+// little ahead holds the last syllable lit until the voice is done.
+export const SAY_ALONG_JOINED_LEAD = 0.85;
 export function sayAlongTimeline(syllables, voice, rep = 0) {
   const d = voice.device[Math.min(rep, voice.device.length - 1)];
-  const w = sayAlongWeights(syllables); const sum = w.reduce((a, b) => a + b, 0); const sayMs = (syllables.filter((s) => s !== ' ').length * SAY_ALONG_SYLLABLE_MS) / d.rate;
-  const out = []; let at = 0;
-  w.forEach((x, k) => { out.push({ rep, syllable: k, at: Math.round(at), until: Math.round(at + (x / sum) * sayMs) }); at += (x / sum) * sayMs; });
+  const w = sayAlongWeights(syllables); const sum = w.reduce((a, b) => a + b, 0); const sayMs = ((sayAlongCount(syllables) * SAY_ALONG_SYLLABLE_MS) / d.rate) * (voice.joined ? SAY_ALONG_JOINED_LEAD : 1);
+  const reps = voice.joined ? Array.from({ length: voice.times }, (_, r) => r) : [rep];
+  const out = [];
+  reps.forEach((r, n) => { let at = n * sayMs; w.forEach((x, k) => { out.push({ rep: r, syllable: k, at: Math.round(at), until: Math.round(at + (x / sum) * sayMs) }); at += (x / sum) * sayMs; }); });
   return out.filter((x) => syllables[x.syllable] !== ' ');
 }
 // The child's turn after a form: about as long as the voice took to say it, three fifths of it and 400 ms more, at least 700 ms and at
 // most 1.8 seconds, so a child who says it back has the time and a child who said it along does not wait long.
 export function sayAlongEcho(syllables, voice) {
-  const total = voice.apart || voice.device.length > 1 ? Array.from({ length: voice.times }, (_, r) => sayAlongEstimateMs(syllables, voice, r, false)).reduce((a, b) => a + b, 0) : sayAlongEstimateMs(syllables, voice);
+  const pieces = voice.joined ? 1 : voice.times;
+  const total = Array.from({ length: pieces }, (_, r) => sayAlongEstimateMs(syllables, voice, r)).reduce((a, b) => a + b, 0) + (voice.pause || 0) * (pieces - 1);
   return Math.max(700, Math.min(1800, Math.round(total * 0.6 + 400)));
 }
 // A cheer (pass MR): a sentence that ends in a run of two or more words written all in capitals and an exclamation mark ("But most
@@ -34059,22 +34143,35 @@ export function speechPieces(text, opts = {}) {
   const pieces = [];
   for (const [si, sentence] of sentences.entries()) {
     const words = sentence.replace(/[.!?]+$/, '').trim().split(/\s+/).filter(Boolean);
-    // A form of the say-along (pass MS): the word in its voice's shape, a saying at a time for the chant (with two claps after every
-    // saying but the last) and the slide (stepping down), each piece carrying what the light needs (sayAlong) and the form's last piece
-    // the child's turn (echo); pieces of one form keep together, with no rest between them (inForm). Since round one's screen check
-    // four times low and three times fast are said a saying at a time too, each piece in the voice's one shape: said as one piece, each
-    // ran on one guessed timeline that fell behind the voice, the light going out before the fourth low saying in all fourteen lines
-    // that play it, and a piece of its own lights each saying from the voice's own start to its own end and fills its own dot.
+    // A form of the say-along (pass MS; the ways of pass MT): the word in its way's shape, each saying a piece of its own, every piece
+    // carrying what the light needs (sayAlong) and the form's last piece the child's turn (echo); pieces of one form keep together, with
+    // no rest between them (inForm) but the brief pause a way asks for after each saying but the last (pauseAfter: Mikey, pass MT, "the
+    // four times in a row should have brief pauses between each one too"). A way said apart (four silly voices, bounced, cheered) is a
+    // sentence a saying, each in its own shape where its sayings differ (silly1 to silly4, bounce1 to bounce4); a cheer has a fan's
+    // whistle after each saying but the last and the crowd's applause after the last (Mikey, pass MT: "maybe a longer session of claps
+    // or cheers with whistling in place of the claps would work"); three times super fast is one piece, every saying in one breath
+    // (joined), since a saying a piece left the voice's own gap between them (pass MS) and Mikey asked for it "faster than it is now";
+    // whispered twice, squeaked twice and the slide are a saying a piece in one sentence. The opener is said excited and emphasized
+    // (sayOpen) and the praise as a cheer.
     const role = roles[si];
+    if (role && role.role === 'open') { pieces.push({ text: sentence.trim(), shape: 'sayOpen', sentence: si }); continue; }
+    if (role && role.role === 'praise') { pieces.push({ text: sentence.trim(), shape: 'cheer', sentence: si }); continue; }
     if (role && role.role === 'form') {
       const v = role.voice; const sa = { word: role.word, syllables: role.syllables, style: v.style, times: v.times, form: role.form };
       const key = `${role.form}-${role.word}`; const echo = sayAlongEcho(role.syllables, v); const t = sentence.trim();
+      const shapeAt = (k) => (v.device.length > 1 ? `${v.style}${k + 1}` : v.style);
       if (v.apart) {
-        pieces.push({ text: t, shape: v.style, sentence: si, sayAlong: { ...sa, rep: role.rep }, inForm: key });
-        if (role.rep < v.times - 1) pieces.push({ sound: 'clap', text: 'clap', shape: 'sound', sentence: si, inForm: key }); else pieces[pieces.length - 1].echo = echo;
+        const last = role.rep === v.times - 1;
+        pieces.push({ text: t, shape: shapeAt(role.rep), sentence: si, sayAlong: { ...sa, rep: role.rep }, inForm: key, ...(!last && v.pause ? { pauseAfter: v.pause } : {}) });
+        if (!last && v.between) pieces.push({ sound: v.between, text: v.between, shape: 'sound', sentence: si, inForm: key });
+        if (last && v.after) pieces.push({ sound: v.after, text: v.after, shape: 'sound', sentence: si, inForm: key });
+        if (last) pieces[pieces.length - 1].echo = echo;
+      } else if (v.joined) {
+        const said = t.replace(/[.!?]+$/, '').split(/,\s*/);
+        pieces.push({ text: `${said.join(' ')}${v.end}`, shape: v.style, sentence: si, sayAlong: { ...sa, rep: 0, joined: said.length }, inForm: key, echo });
       } else if (v.times > 1) {
         const said = t.replace(/[.!?]+$/, '').split(/,\s*/);
-        said.forEach((x, k) => pieces.push({ text: `${x}${k < said.length - 1 ? ',' : v.end}`, shape: v.device.length > 1 ? `${v.style}${k + 1}` : v.style, sentence: si, sayAlong: { ...sa, rep: k }, inForm: key }));
+        said.forEach((x, k) => pieces.push({ text: `${x}${k < said.length - 1 ? ',' : v.end}`, shape: shapeAt(k), sentence: si, sayAlong: { ...sa, rep: k }, inForm: key, ...(k < said.length - 1 && v.pause ? { pauseAfter: v.pause } : {}) }));
         pieces[pieces.length - 1].echo = echo;
       } else pieces.push({ text: t, shape: v.style, sentence: si, sayAlong: { ...sa, rep: 0 }, inForm: key, echo });
       continue;
@@ -34159,7 +34256,7 @@ export const soundClipSamples = (() => {
   // The hiss of sss (pass MP: a band from about 4,000 to 9,500 cycles a second with its peak near 6,500, narrower than before, since
   // Mikey heard the wider hiss as "a little like static").
   const hiss = (n, fs, seed) => filter(filter(filter(noise(n, seed), biquad('hp', 4000, 0.9, fs)), biquad('peak', 6500, 1.6, fs, 10)), biquad('lp', 9500, 0.7, fs));
-  const SEEDS = { s: 11, f: 12, z: 13, m: 21, n: 22, l: 23, r: 24, t: 31, p: 32, k: 33, a: 41, e: 42, i: 43, o: 44, u: 45, b: 51, d: 52, g: 53, j: 54, ig: 61, og: 62, at: 63, clap: 71 };
+  const SEEDS = { s: 11, f: 12, z: 13, m: 21, n: 22, l: 23, r: 24, t: 31, p: 32, k: 33, a: 41, e: 42, i: 43, o: 44, u: 45, b: 51, d: 52, g: 53, j: 54, ig: 61, og: 62, at: 63, whistle: 72, applause: 73 };
   // ---- Vowels and the vowel after a consonant (pass MP, Mikey's answer to Q57, "Q57 - A", and his notes on Q51's rows 8 to 10, 13
   // and 27 to 31). A vowel is the voice's buzz through the mouth's resonances (formants); a consonant before it is heard mostly in
   // how those resonances glide from where the lips or tongue were (the consonant's locus) to the vowel's own. The resonances are
@@ -34219,18 +34316,43 @@ export const soundClipSamples = (() => {
   return function soundClipSamples(sound, { slow = false } = {}) {
     const fs = SOUND_RATE; const seed = SEEDS[sound];
     if (sound === 'quiet') return new Float32Array(Math.round(0.05 * fs));
-    // Two claps for the say-along's chant (pass MS, Mikey: "a chant as if you were at a sporting event"), played between its sayings,
-    // "Different! (clap, clap) Different!", the way a crowd claps between its words. A clap is the hands meeting: three bursts of noise
-    // within ten milliseconds, each falling away in about six, in the band a clap's energy sits in (about 700 to 4,200 cycles a
-    // second); the second clap comes 0.2 seconds after the first, and the whole is 0.42 seconds, quiet at both ends.
-    if (sound === 'clap') {
-      const n = Math.round(0.42 * fs); const yy = new Float64Array(n);
-      for (const [t0, c] of [[0, 0], [0.2, 1]]) for (const [dt, amp, k] of [[0, 1, 0], [0.004, 0.7, 1], [0.0095, 0.45, 2]]) {
-        const len = Math.round(0.03 * fs); const b = filter(filter(noise(len, seed + c * 10 + k), biquad('hp', 700, 0.7, fs)), biquad('lp', 4200, 0.7, fs)); const start = Math.round((t0 + 0.012 + dt) * fs);
-        for (let i = 0; i < len && start + i < n; i++) yy[start + i] += b[i] * amp * Math.exp(-i / (0.006 * fs)) * Math.min(1, i / 6);
+    // The cheer's sounds (pass MT, Mikey: "the claps in row 64 don't sound like real claps ... maybe a longer session of claps or cheers
+    // with whistling in place of the claps would work"; pass MS's clap, two quick claps of three noise bursts each, is retired with
+    // row 64). A fan's whistle plays between a cheer's sayings ("Different! (whistle) Different!"), and after the last the crowd claps
+    // and whistles for a moment and a half. A whistle through the lips or the fingers is nearly a pure tone, so it is made as one: it
+    // swoops up in its first tenth of a second (from about 1,900 cycles a second to 2,700), holds there with a quick wobble (seven times a
+    // second, a little over one percent) and slides a little lower as it ends, with a breath of air in it; half a second in all, its
+    // ends soft. The crowd is many hands: 320 claps over a second and a half, thickest from a tenth of a second in and thinning over the
+    // last half, each a short burst of noise that falls away in a few milliseconds around a pitch of its own between 900 and 2,600 cycles
+    // a second (hands differ), a hush of the crowd under them and a softer whistle from the stands on top; its end fades. Since round one
+    // (pass MT) the whistle is half as loud as it was (about 6 dB down), near the app's own speech sounds, since it sits at the pitch
+    // hearing is keenest and a sudden high sound can startle a young child, and the crowd has nearly twice the claps, so the claps lead.
+    const whistleTone = (n, fs, s, fromHz, holdHz, endHz) => {
+      const air = filter(noise(n, s), biquad('bp', holdHz, 2.5, fs)); let ar = 0; for (const v of air) ar += v * v; ar = Math.sqrt(ar / n) || 1;
+      const out = new Float64Array(n); let ph = 0; const T = n / fs;
+      for (let i = 0; i < n; i++) { const t = i / fs; const glide = t < 0.1 ? fromHz + (holdHz - fromHz) * (t / 0.1) : t > T - 0.12 ? holdHz + (endHz - holdHz) * ((t - (T - 0.12)) / 0.12) : holdHz;
+        ph += (2 * Math.PI * glide * (1 + 0.012 * Math.sin(2 * Math.PI * 7 * t))) / fs;
+        out[i] = Math.min(1, t / 0.025) * Math.min(1, (T - t) / 0.05) * (Math.sin(ph) + 0.08 * (air[i] / ar)); }
+      return out;
+    };
+    if (sound === 'whistle') { const n = Math.round(0.5 * fs); const w = whistleTone(n, fs, seed, 1900, 2700, 2450); const out = new Float32Array(n); for (let i = 0; i < n; i++) out[i] = w[i] * 0.16; return out; }
+    if (sound === 'applause') {
+      const n = Math.round(1.5 * fs); const y = new Float64Array(n); const r = rng(seed); const len = Math.round(0.03 * fs);
+      const density = (t) => (t < 0.1 ? t / 0.1 : t < 0.9 ? 1 : Math.max(0, 1 - (t - 0.9) / 0.55));
+      for (let c = 0; c < 320; c++) {
+        let t = 0; for (let tries = 0; tries < 60; tries++) { t = 0.005 + r() * 1.42; if (r() < density(t)) break; }
+        const f = 900 + r() * 1700; const amp = 0.35 + 0.65 * r(); const fall = (0.003 + 0.004 * r()) * fs;
+        const b = filter(noise(len, seed + 101 + c), biquad('bp', f, 0.9, fs)); const start = Math.round(t * fs);
+        for (let i = 0; i < len && start + i < n; i++) y[start + i] += b[i] * amp * Math.exp(-i / fall) * Math.min(1, i / 4);
       }
-      let peak = 0; for (const v of yy) peak = Math.max(peak, Math.abs(v));
-      const out = new Float32Array(n); for (let i = 0; i < n; i++) out[i] = (yy[i] * 0.5) / (peak || 1); return out;
+      const hush = filter(filter(noise(n, seed + 7), biquad('lp', 2400, 0.7, fs)), biquad('hp', 300, 0.7, fs)); let hr = 0; for (const v of hush) hr += v * v; hr = Math.sqrt(hr / n) || 1;
+      let peak = 0; for (const v of y) peak = Math.max(peak, Math.abs(v));
+      const wAt = Math.round(0.18 * fs); const wn = Math.round(0.55 * fs); const w = whistleTone(wn, fs, seed + 3, 2000, 2900, 2600);
+      const out = new Float32Array(n);
+      for (let i = 0; i < n; i++) { const t = i / fs; const fade = Math.min(1, t / 0.03) * Math.min(1, (1.5 - t) / 0.25);
+        let v = (y[i] / (peak || 1)) * 0.42 + 0.06 * density(t) * (hush[i] / hr); if (i >= wAt && i < wAt + wn) v += 0.09 * w[i - wAt];
+        out[i] = Math.max(-0.95, Math.min(0.95, v * fade)); }
+      return out;
     }
     // sss, fff and zzz come as two short breaths with a little gap between, sss, sss (pass MP, Mikey: "Could be corrected if we
     // perhaps split the sound into fragments like sss sss sun" and of fff "Would be better fractionalized instead of long fff"), each

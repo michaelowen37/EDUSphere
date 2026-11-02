@@ -1436,9 +1436,15 @@ await page.waitForTimeout(300);
     const saidFirst = async (x, from = 0) => { await page.waitForFunction(([l, f]) => window.__spoken.slice(f).some((t) => t.startsWith(`Yes, that is the letter ${l}.`)), [x, from], { timeout: 3000 }).catch(() => {});
       return page.evaluate(([l, f]) => { const s = window.__spoken.slice(f); const a = s.indexOf(`Find the letter ${l}.`); const r = s.findIndex((t) => t.startsWith(`Yes, that is the letter ${l}.`)); return a >= 0 && r > a; }, [x, from]); };
     // Arms two taps in the page: the first the moment board n asks for its first letter ('board') or 10 ms after Hear it again
-    // ('again', which presses it), the second the moment the wait after the first lifts; two() waits for both.
-    const arm2 = (how, n) => page.evaluate(([mode, want]) => { window.__two = new Promise((done) => {
+    // ('again', which presses it), the second the moment the wait after the first lifts; two() waits for both. With fresh (pass MT),
+    // the first tap waits for a new deal, its letters and its ask not those of the board on screen when it was armed (or 1.5 seconds,
+    // for a deal that happens to repeat), since Play again on a board 0 still open leaves board 0 on screen and a change to the page
+    // from elsewhere before the click (the game's clock, a slow click under load) had fired the tap on the board being replaced:
+    // check.sh's first whole run of pass MT tapped the old board's S while the new board asked for A.
+    const arm2 = (how, n, fresh = false) => page.evaluate(([mode, want, isFresh]) => { window.__two = new Promise((done) => {
       const svg = () => document.querySelector('[data-letter-board]'); const askNow = () => { const h = document.querySelector('[data-spot-ask]'); return h ? h.getAttribute('data-spot-ask') : ''; };
+      const deal = () => { const s = svg(); return s ? `${[...s.querySelectorAll('g[data-letter]')].map((g) => g.getAttribute('data-letter')).join('')}|${askNow()}` : ''; };
+      const before = isFresh ? deal() : null; const since = Date.now();
       const tapAsked = () => { const ask = askNow(); const g = svg() && ask ? svg().querySelector(`g[data-letter="${ask}"]`) : null; if (g) g.dispatchEvent(new MouseEvent('click', { bubbles: true })); return { ask, g }; };
       let first = null; let second = null; let obs = null;
       const gone = setTimeout(() => { if (obs) obs.disconnect(); done({ first: first ? { ask: first.ask, taken: !!first.taken } : null, second: null }); }, 15000);
@@ -1446,9 +1452,11 @@ await page.waitForTimeout(300);
         first.taken = !!first.g && first.g.hasAttribute('data-found'); second = tapAsked(); obs.disconnect(); clearTimeout(gone);
         setTimeout(() => done({ first: { ask: first.ask, taken: first.taken }, second: { ask: second.ask, taken: !!second.g && second.g.hasAttribute('data-found') } }), 40); };
       obs = new MutationObserver(() => { if (first) { lift(); return; } if (mode !== 'board') return; const s = svg();
-        if (!s || !askNow() || s.getAttribute('data-letter-board') !== String(want) || s.querySelector('g[data-found]')) return; first = tapAsked(); setTimeout(lift, 0); });
+        if (!s || !askNow() || s.getAttribute('data-letter-board') !== String(want) || s.querySelector('g[data-found]')) return;
+        if (before !== null && deal() === before && Date.now() - since < 1500) return;
+        first = tapAsked(); setTimeout(lift, 0); });
       obs.observe(document.body, { attributes: true, subtree: true, childList: true });
-      if (mode === 'again') { const btn = [...document.querySelectorAll('button')].find((b) => b.getAttribute('aria-label') === 'Hear it again'); if (btn) btn.click(); setTimeout(() => { first = tapAsked(); setTimeout(lift, 0); }, 10); } }); }, [how, n]);
+      if (mode === 'again') { const btn = [...document.querySelectorAll('button')].find((b) => b.getAttribute('aria-label') === 'Hear it again'); if (btn) btn.click(); setTimeout(() => { first = tapAsked(); setTimeout(lift, 0); }, 10); } }); }, [how, n, fresh]);
     const two = () => page.evaluate(() => window.__two);
     const ofTwo = async (r, from = 0) => !!r && !!r.first && !!r.second && r.first.taken === false && r.second.taken === true && r.second.ask === r.first.ask && await saidFirst(r.second.ask, from);
     await arm2('board', 0); await page.getByRole('button', { name: 'Play again' }).click(); const start = await two(); const startOk = await ofTwo(start);
@@ -1462,7 +1470,11 @@ await page.waitForTimeout(300);
     // Play again on a first board still open, its wait over: the new letters are drawn before the effect that resets the round, and
     // a tap in that moment reads the wait as it stands (holdNow), so it takes nothing and the ask comes first.
     await page.getByRole('button', { name: 'Play again' }).click(); await page.waitForTimeout(400);
-    const mark = await page.evaluate(() => window.__spoken.length); await arm2('board', 0); await page.getByRole('button', { name: 'Play again' }).click(); const open1 = await two(); const open1Ok = await ofTwo(open1, mark);
+    // The worst case, forced every run: the page changes between arming and pressing Play again (as a clock tick can), and the tap
+    // still waits for the new deal.
+    const mark = await page.evaluate(() => window.__spoken.length); await arm2('board', 0, true);
+    await page.evaluate(() => document.body.setAttribute('data-test-tick', String(Date.now())));
+    await page.getByRole('button', { name: 'Play again' }).click(); const open1 = await two(); const open1Ok = await ofTwo(open1, mark);
     if (!open1Ok) console.log('  (Find the Letter, Play again on an open first board:', JSON.stringify(open1), '; said', JSON.stringify(await page.evaluate((f) => window.__spoken.slice(f), mark)), ')');
     ok('with a voice still speaking, Play again on a first board still open takes no tap at once either, and a tap the moment its wait lifts takes the letter, its ask said first', open1Ok);
     await page.evaluate(() => Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { cancel() {}, getVoices() { return []; }, speak(u) { window.__spoken.push(u.text); setTimeout(() => { if (u.onend) u.onend({}); }, 30); } } })); }

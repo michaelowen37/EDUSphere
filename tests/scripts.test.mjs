@@ -619,149 +619,210 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   ].map((p) => p.length > 0);
   ok(`every Pairs welcome and help names no pair its deck deals, and each example (${Object.keys(L.PAIR_EXAMPLES).join(', ')}) is in its lines and taught by its course (${pairGames.length} games read; each near miss caught)`, real.length === 0 && pairGames.length >= 15 && plants.every(Boolean), [...real, `near misses ${plants}`].join(' | '));
 }
-// Say it with me, in silly voices (pass MS; pass MR built Mikey's answer to Q67 as one voice a word, and he meant them for one word:
-// "I was talking about applying all of that to a single spoken word ... The very last pronunciation can be a clearer more normal
-// version."). Every cue ("Say different with me, in silly voices!") is in one of Q67's lessons (SAY_ALONG_LESSONS) and opens a whole
-// game that ends its line: three to five silly ways, each its call and then the word said that way, none twice, and the clear one last;
-// the word is said in the line before its cue; its syllables are written for it and join to it; no two words of a lesson play the same
-// ways in the same order; every such lesson plays all eight silly voices; and the device voice says each form in its voice's shape
-// (one piece, the slide in three steps down, the chant a piece a cheer with a clap between), the child's turn after it. The lesson
-// screen hands the voice one sentence at a time, so its reading of a line, sentence by sentence with the line beside it, must hand the
-// voice the same pieces as the whole line (pass MR's voices never reached a lesson's voice, only the voice check page). A sentence that
-// reads like a cue but opens no game fails. Each near miss below is caught.
-{ const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8'); const { LEDGER_CSV } = await import('../tools/audio-ledger.mjs');
-  const silly = L.SAY_ALONG_VOICES.filter((v) => !v.last).map((v) => v.style);
+// Say it together (pass MT, Mikey's answer to Q77, his game word for word; pass MS's cue that named the word, "Say different with me,
+// in silly voices!", and its three to five ways are retired). Every opener ("Let's say it together!") is in one of the say-along lessons
+// (SAY_ALONG_LESSONS) and opens a whole game that ends its line: five steps in order, each its call in Mikey's openings (First, Now,
+// Now, Now, and Okay, let's try) and then the word said its way, one way a step from that step's slot, then "Great job!", then "One
+// last time, nice and clear." and the word; the word is said in the line before the opener; its syllables are written for it and join
+// to it; no two words of a lesson play the same five ways; a lesson of two games or more plays both flavors of the first, second and
+// fifth steps and as many flavors of the silly third as it has games, up to all four; and every way is played somewhere. Learning words
+// plays Mikey's own version on different, word for word. The device voice says each form as its way's shape (a saying a piece, in
+// one shape or one a saying; super fast in one breath; a brief pause after each saying of the ways that ask for one; a cheer's whistle
+// between its sayings and its crowd after), the opener excited (sayOpen) and the praise as a cheer, the child's turn after each form.
+// The lesson screen hands the voice one sentence at a time, so its reading of a line, sentence by sentence with the line beside it, must
+// hand the voice the same pieces as the whole line (pass MR's voices never reached a lesson's voice). And every pre-K lesson that cites
+// a vocabulary outcome (the 2027 II.D.1 or II.D.2, or Head Start's P-LC 6) plays the game, but the older ones SAY_ALONG_WAITS names
+// (Q77 (a): "give it to every new young vocabulary lesson from now on"). Each near miss below is caught.
+{ const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8'); const { LEDGER_CSV, SAY_ALONG_TALK } = await import('../tools/audio-ledger.mjs');
+  const ways = L.SAY_ALONG_VOICES.filter((v) => !v.last); const slots = [0, 1, 2, 3, 4].map((s) => ways.filter((v) => v.slot === s).map((v) => v.style));
   const asLesson = (say, pieces) => { const ss = String(say).split(L.SENTENCE_BREAK).filter(Boolean); return ss.flatMap((s, k) => pieces(s, { line: ss, at: k })); };
   const same = (a, b) => JSON.stringify(a.map(({ sentence, ...x }) => x)) === JSON.stringify(b.map(({ sentence, ...x }) => x));
-  const problems = (mods, { lessons = L.SAY_ALONG_LESSONS, pieces = L.speechPieces, syllables = L.SAY_ALONG_SYLLABLES } = {}) => { const bad = []; const styles = new Set(); const used = new Set(); let n = 0; const lessonsWith = new Set();
-    for (const m of mods) { const orders = new Map(); const heard = new Set();
+  // Mikey's own words for the game on different (pass MT), the calls his and each saying the word: the line must end in exactly this.
+  const MIKEY = "Let's say it together! First, let's say it slowly. Different. Now, let's whisper it twice. Different, different. Now let's say it four times using silly voices. Different! Different! Different! Different! Now let's say it three times super fast! Different, different, different! Okay, let's try stretching it out now. Different. Great job! One last time, nice and clear. Different.";
+  // The eight older vocabulary lessons Q77 (a) leaves as they are, named here so the list can never grow by a quiet edit.
+  const WAITING_EIGHT = ['big-and-little', 'listen-and-tap-pictures', 'animal-sounds', 'colours', 'big-bigger-biggest', 'helpers-all-around', 'which-came-first', 'which-came-second'];
+  const vocab = (m) => /II\.D\.[12]\b|P-LC [67]\b/.test([].concat(m.sources || []).join(' '));   // ELOF's vocabulary goals are P-LC 6 and 7 (round one's alignment read)
+  const problems = (mods, { lessons = L.SAY_ALONG_LESSONS, waits = L.SAY_ALONG_WAITS, pieces = L.speechPieces, syllables = L.SAY_ALONG_SYLLABLES } = {}) => { const bad = []; const styles = new Set(); const used = new Set(); let n = 0; const lessonsWith = new Set(); let mikey = false;
+    for (const m of mods) { const orders = new Map(); const heard = [0, 1, 2, 3, 4].map(() => new Set()); let games = 0;
       for (const [li, line] of (m.lesson.script || []).entries()) {
         const ss = String(line.say).split(L.SENTENCE_BREAK).filter(Boolean); const parts = L.sayAlongParts(ss);
-        for (const [i, s] of ss.entries()) if (/^Say (?!it\b|them\b)[a-z ]+ with me\b/.test(s) && parts[i].role !== 'open') bad.push(`${m.id} ${li}: "${s}" reads like a cue but opens no game`);   // older lines' "Say it with me, apple." are not cues
+        for (const [i, s] of ss.entries()) if (/^Let's say it\b.*together!$/.test(s.trim()) && parts[i].role !== 'open') bad.push(`${m.id} ${li}: "${s}" reads like the opener but opens no game`);
+        for (const s of ss) if (/^Say [a-z ]+ with me, in silly voices!$/.test(s.trim())) bad.push(`${m.id} ${li}: pass MS's cue "${s}" is still said`);
         const whole = pieces(line.say); const read = asLesson(line.say, pieces);
         for (const [i, p] of parts.entries()) { if (p.role !== 'open') continue;
-          n++; lessonsWith.add(m.id); used.add(p.word);
-          if (!lessons.includes(m.id)) bad.push(`${m.id} ${li}: a say-along outside Q67's lessons`);
+          n++; games++; lessonsWith.add(m.id); used.add(p.word);
+          if (!lessons.includes(m.id)) bad.push(`${m.id} ${li}: a say-along outside the say-along lessons`);
           const game = parts.slice(i + 1);
-          if (!game.every((x) => (x.role === 'call' || x.role === 'form') && x.word === p.word)) bad.push(`${m.id} ${li}: the game for ${p.word} does not end its line`);
-          const calls = game.filter((x) => x.role === 'call'); const ways = calls.map((x) => x.voice.style); const sillyWays = ways.filter((w) => w !== 'clear');
-          if (ways[ways.length - 1] !== 'clear' || ways.filter((w) => w === 'clear').length !== 1) bad.push(`${m.id} ${li}: ${p.word}'s clear saying is not last, once`);
-          if (sillyWays.length < 3 || sillyWays.length > 5) bad.push(`${m.id} ${li}: ${p.word} plays ${sillyWays.length} silly ways, not three to five`);
-          if (new Set(sillyWays).size !== sillyWays.length) bad.push(`${m.id} ${li}: ${p.word} plays a way twice`);
-          const key = sillyWays.join(' '); if (orders.has(key)) bad.push(`${m.id} ${li}: ${p.word} plays ${key}, as ${orders.get(key)} does`); orders.set(key, p.word);
-          sillyWays.forEach((w) => { heard.add(w); styles.add(w); });
+          if (!game.every((x) => ['call', 'form', 'praise'].includes(x.role) && x.word === p.word)) bad.push(`${m.id} ${li}: the game for ${p.word} does not end its line`);
+          const calls = game.filter((x) => x.role === 'call'); const steps = calls.filter((x) => !x.voice.last);
+          if (calls.length !== 6 || !calls[5].voice.last || steps.some((x, k) => x.form !== k || x.voice.slot !== k)) bad.push(`${m.id} ${li}: ${p.word} does not play five steps in order and then the clear one`);
+          const praiseAt = game.findIndex((x) => x.role === 'praise'); const clearAt = game.findIndex((x) => x.role === 'call' && x.voice.last);
+          if (game.filter((x) => x.role === 'praise').length !== 1 || praiseAt !== clearAt - 1) bad.push(`${m.id} ${li}: ${p.word}'s "Great job!" is not said once, just before the clear one`);
+          const key = steps.map((x) => x.voice.style).join(' '); if (orders.has(key)) bad.push(`${m.id} ${li}: ${p.word} plays ${key}, as ${orders.get(key)} does`); orders.set(key, p.word);
+          steps.forEach((x) => { heard[x.voice.slot].add(x.voice.style); styles.add(x.voice.style); });
           const syl = syllables[p.word]; if (!syl || syl.join('') !== p.word) bad.push(`${m.id} ${li}: ${p.word}'s syllables (${syl ? syl.join('|') : 'none written'}) do not make the word`);
-          if (!new RegExp(`\\b${p.word}`, 'i').test(ss.slice(0, i).join(' '))) bad.push(`${m.id} ${li}: ${p.word} is not said on the line before its cue`);
-          // Each form as the device voice says it: its pieces in its voice's shape, a clap only between a chant's cheers, the child's
-          // turn on its last piece and on no other.
-          for (const c of calls) { const v = c.voice; const fp = whole.filter((x) => x.inForm === `${c.form}-${p.word}`); const said = fp.filter((x) => !x.sound); const claps = fp.filter((x) => x.sound);
-            // A saying a piece for every way said more than once, four times low and three times fast too since round one's screen check.
-            const shapes = v.device.length > 1 ? v.device.map((_, k) => `${v.style}${k + 1}`) : Array.from({ length: v.times }, () => v.style);
-            const ok1 = JSON.stringify(said.map((x) => x.shape)) === JSON.stringify(shapes) && said.every((x) => x.sayAlong && x.sayAlong.word === p.word && x.sayAlong.style === v.style)
-              && claps.length === (v.apart ? v.times - 1 : 0) && claps.every((x) => x.sound === 'clap') && (!v.apart || fp.every((x, k) => (k % 2 === 1) === !!x.sound))
+          // The line's own words end on the word, so the it of "Let's say it together!" is the word (round one's lesson check: in 29 of 34
+          // lines the last thing a child heard was another word, a count or a thing in the picture).
+          if (!(i > 0 && new RegExp(`\\b${p.word}[.!?]*$`, 'i').test(ss[i - 1].trim()))) bad.push(`${m.id} ${li}: ${p.word} is not the last word said before its opener`);
+          if (m.id === 'learning-words' && p.word === 'different') mikey = ss.slice(i).join(' ') === MIKEY;
+          // The opener excited, the praise a cheer, and each form as the device voice says it.
+          const at = (sentence) => whole.filter((x) => x.sentence === ss.indexOf(sentence));
+          if (!at(p.sentence).every((x) => x.shape === 'sayOpen')) bad.push(`${m.id} ${li}: the opener is not said excited (sayOpen)`);
+          if (praiseAt >= 0 && !at(game[praiseAt].sentence).every((x) => x.shape === 'cheer')) bad.push(`${m.id} ${li}: "Great job!" is not said as a cheer`);
+          for (const c of calls) { const v = c.voice; const fp = whole.filter((x) => x.inForm === `${c.form}-${p.word}`); const said = fp.filter((x) => !x.sound); const sounds = fp.filter((x) => x.sound);
+            const shapeAt = (k) => (v.device.length > 1 ? `${v.style}${k + 1}` : v.style);
+            const wantShapes = v.joined ? [v.style] : Array.from({ length: v.times }, (_, k) => shapeAt(k));
+            const wantSounds = v.apart ? [...Array.from({ length: v.times - 1 }, () => v.between).filter(Boolean), ...(v.after ? [v.after] : [])] : [];
+            const text = v.joined ? `${L.sayAlongForm(p.word, v).replace(/[.!?]+$/, '').split(/,\s*/).join(' ')}${v.end}` : L.sayAlongForm(p.word, v);
+            const ok1 = JSON.stringify(said.map((x) => x.shape)) === JSON.stringify(wantShapes) && said.every((x) => x.sayAlong && x.sayAlong.word === p.word && x.sayAlong.style === v.style)
+              && JSON.stringify(sounds.map((x) => x.sound)) === JSON.stringify(wantSounds) && (!v.between || fp.slice(0, -1).every((x, k) => (k % 2 === 1) === !!x.sound))
+              && said.every((x, k) => (k < said.length - 1 && v.pause ? x.pauseAfter === v.pause : !x.pauseAfter)) && (!v.joined || said[0].sayAlong.joined === v.times)
               && fp.length > 0 && fp.slice(0, -1).every((x) => !x.echo) && fp[fp.length - 1].echo >= 700 && fp[fp.length - 1].echo <= 1800
-              && said.map((x) => x.text).join(' ') === L.sayAlongForm(p.word, v);
-            if (!ok1) bad.push(`${m.id} ${li}: the voice does not say ${p.word} ${v.style} as its voice's shape (${JSON.stringify(fp.map((x) => x.shape))})`); } }
+              && said.map((x) => x.text).join(' ') === text;
+            if (!ok1) bad.push(`${m.id} ${li}: the voice does not say ${p.word} ${v.style} as its way's shape (${JSON.stringify(fp.map((x) => x.sound || `${x.shape}${x.pauseAfter ? `+${x.pauseAfter}` : ''}`))})`); } }
         if (!same(read, whole)) bad.push(`${m.id} ${li}: read a sentence at a time, the line is said otherwise than whole`);
-        if (whole.some((x) => x.sound === 'clap' && x.inForm === undefined)) bad.push(`${m.id} ${li}: a clap outside a chant`);
+        if (whole.some((x) => x.sound && ['whistle', 'applause'].includes(x.sound) && x.inForm === undefined)) bad.push(`${m.id} ${li}: a cheer's sound outside a cheer`);
       }
-      if (lessons.includes(m.id) && silly.some((w) => !heard.has(w))) bad.push(`${m.id} never plays ${silly.filter((w) => !heard.has(w)).join(', ')}`);
+      // A lesson's variety: both flavors of the first, second and fifth steps once it has two games, and as many silly thirds as games.
+      if (games >= 2) { for (const s of [0, 1, 4]) if (heard[s].size < slots[s].length) bad.push(`${m.id} never plays ${slots[s].filter((w) => !heard[s].has(w)).join(', ')} at step ${s + 1}`);
+        if (heard[2].size < Math.min(games, slots[2].length)) bad.push(`${m.id} plays ${heard[2].size} silly thirds in ${games} games`); }
+      // Q77 (a): every pre-K lesson that cites a vocabulary outcome plays the game, but the older ones that wait by name.
+      if (/^PK/.test(m.grade || '') && vocab(m) && !lessons.includes(m.id) && !waits.includes(m.id)) bad.push(`${m.id} cites a vocabulary outcome and plays no say-along (Q77 (a))`);
+      if (m === mods[mods.length - 1] && JSON.stringify([...waits].sort()) !== JSON.stringify([...WAITING_EIGHT].sort())) bad.push(`SAY_ALONG_WAITS is not the eight lessons built before Q77 (a): ${waits}`);
     }
     for (const id of lessons) if (!lessonsWith.has(id) && mods.some((m) => m.id === id)) bad.push(`${id} plays no say-along`);
+    if (!mikey) bad.push('Learning words\' different does not play Mikey\'s own version word for word');
     return { bad, styles, n, lessonsWith: [...lessonsWith], used }; };
-  const real = problems(L.MODULES);
+  const graded = L.COURSES.flatMap((c) => c.modules.map((m) => ({ ...m, grade: c.grade })));
+  const real = problems(graded);
   const stale = Object.keys(L.SAY_ALONG_SYLLABLES).filter((w) => !real.used.has(w));
-  const swap = (id, fn) => L.MODULES.map((m) => (m.id === id ? { ...m, lesson: { ...m.lesson, script: fn(m.lesson.script) } } : m));
-  // The pieces as they were through round one (pass MS): four times low and three times fast said as one piece, which round one's
-  // screen check found the light could not follow; a near miss below.
-  const sayingsInOneGo = (ps) => { const out = []; for (const p of ps) { const last = out[out.length - 1];
-    if (last && p.sayAlong && last.sayAlong && last.inForm === p.inForm && ['low', 'fast'].includes(p.shape) && last.shape === p.shape) out[out.length - 1] = { ...last, text: `${last.text} ${p.text}`, echo: p.echo, sayAlong: { ...last.sayAlong, rep: 0 } }; else out.push(p); }
-    return out; };
+  const waitsReal = L.SAY_ALONG_WAITS.filter((id) => !graded.some((m) => m.id === id && /^PK/.test(m.grade) && vocab(m)));
+  const swap = (id, fn) => graded.map((m) => (m.id === id ? { ...m, lesson: { ...m.lesson, script: fn(m.lesson.script) } } : m));
   const edit = (id, from, to) => swap(id, (s) => s.map((l) => ({ ...l, say: l.say.replace(from, to) })));
+  const game = (word, list) => L.sayAlong(word, list);
+  // The pieces as pass MS said super fast, a saying a piece, and the four silly voices with no pause between: near misses below.
+  const sayingApart = (ps) => ps.flatMap((p) => (p.sayAlong && p.sayAlong.joined ? p.text.replace(/!$/, '').split(' ').reduce((acc, w, k, all) => { const per = all.length / p.sayAlong.joined; if (k % per === 0) acc.push([]); acc[acc.length - 1].push(w); return acc; }, []).map((ws, k, all) => ({ ...p, text: `${ws.join(' ')}${k < all.length - 1 ? ',' : '!'}`, sayAlong: { ...p.sayAlong, rep: k, joined: undefined }, echo: k === all.length - 1 ? p.echo : undefined })) : [p]));
   const plants = [
-    problems(edit('people-and-events', ' Now say it nice and clear. Grandpa.', '')),   // no clear saying: the cue opens no game
-    problems(edit('people-and-events', 'Grandpa, grandpa, grandpa, grandpa!', 'Grandpa, grandpa, grandpa!')),   // four times said three
-    problems(edit('people-and-events', 'Now say it nice and clear. Grandpa.', 'Now say it nice and clear. Grandpa. He is a grown-up.')),   // words after the game
-    problems(edit('learning-words', L.sayAlong('same', ['slide', 'drawn', 'low']), L.sayAlong('same', ['whisper', 'slow', 'low', 'fast', 'drawn']))),   // same plays different's ways
-    problems(edit('learning-words', L.sayAlong('match', ['chant', 'whisper', 'high', 'fast']), L.sayAlong('match', ['slow', 'whisper', 'high', 'fast']))),   // the lesson never chants
-    problems(edit('learning-words', L.sayAlong('different', ['whisper', 'slow', 'low', 'fast', 'drawn']), L.sayAlong('different', ['whisper', 'slow', 'low', 'fast', 'drawn', 'high']))),   // six silly ways
-    problems(edit('learning-words', L.sayAlong('different', ['whisper', 'slow', 'low', 'fast', 'drawn']), L.sayAlong('different', ['whisper', 'slow', 'whisper', 'fast', 'drawn']))),   // a way twice
-    problems(edit('words-go-together', /^[^]*?(Say clothes with me)/, '$1')),   // the word not said before its cue
-    problems(L.MODULES, { lessons: L.SAY_ALONG_LESSONS.slice(1) }),   // a say-along outside Q67's lessons
-    problems(L.MODULES, { syllables: { ...L.SAY_ALONG_SYLLABLES, different: ['dif', 'fer', 'nt'] } }),   // syllables that do not make the word
-    problems(L.MODULES, { pieces: (text, o) => L.speechPieces(text, o).map((x) => (x.shape === 'whisper' ? { ...x, shape: 'plain' } : x)) }),   // a whisper said plain
-    problems(L.MODULES, { pieces: (text, o) => L.speechPieces(text, o).filter((x) => x.sound !== 'clap') }),   // a chant with no claps
-    problems(L.MODULES, { pieces: (text, o) => sayingsInOneGo(L.speechPieces(text, o)) }),   // four times low and three times fast in one piece (round one's screen check)
-    problems(L.MODULES, { pieces: (text, o) => L.speechPieces(text, Array.isArray(o && o.line) ? {} : o) }),   // a sentence read without its line (pass MR's way)
-    problems(edit('learning-words', 'Say match with me, in silly voices!', 'Say match with me, in a silly voice!')),   // a cue in other words
+    problems(edit('people-and-events', ' One last time, nice and clear. Grandpa.', '')),   // no clear saying: the opener opens no game
+    problems(edit('people-and-events', 'Grandpa! Grandpa! Grandpa! Grandpa!', 'Grandpa! Grandpa! Grandpa!')),   // four silly voices said three
+    problems(edit('people-and-events', 'One last time, nice and clear. Grandpa.', 'One last time, nice and clear. Grandpa. He is a grown-up.')),   // words after the game
+    problems(edit('learning-words', game('same', ['slow', 'mouse', 'slide', 'fast', 'stretch']), game('same', ['slow', 'whisper', 'silly', 'fast', 'stretch']))),   // same plays different's ways
+    problems(edit('learning-words', game('match', ['giant', 'mouse', 'chant', 'fast', 'dough']), game('match', ['giant', 'mouse', 'silly', 'fast', 'dough']))),   // the lesson never cheers: two silly thirds in three games
+    problems(edit('learning-words', "Let's say it together! First, let's say it like a big, sleepy giant. Match.", "Let's say it all together! First, let's say it like a big, sleepy giant. Match.")),   // the opener in other words
+    problems(edit('learning-words', game('different', ['slow', 'whisper', 'silly', 'fast', 'stretch']), game('different', ['slow', 'mouse', 'silly', 'fast', 'stretch']))),   // Mikey's version changed
+    problems(edit('learning-words', 'Great job! One last time, nice and clear. Different.', 'One last time, nice and clear. Different.')),   // no praise
+    problems(edit('words-go-together', /^[^]*?(Let's say it together! First, let's say it like a big, sleepy giant\. Clothes\.)/, '$1')),   // the word not said before its opener
+    problems(edit('learning-words', 'so they match. Our word is same. ', 'so they match. ')),   // a line that ends on match before same's opener (round one)
+    problems(graded, { lessons: L.SAY_ALONG_LESSONS.slice(1) }),   // a say-along outside the say-along lessons
+    problems(graded, { waits: L.SAY_ALONG_WAITS.filter((x) => x !== 'colours') }),   // a pre-K vocabulary lesson with no game (Q77 (a))
+    // A new pre-K lesson citing II.D.1 and playing no game, which only the Q77 (a) guard catches (the second read of round one, pass
+    // MT: since round one's eight-lesson hold, the list without Colors fails that hold too, so it no longer proved the guard).
+    problems([...graded, { id: 'new-vocab-pk4', grade: 'PK4', sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.D.1'], lesson: { script: [{ say: 'This is a hat.' }] } }]),
+    problems(graded, { waits: [...L.SAY_ALONG_WAITS, 'shapes-around-us'] }),   // a ninth lesson let off the game (round one's alignment read)
+    problems(graded, { syllables: { ...L.SAY_ALONG_SYLLABLES, different: ['dif', 'fer', 'nt'] } }),   // syllables that do not make the word
+    problems(graded, { pieces: (text, o) => L.speechPieces(text, o).map((x) => (x.shape === 'whisper' ? { ...x, shape: 'plain' } : x)) }),   // a whisper said plain
+    problems(graded, { pieces: (text, o) => L.speechPieces(text, o).map((x) => (x.shape === 'sayOpen' ? { ...x, shape: 'plain' } : x)) }),   // the opener said plain
+    problems(graded, { pieces: (text, o) => L.speechPieces(text, o).filter((x) => x.sound !== 'whistle') }),   // a cheer with no whistles
+    problems(graded, { pieces: (text, o) => L.speechPieces(text, o).filter((x) => x.sound !== 'applause') }),   // a cheer with no crowd after it
+    problems(graded, { pieces: (text, o) => sayingApart(L.speechPieces(text, o)) }),   // super fast a saying a piece, as pass MS said it
+    problems(graded, { pieces: (text, o) => L.speechPieces(text, o).map(({ pauseAfter, ...x }) => x) }),   // no brief pauses between the silly voices
+    problems(graded, { pieces: (text, o) => L.speechPieces(text, Array.isArray(o && o.line) ? {} : o) }),   // a sentence read without its line (pass MR's way)
   ].map((p) => p.bad.length > 0);
-  ok(`every say-along is one word in three to five silly voices and then clear, ending its line, each way in its own shape on the device voice, the same read a sentence at a time, and every Q67 lesson plays all eight (${real.n} words in ${real.lessonsWith.length} lessons, ${real.styles.size} silly voices; ${plants.length} near misses caught)`,
-    real.bad.length === 0 && real.n >= 30 && real.styles.size === silly.length && L.SAY_ALONG_LESSONS.every((id) => real.lessonsWith.includes(id)) && stale.length === 0 && plants.every(Boolean), [...real.bad.slice(0, 6), `stale syllables ${stale}`, `plants ${plants}`, `lessons ${real.lessonsWith}`].join(' | '));
-  // The device voice's shapes come from logic's voices (SAY_ALONG_SHAPES), each keeps its own pace for a young learner, and each sounds
-  // apart from the clear one on a device voice (a rate a fifth apart, a pitch three tenths apart, or a softer volume); the slide steps
-  // down. The recorded voice's ledger row for each form carries only its voice's tag (EARMARKS A55); the cue and the calls keep the
-  // young voice's direction. A lesson that plays it shows the not-final note in a panel under its buttons.
-  const clear = L.SAY_ALONG_VOICES.find((v) => v.last);
-  const apart = L.SAY_ALONG_VOICES.filter((v) => !v.last).every((v) => v.device.some((d) => Math.abs(d.rate - clear.device[0].rate) >= 0.2 || Math.abs(d.pitch - clear.device[0].pitch) >= 0.3 || (d.volume !== undefined && d.volume <= 0.6)));
-  const slide = L.SAY_ALONG_VOICES.find((v) => v.style === 'slide'); const steps = slide && slide.device.length === slide.times && slide.device.every((d, k) => k === 0 || d.pitch < slide.device[k - 1].pitch);
-  const shaped = ui.includes('const SAY_ALONG_SHAPES = Object.fromEntries(SAY_ALONG_VOICES.flatMap(') && /const SPEECH_SHAPES = \{[^;]*\.\.\.SAY_ALONG_SHAPES \};/.test(ui) && ui.includes("const OWN_PACE_SHAPES = ['key', 'cheer', ...Object.keys(SAY_ALONG_SHAPES)];");
-  const rowsOf = LEDGER_CSV.split('\n'); const { DIRECTION } = await import('../tools/audio-ledger.mjs');
-  const tagged = L.MODULES.every((m) => (m.lesson.script || []).every((l) => L.sayAlongParts(l.say).every((p) => p.role === 'say' || (p.role === 'form'
-    ? rowsOf.some((r) => r.includes(`${p.voice.tag} ${p.sentence}`) && !r.includes(DIRECTION.early)) : rowsOf.some((r) => r.includes(`${DIRECTION.early} ${p.sentence}`))))));
+  ok(`every say-along is Mikey's game, "Let's say it together!", five steps each called in his openings, the line's own words ending on its word, "Great job!" and the clear one, ending its line, each way in its own shape on the device voice, the same read a sentence at a time, Learning words' different his own version, and every new pre-K vocabulary lesson plays it (${real.n} words in ${real.lessonsWith.length} lessons, ${real.styles.size} ways; ${plants.length} near misses caught)`,
+    real.bad.length === 0 && real.n >= 30 && real.styles.size === ways.length && L.SAY_ALONG_LESSONS.every((id) => real.lessonsWith.includes(id)) && stale.length === 0 && waitsReal.length === 0 && plants.every(Boolean), [...real.bad.slice(0, 6), `stale syllables ${stale}`, `waits not vocabulary lessons ${waitsReal}`, `plants ${plants}`, `lessons ${real.lessonsWith}`].join(' | '));
+  // The device voice's shapes come from logic's ways (SAY_ALONG_SHAPES, with the opener's), each keeps its own pace for a young
+  // learner, and each sounds apart from the clear one (a rate a fifth apart, a pitch three tenths apart, or a softer volume); Mikey's
+  // numbers: slowly three times as drawn out as pass MS's (its rate a third of 0.48), whispered slower than pass MS's whisper but
+  // quicker than slowly, super fast quicker than pass MS's 1.85, the four silly voices four pitches, some above and some below the clear
+  // one, at four paces, the clear one at the young voice's ordinary pace (0.86 times 0.9), and the opener higher than the plain words;
+  // the slide steps down and the bounce goes high, low, high, low. The recorded voice's ledger row for each form carries its way's tag
+  // (each silly voice its own, two of them the British and the Australian accent in the same voice), the opener, the calls and the
+  // praise their own; and the lesson shows its not-final note in a panel under its buttons.
+  const by = (s) => L.SAY_ALONG_VOICES.find((v) => v.style === s); const clear = by('clear');
+  const apart = ways.every((v) => v.device.every((d, k) => (v.style === 'slide' && k === 1) || Math.abs(d.rate - clear.device[0].rate) >= 0.2 || Math.abs(d.pitch - clear.device[0].pitch) >= 0.3 || (d.volume !== undefined && d.volume <= 0.6)));   // the slide's middle step passes the clear voice's pitch on its way down
+  const silly = by('silly').device; const mikeyNumbers = Math.abs(by('slow').device[0].rate - 0.48 / 3) < 1e-9 && by('whisper').device[0].rate < 0.8 && by('whisper').device[0].rate > by('slow').device[0].rate && by('fast').device[0].rate > 1.85 && by('fast').joined
+    && new Set(silly.map((d) => d.pitch)).size === 4 && new Set(silly.map((d) => d.rate)).size === 4 && silly.some((d) => d.pitch > clear.device[0].pitch) && silly.some((d) => d.pitch < clear.device[0].pitch) && by('silly').pause > 0
+    && Math.abs(clear.device[0].rate - 0.86 * 0.9) < 0.01 && L.SAY_ALONG_OPEN_SHAPE.pitch > 1.15;
+  const slide = by('slide').device; const steps = slide.length === by('slide').times && slide.every((d, k) => k === 0 || d.pitch < slide[k - 1].pitch);
+  const bounce = by('bounce').device; const bounced = bounce.length === 4 && bounce.every((d, k) => (k % 2 === 0 ? d.pitch > 1.5 : d.pitch < 0.6));
+  const shaped = ui.includes('const SAY_ALONG_SHAPES = { sayOpen: SAY_ALONG_OPEN_SHAPE, ...Object.fromEntries(SAY_ALONG_VOICES.flatMap(') && /const SPEECH_SHAPES = \{[^;]*\.\.\.SAY_ALONG_SHAPES \};/.test(ui) && ui.includes("const OWN_PACE_SHAPES = ['key', 'cheer', ...Object.keys(SAY_ALONG_SHAPES)];");
+  const baseShapes = ((/const SPEECH_SHAPES = \{([^;]*)\.\.\.SAY_ALONG_SHAPES \};/.exec(ui) || [])[1] || '').match(/\b([a-z]+): \{/g) || []; const base = baseShapes.map((x) => x.replace(/: \{$/, ''));
+  const wayShapes = (vs) => ['sayOpen', ...vs.flatMap((v) => (v.device.length === 1 ? [v.style] : v.device.map((_, k) => `${v.style}${k + 1}`)))];
+  const apartFromBase = base.length >= 5 && base.includes('cheer') && !wayShapes(L.SAY_ALONG_VOICES).some((s) => base.includes(s)) && wayShapes(L.SAY_ALONG_VOICES.map((v) => (v.style === 'chant' ? { ...v, style: 'cheer' } : v))).some((s) => base.includes(s));
+  const rowsOf = LEDGER_CSV.split('\n');
+  const tagged = L.MODULES.every((m) => (m.lesson.script || []).every((l) => L.sayAlongParts(l.say).every((p) => p.role === 'say' || rowsOf.some((r) => r.includes(`${p.role === 'form' ? (p.voice.tags && p.voice.tags[p.rep]) || p.voice.tag : SAY_ALONG_TALK[p.role]} ${p.sentence}`)))))
+    && by('silly').tags.length === 4 && by('silly').tags.some((t) => /British accent, the same voice/.test(t)) && by('silly').tags.some((t) => /Australian accent, the same voice/.test(t)) && /excited/.test(SAY_ALONG_TALK.open) && /playful/.test(SAY_ALONG_TALK.call);
   const noted = /const playfulLesson = script\.some\(\(l\) => sayAlongParts\(l\.say\)\.some\(\(p\) => p\.role === 'open'\)\);/.test(ui) && ui.includes('{playfulLesson ? <VoiceNote near keys={lineKeys} /> : <VoiceNote keys={lineKeys} />}');
-  ok('each silly voice has its own shape and pace on the device, apart from the clear one, the slide stepping down; each form its own tag in the recording ledger; and the lesson its not-final note in a panel under its buttons', apart && steps && shaped && tagged && noted, `apart ${apart}, steps ${steps}, shaped ${shaped}, tagged ${tagged}, noted ${noted}`);
+  ok('each way has its own shape and pace on the device, never named like a speech shape the app already has (a way named cheer overrode every welcome\'s HAVE FUN cheer; near miss caught), apart from the clear one, by Mikey\'s numbers (slowly a third of pass MS\'s rate, a slower whisper, super fast quicker and in one breath, four silly voices at four pitches and paces with pauses between, the clear one at the young voice\'s pace, the opener excited), the slide stepping down and the bounce high and low; each form its own tag in the recording ledger, the accents in the same voice; and the lesson its not-final note', apart && apartFromBase && mikeyNumbers && steps && bounced && shaped && tagged && noted, `apart ${apart}, base ${apartFromBase} (${base}), numbers ${mikeyNumbers}, steps ${steps}, bounced ${bounced}, shaped ${shaped}, tagged ${tagged}, noted ${noted}`);
   // The strip under the line (SayAlongStrip): the lesson shows the line's own words in the paragraph and the say-along's in the strip,
-  // the strip only on a line with a cue, and the lesson tells it each piece's start and end.
+  // the strip only on a line with an opener, and the lesson tells it each piece's start and end; "Great job!" shows while it is said.
   const strip = ui.includes("{lineParts.some((x) => x.role === 'open') && <SayAlongStrip key={`${lessonStep}-${replays}`} parts={lineParts} lit={litSentence} />}")
-    && ui.includes(".filter(({ i }) => !lineParts[i] || lineParts[i].role === 'say')") && ui.includes("{ together: true, onPieceEnd: (i, k, piece) => sayAlongBus.emit({ type: 'end', i, piece }) }");
+    && ui.includes(".filter(({ i }) => !lineParts[i] || lineParts[i].role === 'say')") && ui.includes("{ together: true, onPieceEnd: (i, k, piece) => sayAlongBus.emit({ type: 'end', i, piece }) }")
+    && ui.includes("const shownLabel = voiced && call ? call.sentence : voiced && praise ? praise.sentence : open.sentence;");
   ok('a say-along line shows its own words in the paragraph and the game in the strip under it, which the voice tells of each piece', strip, `strip ${strip}`);
-  // The light's timing (logic): a saying lights each syllable once, in order, inside the time the voice is guessed to take, a word of
-  // one syllable whole; the child's turn sits between 0.7 and 1.8 seconds. Every piece is one saying since round one's screen check
-  // (pass MS), so each saying's timeline is its own, named by its rep, and starts at 0.
-  const timed = L.SAY_ALONG_VOICES.every((v) => Object.values(L.SAY_ALONG_SYLLABLES).every((syl) => { const real = syl.filter((s) => s !== ' ').length;
-    return Array.from({ length: v.times }, (_, r) => r).every((r) => { const line = L.sayAlongTimeline(syl, v, r); const est = L.sayAlongEstimateMs(syl, v, r, false);
-      return line.length === real && line.every((x, k) => x.rep === r && (k === 0 || x.at >= line[k - 1].at) && x.until > x.at && x.until <= est + 1) && line[0].at === 0; }) && L.sayAlongEcho(syl, v) >= 700 && L.sayAlongEcho(syl, v) <= 1800; }));
-  ok('the say-along light reaches each syllable in order inside the time the voice is guessed to take, and the child\'s turn is 0.7 to 1.8 seconds', timed, `timed ${timed}`);
-  // The pace the light learns from the voice (logic's sayAlongPaceNext since round one's code check, pass MS, which found the rule in
-  // the screen with no test): two fifths of the way to what a form took over its guess, kept between half and 2.2 times the guess, and
-  // left alone for a form too short to measure (150 ms or less) or with no guess; the screen takes its pace from it.
-  const P = L.sayAlongPaceNext; const near = (x, y) => Math.abs(x - y) < 1e-9;
-  // Since round three's screen read a saying of one syllable leaves the pace as it was (the word is lit whole), and the screen hands
-  // the rule the saying's syllables, from a run the voice's own start began (a run the 700 ms guess began teaches nothing). Since round
-  // four's code read the screen's half is read too, each part a plant had taken out with this test still passing: both of the strip's
-  // started sayings carry their syllables (without them the one-syllable rule never applies), a reported start marks the visit's
-  // voice as one that reports starts, and a heard start runs as heard (run(false) there would teach the pace nothing, ever).
+  // No fade on a read-along light (round one's lesson check, pass MT): the ink turns at once, so a fading fill left a word dark on the
+  // dark card or pale on green at every change; the strip's syllables, LIT_WORDS and the lesson's sentences change ink and fill in one
+  // frame. Near miss: the strip as first built, with its 40 ms fade.
+  // Since the second read of round one, every line that lights with readLit() is read too, so a Wonder choice being read (its fill
+  // faded over 200 ms while its ink turned at once) or a lit sentence's unlit side fades nowhere; near miss: the Wonder button's fade.
+  const litLineFades = (src) => src.split('\n').some((l) => /readLit\(\)[^\n]*transition: '[^']*background/.test(l) || /transition: '[^']*background[^\n]*readLit\(\)/.test(l));
+  const fades = (src) => /const LIT_WORDS = \{[^}]*transition/.test(src) || /data-say-along-syllable=\{k\} style=\{[^\n]*transition: 'background/.test(src) || /litSentence === i \? \{ \.\.\.readLit\(\), \.\.\.LIT_WORDS \} : \{[^}]*transition/.test(src) || litLineFades(src);
+  const wonderAt = ui.indexOf('data-wonder-lit=');
+  const wonderFade = wonderAt > 0 ? ui.slice(0, wonderAt) + ui.slice(wonderAt).replace("transition: 'transform 200ms'", "transition: 'transform 200ms, background 200ms'") : ui;
+  ok('no read-along light fades: the strip\'s syllables, LIT_WORDS, the lesson\'s and every lit sentence and a Wonder choice being read change ink and fill in one frame (round one and its second read, pass MT; two near misses caught)', !fades(ui) && fades(ui.replace("...LIT_WORDS, transition: 'none', margin: 0", "...LIT_WORDS, transition: 'background 40ms', margin: 0")) && wonderFade !== ui && fades(wonderFade), `fades ${fades(ui)}`);
+  // The light's timing (logic): a piece lights each syllable once, in order, inside the time the voice is guessed to take, a word of one
+  // syllable whole; a way said in one breath lights every saying in turn, a little ahead (SAY_ALONG_JOINED_LEAD); the child's turn
+  // sits between 0.7 and 1.8 seconds.
+  const timed = ways.concat([clear]).every((v) => Object.values(L.SAY_ALONG_SYLLABLES).every((syl) => { const real = syl.filter((s) => s !== ' ').length;
+    return Array.from({ length: v.joined ? 1 : v.times }, (_, r) => r).every((r) => { const line = L.sayAlongTimeline(syl, v, r); const est = L.sayAlongEstimateMs(syl, v, r);
+      const reps = v.joined ? v.times : 1;
+      return line.length === real * reps && line.every((x, k) => (v.joined ? x.rep === Math.floor(k / real) : x.rep === r) && (k === 0 || x.at >= line[k - 1].at) && x.until > x.at && x.until <= est + 1) && line[0].at === 0; }) && L.sayAlongEcho(syl, v) >= 700 && L.sayAlongEcho(syl, v) <= 1800; }));
+  ok('the say-along light reaches each syllable in order inside the time the voice is guessed to take, super fast\'s three sayings in turn, and the child\'s turn is 0.7 to 1.8 seconds', timed, `timed ${timed}`);
+  // The pace the light learns from the voice (logic's sayAlongPaceNext since round one's code check, pass MS): two fifths of the way to
+  // what a saying took over its guess, between half and 2.2 times the guess, left alone for a saying too short to measure or of one
+  // syllable; since pass MT kept for each shape too (sayAlongLearn): a shape's first heard saying sets its own pace, later ones move it
+  // two fifths, between a quarter and four times, and only a rate a phone says as asked (0.4 to 1.6) moves the pace of all, which a shape
+  // not yet heard starts from. The screen keeps the paces for the visit and takes each saying's from logic.
+  const P = L.sayAlongPaceNext; const near = (x, y) => Math.abs(x - y) < 1e-9; const Lp = L.sayAlongLearn; const Of = L.sayAlongPaceOf;
+  const dif = ['dif', 'fer', 'ent'];
   const paced = near(P(1, 2000, 1000), 1.4) && near(P(1, 500, 1000), 0.8) && P(1, 100000, 1000) === 2.2 && P(0.6, 151, 100000) === 0.5 && P(1.3, 150, 1000) === 1.3 && P(1.3, 900, 0) === 1.3
-    && near([1, 2, 3, 4, 5, 6, 7, 8].reduce((p) => P(p, 1500, 1000), 1), 1.5 - 0.5 * Math.pow(0.6, 8)) && P(1, 2000, 1000, ['match']) === 1 && near(P(1, 2000, 1000, ['dif', 'fer', 'ent']), 1.4)
-    && ui.includes('sayAlongPace = sayAlongPaceNext(sayAlongPace, took, started.current.est, started.current.syllables);') && /if \(started\.current\.heard\) \{ const took/.test(ui) && ui.includes('if (!sayAlongStartsHeard) timers.current.push(setTimeout(() => run(false), 700));') && !/sayAlongPace = Math\.max\(/.test(ui)
-    && (ui.match(/started\.current = \{ at: (?:Date\.now\(\)|null), est, i: ev\.i, rep, heard(?:: false)?, syllables: part\.syllables \};/g) || []).length === 2 && ui.includes('if (ev.begun === true) sayAlongStartsHeard = true;') && ui.includes('if (ev.begun !== false) { run(true); return; }');
-  ok('the say-along light learns the voice\'s pace by logic\'s rule, two fifths of the way a form at a time, between half and 2.2 times the guess, from heard sayings of two syllables or more (pass MS, round one\'s code check and round three\'s reads)', paced, `paced ${paced}`);
+    && P(1, 2000, 1000, ['match']) === 1 && near(P(1, 2000, 1000, dif), 1.4)
+    && Of({}, 'slow') === 1 && near(Lp({}, 'slow', 0.16, 1000, 3000, dif).slow, 1 / 3) && Lp({}, 'slow', 0.16, 1000, 3000, dif).all === undefined && near(Lp({ slow: 0.5 }, 'slow', 0.16, 900, 3000, dif).slow, 0.42)
+    && Lp({}, 'slow', 0.16, 600, 3000, dif).slow === 0.25 && Lp({}, 'slow', 0.16, 100, 3000, dif).slow === undefined && Lp({}, 'slow', 0.16, 4000, 1000, dif).slow === 4 && Lp({}, 'slow', 0.16, 5000, 1000, dif).slow === 4
+    && Lp({}, 'x', 1.6, 1200, 1000, dif).all !== undefined && Lp({}, 'x', 1.7, 1200, 1000, dif).all === undefined && Lp({}, 'x', 0.4, 1200, 1000, dif).all !== undefined && Lp({}, 'x', 0.39, 1200, 1000, dif).all === undefined
+    && (() => { const sv = L.SAY_ALONG_VOICES.find((v) => v.style === 'silly'); const f = L.SAY_ALONG_VOICES.find((v) => v.style === 'fast'); const a1 = L.sayAlongShapeOf({ shape: 'silly2' }, sv, 1); const a2 = L.sayAlongShapeOf({ shape: 'fast' }, f, 0); const a3 = L.sayAlongShapeOf(null, f, 0); return a1.shape === 'silly2' && a1.rate === sv.device[1].rate && a2.shape === 'fast' && a2.rate === 2.2 && a3.shape === 'fast'; })()
+    && ui.includes('const { shape, rate } = sayAlongShapeOf(ev.piece, v, rep);') && near(Lp({}, 'whisper', 0.45, 1200, 1000, dif).all, 1.08) && near(Of({ all: 1.2 }, 'giant'), 1.2) && Lp({}, 'fast', 2.2, 900, 1000, ['toys']).fast === undefined
+    && ui.includes('sayAlongPaces = sayAlongLearn(sayAlongPaces, started.current.shape, started.current.rate, took, started.current.est, started.current.syllables);') && ui.includes('const k = sayAlongPaceOf(sayAlongPaces, shape);') && /if \(started\.current\.heard\) \{ const took/.test(ui) && ui.includes('if (!sayAlongStartsHeard) timers.current.push(setTimeout(() => run(false), 700));') && !/sayAlongPace = /.test(ui)
+    && (ui.match(/started\.current = \{ at: (?:Date\.now\(\)|null), est, i: ev\.i, rep, heard(?:: false)?, syllables: part\.syllables, shape, rate \};/g) || []).length === 2 && ui.includes('if (ev.begun === true) sayAlongStartsHeard = true;') && ui.includes('if (ev.begun !== false) { run(true); return; }');
+  ok('the say-along light learns the voice\'s pace by logic\'s rules, for each shape and for all, from heard sayings of two syllables or more (pass MS, round one\'s code check and round three\'s reads; pass MT, a pace a shape)', paced, `paced ${paced}`);
   // Every say-along line in its lessons' order, as a phone's voice says it (a piece's letters at 40, 62 and 80 ms a letter over its
-  // voice's rate, and 120 ms more), through logic's timeline, estimate and pace rule (round three's screen read: the pace learned from
-  // one-syllable words had run to its ceiling, and whisper and slow "Different." after match and same ended before their last
-  // syllable lit, as did low's first "Vehicles,"): every saying's last syllable lights before the voice ends it. Near miss: the pace
-  // learned from every saying, as before, which leaves some saying short at one of the three paces.
+  // rate, and 120 ms more), through logic's timeline, estimate and paces: every piece's last syllable lights before the voice ends it,
+  // but a shape's first saying of two syllables or more on the visit, which has only the pace of all to go by; and the same on a phone
+  // that holds a rate between 0.5 and 2 (a floor and a ceiling), where the slow way takes a third of its guess. Near misses: the one pace
+  // of pass MS for every shape, which on that phone leaves the slow ways short about half the time (31, 31 and 27 of their sayings at
+  // the three paces; round one's alignment read corrected "every time", and super fast is not among them); and the one-breath light at
+  // the full guess, which leaves super fast's last syllable short on baby, birthday party and animals.
   { const lines = []; for (const id of L.SAY_ALONG_LESSONS) { const mod = L.COURSES.flatMap((c) => c.modules).find((m) => m.id === id); L.readAloudScript(mod).forEach((s) => { if (L.sayAlongParts(s.say).some((x) => x.role === 'open')) lines.push(s.say); }); }
     const split = (x) => String(x).split(L.SENTENCE_BREAK).filter((y) => y.trim());
-    const short = (perChar, guard) => { let pace = 1; let miss = 0; let n = 0;
+    const short = (perChar, { clamp = false, rule = 'shape', lead = true } = {}) => { let paces = {}; let pace = 1; let late = 0; let cold = 0; let n = 0;
       for (const say of lines) { const texts = split(say); for (const p of texts.flatMap((x, k) => L.speechPieces(x, { line: texts, at: k }))) { if (!p.sayAlong) continue; n += 1;
-        const sa = p.sayAlong; const v = L.SAY_ALONG_VOICES.find((x) => x.style === sa.style); const d = v.device[Math.min(sa.rep, v.device.length - 1)];
-        const took = Math.round((p.text.length * perChar) / (d.rate || 1)) + 120; const tl = L.sayAlongTimeline(sa.syllables, v, sa.rep);
-        if (tl[tl.length - 1].at * pace >= took) miss += 1; pace = P(pace, took, L.sayAlongEstimateMs(sa.syllables, v, sa.rep, false), guard ? sa.syllables : null); } }
-      return { miss, n }; };
-    const paces = [40, 62, 80]; const now = paces.map((c) => short(c, true)); const before = paces.map((c) => short(c, false));
-    ok(`every say-along saying's last syllable lights before a phone's voice ends it, over every line in order at 40, 62 and 80 ms a letter (${lines.length} lines, ${now[0].n} sayings; the old pace rule left ${before.map((x) => x.miss).join(', ')} short) (pass MS, round three's screen read)`, lines.length >= 30 && now.every((x) => x.miss === 0 && x.n > 250) && before.some((x) => x.miss > 0), JSON.stringify({ now, before })); }
-  // The two slow ways never side by side in one word's game (pass MS, round one's story flow and lesson checks: "Stretch it out
-  // long." and then "Say it slowly." was the one flat moment, in lunchtime and bedtime); near miss: bedtime's old order.
-  const slowPairs = (say) => { const calls = L.sayAlongParts(say).filter((p) => p.role === 'call'); const out = []; for (let k = 1; k < calls.length; k++) if (calls[k].word === calls[k - 1].word && ['drawn', 'slow'].includes(calls[k].voice.style) && ['drawn', 'slow'].includes(calls[k - 1].voice.style)) out.push(calls[k].word); return out; };
-  const sideBySide = []; for (const c of L.COURSES.filter((x) => x.readAloud)) for (const m of c.modules) for (const l of L.readAloudScript(m)) for (const w of slowPairs(l.say)) sideBySide.push(`${m.id}: ${w}`);
-  ok('no say-along plays its two slow ways, stretched out and slowly, side by side (pass MS, round one; near miss caught)', sideBySide.length === 0 && slowPairs(L.sayAlong('bedtime', ['whisper', 'drawn', 'slow', 'low'])).length === 1, sideBySide.join(', '));
-  // The voice check page's say-along rows are lesson lines word for word, as the page says (round one's code check: nothing held them,
-  // so a lesson edit would have left the page saying an old line); near miss: a row with its order changed.
+        const sa = p.sayAlong; const v = L.SAY_ALONG_VOICES.find((x) => x.style === sa.style); const d = v.device[Math.min(sa.rep, v.device.length - 1)]; const r = clamp ? Math.max(0.5, Math.min(2, d.rate)) : d.rate;
+        const took = Math.round((p.text.replace(/[^A-Za-z]/g, '').length * perChar) / r) + 120; const tl = L.sayAlongTimeline(sa.syllables, v, sa.rep); const est = L.sayAlongEstimateMs(sa.syllables, v, sa.rep);
+        const sh = L.sayAlongShapeOf(p, v, sa.rep); const k = (rule === 'shape' ? Of(paces, sh.shape) : pace) * (v.joined && !lead ? 1 / L.SAY_ALONG_JOINED_LEAD : 1); const multi = sa.syllables.filter((s) => s !== ' ').length > 1;
+        if (tl[tl.length - 1].at * k >= took) { if (multi && rule === 'shape' && !(paces[sh.shape] > 0)) cold += 1; else late += 1; }
+        if (rule === 'shape') paces = Lp(paces, sh.shape, sh.rate, took, est, sa.syllables); else pace = P(pace, took, est, sa.syllables); } }
+      return { late, cold, n }; };
+    const paces = [40, 62, 80]; const now = paces.flatMap((c) => [short(c), short(c, { clamp: true })]);
+    const before = paces.map((c) => short(c, { clamp: true, rule: 'one' })); const full = paces.map((c) => short(c, { lead: false }));
+    ok(`every say-along saying's last syllable lights before a phone's voice ends it, but a shape's first on the visit, over every line in order at 40, 62 and 80 ms a letter, on a phone that says every rate and on one that holds rates between 0.5 and 2 (${lines.length} lines, ${now[0].n} pieces; pass MS's one pace left ${before.map((x) => x.late).join(', ')} short on the second, the full guess ${full.map((x) => x.late).join(', ')} on the first)`,
+      lines.length >= 30 && now.every((x) => x.late === 0 && x.cold <= 6 && x.n > 250) && before.every((x) => x.late > 6) && full.some((x) => x.late > 0), JSON.stringify({ now, before, full })); }
+  // The voice check page's say-along rows are lesson lines word for word, as the page says (round one's code check, pass MS: nothing
+  // held them, so a lesson edit would have left the page saying an old line); near miss: a row with a call changed.
   { const { VOICE_CHECK_ROWS } = await import('../tools/voice-check.mjs'); const lines = new Set(); for (const c of L.COURSES.filter((x) => x.readAloud)) for (const m of c.modules) for (const l of L.readAloudScript(m)) lines.add(l.say);
-    const rows = VOICE_CHECK_ROWS.filter((r) => r.text && /with me, in silly voices!/.test(r.text)); const stale = rows.filter((r) => !lines.has(r.text)).map((r) => r.n);
-    const nearRow = rows.length ? rows[rows.length - 1].text.replace('Whisper it.', 'Whisper it!') : '';
-    ok(`the voice check page's say-along rows are lesson lines word for word (${rows.length} rows; near miss caught)`, rows.length >= 6 && stale.length === 0 && !lines.has(nearRow), `stale rows ${stale.join(', ')}`); }
+    const rows = VOICE_CHECK_ROWS.filter((r) => r.text && r.text.includes("Let's say it together!")); const stale = rows.filter((r) => !lines.has(r.text)).map((r) => r.n);
+    const nearRow = rows.length ? rows[rows.length - 1].text.replace("Now, let's whisper it twice.", "Now, let's whisper it two times.") : '';
+    const allWays = new Set(rows.flatMap((r) => L.sayAlongParts(r.text).filter((x) => x.role === 'call').map((x) => x.voice.style)));
+    ok(`the voice check page's say-along rows are lesson lines word for word, Mikey's own among them, every way played on one (${rows.length} rows; near miss caught)`, rows.length >= 6 && stale.length === 0 && rows.some((r) => r.text.endsWith(MIKEY)) && allWays.size === L.SAY_ALONG_VOICES.length && !lines.has(nearRow), `stale rows ${stale.join(', ')}, ways ${[...allWays]}`); }
 }
 // A story's title is said with its own end mark (pass MR, round one's story flow check): "Is it bedtime yet?" had been spoken as "Is it
 // bedtime yet?." in sixteen titles, a statement with no question lift. The story screen, a long story's read-along and the audio ledger

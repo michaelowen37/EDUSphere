@@ -3557,10 +3557,11 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
       for (const w of Object.keys(q.whyNot || {})) { texts.push(L.whyNotSentence(q.whyNot[w])); try { texts.push(L.preReaderWrongWords(q, w, [w])); } catch (e) { /* not a choice */ } } }
     // Since pass MQ (Mikey's answer to Q60, "Q60 - B") buh, duh, guh and juh, and the endings ig, og and at, are the app's own sounds
     // in every lesson too, so neither reaches the voice (ig had been handed as igg, at alone, og inside its sentence). Since pass MS a
-    // say-along's chant plays the app's clap between its cheers; a clap is no speech sound, so it is allowed only inside a chant.
+    // say-along's chant played the app's clap between its cheers, and since pass MT a cheer plays a fan's whistle between its sayings
+    // and the crowd after; neither is a speech sound, so each is allowed only inside a say-along's form.
     const bad = []; let sounds = 0; let rimes = 0; const kinds = new Set();
     for (const t of texts) for (const x of L.speechPieces(t)) {
-      if (x.sound) { sounds += 1; kinds.add(x.sound); if (['ig', 'og', 'at'].includes(x.sound)) rimes += 1; if (!L.SPEECH_SOUNDS[x.sound] && !(x.sound === 'clap' && x.inForm !== undefined)) bad.push(`unknown sound ${x.sound}`); continue; }
+      if (x.sound) { sounds += 1; kinds.add(x.sound); if (['ig', 'og', 'at'].includes(x.sound)) rimes += 1; if (!L.SPEECH_SOUNDS[x.sound] && !(['whistle', 'applause'].includes(x.sound) && x.inForm !== undefined)) bad.push(`unknown sound ${x.sound}`); continue; }
       const said = String(x.text).split(/[^A-Za-z-]+/).flatMap((w) => w.split('-')).filter(Boolean);
       if (said.some((w) => L.soundOfNotation(w))) bad.push(`a sound handed to the voice: ${String(x.text).slice(0, 60)}`);
       if (said.some((w) => /^(?:ig|og|igg)$/i.test(w))) bad.push(`an ending handed to the voice: ${String(x.text).slice(0, 60)}`);
@@ -3658,7 +3659,9 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   // the trial rows play the e of egg for the short a (row 49), and since round one's code check a fourth has no rests between sentences. Since p52 (pass MQ) a fifth plant hands the lesson rows the page's old
   // pause, a rest before every new sentence piece, which row 21 must catch ("Sss! he said": no rest inside a sentence, as p48 rules), and since round five a sixth, a 200 ms rest there.
   // Since pass MS two more: a page with no child's turn after a say-along's way (row 58 must be caught), and one that rests between a
-  // chant's cheers (row 60).
+  // chant's cheers (row 60). Since pass MT rows 58 to 64 are retired: row 67 (Mikey's own version) must be caught with no child's turn,
+  // and row 68 (a cheer, with its whistles and its crowd) resting inside a way; and a ninth page keeps no brief pause between the four
+  // silly voices (row 67's), which must be caught too.
   { const VC = await import('../tools/voice-check.mjs'); const problems = await VC.voiceCheckSelfTest(L);
     const plantA = VC.VOICE_CHECK_SCRIPT.replace("playSound(row.sound, done)", "playSound('s', done)"); const plantB = VC.VOICE_CHECK_SCRIPT.replace("row.kind === 'line' ? speechPieces(row.text)", "row.kind === 'line' ? speechPieces(row.text).map((p) => (p.sound === 'b' ? { ...p, sound: 'd' } : p))");
     const plantC = VC.VOICE_CHECK_SCRIPT.replace("speechPieces(row.text, { trial: true })", "speechPieces(row.text, { trial: true }).map((p) => (p.sound === 'a' ? { ...p, sound: 'e' } : p))");
@@ -3667,13 +3670,15 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
     const plantF = VC.VOICE_CHECK_SCRIPT.replace('pause: young ? restBefore(YOUNG_PAUSE_MS) : null', 'pause: young ? (next) => (startsSentence(next) ? YOUNG_PAUSE_MS : 200) : null');   // a short rest inside one (round five)
     const plantG = VC.VOICE_CHECK_SCRIPT.replace('const echo = next && prev && prev.echo && !together ? prev.echo : 0;', 'const echo = 0;');   // no child's turn (pass MS)
     const plantH = VC.VOICE_CHECK_SCRIPT.replace('const together = !!(next && prev && prev.inForm !== undefined && next.inForm === prev.inForm);', 'const together = false;');   // a rest between a chant's cheers (pass MS)
+    const plantI = VC.VOICE_CHECK_SCRIPT.replace('const brief = next && prev && together && prev.pauseAfter ? prev.pauseAfter : 0;', 'const brief = 0;');   // no pause between the silly voices (pass MT)
     const caughtB = plantB !== VC.VOICE_CHECK_SCRIPT ? await VC.voiceCheckSelfTest(L, plantB) : [];
     const caught = plantA !== VC.VOICE_CHECK_SCRIPT && plantB !== VC.VOICE_CHECK_SCRIPT && plantC !== VC.VOICE_CHECK_SCRIPT && (await VC.voiceCheckSelfTest(L, plantA)).length > 0 && caughtB.some((x) => /row 45/.test(x)) && caughtB.some((x) => /row 19/.test(x)) && (await VC.voiceCheckSelfTest(L, plantC)).some((x) => /row 49/.test(x)) && plantD !== VC.VOICE_CHECK_SCRIPT && (await VC.voiceCheckSelfTest(L, plantD)).some((x) => / rests \d+ ms before /.test(x))
       && plantE !== VC.VOICE_CHECK_SCRIPT && (await VC.voiceCheckSelfTest(L, plantE)).some((x) => /^row 21 rests \d+ ms before "he said, and he hissed like a snake\.", inside its sentence$/.test(x))
       && plantF !== VC.VOICE_CHECK_SCRIPT && (await VC.voiceCheckSelfTest(L, plantF)).some((x) => /^row 21 rests \d+ ms before "he said, and he hissed like a snake\.", inside its sentence$/.test(x))
-      && plantG !== VC.VOICE_CHECK_SCRIPT && (await VC.voiceCheckSelfTest(L, plantG)).some((x) => /^row 58 waits \d+ ms after "Different\.", not the child's turn of \d+ ms$/.test(x))
-      && plantH !== VC.VOICE_CHECK_SCRIPT && (await VC.voiceCheckSelfTest(L, plantH)).some((x) => /^row 60 rests \d+ ms before "(?:clap|Match!)", inside a say-along's sayings$/.test(x));
-    ok(`the voice check page runs the app's own speech code, its rows said as the app says them and each sound played by name (${VC.VOICE_CHECK_ROWS.filter((r) => r.kind === 'line').length} lines; eight planted pages caught, the fourth with no rests between sentences, the fifth and sixth with a rest inside one, 450 and 200 ms, the seventh with no child's turn after a say-along's way and the eighth resting between a chant's cheers)`, problems.length === 0 && caught, problems.join('; ') || `plants caught ${caught}`); }
+      && plantG !== VC.VOICE_CHECK_SCRIPT && (await VC.voiceCheckSelfTest(L, plantG)).some((x) => /^row 67 waits \d+ ms after "Different\.", not the child's turn of \d+ ms$/.test(x))
+      && plantH !== VC.VOICE_CHECK_SCRIPT && (await VC.voiceCheckSelfTest(L, plantH)).some((x) => /^row 68 rests \d+ ms before "(?:match!|whistle|Match!)", inside a say-along's sayings, where its way pauses \d+ ms$/.test(x))
+      && plantI !== VC.VOICE_CHECK_SCRIPT && (await VC.voiceCheckSelfTest(L, plantI)).some((x) => /^row 67 rests \d+ ms before "(?:different\.|Different!)", inside a say-along's sayings, where its way pauses \d+ ms$/.test(x));
+    ok(`the voice check page runs the app's own speech code, its rows said as the app says them and each sound played by name (${VC.VOICE_CHECK_ROWS.filter((r) => r.kind === 'line').length} lines; nine planted pages caught, the fourth with no rests between sentences, the fifth and sixth with a rest inside one, 450 and 200 ms, the seventh with no child's turn after a say-along's way, the eighth resting inside a way and the ninth with no pause between the silly voices)`, problems.length === 0 && caught, problems.join('; ') || `plants caught ${caught}`); }
   // The sounds themselves (pass MO), measured: the same samples every time; a held sound 0.85 seconds (1.1 on the snail), a crisp
   // stop under a quarter of a second; no click at either end; loud enough to hear and never clipped; and each one's energy where
   // that sound's is (sss high, its loudest part near 6,500 cycles a second, fff spread out and softer, zzz a hiss over a buzz, mmm and
@@ -3687,9 +3692,11 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   // and 1,430); buh, duh, guh and juh a low hum first, then the release, then an uh softer than the release; and ig, og and at a
   // vowel with its own resonances, a closing quiet, then the release. The check is a function, run on the app's sounds and on
   // planted near misses beside it (a held hiss with no gap, o's sound given for a, an uh louder than the t's burst, a b with no hum
-  // before it, an ig whose vowel is e's), each of which it must catch. Since pass MS the say-along chant's clap too: two claps 0.2
-  // seconds apart, each a short burst in a clap's band (700 to 4,200 cycles a second), quiet between them and after; a clap that claps
-  // once and a clap muffled to a thud are planted beside it.
+  // before it, an ig whose vowel is e's), each of which it must catch. Since pass MS the say-along chant's clap too, until pass MT
+  // retired it (Mikey: "the claps in row 64 don't sound like real claps"); since pass MT the cheer's whistle, half a second of one
+  // pitch near 2,700 cycles a second that swoops up into it, nearly all its energy in a narrow band (a tone, not a hiss), and the crowd,
+  // a second and a half of many claps (well over a hundred bursts), its energy in a clap's band, loud through its middle, a whistle on
+  // top and its end faded; a whistle made of noise, a crowd of a few claps and a crowd muffled to a thud are planted beside them.
   { const fft = (re) => { const n = re.length; const im = new Float64Array(n); for (let i = 1, j = 0; i < n; i++) { let bit = n >> 1; for (; j & bit; bit >>= 1) j ^= bit; j ^= bit; if (i < j) { [re[i], re[j]] = [re[j], re[i]]; } }
       for (let len = 2; len <= n; len <<= 1) { const ang = (-2 * Math.PI) / len; for (let i = 0; i < n; i += len) for (let k = 0; k < len / 2; k++) { const wr = Math.cos(ang * k); const wi = Math.sin(ang * k); const a = i + k; const b2 = a + len / 2; const xr = re[b2] * wr - im[b2] * wi; const xi = re[b2] * wi + im[b2] * wr; re[b2] = re[a] - xr; im[b2] = im[a] - xi; re[a] += xr; im[a] += xi; } }
       return Array.from({ length: n / 2 }, (_, k) => re[k] * re[k] + im[k] * im[k]); };
@@ -3708,13 +3715,13 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
       const held = (s) => { const x = get(s); return { x, sp: spectrum(x, s === 's' || s === 'f' || s === 'z' ? Math.round(0.05 * R) : (x.length >> 1) - 4096, 8192) }; };
       const S = Object.fromEntries(['s', 'f', 'z', 'm', 'n', 'l', 'r'].map((s) => [s, held(s)]));
       const shape = [];
-      for (const s of ['m', 'n', 's', 'f', 'z', 'l', 'r', 't', 'p', 'k', 'a', 'e', 'i', 'o', 'u', 'b', 'd', 'g', 'j', 'ig', 'og', 'at', 'clap']) {
+      for (const s of ['m', 'n', 's', 'f', 'z', 'l', 'r', 't', 'p', 'k', 'a', 'e', 'i', 'o', 'u', 'b', 'd', 'g', 'j', 'ig', 'og', 'at', 'whistle', 'applause']) {
         const x = get(s); const y = get(s); const slow = get(s, { slow: true });
         if (!x) { shape.push(`${s} is not made`); continue; }
         const peak = Math.max(...x.map(Math.abs)); const ends = Math.max(...[...x.slice(0, 16), ...x.slice(-16)].map(Math.abs)); const secs = x.length / R; const slowSecs = slow.length / R;
         const same = x.length === y.length && x.every((v, i) => v === y[i]);
         if (!same) shape.push(`${s} changes from one call to the next`);
-        const want = 'mnlr'.includes(s) ? [0.85, 1.1] : 'sfz'.includes(s) ? [0.77, 0.97] : 'aeiou'.includes(s) ? [0.42, 0.55] : null;
+        const want = 'mnlr'.includes(s) && s.length === 1 ? [0.85, 1.1] : 'sfz'.includes(s) && s.length === 1 ? [0.77, 0.97] : 'aeiou'.includes(s) && s.length === 1 ? [0.42, 0.55] : s === 'whistle' ? [0.5, 0.5] : s === 'applause' ? [1.5, 1.5] : null;
         if (want ? Math.abs(secs - want[0]) > 0.001 || Math.abs(slowSecs - want[1]) > 0.001 : secs < 0.1 || secs > (s.length > 1 ? 0.45 : 0.3)) shape.push(`${s} lasts ${secs.toFixed(3)}s`);
         if (peak > 0.9 || peak < 0.15) shape.push(`${s} peaks at ${peak.toFixed(2)}`);
         if (ends > 0.02) shape.push(`${s} starts or ends with a click (${ends.toFixed(3)})`);
@@ -3735,13 +3742,26 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
       // A rime: its vowel's resonances, a closing quiet, then the release.
       const rime = (s, v) => { const x = get(s); const sp = spectrum(x, Math.round(0.05 * R), Math.round(0.15 * R)); const e = frames(x); const quiet = e.slice(53, 60); const after = e.slice(60);
         return !vowelOff(sp, v) && Math.max(...quiet) < 0.03 && Math.max(...after) > 0.1; };
-      // The chant's clap: each clap loud for its first 30 ms, the stretch between them and the end quiet, and the first clap's energy
-      // in the clap's band.
-      const clapOk = (() => { const x = get('clap'); if (!x) return false; const at = (sec) => Math.round(sec * R); const cl = spectrum(x, at(0.012), at(0.035));
-        const quietIn = (a, b) => Math.max(...x.slice(at(a), at(b)).map(Math.abs)) < 0.01;
-        return rmsOf(x, at(0.012), at(0.042)) > 0.05 && rmsOf(x, at(0.212), at(0.242)) > 0.05 && quietIn(0.075, 0.2) && quietIn(0.275, 0.42) && cl.band(700, 4200) >= 0.7 && cl.band(0, 400) <= 0.1; })();
+      // The cheer's whistle (pass MT): a tone, its pitch held near 2,700 cycles a second after a swoop up from below it, nearly all its
+      // energy within 400 cycles a second of that pitch, so a hiss of noise fails, and since round one no louder than a whisper of the
+      // app's own speech sounds' level allows (its middle under 0.13, about 6 dB down from the first build); the crowd: a second and a
+      // half of claps that overlap, counted as onsets (a 2 ms frame at least 1.6 times as loud as the one before it, which smooth noise
+      // never has, 30 at least) and, since round one's code check, thick: no 5 ms from 0.15 to 1 second falls under 15 percent of the
+      // crowd's loud level (a crowd of 40 or 80 claps leaves gaps; a test that counted onsets alone passed a crowd a quarter as thick),
+      // its claps in a clap's band read after the whistle ends (from 0.9 seconds, where the whistle cannot carry it), loud through its
+      // middle, a whistle on top (a tone near 2,900 in its second fifth), and quiet at its end.
+      const whistleOk = (() => { const x = get('whistle'); if (!x) return false; const at = (sec) => Math.round(sec * R); const held = spectrum(x, at(0.15), at(0.25)); const swoop = spectrum(x, at(0.01), at(0.06));
+        return Math.abs(held.peak - 2700) <= 150 && held.band(held.peak - 400, held.peak + 400) >= 0.85 && swoop.peakIn(1200, 3500) < held.peak - 200 && rmsOf(x, at(0.1), at(0.4)) > 0.07 && rmsOf(x, at(0.1), at(0.4)) < 0.13; })();
+      const crowdOk = (() => { const x = get('applause'); if (!x) return false; const at = (sec) => Math.round(sec * R); const two = Math.round(0.002 * R); const e = []; for (let i = 0; i + two <= x.length; i += two) e.push(rmsOf(x, i, i + two));
+        let onsets = 0; for (let k = 1; k < e.length; k++) if (e[k] > 1.6 * e[k - 1] && e[k] > 0.03) onsets += 1;
+        const tenths = []; for (let s = 0.15; s < 0.99; s += 0.1) tenths.push(rmsOf(x, at(s), at(s + 0.1)));
+        const fives = []; for (let s = at(0.15); s + 160 <= at(1.0); s += 160) fives.push(rmsOf(x, s, s + 160)); const loud = [...fives].sort((p, q) => p - q)[Math.floor(fives.length * 0.9)];
+        const gaps = fives.filter((v) => v < 0.15 * loud).length / fives.length;
+        const body = spectrum(x, at(0.9), at(0.25)); const top = spectrum(x, at(0.3), at(0.25));
+        return onsets >= 30 && gaps <= 0.05 && body.band(700, 4200) >= 0.6 && body.band(0, 300) <= 0.1 && Math.min(...tenths) > 0.03 && top.peakIn(2600, 3200) > 2700 && top.band(2650, 3150) >= 0.15 && rmsOf(x, at(1.45), at(1.5)) < 0.02; })();
       const where = [
-        ['the clap is two claps 0.2 seconds apart, quiet between, in a clap\'s band', clapOk],
+        ['the whistle is a tone near 2,700 cycles a second that swoops up into it', whistleOk],
+        ['the crowd is many claps in a clap\'s band with a whistle on top, its end quiet', crowdOk],
         ['sss high, in the range where an s peaks', S.s.sp.band(4000, 16000) >= 0.85 && S.s.sp.band(0, 2000) <= 0.02 && S.s.sp.peak >= 5500 && S.s.sp.peak <= 8000],
         ['fff spread out, flat and softer than sss', S.f.sp.band(1500, 16000) >= 0.9 && [2000, 3000, 4000, 5000, 6000, 7000, 8000].every((lo) => S.f.sp.band(lo, lo + 1000) <= 0.2) && rms(S.f.x) < rms(S.s.x)],
         ['zzz a hiss over a buzz', S.z.sp.band(0, 500) >= 0.2 && S.z.sp.band(4000, 16000) >= 0.2],
@@ -3765,9 +3785,23 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
       plant('an uh louder than the t\'s burst', (s, o) => (s === 't' ? loud(L.soundClipSamples('t', o), Math.round(0.065 * R), 6) : null)),
       plant('a b with no hum before it', (s, o) => { if (s !== 'b') return null; const x = Float32Array.from(L.soundClipSamples('b', o)); for (let i = 0; i < Math.round(0.044 * R); i++) x[i] = 0; return x; }),
       plant('an ig whose vowel is e\'s', (s, o) => { if (s !== 'ig') return null; const x = Float32Array.from(L.soundClipSamples('ig', o)); const e = L.soundClipSamples('e', o); for (let i = 0; i < Math.round(0.24 * R); i++) x[i] = e[i + Math.round(0.05 * R)]; return x; }),
-      plant('a clap that claps once', (s, o) => { if (s !== 'clap') return null; const x = Float32Array.from(L.soundClipSamples('clap', o)); for (let i = Math.round(0.15 * R); i < x.length; i++) x[i] = 0; return x; }),
-      plant('a clap muffled to a thud', (s, o) => { if (s !== 'clap') return null; const x = L.soundClipSamples('clap', o); const y = new Float32Array(x.length); let acc = 0; for (let i = 0; i < x.length; i++) { acc += x[i] - (i >= 40 ? x[i - 40] : 0); y[i] = acc / 40 * 8; } return y; }),
+      plant('a whistle made of noise', (s, o) => { if (s !== 'whistle') return null; const x = L.soundClipSamples('applause', o); return Float32Array.from({ length: Math.round(0.5 * R) }, (_, i) => x[i + Math.round(0.4 * R)] * Math.min(1, i / 400, (Math.round(0.5 * R) - i) / 400)); }),
+      // A crowd of 40 claps (round one's code check, pass MT: it passed the onset count alone): the real crowd kept only in 40 bursts of
+      // 20 ms at seeded times, quiet between them.
+      plant('a crowd of 40 claps', (s, o) => { if (s !== 'applause') return null; const x = Float32Array.from(L.soundClipSamples('applause', o)); let a = 11; const r = () => { a = (a * 16807) % 2147483647; return a / 2147483647; };
+        const keep = new Uint8Array(x.length); for (let n = 0; n < 40; n++) { const st = Math.round((0.02 + r() * 1.4) * R); for (let i = st; i < st + Math.round(0.02 * R) && i < x.length; i++) keep[i] = 1; } for (let i = 0; i < x.length; i++) if (!keep[i]) x[i] = 0; return x; }),
+      plant('a whistle as loud as the first build', (s, o) => (s === 'whistle' ? Float32Array.from(L.soundClipSamples('whistle', o), (v) => v * 2) : null)),
+      plant('a crowd of a few claps', (s, o) => { if (s !== 'applause') return null; const x = Float32Array.from(L.soundClipSamples('applause', o)); for (let i = 0; i < x.length; i++) if (Math.floor(i / Math.round(0.25 * R)) % 2 === 1) x[i] = 0; return x; }),
+      plant('a crowd muffled to a thud', (s, o) => { if (s !== 'applause') return null; const x = L.soundClipSamples('applause', o); const y = new Float32Array(x.length); let acc = 0; for (let i = 0; i < x.length; i++) { acc += x[i] - (i >= 40 ? x[i - 40] : 0); y[i] = acc / 40 * 8; } return y; }),
     ].filter(Boolean);
+    // Every sound the app makes, on either pace, ends at least 300 ms before playSound's guard lets a reading move on (SOUND_LONGEST_MS
+    // in ui.jsx; round one's code check, pass MT: the crowd left 200 ms, and nothing held it); near miss: a crowd of 1.7 seconds.
+    const guardMs = Number((/const SOUND_LONGEST_MS = (\d+);/.exec(readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8')) || [])[1]);
+    const allSounds = [...Object.keys(L.SPEECH_SOUNDS), ...Object.keys(L.TRIAL_SOUNDS), 'whistle', 'applause'];
+    const tooLong = (len) => allSounds.filter((s) => [false, true].some((slow) => { const x = len(s, slow); return x !== null && (x / R) * 1000 > guardMs - 300; }));
+    const guarded = guardMs > 0 && tooLong((s, slow) => { const x = L.soundClipSamples(s, { slow }); return x ? x.length : null; }).length === 0
+      && tooLong((s, slow) => (s === 'applause' ? Math.round(1.7 * R) : (L.soundClipSamples(s, { slow }) || { length: null }).length)).length > 0;
+    if (!guarded) missed.push(`a sound within 300 ms of the play guard (${guardMs} ms), or the near miss not caught`);
     const wav = L.soundClipWav('s'); const dv = new DataView(wav.buffer); const tag = (o) => String.fromCharCode(...wav.slice(o, o + 4));
     const file = tag(0) === 'RIFF' && tag(8) === 'WAVE' && dv.getUint16(22, true) === 1 && dv.getUint32(24, true) === R && dv.getUint16(34, true) === 16 && dv.getUint32(40, true) === L.soundClipSamples('s').length * 2;
     const quiet = L.soundClipSamples('quiet'); const nothing = L.soundClipSamples('buh') === null && L.soundClipWav('x') === null;
@@ -5046,33 +5080,37 @@ const moreRightProblems = (L) => { const r = {};
   const y14ok = !y14a.error && !y14.error && typeof y14first.at === 'number' && typeof y14second.at === 'number' && late35 === true && afterEnd === false && onceEach(y14, AN2);
   ok('a newer reading clears an old young rest too, and a rest counts as talking for a voice 40 ms late but not 150 ms after the line ends (pass MQ, round two\'s code read)', y13ok && y14ok,
     JSON.stringify({ y13ok, y14ok, seqAfter, late35, afterEnd, restEnd40, lineEnd40, err: y13.error || y14a.error || y14.error }).slice(0, 600));
-  // The lesson's half of a chant kept together (pass MS, round one's code check): a lesson reads a line a sentence a text, with
-  // together, and speakSequence's onDone keeps a say-along form's sayings together across texts, so no young rest falls inside a
-  // chant; `const together = false;` there passed every test, since the voice check page's plant reads sayPieces' half alone (the
-  // whole line one text), and in the page the gap from a clap to the next cheer grew from about 520 ms to about 1,000 ms. Learning
-  // words' match line, read as the lesson reads it: each clap follows its cheer and each cheer its clap with no rest between (100 ms
-  // at most from one's end to the next's start; the stand-in's clap plays 300 ms, a word 120 ms and 8 a letter), and the next call
-  // waits the child's turn (the form's echo) after the last cheer; the same case on the code with together planted false fails.
-  { const mline = ((L.MODULES.find((x) => x.id === 'learning-words') || { lesson: { script: [] } }).lesson.script.map((l) => l.say).find((s) => s.includes(L.sayAlongCue('match')))) || '';
-    const texts = mline.split(L.SENTENCE_BREAK).filter(Boolean);
-    const chantRead = (code) => run(false, (api) => { api.setYoungVoice('page', true); api.speakSequence(texts, () => {}, () => {}, [], { together: true }); }, 60000, code ? { src: code } : {});
+  // The lesson's half of a way kept together (pass MS, round one's code check; pass MT's ways): a lesson reads a line a sentence a
+  // text, with together, and speakSequence's onDone keeps a say-along form's sayings together across texts, so no young rest falls
+  // inside a way; `const together = false;` there passed every test in pass MS, since the voice check page's plant reads sayPieces'
+  // half alone (the whole line one text). Learning words' match line, read as the lesson reads it: the cheer's three sayings with a
+  // whistle after each of the first two and the crowd after the last, each following the one before with no rest between (100 ms at
+  // most from one's end to the next's start; the stand-in's sound plays 300 ms, a word 120 ms and 8 a letter), and the next call waits
+  // the child's turn (the form's echo) after the crowd; and its different line, where each of the four silly voices waits its brief
+  // pause after the one before (pauseAfter, 350 ms; Mikey: "the four times in a row should have brief pauses between each one too").
+  // The same cases on the code with together planted false, and with the pause left out between texts, fail.
+  { const lineOf = (has) => ((L.MODULES.find((x) => x.id === 'learning-words') || { lesson: { script: [] } }).lesson.script.map((l) => l.say).find((s) => s.includes(has))) || '';
+    const mline = lineOf("Now let's cheer it like we're at a big game! Match!"); const dline = lineOf("Now let's say it four times using silly voices. Different!");
+    const read = (line, code) => { const texts = line.split(L.SENTENCE_BREAK).filter(Boolean); return { texts, r: run(false, (api) => { api.setYoungVoice('page', true); api.speakSequence(texts, () => {}, () => {}, [], { together: true }); }, 90000, code ? { src: code } : {}) }; };
     const endOf = (e) => e.at + (e.sound ? 300 : 120 + 8 * e.say.length);
-    const judge = (r) => {
-      if (r.error || !r.api) return { ok: false, why: r.error || 'no api' };
-      const evs = r.log.filter((e) => e.say || e.sound); const cheerAt = evs.findIndex((e) => e.say === 'Match!');
-      // The chant: its first cheer and what follows up to its last cheer (three cheers and the two claps between).
-      const chant = []; for (let k = cheerAt; k >= 0 && k < evs.length && (evs[k].say === 'Match!' || evs[k].sound); k++) chant.push(evs[k]);
-      const gaps = chant.slice(1).map((e, k) => e.at - endOf(chant[k]));
-      const claps = chant.filter((e) => e.sound).length; const cheers = chant.filter((e) => e.say === 'Match!');
-      const last = cheers[cheers.length - 1]; const whisper = r.log.find((e) => e.say === 'Whisper it.');
-      const k3 = texts.findIndex((x, i) => x === 'Match!' && texts.slice(0, i).filter((y) => y === 'Match!').length === 2);
+    const judge = (code) => {
+      const { texts, r } = read(mline, code); if (r.error || !r.api) return { ok: false, why: r.error || 'no api' };
+      // The stand-in plays any sound 300 ms and logs its address, so a sound is read as one (the scripts test names each).
+      const evs = r.log.filter((e) => e.say || e.sound); const at = evs.findIndex((e, k) => e.say === 'Match!' && evs[k + 1] && evs[k + 1].sound);
+      const cheer = at >= 0 ? evs.slice(at, at + 6) : []; const gaps = cheer.slice(1).map((e, k) => e.at - endOf(cheer[k]));
+      const order = cheer.map((e) => (e.sound ? 'sound' : e.say)).join(' ');
+      const k3 = texts.findIndex((x, i) => x === 'Match!' && texts[i - 1] === 'Match!' && texts[i - 2] === 'Match!');
       const pcs = k3 >= 0 ? r.api.speechPieces(texts[k3], { line: texts, at: k3 }) : []; const echo = pcs.length ? pcs[pcs.length - 1].echo || 0 : 0;
-      const turn = last && whisper ? whisper.at - endOf(last) : null;
-      return { ok: cheers.length === 3 && claps === 2 && gaps.length === 4 && gaps.every((g) => g >= 0 && g <= 100) && echo >= 700 && turn !== null && turn >= echo, gaps, claps, cheers: cheers.length, echo, turn };
+      const next = r.log.find((e) => e.say === "Now let's say it three times super fast!"); const turn = cheer.length === 6 && next ? next.at - endOf(cheer[5]) : null;
+      const d = read(dline, code); const devs = (d.r.log || []).filter((e) => e.say === 'Different!'); const pauses = devs.slice(1).map((e, k) => e.at - endOf(devs[k]));
+      const ok1 = order === 'Match! sound Match! sound Match! sound' && gaps.length === 5 && gaps.every((g) => g >= 0 && g <= 100) && echo >= 700 && turn !== null && turn >= echo
+        && !d.r.error && devs.length === 4 && pauses.every((g) => g >= 330 && g <= 450);
+      return { ok: ok1, order, gaps, echo, turn, pauses };
     };
     const planted = src.replace(/const together = !!\(lastPc && nextPc && lastPc\.inForm !== undefined && nextPc\.inForm === lastPc\.inForm\);/, 'const together = false;');
-    const real = judge(chantRead(null)); const near = planted !== src ? judge(chantRead(planted)) : { ok: true, why: 'the plant found nothing to change' };
-    ok("a lesson's chant keeps its cheers and claps together across its sentences, and the next call waits the child's turn, read as the lesson reads it; together planted false fails (pass MS, round one's code check)", texts.length > 8 && real.ok && !near.ok, JSON.stringify({ real, near }).slice(0, 600)); }
+    const noPause = src.replace("const gap = together ? (lastPc.pauseAfter || 0) : Math.max(", "const gap = together ? 0 : Math.max(");
+    const real = judge(null); const near = planted !== src ? judge(planted) : { ok: true, why: 'the plant found nothing to change' }; const near2 = noPause !== src ? judge(noPause) : { ok: true, why: 'the plant found nothing to change' };
+    ok("a lesson's cheer keeps its sayings, whistles and crowd together across its sentences, the four silly voices wait their brief pause, and the next call waits the child's turn, read as the lesson reads it; together planted false, and the pause left out, fail (pass MS, round one's code check; pass MT)", mline && dline && real.ok && !near.ok && !near2.ok, JSON.stringify({ real, near, near2 }).slice(0, 700)); }
   // Find the Letter's backstop (round two's code read, pass MQ: right in the game since round one, yet reverting it passed every test;
   // pass MM's round two had found the same backstop cutting a slow voice's line short): read with the speech code, for every right
   // letter's line the course deals. An older learner's is a real voice's pace, 1.2 seconds and 100 ms a letter; the young voice's

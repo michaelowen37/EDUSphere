@@ -32,6 +32,9 @@ export const DIRECTION = {
   gameMain: '[warm, upbeat and engaging]',
 };
 const sentencesOf = (t) => String(t || '').split(SENTENCE_BREAK).filter(Boolean);   // the same split the app uses (src/ui.jsx, SENTENCE_BREAK since pass MN)
+// The say-along's own words, as the recorded voice is asked to say them (pass MT, Mikey's answer to Q77): his opener "(In an excited
+// and emphasized voice)", the calls in his "playful conversational tone", and the praise.
+export const SAY_ALONG_TALK = { open: '[excited, with big emphasis]', call: '[playful and conversational, like a favorite preschool teacher]', praise: '[delighted, cheering]' };
 const rows = [];
 const add = (key, kind, source, grade, text, plain, group) => rows.push({ key, kind, source, grade: String(grade), voice: band(grade) === 'early' ? 'young' : 'main', text, plain, group });
 // Pre-K first, then up (the review's order), so the ledger reads in the order the review tags it.
@@ -48,8 +51,13 @@ for (const c of courses) {
     // Since pass MS (Mikey's note on Q67) each saying of a say-along word is a clip of its own, asked for in its own voice alone
     // ([whispers], [in a deep, silly voice] and the rest, SAY_ALONG_VOICES' tags), with no early direction beside it, since a clip that
     // is only the word said one way has no other words to draw out (EARMARKS A55, which pass MR's cue at a line's end had raised); the
-    // chant's claps are the app's own, played between its sayings. The calls and the cue keep the early direction.
-    (c.readAloud ? readAloudScript(m) : (m.lesson && m.lesson.script ? m.lesson.script : [])).forEach((line, li) => sayAlongParts(sentencesOf(line.say)).forEach((part, si) => add(`${m.id}-${li}-${si}`, 'lesson line', m.id, c.grade, `${part.role === 'form' ? part.voice.tag : DIRECTION.early} ${part.sentence}`, part.sentence, `${m.id}-lesson`)));
+    // chant's claps are the app's own, played between its sayings. The calls and the cue kept the early direction until pass MT (below).
+    // Since pass MT (Mikey's answer to Q77: the game "will sound better with Eleven when we add playful, interesting and silly audio
+    // tags") the opener is asked excited and emphasized, each call playful and conversational, "Great job!" delighted, and a way whose
+    // sayings differ gives each saying its own tag (the four silly voices: low, high, an Australian accent and a British one, low first
+    // since round one, the same voice, as he asked; bounced, up high and down low); the cheer's whistles are the app's own, played
+    // between its sayings, and its crowd after the last.
+    (c.readAloud ? readAloudScript(m) : (m.lesson && m.lesson.script ? m.lesson.script : [])).forEach((line, li) => sayAlongParts(sentencesOf(line.say)).forEach((part, si) => add(`${m.id}-${li}-${si}`, 'lesson line', m.id, c.grade, `${part.role === 'form' ? (part.voice.tags && part.voice.tags[part.rep]) || part.voice.tag : SAY_ALONG_TALK[part.role] || DIRECTION.early} ${part.sentence}`, part.sentence, `${m.id}-lesson`)));
   }
   // A course's long story, and since pass MH its next one (MASTERY_STORIES), keyed by each story's own main picture serial.
   for (const [cs, kind] of [[COURSE_STORIES[c.id], 'long story'], [MASTERY_STORIES[c.id], 'next long story']]) {

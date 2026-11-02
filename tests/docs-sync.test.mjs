@@ -189,6 +189,14 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   { const o = '<!-- RULES-AUDIT rows as pass MR left them, before pass MS replaced them, word for word: begin -->\n'; const ia = hist.indexOf(o); const ib = hist.indexOf('<!-- RULES-AUDIT rows as pass MR left them, before pass MS replaced them, word for word: end -->');
     const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
     ok("docs/RULES-AUDIT-HISTORY.md keeps the say-along row as pass MR left it, every word unchanged, and the audit points to it (pass MS)", /^\| \*\*Say it with me \(Mikey, pass MR, Q67:/.test(kept) && createHash('sha256').update(kept, 'utf8').digest('hex') === 'cfc2a55a4ecbbbc7d3d275e2f6815f2cd12bd01463cef7386d47c94c0e381528' && audit.includes('The row as pass MR left it is kept word for word in docs/RULES-AUDIT-HISTORY.md')); }
+  // Pass MT's two blocks, held the same way: Q77 to Q79, which Mikey answered when he opened the pass, and the say-along and plans
+  // rows as pass MS left them, which his answers to Q77 and Q78 rewrote.
+  { const o = "<!-- RULES-AUDIT section 11's answered questions in pass MT, word for word: begin -->\n"; const ia = hist.indexOf(o); const ib = hist.indexOf("<!-- RULES-AUDIT section 11's answered questions in pass MT, word for word: end -->");
+    const mt = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
+    ok('docs/RULES-AUDIT-HISTORY.md keeps the questions answered in pass MT, every line unchanged (pass MT)', createHash('sha256').update(mt, 'utf8').digest('hex') === '2c359185feb8004eaa8483a833158eca51497c1e621f4c5e99beb576c1a5f3d5'); }
+  { const o = '<!-- RULES-AUDIT rows as pass MS left them, before pass MT replaced them, word for word: begin -->\n'; const ia = hist.indexOf(o); const ib = hist.indexOf('<!-- RULES-AUDIT rows as pass MS left them, before pass MT replaced them, word for word: end -->');
+    const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
+    ok("docs/RULES-AUDIT-HISTORY.md keeps the say-along and plans rows as pass MS left them, every word unchanged, and the audit points to them (pass MT)", /^\| \*\*Say it with me, one word in many silly voices \(Mikey, pass MR, Q67:/.test(kept) && createHash('sha256').update(kept, 'utf8').digest('hex') === 'bad8804a3672a9aa8c7565a17fdbcfac9b63b541dd8d8fb0c6242afb503301e5' && audit.includes('The row as pass MR left it is kept word for word in docs/RULES-AUDIT-HISTORY.md, and the row as pass MS left it beside it') && audit.includes('The row as pass MS left it is kept word for word in docs/RULES-AUDIT-HISTORY.md')); }
   const s = audit.indexOf('## 11. Open items that need Mikey'); const e = audit.indexOf('\n## ', s + 5); const sec = audit.slice(s, e < 0 ? audit.length : e);
   const answeredLines = sec.split('\n').filter((l) => /^- Q\d+\. Answered in pass /.test(l));
   const long = answeredLines.filter((l) => !/^- Q\d+\. Answered in pass \w+ \(Mikey: .+\)\. Its rule lives in [^\n]+\.$/.test(l) || /The question as it stood/.test(l));
@@ -238,6 +246,11 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   // Near misses: a corrected line the row does not name, and a label the row names only as the start of a longer one.
   { const nearRow = 'and the dated lines Themes (2026-09-24, Mikey), and more;'; const named = (label) => new RegExp(`${esc(label)}(?=,|;| and )`).test(nearRow);
     ok('a corrected line counts only when the row names its whole label (Themes (2026-09-24) is not Themes (2026-09-24, Mikey))', !named('Themes (2026-09-24)') && named('Themes (2026-09-24, Mikey)') && !named('Running check.sh (2026-09-28)')); }
+  // Two lines pass MS added, corrected in place in pass MT at Mikey's word (Q77 and Q78): their old words kept in docs/CLAUDE-HISTORY.md,
+  // held by their digest, and RULES-AUDIT section 9 names them.
+  { const o = '<!-- CLAUDE.md lines as pass MS wrote them, before pass MT corrected them, word for word: begin -->\n'; const ia = hist.indexOf(o); const ib = hist.indexOf('<!-- CLAUDE.md lines as pass MS wrote them, before pass MT corrected them, word for word: end -->');
+    const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
+    ok('docs/CLAUDE-HISTORY.md keeps the two CLAUDE.md lines pass MT corrected as pass MS wrote them, and RULES-AUDIT section 9 names them (pass MT)', createHash('sha256').update(kept, 'utf8').digest('hex') === '9ef1f5e89f6f37c6f2b6a4d5862d79a9cb119ad989e14d4de858ea43326145ae' && row.includes('Corrected in pass MT, at Mikey\'s word')); }
 }
 // NEW-CHAT.md's history (pass MM): the state bullets of passes JE to MJ, the earlier chats' "When to start" paragraphs and the
 // chain of earlier preview links moved, word for word, to docs/NEW-CHAT-HISTORY.md, whose text between its markers must hash to
@@ -299,5 +312,53 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   const stale = WAITING.filter((w) => !bullets.some((b) => b.startsWith(`- ${w}`)) || bullets.some((b) => b.startsWith(`- ${w}`) && quotesHim(b)));
   const misses = ['- A printed record never reads as complete when it is not (Q76 (c), pass MS).', '- Pre-K is counted against every 2027 outcome ("a printed record should never read as complete when it is not", pass MS).'].map((b) => !quotesHim(b));
   ok(`every standing preference in PROJECT-CONTEXT quotes Mikey, an answer or his own words found in one of his messages in DECISIONS (${bullets.length} bullets, ${WAITING.length} older ones waiting; three near misses caught, the third one the old 300-character rule passed)`, bullets.length >= 10 && unquoted.length === 0 && stale.length === 0 && misses.every(Boolean) && besideCaught && runs.length >= 4 && unnamed.length === 0, JSON.stringify({ unquoted: unquoted.map((b) => b.slice(0, 80)), stale, misses, besideCaught, runs: runs.length, unnamed: unnamed.map((i) => i + 1) })); }
+// No placeholder left in a doc (pass MT, round one's final read: a pass leaves a name in capitals where a fact comes only at the end,
+// and a hurried delivery could ship one). tools/placeholders.mjs lists every name in capitals in the docs that no code has and that
+// its KEPT list does not keep on purpose, and the clean step before the delivery zip runs it and refuses while it lists any; the
+// docs may hold placeholders mid-pass, so this reads the tool on the real docs and on planted ones: a placeholder written into
+// DECISIONS is caught, a name the code has is not, and every kept name is still in a doc and in no code.
+{
+  const P = await import('../tools/placeholders.mjs');
+  const docs = P.docTexts(); const names = P.codeNames(); const live = P.placeholdersIn(docs, names);
+  const dec = docs.find((d) => d.file === 'docs/DECISIONS.md');
+  const planted = (line) => P.placeholdersIn([{ file: dec.file, text: `${dec.text}\n${line}\n` }], names).filter((x) => x.line > dec.text.split('\n').length);
+  const caught = planted('- For future passes: FUTURE_MT').map((x) => x.name).join() === 'FUTURE_MT' && planted('- check.sh passed in MINUTES_TO_FILL minutes.').length === 1;
+  const real = planted('- SAY_ALONG_WAITS names the eight older lessons.').length === 0;
+  const keptStale = P.KEPT.filter((k) => names.has(k) || !docs.some((d) => d.text.includes(k)));
+  const clean = readFileSync(new URL('../tools/checkpoint.sh', import.meta.url), 'utf8'); const cleanRuns = /--clean" \]; then\n\s*node tools\/placeholders\.mjs \|\|/.test(clean);
+  ok(`a placeholder left in a doc is found by tools/placeholders.mjs, which the clean step before the delivery zip runs (pass MT; ${live.length} in the docs now, ${names.size} names in the code, ${P.KEPT.length} kept; a planted placeholder caught, a real name passed)`, caught && real && keptStale.length === 0 && cleanRuns && names.has('SAY_ALONG_WAITS'), `caught ${caught}, real ${real}, stale kept ${keptStale.join(',')}, clean runs it ${cleanRuns}`);
+}
+// check.sh's time limits (pass MT). A limit is there to catch a hang, not a slow machine (pass KU's rule), yet twice a limit set from
+// an older, shorter run stopped a passing one: the click-through at 480 seconds in pass KU, and at 720 in pass MT, after 348 of its
+// 354 checks (it takes about 695 seconds run alone), where its log read like a crash. Every browser step now runs through check.sh's
+// run, which names a step stopped at its limit, while slow notes a step past two thirds of its limit. This runs both helpers as
+// check.sh writes them, in a shell of their own with their own file: a hung step is named on its last line and in the file, with its
+// code (124) kept, so check.sh still fails it; pass MT's click-through, 695 seconds of 720, is noted, as is a step a second past two
+// thirds; and a step at exactly two thirds, a quick step and a failing step's code (1) pass untouched (the near misses). And no step
+// calls timeout with a limit of its own outside run (a copy of check.sh with one step put back to a bare timeout is caught).
+{
+  const { execFileSync } = await import('node:child_process'); const { mkdtempSync, rmSync } = await import('node:fs');
+  const { tmpdir } = await import('node:os'); const { join } = await import('node:path');
+  const check = readFileSync(new URL('../check.sh', import.meta.url), 'utf8');
+  const slowFn = (check.match(/^slow\(\) \{.*\}$/m) || [''])[0]; const runFn = (check.match(/^run\(\) \{[\s\S]*?return "\$code"; \}$/m) || [''])[0];
+  const dir = mkdtempSync(join(tmpdir(), 'edu-limits-')); const file = join(dir, 'slow.txt');
+  const script = [`slow_file='${file}'; : > "$slow_file"`, slowFn, runFn,
+    `run "a hung step" 1 sleep 5 > '${file}.out' 2>&1; echo "code $?" >> '${file}.codes'`,
+    `run "a quick step" 30 true; echo "code $?" >> '${file}.codes'`, `run "a failing step" 30 false; echo "code $?" >> '${file}.codes'`,
+    'slow "the click-through" 695 720; slow "a step at two thirds" 800 1200; slow "a step a second past two thirds" 801 1200'].join('\n');
+  let notes = []; let codes = ''; let last = '';
+  try { execFileSync('bash', ['-c', script], { stdio: 'ignore', timeout: 30000 }); notes = readFileSync(file, 'utf8').trim().split('\n');
+    codes = readFileSync(`${file}.codes`, 'utf8').trim(); last = readFileSync(`${file}.out`, 'utf8').trim().split('\n').pop(); } catch (e) { notes = [String(e).slice(0, 120)]; }
+  rmSync(dir, { recursive: true, force: true });
+  const hung = 'TIMEOUT: a hung step was stopped at its 1-second limit';
+  const want = [hung, 'NOTE: the click-through took 695 of its 720 seconds', 'NOTE: a step a second past two thirds took 801 of its 1200 seconds'];
+  const bare = (text) => text.split('\n').filter((l) => !l.trim().startsWith('#') && /\btimeout \d/.test(l));
+  const steps = check.split('\n').filter((l) => /^echo "1[0-3][a-z]?\/13 /.test(l));
+  const first = steps.find((l) => / run "[^"]+" \d+ /.test(l)) || ''; const planted = check.replace(first, first.replace(/ run "[^"]+" (\d+) /, ' timeout $1 '));
+  ok(`check.sh names a browser step stopped at its time limit and notes one past two thirds of it, so a limit is raised before it stops a passing run (pass MT; ${steps.length} browser steps, each through run; the click-through's 695 seconds of 720 noted, a hung step named with its code kept, three near misses passed, a bare timeout caught)`,
+    slowFn !== '' && runFn !== '' && notes.length === want.length && want.every((w, i) => notes[i].startsWith(w)) && last.startsWith(hung) && codes === 'code 124\ncode 0\ncode 1'
+    && steps.length === 16 && steps.every((l) => / run "[^"]+" \d+ /.test(l)) && bare(check).length === 0 && bare(planted).length === 1,
+    JSON.stringify({ notes, codes, last: last.slice(0, 60), steps: steps.length, bare: bare(check).length, planted: bare(planted).length }));
+}
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exitCode = failed ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (CLAUDE.md, 2026-09-23)

@@ -200,6 +200,22 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A sample built by hand to look like a real screen drifts: the LI tour sample missed the Merge link and the Wonder pill and was laid out differently, and Mikey saw all three at a glance. Feed made-up data through the real component instead, with taps switched off, and the sample can never differ from the page.
 - Count a daily allowance against the day as it started, not as it stands: finishing the first review shrinks the queue, and a rule that rechecked the live queue would cancel the second review the backlog asked for.
 
+## Learned in pass MT (Mikey's answers Q77 to Q79, his say-it-together game, and the whistle and the crowd)
+
+- When Mikey writes the words, they are used word for word and held by a test: his game on different is checked against his own sentences, and the other words' versions keep his shape and his openings, so a later edit cannot drift from what he wrote; what Claude adds around his words (the flavors on the other words, the device rates but slowly's) is recorded as Claude's.
+- A playful image for a young child is read by the safety checks like any story's words: "stretch it out like bubble gum", a teacher's image, reached nine pre-K lessons through one call, and gum is a choking hazard; the stories test caught it, and play dough, which a pre-K classroom stretches every day, took its place.
+- A light that follows a voice is looked at, not only measured: super fast's syllables last about 80 ms, and the read-along's 150 ms fade never lit one fully, which only a screenshot of the page showed.
+- One way's pace is not another's: the slow ways (0.16 to 0.28) are slower than any way before them (slowly and the giant far slower), slowly itself three times as slow as pass MS's, and a phone may hold a rate at a floor, so the light learns a pace for each way.
+- A light that fades while its ink turns at once blinks in the dark theme: a syllable was dark ink on the dark card for a moment at every change, so no read-along light fades now; look at both themes, and everywhere the same light is drawn (a Wonder choice being read still faded until the second read).
+- A near miss is read again when a new check lands beside it: the list without Colors began failing round one's eight-lesson hold, so it no longer proved the Q77 (a) guard, which could have been deleted with every test passing.
+- "Let's say it together!" says it, so the words before it end on the word ("Our word is match."); in 31 of 34 lines a child had last heard another word, a count or a thing in the picture.
+- A question's example is not its rule: Q79's word-order lesson was first recorded as all of II.E, where his choice cites each outcome whole once every part of that outcome is taught.
+- A question's numbers come from one model: Q80 first set this pass's games on a slow voice beside pass MS's on a quick one, which read as nearly three times longer when it is about twice.
+- A name in a shared table is checked for a twin: the say-along's cheer way took the name of every welcome's cheer voice and changed how HAVE FUN was said everywhere.
+- What Mikey says he missed is fixed for every pass: NEW-CHAT.md now goes first, in a card of its own with its own caption.
+- A time limit is there to catch a hang, so it is read on every run: the click-through had grown to about 695 seconds against a 720-second limit set when it took 539, and a slightly slower run was stopped after 348 of its 354 checks, its log reading like a crash; check.sh now names a step stopped at its limit and notes one past two thirds of it, so the limit is raised first.
+- His reason is a rule only when he says it: pass MS listed Head Start in full by Claude's reading and asked (Q78); his answer, "it's okay to have more than what's required by the state too for better outcomes.", made it his, and it is filed in his words.
+
 ## Learned in pass MS (Mikey's note on Q67, demonstrations that do what they say, Q73 to Q76, CLAUDE.md in two parts, and Domain II's II.B.1 and pre-K 4's words for actions and events)
 
 - A feature of the voice is heard through the screen that uses it: pass MR's silly voices passed every test of the speech code and played on the voice check page, and no lesson ever said them, since the lesson handed the voice a sentence at a time; the lesson now reads a line's sentences together, and the rules test reads a lesson's chant the way the lesson does, beside its planted fault.

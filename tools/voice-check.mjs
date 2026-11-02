@@ -14,7 +14,11 @@
 // nicely organized"). A lesson row is said in the young voice a pre-reader hears since pass MQ: a little slower, with a rest between
 // sentences. Since pass MS (Mikey's note on his answer to Q67: all the silly voices go to one word, the last saying clear) the say-it-
 // with-me rows say a whole say-along, one word in many voices, with the child's turn after each way and a clap between a chant's
-// cheers; rows 51 to 57, pass MR's one voice a word, are retired, and their numbers are not used again.
+// cheers; rows 51 to 57, pass MR's one voice a word, are retired, and their numbers are not used again. Since pass MT (Mikey's answer
+// to Q77, his game: "Let's say it together!", five ways each called in his openings, "Great job!" and the clear one, his own words on
+// different and Claude's flavors on the other words) rows
+// 58 to 63 are retired with the lines they said, and row 64, the clap, with it (Mikey: "the claps in row 64 don't sound like real
+// claps"); rows 65 and 66 play the cheer's new sounds, a fan's whistle and the crowd, and rows 67 to 72 six lesson lines of the new game.
 // Run: node tools/voice-check.mjs   (writes dist/voice-check.html, which is published as its own small page; dist stays out of git)
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 
@@ -80,19 +84,19 @@ export const VOICE_CHECK_ROWS = [
   { group: 'Lines on trial: a sounded-out word with the app\'s own short vowel' },
   { n: 49, kind: 'trial', text: 'Read this word the same way. C says cuh, a says the sound at the start of apple, and n says nnn. Cuh, a, nnn. Can.' },
   { n: 50, kind: 'trial', text: 'Read this one. D says duh, o says the sound at the start of octopus, and g says guh. Duh, o, guh. Dog.' },
-  // Pass MS (Mikey: "I was talking about applying all of that to a single spoken word ... After the description "A cup and a ball
-  // are different" you can add the various ways of saying different ... The very last pronunciation can be a clearer more normal
-  // version."): six lesson lines word for word, each one word in several silly voices and then clear, so every voice of the eight
-  // is heard at least twice (the slide and the chant in rows 59, 60 and 62), and the clap a chant plays between its cheers. Rows 51
-  // to 57 (pass MR, one voice a word) are retired with the lines they said.
-  { group: 'Say it with me (Q67, pass MS): one word, many silly voices, as a lesson says it' },
-  { n: 58, kind: 'line', text: 'Different means not the same. A cup and a ball are different. Say different with me, in silly voices! Whisper it. Different. Say it slowly. Different. Four times, low and silly! Different, different, different, different! Three times, super fast! Different, different, different! Stretch it out long. Different. Now say it nice and clear. Different.', note: 'New in pass MS: your example, five silly ways and then clear (Learning words).' },
-  { n: 59, kind: 'line', text: 'Same means just alike. A red circle and a red circle are the same, so they match. Say same with me, in silly voices! Slide it down, from high to low. Same, same, same. Stretch it out long. Same. Four times, low and silly! Same, same, same, same! Now say it nice and clear. Same.', note: 'New in pass MS: the slide, high to low over three sayings (Learning words).' },
-  { n: 60, kind: 'line', text: 'Match means find one that is the same. This cup matches this cup. Say match with me, in silly voices! Cheer it like a big game! Match! Match! Match! Whisper it. Match. Way up high, like a mouse! Match! Three times, super fast! Match, match, match! Now say it nice and clear. Match.', note: 'New in pass MS: the chant, a clap between its cheers, and way up high (Learning words).' },
-  { n: 61, kind: 'line', text: 'This is a grandpa. A grandpa is the dad of your mom or your dad. A grandpa can help take care of you too. Say grandpa with me, in silly voices! Four times, low and silly! Grandpa, grandpa, grandpa, grandpa! Say it slowly. Grandpa. Way up high, like a mouse! Grandpa! Three times, super fast! Grandpa, grandpa, grandpa! Now say it nice and clear. Grandpa.', note: 'New in pass MS: a word of two syllables, grand and pa (Words for people).' },
-  { n: 62, kind: 'line', text: 'A birthday party is a happy day, often with a cake that has candles to blow out. Say birthday party with me, in silly voices! Cheer it like a big game! Birthday party! Birthday party! Birthday party! Way up high, like a mouse! Birthday party! Three times, super fast! Birthday party, birthday party, birthday party! Slide it down, from high to low. Birthday party, birthday party, birthday party. Now say it nice and clear. Birthday party.', note: 'New in pass MS: two words said as one, birthday party (Things that happen).' },
-  { n: 63, kind: 'line', text: 'At bedtime, you put on your pajamas and sleep in your bed. Say bedtime with me, in silly voices! Whisper it. Bedtime. Stretch it out long. Bedtime. Four times, low and silly! Bedtime, bedtime, bedtime, bedtime! Say it slowly. Bedtime. Now say it nice and clear. Bedtime.', note: 'New in pass MS: a quiet word, whispered, stretched and slow (Things that happen).' },
-  { n: 64, kind: 'sound', sound: 'clap', label: 'a clap, two quick claps between a chant\'s cheers', note: 'New in pass MS: made by the app, so every phone plays the same one.' },
+  // Pass MT (Mikey's answer to Q77, word for word in DECISIONS MT, and his note on row 64: "maybe a longer session of claps or cheers
+  // with whistling in place of the claps would work"): six lesson lines word for word, each one word said together five ways, so every
+  // way is heard at least once (row 67 is his own version, Learning words' different), and the two sounds of a cheer. Rows 58 to 64
+  // (pass MS: the cue that named the word, and the clap) are retired with what they played.
+  { group: 'Say it together (Q77, pass MT): one word, five silly ways, as a lesson says it' },
+  { n: 65, kind: 'sound', sound: 'whistle', label: 'a fan\'s whistle, between a cheer\'s sayings', note: 'New in pass MT, in place of the clap: made by the app, so every phone plays the same one.' },
+  { n: 66, kind: 'sound', sound: 'applause', label: 'the crowd, clapping and whistling after a cheer\'s last saying', note: 'New in pass MT: a longer stretch of claps from many hands, with a whistle on top.' },
+  { n: 67, kind: 'line', text: 'Different means not the same. A cup and a ball are different. Let\'s say it together! First, let\'s say it slowly. Different. Now, let\'s whisper it twice. Different, different. Now let\'s say it four times using silly voices. Different! Different! Different! Different! Now let\'s say it three times super fast! Different, different, different! Okay, let\'s try stretching it out now. Different. Great job! One last time, nice and clear. Different.', note: 'New in pass MT: your version, word for word (Learning words).' },
+  { n: 68, kind: 'line', text: 'Match means find one that is the same. This cup matches this cup. Our word is match. Let\'s say it together! First, let\'s say it like a big, sleepy giant. Match. Now, let\'s squeak it twice, like a tiny mouse! Match, match! Now let\'s cheer it like we\'re at a big game! Match! Match! Match! Now let\'s say it three times super fast! Match, match, match! Okay, let\'s try stretching it out like play dough now. Match. Great job! One last time, nice and clear. Match.', note: 'New in pass MT: like a sleepy giant, a tiny mouse, the cheer with its whistles and its crowd, and play dough (Learning words).' },
+  { n: 69, kind: 'line', text: 'Same means just alike. A red circle and a red circle are the same, so they match. Our word is same. Let\'s say it together! First, let\'s say it slowly. Same. Now, let\'s squeak it twice, like a tiny mouse! Same, same! Now let\'s slide it down, from high to low. Same, same, same. Now let\'s say it three times super fast! Same, same, same! Okay, let\'s try stretching it out now. Same. Great job! One last time, nice and clear. Same.', note: 'New in pass MT: the slide, high to low over three sayings, and a word of one syllable (Learning words).' },
+  { n: 70, kind: 'line', text: 'This is a grandma. A grandma is the mom of your mom or your dad. A grandma can help take care of you. Our word is grandma. Let\'s say it together! First, let\'s say it like a big, sleepy giant. Grandma. Now, let\'s whisper it twice. Grandma, grandma. Now let\'s bounce it, up high and down low! Grandma! Grandma! Grandma! Grandma! Now let\'s say it three times super fast! Grandma, grandma, grandma! Okay, let\'s try stretching it out like play dough now. Grandma. Great job! One last time, nice and clear. Grandma.', note: 'New in pass MT: bounced up high and down low, a word of two syllables (Words for people).' },
+  { n: 71, kind: 'line', text: 'A birthday party is a happy day, often with a cake that has candles to blow out. Our word is birthday party. Let\'s say it together! First, let\'s say it slowly. Birthday party. Now, let\'s squeak it twice, like a tiny mouse! Birthday party, birthday party! Now let\'s cheer it like we\'re at a big game! Birthday party! Birthday party! Birthday party! Now let\'s say it three times super fast! Birthday party, birthday party, birthday party! Okay, let\'s try stretching it out like play dough now. Birthday party. Great job! One last time, nice and clear. Birthday party.', note: 'New in pass MT: two words said as one, cheered (Things that happen).' },
+  { n: 72, kind: 'line', text: 'At bedtime, you put on your pajamas and sleep in your bed. Our word is bedtime. Let\'s say it together! First, let\'s say it like a big, sleepy giant. Bedtime. Now, let\'s whisper it twice. Bedtime, bedtime. Now let\'s slide it down, from high to low. Bedtime, bedtime, bedtime. Now let\'s say it three times super fast! Bedtime, bedtime, bedtime! Okay, let\'s try stretching it out now. Bedtime. Great job! One last time, nice and clear. Bedtime.', note: 'New in pass MT: a quiet word, a sleepy giant, whispered and slid (Things that happen).' },
 ];
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -184,9 +188,9 @@ h2 { font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: 
 </style>
 <main>
 <h1>Voice check</h1>
-<p class="intro">Tap a row to hear it, with the sound on. The sounds in the first list and in the lists from row 33 are made by the app, so every phone plays the same ones. The words are your phone's own voice, a placeholder until the recorded voice. Tell Claude the numbers that sound wrong, and how, whenever you like. A green note under a row says what changed in pass MP, MQ, MR or MS.</p>
+<p class="intro">Tap a row to hear it, with the sound on. The sounds in the first list and in the lists from row 33 are made by the app, so every phone plays the same ones. The words are your phone's own voice, a placeholder until the recorded voice. Tell Claude the numbers that sound wrong, and how, whenever you like. A green note under a row says what changed in pass MP, MQ, MR, MS or MT.</p>
 <p class="voice" id="voice">Your phone's voice: finding it...</p>
-<p class="novoice" id="novoice" hidden>This browser has no voice, so only the app's own sounds play here: rows 1 to 10, 33 to 44 and 64. To hear every row, open this page's link in Safari or Chrome rather than inside another app.</p>
+<p class="novoice" id="novoice" hidden>This browser has no voice, so only the app's own sounds play here: rows 1 to 10, 33 to 44, 65 and 66. To hear every row, open this page's link in Safari or Chrome rather than inside another app.</p>
 ${rowsHtml}
 <p class="foot">Built from the app's own speech code, so a lesson says each line the way this page does.</p>
 </main>
@@ -231,7 +235,11 @@ export async function voiceCheckSelfTest(L, script = VOICE_CHECK_SCRIPT) {
     // Every sound a row plays is one the app makes (pass MP: the trial rows' sounds, and the new sound rows', are made, never silent).
     for (const r of VOICE_CHECK_ROWS.filter((x) => x.kind === 'sound')) { const w = vc.soundClipWav(r.sound); if (!w || w.length < 1000) problems.push(`row ${r.n}'s sound ${r.sound} is not made`); }
     for (const r of VOICE_CHECK_ROWS.filter((x) => x.kind === 'trial')) for (const p of L.speechPieces(r.text, { trial: true })) if (p.sound && !vc.soundClipWav(p.sound)) problems.push(`row ${r.n}'s sound ${p.sound} is not made`);
-    for (const s of ['s', 'm', 't', 'clap']) { const a = vc.soundClipWav(s); const b = L.soundClipWav(s); if (!a || !b || a.length !== b.length || a.some((v, i) => v !== b[i])) problems.push(`the page's ${s} is not the app's`); }
+    // The notice for a browser with no voice names exactly the rows that are sounds (round one's code check, pass MT: it still named
+    // row 64, retired with the clap).
+    { const soundRows = VOICE_CHECK_ROWS.filter((x) => x.kind === 'sound' || x.kind === 'trialSound').map((x) => x.n); const m = /only the app's own sounds play here: ([^.]*)\./.exec(VOICE_CHECK_HTML); const named = []; if (m) for (const part of m[1].split(/, | and /)) { const r = /^rows? (\d+)(?: to (\d+))?$/.exec(part.trim()) || /^(\d+)(?: to (\d+))?$/.exec(part.trim()); if (r) for (let n = Number(r[1]); n <= Number(r[2] || r[1]); n++) named.push(n); }
+      if (!m || JSON.stringify(named) !== JSON.stringify(soundRows)) problems.push(`the no-voice notice names rows ${named.join(',')}, not the sound rows ${soundRows.join(',')}`); }
+    for (const s of ['s', 'm', 't', 'whistle', 'applause']) { const a = vc.soundClipWav(s); const b = L.soundClipWav(s); if (!a || !b || a.length !== b.length || a.some((v, i) => v !== b[i])) problems.push(`the page's ${s} is not the app's`); }
     // Every row played, as a tap plays it: a sound row plays one of the app's clips, a line row hands the voice the line's words with
     // its sounds between them, in order, and a single row hands it its own text.
     // Each row from quiet, over a line still playing (row 12, 200 ms in) and over a sound still playing (row 1, 50 ms in), as a tap
@@ -269,9 +277,10 @@ export async function voiceCheckSelfTest(L, script = VOICE_CHECK_SCRIPT) {
       const ps = L.speechPieces(r.text, r.kind === 'trial' ? { trial: true } : {}); const starts = marks.filter((m) => m.k === 's').map((m) => m.t); const ends = marks.filter((m) => m.k === 'e').map((m) => m.t);
       if (starts.length !== ps.length || ends.length !== ps.length) { problems.push(`row ${r.n} plays ${starts.length} pieces, not ${ps.length}`); continue; }
       for (let i = 1; i < ps.length; i++) { const gap = starts[i] - ends[i - 1];
-        // A say-along (pass MS): a form's sayings keep together, the chant's cheers and claps and the slide's steps a few
-        // milliseconds apart, and the piece that ends a form is followed by the child's turn (its echo) at least.
-        if (ps[i - 1].inForm !== undefined && ps[i].inForm === ps[i - 1].inForm) { if (gap > 100) { problems.push(`row ${r.n} rests ${gap} ms before "${ps[i].text}", inside a say-along's sayings`); break; } continue; }
+        // A say-along (pass MS): a form's sayings keep together, a cheer's sayings and sounds and the slide's steps a few
+        // milliseconds apart, but for the brief pause a way asks after a saying (pauseAfter, pass MT: the four silly voices, bounced,
+        // whispered and squeaked twice), which is kept, and the piece that ends a form is followed by the child's turn (its echo).
+        if (ps[i - 1].inForm !== undefined && ps[i].inForm === ps[i - 1].inForm) { const want = ps[i - 1].pauseAfter || 0; if (gap > want + 100 || gap < want - 20) { problems.push(`row ${r.n} rests ${gap} ms before "${ps[i].text}", inside a say-along's sayings, where its way pauses ${want} ms`); break; } continue; }
         if (ps[i - 1].echo) { if (!(gap >= ps[i - 1].echo)) { problems.push(`row ${r.n} waits ${gap} ms after "${ps[i - 1].text}", not the child's turn of ${ps[i - 1].echo} ms`); break; } continue; }
         if (ps[i].sentence === ps[i - 1].sentence) continue; const opens = vc.startsSentence(ps[i]);
         // No rest inside a sentence means none at all (round five's code read: a page resting 200 ms there passed a check for 450):

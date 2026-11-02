@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-10-29 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 10779 clips, 1,720,799 characters in all; the longest clip is 520 characters and the longest whole story 5,088, far under Eleven v4's 10,000 a request. 224 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-10-29 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 10992 clips, 1,743,224 characters in all; the longest clip is 520 characters and the longest whole story 9,351, far under Eleven v4's 10,000 a request. 224 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,7 +17,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 6473 | 736,705 |
+| Pre-K to grade 2 | 6686 | 759,130 |
 | Grades 3 to 5 | 1375 | 292,652 |
 | Grades 6 to 8 | 1197 | 279,526 |
 | Grades 9 to college | 1734 | 411,916 |
@@ -44,7 +44,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 |---|---|
 | story title | 687 |
 | story | 4470 |
-| lesson line | 4269 |
+| lesson line | 4482 |
 | long story title | 106 |
 | long story | 858 |
 | next long story title | 4 |

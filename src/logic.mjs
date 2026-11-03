@@ -1566,9 +1566,26 @@ export function choiceSpeaks(q, c) {
 // letter by its name prints its words without the letter while the device can speak ("Tap the letter you hear."), and the voice
 // still says the letter, since a printed capital above the letters to tap lets a child who knows no name match the shape (the
 // shortcut round one took out of "What letter is this?"). With no voice the whole question prints, for a grown-up to read.
+// Since pass MV, with no voice a sentence said in a manner carries its cue in parentheses after it, for the grown-up who reads the
+// question aloud ("Listen. I see a dog. (For the grown-up: say it up high.)"), from VOICE_MANNERS, headed for the grown-up so it is not read
+// to the child as words to copy (round two's alignment read); asking, telling and a strong word need none, since
+// the question mark, the full stop and the capitals show them.
 export function printedQuestion(q, voice = true) {
   if (!q) return { story: null, prompt: '' };
-  return { story: voice && q.printedStory ? q.printedStory : q.story || null, prompt: voice && q.printed ? q.printed : q.prompt };
+  if (voice) return { story: q.printedStory ? q.printedStory : q.story || null, prompt: q.printed ? q.printed : q.prompt };
+  return { story: q.story ? mannerCues(q.story, q.voices) : null, prompt: q.prompt };
+}
+// The cues a grown-up reads beside a question's sentences said in a manner: each sentence of the words, cut where SENTENCE_BREAK cuts,
+// is matched whole against the voices as mannerOf matches it, and the first one said in a manner with a cue is followed by that cue; the
+// words and the spaces between the sentences stay as they are.
+export function mannerCues(text, voices) {
+  const done = new Set();
+  return String(text).split(new RegExp(`(${SENTENCE_BREAK.source})`)).map((part, k) => {
+    if (k % 2) return part;   // the space between two sentences, which the split keeps
+    const said = mannerOf(part, voices); const m = said && VOICE_MANNERS[said.manner];
+    if (!m || !m.cue || done.has(part.trim())) return part;
+    done.add(part.trim()); return `${part} (For the grown-up: ${m.cue[0].toLowerCase()}${m.cue.slice(1)})`;
+  }).join('');
 }
 export function readAloudScript(mod) {
   if (!mod || !mod.lesson) return [];
@@ -4743,8 +4760,8 @@ function PREK3_MODULES() { return [
       keyIdea: 'Red and blue are colors. Colors help us tell things apart and sort them into groups.',
       example: { kind: 'pair', a: { kind: 'swatch', colour: 'red' }, b: { kind: 'swatch', colour: 'blue' }, caption: 'Red and blue.' },
       script: [
-        { say: 'This color is red, like a strawberry.', show: { kind: 'swatch', colour: 'red' } },
-        { say: 'This color is blue, like the sky on a clear day.', show: { kind: 'swatch', colour: 'blue' } },
+        { say: 'This color is red, like a strawberry. Our word is red. ' + sayAlong('red', ['giant', 'mouse', 'chant', 'fast', 'stretch']), show: { kind: 'swatch', colour: 'red' } },
+        { say: 'This color is blue, like the sky on a clear day. Our word is blue. ' + sayAlong('blue', ['slow', 'whisper', 'slide', 'fast', 'dough']), show: { kind: 'swatch', colour: 'blue' } },
         { say: 'A red strawberry under a blue sky. Red and blue are two different colors.', show: { kind: 'pair', a: { kind: 'swatch', colour: 'red' }, b: { kind: 'swatch', colour: 'blue' } } },
         { say: 'Colors help us tell things apart. Here are a red circle and a blue circle, the same shape with different colors.', show: { kind: 'pair', a: { kind: 'item', shape: 'circle', colour: 'red' }, b: { kind: 'item', shape: 'circle', colour: 'blue' } } },
         { say: 'Many fire trucks are red, and so are many apples.', show: { kind: 'swatch', colour: 'red' } },
@@ -4753,7 +4770,7 @@ function PREK3_MODULES() { return [
         { say: 'Look around you. Can you find something red? Can you find something blue?', show: { kind: 'pair', a: { kind: 'swatch', colour: 'red' }, b: { kind: 'swatch', colour: 'blue' } } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) V.D.1 (sorts objects based on one attribute such as color, shape, or size) and VI.B.1 (explores observable properties of objects and materials using senses), in part, since the lesson explores one property of things, their color, by sight, in a strawberry, the sky, fire trucks, apples, the sea and a bluebird\'s wings, while the other properties and senses wait (EARMARKS E12), and Head Start ELOF Goals P-SCI 1 (observes and describes observable phenomena (objects, materials, organisms, and events)), whose 36 to 48 month progression reads "Uses the five senses to observe objects, materials, organisms, and events. Provides simple verbal or signed descriptions. With adult support, represents observable phenomena, such as draws a picture.", in part, since the lesson observes by sight, while the other senses, the descriptions, which are the child\'s own talk, and the drawing wait (EARMARKS E12), and P-SCI 3 (compares and categorizes observable phenomena), in part, since the lesson teaches the first sentence of its 36 to 48 month progression, "Sorts objects into groups based on simple attributes, such as color.", while its second, using measurement tools to compare, waits (EARMARKS E12).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) V.D.1 (sorts objects based on one attribute such as color, shape, or size) and VI.B.1 (explores observable properties of objects and materials using senses), in part, since the lesson explores one property of things, their color, by sight, in a strawberry, the sky, fire trucks, apples, the sea and a bluebird\'s wings, while the other properties and senses wait (EARMARKS E12), II.D.1 (understands (receptive) and uses (expressive) words to label and describe common objects, people, places, actions, and events), in part, its receptive half for the color words red and blue, words that describe common objects, said along in the say-it-together game, while their expressive half, using the words, is the child\'s own talk (EARMARKS E12), and Head Start ELOF Goals P-SCI 1 (observes and describes observable phenomena (objects, materials, organisms, and events)), whose 36 to 48 month progression reads "Uses the five senses to observe objects, materials, organisms, and events. Provides simple verbal or signed descriptions. With adult support, represents observable phenomena, such as draws a picture.", in part, since the lesson observes by sight, while the other senses, the descriptions, which are the child\'s own talk, and the drawing wait (EARMARKS E12), and P-SCI 3 (compares and categorizes observable phenomena), in part, since the lesson teaches the first sentence of its 36 to 48 month progression, "Sorts objects into groups based on simple attributes, such as color.", while its second, using measurement tools to compare, waits (EARMARKS E12).'],
     generators: ['p3-tap-red-blue', 'p3-which-colour', 'p3-sort-red-blue', 'p3-which-colour', 'p3-tap-red-blue'],
   },
   {
@@ -4947,8 +4964,8 @@ function PREK3_MODULES() { return [
       keyIdea: 'Yellow like a banana. Green like the grass.',
       example: { kind: 'pair', a: { kind: 'swatch', colour: 'yellow' }, b: { kind: 'swatch', colour: 'green' }, caption: 'Yellow and green.' },
       script: [
-        { say: 'This is yellow, the color of a banana.', show: { kind: 'swatch', colour: 'yellow' } },
-        { say: 'This is green, the color of grass.', show: { kind: 'swatch', colour: 'green' } },
+        { say: 'This is yellow, the color of a banana. Our word is yellow. ' + sayAlong('yellow', ['slow', 'mouse', 'bounce', 'fast', 'dough']), show: { kind: 'swatch', colour: 'yellow' } },
+        { say: 'This is green, the color of grass. Our word is green. ' + sayAlong('green', ['giant', 'whisper', 'silly', 'fast', 'stretch']), show: { kind: 'swatch', colour: 'green' } },
         { say: 'A yellow banana on green grass. Yellow and green are two different colors.', show: { kind: 'pair', a: { kind: 'swatch', colour: 'yellow' }, b: { kind: 'swatch', colour: 'green' } } },
         { say: 'A yellow toy is easy to see in green grass, because the colors are different.', show: { kind: 'pair', a: { kind: 'swatch', colour: 'yellow' }, b: { kind: 'swatch', colour: 'green' } } },
         { say: 'Red and blue are colors too. Now you know four colors, red, blue, yellow and green.', show: { kind: 'pair', a: { kind: 'swatch', colour: 'red' }, b: { kind: 'swatch', colour: 'blue' } } },
@@ -4958,7 +4975,7 @@ function PREK3_MODULES() { return [
         { say: 'Let\'s sort by color. The yellow things go together, and the green things go together.', show: { kind: 'pair', stack: true, a: { kind: 'pattern', items: ['circle', 'triangle'], colour: 'yellow' }, b: { kind: 'pattern', items: ['square', 'circle'], colour: 'green' } } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) V.D.1 (sorts objects based on one attribute such as color, shape, or size) and VI.B.1 (explores observable properties of objects and materials using senses), in part, since the lesson explores one property of things, their color, by sight, in a banana, grass, a lemon, a sunflower\'s petals, frogs and leaves, while the other properties and senses wait (EARMARKS E12), and Head Start ELOF Goals P-SCI 1 (observes and describes observable phenomena (objects, materials, organisms, and events)), whose 36 to 48 month progression reads "Uses the five senses to observe objects, materials, organisms, and events. Provides simple verbal or signed descriptions. With adult support, represents observable phenomena, such as draws a picture.", in part, since the lesson observes by sight, while the other senses, the descriptions, which are the child\'s own talk, and the drawing wait (EARMARKS E12), and P-SCI 3 (compares and categorizes observable phenomena), in part, since the lesson teaches the first sentence of its 36 to 48 month progression, "Sorts objects into groups based on simple attributes, such as color.", while its second, using measurement tools to compare, waits (EARMARKS E12).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) V.D.1 (sorts objects based on one attribute such as color, shape, or size) and VI.B.1 (explores observable properties of objects and materials using senses), in part, since the lesson explores one property of things, their color, by sight, in a banana, grass, a lemon, a sunflower\'s petals, frogs and leaves, while the other properties and senses wait (EARMARKS E12), II.D.1 (understands (receptive) and uses (expressive) words to label and describe common objects, people, places, actions, and events), in part, its receptive half for the color words yellow and green, words that describe common objects, said along in the say-it-together game, while their expressive half, using the words, is the child\'s own talk (EARMARKS E12), and Head Start ELOF Goals P-SCI 1 (observes and describes observable phenomena (objects, materials, organisms, and events)), whose 36 to 48 month progression reads "Uses the five senses to observe objects, materials, organisms, and events. Provides simple verbal or signed descriptions. With adult support, represents observable phenomena, such as draws a picture.", in part, since the lesson observes by sight, while the other senses, the descriptions, which are the child\'s own talk, and the drawing wait (EARMARKS E12), and P-SCI 3 (compares and categorizes observable phenomena), in part, since the lesson teaches the first sentence of its 36 to 48 month progression, "Sorts objects into groups based on simple attributes, such as color.", while its second, using measurement tools to compare, waits (EARMARKS E12).'],
     generators: ['p3-tap-yellow-green', 'p3-which-colour-four', 'p3-tap-colour-item', 'p3-sort-yellow-green', 'p3-tap-any-colour'],
   },
   {
@@ -5204,7 +5221,7 @@ function PREK3_MODULES() { return [
         { say: 'When you talk with a friend, take turns. Listen while your friend talks, and then it is your turn.', show: { kind: 'pair', a: { kind: 'pic', name: 'rabbit' }, b: { kind: 'pic', name: 'bear' } } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) I.A.1 (is building awareness of where own body is in space and an understanding of personal boundaries), in part, since the lesson teaches a friend\'s personal space, a bubble of room around each of you, never right in a friend\'s face, while awareness of where one\'s own body is in space as it moves waits (EARMARKS E12), I.C.1 (begins to use effective verbal and nonverbal communication skills, home language, assistive communication, or other preferred methods to develop positive relationships with adults and peers), in part, since the lesson teaches turning toward a friend, a nod and a smile, and hi and bye, while the kind words of asking and thanking are taught in Please and thank you, II.B.2 (begins to use appropriate language, style, and nonverbal cues during communication with familiar adults and peers), in part, since the lesson teaches saying hi to start and bye when you are done, taking turns talking, waiting until a friend stops, turning toward a friend, a nod and a smile, giving a friend some room and not shouting while a friend talks, with friends and with grown-ups you know, while saying something about what a friend said is taught in Talk about it and the language of asking and thanking, please and thank you, in Please and thank you, and Head Start ELOF Goals P-SE 3 (engages in and maintains positive interactions and relationships with other children), in part, since the lesson teaches taking turns in conversations, from the second sentence of its 36 to 48 month progression, "May spontaneously engage in prosocial behaviors with other children, such as sharing and taking turns with materials and in conversations, or may engage in these with prompting from adults.", while the skills of its first sentence are taught in Can I play too?, sharing in Please and thank you, taking turns with materials in Please and thank you and Can I play too?, and doing them without a grown-up, or spontaneously, is the child\'s own (EARMARKS E12), and P-LC 4 (understands, follows, and uses appropriate social and conversational rules), whose 36 to 48 month progression reads "Engages in conversations with adults, other children, or within the group setting lasting two or three conversational turns, and, with support, will sometimes use appropriate tone and volume for different situations.", in part, since the lesson teaches the turns of a conversation with friends and with grown-ups, a hi, a turn each and a bye, and one rule of volume, no shouting while a friend talks, while saying something about what the other one said, which keeps a conversation going for another turn, is taught in Talk about it, and using an appropriate tone and volume for different situations waits for a lesson, as pre-K 4\'s Say it to fit teaches it since pass MS (EARMARKS E12).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) I.A.1 (is building awareness of where own body is in space and an understanding of personal boundaries), in part, since the lesson teaches a friend\'s personal space, a bubble of room around each of you, never right in a friend\'s face, while awareness of where one\'s own body is in space as it moves waits (EARMARKS E12), I.C.1 (begins to use effective verbal and nonverbal communication skills, home language, assistive communication, or other preferred methods to develop positive relationships with adults and peers), in part, since the lesson teaches turning toward a friend, a nod and a smile, and hi and bye, while the kind words of asking and thanking are taught in Please and thank you, II.B.2 (begins to use appropriate language, style, and nonverbal cues during communication with familiar adults and peers), in part, since the lesson teaches saying hi to start and bye when you are done, taking turns talking, waiting until a friend stops, turning toward a friend, a nod and a smile, giving a friend some room and not shouting while a friend talks, with friends and with grown-ups you know, while saying something about what a friend said is taught in Talk about it and the language of asking and thanking, please and thank you, in Please and thank you, and Head Start ELOF Goals P-SE 3 (engages in and maintains positive interactions and relationships with other children), in part, since the lesson teaches taking turns in conversations, from the second sentence of its 36 to 48 month progression, "May spontaneously engage in prosocial behaviors with other children, such as sharing and taking turns with materials and in conversations, or may engage in these with prompting from adults.", while the skills of its first sentence are taught in Can I play too?, sharing in Please and thank you, taking turns with materials in Please and thank you and Can I play too?, and doing them without a grown-up, or spontaneously, is the child\'s own (EARMARKS E12), and P-LC 4 (understands, follows, and uses appropriate social and conversational rules), whose 36 to 48 month progression reads "Engages in conversations with adults, other children, or within the group setting lasting two or three conversational turns, and, with support, will sometimes use appropriate tone and volume for different situations.", in part, since the lesson teaches the turns of a conversation with friends and with grown-ups, a hi, a turn each and a bye, and one rule of volume, no shouting while a friend talks, while saying something about what the other one said, which keeps a conversation going for another turn, is taught in Talk about it, and using an appropriate tone and volume for different situations is taught in A voice to fit the place, as pre-K 4\'s Say it to fit teaches it.'],
     generators: ['p3-talk-listen', 'p3-talk-turn', 'p3-talk-hi-bye', 'p3-talk-yesno', 'p3-talk-room'],
   },
   // Talk about it (pass MR, Mikey's answer to Q70, "Q70 - C"): the second half of Talking with a friend, saying something about what
@@ -5238,7 +5255,7 @@ function PREK3_MODULES() { return [
         { say: 'When it is your turn, say something about what your friend said. Then your friend knows you listened, and feels happy.', show: { kind: 'face', feeling: 'happy' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.B.2 (begins to use appropriate language, style, and nonverbal cues during communication with familiar adults and peers), in part, since the lesson teaches saying something about what a friend or a grown-up you know said, by asking about it or saying something kind about it, and not talking about something else, while hi and bye, taking turns talking, waiting until a friend stops, turning toward a friend, a nod and a smile, giving a friend some room and not shouting while a friend talks are taught in Talking with a friend and the language of asking and thanking, please and thank you, in Please and thank you, and Head Start ELOF Goal P-LC 4 (understands, follows, and uses appropriate social and conversational rules), in part, since the lesson teaches one conversational rule, saying something about what the other one said, which keeps a conversation going for two or three turns, as its 36 to 48 month progression reads "Engages in conversations with adults, other children, or within the group setting lasting two or three conversational turns, and, with support, will sometimes use appropriate tone and volume for different situations.", while a hi, a turn each, a bye and no shouting are taught in Talking with a friend, and using an appropriate tone and volume for different situations waits for a lesson, as pre-K 4\'s Say it to fit teaches it since pass MS (EARMARKS E12).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.B.2 (begins to use appropriate language, style, and nonverbal cues during communication with familiar adults and peers), in part, since the lesson teaches saying something about what a friend or a grown-up you know said, by asking about it or saying something kind about it, and not talking about something else, while hi and bye, taking turns talking, waiting until a friend stops, turning toward a friend, a nod and a smile, giving a friend some room and not shouting while a friend talks are taught in Talking with a friend and the language of asking and thanking, please and thank you, in Please and thank you, and Head Start ELOF Goal P-LC 4 (understands, follows, and uses appropriate social and conversational rules), in part, since the lesson teaches one conversational rule, saying something about what the other one said, which keeps a conversation going for two or three turns, as its 36 to 48 month progression reads "Engages in conversations with adults, other children, or within the group setting lasting two or three conversational turns, and, with support, will sometimes use appropriate tone and volume for different situations.", while a hi, a turn each, a bye and no shouting are taught in Talking with a friend, and using an appropriate tone and volume for different situations is taught in A voice to fit the place, as pre-K 4\'s Say it to fit teaches it.'],
     generators: ['p3-talk-say-back', 'p3-talk-topic', 'p3-talk-about-yesno', 'p3-talk-why', 'p3-talk-feel'],
   },
   // Say what you need (pass MS, earmark E12, the standards review of Domain II): PK3 II.B.1 ("uses language to communicate basic
@@ -5275,6 +5292,44 @@ function PREK3_MODULES() { return [
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.B.1 (uses language to communicate basic information, needs, and wants), since the lesson teaches the words a child can use to tell a grown-up each of them, a need, being thirsty, still hungry or cold, a lost teddy bear and a book out of reach, a want, a turn on the slide, and basic information, what happened, my cup spilled, and a child using them with the grown-ups around them is the lesson at work, and Head Start ELOF Goal P-LC 3 (varies the amount of information provided to meet the demands of the situation), whose 36 to 48 month progression reads "Uses language, spoken or sign, for different purposes and is sometimes able to provide sufficient detail to get needs met from a variety of adults.", since the lesson teaches language for different purposes, asking for what you need and what you want and telling what happened, and that saying just what is wrong, I cannot find my teddy bear, gives a grown-up the detail to help where uh oh, or I cannot find it, does not, with a variety of adults, a teacher, a grandma and a grandpa, while sometimes says how often a child does so, which makes no part.'],
     generators: ['p3-need-say', 'p3-need-pic', 'p3-need-enough', 'p3-need-who', 'p3-need-yesno'],
+  },
+  // A voice to fit the place (pass MV, earmark E12, the standards review of Domain II): Head Start's P-LC 4 for three-year-olds, its
+  // "with support, will sometimes use appropriate tone and volume for different situations", which Talking with a friend and Talk
+  // about it left waiting, and PK3 II.C.1 ("Child's speech is understood by familiar adults and peers.", the 2027 recommendation), each
+  // in part (P-LC 5, whose first sentence round one's lesson check found too thin a part to turn its plans ready, waits for II.E). A three-year-old hears a whisper, an inside voice and a big outside voice said
+  // the way they sound (VOICE_MANNERS), where each fits (a sleeping baby and the library, the classroom, a friend far away by the
+  // slide), a kind, soft voice for a sad friend and for asking a turn, that slow, clear words said toward a friend help the friend
+  // understand, and that a big voice to call for help is okay anywhere. Pre-K 4's Say it to fit is its older half. A child using the
+  // voices, with support from the grown-ups around them, is the lesson at work.
+  {
+    id: 'voice-to-fit',
+    skill: 'Getting along',
+    order: 20,
+    requires: ['say-what-you-need'],
+    title: 'A voice to fit the place',
+    tagline: 'A whisper, an inside voice and a big outside voice',
+    lesson: {
+      paragraphs: ['Your voice can be quiet, and your voice can be big. When a baby is sleeping, use a whisper, so the baby keeps sleeping. In the library, use a whisper too, so others can read their books.', 'In the classroom, use an inside voice, not too loud and not too soft, when you talk with your teacher. On the playground, by the slide, you can use a big outside voice, so a friend far away can hear you. A whisper or an inside voice is too soft for a friend far away.', 'Your voice can sound kind too. When a friend is sad, use a kind, soft voice, and ask, are you okay? When you ask for a turn, use a kind voice. Say your words slowly and clearly, and turn toward your friend, so your friend and your teacher can understand you.', 'If you are hurt or scared and need help, a big voice is okay anywhere. Call a grown-up, like your teacher.'],
+      keyIdea: 'Make your voice fit the place, a whisper when a baby sleeps, an inside voice in the classroom, and a big outside voice on the playground.',
+      example: { kind: 'pair', a: { kind: 'icon', name: 'baby~asleep' }, b: { kind: 'icon', name: 'slide' }, caption: 'A whisper when the baby sleeps, and a big outside voice by the slide.' },
+      pictures: [{ serial: 'P169', alt: 'A small child whispering beside a grown-up on a couch who holds a sleeping baby', step: 1 }],
+      script: [
+        { say: 'Your voice can be quiet, and your voice can be big. Listen. This is a whisper. Shh, the baby is sleeping.', show: { kind: 'icon', name: 'baby~asleep' }, voices: [['Shh, the baby is sleeping.', 'whisper']] },
+        // The child's turn at the whisper (round two's alignment read: the lesson modeled every voice and asked the child to try none).
+        { say: 'When a baby is sleeping, use a whisper, so the baby keeps sleeping. Now you try, and whisper it like me. Shh, the baby is sleeping.', show: { kind: 'icon', name: 'baby~asleep' }, voices: [['Shh, the baby is sleeping.', 'whisper', 'turn']] },
+        { say: 'In the library, use a whisper too, so others can read their books.', show: { kind: 'icon', name: 'book' } },
+        { say: 'In the classroom, use an inside voice, not too loud and not too soft, when you talk with your teacher. This is an inside voice. May I have a crayon, please?', show: { kind: 'icon', name: 'teacher' }, voices: [['May I have a crayon, please?', 'inside']] },
+        { say: 'On the playground, by the slide, you can use a big outside voice, so a friend far away can hear you. This is a big outside voice. Over here!', show: { kind: 'icon', name: 'slide' }, voices: [['Over here!', 'outside']] },
+        { say: 'A whisper or an inside voice is too soft for a friend far away by the slide, so your friend cannot hear it.', show: { kind: 'icon', name: 'slide' } },
+        { say: 'Your voice can sound kind too. When a friend is sad, use a kind, soft voice. Are you okay?', show: { kind: 'face', feeling: 'sad' }, voices: [['Are you okay?', 'kind']] },
+        { say: 'When you ask for a turn, use a kind voice too. May I have a turn on the slide, please?', show: { kind: 'icon', name: 'slide' }, voices: [['May I have a turn on the slide, please?', 'kind']] },
+        { say: 'Say your words slowly and clearly, and turn toward your friend, so your friend and your teacher can understand you. If you talk very fast, or turn away, your friend may not understand.', show: { kind: 'icon', name: 'teacher' } },
+        { say: 'If you are hurt or scared and need help, a big voice is okay anywhere. Call a grown-up, like your teacher. Help!', show: { kind: 'icon', name: 'teacher' }, voices: [['Help!', 'outside']] },
+        { say: 'Make your voice fit the place. Use a whisper when a baby sleeps, and an inside voice with your teacher. By the slide, use a big outside voice.', show: { kind: 'row', items: [{ kind: 'icon', name: 'baby~asleep' }, { kind: 'icon', name: 'teacher' }, { kind: 'icon', name: 'slide' }] } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.C.1 (Child\'s speech is understood by familiar adults and peers.), in part, since the lesson teaches what helps a friend and a teacher understand a child, words said slowly and clearly while the child turns toward them, where very fast words or turning away may not be understood, while the child\'s own speech, understood as the child says it, is the child\'s own talk (EARMARKS E12), and Head Start ELOF Goal P-LC 4 (understands, follows, and uses appropriate social and conversational rules), in part, whose 36 to 48 month progression reads "Engages in conversations with adults, other children, or within the group setting lasting two or three conversational turns, and, with support, will sometimes use appropriate tone and volume for different situations.", since the lesson teaches the tone and volume for different situations, a whisper when a baby is sleeping and in the library, an inside voice with a teacher in the classroom, a big outside voice for a friend far away on the playground, and a kind, soft voice for a friend who is sad and for asking a turn, each said the way it sounds, and a child using a voice to fit each place, with support from the grown-ups around them, is the lesson at work (sometimes says how often a child does so, which makes no part), while the conversations of two or three turns are taught in Talking with a friend and Talk about it.'],
+    generators: ['p3-vfit-voice', 'p3-vfit-where', 'p3-vfit-kind', 'p3-vfit-yesno', 'p3-vfit-clear'],
   },
 ]; }
 
@@ -5739,6 +5794,40 @@ function PREK3_READING_MODULES() { return [
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.D.1 (understands (receptive) and uses (expressive) words to label and describe common objects, people, places, actions, and events), in part, its receptive half for words that label and describe common events, a birthday party, bedtime, a rainy day, a snowy day, story time and a day at the park, while common people are taught in Words for people, and using the words, its expressive half, is the child\'s own talk (EARMARKS E12), and VII.A.3 (shows awareness of daily events and routines such as daily visual schedule and morning and bedtime routines), since the lesson teaches that one day has many events, story time, the slide at the park and bedtime, and the bedtime routine, pajamas on and to sleep in your bed.'],
     generators: ['p3-event-what', 'p3-event-tap', 'p3-event-yesno', 'p3-event-name', 'p3-event-picture'],
+  },
+  // My voice goes up and down (pass MV, earmark E12, the standards review of Domain II): PK3 II.C.2, "mimics and begins to use
+  // intonation (changes in pitch or stress) in spoken language" (the 2027 recommendation, printed with no closing period). A
+  // three-year-old hears a voice go up high, like a little bird, and down low, like a big bear, up at the end of a question and down
+  // at the end of telling, and one word said strong, each said the way it sounds (VOICE_MANNERS), and takes a turn after each to say
+  // it like the voice. The app hears nothing; the turn is the child's own.
+  {
+    id: 'voice-up-and-down',
+    skill: 'Listening',
+    order: 15,
+    requires: ['things-that-happen'],
+    title: 'My voice goes up and down',
+    tagline: 'Up high, down low, asking and telling',
+    lesson: {
+      paragraphs: ['Your voice can go up high, as a little bird sings, and down low, the way a big bear growls. Say it as the voice does, up high and down low.', 'When we ask a question, our voice often goes up at the end. Is it a ball? When we tell, our voice often goes down at the end. It is a ball.', 'We can say one word strong, to show it matters most. I want the RED circle, not the blue one. Now I\'ll say the other word strong. I want the red CIRCLE, not the red square.'],
+      keyIdea: 'Your voice can go up high and down low. It often goes up at the end to ask, and down at the end to tell.',
+      example: { kind: 'pair', a: { kind: 'icon', name: 'bird' }, b: { kind: 'pic', name: 'bear' }, caption: 'Up high for a little bird, and down low for a big bear.' },
+      pictures: [{ serial: 'P170', alt: 'A small yellow bird singing on a branch, its beak open', step: 0 }],
+      script: [
+        { say: 'Your voice can go up high, like a little bird. Listen. Up high!', show: { kind: 'icon', name: 'bird' }, voices: [['Up high!', 'high']] },
+        { say: 'Your voice can go down low, the way a big bear growls. Listen. Down low.', show: { kind: 'pic', name: 'bear' }, voices: [['Down low.', 'low']] },
+        { say: 'Now say it like me, up high for the bird, and down low for the bear. Up high! Down low.', show: { kind: 'pair', a: { kind: 'icon', name: 'bird' }, b: { kind: 'pic', name: 'bear' } }, voices: [['Up high!', 'high', 'turn'], ['Down low.', 'low', 'turn']] },
+        { say: 'When we ask a question, our voice often goes up at the end. Is it a ball?', show: { kind: 'icon', name: 'ball' }, voices: [['Is it a ball?', 'ask']] },
+        { say: 'When we tell, our voice often goes down at the end. It is a ball.', show: { kind: 'icon', name: 'ball' }, voices: [['It is a ball.', 'tell']] },
+        { say: 'Your turn. Ask it like me, with your voice going up at the end. Is it a ball?', show: { kind: 'icon', name: 'ball' }, voices: [['Is it a ball?', 'ask', 'turn']] },
+        { say: 'Now tell it like me, with your voice going down at the end. It is a ball.', show: { kind: 'icon', name: 'ball' }, voices: [['It is a ball.', 'tell', 'turn']] },
+        { say: 'We can say one word strong, to show it matters most. I want the RED circle, not the blue one.', show: { kind: 'pair', a: { kind: 'item', shape: 'circle', colour: 'red' }, b: { kind: 'item', shape: 'circle', colour: 'blue' } }, voices: [['I want the RED circle, not the blue one.', 'strong']] },
+        { say: 'Now I\'ll say the other word strong. I want the red CIRCLE, not the red square.', show: { kind: 'pair', a: { kind: 'item', shape: 'circle', colour: 'red' }, b: { kind: 'item', shape: 'square', colour: 'red' } }, voices: [['I want the red CIRCLE, not the red square.', 'strong']] },
+        { say: 'Your turn. Say it like me, with one word strong. I want the RED circle.', show: { kind: 'item', shape: 'circle', colour: 'red' }, voices: [['I want the RED circle.', 'strong', 'turn']] },
+        { say: 'Your voice can go up high for the bird and down low for the bear. It often goes up to ask, and down to tell.', show: { kind: 'pair', a: { kind: 'icon', name: 'bird' }, b: { kind: 'pic', name: 'bear' } } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.C.2 (mimics and begins to use intonation (changes in pitch or stress) in spoken language), since the lesson models changes in pitch, a voice going up high and down low, up at the end of a question and down at the end of telling, and changes in stress, one word said strong, gives the child a turn after each to say it like the voice, mimicking it, and shows what each is for, to ask, to tell and to say which word matters most, so a child beginning to use them, with the grown-ups and friends around them, is the lesson at work.'],
+    generators: ['p3-tone-highlow', 'p3-tone-ask', 'p3-tone-strong', 'p3-tone-yesno', 'p3-tone-who'],
   },
 ]; }
 
@@ -6601,7 +6690,7 @@ function PREK_MODULES() { return [
     lesson: {
       // Pass ML (the lesson check): the kind thing to do, each good choice's reason and each way to wait's reason are said on the
       // lines, as the questions say them, and every line has a picture.
-      pictures: [{ serial: 'P120', alt: 'Two children at a swing, one swinging while the other waits for a turn on a bench well away from it', step: 1 }, { serial: 'P142', alt: 'A small child listening while a friend is talking', step: 4 }, { serial: 'P143', alt: 'A small child dropping a snack wrapper into a trash can', step: 5 }, { serial: 'P144', alt: 'A small child helping a friend pick up dropped crayons', step: 6 }, { serial: 'P145', alt: 'A small child on a bench taking a slow, calm breath while waiting for a turn', step: 7 }],
+      pictures: [{ serial: 'P120', alt: 'Two children at a swing, one swinging while the other waits for a turn on a bench well away from it, beside their teacher, who watches the swing', step: 1 }, { serial: 'P142', alt: 'A small child listening while a friend is talking', step: 4 }, { serial: 'P143', alt: 'A small child dropping a snack wrapper into a trash can', step: 5 }, { serial: 'P144', alt: 'A small child helping a friend pick up dropped crayons', step: 6 }, { serial: 'P145', alt: 'A small child on a bench taking a slow, calm breath while waiting for a turn', step: 7 }],
       paragraphs: ['When two people want the same thing, they can take turns. That is the kind thing to do. One goes first while the other waits, and then they swap, so both get a turn.', 'Sharing is different. When friends share, they both use the thing at the same time. Good choices like these help everyone get along. When someone is talking, listen, because it shows you care what they say. When you finish a snack, throw away the wrapper, so the room stays clean for everyone. When a friend drops their crayons, help pick them up.', 'Waiting for a turn can feel hard, and that is okay. A slow breath helps you feel calm, counting to ten helps the wait go by, and cheering for your friend is kind. Soon it is your turn.'],
       keyIdea: 'Wait, and then it is your turn. Taking turns and sharing are kind to everyone.',
       example: { kind: 'pair', a: { kind: 'pic', name: 'frog' }, b: { kind: 'pic', name: 'turtle' }, caption: 'Two friends, one swing. Take turns.' },
@@ -6873,14 +6962,14 @@ function PREK_MODULES() { return [
         { say: 'To ask a question, you can say, where does rain come from? Or, what is your name?', show: { kind: 'icon', name: 'rain' } },
         { say: 'And to say how you feel, you can say, I feel happy! Or, I feel sad.', show: { kind: 'pair', a: { kind: 'face', feeling: 'happy' }, b: { kind: 'face', feeling: 'sad' } } },
         { say: 'Your voice can change to fit the place. In the library, use a whisper, so others can read their books.', show: { kind: 'icon', name: 'book' } },
-        { say: 'When a baby is sleeping, use a whisper too, so the baby keeps sleeping.', show: { kind: 'icon', name: 'baby' } },
+        { say: 'When a baby is sleeping, use a whisper too, so the baby keeps sleeping.', show: { kind: 'icon', name: 'baby~asleep' } },
         { say: 'In the classroom, use an inside voice, not too loud and not too soft, when you talk with your teacher.', show: { kind: 'icon', name: 'teacher' } },
         { say: 'At the doctor\'s office, use an inside voice too. Tell the doctor just what is wrong, like, my ear hurts.', show: { kind: 'icon', name: 'doctor' } },
         { say: 'On the playground by the slide, you can use a big outside voice, like, over here! Then a friend far away can hear you, and a whisper or an inside voice is too soft.', show: { kind: 'icon', name: 'slide' } },
         { say: 'A kind, soft voice fits when a friend is sad. You can say, are you okay?', show: { kind: 'face', feeling: 'sad' } },
         { say: 'Tell a grown-up enough, so they can help, like your teacher, your grandma or your grandpa. If you just say, it hurts, they do not know where. And if you just say uh oh, they do not know what happened.', show: { kind: 'icon', name: 'teacher' } },
         { say: 'Say, my knee hurts. I fell on the slide. Then your teacher knows just what happened.', show: { kind: 'icon', name: 'slide' } },
-        { say: 'We use words to ask for things, to tell, to ask questions and to say how we feel. Make your voice fit the place, a whisper when the baby sleeps, and a big outside voice by the slide.', show: { kind: 'pair', a: { kind: 'icon', name: 'baby' }, b: { kind: 'icon', name: 'slide' } } },
+        { say: 'We use words to ask for things, to tell, to ask questions and to say how we feel. Make your voice fit the place, a whisper when the baby sleeps, and a big outside voice by the slide.', show: { kind: 'pair', a: { kind: 'icon', name: 'baby~asleep' }, b: { kind: 'icon', name: 'slide' } } },
       ],
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.B.1 (uses language for multiple purposes and in various settings), since the lesson teaches four purposes for words, asking for something, telling what happened, asking a question and saying how you feel, each with words a child can use, and a voice to fit each setting, a whisper in the library and when a baby is sleeping, an inside voice in the classroom and at the doctor\'s office, and a big outside voice on the playground, and a child using them is the lesson at work, and Head Start ELOF Goals P-LC 3 (varies the amount of information provided to meet the demands of the situation), whose 48 to 60 month progression reads "Uses language, spoken or sign, for a variety of purposes and can typically provide sufficient detail in order to get needs met from a variety of adults.", since the lesson teaches language for a variety of purposes and the detail that gets a need met from a variety of adults, a teacher, a doctor, a grandma and a grandpa, my ear hurts and not just it hurts, while typically says how often a child does so, which makes no part, and P-LC 4 (understands, follows, and uses appropriate social and conversational rules), in part, for the second sentence of its 48 to 60 month progression, "With increasing independence, varies tone and volume of expression to match the social situation.", since the lesson teaches the volume that matches each setting and a kind, soft voice for a friend who is sad, while varying them with increasing independence is the child\'s own (EARMARKS E13), and its first sentence is taught in Let\'s play together.'],
@@ -7330,6 +7419,46 @@ function PREK_READING_MODULES() { return [
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.D.1 (understands (receptive) and uses (expressive) a growing variety of words to label, describe and make connections among objects, people, places, actions, and events), in part, its receptive half for words for actions, read, kick, sleep, cut, draw, eat, drink and ride, and for events, lunchtime, art time, story time and bedtime, and the connections among them, the thing each action goes with, a book, a ball, a bed, scissors, a crayon, a spoon, a cup and a bus, and the actions that go with each event and with a place, the park, while using them, its expressive half, is the child\'s own talk (EARMARKS E13), its groups, opposites and words that mean the same are taught in Words that go together and Same and opposite, and its words for people and places and the actions and tools of each helper\'s job in Helpers all around, and Head Start ELOF Goal P-LC 6 (understands and uses a wide variety of words for a variety of purposes), whose 48 to 60 month progression reads "Shows a steady increase in vocabulary through the acquisition of words with increasing specificity and variety. Shows repetition of new words offered by adults and may ask about the meaning of unfamiliar words.", in part, since the lesson teaches words of increasing specificity and variety, eight action words and four times of the day, and offers three new words for the child to say after the voice, action, scissors and lunchtime, each in silly voices, while saying them, and asking about the meaning of unfamiliar words, are the child\'s own talk (EARMARKS E13).'],
     generators: ['p4-act-thing', 'p4-act-word', 'p4-act-when', 'p4-act-yesno', 'p4-act-use'],
+  },
+  // My voice tells more (pass MV, earmark E13, the standards review of Domain II): PK4 II.C.2, "uses intonation (changes in pitch or
+  // stress) to convey and interpret meaning in spoken language." (the 2027 recommendation), and PK4 II.C.1, in part (P-LC 5 waits for
+  // II.E, as A voice to fit the place says). A four-year-old hears a voice going up at the end ask and going down tell, the
+  // same words asking or telling, a word said strong show the word that matters most, and a voice going up high sound happy and
+  // a slow, soft, low one sad, each said the way it sounds (VOICE_MANNERS), tells what each means and says some back; and hears that
+  // slow, clear words said toward a friend, a grown-up they know or someone new help them understand. Pre-K 3's My voice goes up and down is its younger
+  // half. The questions about feelings use words that are neither happy nor sad: children of four judge a speaker's feeling by the words
+  // when the words and the voice disagree, even when told to listen to the voice, yet tell a happy voice from a sad one when they cannot
+  // understand the words (Morton and Trehub, Child Development, 2001, a foreign language and muffled speech), so words that say nothing of
+  // a feeling leave the voice to tell it.
+  {
+    id: 'voice-tells-more',
+    skill: 'Listening',
+    order: 16,
+    requires: ['things-we-do'],
+    title: 'My voice tells more',
+    tagline: 'Asking, telling, a strong word and how I feel',
+    lesson: {
+      paragraphs: ['Your voice can go up high and down low. When we ask a question, our voice often goes up at the end. Is it raining? When we tell, our voice often goes down at the end. It is raining. The same words can even ask or tell, by how the voice goes.', 'Saying one word strong shows the word that matters most. I want the RED circle, not the blue one. Now you say circle strong. I want the red CIRCLE, not the red square.', 'Your voice shows how you feel. A happy voice often goes up high, and it can be quick. A sad voice is often slow, soft and low. So listen to how something is said, and you can tell if someone feels happy or sad.', 'Sometimes you talk with a friend, a grown-up you know, or someone new, a doctor you have just met. Say your words slowly and clearly, and turn toward them, so they can understand you.'],
+      keyIdea: 'Your voice goes up to ask and down to tell, says one word strong, and shows how you feel.',
+      example: { kind: 'pair', a: { kind: 'face', feeling: 'happy' }, b: { kind: 'face', feeling: 'sad' }, caption: 'A happy voice often goes up high, and a sad voice is often slow, soft and low.' },
+      pictures: [{ serial: 'P171', alt: 'A small child at a park gate, jumping with joy, arms up and smiling, a grown-up holding the gate open', step: 6 }],
+      script: [
+        { say: 'Your voice can go up high, as a little bird sings, and down low, the way a big bear growls. Listen. Up high! Down low.', show: { kind: 'pair', a: { kind: 'icon', name: 'bird' }, b: { kind: 'pic', name: 'bear' } }, voices: [['Up high!', 'high'], ['Down low.', 'low']] },
+        { say: 'When we ask a question, our voice often goes up at the end. Is it raining?', show: { kind: 'icon', name: 'rain' }, voices: [['Is it raining?', 'ask']] },
+        { say: 'When we tell, our voice often goes down at the end. It is raining.', show: { kind: 'icon', name: 'rain' }, voices: [['It is raining.', 'tell']] },
+        { say: 'The same words can ask a question or tell you something. You have a dog? With the voice going up at the end, it asks. You have a dog. With the voice going down, it tells.', show: { kind: 'icon', name: 'dog' }, voices: [['You have a dog?', 'ask'], ['You have a dog.', 'tell']] },
+        { say: 'Saying one word strong shows the word that matters most. I want the RED circle, not the blue one.', show: { kind: 'pair', a: { kind: 'item', shape: 'circle', colour: 'red' }, b: { kind: 'item', shape: 'circle', colour: 'blue' } }, voices: [['I want the RED circle, not the blue one.', 'strong']] },
+        { say: 'Your turn. Say circle strong, like me. I want the red CIRCLE, not the red square.', show: { kind: 'pair', a: { kind: 'item', shape: 'circle', colour: 'red' }, b: { kind: 'item', shape: 'square', colour: 'red' } }, voices: [['I want the red CIRCLE, not the red square.', 'strong', 'turn']] },
+        { say: 'Your voice shows how you feel. A happy voice often goes up high, and it can be quick. We are going to the park!', show: { kind: 'face', feeling: 'happy' }, voices: [['We are going to the park!', 'happy']] },
+        { say: 'A sad voice is often slow, soft and low. We are going home.', show: { kind: 'face', feeling: 'sad' }, voices: [['We are going home.', 'sad']] },
+        { say: 'The same words can sound happy or sad. We are going home! In a quick voice going up high, that sounds happy. We are going home. In a slow, low voice, that sounds sad. So listen to how something is said, and you can tell if someone feels happy or sad.', show: { kind: 'pair', a: { kind: 'face', feeling: 'happy' }, b: { kind: 'face', feeling: 'sad' } }, voices: [['We are going home!', 'happy'], ['We are going home.', 'sad']] },
+        { say: 'Now you try. Ask it, with your voice going up at the end. Can I play with the ball? Now say it happy, with your voice going up high. We are going to the park!', show: { kind: 'pair', a: { kind: 'icon', name: 'ball' }, b: { kind: 'face', feeling: 'happy' } }, voices: [['Can I play with the ball?', 'ask', 'turn'], ['We are going to the park!', 'happy', 'turn']] },
+        { say: 'Sometimes you talk with a friend, a grown-up you know, or someone new, a doctor you have just met. Say your words slowly and clearly, and turn toward them, so they can understand you.', show: { kind: 'icon', name: 'doctor' } },
+        { say: 'Your voice goes up to ask and down to tell, says one word strong, and shows if you feel happy or sad.', show: { kind: 'pair', a: { kind: 'face', feeling: 'happy' }, b: { kind: 'face', feeling: 'sad' } } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.C.2 (uses intonation (changes in pitch or stress) to convey and interpret meaning in spoken language.), since the lesson teaches that a voice going up at the end often asks and going down often tells, so the same words can ask or tell, that a word said strong shows the word that matters most, and that a voice going up high often sounds happy and a slow, soft, low one sad, has the child hear each and tell what it means, interpreting it, and say some of them like the voice, conveying it, a child using them with the grown-ups and friends around them being the lesson at work, and II.C.1 (Child’s speech is generally intelligible to both familiar and unfamiliar adults and peers.), in part, since the lesson teaches what helps a friend, a grown-up the child knows and someone new, a doctor the child has just met, understand a child, words said slowly and clearly while the child turns toward them, while the child\'s own speech, understood as the child says it, is the child\'s own talk (EARMARKS E13).'],
+    generators: ['p4-tone-ask', 'p4-tone-feel', 'p4-tone-strong', 'p4-tone-which', 'p4-tone-yesno'],
   },
 ]; }
 
@@ -29336,6 +29465,198 @@ Object.assign(GENERATORS, {
   },
 });
 
+// Domain II's II.C for both ages and pre-K 3's voice to fit the place (pass MV, earmarks E12 and E13). In plain terms: three lessons'
+// questions. Pre-K 3's A voice to fit the place (the voice that fits each place and moment, a kind, soft voice, and what helps a friend
+// understand you; Head Start's P-LC 4 and PK3 II.C.1, in part, P-LC 5 waiting for II.E); pre-K 3's My voice goes up and down (a voice up high or down
+// low, a question going up and telling going down, and the word said strong; PK3 II.C.2); and pre-K 4's My voice tells more (asking or
+// telling, a happy or a sad voice, and the word said strong; PK4 II.C.2). A question about what a child heard says its sentence in a
+// manner (voices, VOICE_MANNERS) and uses only what every device voice can show, pitch, pace, a question's lift and a strong word,
+// never loudness alone; a word said strong is printed in small letters (printedStory) while the device can speak, so the screen never
+// shows which word it was (with no voice the capitals print, for the grown-up who reads it aloud).
+// Every fact a question asks is said first on a line of its lesson's spoken script, every answer is re-derived by the rules test from
+// tables of its own (PREK_DERIVE), and each wrong choice's reason talks about the choice tapped.
+// -----------------------------------------------------------------------------------------------------------------
+// A voice to fit the place (pre-K 3): each place or moment the lesson names, the voice that fits it, a voice that does not, why not,
+// and what the lesson says of the right one. The classroom's wrong voice is the big outside voice alone, since a whisper with a teacher
+// can fit a quiet moment, and the far-away friend's is an inside voice, which the lesson names too soft for a friend far away, since
+// beside a whisper only the answer would say voice, as the question does (an echo; the yes or no kind asks about the whisper); the hurt
+// child's is a kind, soft voice for the same reason (round two: a whisper there was the echo the rules test caught).
+const VF3_VOICE = [
+  ['A baby is sleeping.', 'A whisper', 'A big outside voice', 'is too loud while the baby is sleeping.', 'A whisper, so the baby keeps sleeping.'],
+  ['You are in the library, where others read their books.', 'A whisper', 'A big outside voice', 'is for the playground, and too loud for the library.', 'A whisper, so others can read their books.'],
+  ['You are talking with your teacher in the classroom.', 'An inside voice', 'A big outside voice', 'is for the playground, and too loud for the classroom.', 'An inside voice, not too loud and not too soft.'],
+  ['Your friend is far away on the playground, by the slide.', 'A big outside voice', 'An inside voice', 'is too soft for a friend far away to hear.', 'A big outside voice, so your friend far away can hear you.'],
+  // A second row whose answer is the big voice (round one's lesson check: the big outside voice was the wrong choice in five of the seven
+  // voice rows): since round two's second read, a child hurt and needing help, the lesson's other place for it, in place of a second friend
+  // far away, which was the first row in other words and was asked beside it in a triple dose.
+  ['You are hurt and need help.', 'A big outside voice', 'A kind, soft voice', 'is too soft to call a grown-up for help.', 'A big outside voice. When you are hurt and need help, a big voice is okay anywhere, to call a grown-up.'],
+];
+// Where each voice goes, by the lesson's pictures: the book for the library, the sleeping baby, the slide on the playground and the
+// teacher in the classroom, each asked by the voice alone, never by the picture's own name or a reason that names it (round one's
+// lesson check: "so others can read" gave the book away, and "so they keep sleeping" the baby); the wrong pictures are places or people
+// a different voice fits, never one a question's words fit too (round two's second read: "Who needs you to whisper?" fit a teacher at a
+// quiet moment, and "Who do you talk with" ruled out a sleeping baby by meaning alone, so both ask which one goes with the voice).
+const VF3_WHERE = [
+  ['Where do you use a whisper?', 'book', ['slide'], 'The book. In the library, use a whisper, so others can read their books.'],
+  ['Which one goes with a whisper?', 'baby~asleep', ['slide'], 'The baby. When a baby is sleeping, use a whisper, so the baby keeps sleeping.'],
+  ['Where can you use a big outside voice?', 'slide', ['baby~asleep', 'book'], 'The slide. On the playground, by the slide, you can use a big outside voice.'],
+  ['Which one goes with an inside voice?', 'teacher', ['baby~asleep'], 'Your teacher. In the classroom, use an inside voice, not too loud and not too soft, when you talk with your teacher.'],
+];
+const VF3_IS = { book: 'is for the library, where you use a whisper.', baby: 'needs a whisper while the baby is sleeping.', slide: 'is on the playground, where you can use a big outside voice.', teacher: 'is in the classroom, where you use an inside voice.' };
+// A kind, soft voice: the moment, the question, the voice or the words that fit, the ones that do not, why not, and the lesson's words.
+const VF3_KIND = [
+  ['Your friend is sad.', 'Which voice fits?', 'A kind, soft voice', 'A big outside voice', 'is too loud for a friend who is sad.', 'A kind, soft voice. You can ask, are you okay?'],
+  ['Your friend is right beside you, and you want a turn on the slide.', 'Which voice fits?', 'A kind voice', 'A big outside voice', 'is for a friend far away, not for asking a turn.', 'A kind voice. You can ask, may I have a turn on the slide, please?'],
+  ['Your friend is sad.', 'What can you say in a kind, soft voice?', 'Are you okay?', 'Over here!', 'is a big outside voice call, for a friend far away.', 'Are you okay? A kind, soft voice fits a friend who is sad.'],
+];
+// Yes or no about each voice, a big voice to call for help, and an inside voice in the classroom, with what the wrong answer would mean.
+const VF3_YESNO = [
+  ['When a baby is sleeping, do you use a big outside voice?', 'No', 'No. When a baby is sleeping, use a whisper, so the baby keeps sleeping.', 'would mean a big outside voice fits a sleeping baby, but it is too loud.'],
+  ['In the library, do you use a whisper?', 'Yes', 'Yes. In the library, use a whisper, so others can read their books.', 'would mean you do not whisper in the library, but you do.'],
+  ['On the playground, can you use a big outside voice?', 'Yes', 'Yes. On the playground, you can use a big outside voice, so a friend far away can hear you.', 'would mean you cannot use a big outside voice on the playground, but you can.'],
+  ['Is a whisper too soft for a friend far away?', 'Yes', 'Yes. A whisper is too soft for a friend far away, so your friend cannot hear it.', 'would mean a friend far away can hear a whisper, but a whisper is too soft.'],
+  ['When a friend is sad, do you use a big outside voice?', 'No', 'No. When a friend is sad, use a kind, soft voice.', 'would mean a big outside voice fits a sad friend, but a kind, soft voice fits.'],
+  ['If you are hurt and need help, can you use a big voice?', 'Yes', 'Yes. If you are hurt or scared and need help, a big voice is okay anywhere. Call a grown-up.', 'would mean you cannot use a big voice to get help, but you can.'],
+  ['In the classroom, do you use an inside voice with your teacher?', 'Yes', 'Yes. In the classroom, use an inside voice, not too loud and not too soft.', 'would mean you do not use an inside voice in the classroom, but you do.'],
+];
+// What helps a friend or a teacher understand you, beside what does not, each said on the lesson's own line.
+const VF3_CLEAR = [
+  ['How do you say your words, so your friend can understand you?', 'Slowly and clearly', 'Very, very fast', 'is too fast, so your friend may not understand you.', 'Slowly and clearly. Then your friend can understand you.'],
+  ['Which one helps your friend understand you?', 'Turn toward your friend', 'Turn away from your friend', 'makes it harder for your friend to understand you.', 'Turn toward your friend. Then your friend can understand you.'],
+  ['Which one helps your teacher understand you?', 'Say your words slowly and clearly', 'Talk very fast', 'is too fast, so your teacher may not understand you.', 'Say your words slowly and clearly. Then your teacher can understand you.'],
+];
+// My voice goes up and down (pre-K 3) and My voice tells more (pre-K 4). Sentences said up high or down low, words that say nothing of
+// high or low; the things a question and its telling ask about (Is it a ball? beside It is a ball., no picture shown, since the
+// question names none); and a sentence with one word said strong, the word in capitals as the voice is handed it, with the other word
+// a choice names. Pre-K 3 asks which word sounded different too, more than PK3 II.C.2 asks (Mikey's answer to Q78 (a), "it's okay to
+// have more than what's required"): the device says the word slower, higher and as a piece of its own, so the question asks for the word
+// that sounded different, which 24-month-olds already attend to (Grassmann and Tomasello, Journal of Pragmatics, 2010: children looked
+// longer at the thing a stressed word named when it was new), while what a strong word means is pre-K 4's.
+const TN_HEARD = ['Hello!', 'Good morning!', 'I see a dog.', 'Here is my ball.'];
+const TN3_THINGS = [['ball'], ['dog'], ['cup'], ['cat']];
+const TN_STRONG = [['I want the RED circle.', 'Red', 'Circle'], ['I want the red CIRCLE.', 'Circle', 'Red'], ['I want the BLUE circle.', 'Blue', 'Circle'], ['I want the blue CIRCLE.', 'Circle', 'Blue'], ['I want the RED square.', 'Red', 'Square'], ['I want the red SQUARE.', 'Square', 'Red']];
+// The strong sentence as the screen prints it while the device can speak: its word in capitals in small letters, so the screen never
+// shows which word is said strong (the voice is handed the capitals, and with no voice the capitals print).
+const tnPrinted = (s) => s.replace(/\b[A-Z]{2,}\b/g, (w) => w.toLowerCase());
+const TN3_YESNO = [
+  ['When we ask a question, does our voice often go up at the end?', 'Yes', 'Yes. When we ask a question, our voice often goes up at the end.', 'would mean a question does not often go up at the end, but it often does.'],
+  ['When we tell, does our voice often go up at the end?', 'No', 'No. When we tell, our voice often goes down at the end.', 'would mean telling often goes up at the end, but it often goes down.'],
+  ['Can your voice go up high, like a little bird?', 'Yes', 'Yes. Your voice can go up high, like a little bird.', 'would mean your voice cannot go up high, but it can.'],
+  ['Can your voice go down low, like a big bear?', 'Yes', 'Yes. Your voice can go down low, like a big bear.', 'would mean your voice cannot go down low, but it can.'],
+  ['Can you say one word strong, to show it matters most?', 'Yes', 'Yes. We can say one word strong, to show it matters most.', 'would mean you cannot say one word strong, but you can.'],
+  ['Does a little bird sound like a voice down low?', 'No', 'No. A little bird sounds like a voice up high.', 'would mean a little bird sounds down low, but it sounds up high.'],
+];
+// Pre-K 4: a question and its telling, each said its way; words that say nothing of how someone feels, said happy (quick and high,
+// ending with an exclamation mark) or sad (slow, soft and low); and yes or no about the voice.
+const TN4_PAIRS = [['Is it raining?', 'It is raining.'], ['Is the cat asleep?', 'The cat is asleep.'], ['Do you have a dog?', 'You have a dog.'], ['Is it time for lunch?', 'It is time for lunch.']];
+const TN4_FEEL = ['The bus is here', 'We are going home', 'We are going to the store', 'The door is open'];
+const TN4_YESNO = [
+  ['When we ask a question, does our voice often go up at the end?', 'Yes', 'Yes. When we ask a question, our voice often goes up at the end.', 'would mean a question does not often go up at the end, but it often does.'],
+  ['When we tell, does our voice often go up at the end?', 'No', 'No. When we tell, our voice often goes down at the end.', 'would mean telling often goes up at the end, but it often goes down.'],
+  ['Can the same words ask or tell?', 'Yes', 'Yes. With the voice going up, they ask, and with the voice going down, they tell.', 'would mean the same words can only ask or only tell, but they can do both.'],
+  ['Is a sad voice often quick, going up high?', 'No', 'No. A sad voice is often slow, soft and low.', 'would mean a sad voice is quick and high, but it is often slow, soft and low.'],
+  ['Does a happy voice often go up high?', 'Yes', 'Yes. A happy voice often goes up high, and it can be quick.', 'would mean a happy voice does not often go up high, but it often does.'],
+  ['Can how something is said tell you how someone feels?', 'Yes', 'Yes. Listen to how something is said, and you can tell if someone feels happy or sad.', 'would mean how something is said tells you nothing, but it can tell you how someone feels.'],
+  ['When you talk with a doctor you have just met, do you say your words slowly and clearly?', 'Yes', 'Yes. Say your words slowly and clearly, and turn toward them, so they can understand you.', 'would mean you talk very fast to someone new, but slow, clear words help them understand you.'],
+];
+Object.assign(GENERATORS, {
+  // A voice to fit the place: the voice that fits a place or a moment.
+  'p3-vfit-voice': (rng) => {
+    const [story, right, wrong, why, explain] = pick(rng, VF3_VOICE);
+    return { type: 'choice', story, prompt: 'Which voice fits?', choices: shuffle(rng, [right, wrong]), answer: right, explain, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why } }, alsoRight: [] };
+  },
+  // A voice to fit the place: the picture each voice goes with.
+  'p3-vfit-where': (rng) => {
+    const [prompt, right, wrongs, explain] = pick(rng, VF3_WHERE); const choices = shuffle(rng, [right, ...wrongs].map((t) => `icon:${t}`));
+    return { type: 'choice', story: null, prompt, choices, answer: `icon:${right}`, explain, visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, `icon:${right}`, (t) => ({ name: p3PicName(t), why: VF3_IS[p3PicWord(t)] })), alsoRight: [] };
+  },
+  // A voice to fit the place: a kind, soft voice for a sad friend and for asking a turn.
+  'p3-vfit-kind': (rng) => {
+    const [story, prompt, right, wrong, why, explain] = pick(rng, VF3_KIND); const said = /[?!.]$/.test(wrong);
+    return { type: 'choice', story, prompt, choices: shuffle(rng, [right, wrong]), answer: right, explain, visual: null, explainVisual: null, whyNot: { [wrong]: { name: said ? `Saying, ${msSaid(wrong)}` : wrong, why } }, alsoRight: [] };
+  },
+  // A voice to fit the place: yes or no about each voice and a big voice to call for help.
+  'p3-vfit-yesno': (rng) => {
+    const [ask, answer, explain, why] = pick(rng, VF3_YESNO); const wrong = answer === 'Yes' ? 'No' : 'Yes';
+    return { type: 'choice', story: null, prompt: ask, choices: yesNo(rng), answer, explain, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why } }, alsoRight: [] };
+  },
+  // A voice to fit the place: what helps a friend or a teacher understand you (PK3 II.C.1, in part).
+  'p3-vfit-clear': (rng) => {
+    const [prompt, right, wrong, why, explain] = pick(rng, VF3_CLEAR);
+    return { type: 'choice', story: null, prompt, choices: shuffle(rng, [right, wrong]), answer: right, explain, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why } }, alsoRight: [] };
+  },
+  // My voice goes up and down: a sentence said up high or down low, and which it was.
+  'p3-tone-highlow': (rng) => {
+    const said = pick(rng, TN_HEARD); const high = rng() < 0.5; const right = high ? 'Up high' : 'Down low'; const wrong = high ? 'Down low' : 'Up high';
+    return { type: 'choice', story: `Listen. ${said}`, voices: [[said, high ? 'high' : 'low']], prompt: 'Was my voice up high, or down low?', choices: shuffle(rng, [right, wrong]), answer: right,
+      explain: high ? 'Up high. My voice went up high, like a little bird.' : 'Down low. My voice went down low, like a big bear.', visual: null, explainVisual: null,
+      whyNot: { [wrong]: { name: wrong, why: high ? 'is a voice like a big bear\'s, and this voice was not down low.' : 'is a voice like a little bird\'s, and this voice was not up high.' } }, alsoRight: [] };
+  },
+  // My voice goes up and down: the one of a question and its telling that asks, or the one that tells, each said its way when tapped
+  // (voices, a tapped choice said in its manner).
+  'p3-tone-ask': (rng) => {
+    const [thing] = pick(rng, TN3_THINGS); const asks = `Is it a ${thing}?`; const tells = `It is a ${thing}.`; const ask = rng() < 0.5;
+    const right = ask ? asks : tells; const wrong = ask ? tells : asks;
+    return { type: 'choice', story: null, prompt: ask ? 'Which one asks a question?' : 'Which one tells?', voices: [[asks, 'ask'], [tells, 'tell']], choices: shuffle(rng, [asks, tells]), answer: right,
+      explain: ask ? `${asks} It asks, and the voice often goes up at the end.` : `${tells} It tells, and the voice often goes down at the end.`, visual: null, explainVisual: null,
+      whyNot: { [wrong]: { name: `Saying, ${msSaid(wrong)}`, why: ask ? 'tells, and the voice often goes down at the end.' : 'asks a question, and the voice often goes up at the end.' } }, alsoRight: [] };
+  },
+  // My voice goes up and down: which word the voice said strong.
+  'p3-tone-strong': (rng) => {
+    const [said, right, wrong] = pick(rng, TN_STRONG);
+    return { type: 'choice', story: `Listen. ${said}`, printedStory: `Listen. ${tnPrinted(said)}`, voices: [[said, 'strong']], prompt: 'Which word did I say strong?', choices: shuffle(rng, [right, wrong]), answer: right,
+      explain: `${right}. I said the word ${right.toLowerCase()} strong, to show it matters most.`, visual: null, explainVisual: null,
+      whyNot: { [wrong]: { name: wrong, why: 'was said the usual way, not strong.' } }, alsoRight: [] };
+  },
+  // My voice goes up and down: yes or no about a voice up high and down low, asking and telling.
+  'p3-tone-yesno': (rng) => {
+    const [ask, answer, explain, why] = pick(rng, TN3_YESNO); const wrong = answer === 'Yes' ? 'No' : 'Yes';
+    return { type: 'choice', story: null, prompt: ask, choices: yesNo(rng), answer, explain, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why } }, alsoRight: [] };
+  },
+  // My voice goes up and down: the bird or the bear, by a voice up high or down low, asked in words or heard.
+  'p3-tone-who': (rng) => {
+    const high = rng() < 0.5; const heard = rng() < 0.6; const said = pick(rng, TN_HEARD); const right = high ? 'icon:bird' : 'pic:bear'; const choices = shuffle(rng, ['icon:bird', 'pic:bear']);
+    return { type: 'choice', story: heard ? `Listen. ${said}` : null, ...(heard ? { voices: [[said, high ? 'high' : 'low']] } : {}), prompt: heard ? 'Which one does my voice sound like?' : high ? 'Which one sounds like a voice up high?' : 'Which one sounds like a voice down low?', choices, answer: right,
+      explain: high ? 'The bird. A little bird sounds like a voice up high.' : 'The bear. A big bear sounds like a voice down low.', visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, right, (t) => ({ name: p3PicName(t), why: p3PicWord(t) === 'bird' ? 'sounds like a voice up high.' : 'sounds like a voice down low.' })), alsoRight: [] };
+  },
+  // My voice tells more: a sentence said asking or telling, and which it does.
+  'p4-tone-ask': (rng) => {
+    const [asks, tells] = pick(rng, TN4_PAIRS); const ask = rng() < 0.5; const said = ask ? asks : tells; const right = ask ? 'It asks' : 'It tells'; const wrong = ask ? 'It tells' : 'It asks';
+    return { type: 'choice', story: `Listen. ${said}`, voices: [[said, ask ? 'ask' : 'tell']], prompt: 'Does it ask, or tell?', choices: shuffle(rng, [right, wrong]), answer: right,
+      explain: ask ? 'It asks. The voice went up at the end, and it asks a question.' : 'It tells. The voice went down at the end, and it tells.', visual: null, explainVisual: null,
+      whyNot: { [wrong]: { name: wrong, why: ask ? 'is for a voice going down at the end, and this voice went up.' : 'is for a voice going up at the end, and this voice went down.' } }, alsoRight: [] };
+  },
+  // My voice tells more: words that say nothing of a feeling, said happy or sad, and how they sound. The voice is handed the happy one with
+  // "!" and the sad one with ".", which helps it, while the screen prints both with a full stop (round two's alignment read: the end mark
+  // matched the face on every seed, a printed sign of the answer).
+  'p4-tone-feel': (rng) => {
+    const base = pick(rng, TN4_FEEL); const happy = rng() < 0.5; const said = `${base}${happy ? '!' : '.'}`; const right = happy ? 'face:happy' : 'face:sad'; const choices = shuffle(rng, ['face:happy', 'face:sad']);
+    return { type: 'choice', story: `Listen to how it is said. ${said}`, printedStory: `Listen to how it is said. ${base}.`, voices: [[said, happy ? 'happy' : 'sad']], prompt: 'How does it sound?', choices, answer: right,
+      explain: happy ? 'Happy. The voice was quick, and it went up high.' : 'Sad. The voice was slow, soft and low.', visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, right, (t) => ({ name: t === 'face:happy' ? 'The happy face' : 'The sad face', why: t === 'face:happy' ? `has ${P3_FACE_SIGN.happy}, and a happy voice often goes up high.` : `has ${P3_FACE_SIGN.sad}, and a sad voice is slow, soft and low.` })), alsoRight: [] };
+  },
+  // My voice tells more: which word was said strong.
+  'p4-tone-strong': (rng) => {
+    const [said, right, wrong] = pick(rng, TN_STRONG);
+    return { type: 'choice', story: `Listen. ${said}`, printedStory: `Listen. ${tnPrinted(said)}`, voices: [[said, 'strong']], prompt: 'Which word was said strong?', choices: shuffle(rng, [right, wrong]), answer: right,
+      explain: `${right}. The word ${right.toLowerCase()} was said strong, to show it matters most.`, visual: null, explainVisual: null,
+      whyNot: { [wrong]: { name: wrong, why: 'was said the usual way, not strong.' } }, alsoRight: [] };
+  },
+  // My voice tells more: the one of a question and its telling that asks, or the one that tells.
+  'p4-tone-which': (rng) => {
+    const [asks, tells] = pick(rng, TN4_PAIRS); const ask = rng() < 0.5; const right = ask ? asks : tells; const wrong = ask ? tells : asks;
+    return { type: 'choice', story: null, prompt: ask ? 'Which one asks?' : 'Which one tells?', voices: [[asks, 'ask'], [tells, 'tell']], choices: shuffle(rng, [asks, tells]), answer: right,
+      explain: ask ? `${asks} It asks, and the voice often goes up at the end.` : `${tells} It tells, and the voice often goes down at the end.`, visual: null, explainVisual: null,
+      whyNot: { [wrong]: { name: `Saying, ${msSaid(wrong)}`, why: ask ? 'tells, and the voice often goes down at the end.' : 'asks, and the voice often goes up at the end.' } }, alsoRight: [] };
+  },
+  // My voice tells more: yes or no about asking, telling, a happy or a sad voice, and clear words for someone new.
+  'p4-tone-yesno': (rng) => {
+    const [ask, answer, explain, why] = pick(rng, TN4_YESNO); const wrong = answer === 'Yes' ? 'No' : 'Yes';
+    return { type: 'choice', story: null, prompt: ask, choices: yesNo(rng), answer, explain, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why } }, alsoRight: [] };
+  },
+});
 
 // ---------------------------------------------------------------------
 // WRITING questions. There is no right answer: the student writes, checks a short list,
@@ -33890,7 +34211,8 @@ export const SENTENCE_BREAK = /(?<=[.!?])(?<!\b(?:Mr|Mrs|Ms|Dr|Jr)\.)(?<!\b[A-Z]
 // spoken really quickly and not emphasized." A list is three words at the start of a sentence, before start or begin with or the same,
 // end with or in or the same, or rhyme, so "Water, oxygen and warmth start a seed" is read as before. With { trial: true }, the
 // voice check page's trial rows, the sounds of TRIAL_SOUNDS play where a lesson hands them to the voice today, a vowel letter alone
-// in a run of sounds ("Cuh, a, nnn.") among them.
+// in a run of sounds ("Cuh, a, nnn.") among them. With { voices } (pass MV), a line's or a question's sentences said in a manner
+// (VOICE_MANNERS) take that manner's shape.
 const LETTER_NAMED = /^\s+(?:says|makes)\b/;
 // A letter named in a lesson about sounds stands at the start of a sentence or after a comma, and, the, so, but, then, sound or
 // letter ("the sound G makes"); one that labels something ("what source B says") is read as before.
@@ -34021,8 +34343,11 @@ export const SAY_ALONG_SYLLABLES = sayAlongSyllables();
 // asks for its sound, or names the sound and asks for the animal's picture), a narrower reading than the other seven's, and Which came first?
 // plays first and second and Second and last plays last and middle, the joining word then and the two order words a lesson before it
 // taught being left out.
+// Since pass MV (EARMARKS A61, the standards review): pre-K 3's Red and blue and Yellow and green cite II.D.1's receptive half for their
+// color words, as pre-K 4's Colors does, read one way at both ages, so by Q77 (a) they play the game on red, blue, yellow and green.
 export const SAY_ALONG_LESSONS = ['learning-words', 'count-and-sort-words', 'people-and-events', 'things-that-happen', 'more-learning-words', 'sort-and-shape-words', 'words-go-together', 'opposites-and-same', 'things-we-do',
-  'big-and-little', 'listen-and-tap-pictures', 'animal-sounds', 'colours', 'big-bigger-biggest', 'helpers-all-around', 'which-came-first', 'which-came-second'];
+  'big-and-little', 'listen-and-tap-pictures', 'animal-sounds', 'colours', 'big-bigger-biggest', 'helpers-all-around', 'which-came-first', 'which-came-second',
+  'red-and-blue', 'yellow-and-green'];
 // The pre-K lessons that cite a vocabulary outcome (the 2027 II.D.1 or II.D.2, or Head Start's P-LC 6 or P-LC 7) and play no game. Pass MT
 // named eight here, built before Mikey's answer to Q77; since his answer to Q81 (pass MU) they play it, and the list is empty, so every
 // pre-K vocabulary lesson plays the game and the scripts test fails any name put back here.
@@ -34162,6 +34487,69 @@ export function sayAlongEcho(syllables, voice) {
   const total = Array.from({ length: pieces }, (_, r) => sayAlongEstimateMs(syllables, voice, r)).reduce((a, b) => a + b, 0) + (voice.pause || 0) * (pieces - 1);
   return Math.max(700, Math.min(1800, Math.round(total * 0.6 + 400)));
 }
+// Voices a lesson shows (pass MV, the standards review of Domain II: II.C, a child's voice going up and down, at both ages, and Head
+// Start's P-LC 4 for pre-K 3, a voice to fit the place). In plain terms: a lesson that teaches a voice says a sentence in that voice, so
+// a child hears what a whisper, an inside voice, a big outside voice, a kind, soft voice, a voice up high or down low, a question
+// going up at the end, telling going down, one word said strong, a happy voice and a sad voice sound like, and copies it; a question
+// can say a sentence one of these ways too and ask the child what was heard. A script line or a question lists its sentences and
+// their manners (voices: [[sentence, manner]] or [[sentence, manner, 'turn']]), so the screen shows the words as written and only the
+// voice changes, and 'turn' leaves the child a moment to say it back (mannerTurnMs). A device voice cannot truly whisper or call, and
+// some phones ignore how loud a voice is asked to be, so it says a whisper slow and soft and a big outside voice high and drawn out,
+// as a call is (shouted sentences run longer, Raitio, Suni and others, Interspeech 2013; round one's screen check: a quicker one would
+// sound excited, not called); it says high and low by its pitch, which most voices follow (some online voices are reported to
+// ignore it), up high at the plain voice's pace (since round one's screen check: no manner but a happy voice, which can be quick, is
+// quicker than the plain voice, so a sentence the child copies comes no quicker than the words before it unless it is said happy),
+// and a question's lift and telling's fall by its own reading of the question mark and the full stop, helped by a higher and a lower
+// pitch; a word said strong (the one word written all in capitals, "I want the RED circle.") is a piece of its own, slower and
+// higher, the words around it said as usual.
+// A happy voice is higher and a little quicker and a sad one slower, softer and lower: studies of how feelings sound in speech find
+// happiness with a higher, livelier pitch, its pace quicker in some studies and slower in others (Kamiloğlu, Fischer and Sauter's
+// review of how positive feelings sound, 2020), and sadness with a slower, softer, lower voice, while a 2024 review of nearly three
+// decades of work finds the mapping from sound to feeling still unclear (Larrouy-Maestri, Poeppel and Pell, Perspectives on
+// Psychological Science), so the lessons claim a happy voice's pitch alone and say often. The recordings will say each by its tag
+// (tools/audio-ledger.mjs). With no device voice, a question's sentence said one of these ways prints its cue in parentheses for the
+// grown-up who reads it aloud, headed For the grown-up (mannerCues); asking, telling and a strong word have none, since the question
+// mark, the full stop and the capitals show them. A question that asks what a child heard uses only what every device voice can
+// show, pitch, pace, a question's lift and a strong word, never loudness alone. Written as a function, so a lesson's words can use it
+// wherever they sit in the file.
+function voiceManners() {
+  return {
+    whisper: { device: { rate: 0.5, pitch: 1.05, volume: 0.3 }, tag: '[whispers]', cue: 'Whisper it.' },
+    inside: { device: { rate: 0.82, pitch: 1.12, volume: 0.7 }, tag: '[in a calm, everyday inside voice, not too loud and not too soft]', cue: 'Say it in an inside voice.' },
+    outside: { device: { rate: 0.7, pitch: 1.5, volume: 1 }, tag: '[calling out in a big outside voice, to a friend far away across a playground]', cue: 'Call it out in a big outside voice.' },
+    kind: { device: { rate: 0.68, pitch: 1.08, volume: 0.65 }, tag: '[softly, kindly and gently]', cue: 'Say it in a kind, soft voice.' },
+    high: { device: { rate: 0.86, pitch: 1.95 }, tag: '[in a high voice, way up high]', cue: 'Say it up high.' },
+    low: { device: { rate: 0.75, pitch: 0.4 }, tag: '[in a low, deep voice, way down low]', cue: 'Say it down low.' },
+    ask: { device: { rate: 0.86, pitch: 1.3 }, tag: '[asking, the voice rising at the end]' },
+    tell: { device: { rate: 0.82, pitch: 1.0 }, tag: '[telling, the voice falling at the end]' },
+    happy: { device: { rate: 1.1, pitch: 1.7 }, tag: '[happily, bright, quick and bouncy]', cue: 'Say it happily, quick and up high.' },
+    sad: { device: { rate: 0.58, pitch: 0.7, volume: 0.7 }, tag: '[sadly, slow, soft and low]', cue: 'Say it sadly, slow, soft and low.' },
+    strong: { device: { rate: 0.55, pitch: 1.5, volume: 1 }, tag: '[saying the word in capitals strong, the rest as usual]' },
+  };
+}
+export const VOICE_MANNERS = voiceManners();
+// The child's turn after a sentence the line asks the child to say back: about as long as the voice took to say it (62 ms a letter, an
+// everyday pace, at the manner's rate; for a strong sentence the word said strong at the strong rate and the rest at the plain voice's,
+// as the voice says them, since round one's code check; and in the young voice, which says every line with voices since round one's
+// screen check, a little slower, since round two's code read found the turn still timed at the table's own pace) and 600 ms more,
+// from 1.2 to 2.6 seconds, a sentence taking a young child longer than a word.
+const MANNER_PLAIN_RATE = 0.86;   // the plain voice's rate (SPEECH_SHAPES.plain in ui.jsx; the scripts test holds the two together)
+const MANNER_YOUNG_RATE = 0.9;    // the young voice's YOUNG_RATE in ui.jsx, held to it the same way
+export function mannerTurnMs(sentence, manner) {
+  const m = VOICE_MANNERS[manner]; const s = String(sentence); const letters = (t) => String(t).replace(/[^A-Za-z]/g, '').length;
+  const rate = (m && m.device.rate) || MANNER_PLAIN_RATE; const w = manner === 'strong' ? strongWordOf(s) : null;
+  const ms = (w ? (letters(w) * 62) / rate + ((letters(s) - letters(w)) * 62) / MANNER_PLAIN_RATE : (letters(s) * 62) / rate) / MANNER_YOUNG_RATE;
+  return Math.max(1200, Math.min(2600, Math.round(ms + 600)));
+}
+// The word a sentence says strong: its one word written all in capitals, two letters or more, or null when it has none or several.
+export function strongWordOf(sentence) { const m = String(sentence).match(/\b[A-Z]{2,}\b/g); return m && m.length === 1 ? m[0] : null; }
+// The manner a sentence is said in, read from a line's or a question's voices (the sentence matched whole), and whether the child takes
+// a turn after it; null for a sentence said as usual or a manner the table does not have.
+export function mannerOf(sentence, voices) {
+  if (!Array.isArray(voices)) return null;
+  const t = String(sentence).trim(); const v = voices.find((e) => Array.isArray(e) && String(e[0]).trim() === t);
+  return v && VOICE_MANNERS[v[1]] ? { manner: v[1], turn: v[2] === 'turn' } : null;
+}
 // A cheer (pass MR): a sentence that ends in a run of two or more words written all in capitals and an exclamation mark ("But most
 // importantly, HAVE FUN!!!", Mikey's words for every game's welcome) says that run as a piece of its own in the cheer shape, lifted
 // and a little quicker, the way a teacher's voice jumps up on the words a child should feel; the recorded voice is asked for
@@ -34192,6 +34580,22 @@ export function speechPieces(text, opts = {}) {
     // whispered twice, squeaked twice and the slide are a saying a piece in one sentence. The opener is said excited and emphasized
     // (sayOpen) and the praise as a cheer.
     const role = roles[si];
+    // A sentence said in a manner (pass MV): the whole sentence in that manner's shape, or, for a word said strong, the word a piece of
+    // its own in the strong shape and the words around it said as usual; the child's turn after it when the line asks for one (echo).
+    const said = !role || role.role === 'say' ? mannerOf(sentence, opts.voices) : null;
+    if (said) {
+      const t = sentence.trim(); const w = said.manner === 'strong' ? strongWordOf(t) : null; const at = w ? t.indexOf(w) : -1;
+      if (said.manner !== 'strong') pieces.push({ text: t, shape: `said-${said.manner}`, sentence: si });
+      else if (at < 0) pieces.push({ text: t, shape: 'plain', sentence: si });
+      else {
+        const before = t.slice(0, at).trim(); const after = t.slice(at + w.length).trim(); const word = w.toLowerCase();
+        if (/[A-Za-z0-9]/.test(before)) pieces.push({ text: before, shape: 'plain', sentence: si });
+        pieces.push({ text: /[A-Za-z0-9]/.test(after) ? word : `${word}${after}`, shape: 'said-strong', sentence: si });
+        if (/[A-Za-z0-9]/.test(after)) pieces.push({ text: after, shape: 'plain', sentence: si });
+      }
+      if (said.turn) pieces[pieces.length - 1].echo = mannerTurnMs(t, said.manner);
+      continue;
+    }
     if (role && role.role === 'open') { pieces.push({ text: sentence.trim(), shape: 'sayOpen', sentence: si }); continue; }
     if (role && role.role === 'praise') { pieces.push({ text: sentence.trim(), shape: 'cheer', sentence: si }); continue; }
     if (role && role.role === 'form') {
@@ -44131,11 +44535,13 @@ const SMALL_WORDS = new Set(['a', 'an', 'the', 'and', 'but', 'or', 'nor', 'for',
 const LETTER_TOKEN = /^(?:[b-z]|ch|sh|th|wh|ph|ck|ng)[,.?!:;]?$/;
 export function titleCase(text) {
   const words = String(text || '').split(' ');
+  // A small word used as an adverb before and or or is capitalized, as Chicago capitalizes an adverb (pass MV: My Voice Goes Up and Down).
+  const adverb = (i) => /^(?:up|down|in|out|on|off|over)$/i.test(words[i]) && /^(?:and|or)$/i.test(words[i + 1] || '');
   const cap = (part, inner) => { const core = part.toLowerCase().replace(/[^a-z]/g, ''); if (inner && SMALL_WORDS.has(core) && part === part.toLowerCase()) return part; return part.charAt(0).toUpperCase() + part.slice(1); };
   return words.map((w, i) => {
     if (i > 0 && LETTER_TOKEN.test(w)) return w;
     const inner = i > 0 && i < words.length - 1;
-    return w.split('-').map((p, k) => cap(p, k > 0 || inner)).join('-');
+    return w.split('-').map((p, k) => cap(p, k > 0 || (inner && !adverb(i)))).join('-');
   }).join(' ');
 }
 // The module a loop back returns to: the module before it in its course, else its first named prerequisite.

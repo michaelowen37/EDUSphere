@@ -80,7 +80,7 @@ export async function snapshot(root) {
       const printed = pr && (pr.prompt !== q.prompt || (pr.story || null) !== (q.story || null)) ? { story: pr.story || null, prompt: pr.prompt } : null;
       // Only a choice bank's answer sits in one place (round four's code read, pass MM: 13 order banks read "answer at -1").
       if (q.type === 'choice' && Array.isArray(q.choices) && q.choices.length > 1) { const at = q.choices.findIndex((c) => String(c) === String(q.answer)); const tag = `${at} of ${q.choices.length}`; places.set(tag, (places.get(tag) || 0) + 1); }
-      const rendering = plain({ type: q.type, choices: Array.isArray(q.choices) ? [...q.choices].sort() : q.choices || null, explain: q.explain || null, explainVisual: q.explainVisual || null, whyNot: q.whyNot || null, alsoRight: q.alsoRight || null, printed,
+      const rendering = plain({ type: q.type, choices: Array.isArray(q.choices) ? [...q.choices].sort() : q.choices || null, voices: q.voices || null, explain: q.explain || null, explainVisual: q.explainVisual || null, whyNot: q.whyNot || null, alsoRight: q.alsoRight || null, printed,
         // What a pre-reader hears after a wrong trace, which no choice's reason carries (round four's content read, pass MM).
         wrongTrace: q.type === 'trace' && typeof L.preReaderWrongWords === 'function' ? L.preReaderWrongWords(q) : null,
         // And what a wrong order of a direction hears (round one's code check, pass MO).

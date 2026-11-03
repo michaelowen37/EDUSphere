@@ -1009,6 +1009,91 @@ const ponder = () => page.evaluate(() => {
     ok('a say-along strip names its big word whole for a screen reader, as a picture of the word (pass MS)', named === 1, { named }); }
   await page.evaluate(() => Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: window.__voiceBeforeSayAlong })); }
 
+// The voices a lesson shows (pass MV, round one's screen check: no browser check played a manner, so the screens' wiring was held only
+// by the source's own lines and the rules test's node:vm). A stand-in voice records each utterance's words, rate, pitch and loudness and
+// when it was queued, began and ended, and the lesson's light is recorded as it changes. My voice goes up and down's line 2: every piece
+// in order, the plain words in the young voice (0.774 and 1.15) and each manner sentence at its VOICE_MANNERS numbers slowed with them
+// (YOUNG_RATE, 0.9), the child's turn after "Up high!" (mannerTurnMs, less 60 ms for the timers), and "Up high!" lit while it is said and
+// through the turn. My voice tells more's line 5: the strong word a piece of its own in small letters at the strong voice's numbers, the
+// words around it plain, its sentence lit while it is said. A question: "I see a dog." high and then low as the question appears and
+// again from Hear it again, each sentence choice tapped, and the explanation after a right answer, each sentence in its manner. With no
+// voice on the device, the setup prints the cue for the grown-up. Each check is proven on its own record doctored to the plain pitch, and
+// the turn on one doctored short.
+{ await page.setViewportSize({ width: 390, height: 844 });
+  await page.evaluate(() => { window.__voiceBeforeManners = window.speechSynthesis; });
+  const install = () => page.evaluate(() => { const q = []; let cur = null; let timer = null; window.__mv = []; window.__mvLit = [];
+    const next = () => { cur = q.shift() || null; if (!cur) return; const mine = cur; const ms = Math.round((String(mine.text).length * 30) / (mine.rate || 1)) + 60; const rec = { text: mine.text, rate: mine.rate, pitch: mine.pitch, volume: mine.volume, at: Date.now() }; window.__mv.push(rec);
+      timer = setTimeout(() => { if (cur !== mine) return; rec.began = Date.now(); if (mine.onstart) mine.onstart({});
+        timer = setTimeout(() => { if (cur !== mine) return; cur = null; rec.end = Date.now(); if (mine.onend) mine.onend({}); if (!cur) next(); }, ms); }, 120); };
+    Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { get speaking() { return !!cur; }, get pending() { return q.length > 0; }, cancel() { q.length = 0; if (timer) clearTimeout(timer); cur = null; }, getVoices() { return []; }, speak(u) { q.push(u); if (!cur) next(); } } });
+    const read = () => { const el = document.querySelector('[data-read-lit]'); const v = { t: Date.now(), lit: el ? el.textContent.trim() : '' }; const last = window.__mvLit[window.__mvLit.length - 1]; if (!last || last.lit !== v.lit) window.__mvLit.push(v); };
+    if (window.__mvWatch) window.__mvWatch.disconnect(); window.__mvWatch = new MutationObserver(read); window.__mvWatch.observe(document.body, { attributes: true, childList: true, subtree: true, characterData: true }); });
+  const quiet = () => page.waitForFunction(() => { const ss = window.speechSynthesis; const t = Date.now(); if (ss.speaking || ss.pending) { window.__mvQuiet = null; return false; } if (!window.__mvQuiet) window.__mvQuiet = t; return t - window.__mvQuiet >= 500; }, null, { timeout: 30000, polling: 50 }).then(() => true).catch(() => false);
+  const lineNow = () => page.evaluate(() => { const p = [...document.querySelectorAll('p')].find((x) => x.textContent.trim().length > 20 && !x.closest('[data-say-along]') && !x.hasAttribute('data-voice-note')); return p ? p.textContent.trim() : ''; });
+  const toStep = async (mod, step) => { await page.evaluate(() => window.__eduTest.goTo('overview')); await page.waitForFunction(() => window.__eduTest.screen === 'overview'); await page.evaluate((m) => window.__eduTest.openModule(m), mod); await page.waitForFunction(() => window.__eduTest.screen === 'lesson'); await page.waitForTimeout(150);
+    for (let i = 0; i < step; i++) { const was = await lineNow(); await page.getByRole('button', { name: 'Next', exact: true }).first().evaluate((b) => b.click());
+      await page.waitForFunction((w) => { const p = [...document.querySelectorAll('p')].find((x) => x.textContent.trim().length > 20 && !x.closest('[data-say-along]') && !x.hasAttribute('data-voice-note')); return !!p && p.textContent.trim() !== w; }, was, { timeout: 4000 }).catch(() => {}); await page.waitForTimeout(120); } };
+  const lineOf = (mod, step) => L.readAloudScript(L.MODULES.find((m) => m.id === mod))[step];
+  const piecesOfLine = (line) => { const parts = String(line.say).split(L.SENTENCE_BREAK).filter(Boolean); return parts.flatMap((t, k) => L.speechPieces(t, { line: parts, at: k, voices: line.voices })).filter((p) => !p.sound); };
+  // A line played to its end: its pieces' words from the first on, the last one ended and the voice quiet.
+  const playOut = async (line) => { const want = piecesOfLine(line).map((p) => p.text.trim());
+    const done = await page.waitForFunction((w) => { const t = window.__mv.map((x) => String(x.text).trim()); const from = t.lastIndexOf(w[0]); return from >= 0 && t.length - from >= w.length && !!window.__mv[from + w.length - 1].end && !window.speechSynthesis.speaking && !window.speechSynthesis.pending; }, want, { timeout: 60000 }).then(() => true).catch(() => false);
+    const got = await page.evaluate(() => ({ mv: window.__mv.slice(), lits: window.__mvLit.slice() })); const from = got.mv.map((x) => String(x.text).trim()).lastIndexOf(want[0]);
+    return { done, recs: from >= 0 ? got.mv.slice(from, from + want.length) : [], lits: got.lits }; };
+  const near = (a, b) => typeof a === 'number' && typeof b === 'number' && Math.abs(a - b) < 1e-6;
+  const Y = 0.9; const M = L.VOICE_MANNERS;   // YOUNG_RATE in ui.jsx; the manners' own numbers from logic
+  const wantOf = (shape) => (/^said-/.test(shape) && M[shape.slice(5)] ? { rate: M[shape.slice(5)].device.rate * Y, pitch: M[shape.slice(5)].device.pitch, volume: M[shape.slice(5)].device.volume } : shape === 'plain' ? { rate: 0.86 * Y, pitch: 1.15 } : null);
+  const heardAs = (recs, pieces) => pieces.length > 0 && recs.length === pieces.length && pieces.every((p, k) => { const u = recs[k]; const w = wantOf(p.shape); return !!u && String(u.text).trim() === p.text.trim() && (!w || (near(u.rate, w.rate) && near(u.pitch, w.pitch) && (w.volume === undefined ? u.volume === undefined : near(u.volume, w.volume)))); });
+  const flatten = (recs) => recs.map((u) => ({ ...u, pitch: 1.15 }));   // the doctored record: every piece at the plain pitch
+  const litAt = (lits, t) => (lits.filter((x) => x.t <= t).slice(-1)[0] || { lit: '' }).lit;
+  await install();
+  // My voice goes up and down, line 2: up high and down low, each with the child's turn after it.
+  const lineA = lineOf('voice-up-and-down', 2); const pa = piecesOfLine(lineA); await toStep('voice-up-and-down', 2); const A = await playOut(lineA);
+  const up = A.recs[pa.findIndex((p) => p.text === 'Up high!')]; const down = A.recs[pa.findIndex((p) => p.text === 'Down low.')]; const turnA = L.mannerTurnMs('Up high!', 'high');
+  const turned = (u, d, ms) => !!u && !!d && !!u.end && d.at - u.end >= ms - 60;
+  const litThrough = !!up && !!down && !!up.began && litAt(A.lits, up.began + 5) === 'Up high!' && A.lits.filter((x) => x.t > up.began + 5 && x.t < down.at - 30).every((x) => x.lit === 'Up high!') && litAt(A.lits, down.at - 30) === 'Up high!';
+  ok("a lesson line that teaches a voice says each manner sentence in its manner in the real page, slowed with the young voice's words around it, waits for the child's turn after one and keeps it lit through the turn (pass MV, round one's screen check; a doctored record at the plain pitch and a short turn caught)",
+    A.done && pa.map((p) => p.shape).join(',') === 'plain,said-high,said-low' && heardAs(A.recs, pa) && turned(up, down, turnA) && litThrough && !heardAs(flatten(A.recs), pa) && !turned(up, down && up && { ...down, at: up.end + turnA - 300 }, turnA),
+    { done: A.done, heard: heardAs(A.recs, pa), turn: up && down && up.end ? down.at - up.end : null, want: turnA, litThrough, recs: A.recs.map((u) => [u.text, u.rate, u.pitch, u.volume]), lits: A.lits.slice(-6) });
+  // My voice tells more, line 5: circle said strong, a piece of its own in small letters, the words around it plain, the sentence lit.
+  const lineB = lineOf('voice-tells-more', 5); const pb = piecesOfLine(lineB); await toStep('voice-tells-more', 5); const B = await playOut(lineB);
+  const strongAt = pb.findIndex((p) => p.shape === 'said-strong'); const sw = B.recs[strongAt]; const whole = (lineB.voices[0] || [])[0];
+  const litB = !!sw && !!sw.began && litAt(B.lits, sw.began + 5) === whole;
+  ok("a strong word is said in the real page as a piece of its own, in small letters, at the strong voice's rate, pitch and loudness slowed with the young voice, the words around it plain and its sentence lit while it is said (pass MV, round one's screen check; a doctored record at the plain pitch caught)",
+    B.done && strongAt > 0 && pb[strongAt].text === 'circle' && heardAs(B.recs, pb) && litB && !heardAs(flatten(B.recs), pb), { done: B.done, heard: heardAs(B.recs, pb), litB, recs: B.recs.map((u) => [u.text, u.rate, u.pitch, u.volume]), lits: B.lits.slice(-6) });
+  // A question: "I see a dog." high, then low, as it appears and from Hear it again; each sentence choice tapped; the explanation.
+  const seedOf = (g, f) => { for (let s = 1; s < 300; s++) if (f(L.generateQuestion(g, s))) return s; return 0; };
+  const mark = () => page.evaluate(() => window.__mv.length); const since = (n) => page.evaluate((k) => window.__mv.slice(k), n);
+  // Words said to their end: every piece of them from the first on, recorded since the mark, the last one ended and the voice quiet (a
+  // quiet half second is not enough, since the young voice rests between sentences).
+  const sayOut = async (from, text, voices) => { const want = L.speechPieces(text, voices ? { voices } : {}).filter((p) => !p.sound).map((p) => p.text.trim());
+    await page.waitForFunction(([f, w]) => { const t = window.__mv.slice(f).map((x) => String(x.text).trim()); const at = t.lastIndexOf(w[0]); return at >= 0 && t.length - at >= w.length && !!window.__mv[f + at + w.length - 1].end && !window.speechSynthesis.speaking && !window.speechSynthesis.pending; }, [from, want], { timeout: 30000, polling: 50 }).catch(() => {});
+    return since(from); };
+  const saidIn = (recs, text, manner) => { const u = recs.filter((x) => String(x.text).trim() === text).slice(-1)[0]; const w = wantOf(`said-${manner}`); return !!u && !!w && near(u.rate, w.rate) && near(u.pitch, w.pitch) && (w.volume === undefined ? u.volume === undefined : near(u.volume, w.volume)); };
+  const tap = (c) => page.locator(`button[data-choice="${String(c).replace(/"/g, '\\"')}"]`).first().click();
+  // Each shown from the overview: the screen says a question as it appears when the screen, its words or its place in the round changes,
+  // and the high and the low questions have the same words at the same place.
+  const fresh = async (g, s) => { await page.evaluate(() => window.__eduTest.goTo('overview')); await page.waitForFunction(() => window.__eduTest.screen === 'overview'); await quiet(); await show(g, s); };
+  const asked = (k) => [k.story, k.prompt].filter(Boolean).join(' ');
+  const heardQ = {}; const flatQ = {};
+  for (const way of ['high', 'low']) { const s = seedOf('p3-tone-highlow', (k) => k.voices[0][1] === way); const k = L.generateQuestion('p3-tone-highlow', s); const sent = k.voices[0][0];
+    let m0 = await mark(); await fresh('p3-tone-highlow', s); const first = await sayOut(m0, asked(k), k.voices);
+    m0 = await mark(); await page.getByRole('button', { name: 'Hear it again', exact: true }).first().click(); const again = await sayOut(m0, asked(k), k.voices);
+    heardQ[way] = !!s && saidIn(first, sent, way) && saidIn(again, sent, way); flatQ[way] = saidIn(flatten(first), sent, way); }
+  const sa = seedOf('p3-tone-ask', (k) => k.choices.length === 2); const qa = L.generateQuestion('p3-tone-ask', sa); const m2 = await mark(); await fresh('p3-tone-ask', sa); await sayOut(m2, asked(qa), qa.voices);
+  const taps = {}; for (const c of qa.choices) { const m0 = await mark(); await tap(c); taps[c] = saidIn(await sayOut(m0, c, qa.voices), c, L.mannerOf(c, qa.voices).manner); }
+  { const m0 = await mark(); await tap(qa.answer); await sayOut(m0, qa.answer, qa.voices); }
+  const m1 = await mark(); await page.getByRole('button', { name: 'Check answer', exact: true }).first().click(); const told = await sayOut(m1, `Correct. ${qa.explain}`, qa.voices);
+  const explained = told.some((x) => String(x.text).trim() === 'Correct.') && saidIn(told, qa.answer, L.mannerOf(qa.answer, qa.voices).manner);
+  ok("a question asked by ear says its sentence in its manner in the real page as it appears and from Hear it again, high and low, a tapped sentence choice in its own manner, and the explanation after a right answer the same way (pass MV, round one's screen check; a doctored record at the plain pitch caught)",
+    heardQ.high && heardQ.low && !flatQ.high && !flatQ.low && Object.keys(taps).length === 2 && Object.values(taps).every(Boolean) && explained, { heardQ, flatQ, taps, explained, told: told.map((u) => [u.text, u.rate, u.pitch]).slice(0, 6) });
+  // No voice on the device: the setup prints how its sentence is said, for the grown-up who reads it aloud.
+  await page.evaluate(() => { if (window.__mvWatch) window.__mvWatch.disconnect(); Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: undefined }); });
+  const sh = seedOf('p3-tone-highlow', (k) => k.voices[0][1] === 'high'); await show('p3-tone-highlow', sh);
+  const printed = await page.evaluate(() => { const el = document.querySelector('[data-question-setup]'); return el ? el.textContent.trim() : null; });
+  ok("with no voice on the device, a question asked by ear prints its cue after the sentence, for the grown-up who reads it aloud (pass MV, round one's screen check)", printed === L.printedQuestion(L.generateQuestion('p3-tone-highlow', sh), false).story && /\(For the grown-up: say it up high\.\)$/.test(String(printed)), { printed });
+  await page.evaluate(() => Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: window.__voiceBeforeManners })); }
+
 // A practice page's title stays centered beside its speaker at every phone width, whatever the module's title (Mikey's Q72 rule, round
 // one's screen check, pass MR: the side columns were plain 1fr, so a long title's empty left column shrank to nothing while the speaker's
 // kept its width, and 94 of the 675 titles sat more than 3 pixels left of center at 390 pixels, by up to 22 at 320). Every module

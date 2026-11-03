@@ -470,7 +470,10 @@ const PREK_TAUGHT = [
       { framework: 'TEKS', code: 'PK3.II.B.1', text: 'Child uses language to communicate basic information, needs, and wants.', moduleIds: ['say-what-you-need'] },
       { framework: 'CCSS', code: 'ELOF.P-LC.3', text: 'Varies the amount of information provided to meet the demands of the situation.', moduleIds: ['say-what-you-need'] },
       { framework: 'TEKS', code: 'PK3.II.B.2', text: 'Child begins to use appropriate language, style, and nonverbal cues during communication with familiar adults and peers.', moduleIds: ['please-and-thank-you', 'talk-with-a-friend', 'talk-about-it'] },
-      { framework: 'CCSS', code: 'ELOF.P-LC.4', text: 'Understands, follows, and uses appropriate social and conversational rules.', moduleIds: ['talk-with-a-friend', 'talk-about-it'] },
+      { framework: 'CCSS', code: 'ELOF.P-LC.4', text: 'Understands, follows, and uses appropriate social and conversational rules.', moduleIds: ['talk-with-a-friend', 'talk-about-it', 'voice-to-fit'] },
+      // Pass MV: A voice to fit the place, P-LC 4's tone and volume for different situations, with PK3 II.C.1 in part (EARMARKS E12,
+      // the standards review of Domain II; P-LC 5 waits for II.E, whose lessons teach telling in sentences).
+      { framework: 'TEKS', code: 'PK3.II.C.1', text: "Child's speech is understood by familiar adults and peers.", moduleIds: ['voice-to-fit'] },
       { framework: 'CCSS', code: 'ELOF.P-SE.4', text: 'Engages in cooperative play with other children.', moduleIds: ['join-in-play'] },
       // Pass MD, earmark E12 part one: the feelings outcomes, each read in full in TEA's PK3 Streamlined Version (Domain I) and the
       // ELOF goals on headstart.gov, quoted word for word. I.D.1 and P-SE 8 are taught in part, P-SE 6 since pass MN's second read (expressing feelings across contexts is the child's own), and I.C.6 whole since pass MN (each lesson's sources say how).
@@ -504,7 +507,7 @@ const PREK_TAUGHT = [
       { framework: 'CCSS', code: 'ELOF.P-MATH.8', text: 'Measures objects by their various attributes using standard and non-standard measurement. Uses differences in attributes to make comparisons.', moduleIds: ['not-the-same'] },
       { framework: 'CCSS', code: 'ELOF.P-SCI.3', text: 'Compares and categorizes observable phenomena.', moduleIds: ['not-the-same'] },
       { framework: 'TEKS', code: 'PK3.II.A.1', text: 'Child shows understanding of spoken communication by responding to adults and peers using verbal and nonverbal behaviors.', moduleIds: ['listen-and-tap-pictures', 'two-ideas', 'two-ideas-more'] },
-      { framework: 'TEKS', code: 'PK3.II.D.1', text: 'Child understands (receptive) and uses (expressive) words to label and describe common objects, people, places, actions, and events.', moduleIds: ['listen-and-tap-pictures', 'animal-sounds', 'big-and-little', 'people-and-events', 'things-that-happen'] },   // pass MJ: Big and Little's size words, the receptive half; pass MQ: People and events' people and events
+      { framework: 'TEKS', code: 'PK3.II.D.1', text: 'Child understands (receptive) and uses (expressive) words to label and describe common objects, people, places, actions, and events.', moduleIds: ['red-and-blue', 'yellow-and-green', 'listen-and-tap-pictures', 'animal-sounds', 'big-and-little', 'people-and-events', 'things-that-happen'] },   // pass MJ: Big and Little's size words, the receptive half; pass MQ: People and events' people and events
       { framework: 'CCSS', code: 'ELOF.P-LC.1', text: 'Attends to communication and language from others.', moduleIds: ['listen-and-tap-pictures'] },
       { framework: 'CCSS', code: 'ELOF.P-LC.6', text: 'Understands and uses a wide variety of words for a variety of purposes.', moduleIds: ['listen-and-tap-pictures'] },
       // Pass ME, earmark E12 part two: rhymes, read in full in TEA's PK3 Streamlined Version (Domain III, B. Phonological
@@ -531,6 +534,8 @@ const PREK_TAUGHT = [
       { framework: 'TEKS', code: 'PK3.VI.C.1', text: 'Child explores the characteristics of living organisms.', moduleIds: ['animal-sounds'] },
       { framework: 'TEKS', code: 'PK3.VII.B.3', text: 'Child identifies family, school, and community helpers.', moduleIds: ['people-and-events'] },
       { framework: 'TEKS', code: 'PK3.VII.A.3', text: 'Child shows awareness of daily events and routines such as daily visual schedule and morning and bedtime routines.', moduleIds: ['things-that-happen'] },
+      // Pass MV: My voice goes up and down, PK3 II.C.2 (EARMARKS E12, the standards review of Domain II).
+      { framework: 'TEKS', code: 'PK3.II.C.2', text: 'Child mimics and begins to use intonation (changes in pitch or stress) in spoken language', moduleIds: ['voice-up-and-down'] },
     ],
   },
   {
@@ -612,6 +617,9 @@ const PREK_TAUGHT = [
       { framework: 'CCSS', code: 'ELOF.P-LC.7', text: 'Shows understanding of word categories and relationships among words.', moduleIds: ['words-go-together', 'opposites-and-same'] },
       // Pass MS: Things we do, Head Start's P-LC 6 for four-year-olds (EARMARKS E13).
       { framework: 'CCSS', code: 'ELOF.P-LC.6', text: 'Understands and uses a wide variety of words for a variety of purposes.', moduleIds: ['things-we-do'] },
+      // Pass MV: My voice tells more, PK4 II.C.2, with PK4 II.C.1 in part (EARMARKS E13; P-LC 5 waits for II.E).
+      { framework: 'TEKS', code: 'PK4.II.C.1', text: 'Child’s speech is generally intelligible to both familiar and unfamiliar adults and peers.', moduleIds: ['voice-tells-more'] },
+      { framework: 'TEKS', code: 'PK4.II.C.2', text: 'Child uses intonation (changes in pitch or stress) to convey and interpret meaning in spoken language.', moduleIds: ['voice-tells-more'] },
       { framework: 'TEKS', code: 'PK4.III.C.1', text: 'Child recognizes and names at least 18 uppercase letters and 15 lowercase letters.', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
       { framework: 'CCSS', code: 'ELOF.P-LIT.1', text: 'Demonstrates awareness that spoken language is composed of smaller segments of sound.', moduleIds: ['listen-for-rhymes', 'first-sounds'] },
       { framework: 'CCSS', code: 'ELOF.P-LIT.3', text: 'Identifies letters of the alphabet and produces correct sounds associated with letters.', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },

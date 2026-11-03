@@ -9,6 +9,12 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## November 2, 2026 (three new lessons on how a voice sounds)
+
+- Three- and four-year-olds have three new lessons about their voices, each with its own story. A voice to fit the place teaches a whisper when a baby sleeps, an inside voice in the classroom, a big outside voice on the playground and a kind, soft voice for a friend who is sad. My voice goes up and down teaches a voice up high and down low, a question going up at the end, telling going down, and one word said strong. My voice tells more teaches four-year-olds that the same words can ask or tell, and that a happy voice sounds different from a sad one.
+- In these lessons the voice says each example the way the lesson describes it, so a child hears a question go up at the end and then says it back. A few questions ask what the child heard, such as whether a voice went up high or down low, or which word was said strong. On a device with no voice, a sentence said in a special way shows a short note in parentheses for the grown-up who reads it aloud, like "For the grown-up: say it up high.", and a word said strong shows in capital letters. A phone's voice cannot truly whisper or call out yet, so for now a whisper sounds slow and soft, and the recorded voice will say it better later.
+- Red and blue and Yellow and green now play the say-it-together game with their color words, as Colors does for four-year-olds.
+
 ## November 2, 2026 (the say-it-together game in eight more lessons, and better sounds)
 
 - Eight more lessons about new words for three- and four-year-olds now play the say-it-together game with each new word: big and little, ten things a child learns to name (like the sun, a fish and a slice of pizza), the sounds animals make (meow, quack, buzz, ribbit, hoot and growl), the colors red, blue, yellow and green, sizes from tiny to huge, five helpers (a firefighter, a doctor, a teacher, a mail carrier and a police officer), and the order words first, second, middle and last. That makes seventeen lessons where the game plays.

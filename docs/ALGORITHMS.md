@@ -518,7 +518,7 @@ more plays both flavors of the first, second and fifth steps and as many silly t
 SAY_ALONG_LESSONS names play it, and since Mikey's answer to Q77, "Q77 - A", every new pre-K lesson that cites a vocabulary outcome (the
 2027 II.D.1 or II.D.2, or Head Start's P-LC 6 or P-LC 7) joins them; SAY_ALONG_WAITS named the eight older ones built without it until
 pass MU, when Mikey's answer to Q81, "Q81 - A", gave them the game too, on the words each teaches (39 words, which words being Claude's
-reading), so it is empty and the scripts test holds it so. On a phone's voice a game takes about 20 to 57 seconds by the voice's pace (on this pass's model, over all 73 games),
+reading), so it is empty and the scripts test holds it so. On a phone's voice a game takes about 20 to 57 seconds by the voice's pace (on pass MU's model, over all 73 games it had, the four Red and blue and Yellow and green play since pass MV taking the same shape),
 about twice pass MS's, and every new word plays the whole game however many a lesson has (Mikey's answer to Q80, "Q80 - A"; the model
 is kept in pass MT's scratch, and pass MU's for the eight in its own).
 
@@ -597,3 +597,52 @@ part of the screen the pointer may use where it fits (else its middle, as before
 dot first where the board cannot fit), and the pointer first appears inside that part, so on a short screen the floating Skip no
 longer covers the star a walk heads for; and a line that says to press something presses it, so Shape the Sound's "Then check the
 line." is a tap of its own after its nudges, and the board says "Matches the score."
+
+## The voices a lesson shows (pass MV, the standards review of Domain II's II.C)
+
+II.C.2 asks a child to mimic and use intonation (changes in pitch or stress) at both ages, and Head Start's P-LC 4 for three-year-olds
+a tone and volume for different situations, so a lesson that teaches a voice says its example that way and the child hears it before
+copying it. A script line or a question lists the sentences said in a manner and the manner of each (voices: [[sentence, manner]], or
+[[sentence, manner, 'turn']] when the child says it back); the screen shows the words as written. speechPieces matches each listed
+sentence whole (mannerOf, the sentence trimmed) and hands it to the device voice in its manner's shape, said-<manner>, at the rate,
+pitch and volume VOICE_MANNERS gives it, the young voice slowing it with the words around it (YOUNG_RATE, since round one's screen
+check: kept at its own pace, a sentence the child copies came quicker than the line before it). Beside the plain voice (rate
+0.86, pitch 1.15), the numbers are Claude's choices:
+
+- a whisper: rate 0.5, pitch 1.05, volume 0.3. A device voice cannot whisper, so it says one slow and soft.
+- an inside voice: 0.82, 1.12, volume 0.7, calm and everyday, a little softer than plain.
+- a big outside voice: 0.7, 1.5, volume 1, high and drawn out, as a call is (shouted sentences run 20 to 24 percent longer, Raitio,
+  Suni and others, Interspeech 2013; at 0.95 it would sound excited rather than called, round one's screen check, reasoned from its
+  numbers, since no check can hear a device voice).
+- a kind, soft voice: 0.68, 1.08, volume 0.65, slow and soft.
+- a voice up high: 0.86, pitch 1.95 (0.9 until round one's screen check: no manner but a happy voice is quicker than the plain voice,
+  so a sentence the child copies comes no quicker than the words before it unless it is said happy); a voice down low: 0.75, pitch 0.4. High and low are
+  said by pitch, which most voices follow (some online voices are reported to ignore it, worth a listen in Edge; the iPhone's voice is
+  reported to stop lowering at 0.5).
+- asking: 0.86, 1.3; telling: 0.82, 1.0. A device voice already lifts a question's end at its question mark and lowers telling's at
+  its full stop; the higher and the lower pitch help it.
+- a happy voice: 1.1, 1.7, higher and a little quicker; a sad voice: 0.58, 0.7, volume 0.7, slower, softer and lower. Studies of how
+  feelings sound in speech find happiness with a higher, livelier pitch, its pace quicker in some and slower in others (Kamiloğlu,
+  Fischer and Sauter's review of how positive feelings sound, 2020), and sadness slower, softer and lower, while a 2024 review of
+  nearly three decades of work finds the mapping from sound to feeling still unclear (Larrouy-Maestri, Poeppel and Pell, Perspectives
+  on Psychological Science), so the lessons claim a happy voice's pitch alone and say often.
+- one word said strong: 0.55, 1.5, volume 1, the sentence's one word written in capitals (strongWordOf: one word of two capitals or
+  more, else none) said as a piece of its own, slower and higher, and handed to the voice in small letters, since a device can spell a
+  word written in capitals letter by letter; the words before and after it are said as usual.
+
+A child's turn after a 'turn' sentence (mannerTurnMs) is about as long as the voice took to say it, 62 ms a letter at the manner's
+rate (for a strong sentence, since round one's code check, the strong word at the strong rate and the rest at the plain voice's
+0.86, MANNER_PLAIN_RATE, which the scripts test holds to the screens' plain rate), and 600 ms more, held from 1.2 to 2.6 seconds,
+since a sentence takes a young child longer than a word: since round two at the young voice's pace, as every line with voices is said (MANNER_YOUNG_RATE, 0.9, held to the screens' YOUNG_RATE): 1,321 ms after "Is it a ball?" asked, 2,097 after "I want the RED circle." (1,249 and 1,947 at the table's own pace, until round two)
+Some phones ignore how loud a voice is asked to be, so on them a whisper is only slow and a big outside voice only bright and drawn
+out; for that reason a question asks by ear only what every device voice can show (pitch, pace, a question's lift and a strong word),
+never loudness alone, and a question that asks which word was said strong prints its sentence in small letters while the device can
+speak (printedStory), so the screen never shows the answer; with no device voice a sentence said in a manner prints its manner's cue
+in parentheses for the grown-up who reads it aloud, headed for the grown-up since round two so it is not read to the child as words to
+copy (mannerCues: "(For the grown-up: say it up high.)", whisper it, say it happily, quick and up high, say it sadly, slow, soft and
+low; each sentence matched whole, as mannerOf matches it, and cued once), asking, telling and a strong word showing by their end marks
+and capitals; and a question asked by ear prints the same setup whatever its answer while the device can speak (with no voice the cue must say how), so the feelings question prints its sentence with
+a full stop, happy or sad, while the voice is handed the happy one with an exclamation mark (printedStory, since round two's alignment
+read found the end mark matching the face on every seed). The recordings will say each sentence by its manner's Eleven tag, which the audio ledger writes before it ([whispers], [in a high voice, way
+up high], [asking, the voice rising at the end] and the rest). A network voice (Chrome's Google voices) is asked no faster than rate
+2 (NETWORK_RATE_CAP), since some are reported to say nothing above it; super fast's 2.2 is 2 there.

@@ -6,7 +6,7 @@
 // the voice direction for its age band. Every clip, and every whole story, stays far under Eleven v4's 10,000 characters.
 // Run: node tools/audio-ledger.mjs > docs/AUDIO-LEDGER.md   (it also writes docs/AUDIO-LEDGER.csv, which tools/audio-generate.mjs reads)
 import { writeFileSync } from 'node:fs';
-import { COURSES, readAloudScript, SENTENCE_BREAK, GAMES, gameIntro, gameBand, cheerTagged, sayAlongParts, storyTitleSpoken } from '../src/logic.mjs';
+import { COURSES, readAloudScript, SENTENCE_BREAK, GAMES, gameIntro, gameBand, cheerTagged, sayAlongParts, storyTitleSpoken, mannerOf, VOICE_MANNERS } from '../src/logic.mjs';
 import { STORIES, COURSE_STORIES, MASTERY_STORIES } from '../src/stories.mjs';
 
 // Voices by age (Mikey, pass JH). The directions are short on purpose: one opens every clip, and ElevenLabs counts tags as characters.
@@ -56,8 +56,11 @@ for (const c of courses) {
     // tags") the opener is asked excited and emphasized, each call playful and conversational, "Great job!" delighted, and a way whose
     // sayings differ gives each saying its own tag (the four silly voices: low, high, an Australian accent and a British one, low first
     // since round one, the same voice, as he asked; bounced, up high and down low); the cheer's whistles are the app's own, played
-    // between its sayings, and its crowd after the last.
-    (c.readAloud ? readAloudScript(m) : (m.lesson && m.lesson.script ? m.lesson.script : [])).forEach((line, li) => sayAlongParts(sentencesOf(line.say)).forEach((part, si) => add(`${m.id}-${li}-${si}`, 'lesson line', m.id, c.grade, `${part.role === 'form' ? (part.voice.tags && part.voice.tags[part.rep]) || part.voice.tag : SAY_ALONG_TALK[part.role] || DIRECTION.early} ${part.sentence}`, part.sentence, `${m.id}-lesson`)));
+    // between its sayings, and its crowd after the last. Since pass MV a sentence a line says in a manner (a whisper, a voice up high,
+    // a word said strong; VOICE_MANNERS) is asked for in that manner's tag alone, since the young direction's drawn-out key words would
+    // pull against a whisper or a quick, happy voice.
+    const said = (line, part) => (part.role === 'say' ? mannerOf(part.sentence, line.voices) : null);
+    (c.readAloud ? readAloudScript(m) : (m.lesson && m.lesson.script ? m.lesson.script : [])).forEach((line, li) => sayAlongParts(sentencesOf(line.say)).forEach((part, si) => add(`${m.id}-${li}-${si}`, 'lesson line', m.id, c.grade, `${part.role === 'form' ? (part.voice.tags && part.voice.tags[part.rep]) || part.voice.tag : said(line, part) ? VOICE_MANNERS[said(line, part).manner].tag : SAY_ALONG_TALK[part.role] || DIRECTION.early} ${part.sentence}`, part.sentence, `${m.id}-lesson`)));
   }
   // A course's long story, and since pass MH its next one (MASTERY_STORIES), keyed by each story's own main picture serial.
   for (const [cs, kind] of [[COURSE_STORIES[c.id], 'long story'], [MASTERY_STORIES[c.id], 'next long story']]) {

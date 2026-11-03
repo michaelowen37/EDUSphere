@@ -698,7 +698,7 @@ function IconPic({ name, size = 90, tile = false }) {
     tree: <g><defs><radialGradient id="eduTreeG" cx="38%" cy="32%" r="70%"><stop offset="0" stopColor="#7FB58E" /><stop offset="1" stopColor="#245A3C" /></radialGradient></defs><rect x="44" y="60" width="12" height="28" rx="3" fill={brown} /><rect x="47" y="60" width="3" height="28" fill="#A8743F" opacity="0.6" /><circle cx="50" cy="44" r="26" fill="url(#eduTreeG)" /><circle cx="38" cy="36" r="7" fill="#fff" opacity="0.18" /></g>,
     flower: <g><line x1="50" y1="88" x2="50" y2="50" stroke={green} strokeWidth="5" />{[0, 72, 144, 216, 288].map((a) => <ellipse key={a} cx={50 + 14 * Math.cos(a * Math.PI / 180)} cy={44 + 14 * Math.sin(a * Math.PI / 180)} rx="10" ry="7" fill={red} transform={`rotate(${a} ${50 + 14 * Math.cos(a * Math.PI / 180)} ${44 + 14 * Math.sin(a * Math.PI / 180)})`} />)}<circle cx="50" cy="44" r="8" fill={gold} /></g>,
     fish: <g><defs><linearGradient id="eduFishG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#7FB3E6" /><stop offset="1" stopColor="#2F66A8" /></linearGradient></defs><path d="M70 50l18-14v28z" fill="#2F66A8" /><ellipse cx="46" cy="50" rx="28" ry="16" fill="url(#eduFishG)" /><path d="M40 40q8 2 12 10-4 8-12 10" fill="none" stroke="#fff" strokeWidth="1.5" opacity="0.5" /><circle cx="32" cy="46" r="3.5" fill="#fff" /><circle cx="33" cy="46" r="1.6" fill="#1a1a1a" /></g>,
-    bird: <g><ellipse cx="50" cy="54" rx="22" ry="14" fill={grey} /><circle cx="70" cy="42" r="9" fill={grey} /><path d="M78 42l10 3-10 3z" fill={gold} /><path d="M40 50q10-16 26-6" fill="none" stroke="#6B716A" strokeWidth="4" strokeLinecap="round" /></g>,
+    bird: <g><ellipse cx="50" cy="54" rx="22" ry="14" fill={grey} /><circle cx="70" cy="42" r="9" fill={grey} /><circle cx="72.5" cy="40" r="2.2" fill="#24291F" /><path d="M78 42l10 3-10 3z" fill={gold} /><path d="M40 50q10-16 26-6" fill="none" stroke="#6B716A" strokeWidth="4" strokeLinecap="round" /></g>,
     // A few specks and a crack (pass KK) so the rock reads as rough and bumpy beside the smooth pebble, as Looking at rocks says.
     rock: <g><path d="M22 70q-6-22 18-34 30-10 40 14 6 20-14 24-38 6-44-4z" fill="#A5AAA0" stroke={grey} strokeWidth="3" /><path d="M40 46 L48 56 L44 64" fill="none" stroke={grey} strokeWidth="2" strokeLinecap="round" /><circle cx="60" cy="48" r="2.4" fill={grey} /><circle cx="66" cy="60" r="2" fill={grey} /><circle cx="34" cy="60" r="1.8" fill={grey} /></g>,
     drop: <g><defs><radialGradient id="eduDropG" cx="38%" cy="55%" r="70%"><stop offset="0" stopColor="#9CC7F0" /><stop offset="1" stopColor="#2F66A8" /></radialGradient></defs><path d="M50 14q26 34 26 50a26 26 0 0 1-52 0q0-16 26-50z" fill="url(#eduDropG)" /><ellipse cx="40" cy="58" rx="5" ry="9" fill="#fff" opacity="0.45" transform="rotate(-20 40 58)" /></g>,
@@ -1159,10 +1159,52 @@ function IconPic({ name, size = 90, tile = false }) {
   return <svg viewBox="0 0 100 100" width={size} height={size} role="img" aria-label={base} style={{ display: 'block', margin: '0 auto' }}>{shown}</svg>;
 }
 // Another look of an icon, named after a tilde (pass MP), as a shape's look is (shape:triangle~thin): block~wood is the wooden block
-// of the material and magnet lessons, its grain on every face, and plate~food is MyPlate's plate, fruits and vegetables on half of it
+// of the material and magnet lessons, its grain on every face; baby~asleep (pass MV) is the baby asleep, for the lines that say a baby
+// is sleeping, her head tipped to one side, her eyes closed, a soft closed smile and her hands resting, with no bottle; and plate~food is MyPlate's plate, fruits and vegetables on half of it
 // and grains and protein on the rest, for the health lesson that teaches it; since pass MP it is the plain plate's rim, band and
 // shadow with the food in its well, apple slices, broccoli, rice and grilled meat, so it reads as a plate of food and not a pie.
 const ICON_LOOKS = {
+  'baby~asleep': (
+    <g>
+      {/* The baby's yellow onesie, its far side in shade, with a white collar and two snaps, as the awake baby wears it */}
+      <path d="M50 50C41 50 33.4 53.4 28.8 59.4C24.8 64.8 22.8 73.6 22.2 84C21.8 90 21.8 95 21.8 101.6L50 101.6L78.2 101.6C78.2 95 78.2 90 77.8 84C77.2 73.6 75.2 64.8 71.2 59.4C66.6 53.4 59 50 50 50Z" fill="#F2D27A" />
+      <path d="M71.2 59.4C75.2 64.8 77.2 73.6 77.8 84C78.2 90 78.2 95 78.2 101.6L72.6 101.6C72.6 88 72 75.6 68.6 66.4C67.6 63.6 69 61.2 71.2 59.4Z" fill="#E2B954" />
+      <path d="M50 50C41 50 33.4 53.4 28.8 59.4C24.8 64.8 22.8 73.6 22.2 84C21.8 90 21.8 95 21.8 101.6L50 101.6L78.2 101.6C78.2 95 78.2 90 77.8 84C77.2 73.6 75.2 64.8 71.2 59.4C66.6 53.4 59 50 50 50Z" fill="none" stroke="#C9A646" strokeWidth="1.4" strokeLinejoin="round" />
+      <circle cx="50" cy="77" r="1.3" fill="#FFFFFF" stroke="#C9A646" strokeWidth="0.9" />
+      <circle cx="50" cy="84" r="1.3" fill="#FFFFFF" stroke="#C9A646" strokeWidth="0.9" />
+      <path d="M50 56.6C46.4 58.4 41 58 37.8 55.6C36.6 58.8 38.6 62.6 42.8 63.2C46 63.6 48.8 61.6 50 58.6Z" fill="#FFFFFF" stroke="#D8D8D8" strokeWidth="1.1" strokeLinejoin="round" />
+      <g transform="matrix(-1 0 0 1 100 0)"><path d="M50 56.6C46.4 58.4 41 58 37.8 55.6C36.6 58.8 38.6 62.6 42.8 63.2C46 63.6 48.8 61.6 50 58.6Z" fill="#FFFFFF" stroke="#D8D8D8" strokeWidth="1.1" strokeLinejoin="round" /></g>
+      {/* Her two chubby hands resting together on her front, with no bottle */}
+      <path d="M38.6 71.8C38.4 68.4 42.6 66.8 46 67.8C49 68.8 49.4 72.6 47.6 74.4C45.4 76.6 39 75.8 38.6 71.8Z" fill="#F5CBA7" stroke="#D69A72" strokeWidth="1.1" strokeLinejoin="round" />
+      <path d="M61.4 71.8C61.6 68.4 57.4 66.8 54 67.8C51 68.8 50.6 72.6 52.4 74.4C54.6 76.6 61 75.8 61.4 71.8Z" fill="#F5CBA7" stroke="#D69A72" strokeWidth="1.1" strokeLinejoin="round" />
+      <path d="M41 70.6Q43.4 69.8 45.8 70.6M57.2 70.6Q54.8 69.8 52.4 70.6" fill="none" stroke="#E9B28B" strokeWidth="1" strokeLinecap="round" />
+      {/* Her head, tipped a little to one side as a sleeping baby's is */}
+      <g transform="rotate(-9 50 50)">
+        <g>
+          <path d="M30.8 33C26.78 31.48 25.26 35.47 26.4 38.51C27.16 40.41 28.68 41.74 31 41.17Z" fill="#F5CBA7" stroke="#D69A72" strokeWidth="1.2" strokeLinejoin="round" />
+          <path d="M29.63 35.28C27.73 35.09 27.35 37.56 28.68 39.08" fill="none" stroke="#E9B28B" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+        </g>
+        <g transform="matrix(-1 0 0 1 100 0)">
+          <path d="M30.8 33C26.78 31.48 25.26 35.47 26.4 38.51C27.16 40.41 28.68 41.74 31 41.17Z" fill="#F5CBA7" stroke="#D69A72" strokeWidth="1.2" strokeLinejoin="round" />
+          <path d="M29.63 35.28C27.73 35.09 27.35 37.56 28.68 39.08" fill="none" stroke="#E9B28B" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+        </g>
+        <path d="M50 12.4C38 12.4 28.4 21 28.4 33.6C28.4 41.4 31.6 47.6 36.8 51.2C40.6 53.8 45 54.8 50 54.8C55 54.8 59.4 53.8 63.2 51.2C68.4 47.6 71.6 41.4 71.6 33.6C71.6 21 62 12.4 50 12.4Z" fill="#F5CBA7" stroke="#D69A72" strokeWidth="1.1" />
+        <path d="M48.2 13.4C47 9.6 49.8 6.6 53.2 7.4C55.8 8 56.6 10.8 54.8 12.2C53.6 13 52 12.4 52.2 11.2" fill="none" stroke="#8A5A35" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M44.6 14.6Q45.4 12.2 47.4 11.6" fill="none" stroke="#8A5A35" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+        {/* Closed eyes, two soft curves with small lashes, under her light brows */}
+        <path d="M39.4 37.4Q42.4 40.6 45.4 37.4" fill="none" stroke="#2E1F16" strokeWidth="1.7" strokeLinecap="round" />
+        <path d="M54.6 37.4Q57.6 40.6 60.6 37.4" fill="none" stroke="#2E1F16" strokeWidth="1.7" strokeLinecap="round" />
+        <path d="M40.6 39.2L39.8 40.6M42.4 39.8L42.4 41.3M44.2 39.2L45 40.6M55.8 39.2L55 40.6M57.6 39.8L57.6 41.3M59.4 39.2L60.2 40.6" fill="none" stroke="#2E1F16" strokeWidth="0.9" strokeLinecap="round" />
+        <path d="M45 31.6Q42.4 30.7 39.8 32.1" fill="none" stroke="#C99A72" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
+        <g transform="matrix(-1 0 0 1 100 0)"><path d="M45 31.6Q42.4 30.7 39.8 32.1" fill="none" stroke="#C99A72" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" /></g>
+        <ellipse cx="50.4" cy="42.6" rx="1.8" ry="1.1" fill="#E9B28B" />
+        <ellipse cx="38" cy="44" rx="3.8" ry="2.6" fill="#F4978E" opacity="0.5" />
+        <ellipse cx="62" cy="44" rx="3.8" ry="2.6" fill="#F4978E" opacity="0.5" />
+        {/* A soft, closed little smile */}
+        <path d="M47 46.6Q50 49.2 53 46.6" fill="none" stroke="#B4534F" strokeWidth="1.6" strokeLinecap="round" />
+      </g>
+    </g>
+  ),
   'block~wood': <g><path d="M24 36 L54 24 L80 32 L50 44 Z" fill="#E2B97A" stroke="#8B5A2B" strokeWidth="3" strokeLinejoin="round" /><path d="M24 36 L50 44 L50 84 L24 76 Z" fill="#C9955A" stroke="#8B5A2B" strokeWidth="3" strokeLinejoin="round" /><path d="M50 44 L80 32 L80 72 L50 84 Z" fill="#B07838" stroke="#8B5A2B" strokeWidth="3" strokeLinejoin="round" /><path d="M30 52 Q38 50 46 54 M30 64 Q38 62 46 66" fill="none" stroke="#8B5A2B" strokeWidth="1.8" opacity="0.6" /><path d="M55 52 Q63 47 75 45 M55 64 Q64 59 75 57" fill="none" stroke="#7A4A20" strokeWidth="1.8" opacity="0.6" /><path d="M36 34 Q46 31 55 28 M44 37 Q54 34 64 31" fill="none" stroke="#B07838" strokeWidth="1.6" opacity="0.7" /><ellipse cx="38" cy="71" rx="2.6" ry="1.8" fill="none" stroke="#8B5A2B" strokeWidth="1.4" opacity="0.6" /></g>,
   'plate~food': <g><circle cx="52" cy="53" r="41" fill="#24291F" opacity="0.14" /><circle cx="50" cy="50" r="41" fill="#EEF3F6" stroke="#6F8796" strokeWidth="3" /><circle cx="50" cy="50" r="35.5" fill="none" stroke="#4A86C5" strokeWidth="2" /><circle cx="50" cy="50" r="30.5" fill="#FFFFFF" stroke="#C3D0D8" strokeWidth="2" /><path d="M50 50 L50 22 A28 28 0 0 0 22 50 Z" fill="#D9534F" /><path d="M50 50 L22 50 A28 28 0 0 0 50 78 Z" fill="#4E8F4F" /><path d="M50 50 L50 78 A28 28 0 0 0 78 50 Z" fill="#E8C98E" /><path d="M50 50 L78 50 A28 28 0 0 0 50 22 Z" fill="#9C6B3F" /><path d="M50 21 L50 79 M21 50 L79 50" stroke="#FFFFFF" strokeWidth="2.6" /><path d="M31 41 Q36 33 44 31 M33 46 Q38 39 45 37" fill="none" stroke="#F6C1BF" strokeWidth="2" strokeLinecap="round" /><circle cx="35" cy="59" r="3.4" fill="#3A6E3B" /><circle cx="41" cy="64" r="3.1" fill="#3A6E3B" /><circle cx="33" cy="66" r="2.7" fill="#3A6E3B" /><circle cx="42" cy="57" r="2.5" fill="#3A6E3B" /><ellipse cx="58" cy="58" rx="2.2" ry="1.2" fill="#FFF8E7" /><ellipse cx="65" cy="61" rx="2.2" ry="1.2" fill="#FFF8E7" transform="rotate(30 65 61)" /><ellipse cx="59" cy="66" rx="2.2" ry="1.2" fill="#FFF8E7" transform="rotate(-20 59 66)" /><ellipse cx="68" cy="55" rx="2.2" ry="1.2" fill="#FFF8E7" transform="rotate(60 68 55)" /><path d="M56 36 L64 30 M58 42 L68 34" stroke="#6E4523" strokeWidth="2" strokeLinecap="round" /></g>,
 };
@@ -1765,9 +1807,15 @@ function playTap() {
 // emphasized (sayOpen, SAY_ALONG_OPEN_SHAPE). A device voice cannot truly whisper, take an accent or slide inside a word, so it says a
 // whisper softly, pitches the four silly voices apart and steps the slide; the recorded voice does each by its tag.
 const SAY_ALONG_SHAPES = { sayOpen: SAY_ALONG_OPEN_SHAPE, ...Object.fromEntries(SAY_ALONG_VOICES.flatMap((v) => (v.device.length === 1 ? [[v.style, v.device[0]]] : v.device.map((d, k) => [`${v.style}${k + 1}`, d])))) };
-const SPEECH_SHAPES = { key: { rate: 0.6, pitch: 1.25 }, question: { rate: 0.9, pitch: 1.22 }, plain: { rate: 0.86, pitch: 1.15 }, sound: { rate: 0.1, pitch: 1.15 }, cheer: { rate: 1.0, pitch: 1.45 }, ...SAY_ALONG_SHAPES };
+// The voices a lesson shows (pass MV, VOICE_MANNERS in logic, where each manner's rate, pitch and loudness live): said-whisper,
+// said-high and the rest, each named with said- so none can take the place of a say-along way of the same name (whisper is one), the
+// fault a table spread into a shared one met in pass MT.
+const MANNER_SHAPES = Object.fromEntries(Object.entries(VOICE_MANNERS).map(([k, v]) => [`said-${k}`, v.device]));
+const SPEECH_SHAPES = { key: { rate: 0.6, pitch: 1.25 }, question: { rate: 0.9, pitch: 1.22 }, plain: { rate: 0.86, pitch: 1.15 }, sound: { rate: 0.1, pitch: 1.15 }, cheer: { rate: 1.0, pitch: 1.45 }, ...SAY_ALONG_SHAPES, ...MANNER_SHAPES };
 // The shapes that keep their own pace for a young learner (a word at play is already slow; a cheer is meant to bounce; a silly voice
-// is the pace its call names).
+// is the pace its call names). A voice a lesson shows (pass MV) is not among them: its pace is set against the plain voice's, so the young
+// voice slows it with the words around it (round one's screen check: kept at its own pace, a sentence the child copies came 6 to 16
+// percent quicker than the line before it).
 const OWN_PACE_SHAPES = ['key', 'cheer', ...Object.keys(SAY_ALONG_SHAPES)];
 
 // ---------- The app's own speech sounds (pass MO, Mikey's notes on Q51) ----------
@@ -1940,13 +1988,18 @@ function sayPieces(pieces, from, hooks) {
   }
 }
 // A voice's rate and pitch for a piece, slower or quicker with the lesson's pace (SPEECH_NUDGE), times factor, and for a young
-// learner (young, pass MQ) a little slower again, except a word at play, which already has its own slow shape.
+// learner (young, pass MQ) a little slower again, except a word at play, which already has its own slow shape; its loudness when the
+// shape names one (a whisper, a sad voice); and since pass MV a network voice's rate no higher than NETWORK_RATE_CAP.
 function shapeVoice(u, piece, voice, factor = 1, young = false) {
   if (voice) u.voice = voice;
   const shape = SPEECH_SHAPES[piece.shape] || SPEECH_SHAPES.plain;
   u.rate = shape.rate * (SPEECH_NUDGE < 0 ? SNAIL_RATE : SPEECH_NUDGE > 0 ? 1.1 : 1) * factor * (young && !OWN_PACE_SHAPES.includes(piece.shape) ? YOUNG_RATE : 1); u.pitch = shape.pitch;
+  // A network voice (Chrome's Google voices) is reported to say nothing above rate 2 (round one's screen check, pass MV), so it is asked
+  // no faster; super fast's 2.2 is 2 there.
+  if (voice && voice.localService === false && u.rate > NETWORK_RATE_CAP) u.rate = NETWORK_RATE_CAP;
   if (shape.volume !== undefined) u.volume = shape.volume;
 }
+const NETWORK_RATE_CAP = 2;
 // A rest before a piece only where the piece starts a sentence (round three's alignment read, pass MQ): the sentence rule also cuts
 // at a "?" that stands for a missing number and after "D.C." in a sentence that goes on, and the young voice's rest fell there, in
 // the middle of a sentence ("What number makes 7 + 2 = 2 + ?", then 450 ms, then "true?"). A sentence starts with a capital, a digit,
@@ -1964,13 +2017,14 @@ let rotateKept = false;
 // sentence and the next (else YOUNG_PAUSE_MS for the young voice, and none otherwise). Since round four's code read (pass MS) onDone
 // is told when the voice has said the whole line, its last piece ended (or counted said by sayPieces' watch), never for a line
 // cancelled or replaced before then, so a wait can tell a line that is over from a voice that still says it is speaking (afterSaid).
+// voices (pass MV): a question's sentences said in a manner (VOICE_MANNERS), handed on to speechPieces.
 function speak(text, opts = {}) {
   if (typeof window === 'undefined' || !window.speechSynthesis || !text) return;
   if (demoMute > 0) return;   // a game's welcome is playing its board (pass MP): the board's own words wait, so they never cut the welcome off
   const young = opts.young !== undefined ? !!opts.young : speechYoung();
   const rest = opts.pause !== undefined ? Math.max(0, opts.pause || 0) : young ? YOUNG_PAUSE_MS : 0;
   const ticket = ++speechTicket; restUntil = 0;
-  const pieces = speechPieces(text);
+  const pieces = speechPieces(text, opts.voices ? { voices: opts.voices } : {});
   if (!pieces.length) return;
   // Whether the voice has begun this request (pass MI, Mikey: a tapped answer "is repeated twice.  "Blue, blue" and "red, red""):
   // the retry below is for words the browser dropped, but a word as short as Blue can be said and finished inside the 700 ms the
@@ -2075,7 +2129,8 @@ function clipFor(key) { return typeof window !== 'undefined' && Array.isArray(wi
 // Since pass MS (the say-along): together, the texts are one line's sentences, read with each other (a say-along's voices are read
 // from the whole line); onIndex is told the piece too, and whether the voice has begun it (since round one's screen check), and
 // onPieceEnd(i, k, piece) when a piece has been said; a say-along form's
-// sayings keep together across texts, and the child's turn after a form is waited before the next text.
+// sayings keep together across texts, and the child's turn after a form is waited before the next text. Since pass MV: voices, the
+// line's sentences said in a manner (VOICE_MANNERS), handed on to speechPieces with the line.
 function speakSequence(texts, onIndex, onDone, keys = [], opts = {}) {
   if (typeof window === 'undefined' || !texts.length) return () => {};
   // While a game's welcome plays its board (pass MP), a board's own reading is skipped as if it were said, so a wait that hangs on its
@@ -2118,7 +2173,7 @@ function speakSequence(texts, onIndex, onDone, keys = [], opts = {}) {
   // on some phones) is asked once more, from where it is, if nothing began within 700 ms (round three's code check: a lesson line's
   // first sentence was lost, and the watch moved on).
   let began = false;
-  const piecesOf = texts.map((t, k) => speechPieces(t, opts.together ? { line: texts, at: k } : {}));
+  const piecesOf = texts.map((t, k) => speechPieces(t, { ...(opts.together ? { line: texts, at: k } : {}), ...(opts.voices ? { voices: opts.voices } : {}) }));
   const say = (i, from = 0) => {
     if (ticket !== speechTicket) return;
     if (i >= texts.length) { onDone && onDone(); return; }
@@ -2159,7 +2214,8 @@ function speakSequence(texts, onIndex, onDone, keys = [], opts = {}) {
 // right of the card it sits in; otherwise it is a full button. The "on silent" note is
 // shown by the page, at its foot, once anything has been spoken.
 let onSpoke = null;
-function SpeakButton({ text, label, full = false, corner = false, mini = false, cue = 0, pause = undefined }) {
+// voices (pass MV): sentences of the text said in a manner, as speak() takes them.
+function SpeakButton({ text, label, full = false, corner = false, mini = false, cue = 0, pause = undefined, voices = null }) {
   // Tapping while it reads stops it; the button watches the voice so the label follows what is happening. cue (pass MP): its owner
   // started the reading itself (a game's speaker pressed during the welcome reads once the welcome has gone), so it shows reading.
   const [reading, setReading] = useState(false);
@@ -2168,7 +2224,7 @@ function SpeakButton({ text, label, full = false, corner = false, mini = false, 
   if (!canSpeak()) {
     return corner || mini ? null : <p style={{ margin: '0 0 12px', fontSize: 14, color: C.muted }}>Reading aloud is not available on this device or in this preview. The words are all on screen.</p>;
   }
-  const press = () => { if (reading) { speechTicket += 1; restUntil = 0; window.speechSynthesis.cancel(); stopSound(); setReading(false); return; } speak(text, pause === undefined ? {} : { pause }); setReading(true); if (onSpoke) onSpoke(); };
+  const press = () => { if (reading) { speechTicket += 1; restUntil = 0; window.speechSynthesis.cancel(); stopSound(); setReading(false); return; } speak(text, { ...(pause === undefined ? {} : { pause }), ...(voices ? { voices } : {}) }); setReading(true); if (onSpoke) onSpoke(); };
   const shownLabel = reading ? 'Stop reading' : label;
   if (mini) {
     return (
@@ -11606,7 +11662,7 @@ function EduSphereScreens() {
   const questionText = q ? [q.story, q.prompt].filter(Boolean).join(' ') : '';
   // The question's position is a dependency too: two questions in a row can carry the very same words
   // (the same picture picked twice), and the second must still be spoken.
-  useEffect(() => { if (screen === 'practice' && readAloud && questionText) speak(questionText); }, [screen, readAloud, questionText, qIndex]);
+  useEffect(() => { if (screen === 'practice' && readAloud && questionText) speak(questionText, q && q.voices ? { voices: q.voices } : {}); }, [screen, readAloud, questionText, qIndex]);   // a sentence said in a manner (pass MV) is said that way
   // An educator stays signed in while they are using the screen. After four quiet minutes a
   // warning appears; after five, the PIN is asked for again. Any tap or key resets the clock.
   const EDUCATOR_SCREENS = ['educator-pick', 'educator-report', 'transcript', 'life-skills', 'wonder-review', 'backup', 'class-view', 'change-state', 'standards-map'];
@@ -11707,13 +11763,15 @@ function EduSphereScreens() {
   // lines and was never read, nor on Say it again).
   const lessonLines = mod && readAloud ? readAloudScript(mod).map((x) => x.say) : [];
   const currentLessonLine = lessonLines[Math.min(lessonStep, Math.max(0, lessonLines.length - 1))] || '';
+  // The sentences of the line said in a manner (pass MV: a whisper, a voice up high, a word said strong; VOICE_MANNERS), or null.
+  const currentLessonVoices = mod && readAloud ? (readAloudScript(mod)[Math.min(lessonStep, Math.max(0, lessonLines.length - 1))] || {}).voices || null : null;
   const [litSentence, setLitSentence] = useState(-1);               // which sentence of a read-aloud line the voice is on
   useEffect(() => {
     if (!(screen === 'lesson' && readAloud && currentLessonLine)) { setLitSentence(-1); return undefined; }
     const parts = sentencesOf(currentLessonLine); setLitSentence(-1);
     // The line's sentences are read together (pass MS), so a say-along's silly voices are read from the whole line, and the strip
     // under the line (SayAlongStrip) is told each piece's start and end, for the light that follows the voice through the word.
-    const stop = speakSequence(parts, (i, s, piece, begun) => { setLitSentence(i); sayAlongBus.emit({ type: 'start', i, piece, begun }); }, () => { setLitSentence(-1); sayAlongBus.emit({ type: 'stop' }); }, parts.map((_, i) => `${mod ? mod.id : 'lesson'}-${lessonStep}-${i}`), { together: true, onPieceEnd: (i, k, piece) => sayAlongBus.emit({ type: 'end', i, piece }) });
+    const stop = speakSequence(parts, (i, s, piece, begun) => { setLitSentence(i); sayAlongBus.emit({ type: 'start', i, piece, begun }); }, () => { setLitSentence(-1); sayAlongBus.emit({ type: 'stop' }); }, parts.map((_, i) => `${mod ? mod.id : 'lesson'}-${lessonStep}-${i}`), { together: true, voices: currentLessonVoices, onPieceEnd: (i, k, piece) => sayAlongBus.emit({ type: 'end', i, piece }) });
     return () => { stop(); };
   }, [screen, readAloud, currentLessonLine, replays]);   // Say it again (replays) reads the line again this same way (pass MQ)
   useEffect(() => { setStoryOpen(false); setAnotherWay(0); }, [screen === 'lesson' ? (mod && mod.id) : null]);
@@ -12127,7 +12185,7 @@ function EduSphereScreens() {
     setActionItems(Object.fromEntries(pairs.map(([id, , , items]) => [id, items])));
   })(); }, [screen, roster]);
   // A young learner who was wrong tries again, so the voice must not give the answer away.
-  useEffect(() => { if (screen === 'practice' && readAloud && checked && q) speak(wasCorrect ? 'Correct. ' + q.explain : preReaderWrongWords(q, String(given), wrongPicks)); }, [checked]);
+  useEffect(() => { if (screen === 'practice' && readAloud && checked && q) speak(wasCorrect ? 'Correct. ' + q.explain : preReaderWrongWords(q, String(given), wrongPicks), q.voices ? { voices: q.voices } : {}); }, [checked]);   // an answer's sentence said in its question's manner (pass MV)
 
   // ---------- Screens ----------
   const refreshIds = refresherIds(record ? record.events : []);
@@ -12770,7 +12828,7 @@ function EduSphereScreens() {
     const line = step.say;
     const last = lessonStep >= script.length - 1;
     const stepArt = (mod.lesson.pictures || []).find((pic) => pic.step === Math.min(lessonStep, script.length - 1)) || null;   // a painting this line shows (pass JP)
-    const playfulLesson = script.some((l) => sayAlongParts(l.say).some((p) => p.role === 'open'));   // a lesson that plays the say-along with its new words (Q67, pass MS)
+    const playfulLesson = script.some((l) => sayAlongParts(l.say).some((p) => p.role === 'open') || (Array.isArray(l.voices) && l.voices.length));   // a lesson that plays the say-along with its new words (Q67, pass MS), or shows voices a phone cannot truly make (pass MV)
     const lineParts = sayAlongParts(sentencesOf(line));   // which sentences are the line's own words and which the say-along's (pass MS)
     const lineKeys = sentencesOf(line).map((_, i) => `${mod.id}-${Math.min(lessonStep, script.length - 1)}-${i}`);
     return (
@@ -13092,7 +13150,7 @@ function EduSphereScreens() {
         <div data-title-row="" style={isReviewQ ? { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, margin: '8px 0 10px' } : { display: 'grid', gridTemplateColumns: 'minmax(44px, 1fr) auto minmax(44px, 1fr)', justifyItems: 'start', alignItems: 'center', gap: 8, margin: '10px 0 18px' }}>
           {!isReviewQ && <span aria-hidden="true" />}
           {!isReviewQ && <p style={{ margin: 0, fontSize: 18, fontWeight: 600, textAlign: 'center' }}>{titleCase(mod.title)}</p>}
-          <SpeakButton mini text={questionText} label={readAloud ? 'Hear it again' : 'Read it to me'} />
+          <SpeakButton mini text={questionText} voices={q && q.voices ? q.voices : null} label={readAloud ? 'Hear it again' : 'Read it to me'} />
         </div>
         <div style={{ ...card, position: 'relative' }}>
           {/* The setup line comes first and the question after it (pass MH, Mikey: "What is a kind thing to do?  New line Your friend
@@ -13132,7 +13190,7 @@ function EduSphereScreens() {
                 return (
                   // A word answer says itself for a child who cannot read; a picture answer never does, because naming it would
                   // hand over the answer, nor, since pass MC, a single letter (choiceSpeaks reads only the choice, never which one is right).
-                  <button key={c} type="button" data-choice={c} aria-label={pictureName} onClick={() => { if (!checked) { if (readAloud) { playTap(); if (choiceSpeaks(q, c)) speak(c); } setGiven(c); } }}
+                  <button key={c} type="button" data-choice={c} aria-label={pictureName} onClick={() => { if (!checked) { if (readAloud) { playTap(); if (choiceSpeaks(q, c)) speak(c, q.voices ? { voices: q.voices } : {}); } setGiven(c); } }}
                     style={{ opacity: ruledOut && !checked ? (C.mode === 'dark' ? 0.72 : 0.5) : 1, fontFamily: FONT, fontSize: choiceFont(q.choices), textAlign: 'center', padding: standIn ? '12px 10px 34px' : '12px 10px', ...(standIn ? { position: 'relative' } : null), minWidth: 0, overflowWrap: /^-?[\d.,\/ ]+$/.test(c) ? 'normal' : 'anywhere', whiteSpace: /^-?[\d.,\/ ]+$/.test(c) ? 'nowrap' : 'normal', borderRadius: 10, background: bg, border: `2px solid ${border}`, color: C.ink, cursor: checked ? 'default' : 'pointer', minHeight: 48 }}>
                     {choiceFace(c)}
                     {standIn && <ReplaceNote pal={C} style={{ right: 8, bottom: 5 }} />}

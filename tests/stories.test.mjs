@@ -363,6 +363,24 @@ for (const [, cs, id] of LONG_ENTRIES) {
   const shared = [...seen].filter(([, ids]) => ids.length > 1);
   ok(`no more than ${SHARED_LIMIT} story titles are shared by two stories, and none of pre-K 3's (EARMARKS A24)`, shared.length <= SHARED_LIMIT && !shared.some(([, ids]) => ids.some((id) => ['red-and-blue', 'course:very-first-steps-pk3', 'mastery:very-first-steps-pk3'].includes(id) || (L.MODULES.find((m) => m.id === id) || {}).id && L.COURSES.some((c) => c.grade === 'PK3' && c.modules.some((m) => m.id === id)))), shared.map(([t, ids]) => `${t}: ${ids.join(', ')}`).join('; ')); }
 
+// A story picture shows the paragraph it sits beside (Mikey, 2026-09-24; held by a test since pass MV). tools/story-art-audit.mjs lists
+// every picture whose words share no word that matters with its paragraph, and nothing read the list: pass MS's new S3986 was read by
+// hand and kept, and pass MV's first build added S4001 and S4005, each showing its own paragraph's moment in words the audit could not
+// match (tiptoeing beside tiptoed; asking beside tried again), and every check passed. A listed picture now fails unless it was read and
+// kept with its reason (ART_KEPT) or waits by name for its course's re-read (ART_WAITING, kindergarten's eight, EARMARKS' story re-read);
+// both lists only fall. Near miss: S4001's first words planted back.
+{ const { storyArtRows } = await import('../tools/story-art-audit.mjs');
+  const ART_KEPT = { S3986: 'the blanket folded in the big box with Zane and his mom smiling, set after his proud line, the moment it shows (read in pass MS)' };
+  const ART_WAITING = ['S3723', 'S3751', 'S3773', 'S3778', 'S3781', 'S3782', 'S3788', 'S3790'];
+  const listed = (rows) => rows.map((r) => r[3]).filter((x) => !ART_KEPT[x] && !ART_WAITING.includes(x));
+  const { rows } = storyArtRows();
+  const stale = [...Object.keys(ART_KEPT), ...ART_WAITING].filter((x) => !rows.some((r) => r[3] === x));
+  const first = "The girl tiptoeing toward the couch with one finger to her lips, the baby asleep in his mama's arms";
+  const st = STORIES['voice-to-fit']; const planted = st ? { ...STORIES, 'voice-to-fit': { ...st, more: st.more.map((m) => (m.serial === 'S4001' ? { ...m, alt: first } : m)) } } : STORIES;
+  const caught = listed(storyArtRows(planted).rows).includes('S4001');
+  ok(`every story picture shares a word that matters with the paragraph it sits beside, or is read and kept (${Object.keys(ART_KEPT).length}) or waits for its course's re-read (${ART_WAITING.length}); both lists only fall (pass MV; the near miss caught)`, listed(rows).length === 0 && stale.length === 0 && caught, `unread ${listed(rows).join(', ')}; stale ${stale.join(', ')}; near miss ${caught}`);
+}
+
 // A pre-reader's moral echoes the spoken lines (pass MM; the story brief, item 1: "A pre-reader hears the script, never the lesson's
 // paragraphs, so a pre-reader's moral echoes the spoken lines"). Every read-aloud module story's moral says at least one sentence of
 // its lesson's script word for word, or four in five of its content words (the small words left out, a plural read as its
@@ -375,12 +393,12 @@ for (const [, cs, id] of LONG_ENTRIES) {
   const content = (s) => norm(s).split(' ').filter((w) => w && !STOP.has(w)).map((w) => w.replace(/'s$/, '').replace(/(?<=..)s$/, ''));
   const MORAL_KEPT = {
     'first-marks': 'the lesson\'s own "Start at the dot", with "follow the line", what the tracing pad asks of the hand',
-    'yellow-and-green': 'the lesson\'s banana and grass and "easy to see ... because the colors are different", said as "like" and "tell apart"',
     'big-and-little': 'the lesson\'s first two lines nearly word for word, then the story\'s own ending, how Lena knew her shoes',
     'one-more-one-fewer': 'the lesson\'s "Adding one makes more" and "Taking one away makes fewer", said as "one more" and "taken away"',
     'match-the-water-animals': 'the lesson\'s two whales and the whale and the fish, after "Look closely", the matching lessons\' own words',
     'match-the-shapes': 'the lesson\'s corners and sides, then the story\'s shape sorter, "Same shape, same hole"',
     'first-strokes': 'the lesson\'s "smooth" wave and "sharp points" zigzag, after "follow the line", what the tracing pad asks of the hand',
+    'yellow-and-green': 'the lesson\'s banana and grass and "easy to see ... because the colors are different", said as "like" and "tell apart"',
   };
   // tell-and-show (kindergarten technology) joined in round two, when a sentence of two words stopped counting as an echo.
   const MORAL_WAITING = ['tell-and-show', 'teen-numbers', 'subtracting-to-20', 'writing-numbers', 'quick-looks', 'counting-to-120', 'number-sentences-and-stories', 'solid-shapes-1', 'measuring-length', 'tallies-and-graphs', 'kinds-of-weather', 'hot-and-cold', 'kinds-of-rocks', 'our-flag-and-holidays', 'families-and-traditions', 'signs-around-town', 'then-and-now', 'producers-and-consumers', 'maps-of-our-town', 'saving-for-a-goal', 'my-listening-body', 'first-then-do', 'my-clear-voice', 'my-turn-and-kind-words', 'my-brain-and-senses', 'remember-it', 'i-wonder', 'plants-we-eat-k', 'seed-to-plant-k', 'farm-animals-k', 'a-day-on-the-farm-k', 'earning-money-k', 'wants-and-needs-k', 'save-spend-share-k', 'borrow-and-make-k', 'lines-shapes-and-colors', 'voices-and-instruments', 'hard-or-soft', 'magnets', 'habitats', 'shapes', 'more-and-fewer-10', 'letter-names', 'rhymes'];
@@ -388,7 +406,9 @@ for (const [, cs, id] of LONG_ENTRIES) {
   const missed = []; let read = 0;
   for (const c of L.COURSES) { if (!c.readAloud) continue;
     for (const m0 of c.modules) { const m = L.MODULES.find((x) => x.id === m0.id); const s = STORIES[m.id]; if (!s) continue; read += 1;
-      const script = L.readAloudScript(m).map((x) => x.say || '').join(' '); const heard = norm(script); const said = new Set(content(script));
+      // The lesson's own words, not its say-along game's (round one's code check, pass MV: Yellow and green's moral reached four in five
+      // only through the game's "like a tiny mouse" and "like play dough").
+      const script = L.readAloudScript(m).map((x) => L.sayAlongParts(x.say || '').filter((p) => p.role === 'say').map((p) => p.sentence).join(' ')).join(' '); const heard = norm(script); const said = new Set(content(script));
       const moral = s.words[s.words.length - 1]; const cw = content(moral);
       // A sentence counts as the script's word for word only with four words or more, matched at word boundaries (round two's code
       // check: a substring test let a one-word moral, or a fragment of a script sentence, pass).
@@ -453,7 +473,8 @@ for (const [, cs, id] of LONG_ENTRIES) {
 // S1520, and 20 more rows of kindergarten to grade 2, all 21 now waiting by name), and a police officer is a grown-up (P124 waves to children
 // on a neighborhood sidewalk).
 { const { readFileSync } = await import('node:fs');
-  const RISK = /\b(slides?|ladders?|climb\w*|jungle gym|monkey bars|tree ?house|branch|pool|lake|river|pond|ocean|beach|creek|stream|waves?|road|street|crosswalk|parking lot|curb|cliff|rooftop|stairs)\b/i;
+  // Since pass MV a swing too (round one's story and picture check: P120's child swinging with nobody near, D60's class).
+  const RISK = /\b(slides?|swings?|swinging|ladders?|climb\w*|jungle gym|monkey bars|tree ?house|branch|pool|lake|river|pond|ocean|beach|creek|stream|waves?|road|street|crosswalk|parking lot|curb|cliff|rooftop|stairs)\b/i;
   const CHILD = /\b(child|children|boy|girl|kids?|baby|toddler)\b/i;
   const ADULT = /\b(grown-ups?|woman|man|teacher|mom|mother|dad|father|grandpa|grandma|grandmother|grandfather|parent|lifeguard|adult|aunt|uncle|coach|librarian|crossing guard|police officer)\b/i;
   const HEIGHT_READ = {
@@ -461,10 +482,13 @@ for (const [, cs, id] of LONG_ENTRIES) {
     S3859: 'a beach ball, a toy, on the playroom floor',
     S1462: 'climbing onto a swing seat a friend holds still, at no height',
     CS652: 'a river seen far below through a train window, the girl inside the train',
+    P145: 'sitting on a bench well away from the swing, at no height (pass MV)',
   };
   const WAITING_K2 = ['S222', 'S239', 'S263', 'S275', 'S314', 'S338', 'S380', 'S401', 'S407', 'S434', 'S1593', 'S1644', 'S1681', 'S1718', 'S2784', 'S2891', 'S3245', 'S3659', 'S3699', 'S3701', 'S3702', 'S3765', 'S3774', 'D78', 'D99', 'D114', 'D168', 'D176', 'D212', 'D235', 'P69',
     // Since round three's alignment read, the rows whose background holds the street, the creek or the beach.
-    'S374', 'S375', 'S408', 'S1520', 'S1522', 'S1534', 'S1576', 'S1602', 'S1680', 'S1686', 'S1687', 'S1699', 'S1719', 'S1256', 'CS391', 'CS392', 'CS394', 'CS395', 'CS396', 'CS563', 'CS564'];
+    'S374', 'S375', 'S408', 'S1520', 'S1522', 'S1534', 'S1576', 'S1602', 'S1680', 'S1686', 'S1687', 'S1699', 'S1719', 'S1256', 'CS391', 'CS392', 'CS394', 'CS395', 'CS396', 'CS563', 'CS564',
+    // Since pass MV, the rows with a swing (round one's story and picture check).
+    'S3071', 'S3694', 'D129', 'D182', 'D205', 'D224'];
   const courseOf = (id) => L.COURSES.find((c) => c.id === id || c.modules.some((m) => m.id === id));
   const hits = []; let rows = 0;
   for (const line of readFileSync(new URL('../docs/ART-REQUESTS.md', import.meta.url), 'utf8').split('\n')) {

@@ -20,7 +20,12 @@
 // 58 to 63 are retired with the lines they said, and row 64, the clap, with it (Mikey: "the claps in row 64 don't sound like real
 // claps"); rows 65 and 66 play the cheer's new sounds, a fan's whistle and the crowd, and rows 67 to 72 six lesson lines of the new game.
 // Since pass MU (Mikey's notes on rows 39 to 44, 65 and 66: a click in duh and guh, odd sounds with juh, ig, og and at, the whistle cut
-// off too quickly, the clapping like static) those rows play the remade sounds, and their notes say so.
+// off too quickly, the clapping like static) those rows play the remade sounds, and their notes say so. Since pass MV (the standards
+// review of Domain II's II.C and pre-K 3's voice to fit the place) rows 73 to 84 play the voices a lesson shows (VOICE_MANNERS): a
+// whisper, an inside voice, a big outside voice, a kind, soft voice, up high and down low with the child's turn after each, a question
+// going up and telling going down, a word said strong, the same words asking and telling, the same words happy and sad, and one
+// question's heard sentence, each line word for word as its lesson says it and each row's voices handed to speechPieces as the
+// lesson hands them.
 // Run: node tools/voice-check.mjs   (writes dist/voice-check.html, which is published as its own small page; dist stays out of git)
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 
@@ -99,6 +104,21 @@ export const VOICE_CHECK_ROWS = [
   { n: 70, kind: 'line', text: 'This is a grandma. A grandma is the mom of your mom or your dad. A grandma can help take care of you. Our word is grandma. Let\'s say it together! First, let\'s say it like a big, sleepy giant. Grandma. Now, let\'s whisper it twice. Grandma, grandma. Now let\'s bounce it, up high and down low! Grandma! Grandma! Grandma! Grandma! Now let\'s say it three times super fast! Grandma, grandma, grandma! Okay, let\'s try stretching it out like play dough now. Grandma. Great job! One last time, nice and clear. Grandma.', note: 'New in pass MT: bounced up high and down low, a word of two syllables (Words for people).' },
   { n: 71, kind: 'line', text: 'A birthday party is a happy day, often with a cake that has candles to blow out. Our word is birthday party. Let\'s say it together! First, let\'s say it slowly. Birthday party. Now, let\'s squeak it twice, like a tiny mouse! Birthday party, birthday party! Now let\'s cheer it like we\'re at a big game! Birthday party! Birthday party! Birthday party! Now let\'s say it three times super fast! Birthday party, birthday party, birthday party! Okay, let\'s try stretching it out like play dough now. Birthday party. Great job! One last time, nice and clear. Birthday party.', note: 'New in pass MT: two words said as one, cheered (Things that happen).' },
   { n: 72, kind: 'line', text: 'At bedtime, you put on your pajamas and sleep in your bed. Our word is bedtime. Let\'s say it together! First, let\'s say it like a big, sleepy giant. Bedtime. Now, let\'s whisper it twice. Bedtime, bedtime. Now let\'s slide it down, from high to low. Bedtime, bedtime, bedtime. Now let\'s say it three times super fast! Bedtime, bedtime, bedtime! Okay, let\'s try stretching it out now. Bedtime. Great job! One last time, nice and clear. Bedtime.', note: 'New in pass MT: a quiet word, a sleepy giant, whispered and slid (Things that happen).' },
+  // Pass MV: the voices a lesson shows (VOICE_MANNERS), lines word for word from A voice to fit the place (rows 73 to 76), My voice
+  // goes up and down (77 to 81) and My voice tells more (82 and 83), and one of its questions (84).
+  { group: 'Voices a lesson shows (pass MV): soft and big, kind, up and down, asking and telling, a strong word, happy and sad' },
+  { n: 73, kind: 'line', text: 'Your voice can be quiet, and your voice can be big. Listen. This is a whisper. Shh, the baby is sleeping.', voices: [['Shh, the baby is sleeping.', 'whisper']], note: 'New in pass MV: the last sentence as a whisper, slow and soft. Some phones say every row at one loudness; the recording will truly whisper.' },
+  { n: 74, kind: 'line', text: 'In the classroom, use an inside voice, not too loud and not too soft, when you talk with your teacher. This is an inside voice. May I have a crayon, please?', voices: [['May I have a crayon, please?', 'inside']], note: 'New in pass MV: the last sentence in an inside voice.' },
+  { n: 75, kind: 'line', text: 'On the playground, by the slide, you can use a big outside voice, so a friend far away can hear you. This is a big outside voice. Over here!', voices: [['Over here!', 'outside']], note: 'New in pass MV: the last words as a big outside voice, bright and high, since a phone\'s voice cannot truly call.' },
+  { n: 76, kind: 'line', text: 'Your voice can sound kind too. When a friend is sad, use a kind, soft voice. Are you okay?', voices: [['Are you okay?', 'kind']], note: 'New in pass MV: the last sentence kind and soft.' },
+  { n: 77, kind: 'line', text: 'Now say it like me, up high for the bird, and down low for the bear. Up high! Down low.', voices: [['Up high!', 'high', 'turn'], ['Down low.', 'low', 'turn']], note: 'New in pass MV: up high, a pause for the child to say it back, then down low and a pause.' },
+  { n: 78, kind: 'line', text: 'When we ask a question, our voice often goes up at the end. Is it a ball?', voices: [['Is it a ball?', 'ask']], note: 'New in pass MV: the question going up at the end.' },
+  { n: 79, kind: 'line', text: 'When we tell, our voice often goes down at the end. It is a ball.', voices: [['It is a ball.', 'tell']], note: 'New in pass MV: the telling going down at the end.' },
+  { n: 80, kind: 'line', text: 'We can say one word strong, to show it matters most. I want the RED circle, not the blue one.', voices: [['I want the RED circle, not the blue one.', 'strong']], note: 'New in pass MV: red said strong, slower and higher, the other words as usual.' },
+  { n: 81, kind: 'line', text: 'Now I\'ll say the other word strong. I want the red CIRCLE, not the red square.', voices: [['I want the red CIRCLE, not the red square.', 'strong']], note: 'New in pass MV: circle said strong.' },
+  { n: 82, kind: 'line', text: 'The same words can ask a question or tell you something. You have a dog? With the voice going up at the end, it asks. You have a dog. With the voice going down, it tells.', voices: [['You have a dog?', 'ask'], ['You have a dog.', 'tell']], note: 'New in pass MV: the same words asked and told. A phone\'s voice may lift a question with a telling\'s words only a little; the recording will lift it clearly.' },
+  { n: 83, kind: 'line', text: 'The same words can sound happy or sad. We are going home! In a quick voice going up high, that sounds happy. We are going home. In a slow, low voice, that sounds sad. So listen to how something is said, and you can tell if someone feels happy or sad.', voices: [['We are going home!', 'happy'], ['We are going home.', 'sad']], note: 'New in pass MV: the same words happy, quick and high, then sad, slow, soft and low.' },
+  { n: 84, kind: 'line', text: 'Listen to how it is said. The bus is here. How does it sound?', voices: [['The bus is here.', 'sad']], note: 'New in pass MV: a question from My voice tells more, its sentence said sad; a child answers with a happy or a sad face.' },
 ];
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -144,7 +164,7 @@ const play = (row) => {
   const start = () => {
     if (ticket !== speechTicket) return;
     if (row.kind === 'sound') { began = true; playSound(row.sound, done); return; }
-    const pieces = row.kind === 'line' ? speechPieces(row.text) : row.kind === 'trial' ? speechPieces(row.text, { trial: true }) : [{ text: row.text, shape: 'plain', sentence: 0 }];
+    const pieces = row.kind === 'line' ? speechPieces(row.text, row.voices ? { voices: row.voices } : {}) : row.kind === 'trial' ? speechPieces(row.text, { trial: true }) : [{ text: row.text, shape: 'plain', sentence: 0 }];   // a row's voices (pass MV) as a lesson hands them
     if (!canSpeak() && pieces.some((p) => !p.sound)) { began = true; done(); return; }
     const mine = attempt; speechAlive = []; const voice = pickVoice();
     // A lesson row is said in the young voice a pre-reader hears since pass MQ (a little slower, a rest between sentences); a row of
@@ -190,7 +210,7 @@ h2 { font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: 
 </style>
 <main>
 <h1>Voice check</h1>
-<p class="intro">Tap a row to hear it, with the sound on. The sounds in the first list and in the lists from row 33 are made by the app, so every phone plays the same ones. The words are your phone's own voice, a placeholder until the recorded voice. Tell Claude the numbers that sound wrong, and how, whenever you like. A green note under a row says what changed in pass MP, MQ, MR, MS, MT or MU. Inside an app's preview, such as Claude's app on a phone, the phone's own voice may say nothing while the app's sounds still play; open this page's link in Safari or Chrome to hear every row.</p>
+<p class="intro">Tap a row to hear it, with the sound on. The sounds in the first list and in the lists from row 33 are made by the app, so every phone plays the same ones. The words are your phone's own voice, a placeholder until the recorded voice. Tell Claude the numbers that sound wrong, and how, whenever you like. A green note under a row says what changed in pass MP, MQ, MR, MS, MT, MU or MV. Inside an app's preview, such as Claude's app on a phone, the phone's own voice may say nothing while the app's sounds still play; open this page's link in Safari or Chrome to hear every row.</p>
 <p class="voice" id="voice">Your phone's voice: finding it...</p>
 <p class="novoice" id="novoice" hidden>This browser has no voice, so only the app's own sounds play here: rows 1 to 10, 33 to 44, 65 and 66. To hear every row, open this page's link in Safari or Chrome rather than inside another app.</p>
 ${rowsHtml}
@@ -209,6 +229,9 @@ export async function voiceCheckSelfTest(L, script = VOICE_CHECK_SCRIPT) {
   // what it plays (round two's code check: the self-test never played a row, so a slice that lost soundUrl passed while the page's
   // first row threw).
   let now = 0; let seq = 0; const timers = []; const log = []; let queue = []; let blobs = 0; let lastCancel = -100; const rates = []; let deafUntil = -1;
+  // Each utterance's pitch and loudness beside its rate (pass MV, round one's code check: with only the rate recorded, a page that gave
+  // a voice up high the plain pitch passed).
+  const pitches = []; const volumes = [];
   // When each piece starts and ends, voice and sound alike, in the order they play (pass MQ, round one's code check), so a row's
   // rests between sentences can be measured.
   const marks = [];
@@ -220,7 +243,7 @@ export async function voiceCheckSelfTest(L, script = VOICE_CHECK_SCRIPT) {
   // As the rules test's voice does, what is spoken within 4 ms of a cancel is dropped, with no events (a phone's browser does so),
   // and, since round four, what is spoken before deafUntil (a voice not ready yet, which drops a page's first words).
   const ss = { get speaking() { return queue.length > 0; }, get pending() { return queue.length > 1; }, cancel() { lastCancel = now; const old = queue; queue = []; for (const u of old) later(() => { if (u.onerror) u.onerror({}); }, 1); },
-    speak(u) { if (now - lastCancel < 4 || now < deafUntil) { log.push(`dropped ${u.text}`); return; } rates.push(u.rate); queue.push(u); if (queue.length === 1) startNext(); }, getVoices() { return []; } };
+    speak(u) { if (now - lastCancel < 4 || now < deafUntil) { log.push(`dropped ${u.text}`); return; } rates.push(u.rate); pitches.push(u.pitch); volumes.push(u.volume); queue.push(u); if (queue.length === 1) startNext(); }, getVoices() { return []; } };
   function Audio() { const a = { src: '', onended: null, onerror: null, t: 0, play() { log.push(`sound ${a.src}`); marks.push({ t: now, k: 's' }); a.t = later(() => { marks.push({ t: now, k: 'e' }); if (a.onended) a.onended(); }, 100); return Promise.resolve(); }, pause() { clear(a.t); } }; return a; }
   const el = () => ({ textContent: '', classList: { add() {}, remove() {} }, addEventListener() {}, dataset: {} });
   function SpeechSynthesisUtterance(t) { this.text = t; }
@@ -233,7 +256,7 @@ export async function voiceCheckSelfTest(L, script = VOICE_CHECK_SCRIPT) {
   const vc = ctx.__vc || {};
   for (const name of ['speechPieces', 'soundClipWav', 'sayPieces', 'playSound', 'stopSound', 'pickVoice', 'canSpeak', 'shapeVoice', 'play']) if (typeof vc[name] !== 'function') problems.push(`the page has no ${name}`);
   if (!problems.length) {
-    for (const r of VOICE_CHECK_ROWS.filter((x) => x.kind === 'line' || x.kind === 'trial')) { const o = r.kind === 'trial' ? { trial: true } : {}; if (JSON.stringify(vc.speechPieces(r.text, o)) !== JSON.stringify(L.speechPieces(r.text, o))) problems.push(`row ${r.n} is said otherwise on the page`); }
+    for (const r of VOICE_CHECK_ROWS.filter((x) => x.kind === 'line' || x.kind === 'trial')) { const o = r.kind === 'trial' ? { trial: true } : r.voices ? { voices: r.voices } : {}; if (JSON.stringify(vc.speechPieces(r.text, o)) !== JSON.stringify(L.speechPieces(r.text, o))) problems.push(`row ${r.n} is said otherwise on the page`); }
     // Every sound a row plays is one the app makes (pass MP: the trial rows' sounds, and the new sound rows', are made, never silent).
     for (const r of VOICE_CHECK_ROWS.filter((x) => x.kind === 'sound')) { const w = vc.soundClipWav(r.sound); if (!w || w.length < 1000) problems.push(`row ${r.n}'s sound ${r.sound} is not made`); }
     for (const r of VOICE_CHECK_ROWS.filter((x) => x.kind === 'trial')) for (const p of L.speechPieces(r.text, { trial: true })) if (p.sound && !vc.soundClipWav(p.sound)) problems.push(`row ${r.n}'s sound ${p.sound} is not made`);
@@ -249,8 +272,9 @@ export async function voiceCheckSelfTest(L, script = VOICE_CHECK_SCRIPT) {
     const rows = VOICE_CHECK_ROWS.filter((x) => !x.group); const row12 = rows.find((x) => x.n === 12); const row1 = rows.find((x) => x.n === 1);
     for (const r of rows) for (const [before, wait] of [[null, 0], [row12, 200], [row1, 50]]) {
       const where = before ? ` over row ${before.n}` : '';
-      try { if (before) { vc.play(before); tick(wait); } log.length = 0; rates.length = 0; marks.length = 0; win.__eduSounds = []; vc.play(r); tick(40000); } catch (e) { problems.push(`row ${r.n}${where} throws: ${e && e.message}`); continue; }
-      const piecesOf = (row) => L.speechPieces(row.text, row.kind === 'trial' ? { trial: true } : {});
+      try { if (before) { vc.play(before); tick(wait); } log.length = 0; rates.length = 0; pitches.length = 0; volumes.length = 0; marks.length = 0; win.__eduSounds = []; vc.play(r); tick(40000); } catch (e) { problems.push(`row ${r.n}${where} throws: ${e && e.message}`); continue; }
+      // A row's voices (pass MV) are handed on as the page hands them.
+      const piecesOf = (row) => L.speechPieces(row.text, row.kind === 'trial' ? { trial: true } : row.voices ? { voices: row.voices } : {});
       const want = r.kind === 'sound' ? ['sound'] : r.kind === 'line' || r.kind === 'trial' ? piecesOf(r).map((p) => (p.sound ? 'sound' : `say ${p.text}`)) : [`say ${r.text}`];
       const got = log.map((x) => (x.startsWith('sound blob:') ? 'sound' : x));
       if (JSON.stringify(got) !== JSON.stringify(want)) problems.push(`row ${r.n}${where} plays ${JSON.stringify(got)}, not ${JSON.stringify(want)}`);
@@ -265,8 +289,15 @@ export async function voiceCheckSelfTest(L, script = VOICE_CHECK_SCRIPT) {
       // shape with a pace of its own (OWN_PACE_SHAPES: a word at play and the say-it-with-me voices, a whisper or super fast) keeps
       // that pace, as the app's shapeVoice does, and a page without the list fails rather than guess it.
       if ((r.kind === 'line' || r.kind === 'trial') && vc.SPEECH_SHAPES) { if (!Array.isArray(vc.OWN_PACE_SHAPES)) { problems.push('the page has no OWN_PACE_SHAPES'); continue; }
-        const wantRates = piecesOf(r).filter((p) => !p.sound).map((p) => (vc.SPEECH_SHAPES[p.shape] || vc.SPEECH_SHAPES.plain).rate * (vc.OWN_PACE_SHAPES.includes(p.shape) ? 1 : vc.YOUNG_RATE || NaN));
-        if (rates.length !== wantRates.length || rates.some((x, i) => Math.abs(x - wantRates[i]) > 1e-9)) problems.push(`row ${r.n}${where} is said at the rates ${rates.join(', ')}, not its pieces' ${wantRates.join(', ')}`); }
+        // Since pass MV a voice a lesson shows (a said- shape) is held to logic's own VOICE_MANNERS, so a page whose copy of the table
+        // drifted fails, and every piece's pitch and loudness are held as its rate is (a shape with no loudness leaves the voice's own).
+        const shapeOf = (p) => (/^said-/.test(p.shape) && L.VOICE_MANNERS[p.shape.slice(5)] ? L.VOICE_MANNERS[p.shape.slice(5)].device : vc.SPEECH_SHAPES[p.shape] || vc.SPEECH_SHAPES.plain);
+        const voiced = piecesOf(r).filter((p) => !p.sound);
+        const wantRates = voiced.map((p) => shapeOf(p).rate * (vc.OWN_PACE_SHAPES.includes(p.shape) ? 1 : vc.YOUNG_RATE || NaN));
+        if (rates.length !== wantRates.length || rates.some((x, i) => Math.abs(x - wantRates[i]) > 1e-9)) problems.push(`row ${r.n}${where} is said at the rates ${rates.join(', ')}, not its pieces' ${wantRates.join(', ')}`);
+        const wantPitches = voiced.map((p) => shapeOf(p).pitch); const wantVolumes = voiced.map((p) => shapeOf(p).volume);
+        if (pitches.length !== wantPitches.length || pitches.some((x, i) => typeof x !== 'number' || Math.abs(x - wantPitches[i]) > 1e-9)) problems.push(`row ${r.n}${where} is said at the pitches ${pitches.join(', ')}, not its pieces' ${wantPitches.join(', ')}`);
+        if (volumes.length !== wantVolumes.length || volumes.some((x, i) => (wantVolumes[i] === undefined ? x !== undefined : typeof x !== 'number' || Math.abs(x - wantVolumes[i]) > 1e-9))) problems.push(`row ${r.n}${where} is said at the loudness ${volumes.map(String).join(', ')}, not its pieces' ${wantVolumes.map(String).join(', ')}`); }
     }
     // And its rests (pass MQ, round one's code check: a page that handed sayPieces no pause passed every check above): played from
     // quiet, a line or trial row waits at least YOUNG_PAUSE_MS after a piece before the next one when that one starts a new sentence,
@@ -276,7 +307,7 @@ export async function voiceCheckSelfTest(L, script = VOICE_CHECK_SCRIPT) {
       if (typeof vc.YOUNG_PAUSE_MS !== 'number') { problems.push('the page has no YOUNG_PAUSE_MS'); break; }
       if (typeof vc.startsSentence !== 'function') { problems.push('the page has no startsSentence'); break; }
       try { tick(2000); log.length = 0; marks.length = 0; vc.play(r); tick(40000); } catch (e) { problems.push(`row ${r.n}'s rests throw: ${e && e.message}`); continue; }
-      const ps = L.speechPieces(r.text, r.kind === 'trial' ? { trial: true } : {}); const starts = marks.filter((m) => m.k === 's').map((m) => m.t); const ends = marks.filter((m) => m.k === 'e').map((m) => m.t);
+      const ps = L.speechPieces(r.text, r.kind === 'trial' ? { trial: true } : r.voices ? { voices: r.voices } : {}); const starts = marks.filter((m) => m.k === 's').map((m) => m.t); const ends = marks.filter((m) => m.k === 'e').map((m) => m.t);
       if (starts.length !== ps.length || ends.length !== ps.length) { problems.push(`row ${r.n} plays ${starts.length} pieces, not ${ps.length}`); continue; }
       for (let i = 1; i < ps.length; i++) { const gap = starts[i] - ends[i - 1];
         // A say-along (pass MS): a form's sayings keep together, a cheer's sayings and sounds and the slide's steps a few
@@ -293,7 +324,7 @@ export async function voiceCheckSelfTest(L, script = VOICE_CHECK_SCRIPT) {
     // piece is said once (round four's code check: play() had no retry, where speak() has).
     for (const r of rows.filter((x) => x.kind !== 'sound')) {
       try { tick(2000); log.length = 0; deafUntil = now + 50; vc.play(r); tick(40000); deafUntil = -1; } catch (e) { deafUntil = -1; problems.push(`row ${r.n} after dropped first words throws: ${e && e.message}`); continue; }
-      const want = r.kind === 'line' || r.kind === 'trial' ? L.speechPieces(r.text, r.kind === 'trial' ? { trial: true } : {}).map((p) => (p.sound ? 'sound' : `say ${p.text}`)) : [`say ${r.text}`];
+      const want = r.kind === 'line' || r.kind === 'trial' ? L.speechPieces(r.text, r.kind === 'trial' ? { trial: true } : r.voices ? { voices: r.voices } : {}).map((p) => (p.sound ? 'sound' : `say ${p.text}`)) : [`say ${r.text}`];
       const got = log.filter((x) => !x.startsWith('dropped ')).map((x) => (x.startsWith('sound blob:') ? 'sound' : x));
       if (JSON.stringify(got) !== JSON.stringify(want)) problems.push(`row ${r.n} after dropped first words plays ${JSON.stringify(got)}, not ${JSON.stringify(want)}`);
     }

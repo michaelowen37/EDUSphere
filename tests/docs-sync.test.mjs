@@ -208,6 +208,10 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   { const o = '<!-- RULES-AUDIT rows as pass MT left them, before pass MU replaced them, word for word: begin -->\n'; const ia = hist.indexOf(o); const ib = hist.indexOf('<!-- RULES-AUDIT rows as pass MT left them, before pass MU replaced them, word for word: end -->');
     const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
     ok("docs/RULES-AUDIT-HISTORY.md keeps the say-along row as pass MT left it, every word unchanged, and the audit points to it (pass MU)", /^\| \*\*Say it together, one word in five silly ways \(Mikey, pass MR, Q67:/.test(kept) && createHash('sha256').update(kept, 'utf8').digest('hex') === 'dcb4cd30b352f8e23036a5166dba9d2284f24f4dd5432b67a6a72ae036256850' && audit.includes('and the row as pass MS left it beside it, and the row as pass MT left it after them')); }
+  // Pass MV's block, held the same way: Q82, which Mikey answered when he opened the pass ("Q82: A").
+  { const o = "<!-- RULES-AUDIT section 11's answered questions in pass MV, word for word: begin -->\n"; const ia = hist.indexOf(o); const ib = hist.indexOf("<!-- RULES-AUDIT section 11's answered questions in pass MV, word for word: end -->");
+    const mv = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
+    ok('docs/RULES-AUDIT-HISTORY.md keeps the questions answered in pass MV, every line unchanged (pass MV)', createHash('sha256').update(mv, 'utf8').digest('hex') === 'a9b3dfb1a73744b37213df50f5be34ab668687140b9627e17c621ca682b01a8c'); }
   const s = audit.indexOf('## 11. Open items that need Mikey'); const e = audit.indexOf('\n## ', s + 5); const sec = audit.slice(s, e < 0 ? audit.length : e);
   const answeredLines = sec.split('\n').filter((l) => /^- Q\d+\. Answered in pass /.test(l));
   const long = answeredLines.filter((l) => !/^- Q\d+\. Answered in pass \w+ \(Mikey: .+\)\. Its rule lives in [^\n]+\.$/.test(l) || /The question as it stood/.test(l));

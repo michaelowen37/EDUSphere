@@ -1,5 +1,6 @@
 // The curriculum map, checked. Fails only for grades marked ready; reports gaps for the rest.
 import * as L from '../src/logic.mjs';
+import { readFileSync } from 'node:fs';
 import { CURRICULUM, FRAMEWORKS, STATES, coverageReport, frameworkForState } from '../src/curriculum.mjs';
 
 let pass = 0, fail = 0;
@@ -25,6 +26,15 @@ const SOURCE_NEAR = ["Texas Prekindergarten Guidelines as the 2027 Pre-K Guideli
   'Texas Essential Knowledge and Skills for Health Education, Grade 6, Adopted 2020 (§115.26), the reproductive and sexual health strand, (b)(20) to (23), read in full in the Texas Administrative Code.'];
 ok('no plan source the map prints names a pass, a person, a file, an earmark or how it was read, the three old sources fail it, and a code or a pass an exam does not (pass MS)', notesIn(CURRICULUM.map((p) => p.source || '')).length === 0 && notesIn(SOURCE_NEAR).length === 3 && notesIn(notNotes).length === 0, notesIn(CURRICULUM.map((p) => p.source || '')).map((s) => s.slice(0, 120)).join(' | '));
 ok('every standard names a framework the platform knows', CURRICULUM.every((p) => p.standards.every((st) => FRAMEWORKS[st.framework])));
+// A lesson's own Source line is printed for the educator too (pass MV, round two's alignment read: round one found "Mikey's say-it-together
+// game" on one, and nothing read the lessons' lines): none names a pass, a person or a file. The earmark sixty-nine pre-K lines name is
+// EARMARKS A65, for the next citations read. Near miss: round one's clause as it was printed. Since the third read it reads the lines
+// the educator sees, each lesson's sources, the field the screen prints (held below), and counts the lines it read: as round two wrote
+// it, it read a lesson's own sources, which no lesson has, and passed on anything.
+const lessonNote = (s) => /\bpass(?:es)? [A-Z]{2}\b|\bMikey\b|\bClaude\b|docs\/|\.(?:md|txt|mjs|json)\b|RULES-AUDIT/.test(s);
+const lessonLines = L.MODULES.flatMap((m) => m.sources || []); const lessonNotes = L.MODULES.flatMap((m) => (m.sources || []).filter(lessonNote).map(() => m.id));
+const printsSources = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8').includes("Source: {mod.sources.join(' ')}");
+ok(`no lesson's Source line names a pass, a person or a file (pass MV, round two's alignment read; ${lessonLines.length} Source lines of ${L.MODULES.length} lessons read, the lines the educator screen prints; round one's "Mikey's say-it-together game" caught)`, lessonNotes.length === 0 && lessonLines.length >= 690 && printsSources && lessonNote("its color words said along in Mikey's say-it-together game"), `${lessonNotes.join(', ')}${printsSources ? '' : ' (the screen no longer prints mod.sources)'}`);
 ok('every state and the District of Columbia are listed with a framework', STATES.length === 51 && STATES.every((st) => FRAMEWORKS[st.framework]));
 ok('Texas builds to TEKS and California to Common Core', frameworkForState('TX') === 'TEKS' && frameworkForState('CA') === 'CCSS');
 // Every plan carries both frameworks, except pre-K's since pass MS (Q76 (c)): each pre-K plan is one domain of the Texas guidelines or

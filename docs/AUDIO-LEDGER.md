@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-11-02 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 11642 clips, 1,789,828 characters in all; the longest clip is 520 characters and the longest whole story 3,567, far under Eleven v4's 10,000 a request (the longest lesson's lines come to 13,492 in all, each line a request of its own). 224 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-11-02 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 11831 clips, 1,806,459 characters in all; the longest clip is 520 characters and the longest whole story 3,603, far under Eleven v4's 10,000 a request (the longest lesson's lines come to 13,492 in all, each line a request of its own). 227 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -17,7 +17,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 7336 | 805,734 |
+| Pre-K to grade 2 | 7525 | 822,365 |
 | Grades 3 to 5 | 1375 | 292,652 |
 | Grades 6 to 8 | 1197 | 279,526 |
 | Grades 9 to college | 1734 | 411,916 |
@@ -42,9 +42,9 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 | Kind | Clips |
 |---|---|
-| story title | 687 |
-| story | 4470 |
-| lesson line | 5132 |
+| story title | 690 |
+| story | 4496 |
+| lesson line | 5292 |
 | long story title | 106 |
 | long story | 858 |
 | next long story title | 4 |
@@ -598,7 +598,7 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S113-3: [calmly] Let's take turns, said Ana. You go first, and I will wait. [gently] She let go, and Sam sat down.
 - S113-4: [excited] Sam swung up high, and Ana waited on the bench by their teacher. [sighs] Waiting felt hard. [restless] Her hands wanted the ropes, and her feet wanted to kick.
 - S113-5: [slowly] So Ana took a slow breath in and let it out. [cheering] Then she cheered for her friend, go, Sam, go, [counting] and counted to ten.
-- S113-6: [excited] Ten! [carefully] Sam let the swing slow down and climbed off. [warmly] Your turn, he said, and held it still for her.
+- S113-6: [excited] Ten! [carefully] Sam let the swing slow to a stop and climbed off. [warmly] Your turn, he said, and held it still for her.
 - S113-7: [delighted] Now Ana swung, and Sam counted for her. [playful] Later they found a big red ball and played with it together, both at once. [warmly] That is sharing, said their teacher.
 - S113-8: [slowly, warmly] Wait, and then it is your turn. When friends share, they both play at the same time.
 
@@ -829,6 +829,41 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S3995-6: [in a small, excited boy voice, whispering] Kira, come see my book! [softly] Hugo whispered. [disappointed] But Kira did not hear him at all.
 - S3995-7: [pause] [giggling] Hugo giggled. The playground was not the library! He cupped his hands and called in a big outside voice. [in a small, excited boy voice, calling loudly] Kira, over here! [delighted] And Kira came running.
 - S3995-8: [slowly, warmly] A voice can be big or small. Make your voice fit the place.
+
+### A whisper for Otis (S3999, voice-to-fit)
+
+- S3999-1: [cheerful] Mabel ran in from the kitchen with a painting of a big yellow sun.
+- S3999-2: [softly] Mama was on the couch, rocking baby Otis, and his eyes were just closing.
+- S3999-3: [in a small, bright girl voice, shouting happily] Mama, look what I made! [softly] Mabel shouted.
+- S3999-4: [surprised] Otis's eyes popped open, and he began to cry. [a baby crying] Waaah!
+- S3999-5: [gently] Mama rocked him and hummed a soft song. [sadly] Mabel felt bad. She had not meant to wake him up.
+- S3999-6: [pause] [thoughtful] At last, Otis's eyes closed again. Mabel remembered just what to do, and she tiptoed over.
+- S3999-7: [softly] Mabel whispered very softly. [in a small, bright girl voice, whispering] Mama, I made a sun for you.
+- S3999-8: [warmly] Mama smiled and whispered back, [in a soft, warm mom voice, whispering] it is beautiful. [softly] And baby Otis kept on sleeping.
+- S3999-9: [slowly, warmly] A whisper fits when a baby sleeps. Make your voice fit the place.
+
+### Ice cream? (S4003, voice-up-and-down)
+
+- S4003-1: [cheerful] On a warm day at the park, Ayla and her grandpa heard a happy song. [an ice cream truck jingling] An ice cream truck!
+- S4003-2: [softly] Ayla pointed at the truck. [in a small, bright girl voice, falling at the end] Ice cream, [softly] she said, and her voice went down at the end.
+- S4003-3: [calmly] Grandpa nodded. [in a warm, deep grandpa voice] Yes, that is an ice cream truck, [softly] he said, and he leaned back on the bench.
+- S4003-4: [frustrated] Ayla frowned. She had not meant to tell him about the truck. [eagerly] She wanted to ask for an ice cream!
+- S4003-5: [pause] [thoughtful] Then she remembered what her teacher said. [gently] When you ask, your voice can go up at the end.
+- S4003-6: [determined] Ayla tried again, and her voice went up, up, up. [in a small, bright girl voice, rising at the end] Ice cream?
+- S4003-7: [laughs] Grandpa laughed. [in a warm, deep grandpa voice, delighted] Oh, you are asking me for an ice cream, not telling me about the truck! Yes, let's get one.
+- S4003-8: [happily] Soon Ayla had a cone of cold vanilla ice cream, and Grandpa had one too.
+- S4003-9: [slowly, warmly] Your voice can go up at the end to ask, and down at the end to tell.
+
+### Willa says okay (S4007, voice-tells-more)
+
+- S4007-1: [cheerful] Willa and her friend Tobi had come to the park with her dad. The two friends were swinging side by side when he called, [in a warm dad voice, calling] time to go home.
+- S4007-2: [in a small, light girl voice, slow, soft and low] Okay, [gently] said Willa. She said it slowly, and her voice was soft and low.
+- S4007-3: [brightly] Tobi let his swing slow to a stop and climbed off. [in a bright, small boy voice, thinking aloud] Willa said okay, so she must feel fine, [softly] he thought.
+- S4007-4: [pause] [thoughtful] But then he remembered. Her okay had been slow, soft and low, like a sad voice.
+- S4007-5: [in a bright, small boy voice, gently] Are you sad? [softly] Tobi asked, and Willa gave a little nod. [in a small, light girl voice, sadly] I wanted to swing some more, [softly] she said.
+- S4007-6: [hopeful] Tobi had an idea. [in a bright, small boy voice, kindly] We can swing side by side next time too, [softly] he said.
+- S4007-7: [delighted] Willa smiled, and this time her okay was quick and went up high. [in a small, light girl voice, happily, quick and rising high] Okay!
+- S4007-8: [slowly, warmly] Listen to how words are said, and you can tell how someone feels.
 
 ### Cat, mat, hat (S116, listen-for-rhymes)
 

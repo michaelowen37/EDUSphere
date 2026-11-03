@@ -200,6 +200,21 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A sample built by hand to look like a real screen drifts: the LI tour sample missed the Merge link and the Wonder pill and was laid out differently, and Mikey saw all three at a glance. Feed made-up data through the real component instead, with taps switched off, and the sample can never differ from the page.
 - Count a daily allowance against the day as it started, not as it stands: finishing the first review shrinks the queue, and a rule that rechecked the live queue would cancel the second review the backlog asked for.
 
+## Learned in pass MU (Mikey's answers Q80 and Q81, his game in the eight older vocabulary lessons, and the app's sounds made again)
+
+- A sound nobody can hear where it is made is measured against recordings of the real thing: pass MT's crowd passed every measure it had and still sounded like static to Mikey; beside forty real clapping clips its energy centred near 2,600 cycles a second where theirs centres near 1,700, so the crowd was made again from measured hand shapes and a room, and each measure that told them apart is a test.
+- A sound is weighed as the ear hears it: a plain level is ruled by a vowel's low energy, so a release 3 to 8 dB over its uh in plain frames still ticked about 9 dB over it in the click's band as heard (round one's screen check); A-weighted frames are the measure now.
+- A crowd is listened to from its first moment: most of its people clapped first within the same 60 ms and together again a quarter second later, a cue and not applause breaking out; its start is a test now.
+- A game that comes to a lesson changes what its citations say the child does: two said a child "is not asked to say" words the game now asks the child to say.
+- A table of numbers in a comment is credited to the paper it is printed in, read in that paper: the hand shapes are Table 1 of Jylhä and Erkut (DAFx 2008), built on Peltola, Erkut, Cook and Välimäki's synthesis (2007).
+- A guard waits from the start it waits on: armed at play(), a sound's guard would have let a phone slow to start a sound move the reading on over its end.
+- A near miss proves its own bound only when it trips that bound alone: the g plant was caught by the shape check's peak and nothing else.
+- A guess two things share changes both: the light's letter-counting guess also changed the child's turn after each way on pass MT's words, which the change's first account did not say.
+- A flavor is read against its word's meaning in its lesson: huge was squeaked like a tiny mouse in the lesson that sets tiny against huge.
+- What a preview cannot play is said on the page: the rows the phone's own voice says stay silent in an app's preview while the app's own sounds play, and the voice check page's intro says so now.
+- A line of Mikey's is read where he wrote it: "Doesn't matter too much since we will be using Eleven Labs." came after the rows he could not hear, and Q82 first read it as being about the made sounds and leaned its recommendation on that.
+- A sound made gentler is told as a trade: duh's click was measured away as the ear hears it and its d grew gentler beside a louder uh, so the delivery says what to listen for rather than calling the sound fixed.
+
 ## Learned in pass MT (Mikey's answers Q77 to Q79, his say-it-together game, and the whistle and the crowd)
 
 - When Mikey writes the words, they are used word for word and held by a test: his game on different is checked against his own sentences, and the other words' versions keep his shape and his openings, so a later edit cannot drift from what he wrote; what Claude adds around his words (the flavors on the other words, the device rates but slowly's) is recorded as Claude's.

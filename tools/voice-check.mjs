@@ -19,6 +19,8 @@
 // different and Claude's flavors on the other words) rows
 // 58 to 63 are retired with the lines they said, and row 64, the clap, with it (Mikey: "the claps in row 64 don't sound like real
 // claps"); rows 65 and 66 play the cheer's new sounds, a fan's whistle and the crowd, and rows 67 to 72 six lesson lines of the new game.
+// Since pass MU (Mikey's notes on rows 39 to 44, 65 and 66: a click in duh and guh, odd sounds with juh, ig, og and at, the whistle cut
+// off too quickly, the clapping like static) those rows play the remade sounds, and their notes say so.
 // Run: node tools/voice-check.mjs   (writes dist/voice-check.html, which is published as its own small page; dist stays out of git)
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 
@@ -72,10 +74,10 @@ export const VOICE_CHECK_ROWS = [
   { n: 35, kind: 'sound', sound: 'i', label: 'i, as in igloo' }, { n: 36, kind: 'sound', sound: 'o', label: 'o, as in octopus' },
   { n: 37, kind: 'sound', sound: 'u', label: 'u, as in up' },
   { group: 'Sounds the app makes, in the lessons since pass MQ' },
-  { n: 38, kind: 'sound', sound: 'b', label: 'buh, as in ball' },
-  { n: 39, kind: 'sound', sound: 'd', label: 'duh, as in dog' }, { n: 40, kind: 'sound', sound: 'g', label: 'guh, as in goat' },
-  { n: 41, kind: 'sound', sound: 'j', label: 'juh, as in jam' }, { n: 42, kind: 'sound', sound: 'ig', label: 'ig, as in pig' },
-  { n: 43, kind: 'sound', sound: 'og', label: 'og, as in dog' }, { n: 44, kind: 'sound', sound: 'at', label: 'at, as in cat' },
+  { n: 38, kind: 'sound', sound: 'b', label: 'buh, as in ball', note: 'Pass MU: its b starts and ends a little more softly, as the d and g now do; otherwise as you heard it.' },
+  { n: 39, kind: 'sound', sound: 'd', label: 'duh, as in dog', note: 'New in pass MU: a gentler d that runs straight into its uh, and the uh much louder. Tell Claude if the d now sounds too soft beside the uh.' }, { n: 40, kind: 'sound', sound: 'g', label: 'guh, as in goat', note: 'New in pass MU: a gentler g that runs straight into its uh, and the uh much louder. Tell Claude if the g now sounds too soft beside the uh.' },
+  { n: 41, kind: 'sound', sound: 'j', label: 'juh, as in jam', note: 'New in pass MU: a gentler j whose hush starts with it and runs into its uh, and the uh louder.' }, { n: 42, kind: 'sound', sound: 'ig', label: 'ig, as in pig', note: 'New in pass MU: a much softer g at the end, and the i louder, as loud as the vowels above.' },
+  { n: 43, kind: 'sound', sound: 'og', label: 'og, as in dog', note: 'New in pass MU: a much softer g at the end.' }, { n: 44, kind: 'sound', sound: 'at', label: 'at, as in cat', note: 'New in pass MU: a much softer t at the end.' },
   { group: 'Lesson lines with those sounds, as a lesson says them since pass MQ' },
   { n: 45, kind: 'line', text: 'Ball, bed and bear all start with buh.' },
   { n: 46, kind: 'line', text: 'Dog, duck and door all start with duh.' },
@@ -89,8 +91,8 @@ export const VOICE_CHECK_ROWS = [
   // way is heard at least once (row 67 is his own version, Learning words' different), and the two sounds of a cheer. Rows 58 to 64
   // (pass MS: the cue that named the word, and the clap) are retired with what they played.
   { group: 'Say it together (Q77, pass MT): one word, five silly ways, as a lesson says it' },
-  { n: 65, kind: 'sound', sound: 'whistle', label: 'a fan\'s whistle, between a cheer\'s sayings', note: 'New in pass MT, in place of the clap: made by the app, so every phone plays the same one.' },
-  { n: 66, kind: 'sound', sound: 'applause', label: 'the crowd, clapping and whistling after a cheer\'s last saying', note: 'New in pass MT: a longer stretch of claps from many hands, with a whistle on top.' },
+  { n: 65, kind: 'sound', sound: 'whistle', label: 'a fan\'s whistle, between a cheer\'s sayings', note: 'New in pass MU: drawn out to nine tenths of a second on one breath, swelling and fading as a real whistle does.' },
+  { n: 66, kind: 'sound', sound: 'applause', label: 'the crowd, clapping and whistling after a cheer\'s last saying', note: 'New in pass MU: 44 people clapping in a small hall for two and a half seconds, with two whistles from the crowd.' },
   { n: 67, kind: 'line', text: 'Different means not the same. A cup and a ball are different. Let\'s say it together! First, let\'s say it slowly. Different. Now, let\'s whisper it twice. Different, different. Now let\'s say it four times using silly voices. Different! Different! Different! Different! Now let\'s say it three times super fast! Different, different, different! Okay, let\'s try stretching it out now. Different. Great job! One last time, nice and clear. Different.', note: 'New in pass MT: your version, word for word (Learning words).' },
   { n: 68, kind: 'line', text: 'Match means find one that is the same. This cup matches this cup. Our word is match. Let\'s say it together! First, let\'s say it like a big, sleepy giant. Match. Now, let\'s squeak it twice, like a tiny mouse! Match, match! Now let\'s cheer it like we\'re at a big game! Match! Match! Match! Now let\'s say it three times super fast! Match, match, match! Okay, let\'s try stretching it out like play dough now. Match. Great job! One last time, nice and clear. Match.', note: 'New in pass MT: like a sleepy giant, a tiny mouse, the cheer with its whistles and its crowd, and play dough (Learning words).' },
   { n: 69, kind: 'line', text: 'Same means just alike. A red circle and a red circle are the same, so they match. Our word is same. Let\'s say it together! First, let\'s say it slowly. Same. Now, let\'s squeak it twice, like a tiny mouse! Same, same! Now let\'s slide it down, from high to low. Same, same, same. Now let\'s say it three times super fast! Same, same, same! Okay, let\'s try stretching it out now. Same. Great job! One last time, nice and clear. Same.', note: 'New in pass MT: the slide, high to low over three sayings, and a word of one syllable (Learning words).' },
@@ -188,7 +190,7 @@ h2 { font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: 
 </style>
 <main>
 <h1>Voice check</h1>
-<p class="intro">Tap a row to hear it, with the sound on. The sounds in the first list and in the lists from row 33 are made by the app, so every phone plays the same ones. The words are your phone's own voice, a placeholder until the recorded voice. Tell Claude the numbers that sound wrong, and how, whenever you like. A green note under a row says what changed in pass MP, MQ, MR, MS or MT.</p>
+<p class="intro">Tap a row to hear it, with the sound on. The sounds in the first list and in the lists from row 33 are made by the app, so every phone plays the same ones. The words are your phone's own voice, a placeholder until the recorded voice. Tell Claude the numbers that sound wrong, and how, whenever you like. A green note under a row says what changed in pass MP, MQ, MR, MS, MT or MU. Inside an app's preview, such as Claude's app on a phone, the phone's own voice may say nothing while the app's sounds still play; open this page's link in Safari or Chrome to hear every row.</p>
 <p class="voice" id="voice">Your phone's voice: finding it...</p>
 <p class="novoice" id="novoice" hidden>This browser has no voice, so only the app's own sounds play here: rows 1 to 10, 33 to 44, 65 and 66. To hear every row, open this page's link in Safari or Chrome rather than inside another app.</p>
 ${rowsHtml}

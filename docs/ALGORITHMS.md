@@ -294,7 +294,20 @@ Since pass MP the app also makes, for the voice check page alone until Mikey has
 five short vowels (0.42 seconds each, 0.55 on the snail), buh, duh, guh and juh (the voice's low hum while the lips or tongue are
 closed, the release and a short uh), and the endings ig, og and at made whole (the vowel gliding toward the closing consonant and
 its release, with no uh after it); each vowel's resonances follow measured American English vowels in a woman's voice, and how
-each is made is written beside it in logic.mjs.
+each is made is written beside it in logic.mjs. Since pass MU (Mikey of rows 39 to 44: "39 has a weird click sound but the duh sounds
+good.  Guh in 40 has the weird clicking noise too but sounds correct otherwise.  Through 44 they all sound better but have odd
+accompanying sounds."): every release is held to the band where a mouth's release is strongest (under about 6,000 cycles a second for d, t
+and j, 4,500 for g, where pass MP's d and j ran to 16,000), opens over 0.6 ms and closes over its last quarter, and since round one's screen check it is weighed as the ear hears it
+(A-weighted 5 ms frames): its part between 2,500 and 6,000 cycles a second, where a phone's click lives, stands no more than about 3
+decibels over the uh (its plain power against the uh as heard) (d about 1, g 0, j about 3; pass MP's d about 10, the click he heard, and the pass's first fix still about 9 in d
+and 8 in j), while the whole release leads the uh by 0 to 10 (d about 3, g 7, j 4, b 9); d's and g's uh begins with the release, and
+juh's hush begins under its release and its uh under the end of the hush, which stays under 5,500. Against pass MT's they are a little louder
+plainly (d about 2.7 decibels, g 1.2, j 1.4) and, as the ear hears it, d about 1 louder, g 1.5 quieter and j 1.8 louder, so d, g and
+j sit from about 2 decibels under b, which he heard as better, to 2.5 over it; the uh alone is about 6 decibels louder in d and g and
+4 in j, so the balance moved toward the uh. ig, og and at end in a release about 9 decibels under their vowel as heard (ig's release half the others', since its i is low
+and so quieter to the ear; pass MP's stood 1 to 9 over it), g's hum fading over the closing, and their vowels are now as loud as the
+app's own vowels, within about a decibel (pass MP's ig sat about 4 under them); b's burst opens and closes the same softer way, less than
+half a decibel quieter, and t, p and k keep their numbers.
 Since pass MQ (Mikey's answer to Q60, "Q60 - B", read as that choice's own example, "38 to 44 yes, the vowels not yet") the lessons
 play the app's buh, duh, guh and juh wherever a line writes them, and ig, og and at made whole: ig and og wherever they stand as
 words of their own (neither is an English word), at where a line names it as an ending, as above; huh, wuh and shh stay with the
@@ -305,7 +318,31 @@ app's own stand-ins until the sounds are recorded (EARMARKS A41).
 The screens play them (ui.jsx). One audio element plays every sound, and the first tap, key or touch anywhere plays the quiet one,
 which a phone needs before a page may play sound. sayPieces hands the voice its words together up to the next sound, so they flow
 as one line, plays the sound once the voice has finished them, and goes on with the words after it; a sound that cannot play ends
-at once, and none holds a reading up longer than 1.9 seconds (1.7 until pass MT's crowd, a second and a half; since round one of pass MT the rules test holds every sound 300 ms under it). Since pass MT the cheer's sounds are made the same way: a fan's whistle, half a second, a tone that swoops up in its first tenth of a second from about 1,900 cycles a second to 2,700, holds there with a quick wobble (seven times a second, a little over one percent) and slides to about 2,450 as it ends, at about the level of the app's speech sounds (about 6 dB under its first build since round one); and the crowd, a second and a half of 320 claps, each a short burst around a pitch of its own between 900 and 2,600 cycles a second, thickest from a tenth of a second in and thinning over its last half, a hush of voices under them and a softer whistle (about 2,000 up to 2,900 and down to 2,600) from 0.18 seconds for a little over half a second. The rules test measures the whistle's tone and level and the crowd's onsets, thickness, band, whistle and quiet end. A newer line cancels the voice and stops the sound (speak,
+at once, and in pass MT none held a reading up longer than 1.9 seconds (1.7 until pass MT's crowd, a second and a half; since round one of pass MT the rules test holds every sound 300 ms under it); since pass MU no sound holds a reading up longer than its own length and 400 ms more from the moment it starts (soundGuardMs, armed when play's promise says the sound has started, the longest guard holding until then, since round one's code check), never past 2.9 seconds (SOUND_LONGEST_MS, the crowd's two and a half seconds and 400 ms), so sss lets a reading go on at about 1.17 seconds when a browser never reports its end; and a cheer's first whistle, once it has truly started, makes the crowd while it plays (about a quarter of a second of work on a desktop, more on a slow phone, and about two and a half seconds on a phone without a JIT, where the saying after that whistle waits about 1.7 seconds), so the crowd after the last saying starts at once; a whistle refused, left, or followed by another sound within 150 ms makes none. Since pass MT the cheer's sounds are made the same way: a fan's whistle, half a second, a tone that swoops up in its first tenth of a second from about 1,900 cycles a second to 2,700, holds there with a quick wobble (seven times a second, a little over one percent) and slides to about 2,450 as it ends, at about the level of the app's speech sounds (about 6 dB under its first build since round one); and the crowd, a second and a half of 320 claps, each a short burst around a pitch of its own between 900 and 2,600 cycles a second, thickest from a tenth of a second in and thinning over its last half, a hush of voices under them and a softer whistle (about 2,000 up to 2,900 and down to 2,600) from 0.18 seconds for a little over half a second. The rules test measures the whistle's tone and level and the crowd's onsets, thickness, band, whistle and quiet end. Since pass MU
+(Mikey: the whistle "gets cut off too quickly.  It should be drawn out a bit more and slightly change the amplitude of the whistle sound
+to sound natural as if a real breath was required", and "the clapping sounds like static") both are made again. The whistle is nine
+tenths of a second on one breath (breathOf, whistleOnBreath): the breath builds over a tenth of a second, swells to its top about a third
+of the way in (about 3 decibels; the whistle is loudest a little later, about 0.4 seconds in, as its tone fills out), sags as it is spent (about 4) and falls away over the last quarter second, with a slow, uneven sway;
+the tone catches above about a fifth of full breath, so a breath of air comes first, swoops up from about 1,900 cycles a second to
+2,750 in its first tenth of a second, rises a little with the breath, wobbles very slightly, and slides toward 2,350 over its last
+quarter second, the air lasting a moment past it, with a little of its second and third harmonics; its middle about 0.1 of full scale,
+pass MT's quieter level. The crowd is two and a half seconds of 44 people clapping in a small hall (crowdOfHands): each at their own
+pace of three and a half to five claps a second, a little uneven, joining at their own moment over the first third of a second (round one's screen check: a start bunched in its first
+tenth, the second claps landing together again, made a cued clap and then another) and stopping at their own
+moment in the last second and a quarter; each person's hands one of the eight shapes in Jylha and Erkut's table (DAFx 2008,
+Table 1, based on Peltola, Erkut, Cook and Valimaki's synthesis of hand clapping, 2007; the shapes are Repp's), which sets the centre (about 500 to 1,560 cycles a second) and width (about 90 to 375) of the clap's one
+resonance, each clap's centre wandering about a fifth from that person's own; a clap is a 2.5 ms burst of noise through that resonance,
+with a little of the smack itself (900 cycles a second up, to 5,000 near and 3,800 far); three people near, louder and brighter, the
+rest farther off; then a room's echo blended through it all by a fast Fourier transform (roomEcho: a hush dying away 60 decibels in
+0.75 seconds under 1,400 cycles a second and in 0.4 above, 9 ms after the claps), at the claps' own strength, and two whistles from the
+crowd on top, the first at about half the claps' level around it; its loudest moment is 0.8 and its last 0.3 seconds fade. Pass
+MT's crowd measured centred near 2,600 cycles a second against about 1,700 for forty recordings of real clapping (the ESC-50 set's,
+measured in pass MU), with three times their share over 3,000 and nearly as smooth as static; the new crowd measures centred near 1,810,
+5 percent of it over 4,000, about 58 claps standing out each second, and no 20 ms of its start more than about 3 decibels over its
+middle. The rules test holds the whistle's length, swell and sag, air first, swoop, slide, tone and level, and the crowd's centre,
+bands, spikiness, claps a second, loudness through its middle, start, whistle and quiet end, with a near miss for each (a whistle cut
+off at half a second, one at one loudness, one that starts on its tone, one held on its note to the end, one with no breath before its
+tone; a crowd that hisses, one as smooth as static, a few claps, a thud, one whose whistle drowns its claps, one that starts on a cue, one that stops without fading). A newer line cancels the voice and stops the sound (speak,
 speakSequence), and voiceTalking counts a sound playing as the voice still talking, so the read-along's light and the voice's one
 retry wait for it. The rules test measures every sound against these numbers; tools/voice-check.mjs builds a page from the same
 code with numbered rows for Mikey to hear on his phone (Q51; since pass MP rows 33 to 50 hold the sounds made for the page alone, Q60; since pass MT rows 65 and 66 the whistle and the crowd and rows 67 to 72 his say-along game, rows 51 to 64 retired). The retry asks once more when the voice never started, and since
@@ -479,9 +516,11 @@ between 700 ms and 1.8 seconds); the child says the word with the voice ("Let's 
 beat behind, never the whole saying again. A lesson's games differ: no two words play the same five ways, and a lesson of two games or
 more plays both flavors of the first, second and fifth steps and as many silly thirds as it has games, up to all four. Only the lessons
 SAY_ALONG_LESSONS names play it, and since Mikey's answer to Q77, "Q77 - A", every new pre-K lesson that cites a vocabulary outcome (the
-2027 II.D.1 or II.D.2, or Head Start's P-LC 6 or P-LC 7) joins them; SAY_ALONG_WAITS names the eight older ones built without it, held
-to those eight (Q81 asks about them). On a phone's voice a game takes about 30 to 55 seconds by the voice's pace, about twice pass
-MS's (Q80 asks about the longest lessons; the model is kept in the pass's scratch).
+2027 II.D.1 or II.D.2, or Head Start's P-LC 6 or P-LC 7) joins them; SAY_ALONG_WAITS named the eight older ones built without it until
+pass MU, when Mikey's answer to Q81, "Q81 - A", gave them the game too, on the words each teaches (39 words, which words being Claude's
+reading), so it is empty and the scripts test holds it so. On a phone's voice a game takes about 20 to 57 seconds by the voice's pace (on this pass's model, over all 73 games),
+about twice pass MS's, and every new word plays the whole game however many a lesson has (Mikey's answer to Q80, "Q80 - A"; the model
+is kept in pass MT's scratch, and pass MU's for the eight in its own).
 
 Under the line a strip shows the word large with the call above it ("Great job!" while it is said) and lights the syllable being said
 (SAY_ALONG_SYLLABLES, Merriam-Webster's division; a word of one syllable lights whole, since inside a syllable a letter and a sound do not
@@ -494,7 +533,17 @@ at 320 pixels. The device voice tells when a piece starts and ends, never where 
 sayAlongTimeline's guess of the pace (a syllable about 210 ms at a rate of 1, SAY_ALONG_SYLLABLE_MS, divided by the voice's rate, and each
 syllable's share of a saying its letters and one more; super fast's three sayings walked in turn inside its one piece at 85 percent of
 the guess, SAY_ALONG_JOINED_LEAD, since run together they carry one guess's error three times over), corrected by the voice's own starts
-and ends as it goes. Since pass MT the pace is kept for each of the voice's shapes and for all (sayAlongLearn): a shape's first heard
+and ends as it goes. Since pass MU a syllable's letters count in the guess itself: 210 ms is a syllable of three letters, and each letter
+more or fewer adds or takes 34 ms (SAY_ALONG_LETTER_MS: dif, fer and ent 210 each as before, ba and by 176, lice 244), two words said
+as one run together with no time between them, each syllable's share of the saying is its own guess, since a voice says a word by its sounds
+and a word with few letters to its syllables (tiny, meow, mail carrier, police officer) is said quicker than its syllables alone guess:
+with Q81's 39 words the light's last syllable came after a simulated quick phone had ended the word on 8 to 13 of 691 sayings, and none
+does now. Every way walks its saying in 92 percent of its guess (SAY_ALONG_LEAD; super fast keeps its 85), so a voice quicker than the
+test's three paces (30 ms a letter) still never ends a saying before its last syllable lights (at the full guess police officer slid
+lit late three times there; a phone that quick which also holds rates between 0.5 and 2 still leaves two late, round one's code
+check). The child's turn after each way (sayAlongEcho) follows the same guess, so since pass MU it changed for pass MT's words too, on
+119 of the 204 child's turns in pass MT's 34 games, from about 0.2 seconds shorter (baby, whispered twice) to about 0.4 seconds longer
+(clothes, like a sleepy giant). Since pass MT the pace is kept for each of the voice's shapes and for all (sayAlongLearn): a shape's first heard
 saying of two syllables or more sets its own pace outright, each later one moves it two fifths of the way, between a quarter and four
 times the guess, and only a saying at a rate a phone says as asked (0.4 to 1.6) moves the pace of all, by sayAlongPaceNext's rule (two
 fifths of the way, between half and 2.2 times, a one-syllable saying teaching nothing); a shape not yet heard starts at the pace of all.

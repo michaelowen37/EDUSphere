@@ -115,7 +115,7 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MH (line 3579): "Georgette's stand-in portrait looked younger than Frederick's"
 - MI (line 3741): "The picture check found Frederick then read as the oldest and Georgette young"
 
-### C6 citation and teaching disagree (whole, in part, untaught, uncited) (9 passes)
+### C6 citation and teaching disagree (whole, in part, untaught, uncited) (10 passes; MS and MU since the review)
 - MA (line 3062): "was cited by both size lessons and taught by neither"
 - MB (line 3125): "never sorted though it cited sorting"
 - MC (line 3189): "never named a circle or a square though its book page cites both"
@@ -125,6 +125,7 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MK (line 3822): "Which One Is Different? cites P-SCI 3 in part"
 - ML (line 3876): "P-MATH 8 was cited where nothing is measured"
 - MS (line 4633): "II.B.1 and Head Start's P-LC 3 were cited in part for a gap the house reading says does not exist", and "pre-K 3's two citations called tone and volume for a setting the child's own"
+- MU (line 4743, round one): "Two citations said the opposite of the game" (Listen and tap's and Animal sounds' II.D.1: a child "is not asked to say them")
 
 ### C7 standard text not quoted whole, verbatim, from the right band or source (7 passes)
 - MA (line 3057): "The math plan's PK3.V.E.1 quoted the pre-K 4 outcome"
@@ -290,7 +291,7 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MS (line 4637): "the say-along's cue took two lines and each call one, so Back, the dots and Next jumped 19 pixels", and "Learning words' nine left one alone at 320"
 - MS (line 4651, round four): "at 320 the set grew 266 pixels for 2.6 seconds" (a solved timeline's dates squeezed their steps)
 
-### C24 checked in one condition only (width, motion, voice, frame, cap) (10 passes; MN since the review)
+### C24 checked in one condition only (width, motion, voice, frame, cap) (11 passes; MN, MS, MT and MU since the review)
 - MB (line 3115): "every check of it ran at phone width"
 - MC (line 3217): "the pass's own screenshots used reduced motion, which holds the wash at its yellow end"
 - ME (line 3312): "the celebration skipped on a two-review day"
@@ -301,8 +302,9 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MN (line 4065): "since jitter on the line through a stroke's points never cuts a corner"
 - MS (line 4616): "pass MR's voices had never reached a lesson at all" (every test of speechPieces had passed); line 4637: "with a network voice's 400 ms it ran through all of "dif-fer-ent" before the word was heard" (the light, tried only with a voice that begins at once; the holds were tried only with a quick voice and a voice on, and the sideways ask only by touch)
 - MT (line 4693): "super fast's syllables last about 80 ms, and the read-along's 150 ms fade never let one light fully"; and "so what one way took no longer throws another's light off"; line 4706 (round one): "In the dark theme the strip's light blinked out at every syllable change" (the light was looked at in the light theme only)
+- MU (line 4747, round one): "found the tick itself still there" (the stops measured in plain level, not as heard); line 4746: "found the first build's people bunched at the start" (the crowd measured through its middle only); line 4756: "the guard counts from the moment a sound starts" (it counted from play())
 
-### C25 a rule decided on the screen instead of in logic (5 passes; MS since the review)
+### C25 a rule decided on the screen instead of in logic (6 passes; MS since the review)
 - MC (line 3193): "The Let's Play filter in ui.jsx kept only the kinds older lists had before pass FS"
 - MD (line 3272): "the heard list partly decided on the screen"
 - ME (line 3296): "found the old pick could land on a locked lesson"
@@ -338,7 +340,7 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MS (line 4610, Mikey): "when it said to drag the red shape, the demo showed dragging the blue shape" (Sort dragged the first shape dealt; Buckets, two swipes, the balance, Binary Switches and Connect the Dots the same class); and round three, line 4645: "Twenty-two welcomes stopped short of the goal their own words name"
 - MS (line 4651, round four): "the floating Skip covered the star a walk heads for, in all three mazes and the seven paths" (and Shape the Sound said to check the line and pressed nothing)
 
-### C29 the record misstates its source (a count, a claim, a quote) (14 passes)
+### C29 the record misstates its source (a count, a claim, a quote) (15 passes; MS, MT and MU since the review)
 - MA (line 3086): "More and Fewer's bank read 38 where this record says 20"
 - MB (line 3145): "the record said every new check had been broken in a copy, and only most were"
 - MC (line 3219): "a test this record claimed and nobody had written"
@@ -354,8 +356,10 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MS (line 4645, round three): ""Domain II's last teachable outcomes" was untrue", and "Claude's reason for Q76 (c) was filed as Mikey's rule"
 - MS (line 4650, round four): "No test read the sideways ask's dialog or its ring, which this record said the site test did", and line 4651: "while this record said the report's folds print open"
 - MT (line 4707, round one): "Claude's flavors and numbers were filed as Mikey's words", ""From now on" was quoted as his, where it is Q77 (a)'s wording", and ""Three times slower than any way before it" was untrue"; line 4710 (round one's second read): "The records said the docs sync test fails a placeholder", and "Q81's numbers came from no model"
+- MU (line 4757, round one): "the clap table was credited to the wrong paper"; and comments that claimed more than their sources (a hiss no mouth makes, 16,000 cycles for g, the clapping clips near 1,650)
+- MU (line 4760, round one's alignment and final read): "the changed child's turns were counted over every word and way rather than the games"; and "firefighter was named among the words the old guess left late"
 
-### C30 a test that could pass vacuously or reads less than it claims (13 passes)
+### C30 a test that could pass vacuously or reads less than it claims (14 passes; MS, MT and MU since the review)
 - MB (line 3136): "its first check passed with the old bug back"
 - MC (line 3218): "a copy of them typed into the test had passed with the strip broken"
 - MD (line 3271): "tests that could pass vacuously"
@@ -370,6 +374,8 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MS (line 4636): "The CLAUDE.md split check read only the dated lines, so a CLAUDE.md with its rule 5 deleted passed" (and NEW-CHAT's question list was read one way only; round one's screen check found the welcome check reading only the board's own marks, and the hold checks a voice that never reports speaking); and round three, line 4646: "The no-voice Find the Letter check read the first card, which its found ring lifts 3 pixels"
 - MS (line 4650, round four): "The screen half of round three's pace fix had no test"
 - MT (line 4705, round one): "the crowd's measure counted onsets alone and passed a crowd a quarter as thick"; and "The pace kept for each shape was only half held"; line 4710 (round one's second read): "The Q77 (a) guard was no longer proven" (a near miss that came to fail a newer check as well)
+- MU (line 4756, round one): "the g near miss was caught only by the shape check's peak"; and no test held SAY_ALONG_LEAD
+- MU (line 4759, round one's second read): "the record said every new sound condition had a near miss that trips it alone"
 
 ### C31 a fix that broke something else, caught by a later read (14 passes)
 - MA (line 3066): "My first dot change drew the bigger group's dots smaller, a size cue"
@@ -389,7 +395,7 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MS (line 4652, check.sh): "On a Wonder screen the walk tapped the last worded button on the page" (Q74's link, hidden on every page, broke a walk only check.sh runs)
 - MT (line 4695): "so its shape took that one's place" (a new way named like a shared speech shape changed every welcome's HAVE FUN); and line 4708: "so that constant became part of the comment and two sounds side by side threw" (round one's own fix)
 
-### C32 a retired wording or changed fact lingers elsewhere (12 passes; MS and MT since the review)
+### C32 a retired wording or changed fact lingers elsewhere (13 passes; MS, MT and MU since the review)
 - MA (line 3068): "pass KF says a retired idea is searched for in every long story in the same pass"
 - MB (line 3142): "(pass KF: a retired wording is searched for in the same pass)"
 - MC (line 3208): "sixteen about lines still stated a removed age"
@@ -402,8 +408,10 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - ML (line 3905): "still said 454 words and "a picture can be any size", which round two had taken out"
 - MS (line 4649, round four): "Round one's backstop was still given as the rule in FABLE-REVIEW and RULES-AUDIT"
 - MT (line 4705, round one): "told a phone with no voice that row 64, retired with the clap, still played"; and line 4707: "stale comments are right (tools/picture-candidates.mjs quoted pass MS's calls; ui.jsx's "cue")"
+- MU (line 4758, round one): "docs the change had not reached" (ALGORITHMS still said SAY_ALONG_WAITS names the eight; PROJECT-CONTEXT "The nine say-along lessons")
+- MU (line 4760, round one's alignment and final read): "What's new said every lesson about new words for the youngest plays the game" (and its heading still did, found by the third read)
 
-### C33 a new rule or finding left unrecorded (audit row, earmark, For future passes) (13 passes)
+### C33 a new rule or finding left unrecorded (audit row, earmark, For future passes) (14 passes; MS, MT and MU since the review)
 - MB (line 3142): "two rules of this pass had no RULES-AUDIT row"
 - MC (line 3219): "three new rules had no RULES-AUDIT row"
 - MD (line 3273): "two screen findings set aside and logged nowhere"
@@ -418,15 +426,18 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MS (line 4645, round three): "The For future passes bullet left out changes a later pass needs"
 - MS (line 4649, round four): "round three's pace rules were in no record"
 - MT (line 4707, round one): "His "I didn't see the new chat document from the last pass" was answered for this pass only"
+- MU (line 4744, round one): "The child's turn after each way (sayAlongEcho) follows the same guess, so it changed for pass MT's words too" (the letter-counting guess's second reader, unrecorded until round one's code check)
+- MU (line 4760, round one's alignment and final read): "two rules in this pass's checks learned lived only in the audit"
 
 ### C34 an explanation hands the question back, or a composed sentence reads broken (3 passes)
 - MB (line 3125): "A and B's explanations said the question back"
 - MD (line 3267): "three explanations that handed the question back"
 - MH (line 3553): "The older kinds' sentences read as broken English until the alignment read caught them"
 
-### C35 Mikey's intent misread (4 passes; MS since the review)
+### C35 Mikey's intent misread (6 passes; MS and MU since the review)
 - MD (line 3273): ""masters" where the code means a passed round"
 - ME (line 3314): "his "skip/return back" read as skip without asking (Q22)"
 - MF (line 3330): "reading the rows changed that judgment"
 - MH (line 3509): "I'm assuming you mistakenly misinterpreted my text"
 - MS (line 4616): "Pass MR had built Q67 (b) as one voice a word, the voices spread across a lesson's words" (his note on Q67 said what he meant; round four's docs read found the class without its line)
+- MU (line 4760, round one's alignment and final read): "Q82 read his "Doesn't matter too much since we will be using Eleven Labs." as about the made sounds" (it came after the rows he could not hear)

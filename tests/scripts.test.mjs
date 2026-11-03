@@ -632,15 +632,18 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
 // The lesson screen hands the voice one sentence at a time, so its reading of a line, sentence by sentence with the line beside it, must
 // hand the voice the same pieces as the whole line (pass MR's voices never reached a lesson's voice). And every pre-K lesson that cites
 // a vocabulary outcome (the 2027 II.D.1 or II.D.2, or Head Start's P-LC 6) plays the game, but the older ones SAY_ALONG_WAITS names
-// (Q77 (a): "give it to every new young vocabulary lesson from now on"). Each near miss below is caught.
+// (Q77 (a): "give it to every new young vocabulary lesson from now on"). Each near miss below is caught. Since pass MU (Mikey's answer
+// to Q81, "Q81 - A") the eight older ones play it too and SAY_ALONG_WAITS is empty: every pre-K vocabulary lesson plays the game, and a
+// lesson let off by name, or one whose games are taken out, fails.
 { const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8'); const { LEDGER_CSV, SAY_ALONG_TALK } = await import('../tools/audio-ledger.mjs');
   const ways = L.SAY_ALONG_VOICES.filter((v) => !v.last); const slots = [0, 1, 2, 3, 4].map((s) => ways.filter((v) => v.slot === s).map((v) => v.style));
   const asLesson = (say, pieces) => { const ss = String(say).split(L.SENTENCE_BREAK).filter(Boolean); return ss.flatMap((s, k) => pieces(s, { line: ss, at: k })); };
   const same = (a, b) => JSON.stringify(a.map(({ sentence, ...x }) => x)) === JSON.stringify(b.map(({ sentence, ...x }) => x));
   // Mikey's own words for the game on different (pass MT), the calls his and each saying the word: the line must end in exactly this.
   const MIKEY = "Let's say it together! First, let's say it slowly. Different. Now, let's whisper it twice. Different, different. Now let's say it four times using silly voices. Different! Different! Different! Different! Now let's say it three times super fast! Different, different, different! Okay, let's try stretching it out now. Different. Great job! One last time, nice and clear. Different.";
-  // The eight older vocabulary lessons Q77 (a) leaves as they are, named here so the list can never grow by a quiet edit.
-  const WAITING_EIGHT = ['big-and-little', 'listen-and-tap-pictures', 'animal-sounds', 'colours', 'big-bigger-biggest', 'helpers-all-around', 'which-came-first', 'which-came-second'];
+  // The eight older vocabulary lessons Q77 (a) left as they were (pass MT) play the game since Mikey's answer to Q81 (pass MU), so no
+  // lesson waits: the list is held empty, so it can never grow by a quiet edit.
+  const WAITING_NONE = [];
   const vocab = (m) => /II\.D\.[12]\b|P-LC [67]\b/.test([].concat(m.sources || []).join(' '));   // ELOF's vocabulary goals are P-LC 6 and 7 (round one's alignment read)
   const problems = (mods, { lessons = L.SAY_ALONG_LESSONS, waits = L.SAY_ALONG_WAITS, pieces = L.speechPieces, syllables = L.SAY_ALONG_SYLLABLES } = {}) => { const bad = []; const styles = new Set(); const used = new Set(); let n = 0; const lessonsWith = new Set(); let mikey = false;
     for (const m of mods) { const orders = new Map(); const heard = [0, 1, 2, 3, 4].map(() => new Set()); let games = 0;
@@ -688,7 +691,7 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
         if (heard[2].size < Math.min(games, slots[2].length)) bad.push(`${m.id} plays ${heard[2].size} silly thirds in ${games} games`); }
       // Q77 (a): every pre-K lesson that cites a vocabulary outcome plays the game, but the older ones that wait by name.
       if (/^PK/.test(m.grade || '') && vocab(m) && !lessons.includes(m.id) && !waits.includes(m.id)) bad.push(`${m.id} cites a vocabulary outcome and plays no say-along (Q77 (a))`);
-      if (m === mods[mods.length - 1] && JSON.stringify([...waits].sort()) !== JSON.stringify([...WAITING_EIGHT].sort())) bad.push(`SAY_ALONG_WAITS is not the eight lessons built before Q77 (a): ${waits}`);
+      if (m === mods[mods.length - 1] && JSON.stringify([...waits].sort()) !== JSON.stringify([...WAITING_NONE].sort())) bad.push(`SAY_ALONG_WAITS names lessons let off the game, where Q81 (a) gave it to all of them: ${waits}`);
     }
     for (const id of lessons) if (!lessonsWith.has(id) && mods.some((m) => m.id === id)) bad.push(`${id} plays no say-along`);
     if (!mikey) bad.push('Learning words\' different does not play Mikey\'s own version word for word');
@@ -714,11 +717,12 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
     problems(edit('words-go-together', /^[^]*?(Let's say it together! First, let's say it like a big, sleepy giant\. Clothes\.)/, '$1')),   // the word not said before its opener
     problems(edit('learning-words', 'so they match. Our word is same. ', 'so they match. ')),   // a line that ends on match before same's opener (round one)
     problems(graded, { lessons: L.SAY_ALONG_LESSONS.slice(1) }),   // a say-along outside the say-along lessons
-    problems(graded, { waits: L.SAY_ALONG_WAITS.filter((x) => x !== 'colours') }),   // a pre-K vocabulary lesson with no game (Q77 (a))
+    // A pre-K vocabulary lesson with no game (Q77 (a), and since pass MU Q81 (a)): Colors with its four games taken out, and out of the list.
+    problems(swap('colours', (s) => s.map((l) => ({ ...l, say: l.say.replace(/ Our word is [a-z]+\. Let's say it together![^]*$/, '') }))), { lessons: L.SAY_ALONG_LESSONS.filter((x) => x !== 'colours') }),
     // A new pre-K lesson citing II.D.1 and playing no game, which only the Q77 (a) guard catches (the second read of round one, pass
     // MT: since round one's eight-lesson hold, the list without Colors fails that hold too, so it no longer proved the guard).
     problems([...graded, { id: 'new-vocab-pk4', grade: 'PK4', sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.D.1'], lesson: { script: [{ say: 'This is a hat.' }] } }]),
-    problems(graded, { waits: [...L.SAY_ALONG_WAITS, 'shapes-around-us'] }),   // a ninth lesson let off the game (round one's alignment read)
+    problems(graded, { waits: [...L.SAY_ALONG_WAITS, 'colours'] }),   // a lesson let off the game by name again (pass MT's round one: a ninth; since Q81 (a), any)
     problems(graded, { syllables: { ...L.SAY_ALONG_SYLLABLES, different: ['dif', 'fer', 'nt'] } }),   // syllables that do not make the word
     problems(graded, { pieces: (text, o) => L.speechPieces(text, o).map((x) => (x.shape === 'whisper' ? { ...x, shape: 'plain' } : x)) }),   // a whisper said plain
     problems(graded, { pieces: (text, o) => L.speechPieces(text, o).map((x) => (x.shape === 'sayOpen' ? { ...x, shape: 'plain' } : x)) }),   // the opener said plain
@@ -728,7 +732,7 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
     problems(graded, { pieces: (text, o) => L.speechPieces(text, o).map(({ pauseAfter, ...x }) => x) }),   // no brief pauses between the silly voices
     problems(graded, { pieces: (text, o) => L.speechPieces(text, Array.isArray(o && o.line) ? {} : o) }),   // a sentence read without its line (pass MR's way)
   ].map((p) => p.bad.length > 0);
-  ok(`every say-along is Mikey's game, "Let's say it together!", five steps each called in his openings, the line's own words ending on its word, "Great job!" and the clear one, ending its line, each way in its own shape on the device voice, the same read a sentence at a time, Learning words' different his own version, and every new pre-K vocabulary lesson plays it (${real.n} words in ${real.lessonsWith.length} lessons, ${real.styles.size} ways; ${plants.length} near misses caught)`,
+  ok(`every say-along is Mikey's game, "Let's say it together!", five steps each called in his openings, the line's own words ending on its word, "Great job!" and the clear one, ending its line, each way in its own shape on the device voice, the same read a sentence at a time, Learning words' different his own version, and every pre-K vocabulary lesson plays it, none waiting (Q77 (a), Q81 (a); ${real.n} words in ${real.lessonsWith.length} lessons, ${real.styles.size} ways; ${plants.length} near misses caught)`,
     real.bad.length === 0 && real.n >= 30 && real.styles.size === ways.length && L.SAY_ALONG_LESSONS.every((id) => real.lessonsWith.includes(id)) && stale.length === 0 && waitsReal.length === 0 && plants.every(Boolean), [...real.bad.slice(0, 6), `stale syllables ${stale}`, `waits not vocabulary lessons ${waitsReal}`, `plants ${plants}`, `lessons ${real.lessonsWith}`].join(' | '));
   // The device voice's shapes come from logic's ways (SAY_ALONG_SHAPES, with the opener's), each keeps its own pace for a young
   // learner, and each sounds apart from the clear one (a rate a fifth apart, a pitch three tenths apart, or a softer volume); Mikey's
@@ -804,18 +808,26 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   // the full guess, which leaves super fast's last syllable short on baby, birthday party and animals.
   { const lines = []; for (const id of L.SAY_ALONG_LESSONS) { const mod = L.COURSES.flatMap((c) => c.modules).find((m) => m.id === id); L.readAloudScript(mod).forEach((s) => { if (L.sayAlongParts(s.say).some((x) => x.role === 'open')) lines.push(s.say); }); }
     const split = (x) => String(x).split(L.SENTENCE_BREAK).filter((y) => y.trim());
-    const short = (perChar, { clamp = false, rule = 'shape', lead = true } = {}) => { let paces = {}; let pace = 1; let late = 0; let cold = 0; let n = 0;
+    const short = (perChar, { clamp = false, rule = 'shape', lead = true, otherLead = true } = {}) => { let paces = {}; let pace = 1; let late = 0; let cold = 0; let n = 0;
       for (const say of lines) { const texts = split(say); for (const p of texts.flatMap((x, k) => L.speechPieces(x, { line: texts, at: k }))) { if (!p.sayAlong) continue; n += 1;
         const sa = p.sayAlong; const v = L.SAY_ALONG_VOICES.find((x) => x.style === sa.style); const d = v.device[Math.min(sa.rep, v.device.length - 1)]; const r = clamp ? Math.max(0.5, Math.min(2, d.rate)) : d.rate;
         const took = Math.round((p.text.replace(/[^A-Za-z]/g, '').length * perChar) / r) + 120; const tl = L.sayAlongTimeline(sa.syllables, v, sa.rep); const est = L.sayAlongEstimateMs(sa.syllables, v, sa.rep);
-        const sh = L.sayAlongShapeOf(p, v, sa.rep); const k = (rule === 'shape' ? Of(paces, sh.shape) : pace) * (v.joined && !lead ? 1 / L.SAY_ALONG_JOINED_LEAD : 1); const multi = sa.syllables.filter((s) => s !== ' ').length > 1;
+        const sh = L.sayAlongShapeOf(p, v, sa.rep); const k = (rule === 'shape' ? Of(paces, sh.shape) : pace) * (v.joined && !lead ? 1 / L.SAY_ALONG_JOINED_LEAD : 1) * (!v.joined && !otherLead ? 1 / L.SAY_ALONG_LEAD : 1); const multi = sa.syllables.filter((s) => s !== ' ').length > 1;
         if (tl[tl.length - 1].at * k >= took) { if (multi && rule === 'shape' && !(paces[sh.shape] > 0)) cold += 1; else late += 1; }
         if (rule === 'shape') paces = Lp(paces, sh.shape, sh.rate, took, est, sa.syllables); else pace = P(pace, took, est, sa.syllables); } }
       return { late, cold, n }; };
     const paces = [40, 62, 80]; const now = paces.flatMap((c) => [short(c), short(c, { clamp: true })]);
     const before = paces.map((c) => short(c, { clamp: true, rule: 'one' })); const full = paces.map((c) => short(c, { lead: false }));
-    ok(`every say-along saying's last syllable lights before a phone's voice ends it, but a shape's first on the visit, over every line in order at 40, 62 and 80 ms a letter, on a phone that says every rate and on one that holds rates between 0.5 and 2 (${lines.length} lines, ${now[0].n} pieces; pass MS's one pace left ${before.map((x) => x.late).join(', ')} short on the second, the full guess ${full.map((x) => x.late).join(', ')} on the first)`,
-      lines.length >= 30 && now.every((x) => x.late === 0 && x.cold <= 6 && x.n > 250) && before.every((x) => x.late > 6) && full.some((x) => x.late > 0), JSON.stringify({ now, before, full })); }
+    // A voice quicker than the three paces (30 ms a letter, on a phone that says every rate): the other ways' lead, SAY_ALONG_LEAD, keeps
+    // every saying lit in time, and the full guess leaves some late (round one's code check, pass MU: police officer slid, three).
+    const quick = short(30); const quickFull = short(30, { otherLead: false });
+    ok(`every say-along saying's last syllable lights before a phone's voice ends it, but a shape's first on the visit, over every line in order at 40, 62 and 80 ms a letter, on a phone that says every rate and on one that holds rates between 0.5 and 2, and at 30 ms a letter on the first (${lines.length} lines, ${now[0].n} pieces; pass MS's one pace left ${before.map((x) => x.late).join(', ')} short on the second, the full guess ${full.map((x) => x.late).join(', ')} on the first, and at 30 ms the other ways' full guess ${quickFull.late})`,
+      lines.length >= 30 && now.every((x) => x.late === 0 && x.cold <= 6 && x.n > 250) && before.every((x) => x.late > 6) && full.some((x) => x.late > 0) && quick.late === 0 && quickFull.late > 0, JSON.stringify({ now, before, full, quick, quickFull })); }
+  // A say-along lesson's citations never say a child is not asked to say its words, which the game asks for (round one's lesson check,
+  // pass MU: Listen and tap's and Animal sounds' II.D.1 said so after the game came to them); near miss: the words planted back.
+  { const saysNotAsked = (mods) => mods.filter((m) => L.SAY_ALONG_LESSONS.includes(m.id) && (m.sources || []).some((s) => /\bnot asked to (say|use|repeat)\b/i.test(s))).map((m) => m.id);
+    const planted = L.MODULES.map((m) => (m.id === 'animal-sounds' ? { ...m, sources: [...m.sources, 'in part, since a child here understands the words for their sounds and is not asked to say them'] } : m));
+    ok("no say-along lesson's citation says a child is not asked to say its words (pass MU, round one's lesson check; the near miss caught)", saysNotAsked(L.MODULES).length === 0 && saysNotAsked(planted).includes('animal-sounds'), saysNotAsked(L.MODULES).join(',')); }
   // The voice check page's say-along rows are lesson lines word for word, as the page says (round one's code check, pass MS: nothing
   // held them, so a lesson edit would have left the page saying an old line); near miss: a row with a call changed.
   { const { VOICE_CHECK_ROWS } = await import('../tools/voice-check.mjs'); const lines = new Set(); for (const c of L.COURSES.filter((x) => x.readAloud)) for (const m of c.modules) for (const l of L.readAloudScript(m)) lines.add(l.say);
@@ -877,7 +889,7 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
 // next reviewed), and any other lesson, every lesson built from pass MS on, has none. Near misses: Say it to fit's first paragraph
 // and Things we do's eighth line as round one read them (four sentences of 12, 12, 12 and 11 words; three sentences opening At).
 { const { lessonFlowFlags, youngLessons } = await import('../tools/lesson-flow.mjs');
-  const LESSON_FLOW_WAITS = { 'red-and-blue': 1, 'find-the-match': 1, 'big-and-small': 1, 'one-and-two': 1, 'more-or-fewer': 5, 'first-marks': 1, 'yellow-and-green': 2, 'triangles-too': 2, 'big-and-little': 2, 'one-more-one-fewer': 27, 'join-in-play': 2, 'talk-with-a-friend': 4, 'talk-about-it': 4, 'rhymes-with-pictures': 7, 'circle-and-square': 2, 'a-and-b': 4, 'not-the-same': 1, 'listen-and-tap-pictures': 4, 'animal-sounds': 4, 'two-steps': 2, 'two-steps-more': 3, 'two-ideas': 2, 'two-ideas-more': 6, 'learning-words': 1, 'count-and-sort-words': 2, 'people-and-events': 1, 'colours': 3, 'same-and-different': 1, 'match-the-vehicles': 2, 'match-the-things': 1, 'match-the-water-animals': 1, 'match-the-land-animals': 3, 'match-the-shapes': 1, 'match-the-solids': 2, 'more-and-fewer-5': 2, 'bigger-and-smaller': 2, 'patterns': 12, 'count-to-3': 5, 'connect-the-dots': 1, 'taking-turns': 3, 'big-bigger-biggest': 3, 'helpers-all-around': 2, 'feelings-show': 3, 'how-friends-feel': 1, 'good-friend': 3, 'play-together': 1, 'listen-for-rhymes': 2, 'first-sounds': 1, 'which-came-first': 3, 'which-came-second': 5, 'big-letters': 1, 'first-letter-tracing': 1, 'more-big-letters': 2, 'trace-straight-letters': 3, 'three-steps': 1, 'three-steps-more': 3, 'more-learning-words': 2, 'sort-and-shape-words': 3, 'words-go-together': 1 };
+  const LESSON_FLOW_WAITS = { 'red-and-blue': 1, 'find-the-match': 1, 'big-and-small': 1, 'one-and-two': 1, 'more-or-fewer': 5, 'first-marks': 1, 'yellow-and-green': 2, 'triangles-too': 2, 'big-and-little': 1, 'one-more-one-fewer': 27, 'join-in-play': 2, 'talk-with-a-friend': 4, 'talk-about-it': 4, 'rhymes-with-pictures': 7, 'circle-and-square': 2, 'a-and-b': 4, 'not-the-same': 1, 'listen-and-tap-pictures': 4, 'animal-sounds': 1, 'two-steps': 2, 'two-steps-more': 3, 'two-ideas': 2, 'two-ideas-more': 6, 'learning-words': 1, 'count-and-sort-words': 2, 'people-and-events': 1, 'colours': 1, 'same-and-different': 1, 'match-the-vehicles': 2, 'match-the-things': 1, 'match-the-water-animals': 1, 'match-the-land-animals': 3, 'match-the-shapes': 1, 'match-the-solids': 2, 'more-and-fewer-5': 2, 'bigger-and-smaller': 2, 'patterns': 12, 'count-to-3': 5, 'connect-the-dots': 1, 'taking-turns': 3, 'big-bigger-biggest': 2, 'helpers-all-around': 1, 'feelings-show': 3, 'how-friends-feel': 1, 'good-friend': 3, 'play-together': 1, 'listen-for-rhymes': 2, 'first-sounds': 1, 'which-came-first': 3, 'which-came-second': 5, 'big-letters': 1, 'first-letter-tracing': 1, 'more-big-letters': 2, 'trace-straight-letters': 3, 'three-steps': 1, 'three-steps-more': 3, 'more-learning-words': 2, 'sort-and-shape-words': 3, 'words-go-together': 1 };
   const all = youngLessons(); const over = all.map((x) => [x.mod.id, lessonFlowFlags(x.mod)]).filter(([id, f]) => f.length > (LESSON_FLOW_WAITS[id] || 0)).map(([id, f]) => `${id}: ${f.join('; ')}`);
   // A count that fell is written down at once, so it can never rise again unseen (round three's code read: a wait above a lesson's
   // count let it grow back), and a wait names a lesson that is still read.

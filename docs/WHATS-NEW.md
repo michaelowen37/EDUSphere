@@ -9,6 +9,12 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## November 2, 2026 (the say-it-together game in eight more lessons, and better sounds)
+
+- Eight more lessons about new words for three- and four-year-olds now play the say-it-together game with each new word: big and little, ten things a child learns to name (like the sun, a fish and a slice of pizza), the sounds animals make (meow, quack, buzz, ribbit, hoot and growl), the colors red, blue, yellow and green, sizes from tiny to huge, five helpers (a firefighter, a doctor, a teacher, a mail carrier and a police officer), and the order words first, second, middle and last. That makes seventeen lessons where the game plays.
+- The cheer's sounds were made again: the fan's whistle between the cheers is drawn out on one breath, rising and fading as a real one does, and after the last cheer comes a room full of people clapping, with whistles from the crowd, in place of a sound that was closer to static.
+- The letter sounds duh, guh and juh are gentler now, each running straight into its uh, and the word endings ig, og and at end more softly.
+
 ## October 29, 2026 (a new word said together, five silly ways)
 
 - In nine lessons about new words for three- and four-year-olds, the voice now plays a game with each new word: "Let's say it together!", then the word said slowly (really drawn out), whispered or squeaked twice, in four silly voices or another silly way like a slide, a bounce or a cheer, three times super fast, and stretched out, then "Great job!" and one last time, nice and clear. A child hears one new word many ways and says it along each time, and the strip under the line lights each part of the word as it is said.

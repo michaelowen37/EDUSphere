@@ -3697,6 +3697,23 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   // pitch near 2,700 cycles a second that swoops up into it, nearly all its energy in a narrow band (a tone, not a hiss), and the crowd,
   // a second and a half of many claps (well over a hundred bursts), its energy in a clap's band, loud through its middle, a whistle on
   // top and its end faded; a whistle made of noise, a crowd of a few claps and a crowd muffled to a thud are planted beside them.
+  // Since pass MU (Mikey: "65, the whistle gets cut off too quickly.  It should be drawn out a bit more and slightly change the
+  // amplitude of the whistle sound to sound natural as if a real breath was required.  66 the clapping sounds like static."; and of
+  // rows 39 to 44, "39 has a weird click sound but the duh sounds good.  Guh in 40 has the weird clicking noise too ... Through 44 they
+  // all sound better but have odd accompanying sounds."): the whistle is nine tenths of a second on one breath, its loudness swelling
+  // and sagging by 2 to 9 decibels with its loudest moment from 0.2 to 0.5 seconds, a breath of air before its tone, its pitch swooping
+  // up and sliding down at the end, never dropping out before its last quarter second; the crowd is two and a half seconds of clapping
+  // measured like the real group clapping of the ESC-50 set (pass MU's scratch): its energy centred between 1,300 and 2,300 cycles a
+  // second (real clips centre near 1,700; pass MT's hiss near 2,600), little of it over 4,000 or 6,000, spikier than static as a group
+  // whose claps stand out is (its kurtosis 5 to 30, where static is 3, pass MT's was 4.4, and the real clips run from about 3 for a
+  // large, dense crowd to over 100 for one clapper), dozens of claps a second, loud through every tenth
+  // to 1.8 seconds, a whistle near 3,000 on top that the claps still lead, and its end quiet; d, g and j release into
+  // their uh as the ear hears it (A-weighted 5 ms frames, round one's screen check): the release 0 to 10 decibels over the uh (b, which
+  // Mikey heard as better, about 9), its part between 2,500 and 6,000 cycles a second, the click, at most 3 over it (the band's plain
+  // power against the uh as heard), under 6 percent of it over 7,000 cycles a second, and no 5 ms frame between the release and the uh
+  // more than 10 decibels under the softer of the two (b keeps its short gap); ig, og and at end in a release at least 6 decibels under
+  // their vowel, plainly and as heard, inside its band; and the crowd's start is within 3.5 decibels of its middle. The near misses are
+  // named where they are planted, below.
   { const fft = (re) => { const n = re.length; const im = new Float64Array(n); for (let i = 1, j = 0; i < n; i++) { let bit = n >> 1; for (; j & bit; bit >>= 1) j ^= bit; j ^= bit; if (i < j) { [re[i], re[j]] = [re[j], re[i]]; } }
       for (let len = 2; len <= n; len <<= 1) { const ang = (-2 * Math.PI) / len; for (let i = 0; i < n; i += len) for (let k = 0; k < len / 2; k++) { const wr = Math.cos(ang * k); const wi = Math.sin(ang * k); const a = i + k; const b2 = a + len / 2; const xr = re[b2] * wr - im[b2] * wi; const xi = re[b2] * wi + im[b2] * wr; re[b2] = re[a] - xr; im[b2] = im[a] - xi; re[a] += xr; im[a] += xi; } }
       return Array.from({ length: n / 2 }, (_, k) => re[k] * re[k] + im[k] * im[k]); };
@@ -3709,6 +3726,15 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
     const rms = (x) => Math.sqrt(x.reduce((a, v) => a + v * v, 0) / x.length);
     const rmsOf = (x, from, to) => { let q = 0; for (let i = from; i < to; i++) q += x[i] * x[i]; return Math.sqrt(q / Math.max(1, to - from)); };
     const frames = (x) => { const e = []; for (let i = 0; i + 160 <= x.length; i += 160) e.push(rmsOf(x, i, i + 160)); return e; };   // 5 ms each
+    // As the ear hears it (round one's screen check, pass MU): a 5 ms frame's power weighted by the A curve (IEC 61672), and its power
+    // between 2,500 and 6,000 cycles a second, where a phone's click lives; over() finds the loudest frame as heard and the frame with the
+    // most of that band among frames centred between two times, every hopSec.
+    const aCurve = (f) => { const f2 = f * f; const ra = (12194 ** 2 * f2 * f2) / ((f2 + 20.6 ** 2) * Math.sqrt((f2 + 107.7 ** 2) * (f2 + 737.9 ** 2)) * (f2 + 12194 ** 2)); return ra * ra * 10 ** 0.2; };
+    const FRAME = Math.round(0.005 * R);
+    const framePower = (x, from) => { const n = 1024; const re = new Float64Array(n); for (let i = 0; i < FRAME; i++) re[i] = x[from + i] || 0; const P = fft(re); let a = 0; let band = 0; for (let k = 1; k < P.length; k++) { const f = (k * R) / n; a += P[k] * aCurve(f); if (f >= 2500 && f < 6000) band += P[k]; } return { a, band }; };
+    const over = (x, fromSec, toSec, hopSec) => { const h = Math.max(1, Math.round(hopSec * R)); let a = 0; let band = 0; let aAt = -1; let bandAt = -1;
+      for (let i = Math.max(0, Math.round(fromSec * R - FRAME / 2)); i + FRAME <= x.length; i += h) { const t = (i + FRAME / 2) / R; if (t <= fromSec) continue; if (t >= toSec) break; const p = framePower(x, i); if (p.a > a) { a = p.a; aAt = i; } if (p.band > band) { band = p.band; bandAt = i; } } return { a, band, aAt, bandAt }; };
+    const dB10 = (p) => 10 * Math.log10(Math.max(1e-30, p));
     const VOWEL_AT = { a: [860, 2050], e: [610, 2330], i: [480, 2370], o: [910, 1390], u: [750, 1430] };
     const vowelOff = (sp, v) => { const [f1, f2] = VOWEL_AT[v]; const p1 = sp.peakIn(300, 1100); const p2 = sp.peakIn(1150, 2700); return Math.abs(p1 - f1) > 160 || Math.abs(p2 - f2) > 160 ? `${Math.round(p1)} and ${Math.round(p2)}` : null; };
     const soundProblems = (get) => {
@@ -3721,7 +3747,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
         const peak = Math.max(...x.map(Math.abs)); const ends = Math.max(...[...x.slice(0, 16), ...x.slice(-16)].map(Math.abs)); const secs = x.length / R; const slowSecs = slow.length / R;
         const same = x.length === y.length && x.every((v, i) => v === y[i]);
         if (!same) shape.push(`${s} changes from one call to the next`);
-        const want = 'mnlr'.includes(s) && s.length === 1 ? [0.85, 1.1] : 'sfz'.includes(s) && s.length === 1 ? [0.77, 0.97] : 'aeiou'.includes(s) && s.length === 1 ? [0.42, 0.55] : s === 'whistle' ? [0.5, 0.5] : s === 'applause' ? [1.5, 1.5] : null;
+        const want = 'mnlr'.includes(s) && s.length === 1 ? [0.85, 1.1] : 'sfz'.includes(s) && s.length === 1 ? [0.77, 0.97] : 'aeiou'.includes(s) && s.length === 1 ? [0.42, 0.55] : s === 'whistle' ? [0.9, 0.9] : s === 'applause' ? [2.5, 2.5] : null;
         if (want ? Math.abs(secs - want[0]) > 0.001 || Math.abs(slowSecs - want[1]) > 0.001 : secs < 0.1 || secs > (s.length > 1 ? 0.45 : 0.3)) shape.push(`${s} lasts ${secs.toFixed(3)}s`);
         if (peak > 0.9 || peak < 0.15) shape.push(`${s} peaks at ${peak.toFixed(2)}`);
         if (ends > 0.02) shape.push(`${s} starts or ends with a click (${ends.toFixed(3)})`);
@@ -3736,12 +3762,26 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
       // The burst is the first loud moment after the quiet lead, the uh the loudest moment from 45 ms after it.
       const uhAfter = (s) => { const x = get(s); const e = frames(x); const burst = Math.max(0, e.findIndex((v) => v > 0.05)); const from = burst + 9; const tail = e.slice(from); const at = from + tail.indexOf(Math.max(...tail)); return { burst: Math.max(...e.slice(burst, burst + 3)), uh: e[at], low: spectrum(x, at * 160, 1600).band(0, 1000) }; };
       const uhs = ['t', 'p', 'k'].map(uhAfter);
-      // A voiced stop: a low hum first, then the release, then an uh softer than the release.
-      const voicedStop = (s) => { const x = get(s); const e = frames(x); const burst = e.indexOf(Math.max(...e)); const lead = spectrum(x, 0, Math.round(0.04 * R)); const tail = e.slice(burst + 3);
-        return burst >= 6 && rmsOf(x, 0, Math.round(0.03 * R)) > 0.005 && lead.band(0, 600) >= 0.9 && Math.max(...tail) < e[burst] * 0.8 && spectrum(x, (burst + 3 + tail.indexOf(Math.max(...tail))) * 160, 1600).band(0, 1000) >= 0.6; };
-      // A rime: its vowel's resonances, a closing quiet, then the release.
+      // A voiced stop: a low hum first, then the release, then an uh; since pass MU the release stays in a mouth's band (under 6 percent of
+      // it over 7,000 cycles a second), and since round one's screen check it is weighed as the ear hears it: the release (the frames
+      // centred 42 to 54 ms in) leads the uh (its loudest frame from 56 ms, from 120 ms for j, after its hush) by 0 to 10 decibels
+      // A-weighted, its 2,500 to 6,000 cycles part, the click, at most 3 decibels over the uh (pass MT's d about 10, the click Mikey heard;
+      // b, which he heard as better, about -3), and d, g and j run from the release into the uh with no gap (no 5 ms frame more than 10
+      // decibels under the softer of the two; b keeps the short gap he heard as better).
+      const voicedStop = (s) => { const x = get(s); const hum = spectrum(x, 0, Math.round(0.04 * R)); const rel = over(x, 0.042, 0.054, 0.0005); const uh = over(x, s === 'j' ? 0.12 : 0.056, 1, 0.002);
+        const tick = dB10(rel.band) - dB10(uh.a); const leadA = dB10(rel.a) - dB10(uh.a); const dB = (v) => 20 * Math.log10(Math.max(1e-9, v));
+        const w = Math.round(0.005 * R); const h = Math.round(0.001 * R); const e5 = []; for (let i = 0; i + w <= x.length; i += h) e5.push(rmsOf(x, i, i + w));
+        const r5 = 40 + e5.slice(40, 52).indexOf(Math.max(...e5.slice(40, 52))); const from = s === 'j' ? 120 : 56; const tail = e5.slice(from); const u5 = from + tail.indexOf(Math.max(...tail));
+        const dip = dB(Math.min(e5[r5], e5[u5])) - dB(Math.min(...e5.slice(r5, u5 + 1))); const high = spectrum(x, rel.bandAt - Math.round(0.001 * R), Math.round(0.008 * R)).band(7000, 16000);
+        return rmsOf(x, 0, Math.round(0.03 * R)) > 0.005 && hum.band(0, 600) >= 0.9 && spectrum(x, uh.aAt, 1600).band(0, 1000) >= 0.6
+          && leadA >= 0 && leadA <= 10 && tick <= 3 && high <= 0.06 && (s === 'b' || dip <= 10); };
+      // A rime: its vowel's resonances, a closing quiet, then the release; since pass MU a soft release, at least 6 decibels under the
+      // vowel's loudest moment yet heard (a 5 ms frame over 0.02), inside its band (under 5 percent of it over 7,000 cycles a second), and
+      // since round one's screen check at least 6 decibels under the vowel as the ear hears it (A-weighted; ig's had stood about 3 under).
       const rime = (s, v) => { const x = get(s); const sp = spectrum(x, Math.round(0.05 * R), Math.round(0.15 * R)); const e = frames(x); const quiet = e.slice(53, 60); const after = e.slice(60);
-        return !vowelOff(sp, v) && Math.max(...quiet) < 0.03 && Math.max(...after) > 0.1; };
+        const vowel = Math.max(...e.slice(2, 50)); const rel = 60 + after.indexOf(Math.max(...after)); const high = spectrum(x, rel * 160 - Math.round(0.001 * R), Math.round(0.01 * R)).band(7000, 16000);
+        const heardVowel = over(x, 0.02, 0.25, 0.002); const heardRelease = over(x, 0.3, 1, 0.001);
+        return !vowelOff(sp, v) && Math.max(...quiet) < 0.03 && Math.max(...after) > 0.02 && 20 * Math.log10(vowel / Math.max(...after)) >= 6 && high <= 0.05 && dB10(heardVowel.a) - dB10(heardRelease.a) >= 6; };
       // The cheer's whistle (pass MT): a tone, its pitch held near 2,700 cycles a second after a swoop up from below it, nearly all its
       // energy within 400 cycles a second of that pitch, so a hiss of noise fails, and since round one no louder than a whisper of the
       // app's own speech sounds' level allows (its middle under 0.13, about 6 dB down from the first build); the crowd: a second and a
@@ -3750,18 +3790,31 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
       // crowd's loud level (a crowd of 40 or 80 claps leaves gaps; a test that counted onsets alone passed a crowd a quarter as thick),
       // its claps in a clap's band read after the whistle ends (from 0.9 seconds, where the whistle cannot carry it), loud through its
       // middle, a whistle on top (a tone near 2,900 in its second fifth), and quiet at its end.
-      const whistleOk = (() => { const x = get('whistle'); if (!x) return false; const at = (sec) => Math.round(sec * R); const held = spectrum(x, at(0.15), at(0.25)); const swoop = spectrum(x, at(0.01), at(0.06));
-        return Math.abs(held.peak - 2700) <= 150 && held.band(held.peak - 400, held.peak + 400) >= 0.85 && swoop.peakIn(1200, 3500) < held.peak - 200 && rmsOf(x, at(0.1), at(0.4)) > 0.07 && rmsOf(x, at(0.1), at(0.4)) < 0.13; })();
-      const crowdOk = (() => { const x = get('applause'); if (!x) return false; const at = (sec) => Math.round(sec * R); const two = Math.round(0.002 * R); const e = []; for (let i = 0; i + two <= x.length; i += two) e.push(rmsOf(x, i, i + two));
-        let onsets = 0; for (let k = 1; k < e.length; k++) if (e[k] > 1.6 * e[k - 1] && e[k] > 0.03) onsets += 1;
-        const tenths = []; for (let s = 0.15; s < 0.99; s += 0.1) tenths.push(rmsOf(x, at(s), at(s + 0.1)));
-        const fives = []; for (let s = at(0.15); s + 160 <= at(1.0); s += 160) fives.push(rmsOf(x, s, s + 160)); const loud = [...fives].sort((p, q) => p - q)[Math.floor(fives.length * 0.9)];
-        const gaps = fives.filter((v) => v < 0.15 * loud).length / fives.length;
-        const body = spectrum(x, at(0.9), at(0.25)); const top = spectrum(x, at(0.3), at(0.25));
-        return onsets >= 30 && gaps <= 0.05 && body.band(700, 4200) >= 0.6 && body.band(0, 300) <= 0.1 && Math.min(...tenths) > 0.03 && top.peakIn(2600, 3200) > 2700 && top.band(2650, 3150) >= 0.15 && rmsOf(x, at(1.45), at(1.5)) < 0.02; })();
+      const whistleOk = (() => { const x = get('whistle'); if (!x) return false; const at = (sec) => Math.round(sec * R); const dB = (v) => 20 * Math.log10(Math.max(1e-9, v));
+        const held = spectrum(x, at(0.2), at(0.3)); const swoop = spectrum(x, at(0.03), at(0.035)); const slide = spectrum(x, at(0.7), at(0.07)); const air = spectrum(x, 0, at(0.03));
+        const fr = []; for (let s = 0.12; s + 0.02 <= 0.62; s += 0.02) fr.push(rmsOf(x, at(s), at(s + 0.02))); const loudAt = 0.12 + 0.02 * fr.indexOf(Math.max(...fr)); const swing = dB(Math.max(...fr)) - dB(Math.min(...fr));
+        const low = Math.min(...Array.from({ length: 29 }, (_, k) => rmsOf(x, at(0.12 + 0.02 * k), at(0.14 + 0.02 * k))));
+        return Math.abs(held.peak - 2750) <= 150 && held.band(held.peak - 400, held.peak + 400) >= 0.85 && swoop.peakIn(1200, 3500) < held.peak - 200 && slide.peakIn(1200, 3500) < held.peak - 100
+          && loudAt >= 0.2 && loudAt <= 0.5 && swing >= 2 && swing <= 9 && air.band(held.peak - 400, held.peak + 400) <= 0.6 && rmsOf(x, 0, at(0.03)) > 0.0015 && low >= 0.04
+          && rmsOf(x, at(0.1), at(0.4)) > 0.07 && rmsOf(x, at(0.1), at(0.4)) < 0.13; })();
+      const crowdOk = (() => { const x = get('applause'); if (!x) return false; const at = (sec) => Math.round(sec * R); const a = at(0.2); const b = at(1.9); const dB = (v) => 20 * Math.log10(Math.max(1e-9, v));
+        const centre = (() => { const n = 65536; const re = new Float64Array(n); for (let i = 0; i < b - a; i++) re[i] = x[a + i]; const P = fft(re); const tot = P.reduce((s, v) => s + v, 0) || 1; return P.reduce((s, v, k) => s + v * ((k * R) / n), 0) / tot; })();
+        const wide = (() => { const n = 65536; const re = new Float64Array(n); for (let i = 0; i < b - a; i++) re[i] = x[a + i]; const P = fft(re); const tot = P.reduce((s, v) => s + v, 0) || 1; return (lo, hi) => P.reduce((s, v, k) => { const f = (k * R) / n; return f >= lo && f < hi ? s + v : s; }, 0) / tot; })();
+        let m = 0; for (let i = a; i < b; i++) m += x[i]; m /= b - a; let v2 = 0; let v4 = 0; for (let i = a; i < b; i++) { const d = x[i] - m; v2 += d * d; v4 += d * d * d * d; } v2 /= b - a; v4 /= b - a; const kurt = v4 / (v2 * v2);
+        const two = at(0.002); const e = []; for (let i = a; i + two <= b; i += two) e.push(rmsOf(x, i, i + two)); const loud = [...e].sort((p, q) => p - q)[Math.floor(e.length * 0.9)];
+        let onsets = 0; for (let k = 1; k < e.length; k++) if (e[k] > 1.6 * e[k - 1] && e[k] > 0.1 * loud) onsets += 1;
+        const four = at(0.004); const f4 = []; for (let i = a; i + four <= b; i += four) f4.push(rmsOf(x, i, i + four)); f4.sort((p, q) => p - q); const depth = dB(f4[Math.floor(f4.length * 0.9)]) - dB(f4[Math.floor(f4.length * 0.1)]);
+        const tenths = []; for (let s = 0.1; s < 1.79; s += 0.1) tenths.push(rmsOf(x, at(s), at(s + 0.1)));
+        const top = spectrum(x, at(0.45), at(0.4)); const whistleShare = top.band(2850, 3150);
+        // Its start (round one's screen check, pass MU): no 20 ms from 0.02 to 0.5 seconds more than 3.5 decibels over the middle 20 ms
+        // of 0.5 to 1.5, so the claps break out rather than land together on a cue.
+        const w20 = at(0.02); let early = 0; for (let i = at(0.02); i + w20 <= at(0.5); i += at(0.005)) early = Math.max(early, rmsOf(x, i, i + w20)); const mid = []; for (let i = at(0.5); i + w20 <= at(1.5); i += at(0.005)) mid.push(rmsOf(x, i, i + w20)); mid.sort((p, q) => p - q); const startOver = dB(early) - dB(mid[Math.floor(mid.length / 2)]);
+        return centre >= 1300 && centre <= 2300 && wide(4000, 16000) <= 0.09 && wide(6000, 16000) <= 0.03 && wide(0, 300) <= 0.03 && wide(500, 3500) >= 0.75 && kurt >= 5 && kurt <= 30
+          && onsets / ((b - a) / R) >= 35 && depth >= 5 && depth <= 18 && Math.min(...tenths) > 0.03 && Math.abs(top.peakIn(2700, 3300) - 3000) <= 150 && whistleShare >= 0.08 && whistleShare <= 0.5
+          && rmsOf(x, x.length - at(0.05), x.length) < 0.005 && rmsOf(x, x.length - at(0.1), x.length) < 0.01 && startOver <= 3.5; })();
       const where = [
-        ['the whistle is a tone near 2,700 cycles a second that swoops up into it', whistleOk],
-        ['the crowd is many claps in a clap\'s band with a whistle on top, its end quiet', crowdOk],
+        ['the whistle is a tone near 2,750 cycles a second blown on one breath, air first, swooping up, swelling and sagging, and sliding down as it ends', whistleOk],
+        ['the crowd is claps measured like real group clapping (its centre, its bands, spiky not smooth, dozens a second) with a whistle on top it leads, breaking out rather than starting on a cue, its end quiet', crowdOk],
         ['sss high, in the range where an s peaks', S.s.sp.band(4000, 16000) >= 0.85 && S.s.sp.band(0, 2000) <= 0.02 && S.s.sp.peak >= 5500 && S.s.sp.peak <= 8000],
         ['fff spread out, flat and softer than sss', S.f.sp.band(1500, 16000) >= 0.9 && [2000, 3000, 4000, 5000, 6000, 7000, 8000].every((lo) => S.f.sp.band(lo, lo + 1000) <= 0.2) && rms(S.f.x) < rms(S.s.x)],
         ['zzz a hiss over a buzz', S.z.sp.band(0, 500) >= 0.2 && S.z.sp.band(4000, 16000) >= 0.2],
@@ -3770,8 +3823,8 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
         ['t, p and k a quiet moment, then a burst high, low and in the middle', T.lead === 0 && P.lead === 0 && K.lead === 0 && T.sp.band(4000, 16000) >= 0.8 && P.sp.band(0, 2000) >= 0.6 && T.sp.peak > 4000 && P.sp.peak < 1500 && K.sp.peak >= 1600 && K.sp.peak <= 2800],
         ['t, p and k end in a short, soft uh, voiced and quieter than the burst', uhs.every((u) => u.uh > 0.015 && u.uh < u.burst * 0.6 && u.low >= 0.5)],
         ...['a', 'e', 'i', 'o', 'u'].map((v) => { const x = get(v); const off = vowelOff(spectrum(x, Math.round(0.08 * R), Math.round(0.26 * R)), v); return [`the vowel ${v} has its own resonances${off ? ` (found ${off})` : ''}`, !off]; }),
-        ...['b', 'd', 'g', 'j'].map((s) => [`${s} is a low hum, the release and a soft uh`, voicedStop(s)]),
-        ['ig, og and at are a vowel, a closing quiet and the release', rime('ig', 'i') && rime('og', 'o') && rime('at', 'a')],
+        ...['b', 'd', 'g', 'j'].map((s) => [`${s} is a low hum, the release a few decibels over a soft uh as the ear hears it, with no click`, voicedStop(s)]),
+        ['ig, og and at are a vowel, a closing quiet and a release soft to the ear', rime('ig', 'i') && rime('og', 'o') && rime('at', 'a')],
       ].filter(([, okay]) => !okay).map(([what]) => what);
       return [...shape, ...where];
     };
@@ -3785,7 +3838,43 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
       plant('an uh louder than the t\'s burst', (s, o) => (s === 't' ? loud(L.soundClipSamples('t', o), Math.round(0.065 * R), 6) : null)),
       plant('a b with no hum before it', (s, o) => { if (s !== 'b') return null; const x = Float32Array.from(L.soundClipSamples('b', o)); for (let i = 0; i < Math.round(0.044 * R); i++) x[i] = 0; return x; }),
       plant('an ig whose vowel is e\'s', (s, o) => { if (s !== 'ig') return null; const x = Float32Array.from(L.soundClipSamples('ig', o)); const e = L.soundClipSamples('e', o); for (let i = 0; i < Math.round(0.24 * R); i++) x[i] = e[i + Math.round(0.05 * R)]; return x; }),
-      plant('a whistle made of noise', (s, o) => { if (s !== 'whistle') return null; const x = L.soundClipSamples('applause', o); return Float32Array.from({ length: Math.round(0.5 * R) }, (_, i) => x[i + Math.round(0.4 * R)] * Math.min(1, i / 400, (Math.round(0.5 * R) - i) / 400)); }),
+      plant('a whistle made of noise', (s, o) => { if (s !== 'whistle') return null; const x = L.soundClipSamples('applause', o); const n = Math.round(0.9 * R); return Float32Array.from({ length: n }, (_, i) => x[i + Math.round(1.6 * R)] * 0.8 * Math.min(1, i / 400, (n - i) / 400)); }),
+      // Pass MU's near misses: pass MT's length, one loudness, no breath before the tone (the whistle), pass MT's bright hiss and a crowd
+      // as smooth as static (the crowd), pass MT's click and an 11-decibel release (the stops), and pass MT's pop (the endings).
+      plant('a whistle cut off at half a second', (s, o) => { if (s !== 'whistle') return null; const x = L.soundClipSamples('whistle', o); const n = Math.round(0.5 * R); return Float32Array.from({ length: n }, (_, i) => x[i] * Math.min(1, (n - i) / 400)); }),
+      plant('a whistle at one loudness', (s, o) => { if (s !== 'whistle') return null; const x = Float32Array.from(L.soundClipSamples('whistle', o)); const w = Math.round(0.02 * R); const env = Float32Array.from(x, (_, i) => { let q = 0; let c = 0; for (let j = Math.max(0, i - w); j < Math.min(x.length, i + w); j += 8) { q += x[j] * x[j]; c += 1; } return Math.sqrt(q / c); });
+        const target = rmsOf(x, Math.round(0.1 * R), Math.round(0.4 * R)); for (let i = Math.round(0.1 * R); i < Math.round(0.75 * R); i++) x[i] *= target / Math.max(1e-6, env[i]); return x; }),
+      plant('a whistle that starts on its tone', (s, o) => { if (s !== 'whistle') return null; const x = Float32Array.from(L.soundClipSamples('whistle', o)); for (let i = 0; i < Math.round(0.1 * R); i++) x[i] = x[i + Math.round(0.25 * R)] * Math.min(1, i / 32); return x; }),
+      plant('a crowd that hisses as pass MT\'s did', (s, o) => { if (s !== 'applause') return null; const x = L.soundClipSamples('applause', o); const w = 2 * Math.PI * 2200 / R; const cw = Math.cos(w); const al = Math.sin(w) / 1.4; const b0 = (1 + cw) / 2 / (1 + al); const b1 = -(1 + cw) / (1 + al); const a1 = -2 * cw / (1 + al); const a2 = (1 - al) / (1 + al);
+        const y = new Float32Array(x.length); let x1 = 0; let x2 = 0; let y1 = 0; let y2 = 0; for (let i = 0; i < x.length; i++) { const v = b0 * x[i] + b1 * x1 + b0 * x2 - a1 * y1 - a2 * y2; x2 = x1; x1 = x[i]; y2 = y1; y1 = v; y[i] = v * 2.2; } return y; }),
+      plant('a crowd as smooth as static', (s, o) => { if (s !== 'applause') return null; const x = L.soundClipSamples('applause', o); let a = 7; const r = () => { a = (a * 16807) % 2147483647; return a / 2147483647; }; const y = new Float32Array(x.length); const w = Math.round(0.02 * R);
+        for (let s0 = 0; s0 < x.length; s0 += w) { const lvl = rmsOf(x, s0, Math.min(x.length, s0 + w)); for (let i = s0; i < Math.min(x.length, s0 + w); i++) y[i] = (r() + r() + r() - 1.5) * 2 * lvl; } let lp = 0; for (let i = 0; i < y.length; i++) { lp += (y[i] - lp) * 0.35; y[i] = lp * 1.6; } return y; }),
+      plant('a d with pass MT\'s click', (s, o) => { if (s !== 'd') return null; const x = Float32Array.from(L.soundClipSamples('d', o)); const at = Math.round(0.045 * R); let a = 3; const r = () => { a = (a * 16807) % 2147483647; return a / 2147483647; };
+        for (let i = 0; i < Math.round(0.006 * R); i++) x[at + i] = (r() * 2 - 1) * 0.9 * Math.exp(-i / 60); for (let i = Math.round(0.006 * R); i < Math.round(0.012 * R); i++) x[at + i] *= 0.05; return x; }),
+      plant('a g whose uh falls to half', (s, o) => { if (s !== 'g') return null; const x = Float32Array.from(L.soundClipSamples('g', o)); const at = Math.round(0.05 * R); for (let i = at; i < x.length; i++) x[i] *= 1 - 0.5 * Math.min(1, (i - at) / 64); return x; }),
+      // Round one's code check (pass MU): five near misses, each tripping one condition alone (measured in the pass's scratch): a whistle
+      // held to its end, a whistle with no breath before its tone, a crowd whose whistle drowns its claps, an ending whose release hisses,
+      // and a d whose release no longer leads its uh; and the g above, which before the check was caught only by its peak.
+      plant('a whistle held on its note to the end', (s, o) => { if (s !== 'whistle') return null; const x = Float32Array.from(L.soundClipSamples('whistle', o)); const n = x.length; const tail = Math.round(0.26 * R); const from = Math.round(0.3 * R); for (let i = 0; i < tail; i++) x[n - tail + i] = x[from + i] * (1 - i / tail); return x; }),
+      plant('a whistle with no breath before its tone', (s, o) => { if (s !== 'whistle') return null; const x = Float32Array.from(L.soundClipSamples('whistle', o)); for (let i = 0; i < Math.round(0.03 * R); i++) x[i] = 0; return x; }),
+      plant('a crowd whose whistle drowns its claps', (s, o) => { if (s !== 'applause') return null; const x = Float32Array.from(L.soundClipSamples('applause', o)); const s0 = Math.round(0.5 * R); const s1 = Math.round(0.85 * R); for (let i = s0; i < s1; i++) x[i] += 0.14 * Math.sin((2 * Math.PI * 3000 * i) / R) * Math.min(1, (i - s0) / 64, (s1 - i) / 64); return x; }),
+      plant('an at whose release hisses', (s, o) => { if (s !== 'at') return null; const x = Float32Array.from(L.soundClipSamples('at', o)); const e = frames(x); const after = e.slice(60); const rel = (60 + after.indexOf(Math.max(...after))) * 160; let a = 5; const r = () => { a = (a * 16807) % 2147483647; return a / 2147483647; }; for (let i = 0; i < Math.round(0.008 * R); i++) x[rel + i] += (r() * 2 - 1) * 0.03; return x; }),
+      plant('a d whose release no longer leads its uh', (s, o) => { if (s !== 'd') return null; const x = Float32Array.from(L.soundClipSamples('d', o)); for (let i = Math.round(0.045 * R); i < Math.round(0.052 * R); i++) x[i] *= 0.4; return x; }),
+      // Round one's screen check (pass MU): a d whose release ticks over its uh as heard, a g whose release is loud below the click's band,
+      // a j with a gap after its release, an ig whose release is as loud as its vowel to the ear, and a crowd that starts on a cue, each
+      // tripping one condition alone (measured in the pass's scratch).
+      plant('a d whose release ticks over its uh', (s, o) => { if (s !== 'd') return null; const x = Float32Array.from(L.soundClipSamples('d', o)); for (let i = Math.round(0.045 * R); i < Math.round(0.052 * R); i++) x[i] *= 1.9; return x; }),
+      plant('a g whose release is loud below its click', (s, o) => { if (s !== 'g') return null; const x = Float32Array.from(L.soundClipSamples('g', o)); const a0 = Math.round(0.041 * R); const a1 = Math.round(0.05 * R); for (let i = a0; i < a1; i++) x[i] += 0.4 * Math.sin((2 * Math.PI * 1800 * (i - a0)) / R) * Math.sin((Math.PI * (i - a0)) / (a1 - a0)); return x; }),
+      plant('a j with a gap after its release', (s, o) => { if (s !== 'j') return null; const x = Float32Array.from(L.soundClipSamples('j', o)); for (let i = Math.round(0.0475 * R); i < Math.round(0.0535 * R); i++) x[i] *= 0.02; return x; }),
+      plant('an ig whose release is as loud as its vowel to the ear', (s, o) => { if (s !== 'ig') return null; const x = Float32Array.from(L.soundClipSamples('ig', o)); for (let i = Math.round(0.3 * R); i < x.length; i++) x[i] *= 2; return x; }),
+      plant('a crowd that starts on a cue', (s, o) => { if (s !== 'applause') return null; const x = Float32Array.from(L.soundClipSamples('applause', o)); for (let i = Math.round(0.26 * R); i < Math.round(0.32 * R); i++) x[i] *= 1.6; return x; }),
+      // The second reads of round one (pass MU): a d whose release hisses over 7,000 cycles a second, which round one's code check found
+      // proven only beside three other bounds, and a crowd that stops without fading, whose quiet end no near miss tripped; each trips
+      // its own bound alone (the crowd both bounds of its quiet end, its very end still eased to zero so the shape check's end click does
+      // not catch it too; measured in the pass's scratch and by the third read).
+      plant('a d whose release hisses', (s, o) => { if (s !== 'd') return null; const x = Float32Array.from(L.soundClipSamples('d', o)); const at = Math.round(0.045 * R); let a = 9; const r = () => { a = (a * 16807) % 2147483647; return a / 2147483647; }; let p1 = 0; let p2 = 0; for (let i = 0; i < Math.round(0.007 * R); i++) { const w = r() * 2 - 1; x[at + i] += (0.1 * (w - 2 * p1 + p2)) / 4; p2 = p1; p1 = w; } return x; }),
+      plant('a crowd that stops without fading', (s, o) => { if (s !== 'applause') return null; const x = Float32Array.from(L.soundClipSamples('applause', o)); const n = x.length; const tail = Math.round(0.3 * R); for (let i = 0; i < tail; i++) x[n - tail + i] = x[Math.round(1.0 * R) + i]; const ease = Math.round(0.01 * R); for (let i = 0; i < ease; i++) x[n - 1 - i] *= i / ease; return x; }),
+      plant('an ig with pass MT\'s pop', (s, o) => { if (s !== 'ig') return null; const x = Float32Array.from(L.soundClipSamples('ig', o)); for (let i = Math.round(0.3 * R); i < x.length; i++) x[i] = Math.max(-0.9, Math.min(0.9, x[i] * 4)); return x; }),
       // A crowd of 40 claps (round one's code check, pass MT: it passed the onset count alone): the real crowd kept only in 40 bursts of
       // 20 ms at seeded times, quiet between them.
       plant('a crowd of 40 claps', (s, o) => { if (s !== 'applause') return null; const x = Float32Array.from(L.soundClipSamples('applause', o)); let a = 11; const r = () => { a = (a * 16807) % 2147483647; return a / 2147483647; };
@@ -3795,12 +3884,13 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
       plant('a crowd muffled to a thud', (s, o) => { if (s !== 'applause') return null; const x = L.soundClipSamples('applause', o); const y = new Float32Array(x.length); let acc = 0; for (let i = 0; i < x.length; i++) { acc += x[i] - (i >= 40 ? x[i - 40] : 0); y[i] = acc / 40 * 8; } return y; }),
     ].filter(Boolean);
     // Every sound the app makes, on either pace, ends at least 300 ms before playSound's guard lets a reading move on (SOUND_LONGEST_MS
-    // in ui.jsx; round one's code check, pass MT: the crowd left 200 ms, and nothing held it); near miss: a crowd of 1.7 seconds.
+    // in ui.jsx; round one's code check, pass MT: the crowd left 200 ms, and nothing held it); near miss: a crowd 200 ms longer than the
+    // real one (since pass MU's crowd of two and a half seconds; pass MT's near miss was 1.7 seconds).
     const guardMs = Number((/const SOUND_LONGEST_MS = (\d+);/.exec(readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8')) || [])[1]);
     const allSounds = [...Object.keys(L.SPEECH_SOUNDS), ...Object.keys(L.TRIAL_SOUNDS), 'whistle', 'applause'];
     const tooLong = (len) => allSounds.filter((s) => [false, true].some((slow) => { const x = len(s, slow); return x !== null && (x / R) * 1000 > guardMs - 300; }));
     const guarded = guardMs > 0 && tooLong((s, slow) => { const x = L.soundClipSamples(s, { slow }); return x ? x.length : null; }).length === 0
-      && tooLong((s, slow) => (s === 'applause' ? Math.round(1.7 * R) : (L.soundClipSamples(s, { slow }) || { length: null }).length)).length > 0;
+      && tooLong((s, slow) => (s === 'applause' ? L.soundClipSamples('applause').length + Math.round(0.2 * R) : (L.soundClipSamples(s, { slow }) || { length: null }).length)).length > 0;
     if (!guarded) missed.push(`a sound within 300 ms of the play guard (${guardMs} ms), or the near miss not caught`);
     const wav = L.soundClipWav('s'); const dv = new DataView(wav.buffer); const tag = (o) => String.fromCharCode(...wav.slice(o, o + 4));
     const file = tag(0) === 'RIFF' && tag(8) === 'WAVE' && dv.getUint16(22, true) === 1 && dv.getUint32(24, true) === R && dv.getUint16(34, true) === 16 && dv.getUint32(40, true) === L.soundClipSamples('s').length * 2;
@@ -4904,13 +4994,21 @@ const moreRightProblems = (L) => { const r = {};
     const ss = { get speaking() { return opts.stuck && log.some((e) => e.say) ? true : opts.lateSpeaking ? queue.some((u) => u.__began) : queue.length > 0; }, get pending() { return opts.lateSpeaking ? false : queue.length > 1; }, getVoices() { return []; },
       cancel() { lastCancel = now; const old = queue; queue = []; for (const u of old) later(() => { if (u.onerror) u.onerror({ error: 'interrupted' }); }, 1); },
       speak(u) { if (opts.throwOn && opts.throwOn(u.text)) throw new Error('the voice would not take it'); if (opts.mute) { log.push({ at: now, muted: u.text }); return; } spoke += 1; if ((dropFirst && spoke === 1) || now - lastCancel < 4) { log.push({ at: now, dropped: u.text }); return; } queue.push(u); if (queue.length === 1) startNext(); } };
-    function Audio() { const a = { src: '', onended: null, onerror: null, t: 0, play() { log.push({ at: now, sound: a.src }); a.t = later(() => { if (a.onended) a.onended(); }, 300); return Promise.resolve(); }, pause() { clear(a.t); } }; return a; }
+    // opts.lostSoundEnd (pass MU): an audio element that plays and never reports its end, as a browser can; opts.soundStartMs (round
+    // one's code check, pass MU): one that starts that long after play, its promise resolving then on the fake clock, as a cold phone's
+    // can (0 by default, so play's promise resolves at once).
+    // opts.soundPlay (the second read of round one, pass MU): 'nothing', a play() that returns no promise, as an old browser's; 'refused',
+    // one the browser refuses, its promise rejected at once.
+    function Audio() { const a = { src: '', onended: null, onerror: null, t: 0, play() { log.push({ at: now, sound: a.src }); const start = opts.soundStartMs || 0;
+      if (opts.soundPlay === 'refused') return { then(ok, bad) { later(() => { if (bad) bad(new Error('refused')); }, 0); return this; }, catch(bad) { later(() => { if (bad) bad(new Error('refused')); }, 0); return this; } };
+      if (!opts.lostSoundEnd) a.t = later(() => { if (a.onended) a.onended(); }, start + 300); if (opts.soundPlay === 'nothing') return undefined;
+      return { then(ok) { later(() => { if (ok) ok(); }, start); return this; }, catch() { return this; } }; }, pause() { clear(a.t); } }; return a; }
     // The page's window carries the utterance maker too only when a case asks (opts.utterance, pass MS), so canSpeak() says yes and
     // afterSaid speaks; the older cases run as they always have.
     const Utterance = function SpeechSynthesisUtterance(t) { this.text = t; };
     const ctx = vm.createContext({ window: { speechSynthesis: ss, Audio, addEventListener() {}, ...(opts.utterance ? { SpeechSynthesisUtterance: Utterance } : {}) }, console, setTimeout: (f, ms) => later(f, ms), clearTimeout: clear, setInterval: (f, ms) => later(f, ms, ms), clearInterval: clear, Date: { now: () => now }, Math, JSON, Promise, Uint8Array, DataView, ArrayBuffer, Float64Array, Float32Array, Int16Array, SENTENCE_BREAK: L.SENTENCE_BREAK, URL: { createObjectURL: () => `blob:${++blobs}` }, Blob: function Blob() {}, SpeechSynthesisUtterance: Utterance });
     let api = null;
-    try { vm.runInContext(`${opts.src || src}\nglobalThis.__speech = { speak, hushSpeech, speechPieces, speakSequence, voiceTalking, setYoungVoice, speechYoung, YOUNG_RATE, YOUNG_PAUSE_MS, SPEECH_SHAPES, voiceBackstopMs, startsSentence, afterSaid: typeof afterSaid === 'function' ? afterSaid : null, NEXT_QUESTION_BEAT_MS: typeof NEXT_QUESTION_BEAT_MS === 'number' ? NEXT_QUESTION_BEAT_MS : null, RIGHT_ANSWER_HOLD_MS: typeof RIGHT_ANSWER_HOLD_MS === 'number' ? RIGHT_ANSWER_HOLD_MS : null };`, ctx); api = ctx.__speech; } catch (e) { return { log, error: e.message, ss }; }
+    try { vm.runInContext(`${opts.src || src}\nglobalThis.__speech = { speak, hushSpeech, speechPieces, speakSequence, voiceTalking, setYoungVoice, speechYoung, YOUNG_RATE, YOUNG_PAUSE_MS, SPEECH_SHAPES, voiceBackstopMs, startsSentence, afterSaid: typeof afterSaid === 'function' ? afterSaid : null, NEXT_QUESTION_BEAT_MS: typeof NEXT_QUESTION_BEAT_MS === 'number' ? NEXT_QUESTION_BEAT_MS : null, RIGHT_ANSWER_HOLD_MS: typeof RIGHT_ANSWER_HOLD_MS === 'number' ? RIGHT_ANSWER_HOLD_MS : null, playSound: typeof playSound === 'function' ? playSound : null, SOUND_LONGEST_MS: typeof SOUND_LONGEST_MS === 'number' ? SOUND_LONGEST_MS : null, soundMs: typeof soundMs === 'object' ? soundMs : null, setSpeechNudge: typeof setSpeechNudge === 'function' ? setSpeechNudge : null };`, ctx); api = ctx.__speech; } catch (e) { return { log, error: e.message, ss }; }
     script(api, (fn, ms) => later(fn, ms), () => now);   // the fake clock's time, for a script that notes when something came
     // An error thrown inside a timer is a fault of the code under test, kept in the log rather than stopping the run.
     while (timers.length) { timers.sort((x, y) => x.at - y.at || x.id - y.id); const t = timers[0]; if (t.at > until) break; now = t.at; if (t.every) t.at += t.every; else timers.shift(); try { t.fn(); } catch (e) { log.push({ at: now, threw: String(e && e.message) }); } }
@@ -5111,6 +5209,33 @@ const moreRightProblems = (L) => { const r = {};
     const noPause = src.replace("const gap = together ? (lastPc.pauseAfter || 0) : Math.max(", "const gap = together ? 0 : Math.max(");
     const real = judge(null); const near = planted !== src ? judge(planted) : { ok: true, why: 'the plant found nothing to change' }; const near2 = noPause !== src ? judge(noPause) : { ok: true, why: 'the plant found nothing to change' };
     ok("a lesson's cheer keeps its sayings, whistles and crowd together across its sentences, the four silly voices wait their brief pause, and the next call waits the child's turn, read as the lesson reads it; together planted false, and the pause left out, fail (pass MS, round one's code check; pass MT)", mline && dline && real.ok && !near.ok && !near2.ok, JSON.stringify({ real, near, near2 }).slice(0, 700)); }
+  // A sound whose end the browser never reports holds a reading only its own length and 400 ms more (soundGuardMs, pass MU, since the
+  // crowd grew to two and a half seconds and SOUND_LONGEST_MS with it): sss, 0.77 seconds, lets the reading go on at about 1.17 seconds
+  // and the crowd at 2.9, the guard itself; the guard planted back to SOUND_LONGEST_MS for every sound holds sss 2.9 seconds and fails.
+  // Since round one's code check the guard counts from the moment the sound starts (play's promise), the longest guard holding until
+  // then: a sound that starts 600 ms late holds the reading 600 ms longer, and a guard armed at play (the code before the check) fails;
+  // the slow pace holds its own longer sss; the cap is read from the page, and with the cap planted lower the crowd stops at it while a
+  // guard with no cap does not; and a cheer's first whistle makes the crowd while it plays, the crowd not made before it.
+  // Since its second read: a sound whose play() never says it has started holds the reading to the longest guard (the first arm), and
+  // a guard with no first arm fails; a play() that returns nothing counts from the play; a refused one lets the reading go on at once.
+  { const guardOf = (code, { slow = false, startMs = 0, play = null } = {}) => { const out = {}; for (const s of ['s', 'applause']) { let done = null; let cap = null; const r = run(false, (api, later, now) => { cap = api.SOUND_LONGEST_MS; if (slow && api.setSpeechNudge) api.setSpeechNudge(-1); if (api.playSound) api.playSound(s, () => { done = now(); }); }, 10000, { lostSoundEnd: true, soundStartMs: startMs, soundPlay: play, ...(code ? { src: code } : {}) }); out[s] = r.error ? r.error : done; out.cap = cap; } return out; };
+    const msOf = (s, slow) => Math.round((L.soundClipSamples(s, { slow }).length / L.SOUND_RATE) * 1000); const sMs = msOf('s', false); const cMs = msOf('applause', false); const sSlow = msOf('s', true);
+    const real = guardOf(null); const flat = src.replace('guard = setTimeout(finish, soundGuardMs(sound, slow));', 'guard = setTimeout(finish, SOUND_LONGEST_MS);'); const near = flat !== src ? guardOf(flat) : { s: 'the plant found nothing to change' };
+    const slowReal = guardOf(null, { slow: true }); const late = guardOf(null, { startMs: 600 });
+    const atPlay = src.replace('if (p && p.then) p.then(started, finish); else started();', 'started(); if (p && p.catch) p.catch(finish);'); const lateNear = atPlay !== src ? guardOf(atPlay, { startMs: 600 }) : { s: 'the plant found nothing to change' };
+    const lowCap = src.replace('const SOUND_LONGEST_MS = 2900;', 'const SOUND_LONGEST_MS = 2000;'); const capped = lowCap !== src ? guardOf(lowCap) : { applause: 'the plant found nothing to change' };
+    const noMin = lowCap.replace('return ms > 0 ? Math.min(SOUND_LONGEST_MS, ms + 400) : SOUND_LONGEST_MS;', 'return ms > 0 ? ms + 400 : SOUND_LONGEST_MS;'); const uncapped = noMin !== lowCap ? guardOf(noMin) : { applause: 'the plant found nothing to change' };
+    const never = guardOf(null, { startMs: 5000 }); const noFirstArm = src.replace('  guard = setTimeout(finish, SOUND_LONGEST_MS);\n', ''); const neverNear = noFirstArm !== src ? guardOf(noFirstArm, { startMs: 5000 }) : { s: 'the plant found nothing to change' };
+    const nothing = guardOf(null, { play: 'nothing' }); const refused = guardOf(null, { play: 'refused' });
+    ok('a sound whose end is never reported holds a reading its own length and 400 ms more from when it starts, never past the guard: sss about 1.17 seconds (about 1.37 at the slow pace), the crowd 2.9, a sound 600 ms late to start 600 ms longer; the guard planted the same for every sound, armed at play, or with no cap fails (pass MU)',
+      real.s === sMs + 400 && real.applause === Math.min(real.cap, cMs + 400) && real.cap === 2900 && slowReal.s === sSlow + 400 && sSlow > sMs && late.s === 600 + sMs + 400 && near.s !== sMs + 400 && lateNear.s !== 600 + sMs + 400
+        && capped.applause === 2000 && uncapped.applause !== 2000 && never.s === real.cap && neverNear.s !== real.cap && nothing.s === sMs + 400 && refused.s === 0, JSON.stringify({ real, near, slowReal, late, lateNear, capped, uncapped, never, neverNear, nothing, refused, sMs, cMs, sSlow })); }
+  { const crowdMade = (code, more = {}) => { let before = null; let during = null; const r = run(false, (api, later) => { if (!api.playSound || !api.soundMs) return; before = 'applause' in api.soundMs; api.playSound('whistle', () => {}); later(() => { during = api.soundMs.applause > 0; }, 400); }, 3000, { ...more, ...(code ? { src: code } : {}) }); return r.error ? r.error : { before, during }; };
+    const real = crowdMade(null); const without = src.replace("    if (sound === 'whistle' && !(`applause${slow ? '-slow' : ''}` in soundUrls)) setTimeout(() => { if (token === soundToken && !finished) soundUrl('applause', slow); }, 150);\n", ''); const near = without !== src ? crowdMade(without) : { during: 'the plant found nothing to change' };
+    const refusedMade = crowdMade(null, { soundPlay: 'refused' });
+    const followed = (code) => { let made = null; const r = run(false, (api, later) => { if (!api.playSound || !api.soundMs) return; api.playSound('whistle', () => {}); later(() => api.playSound('s', () => {}), 50); later(() => { made = api.soundMs.applause > 0; }, 400); }, 3000, code ? { src: code } : {}); return r.error ? r.error : made; };
+    const followedReal = followed(null); const unguarded = src.replace('if (token === soundToken && !finished) soundUrl', 'soundUrl'); const followedNear = unguarded !== src ? followed(unguarded) : 'the plant found nothing to change';
+    ok("a cheer's first whistle, once it has started, makes the crowd while it plays, so the crowd after the last saying starts at once (round one's code check, pass MU: about a quarter of a second to make), and a refused whistle makes none (its second read), nor one another sound follows within 150 ms (its third read); the whistle left alone, and the crowd made without that guard, fail", real.before === false && real.during === true && near.during === false && refusedMade.during === false && followedReal === false && followedNear === true, JSON.stringify({ real, near, refusedMade, followedReal, followedNear })); }
   // Find the Letter's backstop (round two's code read, pass MQ: right in the game since round one, yet reverting it passed every test;
   // pass MM's round two had found the same backstop cutting a slow voice's line short): read with the speech code, for every right
   // letter's line the course deals. An older learner's is a real voice's pace, 1.2 seconds and 100 ms a letter; the young voice's

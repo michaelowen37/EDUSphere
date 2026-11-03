@@ -97,22 +97,25 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   ok('a question NEW-CHAT calls answered carries its answer in the rules audit', answeredOpen.length === 0, answeredOpen.join(','));
   // And the other way (pass MS: Q73 to Q76 were answered in the rules audit while NEW-CHAT's short list still listed them as open, and
   // every check passed): a question NEW-CHAT lists as open is open in the rules audit, not answered there.
-  const answeredIn = (s) => listed.filter((n) => new RegExp(`^- Q${n}\\. Answered in pass`, 'm').test(s));
+  const answeredIn = (s, ls = listed) => ls.filter((n) => new RegExp(`^- Q${n}\\. Answered in pass`, 'm').test(s));
   const listedAnswered = answeredIn(sec);
   // Near miss (round three's code read: the check ran none): the rules audit with the first open question answered there, as Q73 to
-  // Q76 were while NEW-CHAT still listed them.
-  const firstOpen = listed[0]; const planted = firstOpen === undefined ? null : sec.replace(new RegExp(`^- Q${firstOpen}\\. `, 'm'), `- Q${firstOpen}. Answered in pass ZZ. `);
-  const plantCaught = !!planted && answeredIn(planted).includes(firstOpen);
+  // Q76 were while NEW-CHAT still listed them. With no question open, the near miss plants one of its own, so a pass that leaves none
+  // open still proves the check (pass MU: these two near misses needed an open question, so a pass with none would have failed).
+  const firstOpen = listed.length ? listed[0] : Math.max(0, ...nums) + 1; const base = listed.length ? sec : `${sec}\n- Q${firstOpen}. A question planted for the near miss.`;
+  const planted = base.replace(new RegExp(`^- Q${firstOpen}\\. `, 'm'), `- Q${firstOpen}. Answered in pass ZZ. `);
+  const plantCaught = answeredIn(planted, listed.length ? listed : [firstOpen]).includes(firstOpen);
   ok('a question NEW-CHAT lists as open is still open in the rules audit (pass MS; the near miss caught)', listedAnswered.length === 0 && plantCaught, listedAnswered.join(','));
   // Every open question is named in When to start the next new chat too, where Mikey reads which answers to send (pass MS, round
   // four's docs read: Q79 was left out there and in the commit message, the second time after pass MO's round five left out Q58). A
   // range ("Q77 to Q79") names every number in it. Near miss: the section with Q79 dropped.
   const covered = (s) => { const out = new Set(); for (const m of s.matchAll(/Q(\d+) to Q(\d+)/g)) for (let n = Number(m[1]); n <= Number(m[2]); n++) out.add(n); for (const m of s.matchAll(/Q(\d+)/g)) out.add(Number(m[1])); return out; };
   const w = newChat.indexOf('## When to start the next new chat'); const when = w < 0 ? '' : newChat.slice(w, (newChat.indexOf('\n## ', w + 5) + 1 || newChat.length + 1) - 1);
-  const unnamed = (s) => listed.filter((n) => !covered(s).has(n));
-  const last = listed.length ? Math.max(...listed) : null;
-  const withoutLast = last === null ? null : when.split(`Q${last}`).join('Q0').replace(new RegExp(`Q(\\d+) to Q0`, 'g'), 'Q$1');
-  ok('every open question is named in When to start the next new chat, ranges counted (pass MS; the near miss caught)', when.length > 100 && unnamed(when).length === 0 && !!withoutLast && unnamed(withoutLast).includes(last), unnamed(when).join(','));
+  const unnamed = (s, ls = listed) => ls.filter((n) => !covered(s).has(n));
+  // With no question open, the near miss plants one named in the section and then drops it (pass MU, as above).
+  const last = listed.length ? Math.max(...listed) : Math.max(0, ...nums) + 1; const whenOpen = listed.length ? when : `${when} (Q${last})`; const openNow = listed.length ? listed : [last];
+  const withoutLast = whenOpen.split(`Q${last}`).join('Q0').replace(new RegExp(`Q(\\d+) to Q0`, 'g'), 'Q$1');
+  ok('every open question is named in When to start the next new chat, ranges counted (pass MS; the near miss caught)', when.length > 100 && unnamed(when).length === 0 && unnamed(whenOpen, openNow).length === 0 && unnamed(withoutLast, openNow).includes(last), unnamed(when).join(','));
 }
 // An answered question is never called open again (pass MI, the alignment read: Q27, Q30, Q31 and Q32 were answered while
 // docs, comments and tests still said Q30 was waiting on Mikey or the light theme kept its gold until Q32 was settled, which a
@@ -197,6 +200,14 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   { const o = '<!-- RULES-AUDIT rows as pass MS left them, before pass MT replaced them, word for word: begin -->\n'; const ia = hist.indexOf(o); const ib = hist.indexOf('<!-- RULES-AUDIT rows as pass MS left them, before pass MT replaced them, word for word: end -->');
     const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
     ok("docs/RULES-AUDIT-HISTORY.md keeps the say-along and plans rows as pass MS left them, every word unchanged, and the audit points to them (pass MT)", /^\| \*\*Say it with me, one word in many silly voices \(Mikey, pass MR, Q67:/.test(kept) && createHash('sha256').update(kept, 'utf8').digest('hex') === 'bad8804a3672a9aa8c7565a17fdbcfac9b63b541dd8d8fb0c6242afb503301e5' && audit.includes('The row as pass MR left it is kept word for word in docs/RULES-AUDIT-HISTORY.md, and the row as pass MS left it beside it') && audit.includes('The row as pass MS left it is kept word for word in docs/RULES-AUDIT-HISTORY.md')); }
+  // Pass MU's two blocks, held the same way: Q80 and Q81, which Mikey answered when he opened the pass, and the say-along row as pass
+  // MT left it, which his answer to Q81 and his notes on the cheer's sounds rewrote.
+  { const o = "<!-- RULES-AUDIT section 11's answered questions in pass MU, word for word: begin -->\n"; const ia = hist.indexOf(o); const ib = hist.indexOf("<!-- RULES-AUDIT section 11's answered questions in pass MU, word for word: end -->");
+    const mu = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
+    ok('docs/RULES-AUDIT-HISTORY.md keeps the questions answered in pass MU, every line unchanged (pass MU)', createHash('sha256').update(mu, 'utf8').digest('hex') === '15e00d579bab05282a62156c80997194fd4d20dbcdafcb64bc57311e232f33fe'); }
+  { const o = '<!-- RULES-AUDIT rows as pass MT left them, before pass MU replaced them, word for word: begin -->\n'; const ia = hist.indexOf(o); const ib = hist.indexOf('<!-- RULES-AUDIT rows as pass MT left them, before pass MU replaced them, word for word: end -->');
+    const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
+    ok("docs/RULES-AUDIT-HISTORY.md keeps the say-along row as pass MT left it, every word unchanged, and the audit points to it (pass MU)", /^\| \*\*Say it together, one word in five silly ways \(Mikey, pass MR, Q67:/.test(kept) && createHash('sha256').update(kept, 'utf8').digest('hex') === 'dcb4cd30b352f8e23036a5166dba9d2284f24f4dd5432b67a6a72ae036256850' && audit.includes('and the row as pass MS left it beside it, and the row as pass MT left it after them')); }
   const s = audit.indexOf('## 11. Open items that need Mikey'); const e = audit.indexOf('\n## ', s + 5); const sec = audit.slice(s, e < 0 ? audit.length : e);
   const answeredLines = sec.split('\n').filter((l) => /^- Q\d+\. Answered in pass /.test(l));
   const long = answeredLines.filter((l) => !/^- Q\d+\. Answered in pass \w+ \(Mikey: .+\)\. Its rule lives in [^\n]+\.$/.test(l) || /The question as it stood/.test(l));
@@ -251,6 +262,10 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   { const o = '<!-- CLAUDE.md lines as pass MS wrote them, before pass MT corrected them, word for word: begin -->\n'; const ia = hist.indexOf(o); const ib = hist.indexOf('<!-- CLAUDE.md lines as pass MS wrote them, before pass MT corrected them, word for word: end -->');
     const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
     ok('docs/CLAUDE-HISTORY.md keeps the two CLAUDE.md lines pass MT corrected as pass MS wrote them, and RULES-AUDIT section 9 names them (pass MT)', createHash('sha256').update(kept, 'utf8').digest('hex') === '9ef1f5e89f6f37c6f2b6a4d5862d79a9cb119ad989e14d4de858ea43326145ae' && row.includes('Corrected in pass MT, at Mikey\'s word')); }
+  // The say-along line, corrected in place in pass MU at Mikey's word (Q81): its words as pass MT wrote them kept the same way.
+  { const o = '<!-- CLAUDE.md lines as pass MT wrote them, before pass MU corrected them, word for word: begin -->\n'; const ia = hist.indexOf(o); const ib = hist.indexOf('<!-- CLAUDE.md lines as pass MT wrote them, before pass MU corrected them, word for word: end -->');
+    const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
+    ok('docs/CLAUDE-HISTORY.md keeps the CLAUDE.md line pass MU corrected as pass MT wrote it, and RULES-AUDIT section 9 names it (pass MU)', /^- Say-along \(pass MS, /.test(kept) && createHash('sha256').update(kept, 'utf8').digest('hex') === '8807fc601f55d60281930354b66cd30cfcdca692264e0edbe8b58462b511eacd' && row.includes('Corrected in pass MU, at Mikey\'s word')); }
 }
 // NEW-CHAT.md's history (pass MM): the state bullets of passes JE to MJ, the earlier chats' "When to start" paragraphs and the
 // chain of earlier preview links moved, word for word, to docs/NEW-CHAT-HISTORY.md, whose text between its markers must hash to

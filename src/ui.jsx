@@ -1774,19 +1774,23 @@ const OWN_PACE_SHAPES = ['key', 'cheer', ...Object.keys(SAY_ALONG_SHAPES)];
 // In plain terms: one audio element plays every sound, so the first tap anywhere can unlock it (a phone lets a page play sound only
 // once a tap has played something); each sound is made once a pace, from logic's numbers, and kept in memory as a small WAV file (a
 // blob: address, which the page's security policy allows). playSound plays one and calls back when it ends, at once if the device
-// cannot play it, and never holds a reading up longer than the longest sound and a little more. stopSound silences it. A test
-// reads window.__eduSounds, the sounds asked for in order.
-let soundAudio = null; let soundPlaying = false; let soundToken = 0; const soundUrls = {};
-const SOUND_LONGEST_MS = 1900; const SOUND_GAP_MS = 200;   // the guard: the crowd (1.5 s, pass MT) and 400 ms more; the rules test holds every sound 300 ms under it
+// cannot play it, and never holds a reading up longer than the longest sound and a little more; since pass MU, no longer than that
+// sound itself and a little more from the moment it starts (soundGuardMs), now the crowd runs two and a half seconds. stopSound silences it. A test reads
+// window.__eduSounds, the sounds asked for in order.
+let soundAudio = null; let soundPlaying = false; let soundToken = 0; const soundUrls = {}; const soundMs = {};
+const SOUND_LONGEST_MS = 2900; const SOUND_GAP_MS = 200;   // the guard: the crowd (2.5 s since pass MU; 1.5 s in pass MT) and 400 ms more; the rules test holds every sound 300 ms under it
 function soundPlayer() {
   if (!soundAudio && typeof window !== 'undefined' && typeof window.Audio === 'function') { try { soundAudio = new window.Audio(); soundAudio.preload = 'auto'; } catch (e) { soundAudio = null; } }
   return soundAudio;
 }
 function soundUrl(sound, slow) {
   const key = `${sound}${slow ? '-slow' : ''}`;
-  if (!(key in soundUrls)) { try { soundUrls[key] = URL.createObjectURL(new Blob([soundClipWav(sound, { slow })], { type: 'audio/wav' })); } catch (e) { soundUrls[key] = null; } }
+  if (!(key in soundUrls)) { try { const wav = soundClipWav(sound, { slow }); soundMs[key] = Math.round(((wav.length - 44) / 2 / SOUND_RATE) * 1000); soundUrls[key] = URL.createObjectURL(new Blob([wav], { type: 'audio/wav' })); } catch (e) { soundUrls[key] = null; } }
   return soundUrls[key];
 }
+// How long a reading waits for one sound whose end the browser never reports: the sound's own length and 400 ms more, never past
+// SOUND_LONGEST_MS, and SOUND_LONGEST_MS for a sound whose length is not known (pass MU).
+function soundGuardMs(sound, slow) { const ms = soundMs[`${sound}${slow ? '-slow' : ''}`]; return ms > 0 ? Math.min(SOUND_LONGEST_MS, ms + 400) : SOUND_LONGEST_MS; }
 // The first tap, key or touch anywhere plays a twentieth of a second of silence, which unlocks the element for every sound after it.
 // A tap whose own stopSound cuts that silence short (the play's promise fails) leaves the flag down, so the next tap plays it again,
 // until one plays through (round one's screen check, pass MO: the comment said once); it is kept so, since a phone's browser may
@@ -1803,11 +1807,20 @@ function playSound(sound, onEnd) {
   const token = ++soundToken; let finished = false; let guard = null;
   const finish = () => { if (finished) return; finished = true; if (guard) clearTimeout(guard); if (token === soundToken) { soundPlaying = false; onEnd(); } };
   try { (window.__eduSounds = window.__eduSounds || []).push(sound); } catch (e) { /* only a test reads it */ }
-  const a = soundPlayer(); const url = soundUrl(sound, SPEECH_NUDGE < 0);
+  const slow = SPEECH_NUDGE < 0; const a = soundPlayer(); const url = soundUrl(sound, slow);
   if (!a || !url) { setTimeout(finish, 0); return; }
   soundPlaying = true; a.onended = finish; a.onerror = finish;
+  // The guard (round one's code check, pass MU): the longest sound's until the sound truly starts, then this sound's own length and
+  // 400 ms more from that moment, so a phone slow to start a sound never moves the reading on over its end.
   guard = setTimeout(finish, SOUND_LONGEST_MS);
-  try { a.src = url; const p = a.play(); if (p && p.catch) p.catch(finish); } catch (e) { finish(); }
+  const started = () => {
+    if (finished) return; if (guard) clearTimeout(guard); guard = setTimeout(finish, soundGuardMs(sound, slow));
+    // The crowd takes a moment to make (about a quarter of a second on a desktop, more on a slow phone, and about two and a half
+    // seconds on a phone without a JIT; round one's code check and its second read, pass MU), so a cheer's first whistle, once it has
+    // truly started, makes it while it plays, and the crowd after the last saying starts at once; a whistle refused or left makes none.
+    if (sound === 'whistle' && !(`applause${slow ? '-slow' : ''}` in soundUrls)) setTimeout(() => { if (token === soundToken && !finished) soundUrl('applause', slow); }, 150);
+  };
+  try { a.src = url; const p = a.play(); if (p && p.then) p.then(started, finish); else started(); } catch (e) { finish(); }
 }
 function stopSound() { soundToken += 1; soundPlaying = false; if (soundAudio) { try { soundAudio.pause(); } catch (e) { /* nothing was playing */ } } }
 // Whether anything is still being said: the device voice speaking or waiting to, or one of the app's sounds playing.

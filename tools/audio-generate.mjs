@@ -5,16 +5,24 @@
 // clips are skipped, so the run can be stopped and started again at any time.
 // Since pass MW (Mikey: "Just be sure to add emphasis tags and descriptions within the audio ledger for Eleven.") the ledger also
 // holds the app's own sounds, and this tool asks for each the way its kind needs: a speech sound (kind speech sound) is spoken by the
-// young voice from its phonetic symbols alone, with no words before or after it, and a sound effect (kind sound effect, the cheer's
+// young voice from its row's text, its direction, its goal (since pass MX) and its phonetic symbols, with no words before or after it, and a sound effect (kind sound effect, the cheer's
 // whistle and crowd, Q82 (a)) is made by ElevenLabs' sound effects (POST /v1/sound-generation, model eleven_text_to_sound_v3, or
 // another with --sfx-model, since ElevenLabs says SFX v3 is in limited access) from the row's text, the prompt that describes the
 // sound, for its seconds and its influence, never sent to the voice, which would read the prompt aloud; its description column says
 // what to listen for and is never sent. Each sound is made in a few takes (the row's takes), saved as audio/takes/<key>-<n>.mp3 for Mikey to pick by ear; the take
 // he likes is copied to audio/<key>.mp3, which this tool never writes for a sound itself, and a sound whose file is there is skipped.
-// Run: ELEVENLABS_API_KEY=... node tools/audio-generate.mjs --voice <id> [--voice-young <id>] [--model eleven_v4] [--sfx-model eleven_text_to_sound_v3] [--only S95] [--limit 50] [--dry-run]
-//      (--only sounds makes the speech sounds and the sound effects alone)
+// Run: ELEVENLABS_API_KEY=... node tools/audio-generate.mjs --voice <id> [--voice-young <id>] [--model eleven_v4] [--sfx-model eleven_text_to_sound_v3] [--only S95] [--limit 50] [--dry-run] [--no-goals]
+//      (--only sounds makes the speech sounds and the sound effects alone; --no-goals, since pass MX, sends a row without the short
+//      direction the ledger puts before each speech sound, for a take that still read the direction aloud when made again: delete
+//      that take as well, then run with the voices you used before and --only <its key>, since finished clips are skipped and
+//      every other row should keep its goals)
 // The API key comes only from the environment and is never written to a file.
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
+import { SOUND_GOAL_TAGS } from '../src/logic.mjs';
+
+// A row's text without the goals the ledger puts before its sounds (pass MX, Mikey's descriptors for Eleven), for --no-goals: each
+// goal tag and the space after it, read from the one list in src/logic.mjs.
+export const withoutGoals = (text) => SOUND_GOAL_TAGS.reduce((t, g) => t.split(g + ' ').join(''), String(text));
 
 // The two kinds of row that are sounds rather than spoken words (pass MW).
 export const SOUND_KINDS = ['speech sound', 'sound effect'];
@@ -45,13 +53,13 @@ export function withNeighbors(rows) {
 // endpoint with its text (the sound's prompt), seconds and influence; every other row goes to the voice, a speech sound in the young voice and in
 // takes, a clip of words once, with its neighbors' words when it has them (none for eleven_v3, where ElevenLabs says request
 // stitching is not available). The rules in plain terms are held by tests/scripts.test.mjs.
-export function requestFor(row, { voice, voiceYoung, model = 'eleven_v4', sfxModel = 'eleven_text_to_sound_v3' } = {}) {
+export function requestFor(row, { voice, voiceYoung, model = 'eleven_v4', sfxModel = 'eleven_text_to_sound_v3', noGoals = false } = {}) {
   if (row.kind === 'sound effect') {
     return { url: 'https://api.elevenlabs.io/v1/sound-generation', takes: Math.max(1, Number(row.takes) || 1),
       body: { text: row.text, duration_seconds: Number(row.seconds), prompt_influence: Number(row.influence), model_id: sfxModel } };
   }
   const v = row.voice === 'young' ? (voiceYoung || voice) : voice; const stitch = model !== 'eleven_v3';
-  const body = { text: row.text, model_id: model, ...(stitch && row.previous ? { previous_text: row.previous } : {}), ...(stitch && row.next ? { next_text: row.next } : {}) };
+  const body = { text: noGoals ? withoutGoals(row.text) : row.text, model_id: model, ...(stitch && row.previous ? { previous_text: row.previous } : {}), ...(stitch && row.next ? { next_text: row.next } : {}) };
   return { url: `https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(v)}`, takes: row.kind === 'speech sound' ? Math.max(1, Number(row.takes) || 1) : 1, body };
 }
 
@@ -60,9 +68,9 @@ export function requestFor(row, { voice, voiceYoung, model = 'eleven_v4', sfxMod
 if (process.argv[1] && process.argv[1].endsWith('audio-generate.mjs')) {
   const args = process.argv.slice(2); const opt = (name, fallback = null) => { const i = args.indexOf(`--${name}`); return i >= 0 ? (args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true) : fallback; };
   const voice = opt('voice'); const voiceYoung = opt('voice-young', voice); const model = opt('model', 'eleven_v4'); const sfxModel = opt('sfx-model', 'eleven_text_to_sound_v3');
-  const only = opt('only'); const limit = Number(opt('limit', 0)) || Infinity; const dry = !!opt('dry-run', false);
+  const only = opt('only'); const limit = Number(opt('limit', 0)) || Infinity; const dry = !!opt('dry-run', false); const noGoals = !!opt('no-goals', false);
   const key = process.env.ELEVENLABS_API_KEY;
-  if (!voice || (!key && !dry)) { console.log('Usage: ELEVENLABS_API_KEY=... node tools/audio-generate.mjs --voice <id> [--voice-young <id>] [--model eleven_v4] [--sfx-model eleven_text_to_sound_v3] [--only S95] [--limit 50] [--dry-run]'); process.exitCode = 1; }
+  if (!voice || (!key && !dry)) { console.log('Usage: ELEVENLABS_API_KEY=... node tools/audio-generate.mjs --voice <id> [--voice-young <id>] [--model eleven_v4] [--sfx-model eleven_text_to_sound_v3] [--only S95] [--limit 50] [--dry-run] [--no-goals]'); process.exitCode = 1; }
   else {
     const rows = withNeighbors(parseCsv(readFileSync(new URL('../docs/AUDIO-LEDGER.csv', import.meta.url), 'utf8')));
     const outDir = new URL('../audio/', import.meta.url); if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true });
@@ -72,14 +80,16 @@ if (process.argv[1] && process.argv[1].endsWith('audio-generate.mjs')) {
       if (stop) break;
       if (only && !(r.key === only || r.key.startsWith(`${only}-`) || r.source === only)) continue;
       if (existsSync(new URL(`${r.key}.mp3`, outDir))) { skipped++; continue; }
-      const req = requestFor(r, { voice, voiceYoung, model, sfxModel });
+      const req = requestFor(r, { voice, voiceYoung, model, sfxModel, noGoals });
       const names = req.takes > 1 || SOUND_KINDS.includes(r.kind) ? Array.from({ length: req.takes }, (_, k) => `takes/${r.key}-${k + 1}.mp3`) : [`${r.key}.mp3`];
       for (const name of names) {
         const file = new URL(name, outDir);
         if (existsSync(file)) { skipped++; continue; }
         if (made >= limit) { stop = true; break; }
-        // A dry run shows a sound effect's whole request (its seconds, influence and model come after its prompt) and a clip's first 200 characters.
-        if (dry) { const shown = JSON.stringify(req.body); console.log(r.key + ' -> ' + req.url + ': ' + (r.kind === 'sound effect' ? shown : shown.slice(0, 200))); made++; continue; }
+        // A dry run shows a sound's whole request (a sound effect's seconds, influence and model come after its prompt, and since pass
+        // MX a speech sound's goal and symbols run past 200 characters), a line with a goal whole too (round two's code read: a lesson
+        // line's goals were cut at 200), and any other clip's first 200 characters.
+        if (dry) { const shown = JSON.stringify(req.body); const whole = SOUND_KINDS.includes(r.kind) || SOUND_GOAL_TAGS.some((g) => r.text.includes(g)); console.log(r.key + ' -> ' + req.url + ': ' + (whole ? shown : shown.slice(0, 200))); made++; continue; }
         if (name.startsWith('takes/') && !existsSync(takesDir)) mkdirSync(takesDir, { recursive: true });
         const res = await fetch(req.url, { method: 'POST', headers: { 'xi-api-key': key, 'Content-Type': 'application/json', Accept: 'audio/mpeg' }, body: JSON.stringify(req.body) });
         if (!res.ok) { console.log(`Stopped at ${r.key}: ElevenLabs answered ${res.status} ${await res.text()}`); process.exitCode = 1; stop = true; break; }

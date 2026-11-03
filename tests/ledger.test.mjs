@@ -280,5 +280,38 @@ ok('the ledger has no rows the app does not use', orphans.length === 0, orphans.
   const caught = offRows(swapped).some((r) => r.serial === 'S3919');
   ok(`every pre-K story picture takes its course subject's style anchor (${Object.keys(anchors).length} subjects read from batch.py; ${later.length} rows of kindergarten and up wait as a count that only falls)`, Object.keys(anchors).length >= 5 && early.length === 0 && later.length <= 141 && caught, `pre-K off: ${early.map((r) => r.serial).join(',')}; later ${later.length}`);
 }
+// Two people who look alike (pass MX, round two's content read: Gran's tangerine coat a lesson after a white-haired grandma's
+// marigold sweater, the look class every pass since MO has met, each time found by a person reading). tools/look-echoes.mjs reads
+// every pre-K story and painting row's people for their hair and clothing color families and lists two people of one kind (girl,
+// boy, woman, man) in different lessons of the same course or the course before whose families both match, the looks themselves
+// differing. A row from pass MX on (S4027 and P175 on) is held to none; the older pairs wait as a count that only falls (EARMARKS
+// A73). Since the third read: a person a new row begins a look for (with, who has, of about eight with, teacher with) that the tool
+// cannot read fails (Dex's dad, whose man bun had read as a second man, was read as no one); the people a new row meets again are
+// named, each with the older rows it repeats (P175 paints Mia and Sam as their course draws them), where any look an older row gave
+// had been excused, so someone given another's look word for word passed; and two people in one lesson are read too. The near misses:
+// Gran's coat put back to tangerine; Noemi's dress as round two's fix first wrote it, cranberry, beside First steps' girl with short
+// black hair in a red dress, which this check found; Noemi given that girl's look word for word; Dex given brown hair and a teal
+// t-shirt beside Jasper in his own story; and Dex's dad with no hair written; while P175's Mia and Sam, named, pass.
+{ const { personReads, lookPairs } = await import('../tools/look-echoes.mjs');
+  const NEW_FROM = { S: 4027, P: 175 }; const ECHO_WAITING = 80;
+  const MET_AGAIN = { 'P175|girl': ['S176', 'S200'], 'P175|boy': ['S113', 'S200'] };
+  const isNew = (serial) => { const m = /^([SP])(\d+)$/.exec(serial); return !!m && +m[2] >= NEW_FROM[m[1]]; };
+  const judge = (text) => { const all = personReads(text); const looks = all.filter((x) => x.read); const lookOf = new Map(looks.map((x) => [x.serial + '|' + x.group, x.look]));
+    const metAgain = (x) => { const older = MET_AGAIN[x.serial + '|' + x.group]; return !!older && older.every((s) => lookOf.get(s + '|' + x.group) === x.look); };
+    const fresh = (x) => isNew(x.serial) && !metAgain(x); const pairs = lookPairs(looks);
+    return { looks: looks.length, unread: all.filter((x) => !x.read && isNew(x.serial)), newer: pairs.filter((p) => (fresh(p[0]) || fresh(p[1])) && !(p.same && p.sameLesson)),
+      waiting: pairs.filter((p) => !fresh(p[0]) && !fresh(p[1]) && !p.same), named: Object.keys(MET_AGAIN).every((k) => { const [s, g] = k.split('|'); return metAgain({ serial: s, group: g, look: lookOf.get(k) }); }) }; };
+  const name = ([a, b]) => a.serial + ' and ' + b.serial + ' (' + a.group + ', ' + a.hair + ' hair, ' + a.clothing + ')';
+  const pairOf = (r, x, y) => r.newer.some(([a, b]) => [a.serial, b.serial].includes(x) && [a.serial, b.serial].some((s) => y.test(s)));
+  const now = judge(ledger);
+  const plants = [pairOf(judge(ledger.replace('in a long sapphire-blue coat', 'in a long tangerine coat')), 'S4038', /^S402[79]$/),
+    pairOf(judge(ledger.split('in a caramel-brown dress').join('in a cranberry dress')), 'S1468', /^S403[5-8]$/),
+    pairOf(judge(ledger.split('long black hair and green-framed glasses, in a caramel-brown dress').join('short black hair and bangs in a red dress')), 'S1468', /^S403[5-8]$/),
+    pairOf(judge(ledger.split('a mop of reddish-brown hair over his forehead, in a tan t-shirt').join('a mop of brown hair over his forehead, in a teal t-shirt')), 'S4027', /^S40(2[7-9]|30)$/),
+    judge(ledger.split('a short blond man bun and a blond goatee').join('a blond goatee')).unread.length > 0,
+    now.named && now.waiting.some(([a, b]) => a.serial === 'P175' || b.serial === 'P175')];
+  ok(`no person a pre-K row writes from pass MX on looks like another of their kind in the same lesson, course or course before, by hair and clothing color, and every look such a row begins is read (${now.looks} looks read; P175's Mia and Sam named as met again; ${now.waiting.length} older pairs wait as a count that only falls, at most ${ECHO_WAITING}; six near misses)`,
+    now.looks >= 500 && now.unread.length === 0 && now.newer.length === 0 && now.waiting.length <= ECHO_WAITING && plants.every(Boolean),
+    `new pairs: ${now.newer.map(name).join('; ')}; unread: ${now.unread.map((x) => x.serial + ' ' + x.why).join('; ')}; waiting ${now.waiting.length}; near misses ${plants}`); }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

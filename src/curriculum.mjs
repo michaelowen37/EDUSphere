@@ -543,6 +543,8 @@ const PREK_TAUGHT = [
       { framework: 'TEKS', code: 'PK3.II.E.2', text: 'Child begins to use regular plurals and regular past tense correctly.', moduleIds: ['one-cat-two-cats'] },
       { framework: 'TEKS', code: 'PK3.II.E.3', text: 'Child uses simple sentence structures to share ideas using some details.', moduleIds: ['say-a-sentence'] },
       { framework: 'CCSS', code: 'ELOF.P-LC.5', text: 'Expresses self in increasingly long, detailed, and sophisticated ways.', moduleIds: ['say-a-sentence'] },
+      // Pass MX: Words in a sentence, PK3 III.B.1 (EARMARKS E12, the standards review of Domain III, part one).
+      { framework: 'TEKS', code: 'PK3.III.B.1', text: 'Child counts the number of words in a simple spoken sentence with adult assistance.', moduleIds: ['words-in-a-sentence'] },
     ],
   },
   {
@@ -631,8 +633,10 @@ const PREK_TAUGHT = [
       // P-LC 5 with its 48 to 60 month progression (EARMARKS E13, the standards review of Domain II's II.E).
       { framework: 'CCSS', code: 'ELOF.P-LC.5', text: 'Expresses self in increasingly long, detailed, and sophisticated ways.', moduleIds: ['longer-sentences'] },
       { framework: 'TEKS', code: 'PK4.II.E.1', text: 'Child typically uses complete sentences with increasing length and age-appropriate grammatical complexity, usually in standard word order.', moduleIds: ['longer-sentences'] },
-      { framework: 'TEKS', code: 'PK4.II.E.2', text: 'Child uses a variety of age-appropriate grammatical forms (e.g. plurals, past tense, pronouns, subject-verb agreement) in spoken language.', moduleIds: ['words-that-change'] },
+      { framework: 'TEKS', code: 'PK4.II.E.2', text: 'Child uses a variety of age-appropriate grammatical forms (e.g. plurals, past tense, pronouns, subject-verb agreement) in spoken language.', moduleIds: ['words-that-change', 'she-he-and-they'] },
       { framework: 'TEKS', code: 'PK4.II.E.3', text: 'Child uses sentences that combine multiple phrases or ideas, shares details, maintains a topic, and communicates ideas clearly.', moduleIds: ['longer-sentences'] },
+      // Pass MX: Count the words, PK4 III.B.1 (EARMARKS E13, the standards review of Domain III, part one).
+      { framework: 'TEKS', code: 'PK4.III.B.1', text: 'Child counts the number of words in a spoken sentence of increasing complexity.', moduleIds: ['count-the-words'] },
       { framework: 'TEKS', code: 'PK4.III.C.1', text: 'Child recognizes and names at least 18 uppercase letters and 15 lowercase letters.', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
       { framework: 'CCSS', code: 'ELOF.P-LIT.1', text: 'Demonstrates awareness that spoken language is composed of smaller segments of sound.', moduleIds: ['listen-for-rhymes', 'first-sounds'] },
       { framework: 'CCSS', code: 'ELOF.P-LIT.3', text: 'Identifies letters of the alphabet and produces correct sounds associated with letters.', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },

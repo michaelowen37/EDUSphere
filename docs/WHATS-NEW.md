@@ -9,6 +9,12 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## November 3, 2026 (counting the words in a sentence, and grammar said plainly)
+
+- Three- and four-year-olds have two new lessons that start the reading part of the guidelines: counting the words in a sentence. Words in a sentence (three-year-olds) and Count the words (four-year-olds) say a sentence slowly, clap once for each word and show a dot for each, little words like the counted too, and the four-year-olds hear sentences grow one word at a time. Each lesson has its own story. Their questions are for listening: while the device can speak, the sentence and the choices are heard rather than printed (a sentence to choose shows "Tap to hear"), so a child counts what they hear and not how long the writing looks.
+- The grammar lessons now say, before the questions ask, the forms we do not say, so a child knows what "Which one says it right?" is asking: "When there is just one, we say one cup, and not, one cups." and "We say, yesterday I kicked the ball, and not, yesterday I kick the ball."
+- For four-year-olds, Words that change is now two shorter lessons, since one would have grown too long for a young child. Words that change teaches more than one and what already happened (two buses, I ran, I went), and the new She, he and they teaches she, he, they and I in place of a name and the word that fits who does it (one dog runs, two dogs run; I am, she is, they are), with its own story.
+
 ## November 2, 2026 (four new lessons on telling in sentences)
 
 - Three- and four-year-olds have four new lessons about telling in sentences, each with its own story. Say it in a sentence teaches three-year-olds to put their words in order, who and then what they do ("The dog runs."), to add a word that tells more ("The little cat sleeps."), and to tell two or three things about one thing. One cat, two cats teaches the little sound many words get for more than one (dogs, cups) and the change for what already happened (kicked, played). Longer sentences teaches four-year-olds that the order of the words tells who does what, how a sentence grows longer, joining ideas with and and because, and staying on a topic, and Words that change teaches buses and fish, ran and went, she, he and they, and one dog runs but two dogs run.

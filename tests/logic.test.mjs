@@ -168,7 +168,26 @@ const MW_ANSWERS = { 'Where did you go?': 'I went to the park.', 'What did you e
 const MW_LONG_YESNO = { 'Does a whole sentence tell who, and what they do?': 'Yes', 'Is the baby, all by itself, a whole sentence?': 'No', 'Can the order of the words change who does what?': 'Yes', 'If I say, the dog chases the cat, does the cat run after the dog?': 'No', 'Can you join two ideas with the word and?': 'Yes', 'Does the word because tell why?': 'Yes', 'When you tell about the park, and you say, my cat likes fish, is that on the same topic?': 'No', 'When someone asks you a question, can you answer it with a sentence?': 'Yes', 'When you say your sentences clearly, can a new friend understand you better?': 'Yes', 'Does a sentence get shorter when you tell more?': 'No' };
 const MW_SUBJECTS = ['She', 'He', 'They', 'I'];
 const MW_FITS = { 'One dog': 'runs', 'Two dogs': 'run', 'One ball': 'rolls', 'Two balls': 'roll', I: 'am', She: 'is', We: 'are', They: 'are' };
-const MW_FORM_YESNO = { 'Do we say, there are two buses?': 'Yes', 'Do some words stay the same for more than one, like fish?': 'Yes', 'Do we say, yesterday I goed to the park?': 'No', 'Do we say, yesterday I ran?': 'Yes', 'Can we say she in place of Mia?': 'Yes', 'When you tell what you want, do you say, me want a turn?': 'No', 'Do we say, two dogs runs?': 'No', 'Do we say, I am happy?': 'Yes', 'Do we say, there are two bus?': 'No' };
+// Since pass MX (Mikey's Q70 and Q83) Words that change asks about more than one and what already happened, and She, he and they about
+// she, he, they and I and the word that fits who does it, each with its own yes or no.
+const MW_FORM_YESNO = { 'Do we say, there are two buses?': 'Yes', 'Do we say, one fish, two fish?': 'Yes', 'Do we say, yesterday I goed to the park?': 'No', 'Do we say, yesterday I ran?': 'Yes', 'Do we say, the two bus stopped?': 'No', 'Do we say, there is one hats?': 'No', 'Do we say, yesterday I runned to the slide?': 'No', 'When you tell about yesterday, do you say, I kick the ball?': 'No' };
+const MX_FIT_YESNO = { 'Can we say she in place of Mia?': 'Yes', 'When you tell what you want, do you say, me want a turn?': 'No', 'Do we say, two dogs runs?': 'No', 'Do we say, I am happy?': 'Yes', 'Can we say they in place of Mia and Sam?': 'Yes', 'Do we say, them have fun?': 'No', 'Do we say, she are happy?': 'No', 'Do we say, one dog runs?': 'Yes' };
+// The word that fits each one who is happy, and what one thing and more than one do, in the test's own words.
+const MX_BE = { I: 'am', She: 'is', He: 'is', We: 'are', They: 'are' };
+const MX_DOES = { dog: ['runs', 'run'], ball: ['rolls', 'roll'] };
+// Words in a sentence and Count the words (pass MX): a sentence's words, counted by the test's own split, and the yes or no answers.
+const mxCount = (s) => String(s).replace(/[.!?]+$/, '').trim().split(/\s+/).filter(Boolean).length;
+// The counting lessons' yes or no rows a count cannot answer; "Does, X, have N words?" is worked out from X itself (mxDoesHave, since
+// round one's code check: the answers had been written twice by hand, in the bank and here).
+const MX_WS3_YESNO = { 'Is a sentence made of words?': 'Yes', 'Does a little word, like the, count as a word?': 'Yes', 'When we add a word to a sentence, does it have more words?': 'Yes' };
+const MX_WS4_YESNO = { 'Is a sentence made of words?': 'Yes', 'Does a little word, like the, count as a word?': 'Yes', 'When a sentence grows, does it have more words?': 'Yes' };
+const MX_NUM = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];
+const mxDoesHave = (q) => { const m = /^Does, (.+), have (\w+) words\?$/.exec(q.prompt || ''); if (!m || !MX_NUM.includes(m[2])) return null; return mxCount(m[1]) === MX_NUM.indexOf(m[2]) ? 'Yes' : 'No'; };
+// The heard sentence's count as a group of dots; the one sentence with the most or fewest words; the one whose count is the dots'; the
+// one whose count is the heard sentence's; and the one word of the second sentence the first does not have.
+const mxHeard = (q) => { const m = /^Listen\. (.+)$/.exec(q.story || ''); return m ? m[1] : null; };
+const mxExtreme = (q, most) => { const cs = q.choices || []; const ns = cs.map(mxCount); const best = most ? Math.max(...ns) : Math.min(...ns); return ns.filter((n) => n === best).length === 1 ? cs[ns.indexOf(best)] : null; };
+const mxNew = (q) => { const m = /^Listen\. (.+?) Now, (.+)$/.exec(q.story || ''); if (!m) return null; const before = m[1].toLowerCase().replace(/[.!?]/g, '').split(/\s+/); const added = m[2].toLowerCase().replace(/[.!?]/g, '').split(/\s+/).filter((w) => !before.includes(w)); return added.length === 1 ? mqOne(q, (c) => c.toLowerCase() === added[0]) : null; };
 const NUMBER_NAMES_T = ['zero', 'one', 'two', 'three'];   // the test's own count words
 const mwWord = (w) => new RegExp('\\b' + w + '\\b');
 // The longer of two sentences that holds every word of the shorter, and more; or null.
@@ -385,6 +404,23 @@ const PREK_DERIVE = {
   'p4-form-pronoun': (q) => (q.prompt === 'Which one says it right?' ? mqOne(q, (c) => MW_SUBJECTS.includes(c.split(' ')[0])) : null),
   'p4-form-agree': (q) => (q.prompt === 'Which one says it right?' ? mqOne(q, (c) => { const k = Object.keys(MW_FITS).find((s) => c.startsWith(s + ' ')); return !!k && c.slice(k.length + 1).replace(/[.!?]$/, '').split(' ')[0] === MW_FITS[k]; }) : null),
   'p4-form-yesno': (q) => MW_FORM_YESNO[q.prompt] || null,
+  // Pass MX: a picture of one or more and the sentence that tells about it; what already happened; am, is or are; the sentence whose
+  // words fit the picture; and She, he and they's yes or no.
+  'p4-form-see': (q) => { const s = mwShown(q); if (!s || q.prompt !== 'Which one do we say for this picture?') return null; return msPick(q, [[s.n > 1 ? 'I see ' + MW_MANY[s.name] + '.' : 'I see a ' + s.name + '.']]); },
+  'p4-form-when': (q) => (q.prompt === 'Which one tells what already happened?' && !q.story ? mqOne(q, (c) => MW_PAST.some((w) => mwWord(w).test(c))) : null),
+  'p4-they-be': (q) => (q.prompt === 'Which one says it right?' ? mqOne(q, (c) => { const k = Object.keys(MX_BE).find((s) => c.startsWith(s + ' ')); return !!k && c.slice(k.length + 1).split(' ')[0] === MX_BE[k]; }) : null),
+  'p4-they-see': (q) => { const s = mwShown(q); if (!s || !MX_DOES[s.name] || q.prompt !== 'Which one do we say for this picture?') return null; return msPick(q, [[s.n > 1 ? 'The ' + MW_MANY[s.name] + ' ' + MX_DOES[s.name][1] + '.' : 'The ' + s.name + ' ' + MX_DOES[s.name][0] + '.']]); },
+  'p4-they-yesno': (q) => MX_FIT_YESNO[q.prompt] || null,
+  'p3-words-count': (q) => { const s = mxHeard(q); return s && q.prompt === 'Tap the group with one dot for each word.' ? 'dots:' + mxCount(s) : null; },
+  'p3-words-more': (q) => (q.prompt === 'Which one has more words?' ? mxExtreme(q, true) : null),
+  'p3-words-dots': (q) => (q.visual && q.visual.kind === 'dots' && q.prompt === 'Which one has one word for each of these dots?' ? mqOne(q, (c) => mxCount(c) === q.visual.count) : null),
+  'p3-words-same': (q) => { const s = mxHeard(q); return s && q.prompt === 'Which one has the same number of words?' ? mqOne(q, (c) => mxCount(c) === mxCount(s)) : null; },
+  'p3-words-yesno': (q) => mxDoesHave(q) || MX_WS3_YESNO[q.prompt] || null,
+  'p4-words-count': (q) => { const s = mxHeard(q); return s && q.prompt === 'Tap the group with one dot for each word.' ? 'dots:' + mxCount(s) : null; },
+  'p4-words-more': (q) => (q.prompt === 'Which one has more words?' ? mxExtreme(q, true) : q.prompt === 'Which one has fewer words?' ? mxExtreme(q, false) : null),
+  'p4-words-new': (q) => (q.prompt === 'Which word is new?' ? mxNew(q) : null),
+  'p4-words-dots': (q) => (q.visual && q.visual.kind === 'dots' && q.prompt === 'Which one has one word for each of these dots?' ? mqOne(q, (c) => mxCount(c) === q.visual.count) : null),
+  'p4-words-yesno': (q) => mxDoesHave(q) || MX_WS4_YESNO[q.prompt] || null,
 };
 // A More Info reason never says a choice is not what it is (pass MO): not by its own color, size or shape (round four's code check:
 // "The green circle is not green, and it is not a circle." passed, since a denied color left no color to read), nor by the whole
@@ -869,7 +905,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
       const WN_MARKS = /[:;\u2014\u2013"\u201C\u201D\u2018\u2019]|(^|[^A-Za-z])'|'(?![A-Za-z])/;   // an apostrophe inside a word (a friend's toy) is fine
       const wnCount = (t) => String(t).trim().split(/\s+/).length;
       const wnHas = (name, w) => new RegExp(`\\b${w}\\b`, 'i').test(name);
-      const WN_NUM = ['zero', 'one', 'two', 'three', 'four', 'five'];
+      const WN_NUM = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];   // to ten since pass MX, when pre-K 4's Count the words asked about six dots
       // Sad by its tear (the lesson check, pass MH): the mad face's mouth turns down too, so the mouth never tells sad from mad.
       // Worried by its wiggly mouth and embarrassed by its eyes that look down (pass MN): the sad face's eyebrows rise in the middle
       // as the worried face's do, and the happy face has pink cheeks as the embarrassed face does.
@@ -1719,12 +1755,159 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
 }
 // A yes-or-no reason fits its own question (pass MQ, round one's lesson check): "Yes would mean they do, but they do not." was heard
 // after "Are glad and happy opposites?", and "No would mean it is not, but it is." after "Can you take turns talking with your
-// teacher too?". In Domain II's yes-or-no banks, what the wrong answer would mean names a word of the question it answers.
+// teacher too?". In Domain II's yes-or-no banks, what the wrong answer would mean names a word of the question it answers. Since pass MX
+// the banks are read from the lessons, every yes or no bank of a pre-K lesson that cites Domain II, since the list written by hand had
+// missed pass MW's four sentence banks (one reason found, "bus is for two", whose question had no word of four letters to name).
+// Since round one's code check every pre-K bank that asks yes or no is read, found by its Yes and No choices (the -yesno name had
+// missed p3-ideas-fits and p3-learn-count), a letter the question names counting as its word (Is this the letter B?) and a plural as
+// its one (repeats, repeat); a reason that names nothing of its question is planted and caught.
 { const STOP = new Set(['would', 'mean', 'they', 'that', 'this', 'with', 'your', 'then', 'there', 'does', 'have', 'what', 'when', 'were']);
-  const words = (s) => (String(s).toLowerCase().match(/[a-z']{4,}/g) || []).filter((w) => !STOP.has(w)); const off = [];
-  for (const g of ['p3-people-yesno', 'p3-event-yesno', 'p3-talk-yesno', 'p3-talk-about-yesno', 'p3-steps-yesno', 'p3-steps-home-yesno', 'p4-steps-yesno', 'p4-learn-three-yesno', 'p4-learn-shape-yesno', 'p4-group-yesno', 'p4-opposite-yesno', 'p4-act-yesno', 'p3-need-yesno', 'p4-fit-yesno', 'p3-vfit-yesno', 'p3-tone-yesno', 'p4-tone-yesno']) for (let s = 1; s <= 300; s++) { const q = L.generateQuestion(g, s); const asked = new Set(words(q.prompt));
-    for (const e of Object.values(q.whyNot || {})) if (!words(e.why).some((w) => asked.has(w))) off.push(`${g}: "${q.prompt}" ${e.name} ${e.why}`); }
-  ok('a yes-or-no reason in Domain II\'s banks names a word of its own question (pass MQ)', off.length === 0, [...new Set(off)].slice(0, 3).join(' | ')); }
+  const words = (s) => (String(s).match(/\b[A-Z]\b|[A-Za-z']{4,}/g) || []).map((w) => (w.length === 1 ? w : w.toLowerCase())).filter((w) => !STOP.has(w)).map((w) => (w.length > 4 ? w.replace(/s$/, '') : w));
+  // A capital letter alone is a question's word only where the question names it as a letter ("Is this the letter B?"), so the pronoun
+  // I never makes a reason fit (round two's code read: "would mean I got it wrong, but I did not." passed beside a question with I).
+  const asked = (prompt) => new Set([...words(prompt).filter((w) => w.length > 1), ...[...String(prompt).matchAll(/\bletter ([A-Z])\b/g)].map((m) => m[1])]);
+  const off = []; const fits = (q, e) => { const a = asked(q.prompt); return words(e.why).some((w) => a.has(w)); };
+  const yesNoBank = (g) => { for (let s = 1; s <= 40; s++) { const q = L.generateQuestion(g, s); if (q && Array.isArray(q.choices) && q.choices.length === 2 && q.choices.includes('Yes') && q.choices.includes('No')) return true; } return false; };
+  const banks = [...new Set(L.COURSES.filter((c) => /^PK/.test(c.grade)).flatMap((c) => c.modules).flatMap((m) => m.generators))].filter(yesNoBank);
+  for (const g of banks) for (let s = 1; s <= 300; s++) { const q = L.generateQuestion(g, s);
+    for (const e of Object.values(q.whyNot || {})) if (!fits(q, e)) off.push(`${g}: "${q.prompt}" ${e.name} ${e.why}`); }
+  const planted = !fits({ prompt: 'Are glad and happy opposites?' }, { why: 'would mean they do, but they do not.' }) && fits({ prompt: 'Is this the letter B?' }, { why: 'means it is B, but it has two round bumps.' })
+    && !fits({ prompt: 'Do I say it right?' }, { why: 'would mean I got it wrong, but I did not.' });
+  ok(`a yes-or-no reason in every pre-K bank that asks yes or no names a word of its own question (pass MQ; since pass MX all ${banks.length} found by their choices; a reason naming nothing planted and caught, and one fitting only by the pronoun I)`, banks.length >= 41 && off.length === 0 && planted, [...new Set(off)].slice(0, 3).join(' | ')); }
+
+// Q83 (a), Mikey: "Q83 - A (I want the correct form and don't want to make it confusing)" (pass MX, round two's alignment read: no test
+// held it). Every wrong form a pre-K "Which one says it right?" question offers, and the form a No yes or no "Do we say, X?" asks
+// about, is a change its own lesson says first after "and not,": the form we say against the form we do not, word for word from the
+// start, a dropped or added s or es (a y becoming ies is an added s), a dropped ed (doubled or not), or one word for another; the same
+// change counts, so "one ball roll" is taught by "one dog runs, and not, one dog run". The near misses: She, he and they with its is
+// line taken out, and a planted wrong form no lesson says (two dogs ran). Since the third read an -es is a change of its own, apart
+// from an -s (it had counted "two buses, and not, two bus" as saying "two hat" too, so round two's two new forms could not fail it),
+// a No yes or no's form we say is read in either case and put in its place in the sentence asked ("For one cup, we say cup."), a No
+// question whose form cannot be read is counted and fails, and Words that change as it stood before round two is a near miss.
+{ const words = (s) => String(s).toLowerCase().replace(/[.!?,]/g, ' ').split(/\s+/).filter(Boolean);
+  const change = (right, wrong) => { const a = words(right), b = words(wrong); const n = Math.min(a.length, b.length); const d = [];
+    for (let i = 0; i < n; i++) if (a[i] !== b[i]) d.push([a[i], b[i]]);
+    if (d.length !== 1) return null; const [x, y] = d[0];
+    if (x === y + 'es') return 'drop-es'; if (x === y + 's') return 'drop-s'; if (y === x + 'es') return 'add-es'; if (y === x + 's' || (x.endsWith('y') && y === x.slice(0, -1) + 'ies')) return 'add-s';
+    if (x === y + 'ed' || x === y + 'd' || x === y + y.slice(-1) + 'ed') return 'drop-ed'; return 'swap:' + x + '>' + y; };
+  const taught = (script) => { const out = new Set();
+    for (const line of script) for (const sent of String(line.say).split(/(?<=[.!?])\s+/)) { const k = sent.indexOf(', and not, '); if (k < 0) continue;
+      let left = sent.slice(0, k); const say = left.search(/\bwe say,? /i); if (say >= 0) left = left.slice(say).replace(/^we say,? /i, ''); else left = left.replace(/^(?:and|so) /i, '');
+      const wrong = sent.slice(k + ', and not, '.length).split(/, and |[.!?]/)[0]; const c = change(left, wrong); if (c) out.add(c); }
+    return out; };
+  const unreadNo = new Set();
+  const offered = (q) => { if (q.prompt === 'Which one says it right?') return (q.choices || []).filter((c) => c !== q.answer).map((w) => [q.answer, w]);
+    const ask = /^Do we say, (.+)\?$/.exec(q.prompt || ''); if (!ask || q.answer !== 'No') return [];
+    const we = /\bwe say,? (.+?)\.?$/i.exec(q.explain || ''); if (!we) { unreadNo.add(q.prompt); return []; }
+    let right = we[1]; const aw = words(ask[1]); const rw = words(right);
+    if (rw.length === 1 && aw.length > 1) { const i = aw.findIndex((w) => { const c = change(rw[0], w); return !!c && !c.startsWith('swap'); }); if (i < 0) { unreadNo.add(q.prompt); return []; } right = aw.map((w, k) => (k === i ? rw[0] : w)).join(' '); }
+    return [[right, ask[1]]]; };
+  const untaught = (script, qs) => { const T2 = taught(script); return qs.flatMap((q) => offered(q).filter(([r, w]) => { const c = change(r, w); return !c || !T2.has(c); }).map(([, w]) => w)); };
+  const mods = L.COURSES.filter((c) => /^PK/.test(c.grade)).flatMap((c) => c.modules); const off = []; let read = 0; const lessons = [];
+  for (const m of mods) { const qs = []; for (const g of m.generators) for (let s = 1; s <= 300; s++) { const q = L.generateQuestion(g, s); if (q && offered(q).length) qs.push(q); }
+    if (!qs.length) continue; lessons.push(m.id); read += qs.length; off.push(...untaught(m.lesson.script, qs).map((w) => `${m.id}: ${w}`)); }
+  const she = L.getModule('she-he-and-they'); const sheQs = []; for (let s = 1; s <= 300; s++) sheQs.push(L.generateQuestion('p4-they-be', s));
+  const cut = untaught(she.lesson.script.filter((line) => !/she are happy/.test(line.say)), sheQs).length > 0;
+  const planted = untaught(she.lesson.script, [{ prompt: 'Which one says it right?', choices: ['Two dogs run.', 'Two dogs ran.'], answer: 'Two dogs run.' }]).length === 1
+    && untaught(she.lesson.script, [{ prompt: 'Which one says it right?', choices: ['One ball rolls.', 'One ball roll.'], answer: 'One ball rolls.' }]).length === 0;
+  // Words that change's two plural lines as they stood before round two said only two buses and one hat first.
+  const wtc = L.getModule('words-that-change'); const wtcQs = []; for (const g of wtc.generators) for (let s = 1; s <= 300; s++) { const q = L.generateQuestion(g, s); if (q && offered(q).length) wtcQs.push(q); }
+  const before = wtc.lesson.script.map((line) => (/one bus, and not, one buses/.test(line.say) ? { ...line, say: 'So we say two buses, and not, two bus.' } : /one hat, and not, one hats/.test(line.say) ? { ...line, say: 'Here is one hat, and here are two hats. We say one hat, and not, one hats.' } : line));
+  const roundOne = untaught(before, wtcQs).length > 0 && untaught(wtc.lesson.script, wtcQs).length === 0;
+  ok(`every wrong form a pre-K grammar question offers is a change of the same kind its lesson says first after "and not,", an -es apart from an -s (Q83 (a); ${read} questions read in ${lessons.join(', ')}, every No yes or no's form read; three near misses caught, Words that change before round two among them, and one ball roll taught by one dog run)`, off.length === 0 && unreadNo.size === 0 && read > 2000 && lessons.length >= 3 && cut && planted && roundOne, [...new Set(off)].slice(0, 6).join(' | ') + (unreadNo.size ? ' | unread No: ' + [...unreadNo].slice(0, 4).join(' | ') : '')); }
+
+// The counting lessons (pass MX, round one's lesson, code and screen reads). Every word a counting question counts has one beat, by the
+// test's own count of a word's vowel sounds (a silent e or a quiet -es or -ed is no beat), since a child who claps beats would clap
+// teddy twice, and the beats in a word wait for their own lesson; teddy and little are the near misses.
+{ const beats = (w) => { const x = w.toLowerCase().replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '').replace(/^y/, ''); return Math.max(1, (x.match(/[aeiouy]{1,2}/g) || []).length); };
+  const KINDS = ['p3-words-count', 'p3-words-more', 'p3-words-dots', 'p3-words-same', 'p3-words-yesno', 'p4-words-count', 'p4-words-more', 'p4-words-new', 'p4-words-dots', 'p4-words-yesno'];
+  const counted = (q) => { const out = []; const st = /^Listen\. (.+)$/.exec(q.story || ''); if (st) out.push(...st[1].split(/ Now, /));
+    for (const c of q.choices || []) if (/[.!?]$/.test(c)) out.push(c); const ask = /^Does, (.+), have \w+ words\?$/.exec(q.prompt || ''); if (ask) out.push(ask[1]); return out; };
+  const twoBeats = (sentences) => sentences.flatMap((s) => String(s).replace(/[.!?,]/g, '').split(/\s+/).filter(Boolean)).filter((w) => beats(w) > 1);
+  const long = new Set(); let read = 0;
+  for (const g of KINDS) for (let s = 1; s <= 300; s++) { const q = L.generateQuestion(g, s); const ss = counted(q); read += ss.length; for (const w of twoBeats(ss)) long.add(`${g}: ${w}`); }
+  const misses = beats('teddy') === 2 && beats('little') === 2 && twoBeats(['I hug my teddy.']).length === 1 && ['likes', 'sleeps', 'here', 'tree', 'bed', 'the', 'cake', 'small'].every((w) => beats(w) === 1);
+  ok(`every word a counting question counts has one beat (${read} sentences read over ${KINDS.length} banks; teddy and little caught, likes, sleeps and here read as one)`, long.size === 0 && read > 2000 && misses, [...long].slice(0, 6).join(', '));
+
+  // The lessons' spoken counts, worked out again: a sentence said word by word ("We, like, to, play") is followed by the count it
+  // has ("that is four words", "is six words too", "has one word for each of these four dots"), a story's claps count the words
+  // said before them, and every group of dots a line shows is a count the line says, in a pair each of its two. Since round two's
+  // code read the count may follow as "are N words" or as "N claps" in a lesson line or a paragraph too ("the, cat, sleeps, three
+  // claps!"), and a line that says sentences word by word shows its dots in their order, one group for each sentence with that
+  // sentence's count (three dots over three beside "I, run, fast, has more words, and I, run, has fewer" had passed, three being said).
+  const NUM = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];
+  const RUN = /(?<=^|[.?!] |, |\b(?:And|So|and|so) )((?:[A-Za-z]+, )+[A-Za-z]+)(?:, (?:and )?(?:that is|is|has|are) (one|two|three|four|five|six|seven|eight|nine|ten) words|, has one word for each of these (one|two|three|four|five|six|seven|eight|nine|ten) dots|, (?:and )?(?:that is )?(one|two|three|four|five|six|seven|eight|nine|ten) claps\b)/g;
+  const countsOff = (text) => [...String(text).matchAll(RUN)].filter((m) => NUM.indexOf((m[2] || m[3] || m[4]).toLowerCase()) !== m[1].split(', ').length).map((m) => m[0]);
+  // Every sentence a text says word by word, each once, in the order it is first said.
+  const SAID = /(?<=^|[.?!] |, |\b(?:And|So|and|so) )((?:[A-Za-z]+, )+[A-Za-z]+)(?=[,.!?])/g;
+  const saidRuns = (text) => [...new Set([...String(text).matchAll(SAID)].map((m) => m[1].toLowerCase()))];
+  const dotsOf = (v) => (!v ? [] : v.kind === 'dots' ? [v.count] : v.kind === 'pair' ? [...dotsOf(v.a), ...dotsOf(v.b)] : []);
+  const dotsOff = (line) => { const groups = dotsOf(line.show); if (!groups.length) return []; const runs = saidRuns(line.say);
+    if (runs.length) return runs.map((r) => r.split(', ').length).join() === groups.join() ? [] : [`dots ${groups.join(' and ')} for ${runs.join(' | ')}: ${line.say}`];
+    return groups.filter((n) => !new RegExp('\\b' + NUM[n] + '\\b', 'i').test(line.say)).map((n) => `${n} dots: ${line.say}`); };
+  const clapsOff = (words) => { const all = words.join(' '); const out = [];
+    for (const m of all.matchAll(/((?:[A-Za-z]+, ){2,}[A-Za-z]+)[!.]/g)) { const after = all.slice(m.index + m[0].length); const c = /\b(two|three|four|five|six) claps\b/i.exec(after);
+      if (c && NUM.indexOf(c[1].toLowerCase()) !== m[1].split(', ').length) out.push(m[0] + ' ... ' + c[0]); }
+    return out; };
+  const lessons = ['words-in-a-sentence', 'count-the-words'].map((id) => L.getModule(id));
+  const { STORIES } = await import('../src/stories.mjs');
+  const off = []; let runs = 0;
+  for (const m of lessons) for (const line of m.lesson.script) { off.push(...countsOff(line.say), ...dotsOff(line)); runs += [...line.say.matchAll(RUN)].length; }
+  for (const m of lessons) { off.push(...clapsOff(STORIES[m.id].words)); for (const p of m.lesson.paragraphs) { off.push(...countsOff(p)); runs += [...p.matchAll(RUN)].length; } }
+  const plantA = dotsOff({ say: 'We, like, to, play, that is four words, and four dots!', show: { kind: 'dots', count: 5 } }).length === 1;
+  const plantB = countsOff('My, cat, likes, milk, that is five words, so five claps and five dots.').length === 1 && countsOff('Say it slowly, the, cat, sleeps, and that is three words.').length === 0;
+  const plantC = clapsOff(['My, dog, likes, to, run! Four claps! said Pablo.']).length === 1;
+  // Since the third read every "N claps", "N dots" or "a group of N dots" later in a sentence is held to the sentence it said word by
+  // word with its count before them ("My, cat, is, soft, that is four words, so four claps and four dots."), and every sentence said
+  // word by word before "are N words each" to that count.
+  const W10 = '(one|two|three|four|five|six|seven|eight|nine|ten)';
+  const sentenceOff = (text) => { const out = [];
+    for (const sent of String(text).split(/(?<=[.!?])\s+/)) {
+      for (const m of sent.matchAll(RUN)) { const n = m[1].split(', ').length; const rest = sent.slice(m.index + m[0].length);
+        for (const c of rest.matchAll(new RegExp('\\b' + W10 + ' (?:claps|dots)\\b', 'gi'))) if (NUM.indexOf(c[1].toLowerCase()) !== n) out.push(m[0] + ' ... ' + c[0]); }
+      const each = new RegExp(', are ' + W10 + ' words each').exec(sent);
+      if (each) { const n = NUM.indexOf(each[1].toLowerCase()); for (const r of saidRuns(sent.slice(0, each.index) + '.')) if (r.split(', ').length !== n) out.push(r + ' ... ' + each[0]); } }
+    return out; };
+  for (const m of lessons) { for (const line of m.lesson.script) off.push(...sentenceOff(line.say)); for (const p of m.lesson.paragraphs) off.push(...sentenceOff(p)); }
+  const plantG = sentenceOff('The, cat, sleeps, has three words, so it gets four claps.').length === 1 && sentenceOff('My, cat, is, soft, that is four words, so five claps and five dots.').length === 2
+    && sentenceOff('I, run, that is two words, so here is a group of three dots, one dot for each word.').length === 1 && sentenceOff('The, ball, rolls, fast, and the, cat, sleeps, are three words each.').length === 1
+    && sentenceOff('My, cat, is, soft, that is four words, so four claps and four dots.').length === 0;
+  const plantD = countsOff('We can clap once for each word, so clap with me as we say it, the, cat, sleeps, four claps!').length === 1;
+  const plantE = countsOff('The, ball, rolls, and the, cat, sleeps, are four words each.').length === 1;
+  const plantF = dotsOff({ say: 'Three is more than two, so I, run, fast, has more words, and I, run, has fewer.', show: { kind: 'pair', a: { kind: 'dots', count: 3 }, b: { kind: 'dots', count: 3 } } }).length === 1;
+  ok(`the two counting lessons' spoken counts are right: each sentence said word by word has the count its line says, in words or claps, each story's claps count its words, every clap and dot a sentence says after a word count is that count, and a line's dots are its sentences' counts in the order it says them (${runs} counts read; ten near misses caught, the run after "Say it slowly" read from "the")`, off.length === 0 && runs >= 15 && plantA && plantB && plantC && plantD && plantE && plantF && plantG, off.slice(0, 4).join(' | '));
+
+  // Every word the two lessons and their stories count has one beat too (round two's code read: the beat check read only the banks,
+  // and "I, see, the, puppy" planted in a lesson line passed): every sentence a line, a paragraph or a story says word by word, and
+  // every sentence a turn asks the child to say.
+  const lessonCounted = []; for (const m of lessons) { for (const line of m.lesson.script) { lessonCounted.push(...saidRuns(line.say)); for (const v of line.voices || []) lessonCounted.push(v[0]); }
+    for (const p of m.lesson.paragraphs) lessonCounted.push(...saidRuns(p)); for (const w of STORIES[m.id].words) lessonCounted.push(...saidRuns(w)); }
+  const lessonLong = twoBeats(lessonCounted); const puppy = twoBeats(saidRuns('I, see, the, puppy, that is four words, so here are four dots.')).length === 1;
+  ok(`every word the two counting lessons and their stories say word by word, or a turn asks a child to say, has one beat (${lessonCounted.length} sentences read; a planted puppy caught)`, lessonLong.length === 0 && lessonCounted.length >= 20 && puppy, lessonLong.join(', '));
+
+  // A counting question is a heard question (since round one's screen check): while the voice can speak, its sentence prints as
+  // Listen to the sentence and its sentence choices as Tap to hear, so neither the print's length nor its words answer it; with no
+  // voice everything prints, for a grown-up. A question with heardChoices taken off is the near miss.
+  const SENT = ['p3-words-more', 'p3-words-dots', 'p3-words-same', 'p4-words-more', 'p4-words-dots'];
+  const shown = (q, voice) => { const pq = L.printedQuestion(q, voice); return [pq.story || '', ...(q.choices || []).map((c) => L.printedChoice(q, c, voice) || c)].join(' | '); };
+  const leaks = (q) => counted(q).filter((s) => !/^Does, /.test(q.prompt || '')).some((s) => shown(q, true).includes(String(s).replace(/[.!?]$/, '')));
+  const askLeaks = (q) => { const m = /^Does, (.+), have \w+ words\?$/.exec(q.prompt || ''); return !!m && (L.printedQuestion(q, true).prompt.includes(m[1]) || L.printedQuestion(q, false).prompt !== q.prompt); };
+  // With no voice a counting question prints its own story and prompt (round two's code read: a printer that swapped in Listen to the
+  // sentence with no voice was caught only through another bank); a printer passed in, so the near miss runs through this function.
+  const noVoiceOff = (q, print = L.printedQuestion) => { const pq = print(q, false); return (pq.story || '') !== (q.story || '') || pq.prompt !== q.prompt; };
+  // Since the third read every yes or no of the counting banks is read as printed while the voice can speak, for any sentence the
+  // counting banks count and any sentence said word by word (a row worded another way would have printed its sentence and passed).
+  const bankSaid = new Set(); for (const g of KINDS) for (let s = 1; s <= 120; s++) for (const t of counted(L.generateQuestion(g, s))) bankSaid.add(String(t).replace(/[.!?]$/, '').toLowerCase());
+  const promptLeaks = (q, print = L.printedQuestion) => { const p = String(print(q, true).prompt || ''); const low = p.toLowerCase(); return [...bankSaid].some((t) => low.includes(t)) || saidRuns(p).length > 0; };
+  const leaked = new Set(); let heardRead = 0; let askRead = 0;
+  for (const g of KINDS) for (let s = 1; s <= 120; s++) { const q = L.generateQuestion(g, s);
+    if (/yesno$/.test(g)) { if (/^Does, /.test(q.prompt || '')) { askRead++; if (askLeaks(q)) leaked.add(g); } if (promptLeaks(q)) leaked.add(g + ' (prompt)'); continue; } heardRead++;
+    if (leaks(q) || noVoiceOff(q) || (SENT.includes(g) && !(q.choices || []).every((c) => L.printedChoice(q, c, true) === L.HEARD_CHOICE && L.printedChoice(q, c, false) === null))) leaked.add(g); }
+  const swapped = noVoiceOff(L.generateQuestion('p3-words-count', 3), (q, v) => ({ ...L.printedQuestion(q, v), story: q.printedStory || q.story }));
+  const reworded = promptLeaks({ prompt: 'Is I see the dog three words long?' }) && promptLeaks({ prompt: 'Does I, see, the, dog, have four words?' }) && !promptLeaks({ prompt: 'Does the sentence you hear have three words?' });
+  const bare = { ...L.generateQuestion('p3-words-more', 3) }; delete bare.heardChoices;
+  let askBare = null; for (let s = 1; s <= 60 && !askBare; s++) { const q = L.generateQuestion('p4-words-yesno', s); if (/^Does, /.test(q.prompt)) { askBare = { ...q }; delete askBare.printed; } }
+  ok(`a counting question prints none of the sentences it asks about while the voice can speak, its sentence choices printed Tap to hear and its yes or no printed without the sentence it counts, and everything prints with no voice (${heardRead} questions over eight banks and ${askRead} yes or no; a question without heardChoices, a yes or no without its printed words, a printer that hides the sentence with no voice and two yes or no prompts worded another way caught)`, leaked.size === 0 && heardRead >= 900 && askRead >= 50 && leaks(bare) && !!askBare && askLeaks(askBare) && swapped && reworded, [...leaked].join(', ')); }
 // No bank keeps its answer in one place (pass MM, the workflow review): over 300 seeds no button holds the answer 95 percent of the
 // time, or a child could pass by tapping it every time (grade 1's Which number is greater? always listed the greater number second).
 // And a bank of several different questions whose answer never changes teaches the answer, not the idea: those are kept by name
@@ -4634,7 +4817,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   const otherPair = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']);
   const otherPriv = await crypto.subtle.exportKey('jwk', otherPair.privateKey);
   ok('a code signed with any other key is refused', (await L.checkLicenseCode(await L.makeLicenseCode(otherPriv, { id: 'X', name: 'Y', year: '2026-27', until: '2027-07-31' }), new Date('2026-10-01'))).ok === false);
-  ok('pre-K 3, pre-K 4 and kindergarten courses are free, grade 1 and up are not', L.COURSES.filter(L.courseIsFree).length > 0 && L.COURSES.every((c) => L.courseIsFree(c) === ['PK3', 'PK4', 'K'].includes(c.grade)) && L.COURSES.filter(L.courseIsFree).reduce((n, c) => n + c.modules.length, 0) === 184);   // 86 plus computer science (FS), economics (FV), art and music (GE), philosophy (GL), psychology (GP) and speech (GT), four modules each, plus the five kindergarten science modules of earmark E1 (pass KK) the two Counting modules of earmark E2 (pass KL) the seven Me and my community modules of earmark E3 (passes KM and KN) the seven Taking care of me modules of earmark E4 (passes KO and KP) the four Tell, show, step and repeat modules of earmark E5 (passes KQ and KR) and the five Letters tracing modules of earmark E6 (pass KS), plus the two Very First Steps feelings modules of earmark E12 (pass MD) and its One more and one fewer and Listen and Point's Words that rhyme (pass ME), plus Very First Steps' Can I play too? and First Steps' three feelings lessons of earmarks E12 and E13 (pass MN), plus First Steps' Let's play together of earmark E13 and Listen and Point's Two steps and Two ideas and First Sounds and Letters' Three steps of earmarks E12 and E13 (pass MO), plus Listen and Point's Learning words and People and events, Very First Steps' Talking with a friend, and First Sounds and Letters' More learning words and Words that go together of earmarks E12 and E13 (pass MQ), plus the nine second halves of Mikey's answer to Q70 (pass MR: four of pre-K 3's, five of pre-K 4's), plus Very First Steps' Say what you need and First Steps' Say it to fit and First Sounds and Letters' Things we do of earmarks E12 and E13 (pass MS), plus Very First Steps' A voice to fit the place, Listen and Point's My voice goes up and down and First Sounds and Letters' My voice tells more of earmarks E12 and E13 (pass MV), plus Listen and Point's Say it in a sentence and One cat, two cats and First Sounds and Letters' Longer sentences and Words that change of earmarks E12 and E13 (pass MW)
+  ok('pre-K 3, pre-K 4 and kindergarten courses are free, grade 1 and up are not', L.COURSES.filter(L.courseIsFree).length > 0 && L.COURSES.every((c) => L.courseIsFree(c) === ['PK3', 'PK4', 'K'].includes(c.grade)) && L.COURSES.filter(L.courseIsFree).reduce((n, c) => n + c.modules.length, 0) === 187);   // 86 plus computer science (FS), economics (FV), art and music (GE), philosophy (GL), psychology (GP) and speech (GT), four modules each, plus the five kindergarten science modules of earmark E1 (pass KK) the two Counting modules of earmark E2 (pass KL) the seven Me and my community modules of earmark E3 (passes KM and KN) the seven Taking care of me modules of earmark E4 (passes KO and KP) the four Tell, show, step and repeat modules of earmark E5 (passes KQ and KR) and the five Letters tracing modules of earmark E6 (pass KS), plus the two Very First Steps feelings modules of earmark E12 (pass MD) and its One more and one fewer and Listen and Point's Words that rhyme (pass ME), plus Very First Steps' Can I play too? and First Steps' three feelings lessons of earmarks E12 and E13 (pass MN), plus First Steps' Let's play together of earmark E13 and Listen and Point's Two steps and Two ideas and First Sounds and Letters' Three steps of earmarks E12 and E13 (pass MO), plus Listen and Point's Learning words and People and events, Very First Steps' Talking with a friend, and First Sounds and Letters' More learning words and Words that go together of earmarks E12 and E13 (pass MQ), plus the nine second halves of Mikey's answer to Q70 (pass MR: four of pre-K 3's, five of pre-K 4's), plus Very First Steps' Say what you need and First Steps' Say it to fit and First Sounds and Letters' Things we do of earmarks E12 and E13 (pass MS), plus Very First Steps' A voice to fit the place, Listen and Point's My voice goes up and down and First Sounds and Letters' My voice tells more of earmarks E12 and E13 (pass MV), plus Listen and Point's Say it in a sentence and One cat, two cats and First Sounds and Letters' Longer sentences and Words that change of earmarks E12 and E13 (pass MW), plus First Sounds and Letters' She, he and they, the second half of Words that change by Mikey's Q70 at his answer to Q83, and Listen and Point's Words in a sentence and First Sounds and Letters' Count the words of earmarks E12 and E13 (pass MX)
   const mixed = ['counting-k', 'reading-3', 'letters-k'];
   ok('without a license only the free courses open; with one, all of them do', JSON.stringify(L.openCourseIds(mixed, false)) === JSON.stringify(['counting-k', 'letters-k']) && L.openCourseIds(mixed, true).length === 3);
   ok('the app carries a public key only, marked as the development key until launch', !('d' in L.LICENSE_PUBLIC_KEY) && L.LICENSE_KEY_IS_DEVELOPMENT === true);

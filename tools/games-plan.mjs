@@ -1,5 +1,6 @@
 // Writes docs/GAMES-PLAN.md from the games themselves (2026-09-25), so the plan can never drift from what the app holds:
-// every course and its games, the two ceilings the rules test holds, and where the new kinds stand.
+// every course and its games, the two ceilings the rules test holds, and where the new kinds stand. Since pass MX (the third read) the
+// plan is exported (GAMES_PLAN_MD) and written only when this tool is the file being run, so the docs sync test can hold the file to it.
 // Run: node tools/games-plan.mjs
 import { writeFileSync } from 'node:fs';
 import * as L from '../src/logic.mjs';
@@ -37,5 +38,8 @@ Each new kind should make the course's idea the rule of the game, so playing is 
 |---|---|---|
 ${rows.join('\n')}
 `;
-writeFileSync(new URL('../docs/GAMES-PLAN.md', import.meta.url), out);
-console.log(`games plan written: ${rows.length} courses, ${kinds.size} kinds, ${quick} quick fires, ${repeats} repeats, doubles ${doubles.join(', ') || 'none'}`);
+export const GAMES_PLAN_MD = out;
+if (process.argv[1] && process.argv[1].endsWith('games-plan.mjs')) {
+  writeFileSync(new URL('../docs/GAMES-PLAN.md', import.meta.url), out);
+  console.log(`games plan written: ${rows.length} courses, ${kinds.size} kinds, ${quick} quick fires, ${repeats} repeats, doubles ${doubles.join(', ') || 'none'}`);
+}

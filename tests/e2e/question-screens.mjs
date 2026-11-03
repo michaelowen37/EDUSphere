@@ -1182,6 +1182,21 @@ const ponder = () => page.evaluate(() => {
     await page.waitForTimeout(500); names[look] = { at, want, heard: await page.evaluate(() => [...document.querySelectorAll('svg[role="img"][aria-label]')].map((s) => s.getAttribute('aria-label'))) }; }
   ok("a picture's look is named with it for a screen reader: Longer sentences' sleeping baby and broken crayon (pass MW, round two's code read)", Object.values(names).every((n) => n.at >= 0 && n.heard.includes(n.want)), names); }
 
+// A counting question's sentences are heard (pass MX, round two's code read: no browser test read a heard choice). With the page's
+// voice, Words in a sentence's p3-words-same prints "Listen to the sentence." over two buttons that each say "Tap to hear", wear
+// data-heard-choice and name their sentence to a screen reader; with no voice (the page's SpeechSynthesisUtterance taken away for the
+// moment) its sentence and both choices print, as a grown-up reads them.
+{ const look = () => page.evaluate(() => ({ heard: document.body.innerText.includes('Listen to the sentence.'), buttons: [...document.querySelectorAll('[data-choice]')].filter((b) => b.offsetParent)
+    .map((b) => ({ choice: b.getAttribute('data-choice'), text: (b.textContent || '').trim(), heard: b.hasAttribute('data-heard-choice'), label: b.getAttribute('aria-label') })) }));
+  await page.setViewportSize({ width: 390, height: 844 }); await page.waitForTimeout(200);
+  await show('p3-words-same', 3, 'words-in-a-sentence'); const voiced = await look();
+  await page.evaluate(() => { window.__heldUtterance = window.SpeechSynthesisUtterance; window.SpeechSynthesisUtterance = undefined; });
+  await show('p3-words-same', 4, 'words-in-a-sentence'); await show('p3-words-same', 3, 'words-in-a-sentence'); const silent = await look();
+  await page.evaluate(() => { window.SpeechSynthesisUtterance = window.__heldUtterance; delete window.__heldUtterance; });
+  const voicedOk = voiced.heard && voiced.buttons.length === 2 && voiced.buttons.every((b) => b.heard && /Tap to hear/.test(b.text) && b.label === b.choice);
+  const silentOk = !silent.heard && silent.buttons.length === 2 && silent.buttons.every((b) => !b.heard && b.text.includes(b.choice.replace(/[.!?]$/, '')));
+  ok("a counting question's sentence choices say Tap to hear and name their sentence to a screen reader while the voice can speak, and print it with none (pass MX, round two's code read; p3-words-same)", voicedOk && silentOk, JSON.stringify({ voiced, silent }).slice(0, 600)); }
+
 ok('no page errors along the way', errors.length === 0, errors);
 await browser.close();
 console.log(`\n${passed} passed, ${failed} failed`);

@@ -16,7 +16,7 @@
 // of takes tools/audio-generate.mjs asks for.
 // Run: node tools/audio-ledger.mjs > docs/AUDIO-LEDGER.md   (it also writes docs/AUDIO-LEDGER.csv, which tools/audio-generate.mjs reads)
 import { writeFileSync } from 'node:fs';
-import { COURSES, readAloudScript, SENTENCE_BREAK, GAMES, gameIntro, gameBand, cheerTagged, sayAlongParts, storyTitleSpoken, mannerOf, VOICE_MANNERS, speechPieces, SOUND_RECORDINGS, SPEECH_SOUNDS, TRIAL_SOUNDS, SAY_ALONG_VOICES, soundOfNotation, VOICE_SOUNDS, ipaQuoted } from '../src/logic.mjs';
+import { COURSES, readAloudScript, SENTENCE_BREAK, GAMES, gameIntro, gameBand, cheerTagged, sayAlongParts, storyTitleSpoken, mannerOf, VOICE_MANNERS, speechPieces, SOUND_RECORDINGS, SPEECH_SOUNDS, TRIAL_SOUNDS, SAY_ALONG_VOICES, soundOfNotation, VOICE_SOUNDS, ipaQuoted, goalTag, SOUND_GOAL_TAGS } from '../src/logic.mjs';
 // The voice's own sounds' symbols live in logic.mjs since round one's code check (one source); the ledger keeps its old export.
 export { VOICE_SOUNDS };
 import { STORIES, COURSE_STORIES, MASTERY_STORIES } from '../src/stories.mjs';
@@ -108,7 +108,7 @@ export function elevenSentence(sentence, { voices = null, word = null, stress = 
     if (piece.sound) {
       const rec = ownOf(SOUND_RECORDINGS, piece.sound); const f = find(piece.text, cursor);
       if (!rec || !rec.ipa || !f) { out.missed.push(piece.text); continue; }
-      edits.push({ ...f, put: rec.ipa, ipa: true, name: piece.sound }); out.sounds.push(piece.sound); cursor = f.at + f.len; continue;
+      edits.push({ ...f, put: rec.ipa, ipa: true, name: piece.sound, goal: rec.goal }); out.sounds.push(piece.sound); cursor = f.at + f.len; continue;
     }
     if (piece.shape === 'key' && words.length > 1) {
       const f = find(piece.text, cursor); if (!f) { out.missed.push(piece.text); continue; }
@@ -129,12 +129,12 @@ export function elevenSentence(sentence, { voices = null, word = null, stress = 
   toks.forEach((k, i) => {
     if (covered(k)) return;
     const vs = ownOf(VOICE_SOUNDS, k.w.toLowerCase());
-    if (vs && usesSounds && toks.some((o) => o !== k && sounded(o.w))) { edits.push({ at: k.at, len: k.end - k.at, put: vs.ipa, ipa: true }); out.voiceSounds.push(k.w.toLowerCase()); return; }
+    if (vs && usesSounds && toks.some((o) => o !== k && sounded(o.w))) { edits.push({ at: k.at, len: k.end - k.at, put: vs.ipa, ipa: true, goal: vs.goal }); out.voiceSounds.push(k.w.toLowerCase()); return; }
     if ((k.w === 'A' || (k.w === 'a' && !(usesSounds && [toks[i - 1], toks[i + 1]].some((o) => o && sounded(o.w))))) && isLetterNamed(s, k.at, k.end, k.w)) { edits.push({ at: k.at, len: 1, put: '/eɪ/', ipa: true }); out.letters.push('A'); return; }
     if (!/^[aeiou]$/i.test(k.w)) return;
     const before = s.slice(0, k.at).replace(/\s+$/, ''); const after = s.slice(k.end).replace(/^\s+/, '');
     const setOff = (before === '' || /[,-]$/.test(before)) && (after === '' || /^[,.!?-]/.test(after));
-    if (setOff && (sounded((toks[i - 1] || {}).w) || sounded((toks[i + 1] || {}).w))) { edits.push({ at: k.at, len: 1, put: SOUND_RECORDINGS[k.w.toLowerCase()].ipa, ipa: true, name: k.w.toLowerCase() }); out.sounds.push(k.w.toLowerCase()); vowelRun = true; }
+    if (setOff && (sounded((toks[i - 1] || {}).w) || sounded((toks[i + 1] || {}).w))) { edits.push({ at: k.at, len: 1, put: SOUND_RECORDINGS[k.w.toLowerCase()].ipa, ipa: true, name: k.w.toLowerCase(), goal: SOUND_RECORDINGS[k.w.toLowerCase()].goal }); out.sounds.push(k.w.toLowerCase()); vowelRun = true; }
   });
   // A run of sounds that blend into a word says each sound once: sss, fff and zzz one held breath there (SOUND_RECORDINGS' one). A run
   // holds a vowel's sound among other sounds ("Cuh, a, nnn."); a sentence of sounds alone with no vowel ("Sss, sss, sss.") is no blend,
@@ -142,8 +142,11 @@ export function elevenSentence(sentence, { voices = null, word = null, stress = 
   const soundsOnly = words.every((w) => sounded(w.replace(/[^A-Za-z]/g, '')) || /^[aeiou]$/i.test(w.replace(/[^A-Za-z]/g, '')));
   const vowelPiece = pieces.some((x) => x.sound && /^[aeiou]$/.test(x.sound));
   out.run = vowelRun || (vowelPiece && soundsOnly && pieces.filter((x) => x.sound).length > 1);
-  if (out.run) for (const e of edits) { const rec = e.name ? ownOf(SOUND_RECORDINGS, e.name) : null; if (rec && rec.one) e.put = rec.one; }
-  let text = s; for (const e of [...edits].sort((a, b) => b.at - a.at)) text = text.slice(0, e.at) + (e.ipa ? ipaQuoted(e.put) : e.put) + text.slice(e.at + e.len);
+  if (out.run) for (const e of edits) { const rec = e.name ? ownOf(SOUND_RECORDINGS, e.name) : null; if (rec && rec.one) { e.put = rec.one; e.goal = rec.goalOne; } }
+  // Since pass MX a sound's goal goes right before its symbols (goalTag); a mark holds its place until the capitals are written, so a
+  // stress word or the say-along's word is never capped inside a goal (dog, in og's goal).
+  const goalsAt = []; let text = s;
+  for (const e of [...edits].sort((a, b) => b.at - a.at)) { let put = e.ipa ? ipaQuoted(e.put) : e.put; if (e.goal) { put = '\u0001' + goalsAt.length + '\u0002' + put; goalsAt.push(goalTag(e.goal)); } text = text.slice(0, e.at) + put + text.slice(e.at + e.len); }
   if (word) {
     const re = new RegExp('(?<![A-Za-z])' + String(word).split(/\s+/).map(escapeRe).join('\\s+') + '(?![A-Za-z])', 'gi'); const all = [...text.matchAll(re)];
     if (all.length) { const last = all[all.length - 1]; text = text.slice(0, last.index) + last[0].toUpperCase() + text.slice(last.index + last[0].length); out.stressed.push(last[0].toUpperCase()); } else out.missed.push(word);
@@ -153,13 +156,39 @@ export function elevenSentence(sentence, { voices = null, word = null, stress = 
     text = text.replace(re, (m) => { hit = true; return m.toUpperCase(); });
     if (hit && !out.stressed.includes(String(w).toUpperCase())) out.stressed.push(String(w).toUpperCase());
   }
+  text = text.replace(/\u0001(\d+)\u0002/g, (m, i) => goalsAt[Number(i)] + ' '); out.goals = goalsAt.length;
   out.text = text; out.onlySounds = words.length > 0 && words.every((w) => { const bare = w.replace(/[^A-Za-z]/g, ''); return sounded(bare) || (out.run && /^[aeiou]$/i.test(bare)); });
   return out;
 }
 // A row's description of its sounds, capitals and letters (pass MW), in plain words.
 const soundLine = (n, once) => { const r = SOUND_RECORDINGS[n]; return once && r.one ? r.one + ' ' + r.short.replace(/, twice$/, ', once') : r.ipa + ' ' + r.short; };
-const soundsSaid = (e) => { const all = [...new Set(e.sounds)].map((n) => soundLine(n, e.run)).concat([...new Set(e.voiceSounds || [])].map((n) => VOICE_SOUNDS[n].ipa + ' ' + VOICE_SOUNDS[n].short));
-  return all.length ? ' Each sound in the phonetic alphabet between slashes (sent in double quotes, as ElevenLabs asks) is said as a sound, never as letters: ' + all.join('; ') + '.' + (e.run ? ' The sounds blend into a word, so each is said once.' : '') : ''; };
+const soundsSaid = (e, key, back) => { const all = [...new Set(e.sounds)].map((n) => soundLine(n, e.run)).concat([...new Set(e.voiceSounds || [])].map((n) => VOICE_SOUNDS[n].ipa + ' ' + VOICE_SOUNDS[n].short));
+  return all.length ? ' Each sound in the phonetic alphabet between slashes (sent in double quotes, as ElevenLabs asks) is said as a sound, never as letters: ' + all.join('; ') + '.' + (e.run ? ' The sounds blend into a word, so each is said once.' : '') + goalSaid(key, back) : ''; };
+// What a row's description says of the goals (pass MX), with the row's own key, since the generator skips a clip already made: a take
+// that reads a goal aloud is deleted and made again as it is (the generator makes only what is missing), and if the new take fails
+// too, it is deleted as well before the generator runs with the voices used before and --only <key> --no-goals, so no other row loses
+// its goals (round one's audio check; round two's code read ran it and found the failed retake skipped). back says whether the
+// line's own direction comes again after a sound (directionBack, below).
+const goalSaid = (key, back) => " The bracket just before each sound's symbols tells Eleven what the sound should be (Mikey, pass MX)" + (back ? ", and the line's own direction comes again after a sound, before the words that follow it, since a tag carries forward across the line" : '') + '. If a take reads a bracket aloud or sounds like a sound effect, delete that take and run the generator again, which makes only what is missing; if the new take fails too, delete it as well and run ELEVENLABS_API_KEY=... node tools/audio-generate.mjs with the voices you used before and --only ' + key + ' --no-goals (pasting into ElevenLabs, leave out each bracket before a sound).';
+// Since round one's audio check (pass MX): a tag's delivery carries forward across the line (ElevenLabs' tags list: "When you add a
+// tag, its emotion carries forward across the line, meaning you only need to introduce another tag when you want the delivery to
+// shift."), so where two or more words follow a sound's symbols before the next goal or the line's end, the line's own direction
+// comes again before them, and the words go back to the voice the line opened with. Between the sounds of a run, or with one word
+// between two sounds ("Not ... , not ..."), nothing is put in; a sound's group is its symbol and the same symbol again (sss said
+// twice), so the letter A's name after a sound ("/eɪ/") is a word that follows it.
+export function directionBack(text, direction) {
+  let out = ''; let rest = String(text);
+  for (;;) {
+    const hits = SOUND_GOAL_TAGS.map((g) => [rest.indexOf(g), g]).filter(([i]) => i >= 0).sort((a, b) => a[0] - b[0]);
+    if (!hits.length) return out + rest;
+    const [at, g] = hits[0]; const after = rest.slice(at + g.length);
+    const sym = /^ ("\/[^/"]+\/")(?:, \1)*/.exec(after); if (!sym) return out + rest;
+    const end = at + g.length + sym[0].length; out += rest.slice(0, end); rest = rest.slice(end);
+    const next = SOUND_GOAL_TAGS.map((t) => rest.indexOf(t)).filter((i) => i >= 0); const upTo = next.length ? Math.min(...next) : rest.length;
+    const words = (rest.slice(0, upTo).replace(/"\/[^/"]+\/"/g, ' ').match(/[A-Za-z]+/g) || []).length;
+    if (words >= 2) { const lead = /^[,.;!?]*\s*/.exec(rest)[0]; out += lead + direction + ' '; rest = rest.slice(lead.length); }
+  }
+}
 const stressSaid = (e) => { const many = e.stressed.length > 1 || e.stressed.some((w) => /\s/.test(w)); const letters = [...new Set(e.letters)];
   const stress = e.stressed.length ? ' Stress the word' + (many ? 's' : '') + ' in capitals (' + e.stressed.join(', ') + ').' : '';
   const named = letters.length ? ' ' + letters.join(', ') + (letters.length > 1 ? ' are letters' : ' is a letter') + ', said by name' + (letters.includes('A') && e.text.includes('/eɪ/') ? ', the letter A written as its name, /eɪ/' : '') + '.' : '';
@@ -249,7 +278,8 @@ for (const c of courses) {
         } else {
           const e = elevenSentence(part.sentence, { voices: line.voices, word: si === wordAt ? parts[open].word : null, stress: line.stress || [] });
           const direction = e.onlySounds ? (e.sounds.length === 1 ? SOUND_RECORDINGS[e.sounds[0]].how : '[warm and gentle, a preschool teacher saying each speech sound alone, one after another, slowly]') : DIRECTION.early;
-          add(key, 'lesson line', m.id, c.grade, `${direction} ${e.text}`, part.sentence, `${m.id}-lesson`, `${where}: ${e.onlySounds ? 'speech sounds said alone, slowly and clearly' : VOICE_WORDS.early}.${soundsSaid(e)}${stressSaid(e)}`);
+          const said = directionBack(e.text, direction);
+          add(key, 'lesson line', m.id, c.grade, `${direction} ${said}`, part.sentence, `${m.id}-lesson`, `${where}: ${e.onlySounds ? 'speech sounds said alone, slowly and clearly' : VOICE_WORDS.early}.${soundsSaid(e, key, said !== e.text)}${stressSaid(e)}`);
         }
       });
     });
@@ -289,7 +319,7 @@ const restedLine = (say) => sentencesOf(say).map(cheerTagged).join(' [pause] ');
   for (const name of [...Object.keys(SPEECH_SOUNDS), ...Object.keys(TRIAL_SOUNDS), ...new Set(cheer)]) {
     const r = SOUND_RECORDINGS[name]; if (!r) continue;
     if (r.kind === 'sound effect') add(`sound-${name}`, 'sound effect', 'sounds', 'PK3', r.text, '', 'sounds', r.heard, { voice: 'none', seconds: r.seconds, influence: r.influence, takes: r.takes });
-    else add(`sound-${name}`, 'speech sound', 'sounds', 'PK3', r.text, '', 'sounds', `${r.heard} If no take says it right, record it yourself and turn it into the lesson voice with ElevenLabs' Voice Changer (EARMARKS A41).`, { takes: r.takes });
+    else add(`sound-${name}`, 'speech sound', 'sounds', 'PK3', r.text, '', 'sounds', `${r.heard}${goalSaid('sound-' + name, false)} If no take says it right, record it yourself and turn it into the lesson voice with ElevenLabs' Voice Changer (EARMARKS A41).`, { takes: r.takes });
   } }
 const csv = (v) => `"${String(v).replace(/"/g, '""')}"`;
 // The app's own sounds as a table for the markdown, one row each.
@@ -305,7 +335,9 @@ const longest = Math.max(...rows.map((r) => r.text.length));
 const groups = new Map(); for (const r of rows) groups.set(r.group, (groups.get(r.group) || 0) + r.text.length);
 const tagged = Object.values(STORIES).filter((s) => s.audio).length + Object.values(COURSE_STORIES).filter((s) => s.audio).length + Object.values(MASTERY_STORIES).filter((s) => s.audio).length;
 const chars = rows.reduce((a, r) => a + r.text.length, 0);
-if (runAlone) console.log(`# Audio ledger
+// The markdown docs/AUDIO-LEDGER.md holds, exported as the CSV is so the docs sync test can hold that file to the code too (pass MX,
+// round two's alignment read: its bullet kept an example the code had changed), and printed only when the tool is run alone.
+export const LEDGER_MD = `# Audio ledger
 
 Generated ${new Date().toISOString().slice(0, 10)} by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. ${rows.length} clips, ${chars.toLocaleString('en-US')} characters in all; the longest clip is ${longest} characters and the longest whole story ${Math.max(...[...groups].filter(([g]) => !/-lesson$|^game-|^sounds$/.test(g)).map(([, n]) => n)).toLocaleString('en-US')}, far under Eleven v4's 10,000 a request (the longest lesson's lines come to ${Math.max(...[...groups].filter(([g]) => /-lesson$/.test(g)).map(([, n]) => n)).toLocaleString('en-US')} in all, each line a request of its own). ${tagged} stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
@@ -327,7 +359,8 @@ Mikey, opening pass MW: "I'm not reviewing any more audio for now since it's kin
 
 - **Descriptions.** Every row's description column says in plain words what the clip should sound like: the voice for its age, the way a say-it-together saying is said, the voice a lesson shows, the sounds in it, the words to stress. It is for whoever makes the clip and for the listening in the app; Eleven is sent the text column of every row, and a sound effect's text is the prompt that describes the sound, while its description says what to listen for and is never sent.
 - **Emphasis.** Eleven v4 reads capitals as emphasis (ElevenLabs' best practices: "Capitalization increases emphasis"). A lesson line asks for it where the app's own voice draws a word out inside a longer sentence (each word of a list that starts or ends alike: "DOG, LOG and FOG all end with "/ɑɡ/"."), on the say-it-together game's word in the sentence that names it ("Our word is RED."), and on a word a lesson says strong ("I want the RED circle, not the blue one."); a letter named as a letter is its capital, which Eleven is expected to say by its name (undocumented, so each such clip is heard before use), and the letter A, which a voice can read as the word a, is its name in the phonetic alphabet, "/eɪ/", wherever it is not the article; a story names its letters in its description. ${rows.filter((r) => r.kind === 'lesson line' && (/Stress the word/.test(r.description) || r.text.startsWith(VOICE_MANNERS.strong.tag))).length} lesson clips ask for a stressed word, a line's stress list among them (since round one, the words that change in the pass's four lessons: two DOGS, KICKED). The screen never shows the capitals of a list word, the say-along's word, a stressed word or a letter; a word said strong is in capitals on the screen too, as the lesson writes it.
-- **Speech sounds.** Eleven v4 reads the phonetic alphabet "Enclosed in forward slashes" and "Wrapped in double quotes when passed as a string parameter" (its best practices, IPA in Eleven v4), so every speech sound a lesson line writes as letters (sss, tuh, buh, the ending ig) is sent as its symbols in quotes ("/sː/", "/tʰ/", "/bə̆/", "/ɪɡ/"), and a vowel letter set off beside sounds in a run that blends into a word is sent as its short sound ("Cuh, a, nnn." is "/kʰ/", "/æ/", "/nː/"), never as the letter's name; ${rows.filter((r) => r.kind === 'lesson line' && /between slashes/.test(r.description)).length} lesson clips hold one. The guide documents IPA "for names, technical terms, and other words" and says "results can still vary by voice and phrase"; a sound said alone is not documented, so each clip's description names its sounds, every take is heard before it is used, and where a sentence's sound comes out wrong, the sentence is cut at the sound and the sound's own take (sound-<name>) is played between its parts, as the app does today, or the sound is recorded and turned into the lesson voice with the Voice Changer (EARMARKS A41). The stories' sounds stay as their words write them, named in each paragraph's description.
+- **Speech sounds.** Eleven v4 reads the phonetic alphabet "Enclosed in forward slashes" and "Wrapped in double quotes when passed as a string parameter" (its best practices, IPA with Eleven v4), so every speech sound a lesson line writes as letters (sss, tuh, buh, the ending ig) is sent as its symbols in quotes ("/sː/", "/tʰ/", "/bə̆/", "/ɪɡ/"), and a vowel letter set off beside sounds in a run that blends into a word is sent as its short sound ("Cuh, a, nnn." is "/kʰ/", "/æ/", "/nː/"), never as the letter's name; ${rows.filter((r) => r.kind === 'lesson line' && /between slashes/.test(r.description)).length} lesson clips hold one. The guide documents IPA "for names, technical terms, and other words" and says "results can still vary by voice and phrase"; a sound said alone is not documented, so each clip's description names its sounds, every take is heard before it is used, and where a sentence's sound comes out wrong, the sentence is cut at the sound and the sound's own take (sound-<name>) is played between its parts, as the app does today, or the sound is recorded and turned into the lesson voice with the Voice Changer (EARMARKS A41). The stories' sounds stay as their words write them, named in each paragraph's description.
+- **A goal before every sound (pass MX).** Mikey: "Since Eleven doesn't document a sound said alone like "/sː/", those rows in the ledger can include a short descriptor which can also be pasted into Eleven which describes what we are trying to achieve.  Since it is an AI, it allows for some explanatory text and might be able to provide a better output knowing the goal." So each speech sound's symbols follow a short direction in square brackets that says what the sound should be ("${goalTag(SOUND_RECORDINGS.m.goal)} ${ipaQuoted(SOUND_RECORDINGS.m.ipa)}"), in the sound's own row and in every lesson line that says it, ${rows.filter((r) => r.kind === 'lesson line' && /tells Eleven what the sound should be/.test(r.description)).length} lesson clips in all; pasting the text column, or the generator sending it, gives Eleven the goal with the symbols. ElevenLabs' guide for Eleven v4 says "Because Eleven v4 is trained to generate both vocal delivery styles and sound effects, a tag can occasionally be interpreted as a request for a sound effect rather than a delivery instruction (or vice versa)." and "Writing tags that clearly describe the voice quality you want (e.g. [low, gravelly voice] rather than something that could be read as a sound cue) helps the model deliver what you intended.", so every goal opens with saying, what the voice does, and names its sound by the word it starts or ends ("the first sound of moon"), never by a letter, and none is written as a sound effect of its own ([a snake hissing]), though some name the noise the voice makes (a hum, a hiss, a buzz); ElevenLabs' launch page for Eleven v4 gives the idea in its own words, saying users "can also add specific instructions on how to say certain phrases". A tag carries forward across the line (its tags list: "When you add a tag, its emotion carries forward across the line, meaning you only need to introduce another tag when you want the delivery to shift."), so where two or more words follow a sound, the line's own direction comes again before them. The guide documents no tag for a sound alone, so every take is heard before use; a take that reads a bracket aloud or sounds like a sound effect is deleted and made again as it is (the generator makes only what is missing), and if the new take fails too, it is deleted as well and made with tools/audio-generate.mjs, the voices used before and --only <its key> --no-goals, which sends the same text without the goals (the generator skips every clip already on disk, so the failed take goes first, and --only keeps every other row's goals). The letter A named as a letter ("/eɪ/") takes none, since it is a name, a word the guide documents.
 - **The app's own sounds.** Each sound the app makes itself today has a row of its own, below: what Eleven is asked for, and what to listen for when picking a take.
 
 ## The app's own sounds
@@ -369,4 +402,5 @@ ${[...new Set(rows.map((r) => r.kind))].map((k) => `| ${k} | ${rows.filter((r) =
 ## Stories with hand-written tags
 
 ${Object.entries(STORIES).filter(([, s]) => s.audio).map(([id, s]) => `### ${s.title} (${s.art}, ${id})\n\n${s.audio.map((p, i) => `- ${s.art}-${i + 1}: ${p}`).join('\n')}`).join('\n\n')}
-`);
+`;
+if (runAlone) console.log(LEDGER_MD);

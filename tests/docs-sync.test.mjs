@@ -212,6 +212,11 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   { const o = "<!-- RULES-AUDIT section 11's answered questions in pass MV, word for word: begin -->\n"; const ia = hist.indexOf(o); const ib = hist.indexOf("<!-- RULES-AUDIT section 11's answered questions in pass MV, word for word: end -->");
     const mv = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
     ok('docs/RULES-AUDIT-HISTORY.md keeps the questions answered in pass MV, every line unchanged (pass MV)', createHash('sha256').update(mv, 'utf8').digest('hex') === 'a9b3dfb1a73744b37213df50f5be34ab668687140b9627e17c621ca682b01a8c'); }
+  // Pass MX's block, held the same way: Q83, which Mikey answered when he opened the pass ("Q83 - A (I want the correct form and don't
+  // want to make it confusing)").
+  { const o = "<!-- RULES-AUDIT section 11's answered questions in pass MX, word for word: begin -->\n"; const ia = hist.indexOf(o); const ib = hist.indexOf("<!-- RULES-AUDIT section 11's answered questions in pass MX, word for word: end -->");
+    const mx = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
+    ok('docs/RULES-AUDIT-HISTORY.md keeps the questions answered in pass MX, every line unchanged (pass MX)', /^- Q83\. Answered in pass MX/.test(mx) && createHash('sha256').update(mx, 'utf8').digest('hex') === 'b16346ddea22771bc5be40c81560590243c504ea7636bca653b82c6de9473e0b'); }
   const s = audit.indexOf('## 11. Open items that need Mikey'); const e = audit.indexOf('\n## ', s + 5); const sec = audit.slice(s, e < 0 ? audit.length : e);
   const answeredLines = sec.split('\n').filter((l) => /^- Q\d+\. Answered in pass /.test(l));
   const long = answeredLines.filter((l) => !/^- Q\d+\. Answered in pass \w+ \(Mikey: .+\)\. Its rule lives in [^\n]+\.$/.test(l) || /The question as it stood/.test(l));
@@ -298,6 +303,28 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
 { const { LEDGER_CSV } = await import('../tools/audio-ledger.mjs'); const file = readFileSync(new URL('../docs/AUDIO-LEDGER.csv', import.meta.url), 'utf8');
   const have = file.split('\n'); const want = LEDGER_CSV.split('\n'); const first = want.findIndex((l, i) => l !== have[i]);
   ok(`docs/AUDIO-LEDGER.csv is what tools/audio-ledger.mjs makes from the code today (${want.length - 2} clips)`, want.length > 9000 && file === LEDGER_CSV, first < 0 ? `lengths ${have.length} and ${want.length}` : `first difference at line ${first + 1}: ${String(have[first]).slice(0, 120)}`); }
+// Every generated doc is what its tool prints today (pass MX): round one's code check found docs/QUESTION-POOLS.md and
+// docs/UNTAUGHT.md still saying 694 modules and docs/STORY-FLOW.md's pre-K rows 41 and 46 stories after the pass had added modules
+// and stories, and round two's alignment read found docs/AUDIO-LEDGER.md's bullet giving a goal the code had since changed, with no
+// test holding any of them. Each tool runs as the docs say (node tools/<tool>.mjs > docs/<DOC>.md), the audio ledger's markdown read
+// from its export since running that tool writes the CSV, and the date a doc was made is set aside, so a doc made on another day
+// passes. The near misses, through the same comparison: QUESTION-POOLS with three modules fewer, as round one found it, and the
+// ledger's bullet with its old example.
+{ const { execFileSync } = await import('node:child_process'); const { fileURLToPath } = await import('node:url'); const { LEDGER_MD } = await import('../tools/audio-ledger.mjs');
+  const root = fileURLToPath(new URL('..', import.meta.url));
+  // Since the third read THIN-STORIES (tools/story-arc.mjs) and GAMES-PLAN (tools/games-plan.mjs writes it, so its export is read) too.
+  const TOOLS = [['question-pools', 'QUESTION-POOLS'], ['untaught', 'UNTAUGHT'], ['story-flow-audit', 'STORY-FLOW'], ['review-ledger', 'REVIEW-LEDGER'], ['story-art-audit', 'STORY-ART-AUDIT'], ['story-length', 'STORY-LENGTH'], ['picture-candidates', 'PICTURE-CANDIDATES'], ['cast-ages', 'CAST-AGES'], ['story-arc', 'THIN-STORIES']];
+  const made = new Map(TOOLS.map(([tool, doc]) => [doc, execFileSync('node', ['tools/' + tool + '.mjs'], { cwd: root, encoding: 'utf8', maxBuffer: 256 << 20, timeout: 180000 })]));
+  made.set('AUDIO-LEDGER', LEDGER_MD + '\n'); const { GAMES_PLAN_MD } = await import('../tools/games-plan.mjs'); made.set('GAMES-PLAN', GAMES_PLAN_MD);
+  const undated = (t) => String(t).replace(/^Generated \d{4}-\d\d-\d\d\b/m, 'Generated (date)');
+  const stale = (doc, text) => undated(text) !== undated(made.get(doc));
+  const docText = (doc) => readFileSync(new URL('../docs/' + doc + '.md', import.meta.url), 'utf8');
+  const off = [...made.keys()].filter((doc) => stale(doc, docText(doc)));
+  const pools = docText('QUESTION-POOLS'); const count = / of (\d+) modules/.exec(pools);
+  const goal = L.goalTag(L.SOUND_RECORDINGS.m.goal); const ledger = docText('AUDIO-LEDGER');
+  const plants = [!!count && stale('QUESTION-POOLS', pools.replace(count[0], ' of ' + (+count[1] - 3) + ' modules')), ledger.includes(goal) && stale('AUDIO-LEDGER', ledger.replace(goal, '[saying just the m sound of moon, a steady hum with the lips closed]'))];
+  ok(`every generated doc is what its tool prints today, the date it was made aside (${made.size} docs; two near misses caught)`, off.length === 0 && plants.every(Boolean),
+    `stale ${off.map((d) => 'docs/' + d + '.md').join(', ')} (run each doc's tool with > into it); near misses ${plants}`); }
 // HANDOFF's numbers name the ledger's last serials (round three's final read, pass MO: they were a pass behind, S3914, D245 and
 // P154, as pass LX found them once).
 { const h = readFileSync(new URL('../docs/HANDOFF.md', import.meta.url), 'utf8'); const art = readFileSync(new URL('../docs/ART-REQUESTS.md', import.meta.url), 'utf8');

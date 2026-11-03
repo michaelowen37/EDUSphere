@@ -1412,6 +1412,13 @@ function LookGroup({ token, k = 1, tile = false }) {
     ? <DotGroup count={v.count} size={Math.round(28 * k)} frame={v.frame} gap={Math.round(v.gap * k)} />
     : <CountRow items={v.items} colour={v.colour} cell={Math.round(v.size * k)} frame={v.frame} gap={Math.round((v.gap || 8) * k)} tile={tile} />;
 }
+// A heard choice's face (pass MX): a speaker and the words Tap to hear, the same on every choice of the question, so the button
+// shows which one is which only by where it sits and what the child hears.
+function HeardChoice({ text }) {
+  return <span aria-hidden="true" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+    <svg viewBox="0 0 24 24" width="24" height="24"><path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={C.ink} /><path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12" fill="none" stroke={C.ink} strokeWidth="2" strokeLinecap="round" /></svg>
+    <span>{text}</span></span>;
+}
 function DotGroup({ count, size = 34, animate = false, animKey = 0, frame = 5, snap = false, gap = 8 }) {
   // gap is the space between dots: 8 for every group, wider for the long row of the long-row picture (pass MA), narrower for
   // the five close together beneath it.
@@ -1574,8 +1581,11 @@ function Picture(props) {
   // bare (pass MA): a picture drawn on another picture's paper, half of a pair, takes no paper card of its own.
   const { note, bare, big, ...rest } = props;
   // A size in words (a big, middle or small shape) scales with the rest, so a lesson's three sizes keep their order (the code
-  // check, pass MH: 'big' once kept a shape still while an unsized one grew past it); a number size is a layout and stays.
-  const free = !(typeof props.visual.size === 'number' || props.visual.frame || props.visual.snap || props.visual.gap);
+  // check, pass MH: 'big' once kept a shape still while an unsized one grew past it); a number size is a layout and stays. A frame of
+  // dots just as long as its count is one row, not a layout (pass MX, round two's code read: six dots in a frame of six drew
+  // smaller than three), so it grows as other dots do.
+  const oneRow = props.visual.kind === 'dots' && props.visual.frame === props.visual.count;
+  const free = !(typeof props.visual.size === 'number' || (props.visual.frame && !oneRow) || props.visual.snap || props.visual.gap);
   rest.k = big && free ? bigScale() : 1;
   const noted = note === true || (note !== false && visualStandIn(props.visual));
   const drawing = noted ? <NotedDrawing animKey={props.animKey}><PictureInner {...rest} /></NotedDrawing> : <PictureInner {...rest} />;
@@ -1694,9 +1704,12 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1, 
     // (Mikey, pass MH: "small and separated by a lot of space on my wide screen"); at 110 / 0.31 pixels a cell is as wide as its
     // picture. Its two halves sit closer too, so Next stays in view on a short phone in the light theme.
     const rowed = stack && [first, second].some((v) => v && v.kind === 'row');
+    // Its rows and the pair itself drop their 6-pixel bands (round one's screen check, pass MX: 36 pixels a pair, so Next stays on a
+    // 375 by 667 phone on One cat, two cats' second line and four more lines sit clear of the fold).
+    const tight = (v) => (rowed && v && v.kind === 'row' ? { ...v, tight: true } : v);
     const half = (v, i) => { if (!v.kind) return <Item key={i} spec={`${v.shape}-${v.colour}`} size={96} />;
       return <div key={`${animKey}-${i}`} className={animate ? 'edu-drift' : undefined} style={{ position: 'relative', animationDelay: `${i * 0.5}s`, maxWidth: stack ? '100%' : '46%', ...rowWide(v), ...(together ? { width: `${(natural(v) / widest) * 100}%` } : null), ...(v.step ? stepTile(true) : null) }}>{shrinkOf(v) ? <div style={{ transform: 'scale(0.85)' }}><Picture visual={v} note={false} bare big={wide} /></div> : <Picture visual={v} note={false} bare big={wide} />}{v.step ? <StepBadge n={v.step} pal={B} /> : null}</div>; };
-    return <div data-pair="" style={{ padding: '6px 0', display: 'flex', flexDirection: stack ? 'column' : 'row', justifyContent: 'center', alignItems: 'center', gap: stack ? (rowed ? 2 : 10) : 28, ...(together ? { width: '100%', maxWidth: widest, margin: '0 auto' } : null), ...(rowed ? { width: '100%', maxWidth: Math.round(110 / 0.31), margin: '0 auto' } : null) }}>{half(oneBeside(first, second), 0)}{half(oneBeside(second, first), 1)}</div>;
+    return <div data-pair="" style={{ padding: rowed ? 0 : '6px 0', display: 'flex', flexDirection: stack ? 'column' : 'row', justifyContent: 'center', alignItems: 'center', gap: stack ? (rowed ? 2 : 10) : 28, ...(together ? { width: '100%', maxWidth: widest, margin: '0 auto' } : null), ...(rowed ? { width: '100%', maxWidth: Math.round(110 / 0.31), margin: '0 auto' } : null) }}>{half(tight(oneBeside(first, second)), 0)}{half(tight(oneBeside(second, first)), 1)}</div>;
   }
   // A row of up to three pictures (pass MA): two owls and a fox, or a big, a middle-size and a little circle, so a line that names
   // three things shows all three. Each cell takes the same share of the width and each picture a share of its cell in proportion
@@ -1713,7 +1726,10 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1, 
     const tiled = items.some((v) => v.step);
     // A row may stand its pictures on one floor (align: 'end', pass MR, round one's picture check), so a baby drawn smaller stands
     // beside the grown-ups rather than floating at their middle.
-    return <div className="edu-row-pic" style={{ padding: '6px 0', display: 'flex', justifyContent: 'center', alignItems: visual.align === 'end' ? 'flex-end' : 'center', gap: tiled ? '4%' : '2%' }}>{items.map((v, i) => <div key={`${animKey}-${i}`} className={animate ? 'edu-drift' : undefined} style={{ width: tiled ? '30%' : '31%', display: 'flex', justifyContent: 'center', animationDelay: `${i * 0.4}s` }}><div style={{ position: 'relative', width: `${Math.round((nominal(v) / most) * 100)}%`, maxWidth: nominal(v), ...(tiled ? stepTile(!!v.step) : null) }}><PictureInner visual={v} />{v.step ? <StepBadge n={v.step} pal={B} /> : null}</div></div>)}</div>;
+    // A question's row keeps to a row's width (round one's screen check, pass MX): on a laptop three dogs spread across a 737-pixel strip,
+    // 236 pixels apart; at the largest picture over 0.31 each cell is about as wide as its picture, as a stacked pair's row is. A
+    // lesson's row and a row inside a stacked pair keep their own widths.
+    return <div className="edu-row-pic" style={{ padding: visual.tight ? 0 : '6px 0', display: 'flex', justifyContent: 'center', alignItems: visual.align === 'end' ? 'flex-end' : 'center', gap: tiled ? '4%' : '2%', ...(!lesson && !visual.tight ? { maxWidth: Math.round(most / 0.31), margin: '0 auto' } : null) }}>{items.map((v, i) => <div key={`${animKey}-${i}`} className={animate ? 'edu-drift' : undefined} style={{ width: tiled ? '30%' : '31%', display: 'flex', justifyContent: 'center', animationDelay: `${i * 0.4}s` }}><div style={{ position: 'relative', width: `${Math.round((nominal(v) / most) * 100)}%`, maxWidth: nominal(v), ...(tiled ? stepTile(!!v.step) : null) }}><PictureInner visual={v} />{v.step ? <StepBadge n={v.step} pal={B} /> : null}</div></div>)}</div>;
   }
   if (visual.kind === 'swatch') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><Swatch colour={visual.colour} size={at(120)} /></div>;
   // A thing to match can be drawn at its choices' size (size, pass MA), so the one that is the same is the same size too.
@@ -1956,6 +1972,10 @@ let speechAlive = [];   // the utterances now speaking, held so the browser cann
 function sayPieces(pieces, from, hooks) {
   const { alive, utter, onPiece = () => {}, onBegin = () => {}, onDone = () => {}, pause = null, onRest = () => {}, onPieceEnd = () => {} } = hooks;
   if (!alive()) return;
+  // A browser with speechSynthesis but no SpeechSynthesisUtterance (an odd device, or a test that takes the voice away by halves) is
+  // one with no voice: the words stay printed and the line ends at once (pass MX, the third read: a lesson crashed to "Something went
+  // wrong on this page.").
+  if (typeof SpeechSynthesisUtterance !== 'function') { onDone(); return; }
   if (from >= pieces.length) { onDone(); return; }
   // Goes on to piece j: after the pace's pause when j starts a new sentence, and a sound straight after a sound waits a fifth of a
   // second at least (pass MP), so a run the app plays whole is heard as sounds one by one, never run together: "Cuh, a, nnn." on the
@@ -3053,8 +3073,8 @@ html, body { overflow-x: hidden; }
    like every tour target (pass LK), because the sample card carries no data-action-card. */
 [data-action-card="1"] { animation: edu-alert-border 1.6s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { .edu-tour-target[data-tour="action-demo"] { box-shadow: 0 0 0 5px #E6B84B, 0 0 18px 6px rgba(230, 184, 75, 0.55) !important; } .edu-action-link, .edu-alert-box { animation: none; } [data-action-card="1"] { animation: none; border-color: #D64541 !important; } }
-@keyframes edu-chevron { 0%, 55%, 100% { opacity: 0.22; } 22% { opacity: 1; } }
-.edu-chevron { animation: edu-chevron 1.2s ease-in-out infinite; opacity: 0.22; }
+@keyframes edu-chevron { 0%, 55%, 100% { opacity: 0.45; } 22% { opacity: 1; } }
+.edu-chevron { animation: edu-chevron 1.2s ease-in-out infinite; opacity: 0.45; }
 /* The reading lists (pass MR): a short rule between two books, stopping short of both edges, and the Details pill at a row's right,
    green on the list's green, 40 pixels tall so a finger finds it, with the gold focus ring for a keyboard. */
 .edu-book-rule { height: 1px; margin: 0 8%; background: ${C.bookRule}; }
@@ -4940,7 +4960,7 @@ function StoryBody({ story, pace: paceDefault = null, part = null, autoRead = fa
       {head && (tools ? (
         <div className="edu-story-head" data-story-head="">
           <span className="edu-story-head-spacer" aria-hidden="true" />
-          <p style={{ margin: 0, fontSize: 22, fontWeight: 700, textAlign: 'center' }}>{titleCase(story.title)}</p>
+          <p style={{ margin: 0, fontSize: 22, fontWeight: 700, textAlign: 'center', textWrap: 'balance' }}>{titleCase(story.title)}</p>
           <div className="edu-story-tools" data-story-tools="" role="group" aria-label="Reading">
             <button type="button" onClick={toggle} aria-label={reading ? 'Stop reading' : 'Read the story to me'} className="edu-press"
               style={{ width: 44, height: 44, borderRadius: 999, border: `2px solid ${C.gold}`, background: reading ? C.gold : C.goldSoft, cursor: 'pointer', padding: 0, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flex: '0 0 44px' }}>
@@ -4956,7 +4976,7 @@ function StoryBody({ story, pace: paceDefault = null, part = null, autoRead = fa
             ))}
           </div>
         </div>
-      ) : <p style={{ margin: '0 0 8px', fontSize: 22, fontWeight: 700, textAlign: 'center' }}>{titleCase(story.title)}</p>)}
+      ) : <p style={{ margin: '0 0 8px', fontSize: 22, fontWeight: 700, textAlign: 'center', textWrap: 'balance' }}>{titleCase(story.title)}</p>)}
       {head && <div className={`edu-reveal${hasArt(story.art) ? ' edu-story-main' : ''}`}><StoryArt serial={story.art} alt={story.alt} fallback={story.diagram || null} /></div>}
       {story.words.map((t, i) => (i < from || i > to ? null : (
         // A paragraph and its picture are one piece (2026-09-24, Mikey). On screen the picture follows the words; on paper a
@@ -13150,7 +13170,9 @@ function EduSphereScreens() {
     // dot sits under its partner in the next button; every dot keeps its size. A counted row above them (the same-number
     // question) takes the same frame and snaps too, so it lies right over the right answer's dots. The frame is worked out here,
     // not in the question, so a question's picture never depends on its wrong answer (passes IU and LV).
-    const dotFrame = q.type === 'choice' && Array.isArray(q.choices) && q.choices.length > 0 && q.choices.every((x) => /^dots:\d+$/.test(x)) ? Math.min(5, Math.max(...q.choices.map((x) => Number(x.split(':')[1])))) : 0;
+    // A question may name its frame (dotFrame, since pass MX: the counting lessons draw six as one row), the same for every question
+    // of its kind, so it never depends on the wrong answers.
+    const dotFrame = q.type === 'choice' && Array.isArray(q.choices) && q.choices.length > 0 && q.choices.every((x) => /^dots:\d+$/.test(x)) ? (q.dotFrame || Math.min(5, Math.max(...q.choices.map((x) => Number(x.split(':')[1]))))) : 0;
     const shownVisual = q.visual && dotFrame && q.visual.kind === 'pattern' && q.visual.size ? { ...q.visual, frame: dotFrame, snap: true } : q.visual;
     // How a choice is drawn, in its button and, smaller, in the More Info sheet (pass MH): one function, so the two never differ.
     // paper: drawn on a light paper box (More Info's), so a shape or a solid takes the paper's green, B, in both themes (round two's
@@ -13186,7 +13208,7 @@ function EduSphereScreens() {
               looks sad."  Would reach much better like What is a kind thing to do when your friend looks sad?"), the order the voice
               has always read them in; until pass MH the question sat above its setup, so a reader met them backward. */}
           {/* What prints is printedQuestion's (pass MM): a letter question shows no letter while the voice can say it. */}
-          {printedQuestion(q, canSpeak()).story && <div data-question-setup="" style={{ margin: '0 0 10px', color: C.ink }}><RichText text={printedQuestion(q, canSpeak()).story} size={17} center lineGap={8} /></div>}
+          {printedQuestion(q, canSpeak()).story && <div data-question-setup="" style={{ margin: '0 0 10px', color: C.ink, textWrap: 'balance' }}><RichText text={printedQuestion(q, canSpeak()).story} size={17} center lineGap={8} /></div>}
           <p data-question-text="" style={{ fontSize: 20, fontWeight: 600, margin: '0 0 14px', textAlign: 'center' }}>{printedQuestion(q, canSpeak()).prompt}</p>
           {/* The question's own picture draws bigger (pass MH, Mikey), except when its answers are pictures of the same kind (a
               turtle to match among animal answers), so the one that is the same never looks a different size from the answer. */}
@@ -13216,12 +13238,15 @@ function EduSphereScreens() {
                 // circle, square, circle", since a drawn shape names its shape alone); a word choice is its own name. The app's voice
                 // still never says a picture choice.
                 const pictureName = describeChoice(c) !== c ? describeChoice(c) : undefined;
+                // A heard choice (pass MX) prints Tap to hear beside a speaker for a pre-reader while the voice can speak, and a screen
+                // reader hears the sentence itself, as a child hears it when the button is tapped (printedChoice).
+                const heard = readAloud ? printedChoice(q, c, canSpeak()) : null;
                 return (
                   // A word answer says itself for a child who cannot read; a picture answer never does, because naming it would
                   // hand over the answer, nor, since pass MC, a single letter (choiceSpeaks reads only the choice, never which one is right).
-                  <button key={c} type="button" data-choice={c} aria-label={pictureName} onClick={() => { if (!checked) { if (readAloud) { playTap(); if (choiceSpeaks(q, c)) speak(c, q.voices ? { voices: q.voices } : {}); } setGiven(c); } }}
-                    style={{ opacity: ruledOut && !checked ? (C.mode === 'dark' ? 0.72 : 0.5) : 1, fontFamily: FONT, fontSize: choiceFont(q.choices), textAlign: 'center', padding: standIn ? '12px 10px 34px' : '12px 10px', ...(standIn ? { position: 'relative' } : null), minWidth: 0, overflowWrap: /^-?[\d.,\/ ]+$/.test(c) ? 'normal' : 'anywhere', whiteSpace: /^-?[\d.,\/ ]+$/.test(c) ? 'nowrap' : 'normal', borderRadius: 10, background: bg, border: `2px solid ${border}`, color: C.ink, cursor: checked ? 'default' : 'pointer', minHeight: 48 }}>
-                    {choiceFace(c)}
+                  <button key={c} type="button" data-choice={c} data-heard-choice={heard ? '' : undefined} aria-label={heard ? c : pictureName} onClick={() => { if (!checked) { if (readAloud) { playTap(); if (choiceSpeaks(q, c)) speak(c, q.voices ? { voices: q.voices } : {}); } setGiven(c); } }}
+                    style={{ opacity: ruledOut && !checked ? (C.mode === 'dark' ? 0.72 : 0.5) : 1, fontFamily: FONT, fontSize: choiceFont(q.choices), textAlign: 'center', textWrap: 'balance', padding: standIn ? '12px 10px 34px' : '12px 10px', ...(standIn ? { position: 'relative' } : null), minWidth: 0, overflowWrap: /^-?[\d.,\/ ]+$/.test(c) ? 'normal' : 'anywhere', whiteSpace: /^-?[\d.,\/ ]+$/.test(c) ? 'nowrap' : 'normal', borderRadius: 10, background: bg, border: `2px solid ${border}`, color: C.ink, cursor: checked ? 'default' : 'pointer', minHeight: 48 }}>
+                    {heard ? <HeardChoice text={heard} /> : choiceFace(c)}
                     {standIn && <ReplaceNote pal={C} style={{ right: 8, bottom: 5 }} />}
                   </button>
                 );
@@ -13380,7 +13405,8 @@ function EduSphereScreens() {
         {readAloud && checked && wasCorrect && insight && insight.any && <p style={{ margin: '10px 0 0', textAlign: 'center' }}><button type="button" data-more-info-link="" onClick={() => setMoreInfo(true)} style={{ ...linkBtn, fontSize: 14 }}>More Info</button></p>}
         {/* The cue waits for a whole direction (round one's screen check, pass MO: after the first tap it pointed at a Check answer
             that stays closed until every step is tapped). */}
-        {readAloud && (checked || (given !== '' && !(q.type === 'order' && orderPicked.length < (q.pick || q.items.length)))) && <ScrollCue target="[data-practice-next]" whole watch={`${qIndex}-${checked}-${wasCorrect}-${misses}`} />}
+        {/* It stays away while More Info is open (pass MX, round two's code read: it floated over the sheet's words). */}
+        {readAloud && !moreInfo && (checked || (given !== '' && !(q.type === 'order' && orderPicked.length < (q.pick || q.items.length)))) && <ScrollCue target="[data-practice-next]" whole watch={`${qIndex}-${checked}-${wasCorrect}-${misses}`} />}
         {record.preview && <div style={{ marginTop: 10 }}><Btn full kind="secondary" onClick={() => { setChecked(false); setGiven(''); setOrderPicked([]); if (qIndex + 1 < questions.length) { setQIndex(qIndex + 1); setQShownAt(Date.now()); } else { setScreen('overview'); } }}>Skip (walk-through)</Btn></div>}
         <SilentNote shown={heardNote} />
         <VoiceNote />

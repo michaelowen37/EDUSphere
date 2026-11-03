@@ -1116,5 +1116,112 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   ok(`the audio ledger carries what Eleven needs: a description on all ${rows.length} rows, a row for each of the app's ${Object.keys(L.SPEECH_SOUNDS).length + Object.keys(L.TRIAL_SOUNDS).length + cheer.length} own sounds, no lesson clip sending a speech sound as letters (${lessonRows.length} read), the nine runs of sounds sent with their vowels as sounds, the say-along's word in capitals in all ${games} games, ${stressed} lines' stressed words in capitals, every manner described, and the generator sending a sound effect to the sound-effects endpoint and a sound alone (pass MW; every near miss caught)`,
     noDesc.length === 0 && noDescPlant.length === 2 && soundBad.length === 0 && soundPlants.every(Boolean) && leftAsLetters.length === 0 && plantLetters.length === 1 && missed === 0 && JSON.stringify(runKeys) === JSON.stringify(RUNS) && runVowels.length === 0 && plantVowel && games >= 77 && small.length === 0 && plantSmall && stressed >= 15 && stressBad.length === 0 && plantStress && heldBad.length === 0 && heldPlants && notesBad.length === 0 && plantNotes && storyOff.length === 0 && plantStory && quickHeld && genBad.length === 0 && oldCaught && mannersBad.length === 0 && plantManners,
     `no description ${noDesc.slice(0, 5).join(', ')}; plant ${noDescPlant.length}; sounds ${soundBad.join(' | ')}; sound plants ${soundPlants.map(Boolean)}; as letters ${leftAsLetters.slice(0, 5).join(', ')}; plant ${plantLetters.length}; missed ${missed}; runs ${runKeys.join(', ')}; vowels left ${runVowels.join(', ')}; plant ${plantVowel}; games ${games}; small ${small.join(', ')}; stressed ${stressed} ${stressBad.join(', ')} plant ${plantStress}; held ${heldBad.join(', ')} plants ${heldPlants}; notes ${notesBad.slice(0, 5).join(', ')} plant ${plantNotes}; story notes ${storyOff.slice(0, 5).join(', ')} plant ${plantStory} quick ${quickHeld}; generator ${genBad.slice(0, 5).join(', ')}; old caught ${oldCaught}; manners ${mannersBad.join(', ')} plant ${plantManners}`); }
+// Every speech sound the ledger sends has its goal right before it (pass MX, Mikey: "Since Eleven doesn't document a sound said alone
+// like "/sː/", those rows in the ledger can include a short descriptor which can also be pasted into Eleven which describes what we are
+// trying to achieve."): in every row, each sound's quoted symbols follow its own goal tag (a sound said twice, sss, fff or zzz, has
+// one goal for the pair, and in a run of sounds that blend, the goal for one breath), no goal stands without its sound, and the
+// letter A named as a letter ("/eɪ/") takes none, since it is a name, a word the guide documents. Each goal is a direction for the
+// voice (it opens with saying, since ElevenLabs' guide warns a tag can be taken for a sound effect), short, and names the word the
+// sound is heard in; every row with a goal says what the bracket is in its description; and the generator sends the goals, or with
+// --no-goals the same text without them, every symbol kept. The near misses, through the same functions: a sound row with its goal
+// taken off, a lesson line with m's goal before the s sound, and a goal written as a sound to make. Since round one's audio check a
+// goal names no letter and writes no noise as letters, so a goal read aloud never says a letter's name ("the m sound of moon",
+// "a steady rrr"), no part of one has the form of a sound effect (an article, a thing and an -ing word, as the stories test reads
+// them: p's "the lips popping open once"), and where two or more words follow a sound's symbols the line's own direction comes again
+// before them, since a tag carries forward across the line; each with a near miss.
+{ const { LEDGER_CSV } = await import('../tools/audio-ledger.mjs'); const G = await import('../tools/audio-generate.mjs');
+  const rows = G.parseCsv(LEDGER_CSV); const byKey = new Map(rows.map((r) => [r.key, r]));
+  const pairs = []; for (const r of Object.values(L.SOUND_RECORDINGS)) { if (r.kind !== 'speech sound') continue; pairs.push([L.goalTag(r.goal), L.ipaQuoted(r.ipa)]); if (r.one) pairs.push([L.goalTag(r.goalOne), L.ipaQuoted(r.one)]); }
+  for (const v of Object.values(L.VOICE_SOUNDS)) pairs.push([L.goalTag(v.goal), L.ipaQuoted(v.ipa)]);
+  pairs.sort((a, b) => b[1].length - a[1].length);
+  const unpaired = (text) => { let t = String(text); for (const [g, ipa] of pairs) t = t.split(g + ' ' + ipa).join('#'); const sounds = (t.match(/"\/[^/"]+\/"/g) || []).filter((x) => x !== '"/eɪ/"'); const goals = L.SOUND_GOAL_TAGS.filter((g) => t.includes(g)); return sounds.length + goals.length; };
+  const goalRows = rows.filter((r) => L.SOUND_GOAL_TAGS.some((g) => r.text.includes(g)));
+  const off = rows.filter((r) => unpaired(r.text) > 0).map((r) => r.key);
+  const noteOff = (r) => !/tells Eleven what the sound should be/.test(r.description);
+  const noNote = goalRows.filter(noteOff).map((r) => r.key);
+  const aGoalOff = (r) => L.SOUND_GOAL_TAGS.some((g) => r.text.includes(g + ' "/eɪ/"'));
+  const letterA = rows.filter((r) => r.text.includes('"/eɪ/"')); const aWithGoal = letterA.filter(aGoalOff).map((r) => r.key);
+  const goalWords = (g) => g.replace(/^\[|\]$/g, '');
+  const FX_FORM = /^(?:a|an|the|two|three|some)\s[^,\]]*\b\w+ing\b/i;
+  const directionBad = (tags) => tags.filter((g) => { const w = goalWords(g); return !/^saying /.test(w) || w.split(/\s+/).length > 16 || !/\b(?:of|start of|end of) [a-z]+\b/.test(w)
+    || /\bthe [a-z]{1,2} (?:sound|of)\b/.test(w) || /\b([a-z])\1\1+\b|\bshh\b/.test(w) || w.split(/,\s*/).slice(1).some((part) => FX_FORM.test(part)); });
+  const dirBad = directionBad(L.SOUND_GOAL_TAGS);
+  const sent = (r, noGoals) => G.requestFor(G.withNeighbors([r])[0], { voice: 'MAIN', voiceYoung: 'YOUNG', noGoals }).body.text;
+  // The generator sends a row's text whole, and with --no-goals the same text without its goals, every symbol kept. A sender is
+  // passed in, so the near misses below run through this same function.
+  const genOff = (r, send) => { const withG = send(r, false); const without = send(r, true); const ipa = (t) => (t.match(/"\/[^/"]+\/"/g) || []).join(' ');
+    return withG !== r.text || L.SOUND_GOAL_TAGS.some((g) => without.includes(g)) || ipa(without) !== ipa(r.text); };
+  const genBad = goalRows.filter((r) => genOff(r, sent)).map((r) => r.key);
+  const sm = byKey.get('sound-m'); const fs = byKey.get('first-sounds-1-2');
+  const plants = [unpaired(sm.text.replace(L.goalTag(L.SOUND_RECORDINGS.m.goal) + ' ', '')) > 0, unpaired(fs.text.replace(L.goalTag(L.SOUND_RECORDINGS.s.goal), L.goalTag(L.SOUND_RECORDINGS.m.goal))) > 0, directionBad(['[a snake hissing for a second]']).length === 1];
+  const opening = (t) => { const m = /^\[[^\]]+\]/.exec(t); return m ? m[0] : ''; };
+  // Each sound group that two or more words follow (due) and those without the line's own direction before the words (miss).
+  const backScan = (t) => { const dir = opening(t); let due = 0; let miss = 0;
+    for (const g of L.SOUND_GOAL_TAGS) { let from = 0; for (;;) { const at = t.indexOf(g, from); if (at < 0) break; from = at + g.length;
+      const sym = /^ ("\/[^/"]+\/")(?:, \1)*/.exec(t.slice(from)); if (!sym) continue; const rest = t.slice(from + sym[0].length);
+      const nextAt = Math.min(rest.length, ...L.SOUND_GOAL_TAGS.map((x) => rest.indexOf(x)).filter((i) => i >= 0)); const seg = rest.slice(0, nextAt);
+      const words = (seg.replace(/\[[^\]]*\]/g, ' ').replace(/"\/[^/"]+\/"/g, ' ').match(/[A-Za-z]+/g) || []).length;
+      if (words >= 2) { due++; if (!seg.replace(/^[,.;!?]*\s*/, '').startsWith(dir)) miss++; } } }
+    return { due, miss }; };
+  const backMissing = (t) => backScan(t).miss;
+  // Since round two's code read the direction comes again exactly as often as it is due, so never at a clip's end, and each goal
+  // row's description names its own key in the remake step; a direction put after a line's last sound, and a description naming
+  // another row's key (--only S95), are the near misses.
+  const dirCount = (t) => { const dir = opening(t); return dir ? t.split(dir).length - 1 : 0; };
+  const backOff = (t) => dirCount(t) !== 1 + backScan(t).due;
+  const ownKeyOff = (r) => !String(r.description).includes('--only ' + r.key + ' --no-goals');
+  const lessonRows = goalRows.filter((r) => r.kind === 'lesson line'); const noBack = lessonRows.filter((r) => backMissing(r.text) > 0).map((r) => r.key);
+  const dirOff = lessonRows.filter((r) => backOff(r.text)).map((r) => r.key); const keyOff = goalRows.filter(ownKeyOff).map((r) => r.key);
+  const backs = lessonRows.filter((r) => /comes again after a sound/.test(r.description)).length;
+  const ls = byKey.get('letter-sounds-1-0'); const lsDir = opening(ls.text); const lsCut = ls.text.slice(0, ls.text.lastIndexOf(lsDir)) + ls.text.slice(ls.text.lastIndexOf(lsDir) + lsDir.length + 1);
+  plants.push(directionBad(['[saying just the m sound of moon, a steady hum]']).length === 1, directionBad(['[saying just the first sound of red, a steady rrr]']).length === 1,
+    directionBad(['[saying just the first sound of pan, the lips popping open once]']).length === 1, backMissing(lsCut) > 0 && backMissing(ls.text) === 0);
+  // Each goal names its own sound (round one's code check), in the test's own words: the word a sound starts, or the ending it is.
+  const GOAL_OWN = { m: 'first sound of moon', n: 'first sound of net', s: 'first sound of sun', f: 'first sound of fan', z: 'first sound of zoo', r: 'first sound of red', l: 'first sound of lion', t: 'first sound of tap', p: 'first sound of pan', k: 'first sound of cat', b: 'first sound of ball', d: 'first sound of dog', g: 'first sound of go', j: 'first sound of jam', ig: 'ending of pig', og: 'ending of dog', at: 'ending of cat', a: 'first sound of apple', e: 'first sound of egg', i: 'first sound of igloo', o: 'first sound of octopus', u: 'first sound of up', huh: 'first sound of hat', wuh: 'first sound of wet', shh: 'first sound of ship', ks: 'sounds at the end of six' };
+  const ownOff = (recs, voices) => { const out = [];
+    for (const [name, r] of Object.entries(recs)) { if (r.kind !== 'speech sound') continue; const want = GOAL_OWN[name];
+      if (!want || !String(r.goal).includes(want)) out.push(name); if (r.one && !(String(r.goalOne).includes(want) && /\btwice\b/.test(r.goal) && /\bonce\b/.test(r.goalOne))) out.push(name + ' one'); }
+    for (const [name, v] of Object.entries(voices)) if (!GOAL_OWN[name] || !String(v.goal).includes(GOAL_OWN[name])) out.push(name);
+    return out; };
+  const swap = (o, x, y, field = 'goal') => ({ ...o, [x]: { ...o[x], [field]: o[y][field] }, [y]: { ...o[y], [field]: o[x][field] } });
+  const ownWrong = ownOff(L.SOUND_RECORDINGS, L.VOICE_SOUNDS);
+  plants.push(ownOff(swap(L.SOUND_RECORDINGS, 'm', 'n'), L.VOICE_SOUNDS).length > 0, ownOff(swap(L.SOUND_RECORDINGS, 'd', 'og'), L.VOICE_SOUNDS).length > 0,
+    ownOff({ ...L.SOUND_RECORDINGS, s: { ...L.SOUND_RECORDINGS.s, goal: L.SOUND_RECORDINGS.s.goalOne, goalOne: L.SOUND_RECORDINGS.s.goal } }, L.VOICE_SOUNDS).length > 0, ownOff(L.SOUND_RECORDINGS, swap(L.VOICE_SOUNDS, 'huh', 'wuh')).length > 0);
+  // The place marks: a word in capitals that a goal also names is capped outside the goal, never inside it.
+  const { elevenSentence } = await import('../tools/audio-ledger.mjs');
+  const ogGoal = L.goalTag(L.SOUND_RECORDINGS.og.goal); const capped = [elevenSentence('Dog ends with og.', { stress: ['dog'] }).text, elevenSentence('Dog and log end with og.', { word: 'dog' }).text];
+  const marksHeld = capped.every((t) => t.includes(ogGoal) && /\bDOG\b/.test(t.replace(ogGoal, '')));
+  // noNote, aWithGoal and the generator, each with a near miss through its own function: a row whose description lost its note, a
+  // letter A given huh's goal, a sender that ignores --no-goals, and one whose --no-goals drops the symbols with the goals.
+  const noteMiss = noteOff({ ...fs, description: fs.description.replace('tells Eleven what the sound should be', '') });
+  const aMiss = aGoalOff({ text: L.goalTag(L.VOICE_SOUNDS.huh.goal) + ' "/eɪ/"' });
+  const genKeepsGoals = genOff(sm, (r) => sent(r, false));
+  const genDropsSymbols = genOff(sm, (r, noGoals) => noGoals ? sent(r, true).replace(/"\/[^/"]+\/"/g, '') : sent(r, false));
+  plants.push(noteMiss, aMiss, genKeepsGoals, genDropsSymbols, backOff(ls.text + ' ' + lsDir), ownKeyOff({ ...ls, description: String(ls.description).split('--only ' + ls.key + ' ').join('--only S95 ') }));
+  const lessonGoals = goalRows.filter((r) => r.kind === 'lesson line').length; const soundGoals = goalRows.filter((r) => r.kind === 'speech sound').length;
+  ok(`every speech sound the ledger sends follows its own goal, Mikey's short descriptor for Eleven (${soundGoals} sound rows and ${lessonGoals} lesson lines; ${L.SOUND_GOAL_TAGS.length} goals, each a direction for the voice naming its own sound by its word, no letter and no sound effect; the line's own direction again after a sound in ${backs} lines; the letter A in ${letterA.length} lines without one; --no-goals keeps every symbol; ${plants.length} near misses caught)`,
+    off.length === 0 && soundGoals === rows.filter((r) => r.kind === 'speech sound').length && lessonGoals >= 45 && noNote.length === 0 && aWithGoal.length === 0 && letterA.length >= 20 && dirBad.length === 0 && genBad.length === 0 && noBack.length === 0 && dirOff.length === 0 && keyOff.length === 0 && backs >= 20 && ownWrong.length === 0 && marksHeld && plants.every(Boolean),
+    `unpaired ${off.slice(0, 6).join(', ')}; no note ${noNote.slice(0, 4).join(', ')}; A with a goal ${aWithGoal.join(', ')}; directions ${dirBad.join(' | ')}; generator ${genBad.slice(0, 4).join(', ')}; no direction back ${noBack.slice(0, 4).join(', ')}; direction not as often as due ${dirOff.slice(0, 4).join(', ')}; remake step without its own key ${keyOff.slice(0, 4).join(', ')}; goals on the wrong sound ${ownWrong.join(', ')}; marks held ${marksHeld}; plants ${plants}`); }
+// An id is defined once (pass MX): She, he and they's yes or no first took the id p4-fit-yesno, which Say it to fit's bank already had,
+// and Object.assign(GENERATORS, ...) let the new bank replace the old one with no error, as a second key of the same name in the rules
+// test's PREK_DERIVE replaced its derivation; a module id is global for the same reason (pass GL). Every generator key in src/logic.mjs
+// and every derivation key in tests/logic.test.mjs's PREK_DERIVE is read from the source, and a key written twice fails; the near miss
+// is the source with Say it to fit's yes or no written again. Since round one's code check an id written with a factory call
+// ('pm-same-animals': themedSame(...)) is read too, every id the source builds from a name (pl-hear-, pl-lines-, k5-, k10-, wr-) keeps
+// to that name's pattern and no written id takes one, and the near misses add a second themedSame id, a written k5- id and a
+// derivation written twice.
+{ const src = readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8'); const rules = readFileSync(new URL('./logic.test.mjs', import.meta.url), 'utf8');
+  const twice = (keys) => { const seen = new Map(); for (const k of keys) seen.set(k, (seen.get(k) || 0) + 1); return [...seen].filter(([, n]) => n > 1).map(([k]) => k); };
+  // Since round two's code read a key written rng => (no parentheses) and a key after another on one line are read too.
+  const genKeys = (t) => [...t.matchAll(/(?:^[ \t]+|[{,][ \t]*)'([a-z0-9][a-z0-9-]*)': (?:\(rng\b|rng\s*=>|[A-Za-z_]\w*\()/gm)].map((m) => m[1]);
+  const BUILT = /^(?:pl-(?:hear|lines)-|k(?:5|10)-|wr-)/;
+  const deriveBlock = rules.slice(rules.indexOf('const PREK_DERIVE = {'), rules.indexOf('\n};', rules.indexOf('const PREK_DERIVE = {')));
+  const deriveKeys = [...deriveBlock.matchAll(/^\s+'([a-z0-9][a-z0-9-]*)':/gm)].map((m) => m[1]);
+  const gens = genKeys(src); const genTwice = twice(gens); const deriveTwice = twice(deriveKeys);
+  const built = Object.keys(L.GENERATORS).filter((k) => !gens.includes(k)); const builtOk = built.every((k) => BUILT.test(k)) && !gens.some((k) => BUILT.test(k));
+  const plant = twice(genKeys(src + "\n  'p4-fit-yesno': (rng) => null,\n")).includes('p4-fit-yesno') && twice(genKeys(src + "\n  'pm-same-animals': themedSame(MATCH_THEMES.animals),\n")).includes('pm-same-animals')
+    && genKeys("\n  'k5-more': (rng) => null,\n").some((k) => BUILT.test(k)) && twice([...deriveKeys, 'p4-they-yesno']).includes('p4-they-yesno')
+    && twice(genKeys(src + "\n  'p4-fit-yesno': rng => null,\n")).includes('p4-fit-yesno') && twice(genKeys(src + "\n  'zz-one': (rng) => null, 'p4-fit-yesno': (rng) => null,\n")).includes('p4-fit-yesno');
+  ok(`every generator id in src/logic.mjs and every derivation in the rules test is defined once (${gens.length} written generators, factory calls among them, and ${built.length} built from a name's pattern; ${deriveKeys.length} derivations; six near misses caught)`, gens.length > 1700 && deriveKeys.length > 100 && genTwice.length === 0 && deriveTwice.length === 0 && builtOk && built.length > 0 && plant, `generators twice ${genTwice.join(', ')}; derivations twice ${deriveTwice.join(', ')}; built off pattern ${built.filter((k) => !BUILT.test(k)).slice(0, 5).join(', ')}; plant ${plant}`); }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

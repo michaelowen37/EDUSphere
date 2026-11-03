@@ -1,15 +1,56 @@
 # Audio ledger
 
-Generated 2026-11-02 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 11831 clips, 1,806,459 characters in all; the longest clip is 520 characters and the longest whole story 3,603, far under Eleven v4's 10,000 a request (the longest lesson's lines come to 13,492 in all, each line a request of its own). 227 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-11-03 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 12006 clips, 1,825,890 characters in all; the longest clip is 520 characters and the longest whole story 3,603, far under Eleven v4's 10,000 a request (the longest lesson's lines come to 13,492 in all, each line a request of its own). 231 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
 The quickest way is one command. tools/audio-generate.mjs reads the CSV and, for each clip not yet in audio/, asks Eleven v4 (model eleven_v4) to speak the tagged words, passing the words before and after (previous_text and next_text) so a story sounds like one steady telling, and saves audio/<key>.mp3. It skips clips that already exist, so it can be stopped and started again. The app plays recorded clips in place of the device voice as soon as every clip of a story or lesson line is present; until then it keeps the device voice.
 
     ELEVENLABS_API_KEY=your-key node tools/audio-generate.mjs --voice <voice id> --voice-young <voice id for pre-K to grade 2>
-    (add --only S95 for one story, --limit 50 to try a few, --dry-run to see what would be sent)
+    (add --only S95 for one story, --limit 50 to try a few, --dry-run to see what would be sent, --model to name another speech
+    model, which takes no neighbors' words if it is eleven_v3, and --sfx-model to name another sound effects model)
 
-Pasting into the ElevenLabs app works too, clip by clip, with the text column as written and each file saved as <key>.mp3.
+Pasting into the ElevenLabs app works too, clip by clip, with Eleven v4 chosen as the model and the text column as written (older models, such as Multilingual v2 and Flash and Turbo v2.5, do not read the bracketed tags), and each file saved as <key>.mp3.
+
+The app's own sounds are rows too (since pass MW, below): `--only sounds` makes them alone, a few takes of each in audio/takes (<key>-1.mp3 and on), and the take that sounds right is copied to audio/<key>.mp3, the name the app will look for. A speech sound is spoken by the young voice from its phonetic symbols; a sound effect is made by ElevenLabs' sound effects (model eleven_text_to_sound_v3, or another with --sfx-model) from its text, a prompt describing the sound, for its seconds and influence, never sent to the voice; its description says what to listen for and is never sent.
+
+## Emphasis, sounds and descriptions (pass MW)
+
+Mikey, opening pass MW: "I'm not reviewing any more audio for now since it's kind of pointless.  Makes more sense to review it after Eleven Labs.  Just be sure to add emphasis tags and descriptions within the audio ledger for Eleven.  It will be easier to test later within the artifact instead of opening several browsers and hunting down sounds." So the ledger now carries everything the recordings need, and the listening happens later, in the app itself, once the clips are made.
+
+- **Descriptions.** Every row's description column says in plain words what the clip should sound like: the voice for its age, the way a say-it-together saying is said, the voice a lesson shows, the sounds in it, the words to stress. It is for whoever makes the clip and for the listening in the app; Eleven is sent the text column of every row, and a sound effect's text is the prompt that describes the sound, while its description says what to listen for and is never sent.
+- **Emphasis.** Eleven v4 reads capitals as emphasis (ElevenLabs' best practices: "Capitalization increases emphasis"). A lesson line asks for it where the app's own voice draws a word out inside a longer sentence (each word of a list that starts or ends alike: "DOG, LOG and FOG all end with "/ɑɡ/"."), on the say-it-together game's word in the sentence that names it ("Our word is RED."), and on a word a lesson says strong ("I want the RED circle, not the blue one."); a letter named as a letter is its capital, which Eleven is expected to say by its name (undocumented, so each such clip is heard before use), and the letter A, which a voice can read as the word a, is its name in the phonetic alphabet, "/eɪ/", wherever it is not the article; a story names its letters in its description. 123 lesson clips ask for a stressed word, a line's stress list among them (since round one, the words that change in the pass's four lessons: two DOGS, KICKED). The screen never shows the capitals of a list word, the say-along's word, a stressed word or a letter; a word said strong is in capitals on the screen too, as the lesson writes it.
+- **Speech sounds.** Eleven v4 reads the phonetic alphabet "Enclosed in forward slashes" and "Wrapped in double quotes when passed as a string parameter" (its best practices, IPA in Eleven v4), so every speech sound a lesson line writes as letters (sss, tuh, buh, the ending ig) is sent as its symbols in quotes ("/sː/", "/tʰ/", "/bə̆/", "/ɪɡ/"), and a vowel letter set off beside sounds in a run that blends into a word is sent as its short sound ("Cuh, a, nnn." is "/kʰ/", "/æ/", "/nː/"), never as the letter's name; 53 lesson clips hold one. The guide documents IPA "for names, technical terms, and other words" and says "results can still vary by voice and phrase"; a sound said alone is not documented, so each clip's description names its sounds, every take is heard before it is used, and where a sentence's sound comes out wrong, the sentence is cut at the sound and the sound's own take (sound-<name>) is played between its parts, as the app does today, or the sound is recorded and turned into the lesson voice with the Voice Changer (EARMARKS A41). The stories' sounds stay as their words write them, named in each paragraph's description.
+- **The app's own sounds.** Each sound the app makes itself today has a row of its own, below: what Eleven is asked for, and what to listen for when picking a take.
+
+## The app's own sounds
+
+| Key | Kind | Eleven is asked for | What to listen for | Seconds | Takes |
+|---|---|---|---|---|---|
+| sound-m | speech sound | [warm and gentle, a preschool teacher saying one speech sound alone, holding it about a second] "/mː/" | The m sound alone, as in moon: a steady hum with the lips closed, held about a second. Never the letter's name (em), and no vowel after it. If no take says it right, record it yourself and turn it into the lesson voice with ElevenLabs' Voice Changer (EARMARKS A41). | as said | 3 |
+| sound-n | speech sound | [warm and gentle, a preschool teacher saying one speech sound alone, holding it about a second] "/nː/" | The n sound alone, as in net: a steady hum through the nose, the tongue up behind the top teeth, held about a second. Never the letter's name (en), and no vowel after it. If no take says it right, record it yourself and turn it into the lesson voice with ElevenLabs' Voice Changer (EARMARKS A41). | as said | 3 |
+| sound-s | speech sound | [warm and gentle, a preschool teacher saying one speech sound alone, as two short breaths with a little gap between] "/sː/", "/sː/" | The s sound alone, as in sun: a gentle hiss like a snake, said as two short breaths with a little gap between (sss, sss), as the app says it now. Never the letter's name (ess), and no vowel after it. If no take says it right, record it yourself and turn it into the lesson voice with ElevenLabs' Voice Changer (EARMARKS A41). | as said | 3 |
+| sound-f | speech sound | [warm and gentle, a preschool teacher saying one speech sound alone, as two short breaths with a little gap between] "/fː/", "/fː/" | The f sound alone, as in fan: a soft, breathy hiss with the top teeth resting on the lip, said as two short breaths with a little gap between (fff, fff). Never the letter's name (ef), and no vowel after it. If no take says it right, record it yourself and turn it into the lesson voice with ElevenLabs' Voice Changer (EARMARKS A41). | as said | 3 |
+| sound-z | speech sound | [warm and gentle, a preschool teacher saying one speech sound alone, as two short breaths with a little gap between] "/zː/", "/zː/" | The z sound alone, as in zoo: a buzzing hiss with the voice on, like a bee, said as two short breaths with a little gap between (zzz, zzz). Never the letter's name (zee), and no vowel after it. If no take says it right, record it yourself and turn it into the lesson voice with ElevenLabs' Voice Changer (EARMARKS A41). | as said | 3 |
+| sound-r | speech sound | [warm and gentle, a preschool teacher saying one speech sound alone, holding it about a second] "/ɹː/" | The r sound alone, as in red: a steady rrr, held about a second. Never the letter's name (ar), and no vowel after it. If no take says it right, record it yourself and turn it into the lesson voice with ElevenLabs' Voice Changer (EARMARKS A41). | as said | 3 |
+| sound-l | speech sound | [warm and gentle, a preschool teacher saying one speech sound alone, holding it about a second] "/lː/" | The l sound alone, as in lion: a steady lll, the tongue up behind the top teeth, held about a second. Never the letter's name (el), and no vowel after it. If no take says it right, record it yourself and turn it into the lesson voice with ElevenLabs' Voice Changer (EARMARKS A41). | as said | 3 |
+| sound-t | speech sound | [warm and gentle, a preschool teacher saying one speech sound alone, crisp and quick] "/tʰ/" | The t sound alone, as in tap: one crisp tap of the tongue and a short puff of air, with no vowel after it, or only the faintest uh. Never the letter's name (tee), and never the word two. If no take says it right, record it yourself and turn it into the lesson voice with ElevenLabs' Voice Changer (EARMARKS A41). | as said | 3 |
+| sound-p | speech sound | [warm and gentle, a preschool teacher saying one speech sound alone, crisp and quick] "/pʰ/" | The p sound alone, as in pan: the lips pop open once with a short puff of air, with no vowel after it, or only the faintest uh. Never the letter's name (pee). If no take says it right, record it yourself and turn it into the lesson voice with ElevenLabs' Voice Changer (EARMARKS A41). | as said | 3 |
+| sound-k | speech sound | [warm and gentle, a preschool teacher saying one speech sound alone, crisp and quick] "/kʰ/" | The c or k sound alone, as in cat and kite: one quick catch at the back of the mouth and a short puff of air, with no vowel after it, or only the faintest uh. Never a letter's name (see or kay). If no take says it right, record it yourself and turn it into the lesson voice with ElevenLabs' Voice Changer (EARMARKS A41). | as said | 3 |
+| sound-b | speech sound | [warm and gentle, a preschool teacher saying one speech sound alone, short and soft] "/bə̆/" | The b sound alone, as in ball: a short, gentle buh, the lips opening softly, with only the faintest uh after it, as short and soft as it can be. Never the letter's name (bee), and never boo. If no take says it right, record it yourself and turn it into the lesson voice with ElevenLabs' Voice Changer (EARMARKS A41). | as said | 3 |
+| sound-d | speech sound | [warm and gentle, a preschool teacher saying one speech sound alone, short and soft] "/də̆/" | The d sound alone, as in dog: a short, gentle duh, let go softly with no click, with only the faintest uh after it. Never the letter's name (dee). If no take says it right, record it yourself and turn it into the lesson voice with ElevenLabs' Voice Changer (EARMARKS A41). | as said | 3 |
+| sound-g | speech sound | [warm and gentle, a preschool teacher saying one speech sound alone, short and soft] "/ɡə̆/" | The g sound alone, as in go: a short, gentle guh, let go softly with no click, with only the faintest uh after it. Never the letter's name (jee). If no take says it right, record it yourself and turn it into the lesson voice with ElevenLabs' Voice Changer (EARMARKS A41). | as said | 3 |
+| sound-j | speech sound | [warm and gentle, a preschool teacher saying one speech sound alone, short and soft] "/dʒə̆/" | The j sound alone, as in jam: a short, gentle juh, with only the faintest uh after it. Never the letter's name (jay). If no take says it right, record it yourself and turn it into the lesson voice with ElevenLabs' Voice Changer (EARMARKS A41). | as said | 3 |
+| sound-ig | speech sound | [warm and gentle, a preschool teacher saying one speech sound alone, as one ending, slowly and clearly] "/ɪɡ/" | The ending ig, as in pig and wig, said as one sound: the short i of igloo and a soft g. Never spelled out (i, g), and no uh after the g. If no take says it right, record it yourself and turn it into the lesson voice with ElevenLabs' Voice Changer (EARMARKS A41). | as said | 3 |
+| sound-og | speech sound | [warm and gentle, a preschool teacher saying one speech sound alone, as one ending, slowly and clearly] "/ɑɡ/" | The ending og, as in dog, log and fog, said as one sound: the short o of octopus and a soft g. Never spelled out (o, g), and no uh after the g. Its vowel must match how this voice says dog, log and fog: if the voice says them with the vowel of saw, ask for /ɔɡ/ instead. If no take says it right, record it yourself and turn it into the lesson voice with ElevenLabs' Voice Changer (EARMARKS A41). | as said | 3 |
+| sound-at | speech sound | [warm and gentle, a preschool teacher saying one speech sound alone, as one ending, slowly and clearly] "/æt/" | The ending at, as in cat and hat, said as one sound in full: the short a of apple and a soft t, the way it ends cat, never the quick, soft at of look at the cat. Never spelled out (a, t). If no take says it right, record it yourself and turn it into the lesson voice with ElevenLabs' Voice Changer (EARMARKS A41). | as said | 3 |
+| sound-a | speech sound | [warm and gentle, a preschool teacher saying one speech sound alone, holding it about a second] "/æ/" | The short a sound alone, as at the start of apple, held about a second. Never the letter's name. On trial: no lesson plays it, but a run of sounds that names the letter asks the recording for this sound (EARMARKS A42). If no take says it right, record it yourself and turn it into the lesson voice with ElevenLabs' Voice Changer (EARMARKS A41). | as said | 3 |
+| sound-e | speech sound | [warm and gentle, a preschool teacher saying one speech sound alone, holding it about a second] "/ɛ/" | The short e sound alone, as at the start of egg, held about a second. Never the letter's name. On trial: no lesson plays it, but a run of sounds that names the letter asks the recording for this sound (EARMARKS A42). If no take says it right, record it yourself and turn it into the lesson voice with ElevenLabs' Voice Changer (EARMARKS A41). | as said | 3 |
+| sound-i | speech sound | [warm and gentle, a preschool teacher saying one speech sound alone, holding it about a second] "/ɪ/" | The short i sound alone, as at the start of igloo, held about a second. Never the letter's name. On trial: no lesson plays it, but a run of sounds that names the letter asks the recording for this sound (EARMARKS A42). If no take says it right, record it yourself and turn it into the lesson voice with ElevenLabs' Voice Changer (EARMARKS A41). | as said | 3 |
+| sound-o | speech sound | [warm and gentle, a preschool teacher saying one speech sound alone, holding it about a second] "/ɑ/" | The short o sound alone, as at the start of octopus, held about a second. Never the letter's name. On trial: no lesson plays it, but a run of sounds that names the letter asks the recording for this sound (EARMARKS A42). If no take says it right, record it yourself and turn it into the lesson voice with ElevenLabs' Voice Changer (EARMARKS A41). | as said | 3 |
+| sound-u | speech sound | [warm and gentle, a preschool teacher saying one speech sound alone, holding it about a second] "/ʌ/" | The short u sound alone, as at the start of up, held about a second. Never the letter's name. On trial: no lesson plays it, but a run of sounds that names the letter asks the recording for this sound (EARMARKS A42). If no take says it right, record it yourself and turn it into the lesson voice with ElevenLabs' Voice Changer (EARMARKS A41). | as said | 3 |
+| sound-whistle | sound effect | One excited fan's loud two-finger whistle at a ball game, close by, on a single breath: it swoops up to a bright, high note, holds, then slides down and fades as the breath runs out. About one second, one whistle, no crowd noise, no voices, no music. | One fan's two-finger whistle on a single breath, about a second, swelling and then fading as a real breath runs out (Mikey, of the app's own: "It should be drawn out a bit more and slightly change the amplitude of the whistle sound to sound natural as if a real breath was required."). It plays between the cheer's sayings, so pick the take with one clear whistle and nothing behind it. | 1 | 4 |
+| sound-applause | sound effect | About forty people clapping and cheering for a child in a school gym, warm and happy: claps, cheers and a whistle or two burst out together right away, then fade away at the end. About two and a half seconds, no music, no spoken words. | About forty people clapping and cheering in a school gym for two and a half seconds, fading out at the end, after the cheer's last saying. Pick the take whose claps sound like real hands (Mikey, of the app's own: "the clapping sounds like static"), starting at once, with no music and no words. | 2.5 | 4 |
 
 ## Characters by age band
 
@@ -17,7 +58,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 7525 | 822,365 |
+| Pre-K to grade 2 | 7700 | 841,796 |
 | Grades 3 to 5 | 1375 | 292,652 |
 | Grades 6 to 8 | 1197 | 279,526 |
 | Grades 9 to college | 1734 | 411,916 |
@@ -42,15 +83,17 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 | Kind | Clips |
 |---|---|
-| story title | 690 |
-| story | 4496 |
-| lesson line | 5292 |
+| story title | 694 |
+| story | 4526 |
+| lesson line | 5409 |
 | long story title | 106 |
 | long story | 858 |
 | next long story title | 4 |
 | next long story | 41 |
 | game welcome | 336 |
 | game welcome (keyboard) | 8 |
+| speech sound | 22 |
+| sound effect | 2 |
 
 ## Stories with hand-written tags
 
@@ -864,6 +907,48 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S4007-6: [hopeful] Tobi had an idea. [in a bright, small boy voice, kindly] We can swing side by side next time too, [softly] he said.
 - S4007-7: [delighted] Willa smiled, and this time her okay was quick and went up high. [in a small, light girl voice, happily, quick and rising high] Okay!
 - S4007-8: [slowly, warmly] Listen to how words are said, and you can tell how someone feels.
+
+### Dog! Ball! (S4011, say-a-sentence)
+
+- S4011-1: [cheerful] Vera was tossing her red ball up and catching it in the yard while Grandpa raked the leaves.
+- S4011-2: [playful] Then their big dog, Rufus, ran by. [surprised] He grabbed the red ball from the grass and trotted off behind a bush.
+- S4011-3: [hurried] Vera ran to Grandpa. [in a small, bright girl voice, breathless] Dog! Ball! [softly] she said, pointing every which way.
+- S4011-4: [puzzled] Grandpa looked around. [in a warm, slow grandpa voice] A dog ball? [softly] he asked. [in a warm, slow grandpa voice] Do you want a ball for Rufus?
+- S4011-5: [pause] [gently] Vera shook her head. [thoughtful] Grandpa did not understand, so she took a big breath and put her words together in order.
+- S4011-6: [in a small, bright girl voice, slowly and clearly] The dog took my ball, [softly] she said slowly. [proud] Then she told him more. [in a small, bright girl voice] The big dog took my red ball!
+- S4011-7: [delighted] Now Grandpa understood. They found Rufus behind the bush, [a dog's tail thumping on the grass] his tail going thump, thump, thump, [happily] and he dropped the ball at Vera's feet.
+- S4011-8: [slowly, warmly] Put your words in order, and tell a little more, so others can understand you.
+
+### All done! (S4015, one-cat-two-cats)
+
+- S4015-1: [cheerful] When Dad came to pick him up from school, Femi ran over with a big smile.
+- S4015-2: [in a bright, small boy voice, excited] I paint a picture! [softly] Femi said. [helpful] So Dad looked around for the paint and the brushes.
+- S4015-3: [in a deep, easy dad voice] Okay, [softly] said Dad, setting down his bag. [in a deep, easy dad voice] Where do you want to paint?
+- S4015-4: [pause] [amused] Femi laughed. He did not want to paint now. [delighted] He was already done!
+- S4015-5: [thoughtful] So he changed the word to tell Dad it had already happened. [in a bright, small boy voice, slowly and clearly] I painted a picture, [softly] he said. [in a bright, small boy voice] It is all done.
+- S4015-6: [in a deep, easy dad voice, delighted] Oh, you painted it already! [softly] said Dad. [warmly] Then Femi ran to get his picture and held it up, a big blue fish with a curly orange tail.
+- S4015-7: [slowly, warmly] Words can tell when something happened. Painted means it is already done.
+
+### Ducklings in a line (S4019, longer-sentences)
+
+- S4019-1: [cheerful] On Monday, Maisie's class sat on the rug to tell about their weekends, and Maisie could hardly wait.
+- S4019-2: [excited, rushed] When it was her turn, the words tumbled out all at once. [in a small, bubbly girl voice, rushed] Park! Duck! Babies! Peep!
+- S4019-3: [puzzled] Her friend Yusuf tipped his head. [in a soft, curious boy voice] A baby duck park? [softly] he asked.
+- S4019-4: [pause] [calmly] Maisie stopped and took a slow breath. [proud] Then she told it in whole sentences, the way her teacher had shown her.
+- S4019-5: [in a small, bubbly girl voice, slowly and clearly] I went to the park with my grandma, [softly] she said. [in a small, bubbly girl voice] We saw a mother duck, and three little ducklings swam behind her in a line, [ducklings peeping] peeping all the way.
+- S4019-6: [thoughtful] Maisie wanted to tell about her sparkly socks too, but that was a new topic, not the park. [proud] So she saved it for later.
+- S4019-7: [delighted] Now Yusuf could see it in his head. [in a soft, curious boy voice, excited] Can we go see the ducklings too? [softly] he asked.
+- S4019-8: [slowly, warmly] Say whole sentences, tell more, and stay on that topic, so your friend can follow you.
+
+### Three puppies (S4023, words-that-change)
+
+- S4023-1: [cheerful] Mrs. Petrov from next door brought her new puppies over to Rory's house to play.
+- S4023-2: [excited] Rory ran to the kitchen. [in an eager, bright boy voice] Can I have a bowl of water for the puppy? [softly] he asked.
+- S4023-3: [warmly] Mom filled one little bowl and handed it to him. [gently] Rory set it down on the porch, where Mrs. Petrov sat with the puppies.
+- S4023-4: [surprised] But three puppies came running! [playful] They pushed and bumped, and there was not enough room at the one little bowl.
+- S4023-5: [pause] Rory ran back inside as fast as he could go. [in an eager, bright boy voice, slowly and clearly] Not puppy, [softly] he said, [in an eager, bright boy voice] puppies! There are three puppies, and they all need water!
+- S4023-6: [delighted] Mom smiled and filled two more bowls. [happily] Soon every puppy had its own, [puppies lapping up water] lapping up the water, slurp, slurp, slurp.
+- S4023-7: [slowly, warmly] Words can change to tell us more. Puppy means one, and puppies means more than one.
 
 ### Cat, mat, hat (S116, listen-for-rhymes)
 

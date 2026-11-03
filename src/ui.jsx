@@ -1154,15 +1154,21 @@ function IconPic({ name, size = 90, tile = false }) {
     gravel: <g><path d="M10 84 Q50 46 90 84 Z" fill="#C9C2B6" />{[[30, 76], [42, 68], [54, 64], [66, 70], [76, 78], [36, 82], [50, 78], [62, 82], [46, 56], [58, 58]].map(([x, y], i) => <ellipse key={i} cx={x} cy={y} rx="6" ry="4.5" fill={i % 3 ? '#A5AAA0' : '#8A9086'} stroke="#6B716A" strokeWidth="2" />)}</g>,
     bricks: <g>{[[14, 32, 34], [52, 32, 34], [14, 50, 16], [34, 50, 34], [72, 50, 14], [14, 68, 34], [52, 68, 34]].map(([x, y, w], i) => <rect key={i} x={x} y={y} width={w} height="14" rx="2" fill={red} stroke="#8E3A27" strokeWidth="2.5" />)}</g>,
   }[base] || <circle cx="50" cy="50" r="30" fill={grey} />;
-  // A look after ~ (pass MP) draws the same thing another way, and its name stays the thing's own, so a screen reader hears block.
+  // A look after ~ (pass MP) draws the same thing another way, and its name stays the thing's own, so a screen reader hears block;
+  // since pass MW a look that is a state its line names is said with it (pictureLookName: a broken crayon, a sleeping baby).
   const shown = (look && ICON_LOOKS[`${base}~${look}`]) || body;
-  return <svg viewBox="0 0 100 100" width={size} height={size} role="img" aria-label={base} style={{ display: 'block', margin: '0 auto' }}>{shown}</svg>;
+  return <svg viewBox="0 0 100 100" width={size} height={size} role="img" aria-label={pictureLookName(look ? `${base}~${look}` : base)} style={{ display: 'block', margin: '0 auto' }}>{shown}</svg>;
 }
 // Another look of an icon, named after a tilde (pass MP), as a shape's look is (shape:triangle~thin): block~wood is the wooden block
 // of the material and magnet lessons, its grain on every face; baby~asleep (pass MV) is the baby asleep, for the lines that say a baby
 // is sleeping, her head tipped to one side, her eyes closed, a soft closed smile and her hands resting, with no bottle; and plate~food is MyPlate's plate, fruits and vegetables on half of it
 // and grains and protein on the rest, for the health lesson that teaches it; since pass MP it is the plain plate's rim, band and
 // shadow with the food in its well, apple slices, broccoli, rice and grilled meat, so it reads as a plate of food and not a pie.
+// A picture's name as a screen reader hears it (pass MW, round two's code read: a sleeping cat was said with its look, a broken
+// crayon and a sleeping baby without): a look that is a state its line names is said with the thing, and any other look
+// (block~wood, plate~food) keeps the thing's own name.
+const PICTURE_LOOK_WORDS = { asleep: 'sleeping', broken: 'broken' };
+const pictureLookName = (name) => { const [base, look] = String(name).split('~'); return look && PICTURE_LOOK_WORDS[look] ? PICTURE_LOOK_WORDS[look] + ' ' + base : base; };
 const ICON_LOOKS = {
   'baby~asleep': (
     <g>
@@ -1205,6 +1211,9 @@ const ICON_LOOKS = {
       </g>
     </g>
   ),
+  // crayon~broken (pass MW, round one's lesson and picture checks: "I need a new crayon because this one broke." showed it whole):
+  // the red crayon in two pieces with a jagged break, its wrapper on both, the tip end turned a little away from the rest.
+  'crayon~broken': <g transform="rotate(-45 50 50)"><path d="M14 45 Q14 42 17 42 L41 42 L38.6 46 L42 50 L38.6 54 L41 58 L17 58 Q14 58 14 55 Z" fill="#D9473B" stroke="#7A2620" strokeWidth="2.5" strokeLinejoin="round" /><path d="M24 42 L41 42 L38.6 46 L42 50 L38.6 54 L41 58 L24 58 Z" fill="#B5352B" stroke="#7A2620" strokeWidth="2" strokeLinejoin="round" /><path d="M27 46.5 L38 46.5 M27 53.5 L38 53.5" stroke="#F2C9C2" strokeWidth="1.8" /><g transform="translate(7 2) rotate(9 58 50)"><path d="M47 42 L72 42 L72 58 L47 58 L44.6 54 L48 50 L44.6 46 Z" fill="#D9473B" stroke="#7A2620" strokeWidth="2.5" strokeLinejoin="round" /><path d="M47 42 L62 42 L62 58 L47 58 L44.6 54 L48 50 L44.6 46 Z" fill="#B5352B" stroke="#7A2620" strokeWidth="2" strokeLinejoin="round" /><path d="M50 46.5 L59 46.5 M50 53.5 L59 53.5" stroke="#F2C9C2" strokeWidth="1.8" /><path d="M72 43.5 L85 48.5 Q87.5 50 85 51.5 L72 56.5 Z" fill="#D9473B" stroke="#7A2620" strokeWidth="2.5" strokeLinejoin="round" /></g></g>,
   'block~wood': <g><path d="M24 36 L54 24 L80 32 L50 44 Z" fill="#E2B97A" stroke="#8B5A2B" strokeWidth="3" strokeLinejoin="round" /><path d="M24 36 L50 44 L50 84 L24 76 Z" fill="#C9955A" stroke="#8B5A2B" strokeWidth="3" strokeLinejoin="round" /><path d="M50 44 L80 32 L80 72 L50 84 Z" fill="#B07838" stroke="#8B5A2B" strokeWidth="3" strokeLinejoin="round" /><path d="M30 52 Q38 50 46 54 M30 64 Q38 62 46 66" fill="none" stroke="#8B5A2B" strokeWidth="1.8" opacity="0.6" /><path d="M55 52 Q63 47 75 45 M55 64 Q64 59 75 57" fill="none" stroke="#7A4A20" strokeWidth="1.8" opacity="0.6" /><path d="M36 34 Q46 31 55 28 M44 37 Q54 34 64 31" fill="none" stroke="#B07838" strokeWidth="1.6" opacity="0.7" /><ellipse cx="38" cy="71" rx="2.6" ry="1.8" fill="none" stroke="#8B5A2B" strokeWidth="1.4" opacity="0.6" /></g>,
   'plate~food': <g><circle cx="52" cy="53" r="41" fill="#24291F" opacity="0.14" /><circle cx="50" cy="50" r="41" fill="#EEF3F6" stroke="#6F8796" strokeWidth="3" /><circle cx="50" cy="50" r="35.5" fill="none" stroke="#4A86C5" strokeWidth="2" /><circle cx="50" cy="50" r="30.5" fill="#FFFFFF" stroke="#C3D0D8" strokeWidth="2" /><path d="M50 50 L50 22 A28 28 0 0 0 22 50 Z" fill="#D9534F" /><path d="M50 50 L22 50 A28 28 0 0 0 50 78 Z" fill="#4E8F4F" /><path d="M50 50 L50 78 A28 28 0 0 0 78 50 Z" fill="#E8C98E" /><path d="M50 50 L78 50 A28 28 0 0 0 50 22 Z" fill="#9C6B3F" /><path d="M50 21 L50 79 M21 50 L79 50" stroke="#FFFFFF" strokeWidth="2.6" /><path d="M31 41 Q36 33 44 31 M33 46 Q38 39 45 37" fill="none" stroke="#F6C1BF" strokeWidth="2" strokeLinecap="round" /><circle cx="35" cy="59" r="3.4" fill="#3A6E3B" /><circle cx="41" cy="64" r="3.1" fill="#3A6E3B" /><circle cx="33" cy="66" r="2.7" fill="#3A6E3B" /><circle cx="42" cy="57" r="2.5" fill="#3A6E3B" /><ellipse cx="58" cy="58" rx="2.2" ry="1.2" fill="#FFF8E7" /><ellipse cx="65" cy="61" rx="2.2" ry="1.2" fill="#FFF8E7" transform="rotate(30 65 61)" /><ellipse cx="59" cy="66" rx="2.2" ry="1.2" fill="#FFF8E7" transform="rotate(-20 59 66)" /><ellipse cx="68" cy="55" rx="2.2" ry="1.2" fill="#FFF8E7" transform="rotate(60 68 55)" /><path d="M56 36 L64 30 M58 42 L68 34" stroke="#6E4523" strokeWidth="2" strokeLinecap="round" /></g>,
 };
@@ -1670,9 +1679,24 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1, 
     // inside the half, where the drift never reaches, in the dark theme since round six and in both since Mikey's answer to Q59 ("Q59
     // your recommendation is good"), so a pair is the same size with motion on or off. The row carries data-pair for the browser test.
     const shrinkOf = (v) => !(stack || v.step);
+    // A row in a stacked pair (pass MW: one cup above two cups, One cat, two cats and Words that change) takes the pair's whole width:
+    // its pictures take shares of the row's width, so a row that only wrapped its content drew its cups at a third the size of the
+    // one cup above, a size the words never mention; at the whole width they draw about as big as the one above them.
+    const rowWide = (v) => (stack && v && v.kind === 'row' ? { width: '100%' } : null);
+    // Beside a row in a stacked pair, one thing draws as a row of one (pass MW), in a cell the size of each cell below, so the one
+    // cup is the size of each of the two cups at every width: a lone icon keeps its own size while a row's pictures shrink with the
+    // row, and on a 320-pixel phone the one cup drew 110 pixels over two cups of 66.
+    // A sized shape (a big circle over little ones) never draws as a row of one, since the row scales to its own largest item and a
+    // big circle over two little ones would draw nearly their size (round one's code check: the size trap's mistake again).
+    const oneBeside = (v, other) => (stack && other && other.kind === 'row' && v && (['icon', 'pic'].includes(v.kind) || (v.kind === 'shape' && !v.size)) ? { kind: 'row', items: [v] } : v);
+    // A stacked pair that holds a row keeps to a row's width (round one's screen check): its cells are 31 percent of the row and its
+    // pictures stay at a phone's size in a stacked pair, so on a laptop a row as wide as the paper set two cups a cup's width apart
+    // (Mikey, pass MH: "small and separated by a lot of space on my wide screen"); at 110 / 0.31 pixels a cell is as wide as its
+    // picture. Its two halves sit closer too, so Next stays in view on a short phone in the light theme.
+    const rowed = stack && [first, second].some((v) => v && v.kind === 'row');
     const half = (v, i) => { if (!v.kind) return <Item key={i} spec={`${v.shape}-${v.colour}`} size={96} />;
-      return <div key={`${animKey}-${i}`} className={animate ? 'edu-drift' : undefined} style={{ position: 'relative', animationDelay: `${i * 0.5}s`, maxWidth: stack ? '100%' : '46%', ...(together ? { width: `${(natural(v) / widest) * 100}%` } : null), ...(v.step ? stepTile(true) : null) }}>{shrinkOf(v) ? <div style={{ transform: 'scale(0.85)' }}><Picture visual={v} note={false} bare big={wide} /></div> : <Picture visual={v} note={false} bare big={wide} />}{v.step ? <StepBadge n={v.step} pal={B} /> : null}</div>; };
-    return <div data-pair="" style={{ padding: '6px 0', display: 'flex', flexDirection: stack ? 'column' : 'row', justifyContent: 'center', alignItems: 'center', gap: stack ? 10 : 28, ...(together ? { width: '100%', maxWidth: widest, margin: '0 auto' } : null) }}>{half(first, 0)}{half(second, 1)}</div>;
+      return <div key={`${animKey}-${i}`} className={animate ? 'edu-drift' : undefined} style={{ position: 'relative', animationDelay: `${i * 0.5}s`, maxWidth: stack ? '100%' : '46%', ...rowWide(v), ...(together ? { width: `${(natural(v) / widest) * 100}%` } : null), ...(v.step ? stepTile(true) : null) }}>{shrinkOf(v) ? <div style={{ transform: 'scale(0.85)' }}><Picture visual={v} note={false} bare big={wide} /></div> : <Picture visual={v} note={false} bare big={wide} />}{v.step ? <StepBadge n={v.step} pal={B} /> : null}</div>; };
+    return <div data-pair="" style={{ padding: '6px 0', display: 'flex', flexDirection: stack ? 'column' : 'row', justifyContent: 'center', alignItems: 'center', gap: stack ? (rowed ? 2 : 10) : 28, ...(together ? { width: '100%', maxWidth: widest, margin: '0 auto' } : null), ...(rowed ? { width: '100%', maxWidth: Math.round(110 / 0.31), margin: '0 auto' } : null) }}>{half(oneBeside(first, second), 0)}{half(oneBeside(second, first), 1)}</div>;
   }
   // A row of up to three pictures (pass MA): two owls and a fox, or a big, a middle-size and a little circle, so a line that names
   // three things shows all three. Each cell takes the same share of the width and each picture a share of its cell in proportion
@@ -3201,6 +3225,9 @@ function StudentPicture({ name, tint = null, size = 56 }) {
     whale: <g><path d="M8 34 Q30 12 52 34 Q30 52 8 34 Z" fill="#5A8EA3" /><path d="M46 20 L54 12 L52 24 Z" fill="#5A8EA3" /><circle cx="20" cy="32" r="2.6" fill="#24291F" /><path d="M14 38 Q20 42 26 38" fill="none" stroke="#24291F" strokeWidth="2" strokeLinecap="round" /></g>,
     bee: <g><ellipse cx="30" cy="36" rx="16" ry="12" fill="#E2B83A" {...gild} /><rect x="22" y="26" width="5" height="20" fill="#24291F" /><rect x="34" y="26" width="5" height="20" fill="#24291F" /><ellipse cx="22" cy="20" rx="8" ry="5" fill="#DCE9F5" {...gild} /><ellipse cx="38" cy="20" rx="8" ry="5" fill="#DCE9F5" {...gild} /><circle cx="18" cy="34" r="2.2" fill="#24291F" /></g>,
     cat: <g><path d="M14 44 L14 18 L24 26 L36 26 L46 18 L46 44 Z" fill="#A9A19A" /><circle cx="24" cy="34" r="2.6" fill="#24291F" /><circle cx="36" cy="34" r="2.6" fill="#24291F" /><path d="M27 40 L30 43 L33 40 Z" fill="#B45A3C" /><path d="M8 40 L22 41 M8 46 L22 44 M52 40 L38 41 M52 46 L38 44" stroke="#24291F" strokeWidth="1.5" /></g>,
+    // The cat asleep (pass MW, round one's lesson and picture checks: "The cat sleeps." showed the cat awake, as pass MV's baby
+    // was): the same face, its eyes closed in two soft downward curves. A lesson names it cat~asleep; the sign-in list never offers it.
+    'cat~asleep': <g><path d="M14 44 L14 18 L24 26 L36 26 L46 18 L46 44 Z" fill="#A9A19A" /><path d="M21 33.4 Q24 36.4 27 33.4 M33 33.4 Q36 36.4 39 33.4" fill="none" stroke="#24291F" strokeWidth="1.9" strokeLinecap="round" /><path d="M27 40 L30 43 L33 40 Z" fill="#B45A3C" /><path d="M8 40 L22 41 M8 46 L22 44 M52 40 L38 41 M52 46 L38 44" stroke="#24291F" strokeWidth="1.5" /></g>,
     turtle: <g><ellipse cx="30" cy="36" rx="18" ry="12" fill="#6A8F5B" /><circle cx="48" cy="34" r="6" fill="#8FB07E" /><circle cx="50" cy="33" r="1.8" fill="#24291F" /><path d="M18 32 L24 30 L30 32 L36 30 L42 32" fill="none" stroke="#4F6E44" strokeWidth="2" /></g>,
     rabbit: <g><ellipse cx="23" cy="18" rx="5" ry="12" fill="#E8DFD3" {...fur} /><ellipse cx="37" cy="18" rx="5" ry="12" fill="#E8DFD3" {...fur} /><ellipse cx="23" cy="19" rx="2.2" ry="8" fill="#EDB9B9" /><ellipse cx="37" cy="19" rx="2.2" ry="8" fill="#EDB9B9" /><ellipse cx="30" cy="38" rx="14" ry="12" fill="#E8DFD3" {...fur} /><circle cx="25" cy="36" r="2.4" fill="#24291F" /><circle cx="35" cy="36" r="2.4" fill="#24291F" /><path d="M28 42 L30 44 L32 42 Z" fill="#D98B8B" /></g>,
     bear: <g><circle cx="30" cy="34" r="16" fill="#8B6B4A" /><circle cx="18" cy="22" r="6" fill="#8B6B4A" /><circle cx="42" cy="22" r="6" fill="#8B6B4A" /><ellipse cx="30" cy="40" rx="7" ry="5" fill="#C9A98A" /><circle cx="24" cy="31" r="2.4" fill="#24291F" /><circle cx="36" cy="31" r="2.4" fill="#24291F" /><circle cx="30" cy="38" r="2.4" fill="#24291F" /></g>,
@@ -3209,9 +3236,11 @@ function StudentPicture({ name, tint = null, size = 56 }) {
     snail: <g><path d="M8 44 L40 44 Q46 44 46 38 L46 30" fill="none" stroke="#7A9B6C" strokeWidth="8" strokeLinecap="round" /><circle cx="28" cy="32" r="13" fill="#C98B5E" /><circle cx="28" cy="32" r="7" fill="none" stroke="#A96F45" strokeWidth="3" /><path d="M44 30 L42 20 M48 30 L50 20" stroke="#7A9B6C" strokeWidth="2.5" strokeLinecap="round" /><circle cx="42" cy="19" r="2" fill="#24291F" /><circle cx="50" cy="19" r="2" fill="#24291F" /></g>,
   };
   if (!faces[name]) return null;
+  // A look after ~ is said in words (cat~asleep, a sleeping cat), so a screen reader never hears the tilde (pictureLookName, as IconPic).
+  const spokenName = pictureLookName(name);
   const bg = tintFor(tint);
   return (
-    <svg viewBox="0 0 60 60" width={size} height={size} role="img" aria-label={bg ? `${bg.id} ${name}` : name}>
+    <svg viewBox="0 0 60 60" width={size} height={size} role="img" aria-label={bg ? `${bg.id} ${spokenName}` : spokenName}>
       {bg && <circle cx="30" cy="30" r="29" fill={bg.color} />}
       {faces[name]}
     </svg>

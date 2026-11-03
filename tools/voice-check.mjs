@@ -26,7 +26,8 @@
 // going up and telling going down, a word said strong, the same words asking and telling, the same words happy and sad, and one
 // question's heard sentence, each line word for word as its lesson says it and each row's voices handed to speechPieces as the
 // lesson hands them.
-// Run: node tools/voice-check.mjs   (writes dist/voice-check.html, which is published as its own small page; dist stays out of git)
+// Run: node tools/voice-check.mjs   (writes dist/voice-check.html, published as its own small page when Mikey listens again, after the
+// ElevenLabs recordings, since pass MW; dist stays out of git)
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 
 const logic = readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8');

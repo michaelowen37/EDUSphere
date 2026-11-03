@@ -103,7 +103,7 @@ for (const mod of L.MODULES) {
     // the lone icon is read with the drawn pictures above the instruction skip (round two's lesson read, pass MQ).
     if (show.kind === 'solid' && !said.includes(show.name) && !said.includes({ sphere: 'ball', cube: 'block', cylinder: 'can', cone: 'cone', box: 'box', prism: 'prism' }[show.name])) mismatches.push(`${mod.id}: "${line.say}" shows a ${show.name}`);   // box and prism (pass KY)
     // Every sign-in animal the words name must be on screen too, so a line never mentions a creature the child cannot see.
-    { const shownPics = (show.kind === 'pair' ? [show.a, show.b] : show.kind === 'row' ? show.items : [show]).filter((h) => h && h.kind === 'pic').map((h) => h.name);
+    { const shownPics = (show.kind === 'pair' ? [show.a, show.b] : show.kind === 'row' ? show.items : [show]).filter((h) => h && h.kind === 'pic').map((h) => String(h.name).split('~')[0]);   // a cat asleep is a cat (pass MW)
       if (shownPics.length) { const named = L.PICTURES.filter((n) => new RegExp(`\\b${n}s?\\b`).test(said)); const missing = named.filter((n) => !shownPics.includes(n)); if (missing.length) mismatches.push(`${mod.id}: "${line.say}" names ${missing.join(', ')} but shows ${shownPics.join(', ')}`); } }
     // A pair is two pictures side by side; each half must be named by the words, by its own kind.
     const halves = show.kind === 'pair' ? [show.a, show.b] : show.kind === 'row' ? show.items : [show];   // a row (pass MA) is read like a pair
@@ -210,6 +210,30 @@ ok('every round trace shape is drawn as a curve', flatRound.length === 0, flatRo
 ok('every spoken lesson line reads like a person talking', fragments.length === 0, '\n  ' + fragments.slice(0, 12).join('\n  '));
 ok('every young-learner question names or points at its picture', qbad.length === 0, '\n  ' + qbad.slice(0, 12).join('\n  '));
 ok('every lesson picture matches the words spoken over it', mismatches.length === 0, '\n  ' + mismatches.slice(0, 12).join('\n  '));
+// A row inside a pair (pass MW, from looking at One cat, two cats in the real page, where "Here is one cup, and here are two cups."
+// drew two cups and no one cup): only a stacked pair holds a row, since a side-by-side half is under half the card's width and its
+// row would draw its pictures far smaller than the one beside it; the row holds two or three of a row's kinds, as a row alone does;
+// and every icon or sign-in picture in it is named by its line, as in a row alone. The checks above read a pair's two halves and
+// never looked inside a row there, so this one does, lesson lines and lesson examples alike, and four near misses prove it: an
+// unnamed icon in the row, a row in a side-by-side pair, a row of four and a face in a row.
+const nestedRowProblems = (line) => { const show = line.show; const said = String(line.say || '').toLowerCase(); const out = [];
+  if (!show || show.kind !== 'pair') return out;
+  for (const h of [show.a, show.b]) { if (!h || h.kind !== 'row') continue;
+    if (!show.stack) out.push('a row in a side-by-side pair');
+    const items = Array.isArray(h.items) ? h.items : [];
+    if (!(items.length >= 2 && items.length <= 3 && items.every((x) => x && ['pic', 'shape', 'icon'].includes(x.kind)))) out.push('a row the screen cannot draw whole');
+    for (const x of items) if (x && (x.kind === 'icon' || x.kind === 'pic') && !said.includes(String(x.name).split('~')[0])) out.push(`a ${x.name} it never names`); }
+  return out; };
+{ const real = []; let rows = 0;
+  for (const mod of L.MODULES) { const ex = mod.lesson && mod.lesson.example; const lines = [...((mod.lesson && mod.lesson.script) || []), ...(ex ? [{ say: ex.caption || '', show: ex }] : [])];
+    for (const line of lines) { const s = line.show; if (s && s.kind === 'pair') rows += [s.a, s.b].filter((h) => h && h.kind === 'row').length; for (const p of nestedRowProblems(line)) real.push(`${mod.id}: "${line.say}" shows ${p}`); } }
+  const cup = { kind: 'icon', name: 'cup' }; const say = 'Here is one cup, and here are two cups.';
+  const plants = [nestedRowProblems({ say, show: { kind: 'pair', stack: true, a: cup, b: { kind: 'row', items: [cup, { kind: 'icon', name: 'dog' }] } } }).includes('a dog it never names'),
+    nestedRowProblems({ say, show: { kind: 'pair', a: cup, b: { kind: 'row', items: [cup, cup] } } }).includes('a row in a side-by-side pair'),
+    nestedRowProblems({ say, show: { kind: 'pair', stack: true, a: cup, b: { kind: 'row', items: [cup, cup, cup, cup] } } }).includes('a row the screen cannot draw whole'),
+    nestedRowProblems({ say: say + ' I am happy.', show: { kind: 'pair', stack: true, a: cup, b: { kind: 'row', items: [cup, { kind: 'face', feeling: 'happy' }] } } }).includes('a row the screen cannot draw whole'),
+    nestedRowProblems({ say, show: { kind: 'pair', stack: true, a: cup, b: { kind: 'row', items: [cup, cup] } } }).length === 0];
+  ok(`a row inside a lesson pair is in a stacked pair, holds what a row can draw, and names its pictures (${rows} rows read; four near misses caught, the right one passed)`, real.length === 0 && rows >= 12 && plants.every(Boolean), [...real.slice(0, 6), `near misses ${plants}`].join(' | ')); }
 // The waiting list only falls (pass MQ): every entry still waits on a line, so a fixed line takes its name off the list.
 ok('the drawn things older lessons show without naming them wait by name, on every line, and every name on the list still waits', PAIR_PICTURE_WAITS.every((k) => pairPictureWaited.has(k)), PAIR_PICTURE_WAITS.filter((k) => !pairPictureWaited.has(k)).join(', '));
 // A thing to look at is drawn (pass LU): every picture a lesson shows or a question offers as art has a line drawing in
@@ -973,5 +997,124 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   for (let seed = 1; seed <= 600; seed++) { const q = L.generateQuestion('p4-fit-voice', seed); const s = offered.get(q.story) || new Set(); for (const c of q.choices) if (c !== q.answer) s.add(c); offered.set(q.story, s); }
   const far = offered.get('Your friend is far away on the playground.') || new Set();
   ok('the far-away friend meets both wrong voices, a whisper and an inside voice, and each other moment its one (pass MS, round two)', offered.size === 6 && far.has('A whisper') && far.has('An inside voice') && far.size === 2 && [...offered].filter(([s]) => s !== 'Your friend is far away on the playground.').every(([, v]) => v.size === 1), JSON.stringify([...offered].map(([s, v]) => [s, [...v]]))); }
+// Every look a picture names is drawn (pass MW, round two's code read: with 'crayon~broken' taken out of ICON_LOOKS and 'cat~asleep'
+// out of StudentPicture's faces, the crayon drew whole and the cat drew nothing, and every check passed). An icon's look (name~look)
+// must be a key of ICON_LOOKS and a drawn animal's a key of StudentPicture's faces, both read from ui.jsx, for every lesson line's
+// picture in every course and every pre-K question's pictures over sixty seeds. Near miss: crayon~melted, a look nothing draws.
+{ const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+  const keysIn = (from, to) => { const a = ui.indexOf(from); const b = a < 0 ? -1 : ui.indexOf(to, a + from.length); return new Set(a < 0 || b < 0 ? [] : [...ui.slice(a, b).matchAll(/'([a-z-]+~[a-z-]+)':/g)].map((m) => m[1])); };
+  const iconLooks = keysIn('const ICON_LOOKS = {', '\n};'); const faceLooks = keysIn('const faces = {', '\n  };');
+  const named = []; const walk = (v, where) => { if (!v) return; if (typeof v === 'string') { const m = /^(icon|pic):([a-z-]+~[a-z-]+)$/.exec(v); if (m) named.push([m[1], m[2], where]); return; }
+    if (Array.isArray(v)) { v.forEach((x) => walk(x, where)); return; } if (typeof v !== 'object') return;
+    if ((v.kind === 'icon' || v.kind === 'pic') && /~/.test(String(v.name || ''))) named.push([v.kind, v.name, where]);
+    for (const k of ['a', 'b', 'items', 'show', 'visual', 'explainVisual', 'choices']) if (v[k]) walk(v[k], where); };
+  for (const c of L.COURSES) for (const m of c.modules) for (const [i, line] of ((m.lesson && m.lesson.script) || []).entries()) walk(line.show, m.id + ' line ' + i);
+  const prekBanks = new Set(L.COURSES.filter((c) => c.grade === 'PK3' || c.grade === 'PK4').flatMap((c) => c.modules.flatMap((m) => m.generators || [])));
+  for (const b of prekBanks) for (let s = 1; s <= 60; s++) { let q; try { q = L.generateQuestion(b, s); } catch (e) { continue; } walk([q.visual, q.explainVisual, q.choices], b); }
+  const undrawn = (list) => list.filter(([kind, name]) => !(kind === 'icon' ? iconLooks : faceLooks).has(name)).map(([kind, name, where]) => kind + ':' + name + ' (' + where + ')');
+  const missing = [...new Set(undrawn(named))]; const plant = undrawn([['icon', 'crayon~melted', 'plant']]).length === 1;
+  ok('every look a lesson line or a pre-K question names is drawn: an icon\'s in ICON_LOOKS, a drawn animal\'s in StudentPicture\'s faces (pass MW, round two\'s code read; ' + named.length + ' named, ' + iconLooks.size + ' icon looks and ' + faceLooks.size + ' animal looks drawn; near miss caught)', named.length >= 10 && iconLooks.size >= 4 && faceLooks.size >= 1 && missing.length === 0 && plant, missing.slice(0, 5).join(', ')); }
+// The audio ledger carries what Eleven needs (pass MW, Mikey: "I'm not reviewing any more audio for now since it's kind of
+// pointless.  Makes more sense to review it after Eleven Labs.  Just be sure to add emphasis tags and descriptions within the audio
+// ledger for Eleven."): every row has a description that reads as words; every sound the app makes itself has a row of its own (each
+// speech sound a lesson plays, the five short vowels on trial and the cheer's whistle and crowd), a speech sound sent as its phonetic
+// symbols in double quotes (ElevenLabs' IPA rules) in the young voice and a sound effect as a prompt with its seconds (0.5 to 30, the
+// endpoint's range), its influence (0 to 1) and two takes or more for Mikey to pick; no lesson clip sends a speech sound as letters
+// (no piece the app's voice would play as a sound is left in its words) and each sound in it is its row's symbols, quoted; the nine
+// runs of sounds that blend into a word, pinned by key since round one's code check, each send their vowel as a sound; the
+// say-along's word is in capitals in the sentence that names it, in every game; a line's stress list names words the line says,
+// each in capitals in its clip; every manner has its words; and the generator sends a sound effect to the sound-effects endpoint,
+// never to the voice, and a sound alone, with no neighbor's words. Each check has a near miss run through the function the real
+// check uses: a clip with sss left as letters, a game's word left small, a run with its vowel left a letter, a stress word the line
+// never says, a stress word whose clip says it small beside a longer word in capitals (RUNS for run), a stress word of two letters (he), the generator as pass MV left it (every row to the voice), a sound row with its description taken off or reading
+// undefined, a whistle of 45 seconds, a speech sound in the main voice, and a manner with no words.
+{ const { LEDGER_CSV, elevenSentence, MANNER_HEARD, QUICK, isLetterNamed, soundsWritten, BEATS_NOT_LETTERS } = await import('../tools/audio-ledger.mjs'); const G = await import('../tools/audio-generate.mjs');
+  const rows = G.parseCsv(LEDGER_CSV); const byKey = new Map(rows.map((r) => [r.key, r])); const strip = (t) => String(t).replace(/\[[^\]]*\]\s*/g, '');
+  const described = (rs) => rs.filter((r) => !(String(r.description).trim().length > 20) || /—/.test(r.description) || /\bundefined\b|\bNaN\b|\bnull\b/.test(r.description)).map((r) => r.key);
+  const noDesc = described(rows); const noDescPlant = described([...rows.slice(0, 5), { ...byKey.get('sound-whistle'), description: '' }, { ...byKey.get('sound-m'), description: byKey.get('sound-m').description + ' Then: undefined.' }]);
+  const cheer = [...new Set(L.SAY_ALONG_VOICES.flatMap((v) => [v.between, v.after]).filter(Boolean))];
+  // One sound's row read against SOUND_RECORDINGS: a speech sound in the young voice ending in its quoted symbols, a sound effect a
+  // prompt (no tag) with its seconds, influence and takes in range.
+  const soundProblem = (name, r) => { const rec = L.SOUND_RECORDINGS[name]; if (!rec || !r) return `${name}: no row`;
+    if (rec.kind === 'speech sound' && !(r.kind === 'speech sound' && r.voice === 'young' && r.text.endsWith(L.ipaQuoted(rec.ipa)) && /^\/[^/]+\/(, \/[^/]+\/)?$/.test(rec.ipa) && Number(r.takes) >= 2)) return `${name}: speech row ${r.text}`;
+    if (rec.kind === 'sound effect' && !(r.kind === 'sound effect' && r.voice === 'none' && !r.text.startsWith('[') && Number(r.seconds) >= 0.5 && Number(r.seconds) <= 30 && Number(r.influence) >= 0 && Number(r.influence) <= 1 && Number(r.takes) >= 2)) return `${name}: effect row`;
+    return null; };
+  const soundBad = [...Object.keys(L.SPEECH_SOUNDS), ...Object.keys(L.TRIAL_SOUNDS), ...cheer].map((n) => soundProblem(n, byKey.get(`sound-${n}`))).filter(Boolean);
+  const soundPlants = [soundProblem('whistle', { ...byKey.get('sound-whistle'), seconds: '45' }), soundProblem('m', { ...byKey.get('sound-m'), voice: 'main' }), soundProblem('m', { ...byKey.get('sound-m'), text: byKey.get('sound-m').text.replace(/"/g, '') })];
+  // Every lesson clip: no written speech sound left (read by the app's own speechPieces, on trial), every sound its row's symbols.
+  const lessonRows = rows.filter((r) => r.kind === 'lesson line');
+  const asLetters = (rs) => rs.filter((r) => L.speechPieces(strip(r.text), { trial: true }).some((x) => x.sound)).map((r) => r.key);
+  const leftAsLetters = asLetters(lessonRows); const plantLetters = asLetters([{ ...byKey.get('first-sounds-5-0'), text: '[warm and gentle, drawing out key words] Sun and sock both start with sss.' }]);
+  // A blended run's vowel: no vowel letter set off by commas is left in the words a run sends (round one's code check).
+  const vowelLeft = (text) => /(^|,\s)[aeiou](?=[,.!?])/i.test(strip(text));
+  const RUNS = ['read-the-word-3-2', 'read-the-word-5-2', 'read-the-word-6-2', 'read-the-word-7-2', 'read-the-word-7-5', 'sh-ch-th-1-2', 'sh-ch-th-2-2', 'sh-ch-th-4-2', 'silent-e-1-2'];
+  const wordSmall = (text, word) => !text.includes(word.toUpperCase()); const plantSmall = wordSmall('[warm and gentle, drawing out key words] Our word is red.', 'red');
+  let missed = 0; const runKeys = []; const runVowels = []; let games = 0; const small = []; const stressBad = []; let stressed = 0; const sentencesOf = (t) => String(t || '').split(L.SENTENCE_BREAK).filter(Boolean);
+  // A line's stress list: each word or phrase is said in the line, and the line's clips carry it in capitals.
+  // Since round two each stress word is read whole in its clips, every saying of it in capitals (RUNS had passed for run), and a
+  // single word of one or two letters is never a stress word, since two capitals can be read as letters (round one kept am, us, it
+  // and ok small; round two found HE): the phrase it starts is stressed instead, he kicks.
+  const stressProblem = (line, clips) => (line.stress || []).filter((w) => { const pat = String(w).trim().split(/\s+/).join('\\s+'); const whole = new RegExp('(?<![A-Za-z])' + pat + '(?![A-Za-z])', 'gi');
+    const said = clips.flatMap((t) => [...strip(t || '').matchAll(whole)].map((m) => m[0]));
+    return (!/\s/.test(String(w).trim()) && String(w).trim().length < 3) || !new RegExp('(?<![A-Za-z])' + pat + '(?![A-Za-z])', 'i').test(line.say) || said.length === 0 || said.some((m) => m !== m.toUpperCase()); });
+  for (const c of L.COURSES) for (const m of c.modules) {
+    const lines = c.readAloud ? L.readAloudScript(m) : (m.lesson && m.lesson.script ? m.lesson.script : []);
+    lines.forEach((line, li) => { const parts = L.sayAlongParts(sentencesOf(line.say)); const open = parts.findIndex((x) => x.role === 'open');
+      const wordAt = open > 0 ? parts.slice(0, open).map((x, k) => (x.role === 'say' ? k : -1)).filter((k) => k >= 0).pop() : -1;
+      parts.forEach((p, si) => { if (p.role !== 'say') return; const e = elevenSentence(p.sentence, { voices: line.voices, word: si === wordAt ? parts[open].word : null, stress: line.stress || [] });
+        missed += e.missed.length; const row = byKey.get(`${m.id}-${li}-${si}`);
+        if (e.run) { runKeys.push(`${m.id}-${li}-${si}`); if (!row || vowelLeft(row.text)) runVowels.push(`${m.id}-${li}-${si}`); }
+        if (!row || e.sounds.some((n) => !row.text.includes(L.ipaQuoted(e.run && L.SOUND_RECORDINGS[n].one ? L.SOUND_RECORDINGS[n].one : L.SOUND_RECORDINGS[n].ipa)))) missed += 1;
+        if (si === wordAt) { games += 1; if (!row || wordSmall(row.text, parts[open].word)) small.push(`${m.id}-${li}-${si}`); } });
+      if ((line.stress || []).length) { stressed += 1; const clips = parts.map((p, si) => (byKey.get(`${m.id}-${li}-${si}`) || {}).text); for (const w of stressProblem(line, clips)) stressBad.push(`${m.id} ${li}: ${w}`); } });
+  }
+  const plantVowel = vowelLeft('[warm and gentle, a preschool teacher saying each speech sound alone, one after another, slowly] "/kʰ/", a, "/nː/".');
+  const plantStress = stressProblem({ say: 'Here is one cup, and here are two cups.', stress: ['balls'] }, ['[warm and gentle, drawing out key words] Here is one cup, and here are two CUPS.']).length === 1
+    && stressProblem({ say: 'One dog runs, and two dogs run.', stress: ['runs', 'run'] }, ['[warm and gentle, drawing out key words] One dog RUNS, and two dogs run.']).length === 1
+    && stressProblem({ say: 'We say he kicks it to Mia.', stress: ['he'] }, ['[warm and gentle, drawing out key words] We say HE kicks it to Mia.']).length === 1;
+  // The generator: what each kind of row is sent as, and the old way caught.
+  const sendBad = (request, rs) => { const bad = []; const nb = G.withNeighbors(rs);
+    for (const r of nb) { const q = request(r, { voice: 'MAIN', voiceYoung: 'YOUNG' });
+      if (r.kind === 'sound effect' && !(/\/v1\/sound-generation$/.test(q.url) && q.body.model_id === 'eleven_text_to_sound_v3' && q.body.text === r.text && q.body.duration_seconds === Number(r.seconds) && q.body.prompt_influence === Number(r.influence) && q.takes >= 2)) bad.push(`${r.key} effect`);
+      if (r.kind === 'speech sound' && !(/text-to-speech\/YOUNG$/.test(q.url) && q.takes >= 2 && !q.body.previous_text && !q.body.next_text)) bad.push(`${r.key} speech`);
+      if (!G.SOUND_KINDS.includes(r.kind) && !(/text-to-speech\//.test(q.url) && q.takes === 1)) bad.push(`${r.key} words`); }
+    return bad; };
+  const sample = [...rows.filter((r) => G.SOUND_KINDS.includes(r.kind)), ...rows.filter((r) => r.kind === 'lesson line').slice(0, 30)];
+  const genBad = sendBad(G.requestFor, sample);
+  const oldWay = (r, { voice, voiceYoung }) => ({ url: `https://api.elevenlabs.io/v1/text-to-speech/${r.voice === 'young' ? voiceYoung : voice}`, body: { text: r.text, model_id: 'eleven_v4' }, takes: 1 });
+  const oldCaught = sendBad(oldWay, sample).length > 0;
+  // Every manner a lesson can show has a few words for whoever makes its clip (VOICE_MANNERS against MANNER_HEARD).
+  const mannersMissing = (heard) => Object.keys(L.VOICE_MANNERS).filter((k) => !(typeof heard[k] === 'string' && heard[k].length > 8));
+  const mannersBad = mannersMissing(MANNER_HEARD); const { whisper, ...withoutWhisper } = MANNER_HEARD; const plantManners = mannersMissing(withoutWhisper).length === 1;
+  // Round one's fixes, each held since round two's code read (each could be undone with every check passing): the letter A named as
+  // a letter is its name in IPA and the article is not; a sentence of sounds alone is never a blend, a run with a vowel is; eleven_v3
+  // gets no neighbors' words and eleven_v4 does; --sfx-model reaches a sound effect's request; and every story paragraph whose tags ask
+  // for speed, every story with a fraction and every cheer's saying carries its note. Each the real function, with a near miss.
+  const letterA = (s) => elevenSentence(s).text.includes(L.ipaQuoted('/eɪ/'));
+  const lettersHeld = letterA('Apple starts with A.') && letterA('In A B C, A comes first.') && letterA('This is big A and small a.') && !letterA('A dog runs.') && !letterA('A T, dripping a little!') && !letterA('I have a hat.')
+    && letterA('The letters a, e, i, o and u are the vowels.') && letterA('A starts at its top point.') && !letterA('Cuh, a, nnn.');
+  const blendHeld = elevenSentence('Sss, sss, sss.').run === false && elevenSentence('Cuh, a, nnn.').run === true;
+  const nbRows = G.withNeighbors(lessonRows.slice(0, 3)); const v3 = G.requestFor(nbRows[1], { voice: 'MAIN', voiceYoung: 'YOUNG', model: 'eleven_v3' }); const v4 = G.requestFor(nbRows[1], { voice: 'MAIN', voiceYoung: 'YOUNG' });
+  const stitchHeld = !v3.body.previous_text && !v3.body.next_text && !!(v4.body.previous_text || v4.body.next_text);
+  const sfxHeld = G.requestFor(byKey.get('sound-whistle'), { voice: 'MAIN', voiceYoung: 'YOUNG', sfxModel: 'X' }).body.model_id === 'X';
+  const STORY_KINDS = ['story', 'long story', 'next long story'];
+  const notesMissing = (rs) => rs.filter((r) => (STORY_KINDS.includes(r.kind) && QUICK.test(r.text) && !/quick on purpose/.test(r.description))
+    || (STORY_KINDS.includes(r.kind) && /\b\d+\/\d+\b/.test(strip(r.text)) && !/never as a date/.test(r.description))
+    || (/\[cheering like an excited fan/.test(r.text) && !/The voice alone/.test(r.description))).map((r) => r.key);
+  // Since the third read, the notes round two added: every early story paragraph or title whose words name a letter (isLetterNamed,
+  // less BEATS_NOT_LETTERS) says so, and no other does; every one with a sound written as letters (soundsWritten) says so; the four
+  // tags QUICK took in round two carry the note, and a sound's tag does not; and Buh and buh are named once.
+  const EARLY = ['PK3', 'PK4', 'K', '1', '2']; const STORY_ROWS = [...STORY_KINDS, 'story title', 'long story title', 'next long story title'];
+  const namesLetter = (r) => { const s = strip(r.text); const skip = BEATS_NOT_LETTERS[r.group] || []; return [...s.matchAll(/[A-Za-z][A-Za-z'-]*/g)].some((m) => m[0].length === 1 && isLetterNamed(s, m.index, m.index + 1, m[0]) && !skip.includes(m[0].toUpperCase())); };
+  const storyNotesOff = (rs) => rs.filter((r) => STORY_ROWS.includes(r.kind) && EARLY.includes(r.grade) && (namesLetter(r) !== /Say the letter/.test(r.description) || (soundsWritten(strip(r.text)) !== '') !== /Say each sound written as letters/.test(r.description))).map((r) => r.key);
+  const storyOff = storyNotesOff(rows); const plantStory = storyNotesOff([{ ...byKey.get('S305-3'), description: byKey.get('S305-3').description.replace(/ Say the letters?[^.]*\./, '') }, { ...byKey.get('S200-1'), description: byKey.get('S200-1').description.replace(/ Say each sound written as letters[^.]*\./, '') }]).length === 2;
+  const quickHeld = ['S4007-7', 'S3659-1', 'S305-4', 'S335-4'].every((k) => /quick on purpose/.test(byKey.get(k).description)) && !QUICK.test('[quick footsteps]') && (byKey.get('S200-1').description.match(/\bbuh, /gi) || []).length === 1;
+  const notesBad = notesMissing(rows); const quickRow = rows.find((r) => STORY_KINDS.includes(r.kind) && QUICK.test(r.text));
+  const plantNotes = notesMissing([{ ...quickRow, description: quickRow.description.replace('quick on purpose', 'calm') }, { ...byKey.get('S2942-2'), description: '' }]).length === 2;
+  const heldBad = [lettersHeld || 'letter A', blendHeld || 'blend', stitchHeld || 'eleven_v3 neighbors', sfxHeld || '--sfx-model'].filter((x) => x !== true);
+  const heldPlants = !letterA('I have a hat.') && G.requestFor(byKey.get('sound-whistle'), { voice: 'MAIN', voiceYoung: 'YOUNG' }).body.model_id !== 'X';
+  ok(`the audio ledger carries what Eleven needs: a description on all ${rows.length} rows, a row for each of the app's ${Object.keys(L.SPEECH_SOUNDS).length + Object.keys(L.TRIAL_SOUNDS).length + cheer.length} own sounds, no lesson clip sending a speech sound as letters (${lessonRows.length} read), the nine runs of sounds sent with their vowels as sounds, the say-along's word in capitals in all ${games} games, ${stressed} lines' stressed words in capitals, every manner described, and the generator sending a sound effect to the sound-effects endpoint and a sound alone (pass MW; every near miss caught)`,
+    noDesc.length === 0 && noDescPlant.length === 2 && soundBad.length === 0 && soundPlants.every(Boolean) && leftAsLetters.length === 0 && plantLetters.length === 1 && missed === 0 && JSON.stringify(runKeys) === JSON.stringify(RUNS) && runVowels.length === 0 && plantVowel && games >= 77 && small.length === 0 && plantSmall && stressed >= 15 && stressBad.length === 0 && plantStress && heldBad.length === 0 && heldPlants && notesBad.length === 0 && plantNotes && storyOff.length === 0 && plantStory && quickHeld && genBad.length === 0 && oldCaught && mannersBad.length === 0 && plantManners,
+    `no description ${noDesc.slice(0, 5).join(', ')}; plant ${noDescPlant.length}; sounds ${soundBad.join(' | ')}; sound plants ${soundPlants.map(Boolean)}; as letters ${leftAsLetters.slice(0, 5).join(', ')}; plant ${plantLetters.length}; missed ${missed}; runs ${runKeys.join(', ')}; vowels left ${runVowels.join(', ')}; plant ${plantVowel}; games ${games}; small ${small.join(', ')}; stressed ${stressed} ${stressBad.join(', ')} plant ${plantStress}; held ${heldBad.join(', ')} plants ${heldPlants}; notes ${notesBad.slice(0, 5).join(', ')} plant ${plantNotes}; story notes ${storyOff.slice(0, 5).join(', ')} plant ${plantStory} quick ${quickHeld}; generator ${genBad.slice(0, 5).join(', ')}; old caught ${oldCaught}; manners ${mannersBad.join(', ')} plant ${plantManners}`); }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

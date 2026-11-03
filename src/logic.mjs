@@ -5296,7 +5296,8 @@ function PREK3_MODULES() { return [
   // A voice to fit the place (pass MV, earmark E12, the standards review of Domain II): Head Start's P-LC 4 for three-year-olds, its
   // "with support, will sometimes use appropriate tone and volume for different situations", which Talking with a friend and Talk
   // about it left waiting, and PK3 II.C.1 ("Child's speech is understood by familiar adults and peers.", the 2027 recommendation), each
-  // in part (P-LC 5, whose first sentence round one's lesson check found too thin a part to turn its plans ready, waits for II.E). A three-year-old hears a whisper, an inside voice and a big outside voice said
+  // in part (P-LC 5, whose first sentence round one's lesson check found too thin a part to turn its plans ready, waited for II.E, and
+  // since pass MW is cited whole by Say it in a sentence, which teaches every sentence of it). A three-year-old hears a whisper, an inside voice and a big outside voice said
   // the way they sound (VOICE_MANNERS), where each fits (a sleeping baby and the library, the classroom, a friend far away by the
   // slide), a kind, soft voice for a sad friend and for asking a turn, that slow, clear words said toward a friend help the friend
   // understand, and that a big voice to call for help is okay anywhere. Pre-K 4's Say it to fit is its older half. A child using the
@@ -5828,6 +5829,77 @@ function PREK3_READING_MODULES() { return [
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.C.2 (mimics and begins to use intonation (changes in pitch or stress) in spoken language), since the lesson models changes in pitch, a voice going up high and down low, up at the end of a question and down at the end of telling, and changes in stress, one word said strong, gives the child a turn after each to say it like the voice, mimicking it, and shows what each is for, to ask, to tell and to say which word matters most, so a child beginning to use them, with the grown-ups and friends around them, is the lesson at work.'],
     generators: ['p3-tone-highlow', 'p3-tone-ask', 'p3-tone-strong', 'p3-tone-yesno', 'p3-tone-who'],
+  },
+  // Say it in a sentence (pass MW, earmark E12, the standards review of Domain II's II.E): PK3 II.E.1, "typically uses simple
+  // sentences of three to four words, usually in correct word order.", and PK3 II.E.3, "uses simple sentence structures to share ideas
+  // using some details.", each cited whole at Mikey's answer to Q79 ("Q79 - A": an II.E outcome is cited whole once a lesson teaches,
+  // models and asks for every part of it), and Head Start's P-LC 5 with its 36 to 48 month progression. A three-year-old hears a
+  // sentence's words in order, who and then what they do, hears them mixed up and hard to understand, says sentences of three and four
+  // words back in turns of their own (each said telling, VOICE_MANNERS, with the child's turn after it), hears a word like big or red
+  // tell more, tells more in a turn, and hears two or three sentences tell about one thing. One cat, two cats is its second half.
+  {
+    id: 'say-a-sentence',
+    skill: 'Listening',
+    order: 16,
+    requires: ['voice-up-and-down'],
+    title: 'Say it in a sentence',
+    tagline: 'Words in order, and a little more',
+    lesson: {
+      paragraphs: ['When we talk, we put words together to make a sentence, and the words go in order. First we say who, the dog, and then we say what the dog does. The dog runs. If the words get mixed up, like runs dog the, they are hard to understand.', 'A sentence can have three words, like the cat sleeps, or four words, like I see a bird.', 'A word can tell more in your sentence. When you say, I see a big dog, the word big tells more about the dog. When you say, I have a red ball, the word red tells more about the ball.', 'You can tell two or three things about one thing. My dog is big, and he is brown. He likes to run. If I say, the bus is yellow, that tells about the bus, not about my dog. Say your sentence slowly and clearly, so your family and your teacher can understand you.'],
+      keyIdea: 'Say your words in order, and tell more about one thing.',
+      example: { kind: 'pair', a: { kind: 'icon', name: 'dog' }, b: { kind: 'icon', name: 'ball' }, caption: 'I see a big dog. I have a red ball.' },
+      pictures: [{ serial: 'P172', alt: 'A small child pointing and talking about a big, friendly brown dog in a park, a grown-up smiling beside them', step: 5 }],
+      script: [
+        { say: 'When we talk, we put words together to make a sentence. Listen. The dog runs.', show: { kind: 'icon', name: 'dog' } },
+        { say: 'In a sentence, the words go in order, so they are easy to understand. First we say who, the dog, and then we say what the dog does. The dog runs.', show: { kind: 'icon', name: 'dog' } },
+        { say: 'If the words get mixed up, like runs dog the, they are hard to understand, so we say them in order.', show: { kind: 'icon', name: 'dog' } },
+        { say: 'It is your turn now, so say this sentence like me. The cat sleeps.', show: { kind: 'pic', name: 'cat~asleep' }, voices: [['The cat sleeps.', 'tell', 'turn']] },
+        { say: 'A sentence can have three words, or four, or even more. Now say a longer one like me. I see a bird.', show: { kind: 'icon', name: 'bird' }, voices: [['I see a bird.', 'tell', 'turn']] },
+        { say: 'A word can tell more in your sentence. I see a dog, and now I see a big dog. The word big tells more about the dog.', stress: ['big'], show: { kind: 'icon', name: 'dog' } },
+        { say: 'Here is another one. I have a ball, and now I have a red ball. The word red tells more about the ball.', stress: ['red'], show: { kind: 'icon', name: 'ball' } },
+        { say: 'It is your turn to tell more about the cat, so say it like me. The little cat sleeps.', show: { kind: 'pic', name: 'cat~asleep' }, voices: [['The little cat sleeps.', 'tell', 'turn']] },
+        { say: 'You can tell two or three things about one thing, so tell about my dog like me. My dog is big, and he is brown. He likes to run.', show: { kind: 'icon', name: 'dog' }, voices: [['My dog is big, and he is brown.', 'tell', 'turn'], ['He likes to run.', 'tell', 'turn']] },
+        { say: 'All of that tells about my dog, but if I say, the bus is yellow, that tells about the bus instead.', show: { kind: 'pair', a: { kind: 'icon', name: 'dog' }, b: { kind: 'icon', name: 'bus' } } },
+        { say: 'Say your sentence slowly and clearly, so your family and your teacher can understand you.', show: { kind: 'icon', name: 'teacher' } },
+        { say: 'Say your words in order, and tell more about one thing, like my dog. That is how we share our ideas.', show: { kind: 'icon', name: 'dog' } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.E.1 (typically uses simple sentences of three to four words, usually in correct word order.), since the lesson models sentences of three and four words in order, who and then what they do, the dog runs, the cat sleeps and I see a bird, shows that words mixed up are hard to understand, has the child say sentences back in turns of their own and asks which one is said in order, a child typically using such sentences with the people around them being the lesson at work, and II.E.3 (uses simple sentence structures to share ideas using some details.), since the lesson teaches words that tell more in a simple sentence, big, little, red, yellow and brown, has the child tell more in a turn of their own, and asks which sentence, and which word, tells more, and Head Start ELOF Goal P-LC 5 (expresses self in increasingly long, detailed, and sophisticated ways), whose 36 to 48 month progression reads "Communicates clearly enough to be understood by familiar adults, but may make some pronunciation and grammatical errors. Typically uses three- to five-word phrases/sentences when communicating. With some prompting, can offer multiple (two or three) pieces of information on a single topic.", since the lesson teaches saying a sentence slowly and clearly so a family and a teacher can understand it, sentences of three to five words, and, with the voice prompting, two or three pieces of information on a single topic, a dog that is big, brown and likes to run, which the child tells back in turns of their own, and asks which sentence tells more about that one thing, the errors a child may make being what the progression allows.'],
+    generators: ['p3-sent-order', 'p3-sent-more', 'p3-sent-topic', 'p3-sent-word', 'p3-sent-yesno'],
+  },
+  // One cat, two cats (pass MW, earmark E12, the standards review of Domain II's II.E): PK3 II.E.2, "begins to use regular plurals and
+  // regular past tense correctly.", cited whole at Mikey's answer to Q79. A three-year-old hears a word change for more than one, a
+  // little sound at its end (dogs, cups, balls, cats, blocks), and for what already happened, yesterday (kicked, opened, played,
+  // hugged), each change said strong once so it is heard (VOICE_MANNERS' strong), and says them back in turns of their own. Only the
+  // regular forms: the outcome names them, and the irregular ones (ran, went) are pre-K 4's, in Words that change.
+  {
+    id: 'one-cat-two-cats',
+    skill: 'Listening',
+    order: 17,
+    requires: ['say-a-sentence'],
+    title: 'One cat, two cats',
+    tagline: 'More than one, and what I did yesterday',
+    lesson: {
+      paragraphs: ['Words can change a little to tell us more. One dog, two dogs. When there is more than one, many words get a little sound at the end. Here is one cup, and here are two cups. Here is one ball, and here are three balls.', 'Words can tell when something happened. Today I kick the ball, and yesterday I kicked the ball. Yesterday is before today, so the word changes. Today I open the door, and yesterday I opened the door.', 'Words change to tell us more than one, like dogs, and to tell what already happened, like kicked.'],
+      keyIdea: 'More than one often gets a little sound at the end, and what already happened often sounds different too.',
+      example: { kind: 'pair', stack: true, a: { kind: 'icon', name: 'dog' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'dog' }, { kind: 'icon', name: 'dog' }] }, caption: 'One dog, two dogs.' },
+      pictures: [{ serial: 'P173', alt: 'A small child in a backyard kicking a red ball, a grown-up watching and clapping nearby', step: 5 }],
+      script: [
+        { say: 'Words can change a little to tell us more, so listen to this. One dog. Two dogs.', stress: ['dogs'], show: { kind: 'pair', stack: true, a: { kind: 'icon', name: 'dog' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'dog' }, { kind: 'icon', name: 'dog' }] } } },
+        { say: 'When there is more than one, many words get a little sound at the end, like dog and dogs. Listen again. Two DOGS.', show: { kind: 'pair', stack: true, a: { kind: 'icon', name: 'dog' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'dog' }, { kind: 'icon', name: 'dog' }] } }, voices: [['Two DOGS.', 'strong']] },
+        { say: 'Here is one cup, and here are two cups.', stress: ['cups'], show: { kind: 'pair', stack: true, a: { kind: 'icon', name: 'cup' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'cup' }, { kind: 'icon', name: 'cup' }] } } },
+        { say: 'Here is one ball, and here are three balls.', stress: ['balls'], show: { kind: 'pair', stack: true, a: { kind: 'icon', name: 'ball' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'ball' }, { kind: 'icon', name: 'ball' }, { kind: 'icon', name: 'ball' }] } } },
+        { say: 'It is your turn, so say these like me. One cat. Two cats.', show: { kind: 'pair', stack: true, a: { kind: 'pic', name: 'cat' }, b: { kind: 'row', items: [{ kind: 'pic', name: 'cat' }, { kind: 'pic', name: 'cat' }] } }, voices: [['One cat.', 'tell', 'turn'], ['Two cats.', 'tell', 'turn']] },
+        { say: 'Words can tell when something happened, so listen to this. Today I kick the ball. Yesterday I kicked the ball.', stress: ['kicked'], show: { kind: 'icon', name: 'ball' } },
+        { say: 'Yesterday is before today, so the word changes from kick to kicked. Listen again. Yesterday I KICKED the ball.', show: { kind: 'icon', name: 'ball' }, voices: [['Yesterday I KICKED the ball.', 'strong']] },
+        { say: 'Today I open the door, and yesterday I opened the door.', stress: ['opened'], show: { kind: 'icon', name: 'door' } },
+        { say: 'Today we play with blocks, and yesterday we played with blocks.', stress: ['played'], show: { kind: 'row', items: [{ kind: 'icon', name: 'block' }, { kind: 'icon', name: 'block' }, { kind: 'icon', name: 'block' }] } },
+        { say: 'Now it is your turn, so say this like me. Yesterday I hugged my teddy.', show: { kind: 'icon', name: 'teddy' }, voices: [['Yesterday I hugged my teddy.', 'tell', 'turn']] },
+        { say: 'Words change for more than one, so we say two dogs. They change for what already happened, too, so we say, I kicked the ball.', stress: ['dogs', 'kicked'], show: { kind: 'row', items: [{ kind: 'icon', name: 'dog' }, { kind: 'icon', name: 'dog' }, { kind: 'icon', name: 'ball' }] } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.E.2 (begins to use regular plurals and regular past tense correctly.), since the lesson teaches regular plurals, a little sound at the end of many words for more than one, dogs, cups, balls, cats and blocks, and the regular past tense, the word changing for what already happened, kicked, opened, played and hugged, models each and says the change strong so it is heard, has the child say them back in turns of their own, and asks which one says it right, a child beginning to use them, with the grown-ups and friends around them, being the lesson at work.'],
+    generators: ['p3-more-say', 'p3-more-one', 'p3-past-say', 'p3-past-which', 'p3-change-yesno'],
   },
 ]; }
 
@@ -7421,8 +7493,8 @@ function PREK_READING_MODULES() { return [
     generators: ['p4-act-thing', 'p4-act-word', 'p4-act-when', 'p4-act-yesno', 'p4-act-use'],
   },
   // My voice tells more (pass MV, earmark E13, the standards review of Domain II): PK4 II.C.2, "uses intonation (changes in pitch or
-  // stress) to convey and interpret meaning in spoken language." (the 2027 recommendation), and PK4 II.C.1, in part (P-LC 5 waits for
-  // II.E, as A voice to fit the place says). A four-year-old hears a voice going up at the end ask and going down tell, the
+  // stress) to convey and interpret meaning in spoken language." (the 2027 recommendation), and PK4 II.C.1, in part (P-LC 5 waited for
+  // II.E, as A voice to fit the place says, and since pass MW is cited whole by Longer sentences). A four-year-old hears a voice going up at the end ask and going down tell, the
   // same words asking or telling, a word said strong show the word that matters most, and a voice going up high sound happy and
   // a slow, soft, low one sad, each said the way it sounds (VOICE_MANNERS), tells what each means and says some back; and hears that
   // slow, clear words said toward a friend, a grown-up they know or someone new help them understand. Pre-K 3's My voice goes up and down is its younger
@@ -7459,6 +7531,84 @@ function PREK_READING_MODULES() { return [
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.C.2 (uses intonation (changes in pitch or stress) to convey and interpret meaning in spoken language.), since the lesson teaches that a voice going up at the end often asks and going down often tells, so the same words can ask or tell, that a word said strong shows the word that matters most, and that a voice going up high often sounds happy and a slow, soft, low one sad, has the child hear each and tell what it means, interpreting it, and say some of them like the voice, conveying it, a child using them with the grown-ups and friends around them being the lesson at work, and II.C.1 (Child’s speech is generally intelligible to both familiar and unfamiliar adults and peers.), in part, since the lesson teaches what helps a friend, a grown-up the child knows and someone new, a doctor the child has just met, understand a child, words said slowly and clearly while the child turns toward them, while the child\'s own speech, understood as the child says it, is the child\'s own talk (EARMARKS E13).'],
     generators: ['p4-tone-ask', 'p4-tone-feel', 'p4-tone-strong', 'p4-tone-which', 'p4-tone-yesno'],
+  },
+  // Longer sentences (pass MW, earmark E13, the standards review of Domain II's II.E): PK4 II.E.1, "typically uses complete sentences
+  // with increasing length and age-appropriate grammatical complexity, usually in standard word order.", and PK4 II.E.3, "uses sentences
+  // that combine multiple phrases or ideas, shares details, maintains a topic, and communicates ideas clearly.", each cited whole at
+  // Mikey's answer to Q79, and Head Start's P-LC 5 with its 48 to 60 month progression. A four-year-old hears a whole sentence tell who
+  // and what they do, hears the order of the words change who does what, grows a sentence longer, joins two ideas with and and
+  // tells why with because (the progression's own kind of example: "I need a pencil because this one broke."), stays on a topic,
+  // answers a question with a sentence and says it clearly for someone new. Pre-K 3's Say it in a sentence is its younger half.
+  {
+    id: 'longer-sentences',
+    skill: 'Listening',
+    order: 17,
+    requires: ['voice-tells-more'],
+    title: 'Longer sentences',
+    tagline: 'Who, what, and a little more',
+    lesson: {
+      paragraphs: ['A whole sentence tells who, and what they do. The baby sleeps. But the baby, all by itself, is not a whole sentence, because it does not tell what the baby does.', 'The order of the words tells who does what. If I say, the dog chases the cat, the dog comes first, so the dog runs after the cat. But if I say, the cat chases the dog, the cat comes first, so the cat runs after the dog.', 'You can make a sentence longer to tell more, like the big dog runs to the park. You can join two ideas with the word and. I have a hat, and I have a coat. The word because tells why. I need a new crayon because this one broke.', 'When you tell about something, stay on that topic. When someone asks you a question, answer it with a sentence. Say your sentences clearly, so a new friend or a grown-up you just met can understand your ideas too.'],
+      keyIdea: 'A whole sentence tells who and what they do, in order, and it can grow longer, join ideas and tell why.',
+      example: { kind: 'pair', a: { kind: 'icon', name: 'hat' }, b: { kind: 'icon', name: 'coat' }, caption: 'I have a hat, and I have a coat.' },
+      pictures: [{ serial: 'P174', alt: 'A small child at a park telling a grown-up about the slide and a duck on the pond, pointing, both smiling', step: 9 }],
+      script: [
+        { say: 'A whole sentence tells who, and what they do. The baby sleeps. The baby is who, and sleeps is what the baby does.', show: { kind: 'icon', name: 'baby~asleep' } },
+        { say: 'But the baby, all by itself, is not a whole sentence, because it does not tell what the baby does.', show: { kind: 'icon', name: 'baby~asleep' } },
+        { say: 'The order of the words tells who does what. When I say, the dog chases the cat, the dog comes first. So the dog runs after the cat.', show: { kind: 'pair', a: { kind: 'icon', name: 'dog' }, b: { kind: 'pic', name: 'cat' } } },
+        { say: 'Switch the words around. The cat chases the dog. Now the cat comes first, so the cat runs after the dog, and the order changes what it means.', show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'icon', name: 'dog' } } },
+        { say: 'You can make a short sentence longer to tell more. The dog runs. Make it longer, and say, the dog runs to the park. Make it even longer, and say, the big dog runs to the park.', show: { kind: 'icon', name: 'dog' } },
+        { say: 'It is your turn to make a sentence longer, so say it like me. The cat sleeps on the bed.', show: { kind: 'pair', a: { kind: 'pic', name: 'cat~asleep' }, b: { kind: 'icon', name: 'bed' } }, voices: [['The cat sleeps on the bed.', 'tell', 'turn']] },
+        { say: 'You can join two ideas with the word and. I have a hat, and I have a coat.', stress: ['and'], show: { kind: 'pair', a: { kind: 'icon', name: 'hat' }, b: { kind: 'icon', name: 'coat' } } },
+        { say: 'Or you can tell why something happened, with the word because. Listen. I need a new crayon because this one broke.', stress: ['because'], show: { kind: 'icon', name: 'crayon~broken' } },
+        { say: 'Now you try, and tell why, like me. I am wearing my warm coat today because it is cold outside.', show: { kind: 'icon', name: 'coat' }, voices: [['I am wearing my warm coat today because it is cold outside.', 'tell', 'turn']] },
+        { say: 'When you tell about something, stay on that topic, so tell about the park like me. At the park, I went down the slide, and I saw a duck.', show: { kind: 'pair', a: { kind: 'icon', name: 'slide' }, b: { kind: 'pic', name: 'duck' } }, voices: [['At the park, I went down the slide, and I saw a duck.', 'tell', 'turn']] },
+        { say: 'Your two ideas both tell about the park, but if you say, my cat likes fish, that is a new topic. Save it for later, so your friend can follow you.', show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'pic', name: 'fish' } } },
+        { say: 'When someone asks you a question, answer it with a sentence. Where did you go? I went down the slide at the park.', show: { kind: 'icon', name: 'slide' } },
+        { say: 'Say your sentences clearly, so a new friend can understand your ideas. A grown-up you just met, such as a new doctor, can understand them too.', show: { kind: 'icon', name: 'doctor' } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.E.1 (typically uses complete sentences with increasing length and age-appropriate grammatical complexity, usually in standard word order.), since the lesson teaches that a whole sentence tells who and what they do, that the order of the words changes what a sentence means, the dog chases the cat or the cat chases the dog, how a sentence grows longer, the dog runs, to the park, the big dog, and two ideas joined with and and a reason given with because, has the child make a sentence longer and tell why in turns of their own, and asks which one is whole, which order says what is meant and which one tells more, a child typically using such sentences with the people around them being the lesson at work, and II.E.3 (uses sentences that combine multiple phrases or ideas, shares details, maintains a topic, and communicates ideas clearly.), since the lesson teaches sentences that join ideas with and and because, details that make a sentence longer, staying on a topic, the park, in a turn of the child\'s own, while a new topic waits for later, and saying sentences clearly so others understand, and asks which sentence stays on the topic, and Head Start ELOF Goal P-LC 5 (expresses self in increasingly long, detailed, and sophisticated ways), in part, whose 48 to 60 month progression reads "Communicates clearly enough to be understood by familiar and unfamiliar adults, but may make some pronunciation errors and some isolated grammatical errors. Uses longer sentences, as well as sentences that are slightly more complex, such as \"I need a pencil because this one broke.\" Can offer multiple pieces of information on a topic with increasing independence and answer simple questions.", since the lesson teaches saying sentences clearly so a new friend or a grown-up just met can understand, longer sentences and slightly more complex ones, I need a new crayon because this one broke, two pieces of information on one topic, said in a turn of the child\'s own, and answering a simple question with a sentence, and asks for each, while offering pieces of information on a topic with increasing independence is the child\'s own, the errors a child may make being what the progression allows.'],
+    generators: ['p4-sent-whole', 'p4-sent-order', 'p4-sent-longer', 'p4-sent-topic', 'p4-sent-yesno'],
+  },
+  // Words that change (pass MW, earmark E13, the standards review of Domain II's II.E): PK4 II.E.2, "uses a variety of age-appropriate
+  // grammatical forms (e.g. plurals, past tense, pronouns, subject-verb agreement) in spoken language.", cited whole at Mikey's answer to
+  // Q79, the lesson teaching each form its example names. A four-year-old hears plurals (dogs, buses, and fish that stay fish), the past
+  // tense (kicked, and ran and went, which four-year-olds often say as runned and goed), she, he, they and I in place of a name, and a
+  // word fitting who does it (one dog runs, two dogs run; I am, she is, they are), and says them back in turns of their own. Pre-K 3's
+  // One cat, two cats teaches the regular plurals and past tense first.
+  {
+    id: 'words-that-change',
+    skill: 'Listening',
+    order: 18,
+    requires: ['longer-sentences'],
+    title: 'Words that change',
+    tagline: 'More than one, before, and she, he and they',
+    lesson: {
+      paragraphs: ['Words can change to tell us more. One dog, two dogs. One bus, two buses. A word that already ends with a hiss, like bus, gets a whole new part, buses. Some words do not change at all. One fish, two fish.', 'Words change to tell what already happened. Today I kick the ball, and yesterday I kicked the ball. Some words change even more. Today I run, but yesterday I ran. Today I go to the park, but yesterday I went to the park.', 'We can say she, he or they in place of a name. Mia has a hat, and she likes her hat. Sam has a ball, and he kicks it. When you tell what you want or do, say I. I want a turn.', 'A word changes to fit who does it. One dog runs, and two dogs run. I am happy, she is happy, we are happy, and they are happy.'],
+      keyIdea: 'Words change for more than one, for what already happened, for she, he and they, and to fit who does it.',
+      example: { kind: 'pair', stack: true, a: { kind: 'icon', name: 'bus' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'bus' }, { kind: 'icon', name: 'bus' }] }, caption: 'One bus, two buses.' },
+      pictures: [{ serial: 'P175', alt: 'A small girl in a blue hat and a small boy kicking a red ball to her, playing together in a park, a grown-up watching from a bench nearby', step: 8 }],
+      script: [
+        { say: 'Words can change to tell us more. One dog, two dogs. One bus, two buses.', stress: ['dogs', 'buses'], show: { kind: 'pair', stack: true, a: { kind: 'icon', name: 'dog' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'dog' }, { kind: 'icon', name: 'dog' }] } } },
+        { say: 'A word that already ends with a hiss, like bus, gets a whole new part. Listen. Two BUSES.', show: { kind: 'pair', stack: true, a: { kind: 'icon', name: 'bus' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'bus' }, { kind: 'icon', name: 'bus' }] } }, voices: [['Two BUSES.', 'strong']] },
+        { say: 'It is your turn, so say these like me. One bus. Two buses.', show: { kind: 'pair', stack: true, a: { kind: 'icon', name: 'bus' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'bus' }, { kind: 'icon', name: 'bus' }] } }, voices: [['One bus.', 'tell', 'turn'], ['Two buses.', 'tell', 'turn']] },
+        { say: 'Some words do not change at all, like one fish, two fish.', show: { kind: 'pair', stack: true, a: { kind: 'icon', name: 'fish' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'fish' }, { kind: 'icon', name: 'fish' }] } } },
+        { say: 'Words change to tell what already happened. Today I kick the ball, and yesterday I kicked the ball.', stress: ['kicked'], show: { kind: 'icon', name: 'ball' } },
+        { say: 'Some words change even more. Today I run, but yesterday I ran. Today I go down the slide, but yesterday I went down the slide.', stress: ['ran', 'went'], show: { kind: 'icon', name: 'slide' } },
+        { say: 'Now you try, and say this one like me. Yesterday I went down the slide.', show: { kind: 'icon', name: 'slide' }, voices: [['Yesterday I went down the slide.', 'tell', 'turn']] },
+        { say: 'We can say she, he or they in place of a name. Mia has a hat, and she likes her hat. We say she likes her hat, and not, her likes her hat.', stress: ['she likes'], show: { kind: 'icon', name: 'hat' } },
+        { say: 'Sam has a ball. We say he kicks it to Mia, and not, him kicks it to Mia.', stress: ['he kicks'], show: { kind: 'icon', name: 'ball' } },
+        { say: 'When Mia and Sam play ball together, we say they have fun, and not, them have fun.', stress: ['they have'], show: { kind: 'icon', name: 'ball' } },
+        { say: 'When you tell what you want or do, say I. I want a turn on the slide, not me want a turn.', show: { kind: 'icon', name: 'slide' } },
+        { say: 'Pretend you are building a tall tower, and say this one like me. I can do it.', show: { kind: 'icon', name: 'tower' }, voices: [['I can do it.', 'tell', 'turn']] },
+        { say: 'A word changes to fit who does it, so we say one dog runs, and two dogs run. One ball rolls, two balls roll.', stress: ['runs', 'run', 'rolls', 'roll'], show: { kind: 'pair', stack: true, a: { kind: 'icon', name: 'dog' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'dog' }, { kind: 'icon', name: 'dog' }] } } },
+        { say: 'Now you try these, and say them like me. One dog runs. Two dogs run.', show: { kind: 'pair', stack: true, a: { kind: 'icon', name: 'dog' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'dog' }, { kind: 'icon', name: 'dog' }] } }, voices: [['One dog runs.', 'tell', 'turn'], ['Two dogs run.', 'tell', 'turn']] },
+        { say: 'I am happy, she is happy, we are happy, and they are happy.', show: { kind: 'pair', a: { kind: 'face', feeling: 'happy' }, b: { kind: 'face', feeling: 'happy' } } },
+        { say: 'Words change for more than one, so we say two buses. They change for what already happened, for she, he and they, and to fit who does it.', stress: ['buses'], show: { kind: 'row', items: [{ kind: 'icon', name: 'bus' }, { kind: 'icon', name: 'bus' }] } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) II.E.2 (uses a variety of age-appropriate grammatical forms (e.g. plurals, past tense, pronouns, subject-verb agreement) in spoken language.), since the lesson teaches each form its example names, plurals, dogs, buses, and fish that stay fish, the past tense, kicked, ran and went, the pronouns she, he, they and I in place of a name, and subject-verb agreement, one dog runs and two dogs run, I am, she is and they are, has the child say them back in turns of their own, and asks which one says it right, a child using them in spoken language with the people around them being the lesson at work.'],
+    generators: ['p4-form-plural', 'p4-form-past', 'p4-form-pronoun', 'p4-form-agree', 'p4-form-yesno'],
   },
 ]; }
 
@@ -29467,7 +29617,7 @@ Object.assign(GENERATORS, {
 
 // Domain II's II.C for both ages and pre-K 3's voice to fit the place (pass MV, earmarks E12 and E13). In plain terms: three lessons'
 // questions. Pre-K 3's A voice to fit the place (the voice that fits each place and moment, a kind, soft voice, and what helps a friend
-// understand you; Head Start's P-LC 4 and PK3 II.C.1, in part, P-LC 5 waiting for II.E); pre-K 3's My voice goes up and down (a voice up high or down
+// understand you; Head Start's P-LC 4 and PK3 II.C.1, in part, P-LC 5 waiting for II.E, built in pass MW); pre-K 3's My voice goes up and down (a voice up high or down
 // low, a question going up and telling going down, and the word said strong; PK3 II.C.2); and pre-K 4's My voice tells more (asking or
 // telling, a happy or a sad voice, and the word said strong; PK4 II.C.2). A question about what a child heard says its sentence in a
 // manner (voices, VOICE_MANNERS) and uses only what every device voice can show, pitch, pace, a question's lift and a strong word,
@@ -29654,6 +29804,284 @@ Object.assign(GENERATORS, {
   // My voice tells more: yes or no about asking, telling, a happy or a sad voice, and clear words for someone new.
   'p4-tone-yesno': (rng) => {
     const [ask, answer, explain, why] = pick(rng, TN4_YESNO); const wrong = answer === 'Yes' ? 'No' : 'Yes';
+    return { type: 'choice', story: null, prompt: ask, choices: yesNo(rng), answer, explain, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why } }, alsoRight: [] };
+  },
+});
+
+// ---------------------------------------------------------------------
+// Domain II's II.E, sentence structure (pass MW, earmarks E12 and E13). Every sentence a question offers is said by the screen when a
+// pre-reader taps it, and each table below is read again by the rules test with tables of its own (PREK_DERIVE).
+// ---------------------------------------------------------------------
+// Say it in a sentence (pre-K 3): a sentence in order and the same words mixed up, about a thing the lesson draws; a sentence and the
+// same one telling more, with the word that tells more; a topic, two sentences that tell more about it and two about something else;
+// and yes or no about order, telling more and staying on one thing.
+const SS3_ORDER = [
+  ['The dog runs.', 'Runs dog the.', 'icon', 'dog'], ['The cat sleeps.', 'Cat sleeps the.', 'pic', 'cat~asleep'], ['I see a bird.', 'Bird a see I.', 'icon', 'bird'],
+  ['I have a red ball.', 'Ball red a have I.', 'icon', 'ball'], ['The little cat sleeps.', 'Sleeps cat little the.', 'pic', 'cat~asleep'], ['I see a big dog.', 'Dog big a see I.', 'icon', 'dog'],
+  ['The bus is yellow.', 'Yellow is bus the.', 'icon', 'bus'], ['My dog is big.', 'Big dog my is.', 'icon', 'dog'], ['The little bird sings.', 'Sings bird little the.', 'icon', 'bird'], ['I like my red ball.', 'Red my ball like I.', 'icon', 'ball'],
+];
+const SS3_MORE = [
+  ['dog', 'icon', 'I see a dog.', 'I see a big dog.', 'big'], ['ball', 'icon', 'I have a ball.', 'I have a red ball.', 'red'], ['cat', 'pic', 'The cat sleeps.', 'The little cat sleeps.', 'little', 'cat~asleep'],
+  ['bird', 'icon', 'I see a bird.', 'I see a little bird.', 'little'], ['bus', 'icon', 'Here is the bus.', 'Here is the yellow bus.', 'yellow'], ['dog', 'icon', 'My dog runs.', 'My brown dog runs.', 'brown'],
+  ['ball', 'icon', 'Look at my ball.', 'Look at my big ball.', 'big'], ['cat', 'pic', 'I see a cat.', 'I see a little cat.', 'little'],
+];
+const SS3_TOPIC = [
+  ['dog', 'icon', 'My dog is big.', ['He is brown.', 'He likes to run.'], ['The bus is yellow.', 'I have a red ball.']],
+  ['cat', 'pic', 'My cat is little.', ['She likes to sleep.', 'She is soft.'], ['I see a big dog.', 'I have a red ball.']],
+  ['ball', 'icon', 'I have a red ball.', ['It is round.', 'It can bounce.'], ['The cat sleeps.', 'I see a little bird.']],
+  ['bird', 'icon', 'I see a little bird.', ['It sings a song.', 'It is in a tree.'], ['My dog is big.', 'The cat sleeps.']],
+];
+const SS3_WORD = [
+  ['I see a big dog.', 'Big', 'Dog', 'dog', 'icon'], ['I have a red ball.', 'Red', 'Ball', 'ball', 'icon'], ['The little cat sleeps.', 'Little', 'Cat', 'cat', 'pic', 'cat~asleep'],
+  ['The bus is yellow.', 'Yellow', 'Bus', 'bus', 'icon'], ['My dog is brown.', 'Brown', 'Dog', 'dog', 'icon'], ['I see a little bird.', 'Little', 'Bird', 'bird', 'icon'], ['I have a big ball.', 'Big', 'Ball', 'ball', 'icon'],
+];
+const SS3_YESNO = [
+  ['Do we say our words in order, to make a sentence?', 'Yes', 'Yes. We put words together in order to make a sentence.', 'would mean the words can go in any order, but we say them in order.'],
+  ['When the words get mixed up, are they easy to understand?', 'No', 'No. When the words get mixed up, they are hard to understand.', 'would mean mixed-up words are easy to understand, but they are hard to understand.'],
+  ['When I say, I see a big dog, does the word big tell more about the dog?', 'Yes', 'Yes. The word big tells more about the dog.', 'would mean big tells nothing about the dog, but it tells more about it.'],
+  ['When I say, I have a red ball, does the word red tell more about the ball?', 'Yes', 'Yes. The word red tells more about the ball.', 'would mean red tells nothing about the ball, but it tells more about it.'],
+  ['Can you tell two or three things about one thing?', 'Yes', 'Yes. You can tell two or three things about one thing, like my dog.', 'would mean you can tell only one thing, but you can tell two or three.'],
+  ['If I say, the bus is yellow, does that tell more about my dog?', 'No', 'No. The bus is yellow tells about the bus, not about my dog.', 'would mean it tells about my dog, but it tells about the bus.'],
+  ['If the words come out runs dog the, are they in order?', 'No', 'No. The dog runs is in order.', 'would mean runs dog the is in order, but those words are mixed up.'],
+];
+// One cat, two cats (pre-K 3): the things the lesson counts, the word for one and for more than one; what I did yesterday, said right
+// and with the word unchanged, the word and the word it changes from; and yes or no.
+const MC3_THINGS = [['dog', 'dogs', 'icon'], ['cup', 'cups', 'icon'], ['ball', 'balls', 'icon'], ['cat', 'cats', 'pic'], ['block', 'blocks', 'icon']];
+const MC3_ONE = [...MC3_THINGS, ['teddy', 'teddies', 'icon'], ['door', 'doors', 'icon']];
+const MC3_PAST = [
+  ['I kicked the ball.', 'I kick the ball.', 'kicked', 'kick', 'ball'], ['I rolled the ball.', 'I roll the ball.', 'rolled', 'roll', 'ball'], ['I bounced the ball.', 'I bounce the ball.', 'bounced', 'bounce', 'ball'],
+  ['I opened the door.', 'I open the door.', 'opened', 'open', 'door'], ['I closed the door.', 'I close the door.', 'closed', 'close', 'door'], ['We played with blocks.', 'We play with blocks.', 'played', 'play', 'block'],
+  ['We stacked the blocks.', 'We stack the blocks.', 'stacked', 'stack', 'block'], ['I hugged my teddy.', 'I hug my teddy.', 'hugged', 'hug', 'teddy'], ['We walked the dog.', 'We walk the dog.', 'walked', 'walk', 'dog'], ['I filled the cup.', 'I fill the cup.', 'filled', 'fill', 'cup'],
+];
+const MC3_YESNO = [
+  ['When there is more than one dog, do we say dogs?', 'Yes', 'Yes. More than one dog gets a little sound at the end, dogs.', 'would mean we say dog for more than one, but we say dogs.'],
+  ['Do we say, there is one cups?', 'No', 'No. For one cup, we say cup.', 'would mean cups is for one, but cups is for more than one.'],
+  ['Do we say, there are three ball?', 'No', 'No. For three balls, we say balls.', 'would mean ball is for three, but ball is for one.'],
+  ['Is yesterday before today?', 'Yes', 'Yes. Yesterday is before today.', 'would mean yesterday is not before today, but it is.'],
+  ['When you tell about yesterday, do you say, I kicked the ball?', 'Yes', 'Yes. Yesterday I kicked the ball.', 'would mean we say kick for yesterday, but we say kicked.'],
+  ['Can a word change a little, to tell us more?', 'Yes', 'Yes. Dog changes to dogs, and kick changes to kicked.', 'would mean words never change, but they can.'],
+  ['When you tell about yesterday, do you say, I open the door?', 'No', 'No. For yesterday, we say, I opened the door.', 'would mean we say open for yesterday, but we say opened.'],
+];
+// Longer sentences (pre-K 4): a whole sentence and part of one; who runs after whom, by the order of the words; a sentence and the same
+// one longer, telling why or joining two ideas; a topic, sentences that stay on it and ones that do not, and a question and its answer;
+// and yes or no.
+// Each row is a whole sentence and a part of one. A part is never a sentence in any child's home speech (pass MW: The duck in the
+// pond, with is left out, is a whole sentence in African American English), every part is a who or a what with nothing it does,
+// as the lesson's own baby, all by itself, is, and in half the rows the part is the longer of the two, so length never tells
+// which one is whole (round two's content read: the whole sentence had been the longer choice on every seed).
+const LS4_WHOLE = [
+  ['The baby sleeps.', 'The baby.'], ['The dog runs.', 'The big brown dog.'], ['The little bird sings.', 'The little bird.'], ['I have a hat.', 'My big blue hat.'],
+  ['I need a new crayon.', 'A new crayon.'], ['The cat sleeps.', 'The fluffy gray cat.'], ['The duck swims.', 'The little yellow duck.'], ['I kick the ball.', 'The ball.'],
+];
+const LS4_ANIMAL = { dog: 'icon:dog', cat: 'pic:cat', duck: 'pic:duck' };
+const LS4_CHASE = [['dog', 'cat'], ['cat', 'dog'], ['dog', 'duck'], ['duck', 'dog'], ['cat', 'duck'], ['duck', 'cat']];
+const LS4_LONGER = [
+  ['The dog runs.', 'The dog runs to the park.'], ['The cat sleeps.', 'The cat sleeps on the bed.'], ['The baby sleeps.', 'The baby sleeps in her crib.'],
+  ['The duck swims.', 'The duck swims in the pond.'], ['I read a book.', 'I read a book with my grandma.'], ['I have a hat.', 'I have a big blue hat.'],
+];
+const LS4_WHY = [['I need a new crayon because this one broke.', 'I need a new crayon.'], ['I am wearing my coat because it is cold.', 'I am wearing my coat.'], ['The baby sleeps because she is tired.', 'The baby sleeps.'], ['I wash my hands because they are dirty.', 'I wash my hands.']];
+const LS4_AND = [['I have a hat, and I have a coat.', 'I have a hat.'], ['I went down the slide, and I saw a duck.', 'I went down the slide.']];
+const LS4_TOPIC = [
+  ['the park', 'At the park, I went down the slide.', ['I saw a duck on the pond.', 'I played in the sand.'], ['My cat likes fish.', 'I have a new hat.'], 'slide'],
+  ['bedtime', 'At bedtime, I put on my pajamas.', ['I listen to a story.', 'I hug my teddy.'], ['I went down the slide.', 'My cat likes fish.'], 'bed'],
+  ['lunchtime', 'At lunchtime, I ate a sandwich.', ['I drank my milk.', 'I had an apple too.'], ['I went down the slide.', 'I have a new hat.'], null],
+];
+const LS4_ANSWER = [['Where did you go?', 'I went to the park.', 'I like the color red.'], ['What did you eat?', 'I ate an apple.', 'I went to the park.'], ['Who did you play with?', 'My friend and I played tag.', 'I played in the sand.'], ['What did you see at the park?', 'I saw a duck.', 'I ate an apple.']];
+const LS4_YESNO = [
+  ['Does a whole sentence tell who, and what they do?', 'Yes', 'Yes. A whole sentence tells who, and what they do, like the baby sleeps.', 'would mean a whole sentence does not tell who and what they do, but it does.'],
+  ['Is the baby, all by itself, a whole sentence?', 'No', 'No. The baby does not tell what the baby does, so it is not a whole sentence.', 'would mean the baby is a whole sentence, but it does not tell what the baby does.'],
+  ['Can the order of the words change who does what?', 'Yes', 'Yes. The dog chases the cat, and the cat chases the dog, mean different things.', 'would mean the order does not matter, but it changes who does what.'],
+  ['If I say, the dog chases the cat, does the cat run after the dog?', 'No', 'No. The dog comes first, so the dog runs after the cat.', 'would mean the cat runs after the dog, but the dog comes first.'],
+  ['Can you join two ideas with the word and?', 'Yes', 'Yes. I have a hat, and I have a coat.', 'would mean and cannot join two ideas, but it can.'],
+  ['Does the word because tell why?', 'Yes', 'Yes. I need a new crayon because this one broke.', 'would mean because does not tell why, but it does.'],
+  ['When you tell about the park, and you say, my cat likes fish, is that on the same topic?', 'No', 'No. My cat likes fish is a new topic, so save it for later.', 'would mean it tells about the park, but it tells about a cat.'],
+  ['When someone asks you a question, can you answer it with a sentence?', 'Yes', 'Yes. Where did you go? I went to the park.', 'would mean you cannot answer with a sentence, but you can.'],
+  ['When you say your sentences clearly, can a new friend understand you better?', 'Yes', 'Yes. Say your sentences clearly, so a new friend can understand your ideas.', 'would mean clear words do not help, but they help a new friend understand.'],
+  ['Does a sentence get shorter when you tell more?', 'No', 'No. When you tell more, a sentence gets longer.', 'would mean it gets shorter, but it gets longer.'],
+];
+// Words that change (pre-K 4): the things the lesson counts, for one and more than one; what already happened, right and wrong, with the
+// word and why the wrong one is wrong; she, he, they and I in place of a name; the word that fits who does it; and yes or no.
+const WC4_PLURAL = [['dog', 'dogs', 'icon'], ['bus', 'buses', 'icon'], ['ball', 'balls', 'icon'], ['hat', 'hats', 'icon']];
+const WC4_PAST = [
+  ['Yesterday I kicked the ball.', 'Yesterday I kick the ball.', 'kicked', 'says kick, but for yesterday the word changes, to kicked.', 'ball'],
+  ['Yesterday I rolled the ball.', 'Yesterday I roll the ball.', 'rolled', 'says roll, but for yesterday the word changes, to rolled.', 'ball'],
+  ['Yesterday I went to the park.', 'Yesterday I goed to the park.', 'went', 'says goed, but go changes even more, to went.', 'slide'],
+  ['Yesterday I ran to the slide.', 'Yesterday I runned to the slide.', 'ran', 'says runned, but run changes even more, to ran.', 'slide'],
+  ['Yesterday we played a game.', 'Yesterday we play a game.', 'played', 'says play, but for yesterday the word changes, to played.', null],
+  ['Yesterday the dog ran to me.', 'Yesterday the dog runned to me.', 'ran', 'says runned, but run changes even more, to ran.', 'dog'],
+  ['Yesterday we went on the bus.', 'Yesterday we goed on the bus.', 'went', 'says goed, but go changes even more, to went.', 'bus'],
+  ['Yesterday we walked the dog.', 'Yesterday we walk the dog.', 'walked', 'says walk, but for yesterday the word changes, to walked.', 'dog'],
+];
+const WC4_PRONOUN = [
+  ['Mia has a hat.', 'She likes her hat.', 'Her likes her hat.', 'She', 'Mia', 'hat'], ['Sam has a ball.', 'He kicks the ball.', 'Him kicks the ball.', 'He', 'Sam', 'ball'],
+  ['Mia and Sam play together.', 'They have fun.', 'Them have fun.', 'They', 'Mia and Sam', null], [null, 'I want a turn.', 'Me want a turn.', 'I', null, 'slide'],
+  [null, 'I can do it.', 'Me can do it.', 'I', null, null], ['Mia sees a duck.', 'She waves to the duck.', 'Her waves to the duck.', 'She', 'Mia', null],
+  ['Sam and Mia see a bus.', 'They get on the bus.', 'Them get on the bus.', 'They', 'Sam and Mia', 'bus'], ['Sam has a book.', 'He reads his book.', 'Him reads his book.', 'He', 'Sam', null],
+];
+const WC4_AGREE = [
+  ['One dog runs.', 'One dog run.', 'runs', 'one dog', 'dog', 1], ['Two dogs run.', 'Two dogs runs.', 'run', 'two dogs', 'dog', 2],
+  ['One ball rolls.', 'One ball roll.', 'rolls', 'one ball', 'ball', 1], ['Two balls roll.', 'Two balls rolls.', 'roll', 'two balls', 'ball', 2],
+  ['I am happy.', 'I is happy.', 'am', 'I', null, 0], ['She is happy.', 'She are happy.', 'is', 'she', null, 0], ['We are happy.', 'We is happy.', 'are', 'we', null, 0], ['They are happy.', 'They is happy.', 'are', 'they', null, 0],
+];
+const WC4_YESNO = [
+  ['Do we say, there are two buses?', 'Yes', 'Yes. Bus already ends with a hiss, so we say buses.', 'would mean we say bus for two, but we say buses.'],
+  ['Do some words stay the same for more than one, like fish?', 'Yes', 'Yes. One fish, two fish.', 'would mean every word changes, but fish stays fish.'],
+  ['Do we say, yesterday I goed to the park?', 'No', 'No. We say, yesterday I went to the park.', 'would mean goed is right, but go changes to went.'],
+  ['Do we say, yesterday I ran?', 'Yes', 'Yes. Today I run, and yesterday I ran.', 'would mean ran is not right, but for yesterday we say ran.'],
+  ['Can we say she in place of Mia?', 'Yes', 'Yes. Mia has a hat, and she likes her hat.', 'would mean we cannot say she for Mia, but we can.'],
+  ['When you tell what you want, do you say, me want a turn?', 'No', 'No. We say, I want a turn.', 'would mean me fits there, but we say I.'],
+  ['Do we say, two dogs runs?', 'No', 'No. We say, two dogs run.', 'would mean runs fits two dogs, but with two dogs we say run.'],
+  ['Do we say, I am happy?', 'Yes', 'Yes. I am happy, she is happy, and they are happy.', 'would mean am does not fit I, but with I we say am.'],
+  ['Do we say, there are two bus?', 'No', 'No. We say, there are two buses.', 'would mean bus is for two, but bus is for one.'],
+];
+// A picture for a thing the tables name: a drawn icon, or one of the drawn animals; none for null.
+const ssShow = (kind, name) => (name ? { kind, name } : null);
+// A row of n things, as the lessons draw more than one.
+const ssRow = (kind, name, n) => ({ kind: 'row', items: Array.from({ length: n }, () => ({ kind, name })) });
+// A wrong sentence's name in More Info: the words as said.
+const ssSaid = (s) => 'Saying, ' + msSaid(s);
+Object.assign(GENERATORS, {
+  // Say it in a sentence: the one said in order.
+  'p3-sent-order': (rng) => {
+    const [right, wrong, kind, name] = pick(rng, SS3_ORDER);
+    return { type: 'choice', story: null, prompt: 'Which one says it in order?', choices: shuffle(rng, [right, wrong]), answer: right, explain: right + ' The words are in order, so it is easy to understand.', visual: ssShow(kind, name), explainVisual: null,
+      whyNot: { [wrong]: { name: ssSaid(wrong), why: 'has its words mixed up, so it is hard to understand.' } }, alsoRight: [] };
+  },
+  // Say it in a sentence: the sentence that tells more about the thing.
+  'p3-sent-more': (rng) => {
+    const [thing, kind, plain, more, word, drawn] = pick(rng, SS3_MORE);   // drawn: the picture when it is not the plain thing (the cat that sleeps, asleep)
+    return { type: 'choice', story: null, prompt: 'Which one tells more about the ' + thing + '?', choices: shuffle(rng, [more, plain]), answer: more, explain: more + ' The word ' + word + ' tells more about the ' + thing + '.', visual: ssShow(kind, drawn || thing), explainVisual: null,
+      whyNot: { [plain]: { name: ssSaid(plain), why: 'has no word like ' + word + ' that tells more about the ' + thing + '.' } }, alsoRight: [] };
+  },
+  // Say it in a sentence: a sentence that tells more about the same thing, not about something else.
+  'p3-sent-topic': (rng) => {
+    const [thing, kind, start, on, off] = pick(rng, SS3_TOPIC); const right = pick(rng, on); const wrong = pick(rng, off);
+    return { type: 'choice', story: 'We are telling about my ' + thing + '. ' + start, prompt: 'Which one tells more about my ' + thing + '?', choices: shuffle(rng, [right, wrong]), answer: right, explain: right + ' It tells more about my ' + thing + ', the same thing.', visual: ssShow(kind, thing), explainVisual: null,
+      whyNot: { [wrong]: { name: ssSaid(wrong), why: 'tells about something else, not about my ' + thing + '.' } }, alsoRight: [] };
+  },
+  // Say it in a sentence: the word that tells more, heard in a sentence.
+  'p3-sent-word': (rng) => {
+    const [said, right, wrong, thing, kind, drawn] = pick(rng, SS3_WORD);
+    return { type: 'choice', story: 'Listen. ' + said, prompt: 'Which word tells more about the ' + thing + '?', choices: shuffle(rng, [right, wrong]), answer: right, explain: right + '. The word ' + right.toLowerCase() + ' tells more about the ' + thing + '.', visual: ssShow(kind, drawn || thing), explainVisual: null,
+      whyNot: { [wrong]: { name: wrong, why: 'is the word for the ' + thing + ', and does not tell more about it.' } }, alsoRight: [] };
+  },
+  // Say it in a sentence: yes or no about order, telling more and one thing.
+  'p3-sent-yesno': (rng) => {
+    const [ask, answer, explain, why] = pick(rng, SS3_YESNO); const wrong = answer === 'Yes' ? 'No' : 'Yes';
+    return { type: 'choice', story: null, prompt: ask, choices: yesNo(rng), answer, explain, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why } }, alsoRight: [] };
+  },
+  // One cat, two cats: two or three things, and the sentence that names them as more than one.
+  'p3-more-say': (rng) => {
+    const [one, more, kind] = pick(rng, MC3_THINGS); const n = rng() < 0.5 ? 2 : 3; const count = NUMBER_NAMES[n];
+    const right = 'There are ' + count + ' ' + more + '.'; const wrong = 'There are ' + count + ' ' + one + '.';
+    return { type: 'choice', story: null, prompt: 'Which one says it right?', choices: shuffle(rng, [right, wrong]), answer: right, explain: right + ' There is more than one ' + one + ', so the word gets a little sound at the end, ' + more + '.', visual: ssRow(kind, one, n), explainVisual: null,
+      whyNot: { [wrong]: { name: ssSaid(wrong), why: 'says ' + one + ', the word for one, but here there are ' + count + '.' } }, alsoRight: [] };
+  },
+  // One cat, two cats: one thing, and the sentence that names it as one.
+  'p3-more-one': (rng) => {
+    const [one, more, kind] = pick(rng, MC3_ONE); const right = 'There is one ' + one + '.'; const wrong = 'There is one ' + more + '.';
+    return { type: 'choice', story: null, prompt: 'Which one says it right?', choices: shuffle(rng, [right, wrong]), answer: right, explain: right + ' There is just one ' + one + ', so we say ' + one + '.', visual: ssShow(kind, one), explainVisual: null,
+      whyNot: { [wrong]: { name: ssSaid(wrong), why: 'says ' + more + ', the word for more than one, but here there is one.' } }, alsoRight: [] };
+  },
+  // One cat, two cats: what I did yesterday, said with the word changed.
+  'p3-past-say': (rng) => {
+    const [did, does, word, base, thing] = pick(rng, MC3_PAST); const right = 'Yesterday ' + did.charAt(0).toLowerCase() + did.slice(1); const wrong = 'Yesterday ' + does.charAt(0).toLowerCase() + does.slice(1);
+    const fix = (s) => s.replace(/^Yesterday i /, 'Yesterday I ');
+    // A sentence that says more than one of its thing (we played with blocks) shows three of it, as the lesson draws blocks.
+    const many = new RegExp('\\b' + thing + 's\\b').test(did);
+    return { type: 'choice', story: null, prompt: 'Which one says it right?', choices: shuffle(rng, [fix(right), fix(wrong)]), answer: fix(right), explain: fix(right) + ' Yesterday is before today, so we say ' + word + '.', visual: many ? ssRow('icon', thing, 3) : ssShow('icon', thing), explainVisual: null,
+      whyNot: { [fix(wrong)]: { name: ssSaid(fix(wrong)), why: 'says ' + base + ', but for yesterday we say ' + word + '.' } }, alsoRight: [] };
+  },
+  // One cat, two cats: the one that tells it already happened.
+  'p3-past-which': (rng) => {
+    const [did, does, word, base, thing] = pick(rng, MC3_PAST);
+    return { type: 'choice', story: null, prompt: 'Which one tells what already happened?', choices: shuffle(rng, [did, does]), answer: did, explain: did + ' The word ' + word + ' tells it already happened.', visual: null, explainVisual: null,
+      whyNot: { [does]: { name: ssSaid(does), why: 'says ' + base + ', so it does not tell it already happened.' } }, alsoRight: [] };
+  },
+  // One cat, two cats: yes or no about one and more, and yesterday.
+  'p3-change-yesno': (rng) => {
+    const [ask, answer, explain, why] = pick(rng, MC3_YESNO); const wrong = answer === 'Yes' ? 'No' : 'Yes';
+    return { type: 'choice', story: null, prompt: ask, choices: yesNo(rng), answer, explain, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why } }, alsoRight: [] };
+  },
+  // Longer sentences: the whole sentence, not part of one.
+  'p4-sent-whole': (rng) => {
+    const [whole, part] = pick(rng, LS4_WHOLE);
+    return { type: 'choice', story: null, prompt: 'Which one is a whole sentence?', choices: shuffle(rng, [whole, part]), answer: whole, explain: whole + ' It tells who, and what they do.', visual: null, explainVisual: null,
+      whyNot: { [part]: { name: ssSaid(part), why: 'does not tell what anyone does.' } }, alsoRight: [] };
+  },
+  // Longer sentences: who runs after whom, by the order of the words, asked in words or heard.
+  'p4-sent-order': (rng) => {
+    const [a, b] = pick(rng, LS4_CHASE); const says = 'The ' + a + ' chases the ' + b + '.'; const other = 'The ' + b + ' chases the ' + a + '.';
+    if (rng() < 0.5) {
+      return { type: 'choice', story: null, prompt: 'Which one says the ' + a + ' runs after the ' + b + '?', choices: shuffle(rng, [says, other]), answer: says, explain: says + ' The ' + a + ' comes first, so the ' + a + ' runs after the ' + b + '.', visual: null, explainVisual: null,
+        whyNot: { [other]: { name: ssSaid(other), why: 'says the ' + b + ' runs after the ' + a + ', since the ' + b + ' comes first.' } }, alsoRight: [] };
+    }
+    const right = LS4_ANIMAL[a]; const choices = shuffle(rng, [LS4_ANIMAL[a], LS4_ANIMAL[b]]);
+    return { type: 'choice', story: 'Listen. ' + says, prompt: 'Who is running after the other one?', choices, answer: right, explain: 'The ' + a + '. The ' + a + ' comes first, so the ' + a + ' runs after the ' + b + '.', visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, right, (t) => ({ name: p3PicName(t), why: 'does not come first, so the ' + a + ' runs after the ' + b + '.' })), alsoRight: [] };
+  },
+  // Longer sentences: the one that tells more, tells why, or joins two ideas with and.
+  'p4-sent-longer': (rng) => {
+    const k = rng();
+    if (k < 0.5) { const [short, long] = pick(rng, LS4_LONGER);
+      return { type: 'choice', story: null, prompt: 'Which one tells more?', choices: shuffle(rng, [long, short]), answer: long, explain: long + ' It is longer, so it tells more.', visual: null, explainVisual: null,
+        whyNot: { [short]: { name: ssSaid(short), why: 'is shorter, so it tells less.' } }, alsoRight: [] }; }
+    if (k < 0.8) { const [why, plain] = pick(rng, LS4_WHY);
+      return { type: 'choice', story: null, prompt: 'Which one tells why?', choices: shuffle(rng, [why, plain]), answer: why, explain: why + ' The word because tells why.', visual: null, explainVisual: null,
+        whyNot: { [plain]: { name: ssSaid(plain), why: 'has no because, so it does not tell why.' } }, alsoRight: [] }; }
+    const [joined, one] = pick(rng, LS4_AND);
+    return { type: 'choice', story: null, prompt: 'Which one joins two ideas with the word and?', choices: shuffle(rng, [joined, one]), answer: joined, explain: joined + ' The word and joins the two ideas.', visual: null, explainVisual: null,
+      whyNot: { [one]: { name: ssSaid(one), why: 'has one idea, with no and.' } }, alsoRight: [] };
+  },
+  // Longer sentences: the sentence that stays on the topic, or the one that answers a question.
+  'p4-sent-topic': (rng) => {
+    if (rng() < 0.75) { const [topic, start, on, off, name] = pick(rng, LS4_TOPIC); const right = pick(rng, on); const wrong = pick(rng, off);
+      return { type: 'choice', story: 'We are telling about ' + topic + '. ' + start, prompt: 'Which one stays on the topic?', choices: shuffle(rng, [right, wrong]), answer: right, explain: right + ' It tells about ' + topic + ', so it stays on the topic.', visual: ssShow('icon', name), explainVisual: null,
+        whyNot: { [wrong]: { name: ssSaid(wrong), why: 'is a new topic, not ' + topic + ', so save it for later.' } }, alsoRight: [] }; }
+    const [ask, right, wrong] = pick(rng, LS4_ANSWER);
+    return { type: 'choice', story: 'Someone asks you a question. ' + ask, prompt: 'Which one answers it?', choices: shuffle(rng, [right, wrong]), answer: right, explain: right + ' It answers the question with a sentence.', visual: null, explainVisual: null,
+      whyNot: { [wrong]: { name: ssSaid(wrong), why: 'does not answer the question.' } }, alsoRight: [] };
+  },
+  // Longer sentences: yes or no about whole sentences, order, and, because, a topic, answering and saying it clearly.
+  'p4-sent-yesno': (rng) => {
+    const [ask, answer, explain, why] = pick(rng, LS4_YESNO); const wrong = answer === 'Yes' ? 'No' : 'Yes';
+    return { type: 'choice', story: null, prompt: ask, choices: yesNo(rng), answer, explain, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why } }, alsoRight: [] };
+  },
+  // Words that change: one or more than one, said right.
+  'p4-form-plural': (rng) => {
+    const [one, more, kind] = pick(rng, WC4_PLURAL);
+    if (rng() < 0.65) { const n = rng() < 0.5 ? 2 : 3; const count = NUMBER_NAMES[n]; const right = 'There are ' + count + ' ' + more + '.'; const wrong = 'There are ' + count + ' ' + one + '.';
+      const how = one === 'bus' ? ' Bus already ends with a hiss, so it gets a whole new part, buses.' : ' There is more than one ' + one + ', so we say ' + more + '.';
+      return { type: 'choice', story: null, prompt: 'Which one says it right?', choices: shuffle(rng, [right, wrong]), answer: right, explain: right + how, visual: ssRow(kind, one, n), explainVisual: null,
+        whyNot: { [wrong]: { name: ssSaid(wrong), why: 'says ' + one + ', the word for one, but here there are ' + count + '.' } }, alsoRight: [] }; }
+    const right = 'There is one ' + one + '.'; const wrong = 'There is one ' + more + '.';
+    return { type: 'choice', story: null, prompt: 'Which one says it right?', choices: shuffle(rng, [right, wrong]), answer: right, explain: right + ' There is just one ' + one + ', so we say ' + one + '.', visual: ssShow(kind, one), explainVisual: null,
+      whyNot: { [wrong]: { name: ssSaid(wrong), why: 'says ' + more + ', the word for more than one, but here there is one.' } }, alsoRight: [] };
+  },
+  // Words that change: what already happened, said right.
+  'p4-form-past': (rng) => {
+    const [right, wrong, word, why, thing] = pick(rng, WC4_PAST);
+    return { type: 'choice', story: null, prompt: 'Which one says it right?', choices: shuffle(rng, [right, wrong]), answer: right, explain: right + ' For what already happened, we say ' + word + '.', visual: ssShow('icon', thing), explainVisual: null,
+      whyNot: { [wrong]: { name: ssSaid(wrong), why } }, alsoRight: [] };
+  },
+  // Words that change: she, he, they or I, in place of a name.
+  'p4-form-pronoun': (rng) => {
+    const [story, right, wrong, word, who, thing] = pick(rng, WC4_PRONOUN); const used = wrong.split(' ')[0].toLowerCase();
+    const explain = word === 'I' ? right + ' When you tell what you want or do, you say I.' : right + ' We say ' + word.toLowerCase() + ' in place of ' + who + '.';
+    return { type: 'choice', story, prompt: 'Which one says it right?', choices: shuffle(rng, [right, wrong]), answer: right, explain, visual: ssShow('icon', thing), explainVisual: null,
+      whyNot: { [wrong]: { name: ssSaid(wrong), why: 'says ' + used + ', but here we say ' + (word === 'I' ? 'I' : word.toLowerCase()) + '.' } }, alsoRight: [] };
+  },
+  // Words that change: the word that fits who does it.
+  'p4-form-agree': (rng) => {
+    const [right, wrong, word, who, thing, n] = pick(rng, WC4_AGREE);
+    // We and they are more than one, so they show two happy faces, as the lesson's line does; I and she show one.
+    const visual = thing ? (n === 2 ? ssRow('icon', thing, 2) : ssShow('icon', thing)) : ['we', 'they'].includes(who) ? { kind: 'pair', a: { kind: 'face', feeling: 'happy' }, b: { kind: 'face', feeling: 'happy' } } : { kind: 'face', feeling: 'happy' };
+    return { type: 'choice', story: null, prompt: 'Which one says it right?', choices: shuffle(rng, [right, wrong]), answer: right, explain: right + ' With ' + who + ', we say ' + word + '.', visual, explainVisual: null,
+      whyNot: { [wrong]: { name: ssSaid(wrong), why: 'does not fit ' + who + '. With ' + who + ', we say ' + word + '.' } }, alsoRight: [] };
+  },
+  // Words that change: yes or no about each change.
+  'p4-form-yesno': (rng) => {
+    const [ask, answer, explain, why] = pick(rng, WC4_YESNO); const wrong = answer === 'Yes' ? 'No' : 'Yes';
     return { type: 'choice', story: null, prompt: ask, choices: yesNo(rng), answer, explain, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why } }, alsoRight: [] };
   },
 });
@@ -34116,6 +34544,76 @@ export const SPEECH_SOUNDS = { m: 'mmm', n: 'nnn', s: 'sss', f: 'fff', z: 'zzz',
 // plays them where a lesson hands a vowel letter to the voice today; no lesson asks for a trial, so a child hears none of them until
 // a pass builds them in (EARMARKS A42).
 export const TRIAL_SOUNDS = { a: 'the a of apple', e: 'the e of egg', i: 'the i of igloo', o: 'the o of octopus', u: 'the u of up' };
+// What a recording says in place of each of the app's own sounds (pass MW, Mikey: "I'm not reviewing any more audio for now since
+// it's kind of pointless.  Makes more sense to review it after Eleven Labs.  Just be sure to add emphasis tags and descriptions within
+// the audio ledger for Eleven.  It will be easier to test later within the artifact instead of opening several browsers and hunting
+// down sounds."). In plain terms: the app makes its speech sounds, and the cheer's whistle and crowd, from numbers (soundClipSamples,
+// below), as stand-ins until ElevenLabs records them (EARMARKS A41 and A60). Each gets a row of its own in the audio ledger
+// (tools/audio-ledger.mjs), keyed sound-<name>, so everything the recordings need is written down before they begin:
+// - a speech sound is asked of Eleven v4 in the phonetic alphabet, "Enclosed in forward slashes (/) at the beginning and end",
+//   "Written using standard IPA symbols" and "Wrapped in double quotes when passed as a string parameter" (ElevenLabs' best
+//   practices, IPA in Eleven v4, read in pass MW; ipaQuoted below), since a sound written as letters (sss) can be read as the
+//   letters, as the phone voices read it (Mikey's notes on Q51). The guide documents IPA "for names, technical terms, and other
+//   words", says "results can still vary by voice and phrase" and to "generate more than once and select the best result"; a sound
+//   said alone is not documented, so each is made in takes and heard before it is used, and the Voice Changer is the fallback
+//   (EARMARKS A41). heard says in plain words what it must sound like, for whoever picks a take, and a lesson line that holds the
+//   sound sends the same symbols;
+// - a sound effect is asked of ElevenLabs' sound effects (SFX v3, POST /v1/sound-generation) from its text, a prompt that describes
+//   its action, setting and performance, as its guide asks, for seconds, with influence saying how literally to follow it (0 to 1,
+//   higher more literal and less varied; Claude's choice for each), in a few takes for Mikey to pick by ear (Q82 (a)); heard, the
+//   description, says what to listen for and is never sent.
+// The symbols are the sounds the lessons teach, in American English: a held sound with the length mark (/mː/), a crisp stop with its
+// puff of air (/tʰ/), a voiced stop with the shortest uh, the extra-short mark over its schwa (/bə̆/; round one's accuracy check:
+// phonics teachers keep the uh off a stop, and a plain schwa asks for a full one), and the short o of octopus (/ɑ/), which og shares
+// here, as the lessons' dog, log and fog say it in much of the country (where a voice says them with the vowel of saw, og's row says
+// to ask for /ɔɡ/). sss, fff and zzz come as two short breaths, as the app plays them since
+// Mikey's "sss sss sun" (pass MP), but one held breath (one) inside a run of sounds that blend into a word ("Sss, i, ks." is six),
+// where two would sound like two sounds. The five short vowels are on trial (TRIAL_SOUNDS): no lesson plays them, but a run of sounds that
+// names a vowel letter ("Cuh, a, nnn.") asks the recording for the vowel's sound (EARMARKS A42). The app plays none of these files
+// yet, keeping its own sounds until A41 and A60 give it the path; 'quiet', a twentieth of a second of silence, needs no recording.
+// A symbol as ElevenLabs asks for IPA inside a text: each /.../ in double quotes ("/mː/"), so /sː/, /sː/ becomes "/sː/", "/sː/"
+// (pass MW, round one's code check: the guide's third rule, which the first ledger left out).
+export const ipaQuoted = (ipa) => String(ipa).replace(/\/[^/]+\//g, (m) => '"' + m + '"');
+// The sounds a lesson writes that the device voice says itself (huh, wuh and shh stay the voice's since pass MO, and ks is six's
+// end), for the ledger, which writes them in the phonetic alphabet too when a sentence uses them as sounds; kept here beside
+// SOUND_RECORDINGS since round one's code check, so every symbol the recordings ask for lives in one place. h is breath and w a
+// glide, so each takes the shortest uh, as the voiced stops do.
+export const VOICE_SOUNDS = { huh: { ipa: '/hə̆/', short: 'the h of hat, a breathy huh' }, wuh: { ipa: '/wə̆/', short: 'the w of wet, a short wuh' }, shh: { ipa: '/ʃː/', short: 'the sh of ship, held' }, ks: { ipa: '/ks/', short: 'the x at the end of six, ks' } };
+export const SOUND_RECORDINGS = soundRecordings();
+function soundRecordings() {
+  const teacher = (how) => `[warm and gentle, a preschool teacher saying one speech sound alone, ${how}]`;
+  const held = teacher('holding it about a second'); const twice = teacher('as two short breaths with a little gap between');
+  const crisp = teacher('crisp and quick'); const soft = teacher('short and soft'); const ending = teacher('as one ending, slowly and clearly');
+  const speech = (ipa, how, short, heard) => ({ kind: 'speech sound', ipa, how, text: how + ' ' + ipaQuoted(ipa), short, heard, takes: 3 });
+  const never = (name) => `Never the letter's name (${name}), and no vowel after it.`;
+  const vowel = (ipa, letter, word) => speech(ipa, held, `the short ${letter} of ${word}`, `The short ${letter} sound alone, as at the start of ${word}, held about a second. Never the letter's name. On trial: no lesson plays it, but a run of sounds that names the letter asks the recording for this sound (EARMARKS A42).`);
+  return {
+    m: speech('/mː/', held, 'the m of moon, a steady hum', `The m sound alone, as in moon: a steady hum with the lips closed, held about a second. ${never('em')}`),
+    n: speech('/nː/', held, 'the n of net, a steady hum', `The n sound alone, as in net: a steady hum through the nose, the tongue up behind the top teeth, held about a second. ${never('en')}`),
+    s: { ...speech('/sː/, /sː/', twice, 'the s of sun, a gentle hiss, twice', `The s sound alone, as in sun: a gentle hiss like a snake, said as two short breaths with a little gap between (sss, sss), as the app says it now. ${never('ess')}`), one: '/sː/' },
+    f: { ...speech('/fː/, /fː/', twice, 'the f of fan, a soft hiss, twice', `The f sound alone, as in fan: a soft, breathy hiss with the top teeth resting on the lip, said as two short breaths with a little gap between (fff, fff). ${never('ef')}`), one: '/fː/' },
+    z: { ...speech('/zː/, /zː/', twice, 'the z of zoo, a buzz, twice', `The z sound alone, as in zoo: a buzzing hiss with the voice on, like a bee, said as two short breaths with a little gap between (zzz, zzz). ${never('zee')}`), one: '/zː/' },
+    r: speech('/ɹː/', held, 'the r of red, held', `The r sound alone, as in red: a steady rrr, held about a second. ${never('ar')}`),
+    l: speech('/lː/', held, 'the l of lion, held', `The l sound alone, as in lion: a steady lll, the tongue up behind the top teeth, held about a second. ${never('el')}`),
+    t: speech('/tʰ/', crisp, 'the t of tap, a crisp puff', "The t sound alone, as in tap: one crisp tap of the tongue and a short puff of air, with no vowel after it, or only the faintest uh. Never the letter's name (tee), and never the word two."),
+    p: speech('/pʰ/', crisp, 'the p of pan, a crisp puff', "The p sound alone, as in pan: the lips pop open once with a short puff of air, with no vowel after it, or only the faintest uh. Never the letter's name (pee)."),
+    k: speech('/kʰ/', crisp, 'the c of cat, a crisp puff', "The c or k sound alone, as in cat and kite: one quick catch at the back of the mouth and a short puff of air, with no vowel after it, or only the faintest uh. Never a letter's name (see or kay)."),
+    b: speech('/bə̆/', soft, 'the b of ball, a short buh', "The b sound alone, as in ball: a short, gentle buh, the lips opening softly, with only the faintest uh after it, as short and soft as it can be. Never the letter's name (bee), and never boo."),
+    d: speech('/də̆/', soft, 'the d of dog, a short duh', "The d sound alone, as in dog: a short, gentle duh, let go softly with no click, with only the faintest uh after it. Never the letter's name (dee)."),
+    g: speech('/ɡə̆/', soft, 'the g of go, a short guh', "The g sound alone, as in go: a short, gentle guh, let go softly with no click, with only the faintest uh after it. Never the letter's name (jee)."),
+    j: speech('/dʒə̆/', soft, 'the j of jam, a short juh', "The j sound alone, as in jam: a short, gentle juh, with only the faintest uh after it. Never the letter's name (jay)."),
+    ig: speech('/ɪɡ/', ending, 'the ending ig of pig', 'The ending ig, as in pig and wig, said as one sound: the short i of igloo and a soft g. Never spelled out (i, g), and no uh after the g.'),
+    og: speech('/ɑɡ/', ending, 'the ending og of dog', 'The ending og, as in dog, log and fog, said as one sound: the short o of octopus and a soft g. Never spelled out (o, g), and no uh after the g. Its vowel must match how this voice says dog, log and fog: if the voice says them with the vowel of saw, ask for /ɔɡ/ instead.'),
+    at: speech('/æt/', ending, 'the ending at of cat', "The ending at, as in cat and hat, said as one sound in full: the short a of apple and a soft t, the way it ends cat, never the quick, soft at of look at the cat. Never spelled out (a, t)."),
+    a: vowel('/æ/', 'a', 'apple'), e: vowel('/ɛ/', 'e', 'egg'), i: vowel('/ɪ/', 'i', 'igloo'), o: vowel('/ɑ/', 'o', 'octopus'), u: vowel('/ʌ/', 'u', 'up'),
+    whistle: { kind: 'sound effect', seconds: 1, influence: 0.7, takes: 4,
+      text: "One excited fan's loud two-finger whistle at a ball game, close by, on a single breath: it swoops up to a bright, high note, holds, then slides down and fades as the breath runs out. About one second, one whistle, no crowd noise, no voices, no music.",
+      heard: "One fan's two-finger whistle on a single breath, about a second, swelling and then fading as a real breath runs out (Mikey, of the app's own: \"It should be drawn out a bit more and slightly change the amplitude of the whistle sound to sound natural as if a real breath was required.\"). It plays between the cheer's sayings, so pick the take with one clear whistle and nothing behind it." },
+    applause: { kind: 'sound effect', seconds: 2.5, influence: 0.5, takes: 4,
+      text: 'About forty people clapping and cheering for a child in a school gym, warm and happy: claps, cheers and a whistle or two burst out together right away, then fade away at the end. About two and a half seconds, no music, no spoken words.',
+      heard: "About forty people clapping and cheering in a school gym for two and a half seconds, fading out at the end, after the cheer's last saying. Pick the take whose claps sound like real hands (Mikey, of the app's own: \"the clapping sounds like static\"), starting at once, with no music and no words." },
+  };
+}
 // The sound a written sound names, or null: three or more of one held letter, in lower case or with a capital first (mmm, Sss; an
 // all-capital FFFFFF is a color code, never a sound), or a crisp stop's tuh, puh, cuh or kuh, and since pass MQ (Q60) buh, duh, guh
 // and juh in every lesson (on trial alone in pass MP). The second argument, trial, no longer changes what this returns; the callers
@@ -34123,7 +34621,9 @@ export const TRIAL_SOUNDS = { a: 'the a of apple', e: 'the e of egg', i: 'the i 
 export function soundOfNotation(word) {
   const w = String(word); if (w.length > 1 && w === w.toUpperCase()) return null;
   const low = w.toLowerCase(); if (/^([mnsfzrl])\1{2,}$/.test(low)) return low[0];
-  return ({ tuh: 't', puh: 'p', cuh: 'k', kuh: 'k', buh: 'b', duh: 'd', guh: 'g', juh: 'j' })[low] || null;
+  // An own key only (round one's code check: the word constructor read Object's own constructor from a plain table).
+  const stops = { tuh: 't', puh: 'p', cuh: 'k', kuh: 'k', buh: 'b', duh: 'd', guh: 'g', juh: 'j' };
+  return Object.hasOwn(stops, low) ? stops[low] : null;
 }
 // A word, or a run of words joined by hyphens, as the app says it; null for ordinary words, which the voice says as they are. A word
 // said slowly ("Mmm-at", "Sss-am") is its first sound, held, and then the whole word ("mmm", then "Mat"), since a voice handed the

@@ -1135,6 +1135,53 @@ const ponder = () => page.evaluate(() => {
     const n = (sel) => read(sel).filter((x) => x.kind === 'offset').length; const r = { link: n('#lb1'), linkHung: n('#lb2'), para: n('#lb3'), paraHung: n('#lb4') }; host.remove(); return r; }, LAYOUT_SOURCE);
   ok('the layout read finds a link and a paragraph\'s last line pushed off center by an i in a plain centered block, and passes both with the i hung outside them', blocks.link === 1 && blocks.linkHung === 0 && blocks.para === 1 && blocks.paraHung === 0, blocks); }
 
+// One thing and a row in a stacked pair draw at one size, side by side (pass MW, from looking at One cat, two cats on a phone: "Here
+// is one cup, and here are two cups." drew the two cups about 60 percent as wide as the one cup above, as if the lesson were about
+// big and small). The row takes the pair's width, held to a row's width, and the one thing draws as a row of one, so at 320, 390
+// and 1280 pixels, in both themes, each cup in the row draws between 90 and 110 percent of the one cup's width, the two cups' centres
+// sit no more than 1.3 cups apart (round one's screen check: on a laptop they had sat 2 cups apart), every picture is a cup (so the
+// line measured is the cup line), and with the motion on, after its drift, the sizes hold. Three planted faults must be caught on a
+// laptop: the row's half back to wrapping its content (a cup too small), the pair's width cap gone (cups far apart) and the one
+// cup's half squeezed (a cup too big beside it), each by its own bound.
+{ const L3 = await import('../../src/logic.mjs'); const mod = L3.COURSES.flatMap((c) => c.modules).find((m) => m.id === 'one-cat-two-cats');
+  const at = mod.lesson.script.findIndex((ln) => /^Here is one cup/.test(ln.say));
+  // Measures the cup line's pair: each cup's width against the one cup's, the two cups' centres apart in cups, and every picture's
+  // name; a plant changes one style on the page, is measured and is put back.
+  const cups = (plant) => page.evaluate((p) => { const pair = [...document.querySelectorAll('[data-pair]')].find((x) => x.querySelector('.edu-row-pic')); if (!pair) return null;
+    const [top, below] = pair.children; const undo = []; const set = (el, k, v) => { undo.push([el, k, el.style[k]]); el.style[k] = v; };
+    if (p === 'wrapped') set(below, 'width', ''); if (p === 'uncapped') set(pair, 'maxWidth', 'none'); if (p === 'squeezed') set(top, 'width', '60%');
+    const box = (el) => (el ? el.getBoundingClientRect() : { width: 0, left: 0 }); const oneSvg = top.querySelector('svg'); const twoSvgs = [...below.querySelectorAll('.edu-row-pic > div')].map((d) => d.querySelector('svg'));
+    const one = box(oneSvg).width; const ws = twoSvgs.map((s) => box(s).width); const cs = twoSvgs.map((s) => box(s).left + box(s).width / 2);
+    const r = { one: Math.round(one), two: ws.map(Math.round), least: one ? Math.min(...ws) / one : 0, most: one ? Math.max(...ws) / one : 99, spread: one && cs.length === 2 ? Math.abs(cs[1] - cs[0]) / one : 99, names: [oneSvg, ...twoSvgs].map((s) => s && s.getAttribute('aria-label')) };
+    for (const [el, k, v] of undo.reverse()) el.style[k] = v; return r; }, plant);
+  const toCups = async () => { await page.evaluate(() => window.__eduTest.openModule('one-cat-two-cats')); await page.waitForFunction(() => window.__eduTest.screen === 'lesson'); await page.waitForTimeout(400);
+    for (let i = 0; i < at; i++) { await page.getByRole('button', { name: 'Next', exact: true }).first().click({ force: true }); await page.waitForTimeout(150); } };
+  const real = {}; const planted = {};
+  for (const theme of ['light', 'dark']) {
+    await page.evaluate(() => window.__eduTest.goTo('educator-pick')); await page.waitForTimeout(300); for (const n of ['Skip tour', 'Later', 'Got it']) await tapIf(n);
+    const now = await page.evaluate(() => document.documentElement.getAttribute('data-theme') || 'light');
+    if (now !== theme) { await page.getByLabel(theme === 'dark' ? 'Dark theme' : 'Light theme').first().click({ force: true }); await page.waitForTimeout(400); }
+    await walk('Walk through early years');
+    for (const w of [320, 390, 1280]) { await page.setViewportSize({ width: w, height: 844 }); await page.waitForTimeout(300); await toCups(); await page.waitForTimeout(900); real[`${theme} ${w}`] = await cups(null);
+      if (w === 1280 && theme === 'light') for (const p of ['wrapped', 'uncapped', 'squeezed']) planted[p] = await cups(p); }
+  }
+  await page.setViewportSize({ width: 390, height: 844 }); await page.emulateMedia({ reducedMotion: 'no-preference' }); await page.waitForTimeout(300); await toCups(); await page.waitForTimeout(1600); real['dark 390 motion'] = await cups(null);
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  const fine = (r) => r && r.two.length === 2 && r.least >= 0.9 && r.most <= 1.1 && r.spread <= 1.3 && r.names.length === 3 && r.names.every((n) => n === 'cup');
+  ok(`at 320, 390 and 1280 pixels in both themes, and with the motion on, the two cups in One cat, two cats' stacked pair draw the one cup's size, side by side (line ${at}; a wrapped row, an uncapped pair and a squeezed cup planted and each caught)`, at >= 0 && Object.values(real).length === 7 && Object.values(real).every(fine) && planted.wrapped && planted.wrapped.least < 0.8 && planted.uncapped && planted.uncapped.spread > 1.3 && planted.squeezed && planted.squeezed.most > 1.1, { real, planted });
+  await page.setViewportSize({ width: 1280, height: 900 }); await page.waitForTimeout(200); }
+
+// A look is named with its picture for a screen reader (pass MW, round two's code read and the third read): Longer sentences draws a
+// sleeping baby and a broken crayon, and each is named with its look, as a sleeping cat is (pictureLookName in ui.jsx), where until
+// round two a screen reader heard only baby and crayon.
+{ const L4 = await import('../../src/logic.mjs'); const m4 = L4.COURSES.flatMap((c) => c.modules).find((m) => m.id === 'longer-sentences');
+  const lineOf = (name) => m4.lesson.script.findIndex((l) => JSON.stringify(l.show || '').includes(name)); const names = {};
+  for (const [look, want] of [['baby~asleep', 'sleeping baby'], ['crayon~broken', 'broken crayon']]) { const at = lineOf(look);
+    await page.evaluate(() => window.__eduTest.openModule('longer-sentences')); await page.waitForFunction(() => window.__eduTest.screen === 'lesson'); await page.waitForTimeout(400);
+    for (let i = 0; i < at; i++) { await page.getByRole('button', { name: 'Next', exact: true }).first().click({ force: true }); await page.waitForTimeout(150); }
+    await page.waitForTimeout(500); names[look] = { at, want, heard: await page.evaluate(() => [...document.querySelectorAll('svg[role="img"][aria-label]')].map((s) => s.getAttribute('aria-label'))) }; }
+  ok("a picture's look is named with it for a screen reader: Longer sentences' sleeping baby and broken crayon (pass MW, round two's code read)", Object.values(names).every((n) => n.at >= 0 && n.heard.includes(n.want)), names); }
+
 ok('no page errors along the way', errors.length === 0, errors);
 await browser.close();
 console.log(`\n${passed} passed, ${failed} failed`);

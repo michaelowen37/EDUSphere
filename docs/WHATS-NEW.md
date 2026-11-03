@@ -9,6 +9,12 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## November 2, 2026 (four new lessons on telling in sentences)
+
+- Three- and four-year-olds have four new lessons about telling in sentences, each with its own story. Say it in a sentence teaches three-year-olds to put their words in order, who and then what they do ("The dog runs."), to add a word that tells more ("The little cat sleeps."), and to tell two or three things about one thing. One cat, two cats teaches the little sound many words get for more than one (dogs, cups) and the change for what already happened (kicked, played). Longer sentences teaches four-year-olds that the order of the words tells who does what, how a sentence grows longer, joining ideas with and and because, and staying on a topic, and Words that change teaches buses and fish, ran and went, she, he and they, and one dog runs but two dogs run.
+- In each lesson the child says the new sentences back in turns of their own, and the voice waits while they do.
+- When a lesson says one thing and then more, like one cup and two cups, the picture now shows the one cup above the two, each drawn the same size on a phone, a tablet or a laptop. A sleeping cat is drawn asleep, and a broken crayon in two pieces.
+
 ## November 2, 2026 (three new lessons on how a voice sounds)
 
 - Three- and four-year-olds have three new lessons about their voices, each with its own story. A voice to fit the place teaches a whisper when a baby sleeps, an inside voice in the classroom, a big outside voice on the playground and a kind, soft voice for a friend who is sad. My voice goes up and down teaches a voice up high and down low, a question going up at the end, telling going down, and one word said strong. My voice tells more teaches four-year-olds that the same words can ask or tell, and that a happy voice sounds different from a sad one.

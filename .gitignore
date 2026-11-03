@@ -4,3 +4,5 @@ tests/e2e/out/
 tests/e2e/page.html
 tests/e2e/page-licensed.html
 tests/e2e/art/
+# Takes of the app's own sounds, made by tools/audio-generate.mjs for Mikey to pick from (pass MW); the one he picks is copied to audio/<key>.mp3.
+audio/takes/

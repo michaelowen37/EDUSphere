@@ -592,7 +592,10 @@ const ponder = () => page.evaluate(() => {
   ok('at 320 pixels a lesson\'s dots wrap in balanced rows, none alone on a row (pass MS)', rhymeRows.length >= 2 && balanced(rhymeRows) && wordRows.length === 2 && balanced(wordRows), { rhymeRows, wordRows });
   // g. A run of single letters balances its rows (round three's alignment read: Big letters' last line, "A   B   C   D   E   M   S",
   //    left S alone on a row at 390 and at 768 pixels), and a lesson's Next half below a short phone's fold gets its scroll cue
-  //    (the screen check: Trace a Big Letter's second line showed 24 to 32 of Next's 66 pixels at 375 by 667, with no cue).
+  //    (the screen check: Trace a Big Letter's second line showed 24 to 32 of Next's 66 pixels at 375 by 667, with no cue). Since pass
+  //    MZ's round two (the code check) the cue's part measures Next itself (data-lesson-next) at 375 by 505, and needs that Next more
+  //    than a third under the fold: at 375 by 667 the row had come above it (EARMARKS A80), so the check could not fail, and it measured
+  //    the whole row, dots included, which can drop under the fold while Next shows whole.
   const rows = [];
   for (const w of [390, 768, 320]) {
     await page.setViewportSize({ width: w, height: 844 }); await page.evaluate(() => window.__eduTest.openModule('big-letters')); await page.waitForFunction(() => window.__eduTest.screen === 'lesson'); await page.waitForTimeout(500);
@@ -607,16 +610,20 @@ const ponder = () => page.evaluate(() => {
   // And every row of it is centred (round four's code read: non-breaking spaces stayed at a row's ends, so a second row sat about
   // 25 pixels off centre); a letter's own spacing after it leaves each row 3 pixels to the right at most.
   ok("every row of a run of single letters is centred (Big letters' last line at 390, 768 and 320 pixels)", rows.every((r) => !r.missing && r.rows.length >= 2 && r.off <= 4), rows);
-  await page.setViewportSize({ width: 375, height: 667 }); await page.evaluate(() => window.__eduTest.openModule('first-letter-tracing')); await page.waitForFunction(() => window.__eduTest.screen === 'lesson'); await page.waitForTimeout(500);
-  await page.getByRole('button', { name: 'Next' }).first().click(); await page.waitForTimeout(400); await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(1500);
-  const cue = await page.evaluate(() => { const n = document.querySelector('[data-lesson-nav]').getBoundingClientRect(); return { navBottom: Math.round(n.bottom), vh: window.innerHeight, cue: !!document.querySelector('[data-scroll-cue]') }; });
-  ok("a lesson's Next half below a short phone's fold gets the scroll cue (375 by 667)", cue.navBottom <= cue.vh || cue.cue, cue);
+  await page.setViewportSize({ width: 375, height: 505 }); await page.evaluate(() => window.__eduTest.openModule('first-letter-tracing')); await page.waitForFunction(() => window.__eduTest.screen === 'lesson'); await page.waitForTimeout(500);
+  await page.getByRole('button', { name: 'Next', exact: true }).first().click(); await page.waitForTimeout(400); await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(1500);
+  const cue = await page.evaluate(() => { const n = document.querySelector('[data-lesson-next]').getBoundingClientRect(); return { hidden: Math.round(n.bottom - window.innerHeight), height: Math.round(n.height), cue: !!document.querySelector('[data-scroll-cue]') }; });
+  ok("a lesson's Next more than a third below a short phone's fold gets the scroll cue (First letter tracing's second line, 375 by 505)", cue.hidden > cue.height / 3 && cue.cue, cue);
   // h. The cue shows while a third of the lesson's row or more is below the fold, so it never sits on a Next that is nearly whole
   //    (round four's code read: shown for any part of the row, it covered the Next of More big letters' second line, 57 of whose 66
   //    pixels showed, and a tap there scrolled instead of moving on). Every line of the three tracing lessons, from the top, in both
   //    themes, since those lines are the dark theme's (the light theme's show 65 of 66 pixels); and since round five's code read
   //    Very First Steps' four feelings, whose eighth line hides 22.5 of 66 pixels in the dark and 17 in the light, so a cue at half
-  //    the row or at a quarter fails too. Next is asked for by its exact name, since the cue's own label holds "next".
+  //    the row or at a quarter fails too. Next is asked for by its exact name, since the cue's own label holds "next". Since pass MZ
+  //    (round one's code and screen checks) the cue and this check measure Next itself (data-lesson-next), since the dots under the
+  //    speaker make the row 91 to 106 pixels tall, and the screen is 375 by 505, since at 375 by 667 no line's Next crosses the fold any
+  //    more (EARMARKS A80); at 505 these lessons' Nexts end 19 pixels under it (a quarter to a third, no cue) and 27 (a third to a half).
+  await page.setViewportSize({ width: 375, height: 505 }); await page.waitForTimeout(300);
   const lines = [];
   for (const theme of ['light', 'dark']) {
   if (theme === 'dark') { await page.evaluate(() => window.__eduTest.goTo('educator-pick')); await page.waitForTimeout(300); for (const n of ['Skip tour', 'Later', 'Got it']) await tapIf(n);
@@ -625,13 +632,34 @@ const ponder = () => page.evaluate(() => {
     await page.evaluate((m) => window.__eduTest.openModule(m), mod); await page.waitForFunction(() => window.__eduTest.screen === 'lesson'); await page.waitForTimeout(500);
     for (let step = 0; step < 12; step++) {
       await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(1000);
-      const at = await page.evaluate(() => { const nav = document.querySelector('[data-lesson-nav]'); if (!nav) return null; const r = nav.getBoundingClientRect(); const next = [...nav.querySelectorAll('button')].pop(); const nr = next.getBoundingClientRect();
+      const at = await page.evaluate(() => { const nav = document.querySelector('[data-lesson-nav]'); const box = document.querySelector('[data-lesson-next]'); if (!nav || !box) return null; const r = box.getBoundingClientRect(); const next = [...nav.querySelectorAll('button')].pop(); const nr = next.getBoundingClientRect();
         const low = Math.min(nr.bottom, window.innerHeight) - 2; const hit = nr.top < window.innerHeight ? document.elementFromPoint(nr.left + nr.width / 2, (nr.top + low) / 2) : null;
         return { hidden: r.bottom - window.innerHeight, height: r.height, cue: !!document.querySelector('[data-scroll-cue]'), nextHit: !!hit && next.contains(hit) }; });
       if (!at) break; lines.push({ theme, mod, step, ...at, hidden: Math.round(at.hidden * 10) / 10 });
       if (!(await page.getByRole('button', { name: 'Next', exact: true }).count())) break; await page.getByRole('button', { name: 'Next', exact: true }).first().click(); await page.waitForTimeout(300); } } }
   const wrongCue = lines.filter((l) => l.cue !== (l.hidden > l.height / 3)); const covered = lines.filter((l) => !l.cue && l.hidden > 0 && !l.nextHit);
-  ok("a lesson's scroll cue shows while a third of its row is below a short phone's fold, and never sits on a Next that is nearly whole (375 by 667)", lines.length >= 40 && wrongCue.length === 0 && covered.length === 0 && lines.some((l) => l.hidden > 4 && !l.cue) && lines.some((l) => l.hidden / l.height > 0.25 && l.hidden / l.height < 1 / 3 && !l.cue) && lines.some((l) => l.hidden / l.height > 1 / 3 && l.hidden / l.height < 0.5 && l.cue), { lines: lines.length, wrongCue, covered, partHidden: lines.filter((l) => l.hidden > 0).map((l) => `${l.theme} ${l.mod} ${l.step}: ${l.hidden} of ${l.height}${l.cue ? ' cue' : ''}`) });
+  ok("a lesson's scroll cue shows while a third of its Next is below a short phone's fold, and never sits on a Next that is nearly whole (375 by 505)", lines.length >= 40 && wrongCue.length === 0 && covered.length === 0 && lines.some((l) => l.hidden > 4 && !l.cue) && lines.some((l) => l.hidden / l.height > 0.25 && l.hidden / l.height < 1 / 3 && !l.cue) && lines.some((l) => l.hidden / l.height > 1 / 3 && l.hidden / l.height < 0.5 && l.cue), { lines: lines.length, wrongCue, covered, partHidden: lines.filter((l) => l.hidden > 0).map((l) => `${l.theme} ${l.mod} ${l.step}: ${l.hidden} of ${l.height}${l.cue ? ' cue' : ''}`) });
+  //    And a short phone's layout holds while a browser's bars slide, and is decided again on another phone (pass MZ, round two's code
+  //    check). Safari's bars sliding away on a 390 by 844 iPhone make the window 664 pixels tall, then 745, while the screen stays 844
+  //    tall; bigScale read the window's own height, so a question's picture grew 12 percent, and its answers, Check answer and a
+  //    lesson's Next moved 13 to 17 pixels under the child's finger. DevTools' own call makes that window, since Playwright's
+  //    setViewportSize moves the screen with the window. A window set from 375 by 812 to 375 by 667, as a browser's device toolbar does
+  //    when another phone is chosen (the screen's height changes too), kept the taller phone's 22-pixel words until then.
+  { const cdp = await page.context().newCDPSession(page);
+    const bars = (h) => cdp.send('Emulation.setDeviceMetricsOverride', { width: 390, height: h, deviceScaleFactor: 1, mobile: false, screenWidth: 390, screenHeight: 844 });
+    const where = () => page.evaluate(() => { const t = document.querySelector('[data-question-text]'); const pic = t && t.nextElementSibling; const check = [...document.querySelectorAll('button')].find((b) => b.textContent.trim() === 'Check answer');
+      const top = (el) => (el ? Math.round(el.getBoundingClientRect().top + window.scrollY) : null);
+      return { picture: pic ? Math.round(pic.getBoundingClientRect().height) : null, first: top(document.querySelector('[data-choice]')), check: top(check), next: top(document.querySelector('[data-lesson-next]')) }; });
+    await bars(664); await page.evaluate(() => window.__eduTest.showQuestion('p3-feel-name-face', 1)); await page.waitForFunction(() => window.__eduTest.screen === 'practice'); await page.waitForTimeout(600);
+    const q664 = await where(); await bars(745); await page.waitForTimeout(600); const q745 = await where();
+    await bars(664); await page.evaluate(() => window.__eduTest.openModule('colours')); await page.waitForFunction(() => window.__eduTest.screen === 'lesson'); await page.waitForTimeout(600);
+    const l664 = await where(); await bars(745); await page.waitForTimeout(600); const l745 = await where();
+    await cdp.send('Emulation.clearDeviceMetricsOverride'); await cdp.detach();
+    ok("a short phone's question and lesson hold still while a browser's bars slide away (390 by 664, then 745, the screen 844 tall): the question's picture, its first answer, Check answer and a lesson's Next stay where they were", q664.picture > 0 && q664.first !== null && q664.check !== null && l664.next !== null && JSON.stringify(q664) === JSON.stringify(q745) && JSON.stringify(l664) === JSON.stringify(l745), { q664, q745, l664, l745 });
+    const words = () => page.evaluate(() => { const p = document.querySelector('.edu-rise p'); return p ? getComputedStyle(p).fontSize : null; });
+    await page.setViewportSize({ width: 375, height: 812 }); await page.evaluate(() => window.__eduTest.openModule('four-feelings')); await page.waitForFunction(() => window.__eduTest.screen === 'lesson'); await page.waitForTimeout(600);
+    const tall = await words(); await page.setViewportSize({ width: 375, height: 667 }); await page.waitForTimeout(600); const short = await words();
+    ok("another phone chosen in a browser's device toolbar is decided again: a lesson's words are 22 pixels at 375 by 812, then 20 at 375 by 667", tall === '22px' && short === '20px', { tall, short }); }
   await page.setViewportSize({ width: 1280, height: 900 }); await page.waitForTimeout(300); }
 
 // i. The sounds a lesson says (pass MO, Mikey's notes on Q51: "Sun.Sss..." "Just keeps saying the letter s for what seems like 40

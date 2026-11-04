@@ -19,6 +19,8 @@ const page = await browser.newPage({ viewport: { width: 390, height: 844 }, redu
 settleTaps(page);
 // These checks were written for the light theme; the dark theme has its own check (dark-contrast.mjs).
 await page.addInitScript(() => { try { if (!window.localStorage.getItem('edusphere_v1_theme')) window.localStorage.setItem('edusphere_v1_theme', 'light'); } catch (e) { /* storage may be off */ } });
+// The page's long tasks, from its first load (pass MZ): the report check below reads how long the page was busy.
+await page.addInitScript(() => { window.__eduLongTasks = []; try { new PerformanceObserver((list) => { for (const e of list.getEntries()) window.__eduLongTasks.push([Math.round(e.startTime), Math.round(e.duration)]); }).observe({ type: 'longtask', buffered: true }); } catch (e) { /* no long task timing */ } });
 const errors = [];
 page.on('pageerror', (e) => { errors.push(String(e)); console.log('PAGE ERROR:', String(e).slice(0, 300)); });
 page.on('console', (m) => { if (m.type() === 'error') { errors.push(m.text()); console.log('CONSOLE ERROR:', m.text().slice(0, 300)); } });
@@ -630,6 +632,12 @@ await page.locator('.edu-fold-title', { hasText: 'Progress by course' }).first()
 ok('tapping the words Progress by course opens the fold, not only its arrow', (await page.getByRole('button', { name: /^Progress by course/ }).first().getAttribute('aria-expanded')) === 'true');
 await page.getByRole('button', { name: /^Counting/ }).click();
 ok('an assigned course unfolds into its modules', await page.getByRole('button', { name: 'View progress for this module' }).first().isVisible());
+// The report draws quickly with the fold open (pass MZ, check.sh's first run): each row had worked out every lesson's status twice, so a
+// draw took 2 to 3 seconds and the educator screens, which draw every second for the quiet-time clock, kept the page busy without a
+// break, until a tap waited 30 seconds and the walk stopped. For three seconds after a course unfolds no task may last a second.
+{ const from = await page.evaluate(() => performance.now()); await page.waitForTimeout(3000);
+  const slow = await page.evaluate((t0) => (window.__eduLongTasks || []).filter(([at, ms]) => at + ms >= t0 && ms >= 1000), from);
+  ok('the report draws quickly with Progress by course open: no task of a second or more in the three seconds after a course unfolds', slow.length === 0, JSON.stringify(slow)); }
 await page.getByRole('button', { name: 'View progress for this module' }).first().click();
 t = await text();
 ok('a module story opens as a conversation, not a table', t.includes('read through this lesson') && t.includes('practiced it') && t.includes('confidence score'));

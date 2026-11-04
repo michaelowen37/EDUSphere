@@ -30,26 +30,44 @@ said one.
 
 ## Mastery
 
-A round counts as mastered when `coreCorrect >= toMaster` (default 4 of 5, settable
-per module). Mastery is per round, never accumulated across rounds. For pre-reader
-courses, a student retries a wrong answer until right, and `correct` records whether
-they were right first time, so retrying does not inflate mastery.
+A round is passed when `coreCorrect >= toMaster` (4 of 5 through grade 5, 7 of 8 from
+grade 6 and 8 of 10 from grade 9, unless a module or course sets its own: `moduleRules`).
+A pass is per round, never accumulated across rounds, and opens what needs the lesson;
+the star, mastery, is a second pass on another calendar day (Mastery v2, 2026-09-14).
+For pre-reader courses, a student retries a wrong answer until right, and `correct`
+records whether they were right first time, so retrying does not inflate a pass. (Until
+pass MZ this section said a round "counts as mastered", from before Mastery v2.)
 
 ## What is open
 
-A module is open when every gating prerequisite is mastered. Prerequisites are the
-module before it in its course plus anything in its `requires` list, which may cross
-courses and grades. A prerequisite from another course gates only when that course is
-assigned to the student; placement above it is the educator's call. Loop-back still
-uses the full list. The graph is checked for missing links and loops; a loop would lock a
-student out forever.
+A module is open when every gating prerequisite is passed once or moved past
+(`moduleStatuses`; until pass MZ this section said mastered, from before Mastery v2).
+Prerequisites are the module before it in its course, unless the course is `linear:
+false` (pre-K's courses), plus anything in its `requires` list, which may cross courses
+and grades. A prerequisite from another course gates only when that course is assigned
+to the student; placement above it is the educator's call, and an educator can open a
+locked module by hand. Loop-back still uses the full list. The graph is checked for
+missing links and loops; a loop would lock a student out forever.
+
+Since pass MZ (Mikey's answer to Q84, "Q84 - B") each pre-K lesson's `requires` names the
+lesson its ideas build on, or none, and its `requiresWhy` says why (every lesson that names one,
+or named one in pass MY), naming each lesson it requires by its title; since pass MO each new pre-K lesson had named the lesson built just
+before it. A lesson pass MY delivered names only a lesson it needed then, directly or
+through the lessons those needed, so no lesson open for a child who followed the gates
+locks; the rules test walks 300 children through pass MY's gates to prove it. Where the
+lesson an idea builds on was not one it needed in pass MY, so a child can have it open with that
+lesson not passed, the lesson names none and says so (Big and small, whose size words Big and
+little teaches). Two kinds of educator action can still lock one of the ten lessons that now name another lesson: a lesson on its old path (its old prerequisite, or a lesson that one needed, as Words that change is for Count the words) was opened by hand (Unlock it anyway) and then passed, or moved past with Move Forward, while the lesson it now builds on never was; or the lesson it now builds on was erased (Yes, erase it) after the old one was passed. It opens again when the lesson it builds on is passed or moved past, or when the educator opens the lesson itself by hand; opening the lesson it builds on by hand does not open it (round one's code check, widened by round two's final read, pass MZ; Q87 asks whether to add a second way in).
 
 ## Loop-back
 
 After `LOOP_BACK_AFTER` (2) failed rounds in a row on a module, the nearest
-prerequisite is reopened for a check and the student is offered it as the one thing to
-do. A `looped_back` event records it. Re-passing the prerequisite clears the routing.
-The number 2 is a judgement: one miss is normal, three is too long to wait.
+prerequisite (the last its list names) is reopened for a check and the student is offered
+it as the one thing to do. A `looped_back` event records it. Re-passing the prerequisite
+clears the routing. The number 2 is a judgement: one miss is normal, three is too long to
+wait. In pre-K the prerequisite is the lesson the lesson's ideas build on (Q84, pass MZ),
+and a lesson that names none never loops back: after four failed rounds the educator gets
+its Action Item.
 
 ## Confidence, 1 to 5
 
@@ -718,7 +736,8 @@ starts empty.
   pass MY's four new questions).
 - Loop back after two failed rounds sends the child to the lesson the half requires, usually the first half, the right suspect;
   but since pass MO each new pre-K lesson has named the lesson built before it, so a lesson can loop back to one it does not build
-  on (Count the words to She, he and they). Q84 asks Mikey whether each pre-K lesson should name what its ideas build on.
+  on (Count the words to She, he and they). Since pass MZ (Mikey's answer to Q84, "Q84 - B") each pre-K lesson names the lesson its
+  ideas build on, or none, with its reason, so Count the words loops back to Longer sentences (What is open, above).
 - For a child with progress (EARMARKS A57, before the first classroom): the lesson after a new half locks again, a child who had
   finished pre-K sees the pre-K groups again, a finished course celebrates again when the new half is passed, and a game opened by
   every lesson passed, never played, closes until then.

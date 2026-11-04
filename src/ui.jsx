@@ -398,7 +398,9 @@ function TraceDemo({ letter, animKey = 0, pace = 'slow', nudge = 0 }) {
   const wing = (side) => [tip[0] - ux * 4 + side * uy * 2.4, tip[1] - uy * 4 - side * ux * 2.4];
   return (
     <svg key={animKey} viewBox="0 0 100 100" role="img" aria-label={def.dots ? `Connect the dots to make a ${letter}` : def.line ? 'A line drawing itself' : `${letter} drawing itself`}
-      style={{ width: '100%', maxWidth: 230, aspectRatio: '1 / 1', display: 'block', margin: '0 auto', background: C.surface, border: `2px solid ${C.line}`, borderRadius: 16 }}>
+      style={{ width: '100%', maxWidth: shortPhone() ? 196 : 230, aspectRatio: '1 / 1', display: 'block', margin: '0 auto', background: C.surface, border: `2px solid ${C.line}`, borderRadius: 16 }}>
+      {/* 196 pixels square on a short phone since pass MZ (EARMARKS A80): at 230 the say-along line that shows how to trace L put its
+          Next 14 pixels under a 375 by 667 phone's fold in the dark theme, the last older line there. */}
       <TraceShape letter={letter} def={TRACE_LETTERS[letter]} />
       <style>{css}</style>
       {def.dots && strokes[0].map((pt, i) => (i === strokes[0].length - 1 && pt.join() === strokes[0][0].join() ? null : <circle key={`dot-${i}`} cx={pt[0]} cy={pt[1]} r="5" fill={C.gold} />))}
@@ -705,7 +707,10 @@ function IconPic({ name, size = 90, tile = false }) {
     // Two words make one.
     bird: <g><ellipse cx="50" cy="54" rx="22" ry="14" fill={grey} stroke="#6B716A" strokeWidth="2.5" /><circle cx="70" cy="42" r="9" fill={grey} stroke="#6B716A" strokeWidth="2.5" /><circle cx="72.5" cy="40" r="2.2" fill="#24291F" /><path d="M78 42l10 3-10 3z" fill={gold} stroke="#7A5A1A" strokeWidth="1.5" strokeLinejoin="round" /><path d="M40 50q10-16 26-6" fill="none" stroke="#6B716A" strokeWidth="4" strokeLinecap="round" /></g>,
     // A few specks and a crack (pass KK) so the rock reads as rough and bumpy beside the smooth pebble, as Looking at rocks says.
-    rock: <g><path d="M22 70q-6-22 18-34 30-10 40 14 6 20-14 24-38 6-44-4z" fill="#A5AAA0" stroke={grey} strokeWidth="3" /><path d="M40 46 L48 56 L44 64" fill="none" stroke={grey} strokeWidth="2" strokeLinecap="round" /><circle cx="60" cy="48" r="2.4" fill={grey} /><circle cx="66" cy="60" r="2" fill={grey} /><circle cx="34" cy="60" r="1.8" fill={grey} /></g>,
+    // The rock (redrawn in pass MZ, round one's picture check): a chunky rock with a flat base, a lighter top face over a darker side,
+    // a dark crack, two chips and two specks for its rough, bumpy skin, and a dark outline (#5C6355, 6.2 to 1 on white), since the old
+    // smooth gray lump, its marks 1.4 to 1 on its own fill, read at button size as a stone, an egg or a potato as easily as a rock.
+    rock: <g><path d="M14 80 L18 58 L32 40 L54 31 L74 37 L87 55 L85 80 Z" fill="#9EA49C" stroke="#5C6355" strokeWidth="3.5" strokeLinejoin="round" /><path d="M18 58 L32 40 L54 31 L74 37 L63 49 L39 51 Z" fill="#C5CAC2" stroke="#5C6355" strokeWidth="2.5" strokeLinejoin="round" /><path d="M63 49 L87 55" fill="none" stroke="#5C6355" strokeWidth="2.5" strokeLinecap="round" /><path d="M45 57 L51 64 L47 72" fill="none" stroke="#454B40" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" /><path d="M70 62 L77 65 L71 69 Z" fill="#454B40" /><path d="M24 66 L29 68 L25 72 Z" fill="#454B40" /><circle cx="36" cy="72" r="2.2" fill="#454B40" /><circle cx="62" cy="73" r="2" fill="#454B40" /></g>,
     drop: <g><defs><radialGradient id="eduDropG" cx="38%" cy="55%" r="70%"><stop offset="0" stopColor="#9CC7F0" /><stop offset="1" stopColor="#2F66A8" /></radialGradient></defs><path d="M50 14q26 34 26 50a26 26 0 0 1-52 0q0-16 26-50z" fill="url(#eduDropG)" /><ellipse cx="40" cy="58" rx="5" ry="9" fill="#fff" opacity="0.45" transform="rotate(-20 40 58)" /></g>,
     ice: <g><rect x="24" y="30" width="52" height="46" rx="6" fill="#DDEBF7" stroke={blue} strokeWidth="3" /><line x1="34" y1="40" x2="46" y2="52" stroke="#fff" strokeWidth="4" strokeLinecap="round" /></g>,
     fire: <path d="M50 12q22 22 22 44a22 22 0 0 1-44 0q0-10 8-18 0 12 8 14-2-20 6-40z" fill={red} />,
@@ -1611,14 +1616,14 @@ function NotedDrawing({ children, animKey = 0 }) {
 function Picture(props) {
   if (!props.visual) return null;
   // bare (pass MA): a picture drawn on another picture's paper, half of a pair, takes no paper card of its own.
-  const { note, bare, big, ...rest } = props;
+  const { note, bare, big, shrink, ...rest } = props;
   // A size in words (a big, middle or small shape) scales with the rest, so a lesson's three sizes keep their order (the code
   // check, pass MH: 'big' once kept a shape still while an unsized one grew past it); a number size is a layout and stays. A frame of
   // dots just as long as its count is one row, not a layout (pass MX, round two's code read: six dots in a frame of six drew
   // smaller than three), so it grows as other dots do.
   const oneRow = props.visual.kind === 'dots' && props.visual.frame === props.visual.count;
   const free = !(typeof props.visual.size === 'number' || (props.visual.frame && !oneRow) || props.visual.snap || props.visual.gap);
-  rest.k = big && free ? bigScale() : 1;
+  rest.k = (big && free ? bigScale() : 1) * (props.shrink || 1);   // shrink (pass MZ): a short phone's question picture beside picture answers
   const noted = note === true || (note !== false && visualStandIn(props.visual));
   const drawing = noted ? <NotedDrawing animKey={props.animKey}><PictureInner {...rest} /></NotedDrawing> : <PictureInner {...rest} />;
   // A picture of one thing, one short row or two such things side by side sits on a paper sized to it (pass MH); a diagram, a
@@ -1632,8 +1637,37 @@ function Picture(props) {
 }
 // How much bigger a question's or a lesson's picture draws (pass MH): a wide screen has room to spare, a phone a little, and a
 // short phone (under 720 pixels tall, an iPhone SE's 667) none, so Check answer stays above the fold (the screen check), and
-// nor does a phone held sideways (wide but under 600 tall; the code check's second read).
-function bigScale() { if (typeof window === 'undefined') return 1; const w = window.innerWidth; const h = window.innerHeight; return w >= 700 ? (h >= 600 ? 1.45 : 1) : h >= 720 ? 1.12 : 1; }
+// nor does a phone held sideways (wide but under 600 tall; the code check's second read). Since pass MZ (round two's code check) it reads
+// the height shortPhone() reads, and under 700 pixels wide it follows shortPhone()'s kept decision: read from the window itself, a phone's
+// pictures grew 12 percent as Safari's bars slid away (664 pixels tall to 745), moving the answers, Check answer and Next 13 to 17 pixels
+// under a child's finger, and the preview on a phone, in its page-tall frame, drew them at a tall phone's size.
+function bigScale() { if (typeof window === 'undefined') return 1; return window.innerWidth >= 700 ? (seenHeight() >= 600 ? 1.45 : 1) : shortPhone() ? 1 : 1.12; }
+// A short phone (pass MZ, EARMARKS A80): a phone under 720 pixels tall, an iPhone SE's 667 among them, where bigScale draws nothing
+// bigger. On one, a pre-reader's lesson card and a question's card sit a little tighter (less padding, the lesson's words at 20 pixels,
+// and a question whose answers are pictures draws them, and its own picture, at SHORT_PICTURES of their size), so Next and Check
+// answer end above the fold: on a 375 by 667 phone 14 lesson lines and 21 questions ended under it after the speaker joined the
+// arrows' row (the fold check, tests/e2e/fold-check.mjs). A taller phone, a tablet and a laptop draw as before.
+const SHORT_PICTURES = 0.82;
+// The height read is the height a person sees (seenHeight): in a frame taller than the screen (the claude.ai preview runs the app in a
+// page-tall frame), the screen's own height, so the preview on a phone draws the short phone's layout too (round one's code check, pass
+// MZ). It is decided at the height first seen at a width and kept while the width and the screen's own height stay and the height moves
+// by less than 160 pixels, so Safari's toolbar sliding away as a child scrolls (about 80 to 140 pixels, the screen's height unchanged)
+// never redraws the page under their finger (round one's screen check), while turning the phone, another phone chosen in a browser's
+// device toolbar, whose screen's height changes (375 by 812 to 375 by 667 kept the taller phone's layout until round two's code check),
+// or a test setting another size, decides again.
+const SHORT_PHONE_SEEN = { width: -1, height: -1, screen: -1, short: false };
+function seenHeight() { return framedFullHeight() ? Math.min(window.innerHeight, (window.screen && window.screen.availHeight) || window.innerHeight) : window.innerHeight; }
+function shortPhone() {
+  if (typeof window === 'undefined') return false;
+  const seen = seenHeight(); const screenTall = (window.screen && window.screen.height) || 0;
+  if (SHORT_PHONE_SEEN.width !== window.innerWidth || SHORT_PHONE_SEEN.screen !== screenTall || Math.abs(SHORT_PHONE_SEEN.height - seen) >= 160) {
+    SHORT_PHONE_SEEN.width = window.innerWidth; SHORT_PHONE_SEEN.screen = screenTall; SHORT_PHONE_SEEN.height = seen; SHORT_PHONE_SEEN.short = seen < 720 && window.innerWidth < 700;
+  }
+  return SHORT_PHONE_SEEN.short;
+}
+// The answers a question shows as one picture each (a drawn thing, an animal, a face, a shape, a color square, a die), which a short
+// phone draws at SHORT_PICTURES of their size; a group of dots, a tower, a word or a heard sentence keeps its size.
+const ONE_PICTURE_CHOICE = /^(pic|art|icon|item|face|swatch|shape|solid|dice):/;
 // The number a tapped picture wears in Follow the directions (pass MO): a gold disc with dark ink, sat on the picture's top left
 // corner and half off it, so it never covers the drawing it numbers (round one's screen check, pass MO: set inside the tile it hid
 // the chair's back and part of every face on a 320-pixel phone). A lesson line that teaches the numbers draws the same badge on
@@ -2425,7 +2459,7 @@ function SayAlongStrip({ parts, lit }) {
   const shownLabel = voiced && call ? call.sentence : voiced && praise ? praise.sentence : open.sentence;
   const labels = voiced ? [open.sentence, ...calls.map((x) => x.sentence), ...(said ? [said.sentence] : [])] : [open.sentence];
   return (
-    <div data-say-along={open.word} data-say-along-call={call ? call.voice.style : praise ? 'praise' : ''} data-say-along-lit={sweep ? String(sweep.syllable) : ''} data-say-along-rep={sweep ? String(sweep.rep) : ''} style={{ margin: '16px auto 0', maxWidth: 460 }}>
+    <div data-say-along={open.word} data-say-along-call={call ? call.voice.style : praise ? 'praise' : ''} data-say-along-lit={sweep ? String(sweep.syllable) : ''} data-say-along-rep={sweep ? String(sweep.rep) : ''} style={{ margin: `${shortPhone() ? 10 : 16}px auto 0`, maxWidth: 460 }}>
       <div data-say-along-label={shownLabel} style={{ display: 'grid', margin: '0 0 6px', fontSize: 14, lineHeight: 1.4, color: C.muted, textWrap: 'balance' }}>
         {/* Each sits at the cell's foot, right over the word, so where the cue takes two lines (at 320 pixels) a one-line call does not
             float a line above the word (round three's screen read, pass MS). */}
@@ -4739,9 +4773,12 @@ const BAND_STEP = 200; let bandWatch = null; const bandSeen = [];
 // back when a new line starts at the top, and holds still when the device asks for reduced motion.
 // When the cue shows: by default while less than 24 pixels of the row show; with whole, while any of the row is below what shows
 // (a practice round's full-width buttons, of which the cue's corner covers only the end); with hidden, while that share of the
-// row is (a lesson's Next, which sits in the cue's own corner: a third, since round four's code read, pass MM, where a cue for any
-// part of it sat on a Next 57 of whose 66 pixels showed, and a tap there scrolled instead of moving on).
-function ScrollCue({ target, watch, whole = false, hidden = 0 }) {
+// target is (a lesson's Next itself, data-lesson-next since pass MZ, which sits in the cue's own corner: a third, since round four's
+// code read, pass MM, where a cue for any part of the row sat on a Next 57 of whose 66 pixels showed, and a tap there scrolled instead
+// of moving on).
+// scrollTo (pass MZ): what a tap brings into view, when it is more than the target the cue measures (a lesson's whole row of Back, the
+// speaker with its dots, and Next, while the cue measures Next alone).
+function ScrollCue({ target, watch, whole = false, hidden = 0, scrollTo = null }) {
   const [show, setShow] = useState(false);
   useEffect(() => {
     if (typeof window === 'undefined') return undefined;
@@ -4753,7 +4790,7 @@ function ScrollCue({ target, watch, whole = false, hidden = 0 }) {
     return () => { timers.forEach(clearTimeout); if (frame) window.cancelAnimationFrame(frame); window.removeEventListener('scroll', soon, true); window.removeEventListener('resize', soon); };
   }, [target, watch]);
   if (!show) return null;
-  const go = () => { const el = document.querySelector(target); if (el) el.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'end' }); };
+  const go = () => { const el = document.querySelector(scrollTo || target); if (el) el.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'end' }); };
   return (
     <button type="button" onClick={go} aria-label="Scroll down to the next button" data-scroll-cue
       style={{ position: 'fixed', right: 'calc(14px + env(safe-area-inset-right, 0px))', bottom: 'calc(14px + env(safe-area-inset-bottom, 0px))', zIndex: 60, width: 58, height: 70, borderRadius: 29, border: `2px solid ${C.gold}`, background: C.surface, boxShadow: '0 6px 18px rgba(0,0,0,0.28)', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -4855,8 +4892,12 @@ function StoryArt({ serial, alt, fallback = null }) {
 function LessonStepArt({ pic, visual, animKey }) {
   const present = typeof window !== 'undefined' && Array.isArray(window.__eduArt) && window.__eduArt.includes(pic.serial);
   const [missing, setMissing] = useState(!present);
-  if (!missing) return <img data-lesson-picture={pic.serial} src={`art/stories/${pic.serial}.webp`} alt={pic.alt} onError={() => setMissing(true)} style={{ display: 'block', width: '100%', maxWidth: 420, maxHeight: 300, objectFit: 'contain', margin: '0 auto', borderRadius: 12 }} />;
-  if (!visual) return <div data-lesson-picture={pic.serial} style={{ maxWidth: 400, margin: '0 auto' }}><StoryArt serial={pic.serial} alt={pic.alt} /></div>;   // the painting's own size, 400 by 300 (round one's screen check, pass MN)
+  // On a short phone a painting, and the place it waits in, is at most 180 pixels tall (pass MZ, EARMARKS A80: a 4 by 3 painting the
+  // phone's width took 217, and put Next under a 375 by 667 phone's fold beside a long line); a taller screen keeps 300. The painting is
+  // its own box, its width and height worked out from the picture, so the box hugs the picture at every size and a capped painting
+  // keeps its rounded corners (round one's screen check, pass MZ); the fold check reads every painting line with a painting in place.
+  if (!missing) return <img data-lesson-picture={pic.serial} src={`art/stories/${pic.serial}.webp`} alt={pic.alt} onError={() => setMissing(true)} style={{ display: 'block', width: 'auto', height: 'auto', maxWidth: 'min(100%, 420px)', maxHeight: shortPhone() ? 180 : 300, margin: '0 auto', borderRadius: 12 }} />;
+  if (!visual) return <div data-lesson-picture={pic.serial} style={{ maxWidth: shortPhone() ? 240 : 400, margin: '0 auto' }}><StoryArt serial={pic.serial} alt={pic.alt} /></div>;   // the painting's own size, 400 by 300 (round one's screen check, pass MN), 240 by 180 on a short phone (pass MZ)
   return <div data-lesson-picture={pic.serial}><Picture visual={visual} animate animKey={animKey} note big lesson /><p style={{ margin: '4px 0 0', fontSize: 12, color: C.muted }}>Illustration {pic.serial} to come</p></div>;
 }
 // The story page body: title, pictures where they fall in the text, the words, one speaker.
@@ -9751,7 +9792,7 @@ function layoutLetterParts(parts) {
 // Drawing pages that Mikey makes in Leonardo (D1 to D10 in the ledger): until the image exists the card
 // wears a placeholder with its serial; the child colors over the image by hand once it is there.
 const DRAWN_PAGES = {
-  fishbowl: ['D1', 'A goldfish bowl on a table'], fish: ['D2', 'One fish with sea plants behind it'], cat: ['D3', 'A sitting cat with a long curled tail on a round rug, a ball of yarn and a food bowl beside it'], flower: ['D4', 'One big flower with round petals and two wide leaves growing from the grass, a watering can beside it, a ladybug on a leaf and a puffy cloud above'],
+  fishbowl: ['D1', 'A goldfish bowl on a table'], fish: ['D2', 'One fish with sea plants behind it'], cat: ['D3', 'A sitting cat with a long curled tail on a round rug, a soft round cushion and a food bowl beside it'], flower: ['D4', 'One big flower with round petals and two wide leaves growing from the grass, a watering can beside it, a ladybug on a leaf and a puffy cloud above'],
   rocket: ['D5', 'A rocket blasting off from a launch pad beside a tall tower, big puffy smoke clouds below and a round moon in the sky'], butterfly: ['D6', 'A big butterfly with open patterned wings resting on a broad leaf of a bush, grass below, a small snail and a puffy cloud in the sky'], dinosaur: ['D7', 'A friendly dinosaur'], farm: ['D8', 'A barn, a fence and a cow'],
   birthday: ['D9', 'A three-layer birthday cake with candles on a party table with a striped tablecloth, wrapped presents with bows, party hats, streamers and balloons tied to a chair'], playground: ['D10', 'A playground on the grass with a slide and a swing set side by side, a sandbox with a bucket and spade, a small tree and a cloud above'], city: ['D11', 'A city street with tall buildings'],
   // New pages, simplest first: the further down the list, the busier the scene.
@@ -12925,53 +12966,62 @@ function EduSphereScreens() {
         <button type="button" onClick={() => setScreen('overview')} aria-label="Back" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>
           <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke={C.green} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></svg>
         </button>
-        <div key={lessonStep} className="edu-rise" style={{ ...card, textAlign: 'center', padding: '20px 18px' }}>
+        <div key={lessonStep} className="edu-rise" style={{ ...card, textAlign: 'center', padding: shortPhone() ? '14px 16px' : '20px 18px' }}>
           {stepArt ? <LessonStepArt pic={stepArt} visual={step.show} animKey={`${lessonStep}-${replays}`} /> : <Picture visual={step.show} animate animKey={`${lessonStep}-${replays}`} big lesson />}
 
           {/* The line's own words, its sentence being read lit; a say-along's opener, calls, praise and silly sayings are shown in its strip
               instead (pass MS), the word big and lit a syllable at a time, so the paragraph never fills with "Different, different". */}
           {/* Balanced, so no lesson line ends on one lone word (pass MY, round one's screen check); a browser balances up to about six
               lines, so a longer line can still end on one at 320 pixels (round two's code read). */}
-          <p style={{ fontSize: 22, lineHeight: 1.5, margin: '18px 0 0', textWrap: 'balance' }}>{(() => { const own = sentencesOf(line).map((sentence, i) => ({ sentence, i })).filter(({ i }) => !lineParts[i] || lineParts[i].role === 'say'); return own.map(({ sentence, i }, n) => <React.Fragment key={i}><span data-read-lit={litSentence === i ? '' : undefined} style={litSentence === i ? { ...readLit(), ...LIT_WORDS } : { background: 'transparent' }}>{sentence}</span>{n < own.length - 1 ? ' ' : ''}</React.Fragment>); })()}</p>
+          <p style={{ fontSize: shortPhone() ? 20 : 22, lineHeight: 1.5, margin: shortPhone() ? '12px 0 0' : '18px 0 0', textWrap: 'balance' }}>{(() => { const own = sentencesOf(line).map((sentence, i) => ({ sentence, i })).filter(({ i }) => !lineParts[i] || lineParts[i].role === 'say'); return own.map(({ sentence, i }, n) => <React.Fragment key={i}><span data-read-lit={litSentence === i ? '' : undefined} style={litSentence === i ? { ...readLit(), ...LIT_WORDS } : { background: 'transparent' }}>{sentence}</span>{n < own.length - 1 ? ' ' : ''}</React.Fragment>); })()}</p>
           {lineParts.some((x) => x.role === 'open') && <SayAlongStrip key={`${lessonStep}-${replays}`} parts={lineParts} lit={litSentence} />}
         </div>
-        {/* One tap repeats the line, in case they missed it. */}
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
-          {canSpeak() ? (
-            <button type="button" onClick={() => setReplays((n) => n + 1)} aria-label="Say it again" className="edu-press edu-sway"
-              style={{ width: 66, height: 66, borderRadius: 999, border: `3px solid ${C.gold}`, background: C.goldSoft, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
-                <path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={speakerInk()} />
-                <path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12" fill="none" stroke={speakerInk()} strokeWidth="2" strokeLinecap="round" />
-              </svg>
-            </button>
-          ) : (
-            <p style={{ margin: 0, fontSize: 14, color: C.muted }}>Reading aloud is not available in this preview.</p>
-          )}
-        </div>
-        <div data-lesson-nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        {/* The row under the line, like a player's controls (pass MZ, EARMARKS A80): back, the speaker that says the line again, and
+            next, three circles of one size in one row, with the lesson's dots under the speaker. Until pass MZ the speaker sat in a row
+            of its own above the arrows, which put Next under a 375 by 667 phone's fold on 72 of the older pre-K lines; the row's tops
+            line up, so the dots under the speaker never push Next down. */}
+        <div data-lesson-nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <BigTap dir="back" label="Go back" disabled={lessonStep === 0} onClick={() => setLessonStep(Math.max(0, lessonStep - 1))} />
-          {/* The dots wrap between the two buttons (round two's screen check, pass MM: at 320 pixels thirteen dots pushed Next past
-              the screen's edge), in rows the browser balances (pass MS, round one's screen check: at 320 Learning words' nine dots
-              left one alone on a second row), each dot a small block in a line of its own kind, 6 pixels apart each way. */}
-          <div data-lesson-dots style={{ display: 'block', textAlign: 'center', textWrap: 'balance', fontSize: 0, lineHeight: '15px', flex: '1 1 0', minWidth: 0, margin: '0 5px' }}>
-            {script.map((_, i) => <span key={i} style={{ display: 'inline-block', verticalAlign: 'middle', width: 9, height: 9, margin: '0 3px', borderRadius: 999, background: i === lessonStep ? C.green : C.line }} />)}
+          <div data-lesson-middle="" style={{ flex: '1 1 0', minWidth: 0, margin: '0 5px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+            {/* One tap repeats the line, in case they missed it. Since pass MZ it holds still in the row, so only Next, pulsing, moves
+                (round one's screen check: two moving controls side by side). */}
+            {canSpeak() ? (
+              <button type="button" onClick={() => setReplays((n) => n + 1)} aria-label="Say it again" className="edu-press"
+                style={{ flex: '0 0 auto', width: 66, height: 66, borderRadius: 999, border: `3px solid ${C.gold}`, background: C.goldSoft, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true">
+                  <path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={speakerInk()} />
+                  <path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12" fill="none" stroke={speakerInk()} strokeWidth="2" strokeLinecap="round" />
+                </svg>
+              </button>
+            ) : (
+              <p style={{ margin: 0, minHeight: 66, display: 'flex', alignItems: 'center', fontSize: 13, color: C.muted, textAlign: 'center' }}>Reading aloud is not available in this preview.</p>
+            )}
+            {/* The dots wrap under the speaker (round two's screen check, pass MM: at 320 pixels thirteen dots pushed Next past the
+                screen's edge), in rows the browser balances (pass MS, round one's screen check: at 320 Learning words' nine dots left one
+                alone on a second row), each dot a small block in a line of its own kind, 6 pixels apart each way. The dot of the line
+                showing carries data-lit, so the fold check knows the line it measures is the line it names (round two's code check, pass MZ). */}
+            <div data-lesson-dots style={{ display: 'block', width: '100%', textAlign: 'center', textWrap: 'balance', fontSize: 0, lineHeight: '15px' }}>
+              {script.map((_, i) => <span key={i} data-lit={i === lessonStep ? '' : undefined} style={{ display: 'inline-block', verticalAlign: 'middle', width: 9, height: 9, margin: '0 3px', borderRadius: 999, background: i === lessonStep ? C.green : C.line }} />)}
+            </div>
           </div>
           {last ? (
-            <span style={{ position: 'relative', display: 'inline-flex' }}>
+            <span data-lesson-next="" style={{ position: 'relative', display: 'inline-flex' }}>
               <button type="button" onClick={startPractice} aria-label="Start practice" className="edu-press edu-pulse"
                 style={{ position: 'relative', width: 66, height: 66, borderRadius: 999, border: `3px solid ${C.gold}`, background: C.gold, cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <svg className="edu-star-twinkle" viewBox="0 0 24 24" width="40" height="40" aria-hidden="true" style={{ transformOrigin: 'center' }}><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z" fill={C.onAccent} /></svg>
               </button>
             </span>
           ) : (
-            <BigTap dir="next" label="Next" onClick={() => setLessonStep(lessonStep + 1)} />
+            <span data-lesson-next="" style={{ display: 'inline-flex' }}><BigTap dir="next" label="Next" onClick={() => setLessonStep(lessonStep + 1)} /></span>
           )}
         </div>
-        {/* The cue shows while a third of the row or more is below the fold (round three's screen check, pass MM: on a 375 by 667
-            phone Trace a Big Letter's second line left 24 to 32 of Next's 66 pixels showing, and the cue waited until less than 24
-            did; round four's code read: shown for any part of the row, it sat on a Next 57 of whose 66 pixels showed). */}
-        <ScrollCue target="[data-lesson-nav]" watch={`${moduleId}-${lessonStep}`} hidden={1 / 3} />
+        {/* The cue shows while a third of Next (or the last line's star) or more is below the fold (round three's screen check, pass
+            MM: on a 375 by 667 phone Trace a Big Letter's second line left 24 to 32 of Next's 66 pixels showing, and the cue waited
+            until less than 24 did; round four's code read: shown for any part of the row, it sat on a Next 57 of whose 66 pixels
+            showed). Since pass MZ it measures Next itself (data-lesson-next), since the dots under the speaker make the row 91 to 106
+            pixels tall, so a third of the row was no longer a third of Next (round one's code and screen checks), and a tap on it
+            brings the whole row, dots and all, into view. */}
+        <ScrollCue target="[data-lesson-next]" scrollTo="[data-lesson-nav]" watch={`${moduleId}-${lessonStep}`} hidden={1 / 3} />
         {/* The note that the voice is not final (Q51; the playful lessons' panel, Q67) sits under the buttons, never between the line
             and Next (round one's screen check, pass MR: above them it pushed Next below a phone's fold on most lines). */}
         {playfulLesson ? <VoiceNote near keys={lineKeys} /> : <VoiceNote keys={lineKeys} />}
@@ -13224,6 +13274,10 @@ function EduSphereScreens() {
     // More Info (pass MH): why each wrong choice does not fit, the one picked now first, in words that remember earlier rounds.
     const pickedNow = checked ? (readAloud ? [...wrongPicks, ...(wasCorrect ? [] : [String(given)])] : (wasCorrect ? [] : [String(given)])) : [];
     const insight = q.type === 'choice' ? choiceInsight(q, pickedNow, qHistory) : null;
+    // On a short phone, a question whose answers are all one picture each, under a picture or three or more of them, draws them and the
+    // picture above them at SHORT_PICTURES of their size, so Check answer ends above the fold (pass MZ, EARMARKS A80); two answers with
+    // no picture above end high enough at full size, so they keep it (round one's screen check: 167 such screens ended at 640 at most).
+    const shortPictures = shortPhone() && q.type === 'choice' && Array.isArray(q.choices) && q.choices.every((c) => ONE_PICTURE_CHOICE.test(String(c))) && (!!q.visual || q.choices.length >= 3);
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         {/* Module name on the left, the question count in the middle, and a bold green X on the
@@ -13240,28 +13294,31 @@ function EduSphereScreens() {
             where it covered the end of a long question's first line. A review question has no title, so its speaker stands alone. */}
         {/* Truly centered (pass LS, Mikey): an empty column on the left as wide as the speaker's column on the right, so the
             title sits on the screen's center line with the speaker beside it. A review question has no title; its speaker stands alone. */}
-        <div data-title-row="" style={isReviewQ ? { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, margin: '8px 0 10px' } : { display: 'grid', gridTemplateColumns: 'minmax(44px, 1fr) auto minmax(44px, 1fr)', justifyItems: 'start', alignItems: 'center', gap: 8, margin: '10px 0 18px' }}>
+        <div data-title-row="" style={isReviewQ ? { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, margin: '8px 0 10px' } : { display: 'grid', gridTemplateColumns: 'minmax(44px, 1fr) auto minmax(44px, 1fr)', justifyItems: 'start', alignItems: 'center', gap: 8, margin: shortPhone() ? '6px 0 10px' : '10px 0 18px' }}>
           {!isReviewQ && <span aria-hidden="true" />}
           {!isReviewQ && <p style={{ margin: 0, fontSize: 18, fontWeight: 600, textAlign: 'center' }}>{titleCase(mod.title)}</p>}
           <SpeakButton mini text={questionText} voices={q && q.voices ? q.voices : null} label={readAloud ? 'Hear it again' : 'Read it to me'} />
         </div>
-        <div style={{ ...card, position: 'relative' }}>
+        {/* On a short phone the card sits a little tighter, and a question whose answers are each one picture draws them, and its own
+            picture, at SHORT_PICTURES of their size (pass MZ, EARMARKS A80: 21 pre-K questions ended Check answer under a 375 by 667
+            phone's fold, by 3 to 89 pixels, three or four answers stacked full width). */}
+        <div style={{ ...card, position: 'relative', ...(shortPhone() ? { padding: '14px 16px' } : null) }}>
           {/* The setup line comes first and the question after it (pass MH, Mikey: "What is a kind thing to do?  New line Your friend
               looks sad."  Would reach much better like What is a kind thing to do when your friend looks sad?"), the order the voice
               has always read them in; until pass MH the question sat above its setup, so a reader met them backward. */}
           {/* What prints is printedQuestion's (pass MM): a letter question shows no letter while the voice can say it. */}
           {printedQuestion(q, canSpeak()).story && <div data-question-setup="" style={{ margin: '0 0 10px', color: C.ink, textWrap: 'balance' }}><RichText text={printedQuestion(q, canSpeak()).story} size={17} center lineGap={8} /></div>}
           {/* The printed question wraps balanced too, so it never ends on one lone word (pass MY, round one's screen check). */}
-          <p data-question-text="" style={{ fontSize: 20, fontWeight: 600, margin: '0 0 14px', textAlign: 'center', textWrap: 'balance' }}>{printedQuestion(q, canSpeak()).prompt}</p>
+          <p data-question-text="" style={{ fontSize: 20, fontWeight: 600, margin: shortPhone() ? '0 0 10px' : '0 0 14px', textAlign: 'center', textWrap: 'balance' }}>{printedQuestion(q, canSpeak()).prompt}</p>
           {/* The question's own picture draws bigger (pass MH, Mikey), except when its answers are pictures of the same kind (a
               turtle to match among animal answers), so the one that is the same never looks a different size from the answer. */}
-          {q.visual && <div style={{ margin: '0 0 14px' }}><Picture visual={shownVisual} note={record.preview ? undefined : false} big={!(Array.isArray(q.choices) && q.choices.some((c) => String(c).startsWith(`${q.visual.kind}:`)))} /></div>}
+          {q.visual && <div style={{ margin: shortPhone() ? '0 0 10px' : '0 0 14px' }}><Picture visual={shownVisual} note={record.preview ? undefined : false} big={!(Array.isArray(q.choices) && q.choices.some((c) => String(c).startsWith(`${q.visual.kind}:`)))} shrink={shortPictures ? SHORT_PICTURES : 1} /></div>}
           {q.type === 'choice' ? (
             // Number answers never stack onto two lines (2026-09-23, Mikey): the columns are as wide as the longest one needs.
             // Towers stand side by side on one floor (pass MA): the explanation says both stand on the same floor, so the buttons do too.
             // Two ideas' four corners (q.corners, pass MO) sit two by two, a phone's width on any screen, so the corners read as corners and
             // the fourth and Check answer fit a short phone (round two's code check: four full-width rows ended 30 pixels below its fold).
-            <div style={{ display: 'grid', gap: 10, alignItems: q.choices.every((c) => /^tower:\d+$/.test(c)) ? 'end' : undefined, gridTemplateColumns: q.corners ? 'repeat(2, minmax(0, 1fr))' : q.choices.every((c) => /^tower:\d+$/.test(c)) ? `repeat(${q.choices.length}, 1fr)` : q.choices.every((c) => /^(\d+|[A-Za-z])$/.test(c)) ? `repeat(auto-fit, minmax(${Math.max(70, Math.max(...q.choices.map((c) => c.length)) * 15 + 24)}px, 1fr))` : '1fr', ...(q.corners ? { maxWidth: 360, margin: '0 auto' } : null) }}>
+            <div style={{ display: 'grid', gap: shortPhone() ? 8 : 10, alignItems: q.choices.every((c) => /^tower:\d+$/.test(c)) ? 'end' : undefined, gridTemplateColumns: q.corners ? 'repeat(2, minmax(0, 1fr))' : q.choices.every((c) => /^tower:\d+$/.test(c)) ? `repeat(${q.choices.length}, 1fr)` : q.choices.every((c) => /^(\d+|[A-Za-z])$/.test(c)) ? `repeat(auto-fit, minmax(${Math.max(70, Math.max(...q.choices.map((c) => c.length)) * 15 + 24)}px, 1fr))` : '1fr', ...(q.corners ? { maxWidth: 360, margin: '0 auto' } : null) }}>
               {q.choices.map((c) => {
                 const picked = given === c;
                 let bg = C.surface; let border = C.line;
@@ -13288,8 +13345,8 @@ function EduSphereScreens() {
                   // A word answer says itself for a child who cannot read; a picture answer never does, because naming it would
                   // hand over the answer, nor, since pass MC, a single letter (choiceSpeaks reads only the choice, never which one is right).
                   <button key={c} type="button" data-choice={c} data-heard-choice={heard ? '' : undefined} aria-label={heard ? c : pictureName} onClick={() => { if (!checked) { if (readAloud) { playTap(); if (choiceSpeaks(q, c)) speak(c, q.voices ? { voices: q.voices } : {}); } setGiven(c); } }}
-                    style={{ opacity: ruledOut && !checked ? (C.mode === 'dark' ? 0.72 : 0.5) : 1, fontFamily: FONT, fontSize: choiceFont(q.choices), textAlign: 'center', textWrap: 'balance', padding: standIn ? '12px 10px 34px' : '12px 10px', ...(standIn ? { position: 'relative' } : null), minWidth: 0, overflowWrap: /^-?[\d.,\/ ]+$/.test(c) ? 'normal' : 'anywhere', whiteSpace: /^-?[\d.,\/ ]+$/.test(c) ? 'nowrap' : 'normal', borderRadius: 10, background: bg, border: `2px solid ${border}`, color: C.ink, cursor: checked ? 'default' : 'pointer', minHeight: 48 }}>
-                    {heard ? <HeardChoice text={heard} /> : choiceFace(c)}
+                    style={{ opacity: ruledOut && !checked ? (C.mode === 'dark' ? 0.72 : 0.5) : 1, fontFamily: FONT, fontSize: choiceFont(q.choices), textAlign: 'center', textWrap: 'balance', padding: `${shortPictures ? 6 : 12}px 10px ${standIn ? 34 : shortPictures ? 6 : 12}px`, ...(standIn ? { position: 'relative' } : null), minWidth: 0, overflowWrap: /^-?[\d.,\/ ]+$/.test(c) ? 'normal' : 'anywhere', whiteSpace: /^-?[\d.,\/ ]+$/.test(c) ? 'nowrap' : 'normal', borderRadius: 10, background: bg, border: `2px solid ${border}`, color: C.ink, cursor: checked ? 'default' : 'pointer', minHeight: 48 }}>
+                    {heard ? <HeardChoice text={heard} /> : choiceFace(c, shortPictures ? SHORT_PICTURES : 1)}
                     {standIn && <ReplaceNote pal={C} style={{ right: 8, bottom: 5 }} />}
                   </button>
                 );
@@ -15724,6 +15781,11 @@ function EduSphereScreens() {
     const shownName = student ? student.label : educatorRecord.name;
     const rep = buildReport(shownName, educatorRecord.events);
     const enabled = rep.enabledCourseIds;
+    // Each lesson's status, worked out once a draw and only when Progress by course shows its rows (pass MZ, check.sh's first run):
+    // each row had asked moduleStatuses for every lesson in the app, twice, so with the fold open a student's report took 2 to 3 seconds
+    // to draw, while the educator screens draw every second for the quiet-time clock, and the page never rested for a tap.
+    let statusesNow = null;
+    const statusNow = (id) => { if (!statusesNow) statusesNow = new Map(moduleStatuses(deriveProgress(educatorRecord.events), enabled).map((x) => [x.id, x.status])); return statusesNow.get(id); };
     const since = reportOpenedFrom && student && student.reportSeenAt ? changesSince(educatorRecord.events, reportOpenedFrom) : null;
 
     // Writes one event onto this student's log and keeps the screen in step.
@@ -16012,7 +16074,7 @@ function EduSphereScreens() {
                           <Tag tone={m.mastered ? 'mastered' : m.attempts ? 'review' : 'locked'}>{state}</Tag>
                         </div>
                         {m.mastered && codesForModule(m.id).length > 0 && <p style={{ margin: '4px 0 0', fontSize: 12, color: C.muted }}>Satisfies {codesForModule(m.id).join(', ')}</p>}
-                        {!m.mastered && !m.passed && !m.attempts && moduleStatuses(deriveProgress(educatorRecord.events), enabled).find((x) => x.id === m.id) && moduleStatuses(deriveProgress(educatorRecord.events), enabled).find((x) => x.id === m.id).status === 'locked' && (
+                        {!m.mastered && !m.passed && !m.attempts && statusNow(m.id) === 'locked' && (
                           <p style={{ margin: '6px 0 0', fontSize: 13 }}>Locked by its prerequisites. <button type="button" onClick={async () => { const next = { ...educatorRecord, events: [...educatorRecord.events, makeUnlockEvent(m.id, new Date().toISOString())] }; await saveRecord(next); setEducatorRecord(next); }} style={{ ...linkBtn, fontSize: 13, padding: 0 }}>Unlock it anyway</button></p>
                         )}
                         {/* The story of this module opens over the page, so a long report never sprawls. */}

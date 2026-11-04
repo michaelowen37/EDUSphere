@@ -9,6 +9,13 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## November 4, 2026 (words that sound almost the same, lessons that open by idea, and Next on a small phone)
+
+- Three- and four-year-olds have two new listening lessons, each with its own story. Cat or hat? (three-year-olds) hears words that sound almost the same, cat and hat, rock and sock, dog and log, finds the one that was said, and learns to ask, "Can you say that again, please?" Same word or different? (four-year-olds) listens to every sound to tell whether two words are the same, finds the one different word of three, and laughs at silly sentences like "I wear a rock on my foot," where one sound changed a word.
+- Each pre-K lesson now opens after the lesson its ideas build on, instead of after the lesson built just before it. So a child who misses Count the words twice goes back to Longer sentences, where a whole sentence tells who and what they do, and a child who misses Cat or hat? twice goes back to Words that rhyme. Nothing a child already has open closes, unless you opened a lesson by hand (Unlock it anyway) or erased one (Yes, erase it): then a lesson may wait until the one it now builds on is passed, and you can still open it by hand.
+- A lesson's speaker now sits between Back and Next, with the lesson's dots under it, on every screen, so on a phone the size of an iPhone SE every pre-K lesson's Next, and every pre-K question's Check answer as a child sees it, show without scrolling. On a small phone, question cards at every age and the cards of lessons read aloud draw a little tighter, and picture answers a little smaller.
+- Four new Wonder questions for young children are ready for your approval, like every Wonder question: what to do when you heard cat but your grown-up said hat, what to do when only air comes out as you try to whistle, whether a rainy day is a bad day, and whether you are glad you had a balloon that floated away.
+
 ## November 3, 2026 (words made of two words, and the beats in a word)
 
 - Three- and four-year-olds have two new lessons on the parts of words, each with its own story. Two words make one (three-year-olds) puts two words together into the one word they make, dog and house make doghouse, and takes a word like snowball apart into snow and ball. Clap the beats (four-year-olds) claps once for each beat in a word, rab, bit, for rabbit, and puts beats together into words, so um, brel, luh makes umbrella.

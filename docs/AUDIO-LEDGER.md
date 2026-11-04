@@ -1,6 +1,6 @@
 # Audio ledger
 
-Generated 2026-11-04 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 12212 clips, 1,856,339 characters in all; the longest clip is 754 characters and the longest whole story 3,603, far under Eleven v4's 10,000 a request (the longest lesson's lines come to 13,492 in all, each line a request of its own). 236 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated 2026-11-04 by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. 12307 clips, 1,866,417 characters in all; the longest clip is 754 characters and the longest whole story 3,603, far under Eleven v4's 10,000 a request (the longest lesson's lines come to 13,492 in all, each line a request of its own). 238 stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 
@@ -19,7 +19,7 @@ The app's own sounds are rows too (since pass MW, below): `--only sounds` makes 
 Mikey, opening pass MW: "I'm not reviewing any more audio for now since it's kind of pointless.  Makes more sense to review it after Eleven Labs.  Just be sure to add emphasis tags and descriptions within the audio ledger for Eleven.  It will be easier to test later within the artifact instead of opening several browsers and hunting down sounds." So the ledger now carries everything the recordings need, and the listening happens later, in the app itself, once the clips are made.
 
 - **Descriptions.** Every row's description column says in plain words what the clip should sound like: the voice for its age, the way a say-it-together saying is said, the voice a lesson shows, the sounds in it, the words to stress. It is for whoever makes the clip and for the listening in the app; Eleven is sent the text column of every row, and a sound effect's text is the prompt that describes the sound, while its description says what to listen for and is never sent.
-- **Emphasis.** Eleven v4 reads capitals as emphasis (ElevenLabs' best practices: "Capitalization increases emphasis"). A lesson line asks for it where the app's own voice draws a word out inside a longer sentence (each word of a list that starts or ends alike: "DOG, LOG and FOG all end with "/ɑɡ/"."), on the say-it-together game's word in the sentence that names it ("Our word is RED."), and on a word a lesson says strong ("I want the RED circle, not the blue one."); a letter named as a letter is its capital, which Eleven is expected to say by its name (undocumented, so each such clip is heard before use), and the letter A, which a voice can read as the word a, is its name in the phonetic alphabet, "/eɪ/", wherever it is not the article; a story names its letters in its description. 146 lesson clips ask for a stressed word, a line's stress list among them (since round one, the words that change in the pass's four lessons: two DOGS, KICKED). The screen never shows the capitals of a list word, the say-along's word, a stressed word or a letter; a word said strong is in capitals on the screen too, as the lesson writes it.
+- **Emphasis.** Eleven v4 reads capitals as emphasis (ElevenLabs' best practices: "Capitalization increases emphasis"). A lesson line asks for it where the app's own voice draws a word out inside a longer sentence (each word of a list that starts or ends alike: "DOG, LOG and FOG all end with "/ɑɡ/"."), on the say-it-together game's word in the sentence that names it ("Our word is RED."), and on a word a lesson says strong ("I want the RED circle, not the blue one."); a letter named as a letter is its capital, which Eleven is expected to say by its name (undocumented, so each such clip is heard before use), and the letter A, which a voice can read as the word a, is its name in the phonetic alphabet, "/eɪ/", wherever it is not the article; a story names its letters in its description. 153 lesson clips ask for a stressed word, a line's stress list among them (since round one, the words that change in the pass's four lessons: two DOGS, KICKED). The screen never shows the capitals of a list word, the say-along's word, a stressed word or a letter; a word said strong is in capitals on the screen too, as the lesson writes it.
 - **Speech sounds.** Eleven v4 reads the phonetic alphabet "Enclosed in forward slashes" and "Wrapped in double quotes when passed as a string parameter" (its best practices, IPA with Eleven v4), so every speech sound a lesson line writes as letters (sss, tuh, buh, the ending ig) is sent as its symbols in quotes ("/sː/", "/tʰ/", "/bə̆/", "/ɪɡ/"), and a vowel letter set off beside sounds in a run that blends into a word is sent as its short sound ("Cuh, a, nnn." is "/kʰ/", "/æ/", "/nː/"), never as the letter's name; 53 lesson clips hold one. The guide documents IPA "for names, technical terms, and other words" and says "results can still vary by voice and phrase"; a sound said alone is not documented, so each clip's description names its sounds, every take is heard before it is used, and where a sentence's sound comes out wrong, the sentence is cut at the sound and the sound's own take (sound-<name>) is played between its parts, as the app does today, or the sound is recorded and turned into the lesson voice with the Voice Changer (EARMARKS A41). The stories' sounds stay as their words write them, named in each paragraph's description.
 - **A goal before every sound (pass MX).** Mikey: "Since Eleven doesn't document a sound said alone like "/sː/", those rows in the ledger can include a short descriptor which can also be pasted into Eleven which describes what we are trying to achieve.  Since it is an AI, it allows for some explanatory text and might be able to provide a better output knowing the goal." So each speech sound's symbols follow a short direction in square brackets that says what the sound should be ("[saying just the first sound of moon, a steady hum with the lips closed] "/mː/""), in the sound's own row and in every lesson line that says it, 53 lesson clips in all; pasting the text column, or the generator sending it, gives Eleven the goal with the symbols. ElevenLabs' guide for Eleven v4 says "Because Eleven v4 is trained to generate both vocal delivery styles and sound effects, a tag can occasionally be interpreted as a request for a sound effect rather than a delivery instruction (or vice versa)." and "Writing tags that clearly describe the voice quality you want (e.g. [low, gravelly voice] rather than something that could be read as a sound cue) helps the model deliver what you intended.", so every goal opens with saying, what the voice does, and names its sound by the word it starts or ends ("the first sound of moon"), never by a letter, and none is written as a sound effect of its own ([a snake hissing]), though some name the noise the voice makes (a hum, a hiss, a buzz); ElevenLabs' launch page for Eleven v4 gives the idea in its own words, saying users "can also add specific instructions on how to say certain phrases". A tag carries forward across the line (its tags list: "When you add a tag, its emotion carries forward across the line, meaning you only need to introduce another tag when you want the delivery to shift."), so where two or more words follow a sound, the line's own direction comes again before them. The guide documents no tag for a sound alone, so every take is heard before use; a take that reads a bracket aloud or sounds like a sound effect is deleted and made again as it is (the generator makes only what is missing), and if the new take fails too, it is deleted as well and made with tools/audio-generate.mjs, the voices used before and --only <its key> --no-goals, which sends the same text without the goals (the generator skips every clip already on disk, so the failed take goes first, and --only keeps every other row's goals). The letter A named as a letter ("/eɪ/") takes none, since it is a name, a word the guide documents.
 - **The app's own sounds.** Each sound the app makes itself today has a row of its own, below: what Eleven is asked for, and what to listen for when picking a take.
@@ -59,7 +59,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 
 | Band | Clips | Characters |
 |---|---|---|
-| Pre-K to grade 2 | 7906 | 872,245 |
+| Pre-K to grade 2 | 8001 | 882,323 |
 | Grades 3 to 5 | 1375 | 292,652 |
 | Grades 6 to 8 | 1197 | 279,526 |
 | Grades 9 to college | 1734 | 411,916 |
@@ -70,6 +70,7 @@ ElevenLabs counts characters, tags included, so this is the size of each part of
 |---|---|
 | Pre-K to grade 2, and every pre-reader lesson line | [warm and gentle, drawing out key words] |
 | A story for pre-K to grade 2 (since pass MP) | [calm and unhurried, a voice for each character] |
+| A lesson line that says a word of a near pair, in Cat or hat? and Same word or different? (since pass MZ) | [warm and gentle, each word said clearly, its first sound crisp] |
 | Grades 3 to 5 | [warm and friendly] |
 | Grades 6 to 8 | [warm and natural] |
 | Grades 9 to college | [warm, conversational] |
@@ -84,9 +85,9 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 
 | Kind | Clips |
 |---|---|
-| story title | 699 |
-| story | 4561 |
-| lesson line | 5575 |
+| story title | 701 |
+| story | 4575 |
+| lesson line | 5654 |
 | long story title | 106 |
 | long story | 858 |
 | next long story title | 4 |
@@ -1000,6 +1001,26 @@ Questions stay warm, pleasant and mildly upbeat, never over-excited. Young learn
 - S4043-5: [playful] Then he said his own name slowly, with a stop between the beats. [in a bright, curious boy voice, slowly] Callum. Cal, lum. [thoughtful] He hit his drum once for each beat, boom, boom, and said, [in a bright, curious boy voice, delighted] Callum has two beats!
 - S4043-6: [a dog barking] His dog barked, [playful] so Callum drummed the word dog, boom. [in a bright, curious boy voice] Dog has just one beat, [softly] he said, and Grandma laughed.
 - S4043-7: [slowly, warmly] A word can have more than one beat. Say it slowly, and drum or clap once for each beat.
+
+### Grandpa's hat (S4047, cat-or-hat)
+
+- S4047-1: [cheerful] Lupe and Grandpa were going to the park, and the sun was bright and hot.
+- S4047-2: [in a warm, gravelly grandpa voice] Lupe, can you get my hat? [softly] asked Grandpa. [eager] Lupe ran to his room, and she came back with Ziggy, their cat!
+- S4047-3: [laughing] Grandpa laughed. [in a warm, gravelly grandpa voice, amused] A cat is not what I asked for! [softly] he said. [playful] Ziggy said meow, and Lupe giggled.
+- S4047-4: [in a small, bright girl voice, curious] Can you say that again, please? [softly] asked Lupe. Grandpa said it slowly, and then he told her why. [in a warm, gravelly grandpa voice, slowly] Hat. [in a warm, gravelly grandpa voice] Hat and cat sound almost the same, so listen to the whole word.
+- S4047-5: [pause] [thoughtful] This time Lupe listened carefully. [determined] She set Ziggy down, ran back to the room and brought Grandpa his hat.
+- S4047-6: At the park, Grandpa pointed and said, [in a warm, gravelly grandpa voice] Let's sit on that big rock! [thoughtful] Lupe listened to the whole word. [in a small, bright girl voice, proud] Rock, not sock! [softly] she said, and they sat down on it together.
+- S4047-7: [slowly, warmly] Some words sound almost the same. Listen to the whole word, and you can tell which one you heard.
+
+### Soup with a moon (S4051, same-word-or-different)
+
+- S4051-1: [cheerful] At dinner, Soren had a big bowl of soup, but he had nothing to eat it with.
+- S4051-2: [playful] Dad smiled and said, [in a deep, playful dad voice, teasing] Here you go, eat your soup with this moon! [softly] And he held out a spoon.
+- S4051-3: [laughing] Soren laughed so hard that his shoulders shook. [in a bright, giggly boy voice] A moon? That is silly, [softly] he said, [in a bright, giggly boy voice] because it is a spoon!
+- S4051-4: [pause] [in a deep, playful dad voice, warmly] Moon and spoon sound almost the same, [softly] said Dad. [in a deep, playful dad voice] Only the very start is different, and that makes a whole new word.
+- S4051-5: [thoughtful] Soren thought of a silly sentence of his own. [in a bright, giggly boy voice, playful] I wear a rock on my foot! [softly] he said, [playful] wiggling his sock.
+- S4051-6: Dad laughed and said, [in a deep, playful dad voice] A rock? You mean a sock! [softly] Soren giggled and said, [in a bright, giggly boy voice, proud] Sock, sock, the very same word! [softly] Then they took turns making silly sentences until the soup was all gone.
+- S4051-7: [slowly, warmly] Listen to every sound, from the start to the end. Rock and sock have just one different sound, and they are different words.
 
 ### Cat, mat, hat (S116, listen-for-rhymes)
 

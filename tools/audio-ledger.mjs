@@ -16,7 +16,7 @@
 // of takes tools/audio-generate.mjs asks for.
 // Run: node tools/audio-ledger.mjs > docs/AUDIO-LEDGER.md   (it also writes docs/AUDIO-LEDGER.csv, which tools/audio-generate.mjs reads)
 import { writeFileSync } from 'node:fs';
-import { COURSES, readAloudScript, SENTENCE_BREAK, GAMES, gameIntro, gameBand, cheerTagged, sayAlongParts, storyTitleSpoken, mannerOf, VOICE_MANNERS, speechPieces, SOUND_RECORDINGS, SPEECH_SOUNDS, TRIAL_SOUNDS, SAY_ALONG_VOICES, soundOfNotation, VOICE_SOUNDS, ipaQuoted, goalTag, SOUND_GOAL_TAGS, BEAT_RUNS } from '../src/logic.mjs';
+import { COURSES, readAloudScript, SENTENCE_BREAK, GAMES, gameIntro, gameBand, cheerTagged, sayAlongParts, storyTitleSpoken, mannerOf, VOICE_MANNERS, speechPieces, SOUND_RECORDINGS, SPEECH_SOUNDS, TRIAL_SOUNDS, SAY_ALONG_VOICES, soundOfNotation, VOICE_SOUNDS, ipaQuoted, goalTag, SOUND_GOAL_TAGS, BEAT_RUNS, NS_PAIRS } from '../src/logic.mjs';
 // The voice's own sounds' symbols live in logic.mjs since round one's code check (one source); the ledger keeps its old export.
 export { VOICE_SOUNDS };
 import { STORIES, COURSE_STORIES, MASTERY_STORIES } from '../src/stories.mjs';
@@ -52,6 +52,8 @@ export const VOICE_WORDS = {
   early: "a warm, gentle teacher's voice for a young child, drawing out the key words",
   // A line that is a run of beats (BEAT_RUNS) is never drawn out, since each beat is short and even (pass MY, round two).
   earlyBeats: "a warm, gentle teacher's voice for a young child",
+  // Nor is a lesson line that says a word of a near pair (NEAR_DIRECTION, pass MZ, round two's code check).
+  earlyNear: "a warm, gentle teacher's voice for a young child, each word said clearly",
   earlyStory: 'told calm and unhurried to a young child, with a voice of its own for each character who speaks, the same each time',
   elementary: 'a warm, friendly voice', middle: 'a warm, natural voice', older: 'a warm, conversational voice that never talks down',
   game: 'warm, playful and upbeat, for a young player', gameMain: 'warm, upbeat and engaging, never talking down',
@@ -226,8 +228,10 @@ export const lettersNamed = (words, skip = []) => { const s = String(words); con
 // A word said in its beats (pass MY, round one's story check): each run of beats a row's words say ("Um, brel, luh.") is that word said
 // slowly, each beat even and a little word of its own, and um, umbrella's first beat, is never a hesitation, nor bah, banana's, a sigh.
 // What the child does in a turn (pass MY): puts words or beats together, takes a word apart, or says a word slowly and claps once for
-// each beat, where the line asks it (Now you try, and put these two words together.), and otherwise says the words back.
-const turnSaid = (say) => (/\bput (?:these|them)\b[^.]*\btogether\b/i.test(say) ? ', then the child puts them together in a turn of their own' : /\btake (?:one|it) apart\b/i.test(say) ? ', then the child takes it apart in a turn of their own' : /\bclap once for each beat\b/i.test(say) ? ', then the child says it slowly and claps once for each beat in a turn of their own' : ', then the child says it back');
+// each beat, where the line asks it (Now you try, and put these two words together.), and otherwise says the words back. Since pass MZ
+// (round two's code check) also points to the one said, says same or different, or finds the silly word, as Cat or hat? and Same word or
+// different? ask, where "says it back" had told the voice to wait for the wrong thing.
+const turnSaid = (say) => (/\bput (?:these|them)\b[^.]*\btogether\b/i.test(say) ? ', then the child puts them together in a turn of their own' : /\btake (?:one|it) apart\b/i.test(say) ? ', then the child takes it apart in a turn of their own' : /\bclap once for each beat\b/i.test(say) ? ', then the child says it slowly and claps once for each beat in a turn of their own' : /\bpoint to the one\b/i.test(say) ? ', then the child points to the one they heard, in a turn of their own' : /\bsay same or different\b/i.test(say) ? ', then the child says same or different, in a turn of their own' : /\bfind the silly word\b/i.test(say) ? ', then the child finds the silly word, in a turn of their own' : ', then the child says it back');
 // A sentence that is only a run of beats ("Um, brel, luh.") is asked for as that word said slowly in short, even beats (round one's story
 // flow check: the early direction's "drawing out key words" invited a long ummm), the word named, never a letter.
 const BEAT_COUNT_WORDS = ['', 'one', 'two', 'three', 'four'];
@@ -239,6 +243,18 @@ const beatRunOf = (sentence) => { const p = beatRunPart(sentence); return p ? '[
 export const BOOMS_COUNTED = new Set(['clap-the-beats']);
 export const BOOMS_NOTE = ' Each boom is the word boom said once, short and even, since the child counts the booms by ear.';
 const boomsSaid = (text, moduleId) => (BOOMS_COUNTED.has(moduleId) && /\bboom\b/i.test(String(text)) ? BOOMS_NOTE : '');
+// Words that sound almost the same (pass MZ, round one's story check): in the lessons and stories on telling them apart (NEAR_PAIRS_LESSONS,
+// by lesson: Cat or hat? and Same word or different?), a row that says both words of a pair (hat and cat, rock and sock) asks for each
+// said clearly, its start crisp, since the child tells the two apart by ear and a soft start could make them one. Since round two's code
+// check a row that says one word of a pair asks the same of it, naming the word it must never sound like, since the clips a child
+// compares are most often a word said alone ("Cat." then "Hat."), and a story's title too; a lesson line that says one is asked for
+// clearly (NEAR_DIRECTION), never drawn out, since drawing a word out can blur the very first sound that tells the pair apart; and the
+// pairs are logic's own (NS_PAIRS), where the ledger had kept a copy. The scripts test holds every such row.
+export const NEAR_PAIRS_LESSONS = new Set(['cat-or-hat', 'same-word-or-different']);
+export const NEAR_DIRECTION = '[warm and gentle, each word said clearly, its first sound crisp]';
+const nearIn = (text, moduleId) => { if (!NEAR_PAIRS_LESSONS.has(moduleId)) return []; const low = String(text).toLowerCase(); const has = (w) => new RegExp('\\b' + w + 's?\\b').test(low);
+  return NS_PAIRS.filter(([a, b]) => has(a) || has(b)).map(([a, b]) => [a, b, has(a), has(b)]); };
+const nearSaid = (text, moduleId) => nearIn(text, moduleId).map(([a, b, hasA, hasB]) => (hasA && hasB ? ' Say ' + a + ' and ' + b + ' clearly, each start crisp, since the child tells the two words apart by ear.' : ' Say ' + (hasA ? a : b) + ' clearly, its start crisp, so it never sounds like ' + (hasA ? b : a) + '.')).join('');
 const BEAT_NOTES = { um: ' Um is its first beat, never a hesitation.', bah: ' Bah is its first beat, never a sigh.' };
 const beatsSaid = (text) => Object.entries(BEAT_RUNS).filter(([run]) => new RegExp('\\b' + run + '\\b', 'i').test(String(text))).map(([run, word]) => ' The beats ' + run + ' are ' + word + ' said slowly, each beat even and a little word of its own.' + (BEAT_NOTES[run.split(', ')[0]] || '')).join('');
 // A capital a story uses as something other than a letter, by its picture serial (the third read): Elijah's name clapped in beats,
@@ -251,7 +267,7 @@ function storySaid(story, i, grade, moduleId) { const n = (story.words || []).le
   const quick = QUICK.test(audio) ? ' Where its tags ask for a quicker pace (rushed, hurried, quickly, quick, breathless, out of breath or faster), that part is quick on purpose, and the telling settles back to calm after it.' : '';
   const fractions = [...new Set(words.match(/\b\d+\/\d+\b/g) || [])]; const fraction = fractions.length ? ' Read ' + fractions.join(' and ') + ' as the story means ' + (fractions.length > 1 ? 'them' : 'it') + ', never as a date.' : '';
   const sound = band(grade) === 'early' ? soundsWritten(words) + lettersNamed(words, BEATS_NOT_LETTERS[story.art] || []) : '';
-  return '"' + story.title + '", paragraph ' + (i + 1) + ' of ' + n + ': ' + (band(grade) === 'early' ? VOICE_WORDS.earlyStory : VOICE_WORDS[band(grade)]) + (story.audio ? ', following its hand-written tags' : '') + '.' + quick + fraction + sound + beatsSaid(words) + boomsSaid(words, moduleId); }
+  return '"' + story.title + '", paragraph ' + (i + 1) + ' of ' + n + ': ' + (band(grade) === 'early' ? VOICE_WORDS.earlyStory : VOICE_WORDS[band(grade)]) + (story.audio ? ', following its hand-written tags' : '') + '.' + quick + fraction + sound + beatsSaid(words) + boomsSaid(words, moduleId) + nearSaid(words, moduleId); }
 // Pre-K first, then up (the review's order), so the ledger reads in the order the review tags it.
 const rank = (g) => { const s = String(g); if (/^pk3$/i.test(s)) return 0; if (/^pk/i.test(s)) return 1; if (/^k$/i.test(s)) return 2; if (/^\d+$/.test(s)) return 2 + Number(s); return 15; };
 const courses = [...COURSES].sort((a, b) => rank(a.grade) - rank(b.grade) || (a.elective ? 1 : 0) - (b.elective ? 1 : 0));
@@ -261,7 +277,7 @@ for (const c of courses) {
     if (st) {
       // A title that is a run of beats (grade 2's "Rab, bit") is asked for in its even beats too (round two).
       const titleRun = beatRunPart(st.title); const titleDirection = titleRun ? DIRECTION.title.replace(/\]$/, ', ' + titleRun + ']') : DIRECTION.title;
-      add(`${st.art}-0`, 'story title', m.id, c.grade, `${titleDirection} ${storyTitleSpoken(st.title)}`, storyTitleSpoken(st.title), st.art, titleSaid(st.title, c.grade, st.art) + beatsSaid(st.title));
+      add(`${st.art}-0`, 'story title', m.id, c.grade, `${titleDirection} ${storyTitleSpoken(st.title)}`, storyTitleSpoken(st.title), st.art, titleSaid(st.title, c.grade, st.art) + beatsSaid(st.title) + nearSaid(st.title, m.id));
       st.words.forEach((p, i) => add(`${st.art}-${i + 1}`, 'story', m.id, c.grade, `${band(c.grade) === 'early' ? DIRECTION.earlyStory : DIRECTION[band(c.grade)]} ${(st.audio && st.audio[i]) || p}`, p, st.art, storySaid(st, i, c.grade, m.id)));
     }
     // A read-aloud lesson speaks readAloudScript's lines (pass JP: paragraphs too when it has no script), keyed by step as the app plays them.
@@ -297,13 +313,14 @@ for (const c of courses) {
           add(key, 'lesson line', m.id, c.grade, `${SAY_ALONG_TALK[part.role]} ${part.sentence}`, part.sentence, `${m.id}-lesson`, `${where}: ${heard}.`);
         } else if (manner) {
           const runPart = beatRunPart(part.sentence); const mannerTag = runPart ? VOICE_MANNERS[manner.manner].tag.replace(/\]$/, ', ' + runPart + ']') : VOICE_MANNERS[manner.manner].tag;
-          add(key, 'lesson line', m.id, c.grade, `${mannerTag} ${part.sentence}`, part.sentence, `${m.id}-lesson`, `${where}: said ${MANNER_HEARD[manner.manner]}${manner.turn ? turnSaid(line.say) : ''}.${beatsSaid(part.sentence)}`);
+          add(key, 'lesson line', m.id, c.grade, `${mannerTag} ${part.sentence}`, part.sentence, `${m.id}-lesson`, `${where}: said ${MANNER_HEARD[manner.manner]}${manner.turn ? turnSaid(line.say) : ''}.${beatsSaid(part.sentence)}${nearSaid(part.sentence, m.id)}`);
         } else {
           const e = elevenSentence(part.sentence, { voices: line.voices, word: si === wordAt ? parts[open].word : null, stress: line.stress || [] });
           const beatRun = beatRunOf(part.sentence);
-          const direction = e.onlySounds ? (e.sounds.length === 1 ? SOUND_RECORDINGS[e.sounds[0]].how : '[warm and gentle, a preschool teacher saying each speech sound alone, one after another, slowly]') : beatRun ? beatRun : DIRECTION.early;
+          const near = nearIn(part.sentence, m.id).length > 0;   // a word of a near pair: said clearly, never drawn out (round two's code check)
+          const direction = e.onlySounds ? (e.sounds.length === 1 ? SOUND_RECORDINGS[e.sounds[0]].how : '[warm and gentle, a preschool teacher saying each speech sound alone, one after another, slowly]') : beatRun ? beatRun : near ? NEAR_DIRECTION : DIRECTION.early;
           const said = directionBack(e.text, direction);
-          add(key, 'lesson line', m.id, c.grade, `${direction} ${said}`, part.sentence, `${m.id}-lesson`, `${where}: ${e.onlySounds ? 'speech sounds said alone, slowly and clearly' : beatRun ? VOICE_WORDS.earlyBeats : VOICE_WORDS.early}.${soundsSaid(e, key, said !== e.text)}${stressSaid(e)}${beatsSaid(part.sentence)}`);
+          add(key, 'lesson line', m.id, c.grade, `${direction} ${said}`, part.sentence, `${m.id}-lesson`, `${where}: ${e.onlySounds ? 'speech sounds said alone, slowly and clearly' : beatRun ? VOICE_WORDS.earlyBeats : near ? VOICE_WORDS.earlyNear : VOICE_WORDS.early}.${soundsSaid(e, key, said !== e.text)}${stressSaid(e)}${beatsSaid(part.sentence)}${nearSaid(part.sentence, m.id)}`);
         }
       });
     });
@@ -407,6 +424,7 @@ ${['early', 'elementary', 'middle', 'older'].map((b) => { const rs = rows.filter
 |---|---|
 | Pre-K to grade 2, and every pre-reader lesson line | ${DIRECTION.early} |
 | A story for pre-K to grade 2 (since pass MP) | ${DIRECTION.earlyStory} |
+| A lesson line that says a word of a near pair, in Cat or hat? and Same word or different? (since pass MZ) | ${NEAR_DIRECTION} |
 | Grades 3 to 5 | ${DIRECTION.elementary} |
 | Grades 6 to 8 | ${DIRECTION.middle} |
 | Grades 9 to college | ${DIRECTION.older} |

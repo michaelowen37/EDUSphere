@@ -1250,6 +1250,22 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   const boomRows = allRows.filter((r) => r.description.includes(BOOMS_NOTE.trim())).length;
   ok(`the booms' note reaches only a story whose booms the child counts (${boomRows} rows, all A birthday drum's; a thunder row with it planted and caught)`, boomsOff(allRows).length === 0 && boomRows >= 3 && boomsOff([{ key: 'S3882-2', source: 'four-feelings', description: 'told calm.' + BOOMS_NOTE }]).length === 1, boomsOff(allRows).join(', '));
   ok(`a run of beats is a sentence of its own in every heard lesson line, early story, early Wonder question and beats question, and every ledger row that is a run asks for even beats and never a drawn-out voice (${heard.length} texts and ${runRows.length} rows read; a run inside a sentence and two rows planted and caught)`, off.length === 0 && badRows.length === 0 && runRows.length >= 10 && planted, JSON.stringify({ off: off.slice(0, 4), badRows }));
+  // Words that sound almost the same (pass MZ, round two's code check: the direction reached only a row that said both words of a pair,
+  // and missed the clips a child compares, "Cat." then "Hat."): every row of the two lessons on them, a lesson line, a story paragraph
+  // or a title, that says a word of a pair asks for it said clearly, its start crisp, naming the word it must never sound like (both
+  // words, when it says both), and none of their lesson lines that says one is drawn out. The pairs are logic's (NS_PAIRS). A row
+  // without the direction is planted and caught. The floor is the count of such rows since pass MZ.
+  const { NEAR_PAIRS_LESSONS } = await import('../tools/audio-ledger.mjs');
+  const NEAR_ROWS_FLOOR = 69;   // the rows of the two lessons that say a word of a pair, since pass MZ's round two
+  const fullRows = LEDGER_CSV.split('\n').slice(1).map((r) => { const cells = [...r.matchAll(/"((?:[^"]|"")*)"/g)].map((m) => m[1].replace(/""/g, '"')); return { key: cells[0], kind: cells[1], source: cells[2], text: cells[7] || '', description: cells[8] || '' }; });
+  const pairWords = (r) => { const low = r.text.replace(/\[[^\]]*\]/g, ' ').toLowerCase(); const has = (w) => new RegExp('\\b' + w + 's?\\b').test(low); return L.NS_PAIRS.filter(([a, b]) => has(a) || has(b)).map(([a, b]) => [a, b, has(a), has(b)]); };
+  const nearOff = (list) => list.flatMap((r) => { const want = pairWords(r).map(([a, b, hasA, hasB]) => (hasA && hasB ? `Say ${a} and ${b} clearly, each start crisp` : `Say ${hasA ? a : b} clearly, its start crisp, so it never sounds like ${hasA ? b : a}.`));
+    const missing = want.filter((w) => !r.description.includes(w)); if (want.length && r.kind === 'lesson line' && /drawing out/.test(r.text)) missing.push('drawn out');
+    return missing.map((w) => r.key + ': ' + w); });
+  const nearRows = fullRows.filter((r) => NEAR_PAIRS_LESSONS.has(r.source)); const nearSaying = nearRows.filter((r) => pairWords(r).length).length;
+  const plantNear = nearOff([{ key: 'cat-or-hat-0-1', kind: 'lesson line', source: 'cat-or-hat', text: '[warm and gentle, each word said clearly, its first sound crisp] Cat.', description: 'Lesson line 1.' }]).length === 1
+    && nearOff([{ key: 'cat-or-hat-0-1', kind: 'lesson line', source: 'cat-or-hat', text: '[warm and gentle, drawing out key words] Cat.', description: 'Say cat clearly, its start crisp, so it never sounds like hat.' }]).length === 1;
+  ok(`every ledger row of the lessons on words that sound almost the same that says a word of a pair asks for it said clearly, naming the word it must never sound like, and none of their lesson lines is drawn out (${nearSaying} of their ${nearRows.length} rows; a row without the direction and a drawn-out row planted and caught)`, L.NS_PAIRS.length === 6 && nearOff(nearRows).length === 0 && nearSaying >= NEAR_ROWS_FLOOR && plantNear, nearOff(nearRows).slice(0, 6).join(' | '));
 }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

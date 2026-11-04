@@ -13,18 +13,23 @@ the educator rather than the child.
 
 ## How it works
 
-**Gated modules.** Every module has to be mastered before the one after it opens.
-Today, mastery means answering enough questions correctly in a single round, and the
-number depends on the subject and the grade. Modules can require others from any
+**Gated modules.** Every module has to be passed before the one after it opens.
+Passing means answering enough questions correctly in a single round, four of five
+through grade 5, more from grade 6, and the star, mastery, comes with a second pass on
+another day (Mastery takes two days, below). Modules can require others from any
 course or grade, so the whole library is one map of what depends on what. Grade 3
 multiplication, for instance, requires kindergarten joining and taking away, and a
-grade 3 student who never mastered it finds it locked until they do. A prerequisite
+grade 3 student who never passed it finds it locked until they do. A prerequisite
 from another course gates a module only when that course is assigned, because placing
 a student above a grade is the educator's call.
 
 Pre-K courses are the one exception to the chain. Their activities are parallel,
 because a three-year-old need not finish patterns before counting to three, so those
-courses are marked non-linear and only the prerequisites they name apply.
+courses are marked non-linear and only the prerequisites they name apply. Each pre-K
+lesson names the lesson its ideas build on, or none, with its reason written beside it in the
+code (requiresWhy), so a child who keeps missing one that builds on another is sent back to
+that lesson, and a lesson that names none sends its educator an Action Item after four
+misses instead (pass MZ).
 
 **Loop-back.** Two failed rounds in a row send a student back to the prerequisite,
 even one we thought was solid, for a quick check. Usually the gap is further back
@@ -42,7 +47,7 @@ For older grades the platform can build a prompt from a template and check its
 structure, but judging quality needs a person, or an AI acting as an assistant with a
 teacher confirming. We say so rather than pretend otherwise.
 
-**Spaced repetition, across courses.** Once a module is mastered, its questions
+**Spaced repetition, across courses.** Once a module is passed, its questions
 reappear inside later practice rounds as memory checks, drawn from any course the
 student has worked in, not only the one they are in now. Those never count against
 the current module. They tell us, and the educator, whether the learning held, and the
@@ -66,15 +71,16 @@ checkpoint: eight questions drawn from everything they have passed, with nothing
 it. A miss never removes a pass or a star. It lowers that module's confidence score and
 marks the module "missed in the last checkpoint" on the course list and the report, and
 passing the module again clears the mark. Checkpoints are their own events, so the
-transcript and the who-needs-help list see them.
+transcript and the who-needs-help list see them. A young learner gets none: checkpoints begin
+once every lesson of the child's pre-K to grade 2 courses has its star.
 
 **Confidence, not just correctness.** Each module carries a score from 1 to 5 built
 from mastery, streaks, timing and how the material fares when it comes back. Two
 wrong answers in under four seconds earns a quiet "guessing?" on the report, because
 tapping fast usually means not thinking.
 
-**Wonder questions.** After every second finished practice round, whether it went
-well or not, a student spends a minute on an open question with no right answer, then
+**Wonder questions.** After every two different modules worked, whether the rounds
+went well or not, a student spends a minute on an open question with no right answer, then
 reads how four people from the stories might see it: Frederick the scientist, Chloe
 the artist, Georgette the grandparent of faith, and Mike the skeptic. None of them is
 presented as right. Every question is

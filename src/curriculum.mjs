@@ -548,6 +548,8 @@ const PREK_TAUGHT = [
       // Pass MY: Two words make one, PK3 III.B.3 and III.B.4 (EARMARKS E12, the standards review of Domain III, part two).
       { framework: 'TEKS', code: 'PK3.III.B.3', text: 'Child blends words to form compound words with adult assistance.', moduleIds: ['two-words-make-one'] },
       { framework: 'TEKS', code: 'PK3.III.B.4', text: 'Child segments compound words to form individual words with adult assistance.', moduleIds: ['two-words-make-one'] },
+      // Pass MZ: Cat or hat?, PK3 III.B.2 (EARMARKS E12, the standards review of Domain III's III.B.2).
+      { framework: 'TEKS', code: 'PK3.III.B.2', text: 'Child distinguishes differences between similar-sounding words with adult assistance.', moduleIds: ['cat-or-hat'] },
     ],
   },
   {
@@ -644,8 +646,11 @@ const PREK_TAUGHT = [
       // P-LIT 1 in part, its counting syllables.
       { framework: 'TEKS', code: 'PK4.III.B.3', text: 'Child blends multisyllabic words with up to 3 syllables.', moduleIds: ['clap-the-beats'] },
       { framework: 'TEKS', code: 'PK4.III.B.4', text: 'Child segments multisyllabic words with up to three syllables.', moduleIds: ['clap-the-beats'] },
+      // Pass MZ: Same word or different?, PK4 III.B.2 (EARMARKS E13, the standards review of Domain III's III.B.2), and Head Start's
+      // P-LIT 1 in part, its recognizing phonemic changes in words.
+      { framework: 'TEKS', code: 'PK4.III.B.2', text: 'Child distinguishes when two words are the same or different.', moduleIds: ['same-word-or-different'] },
       { framework: 'TEKS', code: 'PK4.III.C.1', text: 'Child recognizes and names at least 18 uppercase letters and 15 lowercase letters.', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
-      { framework: 'CCSS', code: 'ELOF.P-LIT.1', text: 'Demonstrates awareness that spoken language is composed of smaller segments of sound.', moduleIds: ['listen-for-rhymes', 'first-sounds', 'clap-the-beats'] },
+      { framework: 'CCSS', code: 'ELOF.P-LIT.1', text: 'Demonstrates awareness that spoken language is composed of smaller segments of sound.', moduleIds: ['listen-for-rhymes', 'first-sounds', 'clap-the-beats', 'same-word-or-different'] },
       { framework: 'CCSS', code: 'ELOF.P-LIT.3', text: 'Identifies letters of the alphabet and produces correct sounds associated with letters.', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
       { framework: 'TEKS', code: 'PK4.IV.C.2', text: 'Child progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas.', moduleIds: ['first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
       { framework: 'TEKS', code: 'PK4.IV.C.4', text: 'Child demonstrates directionality when writing (e.g., top to bottom, left to right) adult support as needed.', moduleIds: ['first-strokes', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },

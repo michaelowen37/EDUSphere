@@ -217,6 +217,17 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   { const o = "<!-- RULES-AUDIT section 11's answered questions in pass MX, word for word: begin -->\n"; const ia = hist.indexOf(o); const ib = hist.indexOf("<!-- RULES-AUDIT section 11's answered questions in pass MX, word for word: end -->");
     const mx = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
     ok('docs/RULES-AUDIT-HISTORY.md keeps the questions answered in pass MX, every line unchanged (pass MX)', /^- Q83\. Answered in pass MX/.test(mx) && createHash('sha256').update(mx, 'utf8').digest('hex') === 'b16346ddea22771bc5be40c81560590243c504ea7636bca653b82c6de9473e0b'); }
+  // Pass MZ's block, held the same way: Q84 and Q85, which Mikey answered when he opened the pass ("Q84 - B", "Q85 - B"); its digest
+  // taken again once round two's final read corrected the answers' counts before delivery.
+  { const o = "<!-- RULES-AUDIT section 11's answered questions in pass MZ, word for word: begin -->\n"; const ia = hist.indexOf(o); const ib = hist.indexOf("<!-- RULES-AUDIT section 11's answered questions in pass MZ, word for word: end -->");
+    const mz = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
+    ok('docs/RULES-AUDIT-HISTORY.md keeps the questions answered in pass MZ, every line unchanged (pass MZ)', /^- Q84\. Answered in pass MZ/.test(mz) && /\n- Q85\. Answered in pass MZ/.test(mz) && createHash('sha256').update(mz, 'utf8').digest('hex') === '6530d2b2677542d6c1e485bb0030fc8123f4654942062cb3a223d6fa74d33555'); }
+  // The rows Q85 lets a pass correct in place (pass MZ, Mikey's answer: "Q85 - B"): their words as pass MY left them, held by their digest,
+  // and each corrected row says where those words are, so a correction never loses a word and never passes as the old rule.
+  { const o = '<!-- RULES-AUDIT rows as pass MY left them, before pass MZ corrected them in place, word for word: begin -->\n'; const ia = hist.indexOf(o); const ib = hist.indexOf('<!-- RULES-AUDIT rows as pass MY left them, before pass MZ corrected them in place, word for word: end -->');
+    const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
+    const said = (audit.match(/Corrected in place in pass MZ \(Mikey's answer to Q85\)/g) || []).length;
+    ok("docs/RULES-AUDIT-HISTORY.md keeps the rows pass MZ corrected in place as pass MY left them, each corrected row says so, and section 9's row for Q85 names them (pass MZ, Q85 (b))", /^\| A round is five core questions \(settable\)/.test(kept) && kept.includes('the extra question') && said >= 4 && audit.includes('| **A row of this file that no longer says what the code does is corrected in place (Mikey, pass MZ') && createHash('sha256').update(kept, 'utf8').digest('hex') === '020513500236768c9ca304832d145ce75ecddf983328e9fed1c5da1a14362dab', `${said} rows say so`); }
   const s = audit.indexOf('## 11. Open items that need Mikey'); const e = audit.indexOf('\n## ', s + 5); const sec = audit.slice(s, e < 0 ? audit.length : e);
   const answeredLines = sec.split('\n').filter((l) => /^- Q\d+\. Answered in pass /.test(l));
   const long = answeredLines.filter((l) => !/^- Q\d+\. Answered in pass \w+ \(Mikey: .+\)\. Its rule lives in [^\n]+\.$/.test(l) || /The question as it stood/.test(l));
@@ -275,6 +286,10 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   { const o = '<!-- CLAUDE.md lines as pass MT wrote them, before pass MU corrected them, word for word: begin -->\n'; const ia = hist.indexOf(o); const ib = hist.indexOf('<!-- CLAUDE.md lines as pass MT wrote them, before pass MU corrected them, word for word: end -->');
     const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
     ok('docs/CLAUDE-HISTORY.md keeps the CLAUDE.md line pass MU corrected as pass MT wrote it, and RULES-AUDIT section 9 names it (pass MU)', /^- Say-along \(pass MS, /.test(kept) && createHash('sha256').update(kept, 'utf8').digest('hex') === '8807fc601f55d60281930354b66cd30cfcdca692264e0edbe8b58462b511eacd' && row.includes('Corrected in pass MU, at Mikey\'s word')); }
+  // The line pass MY added, corrected in place in pass MZ at Mikey's word (Q84): its words as pass MY wrote them kept the same way.
+  { const o = '<!-- CLAUDE.md lines as pass MY wrote them, before pass MZ corrected them, word for word: begin -->\n'; const ia = hist.indexOf(o); const ib = hist.indexOf('<!-- CLAUDE.md lines as pass MY wrote them, before pass MZ corrected them, word for word: end -->');
+    const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
+    ok('docs/CLAUDE-HISTORY.md keeps the CLAUDE.md line pass MZ corrected as pass MY wrote it, and RULES-AUDIT section 9 names it (pass MZ)', /^- Parts of words, and a split lesson \(pass MY, /.test(kept) && createHash('sha256').update(kept, 'utf8').digest('hex') === 'f3e8fa11b4fad85c639cd69f89f3c2e204bbe49e6ee5941043c8be20e20dfcc2' && row.includes('Corrected in pass MZ, at Mikey\'s word')); }
 }
 // NEW-CHAT.md's history (pass MM): the state bullets of passes JE to MJ, the earlier chats' "When to start" paragraphs and the
 // chain of earlier preview links moved, word for word, to docs/NEW-CHAT-HISTORY.md, whose text between its markers must hash to
@@ -342,7 +357,8 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
 // his name held it: a DECISIONS with such a line is a near miss now, which that rule passed.
 { const pc = readFileSync(new URL('../docs/PROJECT-CONTEXT.md', import.meta.url), 'utf8'); const dec = readFileSync(new URL('../docs/DECISIONS.md', import.meta.url), 'utf8');
   const s7 = (pc.split(/^## 7\. /m)[1] || '').split(/^## /m)[0]; const bullets = s7.split('\n').filter((l) => l.startsWith('- '));
-  const WAITING = ["The tour cards' words are his", 'Questions for him carry numbers', 'Wonder questions and edits ship', 'Writing: varied sentence lengths', 'Every structural or algorithm change', 'Never take a shortcut', 'No Spanish course'];
+  // Pass MZ: the rules audit bullet quotes Mikey's answer to Q85 now, so it no longer waits.
+  const WAITING = ["The tour cards' words are his", 'Questions for him carry numbers', 'Wonder questions and edits ship', 'Writing: varied sentence lengths', 'Never take a shortcut', 'No Spanish course'];
   const hisIn = (text, near = false) => (q) => { if (!/^Q\d+ - /.test(q) && q.trim().split(/\s+/).length < 5) return false; let at = text.indexOf(q);
     while (at >= 0) { const line = text.lastIndexOf('\n', at) + 1; if (text.startsWith('> ', line) || (near && text.slice(Math.max(0, at - 300), at).includes('Mikey'))) return true; at = text.indexOf(q, at + 1); } return false; };
   const his = hisIn(dec);

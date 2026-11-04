@@ -202,6 +202,21 @@ const MY_BEATS = { dog: 1, cat: 1, bus: 1, fish: 1, rabbit: 2, turtle: 2, pencil
 const MY_SAID = { rabbit: 'rab, bit', turtle: 'tur, tull', pencil: 'pen, sill', banana: 'bah, nan, nuh', butterfly: 'but, ter, fly', umbrella: 'um, brel, luh', dinosaur: 'dye, nuh, sore' };
 // The number words the yes or no rows count beats in, as numbers.
 const MY_NUM = { one: 1, two: 2, three: 3 };
+// Cat or hat? and Same word or different? (pass MZ): the test's own tables, written here and never read from logic: each word and the
+// word that sounds almost the same as it, each silly sentence and the word that made it silly, the two sentences that are just right,
+// and the yes or no questions that name no word.
+const MZ_PAIR = { cat: 'hat', hat: 'cat', bear: 'chair', chair: 'bear', rock: 'sock', sock: 'rock', ball: 'wall', wall: 'ball', dog: 'log', log: 'dog', moon: 'spoon', spoon: 'moon' };
+const MZ_SILLY = { 'I wear a rock on my foot.': 'rock', 'A sock is a hard stone.': 'sock', 'I eat my soup with a moon.': 'moon', 'The spoon shines in the sky at night.': 'spoon', 'I kicked the wall to my friend.': 'wall', 'I hung a picture on the ball.': 'ball', 'The log wagged its tail.': 'log', 'A dog is a big piece of a tree.': 'dog', 'I wear a cat on my head.': 'cat', 'The hat says meow.': 'hat', 'I sit on a bear at the table.': 'bear', 'The chair sleeps in a cave.': 'chair' };
+const MZ_RIGHT = ['I wear a sock on my foot.', 'I eat my soup with a spoon.'];
+// Each sentence of p3-near-in and the question it asks, so a sentence asked with another sentence's question gives no answer (round one's
+// code check: "There is a cat on the bed." asked "What did Grandma draw?" passed every test).
+const MZ_ASK = { 'There is a cat on the bed.': 'What is on the bed?', 'There is a hat on the bed.': 'What is on the bed?', 'I see a bear by the tree.': 'What do I see by the tree?', 'I see a chair by the tree.': 'What do I see by the tree?', 'I found a rock in the grass.': 'What did I find in the grass?', 'I found a sock in the grass.': 'What did I find in the grass?', 'I can see the ball from here.': 'What can I see from here?', 'I can see the wall from here.': 'What can I see from here?', 'We saw a dog by the river.': 'What did we see by the river?', 'We saw a log by the river.': 'What did we see by the river?', 'Grandma drew a moon.': 'What did Grandma draw?', 'Grandma drew a spoon.': 'What did Grandma draw?' };
+// Since round two's content read the bank asks two pairs by ear in place of two general rows, and asks how to listen, never a rule about
+// all words.
+const MZ_GENERAL = { 'To tell if two words are the same, do you listen to every sound?': 'Yes', 'When two words sound almost the same, are they always the same word?': 'No' };
+// The words a heard setup says one by one ("Listen. Dog. Log. Dog."), in small letters, or null; and whether two choices are a pair.
+const mzSaid = (q) => { const m = /^Listen\.((?: [A-Z][a-z]+\.)+)$/.exec(q.story || ''); return m ? m[1].trim().split(' ').map((w) => w.replace('.', '').toLowerCase()) : null; };
+const mzPairChoices = (q) => (q.choices || []).length === 2 && MZ_PAIR[myName(q.choices[0])] === myName(q.choices[1]);
 // A picture choice's word (icon:doghouse is doghouse, pic:cat~asleep is cat), and the one word a heard setup says ("Listen. Rabbit.").
 const myName = (c) => String(c).split(':')[1].split('~')[0];
 const myHeard = (q) => { const m = /^Listen\. ([A-Za-z]+)\.$/.exec(q.story || ''); return m ? m[1].toLowerCase() : null; };
@@ -453,6 +468,21 @@ const PREK_DERIVE = {
   'p4-beats-blend': (q) => { const m = /^Listen\. (.+)\.$/.exec(q.story || ''); if (!m || q.prompt !== 'Put the beats together. Which one do they make?') return null; const said = m[1].toLowerCase(); const w = Object.keys(MY_SAID).find((x) => MY_SAID[x] === said); return w ? mqOne(q, (c) => myName(c) === w) : null; },
   'p4-beats-more': (q) => { const m = /^Listen\. ([A-Za-z]+)\. ([A-Za-z]+)\.$/.exec(q.story || ''); if (!m || [m[1], m[2]].map((x) => x.toLowerCase()).sort().join() !== (q.choices || []).map(myName).sort().join()) return null; return q.prompt === 'Which one has more beats?' ? myMost(q, true) : q.prompt === 'Which one has fewer beats?' ? myMost(q, false) : null; },
   'p4-beats-same': (q) => { const s = mySaidAfter(q, 2); if (!s) return null; const w = s.first; return MY_BEATS[w] && myShows(q, w) && q.prompt === 'Which one has the same number of beats as ' + w + '?' ? mqOne(q, (c) => myName(c) !== w && MY_BEATS[myName(c)] === MY_BEATS[w]) : null; },
+  // Cat or hat? and Same word or different? (pass MZ): the picture of the word heard; the thing a heard sentence names, the one choice
+  // whose word it says; a picture's name among heard words; the same or different; whether a picture is the word heard; the one word of
+  // three said once; the word that made a sentence silly; and yes or no, each from MZ_PAIR, MZ_SILLY, MZ_RIGHT and MZ_GENERAL.
+  'p3-near-tap': (q) => { const s = mzSaid(q); return s && s.length === 1 && q.prompt === 'Which one is ' + s[0] + '?' && mzPairChoices(q) ? mqOne(q, (c) => myName(c) === s[0]) : null; },
+  'p3-near-in': (q) => { const m = /^Listen\. (.+)$/.exec(q.story || ''); if (!m || !mzPairChoices(q) || MZ_ASK[m[1]] !== q.prompt) return null; const words = m[1].toLowerCase().replace(/[.!?]/g, '').split(' '); return mqOne(q, (c) => words.includes(myName(c))); },
+  'p3-near-name': (q) => { const v = q.visual || {}; return q.heardChoices && (v.kind === 'icon' || v.kind === 'pic') && (q.choices || []).length === 2 && q.choices.includes(MZ_PAIR[v.name]) ? mqOne(q, (c) => c === v.name) : null; },
+  'p3-near-same': (q) => { const s = mzSaid(q); return s && s.length === 2 && q.prompt === 'Are the two words the same, or different?' ? (s[0] === s[1] && MZ_PAIR[s[0]] ? 'The same' : MZ_PAIR[s[0]] === s[1] ? 'Different' : null) : null; },
+  'p3-near-yesno': (q) => { const m = /^Is this picture (?:a|the) ([a-z]+)\?$/.exec(q.prompt || ''); const v = q.visual || {}; if (!m || !(v.kind === 'icon' || v.kind === 'pic')) return null; return v.name === m[1] ? 'Yes' : MZ_PAIR[m[1]] === v.name ? 'No' : null; },
+  'p4-near-same': (q) => PREK_DERIVE['p3-near-same'](q),
+  'p4-near-odd': (q) => { const s = mzSaid(q); if (!s || s.length !== 3 || q.prompt !== 'Which word was different?' || !mzPairChoices(q)) return null; const once = s.filter((w) => s.indexOf(w) === s.lastIndexOf(w)); return once.length === 1 && MZ_PAIR[once[0]] && s.includes(MZ_PAIR[once[0]]) ? mqOne(q, (c) => myName(c) === once[0]) : null; },
+  'p4-near-silly': (q) => { const m = /^Listen\. (.+)$/.exec(q.story || ''); const w = m && MZ_SILLY[m[1]]; return w && q.prompt === 'Which word made it silly?' && mzPairChoices(q) ? mqOne(q, (c) => myName(c) === w) : null; },
+  // p4-near-name's three: the picture's word, the word that sounds almost the same and another, or the picture's word beside another
+  // pair (round two's content read); a picture with none of those around it gives no answer.
+  'p4-near-name': (q) => { const v = q.visual || {}; const o = (q.choices || []).filter((c) => c !== v.name); return q.heardChoices && (v.kind === 'icon' || v.kind === 'pic') && (q.choices || []).length === 3 && o.length === 2 && (o.includes(MZ_PAIR[v.name]) || MZ_PAIR[o[0]] === o[1]) ? mqOne(q, (c) => c === v.name) : null; },
+  'p4-near-yesno': (q) => { const p = q.prompt || ''; if (MZ_GENERAL[p]) return MZ_GENERAL[p]; const two = /^Listen\. ([A-Z][a-z]+)\. ([A-Z][a-z]+)\. Are they the same word\?$/.exec(p); if (two) { const [a, b] = [two[1].toLowerCase(), two[2].toLowerCase()]; return a === b && MZ_PAIR[a] ? 'Yes' : MZ_PAIR[a] === b ? 'No' : null; } const silly = /^Listen\. (.+) Is that silly\?$/.exec(p); if (silly) return MZ_SILLY[silly[1]] ? 'Yes' : MZ_RIGHT.includes(silly[1]) ? 'No' : null; return null; },
   'p4-beats-yesno': (q) => { const p = q.prompt || ''; const m = /^Does the word ([a-z]+) have (one|two|three) beats?\?$/.exec(p); if (m) return MY_BEATS[m[1]] ? (MY_BEATS[m[1]] === MY_NUM[m[2]] ? 'Yes' : 'No') : null; const t = /^When we clap the beats in ([a-z]+), do we clap just once\?$/.exec(p); if (t) return MY_BEATS[t[1]] ? (MY_BEATS[t[1]] === 1 ? 'Yes' : 'No') : null; const sw = /^Is ((?:[a-z]+, )+[a-z]+), (just one word|(one|two|three|four|five) words)\?$/.exec(p); if (sw) { const n = sw[1].split(', ').length; return (sw[3] ? MY_NUM[sw[3]] === n : n === 1) ? 'Yes' : 'No'; } if (/^Is ([a-z]+) just one word\?$/.test(p)) return 'Yes'; if (/^Is ([a-z]+) (two|three) words\?$/.test(p)) return 'No'; return p === 'When we count the words in a sentence, do we clap once for each word?' ? 'Yes' : null; },
 };
 // The new banks' derivations read what a question shows as well as what it says (pass MY, round one's code check): a yes or no that
@@ -472,15 +502,69 @@ const PREK_DERIVE = {
   const nearO = other && PREK_DERIVE['p3-two-other']({ ...other, story: other.story.replace(/\. ([A-Za-z]+)\.$/, '. Moon.') }) === null && PREK_DERIVE['p3-two-other'](other) === other.answer;
   ok('the new banks\' answers are worked out from what each question shows as well as what it says (a birdhouse under dog and house, a word said twice over two pictures, a counted word drawn as another, and said words that are not the choices, in four kinds, each caught)', !!(nearD && nearF && nearC && nearS && nearH && nearHr && nearO), JSON.stringify({ nearD, nearF, nearC, nearS, nearH, nearHr, nearO }));
 }
+// Cat or hat? and Same word or different? (pass MZ): one near miss for each way a derivation could be fooled, each run through the same
+// derivation that passes the real question: a tap question whose two pictures are not a pair, a sentence that says neither choice, a
+// name question whose picture is not one of its words, two said words that are not a pair, a picture beside a word it is not paired
+// with, three said words each said once, a silly sentence the test does not know, and a yes or no about two words not a pair. Since
+// round two's code check each is built so that it trips its own bound alone: the sentence that says neither choice is one MZ_ASK knows,
+// asked its own question (a sentence it did not know stopped at that guard, so a derivation that never read the words passed), and the
+// three said words are the two choices and a third word, or one choice said once beside a third word said twice, so the different
+// word's partner is never said (a third word that was not a choice gave no answer with either bound removed). Since the third read a tenth
+// holds p4-near-name's bound, the bound round two added: a picture whose other two choices are neither its partner nor a pair.
+{ const find = (g, test) => { for (let s = 1; s <= 400; s++) { const q = L.generateQuestion(g, s); if (test(q)) return q; } return null; };
+  const D = PREK_DERIVE; const right = (g, q) => !!q && D[g](q) === q.answer;
+  const tap = find('p3-near-tap', () => true); const inq = find('p3-near-in', () => true); const name = find('p4-near-name', () => true); const same = find('p3-near-same', (q) => q.answer === 'Different');
+  const yn = find('p3-near-yesno', (q) => q.answer === 'No'); const odd = find('p4-near-odd', () => true); const silly = find('p4-near-silly', () => true); const yn4 = find('p4-near-yesno', (q) => /^Listen\. [A-Z][a-z]+\. [A-Z][a-z]+\. Are/.test(q.prompt));
+  const misses = [
+    right('p3-near-tap', tap) && D['p3-near-tap']({ ...tap, choices: [tap.answer, 'icon:sun'] }) === null,
+    !!(() => { const s = Object.keys(MZ_ASK).find((x) => !inq.choices.some((c) => x.toLowerCase().replace(/\./g, '').split(' ').includes(myName(c)))); return !!s && right('p3-near-in', inq) && D['p3-near-in']({ ...inq, story: 'Listen. ' + s, prompt: MZ_ASK[s] }) === null; })(),
+    right('p4-near-name', name) && D['p4-near-name']({ ...name, visual: { kind: 'icon', name: 'sun' } }) === null,
+    !!(() => { const w = name.visual.name; const rest = Object.keys(MZ_PAIR).filter((k) => k !== w && k !== MZ_PAIR[w]); const x = rest[0]; const y = rest.find((k) => k !== x && k !== MZ_PAIR[x]); return right('p4-near-name', name) && D['p4-near-name']({ ...name, choices: [w, x, y] }) === null; })(),
+    right('p3-near-same', same) && D['p3-near-same']({ ...same, story: 'Listen. Cat. Dog.' }) === null,
+    right('p3-near-yesno', yn) && D['p3-near-yesno']({ ...yn, visual: { kind: 'icon', name: 'sun' } }) === null,
+    !!(() => { const [a, b] = odd.choices.map(myName); const third = Object.keys(MZ_PAIR).find((w) => w !== a && w !== b); const cap = (w) => w[0].toUpperCase() + w.slice(1);
+      return right('p4-near-odd', odd) && D['p4-near-odd']({ ...odd, story: 'Listen. ' + [a, b, third].map(cap).join('. ') + '.' }) === null && D['p4-near-odd']({ ...odd, story: 'Listen. ' + [a, third, third].map(cap).join('. ') + '.' }) === null; })(),
+    // A sentence asked another sentence's question (round one's code check).
+    !!(() => { const g = find('p3-near-in', (q) => !/Grandma/.test(q.story)); return g && right('p3-near-in', g) && D['p3-near-in']({ ...g, prompt: 'What did Grandma draw?' }) === null; })(),
+    right('p4-near-silly', silly) && D['p4-near-silly']({ ...silly, story: 'Listen. I wear a hat on my head.' }) === null,
+    right('p4-near-yesno', yn4) && D['p4-near-yesno']({ ...yn4, prompt: 'Listen. Cat. Dog. Are they the same word?' }) === null,
+  ];
+  ok('III.B.2\'s ten banks are worked out from what each question says and shows, and ten near misses, one each way, give no answer (pass MZ)', misses.every(Boolean), misses.map((x, i) => (x ? '' : i)).filter(String).join(','));
+  // While the voice can speak, no question of the ten prints a word it asks about (a printed word could be told from its partner by
+  // sight, and a printed sentence read for its silly word); its heard choices print Tap to hear; and with no voice everything prints,
+  // for a grown-up. The near miss: a tap question without its printed frame prints its word.
+  const KINDS10 = ['p3-near-tap', 'p3-near-in', 'p3-near-name', 'p3-near-same', 'p3-near-yesno', 'p4-near-same', 'p4-near-odd', 'p4-near-silly', 'p4-near-name', 'p4-near-yesno'];
+  const WORDS = new RegExp('\\b(' + Object.keys(MZ_PAIR).join('|') + ')\\b', 'i');
+  // A picture choice (pic:cat, icon:hat) prints no word, its name only a label for a screen reader, so it adds nothing to what prints.
+  const prints = (q, voice) => { const pq = L.printedQuestion(q, voice); return [pq.story || '', pq.prompt || '', ...(q.choices || []).map((c) => (String(c).includes(':') ? '' : L.printedChoice(q, c, voice) || c))].join(' | '); };
+  // The other two halves are checks of their own, so each has a near miss run through it (round two's code check, pass MZ: only the
+  // first half had one): a heard choice that prints its word while the voice can speak, and a question that prints less than all of its
+  // words with no voice.
+  const choicePrints = (q, pc) => !!q.heardChoices && !(q.choices || []).every((c) => pc(q, c, true) === L.HEARD_CHOICE && pc(q, c, false) === null);
+  const offShort = (q, pq) => { const off = pq(q, false); return (off.story || '') !== (q.story || '') || off.prompt !== q.prompt; };
+  const leaks = []; let read = 0;
+  for (const g of KINDS10) for (let s = 1; s <= 200; s++) { const q = L.generateQuestion(g, s); read += 1;
+    if (WORDS.test(prints(q, true))) leaks.push(g + ' ' + s + ': ' + prints(q, true).slice(0, 90));
+    if (offShort(q, L.printedQuestion)) leaks.push(g + ' ' + s + ': no voice, not all printed');
+    if (choicePrints(q, L.printedChoice)) leaks.push(g + ' ' + s + ': a heard choice printed'); }
+  const bare = { ...tap }; delete bare.printed;
+  const heardQ = find('p4-near-name', (q) => !!q.heardChoices);
+  const plantChoice = !!heardQ && !choicePrints(heardQ, L.printedChoice) && choicePrints(heardQ, (q, c, voice) => (voice ? c : null));
+  const plantOff = !offShort(tap, L.printedQuestion) && offShort(tap, (q, voice) => L.printedQuestion(q, true));
+  ok('III.B.2\'s questions print none of the words they ask about while the voice can speak, their heard choices print Tap to hear, and everything prints with no voice (' + read + ' questions over ten banks; a tap question without its printed frame, a heard choice printing its word and a question printing less with no voice caught) (pass MZ)', leaks.length === 0 && read === 2000 && WORDS.test(prints(bare, true)) && plantChoice && plantOff, leaks.slice(0, 4).join(' | ') + JSON.stringify({ plantChoice, plantOff }));
+  // Loop back follows Q84's links for the two new lessons: two misses go back to the rhyme lesson each builds on.
+  const miss = (id, n) => ({ type: 'attempt_completed', at: '2026-10-0' + n + 'T10:00:00.000Z', startedAt: '2026-10-0' + n + 'T10:00:00.000Z', moduleId: id, seed: 1, core: [], review: null, coreCorrect: 1, coreTotal: 5 });
+  ok('two misses of Cat or hat? loop back to Words that rhyme, and two of Same word or different? to Rhyme time, the lessons their ideas build on (pass MZ, Q84 (b))', L.loopBackTarget([miss('cat-or-hat', 1), miss('cat-or-hat', 2)], 'cat-or-hat') === 'rhymes-with-pictures' && L.loopBackTarget([miss('same-word-or-different', 1), miss('same-word-or-different', 2)], 'same-word-or-different') === 'listen-for-rhymes');
+}
 // A heard yes or no question prints frames that carry both answers (pass MY, round one's screen check; the rule of FABLE-REVIEW's
 // pass MV): over 400 seeds of every pre-K yes or no bank, every printed frame that stands in for a heard question (printed) has rows
-// that answer Yes and rows that answer No, so the frame's look never tells the answer. The floor is the 18 frames the banks print
-// since pass MY (a frame counted once in each bank that prints it), so a frame lost from a bank fails too.
+// that answer Yes and rows that answer No, so the frame's look never tells the answer. The floor is the 21 frames the banks print
+// since pass MZ (18 since pass MY, three more in pass MZ's banks; a frame counted once in each bank that prints it), so a frame lost from a bank fails too.
 { const oneAnswer = (qs) => { const f = new Map(); for (const q of qs) { if (!q || !q.printed || !Array.isArray(q.choices) || !q.choices.includes('Yes') || !q.choices.includes('No')) continue; if (!f.has(q.printed)) f.set(q.printed, new Set()); f.get(q.printed).add(q.answer); } return [...f].filter(([, a]) => a.size < 2).map(([k, a]) => k + ' -> ' + [...a].join()); };
   const off = []; let frames = 0;
   for (const g of PREK_BANKS) { const qs = []; for (let s = 1; s <= 400; s++) { let q; try { q = L.generateQuestion(g, s); } catch (e) { break; } qs.push(q); } frames += new Set(qs.filter((q) => q && q.printed && Array.isArray(q.choices) && q.choices.includes('Yes')).map((q) => q.printed)).size; for (const x of oneAnswer(qs)) off.push(g + ': ' + x); }
   const planted = oneAnswer([{ printed: 'Is it just one word?', choices: ['Yes', 'No'], answer: 'Yes' }, { printed: 'Is it just one word?', choices: ['No', 'Yes'], answer: 'Yes' }]).length === 1 && oneAnswer([{ printed: 'Is it three words?', choices: ['Yes', 'No'], answer: 'Yes' }, { printed: 'Is it three words?', choices: ['Yes', 'No'], answer: 'No' }]).length === 0;
-  ok(`every printed frame of a heard pre-K yes or no question has rows of both answers, so its look never tells the answer (${frames} frames read; a frame always Yes planted and caught)`, off.length === 0 && frames >= 18 && planted, off.slice(0, 6).join(' | ')); }
+  ok(`every printed frame of a heard pre-K yes or no question has rows of both answers, so its look never tells the answer (${frames} frames read; a frame always Yes planted and caught)`, off.length === 0 && frames >= 21 && planted, off.slice(0, 6).join(' | ')); }
 // A reason's name and its verb agree (pass MY, round one: "One dot are fewer dots than beats" was heard after a second wrong tap and
 // no test read it): every pre-K bank's reasons over 120 seeds, read whole as a child hears them, one thing with is and more with are.
 { const ONE_ARE = /^One [a-z]+ are\b/; const MANY_IS = /^(?:Two|Three|Four|Five|Six|Seven|Eight|Nine|Ten) [a-z]+s is\b/; const bad = new Set(); let read = 0;
@@ -2327,15 +2411,18 @@ ok('no review question when nothing earlier is passed', L.buildAttempt('equivale
 ok('attempt is reproducible from its seed', JSON.stringify(L.buildAttempt('comparing-fractions', 9, ['fraction-meaning'])) === JSON.stringify(L.buildAttempt('comparing-fractions', 9, ['fraction-meaning'])));
 // A round asks about each word, or sentence, once while it can (pass MY, round one's lesson check: 1,752 of 2,000 rounds of Two words
 // make one, 512 of Clap the beats and 1,677 of Words in a sentence asked about one twice, the first explanation answering the second).
+// The lessons are read from the data (round two's code check, pass MZ: they were named by hand): every lesson with a bank whose
+// questions name what they are about (aboutWords), six since pass MZ.
 { const twice = (core) => { const seen = new Set(); let dup = false; for (const q of core) { for (const w of q.aboutWords || []) if (seen.has(w)) dup = true; for (const w of q.aboutWords || []) seen.add(w); } return dup; };
+  const NAMING = L.COURSES.flatMap((c) => c.modules).filter((m) => (m.generators || []).some((g) => Array.isArray(L.generateQuestion(g, 1).aboutWords))).map((m) => m.id);
   const rows = []; let named = true;
-  for (const mid of ['two-words-make-one', 'clap-the-beats', 'words-in-a-sentence', 'count-the-words']) { let n = 0; for (let s = 1; s <= 600; s++) { const a = L.buildAttempt(mid, s, []); if (twice(a.core)) n++; if (!a.core.every((q) => Array.isArray(q.aboutWords))) named = false; } rows.push([mid, n]); }
+  for (const mid of NAMING) { let n = 0; for (let s = 1; s <= 600; s++) { const a = L.buildAttempt(mid, s, []); if (twice(a.core)) n++; if (!a.core.every((q) => Array.isArray(q.aboutWords))) named = false; } rows.push([mid, n]); }
   const planted = twice([{ aboutWords: ['birdhouse'] }, { aboutWords: ['doghouse', 'birdhouse'] }]) && !twice([{ aboutWords: ['birdhouse'] }, { aboutWords: ['doghouse'] }]);
-  ok(`a round of the four lessons that name their words asks about each word or sentence once while it can (${rows.map(([m, n]) => m + ' ' + n).join(', ')} of 600 rounds; a planted round caught)`, rows.every(([, n]) => n <= 12) && named && planted, JSON.stringify(rows));
+  ok(`a round of the ${NAMING.length} lessons that name their words asks about each word or sentence once while it can (${rows.map(([m, n]) => m + ' ' + n).join(', ')} of 600 rounds; a planted round caught)`, NAMING.length >= 6 && rows.every(([, n]) => n <= 12) && named && planted, JSON.stringify(rows));
   // The same as the screen builds a round, the last two rounds' prompts avoided (round two's code read: the echo had only the tries
   // avoid left it), and in a Quick Review, which deals its own questions (buildLightReview).
   const screen = []; const reviews = [];
-  for (const mid of ['two-words-make-one', 'clap-the-beats', 'words-in-a-sentence', 'count-the-words']) { let n = 0; let prev = []; let prev2 = []; for (let s = 1; s <= 600; s++) { const a = L.buildAttempt(mid, s, [], { avoid: [...prev, ...prev2] }); if (twice(a.core)) n++; prev2 = prev; prev = a.core.map((q) => q.prompt); } screen.push([mid, n]);
+  for (const mid of NAMING) { let n = 0; let prev = []; let prev2 = []; for (let s = 1; s <= 600; s++) { const a = L.buildAttempt(mid, s, [], { avoid: [...prev, ...prev2] }); if (twice(a.core)) n++; prev2 = prev; prev = a.core.map((q) => q.prompt); } screen.push([mid, n]);
     let r = 0; for (let s = 1; s <= 600; s++) { const lr = L.buildLightReview([], s, { moduleId: mid, stage: 'first', missedKinds: [] }); if (lr && twice(lr.core)) r++; } reviews.push([mid, r]); }
   ok(`a round as the screen builds it, the last two rounds' prompts avoided, and a Quick Review each ask about a word once while they can (rounds ${screen.map(([m, n]) => m + ' ' + n).join(', ')}; Quick Reviews ${reviews.map(([m, n]) => m + ' ' + n).join(', ')}, of 600 each)`, screen.every(([, n]) => n <= 12) && reviews.every(([, n]) => n <= 12), JSON.stringify({ screen, reviews })); }
 
@@ -3019,6 +3106,158 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('only first modules are open to a brand new student', L.moduleStatuses(fresh).filter((s) => s.status === 'available').every((s) => L.prerequisitesOf(s.id).length === 0));
 }
 
+// ---- 11b. Pre-K's prerequisites by idea (pass MZ, Mikey's answer to Q84, "Q84 - B") ----
+// Since pass MO each new pre-K lesson had named the lesson built just before it as its prerequisite, so loop back could send a child
+// to a lesson its ideas do not need (a child who missed Count the words twice went back to She, he and they). Since pass MZ a pre-K
+// lesson names the lesson its ideas build on, or none, and says why in requiresWhy, naming each lesson it requires by its title. A
+// lesson pass MY delivered may name only a lesson it needed then, directly or through the lessons those needed, so no lesson open
+// for a child who followed the gates locks (MY_PREK_REQUIRES is pass MY's graph, word for word, from its zip). One function checks
+// it, run on the real lessons and on planted near misses; a walk of 300 children through pass MY's gates then reads the real
+// screen rule (moduleStatuses) for every lesson that was open to each.
+{
+  const MY_PREK_REQUIRES = {
+    // Very first steps (PK3)
+    'red-and-blue': [],
+    'find-the-match': [],
+    'one-and-two': [],
+    'more-or-fewer': [],
+    'first-marks': [],
+    'three-dots': [],
+    'yellow-and-green': [],
+    'triangles-too': ['find-the-match'],
+    'big-and-little': [],
+    'please-and-thank-you': [],
+    'match-the-animals': ['find-the-match'],
+    'big-and-small': ['find-the-match'],
+    'four-feelings': [],
+    'help-a-friend': ['four-feelings'],
+    'one-more-one-fewer': ['more-or-fewer'],
+    'join-in-play': ['four-feelings'],
+    'talk-with-a-friend': ['join-in-play'],
+    'talk-about-it': ['talk-with-a-friend'],
+    'say-what-you-need': ['please-and-thank-you'],
+    'voice-to-fit': ['say-what-you-need'],
+    // Listen and point (PK3)
+    'circle-and-square': [],
+    'a-and-b': [],
+    'not-the-same': [],
+    'listen-and-tap-pictures': [],
+    'animal-sounds': ['listen-and-tap-pictures'],
+    'rhymes-with-pictures': ['listen-and-tap-pictures'],
+    'two-steps': ['animal-sounds'],
+    'two-steps-more': ['two-steps'],
+    'two-ideas': ['two-steps-more'],
+    'two-ideas-more': ['two-ideas'],
+    'learning-words': ['two-ideas-more'],
+    'count-and-sort-words': ['learning-words'],
+    'people-and-events': ['listen-and-tap-pictures'],
+    'things-that-happen': ['people-and-events'],
+    'voice-up-and-down': ['things-that-happen'],
+    'say-a-sentence': ['voice-up-and-down'],
+    'one-cat-two-cats': ['say-a-sentence'],
+    'words-in-a-sentence': ['one-cat-two-cats'],
+    'two-words-make-one': ['words-in-a-sentence'],
+    // First steps (PK4)
+    'colours': [],
+    'same-and-different': [],
+    'patterns': ['same-and-different'],
+    'count-to-3': [],
+    'first-strokes': [],
+    'connect-the-dots': [],
+    'draw-the-shapes': [],
+    'taking-turns': [],
+    'big-bigger-biggest': [],
+    'helpers-all-around': [],
+    'match-the-vehicles': ['same-and-different'],
+    'match-the-things': ['match-the-vehicles'],
+    'more-and-fewer-5': ['count-to-3'],
+    'bigger-and-smaller': ['big-bigger-biggest'],
+    'match-the-water-animals': ['match-the-things'],
+    'match-the-land-animals': ['match-the-water-animals'],
+    'match-the-shapes': ['match-the-land-animals'],
+    'match-the-solids': ['match-the-shapes'],
+    'feelings-show': [],
+    'how-friends-feel': ['feelings-show'],
+    'good-friend': ['how-friends-feel'],
+    'play-together': ['good-friend'],
+    'play-with-a-plan': ['play-together'],
+    'say-it-to-fit': ['play-with-a-plan'],
+    // First sounds and letters (PK4)
+    'listen-for-rhymes': [],
+    'first-sounds': [],
+    'big-letters': [],
+    'first-letter-tracing': ['big-letters'],
+    'more-big-letters': ['first-letter-tracing'],
+    'trace-straight-letters': ['more-big-letters'],
+    'which-came-first': ['first-sounds'],
+    'which-came-second': ['which-came-first'],
+    'three-steps': ['which-came-second'],
+    'three-steps-more': ['three-steps'],
+    'more-learning-words': ['three-steps-more'],
+    'sort-and-shape-words': ['more-learning-words'],
+    'words-go-together': ['sort-and-shape-words'],
+    'opposites-and-same': ['words-go-together'],
+    'things-we-do': ['opposites-and-same'],
+    'voice-tells-more': ['things-we-do'],
+    'longer-sentences': ['voice-tells-more'],
+    'words-that-change': ['longer-sentences'],
+    'she-he-and-they': ['words-that-change'],
+    'count-the-words': ['she-he-and-they'],
+    'clap-the-beats': ['count-the-words'],
+  };
+  const titleOf = (id) => (L.getModule(id) || {}).title || id;
+  const myAncestors = (id, seen = new Set()) => { for (const r of MY_PREK_REQUIRES[id] || []) if (!seen.has(r)) { seen.add(r); myAncestors(r, seen); } return seen; };
+  const prekRequiresProblems = (modules) => {
+    const out = [];
+    for (const m of modules) {
+      const req = m.requires || [];
+      const why = m.requiresWhy;
+      if (req.length && !(typeof why === 'string' && why.trim())) out.push(`${m.id}: requires ${req.join(', ')} with no reason`);
+      if (typeof why === 'string') {
+        for (const r of req) if (!why.toLowerCase().includes(titleOf(r).toLowerCase())) out.push(`${m.id}: its reason does not name ${titleOf(r)}`);
+        if (!/^[A-Z][^—]*[.?!]$/.test(why.trim())) out.push(`${m.id}: its reason is not whole sentences`);
+      }
+      if (m.id in MY_PREK_REQUIRES) { const before = myAncestors(m.id); for (const r of req) if (!before.has(r)) out.push(`${m.id}: ${r} was not needed in pass MY, so it would lock the lesson for a child who has it open`); }
+    }
+    return out;
+  };
+  const pre = L.COURSES.filter((c) => c.grade === 'PK3' || c.grade === 'PK4').flatMap((c) => c.modules);
+  const found = prekRequiresProblems(pre);
+  ok('every pre-K lesson that requires another says why in whole sentences, naming each lesson by its title, and requires only what it needed in pass MY, so no lesson open for a child who followed the gates locks (pass MZ, Q84 (b))', found.length === 0, found.join('; '));
+  ok('pass MY delivered 84 pre-K lessons, and every one is still here', Object.keys(MY_PREK_REQUIRES).length === 84 && Object.keys(MY_PREK_REQUIRES).every((id) => pre.some((m) => m.id === id)));
+  // Near misses: the past mistake itself, and one each way the rule can fail.
+  const plant = (id, change) => pre.map((m) => (m.id === id ? { ...m, ...change } : m));
+  const fails = (list, pattern) => prekRequiresProblems(list).some((x) => pattern.test(x));
+  ok("the check fails pass MY's Count the words, which required She, he and they, the lesson built before it, with no reason", fails(plant('count-the-words', { requires: ['she-he-and-they'], requiresWhy: undefined }), /^count-the-words: requires she-he-and-they with no reason$/));
+  ok('the check fails Big and small requiring Big and little, the lesson it builds on, which would lock it for a child who has it open', fails(plant('big-and-small', { requires: ['big-and-little'], requiresWhy: 'Big and small builds on Big and little.' }), /^big-and-small: big-and-little was not needed in pass MY/));
+  ok('the check fails a lesson that had none in pass MY given one', fails(plant('red-and-blue', { requires: ['yellow-and-green'], requiresWhy: 'Red and blue builds on Yellow and green.' }), /^red-and-blue: yellow-and-green was not needed/));
+  ok('the check fails a reason that does not name the lesson it requires, and one that is not a sentence', fails(plant('count-the-words', { requiresWhy: 'It counts the words of a sentence.' }), /^count-the-words: its reason does not name Longer sentences$/) && fails(plant('clap-the-beats', { requiresWhy: 'builds on Count the words' }), /^clap-the-beats: its reason is not whole sentences$/));
+  ok('a lesson new since pass MY may require any lesson, with its reason', prekRequiresProblems([{ id: 'a-new-lesson', requires: ['clap-the-beats'], requiresWhy: 'It builds on Clap the beats.' }]).length === 0);
+  // The claim itself, on the real screen rule: 300 children each pass pre-K lessons one at a time in an order pass MY's gates allowed,
+  // and after every pass each lesson open under pass MY's graph must be open today (available, passed or starred, never locked).
+  { let seed = 2026110401; const rand = () => { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; };
+    const courses = L.COURSES.filter((c) => c.grade === 'PK3' || c.grade === 'PK4').map((c) => c.id);
+    const ids = Object.keys(MY_PREK_REQUIRES); const locked = []; let checks = 0;
+    for (let child = 0; child < 300 && locked.length === 0; child++) {
+      const passed = new Set(); const events = []; const steps = 1 + Math.floor(rand() * ids.length);
+      for (let step = 0; step < steps; step++) {
+        const openThen = ids.filter((id) => !passed.has(id) && MY_PREK_REQUIRES[id].every((r) => passed.has(r)));
+        if (!openThen.length) break;
+        const id = openThen[Math.floor(rand() * openThen.length)]; passed.add(id);
+        const at = new Date(Date.UTC(2026, 8, 20, 9, 0, 0) + events.length * 60000).toISOString();
+        events.push({ type: 'attempt_completed', at, startedAt: at, moduleId: id, seed: 1, core: [], review: null, coreCorrect: 5, coreTotal: 5 });
+        const now = L.moduleStatuses(L.deriveProgress(events), courses);
+        for (const open of ids.filter((x) => MY_PREK_REQUIRES[x].every((r) => passed.has(r)))) { checks += 1; const st = (now.find((s) => s.id === open) || {}).status; if (st === 'locked') locked.push(`${open} after ${[...passed].join(', ')}`); }
+      }
+    }
+    ok(`no lesson open under pass MY's pre-K graph is locked today, for 300 children walking its gates (${checks} lessons read; pass MZ, Q84 (b))`, checks >= 588741 && locked.length === 0, locked.slice(0, 3).join(' | ')); }
+  // Loop back follows the new links: two misses of Count the words go back to Longer sentences, its foundation, not She, he and they;
+  // a lesson that names none never loops back, and its Action Item waits for four misses (neverMasteredStuck).
+  const miss = (id, n) => ({ type: 'attempt_completed', at: `2026-10-0${n}T10:00:00.000Z`, startedAt: `2026-10-0${n}T10:00:00.000Z`, moduleId: id, seed: 1, core: [], review: null, coreCorrect: 1, coreTotal: 5 });
+  ok('two misses of Count the words loop back to Longer sentences, the lesson its idea builds on (pass MZ, Q84 (b))', L.loopBackTarget([miss('count-the-words', 1), miss('count-the-words', 2)], 'count-the-words') === 'longer-sentences');
+  ok('two misses of Clap the beats still loop back to Count the words, a link kept by idea', L.loopBackTarget([miss('clap-the-beats', 1), miss('clap-the-beats', 2)], 'clap-the-beats') === 'count-the-words');
+  ok('a pre-K lesson that names none never loops back, and its Action Item comes after four misses, not two', L.loopBackTarget([miss('say-a-sentence', 1), miss('say-a-sentence', 2)], 'say-a-sentence') === null && !L.neverMasteredStuck([1, 2, 3].map((n) => miss('say-a-sentence', n)), 'say-a-sentence') && !!L.neverMasteredStuck([1, 2, 3, 4].map((n) => miss('say-a-sentence', n)), 'say-a-sentence'));
+}
 // ---- 12. The plain-English summary describes everything assigned at once ----
 {
   const att = (moduleId, at, correct) => ({ type: 'attempt_completed', at, startedAt: at, moduleId, seed: 1, core: [], review: null, coreCorrect: correct, coreTotal: 5 });
@@ -4990,7 +5229,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   const otherPair = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']);
   const otherPriv = await crypto.subtle.exportKey('jwk', otherPair.privateKey);
   ok('a code signed with any other key is refused', (await L.checkLicenseCode(await L.makeLicenseCode(otherPriv, { id: 'X', name: 'Y', year: '2026-27', until: '2027-07-31' }), new Date('2026-10-01'))).ok === false);
-  ok('pre-K 3, pre-K 4 and kindergarten courses are free, grade 1 and up are not', L.COURSES.filter(L.courseIsFree).length > 0 && L.COURSES.every((c) => L.courseIsFree(c) === ['PK3', 'PK4', 'K'].includes(c.grade)) && L.COURSES.filter(L.courseIsFree).reduce((n, c) => n + c.modules.length, 0) === 189);   // 86 plus computer science (FS), economics (FV), art and music (GE), philosophy (GL), psychology (GP) and speech (GT), four modules each, plus the five kindergarten science modules of earmark E1 (pass KK) the two Counting modules of earmark E2 (pass KL) the seven Me and my community modules of earmark E3 (passes KM and KN) the seven Taking care of me modules of earmark E4 (passes KO and KP) the four Tell, show, step and repeat modules of earmark E5 (passes KQ and KR) and the five Letters tracing modules of earmark E6 (pass KS), plus the two Very First Steps feelings modules of earmark E12 (pass MD) and its One more and one fewer and Listen and Point's Words that rhyme (pass ME), plus Very First Steps' Can I play too? and First Steps' three feelings lessons of earmarks E12 and E13 (pass MN), plus First Steps' Let's play together of earmark E13 and Listen and Point's Two steps and Two ideas and First Sounds and Letters' Three steps of earmarks E12 and E13 (pass MO), plus Listen and Point's Learning words and People and events, Very First Steps' Talking with a friend, and First Sounds and Letters' More learning words and Words that go together of earmarks E12 and E13 (pass MQ), plus the nine second halves of Mikey's answer to Q70 (pass MR: four of pre-K 3's, five of pre-K 4's), plus Very First Steps' Say what you need and First Steps' Say it to fit and First Sounds and Letters' Things we do of earmarks E12 and E13 (pass MS), plus Very First Steps' A voice to fit the place, Listen and Point's My voice goes up and down and First Sounds and Letters' My voice tells more of earmarks E12 and E13 (pass MV), plus Listen and Point's Say it in a sentence and One cat, two cats and First Sounds and Letters' Longer sentences and Words that change of earmarks E12 and E13 (pass MW), plus First Sounds and Letters' She, he and they, the second half of Words that change by Mikey's Q70 at his answer to Q83, and Listen and Point's Words in a sentence and First Sounds and Letters' Count the words of earmarks E12 and E13 (pass MX), plus Listen and Point's Two words make one and First Sounds and Letters' Clap the beats of earmarks E12 and E13 (pass MY)
+  ok('pre-K 3, pre-K 4 and kindergarten courses are free, grade 1 and up are not', L.COURSES.filter(L.courseIsFree).length > 0 && L.COURSES.every((c) => L.courseIsFree(c) === ['PK3', 'PK4', 'K'].includes(c.grade)) && L.COURSES.filter(L.courseIsFree).reduce((n, c) => n + c.modules.length, 0) === 191);   // 86 plus computer science (FS), economics (FV), art and music (GE), philosophy (GL), psychology (GP) and speech (GT), four modules each, plus the five kindergarten science modules of earmark E1 (pass KK) the two Counting modules of earmark E2 (pass KL) the seven Me and my community modules of earmark E3 (passes KM and KN) the seven Taking care of me modules of earmark E4 (passes KO and KP) the four Tell, show, step and repeat modules of earmark E5 (passes KQ and KR) and the five Letters tracing modules of earmark E6 (pass KS), plus the two Very First Steps feelings modules of earmark E12 (pass MD) and its One more and one fewer and Listen and Point's Words that rhyme (pass ME), plus Very First Steps' Can I play too? and First Steps' three feelings lessons of earmarks E12 and E13 (pass MN), plus First Steps' Let's play together of earmark E13 and Listen and Point's Two steps and Two ideas and First Sounds and Letters' Three steps of earmarks E12 and E13 (pass MO), plus Listen and Point's Learning words and People and events, Very First Steps' Talking with a friend, and First Sounds and Letters' More learning words and Words that go together of earmarks E12 and E13 (pass MQ), plus the nine second halves of Mikey's answer to Q70 (pass MR: four of pre-K 3's, five of pre-K 4's), plus Very First Steps' Say what you need and First Steps' Say it to fit and First Sounds and Letters' Things we do of earmarks E12 and E13 (pass MS), plus Very First Steps' A voice to fit the place, Listen and Point's My voice goes up and down and First Sounds and Letters' My voice tells more of earmarks E12 and E13 (pass MV), plus Listen and Point's Say it in a sentence and One cat, two cats and First Sounds and Letters' Longer sentences and Words that change of earmarks E12 and E13 (pass MW), plus First Sounds and Letters' She, he and they, the second half of Words that change by Mikey's Q70 at his answer to Q83, and Listen and Point's Words in a sentence and First Sounds and Letters' Count the words of earmarks E12 and E13 (pass MX), plus Listen and Point's Two words make one and First Sounds and Letters' Clap the beats of earmarks E12 and E13 (pass MY), plus Listen and Point's Cat or hat? and First Sounds and Letters' Same word or different? of earmarks E12 and E13 (pass MZ)
   const mixed = ['counting-k', 'reading-3', 'letters-k'];
   ok('without a license only the free courses open; with one, all of them do', JSON.stringify(L.openCourseIds(mixed, false)) === JSON.stringify(['counting-k', 'letters-k']) && L.openCourseIds(mixed, true).length === 3);
   ok('the app carries a public key only, marked as the development key until launch', !('d' in L.LICENSE_PUBLIC_KEY) && L.LICENSE_KEY_IS_DEVELOPMENT === true);

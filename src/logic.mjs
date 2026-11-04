@@ -4810,6 +4810,7 @@ function PREK3_MODULES() { return [
     title: 'Match the animals',
     tagline: 'Which is the same?',
     requires: ['find-the-match'],
+    requiresWhy: 'Matching two animals that are just the same builds on Find the match, where a child first finds the picture that is the same.',
     lesson: {
       paragraphs: ['Two animals are the same when they look just alike, with the same ears, the same eyes and the same color.', 'When one animal is different from the others, it is the odd one out. An owl next to two foxes is the odd one out, because it is not a fox.', 'With two owls and a fox, the owls go together, so the fox is the odd one out.', 'At the zoo you might see two zebras and one lion. The zebras both have stripes and the lion has none, so the lion is the odd one out.'],
       keyIdea: 'The same means just alike. The one that is different is the odd one out.',
@@ -4833,7 +4834,7 @@ function PREK3_MODULES() { return [
     order: 12,
     title: 'Big and small',
     tagline: 'Which is bigger?',
-    requires: ['find-the-match'],
+    requiresWhy: 'Big and small says bigger, smaller, taller and longer in its own lines, so it needs no lesson first. Big and little, whose size words it builds on, would lock it for a child who has it open, and Find the match, which it named until pass MZ, teaches no sizes.',
     lesson: {
       paragraphs: ['Put two things side by side to compare their size. The one that takes up more room is bigger, and the one that takes up less room is smaller.', 'It works for every shape and every thing, from circles and triangles to dogs and their beds. An elephant is bigger than a mouse, and your hand is smaller than a grown-up hand.', 'Things can be tall or short, too. Stand two towers on the same floor. The one that reaches higher is taller, and the other is shorter.', 'Lines can be long or short. Start two lines at the same place, and the one that reaches farther is longer.'],
       keyIdea: 'Bigger things take up more room. A taller tower reaches higher, and a longer line reaches farther.',
@@ -4989,7 +4990,7 @@ function PREK3_MODULES() { return [
     order: 8,
     title: 'Triangles',
     tagline: 'Three sides, three corners',
-    requires: ['find-the-match'],
+    requiresWhy: 'Triangles says the circle and the square beside the triangle in its own lines, so it needs no lesson first. Circle and square, the shapes it builds on, would lock it for a child who has it open, and Find the match, which it named until pass MZ, matches pictures by shape and color but does not teach what makes a triangle.',
     lesson: {
       pictures: [{ serial: 'P15', alt: 'A slice of cheese pizza beside a plain triangle', step: 4 }, { serial: 'P96', alt: 'A triangle road sign turned upside down', step: 7 }],
       paragraphs: ['A triangle has three straight sides and three corners. Count three straight sides and three corners, and you know it is a triangle.', 'A circle is round, with no corners, and a square has four corners and four sides the same length. A slice of round pizza is almost a triangle, though its crust is curved.', 'A triangle is still a triangle when it is big or little, tall and thin, or turned upside down, like a road sign.'],
@@ -5093,6 +5094,7 @@ function PREK3_MODULES() { return [
     skill: 'Getting along',
     order: 14,
     requires: ['four-feelings'],
+    requiresWhy: 'Helping a friend starts by seeing from a face that a friend is sad or scared, feelings first named in Happy, sad, mad and scared.',
     title: 'Helping a friend',
     tagline: 'Kind words and a grown-up',
     lesson: {
@@ -5129,6 +5131,7 @@ function PREK3_MODULES() { return [
     skill: 'Counting',
     order: 15,
     requires: ['more-or-fewer'],
+    requiresWhy: 'One more and one fewer changes a group by one and asks which has more or fewer, the words More and fewer teaches.',
     title: 'One more and one fewer',
     tagline: 'Add one, take one away',
     lesson: {
@@ -5164,6 +5167,7 @@ function PREK3_MODULES() { return [
     skill: 'Getting along',
     order: 16,
     requires: ['four-feelings'],
+    requiresWhy: 'Can I play too? asks how grabbing or being left out makes a friend feel, sad or mad, feelings first named in Happy, sad, mad and scared.',
     title: 'Can I play too?',
     tagline: 'Watch, then ask',
     lesson: {
@@ -5204,6 +5208,7 @@ function PREK3_MODULES() { return [
     skill: 'Getting along',
     order: 17,
     requires: ['join-in-play'],
+    requiresWhy: 'Talking with a friend takes turns talking back and forth, the way Can I play too? takes turns adding blocks and rolling a ball.',
     title: 'Talking with a friend',
     tagline: 'Your turn, my turn',
     lesson: {
@@ -5240,6 +5245,7 @@ function PREK3_MODULES() { return [
     skill: 'Getting along',
     order: 18,
     requires: ['talk-with-a-friend'],
+    requiresWhy: 'Talk about it says something about what a friend said, on its own turn, so it builds on the turns of talking and listening in Talking with a friend.',
     title: 'Talk about it',
     tagline: 'Say something about it',
     lesson: {
@@ -5274,6 +5280,7 @@ function PREK3_MODULES() { return [
     skill: 'Getting along',
     order: 19,
     requires: ['please-and-thank-you'],
+    requiresWhy: 'Say what you need asks a grown-up for water, a coat or a turn with may I and please, the kind words Please and thank you teaches.',
     title: 'Say what you need',
     tagline: 'Water, a coat and a turn',
     lesson: {
@@ -5311,7 +5318,7 @@ function PREK3_MODULES() { return [
     id: 'voice-to-fit',
     skill: 'Getting along',
     order: 20,
-    requires: ['say-what-you-need'],
+    requiresWhy: 'A voice to fit the place is the first lesson about how loud or soft to speak, so it needs no lesson first. Say what you need, which it named until pass MZ, lends its examples their words but not this idea.',
     title: 'A voice to fit the place',
     tagline: 'A whisper, an inside voice and a big outside voice',
     lesson: {
@@ -5348,7 +5355,7 @@ function PREK3_READING_MODULES() { return [
     id: 'rhymes-with-pictures',
     skill: 'Listening',
     order: 6,
-    requires: ['listen-and-tap-pictures'],
+    requiresWhy: 'Words that rhyme is the first lesson about how words sound at the end, and it says every word it rhymes, so it needs no lesson first. Listen and tap, which it named until pass MZ, names things and teaches no rhyme.',
     title: 'Words that rhyme',
     tagline: 'Ball and wall',
     lesson: {
@@ -5506,6 +5513,7 @@ function PREK3_READING_MODULES() { return [
     title: 'Animal sounds',
     tagline: 'Meow, quack, buzz',
     requires: ['listen-and-tap-pictures'],
+    requiresWhy: 'Animal sounds hears a sound and taps the animal that makes it, the listen-then-tap that Listen and tap teaches with words.',
     lesson: {
       paragraphs: ['Animals make sounds, and many have a sound of their own. The cat says meow, the duck says quack, and the bee says buzz.', 'The frog says ribbit, the owl says hoot, and the bear says growl. A sound can tell you which animal is near, even when you cannot see it.', 'When one sound comes after another, one is first and the other is second. On a farm you can hear many sounds at once, and real animals make lots of sounds, so listen closely.'],
       keyIdea: 'Many animals have a sound of their own, so a sound tells you which animal is near.',
@@ -5540,7 +5548,8 @@ function PREK3_READING_MODULES() { return [
     id: 'two-steps',
     skill: 'Listening',
     order: 7,
-    requires: ['animal-sounds'],
+    requires: ['listen-and-tap-pictures'],
+    requiresWhy: 'A direction of two steps is two of the one-word taps of Listen and tap, done in order, and the animal sounds its steps use are said in its own lines.',
     title: 'Two steps',
     tagline: 'First this, then that',
     lesson: {
@@ -5575,6 +5584,7 @@ function PREK3_READING_MODULES() { return [
     skill: 'Listening',
     order: 8,
     requires: ['two-steps'],
+    requiresWhy: 'Two steps every day gives more directions of two steps at play and at home, so it builds on Two steps.',
     title: 'Two steps every day',
     tagline: 'At play and at home',
     lesson: {
@@ -5610,6 +5620,7 @@ function PREK3_READING_MODULES() { return [
     skill: 'Listening',
     order: 9,
     requires: ['two-steps-more'],
+    requiresWhy: 'Two ideas keeps two heard ideas in mind at once, a square and blue, the way Two steps every day keeps two heard steps of colors, shapes and sizes in mind.',
     title: 'Two ideas',
     tagline: 'Listen for both',
     lesson: {
@@ -5642,6 +5653,7 @@ function PREK3_READING_MODULES() { return [
     skill: 'Listening',
     order: 10,
     requires: ['two-ideas'],
+    requiresWhy: 'Who has what tells which goes with which in sentences of two ideas, so it builds on Two ideas.',
     title: 'Who has what',
     tagline: 'Two ideas, two friends',
     lesson: {
@@ -5680,7 +5692,8 @@ function PREK3_READING_MODULES() { return [
     id: 'learning-words',
     skill: 'Listening',
     order: 11,
-    requires: ['two-ideas-more'],
+    requires: ['two-ideas'],
+    requiresWhy: 'Learning words says two things match only when they are the same in shape and in color at once, two ideas held together as Two ideas teaches.',
     title: 'Learning words',
     tagline: 'Match, same and different',
     lesson: {
@@ -5711,6 +5724,7 @@ function PREK3_READING_MODULES() { return [
     skill: 'Listening',
     order: 12,
     requires: ['learning-words'],
+    requiresWhy: 'Count and sort adds count, sort, group, side and corner to the learning words that Learning words begins with match, same and different.',
     title: 'Count and sort',
     tagline: 'Group, sides and corners',
     lesson: {
@@ -5747,6 +5761,7 @@ function PREK3_READING_MODULES() { return [
     skill: 'Listening',
     order: 13,
     requires: ['listen-and-tap-pictures'],
+    requiresWhy: 'Words for people finds the picture of a word it hears, as Listen and tap does for words that name things, now for words that name people.',
     title: 'Words for people',
     tagline: 'Who is who',
     lesson: {
@@ -5779,6 +5794,7 @@ function PREK3_READING_MODULES() { return [
     skill: 'Listening',
     order: 14,
     requires: ['people-and-events'],
+    requiresWhy: 'Things that happen goes on from the words that name people in Words for people to words that name events, and its first line says so.',
     title: 'Things that happen',
     tagline: 'Birthdays, bedtime and rain',
     lesson: {
@@ -5810,7 +5826,7 @@ function PREK3_READING_MODULES() { return [
     id: 'voice-up-and-down',
     skill: 'Listening',
     order: 15,
-    requires: ['things-that-happen'],
+    requiresWhy: 'My voice goes up and down is the first lesson about a voice going up and down, so it needs no lesson first. Things that happen, which it named until pass MZ, teaches words for events.',
     title: 'My voice goes up and down',
     tagline: 'Up high, down low, asking and telling',
     lesson: {
@@ -5846,7 +5862,7 @@ function PREK3_READING_MODULES() { return [
     id: 'say-a-sentence',
     skill: 'Listening',
     order: 16,
-    requires: ['voice-up-and-down'],
+    requiresWhy: 'Say it in a sentence is the first lesson about putting words in order to make a sentence, and it says every word it uses, so it needs no lesson first. My voice goes up and down, which it named until pass MZ, is about the voice.',
     title: 'Say it in a sentence',
     tagline: 'Words in order, and a little more',
     lesson: {
@@ -5882,6 +5898,7 @@ function PREK3_READING_MODULES() { return [
     skill: 'Listening',
     order: 17,
     requires: ['say-a-sentence'],
+    requiresWhy: 'One cat, two cats changes a word inside a sentence, for more than one and for yesterday, so it builds on Say it in a sentence.',
     title: 'One cat, two cats',
     tagline: 'More than one, and what I did yesterday',
     lesson: {
@@ -5912,7 +5929,8 @@ function PREK3_READING_MODULES() { return [
     id: 'words-in-a-sentence',
     skill: 'Listening',
     order: 18,
-    requires: ['one-cat-two-cats'],
+    requires: ['say-a-sentence'],
+    requiresWhy: 'Words in a sentence counts the words of a sentence, so it builds on Say it in a sentence, where words are put together in order to make one.',
     title: 'Words in a sentence',
     tagline: 'One clap for each word',
     lesson: {
@@ -5954,6 +5972,7 @@ function PREK3_READING_MODULES() { return [
     skill: 'Listening',
     order: 19,
     requires: ['words-in-a-sentence'],
+    requiresWhy: 'Two words make one puts two words together into one word and takes one apart, so it needs telling one word from the next, as Words in a sentence teaches.',
     title: 'Two words make one',
     tagline: 'Put two words together, and take them apart',
     lesson: {
@@ -5978,6 +5997,47 @@ function PREK3_READING_MODULES() { return [
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.3 (blends words to form compound words with adult assistance.), since the lesson says two words one after another, dog and house, cup and cake, sun and flower, and bird and house, puts them together into the one word they make, doghouse, cupcake, sunflower and birdhouse, has the child put two words together in a turn of their own, and asks which word two words make and whether two words make a word, and III.B.4 (segments compound words to form individual words with adult assistance.), since the lesson takes snowball, starfish and cupcake apart into their two words in order, says that cat has just one word in it, has the child take a word apart in a turn of their own, and asks which word you hear in a word, which other word you hear, which word has a word in it, and whether a word is made of two words, the voice saying each word slowly being the adult assistance.'],
     generators: ['p3-two-make', 'p3-two-hear', 'p3-two-other', 'p3-two-has', 'p3-two-yesno'],
+  },
+  // Cat or hat? (pass MZ, the standards review of Domain III's III.B.2, EARMARKS E12): PK3 III.B.2, "distinguishes differences between
+  // similar-sounding words with adult assistance.", cited whole. Six pairs of words that sound almost the same, each pair different
+  // only at the very start (cat and hat, bear and chair, rock and sock, ball and wall and dog and log in their first sound, and moon
+  // and spoon in their first sounds, since spoon starts with two, s and p, round one's lesson check), each word a
+  // picture the app draws and each pair one that Words that rhyme says and draws: the child hears which word was said and finds its
+  // picture, hears it inside a sentence, finds a picture's name by ear and tells a word said two times from two different words, the
+  // voice saying each word slowly, and again when asked, being the adult assistance. Its questions are heard questions that print none
+  // of the words they ask about while the voice can speak. It builds on Words that rhyme, whose pairs these are (Mikey's answer to Q84).
+  {
+    id: 'cat-or-hat',
+    skill: 'Listening',
+    order: 20,
+    requires: ['rhymes-with-pictures'],
+    requiresWhy: 'Cat or hat? tells apart words that sound almost the same, like cat and hat, which rhyme, so it builds on hearing words that sound alike, as Words that rhyme teaches.',
+    title: 'Cat or hat?',
+    tagline: 'Words that sound almost the same',
+    lesson: {
+      paragraphs: ['Some words sound almost the same. Cat and hat sound almost the same, but they are two different words. A cat is a pet that says meow, and a hat is something you wear on your head.', 'Bear and chair, rock and sock, ball and wall, dog and log, and moon and spoon sound almost the same too. Only the very start of each word is different, so listen to the whole word, from start to end.', 'Sometimes the two words are just the same, like dog and dog, one word said two times. If you are not sure which word you heard, you can ask, Can you say that again, please?'],
+      keyIdea: 'Some words sound almost the same, like cat and hat, but they are different words. Listen to the whole word to tell them apart.',
+      example: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'icon', name: 'chair' }, caption: 'Bear and chair sound almost the same.' },
+      pictures: [{ serial: 'P181', alt: 'A small child laughing on a bedroom floor, a wide straw sun hat on the child\'s head, a fluffy gray cat with white paws sitting beside the child and saying meow', step: 1 }],
+      script: [
+        { say: 'Listen to two words. Cat. Hat. Cat and hat sound almost the same, but they are two different words.', stress: ['different'], show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'icon', name: 'hat' } } },
+        { say: 'A cat is a pet that says meow. A hat is something you wear on your head.', show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'icon', name: 'hat' } } },
+        { say: 'Only the very start of each word is different. Cat. Hat. So listen to the whole word, from start to end.', stress: ['whole word'], show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'icon', name: 'hat' } } },
+        { say: 'Listen to two more. Bear. Chair. A bear is a big furry animal, and a chair is something you sit on.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'icon', name: 'chair' } } },
+        { say: 'Now you try, and say them like me. Rock. Sock.', show: { kind: 'pair', a: { kind: 'icon', name: 'rock' }, b: { kind: 'icon', name: 'sock' } }, voices: [['Rock.', 'tell', 'turn'], ['Sock.', 'tell', 'turn']] },
+        { say: 'Rock and sock sound almost the same. A rock is a hard stone, and a sock is something you wear on your foot.', show: { kind: 'pair', a: { kind: 'icon', name: 'rock' }, b: { kind: 'icon', name: 'sock' } } },
+        { say: 'Ball and wall sound almost the same too. Now you try, and point to the one I say. Wall.', show: { kind: 'pair', a: { kind: 'icon', name: 'ball' }, b: { kind: 'icon', name: 'wall' } }, voices: [['Wall.', 'tell', 'turn']] },
+        { say: 'The wall is the one made of stones. The ball is a toy you can roll.', show: { kind: 'pair', a: { kind: 'icon', name: 'ball' }, b: { kind: 'icon', name: 'wall' } } },
+        { say: 'Sometimes the two words are just the same. Dog. Dog. That is one word, said two times.', stress: ['the same'], show: { kind: 'pair', a: { kind: 'icon', name: 'dog' }, b: { kind: 'icon', name: 'dog' } } },
+        { say: 'But dog and log are different words. Dog. Log. A dog is a pet that barks, and a log is a big piece of a tree.', show: { kind: 'pair', a: { kind: 'icon', name: 'dog' }, b: { kind: 'icon', name: 'log' } } },
+        { say: 'Now listen for moon or spoon inside a sentence. Grandma drew a moon. Moon, not spoon! You can tell when you listen to the whole word.', show: { kind: 'pair', a: { kind: 'icon', name: 'moon' }, b: { kind: 'icon', name: 'spoon' } } },
+        { say: 'The moon shines in the sky at night, and we eat soup with a spoon.', show: { kind: 'pair', a: { kind: 'icon', name: 'moon' }, b: { kind: 'icon', name: 'spoon' } } },
+        { say: 'If you are not sure which word you heard, you can ask, Can you say that again, please?', show: null },
+        { say: 'Some words sound almost the same, like cat and hat. Listen to the whole word, and you can tell them apart.', show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'icon', name: 'hat' } } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.2 (distinguishes differences between similar-sounding words with adult assistance.), since the lesson says words that sound almost the same one after another, cat and hat, bear and chair, rock and sock, ball and wall, dog and log, and moon and spoon, says what each one is and that only the very start of each is different, has the child say two of them and point to the one heard in turns of their own, tells one word said two times from two different words, hears a word inside a sentence, and asks which picture is the word heard, which thing a heard sentence names, which heard word is a picture\'s name, whether two heard words are the same or different, and whether a picture is the word heard, the voice saying each word slowly, and again when the child asks, being the adult assistance.'],
+    generators: ['p3-near-tap', 'p3-near-in', 'p3-near-name', 'p3-near-same', 'p3-near-yesno'],
   },
 ]; }
 
@@ -6473,6 +6533,7 @@ function PREK_MODULES() { return [
     title: 'Match the vehicles',
     tagline: 'Cars, trains, boats',
     requires: ['same-and-different'],
+    requiresWhy: 'Matching two vehicles that are just the same builds on Same and different.',
     lesson: {
       // Pass ML (the lesson check): where each vehicle goes is two lines, each showing the two it names, and the cars outside are
       // seen with a grown-up.
@@ -6499,7 +6560,8 @@ function PREK_MODULES() { return [
     order: 12,
     title: 'Match the things',
     tagline: 'Balls, balloons, robots',
-    requires: ['match-the-vehicles'],
+    requires: ['same-and-different'],
+    requiresWhy: 'Matching two things that are just the same, and telling those that are almost alike, builds on Same and different.',
     lesson: {
       // Pass ML (the lesson check): a balloon is light, not heavy, the way a lamp's light is not meant, and the robot is this robot,
       // since not every robot has arms and legs.
@@ -6525,7 +6587,8 @@ function PREK_MODULES() { return [
     order: 15,
     title: 'Match the water animals',
     tagline: 'Whales, fish, turtles',
-    requires: ['match-the-things'],
+    requires: ['same-and-different'],
+    requiresWhy: 'Matching two water animals that are just the same builds on Same and different.',
     lesson: {
       // Pass ML (the lesson check): how a whale breathes is said where the question asks it, the painting of a huge whale beside a
       // tiny fish has a line of its own, after the line that says the pictures can be the same size, and many turtles live in and
@@ -6554,7 +6617,8 @@ function PREK_MODULES() { return [
     order: 16,
     title: 'Match the land animals',
     tagline: 'Foxes, bears, rabbits',
-    requires: ['match-the-water-animals'],
+    requires: ['same-and-different'],
+    requiresWhy: 'Matching two land animals that are just the same builds on Same and different.',
     lesson: {
       pictures: [{ serial: 'P110', alt: 'A brown bear with round ears beside a white rabbit with long ears', step: 3 }],
       paragraphs: ['Two things match when they look just alike, with the same shape, the same color and the same parts. When one looks different, it is the odd one out.', 'Land animals live on land. A bear has round ears, a rabbit has long ears, and a fox has pointy ears, so ears help tell them apart. A cat has pointy ears too, so look at the face and the color as well.', 'A snail has no ears and no legs, and it slides along on one flat foot. An owl has big round eyes, and most owls hunt at night.'],
@@ -6579,7 +6643,8 @@ function PREK_MODULES() { return [
     order: 17,
     title: 'Match the shapes',
     tagline: 'Circles, squares, triangles',
-    requires: ['match-the-land-animals'],
+    requires: ['same-and-different'],
+    requiresWhy: 'Matching two shapes that are just the same, by their corners and sides, builds on Same and different.',
     lesson: {
       // Pass ML (the lesson check): a square is a rectangle too (pass JW), so the lesson's rectangle is a long one, with two long
       // sides and two short ones, and the circle's no corners is said aloud.
@@ -6606,6 +6671,7 @@ function PREK_MODULES() { return [
     title: 'Match the solids',
     tagline: 'Blocks, balls, cones',
     requires: ['match-the-shapes'],
+    requiresWhy: 'Match the solids tells a cube from a sphere by its flat sides, corners and roundness, after Match the shapes tells flat shapes apart by their corners and sides.',
     lesson: {
       // Pass ML (the lesson check): round all over, the reason the questions give for a sphere, is said where the sphere comes in.
       pictures: [{ serial: 'P17', alt: 'A wooden block, a ball, an ice cream cone lying on its side and a can in a row', step: 3 }],
@@ -6632,6 +6698,7 @@ function PREK_MODULES() { return [
     title: 'More and fewer',
     tagline: 'Up to five',
     requires: ['count-to-3'],
+    requiresWhy: 'More and fewer compares groups by counting each one, so it builds on One, two, three.',
     lesson: {
       // EARMARKS A7 (pass ML, the lesson check): more and fewer are found by counting each group, never as the bigger group, and
       // the two traps are taught before they are asked, a long row that looks like more and big things that look like more (the
@@ -6665,6 +6732,7 @@ function PREK_MODULES() { return [
     title: 'Bigger and smaller',
     tagline: 'Two of the same shape',
     requires: ['big-bigger-biggest'],
+    requiresWhy: 'Bigger and smaller compares two sizes with the words, and the real sizes tiny, middle-sized and huge, that Big, bigger, biggest teaches.',
     lesson: {
       // Pass ML (the lesson check): shorter, which the towers' and lines' reasons say, is said on their lines; every shape gets
       // bigger and smaller, the triangle as well; and each size group of real animals has a line and a row of its own.
@@ -6698,6 +6766,7 @@ function PREK_MODULES() { return [
     title: 'Patterns',
     tagline: 'What comes next?',
     requires: ['same-and-different'],
+    requiresWhy: 'A pattern repeats the same way each time, so Patterns builds on telling the same from the different, as Same and different teaches.',
     lesson: {
       // Pass ML (the lesson check): every pattern the questions show is taught first, a row that starts either way, a pattern of
       // three shapes, a gap in the first place or the second, and a row of two shapes that is not a pattern, so no question can be
@@ -6960,6 +7029,7 @@ function PREK_MODULES() { return [
     skill: 'Feelings',
     order: 20,
     requires: ['feelings-show'],
+    requiresWhy: 'How do friends feel? reads a friend\'s feelings from a face, so it builds on Feelings and what we do, where a child learns how each feeling shows.',
     title: 'How do friends feel?',
     tagline: 'The same, or different',
     lesson: {
@@ -6991,6 +7061,7 @@ function PREK_MODULES() { return [
     skill: 'Getting along',
     order: 21,
     requires: ['how-friends-feel'],
+    requiresWhy: 'Being a good friend starts by noticing how a friend feels, sad, worried or embarrassed, which How do friends feel? teaches.',
     title: 'Being a good friend',
     tagline: 'Help, and fix it together',
     lesson: {
@@ -7031,6 +7102,7 @@ function PREK_MODULES() { return [
     skill: 'Getting along',
     order: 22,
     requires: ['good-friend'],
+    requiresWhy: 'Let\'s play together starts play with kind words and a friendly face, and Being a good friend is where kind words and a friend\'s feelings come first.',
     title: 'Let\'s play together',
     tagline: 'Smile, wave and say hi',
     lesson: {
@@ -7065,6 +7137,7 @@ function PREK_MODULES() { return [
     skill: 'Getting along',
     order: 23,
     requires: ['play-together'],
+    requiresWhy: 'Play with a plan begins where Let\'s play together ends, playing with a friend, and adds a plan.',
     title: 'Play with a plan',
     tagline: 'Each friend does a part',
     lesson: {
@@ -7098,7 +7171,7 @@ function PREK_MODULES() { return [
     id: 'say-it-to-fit',
     skill: 'Getting along',
     order: 24,
-    requires: ['play-with-a-plan'],
+    requiresWhy: 'Say it to fit is pre-K 4\'s first lesson about why we use words and a voice to fit the place, so it needs no lesson first. Play with a plan, which it named until pass MZ, is about playing together.',
     title: 'Say it to fit',
     tagline: 'Ask, tell, and a voice for each place',
     lesson: {
@@ -7156,7 +7229,7 @@ function PREK_READING_MODULES() { return [
         { say: 'Listen to the end of each word. If the ends sound the same, the words rhyme.', show: { kind: 'letters', text: 'cat hat', highlight: 'at' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.5 (identifies rhyming words), and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches rhyme recognition, whether two words rhyme, which picture rhymes with another and which of three, such as hat, cat and log, does not rhyme, while the first sound in spoken words is taught in First sounds and counting syllables in Clap the beats, and recognizing phonemic changes in words and the other sounds in a word wait (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.5 (identifies rhyming words), and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches rhyme recognition, whether two words rhyme, which picture rhymes with another and which of three, such as hat, cat and log, does not rhyme, while the first sound in spoken words is taught in First sounds, counting syllables in Clap the beats and recognizing phonemic changes in words in Same word or different?, and the other sounds in a word wait (EARMARKS E13).'],
     generators: ['p4-does-rhyme', 'p4-rhyme-pic', 'p4-rhyme-three', 'p4-does-rhyme', 'p4-rhyme-pic'],
   },
   {
@@ -7183,7 +7256,7 @@ function PREK_READING_MODULES() { return [
         { say: 'Say each word slowly and listen to how it starts.', show: { kind: 'letters', text: 'moon sun', highlight: 'first' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.7 (identifies if words begin with the same sound), and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches one sound in spoken words, the first, finding the pictures whose names start the same way and the one of three that starts with a different sound, while rhyme recognition is taught in Rhyme time and counting syllables in Clap the beats, and recognizing phonemic changes in words and the other sounds in a word wait (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.7 (identifies if words begin with the same sound), and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches one sound in spoken words, the first, finding the pictures whose names start the same way and the one of three that starts with a different sound, while rhyme recognition is taught in Rhyme time, counting syllables in Clap the beats and recognizing phonemic changes in words in Same word or different?, and the other sounds in a word wait (EARMARKS E13).'],
     generators: ['p4-start-pic', 'p4-start-odd-pic', 'p4-start-pic', 'p4-start-odd-pic', 'p4-start-pic'],
   },
   {
@@ -7192,7 +7265,7 @@ function PREK_READING_MODULES() { return [
     order: 7,
     title: 'Which came first?',
     tagline: 'Two sounds, in order',
-    requires: ['first-sounds'],
+    requiresWhy: 'Which came first? is the first lesson about the order of things heard, and it says the animal sounds it puts in order, so it needs no lesson first. First sounds, which it named until pass MZ, is the sound at the start of a word.',
     lesson: {
       paragraphs: ['When you hear two sounds, hold the first one in your head while the second one plays. Then you can say which came first.', 'The owl says hoot. The bee says buzz. Hoot, then buzz. The owl came first.'],
       keyIdea: 'Hold the first sound in your head while you hear the second.',
@@ -7217,6 +7290,7 @@ function PREK_READING_MODULES() { return [
     title: 'Second and last',
     tagline: 'Three sounds, in order',
     requires: ['which-came-first'],
+    requiresWhy: 'Second and last puts three sounds in order, so it builds on Which came first?, which puts two in order.',
     lesson: {
       paragraphs: ['With three sounds, keep all three in a row in your head, first, second and last.', 'The owl says hoot. The bee says buzz. The frog says ribbit. Hoot, buzz, ribbit. The bee came second, and the frog came last.'],
       keyIdea: 'Keep the sounds in a row in your head, then point to the place.',
@@ -7264,6 +7338,7 @@ function PREK_READING_MODULES() { return [
     title: 'Trace a big letter',
     tagline: 'L, T and O',
     requires: ['big-letters'],
+    requiresWhy: 'Trace a big letter traces L, T and O and asks for the letter heard, so it builds on Big letters, where a child learns that letters have names and finds a letter by its name.',
     needsTouch: true,
     lesson: {
       paragraphs: ['Big letters are made of lines. Start at the dot and follow the arrow.', 'L goes down, then across the bottom. T goes down the middle, then one line across the top. O goes around to the left, all the way back to where it started. Starting at the dot every time teaches your hand to make each letter the same way.'],
@@ -7287,6 +7362,7 @@ function PREK_READING_MODULES() { return [
     title: 'Trace more big letters',
     tagline: 'I, H and E',
     requires: ['first-letter-tracing'],
+    requiresWhy: 'Trace more big letters traces I, H and E from the dot along the arrow, the way Trace a big letter teaches.',
     needsTouch: true,
     lesson: {
       paragraphs: ['These big letters are all straight lines. Start at the dot and follow the arrow.', 'I goes straight down. H is two lines down, then a bridge across the middle. E is one line down and three across, at the top, the middle and the bottom. Lift your finger after each line, then start the next one at its dot.'],
@@ -7309,7 +7385,8 @@ function PREK_READING_MODULES() { return [
     order: 6,
     title: 'Trace L, T and F',
     tagline: 'Down, then across',
-    requires: ['more-big-letters'],
+    requires: ['first-letter-tracing'],
+    requiresWhy: 'Trace L, T and F traces L and T again from Trace a big letter, and adds F.',
     needsTouch: true,
     lesson: {
       paragraphs: ['L, T and F are made of straight lines. You traced L and T before, and F is new. Start at the dot and follow the arrow.', 'L goes down and then across the bottom. T goes down the middle and then one line across the top. F is one line down and two across, at the top and the middle. All three use the same two moves, down and then across, in different places.'],
@@ -7336,6 +7413,7 @@ function PREK_READING_MODULES() { return [
     skill: 'Listening',
     order: 9,
     requires: ['which-came-second'],
+    requiresWhy: 'Three steps are done first, next and last, the order that Second and last teaches with the middle one and the last.',
     title: 'Three steps',
     tagline: 'First, next, last',
     lesson: {
@@ -7367,6 +7445,7 @@ function PREK_READING_MODULES() { return [
     skill: 'Listening',
     order: 10,
     requires: ['three-steps'],
+    requiresWhy: 'Three steps every day gives more directions of three steps, so it builds on Three steps.',
     title: 'Three steps every day',
     tagline: 'Faces, shapes and places',
     lesson: {
@@ -7404,7 +7483,7 @@ function PREK_READING_MODULES() { return [
     id: 'more-learning-words',
     skill: 'Listening',
     order: 11,
-    requires: ['three-steps-more'],
+    requiresWhy: 'More learning words says what each of its learning words means and every word it uses, so it needs no lesson first. Three steps every day, which it named until pass MZ, gives directions in order.',
     title: 'More learning words',
     tagline: 'Sort, match and trace',
     lesson: {
@@ -7437,6 +7516,7 @@ function PREK_READING_MODULES() { return [
     skill: 'Listening',
     order: 12,
     requires: ['more-learning-words'],
+    requiresWhy: 'Rhymes and shapes sorts into groups with the word sort, which More learning words teaches.',
     title: 'Rhymes and shapes',
     tagline: 'Two groups, sides and corners',
     lesson: {
@@ -7477,6 +7557,7 @@ function PREK_READING_MODULES() { return [
     skill: 'Listening',
     order: 13,
     requires: ['sort-and-shape-words'],
+    requiresWhy: 'Words that go together names the groups things go in, animals, clothes and toys, after Rhymes and shapes sorts things into groups.',
     title: 'Words that go together',
     tagline: 'Animals, clothes, toys and more',
     lesson: {
@@ -7508,6 +7589,7 @@ function PREK_READING_MODULES() { return [
     skill: 'Listening',
     order: 14,
     requires: ['words-go-together'],
+    requiresWhy: 'Same and opposite goes on from Words that go together to other ways words go together, and its first line says so.',
     title: 'Same and opposite',
     tagline: 'Glad and happy, hot and cold',
     lesson: {
@@ -7523,7 +7605,10 @@ function PREK_READING_MODULES() { return [
         { say: 'A snail is slow, and a turtle is slow.', show: { kind: 'pair', a: { kind: 'pic', name: 'snail' }, b: { kind: 'pic', name: 'turtle' } } },
         { say: 'Day and night are opposites. We see the sun in the day, and we often see the moon at night.', show: { kind: 'pair', a: { kind: 'icon', name: 'sun' }, b: { kind: 'icon', name: 'moon' } } },
         { say: 'Big and small are opposites too. This blue circle is big, and this blue circle is small.', show: { kind: 'pair', a: { kind: 'item', shape: 'circle', colour: 'blue', scale: 'big' }, b: { kind: 'item', shape: 'circle', colour: 'blue', scale: 'small' } } },
-        { say: 'Some words mean the same as another word. Angry means mad, with eyebrows that squeeze down, and afraid means scared, with wide-open eyes. Glad means happy, with a big smile. Our word is glad. ' + sayAlong('glad', ['slow', 'whisper', 'chant', 'fast', 'stretch']), show: { kind: 'faces', feelings: ['mad', 'scared', 'happy'] } },
+        // Two lines since pass MZ (EARMARKS A80): angry and afraid with their two faces, then glad with its own face and the game, where one
+        // line had three faces in two rows and four sentences, and its Next ended 289 pixels under a 375 by 667 phone's fold.
+        { say: 'Some words mean the same as another word. Angry means mad, with eyebrows that squeeze down, and afraid means scared, with wide-open eyes.', show: { kind: 'pair', a: { kind: 'face', feeling: 'mad' }, b: { kind: 'face', feeling: 'scared' } } },
+        { say: 'Glad means happy, with a big smile. Our word is glad. ' + sayAlong('glad', ['slow', 'whisper', 'chant', 'fast', 'stretch']), show: { kind: 'face', feeling: 'happy' } },
         { say: 'Large means big, and small means little. The large red square is the big one. Our word is large. ' + sayAlong('large', ['giant', 'whisper', 'silly', 'fast', 'dough']), show: { kind: 'pair', a: { kind: 'item', shape: 'square', colour: 'red', scale: 'big' }, b: { kind: 'item', shape: 'square', colour: 'red', scale: 'small' } } },
         { say: 'Words go together. Some are opposites, like hot and cold, and some mean the same, like glad and happy. Fire is hot, and ice is cold.', show: { kind: 'pair', a: { kind: 'icon', name: 'fire' }, b: { kind: 'icon', name: 'ice' } } },
       ],
@@ -7543,7 +7628,7 @@ function PREK_READING_MODULES() { return [
     id: 'things-we-do',
     skill: 'Listening',
     order: 15,
-    requires: ['opposites-and-same'],
+    requiresWhy: 'Things we do is the first lesson about action words, so it needs no lesson first. Same and opposite, which it named until pass MZ, teaches other ways words go together.',
     title: 'Things we do',
     tagline: 'Read, cut, kick and sleep',
     lesson: {
@@ -7584,7 +7669,7 @@ function PREK_READING_MODULES() { return [
     id: 'voice-tells-more',
     skill: 'Listening',
     order: 16,
-    requires: ['things-we-do'],
+    requiresWhy: 'My voice tells more is pre-K 4\'s first lesson about a voice going up to ask and down to tell, so it needs no lesson first. Things we do, which it named until pass MZ, teaches action words.',
     title: 'My voice tells more',
     tagline: 'Asking, telling, a strong word and how I feel',
     lesson: {
@@ -7621,7 +7706,8 @@ function PREK_READING_MODULES() { return [
     id: 'longer-sentences',
     skill: 'Listening',
     order: 17,
-    requires: ['voice-tells-more'],
+    requires: ['things-we-do'],
+    requiresWhy: 'A whole sentence tells who, and what they do, and the what is an action word, which Things we do teaches.',
     title: 'Longer sentences',
     tagline: 'Who, what, and a little more',
     lesson: {
@@ -7660,6 +7746,7 @@ function PREK_READING_MODULES() { return [
     skill: 'Listening',
     order: 18,
     requires: ['longer-sentences'],
+    requiresWhy: 'Words that change changes a word inside a sentence, for more than one and for what already happened, so it builds on Longer sentences.',
     title: 'Words that change',
     tagline: 'More than one, and what already happened',
     lesson: {
@@ -7693,6 +7780,7 @@ function PREK_READING_MODULES() { return [
     skill: 'Listening',
     order: 19,
     requires: ['words-that-change'],
+    requiresWhy: 'She, he and they fits a word to who does it, one dog runs and two dogs run, so it builds on the more than one of Words that change.',
     title: 'She, he and they',
     tagline: 'Words that fit who does it',
     lesson: {
@@ -7725,7 +7813,8 @@ function PREK_READING_MODULES() { return [
     id: 'count-the-words',
     skill: 'Listening',
     order: 20,
-    requires: ['she-he-and-they'],
+    requires: ['longer-sentences'],
+    requiresWhy: 'Count the words counts the words of a sentence, so it builds on Longer sentences, where a whole sentence tells who, and what they do.',
     title: 'Count the words',
     tagline: 'A clap for every word, even little ones',
     lesson: {
@@ -7769,6 +7858,7 @@ function PREK_READING_MODULES() { return [
     skill: 'Listening',
     order: 21,
     requires: ['count-the-words'],
+    requiresWhy: 'Clap the beats tells a clap for each beat in one word from a clap for each word in a sentence, so it builds on Count the words.',
     title: 'Clap the beats',
     tagline: 'One word can have more than one beat',
     lesson: {
@@ -7792,8 +7882,50 @@ function PREK_READING_MODULES() { return [
         { say: 'A sentence has words, and a word has beats. Say a word slowly, clap once for each beat, and count the claps. Rabbit. Rab, bit. That is two claps.', show: { kind: 'pair', a: { kind: 'pic', name: 'rabbit' }, b: { kind: 'dots', count: 2, frame: 2 } } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.3 (blends multisyllabic words with up to 3 syllables.), since the lesson says the beats of words of two and three beats one after another, pen, sill, um, brel, luh, and dye, nuh, sore, puts them together into the words they make, pencil, umbrella and dinosaur, has the child put beats together in a turn of their own, and asks which word a word\'s beats make, and III.B.4 (segments multisyllabic words with up to three syllables.), since the lesson says words of one, two and three beats slowly, a clap and a dot for each beat, has the child clap a word\'s beats in a turn of their own, tells a clap for each word in a sentence from a clap for each beat in one word, and asks how many beats a word has, which has more or fewer, and which has the same number, and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches counting syllables, the beats in a spoken word, while rhyme recognition is taught in Rhyme time and the first sound in spoken words in First sounds, and recognizing phonemic changes in words and the other sounds in a word wait (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.3 (blends multisyllabic words with up to 3 syllables.), since the lesson says the beats of words of two and three beats one after another, pen, sill, um, brel, luh, and dye, nuh, sore, puts them together into the words they make, pencil, umbrella and dinosaur, has the child put beats together in a turn of their own, and asks which word a word\'s beats make, and III.B.4 (segments multisyllabic words with up to three syllables.), since the lesson says words of one, two and three beats slowly, a clap and a dot for each beat, has the child clap a word\'s beats in a turn of their own, tells a clap for each word in a sentence from a clap for each beat in one word, and asks how many beats a word has, which has more or fewer, and which has the same number, and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches counting syllables, the beats in a spoken word, while rhyme recognition is taught in Rhyme time, the first sound in spoken words in First sounds and recognizing phonemic changes in words in Same word or different?, and the other sounds in a word wait (EARMARKS E13).'],
     generators: ['p4-beats-count', 'p4-beats-blend', 'p4-beats-more', 'p4-beats-same', 'p4-beats-yesno'],
+  },
+  // Same word or different? (pass MZ, the standards review of Domain III's III.B.2, EARMARKS E13): PK4 III.B.2, "distinguishes when two
+  // words are the same or different.", cited whole, and Head Start's P-LIT 1 in part, its "Recognizes phonemic changes in words, such
+  // as noticing the problem with "Old McDonald had a charm."" A child tells two words apart by listening to every sound, from the start
+  // to the end, and the lesson says what is true of its own pairs, never a rule about all words, since a rule either way meets a
+  // counterexample (sun and son sound the same and are two words; either said two ways is one word; round two's content read); the six
+  // pairs Rhyme time says and draws (ball and wall, cat and hat, dog and log, moon and spoon, rock and sock, bear and chair) each sound
+  // almost the same and differ only at the very start (five in one sound, the first, and moon and spoon in more, since spoon starts
+  // with s and p, round one's lesson check); the one different word of three; and a sentence made silly by one word said in
+  // place of the word that sounds almost the same (I wear a rock on my foot), the problem a child notices. Its questions are heard
+  // questions that print none of the words they ask about while the voice can speak. It builds on Rhyme time (Mikey's answer to Q84).
+  {
+    id: 'same-word-or-different',
+    skill: 'Listening',
+    order: 22,
+    requires: ['listen-for-rhymes'],
+    requiresWhy: 'Same word or different? tells whether two words that sound almost the same, like cat and hat, are one word or two, so it builds on hearing words that sound alike, as Rhyme time teaches.',
+    title: 'Same word or different?',
+    tagline: 'Listen closely to every sound',
+    lesson: {
+      paragraphs: ['To tell whether two words are the same, listen to every sound, from the start to the end. Ball and ball have every sound the same, and they are the same word, said two times.', 'Ball and wall sound almost the same, but they are different words. Cat and hat are different words too, and just one sound, the very first one, is different. Dog and log, rock and sock, and bear and chair are the same way, and moon and spoon are different only at the very start.', 'A word that sounds almost the same can make a sentence silly. I wear a rock on my foot is silly, because a sock goes on your foot. I eat my soup with a moon is silly too, because we eat soup with a spoon.'],
+      keyIdea: 'Listen to every sound, from the start to the end, to tell whether two words are the same. Cat and hat have just one different sound, and they are different words. A word that sounds almost the same can turn a sentence silly.',
+      example: { kind: 'pair', a: { kind: 'icon', name: 'rock' }, b: { kind: 'icon', name: 'sock' }, caption: 'Rock and sock. One sound is different.' },
+      pictures: [{ serial: 'P182', alt: 'A small child sitting on a rug and laughing, holding a big smooth gray rock, about as big as the child\'s foot, up to one bare foot, a red-and-white striped sock lying flat on the rug beside them, a grown-up laughing too', step: 7 }],
+      script: [
+        { say: 'Listen to two words. Ball. Ball. They are the same word, said two times.', stress: ['the same'], show: { kind: 'pair', a: { kind: 'icon', name: 'ball' }, b: { kind: 'icon', name: 'ball' } } },
+        { say: 'Now listen. Ball. Wall. Ball and wall sound almost the same, but they are different words.', stress: ['different'], show: { kind: 'pair', a: { kind: 'icon', name: 'ball' }, b: { kind: 'icon', name: 'wall' } } },
+        { say: 'To tell if two words are the same, listen to every sound, from the start to the end. Ball and ball have every sound the same.', stress: ['every sound'], show: { kind: 'pair', a: { kind: 'icon', name: 'ball' }, b: { kind: 'icon', name: 'ball' } } },
+        { say: 'Cat. Hat. Just one sound is different, the very first one, so cat and hat are different words.', show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'icon', name: 'hat' } } },
+        { say: 'Now you try. Listen, and say same or different. Dog. Log.', show: null, voices: [['Log.', 'tell', 'turn']] },
+        { say: 'Different! Dog and log sound almost the same, but one sound is different. A dog barks, and a log is a big piece of a tree.', show: { kind: 'pair', a: { kind: 'icon', name: 'dog' }, b: { kind: 'icon', name: 'log' } } },
+        { say: 'Listen to three words, and find the one that is different. Moon. Spoon. Moon. Spoon is the different one.', show: { kind: 'row', items: [{ kind: 'icon', name: 'moon' }, { kind: 'icon', name: 'spoon' }, { kind: 'icon', name: 'moon' }] } },
+        { say: 'Here is a silly sentence. I wear a rock on my foot. A rock does not go on your foot, so that is silly, and I must mean a sock!', show: { kind: 'pair', a: { kind: 'icon', name: 'rock' }, b: { kind: 'icon', name: 'sock' } } },
+        { say: 'Rock and sock sound almost the same, so one different sound made the sentence silly.', show: { kind: 'pair', a: { kind: 'icon', name: 'rock' }, b: { kind: 'icon', name: 'sock' } } },
+        { say: 'Now you try, and find the silly word. I eat my soup with a moon.', show: null, voices: [['I eat my soup with a moon.', 'tell', 'turn']] },
+        { say: 'Moon made it silly! We eat soup with a spoon, and moon and spoon sound almost the same.', show: { kind: 'pair', a: { kind: 'icon', name: 'moon' }, b: { kind: 'icon', name: 'spoon' } } },
+        { say: 'Listen to two more that sound almost the same. Bear. Chair. A bear is a big furry animal, and a chair is something you sit on.', show: { kind: 'pair', a: { kind: 'pic', name: 'bear' }, b: { kind: 'icon', name: 'chair' } } },
+        { say: 'Listen to every sound, from the start to the end. Cat and hat have just one different sound, and they are different words.', show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'icon', name: 'hat' } } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.2 (distinguishes when two words are the same or different.), since the lesson says two words that are the same, ball and ball, and pairs that sound almost the same but are different words, ball and wall, cat and hat, dog and log, moon and spoon, rock and sock, and bear and chair, says to listen to every sound, from the start to the end, to tell whether two words are the same, finds the one different word of three, has the child say same or different and find a silly word in turns of their own, and asks whether two heard words are the same or different, which of three heard words was different, which word made a heard sentence silly, which heard word is a picture\'s name, and yes or no about words that are the same, words that are different and silly sentences, and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches recognizing phonemic changes in words, a sentence made silly by one word said in place of a word that sounds almost the same, I wear a rock on my foot and I eat my soup with a moon, while rhyme recognition is taught in Rhyme time, the first sound in spoken words in First sounds and counting syllables in Clap the beats, and the other sounds in a word wait (EARMARKS E13).'],
+    generators: ['p4-near-same', 'p4-near-odd', 'p4-near-silly', 'p4-near-name', 'p4-near-yesno'],
   },
 ]; }
 
@@ -30632,6 +30764,143 @@ Object.assign(GENERATORS, {
   },
 });
 
+// Cat or hat? (pre-K 3) and Same word or different? (pre-K 4), pass MZ, the standards review of Domain III's III.B.2. Six pairs of words
+// that sound almost the same, each pair different only at the very start (five in their first sound, and moon and spoon in more, since
+// spoon starts with s and p, round one's lesson check), each word a picture the lessons say and draw, and each pair
+// one the rhyme lessons say and draw (Words that rhyme and Rhyme time, the lessons these two build on). Every question is a heard
+// question: while the voice can speak it prints none of the words it asks about, since a printed word could be told from its partner by
+// sight, and with no voice everything prints, for a grown-up to read.
+// Exported for the audio ledger (tools/audio-ledger.mjs), which asks for each word of a pair said clearly, naming its partner (round
+// two's code check, pass MZ: the ledger kept a copy of its own).
+export const NS_PAIRS = [['cat', 'hat'], ['bear', 'chair'], ['rock', 'sock'], ['ball', 'wall'], ['dog', 'log'], ['moon', 'spoon']];
+// Every word, once each, and the word that sounds almost the same as it.
+const NS_WORDS = NS_PAIRS.flat();
+const nsPartner = (w) => { const pair = NS_PAIRS.find((x) => x.includes(w)); return pair[0] === w ? pair[1] : pair[0]; };
+// A pair as a round compares it (aboutWords): its two words in the table's order, so a round asks about each pair once while it can.
+const nsKey = (w) => NS_PAIRS.find((x) => x.includes(w)).join(' ');
+// A word's picture as a choice, and as a picture to show: cat and bear are the pic kind's, every other word an icon.
+const nsPic = (w) => (w === 'cat' || w === 'bear' ? 'pic:' : 'icon:') + w;
+const nsShow = (w) => ({ kind: w === 'cat' || w === 'bear' ? 'pic' : 'icon', name: w });
+const nsPair = (a, b) => ({ kind: 'pair', a: nsShow(a), b: nsShow(b) });
+// A word with its article (a cat; the moon), and what each one is, as the lessons say it.
+const nsA = (w) => (w === 'moon' ? 'the moon' : 'a ' + w);
+const NS_IS = { cat: 'A cat is a pet that says meow.', hat: 'A hat is something you wear on your head.', bear: 'A bear is a big furry animal.', chair: 'A chair is something you sit on.', rock: 'A rock is a hard stone.', sock: 'A sock is something you wear on your foot.', ball: 'A ball is a toy you can roll.', wall: 'The wall is the one made of stones.', dog: 'A dog is a pet that barks.', log: 'A log is a big piece of a tree.', moon: 'The moon shines in the sky at night.', spoon: 'We eat soup with a spoon.' };
+// Cat or hat?: a sentence for each word in which either word of its pair would make sense, so only the word heard tells which, and the
+// question it asks.
+const NS3_SAID_IN = [
+  ['cat', 'There is a cat on the bed.', 'What is on the bed?'], ['hat', 'There is a hat on the bed.', 'What is on the bed?'],
+  ['bear', 'I see a bear by the tree.', 'What do I see by the tree?'], ['chair', 'I see a chair by the tree.', 'What do I see by the tree?'],
+  ['rock', 'I found a rock in the grass.', 'What did I find in the grass?'], ['sock', 'I found a sock in the grass.', 'What did I find in the grass?'],
+  ['ball', 'I can see the ball from here.', 'What can I see from here?'], ['wall', 'I can see the wall from here.', 'What can I see from here?'],
+  ['dog', 'We saw a dog by the river.', 'What did we see by the river?'], ['log', 'We saw a log by the river.', 'What did we see by the river?'],
+  ['moon', 'Grandma drew a moon.', 'What did Grandma draw?'], ['spoon', 'Grandma drew a spoon.', 'What did Grandma draw?'],
+];
+// Same word or different?: a sentence made silly by one word said in place of the word that sounds almost the same: the sentence, the
+// silly word, the word it should be, and why that word fits. Each pair is silly both ways.
+const NS4_SILLY = [
+  ['I wear a rock on my foot.', 'rock', 'sock', 'A sock goes on your foot.'], ['A sock is a hard stone.', 'sock', 'rock', 'A rock is a hard stone.'],
+  ['I eat my soup with a moon.', 'moon', 'spoon', 'We eat soup with a spoon.'], ['The spoon shines in the sky at night.', 'spoon', 'moon', 'The moon shines in the sky at night.'],
+  ['I kicked the wall to my friend.', 'wall', 'ball', 'We kick a ball to a friend.'], ['I hung a picture on the ball.', 'ball', 'wall', 'We hang a picture on a wall.'],
+  ['The log wagged its tail.', 'log', 'dog', 'A dog wags its tail.'], ['A dog is a big piece of a tree.', 'dog', 'log', 'A log is a big piece of a tree.'],
+  ['I wear a cat on my head.', 'cat', 'hat', 'A hat goes on your head.'], ['The hat says meow.', 'hat', 'cat', 'A cat says meow.'],
+  ['I sit on a bear at the table.', 'bear', 'chair', 'We sit on a chair at the table.'], ['The chair sleeps in a cave.', 'chair', 'bear', 'A bear can sleep in a cave.'],
+];
+// Same word or different?: yes or no about words that are the same, words that are different, how to listen and silly sentences: the
+// question, its answer, the words that explain it, the reason the other answer does not fit, and the words it prints while the voice
+// can speak (none for a question that names no word it asks about). Six answer Yes and six No, and each printed frame has rows of both.
+const NS4_YESNO = [
+  ['Listen. Ball. Ball. Are they the same word?', 'Yes', 'Yes. Ball and ball are the same word, said two times, and every sound is the same.', 'would mean ball and ball are different words, but you heard ball two times.', 'Are the two words you hear the same word?'],
+  ['Listen. Ball. Wall. Are they the same word?', 'No', 'No. Ball and wall sound almost the same, but one sound is different, so they are different words.', 'would mean ball and wall are the same word, but one sound is different.', 'Are the two words you hear the same word?'],
+  ['Listen. Moon. Moon. Are they the same word?', 'Yes', 'Yes. Moon and moon are the same word, said two times, and every sound is the same.', 'would mean moon and moon are different words, but you heard moon two times.', 'Are the two words you hear the same word?'],
+  ['Listen. Dog. Log. Are they the same word?', 'No', 'No. Dog and log sound almost the same, but one sound is different, so they are different words.', 'would mean dog and log are the same word, but one sound is different.', 'Are the two words you hear the same word?'],
+  ['Listen. I wear a rock on my foot. Is that silly?', 'Yes', 'Yes. It should be sock. A sock goes on your foot, and rock and sock sound almost the same.', 'would mean it is not silly, but a rock does not go on your foot.', 'Is the sentence you hear silly?'],
+  ['Listen. I wear a sock on my foot. Is that silly?', 'No', 'No. A sock goes on your foot, so that sentence is just right.', 'would mean it is silly, but a sock does go on your foot.', 'Is the sentence you hear silly?'],
+  ['Listen. I eat my soup with a moon. Is that silly?', 'Yes', 'Yes. It should be spoon. We eat soup with a spoon, and moon and spoon sound almost the same.', 'would mean it is not silly, but we do not eat soup with a moon.', 'Is the sentence you hear silly?'],
+  ['Listen. I eat my soup with a spoon. Is that silly?', 'No', 'No. We eat soup with a spoon, so that sentence is just right.', 'would mean it is silly, but we do eat soup with a spoon.', 'Is the sentence you hear silly?'],
+  ['Listen. Cat. Hat. Are they the same word?', 'No', 'No. Cat and hat sound almost the same, but one sound is different, so they are different words.', 'would mean cat and hat are the same word, but one sound is different.', 'Are the two words you hear the same word?'],
+  ['To tell if two words are the same, do you listen to every sound?', 'Yes', 'Yes. Listen to every sound, from the start to the end, because just one sound can be different, like the very first one in cat and hat.', 'would mean you do not listen to every sound, but just one sound can be different.', null],
+  ['Listen. Rock. Rock. Are they the same word?', 'Yes', 'Yes. Rock and rock are the same word, said two times, and every sound is the same.', 'would mean rock and rock are different words, but you heard rock two times.', 'Are the two words you hear the same word?'],
+  ['When two words sound almost the same, are they always the same word?', 'No', 'No. Bear and chair sound almost the same, but they are different words.', 'would mean they are always the same word, but bear and chair are different.', null],
+];
+// The same or different, for both ages: two heard words, a word said two times or a pair, half the time each. Pre-K 4's explanation
+// says what is true of the pair: every sound the same, or the one sound, the first, that is different.
+const nsSameQ = (rng, older) => {
+  const same = rng() < 0.5; const [x, other] = shuffle(rng, pick(rng, NS_PAIRS)); const y = same ? x : other;
+  const choices = shuffle(rng, ['The same', 'Different']); const answer = same ? 'The same' : 'Different';
+  return { type: 'choice', story: 'Listen. ' + capFirst(x) + '. ' + capFirst(y) + '.', printedStory: 'Listen to the two words.', prompt: 'Are the two words the same, or different?', choices, answer, aboutWords: [nsKey(x)],
+    explain: same ? capFirst(x) + ' and ' + x + ' are the same word, said two times' + (older ? ', and every sound is the same.' : '.') : capFirst(x) + ' and ' + y + ' sound almost the same, but they are different words.' + (older ? (nsKey(x) === 'moon spoon' ? ' Only the very start is different.' : ' Just one sound is different, the very first one.') : ''),
+    visual: null, explainVisual: nsPair(x, y),
+    whyNot: same ? { Different: { name: 'Different', why: 'would mean two different words, but you heard ' + x + ' two times.' } } : { 'The same': { name: 'The same', why: 'would mean one word said two times, but ' + x + ' and ' + y + ' are different words.' } }, alsoRight: [] };
+};
+// A picture's name by ear, for both ages: the picture of one word, and its name and the word that sounds almost the same as heard
+// choices (heardChoices), each printed Tap to hear while the voice can speak. Pre-K 4 has three: half the time its name, the word that
+// sounds almost the same and a word from another pair, and half the time its name beside another pair, so the answer is not always one
+// of two words that sound alike, and a child who has noticed that cannot answer a retry by the sound alone (round two's content read).
+// A picture with another fair name is never offered that name (NS_ALSO_NAMES: a wall of stones, rock).
+const NS_ALSO_NAMES = { wall: ['rock'] };
+const nsNameQ = (rng, older) => {
+  const w = pick(rng, NS_WORDS); const p = nsPartner(w); const also = NS_ALSO_NAMES[w] || [];
+  let others = [p];
+  if (older && rng() < 0.5) others = [p, pick(rng, NS_WORDS.filter((x) => x !== w && x !== p && !also.includes(x)))];
+  else if (older) { const x = pick(rng, NS_WORDS.filter((y) => y !== w && y !== p && !also.includes(y) && !also.includes(nsPartner(y)))); others = [x, nsPartner(x)]; }
+  const choices = shuffle(rng, [w, ...others]);
+  return { type: 'choice', story: null, prompt: 'Which word is the name of this picture?', printed: 'Tap to hear each word. Which word is the name of this picture?', choices, answer: w, heardChoices: true, aboutWords: [nsKey(w)],
+    explain: others.includes(p) ? capFirst(w) + ' is its name. ' + capFirst(w) + ' and ' + p + ' sound almost the same, but this is ' + nsA(w) + '.' : capFirst(w) + ' is its name. This picture is ' + nsA(w) + ', not ' + nsA(others[0]) + ' or ' + nsA(others[1]) + '.', visual: nsShow(w), explainVisual: null,
+    whyNot: Object.fromEntries(others.map((o) => [o, { name: capFirst(o), why: older || o !== p ? 'is not the name of this picture.' : 'sounds almost the same, but this picture is not ' + nsA(p) + '.' }])), alsoRight: [] };
+};
+Object.assign(GENERATORS, {
+  // Cat or hat?: one word heard, and its picture beside the picture of the word that sounds almost the same.
+  'p3-near-tap': (rng) => {
+    const w = pick(rng, NS_WORDS); const p = nsPartner(w);
+    return { type: 'choice', story: 'Listen. ' + capFirst(w) + '.', printedStory: 'Listen to the word.', prompt: 'Which one is ' + w + '?', printed: 'Which one did you hear?', choices: shuffle(rng, [nsPic(w), nsPic(p)]), answer: nsPic(w), aboutWords: [nsKey(w)],
+      explain: 'You heard ' + w + '. ' + NS_IS[w] + ' ' + capFirst(w) + ' and ' + p + ' sound almost the same, but they are different words.', visual: null, explainVisual: nsShow(w),
+      whyNot: { [nsPic(p)]: { name: 'The ' + p, why: 'sounds almost the same as ' + w + ', but ' + p + ' is a different word.' } }, alsoRight: [] };
+  },
+  // Cat or hat?: a sentence heard in which either word of a pair would make sense, and the thing it names, beside its partner.
+  'p3-near-in': (rng) => {
+    const [w, said, ask] = pick(rng, NS3_SAID_IN); const p = nsPartner(w);
+    return { type: 'choice', story: 'Listen. ' + said, printedStory: 'Listen to the sentence.', prompt: ask, choices: shuffle(rng, [nsPic(w), nsPic(p)]), answer: nsPic(w), aboutWords: [nsKey(w)],
+      explain: said + ' ' + capFirst(w) + ' and ' + p + ' sound almost the same, so listen to the whole word.', visual: null, explainVisual: nsShow(w),
+      whyNot: { [nsPic(p)]: { name: 'The ' + p, why: 'sounds almost the same, but the sentence said ' + w + '.' } }, alsoRight: [] };
+  },
+  // Cat or hat?: a picture, and its name and its partner as heard choices.
+  'p3-near-name': (rng) => nsNameQ(rng, false),
+  // Cat or hat?: two heard words, the same or different.
+  'p3-near-same': (rng) => nsSameQ(rng, false),
+  // Cat or hat?: a picture and a word heard, its own name half the time and its partner's the other half, and whether they match.
+  'p3-near-yesno': (rng) => {
+    const [x, y] = shuffle(rng, pick(rng, NS_PAIRS)); const yes = rng() < 0.5; const answer = yes ? 'Yes' : 'No'; const wrong = yes ? 'No' : 'Yes';
+    return { type: 'choice', story: null, prompt: 'Is this picture ' + nsA(x) + '?', printed: 'Is this the word you hear?', choices: yesNo(rng), answer, aboutWords: [nsKey(x)],
+      explain: yes ? 'Yes. This is ' + nsA(x) + '.' : 'No. This is ' + nsA(y) + '. ' + capFirst(y) + ' and ' + x + ' sound almost the same, but they are different words.', visual: nsShow(yes ? x : y), explainVisual: null,
+      whyNot: { [wrong]: { name: wrong, why: yes ? 'would mean this picture is not ' + nsA(x) + ', but it is.' : 'would mean this picture is ' + nsA(x) + ', but it is ' + nsA(y) + '.' } }, alsoRight: [] };
+  },
+  // Same word or different?: two heard words, the same or different, and why.
+  'p4-near-same': (rng) => nsSameQ(rng, true),
+  // Same word or different?: three heard words, two of them the same, and the one that was different, in any of the three places.
+  'p4-near-odd': (rng) => {
+    const [x, y] = shuffle(rng, pick(rng, NS_PAIRS)); const at = Math.floor(rng() * 3); const said = [x, x, x]; said[at] = y;
+    return { type: 'choice', story: 'Listen. ' + said.map((w) => capFirst(w) + '.').join(' '), printedStory: 'Listen to the three words.', prompt: 'Which word was different?', choices: shuffle(rng, [nsPic(x), nsPic(y)]), answer: nsPic(y), aboutWords: [nsKey(x)],
+      explain: capFirst(y) + ' was the different one. You heard ' + x + ' two times, and ' + y + ' just once.', visual: null, explainVisual: nsPair(x, y),
+      whyNot: { [nsPic(x)]: { name: 'The ' + x, why: 'was the word you heard two times, so it was not the different one.' } }, alsoRight: [] };
+  },
+  // Same word or different?: a heard sentence made silly by one word, and the word that made it silly, beside the word it should be.
+  'p4-near-silly': (rng) => {
+    const [said, silly, right, why] = pick(rng, NS4_SILLY);
+    return { type: 'choice', story: 'Listen. ' + said, printedStory: 'Listen to the silly sentence.', prompt: 'Which word made it silly?', choices: shuffle(rng, [nsPic(silly), nsPic(right)]), answer: nsPic(silly), aboutWords: [nsKey(silly)],
+      explain: capFirst(silly) + ' made it silly. ' + why + ' ' + capFirst(silly) + ' and ' + right + ' sound almost the same.', visual: null, explainVisual: nsPair(silly, right),
+      whyNot: { [nsPic(right)]: { name: 'The ' + right, why: 'would fit, but it is not the word you heard.' } }, alsoRight: [] };
+  },
+  // Same word or different?: a picture, and its name, its partner and a word from another pair as heard choices.
+  'p4-near-name': (rng) => nsNameQ(rng, true),
+  // Same word or different?: yes or no about words that are the same, words that are different and silly sentences.
+  'p4-near-yesno': (rng) => {
+    const [ask, answer, explain, why, printed] = pick(rng, NS4_YESNO); const wrong = answer === 'Yes' ? 'No' : 'Yes';
+    // The pairs the question names, so a round does not ask about one of them again (aboutWords).
+    const aboutWords = [...new Set(NS_WORDS.filter((w) => new RegExp('\\b' + w + '\\b', 'i').test(ask)).map(nsKey))];
+    return { type: 'choice', story: null, prompt: ask, ...(printed ? { printed } : null), choices: yesNo(rng), answer, explain, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why } }, alsoRight: [], aboutWords };
+  },
+});
+
 // ---------------------------------------------------------------------
 // WRITING questions. There is no right answer: the student writes, checks a short list,
 // and the piece goes to the educator to mark. The event stores the writing itself; this is
@@ -41553,6 +41822,101 @@ export const WONDER = [
       { voice: 'A skeptic', says: 'Ask yourself a little question. Is something good about to happen, or something you want to stay away from? The answer is a clue to which feeling you have, and you can check it with a grown-up.' },
     ],
     closing: 'What makes your heart beat fast in a happy way?',
+  },
+  // Pass MZ: four early questions, two on failure and two on ups and downs, the thinnest early theme (13 before this pass); the first
+  // goes with Cat or hat? and Same word or different?, a word heard wrong. Written again after round one's Wonder check, so no voice
+  // makes a point an older early question's voice makes, and every closing is a question of its own.
+  {
+    id: 'w-early-heard-cat-not-hat',
+    theme: 'failure',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'Your grown-up asked for a hat, but you heard cat, so you brought the cat! What now?',
+    options: ['Laugh and try again', 'Ask them to say it again', 'Feel a little silly'],
+    simple: [
+      { voice: 'A scientist says', says: 'I learned that grown-ups mix up words that sound almost the same too, like hat and cat!' },
+      { voice: 'An artist says', says: 'I would draw a cat wearing a hat! Some mix-ups make the funniest pictures.' },
+      { voice: 'A grandparent of faith says', says: 'In my family, we laugh together at a mix-up, but never at each other.' },
+      { voice: 'A skeptic says', says: 'Next time, I would ask, did you say hat or cat? Checking is smart, not silly!' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'I learned that everyone hears a word wrong sometimes, grown-ups too. It happens most with words that sound almost the same, like hat and cat, where only the very start is different. Noise makes it even harder, so a word called across a noisy room is easy to hear wrong.' },
+      { voice: 'An artist', says: 'I love a good mix-up. If someone asked me for a hat and I heard cat, I might draw a cat wearing a hat, just for fun. Then I would draw a hat wearing a cat, to make it even sillier.' },
+      { voice: 'A grandparent of faith', says: 'In my family, when someone gets mixed up, we laugh together, but never at each other. Before I laugh, I make sure the other person is laughing too.' },
+      { voice: 'A skeptic', says: 'When I am not sure what I heard, I ask. Did you say hat, or cat? Asking is not silly, because it is how you find out what is true.' },
+    ],
+    closing: 'What other words sound almost like cat and hat?',
+  },
+  {
+    id: 'w-early-tried-to-whistle',
+    theme: 'failure',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'You tried to whistle, and only air came out. What do you do?',
+    options: ['Try again tomorrow', 'Watch someone whistle', 'Give up'],
+    simple: [
+      { voice: 'A scientist says', says: 'I learned that your lips make a tiny hole, and your tongue makes the whistle go high or low!' },
+      { voice: 'An artist says', says: 'My first whistles sounded like a squeaky door. I loved them anyway, and I kept going!' },
+      { voice: 'A grandparent of faith says', says: 'My grandpa and I practiced whistling on our walks, a little every day.' },
+      { voice: 'A skeptic says', says: 'Maybe blowing out is not the only way. I would try whistling while breathing in, and see!' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'I learned that a whistle starts at your lips, which make a small round hole for the air. Your tongue moves inside your mouth to make the sound go high or low. That is how people whistle a whole song.' },
+      { voice: 'An artist', says: 'My first whistles sounded like a squeaky door, then like a tiny bird, and then, one day, like a real whistle. I drew each sound I made, the door, the bird and the whistle, in a row across my page.' },
+      { voice: 'A grandparent of faith', says: 'My grandpa taught me to whistle on our walks. We practiced a little every day, and he was patient with me. Now, whenever I whistle, I think of him and smile.' },
+      { voice: 'A skeptic', says: 'Maybe blowing out is not the only way. Some people whistle while breathing in, and some go back and forth. I would try each way and listen for which one starts to make a sound.' },
+    ],
+    closing: 'What funny sounds can your mouth make?',
+  },
+  {
+    id: 'w-early-rainy-day',
+    theme: 'ups-and-downs',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'It is raining, so you cannot play outside today. Is a rainy day a bad day?',
+    options: ['Yes', 'No', 'It depends'],
+    simple: [
+      { voice: 'A scientist says', says: 'I keep a weather chart. On it, the rain always moved on, and sunny days came back!' },
+      { voice: 'An artist says', says: 'I watch raindrops race down my window, and then I paint the race!' },
+      { voice: 'A grandparent of faith says', says: 'When I was a girl, my grandmother put on her boots and splashed in the puddles with me!' },
+      { voice: 'A skeptic says', says: 'Tomorrow morning, look out the window with a grown-up and check for rain!' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'I keep a weather chart, and every rainy day on it was followed, sooner or later, by a sunny one. A rainy day today does not mean a rainy day forever, and sunny days come back.' },
+      { voice: 'An artist', says: 'I love to watch raindrops race down my window. I pick one drop, cheer it all the way to the bottom, and then I paint the race. Rainy days give me some of my favorite pictures.' },
+      { voice: 'A grandparent of faith', says: 'When I was a girl, my grandmother would pull on her rain boots and splash in the puddles with me, laughing the whole time. I still smile every time I see a puddle.' },
+      { voice: 'A skeptic', says: 'Will it be sunny tomorrow? I would not just guess. Look out the window tomorrow morning, or ask a grown-up what the weather report says.' },
+    ],
+    closing: 'What game will you play when the rain stops?',
+  },
+  {
+    id: 'w-early-balloon-floated-away',
+    theme: 'ups-and-downs',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'Your balloon floated away into the sky. Are you glad you had it?',
+    options: ['Yes', 'No', 'Glad and sad'],
+    simple: [
+      { voice: 'A scientist says', says: 'I have noticed that when I play something fun, a sad feeling gets quieter.' },
+      { voice: 'An artist says', says: 'I picture where my balloon went, over the mountains and the sea. Where do you think it went?' },
+      { voice: 'A grandparent of faith says', says: 'When I lose something I love, I say thank you for the fun it gave me.' },
+      { voice: 'A skeptic says', says: 'Does a balloon go up forever? I checked, and it does not! It comes back down, sometimes far away.' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'I have noticed that when I turn my mind to something fun, like a game or a song, a sad feeling gets quieter. It does not mean you stopped caring about the balloon. It means your mind is busy with something good.' },
+      { voice: 'An artist', says: 'When my balloon floated away, I drew a picture of where it might go. It sailed over the mountains, across the sea and all the way to a faraway town. The balloon was gone, but the picture stayed.' },
+      { voice: 'A grandparent of faith', says: 'When I lose something I love, I try to say thank you for the fun it gave me while I had it. Sometimes I say my thank-you as a prayer, before I go to sleep.' },
+      // Mike's point is his own (the third read, pass MZ: round two's words, glad because the day had more fun, made Georgette's thanks for
+      // the fun again): he doubts that a balloon goes up forever and looks it up. NOAA's Marine Debris Program: released balloons "deflate and
+      // make their way back down, or rise until they pop and fall back to Earth" (Balloons and the Mid-Atlantic, 2017), and land "sometimes
+      // hundreds or even thousands of miles from where they were first lost" (The Washington Coast Five-Year Balloon Project, 2019).
+      { voice: 'A skeptic', says: 'Does a balloon float up forever? I wanted to know, so I looked it up. It rises until it pops or slowly lets out its air, and then it comes back down, sometimes very far from where it was lost.' },
+    ],
+    closing: 'What color balloon would you like next time?',
   },
   {
     id: 'w-growing-left-it-at-home',

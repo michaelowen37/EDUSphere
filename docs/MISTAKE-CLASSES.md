@@ -68,7 +68,7 @@ Tests that ended their class: Overlay (MB), layout as variety (MA), ages (MC), c
 
 Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the line it sits on (DECISIONS only grows at its end, so the lines hold).
 
-### C1 narrator states a fact, finding, rule or answer (10 passes; MV since the review)
+### C1 narrator states a fact, finding, rule or answer (11 passes; MV and MY since the review)
 - MA (line 3073): "had no speaker, so the narrator stated a rule (now Mike says it)"
 - MB (line 3129): "a grown-up to say each rule, and no general fact in the narrator's voice"
 - MC (line 3189): "The B Hunt's narrator stated B's shape and each find"
@@ -79,8 +79,9 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MK (line 3823): "the narrator solved The apple puzzle's trap"
 - ML (line 3879): "the narrator called the train a match"
 - MV (line 4803, round one): "Ice cream?'s narrator said the rule in the present tense" (and named the answer before the child heard it)
+- MY (line 4953, round one): "The story check found the title naming its count before Callum counts"
 
-### C2 moral or story out of step with the spoken lesson (10 passes; MV and MW since the review)
+### C2 moral or story out of step with the spoken lesson (11 passes; MV, MW and MY since the review)
 - MA (line 3076): "Find the Match's story taught the same size"
 - MB (line 3144): "three morals fell behind in two passes"
 - MC (line 3189): "his sister gives the clues, and the moral is the key idea"
@@ -91,8 +92,9 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - ML (line 3879): "its moral said "The same means just alike", which no script line says"
 - MV (line 4804, round one): "the moral's "down at the end to tell" never shown in the story"; line 4806: "the stories test counted the say-along game's words as the lesson's" (so Yellow and green's moral left its kept list on the game's words)
 - MW (line 4854, round one): "the moral that credited the plural with the count"
+- MY (line 4953, round one): "Bruno answering Mom's "Put the two words together" with the meaning, never the word"
 
-### C3 even, clipped or repeated runs, across breaks too (9 passes; MV since the review)
+### C3 even, clipped or repeated runs, across breaks too (10 passes; MV and MY since the review)
 - MA (line 3069): "its paragraph 5 joined every idea with and"
 - MB (line 3130): "three even runs across page breaks and a few grown-up phrases"
 - MC (line 3205): "Will It Roll?'s six She and It openings broken"
@@ -102,8 +104,11 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - ML (line 3885): "round one's fixes had made three even stretches across a paragraph break"
 - MS (line 4635): "Say it to fit's first paragraph ran 12, 12, 12 and 11 words with four sentences opening "To""
 - MV (line 4804, round one): "Willa's first paragraph split, "thought" no longer twice in a row"
+- MY (line 4952, the lead's look): "four sentences of one length ran across two lines of Two words make one"
+- MY (line 4952, the lead's look): "both stories read choppy across paragraph breaks"
+- MY (line 4954, the lead's runs after round one): "Two words make one's lines 10 to 12 ran four sentences within three words of one length"
 
-### C4 audio tags off the floor (7 passes; MX since the review)
+### C4 audio tags off the floor (8 passes; MX and MY since the review)
 - MB (line 3137): "four sound effects the words never name are gone"
 - ME (line 3310): "a clap tag before the clap"
 - MH (line 3703): "the picnic's extra [softly] tag (five tags on one paragraph, over the two to four)"
@@ -111,8 +116,15 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MK (line 3823): "one proud moment takes one tag"
 - ML (line 3906): "four more of First Steps' two-sentence paragraphs keep one tag"
 - MX (line 4908, round two): "the five vowel goals saying "short and clear" beside the line's "holding it about a second""
+- MY (line 4952, the lead's look): "carried five tags a paragraph and no [pause]"
+- MY (line 4953, round one): "four sound effects where the limit is three"
+- MY (line 4953, round one): "a drum effect's count of booms that Eleven does not fix"
+- MY (line 4953, round one): "Grandma's excited voice running on into the narration"
+- MY (line 4953, round one): "the ledger's rows saying nothing of what a word said in beats should sound like"
+- MY (line 4955, round two): "the boom paragraphs' rows"
+- MY (line 4955, round two): "the audio ledger's turn rows with no even beats"
 
-### C5 cast canon contradicted (9 passes; MV, MW and MX since the review)
+### C5 cast canon contradicted (10 passes; MV, MW, MX and MY since the review)
 - MA (line 3090): "gives Mike a daughter old enough to take a class on how people work"
 - MC (line 3214): "named a start that CHARACTERS gives to the microscope"
 - MF (line 3351): "a teacher of forty years, a sixth-grade teacher of thirty-one, and a nurse of forty"
@@ -122,6 +134,7 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MV (line 4803, round one): "Thea renamed Willa (one vowel from Theo, who leads stories in First Steps" (and Pippa beside Pia and Pip)
 - MW (line 4854, round one): "Kiri renamed Maisie (one letter from Kira, who is called in First Steps' A whisper and a call"
 - MX (line 4907, round one): "P175's Mia and Sam unlike their course's"
+- MY (line 4953, round one): "Bruno's mom wearing Georgette's mark, short auburn hair"
 
 ### C6 citation and teaching disagree (whole, in part, untaught, uncited) (12 passes; MS, MU, MV and MW since the review)
 - MA (line 3062): "was cited by both size lessons and taught by neither"
@@ -146,7 +159,7 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MK (line 3822): "The last paraphrased Head Start progressions ("which for three-year-olds means") are quoted"
 - ML (line 3876): "no citation quoted its 48 to 60 month progression, five cut V.E.1 short without saying in part"
 
-### C8 a heard cue gives the answer away (10 passes; MV and MW since the review)
+### C8 a heard cue gives the answer away (11 passes; MV, MW and MY since the review)
 - MC (line 3197): "A tapped letter said its name, so "Tap the letter A" beside H could be passed by ear"
 - MD (line 3267): "the name-it questions answerable by echo"
 - ME (line 3308): "the more-or-fewer question answered by its heard words"
@@ -159,8 +172,12 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MV (line 4809, round one's alignment and final read): "since a bare "(Say it up high.)" could be read to the child as words to copy" (the cue, headed for the grown-up now)
 - MW (line 4853, round one): "the yes or no questions that said their answer's form ("If I kicked the ball yesterday, do I say kicked?")"
 - MW (line 4862, round two): ""When there is one cup, do we say cups?", which said its answer's form"
+- MY (line 4953, round one): "two turns that said the made word before the child's turn"
+- MY (line 4955, round two): "a first wrong tap on a one-beat word saying its count"
+- MY (line 4955, round two): "line 6's turn coming after the voice had taken butterfly apart"
+- MY (line 4956, the third read): "line 6's turn, which waited 1.36 seconds after "Butterfly." before the voice said "But, ter, fly.""
 
-### C9 answerable by a surface shortcut, or variety only on the surface (7 passes; MV, MW and MX since the review)
+### C9 answerable by a surface shortcut, or variety only on the surface (8 passes; MV, MW, MX and MY since the review)
 - MA (line 3086): "1,976 of 3,000 triple-dose sets repeated a counting task"
 - MB (line 3125): "Circle and Square's 16 were 4 tasks recolored, every round repeating one"
 - MC (line 3213): "A was the middle tile of every sign word"
@@ -172,8 +189,11 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MW (line 4862, round two): "since the whole sentence had been the longer choice on every seed"
 - MX (line 4907, round one): "counting questions a pre-reader could answer by how long their print looks"
 - MX (line 4908, round two): "the counting yes or no questions printing the sentence they count, so a child could count its printed words"
+- MY (line 4953, round one): "rounds asking about one word twice, the first explanation answering the second"
+- MY (line 4953, round one): "yes or no frames that each carried one answer, in pass MX's banks too"
+- MY (line 4953, round one): "the first sound alone answering 57 percent of the blend questions"
 
-### C10 a wrong choice a child could fairly call right (9 passes; MV, MW and MX since the review)
+### C10 a wrong choice a child could fairly call right (10 passes; MV, MW, MX and MY since the review)
 - MB (line 3134): ""Tap the one we cut into slices to eat" could offer the fish or the bird"
 - MD (line 3267): "the laugh question fair to a child who plays Ring Around the Rosie"
 - ME (line 3314): "the wall icon (a grid of gray stones) offered beside the rock icon (one gray stone)"
@@ -184,8 +204,11 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MW (line 4860, round one, Q83): "a whole sentence where is is left out (Labov, Language, 1969), so it offers "In the pond.""
 - MW (line 4865, round two): "three more kinds ask about the same forms"
 - MX (line 4907, round one): "of a picture where "I see a ball." is arguably true of three balls"
+- MY (line 4953, round one): "the dog drawn is a puppy to a child, two beats, the cat a kitty"
+- MY (line 4953, round one): ""Cat is just one word.", which also fits doghouse, one new word"
+- MY (line 4955, round two): "p3-two-hear and p3-two-other asking which word a picture stands for without saying their choices"
 
-### C11 asked or heard before the spoken script says it (10 passes; MW and MX since the review)
+### C11 asked or heard before the spoken script says it (11 passes; MW, MX and MY since the review)
 - MB (line 3125): "it never said "listen to the word, then find its picture", its key idea's second half"
 - MC (line 3207): "look-alike lines before the questions"
 - MD (line 3267): ""What do you do next?" leaning on a step never given"
@@ -201,8 +224,9 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MX (line 4908, round two): "Pablo's song counting five, which pre-K 3 never counts to"
 - MX (line 4908, round two): "the reasons "are too many" and "are not enough", in neither script"
 - MX (line 4908, round two): "Words that change offering two hat and one buses unsaid"
+- MY (line 4952, the lead's look): "the bank of Clap the beats offered fifteen pictures no line names"
 
-### C12 a line and its picture disagree (9 passes; MV, MW and MX since the review)
+### C12 a line and its picture disagree (10 passes; MV, MW, MX and MY since the review)
 - MB (line 3125): "named the moon and a cloud over a picture of the sun and a fish side by side"
 - MC (line 3198): "`highlight: 0` on A and B's lines lit nothing"
 - MD (line 3267): "the ball shown three lines running"
@@ -218,8 +242,15 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MX (line 4907, round one): "a line comparing two counts that showed one"
 - MX (line 4908, round two): "the same-number lines showing a ball and a tree"
 - MX (line 4909, the third read): "lines 4 and 5 said two before one where their pictures show one above two"
+- MY (line 4952, the lead's look): "the snowball, first drawn as a round white ball with blue spots, read as a moon"
+- MY (line 4952, the lead's look): "a turn line showed the three dots the next line counts"
+- MY (line 4952, the lead's look): "a story picture shared no word with its paragraph"
+- MY (line 4953, round one): "the turtle and the snow, which read as a blob and as counting dots"
+- MY (line 4953, round one): "S4046's dog wagging where the words say it barked"
+- MY (line 4953, round one): "S4045 painting a count and a toy dinosaur the words never place"
+- MY (line 4953, round one): "P179 in a sunny yard beside its line about rain"
 
-### C13 a wrong or overgeneralized fact (12 passes; MV, MW and MX since the review)
+### C13 a wrong or overgeneralized fact (13 passes; MV, MW, MX and MY since the review)
 - MA (line 3063): ""Falling rain looks like lines" (rain falls as drops, USGS)"
 - MB (line 3125): ""A bird has wings, so it can fly" (penguins and kiwis cannot)"
 - MC (line 3206): "Antarctica painted green on the world map"
@@ -234,8 +265,13 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MW (line 4853, round one): "many words (not every word) get a little sound for more than one"
 - MX (line 4907, round one): "two counted words of two beats, teddy and little, against the lessons' own rule"
 - MX (line 4907, round one): "pre-K 3's "A longer sentence has more words.", which fails once words have several beats"
+- MY (line 4953, round one): "Frederick defining a word as its sounds in their order, which sun and son disprove"
+- MY (line 4953, round one): "chortle's origin given as its meaning"
+- MY (line 4953, round one): "her claim that excitement helps performers do their best, past the newest evidence"
+- MY (line 4953, round one): "Frederick's friendship claims with no source for young children"
+- MY (line 4955, round two): ""every beat must be heard" where the first sound is what never finds the word"
 
-### C14 words a young child hears wrongly or was never taught (12 passes; MN, MV, MW and MX since the review)
+### C14 words a young child hears wrongly or was never taught (13 passes; MN, MV, MW, MX and MY since the review)
 - MC (line 3217): "TEA and SEA, which sound like the letters T and C, left the sign words"
 - MD (line 3269): ""almost grabbed the ball and ran off" heard as running off"
 - ME (line 3309): ""found more. Moon and spoon." heard as a spoon found on the path"
@@ -251,8 +287,16 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MW (line 4866, the third read): "the letter A rule, which still left five lines that name the letter bare"
 - MW (line 4866, the third read): "two notes that named Elijah's E, the first beat of his clapped name (E. Li. Jah.), as a letter"
 - MX (line 4907, round one): "("the same number of words as the cat sleeps", heard as "while the cat sleeps")"
+- MY (line 4952, the lead's look): "explanations began "But, ter, fly." (read as a sentence begun with but)"
+- MY (line 4953, round one): ""we say its first word first", circular and stressed twice"
+- MY (line 4953, round one): "reading's beats against music's rhythm"
+- MY (line 4953, round one): "the beats said inside a sentence, where but was heard as the word but and um as a pause"
+- MY (line 4953, round one): ""Turtle has two beats too, tur, tull.", too heard as a third beat"
+- MY (line 4953, round one): "dictionary in a short voice no lesson below grade 2 says"
+- MY (line 4955, round two): ""Cal, lum, boom, boom.", the name's beats run into the booms a child counts"
+- MY (line 4955, round two): "runs of beats inside sentences in four of CB4_YESNO's reasons and explanations"
 
-### C15 more settled by look, in words or drawings (7 passes; MX since the review)
+### C15 more settled by look, in words or drawings (8 passes; MX and MY since the review)
 - MA (line 3060): "More and Fewer taught more as the bigger group"
 - MB (line 3125): "drew the shape to match larger than its twin"
 - MF (line 3381): "kindergarten's Picture Graphs, which said the longer row has more without the condition that makes it true"
@@ -260,13 +304,16 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MJ (line 3792): "ended its count "The cookie bowl had more", which pairs the big bowl with more"
 - ML (line 3878): "One, two, three explained "The bigger group has more." (A7)"
 - MX (line 4908, round two): "six dots in a frame of six drawn smaller than three, since any frame counted as a layout"
+- MY (line 4952, the lead's look): "three dots beside a picture drew at about two thirds their size"
+- MY (line 4953, round one): "the dots beside shapes in four older lines drawn small"
+- MY (line 4953, round one): "the bird drawn at 42 percent of the house's area in a row of two equal words"
 
 ### C16 red against green, or hue alone, tells two things apart (3 passes)
 - MB (line 3145): "the commit message claimed red is never set against green, which holds in pre-K 3 only"
 - MK (line 3835): "the apple rows painted the green apple "pale yellow-green""
 - ML (line 3876): "in one question in six the answer and a wrong choice differed only by red and green"
 
-### C17 a person's look missing or different across rows (11 passes; MV, MW and MX since the review)
+### C17 a person's look missing or different across rows (12 passes; MV, MW, MX and MY since the review)
 - MD (line 3270): "found the people without a fixed look and the bedroom scenes without night"
 - MF (line 3370): "asked for one look for every person across a story's pictures"
 - MG (line 3472): "painting Savanah from her thirties-and-coat sheet with no age written"
@@ -283,8 +330,13 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MW (line 4862, round two): "Maisie's grandma's pale green coat a lesson from Rory's mom's mint green"
 - MX (line 4907, round one): "all ten new looks too close to looks already in pre-K"
 - MX (line 4908, round two): "Gran in an orange coat a lesson after a white-haired grandma in marigold"
+- MY (line 4952, the lead's look): "Bruno's look matched three black-haired pre-K 3 boys in green"
+- MY (line 4953, round one): "the drum with no look of its own"
+- MY (line 4953, round one): "Callum's short curly red hair, Arlo's in Join in play word for word"
+- MY (line 4953, round one): "Callum's grandma reading as She, he and they's grandma two lessons back"
+- MY (line 4955, round two): "Callum's grandma's chin-length gray hair and forest-green cardigan a course after First Steps' gray-bobbed teacher in teal"
 
-### C18 the folded prompt says the wrong thing (not, writing, hands) (8 passes; MX since the review)
+### C18 the folded prompt says the wrong thing (not, writing, hands) (9 passes; MX and MY since the review)
 - MC (line 3206): "the fold said "Hands have five fingers" over about 85 pictures with no person"
 - ME (line 3311): "P134 as a picture book that a model would letter"
 - MF (line 3377): "no person word where no one is drawn"
@@ -293,8 +345,9 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MK (line 3824): "Where is the cloud?'s picture cards are drawings only"
 - ML (line 3888): "P111's "two black hands" read as a person's"
 - MX (line 4907, round one): "D276's welcome mat, which invites the word welcome"
+- MY (line 4953, round one): "a doghouse, a bowl and a drumhead that could invite lettering"
 
-### C19 an unsafe scene or experiment for a young child (17 passes; MM, MN, MV, MW and MX since the review)
+### C19 an unsafe scene or experiment for a young child (18 passes; MM, MN, MV, MW, MX and MY since the review)
 - MA (line 3068): "three three-year-olds were alone in a park"
 - MB (line 3139): "a three-year-old alone with her eyes shut by a pond"
 - MC (line 3189): "an acorn fits the CPSC small-parts cylinder"
@@ -315,8 +368,11 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MX (line 4907, round one): "no grown-up at the park in They had fun!'s words"
 - MX (line 4907, round one): "two children on one slide at once"
 - MX (line 4908, round two): "a cat lapping milk, which the ASPCA advises against"
+- MY (line 4952, the lead's look): "a "small toy drum" tripped the choking check"
+- MY (line 4953, round one): "Pickle soaking while Bruno and Mom watched from the door"
+- MY (line 4953, round one): "the boy's fingers beside his mom's work"
 
-### C20 a Wonder voice off its person, or repeating another (8 passes)
+### C20 a Wonder voice off its person, or repeating another (9 passes; MY since the review)
 - MA (line 3064): "w-big-or-small's scientist declared a right answer"
 - MB (line 3128): "Georgette had no faith of her own; Mike tested nothing"
 - MF (line 3383): "a Georgette voice that called her "the smallest boy in my class""
@@ -325,8 +381,13 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MJ (line 3793): "w-big-or-small's Chloe made Frederick's point a second time"
 - MK (line 3824): "Frederick and Chloe made one point in the same words"
 - ML (line 3890): ""feel like ... to me" is Chloe's"
+- MY (line 4952, the lead's look): "their short voices spoke bare facts"
+- MY (line 4953, round one): "Mike's test landing on Georgette's line"
+- MY (line 4953, round one): "Chloe's chorus and her frames borrowed from three questions and an artist's line"
+- MY (line 4953, round one): "Mike's "I would check before deciding" landing on Georgette's grandmother"
+- MY (line 4953, round one): "Georgette's openings ("Many" opened 17 of the early stage's 100)"
 
-### C21 low contrast or legibility (11 passes)
+### C21 low contrast or legibility (12 passes; MY since the review)
 - MA (line 3071): "The rabbit's pale fur vanished on the dark theme's almond paper (1.1 to 1)"
 - MC (line 3217): "the best badge's mint ink was 2.00 to 1 on its white chip in the dark theme"
 - MD (line 3271): "drawn in the dark theme's light ink on yellow (1.37 to 1, a blank disc"
@@ -338,15 +399,20 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MK (line 3824): "the yellow shapes were 1.50 to 1 on their cells"
 - ML (line 3891): "the light theme's wrong-tap reason and game titles below the contrast guideline (Q47)"
 - MS (line 4637): "the strip's dots, which read 1.31 to 1 in the light theme and looked like the lesson's own dots"; and round three, line 4647: "The dark theme's printed report kept its gradients, Key Words in ink on dark green at 1.29 to 1"
+- MY (line 4953, round one): "the umbrella's handle and the butterfly's body nearly vanishing on the dark theme's answer tiles"
+- MY (line 4953, round one): "the banana's, the sunflower petals' and the snowball's edges under 3 to 1 on their tiles"
+- MY (line 4955, round two): "the turtle's pale head, feet, tail and rim at 2.42 to 1 on a white tile"
+- MY (line 4956, the third read): "the bird's beak at 2.73 to 1 on a right answer's light green tile"
 
-### C22 the frozen light theme changed without a record (5 passes)
+### C22 the frozen light theme changed without a record (6 passes; MY since the review)
 - MG (line 3485): "the resting lesson page's fix touching the light theme with no record of it"
 - MH (line 3516): "a bolder, bigger title in the light theme, a change nobody had asked for"
 - MJ (line 3799): "the Red and Blue game's and the kite's new looks change the light theme too"
 - MK (line 3824): "These change the light theme's look of nine games"
 - ML (line 3915): "Light-theme changes, recorded in RULES-AUDIT section 8 for Mikey's review, all fixes a check asked for"
+- MY (line 4956, the third read): "how far the bird's and the turtle's new edges reach"
 
-### C23 layout does not fit a screen size (13 passes; MV, MW and MX since the review)
+### C23 layout does not fit a screen size (14 passes; MV, MW, MX and MY since the review)
 - MA (line 3071): "five shapes wrapped at 360 pixels"
 - MB (line 3140): "pop-ups in a page-tall frame still opened at the frame's top the first time"
 - MD (line 3271): "the third face alone in the left column"
@@ -363,8 +429,14 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MW (line 4857, round one): "the stacked pairs spread across a laptop (now held to a row's width)"
 - MX (line 4907, round one): "pushing Next below a 375 by 667 phone's fold"
 - MX (line 4909, the third read): "pushed Next below a 375 by 667 phone's fold with the voice"
+- MY (line 4952, the lead's look): "Two words make one's line 6 put Next below a 375 by 667 phone's fold"
+- MY (line 4953, round one): "Two words make one's last-line star 22 to 26 pixels under a 375 by 667 phone's fold"
+- MY (line 4953, round one): "Check answer under the fold on every seed of the count and same-number questions"
+- MY (line 4953, round one): "the Wonder tiles running past a 320-pixel screen's edge in twelve early questions"
+- MY (line 4953, round one): "a laptop's 69-pixel drawings in 737-pixel tiles"
+- MY (line 4955, round two): "lone words and small dots at 320 pixels"
 
-### C24 checked in one condition only (width, motion, voice, frame, cap) (14 passes; MN, MS, MT, MU, MV, MW and MX since the review)
+### C24 checked in one condition only (width, motion, voice, frame, cap) (15 passes; MN, MS, MT, MU, MV, MW, MX and MY since the review)
 - MB (line 3115): "every check of it ran at phone width"
 - MC (line 3217): "the pass's own screenshots used reduced motion, which holds the wash at its yellow end"
 - ME (line 3312): "the celebration skipped on a two-review day"
@@ -381,14 +453,19 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MX (line 4908, round two): "the scroll cue over a word of Words in a sentence's last line at 320 by 568"
 - MX (line 4909, the third read): "since round two's measure had read two of the four lessons"
 - MX (line 4909, the third read): "stopped a lesson with "Something went wrong on this page.""
+- MY (line 4953, round one): "no browser test covering these lessons and banks"
+- MY (line 4955, round two): "Quick Reviews asking about one word twice"
+- MY (line 4955, round two): "a round as the screen builds it giving the echo only the tries the avoid list left"
+- MY (line 4955, round two): "the fold check reading the light theme only"
 
-### C25 a rule decided on the screen instead of in logic (6 passes; MS since the review)
+### C25 a rule decided on the screen instead of in logic (7 passes; MS and MY since the review)
 - MC (line 3193): "The Let's Play filter in ui.jsx kept only the kinds older lists had before pass FS"
 - MD (line 3272): "the heard list partly decided on the screen"
 - ME (line 3296): "found the old pick could land on a locked lesson"
 - MG (line 3488): "the read-aloud result's "Well done! That was the whole course." is still written in ui.jsx"
 - MH (line 3694): "the story list decided on the screen"
 - MS (line 4650, round four): "the map's twin rows decided in the screen" (logic's planRowName since, read by the coverage test)
+- MY (line 4953, round one): "the dots frame fix living only in Clap the beats' data"
 
 ### C26 code state: stale closure, race, read before declared, stored verdict (7 passes)
 - MB (line 3140): "The elective count stored a verdict made as the story opened"
@@ -421,7 +498,7 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MS (line 4610, Mikey): "when it said to drag the red shape, the demo showed dragging the blue shape" (Sort dragged the first shape dealt; Buckets, two swipes, the balance, Binary Switches and Connect the Dots the same class); and round three, line 4645: "Twenty-two welcomes stopped short of the goal their own words name"
 - MS (line 4651, round four): "the floating Skip covered the star a walk heads for, in all three mazes and the seven paths" (and Shape the Sound said to check the line and pressed nothing)
 
-### C29 the record misstates its source (a count, a claim, a quote) (18 passes; MS, MT, MU, MV, MW and MX since the review)
+### C29 the record misstates its source (a count, a claim, a quote) (19 passes; MS, MT, MU, MV, MW, MX and MY since the review)
 - MA (line 3086): "More and Fewer's bank read 38 where this record says 20"
 - MB (line 3145): "the record said every new check had been broken in a copy, and only most were"
 - MC (line 3219): "a test this record claimed and nobody had written"
@@ -457,8 +534,25 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MX (line 4908, round two): "P176 in the wrong lesson's parenthesis in the commit message"
 - MX (line 4908, round two): "Claude's additions around Mikey's descriptor"
 - MX (line 4909, the third read): "though the records said it found them"
+- MY (line 4939, the lead): "its new section 7 row said a memory check comes from a starred lesson"
+- MY (line 4953, round one): ""a child could miss both and pass at four of five", where two misses leave three of five"
+- MY (line 4953, round one): "A74's count, which did not reproduce"
+- MY (line 4953, round one): "the checkpoint described as by the calendar and for everyone"
+- MY (line 4953, round one): "three records' stale counts"
+- MY (line 4955, round two): "Words in a sentence's example named as drawn though a read-aloud lesson shows its script and never its example"
+- MY (line 4955, round two): "correction 3, the checkpoint, in no RULES-AUDIT row"
+- MY (line 4955, round two): ""a little sooner for a reader" where a reader in grade 1 or 2 is still a young learner"
+- MY (line 4955, round two): "grade 1's bridge quoted without its last clause"
+- MY (line 4955, round two): "two lessons named by titles they do not have"
+- MY (line 4955, round two): ""nine frames" where round one's copy had eight"
+- MY (line 4955, round two): ""9, 1, 0 and 0" where the measure gives 9, 0, 0 and 0"
+- MY (line 4956, the third read): ""9, 0, 0 and 0", which round two's own echo change had moved"
+- MY (line 4956, the third read): ""a color no gray- or white-haired pre-K woman wears", where Count the words' grandma"
+- MY (line 4956, the third read): "the lone-word claim, true only from 375 pixels up"
+- MY (line 4956, the third read): "A80's dark-theme count"
+- MY (line 4956, the third read): "What's new's bridge, which gave both music lessons grade 1's clause"
 
-### C30 a test that could pass vacuously or reads less than it claims (17 passes; MS, MT, MU, MV, MW and MX since the review)
+### C30 a test that could pass vacuously or reads less than it claims (18 passes; MS, MT, MU, MV, MW, MX and MY since the review)
 - MB (line 3136): "its first check passed with the old bug back"
 - MC (line 3218): "a copy of them typed into the test had passed with the strip broken"
 - MD (line 3271): "tests that could pass vacuously"
@@ -492,8 +586,17 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MX (line 4909, the third read): "the Q83 test read an -es and an -s as one change"
 - MX (line 4909, the third read): "the look check read no one for Dex's dad"
 - MX (line 4909, the third read): "the spoken-count check read claps only straight after a sentence said word by word"
+- MY (line 4953, round one): "the new banks' re-derivations reading the words and not the picture"
+- MY (line 4953, round one): "no test reading the counts Clap the beats' lines say, three planted wrong counts passing"
+- MY (line 4953, round one): "the icon check reading on past IconPic into StudentPicture's table"
+- MY (line 4954, the lead's runs after round one): "The new fold check's planted question was never caught in its first three runs"
+- MY (line 4954, the lead's runs after round one): "The frames check asked for more than 20 printed frames, a guess never run"
+- MY (line 4955, round two): "Clap the beats' count check reading only the first count after a run, five planted wrong counts passing"
+- MY (line 4955, round two): "a stale wait never failing"
+- MY (line 4955, round two): "Picture's call of dotsBesideDrawing held by no test"
+- MY (line 4956, the third read): "near misses for p3-two-hear's and p3-two-other's reading of the words said"
 
-### C31 a fix that broke something else, caught by a later read (17 passes; MV, MW and MX since the review)
+### C31 a fix that broke something else, caught by a later read (18 passes; MV, MW, MX and MY since the review)
 - MA (line 3066): "My first dot change drew the bigger group's dots smaller, a size cue"
 - MB (line 3139): "(it would have undone 144 rows)"
 - MC (line 3213): "the first quiet rule silenced the one answer a question named, so silence marked the answer"
@@ -516,8 +619,14 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MW (line 4866, the third read): "whose round two "so we say" had pushed Next below a small phone's fold"
 - MX (line 4908, round two): "She, he and they's is line running a right form straight on from a wrong one"
 - MX (line 4908, round two): "the lead first made it cranberry, which the look check below then found beside First steps' girl with short black hair in a red dress"
+- MY (line 4953, round one): "since round one's teal is a gray-haired teacher's cardigan in First Steps"
+- MY (line 4954, the lead's runs after round one): "the docs sync test held check.sh to 16 browser steps, where the fold check is the 17th"
+- MY (line 4955, round two): "the echo round one's teal had been dropped for"
+- MY (line 4955, round two): "in the slow-word Wonder question, round one's own fix, and its skeptic"
+- MY (line 4955, round two): "the bird drawn a quarter larger everywhere, wider than the big bear beside "a little bird""
+- MY (line 4956, the third read): "the booms' note reaching two older stories where no child counts"
 
-### C32 a retired wording or changed fact lingers elsewhere (16 passes; MS, MT, MU, MV, MW and MX since the review)
+### C32 a retired wording or changed fact lingers elsewhere (17 passes; MS, MT, MU, MV, MW, MX and MY since the review)
 - MA (line 3068): "pass KF says a retired idea is searched for in every long story in the same pass"
 - MB (line 3142): "(pass KF: a retired wording is searched for in the same pass)"
 - MC (line 3208): "sixteen about lines still stated a removed age"
@@ -538,8 +647,14 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MV (line 4810, round one's third read): "A38 still listed swing among the risk words the test leaves out"
 - MW (line 4866, the third read): "the retired duck row named as "The little yellow duck." wherever the docs gave "In the pond.""
 - MX (line 4908, round two): "the ledger's own bullet giving a goal that names a letter"
+- MY (line 4953, round one): "E13 still listing counting syllables as waiting"
+- MY (line 4953, round one): "comments that said what the code no longer did"
+- MY (line 4953, round one): "comments naming a cut word (bucket)"
+- MY (line 4955, round two): "the comments and labels that still said mastered"
+- MY (line 4955, round two): "buildAttempt's comments and a local name still saying mastered"
+- MY (line 4956, the third read): "NEW-CHAT's pass MY bullet and the plan's item 2 opening the next pass with III.B.2"
 
-### C33 a new rule or finding left unrecorded (audit row, earmark, For future passes) (17 passes; MS, MT, MU, MV, MW and MX since the review)
+### C33 a new rule or finding left unrecorded (audit row, earmark, For future passes) (18 passes; MS, MT, MU, MV, MW, MX and MY since the review)
 - MB (line 3142): "two rules of this pass had no RULES-AUDIT row"
 - MC (line 3219): "three new rules had no RULES-AUDIT row"
 - MD (line 3273): "two screen findings set aside and logged nowhere"
@@ -563,8 +678,11 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MW (line 4862, round two): "Recorded, not changed: the classroom half of the story check's (c)"
 - MW (line 4866, the third read): "Recorded: one cats and she are"
 - MX (line 4908, round two): "rules round one added to the briefs with no RULES-AUDIT row"
+- MY (line 4955, round two): "the earmark for reading's beats and music's rhythm, settled by the bridge"
+- MY (line 4955, round two): "A80 given its place, the next pass's first work before III.B.2"
+- MY (line 4955, round two): "since the answer of 14:52 was lost when the chat compacted"
 
-### C34 an explanation hands the question back, or a composed sentence reads broken (5 passes; MW and MX since the review)
+### C34 an explanation hands the question back, or a composed sentence reads broken (6 passes; MW, MX and MY since the review)
 - MB (line 3125): "A and B's explanations said the question back"
 - MD (line 3267): "three explanations that handed the question back"
 - MH (line 3553): "The older kinds' sentences read as broken English until the alignment read caught them"
@@ -572,6 +690,9 @@ Each quote is word for word from docs/DECISIONS.md, at most 20 words, with the l
 - MX (line 4907, round one): "counted sentences said as a sentence's subject ("I run is two words", heard as broken grammar)"
 - MX (line 4908, round two): "still making the counted "I run" a sentence's subject"
 - MX (line 4909, the third read): "could be read as the dog running to the big dog"
+- MY (line 4953, round one): ""One dot are fewer dots than beats" heard after a second wrong tap"
+- MY (line 4953, round one): "fragments in explanations"
+- MY (line 4953, round one): "the printed frames "Is what you hear just one word?""
 
 ### C35 Mikey's intent misread (6 passes; MS and MU since the review)
 - MD (line 3273): ""masters" where the code means a passed round"

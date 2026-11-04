@@ -16,7 +16,7 @@
 // of takes tools/audio-generate.mjs asks for.
 // Run: node tools/audio-ledger.mjs > docs/AUDIO-LEDGER.md   (it also writes docs/AUDIO-LEDGER.csv, which tools/audio-generate.mjs reads)
 import { writeFileSync } from 'node:fs';
-import { COURSES, readAloudScript, SENTENCE_BREAK, GAMES, gameIntro, gameBand, cheerTagged, sayAlongParts, storyTitleSpoken, mannerOf, VOICE_MANNERS, speechPieces, SOUND_RECORDINGS, SPEECH_SOUNDS, TRIAL_SOUNDS, SAY_ALONG_VOICES, soundOfNotation, VOICE_SOUNDS, ipaQuoted, goalTag, SOUND_GOAL_TAGS } from '../src/logic.mjs';
+import { COURSES, readAloudScript, SENTENCE_BREAK, GAMES, gameIntro, gameBand, cheerTagged, sayAlongParts, storyTitleSpoken, mannerOf, VOICE_MANNERS, speechPieces, SOUND_RECORDINGS, SPEECH_SOUNDS, TRIAL_SOUNDS, SAY_ALONG_VOICES, soundOfNotation, VOICE_SOUNDS, ipaQuoted, goalTag, SOUND_GOAL_TAGS, BEAT_RUNS } from '../src/logic.mjs';
 // The voice's own sounds' symbols live in logic.mjs since round one's code check (one source); the ledger keeps its old export.
 export { VOICE_SOUNDS };
 import { STORIES, COURSE_STORIES, MASTERY_STORIES } from '../src/stories.mjs';
@@ -50,6 +50,8 @@ export const SAY_ALONG_TALK = { open: '[excited, with big emphasis]', call: '[pl
 // Each voice direction in plain words, for the descriptions (pass MW).
 export const VOICE_WORDS = {
   early: "a warm, gentle teacher's voice for a young child, drawing out the key words",
+  // A line that is a run of beats (BEAT_RUNS) is never drawn out, since each beat is short and even (pass MY, round two).
+  earlyBeats: "a warm, gentle teacher's voice for a young child",
   earlyStory: 'told calm and unhurried to a young child, with a voice of its own for each character who speaks, the same each time',
   elementary: 'a warm, friendly voice', middle: 'a warm, natural voice', older: 'a warm, conversational voice that never talks down',
   game: 'warm, playful and upbeat, for a young player', gameMain: 'warm, upbeat and engaging, never talking down',
@@ -221,17 +223,35 @@ export const lettersNamed = (words, skip = []) => { const s = String(words); con
   const ls = [...new Set(found)]; if (!ls.length) return '';
   const list = ls.length > 1 ? ls.slice(0, -1).join(', ') + ' and ' + ls[ls.length - 1] : ls[0];
   return ' Say the letter' + (ls.length > 1 ? 's ' : ' ') + list + ' by ' + (ls.length > 1 ? 'their names' : 'its name') + (ls.includes('A') ? ', A as ay, never the word a' : '') + '.'; };
+// A word said in its beats (pass MY, round one's story check): each run of beats a row's words say ("Um, brel, luh.") is that word said
+// slowly, each beat even and a little word of its own, and um, umbrella's first beat, is never a hesitation, nor bah, banana's, a sigh.
+// What the child does in a turn (pass MY): puts words or beats together, takes a word apart, or says a word slowly and claps once for
+// each beat, where the line asks it (Now you try, and put these two words together.), and otherwise says the words back.
+const turnSaid = (say) => (/\bput (?:these|them)\b[^.]*\btogether\b/i.test(say) ? ', then the child puts them together in a turn of their own' : /\btake (?:one|it) apart\b/i.test(say) ? ', then the child takes it apart in a turn of their own' : /\bclap once for each beat\b/i.test(say) ? ', then the child says it slowly and claps once for each beat in a turn of their own' : ', then the child says it back');
+// A sentence that is only a run of beats ("Um, brel, luh.") is asked for as that word said slowly in short, even beats (round one's story
+// flow check: the early direction's "drawing out key words" invited a long ummm), the word named, never a letter.
+const BEAT_COUNT_WORDS = ['', 'one', 'two', 'three', 'four'];
+// beatRunPart is the words alone, so a voice a lesson shows (a turn's telling voice) can take them too (round two's code read).
+const beatRunPart = (sentence) => { const s = String(sentence).trim().replace(/[.!?]$/, '').toLowerCase(); const word = BEAT_RUNS[s]; return word ? word + ' said slowly in ' + BEAT_COUNT_WORDS[s.split(', ').length] + ' short, even beats' : null; };
+const beatRunOf = (sentence) => { const p = beatRunPart(sentence); return p ? '[warm and gentle, ' + p + ']' : null; };
+// In a story whose booms the child counts by ear (BOOMS_COUNTED, by lesson: A birthday drum), each is the word boom said once, short and
+// even (round two's content read); a story where a boom is thunder or a parade drum keeps its own tags (the third read).
+export const BOOMS_COUNTED = new Set(['clap-the-beats']);
+export const BOOMS_NOTE = ' Each boom is the word boom said once, short and even, since the child counts the booms by ear.';
+const boomsSaid = (text, moduleId) => (BOOMS_COUNTED.has(moduleId) && /\bboom\b/i.test(String(text)) ? BOOMS_NOTE : '');
+const BEAT_NOTES = { um: ' Um is its first beat, never a hesitation.', bah: ' Bah is its first beat, never a sigh.' };
+const beatsSaid = (text) => Object.entries(BEAT_RUNS).filter(([run]) => new RegExp('\\b' + run + '\\b', 'i').test(String(text))).map(([run, word]) => ' The beats ' + run + ' are ' + word + ' said slowly, each beat even and a little word of its own.' + (BEAT_NOTES[run.split(', ')[0]] || '')).join('');
 // A capital a story uses as something other than a letter, by its picture serial (the third read): Elijah's name clapped in beats,
 // E. Li. Jah., whose E starts his name and is not the letter.
 export const BEATS_NOT_LETTERS = { S302: ['E'] };
 // A paragraph's description (pass MW): its place, its voice, and since round one what a listener should know before rejecting a
 // right take: a stretch its tags ask to go quickly, a fraction (25/100, which a voice can read as a date), a sound written as letters
 // (buh, sss, mmm), which the story's own words keep (EARMARKS A41), and since round two a letter named as a letter.
-function storySaid(story, i, grade) { const n = (story.words || []).length; const audio = (story.audio && story.audio[i]) || ''; const words = story.words[i] || '';
+function storySaid(story, i, grade, moduleId) { const n = (story.words || []).length; const audio = (story.audio && story.audio[i]) || ''; const words = story.words[i] || '';
   const quick = QUICK.test(audio) ? ' Where its tags ask for a quicker pace (rushed, hurried, quickly, quick, breathless, out of breath or faster), that part is quick on purpose, and the telling settles back to calm after it.' : '';
   const fractions = [...new Set(words.match(/\b\d+\/\d+\b/g) || [])]; const fraction = fractions.length ? ' Read ' + fractions.join(' and ') + ' as the story means ' + (fractions.length > 1 ? 'them' : 'it') + ', never as a date.' : '';
   const sound = band(grade) === 'early' ? soundsWritten(words) + lettersNamed(words, BEATS_NOT_LETTERS[story.art] || []) : '';
-  return '"' + story.title + '", paragraph ' + (i + 1) + ' of ' + n + ': ' + (band(grade) === 'early' ? VOICE_WORDS.earlyStory : VOICE_WORDS[band(grade)]) + (story.audio ? ', following its hand-written tags' : '') + '.' + quick + fraction + sound; }
+  return '"' + story.title + '", paragraph ' + (i + 1) + ' of ' + n + ': ' + (band(grade) === 'early' ? VOICE_WORDS.earlyStory : VOICE_WORDS[band(grade)]) + (story.audio ? ', following its hand-written tags' : '') + '.' + quick + fraction + sound + beatsSaid(words) + boomsSaid(words, moduleId); }
 // Pre-K first, then up (the review's order), so the ledger reads in the order the review tags it.
 const rank = (g) => { const s = String(g); if (/^pk3$/i.test(s)) return 0; if (/^pk/i.test(s)) return 1; if (/^k$/i.test(s)) return 2; if (/^\d+$/.test(s)) return 2 + Number(s); return 15; };
 const courses = [...COURSES].sort((a, b) => rank(a.grade) - rank(b.grade) || (a.elective ? 1 : 0) - (b.elective ? 1 : 0));
@@ -239,8 +259,10 @@ for (const c of courses) {
   for (const m of c.modules) {
     const st = STORIES[m.id];
     if (st) {
-      add(`${st.art}-0`, 'story title', m.id, c.grade, `${DIRECTION.title} ${storyTitleSpoken(st.title)}`, storyTitleSpoken(st.title), st.art, titleSaid(st.title, c.grade, st.art));
-      st.words.forEach((p, i) => add(`${st.art}-${i + 1}`, 'story', m.id, c.grade, `${band(c.grade) === 'early' ? DIRECTION.earlyStory : DIRECTION[band(c.grade)]} ${(st.audio && st.audio[i]) || p}`, p, st.art, storySaid(st, i, c.grade)));
+      // A title that is a run of beats (grade 2's "Rab, bit") is asked for in its even beats too (round two).
+      const titleRun = beatRunPart(st.title); const titleDirection = titleRun ? DIRECTION.title.replace(/\]$/, ', ' + titleRun + ']') : DIRECTION.title;
+      add(`${st.art}-0`, 'story title', m.id, c.grade, `${titleDirection} ${storyTitleSpoken(st.title)}`, storyTitleSpoken(st.title), st.art, titleSaid(st.title, c.grade, st.art) + beatsSaid(st.title));
+      st.words.forEach((p, i) => add(`${st.art}-${i + 1}`, 'story', m.id, c.grade, `${band(c.grade) === 'early' ? DIRECTION.earlyStory : DIRECTION[band(c.grade)]} ${(st.audio && st.audio[i]) || p}`, p, st.art, storySaid(st, i, c.grade, m.id)));
     }
     // A read-aloud lesson speaks readAloudScript's lines (pass JP: paragraphs too when it has no script), keyed by step as the app plays them.
     // Since pass MS (Mikey's note on Q67) each saying of a say-along word is a clip of its own, asked for in its own voice alone
@@ -274,12 +296,14 @@ for (const c of courses) {
           const heard = { open: "the say-it-together game's opener, Mikey's words, said excited and emphasized", call: "a call of the say-it-together game, playful and conversational, like a favorite preschool teacher", praise: "the game's praise before its last saying, delighted, like a cheer" }[part.role];
           add(key, 'lesson line', m.id, c.grade, `${SAY_ALONG_TALK[part.role]} ${part.sentence}`, part.sentence, `${m.id}-lesson`, `${where}: ${heard}.`);
         } else if (manner) {
-          add(key, 'lesson line', m.id, c.grade, `${VOICE_MANNERS[manner.manner].tag} ${part.sentence}`, part.sentence, `${m.id}-lesson`, `${where}: said ${MANNER_HEARD[manner.manner]}${manner.turn ? ', then the child says it back' : ''}.`);
+          const runPart = beatRunPart(part.sentence); const mannerTag = runPart ? VOICE_MANNERS[manner.manner].tag.replace(/\]$/, ', ' + runPart + ']') : VOICE_MANNERS[manner.manner].tag;
+          add(key, 'lesson line', m.id, c.grade, `${mannerTag} ${part.sentence}`, part.sentence, `${m.id}-lesson`, `${where}: said ${MANNER_HEARD[manner.manner]}${manner.turn ? turnSaid(line.say) : ''}.${beatsSaid(part.sentence)}`);
         } else {
           const e = elevenSentence(part.sentence, { voices: line.voices, word: si === wordAt ? parts[open].word : null, stress: line.stress || [] });
-          const direction = e.onlySounds ? (e.sounds.length === 1 ? SOUND_RECORDINGS[e.sounds[0]].how : '[warm and gentle, a preschool teacher saying each speech sound alone, one after another, slowly]') : DIRECTION.early;
+          const beatRun = beatRunOf(part.sentence);
+          const direction = e.onlySounds ? (e.sounds.length === 1 ? SOUND_RECORDINGS[e.sounds[0]].how : '[warm and gentle, a preschool teacher saying each speech sound alone, one after another, slowly]') : beatRun ? beatRun : DIRECTION.early;
           const said = directionBack(e.text, direction);
-          add(key, 'lesson line', m.id, c.grade, `${direction} ${said}`, part.sentence, `${m.id}-lesson`, `${where}: ${e.onlySounds ? 'speech sounds said alone, slowly and clearly' : VOICE_WORDS.early}.${soundsSaid(e, key, said !== e.text)}${stressSaid(e)}`);
+          add(key, 'lesson line', m.id, c.grade, `${direction} ${said}`, part.sentence, `${m.id}-lesson`, `${where}: ${e.onlySounds ? 'speech sounds said alone, slowly and clearly' : beatRun ? VOICE_WORDS.earlyBeats : VOICE_WORDS.early}.${soundsSaid(e, key, said !== e.text)}${stressSaid(e)}${beatsSaid(part.sentence)}`);
         }
       });
     });

@@ -82,6 +82,10 @@ echo "13h/13 every word in every drawn picture, in both themes"; run "the drawn 
 # between every two; one book a list opens exactly its summary under its title and author, and Got it, the dimmed page and Escape
 # each close it; nothing runs past the screen's edge. Both themes, about forty seconds.
 echo "13i/13 the reading lists' Details, in both themes"; run "the reading lists' Details" 240 node tests/e2e/book-details.mjs 2>&1 | tail -1 | tee /tmp/edu_books.txt; grep -q " 0 failed" /tmp/edu_books.txt || fail=1
+# Every read-aloud pre-K lesson line's Next and every pre-K bank's Check answer above a 375 by 667 phone's fold (pass MY, round one's
+# screen check), the older ones waiting by name, in the light theme and then the dark one since round two's code read; about eleven
+# minutes beside another step, so its limit is about twice that.
+echo "13j/13 every pre-K line and question on a short phone, in both themes"; run "the fold check" 1400 node tests/e2e/fold-check.mjs 2>&1 | tail -1 | tee /tmp/edu_fold.txt; grep -q " 0 failed" /tmp/edu_fold.txt || fail=1
 # A step stopped at its limit, or one past two thirds of it (run and slow, above), is named again here, just before the verdict.
 [ -s "$slow_file" ] && cat "$slow_file"
 if [ "$fail" = 0 ]; then echo "ALL CHECKS PASSED"; else echo "CHECKS FAILED - read the lines above"; exit 1; fi

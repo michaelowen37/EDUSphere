@@ -545,6 +545,9 @@ const PREK_TAUGHT = [
       { framework: 'CCSS', code: 'ELOF.P-LC.5', text: 'Expresses self in increasingly long, detailed, and sophisticated ways.', moduleIds: ['say-a-sentence'] },
       // Pass MX: Words in a sentence, PK3 III.B.1 (EARMARKS E12, the standards review of Domain III, part one).
       { framework: 'TEKS', code: 'PK3.III.B.1', text: 'Child counts the number of words in a simple spoken sentence with adult assistance.', moduleIds: ['words-in-a-sentence'] },
+      // Pass MY: Two words make one, PK3 III.B.3 and III.B.4 (EARMARKS E12, the standards review of Domain III, part two).
+      { framework: 'TEKS', code: 'PK3.III.B.3', text: 'Child blends words to form compound words with adult assistance.', moduleIds: ['two-words-make-one'] },
+      { framework: 'TEKS', code: 'PK3.III.B.4', text: 'Child segments compound words to form individual words with adult assistance.', moduleIds: ['two-words-make-one'] },
     ],
   },
   {
@@ -637,8 +640,12 @@ const PREK_TAUGHT = [
       { framework: 'TEKS', code: 'PK4.II.E.3', text: 'Child uses sentences that combine multiple phrases or ideas, shares details, maintains a topic, and communicates ideas clearly.', moduleIds: ['longer-sentences'] },
       // Pass MX: Count the words, PK4 III.B.1 (EARMARKS E13, the standards review of Domain III, part one).
       { framework: 'TEKS', code: 'PK4.III.B.1', text: 'Child counts the number of words in a spoken sentence of increasing complexity.', moduleIds: ['count-the-words'] },
+      // Pass MY: Clap the beats, PK4 III.B.3 and III.B.4 (EARMARKS E13, the standards review of Domain III, part two), and Head Start's
+      // P-LIT 1 in part, its counting syllables.
+      { framework: 'TEKS', code: 'PK4.III.B.3', text: 'Child blends multisyllabic words with up to 3 syllables.', moduleIds: ['clap-the-beats'] },
+      { framework: 'TEKS', code: 'PK4.III.B.4', text: 'Child segments multisyllabic words with up to three syllables.', moduleIds: ['clap-the-beats'] },
       { framework: 'TEKS', code: 'PK4.III.C.1', text: 'Child recognizes and names at least 18 uppercase letters and 15 lowercase letters.', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
-      { framework: 'CCSS', code: 'ELOF.P-LIT.1', text: 'Demonstrates awareness that spoken language is composed of smaller segments of sound.', moduleIds: ['listen-for-rhymes', 'first-sounds'] },
+      { framework: 'CCSS', code: 'ELOF.P-LIT.1', text: 'Demonstrates awareness that spoken language is composed of smaller segments of sound.', moduleIds: ['listen-for-rhymes', 'first-sounds', 'clap-the-beats'] },
       { framework: 'CCSS', code: 'ELOF.P-LIT.3', text: 'Identifies letters of the alphabet and produces correct sounds associated with letters.', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
       { framework: 'TEKS', code: 'PK4.IV.C.2', text: 'Child progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas.', moduleIds: ['first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
       { framework: 'TEKS', code: 'PK4.IV.C.4', text: 'Child demonstrates directionality when writing (e.g., top to bottom, left to right) adult support as needed.', moduleIds: ['first-strokes', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },

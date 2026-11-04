@@ -381,7 +381,8 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
 // check.sh writes them, in a shell of their own with their own file: a hung step is named on its last line and in the file, with its
 // code (124) kept, so check.sh still fails it; pass MT's click-through, 695 seconds of 720, is noted, as is a step a second past two
 // thirds; and a step at exactly two thirds, a quick step and a failing step's code (1) pass untouched (the near misses). And no step
-// calls timeout with a limit of its own outside run (a copy of check.sh with one step put back to a bare timeout is caught).
+// calls timeout with a limit of its own outside run (a copy of check.sh with one step put back to a bare timeout is caught). There are
+// 17 browser steps since pass MY's fold check (13j).
 {
   const { execFileSync } = await import('node:child_process'); const { mkdtempSync, rmSync } = await import('node:fs');
   const { tmpdir } = await import('node:os'); const { join } = await import('node:path');
@@ -403,7 +404,7 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   const first = steps.find((l) => / run "[^"]+" \d+ /.test(l)) || ''; const planted = check.replace(first, first.replace(/ run "[^"]+" (\d+) /, ' timeout $1 '));
   ok(`check.sh names a browser step stopped at its time limit and notes one past two thirds of it, so a limit is raised before it stops a passing run (pass MT; ${steps.length} browser steps, each through run; the click-through's 695 seconds of 720 noted, a hung step named with its code kept, three near misses passed, a bare timeout caught)`,
     slowFn !== '' && runFn !== '' && notes.length === want.length && want.every((w, i) => notes[i].startsWith(w)) && last.startsWith(hung) && codes === 'code 124\ncode 0\ncode 1'
-    && steps.length === 16 && steps.every((l) => / run "[^"]+" \d+ /.test(l)) && bare(check).length === 0 && bare(planted).length === 1,
+    && steps.length === 17 && steps.every((l) => / run "[^"]+" \d+ /.test(l)) && bare(check).length === 0 && bare(planted).length === 1,
     JSON.stringify({ notes, codes, last: last.slice(0, 60), steps: steps.length, bare: bare(check).length, planted: bare(planted).length }));
 }
 console.log(`\n${passed} passed, ${failed} failed`);

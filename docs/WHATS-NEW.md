@@ -9,6 +9,13 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## November 3, 2026 (words made of two words, and the beats in a word)
+
+- Three- and four-year-olds have two new lessons on the parts of words, each with its own story. Two words make one (three-year-olds) puts two words together into the one word they make, dog and house make doghouse, and takes a word like snowball apart into snow and ball. Clap the beats (four-year-olds) claps once for each beat in a word, rab, bit, for rabbit, and puts beats together into words, so um, brel, luh makes umbrella.
+- Clap the beats also tells two kinds of clapping apart. In a sentence we clap once for each word, and in one word we clap once for each beat, so rabbit is one word with two beats. The kindergarten and first grade music lessons now say how this meets music: the beats we clap in a word are what music calls the word's rhythm, and the first grade lesson adds that the steady beat is the even pulse under it.
+- As in the counting lessons, the questions are for listening: while the device can speak, the words a question asks about are heard rather than printed, so a child answers by what they hear, and a question about the beats or the words in its pictures says each picture's word too, since a child may call the dog a puppy, with another number of beats.
+- Four new Wonder questions for young children are ready for your approval, like every Wonder question: whether you could make up a brand-new word, whether a word said very slowly is still the same word, whether a friend who plays with someone else is still your friend, and how to tell excited from scared.
+
 ## November 3, 2026 (counting the words in a sentence, and grammar said plainly)
 
 - Three- and four-year-olds have two new lessons that start the reading part of the guidelines: counting the words in a sentence. Words in a sentence (three-year-olds) and Count the words (four-year-olds) say a sentence slowly, clap once for each word and show a dot for each, little words like the counted too, and the four-year-olds hear sentences grow one word at a time. Each lesson has its own story. Their questions are for listening: while the device can speak, the sentence and the choices are heard rather than printed (a sentence to choose shows "Tap to hear"), so a child counts what they hear and not how long the writing looks.

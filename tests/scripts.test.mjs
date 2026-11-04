@@ -1223,5 +1223,33 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
     && genKeys("\n  'k5-more': (rng) => null,\n").some((k) => BUILT.test(k)) && twice([...deriveKeys, 'p4-they-yesno']).includes('p4-they-yesno')
     && twice(genKeys(src + "\n  'p4-fit-yesno': rng => null,\n")).includes('p4-fit-yesno') && twice(genKeys(src + "\n  'zz-one': (rng) => null, 'p4-fit-yesno': (rng) => null,\n")).includes('p4-fit-yesno');
   ok(`every generator id in src/logic.mjs and every derivation in the rules test is defined once (${gens.length} written generators, factory calls among them, and ${built.length} built from a name's pattern; ${deriveKeys.length} derivations; six near misses caught)`, gens.length > 1700 && deriveKeys.length > 100 && genTwice.length === 0 && deriveTwice.length === 0 && builtOk && built.length > 0 && plant, `generators twice ${genTwice.join(', ')}; derivations twice ${deriveTwice.join(', ')}; built off pattern ${built.filter((k) => !BUILT.test(k)).slice(0, 5).join(', ')}; plant ${plant}`); }
+// A run of beats said (rab, bit) is a sentence of its own after its word said alone (story flow item 12, pass MY: inside a sentence
+// its first beat is heard as a word or a pause, "but" or "um", and a word beside it as one more beat), in every lesson line, every
+// early-years story paragraph, every early Wonder question and every question of the beats banks; and every ledger row that is a run
+// asks for its word in short, even beats, a voice the lesson shows (a turn's telling voice) included, and is never asked drawn out
+// (round two's code read: the turn rows got "[telling, the voice falling at the end] Dye, nuh, sore."). A line and a row planted.
+{ const { LEDGER_CSV } = await import('../tools/audio-ledger.mjs'); const { STORIES } = await import('../src/stories.mjs');
+  const RUNS = Object.keys(L.BEAT_RUNS); const sentences = (t) => String(t || '').split(L.SENTENCE_BREAK).map((s) => s.trim()).filter(Boolean);
+  const inside = (t) => sentences(t).filter((s) => RUNS.some((r) => new RegExp('\\b' + r + '\\b', 'i').test(s)) && !RUNS.includes(s.replace(/[.!?]$/, '').toLowerCase()));
+  const heard = []; for (const c of L.COURSES.filter((x) => x.readAloud)) for (const m of c.modules) for (const line of ((m.lesson && m.lesson.script) || [])) heard.push([m.id, line.say]);
+  for (const [id, st] of Object.entries(STORIES)) { const m = L.getModule(id); const c = m && L.COURSES.find((x) => x.id === m.courseId); if (c && c.readAloud) for (const p of st.words || []) heard.push([id + ' story', p]); }
+  for (const w of (L.WONDER || []).filter((x) => x.stage === 'early')) heard.push([w.id, [w.prompt, ...(w.simple || []).map((s) => s.says)].join(' ')]);
+  for (const g of ['p4-beats-count', 'p4-beats-blend', 'p4-beats-more', 'p4-beats-same', 'p4-beats-yesno']) for (let s = 1; s <= 400; s++) { const q = L.generateQuestion(g, s); heard.push([g + ' ' + s, [q.story, q.prompt, q.explain, ...Object.values(q.whyNot || {}).map((e) => e.why)].filter(Boolean).join(' ')]); }
+  const off = heard.flatMap(([id, t]) => inside(t).map((s) => id + ': ' + s));
+  const rows = LEDGER_CSV.split('\n').slice(1).map((r) => { const cells = [...r.matchAll(/"((?:[^"]|"")*)"/g)].map((m) => m[1].replace(/""/g, '"')); return { key: cells[0], text: cells[7] || '', description: cells[8] || '' }; });
+  const runRows = rows.filter((r) => RUNS.includes(r.text.replace(/\[[^\]]*\]\s*/g, '').trim().replace(/[.!?]$/, '').toLowerCase()));
+  const rowOff = (r) => !/said slowly in (?:two|three|four) short, even beats\]/.test(r.text) || /drawing out/.test(r.description);
+  const badRows = runRows.filter(rowOff).map((r) => r.key);
+  const planted = inside('Then he drummed his own name slowly, Cal, lum, boom, boom.').length === 1 && inside('Callum. Cal, lum.').length === 0
+    && rowOff({ text: '[telling, the voice falling at the end] Dye, nuh, sore.', description: 'Lesson line 10.' }) && rowOff({ text: '[warm and gentle, umbrella said slowly in three short, even beats] Um, brel, luh.', description: 'a warm, gentle teacher\'s voice for a young child, drawing out the key words.' });
+  // The booms' note reaches only a story whose booms the child counts (the third read: it had reached The big boom's thunder and a
+  // parade drum); every row with it is A birthday drum's, and a row of another story with it is caught.
+  const { BOOMS_COUNTED, BOOMS_NOTE } = await import('../tools/audio-ledger.mjs');
+  const allRows = LEDGER_CSV.split('\n').slice(1).map((r) => { const cells = [...r.matchAll(/"((?:[^"]|"")*)"/g)].map((m) => m[1].replace(/""/g, '"')); return { key: cells[0], source: cells[2], description: cells[8] || '' }; });
+  const boomsOff = (list) => list.filter((r) => r.description.includes(BOOMS_NOTE.trim()) && !BOOMS_COUNTED.has(r.source)).map((r) => r.key);
+  const boomRows = allRows.filter((r) => r.description.includes(BOOMS_NOTE.trim())).length;
+  ok(`the booms' note reaches only a story whose booms the child counts (${boomRows} rows, all A birthday drum's; a thunder row with it planted and caught)`, boomsOff(allRows).length === 0 && boomRows >= 3 && boomsOff([{ key: 'S3882-2', source: 'four-feelings', description: 'told calm.' + BOOMS_NOTE }]).length === 1, boomsOff(allRows).join(', '));
+  ok(`a run of beats is a sentence of its own in every heard lesson line, early story, early Wonder question and beats question, and every ledger row that is a run asks for even beats and never a drawn-out voice (${heard.length} texts and ${runRows.length} rows read; a run inside a sentence and two rows planted and caught)`, off.length === 0 && badRows.length === 0 && runRows.length >= 10 && planted, JSON.stringify({ off: off.slice(0, 4), badRows }));
+}
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

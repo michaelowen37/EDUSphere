@@ -37,7 +37,7 @@ export const FEATURES = {
 export const CONFIG = {
   CORE_QUESTIONS_PER_ATTEMPT: 5,   // questions from the current module in one practice set
   MASTERY_MIN_CORRECT: 4,          // how many of those must be right to count as mastered
-  REVIEW_QUESTIONS_PER_ATTEMPT: 2, // extra question from an earlier module (measures retention, never affects the gate)
+  REVIEW_QUESTIONS_PER_ATTEMPT: 2, // memory-check questions from lessons passed (they measure retention and never affect the gate)
   CHOICES_PER_QUESTION: 4,         // options shown for multiple-choice questions
 };
 
@@ -5942,6 +5942,43 @@ function PREK3_READING_MODULES() { return [
     sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.1 (counts the number of words in a simple spoken sentence with adult assistance.), since the lesson shows a simple sentence as words said one after another, a dot for each word, says sentences of two, three and four words slowly with the child, claps once for each word and counts the claps, little words like the counted too, a word added making more words, has the child say a sentence and clap it in turns of their own, and asks how many words a sentence has, which has more, which has a word for each dot, and which has the same number of words, the voice saying each sentence slowly being the adult assistance.'],
     generators: ['p3-words-count', 'p3-words-more', 'p3-words-dots', 'p3-words-same', 'p3-words-yesno'],
   },
+  // Two words make one (pass MY, the standards review of Domain III, part two, EARMARKS E12): PK3 III.B.3, "blends words to form
+  // compound words with adult assistance.", and III.B.4, "segments compound words to form individual words with adult assistance.",
+  // each cited whole. Two words heard one after another are put together into the one word they make (dog and house make doghouse),
+  // and a word made of two words is taken apart into them, its two words in order (snowball is snow, and then ball), the voice saying
+  // each word slowly being the adult assistance. Every word it puts together or takes apart is a picture the app draws, the two words
+  // and the word they make alike, and its questions are heard questions that print none of the words they ask about while the voice
+  // can speak. It needs Words in a sentence, which hears a sentence as words, since it hears one word as two words.
+  {
+    id: 'two-words-make-one',
+    skill: 'Listening',
+    order: 19,
+    requires: ['words-in-a-sentence'],
+    title: 'Two words make one',
+    tagline: 'Put two words together, and take them apart',
+    lesson: {
+      paragraphs: ['Some words are made of two words. Dog and house go together to make one new word, doghouse, a little house for a dog. Cup and cake make cupcake, and sun and flower make sunflower.', 'We can take a word like that apart, too. Snowball has two words in it, snow and ball, and when we take a word apart, we say its two words in order, first one, and then the other. Starfish is star, and then fish, so you hear star, and the other word you hear is fish.', 'Doghouse and birdhouse both have the word house in them, so listen to the first word. Dog and house make doghouse, and bird and house make birdhouse. Some words do not come apart into two words. Cat has just one word in it, and that word is cat.'],
+      keyIdea: 'Two words can go together to make one new word, like dog and house make doghouse, and that word comes apart into its two words again.',
+      example: { kind: 'pair', stack: true, a: { kind: 'row', items: [{ kind: 'icon', name: 'dog' }, { kind: 'icon', name: 'house' }] }, b: { kind: 'icon', name: 'doghouse' }, caption: 'Dog and house make doghouse.' },
+      pictures: [{ serial: 'P179', alt: 'A friendly brown dog resting inside a small red doghouse, dry while a light rain falls in the backyard', step: 1 }],
+      script: [
+        { say: 'Some words are made of two words. Listen. Dog. House. Put the two words together, and they make one new word, doghouse!', stress: ['doghouse'], show: { kind: 'pair', stack: true, a: { kind: 'row', items: [{ kind: 'icon', name: 'dog' }, { kind: 'icon', name: 'house' }] }, b: { kind: 'icon', name: 'doghouse' } } },
+        { say: 'A doghouse is a little house for a dog, where a dog can rest out of the rain.', show: { kind: 'icon', name: 'doghouse' } },
+        { say: 'Listen to two more words. Cup. Cake. Put them together, and they make cupcake!', stress: ['cupcake'], show: { kind: 'pair', stack: true, a: { kind: 'row', items: [{ kind: 'icon', name: 'cup' }, { kind: 'icon', name: 'cake' }] }, b: { kind: 'icon', name: 'cupcake' } } },
+        { say: 'Now you try, and put these two words together. Sun. Flower. Sunflower!', show: { kind: 'pair', stack: true, a: { kind: 'row', items: [{ kind: 'icon', name: 'sun' }, { kind: 'icon', name: 'flower' }] }, b: { kind: 'icon', name: 'sunflower' } }, voices: [['Flower.', 'tell', 'turn']] },
+        { say: 'We can take a word like that apart, too. Listen. Snowball. Snow. Ball. Snowball has two words in it, snow and ball.', show: { kind: 'pair', stack: true, a: { kind: 'icon', name: 'snowball' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'snow' }, { kind: 'icon', name: 'ball' }] } } },
+        { say: 'When we take a word apart, we say its two words in order, first one, and then the other. Starfish is star, and then fish.', stress: ['in order'], show: { kind: 'pair', stack: true, a: { kind: 'icon', name: 'starfish' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'star' }, { kind: 'icon', name: 'fish' }] } } },
+        { say: 'You hear star in starfish, and the other word you hear is fish.', show: { kind: 'pair', a: { kind: 'icon', name: 'star' }, b: { kind: 'icon', name: 'fish' } } },
+        { say: 'Now you try, and take one apart. Cupcake. Cup. Cake.', show: { kind: 'pair', stack: true, a: { kind: 'icon', name: 'cupcake' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'cup' }, { kind: 'icon', name: 'cake' }] } }, voices: [['Cupcake.', 'tell', 'turn']] },
+        { say: 'Listen to these two words. Bird. House. Put them together, and they make birdhouse, a little house for a bird.', stress: ['birdhouse'], show: { kind: 'pair', stack: true, a: { kind: 'row', items: [{ kind: 'icon', name: 'bird~big' }, { kind: 'icon', name: 'house' }] }, b: { kind: 'icon', name: 'birdhouse' } } },
+        { say: 'Doghouse and birdhouse both have the word house in them, so listen to the first word. Dog and house make doghouse, and bird and house make birdhouse.', show: { kind: 'pair', a: { kind: 'icon', name: 'doghouse' }, b: { kind: 'icon', name: 'birdhouse' } } },
+        { say: 'Some words do not come apart into two words at all, like cat. Cat has just one word in it, and that word is cat.', show: { kind: 'pic', name: 'cat' } },
+        { say: 'Two words can make one new word. Dog and house make doghouse. And we can take it apart again, dog, and then house.', show: { kind: 'pair', stack: true, a: { kind: 'row', items: [{ kind: 'icon', name: 'dog' }, { kind: 'icon', name: 'house' }] }, b: { kind: 'icon', name: 'doghouse' } } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.3 (blends words to form compound words with adult assistance.), since the lesson says two words one after another, dog and house, cup and cake, sun and flower, and bird and house, puts them together into the one word they make, doghouse, cupcake, sunflower and birdhouse, has the child put two words together in a turn of their own, and asks which word two words make and whether two words make a word, and III.B.4 (segments compound words to form individual words with adult assistance.), since the lesson takes snowball, starfish and cupcake apart into their two words in order, says that cat has just one word in it, has the child take a word apart in a turn of their own, and asks which word you hear in a word, which other word you hear, which word has a word in it, and whether a word is made of two words, the voice saying each word slowly being the adult assistance.'],
+    generators: ['p3-two-make', 'p3-two-hear', 'p3-two-other', 'p3-two-has', 'p3-two-yesno'],
+  },
 ]; }
 
 // Kindergarten to grade 2 science: spoken, one line at a time, with a drawn picture for every word.
@@ -7119,7 +7156,7 @@ function PREK_READING_MODULES() { return [
         { say: 'Listen to the end of each word. If the ends sound the same, the words rhyme.', show: { kind: 'letters', text: 'cat hat', highlight: 'at' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.5 (identifies rhyming words), and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches rhyme recognition, whether two words rhyme, which picture rhymes with another and which of three, such as hat, cat and log, does not rhyme, while the first sound in spoken words is taught in First sounds, and recognizing phonemic changes in words, counting syllables and the other sounds in a word wait (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.5 (identifies rhyming words), and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches rhyme recognition, whether two words rhyme, which picture rhymes with another and which of three, such as hat, cat and log, does not rhyme, while the first sound in spoken words is taught in First sounds and counting syllables in Clap the beats, and recognizing phonemic changes in words and the other sounds in a word wait (EARMARKS E13).'],
     generators: ['p4-does-rhyme', 'p4-rhyme-pic', 'p4-rhyme-three', 'p4-does-rhyme', 'p4-rhyme-pic'],
   },
   {
@@ -7146,7 +7183,7 @@ function PREK_READING_MODULES() { return [
         { say: 'Say each word slowly and listen to how it starts.', show: { kind: 'letters', text: 'moon sun', highlight: 'first' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.7 (identifies if words begin with the same sound), and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches one sound in spoken words, the first, finding the pictures whose names start the same way and the one of three that starts with a different sound, while rhyme recognition is taught in Rhyme time, and recognizing phonemic changes in words, counting syllables and the other sounds in a word wait (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.7 (identifies if words begin with the same sound), and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches one sound in spoken words, the first, finding the pictures whose names start the same way and the one of three that starts with a different sound, while rhyme recognition is taught in Rhyme time and counting syllables in Clap the beats, and recognizing phonemic changes in words and the other sounds in a word wait (EARMARKS E13).'],
     generators: ['p4-start-pic', 'p4-start-odd-pic', 'p4-start-pic', 'p4-start-odd-pic', 'p4-start-pic'],
   },
   {
@@ -7716,6 +7753,47 @@ function PREK_READING_MODULES() { return [
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.1 (counts the number of words in a spoken sentence of increasing complexity.), since the lesson counts the words of sentences from two words to six, a dot and a clap for each, little words like the counted too, a sentence that grows one word at a time, the longer of two sentences told by its count, has the child say and clap sentences in turns of their own, says how a sentence with more words has more than another, and asks how many words a sentence has, which has more or fewer, which word is new, and which has a word for each dot.'],
     generators: ['p4-words-count', 'p4-words-more', 'p4-words-new', 'p4-words-dots', 'p4-words-yesno'],
+  },
+  // Clap the beats (pass MY, the standards review of Domain III, part two, EARMARKS E13): PK4 III.B.3, "blends multisyllabic words
+  // with up to 3 syllables.", and III.B.4, "segments multisyllabic words with up to three syllables.", each cited whole, and Head Start's
+  // P-LIT 1 in part, its "Is able to count syllables". Beside a picture, a group of dots takes a frame as wide as itself, so it draws
+  // large enough to count (in a frame of five, three dots drew at about two thirds their size, the lead's look). A beat is a syllable, said the way four-year-olds clap it: words of one, two and
+  // three beats said slowly, a clap and a dot for each beat, beats said one after another put together into the word they make (pen,
+  // sill, makes pencil), and the one with more beats, fewer, or the same number. It tells a clap for each word in a sentence (Count the
+  // words, the lesson it needs) from a clap for each beat in one word, as EARMARKS A71 asks ("Rabbit is one word, but it has two
+  // beats."). Each beat is written the way a voice says it as a word of its own (rab, bit; pen, sill; bah, nan, nuh), never as a lone
+  // letter and never as a speech sound the app plays itself (buh, tuh), so the device's voice says every beat. Its questions are
+  // heard questions, printing none of the words they ask about while the voice can speak.
+  {
+    id: 'clap-the-beats',
+    skill: 'Listening',
+    order: 21,
+    requires: ['count-the-words'],
+    title: 'Clap the beats',
+    tagline: 'One word can have more than one beat',
+    lesson: {
+      paragraphs: ['When we count the words in a sentence, we clap once for each word. A word has beats inside it, like a drum. Rabbit is one word, but it has two beats, rab, bit, so we clap two times.', 'Dog, bus and fish have one beat each, and banana has three, bah, nan, nuh. Say a word slowly, clap once for each beat, and count the claps. Butterfly, but, ter, fly, has three beats.', 'We can put beats together to make a word. Pen, sill, makes pencil. Um, brel, luh, makes umbrella. Cat has one beat, fewer than butterfly, and rabbit, pencil and turtle have the same number of beats, two.'],
+      keyIdea: 'A sentence has words, and a word has beats. Say a word slowly, and clap once for each beat.',
+      example: { kind: 'pair', a: { kind: 'pic', name: 'rabbit' }, b: { kind: 'dots', count: 2, frame: 2 }, caption: 'Rab, bit. One word, two beats.' },
+      pictures: [{ serial: 'P180', alt: 'A small child tapping a toy drum on the grass, a white rabbit sitting close in front of the child, a grown-up smiling beside them', step: 1 }],
+      script: [
+        { say: 'When we count the words in a sentence, we clap once for each word. The, cat, sleeps, is three words, so three claps.', show: { kind: 'pair', a: { kind: 'pic', name: 'cat~asleep' }, b: { kind: 'dots', count: 3, frame: 3 } } },
+        { say: 'A word has beats inside it, like a drum. Listen. Rabbit. Rab, bit. Rabbit is one word, but it has two beats.', stress: ['two beats'], show: { kind: 'pic', name: 'rabbit' } },
+        { say: 'So we clap two times for rabbit. Here is a group of two dots, one dot for each beat.', show: { kind: 'pair', a: { kind: 'pic', name: 'rabbit' }, b: { kind: 'dots', count: 2, frame: 2 } } },
+        { say: 'Some words have just one beat. Listen. Dog. Bus. Fish. Say each one slowly, and it is still one beat, so each one gets one clap.', show: { kind: 'row', items: [{ kind: 'icon', name: 'dog' }, { kind: 'icon', name: 'bus' }, { kind: 'icon', name: 'fish' }] } },
+        { say: 'Some words have three beats. Banana. Bah, nan, nuh. That is three beats, so banana gets three claps.', show: { kind: 'pair', a: { kind: 'icon', name: 'banana' }, b: { kind: 'dots', count: 3, frame: 3 } } },
+        { say: 'Now you try. Say this one slowly, and clap once for each beat. Butterfly. But, ter, fly.', show: { kind: 'icon', name: 'butterfly' }, voices: [['Butterfly.', 'tell', 'turn']] },
+        { say: 'Butterfly has three beats, so that is three claps and three dots.', show: { kind: 'dots', count: 3 } },
+        { say: 'We can put beats together to make a word. Listen. Pen, sill. Put the beats together, and they make pencil!', stress: ['pencil'], show: { kind: 'icon', name: 'pencil' } },
+        { say: 'Here are three beats to put together. Um, brel, luh. Put them together, and they make umbrella!', stress: ['umbrella'], show: { kind: 'icon', name: 'umbrella' } },
+        { say: 'Now you try, and put these beats together. Dye, nuh, sore. Dinosaur!', show: { kind: 'icon', name: 'dinosaur' }, voices: [['Dye, nuh, sore.', 'tell', 'turn']] },
+        { say: 'Which one has more beats, cat or butterfly? Cat has one beat. Butterfly has three beats, more than one, so cat has fewer.', show: { kind: 'pair', stack: true, a: { kind: 'dots', count: 1 }, b: { kind: 'dots', count: 3 } } },
+        { say: 'Rabbit. Rab, bit. Pencil. Pen, sill. Rabbit and pencil have two beats each, so they have the same number of beats. Turtle. Tur, tull. Turtle has two beats too.', show: { kind: 'row', items: [{ kind: 'pic', name: 'rabbit' }, { kind: 'icon', name: 'pencil' }, { kind: 'pic', name: 'turtle' }] } },
+        { say: 'A sentence has words, and a word has beats. Say a word slowly, clap once for each beat, and count the claps. Rabbit. Rab, bit. That is two claps.', show: { kind: 'pair', a: { kind: 'pic', name: 'rabbit' }, b: { kind: 'dots', count: 2, frame: 2 } } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.3 (blends multisyllabic words with up to 3 syllables.), since the lesson says the beats of words of two and three beats one after another, pen, sill, um, brel, luh, and dye, nuh, sore, puts them together into the words they make, pencil, umbrella and dinosaur, has the child put beats together in a turn of their own, and asks which word a word\'s beats make, and III.B.4 (segments multisyllabic words with up to three syllables.), since the lesson says words of one, two and three beats slowly, a clap and a dot for each beat, has the child clap a word\'s beats in a turn of their own, tells a clap for each word in a sentence from a clap for each beat in one word, and asks how many beats a word has, which has more or fewer, and which has the same number, and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches counting syllables, the beats in a spoken word, while rhyme recognition is taught in Rhyme time and the first sound in spoken words in First sounds, and recognizing phonemic changes in words and the other sounds in a word wait (EARMARKS E13).'],
+    generators: ['p4-beats-count', 'p4-beats-blend', 'p4-beats-more', 'p4-beats-same', 'p4-beats-yesno'],
   },
 ]; }
 
@@ -13401,7 +13479,7 @@ function MUSIC1_MODULES() { return [
       // long and short sounds on top; the beat staying even while words and tune change; tempo as the speed of the beat,
       // with the musicians' words; and a beat in music from every time and place.
       prose: true,
-      paragraphs: ['Every song has a steady pulse under it, the same every time, and that is the **beat**. A ticking clock keeps one, and so does your heart. You can keep the beat with your hands, clapping, or tap it on your knees, or march to it, left, right, left, right, one step on every pulse. The words of a song change and the tune goes up and down, but the beat stays even underneath. Find the beat and you can join any song.', 'The beat is not the same as the **rhythm**. The beat is the steady pulse. The rhythm is the pattern of long and short sounds on top of it, the way the words fall. Clap your name, and some claps are quick and some are slow. That is a rhythm. Clap, clap, clap, clap, all even, and that is a steady beat.', 'A beat can go fast or slow, and the speed of the beat is called the **tempo**. Musicians use two Italian words for it. **Allegro** means fast and lively, and **largo** means slow and wide. A song can speed up or slow down, and when it does, the tempo has changed. Music from every time and every place has a beat, a drum circle, an old waltz, a march, and a song on the radio today.'],
+      paragraphs: ['Every song has a steady pulse under it, the same every time, and that is the **beat**. A ticking clock keeps one, and so does your heart. You can keep the beat with your hands, clapping, or tap it on your knees, or march to it, left, right, left, right, one step on every pulse. The words of a song change and the tune goes up and down, but the beat stays even underneath. Find the beat and you can join any song.', 'The beat is not the same as the **rhythm**. The beat is the steady pulse. The rhythm is the pattern of long and short sounds on top of it, the way the words fall. Clap your name, and some claps are quick and some are slow. That is a rhythm. Clap, clap, clap, clap, all even, and that is a steady beat. In reading, we clap the beats in a word. Rabbit. Rab, bit. In music, those claps are the word\'s rhythm, and the steady beat is the even pulse under it.', 'A beat can go fast or slow, and the speed of the beat is called the **tempo**. Musicians use two Italian words for it. **Allegro** means fast and lively, and **largo** means slow and wide. A song can speed up or slow down, and when it does, the tempo has changed. Music from every time and every place has a beat, a drum circle, an old waltz, a march, and a song on the radio today.'],
       keyIdea: 'The beat is the even pulse under a song, and the rhythm is the pattern of long and short sounds on top. The speed of the beat is the tempo, allegro for fast and largo for slow.',
       example: { kind: 'flow', steps: ['tick', 'tick', 'tick', 'tick'], caption: 'Four even beats, the way a clock ticks. That is the pulse a song is built on.' },
       script: [
@@ -13410,6 +13488,8 @@ function MUSIC1_MODULES() { return [
         { say: 'The words of a song change and the tune goes up and down, but the beat stays even underneath the music. Hum a song with your mouth closed and tap the table. The tapping is the beat.', show: { kind: 'icon', name: 'music' } },
         { say: 'The beat is not the same as the rhythm. The beat is the steady pulse. The rhythm is the pattern of long and short sounds on top of it, the way the words fall.', show: { kind: 'flow', steps: ['long', 'short', 'short', 'long'] } },
         { say: 'Clap your name. Some claps are quick and some are slow. That is a rhythm. Now clap, clap, clap, clap, all even. That is a steady beat.', show: { kind: 'flow', steps: ['clap', 'clap', 'clap', 'clap'] } },
+        // Pass MY: the beats a reading lesson claps in a word are its rhythm here (round one's lesson check).
+        { say: 'In reading, we clap the beats in a word. Rabbit. Rab, bit. In music, those claps are the word\'s rhythm, and the steady beat is the even pulse under it.', show: null },
         { say: 'A beat can go fast or slow, and the speed of the beat is called the tempo. Musicians use two Italian words for it. Allegro means fast and lively, and largo means slow and wide.', show: { kind: 'twoway', a: 'allegro', b: 'largo', top: 'fast', bottom: 'slow' } },
         { say: 'A song can speed up or slow down. When it does, the tempo has changed, and your clapping has to change with it.', show: { kind: 'flow', steps: ['slow', 'faster', 'fast'] } },
         { say: 'Music from every time and every place has a beat. A drum circle, an old waltz, a march, and a song on the radio today. Find the beat and you can join any song.', show: { kind: 'icon', name: 'music' } },
@@ -14781,7 +14861,7 @@ function ARTSK_MODULES() { return [
     tagline: 'The steady beat, the rhythm on top, and how sounds differ',
     requires: ['what-a-picture-says'],
     lesson: {
-      paragraphs: ['Put a hand on your heart. That steady thump is a beat. Music has a steady beat too, and you can clap it, tap it or march to it, always the same.', 'Rhythm is different. Rhythm is the pattern of long and short sounds on top of the beat, like the words of a song. Clap your name. Some claps are quick and some are slow. That is rhythm.', 'Sounds can be fast or slow, loud or soft, high or low. A bird sings high, and a big drum sounds low. A lullaby is soft and slow, and a marching song is loud and steady. Between the sounds there is silence, and silence is part of music too.', 'The steady beat, the rhythm on top, fast and slow, loud and soft, high and low, and silence in between. Listen for each one.'],
+      paragraphs: ['Put a hand on your heart. That steady thump is a beat. Music has a steady beat too, and you can clap it, tap it or march to it, always the same.', 'Rhythm is different. Rhythm is the pattern of long and short sounds on top of the beat, like the words of a song. Clap your name. Some claps are quick and some are slow. That is rhythm. In reading, we clap the beats in a word. Rabbit. Rab, bit. In music, those claps are the word\'s rhythm.', 'Sounds can be fast or slow, loud or soft, high or low. A bird sings high, and a big drum sounds low. A lullaby is soft and slow, and a marching song is loud and steady. Between the sounds there is silence, and silence is part of music too.', 'The steady beat, the rhythm on top, fast and slow, loud and soft, high and low, and silence in between. Listen for each one.'],
       // Full standard, pass KJ: a spoken script; rhythm said as the pattern of long and short sounds (the words of a song are
       // one example); the semicolons and colons are gone from the example; the bank grows from six questions to eleven.
       script: [
@@ -14789,6 +14869,8 @@ function ARTSK_MODULES() { return [
         { say: 'Music has a steady beat too, and you can clap it, tap it or march to it, always the same.', show: { kind: 'flow', steps: ['tap', 'tap', 'tap', 'tap'] } },
         { say: 'Rhythm is different. Rhythm is the pattern of long and short sounds on top of the beat, like the words of a song.', show: null },
         { say: 'Clap your name. Some claps are quick and some are slow. That is rhythm.', show: null },
+        // Pass MY: the beats a reading lesson claps in a word are its rhythm here (round one's lesson check).
+        { say: 'In reading, we clap the beats in a word. Rabbit. Rab, bit. In music, those claps are the word\'s rhythm.', show: null },
         { say: 'Sounds can be fast or slow, loud or soft, high or low. A bird sings high, and a big drum sounds low.', show: { kind: 'icon', name: 'bird' } },
         { say: 'A lullaby is soft and slow, and a marching song is loud and steady.', show: null },
         { say: 'Between the sounds there is silence, and silence is part of music too.', show: null },
@@ -30265,6 +30347,11 @@ const WS3_YESNO = [
   ['Does a little word, like the, count as a word?', 'Yes', 'Yes. Even a little word, like the, counts as a word, so I, see, the, dog, has four words.', 'would mean a little word is not a word, but it counts as a word too.'],
   ['When we add a word to a sentence, does it have more words?', 'Yes', 'Yes. I, run, fast, has more words than I, run.', 'would mean it has fewer words, but it has more.'],
   ['Does, we like to play, have three words?', 'No', 'No. We, like, to, play. Four words.', 'would mean we, like, to, play, has three words, but it has four.'],
+  // Since pass MY (round one's screen check) every frame has rows of both answers: three, two and four words.
+  ['Does, the cat sleeps, have three words?', 'Yes', 'Yes. The, cat, sleeps. Three words.', 'would mean the, cat, sleeps, does not have three words, but it does.'],
+  ['Does, I like cake, have two words?', 'No', 'No. I, like, cake. Three words.', 'would mean I, like, cake, has two words, but it has three.'],
+  ['Does, I see the dog, have four words?', 'Yes', 'Yes. I, see, the, dog. Four words.', 'would mean I, see, the, dog, does not have four words, but it does.'],
+  ['Does, the ball rolls, have two words?', 'No', 'No. The, ball, rolls. Three words.', 'would mean the, ball, rolls, has two words, but it has three.'],
 ];
 const WS4_SENTENCES = ['The dog runs.', 'Birds can fly.', 'I like milk.', 'The bus stops.', 'My cat likes fish.', 'I see the moon.', 'The fish can swim.', 'We play with blocks.', 'I see the big bus.', 'The big dog runs fast.', 'I run to the slide.', 'We sit on the rug.', 'We go to the park now.', 'The bird sings in the tree.', 'I put on my red hat.', 'The cat naps on the bed.'];
 const WS4_MORE = [['I run.', 'I run to the slide.'], ['The dog runs.', 'The big dog runs fast.'], ['Birds sing.', 'The birds sing in the tree.'], ['I like milk.', 'I like milk and cake.'], ['We play.', 'We play with blocks.'], ['The bus stops.', 'The big bus stops here.']];
@@ -30278,6 +30365,12 @@ const WS4_YESNO = [
   ['Does, we go to the park now, have six words?', 'Yes', 'Yes. We, go, to, the, park, now. Six words.', 'would mean we, go, to, the, park, now, does not have six words, but it does.'],
   ['Does, my cat likes fish, have three words?', 'No', 'No. My, cat, likes, fish. Four words.', 'would mean my, cat, likes, fish, has three words, but it has four.'],
   ['Does, the bird sings in the tree, have five words?', 'No', 'No. The, bird, sings, in, the, tree. Six words.', 'would mean the, bird, sings, in, the, tree, has five words, but it has six.'],
+  // Since pass MY (round one's screen check) every frame has rows of both answers: four, six and five words.
+  ['Does, my cat likes fish, have four words?', 'Yes', 'Yes. My, cat, likes, fish. Four words.', 'would mean my, cat, likes, fish, does not have four words, but it does.'],
+  ['Does, I see the big bus, have six words?', 'No', 'No. I, see, the, big, bus. Five words.', 'would mean I, see, the, big, bus, has six words, but it has five.'],
+  ['Does, I see the big bus, have five words?', 'Yes', 'Yes. I, see, the, big, bus. Five words.', 'would mean I, see, the, big, bus, does not have five words, but it does.'],
+  ['Does, the big dog runs fast, have four words?', 'No', 'No. The, big, dog, runs, fast. Five words.', 'would mean the, big, dog, runs, fast, has four words, but it has five.'],
+  ['Does, we sit on the rug, have six words?', 'No', 'No. We, sit, on, the, rug. Five words.', 'would mean we, sit, on, the, rug, has six words, but it has five.'],
   ['Does, I run, have three words?', 'No', 'No. I, run. Two words.', 'would mean I, run, has three words, but it has two.'],
 ];
 // A sentence's words, its words said one by one ("The, cat, sleeps"), the same inside a sentence ("the, cat, sleeps", since round
@@ -30292,13 +30385,15 @@ const wsShares = (a, b) => { const ws = (s) => wsWords(s).map((w) => w.toLowerCa
 const wsAlso = (table, n, s) => { const o = table.find((x) => x !== s && wsWords(x).length === n); return o ? wsSaid(o) + ', has ' + wsCount(n) + ' words too.' : null; };
 // How many words a heard sentence has (pass MX), the count told as a word: wsCount(3) is three.
 const wsCount = (n) => NUMBER_NAMES[n];
+// A sentence as a round compares it (aboutWords): its words in small letters, without the end mark, so I run. and I run are one.
+const wsKey = (s) => wsWords(s).map((w) => w.toLowerCase()).join(' ');
 // How many words, with a group of dots for each count a child could pick: pre-K 3 two to four, pre-K 4 any three of three to six,
 // drawn in a frame of six at pre-K 4, so six is one row, a dot for each word in the order it is said (round one's screen check). The
 // sentence is heard and never printed while the voice can speak (printedStory), since its printed words could be counted by sight.
 const wsCountQ = (rng, table, pool) => {
   const s = pick(rng, table); const n = wsWords(s).length; const counts = pool.length === 3 ? pool : shuffle(rng, pool.filter((c) => c !== n)).slice(0, 2).concat(n);
   const choices = shuffle(rng, counts.map((c) => 'dots:' + c)); const also = wsAlso(table, n, s);
-  return { type: 'choice', story: 'Listen. ' + s, printedStory: 'Listen to the sentence.', prompt: 'Tap the group with one dot for each word.', choices, answer: 'dots:' + n, ...(pool.length > 3 ? { dotFrame: 6 } : null),
+  return { type: 'choice', story: 'Listen. ' + s, printedStory: 'Listen to the sentence.', prompt: 'Tap the group with one dot for each word.', choices, answer: 'dots:' + n, aboutWords: [wsKey(s)], ...(pool.length > 3 ? { dotFrame: 6 } : null),
     explain: wsSaid(s) + '. ' + capFirst(wsCount(n)) + ' words, ' + wsCount(n) + ' dots.', visual: null, explainVisual: null,
     whyNot: p3WhyNot(choices, 'dots:' + n, (x) => { const k = p3DotCount(x); return { name: p3DotsName(k), why: (k > n ? 'are more dots than words' : 'are fewer dots than words') + ', because the sentence has ' + wsCount(n) + ' words.' }; }),
     alsoRight: also ? [also] : [] };
@@ -30308,14 +30403,14 @@ const wsCountQ = (rng, table, pool) => {
 // read a wrong tap names its sentence word by word, as the lessons say a counted sentence ("I, like, cake, has three words").
 const wsMoreQ = (rng, pairs, fewer) => {
   const [short, long] = pick(rng, pairs); const a = wsWords(short).length; const b = wsWords(long).length; const right = fewer ? short : long; const wrong = fewer ? long : short;
-  return { type: 'choice', story: null, prompt: fewer ? 'Which one has fewer words?' : 'Which one has more words?', choices: shuffle(rng, [short, long]), answer: right, heardChoices: true,
+  return { type: 'choice', story: null, prompt: fewer ? 'Which one has fewer words?' : 'Which one has more words?', choices: shuffle(rng, [short, long]), answer: right, heardChoices: true, aboutWords: [wsKey(short), wsKey(long)],
     explain: right + ' It has ' + wsCount(fewer ? a : b) + ' words, ' + (fewer ? 'fewer than ' + wsCount(b) : 'more than ' + wsCount(a)) + '.', visual: null, explainVisual: null,
     whyNot: { [wrong]: { name: wsSaid(wrong), why: 'has ' + wsCount(fewer ? b : a) + ' words, ' + (fewer ? 'more than ' + wsCount(a) : 'fewer than ' + wsCount(b)) + '.' } }, alsoRight: [] };
 };
 // The sentence with a word for each dot shown, its two sentences heard choices; six dots draw as one row of six.
 const wsDotsQ = (rng, table, pool) => {
   const n = pick(rng, pool); const right = pick(rng, table.filter((s) => wsWords(s).length === n)); const wrong = pick(rng, table.filter((s) => wsWords(s).length !== n)); const k = wsWords(wrong).length;
-  return { type: 'choice', story: null, prompt: 'Which one has one word for each of these dots?', choices: shuffle(rng, [right, wrong]), answer: right, heardChoices: true,
+  return { type: 'choice', story: null, prompt: 'Which one has one word for each of these dots?', choices: shuffle(rng, [right, wrong]), answer: right, heardChoices: true, aboutWords: [wsKey(right)],
     explain: right + ' ' + wsSaid(right) + '. ' + capFirst(wsCount(n)) + ' words, ' + wsCount(n) + ' dots.', visual: n === 6 ? { kind: 'dots', count: n, frame: 6 } : { kind: 'dots', count: n }, explainVisual: null,
     whyNot: { [wrong]: { name: wsSaid(wrong), why: 'has ' + wsCount(k) + ' words, but there are ' + wsCount(n) + ' dots.' } }, alsoRight: [] };
 };
@@ -30325,7 +30420,8 @@ const wsDotsQ = (rng, table, pool) => {
 // words?" while the voice can speak, the voice still saying the sentence, so its words are never counted on sight.
 const wsYesNo = (rng, table) => { const [ask, answer, explain, why] = pick(rng, table); const wrong = answer === 'Yes' ? 'No' : 'Yes';
   const counts = /^Does, .+, have (\w+) words\?$/.exec(ask);
-  return { type: 'choice', story: null, prompt: ask, ...(counts ? { printed: 'Does the sentence you hear have ' + counts[1] + ' words?' } : null), choices: yesNo(rng), answer, explain, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why } }, alsoRight: [] }; };
+  const sentence = /^Does, (.+), have \w+ words\?$/.exec(ask);
+  return { type: 'choice', story: null, prompt: ask, ...(counts ? { printed: 'Does the sentence you hear have ' + counts[1] + ' words?' } : null), choices: yesNo(rng), answer, explain, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why } }, alsoRight: [], aboutWords: sentence ? [wsKey(sentence[1])] : [] }; };
 Object.assign(GENERATORS, {
   // Words in a sentence: how many words a heard sentence has, a group of dots for each count from two to four.
   'p3-words-count': (rng) => wsCountQ(rng, WS3_SENTENCES, [2, 3, 4]),
@@ -30337,7 +30433,7 @@ Object.assign(GENERATORS, {
   'p3-words-same': (rng) => {
     const heard = pick(rng, WS3_SENTENCES); const n = wsWords(heard).length;
     const right = pick(rng, WS3_SENTENCES.filter((s) => s !== heard && wsWords(s).length === n && !wsShares(s, heard))); const wrong = pick(rng, WS3_SENTENCES.filter((s) => wsWords(s).length !== n)); const k = wsWords(wrong).length;
-    return { type: 'choice', story: 'Listen. ' + heard, printedStory: 'Listen to the sentence.', prompt: 'Which one has the same number of words?', choices: shuffle(rng, [right, wrong]), answer: right, heardChoices: true,
+    return { type: 'choice', story: 'Listen. ' + heard, printedStory: 'Listen to the sentence.', prompt: 'Which one has the same number of words?', choices: shuffle(rng, [right, wrong]), answer: right, heardChoices: true, aboutWords: [wsKey(heard), wsKey(right)],
       explain: right + ' It has ' + wsCount(n) + ' words. And ' + wsSaidIn(heard) + ', has ' + wsCount(n) + ' words too, so they have the same number of words.', visual: null, explainVisual: null,
       whyNot: { [wrong]: { name: wsSaid(wrong), why: 'has ' + wsCount(k) + ' words, and ' + wsSaidIn(heard) + ', has ' + wsCount(n) + '.' } }, alsoRight: [] };
   },
@@ -30350,7 +30446,7 @@ Object.assign(GENERATORS, {
   // Count the words: a sentence, then the same sentence with one new word, and the word that is new.
   'p4-words-new': (rng) => {
     const [before, after, word, other] = pick(rng, WS4_NEW); const choices = shuffle(rng, [word, other]);
-    return { type: 'choice', story: 'Listen. ' + before + ' Now, ' + msSaid(after) + '.', printedStory: 'Listen to the two sentences.', prompt: 'Which word is new?', choices, answer: word,
+    return { type: 'choice', story: 'Listen. ' + before + ' Now, ' + msSaid(after) + '.', printedStory: 'Listen to the two sentences.', prompt: 'Which word is new?', choices, answer: word, aboutWords: [wsKey(before), wsKey(after)],
       explain: capFirst(word) + ' is the new word. ' + wsSaid(after) + ', has one more word than ' + wsSaidIn(before) + '.', visual: null, explainVisual: null,
       whyNot: { [other]: { name: capFirst(other), why: 'was in ' + wsSaidIn(before) + ', too, so it is not new.' } }, alsoRight: [] };
   },
@@ -30358,6 +30454,182 @@ Object.assign(GENERATORS, {
   'p4-words-dots': (rng) => wsDotsQ(rng, WS4_SENTENCES, [3, 4, 5, 6]),
   // Count the words: yes or no about words, little words and counts.
   'p4-words-yesno': (rng) => wsYesNo(rng, WS4_YESNO),
+});
+
+// Two words make one (pre-K 3) and Clap the beats (pre-K 4), pass MY, the standards review of Domain III's III.B.3 and III.B.4.
+// Pre-K 3's six words made of two words, each word and the word they make a picture the lesson draws: the first word, the second, and
+// the word they make. Only house is in two of them (doghouse and birdhouse), so a question that offers both says which first word it
+// heard.
+const TW3_WORDS = [['dog', 'house', 'doghouse'], ['cup', 'cake', 'cupcake'], ['sun', 'flower', 'sunflower'], ['snow', 'ball', 'snowball'], ['star', 'fish', 'starfish'], ['bird', 'house', 'birdhouse']];
+// Every word that is part of one of them, once each.
+const TW3_PARTS = [...new Set(TW3_WORDS.flatMap(([a, b]) => [a, b]))];
+// The two words a word is made of, said as the lesson says them ("dog and house").
+const twSaid = ([a, b]) => a + ' and ' + b;
+// The yes or no rows: the question, its answer, the words that explain it, the reason the other answer does not fit, what the question
+// shows (two words above the word asked about, or one word alone), and the words it prints while the voice can speak, which name none
+// of the words it asks about. Four answer Yes and four No.
+const TW3_YESNO = [
+  ['Do dog and house make doghouse?', 'Yes', 'Yes. Dog and house make doghouse.', 'would mean dog and house do not make doghouse, but they do.', ['dog', 'house', 'doghouse']],
+  ['Do cup and cake make sunflower?', 'No', 'No. Cup and cake make cupcake, and sun and flower make sunflower.', 'would mean cup and cake make sunflower, but they make cupcake.', ['cup', 'cake', 'sunflower']],
+  ['Do sun and flower make sunflower?', 'Yes', 'Yes. Sun and flower make sunflower.', 'would mean sun and flower do not make sunflower, but they do.', ['sun', 'flower', 'sunflower']],
+  ['Do star and fish make snowball?', 'No', 'No. Star and fish make starfish, and snow and ball make snowball.', 'would mean star and fish make snowball, but they make starfish.', ['star', 'fish', 'snowball']],
+  ['Do bird and house make birdhouse?', 'Yes', 'Yes. Bird and house make birdhouse.', 'would mean bird and house do not make birdhouse, but they do.', ['bird', 'house', 'birdhouse']],
+  ['Do dog and house make birdhouse?', 'No', 'No. Dog and house make doghouse, and bird and house make birdhouse.', 'would mean dog and house make birdhouse, but they make doghouse.', ['dog', 'house', 'birdhouse']],
+  ['Is snowball made of two words?', 'Yes', 'Yes. Snowball is snow, and then ball.', 'would mean snowball does not come apart, but it is snow and ball.', ['snowball']],
+  ['Is cat made of two words?', 'No', 'No. Cat has just one word in it, and that word is cat.', 'would mean cat comes apart into two words, but it has just one word in it.', ['cat']],
+];
+// A picture choice for one of pre-K 3's words: cat is the pic kind's, every other word an icon, the bird in its larger look (bird~big),
+// so it sits beside the house as a word of equal weight (round two's code read: the plain bird stays small beside a big bear).
+const twIcon = (w) => (w === 'bird' ? 'bird~big' : w);
+const twPic = (w) => (w === 'cat' ? 'pic:cat' : 'icon:' + twIcon(w));
+// The two words above the word they make, as the lesson's lines that put two words together draw them, and the word above its two
+// words, as the lines that take a word apart do (a line that says one thing and then more shows the one above the group).
+const twMade = ([a, b, whole]) => ({ kind: 'pair', stack: true, a: { kind: 'row', items: [{ kind: 'icon', name: twIcon(a) }, { kind: 'icon', name: twIcon(b) }] }, b: { kind: 'icon', name: whole } });
+const twApart = ([a, b, whole]) => ({ kind: 'pair', stack: true, a: { kind: 'icon', name: whole }, b: { kind: 'row', items: [{ kind: 'icon', name: twIcon(a) }, { kind: 'icon', name: twIcon(b) }] } });
+Object.assign(GENERATORS, {
+  // Two words make one: two words heard, and the word they make, beside one of the two words alone and another word made of two words
+  // (the one that shares a word with it when there is one, so dog and house are heard whole).
+  'p3-two-make': (rng) => {
+    const w = pick(rng, TW3_WORDS); const [a, b, whole] = w; const part = pick(rng, [a, b]);
+    const sharing = TW3_WORDS.filter((x) => x !== w && (x.includes(a) || x.includes(b)));
+    const other = pick(rng, sharing.length ? sharing : TW3_WORDS.filter((x) => x !== w));
+    const choices = shuffle(rng, [whole, part, other[2]].map(twPic));
+    return { type: 'choice', story: 'Listen. ' + capFirst(a) + '. ' + capFirst(b) + '.', printedStory: 'Listen to the two words.', prompt: 'Put the two words together. Which one do they make?', choices, answer: twPic(whole), aboutWords: [whole],
+      explain: capFirst(twSaid(w)) + ' make ' + whole + '.', visual: null, explainVisual: twMade(w),
+      whyNot: { [twPic(part)]: { name: 'The ' + part, why: 'is just one of the two words, and the word they make has both.' }, [twPic(other[2])]: { name: 'The ' + other[2], why: 'is ' + twSaid(other) + ', but you heard ' + twSaid(w) + '.' } },
+      alsoRight: [] };
+  },
+  // Two words make one: a word made of two words heard, and one of its words beside a word that is not in it. The two are said too,
+  // in an order of their own, so the child listens for each word whatever they would call its picture (round two's content read: the
+  // dog's face can be a puppy to a child, and the snow a cloud).
+  'p3-two-hear': (rng) => {
+    const w = pick(rng, TW3_WORDS); const [a, b, whole] = w; const part = pick(rng, [a, b]); const not = pick(rng, TW3_PARTS.filter((x) => x !== a && x !== b));
+    const said = shuffle(rng, [part, not]);
+    return { type: 'choice', story: 'Listen. ' + capFirst(whole) + '. Now listen to these two. ' + said.map((x) => capFirst(x) + '.').join(' '), printedStory: 'Listen to the words.', prompt: 'Which word do you hear in ' + whole + '?', printed: 'Which word do you hear in it?', choices: shuffle(rng, [part, not].map(twPic)), answer: twPic(part), aboutWords: [whole],
+      explain: capFirst(whole) + ' is ' + a + ', and then ' + b + ', so you hear ' + part + ' in ' + whole + '.', visual: null, explainVisual: twApart(w),
+      whyNot: { [twPic(not)]: { name: 'The ' + not, why: 'is not one of the two words in ' + whole + '.' } }, alsoRight: [] };
+  },
+  // Two words make one: a word made of two words heard with one of its words named, and the other word, beside the word named and a word
+  // that is not in it, the three said too, in an order of their own (round two's content read, as p3-two-hear).
+  'p3-two-other': (rng) => {
+    const w = pick(rng, TW3_WORDS); const [a, b, whole] = w; const heard = pick(rng, [a, b]); const other = heard === a ? b : a; const not = pick(rng, TW3_PARTS.filter((x) => x !== a && x !== b));
+    const said = shuffle(rng, [other, heard, not]);
+    return { type: 'choice', story: 'Listen. ' + capFirst(whole) + '. You hear ' + heard + ' in ' + whole + '. Now listen to these three words. ' + said.map((x) => capFirst(x) + '.').join(' '), printedStory: 'Listen to the words.', prompt: 'Which other word do you hear in ' + whole + '?', printed: 'Which other word do you hear in it?', choices: shuffle(rng, [other, heard, not].map(twPic)), answer: twPic(other), aboutWords: [whole],
+      explain: capFirst(whole) + ' is ' + a + ', and then ' + b + '. You hear ' + heard + ' in ' + whole + ', and the other word you hear is ' + other + '.', visual: null, explainVisual: twApart(w),
+      whyNot: { [twPic(heard)]: { name: 'The ' + heard, why: 'is one word you hear in ' + whole + ', but it is not the other word.' }, [twPic(not)]: { name: 'The ' + not, why: 'is not one of the two words in ' + whole + '.' } }, alsoRight: [] };
+  },
+  // Two words make one: one word heard, and the word made of two words that has it in it, beside two that do not (house is in two of
+  // them, so a question about house never offers both). The three are said too, in an order of their own, so the child listens for
+  // the word in each, whatever they would call its picture (round one's lesson check: a cupcake can be a muffin to a child).
+  'p3-two-has': (rng) => {
+    const w = pick(rng, TW3_WORDS); const [a, b, whole] = w; const part = pick(rng, [a, b]);
+    const without = shuffle(rng, TW3_WORDS.filter((x) => !x.slice(0, 2).includes(part))).slice(0, 2);
+    const said = shuffle(rng, [whole, ...without.map((x) => x[2])]);
+    return { type: 'choice', story: 'Listen. ' + capFirst(part) + '. Now listen to these three words. ' + said.map((x) => capFirst(x) + '.').join(' '), printedStory: 'Listen to the words.', prompt: 'Which one has the word ' + part + ' in it?', printed: 'Which one has that word in it?', choices: shuffle(rng, [whole, ...without.map((x) => x[2])].map(twPic)), answer: twPic(whole), aboutWords: [whole],
+      explain: capFirst(whole) + ' is ' + a + ', and then ' + b + ', so it has the word ' + part + ' in it.', visual: null, explainVisual: twApart(w),
+      whyNot: Object.fromEntries(without.map((x) => [twPic(x[2]), { name: 'The ' + x[2], why: 'is ' + twSaid(x) + ', so ' + part + ' is not in it.' }])), alsoRight: [] };
+  },
+  // Two words make one: yes or no about two words and the word they make, and a word made of two words or just one.
+  'p3-two-yesno': (rng) => {
+    const [ask, answer, explain, why, shows] = pick(rng, TW3_YESNO); const wrong = answer === 'Yes' ? 'No' : 'Yes';
+    const visual = shows.length === 3 ? twMade(shows) : { kind: shows[0] === 'cat' ? 'pic' : 'icon', name: shows[0] };
+    // The words made of two words the explanation names, so a round does not ask about one of them again (aboutWords).
+    const aboutWords = TW3_WORDS.map((x) => x[2]).filter((c) => new RegExp('\\b' + c + '\\b').test(explain.toLowerCase()));
+    return { type: 'choice', story: null, prompt: ask, printed: shows.length === 3 ? 'Do these two words make this one?' : 'Is this word made of two words?', choices: yesNo(rng), answer, explain, visual, explainVisual: null, whyNot: { [wrong]: { name: wrong, why } }, alsoRight: [], aboutWords };
+  },
+});
+// Pre-K 4's words of one, two and three beats, each one the lesson says and draws (the scripts test's first read: a bank of 23 words
+// offered fifteen pictures no line names, so a child could meet a cactus or a candle never named), four of one beat, three of two and
+// four of three: the word, its beats said as the voice says them (each
+// beat a word of its own, never a lone letter or a speech sound the app plays itself), how many beats, and its picture's kind.
+// Words that start with the same sound (bus, banana and butterfly; dog and dinosaur) are set beside each other when beats are put
+// together, so for banana, butterfly and dinosaur the first sound alone never finds the word; rabbit, turtle, pencil and umbrella have
+// no word here that starts with their sound (round one's code check), which EARMARKS A75 keeps.
+const CB4_WORDS = [
+  ['dog', 'dog', 1, 'icon'], ['cat', 'cat', 1, 'pic'], ['bus', 'bus', 1, 'icon'], ['fish', 'fish', 1, 'icon'],
+  ['rabbit', 'rab, bit', 2, 'pic'], ['turtle', 'tur, tull', 2, 'pic'], ['pencil', 'pen, sill', 2, 'icon'],
+  ['banana', 'bah, nan, nuh', 3, 'icon'], ['butterfly', 'but, ter, fly', 3, 'icon'], ['umbrella', 'um, brel, luh', 3, 'icon'], ['dinosaur', 'dye, nuh, sore', 3, 'icon'],
+];
+// Every run of beats a lesson or a story says, and the word it is (rab, bit is rabbit), for the audio ledger's descriptions: Clap the
+// beats' words of two and three beats, and Callum's name, which its story drums (pass MY, round one's story check).
+export const BEAT_RUNS = { ...Object.fromEntries(CB4_WORDS.filter((x) => x[2] > 1).map((x) => [x[1], x[0]])), 'cal, lum': 'Callum' };
+// The first sound of each word, by sound and not by letter, for the words beats are put together beside.
+const CB4_START = { dog: 'd', dinosaur: 'd', cat: 'k', bus: 'b', banana: 'b', butterfly: 'b', turtle: 't', pencil: 'p', fish: 'f', rabbit: 'r', umbrella: 'u' };
+// A beat word's picture choice (icon:banana, pic:rabbit), its picture as the lesson draws it, and its beats in words (two beats).
+const cbPic = ([w, , , kind]) => kind + ':' + w;
+const cbShow = ([w, , , kind]) => ({ kind, name: w });
+// The heard word's picture above its choices, drawn at the choices' own size so Check answer stays in view on a short phone.
+const cbAsk = (w) => ({ ...cbShow(w), size: 72 });
+const cbBeats = (n) => NUMBER_NAMES[n] + (n === 1 ? ' beat' : ' beats');
+// The yes or no rows: the question, its answer, the explanation, the reason the other answer does not fit, and the words printed
+// while the voice can speak (null where the question names no word). Eight answer Yes and seven No, and every printed frame has rows
+// of both answers (round one's screen check); the rule a sentence's words are clapped by has its twin for one word's beats (round
+// one's lesson check).
+const CB4_YESNO = [
+  ['Does the word rabbit have two beats?', 'Yes', 'Yes. Rabbit. Rab, bit. It has two beats.', 'would mean rabbit does not have two beats, but it does. Rabbit. Rab, bit.', 'Does the word you hear have two beats?'],
+  ['Does the word dog have two beats?', 'No', 'No. Dog has just one beat.', 'would mean dog has two beats, but it has one.', 'Does the word you hear have two beats?'],
+  ['Does the word butterfly have three beats?', 'Yes', 'Yes. Butterfly. But, ter, fly. It has three beats.', 'would mean butterfly does not have three beats, but it does. Butterfly. But, ter, fly.', 'Does the word you hear have three beats?'],
+  ['Does the word pencil have three beats?', 'No', 'No. Pencil. Pen, sill. It has two beats.', 'would mean pencil has three beats, but it has two. Pencil. Pen, sill.', 'Does the word you hear have three beats?'],
+  ['Does the word cat have one beat?', 'Yes', 'Yes. Cat has just one beat.', 'would mean cat has more than one beat, but it has just one.', 'Does the word you hear have one beat?'],
+  ['Does the word banana have two beats?', 'No', 'No. Banana. Bah, nan, nuh. It has three beats.', 'would mean banana has two beats, but it has three.', 'Does the word you hear have two beats?'],
+  ['Does the word umbrella have three beats?', 'Yes', 'Yes. Umbrella. Um, brel, luh. It has three beats.', 'would mean umbrella does not have three beats, but it does. Umbrella. Um, brel, luh.', 'Does the word you hear have three beats?'],
+  ['Is rabbit just one word?', 'Yes', 'Yes. Rabbit is one word, but it has two beats.', 'would mean rabbit is more than one word, but it is one word with two beats.', 'Is it just one word?'],
+  ['Is butterfly three words?', 'No', 'No. Butterfly is one word, and it has three beats.', 'would mean butterfly is three words, but it is one word with three beats.', 'Is it three words?'],
+  ['When we count the words in a sentence, do we clap once for each word?', 'Yes', 'Yes. In a sentence, we clap once for each word, and in one word, we clap once for each beat.', 'would mean we do not clap once for each word, but we do.', null],
+  ['Does the word dinosaur have one beat?', 'No', 'No. Dinosaur. Dye, nuh, sore. It has three beats.', 'would mean dinosaur has one beat, but it has three.', 'Does the word you hear have one beat?'],
+  ['When we clap the beats in rabbit, do we clap just once?', 'No', 'No. Rabbit. Rab, bit. Rabbit is one word, but it has two beats, so we clap two times.', 'would mean rabbit has just one beat, but it has two. Rabbit. Rab, bit.', 'When we clap the beats in the word you hear, do we clap just once?'],
+  ['When we clap the beats in dog, do we clap just once?', 'Yes', 'Yes. Dog has just one beat, so we clap once.', 'would mean dog has more than one beat, but it has just one.', 'When we clap the beats in the word you hear, do we clap just once?'],
+  ['Is the, cat, sleeps, just one word?', 'No', 'No. The, cat, sleeps, is three words.', 'would mean the, cat, sleeps, is one word, but it is three words.', 'Is it just one word?'],
+  ['Is the, cat, sleeps, three words?', 'Yes', 'Yes. The, cat, sleeps, is three words, so we clap three times.', 'would mean the, cat, sleeps, is not three words, but it is.', 'Is it three words?'],
+];
+Object.assign(GENERATORS, {
+  // Clap the beats: how many beats a heard word has, a group of one, two or three dots, the word's picture shown so the child knows it.
+  'p4-beats-count': (rng) => {
+    const w = pick(rng, CB4_WORDS); const [word, said, n] = w; const choices = shuffle(rng, [1, 2, 3].map((c) => 'dots:' + c));
+    return { type: 'choice', story: 'Listen. ' + capFirst(word) + '.', printedStory: 'Listen to the word.', prompt: 'Tap the group with one dot for each beat.', choices, answer: 'dots:' + n, aboutWords: [word],
+      explain: n === 1 ? capFirst(word) + ' has just one beat, so it gets one dot.' : capFirst(word) + '. ' + capFirst(said) + '. ' + capFirst(word) + ' has ' + cbBeats(n) + ', so it gets ' + NUMBER_NAMES[n] + ' dots.', visual: cbAsk(w), explainVisual: null,
+      // One dot is not enough, and a group of more are more or fewer (round one: "One dot are fewer dots than beats" was heard after a
+      // second wrong tap).
+      whyNot: p3WhyNot(choices, 'dots:' + n, (x) => { const k = p3DotCount(x); return { name: p3DotsName(k), why: (k > n ? 'are more dots than beats' : k === 1 ? 'is not enough' : 'are fewer dots than beats') + ', because ' + word + ' has ' + cbBeats(n) + '.' }; }),
+      alsoRight: [] };
+  },
+  // Clap the beats: beats heard one after another, and the word they make, beside two words that start with the same sound where the
+  // table has them (but, ter, fly beside banana and bus), so for banana, butterfly and dinosaur the first sound alone never finds it.
+  'p4-beats-blend': (rng) => {
+    const w = pick(rng, CB4_WORDS.filter((x) => x[2] > 1)); const [word, said] = w;
+    const alike = shuffle(rng, CB4_WORDS.filter((x) => x !== w && CB4_START[x[0]] === CB4_START[word]));
+    const rest = shuffle(rng, CB4_WORDS.filter((x) => x !== w && !alike.includes(x)));
+    const others = [...alike, ...rest].slice(0, 2);
+    return { type: 'choice', story: 'Listen. ' + capFirst(said) + '.', printedStory: 'Listen to the beats.', prompt: 'Put the beats together. Which one do they make?', choices: shuffle(rng, [w, ...others].map(cbPic)), answer: cbPic(w), aboutWords: [word],
+      explain: 'Listen. ' + capFirst(said) + '. Put the beats together, and they make ' + word + '.', visual: null, explainVisual: cbShow(w),
+      whyNot: Object.fromEntries(others.map((x) => [cbPic(x), { name: 'The ' + x[0], why: x[2] === 1 ? 'has just one beat, and you heard more than one.' : 'has different beats. ' + capFirst(x[0]) + '. ' + capFirst(x[1]) + '.' }])), alsoRight: [] };
+  },
+  // Clap the beats: two pictures, and the one with more beats or, half the time, fewer, both words said first.
+  'p4-beats-more': (rng) => {
+    const fewer = rng() < 0.5; const a = pick(rng, CB4_WORDS); const b = pick(rng, CB4_WORDS.filter((x) => x[2] !== a[2]));
+    const [lo, hi] = a[2] < b[2] ? [a, b] : [b, a]; const right = fewer ? lo : hi; const wrong = fewer ? hi : lo; const heard = shuffle(rng, [a, b]);
+    return { type: 'choice', story: 'Listen. ' + capFirst(heard[0][0]) + '. ' + capFirst(heard[1][0]) + '.', printedStory: 'Listen to the two words.', prompt: fewer ? 'Which one has fewer beats?' : 'Which one has more beats?', choices: shuffle(rng, [a, b].map(cbPic)), answer: cbPic(right), aboutWords: [a[0], b[0]],
+      explain: capFirst(right[0]) + ' has ' + cbBeats(right[2]) + ', and ' + wrong[0] + ' has ' + NUMBER_NAMES[wrong[2]] + ', so ' + right[0] + ' has ' + (fewer ? 'fewer' : 'more') + '.', visual: null, explainVisual: null,
+      whyNot: { [cbPic(wrong)]: { name: 'The ' + wrong[0], why: 'has ' + cbBeats(wrong[2]) + ', and ' + right[0] + ' has ' + NUMBER_NAMES[right[2]] + '.' } }, alsoRight: [] };
+  },
+  // Clap the beats: a heard word, and the one that has the same number of beats, beside one that does not (never the same word). The
+  // two choices are said too, in an order of their own, since a picture's everyday name can have another count (round one's lesson
+  // check: the dog drawn is a puppy to a child, two beats, and the cat a kitty).
+  'p4-beats-same': (rng) => {
+    const w = pick(rng, CB4_WORDS); const n = w[2]; const right = pick(rng, CB4_WORDS.filter((x) => x !== w && x[2] === n)); const wrong = pick(rng, CB4_WORDS.filter((x) => x[2] !== n));
+    const said = shuffle(rng, [right, wrong]);
+    return { type: 'choice', story: 'Listen. ' + capFirst(w[0]) + '. Now listen to these two. ' + capFirst(said[0][0]) + '. ' + capFirst(said[1][0]) + '.', printedStory: 'Listen to the words.', prompt: 'Which one has the same number of beats as ' + w[0] + '?', printed: 'Which one has the same number of beats?', choices: shuffle(rng, [right, wrong].map(cbPic)), answer: cbPic(right), aboutWords: [w[0], right[0]],
+      explain: capFirst(right[0]) + ' has ' + cbBeats(n) + ', and ' + w[0] + ' has ' + cbBeats(n) + ' too, so they have the same number of beats.', visual: cbAsk(w), explainVisual: null,
+      whyNot: { [cbPic(wrong)]: { name: 'The ' + wrong[0], why: 'has ' + cbBeats(wrong[2]) + ', and ' + w[0] + ' has ' + cbBeats(n) + '.' } }, alsoRight: [] };
+  },
+  // Clap the beats: yes or no about the beats in a word, and a word told from a beat. A row that asks about a heard word prints the
+  // question's frame without it while the voice can speak.
+  'p4-beats-yesno': (rng) => {
+    const [ask, answer, explain, why, printed] = pick(rng, CB4_YESNO); const wrong = answer === 'Yes' ? 'No' : 'Yes';
+    // The beat words the question names, so a round does not ask about one of them again (aboutWords).
+    const aboutWords = CB4_WORDS.map((x) => x[0]).filter((x) => new RegExp('\\b' + x + '\\b').test(ask));
+    return { type: 'choice', story: null, prompt: ask, ...(printed ? { printed } : null), choices: yesNo(rng), answer, explain, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why } }, alsoRight: [], aboutWords };
+  },
 });
 
 // ---------------------------------------------------------------------
@@ -34656,6 +34928,16 @@ function explainCommonDenominator(x, y, bigger) {
   return `Rename both with the bottom number ${L}: ${fracText(x)} = ${xTop}/${L} and ${fracText(y)} = ${yTop}/${L}. ${Math.max(xTop, yTop)} is the bigger top, so ${fracText(bigger)} is bigger.`;
 }
 
+// A group of dots beside a drawing in a pair (a shape, a picture or an icon: a word's beats beside its picture, a triangle's three
+// sides beside the triangle) takes a frame of its own count, up to five, so three dots draw as large as three can; in the frame of five
+// a group alone keeps, three dots drew at about two thirds that size (pass MY: the lead's look at Clap the beats, and round one's code
+// check at Count and sort and Rhymes and shapes). A half that names its own frame keeps it, and dots beside
+// a ten frame or tens keep the frame of five, so they draw at the ten frame's dot size. Picture (ui.jsx) draws what this returns.
+export const PAIR_DRAWINGS = ['pic', 'icon', 'shape'];
+export function dotsBesideDrawing(v, other) {
+  return v && v.kind === 'dots' && !v.frame && other && PAIR_DRAWINGS.includes(other.kind) ? { ...v, frame: Math.min(5, Math.max(1, v.count)) } : v;
+}
+
 // Turns a choice like 'dots:4' into words a child can hear: "the group with 4".
 export function describeChoice(choice) {
   const raw = String(choice).replace(/#\d+$/, '');
@@ -35324,11 +35606,15 @@ export const VOICE_MANNERS = voiceManners();
 // from 1.2 to 2.6 seconds, a sentence taking a young child longer than a word.
 const MANNER_PLAIN_RATE = 0.86;   // the plain voice's rate (SPEECH_SHAPES.plain in ui.jsx; the scripts test holds the two together)
 const MANNER_YOUNG_RATE = 0.9;    // the young voice's YOUNG_RATE in ui.jsx, held to it the same way
-export function mannerTurnMs(sentence, manner) {
+export function mannerTurnMs(sentence, manner, beats = 0) {
   const m = VOICE_MANNERS[manner]; const s = String(sentence); const letters = (t) => String(t).replace(/[^A-Za-z]/g, '').length;
   const rate = (m && m.device.rate) || MANNER_PLAIN_RATE; const w = manner === 'strong' ? strongWordOf(s) : null;
   const ms = (w ? (letters(w) * 62) / rate + ((letters(s) - letters(w)) * 62) / MANNER_PLAIN_RATE : (letters(s) * 62) / rate) / MANNER_YOUNG_RATE;
-  return Math.max(1200, Math.min(2600, Math.round(ms + 600)));
+  const said = Math.max(1200, Math.min(2600, Math.round(ms + 600)));
+  // A turn that asks the child to say a word slowly and clap once for each beat waits 900 ms and then 750 a beat, up to four seconds
+  // (pass MY, the third read: 1.36 seconds after "Butterfly." left no time for but, ter, fly and three claps), since saying a word
+  // back is quicker than saying and clapping each of its beats.
+  return beats > 0 ? Math.max(said, Math.min(4000, 900 + beats * 750)) : said;
 }
 // The word a sentence says strong: its one word written all in capitals, two letters or more, or null when it has none or several.
 export function strongWordOf(sentence) { const m = String(sentence).match(/\b[A-Z]{2,}\b/g); return m && m.length === 1 ? m[0] : null; }
@@ -35382,7 +35668,10 @@ export function speechPieces(text, opts = {}) {
         pieces.push({ text: /[A-Za-z0-9]/.test(after) ? word : `${word}${after}`, shape: 'said-strong', sentence: si });
         if (/[A-Za-z0-9]/.test(after)) pieces.push({ text: after, shape: 'plain', sentence: si });
       }
-      if (said.turn) pieces[pieces.length - 1].echo = mannerTurnMs(t, said.manner);
+      // A turn whose line asks to clap once for each beat waits for the beats of the run said after it (mannerTurnMs), read in the whole
+      // line, since the lesson screen hands the voice one sentence at a time (opts.line).
+      if (said.turn) { const all = lineTexts ? lineTexts.flatMap(split) : sentences; const next = String(all[offset + si + 1] || '').trim().replace(/[.!?]$/, '').toLowerCase();
+        const beats = /\bclap once for each beat\b/i.test(all.join(' ')) && BEAT_RUNS[next] ? next.split(', ').length : 0; pieces[pieces.length - 1].echo = mannerTurnMs(t, said.manner, beats); }
       continue;
     }
     if (role && role.role === 'open') { pieces.push({ text: sentence.trim(), shape: 'sayOpen', sentence: si }); continue; }
@@ -35814,6 +36103,11 @@ export function whyNotNamesAnswer(q, picked) {
   // the grown-up (round three's lesson check, pass MM: "This letter is not B, and B has two round bumps." printed the B that
   // printedQuestion hides, a capital to match among T, U and B).
   if (/^[A-Z]$/.test(String(q.answer))) { const letter = new RegExp(`\\b${q.answer}\\b`); const p = printedQuestion(q, true); return letter.test(sentence.slice(1)) && (!letter.test(question) || !letter.test(`${p.story || ''} ${p.prompt || ''}`)); }
+  // A dots answer's count said with what it counts names it whatever the question says (pass MY, round two's content read: "Two dots
+  // are more dots than beats, because dog has one beat." left one dot the only group, though the prompt's "one dot for each beat"
+  // had said one, which the rule below leaves out).
+  const dots = /^dots:(\d+)$/.exec(String(q.answer));
+  if (dots && NUMBER_NAMES[Number(dots[1])] && new RegExp(`\\b(?:${NUMBER_NAMES[Number(dots[1])]}|${dots[1]}) (?:beats?|words?|claps?)\\b`, 'i').test(sentence)) return true;
   const said = new Set(sentence.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean));
   // A word the question says counts with its kin both ways, so "Tap the biggest one." has already said big.
   const asked = new Set(); for (const w of question.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean)) { asked.add(w); for (const k of heardWords(w)) asked.add(k); for (const [base, kin] of Object.entries(HEARD_KIN)) if (kin.includes(w)) { asked.add(base); kin.forEach((x) => asked.add(x)); } }
@@ -41168,6 +41462,98 @@ export const WONDER = [
     ],
     closing: 'What is something you are waiting for right now?',
   },
+  // Pass MY: four early questions, so the early pool stays ahead of the lessons it serves (249 early lessons had used 188 of its 192
+  // places, each question twice and the lessons' need half again; the rules test sizes it from the live lesson count). Two wonder
+  // about words, made of two words and said slowly, beside the pass's two lessons, one is about the ups and downs of friends, and one
+  // about two feelings that can feel alike in the body.
+  {
+    id: 'w-early-make-a-new-word',
+    theme: 'world',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'Sun and flower make sunflower. Could you make up a brand-new word?',
+    options: ['Yes', 'No', 'Only grown-ups can'],
+    simple: [
+      { voice: 'A scientist says', says: 'I checked, and every year, new words people start using get added to the books that tell what words mean.' },
+      { voice: 'An artist says', says: 'I love that a writer named Lewis Carroll made up the word chortle, for a happy laugh!' },
+      { voice: 'A grandparent of faith says', says: 'My family has its own words for things, and we pass them down to the little ones.' },
+      { voice: 'A skeptic says', says: 'I think a new word only works if people know what it means. Try one on a friend!' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'I have read that words do not stay the same forever. Every year, the people who make dictionaries add new words that people have started to use. Many new words are two old words put together, the way sun and flower make sunflower.' },
+      { voice: 'An artist', says: 'I love that a writer named Lewis Carroll made up the word chortle for a poem in his book Through the Looking-Glass, from 1871. It means a happy laugh, and he probably made it from bits of two words, chuckle and snort. People liked it so much that it is in the dictionary now.' },
+      { voice: 'A grandparent of faith', says: 'In my family, we have our own words, a name for a favorite blanket or a special family game, and I pass them down to the little ones. Families and faiths also keep very old words alive in their songs and prayers.' },
+      { voice: 'A skeptic', says: 'I think a made-up word only works if other people understand it. Try yours on a friend and see if they can guess what it means. If they can, you might have made a word that lasts.' },
+    ],
+    closing: 'What new word could you make by putting two words together?',
+  },
+  {
+    id: 'w-early-a-word-said-slowly',
+    theme: 'world',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'Butterfly. But, ter, fly. When you say a word very slowly, is it still the same word?',
+    options: ['Yes', 'No', 'I am not sure'],
+    simple: [
+      { voice: 'A scientist says', says: 'Technically, yes! Slow or fast, it has the same sounds in the same order. Slow gives you time to hear each beat.' },
+      { voice: 'An artist says', says: 'I stretch words when I sing. In a slow song, one word can last a long time!' },
+      { voice: 'A grandparent of faith says', says: 'When my family prays together, we say some words slowly, so everyone can say them at once.' },
+      { voice: 'A skeptic says', says: 'Try this test. Say butterfly very slowly to a friend. Do they still know what you mean?' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'Technically, butterfly said fast or slow keeps the same sounds in the same order, and it still means the same thing, so it is the same word. Saying it slowly just leaves more time between the beats, so you can hear and count each one.' },
+      { voice: 'An artist', says: 'When I sing, I stretch words all the time. In a slow song, one word can last as long as a whole breath, and in a fast song it zips by. However long I hold a word, the people listening still know which word I sang.' },
+      { voice: 'A grandparent of faith', says: 'When my family prays together, we say some words slowly, so everyone can say them at the same time. Saying a word slowly can be a way to share it.' },
+      { voice: 'A skeptic', says: 'Here is a test you can try. Say butterfly to a friend very slowly, one beat at a time, and ask what you said. If they know, it is still the same word. Then try saying it so slowly that the beats come far apart, and see when it stops sounding like one word.' },
+    ],
+    closing: 'What word do you like to say slowly?',
+  },
+  {
+    id: 'w-early-friend-plays-with-someone-else',
+    theme: 'ups-and-downs',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'Your friend is playing with someone else today. Are you still friends?',
+    options: ['Yes', 'No', 'I can ask'],
+    simple: [
+      { voice: 'A scientist says', says: 'I notice that friends often play with different kids on different days. That is normal!' },
+      { voice: 'An artist says', says: 'I play tag with one friend and paint with another. Each friend is special in their own way!' },
+      { voice: 'A grandparent of faith says', says: 'My grandmother taught me that love is not like cookies. It does not run out when you share it.' },
+      { voice: 'A skeptic says', says: 'One day does not tell me much. So I ask my friend to play tomorrow, and see what they say!' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'I have noticed that friends often play with different children on different days, and that many children have more than one friend. A friend playing with someone else today does not mean they like you less.' },
+      { voice: 'An artist', says: 'I play tag with one friend, paint with another and read with a third, and each friendship has a color all its own. When your friend plays with someone new, your color is still there. Nobody else can be the friend you are.' },
+      { voice: 'A grandparent of faith', says: 'My faith teaches me that love grows when you share it. It is not like cookies, which run out. Your friend can care about you and about a new friend too, and so can you.' },
+      { voice: 'A skeptic', says: 'One day does not tell me much about a friendship. Ask your friend if you can play together tomorrow, or join in today and see if there is room. What happens next tells you more than one guess.' },
+    ],
+    closing: 'Who could you play with today?',
+  },
+  {
+    id: 'w-early-excited-or-scared',
+    theme: 'feelings',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'Your heart beats fast when you are excited, and when you are scared too. How can you tell which feeling it is?',
+    options: ['Think about what is coming', 'Take a slow breath', 'Ask a grown-up'],
+    simple: [
+      { voice: 'A scientist says', says: 'I learned that excited and scared can feel a lot alike in your body. Your thoughts help you tell them apart.' },
+      { voice: 'An artist says', says: 'I look in a mirror when my heart beats fast. A big smile looks excited to me!' },
+      { voice: 'A grandparent of faith says', says: 'When my heart races, I stop and take a slow breath. Then I can tell which feeling it is.' },
+      { voice: 'A skeptic says', says: 'I ask myself, is something fun coming, or something I want to stay away from?' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'I learned that when you feel excited or scared, your heart beats faster and your body gets ready to move. The two can feel a lot alike inside, so your thoughts about what is happening help you know which feeling it is.' },
+      { voice: 'An artist', says: 'Faces are like pictures of feelings to me. When my heart races, I sometimes look in a mirror. A big smile and bright eyes look excited, and a tight, worried face looks scared. Faces do not always tell the whole story, but a mirror is a good place to start.' },
+      { voice: 'A grandparent of faith', says: 'When my heart races, I stop for a moment and take a slow breath, and some people say a little prayer. In that quiet moment, I can notice what I am really feeling.' },
+      { voice: 'A skeptic', says: 'Ask yourself a little question. Is something good about to happen, or something you want to stay away from? The answer is a clue to which feeling you have, and you can check it with a grown-up.' },
+    ],
+    closing: 'What makes your heart beat fast in a happy way?',
+  },
   {
     id: 'w-growing-left-it-at-home',
     theme: 'failure',
@@ -42494,13 +42880,16 @@ export function questionKey(q) {
   return JSON.stringify([q.story || '', q.prompt || '', q.visual || null, q.answer === undefined ? null : q.answer, q.trace || q.target || null]);
 }
 
-// Builds one practice set for a module. Same (moduleId, seed, masteredIds) => same set.
-//   core:   the questions that count toward mastery
-//   review: one question from an EARLIER, already-mastered module (retention check only)
+// Builds one practice set for a module. Same (moduleId, seed, passedIds) => same set.
+//   core:    the questions that count toward mastery
+//   review:  a memory check from another module the student has passed (retention check only)
+//   review2: a second memory check, from a different passed module when there is one
+// passedIds: the modules the student has passed (the screen hands in progress.passedIds; a pass joins the memory-check pool
+// since Mastery v2). Until pass MY it was named masteredIds, from before Mastery v2, when one pass was the star.
 // options.dose: 1 for a normal round, 3 for a triple dose on a module the student keeps missing.
 // options.avoid: prompts asked in recent rounds, so a repeat round reaches for questions not yet seen;
 // the memory checks avoid their own module's recent prompts the same way (the alternate stack).
-export function buildAttempt(moduleId, seed, masteredIds, options = {}) {
+export function buildAttempt(moduleId, seed, passedIds, options = {}) {
   const dose = options.dose && options.dose > 1 ? options.dose : 1;
   const avoid = new Set(options.avoid || []);
   const mod = getModule(moduleId);
@@ -42526,14 +42915,21 @@ export function buildAttempt(moduleId, seed, masteredIds, options = {}) {
   // other lesson draws as before.
   const isTraceBank = (g) => generateQuestion(g, 1).type === 'trace';
   const mixed = mod.generators.some(isTraceBank) && !mod.generators.every(isTraceBank);
-  const echoes = (q, list) => mixed && list === core && q.type !== 'trace' && list.some((c) => c.type !== 'trace' && c.answer === q.answer);
+  // A question that names what it is about (aboutWords: a word made of two words, a word whose beats it asks, a sentence whose words it
+  // counts) is not asked about one the round has asked about already while another can be found, since the first one's explanation
+  // answers the second (pass MY, round one's lesson check: 1,752 of 2,000 rounds of Two words make one asked about one word twice,
+  // "Yes. Bird and house make birdhouse." before "Which word do you hear in birdhouse?").
+  const aboutEcho = (q, list) => list === core && Array.isArray(q.aboutWords) && list.some((c) => Array.isArray(c.aboutWords) && c.aboutWords.some((w) => q.aboutWords.includes(w)));
+  const echoes = (q, list) => (mixed && list === core && q.type !== 'trace' && list.some((c) => c.type !== 'trace' && c.answer === q.answer)) || aboutEcho(q, list);
   // Every question is made as its own module asks it (moduleQuestion: from kindergarten up a trace counts a line's direction, Q49).
   const fresh = (gen, list, from = mod.id) => {
     // Not one from the last rounds if another can be found, and many tries for one not yet in this round (more for a trace, whose
     // bank of three letters must reach its last letter on the third trace).
     let q = moduleQuestion(gen, randInt(rng, 1, 2147483646), from);
     const tries = q.type === 'trace' ? 120 : 40;
-    for (let t = 0; t < tries && (taken(q, pool(q, list)) || (t < 10 && avoid.has(q.prompt)) || (t < 20 && echoes(q, list))); t++) q = moduleQuestion(gen, randInt(rng, 1, 2147483646), from);
+    // An echo (above) keeps twenty tries of its own after avoid's ten, since a round as the screen builds it avoids the last two rounds'
+    // prompts, and with both in the first ten an echo came back in 48 of 2,000 rounds of Two words make one (round two's code read).
+    for (let t = 0; t < tries && (taken(q, pool(q, list)) || (t < 10 && avoid.has(q.prompt)) || (t < 30 && echoes(q, list))); t++) q = moduleQuestion(gen, randInt(rng, 1, 2147483646), from);
     // A trace that has to open a new set (every one of this set traced) is drawn against the trace just made, so one letter never
     // comes twice in a row while another can come (round two's code check, pass MN: 136 of 1,000 rounds of the tracing lessons did).
     if (q.type === 'trace' && list === core && taken(q, pool(q, list))) { const last = [...core].reverse().find((c) => c.type === 'trace'); for (let t = 0; t < 40 && last && questionKey(q) === questionKey(last); t++) q = moduleQuestion(gen, randInt(rng, 1, 2147483646), from); }
@@ -42553,21 +42949,22 @@ export function buildAttempt(moduleId, seed, masteredIds, options = {}) {
     core.push(q);
   }
   let review = null;
-  // The memory check can come from any module the student has mastered, in any course, so
+  // The memory check can come from any module the student has passed, in any course, so
   // old skills keep resurfacing where they are least expected. Nearer modules in the same
-  // course are more likely, but nothing mastered is ever out of the pool.
-  const inCourse = MODULES.filter((m) => m.courseId === mod.courseId && m.order < mod.order && masteredIds.includes(m.id));
-  const anywhere = MODULES.filter((m) => m.id !== mod.id && masteredIds.includes(m.id));
-  // The memory check favors the mastered modules a student has missed most lately (options.missed: id to miss count),
+  // course are more likely, but nothing passed is ever out of the pool (docs/ALGORITHMS.md's
+  // Memory checks).
+  const inCourse = MODULES.filter((m) => m.courseId === mod.courseId && m.order < mod.order && passedIds.includes(m.id));
+  const anywhere = MODULES.filter((m) => m.id !== mod.id && passedIds.includes(m.id));
+  // The memory check favors the passed modules a student has missed most lately (options.missed: id to miss count),
   // so the alternate stack goes where it is needed; otherwise nearer modules in the same course are more likely.
   const missed = anywhere.filter((m) => (options.missed || {})[m.id] > 0);
-  // After a failed light review the lessons it leads back from come first (options.probe, from probeIds), since a slip
-  // that deep usually starts one step earlier (pass LH); then the missed ones, then nearer modules in the same course.
+  // After a failed light review, the starred lessons the reopened lesson requires come first (options.probe, from probeIds), since
+  // a slip that deep usually starts one step earlier (pass LH); then the missed ones, then nearer modules in the same course.
   const probed = anywhere.filter((m) => (options.probe || []).includes(m.id));
-  const earlierMastered = probed.length && rng() < 0.7 ? probed : missed.length && rng() < 0.6 ? missed : inCourse.length && rng() < 0.6 ? inCourse : anywhere;
+  const earlierPassed = probed.length && rng() < 0.7 ? probed : missed.length && rng() < 0.6 ? missed : inCourse.length && rng() < 0.6 ? inCourse : anywhere;
   let review2 = null;
-  if (CONFIG.REVIEW_QUESTIONS_PER_ATTEMPT > 0 && earlierMastered.length > 0) {
-    const rm = pick(rng, earlierMastered);
+  if (CONFIG.REVIEW_QUESTIONS_PER_ATTEMPT > 0 && earlierPassed.length > 0) {
+    const rm = pick(rng, earlierPassed);
     review = { moduleId: rm.id, question: fresh(pick(rng, rm.generators), [], rm.id) };
     // A second check, from a different passed module when there is one, so two old skills
     // resurface in every round rather than one.
@@ -42581,7 +42978,7 @@ export function buildAttempt(moduleId, seed, masteredIds, options = {}) {
 }
 
 // The prompts a student met in their last rounds on a module (and, for memory checks, on any module).
-// Misses per mastered module over the last month, for the memory check to favor.
+// Misses per module over the last month (a round's and its memory checks'), for the memory check to favor among the lessons passed.
 export function recentMisses(events, days = 30) {
   const since = Date.now() - days * 24 * 3600 * 1000; const count = {};
   for (const e of events) if (e.type === 'attempt_completed' && e.at && new Date(e.at).getTime() >= since) { for (const r of (e.core || [])) if (r && r.correct === false) count[e.moduleId] = (count[e.moduleId] || 0) + 1; if (e.review && e.review.correct === false) count[e.review.moduleId] = (count[e.review.moduleId] || 0) + 1; if (e.review2 && e.review2.correct === false) count[e.review2.moduleId] = (count[e.review2.moduleId] || 0) + 1; }
@@ -42918,8 +43315,11 @@ export function buildLightReview(events, seed, due) {
   let setStart = 0;
   const taken = (q) => (q.type === 'trace' ? core.slice(setStart) : core).some((c) => questionKey(c) === questionKey(q));
   const same = (q) => q.type !== 'trace' && taken(q);
-  // And as in a round, a tracing lesson's choice questions ask different letters while they can (round one's screen check).
-  const echoes = (q) => mixed && q.type !== 'trace' && core.some((c) => c.type !== 'trace' && c.answer === q.answer);
+  // And as in a round, a tracing lesson's choice questions ask different letters while they can (round one's screen check), and a
+  // question that names what it is about (aboutWords) asks about another word while it can (pass MY, round two's code read: 1,811 of
+  // 2,000 Quick Reviews of Two words make one asked about one word twice, the first explanation answering the second).
+  const aboutEcho = (q) => Array.isArray(q.aboutWords) && core.some((c) => Array.isArray(c.aboutWords) && c.aboutWords.some((w) => q.aboutWords.includes(w)));
+  const echoes = (q) => (mixed && q.type !== 'trace' && core.some((c) => c.type !== 'trace' && c.answer === q.answer)) || aboutEcho(q);
   for (let i = 0; core.length < LIGHT_REVIEW_QUESTIONS && i < LIGHT_REVIEW_QUESTIONS * 6; i++) {
     const gen = order[i % order.length];
     let q = moduleQuestion(gen, randInt(rng, 1, 2147483646), mod.id);

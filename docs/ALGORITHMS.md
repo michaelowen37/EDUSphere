@@ -22,7 +22,11 @@ generator through 300 seeds and re-derives the answer independently from the que
 own words, so a generator whose answer is ever wrong cannot ship.
 
 A round is `questions` core questions (default 5, settable per module) plus, once
-anything earlier is mastered, one memory-check question from an earlier module.
+another lesson is passed, memory-check questions from lessons already passed (a passing
+round, a placement past it, or a clear Quick Review after Move Forward; progress.passedIds):
+two once two other lessons are passed, one while only one is (CONFIG.REVIEW_QUESTIONS_PER_ATTEMPT,
+two since Mastery v2). A lesson moved past and never passed gives none. Until pass MY this line
+said one.
 
 ## Mastery
 
@@ -63,11 +67,14 @@ out, and combined with quick wrong answers is read as guessing.
 
 ## Memory checks and spaced repetition
 
-Once a module is mastered, its questions reappear as the extra question in later
-rounds of the same course. They never affect the gate. Their results feed the
-confidence score and the transcript. The spacing is currently "whenever a later round
-happens"; a true interval schedule (days, then weeks) is the next step and belongs
-here when built.
+Once a module is passed (its first pass since Mastery v2; before it, the one pass was the
+star), its questions reappear as the memory-check questions in later rounds, from the same
+course or any other (Memory checks, below, says how they are drawn). They never affect the gate. Their results feed the confidence score
+and the transcript. A memory check comes whenever a later round happens; the Quick Review
+comes by the calendar, 21 calendar days after a star, and the checkpoint by count, after
+every fourth lesson passed, for a student with no early-years course left unfinished
+(both below). Until pass MY this paragraph said the
+interval schedule was still to come.
 
 ## Reflections
 
@@ -208,6 +215,16 @@ t i" in a round; round four's alignment read: "k i t t k" in a Quick Review); an
 round, a Quick Review's trace bank with nothing new hands its turn to the lesson's other
 trace banks (round five's code read: "r m k z r").
 
+A round asks about each word once while it can (pass MY). A question names what its explanation answers for
+(aboutWords: a word made of two words, a word whose beats it asks, a sentence whose words it counts), and a round, and
+since pass MY's round two a Quick Review, draws another question while one can be found rather than ask about a word
+it has asked about, since the first explanation answers the second ("Yes. Bird and house make birdhouse." before
+"Which word do you hear in birdhouse?"). In a round as the screen builds it, the prompts of the last two rounds are
+avoided for ten tries, and the echo keeps twenty tries of its own after them (round two's code read: with both in the
+first ten, 48 of 2,000 rounds of Two words make one asked about one word twice; now 6). A wrong tap's reason may still
+name a word a later question asks about: a child hears it only after tapping that wrong choice, and the later question
+is then a retest after the correction.
+
 ## Backups
 
 A backup is the roster, every record, and the educator's settings, in one JSON file
@@ -217,15 +234,24 @@ format version is kept in `tests/fixtures` and must restore forever.
 
 ## Memory checks (updated 2026-09-13)
 
-The review question in a round is drawn from any module the student has mastered, in any
-course. Six times in ten it comes from an earlier module in the same course; otherwise
-from anywhere mastered. It never affects mastery of the current module. Mastery v2 (see
-DECISIONS.md) will raise this to two checks per round and add a cumulative checkpoint
-round after every fourth module.
+A round asks two memory-check questions (buildAttempt), each from a lesson the student has
+passed, in any course (the screen hands in progress.passedIds; until pass MY buildAttempt named the list
+masteredIds, from before Mastery v2, when one pass was the star). The first: while a
+missed Quick Review has reopened a lesson, a starred lesson that lesson requires seven times in
+ten (probeIds); otherwise a passed lesson with a question missed in the last month, in its own
+rounds or as a memory check, six times in ten (recentMisses); otherwise an earlier passed lesson
+in the same course six times in ten; otherwise any passed lesson. The second: any other passed
+lesson. Each picks a module at
+random, then one of that module's question kinds, so a lesson's share of memory checks
+follows how many lessons there are, not how much each teaches. Neither affects mastery of
+the current module. Mastery v2 (see DECISIONS.md) raised this to two checks a round and
+added the checkpoint after every fourth module; until pass MY this paragraph still said it
+would.
 
 ## Checkpoints (2026-09-14)
 
-After every fourth passed module (checkpointDue), buildCheckpoint draws eight questions from
+After every fourth passed module (checkpointDue), and only for a student with no early-years course (pre-K to grade 2)
+left unfinished (the screen offers none to a young learner, its gate in ui.jsx), buildCheckpoint draws eight questions from
 passed modules (cycling through them, never repeating a question). makeCheckpointEvent records
 per-module results. refresherIds returns modules missed in the latest checkpoint and not passed
 since; computeConfidence counts checkpoint misses with memory-check misses, and a return that
@@ -665,3 +691,34 @@ Mikey, pass MX: "Since Eleven doesn't document a sound said alone like "/sː/", 
 - tools/audio-ledger.mjs puts a sound's goal right before its quoted IPA in every row that sends one, the sound's own row and every lesson line (22 and 53), so pasting the text column or the generator sending it gives Eleven the goal with the symbols. A mark holds each goal's place while the capitals are written (a stress word, the say-along's word), and the goals go in after, so no word inside a goal is ever capped; a blended run gets the one-breath goal with the one-breath symbol.
 - The goals say what the voice does, since ElevenLabs' guide for Eleven v4 warns that "a tag can occasionally be interpreted as a request for a sound effect rather than a delivery instruction (or vice versa)"; none is written as a sound effect (an article, a thing and an -ing word, the form the stories test reads as one). A tag carries forward across the line, so where two or more words follow a sound's symbols, before the next goal or the line's end, directionBack puts the line's own direction in again before them. No tag for a sound alone is documented, so every take is still heard before use; a take that reads a bracket aloud is deleted and made again as it is (the generator makes only what is missing), and if the new take fails too, it is deleted as well and made with the voices used before and tools/audio-generate.mjs --only <its key> --no-goals (withoutGoals sends a row's text with every goal and the space after it taken out and every symbol kept), since the generator skips every clip already on disk. The letter A named as a letter ("/eɪ/") takes no goal.
 - Counting the words in a sentence (Words in a sentence, pre-K 3, and Count the words, pre-K 4): a sentence's words are its words split at spaces once its end mark is off (wsWords), said one by one with commas for the explanation ("The, cat, sleeps"); a count question offers groups of dots, every count from two to four at pre-K 3 and any three of three to six at pre-K 4, so the answer is never always the middle one; every word in the sentences has one beat, so a clap for each word never claps the parts of a word. A same-number question's answer shares no word with the sentence heard (the and I aside), so it is never the only choice that repeats one. A counting question is a heard question: while the voice can speak, its sentence prints as "Listen to the sentence." (printedStory) and a sentence choice as "Tap to hear" beside a speaker (heardChoices; printedChoice returns HEARD_CHOICE, and the button says the sentence when it is tapped and names it to a screen reader), and a yes or no that counts a sentence prints "Does the sentence you hear have three words?" (printed), so neither the print's length nor its words answer it; with no voice everything prints, for a grown-up. A counted sentence said as part of a longer sentence is said word by word ("I, run, is two words"). Pre-K 4's count questions draw their dots in a frame of six (dotFrame), so six is one row.
+
+## A lesson split in two, and the machinery (pass MY, Mikey's question)
+
+Mikey asked, opening pass MY, how breaking a long lesson into two (Q70) affects the mastery rules and the memory checks. No rule
+changes, since every rule counts lessons and works from the record of events, each event carrying its lesson's id. A split changes
+what is counted: where there was one lesson there are two. The half that keeps the old id keeps its whole history; the new half
+starts empty.
+
+- The gate is sharper. A round asks one question from each of a lesson's kinds when it has five kinds and five questions, so before
+  pass MX's split a round of Words that change asked one pronoun question and one agreement question, and a child could miss either
+  one, the round's only question on that idea, and still pass at four of five. Each half's round asks only its own ideas, and each needs its own star on another day.
+- More rounds for the same material: at least four passed rounds where there were two. The first pass opens the second half the
+  same day, so the least calendar time is unchanged, two days.
+- Memory checks pick a lesson, then a kind (above), so a split lesson's material comes back about twice as often as an unsplit
+  lesson's, a side effect of counting lessons, not a weighting anyone chose.
+- Both halves are usually starred on one day, so their Quick Reviews come due together and fill the day's two; a third waits.
+- A checkpoint comes after every fourth lesson passed, but only for a student with no early-years course (pre-K to grade 2) left
+  unfinished (a young learner keeps memory checks only), so a split in those grades moves no checkpoint while the child is young,
+  though once the child moves on the count of lessons passed includes the early ones, so each later checkpoint comes one lesson
+  earlier; from grade 3 up a split brings it a little sooner for the same material; a course's first celebration, its game from pre-K to grade 2, and the next course
+  switched on wait for one more lesson; one more coloring picture is earned.
+- Spoken courses offer no quick check ("I already know this"), so a pre-reader who knows the second half still does its rounds.
+- Wonder questions come after every two different lessons worked, so a split brings more of them; the rules test sizes each
+  stage's pool from the live lesson count, so a split cannot quietly empty it (the early pool was at 188 of its 192 places before
+  pass MY's four new questions).
+- Loop back after two failed rounds sends the child to the lesson the half requires, usually the first half, the right suspect;
+  but since pass MO each new pre-K lesson has named the lesson built before it, so a lesson can loop back to one it does not build
+  on (Count the words to She, he and they). Q84 asks Mikey whether each pre-K lesson should name what its ideas build on.
+- For a child with progress (EARMARKS A57, before the first classroom): the lesson after a new half locks again, a child who had
+  finished pre-K sees the pre-K groups again, a finished course celebrates again when the new half is passed, and a game opened by
+  every lesson passed, never played, closes until then.

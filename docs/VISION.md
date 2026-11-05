@@ -25,8 +25,10 @@ Since pass MM (October 19, 2026), Mikey's words: "We don't need to lean too heav
 
 ## What the product must always do
 
-- **Master, then move.** A module opens only when everything it needs is mastered.
-  Mastery is measured in one sitting, never patched together across days.
+- **Master, then move.** A module opens only when everything it needs is passed,
+  each pass won in one round of practice and never added up across rounds, or placed
+  past by a check, unless an educator chooses to open it. Mastery, the star, is a second pass on another day, so
+  it shows the learning has lasted.
 - **Go back when needed.** Repeated misses send the student back to the prerequisite,
   even one that looked solid. A gap further back is usually the real problem.
 - **Bring it back.** Old material returns inside later rounds. If it did not stick,
@@ -38,15 +40,19 @@ Since pass MM (October 19, 2026), Mikey's words: "We don't need to lean too heav
 - **Keep nothing we do not need.** A school-issued ID, what was assigned, what
   happened in practice. Nothing a child writes. No names, photos, or trackers.
 - **Reflect often, and for a reason.** Reflection questions come round after every
-  second finished round, pass or fail, and every one is written toward one of four
-  aims: curiosity about the world; failure as the way learning happens; naming and
-  handling feelings; and the truth that hard days are a normal part of being human
-  and that people get through them. After a failed round, the questions about failure
-  and feelings come first. No question is ever offered a third time. The pool must
-  grow with the curriculum, and a check says so when it falls behind.
+  two different lessons a student works on, pass or fail, however many rounds each
+  takes, and every one is written toward one of four aims: curiosity about the world;
+  failure as the way learning happens; naming and handling feelings; and the truth
+  that hard days are a normal part of being human and that people get through them.
+  After a hard round, one not passed or with three misses in a row, the questions
+  about failure and feelings come first, and the ones about hard days next. No
+  question is ever offered a third time. The pool must grow with the curriculum, and
+  a check says so when it falls behind.
 - **Stay neutral.** The reflection questions carry four voices and none is right.
   Nothing argues for or against religion. Nothing reaches a child until the school
   approves it.
+
+Since pass NA (November 4, 2026), Mikey's answer to Q86, "Q86 - yes, B": Master, then move and Reflect often say what the app does, as Mastery v2 (September 14, 2026) and his rule restated on September 28, 2026 made it, their aims unchanged, and How to tell if a change is right asks about a pass where it asked about mastery. Their words before are kept in docs/RULES-AUDIT-HISTORY.md. The words beyond his choice are Claude's, each what the code does: unless an educator chooses to open it, or placed past by a check; so it shows the learning has lasted; however many rounds each takes; and the sentence on a hard round.
 
 ## What the product is not
 
@@ -73,4 +79,4 @@ by a test, and that is the extent of what we promise.
 Ask: does it help a child master something, or help an educator see clearly what
 happened, or free up time for real life? If it does none of those, it does not belong.
 If it stores something about a child we did not need, it does not belong. If it lets
-a student move past something they have not mastered, it is wrong.
+a student move past something they have not passed, it is wrong.

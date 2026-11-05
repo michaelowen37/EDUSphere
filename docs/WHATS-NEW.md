@@ -9,6 +9,13 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## November 4, 2026 (first sounds, beats put together, and My progress in the app's own words)
+
+- Three- and four-year-olds have new listening lessons on the first sound of a word, each with its own story. Sun and sock (three-year-olds) hears which words start the same, sun and sock, moon and map, finds the one of three that starts with a different sound, and thinks of a word that starts like sun. Think of a word (four-year-olds) shows how to think of one: say the word's first sound, then look and listen for things that start with it, and plays I spy with a sound.
+- Clap the beats is now two lessons. Clap the beats claps the beats in a word, and Put the beats together puts beats together into the word they make, each word beside one that starts the same way, like pencil and pizza, so a child listens to every beat and not just the first sound. Two words make one now waits for a child to put sun and flower together, and to take cupcake apart, before it says the answer.
+- My progress now says what the app does: a lesson opens when what it needs is passed, and its star comes with a second pass on another day. A lesson placed by a quick check asks for passes on two different days, and a piece of writing shows no score, only that it waits for your check.
+- Questions about a picture's first sound now say each picture's name, so a child who would call the fox a cat still hears "fox", and the fox itself now looks like a fox. Four new Wonder questions for young children are ready for your approval: what to do when you cannot think of a word, whether you could like a food you did not like, what to do when a friend says your drawing looks funny, and how it feels to do something hard all by yourself.
+
 ## November 4, 2026 (words that sound almost the same, lessons that open by idea, and Next on a small phone)
 
 - Three- and four-year-olds have two new listening lessons, each with its own story. Cat or hat? (three-year-olds) hears words that sound almost the same, cat and hat, rock and sock, dog and log, finds the one that was said, and learns to ask, "Can you say that again, please?" Same word or different? (four-year-olds) listens to every sound to tell whether two words are the same, finds the one different word of three, and laughs at silly sentences like "I wear a rock on my foot," where one sound changed a word.

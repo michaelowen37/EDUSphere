@@ -1,7 +1,7 @@
 # The Wise Human
 
-The Wise Human is an adaptive learning platform with a twist. Students master one module
-before the next one unlocks. Old material comes back at widening intervals, so it
+The Wise Human is an adaptive learning platform with a twist. Students pass one module
+before the next one opens, and a second pass on another day masters it. Old material comes back at widening intervals, so it
 sticks. And between lessons, a "Wonder" question invites them to think about
 something with no right answer at all.
 

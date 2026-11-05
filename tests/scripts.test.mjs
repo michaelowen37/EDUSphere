@@ -1234,7 +1234,7 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   const heard = []; for (const c of L.COURSES.filter((x) => x.readAloud)) for (const m of c.modules) for (const line of ((m.lesson && m.lesson.script) || [])) heard.push([m.id, line.say]);
   for (const [id, st] of Object.entries(STORIES)) { const m = L.getModule(id); const c = m && L.COURSES.find((x) => x.id === m.courseId); if (c && c.readAloud) for (const p of st.words || []) heard.push([id + ' story', p]); }
   for (const w of (L.WONDER || []).filter((x) => x.stage === 'early')) heard.push([w.id, [w.prompt, ...(w.simple || []).map((s) => s.says)].join(' ')]);
-  for (const g of ['p4-beats-count', 'p4-beats-blend', 'p4-beats-more', 'p4-beats-same', 'p4-beats-yesno']) for (let s = 1; s <= 400; s++) { const q = L.generateQuestion(g, s); heard.push([g + ' ' + s, [q.story, q.prompt, q.explain, ...Object.values(q.whyNot || {}).map((e) => e.why)].filter(Boolean).join(' ')]); }
+  for (const g of ['p4-beats-count', 'p4-beats-find', 'p4-beats-blend', 'p4-beats-more', 'p4-beats-same', 'p4-beats-yesno', 'p4-blend-heard', 'p4-blend-yesno', 'p4-blend-beats', 'p4-blend-pair']) for (let s = 1; s <= 400; s++) { const q = L.generateQuestion(g, s); heard.push([g + ' ' + s, [q.story, q.prompt, q.explain, ...Object.values(q.whyNot || {}).map((e) => e.why)].filter(Boolean).join(' ')]); }
   const off = heard.flatMap(([id, t]) => inside(t).map((s) => id + ': ' + s));
   const rows = LEDGER_CSV.split('\n').slice(1).map((r) => { const cells = [...r.matchAll(/"((?:[^"]|"")*)"/g)].map((m) => m[1].replace(/""/g, '"')); return { key: cells[0], text: cells[7] || '', description: cells[8] || '' }; });
   const runRows = rows.filter((r) => RUNS.includes(r.text.replace(/\[[^\]]*\]\s*/g, '').trim().replace(/[.!?]$/, '').toLowerCase()));
@@ -1267,5 +1267,15 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
     && nearOff([{ key: 'cat-or-hat-0-1', kind: 'lesson line', source: 'cat-or-hat', text: '[warm and gentle, drawing out key words] Cat.', description: 'Say cat clearly, its start crisp, so it never sounds like hat.' }]).length === 1;
   ok(`every ledger row of the lessons on words that sound almost the same that says a word of a pair asks for it said clearly, naming the word it must never sound like, and none of their lesson lines is drawn out (${nearSaying} of their ${nearRows.length} rows; a row without the direction and a drawn-out row planted and caught)`, L.NS_PAIRS.length === 6 && nearOff(nearRows).length === 0 && nearSaying >= NEAR_ROWS_FLOOR && plantNear, nearOff(nearRows).slice(0, 6).join(' | '));
 }
+// A turn to think of a word, to put beats or words together, or to take a word apart ends its line (pass NA, round one's code check:
+// nothing waits after a line's last turn, so the child has until Next, where a wait after a turn inside a line is the say-back wait,
+// 1.2 seconds; since round two's final read the turns of Two words make one too). Three plants: a blend turn with its answer after it,
+// Two words make one's line 4 as pass MY wrote it, and a think turn with a sentence after it (round two's code read). Clap the beats' clap turn asks no such thing and keeps its wait, timed by its beats.
+{ const asks = /\bthink of (?:a|another) word\b|\bput (?:these|them|the)\b[^.]*\btogether\b|\btake (?:one|it) apart\b/i;
+  const late = (l) => { const t = (l.voices || []).filter((e) => Array.isArray(e) && e[2] === 'turn'); return t.length > 0 && asks.test(l.say) && !l.say.trim().endsWith(String(t[t.length - 1][0]).trim()); };
+  let read = 0; const bad = [];
+  for (const m of L.MODULES) ((m.lesson && m.lesson.script) || []).forEach((l, i) => { if ((l.voices || []).some((e) => Array.isArray(e) && e[2] === 'turn') && asks.test(l.say)) read += 1; if (late(l)) bad.push(m.id + ' line ' + (i + 1)); });
+  const plants = [{ say: 'Now you try, and put these beats together. Rab, bit. Rabbit!', voices: [['Rab, bit.', 'tell', 'turn']] }, { say: 'Now you try, and put these two words together. Sun. Flower. Sunflower!', voices: [['Flower.', 'tell', 'turn']] }, { say: 'Now you try. Sun starts with sss. Think of another word that starts like sun, and say it. Did you think of one?', voices: [['Think of another word that starts like sun, and say it.', 'tell', 'turn']] }];
+  ok(`a turn to think of a word, put beats or words together, or take a word apart ends its line (pass NA; ${read} turns read; three plants with a sentence after the turn caught)`, bad.length === 0 && read >= 10 && plants.every(late), bad.join(', ') + ' read ' + read); }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

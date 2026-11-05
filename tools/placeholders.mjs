@@ -10,9 +10,10 @@ import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 // Names the docs keep on purpose though no code has them: code a pass retired (pass MR's say-with-me, the held sounds, the review
-// backlog's old limits) and checks proposed in docs/MISTAKE-CLASSES.md. A name added here is still in a doc and in no code (the
+// backlog's old limits; pass NA's CB4_START, the blend bank's first sounds before its split, and THINK_TURN_MS, a wait that never ran)
+// and checks proposed in docs/MISTAKE-CLASSES.md. A name added here is still in a doc and in no code (the
 // docs sync test reads both ways).
-export const KEPT = ['ALSO_FITS', 'HELD_SOUND', 'LIGHT_REVIEWS_BUSY_DAY', 'LIGHT_REVIEW_BACKLOG', 'ROGER_SENTENCE', 'SAY_WITH_ME', 'SAY_WITH_ME_LESSONS', 'SOUND_CARRIERS'];
+export const KEPT = ['ALSO_FITS', 'CB4_START', 'HELD_SOUND', 'LIGHT_REVIEWS_BUSY_DAY', 'LIGHT_REVIEW_BACKLOG', 'ROGER_SENTENCE', 'SAY_WITH_ME', 'SAY_WITH_ME_LESSONS', 'SOUND_CARRIERS', 'THINK_TURN_MS'];
 const NAME = /\b[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)+\b/g;
 const ROOT = new URL('../', import.meta.url);
 

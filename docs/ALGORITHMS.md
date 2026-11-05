@@ -21,6 +21,11 @@ students, or the same student twice, get different numbers. The test suite runs 
 generator through 300 seeds and re-derives the answer independently from the question's
 own words, so a generator whose answer is ever wrong cannot ship.
 
+Two questions are the same question (questionKey) when their setup, wording, picture and answer are the same; the wrong
+choices are left out on purpose (pass IU), so a round never asks one twice with another wrong choice. Since pass NA a question
+that says its pictures' names in the buttons' order keys on its setup without them (keyStory), since the names it says are its
+wrong choices said: until then Think of a word's banks never stopped making new questions in the rules test. Since round two's code read pass MY's four banks that say their pictures' names do too (Two words make one's three and Clap the beats' same number), whose keys had counted every wrong choice said, 216 to 669 keys for 12 questions, and 432 for 30 in Clap the beats' same-number bank, and a question that says its pictures' names says them in the buttons' order.
+
 A round is `questions` core questions (default 5, settable per module) plus, once
 another lesson is passed, memory-check questions from lessons already passed (a passing
 round, a placement past it, or a clear Quick Review after Move Forward; progress.passedIds):
@@ -57,7 +62,7 @@ through the lessons those needed, so no lesson open for a child who followed the
 locks; the rules test walks 300 children through pass MY's gates to prove it. Where the
 lesson an idea builds on was not one it needed in pass MY, so a child can have it open with that
 lesson not passed, the lesson names none and says so (Big and small, whose size words Big and
-little teaches). Two kinds of educator action can still lock one of the ten lessons that now name another lesson: a lesson on its old path (its old prerequisite, or a lesson that one needed, as Words that change is for Count the words) was opened by hand (Unlock it anyway) and then passed, or moved past with Move Forward, while the lesson it now builds on never was; or the lesson it now builds on was erased (Yes, erase it) after the old one was passed. It opens again when the lesson it builds on is passed or moved past, or when the educator opens the lesson itself by hand; opening the lesson it builds on by hand does not open it (round one's code check, widened by round two's final read, pass MZ; Q87 asks whether to add a second way in).
+little teaches). Two kinds of educator action can still lock one of the ten lessons that now name another lesson: a lesson on its old path (its old prerequisite, or a lesson that one needed, as Words that change is for Count the words) was opened by hand (Unlock it anyway) and then passed, or moved past with Move Forward, while the lesson it now builds on never was; or the lesson it now builds on was erased (Yes, erase it) after the old one was passed. It opens again when the lesson it builds on is passed or moved past, or when the educator opens the lesson itself by hand; opening the lesson it builds on by hand does not open it (round one's code check, widened by round two's final read, pass MZ; Mikey kept it so in pass NA, his answer to Q87, "Q87 - A", rather than add a second way in that only the gate reads).
 
 ## Loop-back
 
@@ -234,7 +239,12 @@ round, a Quick Review's trace bank with nothing new hands its turn to the lesson
 trace banks (round five's code read: "r m k z r").
 
 A round asks about each word once while it can (pass MY). A question names what its explanation answers for
-(aboutWords: a word made of two words, a word whose beats it asks, a sentence whose words it counts), and a round, and
+(aboutWords: a word made of two words, a word whose beats it asks, a sentence whose words it counts, and since pass NA a word
+whose first sound it asks and a word with its mate, each word named on its own: round one's code check found keys of two and
+three words, sock sun and map sock sun, that no other question could meet, so the echo went unseen, and with each word its own
+Sun and sock's eight drawn words, sun and sock and moon and map the only words of their sounds, asked about one word twice in 42
+of the rules test's 600 rounds; it draws soap and milk since, words its lines already say, and reads 0, 1 and 2 of 600 rounds,
+screen rounds and Quick Reviews, Think of a word 1, 6 and 2 and Put the beats together 0, 0 and 0; an earlier explanation can still name a later question's answer word, in 247 of 2,000 Sun and sock rounds and 106 of Think of a word, since a question's answer stays out of its aboutWords by design: named too, it would have a round ask about a word twice in 1,456 of 2,000, round two's code read), and a round, and
 since pass MY's round two a Quick Review, draws another question while one can be found rather than ask about a word
 it has asked about, since the first explanation answers the second ("Yes. Bird and house make birdhouse." before
 "Which word do you hear in birdhouse?"). In a round as the screen builds it, the prompts of the last two rounds are
@@ -677,7 +687,7 @@ check: kept at its own pace, a sentence the child copies came quicker than the l
 A child's turn after a 'turn' sentence (mannerTurnMs) is about as long as the voice took to say it, 62 ms a letter at the manner's
 rate (for a strong sentence, since round one's code check, the strong word at the strong rate and the rest at the plain voice's
 0.86, MANNER_PLAIN_RATE, which the scripts test holds to the screens' plain rate), and 600 ms more, held from 1.2 to 2.6 seconds,
-since a sentence takes a young child longer than a word: since round two at the young voice's pace, as every line with voices is said (MANNER_YOUNG_RATE, 0.9, held to the screens' YOUNG_RATE): 1,321 ms after "Is it a ball?" asked, 2,097 after "I want the RED circle." (1,249 and 1,947 at the table's own pace, until round two)
+since a sentence takes a young child longer than a word: since round two at the young voice's pace, as every line with voices is said (MANNER_YOUNG_RATE, 0.9, held to the screens' YOUNG_RATE): 1,321 ms after "Is it a ball?" asked, 2,097 after "I want the RED circle." (1,249 and 1,947 at the table's own pace, until round two). A turn that asks a child to say a word slowly and clap once for each beat waits 900 ms and then 750 a beat, up to four seconds (pass MY, the third read: 1.36 seconds after "Butterfly." left no time for but, ter, fly and three claps). A turn that ends its line waits for nothing: the line ends on it, and the next line comes when the child taps Next, so a child thinks of a word for as long as they need (pass NA, round one's code check: a four-second wait written for the think turns never ran, since each is the last sentence of its line, and was taken out).
 Some phones ignore how loud a voice is asked to be, so on them a whisper is only slow and a big outside voice only bright and drawn
 out; for that reason a question asks by ear only what every device voice can show (pitch, pace, a question's lift and a strong word),
 never loudness alone, and a question that asks which word was said strong prints its sentence in small letters while the device can

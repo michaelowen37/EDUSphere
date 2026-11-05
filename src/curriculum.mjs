@@ -513,9 +513,9 @@ const PREK_TAUGHT = [
       { framework: 'CCSS', code: 'ELOF.P-LC.6', text: 'Understands and uses a wide variety of words for a variety of purposes.', moduleIds: ['listen-and-tap-pictures'] },
       // Pass ME, earmark E12 part two: rhymes, read in full in TEA's PK3 Streamlined Version (Domain III, B. Phonological
       // Awareness) and on headstart.gov (P-LIT 1 with its 36 to 48 month progression), quoted word for word; both taught in part
-      // (the lesson's sources say how: rhymes used in a song, nursery rhyme or fingerplay and the child's own made-up rhymes wait, and words that begin alike are not yet taught).
+      // (the lesson's sources say how: rhymes used in a song, nursery rhyme or fingerplay and the child's own made-up rhymes wait, and words that begin alike were not yet taught; since pass NA they are, in Sun and sock, which cites P-LIT 1 in part too).
       { framework: 'TEKS', code: 'PK3.III.B.6', text: 'Child uses rhyming words through playful activities.', moduleIds: ['rhymes-with-pictures'] },
-      { framework: 'CCSS', code: 'ELOF.P-LIT.1', text: 'Demonstrates awareness that spoken language is composed of smaller segments of sound.', moduleIds: ['rhymes-with-pictures'] },
+      { framework: 'CCSS', code: 'ELOF.P-LIT.1', text: 'Demonstrates awareness that spoken language is composed of smaller segments of sound.', moduleIds: ['rhymes-with-pictures', 'sun-and-sock'] },
       { framework: 'CCSS', code: 'ELOF.P-SCI.1', text: 'Observes and describes observable phenomena (objects, materials, organisms, and events).', moduleIds: ['animal-sounds'] },
       // Pass MO, earmark E12, Domain II part one: two-step directions and sentences that combine two ideas, read in TEA's PK3
       // Streamlined Version and on headstart.gov and held word for word to docs/standards.
@@ -550,6 +550,10 @@ const PREK_TAUGHT = [
       { framework: 'TEKS', code: 'PK3.III.B.4', text: 'Child segments compound words to form individual words with adult assistance.', moduleIds: ['two-words-make-one'] },
       // Pass MZ: Cat or hat?, PK3 III.B.2 (EARMARKS E12, the standards review of Domain III's III.B.2).
       { framework: 'TEKS', code: 'PK3.III.B.2', text: 'Child distinguishes differences between similar-sounding words with adult assistance.', moduleIds: ['cat-or-hat'] },
+      // Pass NA: Sun and sock, PK3 III.B.7 and III.B.8 (EARMARKS E12, the standards review of Domain III's first sounds), and Head
+      // Start's P-LIT 1 in part, its when two words begin with the same sound.
+      { framework: 'TEKS', code: 'PK3.III.B.7', text: 'Child identifies if two words begin with the same sound with adult assistance.', moduleIds: ['sun-and-sock'] },
+      { framework: 'TEKS', code: 'PK3.III.B.8', text: 'Child produces a word that begins with the same sound with adult assistance.', moduleIds: ['sun-and-sock'] },
     ],
   },
   {
@@ -643,14 +647,18 @@ const PREK_TAUGHT = [
       // Pass MX: Count the words, PK4 III.B.1 (EARMARKS E13, the standards review of Domain III, part one).
       { framework: 'TEKS', code: 'PK4.III.B.1', text: 'Child counts the number of words in a spoken sentence of increasing complexity.', moduleIds: ['count-the-words'] },
       // Pass MY: Clap the beats, PK4 III.B.3 and III.B.4 (EARMARKS E13, the standards review of Domain III, part two), and Head Start's
-      // P-LIT 1 in part, its counting syllables.
-      { framework: 'TEKS', code: 'PK4.III.B.3', text: 'Child blends multisyllabic words with up to 3 syllables.', moduleIds: ['clap-the-beats'] },
+      // P-LIT 1 in part, its counting syllables. Since pass NA (EARMARKS A75) III.B.3 is Put the beats together's, the blending split from
+      // Clap the beats.
+      { framework: 'TEKS', code: 'PK4.III.B.3', text: 'Child blends multisyllabic words with up to 3 syllables.', moduleIds: ['put-beats-together'] },
       { framework: 'TEKS', code: 'PK4.III.B.4', text: 'Child segments multisyllabic words with up to three syllables.', moduleIds: ['clap-the-beats'] },
       // Pass MZ: Same word or different?, PK4 III.B.2 (EARMARKS E13, the standards review of Domain III's III.B.2), and Head Start's
       // P-LIT 1 in part, its recognizing phonemic changes in words.
       { framework: 'TEKS', code: 'PK4.III.B.2', text: 'Child distinguishes when two words are the same or different.', moduleIds: ['same-word-or-different'] },
+      // Pass NA: Think of a word, PK4 III.B.8 (EARMARKS E13, the standards review of Domain III's first sounds), and Head Start's P-LIT 1
+      // in part, the first sound in spoken words.
+      { framework: 'TEKS', code: 'PK4.III.B.8', text: 'Child produces a word that begins with the same sound.', moduleIds: ['think-of-a-word'] },
       { framework: 'TEKS', code: 'PK4.III.C.1', text: 'Child recognizes and names at least 18 uppercase letters and 15 lowercase letters.', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
-      { framework: 'CCSS', code: 'ELOF.P-LIT.1', text: 'Demonstrates awareness that spoken language is composed of smaller segments of sound.', moduleIds: ['listen-for-rhymes', 'first-sounds', 'clap-the-beats', 'same-word-or-different'] },
+      { framework: 'CCSS', code: 'ELOF.P-LIT.1', text: 'Demonstrates awareness that spoken language is composed of smaller segments of sound.', moduleIds: ['listen-for-rhymes', 'first-sounds', 'clap-the-beats', 'same-word-or-different', 'think-of-a-word'] },
       { framework: 'CCSS', code: 'ELOF.P-LIT.3', text: 'Identifies letters of the alphabet and produces correct sounds associated with letters.', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
       { framework: 'TEKS', code: 'PK4.IV.C.2', text: 'Child progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas.', moduleIds: ['first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
       { framework: 'TEKS', code: 'PK4.IV.C.4', text: 'Child demonstrates directionality when writing (e.g., top to bottom, left to right) adult support as needed.', moduleIds: ['first-strokes', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },

@@ -228,6 +228,37 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
     const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
     const said = (audit.match(/Corrected in place in pass MZ \(Mikey's answer to Q85\)/g) || []).length;
     ok("docs/RULES-AUDIT-HISTORY.md keeps the rows pass MZ corrected in place as pass MY left them, each corrected row says so, and section 9's row for Q85 names them (pass MZ, Q85 (b))", /^\| A round is five core questions \(settable\)/.test(kept) && kept.includes('the extra question') && said >= 4 && audit.includes('| **A row of this file that no longer says what the code does is corrected in place (Mikey, pass MZ') && createHash('sha256').update(kept, 'utf8').digest('hex') === '020513500236768c9ca304832d145ce75ecddf983328e9fed1c5da1a14362dab', `${said} rows say so`); }
+  // Pass NA's two blocks, held the same way: Q86 and Q87, which Mikey answered when he opened the pass ("Q86 - yes, B", "Q87 - A"), and
+  // the vision's sentences and the rows its answers corrected in place, as pass MZ left them.
+  { const o = "<!-- RULES-AUDIT section 11's answered questions in pass NA, word for word: begin -->\n"; const ia = hist.indexOf(o); const ib = hist.indexOf("<!-- RULES-AUDIT section 11's answered questions in pass NA, word for word: end -->");
+    const na = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
+    ok('docs/RULES-AUDIT-HISTORY.md keeps the questions answered in pass NA, every line unchanged (pass NA)', /^- Q86\. Answered in pass NA/.test(na) && /\n- Q87\. Answered in pass NA/.test(na) && createHash('sha256').update(na, 'utf8').digest('hex') === '46be2b4ef230bbcf873b4f7fd6981994d5b5ff4ee776cfab081f027bf67efe92'); }
+  { const o = '<!-- docs/VISION.md and RULES-AUDIT rows as pass MZ left them, before pass NA corrected them in place, word for word: begin -->\n'; const ia = hist.indexOf(o); const ib = hist.indexOf('<!-- docs/VISION.md and RULES-AUDIT rows as pass MZ left them, before pass NA corrected them in place, word for word: end -->');
+    const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
+    ok("docs/RULES-AUDIT-HISTORY.md keeps the vision's sentences and the rows pass NA corrected in place as pass MZ left them, and section 9's row for Q86 names them (pass NA, Q86 (b))", /^- \*\*Master, then move\.\*\* A module opens only when everything it needs is mastered\./.test(kept) && kept.includes('asks whether to add a second way in') && audit.includes('| **The vision says what the app does (Mikey, pass NA, his answer to Q86') && createHash('sha256').update(kept, 'utf8').digest('hex') === 'db7f31d62e1ac33032c6df9bd2c07240f63b6d26bb4258fdc4beb2f1dbd7f532'); }
+  // The vision says what the app does (pass NA, Mikey's answer to Q86, "Q86 - yes, B"): docs/VISION.md and section 1 of the rules audit
+  // each say the gate is a pass and the star a second pass on another day, and the reflection rule with the code's own numbers
+  // (WONDER_EVERY different lessons, MISS_STREAK misses in a row), and neither keeps a rule the app outgrew (the gate as mastered, a
+  // reflection after every second finished round, a change wrong for moving past what is unmastered). Pass MZ's own texts are the near
+  // misses: each must fail the check, and so must each text with one of the old test's two sentences planted in it (round two's final
+  // read: the old texts failed on their other rules, so neither sentence had been read).
+  { const vision = readFileSync(new URL('../docs/VISION.md', import.meta.url), 'utf8');
+    const one = audit.slice(audit.indexOf('## 1. The vision'), audit.indexOf('## 2. The product'));
+    const words = ['zero', 'one', 'two', 'three', 'four', 'five'];
+    const flat = (t) => t.replace(/\s+/g, ' ');
+    const faults = (t) => { const f = flat(t); const out = [];
+      if (!/A module opens only when everything it needs is passed/.test(f)) out.push('the gate');
+      if (!/Mastery, the star, is a second pass on another day/.test(f)) out.push('the star');
+      if (!new RegExp('after every ' + words[L.WONDER_EVERY] + ' different lessons').test(f)) out.push('the reflection rule');
+      if (!new RegExp(words[L.MISS_STREAK] + ' misses in a row').test(f)) out.push('the rough patch');
+      if (/needs is mastered|second finished round|have not mastered, it is wrong|something unmastered/.test(f)) out.push('an old rule');
+      return out; };
+    const kept = (() => { const o = '<!-- docs/VISION.md and RULES-AUDIT rows as pass MZ left them, before pass NA corrected them in place, word for word: begin -->\n'; const ia = hist.indexOf(o); return ia >= 0 ? hist.slice(ia + o.length, hist.indexOf('<!-- docs/VISION.md and RULES-AUDIT rows as pass MZ left them, before pass NA corrected them in place, word for word: end -->')) : ''; })();
+    const oldVision = vision.replace(/- \*\*Master, then move\.\*\*[^]*?(?=\n- \*\*Go back)/, kept.slice(0, kept.indexOf('\n- **Reflect')));
+    const oldOne = one.replace(/- \*\*Reflect often, and for a reason\.\*\*[^\n]*/, (kept.split('\n').find((l) => l.startsWith('- **Reflect often, and for a reason.** Reflection questions come after every second')) || ''));
+    const near = faults(oldVision).length > 0 && faults(oldOne).length > 0 && faults(vision.replace('two different lessons', 'two finished rounds')).length > 0
+      && faults(vision.replace('have not passed, it is wrong', 'have not mastered, it is wrong')).length > 0 && faults(one.replace('something not passed, it is wrong', 'something unmastered, it is wrong')).length > 0;
+    ok("docs/VISION.md and the rules audit's section 1 say the gate is a pass, the star a second pass on another day, and a reflection comes after every " + words[L.WONDER_EVERY] + ' different lessons worked, a hard round being ' + words[L.MISS_STREAK] + " misses in a row, as the code has them, and neither keeps a rule the app outgrew (pass NA, Q86 (b); pass MZ's own texts, the old test's two sentences planted in each and a changed number caught; the plants since round two's final read)", faults(vision).length === 0 && faults(one).length === 0 && near, `vision: ${faults(vision)}; section 1: ${faults(one)}; near misses ${near}`); }
   const s = audit.indexOf('## 11. Open items that need Mikey'); const e = audit.indexOf('\n## ', s + 5); const sec = audit.slice(s, e < 0 ? audit.length : e);
   const answeredLines = sec.split('\n').filter((l) => /^- Q\d+\. Answered in pass /.test(l));
   const long = answeredLines.filter((l) => !/^- Q\d+\. Answered in pass \w+ \(Mikey: .+\)\. Its rule lives in [^\n]+\.$/.test(l) || /The question as it stood/.test(l));
@@ -423,5 +454,11 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
     && steps.length === 17 && steps.every((l) => / run "[^"]+" \d+ /.test(l)) && bare(check).length === 0 && bare(planted).length === 1,
     JSON.stringify({ notes, codes, last: last.slice(0, 60), steps: steps.length, bare: bare(check).length, planted: bare(planted).length }));
 }
+// docs/MISTAKE-CLASSES.md counts a pass once in a class's heading (pass NA, the third read: round two's evidence was counted as one
+// more pass, so eight headings read "NA and NA since the review"). A heading's list of passes since the review names each pass once;
+// the doubled heading is planted.
+{ const mc = readFileSync(new URL('../docs/MISTAKE-CLASSES.md', import.meta.url), 'utf8').split('\n').filter((l) => /^### C\d+ /.test(l));
+  const twice = (l) => { const m = /\((\d+) passes; (.*) since the review\)$/.exec(l); if (!m) return false; const list = m[2].replace(/ and /, ', ').split(', '); return new Set(list).size !== list.length; };
+  ok('no heading of docs/MISTAKE-CLASSES.md names a pass twice in its list since the review (pass NA, the third read; a doubled heading caught)', mc.length >= 35 && !mc.some(twice) && twice('### C10 a wrong choice a child could fairly call right (12 passes; MV, MW, MX, MY, NA and NA since the review)'), mc.filter(twice).join(' | ')); }
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exitCode = failed ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (CLAUDE.md, 2026-09-23)

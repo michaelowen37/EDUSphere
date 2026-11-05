@@ -37,11 +37,15 @@ const SMALL = { width: 320, height: 568 };
 // How many seeds of each bank a child's view is read at (pass MZ, round one's code check: seed 1 alone missed two).
 const SEEDS = 6;
 // What this check reads, as floors at the counts the code has (round two's code check, pass MZ: floors of 800 lines and 300 banks were
-// guesses): 855 lines of 86 lessons, each read at two sizes; 347 banks at six seeds each; the lines whose Next is more than a third below
-// a 320 by 568 screen, where the cue shows (35 in the light theme, 33 in the dark); and 100 lines that show a painting. A lesson or a bank
+// guesses): 895 lines of 89 lessons, each read at two sizes; 362 banks at six seeds each; the lines whose Next is more than a third below
+// a 320 by 568 screen, where the cue shows (35 in the light theme, 34 in the dark); and 103 lines that show a painting (pass
+// NA's three lessons, Sun and sock's fourteen lines since round one and the other two's thirteen, fifteen banks and a painting each, with
+// Clap the beats two lines shorter, and since round two Two words make one two lines longer, its two turns each ending a line, the cue
+// still on none of its lines at 320 by 568; pass MZ's floors were 855 lines of 86 lessons, 347 banks, a cue on 35 and 33 lines and 100 lines with
+// a painting). A lesson or a bank
 // added raises a count, and its floor follows in the same pass; a layout that moves a Next changes the cue's count, and its floor follows
 // that too, once the cue's own rule has passed on every line.
-const FLOORS = { lines: 855, banks: 347, cue: { light: 35, dark: 33 }, paintings: 100 };
+const FLOORS = { lines: 895, banks: 362, cue: { light: 35, dark: 34 }, paintings: 103 };
 // The lines and banks that sat under the fold when this check was written (pass MY: 86 lines of 40 lessons and 21 banks, in either
 // theme, none of pass MX's or MY's lessons, 107 waits in all), each by lesson and line (counted from 1) or by bank with the lower of its
 // two bottoms, waited here for its lesson's next screen read (EARMARKS A80). Pass MZ fixed them all, so none waits: the speaker moved

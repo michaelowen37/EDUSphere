@@ -5378,7 +5378,7 @@ function PREK3_READING_MODULES() { return [
         { say: 'Rhymes are fun to say. Say a rhyme with your grown-up. Ball, wall! Cat, hat!', show: null },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.5 (identifies rhyming words with adult assistance), since the lesson teaches telling whether two words rhyme, pairing pictures of things whose names rhyme and finding the one of three that does not, and III.B.6 (uses rhyming words through playful activities), in part, since the lesson\'s playful activities invite saying rhymes with a grown-up, ball and wall, cat and hat, while using them, saying a rhyme or making up one of its own, is the child\'s own talk, which only a grown-up can hear (EARMARKS E12), and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 36 to 48 month progression reads "Shows rote imitation and enjoyment of rhyme and alliteration. With support, distinguishes when two words rhyme and when two words begin with the same sound.", in part, since the lesson teaches when two words rhyme, while the child\'s rote imitation and enjoyment of rhyme are a grown-up\'s to hear, and not yet alliteration, when two words begin with the same sound (EARMARKS E12; the odd one of three reaches toward the 48 to 60 month progression, which names which words rhyme from a group of three).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.5 (identifies rhyming words with adult assistance), since the lesson teaches telling whether two words rhyme, pairing pictures of things whose names rhyme and finding the one of three that does not, and III.B.6 (uses rhyming words through playful activities), in part, since the lesson\'s playful activities invite saying rhymes with a grown-up, ball and wall, cat and hat, while using them, saying a rhyme or making up one of its own, is the child\'s own talk, which only a grown-up can hear (EARMARKS E12), and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 36 to 48 month progression reads "Shows rote imitation and enjoyment of rhyme and alliteration. With support, distinguishes when two words rhyme and when two words begin with the same sound.", in part, since the lesson teaches when two words rhyme, while when two words begin with the same sound is taught in Sun and sock, and the child\'s rote imitation and enjoyment of rhyme and alliteration are the child\'s own, for a grown-up to hear (the odd one of three reaches toward the 48 to 60 month progression, which names which words rhyme from a group of three).'],
     generators: ['p3-rhyme-tap', 'p3-rhyme-yesno', 'p3-rhyme-listen', 'p3-rhyme-odd', 'p3-rhyme-tap'],
   },
   {
@@ -5984,11 +5984,16 @@ function PREK3_READING_MODULES() { return [
         { say: 'Some words are made of two words. Listen. Dog. House. Put the two words together, and they make one new word, doghouse!', stress: ['doghouse'], show: { kind: 'pair', stack: true, a: { kind: 'row', items: [{ kind: 'icon', name: 'dog' }, { kind: 'icon', name: 'house' }] }, b: { kind: 'icon', name: 'doghouse' } } },
         { say: 'A doghouse is a little house for a dog, where a dog can rest out of the rain.', show: { kind: 'icon', name: 'doghouse' } },
         { say: 'Listen to two more words. Cup. Cake. Put them together, and they make cupcake!', stress: ['cupcake'], show: { kind: 'pair', stack: true, a: { kind: 'row', items: [{ kind: 'icon', name: 'cup' }, { kind: 'icon', name: 'cake' }] }, b: { kind: 'icon', name: 'cupcake' } } },
-        { say: 'Now you try, and put these two words together. Sun. Flower. Sunflower!', show: { kind: 'pair', stack: true, a: { kind: 'row', items: [{ kind: 'icon', name: 'sun' }, { kind: 'icon', name: 'flower' }] }, b: { kind: 'icon', name: 'sunflower' } }, voices: [['Flower.', 'tell', 'turn']] },
+        // A turn to put two words together, or to take a word apart, ends its line, and the next line says the answer, so the child has
+        // until Next to try (pass NA, round two's final read: 1.2 seconds after each turn, the say-back wait, the voice said the answer).
+        // The answer's line says its picture's words from the top down, as lines 1 and 6 do (the third read).
+        { say: 'Now you try, and put these two words together. Sun. Flower.', show: { kind: 'row', items: [{ kind: 'icon', name: 'sun' }, { kind: 'icon', name: 'flower' }] }, voices: [['Flower.', 'tell', 'turn']] },
+        { say: 'Sun. Flower. Sunflower! Sun and flower make sunflower.', stress: ['sunflower'], show: { kind: 'pair', stack: true, a: { kind: 'row', items: [{ kind: 'icon', name: 'sun' }, { kind: 'icon', name: 'flower' }] }, b: { kind: 'icon', name: 'sunflower' } } },
         { say: 'We can take a word like that apart, too. Listen. Snowball. Snow. Ball. Snowball has two words in it, snow and ball.', show: { kind: 'pair', stack: true, a: { kind: 'icon', name: 'snowball' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'snow' }, { kind: 'icon', name: 'ball' }] } } },
         { say: 'When we take a word apart, we say its two words in order, first one, and then the other. Starfish is star, and then fish.', stress: ['in order'], show: { kind: 'pair', stack: true, a: { kind: 'icon', name: 'starfish' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'star' }, { kind: 'icon', name: 'fish' }] } } },
         { say: 'You hear star in starfish, and the other word you hear is fish.', show: { kind: 'pair', a: { kind: 'icon', name: 'star' }, b: { kind: 'icon', name: 'fish' } } },
-        { say: 'Now you try, and take one apart. Cupcake. Cup. Cake.', show: { kind: 'pair', stack: true, a: { kind: 'icon', name: 'cupcake' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'cup' }, { kind: 'icon', name: 'cake' }] } }, voices: [['Cupcake.', 'tell', 'turn']] },
+        { say: 'Now you try, and take one apart. Cupcake.', show: { kind: 'icon', name: 'cupcake' }, voices: [['Cupcake.', 'tell', 'turn']] },
+        { say: 'Cupcake. Cup. Cake. Cupcake has two words in it, cup and cake.', show: { kind: 'pair', stack: true, a: { kind: 'icon', name: 'cupcake' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'cup' }, { kind: 'icon', name: 'cake' }] } } },
         { say: 'Listen to these two words. Bird. House. Put them together, and they make birdhouse, a little house for a bird.', stress: ['birdhouse'], show: { kind: 'pair', stack: true, a: { kind: 'row', items: [{ kind: 'icon', name: 'bird~big' }, { kind: 'icon', name: 'house' }] }, b: { kind: 'icon', name: 'birdhouse' } } },
         { say: 'Doghouse and birdhouse both have the word house in them, so listen to the first word. Dog and house make doghouse, and bird and house make birdhouse.', show: { kind: 'pair', a: { kind: 'icon', name: 'doghouse' }, b: { kind: 'icon', name: 'birdhouse' } } },
         { say: 'Some words do not come apart into two words at all, like cat. Cat has just one word in it, and that word is cat.', show: { kind: 'pic', name: 'cat' } },
@@ -6038,6 +6043,50 @@ function PREK3_READING_MODULES() { return [
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.2 (distinguishes differences between similar-sounding words with adult assistance.), since the lesson says words that sound almost the same one after another, cat and hat, bear and chair, rock and sock, ball and wall, dog and log, and moon and spoon, says what each one is and that only the very start of each is different, has the child say two of them and point to the one heard in turns of their own, tells one word said two times from two different words, hears a word inside a sentence, and asks which picture is the word heard, which thing a heard sentence names, which heard word is a picture\'s name, whether two heard words are the same or different, and whether a picture is the word heard, the voice saying each word slowly, and again when the child asks, being the adult assistance.'],
     generators: ['p3-near-tap', 'p3-near-in', 'p3-near-name', 'p3-near-same', 'p3-near-yesno'],
+  },
+  // Sun and sock (pass NA, the standards review of Domain III's III.B.7 and III.B.8, EARMARKS E12): PK3 III.B.7, "identifies if two
+  // words begin with the same sound with adult assistance.", and III.B.8, "produces a word that begins with the same sound with adult
+  // assistance.", each cited whole, and Head Start's P-LIT 1 in part, its "distinguishes ... when two words begin with the same sound."
+  // Ten words a three-year-old knows, each a picture the app draws, start with three sounds a child can hold and hear (sss, mmm and
+  // fff, which the app plays itself): sun, sock and soap, moon, map and milk, and fish, fan, feather and fox. The child hears two words
+  // that start the same and two that do not and the one of three that starts with a different sound, says two back, hears a silly
+  // sentence with words that start the same, and thinks of a word that starts like sun and one that starts like moon in turns of their
+  // own, each turn ending its line, so the child thinks as long as they need, and the next line naming words that do. Its questions are
+  // heard questions that print none of the words they ask about while the voice can speak. It builds on Cat or hat?, which first
+  // listens to the very start of a word (Mikey's answer to Q84).
+  {
+    id: 'sun-and-sock',
+    skill: 'Listening',
+    order: 21,
+    requires: ['cat-or-hat'],
+    requiresWhy: 'Sun and sock listens to the very start of a word, which Cat or hat? teaches first, since cat and hat sound almost the same and only their very start is different, so it builds on Cat or hat?.',
+    title: 'Sun and sock',
+    tagline: 'Words that start the same',
+    lesson: {
+      paragraphs: ['Every word has a very start. Sun starts with the sound sss, and sock starts with sss too, so sun and sock start the same.', 'Moon and map both start with mmm, and fish, fan, feather and fox all start with fff. Sun and moon do not start the same, because sun starts with sss and moon starts with mmm.', 'To think of a word that starts like sun, say its first sound, sss, and think of things that start with it, like sock, soap and seven.'],
+      keyIdea: 'Listen to the very start of each word. Sun and sock start with the same sound, sss, so they start the same.',
+      example: { kind: 'pair', a: { kind: 'icon', name: 'sun' }, b: { kind: 'icon', name: 'sock' }, caption: 'Sun and sock start the same, with sss.' },
+      pictures: [{ serial: 'P183', alt: 'A pair of bright red socks drying on a sunny windowsill, the bright sun shining in a blue sky outside the window', step: 1 }],
+      script: [
+        { say: 'Listen to the very start of a word. Sun. Sss. Sun starts with the sound sss.', show: { kind: 'icon', name: 'sun' } },
+        { say: 'Sock starts with sss too. Sun. Sock. Sun and sock start with the same sound.', stress: ['the same sound'], show: { kind: 'pair', a: { kind: 'icon', name: 'sun' }, b: { kind: 'icon', name: 'sock' } } },
+        { say: 'Moon. Mmm. Moon starts with the sound mmm, and map starts with mmm too.', show: { kind: 'pair', a: { kind: 'icon', name: 'moon' }, b: { kind: 'icon', name: 'map' } } },
+        { say: 'Fish. Fan. Fish and fan both start with fff.', show: { kind: 'pair', a: { kind: 'pic', name: 'fish' }, b: { kind: 'icon', name: 'fan' } } },
+        { say: 'Some words start with different sounds. Sun. Moon. Sun starts with sss, and moon starts with mmm, so they do not start the same.', stress: ['different sounds'], show: { kind: 'pair', a: { kind: 'icon', name: 'sun' }, b: { kind: 'icon', name: 'moon' } } },
+        // The odd one of three, as its bank asks (round one's lesson check: every line compared two words, or three that all start the same).
+        { say: 'Here are three words. Fish. Fan. Map. Fish and fan start with fff. Map starts with mmm, so map is the one that starts with a different sound.', show: { kind: 'row', items: [{ kind: 'pic', name: 'fish' }, { kind: 'icon', name: 'fan' }, { kind: 'icon', name: 'map' }] } },
+        { say: 'Now you try, and say them like me. Feather. Fox.', show: { kind: 'pair', a: { kind: 'icon', name: 'feather' }, b: { kind: 'pic', name: 'fox' } }, voices: [['Feather.', 'tell', 'turn'], ['Fox.', 'tell', 'turn']] },
+        { say: 'Feather and fox both start with fff, so they start the same.', show: { kind: 'pair', a: { kind: 'icon', name: 'feather' }, b: { kind: 'pic', name: 'fox' } } },
+        { say: 'Here is a silly sentence with words that start the same. Fox finds a fan! Fox, finds and fan all start with fff.', show: { kind: 'pair', a: { kind: 'pic', name: 'fox' }, b: { kind: 'icon', name: 'fan' } } },
+        { say: 'Now you try. Sun starts with sss. Think of another word that starts like sun, and say it.', show: { kind: 'icon', name: 'sun' }, voices: [['Think of another word that starts like sun, and say it.', 'tell', 'turn']] },
+        { say: 'Did you think of sock? Sock starts with sss, just like sun, and so do soap and seven.', show: { kind: 'row', items: [{ kind: 'icon', name: 'sun' }, { kind: 'icon', name: 'sock' }, { kind: 'icon', name: 'soap' }] } },
+        { say: 'Now you try one more. Moon starts with mmm. Think of another word that starts like moon, and say it.', show: { kind: 'icon', name: 'moon' }, voices: [['Think of another word that starts like moon, and say it.', 'tell', 'turn']] },
+        { say: 'Did you think of map? Map starts with mmm, just like moon, and so do milk and mitten.', show: { kind: 'row', items: [{ kind: 'icon', name: 'moon' }, { kind: 'icon', name: 'map' }, { kind: 'icon', name: 'milk' }] } },
+        { say: 'Listen to the very start of each word. Sun and sock start with the same sound, sss, so they start the same.', show: { kind: 'pair', a: { kind: 'icon', name: 'sun' }, b: { kind: 'icon', name: 'sock' } } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.7 (identifies if two words begin with the same sound with adult assistance.), since the lesson says words one after another and the sound each one starts with, sun, sock and soap with sss, moon, map and milk with mmm, and fish, fan, feather and fox with fff, tells two words that start the same from two that do not, sun and moon, and the one of three that starts with a different sound, map among fish and fan, has the child say two of them in a turn of their own, says a silly sentence with words that start the same, and asks which picture starts like a word heard, whether two heard words start with the same sound, which of three heard words starts with a different sound, and whether a picture starts like a word heard, the voice saying each word and the sound it starts with being the adult assistance, and III.B.8 (produces a word that begins with the same sound with adult assistance.), since the lesson has the child think of a word that starts like sun and one that starts like moon and say it, in turns of their own, each turn ending its line, so the child thinks as long as they need, and the next line naming words that do, sock, soap and seven, and map, milk and mitten, and asks which word a child could say that starts like a word heard, and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 36 to 48 month progression reads "Shows rote imitation and enjoyment of rhyme and alliteration. With support, distinguishes when two words rhyme and when two words begin with the same sound.", in part, since the lesson teaches when two words begin with the same sound, while when two words rhyme is taught in Words that rhyme, and the child\'s rote imitation and enjoyment of rhyme and alliteration are the child\'s own, for a grown-up to hear, its turns inviting a child to say words that start the same.'],
+    generators: ['p3-start-tap', 'p3-start-same', 'p3-start-say', 'p3-start-odd', 'p3-start-yesno'],
   },
 ]; }
 
@@ -7843,12 +7892,14 @@ function PREK_READING_MODULES() { return [
     sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.1 (counts the number of words in a spoken sentence of increasing complexity.), since the lesson counts the words of sentences from two words to six, a dot and a clap for each, little words like the counted too, a sentence that grows one word at a time, the longer of two sentences told by its count, has the child say and clap sentences in turns of their own, says how a sentence with more words has more than another, and asks how many words a sentence has, which has more or fewer, which word is new, and which has a word for each dot.'],
     generators: ['p4-words-count', 'p4-words-more', 'p4-words-new', 'p4-words-dots', 'p4-words-yesno'],
   },
-  // Clap the beats (pass MY, the standards review of Domain III, part two, EARMARKS E13): PK4 III.B.3, "blends multisyllabic words
-  // with up to 3 syllables.", and III.B.4, "segments multisyllabic words with up to three syllables.", each cited whole, and Head Start's
-  // P-LIT 1 in part, its "Is able to count syllables". Beside a picture, a group of dots takes a frame as wide as itself, so it draws
+  // Clap the beats (pass MY, the standards review of Domain III, part two, EARMARKS E13): PK4 III.B.4, "segments multisyllabic words
+  // with up to three syllables.", cited whole, and Head Start's P-LIT 1 in part, its "Is able to count syllables". Until pass NA it taught
+  // III.B.3, "blends multisyllabic words with up to 3 syllables.", too; then EARMARKS A75 gave every blend question a word that starts
+  // the same way, said and drawn in its lesson, which would have taken this lesson past fourteen lines, so the blending went to a lesson of
+  // its own, Put the beats together (Mikey's answer to Q70, as A75 asked). Beside a picture, a group of dots takes a frame as wide as itself, so it draws
   // large enough to count (in a frame of five, three dots drew at about two thirds their size, the lead's look). A beat is a syllable, said the way four-year-olds clap it: words of one, two and
-  // three beats said slowly, a clap and a dot for each beat, beats said one after another put together into the word they make (pen,
-  // sill, makes pencil), and the one with more beats, fewer, or the same number. It tells a clap for each word in a sentence (Count the
+  // three beats said slowly, a clap and a dot for each beat, and, since pass NA, the word with a
+  // number of beats asked for, and the one with more beats, fewer, or the same number. It tells a clap for each word in a sentence (Count the
   // words, the lesson it needs) from a clap for each beat in one word, as EARMARKS A71 asks ("Rabbit is one word, but it has two
   // beats."). Each beat is written the way a voice says it as a word of its own (rab, bit; pen, sill; bah, nan, nuh), never as a lone
   // letter and never as a speech sound the app plays itself (buh, tuh), so the device's voice says every beat. Its questions are
@@ -7862,7 +7913,7 @@ function PREK_READING_MODULES() { return [
     title: 'Clap the beats',
     tagline: 'One word can have more than one beat',
     lesson: {
-      paragraphs: ['When we count the words in a sentence, we clap once for each word. A word has beats inside it, like a drum. Rabbit is one word, but it has two beats, rab, bit, so we clap two times.', 'Dog, bus and fish have one beat each, and banana has three, bah, nan, nuh. Say a word slowly, clap once for each beat, and count the claps. Butterfly, but, ter, fly, has three beats.', 'We can put beats together to make a word. Pen, sill, makes pencil. Um, brel, luh, makes umbrella. Cat has one beat, fewer than butterfly, and rabbit, pencil and turtle have the same number of beats, two.'],
+      paragraphs: ['When we count the words in a sentence, we clap once for each word. A word has beats inside it, like a drum. Rabbit is one word, but it has two beats, rab, bit, so we clap two times.', 'Dog, bus and fish have one beat each, and banana has three, bah, nan, nuh. Say a word slowly, clap once for each beat, and count the claps. Butterfly, but, ter, fly, has three beats.', 'Umbrella, um, brel, luh, has three beats too, and so does dinosaur, dye, nuh, sore. Cat has one beat, fewer than butterfly, and rabbit, pencil and turtle have the same number of beats, two.'],
       keyIdea: 'A sentence has words, and a word has beats. Say a word slowly, and clap once for each beat.',
       example: { kind: 'pair', a: { kind: 'pic', name: 'rabbit' }, b: { kind: 'dots', count: 2, frame: 2 }, caption: 'Rab, bit. One word, two beats.' },
       pictures: [{ serial: 'P180', alt: 'A small child tapping a toy drum on the grass, a white rabbit sitting close in front of the child, a grown-up smiling beside them', step: 1 }],
@@ -7874,16 +7925,14 @@ function PREK_READING_MODULES() { return [
         { say: 'Some words have three beats. Banana. Bah, nan, nuh. That is three beats, so banana gets three claps.', show: { kind: 'pair', a: { kind: 'icon', name: 'banana' }, b: { kind: 'dots', count: 3, frame: 3 } } },
         { say: 'Now you try. Say this one slowly, and clap once for each beat. Butterfly. But, ter, fly.', show: { kind: 'icon', name: 'butterfly' }, voices: [['Butterfly.', 'tell', 'turn']] },
         { say: 'Butterfly has three beats, so that is three claps and three dots.', show: { kind: 'dots', count: 3 } },
-        { say: 'We can put beats together to make a word. Listen. Pen, sill. Put the beats together, and they make pencil!', stress: ['pencil'], show: { kind: 'icon', name: 'pencil' } },
-        { say: 'Here are three beats to put together. Um, brel, luh. Put them together, and they make umbrella!', stress: ['umbrella'], show: { kind: 'icon', name: 'umbrella' } },
-        { say: 'Now you try, and put these beats together. Dye, nuh, sore. Dinosaur!', show: { kind: 'icon', name: 'dinosaur' }, voices: [['Dye, nuh, sore.', 'tell', 'turn']] },
+        { say: 'Umbrella and dinosaur have three beats too. Umbrella. Um, brel, luh. Dinosaur. Dye, nuh, sore.', show: { kind: 'pair', a: { kind: 'icon', name: 'umbrella' }, b: { kind: 'icon', name: 'dinosaur' } } },
         { say: 'Which one has more beats, cat or butterfly? Cat has one beat. Butterfly has three beats, more than one, so cat has fewer.', show: { kind: 'pair', stack: true, a: { kind: 'dots', count: 1 }, b: { kind: 'dots', count: 3 } } },
         { say: 'Rabbit. Rab, bit. Pencil. Pen, sill. Rabbit and pencil have two beats each, so they have the same number of beats. Turtle. Tur, tull. Turtle has two beats too.', show: { kind: 'row', items: [{ kind: 'pic', name: 'rabbit' }, { kind: 'icon', name: 'pencil' }, { kind: 'pic', name: 'turtle' }] } },
         { say: 'A sentence has words, and a word has beats. Say a word slowly, clap once for each beat, and count the claps. Rabbit. Rab, bit. That is two claps.', show: { kind: 'pair', a: { kind: 'pic', name: 'rabbit' }, b: { kind: 'dots', count: 2, frame: 2 } } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.3 (blends multisyllabic words with up to 3 syllables.), since the lesson says the beats of words of two and three beats one after another, pen, sill, um, brel, luh, and dye, nuh, sore, puts them together into the words they make, pencil, umbrella and dinosaur, has the child put beats together in a turn of their own, and asks which word a word\'s beats make, and III.B.4 (segments multisyllabic words with up to three syllables.), since the lesson says words of one, two and three beats slowly, a clap and a dot for each beat, has the child clap a word\'s beats in a turn of their own, tells a clap for each word in a sentence from a clap for each beat in one word, and asks how many beats a word has, which has more or fewer, and which has the same number, and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches counting syllables, the beats in a spoken word, while rhyme recognition is taught in Rhyme time, the first sound in spoken words in First sounds and recognizing phonemic changes in words in Same word or different?, and the other sounds in a word wait (EARMARKS E13).'],
-    generators: ['p4-beats-count', 'p4-beats-blend', 'p4-beats-more', 'p4-beats-same', 'p4-beats-yesno'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.4 (segments multisyllabic words with up to three syllables.), since the lesson says words of one, two and three beats slowly, a clap and a dot for each beat, has the child clap a word\'s beats in a turn of their own, tells a clap for each word in a sentence from a clap for each beat in one word, and asks how many beats a word has, which word has the number of beats asked for, which has more or fewer, and which has the same number, while putting beats together into words is taught in Put the beats together, and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches counting syllables, the beats in a spoken word, while rhyme recognition is taught in Rhyme time, the first sound in spoken words in First sounds and recognizing phonemic changes in words in Same word or different?, and the other sounds in a word wait (EARMARKS E13).'],
+    generators: ['p4-beats-count', 'p4-beats-find', 'p4-beats-more', 'p4-beats-same', 'p4-beats-yesno'],
   },
   // Same word or different? (pass MZ, the standards review of Domain III's III.B.2, EARMARKS E13): PK4 III.B.2, "distinguishes when two
   // words are the same or different.", cited whole, and Head Start's P-LIT 1 in part, its "Recognizes phonemic changes in words, such
@@ -7926,6 +7975,88 @@ function PREK_READING_MODULES() { return [
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.2 (distinguishes when two words are the same or different.), since the lesson says two words that are the same, ball and ball, and pairs that sound almost the same but are different words, ball and wall, cat and hat, dog and log, moon and spoon, rock and sock, and bear and chair, says to listen to every sound, from the start to the end, to tell whether two words are the same, finds the one different word of three, has the child say same or different and find a silly word in turns of their own, and asks whether two heard words are the same or different, which of three heard words was different, which word made a heard sentence silly, which heard word is a picture\'s name, and yes or no about words that are the same, words that are different and silly sentences, and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches recognizing phonemic changes in words, a sentence made silly by one word said in place of a word that sounds almost the same, I wear a rock on my foot and I eat my soup with a moon, while rhyme recognition is taught in Rhyme time, the first sound in spoken words in First sounds and counting syllables in Clap the beats, and the other sounds in a word wait (EARMARKS E13).'],
     generators: ['p4-near-same', 'p4-near-odd', 'p4-near-silly', 'p4-near-name', 'p4-near-yesno'],
+  },
+  // Put the beats together (pass NA, EARMARKS A75 and the standards review of Domain III, EARMARKS E13): PK4 III.B.3, "blends
+  // multisyllabic words with up to 3 syllables.", cited whole, taught in Clap the beats until pass NA. A word's beats said one after
+  // another, the way the voice says each (pen, sill; um, brel, luh), put together into the word they make; and every word it puts
+  // together beside a word that starts the same way and has different beats (pencil and pizza, rabbit and river, turtle and table,
+  // umbrella and onion, banana and butterfly, dinosaur and doctor), so a child who knows first sounds must still put every beat
+  // together (A75: until pass NA, 57 percent of blend questions could be answered by the first sound alone). Each run of beats is a
+  // sentence of its own; the child puts three runs together in turns of their own, each turn showing nothing until the voice says the
+  // word. Its questions are heard questions that print none of the words or beats they ask about while the voice can speak. It builds
+  // on Clap the beats, which teaches hearing and clapping the beats in a word (Mikey's answer to Q84).
+  {
+    id: 'put-beats-together',
+    skill: 'Listening',
+    order: 23,
+    requires: ['clap-the-beats'],
+    requiresWhy: 'Put the beats together puts the beats of a word back together into the word, so it builds on Clap the beats, which teaches hearing and clapping the beats in a word.',
+    title: 'Put the beats together',
+    tagline: 'Beats make a word',
+    lesson: {
+      paragraphs: ['A word has beats, and we can put them together to make the word. Pen, sill, makes pencil. Um, brel, luh, makes umbrella.', 'Some words start the same way, so listen to every beat. Pencil and pizza start the same way, but pencil, pen, sill, and pizza, peet, suh, have different beats. Rabbit and river, turtle and table, umbrella and onion, banana and butterfly, and dinosaur and doctor start the same way too, and each has beats of its own.', 'To put beats together, say them one after another, closer and closer, until you hear the word.'],
+      keyIdea: 'Put the beats together to make a word, and listen to every beat. Pencil and pizza start the same way, but their beats are different.',
+      example: { kind: 'pair', a: { kind: 'icon', name: 'pencil' }, b: { kind: 'icon', name: 'pizza' }, caption: 'Pencil and pizza start the same way, but their beats are different.' },
+      pictures: [{ serial: 'P184', alt: 'A yellow pencil beside one slice of pizza on a plate, on a kitchen table', step: 2 }],
+      script: [
+        { say: 'A word has beats, and we can put them together to make the word. Listen. Pen, sill. Put the beats together, and they make pencil!', stress: ['pencil'], show: { kind: 'icon', name: 'pencil' } },
+        { say: 'Here are three beats to put together. Um, brel, luh. Put them together, and they make umbrella!', stress: ['umbrella'], show: { kind: 'icon', name: 'umbrella' } },
+        { say: 'Some words start the same way, so listen to every beat. Pencil. Pen, sill. Pizza. Peet, suh. They start the same way, but their beats are different.', stress: ['every beat'], show: { kind: 'pair', a: { kind: 'icon', name: 'pencil' }, b: { kind: 'icon', name: 'pizza' } } },
+        { say: 'Umbrella and onion start the same way too. Umbrella. Um, brel, luh. Onion. Un, yun. They start the same way, but different beats make them different words.', show: { kind: 'pair', a: { kind: 'icon', name: 'umbrella' }, b: { kind: 'icon', name: 'onion' } } },
+        { say: 'Now you try, and put these beats together. Rab, bit.', show: null, voices: [['Rab, bit.', 'tell', 'turn']] },
+        { say: 'Rabbit! River starts the same way, but its beats are different. River. Riv, ver.', show: { kind: 'pair', a: { kind: 'pic', name: 'rabbit' }, b: { kind: 'icon', name: 'river' } } },
+        { say: 'Now you try again, and put these beats together. Tay, bull.', show: null, voices: [['Tay, bull.', 'tell', 'turn']] },
+        { say: 'Table! Turtle starts the same way, but its beats are different. Turtle. Tur, tull.', show: { kind: 'pair', a: { kind: 'icon', name: 'table~plain' }, b: { kind: 'pic', name: 'turtle' } } },
+        { say: 'Now you try three beats, and put them together. Dye, nuh, sore.', show: null, voices: [['Dye, nuh, sore.', 'tell', 'turn']] },
+        { say: 'Dinosaur! Doctor starts the same way, but its beats are different. Doctor. Dok, ter.', show: { kind: 'pair', a: { kind: 'icon', name: 'dinosaur' }, b: { kind: 'icon', name: 'doctor' } } },
+        { say: 'Now listen to three more beats, and we will put them together. Bah, nan, nuh. They make banana! Butterfly starts the same way, but its beats are different. Butterfly. But, ter, fly.', show: { kind: 'pair', a: { kind: 'icon', name: 'banana' }, b: { kind: 'icon', name: 'butterfly' } } },
+        { say: 'To put beats together, say them one after another, closer and closer, until you hear the word. Pen, sill. Pencil!', show: { kind: 'icon', name: 'pencil' } },
+        { say: 'Words that start the same way can have different beats, like pencil and pizza. So listen to every beat, and put them all together.', show: { kind: 'pair', a: { kind: 'icon', name: 'pencil' }, b: { kind: 'icon', name: 'pizza' } } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.3 (blends multisyllabic words with up to 3 syllables.), since the lesson says the beats of words of two and three beats one after another, pen, sill, um, brel, luh, and bah, nan, nuh, puts them together into the words they make, pencil, umbrella and banana, has the child put beats together in turns of their own, rab, bit, tay, bull, and dye, nuh, sore, tells words that start the same way apart by their beats, pencil and pizza, umbrella and onion, rabbit and river, table and turtle, dinosaur and doctor, and banana and butterfly, and asks which word a word\'s beats make, among pictures and among words heard, whether heard beats make a word named, which beats make a picture\'s word, and which of two words that start the same way the beats make, while hearing and clapping the beats in a word is taught in Clap the beats.'],
+    generators: ['p4-beats-blend', 'p4-blend-heard', 'p4-blend-yesno', 'p4-blend-beats', 'p4-blend-pair'],
+  },
+  // Think of a word (pass NA, the standards review of Domain III's III.B.8, EARMARKS E13): PK4 III.B.8, "produces a word that begins
+  // with the same sound.", cited whole, and Head Start's P-LIT 1 in part, its "understand sounds in spoken words" for the first sound.
+  // Fourteen words a four-year-old knows, each a picture the app draws and the lesson says, start with five of the six sounds First
+  // sounds teaches (mmm, sss, buh, fff and duh, which the app plays itself). The lesson says how to think of a word that starts the same
+  // (say its first sound, and then look and listen for things that start with it), plays I spy with a sound, says a silly sentence with
+  // words that start the same, and has the child think of a word that starts like sun, like fish and like dog and say it out loud, in
+  // turns of their own, each turn ending its line, so the child thinks as long as they need, and the next line naming words that do.
+  // Its questions are heard questions that print none of the words they ask about while the voice can speak. It builds on First sounds,
+  // which teaches how a word starts (Mikey's answer to Q84).
+  {
+    id: 'think-of-a-word',
+    skill: 'Listening',
+    order: 24,
+    requires: ['first-sounds'],
+    requiresWhy: 'Think of a word asks the child to think of a word that starts with the same sound as another, so it builds on First sounds, which teaches how a word starts.',
+    title: 'Think of a word',
+    tagline: 'One that starts the same',
+    lesson: {
+      paragraphs: ['Moon starts with the sound mmm, and so do map, milk and mitten. We can think of more words that start the same way.', 'To think of one, say the first sound, and then look and listen for things that start with it. Sun starts with sss, and so does sock, and ball, bed and bear all start with buh.', 'Fish, fan, fox and feather start with fff. Dog, duck and door start with duh, and we can even make a silly sentence with words that start the same, like Dog digs by the door!'],
+      keyIdea: 'To think of a word that starts the same, say its first sound, and then look and listen for things that start with it.',
+      example: { kind: 'pair', a: { kind: 'icon', name: 'moon' }, b: { kind: 'icon', name: 'map' }, caption: 'Moon and map both start with mmm.' },
+      pictures: [{ serial: 'P185', alt: 'A small child in red mittens holding a glass of milk and smiling, a folded map on the table beside the child', step: 1 }],
+      script: [
+        { say: 'Moon. Mmm. The word moon starts with the sound mmm.', show: { kind: 'icon', name: 'moon' } },
+        { say: 'We can think of other words that start with mmm too, like map, and milk, and mitten.', show: { kind: 'icon', name: 'map' } },
+        { say: 'Let\'s play I spy. I spy something that starts with mmm. Is it the sun, the ball or the map? It is the map, because map starts with mmm, just like moon.', show: { kind: 'row', items: [{ kind: 'icon', name: 'sun' }, { kind: 'icon', name: 'ball' }, { kind: 'icon', name: 'map' }] } },
+        { say: 'Now you try. Sun starts with sss. Think of a word that starts like sun, and say it out loud.', show: { kind: 'icon', name: 'sun' }, voices: [['Think of a word that starts like sun, and say it out loud.', 'tell', 'turn']] },
+        { say: 'Did you say sock? Sock starts with sss, just like sun, and so do soap and seven.', show: { kind: 'pair', a: { kind: 'icon', name: 'sun' }, b: { kind: 'icon', name: 'sock' } } },
+        { say: 'Ball starts with buh, and so do bed and bear, so all three of them start the same.', show: { kind: 'row', items: [{ kind: 'icon', name: 'ball' }, { kind: 'icon', name: 'bed' }, { kind: 'pic', name: 'bear' }] } },
+        { say: 'Now you try again. Fish starts with fff. Think of a word that starts like fish, and say it out loud.', show: { kind: 'pic', name: 'fish' }, voices: [['Think of a word that starts like fish, and say it out loud.', 'tell', 'turn']] },
+        { say: 'Fan, fox and feather all start with fff too.', show: { kind: 'row', items: [{ kind: 'icon', name: 'fan' }, { kind: 'pic', name: 'fox' }, { kind: 'icon', name: 'feather' }] } },
+        { say: 'We can even make a silly sentence with words that start the same. Dog digs by the door! Dog, digs and door all start with duh.', show: { kind: 'pair', a: { kind: 'icon', name: 'dog' }, b: { kind: 'icon', name: 'door' } } },
+        { say: 'Now you try one more. Dog starts with duh. Think of a word that starts like dog, and say it out loud.', show: { kind: 'icon', name: 'dog' }, voices: [['Think of a word that starts like dog, and say it out loud.', 'tell', 'turn']] },
+        { say: 'Did you say duck, or door? Duck and door start with duh, just like dog.', show: { kind: 'row', items: [{ kind: 'icon', name: 'dog' }, { kind: 'pic', name: 'duck' }, { kind: 'icon', name: 'door' }] } },
+        { say: 'Some words start with a different sound. Sun starts with sss, and moon starts with mmm, so moon does not start like sun.', stress: ['different sound'], show: { kind: 'pair', a: { kind: 'icon', name: 'sun' }, b: { kind: 'icon', name: 'moon' } } },
+        { say: 'To think of a word that starts the same, say its first sound. Then look and listen for things that start with it, like moon and map.', show: { kind: 'pair', a: { kind: 'icon', name: 'moon' }, b: { kind: 'icon', name: 'map' } } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.8 (produces a word that begins with the same sound.), since the lesson says the sound a word starts with, mmm, sss, buh, fff or duh, and words that start the same, says how to think of a word that starts the same, say its first sound and then look and listen for things that start with it, plays I spy with a sound, says a silly sentence with words that start the same, and has the child think of a word that starts like sun, like fish and like dog and say it out loud, in turns of their own, each turn ending its line, so the child thinks as long as they need, and the next line naming words that do, and asks which word a child could say that starts like a word heard, among words heard and among pictures, which picture starts with a sound heard, in a game of I spy, which one starts like two words heard, and whether one word starts like another, and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches the first sound in spoken words, thinking of words that start with it, while rhyme recognition is taught in Rhyme time, recognizing phonemic changes in words in Same word or different?, counting syllables in Clap the beats, and the other sounds in a word wait (EARMARKS E13).'],
+    generators: ['p4-think-say', 'p4-think-pic', 'p4-think-spy', 'p4-think-two', 'p4-think-yesno'],
   },
 ]; }
 
@@ -30633,11 +30764,12 @@ Object.assign(GENERATORS, {
   },
   // Two words make one: a word made of two words heard, and one of its words beside a word that is not in it. The two are said too,
   // in an order of their own, so the child listens for each word whatever they would call its picture (round two's content read: the
-  // dog's face can be a puppy to a child, and the snow a cloud).
+  // dog's face can be a puppy to a child, and the snow a cloud). Since pass NA's round two code read the question keys on its setup
+  // without the names (keyStory), as Two words make one's other two naming banks do, so a wrong choice said never makes it new.
   'p3-two-hear': (rng) => {
     const w = pick(rng, TW3_WORDS); const [a, b, whole] = w; const part = pick(rng, [a, b]); const not = pick(rng, TW3_PARTS.filter((x) => x !== a && x !== b));
     const said = shuffle(rng, [part, not]);
-    return { type: 'choice', story: 'Listen. ' + capFirst(whole) + '. Now listen to these two. ' + said.map((x) => capFirst(x) + '.').join(' '), printedStory: 'Listen to the words.', prompt: 'Which word do you hear in ' + whole + '?', printed: 'Which word do you hear in it?', choices: shuffle(rng, [part, not].map(twPic)), answer: twPic(part), aboutWords: [whole],
+    return { type: 'choice', story: 'Listen. ' + capFirst(whole) + '. Now listen to these two. ' + said.map((x) => capFirst(x) + '.').join(' '), keyStory: 'Listen. ' + capFirst(whole) + '.', printedStory: 'Listen to the words.', prompt: 'Which word do you hear in ' + whole + '?', printed: 'Which word do you hear in it?', choices: shuffle(rng, [part, not].map(twPic)), answer: twPic(part), aboutWords: [whole],
       explain: capFirst(whole) + ' is ' + a + ', and then ' + b + ', so you hear ' + part + ' in ' + whole + '.', visual: null, explainVisual: twApart(w),
       whyNot: { [twPic(not)]: { name: 'The ' + not, why: 'is not one of the two words in ' + whole + '.' } }, alsoRight: [] };
   },
@@ -30646,7 +30778,7 @@ Object.assign(GENERATORS, {
   'p3-two-other': (rng) => {
     const w = pick(rng, TW3_WORDS); const [a, b, whole] = w; const heard = pick(rng, [a, b]); const other = heard === a ? b : a; const not = pick(rng, TW3_PARTS.filter((x) => x !== a && x !== b));
     const said = shuffle(rng, [other, heard, not]);
-    return { type: 'choice', story: 'Listen. ' + capFirst(whole) + '. You hear ' + heard + ' in ' + whole + '. Now listen to these three words. ' + said.map((x) => capFirst(x) + '.').join(' '), printedStory: 'Listen to the words.', prompt: 'Which other word do you hear in ' + whole + '?', printed: 'Which other word do you hear in it?', choices: shuffle(rng, [other, heard, not].map(twPic)), answer: twPic(other), aboutWords: [whole],
+    return { type: 'choice', story: 'Listen. ' + capFirst(whole) + '. You hear ' + heard + ' in ' + whole + '. Now listen to these three words. ' + said.map((x) => capFirst(x) + '.').join(' '), keyStory: 'Listen. ' + capFirst(whole) + '. You hear ' + heard + ' in ' + whole + '.', printedStory: 'Listen to the words.', prompt: 'Which other word do you hear in ' + whole + '?', printed: 'Which other word do you hear in it?', choices: shuffle(rng, [other, heard, not].map(twPic)), answer: twPic(other), aboutWords: [whole],
       explain: capFirst(whole) + ' is ' + a + ', and then ' + b + '. You hear ' + heard + ' in ' + whole + ', and the other word you hear is ' + other + '.', visual: null, explainVisual: twApart(w),
       whyNot: { [twPic(heard)]: { name: 'The ' + heard, why: 'is one word you hear in ' + whole + ', but it is not the other word.' }, [twPic(not)]: { name: 'The ' + not, why: 'is not one of the two words in ' + whole + '.' } }, alsoRight: [] };
   },
@@ -30657,7 +30789,7 @@ Object.assign(GENERATORS, {
     const w = pick(rng, TW3_WORDS); const [a, b, whole] = w; const part = pick(rng, [a, b]);
     const without = shuffle(rng, TW3_WORDS.filter((x) => !x.slice(0, 2).includes(part))).slice(0, 2);
     const said = shuffle(rng, [whole, ...without.map((x) => x[2])]);
-    return { type: 'choice', story: 'Listen. ' + capFirst(part) + '. Now listen to these three words. ' + said.map((x) => capFirst(x) + '.').join(' '), printedStory: 'Listen to the words.', prompt: 'Which one has the word ' + part + ' in it?', printed: 'Which one has that word in it?', choices: shuffle(rng, [whole, ...without.map((x) => x[2])].map(twPic)), answer: twPic(whole), aboutWords: [whole],
+    return { type: 'choice', story: 'Listen. ' + capFirst(part) + '. Now listen to these three words. ' + said.map((x) => capFirst(x) + '.').join(' '), keyStory: 'Listen. ' + capFirst(part) + '.', printedStory: 'Listen to the words.', prompt: 'Which one has the word ' + part + ' in it?', printed: 'Which one has that word in it?', choices: shuffle(rng, [whole, ...without.map((x) => x[2])].map(twPic)), answer: twPic(whole), aboutWords: [whole],
       explain: capFirst(whole) + ' is ' + a + ', and then ' + b + ', so it has the word ' + part + ' in it.', visual: null, explainVisual: twApart(w),
       whyNot: Object.fromEntries(without.map((x) => [twPic(x[2]), { name: 'The ' + x[2], why: 'is ' + twSaid(x) + ', so ' + part + ' is not in it.' }])), alsoRight: [] };
   },
@@ -30674,19 +30806,38 @@ Object.assign(GENERATORS, {
 // offered fifteen pictures no line names, so a child could meet a cactus or a candle never named), four of one beat, three of two and
 // four of three: the word, its beats said as the voice says them (each
 // beat a word of its own, never a lone letter or a speech sound the app plays itself), how many beats, and its picture's kind.
-// Words that start with the same sound (bus, banana and butterfly; dog and dinosaur) are set beside each other when beats are put
-// together, so for banana, butterfly and dinosaur the first sound alone never finds the word; rabbit, turtle, pencil and umbrella have
-// no word here that starts with their sound (round one's code check), which EARMARKS A75 keeps.
+// Since pass NA (EARMARKS A75) beats are put together in Put the beats together, whose words (PBT4_WORDS) each come with a word that
+// starts the same way, so these words are counted and found by their number of beats only.
 const CB4_WORDS = [
   ['dog', 'dog', 1, 'icon'], ['cat', 'cat', 1, 'pic'], ['bus', 'bus', 1, 'icon'], ['fish', 'fish', 1, 'icon'],
   ['rabbit', 'rab, bit', 2, 'pic'], ['turtle', 'tur, tull', 2, 'pic'], ['pencil', 'pen, sill', 2, 'icon'],
   ['banana', 'bah, nan, nuh', 3, 'icon'], ['butterfly', 'but, ter, fly', 3, 'icon'], ['umbrella', 'um, brel, luh', 3, 'icon'], ['dinosaur', 'dye, nuh, sore', 3, 'icon'],
 ];
-// Every run of beats a lesson or a story says, and the word it is (rab, bit is rabbit), for the audio ledger's descriptions: Clap the
-// beats' words of two and three beats, and Callum's name, which its story drums (pass MY, round one's story check).
-export const BEAT_RUNS = { ...Object.fromEntries(CB4_WORDS.filter((x) => x[2] > 1).map((x) => [x[1], x[0]])), 'cal, lum': 'Callum' };
-// The first sound of each word, by sound and not by letter, for the words beats are put together beside.
-const CB4_START = { dog: 'd', dinosaur: 'd', cat: 'k', bus: 'b', banana: 'b', butterfly: 'b', turtle: 't', pencil: 'p', fish: 'f', rabbit: 'r', umbrella: 'u' };
+// Put the beats together (pass NA, EARMARKS A75): each word the lesson puts together from its beats, its beats as the voice says them,
+// its count, its picture kind, and the word that starts the same way and has different beats (its mate, said and drawn in the lesson),
+// so every blend question sets the answer beside a word with its first sound and a child must put every beat together.
+const PBT4_WORDS = [
+  ['pencil', 'pen, sill', 2, 'icon', 'pizza'], ['pizza', 'peet, suh', 2, 'icon', 'pencil'],
+  ['rabbit', 'rab, bit', 2, 'pic', 'river'], ['river', 'riv, ver', 2, 'icon', 'rabbit'],
+  ['turtle', 'tur, tull', 2, 'pic', 'table'], ['table', 'tay, bull', 2, 'icon', 'turtle'],
+  ['umbrella', 'um, brel, luh', 3, 'icon', 'onion'], ['onion', 'un, yun', 2, 'icon', 'umbrella'],
+  ['banana', 'bah, nan, nuh', 3, 'icon', 'butterfly'], ['butterfly', 'but, ter, fly', 3, 'icon', 'banana'],
+  ['dinosaur', 'dye, nuh, sore', 3, 'icon', 'doctor'], ['doctor', 'dok, ter', 2, 'icon', 'dinosaur'],
+];
+// A word's row: its word, its beats, its count, its picture kind and its mate.
+const pbtWord = (w) => PBT4_WORDS.find((x) => x[0] === w);
+// A word's picture as a choice and as a picture to show; the table is the plain one (the lead's look: the table drawn for
+// kindergarten's over and under has a bird on it and a cat under it).
+const PBT4_LOOKS = { table: 'table~plain' };
+const pbtPic = ([w, , , kind]) => kind + ':' + (PBT4_LOOKS[w] || w);
+const pbtShow = ([w, , , kind]) => ({ kind, name: PBT4_LOOKS[w] || w });
+// A word's mate, and a third word from another pair, never the word or its mate, so only one choice starts with the answer's sound
+// besides the answer.
+const pbtMate = (x) => pbtWord(x[4]);
+const pbtOther = (rng, x) => pick(rng, PBT4_WORDS.filter((y) => y !== x && y[0] !== x[4]));
+// Every run of beats a lesson or a story says, and the word it is, for the audio ledger's descriptions: Clap the beats' and Put the
+// beats together's words of two and three beats, and Callum's name, which its story drums (pass MY, round one's story check).
+export const BEAT_RUNS = { ...Object.fromEntries([...CB4_WORDS, ...PBT4_WORDS].filter((x) => x[2] > 1).map((x) => [x[1], x[0]])), 'cal, lum': 'Callum' };
 // A beat word's picture choice (icon:banana, pic:rabbit), its picture as the lesson draws it, and its beats in words (two beats).
 const cbPic = ([w, , , kind]) => kind + ':' + w;
 const cbShow = ([w, , , kind]) => ({ kind, name: w });
@@ -30725,32 +30876,31 @@ Object.assign(GENERATORS, {
       whyNot: p3WhyNot(choices, 'dots:' + n, (x) => { const k = p3DotCount(x); return { name: p3DotsName(k), why: (k > n ? 'are more dots than beats' : k === 1 ? 'is not enough' : 'are fewer dots than beats') + ', because ' + word + ' has ' + cbBeats(n) + '.' }; }),
       alsoRight: [] };
   },
-  // Clap the beats: beats heard one after another, and the word they make, beside two words that start with the same sound where the
-  // table has them (but, ter, fly beside banana and bus), so for banana, butterfly and dinosaur the first sound alone never finds it.
-  'p4-beats-blend': (rng) => {
-    const w = pick(rng, CB4_WORDS.filter((x) => x[2] > 1)); const [word, said] = w;
-    const alike = shuffle(rng, CB4_WORDS.filter((x) => x !== w && CB4_START[x[0]] === CB4_START[word]));
-    const rest = shuffle(rng, CB4_WORDS.filter((x) => x !== w && !alike.includes(x)));
-    const others = [...alike, ...rest].slice(0, 2);
-    return { type: 'choice', story: 'Listen. ' + capFirst(said) + '.', printedStory: 'Listen to the beats.', prompt: 'Put the beats together. Which one do they make?', choices: shuffle(rng, [w, ...others].map(cbPic)), answer: cbPic(w), aboutWords: [word],
-      explain: 'Listen. ' + capFirst(said) + '. Put the beats together, and they make ' + word + '.', visual: null, explainVisual: cbShow(w),
-      whyNot: Object.fromEntries(others.map((x) => [cbPic(x), { name: 'The ' + x[0], why: x[2] === 1 ? 'has just one beat, and you heard more than one.' : 'has different beats. ' + capFirst(x[0]) + '. ' + capFirst(x[1]) + '.' }])), alsoRight: [] };
+  // Clap the beats (since pass NA): three heard words of one, two and three beats, and the one with the number of beats asked for, each
+  // word said first, so a picture's everyday name cannot give it another count.
+  'p4-beats-find': (rng) => {
+    const n = 1 + Math.floor(rng() * 3); const picks = [1, 2, 3].map((k) => pick(rng, CB4_WORDS.filter((x) => x[2] === k))); const said = shuffle(rng, picks); const right = picks[n - 1];
+    return { type: 'choice', story: 'Listen. ' + said.map((x) => capFirst(x[0]) + '.').join(' '), printedStory: 'Listen to the three words.', prompt: 'Which one has ' + cbBeats(n) + '?', choices: said.map(cbPic), answer: cbPic(right), aboutWords: [right[0]],
+      explain: n === 1 ? capFirst(right[0]) + ' has just one beat.' : capFirst(right[0]) + '. ' + capFirst(right[1]) + '. ' + capFirst(right[0]) + ' has ' + cbBeats(n) + '.', visual: null, explainVisual: cbShow(right),
+      whyNot: p3WhyNot(said.map(cbPic), cbPic(right), (t) => { const x = said.find((y) => cbPic(y) === t); return { name: 'The ' + x[0], why: 'has ' + cbBeats(x[2]) + ', not ' + NUMBER_NAMES[n] + '.' }; }), alsoRight: [] };
   },
-  // Clap the beats: two pictures, and the one with more beats or, half the time, fewer, both words said first.
+  // Clap the beats: two pictures, and the one with more beats or, half the time, fewer, both words said first, in the buttons' order
+  // (pass NA, round two's code read: two shuffles had said them against the buttons' order on 93 of 200 seeds).
   'p4-beats-more': (rng) => {
     const fewer = rng() < 0.5; const a = pick(rng, CB4_WORDS); const b = pick(rng, CB4_WORDS.filter((x) => x[2] !== a[2]));
     const [lo, hi] = a[2] < b[2] ? [a, b] : [b, a]; const right = fewer ? lo : hi; const wrong = fewer ? hi : lo; const heard = shuffle(rng, [a, b]);
-    return { type: 'choice', story: 'Listen. ' + capFirst(heard[0][0]) + '. ' + capFirst(heard[1][0]) + '.', printedStory: 'Listen to the two words.', prompt: fewer ? 'Which one has fewer beats?' : 'Which one has more beats?', choices: shuffle(rng, [a, b].map(cbPic)), answer: cbPic(right), aboutWords: [a[0], b[0]],
+    return { type: 'choice', story: 'Listen. ' + capFirst(heard[0][0]) + '. ' + capFirst(heard[1][0]) + '.', printedStory: 'Listen to the two words.', prompt: fewer ? 'Which one has fewer beats?' : 'Which one has more beats?', choices: heard.map(cbPic), answer: cbPic(right), aboutWords: [a[0], b[0]],
       explain: capFirst(right[0]) + ' has ' + cbBeats(right[2]) + ', and ' + wrong[0] + ' has ' + NUMBER_NAMES[wrong[2]] + ', so ' + right[0] + ' has ' + (fewer ? 'fewer' : 'more') + '.', visual: null, explainVisual: null,
       whyNot: { [cbPic(wrong)]: { name: 'The ' + wrong[0], why: 'has ' + cbBeats(wrong[2]) + ', and ' + right[0] + ' has ' + NUMBER_NAMES[right[2]] + '.' } }, alsoRight: [] };
   },
   // Clap the beats: a heard word, and the one that has the same number of beats, beside one that does not (never the same word). The
-  // two choices are said too, in an order of their own, since a picture's everyday name can have another count (round one's lesson
-  // check: the dog drawn is a puppy to a child, two beats, and the cat a kitty).
+  // two choices are said too, in the buttons' order since pass NA's round two code read (they had their own order), since a picture's
+  // everyday name can have another count (round one's lesson check: the dog drawn is a puppy to a child, two beats, and the cat a kitty);
+  // the question keys on the word heard, without the two names (keyStory), so the wrong choice said never makes it a new question.
   'p4-beats-same': (rng) => {
     const w = pick(rng, CB4_WORDS); const n = w[2]; const right = pick(rng, CB4_WORDS.filter((x) => x !== w && x[2] === n)); const wrong = pick(rng, CB4_WORDS.filter((x) => x[2] !== n));
     const said = shuffle(rng, [right, wrong]);
-    return { type: 'choice', story: 'Listen. ' + capFirst(w[0]) + '. Now listen to these two. ' + capFirst(said[0][0]) + '. ' + capFirst(said[1][0]) + '.', printedStory: 'Listen to the words.', prompt: 'Which one has the same number of beats as ' + w[0] + '?', printed: 'Which one has the same number of beats?', choices: shuffle(rng, [right, wrong].map(cbPic)), answer: cbPic(right), aboutWords: [w[0], right[0]],
+    return { type: 'choice', story: 'Listen. ' + capFirst(w[0]) + '. Now listen to these two. ' + capFirst(said[0][0]) + '. ' + capFirst(said[1][0]) + '.', keyStory: 'Listen. ' + capFirst(w[0]) + '.', printedStory: 'Listen to the words.', prompt: 'Which one has the same number of beats as ' + w[0] + '?', printed: 'Which one has the same number of beats?', choices: said.map(cbPic), answer: cbPic(right), aboutWords: [w[0], right[0]],
       explain: capFirst(right[0]) + ' has ' + cbBeats(n) + ', and ' + w[0] + ' has ' + cbBeats(n) + ' too, so they have the same number of beats.', visual: cbAsk(w), explainVisual: null,
       whyNot: { [cbPic(wrong)]: { name: 'The ' + wrong[0], why: 'has ' + cbBeats(wrong[2]) + ', and ' + w[0] + ' has ' + cbBeats(n) + '.' } }, alsoRight: [] };
   },
@@ -30898,6 +31048,189 @@ Object.assign(GENERATORS, {
     // The pairs the question names, so a round does not ask about one of them again (aboutWords).
     const aboutWords = [...new Set(NS_WORDS.filter((w) => new RegExp('\\b' + w + '\\b', 'i').test(ask)).map(nsKey))];
     return { type: 'choice', story: null, prompt: ask, ...(printed ? { printed } : null), choices: yesNo(rng), answer, explain, visual: null, explainVisual: null, whyNot: { [wrong]: { name: wrong, why } }, alsoRight: [], aboutWords };
+  },
+});
+
+// Put the beats together (pre-K 4, pass NA, EARMARKS A75): every question sets its answer beside the word that starts the same way and
+// has different beats (PBT4_WORDS' mate), so the first sound alone never finds it. A run of beats is a sentence of its own in every
+// setup, explanation and reason, since inside a sentence its first beat is heard as a word or a pause (pass MY).
+Object.assign(GENERATORS, {
+  // Beats heard one after another, and the picture of the word they make, beside its mate and a word from another pair (the kind
+  // Clap the beats asked until pass NA, its choices now always holding the mate).
+  'p4-beats-blend': (rng) => {
+    const w = pick(rng, PBT4_WORDS); const mate = pbtMate(w); const other = pbtOther(rng, w); const three = shuffle(rng, [w, mate, other]); const choices = three.map(pbtPic);
+    // Its three pictures named first, in the buttons' order, then the beats, as a sentence of their own (round one's lesson check: the
+    // river reads as a map and the onion is a new drawing).
+    return { type: 'choice', story: 'Here are three words. ' + three.map((x) => capFirst(x[0]) + '.').join(' ') + ' Now listen to the beats. ' + capFirst(w[1]) + '.', keyStory: 'Listen. ' + capFirst(w[1]) + '.', printedStory: 'Listen to the words and the beats.', prompt: 'Put the beats together. Which one do they make?', choices, answer: pbtPic(w), aboutWords: [w[0], w[4]],
+      explain: 'Listen. ' + capFirst(w[1]) + '. Put the beats together, and they make ' + w[0] + '. ' + capFirst(mate[0]) + ' starts the same way, but its beats are different.', visual: null, explainVisual: pbtShow(w),
+      whyNot: { [pbtPic(mate)]: { name: 'The ' + mate[0], why: 'has different beats. ' + capFirst(mate[0]) + '. ' + capFirst(mate[1]) + '.' }, [pbtPic(other)]: { name: 'The ' + other[0], why: 'has different beats. ' + capFirst(other[0]) + '. ' + capFirst(other[1]) + '.' } }, alsoRight: [] };
+  },
+  // Beats heard, and the word they make among three heard words (heardChoices), each printed Tap to hear while the voice can speak.
+  'p4-blend-heard': (rng) => {
+    const w = pick(rng, PBT4_WORDS); const mate = pbtMate(w); const other = pbtOther(rng, w);
+    return { type: 'choice', story: 'Listen. ' + capFirst(w[1]) + '.', printedStory: 'Listen to the beats.', prompt: 'Put the beats together. Which word do they make?', printed: 'Tap to hear each word. Which word do the beats make?', choices: shuffle(rng, [w[0], mate[0], other[0]]), answer: w[0], heardChoices: true, aboutWords: [w[0], w[4]],
+      explain: 'Listen. ' + capFirst(w[1]) + '. Put the beats together, and they make ' + w[0] + '. ' + capFirst(mate[0]) + ' starts the same way, but its beats are different.', visual: null, explainVisual: pbtShow(w),
+      whyNot: { [mate[0]]: { name: capFirst(mate[0]), why: 'has different beats. ' + capFirst(mate[0]) + '. ' + capFirst(mate[1]) + '.' }, [other[0]]: { name: capFirst(other[0]), why: 'has different beats. ' + capFirst(other[0]) + '. ' + capFirst(other[1]) + '.' } }, alsoRight: [] };
+  },
+  // Beats heard and a word named, and whether the beats make it: its own beats half the time, and its mate's the other half.
+  'p4-blend-yesno': (rng) => {
+    const w = pick(rng, PBT4_WORDS); const yes = rng() < 0.5; const said = yes ? w : pbtMate(w); const answer = yes ? 'Yes' : 'No'; const wrong = yes ? 'No' : 'Yes';
+    return { type: 'choice', story: 'Listen. ' + capFirst(said[1]) + '.', printedStory: 'Listen to the beats.', prompt: 'Do the beats make ' + w[0] + '?', printed: 'Do the beats you hear make the word you hear?', choices: yesNo(rng), answer, aboutWords: [w[0], w[4]],
+      explain: yes ? 'Yes. Listen. ' + capFirst(w[1]) + '. Put the beats together, and they make ' + w[0] + '.' : 'No. Listen. ' + capFirst(said[1]) + '. Those beats make ' + said[0] + '. ' + capFirst(said[0]) + ' and ' + w[0] + ' start the same way, but their beats are different.', visual: null, explainVisual: pbtShow(said),
+      whyNot: { [wrong]: { name: wrong, why: yes ? 'would mean the beats do not make ' + w[0] + ', but they do.' : 'would mean the beats make ' + w[0] + ', but they make ' + said[0] + '.' } }, alsoRight: [] };
+  },
+  // A picture and its word heard, and the beats that make it among two heard runs of beats, its own and its mate's (heardChoices).
+  'p4-blend-beats': (rng) => {
+    const w = pick(rng, PBT4_WORDS); const mate = pbtMate(w);
+    return { type: 'choice', story: 'Listen. ' + capFirst(w[0]) + '.', printedStory: 'Listen to the word.', prompt: 'Which beats make ' + w[0] + '?', printed: 'Tap to hear each one. Which beats make this word?', choices: shuffle(rng, [w[1], mate[1]]), answer: w[1], heardChoices: true, aboutWords: [w[0], w[4]],
+      explain: capFirst(w[0]) + '. ' + capFirst(w[1]) + '. Those are the beats of ' + w[0] + '.', visual: { ...pbtShow(w), size: 72 }, explainVisual: null,
+      whyNot: { [mate[1]]: { name: 'Those beats', why: 'make ' + mate[0] + ', which starts the same way. ' + capFirst(mate[0]) + '. ' + capFirst(mate[1]) + '.' } }, alsoRight: [] };
+  },
+  // Two words that start the same way said first, then the beats of one, and which of the two the beats make; the buttons follow the
+  // order the two are said in (pass NA, round two's content read: two shuffles had said them against the buttons' order in 212 of 400).
+  'p4-blend-pair': (rng) => {
+    const w = pick(rng, PBT4_WORDS); const mate = pbtMate(w); const first = shuffle(rng, [w, mate]);
+    return { type: 'choice', story: capFirst(first[0][0]) + ' and ' + first[1][0] + ' start the same way. Listen to every beat. ' + capFirst(w[1]) + '.', printedStory: 'Listen to the two words and the beats.', prompt: 'Which one do the beats make?', choices: first.map(pbtPic), answer: pbtPic(w), aboutWords: [w[0], w[4]],
+      explain: 'Listen. ' + capFirst(w[1]) + '. Put the beats together, and they make ' + w[0] + '. ' + capFirst(mate[0]) + ' has different beats.', visual: null, explainVisual: { kind: 'pair', a: pbtShow(w), b: pbtShow(mate) },
+      whyNot: { [pbtPic(mate)]: { name: 'The ' + mate[0], why: 'starts the same way, but it has different beats. ' + capFirst(mate[0]) + '. ' + capFirst(mate[1]) + '.' } }, alsoRight: [] };
+  },
+});
+
+// Sun and sock (pre-K 3), pass NA, the standards review of Domain III's III.B.7 and III.B.8. Ten words a three-year-old knows, each a
+// picture the app draws and the lesson says, and the sound each one starts with, written as the sound (sss, mmm, fff), which the app
+// plays itself: sun, sock and soap, moon, map and milk, and fish, fan, feather and fox. Soap and milk are drawn since round one's code
+// check: with sun and sock, and moon and map, the only words of their sounds, 42 of the rules test's 600 rounds asked about one word
+// twice, an earlier explanation answering a later question in 740 of 2,000; with the two, 0 and 247. Every question is a heard question: while the voice can
+// speak it prints none of the words it asks about, and a picture is never the word heard, so a child finds a word that starts the same,
+// not a picture of the word.
+const SAS3_WORDS = [['sun', 'sss', 'icon'], ['sock', 'sss', 'icon'], ['moon', 'mmm', 'icon'], ['map', 'mmm', 'icon'], ['fish', 'fff', 'pic'], ['fan', 'fff', 'icon'], ['feather', 'fff', 'icon'], ['fox', 'fff', 'pic'], ['soap', 'sss', 'icon'], ['milk', 'mmm', 'icon']];
+// A word's row: its word, its sound and its picture kind.
+const sasEntry = (w) => SAS3_WORDS.find((x) => x[0] === w);
+// A word's sound, its picture as a choice and as a picture to show, the other words that start with its sound and the words that do not.
+const sasSound = (w) => sasEntry(w)[1];
+const sasPic = (w) => sasEntry(w)[2] + ':' + w;
+const sasShow = (w) => ({ kind: sasEntry(w)[2], name: w });
+// The pictures' names said one after another, in the buttons' order, since a child may call a picture by another name (the fox a cat,
+// the fish a goldfish), and a question about a word's first sound hangs on its name (pass MY's rule; pass NA, round one's lesson check).
+const sasNames = (ws) => ws.map((x) => capFirst(x) + '.').join(' ');
+// A picture's name after "This is" (pass NA, round two's content read: the yes or no said "This is a soap." and "This is a milk." once
+// soap and milk were drawn): the sun and the moon, soap and milk with no article, and a sock, a map, a fish.
+const sasThis = (p) => (p === 'sun' || p === 'moon' ? 'the ' + p : p === 'soap' || p === 'milk' ? p : 'a ' + p);
+const sasAlike = (w) => SAS3_WORDS.filter((x) => x[0] !== w && x[1] === sasSound(w)).map((x) => x[0]);
+const sasOther = (w) => SAS3_WORDS.filter((x) => x[1] !== sasSound(w)).map((x) => x[0]);
+// A word heard, its sound picked first, so each of the three sounds is asked as often though fff starts four of the ten words.
+const sasPickWord = (rng) => { const sound = pick(rng, ['sss', 'mmm', 'fff']); return pick(rng, SAS3_WORDS.filter((x) => x[1] === sound))[0]; };
+// More right answers for Sun and sock and Think of a word: the other words a lesson says with a sound, leaving out the words heard and
+// every choice, so a line names only words that would be right and are not on the screen; one word starts, two or more start, and with
+// none left there is no line (pass NA, the lead's read: a line naming fish, fan, feather and fox named the word heard and the answer).
+const naMoreLine = (said, sound, onScreen) => { const w = said.filter((x) => !onScreen.includes(x)); return !w.length ? [] : [(w.length === 1 ? capFirst(w[0]) + ' starts' : capFirst(w.slice(0, -1).join(', ')) + ' and ' + w[w.length - 1] + ' start') + ' with ' + sound + ' too.']; };
+// The words Sun and sock says with each sound, drawn or not (seven and mitten are said and never drawn).
+const SAS3_SAID = { sss: ['sun', 'sock', 'soap', 'seven'], mmm: ['moon', 'map', 'milk', 'mitten'], fff: ['fish', 'fan', 'feather', 'fox'] };
+Object.assign(GENERATORS, {
+  // Sun and sock: one word heard, and the picture that starts like it beside one that does not.
+  'p3-start-tap': (rng) => {
+    const w = sasPickWord(rng); const same = pick(rng, sasAlike(w)); const diff = pick(rng, sasOther(w)); const two = shuffle(rng, [same, diff]);
+    return { type: 'choice', story: 'Listen. ' + capFirst(w) + '. Now listen to these two. ' + sasNames(two), keyStory: 'Listen. ' + capFirst(w) + '.', printedStory: 'Listen to the words.', prompt: 'Which one starts like ' + w + '?', printed: 'Which one starts like the first word you hear?', choices: two.map(sasPic), answer: sasPic(same), aboutWords: [w],
+      explain: capFirst(w) + ' and ' + same + ' both start with ' + sasSound(w) + '.', visual: null, explainVisual: { kind: 'pair', a: sasShow(w), b: sasShow(same) },
+      whyNot: { [sasPic(diff)]: { name: 'The ' + diff, why: 'starts with ' + sasSound(diff) + ', and ' + w + ' starts with ' + sasSound(w) + '.' } }, alsoRight: naMoreLine(SAS3_SAID[sasSound(w)], sasSound(w), [w, same, diff]) };
+  },
+  // Sun and sock: two heard words, and whether they start with the same sound, half the time each.
+  'p3-start-same': (rng) => {
+    const x = sasPickWord(rng); const same = rng() < 0.5; const y = pick(rng, same ? sasAlike(x) : sasOther(x)); const answer = same ? 'Yes' : 'No'; const wrong = same ? 'No' : 'Yes';
+    return { type: 'choice', story: 'Listen. ' + capFirst(x) + '. ' + capFirst(y) + '.', printedStory: 'Listen to the two words.', prompt: 'Do the two words start with the same sound?', choices: yesNo(rng), answer, aboutWords: [x, y],
+      explain: same ? 'Yes. ' + capFirst(x) + ' and ' + y + ' both start with ' + sasSound(x) + '.' : 'No. ' + capFirst(x) + ' starts with ' + sasSound(x) + ', and ' + y + ' starts with ' + sasSound(y) + '.', visual: null, explainVisual: { kind: 'pair', a: sasShow(x), b: sasShow(y) },
+      whyNot: { [wrong]: { name: wrong, why: same ? 'would mean they start with different sounds, but ' + x + ' and ' + y + ' both start with ' + sasSound(x) + '.' : 'would mean they start with the same sound, but ' + x + ' starts with ' + sasSound(x) + ' and ' + y + ' with ' + sasSound(y) + '.' } }, alsoRight: [] };
+  },
+  // Sun and sock: a word heard and a word to think of that starts like it, the two words to choose from heard (heardChoices), each
+  // printed Tap to hear while the voice can speak, as the lesson's turns ask a child to think of one and say it.
+  'p3-start-say': (rng) => {
+    const w = sasPickWord(rng); const same = pick(rng, sasAlike(w)); const diff = pick(rng, sasOther(w));
+    return { type: 'choice', story: 'Listen. ' + capFirst(w) + '. Think of a word that starts like ' + w + '.', printedStory: 'Listen to the word.', prompt: 'Which word could you say?', printed: 'Tap to hear each word. Which word starts like the word you hear?', choices: shuffle(rng, [same, diff]), answer: same, heardChoices: true, aboutWords: [w],
+      explain: capFirst(same) + ' starts with ' + sasSound(w) + ', just like ' + w + ', so you could say ' + same + '.', visual: null, explainVisual: { kind: 'pair', a: sasShow(w), b: sasShow(same) },
+      whyNot: { [diff]: { name: capFirst(diff), why: 'starts with ' + sasSound(diff) + ', and ' + w + ' starts with ' + sasSound(w) + '.' } }, alsoRight: naMoreLine(SAS3_SAID[sasSound(w)], sasSound(w), [w, same, diff]) };
+  },
+  // Sun and sock: three heard words, two that start the same and one that does not, in any of the three places, and the one that
+  // starts with a different sound. A reason names the tapped one's partner, an open wrong picture, so it waits in More Info while two
+  // are open, as First sounds' does.
+  'p3-start-odd': (rng) => {
+    const sound = pick(rng, ['sss', 'mmm', 'fff']); const [a, b] = shuffle(rng, SAS3_WORDS.filter((x) => x[1] === sound).map((x) => x[0])).slice(0, 2);
+    const odd = pick(rng, SAS3_WORDS.filter((x) => x[1] !== sound).map((x) => x[0])); const said = shuffle(rng, [a, b, odd]); const choices = said.map(sasPic);
+    return { type: 'choice', story: 'Listen. ' + said.map((w) => capFirst(w) + '.').join(' '), printedStory: 'Listen to the three words.', prompt: 'Which one starts with a different sound?', choices, answer: sasPic(odd), aboutWords: [a, b],
+      explain: capFirst(a) + ' and ' + b + ' start with ' + sound + ', and ' + odd + ' starts with ' + sasSound(odd) + '.', visual: null, explainVisual: null,
+      whyNot: p3WhyNot(choices, sasPic(odd), (t) => { const w = t.split(':')[1]; const x = w === a ? b : a; return { name: 'The ' + w, why: 'starts with ' + sound + ', just like ' + x + ', so it does not start with a different sound.' }; }), alsoRight: naMoreLine(SAS3_SAID[sasSound(odd)], sasSound(odd), [a, b, odd]) };
+  },
+  // Sun and sock: a picture and a word heard, and whether the picture starts like the word, half the time each; the picture is never
+  // the word heard.
+  'p3-start-yesno': (rng) => {
+    const w = sasPickWord(rng); const yes = rng() < 0.5; const p = pick(rng, yes ? sasAlike(w) : sasOther(w)); const answer = yes ? 'Yes' : 'No'; const wrong = yes ? 'No' : 'Yes';
+    return { type: 'choice', story: 'Listen. ' + capFirst(w) + '. This is ' + sasThis(p) + '.', printedStory: 'Listen to the words.', prompt: 'Does this picture start like ' + w + '?', printed: 'Does this picture start like the first word you hear?', choices: yesNo(rng), answer, aboutWords: [w],
+      explain: yes ? 'Yes. This is ' + sasThis(p) + ', and ' + p + ' starts with ' + sasSound(w) + ', just like ' + w + '.' : 'No. This is ' + sasThis(p) + '. ' + capFirst(p) + ' starts with ' + sasSound(p) + ', and ' + w + ' starts with ' + sasSound(w) + '.', visual: sasShow(p), explainVisual: null,
+      whyNot: { [wrong]: { name: wrong, why: yes ? 'would mean this picture does not start like ' + w + ', but ' + p + ' starts with ' + sasSound(w) + ', just like ' + w + '.' : 'would mean this picture starts like ' + w + ', but ' + p + ' starts with ' + sasSound(p) + '.' } }, alsoRight: [] };
+  },
+});
+
+// Think of a word (pre-K 4), pass NA, the standards review of Domain III's III.B.8. Fourteen words a four-year-old knows, each a picture
+// the app draws and the lesson says, and the sound each one starts with, the five sounds First sounds teaches, written as the sound,
+// which the app plays itself. Every question is a heard question: while the voice can speak it prints none of the words it asks about,
+// and a choice is never the word heard, so a child finds another word that starts the same.
+const TOW4_WORDS = [['moon', 'mmm', 'icon'], ['map', 'mmm', 'icon'], ['sun', 'sss', 'icon'], ['sock', 'sss', 'icon'], ['ball', 'buh', 'icon'], ['bed', 'buh', 'icon'], ['bear', 'buh', 'pic'], ['fish', 'fff', 'pic'], ['fan', 'fff', 'icon'], ['fox', 'fff', 'pic'], ['feather', 'fff', 'icon'], ['dog', 'duh', 'icon'], ['door', 'duh', 'icon'], ['duck', 'duh', 'pic']];
+// The five sounds, and a word's row, its sound, its picture as a choice and to show, and the words that start with a sound.
+const TOW4_SOUNDS = ['mmm', 'sss', 'buh', 'fff', 'duh'];
+const towEntry = (w) => TOW4_WORDS.find((x) => x[0] === w);
+const towSound = (w) => towEntry(w)[1];
+const towPic = (w) => towEntry(w)[2] + ':' + w;
+const towShow = (w) => ({ kind: towEntry(w)[2], name: w });
+// The pictures' names said in the buttons' order (sasNames' reason).
+const towNames = (ws) => ws.map((x) => capFirst(x) + '.').join(' ');
+const towWith = (sound) => TOW4_WORDS.filter((x) => x[1] === sound).map((x) => x[0]);
+// A word heard, its sound picked first so each of the five is asked as often; and two words with two other sounds, never the heard
+// word's, so only one choice starts like it.
+const towPickWord = (rng, sounds = TOW4_SOUNDS) => pick(rng, towWith(pick(rng, sounds)));
+const towTwoOthers = (rng, sound) => shuffle(rng, TOW4_SOUNDS.filter((s) => s !== sound)).slice(0, 2).map((s) => pick(rng, towWith(s)));
+// The words Think of a word says with each sound, drawn or not, for its More right answers (naMoreLine).
+const TOW4_SAID = { mmm: ['moon', 'map', 'milk', 'mitten'], sss: ['sun', 'sock', 'soap', 'seven'], buh: ['ball', 'bed', 'bear'], fff: ['fish', 'fan', 'fox', 'feather'], duh: ['dog', 'duck', 'door'] };
+// A word with its article (the moon; a map), for the explanations.
+const towA = (w) => (w === 'sun' || w === 'moon' ? 'the ' + w : 'a ' + w);
+// The reason a word that starts with another sound does not fit.
+const towWhy = (o, w) => 'starts with ' + towSound(o) + ', and ' + w + ' starts with ' + towSound(w) + '.';
+Object.assign(GENERATORS, {
+  // Think of a word: a word heard and a word to think of that starts like it, three words to choose from heard (heardChoices), each
+  // printed Tap to hear while the voice can speak.
+  'p4-think-say': (rng) => {
+    const w = towPickWord(rng); const same = pick(rng, towWith(towSound(w)).filter((x) => x !== w)); const others = towTwoOthers(rng, towSound(w));
+    return { type: 'choice', story: 'Listen. ' + capFirst(w) + '. Think of a word that starts like ' + w + '.', printedStory: 'Listen to the word.', prompt: 'Which word could you say?', printed: 'Tap to hear each word. Which word starts like the word you hear?', choices: shuffle(rng, [same, ...others]), answer: same, heardChoices: true, aboutWords: [w, same],
+      explain: capFirst(same) + ' starts with ' + towSound(w) + ', just like ' + w + ', so you could say ' + same + '.', visual: null, explainVisual: { kind: 'pair', a: towShow(w), b: towShow(same) },
+      whyNot: Object.fromEntries(others.map((o) => [o, { name: capFirst(o), why: towWhy(o, w) }])), alsoRight: naMoreLine(TOW4_SAID[towSound(w)], towSound(w), [w, same, ...others]) };
+  },
+  // Think of a word: the same, its three choices pictures, as the lesson's turns show the word thought of.
+  'p4-think-pic': (rng) => {
+    const w = towPickWord(rng); const same = pick(rng, towWith(towSound(w)).filter((x) => x !== w)); const others = towTwoOthers(rng, towSound(w)); const three = shuffle(rng, [same, ...others]); const choices = three.map(towPic);
+    return { type: 'choice', story: 'Listen. ' + capFirst(w) + '. Think of a word that starts like ' + w + '. Now listen to these three. ' + towNames(three), keyStory: 'Listen. ' + capFirst(w) + '. Think of a word that starts like ' + w + '.', printedStory: 'Listen to the words.', prompt: 'Which one could you say?', printed: 'Which one starts like the first word you hear?', choices, answer: towPic(same), aboutWords: [w, same],
+      explain: capFirst(same) + ' starts with ' + towSound(w) + ', just like ' + w + ', so you could say ' + same + '.', visual: null, explainVisual: { kind: 'pair', a: towShow(w), b: towShow(same) },
+      whyNot: Object.fromEntries(others.map((o) => [towPic(o), { name: 'The ' + o, why: towWhy(o, w) }])), alsoRight: naMoreLine(TOW4_SAID[towSound(w)], towSound(w), [w, same, ...others]) };
+  },
+  // Think of a word: I spy, as the lesson plays it: a sound heard, and the picture that starts with it among two that do not.
+  'p4-think-spy': (rng) => {
+    const sound = pick(rng, TOW4_SOUNDS); const w = pick(rng, towWith(sound)); const others = towTwoOthers(rng, sound); const three = shuffle(rng, [w, ...others]); const choices = three.map(towPic);
+    // The three named as the lesson's I spy line names them (Is it the sun, the ball or the map?).
+    return { type: 'choice', story: 'Let\'s play I spy. I spy something that starts with ' + sound + '. Is it the ' + three[0] + ', the ' + three[1] + ' or the ' + three[2] + '?', keyStory: 'Let\'s play I spy. I spy something that starts with ' + sound + '.', printedStory: 'Let\'s play I spy. Listen to the sound and the words.', prompt: 'Which one is it?', choices, answer: towPic(w), aboutWords: [w],
+      explain: 'It is the ' + w + ', because ' + w + ' starts with ' + sound + '.', visual: null, explainVisual: towShow(w),
+      whyNot: Object.fromEntries(others.map((o) => [towPic(o), { name: 'The ' + o, why: 'starts with ' + towSound(o) + ', not ' + sound + '.' }])), alsoRight: naMoreLine(TOW4_SAID[sound], sound, [w, ...others]) };
+  },
+  // Think of a word: two heard words that start the same, and the picture that starts like both among two that do not (the sounds
+  // three or more words start with: buh, fff and duh).
+  'p4-think-two': (rng) => {
+    const sound = pick(rng, ['buh', 'fff', 'duh']); const [a, b, c] = shuffle(rng, towWith(sound)); const others = towTwoOthers(rng, sound); const three = shuffle(rng, [c, ...others]); const choices = three.map(towPic);
+    return { type: 'choice', story: 'Listen. ' + capFirst(a) + '. ' + capFirst(b) + '. Now listen to these three. ' + towNames(three), keyStory: 'Listen. ' + capFirst(a) + '. ' + capFirst(b) + '.', printedStory: 'Listen to the words.', prompt: 'Which one starts like ' + a + ' and ' + b + '?', printed: 'Which one starts like the first two words you hear?', choices, answer: towPic(c), aboutWords: [a, b],
+      explain: capFirst(a) + ', ' + b + ' and ' + c + ' all start with ' + sound + '.', visual: null, explainVisual: { kind: 'pair', a: towShow(a), b: towShow(c) },
+      whyNot: Object.fromEntries(others.map((o) => [towPic(o), { name: 'The ' + o, why: 'starts with ' + towSound(o) + ', and ' + a + ' and ' + b + ' start with ' + sound + '.' }])), alsoRight: naMoreLine(TOW4_SAID[sound], sound, [a, b, c, ...others]) };
+  },
+  // Think of a word: two heard words, and whether the second starts like the first, half the time each.
+  'p4-think-yesno': (rng) => {
+    const w = towPickWord(rng); const yes = rng() < 0.5; const x = yes ? pick(rng, towWith(towSound(w)).filter((y) => y !== w)) : pick(rng, TOW4_WORDS.filter((y) => y[1] !== towSound(w)).map((y) => y[0])); const answer = yes ? 'Yes' : 'No'; const wrong = yes ? 'No' : 'Yes';
+    return { type: 'choice', story: 'Listen. ' + capFirst(w) + '. ' + capFirst(x) + '.', printedStory: 'Listen to the two words.', prompt: 'Does ' + x + ' start like ' + w + '?', printed: 'Does the second word start like the first?', choices: yesNo(rng), answer, aboutWords: [w, x],
+      explain: yes ? 'Yes. ' + capFirst(x) + ' and ' + w + ' both start with ' + towSound(w) + '.' : 'No. ' + capFirst(x) + ' starts with ' + towSound(x) + ', and ' + w + ' starts with ' + towSound(w) + '.', visual: null, explainVisual: { kind: 'pair', a: towShow(w), b: towShow(x) },
+      whyNot: { [wrong]: { name: wrong, why: yes ? 'would mean ' + x + ' does not start like ' + w + ', but ' + x + ' and ' + w + ' both start with ' + towSound(w) + '.' : 'would mean ' + x + ' starts like ' + w + ', but ' + x + ' starts with ' + towSound(x) + '.' } }, alsoRight: [] };
   },
 });
 
@@ -36387,18 +36720,21 @@ export function whyNotNamesAnswer(q, picked) {
 function pictureName(choice) { const raw = String(choice).split('#')[0]; const m = raw.match(/^(?:pic|icon):(.+)$/); return m ? m[1].split('~')[0].replace(/-/g, ' ').toLowerCase() : null; }
 // True when the reason heard after a wrong tap names another wrong picture that is still open (pass MJ, the lesson check): "The
 // rabbit looks just like the other rabbit, so those two go together." ruled out the other rabbit and left only the answer, and
-// "Block rhymes with rock" did the same, though neither names the answer. A picture the question itself named does not count.
+// "Block rhymes with rock" did the same, though neither names the answer. A picture the question itself named does not count, unless the
+// reason says the tapped one is just like it (pass NA, round one's lesson check: Sun and sock's three heard words are all named, and "The
+// map starts with mmm, just like moon" ruled moon out too, leaving only the answer). What a question asked is read from its keyStory
+// where it has one (round two's code read), so a picture named only where the question says its pictures' names is not counted as asked.
 export function whyNotNamesOpenWrong(q, picked, open) {
   const entry = q && q.whyNot && q.whyNot[picked]; if (!entry) return false;
   const words = (t) => ' ' + String(t).toLowerCase().replace(/[^a-z0-9]+/g, ' ') + ' ';
-  const said = words(heardForm(whyNotSentence(entry))); const asked = words(heardForm((q.story || '') + ' ' + (q.prompt || '')));
+  const said = words(heardForm(whyNotSentence(entry))); const asked = words(heardForm((q.keyStory !== undefined ? q.keyStory : q.story || '') + ' ' + (q.prompt || '')));
   const answerName = pictureName(q.answer);
   const names = (t, name) => [name, name + 's', name + 'es'].some((n) => t.includes(' ' + n + ' '));
   // A twin of the tapped picture (the same token before its # tag or its look after ~) is ruled out by any reason the tapped one
   // gets, so a twin still open counts as named (pass MK, the lesson check: Which One Is Different?'s "so those two are the same"
   // left only the answer; the second read: grade 1's alike triangles differ only by their look, ~thin and ~turned).
   const twinOf = (c) => String(c).split(/[#~]/)[0];
-  return (open || []).map(String).filter((c) => c !== String(q.answer)).some((c) => { if (twinOf(c) === twinOf(picked)) return true; const name = pictureName(c); return !!name && name !== answerName && names(said, name) && !names(asked, name); });
+  return (open || []).map(String).filter((c) => c !== String(q.answer)).some((c) => { if (twinOf(c) === twinOf(picked)) return true; const name = pictureName(c); return !!name && name !== answerName && names(said, name) && (!names(asked, name) || said.includes(' just like ' + name + ' ')); });
 }
 // ruledOut: the choices already tapped wrong in this question, the one just tapped included; the screen dims them.
 // A trace has no choice to rule out, so a wrong one hears an invitation to trace again (round two's screen check, pass MM).
@@ -36533,12 +36869,13 @@ export const SCIENCE_WHY_GENERATORS = Object.keys(SCIENCE_WHY);
 
 // ---------------------------------------------------------------------
 // 5. WONDER — open questions with no right answer
-//    Shown after a module is mastered. Never graded, never gating.
+//    Shown after every two different lessons worked (WONDER_EVERY), pass or fail. Never graded, never gating.
 //    A child's own words are NEVER stored (compliance rule); only that a
 //    reflection happened, how long it took, and roughly how much was written.
-//    Every prompt and every perspective below was written and approved by a
-//    human. Review passes may correct a fact or a word; every such change is
-//    listed in docs/DECISIONS.md for approval. Perspectives are shown side by side and none is declared right;
+//    Through pass MA every prompt and every perspective below was written and approved by a human. Since pass MB (Mikey: "You
+//    don't really need me to approve wonder questions, just add them and I'll check them all later.") new questions and edits ship
+//    after the Wonder brief's independent read, each quoted in docs/DECISIONS.md for Mikey's later check, and none reaches a child
+//    until an educator approves it in the app. Perspectives are shown side by side and none is declared right;
 //    none takes a side for or against religion or non-belief.
 // ---------------------------------------------------------------------
 // The four Wonder voices are the core cast (pass LY, Mikey): a reader meets Frederick, Chloe, Georgette and Mike by name, the
@@ -41918,6 +42255,101 @@ export const WONDER = [
     ],
     closing: 'What color balloon would you like next time?',
   },
+  // Pass NA: four early questions, two on ups and downs and two on feelings. A word you know but cannot think of is the
+  // tip-of-the-tongue state, which happens to grown-ups too (Brown and McNeill, "The 'tip of the tongue' phenomenon", Journal of
+  // Verbal Learning and Verbal Behavior, 1966, whose students could often give a lost word's first letter, as the choice Say how it
+  // starts does), said as Frederick's own noticing; a new food liked after many tastes is the repeated-exposure finding for young
+  // children (parents of 2 to 6 year olds "gave their child a taste of this vegetable daily for 14 days", and liking rose: Wardle and
+  // others, "Increasing children's acceptance of vegetables; a randomized trial of parent-led exposure", Appetite, 2003), said as
+  // "sometimes ten times or more".
+  {
+    id: 'w-early-word-would-not-come',
+    theme: 'ups-and-downs',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'You wanted to say a word you know, but you could not think of it. What can you do?',
+    options: ['Wait a little', 'Say how it starts', 'Give up'],
+    simple: [
+      { voice: 'A scientist says', says: 'I have noticed that a lost word is still in my head. If I wait a little, it often comes back!' },
+      { voice: 'An artist says', says: 'When I cannot think of a word, I draw the thing instead, and my friend tries to guess it!' },
+      { voice: 'A grandparent of faith says', says: 'When a word will not come, I hum a little song my mother sang. It helps me feel calm, not rushed.' },
+      { voice: 'A skeptic says', says: 'Is the word really gone? I would say how it starts, and see if the rest follows!' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'I have noticed that when I cannot think of a word, it is still in my head somewhere. It even has a name, a word on the tip of your tongue. If I wait a little and think of something else, the word often comes back by itself.' },
+      { voice: 'An artist', says: 'When I cannot think of a word, I show it another way. I can draw it, point to it or act it out with my hands. My friend guesses, and together we find the word.' },
+      { voice: 'A grandparent of faith', says: 'When a word will not come, I hum a little song my mother used to sing to me. The song feels calm, like being little again, and then I am in no hurry at all.' },
+      { voice: 'A skeptic', says: 'Is the word really gone? I do not think so, so I would test it. I would say how the word starts, think about where I saw the thing, and see which one brings the rest of the word back.' },
+    ],
+    closing: 'What is a word you could show with your hands?',
+  },
+  {
+    id: 'w-early-new-food',
+    theme: 'ups-and-downs',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'You tasted a new food, and you did not like it. Could you like it someday?',
+    options: ['Maybe someday', 'Never', 'I will try again'],
+    simple: [
+      { voice: 'A scientist says', says: 'I learned that lots of children need many tastes of a new food before they like it!' },
+      { voice: 'An artist says', says: 'I look at a new food first, at its colors and its shape. Then I take a tiny bite.' },
+      { voice: 'A grandparent of faith says', says: 'At our holiday table, I did not like the soup, but I always sat with everyone. Being together was the best part!' },
+      { voice: 'A skeptic says', says: 'Never is a big word. Maybe it was too hot! I would try it again another day and see.' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'I learned that many children need to taste a new food again and again, sometimes ten times or more, before they start to like it. Each small taste helps a new food feel less new, so a no today can turn into a yes later.' },
+      { voice: 'An artist', says: 'Before I taste something new, I like to look at it closely, at its colors, its shape and how it shines. Then I take a tiny bite and notice how it feels in my mouth, crunchy, soft or smooth.' },
+      { voice: 'A grandparent of faith', says: 'For every holiday, my family makes a soup. When I was little, I did not like it at all, but I still sat at the table with everyone. Being together was the best part, and it still is.' },
+      { voice: 'A skeptic', says: 'Never is a very big word. Maybe I did not like it because it was too hot, or because I was not hungry yet. I would try it again another day, when things are different, and see what I think then.' },
+    ],
+    closing: 'What new food would you like to taste someday?',
+  },
+  {
+    id: 'w-early-hurt-by-words',
+    theme: 'feelings',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'A friend said your drawing looks funny, and your feelings were hurt. What can you do?',
+    options: ['Tell my friend', 'Tell a grown-up', 'Keep drawing'],
+    simple: [
+      { voice: 'A scientist says', says: 'I once showed one drawing to ten people. One said it looked funny, and nine said they liked it!' },
+      { voice: 'An artist says', says: 'My drawings are mine, and I keep drawing, even when my feelings are hurt.' },
+      { voice: 'A grandparent of faith says', says: 'When words hurt me, I think of a kind word someone once said to me, and I hold on to that one.' },
+      { voice: 'A skeptic says', says: 'Which part looks funny? I would ask, then look again myself to see if I agree.' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'I once tried a little test. I showed the same drawing to ten people and asked what they thought. One said it looked funny, and the other nine said they liked it. So I count one friend\'s words as one answer, not the only answer.' },
+      { voice: 'An artist', says: 'My drawings are mine, and I keep drawing, even when my feelings are hurt. My pictures are for me first, and for the people I want to share them with.' },
+      { voice: 'A grandparent of faith', says: 'When words hurt me, I think of a kind word someone once said to me. My grandmother used to say my drawings made her smile. I hold on to a kind word like that one, and the hurt feels smaller.' },
+      { voice: 'A skeptic', says: 'Which part looks funny, and why? I would ask my friend, then look at that part again myself to see if I agree. If the words were meant to be unkind, I would tell a grown-up.' },
+    ],
+    closing: 'What do you love to draw most of all?',
+  },
+  {
+    id: 'w-early-did-it-myself',
+    theme: 'feelings',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'You did something hard all by yourself, like putting on your own shoes. How does that feel?',
+    options: ['Proud', 'Happy', 'Tired'],
+    simple: [
+      { voice: 'A scientist says', says: 'When I finish something hard, my body shows it. I stand up tall, and sometimes I need a rest too!' },
+      { voice: 'An artist says', says: 'Proud feels shiny to me, like a gold star. I would paint myself on a mountaintop, waving!' },
+      { voice: 'A grandparent of faith says', says: 'When someone in our house learns something new, we all cheer at dinner!' },
+      { voice: 'A skeptic says', says: 'Did I do it all by myself? Someone showed me how first, so I would thank them too!' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'When I finish something hard, my body shows it. My chin goes up and I stand up tall, and sometimes my arms and legs feel tired too, so I take a little rest.' },
+      { voice: 'An artist', says: 'Proud feels shiny to me, like a gold star stuck right on my heart. If I painted proud, I would paint myself on top of a tall mountain, waving my arms, with the whole sky around me.' },
+      { voice: 'A grandparent of faith', says: 'When someone in our house learns something new, like pouring their own milk, we all cheer for them at dinner. Later we tell someone far away, like a cousin on the phone, so they can cheer too.' },
+      { voice: 'A skeptic', says: 'Did I really do it all by myself? Someone showed me how first, and I watched and practiced. So I would feel proud of all my practice, and I would say thank you to the person who taught me too.' },
+    ],
+    closing: 'How would you cheer for a friend who did something hard?',
+  },
   {
     id: 'w-growing-left-it-at-home',
     theme: 'failure',
@@ -42398,8 +42830,9 @@ export function wonderAwaitingReview(review) {
 }
 
 // The four things a reflection is for. Every question carries one, and the rotation
-// keeps them in balance. After a failed round, the questions about failure and feelings
-// come first, because that is when they land.
+// keeps them in balance. After a hard round, one not passed or with MISS_STREAK misses in a
+// row, the questions about failure and feelings come first and the hard-days ones next,
+// because that is when they land.
 export const WONDER_THEMES = {
   world: 'Curiosity about the world',
   failure: 'Failure is how learning happens',
@@ -43239,9 +43672,11 @@ export function daysSinceBackup(lastAt, now) {
 // What counts as the same question (pass IU, Mikey: the same question and answer twice in one Animal sounds round): the
 // setup, the wording, the picture and the answer. The wrong choices are left out on purpose. Tap the animal that says
 // buzz with a different wrong animal is still the same question to a child, and before this pass it counted as new.
+// A question that says its pictures' names in the buttons' order keys on its story without them (keyStory), since the names are the
+// wrong choices said (pass NA, the lead's trial of round one's fixes: Think of a word's banks never stopped making new questions).
 export function questionKey(q) {
   if (!q) return '';
-  return JSON.stringify([q.story || '', q.prompt || '', q.visual || null, q.answer === undefined ? null : q.answer, q.trace || q.target || null]);
+  return JSON.stringify([(q.keyStory !== undefined ? q.keyStory : q.story) || '', q.prompt || '', q.visual || null, q.answer === undefined ? null : q.answer, q.trace || q.target || null]);
 }
 
 // Builds one practice set for a module. Same (moduleId, seed, passedIds) => same set.
@@ -43280,7 +43715,9 @@ export function buildAttempt(moduleId, seed, passedIds, options = {}) {
   const isTraceBank = (g) => generateQuestion(g, 1).type === 'trace';
   const mixed = mod.generators.some(isTraceBank) && !mod.generators.every(isTraceBank);
   // A question that names what it is about (aboutWords: a word made of two words, a word whose beats it asks, a sentence whose words it
-  // counts) is not asked about one the round has asked about already while another can be found, since the first one's explanation
+  // counts, and since pass NA a word whose first sound it asks and a word with its mate, each word named on its own, since round one's
+  // code check found keys of two and three words that no other question could meet) is not asked about one the round has asked about
+  // already while another can be found, since the first one's explanation
   // answers the second (pass MY, round one's lesson check: 1,752 of 2,000 rounds of Two words make one asked about one word twice,
   // "Yes. Bird and house make birdhouse." before "Which word do you hear in birdhouse?").
   const aboutEcho = (q, list) => list === core && Array.isArray(q.aboutWords) && list.some((c) => Array.isArray(c.aboutWords) && c.aboutWords.some((w) => q.aboutWords.includes(w)));
@@ -45139,7 +45576,8 @@ export function makeLoopBackEvent(fromModuleId, toModuleId, at) {
   return { type: 'looped_back', at, moduleId: fromModuleId, toModuleId };
 }
 
-// A module is open when every prerequisite is mastered. There is no other way in.
+// A module is open when every prerequisite that gates it is passed once or moved past (Mastery v2; Move Forward since pass LQ), or
+// when an educator opens it by hand (pass NA, the sweep of Mikey's answer to Q86: this line said mastered, and no other way in).
 // Which prerequisites actually gate a module for this student. Those inside the same
 // course always do. One from another course only does when that course is assigned:
 // an educator who places a student at grade 3 without grade 2 has judged them past it,
@@ -45598,6 +46036,28 @@ export const EXPLANATIONS = [
 // Both follow the house style: complete sentences, varied length, simple terms.
 // ---------------------------------------------------------------------
 
+// What the learner's My progress screen says under one lesson (pass NA, the sweep Mikey's answer to Q86 asked for): a star is
+// "You showed you understand this."; a lesson passed but not yet starred names its best score and the second pass on another day
+// that earns the star, as the overview says it; one tried and not passed names its best score and what passes it (four of five, say),
+// since a pass opens what needs it (Mastery v2); a locked one opens when the lessons it needs are passed, since a pre-K lesson needs
+// only what its requires names and a later course's the lesson before it as well; an untried one is ready. Until pass NA the screen
+// wrote its own words, and they said "You need 4 to master it." and "Opens when the module before it is mastered."
+// Since round one's screen check the note reads the lesson's row (buildReport): a lesson placed by a quick check or the placement check
+// has no pass day, so it is mastered by passes on two different days; and a writing module is passed by the teacher's mark, never a
+// score, so its note names none: handed in, it waits for the teacher, as the overview says.
+export const masterAgain = (passDays) => (passDays >= 1 ? 'Pass it again on another day to master it.' : 'Pass it on two different days to master it.');
+// A writing module: every question its banks ask is a piece of writing the teacher marks.
+const WRITING_MODULE_CACHE = new Map();
+export function isWritingModule(id) { if (!WRITING_MODULE_CACHE.has(id)) { const m = getModule(id); WRITING_MODULE_CACHE.set(id, !!m && (m.generators || []).length > 0 && m.generators.every((g) => { try { return generateQuestion(g, 1).type === 'writing'; } catch (e) { return false; } })); } return WRITING_MODULE_CACHE.get(id); }
+export function myProgressNote(status, row, rules) {
+  const { attempts, bestScore, passDays = 0, pendingWriting = false, id } = row || {};
+  if (status === 'mastered') return 'You showed you understand this.';
+  if (id && isWritingModule(id)) { if (pendingWriting) return 'Handed in. Waiting for your teacher to check it.'; if (status === 'passed') return 'You passed this. ' + masterAgain(passDays); if (status === 'locked') return 'Opens when the modules it needs are passed.'; return 'Ready when you are.'; }
+  if (status === 'passed') return attempts && bestScore ? `Your best so far is ${bestScore}. ${masterAgain(passDays)}` : 'You passed this. ' + masterAgain(passDays);
+  if (status === 'locked') return 'Opens when the modules it needs are passed.';
+  return attempts && bestScore ? `Your best so far is ${bestScore}. You need ${rules.toMaster} of ${rules.questions} to pass it.` : 'Ready when you are.';
+}
+
 // What to say to a learner when a practice round ends. Names what they just did and
 // what comes next, so the screen talks to them rather than reporting on them.
 export function encouragementFor(events, moduleId, mastered) {
@@ -45912,24 +46372,37 @@ export function studentSummary(events, moduleIds) {
   const out = [];
 
   // What has been achieved
-  if (rounds.length === 0) {
+  // A pass with no practice round is named too (round two's code read: a writing module marked Pass read "You haven't started a
+  // practice round yet" just above the lesson it opened).
+  const passedHere = mine.filter((m) => ((progress.perModule[m.id] || {}).passes || 0) > 0);
+  if (rounds.length === 0 && passedHere.length === 0 && mastered.length === 0) {
     out.push("You haven't started a practice round yet, and that is the easiest thing in the world to fix. Open a module and try one.");
+  } else if (rounds.length === 0 && mastered.length === 0) {
+    out.push(`You've passed ${passedHere.length} ${passedHere.length === 1 ? 'module' : 'modules'}. Pass ${passedHere.length === 1 ? 'it' : 'one'} again on another day, and it is mastered.`);
   } else if (mastered.length === 0) {
-    out.push(`You've finished ${rounds.length} practice ${rounds.length === 1 ? 'round' : 'rounds'} and nothing is mastered yet, which is exactly how everyone starts.`);
+    // A pass won in a round named before the star (round one's code check: after one pass the summary said nothing was mastered, and
+    // then that the lesson passed opened another); a lesson placed by a check has no pass of its own, so it is left out here.
+    const passed = mine.filter((m) => ((progress.perModule[m.id] || {}).passes || 0) > 0); const roundsWord = rounds.length === 1 ? 'round' : 'rounds';
+    out.push(passed.length ? `You've passed ${passed.length} ${passed.length === 1 ? 'module' : 'modules'} in ${rounds.length} practice ${roundsWord}. Pass ${passed.length === 1 ? 'it' : 'one'} again on another day, and it is mastered.` : `You've finished ${rounds.length} practice ${roundsWord} and nothing is mastered yet, which is exactly how everyone starts.`);
   } else {
     const named = join(titles(mastered.slice(0, 3)).map((t) => `**${t}**`));
     const modulesWord = mastered.length === 1 ? 'module' : 'modules'; const roundsWord = rounds.length === 1 ? 'round' : 'rounds';
     const tail = mastered.length <= 3 ? `: ${named}.` : `, including ${named}.`;
-    out.push(`You've mastered ${mastered.length} ${modulesWord} across ${rounds.length} practice ${roundsWord}${tail}`);
+    const across = rounds.length ? ` across ${rounds.length} practice ${roundsWord}` : '';
+    out.push(`You've mastered ${mastered.length} ${modulesWord}${across}${tail}`);
   }
 
-  // What those skills open up
+  // What those skills open up: a module is open once what it needs is passed (Mastery v2), so the lesson named is one passed (pass NA,
+  // the sweep of Mikey's answer to Q86: until then only a mastered lesson was named, and the line said mastering unlocks).
   const statuses = moduleStatuses(progress, enabledCourseIds(events));
-  const unlocked = mine.filter((m) => !progress.masteredIds.includes(m.id) && statuses.find((x) => x.id === m.id)?.status === 'available' && prerequisitesOf(m.id).some((p) => progress.masteredIds.includes(p)));
+  const unlocked = mine.filter((m) => !progress.passedIds.includes(m.id) && statuses.find((x) => x.id === m.id)?.status === 'available' && prerequisitesOf(m.id).some((p) => progress.passedIds.includes(p)));
   if (unlocked.length > 0) {
-    const because = getModule(prerequisitesOf(unlocked[0].id).find((p) => progress.masteredIds.includes(p)));
-    const opened = unlocked.length === 1 ? `**${lowerTitle(unlocked[0].title)}** is` : `${join(titles(unlocked.slice(0, 2)).map((t) => `**${t}**`))} are`;
-    out.push(`Because you know ${lowerTitle(because.title)}, ${opened} open to you now. Each skill you master unlocks the ones that build on it.`);
+    const because = getModule(prerequisitesOf(unlocked[0].id).find((p) => progress.passedIds.includes(p)));
+    // Only the lessons the one named opens (round one's screen check: graphs and tallies, which builds on measuring things, was named as
+    // opened because a child knew comparing fractions).
+    const opens = unlocked.filter((m) => prerequisitesOf(m.id).includes(because.id));
+    const opened = opens.length === 1 ? `**${lowerTitle(opens[0].title)}** is` : `${join(titles(opens.slice(0, 2)).map((t) => `**${t}**`))} are`;
+    out.push(`Because you know ${lowerTitle(because.title)}, ${opened} open to you now. Each module you pass opens the ones that build on it.`);
   }
 
   // A word that fits the recent record
@@ -45938,7 +46411,7 @@ export function studentSummary(events, moduleIds) {
   const recent = rounds.slice(-6);
   const recentMisses = recent.filter((e) => !isMasteredAttempt(e)).length;
   const loops = active.filter((e) => e.type === 'looped_back').length;
-  if (streak >= 3) out.push(`You are on a streak: ${streak} rounds mastered in a row. Keep that going while it feels easy.`);
+  if (streak >= 3) out.push(`You are on a streak: ${streak} rounds passed in a row. Keep that going while it feels easy.`);
   else if (recentMisses >= 3) out.push(`${recentMisses} of your last ${recent.length} rounds did not go your way. That is not a problem. A wrong answer shows you exactly what to learn next, which a lucky right answer never does, and the people who end up best at something are the ones who kept going through this part.`);
   else if (loops > 0) out.push(`You went back to an earlier module and came forward again. That is how strong foundations get built, and it is the smartest move a learner can make.`);
   else if (rounds.length > 0 && mastered.length > 0) out.push('Steady work like this adds up faster than it feels. Keep going!');

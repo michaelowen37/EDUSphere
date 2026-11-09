@@ -313,5 +313,19 @@ ok('the ledger has no rows the app does not use', orphans.length === 0, orphans.
   ok(`no person a pre-K row writes from pass MX on looks like another of their kind in the same lesson, course or course before, by hair and clothing color, and every look such a row begins is read (${now.looks} looks read; P175's Mia and Sam named as met again; ${now.waiting.length} older pairs wait as a count that only falls, at most ${ECHO_WAITING}; six near misses)`,
     now.looks >= 500 && now.unread.length === 0 && now.newer.length === 0 && now.waiting.length <= ECHO_WAITING && plants.every(Boolean),
     `new pairs: ${now.newer.map(name).join('; ')}; unread: ${now.unread.map((x) => x.serial + ' ' + x.why).join('; ')}; waiting ${now.waiting.length}; near misses ${plants}`); }
+// Hair written alike (pass NC, round two's content read): two people of one kind whose hair is the same color family and the same style
+// words, whatever they wear, in the same course or the course before (hairPairs; a beard, glasses, graying and the like set two apart).
+// A row from pass NC on (S4079 and P189 on) is held to none, and the older pairs wait as a count that only falls (EARMARKS A90). The
+// near misses: Emeka's short wavy black hair and Astrid's mom's long blond braid put back, each caught beside the older row it echoed.
+{ const { personReads, hairPairs } = await import('../tools/look-echoes.mjs');
+  const FROM = { S: 4079, P: 189 }; const HAIR_WAITING = 30;
+  const isNew = (serial) => { const m = /^([SP])(\d+)$/.exec(serial); return !!m && +m[2] >= FROM[m[1]]; };
+  const judge = (text) => { const pairs = hairPairs(personReads(text).filter((x) => x.read)); return { newer: pairs.filter(([a, b]) => isNew(a.serial) || isNew(b.serial)), waiting: pairs.filter(([a, b]) => !isNew(a.serial) && !isNew(b.serial)) }; };
+  const now = judge(ledger); const swap = (from, to) => (ledger.includes(from) ? judge(ledger.split(from).join(to)) : null);
+  const caughtBeside = (r, older) => !!r && r.newer.some(([a, b]) => [a.serial, b.serial].includes(older));
+  const plants = [caughtBeside(swap('A small boy with short black locs, in a lemon-yellow t-shirt', 'A small boy with short wavy black hair, in a lemon-yellow t-shirt'), 'S3987'),
+    caughtBeside(swap('a mom with a short blond pixie cut, in a coral blouse', 'a mom with long blond hair in a loose braid, in a coral blouse'), 'S4039')];
+  ok(`no person a pre-K row writes from pass NC on has hair written like another of their kind in the same course or course before, whatever they wear (${now.waiting.length} older pairs wait as a count that only falls, at most ${HAIR_WAITING}; two near misses)`,
+    now.newer.length === 0 && now.waiting.length <= HAIR_WAITING && plants.every(Boolean), `new pairs: ${now.newer.map(([a, b]) => a.serial + ' and ' + b.serial).join('; ')}; waiting ${now.waiting.length}; near misses ${plants}`); }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

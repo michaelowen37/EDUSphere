@@ -80,9 +80,10 @@ const rowLook = () => page.evaluate(() => {
   const q2 = await show('p3-how-many', 11);
   const squares = await page.evaluate(() => { const row = document.querySelector('[data-pattern-row]'); const paper = row.closest('.edu-paper-picture'); const card = paper.parentElement.parentElement.getBoundingClientRect(); return { sizes: [...row.children].map((c) => Math.round((c.querySelector('rect, circle, polygon, path, ellipse') || c).getBoundingClientRect().width)), paper: Math.round(paper.getBoundingClientRect().width), card: Math.round(card.width) }; });
   ok('How many squares? draws its squares 80 pixels or more across, on a paper sized to them rather than the width of the card', q2.visual.kind === 'pattern' && squares.sizes.every((w) => w >= 80) && squares.paper < squares.card * 0.6, squares);
+  // Since pass NC (EARMARKS A84) the picture to match draws at its answers' own size, so the one that is the same looks the same size.
   await show('pm-same-animals', 11);
-  const same = await page.evaluate(() => { const p = document.querySelector('.edu-paper-picture svg'); return p ? Math.round(p.getBoundingClientRect().width) : 0; });
-  ok('a picture to match among picture answers keeps its old size, so the one that is the same never looks bigger (110 pixels)', same >= 100 && same <= 120, same);
+  const same = await page.evaluate(() => { const p = document.querySelector('.edu-paper-picture svg'); const tiles = [...document.querySelectorAll('button[data-choice] svg')].map((s) => s.getBoundingClientRect().width); return { pic: p ? Math.round(p.getBoundingClientRect().width) : 0, tiles: tiles.map(Math.round) }; });
+  ok('a picture to match among picture answers draws at its answers\' size, so the one that is the same never looks bigger or smaller (pass NC, EARMARKS A84)', same.pic > 0 && same.tiles.length >= 2 && same.tiles.every((w) => Math.abs(w - same.pic) <= 2), same);
   // A row of six never splits (the code and screen checks: five and one at every width before), from a small phone to a laptop.
   const six = [];
   for (const [w, h] of [[360, 740], [768, 1024], [1280, 900]]) { await page.setViewportSize({ width: w, height: h }); await show('pp-which-repeats', 2); six.push({ w, ...(await rowLook()) }); }
@@ -674,13 +675,21 @@ const ponder = () => page.evaluate(() => {
   const heard = [];
   for (let line = 0; line < 5; line++) {
     await page.waitForTimeout(3500);
-    heard.push(await page.evaluate(() => ({ spoken: window.__spoken.slice(), sounds: (window.__eduSounds || []).slice() })));
-    await page.evaluate(() => { window.__spoken = []; window.__eduSounds = []; });
+    heard.push(await page.evaluate(() => ({ spoken: window.__spoken.slice(), sounds: (window.__eduSounds || []).slice(), keys: (window.__eduSoundKeys || []).slice() })));
+    await page.evaluate(() => { window.__spoken = []; window.__eduSounds = []; window.__eduSoundKeys = []; });
     await page.getByRole('button', { name: 'Next', exact: true }).first().click({ force: true });
   }
   const want = [['m', 'm'], ['s', 's'], ['t'], ['f'], ['m']];
   const handed = heard.flatMap((h) => h.spoken).join(' | ');
   ok("First sounds' first five lines play each sound in its place and hand the voice no sss, fff, mmm, tuh or word where a sound goes (pass MO, Q51)", heard.every((h, i) => JSON.stringify(h.sounds) === JSON.stringify(want[i])) && !/\b(s{3,}|f{3,}|m{3,}|tuh)\b/i.test(handed) && !/(start with|starts with|the sound) (moon|sun|fish)/i.test(handed) && /Tap and top both start with the same sound/.test(handed), heard);
+  // The one-breath hiss where a child hears it (pass NC, round one's screen check, Q88): the clip's own key (window.__eduSoundKeys, its
+  // sound, pace and breath), First sounds' line 2, outside the three phoneme lessons, playing sss in its two breaths, and The very first
+  // sound's line 6, inside them (ONE_BREATH_LESSONS), playing each fff once; each lesson is the other's near miss.
+  await page.evaluate(() => window.__eduTest.openModule('very-first-sound')); await page.waitForFunction(() => window.__eduTest.screen === 'lesson');
+  for (let k = 0; k < 5; k++) { await page.waitForTimeout(400); if (k === 4) await page.evaluate(() => { window.__spoken = []; window.__eduSounds = []; window.__eduSoundKeys = []; }); await page.getByRole('button', { name: 'Next', exact: true }).first().click({ force: true }); }
+  await page.waitForTimeout(4000); const vfsKeys = await page.evaluate(() => (window.__eduSoundKeys || []).slice());
+  const twoBreaths = heard[1].keys.filter((k) => /^s(-|$)/.test(k)); const oneBreath = vfsKeys.filter((k) => /^f(-|$)/.test(k));
+  ok('a lone hiss plays one breath in the three phoneme lessons and two breaths outside them, read from the clip each line asks for (pass NC, Q88; First sounds\' line 2 and The very first sound\'s line 6, each the other\'s near miss)', twoBreaths.length >= 2 && twoBreaths.every((k) => !k.endsWith('-once')) && oneBreath.length >= 2 && oneBreath.every((k) => k.endsWith('-once')), { firstSounds: heard[1].keys, veryFirst: vfsKeys });
   await page.evaluate(() => Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: window.__voiceBeforeSounds })); }
 // k. The rabbit and the candle are seen on the paper in both themes (pass MO, Mikey's answer to Q54, "your call as long as it looks
 //    visually appealing and sleek."): the rabbit's outline and the candle's, read from the drawings on the page, are 3 to 1 or more
@@ -1128,15 +1137,27 @@ const ponder = () => page.evaluate(() => {
 // title is put in the real row in turn; the planted fault puts the old columns back and must be caught.
 { const L2 = await import('../../src/logic.mjs'); const titles = [...new Set(L2.COURSES.flatMap((c) => c.modules.map((m) => L2.titleCase(m.title))))];
   const anyMod = L2.COURSES.flatMap((c) => c.modules).find((m) => m.generators && m.generators.length);
-  const readOff = (list) => page.evaluate((ts) => { const row = document.querySelector('[data-title-row]'); const p = row && row.querySelector('p'); if (!p) return null; const was = p.textContent; const rr = row.getBoundingClientRect(); const mid = (rr.left + rr.right) / 2; const bad = [];
-    for (const t of ts) { p.textContent = t; const rg = document.createRange(); rg.selectNodeContents(p); const rs = [...rg.getClientRects()]; const l = Math.min(...rs.map((r) => r.left)); const rgt = Math.max(...rs.map((r) => r.right)); const off = (l + rgt) / 2 - mid; if (Math.abs(off) > 3) bad.push([t, +off.toFixed(1)]); }
-    p.textContent = was; return { read: ts.length, bad: bad.length, first: bad.slice(0, 3) }; }, list);
+  // Under 360 pixels the title stands in FitText's span (pass NC, EARMARKS A72), so each trial title is written into that span, never over
+  // it (writing over React's span broke the title row for the next screen), and fitted as FitText fits it, from 18 pixels down by halves to
+  // 15 and then let wrap, in the room the row leaves it (the row less its two side columns at their least, 44 pixels each, and the two
+  // gaps, since round two's code read); the fit is checked against FitText's own on the title the screen drew, so the copy here cannot
+  // drift unseen.
+  const readOff = (list) => page.evaluate((ts) => { const row = document.querySelector('[data-title-row]'); const p = row && row.querySelector('p'); if (!p) return null;
+    const span = p.querySelector('[data-fit-text]'); const box = span || p; const was = box.textContent; const wasStyle = span ? span.getAttribute('style') : null;
+    const fit = () => { const cs = getComputedStyle(row); const room = row.clientWidth - (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0) - 2 * (44 + 8); span.style.whiteSpace = 'nowrap'; let f = 18; span.style.fontSize = `${f}px`;
+      while (f > 15 && span.scrollWidth > room + 0.5) { f -= 0.5; span.style.fontSize = `${f}px`; }
+      const tooWide = span.scrollWidth > room + 0.5; span.style.whiteSpace = tooWide ? 'normal' : 'nowrap'; span.style.overflowWrap = tooWide ? 'anywhere' : 'normal'; return { fs: f, wrap: tooWide }; };
+    let mirror = null; if (span) { const drew = { fs: parseFloat(span.style.fontSize), wrap: span.style.whiteSpace === 'normal' }; const mine = fit(); mirror = mine.fs === drew.fs && mine.wrap === drew.wrap; span.setAttribute('style', wasStyle); }
+    const rr = row.getBoundingClientRect(); const mid = (rr.left + rr.right) / 2; const bad = [];
+    for (const t of ts) { box.textContent = t; if (span) fit(); const rg = document.createRange(); rg.selectNodeContents(box); const rs = [...rg.getClientRects()]; const l = Math.min(...rs.map((r) => r.left)); const rgt = Math.max(...rs.map((r) => r.right)); const off = (l + rgt) / 2 - mid; if (Math.abs(off) > 3) bad.push([t, +off.toFixed(1)]); }
+    box.textContent = was; if (span) span.setAttribute('style', wasStyle); return { read: ts.length, bad: bad.length, first: bad.slice(0, 3), fitted: !!span, mirror }; }, list);
   const widths = [];
   for (const [w, h] of [[320, 568], [375, 667], [390, 844]]) { await page.setViewportSize({ width: w, height: h }); await show(anyMod.generators[0], 3, anyMod.id); widths.push({ w, ...(await readOff(titles)) }); }
-  ok(`a practice page's title stays centered beside its speaker for every module title at 320, 375 and 390 pixels (${titles.length} titles)`, widths.every((x) => x.read === titles.length && x.bad === 0), widths);
+  ok(`a practice page's title stays centered beside its speaker for every module title at 320, 375 and 390 pixels (${titles.length} titles; at 320 each fitted as FitText fits it, the copy of its fit matching FitText's own)`, widths.every((x) => x.read === titles.length && x.bad === 0) && widths[0].fitted === true && widths[0].mirror === true && !widths[1].fitted && !widths[2].fitted, widths);
   await page.setViewportSize({ width: 320, height: 568 }); await show(anyMod.generators[0], 3, anyMod.id);
-  await page.evaluate(() => { document.querySelector('[data-title-row]').style.gridTemplateColumns = '1fr auto 1fr'; });
-  const planted = await readOff(titles);
+  const plantedRow = await page.evaluate(() => { const row = document.querySelector('[data-title-row]'); if (!row) return false; row.dataset.plantWas = row.style.gridTemplateColumns; row.style.gridTemplateColumns = '1fr auto 1fr'; return true; });
+  const planted = plantedRow ? await readOff(titles) : null;
+  await page.evaluate(() => { const row = document.querySelector('[data-title-row]'); if (row && row.dataset.plantWas !== undefined) { row.style.gridTemplateColumns = row.dataset.plantWas; delete row.dataset.plantWas; } });
   ok('the read catches the old plain columns, which pushed long titles off center', planted && planted.bad > 0, planted);
   await page.setViewportSize({ width: 1280, height: 900 });
   // The layout read (tests/e2e/layout-check.mjs, check.sh 13g) sees words written straight into a centred row beside an icon: the
@@ -1225,6 +1246,196 @@ const ponder = () => page.evaluate(() => {
   const silentOk = !silent.heard && silent.buttons.length === 2 && silent.buttons.every((b) => !b.heard && b.text.includes(b.choice.replace(/[.!?]$/, '')));
   ok("a counting question's sentence choices say Tap to hear and name their sentence to a screen reader while the voice can speak, and print it with none (pass MX, round two's code read; p3-words-same)", voicedOk && silentOk, JSON.stringify({ voiced, silent }).slice(0, 600)); }
 
+// 10. EARMARKS A76's browser check (pass NC, the screen read): the Wonder answer tiles, fitted together (FitTilesRow) with each word
+//    whole (WordFit), never run past their row or the screen, never let a word past a tile's edge or under 13 pixels, and never split a
+//    hyphenated word such as grown-up across two lines, read at 320, 340, 360, 375, 390 and 412 pixels wide in both themes on every early
+//    question whose answers hold a hyphenated word, a word of nine letters or more, or eighteen letters in all, each width reached by
+//    resizing as a phone turned or a window dragged would; the layout read still, transforms and motion off, since a tile the voice reads
+//    grows a little on purpose. Its plants: a tile made 60 pixels wider than its column, and a grown-up let break in a narrow box.
+{ const WIDE = L.WONDER.filter((w) => w.stage === 'early' && w.answerMode === 'pick' && w.options.some((o) => /-/.test(o) || o.length >= 18 || o.split(/\s+/).some((x) => x.length >= 9)));
+  const WIDTHS = [320, 340, 360, 375, 390, 412];
+  const tileFaults = (pg) => pg.evaluate(() => {
+    const row = document.querySelector('.edu-wonder-answers'); if (!row) return ['no tiles'];
+    const out = []; const vw = document.documentElement.clientWidth; const rr = row.getBoundingClientRect();
+    if (rr.right > vw + 0.5 || rr.left < -0.5) out.push(`the row past the screen (${Math.round(rr.left)} to ${Math.round(rr.right)} of ${vw})`);
+    for (const t of row.children) {
+      const r = t.getBoundingClientRect(); const words = t.textContent.trim();
+      if (r.right > rr.right + 0.5 || r.left < rr.left - 0.5) out.push(`"${words}" past its row`);
+      // A tile's words past its edge, read on WordFit's own span whatever its overflow (round one's code check), as FitTilesRow measures.
+      for (const el of t.querySelectorAll('[data-word-fit]')) if (el.scrollWidth > el.clientWidth + 0.5) out.push(`"${words}" past its tile's edge`);
+      for (const el of t.querySelectorAll('span')) { const fs = parseFloat(getComputedStyle(el).fontSize); if (el.textContent.trim() && fs < 13 - 0.01) out.push(`"${words}" at ${fs} pixels`); }
+      const walker = document.createTreeWalker(t, NodeFilter.SHOW_TEXT); let n;
+      while ((n = walker.nextNode())) for (const m of n.textContent.matchAll(/[A-Za-z]+-[A-Za-z]+/g)) { const rg = document.createRange(); rg.setStart(n, m.index); rg.setEnd(n, m.index + m[0].length); const tops = new Set([...rg.getClientRects()].map((x) => Math.round(x.top))); if (tops.size > 1) out.push(`"${m[0]}" split across two lines`); }
+    }
+    return out; });
+  const faults = []; let screens = 0; let plantPast = null; let plantSplit = null; let plantEdge = null; let plantSmall = null; let plantScreen = null;
+  for (const theme of ['light', 'dark']) {
+    const ctx = await browser.newContext({ viewport: { width: 375, height: 800 }, hasTouch: true, reducedMotion: 'reduce' });
+    await ctx.addInitScript((t) => { try { localStorage.setItem('edusphere_v1_theme', t); } catch (e) { /* none */ } }, theme);
+    const pg = await ctx.newPage(); await pg.goto(new URL('./page.html', import.meta.url).href);
+    const isScreen = (n) => pg.waitForFunction((x) => window.__eduTest && window.__eduTest.screen === x, n, { timeout: 15000 });
+    const tap = async (name) => { const b = pg.getByRole('button', { name, exact: true }); if (await b.count()) { await b.first().click({ force: true }); await pg.waitForTimeout(250); } };
+    await isScreen('welcome'); await pg.getByRole('button', { name: 'Create account', exact: true }).first().click(); await isScreen('educator-setup');
+    await pg.fill('input[placeholder="PIN"]', '2468'); await pg.fill('input[placeholder="PIN again"]', '2468'); await pg.fill('input[placeholder="This device\'s name"]', 'Tiles'); await pg.selectOption('select[aria-label="Your state"]', 'TX');
+    await pg.getByRole('button', { name: 'Create account', exact: true }).click(); await isScreen('educator-pick'); await pg.waitForTimeout(400);
+    for (const n of ['Skip tour', 'Later', 'Got it']) await tap(n);
+    await pg.getByLabel('Walk through early years').first().click({ force: true }); await isScreen('overview'); await pg.waitForTimeout(300);
+    // The tiles' layout is read still: a tile the voice is reading grows a little (a scale the eye reads as the tile being said), which
+    // is not where the layout puts it, so the check reads the page with transforms and motion off.
+    await pg.addStyleTag({ content: '.edu-wonder-answers, .edu-wonder-answers * { transform: none !important; animation: none !important; transition: none !important; }' });
+    for (const w of WIDE) {
+      await pg.evaluate((id) => window.__eduTest.openWonder(id, 'big-and-little'), w.id); await isScreen('wonder');
+      for (const width of WIDTHS) {
+        await pg.setViewportSize({ width, height: 800 }); await pg.waitForTimeout(160); screens++;
+        for (const f of await tileFaults(pg)) faults.push(`${theme} ${width} ${w.id}: ${f}`);
+        // The plants, once each: a tile pushed past its row, and a hyphenated word let break inside a narrow box.
+        if (plantPast === null) { await pg.evaluate(() => { const t = document.querySelector('.edu-wonder-answers').children[0]; window.__was = t.getAttribute('style') || ''; t.style.width = (t.offsetWidth + 60) + 'px'; }); plantPast = (await tileFaults(pg)).some((f) => f.includes('past its row')); await pg.evaluate(() => { const t = document.querySelector('.edu-wonder-answers').children[0]; t.setAttribute('style', window.__was); delete window.__was; }); }
+        // Since round one's code check each other bound has its plant too: a tile's words set at 60 pixels on one line run past its edge, a
+        // word set at 12 pixels is under 13, and the row pushed 400 pixels right runs past the screen; each put back as it was.
+        if (plantEdge === null && width === 320) { const res = await pg.evaluate(() => { const s = document.querySelector('.edu-wonder-answers [data-word-fit]'); if (!s) return null; window.__was = s.getAttribute('style') || ''; s.style.fontSize = '60px'; s.style.whiteSpace = 'nowrap'; return true; }); plantEdge = !!res && (await tileFaults(pg)).some((f) => f.includes("past its tile's edge")); await pg.evaluate(() => { const s = document.querySelector('.edu-wonder-answers [data-word-fit]'); if (s && window.__was !== undefined) s.setAttribute('style', window.__was); delete window.__was; }); }
+        if (plantSmall === null && width === 320) { const res = await pg.evaluate(() => { const s = [...document.querySelectorAll('.edu-wonder-answers span')].find((x) => x.textContent.trim()); if (!s) return null; window.__was = s.getAttribute('style') || ''; s.style.fontSize = '12px'; return true; }); plantSmall = !!res && (await tileFaults(pg)).some((f) => f.includes('at 12 pixels')); await pg.evaluate(() => { const s = [...document.querySelectorAll('.edu-wonder-answers span')].find((x) => x.textContent.trim()); if (s && window.__was !== undefined) s.setAttribute('style', window.__was); delete window.__was; }); }
+        if (plantScreen === null && width === 320) { const res = await pg.evaluate(() => { const r = document.querySelector('.edu-wonder-answers'); if (!r) return null; window.__was = r.style.transform; r.style.setProperty('transform', 'translateX(400px)', 'important'); return true; }); plantScreen = !!res && (await tileFaults(pg)).some((f) => f.includes('the row past the screen')); await pg.evaluate(() => { const r = document.querySelector('.edu-wonder-answers'); if (r) { r.style.removeProperty('transform'); if (window.__was) r.style.transform = window.__was; } delete window.__was; }); }
+        if (plantSplit === null && w.options.some((o) => /grown-up/.test(o))) { await pg.evaluate(() => { const s = [...document.querySelectorAll('.edu-wonder-answers span')].find((x) => /grown-up/.test(x.textContent) && !x.querySelector('span')); if (!s) return; window.__was = s.getAttribute('style') || ''; s.setAttribute('style', 'display: inline-block; width: 4ch; white-space: normal; word-break: break-all; font-size: 16px'); }); plantSplit = (await tileFaults(pg)).some((f) => f.includes('split across')); await pg.evaluate(() => { const s = [...document.querySelectorAll('.edu-wonder-answers span')].find((x) => /grown-up/.test(x.textContent) && !x.querySelector('span')); if (s && window.__was !== undefined) s.setAttribute('style', window.__was); delete window.__was; }); }
+      }
+      await pg.setViewportSize({ width: 375, height: 800 });
+    }
+    await ctx.close();
+  }
+  ok(`the Wonder answer tiles fit at 320, 340, 360, 375, 390 and 412 pixels wide in both themes: no tile past its row or the screen, no words past a tile's edge, none under 13 pixels, and no hyphenated word such as grown-up split across two lines (pass NC, EARMARKS A76; ${WIDE.length} early questions with a hyphenated or long answer, ${screens} screens; a tile pushed past its row, a grown-up let break, words set past a tile's edge, a word at 12 pixels and the row pushed past the screen, planted, caught)`, faults.length === 0 && WIDE.length >= 54 && screens === WIDE.length * 12 && plantPast === true && plantSplit === true && plantEdge === true && plantSmall === true && plantScreen === true, [...faults.slice(0, 6), `plants ${plantPast} ${plantSplit} ${plantEdge} ${plantSmall} ${plantScreen}`]);
+}
+// 11. EARMARKS A77's browser check (pass NC, the screen read): on a laptop a column of picture answers is a phone's width, centred
+//    (PICTURE_COLUMN, 420 pixels), where each 69-pixel drawing had sat in a tile 737 pixels wide; read on three banks of pictures at 1280
+//    and 1024 pixels wide in the theme the sections above left on; its plant, the column's width limit taken off, caught. Since round
+//    one's lead run the width is read against 420 times the page's own zoom (a wide screen's 1.08 drew 454), and on a tablet held both
+//    ways (820 by 1180 and 1024 by 768) as well as a laptop; the column's width has no theme of its own, so one theme is read.
+{ const column = () => page.evaluate(() => { const b = document.querySelector('button[data-choice]'); if (!b) return null; const grid = b.parentElement; const r = grid.getBoundingClientRect(); const card = grid.parentElement.getBoundingClientRect(); const wrap = document.querySelector('.edu-wrap'); const zoom = (wrap && parseFloat(getComputedStyle(wrap).zoom)) || 1; return { zoom, width: Math.round(r.width), centred: Math.abs((r.left + r.right) / 2 - (card.left + card.right) / 2) <= 1.5, tile: Math.round(b.getBoundingClientRect().width) }; });
+  const read = [];
+  for (const [g, w, h] of [['p3-snd-pic', 1280, 900], ['pm-same-things', 1280, 900], ['p4-vfs-pic', 1024, 768], ['p3-snd-pic', 820, 1180], ['p4-sbs-count', 1280, 900]]) {
+    await page.setViewportSize({ width: w, height: h }); await page.evaluate((gen) => window.__eduTest.showQuestion(gen, 1), g); await page.waitForFunction(() => window.__eduTest.screen === 'practice'); await page.waitForTimeout(300);
+    read.push({ g, w, ...(await column()) }); }
+  const plant = await page.evaluate(() => { const b = document.querySelector('button[data-choice]'); const grid = b.parentElement; window.__was = grid.style.maxWidth; grid.style.maxWidth = 'none'; return Math.round(grid.getBoundingClientRect().width); });
+  await page.evaluate(() => { const grid = document.querySelector('button[data-choice]').parentElement; grid.style.maxWidth = window.__was; delete window.__was; });
+  ok('on a laptop and a tablet a column of picture answers is a phone\'s width, centred, its tiles no wider than 420 pixels at the page\'s own zoom (pass NC, EARMARKS A77; three banks at 1280 by 900, 1024 by 768 and 820 by 1180, and since round one\'s screen check a column of dots, p4-sbs-count, at 1280 by 900; the width limit taken off, planted, caught)', read.length === 5 && read.every((x) => x.width <= 420 * x.zoom + 1 && x.width >= 300 && x.centred && x.tile <= 420 * x.zoom + 1) && plant > 420 * read[read.length - 1].zoom + 1, { read, plant });
+  await page.setViewportSize({ width: 1280, height: 900 }); }
+// 12. Round one's screen check (pass NC): a run kept whole (data-whole) stays whole and inside its paragraph at rest, in a story's
+//    paragraphs and in the reason after a wrong tap, at 320, 375 and 390 pixels wide, where "Peet, / suh." broke in Put the beats
+//    together's story at rest and "Rab, / bit." in the reason (partsWhole kept a run only when it was the whole text); and the runs the
+//    stories and reasons say are read kept. A voice that takes every line and says none keeps the story's paragraphs at rest. Its plants:
+//    a kept span broken by a line break, and a run's span taken away, each caught.
+{ const keptRead = () => page.evaluate(() => { const spans = [...document.querySelectorAll('[data-whole]')].filter((s) => s.offsetParent !== null);
+    const out = (s) => { const p = s.closest('p') || s.parentElement; const pr = p.getBoundingClientRect(); return [...s.getClientRects()].some((r) => r.right > pr.right + 1 || r.left < pr.left - 1); };
+    return { texts: spans.map((s) => s.textContent), broken: spans.filter((s) => s.getClientRects().length > 1).map((s) => s.textContent), outside: spans.filter(out).map((s) => s.textContent),
+      seen: [...document.querySelectorAll('p')].filter((x) => x.offsetParent !== null).map((x) => x.textContent).join('\n') }; });
+  // A run is kept when every saying of it in the screen's paragraphs is a kept span of its own (round two's code read: a run said twice in
+  // a story passed with one saying kept).
+  const runOff = (r, run) => { const said = r.seen.split(run).length - 1; return said === 0 || r.texts.filter((t) => t === run).length !== said; };
+  await page.evaluate(() => { window.__voiceBeforeRest = window.speechSynthesis; Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { speaking: false, pending: false, cancel() {}, getVoices() { return []; }, speak() {} } }); });
+  const STORIES_KEPT = { 'put-beats-together': ['Peet, suh.', 'Rab, bit.'], 'clap-the-beats': ['Dye, nuh, sore.'], 'sounds-in-a-word': ['Puh, eye.', 'Shh, ooh.', 'Mmm, ooh, nnn.'], 'sound-by-sound': ['Cuh, eye, tuh.', 'Buh, oh, tuh.', 'Mmm, ooh, nnn.'], 'star-and-spoon': ['Puh, ig.'], 'dog-and-frog': ['Duh, og.'] };
+  // A seed and a wrong choice whose reason says the run and is said to a pre-reader (it leaves the answer unsaid, or one choice is left).
+  const reasonAt = (gen, run) => { for (let sd = 1; sd <= 120; sd++) { const q = L.generateQuestion(gen, sd); const w = q.choices.find((c) => c !== q.answer && q.whyNot && q.whyNot[c] && (q.whyNot[c].name + ' ' + q.whyNot[c].why).includes(run) && (q.choices.length === 2 || !L.whyNotNamesAnswer(q, c))); if (w) return [sd, w]; } return [0, null]; };
+  const REASONS_KEPT = [['p4-beats-yesno', 'Rab, bit.'], ['p4-beats-blend', 'Um, brel, luh.'], ['p4-part-blend', 'Lll, og.']].map(([g, run]) => [g, run, ...reasonAt(g, run)]);
+  // The spans read, as a floor at the count the code has (81 in pass NC: round two's code and screen read counted 81 in each theme, six
+  // stories and three reasons at three widths, and the lead's run the same), so a run that stops being kept is caught even where no
+  // story or reason above names it.
+  const KEPT_FLOOR = 81;
+  const off = []; let spans = 0; let screens = 0; let plantBroken = null; let plantGone = null;
+  const plants = async (run) => {
+    if (plantBroken === null) { plantBroken = await page.evaluate(() => { const s = [...document.querySelectorAll('[data-whole]')].find((x) => x.offsetParent !== null); if (!s) return null; const br = document.createElement('br'); br.setAttribute('data-plant-br', ''); s.insertBefore(br, s.lastChild); return true; }); plantBroken = !!plantBroken && (await keptRead()).broken.length > 0; await page.evaluate(() => { const b = document.querySelector('[data-plant-br]'); if (b) b.remove(); }); }
+    if (plantGone === null) { const set = await page.evaluate((t) => { const s = [...document.querySelectorAll('[data-whole]')].find((x) => x.offsetParent !== null && x.textContent === t); if (!s) return false; const tx = document.createTextNode(s.textContent); s.replaceWith(tx); window.__plantKept = [s, tx]; return true; }, run); plantGone = set && runOff(await keptRead(), run);
+      // The span goes back where it was, since React still holds it and the next screen's draw would fail on a page it no longer matches.
+      await page.evaluate(() => { const k = window.__plantKept; if (k) { k[1].replaceWith(k[0]); delete window.__plantKept; } }); } };
+  for (const width of [320, 375, 390]) {
+    await page.setViewportSize({ width, height: 800 });
+    for (const [id, runs] of Object.entries(STORIES_KEPT)) {
+      await page.evaluate((m) => window.__eduTest.openStory(m), id); await screenIs('story'); await page.waitForTimeout(500);
+      const r = await keptRead(); screens++; spans += r.texts.length;
+      for (const x of r.broken) off.push(`${width} ${id}: "${x}" broken`); for (const x of r.outside) off.push(`${width} ${id}: "${x}" past its paragraph`);
+      for (const run of runs) if (runOff(r, run)) off.push(`${width} ${id}: "${run}" not kept everywhere it is said`);
+      if (width === 320 && (plantBroken === null || plantGone === null)) await plants(runs[0]);
+    }
+    for (const [gen, run, sd, wrong] of REASONS_KEPT) {
+      if (!sd) { off.push(`${gen}: no seed whose reason says "${run}"`); continue; }
+      await show(gen, sd); await settle(); await page.locator(`button[data-choice="${wrong}"]`).click(); await page.getByRole('button', { name: 'Check answer' }).click(); await page.waitForTimeout(500);
+      const r = await keptRead(); screens++; spans += r.texts.length;
+      for (const x of r.broken) off.push(`${width} ${gen}: "${x}" broken in the reason`); for (const x of r.outside) off.push(`${width} ${gen}: "${x}" past its paragraph in the reason`);
+      if (runOff(r, run)) off.push(`${width} ${gen}: "${run}" not kept everywhere it is said, the reason included`);
+      await tapIf('Try again');
+    }
+  }
+  await page.evaluate(() => { Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: window.__voiceBeforeRest }); delete window.__voiceBeforeRest; });
+  ok(`a run kept whole stays whole and inside its paragraph at rest, in six stories' paragraphs and in three banks' reasons after a wrong tap, at 320, 375 and 390 pixels wide, and the runs they say are kept wherever they are said (pass NC, round one's screen check; ${screens} screens, ${spans} spans read; a kept span broken and a run's span taken away, planted, caught)`, off.length === 0 && screens === 27 && spans >= KEPT_FLOOR && plantBroken === true && plantGone === true, { off: off.slice(0, 8), screens, spans, plantBroken, plantGone });
+  await page.setViewportSize({ width: 1280, height: 900 }); }
+// 13. EARMARKS A72 decided (pass NC, round one's screen check): at 320 by 568, before a pick, the scroll cue shows on a question exactly
+//    when more than a third of its last answer is below the screen (32 of 2,412 question screens there had nothing pointing down), read on
+//    the three banks the screen check named at seeds 1 to 6; and under 360 pixels the practice title is fitted in the room its row leaves
+//    it, one line at 15 pixels or more where it fits at 15 (a title took two lines in 142 banks at 320), read at 320 and 340 (since round
+//    two's code read, which found the title never shrank and pushed the speaker off the screen). Its plants: a cue put on a question whose
+//    last answer is hidden by less than a third, the cue's mark taken off one more than a third hidden, a title let wrap at 18 pixels, and
+//    the old fit, each caught.
+{ await page.setViewportSize({ width: 320, height: 568 });
+  const cueNow = () => page.evaluate(() => { const last = document.querySelector('[data-choice-last]'); if (!last) return null; const r = last.getBoundingClientRect(); return { hid: Math.max(0, Math.min(r.height, r.bottom - window.innerHeight)) / r.height, cue: !!document.querySelector('[data-scroll-cue]') }; });
+  const cueWrong = (c) => !c || (c.cue && c.hid < 1 / 3 - 0.02) || (!c.cue && c.hid > 1 / 3 + 0.02);
+  const cueOff = []; let read = 0; let shown = 0; let plantFake = null; let plantGone = null;
+  for (const g of ['p4-vfs-sound', 'p4-tell-tells', 'p4-learn-not-rhyme']) for (let sd = 1; sd <= 6; sd++) {
+    await show(g, sd); await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(500); const c = await cueNow(); read++;
+    if (c && c.cue) shown++; if (cueWrong(c)) cueOff.push(`${g} seed ${sd}: ${c ? Math.round(c.hid * 100) + '% of the last answer hidden, the cue ' + (c.cue ? 'shown' : 'missing') : 'no last answer marked'}`);
+    if (plantFake === null && c && !c.cue && c.hid < 1 / 3 - 0.02) { await page.evaluate(() => { const b = document.createElement('button'); b.setAttribute('data-scroll-cue', ''); b.setAttribute('data-plant', ''); document.body.appendChild(b); }); plantFake = cueWrong(await cueNow()); await page.evaluate(() => { const b = document.querySelector('[data-plant]'); if (b) b.remove(); }); }
+    if (plantGone === null && c && c.cue && c.hid > 1 / 3 + 0.02) { await page.evaluate(() => { const b = document.querySelector('[data-scroll-cue]'); if (b) { b.removeAttribute('data-scroll-cue'); b.setAttribute('data-plant-cue', ''); } }); plantGone = cueWrong(await cueNow()); await page.evaluate(() => { const b = document.querySelector('[data-plant-cue]'); if (b) { b.removeAttribute('data-plant-cue'); b.setAttribute('data-scroll-cue', ''); } }); }
+  }
+  ok(`at 320 by 568, before a pick, the scroll cue shows exactly when more than a third of the last answer is below the screen (pass NC, EARMARKS A72; ${read} questions of three banks read, the cue on ${shown}; a cue put on a question whose last answer is hidden by less than a third, and one taken off a last answer more than a third hidden, caught)`, cueOff.length === 0 && read === 18 && shown >= 1 && plantFake === true && plantGone === true, { cueOff, shown, plantFake, plantGone });
+  const prek = L.COURSES.filter((c) => /^PK/.test(c.grade) && c.readAloud).flatMap((c) => c.modules).filter((m) => (m.generators || []).length);
+  const longest = [...prek].sort((a, b) => L.titleCase(b.title).length - L.titleCase(a.title).length).slice(0, 8);
+  // Since round two's code read: under 360 pixels the title is fitted in the room its row leaves it, one line at 15 pixels or more where
+  // it fits at 15 and wrapped at 15 where it does not (three titles take three lines at 320), inside its row, clear of the speaker, the
+  // speaker inside the screen (in a plain
+  // auto column FitText measured the title's own width, never shrank it, and pushed the speaker off the screen on 238 of 712 titles at
+  // 320). Read at 320 and 340 on the eight pre-K lessons and the eight lessons of any course with the longest titles, drawn by the screen,
+  // and on every module title written into the row and fitted as FitText fits it, the copy checked against FitText's own; the old fit,
+  // which measured the title's own column in the old auto column, planted, caught.
+  const allMods = L.COURSES.flatMap((c) => c.modules).filter((m) => (m.generators || []).length);
+  const longAll = [...allMods].sort((a, b) => L.titleCase(b.title).length - L.titleCase(a.title).length).slice(0, 8);
+  const drawnMods = [...new Map([...longest, ...longAll].map((m) => [m.id, m])).values()];
+  const titleBox = () => page.evaluate(() => { const row = document.querySelector('[data-title-row]'); const p = row && row.querySelector('p'); const sp = row && row.querySelector('button'); const s = p && p.querySelector('[data-fit-text]'); if (!s || !sp) return null;
+    const rg = document.createRange(); rg.selectNodeContents(s); const rs = [...rg.getClientRects()]; const rr = row.getBoundingClientRect(); const sr = sp.getBoundingClientRect(); const cs = getComputedStyle(row); const ss = getComputedStyle(s);
+    const room = row.clientWidth - (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0) - 2 * (44 + 8);
+    const probe = document.createElement('span'); probe.style.cssText = 'position:absolute;left:-9999px;top:0;visibility:hidden;white-space:nowrap;font-size:15px'; probe.style.fontFamily = ss.fontFamily; probe.style.fontWeight = ss.fontWeight; probe.style.letterSpacing = ss.letterSpacing; probe.textContent = s.textContent; document.body.appendChild(probe); const at15 = probe.getBoundingClientRect().width; probe.remove();
+    const fs = parseFloat(ss.fontSize); const lh = parseFloat(ss.lineHeight) || fs * 1.2; const l = Math.min(...rs.map((r) => r.left)); const rt = Math.max(...rs.map((r) => r.right));
+    // The lines its words need at 15 pixels in the room, wrapped as FitText wraps (since the third read: a wrapped title is held to them).
+    const wrap15 = document.createElement('span'); wrap15.style.cssText = `position:absolute;left:-9999px;top:0;visibility:hidden;display:block;white-space:normal;overflow-wrap:anywhere;font-size:15px;width:${room}px`; wrap15.style.fontFamily = ss.fontFamily; wrap15.style.fontWeight = ss.fontWeight; wrap15.style.letterSpacing = ss.letterSpacing; wrap15.style.lineHeight = ss.lineHeight; wrap15.textContent = s.textContent; document.body.appendChild(wrap15); const need = Math.round(wrap15.getBoundingClientRect().height / (parseFloat(ss.lineHeight) || 15 * 1.2)); wrap15.remove();
+    return { fs, lines: Math.round((s.getBoundingClientRect().height / lh) * 10) / 10, need, fitsAt15: at15 <= room + 0.5, inRow: l >= rr.left - 1 && rt <= rr.right + 1, clear: rt <= sr.left + 1, speakerIn: sr.left >= -1 && sr.right <= window.innerWidth + 1 }; });
+  const titleWrong = (b) => !b || b.fs < 15 - 0.01 || !b.inRow || !b.clear || !b.speakerIn || (b.fitsAt15 ? b.lines > 1.4 : b.lines < 1.6 || b.lines > b.need + 0.4 || b.fs > 15.01);
+  const fitAll = (list, oldFit) => page.evaluate(([ts, old]) => { const row = document.querySelector('[data-title-row]'); const p = row && row.querySelector('p'); const sp = row && row.querySelector('button'); const span = p && p.querySelector('[data-fit-text]'); if (!span || !sp) return null;
+    const was = span.textContent; const wasSpan = span.getAttribute('style'); const wasRow = row.style.gridTemplateColumns; const wasP = p.style.minWidth;
+    if (old) { row.style.gridTemplateColumns = 'minmax(44px, 1fr) auto minmax(44px, 1fr)'; p.style.minWidth = ''; }
+    const roomNow = () => { const host = old ? p : row; const cs = getComputedStyle(host); return host.clientWidth - (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0) - (old ? 0 : 2 * (44 + 8)); };
+    const fit = () => { const room = roomNow(); span.style.whiteSpace = 'nowrap'; let f = 18; span.style.fontSize = `${f}px`; while (f > 15 && span.scrollWidth > room + 0.5) { f -= 0.5; span.style.fontSize = `${f}px`; }
+      const tooWide = span.scrollWidth > room + 0.5; span.style.whiteSpace = tooWide ? 'normal' : 'nowrap'; span.style.overflowWrap = tooWide ? 'anywhere' : 'normal'; return { f, tooWide }; };
+    let mirror = null; if (!old) { const drew = { f: parseFloat(span.style.fontSize), tooWide: span.style.whiteSpace === 'normal' }; const mine = fit(); mirror = mine.f === drew.f && mine.tooWide === drew.tooWide; span.setAttribute('style', wasSpan); }
+    const bad = []; let wrapped = 0;
+    for (const t of ts) { span.textContent = t; if (fit().tooWide) wrapped++; const rg = document.createRange(); rg.selectNodeContents(span); const rs = [...rg.getClientRects()]; const rr = row.getBoundingClientRect(); const sr = sp.getBoundingClientRect();
+      const l = Math.min(...rs.map((r) => r.left)); const rt = Math.max(...rs.map((r) => r.right)); if (l < rr.left - 1 || rt > rr.right + 1 || rt > sr.left + 1 || sr.left < -1 || sr.right > window.innerWidth + 1) bad.push(t); }
+    span.textContent = was; span.setAttribute('style', wasSpan); row.style.gridTemplateColumns = wasRow; p.style.minWidth = wasP;
+    return { read: ts.length, bad: bad.length, first: bad.slice(0, 3), wrapped, mirror }; }, [list, oldFit]);
+  const titles = [...new Set(allMods.map((m) => L.titleCase(m.title)))];
+  const titleOff = []; let plantWrap = null; let plantTall = null; let drawn = 0; const wrappedDrawn = []; const fitted = []; let plantOld = null;
+  for (const w of [320, 340]) {
+    await page.setViewportSize({ width: w, height: 568 });
+    for (const m of drawnMods) {
+      await show(m.generators[0], 1, m.id); await page.waitForTimeout(300); const b = await titleBox(); drawn++;
+      if (titleWrong(b)) titleOff.push(`${w} ${m.id}: ${JSON.stringify(b)}`); else if (!b.fitsAt15) wrappedDrawn.push(`${w} ${m.id}`);
+      // Its plants, each read by titleWrong itself and put back: a title that fits at 15 let wrap at 18 pixels, and a wrapped title squeezed
+      // to more lines than its words need.
+      const plantSpan = async (css) => { await page.evaluate((c) => { const sp = document.querySelector('[data-title-row] [data-fit-text]'); sp.dataset.plantWas = sp.getAttribute('style'); Object.assign(sp.style, c); }, css); const w2 = titleWrong(await titleBox()); await page.evaluate(() => { const sp = document.querySelector('[data-title-row] [data-fit-text]'); sp.setAttribute('style', sp.dataset.plantWas); delete sp.dataset.plantWas; }); return w2; };
+      if (plantWrap === null && b && b.fitsAt15) plantWrap = await plantSpan({ whiteSpace: 'normal', fontSize: '18px', width: '120px' });
+      if (plantTall === null && b && !b.fitsAt15) plantTall = await plantSpan({ width: '60px' });
+    }
+    fitted.push({ w, ...(await fitAll(titles, false)) });
+    if (plantOld === null) { const o = await fitAll(titles, true); plantOld = !!o && o.bad > 0 ? o.bad : false; }
+  }
+  ok(`under 360 pixels the practice title is fitted in the room its row leaves it, one line at 15 pixels or more where it fits at 15 and wrapped at 15 where it does not, inside its row and clear of the speaker, the speaker inside the screen, at 320 and 340 pixels (pass NC, EARMARKS A72 and round two's code read; ${drawnMods.length} lessons with the longest titles drawn by the screen at each width, ${drawnMods.length * 2 - wrappedDrawn.length - titleOff.length} of those on one line; all ${titles.length} module titles fitted as FitText fits them, ${fitted.map((x) => x.wrapped + ' wrapped at ' + x.w).join(' and ')}, the copy of the fit matching FitText's own; a title let wrap at 18 pixels and a wrapped title squeezed to more lines than its words need caught, and the old fit, which measured the title's own column, planted, caught on ${plantOld} titles at 320)`,
+    titleOff.length === 0 && drawn === drawnMods.length * 2 && drawnMods.length === 16 && plantWrap === true && plantTall === true && fitted.length === 2 && fitted.every((x) => x.read === titles.length && x.bad === 0 && x.mirror === true) && typeof plantOld === 'number' && plantOld > 0,
+    { titleOff: titleOff.slice(0, 6), wrappedDrawn, fitted, plantWrap, plantTall, plantOld });
+  await page.setViewportSize({ width: 1280, height: 900 }); }
 ok('no page errors along the way', errors.length === 0, errors);
 await browser.close();
 console.log(`\n${passed} passed, ${failed} failed`);

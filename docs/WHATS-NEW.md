@@ -9,6 +9,20 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## November 5, 2026 (the sounds in a word, and drawing and writing to tell an idea)
+
+- Three- and four-year-olds have new listening lessons on the sounds in a word. Sounds in a word hears that pie is two sounds, puh and eye, then puts sounds together into a word and takes a word apart. The very first sound finds the one sound a word starts with, even in frog, whose first part is two sounds said together, and Sound by sound puts two or three sounds together and takes words apart, with a dot for each sound. In these lessons a hiss like sss is one short breath, so one sound sounds like one.
+- Writing begins for three- and four-year-olds, with Draw and tell and Write to tell. They show that people draw and write to tell their ideas, with a list, a card, a letter and a stop sign, and that a child's drawing tells an idea too. Each lesson asks a child to think of something to draw and to tell you about it; nothing a child draws or writes is asked for or kept in the app.
+- Picture answers on a laptop or a tablet now stay a phone's width, centered, and so do answers that are groups of dots. A picture to match is drawn the same size as the answers beside it, the words of a lesson line no longer shift as the voice lights them up, and a run of sounds such as Puh, eye stays on one line, in stories too. On the smallest phones a lesson's title shrinks to fit beside its speaker, on one line whenever it can, and an arrow points down when the last answer is below the screen.
+- Four new Wonder questions for young children are ready for your approval, like every Wonder question: what helps while a scraped knee heals, what could help when a new baby takes everyone's time, how to stay friends with someone who moved far away, and whether building a sandcastle was still fun after a wave washed it away.
+
+## November 5, 2026 (first parts of words, and making rhymes)
+
+- Pre-K 3 has a new listening lesson, Dog and frog. Children hear that a word can come apart into a first part and an end, like duh and og in dog, and that some first parts are two sounds said together, like fff-rrr in frog. Then they put the parts back together into the word.
+- Pre-K 4 has two new lessons. Star and spoon tells apart words that start the same way, like sun, star and spoon, by their whole first parts. Make a rhyme shows the trick behind rhyming: keep the end of a word and change its first part, so cat becomes bat, and a pig becomes a big pig.
+- The app now says those two-sound first parts itself, smoothly and as one piece, so children hear fff-rrr the way a teacher says it.
+- Four new Wonder questions for young children are ready for your approval, like every Wonder question: what to do when something good happens on a hard day, what helps on a day home sick, whether it is okay to ask for a hug or for help, and how to help someone you love on a hard day.
+
 ## November 4, 2026 (first sounds, beats put together, and My progress in the app's own words)
 
 - Three- and four-year-olds have new listening lessons on the first sound of a word, each with its own story. Sun and sock (three-year-olds) hears which words start the same, sun and sock, moon and map, finds the one of three that starts with a different sound, and thinks of a word that starts like sun. Think of a word (four-year-olds) shows how to think of one: say the word's first sound, then look and listen for things that start with it, and plays I spy with a sound.

@@ -37,15 +37,26 @@ const SMALL = { width: 320, height: 568 };
 // How many seeds of each bank a child's view is read at (pass MZ, round one's code check: seed 1 alone missed two).
 const SEEDS = 6;
 // What this check reads, as floors at the counts the code has (round two's code check, pass MZ: floors of 800 lines and 300 banks were
-// guesses): 895 lines of 89 lessons, each read at two sizes; 362 banks at six seeds each; the lines whose Next is more than a third below
-// a 320 by 568 screen, where the cue shows (35 in the light theme, 34 in the dark); and 103 lines that show a painting (pass
-// NA's three lessons, Sun and sock's fourteen lines since round one and the other two's thirteen, fifteen banks and a painting each, with
+// guesses): since pass NC 1004 lines of 97 lessons, each read at two sizes; 402 banks at six seeds each; the lines whose Next is more than a
+// third below a 320 by 568 screen, where the cue shows (35 in the light theme, 35 in the dark); 111 lines that show a painting; the speech parts
+// kept whole on a line at both sizes (192); and the sentences lit in turn at both sizes (4624) (pass NC's five lessons, since round one Sounds in a
+// word's fourteen lines and The very first sound's fourteen, Sound by sound's thirteen, Draw and tell's thirteen and Write to tell's fourteen, with
+// twenty-five banks; pass NB's floors were 936 lines, 377 banks, a cue on 35 and 34 lines and 106 lines with a painting; before them, pass
+// NA's 895 lines of 89 lessons, 362 banks and 103 lines with a painting, from pass NA's three lessons, Sun and sock's fourteen lines since round one and the other two's thirteen, fifteen banks and a painting each, with
 // Clap the beats two lines shorter, and since round two Two words make one two lines longer, its two turns each ending a line, the cue
 // still on none of its lines at 320 by 568; pass MZ's floors were 855 lines of 86 lessons, 347 banks, a cue on 35 and 33 lines and 100 lines with
 // a painting). A lesson or a bank
 // added raises a count, and its floor follows in the same pass; a layout that moves a Next changes the cue's count, and its floor follows
 // that too, once the cue's own rule has passed on every line.
-const FLOORS = { lines: 895, banks: 362, cue: { light: 35, dark: 34 }, paintings: 103 };
+const FLOORS = { lines: 1004, banks: 402, cue: { light: 35, dark: 35 }, paintings: 111, whole: 192, lit: 4624 };
+// EARMARKS A82 decided (pass NC, round one's screen check): at 320 by 568 no pre-K lesson line ends on one lone word (25 of the 69 lines
+// past six lines did, where a browser balances nothing), a line past six lines wrapping pretty (LessonWords in ui.jsx). A line that
+// must end alone is named here by lesson and line with the reason; a wait for a line that no longer ends alone fails.
+const LONE_WAITS = {
+  'helpers-all-around line 1': 'Mikey\'s say-along ends the line on its word said alone ("One last time, nice and clear. Firefighter."), a sentence of one word that stands alone wherever it falls',
+  'say-it-to-fit line 11': 'pretty leaves "happened." alone at 320; the line is older than pass NC, and its rewording waits for the next screen read (EARMARKS A82)',
+  'opposites-and-same line 8': 'pretty leaves "eyes." alone at 320; the line is older than pass NC, and its rewording waits for the next screen read (EARMARKS A82)',
+};
 // The lines and banks that sat under the fold when this check was written (pass MY: 86 lines of 40 lessons and 21 banks, in either
 // theme, none of pass MX's or MY's lessons, 107 waits in all), each by lesson and line (counted from 1) or by bank with the lower of its
 // two bottoms, waited here for its lesson's next screen read (EARMARKS A80). Pass MZ fixed them all, so none waits: the speaker moved
@@ -109,10 +120,42 @@ for (const theme of ['light', 'dark']) {
   });
   // The cue as the page shows it at the size it is at: Next's bottom and height, the screen's height, and whether the cue shows.
   const readCue = async () => { await drawn(); return page.evaluate(() => { const nx = document.querySelector('[data-lesson-next]'); if (!nx) return null; const b = nx.getBoundingClientRect(); return { bottom: Math.round(b.bottom), height: Math.round(b.height), H: window.innerHeight, cue: !!document.querySelector('[data-scroll-cue]') }; }); };
+  // Speech parts kept whole (pass NC, EARMARKS A82's browser check): every span partsWhole keeps (data-whole) on the line shown is one
+  // line's piece, a blend, a run of a word's parts or sounds, a word said slowly or a run of beats; and the line's breaks are the same with
+  // each of its sentences lit in turn as with none lit (A86's browser check: the light's room once moved them), each word's line read by
+  // its top, the light the app's own (litStyle from the test hook) and the plant the old padding.
+  // Since round one's code check a kept span also sits inside its paragraph's box, within a pixel, since a span kept whole can never break
+  // but can run off the card (the first run rule kept counts and patterns whole, which ran past the card at 320 to 412).
+  const wholeRead = async () => page.evaluate(() => { const spans = [...document.querySelectorAll('[data-whole]')].filter((s) => s.offsetParent !== null);
+    const out = (s) => { const p = s.closest('p') || s.parentElement; const pr = p.getBoundingClientRect(); return [...s.getClientRects()].some((r) => r.right > pr.right + 1 || r.left < pr.left - 1); };
+    return { n: spans.length, broken: spans.filter((s) => s.getClientRects().length > 1).map((s) => s.textContent), outside: spans.filter(out).map((s) => s.textContent) }; });
+  // Each sentence of the line lit in turn with the app's own light (litStyle) against none lit; and the plant, the old padding.
+  const lightEach = (style) => page.evaluate((given) => { const p = document.querySelector('[data-lesson-words]'); const lit = given || (window.__eduTest && window.__eduTest.litStyle); if (!p || !lit) return null;
+    // Since round one's screen check each word is read by its place, its left and its top, so a word the light moved along its line
+    // is caught as well as one it moved to another line; the message gives the words each line holds.
+    const sig = () => { const tops = []; const places = []; const walk = document.createTreeWalker(p, NodeFilter.SHOW_TEXT); let t; while ((t = walk.nextNode())) { for (const m of t.textContent.matchAll(/\S+/g)) { const r = document.createRange(); r.setStart(t, m.index); r.setEnd(t, m.index + m[0].length); const rect = r.getClientRects()[0]; if (rect) { tops.push(Math.round(rect.top)); places.push(Math.round(rect.left) + ':' + Math.round(rect.top)); } } } const lines = []; let at = null; for (const y of tops) { if (at === null || Math.abs(y - at) > 4) { lines.push(0); at = y; } lines[lines.length - 1]++; } return lines.join(',') + ' @ ' + places.join(' '); };
+    const spans = [...p.children].filter((s) => s.tagName === 'SPAN'); const was = spans.map((s) => s.getAttribute('style'));
+    spans.forEach((s) => s.setAttribute('style', 'background: transparent')); const base = sig(); const off = [];
+    spans.forEach((s, i) => { Object.assign(s.style, lit); const got = sig(); if (got !== base) off.push(`sentence ${i + 1}: ${base.split(' @ ')[0]} unlit, ${got.split(' @ ')[0]} lit${got.split(' @ ')[0] === base.split(' @ ')[0] ? ', a word moved along its line' : ''}`); s.setAttribute('style', 'background: transparent'); });
+    spans.forEach((s, i) => (was[i] === null ? s.removeAttribute('style') : s.setAttribute('style', was[i]))); return { n: spans.length, off }; }, style || null);
+  const OLD_LIGHT = { background: '#AAD8C5', color: '#16201B', borderRadius: '5px', padding: '1px 2px', margin: '0 -2px', boxDecorationBreak: 'clone', webkitBoxDecorationBreak: 'clone' };
+  const wholeOff = []; let wholeSeen = 0; let plantWhole = null; let plantOutside = null; const reflowOff = []; let reflowRead = 0; let plantReflow = null;
+  const readWhole = async (key) => { const w = await wholeRead(); wholeSeen += w.n; for (const t of w.broken) wholeOff.push(`${key}: "${t}" broken`); for (const t of w.outside) wholeOff.push(`${key}: "${t}" past its paragraph`);
+    if (plantOutside === null && w.n > 0) { const set = await page.evaluate(() => { const s = [...document.querySelectorAll('[data-whole]')].find((x) => x.offsetParent !== null); if (!s) return null; window.__wasText = s.textContent; s.textContent = 'One, two, three, four, five, six, seven, eight, nine, ten, eleven, twelve.'; return true; }); const after = await wholeRead(); plantOutside = !!set && after.outside.length > w.outside.length; await page.evaluate(() => { const s = [...document.querySelectorAll('[data-whole]')].find((x) => x.offsetParent !== null && x.textContent.startsWith('One, two, three, four')); if (s && window.__wasText !== undefined) s.textContent = window.__wasText; delete window.__wasText; }); }
+    if (plantWhole === null && w.n > 0) { plantWhole = await page.evaluate(() => { const s = [...document.querySelectorAll('[data-whole]')].find((x) => x.offsetParent !== null); if (!s) return null; const br = document.createElement('br'); br.setAttribute('data-plant-br', ''); s.insertBefore(br, s.lastChild); return true; }); const after = await wholeRead(); plantWhole = plantWhole && after.broken.length > w.broken.length; await page.evaluate(() => { const b = document.querySelector('[data-plant-br]'); if (b) b.remove(); }); }
+    const each = await lightEach(); if (each) { reflowRead += each.n; for (const o of each.off) reflowOff.push(`${key}: ${o}`); }
+    if (plantReflow !== true && each && each.n > 0) { const old = await lightEach(OLD_LIGHT); if (old && old.off.length) plantReflow = true; } };
   // Every read-aloud pre-K lesson, line by line.
   const lineOff = []; const lineWaits = []; let linesRead = 0; let plantLine = null; let plantLit = null;
   const rowOff = []; let rowsRead = 0; let plantTops = null; let plantMiddle = null; let plantAlone = null;
   const cueOff = []; let cueLines = 0; let cueShown = 0; let plantFake = null; let plantGone = null;
+  // The lesson line's words at 320 by 568, line by line: how many lines, and whether the last holds one word alone; the plant, once, on
+  // the first line past six lines that ends alone when set back to balance, puts its wrap back as the app set it.
+  const loneRead = () => page.evaluate(() => { const p = document.querySelector('[data-lesson-words]'); if (!p) return null; const tops = []; const words = [];
+    const walk = document.createTreeWalker(p, NodeFilter.SHOW_TEXT); let t; while ((t = walk.nextNode())) for (const m of t.textContent.matchAll(/\S+/g)) { const r = document.createRange(); r.setStart(t, m.index); r.setEnd(t, m.index + m[0].length); const rect = r.getClientRects()[0]; if (rect) { tops.push(Math.round(rect.top)); words.push(m[0]); } }
+    const lines = []; let at = null; tops.forEach((y, i) => { if (at === null || Math.abs(y - at) > 4) { lines.push([]); at = y; } lines[lines.length - 1].push(words[i]); });
+    const last = lines[lines.length - 1] || []; return { lines: lines.length, alone: lines.length > 1 && last.length === 1 ? last[0] : null, wrap: p.style.textWrap }; });
+  const loneOff = []; const loneSeen = new Set(); let loneLines = 0; let plantLone = null;
   for (const m of lessons) {
     await page.evaluate((id) => window.__eduTest.openModule(id), m.id); await screenIs('lesson'); await page.waitForTimeout(500);
     for (let i = 0; i < m.lesson.script.length; i++) {
@@ -138,7 +181,7 @@ for (const theme of ['light', 'dark']) {
       // dots pushed 16 pixels right, and the dots let wrap unbalanced in a box one dot too narrow, which leaves the last alone. Each
       // plant keeps the style it changes and puts it back as it was, since the row stays on the page from line to line and the app
       // sets some of those styles itself (the dots' width and balanced wrap).
-      for (const f of await rowFaults()) rowOff.push(`${key} (375): ${f}`); rowsRead++;
+      for (const f of await rowFaults()) rowOff.push(`${key} (375): ${f}`); rowsRead++; await readWhole(`${key} (375)`);
       if (plantTops === null && m.lesson.script.length >= 9) {
         const plant = async (sel, changes, word) => {
           await page.evaluate(([s, ch]) => { const el = document.querySelector(s); window.__plantWas = Object.fromEntries(Object.keys(ch).map((k) => [k, el.style[k]])); for (const [k, v] of Object.entries(ch)) el.style[k] = v === 'one dot too narrow' ? `${(el.children.length - 1) * 15 + 2}px` : v; }, [sel, changes]);
@@ -153,7 +196,12 @@ for (const theme of ['light', 'dark']) {
       }
       // The same line at 320 by 568: the row again, and the scroll cue against the share of Next below the screen.
       await page.setViewportSize(SMALL); const c = await readCue();
-      for (const f of await rowFaults()) rowOff.push(`${key} (320): ${f}`); rowsRead++;
+      for (const f of await rowFaults()) rowOff.push(`${key} (320): ${f}`); rowsRead++; await readWhole(`${key} (320)`);
+      const lone = await loneRead(); if (lone) { loneLines++; if (lone.alone && !LONE_WAITS[key]) loneOff.push(`${key}: "${lone.alone}" alone on its last line of ${lone.lines}`); if (lone.alone) loneSeen.add(key); }
+      if (plantLone === null && lone && lone.lines > 6 && !lone.alone) {
+        await page.evaluate(() => { const p = document.querySelector('[data-lesson-words]'); window.__loneWas = p.style.textWrap; p.style.textWrap = 'balance'; });
+        const set = await loneRead(); if (set && set.alone) plantLone = true;
+        await page.evaluate(() => { const p = document.querySelector('[data-lesson-words]'); p.style.textWrap = window.__loneWas; delete window.__loneWas; }); }
       if (c) { cueLines++; if (c.cue) cueShown++; if (cueWrong(c)) cueOff.push(`${key}: ${c.bottom - c.H} of Next's ${c.height} pixels below the screen, the cue ${c.cue ? 'shown' : 'missing'}`); }
       // The cue's plants, once each: a cue put over a Next wholly shown, and the cue's mark taken off while a third of Next is hidden.
       if (plantFake === null && c && !c.cue && c.bottom <= c.H) {
@@ -171,6 +219,10 @@ for (const theme of ['light', 'dark']) {
   ok(`every line of every read-aloud pre-K lesson ends its Next, or its Start practice star, above a 375 by 667 phone's fold in the ${theme} theme (${linesRead} lines of ${lessons.length} lessons read, each its own dot lit; ${lineWaits.length} older lines waiting by name; a line pushed 120 pixels down, and a line whose own dot is not lit, caught)`, lineOff.length === 0 && linesRead >= FLOORS.lines && plantLine === true && plantLit === true, { lineOff, plantLine, plantLit });
   ok(`every line's row holds together at 375 by 667 and 320 by 568 in the ${theme} theme: Back, the speaker and Next with level tops, the dots centred under the speaker, no dot alone on a row (${rowsRead} rows read; a speaker pushed 6 pixels down, dots pushed 16 pixels right and a dot left alone caught)`, rowOff.length === 0 && rowsRead >= FLOORS.lines * 2 && plantTops === true && plantMiddle === true && plantAlone === true, { rowOff: rowOff.slice(0, 12), plantTops, plantMiddle, plantAlone });
   ok(`at 320 by 568 the scroll cue shows on a lesson line exactly when more than a third of Next is below the screen in the ${theme} theme, so it never sits on a Next two thirds of which show (${cueLines} lines read, the cue on ${cueShown}; a cue put over a Next wholly shown and a cue taken away from a Next a third hidden caught)`, cueOff.length === 0 && cueLines >= FLOORS.lines && cueShown >= FLOORS.cue[theme] && plantFake === true && plantGone === true, { cueOff: cueOff.slice(0, 12), plantFake, plantGone });
+  ok(`every speech part kept whole on a pre-K lesson line stays on one line at 375 by 667 and 320 by 568 in the ${theme} theme, a blend, a run of a word's parts or sounds, a word said slowly and a run of beats, and inside its paragraph (pass NC, EARMARKS A82; ${wholeSeen} spans read; a span broken in two and a span run past its paragraph, planted, caught)`, wholeOff.length === 0 && wholeSeen >= FLOORS.whole && plantWhole === true && plantOutside === true, { off: wholeOff.slice(0, 4), seen: wholeSeen, floor: FLOORS.whole, plantWhole, plantOutside });
+  const loneStale = Object.keys(LONE_WAITS).filter((k) => !loneSeen.has(k));
+  ok(`no pre-K lesson line ends on one lone word at 320 by 568 in the ${theme} theme, a line past six lines wrapping pretty (pass NC, EARMARKS A82; ${loneLines} lines read; ${Object.keys(LONE_WAITS).length} lines that must end alone named with their reasons, none stale; a long line set back to balance ended alone and was caught)`, loneOff.length === 0 && loneStale.length === 0 && loneLines >= FLOORS.lines && plantLone === true, { loneOff: loneOff.slice(0, 8), loneStale, plantLone });
+  ok(`every pre-K lesson line breaks the same with each of its sentences lit in turn as with none lit, at 375 by 667 and 320 by 568 in the ${theme} theme, so the reading light never moves the words, each word read by its place (pass NC, EARMARKS A86; ${reflowRead} sentences lit; the old padding, planted, moved the words and was caught)`, reflowOff.length === 0 && reflowRead >= FLOORS.lit && plantReflow === true, reflowOff.slice(0, 4));
   // The questions as a child sees them (pass MZ, round one's code check): an early-years learner the educator adds, opened from the
   // educator's own page, so no question shows a stand-in note.
   // First the near miss for that count (round two's code check): the walk-through shows its notes, and pm-same-things' fifth seed,

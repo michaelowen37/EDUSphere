@@ -55,8 +55,10 @@ echo "13d/13 game breaks, elective stories and Let's Read, walked as a student a
 # read-along's lit sentence (pass MH, from Mikey's notes): about a minute then, and since pass MO (the directions, the ring in both
 # themes, the voice cards' back, the four corners, More Info's paper boxes) about five and a half minutes on its own, past the five
 # its timeout was; the timeout was then twelve, to catch a hang rather than a slow machine (pass KU's rule). It took about nine and
-# a half minutes in pass MT's fourth run, so the limit is twenty, about twice its time (run, above).
-echo "13e/13 question pictures, More Info, the Wonder pictures and the read-along"; run "the question screens" 1200 node tests/e2e/question-screens.mjs 2>&1 | tail -1 | tee /tmp/edu_qs.txt; grep -q " 0 failed" /tmp/edu_qs.txt || fail=1
+# a half minutes in pass MT's fourth run, so the limit is twenty, about twice its time (run, above). Pass NC's sections (the one-breath
+# keys, the Wonder tiles at six widths, the picture and dots columns, kept runs at rest, and the cue and the title at 320 and 340) took it
+# to about sixteen minutes alone, so the limit is thirty-three.
+echo "13e/13 question pictures, More Info, the Wonder pictures and the read-along"; run "the question screens" 2000 node tests/e2e/question-screens.mjs 2>&1 | tail -1 | tee /tmp/edu_qs.txt; grep -q " 0 failed" /tmp/edu_qs.txt || fail=1
 # A game's spoken welcome and its demonstration (pass MP, Mikey's notes of October 26, 2026): a tile opens on it, a child's own taps
 # wait, the play clock waits, Begin, Skip, the round arrow, the Instructions link, the speaker, a visit after leaving, a computer's
 # key press and numbers, and less motion; since round two two short screens played whole and the claude.ai preview's page-tall frame.

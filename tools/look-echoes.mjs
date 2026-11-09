@@ -81,6 +81,23 @@ export function lookPairs(looks = personLooks()) {
 // again, which the ledger test asks a new row to name).
 export const lookEchoes = (looks = personLooks()) => lookPairs(looks).filter((p) => !p.same);
 
+// Two people of one kind whose hair is written alike, whatever they wear (pass NC, round two's content read: Astrid's mom's long blond
+// hair in a loose braid was S4039's mom's, and Emeka's short wavy black hair the boy's of S3987 and S161, which lookPairs passed since
+// their clothing differed): the same hair family and the same style words, at least one of them, in the same course or the course
+// before, the looks themselves differing. A beard, a goatee, a mustache, glasses, graying or freckles that one has and the other does
+// not sets two apart (a dad with short brown hair and a beard beside one with short brown hair and glasses). The hair part is read
+// trimmed, since a look keeps a space before its slash and "black " passed the style-word test with a color alone (round two's code
+// read: 17 of the 47 pairs then waiting named no style).
+const MARKS = /\b(?:beard|goatee|mustache|glasses|graying|freckles)\b/g;
+export function hairPairs(looks = personLooks()) {
+  const hairOf = (x) => x.look.split(' / ')[0].trim(); const marks = (x) => (x.words.match(MARKS) || []).sort().join(' ');
+  const once = new Map(); for (const x of looks) { const key = x.module + '|' + x.group + '|' + x.look; if (!once.has(key)) once.set(key, x); }
+  const xs = [...once.values()]; const pairs = [];
+  for (let i = 0; i < xs.length; i++) for (let j = i + 1; j < xs.length; j++) { const a = xs[i]; const b = xs[j];
+    if (a.group === b.group && Math.abs(a.place - b.place) <= 1 && a.look !== b.look && hairOf(a) === hairOf(b) && hairOf(a).includes(' ') && marks(a) === marks(b)) pairs.push(Object.assign([a, b], { sameLesson: a.module === b.module })); }
+  return pairs;
+}
+
 if (process.argv[1] && process.argv[1].endsWith('look-echoes.mjs')) {
   const all = personReads(); const looks = all.filter((x) => x.read); const pairs = lookEchoes(looks);
   console.log(`${looks.length} looks read in pre-K story and painting rows, ${all.length - looks.length} begun that it cannot read; ${pairs.length} pairs of people who may look alike (one group, the same course or the course before, hair and clothing in the same color families):\n`);

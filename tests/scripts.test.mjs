@@ -251,7 +251,7 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   }
   const missing = [...used].filter((n) => !drawn.has(n));
   ok('every picture a lesson or a question shows as art has a line drawing to fall back on', used.size >= 10 && missing.length === 0, missing.join(', '));
-  ok('lessons and questions draw a thing, never its coloring page placeholder', ui.includes("<ColorThumb picture={visual.name} size={at(120)} thing />") && ui.includes("<ColorThumb picture={c.slice(4).split('#')[0]} size={Math.round(84 * k)} thing />") && ui.includes('const THING_LINE_ART = '));
+  ok('lessons and questions draw a thing, never its coloring page placeholder', ui.includes("<ColorThumb picture={visual.name} size={at(typeof visual.size === 'number' ? visual.size : 120)} thing />") && ui.includes("<ColorThumb picture={c.slice(4).split('#')[0]} size={Math.round(84 * k)} thing />") && ui.includes('const THING_LINE_ART = '));
 }
 // The stand-in note (pass LW, Mikey): his exact words, worn by a lesson line's drawing while its painting is on the way, by a
 // story's drawn fallback and by a thing drawn in place of its coloring page; on a question only in a walk-through, where no
@@ -1048,6 +1048,11 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   // A blended run's vowel: no vowel letter set off by commas is left in the words a run sends (round one's code check).
   const vowelLeft = (text) => /(^|,\s)[aeiou](?=[,.!?])/i.test(strip(text));
   const RUNS = ['read-the-word-3-2', 'read-the-word-5-2', 'read-the-word-6-2', 'read-the-word-7-2', 'read-the-word-7-5', 'sh-ch-th-1-2', 'sh-ch-th-2-2', 'sh-ch-th-4-2', 'silent-e-1-2'];
+  // Pass NC's runs of a word's sounds (Sss, oh, puh; tuh and eye), a long vowel said as a word of its own after a sound, which the ledger
+  // sends as its sound with its goal and never as the word (a run whose oh is left as the word, planted, caught).
+  // Since round one: Sounds in a word's game (two lines after its line 4) and Sound by sound's Kite. and Coat. before their runs.
+  const NC_RUNS = ['sounds-in-a-word-0-2', 'sounds-in-a-word-0-3', 'sounds-in-a-word-3-0', 'sounds-in-a-word-6-1', 'sounds-in-a-word-7-0', 'sounds-in-a-word-7-1', 'sounds-in-a-word-8-1', 'sounds-in-a-word-9-1', 'sounds-in-a-word-10-2', 'sounds-in-a-word-12-0', 'sounds-in-a-word-13-1', 'sound-by-sound-0-2', 'sound-by-sound-1-1', 'sound-by-sound-1-2', 'sound-by-sound-2-0', 'sound-by-sound-3-1', 'sound-by-sound-4-1', 'sound-by-sound-5-2', 'sound-by-sound-6-1', 'sound-by-sound-8-0', 'sound-by-sound-9-3', 'sound-by-sound-9-5', 'sound-by-sound-11-0', 'sound-by-sound-12-2'];
+  const vowelWordLeft = (text) => /(?:^|[\s,])(?:oh|eye|ooh)(?=[,.!?\s])/i.test(strip(text));
   const wordSmall = (text, word) => !text.includes(word.toUpperCase()); const plantSmall = wordSmall('[warm and gentle, drawing out key words] Our word is red.', 'red');
   let missed = 0; const runKeys = []; const runVowels = []; let games = 0; const small = []; const stressBad = []; let stressed = 0; const sentencesOf = (t) => String(t || '').split(L.SENTENCE_BREAK).filter(Boolean);
   // A line's stress list: each word or phrase is said in the line, and the line's clips carry it in capitals.
@@ -1061,10 +1066,11 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
     const lines = c.readAloud ? L.readAloudScript(m) : (m.lesson && m.lesson.script ? m.lesson.script : []);
     lines.forEach((line, li) => { const parts = L.sayAlongParts(sentencesOf(line.say)); const open = parts.findIndex((x) => x.role === 'open');
       const wordAt = open > 0 ? parts.slice(0, open).map((x, k) => (x.role === 'say' ? k : -1)).filter((k) => k >= 0).pop() : -1;
-      parts.forEach((p, si) => { if (p.role !== 'say') return; const e = elevenSentence(p.sentence, { voices: line.voices, word: si === wordAt ? parts[open].word : null, stress: line.stress || [] });
+      // Since round one (pass NC) a one-breath lesson's line is read as the ledger reads it, every hiss one breath (ONE_BREATH_LESSONS).
+      parts.forEach((p, si) => { if (p.role !== 'say') return; const e = elevenSentence(p.sentence, { voices: line.voices, word: si === wordAt ? parts[open].word : null, stress: line.stress || [], once: L.ONE_BREATH_LESSONS.includes(m.id) });
         missed += e.missed.length; const row = byKey.get(`${m.id}-${li}-${si}`);
         if (e.run) { runKeys.push(`${m.id}-${li}-${si}`); if (!row || vowelLeft(row.text)) runVowels.push(`${m.id}-${li}-${si}`); }
-        if (!row || e.sounds.some((n) => !row.text.includes(L.ipaQuoted(e.run && L.SOUND_RECORDINGS[n].one ? L.SOUND_RECORDINGS[n].one : L.SOUND_RECORDINGS[n].ipa)))) missed += 1;
+        if (!row || e.sounds.some((n) => !row.text.includes(L.ipaQuoted((e.run || e.once) && L.SOUND_RECORDINGS[n].one ? L.SOUND_RECORDINGS[n].one : L.SOUND_RECORDINGS[n].ipa)))) missed += 1;
         if (si === wordAt) { games += 1; if (!row || wordSmall(row.text, parts[open].word)) small.push(`${m.id}-${li}-${si}`); } });
       if ((line.stress || []).length) { stressed += 1; const clips = parts.map((p, si) => (byKey.get(`${m.id}-${li}-${si}`) || {}).text); for (const w of stressProblem(line, clips)) stressBad.push(`${m.id} ${li}: ${w}`); } });
   }
@@ -1113,8 +1119,53 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   const plantNotes = notesMissing([{ ...quickRow, description: quickRow.description.replace('quick on purpose', 'calm') }, { ...byKey.get('S2942-2'), description: '' }]).length === 2;
   const heldBad = [lettersHeld || 'letter A', blendHeld || 'blend', stitchHeld || 'eleven_v3 neighbors', sfxHeld || '--sfx-model'].filter((x) => x !== true);
   const heldPlants = !letterA('I have a hat.') && G.requestFor(byKey.get('sound-whistle'), { voice: 'MAIN', voiceYoung: 'YOUNG' }).body.model_id !== 'X';
-  ok(`the audio ledger carries what Eleven needs: a description on all ${rows.length} rows, a row for each of the app's ${Object.keys(L.SPEECH_SOUNDS).length + Object.keys(L.TRIAL_SOUNDS).length + cheer.length} own sounds, no lesson clip sending a speech sound as letters (${lessonRows.length} read), the nine runs of sounds sent with their vowels as sounds, the say-along's word in capitals in all ${games} games, ${stressed} lines' stressed words in capitals, every manner described, and the generator sending a sound effect to the sound-effects endpoint and a sound alone (pass MW; every near miss caught)`,
-    noDesc.length === 0 && noDescPlant.length === 2 && soundBad.length === 0 && soundPlants.every(Boolean) && leftAsLetters.length === 0 && plantLetters.length === 1 && missed === 0 && JSON.stringify(runKeys) === JSON.stringify(RUNS) && runVowels.length === 0 && plantVowel && games >= 77 && small.length === 0 && plantSmall && stressed >= 15 && stressBad.length === 0 && plantStress && heldBad.length === 0 && heldPlants && notesBad.length === 0 && plantNotes && storyOff.length === 0 && plantStory && quickHeld && genBad.length === 0 && oldCaught && mannersBad.length === 0 && plantManners,
+  // The ledger asks for one breath wherever the app plays one, and two where it plays two (pass NC, round two's code read: the check
+  // above read the tool's own once, and found "/sː/" inside "/sː/", "/sː/", so a ledger asking two breaths everywhere passed it). Each line
+  // part is read by the app's own speechPieces, its once from this test's own list of the three phoneme lessons, its own lists of runs
+  // (RUNS and NC_RUNS) and any run the app marks; each hiss is counted in its own form with its goal right before its symbols, one breath
+  // where the app plays one and two where it plays two; no line of one breath is directed as two ("Fff." had been, the lead found applying
+  // it); every early story row names each hiss as the app plays it, and every sound of a run of a word's sounds (S4079-5's shh and ooh,
+  // which round one fixed with no check). Each fault the read planted in the tool is planted here in a row, and caught.
+  const ONE = ['sounds-in-a-word', 'very-first-sound', 'sound-by-sound'];
+  const HISS = Object.keys(L.SOUND_RECORDINGS).filter((n) => L.SOUND_RECORDINGS[n].one);
+  const oneForm = (n) => L.goalTag(L.SOUND_RECORDINGS[n].goalOne) + ' ' + L.ipaQuoted(L.SOUND_RECORDINGS[n].one);
+  const twoForm = (n) => L.goalTag(L.SOUND_RECORDINGS[n].goal) + ' ' + L.ipaQuoted(L.SOUND_RECORDINGS[n].ipa);
+  const times = (t, sub) => String(t).split(sub).length - 1;
+  const breathsOf = (mid, key, sentence) => { const run = RUNS.includes(key) || NC_RUNS.includes(key); const ps = L.speechPieces(sentence, { trial: true, ...(ONE.includes(mid) ? { once: true } : {}) }).filter((x) => x.sound && HISS.includes(x.sound));
+    return HISS.map((n) => ({ n, one: ps.filter((x) => x.sound === n && (x.once || run)).length, two: ps.filter((x) => x.sound === n && !(x.once || run)).length })).filter((x) => x.one || x.two); };
+  const breathOff = (row, want) => { if (!row) return ['no row']; const off = want.filter((w) => times(row.text, oneForm(w.n)) !== w.one || times(row.text, twoForm(w.n)) !== w.two).map((w) => `${w.n} once ${times(row.text, oneForm(w.n))} of ${w.one}, twice ${times(row.text, twoForm(w.n))} of ${w.two}`);
+    if (want.some((w) => w.one) && /two short breaths/.test(row.text)) off.push('a line of one breath directed as two short breaths');
+    if (want.some((w) => w.two) && /as one short breath/.test(row.text)) off.push('a line of two breaths directed as one breath'); return off; };
+  const breathBad = []; const breathAt = {}; let breathParts = 0; let breathOnce = 0; let breathTwice = 0;
+  for (const c of L.COURSES) for (const m of c.modules) {
+    const lines = c.readAloud ? L.readAloudScript(m) : (m.lesson && m.lesson.script ? m.lesson.script : []);
+    lines.forEach((line, li) => L.sayAlongParts(sentencesOf(line.say)).forEach((p, si) => { if (p.role !== 'say') return; const key = `${m.id}-${li}-${si}`; const want = breathsOf(m.id, key, p.sentence); if (!want.length) return;
+      breathParts += 1; breathAt[key] = want; for (const w of want) { breathOnce += w.one; breathTwice += w.two; } for (const o of breathOff(byKey.get(key), want)) breathBad.push(`${key}: ${o}`); }));
+  }
+  const swapped = (key, from, to) => ({ ...byKey.get(key), text: byKey.get(key).text.split(from).join(to) });
+  const breathPlants = [breathOff(swapped('sounds-in-a-word-3-1', oneForm('s'), twoForm('s')), breathAt['sounds-in-a-word-3-1'] || []).length > 0,
+    breathOff(swapped('first-sounds-5-0', twoForm('s'), oneForm('s')), breathAt['first-sounds-5-0'] || []).length > 0,
+    breathOff(swapped('read-the-word-7-5', oneForm('s'), twoForm('s')), breathAt['read-the-word-7-5'] || []).length > 0,
+    breathOff(swapped('very-first-sound-1-3', L.SOUND_RECORDINGS.f.howOne, L.SOUND_RECORDINGS.f.how), breathAt['very-first-sound-1-3'] || []).length > 0,
+    breathOff(swapped('first-sounds-1-1', L.SOUND_RECORDINGS.s.how, L.SOUND_RECORDINGS.s.howOne), breathAt['first-sounds-1-1'] || []).length > 0];
+  const STORY_ALL = ['story', 'story title', 'long story', 'long story title', 'next long story', 'next long story title'];
+  const storyBreathOff = (r) => { const off = []; const ps = L.speechPieces(strip(r.text), { trial: true, ...(ONE.includes(r.source) ? { once: true } : {}) });
+    for (const n of HISS) { const mine = ps.filter((x) => x.sound === n); if (!mine.length) continue; const short = L.SOUND_RECORDINGS[n].short; const shortOne = short.replace(/, twice$/, ', once');
+      if (mine.some((x) => x.once) && !r.description.includes(shortOne)) off.push(`${n} played once, not named once`);
+      if (mine.some((x) => !x.once) && !r.description.includes(short)) off.push(`${n} played twice, not named twice`);
+      if (mine.every((x) => x.once) && r.description.includes(short)) off.push(`${n} played once, named twice`); }
+    for (const sen of strip(r.text).split(L.SENTENCE_BREAK)) { if (!L.namesWordSounds(sen)) continue;
+      for (const t of sen.toLowerCase().match(/[a-z]+/g) || []) { const v = Object.hasOwn(L.VOWEL_WORDS, t) ? L.VOWEL_WORDS[t] : Object.hasOwn(L.VOICE_SOUNDS, t) ? L.VOICE_SOUNDS[t] : null; if (v && !r.description.includes(v.short)) off.push(`${t} said in a run, not named`); } }
+    return off; };
+  const storyBreathBad = rows.filter((r) => STORY_ALL.includes(r.kind)).flatMap((r) => storyBreathOff(r).map((o) => `${r.key}: ${o}`));
+  const storyOnceRows = rows.filter((r) => STORY_ALL.includes(r.kind) && ONE.includes(r.source) && L.speechPieces(strip(r.text), { trial: true, once: true }).some((x) => x.sound && HISS.includes(x.sound))).map((r) => r.key);
+  const storyPlants = [storyBreathOff({ ...byKey.get('S4087-1'), description: byKey.get('S4087-1').description.split(', once').join(', twice') }).length > 0,
+    storyBreathOff({ ...byKey.get('S4079-5'), description: byKey.get('S4079-5').description.replace(' Shh, the sh of ship, held;', '') }).length > 0];
+  ok(`the audio ledger asks for one breath wherever the app plays one and two where it plays two (pass NC, round two's code read): ${breathParts} line parts with a hiss, ${breathOnce} hisses of one breath and ${breathTwice} of two, each counted in its own form with its goal before it; no line of one breath directed as two; every early story row's hisses named as the app plays them (${storyOnceRows.length} rows of the three lessons) and every sound of a run of a word's sounds named; two breaths in a lesson of one, one breath in a lesson of two, a run's hiss as two breaths, "Fff." directed as two breaths, a lone sss of two breaths directed as one (the third read), a story's once as twice and S4079-5's shh dropped, planted, each caught`,
+    breathBad.length === 0 && breathParts >= 52 && breathOnce >= 17 && breathTwice >= 36 && breathPlants.every(Boolean) && storyBreathBad.length === 0 && storyOnceRows.length >= 4 && storyPlants.every(Boolean) && JSON.stringify(L.ONE_BREATH_LESSONS) === JSON.stringify(ONE),
+    { breathBad: breathBad.slice(0, 8), breathParts, breathOnce, breathTwice, breathPlants, storyBreathBad: storyBreathBad.slice(0, 8), storyOnceRows, storyPlants });
+  ok(`the audio ledger carries what Eleven needs: a description on all ${rows.length} rows, a row for each of the app's ${Object.keys(L.SPEECH_SOUNDS).length + Object.keys(L.TRIAL_SOUNDS).length + cheer.length} own sounds, no lesson clip sending a speech sound as letters (${lessonRows.length} read), the nine runs of sounds sent with their vowels as sounds and pass NC's ${NC_RUNS.length} runs of a word's sounds with their long vowels sent as sounds too, the say-along's word in capitals in all ${games} games, ${stressed} lines' stressed words in capitals, every manner described, and the generator sending a sound effect to the sound-effects endpoint and a sound alone (pass MW; every near miss caught)`,
+    noDesc.length === 0 && noDescPlant.length === 2 && soundBad.length === 0 && soundPlants.every(Boolean) && leftAsLetters.length === 0 && plantLetters.length === 1 && missed === 0 && JSON.stringify(runKeys) === JSON.stringify([...RUNS, ...NC_RUNS]) && runVowels.length === 0 && NC_RUNS.every((k) => byKey.get(k) && !vowelWordLeft(byKey.get(k).text)) && vowelWordLeft(byKey.get('sounds-in-a-word-3-0').text.replace('"/oʊ/"', 'oh')) && plantVowel && games >= 77 && small.length === 0 && plantSmall && stressed >= 15 && stressBad.length === 0 && plantStress && heldBad.length === 0 && heldPlants && notesBad.length === 0 && plantNotes && storyOff.length === 0 && plantStory && quickHeld && genBad.length === 0 && oldCaught && mannersBad.length === 0 && plantManners,
     `no description ${noDesc.slice(0, 5).join(', ')}; plant ${noDescPlant.length}; sounds ${soundBad.join(' | ')}; sound plants ${soundPlants.map(Boolean)}; as letters ${leftAsLetters.slice(0, 5).join(', ')}; plant ${plantLetters.length}; missed ${missed}; runs ${runKeys.join(', ')}; vowels left ${runVowels.join(', ')}; plant ${plantVowel}; games ${games}; small ${small.join(', ')}; stressed ${stressed} ${stressBad.join(', ')} plant ${plantStress}; held ${heldBad.join(', ')} plants ${heldPlants}; notes ${notesBad.slice(0, 5).join(', ')} plant ${plantNotes}; story notes ${storyOff.slice(0, 5).join(', ')} plant ${plantStory} quick ${quickHeld}; generator ${genBad.slice(0, 5).join(', ')}; old caught ${oldCaught}; manners ${mannersBad.join(', ')} plant ${plantManners}`); }
 // Every speech sound the ledger sends has its goal right before it (pass MX, Mikey: "Since Eleven doesn't document a sound said alone
 // like "/sː/", those rows in the ledger can include a short descriptor which can also be pasted into Eleven which describes what we are
@@ -1133,6 +1184,8 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   const rows = G.parseCsv(LEDGER_CSV); const byKey = new Map(rows.map((r) => [r.key, r]));
   const pairs = []; for (const r of Object.values(L.SOUND_RECORDINGS)) { if (r.kind !== 'speech sound') continue; pairs.push([L.goalTag(r.goal), L.ipaQuoted(r.ipa)]); if (r.one) pairs.push([L.goalTag(r.goalOne), L.ipaQuoted(r.one)]); }
   for (const v of Object.values(L.VOICE_SOUNDS)) pairs.push([L.goalTag(v.goal), L.ipaQuoted(v.ipa)]);
+  // A long vowel a run says as a word of its own (pass NC's oh, eye and ooh) follows its own goal too.
+  for (const v of Object.values(L.VOWEL_WORDS)) pairs.push([L.goalTag(v.goal), L.ipaQuoted(v.ipa)]);
   pairs.sort((a, b) => b[1].length - a[1].length);
   const unpaired = (text) => { let t = String(text); for (const [g, ipa] of pairs) t = t.split(g + ' ' + ipa).join('#'); const sounds = (t.match(/"\/[^/"]+\/"/g) || []).filter((x) => x !== '"/eɪ/"'); const goals = L.SOUND_GOAL_TAGS.filter((g) => t.includes(g)); return sounds.length + goals.length; };
   const goalRows = rows.filter((r) => L.SOUND_GOAL_TAGS.some((g) => r.text.includes(g)));
@@ -1177,8 +1230,13 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   plants.push(directionBad(['[saying just the m sound of moon, a steady hum]']).length === 1, directionBad(['[saying just the first sound of red, a steady rrr]']).length === 1,
     directionBad(['[saying just the first sound of pan, the lips popping open once]']).length === 1, backMissing(lsCut) > 0 && backMissing(ls.text) === 0);
   // Each goal names its own sound (round one's code check), in the test's own words: the word a sound starts, or the ending it is.
-  const GOAL_OWN = { m: 'first sound of moon', n: 'first sound of net', s: 'first sound of sun', f: 'first sound of fan', z: 'first sound of zoo', r: 'first sound of red', l: 'first sound of lion', t: 'first sound of tap', p: 'first sound of pan', k: 'first sound of cat', b: 'first sound of ball', d: 'first sound of dog', g: 'first sound of go', j: 'first sound of jam', ig: 'ending of pig', og: 'ending of dog', at: 'ending of cat', a: 'first sound of apple', e: 'first sound of egg', i: 'first sound of igloo', o: 'first sound of octopus', u: 'first sound of up', huh: 'first sound of hat', wuh: 'first sound of wet', shh: 'first sound of ship', ks: 'sounds at the end of six' };
-  const ownOff = (recs, voices) => { const out = [];
+  const GOAL_OWN = { m: 'first sound of moon', n: 'first sound of net', s: 'first sound of sun', f: 'first sound of fan', z: 'first sound of zoo', r: 'first sound of red', l: 'first sound of lion', t: 'first sound of tap', p: 'first sound of pan', k: 'first sound of cat', b: 'first sound of ball', d: 'first sound of dog', g: 'first sound of go', j: 'first sound of jam', ig: 'ending of pig', og: 'ending of dog', at: 'ending of cat', fr: 'first part of frog', fl: 'first part of flower', st: 'first part of star', sp: 'first part of spoon', tr: 'first part of tree', a: 'first sound of apple', e: 'first sound of egg', i: 'first sound of igloo', o: 'first sound of octopus', u: 'first sound of up', huh: 'first sound of hat', wuh: 'first sound of wet', shh: 'first sound of ship', ks: 'sounds at the end of six',
+    // Since round one's code check (pass NC) the long vowels a run says as words, by the test's own words and their own IPA.
+    oh: 'middle sound of boat', eye: 'middle sound of kite', ooh: 'middle sound of moon' };
+  const VOWEL_IPA = { oh: '/oʊ/', eye: '/aɪ/', ooh: '/uː/' };
+  const ownOff = (recs, voices, vowels = L.VOWEL_WORDS) => { const out = [];
+    for (const [name, v] of Object.entries(vowels)) if (!GOAL_OWN[name] || !String(v.goal).includes(GOAL_OWN[name]) || v.ipa !== VOWEL_IPA[name]) out.push(name);
+    if (Object.keys(vowels).sort().join() !== Object.keys(VOWEL_IPA).sort().join()) out.push('the vowel words changed');
     for (const [name, r] of Object.entries(recs)) { if (r.kind !== 'speech sound') continue; const want = GOAL_OWN[name];
       if (!want || !String(r.goal).includes(want)) out.push(name); if (r.one && !(String(r.goalOne).includes(want) && /\btwice\b/.test(r.goal) && /\bonce\b/.test(r.goalOne))) out.push(name + ' one'); }
     for (const [name, v] of Object.entries(voices)) if (!GOAL_OWN[name] || !String(v.goal).includes(GOAL_OWN[name])) out.push(name);
@@ -1186,7 +1244,8 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   const swap = (o, x, y, field = 'goal') => ({ ...o, [x]: { ...o[x], [field]: o[y][field] }, [y]: { ...o[y], [field]: o[x][field] } });
   const ownWrong = ownOff(L.SOUND_RECORDINGS, L.VOICE_SOUNDS);
   plants.push(ownOff(swap(L.SOUND_RECORDINGS, 'm', 'n'), L.VOICE_SOUNDS).length > 0, ownOff(swap(L.SOUND_RECORDINGS, 'd', 'og'), L.VOICE_SOUNDS).length > 0,
-    ownOff({ ...L.SOUND_RECORDINGS, s: { ...L.SOUND_RECORDINGS.s, goal: L.SOUND_RECORDINGS.s.goalOne, goalOne: L.SOUND_RECORDINGS.s.goal } }, L.VOICE_SOUNDS).length > 0, ownOff(L.SOUND_RECORDINGS, swap(L.VOICE_SOUNDS, 'huh', 'wuh')).length > 0);
+    ownOff({ ...L.SOUND_RECORDINGS, s: { ...L.SOUND_RECORDINGS.s, goal: L.SOUND_RECORDINGS.s.goalOne, goalOne: L.SOUND_RECORDINGS.s.goal } }, L.VOICE_SOUNDS).length > 0, ownOff(L.SOUND_RECORDINGS, swap(L.VOICE_SOUNDS, 'huh', 'wuh')).length > 0,
+    ownOff(L.SOUND_RECORDINGS, L.VOICE_SOUNDS, swap(L.VOWEL_WORDS, 'oh', 'eye')).length > 0, ownOff(L.SOUND_RECORDINGS, L.VOICE_SOUNDS, swap(L.VOWEL_WORDS, 'oh', 'eye', 'ipa')).length > 0);
   // The place marks: a word in capitals that a goal also names is capped outside the goal, never inside it.
   const { elevenSentence } = await import('../tools/audio-ledger.mjs');
   const ogGoal = L.goalTag(L.SOUND_RECORDINGS.og.goal); const capped = [elevenSentence('Dog ends with og.', { stress: ['dog'] }).text, elevenSentence('Dog and log end with og.', { word: 'dog' }).text];
@@ -1277,5 +1336,16 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   for (const m of L.MODULES) ((m.lesson && m.lesson.script) || []).forEach((l, i) => { if ((l.voices || []).some((e) => Array.isArray(e) && e[2] === 'turn') && asks.test(l.say)) read += 1; if (late(l)) bad.push(m.id + ' line ' + (i + 1)); });
   const plants = [{ say: 'Now you try, and put these beats together. Rab, bit. Rabbit!', voices: [['Rab, bit.', 'tell', 'turn']] }, { say: 'Now you try, and put these two words together. Sun. Flower. Sunflower!', voices: [['Flower.', 'tell', 'turn']] }, { say: 'Now you try. Sun starts with sss. Think of another word that starts like sun, and say it. Did you think of one?', voices: [['Think of another word that starts like sun, and say it.', 'tell', 'turn']] }];
   ok(`a turn to think of a word, put beats or words together, or take a word apart ends its line (pass NA; ${read} turns read; three plants with a sentence after the turn caught)`, bad.length === 0 && read >= 10 && plants.every(late), bad.join(', ') + ' read ' + read); }
+// Huh beside an ending the app plays (pass NB, round one's story flow check): "Huh, at." is a speech sound and an ending, so huh goes to
+// Eleven in IPA with its goal, as it does beside sss; the tool had needed another sound it matches by name and sent "Huh," as letters,
+// which Eleven reads as the word. The near miss is that row as it was sent.
+{ const { elevenSentence } = await import('../tools/audio-ledger.mjs');
+  const huhSent = (t) => t.includes(L.goalTag(L.VOICE_SOUNDS.huh.goal)) && t.includes(L.ipaQuoted(L.VOICE_SOUNDS.huh.ipa)) && !/\bHuh\b/.test(t);
+  const now = ['Hat. Huh, at.', 'The first part of hat is huh, and hat ends with at, just like cat.'].map((t) => elevenSentence(t).text);
+  const old = '[warm and gentle, drawing out key words] Huh, ' + L.goalTag(L.SOUND_RECORDINGS.at.goal) + ' ' + L.ipaQuoted(L.SOUND_RECORDINGS.at.ipa) + '.';
+  ok('huh beside an ending the app plays goes to Eleven as a speech sound, in IPA with its goal (pass NB; "Huh, at." sent as letters caught)', now.every(huhSent) && !huhSent(old), now.join(' | '));
+  // A story row's description names huh with the app's sounds (round one's story check's fifth consider; the old description planted).
+  const { soundsWritten } = await import('../tools/audio-ledger.mjs'); const told = soundsWritten('Mmm, at, mat, and huh, at, hat!'); const huhTold = (d) => d.includes('huh, ' + L.VOICE_SOUNDS.huh.short);
+  ok('a story row\'s description names huh with the app\'s own sounds it is said beside, and no row without them (pass NB, round one\'s story check; the old description caught)', huhTold(told) && !huhTold(told.replace('; huh, ' + L.VOICE_SOUNDS.huh.short, '')) && soundsWritten('Huh? said Grandpa.') === '', told); }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

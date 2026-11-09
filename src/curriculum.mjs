@@ -554,6 +554,19 @@ const PREK_TAUGHT = [
       // Start's P-LIT 1 in part, its when two words begin with the same sound.
       { framework: 'TEKS', code: 'PK3.III.B.7', text: 'Child identifies if two words begin with the same sound with adult assistance.', moduleIds: ['sun-and-sock'] },
       { framework: 'TEKS', code: 'PK3.III.B.8', text: 'Child produces a word that begins with the same sound with adult assistance.', moduleIds: ['sun-and-sock'] },
+      // Pass NB: Dog and frog, PK3 III.B.9 and III.B.10 (EARMARKS E12, the standards review of Domain III's onsets and rimes).
+      { framework: 'TEKS', code: 'PK3.III.B.9', text: 'Child identifies the onset in words (single letters and consonant blends) with adult assistance (in English only).', moduleIds: ['dog-and-frog'] },
+      { framework: 'TEKS', code: 'PK3.III.B.10', text: 'Child is exposed to onset-rime blending activities (in English only)', moduleIds: ['dog-and-frog'] },
+      // Pass NC: Sounds in a word, PK3 III.B.11 to III.B.13 (EARMARKS E12, the standards review of Domain III's phonemes), and Draw and
+      // tell, PK3 IV.A.2 and IV.C.2 in part and Head Start's P-LIT 6 in part, its 36 to 48 month progression (EARMARKS E12, Domain IV begun),
+      // and since round one's lesson check IV.A.1 in part too, its turn's sharing with a grown-up.
+      { framework: 'TEKS', code: 'PK3.III.B.11', text: 'Child participates in activities to isolate initial phonemes with adult assistance.', moduleIds: ['sounds-in-a-word'] },
+      { framework: 'TEKS', code: 'PK3.III.B.12', text: 'Child participates in activities to blend phonemes with adult assistance.', moduleIds: ['sounds-in-a-word'] },
+      { framework: 'TEKS', code: 'PK3.III.B.13', text: 'Child participates in activities to segment phonemes with adult assistance.', moduleIds: ['sounds-in-a-word'] },
+      { framework: 'TEKS', code: 'PK3.IV.A.1', text: 'Child engages in free-choice playful drawing and writing activities and verbally shares meaning with peers and/or adults.', moduleIds: ['draw-and-tell'] },
+      { framework: 'TEKS', code: 'PK3.IV.A.2', text: 'Child draws and writes for different purposes to communicate ideas, using a variety of writing tools with adult modeling.', moduleIds: ['draw-and-tell'] },
+      { framework: 'TEKS', code: 'PK3.IV.C.2', text: 'Child uses drawings, scribbles, and mock letters to communicate ideas.', moduleIds: ['draw-and-tell'] },
+      { framework: 'CCSS', code: 'ELOF.P-LIT.6', text: 'Writes for a variety of purposes using increasingly sophisticated marks.', moduleIds: ['draw-and-tell'] },
     ],
   },
   {
@@ -657,10 +670,25 @@ const PREK_TAUGHT = [
       // Pass NA: Think of a word, PK4 III.B.8 (EARMARKS E13, the standards review of Domain III's first sounds), and Head Start's P-LIT 1
       // in part, the first sound in spoken words.
       { framework: 'TEKS', code: 'PK4.III.B.8', text: 'Child produces a word that begins with the same sound.', moduleIds: ['think-of-a-word'] },
+      // Pass NB: Star and spoon, PK4 III.B.9 and III.B.10, and Make a rhyme, PK4 III.B.6 (EARMARKS E13, the standards review of Domain
+      // III's onsets and rimes), and Head Start's P-LIT 1 in part for Star and spoon, its understanding sounds in spoken words, and since
+      // round one's lesson check for Make a rhyme, its rhyme recognition among three heard words and a phonemic change.
+      { framework: 'TEKS', code: 'PK4.III.B.6', text: 'Child produces rhyming words with adult assistance.', moduleIds: ['make-a-rhyme'] },
+      { framework: 'TEKS', code: 'PK4.III.B.9', text: 'Child identifies the onset in words (single letters and consonant blends) (in English only).', moduleIds: ['star-and-spoon'] },
+      { framework: 'TEKS', code: 'PK4.III.B.10', text: 'Child blends onset-rime to form familiar one-syllable words (in English only).', moduleIds: ['star-and-spoon'] },
+      // Pass NC: The very first sound, PK4 III.B.11, and Sound by sound, PK4 III.B.12 and III.B.13 (EARMARKS E13, the standards review of
+      // Domain III's phonemes), and Head Start's P-LIT 1 in part for both, its understanding sounds in spoken words; and Write to tell,
+      // PK4 IV.A.1, IV.A.2 and IV.C.2 in part and Head Start's P-LIT 6 in part, its 48 to 60 month progression (EARMARKS E13, Domain IV begun).
+      { framework: 'TEKS', code: 'PK4.III.B.11', text: 'Child isolates initial phonemes.', moduleIds: ['very-first-sound'] },
+      { framework: 'TEKS', code: 'PK4.III.B.12', text: 'Child blends 2-3 phonemes with adult assistance.', moduleIds: ['sound-by-sound'] },
+      { framework: 'TEKS', code: 'PK4.III.B.13', text: 'Child segments 2-3 phonemes with adult assistance.', moduleIds: ['sound-by-sound'] },
+      { framework: 'TEKS', code: 'PK4.IV.A.1', text: 'Child intentionally uses drawings and marks, letters, or symbols to represent ideas and verbally shares intended meaning with an adult or peer.', moduleIds: ['write-to-tell'] },
+      { framework: 'TEKS', code: 'PK4.IV.A.2', text: 'Child independently draws and writes for many purposes to communicate ideas, using a variety of writing tools with support as needed.', moduleIds: ['write-to-tell'] },
+      { framework: 'CCSS', code: 'ELOF.P-LIT.6', text: 'Writes for a variety of purposes using increasingly sophisticated marks.', moduleIds: ['write-to-tell'] },
       { framework: 'TEKS', code: 'PK4.III.C.1', text: 'Child recognizes and names at least 18 uppercase letters and 15 lowercase letters.', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
-      { framework: 'CCSS', code: 'ELOF.P-LIT.1', text: 'Demonstrates awareness that spoken language is composed of smaller segments of sound.', moduleIds: ['listen-for-rhymes', 'first-sounds', 'clap-the-beats', 'same-word-or-different', 'think-of-a-word'] },
+      { framework: 'CCSS', code: 'ELOF.P-LIT.1', text: 'Demonstrates awareness that spoken language is composed of smaller segments of sound.', moduleIds: ['listen-for-rhymes', 'first-sounds', 'clap-the-beats', 'same-word-or-different', 'think-of-a-word', 'star-and-spoon', 'make-a-rhyme', 'very-first-sound', 'sound-by-sound'] },
       { framework: 'CCSS', code: 'ELOF.P-LIT.3', text: 'Identifies letters of the alphabet and produces correct sounds associated with letters.', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
-      { framework: 'TEKS', code: 'PK4.IV.C.2', text: 'Child progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas.', moduleIds: ['first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
+      { framework: 'TEKS', code: 'PK4.IV.C.2', text: 'Child progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas.', moduleIds: ['first-letter-tracing', 'more-big-letters', 'trace-straight-letters', 'write-to-tell'] },
       { framework: 'TEKS', code: 'PK4.IV.C.4', text: 'Child demonstrates directionality when writing (e.g., top to bottom, left to right) adult support as needed.', moduleIds: ['first-strokes', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
       // Pass MR (Mikey: "I think we should go ahead and implement the new recommendations from the 2027 Pre-K Guidelines Review
       // Committee."): 2027 outcomes the lessons already teach, cited since the requote (docs/standards/tea-pk4-2027-recommended.txt).

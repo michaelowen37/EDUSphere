@@ -4166,7 +4166,7 @@ export function dotsTooClose(points, gap = DOT_GAP) {
 }
 // A pre-K screen is grouped by the skill being practised rather than by subject: a three-year-old
 // knows what colors are, not what mathematics is. Every other grade groups by subject as before.
-export const SKILL_ORDER = ['Colors', 'Shapes', 'Sizes', 'Matching', 'Patterns', 'Counting', 'Comparing', 'Listening', 'Letters', 'Drawing', 'Feelings', 'Getting along'];   // Feelings: pass MD (E12)
+export const SKILL_ORDER = ['Colors', 'Shapes', 'Sizes', 'Matching', 'Patterns', 'Counting', 'Comparing', 'Listening', 'Letters', 'Writing', 'Drawing', 'Feelings', 'Getting along'];   // Writing: pass NC (Domain IV begun)   // Feelings: pass MD (E12)
 export const COLOR_LOCKOUT_MINUTES = 15;
 // Play and rest by age: the youngest fill more of their time with coloring and games; older students play
 // for less and wait longer before a game or a picture comes back, so the day tilts toward the lessons.
@@ -5378,7 +5378,7 @@ function PREK3_READING_MODULES() { return [
         { say: 'Rhymes are fun to say. Say a rhyme with your grown-up. Ball, wall! Cat, hat!', show: null },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.5 (identifies rhyming words with adult assistance), since the lesson teaches telling whether two words rhyme, pairing pictures of things whose names rhyme and finding the one of three that does not, and III.B.6 (uses rhyming words through playful activities), in part, since the lesson\'s playful activities invite saying rhymes with a grown-up, ball and wall, cat and hat, while using them, saying a rhyme or making up one of its own, is the child\'s own talk, which only a grown-up can hear (EARMARKS E12), and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 36 to 48 month progression reads "Shows rote imitation and enjoyment of rhyme and alliteration. With support, distinguishes when two words rhyme and when two words begin with the same sound.", in part, since the lesson teaches when two words rhyme, while when two words begin with the same sound is taught in Sun and sock, and the child\'s rote imitation and enjoyment of rhyme and alliteration are the child\'s own, for a grown-up to hear (the odd one of three reaches toward the 48 to 60 month progression, which names which words rhyme from a group of three).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.5 (identifies rhyming words with adult assistance), since the lesson teaches telling whether two words rhyme, pairing pictures of things whose names rhyme and finding the one of three that does not, and III.B.6 (uses rhyming words through playful activities), in part, since the lesson\'s playful activities invite saying rhymes with a grown-up, ball and wall, cat and hat, while using them, saying a rhyme is the child\'s own talk, which only a grown-up can hear, and making up a rhyme of its own waits for a pre-K 3 lesson, as pre-K 4\'s Make a rhyme teaches one with turns and questions (EARMARKS E12), and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 36 to 48 month progression reads "Shows rote imitation and enjoyment of rhyme and alliteration. With support, distinguishes when two words rhyme and when two words begin with the same sound.", in part, since the lesson teaches when two words rhyme, while when two words begin with the same sound is taught in Sun and sock, and the child\'s rote imitation and enjoyment of rhyme and alliteration are the child\'s own, for a grown-up to hear (the odd one of three reaches toward the 48 to 60 month progression, which names which words rhyme from a group of three).'],
     generators: ['p3-rhyme-tap', 'p3-rhyme-yesno', 'p3-rhyme-listen', 'p3-rhyme-odd', 'p3-rhyme-tap'],
   },
   {
@@ -6087,6 +6087,138 @@ function PREK3_READING_MODULES() { return [
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.7 (identifies if two words begin with the same sound with adult assistance.), since the lesson says words one after another and the sound each one starts with, sun, sock and soap with sss, moon, map and milk with mmm, and fish, fan, feather and fox with fff, tells two words that start the same from two that do not, sun and moon, and the one of three that starts with a different sound, map among fish and fan, has the child say two of them in a turn of their own, says a silly sentence with words that start the same, and asks which picture starts like a word heard, whether two heard words start with the same sound, which of three heard words starts with a different sound, and whether a picture starts like a word heard, the voice saying each word and the sound it starts with being the adult assistance, and III.B.8 (produces a word that begins with the same sound with adult assistance.), since the lesson has the child think of a word that starts like sun and one that starts like moon and say it, in turns of their own, each turn ending its line, so the child thinks as long as they need, and the next line naming words that do, sock, soap and seven, and map, milk and mitten, and asks which word a child could say that starts like a word heard, and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 36 to 48 month progression reads "Shows rote imitation and enjoyment of rhyme and alliteration. With support, distinguishes when two words rhyme and when two words begin with the same sound.", in part, since the lesson teaches when two words begin with the same sound, while when two words rhyme is taught in Words that rhyme, and the child\'s rote imitation and enjoyment of rhyme and alliteration are the child\'s own, for a grown-up to hear, its turns inviting a child to say words that start the same.'],
     generators: ['p3-start-tap', 'p3-start-same', 'p3-start-say', 'p3-start-odd', 'p3-start-yesno'],
+  },
+  // Dog and frog (pass NB, the standards review of Domain III's onsets and rimes, EARMARKS E12): PK3 III.B.9, "identifies the onset in
+  // words (single letters and consonant blends) with adult assistance (in English only).", and III.B.10, "is exposed to onset-rime
+  // blending activities (in English only)", each cited whole. A word comes apart into two parts, its first part and its end: dog is duh
+  // and og, log is lll and og, cat is cuh and at, hat is huh and at, and pig is puh and ig, each first part one sound, and frog is fff-rrr and og and star
+  // starts with sss-tuh, first parts of two sounds said together, the consonant blends the outcome names. Then two parts are put
+  // together into a word (puh and ig into pig, lll and og into log), and the child puts fff-rrr and og together and says frog in a turn
+  // of their own, the voice the adult assistance. The app plays every first part and end itself (fff-rrr and sss-tuh as one part each,
+  // BLEND_PARTS). Since round one's lesson check a line also finds which of two pictures has a first part heard alone (puh, the pig beside
+  // a dog), as p3-part-pic asks, and says that lots of words have a first part, never every word (at, am and on have none). Its questions
+  // are heard questions that print none of the words or parts they ask about while the voice can speak. It builds on Sun and sock, which
+  // listens to the very first sound of a word, and on Two words make one, which puts two words together into one, as Star and spoon's
+  // putting together builds on Put the beats together (Mikey's answer to Q84; Two words make one since round one's lesson check).
+  {
+    id: 'dog-and-frog',
+    skill: 'Listening',
+    order: 22,
+    requires: ['sun-and-sock', 'two-words-make-one'],
+    requiresWhy: 'Dog and frog listens to the first part of a word, which begins with the very first sound that Sun and sock teaches a child to hear, and puts two parts together into a word, as Two words make one puts two words together into one, so it builds on Sun and sock and Two words make one.',
+    title: 'Dog and frog',
+    tagline: 'The first part of a word',
+    lesson: {
+      paragraphs: ['A word can come apart into two parts, its first part and its end. Dog is duh and og, log is lll and og, cat is cuh and at, hat is huh and at, and pig is puh and ig.', 'Some first parts have two sounds said together. The first part of frog is fff-rrr, and the first part of star is sss-tuh.', 'Put the two parts back together, and they make the word. Puh and ig make pig, lll and og make log, and fff-rrr and og make frog.'],
+      keyIdea: 'Lots of words have a first part. The first part of dog is duh, and the first part of frog is fff-rrr, two sounds said together.',
+      example: { kind: 'pair', a: { kind: 'icon', name: 'dog' }, b: { kind: 'pic', name: 'frog' }, caption: 'The first part of dog is duh. The first part of frog is fff-rrr.' },
+      pictures: [{ serial: 'P186', alt: 'A cheerful green frog sitting on a lily pad in a sunny pond', step: 5 }],
+      script: [
+        { say: 'A word can come apart into two parts. Dog. Duh, og. The first part of dog is duh, and dog ends with og.', show: { kind: 'icon', name: 'dog' } },
+        { say: 'Log. Lll, og. The first part of log is lll, and log ends with og, just like dog.', show: { kind: 'pair', a: { kind: 'icon', name: 'dog' }, b: { kind: 'icon', name: 'log' } } },
+        { say: 'Cat. Cuh, at. The first part of cat is cuh, and cat ends with at.', show: { kind: 'pic', name: 'cat' } },
+        { say: 'Hat. Huh, at. The first part of hat is huh, and hat ends with at, just like cat.', show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'icon', name: 'hat' } } },
+        { say: 'Here are two pictures, a dog and a pig. Listen to this first part. Puh. Which one has that first part? It is the pig, because pig is puh and ig.', show: { kind: 'pair', a: { kind: 'icon', name: 'dog' }, b: { kind: 'icon', name: 'pig' } } },
+        { say: 'Some first parts have two sounds said together. Frog. Fff-rrr, og. The first part of frog is fff-rrr.', stress: ['two sounds'], show: { kind: 'pic', name: 'frog' } },
+        { say: 'Star starts with two sounds said together too, sss-tuh, so the first part of star is sss-tuh.', show: { kind: 'icon', name: 'star' } },
+        { say: 'Now you try. Say the first part of dog, the way I said it.', show: { kind: 'icon', name: 'dog' }, voices: [['Say the first part of dog, the way I said it.', 'tell', 'turn']] },
+        { say: 'The first part of dog is duh, and dog ends with og.', show: { kind: 'icon', name: 'dog' } },
+        { say: 'Now let\'s put two parts back together. Puh and ig go together, and they make pig!', show: { kind: 'icon', name: 'pig' } },
+        { say: 'Lll and og go together too, and when you say them fast, you hear log!', show: { kind: 'icon', name: 'log' } },
+        { say: 'Now you try, and listen to these two parts. Fff-rrr, og. Put them together, and say the word.', show: null, voices: [['Put them together, and say the word.', 'tell', 'turn']] },
+        { say: 'Did you say frog? Fff-rrr and og go together, and they make frog.', show: { kind: 'pic', name: 'frog' } },
+        { say: 'Lots of words have a first part. The first part of dog is duh, and the first part of frog is fff-rrr, two sounds said together.', show: { kind: 'pair', a: { kind: 'icon', name: 'dog' }, b: { kind: 'pic', name: 'frog' } } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.9 (identifies the onset in words (single letters and consonant blends) with adult assistance (in English only).), since the lesson says words in two parts, the first part and the end, dog, duh and og, log, lll and og, cat, cuh and at, hat, huh and at, and pig, puh and ig, each first part one sound, and frog, fff-rrr and og, and star, sss-tuh, first parts of two sounds said together, the consonant blends the outcome names, finds which of two pictures, a dog and a pig, has the first part puh, has the child say the first part of dog in a turn of their own, and asks which part comes first in a word heard and which picture has a first part heard, the voice the adult assistance, and III.B.10 (is exposed to onset-rime blending activities (in English only)), since the lesson puts two parts together into words, puh and ig into pig and lll and og into log, has the child put fff-rrr and og together and say frog in a turn of their own, the turn ending its line, and asks which picture and which word two heard parts make and whether two heard parts make a picture\'s name.'],
+    generators: ['p3-part-first', 'p3-part-pic', 'p3-part-blend', 'p3-part-yesno', 'p3-part-heard'],
+  },
+  // Sounds in a word (pass NC, the standards review of Domain III's phonemes, EARMARKS E12): PK3 III.B.11, "participates in activities
+  // to isolate initial phonemes with adult assistance.", III.B.12, "participates in activities to blend phonemes with adult
+  // assistance.", and III.B.13, "participates in activities to segment phonemes with adult assistance.", each cited whole. Lots of words
+  // are made of sounds said one after another (never every word, round one's lesson check: eye is one sound): pie is puh and eye, two sounds, and moon is mmm, ooh and nnn, three. The child hears the very first
+  // sound of a word and says one (soap's sss), hears sounds put together into a word (shh and ooh make shoe) and puts cuh, oh and tuh
+  // together into coat, and hears a word taken apart into its sounds and takes tie apart into tuh and eye, each in a turn of their own
+  // that comes before the voice says it, the voice the adult assistance. Every word's vowel is a long one the device's voice says as a
+  // word of its own (eye, oh, ooh), since the app's own short vowels stay on trial (Mikey's answer to Q60, EARMARKS A42); its other
+  // sounds are the app's own, and shh the voice's, and every sss is one breath, in a run of a word's sounds and alone (ONE_BREATH_LESSONS).
+  // Since round one it plays the game its picture bank asks, a sound heard and which of two pictures starts with it, the child's own turn
+  // before its answer. Its questions are
+  // heard questions that print none of the words or sounds they ask about while the voice can speak. It builds on Dog and frog, which
+  // takes a word apart into two parts, its first part and its end (Mikey's answer to Q84).
+  {
+    id: 'sounds-in-a-word',
+    skill: 'Listening',
+    order: 23,
+    requires: ['dog-and-frog'],
+    requiresWhy: 'Sounds in a word hears every sound in a word, one after another, and Dog and frog first takes a word apart into two parts, its first part and its end, so it builds on Dog and frog.',
+    title: 'Sounds in a word',
+    tagline: 'One sound after another',
+    lesson: {
+      paragraphs: ['Lots of words are made of sounds, said one after another. Pie is puh and eye, two sounds, and moon is mmm, ooh and nnn, three sounds.', 'The very first sound of a word is the sound we say first. The very first sound of moon is mmm, and the very first sound of soap is sss.', 'Say the sounds one after another, fast, and they make the word. Shh and ooh make shoe, and buh, oh and tuh make boat. Take a word apart, and you hear each sound, like tuh and eye in tie.'],
+      keyIdea: 'Lots of words are made of sounds, said one after another. Pie has two sounds, puh and eye.',
+      example: { kind: 'icon', name: 'pie', caption: 'Pie. Puh, eye. Pie has two sounds.' },
+      pictures: [{ serial: 'P189', alt: 'A small red boat with a white sail floating on a calm blue lake on a sunny day', step: 7 }],
+      script: [
+        { say: 'Lots of words are made of sounds, said one after another. Pie. Puh, eye. Pie has two sounds, puh and eye.', show: { kind: 'icon', name: 'pie' } },
+        { say: 'Listen to the very first sound of a word. Moon. Mmm. The very first sound of moon is mmm.', stress: ['very first sound'], show: { kind: 'icon', name: 'moon' } },
+        { say: 'Now you try. Say the very first sound of soap.', show: { kind: 'icon', name: 'soap' }, voices: [['Say the very first sound of soap.', 'tell', 'turn']] },
+        { say: 'Sss, oh, puh. Sss comes first, so the very first sound of soap is sss. Did you say it too?', show: { kind: 'icon', name: 'soap' } },
+        { say: 'Let\'s play a game with the very first sound. Now you try. Listen to this sound. Buh. Which one starts with it, the boat or the moon?', show: { kind: 'pair', a: { kind: 'icon', name: 'boat' }, b: { kind: 'icon', name: 'moon' } }, voices: [['Which one starts with it, the boat or the moon?', 'ask', 'turn']] },
+        { say: 'It is the boat, because boat starts with buh.', show: { kind: 'icon', name: 'boat' } },
+        { say: 'Now let\'s put the sounds of a word together, one after another. Shh, ooh. When we say them fast, we hear shoe!', show: { kind: 'icon', name: 'shoe' } },
+        { say: 'Buh, oh, tuh. Buh, oh and tuh go together, and they make boat!', show: { kind: 'icon', name: 'boat' } },
+        { say: 'Now you try, and listen to these sounds. Cuh, oh, tuh. Put them together, and say the word.', show: null, voices: [['Put them together, and say the word.', 'tell', 'turn']] },
+        { say: 'Did you say coat? Cuh, oh and tuh go together, and they make coat.', show: { kind: 'icon', name: 'coat' } },
+        { say: 'We can take a word apart into its sounds too. Moon. Mmm, ooh, nnn. Moon has three sounds, one after another.', show: { kind: 'icon', name: 'moon' } },
+        { say: 'Now you try. Take the word tie apart, and say its sounds one at a time.', show: { kind: 'icon', name: 'tie' }, voices: [['Take the word tie apart, and say its sounds one at a time.', 'tell', 'turn']] },
+        { say: 'Tie has two sounds, tuh and eye. Did you say them too?', show: { kind: 'icon', name: 'tie' } },
+        { say: 'Lots of words are made of sounds, one after another. Pie has two sounds, puh and eye, and moon has three, mmm, ooh and nnn.', show: { kind: 'pair', a: { kind: 'icon', name: 'pie' }, b: { kind: 'icon', name: 'moon' } } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.11 (participates in activities to isolate initial phonemes with adult assistance.), since the lesson says the very first sound of a word alone, moon, mmm, says a word\'s sounds and which one comes first, sss, oh and puh, so sss is the very first sound of soap, has the child say the very first sound of soap in a turn of their own, and asks which sound comes first in a word heard and which picture starts with a sound heard, the voice the adult assistance, and III.B.12 (participates in activities to blend phonemes with adult assistance.), since the lesson puts sounds together into words, shh and ooh into shoe, and buh, oh and tuh into boat, has the child put cuh, oh and tuh together and say coat in a turn of their own, the turn ending its line, and asks which picture sounds heard make and whether sounds heard make a picture\'s name, and III.B.13 (participates in activities to segment phonemes with adult assistance.), since the lesson takes words apart into their sounds, pie into puh and eye, and moon into mmm, ooh and nnn, has the child take tie apart and say its sounds one at a time in a turn of their own, before the voice says them, and asks which sounds make a word heard.'],
+    generators: ['p3-snd-first', 'p3-snd-pic', 'p3-snd-blend', 'p3-snd-apart', 'p3-snd-yesno'],
+  },
+  // Draw and tell (pass NC, Domain IV begun beside Domain III's phonemes, EARMARKS E12; the map's first planned writing lesson, drawing and
+  // writing to share an idea): PK3 IV.A.2, "draws and writes for different purposes to communicate ideas, using a variety of writing tools
+  // with adult modeling.", and IV.C.2, "uses drawings, scribbles, and mock letters to communicate ideas.", each cited in part, and Head
+  // Start's P-LIT 6 in part. People draw and write to tell ideas, each for its own reason: a list to remember what to buy, a card to tell
+  // a friend happy birthday, a sign that tells cars what to do, a book that tells a story; a drawing tells an idea too (the sun and a ball,
+  // I played outside today), and so do scribbles and marks that look a little like letters; and a crayon, a pencil and a marker are tools
+  // to draw and write with, never a sock, a ball or a spoon. The voice models it, the adult modeling the outcome names; a child's own drawing and
+  // writing, on paper with a grown-up, is the child's own, and nothing a child draws or writes is kept. The child thinks of something to
+  // draw and tells a grown-up about it in a turn of their own, PK3 IV.A.1's sharing half, cited in part since round one's lesson check. It requires no lesson before it: drawing to tell an idea is where writing
+  // begins (Mikey's answer to Q84 lets a lesson name none).
+  {
+    id: 'draw-and-tell',
+    skill: 'Writing',
+    order: 24,
+    requiresWhy: 'Draw and tell is the first lesson about drawing and writing to tell an idea, and it shows and says everything it asks about, so it needs no lesson first. First marks teaches the marks a hand makes, not what a drawing tells.',
+    title: 'Draw and tell',
+    tagline: 'Drawing and writing tell ideas',
+    lesson: {
+      paragraphs: ['People draw and write to tell their ideas. Dad writes a list so he remembers what to buy, Grandma makes a card to tell her friend happy birthday, a stop sign tells cars to stop, and a book tells a story.', 'A drawing can tell an idea too. A drawing of the sun and a ball tells us, I played outside today! Scribbles, and marks that look a little like letters, can tell an idea too.', 'We draw and write with tools. A crayon, a pencil and a marker are tools, but a sock, a ball and a spoon are not.'],
+      keyIdea: 'People draw and write to tell ideas. A list helps us remember, a card says something kind, and a stop sign tells us what to do.',
+      example: { kind: 'icon', name: 'drawing~outside', caption: 'Ana\'s drawing tells us, I played outside today!' },
+      pictures: [{ serial: 'P192', alt: 'A yellow crayon and a pencil lying side by side on a sheet of drawing paper, its only marks a few loose crayon scribbles, on a kitchen table', step: 0 }],
+      script: [
+        { say: 'With a crayon or a pencil, people draw and write to tell their ideas to someone else.', show: { kind: 'pair', a: { kind: 'icon', name: 'crayon' }, b: { kind: 'icon', name: 'pencil' } } },
+        { say: 'Dad writes a list, so he remembers what to buy at the store.', show: { kind: 'icon', name: 'list' } },
+        { say: 'Grandma makes a card to tell her friend, Happy birthday!', show: { kind: 'icon', name: 'card' } },
+        { say: 'A sign tells us what to do. When a car comes to the corner, this stop sign tells it to stop.', show: { kind: 'icon', name: 'sign~stop' } },
+        { say: 'A book tells a story, with pictures and words.', show: { kind: 'icon', name: 'book' } },
+        { say: 'A drawing can tell an idea too. Ana drew the sun and a ball, and her drawing tells us, I played outside today!', show: { kind: 'icon', name: 'drawing~outside' } },
+        { say: 'Here are two more drawings. A cloud and an umbrella tell us, It rained today. The moon and a bed tell us, It is time for bed.', show: { kind: 'pair', a: { kind: 'icon', name: 'drawing~rain' }, b: { kind: 'icon', name: 'drawing~bedtime' } } },
+        { say: 'Scribbles, and marks that look a little like letters, can tell an idea too. Leo made some on his paper and said, This is a note for Mom!', show: { kind: 'pair', a: { kind: 'icon', name: 'scribble' }, b: { kind: 'icon', name: 'marks' } } },
+        { say: 'We draw and write with tools. Here are three of them, a crayon, a pencil and a marker.', show: { kind: 'row', items: [{ kind: 'icon', name: 'crayon' }, { kind: 'icon', name: 'pencil' }, { kind: 'icon', name: 'marker' }] } },
+        { say: 'A sock is for your foot, a ball is for throwing, and a spoon is for eating. They are not tools for drawing, so we pick a crayon.', show: { kind: 'row', items: [{ kind: 'icon', name: 'sock' }, { kind: 'icon', name: 'ball' }, { kind: 'icon', name: 'spoon' }] } },
+        { say: 'Now you try. Think of something fun you did today, and tell a grown-up what you could draw about it.', show: null, voices: [['Think of something fun you did today, and tell a grown-up what you could draw about it.', 'tell', 'turn']] },
+        { say: 'Then you can draw it on paper with a crayon, and tell a grown-up all about your picture.', show: { kind: 'icon', name: 'crayon' } },
+        { say: 'People draw and write to tell ideas. A list helps us remember, a card says something kind, and a stop sign tells us what to do.', show: { kind: 'row', items: [{ kind: 'icon', name: 'list' }, { kind: 'icon', name: 'card' }, { kind: 'icon', name: 'sign~stop' }] } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) IV.A.1 (engages in free-choice playful drawing and writing activities and verbally shares meaning with peers and/or adults.), in part, since the lesson has the child think of something fun they did and tell a grown-up what they could draw about it, in a turn of their own, and says to tell a grown-up all about the picture they draw, while the child\'s own free-choice drawing and writing, and sharing what it means with friends, wait (EARMARKS E12), and IV.A.2 (draws and writes for different purposes to communicate ideas, using a variety of writing tools with adult modeling.), in part, since the lesson shows people drawing and writing for different purposes to tell ideas, a list to remember what to buy, a card to tell a friend happy birthday, a sign that tells a car to stop and a book that tells a story, and names a variety of tools to draw and write with, a crayon, a pencil and a marker, never a sock, a ball or a spoon, the voice the adult modeling, and asks which one fits a reason to write, which one is a tool to draw and write with, and yes or no about what each one is for, while a child\'s own drawing and writing with the tools, on paper with a grown-up, waits (EARMARKS E12), and IV.C.2 (uses drawings, scribbles, and mock letters to communicate ideas.), in part, since the lesson shows drawings, scribbles and marks that look a little like letters telling ideas, a drawing of the sun and a ball that tells, I played outside today, has the child think of something to draw and tell a grown-up about it in a turn of their own, and asks what a drawing tells and which drawing tells an idea, while a child\'s own use of them waits, and Head Start ELOF Goal P-LIT 6 (writes for a variety of purposes using increasingly sophisticated marks), whose 36 to 48 month progression reads "Engages in writing activities that consist largely of drawing and scribbling. Begins to convey meaning. With modeling and support, writes some letter-like forms and letters.", in part, since the lesson shows drawing and scribbling that convey meaning, modeled by the voice, while a child\'s own writing activities, letter-like forms and letters wait.'],
+    generators: ['p3-draw-job', 'p3-draw-tool', 'p3-draw-tells', 'p3-draw-make', 'p3-draw-yesno'],
   },
 ]; }
 
@@ -7278,7 +7410,7 @@ function PREK_READING_MODULES() { return [
         { say: 'Listen to the end of each word. If the ends sound the same, the words rhyme.', show: { kind: 'letters', text: 'cat hat', highlight: 'at' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.5 (identifies rhyming words), and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches rhyme recognition, whether two words rhyme, which picture rhymes with another and which of three, such as hat, cat and log, does not rhyme, while the first sound in spoken words is taught in First sounds, counting syllables in Clap the beats and recognizing phonemic changes in words in Same word or different?, and the other sounds in a word wait (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.5 (identifies rhyming words), and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches rhyme recognition, whether two words rhyme, which picture rhymes with another and which of three, such as hat, cat and log, does not rhyme, while the first sound in spoken words is taught in First sounds, a word\'s first part and its end in Star and spoon, counting syllables in Clap the beats and recognizing phonemic changes in words in Same word or different?, and a word\'s sounds one by one, put together and taken apart, in Sound by sound.'],
     generators: ['p4-does-rhyme', 'p4-rhyme-pic', 'p4-rhyme-three', 'p4-does-rhyme', 'p4-rhyme-pic'],
   },
   {
@@ -7305,7 +7437,7 @@ function PREK_READING_MODULES() { return [
         { say: 'Say each word slowly and listen to how it starts.', show: { kind: 'letters', text: 'moon sun', highlight: 'first' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.7 (identifies if words begin with the same sound), and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches one sound in spoken words, the first, finding the pictures whose names start the same way and the one of three that starts with a different sound, while rhyme recognition is taught in Rhyme time, counting syllables in Clap the beats and recognizing phonemic changes in words in Same word or different?, and the other sounds in a word wait (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.7 (identifies if words begin with the same sound), and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches one sound in spoken words, the first, finding the pictures whose names start the same way and the one of three that starts with a different sound, while rhyme recognition is taught in Rhyme time, a word\'s first part and its end in Star and spoon, counting syllables in Clap the beats and recognizing phonemic changes in words in Same word or different?, and a word\'s sounds one by one, put together and taken apart, in Sound by sound.'],
     generators: ['p4-start-pic', 'p4-start-odd-pic', 'p4-start-pic', 'p4-start-odd-pic', 'p4-start-pic'],
   },
   {
@@ -7400,7 +7532,7 @@ function PREK_READING_MODULES() { return [
         { say: 'Start at the dot and follow the arrow every time, so your hand learns to make each letter the same way.', show: { kind: 'trace', text: 'O' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.1 (recognizes and names at least 18 uppercase letters and 15 lowercase letters), in part, since the lesson asks the child to tap L, T and O when each is heard and to find each by its lines, which with Big letters\' seven and the other tracing lessons\' letters makes thirteen letters the course asks by name, while naming them aloud is the child\'s own talk, for a grown-up to hear, and five more capital letters and fifteen small letters wait (EARMARKS E13), IV.C.2 (progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas), in part, since the lesson forms the letters L, T and O along a guide, while forming letters without a guide, letter strings and writing as a way to communicate ideas are the child\'s own, with a grown-up (EARMARKS E13), IV.C.4 (demonstrates directionality when writing (e.g., top to bottom, left to right) adult support as needed), in part, since every letter starts at the top, each line down goes from top to bottom, each line across goes from left to right and O goes around to the left, while writing letters and words from left to right along a line waits (EARMARKS E13), and IX.B.2 (demonstrates control, coordination and increasing precision when completing tasks that require eye-hand coordination), and Head Start ELOF Goals P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson asks for L, T and O by name and by their lines, and with Big letters\' seven and the other tracing lessons\' letters the course asks thirteen by name, half of the alphabet, while naming them aloud is the child\'s own talk, for a grown-up to hear, and letters met often in the environment and the sounds of letters wait (EARMARKS E13), and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show, and P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws letters along their lines with moderate precision, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.1 (recognizes and names at least 18 uppercase letters and 15 lowercase letters), in part, since the lesson asks the child to tap L, T and O when each is heard and to find each by its lines, which with Big letters\' seven and the other tracing lessons\' letters makes thirteen letters the course asks by name, while naming them aloud is the child\'s own talk, for a grown-up to hear, and five more capital letters and fifteen small letters wait (EARMARKS E13), IV.C.2 (progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas), in part, since the lesson forms the letters L, T and O along a guide, while forming letters without a guide, letter strings and writing as a way to communicate ideas are the child\'s own, with a grown-up (EARMARKS E13), and writing\'s growth from scribbles and mock letters to letters is shown in Write to tell, IV.C.4 (demonstrates directionality when writing (e.g., top to bottom, left to right) adult support as needed), in part, since every letter starts at the top, each line down goes from top to bottom, each line across goes from left to right and O goes around to the left, while writing letters and words from left to right along a line waits (EARMARKS E13), and IX.B.2 (demonstrates control, coordination and increasing precision when completing tasks that require eye-hand coordination), and Head Start ELOF Goals P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson asks for L, T and O by name and by their lines, and with Big letters\' seven and the other tracing lessons\' letters the course asks thirteen by name, half of the alphabet, while naming them aloud is the child\'s own talk, for a grown-up to hear, and letters met often in the environment and the sounds of letters wait (EARMARKS E13), and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show, and P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws letters along their lines with moderate precision, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13).'],
     // Three traces, one of each letter, and two choices, the letter heard and the letter by its lines (pass MN, Q50).
     generators: ['pl-trace-first', 'pl-trace-first', 'pl-trace-first', 'pl-hear-first', 'pl-lines-first'],
   },
@@ -7424,7 +7556,7 @@ function PREK_READING_MODULES() { return [
         { say: 'For H, lift your finger after each line, then start the next one at its dot and follow the arrow.', show: { kind: 'trace', text: 'H' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.1 (recognizes and names at least 18 uppercase letters and 15 lowercase letters), in part, since the lesson asks the child to tap I, H and E when each is heard and to find each by its lines, which with Big letters\' seven and the other tracing lessons\' letters makes thirteen letters the course asks by name, while naming them aloud is the child\'s own talk, for a grown-up to hear, and five more capital letters and fifteen small letters wait (EARMARKS E13), IV.C.2 (progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas), in part, since the lesson forms the letters I, H and E along a guide, while forming letters without a guide, letter strings and writing as a way to communicate ideas are the child\'s own, with a grown-up (EARMARKS E13), IV.C.4 (demonstrates directionality when writing (e.g., top to bottom, left to right) adult support as needed), in part, since every letter starts at the top, each line down goes from top to bottom and each line across goes from left to right, while writing letters and words from left to right along a line waits (EARMARKS E13), and IX.B.2 (demonstrates control, coordination and increasing precision when completing tasks that require eye-hand coordination), and Head Start ELOF Goals P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson asks for I, H and E by name and by their lines, and with Big letters\' seven and the other tracing lessons\' letters the course asks thirteen by name, half of the alphabet, while naming them aloud is the child\'s own talk, for a grown-up to hear, and letters met often in the environment and the sounds of letters wait (EARMARKS E13), and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show, and P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws letters along their lines with moderate precision, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.1 (recognizes and names at least 18 uppercase letters and 15 lowercase letters), in part, since the lesson asks the child to tap I, H and E when each is heard and to find each by its lines, which with Big letters\' seven and the other tracing lessons\' letters makes thirteen letters the course asks by name, while naming them aloud is the child\'s own talk, for a grown-up to hear, and five more capital letters and fifteen small letters wait (EARMARKS E13), IV.C.2 (progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas), in part, since the lesson forms the letters I, H and E along a guide, while forming letters without a guide, letter strings and writing as a way to communicate ideas are the child\'s own, with a grown-up (EARMARKS E13), and writing\'s growth from scribbles and mock letters to letters is shown in Write to tell, IV.C.4 (demonstrates directionality when writing (e.g., top to bottom, left to right) adult support as needed), in part, since every letter starts at the top, each line down goes from top to bottom and each line across goes from left to right, while writing letters and words from left to right along a line waits (EARMARKS E13), and IX.B.2 (demonstrates control, coordination and increasing precision when completing tasks that require eye-hand coordination), and Head Start ELOF Goals P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson asks for I, H and E by name and by their lines, and with Big letters\' seven and the other tracing lessons\' letters the course asks thirteen by name, half of the alphabet, while naming them aloud is the child\'s own talk, for a grown-up to hear, and letters met often in the environment and the sounds of letters wait (EARMARKS E13), and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show, and P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws letters along their lines with moderate precision, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13).'],
     // Three traces, one of each letter, and two choices, the letter heard and the letter by its lines (pass MN, Q50).
     generators: ['pl-trace-more', 'pl-trace-more', 'pl-trace-more', 'pl-hear-more', 'pl-lines-more'],
   },
@@ -7448,7 +7580,7 @@ function PREK_READING_MODULES() { return [
         { say: 'L, T and F use the same two moves, down and then across, in different places. Start at the dot and follow the arrow.', show: { kind: 'letters', text: 'L   T   F' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.1 (recognizes and names at least 18 uppercase letters and 15 lowercase letters), in part, since the lesson asks the child to tap L, T and F when each is heard and to find each by its lines, which with Big letters\' seven and the other tracing lessons\' letters makes thirteen letters the course asks by name, while naming them aloud is the child\'s own talk, for a grown-up to hear, and five more capital letters and fifteen small letters wait (EARMARKS E13), IV.C.2 (progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas), in part, since the lesson forms the letters L, T and F along a guide, while forming letters without a guide, letter strings and writing as a way to communicate ideas are the child\'s own, with a grown-up (EARMARKS E13), IV.C.4 (demonstrates directionality when writing (e.g., top to bottom, left to right) adult support as needed), in part, since every letter starts at the top, each line down goes from top to bottom and each line across goes from left to right, while writing letters and words from left to right along a line waits (EARMARKS E13), and IX.B.2 (demonstrates control, coordination and increasing precision when completing tasks that require eye-hand coordination), and Head Start ELOF Goals P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson asks for L, T and F by name and by their lines, and with Big letters\' seven and the other tracing lessons\' letters the course asks thirteen by name, half of the alphabet, while naming them aloud is the child\'s own talk, for a grown-up to hear, and letters met often in the environment and the sounds of letters wait (EARMARKS E13), and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show, and P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws letters along their lines with moderate precision, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.1 (recognizes and names at least 18 uppercase letters and 15 lowercase letters), in part, since the lesson asks the child to tap L, T and F when each is heard and to find each by its lines, which with Big letters\' seven and the other tracing lessons\' letters makes thirteen letters the course asks by name, while naming them aloud is the child\'s own talk, for a grown-up to hear, and five more capital letters and fifteen small letters wait (EARMARKS E13), IV.C.2 (progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas), in part, since the lesson forms the letters L, T and F along a guide, while forming letters without a guide, letter strings and writing as a way to communicate ideas are the child\'s own, with a grown-up (EARMARKS E13), and writing\'s growth from scribbles and mock letters to letters is shown in Write to tell, IV.C.4 (demonstrates directionality when writing (e.g., top to bottom, left to right) adult support as needed), in part, since every letter starts at the top, each line down goes from top to bottom and each line across goes from left to right, while writing letters and words from left to right along a line waits (EARMARKS E13), and IX.B.2 (demonstrates control, coordination and increasing precision when completing tasks that require eye-hand coordination), and Head Start ELOF Goals P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson asks for L, T and F by name and by their lines, and with Big letters\' seven and the other tracing lessons\' letters the course asks thirteen by name, half of the alphabet, while naming them aloud is the child\'s own talk, for a grown-up to hear, and letters met often in the environment and the sounds of letters wait (EARMARKS E13), and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show, and P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws letters along their lines with moderate precision, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13).'],
     // Three traces, one of each letter, and two choices, the letter heard and the letter by its lines (pass MN, Q50).
     generators: ['pl-trace-ltf', 'pl-trace-ltf', 'pl-trace-ltf', 'pl-hear-ltf', 'pl-lines-ltf'],
   },
@@ -7931,7 +8063,7 @@ function PREK_READING_MODULES() { return [
         { say: 'A sentence has words, and a word has beats. Say a word slowly, clap once for each beat, and count the claps. Rabbit. Rab, bit. That is two claps.', show: { kind: 'pair', a: { kind: 'pic', name: 'rabbit' }, b: { kind: 'dots', count: 2, frame: 2 } } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.4 (segments multisyllabic words with up to three syllables.), since the lesson says words of one, two and three beats slowly, a clap and a dot for each beat, has the child clap a word\'s beats in a turn of their own, tells a clap for each word in a sentence from a clap for each beat in one word, and asks how many beats a word has, which word has the number of beats asked for, which has more or fewer, and which has the same number, while putting beats together into words is taught in Put the beats together, and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches counting syllables, the beats in a spoken word, while rhyme recognition is taught in Rhyme time, the first sound in spoken words in First sounds and recognizing phonemic changes in words in Same word or different?, and the other sounds in a word wait (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.4 (segments multisyllabic words with up to three syllables.), since the lesson says words of one, two and three beats slowly, a clap and a dot for each beat, has the child clap a word\'s beats in a turn of their own, tells a clap for each word in a sentence from a clap for each beat in one word, and asks how many beats a word has, which word has the number of beats asked for, which has more or fewer, and which has the same number, while putting beats together into words is taught in Put the beats together, and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches counting syllables, the beats in a spoken word, while rhyme recognition is taught in Rhyme time, the first sound in spoken words in First sounds, a word\'s first part and its end in Star and spoon and recognizing phonemic changes in words in Same word or different?, and a word\'s sounds one by one, put together and taken apart, in Sound by sound.'],
     generators: ['p4-beats-count', 'p4-beats-find', 'p4-beats-more', 'p4-beats-same', 'p4-beats-yesno'],
   },
   // Same word or different? (pass MZ, the standards review of Domain III's III.B.2, EARMARKS E13): PK4 III.B.2, "distinguishes when two
@@ -7973,7 +8105,7 @@ function PREK_READING_MODULES() { return [
         { say: 'Listen to every sound, from the start to the end. Cat and hat have just one different sound, and they are different words.', show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'icon', name: 'hat' } } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.2 (distinguishes when two words are the same or different.), since the lesson says two words that are the same, ball and ball, and pairs that sound almost the same but are different words, ball and wall, cat and hat, dog and log, moon and spoon, rock and sock, and bear and chair, says to listen to every sound, from the start to the end, to tell whether two words are the same, finds the one different word of three, has the child say same or different and find a silly word in turns of their own, and asks whether two heard words are the same or different, which of three heard words was different, which word made a heard sentence silly, which heard word is a picture\'s name, and yes or no about words that are the same, words that are different and silly sentences, and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches recognizing phonemic changes in words, a sentence made silly by one word said in place of a word that sounds almost the same, I wear a rock on my foot and I eat my soup with a moon, while rhyme recognition is taught in Rhyme time, the first sound in spoken words in First sounds and counting syllables in Clap the beats, and the other sounds in a word wait (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.2 (distinguishes when two words are the same or different.), since the lesson says two words that are the same, ball and ball, and pairs that sound almost the same but are different words, ball and wall, cat and hat, dog and log, moon and spoon, rock and sock, and bear and chair, says to listen to every sound, from the start to the end, to tell whether two words are the same, finds the one different word of three, has the child say same or different and find a silly word in turns of their own, and asks whether two heard words are the same or different, which of three heard words was different, which word made a heard sentence silly, which heard word is a picture\'s name, and yes or no about words that are the same, words that are different and silly sentences, and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches recognizing phonemic changes in words, a sentence made silly by one word said in place of a word that sounds almost the same, I wear a rock on my foot and I eat my soup with a moon, while rhyme recognition is taught in Rhyme time, the first sound in spoken words in First sounds, a word\'s first part and its end in Star and spoon and counting syllables in Clap the beats, and a word\'s sounds one by one, put together and taken apart, in Sound by sound.'],
     generators: ['p4-near-same', 'p4-near-odd', 'p4-near-silly', 'p4-near-name', 'p4-near-yesno'],
   },
   // Put the beats together (pass NA, EARMARKS A75 and the standards review of Domain III, EARMARKS E13): PK4 III.B.3, "blends
@@ -8055,8 +8187,220 @@ function PREK_READING_MODULES() { return [
         { say: 'To think of a word that starts the same, say its first sound. Then look and listen for things that start with it, like moon and map.', show: { kind: 'pair', a: { kind: 'icon', name: 'moon' }, b: { kind: 'icon', name: 'map' } } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.8 (produces a word that begins with the same sound.), since the lesson says the sound a word starts with, mmm, sss, buh, fff or duh, and words that start the same, says how to think of a word that starts the same, say its first sound and then look and listen for things that start with it, plays I spy with a sound, says a silly sentence with words that start the same, and has the child think of a word that starts like sun, like fish and like dog and say it out loud, in turns of their own, each turn ending its line, so the child thinks as long as they need, and the next line naming words that do, and asks which word a child could say that starts like a word heard, among words heard and among pictures, which picture starts with a sound heard, in a game of I spy, which one starts like two words heard, and whether one word starts like another, and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches the first sound in spoken words, thinking of words that start with it, while rhyme recognition is taught in Rhyme time, recognizing phonemic changes in words in Same word or different?, counting syllables in Clap the beats, and the other sounds in a word wait (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.8 (produces a word that begins with the same sound.), since the lesson says the sound a word starts with, mmm, sss, buh, fff or duh, and words that start the same, says how to think of a word that starts the same, say its first sound and then look and listen for things that start with it, plays I spy with a sound, says a silly sentence with words that start the same, and has the child think of a word that starts like sun, like fish and like dog and say it out loud, in turns of their own, each turn ending its line, so the child thinks as long as they need, and the next line naming words that do, and asks which word a child could say that starts like a word heard, among words heard and among pictures, which picture starts with a sound heard, in a game of I spy, which one starts like two words heard, and whether one word starts like another, and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches the first sound in spoken words, thinking of words that start with it, while rhyme recognition is taught in Rhyme time, recognizing phonemic changes in words in Same word or different?, counting syllables in Clap the beats, a word\'s first part and its end in Star and spoon, and a word\'s sounds one by one, put together and taken apart, in Sound by sound.'],
     generators: ['p4-think-say', 'p4-think-pic', 'p4-think-spy', 'p4-think-two', 'p4-think-yesno'],
+  },
+  // Star and spoon (pass NB, the standards review of Domain III's onsets and rimes, EARMARKS E13): PK4 III.B.9, "identifies the onset in
+  // words (single letters and consonant blends) (in English only).", and III.B.10, "blends onset-rime to form familiar one-syllable words
+  // (in English only).", each cited whole, and Head Start's P-LIT 1 in part, its understanding sounds in spoken words. A word comes apart
+  // into its first part and its end (dog is duh and og, cat is cuh and at); some first parts have two sounds said together (frog's
+  // fff-rrr), and words that start with one sound are set side by side with their different first parts, sun, star and spoon (sss,
+  // sss-tuh and sss-puh), and fish, frog and flower (fff, fff-rrr and fff-lll), and table and tree have different first parts (tuh and
+  // tuh-rrr), the tree found by its first part heard alone, as p4-part-pic asks: since round one's lesson check no line says the two
+  // start alike, since some young children hear tr as starting like ch (Treiman 1985), the consonant blends the outcome names. Then first parts and ends are put together into familiar words (lll and og into log, puh and ig into pig, huh and at
+  // into hat among three pictures), and the child puts mmm and at, and fff-rrr and og, together in turns of their own. Its questions are
+  // heard questions. It builds on Put the beats together, which puts the beats of a word together, and on Think of a word, which hears
+  // the first sound a word starts with (Mikey's answer to Q84).
+  {
+    id: 'star-and-spoon',
+    skill: 'Listening',
+    order: 25,
+    requires: ['put-beats-together', 'think-of-a-word'],
+    requiresWhy: 'Star and spoon puts the first part and the end of a word together into the word, as Put the beats together puts beats together into a word, and listens to the first part of a word, which begins with the first sound Think of a word teaches a child to hear, so it builds on Put the beats together and Think of a word.',
+    title: 'Star and spoon',
+    tagline: 'First parts and ends',
+    lesson: {
+      paragraphs: ['A word can come apart into two parts, its first part and its end. Dog is duh and og, and cat is cuh and at.', 'Some first parts have two sounds said together. Sun, star and spoon all start with sss, but the first part of sun is sss, of star sss-tuh, and of spoon sss-puh. Fish, frog and flower start with fff, fff-rrr and fff-lll, and table and tree with tuh and tuh-rrr.', 'Put a first part and an end together, and they make a word. Lll and og make log, puh and ig make pig, and huh and at make hat.'],
+      keyIdea: 'Lots of words have a first part and an end. Some first parts have two sounds said together, like sss-tuh in star.',
+      example: { kind: 'pair', a: { kind: 'icon', name: 'star' }, b: { kind: 'icon', name: 'spoon' }, caption: 'The first part of star is sss-tuh. The first part of spoon is sss-puh.' },
+      pictures: [{ serial: 'P187', alt: 'A plain wooden table under a big leafy tree in a sunny backyard', step: 5 }],
+      script: [
+        { say: 'A word can come apart into two parts, its first part and its end. Dog. Duh, og. The first part of dog is duh, and dog ends with og.', show: { kind: 'icon', name: 'dog' } },
+        { say: 'Cat. Cuh, at. The first part of cat is cuh, and cat ends with at.', show: { kind: 'pic', name: 'cat' } },
+        { say: 'Some first parts have two sounds said together. Frog. Fff-rrr, og. The first part of frog is fff-rrr.', stress: ['two sounds'], show: { kind: 'pic', name: 'frog' } },
+        { say: 'Sun, star and spoon all start with sss, but their first parts are different. Sun. Sss. Star. Sss-tuh. Spoon. Sss-puh.', stress: ['different'], show: { kind: 'row', items: [{ kind: 'icon', name: 'sun' }, { kind: 'icon', name: 'star' }, { kind: 'icon', name: 'spoon' }] } },
+        { say: 'Fish, frog and flower all start with fff. The first part of fish is fff, of frog fff-rrr, and of flower fff-lll.', show: { kind: 'row', items: [{ kind: 'pic', name: 'fish' }, { kind: 'pic', name: 'frog' }, { kind: 'icon', name: 'flower' }] } },
+        { say: 'Table and tree have different first parts. Listen to this first part. Tuh-rrr. Which one has that first part? It is the tree, and the first part of table is tuh.', show: { kind: 'pair', a: { kind: 'icon', name: 'table~plain' }, b: { kind: 'icon', name: 'tree' } } },
+        { say: 'Now let\'s put two parts together. When you put lll and og together, you hear log!', show: { kind: 'icon', name: 'log' } },
+        { say: 'Puh and ig go together, and they make pig!', show: { kind: 'icon', name: 'pig' } },
+        { say: 'Here are three pictures, a cat, a hat and a dog. Listen to the two parts. Huh, at. When you put huh and at together, you hear hat!', show: { kind: 'row', items: [{ kind: 'pic', name: 'cat' }, { kind: 'icon', name: 'hat' }, { kind: 'icon', name: 'dog' }] } },
+        { say: 'Now you try, and listen to these two parts. Mmm, at. Put them together, and say the word.', show: null, voices: [['Put them together, and say the word.', 'tell', 'turn']] },
+        { say: 'Mmm and at make mat, so the word you hear is mat!', show: null },
+        { say: 'Now you try one more, and listen closely. Fff-rrr, og. Put them together, and say the word.', show: null, voices: [['Put them together, and say the word.', 'tell', 'turn']] },
+        { say: 'Did you say frog? Fff-rrr and og make frog.', show: { kind: 'pic', name: 'frog' } },
+        { say: 'Lots of words have a first part and an end, like duh and og in dog. Put them together, and you hear the word.', show: { kind: 'icon', name: 'dog' } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.9 (identifies the onset in words (single letters and consonant blends) (in English only).), since the lesson says words in two parts, the first part and the end, dog, duh and og, and cat, cuh and at, says first parts of one sound and of two sounds said together, the consonant blends the outcome names, frog\'s fff-rrr, sets words that start with the same sound side by side with their different first parts, sun, star and spoon, sss, sss-tuh and sss-puh, and fish, frog and flower, fff, fff-rrr and fff-lll, tells table and tree apart by their different first parts, tuh and tuh-rrr, finding the one with the first part tuh-rrr, and asks what the first part of a word heard is and which picture has a first part heard, and III.B.10 (blends onset-rime to form familiar one-syllable words (in English only).), since the lesson puts first parts and ends together into familiar words, lll and og into log, puh and ig into pig, and huh and at into hat among three pictures, has the child put mmm and at, and fff-rrr and og, together and say the word in turns of their own, each turn ending its line, and asks which picture and which word two heard parts make and whether two heard parts make a word named, and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches the first parts and ends of spoken words and putting them together, while rhyme recognition is taught in Rhyme time, recognizing phonemic changes in words in Same word or different?, counting syllables in Clap the beats, and a word\'s sounds one by one, put together and taken apart, in Sound by sound.'],
+    generators: ['p4-part-first', 'p4-part-pic', 'p4-part-blend', 'p4-part-heard', 'p4-part-yesno'],
+  },
+  // Make a rhyme (pass NB, the standards review of Domain III's onsets and rimes, EARMARKS E13): PK4 III.B.6, "produces rhyming words
+  // with adult assistance.", cited whole. Words that rhyme end the same way, so a word that rhymes is made by keeping the end of a word and
+  // changing its first part (cat into bat, dog into log, pig into big, a silly big pig), the voice giving the new first part as the adult
+  // assistance; the child makes a word that rhymes with hat and one that rhymes with log, and thinks of a word that rhymes with cat, each
+  // said in a turn of their own, the next line naming words that do. Since round one's lesson check its lines say every first part its
+  // questions' setups use (Frog is fff-rrr and og; Sss and at make sat, so sat is one more word that rhymes), and it cites Head Start's P-LIT 1 in part, since one bank finds
+  // a rhyme among three heard words and another a phonemic change. It builds on Star and spoon, which teaches a word's first part and
+  // end, and on Rhyme time, which teaches that words that rhyme end the same way (Mikey's answer to Q84).
+  {
+    id: 'make-a-rhyme',
+    skill: 'Listening',
+    order: 26,
+    requires: ['star-and-spoon', 'listen-for-rhymes'],
+    requiresWhy: 'Make a rhyme keeps the end of a word and changes its first part, the two parts Star and spoon teaches, and the words it makes rhyme because they end the same way, as Rhyme time teaches, so it builds on Star and spoon and Rhyme time.',
+    title: 'Make a rhyme',
+    tagline: 'Keep the end, change the first part',
+    lesson: {
+      paragraphs: ['Words that rhyme end the same way. Cat ends with at, and hat ends with at, so cat and hat rhyme.', 'To make a word that rhymes, keep the end of a word and change its first part. Keep the end of cat, change cuh to buh, and you make bat. Keep the end of dog, change duh to lll, and you make log.', 'Words that rhyme can be silly. Pig and big rhyme, so a pig can be a big pig.'],
+      keyIdea: 'To make a rhyme, keep the end of a word and change its first part, like cat and hat.',
+      example: { kind: 'pair', a: { kind: 'icon', name: 'dog' }, b: { kind: 'icon', name: 'log' }, caption: 'Dog and log both end with og, so they rhyme.' },
+      pictures: [{ serial: 'P188', alt: 'A very big, happy pink pig standing in a sunny farmyard, looking silly beside a tiny yellow chick', step: 4 }],
+      script: [
+        { say: 'Words that rhyme end the same way. Cat ends with at, and hat ends with at, so cat and hat rhyme.', show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'icon', name: 'hat' } } },
+        { say: 'To make a word that rhymes with cat, keep its end and change its first part.', stress: ['keep its end'], show: { kind: 'pic', name: 'cat' } },
+        { say: 'Cat. Cuh, at. Keep the end, and change cuh to buh. Now buh and at make bat, and bat rhymes with cat!', show: { kind: 'pic', name: 'cat' } },
+        { say: 'Dog. Duh, og. Keep the end, and change duh to lll. Now lll and og make log, and log rhymes with dog!', show: { kind: 'pair', a: { kind: 'icon', name: 'dog' }, b: { kind: 'icon', name: 'log' } } },
+        { say: 'Here is a silly one. Pig is puh and ig, so change puh to buh. Now buh and ig make big, and we have a big pig!', show: { kind: 'icon', name: 'pig' } },
+        { say: 'Now you try. Hat is huh and at, so keep the end and change huh to mmm. Now say the new word.', show: { kind: 'icon', name: 'hat' }, voices: [['Now say the new word.', 'tell', 'turn']] },
+        { say: 'Mmm and at make mat, and mat rhymes with hat!', show: { kind: 'icon', name: 'hat' } },
+        { say: 'Now you try one more. Log is lll and og, so keep the end and change lll to fff. Now say the new word.', show: { kind: 'icon', name: 'log' }, voices: [['Now say the new word.', 'tell', 'turn']] },
+        { say: 'Fff and og make fog, and fog rhymes with log!', show: { kind: 'icon', name: 'log' } },
+        { say: 'Frog is fff-rrr and og. Dog, log and frog all end with og, and fog does too, so they all rhyme.', show: { kind: 'row', items: [{ kind: 'icon', name: 'dog' }, { kind: 'icon', name: 'log' }, { kind: 'pic', name: 'frog' }] } },
+        { say: 'Now you try to think of your own. Think of a word that rhymes with cat, and say it.', show: { kind: 'pic', name: 'cat' }, voices: [['Think of a word that rhymes with cat, and say it.', 'tell', 'turn']] },
+        { say: 'Did you think of hat, bat or mat? Sss and at make sat, so sat is one more word that rhymes. They all end with at, just like cat, so they all rhyme with cat.', show: { kind: 'pair', a: { kind: 'icon', name: 'hat' }, b: { kind: 'pic', name: 'cat' } } },
+        { say: 'To make a rhyme, keep the end of a word and change its first part, like cat and hat.', show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'icon', name: 'hat' } } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.6 (produces rhyming words with adult assistance.), since the lesson says that words that rhyme end the same way, cat and hat, and how to make a word that rhymes, keep the end of a word and change its first part, cat into bat, dog into log and pig into big, has the child make a word that rhymes with hat and one that rhymes with log, the voice giving each new first part, and think of a word that rhymes with cat, each said in a turn of their own, each turn ending its line, and the next line naming words that do, and asks which word and which picture a new first part makes, which word could be said that rhymes with a word heard, whether a new first part makes a word named, and which first part changes one word into another that rhymes with it, the voice the adult assistance, and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches rhyme recognition, finding which of three heard words rhymes with a word heard, and recognizing phonemic changes in words, which first part changes one word into another, while the first sound in spoken words is taught in First sounds, a word\'s first part and its end in Star and spoon, counting syllables in Clap the beats and noticing a sentence made silly by a word that sounds almost the same in Same word or different?, and a word\'s sounds one by one, put together and taken apart, in Sound by sound.'],
+    generators: ['p4-make-word', 'p4-make-pic', 'p4-make-say', 'p4-make-yesno', 'p4-make-first'],
+  },
+  // The very first sound (pass NC, the standards review of Domain III's phonemes, EARMARKS E13): PK4 III.B.11, "isolates initial
+  // phonemes.", cited whole, and Head Start's P-LIT 1 in part. A word's sounds come one after another, and the very first is the one said
+  // first: moon's mmm, dog's duh, fish's fff, soap's sss and cat's cuh, each said alone. Some words start with two sounds said together,
+  // their first part (frog's fff-rrr, star's sss-tuh, spoon's sss-puh, flower's fff-lll, which Star and spoon teaches), and the very first
+  // sound of each is one sound, fff or sss, so star and spoon have the same very first sound. The child says the very first sound of soap
+  // and of flower in turns of their own that come before the voice says them, plays a game of finding the picture that starts with a
+  // sound heard, and says a word slowly to hear its very first sound (Mmm-oon). Tree, whose first part is tr, is never said to start with
+  // tuh (pass NB's rule). Its questions are heard questions that print none of the words or sounds they ask about while the voice can
+  // speak. It builds on Think of a word, which says a word's first sound to think of words that start with it, and on Star and spoon,
+  // which teaches a word's first part, one sound or two said together (Mikey's answer to Q84).
+  {
+    id: 'very-first-sound',
+    skill: 'Listening',
+    order: 27,
+    requires: ['think-of-a-word', 'star-and-spoon'],
+    requiresWhy: 'The very first sound says the first sound of a word all by itself, as Think of a word says a word\'s first sound to think of words that start with it, and tells it from a first part of two sounds said together, which Star and spoon teaches, so it builds on Think of a word and Star and spoon.',
+    title: 'The very first sound',
+    tagline: 'The sound a word starts with',
+    lesson: {
+      paragraphs: ['In lots of words, the sounds come one after another, and one of them comes first. The very first sound of moon is mmm, of dog duh, of fish fff, of soap sss and of cat cuh.', 'Some words start with two sounds said together, the first part of the word. The first part of frog is fff-rrr, but its very first sound is just one sound, fff. The very first sound of star is sss, and of spoon sss too, and the very first sound of flower is fff.', 'To find the very first sound, say the word slowly, and listen for the sound that comes first.'],
+      keyIdea: 'The very first sound of a word is the sound you say first, like mmm in moon, and fff in frog.',
+      example: { kind: 'pair', a: { kind: 'icon', name: 'moon' }, b: { kind: 'pic', name: 'frog' }, caption: 'The very first sound of moon is mmm, and of frog, fff.' },
+      pictures: [{ serial: 'P190', alt: 'One big, bright star twinkling in a deep blue night sky above a quiet, grassy field', step: 6 }],
+      script: [
+        { say: 'The sounds of moon come one after another, and one of them comes first. Moon. Mmm. The very first sound of moon is mmm.', stress: ['very first sound'], show: { kind: 'icon', name: 'moon' } },
+        { say: 'Dog. Duh. Fish. Fff. The very first sound of dog is duh, and the very first sound of fish is fff.', show: { kind: 'pair', a: { kind: 'icon', name: 'dog' }, b: { kind: 'pic', name: 'fish' } } },
+        { say: 'Now you try. Say the very first sound of soap, all by itself.', show: { kind: 'icon', name: 'soap' }, voices: [['Say the very first sound of soap, all by itself.', 'tell', 'turn']] },
+        { say: 'The very first sound of soap is sss. Did you say it too?', show: { kind: 'icon', name: 'soap' } },
+        { say: 'Some words start with two sounds said together. Frog. Fff-rrr, og. The first part of frog is fff-rrr.', show: { kind: 'pic', name: 'frog' } },
+        { say: 'But the very first sound of frog is just one sound. Fff. Fff comes first, and then comes rrr.', stress: ['one sound'], show: { kind: 'pic', name: 'frog' } },
+        { say: 'Star starts with two sounds said together too. Sss-tuh. The very first sound of star is sss.', show: { kind: 'icon', name: 'star' } },
+        { say: 'The first part of spoon is sss-puh, and its very first sound is sss, just like star. So star and spoon have the same very first sound.', show: { kind: 'pair', a: { kind: 'icon', name: 'star' }, b: { kind: 'icon', name: 'spoon' } } },
+        { say: 'Now you try. Say the very first sound of flower, just one sound.', show: { kind: 'icon', name: 'flower' }, voices: [['Say the very first sound of flower, just one sound.', 'tell', 'turn']] },
+        { say: 'The first part of flower is fff-lll, and its very first sound is just fff. Did you say it?', show: { kind: 'icon', name: 'flower' } },
+        { say: 'Let\'s play a game with the very first sound. Now you try. Listen to this sound. Cuh. Which one starts with it, the cat or the moon?', show: { kind: 'pair', a: { kind: 'pic', name: 'cat' }, b: { kind: 'icon', name: 'moon' } }, voices: [['Which one starts with it, the cat or the moon?', 'ask', 'turn']] },
+        { say: 'It is the cat, because cat starts with cuh.', show: { kind: 'pic', name: 'cat' } },
+        { say: 'To find the very first sound, say a word slowly. Moon. Mmm-oon. Mmm comes first.', show: { kind: 'icon', name: 'moon' } },
+        { say: 'The very first sound of a word is the sound you say first, like mmm in moon, and fff in frog.', show: { kind: 'pair', a: { kind: 'icon', name: 'moon' }, b: { kind: 'pic', name: 'frog' } } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.11 (isolates initial phonemes.), since the lesson says the very first sound of a word all by itself, moon, mmm, dog, duh, fish, fff, and soap, sss, tells the very first sound of a word whose first part has two sounds said together from its first part, frog, fff-rrr and fff, star, sss-tuh and sss, spoon, sss-puh and sss, and flower, fff-lll and fff, so star and spoon have the same very first sound, has the child say the very first sound of soap and of flower in turns of their own, before the voice says them, finds the picture that starts with a sound heard, says a word slowly to hear its very first sound, and asks what the very first sound of a word heard is, which picture starts with a sound heard, whether a sound heard is the very first sound of a word and whether two words heard have the same very first sound, and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches the very first sound of a spoken word, said alone, while rhyme recognition is taught in Rhyme time, recognizing phonemic changes in words in Same word or different?, counting syllables in Clap the beats, a word\'s first part and its end in Star and spoon, and a word\'s sounds one by one, put together and taken apart, in Sound by sound.'],
+    generators: ['p4-vfs-sound', 'p4-vfs-part', 'p4-vfs-pic', 'p4-vfs-yesno', 'p4-vfs-same'],
+  },
+  // Sound by sound (pass NC, the standards review of Domain III's phonemes, EARMARKS E13): PK4 III.B.12, "blends 2-3 phonemes with adult
+  // assistance.", and III.B.13, "segments 2-3 phonemes with adult assistance.", each cited whole, and Head Start's P-LIT 1 in part. A word
+  // is made of sounds said one after another: puh and eye make pie, buh, oh and tuh make boat, and cuh, eye and tuh make kite; the child
+  // puts sss, oh and puh together into soap. Then words come apart into their sounds, a dot for each sound: shoe is shh and ooh, two
+  // sounds, moon is mmm, ooh and nnn, three, and the child takes coat and phone apart in turns of their own that come before the voice
+  // says them. Kite and coat are told apart by the sound in the middle. Every word's vowel is a long one the device's voice says as a word
+  // of its own (eye, oh, ooh), since the app's own short vowels stay on trial (Q60, EARMARKS A42), and sss and fff are one breath, in a
+  // run of a word's sounds and alone (ONE_BREATH_LESSONS), so a child counts one sound for each. Its questions are heard questions that print none of the
+  // words or sounds they ask about while the voice can speak. It builds on The very first sound, which says a word's first sound alone
+  // (Mikey's answer to Q84).
+  {
+    id: 'sound-by-sound',
+    skill: 'Listening',
+    order: 28,
+    requires: ['very-first-sound'],
+    requiresWhy: 'Sound by sound says every sound in a word, one after another, the very first sound and each one after it, and The very first sound first says a word\'s first sound all by itself, so it builds on The very first sound.',
+    title: 'Sound by sound',
+    tagline: 'Put sounds together and take them apart',
+    lesson: {
+      paragraphs: ['Lots of words are made of sounds, said one after another. Puh and eye make pie. Buh, oh and tuh make boat, and cuh, eye and tuh make kite.', 'We can take a word apart into its sounds, with a dot for each sound. Shoe is shh and ooh, two sounds. Moon is mmm, ooh and nnn, three sounds, and so is coat, cuh, oh and tuh.', 'Kite and coat both start with cuh and end with tuh, and only the sound in the middle is different. Listen to every sound, and you can tell them apart.'],
+      keyIdea: 'Lots of words are made of sounds. Put them together, and you say the word. Take it apart, and you hear each sound, like buh, oh and tuh in boat.',
+      example: { kind: 'pair', a: { kind: 'icon', name: 'boat' }, b: { kind: 'dots', count: 3, frame: 3 }, caption: 'Boat. Buh, oh, tuh. Three sounds, three dots.' },
+      pictures: [{ serial: 'P191', alt: 'A bright red and yellow kite with a long ribbon tail flying high in a blue sky over a green, grassy hill', step: 2 }],
+      script: [
+        { say: 'Lots of words are made of sounds, said one after another. Listen. Puh, eye. Put them together fast, and you hear pie!', show: { kind: 'icon', name: 'pie' } },
+        { say: 'Some words have three sounds. Buh, oh, tuh. Buh, oh and tuh go together, and they make boat!', stress: ['three sounds'], show: { kind: 'icon', name: 'boat' } },
+        { say: 'Cuh, eye, tuh. Those three sounds go together, and they make kite.', show: { kind: 'icon', name: 'kite' } },
+        { say: 'Now you try, and listen closely. Sss, oh, puh. Put the sounds together, and say the word.', show: null, voices: [['Put the sounds together, and say the word.', 'tell', 'turn']] },
+        { say: 'Did you say soap? Sss, oh and puh go together, and they make soap.', show: { kind: 'icon', name: 'soap' } },
+        { say: 'Now let\'s take a word apart into its sounds, with a dot for each sound. Shoe. Shh, ooh. Shoe has two sounds, so here is a group of two dots.', show: { kind: 'pair', a: { kind: 'icon', name: 'shoe' }, b: { kind: 'dots', count: 2, frame: 2 } } },
+        { say: 'Moon. Mmm, ooh, nnn. Moon has three sounds, so it gets three dots.', show: { kind: 'pair', a: { kind: 'icon', name: 'moon' }, b: { kind: 'dots', count: 3, frame: 3 } } },
+        { say: 'Now you try. Say the sounds in coat, one at a time.', show: { kind: 'icon', name: 'coat' }, voices: [['Say the sounds in coat, one at a time.', 'tell', 'turn']] },
+        { say: 'Coat has three sounds, cuh, oh and tuh, so it gets three dots. Did you say them too?', show: { kind: 'pair', a: { kind: 'icon', name: 'coat' }, b: { kind: 'dots', count: 3, frame: 3 } } },
+        { say: 'Kite and coat both start with cuh and end with tuh. Only the sound in the middle is different. Kite. Cuh, eye, tuh. Coat. Cuh, oh, tuh.', stress: ['in the middle'], show: { kind: 'pair', a: { kind: 'icon', name: 'kite' }, b: { kind: 'icon', name: 'coat' } } },
+        { say: 'Now you try one more word, and say the sounds in phone, one at a time.', show: { kind: 'icon', name: 'phone' }, voices: [['Now you try one more word, and say the sounds in phone, one at a time.', 'tell', 'turn']] },
+        { say: 'Phone has three sounds, fff, oh and nnn. Did you say them too?', show: { kind: 'pair', a: { kind: 'icon', name: 'phone' }, b: { kind: 'dots', count: 3, frame: 3 } } },
+        { say: 'Lots of words are made of sounds, said one after another. Put them together, and you say the word. Take it apart, and you hear each sound, like buh, oh and tuh in boat.', show: { kind: 'icon', name: 'boat' } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.B.12 (blends 2-3 phonemes with adult assistance.), since the lesson puts two and three sounds together into words, puh and eye into pie, buh, oh and tuh into boat, and cuh, eye and tuh into kite, has the child put sss, oh and puh together and say soap in a turn of their own, the turn ending its line, and asks which picture and which word sounds heard make and whether sounds heard make a picture\'s name, the voice the adult assistance, and III.B.13 (segments 2-3 phonemes with adult assistance.), since the lesson takes words apart into two and three sounds, a dot for each sound, shoe into shh and ooh, and moon into mmm, ooh and nnn, has the child take coat and phone apart and say their sounds one at a time in turns of their own, before the voice says them, tells kite and coat apart by the sound in the middle, and asks how many sounds a word heard has and which sounds make a word heard, and Head Start ELOF Goal P-LIT 1 (demonstrates awareness that spoken language is composed of smaller segments of sound), whose 48 to 60 month progression reads "Demonstrates rhyme recognition, such as identifying which words rhyme from a group of three: hat, cat, log. Recognizes phonemic changes in words, such as noticing the problem with "Old McDonald had a charm." Is able to count syllables and understand sounds in spoken words.", in part, since the lesson teaches the sounds in spoken words, one by one, put together into words and taken apart, while rhyme recognition is taught in Rhyme time, recognizing phonemic changes in words in Same word or different?, counting syllables in Clap the beats, the very first sound of a spoken word in The very first sound and a word\'s first part and its end in Star and spoon.'],
+    generators: ['p4-sbs-blend', 'p4-sbs-heard', 'p4-sbs-count', 'p4-sbs-apart', 'p4-sbs-yesno'],
+  },
+  // Write to tell (pass NC, Domain IV begun beside Domain III's phonemes, EARMARKS E13; the map's first planned writing lesson, drawing and
+  // writing to share an idea): PK4 IV.A.1, "intentionally uses drawings and marks, letters, or symbols to represent ideas and verbally
+  // shares intended meaning with an adult or peer.", IV.A.2, "independently draws and writes for many purposes to communicate ideas,
+  // using a variety of writing tools with support as needed.", and IV.C.2, "progresses from using scribbles and mock letters to forming
+  // letters and letter strings as a way to communicate ideas.", each cited in part, and Head Start's P-LIT 6 in part. People draw and
+  // write for many reasons: a list to remember, a card to say something kind, a letter in an envelope for someone far away, a sign that
+  // tells cars what to do; some marks are symbols (an arrow tells which way to go, a heart means love); a drawing tells an idea; and
+  // writing grows from scribbles to marks that look a little like letters to real letters that make words. The child thinks of something
+  // kind to draw or write for a friend and tells a grown-up in a turn of their own; a child's own drawing and writing is the child's own,
+  // and nothing a child draws or writes is kept. It requires no lesson before it: drawing and writing to tell an idea is where writing
+  // begins (Mikey's answer to Q84 lets a lesson name none).
+  {
+    id: 'write-to-tell',
+    skill: 'Writing',
+    order: 29,
+    requiresWhy: 'Write to tell is the first lesson of pre-K 4 about drawing and writing to tell an idea, and it shows and says everything it asks about, so it needs no lesson first. Draw and tell teaches the same idea in pre-K 3, a course a child in pre-K 4 may never have had, so Write to tell says it all again.',
+    title: 'Write to tell',
+    tagline: 'Drawing and writing for lots of reasons',
+    lesson: {
+      paragraphs: ['People draw and write for lots of reasons. A list helps us remember, a card tells someone something kind, a letter tells someone far away about our day, and a stop sign tells cars to stop.', 'Some marks are symbols, and each one tells an idea. An arrow tells which way to go, and a heart means love. A drawing tells an idea too, like a drawing of a cloud and an umbrella, which tells us, It rained today.', 'Writing starts as scribbles. Then come marks that look a little like letters, and then real letters that make words. We draw and write with a crayon, a pencil or a marker, never a sock, a cup or a hat.'],
+      keyIdea: 'People draw and write for lots of reasons. A list helps us remember, and a card says something kind. A letter tells our news, and a stop sign tells us what to do.',
+      example: { kind: 'icon', name: 'card', caption: 'A card can tell a friend, Thank you!' },
+      pictures: [{ serial: 'P193', alt: 'One red crayon and one pencil lying side by side on a wooden table, seen from directly above', step: 0 }],
+      script: [
+        { say: 'With a crayon or a pencil, people draw and write to tell their ideas. They do it for lots of reasons.', show: { kind: 'pair', a: { kind: 'icon', name: 'crayon' }, b: { kind: 'icon', name: 'pencil' } } },
+        { say: 'A list helps us remember. Dad writes a list of what to buy at the store.', show: { kind: 'icon', name: 'list' } },
+        { say: 'A card tells someone something kind, like Happy birthday, or Thank you.', show: { kind: 'icon', name: 'card' } },
+        { say: 'A letter tells someone far away about our day. We put it in an envelope, and then we mail it to them.', show: { kind: 'icon', name: 'envelope' } },
+        { say: 'A sign tells us what to do. When a car comes to the corner, a stop sign tells it to stop.', show: { kind: 'icon', name: 'sign~stop' } },
+        { say: 'Some marks are symbols, and each one tells an idea. An arrow tells which way to go, and a heart means love.', show: { kind: 'pair', a: { kind: 'icon', name: 'arrow' }, b: { kind: 'icon', name: 'heart' } } },
+        { say: 'A drawing tells an idea too. Ana drew the sun and a ball, and her drawing tells us, I played outside today!', show: { kind: 'icon', name: 'drawing~outside' } },
+        { say: 'Here are two more drawings. A cloud and an umbrella tell us, It rained today. The moon and a bed tell us, It is time for bed.', show: { kind: 'pair', a: { kind: 'icon', name: 'drawing~rain' }, b: { kind: 'icon', name: 'drawing~bedtime' } } },
+        { say: 'Writing starts as scribbles. Then come marks that look a little like letters, and then real letters that make words, like cat.', show: { kind: 'row', items: [{ kind: 'icon', name: 'scribble' }, { kind: 'icon', name: 'marks' }, { kind: 'icon', name: 'word' }] } },
+        { say: 'We draw and write with tools. Here are three of them, a crayon, a pencil and a marker.', show: { kind: 'row', items: [{ kind: 'icon', name: 'crayon' }, { kind: 'icon', name: 'pencil' }, { kind: 'icon', name: 'marker' }] } },
+        { say: 'A sock is for your foot, a cup is for drinking, and a hat is for your head. They are not tools for writing, so we pick a pencil.', show: { kind: 'row', items: [{ kind: 'icon', name: 'sock' }, { kind: 'icon', name: 'cup' }, { kind: 'icon', name: 'hat' }] } },
+        { say: 'Now you try. Think of something kind to draw or write for a friend, and tell a grown-up about it.', show: null, voices: [['Think of something kind to draw or write for a friend, and tell a grown-up about it.', 'tell', 'turn']] },
+        { say: 'You could make a card with a heart on it, and tell your friend what it means.', show: { kind: 'icon', name: 'card' } },
+        { say: 'People draw and write for lots of reasons. A list helps us remember, and a card says something kind. A letter tells our news, and a stop sign tells us what to do.', show: { kind: 'row', items: [{ kind: 'icon', name: 'list' }, { kind: 'icon', name: 'card' }, { kind: 'icon', name: 'sign~stop' }] } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) IV.A.1 (intentionally uses drawings and marks, letters, or symbols to represent ideas and verbally shares intended meaning with an adult or peer.), in part, since the lesson shows drawings, marks that look a little like letters, letters and symbols representing ideas, an arrow that tells which way to go and a heart that means love, has the child think of something kind to draw or write for a friend and tell a grown-up about it in a turn of their own, and asks what a drawing tells, which drawing tells an idea and yes or no about what a symbol means, while a child\'s own drawing, writing and telling what it means, with a grown-up or a friend, waits (EARMARKS E13), and IV.A.2 (independently draws and writes for many purposes to communicate ideas, using a variety of writing tools with support as needed.), in part, since the lesson shows drawing and writing for many purposes, a list to remember, a card to say something kind, a letter in an envelope for someone far away and a sign that tells a car to stop, names a variety of tools to draw and write with, a crayon, a pencil and a marker, never a sock, a cup or a hat, and asks which one fits a reason to write, which one is a tool for writing and yes or no about what each one is for, while drawing and writing independently is the child\'s own (EARMARKS E13), and IV.C.2 (progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas.), in part, since the lesson shows writing growing from scribbles to marks that look a little like letters to real letters that make a word, cat, while a child\'s own progress waits, and forming letters is taught in the tracing lessons, and Head Start ELOF Goal P-LIT 6 (writes for a variety of purposes using increasingly sophisticated marks), whose 48 to 60 month progression reads "Progressively uses drawing, scribbling, letter-like forms, and letters to intentionally convey meaning. With support, may use invented spelling consisting of salient or beginning sounds, such as L for elevator or B for bug.", in part, since the lesson shows drawing, scribbling, letter-like forms and letters conveying meaning, while a child\'s own use of them and invented spelling wait.'],
+    generators: ['p4-tell-job', 'p4-tell-tool', 'p4-tell-tells', 'p4-tell-make', 'p4-tell-yesno'],
   },
 ]; }
 
@@ -31234,6 +31578,528 @@ Object.assign(GENERATORS, {
   },
 });
 
+// Dog and frog (pre-K 3), pass NB, the standards review of Domain III's III.B.9 and III.B.10. Seven words a three-year-old knows, each a
+// picture the app draws and the lesson says, with the two parts the lesson says it in: its first part, written as the app plays it (duh,
+// lll, cuh, puh, and huh, which the voice says; fff-rrr and sss-tuh, two sounds said together as one part), and its end, an ending the app plays itself (og, at, ig),
+// or none for star, whose end the lesson never says alone. Every question is a heard question: while the voice can speak it prints none
+// of the words or parts it asks about.
+const DAF3_WORDS = [['dog', 'duh', 'og', 'icon'], ['log', 'lll', 'og', 'icon'], ['frog', 'fff-rrr', 'og', 'pic'], ['cat', 'cuh', 'at', 'pic'], ['hat', 'huh', 'at', 'icon'], ['pig', 'puh', 'ig', 'icon'], ['star', 'sss-tuh', null, 'icon']];
+// A word's row, its first part, its end, its picture as a choice and to show, and its two parts said one after another (Puh, ig).
+const dafEntry = (w) => DAF3_WORDS.find((x) => x[0] === w);
+const dafFirst = (w) => dafEntry(w)[1];
+const dafEnd = (w) => dafEntry(w)[2];
+const dafPic = (w) => dafEntry(w)[3] + ':' + w;
+const dafShow = (w) => ({ kind: dafEntry(w)[3], name: w });
+const dafParts = (w) => capFirst(dafFirst(w)) + ', ' + dafEnd(w);
+// The pictures' names said in the buttons' order (sasNames' reason), and a picture's name after "This is" (a dog, a star).
+const dafNames = (ws) => ws.map((x) => capFirst(x) + '.').join(' ');
+const dafThis = (w) => 'a ' + w;
+// The words whose two parts the lesson says and puts together (every word but star), and those whose end is a heard choice of its own
+// (at is left out, since a voice handed at alone says the little word; the app plays it only after a first part or an "ends with").
+const DAF3_TWO = DAF3_WORDS.filter((x) => x[2]).map((x) => x[0]);
+const DAF3_END_HEARD = DAF3_WORDS.filter((x) => x[2] && x[2] !== 'at').map((x) => x[0]);
+Object.assign(GENERATORS, {
+  // Dog and frog: a word heard, and which of its two parts comes first, its first part or its end, each heard (heardChoices).
+  'p3-part-first': (rng) => {
+    const w = pick(rng, DAF3_END_HEARD); const first = dafFirst(w); const end = dafEnd(w);
+    return { type: 'choice', story: 'Listen. ' + capFirst(w) + '.', printedStory: 'Listen to the word.', prompt: 'What is the first part of ' + w + '?', printed: 'Tap to hear each part. Which part comes first in the word you hear?', choices: shuffle(rng, [first, end]), answer: first, heardChoices: true, aboutWords: [w],
+      explain: capFirst(first) + ' is the first part of ' + w + ', and ' + w + ' ends with ' + end + '. ' + dafParts(w) + ', ' + w + '.', visual: null, explainVisual: dafShow(w),
+      whyNot: { [end]: { name: capFirst(end), why: 'is how ' + w + ' ends, so it is not the first part.' } }, alsoRight: [] };
+  },
+  // Dog and frog: a first part heard, and the picture that has it beside one that does not, the pictures' names said in the buttons' order.
+  'p3-part-pic': (rng) => {
+    const w = pick(rng, DAF3_WORDS)[0]; const other = pick(rng, DAF3_WORDS.filter((x) => x[0] !== w))[0]; const two = shuffle(rng, [w, other]);
+    return { type: 'choice', story: 'Listen to this first part. ' + capFirst(dafFirst(w)) + '. Now listen to these two. ' + dafNames(two), keyStory: 'Listen to this first part. ' + capFirst(dafFirst(w)) + '.', printedStory: 'Listen to the first part and the words.', prompt: 'Which one has that first part?', choices: two.map(dafPic), answer: dafPic(w), aboutWords: [w],
+      explain: 'The first part of ' + w + ' is ' + dafFirst(w) + '.', visual: null, explainVisual: dafShow(w),
+      whyNot: { [dafPic(other)]: { name: 'The ' + other, why: 'starts with the first part ' + dafFirst(other) + ', and the first part you heard is ' + dafFirst(w) + '.' } }, alsoRight: [] };
+  },
+  // Dog and frog: two pictures named, then two parts heard, and the picture the parts make put together.
+  'p3-part-blend': (rng) => {
+    const w = pick(rng, DAF3_TWO); const other = pick(rng, DAF3_WORDS.filter((x) => x[0] !== w))[0]; const two = shuffle(rng, [w, other]);
+    return { type: 'choice', story: 'Here are two pictures. ' + dafNames(two) + ' Now listen to the parts. ' + dafParts(w) + '.', keyStory: 'Now listen to the parts. ' + dafParts(w) + '.', printedStory: 'Listen to the words and the parts.', prompt: 'Put the parts together. Which one do they make?', choices: two.map(dafPic), answer: dafPic(w), aboutWords: [w],
+      explain: dafParts(w) + ', ' + w + '. The parts make ' + w + '.', visual: null, explainVisual: dafShow(w),
+      whyNot: { [dafPic(other)]: { name: 'The ' + other, why: 'starts with the first part ' + dafFirst(other) + ', and the parts you heard start with ' + dafFirst(w) + '.' } }, alsoRight: [] };
+  },
+  // Dog and frog: two parts heard and a picture, and whether the parts make the picture's name, half the time each.
+  'p3-part-yesno': (rng) => {
+    const w = pick(rng, DAF3_TWO); const yes = rng() < 0.5; const p = yes ? w : pick(rng, DAF3_WORDS.filter((x) => x[0] !== w))[0]; const answer = yes ? 'Yes' : 'No'; const wrong = yes ? 'No' : 'Yes';
+    return { type: 'choice', story: 'Listen to the parts. ' + dafParts(w) + '. This is ' + dafThis(p) + '.', printedStory: 'Listen to the parts and the picture\'s name.', prompt: 'Do the parts make ' + p + '?', printed: 'Do the parts make this picture\'s name?', choices: yesNo(rng), answer, aboutWords: [w],
+      explain: yes ? 'Yes. ' + dafParts(w) + ', ' + w + '. The parts make ' + w + '.' : 'No. ' + dafParts(w) + ', ' + w + '. The parts make ' + w + ', not ' + p + '.', visual: dafShow(p), explainVisual: null,
+      whyNot: { [wrong]: { name: wrong, why: yes ? 'would mean the parts do not make ' + p + ', but ' + dafFirst(w) + ' and ' + dafEnd(w) + ' make ' + p + '.' : 'would mean the parts make ' + p + ', but they make ' + w + '.' } }, alsoRight: [] };
+  },
+  // Dog and frog: two parts heard, and which of two heard words they make put together.
+  'p3-part-heard': (rng) => {
+    const w = pick(rng, DAF3_TWO); const other = pick(rng, DAF3_WORDS.filter((x) => x[0] !== w))[0];
+    return { type: 'choice', story: 'Listen to the parts. ' + dafParts(w) + '.', printedStory: 'Listen to the parts.', prompt: 'Put the parts together. Which word do they make?', printed: 'Tap to hear each word. Which word do the parts make?', choices: shuffle(rng, [w, other]), answer: w, heardChoices: true, aboutWords: [w],
+      explain: dafParts(w) + ', ' + w + '. The parts make ' + w + '.', visual: null, explainVisual: dafShow(w),
+      whyNot: { [other]: { name: capFirst(other), why: 'starts with the first part ' + dafFirst(other) + ', and the parts you heard start with ' + dafFirst(w) + '.' } }, alsoRight: [] };
+  },
+});
+
+// Star and spoon (pre-K 4), pass NB, the standards review of Domain III's III.B.9 and III.B.10. Fourteen words a four-year-old knows,
+// each with the first part the lesson says it with and its end, an ending the app plays itself (og, at, ig), or none where the lesson
+// never says it alone, and its picture kind (mat is said and never drawn). Three groups start with one sound and have different first
+// parts, as the lesson sets them side by side: sun, star and spoon; fish, frog and flower; table and tree. Every question is heard.
+const SNS4_WORDS = [['sun', 'sss', null, 'icon'], ['star', 'sss-tuh', null, 'icon'], ['spoon', 'sss-puh', null, 'icon'], ['fish', 'fff', null, 'pic'], ['frog', 'fff-rrr', 'og', 'pic'], ['flower', 'fff-lll', null, 'icon'],
+  ['table', 'tuh', null, 'icon'], ['tree', 'tuh-rrr', null, 'icon'], ['dog', 'duh', 'og', 'icon'], ['log', 'lll', 'og', 'icon'], ['cat', 'cuh', 'at', 'pic'], ['hat', 'huh', 'at', 'icon'], ['pig', 'puh', 'ig', 'icon'], ['mat', 'mmm', 'at', null]];
+const SNS4_GROUPS = [['sun', 'star', 'spoon'], ['fish', 'frog', 'flower'], ['table', 'tree']];
+const snsEntry = (w) => SNS4_WORDS.find((x) => x[0] === w);
+const snsFirst = (w) => snsEntry(w)[1];
+const snsEnd = (w) => snsEntry(w)[2];
+// A word's look where its drawing carries more than the word (the table drawing has Over and under's bird and cat).
+const SNS4_LOOKS = { table: 'table~plain' };
+const snsPic = (w) => snsEntry(w)[3] + ':' + (SNS4_LOOKS[w] || w);
+const snsShow = (w) => (snsEntry(w)[3] ? { kind: snsEntry(w)[3], name: SNS4_LOOKS[w] || w } : null);
+const snsParts = (w) => capFirst(snsFirst(w)) + ', ' + snsEnd(w);
+const snsNames = (ws) => ws.map((x) => capFirst(x) + '.').join(' ');
+// The word a first part belongs to in the lesson (sss-puh is spoon's), for a reason that names it.
+const snsWordOf = (first) => SNS4_WORDS.find((x) => x[1] === first)[0];
+// The words whose two parts the lesson puts together, and of them the ones it draws.
+const SNS4_TWO = SNS4_WORDS.filter((x) => x[2]).map((x) => x[0]);
+const SNS4_TWO_DRAWN = SNS4_WORDS.filter((x) => x[2] && x[3]).map((x) => x[0]);
+// Two wrong choices beside a word whose parts are heard: one that ends the same way, so its first part tells it apart, and one that ends
+// another way; or two that end other ways when no other word ends like it (pig).
+const snsTwoBeside = (rng, w, ws) => { const same = ws.filter((x) => x !== w && snsEnd(x) === snsEnd(w)); const others = ws.filter((x) => snsEnd(x) !== snsEnd(w)); return same.length ? [pick(rng, same), pick(rng, others)] : shuffle(rng, others).slice(0, 2); };
+// The reason a word whose parts were not heard does not fit: the same end, said as the lesson says an end (ends with at), and another
+// first part, or other parts (each under 18 words, the reasons' limit; the parts heard are the question's own).
+const snsWhyBeside = (x, w) => (snsEnd(x) === snsEnd(w) ? 'ends with ' + snsEnd(x) + ' too, but its first part is ' + snsFirst(x) + '.' : 'has other parts. ' + snsParts(x) + '.');
+Object.assign(GENERATORS, {
+  // Star and spoon: a word heard, and its first part among the first parts of its group (and lll beside table and tree), each heard. Since
+  // round one's lesson check the third first part is lll, not duh, which differs from tuh only in voicing, the pair preschoolers most
+  // often take for one sound (Treiman, Broderick, Tincoff and Rodriguez 1998).
+  'p4-part-first': (rng) => {
+    const g = pick(rng, SNS4_GROUPS); const w = pick(rng, g); const first = snsFirst(w); const choices = shuffle(rng, g.length >= 3 ? g.map(snsFirst) : [...g.map(snsFirst), 'lll']);
+    return { type: 'choice', story: 'Listen. ' + capFirst(w) + '.', printedStory: 'Listen to the word.', prompt: 'What is the first part of ' + w + '?', printed: 'Tap to hear each part. Which one is the first part of the word you hear?', choices, answer: first, heardChoices: true, aboutWords: [w],
+      explain: 'The first part of ' + w + ' is ' + first + (first.includes('-') ? ', two sounds said together.' : '.'), visual: null, explainVisual: snsShow(w),
+      whyNot: Object.fromEntries(choices.filter((c) => c !== first).map((c) => [c, { name: capFirst(c), why: 'is the first part of ' + snsWordOf(c) + '.' }])), alsoRight: [] };
+  },
+  // Star and spoon: a first part heard, and the picture of its group that has it (a log, a cat or a pig beside table and tree, never the
+  // dog, whose duh differs from tuh only in voicing), the pictures' names said in the buttons' order.
+  'p4-part-pic': (rng) => {
+    const g = pick(rng, SNS4_GROUPS); const w = pick(rng, g); const first = snsFirst(w); const three = shuffle(rng, g.length >= 3 ? g : [...g, pick(rng, ['log', 'cat', 'pig'])]);
+    return { type: 'choice', story: 'Listen to this first part. ' + capFirst(first) + '. Now listen to these three. ' + snsNames(three), keyStory: 'Listen to this first part. ' + capFirst(first) + '.', printedStory: 'Listen to the first part and the words.', prompt: 'Which one has that first part?', choices: three.map(snsPic), answer: snsPic(w), aboutWords: [w],
+      explain: 'The first part of ' + w + ' is ' + first + '.', visual: null, explainVisual: snsShow(w),
+      whyNot: Object.fromEntries(three.filter((x) => x !== w).map((x) => [snsPic(x), { name: 'The ' + x, why: 'starts with the first part ' + snsFirst(x) + ', and the first part you heard is ' + first + '.' }])), alsoRight: [] };
+  },
+  // Star and spoon: three pictures named, then a first part and an end heard, and the picture they make put together, as Head Start's
+  // example has it (shown pictures, then the parts), one picture ending the same way and one another way.
+  'p4-part-blend': (rng) => {
+    const w = pick(rng, SNS4_TWO_DRAWN); const two = snsTwoBeside(rng, w, SNS4_TWO_DRAWN); const three = shuffle(rng, [w, ...two]);
+    return { type: 'choice', story: 'Here are three pictures. ' + snsNames(three) + ' Now listen to the parts. ' + snsParts(w) + '.', keyStory: 'Now listen to the parts. ' + snsParts(w) + '.', printedStory: 'Listen to the words and the parts.', prompt: 'Put the parts together. Which one do they make?', choices: three.map(snsPic), answer: snsPic(w), aboutWords: [w],
+      explain: snsParts(w) + ', ' + w + '. The parts make ' + w + '.', visual: null, explainVisual: snsShow(w),
+      whyNot: Object.fromEntries(two.map((x) => [snsPic(x), { name: 'The ' + x, why: snsWhyBeside(x, w) }])), alsoRight: [] };
+  },
+  // Star and spoon: a first part and an end heard, and the word they make among three heard words, with no pictures.
+  'p4-part-heard': (rng) => {
+    const w = pick(rng, SNS4_TWO); const two = snsTwoBeside(rng, w, SNS4_TWO);
+    return { type: 'choice', story: 'Listen to the parts. ' + snsParts(w) + '.', printedStory: 'Listen to the parts.', prompt: 'Put the parts together. Which word do they make?', printed: 'Tap to hear each word. Which word do the parts make?', choices: shuffle(rng, [w, ...two]), answer: w, heardChoices: true, aboutWords: [w],
+      explain: snsParts(w) + ', ' + w + '. The parts make ' + w + '.', visual: null, explainVisual: snsShow(w),
+      whyNot: Object.fromEntries(two.map((x) => [x, { name: capFirst(x), why: snsWhyBeside(x, w) }])), alsoRight: [] };
+  },
+  // Star and spoon: a first part and an end heard, and whether they make a word named, half the time each; the word named when they do
+  // not ends the same way where one does, so its first part decides.
+  'p4-part-yesno': (rng) => {
+    const w = pick(rng, SNS4_TWO); const yes = rng() < 0.5; const same = SNS4_TWO.filter((x) => x !== w && snsEnd(x) === snsEnd(w)); const t = yes ? w : pick(rng, same.length ? same : SNS4_TWO.filter((x) => x !== w)); const answer = yes ? 'Yes' : 'No'; const wrong = yes ? 'No' : 'Yes';
+    return { type: 'choice', story: 'Listen to the parts. ' + snsParts(w) + '.', printedStory: 'Listen to the parts.', prompt: 'Do the parts make ' + t + '?', printed: 'Do the parts make the word in the question?', choices: yesNo(rng), answer, aboutWords: [w],
+      explain: yes ? 'Yes. ' + snsParts(w) + ', ' + w + '. The parts make ' + w + '.' : 'No. ' + snsParts(w) + ', ' + w + '. The parts make ' + w + ', not ' + t + '.', visual: null, explainVisual: snsShow(w),
+      whyNot: { [wrong]: { name: wrong, why: yes ? 'would mean the parts do not make ' + t + ', but ' + snsFirst(w) + ' and ' + snsEnd(w) + ' make ' + t + '.' : 'would mean the parts make ' + t + ', but they make ' + w + '.' } }, alsoRight: [] };
+  },
+});
+
+// Make a rhyme (pre-K 4), pass NB, the standards review of Domain III's III.B.6. Eleven words the lesson says, in three families that
+// end the same way (at, og and ig), each with its first part and its picture kind (bat, mat, sat, fog and big are said and never drawn).
+// A word that rhymes is made by keeping a word's end and changing its first part, any word of a family into another of it. Every
+// question is heard.
+const MAR4_WORDS = [['cat', 'cuh', 'at', 'pic'], ['hat', 'huh', 'at', 'icon'], ['bat', 'buh', 'at', null], ['mat', 'mmm', 'at', null], ['sat', 'sss', 'at', null],
+  ['dog', 'duh', 'og', 'icon'], ['log', 'lll', 'og', 'icon'], ['frog', 'fff-rrr', 'og', 'pic'], ['fog', 'fff', 'og', null], ['pig', 'puh', 'ig', 'icon'], ['big', 'buh', 'ig', null]];
+const marEntry = (w) => MAR4_WORDS.find((x) => x[0] === w);
+const marFirst = (w) => marEntry(w)[1];
+const marEnd = (w) => marEntry(w)[2];
+const marPic = (w) => marEntry(w)[3] + ':' + w;
+const marShow = (w) => (marEntry(w)[3] ? { kind: marEntry(w)[3], name: w } : null);
+const marNames = (ws) => ws.map((x) => capFirst(x) + '.').join(' ');
+const marFamily = (w) => MAR4_WORDS.filter((x) => x[2] === marEnd(w)).map((x) => x[0]);
+// The first parts the lesson says aloud on their own, as a change (Keep the end, and change huh to mmm), so a question whose answer is a
+// first part asks only for those; sat's sss and frog's fff-rrr it says only in their words' parts (Sss and at make sat, so sat is one more
+// word that rhymes; Frog is fff-rrr and og), since round one's lesson check, for the setups that change a word into sat or frog.
+const MAR4_SAID_FIRSTS = ['cuh', 'huh', 'buh', 'mmm', 'duh', 'lll', 'fff', 'puh'];
+// A word and another of its family made by changing its first part, from all the words or from the ones drawn, or from the words
+// whose first parts the lesson says. Since round two's content and alignment reads the word, yes or no and first-part banks leave out the
+// ig family (pig and big), whose change, puh to buh, differs only in voicing, the pair preschoolers most often take for one sound
+// (Treiman, Broderick, Tincoff and Rodriguez 1998); line 5 still tells the silly big pig, and p4-make-say still asks for a rhyme of pig.
+const MAR4_NO_VOICING = (x) => x[2] !== 'ig';
+const marPair = (rng, keep = () => true) => { const ws = MAR4_WORDS.filter(keep).map((x) => x[0]); const from = pick(rng, ws.filter((w) => marFamily(w).some((y) => y !== w && ws.includes(y)))); return [from, pick(rng, marFamily(from).filter((y) => y !== from && ws.includes(y)))]; };
+// The change as the lesson says it: the word's end, kept, and its first part changed.
+const marChange = (from, to) => capFirst(from) + ' ends with ' + marEnd(from) + '. Keep the end, and change ' + marFirst(from) + ' to ' + marFirst(to) + '.';
+// The word made, said in its parts and put together.
+const marMade = (to) => capFirst(marFirst(to)) + ', ' + marEnd(to) + ', ' + to;
+// More right answers under a question that asks for a rhyme: the other words of the family the lesson says, never a word on the screen.
+const marMoreLine = (w, onScreen) => { const r = marFamily(w).filter((y) => y !== w && !onScreen.includes(y)); return !r.length ? [] : [(r.length === 1 ? capFirst(r[0]) + ' rhymes' : capFirst(r.slice(0, -1).join(', ')) + ' and ' + r[r.length - 1] + ' rhyme') + ' with ' + w + ' too.']; };
+Object.assign(GENERATORS, {
+  // Make a rhyme: a word, its end kept and its first part changed, and the word made among three heard words: the word made, the word
+  // started with, and another of the family (or, beside pig and big, a word with the new first part that ends another way). A third word
+  // that ends another way is told by its end, and by its first part only where it has the new one (round one's lesson check: "Hat starts
+  // with huh, but" told a child that huh fits the change into big).
+  'p4-make-word': (rng) => {
+    const [from, to] = marPair(rng, MAR4_NO_VOICING); const rest = marFamily(from).filter((y) => y !== from && y !== to);
+    const third = rest.length ? pick(rng, rest) : (MAR4_WORDS.find((x) => x[1] === marFirst(to) && x[2] !== marEnd(to)) || pick(rng, MAR4_WORDS.filter((x) => x[2] !== marEnd(to))))[0];
+    return { type: 'choice', story: marChange(from, to), printedStory: 'Listen to the word and the new first part.', prompt: 'Which word do you make?', printed: 'Tap to hear each word. Which word do you make?', choices: shuffle(rng, [to, from, third]), answer: to, heardChoices: true, aboutWords: [to], saysFirstOf: [from, to, 'rhyme:' + from, 'rhyme:' + to],
+      explain: marMade(to) + '! ' + capFirst(to) + ' rhymes with ' + from + '.', visual: null, explainVisual: marShow(to) || marShow(from),
+      whyNot: { [from]: { name: capFirst(from), why: 'is the word you started with, and its first part is ' + marFirst(from) + '.' }, [third]: { name: capFirst(third), why: marEnd(third) === marEnd(to) ? 'ends the same way, but its first part is ' + marFirst(third) + '.' : marFirst(third) === marFirst(to) ? 'starts with ' + marFirst(third) + ', but it does not end with ' + marEnd(to) + '.' : 'does not end with ' + marEnd(to) + '.' } }, alsoRight: [] };
+  },
+  // Make a rhyme: the same change between two drawn words, and the picture made among three, the pictures' names said in the buttons'
+  // order: the word made, the word started with, and a word that ends another way.
+  'p4-make-pic': (rng) => {
+    const [from, to] = marPair(rng, (x) => !!x[3]); const other = pick(rng, MAR4_WORDS.filter((x) => x[3] && x[2] !== marEnd(from)).map((x) => x[0])); const three = shuffle(rng, [to, from, other]);
+    return { type: 'choice', story: marChange(from, to) + ' Now listen to these three. ' + marNames(three), keyStory: marChange(from, to), printedStory: 'Listen to the word, the new first part and the words.', prompt: 'Which one do you make?', choices: three.map(marPic), answer: marPic(to), aboutWords: [to], saysFirstOf: [from, to, 'rhyme:' + from, 'rhyme:' + to],
+      explain: marMade(to) + '! ' + capFirst(to) + ' rhymes with ' + from + '.', visual: null, explainVisual: { kind: 'pair', a: marShow(from), b: marShow(to) },
+      whyNot: { [marPic(from)]: { name: 'The ' + from, why: 'is the word you started with, and its first part is ' + marFirst(from) + '.' }, [marPic(other)]: { name: 'The ' + other, why: 'does not end with ' + marEnd(from) + '.' } }, alsoRight: [] };
+  },
+  // Make a rhyme: a word heard and a word to think of that rhymes with it, three heard words to choose from, as the lesson's last turn
+  // asks a child to think of one and say it.
+  'p4-make-say': (rng) => {
+    const w = pick(rng, ['cat', 'hat', 'dog', 'log', 'pig']); const same = pick(rng, marFamily(w).filter((y) => y !== w)); const others = shuffle(rng, MAR4_WORDS.filter((x) => x[2] !== marEnd(w)).map((x) => x[0])).slice(0, 2);
+    return { type: 'choice', story: 'Listen. ' + capFirst(w) + '. Think of a word that rhymes with ' + w + '.', printedStory: 'Listen to the word.', prompt: 'Which word could you say?', printed: 'Tap to hear each word. Which word rhymes with the word you hear?', choices: shuffle(rng, [same, ...others]), answer: same, heardChoices: true, aboutWords: [same], asksFirstOf: ['rhyme:' + w],
+      explain: capFirst(same) + ' ends with ' + marEnd(w) + ', just like ' + w + ', so ' + same + ' rhymes with ' + w + '.', visual: null, explainVisual: marShow(same) ? { kind: 'pair', a: marShow(w), b: marShow(same) } : marShow(w),
+      whyNot: Object.fromEntries(others.map((o) => [o, { name: capFirst(o), why: 'ends with ' + marEnd(o) + ', and ' + w + ' ends with ' + marEnd(w) + '.' }])), alsoRight: marMoreLine(w, [w, same, ...others]) };
+  },
+  // Make a rhyme: a change, and whether it makes a word named, half the time each; when it does not, the word named is the word started
+  // with or another of the family, so the new first part decides.
+  'p4-make-yesno': (rng) => {
+    const [from, to] = marPair(rng, MAR4_NO_VOICING); const yes = rng() < 0.5; const rest = marFamily(from).filter((y) => y !== from && y !== to); const t = yes ? to : rest.length && rng() < 0.5 ? pick(rng, rest) : from; const answer = yes ? 'Yes' : 'No'; const wrong = yes ? 'No' : 'Yes';
+    return { type: 'choice', story: marChange(from, to), printedStory: 'Listen to the word and the new first part.', prompt: 'Do you make ' + t + '?', printed: 'Do you make the word in the question?', choices: yesNo(rng), answer, aboutWords: [to], saysFirstOf: [from, to, 'rhyme:' + from, 'rhyme:' + to],
+      explain: yes ? 'Yes. ' + marMade(to) + '!' : 'No. ' + marMade(to) + '. You make ' + to + ', not ' + t + '.', visual: null, explainVisual: marShow(to),
+      whyNot: { [wrong]: { name: wrong, why: yes ? 'would mean you do not make ' + t + ', but the new first part makes ' + t + '.' : 'would mean you make ' + t + ', but ' + (t === from ? t + ' is the word you started with.' : 'you make ' + to + '.') } }, alsoRight: [] };
+  },
+  // Make a rhyme: two heard words that rhyme, and the first part that changes the first into the second, among three heard first parts:
+  // the second word's, the first word's and another of the family's (never huh, which the voice says), each one the lesson says aloud.
+  // It names both words (round one's code check: an earlier setup's "change lll to fff" said the first part a later "Which first part
+  // changes fog into log?" asked for); the other make banks name the word made alone, since naming both in every bank stalled rounds.
+  // Since round two's content read a one-way key does the rest: a bank that says a change names both words' first parts and their rhyme
+  // as said (saysFirstOf), this bank asks for its second word's first part and p4-make-say for a rhyme of its heard word (asksFirstOf),
+  // and the round builders draw again a question whose ask an earlier question said (first parts: 183 of 2,000 rounds before, 5 after; a
+  // rhyme: 84 before, none after, the yes or no keying its words' rhyme since the third read), so it rarely happens.
+  'p4-make-first': (rng) => {
+    const [from, to] = marPair(rng, (x) => MAR4_SAID_FIRSTS.includes(x[1]) && MAR4_NO_VOICING(x)); const fam = marFamily(from).filter((y) => y !== from && y !== to).map(marFirst).filter((f) => MAR4_SAID_FIRSTS.includes(f) && f !== 'huh');
+    const third = fam.length ? pick(rng, fam) : pick(rng, ['mmm', 'lll', 'duh'].filter((f) => f !== marFirst(from) && f !== marFirst(to)));
+    return { type: 'choice', story: 'Listen. ' + capFirst(from) + '. ' + capFirst(to) + '.', printedStory: 'Listen to the two words.', prompt: 'Which first part changes ' + from + ' into ' + to + '?', printed: 'Tap to hear each part. Which first part changes the first word into the second?', choices: shuffle(rng, [marFirst(to), marFirst(from), third]), answer: marFirst(to), heardChoices: true, aboutWords: [from, to], asksFirstOf: [to],
+      explain: 'Keep the end, and change ' + marFirst(from) + ' to ' + marFirst(to) + '. ' + marMade(to) + '.', visual: null, explainVisual: null,
+      whyNot: { [marFirst(from)]: { name: capFirst(marFirst(from)), why: 'is the first part of ' + from + ', the word you started with.' }, [third]: { name: capFirst(third), why: 'is not the first part of ' + to + '.' } }, alsoRight: [] };
+  },
+});
+
+// The phonemes (pass NC, the standards review of Domain III's III.B.11 to III.B.13 for both ages): Sounds in a word (pre-K 3), The very
+// first sound and Sound by sound (pre-K 4). A word is its sounds said one after another, written as the voice says them: the app's own
+// sounds (mmm, sss, puh, cuh, tuh, buh, duh, fff, nnn), the voice's shh, and a long vowel the device's voice says as a word of its own
+// (eye, oh, ooh), since the app's own short vowels stay on trial (Mikey's answer to Q60, EARMARKS A42). Every question is a heard
+// question: while the voice can speak it prints none of the words or sounds it asks about.
+// Two sounds a young child confuses are never set side by side where a question compares them (pass NB's voicing rule, Treiman,
+// Broderick, Tincoff and Rodriguez 1998, and Claude's design for two more pairs): sounds that differ only in voicing (puh and buh, tuh and
+// duh, cuh and guh, sss and zzz), the two hums (mmm and nnn) and the two hisses (sss and shh).
+export const NC_NEAR = [['puh', 'buh'], ['tuh', 'duh'], ['cuh', 'guh'], ['sss', 'zzz'], ['mmm', 'nnn'], ['sss', 'shh']];
+const ncNear = (a, b) => NC_NEAR.some(([x, y]) => (a === x && b === y) || (a === y && b === x));
+// None of a list of sounds is near another (the same sound twice is not near: kite and coat both start with cuh).
+const ncClear = (sounds) => sounds.every((a, i) => sounds.every((b, j) => i === j || !ncNear(a, b)));
+// A word's sounds said one after another, as a line says them (Puh, eye), and named in a sentence (puh and eye; buh, oh and tuh).
+const ncRun = (sounds) => capFirst(sounds.join(', '));
+const ncList = (sounds) => sounds.slice(0, -1).join(', ') + ' and ' + sounds[sounds.length - 1];
+const NC_NUMBER = ['zero', 'one', 'two', 'three'];
+// A picture's name after "This is", as a child says it (the moon, soap, a pie), and the pictures' names said in the buttons' order.
+const ncThis = (w) => (w === 'moon' ? 'the moon' : w === 'soap' ? 'soap' : 'a ' + w);
+const ncNames = (ws) => ws.map((x) => capFirst(x) + '.').join(' ');
+// Why a word heard as sounds is not the one tapped: the first place their sounds differ, said of the tapped word as what it does not
+// have and of the sounds heard as what they do (since round two's content read, which found "The boat starts with buh" before a later
+// "What is the very first sound of boat?").
+function ncWhyNot(tapped, tappedSounds, heard) {
+  if (tappedSounds[0] !== heard[0]) return 'does not start with ' + heard[0] + ', and the sounds you heard do.';
+  if (tappedSounds.length !== heard.length) return 'does not have ' + NC_NUMBER[heard.length] + ' sounds, and you heard ' + NC_NUMBER[heard.length] + '.';
+  if (tappedSounds[1] !== heard[1]) return 'does not have ' + heard[1] + ' in the middle, and the sounds you heard do.';
+  return 'does not end with ' + heard[heard.length - 1] + ', and the sounds you heard do.';
+}
+// Why a run of sounds tapped does not make the word heard: the first place where it and the word's own sounds differ, said of the word,
+// never what the run makes ("Those sounds make tie, not coat." had told tie's sounds).
+function ncRunNot(w, run, own) {
+  const tail = run[0] !== own[0] ? 'starts with ' + own[0] : run.length !== own.length ? 'has ' + NC_NUMBER[own.length] + ' sounds' : run[1] !== own[1] ? 'has ' + own[1] + ' in the middle' : 'ends with ' + own[own.length - 1];
+  return 'do not make ' + w + ', which ' + tail + '.';
+}
+
+// Sounds in a word (pre-K 3): seven words a three-year-old knows, each a picture the app draws, with every sound the lesson says it in.
+const SIW3_WORDS = [['pie', ['puh', 'eye']], ['moon', ['mmm', 'ooh', 'nnn']], ['soap', ['sss', 'oh', 'puh']], ['shoe', ['shh', 'ooh']], ['boat', ['buh', 'oh', 'tuh']], ['coat', ['cuh', 'oh', 'tuh']], ['tie', ['tuh', 'eye']]];
+const siwSounds = (w) => SIW3_WORDS.find((x) => x[0] === w)[1];
+// The sound set beside a word's very first sound (round one's lesson check: its second sound was always a vowel the voice says as a
+// word, so a child could find the answer by which kind of sound played): the word's last sound where it is a speech sound not near the
+// first (soap's puh, boat's and coat's tuh), else another word's very first sound, never one near it (pie, tie and moon). Since round
+// two's content read shoe is left out of this bank: its very first sound, shh, is the voice's own, and every sound that could stand
+// beside it is one of the app's own clips, so the sound the voice said was always the answer (60 of 400 seeds); shoe stays in the
+// lesson's other four banks.
+const SIW3_BESIDE = { pie: ['sss', 'mmm'], moon: ['sss', 'puh'], soap: ['puh'], boat: ['tuh'], coat: ['tuh'], tie: ['sss', 'mmm'] };
+// Another word whose first sound can stand beside this one's (never one near it, nor the same one).
+const siwOther = (rng, w) => pick(rng, SIW3_WORDS.filter(([x, s]) => x !== w && s[0] !== siwSounds(w)[0] && !ncNear(s[0], siwSounds(w)[0])))[0];
+// Since round two's content read no reason in the three phoneme lessons' banks tells another word's sounds, which a later question in
+// the round could ask ("Sss is the very first sound of soap, not of pie." came before "What is the very first sound of soap?" in 537,
+// 1,119 and 276 of 2,000 rounds of the three lessons): a reason says a tapped picture, word or sound only as what it is not, which its
+// wrong mark already says, and the question's own word or the sounds heard as what they are. Pass NB's one-way key (saysFirstOf and
+// asksFirstOf) was tried on all fifteen banks first, and a round of five from seven to nine words could not keep clear of it: rounds
+// that asked about one word twice rose from 0, 7 and 0 to 48, 78 and 88 of 600, past the bound of 12.
+Object.assign(GENERATORS, {
+  // Sounds in a word: a word heard and its picture, and its very first sound beside another speech sound, each heard (heardChoices): its
+  // last sound, or another word's very first sound (SIW3_BESIDE).
+  'p3-snd-first': (rng) => {
+    const [w, s] = pick(rng, SIW3_WORDS.filter(([x]) => SIW3_BESIDE[x])); const beside = pick(rng, SIW3_BESIDE[w]); const last = beside === s[s.length - 1];
+    return { type: 'choice', story: 'Listen. ' + capFirst(w) + '.', printedStory: 'Listen to the word.', prompt: 'What is the very first sound of ' + w + '?', printed: 'Tap to hear each sound. Which sound comes first in the word you hear?', choices: shuffle(rng, [s[0], beside]), answer: s[0], heardChoices: true, aboutWords: [w],
+      explain: capFirst(s[0]) + ' is the very first sound of ' + w + '. ' + ncRun(s) + ', ' + w + '.', visual: { kind: 'icon', name: w, size: 72 }, explainVisual: null,
+      whyNot: { [beside]: { name: capFirst(beside), why: last ? 'comes after ' + s.slice(0, -1).join(' and ') + ' in ' + w + ', so it is not the very first sound.' : 'is not a sound in ' + w + '.' } }, alsoRight: [] };
+  },
+  // Sounds in a word: a sound heard, and the picture that starts with it beside one that does not, the names said in the buttons' order.
+  'p3-snd-pic': (rng) => {
+    const [w, s] = pick(rng, SIW3_WORDS); const other = siwOther(rng, w); const two = shuffle(rng, [w, other]);
+    return { type: 'choice', story: 'Listen to this sound. ' + capFirst(s[0]) + '. Now listen to these two. ' + ncNames(two), keyStory: 'Listen to this sound. ' + capFirst(s[0]) + '.', printedStory: 'Listen to the sound and the words.', prompt: 'Which one starts with that sound?', choices: two.map((x) => 'icon:' + x), answer: 'icon:' + w, aboutWords: [w],
+      explain: 'The very first sound of ' + w + ' is ' + s[0] + '.', visual: null, explainVisual: { kind: 'icon', name: w },
+      whyNot: { ['icon:' + other]: { name: 'The ' + other, why: 'does not start with ' + s[0] + ', and the ' + w + ' does.' } }, alsoRight: [] };
+  },
+  // Sounds in a word: two pictures named, then a word's sounds heard, and the picture they make put together.
+  'p3-snd-blend': (rng) => {
+    const [w, s] = pick(rng, SIW3_WORDS); const other = siwOther(rng, w); const two = shuffle(rng, [w, other]);
+    return { type: 'choice', story: 'Here are two pictures. ' + ncNames(two) + ' Now listen to the sounds. ' + ncRun(s) + '.', keyStory: 'Now listen to the sounds. ' + ncRun(s) + '.', printedStory: 'Listen to the words and the sounds.', prompt: 'Put the sounds together. Which one do they make?', choices: two.map((x) => 'icon:' + x), answer: 'icon:' + w, aboutWords: [w],
+      explain: ncRun(s) + ', ' + w + '. The sounds make ' + w + '.', visual: null, explainVisual: { kind: 'icon', name: w },
+      whyNot: { ['icon:' + other]: { name: 'The ' + other, why: ncWhyNot(other, siwSounds(other), s) } }, alsoRight: [] };
+  },
+  // Sounds in a word: a word heard and its picture, and the sounds that make it beside another word's, each run of sounds heard.
+  'p3-snd-apart': (rng) => {
+    const [w, s] = pick(rng, SIW3_WORDS); const other = siwOther(rng, w);
+    return { type: 'choice', story: 'Listen. ' + capFirst(w) + '.', printedStory: 'Listen to the word.', prompt: 'Which sounds make ' + w + '?', printed: 'Tap to hear each one. Which sounds make the word you hear?', choices: shuffle(rng, [ncRun(s), ncRun(siwSounds(other))]), answer: ncRun(s), heardChoices: true, aboutWords: [w],
+      explain: capFirst(w) + '. ' + ncRun(s) + '. Those are the sounds of ' + w + '.', visual: { kind: 'icon', name: w, size: 72 }, explainVisual: null,
+      whyNot: { [ncRun(siwSounds(other))]: { name: 'Those sounds', why: ncRunNot(w, siwSounds(other), s) } }, alsoRight: [] };
+  },
+  // Sounds in a word: a word's sounds heard and a picture, and whether the sounds make the picture's name, half the time each.
+  'p3-snd-yesno': (rng) => {
+    const [w, s] = pick(rng, SIW3_WORDS); const yes = rng() < 0.5; const p = yes ? w : siwOther(rng, w); const answer = yes ? 'Yes' : 'No'; const wrong = yes ? 'No' : 'Yes';
+    return { type: 'choice', story: 'Listen to the sounds. ' + ncRun(s) + '. This is ' + ncThis(p) + '.', printedStory: 'Listen to the sounds and the picture\'s name.', prompt: 'Do the sounds make ' + p + '?', printed: 'Do the sounds make this picture\'s name?', choices: yesNo(rng), answer, aboutWords: [w],
+      explain: yes ? 'Yes. ' + ncRun(s) + ', ' + w + '. The sounds make ' + w + '.' : 'No. ' + ncRun(s) + ', ' + w + '. The sounds make ' + w + ', not ' + p + '.', visual: { kind: 'icon', name: p }, explainVisual: null,
+      whyNot: { [wrong]: { name: wrong, why: yes ? 'would mean the sounds do not make ' + p + ', but ' + ncList(s) + ' make ' + p + '.' : 'would mean the sounds make ' + p + ', but they make ' + w + '.' } }, alsoRight: [] };
+  },
+});
+
+// The very first sound (pre-K 4): nine words a four-year-old knows, each with its very first sound, its first part where that has two
+// sounds said together (the four blends Star and spoon teaches; tree is left out, since a word whose first part is tr is never said to
+// start with tuh), and its picture kind. Three start with sss, three with fff, and moon, dog and cat each with a sound of its own.
+const VFS4_WORDS = [['moon', 'mmm', null, 'icon'], ['dog', 'duh', null, 'icon'], ['fish', 'fff', null, 'pic'], ['soap', 'sss', null, 'icon'], ['cat', 'cuh', null, 'pic'],
+  ['frog', 'fff', 'fff-rrr', 'pic'], ['star', 'sss', 'sss-tuh', 'icon'], ['spoon', 'sss', 'sss-puh', 'icon'], ['flower', 'fff', 'fff-lll', 'icon']];
+const vfsRow = (w) => VFS4_WORDS.find((x) => x[0] === w);
+const vfsPic = (w) => vfsRow(w)[3] + ':' + w;
+const vfsShow = (w) => ({ kind: vfsRow(w)[3], name: w });
+const VFS4_SOUNDS = [...new Set(VFS4_WORDS.map((x) => x[1]))];
+// Sounds that can stand beside a word's very first sound: never it, nor one near it.
+const vfsOthers = (s) => VFS4_SOUNDS.filter((o) => o !== s && !ncNear(o, s));
+Object.assign(GENERATORS, {
+  // The very first sound: a word heard and its picture, and its very first sound among three heard sounds (heardChoices).
+  'p4-vfs-sound': (rng) => {
+    const [w, s] = pick(rng, VFS4_WORDS); const others = shuffle(rng, vfsOthers(s)).slice(0, 2);
+    return { type: 'choice', story: 'Listen. ' + capFirst(w) + '.', printedStory: 'Listen to the word.', prompt: 'What is the very first sound of ' + w + '?', printed: 'Tap to hear each sound. Which one is the very first sound of the word you hear?', choices: shuffle(rng, [s, ...others]), answer: s, heardChoices: true, aboutWords: [w],
+      explain: capFirst(s) + ' is the very first sound of ' + w + '.', visual: { ...vfsShow(w), size: 72 }, explainVisual: null,
+      whyNot: Object.fromEntries(others.map((o) => [o, { name: capFirst(o), why: 'is not the very first sound of ' + w + ', so say ' + w + ' slowly and listen.' }])), alsoRight: [] };
+  },
+  // The very first sound: a word whose first part has two sounds said together, and its very first sound beside its first part, heard.
+  'p4-vfs-part': (rng) => {
+    const [w, s, part] = pick(rng, VFS4_WORDS.filter((x) => x[2]));
+    return { type: 'choice', story: 'Listen. ' + capFirst(w) + '.', printedStory: 'Listen to the word.', prompt: 'What is the very first sound of ' + w + '?', printed: 'Tap to hear each one. Which one is the very first sound of the word you hear?', choices: shuffle(rng, [s, part]), answer: s, heardChoices: true, aboutWords: [w],
+      explain: 'The first part of ' + w + ' is ' + part + ', two sounds said together, and its very first sound is just ' + s + '.', visual: { ...vfsShow(w), size: 72 }, explainVisual: null,
+      whyNot: { [part]: { name: capFirst(part), why: 'is the first part of ' + w + ', two sounds said together, not just one sound.' } }, alsoRight: [] };
+  },
+  // The very first sound: a sound heard, and the picture that starts with it among two that do not, the names said in the buttons' order.
+  'p4-vfs-pic': (rng) => {
+    const [w, s] = pick(rng, VFS4_WORDS); const pool = VFS4_WORDS.filter((x) => x[1] !== s && !ncNear(x[1], s));
+    const first = pick(rng, pool); const second = pick(rng, pool.filter((x) => x[1] !== first[1] && !ncNear(x[1], first[1])));
+    const three = shuffle(rng, [w, first[0], second[0]]);
+    return { type: 'choice', story: 'Listen to this sound. ' + capFirst(s) + '. Now listen to these three. ' + ncNames(three), keyStory: 'Listen to this sound. ' + capFirst(s) + '.', printedStory: 'Listen to the sound and the words.', prompt: 'Which one starts with that sound?', choices: three.map(vfsPic), answer: vfsPic(w), aboutWords: [w],
+      explain: 'The very first sound of ' + w + ' is ' + s + '.', visual: null, explainVisual: vfsShow(w),
+      whyNot: Object.fromEntries([first[0], second[0]].map((o) => [vfsPic(o), { name: 'The ' + o, why: 'does not start with ' + s + ', so say the words slowly and listen.' }])), alsoRight: [] };
+  },
+  // The very first sound: a word heard and a sound or a first part heard, and whether it is the word's very first sound, half the
+  // questions Yes. A No about a word whose first part has two sounds said together (four of the nine) says that part, the lesson's
+  // point, and a No about any other word says another word's very first sound, so about four Nos in nine say a part (round one's lesson
+  // check: 47 in 200 had); the word is drawn from all nine alike, so a round still finds another word to ask about (drawn from the four
+  // for half the Nos, a round asked about one word twice in 15 of 600).
+  'p4-vfs-yesno': (rng) => {
+    const yes = rng() < 0.5; const [w, s, part] = pick(rng, VFS4_WORDS); const byPart = !yes && !!part;
+    const said = yes ? s : byPart ? part : pick(rng, vfsOthers(s)); const answer = yes ? 'Yes' : 'No'; const wrong = yes ? 'No' : 'Yes';
+    const explain = yes ? 'Yes. ' + capFirst(s) + ' is the very first sound of ' + w + '.' : byPart ? 'No. ' + capFirst(part) + ' is the first part of ' + w + ', two sounds said together, and its very first sound is just ' + s + '.' : 'No. The very first sound of ' + w + ' is ' + s + ', not ' + said + '.';
+    const why = yes ? 'would mean ' + s + ' is not the very first sound of ' + w + ', but ' + w + ' starts with ' + s + '.' : byPart ? 'would mean ' + part + ' is the very first sound of ' + w + ', but ' + part + ' is two sounds.' : 'would mean the very first sound of ' + w + ' is ' + said + ', but it is ' + s + '.';
+    return { type: 'choice', story: 'Listen. ' + capFirst(w) + '.', printedStory: 'Listen to the word and what comes next.', prompt: 'Is ' + said + ' the very first sound of ' + w + '?', printed: 'Is what you hear the very first sound of the word?', choices: yesNo(rng), answer, aboutWords: [w],
+      explain, visual: { ...vfsShow(w), size: 72 }, explainVisual: null, whyNot: { [wrong]: { name: wrong, why } }, alsoRight: [] };
+  },
+  // The very first sound: two words heard, and whether they have the same very first sound, half the time each (star and spoon do,
+  // though their first parts are different; fish and frog do; frog and moon do not).
+  'p4-vfs-same': (rng) => {
+    const yes = rng() < 0.5; const [a, sa] = pick(rng, yes ? VFS4_WORDS.filter((x) => VFS4_WORDS.some((y) => y[0] !== x[0] && y[1] === x[1])) : VFS4_WORDS);
+    const pool = VFS4_WORDS.filter((x) => x[0] !== a && (yes ? x[1] === sa : x[1] !== sa && !ncNear(x[1], sa))); const [b, sb] = pick(rng, pool);
+    const answer = yes ? 'Yes' : 'No'; const wrong = yes ? 'No' : 'Yes';
+    return { type: 'choice', story: 'Listen. ' + capFirst(a) + '. ' + capFirst(b) + '.', printedStory: 'Listen to the two words.', prompt: 'Do ' + a + ' and ' + b + ' have the same very first sound?', printed: 'Do the two words you hear have the same very first sound?', choices: yesNo(rng), answer, aboutWords: [a, b],
+      explain: yes ? 'Yes. ' + capFirst(a) + ' and ' + b + ' both start with ' + sa + ', so they have the same very first sound.' : 'No. ' + capFirst(a) + ' starts with ' + sa + ', and ' + b + ' starts with ' + sb + '.', visual: null, explainVisual: { kind: 'pair', a: vfsShow(a), b: vfsShow(b) },
+      whyNot: { [wrong]: { name: wrong, why: yes ? 'would mean ' + a + ' and ' + b + ' start with different sounds, but they both start with ' + sa + '.' : 'would mean ' + a + ' and ' + b + ' start the same, but ' + a + ' starts with ' + sa + ' and ' + b + ' with ' + sb + '.' } }, alsoRight: [] };
+  },
+});
+
+// Sound by sound (pre-K 4): eight words a four-year-old knows, each a picture the app draws, with every sound the lesson says it in:
+// two of two sounds (pie, shoe) and six of three.
+const SBS4_WORDS = [['pie', ['puh', 'eye']], ['shoe', ['shh', 'ooh']], ['boat', ['buh', 'oh', 'tuh']], ['kite', ['cuh', 'eye', 'tuh']], ['soap', ['sss', 'oh', 'puh']], ['moon', ['mmm', 'ooh', 'nnn']], ['coat', ['cuh', 'oh', 'tuh']], ['phone', ['fff', 'oh', 'nnn']]];
+const sbsSounds = (w) => SBS4_WORDS.find((x) => x[0] === w)[1];
+// Two other words to stand beside a word, none of the three first sounds near another; a word that shares a sound with it comes first
+// half the time, so kite is often heard beside coat, which only its middle sound tells apart.
+function sbsTwoOthers(rng, w) {
+  const s = sbsSounds(w); const ok = (xs) => ncClear(xs.map((x) => sbsSounds(x)[0]));
+  const pool = SBS4_WORDS.map((x) => x[0]).filter((x) => x !== w);
+  const close = pool.filter((x) => sbsSounds(x)[0] === s[0] || sbsSounds(x)[sbsSounds(x).length - 1] === s[s.length - 1]);
+  const lead = close.length && rng() < 0.5 ? pick(rng, close.filter((x) => ok([w, x])).length ? close.filter((x) => ok([w, x])) : pool.filter((x) => ok([w, x]))) : pick(rng, pool.filter((x) => ok([w, x])));
+  const second = pick(rng, pool.filter((x) => x !== lead && ok([w, lead, x])));
+  return [lead, second];
+}
+Object.assign(GENERATORS, {
+  // Sound by sound: three pictures named, then a word's sounds heard, and the picture they make put together.
+  'p4-sbs-blend': (rng) => {
+    const [w, s] = pick(rng, SBS4_WORDS); const others = sbsTwoOthers(rng, w); const three = shuffle(rng, [w, ...others]);
+    return { type: 'choice', story: 'Here are three pictures. ' + ncNames(three) + ' Now listen to the sounds. ' + ncRun(s) + '.', keyStory: 'Now listen to the sounds. ' + ncRun(s) + '.', printedStory: 'Listen to the words and the sounds.', prompt: 'Put the sounds together. Which one do they make?', choices: three.map((x) => 'icon:' + x), answer: 'icon:' + w, aboutWords: [w],
+      explain: ncRun(s) + ', ' + w + '. The sounds make ' + w + '.', visual: null, explainVisual: { kind: 'icon', name: w },
+      whyNot: Object.fromEntries(others.map((o) => ['icon:' + o, { name: 'The ' + o, why: ncWhyNot(o, sbsSounds(o), s) }])), alsoRight: [] };
+  },
+  // Sound by sound: a word's sounds heard, and the word they make among three heard words (heardChoices).
+  'p4-sbs-heard': (rng) => {
+    const [w, s] = pick(rng, SBS4_WORDS); const others = sbsTwoOthers(rng, w);
+    return { type: 'choice', story: 'Listen to the sounds. ' + ncRun(s) + '.', printedStory: 'Listen to the sounds.', prompt: 'Put the sounds together. Which word do they make?', printed: 'Tap to hear each word. Which word do the sounds make?', choices: shuffle(rng, [w, ...others]), answer: w, heardChoices: true, aboutWords: [w],
+      explain: ncRun(s) + ', ' + w + '. The sounds make ' + w + '.', visual: null, explainVisual: { kind: 'icon', name: w },
+      whyNot: Object.fromEntries(others.map((o) => [o, { name: capFirst(o), why: ncWhyNot(o, sbsSounds(o), s) }])), alsoRight: [] };
+  },
+  // Sound by sound: a word heard and its picture, and the group with one dot for each of its sounds, two or three, about evenly. A wrong
+  // group's reason says what it is for in the lesson's words (since round two's content read: "Two dots are for two sounds, and coat has
+  // three sounds.", where "not enough" and "more dots than sounds" used words the lesson never says).
+  'p4-sbs-count': (rng) => {
+    const n = rng() < 0.5 ? 2 : 3; const [w, s] = pick(rng, SBS4_WORDS.filter((x) => x[1].length === n));
+    const others = [1, 2, 3].filter((k) => k !== n);
+    const dotName = (k) => (k === 1 ? 'One dot' : capFirst(NC_NUMBER[k]) + ' dots');
+    return { type: 'choice', story: 'Listen. ' + capFirst(w) + '.', printedStory: 'Listen to the word.', prompt: 'Tap the group with one dot for each sound.', choices: shuffle(rng, [1, 2, 3].map((k) => 'dots:' + k)), answer: 'dots:' + n, aboutWords: [w],
+      explain: capFirst(w) + '. ' + ncRun(s) + '. ' + capFirst(w) + ' has ' + NC_NUMBER[n] + ' sounds, so it gets ' + NC_NUMBER[n] + ' dots.', visual: { kind: 'icon', name: w, size: 72 }, explainVisual: null,
+      whyNot: Object.fromEntries(others.map((k) => ['dots:' + k, { name: dotName(k), why: (k === 1 ? 'is for one sound' : 'are for ' + NC_NUMBER[k] + ' sounds') + ', and ' + w + ' has ' + NC_NUMBER[n] + ' sounds.' }])), alsoRight: [] };
+  },
+  // Sound by sound: a word heard and its picture, and the sounds that make it among three heard runs of sounds (heardChoices). A wrong
+  // run's reason says the lesson's own way to find the answer (line 8: "Say the sounds in coat, one at a time."), never where the word and
+  // the run differ, since with three runs "which starts with mmm" points at the answer and is held back while two are open (the third
+  // read: a first wrong tap heard a reason on 24 of 800 taps).
+  'p4-sbs-apart': (rng) => {
+    const [w, s] = pick(rng, SBS4_WORDS); const others = sbsTwoOthers(rng, w);
+    return { type: 'choice', story: 'Listen. ' + capFirst(w) + '.', printedStory: 'Listen to the word.', prompt: 'Which sounds make ' + w + '?', printed: 'Tap to hear each one. Which sounds make the word you hear?', choices: shuffle(rng, [ncRun(s), ...others.map((o) => ncRun(sbsSounds(o)))]), answer: ncRun(s), heardChoices: true, aboutWords: [w],
+      explain: capFirst(w) + '. ' + ncRun(s) + '. Those are the sounds of ' + w + '.', visual: { kind: 'icon', name: w, size: 72 }, explainVisual: null,
+      whyNot: Object.fromEntries(others.map((o) => [ncRun(sbsSounds(o)), { name: 'Those sounds', why: 'do not make ' + w + ', so say the sounds in ' + w + ' one at a time.' }])), alsoRight: [] };
+  },
+  // Sound by sound: a word's sounds heard and a picture, and whether the sounds make the picture's name, half the time each.
+  'p4-sbs-yesno': (rng) => {
+    const [w, s] = pick(rng, SBS4_WORDS); const yes = rng() < 0.5; const p = yes ? w : pick(rng, SBS4_WORDS.filter(([x, t]) => x !== w && !ncNear(t[0], s[0])))[0]; const answer = yes ? 'Yes' : 'No'; const wrong = yes ? 'No' : 'Yes';
+    return { type: 'choice', story: 'Listen to the sounds. ' + ncRun(s) + '. This is ' + ncThis(p) + '.', printedStory: 'Listen to the sounds and the picture\'s name.', prompt: 'Do the sounds make ' + p + '?', printed: 'Do the sounds make this picture\'s name?', choices: yesNo(rng), answer, aboutWords: [w],
+      explain: yes ? 'Yes. ' + ncRun(s) + ', ' + w + '. The sounds make ' + w + '.' : 'No. ' + ncRun(s) + ', ' + w + '. The sounds make ' + w + ', not ' + p + '.', visual: { kind: 'icon', name: p }, explainVisual: null,
+      whyNot: { [wrong]: { name: wrong, why: yes ? 'would mean the sounds do not make ' + p + ', but ' + ncList(s) + ' make ' + p + '.' : 'would mean the sounds make ' + p + ', but they make ' + w + '.' } }, alsoRight: [] };
+  },
+});
+
+// The writing lessons (pass NC, Domain IV begun: drawing and writing to share an idea). Each thing people draw or write is a picture the
+// app draws, with the reason it is for, in the lesson's own words; a child's drawing tells one idea of its own. Nothing a child draws or
+// writes is asked for or kept: every question is a tap.
+const WRITE_THINGS = { list: ['The list', 'remembering what to buy'], card: ['The card', 'telling someone something kind'], stop: ['The stop sign', 'telling a car to stop at the corner'], book: ['The book', 'telling a story'], envelope: ['The envelope', 'mailing a letter to someone far away'] };
+// Two things never set side by side as a job's right and wrong answer, since either could do the other's job: a card can be mailed
+// far away, and a letter can say thank you.
+const WRITE_APART = { card: ['envelope'], envelope: ['card'] };
+// A child's drawing and the idea it tells, said as the lessons say it.
+const WRITE_DRAWINGS = [['outside', 'I played outside today!'], ['rain', 'It rained today.'], ['bedtime', 'It is time for bed.']];
+const writeDrawing = (d) => ({ kind: 'icon', name: 'drawing~' + d });
+// The tools the lessons name, and the things each lesson says are not tools for drawing or writing, with what each is for.
+const WRITE_TOOLS = ['crayon', 'pencil', 'marker'];
+// Since round one's lesson check each lesson says what each of its three is for, and a question offers two of them.
+const WRITE_NOT = { sock: 'is for your foot, not for drawing or writing.', ball: 'is for throwing, not for drawing or writing.', spoon: 'is for eating, not for drawing or writing.', cup: 'is for drinking, not for drawing or writing.', hat: 'is for your head, not for drawing or writing.' };
+// Reasons for a job: the setup, the prompt and the thing that fits, from each lesson's lines.
+// Since round one's lesson check the list's and the card's setups say what each is for in words of their own, never their thing's own
+// line, so a child finds the thing by its reason; the stop sign's, the book's and the letter's say the reason the lesson gives them.
+// Since round two's content read the book's setup says only what its line says (Leo wants a story, never hear, which the lesson never
+// says), Write to tell's list asks "Which one could help her?", since "help her remember" was its line's own words, and its card is a
+// thank-you in words of its own (no teacher, no "something kind"). Pre-K 4's list keeps forget, a word its lines never say, on purpose:
+// it is what a list keeps from happening, so a child reasons from forgetting to the list's line, "A list helps us remember." Pre-K 3's
+// card keeps "something kind", the lesson's last line, since its own line says Happy birthday.
+const DAT3_JOBS = [['list', 'Mom wants to remember to buy milk.', 'Which one could she write?'], ['card', 'Grandpa wants to tell his friend something kind.', 'Which one could he make?'], ['stop', 'A car is coming to the corner.', 'Which one tells it what to do?'], ['book', 'Leo wants a story, with pictures and words.', 'Which one could tell him a story?']];
+const WTT4_JOBS = [['list', 'Mom does not want to forget the milk.', 'Which one could help her?'], ['card', 'Ana wants to thank Dad.', 'Which one could she make?'], ['envelope', 'Grandpa lives far away, and Leo wants to tell him about his day.', 'Which one could he mail?'], ['stop', 'A car is coming to the corner.', 'Which one tells it what to do?']];
+// Yes or no about what a thing is for, its picture shown: five Yes and five No for each lesson.
+const DAT3_YESNO = [['list', 'Does a list help Dad remember what to buy?', 'Yes'], ['list', 'Does a list tell a story?', 'No'], ['card', 'Does a card tell a friend something kind, like Happy birthday?', 'Yes'], ['card', 'Does a card tell a car to stop?', 'No'], ['stop', 'Does a stop sign tell a car to stop at the corner?', 'Yes'], ['stop', 'Does a stop sign help Dad remember what to buy?', 'No'],
+  ['book', 'Does a book tell a story?', 'Yes'], ['book', 'Does a book tell a car to stop?', 'No'], ['crayon', 'Is a crayon a tool for drawing?', 'Yes'], ['sock', 'Is a sock a tool for drawing?', 'No']];
+const WTT4_YESNO = [['list', 'Does a list help Dad remember what to buy?', 'Yes'], ['envelope', 'Does a letter tell someone far away about our day?', 'Yes'], ['arrow', 'Does an arrow tell which way to go?', 'Yes'], ['heart', 'Does a heart mean love?', 'Yes'], ['pencil', 'Is a pencil a tool for writing?', 'Yes'],
+  ['arrow', 'Does an arrow mean love?', 'No'], ['heart', 'Does a heart tell which way to go?', 'No'], ['stop', 'Does a stop sign help Dad remember what to buy?', 'No'], ['card', 'Does a card tell a car to stop?', 'No'], ['cup', 'Is a cup a tool for writing?', 'No']];
+// The answer to each yes or no in the lesson's words, and the reason the other answer does not fit; where a thing has two, the yes or
+// no gives the first and a job's explanation the last, which says more (a reason line stays at eighteen words or fewer).
+const WRITE_YESNO_WHY = {
+  list: ['A list helps us remember, like what to buy at the store.'], card: ['A card tells someone something kind, like Happy birthday or Thank you.'], stop: ['A stop sign tells a car to stop at the corner.'], book: ['A book tells a story, with pictures and words.'],
+  envelope: ['A letter tells someone far away about our day.', 'A letter tells someone far away about our day, and we mail it in an envelope.'], arrow: ['An arrow tells which way to go.'], heart: ['A heart means love.'], crayon: ['A crayon is a tool for drawing and writing.'], pencil: ['A pencil is a tool for writing and drawing.'],
+  sock: ['A sock is for your foot, not for drawing.'], cup: ['A cup is for drinking, not for writing.'],
+};
+// Pre-K 3's card says only what Draw and tell says (round one's lesson check: Thank you is Write to tell's).
+const DAT3_WHY = { ...WRITE_YESNO_WHY, card: ['A card tells someone something kind, like Happy birthday.'] };
+// The picture each thing is drawn by: its own name, but the stop sign's (sign~stop), since the app's stop is the raised hand.
+const writeIcon = (x) => (x === 'stop' ? 'sign~stop' : x);
+const writeThis = (x) => ({ list: 'a list', card: 'a card', stop: 'a stop sign', book: 'a book', envelope: 'a letter in its envelope', arrow: 'an arrow', heart: 'a heart', crayon: 'a crayon', pencil: 'a pencil', sock: 'a sock', cup: 'a cup' })[x];
+// A job's question among the lesson's own things: the one that fits and two that do not, each wrong one said by what it is for.
+function writeJob(rng, jobs, why = WRITE_YESNO_WHY) {
+  const [thing, story, prompt] = pick(rng, jobs); const others = shuffle(rng, jobs.map((j) => j[0]).filter((x) => x !== thing && !(WRITE_APART[thing] || []).includes(x))).slice(0, 2);
+  return { type: 'choice', story, prompt, choices: shuffle(rng, [thing, ...others]).map((x) => 'icon:' + writeIcon(x)), answer: 'icon:' + writeIcon(thing), aboutWords: [thing],
+    explain: why[thing][why[thing].length - 1], visual: null, explainVisual: { kind: 'icon', name: writeIcon(thing) },
+    whyNot: Object.fromEntries(others.map((o) => ['icon:' + writeIcon(o), { name: WRITE_THINGS[o][0], why: 'is for ' + WRITE_THINGS[o][1] + '.' }])), alsoRight: [] };
+}
+// A tool to draw and write with, beside two of the three things each lesson says are not tools.
+function writeTool(rng, nots, prompts) {
+  const tool = pick(rng, WRITE_TOOLS); const prompt = pick(rng, prompts); const two = shuffle(rng, nots).slice(0, 2);
+  return { type: 'choice', story: null, prompt, choices: shuffle(rng, [tool, ...two]).map((x) => 'icon:' + x), answer: 'icon:' + tool, aboutWords: [tool],
+    explain: 'A ' + tool + ' is a tool to draw and write with.', visual: null, explainVisual: { kind: 'icon', name: tool },
+    whyNot: Object.fromEntries(two.map((o) => ['icon:' + o, { name: 'The ' + o, why: WRITE_NOT[o] }])), alsoRight: [] };
+}
+// What a drawing tells, its ideas heard (heardChoices): the one it tells and n - 1 others.
+function writeTells(rng, n) {
+  const [d, said] = pick(rng, WRITE_DRAWINGS); const others = shuffle(rng, WRITE_DRAWINGS.filter((x) => x[0] !== d)).slice(0, n - 1);
+  return { type: 'choice', story: 'Look at this drawing.', prompt: 'What does the drawing tell?', printed: 'Tap to hear each one. What does the drawing tell?', choices: shuffle(rng, [said, ...others.map((o) => o[1])]), answer: said, heardChoices: true, aboutWords: [d],
+    explain: 'A ' + DRAWING_NAMES[d] + ' tells us, ' + said, visual: writeDrawing(d), explainVisual: null,
+    whyNot: Object.fromEntries(others.map(([o, s]) => [s, { name: 'That one', why: 'goes with a ' + DRAWING_NAMES[o] + '.' }])), alsoRight: [] };
+}
+// Which drawing tells an idea: the drawing among n, each wrong one said by the idea it tells.
+function writeMake(rng, n, who) {
+  const [d, said] = pick(rng, WRITE_DRAWINGS); const others = shuffle(rng, WRITE_DRAWINGS.filter((x) => x[0] !== d)).slice(0, n - 1);
+  return { type: 'choice', story: who + ' wants to tell, ' + said, prompt: 'Which drawing could ' + (who === 'Leo' ? 'he' : 'she') + ' make?', choices: shuffle(rng, [d, ...others.map((o) => o[0])]).map((x) => 'icon:drawing~' + x), answer: 'icon:drawing~' + d, aboutWords: [d],
+    explain: 'A ' + DRAWING_NAMES[d] + ' tells us, ' + said, visual: null, explainVisual: writeDrawing(d),
+    whyNot: Object.fromEntries(others.map(([o, s]) => ['icon:drawing~' + o, { name: capFirst(DRAWING_NAMES[o].replace(/^drawing/, 'The drawing')), why: 'tells us, ' + s.replace(/!$/, '.') }])), alsoRight: [] };
+}
+// Yes or no about what a thing is for, its picture shown, half the time each.
+function writeYesNo(rng, table, why = WRITE_YESNO_WHY) {
+  const yes = rng() < 0.5; const [thing, prompt, answer] = pick(rng, table.filter((r) => r[2] === (yes ? 'Yes' : 'No'))); const wrong = answer === 'Yes' ? 'No' : 'Yes';
+  return { type: 'choice', story: 'This is ' + writeThis(thing) + '.', prompt, choices: yesNo(rng), answer, aboutWords: [thing],
+    explain: answer + '. ' + why[thing][0], visual: { kind: 'icon', name: writeIcon(thing) }, explainVisual: null,
+    whyNot: { [wrong]: { name: wrong, why: 'would not fit, because ' + why[thing][0].replace(/^(An?) /, (m) => m.toLowerCase()).replace(/\.$/, '') + '.' } }, alsoRight: [] };
+}
+Object.assign(GENERATORS, {
+  // Draw and tell (pre-K 3): which thing fits a reason to draw or write, among three of the lesson's.
+  'p3-draw-job': (rng) => writeJob(rng, DAT3_JOBS, DAT3_WHY),
+  // Draw and tell: a tool to draw and write with, beside two things that are not tools (two of a sock, a ball and a spoon, as the lesson
+  // shows them).
+  'p3-draw-tool': (rng) => writeTool(rng, ['sock', 'ball', 'spoon'], ['Which one can you draw with?', 'Which one can you write with?']),
+  // Draw and tell: what a child's drawing tells, its idea among two heard.
+  'p3-draw-tells': (rng) => writeTells(rng, 2),
+  // Draw and tell: the drawing that tells an idea, among two.
+  'p3-draw-make': (rng) => writeMake(rng, 2, 'Ana'),
+  // Draw and tell: yes or no about what a thing is for.
+  'p3-draw-yesno': (rng) => writeYesNo(rng, DAT3_YESNO, DAT3_WHY),
+  // Write to tell (pre-K 4): which thing fits a reason to write, among three of the lesson's.
+  'p4-tell-job': (rng) => writeJob(rng, WTT4_JOBS),
+  // Write to tell: a tool to draw and write with, beside two things that are not tools (two of a sock, a cup and a hat, as the lesson
+  // shows them).
+  'p4-tell-tool': (rng) => writeTool(rng, ['sock', 'cup', 'hat'], ['Which one can you write with?', 'Which one is a tool for writing?']),
+  // Write to tell: what a child's drawing tells, its idea among three heard.
+  'p4-tell-tells': (rng) => writeTells(rng, 3),
+  // Write to tell: the drawing that tells an idea, among three.
+  'p4-tell-make': (rng) => writeMake(rng, 3, 'Leo'),
+  // Write to tell: yes or no about what a thing or a symbol is for (an arrow tells which way to go, a heart means love).
+  'p4-tell-yesno': (rng) => writeYesNo(rng, WTT4_YESNO),
+});
+
 // ---------------------------------------------------------------------
 // WRITING questions. There is no right answer: the student writes, checks a short list,
 // and the piece goes to the educator to mark. The event stores the writing itself; this is
@@ -35540,6 +36406,11 @@ export function dotsBesideDrawing(v, other) {
   return v && v.kind === 'dots' && !v.frame && other && PAIR_DRAWINGS.includes(other.kind) ? { ...v, frame: Math.min(5, Math.max(1, v.count)) } : v;
 }
 
+// What each child's drawing shows (pass NC), for a screen reader and a reader's answer.
+export const DRAWING_NAMES = { outside: 'drawing of the sun and a ball', rain: 'drawing of a cloud and an umbrella', bedtime: 'drawing of the moon and a bed' };
+// A look whose thing is named by more than its own word (pass NC): the stop sign is a sign, named a stop sign, so a line's words and a
+// screen reader say what it is (the app's stop is the raised hand).
+export const LOOK_NAMES = { 'sign~stop': 'stop sign' };
 // Turns a choice like 'dots:4' into words a child can hear: "the group with 4".
 export function describeChoice(choice) {
   const raw = String(choice).replace(/#\d+$/, '');
@@ -35556,6 +36427,9 @@ export function describeChoice(choice) {
   // code check, pass MO: a reader's answer said "the rectangle" where the direction said the long rectangle).
   const pic = /^(?:icon|pic|art|shape|solid):([a-z]+)$/.exec(raw); if (pic) return raw === 'shape:rectangle' ? 'the long rectangle' : `the ${pic[1]}`;
   // An icon's look after a tilde (pass MP: icon:block~wood, the wooden block) is the same thing, named as itself.
+  // A child's drawing (pass NC, the writing lessons) is named by what it shows, since three drawings stand side by side.
+  const drawn = /^icon:drawing~([a-z]+)$/.exec(raw); if (drawn && DRAWING_NAMES[drawn[1]]) return `the ${DRAWING_NAMES[drawn[1]]}`;
+  if (/^icon:/.test(raw) && LOOK_NAMES[raw.slice(5)]) return `the ${LOOK_NAMES[raw.slice(5)]}`;
   const looked = /^icon:([a-z]+)~[a-z]+$/.exec(raw); if (looked) return `the ${looked[1]}`;
   const it = /^item:([a-z]+)-([a-z]+)$/.exec(raw); if (it) return `the ${it[2]} ${it[1]}`;
   // A shape with a size (pass MQ: More learning words' small red square, and Same and different's bigger and smaller ones, which a
@@ -35694,7 +36568,12 @@ function heardWords(choice) {
 // juh, which his laptop's voice said as "boo" or with the uh louder than the consonant, and the endings ig, og and at made whole,
 // which a voice spelled (ig as "i g g", og as "o g") or said as the little word ("almost like et"). Huh, wuh and shh stay with the
 // voice, and the five short vowels stay on trial (TRIAL_SOUNDS, below).
-export const SPEECH_SOUNDS = { m: 'mmm', n: 'nnn', s: 'sss', f: 'fff', z: 'zzz', r: 'rrr', l: 'lll', t: 'tuh', p: 'puh', k: 'cuh', b: 'buh', d: 'duh', g: 'guh', j: 'juh', ig: 'ig', og: 'og', at: 'at' };
+export const SPEECH_SOUNDS = { m: 'mmm', n: 'nnn', s: 'sss', f: 'fff', z: 'zzz', r: 'rrr', l: 'lll', t: 'tuh', p: 'puh', k: 'cuh', b: 'buh', d: 'duh', g: 'guh', j: 'juh', ig: 'ig', og: 'og', at: 'at', fr: 'fff-rrr', fl: 'fff-lll', st: 'sss-tuh', sp: 'sss-puh', tr: 'tuh-rrr' };
+// Five consonant blends (pass NB, the standards review of Domain III's onsets and rimes: PK3 and PK4 III.B.9, "identifies the onset in
+// words (single letters and consonant blends)"): the first part of frog, flower, star, spoon and tree, two of the app's sounds said
+// together as one part, quick and smooth (soundClipSamples, below), written as the two sounds joined by a hyphen (fff-rrr, sss-tuh),
+// which a line plays as one piece (sayToken), never as two sounds with the voice's gap between them. Each blend's two sounds, in order.
+export const BLEND_PARTS = { fr: ['f', 'r'], fl: ['f', 'l'], st: ['s', 't'], sp: ['s', 'p'], tr: ['t', 'r'] };
 // The sounds the app made in pass MP for the voice check page alone (Mikey's answer to Q57, "Q57 - A": "the app makes the five short
 // vowels itself ... with new rows on the voice check page for you to hear before any lesson uses them", and his rows 16 to 20 and 27
 // to 30 of Q51): the five short vowels, buh, duh, guh and juh, and the endings ig, og and at made whole. Since pass MQ (Q60, above)
@@ -35748,24 +36627,45 @@ export const VOICE_SOUNDS = { huh: { ipa: '/hə̆/', short: 'the h of hat, a bre
 // in words, never letters (held, a breath, a rush of air for rrr, lll, fff and shh), so a goal read aloud never says a letter's name,
 // and none takes the form of a sound effect (an article, a thing and an -ing word, "the lips popping open once").
 export const goalTag = (goal) => '[' + goal + ']';
+// The long vowels the phoneme lessons say (pass NC, the standards review of Domain III's III.B.11 to III.B.13): every word has a vowel, and
+// the app's own five short vowels stay on trial (Mikey's answer to Q60, "Q60 - B", read as "the vowels not yet"; EARMARKS A42), so the
+// lessons' words have a long vowel the device's voice says as a word of its own: oh (the middle of boat), eye (of kite) and ooh (of
+// moon). A line writes each as that word (Puh, eye.), and the voice says it; no new sound is made, so nothing new waits for Mikey's ear.
+// For the recordings each is sent in the phonetic alphabet with its goal, as the voice's own huh and shh are (VOICE_SOUNDS), but only
+// where a line sets it off beside a speech sound in a run of a word's sounds (Buh, oh, tuh; the audio ledger reads it so), never an
+// exclamation (Oh, look!). Claude's design, recorded in RULES-AUDIT section 4.
+export const VOWEL_WORDS = { oh: { ipa: '/oʊ/', short: 'the long o of boat, said like the word oh', goal: 'saying just the middle sound of boat, a long, round oh' }, eye: { ipa: '/aɪ/', short: 'the long i of kite, said like the word eye', goal: 'saying just the middle sound of kite, a long eye that glides' }, ooh: { ipa: '/uː/', short: 'the long oo of moon, said like the word ooh', goal: 'saying just the middle sound of moon, a long, round ooh' } };
+// A run of a word's sounds (pass NC): a long vowel word set off by a comma or an and right after one of the app's sounds or the voice's
+// shh (Sss, oh, puh; shh and ooh), so the sentence says a word's sounds one by one. Hissed sounds there are one breath (onceInRun).
+export function namesWordSounds(sentence) {
+  const s = String(sentence); const toks = [...s.matchAll(/[A-Za-z]+(?:-[A-Za-z]+)*/g)];
+  // The word before the vowel, past an and (tuh and eye): a speech sound, with only a comma, an and or both between them.
+  return toks.some((t, i) => { if (!Object.hasOwn(VOWEL_WORDS, t[0].toLowerCase())) return false; let j = i - 1; if (j >= 0 && /^and$/i.test(toks[j][0])) j -= 1; if (j < 0) return false;
+    const p = toks[j][0]; return (!!soundOfNotation(p) || /^shh$/i.test(p)) && /^\s*(?:,\s*|,?\s+and\s+)$/i.test(s.slice(toks[j].index + p.length, t.index)); });
+}
 export const SOUND_RECORDINGS = soundRecordings();
 // Every goal tag the ledger can send (pass MX): each speech sound's, the single breath's of sss, fff and zzz, and the voice's own sounds'.
-export const SOUND_GOAL_TAGS = [...new Set([...Object.values(SOUND_RECORDINGS).flatMap((r) => [r.goal, r.goalOne]), ...Object.values(VOICE_SOUNDS).map((v) => v.goal)].filter(Boolean).map(goalTag))];
+export const SOUND_GOAL_TAGS = [...new Set([...Object.values(SOUND_RECORDINGS).flatMap((r) => [r.goal, r.goalOne]), ...Object.values(VOICE_SOUNDS).map((v) => v.goal), ...Object.values(VOWEL_WORDS).map((v) => v.goal)].filter(Boolean).map(goalTag))];
 function soundRecordings() {
   const teacher = (how) => `[warm and gentle, a preschool teacher saying one speech sound alone, ${how}]`;
   const held = teacher('holding it about a second'); const twice = teacher('as two short breaths with a little gap between');
   const crisp = teacher('crisp and quick'); const soft = teacher('short and soft'); const ending = teacher('as one ending, slowly and clearly');
+  // A consonant blend's two sounds said together as one first part (pass NB). Since round one's code check it names a first part, since
+  // "one speech sound alone" beside "the two sounds" asked for one sound and two in one direction.
+  const together = '[warm and gentle, a preschool teacher saying the first part of a word alone, as one quick part, the two sounds said together with no vowel between them]';
   // Since pass MX each sound also has its goal, the short direction for Eleven put right before its symbols (goalTag, above), and a
-  // sound said twice (sss, fff, zzz) its goal for the one breath a run of sounds asks for (goalOne).
+  // sound said twice (sss, fff, zzz) its goal for the one breath a run of sounds asks for (goalOne). Since pass NC (round two's code read)
+  // it has the line's direction for that one breath too (howOne), for a line that is the sound alone in a lesson of one breath, where
+  // the two-breath direction had asked Eleven for two breaths and one in the same clip.
   const speech = (ipa, how, short, heard, goal) => ({ kind: 'speech sound', ipa, how, goal, text: how + ' ' + goalTag(goal) + ' ' + ipaQuoted(ipa), short, heard, takes: 3 });
   const never = (name) => `Never the letter's name (${name}), and no vowel after it.`;
   const vowel = (ipa, letter, word) => speech(ipa, held, `the short ${letter} of ${word}`, `The short ${letter} sound alone, as at the start of ${word}, held about a second. Never the letter's name. On trial: no lesson plays it, but a run of sounds that names the letter asks the recording for this sound (EARMARKS A42).`, `saying just the first sound of ${word}, clear and steady`);
   return {
     m: speech('/mː/', held, 'the m of moon, a steady hum', `The m sound alone, as in moon: a steady hum with the lips closed, held about a second. ${never('em')}`, 'saying just the first sound of moon, a steady hum with the lips closed'),
     n: speech('/nː/', held, 'the n of net, a steady hum', `The n sound alone, as in net: a steady hum through the nose, the tongue up behind the top teeth, held about a second. ${never('en')}`, 'saying just the first sound of net, a steady hum through the nose'),
-    s: { ...speech('/sː/, /sː/', twice, 'the s of sun, a gentle hiss, twice', `The s sound alone, as in sun: a gentle hiss like a snake, said as two short breaths with a little gap between (sss, sss), as the app says it now. ${never('ess')}`, 'saying just the first sound of sun twice, a soft, steady hiss each time'), one: '/sː/', goalOne: 'saying just the first sound of sun once, a soft, steady hiss' },
-    f: { ...speech('/fː/, /fː/', twice, 'the f of fan, a soft hiss, twice', `The f sound alone, as in fan: a soft, breathy hiss with the top teeth resting on the lip, said as two short breaths with a little gap between (fff, fff). ${never('ef')}`, 'saying just the first sound of fan twice, a soft breath through the teeth each time'), one: '/fː/', goalOne: 'saying just the first sound of fan once, a soft breath through the teeth' },
-    z: { ...speech('/zː/, /zː/', twice, 'the z of zoo, a buzz, twice', `The z sound alone, as in zoo: a buzzing hiss with the voice on, like a bee, said as two short breaths with a little gap between (zzz, zzz). ${never('zee')}`, 'saying just the first sound of zoo twice, a voiced buzz each time'), one: '/zː/', goalOne: 'saying just the first sound of zoo once, a voiced buzz' },
+    s: { ...speech('/sː/, /sː/', twice, 'the s of sun, a gentle hiss, twice', `The s sound alone, as in sun: a gentle hiss like a snake, said as two short breaths with a little gap between (sss, sss), as the app says it now. ${never('ess')}`, 'saying just the first sound of sun twice, a soft, steady hiss each time'), one: '/sː/', goalOne: 'saying just the first sound of sun once, a soft, steady hiss', howOne: teacher('as one short breath') },
+    f: { ...speech('/fː/, /fː/', twice, 'the f of fan, a soft hiss, twice', `The f sound alone, as in fan: a soft, breathy hiss with the top teeth resting on the lip, said as two short breaths with a little gap between (fff, fff). ${never('ef')}`, 'saying just the first sound of fan twice, a soft breath through the teeth each time'), one: '/fː/', goalOne: 'saying just the first sound of fan once, a soft breath through the teeth', howOne: teacher('as one short breath') },
+    z: { ...speech('/zː/, /zː/', twice, 'the z of zoo, a buzz, twice', `The z sound alone, as in zoo: a buzzing hiss with the voice on, like a bee, said as two short breaths with a little gap between (zzz, zzz). ${never('zee')}`, 'saying just the first sound of zoo twice, a voiced buzz each time'), one: '/zː/', goalOne: 'saying just the first sound of zoo once, a voiced buzz', howOne: teacher('as one short breath') },
     r: speech('/ɹː/', held, 'the r of red, held', `The r sound alone, as in red: a steady rrr, held about a second. ${never('ar')}`, 'saying just the first sound of red, held steady and smooth'),
     l: speech('/lː/', held, 'the l of lion, held', `The l sound alone, as in lion: a steady lll, the tongue up behind the top teeth, held about a second. ${never('el')}`, 'saying just the first sound of lion, held steady with the tongue up'),
     t: speech('/tʰ/', crisp, 'the t of tap, a crisp puff', "The t sound alone, as in tap: one crisp tap of the tongue and a short puff of air, with no vowel after it, or only the faintest uh. Never the letter's name (tee), and never the word two.", 'saying just the first sound of tap, one crisp puff of air'),
@@ -35778,6 +36678,13 @@ function soundRecordings() {
     ig: speech('/ɪɡ/', ending, 'the ending ig of pig', 'The ending ig, as in pig and wig, said as one sound: the short i of igloo and a soft g. Never spelled out (i, g), and no uh after the g.', 'saying just the ending of pig and wig as one sound'),
     og: speech('/ɑɡ/', ending, 'the ending og of dog', 'The ending og, as in dog, log and fog, said as one sound: the short o of octopus and a soft g. Never spelled out (o, g), and no uh after the g. Its vowel must match how this voice says dog, log and fog: if the voice says them with the vowel of saw, ask for /ɔɡ/ instead.', 'saying just the ending of dog and log as one sound'),
     at: speech('/æt/', ending, 'the ending at of cat', "The ending at, as in cat and hat, said as one sound in full: the short a of apple and a soft t, the way it ends cat, never the quick, soft at of look at the cat. Never spelled out (a, t).", 'saying just the ending of cat and hat as one sound, with a crisp finish'),
+    // The five consonant blends (pass NB, BLEND_PARTS): the first part of frog, flower, star, spoon and tree, two sounds said together as
+    // one part, with no vowel between them and none after, but the faintest uh after a closing t or p, as the app says tuh and puh.
+    fr: speech('/fɹ/', together, 'the fr of frog, two sounds together', "The first part of frog alone, fr: the f and the r said together, quick and smooth, as one part, with no vowel between them and none after. Never the letters' names (ef, ar).", 'saying just the first part of frog, two sounds together, quick and smooth'),
+    fl: speech('/fl/', together, 'the fl of flower, two sounds together', "The first part of flower alone, fl: the f and the l said together, quick and smooth, as one part, with no vowel between them and none after. Never the letters' names (ef, el).", 'saying just the first part of flower, two sounds together, quick and smooth'),
+    st: speech('/st/', together, 'the st of star, two sounds together', "The first part of star alone, st: a short hiss and then a crisp t, said together as one part, with no vowel between them, and only the faintest uh after the t. Never the letters' names (ess, tee).", 'saying just the first part of star, a short hiss and a crisp tap together'),
+    sp: speech('/sp/', together, 'the sp of spoon, two sounds together', "The first part of spoon alone, sp: a short hiss and then a crisp p, said together as one part, with no vowel between them, and only the faintest uh after the p. Never the letters' names (ess, pee).", 'saying just the first part of spoon, a short hiss and a crisp pop together'),
+    tr: speech('/tɹ/', together, 'the tr of tree, two sounds together', "The first part of tree alone, tr: a crisp t that runs straight into r, said together as one part, with no vowel between them and none after. Never the letters' names (tee, ar), and never the word true.", 'saying just the first part of tree, two sounds together, quick and smooth'),
     a: vowel('/æ/', 'a', 'apple'), e: vowel('/ɛ/', 'e', 'egg'), i: vowel('/ɪ/', 'i', 'igloo'), o: vowel('/ɑ/', 'o', 'octopus'), u: vowel('/ʌ/', 'u', 'up'),
     whistle: { kind: 'sound effect', seconds: 1, influence: 0.7, takes: 4,
       text: "One excited fan's loud two-finger whistle at a ball game, close by, on a single breath: it swoops up to a bright, high note, holds, then slides down and fades as the breath runs out. About one second, one whistle, no crowd noise, no voices, no music.",
@@ -35816,6 +36723,9 @@ function sayToken(token, trial = false) {
     return null;
   }
   if (!segs.some((s) => soundOfNotation(s, trial))) return null;
+  // A blend (pass NB): exactly two sounds that make one of BLEND_PARTS (Fff-rrr, sss-tuh) are one piece, the two sounds said together
+  // as the first part of a word, which the app plays as one sound.
+  if (segs.length === 2) { const pair = segs.map((s) => soundOfNotation(s, trial)); const blend = pair.every(Boolean) ? Object.keys(BLEND_PARTS).find((k) => BLEND_PARTS[k][0] === pair[0] && BLEND_PARTS[k][1] === pair[1]) : null; if (blend) return [{ sound: blend, text: token }]; }
   const first = soundOfNotation(segs[0], trial);
   if (segs.length === 2 && first && 'mnsfzrl'.includes(first) && !soundOfNotation(segs[1], trial) && !/^h/i.test(segs[1])) {
     const head = segs[0][0] === segs[0][0].toUpperCase() ? first.toUpperCase() : first;
@@ -35833,15 +36743,17 @@ function sayToken(token, trial = false) {
 // little word. Since pass MQ (Mikey's answer to Q60) the app plays ig, og and at itself, made whole (rimePieces, below), so the
 // voice is handed none of them; igg stays here as the respelling the recorded voice's pronunciation dictionary takes (EARMARKS A41).
 export const RIME_SPOKEN = { at: 'at', ig: 'igg' };
-const RIME_AT_BEFORE = /(?:\b(?:end|ends|ended|ending)\s+(?:in|with)|\bsound,|\b(?!(?:th|wh)at,)[a-z]*at,)\s+$/i;   // never after that, or what, ("is that, at least")
+// Since pass NB (the onsets and rimes) at is an ending after a first part said as its sound and a comma or an and too ("Cuh, at",
+// "Huh, at", "Buh, at, bat!", "huh and at make hat"), the ways the onset lessons say a word's two parts.
+const RIME_AT_BEFORE = /(?:\b(?:end|ends|ended|ending)\s+(?:in|with)|\bsound,|\b(?!(?:th|wh)at,)[a-z]*at,|\b(?:[tpckbdgjhw]uh|mmm+|nnn+|sss+|fff+|zzz+|rrr+|lll+)(?:,|\s+and))\s+$/i;   // never after that, or what, ("is that, at least")
 // Since pass MQ (Mikey's answer to Q60; on trial alone in pass MP) ig, og and at are the app's own endings, made whole ({ sound }),
 // in every lesson, where the voice had been handed igg and a lone at, and og inside its sentence; og is never a word, so it is an
 // ending wherever it stands.
-function rimePieces(text) {
+function rimePieces(text, before = '') {
   const out = []; let last = 0; const s = String(text);
   for (const m of s.matchAll(/\b(at|ig|og)\b/gi)) {
     const rime = m[1].toLowerCase();
-    if (rime === 'at' && !RIME_AT_BEFORE.test(s.slice(0, m.index))) continue;
+    if (rime === 'at' && !RIME_AT_BEFORE.test(before + s.slice(0, m.index))) continue;
     if (m.index > last) out.push({ text: s.slice(last, m.index) });
     out.push({ sound: rime, text: m[1] }); last = m.index + m[0].length;
   }
@@ -36299,12 +37211,18 @@ export function speechPieces(text, opts = {}) {
       continue;
     }
     const shape = words.length === 1 && !/\d/.test(words[0]) ? 'key' : /\?$/.test(sentence.trim()) ? 'question' : 'plain';
-    const voice = (t) => { for (const r of rimePieces(t)) pieces.push(r.sound ? { sound: r.sound, text: r.text, shape: 'sound', sentence: si } : { text: r.text, shape, sentence: si }); };
+    const voice = (t, before = '') => { for (const r of rimePieces(t, before)) pieces.push(r.sound ? { sound: r.sound, text: r.text, shape: 'sound', sentence: si } : { text: r.text, shape, sentence: si }); };
     let last = 0;
     const list = SOUND_LIST.exec(sentence);
     if (list) { for (const w of [list[2], list[3], `and ${list[4]}`]) pieces.push({ text: w, shape: 'key', sentence: si }); last = list[0].length; }
     // On trial, a sentence that is only sounds and lone vowel letters ("Cuh, a, nnn.") is a run of sounds, its vowels the app's own.
     const run = trial && words.length > 1 && words.every((w) => { const bare = w.replace(/[^A-Za-z]/g, ''); return !!soundOfNotation(bare, true) || /^[aeiou]$/i.test(bare); });
+    // A hiss inside a run of a word's sounds is one breath (pass NC, onceInRun): "Sss, oh, puh." is three sounds, sss once, where two
+    // breaths would sound like four sounds to a child counting them, as the audio ledger already asks the recordings (SOUND_RECORDINGS'
+    // one). A sound said alone keeps its two breaths (Mikey's "sss sss sun", pass MP).
+    // Since round one's lesson check every hiss is one breath where the caller asks (opts.once: the phoneme lessons, ONE_BREATH_LESSONS),
+    // since a child counting a word's sounds heard a hiss said alone as two ("the very first sound of frog is just one sound. Fff.").
+    const onceRun = namesWordSounds(sentence) || !!opts.once;
     for (const m of sentence.matchAll(SAID_TOKEN)) {
       if (m.index < last) continue;
       let parts = sayToken(m[0], trial);
@@ -36316,12 +37234,12 @@ export function speechPieces(text, opts = {}) {
         parts = [{ text: `${the ? sentence.slice(from, m.index) : ''}${m[0].toUpperCase()}` }];
       }
       if (!parts) continue;
-      voice(sentence.slice(last, from));
-      for (const x of parts) pieces.push(x.sound ? { sound: x.sound, text: x.text, shape: 'sound', sentence: si } : { text: x.text, shape: 'key', sentence: si });
+      voice(sentence.slice(last, from), sentence.slice(0, last));
+      for (const x of parts) pieces.push(x.sound ? { sound: x.sound, text: x.text, shape: 'sound', sentence: si, ...(onceRun && 'sfz'.includes(x.sound) && x.sound.length === 1 ? { once: true } : {}) } : { text: x.text, shape: 'key', sentence: si });
       last = m.index + m[0].length;
     }
     const rest = sentence.slice(last); const cheer = CHEER_RUN.exec(rest);
-    if (cheer && /[A-Za-z]/.test(rest.slice(0, cheer.index))) { voice(rest.slice(0, cheer.index)); pieces.push({ text: cheer[1], shape: 'cheer', sentence: si }); } else if (cheer) pieces.push({ text: cheer[1], shape: 'cheer', sentence: si }); else voice(rest);
+    if (cheer && /[A-Za-z]/.test(rest.slice(0, cheer.index))) { voice(rest.slice(0, cheer.index), sentence.slice(0, last)); pieces.push({ text: cheer[1], shape: 'cheer', sentence: si }); } else if (cheer) pieces.push({ text: cheer[1], shape: 'cheer', sentence: si }); else voice(rest, sentence.slice(0, last));
   }
   return pieces.filter((x) => x.sound || /[A-Za-z0-9]/.test(x.text));
 }
@@ -36345,6 +37263,10 @@ export function speechPieces(text, opts = {}) {
 export const SOUND_RATE = 32000;
 export const soundClipSamples = (() => {
   const rng = (seed) => { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) | 0; let t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; };
+  // A crisp stop's timing in samples (t, p and k): its moment of quiet, its burst, the breath after it, and where its uh begins. The stop
+  // below and a blend that starts with a stop (tr) both read it, so a blend's cut lands where the uh begins whatever the timing becomes
+  // (round one's code check: the blend copied these numbers).
+  const stopTiming = (sound, fs) => { const lead = Math.round(0.03 * fs); const burstN = Math.round((sound === 'k' ? 0.016 : 0.008) * fs); const aspN = Math.round((sound === 'k' ? 0.075 : 0.06) * fs); return { lead, burstN, aspN, vStart: lead + Math.round(burstN * 0.6) + Math.round(aspN * 0.6) }; };
   // Noise with a bell-shaped spread (four uniform draws added), centred on zero.
   const noise = (n, seed) => { const r = rng(seed); const x = new Float64Array(n); for (let i = 0; i < n; i++) x[i] = (r() + r() + r() + r() - 2) * 0.866; return x; };
   // The standard two-pole filters (the audio cookbook's): low pass, high pass, band pass and a peak.
@@ -36554,9 +37476,41 @@ export const soundClipSamples = (() => {
     for (let i = 0; i < n; i++) { const t = i / fs; const fade = Math.min(1, t / 0.01) * (1 - ease(secs - 0.3, secs, t)); out[i] = Math.max(-0.95, Math.min(0.95, (mix[i] / (peak || 1)) * 0.8 * fade)); }
     return out;
   };
-  return function soundClipSamples(sound, { slow = false } = {}) {
+  // How long after a t's release a held sound's voice comes in, in a blend that starts with a t (tr): until then its place is taken by
+  // breath, noise through the rrr's resonances, as in a spoken tr, where the r stays breathed through the t's aspiration (Klatt 1975),
+  // since voicing within about 30 to 35 ms of the release is heard as d (Lisker and Abramson 1970; pass NB, round two's code read; since
+  // the third read the breath is noise, where the rrr high-passed had stayed periodic and voiced at 32 ms).
+  const TR_VOICE_AFTER = 0.035;
+  return function soundClipSamples(sound, { slow = false, once = false } = {}) {
     const fs = SOUND_RATE; const seed = SEEDS[sound];
     if (sound === 'quiet') return new Float32Array(Math.round(0.05 * fs));
+    // A consonant blend (pass NB, BLEND_PARTS): the first part of frog, flower, star, spoon or tree, the app's own two sounds joined into
+    // one part, quick and smooth, as a teacher says fr or st. A hissed first sound comes once, its first breath (alone, sss and fff are
+    // two), and a crisp t keeps its quiet, its burst and the start of its breath, cut where its uh would begin, so no vowel comes between
+    // the two sounds. A held rrr or lll after it rises under the last 50 ms of a hiss, or from a t's release, and lasts 0.42 seconds (0.55
+    // on the snail's pace), fading over its last 0.12 (round one's code check: tr's rrr rose only 10 ms before the t's breath was cut, a
+    // valley about 20 decibels deep as heard between the two sounds, where fr and fl dip about 7 and 8; from the release it dips about 5;
+    // and since round two's code read and the third read its place is taken by breath until TR_VOICE_AFTER, so its voice comes in about
+    // 43 ms after the t's release, past the 30 to 35 ms where a t is heard as d); a t or p after a hiss keeps its own moment of quiet, the closure of a real st or sp, its
+    // burst and its short, soft uh, as the lessons write tuh and puh. The rules test measures each part where it sits.
+    if (Object.hasOwn(BLEND_PARTS, sound)) {
+      const [a, b] = BLEND_PARTS[sound]; const first = soundClipSamples(a, { slow }); const second = soundClipSamples(b, { slow });
+      const hiss = 'sfz'.includes(a); const aLen = hiss ? Math.round((slow ? 0.4 : 0.32) * fs) : stopTiming(a, fs).vStart;
+      const held = 'mnrl'.includes(b); const bLen = held ? Math.round((slow ? 0.55 : 0.42) * fs) : second.length;
+      const start = !held ? aLen : hiss ? aLen - Math.round(0.05 * fs) : stopTiming(a, fs).lead; const out = new Float32Array(start + bLen);
+      const cut = Math.round(0.008 * fs); const fall = Math.round(0.12 * fs);
+      for (let i = 0; i < aLen; i++) out[i] += first[i] * (hiss ? 1 : Math.min(1, (aLen - i) / cut));
+      // After a stop the held sound starts as breath, noise through the rrr's 1,150, 1,650 and 3,300 cycles a second resonances, high-passed
+      // at 350 as its place-holder is and matched every 5 ms to the level the held sound has there, its voice coming in TR_VOICE_AFTER after
+      // the release over 10 ms, so nothing periodic sounds before the voice (the third read: the rrr high-passed alone stayed periodic).
+      const hp3 = (x) => filter(filter(filter(x, biquad('hp', 350, 0.707, fs)), biquad('hp', 350, 0.707, fs)), biquad('hp', 350, 0.707, fs));
+      const hpV = !hiss && held ? hp3(second) : null; let breathed = null;
+      if (hpV) { const nz = hp3(reson(reson(reson(noise(second.length, SEEDS[b] + 5), 1150, 100, fs), 1650, 120, fs), 3300, 250, fs)); const w = Math.round(0.005 * fs); breathed = new Float64Array(second.length);
+        for (let i = 0; i < second.length; i += w) { let a2 = 0; let b2 = 0; const e = Math.min(second.length, i + w); for (let j = i; j < e; j++) { a2 += hpV[j] * hpV[j]; b2 += nz[j] * nz[j]; } const g = b2 > 0 ? Math.sqrt(a2 / b2) : 0; for (let j = i; j < e; j++) breathed[j] = nz[j] * g; } }
+      const vIn = Math.round(TR_VOICE_AFTER * fs); const vRamp = Math.round(0.01 * fs);
+      for (let i = 0; i < bLen; i++) { const vg = breathed ? Math.max(0, Math.min(1, (i - vIn) / vRamp)) : 1; out[start + i] += (breathed ? second[i] * vg + breathed[i] * (1 - vg) : second[i]) * (held ? Math.min(1, (bLen - i) / fall) : 1); }
+      return out;
+    }
     // The cheer's sounds (pass MT, Mikey: "the claps in row 64 don't sound like real claps ... maybe a longer session of claps or cheers
     // with whistling in place of the claps would work"; pass MS's clap, two quick claps of three noise bursts each, is retired with
     // row 64). A fan's whistle plays between a cheer's sayings ("Different! (whistle) Different!"), and after the last the crowd claps
@@ -36578,8 +37532,9 @@ export const soundClipSamples = (() => {
     // 0.32 seconds, or 0.4 on the snail's slower pace, with 0.13 (0.17) between; zzz keeps more of its buzz and less hiss, since he
     // heard "static behind it". The others, which he heard as good, are held as before.
     if ('sfz'.includes(sound) && sound.length === 1) {
-      const one = Math.round((slow ? 0.4 : 0.32) * fs); const gap = Math.round((slow ? 0.17 : 0.13) * fs); const out = new Float32Array(one * 2 + gap);
-      for (const [start, part] of [[0, 0], [one + gap, 1]]) {
+      // Inside a run of a word's sounds (pass NC, once) the first breath alone, as a blend's hissed first sound is.
+      const one = Math.round((slow ? 0.4 : 0.32) * fs); const gap = Math.round((slow ? 0.17 : 0.13) * fs); const out = new Float32Array(once ? one : one * 2 + gap);
+      for (const [start, part] of once ? [[0, 0]] : [[0, 0], [one + gap, 1]]) {
         const env = rise(one, fs, 0.035, 0.07); let y;
         if (sound === 's') y = scaleTo(mul(hiss(one, fs, seed + part), wobble(one, fs, seed + part, 0.06)), 0.11);
         else if (sound === 'f') y = scaleTo(mul(filter(filter(noise(one, seed + part), biquad('hp', 1500, 0.6, fs)), biquad('lp', 7500, 0.6, fs)), wobble(one, fs, seed + part, 0.08)), 0.05);
@@ -36599,7 +37554,7 @@ export const soundClipSamples = (() => {
       // A moment of quiet, the burst, and the breath after it: the shape of a relaxed mouth (its second, third and fourth
       // resonances; the first is all but gone while the throat is open), and for t a little of the tongue's hiss as it leaves the
       // ridge behind the teeth. Scaled by its loudest moment, since a burst is short and sharp.
-      const lead = Math.round(0.03 * fs); const burstN = Math.round((sound === 'k' ? 0.016 : 0.008) * fs); const aspN = Math.round((sound === 'k' ? 0.075 : 0.06) * fs); const n = lead + burstN + aspN + Math.round(0.04 * fs);
+      const { lead, burstN, aspN, vStart } = stopTiming(sound, fs); const n = lead + burstN + aspN + Math.round(0.04 * fs);
       let b = noise(burstN, seed);
       if (sound === 't') b = filter(filter(b, biquad('hp', 3200, 0.7, fs)), biquad('peak', 5200, 1.2, fs, 6));
       else if (sound === 'p') b = filter(filter(b, biquad('lp', 1200, 0.7, fs)), biquad('hp', 300, 0.7, fs));
@@ -36613,7 +37568,7 @@ export const soundClipSamples = (() => {
       // voice's uh, gliding from the consonant's locus and fading fast, softer than the burst and about as loud as the breath before
       // it, so the consonant leads and the uh never takes over (his note on the voice's duh: "You can hear an emphasis on the uh part
       // more than the d").
-      const vN = Math.round(0.1 * fs); const vStart = lead + Math.round(burstN * 0.6) + Math.round(aspN * 0.6);
+      const vN = Math.round(0.1 * fs);
       const vow = scaleTo(vowelBody(vN, fs, 'uh', seed + 3, { from: sound, lead: 0.035 }), 0.11);
       const yy = new Float64Array(Math.max(n, vStart + vN + Math.round(0.02 * fs)));
       for (let i = 0; i < burstN; i++) yy[lead + i] += b[i]; for (let i = 0; i < aspN; i++) yy[lead + Math.round(burstN * 0.6) + i] += a[i];
@@ -36733,7 +37688,11 @@ export function whyNotNamesOpenWrong(q, picked, open) {
   // A twin of the tapped picture (the same token before its # tag or its look after ~) is ruled out by any reason the tapped one
   // gets, so a twin still open counts as named (pass MK, the lesson check: Which One Is Different?'s "so those two are the same"
   // left only the answer; the second read: grade 1's alike triangles differ only by their look, ~thin and ~turned).
-  const twinOf = (c) => String(c).split(/[#~]/)[0];
+  // A look that names a picture of its own, a child's drawing of the rain or of bedtime (DRAWING_NAMES) or the stop sign (LOOK_NAMES), is
+  // no twin of another look of its thing (pass NC, found applying the third read: Write to tell's three drawings were read as twins, so
+  // no first wrong tap there heard its reason).
+  const ownLook = (c) => { const raw = String(c).split('#')[0]; const d = /^icon:drawing~([a-z]+)$/.exec(raw); return !!((d && DRAWING_NAMES[d[1]]) || LOOK_NAMES[raw.replace(/^icon:/, '')]); };
+  const twinOf = (c) => (ownLook(c) ? String(c).split('#')[0] : String(c).split(/[#~]/)[0]);
   return (open || []).map(String).filter((c) => c !== String(q.answer)).some((c) => { if (twinOf(c) === twinOf(picked)) return true; const name = pictureName(c); return !!name && name !== answerName && names(said, name) && (!names(asked, name) || said.includes(' just like ' + name + ' ')); });
 }
 // ruledOut: the choices already tapped wrong in this question, the one just tapped included; the screen dims them.
@@ -36967,7 +37926,7 @@ export const WONDER = [
       { voice: 'A scientist', says: 'Whatever number you name, you can always add one more, and that number is bigger. So there is no biggest number. People have thought hard about this for a very long time, and it still surprises most of us.' },
       { voice: 'An artist', says: 'Try drawing the biggest number you can as dots on a page. You will run out of paper long before you run out of numbers. That feeling of running out is a good one to sit with.' },
       { voice: 'A grandparent of faith', says: 'Some people find comfort in the idea that numbers never end. It reminds them that the world is bigger than what we can hold in our heads. That is a fine thing to wonder about at any age.' },
-      { voice: 'A skeptic', says: 'How would we check? If someone told me they had found the biggest number, I would ask them to add one to it. If they could, they were wrong. That is a test anyone can do.' },
+      { voice: 'A skeptic', says: 'How would we check for a biggest number? If someone told me they had found the biggest number, I would ask them to add one to it. If they could, they were wrong. That is a test anyone can do.' },
     ],
     closing: 'What is the biggest number you can say? Now say the one after it.',
   },
@@ -36990,7 +37949,7 @@ export const WONDER = [
       { voice: 'A scientist', says: 'A shape is named by what it has, not by which way it points. Turn a square tile, and its four sides stay the same length and its four corners stay square. Four equal sides and four square corners is a square, however it sits.' },
       { voice: 'An artist', says: 'On its corner a square looks like a diamond, and a drawing can make you feel it is a different shape. Feelings about a shape are real, but they are about the picture, not the shape. Count the sides, and the feeling and the count can both be true.' },
       { voice: 'A grandparent of faith', says: 'People are a little like that square. Turned by a hard day, we look different, but what we are made of stays the same. It is a comfort to know that what counts about something does not turn with it.' },
-      { voice: 'A skeptic', says: 'How would we check? Trace the square, turn the paper, and trace it again. If the two tracings match when you turn one back, nothing about the shape changed. That is a test a child can run on the kitchen table.' },
+      { voice: 'A skeptic', says: 'How could we check the square ourselves? Trace the square, turn the paper, and trace it again. If the two tracings match when you turn one back, nothing about the shape changed. That is a test a child can run on the kitchen table.' },
     ],
     closing: 'Turn a block or a cup around. Is it still the same thing?',
   },
@@ -38346,7 +39305,7 @@ export const WONDER = [
       { voice: 'A scientist', says: 'The sun warms the sea and the puddles, and tiny bits of water float up into the sky where you cannot see them. High up it is cold, so they gather into clouds. When the drops get heavy enough, they fall. The same water goes round and round.' },
       { voice: 'An artist', says: 'Rain changes how everything looks. Colors get deeper, the ground shines, and the sound on a roof is a kind of music. Some artists go out on purpose when it rains, just to see.' },
       { voice: 'A grandparent of faith', says: 'For most of history, rain was the difference between a good year and a hungry one. That is why so many traditions have songs and prayers about it. Being glad of rain is an old feeling.' },
-      { voice: 'A skeptic', says: 'A good test of the cloud idea is to leave a bowl of water in the sun and watch it slowly disappear. Where did it go? If you can answer that, you have most of the story of rain.' },
+      { voice: 'A skeptic', says: 'A good test of the cloud idea is to leave a bowl of water in the sun and watch it slowly disappear. Where did the water go? If you can answer that, you have most of the story of rain.' },
     ],
     closing: 'Where do you think a puddle goes when it dries up?',
   },
@@ -38412,7 +39371,7 @@ export const WONDER = [
       { voice: 'A scientist', says: 'It depends on the job. An elephant is huge but cannot climb a tree. An ant is tiny and can lift many times its own weight. Every size is good at something and bad at something else.' },
       { voice: 'An artist', says: 'A tiny drawing can be looked at up close and hold a whole story. A giant painting can fill a room. Neither one is better than the other. They are for different moments.' },
       { voice: 'A grandparent of faith', says: 'Lots of old stories are about something small doing something the big ones could not. People have always liked those stories, and I think it is because most of us feel small sometimes.' },
-      { voice: 'A skeptic', says: 'Better for what? Bigger is better for a bed and worse for a pocket. Until someone says what the thing is for, the question cannot be answered, and noticing that is the first step.' },
+      { voice: 'A skeptic', says: 'Bigger is better for what? Bigger is better for a bed and worse for a pocket. Until someone says what the thing is for, the question cannot be answered, and noticing that is the first step.' },
     ],
     closing: 'What is one thing that is better small, and one thing that is better big?',
   },
@@ -38650,7 +39609,7 @@ export const WONDER = [
       { voice: 'A scientist', says: 'Today a robot can talk, remember what you said, and seem to care. What it cannot do, as far as anyone can tell, is actually feel anything. A friend who cannot feel is a strange kind of friend, and it is worth knowing the difference before you decide.' },
       { voice: 'An artist', says: 'Children have always made friends with things that cannot feel: a stuffed animal, an imaginary companion. That friendship was real on one side. The question is whether one-sided friendship is a lesser thing or just a different thing.' },
       { voice: 'A grandparent of faith', says: 'Many traditions hold that what makes a person a person is something a machine cannot have, however clever. Other people are much less sure of that. Either way, most would say the people around you deserve your friendship first.' },
-      { voice: 'A skeptic', says: 'I would ask what a friend does that a robot could not. Keep a secret? Show up when it is inconvenient? Disagree with you for your own good? Make that list, then check the robot against it. The list will teach you what friendship is.' },
+      { voice: 'A skeptic', says: 'I would ask what a friend does that a robot could not. Could it keep a secret? Show up when it is inconvenient? Disagree with you for your own good? Make that list, then check the robot against it. The list will teach you what friendship is.' },
     ],
     closing: 'What is one thing a real friend does that you would not want a machine to do instead?',
   },
@@ -38870,7 +39829,7 @@ export const WONDER = [
       { voice: 'A scientist', says: 'Something surprising: things learned slowly often stay longer than things learned fast. When you have to work at it, your brain builds more paths to it. Slow is not a problem. Slow is often how deep gets done.' },
       { voice: 'An artist', says: 'A tree takes years to grow and nobody says it is bad at growing. Some things are meant to take time. The speed you learn something says nothing about how well you will know it in the end.' },
       { voice: 'A grandparent of faith', says: 'Many of the wisest people in old stories were slow to start. What mattered was that they kept going. The tortoise wins that race for a reason.' },
-      { voice: 'A skeptic', says: 'Slow compared to whom? Everyone learns different things at different speeds. The child who is fast at reading may be slow at swimming. There is no one speed, so there is nothing to be bad at.' },
+      { voice: 'A skeptic', says: 'Slow compared to whom, and at what? Everyone learns different things at different speeds. The child who is fast at reading may be slow at swimming. There is no one speed, so there is nothing to be bad at.' },
     ],
     closing: 'What is something you learned slowly? Are you glad you kept trying?',
   },
@@ -39064,7 +40023,7 @@ export const WONDER = [
       { voice: 'A scientist', says: 'Light travels in straight lines. When something is in the way, the light cannot get past, and the dark patch behind it is the shadow. Your shadow is long in the morning and short at midday because the sun is in a different place.' },
       { voice: 'An artist', says: 'Painters spend a long time learning shadows, because a picture with no shadows looks flat. Try tracing your shadow on the ground with chalk in the morning, then again after lunch. It will have moved a long way.' },
       { voice: 'A grandparent of faith', says: 'Shadows appear in a lot of old stories, sometimes as something scary and sometimes as a friend that follows you everywhere. Both are true in a way. A shadow is always yours.' },
-      { voice: 'A skeptic', says: 'Can you have a shadow in the dark? Try it and see. With no light there is no shadow at all. So a shadow is not a thing on its own. It is a missing piece of light, and that is a strange idea to sit with.' },
+      { voice: 'A skeptic', says: 'Can you have a shadow in the dark? Try it tonight and see. With no light there is no shadow at all. So a shadow is not a thing on its own. It is a missing piece of light, and that is a strange idea to sit with.' },
     ],
     closing: 'With a grown-up, find your shadow. What shape is it right now?',
   },
@@ -39086,7 +40045,7 @@ export const WONDER = [
       { voice: 'A scientist', says: 'Your hands pick up tiny living things called germs everywhere they go. You cannot see them, but some of them can make you ill. Soap grabs them and water carries them away. Twenty seconds of washing is one of the best tricks anyone ever found for staying well.' },
       { voice: 'An artist', says: 'There is something calming about warm water and bubbles. Some people sing a song while they wash, which is how long it takes. It is a tiny kind thing you do for yourself and everyone you touch.' },
       { voice: 'A grandparent of faith', says: 'Many traditions have washing as part of a special moment, before a meal or a prayer. Long before anyone knew about germs, people felt that clean hands mattered. They were right for reasons they did not yet know.' },
-      { voice: 'A skeptic', says: 'How do we know washing works, if we cannot see the germs? Scientists tested it. Hospitals where doctors washed their hands had far fewer sick patients. That is how you know something works: you check.' },
+      { voice: 'A skeptic', says: 'How do we know washing works, if we cannot see the germs? Scientists tested it, and the results were clear. Hospitals where doctors washed their hands had far fewer sick patients. That is how you know something works: you check.' },
     ],
     closing: 'What song lasts about as long as washing your hands?',
   },
@@ -39584,7 +40543,7 @@ export const WONDER = [
   {"id": "w-growing-new-place", "theme": "feelings", "stage": "growing", "courseIds": [], "answerMode": "typed", "prompt": "What is scary about the first day somewhere new, and what makes it better?", "perspectives": [{"voice": "A scientist", "says": "New places make the brain alert, because everything is unfamiliar. After a few days, the brain learns the new place and the scared feeling fades."}, {"voice": "An artist", "says": "I sketch new places on my first day. By the time I finish, I know where the doors and windows are, and the room feels like mine."}, {"voice": "A grandparent of faith", "says": "You are brave for going. It helps to remember that the other people there were new once too."}, {"voice": "A skeptic", "says": "Look for one person who seems friendly and say hello. You do not need a whole group of friends on the first day. One is enough to start."}], "closing": "What would you say to someone new at your school?"},
   {"id": "w-growing-proud", "theme": "feelings", "stage": "growing", "courseIds": [], "answerMode": "typed", "prompt": "What does it feel like to be proud of yourself, and how is that different from showing off?", "perspectives": [{"voice": "A scientist", "says": "Feeling proud after hard work is healthy; it helps you want to keep trying. It is different from bragging, which is about how others see you."}, {"voice": "An artist", "says": "When I finish a painting I am proud of, I want to show it to someone who will be happy for me, not to someone I want to beat."}, {"voice": "A grandparent of faith", "says": "Being grateful for what you did well, and for the people who helped you, is a gentle kind of pride."}, {"voice": "A skeptic", "says": "A good test: would you still feel proud if nobody ever found out? If yes, that is real pride."}], "closing": "What is something you are proud of this week?"},
   {"id": "w-growing-embarrassed", "theme": "feelings", "stage": "growing", "courseIds": [], "answerMode": "typed", "prompt": "Everyone laughed when you tripped. How long does embarrassment really last?", "perspectives": [{"voice": "A scientist", "says": "Embarrassment is strongest right away and fades quickly. Other people forget much faster than we do, usually by the next class."}, {"voice": "An artist", "says": "Some of the funniest stories people tell are about the times they tripped. Years later, they laugh along."}, {"voice": "A grandparent of faith", "says": "Laughing at yourself kindly is a gift. It helps you and everyone around you move on."}, {"voice": "A skeptic", "says": "If someone keeps teasing you about it for days, that is not okay, and it is worth telling a teacher."}], "closing": "What is a funny story you can tell about yourself now?"},
-  {"id": "w-early-tower-fell", "theme": "failure", "stage": "early", "courseIds": [], "answerMode": "pick", "prompt": "Your block tower fell down. What do you do next?", "options": ["Build it again", "Build it wider", "Take a break first"], "simple": [{"voice": "A scientist says", "says": "A wide bottom helps a tower stand tall. I test that with my own blocks!"}, {"voice": "An artist says", "says": "I think every new tower is a brand new chance to make something different."}, {"voice": "A grandparent of faith says", "says": "When my towers fell as a girl, I felt sad too. A slow breath helped me build again."}, {"voice": "A skeptic says", "says": "Let's look at how the tower fell, leaning or wobbling. That tells us what to change."}], "perspectives": [{"voice": "A scientist", "says": "Towers fall when they are taller than their bottom can hold. A wider bottom helps them stand. Every fall teaches you how to build the next one."}, {"voice": "An artist", "says": "I like to build the second tower a little differently from the first. Sometimes the new way is better."}, {"voice": "A grandparent of faith", "says": "It is okay to be sad when something falls. Take a breath, and try again when you are ready."}, {"voice": "A skeptic", "says": "Look at how it fell before you build again. Did it lean? Wobble? That tells you what to change."}], "closing": "What will you build next?"},
+  {"id": "w-early-tower-fell", "theme": "failure", "stage": "early", "courseIds": [], "answerMode": "pick", "prompt": "Your block tower fell down. What do you do next?", "options": ["Build it again", "Build it wider", "Take a break first"], "simple": [{"voice": "A scientist says", "says": "A wide bottom helps a tower stand tall. I test that with my own blocks!"}, {"voice": "An artist says", "says": "I think every new tower is a brand new chance to make something different."}, {"voice": "A grandparent of faith says", "says": "When my towers fell as a girl, I felt sad too. A slow breath helped me build again."}, {"voice": "A skeptic says", "says": "Let's look at how the tower fell, leaning or wobbling. That tells us what to change."}], "perspectives": [{"voice": "A scientist", "says": "Towers fall when they are taller than their bottom can hold. A wider bottom helps them stand. Every fall teaches you how to build the next one."}, {"voice": "An artist", "says": "I like to build the second tower a little differently from the first. Sometimes the new way is better."}, {"voice": "A grandparent of faith", "says": "It is okay to be sad when something falls. Take a breath, and try again when you are ready."}, {"voice": "A skeptic", "says": "Look at how it fell before you build again. Did it lean to one side? Did it wobble at the bottom? That tells you what to change."}], "closing": "What will you build next?"},
   {"id": "w-early-feeling-sad", "theme": "feelings", "stage": "early", "courseIds": [], "answerMode": "pick", "prompt": "When you feel sad, what helps you feel better?", "options": ["A hug", "Telling someone", "Quiet time"], "simple": [{"voice": "A scientist says", "says": "It turns out a warm hug can help a body calm down."}, {"voice": "An artist says", "says": "Drawing my favorite place helps me when I am sad. It feels like a little trip there."}, {"voice": "A grandparent of faith says", "says": "When I am sad, I say a little prayer and have a cup of tea with a friend."}, {"voice": "A skeptic says", "says": "I check how long my sad feelings stay. If one stays long, tell a grown-up you trust."}], "perspectives": [{"voice": "A scientist", "says": "Telling someone how you feel helps your body calm down. Your feelings are real, and they change."}, {"voice": "An artist", "says": "Some people draw something they love when they feel sad, like a pet or a favorite place. In one study, that helped children feel better more than drawing the sad thing did."}, {"voice": "A grandparent of faith", "says": "It is okay to be sad sometimes. The people who love you want to help. Let them help you feel better."}, {"voice": "A skeptic", "says": "Sad feelings come and go like clouds. If a sad feeling stays a long time, tell a grown-up you trust."}], "closing": "Who can you go to when you feel sad?"},
   {
     id: 'w-grown-exactly-what-you-wrote',
@@ -39654,7 +40613,7 @@ export const WONDER = [
     answerMode: 'typed',
     prompt: 'A famous painting is ugly on purpose, and it works. Can a work of art succeed without being beautiful?',
     perspectives: [
-      { voice: 'A scientist', says: 'Succeed at what? Guernica set out to make you feel a bombing, and it does, so by its own goal it succeeds completely. Beauty was never the goal, so its absence is not a failure. Judge a thing by what it tried to do.' },
+      { voice: 'A scientist', says: 'First ask what success would even mean here. Guernica set out to make you feel a bombing, and it does, so by its own goal it succeeds completely. Beauty was never the goal, so its absence is not a failure. Judge a thing by what it tried to do.' },
       { voice: 'An artist', says: 'Yes, and it is one of the hardest things to pull off. Anyone can make something pretty. Making something hard to look at that you cannot stop looking at is a different skill, and it is the one the four steps are for.' },
       { voice: 'A grandparent of faith', says: 'Some truths are not beautiful, and a picture that tells one honestly has done a holy kind of work. I would rather a true ugly picture than a lovely lie.' },
       { voice: 'A skeptic', says: 'Be careful with the word famous. Plenty of ugly art is just ugly, and fame is not a criterion. Run the four steps on it yourself; if it survives evaluate, it works, and if it only survives because of the name on the wall, it does not.' },
@@ -41822,7 +42781,7 @@ export const WONDER = [
       { voice: 'A scientist', says: 'Drawing what you picture takes your eyes, your memory and your hands working together. Your hands keep getting more skillful for many years. So the gap between your idea and your drawing is normal, and it shrinks as you practice.' },
       { voice: 'An artist', says: 'Every artist knows this feeling, even the famous ones. Many artists make lots of sketches before they keep one. Find one part you like, and start your next drawing from there.' },
       { voice: 'A grandparent of faith', says: 'Something you made with care is worth keeping, even when it surprises you. Many grandparents keep a drawer full of drawings like yours. We keep them because you made them, not because they are perfect.' },
-      { voice: 'A skeptic', says: 'Bad compared to what? Compare it to your drawings from last month, not to the picture in your head. If it is a little better, you are getting somewhere.' },
+      { voice: 'A skeptic', says: 'My question is, bad compared to what? Compare it to your drawings from last month, not to the picture in your head. If it is a little better, you are getting somewhere.' },
     ],
     closing: 'What part of your drawing do you like best?',
   },
@@ -42019,7 +42978,7 @@ export const WONDER = [
     perspectives: [
       { voice: 'A scientist', says: 'The let-down feeling has a name: disappointment. It shows up when what happens is different from what you hoped for. The bigger the hope, the bigger the feeling, and like most feelings, it usually gets smaller with time.' },
       { voice: 'An artist', says: 'A rainy day can be its own adventure. Build a blanket fort, draw the trip you will take another day, or put on music and dance. Plans can change and still be fun.' },
-      { voice: 'A grandparent of faith', says: 'When plans fall through, my family likes to say that a day can hold a different gift than the one we expected. Many people of faith practice being thankful even on gray days. You can be sad and still find something good.' },
+      { voice: 'A grandparent of faith', says: 'When a fun plan is canceled, my family likes to say that a day can hold a different gift than the one we expected. Many people of faith practice being thankful even on gray days. You can be sad and still find something good.' },
       { voice: 'A skeptic', says: 'Ask when the trip can happen instead. A trip moved to another day is still coming. Put the new day on a calendar, and you will have something to look forward to.' },
     ],
     closing: 'What could you do on a rainy day that would still be fun?',
@@ -42305,6 +43264,217 @@ export const WONDER = [
       { voice: 'A skeptic', says: 'Never is a very big word. Maybe I did not like it because it was too hot, or because I was not hungry yet. I would try it again another day, when things are different, and see what I think then.' },
     ],
     closing: 'What new food would you like to taste someday?',
+  },
+  // Pass NB's early Wonder batch, plainly about hard days (the ups-and-downs theme, as NEW-CHAT asked of the next early batch): a good
+  // moment kept a few seconds longer on a hard day, a day home sick, asking for a hug or for help, and helping someone else's hard day.
+  // Since round one's Wonder check each point is one no older early question makes (a canceled plan, w-early-trip-canceled's, gave way
+  // to a sick day; since round two's content read its artist, grandparent, skeptic and closing are each a point of their own too), and
+  // each claim is sourced: bad things stick in our minds more than good ones (Baumeister, Bratslavsky, Finkenauer
+  // and Vohs, "Bad is stronger than good", Review of General Psychology, 2001; in children, Vaish, Grossmann and Woodward,
+  // Psychological Bulletin, 2008), and staying "a few extra seconds" with a good experience (Rick Hanson, Hardwiring Happiness, 2013,
+  // and rickhanson.com); sleep helps the body fight germs and heal (Besedovsky, Lange and Born, "Sleep and immune function",
+  // Pflugers Archiv, 2012); people agree to help more often than askers guess (Flynn and Lake, Journal of Personality and Social
+  // Psychology, 2008: askers expected to need up to about twice the people they did, for favors such as borrowing a phone); and a caring
+  // person nearby eases stress (Hostinar, Sullivan and Gunnar, Psychological Bulletin, 2014).
+  {
+    id: 'w-early-small-good-thing',
+    theme: 'ups-and-downs',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'On a hard day, something good happens, like a hug or a funny joke. What could you do?',
+    options: ['Stay with it a while', 'Tell someone', 'Hurry on to the next thing'],
+    simple: [
+      { voice: 'A scientist says', says: 'I read that bad things stick in our minds more than good things, so I stay with a good moment a little longer!' },
+      { voice: 'An artist says', says: 'When a good moment comes, I notice it like a painter, its colors, its sounds and how it feels.' },
+      { voice: 'A grandparent of faith says', says: 'My faith teaches me to stop and enjoy good gifts. When something good happens, I pause before I hurry on.' },
+      { voice: 'A skeptic says', says: 'Try a little test today. When something good happens, stay with it a few seconds longer, and notice how you feel.' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'I read that bad things tend to stick in our minds more than good things do. Scientists think that long ago, this helped people stay safe. A psychologist named Rick Hanson studies how our minds work. He says to notice a good moment when it comes, like a hug or a warm spot of sun. Then you can stay with it for a few extra seconds, so it sinks in.' },
+      { voice: 'An artist', says: 'Painters look closely, and you can too. When a good moment comes, notice its colors, its sounds and even its smells, like warm bread or fresh grass. Then give the moment a name, like the warm bread moment, so it is easy to find again in your mind.' },
+      { voice: 'A grandparent of faith', says: 'My faith teaches me that good things are gifts, and gifts are worth enjoying slowly. When my grandchildren laugh at dinner, I stop and listen to the sound for a moment before I say anything. Those little pauses are some of my favorite moments.' },
+      { voice: 'A skeptic', says: 'I would test it like a scientist. Today, when something good happens, stay with it a few seconds longer. Tomorrow, hurry past a good moment instead. Then ask yourself which day felt a little better.' },
+    ],
+    closing: 'When something good happens, how could you make it last a little longer?',
+  },
+  {
+    id: 'w-early-home-sick',
+    theme: 'ups-and-downs',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'You are home sick, and you cannot play with your friends today. What could help?',
+    options: ['Rest and sleep', 'A quiet pretend game', 'A cozy story'],
+    simple: [
+      { voice: 'A scientist says', says: 'Sleep helps a body heal, so resting on a sick day is real work for your body, not wasted time!' },
+      { voice: 'An artist says', says: 'I turn my blanket into a pretend sea and sail a toy boat across it, quiet and slow.' },
+      { voice: 'A grandparent of faith says', says: 'When I am sick, I think of other people who feel sick today, and I say a little prayer for them.' },
+      { voice: 'A skeptic says', says: 'How do you know you are getting better? I look for signs, like feeling hungry again or wanting to play.' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'Sleep helps the body fight off germs and heal. That is why grown-ups ask you to rest when you are sick. Resting may feel boring, but inside your body, a lot of busy work is happening. So a quiet day in bed is a helpful day for your body.' },
+      { voice: 'An artist', says: 'A sick day can still hold a little adventure. You could turn your blanket into a sea and sail a toy boat across it, or build a pillow mountain for your stuffed animals to climb. Quiet pretend play lets your mind play while your body rests.' },
+      { voice: 'A grandparent of faith', says: 'My faith teaches me that feeling sick can open my heart to others. When I am stuck in bed, I think of all the other people who feel sick today, and I say a little prayer for them. It helps me feel less alone.' },
+      { voice: 'A skeptic', says: 'How can you tell your body is getting better? You can look for signs. Maybe you feel hungry again, or you want to play, or your nose stops running. Each sign tells you that resting is doing its work.' },
+    ],
+    closing: 'What does your body need most on a sick day?',
+  },
+  {
+    id: 'w-early-ask-for-a-hug',
+    theme: 'ups-and-downs',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'On a hard day, is it okay to ask for a hug or for help?',
+    options: ['Yes', 'No', 'Sometimes'],
+    simple: [
+      { voice: 'A scientist says', says: 'I read that people say yes to helping more often than we guess, so it is good to ask!' },
+      { voice: 'An artist says', says: 'When I cannot find the words, I hold out my arms or draw a heart. That is a way to ask too.' },
+      { voice: 'A grandparent of faith says', says: 'When I ask for help, I give someone who loves me a chance to be kind.' },
+      { voice: 'A skeptic says', says: 'Some people love hugs and some do not. I always ask first, and I listen to the answer.' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'In one study, grown-ups asked other grown-ups for small favors, like borrowing a phone. They expected many people to say no, but more said yes than they had guessed. So when you need help, asking someone you trust is worth a try.' },
+      { voice: 'An artist', says: 'You could make a little help card with a heart on it and hand it to someone you love when the words will not come. Then they will know you need a hug or some help.' },
+      { voice: 'A grandparent of faith', says: 'In my faith, helping one another is a way to show love. So when you ask for help, you are not being a bother. You are giving someone you love a chance to be kind, and that is a gift.' },
+      { voice: 'A skeptic', says: 'The next time you feel sad, ask a grown-up you trust for a hug or some help, and notice whether you feel a little better. And remember that other people get to choose too, so listen to their answer.' },
+    ],
+    closing: 'If someone says no to a hug, what else could you ask for?',
+  },
+  {
+    id: 'w-early-someone-else-hard-day',
+    theme: 'ups-and-downs',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'Someone you love is having a hard day. How could you help?',
+    options: ['Ask to hug them', 'Make a picture', 'Sit with them'],
+    simple: [
+      { voice: 'A scientist says', says: 'In many studies, a caring person nearby made a hard feeling a little easier to carry.' },
+      { voice: 'An artist says', says: 'I draw their favorite animal or make up a silly song, just to cheer them up.' },
+      { voice: 'A grandparent of faith says', says: 'When someone I love is sad, I listen more than I talk. Listening is a gift I can give.' },
+      { voice: 'A skeptic says', says: 'I watch first, because a quiet voice or tired eyes can tell me a lot. Then I ask what would help.' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'In many studies, having someone near who cares made a hard feeling easier to carry. Scientists call it support, and it helps grown-ups and children alike. You do not have to fix the problem. Just being there with them helps a lot. And if someone you love stays sad for a long time, tell a grown-up you trust.' },
+      { voice: 'An artist', says: 'Artists sometimes make things just to cheer someone up. You could draw their favorite animal, pick them a flower, or make up a silly song.' },
+      { voice: 'A grandparent of faith', says: 'When someone I love is hurting, I listen more than I talk. My faith teaches me that listening is a gift, and anyone can give it.' },
+      { voice: 'A skeptic', says: 'Do not guess what they need. You could ask whether they would like a hug or some quiet. Then do what they say, and notice whether it helps.' },
+    ],
+    closing: 'What is one kind thing you could do for someone having a hard day?',
+  },
+  // Pass NC's early Wonder batch, ups-and-downs still (NEW-CHAT asked the next early batch to stay with them, the smallest of the four
+  // themes): a scrape that stings while it heals, a new baby who takes everyone's time, a friend who moved far away (Write to tell's
+  // letter for someone far away, met in a child's own life), and a sandcastle the waves washed away. Since round one's Wonder check every
+  // voice speaks in the first person or a frame of its own, Georgette from her own memories (eight of her lines had opened "My faith
+  // teaches me"), Mike tests without "really", and each voice's point was read against every older early question, where the first
+  // batch had retold w-early-missing-someone, w-early-friend-plays-with-someone-else, w-early-balloon-floated-away and others; one option
+  // of the friend far away changed for that reason. Since round two's content read the sandcastle's grandparent of faith no longer says
+  // the sea always takes it (the skeptic's test found otherwise), the friend far away's artist and grandparent of faith no longer retell
+  // w-early-missing-someone (a color that brings her friend near) or the phone round one took out, the new baby's skeptic asks whether a
+  // special time helps rather than whether there is time for you, and two scientist voices open without "I read". Each claim is sourced: a scab is "a dry, temporary crust" whose "job is to protect the
+  // wound as the damaged skin heals underneath", and "When healing is done, the scab dries up and falls off" (KidsHealth from Nemours,
+  // "What's a Scab?", kidshealth.org/en/kids/scab.html); "A bandage helps prevent germs from getting into the cut and causing an
+  // infection", and soap is used "to gently wash the cut or scrape" (KidsHealth's page for teens, "Cuts, Scratches, and Scrapes",
+  // kidshealth.org/en/teens/cuts.html, reviewed September 2020); a sibling's birth shows "very little indication that the TTS is experienced as a family crisis for most children", with "large
+  // individual differences", younger firstborns "more likely to show increases in clinging", and two studies reporting "improvements in
+  // selfcare skills" (Volling, "Family transitions following the birth of a sibling: An empirical review of changes in the firstborn's adjustment", Psychological Bulletin, 2012, a review of many studies); remembering a happy
+  // time left grown-ups (undergraduates, Study 5) feeling more loved, nostalgia that "bolsters social bonds" (Wildschut, Sedikides,
+  // Arndt and Routledge, "Nostalgia: content, triggers, functions", Journal of Personality and Social Psychology, 2006); wet sand's
+  // strength comes from "interstitial liquid bridges between grains", and "Wet sand can be used to build sharp-featured sandcastles that
+  // would be unstable in dry sand" (Hornbaker, Albert, Albert, Barabasi and Schiffer, "What keeps sandcastles standing?", Nature, 1997);
+  // and Tibetan Buddhist monks' sand mandala, "a creative process spanning several days" that "ends with a ceremonial sweeping away that
+  // symbolizes the impermanence of worldly things" (Davidson College, 2018; and the Smithsonian's "The act of destroying a mandala
+  // symbolizes the impermanence of existence", asia-archive.si.edu, Tibetan Healing Mandala). A child near the water builds with a
+  // grown-up, and a scrape is washed and covered by one.
+  {
+    id: 'w-early-scraped-knee',
+    theme: 'ups-and-downs',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'You fell and scraped your knee, and it stings. What helps while it heals?',
+    options: ['A hug from a grown-up', 'A bandage', 'Waiting a few days'],
+    simple: [
+      { voice: 'A scientist says', says: 'I have watched my own scrapes heal. A scab covers each one like a little roof, and new skin grows underneath.' },
+      { voice: 'An artist says', says: 'I watch a scrape change colors, from red to a brown scab to pink new skin. It is like a slow painting!' },
+      { voice: 'A grandparent of faith says', says: 'When my grandchildren fall, I hug them first and wash the scrape gently. Then we wait for it to heal together.' },
+      { voice: 'A skeptic says', says: 'Is a bandage just a sticker? Ask a grown-up what it does, and see if the answer surprises you.' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'When I was a boy, I scraped my knees all the time, so I got to watch them heal. My body went to work right away. It made a scab, a dry crust that covers a scrape like a little roof. New skin grew underneath it, and one day the scab fell off all by itself.' },
+      { voice: 'An artist', says: 'A scrape is like a slow painting that changes every day. First it is red, then a brown scab covers it, and then pink new skin peeks out from the edges. I like to look closely, the way I look at a painting I am still working on. One day the painting is finished, and your knee looks like your knee again.' },
+      { voice: 'A grandparent of faith', says: 'When my grandchildren fall down, I hug them first, before anything else. Then I wash the scrape gently with soap and water. While we wait for it to heal, I tell them about the day I fell off my wagon when I was little. In my prayers that night, I give thanks that a body knows how to heal.' },
+      { voice: 'A skeptic', says: 'When I was little, I thought a bandage was just a sticker with a picture on it. So I asked my mom what it does. She told me a bandage helps keep germs out while new skin grows underneath. I like to ask how things work, even little things. You can ask a grown-up too, the next time you need a bandage.' },
+    ],
+    closing: 'What do you think your knee will look like in a week?',
+  },
+  {
+    id: 'w-early-new-baby',
+    theme: 'ups-and-downs',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'A new baby came home, and everyone is busy with the baby. What could help you?',
+    options: ['Help with the baby', 'Ask for a special time', 'Tell how you feel'],
+    simple: [
+      { voice: 'A scientist says', says: 'Studies of many families show that some big kids want extra hugs for a while after a baby comes, and most find their way.' },
+      { voice: 'An artist says', says: 'I would draw a welcome picture for the baby, with me right in the middle as the big helper!' },
+      { voice: 'A grandparent of faith says', says: 'When my baby brother was born, I made silly faces for him. One day he smiled back, just at me!' },
+      { voice: 'A skeptic says', says: 'Does a special time help? Ask a grown-up for one, and notice how you feel.' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'Many studies have looked at families with a new baby. A new baby is a big change for everyone at home, and children feel it in different ways. Some want to stay close to a grown-up for a while, and some learn new things, like getting dressed all by themselves. Most children find their way through the change.' },
+      { voice: 'An artist', says: 'You could make the baby a welcome picture. Draw your whole family, and put yourself right in the middle, as the big helper. Then you can hold it up and tell the baby who everyone is. Making something for someone is a good way to feel like part of the welcome.' },
+      { voice: 'A grandparent of faith', says: 'When my baby brother was born, everyone was busy, and I felt a little left out. So I made silly faces for him every morning. One day he smiled back, just at me, and I felt like the luckiest big sister in the world. I still say a thank-you prayer for that little brother.' },
+      { voice: 'A skeptic', says: 'When my little sister was born, I wondered if there would ever be time just for me again. So I decided to test it. I asked my dad for a special time, just the two of us, and we went for a walk around the block. That walk became our special time, and we still take it.' },
+    ],
+    closing: 'How could a big brother or sister help a new baby feel welcome?',
+  },
+  {
+    id: 'w-early-friend-moved-away',
+    theme: 'ups-and-downs',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'Your friend moved far away. How could you stay friends?',
+    options: ['Send a drawing or a letter', 'Remember fun times', 'Wear their favorite color'],
+    simple: [
+      { voice: 'A scientist says', says: 'When grown-ups in one study remembered happy times, they felt more loved. I think of my old friends that way.' },
+      { voice: 'An artist says', says: 'My far-away friend loves purple, so on days I miss her, I wear purple. Her color cheers me up!' },
+      { voice: 'A grandparent of faith says', says: 'My best friend from when I was little moved away. Now we are both grandmas, and we are still friends!' },
+      { voice: 'A skeptic says', says: 'Can a drawing go that far? Mail one with a grown-up, and ask your friend\'s grown-up when it gets there.' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'There is a study I like, where scientists asked grown-ups to remember a happy time from long ago. Afterward, many of them said they felt more loved. So when I miss an old friend, I think about a fun day we had together. It does not bring my friend back, but it helps me feel close.' },
+      { voice: 'An artist', says: 'I have a friend who lives far away, and her favorite color is purple. When I miss her, I wear my purple scarf, or I paint something purple. Purple always makes me smile and think of her. What is your friend\'s favorite color? You could wear it, or draw with it, when you miss them.' },
+      { voice: 'A grandparent of faith', says: 'When I was a little girl, my best friend moved far away, and we were both so sad. Now we are grandmas, and we are still best friends. We laugh at the same old jokes, just like when we were five. I thank God for a friend like that.' },
+      { voice: 'A skeptic', says: 'Can a drawing travel all the way to a friend far away? You could test it and find out. Make a drawing, and mail it with a grown-up. Then your grown-up can call your friend\'s grown-up and ask when it gets there. I am always surprised how far a drawing can go.' },
+    ],
+    closing: 'What fun time with a friend would you like to remember?',
+  },
+  {
+    id: 'w-early-sandcastle-washed-away',
+    theme: 'ups-and-downs',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'You built a sandcastle, and a wave washed it away. Was building it still fun?',
+    options: ['Yes, building was fun', 'No, I wanted it to stay', 'I could build another one'],
+    simple: [
+      { voice: 'A scientist says', says: 'I tested it once! A little water helps sand stick together, so wet sand makes the tallest towers.' },
+      { voice: 'An artist says', says: 'In Tibet, some people make sand pictures for days, then sweep them away. To me, the making is the best part!' },
+      { voice: 'A grandparent of faith says', says: 'At the beach, my grandchildren and I build a castle every summer. When a wave takes it, we wave goodbye!' },
+      { voice: 'A skeptic says', says: 'Does the sea take every castle? Build one near the water and one farther back, with a grown-up, and watch the waves.' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'I tested sand once at the beach. Dry sand just slid into a pile, but sand with a little water stuck together and made tall towers. Scientists have found out why. The water makes tiny bridges between the bits of sand. Big waves bring too much water, though, and wash a castle away.' },
+      { voice: 'An artist', says: 'Far away in Tibet, some monks make beautiful pictures out of colored sand. They work on one picture for several days, adding tiny bits of sand in every color. When it is done, they sweep it all away on purpose, to remember that nothing lasts forever. I think the making matters most of all, and that is true for sandcastles too.' },
+      { voice: 'A grandparent of faith', says: 'Every summer, my grandchildren and I build a sandcastle at the beach. We know a wave may take it. So when the waves come, we stand back and wave goodbye to it together, and then we laugh. I think of each castle as a little blessing, a happy day we get to share.' },
+      { voice: 'A skeptic', says: 'I wondered whether the sea takes every sandcastle, so I tried a test with my dad. We built one castle near the water and one farther up the beach, where the waves could not reach. The waves took the first one, and the second one stood until we went home. Building near the water was still the most fun, because we got to watch the waves come.' },
+    ],
+    closing: 'What else is fun to make, even though it does not last?',
   },
   {
     id: 'w-early-hurt-by-words',
@@ -43720,7 +44890,9 @@ export function buildAttempt(moduleId, seed, passedIds, options = {}) {
   // already while another can be found, since the first one's explanation
   // answers the second (pass MY, round one's lesson check: 1,752 of 2,000 rounds of Two words make one asked about one word twice,
   // "Yes. Bird and house make birdhouse." before "Which word do you hear in birdhouse?").
-  const aboutEcho = (q, list) => list === core && Array.isArray(q.aboutWords) && list.some((c) => Array.isArray(c.aboutWords) && c.aboutWords.some((w) => q.aboutWords.includes(w)));
+  // Since pass NB (round two's content read) a one-way key too: a question that asks for what an earlier one said (asksFirstOf against
+  // saysFirstOf: a word's first part, or a rhyme of a word) is drawn again, as an echo of its words is.
+  const aboutEcho = (q, list) => list === core && ((Array.isArray(q.aboutWords) && list.some((c) => Array.isArray(c.aboutWords) && c.aboutWords.some((w) => q.aboutWords.includes(w)))) || (Array.isArray(q.asksFirstOf) && list.some((c) => (c.saysFirstOf || []).some((w) => q.asksFirstOf.includes(w)))));
   const echoes = (q, list) => (mixed && list === core && q.type !== 'trace' && list.some((c) => c.type !== 'trace' && c.answer === q.answer)) || aboutEcho(q, list);
   // Every question is made as its own module asks it (moduleQuestion: from kindergarten up a trace counts a line's direction, Q49).
   const fresh = (gen, list, from = mod.id) => {
@@ -44119,7 +45291,8 @@ export function buildLightReview(events, seed, due) {
   // And as in a round, a tracing lesson's choice questions ask different letters while they can (round one's screen check), and a
   // question that names what it is about (aboutWords) asks about another word while it can (pass MY, round two's code read: 1,811 of
   // 2,000 Quick Reviews of Two words make one asked about one word twice, the first explanation answering the second).
-  const aboutEcho = (q) => Array.isArray(q.aboutWords) && core.some((c) => Array.isArray(c.aboutWords) && c.aboutWords.some((w) => q.aboutWords.includes(w)));
+  // The one-way key too (pass NB, round two's content read), as buildAttempt reads it.
+  const aboutEcho = (q) => (Array.isArray(q.aboutWords) && core.some((c) => Array.isArray(c.aboutWords) && c.aboutWords.some((w) => q.aboutWords.includes(w)))) || (Array.isArray(q.asksFirstOf) && core.some((c) => (c.saysFirstOf || []).some((w) => q.asksFirstOf.includes(w))));
   const echoes = (q) => (mixed && q.type !== 'trace' && core.some((c) => c.type !== 'trace' && c.answer === q.answer)) || aboutEcho(q);
   for (let i = 0; core.length < LIGHT_REVIEW_QUESTIONS && i < LIGHT_REVIEW_QUESTIONS * 6; i++) {
     const gen = order[i % order.length];
@@ -45841,6 +47014,19 @@ export function coloringBreaks(events) { return activeEvents(events).filter((e) 
 // rule here from the screens, where taking practice out of the list passed every test).
 export const YOUNG_VOICE_SCREENS = ['lesson', 'practice', 'result', 'wonder', 'wonder-voices', 'course-done', 'light-review-result', 'checkpoint-result', 'quick-result'];
 export function youngVoiceOn({ screen, readAloud, youngLearner }) { return !!((readAloud && YOUNG_VOICE_SCREENS.includes(screen)) || (youngLearner && (screen === 'overview' || screen === 'coloring'))); }
+// The lessons whose hisses are one breath everywhere (pass NC, round one's lesson check): in the phoneme lessons a child counts a word's
+// sounds, and a hiss said alone as two breaths, as Mikey's "sss sss sun" asked for a hiss alone (pass MP), was heard as two sounds where
+// a line said one ("the very first sound of frog is just one sound. Fff."), so their lines, their questions and their stories play every
+// sss, fff and zzz as one breath of 0.32 seconds, still a short fragment and never the long hiss Mikey heard as static, as a run of a
+// word's sounds does in every lesson since pass NC but grade 1's Read the word and Sh, ch and th, whose short vowels are on trial ("Sss,
+// i, ks.", "Fff, i, shh."), until EARMARKS A42. Claude's design, recorded in RULES-AUDIT section 4 and told to Mikey. oneBreathOn is what
+// the page reads on every screen: a lesson or a story of one of them, or a question from one of their banks wherever it is asked.
+export const ONE_BREATH_LESSONS = ['sounds-in-a-word', 'very-first-sound', 'sound-by-sound'];
+export function oneBreathGenerators() { return ONE_BREATH_LESSONS.flatMap((id) => { const m = getModule(id); return m ? m.generators : []; }); }
+export function oneBreathOn({ screen, moduleId = null, genId = null } = {}) {
+  if (screen === 'practice') return !!genId && oneBreathGenerators().includes(genId);
+  return (screen === 'lesson' || screen === 'story') && ONE_BREATH_LESSONS.includes(moduleId);
+}
 // A game break (pass MB, Mikey): a game opened from Let's Play and closed again, logged the way a coloring break is, with
 // which game and when, never a score. Before pass MB a game left no trace at all, so the report could not count them.
 // Since pass MQ (Mikey's answer to Q63, "Q63 - A") a visit is a break only once the child has tapped Begin: a game's welcome is its

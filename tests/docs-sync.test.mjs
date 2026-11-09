@@ -236,6 +236,27 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   { const o = '<!-- docs/VISION.md and RULES-AUDIT rows as pass MZ left them, before pass NA corrected them in place, word for word: begin -->\n'; const ia = hist.indexOf(o); const ib = hist.indexOf('<!-- docs/VISION.md and RULES-AUDIT rows as pass MZ left them, before pass NA corrected them in place, word for word: end -->');
     const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
     ok("docs/RULES-AUDIT-HISTORY.md keeps the vision's sentences and the rows pass NA corrected in place as pass MZ left them, and section 9's row for Q86 names them (pass NA, Q86 (b))", /^- \*\*Master, then move\.\*\* A module opens only when everything it needs is mastered\./.test(kept) && kept.includes('asks whether to add a second way in') && audit.includes('| **The vision says what the app does (Mikey, pass NA, his answer to Q86') && createHash('sha256').update(kept, 'utf8').digest('hex') === 'db7f31d62e1ac33032c6df9bd2c07240f63b6d26bb4258fdc4beb2f1dbd7f532'); }
+  // Pass NC's block, held the same way: section 8's two rows it corrected in place under Q85 (b), as pass NB left them, and each
+  // corrected row saying so.
+  { const o = '<!-- RULES-AUDIT rows as pass NB left them, before pass NC corrected them in place, word for word: begin -->\n'; const ia = hist.indexOf(o); const ib = hist.indexOf('<!-- RULES-AUDIT rows as pass NB left them, before pass NC corrected them in place, word for word: end -->');
+    const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
+    const said = (audit.match(/Corrected in place in pass NC \(Mikey's answer to Q85\)/g) || []).length;
+    ok("docs/RULES-AUDIT-HISTORY.md keeps the four rows pass NC corrected in place as pass NB left them (section 8's two, section 6's short breaths and section 7's twins), each corrected row says so, and section 9's row for Q85 names them (pass NC, Q85 (b))", /^\| \*\*Lines wrap balanced, and the Wonder answers stack on a narrow phone/.test(kept) && kept.includes('a browser check waits (EARMARKS A76 and A82)') && kept.includes('The app\'s sounds in short breaths') && kept.includes('A twin still open is named (pass MK') && said >= 4 && audit.includes('Corrected in pass NC, each read against the code: section 8') && audit.includes("and section 7's row on a twin still open") && createHash('sha256').update(kept, 'utf8').digest('hex') === '25c405a9d383bddebe52a5199031ef1fa7e7a090e77f0c0f5ecb0bdd54d256af', `${said} rows say so`); }
+  // HANDOFF's numbers name the pass that counted them (pass NC, round two's final read: its heading still named pass NB over pass NC's
+  // numbers): the heading's pass is the newest DECISIONS entry's. An older pass's name, planted, is caught.
+  { const handoff = readFileSync(new URL('../docs/HANDOFF.md', import.meta.url), 'utf8'); const dec = readFileSync(new URL('../docs/DECISIONS.md', import.meta.url), 'utf8');
+    const passes = [...dec.matchAll(/^## (\d{4}-\d{2}-\d{2}) \(pass ([A-Z]{2})\)/gm)]; const last = passes.length ? passes[passes.length - 1][2] : '';
+    const named = (text) => (/^## Numbers at handoff \(\d{4}-\d{2}-\d{2}, pass ([A-Z]{2})\)/m.exec(text) || [])[1];
+    ok('HANDOFF\'s numbers heading names the newest DECISIONS entry\'s pass (pass NC; an older pass named, planted, caught)', !!last && named(handoff) === last && named(handoff.replace('pass ' + last + ')', 'pass AA)')) !== last, `heading names pass ${named(handoff)}, newest entry pass ${last}`); }
+  // A research sweep once a week (Mikey, pass NC; RULES-AUDIT section 9): docs/AI-RESEARCH.md's newest entry is dated no more than
+  // seven days before the newest DECISIONS entry, so a week of passes never goes by without one. A sweep eight days old, planted, is caught.
+  { const research = readFileSync(new URL('../docs/AI-RESEARCH.md', import.meta.url), 'utf8');
+    const dec = readFileSync(new URL('../docs/DECISIONS.md', import.meta.url), 'utf8');
+    const newest = (text, re) => [...text.matchAll(re)].map((m) => Date.parse(m[1] + 'T00:00:00Z')).filter(Number.isFinite).sort((a, b) => b - a)[0];
+    const lastPass = newest(dec, /^## (\d{4}-\d{2}-\d{2}) \(pass /gm); const sweep = (text) => newest(text, /^## (\d{4}-\d{2}-\d{2}) \(pass /gm);
+    const within = (s) => Number.isFinite(lastPass) && Number.isFinite(s) && (lastPass - s) / 86400000 <= 7;
+    const stale = new Date(lastPass - 8 * 86400000).toISOString().slice(0, 10);
+    ok('docs/AI-RESEARCH.md has a sweep dated no more than seven days before the newest DECISIONS entry (pass NC, Mikey\'s weekly research; a sweep eight days old planted, caught)', within(sweep(research)) && !within(sweep('## ' + stale + ' (pass XX)\n')), `newest sweep ${new Date(sweep(research) || 0).toISOString().slice(0, 10)}, newest pass ${new Date(lastPass || 0).toISOString().slice(0, 10)}`); }
   // The vision says what the app does (pass NA, Mikey's answer to Q86, "Q86 - yes, B"): docs/VISION.md and section 1 of the rules audit
   // each say the gate is a pass and the star a second pass on another day, and the reflection rule with the code's own numbers
   // (WONDER_EVERY different lessons, MISS_STREAK misses in a row), and neither keeps a rule the app outgrew (the gate as mastered, a
@@ -280,7 +301,9 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   // Since pass MS (Mikey: "If you need to break it into two documents feel free.  I would rather that than you having to summarize to
   // save space.") the dated lines a coder needs most stand in CLAUDE-PART-2.md, which CLAUDE.md imports, and are read there.
   const part2 = readFileSync(new URL('../CLAUDE-PART-2.md', import.meta.url), 'utf8');
-  const at = part2.indexOf('## Lines a coder needs most'); const keptLines = at < 0 ? [] : part2.slice(at).split('\n').filter((l) => l.startsWith('- '));
+  // Since pass NB, CLAUDE.md being full (a new line would take it past 40,000 bytes), new lines go in part two's last section, Lines added
+  // since pass NB, which is no copy of the history and is read here no more than CLAUDE.md's own Lines added since pass MS.
+  const at = part2.indexOf('## Lines a coder needs most'); const newAt = part2.indexOf('\n## Lines added since pass NB'); const keptLines = at < 0 ? [] : part2.slice(at, newAt > at ? newAt : undefined).split('\n').filter((l) => l.startsWith('- '));
   const blockLines = new Set(block.split('\n'));
   // Since pass MN (Mikey's answer to Q53, "Q53 - B") a kept line gone stale is corrected in place once RULES-AUDIT section 9's
   // row names it: a dated line that is not word for word a line of the history must be named in that row (its label, the words
@@ -371,6 +394,21 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   const plants = [!!count && stale('QUESTION-POOLS', pools.replace(count[0], ' of ' + (+count[1] - 3) + ' modules')), ledger.includes(goal) && stale('AUDIO-LEDGER', ledger.replace(goal, '[saying just the m sound of moon, a steady hum with the lips closed]'))];
   ok(`every generated doc is what its tool prints today, the date it was made aside (${made.size} docs; two near misses caught)`, off.length === 0 && plants.every(Boolean),
     `stale ${off.map((d) => 'docs/' + d + '.md').join(', ')} (run each doc's tool with > into it); near misses ${plants}`); }
+// NEW-CHAT names the newest preview (pass NB, the lead's read of How a pass is delivered: pass NA published a new preview, recorded in
+// its DECISIONS entry, and NEW-CHAT's chain still began with pass MZ's link, so a new chat would have been told to update a page two
+// passes old). The first link of the chain, after "since pass", is the newest DECISIONS entry's preview; a chain one pass behind is
+// planted and caught.
+{
+  const dec = readFileSync(new URL('../docs/DECISIONS.md', import.meta.url), 'utf8'); const nc = readFileSync(new URL('../docs/NEW-CHAT.md', import.meta.url), 'utf8');
+  const previews = [...dec.matchAll(/^- \*\*The preview\.\*\* (https:\/\/claude\.ai\/artifact\/[A-Za-z0-9]+)/gm)].map((m) => m[1]);
+  const newest = previews.at(-1);
+  const chainOf = (text) => { const m = /since pass [A-Z]{2}, (https:\/\/claude\.ai\/artifact\/[A-Za-z0-9]+), which replaced pass [A-Z]{2}'s at (https:\/\/claude\.ai\/artifact\/[A-Za-z0-9]+)/.exec(text); return m ? [m[1], m[2]] : null; };
+  const chain = chainOf(nc);
+  const stale = nc.replace(/since pass [A-Z]{2}, https:\/\/claude\.ai\/artifact\/[A-Za-z0-9]+, which replaced /, 'since pass ZZ, ' + previews.at(-2) + ', which replaced ');
+  const staleChain = chainOf(stale);
+  ok(`NEW-CHAT's chain of preview links starts with the newest DECISIONS entry's preview, and the one it replaced comes next (pass NB; ${previews.length} previews in DECISIONS; a chain one pass behind caught)`,
+    !!newest && !!chain && chain[0] === newest && chain[1] === previews.at(-2) && !!staleChain && staleChain[0] !== newest, chain ? 'chain starts ' + chain[0] + ', then ' + chain[1] + '; newest ' + newest : 'no chain found in NEW-CHAT');
+}
 // HANDOFF's numbers name the ledger's last serials (round three's final read, pass MO: they were a pass behind, S3914, D245 and
 // P154, as pass LX found them once).
 { const h = readFileSync(new URL('../docs/HANDOFF.md', import.meta.url), 'utf8'); const art = readFileSync(new URL('../docs/ART-REQUESTS.md', import.meta.url), 'utf8');

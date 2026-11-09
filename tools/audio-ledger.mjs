@@ -16,7 +16,7 @@
 // of takes tools/audio-generate.mjs asks for.
 // Run: node tools/audio-ledger.mjs > docs/AUDIO-LEDGER.md   (it also writes docs/AUDIO-LEDGER.csv, which tools/audio-generate.mjs reads)
 import { writeFileSync } from 'node:fs';
-import { COURSES, readAloudScript, SENTENCE_BREAK, GAMES, gameIntro, gameBand, cheerTagged, sayAlongParts, storyTitleSpoken, mannerOf, VOICE_MANNERS, speechPieces, SOUND_RECORDINGS, SPEECH_SOUNDS, TRIAL_SOUNDS, SAY_ALONG_VOICES, soundOfNotation, VOICE_SOUNDS, ipaQuoted, goalTag, SOUND_GOAL_TAGS, BEAT_RUNS, NS_PAIRS } from '../src/logic.mjs';
+import { COURSES, readAloudScript, SENTENCE_BREAK, GAMES, gameIntro, gameBand, cheerTagged, sayAlongParts, storyTitleSpoken, mannerOf, VOICE_MANNERS, speechPieces, SOUND_RECORDINGS, SPEECH_SOUNDS, TRIAL_SOUNDS, SAY_ALONG_VOICES, soundOfNotation, VOICE_SOUNDS, ipaQuoted, goalTag, SOUND_GOAL_TAGS, BEAT_RUNS, NS_PAIRS, VOWEL_WORDS, namesWordSounds, ONE_BREATH_LESSONS } from '../src/logic.mjs';
 // The voice's own sounds' symbols live in logic.mjs since round one's code check (one source); the ledger keeps its old export.
 export { VOICE_SOUNDS };
 import { STORIES, COURSE_STORIES, MASTERY_STORIES } from '../src/stories.mjs';
@@ -102,8 +102,8 @@ export function isLetterNamed(s, at, end, w) {
   const article = /(^|[.!?,:]\s+|^\s*)$/.test(s.slice(0, at)) && nextWord.length > 0 && !/^(?:and|or|is|was|says|sounds|starts|comes|has|makes|looks|goes|stands|ends|begins)$/i.test(nextWord);
   return !article;
 }
-export function elevenSentence(sentence, { voices = null, word = null, stress = [] } = {}) {
-  const s = String(sentence); const out = { text: s, sounds: [], stressed: [], letters: [], missed: [], onlySounds: false, voiceSounds: [], run: false };
+export function elevenSentence(sentence, { voices = null, word = null, stress = [], once = false } = {}) {
+  const s = String(sentence); const out = { text: s, sounds: [], stressed: [], letters: [], missed: [], onlySounds: false, voiceSounds: [], vowelWords: [], run: false, once: false };
   if (mannerOf(s, voices)) return out;
   const words = s.replace(/[.!?]+$/, '').trim().split(/\s+/).filter(Boolean);
   const pieces = speechPieces(s, { trial: true }); const edits = []; let cursor = 0;
@@ -132,8 +132,15 @@ export function elevenSentence(sentence, { voices = null, word = null, stress = 
   let vowelRun = false;
   toks.forEach((k, i) => {
     if (covered(k)) return;
+    // A long vowel the voice says as a word (pass NC, VOWEL_WORDS), set off by a comma or an and right after a speech sound in a run of a
+    // word's sounds (Buh, oh, tuh; shh and ooh), is that vowel's sound, never the word oh or eye, so it goes in the phonetic alphabet with
+    // its goal; an exclamation (Oh, look!) or a body's eye is left as it is.
+    const vw = ownOf(VOWEL_WORDS, k.w.toLowerCase()); const prev = toks[i - 1] && /^and$/i.test(toks[i - 1].w) ? toks[i - 2] : toks[i - 1];
+    if (vw && prev && (sounded(prev.w) || covered(prev)) && /^\s*(?:,\s*|,?\s+and\s+)$/i.test(s.slice(prev.end, k.at))) { edits.push({ at: k.at, len: k.end - k.at, put: vw.ipa, ipa: true, goal: vw.goal }); out.vowelWords.push(k.w.toLowerCase()); return; }
     const vs = ownOf(VOICE_SOUNDS, k.w.toLowerCase());
-    if (vs && usesSounds && toks.some((o) => o !== k && sounded(o.w))) { edits.push({ at: k.at, len: k.end - k.at, put: vs.ipa, ipa: true, goal: vs.goal }); out.voiceSounds.push(k.w.toLowerCase()); return; }
+    // Since round one's story flow check a voice sound beside the app's own sounds counts them too (Huh, at), not only another sound
+    // the tool matches by name: "Huh, at." had sent Huh as letters, which Eleven reads as the word.
+    if (vs && usesSounds && (out.sounds.length > 0 || toks.some((o) => o !== k && sounded(o.w)) || namesWordSounds(s))) { edits.push({ at: k.at, len: k.end - k.at, put: vs.ipa, ipa: true, goal: vs.goal }); out.voiceSounds.push(k.w.toLowerCase()); return; }
     if ((k.w === 'A' || (k.w === 'a' && !(usesSounds && [toks[i - 1], toks[i + 1]].some((o) => o && sounded(o.w))))) && isLetterNamed(s, k.at, k.end, k.w)) { edits.push({ at: k.at, len: 1, put: '/eɪ/', ipa: true }); out.letters.push('A'); return; }
     if (!/^[aeiou]$/i.test(k.w)) return;
     const before = s.slice(0, k.at).replace(/\s+$/, ''); const after = s.slice(k.end).replace(/^\s+/, '');
@@ -145,8 +152,13 @@ export function elevenSentence(sentence, { voices = null, word = null, stress = 
   // and keeps its two breaths each, as the app plays it (round one's code check).
   const soundsOnly = words.every((w) => sounded(w.replace(/[^A-Za-z]/g, '')) || /^[aeiou]$/i.test(w.replace(/[^A-Za-z]/g, '')));
   const vowelPiece = pieces.some((x) => x.sound && /^[aeiou]$/.test(x.sound));
-  out.run = vowelRun || (vowelPiece && soundsOnly && pieces.filter((x) => x.sound).length > 1);
-  if (out.run) for (const e of edits) { const rec = e.name ? ownOf(SOUND_RECORDINGS, e.name) : null; if (rec && rec.one) { e.put = rec.one; e.goal = rec.goalOne; } }
+  // Since pass NC a sentence that names a word's sounds with a long vowel the voice says (Sss, oh, puh) is a run too (namesWordSounds), so
+  // its hiss is one breath, as the app plays it there (onceInRun).
+  out.run = vowelRun || namesWordSounds(s) || (vowelPiece && soundsOnly && pieces.filter((x) => x.sound).length > 1);
+  // Since round one's lesson check (pass NC) a phoneme lesson's line asks for one breath for every hiss (once: ONE_BREATH_LESSONS), as
+  // the app plays it there, where a child counts a word's sounds.
+  out.once = out.run || !!once;
+  if (out.once) for (const e of edits) { const rec = e.name ? ownOf(SOUND_RECORDINGS, e.name) : null; if (rec && rec.one) { e.put = rec.one; e.goal = rec.goalOne; } }
   // Since pass MX a sound's goal goes right before its symbols (goalTag); a mark holds its place until the capitals are written, so a
   // stress word or the say-along's word is never capped inside a goal (dog, in og's goal).
   const goalsAt = []; let text = s;
@@ -166,8 +178,8 @@ export function elevenSentence(sentence, { voices = null, word = null, stress = 
 }
 // A row's description of its sounds, capitals and letters (pass MW), in plain words.
 const soundLine = (n, once) => { const r = SOUND_RECORDINGS[n]; return once && r.one ? r.one + ' ' + r.short.replace(/, twice$/, ', once') : r.ipa + ' ' + r.short; };
-const soundsSaid = (e, key, back) => { const all = [...new Set(e.sounds)].map((n) => soundLine(n, e.run)).concat([...new Set(e.voiceSounds || [])].map((n) => VOICE_SOUNDS[n].ipa + ' ' + VOICE_SOUNDS[n].short));
-  return all.length ? ' Each sound in the phonetic alphabet between slashes (sent in double quotes, as ElevenLabs asks) is said as a sound, never as letters: ' + all.join('; ') + '.' + (e.run ? ' The sounds blend into a word, so each is said once.' : '') + goalSaid(key, back) : ''; };
+const soundsSaid = (e, key, back) => { const all = [...new Set(e.sounds)].map((n) => soundLine(n, e.once || e.run)).concat([...new Set(e.voiceSounds || [])].map((n) => VOICE_SOUNDS[n].ipa + ' ' + VOICE_SOUNDS[n].short)).concat([...new Set(e.vowelWords || [])].map((n) => VOWEL_WORDS[n].ipa + ' ' + VOWEL_WORDS[n].short));
+  return all.length ? ' Each sound in the phonetic alphabet between slashes (sent in double quotes, as ElevenLabs asks) is said as a sound, never as letters: ' + all.join('; ') + '.' + (e.run ? ' The sounds blend into a word, so each is said once.' : e.once && e.sounds.some((n) => SOUND_RECORDINGS[n] && SOUND_RECORDINGS[n].one) ? ' In this lesson a child counts a word\'s sounds, so a hiss is one breath, said once.' : '') + goalSaid(key, back) : ''; };
 // What a row's description says of the goals (pass MX), with the row's own key, since the generator skips a clip already made: a take
 // that reads a goal aloud is deleted and made again as it is (the generator makes only what is missing), and if the new take fails
 // too, it is deleted as well before the generator runs with the voices used before and --only <key> --no-goals, so no other row loses
@@ -213,8 +225,18 @@ function titleSaid(title, grade = null, art = null) { const sounds = grade && ba
 export const QUICK = /\[[^\]]*\b(?:rushed|hurried|quickly|quick and|breathless|out of breath|faster)\b[^\]]*\]/i;
 // The sounds a story's words write as letters (Sss, buh, mmm), named for whoever makes the clip, each once however it is capitalized
 // (round two's code read: Buh and buh were named twice).
-export const soundsWritten = (words) => { const seen = new Map();
-  for (const x of speechPieces(String(words), { trial: true })) if (x.sound && ownOf(SOUND_RECORDINGS, x.sound) && !seen.has(x.text.toLowerCase())) seen.set(x.text.toLowerCase(), x.text + ', ' + SOUND_RECORDINGS[x.sound].short);
+export const soundsWritten = (words, { once = false } = {}) => { const seen = new Map();
+  // Since pass NC a phoneme lesson's story says each hiss once (once: ONE_BREATH_LESSONS), as the app plays it there.
+  const shortOf = (x) => { const r = SOUND_RECORDINGS[x.sound]; return once && r.one ? r.short.replace(/, twice$/, ', once') : r.short; };
+  for (const x of speechPieces(String(words), { trial: true, ...(once ? { once: true } : {}) })) if (x.sound && ownOf(SOUND_RECORDINGS, x.sound) && !seen.has(x.text.toLowerCase())) seen.set(x.text.toLowerCase(), x.text + ', ' + shortOf(x));
+  // Since round one's story check a sentence that names a word's sounds (Shh, ooh.) has its voice sounds and vowel words named though the
+  // paragraph has none of the app's own sounds: S4079-5 had no sound direction, and Eleven might have played a hush and a wondering ooh.
+  const runs = String(words).split(SENTENCE_BREAK).some((sentence) => namesWordSounds(sentence));
+  // A voice sound said beside the app's own sounds is a sound too (pass NB, round one's story check: "Mmm, at, mat, and huh, at, hat!"
+  // named mmm, at and sss but not huh, which Eleven may read as the questioning word), named after the app's sounds.
+  if (seen.size || runs) for (const [k, v] of Object.entries(VOICE_SOUNDS)) { const m = new RegExp(`\\b${k}\\b`, 'i').exec(String(words)); if (m && !seen.has(k)) seen.set(k, m[0] + ', ' + v.short); }
+  // Since pass NC a long vowel a sentence sets off in a run of a word's sounds (Buh, oh, tuh. Boat!) is named too, read sentence by sentence.
+  if (seen.size || runs) for (const sentence of String(words).split(SENTENCE_BREAK)) if (namesWordSounds(sentence)) for (const [k, v] of Object.entries(VOWEL_WORDS)) { const m = new RegExp(`(?:[A-Za-z]+)\\s*(?:,\\s*|\\s+and\\s+)(${k})\\b`, 'i').exec(sentence); if (m && !seen.has(k)) seen.set(k, m[1] + ', ' + v.short); }
   const sounds = [...seen.values()];
   return sounds.length ? ' Say each sound written as letters as the sound itself, never as letters: ' + sounds.join('; ') + '.' : ''; };
 // The letters a story names as letters (round two's code read: "C says cuh, A says the sound at the start of apple"), said by their
@@ -266,7 +288,7 @@ export const BEATS_NOT_LETTERS = { S302: ['E'] };
 function storySaid(story, i, grade, moduleId) { const n = (story.words || []).length; const audio = (story.audio && story.audio[i]) || ''; const words = story.words[i] || '';
   const quick = QUICK.test(audio) ? ' Where its tags ask for a quicker pace (rushed, hurried, quickly, quick, breathless, out of breath or faster), that part is quick on purpose, and the telling settles back to calm after it.' : '';
   const fractions = [...new Set(words.match(/\b\d+\/\d+\b/g) || [])]; const fraction = fractions.length ? ' Read ' + fractions.join(' and ') + ' as the story means ' + (fractions.length > 1 ? 'them' : 'it') + ', never as a date.' : '';
-  const sound = band(grade) === 'early' ? soundsWritten(words) + lettersNamed(words, BEATS_NOT_LETTERS[story.art] || []) : '';
+  const sound = band(grade) === 'early' ? soundsWritten(words, { once: ONE_BREATH_LESSONS.includes(moduleId) }) + lettersNamed(words, BEATS_NOT_LETTERS[story.art] || []) : '';
   return '"' + story.title + '", paragraph ' + (i + 1) + ' of ' + n + ': ' + (band(grade) === 'early' ? VOICE_WORDS.earlyStory : VOICE_WORDS[band(grade)]) + (story.audio ? ', following its hand-written tags' : '') + '.' + quick + fraction + sound + beatsSaid(words) + boomsSaid(words, moduleId) + nearSaid(words, moduleId); }
 // Pre-K first, then up (the review's order), so the ledger reads in the order the review tags it.
 const rank = (g) => { const s = String(g); if (/^pk3$/i.test(s)) return 0; if (/^pk/i.test(s)) return 1; if (/^k$/i.test(s)) return 2; if (/^\d+$/.test(s)) return 2 + Number(s); return 15; };
@@ -315,10 +337,13 @@ for (const c of courses) {
           const runPart = beatRunPart(part.sentence); const mannerTag = runPart ? VOICE_MANNERS[manner.manner].tag.replace(/\]$/, ', ' + runPart + ']') : VOICE_MANNERS[manner.manner].tag;
           add(key, 'lesson line', m.id, c.grade, `${mannerTag} ${part.sentence}`, part.sentence, `${m.id}-lesson`, `${where}: said ${MANNER_HEARD[manner.manner]}${manner.turn ? turnSaid(line.say) : ''}.${beatsSaid(part.sentence)}${nearSaid(part.sentence, m.id)}`);
         } else {
-          const e = elevenSentence(part.sentence, { voices: line.voices, word: si === wordAt ? parts[open].word : null, stress: line.stress || [] });
+          const e = elevenSentence(part.sentence, { voices: line.voices, word: si === wordAt ? parts[open].word : null, stress: line.stress || [], once: ONE_BREATH_LESSONS.includes(m.id) });
           const beatRun = beatRunOf(part.sentence);
           const near = nearIn(part.sentence, m.id).length > 0;   // a word of a near pair: said clearly, never drawn out (round two's code check)
-          const direction = e.onlySounds ? (e.sounds.length === 1 ? SOUND_RECORDINGS[e.sounds[0]].how : '[warm and gentle, a preschool teacher saying each speech sound alone, one after another, slowly]') : beatRun ? beatRun : near ? NEAR_DIRECTION : DIRECTION.early;
+          // A line that is one sound alone takes that sound's own direction, and in a lesson of one breath (or a run) a hiss's one-breath
+          // direction, beside its one-breath goal (pass NC, round two's code read: "Fff." asked for two breaths and one in one clip).
+          const alone = e.sounds.length === 1 ? SOUND_RECORDINGS[e.sounds[0]] : null;
+          const direction = e.onlySounds ? (alone ? (e.once && alone.howOne ? alone.howOne : alone.how) : '[warm and gentle, a preschool teacher saying each speech sound alone, one after another, slowly]') : beatRun ? beatRun : near ? NEAR_DIRECTION : DIRECTION.early;
           const said = directionBack(e.text, direction);
           add(key, 'lesson line', m.id, c.grade, `${direction} ${said}`, part.sentence, `${m.id}-lesson`, `${where}: ${e.onlySounds ? 'speech sounds said alone, slowly and clearly' : beatRun ? VOICE_WORDS.earlyBeats : near ? VOICE_WORDS.earlyNear : VOICE_WORDS.early}.${soundsSaid(e, key, said !== e.text)}${stressSaid(e)}${beatsSaid(part.sentence)}${nearSaid(part.sentence, m.id)}`);
         }

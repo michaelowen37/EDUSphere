@@ -99,10 +99,13 @@ const paperMuted = () => (C.mode === 'dark' ? '#3A4A40' : B.muted);
 // Since pass MI (Mikey's answer to Q32, "I agree with you") the light theme lights it the same light green: its pale gold read
 // 1.12 to 1 on a story card at the size of a sentence; the green reads 1.57 to 1 on white, the words on it 10.6 to 1.
 const readLit = () => ({ background: '#AAD8C5', color: '#16201B' });
-// The shape of a lit sentence (pass MH): a highlight hugging the words, rounded at each line's ends, its padding taken back by
-// a negative margin so the words never move as the light passes over them. No fade (round one's lesson check, pass MT): a word's ink
+// The shape of a lit sentence (pass MH): a highlight hugging the words. Since pass NC (EARMARKS A86) its room beside the words is a
+// shadow of the light's own green, two pixels each side and one above and below, which takes no room at all, so the words never move as
+// the light passes over them: until then it was padding taken back by a negative margin, cloned onto the ends of every line of a broken
+// sentence (box-decoration-break: clone), and the fold check found clone alone moving a balanced line's breaks in Chromium, so a broken
+// sentence's light is one box cut at each line's end, rounded at its first and last ends. No fade (round one's lesson check, pass MT): a word's ink
 // turns at once, so a fill that faded in or out left it dark on the dark card, or pale on green, for a moment at every change.
-const LIT_WORDS = { borderRadius: 5, padding: '1px 2px', margin: '0 -2px', boxDecorationBreak: 'clone', WebkitBoxDecorationBreak: 'clone' };
+const LIT_WORDS = { borderRadius: 5, boxShadow: '-1px 0 0 1px #AAD8C5, 1px 0 0 1px #AAD8C5' };
 // Style objects shared across screens copy colors from C when they are made, so each is made from a recipe that
 // applyTheme runs again after a switch.
 const THEMED = [];
@@ -679,17 +682,26 @@ function IconPic({ name, size = 90, tile = false }) {
     // A star, soil and wind (pass JY): drawn for kindergarten Looking at the world, where the day and night lesson says the stars
     // hide in the day, the plant lesson says soil holds nutrients (specks in a mound, a sprout on top) and the weather lesson
     // says wind is moving air (three swirling lines).
-    star: <path d="M50 12 L60 38 L88 39 L66 56 L74 84 L50 68 L26 84 L34 56 L12 39 L40 38 Z" fill={gold} stroke="#D99A2B" strokeWidth="3" strokeLinejoin="round" />,
+    // The star's edge (pass NB, round one's picture check): its gold outline read 2.44, 2.06 and 1.98 to 1 on the light theme's resting,
+    // right and wrong tiles and 1.89 on the dark theme's paper; the duck's deeper gold reads 4.40, 3.71, 3.57 and 3.42, and a dark tile
+    // keeps the gold, which reads well there.
+    star: <path d="M50 12 L60 38 L88 39 L66 56 L74 84 L50 68 L26 84 L34 56 L12 39 L40 38 Z" fill={gold} stroke={dk ? '#D99A2B' : '#94741A'} strokeWidth="3" strokeLinejoin="round" />,
     soil: <g><path d="M10 80 Q50 44 90 80 Z" fill={brown} /><path d="M10 80 L90 80" stroke="#6B4321" strokeWidth="4" strokeLinecap="round" />{[[30, 74], [42, 68], [56, 70], [68, 75], [50, 77]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r="2.6" fill="#E8C9A0" />)}<path d="M50 62 L50 36" stroke={green} strokeWidth="4" strokeLinecap="round" /><path d="M50 46 Q38 36 30 42 Q40 50 50 46 Z" fill={green} /><path d="M50 41 Q62 30 72 36 Q60 46 50 41 Z" fill={green} /></g>,
     wind: <g fill="none" stroke={blue} strokeWidth="5" strokeLinecap="round"><path d="M14 36 H62 a10 10 0 1 0 -10 -10" /><path d="M14 54 H76 a10 10 0 1 1 -10 10" /><path d="M14 72 H48" /></g>,
     sun: <g><defs><radialGradient id="eduSunG" cx="40%" cy="38%" r="65%"><stop offset="0" stopColor="#FFF1B8" /><stop offset="0.6" stopColor={gold} /><stop offset="1" stopColor="#D99A2B" /></radialGradient></defs><circle cx="50" cy="50" r="30" fill={gold} opacity="0.18" /><circle cx="50" cy="50" r="20" fill="url(#eduSunG)" stroke={dk ? 'none' : '#94741A'} strokeWidth="2" />{[0, 45, 90, 135, 180, 225, 270, 315].map((a) => <line key={a} x1={50 + 28 * Math.cos(a * Math.PI / 180)} y1={50 + 28 * Math.sin(a * Math.PI / 180)} x2={50 + 40 * Math.cos(a * Math.PI / 180)} y2={50 + 40 * Math.sin(a * Math.PI / 180)} stroke={dk ? gold : '#94741A'} strokeWidth="5" strokeLinecap="round" />)}</g>,
     // The moon (pass IT): the old path's two arcs fell onto the same half-circle and drew nothing. Now a crescent, an outer
     // half-circle and a flatter inner arc.
-    moon: <path d="M66 16A34 34 0 0 0 66 84A40 40 0 0 1 66 16Z" fill={gold} stroke={dk ? 'none' : '#94741A'} strokeWidth="2" />,
+    // The moon (pass NC, EARMARKS A83): a fuller crescent opening to the left, so it never reads as a capital C beside a lesson on C.
+    moon: <path d="M34 16A34 34 0 0 1 34 84A60 60 0 0 0 34 16Z" fill={gold} stroke={dk ? 'none' : '#94741A'} strokeWidth="2" />,
     // Six pictures the questions used with no drawing (pass IT, Mikey's screenshots): each fell back to a grey circle.
     cup: <g><path d="M38 14q-4 6 0 11M50 12q-4 7 0 13" fill="none" stroke="#B9C2C9" strokeWidth="3" strokeLinecap="round" /><path d="M68 40h6a10 10 0 0 1 0 20h-6" fill="none" stroke="#4A6A86" strokeWidth="5" strokeLinecap="round" /><path d="M24 32h44v30a18 18 0 0 1-18 18h-8a18 18 0 0 1-18-18z" fill="#E8EEF3" stroke="#4A6A86" strokeWidth="3" strokeLinejoin="round" /><path d="M28 41h36" stroke={blue} strokeWidth="4" strokeLinecap="round" /></g>,
     bus: <g><rect x="12" y="28" width="76" height="40" rx="8" fill="#F2B632" stroke="#8A5A12" strokeWidth="3" /><rect x="13" y="56" width="74" height="5" fill="#2E2E2E" />{[20, 36, 52].map((x) => <rect key={x} x={x} y="34" width="12" height="12" rx="2" fill="#CFE6F5" stroke="#8A5A12" strokeWidth="2" />)}<rect x="68" y="34" width="14" height="20" rx="2" fill="#CFE6F5" stroke="#8A5A12" strokeWidth="2" /><circle cx="28" cy="70" r="9" fill="#2E2E2E" stroke="#BFC5C9" strokeWidth="3" /><circle cx="72" cy="70" r="9" fill="#2E2E2E" stroke="#BFC5C9" strokeWidth="3" /></g>,
     dog: <g><ellipse cx="26" cy="48" rx="11" ry="20" fill="#7A4E2A" stroke={dk ? '#D9B48A' : 'none'} strokeWidth="2" transform="rotate(18 26 48)" /><ellipse cx="74" cy="48" rx="11" ry="20" fill="#7A4E2A" stroke={dk ? '#D9B48A' : 'none'} strokeWidth="2" transform="rotate(-18 74 48)" /><circle cx="50" cy="52" r="26" fill="#C98B52" stroke={dk ? 'none' : '#8A5A2E'} strokeWidth="2.5" /><ellipse cx="50" cy="66" rx="14" ry="10" fill="#F1D3B0" /><circle cx="40" cy="47" r="4" fill="#2E2E2E" /><circle cx="60" cy="47" r="4" fill="#2E2E2E" /><ellipse cx="50" cy="60" rx="6" ry="4.5" fill="#2E2E2E" /><path d="M50 64v5M44 71q6 5 12 0" fill="none" stroke="#2E2E2E" strokeWidth="2.5" strokeLinecap="round" /></g>,
+    // A pig (pass NB): Dog and frog and Star and spoon put two parts together into pig (puh, ig), and Make a rhyme makes a big pig, on
+    // lesson lines and on answer tiles (p4-make-pic draws it too).
+    // A round pink face with pointed ears behind it, a snout with two nostrils, two eyes and a smile; a deep rose edge where the paper or
+    // the tile is light (the pink alone reads under 2 to 1 on white) and a pale rose one on a dark theme's tile.
+    pig: <g><path d="M30 36 L22 12 L46 26 Z" fill="#E98BA3" stroke={dk ? '#F6C9D4' : '#A8445F'} strokeWidth="2.5" strokeLinejoin="round" /><path d="M70 36 L78 12 L54 26 Z" fill="#E98BA3" stroke={dk ? '#F6C9D4' : '#A8445F'} strokeWidth="2.5" strokeLinejoin="round" /><circle cx="50" cy="54" r="30" fill="#F5AFC0" stroke={dk ? '#F6C9D4' : '#A8445F'} strokeWidth="2.5" /><circle cx="39" cy="46" r="4" fill="#2E2E2E" /><circle cx="61" cy="46" r="4" fill="#2E2E2E" /><ellipse cx="50" cy="62" rx="13" ry="9" fill="#E7849D" stroke="#A8445F" strokeWidth="2" /><ellipse cx="45" cy="62" rx="2.4" ry="3.4" fill="#7A2E45" /><ellipse cx="55" cy="62" rx="2.4" ry="3.4" fill="#7A2E45" /><path d="M41 75q9 6 18 0" fill="none" stroke="#7A2E45" strokeWidth="2.5" strokeLinecap="round" /></g>,
     hat: <g><ellipse cx="50" cy="66" rx="40" ry="10" fill={dk ? '#7088B7' : '#3F5F9E'} stroke="#22365E" strokeWidth="3" /><path d="M28 64V40a22 14 0 0 1 44 0v24" fill={dk ? '#7592C8' : '#4E73B8'} stroke="#22365E" strokeWidth="3" /><rect x="29.5" y="53" width="41" height="8" fill="#C9573E" /></g>,
     bed: <g><rect x="12" y="34" width="8" height="46" rx="2" fill={dk ? '#B88A5A' : '#8B5A2B'} /><rect x="80" y="50" width="8" height="30" rx="2" fill={dk ? '#B88A5A' : '#8B5A2B'} /><rect x="16" y="56" width="68" height="14" rx="3" fill="#8DB3DB" stroke="#2F66A8" strokeWidth="2" /><rect x="21" y="45" width="22" height="12" rx="5" fill="#F4F6F7" stroke="#6F7A76" strokeWidth="2" /><path d="M44 57q18-9 40 0z" fill="#5E8FD0" stroke={dk ? 'none' : '#2F66A8'} strokeWidth="2" /><rect x="16" y="70" width="68" height="6" fill={dk ? '#B88A5A' : '#8B5A2B'} /></g>,
     fan: <g><rect x="46" y="58" width="8" height="22" fill={dk ? '#8A9086' : '#6B716A'} /><rect x="30" y="78" width="40" height="8" rx="4" fill={dk ? '#8A9086' : '#6B716A'} /><circle cx="50" cy="40" r="28" fill="#DCE6EC" stroke="#6B716A" strokeWidth="3" />{[0, 120, 240].map((a) => { const x = 50 + 12 * Math.cos((a - 90) * Math.PI / 180); const y = 40 + 12 * Math.sin((a - 90) * Math.PI / 180); return <ellipse key={a} cx={x} cy={y} rx="7" ry="13" fill="#4A86C5" transform={`rotate(${a} ${x} ${y})`} />; })}<circle cx="50" cy="40" r="5" fill="#2E2E2E" /></g>,
@@ -699,8 +711,13 @@ function IconPic({ name, size = 90, tile = false }) {
     // looked like counting dots.
     snow: <g><path d="M28 52a14 14 0 0 1 3-27 20 20 0 0 1 38-4 15 15 0 0 1 3 31z" fill="#D6DBD2" stroke={dkPaper ? '#7A8076' : grey} strokeWidth="3" />{[[34, 70], [50, 80], [66, 70]].map(([x, y], i) => <path key={i} d={'M' + (x - 6) + ' ' + y + ' L' + (x + 6) + ' ' + y + ' M' + x + ' ' + (y - 6) + ' L' + x + ' ' + (y + 6) + ' M' + (x - 4.2) + ' ' + (y - 4.2) + ' L' + (x + 4.2) + ' ' + (y + 4.2) + ' M' + (x - 4.2) + ' ' + (y + 4.2) + ' L' + (x + 4.2) + ' ' + (y - 4.2)} stroke={dkPaper ? '#3F78B4' : blue} strokeWidth="2.4" strokeLinecap="round" />)}</g>,
     plant: <g><defs><linearGradient id="eduLeafG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#6FAF7E" /><stop offset="1" stopColor="#245A3C" /></linearGradient></defs><rect x="30" y="72" width="40" height="16" rx="4" fill={brown} /><rect x="30" y="72" width="40" height="4" rx="2" fill="#A8743F" opacity="0.7" /><line x1="50" y1="72" x2="50" y2="34" stroke="#3E7D52" strokeWidth="5" strokeLinecap="round" /><ellipse cx="38" cy="48" rx="12" ry="7" fill="url(#eduLeafG)" transform="rotate(-30 38 48)" /><ellipse cx="62" cy="40" rx="12" ry="7" fill="url(#eduLeafG)" transform="rotate(30 62 40)" /></g>,
-    tree: <g><defs><radialGradient id="eduTreeG" cx="38%" cy="32%" r="70%"><stop offset="0" stopColor="#7FB58E" /><stop offset="1" stopColor="#245A3C" /></radialGradient></defs><rect x="44" y="60" width="12" height="28" rx="3" fill={brown} /><rect x="47" y="60" width="3" height="28" fill="#A8743F" opacity="0.6" /><circle cx="50" cy="44" r="26" fill="url(#eduTreeG)" /><circle cx="38" cy="36" r="7" fill="#fff" opacity="0.18" /></g>,
-    flower: <g><line x1="50" y1="88" x2="50" y2="50" stroke={green} strokeWidth="5" />{[0, 72, 144, 216, 288].map((a) => <ellipse key={a} cx={50 + 14 * Math.cos(a * Math.PI / 180)} cy={44 + 14 * Math.sin(a * Math.PI / 180)} rx="10" ry="7" fill={red} transform={`rotate(${a} ${50 + 14 * Math.cos(a * Math.PI / 180)} ${44 + 14 * Math.sin(a * Math.PI / 180)})`} />)}<circle cx="50" cy="44" r="8" fill={gold} /></g>,
+    // The tree's edge (pass NB, round one's picture check): on a dark tile its shaded canopy read 1.89 to 1 and its trunk 2.38, and on the
+    // dark paper its lit edge 2.89; a pale green ring and a lighter trunk on a dark tile, and a deep green ring on the dark paper, read 4.42
+    // and 4.53.
+    tree: <g><defs><radialGradient id="eduTreeG" cx="38%" cy="32%" r="70%"><stop offset="0" stopColor="#7FB58E" /><stop offset="1" stopColor="#245A3C" /></radialGradient></defs><rect x="44" y="60" width="12" height="28" rx="3" fill={dk ? '#BC8650' : brown} /><rect x="47" y="60" width="3" height="28" fill="#A8743F" opacity="0.6" /><circle cx="50" cy="44" r="26" fill="url(#eduTreeG)" stroke={dk ? '#B9DCC4' : dkPaper ? '#245A3C' : 'none'} strokeWidth="2" /><circle cx="38" cy="36" r="7" fill="#fff" opacity="0.18" /></g>,
+    // The flower's edge (pass NB, round one's picture check): its petals read 2.61 to 1 on the dark theme's right tile and its stem 1.60 on
+    // the dark paper; lighter petals on a dark tile and a deep green stem on the dark paper read 3.78 and 3.32 or better.
+    flower: <g><line x1="50" y1="88" x2="50" y2="50" stroke={dkPaper ? '#2F5D4F' : green} strokeWidth="5" />{[0, 72, 144, 216, 288].map((a) => <ellipse key={a} cx={50 + 14 * Math.cos(a * Math.PI / 180)} cy={44 + 14 * Math.sin(a * Math.PI / 180)} rx="10" ry="7" fill={dk ? '#E07A62' : red} transform={`rotate(${a} ${50 + 14 * Math.cos(a * Math.PI / 180)} ${44 + 14 * Math.sin(a * Math.PI / 180)})`} />)}<circle cx="50" cy="44" r="8" fill={gold} /></g>,
     fish: <g><defs><linearGradient id="eduFishG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stopColor="#7FB3E6" /><stop offset="1" stopColor="#2F66A8" /></linearGradient></defs><path d="M70 50l18-14v28z" fill={dk ? '#5B95D2' : '#2F66A8'} /><ellipse cx="46" cy="50" rx="28" ry="16" fill="url(#eduFishG)" stroke={dk ? '#9CC7F0' : '#2F66A8'} strokeWidth="2" /><path d="M40 40q8 2 12 10-4 8-12 10" fill="none" stroke="#fff" strokeWidth="1.5" opacity="0.5" /><circle cx="32" cy="46" r="3.5" fill="#fff" /><circle cx="33" cy="46" r="1.6" fill="#1a1a1a" /></g>,
     // The bird's body and head take a darker edge, 3 to 1 or better on a right answer's green tile (pass MY, round two's code read:
     // 2.76 before), and its beak a darker gold one (the third read: 2.73); its look bird~big (ICON_LOOKS) draws it a quarter larger for
@@ -733,9 +750,15 @@ function IconPic({ name, size = 90, tile = false }) {
     tower: <g transform="translate(17.2 41.2) scale(0.63)">{[0, -40, -80].map((dy) => <g key={dy} transform={`translate(0 ${dy})`}><path d="M24 36 L54 24 L80 32 L50 44 Z" fill="#E46B57" stroke="#7A2E1F" strokeWidth="4.5" strokeLinejoin="round" /><path d="M24 36 L50 44 L50 84 L24 76 Z" fill="#C9573E" stroke="#7A2E1F" strokeWidth="4.5" strokeLinejoin="round" /><path d="M50 44 L80 32 L80 72 L50 84 Z" fill="#A8432D" stroke="#7A2E1F" strokeWidth="4.5" strokeLinejoin="round" /></g>)}</g>,
     teddy: <g><circle cx="30" cy="30" r="10" fill="#A9743F" /><circle cx="70" cy="30" r="10" fill="#A9743F" /><circle cx="50" cy="40" r="22" fill="#C48A48" /><ellipse cx="50" cy="48" rx="9" ry="7" fill="#E8C9A0" /><circle cx="42" cy="36" r="3" fill="#2E2E2E" /><circle cx="58" cy="36" r="3" fill="#2E2E2E" /><ellipse cx="50" cy="46" rx="3.5" ry="2.5" fill="#2E2E2E" /><ellipse cx="50" cy="76" rx="20" ry="16" fill="#C48A48" /><circle cx="26" cy="72" r="8" fill="#A9743F" /><circle cx="74" cy="72" r="8" fill="#A9743F" /><ellipse cx="50" cy="78" rx="9" ry="7" fill="#E8C9A0" /></g>,
     sock: <g><path d="M34 22 H60 V50 Q60 58 68 62 L78 68 Q86 74 80 84 Q72 92 60 86 L40 74 Q32 68 34 58 Z" fill="#4A86C5" stroke={dk ? '#8FB8E3' : '#2F5F91'} strokeWidth="3" strokeLinejoin="round" /><rect x="32" y="12" width="30" height="12" rx="3" fill="#DDEBF7" stroke="#2F5F91" strokeWidth="2.5" /><path d="M64 84 Q74 88 78 80" fill="none" stroke="#DDEBF7" strokeWidth="3" strokeLinecap="round" opacity="0.8" /></g>,
-    spoon: <g><ellipse cx="50" cy="28" rx="15" ry="20" fill="#D8DEE2" stroke="#6F7A76" strokeWidth="3" /><ellipse cx="46" cy="22" rx="5" ry="8" fill="#fff" opacity="0.5" /><path d="M50 48 L50 88" stroke="#B8BFBA" strokeWidth="9" strokeLinecap="round" /><path d="M50 48 L50 88" stroke="#6F7A76" strokeWidth="11" strokeLinecap="round" opacity="0.25" /></g>,
-    log: <g><rect x="12" y="36" width="72" height="28" rx="6" fill="#8B5A2B" stroke="#5E3C1A" strokeWidth="3" /><path d="M20 44 Q32 40 44 44 M22 56 Q38 60 54 56 M58 42 Q66 46 74 42 M60 58 Q68 62 76 58" fill="none" stroke="#5E3C1A" strokeWidth="2.5" strokeLinecap="round" /><ellipse cx="84" cy="50" rx="9" ry="14" fill="#E2B97A" stroke="#5E3C1A" strokeWidth="3" /><ellipse cx="84" cy="50" rx="4" ry="7" fill="none" stroke="#B07838" strokeWidth="2" /></g>,
-    book: <g><path d="M22 18 H70 Q78 18 78 26 V82 H30 Q22 82 22 74 Z" fill="#3E7D52" stroke="#245A3C" strokeWidth="3" strokeLinejoin="round" /><path d="M30 68 H78 V82 H30 Q22 82 22 75 Q22 68 30 68 Z" fill="#F4F6F7" stroke="#245A3C" strokeWidth="2.5" strokeLinejoin="round" /><rect x="34" y="30" width="32" height="7" rx="2" fill={gold} /></g>,
+    // The spoon's handle (pass NB, round one's picture check) wears the bowl's grey edge in full: a faint edge read 2.30 to 1 at best on a
+    // light tile and 1.76 on the dark paper, and the spoon looked close to a magnifying glass; the edge reads 3.45 or better everywhere.
+    spoon: <g><ellipse cx="50" cy="28" rx="15" ry="20" fill="#D8DEE2" stroke={dk ? '#A9B3AE' : '#6F7A76'} strokeWidth="3" /><ellipse cx="46" cy="22" rx="5" ry="8" fill="#fff" opacity="0.5" /><path d="M50 48 L50 88" stroke={dk ? '#A9B3AE' : '#6F7A76'} strokeWidth="11" strokeLinecap="round" /><path d="M50 48 L50 88" stroke="#B8BFBA" strokeWidth="7" strokeLinecap="round" /></g>,
+    // The log's body on a dark tile (pass NB, round one's picture check): its brown read 2.38 to 1 there and its outline 1.13 to 1.43, on
+    // three quarters of its edge; a lighter brown reads 4.42.
+    log: <g><rect x="12" y="36" width="72" height="28" rx="6" fill={dk ? '#BC8650' : '#8B5A2B'} stroke={dk ? '#E2B97A' : '#5E3C1A'} strokeWidth="3" /><path d="M20 44 Q32 40 44 44 M22 56 Q38 60 54 56 M58 42 Q66 46 74 42 M60 58 Q68 62 76 58" fill="none" stroke="#5E3C1A" strokeWidth="2.5" strokeLinecap="round" /><ellipse cx="84" cy="50" rx="9" ry="14" fill="#E2B97A" stroke={dk ? '#E2B97A' : '#5E3C1A'} strokeWidth="3" /><ellipse cx="84" cy="50" rx="4" ry="7" fill="none" stroke="#B07838" strokeWidth="2" /></g>,
+    // The book's cover edge on a dark tile (pass NC, round one's screen check: p3-draw-job puts it on a tile): #245A3C read 2.82 to 1 on
+    // the dark theme's resting tile and 2.26 on a right one, and a light green reads 7.15 or better there; the light theme keeps its own.
+    book: <g><path d="M22 18 H70 Q78 18 78 26 V82 H30 Q22 82 22 74 Z" fill="#3E7D52" stroke={dk ? '#9FDDB5' : '#245A3C'} strokeWidth="3" strokeLinejoin="round" /><path d="M30 68 H78 V82 H30 Q22 82 22 75 Q22 68 30 68 Z" fill="#F4F6F7" stroke="#245A3C" strokeWidth="2.5" strokeLinejoin="round" /><rect x="34" y="30" width="32" height="7" rx="2" fill={gold} /></g>,
     glass: <g><path d="M30 14 L70 14 L64 88 L36 88 Z" fill="#E6F3FA" stroke="#4A6A86" strokeWidth="3" strokeLinejoin="round" /><path d="M33 44 L67 44 L64 88 L36 88 Z" fill="#8EC5EA" opacity="0.85" /><path d="M40 24 L38 74" stroke="#fff" strokeWidth="3" opacity="0.6" strokeLinecap="round" /></g>,
     flashlight: <g transform="rotate(-30 50 50)"><rect x="16" y="38" width="44" height="24" rx="5" fill="#4A6A86" stroke="#2E4A62" strokeWidth="3" /><path d="M60 34 L78 26 L78 74 L60 66 Z" fill="#6B8AA6" stroke="#2E4A62" strokeWidth="3" strokeLinejoin="round" /><path d="M82 30 L96 22 M84 50 L98 50 M82 70 L96 78" stroke={gold} strokeWidth="4" strokeLinecap="round" /><rect x="24" y="44" width="10" height="12" rx="2" fill={red} /></g>,
     lamp: <g><path d="M30 44 L70 44 L62 14 L38 14 Z" fill="#F2C14E" stroke="#8A6A1F" strokeWidth="3" strokeLinejoin="round" /><rect x="47" y="44" width="6" height="32" fill="#8A9086" /><path d="M28 88 Q50 72 72 88 Z" fill="#6B716A" stroke="#4A4F49" strokeWidth="2" /><path d="M24 50 L14 58 M76 50 L86 58 M50 48 L50 60" stroke={gold} strokeWidth="3" strokeLinecap="round" opacity="0.9" /></g>,
@@ -755,7 +778,7 @@ function IconPic({ name, size = 90, tile = false }) {
     // side view's back post rising over the seat read as a capital H, a letter pre-K 4 traces before its Three steps lesson. Since round
     // two's story check the back reaches down to the seat (it floated a hairline above it), and the front legs, strokes with no fill to
     // carry them, are a lighter brown that reads 3.3 to 1 on the dark theme's answer tiles (the outline brown read 1.8).
-    chair: <g><rect x="30" y="8" width="40" height="46" rx="6" fill="#B07838" stroke="#6E4A26" strokeWidth="3" /><path d="M40 16 L40 44 M50 16 L50 44 M60 16 L60 44" stroke="#6E4A26" strokeWidth="3" strokeLinecap="round" opacity="0.45" /><path d="M22 54 L78 54 L72 66 L28 66 Z" fill="#C9955A" stroke="#6E4A26" strokeWidth="3" strokeLinejoin="round" /><path d="M30 66 L27 92 M70 66 L73 92" stroke="#A86F33" strokeWidth="6" strokeLinecap="round" /><path d="M36 64 L36 84 M64 64 L64 84" stroke="#A26B32" strokeWidth="5" strokeLinecap="round" /></g>,
+    chair: <g><rect x="30" y="8" width="40" height="46" rx="6" fill="#B07838" stroke={dk ? '#E0B98A' : '#6E4A26'} strokeWidth="3" /><path d="M40 16 L40 44 M50 16 L50 44 M60 16 L60 44" stroke="#6E4A26" strokeWidth="3" strokeLinecap="round" opacity="0.45" /><path d="M22 54 L78 54 L72 66 L28 66 Z" fill="#C9955A" stroke={dk ? '#E0B98A' : '#6E4A26'} strokeWidth="3" strokeLinejoin="round" /><path d="M30 66 L27 92 M70 66 L73 92" stroke={dk ? '#D9A066' : '#A86F33'} strokeWidth="6" strokeLinecap="round" /><path d="M36 64 L36 84 M64 64 L64 84" stroke={dk ? '#D49A5E' : '#A26B32'} strokeWidth="5" strokeLinecap="round" /></g>,
     bulb: <g><path d="M50 10 Q24 10 24 36 Q24 50 36 60 L36 70 L64 70 L64 60 Q76 50 76 36 Q76 10 50 10 Z" fill={gold} stroke="#8A6A1F" strokeWidth="3" strokeLinejoin="round" /><rect x="38" y="72" width="24" height="7" rx="2" fill="#8A9086" /><rect x="40" y="81" width="20" height="7" rx="2" fill="#6F7A76" /><path d="M44 58 L46 44 L50 50 L54 44 L56 58" fill="none" stroke="#8A6A1F" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /><path d="M14 30 L8 28 M86 30 L92 28 M20 12 L16 8 M80 12 L84 8" stroke="#D99A2B" strokeWidth="3" strokeLinecap="round" /></g>,
     // A classroom whiteboard (pass MQ): one white board in a gray frame with a marker tray, a circle and a triangle drawn on it and
     // a line of writing, so it never reads as the story board's three cards below.
@@ -763,7 +786,10 @@ function IconPic({ name, size = 90, tile = false }) {
     board: <g><rect x="6" y="30" width="26" height="40" rx="3" fill="#F4F6F7" stroke="#4A6A86" strokeWidth="2.5" /><rect x="37" y="30" width="26" height="40" rx="3" fill="#F4F6F7" stroke="#4A6A86" strokeWidth="2.5" /><rect x="68" y="30" width="26" height="40" rx="3" fill="#F4F6F7" stroke="#4A6A86" strokeWidth="2.5" /><circle cx="19" cy="48" r="7" fill="none" stroke={blue} strokeWidth="2.5" /><rect x="43" y="42" width="14" height="14" fill="none" stroke={green} strokeWidth="2.5" /><path d="M74 58 L81 40 L88 58 Z" fill="none" stroke={red} strokeWidth="2.5" strokeLinejoin="round" /></g>,
     // Pass KQ (kindergarten technology): a camera, a music note and a magnifier for searching.
     camera: <g><rect x="12" y="30" width="76" height="52" rx="8" fill="#4A6A86" stroke="#2E4A62" strokeWidth="3" /><rect x="34" y="20" width="22" height="12" rx="3" fill="#2E4A62" /><circle cx="50" cy="56" r="17" fill="#2E4A62" /><circle cx="50" cy="56" r="11" fill="#8EC5EA" /><circle cx="46" cy="52" r="3" fill="#fff" opacity="0.8" /><rect x="68" y="38" width="12" height="6" rx="2" fill={gold} /></g>,
-    music: <g><path d="M40 70 L40 22 L74 14 L74 60" fill="none" stroke="#2E2E2E" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" /><path d="M40 22 L74 14 L74 26 L40 34 Z" fill="#2E2E2E" /><ellipse cx="31" cy="72" rx="11" ry="8" fill={red} transform="rotate(-20 31 72)" /><ellipse cx="65" cy="62" rx="11" ry="8" fill={red} transform="rotate(-20 65 62)" /></g>,
+    // The music note's stems and beam on a dark tile (pass NC, found while applying round one's screen check): near-black, they read
+    // 1.03 to 1 on the dark theme's resting tile in tk-tap-made, where only the red heads showed; they take the phone's light edge
+    // there (5.17 to 1 or better), the light theme keeping its own.
+    music: <g><path d="M40 70 L40 22 L74 14 L74 60" fill="none" stroke={dk ? '#A9B3AE' : '#2E2E2E'} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" /><path d="M40 22 L74 14 L74 26 L40 34 Z" fill={dk ? '#A9B3AE' : '#2E2E2E'} /><ellipse cx="31" cy="72" rx="11" ry="8" fill={red} transform="rotate(-20 31 72)" /><ellipse cx="65" cy="62" rx="11" ry="8" fill={red} transform="rotate(-20 65 62)" /></g>,
     search: <g><circle cx="42" cy="42" r="24" fill="#CFEAF7" stroke="#4A6A86" strokeWidth="6" /><circle cx="42" cy="42" r="16" fill="none" stroke="#fff" strokeWidth="3" opacity="0.7" /><path d="M60 60 L86 86" stroke="#8B5A2B" strokeWidth="11" strokeLinecap="round" /><path d="M60 60 L86 86" stroke="#B07838" strokeWidth="5" strokeLinecap="round" /></g>,
     // Pass KP (kindergarten health, part two): a child inside a bubble of personal space, a raised hand that means stop, a
     // playground slide, a kitchen knife, scissors, a screwdriver, a house with its number plate blank, a medicine bottle and a
@@ -1142,13 +1168,17 @@ function IconPic({ name, size = 90, tile = false }) {
     cake: <g><path d="M18 56 L82 56 L82 84 Q82 90 76 90 L24 90 Q18 90 18 84 Z" fill="#F2C14E" stroke="#8A6A1F" strokeWidth="3" strokeLinejoin="round" /><path d="M18 56 Q50 70 82 56" fill="none" stroke="#C9573E" strokeWidth="5" /><rect x="20" y="48" width="60" height="10" rx="4" fill="#C9573E" />{[32, 50, 68].map((x) => <g key={x}><rect x={x - 2} y="30" width="4" height="18" fill="#4A86C5" /><path d={`M${x} 18 Q${x + 5} 26 ${x} 30 Q${x - 5} 26 ${x} 18 Z`} fill={gold} /></g>)}</g>,
     fridge: <g><rect x="26" y="8" width="48" height="84" rx="5" fill="#E8EEF3" stroke="#4A6A86" strokeWidth="3" /><path d="M26 40 L74 40" stroke="#4A6A86" strokeWidth="3" /><rect x="64" y="18" width="4" height="14" rx="2" fill="#4A6A86" /><rect x="64" y="50" width="4" height="24" rx="2" fill="#4A6A86" /></g>,
     washer: <g><rect x="22" y="10" width="56" height="80" rx="6" fill="#E8EEF3" stroke="#4A6A86" strokeWidth="3" /><rect x="22" y="10" width="56" height="16" rx="6" fill="#DCE6EC" stroke="#4A6A86" strokeWidth="3" /><circle cx="66" cy="18" r="3" fill="#4A6A86" /><circle cx="56" cy="18" r="3" fill="#4A6A86" /><circle cx="50" cy="58" r="22" fill="#4A6A86" /><circle cx="50" cy="58" r="16" fill="#8EC5EA" /><path d="M38 60 Q50 50 62 60" fill="none" stroke="#fff" strokeWidth="3" opacity="0.8" /></g>,
-    phone: <g><rect x="32" y="8" width="36" height="84" rx="8" fill="#2E2E2E" stroke="#1a1a1a" strokeWidth="2" /><rect x="36" y="16" width="28" height="60" rx="3" fill="#8EC5EA" /><circle cx="50" cy="84" r="3.5" fill="#B9C2C9" /><rect x="44" y="11" width="12" height="2.5" rx="1" fill="#B9C2C9" /></g>,
-    tablet: <g><rect x="12" y="20" width="76" height="60" rx="7" fill="#2E2E2E" stroke="#1a1a1a" strokeWidth="2" /><rect x="18" y="26" width="64" height="48" rx="3" fill="#CFEAF7" /><circle cx="50" cy="50" r="9" fill={green} /><path d="M30 64 L70 64" stroke={gold} strokeWidth="4" strokeLinecap="round" /></g>,
+    // The phone's and the tablet's edges on a dark tile (pass NC, round one's screen check: p4-sbs-blend puts the phone on a tile in 186
+    // of 400 seeds, and the tablet, found while applying it, stands on tk-tap-made's and ck-tap-tech's): a near-black body with a black
+    // edge read 1.03 to 1.56 to 1 there, so only the blue screen showed, and a light grey edge reads 5.17 or better; the light theme keeps its own.
+    phone: <g><rect x="32" y="8" width="36" height="84" rx="8" fill="#2E2E2E" stroke={dk ? '#A9B3AE' : '#1a1a1a'} strokeWidth="2" /><rect x="36" y="16" width="28" height="60" rx="3" fill="#8EC5EA" /><circle cx="50" cy="84" r="3.5" fill="#B9C2C9" /><rect x="44" y="11" width="12" height="2.5" rx="1" fill="#B9C2C9" /></g>,
+    tablet: <g><rect x="12" y="20" width="76" height="60" rx="7" fill="#2E2E2E" stroke={dk ? '#A9B3AE' : '#1a1a1a'} strokeWidth="2" /><rect x="18" y="26" width="64" height="48" rx="3" fill="#CFEAF7" /><circle cx="50" cy="50" r="9" fill={green} /><path d="M30 64 L70 64" stroke={gold} strokeWidth="4" strokeLinecap="round" /></g>,
     pencil: <g transform="rotate(-45 50 50)"><rect x="22" y="42" width="48" height="16" fill="#F2C14E" stroke="#8A6A1F" strokeWidth="2.5" /><path d="M70 42 L84 50 L70 58 Z" fill="#E2B97A" stroke="#8A6A1F" strokeWidth="2.5" strokeLinejoin="round" /><path d="M79 47 L84 50 L79 53 Z" fill="#2E2E2E" /><rect x="14" y="42" width="8" height="16" fill="#E88A8A" stroke="#8A6A1F" strokeWidth="2.5" /><path d="M30 50 L66 50" stroke="#D99A2B" strokeWidth="2" /></g>,
     // A red crayon (pass ML, the lesson check's second read): a red body in its paper wrapper, two thin bands on the wrapper and a
     // blunt cone tip, at the pencil's slant, so two of them can stand for "Two red crayons from the same box match" until P137
-    // is painted. Fixed art colors on paper, the same in both themes.
-    crayon: <g transform="rotate(-45 50 50)"><rect x="14" y="42" width="58" height="16" rx="3" fill="#D9473B" stroke="#7A2620" strokeWidth="2.5" /><rect x="24" y="42" width="38" height="16" fill="#B5352B" stroke="#7A2620" strokeWidth="2" /><path d="M27 46.5 L59 46.5 M27 53.5 L59 53.5" stroke="#F2C9C2" strokeWidth="1.8" /><path d="M72 43.5 L85 48.5 Q87.5 50 85 51.5 L72 56.5 Z" fill="#D9473B" stroke="#7A2620" strokeWidth="2.5" strokeLinejoin="round" /></g>,
+    // is painted. Fixed art colors on paper, the same in both themes, but for its edge on a dark tile (pass NC, round one's screen
+    // check: the answer in p3-draw-tool and p4-tell-tool read 2.61 to 1 on a right one), a light red there, 5.75 or better.
+    crayon: <g transform="rotate(-45 50 50)"><rect x="14" y="42" width="58" height="16" rx="3" fill="#D9473B" stroke={dk ? '#F0A99A' : '#7A2620'} strokeWidth="2.5" /><rect x="24" y="42" width="38" height="16" fill="#B5352B" stroke={dk ? '#F0A99A' : '#7A2620'} strokeWidth="2" /><path d="M27 46.5 L59 46.5 M27 53.5 L59 53.5" stroke="#F2C9C2" strokeWidth="1.8" /><path d="M72 43.5 L85 48.5 Q87.5 50 85 51.5 L72 56.5 Z" fill="#D9473B" stroke={dk ? '#F0A99A' : '#7A2620'} strokeWidth="2.5" strokeLinejoin="round" /></g>,
     // Pass KM (kindergarten social studies): a bird over a table and a cat under it, a ball near a tree with a house far up a
     // hill, a folded map with a river and a park, and a globe on its stand with land shapes that only suggest continents.
     table: <g><rect x="20" y="52" width="60" height="6" rx="2" fill={brown} /><rect x="26" y="58" width="6" height="26" fill={brown} /><rect x="68" y="58" width="6" height="26" fill={brown} /><ellipse cx="50" cy="34" rx="12" ry="8" fill={grey} /><circle cx="61" cy="28" r="5" fill={grey} /><path d="M66 28l6 2-6 2z" fill={gold} /><path d="M44 32q6-10 14-4" fill="none" stroke="#6B716A" strokeWidth="3" strokeLinecap="round" /><ellipse cx="50" cy="76" rx="12" ry="8" fill="#B07838" /><circle cx="40" cy="72" r="6" fill="#B07838" /><path d="M36 67l2-5 3 4M41 67l3-5 2 5z" fill="#B07838" /><circle cx="38" cy="72" r="1.2" fill="#2E2E2E" /><circle cx="42" cy="72" r="1.2" fill="#2E2E2E" /><path d="M62 76q8-6 6-14" fill="none" stroke="#B07838" strokeWidth="3" strokeLinecap="round" /></g>,
@@ -1195,6 +1225,41 @@ function IconPic({ name, size = 90, tile = false }) {
     // each outlined to read 3 to 1 or better on a resting, a right and a wrong answer's tile in both themes.
     soap: <g>{[[34, 24, 8], [52, 14, 6], [66, 27, 7]].map(([cx, cy, r]) => <circle key={cx} cx={cx} cy={cy} r={r} fill="#E3F2FB" stroke={dk ? '#9CC7F0' : '#3B78B8'} strokeWidth="2.5" />)}<rect x="14" y="42" width="72" height="42" rx="16" fill="#F2A7C3" stroke={dk ? '#F7C6D9' : '#A4466F'} strokeWidth="3" /><path d="M26 54 Q38 47 52 50" fill="none" stroke="#FFFFFF" strokeWidth="4.5" strokeLinecap="round" opacity="0.75" /><circle cx="70" cy="70" r="4" fill="#FFFFFF" opacity="0.6" /></g>,
     milk: <g><path d="M28 12 L72 12 L66 90 L34 90 Z" fill="#D6EAF7" stroke={dk ? '#B9D3E6' : '#4A6A86'} strokeWidth="3" strokeLinejoin="round" /><path d="M30.4 30 L69.6 30 L65.9 88.5 L34.1 88.5 Z" fill="#FFFFFF" /><path d="M57 30 L69.6 30 L65.9 88.5 L55.5 88.5 Z" fill="#E4EAEF" /><ellipse cx="50" cy="30" rx="19.4" ry="4.6" fill="#F6F8FA" stroke="#B7C6D1" strokeWidth="1.6" /><path d="M33.5 16 L32.6 24" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" /></g>,
+    // The phoneme lessons' words (pass NC, the standards review of Domain III's III.B.11 to III.B.13): a pie, a tie, a shoe, a boat and a
+    // kite, each word a long vowel the device's voice says as a word of its own (puh, eye; tuh, eye; shh, ooh; buh, oh, tuh; cuh, eye,
+    // tuh). Each wears an outline that reads 3 to 1 or better on a resting, a right and a wrong answer's tile in both themes and on the
+    // dark theme's light paper: a deep edge in the light theme and on that paper, and a pale one on a dark theme's tile (dk).
+    // A whole pie seen a little from above: a grey tin, a golden crust rim and a lattice over a red berry filling.
+    pie: <g><path d="M12 56 L20 80 Q50 90 80 80 L88 56 Z" fill="#A7B0B6" stroke={dk ? '#DCE3E7' : '#5C6770'} strokeWidth="3" strokeLinejoin="round" /><ellipse cx="50" cy="56" rx="38" ry="15" fill="#E2A857" stroke={dk ? '#F2CF94' : '#8A5A22'} strokeWidth="3" /><ellipse cx="50" cy="56" rx="29" ry="10.5" fill="#C9573E" /><g stroke="#EDBE73" strokeWidth="4" strokeLinecap="round"><path d="M33 49 L41 64 M45 46.5 L53 66 M57 46.5 L64 64" /><path d="M24 54 L76 54 M27 60 L73 60" /></g></g>,
+    // A necktie: a red blade with gold stripes, under its knot.
+    tie: <g><path d="M42 26 L58 26 L68 76 L50 92 L32 76 Z" fill="#C9573E" stroke={dk ? '#F0A99A' : '#7A2620'} strokeWidth="3" strokeLinejoin="round" /><g stroke="#F2C14E" strokeWidth="4"><path d="M41 42 L59 37" /><path d="M38 58 L62 52" /><path d="M36 72 L64 66" /></g><path d="M38 10 L62 10 L58 26 L42 26 Z" fill="#B44A33" stroke={dk ? '#F0A99A' : '#7A2620'} strokeWidth="3" strokeLinejoin="round" /></g>,
+    // A blue sneaker from the side, its toe to the right, with white laces and a white sole.
+    shoe: <g><path d="M14 70 L14 50 Q14 40 24 40 L36 40 Q42 46 52 44 L60 42 Q70 56 82 60 Q90 62 90 70 Z" fill="#4A86C5" stroke={dk ? '#8FB8E3' : '#2F5F91'} strokeWidth="3" strokeLinejoin="round" /><path d="M10 70 L92 70 Q92 80 84 80 L18 80 Q10 80 10 74 Z" fill="#FFFFFF" stroke={dk ? '#8FB8E3' : '#2F5F91'} strokeWidth="3" strokeLinejoin="round" /><g stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round"><path d="M46 48 L54 46" /><path d="M50 54 L59 51" /><path d="M54 60 L64 57" /></g><path d="M70 62 Q78 64 82 70" fill="none" stroke="#DDEBF7" strokeWidth="3" strokeLinecap="round" /></g>,
+    // A little sailboat on the water: a red hull, a mast, a white sail and a gold one.
+    boat: <g><path d="M50 12 L50 62" stroke={dk ? '#DCE3E7' : '#5C6770'} strokeWidth="3.5" strokeLinecap="round" /><path d="M54 16 L54 58 L84 58 Z" fill="#FFFFFF" stroke={dk ? '#DCE3E7' : '#5C6770'} strokeWidth="2.5" strokeLinejoin="round" /><path d="M46 24 L46 58 L24 58 Z" fill="#F2C14E" stroke={dk ? '#F2C14E' : '#94741A'} strokeWidth="2.5" strokeLinejoin="round" /><path d="M12 62 L88 62 L76 80 L24 80 Z" fill="#C9573E" stroke={dk ? '#F0A99A' : '#7A2620'} strokeWidth="3" strokeLinejoin="round" /><path d="M6 88 Q28 82 50 88 Q72 94 94 88" fill="none" stroke={dk ? '#8EC5EA' : '#3B78B8'} strokeWidth="3.5" strokeLinecap="round" /></g>,
+    // A diamond kite of four colors with its cross sticks, and a tail with two bows. Each bow wears the kite's line, so it reads on an answer
+    // tile in both themes (pass NC, round one's picture check: the bows had no edge).
+    kite: <g><path d="M50 8 L22 38 L50 38 Z" fill="#D9473B" /><path d="M50 8 L78 38 L50 38 Z" fill="#F2C14E" /><path d="M22 38 L50 76 L50 38 Z" fill="#4A86C5" /><path d="M78 38 L50 76 L50 38 Z" fill="#4CAF6E" /><path d="M50 8 L78 38 L50 76 L22 38 Z" fill="none" stroke={dk ? '#B9CDE0' : '#2E4A62'} strokeWidth="3" strokeLinejoin="round" /><path d="M50 8 L50 76 M22 38 L78 38" stroke={dk ? '#B9CDE0' : '#2E4A62'} strokeWidth="2" /><path d="M50 76 Q40 84 48 90 Q56 96 46 98" fill="none" stroke={dk ? '#B9CDE0' : '#2E4A62'} strokeWidth="2" strokeLinecap="round" /><path d="M40 82 L46 86 L40 88 Z" fill="#D9473B" stroke={dk ? '#B9CDE0' : '#2E4A62'} strokeWidth="1.5" strokeLinejoin="round" /><path d="M52 92 L58 94 L52 97 Z" fill="#F2C14E" stroke={dk ? '#B9CDE0' : '#2E4A62'} strokeWidth="1.5" strokeLinejoin="round" /></g>,
+    // The writing lessons' things (pass NC, Domain IV begun: drawing and writing to share an idea): a list, a card, a letter in its
+    // envelope, a marker, an arrow and a heart, and paper with scribbles, with marks that look a little like letters, and with a word.
+    // Lines on a list or a page stand for writing and spell nothing; only the word page carries a word, cat, the lesson's real letters.
+    list: <g><rect x="22" y="10" width="56" height="80" rx="4" fill="#FFFDF5" stroke={dk ? '#C9D3CE' : '#6F7A76'} strokeWidth="3" />{[[28, 64], [42, 58], [56, 66], [70, 54]].map(([y, end]) => <g key={y}><circle cx="32" cy={y} r="3" fill="#4A86C5" /><line x1="40" y1={y} x2={end} y2={y} stroke="#8A9086" strokeWidth="3.5" strokeLinecap="round" /></g>)}</g>,
+    // A greeting card standing closed, a red heart on its front panel and its fold showing at the side (pass NC, round one's picture check:
+    // drawn open in a V, it read as an open picture book beside the book).
+    card: <g><path d="M70 20 L82 27 L82 80 L70 86 Z" fill="#F2B8CB" stroke={dk ? '#F7C6D9' : '#A4466F'} strokeWidth="3" strokeLinejoin="round" /><rect x="18" y="20" width="52" height="66" rx="2" fill="#FBE3EB" stroke={dk ? '#F7C6D9' : '#A4466F'} strokeWidth="3" strokeLinejoin="round" /><path d="M44 70 C30 60 27 52 31 45 C35 38 42 39 44 46 C46 39 53 38 57 45 C61 52 58 60 44 70 Z" fill="#D9473B" /></g>,
+    // A letter in its envelope, a red stamp in the corner. The flap is grey in both themes (pass NC, round one's picture check: in the dark
+    // theme's pale stroke it read 1.15 to 1 on the envelope's own cream face).
+    envelope: <g><rect x="12" y="26" width="76" height="52" rx="4" fill="#FFFDF5" stroke={dk ? '#E9EEF0' : '#6F7A76'} strokeWidth="3" /><path d="M14 28 L50 56 L86 28" fill="none" stroke="#6F7A76" strokeWidth="3" strokeLinejoin="round" /><rect x="66" y="34" width="14" height="12" rx="1.5" fill="#D9473B" /></g>,
+    // A marker with its cap on, tipped as a hand holds it.
+    marker: <g transform="rotate(-35 50 50)"><path d="M16 44 L6 48 L6 52 L16 56 Z" fill="#4A86C5" stroke={dk ? '#8FB8E3' : '#2F5F91'} strokeWidth="2.5" strokeLinejoin="round" /><rect x="16" y="40" width="48" height="20" rx="4" fill="#F4F6F7" stroke={dk ? '#8FB8E3' : '#2F5F91'} strokeWidth="3" /><rect x="24" y="46" width="28" height="8" rx="2" fill="#4A86C5" /><rect x="62" y="38" width="28" height="24" rx="5" fill="#4A86C5" stroke={dk ? '#8FB8E3' : '#2F5F91'} strokeWidth="3" /></g>,
+    // An arrow, a symbol that tells which way to go, and a heart, a symbol for love.
+    arrow: <path d="M12 40 L56 40 L56 24 L88 50 L56 76 L56 60 L12 60 Z" fill="#4CAF6E" stroke={dk ? '#9FDDB5' : '#1F5A36'} strokeWidth="3" strokeLinejoin="round" />,
+    heart: <path d="M50 84 C22 64 12 48 18 33 C24 19 42 17 50 31 C58 17 76 19 82 33 C88 48 78 64 50 84 Z" fill="#D9473B" stroke={dk ? '#F4A99F' : '#7A2620'} strokeWidth="3" strokeLinejoin="round" />,
+    // Paper with blue scribbles; paper with red marks that look a little like letters (marks); and paper with the word cat, in real
+    // letters (word), each named as the lines name it (Writing starts as scribbles, then marks, then real letters that make words).
+    scribble: <g><rect x="16" y="14" width="68" height="72" rx="4" fill="#FFFDF5" stroke={dk ? '#E9EEF0' : '#6F7A76'} strokeWidth="3" /><path d="M24 36 Q30 24 36 36 T48 36 T60 36 T72 34 M26 58 C34 46 40 70 48 56 S62 46 68 62 S74 70 76 56" fill="none" stroke="#4A86C5" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" /></g>,
+    marks: <g><rect x="16" y="14" width="68" height="72" rx="4" fill="#FFFDF5" stroke={dk ? '#E9EEF0' : '#6F7A76'} strokeWidth="3" /><g fill="none" stroke="#C9573E" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="26" cy="32" r="5" /><path d="M26 37 L26 46" /><path d="M37 30 L37 46 M45 30 L45 46 M37 35 L45 35 M37 41 L45 41" /><path d="M59 30 L59 44 M53 37 L65 37 M54.5 32.5 L63.5 41.5 M63.5 32.5 L54.5 41.5" /><path d="M70 44 L74 30 L78 44 Z" /><path d="M22 59 L32 59 L32 69 L22 69 Z M22 59 L32 69 M32 59 L22 69" /><path d="M42 64 a2 2 0 1 1 4 0 a4 4 0 1 1 -8 0 a6 6 0 1 1 12 0" /><path d="M66 58 L66 69 Q66 74 71 72" /><circle cx="73" cy="61" r="3" /></g></g>,
+    word: <g><rect x="16" y="14" width="68" height="72" rx="4" fill="#FFFDF5" stroke={dk ? '#E9EEF0' : '#6F7A76'} strokeWidth="3" /><text x="50" y="60" textAnchor="middle" fontSize="30" fontWeight="700" fill="#2E2E2E" style={{ fontFamily: 'inherit' }}>cat</text></g>,
   }[base] || <circle cx="50" cy="50" r="30" fill={grey} />;
   // A look after ~ (pass MP) draws the same thing another way, and its name stays the thing's own, so a screen reader hears block;
   // since pass MW a look that is a state its line names is said with it (pictureLookName: a broken crayon, a sleeping baby).
@@ -1212,7 +1277,8 @@ function IconPic({ name, size = 90, tile = false }) {
 // crayon and a sleeping baby without): a look that is a state its line names is said with the thing, and any other look
 // (block~wood, plate~food) keeps the thing's own name.
 const PICTURE_LOOK_WORDS = { asleep: 'sleeping', broken: 'broken' };
-const pictureLookName = (name) => { const [base, look] = String(name).split('~'); return look && PICTURE_LOOK_WORDS[look] ? PICTURE_LOOK_WORDS[look] + ' ' + base : base; };
+// A child's drawing (pass NC) is named by what it shows (DRAWING_NAMES in logic.mjs).
+const pictureLookName = (name) => { const [base, look] = String(name).split('~'); if (base === 'drawing' && look && DRAWING_NAMES[look]) return DRAWING_NAMES[look]; if (LOOK_NAMES[String(name)]) return LOOK_NAMES[String(name)]; return look && PICTURE_LOOK_WORDS[look] ? PICTURE_LOOK_WORDS[look] + ' ' + base : base; };
 const ICON_LOOKS = {
   // A plain wooden table, seen a little from above (pass NA, the lead's look): Put the beats together says table as a word of its
   // own, beside turtle, and the table drawn for kindergarten's over and under carries a bird on it and a cat under it, which a child
@@ -1278,6 +1344,18 @@ const ICON_LOOKS = {
   'crayon~broken': <g transform="rotate(-45 50 50)"><path d="M14 45 Q14 42 17 42 L41 42 L38.6 46 L42 50 L38.6 54 L41 58 L17 58 Q14 58 14 55 Z" fill="#D9473B" stroke="#7A2620" strokeWidth="2.5" strokeLinejoin="round" /><path d="M24 42 L41 42 L38.6 46 L42 50 L38.6 54 L41 58 L24 58 Z" fill="#B5352B" stroke="#7A2620" strokeWidth="2" strokeLinejoin="round" /><path d="M27 46.5 L38 46.5 M27 53.5 L38 53.5" stroke="#F2C9C2" strokeWidth="1.8" /><g transform="translate(7 2) rotate(9 58 50)"><path d="M47 42 L72 42 L72 58 L47 58 L44.6 54 L48 50 L44.6 46 Z" fill="#D9473B" stroke="#7A2620" strokeWidth="2.5" strokeLinejoin="round" /><path d="M47 42 L62 42 L62 58 L47 58 L44.6 54 L48 50 L44.6 46 Z" fill="#B5352B" stroke="#7A2620" strokeWidth="2" strokeLinejoin="round" /><path d="M50 46.5 L59 46.5 M50 53.5 L59 53.5" stroke="#F2C9C2" strokeWidth="1.8" /><path d="M72 43.5 L85 48.5 Q87.5 50 85 51.5 L72 56.5 Z" fill="#D9473B" stroke="#7A2620" strokeWidth="2.5" strokeLinejoin="round" /></g></g>,
   'block~wood': <g><path d="M24 36 L54 24 L80 32 L50 44 Z" fill="#E2B97A" stroke="#8B5A2B" strokeWidth="3" strokeLinejoin="round" /><path d="M24 36 L50 44 L50 84 L24 76 Z" fill="#C9955A" stroke="#8B5A2B" strokeWidth="3" strokeLinejoin="round" /><path d="M50 44 L80 32 L80 72 L50 84 Z" fill="#B07838" stroke="#8B5A2B" strokeWidth="3" strokeLinejoin="round" /><path d="M30 52 Q38 50 46 54 M30 64 Q38 62 46 66" fill="none" stroke="#8B5A2B" strokeWidth="1.8" opacity="0.6" /><path d="M55 52 Q63 47 75 45 M55 64 Q64 59 75 57" fill="none" stroke="#7A4A20" strokeWidth="1.8" opacity="0.6" /><path d="M36 34 Q46 31 55 28 M44 37 Q54 34 64 31" fill="none" stroke="#B07838" strokeWidth="1.6" opacity="0.7" /><ellipse cx="38" cy="71" rx="2.6" ry="1.8" fill="none" stroke="#8B5A2B" strokeWidth="1.4" opacity="0.6" /></g>,
   'plate~food': <g><circle cx="52" cy="53" r="41" fill="#24291F" opacity="0.14" /><circle cx="50" cy="50" r="41" fill="#EEF3F6" stroke="#6F8796" strokeWidth="3" /><circle cx="50" cy="50" r="35.5" fill="none" stroke="#4A86C5" strokeWidth="2" /><circle cx="50" cy="50" r="30.5" fill="#FFFFFF" stroke="#C3D0D8" strokeWidth="2" /><path d="M50 50 L50 22 A28 28 0 0 0 22 50 Z" fill="#D9534F" /><path d="M50 50 L22 50 A28 28 0 0 0 50 78 Z" fill="#4E8F4F" /><path d="M50 50 L50 78 A28 28 0 0 0 78 50 Z" fill="#E8C98E" /><path d="M50 50 L78 50 A28 28 0 0 0 50 22 Z" fill="#9C6B3F" /><path d="M50 21 L50 79 M21 50 L79 50" stroke="#FFFFFF" strokeWidth="2.6" /><path d="M31 41 Q36 33 44 31 M33 46 Q38 39 45 37" fill="none" stroke="#F6C1BF" strokeWidth="2" strokeLinecap="round" /><circle cx="35" cy="59" r="3.4" fill="#3A6E3B" /><circle cx="41" cy="64" r="3.1" fill="#3A6E3B" /><circle cx="33" cy="66" r="2.7" fill="#3A6E3B" /><circle cx="42" cy="57" r="2.5" fill="#3A6E3B" /><ellipse cx="58" cy="58" rx="2.2" ry="1.2" fill="#FFF8E7" /><ellipse cx="65" cy="61" rx="2.2" ry="1.2" fill="#FFF8E7" transform="rotate(30 65 61)" /><ellipse cx="59" cy="66" rx="2.2" ry="1.2" fill="#FFF8E7" transform="rotate(-20 59 66)" /><ellipse cx="68" cy="55" rx="2.2" ry="1.2" fill="#FFF8E7" transform="rotate(60 68 55)" /><path d="M56 36 L64 30 M58 42 L68 34" stroke="#6E4523" strokeWidth="2" strokeLinecap="round" /></g>,
+  // A child's drawings on paper (pass NC, the writing lessons): each tells an idea, as Draw and tell and Write to tell say. The sun and a
+  // ball on the grass (I played outside today), a rain cloud and an umbrella (It rained today) and the moon, a star and a bed (It is time
+  // for bed), drawn as a young child draws with crayons. The paper wears the list's edge, which reads 3 to 1 or better on every tile and
+  // paper, and a dark theme's tile reads against the paper itself. Since round one's picture check the sun's, the moon's and the star's
+  // outlines are a deeper gold and the grass a deeper green, each 3 to 1 or better on the drawing's own paper, and the bedtime moon a
+  // filled crescent opening left (its arcs had fallen on one half-circle and read as a C).
+  'drawing~outside': ({ dk }) => <g><rect x="6" y="6" width="88" height="88" rx="5" fill="#FFFDF5" stroke={dk ? '#E9EEF0' : '#6F7A76'} strokeWidth="3" /><g transform="translate(50 50) scale(1.12) translate(-50 -50)"><circle cx="32" cy="32" r="9" fill="#F2C14E" stroke="#94741A" strokeWidth="2" /><path d="M32 17 L32 21 M32 43 L32 47 M17 32 L21 32 M43 32 L47 32 M21.5 21.5 L24 24 M40 40 L42.5 42.5 M21.5 42.5 L24 40 M40 24 L42.5 21.5" stroke="#94741A" strokeWidth="2.5" strokeLinecap="round" /><circle cx="64" cy="62" r="10" fill="#D9473B" stroke="#8E3A27" strokeWidth="2" /><path d="M56 58 Q64 54 72 58" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" /><path d="M16 82 L22 74 L28 82 L34 74 L40 82 L46 74 L52 82 L58 74 L64 82 L70 74 L76 82 L82 74 L84 80" fill="none" stroke="#3A8F55" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /></g></g>,
+  'drawing~rain': ({ dk }) => <g><rect x="6" y="6" width="88" height="88" rx="5" fill="#FFFDF5" stroke={dk ? '#E9EEF0' : '#6F7A76'} strokeWidth="3" /><g transform="translate(50 50) scale(1.12) translate(-50 -50)"><path d="M24 40 Q22 30 32 30 Q36 20 46 24 Q54 18 60 26 Q70 26 68 36 Q72 42 64 44 L28 44 Q20 44 24 40 Z" fill="#B9C2C9" stroke="#6B716A" strokeWidth="2.5" strokeLinejoin="round" /><path d="M30 52 L28 58 M42 52 L40 58 M54 52 L52 58" stroke="#4A86C5" strokeWidth="3" strokeLinecap="round" /><path d="M48 70 Q62 54 76 70 Z" fill="#D9473B" stroke="#8E3A27" strokeWidth="2.5" strokeLinejoin="round" /><path d="M62 70 L62 82 Q62 86 58 84" fill="none" stroke="#6B716A" strokeWidth="2.5" strokeLinecap="round" /></g></g>,
+  // A stop sign (pass NC): a red sign of eight sides with a white rim and STOP, on a grey post, for the writing lessons' sign that tells a
+  // car to stop at the corner; the app's stop on its own is the raised hand the safety lessons teach.
+  'sign~stop': ({ dk }) => <g><rect x="47" y="70" width="6" height="26" rx="1.5" fill="#8A9086" stroke={dk ? '#E9EEF0' : '#5C6355'} strokeWidth="2" /><path d="M61.5 12.3 L79.7 30.5 L79.7 56.5 L61.5 74.7 L38.5 74.7 L20.3 56.5 L20.3 30.5 L38.5 12.3 Z" fill="#D9473B" stroke={dk ? '#F4A99F' : '#7A2620'} strokeWidth="3" strokeLinejoin="round" /><path d="M59.8 16.5 L75.5 32.2 L75.5 54.8 L59.8 70.5 L40.2 70.5 L24.5 54.8 L24.5 32.2 L40.2 16.5 Z" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinejoin="round" /><text x="50" y="49.5" textAnchor="middle" fontSize="15" fontWeight="800" fill="#FFFFFF" style={{ fontFamily: 'inherit', letterSpacing: 0.5 }}>STOP</text></g>,
+  'drawing~bedtime': ({ dk }) => <g><rect x="6" y="6" width="88" height="88" rx="5" fill="#FFFDF5" stroke={dk ? '#E9EEF0' : '#6F7A76'} strokeWidth="3" /><g transform="translate(50 50) scale(1.12) translate(-50 -50)"><path d="M30 18 A12 12 0 1 1 30 42 A20 20 0 0 0 30 18 Z" fill="#F2C14E" stroke="#94741A" strokeWidth="2" strokeLinejoin="round" /><path d="M62 22 L64 27 L69 27 L65 30 L67 35 L62 32 L57 35 L59 30 L55 27 L60 27 Z" fill="#F2C14E" stroke="#94741A" strokeWidth="1.5" strokeLinejoin="round" /><path d="M20 78 L20 56 M80 78 L80 64 M20 64 L80 64 L80 72 L20 72" fill="none" stroke="#8B5A2B" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" /><rect x="22" y="57" width="12" height="7" rx="3" fill="#FFFFFF" stroke="#6B716A" strokeWidth="2" /><rect x="34" y="64" width="44" height="6" fill="#4A86C5" /></g></g>,
 };
 
 // Grade 1 geometry (pass KY, TEKS 1.6A to 1.6D): the rhombus, the hexagon and the trapezoid join the four kindergarten shapes,
@@ -1673,6 +1751,11 @@ function bigScale() { if (typeof window === 'undefined') return 1; return window
 // answer end above the fold: on a 375 by 667 phone 14 lesson lines and 21 questions ended under it after the speaker joined the
 // arrows' row (the fold check, tests/e2e/fold-check.mjs). A taller phone, a tablet and a laptop draw as before.
 const SHORT_PICTURES = 0.82;
+// The picture to match, where a question's answers are pictures of its kind (pass NC, EARMARKS A84): drawn at the answer tile's own base
+// size for that kind, scaled as the tiles are, so the answer that is the same is drawn the same size as it (choiceFace's sizes).
+const MATCH_SIZE = { pic: 72, art: 84, item: 64, icon: 64 };
+// A child's drawing to match draws at a drawing's tile size, 84, as choiceFace draws it on an answer tile (round one's code check, pass NC).
+const matchSize = (v) => (v && v.kind === 'icon' && /^drawing~/.test(String(v.name)) ? 84 : MATCH_SIZE[v && v.kind]);
 // The height read is the height a person sees (seenHeight): in a frame taller than the screen (the claude.ai preview runs the app in a
 // page-tall frame), the screen's own height, so the preview on a phone draws the short phone's layout too (round one's code check, pass
 // MZ). It is decided at the height first seen at a width and kept while the width and the screen's own height stay and the height moves
@@ -1682,6 +1765,9 @@ const SHORT_PICTURES = 0.82;
 // or a test setting another size, decides again.
 const SHORT_PHONE_SEEN = { width: -1, height: -1, screen: -1, short: false };
 function seenHeight() { return framedFullHeight() ? Math.min(window.innerHeight, (window.screen && window.screen.availHeight) || window.innerHeight) : window.innerHeight; }
+// A screen narrower than 360 pixels (pass NC, EARMARKS A72), where the practice title is fitted to one line where it fits at 15 pixels in
+// the room its row leaves it, and wraps at 15 where it does not (since round two's code read).
+function narrowScreen() { return typeof window !== 'undefined' && window.innerWidth < 360; }
 function shortPhone() {
   if (typeof window === 'undefined') return false;
   const seen = seenHeight(); const screenTall = (window.screen && window.screen.height) || 0;
@@ -1693,6 +1779,8 @@ function shortPhone() {
 // The answers a question shows as one picture each (a drawn thing, an animal, a face, a shape, a color square, a die), which a short
 // phone draws at SHORT_PICTURES of their size; a group of dots, a tower, a word or a heard sentence keeps its size.
 const ONE_PICTURE_CHOICE = /^(pic|art|icon|item|face|swatch|shape|solid|dice):/;
+// The widest a column of picture answers draws (pass NC, EARMARKS A77): a large phone's card, so a laptop's tiles are a phone's.
+const PICTURE_COLUMN = 420;
 // The number a tapped picture wears in Follow the directions (pass MO): a gold disc with dark ink, sat on the picture's top left
 // corner and half off it, so it never covers the drawing it numbers (round one's screen check, pass MO: set inside the tile it hid
 // the chair's back and part of every face on a 320-pixel phone). A lesson line that teaches the numbers draws the same badge on
@@ -1719,7 +1807,7 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1, 
   if (visual.kind === 'periodic') return <div key={animKey} style={{ padding: '6px 0' }}><PeriodicPic highlight={visual.highlight || []} period={visual.period || null} group={visual.group || null} /></div>;
   // A pic may carry a number size (pass ML): a huge whale beside a tiny fish, or a tiny bee, a middle-sized cat and a huge bear.
   if (visual.kind === 'pic') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0', display: 'flex', justifyContent: 'center' }}><StudentPicture name={visual.name} size={at(typeof visual.size === 'number' ? visual.size : 110)} /></div>;
-  if (visual.kind === 'art') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0', display: 'flex', justifyContent: 'center' }}><ColorThumb picture={visual.name} size={at(120)} thing /></div>;
+  if (visual.kind === 'art') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0', display: 'flex', justifyContent: 'center' }}><ColorThumb picture={visual.name} size={at(typeof visual.size === 'number' ? visual.size : 120)} thing /></div>;
   // An icon may carry a number size too (pass MY): a heard word's picture at its choices' size, so Check answer stays in view.
   if (visual.kind === 'icon') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><IconPic name={visual.name} size={at(typeof visual.size === 'number' ? visual.size : 110)} /></div>;
   // A feeling face, or a grid of two to four of them two to a row (pass MD), each face its own drawing (FeelingFace).
@@ -1826,7 +1914,7 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1, 
   }
   if (visual.kind === 'swatch') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><Swatch colour={visual.colour} size={at(120)} /></div>;
   // A thing to match can be drawn at its choices' size (size, pass MA), so the one that is the same is the same size too.
-  if (visual.kind === 'item') { const scale = visual.scale ? '-' + visual.scale : ''; return <div style={{ padding: '6px 0' }}><Item spec={`${visual.shape}-${visual.colour}${scale}`} size={visual.size || at(110)} /></div>; }
+  if (visual.kind === 'item') { const scale = visual.scale ? '-' + visual.scale : ''; return <div style={{ padding: '6px 0' }}><Item spec={`${visual.shape}-${visual.colour}${scale}`} size={at(visual.size || 110)} /></div>; }
   // A counted row with a cell size (pass MA) is drawn like a group of dots (CountRow), so it lines up with dots of the same
   // number; every other row of shapes keeps PatternRow.
   if (visual.kind === 'pattern' && visual.size) return <div key={animKey} className={animate ? 'edu-rise' : undefined} style={{ padding: '6px 0' }}><CountRow items={visual.items} colour={visual.colour || 'green'} cell={visual.size} frame={visual.frame || 5} snap={!!visual.snap} gap={visual.gap || 8} /></div>;
@@ -1964,14 +2052,15 @@ function soundPlayer() {
   if (!soundAudio && typeof window !== 'undefined' && typeof window.Audio === 'function') { try { soundAudio = new window.Audio(); soundAudio.preload = 'auto'; } catch (e) { soundAudio = null; } }
   return soundAudio;
 }
-function soundUrl(sound, slow) {
-  const key = `${sound}${slow ? '-slow' : ''}`;
-  if (!(key in soundUrls)) { try { const wav = soundClipWav(sound, { slow }); soundMs[key] = Math.round(((wav.length - 44) / 2 / SOUND_RATE) * 1000); soundUrls[key] = URL.createObjectURL(new Blob([wav], { type: 'audio/wav' })); } catch (e) { soundUrls[key] = null; } }
+// A hiss inside a run of a word's sounds (pass NC, once) is its own clip, one breath, kept under its own key.
+function soundUrl(sound, slow, once = false) {
+  const key = `${sound}${slow ? '-slow' : ''}${once ? '-once' : ''}`;
+  if (!(key in soundUrls)) { try { const wav = soundClipWav(sound, { slow, once }); soundMs[key] = Math.round(((wav.length - 44) / 2 / SOUND_RATE) * 1000); soundUrls[key] = URL.createObjectURL(new Blob([wav], { type: 'audio/wav' })); } catch (e) { soundUrls[key] = null; } }
   return soundUrls[key];
 }
 // How long a reading waits for one sound whose end the browser never reports: the sound's own length and 400 ms more, never past
 // SOUND_LONGEST_MS, and SOUND_LONGEST_MS for a sound whose length is not known (pass MU).
-function soundGuardMs(sound, slow) { const ms = soundMs[`${sound}${slow ? '-slow' : ''}`]; return ms > 0 ? Math.min(SOUND_LONGEST_MS, ms + 400) : SOUND_LONGEST_MS; }
+function soundGuardMs(sound, slow, once = false) { const ms = soundMs[`${sound}${slow ? '-slow' : ''}${once ? '-once' : ''}`]; return ms > 0 ? Math.min(SOUND_LONGEST_MS, ms + 400) : SOUND_LONGEST_MS; }
 // The first tap, key or touch anywhere plays a twentieth of a second of silence, which unlocks the element for every sound after it.
 // A tap whose own stopSound cuts that silence short (the play's promise fails) leaves the flag down, so the next tap plays it again,
 // until one plays through (round one's screen check, pass MO: the comment said once); it is kept so, since a phone's browser may
@@ -1984,18 +2073,21 @@ function unlockSounds() {
   try { a.src = url; const p = a.play(); if (p && p.catch) p.catch(() => { a.__eduUnlocked = false; }); } catch (e) { a.__eduUnlocked = false; }
 }
 if (typeof window !== 'undefined' && window.addEventListener) ['pointerdown', 'touchend', 'keydown'].forEach((ev) => window.addEventListener(ev, unlockSounds, { capture: true, passive: true }));
-function playSound(sound, onEnd) {
+function playSound(sound, onEnd, once = false) {
   const token = ++soundToken; let finished = false; let guard = null;
   const finish = () => { if (finished) return; finished = true; if (guard) clearTimeout(guard); if (token === soundToken) { soundPlaying = false; onEnd(); } };
   try { (window.__eduSounds = window.__eduSounds || []).push(sound); } catch (e) { /* only a test reads it */ }
-  const slow = SPEECH_NUDGE < 0; const a = soundPlayer(); const url = soundUrl(sound, slow);
+  const slow = SPEECH_NUDGE < 0; const a = soundPlayer(); const url = soundUrl(sound, slow, once);
+  // The clip's own key, pace and breath included (pass NC, round one's screen check: __eduSounds names only the sound, so no browser
+  // check could tell the one-breath hiss from two); only a test reads it.
+  try { (window.__eduSoundKeys = window.__eduSoundKeys || []).push(`${sound}${slow ? '-slow' : ''}${once ? '-once' : ''}`); } catch (e) { /* only a test reads it */ }
   if (!a || !url) { setTimeout(finish, 0); return; }
   soundPlaying = true; a.onended = finish; a.onerror = finish;
   // The guard (round one's code check, pass MU): the longest sound's until the sound truly starts, then this sound's own length and
   // 400 ms more from that moment, so a phone slow to start a sound never moves the reading on over its end.
   guard = setTimeout(finish, SOUND_LONGEST_MS);
   const started = () => {
-    if (finished) return; if (guard) clearTimeout(guard); guard = setTimeout(finish, soundGuardMs(sound, slow));
+    if (finished) return; if (guard) clearTimeout(guard); guard = setTimeout(finish, soundGuardMs(sound, slow, once));
     // The crowd takes a moment to make (about a quarter of a second on a desktop, more on a slow phone, and about two and a half
     // seconds on a phone without a JIT; round one's code check and its second read, pass MU), so a cheer's first whistle, once it has
     // truly started, makes it while it plays, and the crowd after the last saying starts at once; a whistle refused or left makes none.
@@ -2031,6 +2123,15 @@ const YOUNG_PAUSE_MS = 450;
 const youngVoice = { page: false, game: null };
 function setYoungVoice(owner, on) { youngVoice[owner] = on; }
 function speechYoung() { return youngVoice.game !== null ? !!youngVoice.game : !!youngVoice.page; }
+// A hiss said alone as one breath (pass NC, round one's lesson check): in the phoneme lessons a child counts a word's sounds, so their
+// lines and questions play every sss, fff and zzz as one breath, never the two Mikey's "sss sss sun" gave a hiss alone (pass MP), which
+// a child counting heard as two sounds. The page sets it by screen (oneBreathOn in logic), as it sets the young voice, and speak() and
+// speakSequence() read it when they are called; a caller may say once itself (a story read from the book, its own story's way).
+const oneBreathVoice = { page: false };
+function setOneBreath(on) { oneBreathVoice.page = !!on; }
+function speechOnce() { return !!oneBreathVoice.page; }
+// Whether a story is a phoneme lesson's, whose hisses are one breath wherever it is read (its page, the book, Let's Read).
+function storyOnce(st) { return !!st && ONE_BREATH_LESSONS.some((id) => STORIES[id] === st); }
 // While a reader rests between sentences (a young learner's pause, a story's breath, a welcome's), the voice counts as still talking
 // (voiceTalking), so a speaker button keeps showing that it reads and a wait for the voice's end waits for the whole line; a hush or
 // a newer line clears it.
@@ -2085,7 +2186,7 @@ function sayPieces(pieces, from, hooks) {
     const wait = Math.max(rest, echo, brief, next && next.sound && prev.sound ? SOUND_GAP_MS : 0);
     if (wait > 0) { onRest(j); restUntil = Date.now() + wait + 60; setTimeout(() => { if (alive()) sayPieces(pieces, j, hooks); }, wait); } else sayPieces(pieces, j, hooks);
   };
-  if (pieces[from].sound) { onPiece(from, true); onBegin(); playSound(pieces[from].sound, () => { if (alive()) { onPieceEnd(from); goOn(from + 1); } }); return; }
+  if (pieces[from].sound) { onPiece(from, true); onBegin(); playSound(pieces[from].sound, () => { if (alive()) { onPieceEnd(from); goOn(from + 1); } }, !!pieces[from].once); return; }
   const rest = pause ? pause() : 0;
   let to = from; while (to < pieces.length && !pieces[to].sound && !(to > from && pieces[to - 1].pauseAfter) && !(rest > 0 && to > from && pieces[to].sentence !== pieces[to - 1].sentence)) to += 1;
   const after = () => goOn(to);
@@ -2161,7 +2262,8 @@ function speak(text, opts = {}) {
   const young = opts.young !== undefined ? !!opts.young : speechYoung();
   const rest = opts.pause !== undefined ? Math.max(0, opts.pause || 0) : young ? YOUNG_PAUSE_MS : 0;
   const ticket = ++speechTicket; restUntil = 0;
-  const pieces = speechPieces(text, opts.voices ? { voices: opts.voices } : {});
+  const once = opts.once !== undefined ? !!opts.once : speechOnce();
+  const pieces = speechPieces(text, { ...(opts.voices ? { voices: opts.voices } : {}), ...(once ? { once: true } : {}) });
   if (!pieces.length) return;
   // Whether the voice has begun this request (pass MI, Mikey: a tapped answer "is repeated twice.  "Blue, blue" and "red, red""):
   // the retry below is for words the browser dropped, but a word as short as Blue can be said and finished inside the 700 ms the
@@ -2310,7 +2412,9 @@ function speakSequence(texts, onIndex, onDone, keys = [], opts = {}) {
   // on some phones) is asked once more, from where it is, if nothing began within 700 ms (round three's code check: a lesson line's
   // first sentence was lost, and the watch moved on).
   let began = false;
-  const piecesOf = texts.map((t, k) => speechPieces(t, { ...(opts.together ? { line: texts, at: k } : {}), ...(opts.voices ? { voices: opts.voices } : {}) }));
+  // Since pass NC: once, the one breath for every hiss, from the caller (true, false, or a text's index to a choice) or else the page.
+  const onceAt = (k) => (typeof opts.once === 'function' ? !!opts.once(k) : opts.once !== undefined ? !!opts.once : speechOnce());
+  const piecesOf = texts.map((t, k) => speechPieces(t, { ...(opts.together ? { line: texts, at: k } : {}), ...(opts.voices ? { voices: opts.voices } : {}), ...(onceAt(k) ? { once: true } : {}) }));
   const say = (i, from = 0) => {
     if (ticket !== speechTicket) return;
     if (i >= texts.length) { onDone && onDone(); return; }
@@ -2602,19 +2706,20 @@ function MoreInfoSheet({ insight, face, onClose, visual = null, young = false })
         {insight.wrong.map((w, k) => (
           <div key={w.choice} data-more-info-wrong={w.choice} data-chosen={w.chosenNow ? 'now' : w.chosenBefore ? 'before' : undefined} style={row(w.choice)}>
             {drawn(w.choice) && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 48, borderRadius: 10, background: C.paperBoard, border: `1px solid ${C.line}`, color: B.ink, fontWeight: 600, fontSize: 14, textAlign: 'center', padding: 4 }}>{face(w.choice)}</div>}
-            <div data-more-info-words=""><RichText text={w.text} size={16} lineGap={0} lit={litAt(k)} /></div>
+            {/* More Info's words balanced (pass NB, round two's code read: "The first part of star is / sss-tuh." left the blend alone). */}
+            <div data-more-info-words="" style={{ textWrap: 'balance' }}><RichText text={w.text} size={16} lineGap={0} lit={litAt(k)} /></div>
           </div>
         ))}
         {insight.right && (
           <div data-more-info-right="" style={{ ...row(insight.answer), borderTop: `1px solid ${C.line}` }}>
             {drawn(insight.answer) && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 48, borderRadius: 10, background: C.paperBoard, border: `2px solid ${C.green}`, color: B.ink, fontWeight: 600, fontSize: 14, textAlign: 'center', padding: 4 }}>{face(insight.answer)}</div>}
-            <div>{!drawn(insight.answer) && <p data-more-info-answer="" style={{ margin: '0 0 2px', fontSize: 16, fontWeight: 700 }}>{capFirst(String(insight.answer))}</p>}<p style={{ margin: '0 0 2px', fontSize: 14, fontWeight: 700, color: C.green }}>Why this one fits</p><div data-more-info-words=""><RichText text={rightText} size={16} lineGap={6} lit={rightLines === 1 ? litAt(rightAt) : null} litLine={rightLines > 1 && litAt(rightAt) !== null ? lineOfSentence(rightText, litAt(rightAt)) : null} /></div></div>
+            <div>{!drawn(insight.answer) && <p data-more-info-answer="" style={{ margin: '0 0 2px', fontSize: 16, fontWeight: 700 }}>{capFirst(String(insight.answer))}</p>}<p style={{ margin: '0 0 2px', fontSize: 14, fontWeight: 700, color: C.green }}>Why this one fits</p><div data-more-info-words="" style={{ textWrap: 'balance' }}><RichText text={rightText} size={16} lineGap={6} lit={rightLines === 1 ? litAt(rightAt) : null} litLine={rightLines > 1 && litAt(rightAt) !== null ? lineOfSentence(rightText, litAt(rightAt)) : null} /></div></div>
           </div>
         )}
         {insight.more.length > 0 && (
           <div data-more-info-more="" style={{ padding: '10px 0 0', borderTop: `1px solid ${C.line}` }}>
             <p style={{ margin: '0 0 4px', fontSize: 14, fontWeight: 700, color: C.muted, textAlign: 'center' }}>More right answers</p>
-            {insight.more.map((m, k) => <div key={k} data-more-info-words="" style={{ margin: '4px 0' }}><RichText text={m} size={16} lineGap={0} lit={litAt(moreAt + k)} /></div>)}
+            {insight.more.map((m, k) => <div key={k} data-more-info-words="" style={{ margin: '4px 0', textWrap: 'balance' }}><RichText text={m} size={16} lineGap={0} lit={litAt(moreAt + k)} /></div>)}
           </div>
         )}
         <div data-more-info-close="" style={{ textAlign: 'center', marginTop: 14 }}><Btn onClick={onClose}>Got it</Btn></div>
@@ -3346,7 +3451,10 @@ function StudentPicture({ name, tint = null, size = 56, tile = false }) {
     // outlined, its pointy ears kept for Look Closely's ears.
     fox: <g><path d="M12 31 L17 8 L27 20 L33 20 L43 8 L48 31 Q47 38 41 42 L30 53 L19 42 Q13 38 12 31 Z" fill="#D98B3D" stroke="#9A5420" strokeWidth="1.5" strokeLinejoin="round" /><path d="M17 13 L23.5 20.5 L18.5 22 Z M43 13 L36.5 20.5 L41.5 22 Z" fill="#5E3C1A" /><path d="M13.5 34 Q22 34.5 30 41 Q38 34.5 46.5 34 Q45 39.5 41 42 L30 53 L19 42 Q15 39.5 13.5 34 Z" fill="#FFF6EA" stroke="#9A5420" strokeWidth="1.2" strokeLinejoin="round" /><circle cx="23" cy="29" r="2.5" fill="#24291F" /><circle cx="37" cy="29" r="2.5" fill="#24291F" /><circle cx="30" cy="50" r="2.6" fill="#24291F" /></g>,
     owl: <g><path d="M14.5 25 L13 8.5 L24 17 Z M45.5 25 L47 8.5 L36 17 Z" fill="#7A6A4D" strokeLinejoin="round" /><ellipse cx="30" cy="34" rx="18" ry="20" fill="#8C7A5B" /><path d="M14 38 Q15.5 47 22 51 M46 38 Q44.5 47 38 51" fill="none" stroke="#6E5F44" strokeWidth="2" strokeLinecap="round" /><ellipse cx="30" cy="47" rx="9" ry="6.5" fill="#B4A07A" /><circle cx="22" cy="30" r="8.6" fill="#A8946D" /><circle cx="38" cy="30" r="8.6" fill="#A8946D" /><circle cx="22" cy="30" r="7" fill="#F5F1E6" /><circle cx="38" cy="30" r="7" fill="#F5F1E6" /><circle cx="22" cy="30" r="3" fill="#24291F" /><circle cx="38" cy="30" r="3" fill="#24291F" /><path d="M27 40 L30 46 L33 40 Z" fill="#C79A3D" /></g>,
-    frog: <g><ellipse cx="30" cy="36" rx="20" ry="14" fill="#5E9A62" /><circle cx="20" cy="22" r="7" fill="#5E9A62" /><circle cx="40" cy="22" r="7" fill="#5E9A62" /><circle cx="20" cy="22" r="3" fill="#24291F" /><circle cx="40" cy="22" r="3" fill="#24291F" /><path d="M20 40 Q30 47 40 40" fill="none" stroke="#24291F" strokeWidth="2.5" strokeLinecap="round" /></g>,
+    // The frog's edge (pass NB, round one's picture check: Dog and frog and Star and spoon draw it on answer tiles): its green read 2.82
+    // and 2.72 to 1 on the light theme's right and wrong tiles and 2.60 on the dark paper; a deeper green ring drawn under it reads 4.18
+    // or better. Not on a dark tile, where the green reads well, nor on a name picture's tint (name-picture edges went to Mikey, Q54).
+    frog: <g>{!darkTile && !tint && <g fill="#3F7A45" stroke="#3F7A45" strokeWidth="3"><ellipse cx="30" cy="36" rx="20" ry="14" /><circle cx="20" cy="22" r="7" /><circle cx="40" cy="22" r="7" /></g>}<ellipse cx="30" cy="36" rx="20" ry="14" fill="#5E9A62" /><circle cx="20" cy="22" r="7" fill="#5E9A62" /><circle cx="40" cy="22" r="7" fill="#5E9A62" /><circle cx="20" cy="22" r="3" fill="#24291F" /><circle cx="40" cy="22" r="3" fill="#24291F" /><path d="M20 40 Q30 47 40 40" fill="none" stroke="#24291F" strokeWidth="2.5" strokeLinecap="round" /></g>,
     whale: <g><path d="M8 34 Q30 12 52 34 Q30 52 8 34 Z" fill="#5A8EA3" /><path d="M46 20 L54 12 L52 24 Z" fill="#5A8EA3" /><circle cx="20" cy="32" r="2.6" fill="#24291F" /><path d="M14 38 Q20 42 26 38" fill="none" stroke="#24291F" strokeWidth="2" strokeLinecap="round" /></g>,
     bee: <g><ellipse cx="30" cy="36" rx="16" ry="12" fill="#E2B83A" {...gild} /><rect x="22" y="26" width="5" height="20" fill="#24291F" /><rect x="34" y="26" width="5" height="20" fill="#24291F" /><ellipse cx="22" cy="20" rx="8" ry="5" fill="#DCE9F5" {...gild} /><ellipse cx="38" cy="20" rx="8" ry="5" fill="#DCE9F5" {...gild} /><circle cx="18" cy="34" r="2.2" fill="#24291F" /></g>,
     cat: <g><path d="M14 44 L14 18 L24 26 L36 26 L46 18 L46 44 Z" fill="#A9A19A" stroke="#6B716A" strokeWidth="1.5" strokeLinejoin="round" /><circle cx="24" cy="34" r="2.6" fill="#24291F" /><circle cx="36" cy="34" r="2.6" fill="#24291F" /><path d="M27 40 L30 43 L33 40 Z" fill="#B45A3C" /><path d="M8 40 L22 41 M8 46 L22 44 M52 40 L38 41 M52 46 L38 44" stroke={whisker} strokeWidth="1.5" /></g>,
@@ -3523,9 +3631,48 @@ function StarBurst() {
 // is rendered through this. A newline starts a new line. **bold** is emphasized. A line
 // wrapped in [[ ]] is centered, bold, and given air above and below: that is how an
 // equation or a key phrase stands apart from the prose around it.
+// Speech parts kept whole on the page (pass NB, round one's screen check): a blend's written form (fff-rrr, sss-tuh) broke at its hyphen
+// like any word, so a grown-up reading along saw "fff-" end one line and "rrr," start the next, and a run of a word's two parts said one
+// after the other ("Duh, og.") broke between them. Each is wrapped in a span that never breaks inside, which leaves the text itself, what
+// the voice reads and the tests find, unchanged. The forms are the app's own sounds (SPEECH_SOUNDS in logic) and huh, which the voice
+// says; an ending (og, at, ig) joins the part before it only after a comma, so "look at the cat" is untouched.
+const PART_FORMS = [...new Set([...Object.values(SPEECH_SOUNDS).filter((v) => !['ig', 'og', 'at'].includes(v)), 'huh', 'kuh'])].sort((a, b) => b.length - a.length);
+// Since pass NC a word's sounds said one after another (Cuh, oh, tuh), with the voice's shh and a long vowel said as a word (oh, eye, ooh)
+// among them, and a word said slowly from its first sound (Mmm-oon, Sss-tar) stay whole too; and a sentence that is a run of beats or
+// sounds alone (But, ter, fly.; Sss, oh, puh.) stays whole on its line, every part of it a speech part or the run one of the beat runs
+// the lessons say (BEAT_RUNS in logic), since round one's code check found short words with commas between kept whole whatever they
+// were, counts and patterns among them ("One, two, three, four, five, six, seven."), which ran past the card at 320 to 412 pixels. Each
+// kept span is marked data-whole, which the
+// fold check reads on every pre-K line at 375 by 667 and 320 by 568 (EARMARKS A82). And a first part and an end said with and between
+// them (puh and ig, Fff-rrr and og) stay whole, since "puh and / ig." broke at 320 by 568; a list of a word's sounds (puh and eye) is
+// not one, as an end is og, at or ig.
+const RUN_SOUNDS = [...new Set([...PART_FORMS, 'shh', 'oh', 'eye', 'ooh'])].sort((a, b) => b.length - a.length);
+const PARTS_WHOLE = new RegExp('\\b(?:' + [...PART_FORMS, 'shh'].map((f) => f.replace(/-/g, '\\-')).join('|') + ')(?:-[a-z]+|(?:, (?:' + RUN_SOUNDS.map((f) => f.replace(/-/g, '\\-')).join('|') + '))+)?(?:(?:, | and )(?:og|at|ig))?\\b', 'gi');
+const RUN_ALONE = /^\s*[A-Za-z]{1,7}(?:, [A-Za-z]{1,7})+[.!?]?\s*$/;
+const RUN_ENDS = ['og', 'at', 'ig'];
+function runAlone(s) { if (!RUN_ALONE.test(s)) return false; const t = s.trim().replace(/[.!?]$/, '').toLowerCase(); const parts = t.split(', ');
+  return parts.length > 1 && (Object.prototype.hasOwnProperty.call(BEAT_RUNS, t) || parts.every((p) => RUN_SOUNDS.includes(p) || RUN_ENDS.includes(p))); }
+// Since round one's screen check (pass NC) a run that is one sentence of a longer text, a story paragraph, the reason after a wrong tap
+// or an explanation, is kept whole too: the text is split where SENTENCE_BREAK splits it, its spaces kept, and each sentence runAlone
+// takes is one span (a text that is one run alone, as a lesson line's sentence can be, is its own one sentence), so a story's run is
+// whole at rest as it is under the reading light, which reads it one sentence at a time, and its
+// words never move as the light arrives ("Peet, / suh." broke at 320 in Put the beats together's story, "Dye, / nuh, sore." at 390 in
+// Clap the beats', and "Rab, / bit." and "Pen, / sill." in the reason after a wrong tap); a run inside a sentence keeps PARTS_WHOLE.
+const SENTENCE_PARTS = new RegExp('(' + SENTENCE_BREAK.source + ')');
+function partsWhole(text, keyPrefix = 'p') {
+  const s = String(text); const out = []; let n = 0;
+  for (const piece of s.split(SENTENCE_PARTS)) {
+    if (!piece) continue;
+    if (runAlone(piece)) { out.push(<span key={`${keyPrefix}-r${n++}`} data-whole="" style={{ whiteSpace: 'nowrap' }}>{piece}</span>); continue; }
+    let last = 0;
+    for (const m of piece.matchAll(PARTS_WHOLE)) { if (!m[0].includes('-') && !m[0].includes(',') && !m[0].includes(' and ')) continue; if (m.index > last) out.push(piece.slice(last, m.index)); out.push(<span key={`${keyPrefix}-w${n++}`} data-whole="" style={{ whiteSpace: 'nowrap' }}>{m[0]}</span>); last = m.index + m[0].length; }
+    if (last < piece.length) out.push(piece.slice(last));
+  }
+  return out.some((x) => typeof x !== 'string') ? out : s;
+}
 function inlineRich(text, keyPrefix) {
   const parts = String(text).split(/(\*\*[^*]+\*\*)/g).filter(Boolean);
-  return parts.map((part, i) => (part.startsWith('**') && part.endsWith('**') ? <strong key={`${keyPrefix}-${i}`}>{part.slice(2, -2)}</strong> : <React.Fragment key={`${keyPrefix}-${i}`}>{part}</React.Fragment>));
+  return parts.map((part, i) => (part.startsWith('**') && part.endsWith('**') ? <strong key={`${keyPrefix}-${i}`}>{partsWhole(part.slice(2, -2), `${keyPrefix}-${i}`)}</strong> : <React.Fragment key={`${keyPrefix}-${i}`}>{partsWhole(part, `${keyPrefix}-${i}`)}</React.Fragment>));
 }
 // The weekly note, laid out (2026-09-25, Mikey: sleeker, short lines between its parts, the next module in bold). The
 // words are the note's own, generated or edited. Parts split at blank lines, with a short line between them; a part that
@@ -3590,6 +3737,22 @@ function LicenseCard({ name, code, license, usedBy, onSave }) {
       )}
     </div>
   );
+}
+// A lesson line's words (pass NC, EARMARKS A82): balanced, as every line is, up to six lines, where a browser balances; past six a
+// browser balances nothing and a line could end on one lone word (25 of the 69 pre-K lines past six lines at 320 by 568 did), so a
+// longer line takes pretty wrapping, which keeps its last word company and, read on all 69, added no line and moved no Next. Measured
+// before the line paints and again when the screen's width changes; the reading light moves no words, so lighting needs no measure.
+function LessonWords({ lineKey, style, children }) {
+  const ref = useRef(null);
+  React.useLayoutEffect(() => {
+    const p = ref.current; if (!p) return undefined;
+    const fit = () => { p.style.textWrap = 'balance'; const lh = parseFloat(getComputedStyle(p).lineHeight) || 30; if (p.getBoundingClientRect().height / lh > 6.5) p.style.textWrap = 'pretty'; };
+    fit(); window.addEventListener('resize', fit);
+    return () => window.removeEventListener('resize', fit);
+    // It decides again when the line's font size or line height changes (round two's code read, pass NC): the App redraws a frame after a
+    // resize, and that redraw can change the font (20 or 22 by shortPhone) after the resize's own measure.
+  }, [lineKey, style && style.fontSize, style && style.lineHeight]);
+  return <p ref={ref} data-lesson-words="" style={style}>{children}</p>;
 }
 // lit (pass MH): the sentence of a one-line paragraph being read aloud, lit word by word as a highlight the size of its words,
 // in readLit's colors; the rest of the paragraph stays as it is.
@@ -5017,7 +5180,7 @@ function StoryBody({ story, pace: paceDefault = null, part = null, autoRead = fa
     if (card && typeof window !== 'undefined' && window.scrollTo) window.scrollTo({ top: Math.max(0, card.getBoundingClientRect().top + window.scrollY - 12), behavior: scrollWay() });
     if (onReadingChange) onReadingChange(true);
     const keys = storyClipKeys(story);
-    stopRef.current = speakSequence([storyTitleSpoken(story.title), ...story.words], (i, si) => { setReadingAt(i - 1); setReadingSentence(si || 0); }, () => { stopRef.current = null; setReadingAt(-1); setVoiceWatch(0); if (onReadingChange) onReadingChange(false); }, keys, { gap: (i) => storyGap(i === 0), pause: storyPause, young: false });
+    stopRef.current = speakSequence([storyTitleSpoken(story.title), ...story.words], (i, si) => { setReadingAt(i - 1); setReadingSentence(si || 0); }, () => { stopRef.current = null; setReadingAt(-1); setVoiceWatch(0); if (onReadingChange) onReadingChange(false); }, keys, { gap: (i) => storyGap(i === 0), pause: storyPause, young: false, once: storyOnce(story) });
     if (!keys.every((k) => clipFor(k))) setVoiceWatch((n) => n + 1);   // the device voice reads, so the page watches it
   };
   // A story that reads itself (pass MD): a read-aloud course's lesson story starts its voice a moment after the page opens,
@@ -5100,7 +5263,8 @@ function StoryBody({ story, pace: paceDefault = null, part = null, autoRead = fa
           {(story.more || []).filter((m) => m.after === i).map((m) => (
             <div key={m.serial} className={`edu-par-pic edu-reveal ${story.more.indexOf(m) % 2 ? 'edu-pic-left' : 'edu-pic-right'}${hasArt(m.serial) ? ' edu-story-pic' : ''}`} style={{ order: 2 }}><StoryArt serial={m.serial} alt={m.alt} /></div>
           ))}
-          <div data-story-par={i} data-reading={readingAt === i ? '' : undefined} style={{ order: 1 }}><RichText text={t} size={17} lineGap={12} lit={readingAt === i ? readingSentence : null} /></div>
+          {/* A paragraph's last line never a lone word where the browser can help (pass NB, round two's code read: "so listen for both. / Fff-rrr."). */}
+          <div data-story-par={i} data-reading={readingAt === i ? '' : undefined} style={{ order: 1, textWrap: 'pretty' }}><RichText text={t} size={17} lineGap={12} lit={readingAt === i ? readingSentence : null} /></div>
         </div>
       )))}
       {/* A pre-reader's story (round, pass MD) has the round drawn speaker of the young learners' screens, where a worded button
@@ -7512,13 +7676,17 @@ function KeyHint({ k }) { return <span className="edu-key-hint" aria-hidden="tru
 // whenever its tile changes size (a ResizeObserver, or the window's resize where there is none). A screen's own font can be wider than
 // the test browser's (Mikey's phone drew sunshine wider than the tests' font did, so a fix measured in the tests could still spill
 // there), so the fit is made on the device itself.
-function FitText({ children, size = 12, min = 9, style = null, className = undefined }) {
+// Since round two's code read (pass NC) the room can be measured on an ancestor (within, a selector) less what else shares its width
+// (less, in pixels), for words whose own parent is only as wide as the words: the practice title's column is, so the title measured its
+// own width as its room and never shrank.
+function FitText({ children, size = 12, min = 9, style = null, className = undefined, within = null, less = 0 }) {
   const ref = useRef(null); const [fs, setFs] = useState(size); const [wrap, setWrap] = useState(false);
   React.useLayoutEffect(() => {
     const el = ref.current; if (!el || !el.parentElement) return undefined;
+    const boxOf = () => (within && el.closest(within)) || el.parentElement;
     const fit = () => {
-      const host = el.parentElement; const cs = getComputedStyle(host);
-      const room = host.clientWidth - (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0);
+      const host = boxOf(); const cs = getComputedStyle(host);
+      const room = host.clientWidth - (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0) - (within && host !== el.parentElement ? less : 0);
       if (room <= 0) return;
       el.style.whiteSpace = 'nowrap'; let f = size; el.style.fontSize = `${f}px`;
       while (f > min && el.scrollWidth > room + 0.5) { f -= 0.5; el.style.fontSize = `${f}px`; }
@@ -7527,10 +7695,37 @@ function FitText({ children, size = 12, min = 9, style = null, className = undef
       setFs(f); setWrap(tooWide);
     };
     fit();
-    let ro = null; if (typeof ResizeObserver === 'function') { ro = new ResizeObserver(() => fit()); ro.observe(el.parentElement); } else window.addEventListener('resize', fit);
+    let ro = null; if (typeof ResizeObserver === 'function') { ro = new ResizeObserver(() => fit()); ro.observe(boxOf()); } else window.addEventListener('resize', fit);
     return () => { if (ro) ro.disconnect(); else window.removeEventListener('resize', fit); };
-  }, [children, size, min]);
+  }, [children, size, min, within, less]);
   return <span ref={ref} data-fit-text="" className={className} style={{ display: 'block', maxWidth: '100%', fontSize: fs, whiteSpace: wrap ? 'normal' : 'nowrap', overflowWrap: wrap ? 'anywhere' : 'normal', hyphens: wrap ? 'manual' : 'none', ...(style || {}) }}>{children}</span>;
+}
+// A Wonder answer tile's words (pass NB, round one's screen check, and EARMARKS A76): they wrap between words, a hyphenated word kept
+// whole (grown-up broke as "grown- / up"), at the size their row sets (FitTilesRow, below), since a 1fr column would not shrink below its
+// longest word and "something" pushed a tile past the screen's edge at 360 pixels. The tile's width is the grid's (minmax(0, 1fr)).
+function WordFit({ children }) {
+  const words = String(children).split(/(\S+-\S+)/).map((w, i) => (i % 2 ? <span key={i} style={{ whiteSpace: 'nowrap' }}>{w}</span> : w));
+  return <span data-word-fit="" style={{ display: 'block', width: '100%', fontSize: 'var(--tile-words, 20px)', whiteSpace: 'normal', overflowWrap: 'normal', hyphens: 'none', textWrap: 'balance' }}>{words}</span>;
+}
+// A row of Wonder tiles fitted together (pass NB, round two's code read: tiles fitted one by one read "Yes" and "No" at 20 pixels beside
+// "Sometimes" at 13): the row's words shrink together, half a pixel at a time, until every tile's longest word fits, 13 pixels at least, so
+// the row reads at one size; a row that would read under 16 pixels stands in one column, as a row does under 360 pixels (the third read:
+// fitted together, nine questions' Yes and No read at 13 pixels). It fits when it is drawn and whenever the window's size changes; nothing
+// is stored.
+function FitTilesRow({ children, size = 20, min = 13, ...rest }) {
+  const ref = useRef(null);
+  React.useLayoutEffect(() => {
+    const el = ref.current; if (!el) return undefined;
+    const cols = (rest.style && rest.style.gridTemplateColumns) || '';
+    const shrink = (spans) => { let f = size; el.style.setProperty('--tile-words', `${f}px`); while (f > min && spans.some((x) => x.scrollWidth > x.clientWidth + 0.5)) { f -= 0.5; el.style.setProperty('--tile-words', `${f}px`); } return f; };
+    // Since round one's screen check (pass NC) a row whose tile would take four lines stands in one column too ("Help / with / the /
+    // baby" at 360 and 375 pixels).
+    const tall = (spans) => spans.some((x) => { const cs = getComputedStyle(x); const lh = parseFloat(cs.lineHeight) || (parseFloat(cs.fontSize) || 20) * 1.2; return x.getBoundingClientRect().height / lh > 3.5; });
+    const fit = () => { const spans = [...el.querySelectorAll('[data-word-fit]')]; el.style.gridTemplateColumns = cols; if ((shrink(spans) < 16 || tall(spans)) && spans.length > 1 && getComputedStyle(el).gridTemplateColumns.split(' ').length > 1) { el.style.gridTemplateColumns = 'minmax(0, 1fr)'; shrink(spans); } };
+    fit(); window.addEventListener('resize', fit);
+    return () => window.removeEventListener('resize', fit);
+  }, [children, size, min]);
+  return <div ref={ref} {...rest}>{children}</div>;
 }
 function SenseGame({ game, round, onScore = null, demo = false }) {
   const rounds = useMemo(() => senseRounds(round), [round]);
@@ -10326,7 +10521,7 @@ function BookReader({ items, pace: paceDefault }) {
     const texts = []; const owner = []; const titles = new Set();
     items.forEach((st, i) => { titles.add(texts.length); [storyTitleSpoken(st.title), ...st.words].forEach((t) => { texts.push(t); owner.push(i); }); });
     // Each story's clips in the order its title and paragraphs are read (pass MQ), so the book plays the recordings once all exist.
-    stopRef.current = speakSequence(texts, (i) => setAt(owner[i]), () => { stopRef.current = null; setAt(-1); }, items.flatMap(storyClipKeys), { gap: (i) => storyGap(titles.has(i)), pause: storyPause, young: false });
+    stopRef.current = speakSequence(texts, (i) => setAt(owner[i]), () => { stopRef.current = null; setAt(-1); }, items.flatMap(storyClipKeys), { gap: (i) => storyGap(titles.has(i)), pause: storyPause, young: false, once: (i) => storyOnce(items[owner[i]]) });
   };
   if (!canSpeak()) return null;
   return (
@@ -11793,6 +11988,9 @@ function EduSphereScreens() {
   // Let's Color (pass MQ): speak() and speakSequence() read it when they are called, in a layout effect, so it is set before any
   // effect of the same render speaks (the practice question below). A story keeps its own pace; an open game sets its own (GamePad).
   React.useLayoutEffect(() => { setYoungVoice('page', youngVoiceOn({ screen, readAloud, youngLearner })); }, [readAloud, screen, youngLearner]);   // the rule lives in logic (youngVoiceOn)
+  // The one-breath hiss (pass NC): a phoneme lesson's lines and story, and a question of a phoneme lesson's bank wherever it is asked
+  // (a memory check in another lesson's round too), play every hiss as one breath; set in a layout effect, as the young voice is.
+  React.useLayoutEffect(() => { setOneBreath(oneBreathOn({ screen, moduleId: mod ? mod.id : null, genId: q ? q.genId : null })); }, [screen, mod, q]);   // the rule lives in logic (oneBreathOn)
   // What comes after a finished round in a read-aloud course (pass MD): one thing at a time, never a menu. The result screen's
   // arrow and a reward story's arrow both call this, so a story given as a reward carries on exactly where the round left off:
   // a Wonder question that is due, then the next lesson, the next course or home after a pass, and back through the lesson (or
@@ -12196,7 +12394,7 @@ function EduSphereScreens() {
     setRoster((r) => ({ ...r }));   // the classroom reloads its Action Items
     return seeded;
   }
-  useEffect(() => { if (typeof window !== 'undefined') window.__eduTest = { seedHistory: (key, plan) => seedHistoryForTest(key, plan), screen, moduleId: moduleId || null, question: q || null, isReviewQ, openModule: (id) => openModule(id), startQuickCheck: (id) => startQuickCheck(id),
+  useEffect(() => { if (typeof window !== 'undefined') window.__eduTest = { seedHistory: (key, plan) => seedHistoryForTest(key, plan), litStyle: { ...readLit(), ...LIT_WORDS }, screen, moduleId: moduleId || null, question: q || null, isReviewQ, openModule: (id) => openModule(id), startQuickCheck: (id) => startQuickCheck(id),
     // Test-only (pass ME): draws the current trace question along its own strokes, the way a steady hand would, so a browser
     // walk can pass a round whose memory check reaches into a tracing lesson (a finished course has those among its stars).
     traceWell: () => { const def = q && q.type === 'trace' ? TRACE_LETTERS[q.answer] : null; if (!def) return false; const paths = def.strokes.map((s) => s.flatMap((p, i) => (i === 0 ? [p] : Array.from({ length: 8 }, (_, k) => [s[i - 1][0] + ((p[0] - s[i - 1][0]) * (k + 1)) / 8, s[i - 1][1] + ((p[1] - s[i - 1][1]) * (k + 1)) / 8])))); setTracePaths(paths); setGiven(JSON.stringify(paths)); return true; }, openColoring: (pic, opts = null) => { gameIntroNext.current = !!(opts && opts.intro); setColoring(pic); setScreen('coloring'); }, setColoringLeft: (n) => setColorLeft(n), openCertificate: (id, grade) => { setCertFor({ id, grade }); setCertTemplate('classic'); setCertName(''); setCertPhotos([]); setScreen('certificate'); }, visibleModuleIds: () => visibleModules.map((m) => m.id), openStory: (id) => { noteStoryOpen(id, 'shelf'); setModuleId(id); setScreen('story'); }, openCourseStory: (id, part = 'course') => { noteStoryOpen(`${part}:${id}`, 'shelf'); setCourseStoryId(id); setCourseStoryPart(part); setScreen('course-story'); }, openWonderVoices: (id, mid) => { if (mid) setModuleId(mid); setWonder(WONDER.find((w) => w.id === id) || null); setWonderVoiceStep(0); setScreen('wonder-voices'); }, openWonder: (id, mid) => { if (mid) setModuleId(mid); setWonder(WONDER.find((w) => w.id === id) || null); setWonderText(''); setWonderPick(''); setWonderStartedAt(Date.now()); setScreen('wonder'); },
@@ -12580,7 +12778,8 @@ function EduSphereScreens() {
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
                               <div>
                                 <h2 style={{ fontSize: 18, margin: '0 0 2px' }}>{titleCase(m.title)}</h2>
-                                <p style={{ margin: 0, color: C.muted, fontSize: 15 }}>{m.tagline}</p>
+                                {/* A tagline's lines balanced (pass NB, round one's screen check: "Keep the end, change the first / part"). */}
+                                <p style={{ margin: 0, color: C.muted, fontSize: 15, textWrap: 'balance' }}>{m.tagline}</p>
                               </div>
                               {isPreReader(course.id) ? <StatusMark status={st} /> : <Tag tone={st}>{st === 'mastered' ? 'Mastered' : st === 'passed' ? 'Passed once' : st === 'available' ? 'Ready' : 'Locked'}</Tag>}
                             </div>
@@ -13007,7 +13206,7 @@ function EduSphereScreens() {
               instead (pass MS), the word big and lit a syllable at a time, so the paragraph never fills with "Different, different". */}
           {/* Balanced, so no lesson line ends on one lone word (pass MY, round one's screen check); a browser balances up to about six
               lines, so a longer line can still end on one at 320 pixels (round two's code read). */}
-          <p style={{ fontSize: shortPhone() ? 20 : 22, lineHeight: 1.5, margin: shortPhone() ? '12px 0 0' : '18px 0 0', textWrap: 'balance' }}>{(() => { const own = sentencesOf(line).map((sentence, i) => ({ sentence, i })).filter(({ i }) => !lineParts[i] || lineParts[i].role === 'say'); return own.map(({ sentence, i }, n) => <React.Fragment key={i}><span data-read-lit={litSentence === i ? '' : undefined} style={litSentence === i ? { ...readLit(), ...LIT_WORDS } : { background: 'transparent' }}>{sentence}</span>{n < own.length - 1 ? ' ' : ''}</React.Fragment>); })()}</p>
+          <LessonWords lineKey={`${moduleId}-${lessonStep}`} style={{ fontSize: shortPhone() ? 20 : 22, lineHeight: 1.5, margin: shortPhone() ? '12px 0 0' : '18px 0 0', textWrap: 'balance' }}>{(() => { const own = sentencesOf(line).map((sentence, i) => ({ sentence, i })).filter(({ i }) => !lineParts[i] || lineParts[i].role === 'say'); return own.map(({ sentence, i }, n) => <React.Fragment key={i}><span data-read-lit={litSentence === i ? '' : undefined} style={litSentence === i ? { ...readLit(), ...LIT_WORDS } : { background: 'transparent' }}>{partsWhole(sentence, `s${i}`)}</span>{n < own.length - 1 ? ' ' : ''}</React.Fragment>); })()}</LessonWords>
           {lineParts.some((x) => x.role === 'open') && <SayAlongStrip key={`${lessonStep}-${replays}`} parts={lineParts} lit={litSentence} />}
         </div>
         {/* The row under the line, like a player's controls (pass MZ, EARMARKS A80): back, the speaker that says the line again, and
@@ -13304,7 +13503,7 @@ function EduSphereScreens() {
     // paper: drawn on a light paper box (More Info's), so a shape or a solid takes the paper's green, B, in both themes (round two's
     // code check, pass MO: the dark theme's mint read 1.6 to 1 there). Without it a choice sits on its answer tile, and its color
     // squares and colored shapes are told so (tile), so the dark theme's green keeps its edge for the paper alone (Q56).
-    const choiceFace = (c, k = 1, paper = false) => (/^look:/.test(c) ? <LookGroup token={c} k={k} tile={!paper} /> : /^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={Math.round(28 * k)} frame={dotFrame || 5} snap={dotFrame > 0} /> : /^shape:/.test(c) ? <ShapePic name={c.split(':')[1]} color={paper ? B.green : undefined} size={Math.round((c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64) * k)} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={Math.round(14 * k)} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={Math.round(18 * k)} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={Math.round(14 * k)} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6).split('#')[0]} color={paper ? B.green : undefined} size={Math.round(64 * k)} /> : /^shares:/.test(c) ? <SharesPic shape={c.split(':')[1]} cut={c.split(':')[2]} shaded={Number(c.split(':')[3] || 0)} size={Math.round(72 * k)} /> : /^dice:/.test(c) ? <DicePic pips={Number(c.split(':')[1].split('#')[0])} size={Math.round(64 * k)} /> : /^pic:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><StudentPicture name={c.slice(4).split('#')[0]} size={Math.round(72 * k)} tile={!paper} /></span> : /^art:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><ColorThumb picture={c.slice(4).split('#')[0]} size={Math.round(84 * k)} thing /></span> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={Math.round(64 * k)} tile={!paper} /> : /^face:/.test(c) ? <FeelingFace feeling={c.slice(5).split('#')[0]} size={Math.round(84 * k)} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={Math.round(64 * k)} tile={!paper} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={Math.round(64 * k)} tile={!paper} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={Math.round(80 * k)} /> : /^digital:/.test(c) ? <DigitalPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={Math.round(96 * k)} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={Math.round(12 * k)} /> : c);
+    const choiceFace = (c, k = 1, paper = false) => (/^look:/.test(c) ? <LookGroup token={c} k={k} tile={!paper} /> : /^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={Math.round(28 * k)} frame={dotFrame || 5} snap={dotFrame > 0} /> : /^shape:/.test(c) ? <ShapePic name={c.split(':')[1]} color={paper ? B.green : undefined} size={Math.round((c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64) * k)} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={Math.round(14 * k)} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={Math.round(18 * k)} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={Math.round(14 * k)} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6).split('#')[0]} color={paper ? B.green : undefined} size={Math.round(64 * k)} /> : /^shares:/.test(c) ? <SharesPic shape={c.split(':')[1]} cut={c.split(':')[2]} shaded={Number(c.split(':')[3] || 0)} size={Math.round(72 * k)} /> : /^dice:/.test(c) ? <DicePic pips={Number(c.split(':')[1].split('#')[0])} size={Math.round(64 * k)} /> : /^pic:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><StudentPicture name={c.slice(4).split('#')[0]} size={Math.round(72 * k)} tile={!paper} /></span> : /^art:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><ColorThumb picture={c.slice(4).split('#')[0]} size={Math.round(84 * k)} thing /></span> : /^icon:drawing~/.test(c) ? <IconPic name={c.slice(5)} size={Math.round(84 * k)} tile={!paper} /> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={Math.round(64 * k)} tile={!paper} /> : /^face:/.test(c) ? <FeelingFace feeling={c.slice(5).split('#')[0]} size={Math.round(84 * k)} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={Math.round(64 * k)} tile={!paper} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={Math.round(64 * k)} tile={!paper} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={Math.round(80 * k)} /> : /^digital:/.test(c) ? <DigitalPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={Math.round(96 * k)} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={Math.round(12 * k)} /> : c);
     // More Info (pass MH): why each wrong choice does not fit, the one picked now first, in words that remember earlier rounds.
     const pickedNow = checked ? (readAloud ? [...wrongPicks, ...(wasCorrect ? [] : [String(given)])] : (wasCorrect ? [] : [String(given)])) : [];
     const insight = q.type === 'choice' ? choiceInsight(q, pickedNow, qHistory) : null;
@@ -13328,9 +13527,16 @@ function EduSphereScreens() {
             where it covered the end of a long question's first line. A review question has no title, so its speaker stands alone. */}
         {/* Truly centered (pass LS, Mikey): an empty column on the left as wide as the speaker's column on the right, so the
             title sits on the screen's center line with the speaker beside it. A review question has no title; its speaker stands alone. */}
-        <div data-title-row="" style={isReviewQ ? { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, margin: '8px 0 10px' } : { display: 'grid', gridTemplateColumns: 'minmax(44px, 1fr) auto minmax(44px, 1fr)', justifyItems: 'start', alignItems: 'center', gap: 8, margin: shortPhone() ? '6px 0 10px' : '10px 0 18px' }}>
+        {/* Under 360 pixels the middle column's least width is 0 and so is the title's (pass NC, round two's code read): in a plain auto
+            column a title on one line was as wide as its words, which pushed the speaker off the screen on 238 of 712 titles at 320. */}
+        <div data-title-row="" style={isReviewQ ? { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, margin: '8px 0 10px' } : { display: 'grid', gridTemplateColumns: narrowScreen() ? 'minmax(44px, 1fr) minmax(0, auto) minmax(44px, 1fr)' : 'minmax(44px, 1fr) auto minmax(44px, 1fr)', justifyItems: 'start', alignItems: 'center', gap: 8, margin: shortPhone() ? '6px 0 10px' : '10px 0 18px' }}>
           {!isReviewQ && <span aria-hidden="true" />}
-          {!isReviewQ && <p style={{ margin: 0, fontSize: 18, fontWeight: 600, textAlign: 'center' }}>{titleCase(mod.title)}</p>}
+          {/* Under 360 pixels the title is fitted to one line, 15 pixels at least, in the room the row leaves it (the row less its two side
+              columns at their least, 44 pixels each, and the two gaps), and a title too long for one line at 15 wraps there (pass NC,
+              EARMARKS A72: it took two lines in 142 banks at 320, 27 pixels each, and in round one's measure one line lifted Check answer
+              above the fold on 110 of the 489 screens it was under; as fitted, 198 of the 712 lessons' titles wrap at 320, and Check
+              answer is under the fold on 437 of the 2,412 pre-K question screens there in the light theme). */}
+          {!isReviewQ && <p style={{ margin: 0, fontSize: 18, fontWeight: 600, textAlign: 'center', ...(narrowScreen() ? { minWidth: 0 } : null) }}>{narrowScreen() ? <FitText size={18} min={15} within="[data-title-row]" less={2 * (44 + 8)}>{titleCase(mod.title)}</FitText> : titleCase(mod.title)}</p>}
           <SpeakButton mini text={questionText} voices={q && q.voices ? q.voices : null} label={readAloud ? 'Hear it again' : 'Read it to me'} />
         </div>
         {/* On a short phone the card sits a little tighter, and a question whose answers are each one picture draws them, and its own
@@ -13346,13 +13552,15 @@ function EduSphereScreens() {
           <p data-question-text="" style={{ fontSize: 20, fontWeight: 600, margin: shortPhone() ? '0 0 10px' : '0 0 14px', textAlign: 'center', textWrap: 'balance' }}>{printedQuestion(q, canSpeak()).prompt}</p>
           {/* The question's own picture draws bigger (pass MH, Mikey), except when its answers are pictures of the same kind (a
               turtle to match among animal answers), so the one that is the same never looks a different size from the answer. */}
-          {q.visual && <div style={{ margin: shortPhone() ? '0 0 10px' : '0 0 14px' }}><Picture visual={shownVisual} note={record.preview ? undefined : false} big={!(Array.isArray(q.choices) && q.choices.some((c) => String(c).startsWith(`${q.visual.kind}:`)))} shrink={shortPictures ? SHORT_PICTURES : 1} /></div>}
+          {q.visual && <div style={{ margin: shortPhone() ? '0 0 10px' : '0 0 14px' }}><Picture visual={Array.isArray(q.choices) && q.choices.some((c) => String(c).startsWith(`${q.visual.kind}:`)) && matchSize(q.visual) ? { ...shownVisual, size: matchSize(q.visual) } : shownVisual} note={record.preview ? undefined : false} big={!(Array.isArray(q.choices) && q.choices.some((c) => String(c).startsWith(`${q.visual.kind}:`)))} shrink={shortPictures ? SHORT_PICTURES : 1} /></div>}
           {q.type === 'choice' ? (
             // Number answers never stack onto two lines (2026-09-23, Mikey): the columns are as wide as the longest one needs.
             // Towers stand side by side on one floor (pass MA): the explanation says both stand on the same floor, so the buttons do too.
+            // A column of picture answers (pass NC, EARMARKS A77) is a phone's width on any screen, centred, so a 69-pixel drawing never sits
+            // in a tile as wide as a laptop's card (737 pixels); a phone's card is narrower than that width, so a phone draws it as before.
             // Two ideas' four corners (q.corners, pass MO) sit two by two, a phone's width on any screen, so the corners read as corners and
             // the fourth and Check answer fit a short phone (round two's code check: four full-width rows ended 30 pixels below its fold).
-            <div style={{ display: 'grid', gap: shortPhone() ? 8 : 10, alignItems: q.choices.every((c) => /^tower:\d+$/.test(c)) ? 'end' : undefined, gridTemplateColumns: q.corners ? 'repeat(2, minmax(0, 1fr))' : q.choices.every((c) => /^tower:\d+$/.test(c)) ? `repeat(${q.choices.length}, 1fr)` : q.choices.every((c) => /^(\d+|[A-Za-z])$/.test(c)) ? `repeat(auto-fit, minmax(${Math.max(70, Math.max(...q.choices.map((c) => c.length)) * 15 + 24)}px, 1fr))` : '1fr', ...(q.corners ? { maxWidth: 360, margin: '0 auto' } : null) }}>
+            <div style={{ display: 'grid', gap: shortPhone() ? 8 : 10, alignItems: q.choices.every((c) => /^tower:\d+$/.test(c)) ? 'end' : undefined, gridTemplateColumns: q.corners ? 'repeat(2, minmax(0, 1fr))' : q.choices.every((c) => /^tower:\d+$/.test(c)) ? `repeat(${q.choices.length}, 1fr)` : q.choices.every((c) => /^(\d+|[A-Za-z])$/.test(c)) ? `repeat(auto-fit, minmax(${Math.max(70, Math.max(...q.choices.map((c) => c.length)) * 15 + 24)}px, 1fr))` : '1fr', ...(q.corners ? { maxWidth: 360, margin: '0 auto' } : q.choices.every((c) => ONE_PICTURE_CHOICE.test(String(c)) || /^dots:\d+$/.test(String(c))) ? { maxWidth: PICTURE_COLUMN, margin: '0 auto' } : null) }}>
               {q.choices.map((c) => {
                 const picked = given === c;
                 let bg = C.surface; let border = C.line;
@@ -13378,7 +13586,7 @@ function EduSphereScreens() {
                 return (
                   // A word answer says itself for a child who cannot read; a picture answer never does, because naming it would
                   // hand over the answer, nor, since pass MC, a single letter (choiceSpeaks reads only the choice, never which one is right).
-                  <button key={c} type="button" data-choice={c} data-heard-choice={heard ? '' : undefined} aria-label={heard ? c : pictureName} onClick={() => { if (!checked) { if (readAloud) { playTap(); if (choiceSpeaks(q, c)) speak(c, q.voices ? { voices: q.voices } : {}); } setGiven(c); } }}
+                  <button key={c} type="button" data-choice={c} data-heard-choice={heard ? '' : undefined} data-choice-last={c === q.choices[q.choices.length - 1] ? '' : undefined} aria-label={heard ? c : pictureName} onClick={() => { if (!checked) { if (readAloud) { playTap(); if (choiceSpeaks(q, c)) speak(c, q.voices ? { voices: q.voices } : {}); } setGiven(c); } }}
                     style={{ opacity: ruledOut && !checked ? (C.mode === 'dark' ? 0.72 : 0.5) : 1, fontFamily: FONT, fontSize: choiceFont(q.choices), textAlign: 'center', textWrap: 'balance', padding: `${shortPictures ? 6 : 12}px 10px ${standIn ? 34 : shortPictures ? 6 : 12}px`, ...(standIn ? { position: 'relative' } : null), minWidth: 0, overflowWrap: /^-?[\d.,\/ ]+$/.test(c) ? 'normal' : 'anywhere', whiteSpace: /^-?[\d.,\/ ]+$/.test(c) ? 'nowrap' : 'normal', borderRadius: 10, background: bg, border: `2px solid ${border}`, color: C.ink, cursor: checked ? 'default' : 'pointer', minHeight: 48 }}>
                     {heard ? <HeardChoice text={heard} /> : choiceFace(c, shortPictures ? SHORT_PICTURES : 1)}
                     {standIn && <ReplaceNote pal={C} style={{ right: 8, bottom: 5 }} />}
@@ -13503,8 +13711,9 @@ function EduSphereScreens() {
           {checked && !(attempt.placement && !wasCorrect && given === '') && (
             <div key={cheer} className={wasCorrect ? 'edu-cheer' : 'edu-wobble'} style={{ position: 'relative', marginTop: 14, padding: 14, borderRadius: 10, background: wasCorrect ? C.greenSoft : C.claySoft }}>
               {wasCorrect && <StarBurst />}
-              <p style={{ margin: 0, fontWeight: 600, color: wasCorrect ? C.green : C.clayInk }}>{wasCorrect ? 'Correct' : readAloud ? preReaderWrongWords(q, String(given), wrongPicks) : `Not quite. The answer is ${describeAnswer(q)}.`}</p>
-              {(wasCorrect || !readAloud) && <div style={{ margin: '8px 0 0' }}><RichText text={formatTeachingText(q.explain)} size={15} lineGap={6} />{!wasCorrect && !readAloud && taughtLine(mod.id, q.answer) && <p style={{ margin: '8px 0 0', fontSize: 14, color: C.muted }}>From the lesson: “{taughtLine(mod.id, q.answer)}”</p>}{!wasCorrect && !readAloud && mod.lesson.example && mod.lesson.example.another && (wrongWay ? <div style={{ margin: '8px 0 0', padding: '10px 12px', borderRadius: 10, background: C.goldSoft }}><div style={{ maxWidth: 240, margin: '0 auto 8px' }}><Picture visual={wayVisual(mod.lesson.example, 1)} note={record.preview ? undefined : false} /></div><RichText text={wayText([].concat(mod.lesson.example.another)[0])} size={14} lineGap={6} /></div> : <p style={{ margin: '8px 0 0', textAlign: 'center' }}><button type="button" style={{ ...linkBtn, fontSize: 14 }} onClick={() => setWrongWay(true)}>Show me another way</button></p>)}{!wasCorrect && q.choiceNotes && q.choiceNotes[given] && !(insight && insight.any) && <p style={{ margin: '6px 0 0', fontSize: 15, color: C.muted }}>{q.choiceNotes[given]}</p>}</div>}
+              {/* The reason after a wrong tap and the explanation, balanced, their speech parts kept whole (pass NB, round one's screen check: "Have another / try."). */}
+              <p style={{ margin: 0, fontWeight: 600, color: wasCorrect ? C.green : C.clayInk, textWrap: 'balance' }}>{wasCorrect ? 'Correct' : readAloud ? partsWhole(preReaderWrongWords(q, String(given), wrongPicks), 'why') : `Not quite. The answer is ${describeAnswer(q)}.`}</p>
+              {(wasCorrect || !readAloud) && <div style={{ margin: '8px 0 0', textWrap: 'balance' }}><RichText text={formatTeachingText(q.explain)} size={15} lineGap={6} />{!wasCorrect && !readAloud && taughtLine(mod.id, q.answer) && <p style={{ margin: '8px 0 0', fontSize: 14, color: C.muted }}>From the lesson: “{taughtLine(mod.id, q.answer)}”</p>}{!wasCorrect && !readAloud && mod.lesson.example && mod.lesson.example.another && (wrongWay ? <div style={{ margin: '8px 0 0', padding: '10px 12px', borderRadius: 10, background: C.goldSoft }}><div style={{ maxWidth: 240, margin: '0 auto 8px' }}><Picture visual={wayVisual(mod.lesson.example, 1)} note={record.preview ? undefined : false} /></div><RichText text={wayText([].concat(mod.lesson.example.another)[0])} size={14} lineGap={6} /></div> : <p style={{ margin: '8px 0 0', textAlign: 'center' }}><button type="button" style={{ ...linkBtn, fontSize: 14 }} onClick={() => setWrongWay(true)}>Show me another way</button></p>)}{!wasCorrect && q.choiceNotes && q.choiceNotes[given] && !(insight && insight.any) && <p style={{ margin: '6px 0 0', fontSize: 15, color: C.muted }}>{q.choiceNotes[given]}</p>}</div>}
               {/* An explanation picture is a set of fraction bars, one group of dots, or (since pass LW) any picture kind below. */}
               {(wasCorrect || !readAloud) && Array.isArray(q.explainVisual) && q.explainVisual.map((b, i) => <LabeledBar key={i} parts={b.parts} shaded={b.shaded} label={b.label} color={wasCorrect ? C.green : C.clay} />)}
               {(wasCorrect || !readAloud) && q.explainVisual && !Array.isArray(q.explainVisual) && q.explainVisual.kind === 'dots' && <div style={{ marginTop: 8 }}><DotGroup count={q.explainVisual.count} size={28} animate animKey={cheer} /></div>}
@@ -13541,6 +13750,10 @@ function EduSphereScreens() {
             that stays closed until every step is tapped). */}
         {/* It stays away while More Info is open (pass MX, round two's code read: it floated over the sheet's words). */}
         {readAloud && !moreInfo && (checked || (given !== '' && !(q.type === 'order' && orderPicked.length < (q.pick || q.items.length)))) && <ScrollCue target="[data-practice-next]" whole watch={`${qIndex}-${checked}-${wasCorrect}-${misses}`} />}
+        {/* Before a pick (pass NC, EARMARKS A72 decided): on a short phone the last answer can sit partly under the screen with nothing
+            pointing down (32 of 2,412 question screens at 320 by 568), so the cue shows while more than a third of it is hidden and nothing
+            is picked, and leads to that answer, never to the closed Check answer. */}
+        {readAloud && !moreInfo && !checked && given === '' && q && q.type === 'choice' && <ScrollCue target="[data-choice-last]" hidden={1 / 3} watch={`${questionKey}-${q.genId}-pick`} />}
         {record.preview && <div style={{ marginTop: 10 }}><Btn full kind="secondary" onClick={() => { setChecked(false); setGiven(''); setOrderPicked([]); if (qIndex + 1 < questions.length) { setQIndex(qIndex + 1); setQShownAt(Date.now()); } else { setScreen('overview'); } }}>Skip (walk-through)</Btn></div>}
         <SilentNote shown={heardNote} />
         <VoiceNote />
@@ -13806,7 +14019,7 @@ function EduSphereScreens() {
         {/* The pondering pictures around the question (pass MH, Mikey: "The let's wonder question should also be spiced up with icons
             around the question."). */}
         <PonderFrame seed={seedOf(wonder.id)} attrs={{ 'data-wonder-question': '' }} className="edu-rise" style={{ ...card, textAlign: 'center', padding: '22px 18px', margin: '0 0 14px' }}>
-          <p style={{ fontSize: 22, lineHeight: 1.5, margin: 0 }}>{wonder.prompt}</p>
+          <p style={{ fontSize: 22, lineHeight: 1.5, margin: 0, textWrap: 'balance' }}>{wonder.prompt}</p>
         </PonderFrame>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
           {canSpeak() && (
@@ -13824,14 +14037,14 @@ function EduSphereScreens() {
             changes in the same frame as its ink, with no fade (pass MT, the second read of round one: a 200 ms fade left a dark word on
             the dark card, or a green one on the pale fill, for a moment at every change, as the read-along's lights did); the press
             still grows in 200 ms. */}
-        <div className="edu-wonder-answers" style={{ display: 'grid', gap: 12, gridTemplateColumns: `repeat(${evenColumns(options.length)}, 1fr)` }}>
+        <FitTilesRow className="edu-wonder-answers" style={{ display: 'grid', gap: 12, gridTemplateColumns: `repeat(${evenColumns(options.length)}, minmax(0, 1fr))` }}>
           {options.map((o, i) => (
             <button key={o} type="button" onClick={() => finish(o)} className="edu-press" data-wonder-lit={wonderLit === i ? '' : undefined}
               style={{ fontFamily: FONT, fontSize: 20, fontWeight: 600, padding: '22px 10px', borderRadius: 14, background: wonderLit === i ? readLit().background : C.surface, border: `3px solid ${wonderLit === i ? '#AAD8C5' : C.green}`, color: wonderLit === i ? readLit().color : C.green, cursor: 'pointer', minHeight: 78, transform: wonderLit === i ? 'scale(1.04)' : 'none', ...(optionSwatch(o) ? { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 6, padding: '14px 10px' } : {}), transition: 'transform 200ms' }}>
-              {optionSwatch(o) && <OptionSwatch colour={optionSwatch(o)} size={30} />}{o}
+              {optionSwatch(o) && <OptionSwatch colour={optionSwatch(o)} size={30} />}<WordFit>{o}</WordFit>
             </button>
           ))}
-        </div>
+        </FitTilesRow>
         <VoiceNote />
       </div></div>
     );
@@ -13850,7 +14063,7 @@ function EduSphereScreens() {
         {/* The question stays above the voices, small, so a child remembers what they are talking about (pass MH, Mikey: "They should
             also still see the question above what the characters are saying so they can remember what is being discussed.  It can
             be discrete."). */}
-        <p data-wonder-asked="" style={{ margin: '4px 0 10px', fontSize: 15, lineHeight: 1.45, color: C.muted, textAlign: 'center', fontStyle: 'italic' }}>{wonder.prompt}</p>
+        <p data-wonder-asked="" style={{ margin: '4px 0 10px', fontSize: 15, lineHeight: 1.45, color: C.muted, textAlign: 'center', fontStyle: 'italic', textWrap: 'balance' }}>{wonder.prompt}</p>
         {v.closing
           ? <div key={step}><PonderCard wonder={wonder} title={v.title} text={v.closing} big attrs={{ 'data-wonder-closing': '' }} /></div>
           : <div key={step} className="edu-rise" data-wonder-voice-card={wonderVoice(v.voice) ? wonderVoice(v.voice).name : ''} style={{ ...card, textAlign: 'center', padding: '20px 18px 22px' }}>
@@ -13906,7 +14119,7 @@ function EduSphereScreens() {
         </div>
         <p style={{ color: C.muted, fontSize: 14, margin: '0 0 10px', textAlign: 'center' }}>No right answer</p>
         <PonderFrame seed={seedOf(wonder.id)} attrs={{ 'data-wonder-question': '' }} style={{ ...card, margin: '0 0 14px' }}>
-          <p style={{ fontSize: 20, fontWeight: 600, margin: '0 0 14px' }}>{wonder.prompt}</p>
+          <p style={{ fontSize: 20, fontWeight: 600, margin: '0 0 14px', textWrap: 'balance' }}>{wonder.prompt}</p>
           {wonder.answerMode === 'pick' ? (
             <div style={{ display: 'grid', gap: 10 }}>
               {wonder.options.map((o) => (
@@ -13935,7 +14148,7 @@ function EduSphereScreens() {
         <p style={{ color: C.muted, fontSize: 14, margin: '4px 0 6px' }}>How others might see it</p>
         {/* The question is repeated here so nobody has to remember what they were asked. */}
         <div style={{ ...card, background: C.greenSoft, borderColor: C.softEdge }}>
-          <p style={{ margin: 0, fontSize: 17, fontWeight: 600 }}>{wonder.prompt}</p>
+          <p style={{ margin: 0, fontSize: 17, fontWeight: 600, textWrap: 'balance' }}>{wonder.prompt}</p>
         </div>
         <SpeakButton text={allText} label="Read it to me" />
         {/* Each voice (pass MH, Mikey's layout): the name, the label and the portrait centered, then the words in quotes, which run
@@ -16061,7 +16274,8 @@ function EduSphereScreens() {
                   {getCourse(coursePreview).modules.map((m) => (
                     <li key={m.id} style={{ padding: '6px 0', borderTop: `1px solid ${C.line}` }}>
                       <span style={{ display: 'block', fontSize: 16, fontWeight: 600 }}>{titleCase(m.title)}</span>
-                      <span style={{ display: 'block', fontSize: 14, color: C.muted }}>{m.tagline || (m.lesson && m.lesson.keyIdea) || ''}</span>
+                      {/* Balanced, as the overview's taglines are (pass NB). */}
+                      <span style={{ display: 'block', fontSize: 14, color: C.muted, textWrap: 'balance' }}>{m.tagline || (m.lesson && m.lesson.keyIdea) || ''}</span>
                     </li>
                   ))}
                 </ol>

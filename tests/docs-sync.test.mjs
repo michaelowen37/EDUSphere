@@ -242,6 +242,15 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
     const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
     const said = (audit.match(/Corrected in place in pass NC \(Mikey's answer to Q85\)/g) || []).length;
     ok("docs/RULES-AUDIT-HISTORY.md keeps the four rows pass NC corrected in place as pass NB left them (section 8's two, section 6's short breaths and section 7's twins), each corrected row says so, and section 9's row for Q85 names them (pass NC, Q85 (b))", /^\| \*\*Lines wrap balanced, and the Wonder answers stack on a narrow phone/.test(kept) && kept.includes('a browser check waits (EARMARKS A76 and A82)') && kept.includes('The app\'s sounds in short breaths') && kept.includes('A twin still open is named (pass MK') && said >= 4 && audit.includes('Corrected in pass NC, each read against the code: section 8') && audit.includes("and section 7's row on a twin still open") && createHash('sha256').update(kept, 'utf8').digest('hex') === '25c405a9d383bddebe52a5199031ef1fa7e7a090e77f0c0f5ecb0bdd54d256af', `${said} rows say so`); }
+  // Pass ND's two blocks, held the same way: Q88, which Mikey answered when he opened the pass ("Q88 - A"), and the three rows his answer
+  // let pass ND correct in place under Q85 (b), as pass NC left them, each corrected row saying so and section 9's row for Q85 naming them.
+  { const o = "<!-- RULES-AUDIT section 11's answered questions in pass ND, word for word: begin -->\n"; const ia = hist.indexOf(o); const ib = hist.indexOf("<!-- RULES-AUDIT section 11's answered questions in pass ND, word for word: end -->");
+    const nd = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
+    ok('docs/RULES-AUDIT-HISTORY.md keeps the question answered in pass ND, every line unchanged (pass ND)', /^- Q88\. Answered in pass ND/.test(nd) && nd.includes('The question as it stood: A hiss said as one breath') && createHash('sha256').update(nd, 'utf8').digest('hex') === '949292b0607f6cf926d8ccb083e369ea29855b4e842239cec1432c3607e829ee'); }
+  { const o = '<!-- RULES-AUDIT rows as pass NC left them, before pass ND corrected them in place, word for word: begin -->\n'; const ia = hist.indexOf(o); const ib = hist.indexOf('<!-- RULES-AUDIT rows as pass NC left them, before pass ND corrected them in place, word for word: end -->');
+    const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
+    const said = (audit.match(/Corrected in place in pass ND \(Mikey's answer to Q85\)/g) || []).length;
+    ok("docs/RULES-AUDIT-HISTORY.md keeps the three rows pass ND corrected in place as pass NC left them (section 2's line, section 4's row and section 6's short breaths), each corrected row says so, and section 9's row for Q85 names them (pass ND, Q85 (b))", /^- \*\*Since pass NC \(Domain III's phonemes/.test(kept) && (kept.match(/Q88 as[k]s Mikey/g) || []).length === 3 && said >= 3 && audit.includes('Corrected in pass ND, each read against the code: section 2') && !/Q88 as[k]s Mikey/.test(audit) && createHash('sha256').update(kept, 'utf8').digest('hex') === '82144b19b20626b09308aaeafde4cffb105b71b507588e9769a570e11076308c', `${said} rows say so`); }
   // HANDOFF's numbers name the pass that counted them (pass NC, round two's final read: its heading still named pass NB over pass NC's
   // numbers): the heading's pass is the newest DECISIONS entry's. An older pass's name, planted, is caught.
   { const handoff = readFileSync(new URL('../docs/HANDOFF.md', import.meta.url), 'utf8'); const dec = readFileSync(new URL('../docs/DECISIONS.md', import.meta.url), 'utf8');
@@ -344,6 +353,10 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   { const o = '<!-- CLAUDE.md lines as pass MY wrote them, before pass MZ corrected them, word for word: begin -->\n'; const ia = hist.indexOf(o); const ib = hist.indexOf('<!-- CLAUDE.md lines as pass MY wrote them, before pass MZ corrected them, word for word: end -->');
     const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
     ok('docs/CLAUDE-HISTORY.md keeps the CLAUDE.md line pass MZ corrected as pass MY wrote it, and RULES-AUDIT section 9 names it (pass MZ)', /^- Parts of words, and a split lesson \(pass MY, /.test(kept) && createHash('sha256').update(kept, 'utf8').digest('hex') === 'f3e8fa11b4fad85c639cd69f89f3c2e204bbe49e6ee5941043c8be20e20dfcc2' && row.includes('Corrected in pass MZ, at Mikey\'s word')); }
+  // The line pass NC added to CLAUDE-PART-2.md, corrected in place in pass ND at Mikey's word (Q88): its words as pass NC wrote them kept the same way.
+  { const o = '<!-- CLAUDE.md lines as pass NC wrote them, before pass ND corrected them, word for word: begin -->\n'; const ia = hist.indexOf(o); const ib = hist.indexOf('<!-- CLAUDE.md lines as pass NC wrote them, before pass ND corrected them, word for word: end -->');
+    const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
+    ok('docs/CLAUDE-HISTORY.md keeps the CLAUDE-PART-2 line pass ND corrected as pass NC wrote it, and RULES-AUDIT section 9 names it (pass ND)', /^- Phonemes, the one-breath hiss, writing to tell, and the screen read \(pass NC, /.test(kept) && /Q88 as[k]s Mikey/.test(kept) && createHash('sha256').update(kept, 'utf8').digest('hex') === '6d48bb3dc86291b4aaf4ad9f072ea7fbe8a60ae01592f012acc5357716f66035' && row.includes('Corrected in pass ND, at Mikey\'s word')); }
 }
 // NEW-CHAT.md's history (pass MM): the state bullets of passes JE to MJ, the earlier chats' "When to start" paragraphs and the
 // chain of earlier preview links moved, word for word, to docs/NEW-CHAT-HISTORY.md, whose text between its markers must hash to
@@ -487,9 +500,10 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   const bare = (text) => text.split('\n').filter((l) => !l.trim().startsWith('#') && /\btimeout \d/.test(l));
   const steps = check.split('\n').filter((l) => /^echo "1[0-3][a-z]?\/13 /.test(l));
   const first = steps.find((l) => / run "[^"]+" \d+ /.test(l)) || ''; const planted = check.replace(first, first.replace(/ run "[^"]+" (\d+) /, ' timeout $1 '));
+  // Eighteen browser steps since pass ND's tile edges step (13k, EARMARKS A89).
   ok(`check.sh names a browser step stopped at its time limit and notes one past two thirds of it, so a limit is raised before it stops a passing run (pass MT; ${steps.length} browser steps, each through run; the click-through's 695 seconds of 720 noted, a hung step named with its code kept, three near misses passed, a bare timeout caught)`,
     slowFn !== '' && runFn !== '' && notes.length === want.length && want.every((w, i) => notes[i].startsWith(w)) && last.startsWith(hung) && codes === 'code 124\ncode 0\ncode 1'
-    && steps.length === 17 && steps.every((l) => / run "[^"]+" \d+ /.test(l)) && bare(check).length === 0 && bare(planted).length === 1,
+    && steps.length === 18 && steps.every((l) => / run "[^"]+" \d+ /.test(l)) && bare(check).length === 0 && bare(planted).length === 1,
     JSON.stringify({ notes, codes, last: last.slice(0, 60), steps: steps.length, bare: bare(check).length, planted: bare(planted).length }));
 }
 // docs/MISTAKE-CLASSES.md counts a pass once in a class's heading (pass NA, the third read: round two's evidence was counted as one

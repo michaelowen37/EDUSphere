@@ -98,6 +98,25 @@ export function hairPairs(looks = personLooks()) {
   return pairs;
 }
 
+// Hair near alike (pass ND, round one's story check): two people of one kind, in the same course or the course before, whose hair is
+// the same color family and shares at least one style word that sets a look (a bob, pigtails, chin-length, curly, braids), since
+// hairPairs asks for every style word alike and passed "a chin-length brown bob" beside "chin-length curly brown hair". The words
+// short, long, straight and loose are too common to set a look alone, and freckles, which a picture this size hardly shows, never set
+// two apart here; a beard, a goatee, a mustache, glasses or graying still do. Returns [a, b, shared words] for each pair.
+const NEAR_COMMON = new Set(['short', 'long', 'straight', 'loose']);
+// A style word in its forms is one word (pass ND, round two's alignment read: "short black curls" passed beside "short black curly hair").
+const NEAR_FORMS = { curly: 'curls', braids: 'braid', buns: 'bun', dreadlocks: 'locs' };
+const NEAR_MARKS = /\b(?:beard|goatee|mustache|glasses|graying)\b/g;
+export function hairNearPairs(looks = personLooks()) {
+  const styleOf = (x) => x.look.split(' / ')[0].trim().split(' ').slice(1).filter((w) => w && !NEAR_COMMON.has(w)).map((w) => NEAR_FORMS[w] || w); const marks = (x) => (x.words.match(NEAR_MARKS) || []).sort().join(' ');
+  const once = new Map(); for (const x of looks) { const key = x.module + '|' + x.group + '|' + x.look; if (!once.has(key)) once.set(key, x); }
+  const xs = [...once.values()]; const pairs = [];
+  for (let i = 0; i < xs.length; i++) for (let j = i + 1; j < xs.length; j++) { const a = xs[i]; const b = xs[j];
+    if (a.group !== b.group || Math.abs(a.place - b.place) > 1 || a.look === b.look || a.hair !== b.hair || marks(a) !== marks(b)) continue;
+    const shared = styleOf(a).filter((w) => styleOf(b).includes(w)); if (shared.length) pairs.push([a, b, shared]); }
+  return pairs;
+}
+
 if (process.argv[1] && process.argv[1].endsWith('look-echoes.mjs')) {
   const all = personReads(); const looks = all.filter((x) => x.read); const pairs = lookEchoes(looks);
   console.log(`${looks.length} looks read in pre-K story and painting rows, ${all.length - looks.length} begun that it cannot read; ${pairs.length} pairs of people who may look alike (one group, the same course or the course before, hair and clothing in the same color families):\n`);

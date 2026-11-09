@@ -437,9 +437,17 @@ const SWATCH = { red: '#D9534F', blue: '#4A7FC1', yellow: '#F0C93A', green: '#5E
 // is for the paper only, as Q56 asked ("the green ones on the dark theme's paper the same"): on the dark theme's own answer tiles
 // (tile) the green reads 4.2 to 1 as it is, and its deeper edge read 2.2 to 1 there (round one's screen check).
 const SWATCH_EDGE = { yellow: '#9C7A14', green: '#3D6B41' };
+// Since pass ND (EARMARKS A89, the screen read's measure of every drawing on its answer tile) the same kind of edge where a color read
+// under 3 to 1 on a tile: the light theme's green on its right and wrong tiles (2.84 and 2.71 to 1) takes its deeper green there; and the
+// dark theme's red and blue on its right answer's tile (2.87 and 2.66) take a lighter edge of their own color, since a deeper one would
+// melt into the dark tile. Each reads 3 to 1 or better on every tile of its theme (the scripts test), and the fill never changes (Q56).
+const SWATCH_TILE_EDGE = { red: '#E8837F', blue: '#7FA7DC' };
 function swatchEdge(fill, width = 4, tile = false) {
   if (fill === SWATCH.yellow) return { stroke: SWATCH_EDGE.yellow, strokeWidth: width };
   if (fill === SWATCH.green && C.mode === 'dark' && !tile) return { stroke: SWATCH_EDGE.green, strokeWidth: width };
+  if (fill === SWATCH.green && C.mode !== 'dark' && tile) return { stroke: SWATCH_EDGE.green, strokeWidth: width };
+  if (fill === SWATCH.red && C.mode === 'dark' && tile) return { stroke: SWATCH_TILE_EDGE.red, strokeWidth: width };
+  if (fill === SWATCH.blue && C.mode === 'dark' && tile) return { stroke: SWATCH_TILE_EDGE.blue, strokeWidth: width };
   return {};
 }
 function Swatch({ colour, size = 90, tile = false }) {
@@ -579,11 +587,13 @@ function TensGroup({ count, size = 22, animate = false, animKey = 0 }) {
   );
 }
 
-// Lines of different lengths, or towers of different heights, for comparing size.
-function BarPic({ length, vertical = false, size = 22 }) {
+// Lines of different lengths, or towers of different heights, for comparing size. On a light theme's answer tile (tile) each cell wears
+// the duck's deeper gold edge (pass ND, round one's code check: C.gold read 2.73 and 2.63 to 1 on a right and a wrong answer's tile).
+function BarPic({ length, vertical = false, size = 22, tile = false }) {
+  const edge = tile && C.mode !== 'dark' ? { stroke: '#94741A', strokeWidth: 2 } : {};
   const cells = Array.from({ length }).map((_, i) => vertical
-    ? <rect key={i} x="0" y={(9 - 1 - i) * (size + 3)} width={size * 1.6} height={size} rx="4" fill={C.gold} />
-    : <rect key={i} x={i * (size + 3)} y="0" width={size} height={size * 1.6} rx="4" fill={C.gold} />);
+    ? <rect key={i} x="0" y={(9 - 1 - i) * (size + 3)} width={size * 1.6} height={size} rx="4" fill={C.gold} {...edge} />
+    : <rect key={i} x={i * (size + 3)} y="0" width={size} height={size * 1.6} rx="4" fill={C.gold} {...edge} />);
   const w = vertical ? size * 1.6 : 9 * (size + 3) - 3; const h = vertical ? 9 * (size + 3) - 3 : size * 1.6;
   return <svg viewBox={`0 0 ${w} ${h}`} width={vertical ? 40 : Math.min(w, 260)} height={vertical ? 160 : undefined} role="img" aria-label={vertical ? `tower ${length}` : `line ${length}`} style={{ display: 'block', margin: '0 auto', maxWidth: '100%' }}>{cells}</svg>;
 }
@@ -591,8 +601,15 @@ function BarPic({ length, vertical = false, size = 22 }) {
 // Solid shapes, drawn with a little shading so they read as things rather than outlines.
 // Drawn with gradients rather than a 3D library: the light sits upper left, a soft
 // shadow sits beneath, and the whole thing weighs nothing and renders on every device.
-function SolidPic({ name, size = 90, color = C.green }) {   // color: B.green on game paper (pass ML)
+function SolidPic({ name, size = 90, color = C.green, tile = false }) {   // color: B.green on game paper (pass ML)
   const clean = String(name).split('#')[0];
+  // Their edges (pass ND, EARMARKS A89). On the dark theme's answer tiles (dk, as IconPic's) their shaded sides fall to a dark green that
+  // read 1.1 to 1.5 to 1 there, so every face wears a pale green rim, the ball's own highlight, 5.95 or better (rim); and the pale tops of
+  // the box, the cube and the cylinder and the cylinder's lit side, 1.4 to 2.5 on the light theme's tiles, wear an edge of the solid's
+  // own green there, 6.09 or better, and that pale rim on a dark tile (lid).
+  const dk = C.mode === 'dark' && tile;
+  const rim = dk ? { stroke: '#9CC7B0', strokeWidth: 2, strokeLinejoin: 'round' } : {};
+  const lid = { stroke: dk ? '#9CC7B0' : color, strokeWidth: 2, strokeLinejoin: 'round' };
   const uid = `s${clean}${color === C.green ? '' : String(color).replace(/[^0-9a-z]/gi, '')}`;
   const defs = (
     <defs>
@@ -604,14 +621,14 @@ function SolidPic({ name, size = 90, color = C.green }) {   // color: B.green on
     </defs>
   );
   const shadow = <ellipse cx="52" cy="88" rx="30" ry="6" fill={`url(#${uid}-shadow)`} />;
-  const body = clean === 'sphere' ? <g>{shadow}<circle cx="50" cy="48" r="36" fill={`url(#${uid}-ball)`} /><ellipse cx="36" cy="34" rx="9" ry="6" fill="#fff" opacity="0.45" /></g>
-    : clean === 'cube' ? <g>{shadow}<path d="M22 34 L54 22 L82 34 L50 46 Z" fill={`url(#${uid}-top)`} /><path d="M22 34 L50 46 L50 84 L22 72 Z" fill={color} /><path d="M50 46 L82 34 L82 72 L50 84 Z" fill={`url(#${uid}-side)`} /></g>
-    : clean === 'cylinder' ? <g>{shadow}<rect x="24" y="24" width="52" height="52" fill={`url(#${uid}-cone)`} /><ellipse cx="50" cy="76" rx="26" ry="10" fill="#2A4E42" /><ellipse cx="50" cy="24" rx="26" ry="10" fill={`url(#${uid}-top)`} /></g>
+  const body = clean === 'sphere' ? <g>{shadow}<circle cx="50" cy="48" r="36" fill={`url(#${uid}-ball)`} {...rim} /><ellipse cx="36" cy="34" rx="9" ry="6" fill="#fff" opacity="0.45" /></g>
+    : clean === 'cube' ? <g>{shadow}<path d="M22 34 L54 22 L82 34 L50 46 Z" fill={`url(#${uid}-top)`} {...lid} /><path d="M22 34 L50 46 L50 84 L22 72 Z" fill={color} {...rim} /><path d="M50 46 L82 34 L82 72 L50 84 Z" fill={`url(#${uid}-side)`} {...rim} /></g>
+    : clean === 'cylinder' ? <g>{shadow}<rect x="24" y="24" width="52" height="52" fill={`url(#${uid}-cone)`} {...lid} /><ellipse cx="50" cy="76" rx="26" ry="10" fill="#2A4E42" /><path d="M24 76 A26 10 0 0 0 76 76" fill="none" {...rim} /><ellipse cx="50" cy="24" rx="26" ry="10" fill={`url(#${uid}-top)`} {...lid} /></g>
     // A rectangular prism (pass KY, TEKS 1.6E), drawn as a box longer than it is tall, so it reads as a box and not a cube.
-    : clean === 'box' ? <g>{shadow}<path d="M10 38 L32 22 L90 22 L68 38 Z" fill={`url(#${uid}-top)`} /><path d="M10 38 L68 38 L68 82 L10 82 Z" fill={color} /><path d="M68 38 L90 22 L90 66 L68 82 Z" fill={`url(#${uid}-side)`} /></g>
+    : clean === 'box' ? <g>{shadow}<path d="M10 38 L32 22 L90 22 L68 38 Z" fill={`url(#${uid}-top)`} {...lid} /><path d="M10 38 L68 38 L68 82 L10 82 Z" fill={color} {...rim} /><path d="M68 38 L90 22 L90 66 L68 82 Z" fill={`url(#${uid}-side)`} {...rim} /></g>
     // A triangular prism (pass KY): a triangle in front and the same triangle behind, joined by three rectangles, like a tent.
-    : clean === 'prism' ? <g>{shadow}<path d="M44 24 L66 10 L96 66 L74 80 Z" fill={`url(#${uid}-side)`} /><path d="M14 80 L44 24 L74 80 Z" fill={color} /><path d="M74 80 L96 66" stroke="#1F3B31" strokeWidth="1.5" /></g>
-    : <g>{shadow}<path d="M50 12 L22 74 L78 74 Z" fill={`url(#${uid}-cone)`} /><ellipse cx="50" cy="74" rx="28" ry="10" fill="#2A4E42" /></g>;
+    : clean === 'prism' ? <g>{shadow}<path d="M44 24 L66 10 L96 66 L74 80 Z" fill={`url(#${uid}-side)`} {...rim} /><path d="M14 80 L44 24 L74 80 Z" fill={color} {...rim} /><path d="M74 80 L96 66" stroke={dk ? '#9CC7B0' : '#1F3B31'} strokeWidth="1.5" /></g>
+    : <g>{shadow}<path d="M50 12 L22 74 L78 74 Z" fill={`url(#${uid}-cone)`} {...rim} /><ellipse cx="50" cy="74" rx="28" ry="10" fill="#2A4E42" /><path d="M22 74 A28 10 0 0 0 78 74" fill="none" {...rim} /></g>;
   return <svg viewBox="0 0 100 100" width={size} height={size} role="img" aria-label={clean} style={{ display: 'block', margin: '0 auto' }}>{defs}{body}</svg>;
 }
 
@@ -664,7 +681,10 @@ function IconPic({ name, size = 90, tile = false }) {
   // cactus fell from 3.83 to 2.93 to 1 and the hat's crown from 3.65 to 2.43), and a shade lighter since round five's code read, so
   // they read 3.1 to 1 or better on a right answer's green tile too (2.89 to 2.95 before) and 3.9 on a resting or wrong one. On that
   // paper, where the rain's grey outline and blue drops read 2.54 and 2.96 to 1, the rain takes a deeper grey and blue (3.15 and
-  // 3.58), as People and events shows it, and so do the cloud and the snow, which draw the rain's cloud beside it.
+  // 3.58), as People and events shows it, and so do the cloud and the snow, which draw the rain's cloud beside it. Since pass ND (EARMARKS
+  // A89) the deeper grey outline is the light theme's too, where the old grey read 2.78 and 2.66 to 1 on its right and wrong tiles, and a
+  // dark tile's drops and flakes take a lighter blue (#6FA3DA, 4.2 to 1 on the right tile, where the blue read 2.93); a dark tile keeps
+  // the grey, which reads 3.4 to 1 or better there.
   const dk = C.mode === 'dark' && tile; const dkPaper = C.mode === 'dark' && !tile;
   const body = {
     // A slice of pizza (pass JV, Mikey): drawn beside a triangle where a lesson says a slice is almost a triangle. The point is
@@ -686,7 +706,8 @@ function IconPic({ name, size = 90, tile = false }) {
     // right and wrong tiles and 1.89 on the dark theme's paper; the duck's deeper gold reads 4.40, 3.71, 3.57 and 3.42, and a dark tile
     // keeps the gold, which reads well there.
     star: <path d="M50 12 L60 38 L88 39 L66 56 L74 84 L50 68 L26 84 L34 56 L12 39 L40 38 Z" fill={gold} stroke={dk ? '#D99A2B' : '#94741A'} strokeWidth="3" strokeLinejoin="round" />,
-    soil: <g><path d="M10 80 Q50 44 90 80 Z" fill={brown} /><path d="M10 80 L90 80" stroke="#6B4321" strokeWidth="4" strokeLinecap="round" />{[[30, 74], [42, 68], [56, 70], [68, 75], [50, 77]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r="2.6" fill="#E8C9A0" />)}<path d="M50 62 L50 36" stroke={green} strokeWidth="4" strokeLinecap="round" /><path d="M50 46 Q38 36 30 42 Q40 50 50 46 Z" fill={green} /><path d="M50 41 Q62 30 72 36 Q60 46 50 41 Z" fill={green} /></g>,
+    // Its mound on a dark tile takes the door's lighter wood (pass ND, EARMARKS A89): the brown read 1.91 to 2.40 to 1 there, now 3.53.
+    soil: <g><path d="M10 80 Q50 44 90 80 Z" fill={dk ? '#BC8650' : brown} /><path d="M10 80 L90 80" stroke="#6B4321" strokeWidth="4" strokeLinecap="round" />{[[30, 74], [42, 68], [56, 70], [68, 75], [50, 77]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r="2.6" fill="#E8C9A0" />)}<path d="M50 62 L50 36" stroke={green} strokeWidth="4" strokeLinecap="round" /><path d="M50 46 Q38 36 30 42 Q40 50 50 46 Z" fill={green} /><path d="M50 41 Q62 30 72 36 Q60 46 50 41 Z" fill={green} /></g>,
     wind: <g fill="none" stroke={blue} strokeWidth="5" strokeLinecap="round"><path d="M14 36 H62 a10 10 0 1 0 -10 -10" /><path d="M14 54 H76 a10 10 0 1 1 -10 10" /><path d="M14 72 H48" /></g>,
     sun: <g><defs><radialGradient id="eduSunG" cx="40%" cy="38%" r="65%"><stop offset="0" stopColor="#FFF1B8" /><stop offset="0.6" stopColor={gold} /><stop offset="1" stopColor="#D99A2B" /></radialGradient></defs><circle cx="50" cy="50" r="30" fill={gold} opacity="0.18" /><circle cx="50" cy="50" r="20" fill="url(#eduSunG)" stroke={dk ? 'none' : '#94741A'} strokeWidth="2" />{[0, 45, 90, 135, 180, 225, 270, 315].map((a) => <line key={a} x1={50 + 28 * Math.cos(a * Math.PI / 180)} y1={50 + 28 * Math.sin(a * Math.PI / 180)} x2={50 + 40 * Math.cos(a * Math.PI / 180)} y2={50 + 40 * Math.sin(a * Math.PI / 180)} stroke={dk ? gold : '#94741A'} strokeWidth="5" strokeLinecap="round" />)}</g>,
     // The moon (pass IT): the old path's two arcs fell onto the same half-circle and drew nothing. Now a crescent, an outer
@@ -694,7 +715,9 @@ function IconPic({ name, size = 90, tile = false }) {
     // The moon (pass NC, EARMARKS A83): a fuller crescent opening to the left, so it never reads as a capital C beside a lesson on C.
     moon: <path d="M34 16A34 34 0 0 1 34 84A60 60 0 0 0 34 16Z" fill={gold} stroke={dk ? 'none' : '#94741A'} strokeWidth="2" />,
     // Six pictures the questions used with no drawing (pass IT, Mikey's screenshots): each fell back to a grey circle.
-    cup: <g><path d="M38 14q-4 6 0 11M50 12q-4 7 0 13" fill="none" stroke="#B9C2C9" strokeWidth="3" strokeLinecap="round" /><path d="M68 40h6a10 10 0 0 1 0 20h-6" fill="none" stroke="#4A6A86" strokeWidth="5" strokeLinecap="round" /><path d="M24 32h44v30a18 18 0 0 1-18 18h-8a18 18 0 0 1-18-18z" fill="#E8EEF3" stroke="#4A6A86" strokeWidth="3" strokeLinejoin="round" /><path d="M28 41h36" stroke={blue} strokeWidth="4" strokeLinecap="round" /></g>,
+    // The cup (pass ND, EARMARKS A89): in the light theme its pale steam read 1.5 to 1.8 to 1 on the light tiles, and the candle's slate
+    // reads 3.19 or better; on a dark tile its slate handle and edge read 1.96 to 2.47, and a lighter slate reads 4.57 or better.
+    cup: <g><path d="M38 14q-4 6 0 11M50 12q-4 7 0 13" fill="none" stroke={dk ? '#B9C2C9' : '#76828B'} strokeWidth="3" strokeLinecap="round" /><path d="M68 40h6a10 10 0 0 1 0 20h-6" fill="none" stroke={dk ? '#8FA9C2' : '#4A6A86'} strokeWidth="5" strokeLinecap="round" /><path d="M24 32h44v30a18 18 0 0 1-18 18h-8a18 18 0 0 1-18-18z" fill="#E8EEF3" stroke={dk ? '#8FA9C2' : '#4A6A86'} strokeWidth="3" strokeLinejoin="round" /><path d="M28 41h36" stroke={blue} strokeWidth="4" strokeLinecap="round" /></g>,
     bus: <g><rect x="12" y="28" width="76" height="40" rx="8" fill="#F2B632" stroke="#8A5A12" strokeWidth="3" /><rect x="13" y="56" width="74" height="5" fill="#2E2E2E" />{[20, 36, 52].map((x) => <rect key={x} x={x} y="34" width="12" height="12" rx="2" fill="#CFE6F5" stroke="#8A5A12" strokeWidth="2" />)}<rect x="68" y="34" width="14" height="20" rx="2" fill="#CFE6F5" stroke="#8A5A12" strokeWidth="2" /><circle cx="28" cy="70" r="9" fill="#2E2E2E" stroke="#BFC5C9" strokeWidth="3" /><circle cx="72" cy="70" r="9" fill="#2E2E2E" stroke="#BFC5C9" strokeWidth="3" /></g>,
     dog: <g><ellipse cx="26" cy="48" rx="11" ry="20" fill="#7A4E2A" stroke={dk ? '#D9B48A' : 'none'} strokeWidth="2" transform="rotate(18 26 48)" /><ellipse cx="74" cy="48" rx="11" ry="20" fill="#7A4E2A" stroke={dk ? '#D9B48A' : 'none'} strokeWidth="2" transform="rotate(-18 74 48)" /><circle cx="50" cy="52" r="26" fill="#C98B52" stroke={dk ? 'none' : '#8A5A2E'} strokeWidth="2.5" /><ellipse cx="50" cy="66" rx="14" ry="10" fill="#F1D3B0" /><circle cx="40" cy="47" r="4" fill="#2E2E2E" /><circle cx="60" cy="47" r="4" fill="#2E2E2E" /><ellipse cx="50" cy="60" rx="6" ry="4.5" fill="#2E2E2E" /><path d="M50 64v5M44 71q6 5 12 0" fill="none" stroke="#2E2E2E" strokeWidth="2.5" strokeLinecap="round" /></g>,
     // A pig (pass NB): Dog and frog and Star and spoon put two parts together into pig (puh, ig), and Make a rhyme makes a big pig, on
@@ -705,12 +728,14 @@ function IconPic({ name, size = 90, tile = false }) {
     hat: <g><ellipse cx="50" cy="66" rx="40" ry="10" fill={dk ? '#7088B7' : '#3F5F9E'} stroke="#22365E" strokeWidth="3" /><path d="M28 64V40a22 14 0 0 1 44 0v24" fill={dk ? '#7592C8' : '#4E73B8'} stroke="#22365E" strokeWidth="3" /><rect x="29.5" y="53" width="41" height="8" fill="#C9573E" /></g>,
     bed: <g><rect x="12" y="34" width="8" height="46" rx="2" fill={dk ? '#B88A5A' : '#8B5A2B'} /><rect x="80" y="50" width="8" height="30" rx="2" fill={dk ? '#B88A5A' : '#8B5A2B'} /><rect x="16" y="56" width="68" height="14" rx="3" fill="#8DB3DB" stroke="#2F66A8" strokeWidth="2" /><rect x="21" y="45" width="22" height="12" rx="5" fill="#F4F6F7" stroke="#6F7A76" strokeWidth="2" /><path d="M44 57q18-9 40 0z" fill="#5E8FD0" stroke={dk ? 'none' : '#2F66A8'} strokeWidth="2" /><rect x="16" y="70" width="68" height="6" fill={dk ? '#B88A5A' : '#8B5A2B'} /></g>,
     fan: <g><rect x="46" y="58" width="8" height="22" fill={dk ? '#8A9086' : '#6B716A'} /><rect x="30" y="78" width="40" height="8" rx="4" fill={dk ? '#8A9086' : '#6B716A'} /><circle cx="50" cy="40" r="28" fill="#DCE6EC" stroke="#6B716A" strokeWidth="3" />{[0, 120, 240].map((a) => { const x = 50 + 12 * Math.cos((a - 90) * Math.PI / 180); const y = 40 + 12 * Math.sin((a - 90) * Math.PI / 180); return <ellipse key={a} cx={x} cy={y} rx="7" ry="13" fill="#4A86C5" transform={`rotate(${a} ${x} ${y})`} />; })}<circle cx="50" cy="40" r="5" fill="#2E2E2E" /></g>,
-    cloud: <path d="M28 66a14 14 0 0 1 3-27 20 20 0 0 1 38-4 15 15 0 0 1 3 31z" fill="#D6DBD2" stroke={dkPaper ? '#7A8076' : grey} strokeWidth="3" />,
-    rain: <g><path d="M28 52a14 14 0 0 1 3-27 20 20 0 0 1 38-4 15 15 0 0 1 3 31z" fill="#D6DBD2" stroke={dkPaper ? '#7A8076' : grey} strokeWidth="3" />{[34, 50, 66].map((x) => <line key={x} x1={x} y1="62" x2={x - 6} y2="82" stroke={dkPaper ? '#3F78B4' : blue} strokeWidth="5" strokeLinecap="round" />)}</g>,
+    cloud: <path d="M28 66a14 14 0 0 1 3-27 20 20 0 0 1 38-4 15 15 0 0 1 3 31z" fill="#D6DBD2" stroke={dk ? grey : '#7A8076'} strokeWidth="3" />,
+    rain: <g><path d="M28 52a14 14 0 0 1 3-27 20 20 0 0 1 38-4 15 15 0 0 1 3 31z" fill="#D6DBD2" stroke={dk ? grey : '#7A8076'} strokeWidth="3" />{[34, 50, 66].map((x) => <line key={x} x1={x} y1="62" x2={x - 6} y2="82" stroke={dk ? '#6FA3DA' : dkPaper ? '#3F78B4' : blue} strokeWidth="5" strokeLinecap="round" />)}</g>,
     // Snow (pass MY, round one's screen check): the snowball's eight-armed flakes fall from the cloud, where three white circles had
     // looked like counting dots.
-    snow: <g><path d="M28 52a14 14 0 0 1 3-27 20 20 0 0 1 38-4 15 15 0 0 1 3 31z" fill="#D6DBD2" stroke={dkPaper ? '#7A8076' : grey} strokeWidth="3" />{[[34, 70], [50, 80], [66, 70]].map(([x, y], i) => <path key={i} d={'M' + (x - 6) + ' ' + y + ' L' + (x + 6) + ' ' + y + ' M' + x + ' ' + (y - 6) + ' L' + x + ' ' + (y + 6) + ' M' + (x - 4.2) + ' ' + (y - 4.2) + ' L' + (x + 4.2) + ' ' + (y + 4.2) + ' M' + (x - 4.2) + ' ' + (y + 4.2) + ' L' + (x + 4.2) + ' ' + (y - 4.2)} stroke={dkPaper ? '#3F78B4' : blue} strokeWidth="2.4" strokeLinecap="round" />)}</g>,
-    plant: <g><defs><linearGradient id="eduLeafG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#6FAF7E" /><stop offset="1" stopColor="#245A3C" /></linearGradient></defs><rect x="30" y="72" width="40" height="16" rx="4" fill={brown} /><rect x="30" y="72" width="40" height="4" rx="2" fill="#A8743F" opacity="0.7" /><line x1="50" y1="72" x2="50" y2="34" stroke="#3E7D52" strokeWidth="5" strokeLinecap="round" /><ellipse cx="38" cy="48" rx="12" ry="7" fill="url(#eduLeafG)" transform="rotate(-30 38 48)" /><ellipse cx="62" cy="40" rx="12" ry="7" fill="url(#eduLeafG)" transform="rotate(30 62 40)" /></g>,
+    snow: <g><path d="M28 52a14 14 0 0 1 3-27 20 20 0 0 1 38-4 15 15 0 0 1 3 31z" fill="#D6DBD2" stroke={dk ? grey : '#7A8076'} strokeWidth="3" />{[[34, 70], [50, 80], [66, 70]].map(([x, y], i) => <path key={i} d={'M' + (x - 6) + ' ' + y + ' L' + (x + 6) + ' ' + y + ' M' + x + ' ' + (y - 6) + ' L' + x + ' ' + (y + 6) + ' M' + (x - 4.2) + ' ' + (y - 4.2) + ' L' + (x + 4.2) + ' ' + (y + 4.2) + ' M' + (x - 4.2) + ' ' + (y + 4.2) + ' L' + (x + 4.2) + ' ' + (y - 4.2)} stroke={dk ? '#6FA3DA' : dkPaper ? '#3F78B4' : blue} strokeWidth="2.4" strokeLinecap="round" />)}</g>,
+    // The plant on a dark tile (pass ND, EARMARKS A89): its brown pot read 1.91 to 1 on a right answer's tile, its stem 2.26 and its leaves'
+    // shaded ends 1.4; the door's lighter wood, a lighter green and the tree's pale ring read 3.46 or better.
+    plant: <g><defs><linearGradient id="eduLeafG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#6FAF7E" /><stop offset="1" stopColor="#245A3C" /></linearGradient></defs><rect x="30" y="72" width="40" height="16" rx="4" fill={dk ? '#BC8650' : brown} /><rect x="30" y="72" width="40" height="4" rx="2" fill="#A8743F" opacity="0.7" /><line x1="50" y1="72" x2="50" y2="34" stroke={dk ? '#5A9E68' : '#3E7D52'} strokeWidth="5" strokeLinecap="round" /><ellipse cx="38" cy="48" rx="12" ry="7" fill="url(#eduLeafG)" stroke={dk ? '#B9DCC4' : 'none'} strokeWidth="2" transform="rotate(-30 38 48)" /><ellipse cx="62" cy="40" rx="12" ry="7" fill="url(#eduLeafG)" stroke={dk ? '#B9DCC4' : 'none'} strokeWidth="2" transform="rotate(30 62 40)" /></g>,
     // The tree's edge (pass NB, round one's picture check): on a dark tile its shaded canopy read 1.89 to 1 and its trunk 2.38, and on the
     // dark paper its lit edge 2.89; a pale green ring and a lighter trunk on a dark tile, and a deep green ring on the dark paper, read 4.42
     // and 4.53.
@@ -728,12 +753,19 @@ function IconPic({ name, size = 90, tile = false }) {
     // a dark crack, two chips and two specks for its rough, bumpy skin, and a dark outline (#5C6355, 6.2 to 1 on white), since the old
     // smooth gray lump, its marks 1.4 to 1 on its own fill, read at button size as a stone, an egg or a potato as easily as a rock.
     rock: <g><path d="M14 80 L18 58 L32 40 L54 31 L74 37 L87 55 L85 80 Z" fill="#9EA49C" stroke="#5C6355" strokeWidth="3.5" strokeLinejoin="round" /><path d="M18 58 L32 40 L54 31 L74 37 L63 49 L39 51 Z" fill="#C5CAC2" stroke="#5C6355" strokeWidth="2.5" strokeLinejoin="round" /><path d="M63 49 L87 55" fill="none" stroke="#5C6355" strokeWidth="2.5" strokeLinecap="round" /><path d="M45 57 L51 64 L47 72" fill="none" stroke="#454B40" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" /><path d="M70 62 L77 65 L71 69 Z" fill="#454B40" /><path d="M24 66 L29 68 L25 72 Z" fill="#454B40" /><circle cx="36" cy="72" r="2.2" fill="#454B40" /><circle cx="62" cy="73" r="2" fill="#454B40" /></g>,
-    drop: <g><defs><radialGradient id="eduDropG" cx="38%" cy="55%" r="70%"><stop offset="0" stopColor="#9CC7F0" /><stop offset="1" stopColor="#2F66A8" /></radialGradient></defs><path d="M50 14q26 34 26 50a26 26 0 0 1-52 0q0-16 26-50z" fill="url(#eduDropG)" /><ellipse cx="40" cy="58" rx="5" ry="9" fill="#fff" opacity="0.45" transform="rotate(-20 40 58)" /></g>,
+    // The drop wears the fish's edge (pass ND, EARMARKS A89): its pale side read 1.4 to 2.9 to 1 on the light theme's right and wrong tiles
+    // and its deep side 1.9 to 2.3 on a right answer's dark tile; a deep blue edge (4.75 or better) and, on a dark tile, a pale
+    // one (6.28 or better).
+    drop: <g><defs><radialGradient id="eduDropG" cx="38%" cy="55%" r="70%"><stop offset="0" stopColor="#9CC7F0" /><stop offset="1" stopColor="#2F66A8" /></radialGradient></defs><path d="M50 14q26 34 26 50a26 26 0 0 1-52 0q0-16 26-50z" fill="url(#eduDropG)" stroke={dk ? '#9CC7F0' : '#2F66A8'} strokeWidth="2.5" /><ellipse cx="40" cy="58" rx="5" ry="9" fill="#fff" opacity="0.45" transform="rotate(-20 40 58)" /></g>,
     ice: <g><rect x="24" y="30" width="52" height="46" rx="6" fill="#DDEBF7" stroke={blue} strokeWidth="3" /><line x1="34" y1="40" x2="46" y2="52" stroke="#fff" strokeWidth="4" strokeLinecap="round" /></g>,
-    fire: <path d="M50 12q22 22 22 44a22 22 0 0 1-44 0q0-10 8-18 0 12 8 14-2-20 6-40z" fill={red} />,
-    magnet: <g><path d="M30 20v34a20 20 0 0 0 40 0V20" fill="none" stroke={red} strokeWidth="14" strokeLinecap="butt" /><rect x="23" y="20" width="14" height="16" fill={grey} /><rect x="63" y="20" width="14" height="16" fill={grey} /></g>,
+    // The fire's and the magnet's red on a dark tile (pass ND, EARMARKS A89): 2.61 to 1 on a right answer's tile, and the flower's lighter
+    // petal red reads 3.78 or better there. In the light theme the magnet's gray tips wear the bird's darker gray edge: they read 2.76 and
+    // 2.66 to 1 on a right and a wrong answer's tile, and the edge 4.22 and 4.06.
+    fire: <path d="M50 12q22 22 22 44a22 22 0 0 1-44 0q0-10 8-18 0 12 8 14-2-20 6-40z" fill={dk ? '#E07A62' : red} />,
+    magnet: <g><path d="M30 20v34a20 20 0 0 0 40 0V20" fill="none" stroke={dk ? '#E07A62' : red} strokeWidth="14" strokeLinecap="butt" /><rect x="23" y="20" width="14" height="16" fill={grey} stroke={dk ? 'none' : '#6B716A'} strokeWidth="2" /><rect x="63" y="20" width="14" height="16" fill={grey} stroke={dk ? 'none' : '#6B716A'} strokeWidth="2" /></g>,
     // Two metal things a magnet pulls (2026-09-23): a paper clip and a nail, both steel-gray with a darker edge.
-    clip: <path d="M40 26v42a10 10 0 0 0 20 0V22a7 7 0 0 0 -14 0v42a4 4 0 0 0 8 0V30" fill="none" stroke="#6F7A76" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />,
+    // The clip on a dark tile takes the spoon's light gray (pass ND, EARMARKS A89): its gray read 2.50 to 1 on a right answer's tile, now 5.17.
+    clip: <path d="M40 26v42a10 10 0 0 0 20 0V22a7 7 0 0 0 -14 0v42a4 4 0 0 0 8 0V30" fill="none" stroke={dk ? '#A9B3AE' : '#6F7A76'} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />,
     nail: <g><polygon points="45,22 55,22 51,86 49,86" fill="#B8BFBA" stroke="#6F7A76" strokeWidth="2.5" strokeLinejoin="round" /><rect x="34" y="14" width="32" height="9" rx="3" fill="#B8BFBA" stroke="#6F7A76" strokeWidth="2.5" /></g>,
     // Pass KK (kindergarten science, earmark E1): the things the sorting, magnet, light and rock lessons show. A ball, a
     // wooden block, a teddy bear, a sock, a spoon, a log with bark, a book, a glass of water, a flashlight, a lamp, a child
@@ -743,12 +775,18 @@ function IconPic({ name, size = 90, tile = false }) {
     // The block (pass MP, Mikey: "I like the new red block better too."): a red toy block, the block of every play lesson, rhyme and
     // direction, which also no longer reads as a cardboard box (EARMARKS L15). Its wooden look is kept as block~wood, drawn by IconLook
     // below, for the lessons where the wood is the point ("This block is made of wood, from a tree.").
-    block: <g><path d="M24 36 L54 24 L80 32 L50 44 Z" fill="#E46B57" stroke="#7A2E1F" strokeWidth="3" strokeLinejoin="round" /><path d="M24 36 L50 44 L50 84 L24 76 Z" fill="#C9573E" stroke="#7A2E1F" strokeWidth="3" strokeLinejoin="round" /><path d="M50 44 L80 32 L80 72 L50 84 Z" fill="#A8432D" stroke="#7A2E1F" strokeWidth="3" strokeLinejoin="round" /><path d="M31 36.5 L53 28.5" stroke="#F4A394" strokeWidth="2.6" strokeLinecap="round" opacity="0.8" /></g>,
+    // Its edge on a dark tile (pass ND, EARMARKS A89): the dark red outline read 1.19 to 1 on a right answer's tile, where its two sides
+    // read 2.61 and 1.86; the crayon's pale red reads 5.75 or better there.
+    block: <g><path d="M24 36 L54 24 L80 32 L50 44 Z" fill="#E46B57" stroke={dk ? '#F0A99A' : '#7A2E1F'} strokeWidth="3" strokeLinejoin="round" /><path d="M24 36 L50 44 L50 84 L24 76 Z" fill="#C9573E" stroke={dk ? '#F0A99A' : '#7A2E1F'} strokeWidth="3" strokeLinejoin="round" /><path d="M50 44 L80 32 L80 72 L50 84 Z" fill="#A8432D" stroke={dk ? '#F0A99A' : '#7A2E1F'} strokeWidth="3" strokeLinejoin="round" /><path d="M31 36.5 L53 28.5" stroke="#F4A394" strokeWidth="2.6" strokeLinecap="round" opacity="0.8" /></g>,
     // A tower of three of the blocks above, red since pass MP (pass MO, round one's screen check: Let's play together's "I like your tower!" showed three
     // blocks side by side). Each block sits 40 units above the one under it, the lowest drawn first, so a block's sides cover the top
     // of the one below exactly, and the tower is scaled to stand in the box.
-    tower: <g transform="translate(17.2 41.2) scale(0.63)">{[0, -40, -80].map((dy) => <g key={dy} transform={`translate(0 ${dy})`}><path d="M24 36 L54 24 L80 32 L50 44 Z" fill="#E46B57" stroke="#7A2E1F" strokeWidth="4.5" strokeLinejoin="round" /><path d="M24 36 L50 44 L50 84 L24 76 Z" fill="#C9573E" stroke="#7A2E1F" strokeWidth="4.5" strokeLinejoin="round" /><path d="M50 44 L80 32 L80 72 L50 84 Z" fill="#A8432D" stroke="#7A2E1F" strokeWidth="4.5" strokeLinejoin="round" /></g>)}</g>,
-    teddy: <g><circle cx="30" cy="30" r="10" fill="#A9743F" /><circle cx="70" cy="30" r="10" fill="#A9743F" /><circle cx="50" cy="40" r="22" fill="#C48A48" /><ellipse cx="50" cy="48" rx="9" ry="7" fill="#E8C9A0" /><circle cx="42" cy="36" r="3" fill="#2E2E2E" /><circle cx="58" cy="36" r="3" fill="#2E2E2E" /><ellipse cx="50" cy="46" rx="3.5" ry="2.5" fill="#2E2E2E" /><ellipse cx="50" cy="76" rx="20" ry="16" fill="#C48A48" /><circle cx="26" cy="72" r="8" fill="#A9743F" /><circle cx="74" cy="72" r="8" fill="#A9743F" /><ellipse cx="50" cy="78" rx="9" ry="7" fill="#E8C9A0" /></g>,
+    // Its blocks take the block's pale red edge on a dark tile (pass ND, EARMARKS A89).
+    tower: <g transform="translate(17.2 41.2) scale(0.63)">{[0, -40, -80].map((dy) => <g key={dy} transform={`translate(0 ${dy})`}><path d="M24 36 L54 24 L80 32 L50 44 Z" fill="#E46B57" stroke={dk ? '#F0A99A' : '#7A2E1F'} strokeWidth="4.5" strokeLinejoin="round" /><path d="M24 36 L50 44 L50 84 L24 76 Z" fill="#C9573E" stroke={dk ? '#F0A99A' : '#7A2E1F'} strokeWidth="4.5" strokeLinejoin="round" /><path d="M50 44 L80 32 L80 72 L50 84 Z" fill="#A8432D" stroke={dk ? '#F0A99A' : '#7A2E1F'} strokeWidth="4.5" strokeLinejoin="round" /></g>)}</g>,
+    // The teddy's edge (pass ND, EARMARKS A89), as the dog wears it: in the light theme its head and body read 2.50 and 2.41 to 1 on a right
+    // and a wrong answer's tile, and the dog's brown edge reads 4.76 or better; on a dark tile its ears and paws read 2.79 on a right
+    // answer's tile, and the dog's pale ear edge reads 5.75 or better.
+    teddy: <g><circle cx="30" cy="30" r="10" fill="#A9743F" stroke={dk ? '#D9B48A' : '#8A5A2E'} strokeWidth="2.5" /><circle cx="70" cy="30" r="10" fill="#A9743F" stroke={dk ? '#D9B48A' : '#8A5A2E'} strokeWidth="2.5" /><circle cx="50" cy="40" r="22" fill="#C48A48" stroke={dk ? 'none' : '#8A5A2E'} strokeWidth="2.5" /><ellipse cx="50" cy="48" rx="9" ry="7" fill="#E8C9A0" /><circle cx="42" cy="36" r="3" fill="#2E2E2E" /><circle cx="58" cy="36" r="3" fill="#2E2E2E" /><ellipse cx="50" cy="46" rx="3.5" ry="2.5" fill="#2E2E2E" /><ellipse cx="50" cy="76" rx="20" ry="16" fill="#C48A48" stroke={dk ? 'none' : '#8A5A2E'} strokeWidth="2.5" /><circle cx="26" cy="72" r="8" fill="#A9743F" stroke={dk ? '#D9B48A' : '#8A5A2E'} strokeWidth="2.5" /><circle cx="74" cy="72" r="8" fill="#A9743F" stroke={dk ? '#D9B48A' : '#8A5A2E'} strokeWidth="2.5" /><ellipse cx="50" cy="78" rx="9" ry="7" fill="#E8C9A0" /></g>,
     sock: <g><path d="M34 22 H60 V50 Q60 58 68 62 L78 68 Q86 74 80 84 Q72 92 60 86 L40 74 Q32 68 34 58 Z" fill="#4A86C5" stroke={dk ? '#8FB8E3' : '#2F5F91'} strokeWidth="3" strokeLinejoin="round" /><rect x="32" y="12" width="30" height="12" rx="3" fill="#DDEBF7" stroke="#2F5F91" strokeWidth="2.5" /><path d="M64 84 Q74 88 78 80" fill="none" stroke="#DDEBF7" strokeWidth="3" strokeLinecap="round" opacity="0.8" /></g>,
     // The spoon's handle (pass NB, round one's picture check) wears the bowl's grey edge in full: a faint edge read 2.30 to 1 at best on a
     // light tile and 1.76 on the dark paper, and the spoon looked close to a magnifying glass; the edge reads 3.45 or better everywhere.
@@ -760,8 +798,14 @@ function IconPic({ name, size = 90, tile = false }) {
     // the dark theme's resting tile and 2.26 on a right one, and a light green reads 7.15 or better there; the light theme keeps its own.
     book: <g><path d="M22 18 H70 Q78 18 78 26 V82 H30 Q22 82 22 74 Z" fill="#3E7D52" stroke={dk ? '#9FDDB5' : '#245A3C'} strokeWidth="3" strokeLinejoin="round" /><path d="M30 68 H78 V82 H30 Q22 82 22 75 Q22 68 30 68 Z" fill="#F4F6F7" stroke="#245A3C" strokeWidth="2.5" strokeLinejoin="round" /><rect x="34" y="30" width="32" height="7" rx="2" fill={gold} /></g>,
     glass: <g><path d="M30 14 L70 14 L64 88 L36 88 Z" fill="#E6F3FA" stroke="#4A6A86" strokeWidth="3" strokeLinejoin="round" /><path d="M33 44 L67 44 L64 88 L36 88 Z" fill="#8EC5EA" opacity="0.85" /><path d="M40 24 L38 74" stroke="#fff" strokeWidth="3" opacity="0.6" strokeLinecap="round" /></g>,
-    flashlight: <g transform="rotate(-30 50 50)"><rect x="16" y="38" width="44" height="24" rx="5" fill="#4A6A86" stroke="#2E4A62" strokeWidth="3" /><path d="M60 34 L78 26 L78 74 L60 66 Z" fill="#6B8AA6" stroke="#2E4A62" strokeWidth="3" strokeLinejoin="round" /><path d="M82 30 L96 22 M84 50 L98 50 M82 70 L96 78" stroke={gold} strokeWidth="4" strokeLinecap="round" /><rect x="24" y="44" width="10" height="12" rx="2" fill={red} /></g>,
-    lamp: <g><path d="M30 44 L70 44 L62 14 L38 14 Z" fill="#F2C14E" stroke="#8A6A1F" strokeWidth="3" strokeLinejoin="round" /><rect x="47" y="44" width="6" height="32" fill="#8A9086" /><path d="M28 88 Q50 72 72 88 Z" fill="#6B716A" stroke="#4A4F49" strokeWidth="2" /><path d="M24 50 L14 58 M76 50 L86 58 M50 48 L50 60" stroke={gold} strokeWidth="3" strokeLinecap="round" opacity="0.9" /></g>,
+    // The flashlight (pass ND, EARMARKS A89): on a dark tile its slate body read 1.96 to 2.47 to 1 and its edge 1.21 to 1.52, and the cup's
+    // lighter slate edge reads 4.57 or better; in the light theme its gold beams read 2.73 and 2.63 on a right and a wrong answer's tile,
+    // and take the sun's deeper gold rays (3.57 or better).
+    flashlight: <g transform="rotate(-30 50 50)"><rect x="16" y="38" width="44" height="24" rx="5" fill="#4A6A86" stroke={dk ? '#8FA9C2' : '#2E4A62'} strokeWidth="3" /><path d="M60 34 L78 26 L78 74 L60 66 Z" fill="#6B8AA6" stroke={dk ? '#8FA9C2' : '#2E4A62'} strokeWidth="3" strokeLinejoin="round" /><path d="M82 30 L96 22 M84 50 L98 50 M82 70 L96 78" stroke={dk ? gold : '#94741A'} strokeWidth="4" strokeLinecap="round" /><rect x="24" y="44" width="10" height="12" rx="2" fill={red} /></g>,
+    // The lamp (since pass ND, EARMARKS A89, where At the end of the name puts it on a tile): its pole the rain's deeper grey and its rays
+    // a deeper gold in the light theme, which read 2.78 and 2.8 to 1 on its right tile before, and its base lighter on a dark tile, where
+    // it read 2.7 to 1; the dark theme's paper keeps its colors.
+    lamp: <g><path d="M30 44 L70 44 L62 14 L38 14 Z" fill="#F2C14E" stroke="#8A6A1F" strokeWidth="3" strokeLinejoin="round" /><rect x="47" y="44" width="6" height="32" fill={dk ? '#8A9086' : '#7A8076'} /><path d="M28 88 Q50 72 72 88 Z" fill={dk ? '#868C82' : '#6B716A'} stroke={dk ? '#A9B0A6' : '#4A4F49'} strokeWidth="2" /><path d="M24 50 L14 58 M76 50 L86 58 M50 48 L50 60" stroke={C.mode === 'dark' ? gold : '#9C7A14'} strokeWidth="3" strokeLinecap="round" opacity="0.9" /></g>,
     shadow: <g><circle cx="16" cy="16" r="8" fill={gold} /><path d="M26 16 L32 16 M16 26 L16 32 M23 23 L27 27" stroke={gold} strokeWidth="3" strokeLinecap="round" /><path d="M14 90 L96 90" stroke="#B9BFB9" strokeWidth="2" strokeLinecap="round" /><path d="M34 88 L82 70 L92 76 L42 92 Z" fill="#3A3A3A" opacity="0.5" /><circle cx="90" cy="68" r="6.5" fill="#3A3A3A" opacity="0.5" /><circle cx="40" cy="30" r="9" fill="#E8C9A0" /><rect x="33" y="40" width="14" height="26" rx="5" fill="#4A86C5" /><path d="M36 66 L35 86 M44 66 L45 86" stroke="#2F5F91" strokeWidth="5" strokeLinecap="round" /><path d="M33 46 L24 58 M47 46 L56 58" stroke="#E8C9A0" strokeWidth="5" strokeLinecap="round" /></g>,
     pebble: <g><ellipse cx="50" cy="58" rx="18" ry="13" fill="#B9BFB9" stroke="#7D837D" strokeWidth="3" /><ellipse cx="44" cy="52" rx="6" ry="3.5" fill="#fff" opacity="0.5" /></g>,
     boulder: <g><path d="M8 84 Q4 52 26 34 Q50 12 78 26 Q98 40 92 68 Q90 86 70 88 Z" fill="#A5AAA0" stroke="#6B716A" strokeWidth="3" strokeLinejoin="round" /><path d="M30 60 Q46 50 62 58 M24 74 Q40 70 52 76" fill="none" stroke="#8A9086" strokeWidth="2.5" strokeLinecap="round" /><path d="M6 88 L14 80 L20 88 M84 90 L90 82 L96 90" fill="none" stroke={green} strokeWidth="2.5" strokeLinecap="round" /></g>,
@@ -773,43 +817,57 @@ function IconPic({ name, size = 90, tile = false }) {
     space: <g><rect x="10" y="38" width="80" height="24" rx="6" fill="#F4F6F7" stroke="#4A6A86" strokeWidth="3" /><path d="M24 50 L76 50" stroke="#B9C2C9" strokeWidth="2" strokeLinecap="round" /><rect x="10" y="62" width="80" height="4" fill="#B9C2C9" /></g>,
     backspace: <g><path d="M34 26 L90 26 Q94 26 94 30 L94 70 Q94 74 90 74 L34 74 L10 50 Z" fill="#F4F6F7" stroke="#4A6A86" strokeWidth="3" strokeLinejoin="round" /><path d="M44 40 L64 60 M64 40 L44 60" stroke={red} strokeWidth="5" strokeLinecap="round" /></g>,
     save: <g><path d="M10 30 Q10 24 16 24 L36 24 L44 32 L84 32 Q90 32 90 38 L90 78 Q90 84 84 84 L16 84 Q10 84 10 78 Z" fill={gold} stroke="#8A6A1F" strokeWidth="3" strokeLinejoin="round" /><circle cx="64" cy="60" r="14" fill="#F4F6F7" stroke="#3E7D52" strokeWidth="3" /><path d="M56 60 L62 66 L72 54" fill="none" stroke="#3E7D52" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" /></g>,
-    printer: <g><rect x="28" y="14" width="44" height="22" fill="#F4F6F7" stroke="#6F7A76" strokeWidth="2.5" /><rect x="12" y="36" width="76" height="34" rx="6" fill="#4A6A86" stroke="#2E4A62" strokeWidth="3" /><rect x="26" y="58" width="48" height="28" fill="#F4F6F7" stroke="#6F7A76" strokeWidth="2.5" /><path d="M34 68 L66 68 M34 76 L58 76" stroke="#B9C2C9" strokeWidth="2.5" strokeLinecap="round" /><circle cx="78" cy="46" r="3" fill={green} /></g>,
+    // The printer's slate body on a dark tile wears the cup's lighter slate edge (pass ND, EARMARKS A89): 1.21 to 2.47 to 1 before, now 4.57.
+    printer: <g><rect x="28" y="14" width="44" height="22" fill="#F4F6F7" stroke="#6F7A76" strokeWidth="2.5" /><rect x="12" y="36" width="76" height="34" rx="6" fill="#4A6A86" stroke={dk ? '#8FA9C2' : '#2E4A62'} strokeWidth="3" /><rect x="26" y="58" width="48" height="28" fill="#F4F6F7" stroke="#6F7A76" strokeWidth="2.5" /><path d="M34 68 L66 68 M34 76 L58 76" stroke="#B9C2C9" strokeWidth="2.5" strokeLinecap="round" /><circle cx="78" cy="46" r="3" fill={green} /></g>,
     // The chair since pass MO (round one's picture check): seen from the front, a slatted back over a seat and four legs, since the
     // side view's back post rising over the seat read as a capital H, a letter pre-K 4 traces before its Three steps lesson. Since round
     // two's story check the back reaches down to the seat (it floated a hairline above it), and the front legs, strokes with no fill to
     // carry them, are a lighter brown that reads 3.3 to 1 on the dark theme's answer tiles (the outline brown read 1.8).
     chair: <g><rect x="30" y="8" width="40" height="46" rx="6" fill="#B07838" stroke={dk ? '#E0B98A' : '#6E4A26'} strokeWidth="3" /><path d="M40 16 L40 44 M50 16 L50 44 M60 16 L60 44" stroke="#6E4A26" strokeWidth="3" strokeLinecap="round" opacity="0.45" /><path d="M22 54 L78 54 L72 66 L28 66 Z" fill="#C9955A" stroke={dk ? '#E0B98A' : '#6E4A26'} strokeWidth="3" strokeLinejoin="round" /><path d="M30 66 L27 92 M70 66 L73 92" stroke={dk ? '#D9A066' : '#A86F33'} strokeWidth="6" strokeLinecap="round" /><path d="M36 64 L36 84 M64 64 L64 84" stroke={dk ? '#D49A5E' : '#A26B32'} strokeWidth="5" strokeLinecap="round" /></g>,
-    bulb: <g><path d="M50 10 Q24 10 24 36 Q24 50 36 60 L36 70 L64 70 L64 60 Q76 50 76 36 Q76 10 50 10 Z" fill={gold} stroke="#8A6A1F" strokeWidth="3" strokeLinejoin="round" /><rect x="38" y="72" width="24" height="7" rx="2" fill="#8A9086" /><rect x="40" y="81" width="20" height="7" rx="2" fill="#6F7A76" /><path d="M44 58 L46 44 L50 50 L54 44 L56 58" fill="none" stroke="#8A6A1F" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /><path d="M14 30 L8 28 M86 30 L92 28 M20 12 L16 8 M80 12 L84 8" stroke="#D99A2B" strokeWidth="3" strokeLinecap="round" /></g>,
+    // Its rays in the light theme take the sun's deeper gold (pass ND, EARMARKS A89): 1.98 to 2.44 to 1 on the light tiles before, now 3.57.
+    bulb: <g><path d="M50 10 Q24 10 24 36 Q24 50 36 60 L36 70 L64 70 L64 60 Q76 50 76 36 Q76 10 50 10 Z" fill={gold} stroke="#8A6A1F" strokeWidth="3" strokeLinejoin="round" /><rect x="38" y="72" width="24" height="7" rx="2" fill="#8A9086" /><rect x="40" y="81" width="20" height="7" rx="2" fill="#6F7A76" /><path d="M14 30 L8 28 M86 30 L92 28 M20 12 L16 8 M80 12 L84 8" stroke={dk ? '#D99A2B' : '#94741A'} strokeWidth="3" strokeLinecap="round" /></g>,
     // A classroom whiteboard (pass MQ): one white board in a gray frame with a marker tray, a circle and a triangle drawn on it and
     // a line of writing, so it never reads as the story board's three cards below.
     whiteboard: <g><rect x="8" y="16" width="84" height="58" rx="3" fill="#FFFFFF" stroke="#6F7A76" strokeWidth="3" /><circle cx="30" cy="38" r="10" fill="none" stroke={blue} strokeWidth="3" /><path d="M54 48 L64 28 L74 48 Z" fill="none" stroke={red} strokeWidth="3" strokeLinejoin="round" /><path d="M20 62 Q26 58 32 62 T44 62 T56 62 T68 62 T80 62" fill="none" stroke="#4A6A86" strokeWidth="2.5" strokeLinecap="round" /><rect x="10" y="76" width="80" height="6" rx="2" fill="#A9B2B7" stroke="#6F7A76" strokeWidth="2" /><rect x="58" y="71" width="18" height="5" rx="2" fill={blue} /></g>,
     board: <g><rect x="6" y="30" width="26" height="40" rx="3" fill="#F4F6F7" stroke="#4A6A86" strokeWidth="2.5" /><rect x="37" y="30" width="26" height="40" rx="3" fill="#F4F6F7" stroke="#4A6A86" strokeWidth="2.5" /><rect x="68" y="30" width="26" height="40" rx="3" fill="#F4F6F7" stroke="#4A6A86" strokeWidth="2.5" /><circle cx="19" cy="48" r="7" fill="none" stroke={blue} strokeWidth="2.5" /><rect x="43" y="42" width="14" height="14" fill="none" stroke={green} strokeWidth="2.5" /><path d="M74 58 L81 40 L88 58 Z" fill="none" stroke={red} strokeWidth="2.5" strokeLinejoin="round" /></g>,
     // Pass KQ (kindergarten technology): a camera, a music note and a magnifier for searching.
-    camera: <g><rect x="12" y="30" width="76" height="52" rx="8" fill="#4A6A86" stroke="#2E4A62" strokeWidth="3" /><rect x="34" y="20" width="22" height="12" rx="3" fill="#2E4A62" /><circle cx="50" cy="56" r="17" fill="#2E4A62" /><circle cx="50" cy="56" r="11" fill="#8EC5EA" /><circle cx="46" cy="52" r="3" fill="#fff" opacity="0.8" /><rect x="68" y="38" width="12" height="6" rx="2" fill={gold} /></g>,
+    // The camera on a dark tile (pass ND, EARMARKS A89): its slate body read 1.96 to 2.47 to 1 there and its dark edge and top 1.21 to 1.52;
+    // the edge and the top take the cup's lighter slate, 4.57 or better.
+    camera: <g><rect x="12" y="30" width="76" height="52" rx="8" fill="#4A6A86" stroke={dk ? '#8FA9C2' : '#2E4A62'} strokeWidth="3" /><rect x="34" y="20" width="22" height="12" rx="3" fill={dk ? '#8FA9C2' : '#2E4A62'} /><circle cx="50" cy="56" r="17" fill="#2E4A62" /><circle cx="50" cy="56" r="11" fill="#8EC5EA" /><circle cx="46" cy="52" r="3" fill="#fff" opacity="0.8" /><rect x="68" y="38" width="12" height="6" rx="2" fill={gold} /></g>,
     // The music note's stems and beam on a dark tile (pass NC, found while applying round one's screen check): near-black, they read
     // 1.03 to 1 on the dark theme's resting tile in tk-tap-made, where only the red heads showed; they take the phone's light edge
     // there (5.17 to 1 or better), the light theme keeping its own.
-    music: <g><path d="M40 70 L40 22 L74 14 L74 60" fill="none" stroke={dk ? '#A9B3AE' : '#2E2E2E'} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" /><path d="M40 22 L74 14 L74 26 L40 34 Z" fill={dk ? '#A9B3AE' : '#2E2E2E'} /><ellipse cx="31" cy="72" rx="11" ry="8" fill={red} transform="rotate(-20 31 72)" /><ellipse cx="65" cy="62" rx="11" ry="8" fill={red} transform="rotate(-20 65 62)" /></g>,
+    // Its red heads on a dark tile take the flower's lighter red (pass ND, EARMARKS A89): 2.61 to 1 on a right answer's tile, now 3.78.
+    music: <g><path d="M40 70 L40 22 L74 14 L74 60" fill="none" stroke={dk ? '#A9B3AE' : '#2E2E2E'} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" /><path d="M40 22 L74 14 L74 26 L40 34 Z" fill={dk ? '#A9B3AE' : '#2E2E2E'} /><ellipse cx="31" cy="72" rx="11" ry="8" fill={dk ? '#E07A62' : red} transform="rotate(-20 31 72)" /><ellipse cx="65" cy="62" rx="11" ry="8" fill={dk ? '#E07A62' : red} transform="rotate(-20 65 62)" /></g>,
     search: <g><circle cx="42" cy="42" r="24" fill="#CFEAF7" stroke="#4A6A86" strokeWidth="6" /><circle cx="42" cy="42" r="16" fill="none" stroke="#fff" strokeWidth="3" opacity="0.7" /><path d="M60 60 L86 86" stroke="#8B5A2B" strokeWidth="11" strokeLinecap="round" /><path d="M60 60 L86 86" stroke="#B07838" strokeWidth="5" strokeLinecap="round" /></g>,
     // Pass KP (kindergarten health, part two): a child inside a bubble of personal space, a raised hand that means stop, a
     // playground slide, a kitchen knife, scissors, a screwdriver, a house with its number plate blank, a medicine bottle and a
     // crossed-out cigarette.
     bubble: <g><circle cx="50" cy="50" r="40" fill="#CFEAF7" stroke={blue} strokeWidth="3" strokeDasharray="6 5" opacity="0.9" /><circle cx="50" cy="34" r="9" fill="#E8C9A0" /><rect x="43" y="44" width="14" height="22" rx="5" fill="#C9573E" /><path d="M46 66 L44 82 M54 66 L56 82" stroke="#2E4A62" strokeWidth="5" strokeLinecap="round" /><path d="M43 48 L30 56 M57 48 L70 56" stroke="#E8C9A0" strokeWidth="5" strokeLinecap="round" /><circle cx="46" cy="33" r="1.5" fill="#2E2E2E" /><circle cx="54" cy="33" r="1.5" fill="#2E2E2E" /><path d="M46 38 Q50 41 54 38" fill="none" stroke="#2E2E2E" strokeWidth="1.5" strokeLinecap="round" /></g>,
     stop: <g>{/* The stop hand (pass MH): one outlined shape from a sleeve, four fingers and an attached thumb, and the red no sign. */}
-      <rect x="31" y="84" width="40" height="16" rx="5" fill="#4A7FC1" stroke="#2E2E2E" strokeWidth="2.5" />
+      {/* The sleeve's edge on a dark tile is the sock's light blue (pass ND, EARMARKS A89): its blue read 2.70 to 1 on a right answer's tile. */}
+      <rect x="31" y="84" width="40" height="16" rx="5" fill="#4A7FC1" stroke={dk ? '#8FB8E3' : '#2E2E2E'} strokeWidth="2.5" />
       {[['M38 30 L38 64', 9.4], ['M48.5 23 L48.5 64', 9.8], ['M59 26 L59 64', 9.4], ['M68.4 35 L68.4 66', 8.2], ['M38 78 L24 58', 9.6]].map(([d, w], i) => <path key={`o${i}`} d={d} stroke="#8B5A2B" strokeWidth={w + 5} strokeLinecap="round" fill="none" />)}
       <path d="M33 58 L73 58 L73 76 Q73 90 60 90 L44 90 Q33 90 33 78 Z" fill="#8B5A2B" stroke="#8B5A2B" strokeWidth="5" strokeLinejoin="round" />
       <path d="M33 58 L73 58 L73 76 Q73 90 60 90 L44 90 Q33 90 33 78 Z" fill="#E8C9A0" />
       {[['M38 30 L38 64', 9.4], ['M48.5 23 L48.5 64', 9.8], ['M59 26 L59 64', 9.4], ['M68.4 35 L68.4 66', 8.2], ['M38 78 L24 58', 9.6]].map(([d, w], i) => <path key={`f${i}`} d={d} stroke="#E8C9A0" strokeWidth={w} strokeLinecap="round" fill="none" />)}
       <path d="M43.4 46 L43.4 60 M53.8 44 L53.8 60 M63.8 48 L63.8 61" stroke="#C99E72" strokeWidth="1.4" strokeLinecap="round" />
       <circle cx="84" cy="18" r="12" fill={red} stroke="#FFFFFF" strokeWidth="2" /><path d="M78 18 L90 18" stroke="#fff" strokeWidth="4" strokeLinecap="round" /></g>,
-    slide: <g><path d="M14 84 L14 70 L40 70" fill="none" stroke="#6B716A" strokeWidth="4" /><path d="M20 70 L20 84 M34 70 L34 84" stroke="#6B716A" strokeWidth="4" /><path d="M14 30 L36 30 L36 70" fill="none" stroke="#6B716A" strokeWidth="4" /><path d="M36 30 Q60 32 70 56 Q78 76 90 82" fill="none" stroke={gold} strokeWidth="12" strokeLinecap="round" /><path d="M36 30 Q60 32 70 56 Q78 76 90 82" fill="none" stroke="#F2C14E" strokeWidth="6" strokeLinecap="round" opacity="0.7" /><path d="M14 30 L14 84" stroke="#6B716A" strokeWidth="4" /><path d="M14 40 L36 40 M14 50 L36 50 M14 60 L36 60" stroke="#6B716A" strokeWidth="3" /><path d="M4 90 L96 90" stroke="#3E7D52" strokeWidth="5" strokeLinecap="round" /></g>,
+    // The slide (pass ND, EARMARKS A89): on a dark tile its gray ladder read 2.23 to 2.80 to 1 and its green ground 2.26 to 2.85, and the
+    // spoon's light gray and a lighter green read 3.46 or better; in the light theme the chute's gold rim read 2.73 and 2.63 on a right and
+    // a wrong answer's tile, and takes the sun's deeper gold (3.57 or better).
+    slide: <g><path d="M14 84 L14 70 L40 70" fill="none" stroke={dk ? '#A9B3AE' : '#6B716A'} strokeWidth="4" /><path d="M20 70 L20 84 M34 70 L34 84" stroke={dk ? '#A9B3AE' : '#6B716A'} strokeWidth="4" /><path d="M14 30 L36 30 L36 70" fill="none" stroke={dk ? '#A9B3AE' : '#6B716A'} strokeWidth="4" /><path d="M36 30 Q60 32 70 56 Q78 76 90 82" fill="none" stroke={dk ? gold : '#94741A'} strokeWidth="12" strokeLinecap="round" /><path d="M36 30 Q60 32 70 56 Q78 76 90 82" fill="none" stroke="#F2C14E" strokeWidth="6" strokeLinecap="round" opacity="0.7" /><path d="M14 30 L14 84" stroke={dk ? '#A9B3AE' : '#6B716A'} strokeWidth="4" /><path d="M14 40 L36 40 M14 50 L36 50 M14 60 L36 60" stroke={dk ? '#A9B3AE' : '#6B716A'} strokeWidth="3" /><path d="M4 90 L96 90" stroke={dk ? '#5A9E68' : '#3E7D52'} strokeWidth="5" strokeLinecap="round" /></g>,
     knife: <g transform="rotate(-40 50 50)"><rect x="14" y="43" width="30" height="14" rx="4" fill="#4A3B2A" stroke="#2E2E2E" strokeWidth="2.5" /><path d="M44 42 L90 46 Q92 50 90 54 L44 58 Z" fill="#D8DEE2" stroke="#6F7A76" strokeWidth="2.5" strokeLinejoin="round" /><path d="M48 54 L86 54" stroke="#B8BFBA" strokeWidth="2" /></g>,
-    scissors: <g><circle cx="30" cy="70" r="11" fill="none" stroke={red} strokeWidth="6" /><circle cx="58" cy="78" r="11" fill="none" stroke={red} strokeWidth="6" /><path d="M36 61 L78 22" stroke="#D8DEE2" strokeWidth="9" strokeLinecap="round" /><path d="M36 61 L78 22" stroke="#6F7A76" strokeWidth="3" strokeLinecap="round" opacity="0.6" /><path d="M52 70 L30 18" stroke="#D8DEE2" strokeWidth="9" strokeLinecap="round" /><path d="M52 70 L30 18" stroke="#6F7A76" strokeWidth="3" strokeLinecap="round" opacity="0.6" /><circle cx="46" cy="56" r="4" fill="#6F7A76" /></g>,
+    // The scissors (pass ND, EARMARKS A89): their red handles take the flower's lighter red on a dark tile (2.61 to 1 on a right answer's
+    // tile, now 3.78), and in the light theme each pale blade wears the spoon's gray edge, drawn under it, since the blades read 1.4 to 1
+    // on white and the edge reads 3.61 or better on every light tile.
+    scissors: <g><circle cx="30" cy="70" r="11" fill="none" stroke={dk ? '#E07A62' : red} strokeWidth="6" /><circle cx="58" cy="78" r="11" fill="none" stroke={dk ? '#E07A62' : red} strokeWidth="6" /><path d="M36 61 L78 22" stroke={dk ? 'none' : '#6F7A76'} strokeWidth="12" strokeLinecap="round" /><path d="M36 61 L78 22" stroke="#D8DEE2" strokeWidth="9" strokeLinecap="round" /><path d="M36 61 L78 22" stroke="#6F7A76" strokeWidth="3" strokeLinecap="round" opacity="0.6" /><path d="M52 70 L30 18" stroke={dk ? 'none' : '#6F7A76'} strokeWidth="12" strokeLinecap="round" /><path d="M52 70 L30 18" stroke="#D8DEE2" strokeWidth="9" strokeLinecap="round" /><path d="M52 70 L30 18" stroke="#6F7A76" strokeWidth="3" strokeLinecap="round" opacity="0.6" /><circle cx="46" cy="56" r="4" fill="#6F7A76" /></g>,
     screwdriver: <g transform="rotate(-45 50 50)"><rect x="10" y="40" width="34" height="20" rx="8" fill={red} stroke="#8E3A27" strokeWidth="2.5" /><path d="M44 46 L84 46 L84 54 L44 54 Z" fill="#D8DEE2" stroke="#6F7A76" strokeWidth="2.5" /><path d="M84 44 L92 44 L92 56 L84 56 Z" fill="#B8BFBA" stroke="#6F7A76" strokeWidth="2.5" /></g>,
-    house: <g><path d="M14 50 L50 18 L86 50" fill="none" stroke="#8E3A27" strokeWidth="5" strokeLinejoin="round" strokeLinecap="round" /><rect x="22" y="48" width="56" height="40" fill="#F2C14E" stroke="#8A6A1F" strokeWidth="3" /><rect x="42" y="62" width="16" height="26" fill="#8B5A2B" stroke="#5E3C1A" strokeWidth="2" /><rect x="28" y="56" width="10" height="10" fill="#CFEAF7" stroke="#5E3C1A" strokeWidth="2" /><rect x="62" y="56" width="10" height="10" fill="#CFEAF7" stroke="#5E3C1A" strokeWidth="2" /><rect x="60" y="72" width="14" height="8" rx="2" fill="#F4F6F7" stroke="#5E3C1A" strokeWidth="1.5" /></g>,
+    // The house's roof on a dark tile (pass ND, EARMARKS A89): its dark red read 1.48 to 1.86 to 1 there; the flower's lighter red reads 3.78.
+    house: <g><path d="M14 50 L50 18 L86 50" fill="none" stroke={dk ? '#E07A62' : '#8E3A27'} strokeWidth="5" strokeLinejoin="round" strokeLinecap="round" /><rect x="22" y="48" width="56" height="40" fill="#F2C14E" stroke="#8A6A1F" strokeWidth="3" /><rect x="42" y="62" width="16" height="26" fill="#8B5A2B" stroke="#5E3C1A" strokeWidth="2" /><rect x="28" y="56" width="10" height="10" fill="#CFEAF7" stroke="#5E3C1A" strokeWidth="2" /><rect x="62" y="56" width="10" height="10" fill="#CFEAF7" stroke="#5E3C1A" strokeWidth="2" /><rect x="60" y="72" width="14" height="8" rx="2" fill="#F4F6F7" stroke="#5E3C1A" strokeWidth="1.5" /></g>,
     bottle: <g><rect x="34" y="10" width="32" height="14" rx="3" fill="#F4F6F7" stroke="#4A6A86" strokeWidth="3" /><rect x="30" y="24" width="40" height="64" rx="6" fill="#E88A3A" stroke="#8E4F22" strokeWidth="3" /><rect x="36" y="38" width="28" height="30" rx="3" fill="#F4F6F7" opacity="0.9" /><circle cx="44" cy="80" r="3" fill="#F4F6F7" /><circle cx="56" cy="80" r="3" fill="#F4F6F7" /></g>,
-    cigarette: <g><rect x="24" y="46" width="52" height="10" rx="2" fill="#F4F6F7" stroke="#6F7A76" strokeWidth="2" /><rect x="66" y="46" width="10" height="10" fill="#E2B97A" stroke="#6F7A76" strokeWidth="2" /><path d="M24 44 Q28 36 24 30" fill="none" stroke="#8A9086" strokeWidth="2" strokeLinecap="round" /><circle cx="50" cy="50" r="38" fill="none" stroke={red} strokeWidth="6" /><path d="M24 24 L76 76" stroke={red} strokeWidth="6" strokeLinecap="round" /></g>,
+    // The no sign's red on a dark tile takes the flower's lighter red (pass ND, EARMARKS A89): 2.61 to 1 on a right answer's tile, now 3.78.
+    cigarette: <g><rect x="24" y="46" width="52" height="10" rx="2" fill="#F4F6F7" stroke="#6F7A76" strokeWidth="2" /><rect x="66" y="46" width="10" height="10" fill="#E2B97A" stroke="#6F7A76" strokeWidth="2" /><path d="M24 44 Q28 36 24 30" fill="none" stroke="#8A9086" strokeWidth="2" strokeLinecap="round" /><circle cx="50" cy="50" r="38" fill="none" stroke={dk ? '#E07A62' : red} strokeWidth="6" /><path d="M24 24 L76 76" stroke={dk ? '#E07A62' : red} strokeWidth="6" strokeLinecap="round" /></g>,
     // Pass KO (kindergarten health): a doctor in a white coat, a shot, a fine comb, a mosquito, a child-sized plate half fruits
     // and vegetables, a peanut, a bike helmet, a booster seat and a seat belt across a seat.
     // The doctor (pass MR, drawn to look like a real person): a woman with dark hair to her shoulders, in a white coat over light blue scrubs, a stethoscope around her neck.
@@ -827,7 +885,9 @@ function IconPic({ name, size = 90, tile = false }) {
         {/* The white coat, its far side in shade */}
         <path d="M50 57C42.5 57 37 59 31 61.6C23 64.6 15.6 67.4 13.6 75C12.2 80.6 11.6 90 13.2 101.6L50 101.6L86.8 101.6C88.4 90 87.8 80.6 86.4 75C84.4 67.4 77 64.6 69 61.6C63 59 57.5 57 50 57Z" fill="#F7F9FA" />
         <g clipPath={`url(#${uid}-body)`}><path d="M70 60C81 62.2 89.6 70.6 90.6 78.6L92 101.6L80.2 101.6C80.4 90 80.6 80 82.31 72.6C80.46 67.6 74.6 63 70 60Z" fill="#DFE6EB" /></g>
-        <path d="M50 57C42.5 57 37 59 31 61.6C23 64.6 15.6 67.4 13.6 75C12.2 80.6 11.6 90 13.2 101.6L50 101.6L86.8 101.6C88.4 90 87.8 80.6 86.4 75C84.4 67.4 77 64.6 69 61.6C63 59 57.5 57 50 57Z" fill="none" stroke="#6F7A76" strokeWidth="1.4" strokeLinejoin="round" />
+        {/* The coat's outline closes along the foot of the drawing (pass ND, EARMARKS A89): cut there, the white coat and the scrubs met a
+            light tile with no edge (1.06 to 2.55 to 1); the gray outline reads 3.61 or better there. */}
+        <path d="M50 57C42.5 57 37 59 31 61.6C23 64.6 15.6 67.4 13.6 75C12.2 80.6 11.6 90 13.2 101.6L13.2 99.3L86.8 99.3L86.8 101.6C88.4 90 87.8 80.6 86.4 75C84.4 67.4 77 64.6 69 61.6C63 59 57.5 57 50 57Z" fill="none" stroke="#6F7A76" strokeWidth="1.4" strokeLinejoin="round" />
         {/* Light blue scrubs with a V neck, where the coat hangs open */}
         <path d="M42.6 57.2L45.8 77L47 101.6L53 101.6L54.2 77L57.4 57.2Z" fill="#6FA8D6" />
         <path d="M43.4 57.2L50 67.2L56.6 57.2Z" fill="#E8C9A0" />
@@ -887,28 +947,31 @@ function IconPic({ name, size = 90, tile = false }) {
     // with her gray hair in a bun and small round glasses, and a grandpa with short gray hair, a gray mustache and glasses, drawn
     // as the doctor is, in four skin tones.
     // The baby (pass MR): a big round head with a curl of hair, round cheeks, a yellow onesie with a collar, holding up a bottle of milk.
+    // Her edges in the light theme (pass ND, EARMARKS A89): the onesie's gold edge read 1.89 to 2.33 to 1 on the light tiles, her skin's
+    // 1.95 to 2.41 and the bottle's 1.8 to 3.3, and the yellow, cut at the foot of the drawing, 1.2 to 1.5; the duck's deeper gold, a
+    // deeper tan and deeper blues and grays read 3.32 or better, and the onesie's outline closes along the foot. A dark tile keeps hers.
     baby: (
       <g>
         {/* A yellow onesie, its far side in shade, with a white collar and two snaps */}
         <path d="M50 50C41 50 33.4 53.4 28.8 59.4C24.8 64.8 22.8 73.6 22.2 84C21.8 90 21.8 95 21.8 101.6L50 101.6L78.2 101.6C78.2 95 78.2 90 77.8 84C77.2 73.6 75.2 64.8 71.2 59.4C66.6 53.4 59 50 50 50Z" fill="#F2D27A" />
         <path d="M71.2 59.4C75.2 64.8 77.2 73.6 77.8 84C78.2 90 78.2 95 78.2 101.6L72.6 101.6C72.6 88 72 75.6 68.6 66.4C67.6 63.6 69 61.2 71.2 59.4Z" fill="#E2B954" />
-        <path d="M50 50C41 50 33.4 53.4 28.8 59.4C24.8 64.8 22.8 73.6 22.2 84C21.8 90 21.8 95 21.8 101.6L50 101.6L78.2 101.6C78.2 95 78.2 90 77.8 84C77.2 73.6 75.2 64.8 71.2 59.4C66.6 53.4 59 50 50 50Z" fill="none" stroke="#C9A646" strokeWidth="1.4" strokeLinejoin="round" />
+        <path d="M50 50C41 50 33.4 53.4 28.8 59.4C24.8 64.8 22.8 73.6 22.2 84C21.8 90 21.8 95 21.8 101.6L21.8 99.3L78.2 99.3L78.2 101.6C78.2 95 78.2 90 77.8 84C77.2 73.6 75.2 64.8 71.2 59.4C66.6 53.4 59 50 50 50Z" fill="none" stroke={dk ? '#C9A646' : '#94741A'} strokeWidth="1.4" strokeLinejoin="round" />
         <circle cx="50" cy="70" r="1.3" fill="#FFFFFF" stroke="#C9A646" strokeWidth="0.9" />
         <circle cx="50" cy="77" r="1.3" fill="#FFFFFF" stroke="#C9A646" strokeWidth="0.9" />
         <path d="M50 56.6C46.4 58.4 41 58 37.8 55.6C36.6 58.8 38.6 62.6 42.8 63.2C46 63.6 48.8 61.6 50 58.6Z" fill="#FFFFFF" stroke="#D8D8D8" strokeWidth="1.1" strokeLinejoin="round" />
         <g transform="matrix(-1 0 0 1 100 0)"><path d="M50 56.6C46.4 58.4 41 58 37.8 55.6C36.6 58.8 38.6 62.6 42.8 63.2C46 63.6 48.8 61.6 50 58.6Z" fill="#FFFFFF" stroke="#D8D8D8" strokeWidth="1.1" strokeLinejoin="round" /></g>
         {/* Her ears and big round face */}
         <g>
-          <path d="M30.8 33C26.78 31.48 25.26 35.47 26.4 38.51C27.16 40.41 28.68 41.74 31 41.17Z" fill="#F5CBA7" stroke="#D69A72" strokeWidth="1.2" strokeLinejoin="round" />
+          <path d="M30.8 33C26.78 31.48 25.26 35.47 26.4 38.51C27.16 40.41 28.68 41.74 31 41.17Z" fill="#F5CBA7" stroke={dk ? '#D69A72' : '#A8714C'} strokeWidth="1.2" strokeLinejoin="round" />
           <path d="M29.63 35.28C27.73 35.09 27.35 37.56 28.68 39.08" fill="none" stroke="#E9B28B" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
         </g>
         <g transform="matrix(-1 0 0 1 100 0)">
           <g>
-            <path d="M30.8 33C26.78 31.48 25.26 35.47 26.4 38.51C27.16 40.41 28.68 41.74 31 41.17Z" fill="#F5CBA7" stroke="#D69A72" strokeWidth="1.2" strokeLinejoin="round" />
+            <path d="M30.8 33C26.78 31.48 25.26 35.47 26.4 38.51C27.16 40.41 28.68 41.74 31 41.17Z" fill="#F5CBA7" stroke={dk ? '#D69A72' : '#A8714C'} strokeWidth="1.2" strokeLinejoin="round" />
             <path d="M29.63 35.28C27.73 35.09 27.35 37.56 28.68 39.08" fill="none" stroke="#E9B28B" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
           </g>
         </g>
-        <path d="M50 12.4C38 12.4 28.4 21 28.4 33.6C28.4 41.4 31.6 47.6 36.8 51.2C40.6 53.8 45 54.8 50 54.8C55 54.8 59.4 53.8 63.2 51.2C68.4 47.6 71.6 41.4 71.6 33.6C71.6 21 62 12.4 50 12.4Z" fill="#F5CBA7" stroke="#D69A72" strokeWidth="1.1" />
+        <path d="M50 12.4C38 12.4 28.4 21 28.4 33.6C28.4 41.4 31.6 47.6 36.8 51.2C40.6 53.8 45 54.8 50 54.8C55 54.8 59.4 53.8 63.2 51.2C68.4 47.6 71.6 41.4 71.6 33.6C71.6 21 62 12.4 50 12.4Z" fill="#F5CBA7" stroke={dk ? '#D69A72' : '#A8714C'} strokeWidth="1.1" />
         {/* A little tuft of hair */}
         <path d="M48.2 13.4C47 9.6 49.8 6.6 53.2 7.4C55.8 8 56.6 10.8 54.8 12.2C53.6 13 52 12.4 52.2 11.2" fill="none" stroke="#8A5A35" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
         <path d="M44.6 14.6Q45.4 12.2 47.4 11.6" fill="none" stroke="#8A5A35" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
@@ -929,17 +992,17 @@ function IconPic({ name, size = 90, tile = false }) {
         <path d="M46.8 46.2Q50 47.2 53.2 46.2Q52.6 49.8 50 50Q47.4 49.8 46.8 46.2Z" fill="#B4534F" />
         <path d="M47.8 48.6Q50 47.4 52.2 48.6Q51.2 49.9 50 49.9Q48.8 49.9 47.8 48.6Z" fill="#EE8E8E" />
         {/* Her arm, bent up from the elbow to hold the bottle */}
-        <path d="M77.8 101.6C79.6 94 79.2 86.6 76.4 78.6L68.8 80.2C70.4 86.4 70.6 94.4 69.4 101.6Z" fill="#F2D27A" stroke="#C9A646" strokeWidth="1.3" strokeLinejoin="round" />
+        <path d="M77.8 101.6C79.6 94 79.2 86.6 76.4 78.6L68.8 80.2C70.4 86.4 70.6 94.4 69.4 101.6Z" fill="#F2D27A" stroke={dk ? '#C9A646' : '#94741A'} strokeWidth="1.3" strokeLinejoin="round" />
         {/* The bottle: a teat on top, a blue ring, and milk inside */}
         <g transform="rotate(10 72 70)">
-          <path d="M69.4 53.6Q72 48 74.6 53.6Z" fill="#F3C77E" stroke="#D6A55B" strokeWidth="1" strokeLinejoin="round" />
-          <rect x="66.8" y="53.4" width="10.4" height="4.2" rx="1.4" fill="#7FB3D5" stroke="#5C93BC" strokeWidth="1" />
-          <rect x="67.4" y="57.6" width="9.2" height="22" rx="3" fill="#EEF6FC" stroke="#8FAAC0" strokeWidth="1.2" />
-          <path d="M67.4 64.6L76.6 64.6L76.6 76.6Q76.6 79.6 73.6 79.6L70.4 79.6Q67.4 79.6 67.4 76.6Z" fill="#FFFFFF" stroke="#8FAAC0" strokeWidth="1.2" />
+          <path d="M69.4 53.6Q72 48 74.6 53.6Z" fill="#F3C77E" stroke={dk ? '#D6A55B' : '#9C7330'} strokeWidth="1" strokeLinejoin="round" />
+          <rect x="66.8" y="53.4" width="10.4" height="4.2" rx="1.4" fill="#7FB3D5" stroke={dk ? '#5C93BC' : '#3B78B8'} strokeWidth="1" />
+          <rect x="67.4" y="57.6" width="9.2" height="22" rx="3" fill="#EEF6FC" stroke={dk ? '#8FAAC0' : '#5F7B91'} strokeWidth="1.2" />
+          <path d="M67.4 64.6L76.6 64.6L76.6 76.6Q76.6 79.6 73.6 79.6L70.4 79.6Q67.4 79.6 67.4 76.6Z" fill="#FFFFFF" stroke={dk ? '#8FAAC0' : '#5F7B91'} strokeWidth="1.2" />
           <path d="M69.6 60.4L69.6 62.4M69.6 67.6L69.6 74.4" fill="none" stroke="#FFFFFF" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" />
         </g>
         {/* Her chubby hand around the bottle, fingers curled over the front */}
-        <path d="M66.6 73.6C66.8 70.2 71.6 69 74.8 70.2C77.6 71.2 78 75.6 76.6 77.8C74.8 80.6 68.4 80.4 67 77.4Z" fill="#F5CBA7" stroke="#D69A72" strokeWidth="1.1" strokeLinejoin="round" />
+        <path d="M66.6 73.6C66.8 70.2 71.6 69 74.8 70.2C77.6 71.2 78 75.6 76.6 77.8C74.8 80.6 68.4 80.4 67 77.4Z" fill="#F5CBA7" stroke={dk ? '#D69A72' : '#A8714C'} strokeWidth="1.1" strokeLinejoin="round" />
         <path d="M68.4 72.6Q71.4 71.6 74.8 72.6M68 75.2Q71.2 74.4 74.8 75.4M68.6 77.8Q71.2 77.2 73.8 77.8" fill="none" stroke="#E9B28B" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" />
       </g>
     ),
@@ -956,24 +1019,27 @@ function IconPic({ name, size = 90, tile = false }) {
         {/* A green sweater, its far side in shade, and the white collar of his shirt */}
         <path d="M50 56.6C42.5 56.6 37 58.6 31 61.6C23 64.6 14.8 67.4 12.8 75C11.4 80.6 10.8 90 11.6 101.6L50 101.6L88.4 101.6C89.2 90 88.6 80.6 87.2 75C85.2 67.4 77 64.6 69 61.6C63 58.6 57.5 56.6 50 56.6Z" fill="#3E8E6E" />
         <g clipPath={`url(#${uid}-body)`}><path d="M70 60C81 62.2 89.6 70.6 90.6 78.6L92 101.6L81.6 101.6C81.8 90 81.2 80 82.98 72.6C81.08 67.6 74.6 63 70 60Z" fill="#327459" /></g>
-        <path d="M50 56.6C42.5 56.6 37 58.6 31 61.6C23 64.6 14.8 67.4 12.8 75C11.4 80.6 10.8 90 11.6 101.6L50 101.6L88.4 101.6C89.2 90 88.6 80.6 87.2 75C85.2 67.4 77 64.6 69 61.6C63 58.6 57.5 56.6 50 56.6Z" fill="none" stroke="#2C6A51" strokeWidth="1.4" strokeLinejoin="round" />
+        {/* On a dark tile (pass ND, EARMARKS A89) the sweater read 2.81 to 1 on a right answer's tile and its edge 1.74, his hair's edge 1.1
+            and his ears' 1.0 to 1.3; a pale green edge, closed along the foot of the drawing, and a lighter brown on his hair's, his ears' and
+            his face's edges read 3.37 or better. */}
+        <path d="M50 56.6C42.5 56.6 37 58.6 31 61.6C23 64.6 14.8 67.4 12.8 75C11.4 80.6 10.8 90 11.6 101.6L11.6 99.3L88.4 99.3L88.4 101.6C89.2 90 88.6 80.6 87.2 75C85.2 67.4 77 64.6 69 61.6C63 58.6 57.5 56.6 50 56.6Z" fill="none" stroke={dk ? '#8FC79B' : '#2C6A51'} strokeWidth="1.4" strokeLinejoin="round" />
         <path d="M50 59.2L43.4 55.6L40.8 60.6L46.4 64.6Z" fill="#F4F6F7" stroke="#C9D0D5" strokeWidth="1.1" strokeLinejoin="round" />
         <g transform="matrix(-1 0 0 1 100 0)"><path d="M50 59.2L43.4 55.6L40.8 60.6L46.4 64.6Z" fill="#F4F6F7" stroke="#C9D0D5" strokeWidth="1.1" strokeLinejoin="round" /></g>
         {/* His ears and face */}
         <g>
-          <path d="M35.6 28.6C31.4 27 29.8 31.2 31 34.4C31.8 36.4 33.4 37.8 35.8 37.2Z" fill="#8D5524" stroke="#5A3112" strokeWidth="1.2" strokeLinejoin="round" />
+          <path d="M35.6 28.6C31.4 27 29.8 31.2 31 34.4C31.8 36.4 33.4 37.8 35.8 37.2Z" fill="#8D5524" stroke={dk ? '#B98257' : '#5A3112'} strokeWidth="1.2" strokeLinejoin="round" />
           <path d="M34.4 31C32.4 30.8 32 33.4 33.4 35" fill="none" stroke="#713F17" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
         </g>
         <g transform="matrix(-1 0 0 1 100 0)">
           <g>
-            <path d="M35.6 28.6C31.4 27 29.8 31.2 31 34.4C31.8 36.4 33.4 37.8 35.8 37.2Z" fill="#8D5524" stroke="#5A3112" strokeWidth="1.2" strokeLinejoin="round" />
+            <path d="M35.6 28.6C31.4 27 29.8 31.2 31 34.4C31.8 36.4 33.4 37.8 35.8 37.2Z" fill="#8D5524" stroke={dk ? '#B98257' : '#5A3112'} strokeWidth="1.2" strokeLinejoin="round" />
             <path d="M34.4 31C32.4 30.8 32 33.4 33.4 35" fill="none" stroke="#713F17" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
           </g>
         </g>
-        <path d="M50 11C40.88 11 34.8 18.5 34.8 28.5C34.8 37 36.56 42.5 39.28 46.2C41.68 49.6 47 51.6 50 51.6C53 51.6 58.32 49.6 60.72 46.2C63.44 42.5 65.2 37 65.2 28.5C65.2 18.5 59.12 11 50 11Z" fill="#8D5524" stroke="#5A3112" strokeWidth="1.1" />
+        <path d="M50 11C40.88 11 34.8 18.5 34.8 28.5C34.8 37 36.56 42.5 39.28 46.2C41.68 49.6 47 51.6 50 51.6C53 51.6 58.32 49.6 60.72 46.2C63.44 42.5 65.2 37 65.2 28.5C65.2 18.5 59.12 11 50 11Z" fill="#8D5524" stroke={dk ? '#B98257' : '#5A3112'} strokeWidth="1.1" />
         {/* Short, close-curled hair, with a soft shadow under the hairline */}
         <g clipPath={`url(#${uid}-face)`}><path d="M50 21.4C46.4 21.4 42.4 21 39.4 21.8C36.8 22.8 35.4 25.4 34.6 30.2C33 24.4 33.2 18 37 13.8C40 10.4 44.8 8.6 50 8.6C55.2 8.6 60 10.4 63 13.8C66.8 18 67 24.4 65.4 30.2C64.6 25.4 63.2 22.8 60.6 21.8C57.6 21 53.6 21.4 50 21.4Z" fill="#713F17" opacity="0.6" /></g>
-        <path d="M50 19.8C46.4 19.8 42.4 19.4 39.4 20.2C36.8 21.2 35.4 23.8 34.6 28.6C33 22.8 33.2 16.4 37 12.2C40 8.8 44.8 7 50 7C55.2 7 60 8.8 63 12.2C66.8 16.4 67 22.8 65.4 28.6C64.6 23.8 63.2 21.2 60.6 20.2C57.6 19.4 53.6 19.8 50 19.8Z" fill="#231610" stroke="#46301F" strokeWidth="1.2" strokeLinejoin="round" />
+        <path d="M50 19.8C46.4 19.8 42.4 19.4 39.4 20.2C36.8 21.2 35.4 23.8 34.6 28.6C33 22.8 33.2 16.4 37 12.2C40 8.8 44.8 7 50 7C55.2 7 60 8.8 63 12.2C66.8 16.4 67 22.8 65.4 28.6C64.6 23.8 63.2 21.2 60.6 20.2C57.6 19.4 53.6 19.8 50 19.8Z" fill="#231610" stroke={dk ? '#A8876E' : '#46301F'} strokeWidth="1.2" strokeLinejoin="round" />
         <path d="M40.2 13.6 q 1.4 -1.2 2.8 0M45 10.8 q 1.4 -1.2 2.8 0M51.4 10.4 q 1.4 -1.2 2.8 0M56.8 12.6 q 1.4 -1.2 2.8 0M37.8 18.4 q 1.2 -1.2 2.6 -0.4M59.6 18 q 1.4 -0.8 2.6 0.4M47.6 15 q 1.4 -1.2 2.8 0M53.4 15.6 q 1.4 -1.2 2.8 0M42.2 16.6 q 1.4 -1.2 2.8 0" fill="none" stroke="#4A3423" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" />
         {/* Eyes, brows, nose and a wide smile */}
         <g>
@@ -1012,7 +1078,7 @@ function IconPic({ name, size = 90, tile = false }) {
           <clipPath id={`${uid}-face`}><path d="M50 11C41.24 11 35.4 18.5 35.4 28.5C35.4 37 37.6 42.5 41 46.2C44 49.6 47 51.2 50 51.2C53 51.2 56 49.6 59 46.2C62.4 42.5 64.6 37 64.6 28.5C64.6 18.5 58.76 11 50 11Z" /></clipPath>
         </defs>
         {/* Her bun, on top of her head */}
-        <circle cx="50" cy="10.2" r="6.6" fill="#D5D8DB" stroke="#9AA1A8" strokeWidth="1.2" />
+        <circle cx="50" cy="10.2" r="6.6" fill="#D5D8DB" stroke={dk ? '#9AA1A8' : '#6E757C'} strokeWidth="1.2" />
         <path d="M46 9.6Q49 5.8 53.6 8.4M46.4 12.8Q50.6 13.8 54 11.2" fill="none" stroke="#B5BAC0" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
         {/* Her neck, and the shadow under her chin */}
         <path d="M44.4 42C44.4 49 44 54 43 58.6L57 58.6C56 54 55.6 49 55.6 42Z" fill="#C68642" />
@@ -1020,7 +1086,9 @@ function IconPic({ name, size = 90, tile = false }) {
         {/* A lilac cardigan, its far side in shade, over a white blouse with a round collar, three buttons down the front */}
         <path d="M50 57C42.5 57 37 59 31 61.6C23 64.6 16.8 67.4 14.8 75C13.4 80.6 12.8 90 14.4 101.6L50 101.6L85.6 101.6C87.2 90 86.6 80.6 85.2 75C83.2 67.4 77 64.6 69 61.6C63 59 57.5 57 50 57Z" fill="#B39DDB" />
         <g clipPath={`url(#${uid}-body)`}><path d="M70 60C81 62.2 89.6 70.6 90.6 78.6L92 101.6L79.2 101.6C79.4 90 79.6 80 81.23 72.6C79.44 67.6 74.6 63 70 60Z" fill="#9C84C8" /></g>
-        <path d="M50 57C42.5 57 37 59 31 61.6C23 64.6 16.8 67.4 14.8 75C13.4 80.6 12.8 90 14.4 101.6L50 101.6L85.6 101.6C87.2 90 86.6 80.6 85.2 75C83.2 67.4 77 64.6 69 61.6C63 59 57.5 57 50 57Z" fill="none" stroke="#7C64AC" strokeWidth="1.4" strokeLinejoin="round" />
+        {/* In the light theme (pass ND, EARMARKS A89) her cardigan's outline closes along the foot of the drawing, where the lilac, cut,
+            read 1.94 to 2.40 to 1 on the light tiles, and her gray hair's edge is a deeper gray: it read 2.12 to 2.61, and reads 3.79 or better. */}
+        <path d="M50 57C42.5 57 37 59 31 61.6C23 64.6 16.8 67.4 14.8 75C13.4 80.6 12.8 90 14.4 101.6L14.4 99.3L85.6 99.3L85.6 101.6C87.2 90 86.6 80.6 85.2 75C83.2 67.4 77 64.6 69 61.6C63 59 57.5 57 50 57Z" fill="none" stroke="#7C64AC" strokeWidth="1.4" strokeLinejoin="round" />
         <path d="M41.2 57.8L50 80L58.8 57.8Z" fill="#FAFAF8" />
         <path d="M41.2 57.8L50 80L58.8 57.8M50 80L50 101" fill="none" stroke="#7C64AC" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
         <path d="M50 60.2C46.6 59.8 43.2 58.4 41.6 56.8C40.2 59.6 41.4 63.2 44.8 64C47.2 64.6 49.2 63.2 50 60.2Z" fill="#FFFFFF" stroke="#C9C6CF" strokeWidth="1.1" strokeLinejoin="round" />
@@ -1042,7 +1110,7 @@ function IconPic({ name, size = 90, tile = false }) {
         <path d="M50 11C41.24 11 35.4 18.5 35.4 28.5C35.4 37 37.6 42.5 41 46.2C44 49.6 47 51.2 50 51.2C53 51.2 56 49.6 59 46.2C62.4 42.5 64.6 37 64.6 28.5C64.6 18.5 58.76 11 50 11Z" fill="#C68642" stroke="#8C5A27" strokeWidth="1.1" />
         {/* Soft gray hair swept up from her face, with a shadow under the hairline */}
         <g clipPath={`url(#${uid}-face)`}><path d="M50 21C43.6 21 37.4 24.6 34.8 33.8Q32.04 31.74 32.2 29Q30.91 25.97 32.6 23.2Q32.94 19.67 36 17.4Q37.79 14.19 41.6 13.2Q45.4 10.95 50 11.6Q54.6 10.95 58.4 13.2Q62.21 14.19 64 17.4Q67.06 19.67 67.4 23.2Q69.09 25.97 67.8 29Q67.96 31.74 65.2 33.8C62.6 24.6 56.4 21 50 21Z" fill="#A96E33" opacity="0.55" /></g>
-        <path d="M50 19.4C43.6 19.4 37.4 23 34.8 32.2Q32.04 30.14 32.2 27.4Q30.91 24.37 32.6 21.6Q32.94 18.07 36 15.8Q37.79 12.59 41.6 11.6Q45.4 9.35 50 10Q54.6 9.35 58.4 11.6Q62.21 12.59 64 15.8Q67.06 18.07 67.4 21.6Q69.09 24.37 67.8 27.4Q67.96 30.14 65.2 32.2C62.6 23 56.4 19.4 50 19.4Z" fill="#D5D8DB" stroke="#9AA1A8" strokeWidth="1.2" strokeLinejoin="round" />
+        <path d="M50 19.4C43.6 19.4 37.4 23 34.8 32.2Q32.04 30.14 32.2 27.4Q30.91 24.37 32.6 21.6Q32.94 18.07 36 15.8Q37.79 12.59 41.6 11.6Q45.4 9.35 50 10Q54.6 9.35 58.4 11.6Q62.21 12.59 64 15.8Q67.06 18.07 67.4 21.6Q69.09 24.37 67.8 27.4Q67.96 30.14 65.2 32.2C62.6 23 56.4 19.4 50 19.4Z" fill="#D5D8DB" stroke={dk ? '#9AA1A8' : '#6E757C'} strokeWidth="1.2" strokeLinejoin="round" />
         <path d="M38.6 18.4C42 15.2 45.8 14 48.6 13.8M52.8 14C56.6 14.4 59.6 15.8 61.8 18.4M35.2 26C35.8 23.4 37 21.2 38.8 19.8M64.8 26C64.2 23.4 63 21.2 61.2 19.8" fill="none" stroke="#B5BAC0" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
         <path d="M44.6 12.2C47.4 11.4 50.6 11.2 53.4 11.8" fill="none" stroke="#EEF0F2" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
         {/* Eyes behind small round glasses, gray brows, the lines of her smile */}
@@ -1085,7 +1153,10 @@ function IconPic({ name, size = 90, tile = false }) {
         {/* A blue V-neck sweater, its far side in shade, over a white collared shirt */}
         <path d="M50 56.6C42.5 56.6 37 58.6 31 61.6C23 64.6 14.8 67.4 12.8 75C11.4 80.6 10.8 90 11.6 101.6L50 101.6L88.4 101.6C89.2 90 88.6 80.6 87.2 75C85.2 67.4 77 64.6 69 61.6C63 58.6 57.5 56.6 50 56.6Z" fill="#4A6FA5" />
         <g clipPath={`url(#${uid}-body)`}><path d="M70 60C81 62.2 89.6 70.6 90.6 78.6L92 101.6L81.6 101.6C81.8 90 81.2 80 82.98 72.6C81.08 67.6 74.6 63 70 60Z" fill="#3C5D8E" /></g>
-        <path d="M50 56.6C42.5 56.6 37 58.6 31 61.6C23 64.6 14.8 67.4 12.8 75C11.4 80.6 10.8 90 11.6 101.6L50 101.6L88.4 101.6C89.2 90 88.6 80.6 87.2 75C85.2 67.4 77 64.6 69 61.6C63 58.6 57.5 56.6 50 56.6Z" fill="none" stroke="#2F4A73" strokeWidth="1.4" strokeLinejoin="round" />
+        {/* On a dark tile (pass ND, EARMARKS A89) his blue sweater read 2.18 to 2.75 to 1 and its edge 1.25 to 1.57; a pale blue edge, closed
+            along the foot of the drawing, reads 5.01 or better. In the light theme his gray hair's edge is a deeper gray: it read 2.25 to
+            2.78 on the light tiles, and reads 3.79 or better. */}
+        <path d="M50 56.6C42.5 56.6 37 58.6 31 61.6C23 64.6 14.8 67.4 12.8 75C11.4 80.6 10.8 90 11.6 101.6L11.6 99.3L88.4 99.3L88.4 101.6C89.2 90 88.6 80.6 87.2 75C85.2 67.4 77 64.6 69 61.6C63 58.6 57.5 56.6 50 56.6Z" fill="none" stroke={dk ? '#8FB0E0' : '#2F4A73'} strokeWidth="1.4" strokeLinejoin="round" />
         <path d="M41.4 57.2L50 76L58.6 57.2Z" fill="#F2F4F6" />
         <path d="M50 61L50 76" fill="none" stroke="#C3CBD2" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" />
         <circle cx="50" cy="66.4" r="0.9" fill="#9AA6B2" />
@@ -1108,7 +1179,7 @@ function IconPic({ name, size = 90, tile = false }) {
         <path d="M50 11C40.88 11 34.8 18.5 34.8 28.5C34.8 37 36.67 42.5 39.56 46.2C42.11 49.6 47 51.6 50 51.6C53 51.6 57.89 49.6 60.44 46.2C63.33 42.5 65.2 37 65.2 28.5C65.2 18.5 59.12 11 50 11Z" fill="#E0AC69" stroke="#A57437" strokeWidth="1.1" />
         {/* Short gray hair, combed to one side and a little high at the temples, with a soft shadow under the hairline */}
         <g clipPath={`url(#${uid}-face)`}><path d="M50 19.8C47.6 19 43.4 18.8 40 20.4C37.8 21.8 36.4 25 36.2 29L36 33.2C35.2 33 34.4 32.4 34 31.4C32.4 26.2 33 19 37.2 14.6C40.2 11.4 44.8 10 50 10C55.2 10 59.8 11.4 62.8 14.6C67 19 67.6 26.2 66 31.4C65.6 32.4 64.8 33 64 33.2L63.8 29C63.6 25 62.2 21.8 60 20.4C56.6 18.8 52.4 19 50 19.8Z" fill="#C69050" opacity="0.55" /></g>
-        <path d="M50 18.2C47.6 17.4 43.4 17.2 40 18.8C37.8 20.2 36.4 23.4 36.2 27.4L36 31.6C35.2 31.4 34.4 30.8 34 29.8C32.4 24.6 33 17.4 37.2 13C40.2 9.8 44.8 8.4 50 8.4C55.2 8.4 59.8 9.8 62.8 13C67 17.4 67.6 24.6 66 29.8C65.6 30.8 64.8 31.4 64 31.6L63.8 27.4C63.6 23.4 62.2 20.2 60 18.8C56.6 17.2 52.4 17.4 50 18.2Z" fill="#C8CCD0" stroke="#959CA3" strokeWidth="1.2" strokeLinejoin="round" />
+        <path d="M50 18.2C47.6 17.4 43.4 17.2 40 18.8C37.8 20.2 36.4 23.4 36.2 27.4L36 31.6C35.2 31.4 34.4 30.8 34 29.8C32.4 24.6 33 17.4 37.2 13C40.2 9.8 44.8 8.4 50 8.4C55.2 8.4 59.8 9.8 62.8 13C67 17.4 67.6 24.6 66 29.8C65.6 30.8 64.8 31.4 64 31.6L63.8 27.4C63.6 23.4 62.2 20.2 60 18.8C56.6 17.2 52.4 17.4 50 18.2Z" fill="#C8CCD0" stroke={dk ? '#959CA3' : '#6E757C'} strokeWidth="1.2" strokeLinejoin="round" />
         <path d="M42.4 17.4C44.4 14 48.6 11.8 53.6 11.6M46.6 17.6C49.2 15 53.2 13.8 58 14.2M52.4 18.6C55.4 17 59.2 17 62.2 18.6" fill="none" stroke="#A9AFB5" strokeWidth="1.1" strokeLinecap="round" strokeLinejoin="round" />
         <path d="M40.4 13.2C42.6 11.4 45.4 10.4 48.4 10.2" fill="none" stroke="#E2E5E8" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
         {/* A line of his years on his forehead */}
@@ -1139,16 +1210,27 @@ function IconPic({ name, size = 90, tile = false }) {
         <path d="M46.6 46.2Q50 48.8 53.4 46.2Q52.4 49.2 50 49.4Q47.6 49.2 46.6 46.2Z" fill="#B0705A" />
       </g>
     ),
-    shot: <g transform="rotate(-35 50 50)"><rect x="22" y="40" width="46" height="20" rx="4" fill="#E8EEF3" stroke="#4A6A86" strokeWidth="3" /><rect x="26" y="44" width="22" height="12" fill="#8EC5EA" /><rect x="14" y="36" width="8" height="28" rx="2" fill="#4A6A86" /><rect x="68" y="46" width="10" height="8" fill="#4A6A86" /><path d="M78 50 L92 50" stroke="#6F7A76" strokeWidth="3" strokeLinecap="round" /></g>,
-    comb: <g><rect x="14" y="30" width="72" height="14" rx="4" fill="#4A86C5" stroke="#2F5F91" strokeWidth="2.5" />{[20, 26, 32, 38, 44, 50, 56, 62, 68, 74, 80].map((x) => <line key={x} x1={x} y1="44" x2={x} y2="70" stroke="#2F5F91" strokeWidth="2.6" strokeLinecap="round" />)}</g>,
-    mosquito: <g><ellipse cx="50" cy="52" rx="7" ry="16" fill="#6B716A" /><circle cx="50" cy="32" r="5" fill="#6B716A" /><path d="M50 27 L50 16 M50 16 L40 8" fill="none" stroke="#6B716A" strokeWidth="2" strokeLinecap="round" /><ellipse cx="34" cy="44" rx="14" ry="6" fill="#CFEAF7" stroke="#8A9086" strokeWidth="1.5" transform="rotate(-25 34 44)" /><ellipse cx="66" cy="44" rx="14" ry="6" fill="#CFEAF7" stroke="#8A9086" strokeWidth="1.5" transform="rotate(25 66 44)" /><path d="M44 58 L28 70 M56 58 L72 70 M44 50 L26 52 M56 50 L74 52 M46 64 L36 80 M54 64 L64 80" fill="none" stroke="#6B716A" strokeWidth="2" strokeLinecap="round" /></g>,
+    // The shot on a dark tile (pass ND, EARMARKS A89): its slate edge, plunger and tip read 1.96 to 2.47 to 1 there and its needle 2.50 on a
+    // right answer's tile; the cup's lighter slate and the spoon's light gray read 4.57 or better.
+    shot: <g transform="rotate(-35 50 50)"><rect x="22" y="40" width="46" height="20" rx="4" fill="#E8EEF3" stroke={dk ? '#8FA9C2' : '#4A6A86'} strokeWidth="3" /><rect x="26" y="44" width="22" height="12" fill="#8EC5EA" /><rect x="14" y="36" width="8" height="28" rx="2" fill={dk ? '#8FA9C2' : '#4A6A86'} /><rect x="68" y="46" width="10" height="8" fill={dk ? '#8FA9C2' : '#4A6A86'} /><path d="M78 50 L92 50" stroke={dk ? '#A9B3AE' : '#6F7A76'} strokeWidth="3" strokeLinecap="round" /></g>,
+    // The comb on a dark tile (pass ND, EARMARKS A89): its dark blue teeth and edge read 1.68 to 2.12 to 1 there; the sock's light blue reads
+    // 5.38 or better.
+    comb: <g><rect x="14" y="30" width="72" height="14" rx="4" fill="#4A86C5" stroke={dk ? '#8FB8E3' : '#2F5F91'} strokeWidth="2.5" />{[20, 26, 32, 38, 44, 50, 56, 62, 68, 74, 80].map((x) => <line key={x} x1={x} y1="44" x2={x} y2="70" stroke={dk ? '#8FB8E3' : '#2F5F91'} strokeWidth="2.6" strokeLinecap="round" />)}</g>,
+    // The mosquito (pass ND, EARMARKS A89): on a dark tile its dark gray body and legs read 2.23 to 2.80 to 1, and the app's gray reads 3.40
+    // or better; in the light theme its wings' gray edge read 2.76 and 2.66 on a right and a wrong answer's tile, and its body's darker gray
+    // reads 4.06 or better.
+    mosquito: <g><ellipse cx="50" cy="52" rx="7" ry="16" fill={dk ? '#8A9086' : '#6B716A'} /><circle cx="50" cy="32" r="5" fill={dk ? '#8A9086' : '#6B716A'} /><path d="M50 27 L50 16 M50 16 L40 8" fill="none" stroke={dk ? '#8A9086' : '#6B716A'} strokeWidth="2" strokeLinecap="round" /><ellipse cx="34" cy="44" rx="14" ry="6" fill="#CFEAF7" stroke={dk ? '#8A9086' : '#6B716A'} strokeWidth="1.5" transform="rotate(-25 34 44)" /><ellipse cx="66" cy="44" rx="14" ry="6" fill="#CFEAF7" stroke={dk ? '#8A9086' : '#6B716A'} strokeWidth="1.5" transform="rotate(25 66 44)" /><path d="M44 58 L28 70 M56 58 L72 70 M44 50 L26 52 M56 50 L74 52 M46 64 L36 80 M54 64 L64 80" fill="none" stroke={dk ? '#8A9086' : '#6B716A'} strokeWidth="2" strokeLinecap="round" /></g>,
     // A plain plate seen from above (pass MP, Mikey: "change the plate to look more like a plate"): a round rim with a blue ring and a
     // shine, its well, and a soft shadow under it so it sits on the table, so it stays round like a circle where a lesson says so. MyPlate's four food sections, which the plate wore
     // until pass MP and made it read as a pie, are kept as plate~food for the health lesson that teaches them (IconLook, below).
     plate: <g><circle cx="52" cy="53" r="41" fill="#24291F" opacity="0.14" /><circle cx="50" cy="50" r="41" fill="#EEF3F6" stroke="#6F8796" strokeWidth="3" /><circle cx="50" cy="50" r="35.5" fill="none" stroke="#4A86C5" strokeWidth="2" /><circle cx="50" cy="50" r="26" fill="#FFFFFF" stroke="#C3D0D8" strokeWidth="2.5" /><path d="M33 64 A21 21 0 0 0 67 64" fill="none" stroke="#DCE5EB" strokeWidth="3" strokeLinecap="round" /><path d="M23 32 A32 32 0 0 1 38 18" fill="none" stroke="#FFFFFF" strokeWidth="3.2" strokeLinecap="round" /></g>,
     peanut: <g><path d="M38 20 Q56 14 58 32 Q58 42 50 48 Q42 56 44 68 Q46 86 64 80 Q78 74 70 58" fill="none" stroke="#B07838" strokeWidth="0" /><path d="M36 22 Q24 36 36 48 Q46 58 38 72 Q34 86 50 88 Q66 90 66 74 Q66 60 58 52 Q50 42 58 30 Q64 14 48 14 Q40 14 36 22 Z" fill="#D9A866" stroke="#8B5A2B" strokeWidth="3" strokeLinejoin="round" /><path d="M42 30 Q46 40 44 50 M48 64 Q52 72 50 80" fill="none" stroke="#B07838" strokeWidth="2" strokeLinecap="round" /></g>,
-    helmet: <g><path d="M14 58 Q14 20 50 20 Q86 20 86 58 L86 64 Q86 70 80 70 L20 70 Q14 70 14 64 Z" fill={red} stroke="#8E3A27" strokeWidth="3" strokeLinejoin="round" /><path d="M30 24 L36 66 M50 20 L50 70 M70 24 L64 66" stroke="#F4F6F7" strokeWidth="4" opacity="0.6" /><path d="M24 70 L30 88 M76 70 L70 88" stroke="#2E2E2E" strokeWidth="3" strokeLinecap="round" /><rect x="30" y="84" width="40" height="6" rx="3" fill="#2E2E2E" /></g>,
-    booster: <g><path d="M22 44 L22 86 L82 86 L82 66 L48 66 L44 44 Z" fill="#4A86C5" stroke="#2F5F91" strokeWidth="3" strokeLinejoin="round" /><path d="M22 44 Q22 36 30 36 L40 36 Q46 36 48 42 L50 56" fill="#6B8AA6" stroke="#2F5F91" strokeWidth="3" strokeLinejoin="round" /><rect x="48" y="60" width="38" height="8" rx="3" fill="#2F5F91" /><path d="M14 90 L90 90" stroke="#6B716A" strokeWidth="4" strokeLinecap="round" /></g>,
+    // The helmet on a dark tile (pass ND, EARMARKS A89): its red read 2.61 to 1 on a right answer's tile and its near-black straps 1.0 to 1.2
+    // on every dark tile; the block's pale red edge and the phone's light gray read 5.17 or better.
+    helmet: <g><path d="M14 58 Q14 20 50 20 Q86 20 86 58 L86 64 Q86 70 80 70 L20 70 Q14 70 14 64 Z" fill={red} stroke={dk ? '#F0A99A' : '#8E3A27'} strokeWidth="3" strokeLinejoin="round" /><path d="M30 24 L36 66 M50 20 L50 70 M70 24 L64 66" stroke="#F4F6F7" strokeWidth="4" opacity="0.6" /><path d="M24 70 L30 88 M76 70 L70 88" stroke={dk ? '#A9B3AE' : '#2E2E2E'} strokeWidth="3" strokeLinecap="round" /><rect x="30" y="84" width="40" height="6" rx="3" fill={dk ? '#A9B3AE' : '#2E2E2E'} /></g>,
+    // The booster seat on a dark tile (pass ND, EARMARKS A89): its dark blue edge and armrest read 1.68 to 2.12 to 1 there and its gray floor
+    // 2.23 to 2.80; the sock's light blue and the spoon's light gray read 5.17 or better.
+    booster: <g><path d="M22 44 L22 86 L82 86 L82 66 L48 66 L44 44 Z" fill="#4A86C5" stroke={dk ? '#8FB8E3' : '#2F5F91'} strokeWidth="3" strokeLinejoin="round" /><path d="M22 44 Q22 36 30 36 L40 36 Q46 36 48 42 L50 56" fill="#6B8AA6" stroke={dk ? '#8FB8E3' : '#2F5F91'} strokeWidth="3" strokeLinejoin="round" /><rect x="48" y="60" width="38" height="8" rx="3" fill={dk ? '#8FB8E3' : '#2F5F91'} /><path d="M14 90 L90 90" stroke={dk ? '#A9B3AE' : '#6B716A'} strokeWidth="4" strokeLinecap="round" /></g>,
     belt: <g><rect x="22" y="14" width="56" height="74" rx="10" fill="#6B8AA6" stroke="#2E4A62" strokeWidth="3" /><rect x="30" y="20" width="40" height="30" rx="6" fill="#4A6A86" /><path d="M30 20 L74 84" stroke="#2E2E2E" strokeWidth="9" strokeLinecap="round" /><path d="M30 20 L74 84" stroke="#8A9086" strokeWidth="4" strokeLinecap="round" /><rect x="66" y="72" width="16" height="12" rx="3" fill="#B9C2C9" stroke="#2E2E2E" strokeWidth="2" /></g>,
     // Pass KN (kindergarten places, families and technology): a snow-topped mountain, a winding river, a lake, the sea with
     // waves, a cactus, a thick winter coat, a lit candle, a birthday cake, a refrigerator, a washing machine, a phone, a tablet
@@ -1157,15 +1239,25 @@ function IconPic({ name, size = 90, tile = false }) {
     // The river (since pass NA, round one's picture and screen checks): its land outlined in the light theme, where it read 1.89 to 1 on
     // a white tile, and its water running off the land's edges, so at button size it reads as a river and not a blue worm.
     river: <g><rect x="4" y="10" width="92" height="80" rx="8" fill="#9CC98A" stroke={dk ? 'none' : '#4F7F40'} strokeWidth="2.5" /><path d="M5 21 Q40 30 30 50 Q20 70 60 76 Q80 79 95 80" fill="none" stroke={blue} strokeWidth="12" strokeLinecap="butt" /><path d="M5 21 Q40 30 30 50 Q20 70 60 76 Q80 79 95 80" fill="none" stroke="#8EC5EA" strokeWidth="5" strokeLinecap="butt" opacity="0.8" /></g>,
-    lake: <g><rect x="4" y="10" width="92" height="80" rx="8" fill="#9CC98A" /><path d="M22 50 Q24 28 50 30 Q78 30 80 52 Q78 72 50 72 Q22 72 22 50 Z" fill={blue} /><path d="M32 46 Q42 40 52 46 M44 58 Q54 52 64 58" fill="none" stroke="#8EC5EA" strokeWidth="3" strokeLinecap="round" /></g>,
-    ocean: <g><rect x="4" y="12" width="92" height="30" fill="#CFEAF7" /><rect x="4" y="42" width="92" height="46" fill={blue} /><path d="M4 50 Q14 42 24 50 T44 50 T64 50 T84 50 T104 50" fill="none" stroke="#fff" strokeWidth="3" /><path d="M4 66 Q14 58 24 66 T44 66 T64 66 T84 66 T104 66" fill="none" stroke="#8EC5EA" strokeWidth="3" /><circle cx="78" cy="26" r="7" fill={gold} /></g>,
-    cactus: <g><path d="M8 86 L92 86" stroke="#E2B97A" strokeWidth="6" strokeLinecap="round" /><rect x="42" y="18" width="16" height="68" rx="8" fill={dk ? '#5C946E' : '#3E7D52'} /><path d="M42 50 Q26 50 26 36 L26 28" fill="none" stroke={dk ? '#5C946E' : '#3E7D52'} strokeWidth="10" strokeLinecap="round" /><path d="M58 42 Q74 42 74 30 L74 24" fill="none" stroke={dk ? '#5C946E' : '#3E7D52'} strokeWidth="10" strokeLinecap="round" /><path d="M46 30 L48 36 M52 44 L54 50 M46 60 L48 66" stroke="#DCEBD3" strokeWidth="2" strokeLinecap="round" /></g>,
+    // The lake's land wears the river's edge in the light theme (pass ND, EARMARKS A89): its pale green read 1.5 to 1.9 to 1 on the light
+    // tiles, and the edge reads 3.84 or better.
+    lake: <g><rect x="4" y="10" width="92" height="80" rx="8" fill="#9CC98A" stroke={dk ? 'none' : '#4F7F40'} strokeWidth="2.5" /><path d="M22 50 Q24 28 50 30 Q78 30 80 52 Q78 72 50 72 Q22 72 22 50 Z" fill={blue} /><path d="M32 46 Q42 40 52 46 M44 58 Q54 52 64 58" fill="none" stroke="#8EC5EA" strokeWidth="3" strokeLinecap="round" /></g>,
+    // The ocean (pass ND, EARMARKS A89): in the light theme its pale sky read 1.0 to 1.3 to 1 on the light tiles and wears the sea's own blue
+    // as its edge (3.09 or better); on a dark tile the sea read 2.92 on a right answer's tile, and the fish fin's lighter blue reads 3.54.
+    ocean: <g><rect x="4" y="12" width="92" height="30" fill="#CFEAF7" /><rect x="4" y="42" width="92" height="46" fill={dk ? '#5B95D2' : dkPaper ? '#3F78B4' : blue} /><path d="M4 50 Q14 42 24 50 T44 50 T64 50 T84 50 Q90 45.2 96 46.16" fill="none" stroke="#fff" strokeWidth="3" /><path d="M4 66 Q14 58 24 66 T44 66 T64 66 T84 66 Q90 61.2 96 62.16" fill="none" stroke="#8EC5EA" strokeWidth="3" /><circle cx="78" cy="26" r="7" fill={gold} /><rect x="4" y="12" width="92" height="76" fill="none" stroke={dk ? 'none' : dkPaper ? '#3F78B4' : blue} strokeWidth="2.5" /></g>,
+    // Its sand in the light theme is a deeper sand (pass ND, EARMARKS A89): the pale sand read 1.5 to 1.8 to 1 on the light tiles, now 3.17.
+    cactus: <g><path d="M8 86 L92 86" stroke={dk ? '#E2B97A' : '#A07A48'} strokeWidth="6" strokeLinecap="round" /><rect x="42" y="18" width="16" height="68" rx="8" fill={dk ? '#5C946E' : '#3E7D52'} /><path d="M42 50 Q26 50 26 36 L26 28" fill="none" stroke={dk ? '#5C946E' : '#3E7D52'} strokeWidth="10" strokeLinecap="round" /><path d="M58 42 Q74 42 74 30 L74 24" fill="none" stroke={dk ? '#5C946E' : '#3E7D52'} strokeWidth="10" strokeLinecap="round" /><path d="M46 30 L48 36 M52 44 L54 50 M46 60 L48 66" stroke="#DCEBD3" strokeWidth="2" strokeLinecap="round" /></g>,
     // A coat (pass MQ, round one's lesson check: the old short sleeves drew a shirt): long sleeves to the wrists, buttons down the front.
     coat: <g><path d="M34 20 L50 14 L66 20 L80 28 L88 80 L76 82 L68 46 L68 92 L32 92 L32 46 L24 82 L12 80 L20 28 Z" fill={dk ? '#728BA1' : '#4A6A86'} stroke="#2E4A62" strokeWidth="3" strokeLinejoin="round" /><path d="M50 14 L50 92" stroke="#2E4A62" strokeWidth="3" /><path d="M40 18 L50 30 L60 18" fill="none" stroke="#F4F6F7" strokeWidth="4" strokeLinejoin="round" /><circle cx="56" cy="44" r="2.5" fill="#F4F6F7" /><circle cx="56" cy="60" r="2.5" fill="#F4F6F7" /><circle cx="56" cy="76" r="2.5" fill="#F4F6F7" /></g>,
     // The candle's body, white wax, takes a slate outline (pass MO, Mikey's answer to Q54): its pale gray one read 1.8 to 1 on white
     // and 1.4 on the dark theme's paper, and #76828B reads 3.9 and 3.1, the 3 to 1 a drawing that carries meaning needs.
-    candle: <g><rect x="40" y="38" width="20" height="46" rx="4" fill="#F4F6F7" stroke="#76828B" strokeWidth="2.5" /><rect x="30" y="84" width="40" height="6" rx="3" fill="#8A9086" /><path d="M50 36 L50 28" stroke="#2E2E2E" strokeWidth="2" /><path d="M50 10 Q60 22 50 30 Q40 22 50 10 Z" fill={gold} /><path d="M50 18 Q54 24 50 28 Q46 24 50 18 Z" fill="#fff" opacity="0.8" /></g>,
-    cake: <g><path d="M18 56 L82 56 L82 84 Q82 90 76 90 L24 90 Q18 90 18 84 Z" fill="#F2C14E" stroke="#8A6A1F" strokeWidth="3" strokeLinejoin="round" /><path d="M18 56 Q50 70 82 56" fill="none" stroke="#C9573E" strokeWidth="5" /><rect x="20" y="48" width="60" height="10" rx="4" fill="#C9573E" />{[32, 50, 68].map((x) => <g key={x}><rect x={x - 2} y="30" width="4" height="18" fill="#4A86C5" /><path d={`M${x} 18 Q${x + 5} 26 ${x} 30 Q${x - 5} 26 ${x} 18 Z`} fill={gold} /></g>)}</g>,
+    // In the light theme its flame and its base wear an edge too (pass ND, EARMARKS A89): the gold flame read 2.73 and 2.63 to 1 on a right
+    // and a wrong answer's tile and the gray base 2.76 and 2.66; the duck's deeper gold and the body's slate read 3.19 or better.
+    candle: <g><rect x="40" y="38" width="20" height="46" rx="4" fill="#F4F6F7" stroke="#76828B" strokeWidth="2.5" /><rect x="30" y="84" width="40" height="6" rx="3" fill="#8A9086" stroke={dk ? 'none' : '#76828B'} strokeWidth="2" /><path d="M50 36 L50 28" stroke="#2E2E2E" strokeWidth="2" /><path d="M50 10 Q60 22 50 30 Q40 22 50 10 Z" fill={gold} stroke={dk ? 'none' : '#94741A'} strokeWidth="2" strokeLinejoin="round" /><path d="M50 18 Q54 24 50 28 Q46 24 50 18 Z" fill="#fff" opacity="0.8" /></g>,
+    // The cake (pass ND, EARMARKS A89): on a dark tile its red band and blue candles read 2.61 and 2.92 to 1 on a right answer's tile, and
+    // the flower's lighter red and the fish fin's lighter blue read 3.54 or better; in the light theme its gold flames, 2.73 and 2.63 on a
+    // right and a wrong answer's tile, wear the duck's deeper gold edge (3.57 or better), as the candle's flame does.
+    cake: <g><path d="M18 56 L82 56 L82 84 Q82 90 76 90 L24 90 Q18 90 18 84 Z" fill="#F2C14E" stroke="#8A6A1F" strokeWidth="3" strokeLinejoin="round" /><path d="M18 56 Q50 70 82 56" fill="none" stroke={dk ? '#E07A62' : '#C9573E'} strokeWidth="5" /><rect x="20" y="48" width="60" height="10" rx="4" fill={dk ? '#E07A62' : '#C9573E'} />{[32, 50, 68].map((x) => <g key={x}><rect x={x - 2} y="30" width="4" height="18" fill={dk ? '#5B95D2' : dkPaper ? '#3F78B4' : blue} /><path d={`M${x} 18 Q${x + 5} 26 ${x} 30 Q${x - 5} 26 ${x} 18 Z`} fill={gold} stroke={dk ? 'none' : '#94741A'} strokeWidth="2" strokeLinejoin="round" /></g>)}</g>,
     fridge: <g><rect x="26" y="8" width="48" height="84" rx="5" fill="#E8EEF3" stroke="#4A6A86" strokeWidth="3" /><path d="M26 40 L74 40" stroke="#4A6A86" strokeWidth="3" /><rect x="64" y="18" width="4" height="14" rx="2" fill="#4A6A86" /><rect x="64" y="50" width="4" height="24" rx="2" fill="#4A6A86" /></g>,
     washer: <g><rect x="22" y="10" width="56" height="80" rx="6" fill="#E8EEF3" stroke="#4A6A86" strokeWidth="3" /><rect x="22" y="10" width="56" height="16" rx="6" fill="#DCE6EC" stroke="#4A6A86" strokeWidth="3" /><circle cx="66" cy="18" r="3" fill="#4A6A86" /><circle cx="56" cy="18" r="3" fill="#4A6A86" /><circle cx="50" cy="58" r="22" fill="#4A6A86" /><circle cx="50" cy="58" r="16" fill="#8EC5EA" /><path d="M38 60 Q50 50 62 60" fill="none" stroke="#fff" strokeWidth="3" opacity="0.8" /></g>,
     // The phone's and the tablet's edges on a dark tile (pass NC, round one's screen check: p4-sbs-blend puts the phone on a tile in 186
@@ -1184,7 +1276,8 @@ function IconPic({ name, size = 90, tile = false }) {
     table: <g><rect x="20" y="52" width="60" height="6" rx="2" fill={brown} /><rect x="26" y="58" width="6" height="26" fill={brown} /><rect x="68" y="58" width="6" height="26" fill={brown} /><ellipse cx="50" cy="34" rx="12" ry="8" fill={grey} /><circle cx="61" cy="28" r="5" fill={grey} /><path d="M66 28l6 2-6 2z" fill={gold} /><path d="M44 32q6-10 14-4" fill="none" stroke="#6B716A" strokeWidth="3" strokeLinecap="round" /><ellipse cx="50" cy="76" rx="12" ry="8" fill="#B07838" /><circle cx="40" cy="72" r="6" fill="#B07838" /><path d="M36 67l2-5 3 4M41 67l3-5 2 5z" fill="#B07838" /><circle cx="38" cy="72" r="1.2" fill="#2E2E2E" /><circle cx="42" cy="72" r="1.2" fill="#2E2E2E" /><path d="M62 76q8-6 6-14" fill="none" stroke="#B07838" strokeWidth="3" strokeLinecap="round" /></g>,
     hill: <g><path d="M0 100 L0 70 Q40 44 100 54 L100 100 Z" fill="#9CC98A" /><rect x="22" y="56" width="6" height="26" fill={brown} /><circle cx="25" cy="48" r="16" fill="#3E7D52" /><circle cx="40" cy="80" r="7" fill={red} /><path d="M72 46 L84 36 L96 46 Z" fill={red} /><rect x="76" y="46" width="16" height="12" fill="#F2C14E" stroke={brown} strokeWidth="1.5" /><rect x="82" y="51" width="4" height="7" fill={brown} /></g>,
     map: <g><path d="M14 22 L40 14 L62 22 L88 14 L88 78 L62 86 L40 78 L14 86 Z" fill="#F4EBD0" stroke="#8A7A4A" strokeWidth="3" strokeLinejoin="round" /><path d="M40 14 L40 78 M62 22 L62 86" stroke="#D9C88F" strokeWidth="2" /><path d="M18 60 Q34 50 46 60 Q58 70 84 56" fill="none" stroke={blue} strokeWidth="4" strokeLinecap="round" /><rect x="22" y="28" width="12" height="12" rx="2" fill="#9CC98A" /><rect x="66" y="30" width="7" height="7" fill={red} /><rect x="72" y="40" width="7" height="7" fill={red} /><path d="M46 28 L54 24 L50 34 Z" fill={gold} /></g>,
-    globe: <g><rect x="40" y="86" width="20" height="4" rx="2" fill="#6B716A" /><path d="M50 86 L50 76" stroke="#6B716A" strokeWidth="4" /><path d="M72 20 Q92 44 74 70" fill="none" stroke="#6B716A" strokeWidth="4" strokeLinecap="round" /><circle cx="50" cy="46" r="30" fill="#8EC5EA" stroke="#2F66A8" strokeWidth="2.5" /><path d="M34 26 Q46 20 52 30 Q50 40 40 44 Q32 40 34 26 Z" fill="#6FAF7E" /><path d="M44 48 Q54 46 58 56 Q56 68 48 70 Q40 62 44 48 Z" fill="#6FAF7E" /><path d="M62 30 Q74 30 76 42 Q70 48 62 42 Z" fill="#B07838" /></g>,
+    // The globe's stand on a dark tile takes the spoon's light gray (pass ND, EARMARKS A89): its gray read 2.23 to 2.80 to 1 there, now 5.17.
+    globe: <g><rect x="40" y="86" width="20" height="4" rx="2" fill={dk ? '#A9B3AE' : '#6B716A'} /><path d="M50 86 L50 76" stroke={dk ? '#A9B3AE' : '#6B716A'} strokeWidth="4" /><path d="M72 20 Q92 44 74 70" fill="none" stroke={dk ? '#A9B3AE' : '#6B716A'} strokeWidth="4" strokeLinecap="round" /><circle cx="50" cy="46" r="30" fill="#8EC5EA" stroke="#2F66A8" strokeWidth="2.5" /><path d="M34 26 Q46 20 52 30 Q50 40 40 44 Q32 40 34 26 Z" fill="#6FAF7E" /><path d="M44 48 Q54 46 58 56 Q56 68 48 70 Q40 62 44 48 Z" fill="#6FAF7E" /><path d="M62 30 Q74 30 76 42 Q70 48 62 42 Z" fill="#B07838" /></g>,
     // The four coins (pass KL) drawn to one scale, so side by side they keep their true order of size: a dime (17.9 mm) is the
     // smallest, then a penny (19.1), a nickel (21.2) and a quarter (24.3). A dime and a quarter carry ridges (a reeded edge); a
     // penny and a nickel are smooth. No faces or lettering, which the painting P43 supplies.
@@ -1193,19 +1286,30 @@ function IconPic({ name, size = 90, tile = false }) {
     dime: <g><circle cx="50" cy="50" r="24" fill="#D8DEE2" stroke="#6F7A76" strokeWidth="3" /><circle cx="50" cy="50" r="24" fill="none" stroke="#6F7A76" strokeWidth="3" strokeDasharray="2 2.4" /><circle cx="50" cy="50" r="17" fill="none" stroke="#A9B2B0" strokeWidth="2" /><circle cx="50" cy="50" r="6.5" fill="#C2CACB" stroke="#6F7A76" strokeWidth="2" /><ellipse cx="40" cy="37" rx="5" ry="3" fill="#fff" opacity="0.5" transform="rotate(-30 40 37)" /></g>,
     quarter: <g><circle cx="50" cy="50" r="34" fill="#D8DEE2" stroke="#6F7A76" strokeWidth="3" /><circle cx="50" cy="50" r="34" fill="none" stroke="#6F7A76" strokeWidth="3" strokeDasharray="2 2.6" /><circle cx="50" cy="50" r="26" fill="none" stroke="#A9B2B0" strokeWidth="2" /><circle cx="50" cy="50" r="9" fill="#C2CACB" stroke="#6F7A76" strokeWidth="2" /><ellipse cx="34" cy="30" rx="7" ry="4" fill="#fff" opacity="0.5" transform="rotate(-30 34 30)" /></g>,
     wall: <g>{[[12, 36, 20], [36, 36, 28], [68, 36, 20], [12, 54, 28], [44, 54, 20], [68, 54, 20], [12, 72, 20], [36, 72, 28], [68, 72, 20]].map(([x, y, w], i) => <rect key={i} x={x} y={y} width={w} height="15" rx="6" fill={i % 2 ? '#A5AAA0' : '#B9BFB9'} stroke="#6B716A" strokeWidth="2.5" />)}</g>,
-    gravel: <g><path d="M10 84 Q50 46 90 84 Z" fill="#C9C2B6" />{[[30, 76], [42, 68], [54, 64], [66, 70], [76, 78], [36, 82], [50, 78], [62, 82], [46, 56], [58, 58]].map(([x, y], i) => <ellipse key={i} cx={x} cy={y} rx="6" ry="4.5" fill={i % 3 ? '#A5AAA0' : '#8A9086'} stroke="#6B716A" strokeWidth="2" />)}</g>,
-    bricks: <g>{[[14, 32, 34], [52, 32, 34], [14, 50, 16], [34, 50, 34], [72, 50, 14], [14, 68, 34], [52, 68, 34]].map(([x, y, w], i) => <rect key={i} x={x} y={y} width={w} height="14" rx="2" fill={red} stroke="#8E3A27" strokeWidth="2.5" />)}</g>,
+    // The gravel's mound wears its stones' gray edge in the light theme (pass ND, EARMARKS A89): its pale fill read 1.4 to 1.8 to 1 on the
+    // light tiles, and the edge reads 4.06 or better.
+    gravel: <g><path d="M10 84 Q50 46 90 84 Z" fill="#C9C2B6" stroke={dk ? 'none' : '#6B716A'} strokeWidth="2.5" strokeLinejoin="round" />{[[30, 76], [42, 68], [54, 64], [66, 70], [76, 78], [36, 82], [50, 78], [62, 82], [46, 56], [58, 58]].map(([x, y], i) => <ellipse key={i} cx={x} cy={y} rx="6" ry="4.5" fill={i % 3 ? '#A5AAA0' : '#8A9086'} stroke="#6B716A" strokeWidth="2" />)}</g>,
+    // The bricks' edge on a dark tile (pass ND, EARMARKS A89): the red read 2.61 to 1 on a right answer's tile and its outline 1.48; the
+    // block's pale red edge reads 5.75 or better.
+    bricks: <g>{[[14, 32, 34], [52, 32, 34], [14, 50, 16], [34, 50, 34], [72, 50, 14], [14, 68, 34], [52, 68, 34]].map(([x, y, w], i) => <rect key={i} x={x} y={y} width={w} height="14" rx="2" fill={red} stroke={dk ? '#F0A99A' : '#8E3A27'} strokeWidth="2.5" />)}</g>,
     // Pass MY: the pictures for pre-K 3's Two words make one, each a word made of two words the app already draws (dog and house,
     // cup and cake, sun and flower, snow and ball, star and fish, bird and house), drawn so it reads as the new word and not as either
     // of its two: the doghouse is a small red one with an arched doorway (the house is yellow, with a door and windows), the birdhouse
     // sits on a pole with a round hole, the cupcake is in a striped paper cup, the sunflower has many yellow petals around a brown
     // middle, the snowball is a lumpy white ball of packed snow with a soft blue shadow and snowflakes around it, and the starfish is a coral star with round arms and spots (the star is gold and
     // pointed).
-    doghouse: <g><path d="M6 88 L94 88" stroke="#3E7D52" strokeWidth="5" strokeLinecap="round" /><path d="M22 46 L50 24 L78 46 L78 86 L22 86 Z" fill="#C9573E" stroke="#8E3A27" strokeWidth="3" strokeLinejoin="round" /><path d="M24 58 L76 58 M24 72 L76 72" stroke="#A9452F" strokeWidth="2" /><path d="M37 86 L37 66 A13 13 0 0 1 63 66 L63 86 Z" fill="#3A2A22" stroke="#8E3A27" strokeWidth="2.5" /><path d="M12 50 L50 18 L88 50" fill="none" stroke="#6E2A1C" strokeWidth="7" strokeLinejoin="round" strokeLinecap="round" /></g>,
-    birdhouse: <g><rect x="46" y="64" width="8" height="26" fill="#8B5A2B" stroke="#5E3C1A" strokeWidth="2" /><path d="M36 90 L64 90" stroke="#3E7D52" strokeWidth="4" strokeLinecap="round" /><path d="M30 40 L50 22 L70 40 L70 66 L30 66 Z" fill="#F2C14E" stroke="#8A6A1F" strokeWidth="3" strokeLinejoin="round" /><circle cx="50" cy="46" r="7" fill="#3A2A22" /><circle cx="50" cy="59" r="2.6" fill="#5E3C1A" /><path d="M24 42 L50 17 L76 42" fill="none" stroke="#3E7D52" strokeWidth="6" strokeLinejoin="round" strokeLinecap="round" /></g>,
-    cupcake: <g><path d="M28 56 L72 56 L64 88 L36 88 Z" fill="#4A86C5" stroke="#2F5F91" strokeWidth="3" strokeLinejoin="round" /><path d="M39 57 L43 87 M50 57 L50 87 M61 57 L57 87" stroke="#9CC3EA" strokeWidth="3" /><path d="M24 58 Q20 42 36 40 Q38 26 52 27 Q67 27 68 40 Q82 42 76 58 Z" fill="#F4A6C0" stroke="#C9577E" strokeWidth="3" strokeLinejoin="round" /><path d="M34 48 Q50 54 66 48" fill="none" stroke="#F9CADA" strokeWidth="3" strokeLinecap="round" /><circle cx="53" cy="22" r="7" fill="#C9573E" stroke="#8E3A27" strokeWidth="2" /><path d="M53 15 Q56 8 63 7" fill="none" stroke="#3E7D52" strokeWidth="2.5" strokeLinecap="round" /></g>,
+    // The doghouse and the birdhouse on a dark tile (pass ND, EARMARKS A89): the doghouse's dark roof read 1.07 to 1.34 to 1 there, their
+    // grass and the birdhouse's roof, both green, 2.26 to 2.85, the doghouse's red 2.61 on a right answer's tile and the birdhouse's brown
+    // pole 1.91; a coral roof, a lighter green, the block's pale red edge and the door's lighter wood read 3.46 or better.
+    doghouse: <g><path d="M6 88 L94 88" stroke={dk ? '#5A9E68' : '#3E7D52'} strokeWidth="5" strokeLinecap="round" /><path d="M22 46 L50 24 L78 46 L78 86 L22 86 Z" fill="#C9573E" stroke={dk ? '#F0A99A' : '#8E3A27'} strokeWidth="3" strokeLinejoin="round" /><path d="M24 58 L76 58 M24 72 L76 72" stroke="#A9452F" strokeWidth="2" /><path d="M37 86 L37 66 A13 13 0 0 1 63 66 L63 86 Z" fill="#3A2A22" stroke="#8E3A27" strokeWidth="2.5" /><path d="M12 50 L50 18 L88 50" fill="none" stroke={dk ? '#E07A62' : '#6E2A1C'} strokeWidth="7" strokeLinejoin="round" strokeLinecap="round" /></g>,
+    birdhouse: <g><rect x="46" y="64" width="8" height="26" fill={dk ? '#BC8650' : '#8B5A2B'} stroke="#5E3C1A" strokeWidth="2" /><path d="M36 90 L64 90" stroke={dk ? '#5A9E68' : '#3E7D52'} strokeWidth="4" strokeLinecap="round" /><path d="M30 40 L50 22 L70 40 L70 66 L30 66 Z" fill="#F2C14E" stroke="#8A6A1F" strokeWidth="3" strokeLinejoin="round" /><circle cx="50" cy="46" r="7" fill="#3A2A22" /><circle cx="50" cy="59" r="2.6" fill="#5E3C1A" /><path d="M24 42 L50 17 L76 42" fill="none" stroke={dk ? '#5A9E68' : '#3E7D52'} strokeWidth="6" strokeLinejoin="round" strokeLinecap="round" /></g>,
+    // The cupcake on a dark tile (pass ND, EARMARKS A89): its paper cup's blue read 2.92 to 1 on a right answer's tile and its edge 1.68,
+    // its cherry 2.61 and its stem 2.26; the sock's light blue edge, the flower's lighter red and a lighter green read 3.46 or better.
+    cupcake: <g><path d="M28 56 L72 56 L64 88 L36 88 Z" fill="#4A86C5" stroke={dk ? '#8FB8E3' : '#2F5F91'} strokeWidth="3" strokeLinejoin="round" /><path d="M39 57 L43 87 M50 57 L50 87 M61 57 L57 87" stroke="#9CC3EA" strokeWidth="3" /><path d="M24 58 Q20 42 36 40 Q38 26 52 27 Q67 27 68 40 Q82 42 76 58 Z" fill="#F4A6C0" stroke="#C9577E" strokeWidth="3" strokeLinejoin="round" /><path d="M34 48 Q50 54 66 48" fill="none" stroke="#F9CADA" strokeWidth="3" strokeLinecap="round" /><circle cx="53" cy="22" r="7" fill={dk ? '#E07A62' : '#C9573E'} stroke="#8E3A27" strokeWidth="2" /><path d="M53 15 Q56 8 63 7" fill="none" stroke={dk ? '#5A9E68' : '#3E7D52'} strokeWidth="2.5" strokeLinecap="round" /></g>,
     sunflower: <g><path d="M50 58 L50 92" stroke="#3E7D52" strokeWidth="5" strokeLinecap="round" /><path d="M50 78 Q34 66 26 74 Q36 84 50 80 Z" fill="#5A9E68" stroke="#2F6B40" strokeWidth="1.5" /><path d="M50 72 Q66 60 74 68 Q64 78 50 74 Z" fill="#5A9E68" stroke="#2F6B40" strokeWidth="1.5" />{[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((a) => { const x = 50 + 21 * Math.cos(a * Math.PI / 180); const y = 34 + 21 * Math.sin(a * Math.PI / 180); return <ellipse key={a} cx={x} cy={y} rx="10" ry="5.5" fill="#F2C14E" stroke="#94741A" strokeWidth="1.5" transform={'rotate(' + a + ' ' + x + ' ' + y + ')'} />; })}<circle cx="50" cy="34" r="13" fill="#7A4E2A" stroke="#5E3C1A" strokeWidth="2" />{[[45, 30], [55, 30], [50, 35], [44, 38], [56, 38], [50, 41]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r="1.7" fill="#E8C9A0" />)}</g>,
-    snowball: <g><path d="M50 20 Q60 17 67 24 Q77 26 79 36 Q85 45 80 54 Q84 64 76 71 Q70 81 59 80 Q51 86 42 82 Q31 82 26 74 Q17 68 20 58 Q15 48 22 40 Q24 28 35 26 Q41 18 50 20 Z" fill="#F7FAFC" stroke="#3F78B4" strokeWidth="3" strokeLinejoin="round" /><path d="M77 46 Q80 64 68 74 Q56 82 40 78 Q60 74 70 62 Q76 54 77 46 Z" fill="#D6E4F0" /><ellipse cx="38" cy="36" rx="7" ry="4.5" fill="#FFFFFF" transform="rotate(-30 38 36)" />{[[14, 18], [86, 20], [88, 82]].map(([x, y], i) => <path key={i} d={'M' + (x - 5) + ' ' + y + ' L' + (x + 5) + ' ' + y + ' M' + x + ' ' + (y - 5) + ' L' + x + ' ' + (y + 5) + ' M' + (x - 3.5) + ' ' + (y - 3.5) + ' L' + (x + 3.5) + ' ' + (y + 3.5) + ' M' + (x - 3.5) + ' ' + (y + 3.5) + ' L' + (x + 3.5) + ' ' + (y - 3.5)} stroke={dkPaper ? '#3F78B4' : blue} strokeWidth="2" strokeLinecap="round" />)}</g>,
+    // Its snowflakes on a dark tile take the lighter blue the snow's flakes take there (pass ND, EARMARKS A89): the blue read 2.92 to 1 on a
+    // right answer's tile, and #6FA3DA reads 4.20.
+    snowball: <g><path d="M50 20 Q60 17 67 24 Q77 26 79 36 Q85 45 80 54 Q84 64 76 71 Q70 81 59 80 Q51 86 42 82 Q31 82 26 74 Q17 68 20 58 Q15 48 22 40 Q24 28 35 26 Q41 18 50 20 Z" fill="#F7FAFC" stroke="#3F78B4" strokeWidth="3" strokeLinejoin="round" /><path d="M77 46 Q80 64 68 74 Q56 82 40 78 Q60 74 70 62 Q76 54 77 46 Z" fill="#D6E4F0" /><ellipse cx="38" cy="36" rx="7" ry="4.5" fill="#FFFFFF" transform="rotate(-30 38 36)" />{[[14, 18], [86, 20], [88, 82]].map(([x, y], i) => <path key={i} d={'M' + (x - 5) + ' ' + y + ' L' + (x + 5) + ' ' + y + ' M' + x + ' ' + (y - 5) + ' L' + x + ' ' + (y + 5) + ' M' + (x - 3.5) + ' ' + (y - 3.5) + ' L' + (x + 3.5) + ' ' + (y + 3.5) + ' M' + (x - 3.5) + ' ' + (y + 3.5) + ' L' + (x + 3.5) + ' ' + (y - 3.5)} stroke={dk ? '#6FA3DA' : dkPaper ? '#3F78B4' : blue} strokeWidth="2" strokeLinecap="round" />)}</g>,
     starfish: <g><path d="M50 14 L59 39 L85 39 L64 55 L72 81 L50 66 L28 81 L36 55 L15 39 L41 39 Z" fill="#F08A5D" stroke="#F08A5D" strokeWidth="11" strokeLinejoin="round" /><path d="M50 14 L59 39 L85 39 L64 55 L72 81 L50 66 L28 81 L36 55 L15 39 L41 39 Z" fill="none" stroke="#B5532F" strokeWidth="2" strokeLinejoin="round" />{[[50, 26], [50, 40], [50, 53], [66, 42], [34, 42], [61, 63], [39, 63]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r="2.6" fill="#FBD3B8" />)}</g>,
     // Pass MY: the three-beat words for pre-K 4's Clap the beats (banana, butterfly, umbrella and dinosaur), which no picture drew:
     // a yellow banana curved like a smile with brown ends, an orange and yellow butterfly with its body between its wings, a red
@@ -1239,6 +1343,13 @@ function IconPic({ name, size = 90, tile = false }) {
     boat: <g><path d="M50 12 L50 62" stroke={dk ? '#DCE3E7' : '#5C6770'} strokeWidth="3.5" strokeLinecap="round" /><path d="M54 16 L54 58 L84 58 Z" fill="#FFFFFF" stroke={dk ? '#DCE3E7' : '#5C6770'} strokeWidth="2.5" strokeLinejoin="round" /><path d="M46 24 L46 58 L24 58 Z" fill="#F2C14E" stroke={dk ? '#F2C14E' : '#94741A'} strokeWidth="2.5" strokeLinejoin="round" /><path d="M12 62 L88 62 L76 80 L24 80 Z" fill="#C9573E" stroke={dk ? '#F0A99A' : '#7A2620'} strokeWidth="3" strokeLinejoin="round" /><path d="M6 88 Q28 82 50 88 Q72 94 94 88" fill="none" stroke={dk ? '#8EC5EA' : '#3B78B8'} strokeWidth="3.5" strokeLinecap="round" /></g>,
     // A diamond kite of four colors with its cross sticks, and a tail with two bows. Each bow wears the kite's line, so it reads on an answer
     // tile in both themes (pass NC, round one's picture check: the bows had no edge).
+    // A jar of jam (pass ND, Hear it in the name's J): a glass jar, red jam inside, a gold lid, a shine down its side.
+    jar: <g><path d="M34 26 L66 26 L66 31 Q78 35 78 48 L78 80 Q78 90 68 90 L32 90 Q22 90 22 80 L22 48 Q22 35 34 31 Z" fill="#EAF2F6" /><path d="M24 52 L76 52 L76 80 Q76 88 68 88 L32 88 Q24 88 24 80 Z" fill="#C9573E" /><path d="M34 26 L66 26 L66 31 Q78 35 78 48 L78 80 Q78 90 68 90 L32 90 Q22 90 22 80 L22 48 Q22 35 34 31 Z" fill="none" stroke={dk ? '#DCE3E7' : '#5C6770'} strokeWidth="3" strokeLinejoin="round" /><path d="M31 44 L31 80" stroke="#FFFFFF" strokeWidth="4" strokeLinecap="round" opacity="0.85" /><rect x="29" y="10" width="42" height="16" rx="4" fill="#E2A857" stroke={dk ? '#F2CF94' : '#8A5A22'} strokeWidth="3" /><path d="M35 15 L35 21 M42.5 15 L42.5 21 M50 15 L50 21 M57.5 15 L57.5 21 M65 15 L65 21" stroke={dk ? '#F2CF94' : '#8A5A22'} strokeWidth="2" strokeLinecap="round" /></g>,
+    // A zebra (pass ND, Hear it in the name's Z), side on and facing left: a white body with black stripes, a black mane and muzzle, a
+    // tail with a black tuft; its outline reads on both themes' tiles.
+    zebra: <g><path d="M86 46 Q94 54 90 66" fill="none" stroke={dk ? '#DCE3E7' : '#3A3F44'} strokeWidth="2.5" strokeLinecap="round" /><path d="M88 62 L93 72 L86 70 Z" fill="#2B2F33" /><rect x="36" y="58" width="7" height="30" rx="2" fill="#FFFFFF" stroke={dk ? '#DCE3E7' : '#3A3F44'} strokeWidth="2" /><rect x="46" y="58" width="7" height="30" rx="2" fill="#FFFFFF" stroke={dk ? '#DCE3E7' : '#3A3F44'} strokeWidth="2" /><rect x="68" y="58" width="7" height="30" rx="2" fill="#FFFFFF" stroke={dk ? '#DCE3E7' : '#3A3F44'} strokeWidth="2" /><rect x="78" y="58" width="7" height="30" rx="2" fill="#FFFFFF" stroke={dk ? '#DCE3E7' : '#3A3F44'} strokeWidth="2" /><path d="M36 84 L43 84 M46 84 L53 84 M68 84 L75 84 M78 84 L85 84" stroke="#2B2F33" strokeWidth="5" /><path d="M36 70 L43 68 M46 70 L53 68 M68 70 L75 68 M78 70 L85 68" stroke="#2B2F33" strokeWidth="3" strokeLinecap="round" /><ellipse cx="61" cy="50" rx="28" ry="15" fill="#FFFFFF" stroke={dk ? '#DCE3E7' : '#3A3F44'} strokeWidth="2.5" /><path d="M40 38 L30 18 Q26 12 20 16 L10 34 Q8 40 14 42 L22 42 L34 60 Z" fill="#FFFFFF" stroke={dk ? '#DCE3E7' : '#3A3F44'} strokeWidth="2.5" strokeLinejoin="round" /><path d="M10 34 Q8 40 14 42 L20 42 L18 32 Z" fill="#2B2F33" /><path d="M24 14 L36 36 L40 38 L28 13 Z" fill="#2B2F33" /><ellipse cx="24" cy="9" rx="3.4" ry="6" transform="rotate(-18 24 9)" fill="#FFFFFF" stroke={dk ? '#DCE3E7' : '#3A3F44'} strokeWidth="2" /><circle cx="20" cy="24" r="2.2" fill="#2B2F33" /><g stroke="#2B2F33" strokeWidth="3.5" strokeLinecap="round" fill="none"><path d="M24 30 L32 28" /><path d="M26 38 L34 34" /><path d="M30 46 L37 42" /><path d="M46 37 Q44 50 47 63" /><path d="M56 35 Q54 50 57 65" /><path d="M66 35 Q64 50 67 65" /><path d="M76 37 Q74 50 77 62" /></g></g>,
+    // A key (pass ND, Hear it in the name's K), gold, its round bow with a hole and two teeth.
+    key: <g><path d="M11 50 a17 17 0 1 0 34 0 a17 17 0 1 0 -34 0 Z M21.5 50 a6.5 6.5 0 1 0 13 0 a6.5 6.5 0 1 0 -13 0 Z" fillRule="evenodd" fill="#F2C14E" stroke={dk ? '#F2CF94' : '#8A6424'} strokeWidth="3" /><path d="M44 45 L88 45 L88 55 L84 55 L84 66 L76 66 L76 55 L72 55 L72 62 L64 62 L64 55 L44 55 Z" fill="#F2C14E" stroke={dk ? '#F2CF94' : '#8A6424'} strokeWidth="3" strokeLinejoin="round" /></g>,
     kite: <g><path d="M50 8 L22 38 L50 38 Z" fill="#D9473B" /><path d="M50 8 L78 38 L50 38 Z" fill="#F2C14E" /><path d="M22 38 L50 76 L50 38 Z" fill="#4A86C5" /><path d="M78 38 L50 76 L50 38 Z" fill="#4CAF6E" /><path d="M50 8 L78 38 L50 76 L22 38 Z" fill="none" stroke={dk ? '#B9CDE0' : '#2E4A62'} strokeWidth="3" strokeLinejoin="round" /><path d="M50 8 L50 76 M22 38 L78 38" stroke={dk ? '#B9CDE0' : '#2E4A62'} strokeWidth="2" /><path d="M50 76 Q40 84 48 90 Q56 96 46 98" fill="none" stroke={dk ? '#B9CDE0' : '#2E4A62'} strokeWidth="2" strokeLinecap="round" /><path d="M40 82 L46 86 L40 88 Z" fill="#D9473B" stroke={dk ? '#B9CDE0' : '#2E4A62'} strokeWidth="1.5" strokeLinejoin="round" /><path d="M52 92 L58 94 L52 97 Z" fill="#F2C14E" stroke={dk ? '#B9CDE0' : '#2E4A62'} strokeWidth="1.5" strokeLinejoin="round" /></g>,
     // The writing lessons' things (pass NC, Domain IV begun: drawing and writing to share an idea): a list, a card, a letter in its
     // envelope, a marker, an arrow and a heart, and paper with scribbles, with marks that look a little like letters, and with a word.
@@ -1298,31 +1409,32 @@ const ICON_LOOKS = {
   // round one's screen check: at its own size it drew at 42 percent of the house's area); the plain bird keeps its size, since lines
   // set a little bird beside a big bear (round two's code read). Its beak is the live palette's gold, so it is drawn from the palette.
   'bird~big': ({ grey, gold }) => <g transform="translate(50 50) scale(1.25) translate(-58 -50)"><ellipse cx="50" cy="54" rx="22" ry="14" fill={grey} stroke="#6B716A" strokeWidth="2.5" /><circle cx="70" cy="42" r="9" fill={grey} stroke="#6B716A" strokeWidth="2.5" /><circle cx="72.5" cy="40" r="2.2" fill="#24291F" /><path d="M78 42l10 3-10 3z" fill={gold} stroke="#7A5A1A" strokeWidth="1.5" strokeLinejoin="round" /><path d="M40 50q10-16 26-6" fill="none" stroke="#6B716A" strokeWidth="4" strokeLinecap="round" /></g>,
-  'baby~asleep': (
+  // The sleeping baby wears the awake baby's edges (pass ND, EARMARKS A89), so she is drawn from the live palette's dk, as bird~big is.
+  'baby~asleep': ({ dk }) => (
     <g>
       {/* The baby's yellow onesie, its far side in shade, with a white collar and two snaps, as the awake baby wears it */}
       <path d="M50 50C41 50 33.4 53.4 28.8 59.4C24.8 64.8 22.8 73.6 22.2 84C21.8 90 21.8 95 21.8 101.6L50 101.6L78.2 101.6C78.2 95 78.2 90 77.8 84C77.2 73.6 75.2 64.8 71.2 59.4C66.6 53.4 59 50 50 50Z" fill="#F2D27A" />
       <path d="M71.2 59.4C75.2 64.8 77.2 73.6 77.8 84C78.2 90 78.2 95 78.2 101.6L72.6 101.6C72.6 88 72 75.6 68.6 66.4C67.6 63.6 69 61.2 71.2 59.4Z" fill="#E2B954" />
-      <path d="M50 50C41 50 33.4 53.4 28.8 59.4C24.8 64.8 22.8 73.6 22.2 84C21.8 90 21.8 95 21.8 101.6L50 101.6L78.2 101.6C78.2 95 78.2 90 77.8 84C77.2 73.6 75.2 64.8 71.2 59.4C66.6 53.4 59 50 50 50Z" fill="none" stroke="#C9A646" strokeWidth="1.4" strokeLinejoin="round" />
+      <path d="M50 50C41 50 33.4 53.4 28.8 59.4C24.8 64.8 22.8 73.6 22.2 84C21.8 90 21.8 95 21.8 101.6L21.8 99.3L78.2 99.3L78.2 101.6C78.2 95 78.2 90 77.8 84C77.2 73.6 75.2 64.8 71.2 59.4C66.6 53.4 59 50 50 50Z" fill="none" stroke={dk ? '#C9A646' : '#94741A'} strokeWidth="1.4" strokeLinejoin="round" />
       <circle cx="50" cy="77" r="1.3" fill="#FFFFFF" stroke="#C9A646" strokeWidth="0.9" />
       <circle cx="50" cy="84" r="1.3" fill="#FFFFFF" stroke="#C9A646" strokeWidth="0.9" />
       <path d="M50 56.6C46.4 58.4 41 58 37.8 55.6C36.6 58.8 38.6 62.6 42.8 63.2C46 63.6 48.8 61.6 50 58.6Z" fill="#FFFFFF" stroke="#D8D8D8" strokeWidth="1.1" strokeLinejoin="round" />
       <g transform="matrix(-1 0 0 1 100 0)"><path d="M50 56.6C46.4 58.4 41 58 37.8 55.6C36.6 58.8 38.6 62.6 42.8 63.2C46 63.6 48.8 61.6 50 58.6Z" fill="#FFFFFF" stroke="#D8D8D8" strokeWidth="1.1" strokeLinejoin="round" /></g>
       {/* Her two chubby hands resting together on her front, with no bottle */}
-      <path d="M38.6 71.8C38.4 68.4 42.6 66.8 46 67.8C49 68.8 49.4 72.6 47.6 74.4C45.4 76.6 39 75.8 38.6 71.8Z" fill="#F5CBA7" stroke="#D69A72" strokeWidth="1.1" strokeLinejoin="round" />
-      <path d="M61.4 71.8C61.6 68.4 57.4 66.8 54 67.8C51 68.8 50.6 72.6 52.4 74.4C54.6 76.6 61 75.8 61.4 71.8Z" fill="#F5CBA7" stroke="#D69A72" strokeWidth="1.1" strokeLinejoin="round" />
+      <path d="M38.6 71.8C38.4 68.4 42.6 66.8 46 67.8C49 68.8 49.4 72.6 47.6 74.4C45.4 76.6 39 75.8 38.6 71.8Z" fill="#F5CBA7" stroke={dk ? '#D69A72' : '#A8714C'} strokeWidth="1.1" strokeLinejoin="round" />
+      <path d="M61.4 71.8C61.6 68.4 57.4 66.8 54 67.8C51 68.8 50.6 72.6 52.4 74.4C54.6 76.6 61 75.8 61.4 71.8Z" fill="#F5CBA7" stroke={dk ? '#D69A72' : '#A8714C'} strokeWidth="1.1" strokeLinejoin="round" />
       <path d="M41 70.6Q43.4 69.8 45.8 70.6M57.2 70.6Q54.8 69.8 52.4 70.6" fill="none" stroke="#E9B28B" strokeWidth="1" strokeLinecap="round" />
       {/* Her head, tipped a little to one side as a sleeping baby's is */}
       <g transform="rotate(-9 50 50)">
         <g>
-          <path d="M30.8 33C26.78 31.48 25.26 35.47 26.4 38.51C27.16 40.41 28.68 41.74 31 41.17Z" fill="#F5CBA7" stroke="#D69A72" strokeWidth="1.2" strokeLinejoin="round" />
+          <path d="M30.8 33C26.78 31.48 25.26 35.47 26.4 38.51C27.16 40.41 28.68 41.74 31 41.17Z" fill="#F5CBA7" stroke={dk ? '#D69A72' : '#A8714C'} strokeWidth="1.2" strokeLinejoin="round" />
           <path d="M29.63 35.28C27.73 35.09 27.35 37.56 28.68 39.08" fill="none" stroke="#E9B28B" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
         </g>
         <g transform="matrix(-1 0 0 1 100 0)">
-          <path d="M30.8 33C26.78 31.48 25.26 35.47 26.4 38.51C27.16 40.41 28.68 41.74 31 41.17Z" fill="#F5CBA7" stroke="#D69A72" strokeWidth="1.2" strokeLinejoin="round" />
+          <path d="M30.8 33C26.78 31.48 25.26 35.47 26.4 38.51C27.16 40.41 28.68 41.74 31 41.17Z" fill="#F5CBA7" stroke={dk ? '#D69A72' : '#A8714C'} strokeWidth="1.2" strokeLinejoin="round" />
           <path d="M29.63 35.28C27.73 35.09 27.35 37.56 28.68 39.08" fill="none" stroke="#E9B28B" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" />
         </g>
-        <path d="M50 12.4C38 12.4 28.4 21 28.4 33.6C28.4 41.4 31.6 47.6 36.8 51.2C40.6 53.8 45 54.8 50 54.8C55 54.8 59.4 53.8 63.2 51.2C68.4 47.6 71.6 41.4 71.6 33.6C71.6 21 62 12.4 50 12.4Z" fill="#F5CBA7" stroke="#D69A72" strokeWidth="1.1" />
+        <path d="M50 12.4C38 12.4 28.4 21 28.4 33.6C28.4 41.4 31.6 47.6 36.8 51.2C40.6 53.8 45 54.8 50 54.8C55 54.8 59.4 53.8 63.2 51.2C68.4 47.6 71.6 41.4 71.6 33.6C71.6 21 62 12.4 50 12.4Z" fill="#F5CBA7" stroke={dk ? '#D69A72' : '#A8714C'} strokeWidth="1.1" />
         <path d="M48.2 13.4C47 9.6 49.8 6.6 53.2 7.4C55.8 8 56.6 10.8 54.8 12.2C53.6 13 52 12.4 52.2 11.2" fill="none" stroke="#8A5A35" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
         <path d="M44.6 14.6Q45.4 12.2 47.4 11.6" fill="none" stroke="#8A5A35" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
         {/* Closed eyes, two soft curves with small lashes, under her light brows */}
@@ -1342,7 +1454,9 @@ const ICON_LOOKS = {
   // crayon~broken (pass MW, round one's lesson and picture checks: "I need a new crayon because this one broke." showed it whole):
   // the red crayon in two pieces with a jagged break, its wrapper on both, the tip end turned a little away from the rest.
   'crayon~broken': <g transform="rotate(-45 50 50)"><path d="M14 45 Q14 42 17 42 L41 42 L38.6 46 L42 50 L38.6 54 L41 58 L17 58 Q14 58 14 55 Z" fill="#D9473B" stroke="#7A2620" strokeWidth="2.5" strokeLinejoin="round" /><path d="M24 42 L41 42 L38.6 46 L42 50 L38.6 54 L41 58 L24 58 Z" fill="#B5352B" stroke="#7A2620" strokeWidth="2" strokeLinejoin="round" /><path d="M27 46.5 L38 46.5 M27 53.5 L38 53.5" stroke="#F2C9C2" strokeWidth="1.8" /><g transform="translate(7 2) rotate(9 58 50)"><path d="M47 42 L72 42 L72 58 L47 58 L44.6 54 L48 50 L44.6 46 Z" fill="#D9473B" stroke="#7A2620" strokeWidth="2.5" strokeLinejoin="round" /><path d="M47 42 L62 42 L62 58 L47 58 L44.6 54 L48 50 L44.6 46 Z" fill="#B5352B" stroke="#7A2620" strokeWidth="2" strokeLinejoin="round" /><path d="M50 46.5 L59 46.5 M50 53.5 L59 53.5" stroke="#F2C9C2" strokeWidth="1.8" /><path d="M72 43.5 L85 48.5 Q87.5 50 85 51.5 L72 56.5 Z" fill="#D9473B" stroke="#7A2620" strokeWidth="2.5" strokeLinejoin="round" /></g></g>,
-  'block~wood': <g><path d="M24 36 L54 24 L80 32 L50 44 Z" fill="#E2B97A" stroke="#8B5A2B" strokeWidth="3" strokeLinejoin="round" /><path d="M24 36 L50 44 L50 84 L24 76 Z" fill="#C9955A" stroke="#8B5A2B" strokeWidth="3" strokeLinejoin="round" /><path d="M50 44 L80 32 L80 72 L50 84 Z" fill="#B07838" stroke="#8B5A2B" strokeWidth="3" strokeLinejoin="round" /><path d="M30 52 Q38 50 46 54 M30 64 Q38 62 46 66" fill="none" stroke="#8B5A2B" strokeWidth="1.8" opacity="0.6" /><path d="M55 52 Q63 47 75 45 M55 64 Q64 59 75 57" fill="none" stroke="#7A4A20" strokeWidth="1.8" opacity="0.6" /><path d="M36 34 Q46 31 55 28 M44 37 Q54 34 64 31" fill="none" stroke="#B07838" strokeWidth="1.6" opacity="0.7" /><ellipse cx="38" cy="71" rx="2.6" ry="1.8" fill="none" stroke="#8B5A2B" strokeWidth="1.4" opacity="0.6" /></g>,
+  // Its edge on a dark tile is its own top's light wood (pass ND, EARMARKS A89): the brown edge read 1.91 to 1 on a right answer's tile and
+  // its darker side 2.96; the light wood reads 6.08 there.
+  'block~wood': ({ dk }) => <g><path d="M24 36 L54 24 L80 32 L50 44 Z" fill="#E2B97A" stroke={dk ? '#E2B97A' : '#8B5A2B'} strokeWidth="3" strokeLinejoin="round" /><path d="M24 36 L50 44 L50 84 L24 76 Z" fill="#C9955A" stroke={dk ? '#E2B97A' : '#8B5A2B'} strokeWidth="3" strokeLinejoin="round" /><path d="M50 44 L80 32 L80 72 L50 84 Z" fill="#B07838" stroke={dk ? '#E2B97A' : '#8B5A2B'} strokeWidth="3" strokeLinejoin="round" /><path d="M30 52 Q38 50 46 54 M30 64 Q38 62 46 66" fill="none" stroke="#8B5A2B" strokeWidth="1.8" opacity="0.6" /><path d="M55 52 Q63 47 75 45 M55 64 Q64 59 75 57" fill="none" stroke="#7A4A20" strokeWidth="1.8" opacity="0.6" /><path d="M36 34 Q46 31 55 28 M44 37 Q54 34 64 31" fill="none" stroke="#B07838" strokeWidth="1.6" opacity="0.7" /><ellipse cx="38" cy="71" rx="2.6" ry="1.8" fill="none" stroke="#8B5A2B" strokeWidth="1.4" opacity="0.6" /></g>,
   'plate~food': <g><circle cx="52" cy="53" r="41" fill="#24291F" opacity="0.14" /><circle cx="50" cy="50" r="41" fill="#EEF3F6" stroke="#6F8796" strokeWidth="3" /><circle cx="50" cy="50" r="35.5" fill="none" stroke="#4A86C5" strokeWidth="2" /><circle cx="50" cy="50" r="30.5" fill="#FFFFFF" stroke="#C3D0D8" strokeWidth="2" /><path d="M50 50 L50 22 A28 28 0 0 0 22 50 Z" fill="#D9534F" /><path d="M50 50 L22 50 A28 28 0 0 0 50 78 Z" fill="#4E8F4F" /><path d="M50 50 L50 78 A28 28 0 0 0 78 50 Z" fill="#E8C98E" /><path d="M50 50 L78 50 A28 28 0 0 0 50 22 Z" fill="#9C6B3F" /><path d="M50 21 L50 79 M21 50 L79 50" stroke="#FFFFFF" strokeWidth="2.6" /><path d="M31 41 Q36 33 44 31 M33 46 Q38 39 45 37" fill="none" stroke="#F6C1BF" strokeWidth="2" strokeLinecap="round" /><circle cx="35" cy="59" r="3.4" fill="#3A6E3B" /><circle cx="41" cy="64" r="3.1" fill="#3A6E3B" /><circle cx="33" cy="66" r="2.7" fill="#3A6E3B" /><circle cx="42" cy="57" r="2.5" fill="#3A6E3B" /><ellipse cx="58" cy="58" rx="2.2" ry="1.2" fill="#FFF8E7" /><ellipse cx="65" cy="61" rx="2.2" ry="1.2" fill="#FFF8E7" transform="rotate(30 65 61)" /><ellipse cx="59" cy="66" rx="2.2" ry="1.2" fill="#FFF8E7" transform="rotate(-20 59 66)" /><ellipse cx="68" cy="55" rx="2.2" ry="1.2" fill="#FFF8E7" transform="rotate(60 68 55)" /><path d="M56 36 L64 30 M58 42 L68 34" stroke="#6E4523" strokeWidth="2" strokeLinecap="round" /></g>,
   // A child's drawings on paper (pass NC, the writing lessons): each tells an idea, as Draw and tell and Write to tell say. The sun and a
   // ball on the grass (I played outside today), a rain cloud and an umbrella (It rained today) and the moon, a star and a bed (It is time
@@ -1467,11 +1581,12 @@ function MeasurePic({ object = 'pencil', units = 4, unit = 'cube', second = null
   );
 }
 // A digital clock (pass KZ, TEKS 1.7E): the hour, two dots and the minutes, on a dark face the way a bedside clock shows them.
-function DigitalPic({ hour = 3, minute = 0, size = 120 }) {
+// On a dark theme's answer tile (tile) its body wears a pale rim (pass ND, round one's code check: #2E3A36 read 1.06 to 1.19 to 1 there).
+function DigitalPic({ hour = 3, minute = 0, size = 120, tile = false }) {
   const text = `${hour}:${String(minute).padStart(2, '0')}`;
   return (
     <svg viewBox="0 0 100 56" width={size} role="img" aria-label={`digital clock showing ${text}`} style={{ display: 'block', margin: '0 auto', height: 'auto' }}>
-      <rect x="4" y="4" width="92" height="48" rx="10" fill="#2E3A36" stroke="#2E2E2E" strokeWidth="2" />
+      <rect x="4" y="4" width="92" height="48" rx="10" fill="#2E3A36" stroke={tile && C.mode === 'dark' ? '#9CC7B0' : '#2E2E2E'} strokeWidth="2" />
       <rect x="12" y="12" width="76" height="32" rx="5" fill="#1B2422" />
       <text x="50" y="30" textAnchor="middle" dominantBaseline="central" fontFamily={FONT} fontSize="24" fontWeight="700" fill="#9CF0B0">{text}</text>
     </svg>
@@ -1544,12 +1659,25 @@ function JoinedPic({ figure = 'square-2tri', size = 120 }) {
   );
 }
 
+// Writing shown as print (pass ND, the spacing lessons, PK3 and PK4 IV.C.5): a sentence a child sees, each word's group of letters set
+// apart by a space a little wider than a book's, as a finger space is, so a pre-reader sees where each word starts and stops. Writing
+// never breaks across lines, so it never shows a space it does not have, nor a line break where a space is.
+// On paper (a lesson's or a question's own picture) it takes the paper's ink (B), as letters do; on an answer tile, the tile's ink (C).
+// A print: answer never says itself (choiceSpeaks reads a token as a picture), since a voice reading writing with no spaces would give
+// the answer away by how odd it sounds.
+// Since pass ND's round one (the code check: at 320 pixels "I see the big bus." wrapped at one of its spaces on the question about its
+// spaces) the writing is always one line, fitted to its room half a pixel at a time down to a little over half its size (FitText), so
+// a space is never shown as a line break; the block it sits in is as wide as its room, so FitText measures the room and not the words.
+function PrintWords({ text, size = 28, paper = true }) {
+  const t = String(text);
+  return <span data-print="" style={{ display: 'block', width: '100%', maxWidth: '100%', textAlign: 'center' }}><FitText size={size} min={Math.max(12, Math.round(size * 0.55))} style={{ fontFamily: FONT, fontWeight: 700, color: paper ? B.green : C.ink, lineHeight: 1.25, textAlign: 'center', wordSpacing: '0.35em' }}>{t}</FitText></span>;
+}
 // A group that looks like more (pass ML, EARMARKS A7): a long row against a close bunch, or big circles against little ones,
 // each drawn in a frame of its own by lookVisual, so a choice keeps its look and only counting tells which has more.
 function LookGroup({ token, k = 1, tile = false }) {
   const v = lookVisual(token);
   return v.kind === 'dots'
-    ? <DotGroup count={v.count} size={Math.round(28 * k)} frame={v.frame} gap={Math.round(v.gap * k)} />
+    ? <DotGroup count={v.count} size={Math.round(28 * k)} frame={v.frame} gap={Math.round(v.gap * k)} tile={tile} />
     : <CountRow items={v.items} colour={v.colour} cell={Math.round(v.size * k)} frame={v.frame} gap={Math.round((v.gap || 8) * k)} tile={tile} />;
 }
 // A heard choice's face (pass MX): a speaker and the words Tap to hear, the same on every choice of the question, so the button
@@ -1559,7 +1687,9 @@ function HeardChoice({ text }) {
     <svg viewBox="0 0 24 24" width="24" height="24"><path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={C.ink} /><path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12" fill="none" stroke={C.ink} strokeWidth="2" strokeLinecap="round" /></svg>
     <span>{text}</span></span>;
 }
-function DotGroup({ count, size = 34, animate = false, animKey = 0, frame = 5, snap = false, gap = 8 }) {
+// On a dark theme's answer tile (tile) every dot wears a pale rim, the ball's own highlight (pass ND, round one's code check: the dots'
+// dark rim, #1F3B31, read 1.09 to 1 on #22413A, so 0.67 to 0.78 of a group's edge read 3 to 1 there).
+function DotGroup({ count, size = 34, animate = false, animKey = 0, frame = 5, snap = false, gap = 8, tile = false }) {
   // gap is the space between dots: 8 for every group, wider for the long row of the long-row picture (pass MA), narrower for
   // the five close together beneath it.
   const cols = frame; const rows = Math.ceil(count / cols);
@@ -1579,7 +1709,7 @@ function DotGroup({ count, size = 34, animate = false, animKey = 0, frame = 5, s
       {Array.from({ length: count }).map((_, i) => (
         <circle key={`${animKey}-${i}`} className={animate ? 'edu-drift' : undefined}
           style={animate ? { animationDelay: `${i * 0.55}s`, transformBox: 'fill-box', transformOrigin: 'center' } : undefined}
-          cx={lead + (i % cols) * (size + gap) + size / 2} cy={Math.floor(i / cols) * (size + gap) + size / 2} r={size / 2 - 2} fill="url(#edu-ball)" />
+          cx={lead + (i % cols) * (size + gap) + size / 2} cy={Math.floor(i / cols) * (size + gap) + size / 2} r={size / 2 - 2} fill="url(#edu-ball)" {...(tile && C.mode === 'dark' ? { stroke: '#9CC7B0', strokeWidth: 2 } : {})} />
       ))}
     </svg>
   );
@@ -1861,7 +1991,15 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1, 
     // screen (k from bigScale, 1.45); and only when both halves are drawings that scale alike, so a phone, a counted pair and a
     // pair with words keep their sizes.
     const grows = (v) => !!v && ['pic', 'icon', 'face', 'shape', 'art', 'solid', 'swatch', 'item'].includes(v.kind);
-    const wide = lesson && k >= 1.4 && !stack && grows(first) && grows(second);
+    // Since pass ND (EARMARKS A88) a drawing beside its group of dots grows with them in a lesson on a wide screen, as two drawings do:
+    // Sound by sound's coat drew 94 pixels tall beside its three dots on a tablet, where it drew 160 alone a line before, and the dots
+    // take the counting size a lesson's dots take on a laptop (60 pixels). Two groups of dots still keep their sizes.
+    const counts = (v) => !!v && v.kind === 'dots';
+    // And one letter beside a drawing (round one's screen check): the jar beside J drew 94 pixels on a tablet, a phone's size, and the
+    // letter kept its 44 in a 736-pixel paper; the letter grows with its drawing, at 44 pixels times the lesson's scale (grow).
+    const oneLetter = (v) => !!v && v.kind === 'letters' && /^[A-Za-z]$/.test(v.text);
+    const wide = lesson && k >= 1.4 && !stack && ((grows(first) && grows(second)) || (grows(first) && counts(second)) || (counts(first) && grows(second)) || (grows(first) && oneLetter(second)) || (oneLetter(first) && grows(second)));
+    const grown = (v) => (wide && oneLetter(v) ? { ...v, grow: true } : v);
     // A half may carry its step (pass MO): Two steps' "each picture you tap gets a number" shows the fish with a gold 1 and the ball
     // with a 2, as practice will draw them.
     // Each half draws at 85 percent beside its partner. Its drift (motion on) is a transform too, and its last frame took the half's
@@ -1890,7 +2028,7 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1, 
     const tight = (v) => (rowed && v && v.kind === 'row' ? { ...v, tight: true } : v);
     const half = (v, i) => { if (!v.kind) return <Item key={i} spec={`${v.shape}-${v.colour}`} size={96} />;
       return <div key={`${animKey}-${i}`} className={animate ? 'edu-drift' : undefined} style={{ position: 'relative', animationDelay: `${i * 0.5}s`, maxWidth: stack ? '100%' : '46%', ...rowWide(v), ...(together ? { width: `${(natural(v) / widest) * 100}%` } : null), ...(v.step ? stepTile(true) : null) }}>{shrinkOf(v) ? <div style={{ transform: 'scale(0.85)' }}><Picture visual={v} note={false} bare big={wide} /></div> : <Picture visual={v} note={false} bare big={wide} />}{v.step ? <StepBadge n={v.step} pal={B} /> : null}</div>; };
-    return <div data-pair="" style={{ padding: rowed ? 0 : '6px 0', display: 'flex', flexDirection: stack ? 'column' : 'row', justifyContent: 'center', alignItems: 'center', gap: stack ? (rowed ? 2 : 10) : 28, ...(together ? { width: '100%', maxWidth: widest, margin: '0 auto' } : null), ...(rowed ? { width: '100%', maxWidth: Math.round(110 / 0.31), margin: '0 auto' } : null) }}>{half(tight(oneBeside(first, second)), 0)}{half(tight(oneBeside(second, first)), 1)}</div>;
+    return <div data-pair="" style={{ padding: rowed ? 0 : '6px 0', display: 'flex', flexDirection: stack ? 'column' : 'row', justifyContent: 'center', alignItems: 'center', gap: stack ? (rowed ? 2 : 10) : 28, ...(together ? { width: '100%', maxWidth: widest, margin: '0 auto' } : null), ...(rowed ? { width: '100%', maxWidth: Math.round(110 / 0.31), margin: '0 auto' } : null) }}>{half(grown(tight(oneBeside(first, second))), 0)}{half(grown(tight(oneBeside(second, first))), 1)}</div>;
   }
   // A row of up to three pictures (pass MA): two owls and a fox, or a big, a middle-size and a little circle, so a line that names
   // three things shows all three. Each cell takes the same share of the width and each picture a share of its cell in proportion
@@ -1919,10 +2057,12 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1, 
   // number; every other row of shapes keeps PatternRow.
   if (visual.kind === 'pattern' && visual.size) return <div key={animKey} className={animate ? 'edu-rise' : undefined} style={{ padding: '6px 0' }}><CountRow items={visual.items} colour={visual.colour || 'green'} cell={visual.size} frame={visual.frame || 5} snap={!!visual.snap} gap={visual.gap || 8} /></div>;
   if (visual.kind === 'pattern') return <div key={animKey} className={animate ? 'edu-rise' : undefined} style={{ padding: '6px 0' }}><PatternRow items={visual.items} colour={visual.colour || 'green'} k={k} /></div>;
-  if (visual.kind === 'solid') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><SolidPic name={visual.name} size={at(110)} /></div>;
+  if (visual.kind === 'solid') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><SolidPic name={visual.name} size={at(110)} color={B.green} /></div>;
   if (visual.kind === 'tenframe') return <div key={animKey} className={animate ? 'edu-rise' : undefined} style={{ padding: '6px 0' }}><TenFrame filled={visual.filled} /></div>;
   // Towers (pass JX): with vertical set, the bars stand side by side on one floor, so a lesson can compare heights.
   if (visual.kind === 'bars') return <div style={visual.vertical ? { padding: '6px 0', display: 'flex', gap: 28, justifyContent: 'center', alignItems: 'flex-end' } : { padding: '6px 0', display: 'grid', gap: 10 }}>{visual.lengths.map((n, i) => <BarPic vertical={!!visual.vertical} key={`${animKey}-${i}`} length={n} />)}</div>;
+  // Writing shown as print (pass ND, the spacing lessons): a sentence a child sees, its words set apart (PrintWords, below).
+  if (visual.kind === 'print') return <div key={animKey} className={animate ? 'edu-rise' : undefined} style={{ padding: '6px 0', display: 'flex', justifyContent: 'center' }}><PrintWords text={visual.text} size={28} paper /></div>;
   if (visual.kind === 'letters') {
     // Letters sit on paper, so they take the light palette's ink (B) in both themes (pass MA): the dark theme's green is mint,
     // too faint on the almond paper to read (1.7 to 1).
@@ -1963,7 +2103,7 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1, 
     // ends, and a second row sat about 25 pixels off centre). A run on one row is drawn exactly as before, and the gap takes no
     // height of its own (line height 0, set at the middle).
     return (
-      <p style={{ fontSize: 44, fontWeight: 700, letterSpacing: 6, margin: '6px 0', textAlign: 'center', color: B.green, textWrap: 'balance' }}>
+      <p style={{ fontSize: visual.grow ? Math.round(44 * k) : 44, fontWeight: 700, letterSpacing: 6, margin: '6px 0', textAlign: 'center', color: B.green, textWrap: 'balance' }}>
         {parts.map((ch, i) => (ch[0] === ' '
           ? <span key={`${animKey}-${i}`} style={{ fontSize: `${ch.length * 100}%`, letterSpacing: 6 * ch.length, lineHeight: 0, verticalAlign: 'middle' }}>{' '}</span>
           : <span key={`${animKey}-${i}`} className={animate ? 'edu-grow' : undefined}
@@ -1983,12 +2123,23 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1, 
 // text-to-speech service; that is a phase 1 decision.
 // Warm, clear, female voices first, on whichever device this is. Names are matched loosely
 // because each maker names its voices differently.
-const PREFERRED_VOICES = ['Ava', 'Samantha', 'Allison', 'Microsoft Aria', 'Microsoft Jenny', 'Google US English', 'Karen', 'Moira', 'Microsoft Zira', 'Tessa', 'Victoria', 'Fiona', 'Susan', 'Joanna', 'Salli'];
+// Every US English voice comes before any other accent's, and with none of these the first US English voice (pass ND, round one's
+// lesson check): the letters lessons say a letter's name and its sound, and in an accent that drops the r (Karen's Australian, en-AU;
+// Tessa's South African, en-ZA) R's name is "ah", so "its name ends with rrr" would be heard as false; Karen had come before Microsoft Zira
+// and Victoria. Since round two (its alignment read) a US name is taken only with a US English lang, since a name matches loosely and
+// Microsoft's Susan is a UK voice, and any US English voice comes before another accent's preferred voice. Since the third read the
+// others are ordered by whether R's name keeps its r: Moira's Irish English (en-IE) and Fiona's Scottish (en-GB) keep it, so they
+// come before Karen and Tessa.
+const PREFERRED_US_VOICES = ['Ava', 'Samantha', 'Allison', 'Microsoft Aria', 'Microsoft Jenny', 'Google US English', 'Microsoft Zira', 'Victoria', 'Susan', 'Joanna', 'Salli'];
+const PREFERRED_OTHER_VOICES = ['Moira', 'Fiona', 'Karen', 'Tessa'];
 function pickVoice() {
   if (typeof window === 'undefined' || !window.speechSynthesis) return null;
   const voices = window.speechSynthesis.getVoices() || [];
   const english = voices.filter((v) => /^en/i.test(v.lang));
-  for (const name of PREFERRED_VOICES) { const v = english.find((x) => x.name.includes(name)); if (v) return v; }
+  const us = english.filter((v) => /^en[-_]US/i.test(v.lang));
+  for (const name of PREFERRED_US_VOICES) { const v = us.find((x) => x.name.includes(name)); if (v) return v; }
+  const usAny = us.find((v) => /female/i.test(v.name)) || us[0]; if (usAny) return usAny;
+  for (const name of PREFERRED_OTHER_VOICES) { const v = english.find((x) => x.name.includes(name)); if (v) return v; }
   return english.find((v) => /female/i.test(v.name)) || english[0] || null;
 }
 // Some previews and older browsers have no speech at all. We check once so the screen can
@@ -2676,7 +2827,9 @@ function MoreInfoSheet({ insight, face, onClose, visual = null, young = false })
   // row is a sentence alone, so Gas never sits in a box while Solid and Liquid do not.
   const worded = [insight.answer, ...insight.wrong.map((w) => w.choice)].some((c) => typeof face(c) === 'string' && String(c).length > 3);
   const drawn = (c) => typeof face(c) !== 'string' || !worded;
-  const wide = (c) => /^look:/.test(String(c));   // a group that looks like more keeps its row's length and its dots' size (pass ML)
+  // A group that looks like more keeps its row's length and its dots' size (pass ML), and since pass ND writing as print keeps its own
+  // width, so it never runs out of a 64-pixel box or breaks at its spaces (round one's code check).
+  const wide = (c) => /^(look|print):/.test(String(c));
   const row = (c) => ({ display: 'grid', gridTemplateColumns: drawn(c) && !wide(c) ? '64px 1fr' : '1fr', gap: wide(c) ? 6 : 12, alignItems: 'center', padding: '10px 0', borderTop: `1px solid ${C.line}` });
   useEffect(() => {
     const back = typeof document !== 'undefined' ? document.activeElement : null;
@@ -2713,7 +2866,7 @@ function MoreInfoSheet({ insight, face, onClose, visual = null, young = false })
         {insight.right && (
           <div data-more-info-right="" style={{ ...row(insight.answer), borderTop: `1px solid ${C.line}` }}>
             {drawn(insight.answer) && <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 48, borderRadius: 10, background: C.paperBoard, border: `2px solid ${C.green}`, color: B.ink, fontWeight: 600, fontSize: 14, textAlign: 'center', padding: 4 }}>{face(insight.answer)}</div>}
-            <div>{!drawn(insight.answer) && <p data-more-info-answer="" style={{ margin: '0 0 2px', fontSize: 16, fontWeight: 700 }}>{capFirst(String(insight.answer))}</p>}<p style={{ margin: '0 0 2px', fontSize: 14, fontWeight: 700, color: C.green }}>Why this one fits</p><div data-more-info-words="" style={{ textWrap: 'balance' }}><RichText text={rightText} size={16} lineGap={6} lit={rightLines === 1 ? litAt(rightAt) : null} litLine={rightLines > 1 && litAt(rightAt) !== null ? lineOfSentence(rightText, litAt(rightAt)) : null} /></div></div>
+            <div>{!drawn(insight.answer) && <p data-more-info-answer="" style={{ margin: '0 0 2px', fontSize: 16, fontWeight: 700, textWrap: 'balance' }}>{capFirst(String(insight.answer))}</p>}<p style={{ margin: '0 0 2px', fontSize: 14, fontWeight: 700, color: C.green }}>Why this one fits</p><div data-more-info-words="" style={{ textWrap: 'balance' }}><RichText text={rightText} size={16} lineGap={6} lit={rightLines === 1 ? litAt(rightAt) : null} litLine={rightLines > 1 && litAt(rightAt) !== null ? lineOfSentence(rightText, litAt(rightAt)) : null} /></div></div>
           </div>
         )}
         {insight.more.length > 0 && (
@@ -3439,6 +3592,11 @@ function StudentPicture({ name, tint = null, size = 56, tile = false }) {
   const darkTile = C.mode === 'dark' && tile;
   const bearEdge = darkTile ? { stroke: '#C9A98A', strokeWidth: 1.5 } : {};
   const whisker = darkTile ? '#B3C1B9' : '#24291F';
+  // The owl's pale edge on a dark theme's answer tile, as the bear's (pass ND, EARMARKS A89): its brown read 2.68 to 1 on a right answer's
+  // tile and its ears 2.12, and its own belly's tan reads 4.38 or better there. Off a dark tile and a name picture's tint, as the frog's
+  // ring, the snail and the whale wear deeper edges: the snail's green and shell read 2.32 to 2.63 to 1 on the light theme's right and
+  // wrong tiles and the whale 2.92 on a wrong one, and a deeper green, brown and blue read 3.38 or better on every light tile.
+  const owlEdge = darkTile ? { stroke: '#B4A07A', strokeWidth: 1.5 } : {};
   // The duck and the bee wear a thin deeper-gold outline wherever they are drawn, in both themes (pass MQ, Mikey's answer to Q62,
   // "Q62 - A"): the duck's yellow read 1.5 to 1 on a white answer tile and the bee's 1.9, the palest things on a pre-K screen, where a
   // picture a child must see keeps 3 to 1. #94741A reads 3 to 1 or better on white, on every name picture's tint, and on the dark
@@ -3450,12 +3608,12 @@ function StudentPicture({ name, tint = null, size = 56, tile = false }) {
     // a word ask for the first sound of its name): a fox's face with a pointed muzzle, white cheeks, dark inner ears and a black nose,
     // outlined, its pointy ears kept for Look Closely's ears.
     fox: <g><path d="M12 31 L17 8 L27 20 L33 20 L43 8 L48 31 Q47 38 41 42 L30 53 L19 42 Q13 38 12 31 Z" fill="#D98B3D" stroke="#9A5420" strokeWidth="1.5" strokeLinejoin="round" /><path d="M17 13 L23.5 20.5 L18.5 22 Z M43 13 L36.5 20.5 L41.5 22 Z" fill="#5E3C1A" /><path d="M13.5 34 Q22 34.5 30 41 Q38 34.5 46.5 34 Q45 39.5 41 42 L30 53 L19 42 Q15 39.5 13.5 34 Z" fill="#FFF6EA" stroke="#9A5420" strokeWidth="1.2" strokeLinejoin="round" /><circle cx="23" cy="29" r="2.5" fill="#24291F" /><circle cx="37" cy="29" r="2.5" fill="#24291F" /><circle cx="30" cy="50" r="2.6" fill="#24291F" /></g>,
-    owl: <g><path d="M14.5 25 L13 8.5 L24 17 Z M45.5 25 L47 8.5 L36 17 Z" fill="#7A6A4D" strokeLinejoin="round" /><ellipse cx="30" cy="34" rx="18" ry="20" fill="#8C7A5B" /><path d="M14 38 Q15.5 47 22 51 M46 38 Q44.5 47 38 51" fill="none" stroke="#6E5F44" strokeWidth="2" strokeLinecap="round" /><ellipse cx="30" cy="47" rx="9" ry="6.5" fill="#B4A07A" /><circle cx="22" cy="30" r="8.6" fill="#A8946D" /><circle cx="38" cy="30" r="8.6" fill="#A8946D" /><circle cx="22" cy="30" r="7" fill="#F5F1E6" /><circle cx="38" cy="30" r="7" fill="#F5F1E6" /><circle cx="22" cy="30" r="3" fill="#24291F" /><circle cx="38" cy="30" r="3" fill="#24291F" /><path d="M27 40 L30 46 L33 40 Z" fill="#C79A3D" /></g>,
+    owl: <g><path d="M14.5 25 L13 8.5 L24 17 Z M45.5 25 L47 8.5 L36 17 Z" fill="#7A6A4D" {...owlEdge} strokeLinejoin="round" /><ellipse cx="30" cy="34" rx="18" ry="20" fill="#8C7A5B" {...owlEdge} /><path d="M14 38 Q15.5 47 22 51 M46 38 Q44.5 47 38 51" fill="none" stroke="#6E5F44" strokeWidth="2" strokeLinecap="round" /><ellipse cx="30" cy="47" rx="9" ry="6.5" fill="#B4A07A" /><circle cx="22" cy="30" r="8.6" fill="#A8946D" /><circle cx="38" cy="30" r="8.6" fill="#A8946D" /><circle cx="22" cy="30" r="7" fill="#F5F1E6" /><circle cx="38" cy="30" r="7" fill="#F5F1E6" /><circle cx="22" cy="30" r="3" fill="#24291F" /><circle cx="38" cy="30" r="3" fill="#24291F" /><path d="M27 40 L30 46 L33 40 Z" fill="#C79A3D" /></g>,
     // The frog's edge (pass NB, round one's picture check: Dog and frog and Star and spoon draw it on answer tiles): its green read 2.82
     // and 2.72 to 1 on the light theme's right and wrong tiles and 2.60 on the dark paper; a deeper green ring drawn under it reads 4.18
     // or better. Not on a dark tile, where the green reads well, nor on a name picture's tint (name-picture edges went to Mikey, Q54).
     frog: <g>{!darkTile && !tint && <g fill="#3F7A45" stroke="#3F7A45" strokeWidth="3"><ellipse cx="30" cy="36" rx="20" ry="14" /><circle cx="20" cy="22" r="7" /><circle cx="40" cy="22" r="7" /></g>}<ellipse cx="30" cy="36" rx="20" ry="14" fill="#5E9A62" /><circle cx="20" cy="22" r="7" fill="#5E9A62" /><circle cx="40" cy="22" r="7" fill="#5E9A62" /><circle cx="20" cy="22" r="3" fill="#24291F" /><circle cx="40" cy="22" r="3" fill="#24291F" /><path d="M20 40 Q30 47 40 40" fill="none" stroke="#24291F" strokeWidth="2.5" strokeLinecap="round" /></g>,
-    whale: <g><path d="M8 34 Q30 12 52 34 Q30 52 8 34 Z" fill="#5A8EA3" /><path d="M46 20 L54 12 L52 24 Z" fill="#5A8EA3" /><circle cx="20" cy="32" r="2.6" fill="#24291F" /><path d="M14 38 Q20 42 26 38" fill="none" stroke="#24291F" strokeWidth="2" strokeLinecap="round" /></g>,
+    whale: <g><path d="M8 34 Q30 12 52 34 Q30 52 8 34 Z" fill="#5A8EA3" stroke={!darkTile && !tint ? '#467A8F' : 'none'} strokeWidth="1.5" strokeLinejoin="round" /><path d="M46 20 L54 12 L52 24 Z" fill="#5A8EA3" stroke={!darkTile && !tint ? '#467A8F' : 'none'} strokeWidth="1.5" strokeLinejoin="round" /><circle cx="20" cy="32" r="2.6" fill="#24291F" /><path d="M14 38 Q20 42 26 38" fill="none" stroke="#24291F" strokeWidth="2" strokeLinecap="round" /></g>,
     bee: <g><ellipse cx="30" cy="36" rx="16" ry="12" fill="#E2B83A" {...gild} /><rect x="22" y="26" width="5" height="20" fill="#24291F" /><rect x="34" y="26" width="5" height="20" fill="#24291F" /><ellipse cx="22" cy="20" rx="8" ry="5" fill="#DCE9F5" {...gild} /><ellipse cx="38" cy="20" rx="8" ry="5" fill="#DCE9F5" {...gild} /><circle cx="18" cy="34" r="2.2" fill="#24291F" /></g>,
     cat: <g><path d="M14 44 L14 18 L24 26 L36 26 L46 18 L46 44 Z" fill="#A9A19A" stroke="#6B716A" strokeWidth="1.5" strokeLinejoin="round" /><circle cx="24" cy="34" r="2.6" fill="#24291F" /><circle cx="36" cy="34" r="2.6" fill="#24291F" /><path d="M27 40 L30 43 L33 40 Z" fill="#B45A3C" /><path d="M8 40 L22 41 M8 46 L22 44 M52 40 L38 41 M52 46 L38 44" stroke={whisker} strokeWidth="1.5" /></g>,
     // The cat asleep (pass MW, round one's lesson and picture checks: "The cat sleeps." showed the cat awake, as pass MV's baby
@@ -3469,7 +3627,7 @@ function StudentPicture({ name, tint = null, size = 56, tile = false }) {
     bear: <g><circle cx="30" cy="34" r="16" fill="#8B6B4A" {...bearEdge} /><circle cx="18" cy="22" r="6" fill="#8B6B4A" {...bearEdge} /><circle cx="42" cy="22" r="6" fill="#8B6B4A" {...bearEdge} /><ellipse cx="30" cy="40" rx="7" ry="5" fill="#C9A98A" /><circle cx="24" cy="31" r="2.4" fill="#24291F" /><circle cx="36" cy="31" r="2.4" fill="#24291F" /><circle cx="30" cy="38" r="2.4" fill="#24291F" /></g>,
     fish: <g><path d="M10 34 Q26 16 44 34 Q26 52 10 34 Z" fill="#E28A5B" stroke="#A9502A" strokeWidth="1.5" strokeLinejoin="round" /><path d="M44 34 L54 24 L54 44 Z" fill="#E28A5B" stroke="#A9502A" strokeWidth="1.5" strokeLinejoin="round" /><circle cx="20" cy="32" r="2.6" fill="#24291F" /><path d="M26 26 Q30 34 26 42" fill="none" stroke="#C9704A" strokeWidth="2" /></g>,
     duck: <g><ellipse cx="32" cy="38" rx="17" ry="11" fill="#F0D45C" {...gild} /><path d="M14 26 L4 30 L14 32.5 Z" fill="#E28A2B" {...gild} strokeLinejoin="round" /><circle cx="20" cy="26" r="9" fill="#F0D45C" {...gild} /><circle cx="18" cy="24" r="2.2" fill="#24291F" /></g>,
-    snail: <g><path d="M8 44 L40 44 Q46 44 46 38 L46 30" fill="none" stroke="#7A9B6C" strokeWidth="8" strokeLinecap="round" /><circle cx="28" cy="32" r="13" fill="#C98B5E" /><circle cx="28" cy="32" r="7" fill="none" stroke="#A96F45" strokeWidth="3" /><path d="M44 30 L42 20 M48 30 L50 20" stroke="#7A9B6C" strokeWidth="2.5" strokeLinecap="round" /><circle cx="42" cy="19" r="2" fill="#24291F" /><circle cx="50" cy="19" r="2" fill="#24291F" /></g>,
+    snail: <g>{!darkTile && !tint && <g fill="none" stroke="#5A7550" strokeLinecap="round"><path d="M8 44 L40 44 Q46 44 46 38 L46 30" strokeWidth="11" /><path d="M44 30 L42 20 M48 30 L50 20" strokeWidth="5.5" /></g>}<path d="M8 44 L40 44 Q46 44 46 38 L46 30" fill="none" stroke="#7A9B6C" strokeWidth="8" strokeLinecap="round" /><circle cx="28" cy="32" r="13" fill="#C98B5E" stroke={!darkTile && !tint ? '#A96F45' : 'none'} strokeWidth="1.5" /><circle cx="28" cy="32" r="7" fill="none" stroke="#A96F45" strokeWidth="3" /><path d="M44 30 L42 20 M48 30 L50 20" stroke="#7A9B6C" strokeWidth="2.5" strokeLinecap="round" /><circle cx="42" cy="19" r="2" fill="#24291F" /><circle cx="50" cy="19" r="2" fill="#24291F" /></g>,
   };
   if (!faces[name]) return null;
   // A look after ~ is said in words (cat~asleep, a sleeping cat), so a screen reader never hears the tilde (pictureLookName, as IconPic).
@@ -7703,8 +7861,14 @@ function FitText({ children, size = 12, min = 9, style = null, className = undef
 // A Wonder answer tile's words (pass NB, round one's screen check, and EARMARKS A76): they wrap between words, a hyphenated word kept
 // whole (grown-up broke as "grown- / up"), at the size their row sets (FitTilesRow, below), since a 1fr column would not shrink below its
 // longest word and "something" pushed a tile past the screen's edge at 360 pixels. The tile's width is the grid's (minmax(0, 1fr)).
+// A hyphenated word kept whole in running words (grown-up, never "grown- / up"), for a Wonder prompt as for its tiles (round one's screen
+// check, pass ND: at 320 pixels "and your grown- / up says it is time / to go."). Since round two's code read, all the Wonder words the
+// screen prints go through it: a pre-reader's voice card and closing card ("a grown- / up can help you" at 320), a reader's voices and
+// the educator's review, and since the third read a reader's options and the review's option chips (grade 2's courses are not read
+// aloud and meet early questions: "A hug from a grown- / up" at 320). A prop the voice says (text={wonder.prompt}) stays a string.
+function wholeHyphens(text) { return String(text).split(/(\S+-\S+)/).map((w, i) => (i % 2 ? <span key={i} data-whole-word="" style={{ whiteSpace: 'nowrap' }}>{w}</span> : w)); }
 function WordFit({ children }) {
-  const words = String(children).split(/(\S+-\S+)/).map((w, i) => (i % 2 ? <span key={i} style={{ whiteSpace: 'nowrap' }}>{w}</span> : w));
+  const words = wholeHyphens(children);
   return <span data-word-fit="" style={{ display: 'block', width: '100%', fontSize: 'var(--tile-words, 20px)', whiteSpace: 'normal', overflowWrap: 'normal', hyphens: 'none', textWrap: 'balance' }}>{words}</span>;
 }
 // A row of Wonder tiles fitted together (pass NB, round two's code read: tiles fitted one by one read "Yes" and "No" at 20 pixels beside
@@ -9897,6 +10061,10 @@ function ColorThumb({ picture, name, size = 72, thing = false }) {
   const parts = layoutLetterParts((pageSerial && !pagePainted && THING_LINE_ART[picture]) || COLORING_ART[picture] || []);
   return (
     <svg viewBox="0 0 100 100" {...box} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      {/* In the dark theme a thing's open lines (a balloon's string, a boat's waves, a butterfly's feelers) wear a halo of the paper's color,
+          drawn under every part (pass ND, EARMARKS A89): on a dark answer tile their dark line read 1.0 to 1.2 to 1 and the halo reads 8.65
+          or better, and on the paper the halo is the paper's own color and draws nothing new. */}
+      {thing && C.mode === 'dark' && parts.map((p, i) => (p.line && p.t === 'path' ? <path key={`halo-${i}`} d={p.d} fill="none" stroke={C.paperBoard} strokeWidth="5.4" strokeLinecap="round" strokeLinejoin="round" /> : null))}
       {parts.map((p, i) => {
         const common = { key: i, fill: p.line ? 'none' : C.paperBoard, stroke: '#2E2E2E', strokeWidth: 2.4, strokeLinecap: 'round', strokeLinejoin: 'round' };
         if (p.t === 'art') return <ArtPart key={i} p={p} thumb />;
@@ -10945,7 +11113,7 @@ function PonderCard({ wonder, title, text, big = false, attrs = null }) {
   return (
     <PonderFrame seed={seedOf(`${wonder.id}-closing`)} attrs={attrs} className="edu-rise" style={{ ...card, background: C.goldSoft, borderColor: C.goldEdge, textAlign: 'center', padding: big ? '20px 18px 22px' : '14px 16px 16px', margin: '0 0 14px' }}>
         <p data-ponder-title="" className="edu-ponder-title" style={{ margin: '0 0 8px', fontSize: big ? 24 : 19, fontWeight: 800, letterSpacing: '0.01em', color: C.mode === 'dark' ? '#E9C46A' : C.green }}>{title}</p>
-        <p style={{ fontSize: big ? 20 : 16, lineHeight: 1.5, margin: 0 }}>{text}</p>
+        <p style={{ fontSize: big ? 20 : 16, lineHeight: 1.5, margin: 0 }}>{wholeHyphens(text)}</p>
     </PonderFrame>
   );
 }
@@ -13503,7 +13671,7 @@ function EduSphereScreens() {
     // paper: drawn on a light paper box (More Info's), so a shape or a solid takes the paper's green, B, in both themes (round two's
     // code check, pass MO: the dark theme's mint read 1.6 to 1 there). Without it a choice sits on its answer tile, and its color
     // squares and colored shapes are told so (tile), so the dark theme's green keeps its edge for the paper alone (Q56).
-    const choiceFace = (c, k = 1, paper = false) => (/^look:/.test(c) ? <LookGroup token={c} k={k} tile={!paper} /> : /^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={Math.round(28 * k)} frame={dotFrame || 5} snap={dotFrame > 0} /> : /^shape:/.test(c) ? <ShapePic name={c.split(':')[1]} color={paper ? B.green : undefined} size={Math.round((c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64) * k)} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={Math.round(14 * k)} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={Math.round(18 * k)} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={Math.round(14 * k)} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6).split('#')[0]} color={paper ? B.green : undefined} size={Math.round(64 * k)} /> : /^shares:/.test(c) ? <SharesPic shape={c.split(':')[1]} cut={c.split(':')[2]} shaded={Number(c.split(':')[3] || 0)} size={Math.round(72 * k)} /> : /^dice:/.test(c) ? <DicePic pips={Number(c.split(':')[1].split('#')[0])} size={Math.round(64 * k)} /> : /^pic:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><StudentPicture name={c.slice(4).split('#')[0]} size={Math.round(72 * k)} tile={!paper} /></span> : /^art:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><ColorThumb picture={c.slice(4).split('#')[0]} size={Math.round(84 * k)} thing /></span> : /^icon:drawing~/.test(c) ? <IconPic name={c.slice(5)} size={Math.round(84 * k)} tile={!paper} /> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={Math.round(64 * k)} tile={!paper} /> : /^face:/.test(c) ? <FeelingFace feeling={c.slice(5).split('#')[0]} size={Math.round(84 * k)} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={Math.round(64 * k)} tile={!paper} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={Math.round(64 * k)} tile={!paper} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={Math.round(80 * k)} /> : /^digital:/.test(c) ? <DigitalPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={Math.round(96 * k)} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={Math.round(12 * k)} /> : c);
+    const choiceFace = (c, k = 1, paper = false) => (/^look:/.test(c) ? <LookGroup token={c} k={k} tile={!paper} /> : /^dots:(\d+)$/.test(c) ? <DotGroup count={Number(c.split(':')[1])} size={Math.round(28 * k)} frame={dotFrame || 5} snap={dotFrame > 0} tile={!paper} /> : /^shape:/.test(c) ? <ShapePic name={c.split(':')[1]} color={paper ? B.green : undefined} size={Math.round((c.endsWith(':big') ? 88 : c.endsWith(':small') ? 34 : c.endsWith(':medium') ? 58 : 64) * k)} /> : /^tens:(\d+)$/.test(c) ? <TensGroup count={Number(c.split(':')[1])} size={Math.round(14 * k)} /> : /^bar:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} size={Math.round(18 * k)} tile={!paper} /> : /^tower:(\d+)$/.test(c) ? <BarPic length={Number(c.split(':')[1])} vertical size={Math.round(14 * k)} tile={!paper} /> : /^solid:/.test(c) ? <SolidPic name={c.slice(6).split('#')[0]} color={paper ? B.green : undefined} size={Math.round(64 * k)} tile={!paper} /> : /^shares:/.test(c) ? <SharesPic shape={c.split(':')[1]} cut={c.split(':')[2]} shaded={Number(c.split(':')[3] || 0)} size={Math.round(72 * k)} /> : /^dice:/.test(c) ? <DicePic pips={Number(c.split(':')[1].split('#')[0])} size={Math.round(64 * k)} /> : /^pic:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><StudentPicture name={c.slice(4).split('#')[0]} size={Math.round(72 * k)} tile={!paper} /></span> : /^art:/.test(c) ? <span style={{ display: 'flex', justifyContent: 'center' }}><ColorThumb picture={c.slice(4).split('#')[0]} size={Math.round(84 * k)} thing /></span> : /^icon:drawing~/.test(c) ? <IconPic name={c.slice(5)} size={Math.round(84 * k)} tile={!paper} /> : /^icon:/.test(c) ? <IconPic name={c.slice(5)} size={Math.round(64 * k)} tile={!paper} /> : /^face:/.test(c) ? <FeelingFace feeling={c.slice(5).split('#')[0]} size={Math.round(84 * k)} /> : /^swatch:/.test(c) ? <Swatch colour={c.slice(7)} size={Math.round(64 * k)} tile={!paper} /> : /^item:/.test(c) ? <Item spec={c.slice(5)} size={Math.round(64 * k)} tile={!paper} /> : /^clock:/.test(c) ? <ClockPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={Math.round(80 * k)} /> : /^digital:/.test(c) ? <DigitalPic hour={Number(c.split(':')[1])} minute={Number(c.split(':')[2])} size={Math.round(96 * k)} tile={!paper} /> : /^array:/.test(c) ? <ArrayPic rows={Number(c.slice(6).split('x')[0])} cols={Number(c.slice(6).split('x')[1])} size={Math.round(12 * k)} /> : /^print:/.test(c) ? <PrintWords text={c.slice(6)} size={Math.round(22 * k)} paper={paper} /> : c);
     // More Info (pass MH): why each wrong choice does not fit, the one picked now first, in words that remember earlier rounds.
     const pickedNow = checked ? (readAloud ? [...wrongPicks, ...(wasCorrect ? [] : [String(given)])] : (wasCorrect ? [] : [String(given)])) : [];
     const insight = q.type === 'choice' ? choiceInsight(q, pickedNow, qHistory) : null;
@@ -13560,14 +13728,17 @@ function EduSphereScreens() {
             // in a tile as wide as a laptop's card (737 pixels); a phone's card is narrower than that width, so a phone draws it as before.
             // Two ideas' four corners (q.corners, pass MO) sit two by two, a phone's width on any screen, so the corners read as corners and
             // the fourth and Check answer fit a short phone (round two's code check: four full-width rows ended 30 pixels below its fold).
-            <div style={{ display: 'grid', gap: shortPhone() ? 8 : 10, alignItems: q.choices.every((c) => /^tower:\d+$/.test(c)) ? 'end' : undefined, gridTemplateColumns: q.corners ? 'repeat(2, minmax(0, 1fr))' : q.choices.every((c) => /^tower:\d+$/.test(c)) ? `repeat(${q.choices.length}, 1fr)` : q.choices.every((c) => /^(\d+|[A-Za-z])$/.test(c)) ? `repeat(auto-fit, minmax(${Math.max(70, Math.max(...q.choices.map((c) => c.length)) * 15 + 24)}px, 1fr))` : '1fr', ...(q.corners ? { maxWidth: 360, margin: '0 auto' } : q.choices.every((c) => ONE_PICTURE_CHOICE.test(String(c)) || /^dots:\d+$/.test(String(c))) ? { maxWidth: PICTURE_COLUMN, margin: '0 auto' } : null) }}>
+            <div style={{ display: 'grid', gap: shortPhone() ? 8 : 10, alignItems: q.choices.every((c) => /^tower:\d+$/.test(c)) ? 'end' : undefined, gridTemplateColumns: q.corners ? 'repeat(2, minmax(0, 1fr))' : q.choices.every((c) => /^tower:\d+$/.test(c)) ? `repeat(${q.choices.length}, 1fr)` : q.choices.every((c) => /^(\d+|[A-Za-z])$/.test(c)) ? `repeat(auto-fit, minmax(${Math.max(70, Math.max(...q.choices.map((c) => c.length)) * 15 + 24)}px, 1fr))` : '1fr', ...(q.corners ? { maxWidth: 360, margin: '0 auto' } : q.choices.every((c) => ONE_PICTURE_CHOICE.test(String(c)) || /^dots:\d+$/.test(String(c)) || /^print:/.test(String(c))) ? { maxWidth: PICTURE_COLUMN, margin: '0 auto' } : null) }}>
               {q.choices.map((c) => {
                 const picked = given === c;
                 let bg = C.surface; let border = C.line;
                 const ruledOut = wrongPicks.includes(c);
                 // A ruled-out answer stays readable in the dark theme (2026-09-29, Mikey): a slightly lighter surface at
-                // seven-tenths, not the light grey that swallowed pale text; the light theme keeps its pale grey.
-                if (ruledOut) { bg = C.mode === 'dark' ? '#2C4238' : '#EDEFEA'; border = C.muted; }
+                // seven-tenths, not the light grey that swallowed pale text; the light theme keeps its pale grey. Since round two's code
+                // read (pass ND) the dark one is #294035, a shade under the right tile's lightness, where #2C4238 was a hair over it: a
+                // pre-reader's earlier wrong pick stays on it at full opacity after the answer, and on a dark tile only what is lighter
+                // than the tile reads, so the belt that read on the right tile read 2.99 to 1 there (tests/e2e/tile-edges.mjs reads it).
+                if (ruledOut) { bg = C.mode === 'dark' ? '#294035' : '#EDEFEA'; border = C.muted; }
                 // A pre-reader's answer turns green only when the child gets it (round two's screen check, pass MM: it turned green
                 // after a wrong tap, before the retry, so the retry could be answered by color); a reader sees it at once, as before.
                 if (checked && c === q.answer && (wasCorrect || !readAloud)) { bg = C.greenSoft; border = C.green; }
@@ -13712,7 +13883,7 @@ function EduSphereScreens() {
             <div key={cheer} className={wasCorrect ? 'edu-cheer' : 'edu-wobble'} style={{ position: 'relative', marginTop: 14, padding: 14, borderRadius: 10, background: wasCorrect ? C.greenSoft : C.claySoft }}>
               {wasCorrect && <StarBurst />}
               {/* The reason after a wrong tap and the explanation, balanced, their speech parts kept whole (pass NB, round one's screen check: "Have another / try."). */}
-              <p style={{ margin: 0, fontWeight: 600, color: wasCorrect ? C.green : C.clayInk, textWrap: 'balance' }}>{wasCorrect ? 'Correct' : readAloud ? partsWhole(preReaderWrongWords(q, String(given), wrongPicks), 'why') : `Not quite. The answer is ${describeAnswer(q)}.`}</p>
+              <p style={{ margin: 0, fontWeight: 600, color: wasCorrect ? C.green : C.clayInk, textWrap: 'balance' }}>{wasCorrect ? 'Correct' : readAloud ? partsWhole(preReaderWrongWords(q, String(given), wrongPicks, canSpeak()), 'why') : `Not quite. The answer is ${describeAnswer(q)}.`}</p>
               {(wasCorrect || !readAloud) && <div style={{ margin: '8px 0 0', textWrap: 'balance' }}><RichText text={formatTeachingText(q.explain)} size={15} lineGap={6} />{!wasCorrect && !readAloud && taughtLine(mod.id, q.answer) && <p style={{ margin: '8px 0 0', fontSize: 14, color: C.muted }}>From the lesson: “{taughtLine(mod.id, q.answer)}”</p>}{!wasCorrect && !readAloud && mod.lesson.example && mod.lesson.example.another && (wrongWay ? <div style={{ margin: '8px 0 0', padding: '10px 12px', borderRadius: 10, background: C.goldSoft }}><div style={{ maxWidth: 240, margin: '0 auto 8px' }}><Picture visual={wayVisual(mod.lesson.example, 1)} note={record.preview ? undefined : false} /></div><RichText text={wayText([].concat(mod.lesson.example.another)[0])} size={14} lineGap={6} /></div> : <p style={{ margin: '8px 0 0', textAlign: 'center' }}><button type="button" style={{ ...linkBtn, fontSize: 14 }} onClick={() => setWrongWay(true)}>Show me another way</button></p>)}{!wasCorrect && q.choiceNotes && q.choiceNotes[given] && !(insight && insight.any) && <p style={{ margin: '6px 0 0', fontSize: 15, color: C.muted }}>{q.choiceNotes[given]}</p>}</div>}
               {/* An explanation picture is a set of fraction bars, one group of dots, or (since pass LW) any picture kind below. */}
               {(wasCorrect || !readAloud) && Array.isArray(q.explainVisual) && q.explainVisual.map((b, i) => <LabeledBar key={i} parts={b.parts} shaded={b.shaded} label={b.label} color={wasCorrect ? C.green : C.clay} />)}
@@ -14019,7 +14190,7 @@ function EduSphereScreens() {
         {/* The pondering pictures around the question (pass MH, Mikey: "The let's wonder question should also be spiced up with icons
             around the question."). */}
         <PonderFrame seed={seedOf(wonder.id)} attrs={{ 'data-wonder-question': '' }} className="edu-rise" style={{ ...card, textAlign: 'center', padding: '22px 18px', margin: '0 0 14px' }}>
-          <p style={{ fontSize: 22, lineHeight: 1.5, margin: 0, textWrap: 'balance' }}>{wonder.prompt}</p>
+          <p style={{ fontSize: 22, lineHeight: 1.5, margin: 0, textWrap: 'balance' }}>{wholeHyphens(wonder.prompt)}</p>
         </PonderFrame>
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
           {canSpeak() && (
@@ -14063,14 +14234,14 @@ function EduSphereScreens() {
         {/* The question stays above the voices, small, so a child remembers what they are talking about (pass MH, Mikey: "They should
             also still see the question above what the characters are saying so they can remember what is being discussed.  It can
             be discrete."). */}
-        <p data-wonder-asked="" style={{ margin: '4px 0 10px', fontSize: 15, lineHeight: 1.45, color: C.muted, textAlign: 'center', fontStyle: 'italic', textWrap: 'balance' }}>{wonder.prompt}</p>
+        <p data-wonder-asked="" style={{ margin: '4px 0 10px', fontSize: 15, lineHeight: 1.45, color: C.muted, textAlign: 'center', fontStyle: 'italic', textWrap: 'balance' }}>{wholeHyphens(wonder.prompt)}</p>
         {v.closing
           ? <div key={step}><PonderCard wonder={wonder} title={v.title} text={v.closing} big attrs={{ 'data-wonder-closing': '' }} /></div>
           : <div key={step} className="edu-rise" data-wonder-voice-card={wonderVoice(v.voice) ? wonderVoice(v.voice).name : ''} style={{ ...card, textAlign: 'center', padding: '20px 18px 22px' }}>
             {/* Mikey's layout: the name at the top, the label under it, the portrait under both, then the words in quotes. */}
             <VoiceName label={v.voice} size={21} color={C.green} />
             <WonderPortrait name={wonderVoice(v.voice) ? wonderVoice(v.voice).name : ''} size={96} note={!!(record && record.preview)} />
-            <p style={{ fontSize: 20, lineHeight: 1.5, margin: '2px 0 0' }}>{'\u201C'}{v.says}{'\u201D'}</p>
+            <p style={{ fontSize: 20, lineHeight: 1.5, margin: '2px 0 0' }}>{'\u201C'}{wholeHyphens(v.says)}{'\u201D'}</p>
           </div>}
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}>
           {canSpeak() && (
@@ -14119,11 +14290,11 @@ function EduSphereScreens() {
         </div>
         <p style={{ color: C.muted, fontSize: 14, margin: '0 0 10px', textAlign: 'center' }}>No right answer</p>
         <PonderFrame seed={seedOf(wonder.id)} attrs={{ 'data-wonder-question': '' }} style={{ ...card, margin: '0 0 14px' }}>
-          <p style={{ fontSize: 20, fontWeight: 600, margin: '0 0 14px', textWrap: 'balance' }}>{wonder.prompt}</p>
+          <p style={{ fontSize: 20, fontWeight: 600, margin: '0 0 14px', textWrap: 'balance' }}>{wholeHyphens(wonder.prompt)}</p>
           {wonder.answerMode === 'pick' ? (
             <div style={{ display: 'grid', gap: 10 }}>
               {wonder.options.map((o) => (
-                <button key={o} type="button" onClick={() => setWonderPick(o)} style={{ fontFamily: FONT, fontSize: 20, padding: '12px 14px', borderRadius: 10, background: wonderPick === o ? C.greenSoft : C.surface, border: `2px solid ${wonderPick === o ? C.green : C.line}`, color: C.ink, cursor: 'pointer', minHeight: 48 }}>{optionSwatch(o) ? <span style={{ position: 'relative', display: 'inline-block' }}><span style={{ position: 'absolute', right: '100%', top: '50%', transform: 'translateY(-50%)', marginRight: 10, lineHeight: 0 }}><OptionSwatch colour={optionSwatch(o)} size={24} /></span>{o}</span> : o}</button>
+                <button key={o} type="button" onClick={() => setWonderPick(o)} style={{ fontFamily: FONT, fontSize: 20, padding: '12px 14px', borderRadius: 10, background: wonderPick === o ? C.greenSoft : C.surface, border: `2px solid ${wonderPick === o ? C.green : C.line}`, color: C.ink, cursor: 'pointer', minHeight: 48 }}>{optionSwatch(o) ? <span style={{ position: 'relative', display: 'inline-block' }}><span style={{ position: 'absolute', right: '100%', top: '50%', transform: 'translateY(-50%)', marginRight: 10, lineHeight: 0 }}><OptionSwatch colour={optionSwatch(o)} size={24} /></span>{wholeHyphens(o)}</span> : wholeHyphens(o)}</button>
               ))}
             </div>
           ) : (
@@ -14148,7 +14319,7 @@ function EduSphereScreens() {
         <p style={{ color: C.muted, fontSize: 14, margin: '4px 0 6px' }}>How others might see it</p>
         {/* The question is repeated here so nobody has to remember what they were asked. */}
         <div style={{ ...card, background: C.greenSoft, borderColor: C.softEdge }}>
-          <p style={{ margin: 0, fontSize: 17, fontWeight: 600, textWrap: 'balance' }}>{wonder.prompt}</p>
+          <p style={{ margin: 0, fontSize: 17, fontWeight: 600, textWrap: 'balance' }}>{wholeHyphens(wonder.prompt)}</p>
         </div>
         <SpeakButton text={allText} label="Read it to me" />
         {/* Each voice (pass MH, Mikey's layout): the name, the label and the portrait centered, then the words in quotes, which run
@@ -14157,7 +14328,7 @@ function EduSphereScreens() {
           <div key={p.voice} data-wonder-voice-card={wonderVoice(p.voice) ? wonderVoice(p.voice).name : ''} style={{ ...card, textAlign: 'center' }}>
             <VoiceName label={p.voice} size={16} color={C.green} />
             <WonderPortrait name={wonderVoice(p.voice) ? wonderVoice(p.voice).name : ''} size={64} note={!!(record && record.preview)} />
-            <p style={{ margin: 0, fontSize: 16, textAlign: 'left' }}>{'\u201C'}{p.says}{'\u201D'}</p>
+            <p style={{ margin: 0, fontSize: 16, textAlign: 'left' }}>{'\u201C'}{wholeHyphens(p.says)}{'\u201D'}</p>
           </div>
         ))}
         <PonderCard wonder={wonder} title={ponderTitle(wonder, wonderAnswered)} text={wonder.closing} attrs={{ 'data-wonder-closing': '' }} />
@@ -14492,7 +14663,7 @@ function EduSphereScreens() {
                   return (
                     <button key={w.id} type="button" onClick={() => { setReviewing(w.id); setOpenVoices([]); }}
                       style={{ ...card, display: 'block', width: '100%', textAlign: 'center', padding: 14, cursor: 'pointer', border: `1px solid ${C.line}`, opacity: hidden ? 0.7 : 1, background: hidden ? (C.mode === 'dark' ? C.panel : '#EDEFEA') : C.surface, fontFamily: FONT, color: C.ink }}>
-                      <span style={{ display: 'block', fontSize: 16, fontWeight: 600, lineHeight: 1.4 }}>{w.prompt}</span>
+                      <span style={{ display: 'block', fontSize: 16, fontWeight: 600, lineHeight: 1.4 }}>{wholeHyphens(w.prompt)}</span>
                       <span style={{ display: 'block', marginTop: 8 }}><Tag tone={tone}>{state}</Tag></span>
                     </button>
                   );
@@ -14537,7 +14708,7 @@ function EduSphereScreens() {
                 </Tag>
 
               </div>
-              <p style={{ margin: '12px 0 14px', fontSize: 18, fontWeight: 600, lineHeight: 1.4, textAlign: 'center' }}>{reviewingQuestion.prompt}</p>
+              <p style={{ margin: '12px 0 14px', fontSize: 18, fontWeight: 600, lineHeight: 1.4, textAlign: 'center' }}>{wholeHyphens(reviewingQuestion.prompt)}</p>
 
               {Array.isArray(reviewingQuestion.simple) && (
                 <div style={{ background: PANEL, ...(C.mode === 'dark' ? { border: `1px solid ${C.panelLine}` } : {}), borderRadius: 10, padding: '10px 12px', marginBottom: 12 }}>
@@ -14548,7 +14719,7 @@ function EduSphereScreens() {
                   {reviewingQuestion.simple.map((v, i) => (
                     <div key={v.voice} style={{ margin: i === 0 ? 0 : '14px 0 0', textAlign: 'center' }}>
                       <VoiceName label={v.voice} size={14} color={C.green} />
-                      <p style={{ margin: 0, fontSize: 14 }}>{v.says}</p>
+                      <p style={{ margin: 0, fontSize: 14 }}>{wholeHyphens(v.says)}</p>
                     </div>
                   ))}
                 </div>
@@ -14562,7 +14733,7 @@ function EduSphereScreens() {
                      (pass LY, Mikey's screenshot). */
                   <div data-answer-chips="" style={{ display: 'grid', gridTemplateColumns: `repeat(${chipColumns(reviewingQuestion.options)}, minmax(0, 1fr))`, gap: 8, marginTop: 4, maxWidth: 420, marginLeft: 'auto', marginRight: 'auto' }}>
                     {(reviewingQuestion.options || []).map((o) => (
-                      <span key={o} style={{ fontSize: 14, fontWeight: 600, color: C.green, background: C.surface, border: `2px solid ${C.line}`, borderRadius: 10, padding: '7px 10px', textAlign: 'center', display: 'flex', flexDirection: optionSwatch(o) ? 'column' : 'row', alignItems: 'center', justifyContent: 'center', gap: 4 }}>{optionSwatch(o) && <OptionSwatch colour={optionSwatch(o)} size={18} />}{o}</span>
+                      <span key={o} style={{ fontSize: 14, fontWeight: 600, color: C.green, background: C.surface, border: `2px solid ${C.line}`, borderRadius: 10, padding: '7px 10px', textAlign: 'center', display: 'flex', flexDirection: optionSwatch(o) ? 'column' : 'row', alignItems: 'center', justifyContent: 'center', gap: 4 }}>{optionSwatch(o) && <OptionSwatch colour={optionSwatch(o)} size={18} />}{wholeHyphens(o)}</span>
                     ))}
                   </div>
                 )}
@@ -14580,7 +14751,7 @@ function EduSphereScreens() {
                     </button>
                     <div className="edu-collapsible" style={{ display: shown ? 'block' : 'none', paddingBottom: 10, textAlign: 'center' }}>
                       <VoiceName label={p.voice} size={15} roleOnly />
-                      <p style={{ margin: 0, fontSize: 15, lineHeight: 1.6, textAlign: 'center' }}>{p.says}</p>
+                      <p style={{ margin: 0, fontSize: 15, lineHeight: 1.6, textAlign: 'center' }}>{wholeHyphens(p.says)}</p>
                     </div>
                   </div>
                 );
@@ -14588,7 +14759,7 @@ function EduSphereScreens() {
 
               <div style={{ background: C.mode === 'dark' ? '#AAD8C5' : PANEL, color: C.mode === 'dark' ? '#16201B' : undefined, borderRadius: 10, padding: '10px 12px', marginTop: 12 }}>
                 <p style={{ margin: 0, fontSize: 14, fontWeight: 600, textAlign: 'center' }}>Closing question</p>
-                <p style={{ margin: '2px 0 0', fontSize: 15, textAlign: 'center' }}>{reviewingQuestion.closing}</p>
+                <p style={{ margin: '2px 0 0', fontSize: 15, textAlign: 'center' }}>{wholeHyphens(reviewingQuestion.closing)}</p>
               </div>
 
               <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 16, justifyContent: 'center' }}>

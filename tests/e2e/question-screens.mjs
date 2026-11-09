@@ -1307,15 +1307,16 @@ const ponder = () => page.evaluate(() => {
 //    (PICTURE_COLUMN, 420 pixels), where each 69-pixel drawing had sat in a tile 737 pixels wide; read on three banks of pictures at 1280
 //    and 1024 pixels wide in the theme the sections above left on; its plant, the column's width limit taken off, caught. Since round
 //    one's lead run the width is read against 420 times the page's own zoom (a wide screen's 1.08 drew 454), and on a tablet held both
-//    ways (820 by 1180 and 1024 by 768) as well as a laptop; the column's width has no theme of its own, so one theme is read.
+//    ways (820 by 1180 and 1024 by 768) as well as a laptop; the column's width has no theme of its own, so one theme is read. Since pass
+//    ND's round one (the screen read: a 69-pixel sun in a 737-pixel tile) a column of writing as print stands in it too.
 { const column = () => page.evaluate(() => { const b = document.querySelector('button[data-choice]'); if (!b) return null; const grid = b.parentElement; const r = grid.getBoundingClientRect(); const card = grid.parentElement.getBoundingClientRect(); const wrap = document.querySelector('.edu-wrap'); const zoom = (wrap && parseFloat(getComputedStyle(wrap).zoom)) || 1; return { zoom, width: Math.round(r.width), centred: Math.abs((r.left + r.right) / 2 - (card.left + card.right) / 2) <= 1.5, tile: Math.round(b.getBoundingClientRect().width) }; });
   const read = [];
-  for (const [g, w, h] of [['p3-snd-pic', 1280, 900], ['pm-same-things', 1280, 900], ['p4-vfs-pic', 1024, 768], ['p3-snd-pic', 820, 1180], ['p4-sbs-count', 1280, 900]]) {
+  for (const [g, w, h] of [['p3-snd-pic', 1280, 900], ['pm-same-things', 1280, 900], ['p4-vfs-pic', 1024, 768], ['p3-snd-pic', 820, 1180], ['p4-sbs-count', 1280, 900], ['p4-space-kind', 1280, 900], ['p4-space-which', 1280, 900]]) {
     await page.setViewportSize({ width: w, height: h }); await page.evaluate((gen) => window.__eduTest.showQuestion(gen, 1), g); await page.waitForFunction(() => window.__eduTest.screen === 'practice'); await page.waitForTimeout(300);
     read.push({ g, w, ...(await column()) }); }
   const plant = await page.evaluate(() => { const b = document.querySelector('button[data-choice]'); const grid = b.parentElement; window.__was = grid.style.maxWidth; grid.style.maxWidth = 'none'; return Math.round(grid.getBoundingClientRect().width); });
   await page.evaluate(() => { const grid = document.querySelector('button[data-choice]').parentElement; grid.style.maxWidth = window.__was; delete window.__was; });
-  ok('on a laptop and a tablet a column of picture answers is a phone\'s width, centred, its tiles no wider than 420 pixels at the page\'s own zoom (pass NC, EARMARKS A77; three banks at 1280 by 900, 1024 by 768 and 820 by 1180, and since round one\'s screen check a column of dots, p4-sbs-count, at 1280 by 900; the width limit taken off, planted, caught)', read.length === 5 && read.every((x) => x.width <= 420 * x.zoom + 1 && x.width >= 300 && x.centred && x.tile <= 420 * x.zoom + 1) && plant > 420 * read[read.length - 1].zoom + 1, { read, plant });
+  ok('on a laptop and a tablet a column of picture answers is a phone\'s width, centred, its tiles no wider than 420 pixels at the page\'s own zoom (pass NC, EARMARKS A77; three banks at 1280 by 900, 1024 by 768 and 820 by 1180, and since round one\'s screen check a column of dots, p4-sbs-count, at 1280 by 900, and since pass ND\'s a column of print, p4-space-kind and p4-space-which; the width limit taken off, planted, caught)', read.length === 7 && read.every((x) => x.width <= 420 * x.zoom + 1 && x.width >= 300 && x.centred && x.tile <= 420 * x.zoom + 1) && plant > 420 * read[read.length - 1].zoom + 1, { read, plant });
   await page.setViewportSize({ width: 1280, height: 900 }); }
 // 12. Round one's screen check (pass NC): a run kept whole (data-whole) stays whole and inside its paragraph at rest, in a story's
 //    paragraphs and in the reason after a wrong tap, at 320, 375 and 390 pixels wide, where "Peet, / suh." broke in Put the beats
@@ -1436,6 +1437,190 @@ const ponder = () => page.evaluate(() => {
     titleOff.length === 0 && drawn === drawnMods.length * 2 && drawnMods.length === 16 && plantWrap === true && plantTall === true && fitted.length === 2 && fitted.every((x) => x.read === titles.length && x.bad === 0 && x.mirror === true) && typeof plantOld === 'number' && plantOld > 0,
     { titleOff: titleOff.slice(0, 6), wrappedDrawn, fitted, plantWrap, plantTall, plantOld });
   await page.setViewportSize({ width: 1280, height: 900 }); }
+// 14. EARMARKS A88's browser check (pass ND, the screen read): in a lesson on a tablet (820 by 1180) and a laptop (1280 by 800), in both
+//    themes, a drawing beside its group of dots grows as two drawings do, where it had kept a phone's size: Sound by sound's coat beside
+//    its three dots (line 9) draws at least 0.8 of the coat alone on line 8 (0.85 is a pair's own share), and each dot at least 1.4 times
+//    its size on a phone in the same theme (they grow 1.69 to 1.87 times on a tablet, round two's code read found, more than the lesson's
+//    scale of 1.45 this line once gave as the bar's reason, so the bar holds with room); on a phone (390 by 844) the coat keeps the size it had. Since
+//    round one's screen read each dot is read as its own circle, since the dots' svg keeps its height while the drawing in it shrinks (it
+//    read 45 pixels or more where a dot was 42.9 across in the dark theme on a tablet), and every read must be a number (a null passed the
+//    phone's bounds). Its plants: the coat beside its dots drawn at the old share, and since round one the tablet's dots drawn at a phone's
+//    size and the phone's coat drawn at the tablet's share, each caught.
+{ const sizes = (pg) => pg.evaluate(() => { const svgs = [...document.querySelectorAll('svg')].filter((s) => !s.closest('button') && !s.closest('[data-lesson-nav]') && s.getBoundingClientRect().height > 20 && s.getBoundingClientRect().width > 20 && s.getBoundingClientRect().height < window.innerHeight * 0.6);
+    const pair = document.querySelector('[data-pair]'); const inPair = pair ? svgs.filter((s) => pair.contains(s) && !/dots$/.test(s.getAttribute('aria-label') || '')) : [];
+    const circles = pair ? [...pair.querySelectorAll('svg[aria-label$="dots"] circle')].map((c) => c.getBoundingClientRect().width) : [];
+    return { alone: pair ? null : Math.max(0, ...svgs.map((s) => s.getBoundingClientRect().height)), drawing: inPair.length ? Math.round(inPair[0].getBoundingClientRect().height) : null, dots: circles.length ? +Math.max(...circles).toFixed(1) : null }; });
+  const read = []; const phoneDots = {}; let plant = null; let plantDots = null; let plantPhone = null;
+  for (const theme of ['light', 'dark']) for (const [w, h] of [[390, 844], [820, 1180], [1280, 800]]) {
+    const ctx = await browser.newContext({ viewport: { width: w, height: h }, hasTouch: true, reducedMotion: 'reduce' });
+    await ctx.addInitScript((t) => { try { localStorage.setItem('edusphere_v1_theme', t); } catch (e) { /* none */ } }, theme);
+    const pg = await ctx.newPage(); await pg.goto(new URL('./page.html', import.meta.url).href);
+    const isScreen = (n) => pg.waitForFunction((x) => window.__eduTest && window.__eduTest.screen === x, n, { timeout: 15000 });
+    const tap = async (name) => { const b = pg.getByRole('button', { name, exact: true }); if (await b.count()) { await b.first().click({ force: true }); await pg.waitForTimeout(250); } };
+    await isScreen('welcome'); await pg.getByRole('button', { name: 'Create account', exact: true }).first().click(); await isScreen('educator-setup');
+    await pg.fill('input[placeholder="PIN"]', '2468'); await pg.fill('input[placeholder="PIN again"]', '2468'); await pg.fill('input[placeholder="This device\'s name"]', 'Pairs'); await pg.selectOption('select[aria-label="Your state"]', 'TX');
+    await pg.getByRole('button', { name: 'Create account', exact: true }).click(); await isScreen('educator-pick'); await pg.waitForTimeout(400);
+    for (const n of ['Skip tour', 'Later', 'Got it']) await tap(n);
+    await pg.getByLabel('Walk through early years').first().click({ force: true }); await isScreen('overview'); await pg.waitForTimeout(300);
+    await pg.evaluate(() => window.__eduTest.openModule('sound-by-sound')); await pg.waitForTimeout(600);
+    const next = async () => { await pg.locator('[data-lesson-nav] button[aria-label="Next"]').first().click({ force: true }); await pg.waitForTimeout(350); };
+    for (let i = 1; i < 8; i++) await next();
+    const alone = (await sizes(pg)).alone; await next(); const beside = await sizes(pg);
+    read.push({ theme, w, alone: Math.round(alone), drawing: beside.drawing, dots: beside.dots });
+    if (w === 390) phoneDots[theme] = beside.dots;
+    await pg.evaluate(() => { window.__coat = () => [...document.querySelector('[data-pair]').querySelectorAll('svg')].find((x) => !/dots$/.test(x.getAttribute('aria-label') || '')); });
+    // The coat at its old share on a tablet, caught.
+    if (plant === null && w === 820) { await pg.evaluate(() => { const s = window.__coat(); window.__was = s.getAttribute('style') || ''; s.style.height = (s.getBoundingClientRect().height * (94 / 136)) + 'px'; });
+      const pr = await sizes(pg); plant = pr.drawing < 0.8 * alone; await pg.evaluate(() => { const s = window.__coat(); s.setAttribute('style', window.__was); delete window.__was; }); }
+    // The tablet's dots drawn at the phone's size in the same theme, caught.
+    if (plantDots === null && w === 820 && phoneDots[theme]) { const set = await pg.evaluate((target) => { const s = document.querySelector('[data-pair] svg[aria-label$="dots"]'); const c = s && s.querySelector('circle'); if (!c) return false; window.__was = s.getAttribute('style') || ''; const cs = getComputedStyle(s); const d = c.getBoundingClientRect().width; s.style.width = (parseFloat(cs.width) * target / d) + 'px'; s.style.height = (parseFloat(cs.height) * target / d) + 'px'; return true; }, phoneDots[theme]);
+      const pr = await sizes(pg); plantDots = set && !(pr.dots >= 1.4 * phoneDots[theme]); await pg.evaluate(() => { const s = document.querySelector('[data-pair] svg[aria-label$="dots"]'); s.setAttribute('style', window.__was); delete window.__was; }); }
+    // The phone's coat drawn at the tablet's share of the coat alone, caught.
+    if (plantPhone === null && w === 390) { await pg.evaluate((a) => { const s = window.__coat(); window.__was = s.getAttribute('style') || ''; const r = s.getBoundingClientRect(); const cs = getComputedStyle(s); const f = (a * 0.85) / r.height; s.style.height = (parseFloat(cs.height) * f) + 'px'; s.style.width = (parseFloat(cs.width) * f) + 'px'; }, alone);
+      const pr = await sizes(pg); plantPhone = !(pr.drawing <= 0.8 * alone); await pg.evaluate(() => { const s = window.__coat(); s.setAttribute('style', window.__was); delete window.__was; }); }
+    await ctx.close();
+  }
+  const num = (x) => typeof x === 'number' && x > 0; const grown = read.filter((x) => x.w >= 820); const phone = read.filter((x) => x.w === 390);
+  ok(`in a lesson on a tablet and a laptop, in both themes, a drawing beside its group of dots grows as two drawings do: Sound by sound's coat beside its three dots draws at least 0.8 of the coat alone, each dot at least 1.4 times its size on a phone, and on a phone the coat keeps its size (pass ND, EARMARKS A88; ${read.map((x) => x.theme + ' ' + x.w + ': ' + x.drawing + ' of ' + x.alone + ', dots ' + x.dots).join('; ')}; the coat at its old share, the tablet's dots at a phone's size and the phone's coat at a tablet's share, planted, caught)`,
+    read.length === 6 && read.every((x) => num(x.alone) && num(x.drawing) && num(x.dots)) && grown.every((x) => x.drawing >= 0.8 * x.alone && x.dots >= 1.4 * phoneDots[x.theme]) && phone.every((x) => x.drawing <= 0.8 * x.alone) && plant === true && plantDots === true && plantPhone === true, { read, plant, plantDots, plantPhone }); }
+// 15. Round one's screen read (pass ND), in both themes. Writing as print stays on one line, inside its box, in every line of the two
+//    spacing lessons at 320 by 568, on the question screen of every spacing bank at seeds 1 to 3 and in its More Info sheet at 320 and 390
+//    pixels wide (print broke "I see the / big bus." in More Info's 240-pixel picture box, and five sentences at 320 in the dark theme). One letter beside a drawing in a lesson grows
+//    with it on a tablet and a laptop, the letter 1.4 times its 44 pixels or more and the drawing at least 0.8 of a lone drawing's size,
+//    while a phone keeps both (the jar beside J drew 94 pixels on a tablet, a phone's size). A Wonder prompt never splits a hyphenated word
+//    at 320 to 412 pixels (grown-up broke as "grown- / up"). Its plants: More Info's picture box set 64 pixels wide, a lesson's print set
+//    in a 64-pixel box, the letter set back to 44 pixels, and grown-up let break, each caught. Since round two's code read: the letter is
+//    read as drawn, the box of its text against the phone's drawn letter in the same theme, where its font size had been read (the pair
+//    draws at 0.85, so 64 pixels is drawn 54.4, and the plant set the very size the read read), with a transform the font size cannot see
+//    planted; the print read's floors are the counts the code has (70 lesson prints, 204 on questions, 68 in 40 sheets), and a print kept
+//    on one line but set past its box is planted for that bound alone; and the cards a pre-reader meets after a Wonder question, its voices
+//    and its closing card with the question above them, keep a hyphenated word whole too (a voice card broke "a grown- / up can help you"
+//    at 320), with a voice card's hyphenated word let break, planted. Since the third read a reader's screens too: grade 2's courses are
+//    not read aloud and meet early questions, whose options printed bare ("A hug from a grown- / up" at 320), so the question with its
+//    options and the voices with the closing card are read at the six widths in both themes, an option's word and a voice's let break.
+{ const openAs = async (theme, w, h) => {
+    const ctx = await browser.newContext({ viewport: { width: w, height: h }, hasTouch: true, reducedMotion: 'reduce' });
+    await ctx.addInitScript((t) => { try { localStorage.setItem('edusphere_v1_theme', t); } catch (e) { /* none */ } }, theme);
+    const pg = await ctx.newPage(); await pg.goto(new URL('./page.html', import.meta.url).href);
+    const isScreen = (n) => pg.waitForFunction((x) => window.__eduTest && window.__eduTest.screen === x, n, { timeout: 15000 });
+    const tap = async (name) => { const b = pg.getByRole('button', { name, exact: true }); if (await b.count()) { await b.first().click({ force: true }); await pg.waitForTimeout(250); } };
+    await isScreen('welcome'); await pg.getByRole('button', { name: 'Create account', exact: true }).first().click(); await isScreen('educator-setup');
+    await pg.fill('input[placeholder="PIN"]', '2468'); await pg.fill('input[placeholder="PIN again"]', '2468'); await pg.fill('input[placeholder="This device\'s name"]', 'Round one'); await pg.selectOption('select[aria-label="Your state"]', 'TX');
+    await pg.getByRole('button', { name: 'Create account', exact: true }).click(); await isScreen('educator-pick'); await pg.waitForTimeout(400);
+    for (const n of ['Skip tour', 'Later', 'Got it']) await tap(n);
+    await pg.getByLabel('Walk through early years').first().click({ force: true }); await isScreen('overview'); await pg.waitForTimeout(300);
+    return { ctx, pg, isScreen }; };
+  const toLine = async (pg, mod, n) => { await pg.evaluate((m) => window.__eduTest.openModule(m), mod); await pg.waitForTimeout(600); for (let i = 1; i < n; i++) { await pg.locator('[data-lesson-nav] button[aria-label="Next"]').first().click({ force: true }); await pg.waitForTimeout(260); } };
+  // Every [data-print] in scope: its fitted words on one line, and not past its box.
+  const printRead = (pg, scope) => pg.evaluate((sc) => { const out = { n: 0, faults: [] }; for (const p of document.querySelectorAll(sc + ' [data-print]')) { const t = p.querySelector('[data-fit-text]') || p; const cs = getComputedStyle(t); const lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.25; const lines = Math.round(t.getBoundingClientRect().height / lh); out.n += 1;
+    if (lines !== 1) out.faults.push(`"${t.textContent}" on ${lines} lines`); if (t.scrollWidth > p.clientWidth + 0.5) out.faults.push(`"${t.textContent}" past its box`); } return out; }, scope);
+  const faults = []; let lessonPrints = 0; let sheetPrints = 0; let sheets = 0; let questionPrints = 0; let plantSheet = null; let plantLesson = null; let plantPast = null;
+  const SPACE = L.getModule('space-between-words').generators.concat(L.getModule('spaces-between-words').generators);
+  for (const theme of ['light', 'dark']) {
+    const { ctx, pg, isScreen } = await openAs(theme, 320, 568);
+    for (const mod of ['space-between-words', 'spaces-between-words']) { await toLine(pg, mod, 1);
+      for (let i = 1; i <= 14; i++) { const r = await printRead(pg, '#root'); lessonPrints += r.n; for (const f of r.faults) faults.push(`${theme} ${mod} line ${i}: ${f}`);
+        if (plantLesson === null && r.n > 0) { await pg.evaluate(() => { const p = document.querySelector('[data-print]'); window.__was = p.parentElement.getAttribute('style') || ''; p.parentElement.style.width = '64px'; }); await pg.waitForTimeout(250); plantLesson = (await printRead(pg, '#root')).faults.length > 0; await pg.evaluate(() => { const p = document.querySelector('[data-print]'); p.parentElement.setAttribute('style', window.__was); delete window.__was; }); await pg.waitForTimeout(150); }
+        // The past-its-box bound alone (round two's code read): every print kept on one line and set too large for its box, caught as past
+        // its box and on no line count, since each plant above is caught by the line count.
+        if (plantPast === null && r.n > 0) { const tag = await pg.addStyleTag({ content: '[data-print] [data-fit-text] { white-space: nowrap !important; font-size: 60px !important; line-height: normal !important; }' }); await pg.waitForTimeout(200);
+          const pr = await printRead(pg, '#root'); plantPast = pr.faults.some((f) => f.endsWith('past its box')) && !pr.faults.some((f) => / on \d+ lines$/.test(f)); await tag.evaluate((n) => n.remove()); await pg.waitForTimeout(250); }
+        const nx = pg.locator('[data-lesson-nav] button[aria-label="Next"]'); if (i === 14 || !(await nx.count())) break; await nx.first().click({ force: true }); await pg.waitForTimeout(260); } }
+    // More Info at 320, then 390: a right answer, Check answer, the More Info link, and every print in its sheet.
+    for (const width of [320, 390]) { await pg.setViewportSize({ width, height: 800 });
+      for (const g of SPACE) { for (const seed of [3, 2, 1]) { await pg.evaluate(([x, s]) => window.__eduTest.showQuestion(x, s), [g, seed]); await isScreen('practice'); await pg.waitForTimeout(450);
+          const r = await printRead(pg, '#root'); questionPrints += r.n; if (!r.n) faults.push(`${theme} ${width} ${g} seed ${seed}: no print on the question`); for (const f of r.faults) faults.push(`${theme} ${width} ${g} seed ${seed}: ${f}`); }
+        const qq = await pg.evaluate(() => window.__eduTest.question); await pg.locator(`button[data-choice="${qq.answer.replace(/"/g, '\\"')}"]`).click(); await pg.getByRole('button', { name: 'Check answer' }).click(); await pg.waitForTimeout(400);
+        const link = pg.locator('[data-more-info-link]'); if (!(await link.count())) { faults.push(`${theme} ${width} ${g}: no More Info`); continue; } await link.click(); await pg.waitForTimeout(400); sheets += 1;
+        const r = await printRead(pg, '[data-more-info]'); sheetPrints += r.n; if (!r.n) faults.push(`${theme} ${width} ${g}: no print in More Info`); for (const f of r.faults) faults.push(`${theme} ${width} ${g}: ${f}`);
+        if (plantSheet === null && width === 320 && theme === 'light') { const set = await pg.evaluate(() => { const b = document.querySelector('[data-more-info] [data-more-info-picture]'); if (!b || !b.querySelector('[data-print]') || b.querySelector('[data-print]').textContent.trim().length < 12) return false; window.__was = b.getAttribute('style') || ''; b.style.maxWidth = '64px'; return true; }); if (set) { await pg.waitForTimeout(250); plantSheet = (await printRead(pg, '[data-more-info]')).faults.length > 0; await pg.evaluate(() => { const b = document.querySelector('[data-more-info] [data-more-info-picture]'); b.setAttribute('style', window.__was); delete window.__was; }); } }
+        await pg.keyboard.press('Escape'); await pg.waitForTimeout(250); } }
+    await ctx.close(); }
+  ok(`writing as print stays on one line, inside its box, in every line of the two spacing lessons at 320 by 568 and in More Info for every spacing bank at 320 and 390 pixels wide, in both themes (pass ND, round one's screen read; ${lessonPrints} lesson prints, ${questionPrints} on questions, ${sheets} sheets with ${sheetPrints} prints; More Info's picture box at 64 pixels and a lesson's print in a 64-pixel box, planted, caught, and since round two's code read a print on one line past its box, planted, caught)`,
+    faults.length === 0 && lessonPrints >= 70 && questionPrints >= 204 && sheets === 4 * SPACE.length && sheetPrints >= 68 && plantSheet === true && plantLesson === true && plantPast === true, { faults: faults.slice(0, 8), lessonPrints, questionPrints, sheets, sheetPrints, plantSheet, plantLesson, plantPast });
+  // One letter beside a drawing: Letters and sounds' line 7 (S beside the sun) against line 4's lone moon.
+  const letterRead = (pg) => pg.evaluate(() => { const pair = document.querySelector('[data-pair]'); const svgs = [...document.querySelectorAll('svg')].filter((s) => !s.closest('button') && !s.closest('[data-lesson-nav]') && s.getBoundingClientRect().height > 20 && s.getBoundingClientRect().height < window.innerHeight * 0.6);
+    if (!pair) return { alone: Math.round(Math.max(0, ...svgs.map((s) => s.getBoundingClientRect().height))) };
+    const p = [...pair.querySelectorAll('p')].find((x) => /^[A-Z]$/.test(x.textContent.trim())); const d = svgs.find((s) => pair.contains(s));
+    // The letter as drawn (round two's code read): the box of its text, which every scale and transform above it reaches, where its font size
+    // sees none of them.
+    let drawn = null; if (p) { const rg = document.createRange(); rg.selectNodeContents(p); drawn = +rg.getBoundingClientRect().height.toFixed(1); }
+    return { letter: p ? parseFloat(getComputedStyle(p).fontSize) : null, drawn, drawing: d ? Math.round(d.getBoundingClientRect().height) : null }; });
+  const letters = []; let plantLetter = null; let plantScale = null; const phoneDrawn = {};
+  for (const theme of ['light', 'dark']) for (const [w, h] of [[390, 844], [820, 1180], [1280, 800]]) {
+    const { ctx, pg } = await openAs(theme, w, h); await toLine(pg, 'letters-and-sounds', 4); const alone = (await letterRead(pg)).alone;
+    for (let i = 4; i < 7; i++) { await pg.locator('[data-lesson-nav] button[aria-label="Next"]').first().click({ force: true }); await pg.waitForTimeout(300); }
+    const r = await letterRead(pg); letters.push({ theme, w, alone, ...r }); if (w === 390) phoneDrawn[theme] = r.drawn;
+    if (plantLetter === null && w === 820 && phoneDrawn[theme]) { await pg.evaluate(() => { const p = [...document.querySelector('[data-pair]').querySelectorAll('p')].find((x) => /^[A-Z]$/.test(x.textContent.trim())); window.__was = p.style.fontSize; p.style.fontSize = '44px'; }); const pr = await letterRead(pg); plantLetter = !(pr.drawn >= 1.4 * phoneDrawn[theme]); await pg.evaluate(() => { const p = [...document.querySelector('[data-pair]').querySelectorAll('p')].find((x) => /^[A-Z]$/.test(x.textContent.trim())); p.style.fontSize = window.__was; delete window.__was; }); }
+    // A transform the font size cannot see (round two's code read), the letter drawn at 0.8 of its size, caught, its font size unchanged.
+    if (plantScale === null && w === 820 && phoneDrawn[theme]) { await pg.evaluate(() => { const p = [...document.querySelector('[data-pair]').querySelectorAll('p')].find((x) => /^[A-Z]$/.test(x.textContent.trim())); window.__was = p.style.transform; p.style.transform = 'scale(0.8)'; }); const pr = await letterRead(pg); plantScale = pr.letter === r.letter && !(pr.drawn >= 1.4 * phoneDrawn[theme]); await pg.evaluate(() => { const p = [...document.querySelector('[data-pair]').querySelectorAll('p')].find((x) => /^[A-Z]$/.test(x.textContent.trim())); p.style.transform = window.__was; delete window.__was; }); }
+    await ctx.close(); }
+  const big = letters.filter((x) => x.w >= 820); const small = letters.filter((x) => x.w === 390);
+  ok(`one letter beside a drawing in a lesson grows with it on a tablet and a laptop, in both themes, the letter drawn 1.4 times the phone's or more and the drawing at least 0.8 of a lone drawing's size, while a phone keeps both, its letter at 44 pixels (pass ND, round one's screen read, the letter read as drawn since round two's code read; ${letters.map((x) => x.theme + ' ' + x.w + ': ' + x.letter + ' drawn ' + x.drawn + ' and ' + x.drawing + ' of ' + x.alone).join('; ')}; the letter set back to 44 pixels, and drawn at 0.8 by a transform, planted, caught)`,
+    letters.length === 6 && letters.every((x) => x.alone > 0 && x.letter > 0 && x.drawn > 0 && x.drawing > 0) && big.every((x) => phoneDrawn[x.theme] > 0 && x.drawn >= 1.4 * phoneDrawn[x.theme] && x.drawing >= 0.8 * x.alone) && small.every((x) => x.letter === 44 && x.drawing <= 0.8 * x.alone) && plantLetter === true && plantScale === true, { letters, phoneDrawn, plantLetter, plantScale });
+  // A Wonder prompt's hyphenated words, whole, wherever the prompt prints.
+  const HYPHENS = L.WONDER.filter((w) => w.stage === 'early' && /\S+-\S+/.test(w.prompt));
+  const promptFaults = (pg, prompt) => pg.evaluate((pr) => { const out = []; const els = [...document.querySelectorAll('#root p')].filter((p) => p.textContent.trim() === pr.trim()); if (!els.length) return ['no prompt'];
+    for (const el of els) { const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); let n; while ((n = walker.nextNode())) for (const m of n.textContent.matchAll(/[A-Za-z]+-[A-Za-z]+/g)) { const rg = document.createRange(); rg.setStart(n, m.index); rg.setEnd(n, m.index + m[0].length); const tops = new Set([...rg.getClientRects()].map((x) => Math.round(x.top))); if (tops.size > 1) out.push(`"${m[0]}" split across two lines`); } } return out; }, prompt);
+  const wonderFaults = []; let prompts = 0; let plantSplit = null;
+  for (const theme of ['light', 'dark']) { const { ctx, pg, isScreen } = await openAs(theme, 375, 800);
+    for (const w of HYPHENS) { await pg.evaluate((id) => window.__eduTest.openWonder(id, 'big-and-little'), w.id); await isScreen('wonder');
+      for (const width of [320, 340, 360, 375, 390, 412]) { await pg.setViewportSize({ width, height: 800 }); await pg.waitForTimeout(160); prompts += 1; for (const f of await promptFaults(pg, w.prompt)) wonderFaults.push(`${theme} ${width} ${w.id}: ${f}`);
+        if (plantSplit === null && width === 320) { const set = await pg.evaluate(() => { const s = document.querySelector('#root p [data-whole-word]'); if (!s) return false; window.__was = s.getAttribute('style') || ''; s.setAttribute('style', 'display: inline-block; width: 4ch; white-space: normal; word-break: break-all'); return true; }); plantSplit = set && (await promptFaults(pg, w.prompt)).some((f) => f.includes('split across')); await pg.evaluate(() => { const s = document.querySelector('#root p [data-whole-word]'); if (s) s.setAttribute('style', window.__was); delete window.__was; }); } } }
+    await ctx.close(); }
+  ok(`a Wonder prompt keeps a hyphenated word such as grown-up whole at 320, 340, 360, 375, 390 and 412 pixels wide in both themes (pass ND, round one's screen read; ${HYPHENS.length} early prompts, ${prompts} screens; grown-up let break, planted, caught)`, HYPHENS.length >= 5 && wonderFaults.length === 0 && prompts === HYPHENS.length * 12 && plantSplit === true, { wonderFaults: wonderFaults.slice(0, 6), prompts, plantSplit });
+  // The cards a pre-reader meets after a Wonder question (round two's code read: 17 splits, "a grown- / up can help you" in a voice card at
+  // 320, thank-you at 340 and 360 and hard-working in others, and a closing card at 320): every early question with a hyphenated word on a
+  // card or in its question, read on its voice screens (openWonderVoices), each card that shows one, with the question above it, at the six
+  // widths in both themes. Each card is checked to be the one expected before it is read, and every such card is read. Its plant: a voice
+  // card's hyphenated word let break, caught.
+  const HYPHEN = /[A-Za-z]+-[A-Za-z]+/;
+  const CARDED = L.WONDER.filter((w) => w.stage === 'early' && (HYPHEN.test(w.prompt) || L.wonderPreReaderCards(w, 0).some((c) => HYPHEN.test(c.says || c.closing || ''))));
+  const toRead = (w) => L.wonderPreReaderCards(w, 0).map((c, k) => HYPHEN.test(c.says || c.closing || '') || (k === 0 && HYPHEN.test(w.prompt)));
+  const EXPECTED = CARDED.reduce((n, w) => n + toRead(w).filter(Boolean).length, 0);
+  const cardFaults = (pg) => pg.evaluate(() => { const out = []; const els = [...document.querySelectorAll('[data-wonder-asked], [data-wonder-voice-card] p, [data-wonder-closing] p')]; if (els.length < 2) return ['no card'];
+    for (const el of els) { const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); let n; while ((n = walker.nextNode())) for (const m of n.textContent.matchAll(/[A-Za-z]+-[A-Za-z]+/g)) { const rg = document.createRange(); rg.setStart(n, m.index); rg.setEnd(n, m.index + m[0].length); const tops = new Set([...rg.getClientRects()].map((x) => Math.round(x.top))); if (tops.size > 1) out.push(`"${m[0]}" split across two lines`); } } return out; });
+  const shownCard = (pg) => pg.evaluate(() => { const c = document.querySelector('[data-wonder-voice-card], [data-wonder-closing]'); return c ? c.textContent.replace(/\s+/g, ' ') : ''; });
+  const cardFaultList = []; let cardsRead = 0; let cardScreens = 0; let plantCard = null;
+  for (const theme of ['light', 'dark']) { const { ctx, pg, isScreen } = await openAs(theme, 375, 800);
+    for (const w of CARDED) { const cards = L.wonderPreReaderCards(w, 0); const read = toRead(w); await pg.setViewportSize({ width: 375, height: 800 });
+      await pg.evaluate((id) => window.__eduTest.openWonderVoices(id, 'big-and-little'), w.id); await isScreen('wonder-voices'); await pg.waitForTimeout(250);
+      for (let k = 0; k < cards.length; k++) { const words = String(cards[k].says || cards[k].closing).replace(/\s+/g, ' ');
+        if (!(await shownCard(pg)).includes(words)) { cardFaultList.push(`${theme} ${w.id} card ${k + 1}: not the card expected`); break; }
+        if (read[k]) { cardsRead += 1;
+          for (const width of [320, 340, 360, 375, 390, 412]) { await pg.setViewportSize({ width, height: 800 }); await pg.waitForTimeout(120); cardScreens += 1; for (const f of await cardFaults(pg)) cardFaultList.push(`${theme} ${width} ${w.id} card ${k + 1}: ${f}`);
+            if (plantCard === null && width === 320 && cards[k].says && HYPHEN.test(cards[k].says)) { const set = await pg.evaluate(() => { const s = document.querySelector('[data-wonder-voice-card] p [data-whole-word]'); if (!s) return false; window.__was = s.getAttribute('style') || ''; s.setAttribute('style', 'display: inline-block; width: 4ch; white-space: normal; word-break: break-all'); return true; });
+              plantCard = set && (await cardFaults(pg)).some((f) => f.includes('split across')); await pg.evaluate(() => { const s = document.querySelector('[data-wonder-voice-card] p [data-whole-word]'); if (s) s.setAttribute('style', window.__was); delete window.__was; }); } }
+          await pg.setViewportSize({ width: 375, height: 800 }); await pg.waitForTimeout(80); }
+        if (k < cards.length - 1) { await pg.getByLabel('Next', { exact: true }).first().click({ force: true }); await pg.waitForTimeout(250); } } }
+    await ctx.close(); }
+  ok(`the cards a pre-reader meets after a Wonder question, its voices and its closing card with the question above them, keep a hyphenated word such as grown-up whole at 320, 340, 360, 375, 390 and 412 pixels wide in both themes (pass ND, round two's code read; ${CARDED.length} early questions, ${cardsRead} cards read on ${cardScreens} screens; a voice card's hyphenated word let break, planted, caught)`,
+    CARDED.length >= 25 && cardFaultList.length === 0 && cardsRead === 2 * EXPECTED && cardScreens === cardsRead * 6 && plantCard === true, { cardFaultList: cardFaultList.slice(0, 6), expected: EXPECTED, cardsRead, cardScreens, plantCard });
+  // A reader's screens (the third read): grade 2's reading, numbers and writing courses are not read aloud and are dealt early Wonder
+  // questions, so a reader meets the question with its options printed as buttons, and every voice with the closing card on one page.
+  // Each is opened from a grade 2 lesson (vowel-teams), checked to be the question expected, and read at the six widths in both themes.
+  // Its plants: an option's hyphenated word, and a reader's voice's, let break, each caught.
+  const asReader = L.WONDER.filter((w) => w.stage === 'early' && (HYPHEN.test(w.prompt) || (w.answerMode === 'pick' && (w.options || []).some((o) => HYPHEN.test(o)))));
+  const voicesReader = L.WONDER.filter((w) => w.stage === 'early' && ((w.perspectives || []).some((p) => HYPHEN.test(p.says)) || HYPHEN.test(w.closing || '')));
+  const questionFaults = (pg) => pg.evaluate(() => { const out = []; const els = [...document.querySelectorAll('[data-wonder-question] p, [data-wonder-question] button')]; if (!els.length) return ['no question'];
+    for (const el of els) { const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); let n; while ((n = walker.nextNode())) for (const m of n.textContent.matchAll(/[A-Za-z]+-[A-Za-z]+/g)) { const rg = document.createRange(); rg.setStart(n, m.index); rg.setEnd(n, m.index + m[0].length); const tops = new Set([...rg.getClientRects()].map((x) => Math.round(x.top))); if (tops.size > 1) out.push(`"${m[0]}" split across two lines`); } } return out; });
+  const readerFaults = []; let readerScreens = 0; let voiceScreens = 0; let plantOption = null; let plantReaderVoice = null;
+  const breakIt = (sel) => `(() => { const s = document.querySelector(${JSON.stringify(sel)}); if (!s) return false; window.__was = s.getAttribute('style') || ''; s.setAttribute('style', 'display: inline-block; width: 4ch; white-space: normal; word-break: break-all'); return true; })()`;
+  const mendIt = (sel) => `(() => { const s = document.querySelector(${JSON.stringify(sel)}); if (s) s.setAttribute('style', window.__was); delete window.__was; })()`;
+  for (const theme of ['light', 'dark']) { const { ctx, pg, isScreen } = await openAs(theme, 375, 800);
+    for (const w of asReader) { await pg.setViewportSize({ width: 375, height: 800 }); await pg.evaluate((id) => window.__eduTest.openWonder(id, 'vowel-teams'), w.id); await isScreen('wonder'); await pg.waitForTimeout(250);
+      const shown = await pg.evaluate(() => ({ prompt: ((document.querySelector('[data-wonder-question] p') || {}).textContent || '').trim(), options: document.querySelectorAll('[data-wonder-question] button').length }));
+      if (shown.prompt !== w.prompt.trim() || (w.answerMode === 'pick' && shown.options !== w.options.length)) { readerFaults.push(`${theme} ${w.id}: not the reader's question expected`); continue; }
+      for (const width of [320, 340, 360, 375, 390, 412]) { await pg.setViewportSize({ width, height: 800 }); await pg.waitForTimeout(120); readerScreens += 1; for (const f of await questionFaults(pg)) readerFaults.push(`${theme} ${width} ${w.id} question: ${f}`);
+        if (plantOption === null && width === 320 && (w.options || []).some((o) => HYPHEN.test(o))) { const set = await pg.evaluate(breakIt('[data-wonder-question] button [data-whole-word]')); plantOption = set && (await questionFaults(pg)).some((f) => f.includes('split across')); await pg.evaluate(mendIt('[data-wonder-question] button [data-whole-word]')); } } }
+    for (const w of voicesReader) { await pg.setViewportSize({ width: 375, height: 800 }); await pg.evaluate((id) => window.__eduTest.openWonderVoices(id, 'vowel-teams'), w.id); await isScreen('wonder-voices'); await pg.waitForTimeout(250);
+      const voices = await pg.evaluate(() => [...document.querySelectorAll('[data-wonder-voice-card] p')].map((p) => p.textContent.replace(/\s+/g, ' ')).join(' | '));
+      if (!w.perspectives.every((p) => voices.includes(p.says.replace(/\s+/g, ' ')))) { readerFaults.push(`${theme} ${w.id}: not the reader's voices expected`); continue; }
+      for (const width of [320, 340, 360, 375, 390, 412]) { await pg.setViewportSize({ width, height: 800 }); await pg.waitForTimeout(120); voiceScreens += 1; for (const f of await cardFaults(pg)) readerFaults.push(`${theme} ${width} ${w.id} voices: ${f}`);
+        if (plantReaderVoice === null && width === 320 && w.perspectives.some((p) => HYPHEN.test(p.says))) { const set = await pg.evaluate(breakIt('[data-wonder-voice-card] p [data-whole-word]')); plantReaderVoice = set && (await cardFaults(pg)).some((f) => f.includes('split across')); await pg.evaluate(mendIt('[data-wonder-voice-card] p [data-whole-word]')); } } }
+    await ctx.close(); }
+  ok(`a reader's Wonder screens keep a hyphenated word such as grown-up whole at 320, 340, 360, 375, 390 and 412 pixels wide in both themes, the question with its options and the voices with the closing card (pass ND, the third read; ${asReader.length} questions on ${readerScreens} screens and ${voicesReader.length} voice pages on ${voiceScreens}; an option's word and a voice's let break, planted, caught)`,
+    asReader.length >= 9 && voicesReader.length >= 30 && readerFaults.length === 0 && readerScreens === asReader.length * 12 && voiceScreens === voicesReader.length * 12 && plantOption === true && plantReaderVoice === true, { readerFaults: readerFaults.slice(0, 6), readerScreens, voiceScreens, plantOption, plantReaderVoice }); }
 ok('no page errors along the way', errors.length === 0, errors);
 await browser.close();
 console.log(`\n${passed} passed, ${failed} failed`);

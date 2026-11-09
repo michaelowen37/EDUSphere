@@ -596,6 +596,27 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   const real = edgeProblems(ui);
   const plants = [ui.replace(/(const SWATCH_EDGE = \{ yellow: ')#[0-9A-F]{6}/, '$1#E8C24A'), ui.replace('{...swatchEdge(SWATCH[colour], 4, tile)}', ''), ui.replace("C.mode === 'dark' && !tile)", "C.mode === 'dark')"), ui.replace('<Swatch colour={c.slice(7)} size={Math.round(64 * k)} tile={!paper} />', '<Swatch colour={c.slice(7)} size={Math.round(64 * k)} />')].map((src) => edgeProblems(src).length > real.length);
   ok('Q56: every yellow shape and color square has its darker edge, and the dark theme\'s green on paper too, each 3 to 1 or better (each near miss caught)', real.length === 0 && plants.every(Boolean), [...real, `near misses ${plants}`].join(' | '));
+  // Since pass ND (EARMARKS A89, the screen read's measure of every drawing on its answer tile): the light theme's green wears its deeper
+  // edge on that theme's answer tiles (it read 2.84 and 2.71 to 1 on a right and a wrong one), and the dark theme's red and blue a lighter
+  // edge of their own color on its answer tiles (2.87 and 2.66 on a right one); each edge 3 to 1 or better on every tile of its theme.
+  // Near misses: the red's edge as deep as its fill, and the light theme's green tile edge taken off; since round one's code read the blue's
+  // edge as deep as its fill, the red's and the blue's lines taken off, and a dark tile turned the red edge's own color, each caught. The
+  // tiles are read from THEMES in ui.jsx (a resting, a right and a wrong tile: surface, greenSoft, claySoft), never typed.
+  const tileEdgeProblems = (src) => { const hex = (re) => (src.match(re) || [])[1];
+    const tones = (mode) => { const at = src.indexOf(`mode: '${mode}'`); const b = at < 0 ? '' : src.slice(at, src.indexOf('\n  },', at)); return ['surface', 'greenSoft', 'claySoft'].map((k) => (b.match(new RegExp(`\\b${k}: '(#[0-9A-Fa-f]{6})'`)) || [])[1]); };
+    const darkTiles = tones('dark'); const lightTiles = tones('light'); if ([...darkTiles, ...lightTiles].some((t) => !t)) return ['a tile color is missing from THEMES']; const lum = (h) => { const v = [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4)); return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2]; };
+    const cr = (a, b) => { const x = lum(a); const y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+    const red = hex(/const SWATCH_TILE_EDGE = \{ red: '(#[0-9A-F]{6})'/); const blue = hex(/const SWATCH_TILE_EDGE = \{[^}]*blue: '(#[0-9A-F]{6})'/); const green = hex(/const SWATCH_EDGE = \{[^}]*green: '(#[0-9A-F]{6})'/);
+    if (!red || !blue || !green) return ['a tile edge is missing from the source'];
+    const bad = [];
+    for (const [name, edge, tiles] of [['red', red, darkTiles], ['blue', blue, darkTiles], ['green', green, lightTiles]]) for (const t of tiles) if (cr(edge, t) < 3) bad.push(`${name}'s edge on ${t} ${cr(edge, t).toFixed(2)} to 1`);
+    for (const line of ["if (fill === SWATCH.green && C.mode !== 'dark' && tile) return { stroke: SWATCH_EDGE.green, strokeWidth: width };", "if (fill === SWATCH.red && C.mode === 'dark' && tile) return { stroke: SWATCH_TILE_EDGE.red, strokeWidth: width };", "if (fill === SWATCH.blue && C.mode === 'dark' && tile) return { stroke: SWATCH_TILE_EDGE.blue, strokeWidth: width };"]) if (!src.includes(line)) bad.push('no line: ' + line.slice(0, 50));
+    return bad; };
+  const tileReal = tileEdgeProblems(ui);
+  const tilePlants = [ui.replace(/(const SWATCH_TILE_EDGE = \{ red: ')#[0-9A-F]{6}/, '$1#D9534F'), ui.replace("if (fill === SWATCH.green && C.mode !== 'dark' && tile) return { stroke: SWATCH_EDGE.green, strokeWidth: width };", ''),
+    ui.replace(/(const SWATCH_TILE_EDGE = \{[^}]*blue: ')#[0-9A-F]{6}/, '$1#4A7FC1'), ui.replace("if (fill === SWATCH.red && C.mode === 'dark' && tile) return { stroke: SWATCH_TILE_EDGE.red, strokeWidth: width };", ''),
+    ui.replace("if (fill === SWATCH.blue && C.mode === 'dark' && tile) return { stroke: SWATCH_TILE_EDGE.blue, strokeWidth: width };", ''), ui.replace("green: '#7CC3A6', greenSoft: '#22413A'", "green: '#7CC3A6', greenSoft: '#E8837F'")].map((src) => src !== ui && tileEdgeProblems(src).length > tileReal.length);
+  ok('since pass ND (EARMARKS A89) the light theme\'s green wears its deeper edge on its answer tiles and the dark theme\'s red and blue a lighter edge of their own on theirs, each 3 to 1 or better on every tile of its theme as THEMES has them, the fills unchanged (six near misses, each caught)', tileReal.length === 0 && tilePlants.length === 6 && tilePlants.every(Boolean), [...tileReal, `near misses ${tilePlants}`].join(' | '));
 }
 // Pairs examples (round two's final read, pass MP): a Pairs game's welcome and its written help may give an example of a twin, but
 // never a pair its own deck deals, and an example is one the course that owns the game teaches. Round one found one half and two
@@ -1121,12 +1142,14 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   const heldPlants = !letterA('I have a hat.') && G.requestFor(byKey.get('sound-whistle'), { voice: 'MAIN', voiceYoung: 'YOUNG' }).body.model_id !== 'X';
   // The ledger asks for one breath wherever the app plays one, and two where it plays two (pass NC, round two's code read: the check
   // above read the tool's own once, and found "/sː/" inside "/sː/", "/sː/", so a ledger asking two breaths everywhere passed it). Each line
-  // part is read by the app's own speechPieces, its once from this test's own list of the three phoneme lessons, its own lists of runs
+  // part is read by the app's own speechPieces, its once from this test's own list of the three phoneme lessons (and since pass ND the
+  // three letters lessons, Letters and sounds, Hear it in the name and At the end of the name, each teaching one sound for one letter),
+  // its own lists of runs
   // (RUNS and NC_RUNS) and any run the app marks; each hiss is counted in its own form with its goal right before its symbols, one breath
   // where the app plays one and two where it plays two; no line of one breath is directed as two ("Fff." had been, the lead found applying
   // it); every early story row names each hiss as the app plays it, and every sound of a run of a word's sounds (S4079-5's shh and ooh,
   // which round one fixed with no check). Each fault the read planted in the tool is planted here in a row, and caught.
-  const ONE = ['sounds-in-a-word', 'very-first-sound', 'sound-by-sound'];
+  const ONE = ['sounds-in-a-word', 'very-first-sound', 'sound-by-sound', 'letters-and-sounds', 'hear-it-in-the-name', 'end-of-the-name'];
   const HISS = Object.keys(L.SOUND_RECORDINGS).filter((n) => L.SOUND_RECORDINGS[n].one);
   const oneForm = (n) => L.goalTag(L.SOUND_RECORDINGS[n].goalOne) + ' ' + L.ipaQuoted(L.SOUND_RECORDINGS[n].one);
   const twoForm = (n) => L.goalTag(L.SOUND_RECORDINGS[n].goal) + ' ' + L.ipaQuoted(L.SOUND_RECORDINGS[n].ipa);
@@ -1158,11 +1181,13 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
       for (const t of sen.toLowerCase().match(/[a-z]+/g) || []) { const v = Object.hasOwn(L.VOWEL_WORDS, t) ? L.VOWEL_WORDS[t] : Object.hasOwn(L.VOICE_SOUNDS, t) ? L.VOICE_SOUNDS[t] : null; if (v && !r.description.includes(v.short)) off.push(`${t} said in a run, not named`); } }
     return off; };
   const storyBreathBad = rows.filter((r) => STORY_ALL.includes(r.kind)).flatMap((r) => storyBreathOff(r).map((o) => `${r.key}: ${o}`));
+  // The floors are the counts the code has (pass ND, round one's code read: 52, 17 and 4 stood against 69, 38 and 10).
+  const BREATH_FLOORS = { parts: 69, once: 38, twice: 36, storyRows: 10 };
   const storyOnceRows = rows.filter((r) => STORY_ALL.includes(r.kind) && ONE.includes(r.source) && L.speechPieces(strip(r.text), { trial: true, once: true }).some((x) => x.sound && HISS.includes(x.sound))).map((r) => r.key);
   const storyPlants = [storyBreathOff({ ...byKey.get('S4087-1'), description: byKey.get('S4087-1').description.split(', once').join(', twice') }).length > 0,
     storyBreathOff({ ...byKey.get('S4079-5'), description: byKey.get('S4079-5').description.replace(' Shh, the sh of ship, held;', '') }).length > 0];
-  ok(`the audio ledger asks for one breath wherever the app plays one and two where it plays two (pass NC, round two's code read): ${breathParts} line parts with a hiss, ${breathOnce} hisses of one breath and ${breathTwice} of two, each counted in its own form with its goal before it; no line of one breath directed as two; every early story row's hisses named as the app plays them (${storyOnceRows.length} rows of the three lessons) and every sound of a run of a word's sounds named; two breaths in a lesson of one, one breath in a lesson of two, a run's hiss as two breaths, "Fff." directed as two breaths, a lone sss of two breaths directed as one (the third read), a story's once as twice and S4079-5's shh dropped, planted, each caught`,
-    breathBad.length === 0 && breathParts >= 52 && breathOnce >= 17 && breathTwice >= 36 && breathPlants.every(Boolean) && storyBreathBad.length === 0 && storyOnceRows.length >= 4 && storyPlants.every(Boolean) && JSON.stringify(L.ONE_BREATH_LESSONS) === JSON.stringify(ONE),
+  ok(`the audio ledger asks for one breath wherever the app plays one and two where it plays two (pass NC, round two's code read): ${breathParts} line parts with a hiss, ${breathOnce} hisses of one breath and ${breathTwice} of two, each counted in its own form with its goal before it; no line of one breath directed as two; every early story row's hisses named as the app plays them (${storyOnceRows.length} rows of the six one-breath lessons) and every sound of a run of a word's sounds named; two breaths in a lesson of one, one breath in a lesson of two, a run's hiss as two breaths, "Fff." directed as two breaths, a lone sss of two breaths directed as one (the third read), a story's once as twice and S4079-5's shh dropped, planted, each caught`,
+    breathBad.length === 0 && breathParts >= BREATH_FLOORS.parts && breathOnce >= BREATH_FLOORS.once && breathTwice >= BREATH_FLOORS.twice && breathPlants.every(Boolean) && storyBreathBad.length === 0 && storyOnceRows.length >= BREATH_FLOORS.storyRows && storyPlants.every(Boolean) && JSON.stringify(L.ONE_BREATH_LESSONS) === JSON.stringify(ONE),
     { breathBad: breathBad.slice(0, 8), breathParts, breathOnce, breathTwice, breathPlants, storyBreathBad: storyBreathBad.slice(0, 8), storyOnceRows, storyPlants });
   ok(`the audio ledger carries what Eleven needs: a description on all ${rows.length} rows, a row for each of the app's ${Object.keys(L.SPEECH_SOUNDS).length + Object.keys(L.TRIAL_SOUNDS).length + cheer.length} own sounds, no lesson clip sending a speech sound as letters (${lessonRows.length} read), the nine runs of sounds sent with their vowels as sounds and pass NC's ${NC_RUNS.length} runs of a word's sounds with their long vowels sent as sounds too, the say-along's word in capitals in all ${games} games, ${stressed} lines' stressed words in capitals, every manner described, and the generator sending a sound effect to the sound-effects endpoint and a sound alone (pass MW; every near miss caught)`,
     noDesc.length === 0 && noDescPlant.length === 2 && soundBad.length === 0 && soundPlants.every(Boolean) && leftAsLetters.length === 0 && plantLetters.length === 1 && missed === 0 && JSON.stringify(runKeys) === JSON.stringify([...RUNS, ...NC_RUNS]) && runVowels.length === 0 && NC_RUNS.every((k) => byKey.get(k) && !vowelWordLeft(byKey.get(k).text)) && vowelWordLeft(byKey.get('sounds-in-a-word-3-0').text.replace('"/oʊ/"', 'oh')) && plantVowel && games >= 77 && small.length === 0 && plantSmall && stressed >= 15 && stressBad.length === 0 && plantStress && heldBad.length === 0 && heldPlants && notesBad.length === 0 && plantNotes && storyOff.length === 0 && plantStory && quickHeld && genBad.length === 0 && oldCaught && mannersBad.length === 0 && plantManners,

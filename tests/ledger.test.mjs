@@ -318,7 +318,7 @@ ok('the ledger has no rows the app does not use', orphans.length === 0, orphans.
 // A row from pass NC on (S4079 and P189 on) is held to none, and the older pairs wait as a count that only falls (EARMARKS A90). The
 // near misses: Emeka's short wavy black hair and Astrid's mom's long blond braid put back, each caught beside the older row it echoed.
 { const { personReads, hairPairs } = await import('../tools/look-echoes.mjs');
-  const FROM = { S: 4079, P: 189 }; const HAIR_WAITING = 30;
+  const FROM = { S: 4079, P: 189 }; const HAIR_WAITING = 5;
   const isNew = (serial) => { const m = /^([SP])(\d+)$/.exec(serial); return !!m && +m[2] >= FROM[m[1]]; };
   const judge = (text) => { const pairs = hairPairs(personReads(text).filter((x) => x.read)); return { newer: pairs.filter(([a, b]) => isNew(a.serial) || isNew(b.serial)), waiting: pairs.filter(([a, b]) => !isNew(a.serial) && !isNew(b.serial)) }; };
   const now = judge(ledger); const swap = (from, to) => (ledger.includes(from) ? judge(ledger.split(from).join(to)) : null);
@@ -327,5 +327,54 @@ ok('the ledger has no rows the app does not use', orphans.length === 0, orphans.
     caughtBeside(swap('a mom with a short blond pixie cut, in a coral blouse', 'a mom with long blond hair in a loose braid, in a coral blouse'), 'S4039')];
   ok(`no person a pre-K row writes from pass NC on has hair written like another of their kind in the same course or course before, whatever they wear (${now.waiting.length} older pairs wait as a count that only falls, at most ${HAIR_WAITING}; two near misses)`,
     now.newer.length === 0 && now.waiting.length <= HAIR_WAITING && plants.every(Boolean), `new pairs: ${now.newer.map(([a, b]) => a.serial + ' and ' + b.serial).join('; ')}; waiting ${now.waiting.length}; near misses ${plants}`); }
+// Hair near alike (pass ND, round one's story check): hairNearPairs reads one shared style word where hairPairs asks for all of them, so
+// a row from pass ND on (S4099 and P194 on) is held to none, and the older pairs wait as a count that only falls. Its plants: Harriet's
+// first look, a chin-length brown bob, caught beside say-it-to-fit's girl (S3997), and the car-seat girl's A90 pigtails beside S107's.
+{ const { personReads, hairNearPairs } = await import('../tools/look-echoes.mjs');
+  // HAIR_NEAR_WAITING: 33 since round two's alignment read made the tool read a style word in its forms (curly as curls, braids as braid),
+  // where it stood at 18 by the older reading; pass NC's ledger had 49 by the stricter one.
+  const FROM = { S: 4099, P: 194 }; const HAIR_NEAR_WAITING = 33;
+  const isNew = (serial) => { const m = /^([SP])(\d+)$/.exec(serial); return !!m && +m[2] >= FROM[m[1]]; };
+  const pairsIn = (text) => hairNearPairs(personReads(text).filter((x) => x.read));
+  const now = pairsIn(ledger); const newer = now.filter(([a, b]) => isNew(a.serial) || isNew(b.serial)); const waiting = now.filter(([a, b]) => !isNew(a.serial) && !isNew(b.serial));
+  const has = (pairs, x, y) => pairs.some(([a, b]) => (a.serial === x && b.serial === y) || (a.serial === y && b.serial === x));
+  const swap = (from, to) => (ledger.includes(from) ? pairsIn(ledger.split(from).join(to)) : []);
+  const plants = [has(swap('a chin-length auburn bob and freckles', 'a chin-length brown bob and freckles'), 'S4107', 'S3997'),
+    has(swap('a brown side braid tied with a yellow ribbon', 'short brown pigtails tied with yellow ribbons'), 'S4075', 'S107'),
+    // Round two's alignment read: round one's look for the play-together boy, curls beside how-friends-feel's curly hair, put back.
+    has(swap('small boy with two short black braids in a green shirt', 'small boy with short black curls in a green shirt'), 'S3915', 'S3907')];
+  ok(`no person a pre-K row writes from pass ND on has hair sharing a style word and a color with another of their kind in the same course or course before (${waiting.length} older pairs wait as a count that only falls, at most ${HAIR_NEAR_WAITING}; three plants caught)`,
+    newer.length === 0 && waiting.length <= HAIR_NEAR_WAITING && plants.every(Boolean), `new pairs: ${newer.map(([a, b, s]) => a.serial + ' and ' + b.serial + ' (' + s.join(', ') + ')').join('; ')}; waiting ${waiting.length}; plants ${plants}`); }
+// The rows pass ND re-picked (the third read): A90's 52 older rows keep their serials, so the hair checks above held them only by their
+// ceilings, never to none, and round one's look for S1468 made a new near pair under that ceiling, found only by round two's
+// alignment read. Each re-picked row is in no pair it was not in before the pass: the pairs it is in today by the three readings (one
+// distinctive hair word, hair written alike, and hair with clothing color), each of them on pass NC's ledger read by today's tool, are
+// named (KEPT_ND), a new one fails, and one that is gone must leave the list. Its plant: S1468's round one look, a short black side
+// ponytail, put back, caught.
+{ const { personReads, hairPairs, hairNearPairs, lookPairs } = await import('../tools/look-echoes.mjs');
+  const REPICKED_ND = ['S1', 'S104', 'S105', 'S1397', 'S1398', 'S1448', 'S1468', 'S3894', 'S3895', 'S3896', 'S3897', 'S3898', 'S3899', 'S3900', 'S3901', 'S3902', 'S3903', 'S3904', 'S3905', 'S3906',
+    'S3907', 'S3908', 'S3909', 'S3910', 'S3911', 'S3912', 'S3913', 'S3914', 'S3915', 'S3916', 'S3917', 'S3918', 'S3919', 'S3920', 'S3921', 'S3922', 'S3939', 'S3940', 'S3941', 'S3942',
+    'S4063', 'S4064', 'S4065', 'S4066', 'S4071', 'S4072', 'S4073', 'S4074', 'S4075', 'S4076', 'S4077', 'S4078'];
+  const KEPT_ND = { near: ['S173 S3907', 'S185 S3911', 'S191 S4075', 'S212 S3907', 'S3911 S4047', 'S3915 S4059'], hair: [],
+    look: ['S104 S128', 'S104 S146', 'S116 S3907', 'S116 S3911', 'S134 S3894', 'S1406 S3942', 'S1465 S3907', 'S1468 S3967', 'S149 S3899', 'S155 S3911', 'S158 S3904', 'S170 S3907', 'S179 S3894',
+      'S179 S3907', 'S179 S3911', 'S200 S3911', 'S209 S3903', 'S215 S3907', 'S3886 S3899', 'S3894 S3907', 'S3894 S3963', 'S3899 S3967', 'S3899 S3970', 'S3903 S3955', 'S3903 S3959', 'S3903 S4011',
+      'S3904 S3955', 'S3907 S3935', 'S3911 S3971', 'S3915 S3931', 'S3915 S3983', 'S3919 S4015', 'S95 S3899'] };
+  const set = new Set(REPICKED_ND); const key = ([a, b]) => [a.serial, b.serial].sort((x, y) => +x.slice(1) - +y.slice(1)).join(' ');
+  const mine = (pairs) => [...new Set(pairs.filter(([a, b]) => set.has(a.serial) || set.has(b.serial)).map(key))];
+  const judge = (text) => { const reads = personReads(text).filter((x) => x.read); return { near: mine(hairNearPairs(reads)), hair: mine(hairPairs(reads)), look: mine(lookPairs(reads)) }; };
+  const diff = (j) => Object.keys(KEPT_ND).flatMap((k) => [...j[k].filter((p) => !KEPT_ND[k].includes(p)).map((p) => 'new ' + k + ' pair ' + p), ...KEPT_ND[k].filter((p) => !j[k].includes(p)).map((p) => 'gone ' + k + ' pair ' + p)]);
+  const now = diff(judge(ledger)); const LOOK = 'a small girl with a short black pixie cut in a red dress';
+  const plant = ledger.includes(LOOK) ? diff(judge(ledger.split(LOOK).join('a small girl with a short black side ponytail in a red dress'))) : [];
+  ok(`no row pass ND re-picked is in a pair it was not in before the pass, by one hair word, hair written alike or hair with clothing color (${REPICKED_ND.length} rows; ${KEPT_ND.near.length + KEPT_ND.hair.length + KEPT_ND.look.length} pairs named, each on pass NC's ledger; S1468's round one look, planted, caught)`,
+    now.length === 0 && plant.some((d) => d.startsWith('new near pair') && d.includes('S1468')), `now: ${now.slice(0, 6).join('; ')}; plant: ${plant.slice(0, 4).join('; ')}`); }
+// Mike's haircut is his (pass ND, round one's story check; pass MQ re-picked a boy with Mike at four's look): Mike, "a shaved-short
+// haircut and curious brown eyes", is painted in every pre-K course, so no other pre-K boy wears a buzz cut, a crew cut or a
+// shaved-short haircut. Its plant: A note for the fridge's boy given his first look, a red buzz cut, caught; Mike's own rows pass.
+{ const { personReads } = await import('../tools/look-echoes.mjs');
+  const MIKE = /shaved-short haircut and curious brown eyes/; const SHORT_CUT = /\b(?:buzz cut|crew cut|shaved)/;
+  const offenders = (text) => personReads(text).filter((x) => x.group === 'boy' && SHORT_CUT.test(x.words) && !MIKE.test(x.words)).map((x) => x.serial);
+  const mikes = personReads(ledger).filter((x) => x.group === 'boy' && MIKE.test(x.words)).length; const now = offenders(ledger);
+  const plant = offenders(ledger.split('A small boy with wavy red hair over his ears and round cheeks,').join('A small boy with a red buzz cut and round cheeks,')).includes('S4103');
+  ok(`no pre-K boy but Mike wears a buzz cut, a crew cut or a shaved-short haircut (${mikes} rows of Mike read; the fridge boy's buzz cut planted, caught)`, mikes >= 3 && now.length === 0 && plant, `${now.join(', ')}; plant ${plant}`); }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

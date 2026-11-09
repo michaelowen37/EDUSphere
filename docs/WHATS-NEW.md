@@ -9,6 +9,13 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## November 9, 2026 (letters and their sounds, and spaces between words)
+
+- Three- and four-year-olds have new lessons on the sounds letters make. Letters and sounds shows three-year-olds that M says mmm, S says sss and B says buh, each with words that start with its sound. Hear it in the name and At the end of the name share a trick with four-year-olds: for some letters, the sound is right in the letter's name, at the start of B, T, K, J and Z, and at the end of M, S, F, L and R. A child hears each sound, finds the letter that says it and says it too.
+- Writing goes on with the spaces between words. Space between words and Spaces between words show that writers leave a little space after each word, about as wide as a finger, so a reader can see where each word starts and stops, and a child picks out the writing that has its spaces. Nothing a child writes is asked for or kept in the app.
+- Pictures on answer buttons are easier to see. Every drawing was measured on its button in both color themes, and the ones whose edges faded into the button got a clearer edge. On a tablet or a laptop, a picture beside its counting dots in a lesson now grows with them, and a letter beside its picture grows with it.
+- Four new Wonder questions for young children are ready for your approval, like every Wonder question: how a new haircut feels, what to do when a favorite stuffed animal is lost at bedtime, a birthday gift that was not the one you hoped for, and what helps when it is time to leave the playground.
+
 ## November 5, 2026 (the sounds in a word, and drawing and writing to tell an idea)
 
 - Three- and four-year-olds have new listening lessons on the sounds in a word. Sounds in a word hears that pie is two sounds, puh and eye, then puts sounds together into a word and takes a word apart. The very first sound finds the one sound a word starts with, even in frog, whose first part is two sounds said together, and Sound by sound puts two or three sounds together and takes words apart, with a dot for each sound. In these lessons a hiss like sss is one short breath, so one sound sounds like one.

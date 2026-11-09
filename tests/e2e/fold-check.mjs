@@ -37,9 +37,14 @@ const SMALL = { width: 320, height: 568 };
 // How many seeds of each bank a child's view is read at (pass MZ, round one's code check: seed 1 alone missed two).
 const SEEDS = 6;
 // What this check reads, as floors at the counts the code has (round two's code check, pass MZ: floors of 800 lines and 300 banks were
-// guesses): since pass NC 1004 lines of 97 lessons, each read at two sizes; 402 banks at six seeds each; the lines whose Next is more than a
-// third below a 320 by 568 screen, where the cue shows (35 in the light theme, 35 in the dark); 111 lines that show a painting; the speech parts
-// kept whole on a line at both sizes (192); and the sentences lit in turn at both sizes (4624) (pass NC's five lessons, since round one Sounds in a
+// guesses): since pass ND 1074 lines of 102 lessons, each read at two sizes; 427 banks at six seeds each; the lines whose Next is more than a
+// third below a 320 by 568 screen, where the cue shows (39 in the light theme, 39 in the dark: round two's content read moved it off Letters and sounds'
+// line 5 and onto its line 8 and Hear it in the name's line 8); 112 lines that show a painting; the speech parts
+// kept whole on a line at both sizes (192); and the sentences lit in turn at both sizes (4968) (pass ND's five lessons, Letters and sounds,
+// Hear it in the name, At the end of the name, Space between words and Spaces between words, fourteen lines each, with twenty-five banks;
+// round two's code read found the floors still pass NC's, under which those lessons and banks could have dropped out of the read unnoticed;
+// pass NC's floors were 1004 lines of 97 lessons, 402 banks, a cue on 35 and 35 lines, 111 lines with a painting and 4624 sentences lit, from
+// pass NC's five lessons, since round one Sounds in a
 // word's fourteen lines and The very first sound's fourteen, Sound by sound's thirteen, Draw and tell's thirteen and Write to tell's fourteen, with
 // twenty-five banks; pass NB's floors were 936 lines, 377 banks, a cue on 35 and 34 lines and 106 lines with a painting; before them, pass
 // NA's 895 lines of 89 lessons, 362 banks and 103 lines with a painting, from pass NA's three lessons, Sun and sock's fourteen lines since round one and the other two's thirteen, fifteen banks and a painting each, with
@@ -48,7 +53,7 @@ const SEEDS = 6;
 // a painting). A lesson or a bank
 // added raises a count, and its floor follows in the same pass; a layout that moves a Next changes the cue's count, and its floor follows
 // that too, once the cue's own rule has passed on every line.
-const FLOORS = { lines: 1004, banks: 402, cue: { light: 35, dark: 35 }, paintings: 111, whole: 192, lit: 4624 };
+const FLOORS = { lines: 1074, banks: 427, cue: { light: 39, dark: 39 }, paintings: 112, whole: 192, lit: 4968 };
 // EARMARKS A82 decided (pass NC, round one's screen check): at 320 by 568 no pre-K lesson line ends on one lone word (25 of the 69 lines
 // past six lines did, where a browser balances nothing), a line past six lines wrapping pretty (LessonWords in ui.jsx). A line that
 // must end alone is named here by lesson and line with the reason; a wait for a line that no longer ends alone fails.

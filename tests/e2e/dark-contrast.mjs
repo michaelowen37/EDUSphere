@@ -207,6 +207,10 @@ const tapInk = () => page.evaluate(() => {
   await walkInto('Walk through elementary'); }
 // A ruled-out answer on the dark board stays visible (2026-09-29, Mikey): answer a practice question wrong, tap Try again,
 // and the greyed choice must keep its ink apart from its background at seven-tenths or more.
+// Its background is pinned as the page hands it back, rgb(41, 64, 53): the dark ruled-out tile is #294035 since pass ND, where
+// round two's code read set it a shade under the right tile's lightness so every drawing on it reads (tests/e2e/tile-edges.mjs).
+// It was #2C4238, rgb(44, 66, 56), from pass GA; this pin kept the old color after the change, since the search for it was for
+// its hex, and check.sh's second run of pass ND failed here, so the rules test now reads every rgb() a test pins against src.
 { await keepAlive(); await page.evaluate(() => window.__eduTest.goTo('overview')); await page.waitForTimeout(300);
   // The first unlocked early module: open it, go from its lesson to practice, and wait for a question to appear.
   for (const id of ['count-to-3', 'one-and-two', 'washing-hands', 'tell-and-show', 'wants-needs-and-choices']) {
@@ -226,7 +230,7 @@ const tapInk = () => page.evaluate(() => {
     await el.click(); await page.getByRole('button', { name: 'Check answer' }).click(); await page.waitForTimeout(200);
     const again = page.getByRole('button', { name: 'Try again' }); if (await again.count()) { await again.click(); await page.waitForTimeout(200); }
     const look = await el.evaluate((node) => { const cs = getComputedStyle(node); return { opacity: Number(cs.opacity), color: cs.color, bg: cs.backgroundColor }; });
-    ok('a ruled-out answer stays readable on the dark board', look.opacity >= 0.7 && look.color !== look.bg && look.bg === 'rgb(44, 66, 56)', JSON.stringify(look));
+    ok('a ruled-out answer stays readable on the dark board', look.opacity >= 0.7 && look.color !== look.bg && look.bg === 'rgb(41, 64, 53)', JSON.stringify(look));
   } else ok('a ruled-out answer stays readable on the dark board', false, `no choice question on the practice screen: ${JSON.stringify(q0 && q0.type)}`);
   await page.evaluate(() => window.__eduTest.goTo('overview')); await page.waitForTimeout(200); }
 // The colorful rows on the courses page, opened one at a time: they keep their color and their words stay readable. With motion

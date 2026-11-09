@@ -200,6 +200,22 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A sample built by hand to look like a real screen drifts: the LI tour sample missed the Merge link and the Wonder pill and was laid out differently, and Mikey saw all three at a glance. Feed made-up data through the real component instead, with taps switched off, and the sample can never differ from the page.
 - Count a daily allowance against the day as it started, not as it stands: finishing the first review shrinks the queue, and a rule that rechecked the live queue would cancel the second review the backlog asked for.
 
+## Learned in pass ND (Domain III's letters and their sounds, Domain IV's spaces between words, four early Wonder questions and the screen and story reads)
+
+- A lesson models every kind of question its banks ask, and pass NC had learned it, so the second time it has a check: a phrase for each kind read against every line (the letters lessons never asked which picture starts with a letter's sound, or which letter a word starts with).
+- A question about which writing has more words, or which group has a dot for each word, is read for what its look gives away: the widest writing answered it in four pairs of five, and one fewer, the right count and one more put the answer in the middle every time, so each lesson shows writing that looks long but has few words, and the banks choose so that neither the width nor the place answers.
+- What the screen prints is read for what a child can match by sight, not only for what it says: a wrong tap's printed reason showed juh beside J, K and Z, so it hides the sound while the voice says it.
+- A claim about all writing or all writers is read against the writing and the writers it leaves out ("When people write" is untrue of writing with no spaces, and grown writers do not make a space with a finger).
+- A measure that says other checks read what it skips is read for whether they do: tile-edges left nine kinds to checks that did not read them, and with them read, three kinds fell short; and a browser check reads the page's own values (each theme's tiles, a dot's circle), never values typed into the test or the box a drawing sits in.
+- A number written in a comment or a record is measured first: the dots "at a laptop's counting size, 60 pixels" drew 42.9 to 51.4, and an answer "a third of the time each" is 22, 46 and 33 percent at seeds 1 to 400, where the sentences' counts would give 28, 44 and 28, so an expectation is written as one and a measure as the other.
+- A painting that would sit over the print a line shows and names is not logged, and a person's look is read against the cast and the course's grown-ups word by word, a beard and a style word as well as the whole look.
+- A fix is read again for the fault it fixed and for the fault it may make: round one's "but I is" modeled a form pre-K 4 teaches as wrong, and the bulb's new filament still read as a capital M.
+- A lesson's own definition is read against every reason its banks give: a word can be one letter, like I, so the banks count words, not groups of letters.
+- A check is proven against the old way it was written for, with the fix undone in a copy: the widest writing's band of 30 to 70 percent passed the old draw at 62, so it is 45 to 55; and undoing each fix found five with no check at all.
+- A style word is read in its forms (curly and curls), and a size is read as drawn, never as a font size a transform can hide.
+- A rule a fix applies is searched for across the whole screen code: round two kept grown-up whole on a pre-reader's cards and a reader's voices, and a reader's options still printed it bare.
+- A record says what a check holds and what is read by eye: round two's said every fix had a check, and with the content read's fixes undone every test still passed.
+
 ## Learned in pass NC (Domain III's phonemes, Domain IV begun, four early Wonder questions and the screen read)
 
 - A child can answer by the kind of sound as well as by the sound: where an answer is one of the app's own sounds and its wrong choice a word the voice says, the voice gives the answer away, so every heard choice's kind is read against its answer's (Sounds in a word's first-sound question had always set a vowel the voice says beside the app's own sound).

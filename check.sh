@@ -90,6 +90,10 @@ echo "13i/13 the reading lists' Details, in both themes"; run "the reading lists
 # every line with a painting again, with a stand-in painting in place: about 22 minutes beside another step (eighteen before the
 # paintings, eleven before pass MZ), so its limit is about twice that.
 echo "13j/13 every pre-K line and question on a short phone, in both themes"; run "the fold check" 2600 node tests/e2e/fold-check.mjs 2>&1 | tail -1 | tee /tmp/edu_fold.txt; grep -q " 0 failed" /tmp/edu_fold.txt || fail=1
+# Every drawing a bank puts on an answer tile reads at its edge on the resting, right and wrong tiles of both themes (pass ND, EARMARKS
+# A89, the screen read), none waiting, every kind of drawing read since round one's code check: about three minutes alone, so its limit of
+# eight minutes is about twice its time beside another step.
+echo "13k/13 every drawing on an answer tile, at its edge, in both themes"; run "the tile edges" 480 node tests/e2e/tile-edges.mjs 2>&1 | tail -1 | tee /tmp/edu_edges.txt; grep -q " 0 failed" /tmp/edu_edges.txt || fail=1
 # A step stopped at its limit, or one past two thirds of it (run and slow, above), is named again here, just before the verdict.
 [ -s "$slow_file" ] && cat "$slow_file"
 if [ "$fail" = 0 ]; then echo "ALL CHECKS PASSED"; else echo "CHECKS FAILED - read the lines above"; exit 1; fi

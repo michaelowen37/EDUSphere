@@ -504,7 +504,7 @@ const PREK_TAUGHT = [
       { framework: 'TEKS', code: 'PK3.III.C.1', text: 'Child participates in alphabet activities and recognizes some frequently encountered letters with adult assistance.', moduleIds: ['a-and-b'] },
       { framework: 'TEKS', code: 'PK3.V.D.1', text: 'Child sorts objects based on one attribute such as color, shape, or size.', moduleIds: ['not-the-same'] },
       { framework: 'CCSS', code: 'ELOF.P-MATH.9', text: 'Identifies, describes, compares, and composes shapes.', moduleIds: ['circle-and-square'] },
-      { framework: 'CCSS', code: 'ELOF.P-LIT.3', text: 'Identifies letters of the alphabet and produces correct sounds associated with letters.', moduleIds: ['a-and-b'] },
+      { framework: 'CCSS', code: 'ELOF.P-LIT.3', text: 'Identifies letters of the alphabet and produces correct sounds associated with letters.', moduleIds: ['a-and-b', 'letters-and-sounds'] },
       { framework: 'CCSS', code: 'ELOF.P-MATH.8', text: 'Measures objects by their various attributes using standard and non-standard measurement. Uses differences in attributes to make comparisons.', moduleIds: ['not-the-same'] },
       { framework: 'CCSS', code: 'ELOF.P-SCI.3', text: 'Compares and categorizes observable phenomena.', moduleIds: ['not-the-same'] },
       { framework: 'TEKS', code: 'PK3.II.A.1', text: 'Child shows understanding of spoken communication by responding to adults and peers using verbal and nonverbal behaviors.', moduleIds: ['listen-and-tap-pictures', 'two-ideas', 'two-ideas-more'] },
@@ -567,6 +567,14 @@ const PREK_TAUGHT = [
       { framework: 'TEKS', code: 'PK3.IV.A.2', text: 'Child draws and writes for different purposes to communicate ideas, using a variety of writing tools with adult modeling.', moduleIds: ['draw-and-tell'] },
       { framework: 'TEKS', code: 'PK3.IV.C.2', text: 'Child uses drawings, scribbles, and mock letters to communicate ideas.', moduleIds: ['draw-and-tell'] },
       { framework: 'CCSS', code: 'ELOF.P-LIT.6', text: 'Writes for a variety of purposes using increasingly sophisticated marks.', moduleIds: ['draw-and-tell'] },
+      // Pass ND: Letters and sounds, PK3 III.C.2 and III.C.3 (EARMARKS E12, the standards review of Domain III's letters and their sounds),
+      // and Space between words, PK3 IV.C.5 and III.E.4 in part and Head Start's P-LIT 2 in part, its 36 to 48 month progression (EARMARKS
+      // E12, Domain IV's spaces between words); Letters and sounds joins A and B in the P-LIT 3 row of the Reading plan.
+      { framework: 'TEKS', code: 'PK3.III.C.2', text: 'Child recognizes some distinct letter-sound correspondences with adult assistance.', moduleIds: ['letters-and-sounds'] },
+      { framework: 'TEKS', code: 'PK3.III.C.3', text: 'Child produces some distinct letter-sound correspondences with adult assistance.', moduleIds: ['letters-and-sounds'] },
+      { framework: 'TEKS', code: 'PK3.IV.C.5', text: 'Child demonstrates emerging use of spacing in their writing attempts with adult support.', moduleIds: ['space-between-words'] },
+      { framework: 'TEKS', code: 'PK3.III.E.4', text: 'Child begins to notice the basic features of print.', moduleIds: ['space-between-words'] },
+      { framework: 'CCSS', code: 'ELOF.P-LIT.2', text: 'Demonstrates an understanding of how print is used (functions of print) and the rules that govern how print works (conventions of print).', moduleIds: ['space-between-words'] },
     ],
   },
   {
@@ -685,9 +693,18 @@ const PREK_TAUGHT = [
       { framework: 'TEKS', code: 'PK4.IV.A.1', text: 'Child intentionally uses drawings and marks, letters, or symbols to represent ideas and verbally shares intended meaning with an adult or peer.', moduleIds: ['write-to-tell'] },
       { framework: 'TEKS', code: 'PK4.IV.A.2', text: 'Child independently draws and writes for many purposes to communicate ideas, using a variety of writing tools with support as needed.', moduleIds: ['write-to-tell'] },
       { framework: 'CCSS', code: 'ELOF.P-LIT.6', text: 'Writes for a variety of purposes using increasingly sophisticated marks.', moduleIds: ['write-to-tell'] },
+      // Pass ND: Hear it in the name and At the end of the name, PK4 III.C.2 and III.C.3 in part (EARMARKS E13, the standards review of
+      // Domain III's letters and their sounds: ten letters of the twenty and fifteen, the rest in the next pass's lessons), each joining the
+      // P-LIT 3 row; and Spaces between words, PK4 IV.C.5 in part, III.E.2 whole and Head Start's P-LIT 2 in part, its 48 to 60 month
+      // progression (EARMARKS E13, Domain IV's spaces between words).
+      { framework: 'TEKS', code: 'PK4.III.C.2', text: 'Child recognizes at least 20 distinct letter-sound correspondences.', moduleIds: ['hear-it-in-the-name', 'end-of-the-name'] },
+      { framework: 'TEKS', code: 'PK4.III.C.3', text: 'Child produces at least 15 distinct letter-sound correspondences.', moduleIds: ['hear-it-in-the-name', 'end-of-the-name'] },
+      { framework: 'TEKS', code: 'PK4.IV.C.5', text: 'Child demonstrates use of spacing in their writing with adult support as needed.', moduleIds: ['spaces-between-words'] },
+      { framework: 'TEKS', code: 'PK4.III.E.2', text: 'Child can distinguish between elements of print including letters, words, and pictures.', moduleIds: ['spaces-between-words'] },
+      { framework: 'CCSS', code: 'ELOF.P-LIT.2', text: 'Demonstrates an understanding of how print is used (functions of print) and the rules that govern how print works (conventions of print).', moduleIds: ['spaces-between-words'] },
       { framework: 'TEKS', code: 'PK4.III.C.1', text: 'Child recognizes and names at least 18 uppercase letters and 15 lowercase letters.', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
       { framework: 'CCSS', code: 'ELOF.P-LIT.1', text: 'Demonstrates awareness that spoken language is composed of smaller segments of sound.', moduleIds: ['listen-for-rhymes', 'first-sounds', 'clap-the-beats', 'same-word-or-different', 'think-of-a-word', 'star-and-spoon', 'make-a-rhyme', 'very-first-sound', 'sound-by-sound'] },
-      { framework: 'CCSS', code: 'ELOF.P-LIT.3', text: 'Identifies letters of the alphabet and produces correct sounds associated with letters.', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
+      { framework: 'CCSS', code: 'ELOF.P-LIT.3', text: 'Identifies letters of the alphabet and produces correct sounds associated with letters.', moduleIds: ['big-letters', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters', 'hear-it-in-the-name', 'end-of-the-name'] },
       { framework: 'TEKS', code: 'PK4.IV.C.2', text: 'Child progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas.', moduleIds: ['first-letter-tracing', 'more-big-letters', 'trace-straight-letters', 'write-to-tell'] },
       { framework: 'TEKS', code: 'PK4.IV.C.4', text: 'Child demonstrates directionality when writing (e.g., top to bottom, left to right) adult support as needed.', moduleIds: ['first-strokes', 'first-letter-tracing', 'more-big-letters', 'trace-straight-letters'] },
       // Pass MR (Mikey: "I think we should go ahead and implement the new recommendations from the 2027 Pre-K Guidelines Review

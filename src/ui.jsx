@@ -555,19 +555,26 @@ function NumberLine({ parts, mark }) {
 }
 
 // An array: rows and columns of dots, the picture of a multiplication.
-function ArrayPic({ rows, cols, size = 18 }) {
+// Since pass NE (EARMARKS A92) an array on the dark theme's paper (paper, which PictureInner passes) draws in the paper's own green,
+// B.green, as the solids do: the dark theme's green read 1.60 to 1 on that paper, so none of its edge read 3 to 1; B.green reads 5.82.
+// An answer tile keeps the live palette's green, and the light theme's green is B.green already.
+function ArrayPic({ rows, cols, size = 18, paper = false }) {
   const gap = 6; const w = cols * (size + gap) - gap; const h = rows * (size + gap) - gap;
+  const fill = C.mode === 'dark' && paper ? B.green : C.green;
   return (
     <svg viewBox={`0 0 ${w} ${h}`} width={Math.min(w, 280)} role="img" aria-label={`${rows} rows of ${cols}`} style={{ display: 'block', margin: '0 auto', maxWidth: '100%', height: 'auto' }}>
       {Array.from({ length: rows * cols }).map((_, i) => (
-        <circle key={i} cx={(i % cols) * (size + gap) + size / 2} cy={Math.floor(i / cols) * (size + gap) + size / 2} r={size / 2} fill={C.green} />
+        <circle key={i} cx={(i % cols) * (size + gap) + size / 2} cy={Math.floor(i / cols) * (size + gap) + size / 2} r={size / 2} fill={fill} />
       ))}
     </svg>
   );
 }
 
 // Groups of ten, drawn as neat ten-frames, so counting by tens has something to point at.
-function TensGroup({ count, size = 22, animate = false, animKey = 0 }) {
+// Since pass NE (EARMARKS A92) tens on the dark theme's paper (paper, which PictureInner passes) draw in the paper's own green, as an
+// array does: the dark theme's green read 1.60 to 1 there; B.green reads 5.82. An answer tile keeps the live palette's green.
+function TensGroup({ count, size = 22, animate = false, animKey = 0, paper = false }) {
+  const fill = C.mode === 'dark' && paper ? B.green : C.green;
   const gap = 6; const frameW = size * 5 + gap * 4; const frameH = size * 2 + gap;
   const cols = Math.min(count, 5); const rows = Math.ceil(count / 5);
   const w = cols * (frameW + 14) - 14; const h = rows * (frameH + 14) - 14;
@@ -578,7 +585,7 @@ function TensGroup({ count, size = 22, animate = false, animKey = 0 }) {
         return (
           <g key={`${animKey}-${g}`} className={animate ? 'edu-drift' : undefined} style={animate ? { animationDelay: `${g * 0.5}s`, transformBox: 'fill-box', transformOrigin: 'center' } : undefined}>
             {Array.from({ length: 10 }).map((__, i) => (
-              <rect key={i} x={ox + (i % 5) * (size + gap)} y={oy + Math.floor(i / 5) * (size + gap)} width={size} height={size} rx={size / 2} fill={C.green} />
+              <rect key={i} x={ox + (i % 5) * (size + gap)} y={oy + Math.floor(i / 5) * (size + gap)} width={size} height={size} rx={size / 2} fill={fill} />
             ))}
           </g>
         );
@@ -589,11 +596,16 @@ function TensGroup({ count, size = 22, animate = false, animKey = 0 }) {
 
 // Lines of different lengths, or towers of different heights, for comparing size. On a light theme's answer tile (tile) each cell wears
 // the duck's deeper gold edge (pass ND, round one's code check: C.gold read 2.73 and 2.63 to 1 on a right and a wrong answer's tile).
+// Since pass NE (EARMARKS A92) on the dark theme's paper (dkPaper, as IconPic's: dark, not on a tile) each cell takes the paper's own
+// gold, B.gold, and wears the same deeper edge: the dark theme's gold read 1.75 to 1 on that paper and B.gold alone 2.51; the edge reads
+// 3.42. A dark tile keeps its gold and no edge, and the light theme is as it was.
 function BarPic({ length, vertical = false, size = 22, tile = false }) {
-  const edge = tile && C.mode !== 'dark' ? { stroke: '#94741A', strokeWidth: 2 } : {};
+  const dkPaper = C.mode === 'dark' && !tile;
+  const edge = (tile && C.mode !== 'dark') || dkPaper ? { stroke: '#94741A', strokeWidth: 2 } : {};
+  const fill = dkPaper ? B.gold : C.gold;
   const cells = Array.from({ length }).map((_, i) => vertical
-    ? <rect key={i} x="0" y={(9 - 1 - i) * (size + 3)} width={size * 1.6} height={size} rx="4" fill={C.gold} {...edge} />
-    : <rect key={i} x={i * (size + 3)} y="0" width={size} height={size * 1.6} rx="4" fill={C.gold} {...edge} />);
+    ? <rect key={i} x="0" y={(9 - 1 - i) * (size + 3)} width={size * 1.6} height={size} rx="4" fill={fill} {...edge} />
+    : <rect key={i} x={i * (size + 3)} y="0" width={size} height={size * 1.6} rx="4" fill={fill} {...edge} />);
   const w = vertical ? size * 1.6 : 9 * (size + 3) - 3; const h = vertical ? 9 * (size + 3) - 3 : size * 1.6;
   return <svg viewBox={`0 0 ${w} ${h}`} width={vertical ? 40 : Math.min(w, 260)} height={vertical ? 160 : undefined} role="img" aria-label={vertical ? `tower ${length}` : `line ${length}`} style={{ display: 'block', margin: '0 auto', maxWidth: '100%' }}>{cells}</svg>;
 }
@@ -607,8 +619,11 @@ function SolidPic({ name, size = 90, color = C.green, tile = false }) {   // col
   // read 1.1 to 1.5 to 1 there, so every face wears a pale green rim, the ball's own highlight, 5.95 or better (rim); and the pale tops of
   // the box, the cube and the cylinder and the cylinder's lit side, 1.4 to 2.5 on the light theme's tiles, wear an edge of the solid's
   // own green there, 6.09 or better, and that pale rim on a dark tile (lid).
-  const dk = C.mode === 'dark' && tile;
+  // Since pass NE (EARMARKS A92) the cone's side wears the solid's own green on the dark theme's paper (dkPaper, as IconPic's): its lit
+  // side, #7FB09A, read 1.90 to 1 there, so 0.93 of its edge read 3 to 1; the other solids' lids already wear it.
+  const dk = C.mode === 'dark' && tile; const dkPaper = C.mode === 'dark' && !tile;
   const rim = dk ? { stroke: '#9CC7B0', strokeWidth: 2, strokeLinejoin: 'round' } : {};
+  const side = dkPaper ? { stroke: color, strokeWidth: 2, strokeLinejoin: 'round' } : rim;
   const lid = { stroke: dk ? '#9CC7B0' : color, strokeWidth: 2, strokeLinejoin: 'round' };
   const uid = `s${clean}${color === C.green ? '' : String(color).replace(/[^0-9a-z]/gi, '')}`;
   const defs = (
@@ -628,7 +643,7 @@ function SolidPic({ name, size = 90, color = C.green, tile = false }) {   // col
     : clean === 'box' ? <g>{shadow}<path d="M10 38 L32 22 L90 22 L68 38 Z" fill={`url(#${uid}-top)`} {...lid} /><path d="M10 38 L68 38 L68 82 L10 82 Z" fill={color} {...rim} /><path d="M68 38 L90 22 L90 66 L68 82 Z" fill={`url(#${uid}-side)`} {...rim} /></g>
     // A triangular prism (pass KY): a triangle in front and the same triangle behind, joined by three rectangles, like a tent.
     : clean === 'prism' ? <g>{shadow}<path d="M44 24 L66 10 L96 66 L74 80 Z" fill={`url(#${uid}-side)`} {...rim} /><path d="M14 80 L44 24 L74 80 Z" fill={color} {...rim} /><path d="M74 80 L96 66" stroke={dk ? '#9CC7B0' : '#1F3B31'} strokeWidth="1.5" /></g>
-    : <g>{shadow}<path d="M50 12 L22 74 L78 74 Z" fill={`url(#${uid}-cone)`} {...rim} /><ellipse cx="50" cy="74" rx="28" ry="10" fill="#2A4E42" /><path d="M22 74 A28 10 0 0 0 78 74" fill="none" {...rim} /></g>;
+    : <g>{shadow}<path d="M50 12 L22 74 L78 74 Z" fill={`url(#${uid}-cone)`} {...side} /><ellipse cx="50" cy="74" rx="28" ry="10" fill="#2A4E42" /><path d="M22 74 A28 10 0 0 0 78 74" fill="none" {...rim} /></g>;
   return <svg viewBox="0 0 100 100" width={size} height={size} role="img" aria-label={clean} style={{ display: 'block', margin: '0 auto' }}>{defs}{body}</svg>;
 }
 
@@ -707,8 +722,11 @@ function IconPic({ name, size = 90, tile = false }) {
     // keeps the gold, which reads well there.
     star: <path d="M50 12 L60 38 L88 39 L66 56 L74 84 L50 68 L26 84 L34 56 L12 39 L40 38 Z" fill={gold} stroke={dk ? '#D99A2B' : '#94741A'} strokeWidth="3" strokeLinejoin="round" />,
     // Its mound on a dark tile takes the door's lighter wood (pass ND, EARMARKS A89): the brown read 1.91 to 2.40 to 1 there, now 3.53.
-    soil: <g><path d="M10 80 Q50 44 90 80 Z" fill={dk ? '#BC8650' : brown} /><path d="M10 80 L90 80" stroke="#6B4321" strokeWidth="4" strokeLinecap="round" />{[[30, 74], [42, 68], [56, 70], [68, 75], [50, 77]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r="2.6" fill="#E8C9A0" />)}<path d="M50 62 L50 36" stroke={green} strokeWidth="4" strokeLinecap="round" /><path d="M50 46 Q38 36 30 42 Q40 50 50 46 Z" fill={green} /><path d="M50 41 Q62 30 72 36 Q60 46 50 41 Z" fill={green} /></g>,
-    wind: <g fill="none" stroke={blue} strokeWidth="5" strokeLinecap="round"><path d="M14 36 H62 a10 10 0 1 0 -10 -10" /><path d="M14 54 H76 a10 10 0 1 1 -10 10" /><path d="M14 72 H48" /></g>,
+    // Since pass NE (EARMARKS A92) its sprout on the dark theme's paper is the paper's own green, B.green, the light theme's: the dark
+    // theme's green read 1.60 to 1 there, so 0.53 of the soil's edge read 3 to 1; B.green reads 5.82.
+    soil: <g><path d="M10 80 Q50 44 90 80 Z" fill={dk ? '#BC8650' : brown} /><path d="M10 80 L90 80" stroke="#6B4321" strokeWidth="4" strokeLinecap="round" />{[[30, 74], [42, 68], [56, 70], [68, 75], [50, 77]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r="2.6" fill="#E8C9A0" />)}<path d="M50 62 L50 36" stroke={dkPaper ? B.green : green} strokeWidth="4" strokeLinecap="round" /><path d="M50 46 Q38 36 30 42 Q40 50 50 46 Z" fill={dkPaper ? B.green : green} /><path d="M50 41 Q62 30 72 36 Q60 46 50 41 Z" fill={dkPaper ? B.green : green} /></g>,
+    // Since pass NE (EARMARKS A92) the wind on the dark theme's paper takes the rain's paper blue: the blue read 2.96 to 1 there, now 3.58.
+    wind: <g fill="none" stroke={dkPaper ? '#3F78B4' : blue} strokeWidth="5" strokeLinecap="round"><path d="M14 36 H62 a10 10 0 1 0 -10 -10" /><path d="M14 54 H76 a10 10 0 1 1 -10 10" /><path d="M14 72 H48" /></g>,
     sun: <g><defs><radialGradient id="eduSunG" cx="40%" cy="38%" r="65%"><stop offset="0" stopColor="#FFF1B8" /><stop offset="0.6" stopColor={gold} /><stop offset="1" stopColor="#D99A2B" /></radialGradient></defs><circle cx="50" cy="50" r="30" fill={gold} opacity="0.18" /><circle cx="50" cy="50" r="20" fill="url(#eduSunG)" stroke={dk ? 'none' : '#94741A'} strokeWidth="2" />{[0, 45, 90, 135, 180, 225, 270, 315].map((a) => <line key={a} x1={50 + 28 * Math.cos(a * Math.PI / 180)} y1={50 + 28 * Math.sin(a * Math.PI / 180)} x2={50 + 40 * Math.cos(a * Math.PI / 180)} y2={50 + 40 * Math.sin(a * Math.PI / 180)} stroke={dk ? gold : '#94741A'} strokeWidth="5" strokeLinecap="round" />)}</g>,
     // The moon (pass IT): the old path's two arcs fell onto the same half-circle and drew nothing. Now a crescent, an outer
     // half-circle and a flatter inner arc.
@@ -735,7 +753,9 @@ function IconPic({ name, size = 90, tile = false }) {
     snow: <g><path d="M28 52a14 14 0 0 1 3-27 20 20 0 0 1 38-4 15 15 0 0 1 3 31z" fill="#D6DBD2" stroke={dk ? grey : '#7A8076'} strokeWidth="3" />{[[34, 70], [50, 80], [66, 70]].map(([x, y], i) => <path key={i} d={'M' + (x - 6) + ' ' + y + ' L' + (x + 6) + ' ' + y + ' M' + x + ' ' + (y - 6) + ' L' + x + ' ' + (y + 6) + ' M' + (x - 4.2) + ' ' + (y - 4.2) + ' L' + (x + 4.2) + ' ' + (y + 4.2) + ' M' + (x - 4.2) + ' ' + (y + 4.2) + ' L' + (x + 4.2) + ' ' + (y - 4.2)} stroke={dk ? '#6FA3DA' : dkPaper ? '#3F78B4' : blue} strokeWidth="2.4" strokeLinecap="round" />)}</g>,
     // The plant on a dark tile (pass ND, EARMARKS A89): its brown pot read 1.91 to 1 on a right answer's tile, its stem 2.26 and its leaves'
     // shaded ends 1.4; the door's lighter wood, a lighter green and the tree's pale ring read 3.46 or better.
-    plant: <g><defs><linearGradient id="eduLeafG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#6FAF7E" /><stop offset="1" stopColor="#245A3C" /></linearGradient></defs><rect x="30" y="72" width="40" height="16" rx="4" fill={dk ? '#BC8650' : brown} /><rect x="30" y="72" width="40" height="4" rx="2" fill="#A8743F" opacity="0.7" /><line x1="50" y1="72" x2="50" y2="34" stroke={dk ? '#5A9E68' : '#3E7D52'} strokeWidth="5" strokeLinecap="round" /><ellipse cx="38" cy="48" rx="12" ry="7" fill="url(#eduLeafG)" stroke={dk ? '#B9DCC4' : 'none'} strokeWidth="2" transform="rotate(-30 38 48)" /><ellipse cx="62" cy="40" rx="12" ry="7" fill="url(#eduLeafG)" stroke={dk ? '#B9DCC4' : 'none'} strokeWidth="2" transform="rotate(30 62 40)" /></g>,
+    // Since pass NE (EARMARKS A92) its leaves on the dark theme's paper wear the tree's deep green ring there: their lit ends, #6FAF7E, read
+    // 2.01 to 1 on that paper, so 0.90 of the plant's edge read 3 to 1; #245A3C reads 6.26.
+    plant: <g><defs><linearGradient id="eduLeafG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#6FAF7E" /><stop offset="1" stopColor="#245A3C" /></linearGradient></defs><rect x="30" y="72" width="40" height="16" rx="4" fill={dk ? '#BC8650' : brown} /><rect x="30" y="72" width="40" height="4" rx="2" fill="#A8743F" opacity="0.7" /><line x1="50" y1="72" x2="50" y2="34" stroke={dk ? '#5A9E68' : '#3E7D52'} strokeWidth="5" strokeLinecap="round" /><ellipse cx="38" cy="48" rx="12" ry="7" fill="url(#eduLeafG)" stroke={dk ? '#B9DCC4' : dkPaper ? '#245A3C' : 'none'} strokeWidth="2" transform="rotate(-30 38 48)" /><ellipse cx="62" cy="40" rx="12" ry="7" fill="url(#eduLeafG)" stroke={dk ? '#B9DCC4' : dkPaper ? '#245A3C' : 'none'} strokeWidth="2" transform="rotate(30 62 40)" /></g>,
     // The tree's edge (pass NB, round one's picture check): on a dark tile its shaded canopy read 1.89 to 1 and its trunk 2.38, and on the
     // dark paper its lit edge 2.89; a pale green ring and a lighter trunk on a dark tile, and a deep green ring on the dark paper, read 4.42
     // and 4.53.
@@ -757,7 +777,9 @@ function IconPic({ name, size = 90, tile = false }) {
     // and its deep side 1.9 to 2.3 on a right answer's dark tile; a deep blue edge (4.75 or better) and, on a dark tile, a pale
     // one (6.28 or better).
     drop: <g><defs><radialGradient id="eduDropG" cx="38%" cy="55%" r="70%"><stop offset="0" stopColor="#9CC7F0" /><stop offset="1" stopColor="#2F66A8" /></radialGradient></defs><path d="M50 14q26 34 26 50a26 26 0 0 1-52 0q0-16 26-50z" fill="url(#eduDropG)" stroke={dk ? '#9CC7F0' : '#2F66A8'} strokeWidth="2.5" /><ellipse cx="40" cy="58" rx="5" ry="9" fill="#fff" opacity="0.45" transform="rotate(-20 40 58)" /></g>,
-    ice: <g><rect x="24" y="30" width="52" height="46" rx="6" fill="#DDEBF7" stroke={blue} strokeWidth="3" /><line x1="34" y1="40" x2="46" y2="52" stroke="#fff" strokeWidth="4" strokeLinecap="round" /></g>,
+    // Since pass NE (EARMARKS A92) the ice's edge on the dark theme's paper is the rain's paper blue: the blue read 2.96 to 1 there, and the
+    // pale ice inside it none of its edge; #3F78B4 reads 3.58.
+    ice: <g><rect x="24" y="30" width="52" height="46" rx="6" fill="#DDEBF7" stroke={dkPaper ? '#3F78B4' : blue} strokeWidth="3" /><line x1="34" y1="40" x2="46" y2="52" stroke="#fff" strokeWidth="4" strokeLinecap="round" /></g>,
     // The fire's and the magnet's red on a dark tile (pass ND, EARMARKS A89): 2.61 to 1 on a right answer's tile, and the flower's lighter
     // petal red reads 3.78 or better there. In the light theme the magnet's gray tips wear the bird's darker gray edge: they read 2.76 and
     // 2.66 to 1 on a right and a wrong answer's tile, and the edge 4.22 and 4.06.
@@ -804,17 +826,27 @@ function IconPic({ name, size = 90, tile = false }) {
     flashlight: <g transform="rotate(-30 50 50)"><rect x="16" y="38" width="44" height="24" rx="5" fill="#4A6A86" stroke={dk ? '#8FA9C2' : '#2E4A62'} strokeWidth="3" /><path d="M60 34 L78 26 L78 74 L60 66 Z" fill="#6B8AA6" stroke={dk ? '#8FA9C2' : '#2E4A62'} strokeWidth="3" strokeLinejoin="round" /><path d="M82 30 L96 22 M84 50 L98 50 M82 70 L96 78" stroke={dk ? gold : '#94741A'} strokeWidth="4" strokeLinecap="round" /><rect x="24" y="44" width="10" height="12" rx="2" fill={red} /></g>,
     // The lamp (since pass ND, EARMARKS A89, where At the end of the name puts it on a tile): its pole the rain's deeper grey and its rays
     // a deeper gold in the light theme, which read 2.78 and 2.8 to 1 on its right tile before, and its base lighter on a dark tile, where
-    // it read 2.7 to 1; the dark theme's paper keeps its colors.
-    lamp: <g><path d="M30 44 L70 44 L62 14 L38 14 Z" fill="#F2C14E" stroke="#8A6A1F" strokeWidth="3" strokeLinejoin="round" /><rect x="47" y="44" width="6" height="32" fill={dk ? '#8A9086' : '#7A8076'} /><path d="M28 88 Q50 72 72 88 Z" fill={dk ? '#868C82' : '#6B716A'} stroke={dk ? '#A9B0A6' : '#4A4F49'} strokeWidth="2" /><path d="M24 50 L14 58 M76 50 L86 58 M50 48 L50 60" stroke={C.mode === 'dark' ? gold : '#9C7A14'} strokeWidth="3" strokeLinecap="round" opacity="0.9" /></g>,
-    shadow: <g><circle cx="16" cy="16" r="8" fill={gold} /><path d="M26 16 L32 16 M16 26 L16 32 M23 23 L27 27" stroke={gold} strokeWidth="3" strokeLinecap="round" /><path d="M14 90 L96 90" stroke="#B9BFB9" strokeWidth="2" strokeLinecap="round" /><path d="M34 88 L82 70 L92 76 L42 92 Z" fill="#3A3A3A" opacity="0.5" /><circle cx="90" cy="68" r="6.5" fill="#3A3A3A" opacity="0.5" /><circle cx="40" cy="30" r="9" fill="#E8C9A0" /><rect x="33" y="40" width="14" height="26" rx="5" fill="#4A86C5" /><path d="M36 66 L35 86 M44 66 L45 86" stroke="#2F5F91" strokeWidth="5" strokeLinecap="round" /><path d="M33 46 L24 58 M47 46 L56 58" stroke="#E8C9A0" strokeWidth="5" strokeLinecap="round" /></g>,
+    // it read 2.7 to 1; the dark theme's paper keeps its colors. Since pass NE (EARMARKS A92) its rays on that paper are its shade's own
+    // edge, #8A6A1F: the dark theme's gold read 1.75 to 1 there, so 0.79 of the lamp's edge read 3 to 1, and the edge reads 3.35 drawn at
+    // nine tenths, as the rays are.
+    lamp: <g><path d="M30 44 L70 44 L62 14 L38 14 Z" fill="#F2C14E" stroke="#8A6A1F" strokeWidth="3" strokeLinejoin="round" /><rect x="47" y="44" width="6" height="32" fill={dk ? '#8A9086' : '#7A8076'} /><path d="M28 88 Q50 72 72 88 Z" fill={dk ? '#868C82' : '#6B716A'} stroke={dk ? '#A9B0A6' : '#4A4F49'} strokeWidth="2" /><path d="M24 50 L14 58 M76 50 L86 58 M50 48 L50 60" stroke={dkPaper ? '#8A6A1F' : C.mode === 'dark' ? gold : '#9C7A14'} strokeWidth="3" strokeLinecap="round" opacity="0.9" /></g>,
+    // The shadow on the dark theme's paper (since pass NE, EARMARKS A92), where 0.20 of its edge read 3 to 1: its sun and rays wear the
+    // duck's deeper gold (the gold read 1.75 to 1), the ground the rain's deeper grey (1.45 before, 3.15 now), the shirt the rain's paper blue
+    // (2.96, 3.58 now), and the head and arms the stop hand's brown outline under the skin, which read 1.23 to 1 there.
+    shadow: <g><circle cx="16" cy="16" r="8" fill={gold} stroke={dkPaper ? '#94741A' : 'none'} strokeWidth="2" /><path d="M26 16 L32 16 M16 26 L16 32 M23 23 L27 27" stroke={dkPaper ? '#94741A' : gold} strokeWidth="3" strokeLinecap="round" /><path d="M14 90 L96 90" stroke={dkPaper ? '#7A8076' : '#B9BFB9'} strokeWidth="2" strokeLinecap="round" /><path d="M34 88 L82 70 L92 76 L42 92 Z" fill="#3A3A3A" opacity="0.5" /><circle cx="90" cy="68" r="6.5" fill="#3A3A3A" opacity="0.5" /><circle cx="40" cy="30" r="9" fill="#E8C9A0" stroke={dkPaper ? '#8B5A2B' : 'none'} strokeWidth="2" />{dkPaper && <path d="M33 46 L24 58 M47 46 L56 58" stroke="#8B5A2B" strokeWidth="8" strokeLinecap="round" />}<rect x="33" y="40" width="14" height="26" rx="5" fill={dkPaper ? '#3F78B4' : '#4A86C5'} /><path d="M36 66 L35 86 M44 66 L45 86" stroke="#2F5F91" strokeWidth="5" strokeLinecap="round" /><path d="M33 46 L24 58 M47 46 L56 58" stroke="#E8C9A0" strokeWidth="5" strokeLinecap="round" /></g>,
     pebble: <g><ellipse cx="50" cy="58" rx="18" ry="13" fill="#B9BFB9" stroke="#7D837D" strokeWidth="3" /><ellipse cx="44" cy="52" rx="6" ry="3.5" fill="#fff" opacity="0.5" /></g>,
-    boulder: <g><path d="M8 84 Q4 52 26 34 Q50 12 78 26 Q98 40 92 68 Q90 86 70 88 Z" fill="#A5AAA0" stroke="#6B716A" strokeWidth="3" strokeLinejoin="round" /><path d="M30 60 Q46 50 62 58 M24 74 Q40 70 52 76" fill="none" stroke="#8A9086" strokeWidth="2.5" strokeLinecap="round" /><path d="M6 88 L14 80 L20 88 M84 90 L90 82 L96 90" fill="none" stroke={green} strokeWidth="2.5" strokeLinecap="round" /></g>,
-    speckled: <g><path d="M22 70 Q18 44 42 32 Q66 22 80 42 Q90 60 72 74 Q50 86 22 70 Z" fill="#D8CFC4" stroke="#8A8078" strokeWidth="3" strokeLinejoin="round" />{[[34, 50, '#C9869B'], [46, 42, '#444'], [58, 48, '#8A8078'], [66, 58, '#C9869B'], [50, 62, '#444'], [38, 64, '#8A8078'], [56, 70, '#C9869B'], [70, 46, '#444']].map(([x, y, f], i) => <circle key={i} cx={x} cy={y} r="2.6" fill={f} />)}</g>,
-    flatrock: <g><path d="M12 54 Q20 40 50 38 Q82 38 90 52 Q86 64 50 66 Q16 66 12 54 Z" fill="#C9C2B6" stroke="#8A8078" strokeWidth="3" strokeLinejoin="round" /><path d="M12 56 Q14 72 50 72 Q88 72 90 54" fill="#A89E90" stroke="#8A8078" strokeWidth="3" strokeLinejoin="round" /></g>,
+    // Since pass NE (EARMARKS A92) on the dark theme's paper the boulder's grass is the paper's own green (the dark theme's green read 1.60
+    // to 1 there, so 0.88 of its edge read 3 to 1), and the speckled and flat rocks' edge a shade deeper, #7A7068, 3.75 to 1, where their
+    // #8A8078 read 3.00 and 0.90 and 0.81 of their edges read 3 to 1 or better.
+    boulder: <g><path d="M8 84 Q4 52 26 34 Q50 12 78 26 Q98 40 92 68 Q90 86 70 88 Z" fill="#A5AAA0" stroke="#6B716A" strokeWidth="3" strokeLinejoin="round" /><path d="M30 60 Q46 50 62 58 M24 74 Q40 70 52 76" fill="none" stroke="#8A9086" strokeWidth="2.5" strokeLinecap="round" /><path d="M6 88 L14 80 L20 88 M84 90 L90 82 L96 90" fill="none" stroke={dkPaper ? B.green : green} strokeWidth="2.5" strokeLinecap="round" /></g>,
+    speckled: <g><path d="M22 70 Q18 44 42 32 Q66 22 80 42 Q90 60 72 74 Q50 86 22 70 Z" fill="#D8CFC4" stroke={dkPaper ? '#7A7068' : '#8A8078'} strokeWidth="3" strokeLinejoin="round" />{[[34, 50, '#C9869B'], [46, 42, '#444'], [58, 48, '#8A8078'], [66, 58, '#C9869B'], [50, 62, '#444'], [38, 64, '#8A8078'], [56, 70, '#C9869B'], [70, 46, '#444']].map(([x, y, f], i) => <circle key={i} cx={x} cy={y} r="2.6" fill={f} />)}</g>,
+    flatrock: <g><path d="M12 54 Q20 40 50 38 Q82 38 90 52 Q86 64 50 66 Q16 66 12 54 Z" fill="#C9C2B6" stroke={dkPaper ? '#7A7068' : '#8A8078'} strokeWidth="3" strokeLinejoin="round" /><path d="M12 56 Q14 72 50 72 Q88 72 90 54" fill="#A89E90" stroke={dkPaper ? '#7A7068' : '#8A8078'} strokeWidth="3" strokeLinejoin="round" /></g>,
     // Pass KR (kindergarten technology, part two): a keyboard, the space bar, the backspace key, a save folder, a printer, a
     // chair, a light bulb and a story board of boxes.
     keyboard: <g><rect x="6" y="28" width="88" height="48" rx="6" fill="#DCE6EC" stroke="#4A6A86" strokeWidth="3" />{[0, 1, 2].map((r) => [0, 1, 2, 3, 4, 5, 6, 7].map((c) => <rect key={`${r}-${c}`} x={12 + c * 10} y={34 + r * 10} width="8" height="8" rx="2" fill="#F4F6F7" stroke="#8A9086" strokeWidth="1.2" />))}<rect x="26" y="64" width="48" height="8" rx="2" fill="#F4F6F7" stroke="#4A6A86" strokeWidth="1.6" /><rect x="12" y="64" width="12" height="8" rx="2" fill="#F4F6F7" stroke="#8A9086" strokeWidth="1.2" /><rect x="76" y="64" width="12" height="8" rx="2" fill="#F4F6F7" stroke="#8A9086" strokeWidth="1.2" /></g>,
-    space: <g><rect x="10" y="38" width="80" height="24" rx="6" fill="#F4F6F7" stroke="#4A6A86" strokeWidth="3" /><path d="M24 50 L76 50" stroke="#B9C2C9" strokeWidth="2" strokeLinecap="round" /><rect x="10" y="62" width="80" height="4" fill="#B9C2C9" /></g>,
+    // Since pass NE (EARMARKS A92) the space bar's side, under it, is a deeper slate on the dark theme's paper: #B9C2C9 read 1.40 to 1
+    // there, so 0.70 of the key's edge read 3 to 1; #5F7787 reads 3.64.
+    space: <g><rect x="10" y="38" width="80" height="24" rx="6" fill="#F4F6F7" stroke="#4A6A86" strokeWidth="3" /><path d="M24 50 L76 50" stroke="#B9C2C9" strokeWidth="2" strokeLinecap="round" /><rect x="10" y="62" width="80" height="4" fill={dkPaper ? '#5F7787' : '#B9C2C9'} /></g>,
     backspace: <g><path d="M34 26 L90 26 Q94 26 94 30 L94 70 Q94 74 90 74 L34 74 L10 50 Z" fill="#F4F6F7" stroke="#4A6A86" strokeWidth="3" strokeLinejoin="round" /><path d="M44 40 L64 60 M64 40 L44 60" stroke={red} strokeWidth="5" strokeLinecap="round" /></g>,
     save: <g><path d="M10 30 Q10 24 16 24 L36 24 L44 32 L84 32 Q90 32 90 38 L90 78 Q90 84 84 84 L16 84 Q10 84 10 78 Z" fill={gold} stroke="#8A6A1F" strokeWidth="3" strokeLinejoin="round" /><circle cx="64" cy="60" r="14" fill="#F4F6F7" stroke="#3E7D52" strokeWidth="3" /><path d="M56 60 L62 66 L72 54" fill="none" stroke="#3E7D52" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" /></g>,
     // The printer's slate body on a dark tile wears the cup's lighter slate edge (pass ND, EARMARKS A89): 1.21 to 2.47 to 1 before, now 4.57.
@@ -843,7 +875,9 @@ function IconPic({ name, size = 90, tile = false }) {
     // Pass KP (kindergarten health, part two): a child inside a bubble of personal space, a raised hand that means stop, a
     // playground slide, a kitchen knife, scissors, a screwdriver, a house with its number plate blank, a medicine bottle and a
     // crossed-out cigarette.
-    bubble: <g><circle cx="50" cy="50" r="40" fill="#CFEAF7" stroke={blue} strokeWidth="3" strokeDasharray="6 5" opacity="0.9" /><circle cx="50" cy="34" r="9" fill="#E8C9A0" /><rect x="43" y="44" width="14" height="22" rx="5" fill="#C9573E" /><path d="M46 66 L44 82 M54 66 L56 82" stroke="#2E4A62" strokeWidth="5" strokeLinecap="round" /><path d="M43 48 L30 56 M57 48 L70 56" stroke="#E8C9A0" strokeWidth="5" strokeLinecap="round" /><circle cx="46" cy="33" r="1.5" fill="#2E2E2E" /><circle cx="54" cy="33" r="1.5" fill="#2E2E2E" /><path d="M46 38 Q50 41 54 38" fill="none" stroke="#2E2E2E" strokeWidth="1.5" strokeLinecap="round" /></g>,
+    // Since pass NE (EARMARKS A92) the bubble's dashed edge on the dark theme's paper is the drop's deep blue: the blue read 2.96 to 1
+    // there, and its pale inside none of its edge; #2F66A8 reads 3.81 drawn at nine tenths, as the bubble is.
+    bubble: <g><circle cx="50" cy="50" r="40" fill="#CFEAF7" stroke={dkPaper ? '#2F66A8' : blue} strokeWidth="3" strokeDasharray="6 5" opacity="0.9" /><circle cx="50" cy="34" r="9" fill="#E8C9A0" /><rect x="43" y="44" width="14" height="22" rx="5" fill="#C9573E" /><path d="M46 66 L44 82 M54 66 L56 82" stroke="#2E4A62" strokeWidth="5" strokeLinecap="round" /><path d="M43 48 L30 56 M57 48 L70 56" stroke="#E8C9A0" strokeWidth="5" strokeLinecap="round" /><circle cx="46" cy="33" r="1.5" fill="#2E2E2E" /><circle cx="54" cy="33" r="1.5" fill="#2E2E2E" /><path d="M46 38 Q50 41 54 38" fill="none" stroke="#2E2E2E" strokeWidth="1.5" strokeLinecap="round" /></g>,
     stop: <g>{/* The stop hand (pass MH): one outlined shape from a sleeve, four fingers and an attached thumb, and the red no sign. */}
       {/* The sleeve's edge on a dark tile is the sock's light blue (pass ND, EARMARKS A89): its blue read 2.70 to 1 on a right answer's tile. */}
       <rect x="31" y="84" width="40" height="16" rx="5" fill="#4A7FC1" stroke={dk ? '#8FB8E3' : '#2E2E2E'} strokeWidth="2.5" />
@@ -1223,7 +1257,9 @@ function IconPic({ name, size = 90, tile = false }) {
     // A plain plate seen from above (pass MP, Mikey: "change the plate to look more like a plate"): a round rim with a blue ring and a
     // shine, its well, and a soft shadow under it so it sits on the table, so it stays round like a circle where a lesson says so. MyPlate's four food sections, which the plate wore
     // until pass MP and made it read as a pie, are kept as plate~food for the health lesson that teaches them (IconLook, below).
-    plate: <g><circle cx="52" cy="53" r="41" fill="#24291F" opacity="0.14" /><circle cx="50" cy="50" r="41" fill="#EEF3F6" stroke="#6F8796" strokeWidth="3" /><circle cx="50" cy="50" r="35.5" fill="none" stroke="#4A86C5" strokeWidth="2" /><circle cx="50" cy="50" r="26" fill="#FFFFFF" stroke="#C3D0D8" strokeWidth="2.5" /><path d="M33 64 A21 21 0 0 0 67 64" fill="none" stroke="#DCE5EB" strokeWidth="3" strokeLinecap="round" /><path d="M23 32 A32 32 0 0 1 38 18" fill="none" stroke="#FFFFFF" strokeWidth="3.2" strokeLinecap="round" /></g>,
+    // Since pass NE (EARMARKS A92) its rim on the dark theme's paper is a deeper slate of its own blue-grey, and so is plate~food's: #6F8796
+    // read 2.92 to 1 there, and the pale plate inside it, so 0.04 of the plate's edge read 3 to 1; #5A7282 reads 3.92.
+    plate: <g><circle cx="52" cy="53" r="41" fill="#24291F" opacity="0.14" /><circle cx="50" cy="50" r="41" fill="#EEF3F6" stroke={dkPaper ? '#5A7282' : '#6F8796'} strokeWidth="3" /><circle cx="50" cy="50" r="35.5" fill="none" stroke="#4A86C5" strokeWidth="2" /><circle cx="50" cy="50" r="26" fill="#FFFFFF" stroke="#C3D0D8" strokeWidth="2.5" /><path d="M33 64 A21 21 0 0 0 67 64" fill="none" stroke="#DCE5EB" strokeWidth="3" strokeLinecap="round" /><path d="M23 32 A32 32 0 0 1 38 18" fill="none" stroke="#FFFFFF" strokeWidth="3.2" strokeLinecap="round" /></g>,
     peanut: <g><path d="M38 20 Q56 14 58 32 Q58 42 50 48 Q42 56 44 68 Q46 86 64 80 Q78 74 70 58" fill="none" stroke="#B07838" strokeWidth="0" /><path d="M36 22 Q24 36 36 48 Q46 58 38 72 Q34 86 50 88 Q66 90 66 74 Q66 60 58 52 Q50 42 58 30 Q64 14 48 14 Q40 14 36 22 Z" fill="#D9A866" stroke="#8B5A2B" strokeWidth="3" strokeLinejoin="round" /><path d="M42 30 Q46 40 44 50 M48 64 Q52 72 50 80" fill="none" stroke="#B07838" strokeWidth="2" strokeLinecap="round" /></g>,
     // The helmet on a dark tile (pass ND, EARMARKS A89): its red read 2.61 to 1 on a right answer's tile and its near-black straps 1.0 to 1.2
     // on every dark tile; the block's pale red edge and the phone's light gray read 5.17 or better.
@@ -1273,8 +1309,13 @@ function IconPic({ name, size = 90, tile = false }) {
     crayon: <g transform="rotate(-45 50 50)"><rect x="14" y="42" width="58" height="16" rx="3" fill="#D9473B" stroke={dk ? '#F0A99A' : '#7A2620'} strokeWidth="2.5" /><rect x="24" y="42" width="38" height="16" fill="#B5352B" stroke={dk ? '#F0A99A' : '#7A2620'} strokeWidth="2" /><path d="M27 46.5 L59 46.5 M27 53.5 L59 53.5" stroke="#F2C9C2" strokeWidth="1.8" /><path d="M72 43.5 L85 48.5 Q87.5 50 85 51.5 L72 56.5 Z" fill="#D9473B" stroke={dk ? '#F0A99A' : '#7A2620'} strokeWidth="2.5" strokeLinejoin="round" /></g>,
     // Pass KM (kindergarten social studies): a bird over a table and a cat under it, a ball near a tree with a house far up a
     // hill, a folded map with a river and a park, and a globe on its stand with land shapes that only suggest continents.
-    table: <g><rect x="20" y="52" width="60" height="6" rx="2" fill={brown} /><rect x="26" y="58" width="6" height="26" fill={brown} /><rect x="68" y="58" width="6" height="26" fill={brown} /><ellipse cx="50" cy="34" rx="12" ry="8" fill={grey} /><circle cx="61" cy="28" r="5" fill={grey} /><path d="M66 28l6 2-6 2z" fill={gold} /><path d="M44 32q6-10 14-4" fill="none" stroke="#6B716A" strokeWidth="3" strokeLinecap="round" /><ellipse cx="50" cy="76" rx="12" ry="8" fill="#B07838" /><circle cx="40" cy="72" r="6" fill="#B07838" /><path d="M36 67l2-5 3 4M41 67l3-5 2 5z" fill="#B07838" /><circle cx="38" cy="72" r="1.2" fill="#2E2E2E" /><circle cx="42" cy="72" r="1.2" fill="#2E2E2E" /><path d="M62 76q8-6 6-14" fill="none" stroke="#B07838" strokeWidth="3" strokeLinecap="round" /></g>,
-    hill: <g><path d="M0 100 L0 70 Q40 44 100 54 L100 100 Z" fill="#9CC98A" /><rect x="22" y="56" width="6" height="26" fill={brown} /><circle cx="25" cy="48" r="16" fill="#3E7D52" /><circle cx="40" cy="80" r="7" fill={red} /><path d="M72 46 L84 36 L96 46 Z" fill={red} /><rect x="76" y="46" width="16" height="12" fill="#F2C14E" stroke={brown} strokeWidth="1.5" /><rect x="82" y="51" width="4" height="7" fill={brown} /></g>,
+    // Since pass NE (EARMARKS A92) on the dark theme's paper the bird and the cat wear an outline, drawn under each as the stop hand's is,
+    // the bird's own wing grey and the stop hand's brown, and the bird's beak the bird's own beak edge: there the grey read 2.54 to 1, the
+    // dark theme's gold 1.75 and the cat 2.92, so 0.64 of the picture's edge read 3 to 1; the outlines read 3.89 and 4.53.
+    table: <g><rect x="20" y="52" width="60" height="6" rx="2" fill={brown} /><rect x="26" y="58" width="6" height="26" fill={brown} /><rect x="68" y="58" width="6" height="26" fill={brown} />{dkPaper && <g stroke="#6B716A" fill="#6B716A" strokeWidth="3"><ellipse cx="50" cy="34" rx="12" ry="8" /><circle cx="61" cy="28" r="5" /></g>}{dkPaper && <g stroke="#8B5A2B" fill="#8B5A2B" strokeWidth="3" strokeLinejoin="round"><ellipse cx="50" cy="76" rx="12" ry="8" /><circle cx="40" cy="72" r="6" /><path d="M36 67l2-5 3 4M41 67l3-5 2 5z" /><path d="M62 76q8-6 6-14" fill="none" strokeWidth="6" strokeLinecap="round" /></g>}<ellipse cx="50" cy="34" rx="12" ry="8" fill={grey} /><circle cx="61" cy="28" r="5" fill={grey} /><path d="M66 28l6 2-6 2z" fill={gold} stroke={dkPaper ? '#7A5A1A' : 'none'} strokeWidth="1.5" strokeLinejoin="round" /><path d="M44 32q6-10 14-4" fill="none" stroke="#6B716A" strokeWidth="3" strokeLinecap="round" /><ellipse cx="50" cy="76" rx="12" ry="8" fill="#B07838" /><circle cx="40" cy="72" r="6" fill="#B07838" /><path d="M36 67l2-5 3 4M41 67l3-5 2 5z" fill="#B07838" /><circle cx="38" cy="72" r="1.2" fill="#2E2E2E" /><circle cx="42" cy="72" r="1.2" fill="#2E2E2E" /><path d="M62 76q8-6 6-14" fill="none" stroke="#B07838" strokeWidth="3" strokeLinecap="round" /></g>,
+    // Since pass NE (EARMARKS A92) the hill on the dark theme's paper wears the deeper green edge the lessons' green wears there
+    // (SWATCH_EDGE.green): its pale green read 1.46 to 1 on that paper, so 0.34 of the picture's edge read 3 to 1; #3D6B41 reads 4.83.
+    hill: <g><path d="M0 100 L0 70 Q40 44 100 54 L100 100 Z" fill="#9CC98A" stroke={dkPaper ? SWATCH_EDGE.green : 'none'} strokeWidth="3" strokeLinejoin="round" /><rect x="22" y="56" width="6" height="26" fill={brown} /><circle cx="25" cy="48" r="16" fill="#3E7D52" /><circle cx="40" cy="80" r="7" fill={red} /><path d="M72 46 L84 36 L96 46 Z" fill={red} /><rect x="76" y="46" width="16" height="12" fill="#F2C14E" stroke={brown} strokeWidth="1.5" /><rect x="82" y="51" width="4" height="7" fill={brown} /></g>,
     map: <g><path d="M14 22 L40 14 L62 22 L88 14 L88 78 L62 86 L40 78 L14 86 Z" fill="#F4EBD0" stroke="#8A7A4A" strokeWidth="3" strokeLinejoin="round" /><path d="M40 14 L40 78 M62 22 L62 86" stroke="#D9C88F" strokeWidth="2" /><path d="M18 60 Q34 50 46 60 Q58 70 84 56" fill="none" stroke={blue} strokeWidth="4" strokeLinecap="round" /><rect x="22" y="28" width="12" height="12" rx="2" fill="#9CC98A" /><rect x="66" y="30" width="7" height="7" fill={red} /><rect x="72" y="40" width="7" height="7" fill={red} /><path d="M46 28 L54 24 L50 34 Z" fill={gold} /></g>,
     // The globe's stand on a dark tile takes the spoon's light gray (pass ND, EARMARKS A89): its gray read 2.23 to 2.80 to 1 there, now 5.17.
     globe: <g><rect x="40" y="86" width="20" height="4" rx="2" fill={dk ? '#A9B3AE' : '#6B716A'} /><path d="M50 86 L50 76" stroke={dk ? '#A9B3AE' : '#6B716A'} strokeWidth="4" /><path d="M72 20 Q92 44 74 70" fill="none" stroke={dk ? '#A9B3AE' : '#6B716A'} strokeWidth="4" strokeLinecap="round" /><circle cx="50" cy="46" r="30" fill="#8EC5EA" stroke="#2F66A8" strokeWidth="2.5" /><path d="M34 26 Q46 20 52 30 Q50 40 40 44 Q32 40 34 26 Z" fill="#6FAF7E" /><path d="M44 48 Q54 46 58 56 Q56 68 48 70 Q40 62 44 48 Z" fill="#6FAF7E" /><path d="M62 30 Q74 30 76 42 Q70 48 62 42 Z" fill="#B07838" /></g>,
@@ -1316,6 +1357,9 @@ function IconPic({ name, size = 90, tile = false }) {
     // umbrella open over a hooked handle, and a friendly green dinosaur with a long neck and tail. On a dark theme's answer tile (dk)
     // the umbrella's handle and the butterfly's body and feelers take a lighter brown, #B88A5A, since their dark brown nearly vanished
     // there (round one's picture check: 1.0 to 1.4 to 1), as the coat's and the cactus' fills do.
+    // An apple (pass NE, found by the screen engineer who edged the paper's drawings): What is data's picture graph names apples, and with no
+    // apple drawn its four were grey stand-in discs. A red apple with a darker red outline, a brown stem, a green leaf and a light shine.
+    apple: <g><path d="M50 32 C38 22 16 26 16 52 C16 76 34 92 50 86 C66 92 84 76 84 52 C84 26 62 22 50 32 Z" fill="#D9473B" stroke="#7A1F18" strokeWidth="3" strokeLinejoin="round" /><path d="M50 32 Q49 22 54 13" fill="none" stroke="#5E3C1A" strokeWidth="4" strokeLinecap="round" /><path d="M55 19 Q66 9 77 16 Q67 25 55 19 Z" fill="#5E9A62" stroke="#3D6B41" strokeWidth="2" strokeLinejoin="round" /><path d="M29 48 Q29 39 37 35" fill="none" stroke="#F2A097" strokeWidth="4" strokeLinecap="round" /></g>,
     banana: <g><path d="M14 30 Q18 74 62 80 Q84 82 90 70 Q70 74 54 66 Q34 56 30 28 Z" fill="#F2D24E" stroke="#94741A" strokeWidth="3" strokeLinejoin="round" /><path d="M29 32 Q36 58 60 69" fill="none" stroke="#D9B53A" strokeWidth="3" strokeLinecap="round" /><path d="M90 70 Q70 74 54 66 Q34 56 30 28" fill="none" stroke="#94741A" strokeWidth="3" strokeLinecap="round" /><path d="M14 30 L10 20 L22 18 L30 28" fill={dk ? '#B88A5A' : '#7A5A2A'} stroke="#5E3C1A" strokeWidth="2" strokeLinejoin="round" /><circle cx="89" cy="71" r="2.6" fill="#5E3C1A" /></g>,
     butterfly: <g><path d="M48 46 Q30 12 13 21 Q6 40 46 52 Z" fill="#E88A3A" stroke="#9A5420" strokeWidth="2.5" strokeLinejoin="round" /><path d="M52 46 Q70 12 87 21 Q94 40 54 52 Z" fill="#E88A3A" stroke="#9A5420" strokeWidth="2.5" strokeLinejoin="round" /><path d="M47 54 Q24 57 21 74 Q34 88 48 62 Z" fill="#F2C14E" stroke="#9A5420" strokeWidth="2.5" strokeLinejoin="round" /><path d="M53 54 Q76 57 79 74 Q66 88 52 62 Z" fill="#F2C14E" stroke="#9A5420" strokeWidth="2.5" strokeLinejoin="round" /><circle cx="27" cy="31" r="4.5" fill="#FBE3C4" /><circle cx="73" cy="31" r="4.5" fill="#FBE3C4" /><rect x="46" y="38" width="8" height="34" rx="4" fill={dk ? '#B88A5A' : '#3A2A22'} /><path d="M48 40 Q42 26 35 21 M52 40 Q58 26 65 21" fill="none" stroke={dk ? '#B88A5A' : '#3A2A22'} strokeWidth="2.5" strokeLinecap="round" /></g>,
     umbrella: <g><path d="M50 50 L50 80 Q50 90 41 90 Q34 90 34 83" fill="none" stroke={dk ? '#B88A5A' : '#5E3C1A'} strokeWidth="5" strokeLinecap="round" /><path d="M10 50 Q14 12 50 10 Q86 12 90 50 Q83 44 76 50 Q70 44 63 50 Q57 44 50 50 Q43 44 37 50 Q30 44 24 50 Q17 44 10 50 Z" fill={dk ? '#DB6D55' : '#C9573E'} stroke="#8E3A27" strokeWidth="3" strokeLinejoin="round" /><path d="M50 10 Q41 28 37 50 M50 10 Q59 28 63 50" fill="none" stroke="#8E3A27" strokeWidth="2" /><path d="M50 4 L50 11" stroke={dk ? '#B88A5A' : '#5E3C1A'} strokeWidth="4" strokeLinecap="round" /></g>,
@@ -1348,6 +1392,14 @@ function IconPic({ name, size = 90, tile = false }) {
     // A zebra (pass ND, Hear it in the name's Z), side on and facing left: a white body with black stripes, a black mane and muzzle, a
     // tail with a black tuft; its outline reads on both themes' tiles.
     zebra: <g><path d="M86 46 Q94 54 90 66" fill="none" stroke={dk ? '#DCE3E7' : '#3A3F44'} strokeWidth="2.5" strokeLinecap="round" /><path d="M88 62 L93 72 L86 70 Z" fill="#2B2F33" /><rect x="36" y="58" width="7" height="30" rx="2" fill="#FFFFFF" stroke={dk ? '#DCE3E7' : '#3A3F44'} strokeWidth="2" /><rect x="46" y="58" width="7" height="30" rx="2" fill="#FFFFFF" stroke={dk ? '#DCE3E7' : '#3A3F44'} strokeWidth="2" /><rect x="68" y="58" width="7" height="30" rx="2" fill="#FFFFFF" stroke={dk ? '#DCE3E7' : '#3A3F44'} strokeWidth="2" /><rect x="78" y="58" width="7" height="30" rx="2" fill="#FFFFFF" stroke={dk ? '#DCE3E7' : '#3A3F44'} strokeWidth="2" /><path d="M36 84 L43 84 M46 84 L53 84 M68 84 L75 84 M78 84 L85 84" stroke="#2B2F33" strokeWidth="5" /><path d="M36 70 L43 68 M46 70 L53 68 M68 70 L75 68 M78 70 L85 68" stroke="#2B2F33" strokeWidth="3" strokeLinecap="round" /><ellipse cx="61" cy="50" rx="28" ry="15" fill="#FFFFFF" stroke={dk ? '#DCE3E7' : '#3A3F44'} strokeWidth="2.5" /><path d="M40 38 L30 18 Q26 12 20 16 L10 34 Q8 40 14 42 L22 42 L34 60 Z" fill="#FFFFFF" stroke={dk ? '#DCE3E7' : '#3A3F44'} strokeWidth="2.5" strokeLinejoin="round" /><path d="M10 34 Q8 40 14 42 L20 42 L18 32 Z" fill="#2B2F33" /><path d="M24 14 L36 36 L40 38 L28 13 Z" fill="#2B2F33" /><ellipse cx="24" cy="9" rx="3.4" ry="6" transform="rotate(-18 24 9)" fill="#FFFFFF" stroke={dk ? '#DCE3E7' : '#3A3F44'} strokeWidth="2" /><circle cx="20" cy="24" r="2.2" fill="#2B2F33" /><g stroke="#2B2F33" strokeWidth="3.5" strokeLinecap="round" fill="none"><path d="M24 30 L32 28" /><path d="M26 38 L34 34" /><path d="M30 46 L37 42" /><path d="M46 37 Q44 50 47 63" /><path d="M56 35 Q54 50 57 65" /><path d="M66 35 Q64 50 67 65" /><path d="M76 37 Q74 50 77 62" /></g></g>,
+    // A bird's nest (pass NE, Start or end of the name's N): a brown bowl of twigs with three pale blue eggs peeking over its rim. Since
+    // round one's picture read its weave runs in short strokes every which way and twigs stick out past the rim at ten places, none crossing
+    // another (a crossing could read as X in this lesson), where three even bands and four corner sticks read as a basket, whose name
+    // starts with buh, beside P's puh.
+    nest: <g><ellipse cx="34" cy="50" rx="10" ry="12" fill="#CFE8F5" stroke={dk ? '#E6F3FA' : '#3F7A99'} strokeWidth="2.5" /><ellipse cx="51" cy="45" rx="10" ry="12.5" fill="#CFE8F5" stroke={dk ? '#E6F3FA' : '#3F7A99'} strokeWidth="2.5" /><ellipse cx="67" cy="50" rx="10" ry="12" fill="#CFE8F5" stroke={dk ? '#E6F3FA' : '#3F7A99'} strokeWidth="2.5" /><path d="M10 54 Q50 48 90 54 Q87 84 50 87 Q13 84 10 54 Z" fill="#A9773F" stroke={dk ? '#E2C59A' : '#5E3D1C'} strokeWidth="3" strokeLinejoin="round" /><path d="M16 60 Q28 66 40 62 M34 66 Q48 60 62 66 M58 61 Q72 66 84 60 M20 71 Q32 76 46 70 M42 75 Q56 70 70 76 M64 71 Q74 74 81 69 M30 80 Q42 77 52 83 M50 79 Q60 83 70 79" fill="none" stroke="#6E4A26" strokeWidth="2.5" strokeLinecap="round" /><path d="M3 49 L25 58 M4 62 L18 60 M97 49 L75 58 M96 62 L82 60 M15 45 L27 56 M85 45 L73 56 M9 70 L19 67 M91 70 L81 67" stroke={dk ? '#E2C59A' : '#5E3D1C'} strokeWidth="2.5" strokeLinecap="round" /></g>,
+    // A cardboard box (pass NE, Start or end of the name's X, the box that ends with its sound): a tan front with a handle hole, its
+    // dark inside showing over the top, and two flaps folded open.
+    box: <g><path d="M18 40 L4 26 L36 22 L44 40 Z" fill="#E3B57A" stroke={dk ? '#F0D3A8' : '#7A5230'} strokeWidth="3" strokeLinejoin="round" /><path d="M82 40 L96 26 L64 22 L56 40 Z" fill="#E3B57A" stroke={dk ? '#F0D3A8' : '#7A5230'} strokeWidth="3" strokeLinejoin="round" /><path d="M18 40 L82 40 L80 47 L20 47 Z" fill="#6E4A26" /><path d="M18 46 L82 46 L82 88 L18 88 Z" fill="#C9935A" stroke={dk ? '#F0D3A8' : '#7A5230'} strokeWidth="3" strokeLinejoin="round" /><path d="M42 58 L58 58 A4 4 0 0 1 58 66 L42 66 A4 4 0 0 1 42 58 Z" fill="#6E4A26" /><path d="M18 40 L82 40" stroke={dk ? '#F0D3A8' : '#7A5230'} strokeWidth="3" strokeLinecap="round" /></g>,
     // A key (pass ND, Hear it in the name's K), gold, its round bow with a hole and two teeth.
     key: <g><path d="M11 50 a17 17 0 1 0 34 0 a17 17 0 1 0 -34 0 Z M21.5 50 a6.5 6.5 0 1 0 13 0 a6.5 6.5 0 1 0 -13 0 Z" fillRule="evenodd" fill="#F2C14E" stroke={dk ? '#F2CF94' : '#8A6424'} strokeWidth="3" /><path d="M44 45 L88 45 L88 55 L84 55 L84 66 L76 66 L76 55 L72 55 L72 62 L64 62 L64 55 L44 55 Z" fill="#F2C14E" stroke={dk ? '#F2CF94' : '#8A6424'} strokeWidth="3" strokeLinejoin="round" /></g>,
     kite: <g><path d="M50 8 L22 38 L50 38 Z" fill="#D9473B" /><path d="M50 8 L78 38 L50 38 Z" fill="#F2C14E" /><path d="M22 38 L50 76 L50 38 Z" fill="#4A86C5" /><path d="M78 38 L50 76 L50 38 Z" fill="#4CAF6E" /><path d="M50 8 L78 38 L50 76 L22 38 Z" fill="none" stroke={dk ? '#B9CDE0' : '#2E4A62'} strokeWidth="3" strokeLinejoin="round" /><path d="M50 8 L50 76 M22 38 L78 38" stroke={dk ? '#B9CDE0' : '#2E4A62'} strokeWidth="2" /><path d="M50 76 Q40 84 48 90 Q56 96 46 98" fill="none" stroke={dk ? '#B9CDE0' : '#2E4A62'} strokeWidth="2" strokeLinecap="round" /><path d="M40 82 L46 86 L40 88 Z" fill="#D9473B" stroke={dk ? '#B9CDE0' : '#2E4A62'} strokeWidth="1.5" strokeLinejoin="round" /><path d="M52 92 L58 94 L52 97 Z" fill="#F2C14E" stroke={dk ? '#B9CDE0' : '#2E4A62'} strokeWidth="1.5" strokeLinejoin="round" /></g>,
@@ -1374,9 +1426,10 @@ function IconPic({ name, size = 90, tile = false }) {
   }[base] || <circle cx="50" cy="50" r="30" fill={grey} />;
   // A look after ~ (pass MP) draws the same thing another way, and its name stays the thing's own, so a screen reader hears block;
   // since pass MW a look that is a state its line names is said with it (pictureLookName: a broken crayon, a sleeping baby).
-  // A look that needs the live palette (bird~big's gold beak) is a function of it.
+  // A look that needs the live palette (bird~big's gold beak) is a function of it, and since pass NE (EARMARKS A92) it is handed dkPaper too
+  // (plate~food's rim on the dark theme's paper).
   const lookArt = look && ICON_LOOKS[`${base}~${look}`];
-  const shown = (typeof lookArt === 'function' ? lookArt({ grey, gold, dk }) : lookArt) || body;
+  const shown = (typeof lookArt === 'function' ? lookArt({ grey, gold, dk, dkPaper }) : lookArt) || body;
   return <svg viewBox="0 0 100 100" width={size} height={size} role="img" aria-label={pictureLookName(look ? `${base}~${look}` : base)} style={{ display: 'block', margin: '0 auto' }}>{shown}</svg>;
 }
 // Another look of an icon, named after a tilde (pass MP), as a shape's look is (shape:triangle~thin): block~wood is the wooden block
@@ -1457,7 +1510,8 @@ const ICON_LOOKS = {
   // Its edge on a dark tile is its own top's light wood (pass ND, EARMARKS A89): the brown edge read 1.91 to 1 on a right answer's tile and
   // its darker side 2.96; the light wood reads 6.08 there.
   'block~wood': ({ dk }) => <g><path d="M24 36 L54 24 L80 32 L50 44 Z" fill="#E2B97A" stroke={dk ? '#E2B97A' : '#8B5A2B'} strokeWidth="3" strokeLinejoin="round" /><path d="M24 36 L50 44 L50 84 L24 76 Z" fill="#C9955A" stroke={dk ? '#E2B97A' : '#8B5A2B'} strokeWidth="3" strokeLinejoin="round" /><path d="M50 44 L80 32 L80 72 L50 84 Z" fill="#B07838" stroke={dk ? '#E2B97A' : '#8B5A2B'} strokeWidth="3" strokeLinejoin="round" /><path d="M30 52 Q38 50 46 54 M30 64 Q38 62 46 66" fill="none" stroke="#8B5A2B" strokeWidth="1.8" opacity="0.6" /><path d="M55 52 Q63 47 75 45 M55 64 Q64 59 75 57" fill="none" stroke="#7A4A20" strokeWidth="1.8" opacity="0.6" /><path d="M36 34 Q46 31 55 28 M44 37 Q54 34 64 31" fill="none" stroke="#B07838" strokeWidth="1.6" opacity="0.7" /><ellipse cx="38" cy="71" rx="2.6" ry="1.8" fill="none" stroke="#8B5A2B" strokeWidth="1.4" opacity="0.6" /></g>,
-  'plate~food': <g><circle cx="52" cy="53" r="41" fill="#24291F" opacity="0.14" /><circle cx="50" cy="50" r="41" fill="#EEF3F6" stroke="#6F8796" strokeWidth="3" /><circle cx="50" cy="50" r="35.5" fill="none" stroke="#4A86C5" strokeWidth="2" /><circle cx="50" cy="50" r="30.5" fill="#FFFFFF" stroke="#C3D0D8" strokeWidth="2" /><path d="M50 50 L50 22 A28 28 0 0 0 22 50 Z" fill="#D9534F" /><path d="M50 50 L22 50 A28 28 0 0 0 50 78 Z" fill="#4E8F4F" /><path d="M50 50 L50 78 A28 28 0 0 0 78 50 Z" fill="#E8C98E" /><path d="M50 50 L78 50 A28 28 0 0 0 50 22 Z" fill="#9C6B3F" /><path d="M50 21 L50 79 M21 50 L79 50" stroke="#FFFFFF" strokeWidth="2.6" /><path d="M31 41 Q36 33 44 31 M33 46 Q38 39 45 37" fill="none" stroke="#F6C1BF" strokeWidth="2" strokeLinecap="round" /><circle cx="35" cy="59" r="3.4" fill="#3A6E3B" /><circle cx="41" cy="64" r="3.1" fill="#3A6E3B" /><circle cx="33" cy="66" r="2.7" fill="#3A6E3B" /><circle cx="42" cy="57" r="2.5" fill="#3A6E3B" /><ellipse cx="58" cy="58" rx="2.2" ry="1.2" fill="#FFF8E7" /><ellipse cx="65" cy="61" rx="2.2" ry="1.2" fill="#FFF8E7" transform="rotate(30 65 61)" /><ellipse cx="59" cy="66" rx="2.2" ry="1.2" fill="#FFF8E7" transform="rotate(-20 59 66)" /><ellipse cx="68" cy="55" rx="2.2" ry="1.2" fill="#FFF8E7" transform="rotate(60 68 55)" /><path d="M56 36 L64 30 M58 42 L68 34" stroke="#6E4523" strokeWidth="2" strokeLinecap="round" /></g>,
+  // Its rim on the dark theme's paper is the plain plate's deeper slate since pass NE (EARMARKS A92), as the plate's is.
+  'plate~food': ({ dkPaper }) => <g><circle cx="52" cy="53" r="41" fill="#24291F" opacity="0.14" /><circle cx="50" cy="50" r="41" fill="#EEF3F6" stroke={dkPaper ? '#5A7282' : '#6F8796'} strokeWidth="3" /><circle cx="50" cy="50" r="35.5" fill="none" stroke="#4A86C5" strokeWidth="2" /><circle cx="50" cy="50" r="30.5" fill="#FFFFFF" stroke="#C3D0D8" strokeWidth="2" /><path d="M50 50 L50 22 A28 28 0 0 0 22 50 Z" fill="#D9534F" /><path d="M50 50 L22 50 A28 28 0 0 0 50 78 Z" fill="#4E8F4F" /><path d="M50 50 L50 78 A28 28 0 0 0 78 50 Z" fill="#E8C98E" /><path d="M50 50 L78 50 A28 28 0 0 0 50 22 Z" fill="#9C6B3F" /><path d="M50 21 L50 79 M21 50 L79 50" stroke="#FFFFFF" strokeWidth="2.6" /><path d="M31 41 Q36 33 44 31 M33 46 Q38 39 45 37" fill="none" stroke="#F6C1BF" strokeWidth="2" strokeLinecap="round" /><circle cx="35" cy="59" r="3.4" fill="#3A6E3B" /><circle cx="41" cy="64" r="3.1" fill="#3A6E3B" /><circle cx="33" cy="66" r="2.7" fill="#3A6E3B" /><circle cx="42" cy="57" r="2.5" fill="#3A6E3B" /><ellipse cx="58" cy="58" rx="2.2" ry="1.2" fill="#FFF8E7" /><ellipse cx="65" cy="61" rx="2.2" ry="1.2" fill="#FFF8E7" transform="rotate(30 65 61)" /><ellipse cx="59" cy="66" rx="2.2" ry="1.2" fill="#FFF8E7" transform="rotate(-20 59 66)" /><ellipse cx="68" cy="55" rx="2.2" ry="1.2" fill="#FFF8E7" transform="rotate(60 68 55)" /><path d="M56 36 L64 30 M58 42 L68 34" stroke="#6E4523" strokeWidth="2" strokeLinecap="round" /></g>,
   // A child's drawings on paper (pass NC, the writing lessons): each tells an idea, as Draw and tell and Write to tell say. The sun and a
   // ball on the grass (I played outside today), a rain cloud and an umbrella (It rained today) and the moon, a star and a bed (It is time
   // for bed), drawn as a young child draws with crayons. The paper wears the list's edge, which reads 3 to 1 or better on every tile and
@@ -1689,7 +1743,10 @@ function HeardChoice({ text }) {
 }
 // On a dark theme's answer tile (tile) every dot wears a pale rim, the ball's own highlight (pass ND, round one's code check: the dots'
 // dark rim, #1F3B31, read 1.09 to 1 on #22413A, so 0.67 to 0.78 of a group's edge read 3 to 1 there).
-function DotGroup({ count, size = 34, animate = false, animKey = 0, frame = 5, snap = false, gap = 8, tile = false }) {
+// Since pass NE (EARMARKS A92) a dot on the dark theme's paper (paper, which PictureInner passes) wears the paper's own green as its rim:
+// there its lit side, the dark theme's green fading to #9CC7B0, read 1.5 to 1, so 0.68 to 0.76 of a group's edge read 3 to 1; B.green
+// reads 5.82. Only the paper's dots wear it: an explanation's dots, drawn on the answer's own green or clay box, keep theirs.
+function DotGroup({ count, size = 34, animate = false, animKey = 0, frame = 5, snap = false, gap = 8, tile = false, paper = false }) {
   // gap is the space between dots: 8 for every group, wider for the long row of the long-row picture (pass MA), narrower for
   // the five close together beneath it.
   const cols = frame; const rows = Math.ceil(count / cols);
@@ -1709,7 +1766,7 @@ function DotGroup({ count, size = 34, animate = false, animKey = 0, frame = 5, s
       {Array.from({ length: count }).map((_, i) => (
         <circle key={`${animKey}-${i}`} className={animate ? 'edu-drift' : undefined}
           style={animate ? { animationDelay: `${i * 0.55}s`, transformBox: 'fill-box', transformOrigin: 'center' } : undefined}
-          cx={lead + (i % cols) * (size + gap) + size / 2} cy={Math.floor(i / cols) * (size + gap) + size / 2} r={size / 2 - 2} fill="url(#edu-ball)" {...(tile && C.mode === 'dark' ? { stroke: '#9CC7B0', strokeWidth: 2 } : {})} />
+          cx={lead + (i % cols) * (size + gap) + size / 2} cy={Math.floor(i / cols) * (size + gap) + size / 2} r={size / 2 - 2} fill="url(#edu-ball)" {...(tile && C.mode === 'dark' ? { stroke: '#9CC7B0', strokeWidth: 2 } : paper && C.mode === 'dark' ? { stroke: B.green, strokeWidth: 2 } : {})} />
       ))}
     </svg>
   );
@@ -1928,7 +1985,7 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1, 
   const at = (n) => Math.round(n * k);   // a size, scaled for a question's or a lesson's own picture (k is 1 everywhere else)
   // Dots to count grow a little more than other pictures (60 pixels on a laptop, 40 on a phone), so a row of two or three fills
   // the paper the way a counting picture should (pass MH).
-  if (visual.kind === 'dots') return <div style={{ padding: '6px 0' }}><DotGroup count={visual.count} size={visual.size || (k > 1 ? (k >= 1.4 ? 60 : 40) : 34)} frame={visual.frame || 5} snap={!!visual.snap} gap={visual.gap || 8} animate={animate} animKey={animKey} /></div>;
+  if (visual.kind === 'dots') return <div style={{ padding: '6px 0' }}><DotGroup count={visual.count} size={visual.size || (k > 1 ? (k >= 1.4 ? 60 : 40) : 34)} frame={visual.frame || 5} snap={!!visual.snap} gap={visual.gap || 8} animate={animate} animKey={animKey} paper /></div>;
   if (visual.kind === 'trace') return <div style={{ padding: '6px 0' }}><TraceDemo letter={visual.text} animKey={animKey} pace={visual.pace} nudge={nudge} /></div>;
   if (DIAGRAMS[visual.kind]) { const D = DIAGRAMS[visual.kind]; return <div key={animKey} style={{ padding: '6px 0' }}><D {...visual} /></div>; }
   if (visual.kind === 'numberline' && visual.from !== undefined) return <div key={animKey} style={{ padding: '6px 0' }}><NumberLinePic from={visual.from} to={visual.to} mark={visual.mark ?? null} marks={visual.marks || []} /></div>;
@@ -1948,8 +2005,10 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1, 
   // A shape with no color of its own takes the paper's green, B.green, in both themes (pass MA): the dark theme's mint was 1.7
   // to 1 on the almond paper, and pass CY's rule gives every drawing on paper the light palette.
   if (visual.kind === 'shape') return <div key={animKey} className={animate ? 'edu-drift' : undefined} style={{ padding: '6px 0' }}><ShapePic name={visual.name} variant={visual.variant || null} color={SWATCH[visual.colour] || B.green} size={at(visual.size === 'big' ? 140 : visual.size === 'small' ? 50 : 110)} /></div>;
-  if (visual.kind === 'tens') return <div style={{ padding: '6px 0' }}><TensGroup count={visual.count} animate={animate} animKey={animKey} /></div>;
-  if (visual.kind === 'array') return <div style={{ padding: '6px 0' }}><ArrayPic rows={visual.rows} cols={visual.cols} /></div>;
+  // Here the dots (above), the tens and an array are on the paper (paper), where since pass NE (EARMARKS A92) the dots wear the paper's
+  // own green as a rim and the tens and an array draw in it.
+  if (visual.kind === 'tens') return <div style={{ padding: '6px 0' }}><TensGroup count={visual.count} animate={animate} animKey={animKey} paper /></div>;
+  if (visual.kind === 'array') return <div style={{ padding: '6px 0' }}><ArrayPic rows={visual.rows} cols={visual.cols} paper /></div>;
   if (visual.kind === 'numberline') return <div style={{ padding: '6px 0' }}><NumberLine parts={visual.parts} mark={visual.mark} /></div>;
   if (visual.kind === 'clock') return <div style={{ padding: '6px 0' }}><ClockPic hour={visual.hour} minute={visual.minute} /></div>;
   if (visual.kind === 'picto') return <div key={animKey}><PictoGraph rows={visual.rows} /></div>;
@@ -2062,7 +2121,11 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1, 
   // Towers (pass JX): with vertical set, the bars stand side by side on one floor, so a lesson can compare heights.
   if (visual.kind === 'bars') return <div style={visual.vertical ? { padding: '6px 0', display: 'flex', gap: 28, justifyContent: 'center', alignItems: 'flex-end' } : { padding: '6px 0', display: 'grid', gap: 10 }}>{visual.lengths.map((n, i) => <BarPic vertical={!!visual.vertical} key={`${animKey}-${i}`} length={n} />)}</div>;
   // Writing shown as print (pass ND, the spacing lessons): a sentence a child sees, its words set apart (PrintWords, below).
-  if (visual.kind === 'print') return <div key={animKey} className={animate ? 'edu-rise' : undefined} style={{ padding: '6px 0', display: 'flex', justifyContent: 'center' }}><PrintWords text={visual.text} size={28} paper /></div>;
+  // Since pass NE (EARMARKS A93) a lesson's own print and letters grow with the lesson's scale on a wide screen (k 1.45, from bigScale), as a
+  // drawing alone does, where they kept a phone's size beside drawings of 160 pixels; lesson is passed only by a lesson's own picture, so a
+  // pair's halves, a question and a phone (k under 1.4) keep their sizes.
+  const lessonGrows = lesson && k >= 1.4;
+  if (visual.kind === 'print') return <div key={animKey} className={animate ? 'edu-rise' : undefined} style={{ padding: '6px 0', display: 'flex', justifyContent: 'center' }}><PrintWords text={visual.text} size={lessonGrows ? Math.round(28 * k) : 28} paper /></div>;
   if (visual.kind === 'letters') {
     // Letters sit on paper, so they take the light palette's ink (B) in both themes (pass MA): the dark theme's green is mint,
     // too faint on the almond paper to read (1.7 to 1).
@@ -2080,7 +2143,7 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1, 
     if (visual.highlight) {
       const words = visual.text.split(' ');
       return (
-        <p style={{ fontSize: 44, fontWeight: 700, letterSpacing: 6, margin: '6px 0', textAlign: 'center', color: B.green }}>
+        <p style={{ fontSize: lessonGrows ? Math.round(44 * k) : 44, fontWeight: 700, letterSpacing: 6, margin: '6px 0', textAlign: 'center', color: B.green }}>
           {words.map((w, wi) => {
             const at = visual.highlight === 'first' ? 0 : w.toLowerCase().lastIndexOf(visual.highlight.toLowerCase());
             const len = visual.highlight === 'first' ? 1 : visual.highlight.length;
@@ -2103,7 +2166,7 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1, 
     // ends, and a second row sat about 25 pixels off centre). A run on one row is drawn exactly as before, and the gap takes no
     // height of its own (line height 0, set at the middle).
     return (
-      <p style={{ fontSize: visual.grow ? Math.round(44 * k) : 44, fontWeight: 700, letterSpacing: 6, margin: '6px 0', textAlign: 'center', color: B.green, textWrap: 'balance' }}>
+      <p style={{ fontSize: visual.grow || lessonGrows ? Math.round(44 * k) : 44, fontWeight: 700, letterSpacing: 6, margin: '6px 0', textAlign: 'center', color: B.green, textWrap: 'balance' }}>
         {parts.map((ch, i) => (ch[0] === ' '
           ? <span key={`${animKey}-${i}`} style={{ fontSize: `${ch.length * 100}%`, letterSpacing: 6 * ch.length, lineHeight: 0, verticalAlign: 'middle' }}>{' '}</span>
           : <span key={`${animKey}-${i}`} className={animate ? 'edu-grow' : undefined}
@@ -2738,6 +2801,10 @@ function SayAlongStrip({ parts, lit }) {
   // the cue and every call of the line sit in one grid cell, the one shown visible and the rest hidden, from the screen reader too.
   const shownLabel = voiced && call ? call.sentence : voiced && praise ? praise.sentence : open.sentence;
   const labels = voiced ? [open.sentence, ...calls.map((x) => x.sentence), ...(said ? [said.sentence] : [])] : [open.sentence];
+  // Since pass NE (EARMARKS A63) the strip keeps room for the scroll cue as the line's words do (data-cue-room, keepCueRoom), on a wrapper
+  // the lesson draws around it since round one's screen read (Say it again draws the strip anew, which took its room away): a call
+  // still hidden counts, since the voice shows each in turn (Helpers all around's "One last time, nice and clear." sat under the cue
+  // at 320 by 568, and the last syllables of mail carrier and police officer).
   return (
     <div data-say-along={open.word} data-say-along-call={call ? call.voice.style : praise ? 'praise' : ''} data-say-along-lit={sweep ? String(sweep.syllable) : ''} data-say-along-rep={sweep ? String(sweep.rep) : ''} style={{ margin: `${shortPhone() ? 10 : 16}px auto 0`, maxWidth: 460 }}>
       <div data-say-along-label={shownLabel} style={{ display: 'grid', margin: '0 0 6px', fontSize: 14, lineHeight: 1.4, color: C.muted, textWrap: 'balance' }}>
@@ -2750,7 +2817,10 @@ function SayAlongStrip({ parts, lit }) {
           same frame as its ink, with no fade (pass MT: a 150 ms fade never lit super fast's 80 ms syllables, and in the dark theme any fade
           left a syllable dark on the dark card for a moment, round one's lesson check). The word shrinks to its box on a narrow phone
           (birthday party ran 12 pixels past it at 320, its two words never parting). */}
-      <p role="img" aria-label={open.word} style={{ margin: 0, fontSize: 'min(32px, 9vw)', lineHeight: 1.3, fontWeight: 800, letterSpacing: '0.02em', color: C.ink }}>
+      {/* Since pass NE (EARMARKS A63) the big word shrinks with the strip's room for the scroll cue: 9vw is about 0.12 of the strip's
+          width at 320 pixels (28.8 of 238), so it gives up 0.12 of a pixel for each pixel of room, and a word that never parts (police
+          officer, 210 pixels wide there, 179 beside the cue's 37 pixels of room) still fits beside the cue; with no room it is the size it was. */}
+      <p role="img" aria-label={open.word} style={{ margin: 0, fontSize: 'min(32px, 9vw - var(--cue-room, 0px) * 0.12)', lineHeight: 1.3, fontWeight: 800, letterSpacing: '0.02em', color: C.ink }}>
         {open.syllables.map((s, k) => <span key={k} aria-hidden="true" data-say-along-syllable={k} style={sweep && sweep.syllable === k ? { ...readLit(), ...LIT_WORDS, transition: 'none', margin: 0, padding: '0 1px' } : { background: 'transparent', transition: 'none', padding: '0 1px' }}>{s === ' ' ? ' ' : s}</span>)}
       </p>
       {/* The dots' row keeps its height for a way said once too, so the card never grows and shrinks under the child's finger while
@@ -3817,16 +3887,33 @@ function runAlone(s) { if (!RUN_ALONE.test(s)) return false; const t = s.trim().
 // words never move as the light arrives ("Peet, / suh." broke at 320 in Put the beats together's story, "Dye, / nuh, sore." at 390 in
 // Clap the beats', and "Rab, / bit." and "Pen, / sill." in the reason after a wrong tap); a run inside a sentence keeps PARTS_WHOLE.
 const SENTENCE_PARTS = new RegExp('(' + SENTENCE_BREAK.source + ')');
+// Since pass NE (round one's lesson read: grown-up broke as "grown- / up" at 375 pixels in Write it by its sounds) a hyphenated word in
+// the plain words between them is one span too, kept whole as the Wonder screens keep theirs (wholeHyphens), in everything partsWhole
+// draws: every lesson line, reason and explanation, and through inlineRich every RichText, a story's paragraphs and every grade's
+// lesson paragraphs. A word of 22 characters or fewer (about 224 pixels at a lesson line's 20, inside the 238 a 320-pixel phone leaves
+// it) is kept whole, and a longer one breaks at its hyphens as before (round two's final read: great-great-great-grandmother, 29, the
+// longest the app says, drew 251 pixels in a story's 234-pixel column at 320, 17 into the card's padding).
 function partsWhole(text, keyPrefix = 'p') {
   const s = String(text); const out = []; let n = 0;
+  const plain = (t) => String(t).split(/(\S+-\S+)/).forEach((w, i) => { if (!w) return; out.push(i % 2 && w.length <= 22 ? <span key={`${keyPrefix}-h${n++}`} data-whole-word="" style={{ whiteSpace: 'nowrap' }}>{w}</span> : w); });
   for (const piece of s.split(SENTENCE_PARTS)) {
     if (!piece) continue;
     if (runAlone(piece)) { out.push(<span key={`${keyPrefix}-r${n++}`} data-whole="" style={{ whiteSpace: 'nowrap' }}>{piece}</span>); continue; }
     let last = 0;
-    for (const m of piece.matchAll(PARTS_WHOLE)) { if (!m[0].includes('-') && !m[0].includes(',') && !m[0].includes(' and ')) continue; if (m.index > last) out.push(piece.slice(last, m.index)); out.push(<span key={`${keyPrefix}-w${n++}`} data-whole="" style={{ whiteSpace: 'nowrap' }}>{m[0]}</span>); last = m.index + m[0].length; }
-    if (last < piece.length) out.push(piece.slice(last));
+    for (const m of piece.matchAll(PARTS_WHOLE)) { if (!m[0].includes('-') && !m[0].includes(',') && !m[0].includes(' and ')) continue; if (m.index > last) plain(piece.slice(last, m.index)); out.push(<span key={`${keyPrefix}-w${n++}`} data-whole="" style={{ whiteSpace: 'nowrap' }}>{m[0]}</span>); last = m.index + m[0].length; }
+    if (last < piece.length) plain(piece.slice(last));
   }
   return out.some((x) => typeof x !== 'string') ? out : s;
+}
+// A lesson line's last two words held together (since pass NE, round one's screen read): a no-break space before the line's last word,
+// so no width and no room for the scroll cue can leave one word alone on its last line (EARMARKS A82), where keeping a hyphenated word
+// whole had (Big and little's "middle-size." alone at 390). Two words longer together than 18 letters and spaces are left to wrap, so the
+// pair never runs past a 320-pixel card. Only the space changes: the words, their kept spans and what the voice says are as they were.
+function lastTwoTogether(nodes, sentence) {
+  const m = /(\S+) (\S+)$/.exec(String(sentence).trim()); if (!m || m[1].length + m[2].length + 1 > 18) return nodes;
+  const out = Array.isArray(nodes) ? [...nodes] : [nodes];
+  for (let k = out.length - 1; k >= 0; k--) { if (typeof out[k] !== 'string') continue; const j = out[k].lastIndexOf(' '); if (j >= 0) { out[k] = out[k].slice(0, j) + '\u00a0' + out[k].slice(j + 1); return out; } }
+  return nodes;
 }
 function inlineRich(text, keyPrefix) {
   const parts = String(text).split(/(\*\*[^*]+\*\*)/g).filter(Boolean);
@@ -3900,17 +3987,20 @@ function LicenseCard({ name, code, license, usedBy, onSave }) {
 // browser balances nothing and a line could end on one lone word (25 of the 69 pre-K lines past six lines at 320 by 568 did), so a
 // longer line takes pretty wrapping, which keeps its last word company and, read on all 69, added no line and moved no Next. Measured
 // before the line paints and again when the screen's width changes; the reading light moves no words, so lighting needs no measure.
+// Since pass NE (EARMARKS A63) the words keep room for the scroll cue (data-cue-room, keepCueRoom beside ScrollCue): while the cue
+// shows beside them their right padding is the room it needs, and the wrap is chosen again in that measure (edu-refit), so a line the
+// room takes past six lines wraps pretty and still never ends on one lone word.
 function LessonWords({ lineKey, style, children }) {
   const ref = useRef(null);
   React.useLayoutEffect(() => {
     const p = ref.current; if (!p) return undefined;
     const fit = () => { p.style.textWrap = 'balance'; const lh = parseFloat(getComputedStyle(p).lineHeight) || 30; if (p.getBoundingClientRect().height / lh > 6.5) p.style.textWrap = 'pretty'; };
-    fit(); window.addEventListener('resize', fit);
-    return () => window.removeEventListener('resize', fit);
+    fit(); window.addEventListener('resize', fit); p.addEventListener('edu-refit', fit);
+    return () => { window.removeEventListener('resize', fit); p.removeEventListener('edu-refit', fit); };
     // It decides again when the line's font size or line height changes (round two's code read, pass NC): the App redraws a frame after a
     // resize, and that redraw can change the font (20 or 22 by shortPhone) after the resize's own measure.
   }, [lineKey, style && style.fontSize, style && style.lineHeight]);
-  return <p ref={ref} data-lesson-words="" style={style}>{children}</p>;
+  return <p ref={ref} data-lesson-words="" data-cue-room="" style={{ ...style, paddingRight: 'var(--cue-room, 0px)' }}>{children}</p>;
 }
 // lit (pass MH): the sentence of a one-line paragraph being read aloud, lit word by word as a highlight the size of its words,
 // in readLit's colors; the rest of the paragraph stays as it is.
@@ -5124,8 +5214,13 @@ const BAND_STEP = 200; let bandWatch = null; const bandSeen = [];
 // screen, and the row with Next and the star sits below it, where a child who cannot read does not know to look. While that row
 // is below what shows, three arrows stacked inside one another pulse in turn, top to bottom, in a round button at the bottom of
 // the screen, and a tap scrolls the row into view. It sits in the bottom right corner, where the star appears, so it never
-// covers the speaker button in the middle or the words above it (pass KA). It watches the page and any box the app scrolls in (visibleBand), comes
-// back when a new line starts at the top, and holds still when the device asks for reduced motion.
+// covers the speaker button in the middle (pass KA). The words above it do reach that corner on a short phone: a long lesson line's
+// last words, and a practice round's reason after a wrong tap or its explanation after the right one, sat under it at 320 by 568 and
+// 375 by 667 (EARMARKS A63, from pass MV's screen check to pass ND's). Since pass NE (EARMARKS A63) those words make room for it
+// instead (keepCueRoom, below): whenever the cue shows on a page at rest, each block of words that keeps room (data-cue-room) and
+// would have a word under it, or within CUE_GAP pixels of it, ends its lines that far short of the cue, so no word sits under it.
+// It watches the page and any box the app scrolls in (visibleBand), comes back when a new line starts at the top, and holds still
+// when the device asks for reduced motion.
 // When the cue shows: by default while less than 24 pixels of the row show; with whole, while any of the row is below what shows
 // (a practice round's full-width buttons, of which the cue's corner covers only the end); with hidden, while that share of the
 // target is (a lesson's Next itself, data-lesson-next since pass MZ, which sits in the cue's own corner: a third, since round four's
@@ -5133,27 +5228,149 @@ const BAND_STEP = 200; let bandWatch = null; const bandSeen = [];
 // of moving on).
 // scrollTo (pass MZ): what a tap brings into view, when it is more than the target the cue measures (a lesson's whole row of Back, the
 // speaker with its dots, and Next, while the cue measures Next alone).
+// Since pass NE (EARMARKS A63) the cue decides as the new state is drawn, before the browser paints it, as well as 60, 450 and 1,200
+// milliseconds after and after a resize, so a new line or a reason never shows with a word under the cue, or shows one first and then
+// moves its words. Each of these is a check at rest: it starts from no room, decides whether the cue shows by the same rule as
+// before (the room only ever pushes the row further down, so it never changes that answer), and keeps room for the words when the cue
+// shows. A check made because the page scrolled only shows or hides the cue. Once the person touches, scrolls, types or taps the
+// cue, the words hold still until the next state, so nothing moves under a finger; a change of width (or of height by 160 pixels,
+// shortPhone's rule) decides again, once the app has redrawn for the new size.
 function ScrollCue({ target, watch, whole = false, hidden = 0, scrollTo = null }) {
   const [show, setShow] = useState(false);
+  const cue = useRef(null);         // the cue's button, while it shows
+  const roomDue = useRef(false);    // room to keep as soon as the button is drawn (its place is read from the button itself)
+  const held = useRef(false);       // the person has moved the page since this state began, so the words' room holds still
+  const size = useRef(null);        // the screen's size when the room was last decided
+  const check = useRef(null);
+  check.current = (rest, fresh = false) => {
+    if (typeof document === 'undefined') return;
+    const decide = rest && !held.current;
+    // Since pass NE (round one's screen read) a check within a state puts the rooms back as they stood when the cue does not show (the page
+    // scrolled so its target shows, by no finger), so a scroll back up shows the cue beside words that kept their room; a new state and
+    // a new size (fresh) start from no room.
+    const before = decide && !fresh ? [...document.querySelectorAll('[data-cue-room]')].map((b) => [b, parseFloat(b.style.getPropertyValue('--cue-room')) || 0]) : null;
+    if (decide) clearCueRoom();
+    const el = document.querySelector(target); if (!el) { setShow(false); return; }
+    const r = el.getBoundingClientRect(); const band = visibleBand();
+    const want = hidden ? r.bottom - band.bottom > r.height * hidden : whole ? r.bottom > band.bottom + 4 : r.top > band.bottom - 24;
+    setShow(want);
+    if (decide && want) { if (cue.current) keepCueRoom(cue.current.getBoundingClientRect()); else roomDue.current = true; }
+    else if (before) for (const [b, px] of before) setCueRoom(b, px);
+  };
+  // A new state (a line, a tap's reason, a retry): decided at once, before the page is painted.
+  React.useLayoutEffect(() => {
+    if (typeof window === 'undefined') return;
+    held.current = false; roomDue.current = false; size.current = { w: window.innerWidth, h: window.innerHeight };
+    check.current(true, true);
+  }, [target, watch]);
+  // The cue just drawn: room for the words beside its own button, still before the paint.
+  React.useLayoutEffect(() => { if (show && roomDue.current && cue.current) { roomDue.current = false; keepCueRoom(cue.current.getBoundingClientRect()); } }, [show]);
   useEffect(() => {
     if (typeof window === 'undefined') return undefined;
-    let frame = 0;
-    const check = () => { frame = 0; const el = document.querySelector(target); if (!el) { setShow(false); return; } const r = el.getBoundingClientRect(); const band = visibleBand(); setShow(hidden ? r.bottom - band.bottom > r.height * hidden : whole ? r.bottom > band.bottom + 4 : r.top > band.bottom - 24); };
-    const soon = () => { if (!frame) frame = window.requestAnimationFrame(check); };
-    const timers = [60, 450, 1200].map((ms) => setTimeout(check, ms));
-    window.addEventListener('scroll', soon, true); window.addEventListener('resize', soon);
-    return () => { timers.forEach(clearTimeout); if (frame) window.cancelAnimationFrame(frame); window.removeEventListener('scroll', soon, true); window.removeEventListener('resize', soon); };
+    let frame = 0; let later = 0;
+    const soon = () => { if (!frame) frame = window.requestAnimationFrame(() => { frame = 0; check.current(false); }); };
+    const resized = () => {
+      const was = size.current || { w: -1, h: -1 };
+      if (window.innerWidth !== was.w || Math.abs(window.innerHeight - was.h) >= 160) {
+        size.current = { w: window.innerWidth, h: window.innerHeight }; held.current = false; clearCueRoom();
+        clearTimeout(later); later = setTimeout(() => check.current(true, true), 160);   // after the app's own redraw for the new size
+      }
+      soon();
+    };
+    const hold = () => { held.current = true; };
+    const rest = () => check.current(true);   // a feedback box's own animation has ended (edu-cue-check): decided again, at rest
+    const timers = [60, 450, 1200].map((ms) => setTimeout(() => check.current(true), ms));
+    window.addEventListener('scroll', soon, true); window.addEventListener('resize', resized); window.addEventListener('edu-cue-check', rest);
+    for (const ev of CUE_HOLD_EVENTS) window.addEventListener(ev, hold, { passive: true, capture: true });
+    return () => { timers.forEach(clearTimeout); clearTimeout(later); if (frame) window.cancelAnimationFrame(frame); window.removeEventListener('scroll', soon, true); window.removeEventListener('resize', resized); window.removeEventListener('edu-cue-check', rest); for (const ev of CUE_HOLD_EVENTS) window.removeEventListener(ev, hold, { capture: true }); };
   }, [target, watch]);
   if (!show) return null;
-  const go = () => { const el = document.querySelector(scrollTo || target); if (el) el.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'end' }); };
+  const go = () => { held.current = true; const el = document.querySelector(scrollTo || target); if (el) el.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'end' }); };
   return (
-    <button type="button" onClick={go} aria-label="Scroll down to the next button" data-scroll-cue
+    <button ref={cue} type="button" onClick={go} aria-label="Scroll down to the next button" data-scroll-cue
       style={{ position: 'fixed', right: 'calc(14px + env(safe-area-inset-right, 0px))', bottom: 'calc(14px + env(safe-area-inset-bottom, 0px))', zIndex: 60, width: 58, height: 70, borderRadius: 29, border: `2px solid ${C.gold}`, background: C.surface, boxShadow: '0 6px 18px rgba(0,0,0,0.28)', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <svg viewBox="0 0 40 50" width="34" height="44" aria-hidden="true">
         {[0, 1, 2].map((k) => <polyline key={k} className="edu-chevron" points={`8,${7 + k * 13} 20,${18 + k * 13} 32,${7 + k * 13}`} fill="none" stroke={C.gold} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" style={{ animationDelay: `${k * 0.2}s` }} />)}
       </svg>
     </button>
   );
+}
+// The room the scroll cue keeps (pass NE, EARMARKS A63). In plain terms: a block of words that sits where the cue can show (a lesson
+// line's words, its say-along strip, a practice round's reason or explanation) carries data-cue-room, and its right padding includes
+// var(--cue-room, 0px). When the cue shows on a page at rest and a word of the block would lie under the cue, or within CUE_GAP pixels
+// of it, keepCueRoom sets --cue-room on that block to how far its words reach into the cue's corner, so every line of the block ends
+// that far short of it, and tells the block (edu-refit) so a lesson line can choose its wrap again (LessonWords). A block the cue does
+// not reach keeps no room, so its look never changes; on a laptop the cue's corner is far from the words and nothing changes at all.
+// Padding was chosen over a float at the block's foot: a float that reaches into a paragraph makes the browser drop its balanced and
+// pretty wrapping for the whole paragraph (Chromium 153, read in the page), which left "says." and "scared." alone on the last lines
+// of two lesson lines, against EARMARKS A82's rule; with padding the line keeps its balanced or pretty wrap in a narrower measure, at
+// most a line or two longer, and a centred line sits a little left of centre, about 18 pixels on a 320-pixel phone, only while the cue
+// shows beside it. The words are read where they will rest: a block whose card is still rising (edu-rise, a slide up) is measured less
+// that slide, and one inside a box that turns or swells (a wrong tap's wobble, a right tap's cheer) waits for a check where it is
+// still, since the first check comes before its first frame and the last after it ends.
+const CUE_GAP = 6;
+// A touch, a scroll by wheel, a key or a tap: the person has the page, so the words hold still until the next state.
+const CUE_HOLD_EVENTS = ['touchstart', 'wheel', 'pointerdown', 'keydown'];
+function setCueRoom(el, px) {
+  const now = `${Math.max(0, Math.round(px))}px`; const was = el.style.getPropertyValue('--cue-room') || '0px';
+  if (now === was) return;
+  el.style.setProperty('--cue-room', now); el.dispatchEvent(new Event('edu-refit'));
+}
+// Since round one's screen read a block whose box still turns or swells (a wrong tap's wobble, a right tap's cheer) keeps its room: the
+// timed checks cleared it while keepCueRoom passes over a moving block, so with motion on the room was gone from about 75 ms to the check
+// at 1,200 ms, words lay under the cue once the box stopped, and then the lines moved again. Both animations start and end at rest
+// (tests/scripts.test.mjs holds both), so the room chosen before the first frame is the resting room, and the box's own animation's
+// end, sent as edu-cue-check, decides again at rest. Round two's code read took that decision out, since no check held it, and the
+// third read put it back: a page that changes while the box moves (a phone turned during a wobble) kept the old room until the check
+// at 1,200 ms, so the lines moved about 650 ms after the box stopped; cue-words turns the phone during a wobble and reads every frame.
+function clearCueRoom() { if (typeof document !== 'undefined') for (const el of document.querySelectorAll('[data-cue-room]')) if (cueRestShift(el)) setCueRoom(el, 0); }
+// How far a block sits from where it will rest: the sum of its ancestors' slides, or null while one of them turns or swells.
+// Zoom (a laptop's .edu-wrap) scales a slide as drawn on the screen, so it is multiplied in.
+function cueRestShift(el) {
+  let x = 0; let y = 0;
+  for (let a = el; a && a.nodeType === 1; a = a.parentElement) {
+    const cs = getComputedStyle(a); const t = cs.transform;
+    if (t && t !== 'none') {
+      const m = new DOMMatrixReadOnly(t);
+      if (Math.abs(m.a - 1) > 0.001 || Math.abs(m.d - 1) > 0.001 || Math.abs(m.b) > 0.001 || Math.abs(m.c) > 0.001) return null;
+      let z = 1; for (let b = a; b && b.nodeType === 1; b = b.parentElement) z *= parseFloat(getComputedStyle(b).zoom) || 1;
+      x += m.e * z; y += m.f * z;
+    }
+  }
+  return { x, y };
+}
+// Whether a word of the block, where it will rest, lies in the box: each word's own boxes, read with a Range, as the browser
+// checks read them (tests/e2e/cue-words.mjs). A say-along call hidden until the voice reaches it is read too, since it shows in turn.
+function cueWordsIn(el, box, shift) {
+  const walk = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); let t;
+  while ((t = walk.nextNode())) {
+    for (const m of t.textContent.matchAll(/\S+/g)) {
+      const range = document.createRange(); range.setStart(t, m.index); range.setEnd(t, m.index + m[0].length);
+      for (const q of range.getClientRects()) {
+        if (q.width > 0 && q.right - shift.x > box.left && q.left - shift.x < box.right && q.bottom - shift.y > box.top && q.top - shift.y < box.bottom) return true;
+      }
+    }
+  }
+  return false;
+}
+// Keeps room beside the cue's own box (spot) in every block that needs it. Each block starts from no room; the room is how far its
+// widest line could reach past the cue's left edge less CUE_GAP, in the block's own pixels, and at most two fifths of its width.
+// A lesson line's last two words are held together (lastTwoTogether), so the room never leaves its last word alone and is only what the
+// cue needs; until round one's screen read the room grew 4 pixels at a time until a word joined a lone last one, which took up to 93
+// pixels, two fifths of a line, and left What is data's sixth line a ragged column 145 pixels wide.
+function keepCueRoom(spot) {
+  if (typeof document === 'undefined' || !spot) return;
+  const box = { left: spot.left - CUE_GAP, right: spot.right + CUE_GAP, top: spot.top - CUE_GAP, bottom: spot.bottom + CUE_GAP };
+  for (const el of document.querySelectorAll('[data-cue-room]')) {
+    const shift = cueRestShift(el); if (!shift) continue;
+    setCueRoom(el, 0);
+    if (!cueWordsIn(el, box, shift)) continue;
+    const cs = getComputedStyle(el); const r = el.getBoundingClientRect();
+    const scale = el.offsetWidth ? r.width / el.offsetWidth : 1;   // screen pixels to the block's own, under a laptop's zoom
+    const inner = r.right - shift.x - ((parseFloat(cs.paddingRight) || 0) + (parseFloat(cs.borderRightWidth) || 0)) * scale;
+    const most = el.clientWidth * 0.4; const least = Math.min((inner - box.left) / scale, most);
+    setCueRoom(el, least);
+  }
 }
 function visibleBand() {
   const H = typeof window === 'undefined' ? 800 : window.innerHeight;
@@ -13374,8 +13591,10 @@ function EduSphereScreens() {
               instead (pass MS), the word big and lit a syllable at a time, so the paragraph never fills with "Different, different". */}
           {/* Balanced, so no lesson line ends on one lone word (pass MY, round one's screen check); a browser balances up to about six
               lines, so a longer line can still end on one at 320 pixels (round two's code read). */}
-          <LessonWords lineKey={`${moduleId}-${lessonStep}`} style={{ fontSize: shortPhone() ? 20 : 22, lineHeight: 1.5, margin: shortPhone() ? '12px 0 0' : '18px 0 0', textWrap: 'balance' }}>{(() => { const own = sentencesOf(line).map((sentence, i) => ({ sentence, i })).filter(({ i }) => !lineParts[i] || lineParts[i].role === 'say'); return own.map(({ sentence, i }, n) => <React.Fragment key={i}><span data-read-lit={litSentence === i ? '' : undefined} style={litSentence === i ? { ...readLit(), ...LIT_WORDS } : { background: 'transparent' }}>{partsWhole(sentence, `s${i}`)}</span>{n < own.length - 1 ? ' ' : ''}</React.Fragment>); })()}</LessonWords>
-          {lineParts.some((x) => x.role === 'open') && <SayAlongStrip key={`${lessonStep}-${replays}`} parts={lineParts} lit={litSentence} />}
+          <LessonWords lineKey={`${moduleId}-${lessonStep}`} style={{ fontSize: shortPhone() ? 20 : 22, lineHeight: 1.5, margin: shortPhone() ? '12px 0 0' : '18px 0 0', textWrap: 'balance' }}>{(() => { const own = sentencesOf(line).map((sentence, i) => ({ sentence, i })).filter(({ i }) => !lineParts[i] || lineParts[i].role === 'say'); return own.map(({ sentence, i }, n) => <React.Fragment key={i}><span data-read-lit={litSentence === i ? '' : undefined} style={litSentence === i ? { ...readLit(), ...LIT_WORDS } : { background: 'transparent' }}>{n === own.length - 1 ? lastTwoTogether(partsWhole(sentence, `s${i}`), sentence) : partsWhole(sentence, `s${i}`)}</span>{n < own.length - 1 ? ' ' : ''}</React.Fragment>); })()}</LessonWords>
+          {/* The strip's room for the scroll cue sits on this wrapper, outside the strip's key, so Say it again, which draws the strip anew,
+              keeps it (round one's screen read, pass NE); the big word's size reads it through the wrapper. */}
+          {lineParts.some((x) => x.role === 'open') && <div data-cue-room="" style={{ paddingRight: 'var(--cue-room, 0px)' }}><SayAlongStrip key={`${lessonStep}-${replays}`} parts={lineParts} lit={litSentence} /></div>}
         </div>
         {/* The row under the line, like a player's controls (pass MZ, EARMARKS A80): back, the speaker that says the line again, and
             next, three circles of one size in one row, with the lesson's dots under the speaker. Until pass MZ the speaker sat in a row
@@ -13880,17 +14099,27 @@ function EduSphereScreens() {
             </div>
           )}
           {checked && !(attempt.placement && !wasCorrect && given === '') && (
-            <div key={cheer} className={wasCorrect ? 'edu-cheer' : 'edu-wobble'} style={{ position: 'relative', marginTop: 14, padding: 14, borderRadius: 10, background: wasCorrect ? C.greenSoft : C.claySoft }}>
+            <div key={cheer} data-feedback="" onAnimationEnd={(e) => { if (e.target === e.currentTarget && typeof window !== 'undefined') window.dispatchEvent(new Event('edu-cue-check')); }} className={wasCorrect ? 'edu-cheer' : 'edu-wobble'} style={{ position: 'relative', marginTop: 14, padding: 14, borderRadius: 10, background: wasCorrect ? C.greenSoft : C.claySoft }}>
               {wasCorrect && <StarBurst />}
               {/* The reason after a wrong tap and the explanation, balanced, their speech parts kept whole (pass NB, round one's screen check: "Have another / try."). */}
-              <p style={{ margin: 0, fontWeight: 600, color: wasCorrect ? C.green : C.clayInk, textWrap: 'balance' }}>{wasCorrect ? 'Correct' : readAloud ? partsWhole(preReaderWrongWords(q, String(given), wrongPicks, canSpeak()), 'why') : `Not quite. The answer is ${describeAnswer(q)}.`}</p>
-              {(wasCorrect || !readAloud) && <div style={{ margin: '8px 0 0', textWrap: 'balance' }}><RichText text={formatTeachingText(q.explain)} size={15} lineGap={6} />{!wasCorrect && !readAloud && taughtLine(mod.id, q.answer) && <p style={{ margin: '8px 0 0', fontSize: 14, color: C.muted }}>From the lesson: “{taughtLine(mod.id, q.answer)}”</p>}{!wasCorrect && !readAloud && mod.lesson.example && mod.lesson.example.another && (wrongWay ? <div style={{ margin: '8px 0 0', padding: '10px 12px', borderRadius: 10, background: C.goldSoft }}><div style={{ maxWidth: 240, margin: '0 auto 8px' }}><Picture visual={wayVisual(mod.lesson.example, 1)} note={record.preview ? undefined : false} /></div><RichText text={wayText([].concat(mod.lesson.example.another)[0])} size={14} lineGap={6} /></div> : <p style={{ margin: '8px 0 0', textAlign: 'center' }}><button type="button" style={{ ...linkBtn, fontSize: 14 }} onClick={() => setWrongWay(true)}>Show me another way</button></p>)}{!wasCorrect && q.choiceNotes && q.choiceNotes[given] && !(insight && insight.any) && <p style={{ margin: '6px 0 0', fontSize: 15, color: C.muted }}>{q.choiceNotes[given]}</p>}</div>}
-              {/* An explanation picture is a set of fraction bars, one group of dots, or (since pass LW) any picture kind below. */}
-              {(wasCorrect || !readAloud) && Array.isArray(q.explainVisual) && q.explainVisual.map((b, i) => <LabeledBar key={i} parts={b.parts} shaded={b.shaded} label={b.label} color={wasCorrect ? C.green : C.clay} />)}
-              {(wasCorrect || !readAloud) && q.explainVisual && !Array.isArray(q.explainVisual) && q.explainVisual.kind === 'dots' && <div style={{ marginTop: 8 }}><DotGroup count={q.explainVisual.count} size={28} animate animKey={cheer} /></div>}
-              {/* Every other explanation picture (pass LW): a pair, a picture, a word card, a number line, a triangle or a grid, the
-                  ones the rules test validates. Before this line only bars and dots reached the screen. */}
-              {(wasCorrect || !readAloud) && q.explainVisual && !Array.isArray(q.explainVisual) && q.explainVisual.kind !== 'dots' && <div data-explain-picture="" style={{ marginTop: 8 }}><Picture visual={q.explainVisual} note={record.preview ? undefined : false} /></div>}
+              {/* Since pass NE (EARMARKS A63) the reason and the explanation keep room for the scroll cue (data-cue-room, keepCueRoom beside
+                  ScrollCue): on a short phone the cue sat on the reason's last words after a first wrong tap (at 320 by 568 on 25 of pass ND's
+                  150 screens in the light theme) and on the explanation's last word after the right one, so while the cue shows beside them
+                  their lines end short of it. The explanation keeps it as one block, its words and its picture together (a spacing bank's
+                  explanation shows its sentence as print fitted to its box, PrintWords, and "splash." and "dog." sat under the cue after the
+                  right tap). The box keeps its full width and color; only what is in it steps aside. */}
+              <p data-cue-room="" style={{ margin: 0, fontWeight: 600, color: wasCorrect ? C.green : C.clayInk, paddingRight: 'var(--cue-room, 0px)', textWrap: 'balance' }}>{wasCorrect ? 'Correct' : readAloud ? partsWhole(preReaderWrongWords(q, String(given), wrongPicks, canSpeak()), 'why') : `Not quite. The answer is ${describeAnswer(q)}.`}</p>
+              {(wasCorrect || !readAloud) && (
+                <div data-cue-room="" style={{ paddingRight: 'var(--cue-room, 0px)' }}>
+                  <div style={{ margin: '8px 0 0', textWrap: 'balance' }}><RichText text={formatTeachingText(q.explain)} size={15} lineGap={6} />{!wasCorrect && !readAloud && taughtLine(mod.id, q.answer) && <p style={{ margin: '8px 0 0', fontSize: 14, color: C.muted }}>From the lesson: “{taughtLine(mod.id, q.answer)}”</p>}{!wasCorrect && !readAloud && mod.lesson.example && mod.lesson.example.another && (wrongWay ? <div style={{ margin: '8px 0 0', padding: '10px 12px', borderRadius: 10, background: C.goldSoft }}><div style={{ maxWidth: 240, margin: '0 auto 8px' }}><Picture visual={wayVisual(mod.lesson.example, 1)} note={record.preview ? undefined : false} /></div><RichText text={wayText([].concat(mod.lesson.example.another)[0])} size={14} lineGap={6} /></div> : <p style={{ margin: '8px 0 0', textAlign: 'center' }}><button type="button" style={{ ...linkBtn, fontSize: 14 }} onClick={() => setWrongWay(true)}>Show me another way</button></p>)}{!wasCorrect && q.choiceNotes && q.choiceNotes[given] && !(insight && insight.any) && <p style={{ margin: '6px 0 0', fontSize: 15, color: C.muted }}>{q.choiceNotes[given]}</p>}</div>
+                  {/* An explanation picture is a set of fraction bars, one group of dots, or (since pass LW) any picture kind below. */}
+                  {Array.isArray(q.explainVisual) && q.explainVisual.map((b, i) => <LabeledBar key={i} parts={b.parts} shaded={b.shaded} label={b.label} color={wasCorrect ? C.green : C.clay} />)}
+                  {q.explainVisual && !Array.isArray(q.explainVisual) && q.explainVisual.kind === 'dots' && <div style={{ marginTop: 8 }}><DotGroup count={q.explainVisual.count} size={28} animate animKey={cheer} /></div>}
+                  {/* Every other explanation picture (pass LW): a pair, a picture, a word card, a number line, a triangle or a grid, the
+                      ones the rules test validates. Before this line only bars and dots reached the screen. */}
+                  {q.explainVisual && !Array.isArray(q.explainVisual) && q.explainVisual.kind !== 'dots' && <div data-explain-picture="" style={{ marginTop: 8 }}><Picture visual={q.explainVisual} note={record.preview ? undefined : false} /></div>}
+                </div>
+              )}
               {!readAloud && insight && insight.any && <p style={{ margin: '8px 0 0', textAlign: 'center' }}><button type="button" data-more-info-link="" onClick={() => setMoreInfo(true)} style={{ ...linkBtn, fontSize: 14 }}>More Info</button></p>}
             </div>
           )}

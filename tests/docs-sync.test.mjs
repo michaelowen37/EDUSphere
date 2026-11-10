@@ -251,6 +251,15 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
     const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
     const said = (audit.match(/Corrected in place in pass ND \(Mikey's answer to Q85\)/g) || []).length;
     ok("docs/RULES-AUDIT-HISTORY.md keeps the three rows pass ND corrected in place as pass NC left them (section 2's line, section 4's row and section 6's short breaths), each corrected row says so, and section 9's row for Q85 names them (pass ND, Q85 (b))", /^- \*\*Since pass NC \(Domain III's phonemes/.test(kept) && (kept.match(/Q88 as[k]s Mikey/g) || []).length === 3 && said >= 3 && audit.includes('Corrected in pass ND, each read against the code: section 2') && !/Q88 as[k]s Mikey/.test(audit) && createHash('sha256').update(kept, 'utf8').digest('hex') === '82144b19b20626b09308aaeafde4cffb105b71b507588e9769a570e11076308c', `${said} rows say so`); }
+  // Pass NE's two blocks, held the same way: Q89, which Mikey answered when he opened the pass ("Q89 - A"), and the two rows his answer
+  // let pass NE correct in place under Q85 (b), as pass ND left them, each corrected row saying so and section 9's row for Q85 naming them.
+  { const o = "<!-- RULES-AUDIT section 11's answered questions in pass NE, word for word: begin -->\n"; const ia = hist.indexOf(o); const ib = hist.indexOf("<!-- RULES-AUDIT section 11's answered questions in pass NE, word for word: end -->");
+    const ne = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
+    ok('docs/RULES-AUDIT-HISTORY.md keeps the question answered in pass NE, every line unchanged (pass NE)', /^- Q89\. Answered in pass NE/.test(ne) && ne.includes('The question as it stood: One breath for a hiss in the three letters lessons') && createHash('sha256').update(ne, 'utf8').digest('hex') === '8e583c0def68e2d1fa00a58d6631bc73b509f679216143c6eb39e7d841977634'); }
+  { const o = '<!-- RULES-AUDIT rows as pass ND left them, before pass NE corrected them in place, word for word: begin -->\n'; const ia = hist.indexOf(o); const ib = hist.indexOf('<!-- RULES-AUDIT rows as pass ND left them, before pass NE corrected them in place, word for word: end -->');
+    const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
+    const said = (audit.match(/Corrected in place in pass NE \(Mikey's answer to Q85\)/g) || []).length;
+    ok("docs/RULES-AUDIT-HISTORY.md keeps the six rows pass NE corrected in place as pass ND left them (section 2's line, section 4's row on one breath in the letters lessons, and since the pass's own work section 5's row on III.C.2 and III.C.3, section 6's row on a spacing or dots question, section 8's row on writing shown as print and its row on every drawing on an answer tile), each corrected row says so, and section 9's row for Q85 names them (pass NE, Q85 (b))", /^- \*\*Since pass ND \(Domain III's letters and their sounds/.test(kept) && (kept.match(/Q89 as[k]s Mikey/g) || []).length === 2 && ['| **Domain III\'s III.C.2 and III.C.3, read (pass ND', '| **A spacing or dots question is never answered by its look (pass ND', '| **Writing shown as print (pass ND', '| **Every drawing on an answer tile reads at its edge (pass ND'].every((s) => kept.includes('\n' + s)) && said >= 6 && audit.includes('Corrected in pass NE, each read against the code: section 2') && audit.includes('Corrected in pass NE too, each where the pass\'s own work outgrew it') && !/Q89 as[k]s Mikey/.test(audit) && createHash('sha256').update(kept, 'utf8').digest('hex') === '287fe18195c984df8431d824837eb6a4d76d5ea001391467002849251c640b96', `${said} rows say so`); }
   // HANDOFF's numbers name the pass that counted them (pass NC, round two's final read: its heading still named pass NB over pass NC's
   // numbers): the heading's pass is the newest DECISIONS entry's. An older pass's name, planted, is caught.
   { const handoff = readFileSync(new URL('../docs/HANDOFF.md', import.meta.url), 'utf8'); const dec = readFileSync(new URL('../docs/DECISIONS.md', import.meta.url), 'utf8');
@@ -357,6 +366,10 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   { const o = '<!-- CLAUDE.md lines as pass NC wrote them, before pass ND corrected them, word for word: begin -->\n'; const ia = hist.indexOf(o); const ib = hist.indexOf('<!-- CLAUDE.md lines as pass NC wrote them, before pass ND corrected them, word for word: end -->');
     const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
     ok('docs/CLAUDE-HISTORY.md keeps the CLAUDE-PART-2 line pass ND corrected as pass NC wrote it, and RULES-AUDIT section 9 names it (pass ND)', /^- Phonemes, the one-breath hiss, writing to tell, and the screen read \(pass NC, /.test(kept) && /Q88 as[k]s Mikey/.test(kept) && createHash('sha256').update(kept, 'utf8').digest('hex') === '6d48bb3dc86291b4aaf4ad9f072ea7fbe8a60ae01592f012acc5357716f66035' && row.includes('Corrected in pass ND, at Mikey\'s word')); }
+  // The line pass ND added to CLAUDE-PART-2.md, corrected in place in pass NE at Mikey's word (Q89): its words as pass ND wrote them kept the same way.
+  { const o = '<!-- CLAUDE.md lines as pass ND wrote them, before pass NE corrected them, word for word: begin -->\n'; const ia = hist.indexOf(o); const ib = hist.indexOf('<!-- CLAUDE.md lines as pass ND wrote them, before pass NE corrected them, word for word: end -->');
+    const kept = ia >= 0 && ib > ia ? hist.slice(ia + o.length, ib) : '';
+    ok('docs/CLAUDE-HISTORY.md keeps the CLAUDE-PART-2 line pass NE corrected as pass ND wrote it, and RULES-AUDIT section 9 names it (pass NE)', /^- Letters and their sounds, spaces between words, and every drawing's edge \(pass ND, /.test(kept) && /Q89 as[k]s Mikey/.test(kept) && createHash('sha256').update(kept, 'utf8').digest('hex') === '380d6c54d17d1e373c8148af6c1778b7bf3da059bbe99c30cf685816dc459967' && row.includes('Corrected in pass NE, at Mikey\'s word')); }
 }
 // NEW-CHAT.md's history (pass MM): the state bullets of passes JE to MJ, the earlier chats' "When to start" paragraphs and the
 // chain of earlier preview links moved, word for word, to docs/NEW-CHAT-HISTORY.md, whose text between its markers must hash to
@@ -500,10 +513,11 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
   const bare = (text) => text.split('\n').filter((l) => !l.trim().startsWith('#') && /\btimeout \d/.test(l));
   const steps = check.split('\n').filter((l) => /^echo "1[0-3][a-z]?\/13 /.test(l));
   const first = steps.find((l) => / run "[^"]+" \d+ /.test(l)) || ''; const planted = check.replace(first, first.replace(/ run "[^"]+" (\d+) /, ' timeout $1 '));
-  // Eighteen browser steps since pass ND's tile edges step (13k, EARMARKS A89).
+  // Eighteen browser steps since pass ND's tile edges step (13k, EARMARKS A89), and nineteen since pass NE's paper edges step (13l, EARMARKS A92).
+  // Twenty since pass NE's step for the words under the scroll cue (13m, EARMARKS A63).
   ok(`check.sh names a browser step stopped at its time limit and notes one past two thirds of it, so a limit is raised before it stops a passing run (pass MT; ${steps.length} browser steps, each through run; the click-through's 695 seconds of 720 noted, a hung step named with its code kept, three near misses passed, a bare timeout caught)`,
     slowFn !== '' && runFn !== '' && notes.length === want.length && want.every((w, i) => notes[i].startsWith(w)) && last.startsWith(hung) && codes === 'code 124\ncode 0\ncode 1'
-    && steps.length === 18 && steps.every((l) => / run "[^"]+" \d+ /.test(l)) && bare(check).length === 0 && bare(planted).length === 1,
+    && steps.length === 20 && steps.every((l) => / run "[^"]+" \d+ /.test(l)) && bare(check).length === 0 && bare(planted).length === 1,
     JSON.stringify({ notes, codes, last: last.slice(0, 60), steps: steps.length, bare: bare(check).length, planted: bare(planted).length }));
 }
 // docs/MISTAKE-CLASSES.md counts a pass once in a class's heading (pass NA, the third read: round two's evidence was counted as one
@@ -512,5 +526,16 @@ for (const w of WORDS) ok(`on screen and in the rules audit: "${w}"`, ui.include
 { const mc = readFileSync(new URL('../docs/MISTAKE-CLASSES.md', import.meta.url), 'utf8').split('\n').filter((l) => /^### C\d+ /.test(l));
   const twice = (l) => { const m = /\((\d+) passes; (.*) since the review\)$/.exec(l); if (!m) return false; const list = m[2].replace(/ and /, ', ').split(', '); return new Set(list).size !== list.length; };
   ok('no heading of docs/MISTAKE-CLASSES.md names a pass twice in its list since the review (pass NA, the third read; a doubled heading caught)', mc.length >= 35 && !mc.some(twice) && twice('### C10 a wrong choice a child could fairly call right (12 passes; MV, MW, MX, MY, NA and NA since the review)'), mc.filter(twice).join(' | ')); }
+// Since pass NE's third read: a round's record says which of its fixes are read by eye. Round two's bullet said every fix had a check
+// that fails without it, and three had none, the second pass this came back after pass ND learned it ("A record says what a check holds
+// and what is read by eye"), so a check: every line of the newest DECISIONS entry's The checks that claims "a check that fails without
+// it" also names what is read by eye. Plant: such a line with no by eye, caught.
+{ const dec = readFileSync(new URL('../docs/DECISIONS.md', import.meta.url), 'utf8'); const entry = dec.slice(dec.lastIndexOf('\n## 20'));
+  const from = entry.indexOf('\n### The checks'); const to = entry.indexOf('\n### Tests and tools'); const checks = from >= 0 && to > from ? entry.slice(from, to) : '';
+  const claims = (txt) => txt.split('\n').filter((l) => l.includes('a check that fails without it'));
+  const unnamed = (txt) => claims(txt).filter((l) => !/\bby eye\b/.test(l)).map((l) => l.slice(0, 90));
+  const now = unnamed(checks); const plant = unnamed(checks + '\n- **A planted round.** Every fix was applied, each with a check that fails without it.');
+  ok(`every round of the newest DECISIONS entry that claims a check that fails without it names what is read by eye (pass NE's third read; ${claims(checks).length} lines read; a round that names none, planted, caught)`, checks.length > 1000 && claims(checks).length >= 3 && now.length === 0 && plant.length === 1, JSON.stringify(now));
+}
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exitCode = failed ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (CLAUDE.md, 2026-09-23)

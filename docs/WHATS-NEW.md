@@ -9,6 +9,13 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## November 9, 2026 (letters at the start or end of a name, and writing a word by its sounds)
+
+- Four-year-olds meet four more letters whose names hold their sounds. In Start or end of the name, P and D have their sound at the start of their names, puh and duh, and N and X have theirs at the end, nnn and the cuh-sss you hear at the end of box and fox. A child hears each sound, finds the letter that says it, and says the sounds of P, D and N too.
+- Write it by its sounds shows how new writers get a word started: say the word slowly, write the letter for its first sound, then the letter for its last, and a grown-up helps with the middle, the way a child might write S and N for sun. Every question is a tap, and nothing a child writes is asked for or kept in the app.
+- Lessons read better on every screen. On a tablet or a laptop a lesson's own letters and writing grow with its pictures, a word like grown-up stays whole on one line, the pictures on a lesson's page have clearer edges in the dark theme, and the apples in What is data's picture graph are drawn at last, where gray circles stood in. On a small phone, the arrow that shows there is more below no longer covers a lesson's words or an answer's explanation.
+- Four new Wonder questions for young children are ready for your approval, like every Wonder question: an ice cream that falls off its cone, hiccups that will not stop, a coat you do not want to put on when it is cold, and favorite shoes that got too small.
+
 ## November 9, 2026 (letters and their sounds, and spaces between words)
 
 - Three- and four-year-olds have new lessons on the sounds letters make. Letters and sounds shows three-year-olds that M says mmm, S says sss and B says buh, each with words that start with its sound. Hear it in the name and At the end of the name share a trick with four-year-olds: for some letters, the sound is right in the letter's name, at the start of B, T, K, J and Z, and at the end of M, S, F, L and R. A child hears each sound, finds the letter that says it and says it too.
@@ -1003,11 +1010,11 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 ## September 29, 2026 (two small fixes)
 
 - On a student's report, the whole Progress by course bar now opens the list, not only its arrow, and the courses that appear are tinted so they read apart from the bar. Every dropdown list in the app now shows its choices in the theme's own colors.
-- In the dark theme, an answer that was ruled out after a wrong try stays visible behind its grey, so a child can see what was wrong before trying again.
+- In the dark theme, an answer that was ruled out after a wrong try stays visible behind its gray, so a child can see what was wrong before trying again.
 
 ## September 29, 2026 (how computers compute)
 
-- College has a new course, How computers compute: what actually runs when a program runs, from fetch, decode and execute to numbered bytes and the call stack; how work grows with the input, and why a better algorithm beats a faster machine; the shapes of data, from arrays and linked lists to stacks, queues, hash tables and trees; and recursion, the base case, and the one question no program can answer. Arithmetic questions are worked out fresh every time. Each lesson has a story, and the course ends with a long story about Chloe and a gallery catalogue of ten thousand paintings.
+- College has a new course, How computers compute: what actually runs when a program runs, from fetch, decode and execute to numbered bytes and the call stack; how work grows with the input, and why a better algorithm beats a faster machine; the shapes of data, from arrays and linked lists to stacks, queues, hash tables and trees; and recursion, the base case, and the one question no program can answer. Arithmetic questions are worked out fresh every time. Each lesson has a story, and the course ends with a long story about Chloe and a gallery catalog of ten thousand paintings.
 - Finishing the course unlocks Split the Search, a new kind of game: thirty-two cards face down in order, a number to find, and six looks that are always enough.
 - Two new Wonder questions for college wait in the review screen.
 

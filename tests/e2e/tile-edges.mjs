@@ -18,7 +18,7 @@
 // reads, its colors turned the tile's own, caught; and its near miss: the key's dark outline turned the dark tile's own color, its gold
 // fill just inside reading, passed, as the eye reads it. Since round one's code check each threshold is pinned on both sides: R by the
 // key's outline turned the dark tile's color at seven units wide, caught (at R 12 it would pass), beside the near miss above; the bar by
-// two squares drawn in the page, one with a strip of its edge melted into the tile so about 93 percent reads, caught, and one at about 97
+// two squares drawn in the page, one with a strip of its edge melted into the tile so about 92 percent reads (0.917, measured), caught, and one at about 96
 // percent, passed. A blind spot, named: an edge pixel is opaque beside a clear one, so an edge that meets a translucent part (the sun's
 // glow, a solid's soft shadow) is read where the opaque part ends. Only choice questions are read: an order question with pick draws
 // the same icons, pictures, faces, items and shapes on its tiles, and at seeds 1 to 400 each of them is also on a choice tile.
@@ -50,7 +50,7 @@ const tilesOf = async (page) => {
 };
 const TILE_QUESTION = ['p3-sort-red-blue', 11];
 // The counts the code has (as the fold check's FLOORS): how many drawings the banks put on tiles, read in each theme.
-const FLOORS = { drawings: 416 };   // 262 when the check was written, 416 since round one's code check read every kind
+const FLOORS = { drawings: 424 };   // 262 when the check was written, 416 since round one's code check read every kind, 424 since pass NE
 // Where each drawing first shows on a tile: a bank, a seed and its module, and the questions that show them all.
 const where = new Map();
 for (const c of L.COURSES) for (const m of c.modules) for (const g of [...new Set(m.generators || [])]) for (let s = 1; s <= 80; s++) {
@@ -133,7 +133,7 @@ for (const theme of ['light', 'dark']) {
         // The second plant, R's other side: the key's outline turned the tile's color at seven units wide, wider than R reaches past, caught.
         const w = await shoot(page, x.token, { strokes: TILES.dark[0], width: 7 }); const rw = w ? await readEdge(page, w, TILES.dark) : null; plantWide = !!rw && Math.min(...rw.shares) < BAR; } }
   }
-  // The bar's two cases, once, in the dark theme: a square about 93 percent of whose edge reads, caught, and one about 97 percent, passed.
+  // The bar's two cases, once, in the dark theme: a square about 92 percent of whose edge reads (0.917), caught, and one about 96 percent (0.962), passed.
   if (theme === 'dark') { const lo = await readEdge(page, await square(page, SQUARE_MELT.low, TILES.dark[0]), TILES.dark); const hi = await readEdge(page, await square(page, SQUARE_MELT.high, TILES.dark[0]), TILES.dark);
     const l = Math.min(...lo.shares); const h = Math.min(...hi.shares); barLow = l >= 0.9 && l < BAR ? l : -l; barHigh = h >= BAR && h < 0.99 ? h : -h; }
   await ctx.close();
@@ -144,7 +144,7 @@ const lowest = (k) => (read[k] ? Math.min(...read[k].shares) : null);
 const keys = Object.keys(read); const missing = keys.filter((k) => !read[k]);
 const short = keys.filter((k) => read[k] && lowest(k) < BAR);
 const perTheme = (t) => keys.filter((k) => k.startsWith(t + ' ') && read[k]).length;
-ok(`every drawing a bank puts on an answer tile reads at its edge, 3 to 1 or better on ${Math.round(BAR * 100)} percent of it against the resting, right, wrong and ruled-out tiles, in the light theme (${perTheme('light')} drawings) and the dark theme (${perTheme('dark')}) (pass ND, EARMARKS A89; the key's outline turned the tile's color at seven units wide, caught; a square reading about 93 percent of its edge caught and one about 97 percent passed; the jar turned the tile's own colors, planted, caught, and the key's dark outline melted into the dark tile with its fill reading, passed)`,
+ok(`every drawing a bank puts on an answer tile reads at its edge, 3 to 1 or better on ${Math.round(BAR * 100)} percent of it against the resting, right, wrong and ruled-out tiles, in the light theme (${perTheme('light')} drawings) and the dark theme (${perTheme('dark')}) (pass ND, EARMARKS A89; the key's outline turned the tile's color at seven units wide, caught; a square reading about 92 percent of its edge caught and one about 96 percent passed; the jar turned the tile's own colors, planted, caught, and the key's dark outline melted into the dark tile with its fill reading, passed)`,
   missing.length === 0 && short.length === 0 && perTheme('light') >= FLOORS.drawings && perTheme('dark') >= FLOORS.drawings && plantTurned === true && nearMelted === true && plantWide === true && barLow > 0 && barHigh > 0,
   { missing: missing.slice(0, 6), short: short.map((k) => k + ' ' + lowest(k).toFixed(3)).slice(0, 12), counts: [perTheme('light'), perTheme('dark')], plantTurned, nearMelted, plantWide, barLow, barHigh });
 const tileSet = (t) => Array.isArray(TILES[t]) && TILES[t].length === 4 && TILES[t].every((h) => /^#[0-9A-F]{6}$/.test(h)) && new Set(TILES[t]).size === 4;

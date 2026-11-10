@@ -26,7 +26,10 @@ page.on('pageerror', (e) => { errors.push(String(e)); console.log('PAGE ERROR:',
 page.on('console', (m) => { if (m.type() === 'error') { errors.push(m.text()); console.log('CONSOLE ERROR:', m.text().slice(0, 300)); } });
 await page.goto(pathToFileURL('tests/e2e/page.html').href);
 
-const text = async () => (await page.textContent('#root')) || ''; // #root only: the page's own scripts contain these words too
+// #root only: the page's own scripts contain these words too. Since pass NE a lesson line's last two words are held by a no-break space
+// (lastTwoTogether), read as the space it is, so a phrase that ends a line is found and a phrase said to be absent is truly absent
+// (check.sh's first run of pass NE: Count to 5's "There are five dots." was not found).
+const text = async () => ((await page.textContent('#root')) || '').replace(/\u00a0/g, ' ');
 const tap = async (label) => { await page.getByRole('button', { name: label, exact: true }).first().click(); };
 const state = async () => page.evaluate(() => window.__eduTest || {});
 let t = '';

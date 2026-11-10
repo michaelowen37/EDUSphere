@@ -1575,9 +1575,14 @@ export function choiceSpeaks(q, c) {
 // never by how long its print looks; with no voice, or for any other choice, null, and the button draws the choice as it always has.
 export const HEARD_CHOICE = 'Tap to hear';
 export function printedChoice(q, c, voice = true) { return voice && q && q.heardChoices && typeof c === 'string' && !c.includes(':') ? HEARD_CHOICE : null; }
+// Since pass NE (EARMARKS A91) a question whose setup, printed whole, would give its answer away to a child who compares it with what the
+// question shows carries unvoicedStory, a grown-up's line printed in the setup's place with no voice (the spacing questions' sentence
+// with its spaces sat above writing that may have none); the grown-up reads the writing's own words aloud.
+export const UNVOICED_SPACING = 'For the grown-up: read the words aloud, then ask.';
 export function printedQuestion(q, voice = true) {
   if (!q) return { story: null, prompt: '' };
   if (voice) return { story: q.printedStory ? q.printedStory : q.story || null, prompt: q.printed ? q.printed : q.prompt };
+  if (q.unvoicedStory) return { story: q.unvoicedStory, prompt: q.prompt };
   return { story: q.story ? mannerCues(q.story, q.voices) : null, prompt: q.prompt };
 }
 // The cues a grown-up reads beside a question's sentences said in a manner: each sentence of the words, cut where SENTENCE_BREAK cuts,
@@ -6226,7 +6231,7 @@ function PREK3_READING_MODULES() { return [
   // says: M says mmm, S says sss and B says buh, each the app's own sound, with two words that start with it, moon and map, sun and sock,
   // ball and bed. The child says each letter's sound in a turn of their own, then finds the letter that says a sound heard in a game,
   // and hears that M does not say sss. Three letters are "some", and the voice is the adult assistance. Every hiss is one breath, as in
-  // the phoneme lessons (ONE_BREATH_LESSONS; Q89 asks Mikey). Its questions print none of the sounds or words they ask about while the
+  // the phoneme lessons (ONE_BREATH_LESSONS; kept so by Mikey's answer to Q89, "Q89 - A", in pass NE). Its questions print none of the sounds or words they ask about while the
   // voice can speak. It builds on A and B, which first says that letters have names, and on Sun and sock, which listens to the sound a
   // word starts with (Mikey's answer to Q84).
   {
@@ -7210,7 +7215,9 @@ function PREK_MODULES() { return [
         { say: 'Here is a small circle. It takes up the least room, so it is the smallest. ' + sayAlong('smallest', ['slow', 'mouse', 'silly', 'fast', 'stretch']), show: { kind: 'shape', name: 'circle', size: 'small' } },
         { say: 'Here is a middle-sized circle. Not little, and not big. Our word is middle-sized. ' + sayAlong('middle-sized', ['slow', 'whisper', 'slide', 'fast', 'dough']), show: { kind: 'shape', name: 'circle' } },
         { say: 'Here is the biggest circle of all. It takes up the most room. Our word is biggest. ' + sayAlong('biggest', ['giant', 'whisper', 'chant', 'fast', 'stretch']), show: { kind: 'shape', name: 'circle', size: 'big' } },
-        { say: 'Here are all three circles, small, middle-sized and biggest.', show: { kind: 'row', items: [{ kind: 'shape', name: 'circle', size: 'small' }, { kind: 'shape', name: 'circle' }, { kind: 'shape', name: 'circle', size: 'big' }] } },
+        // Since pass NE: middle-sized is kept whole on the page (partsWhole), which left biggest. alone on the last line at 320 pixels, so the
+        // line names each circle (the fold check reads a lone last word at 320 by 568).
+        { say: 'Here are all three circles, the small one, the middle-sized one and the biggest.', show: { kind: 'row', items: [{ kind: 'shape', name: 'circle', size: 'small' }, { kind: 'shape', name: 'circle' }, { kind: 'shape', name: 'circle', size: 'big' }] } },
         { say: 'The middle-sized circle is bigger than the small one, but smaller than the biggest circle.', show: { kind: 'pair', a: { kind: 'shape', name: 'circle' }, b: { kind: 'shape', name: 'circle', size: 'big' } } },
         { say: 'Big, bigger, biggest, like these three circles. Each one is bigger than the one before, and the last is the biggest of all.', show: { kind: 'row', items: [{ kind: 'shape', name: 'circle', size: 'small' }, { kind: 'shape', name: 'circle' }, { kind: 'shape', name: 'circle', size: 'big' }] } },
         { say: 'Three snowmen in a row can be big, bigger and biggest too.', show: null },
@@ -7592,7 +7599,7 @@ function PREK_READING_MODULES() { return [
         { say: 'Find the letter when you hear its name. Every letter has one, A, B, C, D, E, M and S.', show: { kind: 'letters', text: 'A   B   C   D   E   M   S' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.1 (recognizes and names at least 18 uppercase letters and 15 lowercase letters), in part, since the lesson teaches seven capital letters, A, B, C, D, E, M and S, each by its name and its shape, and asks the child to find each one when its name is heard, to say whether a letter is the one named and to find one by its shape, while naming them aloud is the child\'s own talk, for a grown-up to hear, and with the tracing lessons\' six more, L, T, O, I, H and F, the course asks thirteen letters by name, so five more capital letters and fifteen small letters wait (EARMARKS E13), and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson teaches seven letters by name and shape, and with the tracing lessons\' six more the course asks thirteen by name, half of the alphabet, while naming them aloud is the child\'s own talk, for a grown-up to hear, and letters met often in the environment and the sounds of letters other than the ten Hear it in the name and At the end of the name teach wait (EARMARKS E13), and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.1 (recognizes and names at least 18 uppercase letters and 15 lowercase letters), in part, since the lesson teaches seven capital letters, A, B, C, D, E, M and S, each by its name and its shape, and asks the child to find each one when its name is heard, to say whether a letter is the one named and to find one by its shape, while naming them aloud is the child\'s own talk, for a grown-up to hear, and with the tracing lessons\' six more, L, T, O, I, H and F, the course asks thirteen letters by name, so five more capital letters and fifteen small letters wait (EARMARKS E13), and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson teaches seven letters by name and shape, and with the tracing lessons\' six more the course asks thirteen by name, half of the alphabet, while naming them aloud is the child\'s own talk, for a grown-up to hear, and letters met often in the environment and the sounds of letters other than the fourteen Hear it in the name, At the end of the name and Start or end of the name teach wait (EARMARKS E13), and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show.'],
     generators: ['pl-tap-letter', 'pl-is-letter', 'pl-letter-look', 'pl-tap-letter', 'pl-is-letter'],
   },
   {
@@ -7615,7 +7622,7 @@ function PREK_READING_MODULES() { return [
         { say: 'Start at the dot and follow the arrow every time, so your hand learns to make each letter the same way.', show: { kind: 'trace', text: 'O' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.1 (recognizes and names at least 18 uppercase letters and 15 lowercase letters), in part, since the lesson asks the child to tap L, T and O when each is heard and to find each by its lines, which with Big letters\' seven and the other tracing lessons\' letters makes thirteen letters the course asks by name, while naming them aloud is the child\'s own talk, for a grown-up to hear, and five more capital letters and fifteen small letters wait (EARMARKS E13), IV.C.2 (progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas), in part, since the lesson forms the letters L, T and O along a guide, while forming letters without a guide, letter strings and writing as a way to communicate ideas are the child\'s own, with a grown-up (EARMARKS E13), and writing\'s growth from scribbles and mock letters to letters is shown in Write to tell, IV.C.4 (demonstrates directionality when writing (e.g., top to bottom, left to right) adult support as needed), in part, since every letter starts at the top, each line down goes from top to bottom, each line across goes from left to right and O goes around to the left, while writing letters and words from left to right along a line waits (EARMARKS E13), and IX.B.2 (demonstrates control, coordination and increasing precision when completing tasks that require eye-hand coordination), and Head Start ELOF Goals P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson asks for L, T and O by name and by their lines, and with Big letters\' seven and the other tracing lessons\' letters the course asks thirteen by name, half of the alphabet, while naming them aloud is the child\'s own talk, for a grown-up to hear, and letters met often in the environment and the sounds of letters other than the ten Hear it in the name and At the end of the name teach wait (EARMARKS E13), and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show, and P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws letters along their lines with moderate precision, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.1 (recognizes and names at least 18 uppercase letters and 15 lowercase letters), in part, since the lesson asks the child to tap L, T and O when each is heard and to find each by its lines, which with Big letters\' seven and the other tracing lessons\' letters makes thirteen letters the course asks by name, while naming them aloud is the child\'s own talk, for a grown-up to hear, and five more capital letters and fifteen small letters wait (EARMARKS E13), IV.C.2 (progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas), in part, since the lesson forms the letters L, T and O along a guide, while forming letters without a guide, letter strings and writing as a way to communicate ideas are the child\'s own, with a grown-up (EARMARKS E13), and writing\'s growth from scribbles and mock letters to letters is shown in Write to tell, IV.C.4 (demonstrates directionality when writing (e.g., top to bottom, left to right) adult support as needed), in part, since every letter starts at the top, each line down goes from top to bottom, each line across goes from left to right and O goes around to the left, while writing letters and words from left to right along a line waits (EARMARKS E13), and IX.B.2 (demonstrates control, coordination and increasing precision when completing tasks that require eye-hand coordination), and Head Start ELOF Goals P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson asks for L, T and O by name and by their lines, and with Big letters\' seven and the other tracing lessons\' letters the course asks thirteen by name, half of the alphabet, while naming them aloud is the child\'s own talk, for a grown-up to hear, and letters met often in the environment and the sounds of letters other than the fourteen Hear it in the name, At the end of the name and Start or end of the name teach wait (EARMARKS E13), and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show, and P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws letters along their lines with moderate precision, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13).'],
     // Three traces, one of each letter, and two choices, the letter heard and the letter by its lines (pass MN, Q50).
     generators: ['pl-trace-first', 'pl-trace-first', 'pl-trace-first', 'pl-hear-first', 'pl-lines-first'],
   },
@@ -7639,7 +7646,7 @@ function PREK_READING_MODULES() { return [
         { say: 'For H, lift your finger after each line, then start the next one at its dot and follow the arrow.', show: { kind: 'trace', text: 'H' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.1 (recognizes and names at least 18 uppercase letters and 15 lowercase letters), in part, since the lesson asks the child to tap I, H and E when each is heard and to find each by its lines, which with Big letters\' seven and the other tracing lessons\' letters makes thirteen letters the course asks by name, while naming them aloud is the child\'s own talk, for a grown-up to hear, and five more capital letters and fifteen small letters wait (EARMARKS E13), IV.C.2 (progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas), in part, since the lesson forms the letters I, H and E along a guide, while forming letters without a guide, letter strings and writing as a way to communicate ideas are the child\'s own, with a grown-up (EARMARKS E13), and writing\'s growth from scribbles and mock letters to letters is shown in Write to tell, IV.C.4 (demonstrates directionality when writing (e.g., top to bottom, left to right) adult support as needed), in part, since every letter starts at the top, each line down goes from top to bottom and each line across goes from left to right, while writing letters and words from left to right along a line waits (EARMARKS E13), and IX.B.2 (demonstrates control, coordination and increasing precision when completing tasks that require eye-hand coordination), and Head Start ELOF Goals P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson asks for I, H and E by name and by their lines, and with Big letters\' seven and the other tracing lessons\' letters the course asks thirteen by name, half of the alphabet, while naming them aloud is the child\'s own talk, for a grown-up to hear, and letters met often in the environment and the sounds of letters other than the ten Hear it in the name and At the end of the name teach wait (EARMARKS E13), and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show, and P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws letters along their lines with moderate precision, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.1 (recognizes and names at least 18 uppercase letters and 15 lowercase letters), in part, since the lesson asks the child to tap I, H and E when each is heard and to find each by its lines, which with Big letters\' seven and the other tracing lessons\' letters makes thirteen letters the course asks by name, while naming them aloud is the child\'s own talk, for a grown-up to hear, and five more capital letters and fifteen small letters wait (EARMARKS E13), IV.C.2 (progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas), in part, since the lesson forms the letters I, H and E along a guide, while forming letters without a guide, letter strings and writing as a way to communicate ideas are the child\'s own, with a grown-up (EARMARKS E13), and writing\'s growth from scribbles and mock letters to letters is shown in Write to tell, IV.C.4 (demonstrates directionality when writing (e.g., top to bottom, left to right) adult support as needed), in part, since every letter starts at the top, each line down goes from top to bottom and each line across goes from left to right, while writing letters and words from left to right along a line waits (EARMARKS E13), and IX.B.2 (demonstrates control, coordination and increasing precision when completing tasks that require eye-hand coordination), and Head Start ELOF Goals P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson asks for I, H and E by name and by their lines, and with Big letters\' seven and the other tracing lessons\' letters the course asks thirteen by name, half of the alphabet, while naming them aloud is the child\'s own talk, for a grown-up to hear, and letters met often in the environment and the sounds of letters other than the fourteen Hear it in the name, At the end of the name and Start or end of the name teach wait (EARMARKS E13), and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show, and P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws letters along their lines with moderate precision, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13).'],
     // Three traces, one of each letter, and two choices, the letter heard and the letter by its lines (pass MN, Q50).
     generators: ['pl-trace-more', 'pl-trace-more', 'pl-trace-more', 'pl-hear-more', 'pl-lines-more'],
   },
@@ -7663,7 +7670,7 @@ function PREK_READING_MODULES() { return [
         { say: 'L, T and F use the same two moves, down and then across, in different places. Start at the dot and follow the arrow.', show: { kind: 'letters', text: 'L   T   F' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.1 (recognizes and names at least 18 uppercase letters and 15 lowercase letters), in part, since the lesson asks the child to tap L, T and F when each is heard and to find each by its lines, which with Big letters\' seven and the other tracing lessons\' letters makes thirteen letters the course asks by name, while naming them aloud is the child\'s own talk, for a grown-up to hear, and five more capital letters and fifteen small letters wait (EARMARKS E13), IV.C.2 (progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas), in part, since the lesson forms the letters L, T and F along a guide, while forming letters without a guide, letter strings and writing as a way to communicate ideas are the child\'s own, with a grown-up (EARMARKS E13), and writing\'s growth from scribbles and mock letters to letters is shown in Write to tell, IV.C.4 (demonstrates directionality when writing (e.g., top to bottom, left to right) adult support as needed), in part, since every letter starts at the top, each line down goes from top to bottom and each line across goes from left to right, while writing letters and words from left to right along a line waits (EARMARKS E13), and IX.B.2 (demonstrates control, coordination and increasing precision when completing tasks that require eye-hand coordination), and Head Start ELOF Goals P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson asks for L, T and F by name and by their lines, and with Big letters\' seven and the other tracing lessons\' letters the course asks thirteen by name, half of the alphabet, while naming them aloud is the child\'s own talk, for a grown-up to hear, and letters met often in the environment and the sounds of letters other than the ten Hear it in the name and At the end of the name teach wait (EARMARKS E13), and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show, and P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws letters along their lines with moderate precision, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13).'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.1 (recognizes and names at least 18 uppercase letters and 15 lowercase letters), in part, since the lesson asks the child to tap L, T and F when each is heard and to find each by its lines, which with Big letters\' seven and the other tracing lessons\' letters makes thirteen letters the course asks by name, while naming them aloud is the child\'s own talk, for a grown-up to hear, and five more capital letters and fifteen small letters wait (EARMARKS E13), IV.C.2 (progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas), in part, since the lesson forms the letters L, T and F along a guide, while forming letters without a guide, letter strings and writing as a way to communicate ideas are the child\'s own, with a grown-up (EARMARKS E13), and writing\'s growth from scribbles and mock letters to letters is shown in Write to tell, IV.C.4 (demonstrates directionality when writing (e.g., top to bottom, left to right) adult support as needed), in part, since every letter starts at the top, each line down goes from top to bottom and each line across goes from left to right, while writing letters and words from left to right along a line waits (EARMARKS E13), and IX.B.2 (demonstrates control, coordination and increasing precision when completing tasks that require eye-hand coordination), and Head Start ELOF Goals P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson asks for L, T and F by name and by their lines, and with Big letters\' seven and the other tracing lessons\' letters the course asks thirteen by name, half of the alphabet, while naming them aloud is the child\'s own talk, for a grown-up to hear, and letters met often in the environment and the sounds of letters other than the fourteen Hear it in the name, At the end of the name and Start or end of the name teach wait (EARMARKS E13), and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show, and P-PMP 3 (demonstrates increasing control, strength, and coordination of small muscles), whose 48 to 60 month progression reads "Performs tasks that require more complex hand-eye coordination, such as cutting out shapes and drawing letter-like forms, with moderate levels of precision and control.", in part, since the lesson draws letters along their lines with moderate precision, while cutting out shapes is a grown-up\'s to guide (EARMARKS E13).'],
     // Three traces, one of each letter, and two choices, the letter heard and the letter by its lines (pass MN, Q50).
     generators: ['pl-trace-ltf', 'pl-trace-ltf', 'pl-trace-ltf', 'pl-hear-ltf', 'pl-lines-ltf'],
   },
@@ -8482,7 +8489,7 @@ function PREK_READING_MODULES() { return [
         { say: 'People draw and write for lots of reasons. A list helps us remember, and a card says something kind. A letter tells our news, and a stop sign tells us what to do.', show: { kind: 'row', items: [{ kind: 'icon', name: 'list' }, { kind: 'icon', name: 'card' }, { kind: 'icon', name: 'sign~stop' }] } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) IV.A.1 (intentionally uses drawings and marks, letters, or symbols to represent ideas and verbally shares intended meaning with an adult or peer.), in part, since the lesson shows drawings, marks that look a little like letters, letters and symbols representing ideas, an arrow that tells which way to go and a heart that means love, has the child think of something kind to draw or write for a friend and tell a grown-up about it in a turn of their own, and asks what a drawing tells, which drawing tells an idea and yes or no about what a symbol means, while a child\'s own drawing, writing and telling what it means, with a grown-up or a friend, waits (EARMARKS E13), and IV.A.2 (independently draws and writes for many purposes to communicate ideas, using a variety of writing tools with support as needed.), in part, since the lesson shows drawing and writing for many purposes, a list to remember, a card to say something kind, a letter in an envelope for someone far away and a sign that tells a car to stop, names a variety of tools to draw and write with, a crayon, a pencil and a marker, never a sock, a cup or a hat, and asks which one fits a reason to write, which one is a tool for writing and yes or no about what each one is for, while drawing and writing independently is the child\'s own (EARMARKS E13), and IV.C.2 (progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas.), in part, since the lesson shows writing growing from scribbles to marks that look a little like letters to real letters that make a word, cat, while a child\'s own progress waits, and forming letters is taught in the tracing lessons, and Head Start ELOF Goal P-LIT 6 (writes for a variety of purposes using increasingly sophisticated marks), whose 48 to 60 month progression reads "Progressively uses drawing, scribbling, letter-like forms, and letters to intentionally convey meaning. With support, may use invented spelling consisting of salient or beginning sounds, such as L for elevator or B for bug.", in part, since the lesson shows drawing, scribbling, letter-like forms and letters conveying meaning, while a child\'s own use of them and invented spelling wait.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) IV.A.1 (intentionally uses drawings and marks, letters, or symbols to represent ideas and verbally shares intended meaning with an adult or peer.), in part, since the lesson shows drawings, marks that look a little like letters, letters and symbols representing ideas, an arrow that tells which way to go and a heart that means love, has the child think of something kind to draw or write for a friend and tell a grown-up about it in a turn of their own, and asks what a drawing tells, which drawing tells an idea and yes or no about what a symbol means, while a child\'s own drawing, writing and telling what it means, with a grown-up or a friend, waits (EARMARKS E13), and IV.A.2 (independently draws and writes for many purposes to communicate ideas, using a variety of writing tools with support as needed.), in part, since the lesson shows drawing and writing for many purposes, a list to remember, a card to say something kind, a letter in an envelope for someone far away and a sign that tells a car to stop, names a variety of tools to draw and write with, a crayon, a pencil and a marker, never a sock, a cup or a hat, and asks which one fits a reason to write, which one is a tool for writing and yes or no about what each one is for, while drawing and writing independently is the child\'s own (EARMARKS E13), and IV.C.2 (progresses from using scribbles and mock letters to forming letters and letter strings as a way to communicate ideas.), in part, since the lesson shows writing growing from scribbles to marks that look a little like letters to real letters that make a word, cat, while a child\'s own progress waits, and forming letters is taught in the tracing lessons, and Head Start ELOF Goal P-LIT 6 (writes for a variety of purposes using increasingly sophisticated marks), whose 48 to 60 month progression reads "Progressively uses drawing, scribbling, letter-like forms, and letters to intentionally convey meaning. With support, may use invented spelling consisting of salient or beginning sounds, such as L for elevator or B for bug.", in part, since the lesson shows drawing, scribbling, letter-like forms and letters conveying meaning, while a child\'s own use of them waits, and invented spelling, a word written with support by the letters for its first and last sounds, is shown in Write it by its sounds.'],
     generators: ['p4-tell-job', 'p4-tell-tool', 'p4-tell-tells', 'p4-tell-make', 'p4-tell-yesno'],
   },
   // Hear it in the name (pass ND, the standards review of Domain III's letters and their sounds, EARMARKS E13): PK4 III.C.2, "recognizes at
@@ -8494,7 +8501,7 @@ function PREK_READING_MODULES() { return [
   // start of the name is the easiest kind to learn (Treiman, Tincoff, Rodriguez, Mouzaki and Francis, Child Development, 1998), so the child finds T's and J's sounds in their
   // names in turns of their own, says B's sound from its shape, and finds the letter that says a sound heard in a game. None of its
   // letters' sounds is near another's (NC_NEAR), so a question may set any two side by side. Every hiss is one breath (ONE_BREATH_LESSONS;
-  // Q89 asks Mikey). It builds on Big letters, which names letters, and on The very first sound, which says a word's first sound alone, as
+  // kept so by Mikey's answer to Q89, "Q89 - A", in pass NE). It builds on Big letters, which names letters, and on The very first sound, which says a word's first sound alone, as
   // the lesson does to a letter's name (Mikey's answer to Q84).
   {
     id: 'hear-it-in-the-name',
@@ -8526,7 +8533,7 @@ function PREK_READING_MODULES() { return [
         { say: 'For some letters, the sound is at the start of the name. B says buh, T says tuh, and K says cuh.', show: { kind: 'letters', text: 'B   T   K' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.2 (recognizes at least 20 distinct letter-sound correspondences.), in part, since the lesson teaches five letters and the sound each one makes, B says buh, T says tuh, K says cuh, J says juh and Z says zzz, each heard at the very start of the letter\'s name, with words that start with each sound, ball and bed, tie and table, kite and key, jar, and zebra, finds the letter that says a sound heard in a game, says that T does not say cuh, and asks which letter says a sound heard, which sound a letter says, which picture starts with the sound a letter says, which letter says the sound a word starts with and whether a sound heard is the sound a letter says, while At the end of the name teaches five more and the rest wait (EARMARKS E13), and III.C.3 (produces at least 15 distinct letter-sound correspondences.), in part, since the child finds the sounds of T and J at the start of their names and says them, and says the sound of B from its shape, in turns of their own, each turn ending its line, before the voice says them, while At the end of the name has the child say three more and the rest wait (EARMARKS E13), and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson teaches the sounds of five letters, three of which the child says in turns of their own, while At the end of the name teaches five more and the sounds of the rest wait (EARMARKS E13), naming letters is taught in Big letters and the tracing lessons, and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.2 (recognizes at least 20 distinct letter-sound correspondences.), in part, since the lesson teaches five letters and the sound each one makes, B says buh, T says tuh, K says cuh, J says juh and Z says zzz, each heard at the very start of the letter\'s name, with words that start with each sound, ball and bed, tie and table, kite and key, jar, and zebra, finds the letter that says a sound heard in a game, says that T does not say cuh, and asks which letter says a sound heard, which sound a letter says, which picture starts with the sound a letter says, which letter says the sound a word starts with and whether a sound heard is the sound a letter says, while At the end of the name teaches five more, Start or end of the name four more, and the rest wait (EARMARKS E13), and III.C.3 (produces at least 15 distinct letter-sound correspondences.), in part, since the child finds the sounds of T and J at the start of their names and says them, and says the sound of B from its shape, in turns of their own, each turn ending its line, before the voice says them, while At the end of the name and Start or end of the name each have the child say three more, and the rest wait (EARMARKS E13), and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson teaches the sounds of five letters, three of which the child says in turns of their own, while At the end of the name teaches five more, Start or end of the name four more, and the sounds of the rest wait (EARMARKS E13), naming letters is taught in Big letters and the tracing lessons, and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show.'],
     generators: ['p4-name-letter', 'p4-name-sound', 'p4-name-pic', 'p4-name-first', 'p4-name-yesno'],
   },
   // At the end of the name (pass ND, the standards review of Domain III's letters and their sounds, EARMARKS E13): PK4 III.C.2 and III.C.3,
@@ -8535,7 +8542,7 @@ function PREK_READING_MODULES() { return [
   // fan and fish, log and lamp, rock and rain). A sound at the end of the name is harder to learn than one at its start (Treiman and
   // colleagues, 1998, of US children, who learn the names first), so this lesson comes after Hear it in the name, and the child finds S's and L's sounds at the end of their names
   // in turns of their own and says M's from its shape. Lll and rrr, which the app makes from numbers and which are two of the hardest to
-  // tell apart, are never set side by side (ND_NEAR, Claude's design). Every hiss is one breath (ONE_BREATH_LESSONS; Q89 asks Mikey). It
+  // tell apart, are never set side by side (ND_NEAR, Claude's design). Every hiss is one breath (ONE_BREATH_LESSONS; kept so by Mikey's answer to Q89, "Q89 - A", in pass NE). It
   // builds on Hear it in the name, which hears a letter's sound at the start of its name (Mikey's answer to Q84).
   {
     id: 'end-of-the-name',
@@ -8567,7 +8574,7 @@ function PREK_READING_MODULES() { return [
         { say: 'For some letters, the sound is at the end of the name. M says mmm, S says sss, and F says fff.', show: { kind: 'letters', text: 'M   S   F' } },
       ],
     },
-    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.2 (recognizes at least 20 distinct letter-sound correspondences.), in part, since the lesson teaches five letters and the sound each one makes, M says mmm, S says sss, F says fff, L says lll and R says rrr, each heard at the end of the letter\'s name, with words that start with each sound, moon and map, sun and sock, fan and fish, log and lamp, rock and rain, finds the letter that says a sound heard in a game, says that F does not say sss, and asks which letter says a sound heard, which sound a letter says, which picture starts with the sound a letter says, which letter says the sound a word starts with and whether a sound heard is the sound a letter says, while Hear it in the name teaches five more and the rest wait (EARMARKS E13), and III.C.3 (produces at least 15 distinct letter-sound correspondences.), in part, since the child finds the sounds of S and L at the end of their names and says them, and says the sound of M from its shape, in turns of their own, each turn ending its line, before the voice says them, while Hear it in the name has the child say three more and the rest wait (EARMARKS E13), and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson teaches the sounds of five letters, three of which the child says in turns of their own, while Hear it in the name teaches five more and the sounds of the rest wait (EARMARKS E13), naming letters is taught in Big letters and the tracing lessons, and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show.'],
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.2 (recognizes at least 20 distinct letter-sound correspondences.), in part, since the lesson teaches five letters and the sound each one makes, M says mmm, S says sss, F says fff, L says lll and R says rrr, each heard at the end of the letter\'s name, with words that start with each sound, moon and map, sun and sock, fan and fish, log and lamp, rock and rain, finds the letter that says a sound heard in a game, says that F does not say sss, and asks which letter says a sound heard, which sound a letter says, which picture starts with the sound a letter says, which letter says the sound a word starts with and whether a sound heard is the sound a letter says, while Hear it in the name teaches five more, Start or end of the name four more, and the rest wait (EARMARKS E13), and III.C.3 (produces at least 15 distinct letter-sound correspondences.), in part, since the child finds the sounds of S and L at the end of their names and says them, and says the sound of M from its shape, in turns of their own, each turn ending its line, before the voice says them, while Hear it in the name and Start or end of the name each have the child say three more, and the rest wait (EARMARKS E13), and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson teaches the sounds of five letters, three of which the child says in turns of their own, while Hear it in the name teaches five more, Start or end of the name four more, and the sounds of the rest wait (EARMARKS E13), naming letters is taught in Big letters and the tracing lessons, and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show.'],
     generators: ['p4-end-letter', 'p4-end-sound', 'p4-end-pic', 'p4-end-first', 'p4-end-yesno'],
   },
   // Spaces between words (pass ND, Domain IV beside Domain III's letters and their sounds, EARMARKS E13): PK4 IV.C.5, "demonstrates use
@@ -8598,7 +8605,7 @@ function PREK_READING_MODULES() { return [
         { say: 'A word can be one letter, like I, or a group of letters, like bus. Listen for both in this one, I see the big bus. I, see, the, big, bus, that is five words, more than four.', show: { kind: 'pair', stack: true, a: { kind: 'print', text: 'I see the big bus.' }, b: { kind: 'print', text: 'My cat is soft.' } } },
         { say: 'Letters make words, and words make sentences. Here is the letter d, and here is the word dog, with three letters, d, o and g. The letter d by itself is not a word, but one letter can be a word, like I.', show: { kind: 'pair', a: { kind: 'print', text: 'd' }, b: { kind: 'print', text: 'dog' } } },
         { say: 'Is this a word, or a picture? It is a picture of a dog, and this picture has no letters at all.', show: { kind: 'icon', name: 'dog' } },
-        { say: 'Here is some writing to count. Brown bears splash. That one looks long, but brown, bears, splash, is just three words. I, run, is two, and I, see, the, big, bus, is five, the most of all.', show: { kind: 'pair', stack: true, a: { kind: 'print', text: 'Brown bears splash.' }, b: { kind: 'pair', stack: true, a: { kind: 'print', text: 'I run.' }, b: { kind: 'print', text: 'I see the big bus.' } } } },
+        { say: 'Here is some writing to count. Brown bears splash. That one looks long, but brown, bears, splash, is just three words. Frogs, splash, is two words. I, see, a, cat, looks shorter than the top one, but it has four words, the most of all.', show: { kind: 'pair', stack: true, a: { kind: 'print', text: 'Brown bears splash.' }, b: { kind: 'pair', stack: true, a: { kind: 'print', text: 'Frogs splash.' }, b: { kind: 'print', text: 'I see a cat.' } } } },
         { say: 'New writers can make a space with a finger. First they write the word my. Then they put a finger down after it, and write the next word, cat, on the other side.', show: { kind: 'print', text: 'My cat' } },
         { say: 'Now you try with this sentence, the sun is hot. Count its words, and say how many.', show: { kind: 'print', text: 'The sun is hot.' }, voices: [['Count its words, and say how many.', 'tell', 'turn']] },
         { say: 'The, sun, is, hot, that is four words, with a space between each one. Did you count four?', show: { kind: 'pair', stack: true, a: { kind: 'print', text: 'The sun is hot.' }, b: { kind: 'dots', count: 4 } } },
@@ -8610,6 +8617,94 @@ function PREK_READING_MODULES() { return [
     },
     sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) IV.C.5 (demonstrates use of spacing in their writing with adult support as needed.), in part, since the lesson shows writing with a space between words, says that the spaces show a reader where each word starts and stops and that words without them run together, shows how a writer makes a space with a finger and says to put a finger space after each word when writing with a grown-up, and asks which writing has a space between every word, whether writing has a space between every word, which writing has the most words and how many words a written sentence has, while the child\'s own writing, with a grown-up and on paper, is the child\'s own (EARMARKS E13), and III.E.2 (can distinguish between elements of print including letters, words, and pictures.), since the lesson says that a word can be one letter or a group of letters, that letters make words and words make sentences, that the letter d by itself is not a word, and that a picture of a dog has no letters, shows the letter d beside the word dog and then a picture of a dog, asks whether the picture is a word or a picture, and asks which one is a letter, which one is a word and which one is a picture, and Head Start ELOF Goal P-LIT 2 (demonstrates an understanding of how print is used (functions of print) and the rules that govern how print works (conventions of print)), whose 48 to 60 month progression reads "Begins to demonstrate an understanding of the connection between speech and print. Shows a growing awareness that print is a system that has rules and conventions, such as holding a book correctly or following a book left to right.", in part, since the lesson connects each word said to a group of letters written and teaches one rule of how print works, a space between words, while holding a book and following it left to right wait.'],
     generators: ['p4-space-which', 'p4-space-dots', 'p4-space-kind', 'p4-space-yesno', 'p4-space-more'],
+  },
+  // Start or end of the name (pass NE, the standards review of Domain III's letters and their sounds, EARMARKS E13): PK4 III.C.2 and
+  // III.C.3, each cited in part, and Head Start's P-LIT 3 in part. The four letters left whose names hold a sound the app makes: P says
+  // puh and D says duh, the sound at the start of each name (pig and pie, dog and duck), and N says nnn and X says cuh-sss, the sound at
+  // the end of each name (nest; box and fox). X's sound is two sounds said together, the k and the s that end box and fox, the
+  // app's own (BLEND_PARTS); X often comes at the end of a word, so its words are heard at their end, and the picture question asks which
+  // word ends with X's sound. The child says D's and N's sounds from their names and P's from its shape, in turns of their own, and finds the letter
+  // for a sound heard in a game. None of its letters' sounds is near another's (NE_NEAR), and a picture beside another letter's sound never
+  // starts (or, for X, ends) with a sound near it: the box, which starts with buh, never stands beside P's puh, and the duck, which ends
+  // with cuh, never beside X's cuh-sss. Every hiss is one breath (ONE_BREATH_LESSONS; Claude's design, the reason Mikey kept in Q88 and
+  // Q89). It builds on At the end of the name, which hears a letter's sound at the end of its name, after Hear it in the name, which hears
+  // it at the start (Mikey's answer to Q84).
+  {
+    id: 'start-or-end',
+    skill: 'Letters',
+    order: 33,
+    requires: ['end-of-the-name'],
+    requiresWhy: 'Start or end of the name hears four more letters\' sounds in their names, two at the start and two at the end, so it builds on At the end of the name, which hears a letter\'s sound at the end of its name, and which comes after Hear it in the name, where a letter\'s sound is heard at the start.',
+    title: 'Start or end of the name',
+    tagline: 'Four more letters with their sound in their name',
+    lesson: {
+      paragraphs: ['Some letters have their sound in their name. P says puh and D says duh, the sound at the start of each name, like pig and pie, and dog and duck.', 'N says nnn, the sound at the end of its name, and at the start of nest. X says cuh-sss, two sounds said together at the end of its name, and X often comes at the end of a word, like box and fox.', 'To find the sound of one of these letters, say its name slowly, and listen to its start and to its end.'],
+      keyIdea: 'Some letters have their sound in their name. P and D have it at the start, and N and X have it at the end.',
+      example: { kind: 'pair', a: { kind: 'letters', text: 'X' }, b: { kind: 'icon', name: 'box' }, caption: 'X says cuh-sss, like the end of box.' },
+      pictures: [],
+      script: [
+        { say: 'We will meet four more letters with their sound in their name. P and D have it at the start. Listen to this one. P. Its name starts with puh, so P says puh.', show: { kind: 'letters', text: 'P' } },
+        { say: 'Listen to this word, pig. Which letter says the sound pig starts with? It is P, because pig starts with puh, the sound that P says, and so does pie.', show: { kind: 'pair', stack: true, a: { kind: 'letters', text: 'P' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'pig' }, { kind: 'icon', name: 'pie' }] } } },
+        { say: 'This is D, so listen to its name. D. Now you try, and say the sound at the start of its name.', show: { kind: 'letters', text: 'D' }, voices: [['Now you try, and say the sound at the start of its name.', 'tell', 'turn']] },
+        { say: 'D says duh. Did you say it too? Dog and duck start with duh, just like the name of D.', show: { kind: 'pair', stack: true, a: { kind: 'letters', text: 'D' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'dog' }, { kind: 'pic', name: 'duck' }] } } },
+        { say: 'For N and X, the sound is at the end of the name. This is N, so listen to its name. N. Now you try again, and say the sound at the end of its name.', show: { kind: 'letters', text: 'N' }, voices: [['Now you try again, and say the sound at the end of its name.', 'tell', 'turn']] },
+        { say: 'N says nnn, the sound at the end of its name. Did you say it too? Listen to these three, the dog, the nest and the pie. Which one starts with the sound that N says? The nest does.', show: { kind: 'pair', stack: true, a: { kind: 'letters', text: 'N' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'dog' }, { kind: 'icon', name: 'nest' }, { kind: 'icon', name: 'pie' }] } } },
+        { say: 'Here is X, so listen to its name. X. Its name ends with two sounds said together, cuh-sss, so X says cuh-sss, like the end of fox.', show: { kind: 'pair', a: { kind: 'letters', text: 'X' }, b: { kind: 'pic', name: 'fox' } } },
+        { say: 'X often comes at the end of a word, so for X, we listen to the end. Listen to these three, the box, the pig and the dog. Which one ends with the sound that X says? The box does, and so does fox.', show: { kind: 'pair', stack: true, a: { kind: 'letters', text: 'X' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'box' }, { kind: 'icon', name: 'pig' }, { kind: 'icon', name: 'dog' }] } } },
+        { say: 'Now you try one more. Look at this letter, and say its sound.', show: { kind: 'letters', text: 'P' }, voices: [['Look at this letter, and say its sound.', 'tell', 'turn']] },
+        { say: 'It is P, and P says puh, like pig. Did you say it?', show: { kind: 'pair', a: { kind: 'letters', text: 'P' }, b: { kind: 'icon', name: 'pig' } } },
+        { say: 'Now you try, and let\'s play a game. Listen to this sound. Duh. Which letter says it, D or N?', show: { kind: 'pair', a: { kind: 'letters', text: 'D' }, b: { kind: 'letters', text: 'N' } }, voices: [['Which letter says it, D or N?', 'ask', 'turn']] },
+        { say: 'It is D, and D says duh, the sound at the start of its name and of dog.', show: { kind: 'pair', a: { kind: 'letters', text: 'D' }, b: { kind: 'icon', name: 'dog' } } },
+        { say: 'Now listen to this sound. Puh. Does N say it? No, it does not, because N says nnn, and P says puh.', show: { kind: 'pair', a: { kind: 'letters', text: 'N' }, b: { kind: 'letters', text: 'P' } } },
+        { say: 'Some letters have their sound in their name. P and D have it at the start, and N and X have it at the end.', show: { kind: 'letters', text: 'P  D  N  X' } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) III.C.2 (recognizes at least 20 distinct letter-sound correspondences.), in part, since the lesson teaches four letters and the sound each one makes, P says puh and D says duh, each heard at the very start of the letter\'s name, and N says nnn and X says cuh-sss, each heard at the end of the letter\'s name, with words that start with each sound, pig and pie, dog and duck, and nest, and words that end with X\'s, box and fox, finds the letter that says a sound heard in a game, says that N does not say puh, and asks which letter says a sound heard, which sound a letter says, which picture starts or ends with the sound a letter says, which letter says the sound a word starts with and whether a sound heard is the sound a letter says, while Hear it in the name and At the end of the name teach ten more and the rest wait (EARMARKS E13), and III.C.3 (produces at least 15 distinct letter-sound correspondences.), in part, since the child finds the sounds of D and N in their names and says them, and says the sound of P from its shape, in turns of their own, each turn ending its line, before the voice says them, while Hear it in the name and At the end of the name have the child say six more and the rest wait (EARMARKS E13), and Head Start ELOF Goal P-LIT 3 (identifies letters of the alphabet and produces correct sounds associated with letters), whose 48 to 60 month progression reads "Recognizes and names at least half of the letters in the alphabet, including letters in own name (first name and last name), as well as letters encountered often in the environment. Produces the sound of many recognized letters.", in part, since the lesson teaches the sounds of four letters, three of which the child says in turns of their own, while Hear it in the name and At the end of the name teach ten more and the sounds of the rest wait (EARMARKS E13), naming letters is taught in Big letters and the tracing lessons, and the app keeps no names, so the letters of a child\'s own name are a grown-up\'s to show.'],
+    generators: ['p4-soe-letter', 'p4-soe-sound', 'p4-soe-pic', 'p4-soe-first', 'p4-soe-yesno'],
+  },
+  // Write it by its sounds (pass NE, Domain IV beside Domain III's letters and their sounds, EARMARKS E13): PK4 IV.C.3, "writes familiar
+  // words using letter-sound correspondences, often using letters associated with beginning, medial and/or ending sounds to write words
+  // with adult support as needed.", in part, and Head Start's P-LIT 6 in part, its 48 to 60 month progression's invented spelling. To write
+  // a word, say it slowly: the letter for its first sound goes first, and the letter for its last sound at the end, as new writers often
+  // write a word (S and N for sun), a grown-up helping with the letters in the middle. Its words are familiar and drawn, each starting and
+  // ending with a letter the earlier lessons teach the sound of, and each spelled with that letter first and that letter last: map, moon,
+  // soap, sun, fan, fox, bed and box. The child finds the first and last letters of sun and bed in turns of their own; every question is a
+  // tap, and nothing a child writes is asked for or kept. Its letters are capitals, the letters the lessons have taught by name (the small
+  // letters wait, EARMARKS E13). Every hiss is one breath, as in the letters lessons (ONE_BREATH_LESSONS; Claude's design). It builds on
+  // Start or end of the name, the last of the letters lessons whose sounds it uses, and on Sound by sound, which takes a word apart into
+  // its sounds (Mikey's answer to Q84).
+  {
+    id: 'write-by-sounds',
+    skill: 'Writing',
+    order: 34,
+    requires: ['start-or-end', 'sound-by-sound'],
+    requiresWhy: 'Write it by its sounds writes a word with the letters for its first sound and its last sound, so it builds on Start or end of the name, the last of the lessons on the sounds its letters say, and on Sound by sound, which takes a word apart into its sounds.',
+    title: 'Write it by its sounds',
+    tagline: 'The first sound and the last sound',
+    lesson: {
+      paragraphs: ['We can write a word by its sounds. Say the word slowly, and listen to its first sound. Then write the letter that says it, like M for map, since map starts with mmm.', 'Next, listen to the last sound, and write the letter that says it at the end, like P for map, since map ends with puh. Fox ends with cuh-sss, so X goes at the end of fox.', 'New writers often write the letters for the first sound and the last sound, like S and N for sun. A grown-up can help with the letters in the middle.'],
+      keyIdea: 'To write a word, say it slowly. Write the letter for its first sound, and then the letter for its last sound.',
+      example: { kind: 'pair', stack: true, a: { kind: 'icon', name: 'map' }, b: { kind: 'letters', text: 'M   P' }, caption: 'We write M for the first sound of map, and P for its last.' },
+      pictures: [],
+      script: [
+        { say: 'We can write a word by its sounds. Listen to this word, map. Which letter do we write first? M, because map starts with mmm, the sound that M says.', show: { kind: 'pair', a: { kind: 'icon', name: 'map' }, b: { kind: 'letters', text: 'M' } } },
+        { say: 'Then listen to the end of map. Which letter do we write at the end? P, because map ends with puh, the sound that P says.', show: { kind: 'pair', stack: true, a: { kind: 'icon', name: 'map' }, b: { kind: 'letters', text: 'M   P' } } },
+        { say: 'A grown-up can help with the letters in the middle. Here is the whole word, map, with M at the start and P at the end.', show: { kind: 'pair', stack: true, a: { kind: 'letters', text: 'M   P' }, b: { kind: 'letters', text: 'MAP' } } },
+        { say: 'Now you try. Listen to this word, sun. Say its first sound, and then the letter that says it.', show: { kind: 'icon', name: 'sun' }, voices: [['Say its first sound, and then the letter that says it.', 'tell', 'turn']] },
+        { say: 'Sun starts with sss, so S goes first. Did you say S? Sun ends with nnn, so N goes at the end.', show: { kind: 'pair', stack: true, a: { kind: 'icon', name: 'sun' }, b: { kind: 'letters', text: 'S   N' } } },
+        { say: 'Now listen to this word, fox. Which letter do we write at the end? X, because fox ends with cuh-sss, the sound that X says.', show: { kind: 'pair', stack: true, a: { kind: 'pic', name: 'fox' }, b: { kind: 'letters', text: 'F   X' } } },
+        { say: 'This is N, and N says nnn. Listen to these three, the moon, the soap and the box. Which one ends with the sound that N says? The moon does, and so do sun and fan.', show: { kind: 'pair', stack: true, a: { kind: 'letters', text: 'N' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'moon' }, { kind: 'icon', name: 'soap' }, { kind: 'icon', name: 'box' }] } } },
+        { say: 'Here are B and X. These two letters are for the first sound and the last sound of a word. Which word are these letters for, the bed, the box or the fox? The box, because box starts with buh and ends with cuh-sss.', show: { kind: 'pair', stack: true, a: { kind: 'letters', text: 'B   X' }, b: { kind: 'row', items: [{ kind: 'icon', name: 'bed' }, { kind: 'icon', name: 'box' }, { kind: 'pic', name: 'fox' }] } } },
+        { say: 'Listen to this word, fan. Do we write this letter first? No, because fan starts with fff, so F goes first, and N goes at the end.', show: { kind: 'pair', a: { kind: 'icon', name: 'fan' }, b: { kind: 'letters', text: 'N' } } },
+        { say: 'Now you try one more. Listen to this word, bed. Say its last sound, and then the letter that says it.', show: { kind: 'icon', name: 'bed' }, voices: [['Say its last sound, and then the letter that says it.', 'tell', 'turn']] },
+        { say: 'Bed ends with duh, so D goes at the end. Did you say D? Bed starts with buh, so B goes first.', show: { kind: 'pair', stack: true, a: { kind: 'icon', name: 'bed' }, b: { kind: 'letters', text: 'B   D' } } },
+        { say: 'A letter can go first in one word and at the end of another. D goes at the end of bed, but duck starts with duh, so D goes first in duck. Duck ends with cuh, the sound that K says, so K goes at the end.', show: { kind: 'pair', stack: true, a: { kind: 'pic', name: 'duck' }, b: { kind: 'letters', text: 'D   K' } } },
+        { say: 'New writers often write the letters for the first and last sounds, like S and N for sun. That is a great start, and a grown-up can help with the rest. Next time you draw something, say its name slowly, and write its first and last letters with a grown-up.', show: { kind: 'pair', stack: true, a: { kind: 'letters', text: 'S   N' }, b: { kind: 'letters', text: 'SUN' } } },
+        { say: 'To write a word, say it slowly. Write the letter for its first sound, and then the letter for its last sound. Those are M and P for map.', show: { kind: 'pair', stack: true, a: { kind: 'icon', name: 'map' }, b: { kind: 'letters', text: 'M   P' } } },
+      ],
+    },
+    sources: ['Aligned with Texas Prekindergarten Guidelines (2027 recommendations) IV.C.3 (writes familiar words using letter-sound correspondences, often using letters associated with beginning, medial and/or ending sounds to write words with adult support as needed.), in part, since the lesson writes familiar words by their sounds, the letter for the first sound first and the letter for the last sound at the end, map with M and P, sun with S and N, bed with B and D, and fox with X at the end, says that a letter can go first in one word and at the end of another, D first in duck and K at its end, says that new writers often write those two letters and that a grown-up can help with the letters in the middle, says to write the first and last letters of a drawing\'s name with a grown-up next time, has the child find the first letter of sun and the last letter of bed and say them in turns of their own, each turn ending its line, and asks which letter we write first, which letter we write at the end, which word two letters are for, which picture ends with the sound a letter says and whether a letter is written first or at the end, the voice the adult support, while a child\'s own writing of familiar words, with a grown-up and on paper, is the child\'s own (EARMARKS E13), and Head Start ELOF Goal P-LIT 6 (writes for a variety of purposes using increasingly sophisticated marks), whose 48 to 60 month progression reads "Progressively uses drawing, scribbling, letter-like forms, and letters to intentionally convey meaning. With support, may use invented spelling consisting of salient or beginning sounds, such as L for elevator or B for bug.", in part, since the lesson shows a word written with support by the letters for its first and last sounds, as invented spelling is, while a child\'s own drawing and writing to convey meaning wait.'],
+    generators: ['p4-wbs-first', 'p4-wbs-last', 'p4-wbs-word', 'p4-wbs-end', 'p4-wbs-yesno'],
   },
 ]; }
 
@@ -32401,6 +32496,185 @@ Object.assign(GENERATORS, {
   'p4-end-yesno': (rng) => lsYesNo(rng, EN4_LETTERS),
 });
 
+// Start or end of the name (pass NE, the standards review of Domain III's III.C.2 and III.C.3 for pre-K 4's next letters): P and D, whose
+// sound is at the start of the name, and N and X, at the end, each with the words its lines say and draw. X's words end with its sound
+// (cuh-sss, the k and the s of box and fox) and start with another letter's, so a question about X asks what a word ends with ('end').
+// Every question is a heard question, as pass ND's letters questions are: it prints none of the sounds or words it asks about while the
+// voice can speak, nor the letter it shows; a question about a letter is keyed to the letter and one about a word to the word.
+// Since round one's lesson read N's word is the nest alone: the nail was drawn nowhere in the lesson, and on a tile it is a gray T.
+export const SOE4_LETTERS = { P: ['puh', ['pig', 'pie']], D: ['duh', ['dog', 'duck']], N: ['nnn', ['nest']], X: ['cuh-sss', ['box', 'fox'], 'end'] };
+// Each word's first and last sound, as the voice and the app say them, so a picture beside another letter's sound is never one whose
+// start (or, beside X, whose end) is near the sound asked: the box starts with buh, near P's puh, and the duck ends with cuh, a part of
+// X's cuh-sss (Claude's design).
+export const SOE4_FIRST = { pig: 'puh', pie: 'puh', dog: 'duh', duck: 'duh', nest: 'nnn', box: 'buh', fox: 'fff' };
+export const SOE4_LAST = { pig: 'guh', pie: 'eye', dog: 'guh', duck: 'cuh', nest: 'tuh', box: 'cuh-sss', fox: 'cuh-sss' };
+// The sound just before a word's last, where it ends with two sounds (nest, sss and then tuh), so a picture beside X is never one whose end
+// holds a sound near cuh-sss (round one's lesson read: the nest stood beside X in 29 of 71 of its picture questions).
+export const SOE4_BEFORE_LAST = { nest: 'sss' };
+// Sounds never set side by side since pass NE: pass ND's near pairs, and X's cuh-sss beside cuh or sss, each a part of it.
+export const NE_NEAR = [...ND_NEAR, ['cuh-sss', 'cuh'], ['cuh-sss', 'sss']];
+const neNear = (a, b) => NE_NEAR.some(([x, y]) => (a === x && b === y) || (a === y && b === x));
+const neClear = (sounds) => sounds.every((a, i) => sounds.every((b, j) => i === j || !neNear(a, b)));
+// The duck and the fox are animal pictures of their own (pic); every other word an icon.
+const SOE_PICS = ['duck', 'fox'];
+const soeTok = (w) => (SOE_PICS.includes(w) ? 'pic:' : 'icon:') + w;
+const soeShow = (w) => ({ kind: SOE_PICS.includes(w) ? 'pic' : 'icon', name: w });
+// Where a letter's words carry its sound: the start, or for X the end.
+const soeAt = (table, x) => (table[x][2] === 'end' ? 'end' : 'start');
+const soeVerb = (at) => (at === 'end' ? 'ends with' : 'starts with');
+// n - 1 other letters for a letter, none whose sound is near its own or another's.
+function soeOthers(rng, table, x, n) {
+  for (let tries = 0; tries < 50; tries += 1) { const others = shuffle(rng, Object.keys(table).filter((y) => y !== x)).slice(0, n - 1); if (neClear([x, ...others].map((y) => table[y][0]))) return others; }
+  throw new Error('no clear letters for ' + x);
+}
+// A sound heard, and the letter that says it among n letters; a wrong letter's reason says it only as what it is not, and its printed
+// words hide the sound while the voice can speak.
+function soeLetterOf(rng, table, n) {
+  const x = pick(rng, Object.keys(table)); const s = table[x][0]; const others = soeOthers(rng, table, x, n);
+  return { type: 'choice', story: 'Listen to this sound. ' + capFirst(s) + '.', printedStory: 'Listen to the sound.', prompt: 'Which letter says that sound?', printed: 'Which letter says the sound you hear?', choices: shuffle(rng, [x, ...others]), answer: x, aboutWords: [x.toLowerCase()],
+    explain: x + ' says ' + s + '.', visual: null, explainVisual: lsLetter(x),
+    whyNot: Object.fromEntries(others.map((o) => [o, { name: 'The letter ' + o, why: 'does not say ' + s + '.', printedWhy: 'does not say that sound.' }])), alsoRight: [] };
+}
+// A letter shown, and the sound it says among n heard sounds, every one the app's own.
+function soeSoundOf(rng, table, n) {
+  const x = pick(rng, Object.keys(table)); const s = table[x][0]; const others = soeOthers(rng, table, x, n).map((o) => table[o][0]);
+  return { type: 'choice', story: 'This is the letter ' + x + '.', printedStory: 'Look at this letter.', prompt: 'Which sound does it say?', printed: 'Tap to hear each sound. Which sound does the letter say?', choices: shuffle(rng, [s, ...others]), answer: s, heardChoices: true, aboutWords: [x.toLowerCase()],
+    explain: x + ' says ' + s + '.', visual: lsLetter(x), explainVisual: null,
+    whyNot: Object.fromEntries(others.map((o) => [o, { name: capFirst(o), why: 'is not the sound ' + x + ' says.' }])), alsoRight: [] };
+}
+// A letter shown, and the picture that starts with the sound it says (for X, that ends with it) among n pictures, their names said in the
+// buttons' order; each wrong one is another letter's word whose start (or end) is not the sound asked nor near it.
+function soePicOf(rng, table, n, FIRST, LAST) {
+  // Since round one's code read the letter is drawn once and its other letters come from those with a picture clear of its sound, where
+  // a retry drew the letter again: since the nest is kept from X and the nail is gone, X survived about one try in six and was shown on
+  // 19 of seeds 1 to 400.
+  const x = pick(rng, Object.keys(table)); const s = table[x][0]; const at = soeAt(table, x); const edge = at === 'end' ? LAST : FIRST; const w = pick(rng, table[x][1]);
+  const clear = (o) => !(edge[o] === s || neNear(edge[o], s) || (at === 'end' && SOE4_BEFORE_LAST[o] && (SOE4_BEFORE_LAST[o] === s || neNear(SOE4_BEFORE_LAST[o], s))));
+  const beside = Object.fromEntries(Object.entries(table).map(([y, v]) => [y, y === x ? v : [v[0], v[1].filter(clear), v[2]]]).filter(([y, v]) => y === x || v[1].length));
+  // Since round two's content read X's wrong pictures are drawn from all its clear pictures (pig, pie and the dog), where one each from
+  // P and D put the dog, D's only clear one, beside X every time (91 of 91).
+  const pool = Object.entries(beside).filter(([y]) => y !== x).flatMap(([, v]) => v[1]);
+  const others = at === 'end' ? shuffle(rng, pool).slice(0, n - 1) : soeOthers(rng, beside, x, n).map((o) => pick(rng, beside[o][1]));
+  const shown = shuffle(rng, [w, ...others]);
+  return { type: 'choice', story: 'This is the letter ' + x + '. Now listen to these ' + NUMBER_SAID[n] + '. ' + ncNames(shown), keyStory: 'This is the letter ' + x + '.', printedStory: 'Look at the letter, and listen.', prompt: 'Which one ' + soeVerb(at) + ' the sound that ' + x + ' says?', printed: 'Which one ' + soeVerb(at) + ' the sound this letter says?', choices: shown.map(soeTok), answer: soeTok(w), aboutWords: [w],
+    explain: x + ' says ' + s + ', and ' + w + ' ' + soeVerb(at) + ' ' + s + '.', visual: lsLetter(x), explainVisual: soeShow(w),
+    whyNot: Object.fromEntries(others.map((o) => [soeTok(o), { name: 'The ' + o, why: 'does not ' + (at === 'end' ? 'end' : 'start') + ' with ' + s + '.' }])), alsoRight: [] };
+}
+// A word heard and its picture, and the letter that says the sound it starts with among n letters; the word is never printed. Only words
+// that start with their letter's sound are asked about (P's, D's and N's), as the lesson's line 2 models; X's words end with its sound,
+// and the picture bank asks about them by their end, as line 8 models.
+// Since round one's lesson read the other letters are those whose sounds start their words too, so X, which can never be the answer here,
+// is never a choice to set aside (it was offered in 259 of 400).
+function soeFirstOf(rng, table, n) {
+  const starts = Object.fromEntries(Object.entries(table).filter(([y]) => soeAt(table, y) === 'start'));
+  const x = pick(rng, Object.keys(starts)); const s = table[x][0]; const w = pick(rng, table[x][1]); const others = soeOthers(rng, starts, x, n);
+  return { type: 'choice', story: 'Listen. ' + capFirst(w) + '.', printedStory: 'Listen to the word.', prompt: 'Which letter says the sound ' + w + ' starts with?', printed: 'Which letter says the sound the word starts with?', choices: shuffle(rng, [x, ...others]), answer: x, aboutWords: [w],
+    explain: capFirst(w) + ' starts with ' + s + ', and ' + x + ' says ' + s + '.', visual: { ...soeShow(w), size: 72 }, explainVisual: null,
+    whyNot: Object.fromEntries(others.map((o) => [o, { name: 'The letter ' + o, why: 'does not say the sound ' + w + ' starts with.', printedWhy: 'does not say the sound the word starts with.' }])), alsoRight: [] };
+}
+// A letter shown and a sound heard, and whether it is the sound the letter says, half the time each; a No's sound is another letter's,
+// never near the letter's own.
+function soeYesNo(rng, table) {
+  const x = pick(rng, Object.keys(table)); const s = table[x][0]; const yes = rng() < 0.5;
+  const said = yes ? s : table[soeOthers(rng, table, x, 2)[0]][0]; const answer = yes ? 'Yes' : 'No'; const wrong = yes ? 'No' : 'Yes';
+  return { type: 'choice', story: 'This is the letter ' + x + '. Listen to this sound. ' + capFirst(said) + '.', printedStory: 'Look at this letter, and listen to the sound.', prompt: 'Does ' + x + ' say that sound?', printed: 'Does this letter say that sound?', choices: yesNo(rng), answer, aboutWords: [x.toLowerCase()],
+    explain: yes ? 'Yes. ' + x + ' says ' + s + '.' : 'No. ' + x + ' says ' + s + ', not ' + said + '.', visual: lsLetter(x), explainVisual: null,
+    whyNot: { [wrong]: { name: wrong, why: yes ? 'would mean ' + s + ' is not the sound ' + x + ' says, but it is.' : 'would mean ' + said + ' is the sound ' + x + ' says, but ' + x + ' says ' + s + '.' } }, alsoRight: [] };
+}
+Object.assign(GENERATORS, {
+  // Start or end of the name (pre-K 4), three choices each but the yes or no.
+  'p4-soe-letter': (rng) => soeLetterOf(rng, SOE4_LETTERS, 3),
+  'p4-soe-sound': (rng) => soeSoundOf(rng, SOE4_LETTERS, 3),
+  'p4-soe-pic': (rng) => soePicOf(rng, SOE4_LETTERS, 3, SOE4_FIRST, SOE4_LAST),
+  'p4-soe-first': (rng) => soeFirstOf(rng, SOE4_LETTERS, 3),
+  'p4-soe-yesno': (rng) => soeYesNo(rng, SOE4_LETTERS),
+});
+
+// Write it by its sounds (pass NE, PK4 IV.C.3): each word the lesson's lines say, with the letter for its first sound and the letter for
+// its last sound, each spelled with that letter first and that letter last; and the sound each of those letters says, as the letters
+// lessons teach it. Every question is a tap, and nothing a child writes is asked for or kept; a word heard is never printed while the voice
+// can speak, nor the letter a question shows, and a question is keyed to its word, or to its letter where it asks about one.
+// Since round one's lesson read duck too, D first and K at the end, said and drawn in a line of its own, so a letter goes first in one word
+// and at the end of another (D at the end of bed); with eight words the letters split into two groups, M, S, F and B only first and
+// P, N, X and D only at the end, and a child who learned the groups without hearing the word answered seven questions in ten.
+export const WBS4_WORDS = { map: ['M', 'P'], moon: ['M', 'N'], soap: ['S', 'P'], sun: ['S', 'N'], fan: ['F', 'N'], fox: ['F', 'X'], bed: ['B', 'D'], box: ['B', 'X'], duck: ['D', 'K'] };
+export const WBS4_SOUNDS = { M: 'mmm', P: 'puh', S: 'sss', N: 'nnn', F: 'fff', X: 'cuh-sss', B: 'buh', D: 'duh', K: 'cuh' };
+const WBS_PICS = ['fox', 'duck'];
+const wbsTok = (w) => (WBS_PICS.includes(w) ? 'pic:' : 'icon:') + w;
+const wbsShow = (w) => ({ kind: WBS_PICS.includes(w) ? 'pic' : 'icon', name: w });
+const wbsPair = (w) => WBS4_WORDS[w][0] + '   ' + WBS4_WORDS[w][1];
+// Two other letters for a word's first or last letter, none whose sound is near the answer's or each other's: the word's other letter
+// (its last letter beside a question about the first, and its first beside one about the last) half the time, where it is clear, since
+// telling the start from the end is what the lesson teaches, and otherwise letters that go in the same place (at) in a word of the lesson,
+// so knowing which letters come first never answers without the word (round one's lesson read: three in four, then).
+const wbsPlace = (at) => [...new Set(Object.values(WBS4_WORDS).map((p) => p[at]))];
+function wbsOthers(rng, x, also, at = null) {
+  const pool = Object.keys(WBS4_SOUNDS).filter((y) => y !== x); const same = at === null ? pool : pool.filter((y) => wbsPlace(at).includes(y));
+  for (let tries = 0; tries < 60; tries += 1) {
+    // Since round two's content read X is never the other letter beside a question about the first letter, since its sound starts no
+    // English word, so it could only be set aside (39 of 400); P, N and K stay, since words start with them.
+    const lead = also && also !== x && !(at === 0 && also === 'X') && neClear([WBS4_SOUNDS[x], WBS4_SOUNDS[also]]) && rng() < 0.5 ? [also] : [];
+    const near = shuffle(rng, same.filter((y) => !lead.includes(y))); const far = shuffle(rng, pool.filter((y) => !lead.includes(y) && !same.includes(y)));
+    const others = [...lead, ...near, ...far].slice(0, 2);
+    if (neClear([x, ...others].map((y) => WBS4_SOUNDS[y]))) return others;
+  }
+  throw new Error('no clear letters for ' + x);
+}
+// A word heard and its picture, and the letter we write first (at = 0) or at the end (at = 1) among three letters.
+function wbsLetter(rng, at) {
+  const w = pick(rng, Object.keys(WBS4_WORDS)); const x = WBS4_WORDS[w][at]; const s = WBS4_SOUNDS[x]; const others = wbsOthers(rng, x, WBS4_WORDS[w][1 - at], at);
+  const where = at === 0 ? 'first' : 'at the end'; const edge = at === 0 ? 'starts' : 'ends';
+  return { type: 'choice', story: 'Let\'s write a word by its sounds. Listen. ' + capFirst(w) + '.', printedStory: 'Let\'s write a word by its sounds. Listen to the word.', prompt: 'Which letter do we write ' + where + '?', printed: 'Which letter do we write ' + where + '?', choices: shuffle(rng, [x, ...others]), answer: x, aboutWords: [w],
+    explain: capFirst(w) + ' ' + edge + ' with ' + s + ', and ' + x + ' says ' + s + ', so we write ' + x + ' ' + where + '.', visual: { ...wbsShow(w), size: 72 }, explainVisual: { kind: 'letters', text: wbsPair(w) },
+    whyNot: Object.fromEntries(others.map((o) => [o, { name: 'The letter ' + o, why: 'does not say the sound ' + w + ' ' + edge + ' with.', printedWhy: 'does not say the sound the word ' + edge + ' with.' }])), alsoRight: [] };
+}
+// Two letters shown, the letters for a word's first sound and its last sound, and the word they are for among three pictures, named in the
+// buttons' order: one word that starts the same way and one that ends the same way, wherever the lesson has one, so both letters count.
+function wbsWord(rng) {
+  const words = Object.keys(WBS4_WORDS); const w = pick(rng, words); const [f, l] = WBS4_WORDS[w];
+  const sameStart = words.filter((v) => v !== w && WBS4_WORDS[v][0] === f && WBS4_WORDS[v][1] !== l); const sameEnd = words.filter((v) => v !== w && WBS4_WORDS[v][1] === l && WBS4_WORDS[v][0] !== f);
+  const others = []; if (sameStart.length) others.push(pick(rng, sameStart)); if (sameEnd.length) others.push(pick(rng, sameEnd));
+  const rest = shuffle(rng, words.filter((v) => v !== w && !others.includes(v) && (WBS4_WORDS[v][0] !== f || WBS4_WORDS[v][1] !== l))); while (others.length < 2) others.push(rest.shift());
+  const shown = shuffle(rng, [w, ...others]); const why = (v) => (WBS4_WORDS[v][0] !== f ? 'does not start with ' + WBS4_SOUNDS[f] + '.' : 'does not end with ' + WBS4_SOUNDS[l] + '.');
+  return { type: 'choice', story: 'These two letters are for the first sound and the last sound of a word. Now listen to these three. ' + ncNames(shown), keyStory: 'These two letters are for the first sound and the last sound of a word.', printedStory: 'Look at the two letters, and listen.', prompt: 'Which word are these letters for?', printed: 'Which word are these letters for?', choices: shown.map(wbsTok), answer: wbsTok(w), aboutWords: [w],
+    explain: capFirst(w) + ' starts with ' + WBS4_SOUNDS[f] + ', the sound that ' + f + ' says, and ends with ' + WBS4_SOUNDS[l] + ', the sound that ' + l + ' says.', visual: { kind: 'letters', text: wbsPair(w) }, explainVisual: wbsShow(w),
+    whyNot: Object.fromEntries(others.map((o) => [wbsTok(o), { name: 'The ' + o, why: why(o) }])), alsoRight: [] };
+}
+// A letter shown, and the picture that ends with the sound it says among three, their names said in the buttons' order; no wrong one ends
+// with that sound or one near it.
+function wbsEnd(rng) {
+  const words = Object.keys(WBS4_WORDS); const enders = [...new Set(words.map((w) => WBS4_WORDS[w][1]))];
+  const x = pick(rng, enders); const s = WBS4_SOUNDS[x]; const w = pick(rng, words.filter((v) => WBS4_WORDS[v][1] === x));
+  // Since round one's lesson read no wrong picture starts with a sound near the one asked either (bed and box beside P's puh).
+  const others = shuffle(rng, words.filter((v) => { const e = WBS4_SOUNDS[WBS4_WORDS[v][1]]; const b = WBS4_SOUNDS[WBS4_WORDS[v][0]]; return e !== s && !neNear(e, s) && !neNear(b, s); })).slice(0, 2);
+  const shown = shuffle(rng, [w, ...others]);
+  return { type: 'choice', story: 'This is the letter ' + x + '. Now listen to these three. ' + ncNames(shown), keyStory: 'This is the letter ' + x + '.', printedStory: 'Look at the letter, and listen.', prompt: 'Which one ends with the sound that ' + x + ' says?', printed: 'Which one ends with the sound this letter says?', choices: shown.map(wbsTok), answer: wbsTok(w), aboutWords: [w],
+    explain: x + ' says ' + s + ', and ' + w + ' ends with ' + s + '.', visual: lsLetter(x), explainVisual: wbsShow(w),
+    whyNot: Object.fromEntries(others.map((o) => [wbsTok(o), { name: 'The ' + o, why: 'does not end with ' + s + '.' }])), alsoRight: [] };
+}
+// A word heard and a letter shown, and whether we write that letter first (or, half the time, at the end), half the time yes; a No's letter
+// is the word's other letter a quarter of the time (the start told from the end) and otherwise a letter that goes in the same place in a
+// word of the lesson, its sound not near the right one's (round one's lesson read: with half and any letter, the groups alone answered 84 of 100).
+function wbsYesNo(rng) {
+  const w = pick(rng, Object.keys(WBS4_WORDS)); const at = rng() < 0.5 ? 0 : 1; const right = WBS4_WORDS[w][at]; const other = WBS4_WORDS[w][1 - at];
+  const where = at === 0 ? 'first' : 'at the end'; const edge = at === 0 ? 'starts' : 'ends'; const yes = rng() < 0.5;
+  const shown = yes ? right : (!(at === 0 && other === 'X') && neClear([WBS4_SOUNDS[right], WBS4_SOUNDS[other]]) && rng() < 0.25 ? other : wbsOthers(rng, right, null, at)[0]);   // X never asked about as a first letter (round two's content read)
+  const answer = yes ? 'Yes' : 'No'; const wrong = yes ? 'No' : 'Yes'; const s = WBS4_SOUNDS[right];
+  const place = shown === other ? ', and ' + shown + ' goes ' + (at === 0 ? 'at the end' : 'first') : ', and ' + shown + ' says ' + WBS4_SOUNDS[shown];
+  return { type: 'choice', story: 'Let\'s write a word by its sounds. Listen. ' + capFirst(w) + '.', printedStory: 'Let\'s write a word by its sounds. Listen to the word, and look at the letter.', prompt: 'Do we write this letter ' + where + '?', printed: 'Do we write this letter ' + where + '?', choices: yesNo(rng), answer, aboutWords: [w],
+    explain: yes ? 'Yes. ' + capFirst(w) + ' ' + edge + ' with ' + s + ', the sound that ' + right + ' says.' : 'No. ' + capFirst(w) + ' ' + edge + ' with ' + s + place + '.', visual: { kind: 'pair', a: { ...wbsShow(w) }, b: lsLetter(shown) }, explainVisual: { kind: 'letters', text: wbsPair(w) },
+    whyNot: { [wrong]: { name: wrong, why: yes ? 'would mean we do not write ' + right + ' ' + where + ', but ' + w + ' ' + edge + ' with ' + s + '.' : 'would mean we write ' + shown + ' ' + where + ', but ' + w + ' ' + edge + ' with ' + s + '.' } }, alsoRight: [] };
+}
+Object.assign(GENERATORS, {
+  // Write it by its sounds (pre-K 4), three choices each but the yes or no: the letter we write first, the letter we write at the end, the
+  // word two letters are for, the picture that ends with a letter's sound, and whether we write a letter first or at the end.
+  'p4-wbs-first': (rng) => wbsLetter(rng, 0),
+  'p4-wbs-last': (rng) => wbsLetter(rng, 1),
+  'p4-wbs-word': (rng) => wbsWord(rng),
+  'p4-wbs-end': (rng) => wbsEnd(rng),
+  'p4-wbs-yesno': (rng) => wbsYesNo(rng),
+});
+
 // The spaces between words (pass ND, Domain IV's IV.C.5 for both ages): Space between words (pre-K 3) and Spaces between words (pre-K 4).
 // Each lesson's sentences, written with a space between every word, as its lines say and write them; a question shows writing as print
 // (a print: choice or a print picture), which never says itself, since a voice reading writing with no spaces would give the answer
@@ -32408,7 +32682,8 @@ Object.assign(GENERATORS, {
 // or its words is keyed to the sentence, so a round asks about each once while it can; the reason for a space, the kind of print and
 // which sentence has more words are keyed to themselves, and the last never says a sentence's count, which a dots question asks.
 export const SBW3_SENTENCES = ['The cat sleeps.', 'I see the dog.', 'We like to play.', 'I run.', 'Green frogs splash.'];
-export const SBW4_SENTENCES = ['My cat is soft.', 'The sun is hot.', 'The dog runs.', 'I see the big bus.', 'I run.', 'Brown bears splash.'];
+// Since pass NE (EARMARKS A95) Frogs splash. and I see a cat., said and shown in line 7, so the narrowest writing can have the most words.
+export const SBW4_SENTENCES = ['My cat is soft.', 'The sun is hot.', 'The dog runs.', 'I see the big bus.', 'I run.', 'Brown bears splash.', 'Frogs splash.', 'I see a cat.'];
 // How wide a writing prints, by its letters and spaces (the measure in Chromium, 28 pixels bold, follows its length: Green frogs splash.
 // 287 pixels, I see the big bus. 270, We like to play. 234, The cat sleeps. 228, I see the dog. 213), so a bank about more or the most
 // words can put the longest writing on its answer about half the time and never let length answer it (round one's lesson check).
@@ -32422,7 +32697,7 @@ const spTok = (s) => 'print:' + s;
 const spShow = (s) => ({ kind: 'print', text: s });
 // A sentence's word said one by one, as the lessons say it (The, cat, sleeps), and its key for the round's echo rule.
 const spSaid = (s) => spWords(s).map((w, i) => (i === 0 ? w : w.toLowerCase())).join(', ');
-const spKey = (s) => ({ 'The cat sleeps.': 'cat', 'I see the dog.': 'dog', 'We like to play.': 'play', 'I run.': 'run', 'My cat is soft.': 'soft', 'The sun is hot.': 'hot', 'The dog runs.': 'runs', 'I see the big bus.': 'bus', 'Green frogs splash.': 'frogs', 'Brown bears splash.': 'bears' })[s];
+const spKey = (s) => ({ 'The cat sleeps.': 'cat', 'I see the dog.': 'dog', 'We like to play.': 'play', 'I run.': 'run', 'My cat is soft.': 'soft', 'The sun is hot.': 'hot', 'The dog runs.': 'runs', 'I see the big bus.': 'bus', 'Green frogs splash.': 'frogs', 'Brown bears splash.': 'bears', 'Frogs splash.': 'frogs', 'I see a cat.': 'cat' })[s];
 // The child the pre-K 3 lesson's line 11 names, who writes the questions' sentences.
 const spNames = ['Mia'];
 const spPronoun = () => 'she';
@@ -32448,7 +32723,7 @@ function spDots(rng, sentences, n, pool) {
 // Space between words: whether writing has a space between each word, half the time each (a No shows the same words with none).
 function spYesNo3(rng) {
   const s = pick(rng, SBW3_SENTENCES); const yes = rng() < 0.5; const shown = yes ? s : spSquish(s); const answer = yes ? 'Yes' : 'No'; const wrong = yes ? 'No' : 'Yes';
-  return { type: 'choice', story: 'Listen. ' + s, printedStory: 'Listen, and look at the writing.', prompt: 'Is there a space between each word?', choices: yesNo(rng), answer, aboutWords: [spKey(s)],
+  return { type: 'choice', story: 'Listen. ' + s, printedStory: 'Listen, and look at the writing.', unvoicedStory: UNVOICED_SPACING, prompt: 'Is there a space between each word?', choices: yesNo(rng), answer, aboutWords: [spKey(s)],
     explain: yes ? 'Yes. There is a space between each word, so each word stands on its own.' : 'No. The words bump together, with no spaces.', visual: spShow(shown), explainVisual: null,
     whyNot: { [wrong]: { name: wrong, why: yes ? 'would mean the words bump together, but there is a space between each word.' : 'would mean there are spaces, but the words bump together.' } }, alsoRight: [] };
 }
@@ -32483,7 +32758,7 @@ const spGap = (rng, s) => { const w = spWords(s); const ok = w.slice(0, -1).map(
 // Spaces between words: which writing has a space between every word, beside the same words with none and with one space missing.
 function spWhich4(rng) {
   const s = pick(rng, SBW4_SENTENCES.filter((x) => spCount(x) >= 3)); const i = spGap(rng, s); const missing = spMissing(s, i); const squished = spSquish(s);
-  return { type: 'choice', story: 'Listen. ' + s, printedStory: 'Listen, and look at the writing.', prompt: 'Which one has a space between every word?', choices: shuffle(rng, [spTok(s), spTok(squished), spTok(missing)]), answer: spTok(s), aboutWords: [spKey(s)],
+  return { type: 'choice', story: 'Listen. ' + s, printedStory: 'Listen, and look at the writing.', unvoicedStory: UNVOICED_SPACING, prompt: 'Which one has a space between every word?', choices: shuffle(rng, [spTok(s), spTok(squished), spTok(missing)]), answer: spTok(s), aboutWords: [spKey(s)],
     explain: 'This one has a space between every word, so a reader can see where each word starts and stops.', visual: null, explainVisual: spShow(s),
     whyNot: { [spTok(squished)]: { name: 'That one', why: 'has no spaces at all, so its words run together.' }, [spTok(missing)]: { name: 'That one', why: 'is missing a space, so two of its words run together.' } }, alsoRight: [] };
 }
@@ -32508,7 +32783,7 @@ function spKind4(rng) {
 function spYesNo4(rng) {
   const s = pick(rng, SBW4_SENTENCES.filter((x) => spCount(x) >= 3)); const yes = rng() < 0.5; const none = rng() < 0.5;
   const shown = yes ? s : none ? spSquish(s) : spMissing(s, spGap(rng, s)); const answer = yes ? 'Yes' : 'No'; const wrong = yes ? 'No' : 'Yes';
-  return { type: 'choice', story: 'Listen. ' + s, printedStory: 'Listen, and look at the writing.', prompt: 'Is there a space between every word?', choices: yesNo(rng), answer, aboutWords: [spKey(s)],
+  return { type: 'choice', story: 'Listen. ' + s, printedStory: 'Listen, and look at the writing.', unvoicedStory: UNVOICED_SPACING, prompt: 'Is there a space between every word?', choices: yesNo(rng), answer, aboutWords: [spKey(s)],
     explain: yes ? 'Yes. There is a space between every word, so a reader can see where each word starts and stops.' : none ? 'No. There are no spaces, so the words run together.' : 'No. One space is missing, so two of the words run together.', visual: spShow(shown), explainVisual: null,
     whyNot: { [wrong]: { name: wrong, why: yes ? 'would mean a space is missing, but there is a space between every word.' : 'would mean every word has a space between it and the next, but ' + (none ? 'there are none.' : 'one space is missing.') } }, alsoRight: [] };
 }
@@ -32521,7 +32796,11 @@ function spMost4(rng) {
   // The answer is chosen first, among the sentences that can have the most words in a three, so I see the big bus., the only one of five
   // words, answers a third of the time, not five times in eight (round two's content read: a child could answer by knowing that one).
   const answers = [...new Set(threes.map(mostOf))]; const most = pick(rng, answers);
-  const notLongest = rng() < 0.5; const fits = threes.filter((t) => mostOf(t) === most); const balanced = fits.filter((t) => (longest(t) !== most) === notLongest);
+  // Since pass NE (EARMARKS A95) I see a cat., four short words, has the most words in a three only where it is narrower than another, so an
+  // answer that can be the widest is the widest with the chance that keeps the whole bank at half: half of all answers over the share of
+  // answers that can be widest (pass ND's even chance, where every answer could be).
+  const canWide = answers.filter((a) => threes.some((t) => mostOf(t) === a && longest(t) === a)); const wideChance = Math.min(1, (0.5 * answers.length) / Math.max(1, canWide.length));
+  const notLongest = !(canWide.includes(most) && rng() < wideChance); const fits = threes.filter((t) => mostOf(t) === most); const balanced = fits.filter((t) => (longest(t) !== most) === notLongest);
   const three = shuffle(rng, pick(rng, balanced.length ? balanced : fits));
   return { type: 'choice', story: 'Look at the writing.', prompt: 'Which one has the most words?', choices: shuffle(rng, three.map(spTok)), answer: spTok(most), aboutWords: ['more'],
     explain: 'Count the words in each one, and this one has the most.', visual: null, explainVisual: spShow(most),
@@ -37012,12 +37291,15 @@ function heardWords(choice) {
 // juh, which his laptop's voice said as "boo" or with the uh louder than the consonant, and the endings ig, og and at made whole,
 // which a voice spelled (ig as "i g g", og as "o g") or said as the little word ("almost like et"). Huh, wuh and shh stay with the
 // voice, and the five short vowels stay on trial (TRIAL_SOUNDS, below).
-export const SPEECH_SOUNDS = { m: 'mmm', n: 'nnn', s: 'sss', f: 'fff', z: 'zzz', r: 'rrr', l: 'lll', t: 'tuh', p: 'puh', k: 'cuh', b: 'buh', d: 'duh', g: 'guh', j: 'juh', ig: 'ig', og: 'og', at: 'at', fr: 'fff-rrr', fl: 'fff-lll', st: 'sss-tuh', sp: 'sss-puh', tr: 'tuh-rrr' };
+export const SPEECH_SOUNDS = { m: 'mmm', n: 'nnn', s: 'sss', f: 'fff', z: 'zzz', r: 'rrr', l: 'lll', t: 'tuh', p: 'puh', k: 'cuh', b: 'buh', d: 'duh', g: 'guh', j: 'juh', ig: 'ig', og: 'og', at: 'at', fr: 'fff-rrr', fl: 'fff-lll', st: 'sss-tuh', sp: 'sss-puh', tr: 'tuh-rrr', x: 'cuh-sss' };
 // Five consonant blends (pass NB, the standards review of Domain III's onsets and rimes: PK3 and PK4 III.B.9, "identifies the onset in
 // words (single letters and consonant blends)"): the first part of frog, flower, star, spoon and tree, two of the app's sounds said
 // together as one part, quick and smooth (soundClipSamples, below), written as the two sounds joined by a hyphen (fff-rrr, sss-tuh),
 // which a line plays as one piece (sayToken), never as two sounds with the voice's gap between them. Each blend's two sounds, in order.
-export const BLEND_PARTS = { fr: ['f', 'r'], fl: ['f', 'l'], st: ['s', 't'], sp: ['s', 'p'], tr: ['t', 'r'] };
+// Since pass NE (the standards review of PK4 III.C.2 and III.C.3, Start or end of the name): X's sound, the k and the s that end box and
+// fox, two of the app's sounds said together as one piece, written cuh-sss, the k first, as a word ends with them, and keyed by the letter
+// (x), since grade 1's ks, six's end in a run of its sounds (Sss, i, ks.), stays the voice's under that name (VOICE_SOUNDS).
+export const BLEND_PARTS = { fr: ['f', 'r'], fl: ['f', 'l'], st: ['s', 't'], sp: ['s', 'p'], tr: ['t', 'r'], x: ['k', 's'] };
 // The sounds the app made in pass MP for the voice check page alone (Mikey's answer to Q57, "Q57 - A": "the app makes the five short
 // vowels itself ... with new rows on the voice check page for you to hear before any lesson uses them", and his rows 16 to 20 and 27
 // to 30 of Q51): the five short vowels, buh, duh, guh and juh, and the endings ig, og and at made whole. Since pass MQ (Q60, above)
@@ -37096,6 +37378,8 @@ function soundRecordings() {
   const crisp = teacher('crisp and quick'); const soft = teacher('short and soft'); const ending = teacher('as one ending, slowly and clearly');
   // A consonant blend's two sounds said together as one first part (pass NB). Since round one's code check it names a first part, since
   // "one speech sound alone" beside "the two sounds" asked for one sound and two in one direction.
+  // X's sound (pass NE) ends a word, so its direction says the last part of a word, where the onset blends' says the first.
+  const togetherEnd = '[warm and gentle, a preschool teacher saying the last part of a word alone, as one quick part, the two sounds said together with no vowel between them]';
   const together = '[warm and gentle, a preschool teacher saying the first part of a word alone, as one quick part, the two sounds said together with no vowel between them]';
   // Since pass MX each sound also has its goal, the short direction for Eleven put right before its symbols (goalTag, above), and a
   // sound said twice (sss, fff, zzz) its goal for the one breath a run of sounds asks for (goalOne). Since pass NC (round two's code read)
@@ -37129,6 +37413,8 @@ function soundRecordings() {
     st: speech('/st/', together, 'the st of star, two sounds together', "The first part of star alone, st: a short hiss and then a crisp t, said together as one part, with no vowel between them, and only the faintest uh after the t. Never the letters' names (ess, tee).", 'saying just the first part of star, a short hiss and a crisp tap together'),
     sp: speech('/sp/', together, 'the sp of spoon, two sounds together', "The first part of spoon alone, sp: a short hiss and then a crisp p, said together as one part, with no vowel between them, and only the faintest uh after the p. Never the letters' names (ess, pee).", 'saying just the first part of spoon, a short hiss and a crisp pop together'),
     tr: speech('/tɹ/', together, 'the tr of tree, two sounds together', "The first part of tree alone, tr: a crisp t that runs straight into r, said together as one part, with no vowel between them and none after. Never the letters' names (tee, ar), and never the word true.", 'saying just the first part of tree, two sounds together, quick and smooth'),
+    // X's sound (pass NE, BLEND_PARTS): the last part of box and fox, a crisp k and one short hiss said together.
+    x: speech('/ks/', togetherEnd, 'the x of box, two sounds together', "The x sound alone, as at the end of box and fox, ks: a crisp k that runs straight into one short hiss, said together as one part, with no vowel between them and none after. Never the letter's name (ex), and never the word kiss.", 'saying just the last part of box, a crisp catch and one short hiss together'),
     a: vowel('/æ/', 'a', 'apple'), e: vowel('/ɛ/', 'e', 'egg'), i: vowel('/ɪ/', 'i', 'igloo'), o: vowel('/ɑ/', 'o', 'octopus'), u: vowel('/ʌ/', 'u', 'up'),
     whistle: { kind: 'sound effect', seconds: 1, influence: 0.7, takes: 4,
       text: "One excited fan's loud two-finger whistle at a ball game, close by, on a single breath: it swoops up to a bright, high note, holds, then slides down and fades as the breath runs out. About one second, one whistle, no crowd noise, no voices, no music.",
@@ -37938,10 +38224,12 @@ export const soundClipSamples = (() => {
     // 43 ms after the t's release, past the 30 to 35 ms where a t is heard as d); a t or p after a hiss keeps its own moment of quiet, the closure of a real st or sp, its
     // burst and its short, soft uh, as the lessons write tuh and puh. The rules test measures each part where it sits.
     if (Object.hasOwn(BLEND_PARTS, sound)) {
-      const [a, b] = BLEND_PARTS[sound]; const first = soundClipSamples(a, { slow }); const second = soundClipSamples(b, { slow });
+      // Since pass NE a hiss that ends a blend (X's cuh-sss) is one breath, as a hissed first sound is, and rises under the last 15 ms of the
+      // stop's breath, so no quiet and no vowel come between the k and the s.
+      const [a, b] = BLEND_PARTS[sound]; const first = soundClipSamples(a, { slow }); const second = soundClipSamples(b, { slow, once: 'sfz'.includes(b) });
       const hiss = 'sfz'.includes(a); const aLen = hiss ? Math.round((slow ? 0.4 : 0.32) * fs) : stopTiming(a, fs).vStart;
       const held = 'mnrl'.includes(b); const bLen = held ? Math.round((slow ? 0.55 : 0.42) * fs) : second.length;
-      const start = !held ? aLen : hiss ? aLen - Math.round(0.05 * fs) : stopTiming(a, fs).lead; const out = new Float32Array(start + bLen);
+      const start = !held ? (!hiss && 'sfz'.includes(b) ? aLen - Math.round(0.015 * fs) : aLen) : hiss ? aLen - Math.round(0.05 * fs) : stopTiming(a, fs).lead; const out = new Float32Array(start + bLen);
       const cut = Math.round(0.008 * fs); const fall = Math.round(0.12 * fs);
       for (let i = 0; i < aLen; i++) out[i] += first[i] * (hiss ? 1 : Math.min(1, (aLen - i) / cut));
       // After a stop the held sound starts as breath, noise through the rrr's 1,150, 1,650 and 3,300 cycles a second resonances, high-passed
@@ -44023,6 +44311,143 @@ export const WONDER = [
     ],
     closing: 'What do you like to do last at the playground?',
   },
+  // Pass NE's early Wonder batch, ups-and-downs still (the next early batch stays with the smallest theme): an ice cream that falls
+  // off the cone, hiccups that will not stop, a coat a child does not want on a cold morning, and favorite shoes grown too small. Each
+  // voice speaks in the first person from its own childhood, in the past tense, each voice's point was read against every older early
+  // question before the batch was written (the balloon, the sandcastle, the spilled picture, the trip canceled, feelings pass, so hard
+  // to wait, the stuck zipper, outside the lines, the tortoise of slow learner, haircut and time to go came nearest), no voice says
+  // always of what the skeptic tests, no prayer is answered away by the voice after it, and a child at a park, on a sidewalk or on a
+  // back step is with a grown-up named (Dad, Mom, Grandmother, Grandfather). Each claim is sourced: ice cream "includes many
+  // ingredients: air, water, milk fat, so-called milk solids" in which "small clusters of water molecules assemble to form tiny ice
+  // crystals" and "The mixing process also incorporates air" (Nathan Kilah, University of Tasmania, "How does ice cream work? A
+  // chemist explains why you can't just freeze cream and expect results", The Conversation, July 25, 2023, read in its salon.com and
+  // phys.org republications; since round one's Wonder read "The serum remains a liquid well below 0℃", "This concentrated liquid, known as the “serum”, bridges between the ice crystals, solid fat globules and air bubbles." and "The fat in the milk exists as globules surrounded by proteins.", so the voice says "tiny bits of ice, little bubbles of air and tiny drops of fat, in a sweet syrup that stays soft", where it said the drops were cream, all frozen together; and since round two's content read the short voice says "tiny bits of ice and air bubbles", where it said bits of ice, air and cream; the drips starting on the
+  // outside and licking the bottom edge first are the voice's own noticing, told as such). The five-second rule: "In some instances,
+  // the transfer begins in less than one second.", "longer food contact times usually result in the transfer of more bacteria" and
+  // "watermelon had the most contamination, gummy candy the least" (Rutgers Today, "Rutgers Researchers Debunk 'Five-Second Rule':
+  // Eating Food off the Floor Isn't Safe", September 8, 2016, Donald Schaffner, Applied and Environmental Microbiology; the voice says
+  // "germs can start to stick in under a second, and wet food picks up the most", and the fluff on a wet apple slice is the skeptic's
+  // own kitchen test). Hiccups: the diaphragm "is a dome-shaped muscle at the bottom of your chest, and all hiccups start here", when
+  // irritated "it pulls down in a jerky way", "your vocal cords close suddenly", "Almost all cases of the hiccups last only a few
+  // minutes.", "Holding your breath and counting to 10 is one way some people can get rid of their hiccups." and "Putting sugar under
+  // your tongue might work, too.", the irritants eating too quickly or too much and feeling nervous or excited (KidsHealth from
+  // Nemours, "What Causes Hiccups?", kidshealth.org/en/kids/hiccup.html, read November 9, 2026 through its CHOC copy, which showed no
+  // review date; the voice says "your vocal cords snap shut" and "getting very excited" for excited, where it said the top of the throat snapped shut).
+  // The hiccup words: "hipo ... Voz imit." (Real Academia Española, Diccionario de la lengua española, hipo, read November 9, 2026; the voice says it as it
+  // sounds, ee-po, since a US English device voice reads hipo with its h, and France's hoquet, read the same way, left the voice), "In Spain, you get a bad case of the hipos.", "the Japanese for hiccup ...
+  // shakkuri" and "we'll hear all sorts of gasping Hs and gulping Ks" (John Kelly, "How 35 Languages Say the Word 'Hiccup'", Mental
+  // Floss, August 23, 2017, updated June 8, 2022), and "The word hiccup itself was created through imitation." (Wikipedia, Hiccup, read
+  // November 9, 2026); the saying is real and told as a saying, not a fact: "it is said that hiccups occur when the person
+  // experiencing them is being talked about by someone not present" (the same Wikipedia page), Georgette's family saying "thinking of
+  // you". The coat: "A coat helps slow down the flow of heat out to the air, so it helps on cold days." and "there's new heat energy
+  // flowing into you from a sort of slow chemical burning of your food" (University of Illinois Physics Van, "Why Wear a Coat?",
+  // October 22, 2007), and "Insulation fights conduction by trapping air in a web of tiny pockets, slowing the heat's escape." (Wan
+  // Xiong and Longji Cui, "The science behind how your winter jacket keeps you warm", Popular Science from The Conversation, January
+  // 8, 2026; the voice says "a slow, quiet stove" and "tiny pockets of air"). The sparrows: "When birds fluff up, they create hundreds
+  // of air pockets between their feathers that trap heat" (Andrew Del-Colle, "How Do Birds Cope With Cold Winter Weather?", Audubon,
+  // January 24, 2024). The feet: "Children's feet grow in spurts.", "children over 3 years of age experience increases of one-half a foot size every
+  // 4-6 months" and "Children may require new shoes every 3-4 months." (American
+  // Orthopaedic Foot & Ankle Society, FootCareMD, "How Do I Choose Shoes for My Child?", no date shown, read November 9, 2026; the voice
+  // says "Feet grow in spurts, a quiet stretch and then a jump", the tracings made every few months, where it said every birthday and a whole year barely moving). A toe's dent inside a worn shoe, a bare hand stinging by a count of
+  // twenty, sleeves and pants short on the same day, and hiccups gone within a few minutes trick or no trick are the voices' own
+  // noticings and tests, told as such (pass NE, before round one's Wonder check). The lead's read changed two sentences: the hiccup
+  // words were named after their sound "in many places", where "nearly everywhere" said more than a list of 35 languages shows, and the
+  // mitten test's last sentence is two whole ones ("A test does not care who was right. It just shows you what happens."), where a
+  // comma joined them. Round one's Wonder read (Opus) changed more, each quoted in pass NE's DECISIONS entry: the two facts above; Georgette's
+  // grandfather holding her coat open, where he buttoned it before her arms were in; the door frame's marks, made each birthday, sitting
+  // higher at the next one, where a pinch came a few weeks before a mark; growing explaining all three, where three things never shrinking
+  // on one day fails beside a hot wash; Mike's ice cream test about wanting a rule to be true, where asking how they know retold older
+  // skeptics; it sounded like a hiccup, where like one could be heard as the number; Mike's mitten test made with Mom; Chloe's red shoes kept
+  // in a memory box, since the podiatrists' association tells parents never to hand down shoes ("NEVER HAND DOWN FOOTWEAR", APMA's tips
+  // for kids' shoe shopping); and three openings that repeated within a question.
+  {
+    id: 'w-early-ice-cream-fell',
+    theme: 'ups-and-downs',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'Your ice cream fell off the cone and landed on the ground. What could you do?',
+    options: ['Crunch the cone anyway', 'Ask for a hug', 'Pick a flavor for next time'],
+    simple: [
+      { voice: 'A scientist says', says: 'My scoop slid off at the park with Dad. Ice cream has tiny bits of ice and air bubbles, and warm air melts it.' },
+      { voice: 'An artist says', says: 'Once, Mom and I watched ants march to my fallen scoop by a bench. My sad ice cream was an ant party!' },
+      { voice: 'A grandparent of faith says', says: 'Grandmother let me be sad when my scoop fell. She never once said, it is only ice cream.' },
+      { voice: 'A skeptic says', says: 'My brother said, grab it fast and it is still good. I wanted that to be true, so we tested it. It was not!' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'My scoop slid off the cone at the park one hot day, and my dad and I knelt down to look. Ice cream is tiny bits of ice, little bubbles of air and tiny drops of fat, in a sweet syrup that stays soft. Warm air melts the ice back into water, and a melting scoop gets soft and slippery. I noticed the drips started on the outside, where the warm air touched it, so now I lick around the bottom edge first. The scoop did not fall because I did anything wrong. It fell because of what ice cream is, and a hot day is hard on ice cream.' },
+      { voice: 'An artist', says: 'When my scoop fell beside a park bench, I cried, and my mom sat down with me on the bench. While we sat there, one ant found my ice cream, and then another, and then a long line of them came marching across the path. They climbed the melting mountain and carried crumbs of cone away over their heads. My sad ice cream had turned into a party for a hundred ants. I stopped crying so I could watch. Something that is lost to you can still be a gift to someone very small.' },
+      { voice: 'A grandparent of faith', says: 'My ice cream fell on the sidewalk when I was five, and I cried all the way home. My grandmother held my hand and let me be sad for every step. She never once said, it is only ice cream, and she never hurried me. Years later, when much bigger sad things came, I found that I knew how to carry a sad feeling, because she had let me practice with a small one. I believe the small sad things are where we learn. A grown-up who takes your little sadness seriously is giving you something you will use your whole life.' },
+      { voice: 'A skeptic', says: 'When my ice cream fell, my big brother said to grab it fast, because then it is still good. My mom helped us test it. We dropped a wet slice of apple and a dry cracker on the kitchen floor and grabbed them fast. The apple came up with fluff and crumbs stuck to it before I could count to one. Scientists who tested this found that germs can start to stick in under a second, and wet food picks up the most. I wanted that rule to be true, because I wanted my ice cream. The rules I most want to believe are the ones I check first.' },
+    ],
+    closing: 'What could you do with an empty cone?',
+  },
+  {
+    id: 'w-early-hiccups',
+    theme: 'ups-and-downs',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'You have the hiccups, and they will not stop. What could you do?',
+    options: ['Sip some water', 'Hold my breath and count', 'Wait for them to go'],
+    simple: [
+      { voice: 'A scientist says', says: 'I had hiccups at dinner, and Dad put my hand under my ribs. A breathing muscle there was jumping. That jump is a hiccup!' },
+      { voice: 'An artist says', says: 'My friend\'s grandmother from Mexico had her own word for hiccups, and it sounded like a hiccup. In Japan they say shakkuri!' },
+      { voice: 'A grandparent of faith says', says: 'My mother said hiccups mean someone is thinking of you. It was just a saying, but we guessed who, and I forgot my hiccups!' },
+      { voice: 'A skeptic says', says: 'Grandpa\'s sugar trick stopped my hiccups once. The next time it did not. Maybe they just stop on their own, so I timed them.' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'One night when I was small I had the hiccups all through dinner, and my dad put my hand under my ribs to feel what was happening. There is a muscle there, shaped like a dome, that helps you breathe. When you breathe in, it pulls down, and air comes into your lungs. Sometimes it gets bothered, from eating too fast or getting very excited, and it pulls down with a sudden jerk. Air rushes in, your vocal cords snap shut, and out comes the hic. Nothing is broken when you hiccup. A muscle is just jumping, and it settles down again.' },
+      { voice: 'An artist', says: 'When I was little, my friend\'s grandmother came from Mexico, and when I got the hiccups at her table she laughed and said, ee-po! It was the Spanish word for hiccups, and it sounded just like a hiccup. I started collecting hiccup words after that. In Japan they say shakkuri, and our own word, hiccup, sounds like the hic itself too. People everywhere get the hiccups, and in many places they named them after the sound they make. Now when I hiccup, I think of all the hiccuping people in the world, and I feel I am in good company.' },
+      { voice: 'A grandparent of faith', says: 'When I got the hiccups as a girl, my mother would look up from her sewing and say, somebody is thinking about you! It is an old saying, not a true one, but I loved it. We would guess who, my uncle, my cousin, the lady next door, and by the time we ran out of names I had forgotten the hiccups. I still do it, now that I am old. When I hiccup, I ask myself who might be thinking of me, and then I turn it around and think of them. A small bother can be a little bell that reminds you of the people you love.' },
+      { voice: 'A skeptic', says: 'My grandpa had a hiccup cure, a spoonful of sugar, and the first time he gave me one my hiccups stopped right away. The next time, I ate the sugar and hiccuped for ten more minutes. My dad helped me test it with his watch. Some days I tried the sugar, and some days I just waited, and each time the hiccups were gone within a few minutes, sugar or no sugar. Hiccups mostly stop by themselves. When something stops on its own, whatever you did last looks like the cure, so I time things before I give a trick the credit.' },
+    ],
+    closing: 'Who do you think about when you have the hiccups?',
+  },
+  {
+    id: 'w-early-cold-coat',
+    theme: 'ups-and-downs',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'It is cold outside, and you do not want to put on your coat. What could you do?',
+    options: ['Feel the air at the door', 'Put it on all by myself', 'Say why I do not want to'],
+    simple: [
+      { voice: 'A scientist says', says: 'Dad said a coat makes no heat. My body makes the heat, like a little stove. The coat just holds it in.' },
+      { voice: 'An artist says', says: 'My mittens had faces, Lefty and Righty. They wanted to see the snow, so I put them on and went out with Mom.' },
+      { voice: 'A grandparent of faith says', says: 'Grandfather showed me the sparrows, puffed up round in the cold. Even the little birds put their coats on, he said. So did I.' },
+      { voice: 'A skeptic says', says: 'Was Mom right about the cold? Mom and I tested it, one mitten on and one hand bare. The bare one got cold first!' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'One winter morning I did not want my coat, and I told my dad it was not even warm when I touched it. He said a coat makes no heat at all. Your body makes the heat, all day and all night, from the food you eat, a little like a slow, quiet stove. A coat is full of tiny pockets of air, and those pockets hold your own warmth close to you instead of letting it float off into the cold. That is why a coat feels cold when you pick it up and warm once you are inside it. The warm was yours all along.' },
+      { voice: 'An artist', says: 'When I was small, I would not wear my mittens, until my mom let me draw a face on each one with a marker. The left one was Lefty, who was shy, and the right one was Righty, who was loud. In the morning, Righty wanted to go out and see the snow, and Lefty wanted to stay in. I was the only one who could take them out, so I put them on and off we went, with my mom, and Lefty was brave after all. A thing you do not want to wear can turn into a friend who wants to go somewhere with you.' },
+      { voice: 'A grandparent of faith', says: 'On the coldest mornings, when I was a girl, I would stand at the door with my arms folded and no coat on. My grandfather would call me to the window instead. He showed me the sparrows on the fence, puffed up as round as little balls to hold their warm air in. Even the little birds put their coats on, he said. I believe the small ones of this world are looked after, the sparrows and the children, and much of that looking after arrives through someone\'s hands. That morning, his hands held my coat open. So I put my arms in, and we went out together.' },
+      { voice: 'A skeptic', says: 'My mom said my hands would get too cold without mittens, and I wanted to see for myself, because my hands felt fine in the kitchen. So we made a deal and ran a test on the back step. I wore one mitten and left the other hand bare, and we counted slowly to thirty together. By twenty, the bare hand was stinging and the mitten hand was fine. I put the second mitten on myself, and nobody had to tell me. Arguing with Mom would have taken all morning, and the test took half a minute. A test does not care who was right. It just shows you what happens.' },
+    ],
+    closing: 'What is your favorite thing to wear on a cold day?',
+  },
+  {
+    id: 'w-early-shoes-too-small',
+    theme: 'ups-and-downs',
+    stage: 'early',
+    courseIds: [],
+    answerMode: 'pick',
+    prompt: 'Your favorite shoes got too small for your feet. How does that feel?',
+    options: ['Sad for the shoes', 'Happy that I grew', 'Sad and happy together'],
+    simple: [
+      { voice: 'A scientist says', says: 'Dad traced my feet on paper every few months. Sometimes the line barely moved. Then it jumped! Feet grow in jumps.' },
+      { voice: 'An artist says', says: 'My old red shoes had a dent inside where each toe lived. Shoes remember your feet! I kept them on my shelf.' },
+      { voice: 'A grandparent of faith says', says: 'My family marked how tall I was on the door. Pinching shoes meant a higher mark was coming! We gave thanks for every inch.' },
+      { voice: 'A skeptic says', says: 'Did my feet grow, or did my boots shrink? I checked my sleeves and pants. Too short too! The one who changed was me.' },
+    ],
+    perspectives: [
+      { voice: 'A scientist', says: 'Every few months, my dad stood me on a piece of paper and traced around my bare feet with a pencil, and kept every tracing. When my favorite sneakers started to pinch, we laid the tracings out in a row on the floor. Some new lines sat almost on top of the one before. Then one had jumped ahead. Feet grow in spurts, a quiet stretch and then a jump, and the jump is when your shoes suddenly feel too tight. Nothing was wrong with the shoes or with my feet. My feet had done a lot of growing in a few short months.' },
+      { voice: 'An artist', says: 'My first favorite shoes were red, with a strap, and when they got too small I did not want to let them go. Before they went in the box, I looked inside them. There was a soft dent where each of my toes had lived, five little hollows in a row, and the heel had worn into a curve that was exactly me. My shoes remembered my feet. I set them on my shelf beside my drawings for a while, because a thing you have used and loved keeps a little of you in its shape. Then they went into my memory box, and they are still there today.' },
+      { voice: 'A grandparent of faith', says: 'In the house where I grew up, the kitchen door frame was covered in pencil marks, one for each child on each birthday, with a name and a date beside it. When my shoes began to pinch, my grandmother would smile and say, a higher mark is coming. The pinch came first, and at my next birthday the new mark sat well above the last one. So I learned to hear a tight shoe as good news arriving early. I was sad to put my little shoes away, but my grandmother and I said a small thank-you for every inch, and we still do that in my family today.' },
+      { voice: 'A skeptic', says: 'When my favorite boots got tight, I had a question. Did my feet grow, or did the boots shrink? Then I thought of a test. If the boots had shrunk, only the boots would be too small. If I had grown, other things would be too small as well. So I checked my other clothes. My sleeves stopped before my wrists, and my pants showed my socks. Three things shrinking on the same day would be very strange, but growing explained all three at once. When something stops fitting, I look for a second clue before I decide what happened.' },
+    ],
+    closing: 'What was the best place your old shoes took you?',   // since round two's content read: the old one invited a hand-down, which APMA says never to do
+  },
   {
     id: 'w-early-hurt-by-words',
     theme: 'feelings',
@@ -47568,9 +47993,11 @@ export function youngVoiceOn({ screen, readAloud, youngLearner }) { return !!((r
 // word's sounds does in every lesson since pass NC but grade 1's Read the word and Sh, ch and th, whose short vowels are on trial ("Sss,
 // i, ks.", "Fff, i, shh."), until EARMARKS A42. Claude's design, recorded in RULES-AUDIT section 4 and told to Mikey, who kept it (his answer to Q88, "Q88 - A", pass ND). oneBreathOn is what
 // the page reads on every screen: a lesson or a story of one of them, or a question from one of their banks wherever it is asked.
-// Since pass ND the three letters lessons join them (Claude's design, Q89 asks Mikey): each teaches one sound for one letter, S says sss, and
-// a hiss in two breaths there sounds like a letter that says its sound twice.
-export const ONE_BREATH_LESSONS = ['sounds-in-a-word', 'very-first-sound', 'sound-by-sound', 'letters-and-sounds', 'hear-it-in-the-name', 'end-of-the-name'];
+// Since pass ND the three letters lessons join them (Claude's design, kept so by Mikey's answer to Q89, "Q89 - A", in pass NE): each teaches one sound for one letter, S says sss, and
+// a hiss in two breaths there sounds like a letter that says its sound twice. Since pass NE pre-K 4's Start or end of the name and Write it
+// by its sounds join them (Claude's design, by the reason Mikey kept in Q88 and Q89): the first teaches four more letters' sounds, and the
+// second the letters for a word's first and last sounds (bus ends with sss), where one sound must sound like one.
+export const ONE_BREATH_LESSONS = ['sounds-in-a-word', 'very-first-sound', 'sound-by-sound', 'letters-and-sounds', 'hear-it-in-the-name', 'end-of-the-name', 'start-or-end', 'write-by-sounds'];
 export function oneBreathGenerators() { return ONE_BREATH_LESSONS.flatMap((id) => { const m = getModule(id); return m ? m.generators : []; }); }
 export function oneBreathOn({ screen, moduleId = null, genId = null } = {}) {
   if (screen === 'practice') return !!genId && oneBreathGenerators().includes(genId);

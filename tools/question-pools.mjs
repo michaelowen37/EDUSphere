@@ -41,7 +41,7 @@ export function longPrompts(samples = 600, maxLength = 400) {
 if (process.argv[1] && process.argv[1].endsWith('question-pools.mjs')) {
   const rows = shortPools();
   const total = COURSES.reduce((a, c) => a + c.modules.length, 0);
-  console.log(`# Question pools\n\nGenerated ${new Date().toISOString().slice(0, 10)} by tools/question-pools.mjs. ${rows.length} of ${total} modules can produce fewer different questions than one practice round asks for. The rules test fails on any such module, because a round is never shortened and never repeats a question; a bank that lands here needs more questions, written so every answer is taught in its lesson.\n\n| Grade | Subject | Course | Module | Different questions | Round length |\n|---|---|---|---|---|---|`);
+  console.log(`# Question pools\n\nGenerated ${new Date().toLocaleDateString('en-CA', { timeZone: 'America/Chicago' })} by tools/question-pools.mjs. ${rows.length} of ${total} modules can produce fewer different questions than one practice round asks for. The rules test fails on any such module, because a round is never shortened and never repeats a question; a bank that lands here needs more questions, written so every answer is taught in its lesson.\n\n| Grade | Subject | Course | Module | Different questions | Round length |\n|---|---|---|---|---|---|`);
   for (const r of rows) console.log(`| ${r.grade} | ${r.subject} | ${r.course} | ${r.module} | ${r.have} | ${r.need} |`);
   const longs = longPrompts();
   console.log(`\n## Long prompts\n\nA prompt stays under 70 characters, and a writing prompt under 110. ${longs.length} prompts, in every bank sampled, are at or over their limit; the rules test fails on any.\n\n| Bank | Characters | Prompt |\n|---|---|---|`);

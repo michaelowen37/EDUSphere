@@ -980,7 +980,7 @@ const ponder = () => page.evaluate(() => {
     const got = await page.evaluate(() => ({ sa: window.__sa.slice(), lits: window.__lits.slice(), sounds: (window.__eduSounds || []).slice() }));
     const from = got.sa.map((x) => x.text.trim()).lastIndexOf(want[0]); return { done, line, sa: from >= 0 ? got.sa.slice(from) : [], lits: got.lits, sounds: got.sounds }; };
   await install(); await toStep('learning-words', 5);
-  const shown = await page.evaluate(() => { const s = document.querySelector('[data-say-along]'); const para = [...document.querySelectorAll('p')].find((p) => /A cup and a ball are different\./.test(p.textContent) && !p.closest('[data-say-along]')); return { word: s && s.getAttribute('data-say-along'), para: para ? para.textContent.trim() : null }; });
+  const shown = await page.evaluate(() => { const s = document.querySelector('[data-say-along]'); const para = [...document.querySelectorAll('p')].find((p) => /A cup and a ball are[ \u00a0]different\./.test(p.textContent) && !p.closest('[data-say-along]')); return { word: s && s.getAttribute('data-say-along'), para: para ? para.textContent.trim() : null }; });
   const D = await playOut('learning-words', 5);
   const pieces = L.speechPieces(D.line).filter((x) => !x.sound); const forms = pieces.filter((x) => x.sayAlong);
   const voiceOf = (style) => L.SAY_ALONG_VOICES.find((v) => v.style === style);
@@ -1010,7 +1010,7 @@ const ponder = () => page.evaluate(() => {
   const early = []; forms.forEach((fm) => { const u = D.sa[pieces.indexOf(fm)]; if (!u || !u.began) { early.push(`${fm.sayAlong.style} ${fm.sayAlong.rep} never began`); return; }
     for (const x of D.lits) if (x.word === 'different' && x.call === fm.sayAlong.style && x.rep === String(fm.sayAlong.rep) && x.lit !== '' && x.lit !== '0' && x.t < u.began - 20 && x.t >= u.at) early.push(`${fm.sayAlong.style} ${x.rep}:${x.lit} at ${x.t - u.began} ms`); });
   ok("a say-along line shows its own words in the paragraph and the word in the strip; the voice says Mikey's game in order, the opener excited, each way at its own rate and pitch, the silly voices and the whisper with their brief pauses, the calls in the young voice and the praise as a cheer; the child's turn follows each way; and the light walks each syllable of each saying, super fast's three in one breath (pass MS; pass MT)",
-    D.done && shown.word === 'different' && shown.para === 'Different means not the same. A cup and a ball are different.' && inOrder && shaped && pausedOk && calls && turned && swept && early.length === 0,
+    D.done && shown.word === 'different' && shown.para === 'Different means not the same. A cup and a ball are\u00a0different.' && inOrder && shaped && pausedOk && calls && turned && swept && early.length === 0,
     { shaped, pausedOk, calls, turned, swept, early: early.slice(0, 6), done: D.done, shown, inOrder, paused, turns, slowLit, whisperLit, sillyLit, fastLit, said: said.slice(0, 18) });   // the yes-or-no parts first, so a cut detail still shows which (round one's code check)
   // The cheer (pass MT, in place of pass MS's chant and its clap): three cheers, a fan's whistle after each of the first two and the
   // crowd after the last, the app's own sounds.
@@ -1095,7 +1095,7 @@ const ponder = () => page.evaluate(() => {
   // My voice tells more, line 5: circle said strong, a piece of its own in small letters, the words around it plain, the sentence lit.
   const lineB = lineOf('voice-tells-more', 5); const pb = piecesOfLine(lineB); await toStep('voice-tells-more', 5); const B = await playOut(lineB);
   const strongAt = pb.findIndex((p) => p.shape === 'said-strong'); const sw = B.recs[strongAt]; const whole = (lineB.voices[0] || [])[0];
-  const litB = !!sw && !!sw.began && litAt(B.lits, sw.began + 5) === whole;
+  const litB = !!sw && !!sw.began && String(litAt(B.lits, sw.began + 5) || '').replace(/\u00a0/g, ' ') === whole;   // a line's last two words held by a no-break space (pass NE)
   ok("a strong word is said in the real page as a piece of its own, in small letters, at the strong voice's rate, pitch and loudness slowed with the young voice, the words around it plain and its sentence lit while it is said (pass MV, round one's screen check; a doctored record at the plain pitch caught)",
     B.done && strongAt > 0 && pb[strongAt].text === 'circle' && heardAs(B.recs, pb) && litB && !heardAs(flatten(B.recs), pb), { done: B.done, heard: heardAs(B.recs, pb), litB, recs: B.recs.map((u) => [u.text, u.rate, u.pitch, u.volume]), lits: B.lits.slice(-6) });
   // A question: "I see a dog." high, then low, as it appears and from Hear it again; each sentence choice tapped; the explanation.
@@ -1498,6 +1498,18 @@ const ponder = () => page.evaluate(() => {
 //    at 320), with a voice card's hyphenated word let break, planted. Since the third read a reader's screens too: grade 2's courses are
 //    not read aloud and meet early questions, whose options printed bare ("A hug from a grown- / up" at 320), so the question with its
 //    options and the voices with the closing card are read at the six widths in both themes, an option's word and a voice's let break.
+// 16. EARMARKS A93's browser check (pass NE, pass ND's round one's screen read): in a lesson on a tablet (820 by 1180 and 768 by 1024) and a
+//    laptop (1280 by 800 and 1280 by 720), in both themes, a lesson's own letters and print grow with the lesson's scale, as a drawing alone does, where they kept a
+//    phone's 44 and 28 pixels beside drawings of 160: one letter alone (Start or end of the name's P, line 1), a run of letters (its close,
+//    P  D  N  X, line 14), a word with its first letter lit (A and B's Apple, line 2) and a sentence as print (Spaces between words' My cat
+//    is soft., line 1), each read as drawn, the box of one character's text, against the same line on a phone (390 by 844) in the same
+//    theme, 1.4 times or more (the lesson's scale is 1.45), each line's Next above the fold at those sizes (the earmark's ask, since a grown
+//    letter makes its line taller); on the phone the letters stay at 44 pixels and the print at 28 or less. Its
+//    plants, on the tablet in the light theme: the letter set back to 44 pixels, the print to 28, and the run drawn at 0.7 by a transform
+//    its font size cannot see, each caught.
+// 17. Round one's lesson read (pass NE): a hyphenated word in a lesson line stays whole on its line (Write it by its sounds broke grown-up as
+//    "grown- / up" at 375 pixels in both themes): twelve pre-K lines with grown-up, grown-ups or middle-sized, read at 320, 340, 360, 375,
+//    390 and 412 pixels wide in both themes, every hyphenated word's text on one line. Its plant: a word let break, caught.
 { const openAs = async (theme, w, h) => {
     const ctx = await browser.newContext({ viewport: { width: w, height: h }, hasTouch: true, reducedMotion: 'reduce' });
     await ctx.addInitScript((t) => { try { localStorage.setItem('edusphere_v1_theme', t); } catch (e) { /* none */ } }, theme);
@@ -1620,7 +1632,87 @@ const ponder = () => page.evaluate(() => {
         if (plantReaderVoice === null && width === 320 && w.perspectives.some((p) => HYPHEN.test(p.says))) { const set = await pg.evaluate(breakIt('[data-wonder-voice-card] p [data-whole-word]')); plantReaderVoice = set && (await cardFaults(pg)).some((f) => f.includes('split across')); await pg.evaluate(mendIt('[data-wonder-voice-card] p [data-whole-word]')); } } }
     await ctx.close(); }
   ok(`a reader's Wonder screens keep a hyphenated word such as grown-up whole at 320, 340, 360, 375, 390 and 412 pixels wide in both themes, the question with its options and the voices with the closing card (pass ND, the third read; ${asReader.length} questions on ${readerScreens} screens and ${voicesReader.length} voice pages on ${voiceScreens}; an option's word and a voice's let break, planted, caught)`,
-    asReader.length >= 9 && voicesReader.length >= 30 && readerFaults.length === 0 && readerScreens === asReader.length * 12 && voiceScreens === voicesReader.length * 12 && plantOption === true && plantReaderVoice === true, { readerFaults: readerFaults.slice(0, 6), readerScreens, voiceScreens, plantOption, plantReaderVoice }); }
+    asReader.length >= 9 && voicesReader.length >= 30 && readerFaults.length === 0 && readerScreens === asReader.length * 12 && voiceScreens === voicesReader.length * 12 && plantOption === true && plantReaderVoice === true, { readerFaults: readerFaults.slice(0, 6), readerScreens, voiceScreens, plantOption, plantReaderVoice });
+  // Section 16 (pass NE, EARMARKS A93). The drawn size of a line's own letters or print: the box of its last character's text, which every
+  // scale and transform above it reaches, read with the font size the code set. A plant is set, read and put back in one call, so a fitted
+  // text never refits between them.
+  const A93_LINES = [['start-or-end', 1, 'letter'], ['start-or-end', 14, 'run'], ['a-and-b', 2, 'lit'], ['spaces-between-words', 1, 'print']];
+  const a93Read = (pg, kind, how = null) => pg.evaluate(([kd, hw]) => { const card = document.querySelector('.edu-wrap .edu-rise'); if (!card) return null;
+    const host = kd === 'print' ? card.querySelector('[data-print] [data-fit-text]') : [...card.querySelectorAll('p')].find((p) => p.style.letterSpacing === '6px'); if (!host) return null;
+    const was = host.getAttribute('style') || ''; if (hw === 'scale') host.style.transform = 'scale(0.7)'; else if (hw) host.style.fontSize = hw;
+    const walker = document.createTreeWalker(host, NodeFilter.SHOW_TEXT); let last = null; let n; while ((n = walker.nextNode())) if (n.textContent.trim()) last = n;
+    let out = null; if (last) { const t = last.textContent; let i = t.length - 1; while (i > 0 && !t[i].trim()) i -= 1; const rg = document.createRange(); rg.setStart(last, i); rg.setEnd(last, i + 1);
+      const nx = document.querySelector('[data-lesson-next]'); out = { drawn: +rg.getBoundingClientRect().height.toFixed(1), font: parseFloat(getComputedStyle(host).fontSize), text: host.textContent.replace(/\s+/g, ' ').trim(), next: nx ? Math.round(nx.getBoundingClientRect().bottom) : null, H: window.innerHeight }; }
+    if (hw) host.setAttribute('style', was); return out; }, [kind, how]);
+  const reads93 = []; const phone93 = {}; let plantLetter93 = null; let plantPrint93 = null; let plantRun93 = null; let nearLetter93 = null;
+  for (const theme of ['light', 'dark']) for (const [w, h] of [[390, 844], [820, 1180], [1280, 800], [1280, 720], [768, 1024]]) {
+    const { ctx, pg } = await openAs(theme, w, h);
+    for (const [mod, line, kind] of A93_LINES) { await toLine(pg, mod, line); await pg.waitForTimeout(300); const r = await a93Read(pg, kind); reads93.push({ theme, w, h, mod, line, kind, ...(r || { drawn: null, font: null, next: null }) });
+      if (w === 390) phone93[theme + ' ' + kind] = r ? r.drawn : null;
+      if (w === 820 && theme === 'light' && r && phone93['light ' + kind] > 0) { const bar = 1.4 * phone93['light ' + kind];
+        if (kind === 'letter') { const p = await a93Read(pg, kind, '44px'); plantLetter93 = !!p && !(p.drawn >= bar);
+          // Since round one's code read: just under the bar, 1.35 times a phone's 44 pixels, caught, so the bar is pinned from below too.
+          const q = await a93Read(pg, kind, (44 * 1.35).toFixed(1) + 'px'); nearLetter93 = !!q && q.drawn >= 1.3 * phone93['light ' + kind] && !(q.drawn >= bar); }
+        if (kind === 'print') { const p = await a93Read(pg, kind, '28px'); plantPrint93 = !!p && !(p.drawn >= bar); }
+        if (kind === 'run') { const p = await a93Read(pg, kind, 'scale'); plantRun93 = !!p && p.font === r.font && !(p.drawn >= bar); } } }
+    await ctx.close(); }
+  const wide93 = reads93.filter((x) => x.w >= 768); const phones93 = reads93.filter((x) => x.w === 390); const below93 = wide93.filter((x) => !(x.next > 0 && x.next <= x.H));
+  ok(`in a lesson on a tablet and a laptop its own letters and print grow with the lesson's scale, in both themes, each drawn 1.4 times the phone's or more, each line's Next above the fold, while a phone keeps the letters at 44 pixels and the print at 28 or less (EARMARKS A93, pass NE; ${reads93.length} reads, ${below93.length} below the fold: ${wide93.map((x) => x.theme + ' ' + x.w + 'x' + x.h + ' ' + x.kind + ' ' + (phone93[x.theme + ' ' + x.kind] ? (x.drawn / phone93[x.theme + ' ' + x.kind]).toFixed(2) : 'none')).join(', ')}; the letter set back to 44, the print to 28 and the run drawn at 0.7, planted, caught, and since round one's code read a letter just under the bar, 1.35 times a phone's, caught)`,
+    reads93.length === 40 && below93.length === 0 && reads93.every((x) => x.drawn > 0 && x.font > 0) && wide93.every((x) => phone93[x.theme + ' ' + x.kind] > 0 && x.drawn >= 1.4 * phone93[x.theme + ' ' + x.kind]) && phones93.every((x) => (x.kind === 'print' ? x.font <= 28 : x.font === 44)) && plantLetter93 === true && plantPrint93 === true && plantRun93 === true && nearLetter93 === true, { reads93: reads93.map((x) => [x.theme, x.w, x.h, x.kind, x.drawn, x.font, x.next]), below93: below93.map((x) => [x.theme, x.w, x.h, x.mod, x.line]), phone93, plantLetter93, plantPrint93, plantRun93 });
+  // Section 17 (pass NE): every hyphenated word in a lesson line's words on one line, read by the rects of its own text.
+  const HYPHEN_LINES = [['write-by-sounds', 3], ['write-by-sounds', 13], ['say-what-you-need', 1], ['spaces-between-words', 13], ['space-between-words', 13], ['write-to-tell', 12], ['help-a-friend', 4], ['help-a-friend', 5], ['good-friend', 12], ['feelings-show', 11], ['big-bigger-biggest', 2], ['bigger-and-smaller', 11]];
+  const lineSplits = (pg) => pg.evaluate(() => { const out = []; const host = document.querySelector('.edu-wrap .edu-rise'); if (!host) return ['no line']; let read = 0;
+    const walker = document.createTreeWalker(host, NodeFilter.SHOW_TEXT); let n; while ((n = walker.nextNode())) { if (n.parentElement && n.parentElement.closest('svg, button, [data-print]')) continue;
+      for (const m of n.textContent.matchAll(/[A-Za-z]+-[A-Za-z]+/g)) { read += 1; const rg = document.createRange(); rg.setStart(n, m.index); rg.setEnd(n, m.index + m[0].length); const tops = [...new Set([...rg.getClientRects()].filter((r) => r.width > 0).map((r) => Math.round(r.top)))]; if (tops.length > 1) out.push(m[0] + ' split across lines'); } }
+    return read ? out : ['no hyphenated word read']; });
+  const hyphenFaults = []; let hyphenReads = 0; let plantHyphen = null;
+  for (const theme of ['light', 'dark']) { const { ctx, pg } = await openAs(theme, 375, 800);
+    for (const [mod, line] of HYPHEN_LINES) { await pg.setViewportSize({ width: 375, height: 800 }); await toLine(pg, mod, line); await pg.waitForTimeout(250);
+      for (const width of [320, 340, 360, 375, 390, 412]) { await pg.setViewportSize({ width, height: 800 }); await pg.waitForTimeout(120); hyphenReads += 1; for (const f of await lineSplits(pg)) hyphenFaults.push(`${theme} ${width} ${mod} line ${line}: ${f}`);
+        if (plantHyphen === null && width === 320) { const set = await pg.evaluate(() => { const s = document.querySelector('.edu-wrap .edu-rise [data-whole-word]'); if (!s) return false; window.__was = s.getAttribute('style') || ''; s.setAttribute('style', 'display: inline-block; width: 4ch; white-space: normal; word-break: break-all'); return true; });
+          plantHyphen = set && (await lineSplits(pg)).some((f) => f.includes('split across')); await pg.evaluate(() => { const s = document.querySelector('.edu-wrap .edu-rise [data-whole-word]'); if (s) s.setAttribute('style', window.__was); delete window.__was; }); } } }
+    await ctx.close(); }
+  // Since round two's final read: a kept word never runs past its paragraph's inner edge, read on the story with the longest hyphenated word
+  // the app says (great-great-great-grandmother, 29 characters, which breaks at its hyphens since a kept word is 22 or fewer) at 320 by 568
+  // in both themes; the long word wrapped whole in the page, as the uncapped span did, planted, caught.
+  const pastEdge = (pg) => pg.evaluate(() => { const out = []; for (const s of document.querySelectorAll('[data-whole-word]')) { const p = s.closest('p') || s.parentElement; const pr = p.getBoundingClientRect(); const inner = pr.right - (parseFloat(getComputedStyle(p).paddingRight) || 0);
+    for (const r of s.getClientRects()) if (r.width > 0 && r.right > inner + 1) out.push(`${s.textContent} ${Math.round(r.right - inner)} past`); } return out; });
+  const storyFaults = []; let storyReads = 0; let plantLong = null;
+  for (const theme of ['light', 'dark']) { const { ctx, pg } = await openAs(theme, 320, 568);
+    await pg.evaluate(() => window.__eduTest.openStory('statehood-and-civil-war')); await pg.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'story', null, { timeout: 15000 }); await pg.waitForTimeout(600);
+    storyReads += 1; const found = await pg.evaluate(() => document.body.innerText.includes('great-great-great-grandmother')); if (!found) storyFaults.push(`${theme}: the long word not on the page`);
+    for (const f of await pastEdge(pg)) storyFaults.push(`${theme}: ${f}`);
+    if (plantLong === null) { const set = await pg.evaluate(() => { const walk = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT); let t; while ((t = walk.nextNode())) { const k = t.textContent.indexOf('great-great-great-grandmother'); if (k < 0) continue;
+        const tail = t.splitText(k); tail.splitText('great-great-great-grandmother'.length); const s = document.createElement('span'); s.setAttribute('data-whole-word', ''); s.setAttribute('data-plant-long', ''); s.style.whiteSpace = 'nowrap'; tail.parentNode.replaceChild(s, tail); s.appendChild(tail); return true; } return false; });
+      plantLong = set && (await pastEdge(pg)).some((f) => f.startsWith('great-great-great-grandmother')); await pg.evaluate(() => { const s = document.querySelector('[data-plant-long]'); if (s) s.replaceWith(...s.childNodes); }); }
+    await ctx.close(); }
+  ok(`a hyphenated word in a lesson line stays whole on its line at 320, 340, 360, 375, 390 and 412 pixels wide in both themes, grown-up never "grown- / up" (round one's lesson read, pass NE; ${HYPHEN_LINES.length} lines on ${hyphenReads} screens; a word let break, planted, caught), and since round two's final read no kept word runs past its paragraph's edge, read on the story with the longest (great-great-great-grandmother breaks at its hyphens; wrapped whole, planted, caught)`,
+    hyphenFaults.length === 0 && hyphenReads === HYPHEN_LINES.length * 12 && plantHyphen === true && storyFaults.length === 0 && storyReads === 2 && plantLong === true, { hyphenFaults: hyphenFaults.slice(0, 6), hyphenReads, plantHyphen, storyFaults, plantLong });
+  // Section 18 (pass NE, round one's screen read): a lesson line's last two words stay together at every phone width (lastTwoTogether's
+  // no-break space), read on the lines the hyphen span moved and the ones the reader found, by each word's top as the fold check reads it;
+  // and Write it by its sounds' F   X, stacked under the fox, on one row at every width.
+  const LONE_LINES = [...HYPHEN_LINES, ['big-and-little', 5], ['big-bigger-biggest', 4], ['opposites-and-same', 8], ['write-by-sounds', 6]];
+  const loneLast = (pg) => pg.evaluate(() => { const p = document.querySelector('[data-lesson-words]'); if (!p) return 'no line'; const tops = []; const walk = document.createTreeWalker(p, NodeFilter.SHOW_TEXT); let t;
+    while ((t = walk.nextNode())) for (const m of t.textContent.matchAll(/\S+/g)) { const r = document.createRange(); r.setStart(t, m.index); r.setEnd(t, m.index + m[0].length); const q = [...r.getClientRects()].find((x) => x.width > 0); if (q) tops.push([Math.round(q.top), m[0]]); }
+    const rows = []; let at = null; for (const [y, w] of tops) { if (at === null || Math.abs(y - at) > 4) { rows.push([]); at = y; } rows[rows.length - 1].push(w); }
+    const last = rows[rows.length - 1] || []; return rows.length > 1 && last.length === 1 ? last[0] : ''; });
+  const runRows = (pg) => pg.evaluate(() => { const p = [...document.querySelectorAll('.edu-wrap .edu-rise p')].find((x) => /^[A-Z](?: +[A-Z])+$/.test(x.textContent.trim())); if (!p) return 0;
+    const walk = document.createTreeWalker(p, NodeFilter.SHOW_TEXT); const tops = new Set(); let t; while ((t = walk.nextNode())) for (const m of t.textContent.matchAll(/[A-Z]/g)) { const r = document.createRange(); r.setStart(t, m.index); r.setEnd(t, m.index + 1); const q = r.getClientRects()[0]; if (q) tops.add(Math.round(q.top / 4)); }
+    return tops.size; });
+  const loneFaults = []; const runFaults = []; let loneReads = 0; let runReads = 0; let plantLone = null; let plantRun = null;
+  for (const theme of ['light', 'dark']) { const { ctx, pg } = await openAs(theme, 375, 800);
+    for (const [mod, line] of LONE_LINES) { await pg.setViewportSize({ width: 375, height: 800 }); await toLine(pg, mod, line); await pg.waitForTimeout(250);
+      for (const width of [320, 340, 360, 375, 390, 412]) { await pg.setViewportSize({ width, height: 800 }); await pg.waitForTimeout(140); loneReads += 1;
+        const lone = await loneLast(pg); if (lone) loneFaults.push(`${theme} ${width} ${mod} line ${line}: "${lone}" alone`);
+        if (mod === 'write-by-sounds' && line === 6) { runReads += 1; const rows = await runRows(pg); if (rows !== 1) runFaults.push(`${theme} ${width}: F X on ${rows} rows`);
+          if (plantRun === null && width === 320) { await pg.evaluate(() => { const p = [...document.querySelectorAll('.edu-wrap .edu-rise p')].find((x) => /^[A-Z](?: +[A-Z])+$/.test(x.textContent.trim())); if (p) { window.__was = p.getAttribute('style') || ''; p.style.width = '1.2em'; } });
+            plantRun = (await runRows(pg)) > 1; await pg.evaluate(() => { const p = [...document.querySelectorAll('.edu-wrap .edu-rise p')].find((x) => /^[A-Z](?: +[A-Z])+$/.test(x.textContent.trim())); if (p) p.setAttribute('style', window.__was); delete window.__was; }); } }
+        if (plantLone === null && theme === 'light' && width === 390 && mod === 'big-and-little') { const set = await pg.evaluate(() => { const p = document.querySelector('[data-lesson-words]'); if (!p) return false; const walk = document.createTreeWalker(p, NodeFilter.SHOW_TEXT); let t; window.__nb = [];
+            while ((t = walk.nextNode())) if (t.textContent.includes('\u00a0')) { window.__nb.push([t, t.textContent]); t.textContent = t.textContent.replace(/\u00a0/g, ' '); } return window.__nb.length > 0; });
+          plantLone = set && !!(await loneLast(pg)); await pg.evaluate(() => { for (const [t, s] of window.__nb || []) t.textContent = s; delete window.__nb; }); } } }
+    await ctx.close(); }
+  ok(`a lesson line's last word never stands alone on its last line at 320, 340, 360, 375, 390 and 412 pixels wide in both themes, its last two words held together, and Write it by its sounds' F   X on one row under the fox at every width (round one's screen read, pass NE; ${LONE_LINES.length} lines, ${loneReads} reads; Big and little's no-break space set back to a space at 390, planted, caught; F X's box narrowed, planted, caught)`,
+    loneFaults.length === 0 && runFaults.length === 0 && loneReads === LONE_LINES.length * 12 && runReads === 12 && plantLone === true && plantRun === true, { loneFaults: loneFaults.slice(0, 8), runFaults, loneReads, plantLone, plantRun }); }
 ok('no page errors along the way', errors.length === 0, errors);
 await browser.close();
 console.log(`\n${passed} passed, ${failed} failed`);

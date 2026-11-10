@@ -200,6 +200,27 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A sample built by hand to look like a real screen drifts: the LI tour sample missed the Merge link and the Wonder pill and was laid out differently, and Mikey saw all three at a glance. Feed made-up data through the real component instead, with taps switched off, and the sample can never differ from the page.
 - Count a daily allowance against the day as it started, not as it stands: finishing the first review shrinks the queue, and a rule that rechecked the live queue would cancel the second review the backlog asked for.
 
+## Learned in pass NE (pre-K 4's P, D, N and X, a word written by its sounds, four early Wonder questions and the screen read's earmarks)
+
+- A bank's answers and wrong choices are read over every seed for what a child could learn without hearing the question: Write it by its sounds' eight words put some letters only first and others only last, so a child who knew which group a letter was in scored 69, 70 and 84 percent, where chance is 33 and 50. A rule that sorts the choices is scored against chance, and the rules test holds the best such rule near it.
+- Every picture a bank shows is drawn in its lesson, not only said, and looked at on its tile for what else it is: the nail was never drawn, and on a tile it was a gray capital T, in a course that teaches T.
+- A story paints what a child finds only from the paragraph that finds it, the container as well as the things put in it (the box Ollie fills was in the first picture), and the narration gives each find to the child.
+- What a scene paints beside a lesson's sounds is named as a child names it and read against the lesson's near pairs: a ball, a teddy bear and a toy boat start with buh and tuh, beside P's puh and D's duh.
+- A drawing is read at its tile size for what else it could be: the nest's three even bands and four corner sticks read as a basket.
+- A Wonder voice's fact is read against its cited page's own words (ice cream's liquid part stays soft well below freezing; the vocal cords close, not the top of the throat), and its events for an order that can happen (a coat buttoned before the arms go in; a birthday mark a few weeks after a pinch).
+- A measure names the kinds it reads and logs the ones it leaves out: the paper's diagrams fall short where the light palette meets the paper, a restyle that is Mikey's to choose, so they wait as A98 rather than pass unread.
+- Words make room for a control that floats over them, measured where they rest, rather than the control moving or shrinking under a child's finger (A63).
+- A change that keeps words whole is read on every older line whose wrap it moves: keeping middle-sized whole left "biggest." alone on Big, bigger, biggest's fourth line at 320, and only the fold check's whole run found it.
+- A fix that narrows one draw is read for what it leaves of another: drawing the picture bank's letter again on every retry, to keep the nest from X, left X shown on 19 of 400 seeds.
+- A fact a round corrects is swept from every voice that says it, the short voice a pre-reader hears first: round one fixed ice cream's "drops of cream" in the long voice, and the short voice still said "bits of ice, air and cream".
+- A rule written for one bank is read against every bank of the pass that asks the same thing: X, kept from the first-sound question since no English word starts with its sound, was still offered as a first letter in Write it by its sounds.
+- A rule's reason is written as the fact it is: it is X's sound, cuh-sss, that starts no English word, while the letter starts x-ray.
+- An every or a never about wrapping is tried on the longest word and the longest last pair in every course, not only the pass's own: great-great-great-grandmother ran into a story card's padding at 320, and "before seventy-three." still ends alone.
+- A decision no check holds gets a check that fails without it, with the page changed while it works, before it is called needless: round two took out the scroll cue's decision at a feedback box's animation's end, and the third read found a phone turned during a wobble kept the old room until the 1,200 ms check, so the lines moved after the box stopped.
+- A check reads the form a question takes: check 7b read a lone letter, and every yes or no of Write it by its sounds shows a picture and a letter as a pair, so it read 0 whatever the bank did.
+- A round's record names what is read by eye: three of round two's fixes had no check while the record said every fix had one, and the docs sync test now fails a round that claims a check and names nothing read by eye.
+- Every whole browser check runs on a round's fixes before the next round's copy is frozen: the fold check's two waits went stale and its plant stopped working, and round two found it; question-screens' two comparisons with a plain space, where a line's last two words are now held by a no-break space, reached the third read, and the click-through's one reached check.sh's first run.
+
 ## Learned in pass ND (Domain III's letters and their sounds, Domain IV's spaces between words, four early Wonder questions and the screen and story reads)
 
 - A lesson models every kind of question its banks ask, and pass NC had learned it, so the second time it has a check: a phrase for each kind read against every line (the letters lessons never asked which picture starts with a letter's sound, or which letter a word starts with).

@@ -243,7 +243,8 @@ export const soundsWritten = (words, { once = false } = {}) => { const seen = ne
 // names; a story keeps its words, so its description says how, the letter A above all, which a voice can read as the word a. skip
 // leaves out a capital that is not a letter there (BEATS_NOT_LETTERS).
 export const lettersNamed = (words, skip = []) => { const s = String(words); const found = [];
-  for (const m of s.matchAll(/[A-Za-z][A-Za-z'-]*/g)) if (m[0].length === 1 && isLetterNamed(s, m.index, m.index + 1, m[0]) && !skip.includes(m[0].toUpperCase())) found.push(m[0].toUpperCase());
+  // Since pass NE (round two's content read) a letter with 's ("At the end of N's name") is a letter named too, its 's taken off first.
+  for (const m of s.matchAll(/[A-Za-z][A-Za-z'-]*/g)) { const tok = m[0].replace(/'s$/, ''); if (tok.length === 1 && isLetterNamed(s, m.index, m.index + 1, tok) && !skip.includes(tok.toUpperCase())) found.push(tok.toUpperCase()); }
   const ls = [...new Set(found)]; if (!ls.length) return '';
   const list = ls.length > 1 ? ls.slice(0, -1).join(', ') + ' and ' + ls[ls.length - 1] : ls[0];
   return ' Say the letter' + (ls.length > 1 ? 's ' : ' ') + list + ' by ' + (ls.length > 1 ? 'their names' : 'its name') + (ls.includes('A') ? ', A as ay, never the word a' : '') + '.'; };
@@ -405,7 +406,7 @@ const chars = rows.reduce((a, r) => a + r.text.length, 0);
 // round two's alignment read: its bullet kept an example the code had changed), and printed only when the tool is run alone.
 export const LEDGER_MD = `# Audio ledger
 
-Generated ${new Date().toISOString().slice(0, 10)} by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. ${rows.length} clips, ${chars.toLocaleString('en-US')} characters in all; the longest clip is ${longest} characters and the longest whole story ${Math.max(...[...groups].filter(([g]) => !/-lesson$|^game-|^sounds$/.test(g)).map(([, n]) => n)).toLocaleString('en-US')}, far under Eleven v4's 10,000 a request (the longest lesson's lines come to ${Math.max(...[...groups].filter(([g]) => /-lesson$/.test(g)).map(([, n]) => n)).toLocaleString('en-US')} in all, each line a request of its own). ${tagged} stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
+Generated ${new Date().toLocaleDateString('en-CA', { timeZone: 'America/Chicago' })} by tools/audio-ledger.mjs. Every clip the app can play in a recorded voice is a row of docs/AUDIO-LEDGER.csv: its key (the file name, audio/<key>.mp3, that the app already looks for), its group (the story or lesson it belongs to) and the words with their Eleven v4 audio tags. ${rows.length} clips, ${chars.toLocaleString('en-US')} characters in all; the longest clip is ${longest} characters and the longest whole story ${Math.max(...[...groups].filter(([g]) => !/-lesson$|^game-|^sounds$/.test(g)).map(([, n]) => n)).toLocaleString('en-US')}, far under Eleven v4's 10,000 a request (the longest lesson's lines come to ${Math.max(...[...groups].filter(([g]) => /-lesson$/.test(g)).map(([, n]) => n)).toLocaleString('en-US')} in all, each line a request of its own). ${tagged} stories carry hand-written tags so far (the writing review adds them course by course); the rest open with their age band's voice direction only.
 
 ## How to make the audio
 

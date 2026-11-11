@@ -9,7 +9,9 @@
 // silver" is black) and the color of what they wear (the first garment after it, "in a long sapphire-blue coat" being blue), each
 // put in a family (tangerine, marigold and peach are all orange). Two people of one kind (girl, boy, woman, man) in different
 // lessons of the same course or the course before it echo when both families match and the looks are not the same look: the same
-// look again is one person met again (Mia and Sam in several lessons), which is how the course reuses its people.
+// look again is one person met again (Mia and Sam in several lessons), which is how the course reuses its people. Since pass NF (EARMARKS
+// A97) the course before it in its own subject counts too (pre-K 4's First Sounds and Letters is read against pre-K 3's Listen and point,
+// as well as against First Steps, the course one place before it in COURSES), since a child meets the subject's people a year apart.
 // Run: node tools/look-echoes.mjs     every echo, oldest rows first, for a reader; tests/ledger.test.mjs holds a new row to none
 import { readFileSync } from 'node:fs';
 import { COURSES } from '../src/logic.mjs';
@@ -44,7 +46,7 @@ const family = (table, text) => { for (const [name, re] of table) if (re.test(te
 // knows, no garment) is returned with read false and why, so a test can hold a new row to none.
 export function personReads(artText = readFileSync(new URL('../docs/ART-REQUESTS.md', import.meta.url), 'utf8'), courses = COURSES) {
   const prek = courses.filter((c) => /^PK/.test(c.grade)); const where = new Map();
-  prek.forEach((c, place) => { for (const m of c.modules) where.set(m.id, { course: c.id, place }); });
+  prek.forEach((c, place) => { for (const m of c.modules) where.set(m.id, { course: c.id, place, subject: c.subject, grade: c.grade }); });
   const out = [];
   for (const line of artText.split('\n')) { const cells = line.split('|').map((x) => x.trim()); if (!/^[SP]\d+$/.test(cells[1] || '') || !where.has(cells[2])) continue;
     const prompt = cells[4] || ''; const hits = []; let m; ROLE.lastIndex = 0;
@@ -66,20 +68,26 @@ export function personReads(artText = readFileSync(new URL('../docs/ART-REQUESTS
 }
 // The looks read, as before the third read.
 export const personLooks = (artText, courses) => personReads(artText, courses).filter((x) => x.read);
+// Two looks a child could meet near together (EARMARKS A97, pass NF): in the same course, the course one place before it in COURSES, or the
+// course of the same subject in the other pre-K grade (Listen and point and First Sounds and Letters, Very first steps and First Steps).
+export const coursesNear = (a, b) => Math.abs(a.place - b.place) <= 1 || (a.subject === b.subject && a.grade !== b.grade);
+// The reading through pass NE, the same course or the one place before it in COURSES, which the ledger test's older checks keep, since their
+// waiting counts and named pairs were taken by it (the wide reading's own check holds a new row to none and counts the older pairs only it finds).
+export const coursesBefore = (a, b) => Math.abs(a.place - b.place) <= 1;
 
-// Every pair of looks of one group, in the same course or the course before it, whose hair and clothing families both match. Each look
+// Every pair of looks of one group, near together by near (coursesNear unless a caller says otherwise), whose hair and clothing families both match. Each look
 // is read once per lesson. same says the two looks are one look (in two lessons, a person met again, or someone given another's look),
 // and sameLesson says both are in one lesson (two people in one story who look alike).
-export function lookPairs(looks = personLooks()) {
+export function lookPairs(looks = personLooks(), near = coursesNear) {
   const once = new Map(); for (const x of looks) { const key = x.module + '|' + x.group + '|' + x.look; if (!once.has(key)) once.set(key, x); }
   const xs = [...once.values()]; const pairs = [];
   for (let i = 0; i < xs.length; i++) for (let j = i + 1; j < xs.length; j++) { const a = xs[i]; const b = xs[j];
-    if (a.group === b.group && Math.abs(a.place - b.place) <= 1 && a.hair === b.hair && a.clothing === b.clothing) pairs.push(Object.assign([a, b], { same: a.look === b.look, sameLesson: a.module === b.module })); }
+    if (a.group === b.group && near(a, b) && a.hair === b.hair && a.clothing === b.clothing) pairs.push(Object.assign([a, b], { same: a.look === b.look, sameLesson: a.module === b.module })); }
   return pairs;
 }
 // The echoes a reader looks at: two looks that differ, in one lesson or two (the same look in two lessons is taken as a person met
 // again, which the ledger test asks a new row to name).
-export const lookEchoes = (looks = personLooks()) => lookPairs(looks).filter((p) => !p.same);
+export const lookEchoes = (looks = personLooks(), near = coursesNear) => lookPairs(looks, near).filter((p) => !p.same);
 
 // Two people of one kind whose hair is written alike, whatever they wear (pass NC, round two's content read: Astrid's mom's long blond
 // hair in a loose braid was S4039's mom's, and Emeka's short wavy black hair the boy's of S3987 and S161, which lookPairs passed since
@@ -89,16 +97,16 @@ export const lookEchoes = (looks = personLooks()) => lookPairs(looks).filter((p)
 // trimmed, since a look keeps a space before its slash and "black " passed the style-word test with a color alone (round two's code
 // read: 17 of the 47 pairs then waiting named no style).
 const MARKS = /\b(?:beard|goatee|mustache|glasses|graying|freckles)\b/g;
-export function hairPairs(looks = personLooks()) {
+export function hairPairs(looks = personLooks(), near = coursesNear) {
   const hairOf = (x) => x.look.split(' / ')[0].trim(); const marks = (x) => (x.words.match(MARKS) || []).sort().join(' ');
   const once = new Map(); for (const x of looks) { const key = x.module + '|' + x.group + '|' + x.look; if (!once.has(key)) once.set(key, x); }
   const xs = [...once.values()]; const pairs = [];
   for (let i = 0; i < xs.length; i++) for (let j = i + 1; j < xs.length; j++) { const a = xs[i]; const b = xs[j];
-    if (a.group === b.group && Math.abs(a.place - b.place) <= 1 && a.look !== b.look && hairOf(a) === hairOf(b) && hairOf(a).includes(' ') && marks(a) === marks(b)) pairs.push(Object.assign([a, b], { sameLesson: a.module === b.module })); }
+    if (a.group === b.group && near(a, b) && a.look !== b.look && hairOf(a) === hairOf(b) && hairOf(a).includes(' ') && marks(a) === marks(b)) pairs.push(Object.assign([a, b], { sameLesson: a.module === b.module })); }
   return pairs;
 }
 
-// Hair near alike (pass ND, round one's story check): two people of one kind, in the same course or the course before, whose hair is
+// Hair near alike (pass ND, round one's story check): two people of one kind, near together by near (as lookPairs reads it), whose hair is
 // the same color family and shares at least one style word that sets a look (a bob, pigtails, chin-length, curly, braids), since
 // hairPairs asks for every style word alike and passed "a chin-length brown bob" beside "chin-length curly brown hair". The words
 // short, long, straight and loose are too common to set a look alone, and freckles, which a picture this size hardly shows, never set
@@ -107,19 +115,19 @@ const NEAR_COMMON = new Set(['short', 'long', 'straight', 'loose']);
 // A style word in its forms is one word (pass ND, round two's alignment read: "short black curls" passed beside "short black curly hair").
 const NEAR_FORMS = { curly: 'curls', braids: 'braid', buns: 'bun', dreadlocks: 'locs' };
 const NEAR_MARKS = /\b(?:beard|goatee|mustache|glasses|graying)\b/g;
-export function hairNearPairs(looks = personLooks()) {
+export function hairNearPairs(looks = personLooks(), near = coursesNear) {
   const styleOf = (x) => x.look.split(' / ')[0].trim().split(' ').slice(1).filter((w) => w && !NEAR_COMMON.has(w)).map((w) => NEAR_FORMS[w] || w); const marks = (x) => (x.words.match(NEAR_MARKS) || []).sort().join(' ');
   const once = new Map(); for (const x of looks) { const key = x.module + '|' + x.group + '|' + x.look; if (!once.has(key)) once.set(key, x); }
   const xs = [...once.values()]; const pairs = [];
   for (let i = 0; i < xs.length; i++) for (let j = i + 1; j < xs.length; j++) { const a = xs[i]; const b = xs[j];
-    if (a.group !== b.group || Math.abs(a.place - b.place) > 1 || a.look === b.look || a.hair !== b.hair || marks(a) !== marks(b)) continue;
+    if (a.group !== b.group || !near(a, b) || a.look === b.look || a.hair !== b.hair || marks(a) !== marks(b)) continue;
     const shared = styleOf(a).filter((w) => styleOf(b).includes(w)); if (shared.length) pairs.push([a, b, shared]); }
   return pairs;
 }
 
 if (process.argv[1] && process.argv[1].endsWith('look-echoes.mjs')) {
   const all = personReads(); const looks = all.filter((x) => x.read); const pairs = lookEchoes(looks);
-  console.log(`${looks.length} looks read in pre-K story and painting rows, ${all.length - looks.length} begun that it cannot read; ${pairs.length} pairs of people who may look alike (one group, the same course or the course before, hair and clothing in the same color families):\n`);
+  console.log(`${looks.length} looks read in pre-K story and painting rows, ${all.length - looks.length} begun that it cannot read; ${pairs.length} pairs of people who may look alike (one group, the same course, the course before or after it, or the course of the same subject in the other pre-K grade, hair and clothing in the same color families):\n`);
   for (const p of pairs) console.log(`- ${p[0].group}, ${p[0].hair} hair, ${p[0].clothing}${p.sameLesson ? ', one lesson' : ''}: ${p[0].serial} (${p[0].module}) "${p[0].words}" and ${p[1].serial} (${p[1].module}) "${p[1].words}"`);
   console.log(`\nLooks begun that it cannot read:\n`);
   for (const x of all.filter((y) => !y.read)) console.log(`- ${x.serial} (${x.module}), ${x.group}, ${x.why}: "${x.words}"`);

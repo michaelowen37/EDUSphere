@@ -319,7 +319,7 @@ const ncWriteYes = (q) => { const v = q.visual || {}; const m = /^This is (.+)\.
 // and never read from logic: each lesson's letters, the sound each says, and the words its lines say start with that sound.
 const ND_LETTERS = {
   'p3-ls': { M: ['mmm', ['moon', 'map']], S: ['sss', ['sun', 'sock']], B: ['buh', ['ball', 'bed']] },
-  'p4-name': { B: ['buh', ['ball', 'bed']], T: ['tuh', ['tie', 'table']], K: ['cuh', ['kite', 'key']], J: ['juh', ['jar']], Z: ['zzz', ['zebra']] },
+  'p4-name': { B: ['buh', ['ball', 'bed']], T: ['tuh', ['tie', 'table']], K: ['cuh', ['kite', 'key']], J: ['juh', ['jar', 'jellyfish']], Z: ['zzz', ['zebra', 'zipper']] },   // the jellyfish and the zipper since pass NF (A104)
   'p4-end': { M: ['mmm', ['moon', 'map']], S: ['sss', ['sun', 'sock']], F: ['fff', ['fan', 'fish']], L: ['lll', ['log', 'lamp']], R: ['rrr', ['rock', 'rain']] },
 };
 const ndTable = (g) => ND_LETTERS[String(g).split('-').slice(0, 2).join('-')];
@@ -349,9 +349,12 @@ const ndPrinted = (c) => (/^print:(.+)$/.exec(String(c)) || [])[1] || null;
 // first and last sounds; and the sound each of those letters says.
 // Since round one's lesson read N's word is the nest alone, the writing lesson has duck (D first, K at the end), and the nest's sss before its
 // last sound is read beside X's cuh-sss.
-const NE_LETTERS = { P: ['puh', ['pig', 'pie'], 'start'], D: ['duh', ['dog', 'duck'], 'start'], N: ['nnn', ['nest'], 'start'], X: ['cuh-sss', ['box', 'fox'], 'end'] };
-const NE_EDGES = { pig: ['puh', 'guh'], pie: ['puh', 'eye'], dog: ['duh', 'guh'], duck: ['duh', 'cuh'], nest: ['nnn', 'tuh'], box: ['buh', 'cuh-sss'], fox: ['fff', 'cuh-sss'], map: ['mmm', 'puh'], moon: ['mmm', 'nnn'], soap: ['sss', 'puh'], sun: ['sss', 'nnn'], fan: ['fff', 'nnn'], bed: ['buh', 'duh'] };
-const NE_WORDS = { map: ['M', 'P'], moon: ['M', 'N'], soap: ['S', 'P'], sun: ['S', 'N'], fan: ['F', 'N'], fox: ['F', 'X'], bed: ['B', 'D'], box: ['B', 'X'], duck: ['D', 'K'] };
+// Since pass NF (EARMARKS A104) the net beside the nest, and bird and sock in the writing lesson.
+const NE_LETTERS = { P: ['puh', ['pig', 'pie'], 'start'], D: ['duh', ['dog', 'duck'], 'start'], N: ['nnn', ['nest', 'net'], 'start'], X: ['cuh-sss', ['box', 'fox'], 'end'] };
+const NE_EDGES = { pig: ['puh', 'guh'], pie: ['puh', 'eye'], dog: ['duh', 'guh'], duck: ['duh', 'cuh'], nest: ['nnn', 'tuh'], net: ['nnn', 'tuh'], bird: ['buh', 'duh'], sock: ['sss', 'cuh'], box: ['buh', 'cuh-sss'], fox: ['fff', 'cuh-sss'], map: ['mmm', 'puh'], moon: ['mmm', 'nnn'], soap: ['sss', 'puh'], sun: ['sss', 'nnn'], fan: ['fff', 'nnn'], bed: ['buh', 'duh'] };
+// A picture that is a kind of another (pass NF, round one's lesson read): a duck is a bird.
+const NE_KIND_OF = { duck: 'bird' };
+const NE_WORDS = { map: ['M', 'P'], moon: ['M', 'N'], soap: ['S', 'P'], sun: ['S', 'N'], fan: ['F', 'N'], fox: ['F', 'X'], bed: ['B', 'D'], bird: ['B', 'D'], box: ['B', 'X'], duck: ['D', 'K'], sock: ['S', 'K'] };
 const NE_SAYS = { M: 'mmm', P: 'puh', S: 'sss', N: 'nnn', F: 'fff', X: 'cuh-sss', B: 'buh', D: 'duh', K: 'cuh' };
 const NE_BEFORE_LAST = { nest: 'sss' };
 // A sound heard and the one letter that says it; a letter shown and the one heard sound it says; a letter shown and the one picture, named
@@ -388,6 +391,38 @@ const ndDots = (q, S) => { const s = ndHeardSentence(q, S); const v = q.visual |
 const ndSpaced = (q, S, prompt) => { const s = ndHeardSentence(q, S); const v = q.visual || {}; if (!s || v.kind !== 'print' || ndLettersOf(v.text) !== ndLettersOf(s) || q.prompt !== prompt) return null; return ndGroups(v.text) === S[s] ? 'Yes' : 'No'; };
 // Which written sentence has the most words, by its groups of letters, each a sentence of the table written whole.
 const ndMost = (q, S, prompt) => { const texts = (q.choices || []).map(ndPrinted); if (q.story !== 'Look at the writing.' || q.prompt !== prompt || texts.some((x) => !x || !Object.prototype.hasOwnProperty.call(S, x))) return null; const most = Math.max(...texts.map(ndGroups)); return mqOne(q, (c) => ndGroups(ndPrinted(c)) === most); };
+// Hear it in a word and Look and write (pass NF): the test's own tables, written here from the lessons' lines and never read from logic:
+// each letter Hear it in a word teaches, the sound its lines say it says in lots of words, and the words its lines say start with it; each
+// of those words' first sound; the sounds a letter can say in some words, or its name starts with, which are never a wrong sound for it
+// (C's sss, G's juh); the sounds the device voice says itself (every other one the app's own); and every sound the lesson's lines say.
+// For Look and write, the letters it names with the sound each says, the three names its lines say and show written, with the letter and
+// sound each starts with, and the two kinds of marks it draws that are not real letters yet.
+const NF_LETTERS = { C: ['cuh', ['cat', 'cup']], G: ['guh', ['goat', 'guitar']], H: ['huh', ['hat', 'house']], W: ['wuh', ['window', 'watermelon']] };
+const NF_FIRST = { cat: 'cuh', cup: 'cuh', goat: 'guh', guitar: 'guh', hat: 'huh', house: 'huh', window: 'wuh', watermelon: 'wuh' };
+const NF_ALSO = { C: ['sss'], G: ['juh'] };
+const NF_VOICE = ['huh', 'wuh', 'chuh'];
+// The letters Hear it in a word's yes or no asks about since round one's lesson read (pass NF): H and W, whose sounds are each the other's No.
+const NF_YESNO = ['H', 'W'];
+const NF_SAID = ['cuh', 'guh', 'huh', 'wuh', 'sss', 'juh', 'chuh', 'duh'];
+const LW_LETTERS = { M: 'mmm', S: 'sss', B: 'buh' };
+const LW_NAMES = { Sam: ['S', 'sss'], Mia: ['M', 'mmm'], Ben: ['B', 'buh'] };
+const LW_MARKS = ['marks', 'scribble'];
+// A sound heard and the one letter that says it; a letter shown and the one heard sound it says; a letter shown and the one picture, named
+// in the buttons' order, that starts with its sound; a word heard and its picture and the one letter that says its first sound; and a
+// letter shown and a sound heard, and whether it is the letter's sound, each by Hear it in a word's table.
+const nfLetterOf = (q) => { const m = /^Listen to this sound\. ([A-Z][a-z]+)\.$/.exec(q.story || ''); if (!m || q.prompt !== 'Which letter says that sound?' || q.heardChoices || !(q.choices || []).every((c) => NF_LETTERS[c])) return null; const s = m[1].toLowerCase(); return mqOne(q, (c) => NF_LETTERS[c][0] === s); };
+const nfSoundOf = (q) => { const x = ndShown(q); if (!x || !NF_LETTERS[x] || q.story !== 'This is the letter ' + x + '.' || !q.heardChoices || q.prompt !== 'Which sound does it say?') return null; return mqOne(q, (c) => c === NF_LETTERS[x][0]); };
+const nfPicOf = (q) => { const x = ndShown(q); const m = /^This is the letter ([A-Z])\. Now listen to these three\. /.exec(q.story || ''); if (!x || !NF_LETTERS[x] || !m || m[1] !== x || !naNames(q, q.story) || q.prompt !== 'Which one starts with the sound that ' + x + ' says?') return null; return mqOne(q, (c) => NF_FIRST[myName(c)] === NF_LETTERS[x][0]); };
+const nfFirstOf = (q) => { const w = myHeard(q); if (!w || !NF_FIRST[w] || !myShows(q, w) || q.prompt !== 'Which letter says the sound ' + w + ' starts with?' || !(q.choices || []).every((c) => NF_LETTERS[c])) return null; return mqOne(q, (c) => NF_LETTERS[c][0] === NF_FIRST[w]); };
+const nfSaysIt = (q) => { const x = ndShown(q); const m = /^This is the letter ([A-Z])\. Listen to this sound\. ([A-Z][a-z]+)\.$/.exec(q.story || ''); if (!x || !NF_LETTERS[x] || !m || m[1] !== x || q.prompt !== 'Does ' + x + ' say that sound?') return null; return m[2].toLowerCase() === NF_LETTERS[x][0] ? 'Yes' : 'No'; };
+// Look and write: the one real letter beside marks or a scribble; the one letter just like the letter shown; the letter a written name
+// starts with, read from the print itself (its first letter); the letter a name heard is written with first, by the sound it starts with;
+// and whether the thing shown is a real letter.
+const lwRealOf = (q) => { if (q.story !== 'Look at these two.' || q.prompt !== 'Which one is a real letter?' || !(q.choices || []).every((c) => LW_LETTERS[c] || (/^icon:/.test(c) && LW_MARKS.includes(myName(c))))) return null; return mqOne(q, (c) => !!LW_LETTERS[c]); };
+const lwSameOf = (q) => { const x = ndShown(q); if (!x || !LW_LETTERS[x] || q.story !== 'Look at this letter.' || q.prompt !== 'Which one looks just like it?') return null; return mqOne(q, (c) => c === x); };
+const lwFirstOf = (q) => { const v = q.visual || {}; if (v.kind !== 'print' || !LW_NAMES[v.text] || q.story !== 'Look at this name.' || q.prompt !== 'Which letter does it start with?') return null; return mqOne(q, (c) => c === v.text[0]); };
+const lwNameOf = (q) => { const m = /^Listen to this name\. ([A-Z][a-z]+)\.$/.exec(q.story || ''); const n = m && m[1]; if (!n || !LW_NAMES[n] || q.prompt !== 'Which letter does ' + n + ' write first?' || q.visual) return null; return mqOne(q, (c) => LW_LETTERS[c] === LW_NAMES[n][1]); };
+const lwYesNoOf = (q) => { const v = q.visual || {}; if (q.story !== 'Look at this.' || q.prompt !== 'Is this a real letter?') return null; if (v.kind === 'letters' && LW_LETTERS[v.text]) return 'Yes'; if (v.kind === 'icon' && LW_MARKS.includes(v.name)) return 'No'; return null; };
 const PREK_DERIVE = {
   // Learning words (pre-K 3): the one just like the picture shown; the one not like the two alike; whether the counted row holds the
   // number asked; the one in the group's color; and the shape the lesson says has those sides or corners.
@@ -721,6 +756,9 @@ const PREK_DERIVE = {
   // Start or end of the name and Write it by its sounds (pass NE), each from the test's own tables (NE_LETTERS, NE_EDGES, NE_WORDS, NE_SAYS).
   'p4-soe-letter': (q) => neLetterOf(q), 'p4-soe-sound': (q) => neSoundOf(q), 'p4-soe-pic': (q) => nePicOf(q), 'p4-soe-first': (q) => neFirstOf(q), 'p4-soe-yesno': (q) => neSaysIt(q),
   'p4-wbs-first': (q) => neWbsLetter(q, 0), 'p4-wbs-last': (q) => neWbsLetter(q, 1), 'p4-wbs-word': (q) => neWbsWord(q), 'p4-wbs-end': (q) => neWbsEnd(q), 'p4-wbs-yesno': (q) => neWbsYesNo(q),
+  // Hear it in a word and Look and write (pass NF), each from the test's own tables (NF_LETTERS, NF_FIRST, LW_LETTERS, LW_NAMES).
+  'p4-hiw-letter': (q) => nfLetterOf(q), 'p4-hiw-sound': (q) => nfSoundOf(q), 'p4-hiw-pic': (q) => nfPicOf(q), 'p4-hiw-first': (q) => nfFirstOf(q), 'p4-hiw-yesno': (q) => nfSaysIt(q),
+  'p3-look-real': (q) => lwRealOf(q), 'p3-look-same': (q) => lwSameOf(q), 'p3-look-first': (q) => lwFirstOf(q), 'p3-look-name': (q) => lwNameOf(q), 'p3-look-yesno': (q) => lwYesNoOf(q),
   'p4-space-kind': (q) => { const m = /^Which one is (a letter|a word|a picture)\?$/.exec(q.prompt || ''); const ch = q.choices || []; if (!m || q.story !== 'Look at these three.' || ch.length !== 3) return null;
     const isLetter = (c) => ND_KIND.letters.includes(ndPrinted(c)); const isWord = (c) => ND_KIND.words.includes(ndPrinted(c)); const isPicture = (c) => /^icon:/.test(c) && ND_KIND.pictures.includes(myName(c));
     if (!ch.every((c) => isLetter(c) || isWord(c) || isPicture(c))) return null; return mqOne(q, { 'a letter': isLetter, 'a word': isWord, 'a picture': isPicture }[m[1]]); },
@@ -1612,23 +1650,44 @@ const PREK_DERIVE = {
   // EARMARKS A88 (pass ND, the screen read): in the screen code a lesson's pair grows on a wide screen when a drawing sits beside a group
   // of dots, as when two drawings do, and since round one's screen read when one letter sits beside a drawing, the letter drawn at 44
   // pixels times the lesson's scale; the old rules, two drawings only and A88's without the letter, and a letter kept at 44, planted, caught.
+  // Since pass NF (EARMARKS A101) any run of single letters grows the same way (run), two runs side by side grow together, and in a stacked
+  // pair the letters grow and the one drawing stacked with them grows with them (bigHalf), so the rule is read in that form; pass ND's
+  // rule, one letter only, and a stacked pair's letters kept at a phone's size, planted, caught too.
   { const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
-    const RULE = "const wide = lesson && k >= 1.4 && !stack && ((grows(first) && grows(second)) || (grows(first) && counts(second)) || (counts(first) && grows(second)) || (grows(first) && oneLetter(second)) || (oneLetter(first) && grows(second)));";
+    // Since p17 of pass NF print is writing too (writing), a stacked pair of writing inside a stacked pair draws as the lesson's own
+    // (nestWriting, lessonHalf), and a pair of prints is fitted as one group (EARMARKS A102: PrintFitGroup, and FitText's shown size).
+    const RULE = "const wide = tall && !stack && ((grows(first) && grows(second)) || (grows(first) && counts(second)) || (counts(first) && grows(second)) || (grows(first) && writing(second)) || (writing(first) && grows(second)) || (writing(first) && writing(second)));";
+    const STACKED = "const stackedRun = tall && stack && !together;"; const BIG = "const bigHalf = (v) => wide || (stackedRun && writing(v)) || (upright && (grows(v) || counts(v))) || (stackedRun && nestWriting(v));";
+    const WRITING = "const writing = (v) => run(v) || (!!v && v.kind === 'print');"; const GROUP = 'return allPrint(visual) && !printGroup ? <PrintFitGroup>{drawn}</PrintFitGroup> : drawn;';
+    const SHOWN = 'const shown = group && group.least !== null ? Math.min(fs, group.least) : fs;';
     // Since pass NE (EARMARKS A93) a lesson's own letters grow too (lessonGrows), so the letter beside a drawing reads in that form.
     const GROW = "fontSize: visual.grow || lessonGrows ? Math.round(44 * k) : 44, fontWeight: 700, letterSpacing: 6,";
-    const has = (src) => src.includes(RULE) && /const counts = \(v\) => !!v && v\.kind === 'dots';/.test(src) && src.includes("const oneLetter = (v) => !!v && v.kind === 'letters' && /^[A-Za-z]$/.test(v.text);") && src.includes('const grown = (v) => (wide && oneLetter(v) ? { ...v, grow: true } : v);') && src.includes('{half(grown(tight(oneBeside(first, second))), 0)}{half(grown(tight(oneBeside(second, first))), 1)}') && src.split(GROW).length === 2;
-    const old = ui.replace(RULE, 'const wide = lesson && k >= 1.4 && !stack && grows(first) && grows(second);');
-    const a88 = ui.replace(RULE, 'const wide = lesson && k >= 1.4 && !stack && ((grows(first) && grows(second)) || (grows(first) && counts(second)) || (counts(first) && grows(second)));');
+    const has = (src) => src.includes(RULE) && /const counts = \(v\) => !!v && v\.kind === 'dots';/.test(src) && src.includes("const run = (v) => { if (!v || v.kind !== 'letters' || v.highlight) return false; const ts = String(v.text).trim().split(/\\s+/); return ts.every((t) => /^[A-Za-z]+$/.test(t)) && (ts.every((t) => t.length === 1) || ts.join('').length <= 4); };") && src.includes(STACKED) && src.includes(BIG) && src.includes(WRITING) && src.includes(GROUP) && src.includes(SHOWN) && src.includes("fontSize: shown, whiteSpace: wrap ? 'normal' : 'nowrap'") && src.includes('const grown = (v) => ((wide || stackedRun) && writing(v) ? { ...v, grow: true } : v);') && src.includes('<Picture visual={v} note={false} bare big={bigHalf(v)} lesson={lessonHalf(v)} />') && src.includes('{half(grown(tight(oneBeside(first, second))), 0)}{half(grown(tight(oneBeside(second, first))), 1)}') && src.split(GROW).length === 2;
+    const old = ui.replace(RULE, 'const wide = tall && !stack && grows(first) && grows(second);');
+    const a88 = ui.replace(RULE, 'const wide = tall && !stack && ((grows(first) && grows(second)) || (grows(first) && counts(second)) || (counts(first) && grows(second)));');
     const kept = ui.replace(GROW, 'fontSize: 44, fontWeight: 700, letterSpacing: 6,');
-    ok('in the screen code a lesson\'s pair grows on a wide screen when a drawing sits beside its dots or one letter, as two drawings do, the letter at 44 pixels times the lesson\'s scale (pass ND, EARMARKS A88 and round one\'s screen read; the old rules and a letter kept at 44, planted, caught)', has(ui) && [old, a88, kept].every((s) => s !== ui && !has(s)));
+    const nd = ui.replace(RULE, "const wide = tall && !stack && ((grows(first) && grows(second)) || (grows(first) && counts(second)) || (counts(first) && grows(second)) || (grows(first) && /^[A-Za-z]$/.test(String((second || {}).text)) && second.kind === 'letters') || (first && first.kind === 'letters' && /^[A-Za-z]$/.test(String(first.text)) && grows(second)));");
+    const flat = ui.replace(BIG, 'const bigHalf = (v) => wide;'); const noPrint = ui.replace(WRITING, 'const writing = (v) => run(v);'); const oneByOne = ui.replace(GROUP, 'return drawn;');
+    ok('in the screen code a lesson\'s pair grows on a wide screen when a drawing sits beside its dots or a run of letters, as two drawings do, two runs grow together, and a stacked pair\'s letters grow with the drawing stacked with them, the letters at 44 pixels times the lesson\'s scale (pass ND, EARMARKS A88 and round one\'s screen read; pass NF, EARMARKS A101; the old rules, a letter kept at 44, pass ND\'s one-letter rule, a stacked pair kept at a phone\'s size, print not counted as writing and prints fitted one by one, planted, caught)', has(ui) && [old, a88, kept, nd, flat, noPrint, oneByOne].every((s) => s !== ui && !has(s)));
     // EARMARKS A93 (pass NE, pass ND's round one's screen read): a lesson's own print, a run of letters and one letter alone grow with the
     // lesson's scale on a wide screen (k 1.4 or more), as a drawing alone does, where they kept a phone's 28 and 44 pixels beside drawings
     // of 160; each of the three put back to the phone's size, planted, caught. The browser reads the sizes as drawn (question-screens).
-    const LG = 'const lessonGrows = lesson && k >= 1.4;'; const PRINT = 'size={lessonGrows ? Math.round(28 * k) : 28} paper';
+    // Since pass NF (EARMARKS A101) the print grows in a pair too (visual.grow, set by grown), so it is read in that form, and its plant
+    // takes away the lesson's own growth alone.
+    const LG = 'const lessonGrows = lesson && k >= 1.4;'; const PRINT = 'size={visual.grow || lessonGrows ? Math.round(28 * k) : 28} paper';
     const RUN = "<p style={{ fontSize: lessonGrows ? Math.round(44 * k) : 44, fontWeight: 700, letterSpacing: 6, margin: '6px 0', textAlign: 'center', color: B.green }}>";
     const grows93 = (src) => src.split(LG).length === 2 && src.split(PRINT).length === 2 && src.split(RUN).length === 2 && src.split(GROW).length === 2;
-    const p93 = [ui.replace(PRINT, 'size={28} paper'), ui.replace(RUN, RUN.replace('lessonGrows ? Math.round(44 * k) : 44', '44')), ui.replace(GROW, GROW.replace('visual.grow || lessonGrows', 'visual.grow'))];
+    const p93 = [ui.replace(PRINT, 'size={visual.grow ? Math.round(28 * k) : 28} paper'), ui.replace(RUN, RUN.replace('lessonGrows ? Math.round(44 * k) : 44', '44')), ui.replace(GROW, GROW.replace('visual.grow || lessonGrows', 'visual.grow'))];
     ok('in a lesson on a wide screen its own print, a run of letters and one letter alone grow with the lesson\'s scale, as a drawing alone does (EARMARKS A93, pass NE; each put back to a phone\'s size, planted, caught)', grows93(ui) && p93.every((s) => s !== ui && !grows93(s))); }
+  // Round one's lesson read (pass NF): a lone letter offered among pictures (Look and write's Which one is a real letter?) draws as large
+  // and bold as the lesson's letters, at LETTER_TILE times the picture scale, in a phone-wide column, where it drew at body-text size in a
+  // column as wide as a laptop's card; each old text planted alone, caught. The browser reads the sizes as drawn (question-screens 16c).
+  { const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+    const SIZE = 'const LETTER_TILE = 56;'; const FACE = "/^[A-Za-z]$/.test(c) && loneLetterAmongPictures(q.choices) ? <span data-tile-letter=\"\" style={{ display: 'block', fontSize: Math.round(LETTER_TILE * k), fontWeight: 700, lineHeight: 1.1 }}>{c}</span> : c);";
+    const COLUMN = "|| loneLetterAmongPictures(q.choices) ? { maxWidth: PICTURE_COLUMN, margin: '0 auto' } : null) }}>";
+    const holds = (src) => [SIZE, FACE, COLUMN].every((x) => src.split(x).length === 2) && src.includes('const loneLetterAmongPictures = (choices) =>');
+    const plants = [ui.replace(FACE, 'c);'), ui.replace(COLUMN, "? { maxWidth: PICTURE_COLUMN, margin: '0 auto' } : null) }}>"), ui.replace(SIZE, 'const LETTER_TILE = 18;')];
+    ok('a lone letter among pictures draws at LETTER_TILE (56 pixels) times the picture scale, bold, in a phone-wide column, in the screen code (pass NF, round one\'s lesson read: Which one is a real letter? drew its letter at body-text size; the plain letter, the card-wide column and an 18-pixel size, planted, caught)', holds(ui) && plants.every((s) => s !== ui && !holds(s))); }
   // EARMARKS A83's last four (pass NC, the screen read): the spoon's bowl and handle, the log's body and end, and the chair's back, seat
   // and legs each wear an edge that reads 3 to 1 or better on the dark theme's resting, right and wrong tiles, a light one there, and the
   // light theme keeps an edge that reads 3 to 1 on its tiles and the dark theme's light paper; each found by its text, each old text caught.
@@ -1698,8 +1757,9 @@ const PREK_DERIVE = {
   // they are asked, and nothing else. Its near misses: the same texts read without once (a lone hiss keeps two breaths, so the rule is
   // needed), and a lesson, a bank and a screen outside the rule.
   // Since pass ND the three letters lessons too (Claude's design, kept so by Mikey's answer to Q89, "Q89 - A", in pass NE): each teaches one sound for one letter, S says sss.
-  // Since pass NE Start or end of the name and Write it by its sounds too (Claude's design, the reason of Q88 and Q89).
-  { const OB = ['sounds-in-a-word', 'very-first-sound', 'sound-by-sound', 'letters-and-sounds', 'hear-it-in-the-name', 'end-of-the-name', 'start-or-end', 'write-by-sounds'];
+  // Since pass NE Start or end of the name and Write it by its sounds too (Claude's design, the reason of Q88 and Q89), and since pass NF Hear it
+  // in a word, whose first line says C's name starts with sss.
+  { const OB = ['sounds-in-a-word', 'very-first-sound', 'sound-by-sound', 'letters-and-sounds', 'hear-it-in-the-name', 'end-of-the-name', 'start-or-end', 'write-by-sounds', 'hear-it-in-a-word'];
     const hisses = (t, once) => L.speechPieces(t, once ? { once: true } : {}).filter((p) => p.sound && p.sound.length === 1 && 'sfz'.includes(p.sound));
     const obTexts = [];
     for (const id of OB) { const m = L.getModule(id); for (const l of m.lesson.script) obTexts.push(l.say); for (const w of ((STORIES_NB[id] || {}).words || [])) obTexts.push(w);
@@ -1928,7 +1988,7 @@ const PREK_DERIVE = {
   const linesNow = (id) => L.getModule(id).lesson.script.map((l) => l.say);
   const unsaidNow = unsaid(linesNow); const unsaidPlant = unsaid((id) => linesNow(id).map((s) => (id === 'start-or-end' ? s.replace('Dog and duck start with duh', 'Dog starts with duh') : s)));
   const showsNow = (id) => L.getModule(id).lesson.script.map((l) => l.show).filter(Boolean); const drawnIn = (shows, name) => shows.some((v) => JSON.stringify(v).includes('"name":"' + name + '"'));
-  const pictured = (x) => { const out = new Set(); for (const c of x.choices || []) if (/^(icon|pic):/.test(c)) out.add(myName(c)); const walk = (v) => { if (!v) return; if (['icon', 'pic'].includes(v.kind)) out.add(v.name); if (v.a) walk(v.a); if (v.b) walk(v.b); (v.items || []).forEach(walk); }; walk(x.visual); walk(x.explainVisual); return [...out]; };
+  const pictured = (x) => { const out = new Set(); for (const c of x.choices || []) if (/^(icon|pic):/.test(c)) out.add(String(c).split(':')[1].split('#')[0]); const walk = (v) => { if (!v) return; if (['icon', 'pic'].includes(v.kind)) out.add(v.name); if (v.a) walk(v.a); if (v.b) walk(v.b); (v.items || []).forEach(walk); }; walk(x.visual); walk(x.explainVisual); return [...out]; };
   const undrawn = (showsOf) => { const out = new Set(); for (const g of BANKS) for (const x of gen(g, 300)) for (const p of pictured(x)) if (!drawnIn(showsOf(lessonOf(g)), p)) out.add(g + ': ' + p); return [...out]; };
   const undrawnNow = undrawn(showsNow); const undrawnPlant = undrawn((id) => showsNow(id).map((v) => (id === 'start-or-end' && v.kind === 'pair' && v.a && v.a.kind === 'letters' && v.a.text === 'X' && v.b && v.b.name === 'fox' ? v.a : v)));
   ok('every word, letter and sound pass NE\'s ten banks use is said in their own lesson\'s lines first, and every picture they show is drawn there (Start or end of the name with its duck never said, and its fox never drawn, planted, caught)', unsaidNow.length === 0 && unsaidPlant.some((u) => /: duck$/.test(u)) && undrawnNow.length === 0 && undrawnPlant.some((u) => /: fox$/.test(u)), [...unsaidNow, ...undrawnNow].slice(0, 4).join(', '));
@@ -1941,16 +2001,19 @@ const PREK_DERIVE = {
     // a sound near cuh-sss just before its last (the nest's sss).
     // Since round one's code read a picture outside the test's tables is a fault of its own, where reading its edges stopped the run.
     if (asked && (x.choices || []).some((c) => !NE_EDGES[myName(c)])) return 'pictures';
+    // Since pass NF's round one (the lesson read) a wrong picture is never a kind of the answer: a duck is a bird (the test's own NE_KIND_OF).
+    if (g === 'p4-wbs-end' && (x.choices || []).some((c) => c !== x.answer && NE_KIND_OF[myName(c)] === myName(x.answer))) return 'kind of the answer';
     if (asked && (x.choices || []).filter((c) => c !== x.answer).some((c) => { const n = myName(c); const e = NE_EDGES[n][asked.e]; return e === asked.s || near(e, asked.s) || (g === 'p4-wbs-end' && near(NE_EDGES[n][0], asked.s)) || (asked.e === 1 && NE_BEFORE_LAST[n] && (NE_BEFORE_LAST[n] === asked.s || near(NE_BEFORE_LAST[n], asked.s))); })) return 'pictures';
     return null; };
   const nearOff = BANKS.flatMap((g) => gen(g, 400).map((x) => nearIn(g, x)).filter(Boolean).map((k) => g + ' ' + k));
   const qN = gen('p4-soe-letter', 40).find((x) => x.answer === 'N'); const qP = gen('p4-soe-pic', 400).find((x) => x.answer === 'icon:pig' || x.answer === 'icon:pie');
-  const qX = gen('p4-soe-pic', 400).find((x) => ndShown(x) === 'X'); const qEndP = gen('p4-wbs-end', 400).find((x) => ndShown(x) === 'P');
+  const qX = gen('p4-soe-pic', 400).find((x) => ndShown(x) === 'X'); const qEndP = gen('p4-wbs-end', 400).find((x) => ndShown(x) === 'P'); const qBird = gen('p4-wbs-end', 400).find((x) => myName(x.answer) === 'bird');
   const nearPlants = !!qN && nearIn('p4-wbs-first', { ...qN, choices: ['N', 'M', 'P'] }) === 'choices' && nearIn('p4-soe-letter', { ...qN, choices: ['N', 'X', 'D'] }) === null
     && !!qP && nearIn('p4-soe-pic', { ...qP, choices: [qP.answer, 'icon:box', 'icon:nest'] }) === 'pictures'
     && !!qX && nearIn('p4-soe-pic', { ...qX, choices: [qX.answer, 'icon:nest', 'icon:pig'] }) === 'pictures' && nearIn('p4-soe-pic', { ...qX, choices: [qX.answer, 'icon:dog', 'icon:pig'] }) === null
-    && !!qEndP && nearIn('p4-wbs-end', { ...qEndP, choices: [qEndP.answer, 'icon:bed', 'icon:fan'] }) === 'pictures';
-  ok('no question of pass NE\'s ten banks sets two near sounds side by side, X\'s cuh-sss never beside cuh or sss, and no picture beside a sound starts or ends with a sound near it, the box never beside P\'s puh nor the duck beside X\'s cuh-sss, and since round one\'s lesson read no wrong picture in p4-wbs-end starts with a sound near the one asked and the nest never stands beside X (4,000 questions; N beside M, the box beside puh, the nest beside X and the bed beside P\'s ending, planted, caught)', nearOff.length === 0 && nearPlants, nearOff.slice(0, 4).join(', '));
+    && !!qEndP && nearIn('p4-wbs-end', { ...qEndP, choices: [qEndP.answer, 'icon:bed', 'icon:fan'] }) === 'pictures'
+    && !!qBird && nearIn('p4-wbs-end', { ...qBird, choices: [qBird.answer, 'pic:duck', 'icon:moon'] }) === 'kind of the answer';
+  ok('no question of pass NE\'s ten banks sets two near sounds side by side, X\'s cuh-sss never beside cuh or sss, and no picture beside a sound starts or ends with a sound near it, the box never beside P\'s puh nor the duck beside X\'s cuh-sss, and since round one\'s lesson read no wrong picture in p4-wbs-end starts with a sound near the one asked and the nest never stands beside X, and since pass NF no wrong picture is a kind of the answer, the duck never beside the bird (4,000 questions; N beside M, the box beside puh, the nest beside X, the bed beside P\'s ending and the duck beside the bird, planted, caught)', nearOff.length === 0 && nearPlants, nearOff.slice(0, 4).join(', '));
   // 4. Every reason is true by the tables: a letter does not say the sound named, a picture does not start or end with the sound named.
   //    Plant: a reason that calls the nest's start not nnn.
   const reasonTrue = (g, x, c, e) => { let m;
@@ -1992,6 +2055,25 @@ const PREK_DERIVE = {
   const oldYn = Array.from({ length: 400 }, () => { const w = oldWord(); const at = rnd() < 0.5 ? 0 : 1; const right = OLD_WORDS[w][at]; const other = OLD_WORDS[w][1 - at]; const yes = rnd() < 0.5; const shown = yes ? right : (clearAll([right, other]) && rnd() < 0.5 ? other : oldPick(right, null)[0]); return { prompt: at ? 'at the end' : 'first', visual: { b: { text: shown } }, answer: yes ? 'Yes' : 'No' }; });
   const oldScores = [groupScore(oldQs(0), OLD_WORDS, 0), groupScore(oldQs(1), OLD_WORDS, 1), groupYesNo(oldYn, OLD_WORDS)];
   ok('Write it by its sounds\' letters never answer by their place alone: knowing only which letters come first and which at the end scores ' + scores.map((v) => Math.round(v * 100) + '%').join(', ') + ' on the first letter, the last letter and the yes or no, under 45, 45 and 60 (round one\'s lesson read; its draw over its eight words, rebuilt, planted, caught: ' + oldScores.map((v) => Math.round(v * 100) + '%').join(', ') + ')', scores[0] < 0.45 && scores[1] < 0.45 && scores[2] < 0.6 && oldScores[0] >= 0.45 && oldScores[1] >= 0.45 && oldScores[2] >= 0.6, JSON.stringify({ scores, oldScores }));
+  // 6c. Since pass NF (round one's lesson read, and its code read, which found the fix held by no check): the first-letter bank's same-place
+  //     wrong letters are drawn by how often each starts a word of the lesson (wbsWeighted), so a child who never hears the word and taps the
+  //     choice that starts the most of the lesson's words (ties split) scores under 45 percent at seeds 1 to 400, where an even draw let that
+  //     child score about half the time. Plant: the even draw, rebuilt by the test's own seeded rule (seed 11) from NE_WORDS, NE_SAYS and the
+  //     near pairs (a word drawn evenly, its first letter the answer; its last letter beside it half the time, where it is clear and is not
+  //     X; then the other first letters in a fair shuffle and the other letters after them; redrawn until no two letters are near), caught.
+  //     The last-letter bank is left out by name: its weighted and even draws read about 42 and 43 percent (round one's code read), too close
+  //     for a bound to tell apart.
+  { const startsOf = (y) => Object.values(NE_WORDS).filter((p) => p[0] === y).length;
+    const mostStarts = (qs) => qs.reduce((n, q) => { const top = Math.max(...q.choices.map(startsOf)); const fit = q.choices.filter((c) => startsOf(c) === top); return n + (fit.includes(q.answer) ? 1 / fit.length : 0); }, 0) / qs.length;
+    let s11 = 11; const r11 = () => (s11 = (s11 * 1103515245 + 12345) % 2147483648) / 2147483648;
+    const fair = (ls) => ls.map((y) => [r11(), y]).sort((a, b) => a[0] - b[0]).map((p) => p[1]); const firsts = placeOf(NE_WORDS, 0);
+    const evenFirst = Array.from({ length: 400 }, () => { const ws = Object.keys(NE_WORDS); const w = ws[Math.floor(r11() * ws.length)]; const x = NE_WORDS[w][0]; const also = NE_WORDS[w][1]; const pool = Object.keys(NE_SAYS).filter((y) => y !== x);
+      for (let t = 0; t < 60; t += 1) { const lead = also !== x && also !== 'X' && clearAll([x, also]) && r11() < 0.5 ? [also] : [];
+        const others = [...lead, ...fair(pool.filter((y) => !lead.includes(y) && firsts.has(y))), ...fair(pool.filter((y) => !lead.includes(y) && !firsts.has(y)))].slice(0, 2);
+        if (clearAll([x, ...others])) return { answer: x, choices: [x, ...others] }; }
+      return { answer: x, choices: [x] }; });
+    const weightedBlind = mostStarts(gen('p4-wbs-first', 400)); const evenBlind = mostStarts(evenFirst);
+    ok('Write it by its sounds\' first-letter bank draws its same-place wrong letters by how often each starts a word of the lesson (wbsWeighted, pass NF): a child who never hears the word and taps the choice that starts the most of its words scores ' + Math.round(weightedBlind * 1000) / 10 + ' percent at seeds 1 to 400, under 45 (round one\'s code read; the even draw, rebuilt, planted, caught: ' + Math.round(evenBlind * 1000) / 10 + ' percent; the last-letter bank left out by name, its two draws too close to tell apart)', weightedBlind < 0.45 && evenBlind >= 0.45 && evenFirst.every((q) => q.choices.length === 3), JSON.stringify({ weightedBlind, evenBlind })); }
   // 7. The first-sound question offers only the letters whose sounds start their words (round one's lesson read: X, never right there, was a
   //    choice in 259 of 400). Plant: round one's draw, any two of the other three letters, rebuilt, caught.
   const ENDERS = Object.keys(NE_LETTERS).filter((x) => NE_LETTERS[x][2] === 'end'); const firstQs = gen('p4-soe-first', 400); const offered = firstQs.filter((q) => q.choices.some((c) => ENDERS.includes(c))).length;
@@ -2037,12 +2119,222 @@ const PREK_DERIVE = {
   ok('every word of Write it by its sounds\' table is asked by each of its four banks, and every word of Start or end of the name\'s table is shown by its picture bank, at seeds 1 to 400 (round one\'s code read; a word the banks never ask, planted, caught)', notAsked(askedBy).length === 0 && notShown.length === 0 && notAsked(withoutDuck).length === WBS_GENS.length, JSON.stringify({ notAsked: notAsked(askedBy), notShown }));
   // 10. The which-word question's two other words make both letters count: one starts the way the word does and one ends the way it does,
   //     so one letter alone answers it on at most 100 of seeds 1 to 400 (round one's code read: with any two other words it answered 379,
-  //     against 82). Plant: any two other words, rebuilt by the test's own seeded rule, caught.
+  //     against 82). Plant: any two other words, rebuilt by the test's own seeded rule, caught. Since pass NF (EARMARKS A104) the bird has
+  //     both of bed's letters, B and D, so neither stands beside the other and no other word ends with D: a question about either is
+  //     answered by its end letter alone, and the bound is 110 (103 at seeds 1 to 400), still far under any two other words.
   const oneLetter = (items) => items.filter(({ f, l, names }) => names.filter((n) => NE_WORDS[n][0] === f).length === 1 || names.filter((n) => NE_WORDS[n][1] === l).length === 1).length;
   const wordQs = gen('p4-wbs-word', 400).map((x) => { const [f, l] = String((x.visual && x.visual.text) || '').split(/ +/); return { f, l, names: (x.choices || []).map(myName) }; });
   const anyTwo = Array.from({ length: 400 }, () => { const ws = Object.keys(NE_WORDS); const w = ws[Math.floor(rnd() * ws.length)]; const rest = ws.filter((v) => v !== w).map((v) => [rnd(), v]).sort((p, q) => p[0] - q[0]).slice(0, 2).map((p) => p[1]); return { f: NE_WORDS[w][0], l: NE_WORDS[w][1], names: [w, ...rest] }; });
   const aloneNow = oneLetter(wordQs); const aloneAny = oneLetter(anyTwo);
-  ok('Write it by its sounds\' which-word question is answered by one letter alone on at most 100 of seeds 1 to 400 (' + aloneNow + '; any two other words, rebuilt, planted, caught: ' + aloneAny + ')', wordQs.every((q) => q.f && q.l && q.names.length === 3) && aloneNow <= 100 && aloneAny > 100, JSON.stringify({ aloneNow, aloneAny }));
+  ok('Write it by its sounds\' which-word question is answered by one letter alone on at most 110 of seeds 1 to 400 (' + aloneNow + '; any two other words, rebuilt, planted, caught: ' + aloneAny + ')', wordQs.every((q) => q.f && q.l && q.names.length === 3) && aloneNow <= 110 && aloneAny > 110, JSON.stringify({ aloneNow, aloneAny }));
+}
+// Hear it in a word and Look and write (pass NF): their ten banks worked out from what each question says and shows by the test's own
+// tables (NF_LETTERS, NF_FIRST, LW_LETTERS, LW_NAMES), each near miss caught by the guard it names and no other, as pass NE's are.
+{ const D = PREK_DERIVE; const NF_BANKS = ['p4-hiw-letter', 'p4-hiw-sound', 'p4-hiw-pic', 'p4-hiw-first', 'p4-hiw-yesno', 'p3-look-real', 'p3-look-same', 'p3-look-first', 'p3-look-name', 'p3-look-yesno'];
+  const otherWord = (w) => Object.keys(NF_FIRST).find((v) => NF_FIRST[v] !== NF_FIRST[w]);
+  const NEAR = [
+    ['p4-hiw-letter', 'prompt', (x) => ({ ...x, prompt: 'Which letter makes that sound?' })],
+    ['p4-hiw-sound', 'heard', (x) => ({ ...x, heardChoices: false })],
+    ['p4-hiw-pic', 'story', (x) => ({ ...x, story: x.story.replace(/^This is the letter ([A-Z])\./, (s, l) => 'This is the letter ' + Object.keys(NF_LETTERS).find((y) => y !== l) + '.') })],
+    ['p4-hiw-first', 'shown', (x) => ({ ...x, visual: { kind: 'icon', name: otherWord(myHeard(x)), size: 72 } })],
+    ['p4-hiw-yesno', 'story', (x) => ({ ...x, story: x.story.replace(/^This is the letter ([A-Z])\./, (s, l) => 'This is the letter ' + Object.keys(NF_LETTERS).find((y) => y !== l) + '.') })],
+    ['p3-look-real', 'prompt', (x) => ({ ...x, prompt: 'Which one is not a real letter?' })],
+    ['p3-look-same', 'story', (x) => ({ ...x, story: 'Look at these letters.' })],
+    ['p3-look-first', 'prompt', (x) => ({ ...x, prompt: 'Which letter does it end with?' })],
+    ['p3-look-name', 'prompt', (x) => ({ ...x, prompt: x.prompt.replace(/^Which letter does ([A-Z][a-z]+) write first\?$/, (s, n) => 'Which letter does ' + Object.keys(LW_NAMES).find((y) => y !== n) + ' write first?') })],
+    ['p3-look-yesno', 'prompt', (x) => ({ ...x, prompt: 'Is this a real word?' })],
+  ];
+  const GUARDS = {
+    'p4-hiw-letter prompt': ['nfLetterOf', " || q.prompt !== 'Which letter says that sound?'", ''],
+    'p4-hiw-sound heard': ['nfSoundOf', ' || !q.heardChoices', ''],
+    'p4-hiw-pic story': ['nfPicOf', ' || m[1] !== x', ''],
+    'p4-hiw-first shown': ['nfFirstOf', ' || !myShows(q, w)', ''],
+    'p4-hiw-yesno story': ['nfSaysIt', ' || m[1] !== x', ''],
+    'p3-look-real prompt': ['lwRealOf', " || q.prompt !== 'Which one is a real letter?'", ''],
+    'p3-look-same story': ['lwSameOf', " || q.story !== 'Look at this letter.'", ''],
+    'p3-look-first prompt': ['lwFirstOf', " || q.prompt !== 'Which letter does it start with?'", ''],
+    'p3-look-name prompt': ['lwNameOf', " || q.prompt !== 'Which letter does ' + n + ' write first?'", ''],
+    'p3-look-yesno prompt': ['lwYesNoOf', " || q.prompt !== 'Is this a real letter?'", ''],
+  };
+  const HELPERS = { nfLetterOf, nfSoundOf, nfPicOf, nfFirstOf, nfSaysIt, lwRealOf, lwSameOf, lwFirstOf, lwNameOf, lwYesNoOf };
+  const without = (g, [where, from, to]) => { const src = HELPERS[where].toString(); if (src.split(from).length !== 2) return null; const cut = src.split(from).join(to);
+    return eval('(() => { const ' + where + ' = ' + cut + '; return ' + D[g].toString() + '; })()'); };
+  const prove = (g, k, f) => { const guard = GUARDS[g + ' ' + k]; const off = guard && without(g, guard); if (!off) return g + ' ' + k + ': its guard is not in the text once';
+    for (let s = 1; s <= 400; s++) { const x = L.generateQuestion(g, s); if (D[g](x) !== x.answer) return g + ' ' + k + ': seed ' + s + ' not derived'; const m = f(x);
+      if (D[g](m) !== null) return g + ' ' + k + ': seed ' + s + ' answered with its guard'; const ans = off(m); if (ans === null || ans === undefined) return g + ' ' + k + ': seed ' + s + ' no answer with its guard out'; }
+    return ''; };
+  const unproven = NEAR.map(([g, k, f]) => prove(g, k, f)).filter(Boolean);
+  // The plant: a near miss that also changes a second thing its derivation reads, so another guard still catches it with its own guard out.
+  const plantCaught = !!prove('p4-hiw-letter', 'prompt', (x) => ({ ...x, prompt: 'Which letter makes that sound?', heardChoices: true }));
+  ok('pass NF\'s ten banks (Hear it in a word and Look and write) are worked out from what each question says and shows by the test\'s own tables, and each of their ' + NEAR.length + ' near misses is caught by the guard it names and no other: with that guard taken out of its derivation\'s own text it gets an answer at every seed from 1 to 400, and with it in none (a near miss a second guard also catches, planted, failed)',
+    NF_BANKS.every((g) => typeof D[g] === 'function') && NEAR.length === NF_BANKS.length && unproven.length === 0 && plantCaught, unproven.join(' | '));
+}
+// What pass NF's ten banks may and may not do, read over seeds 1 to 400 by the test's own tables: what they print, what their lessons say and
+// draw, the sounds they set side by side and of which kind, what their reasons claim, every kind their lessons model, and what a child
+// who never hears the question could score.
+{ const NF_LESSON = { 'p4-hiw': 'hear-it-in-a-word', 'p3-look': 'look-and-write' }; const lessonOf = (g) => NF_LESSON[g.split('-').slice(0, 2).join('-')];
+  const BANKS = Object.values(NF_LESSON).flatMap((id) => L.getModule(id).generators); const gen = (g, n) => Array.from({ length: n }, (_, i) => L.generateQuestion(g, i + 1));
+  const NEAR_PAIRS = [['puh', 'buh'], ['tuh', 'duh'], ['cuh', 'guh'], ['sss', 'zzz'], ['mmm', 'nnn'], ['sss', 'shh'], ['lll', 'rrr'], ['cuh-sss', 'cuh'], ['cuh-sss', 'sss']];
+  const near = (a, b) => NEAR_PAIRS.some(([x, y]) => (a === x && b === y) || (a === y && b === x));
+  // 1. Nothing printed while the voice can speak names a sound, a word, a letter or a name the question asks about: its printed setup, its
+  //    printed question and every printed reason (the heard banks; Look and write's other four show what they ask about). Plant: a printed
+  //    setup that names its sound, its word and its name.
+  const HEARD = BANKS.filter((g) => g.startsWith('p4-hiw') || g === 'p3-look-name');
+  const SOUNDS = NF_SAID; const WORDS = [...Object.keys(NF_FIRST), ...Object.keys(LW_NAMES).map((n) => n.toLowerCase())]; const LETTERS = [...Object.keys(NF_LETTERS), 'K', ...Object.keys(LW_LETTERS)];
+  const leaks = (t) => { const s = String(t || ''); return SOUNDS.some((x) => new RegExp('(?:^|[^a-z-])' + x + '(?![a-z-])', 'i').test(s)) || WORDS.some((w) => new RegExp('\\b' + w + '\\b', 'i').test(s)) || LETTERS.some((l) => new RegExp('(?:^|\\s)' + l + '(?=[\\s,.?!]|$)').test(s)); };
+  const printedOf = (x) => [x.printedStory, x.printed, ...Object.values(x.whyNot || {}).map((w) => w.printedWhy).filter(Boolean)];
+  const leaked = HEARD.flatMap((g) => gen(g, 300).filter((x) => printedOf(x).some(leaks)).map((x) => g + ': ' + printedOf(x).find(leaks)));
+  const leakPlant = leaks('Listen to the sound. Wuh.') && leaks('Which letter says the sound goat starts with?') && leaks('Which letter does Ben write first?') && !leaks('Which letter does the name start with?');
+  ok('pass NF\'s heard banks print none of the sounds, words, letters or names they ask about while the voice can speak: their printed setups, questions and reasons (1,800 questions; a printed sound, word and name planted, caught, and a clean line passed)', leaked.length === 0 && leakPlant, leaked.slice(0, 3).join(' | '));
+  // 2. Every word, letter, sound and name a question uses is said in its own lesson's lines, and every picture it shows is drawn there.
+  //    Plants: Hear it in a word with its watermelon never said, and its guitar never drawn.
+  const used = (x) => { const out = new Set([...(x.aboutWords || [])]); for (const c of x.choices || []) { if (/:/.test(c)) out.add(myName(c)); else if (/^[A-Z]$/.test(c)) out.add(c); else if (c !== 'Yes' && c !== 'No') out.add(c); }
+    const names = /Now listen to these three\. ((?:[A-Z][a-z]+\. ?)+)$/.exec(x.story || ''); if (names) names[1].trim().split(' ').forEach((n) => out.add(n.replace('.', '').toLowerCase()));
+    const heard = /^Listen to this (?:sound|name)\. ([A-Z][a-z]+)\./.exec(x.story || '') || /Listen to this sound\. ([A-Z][a-z]+)\.$/.exec(x.story || ''); if (heard) out.add(heard[1].toLowerCase()); return [...out]; };
+  const saidIn = (lines, u) => (/^[A-Z]$/.test(u) ? lines.some((s) => new RegExp('\\b' + u + '\\b').test(s)) : lines.some((s) => new RegExp('(?:^|[^a-z-])' + u.replace('-', '\\-') + '(?![a-z-])', 'i').test(s)));
+  const unsaid = (linesOf) => { const out = new Set(); for (const g of BANKS) for (const x of gen(g, 300)) for (const u of used(x)) if (!saidIn(linesOf(lessonOf(g)), u)) out.add(g + ': ' + u); return [...out]; };
+  const linesNow = (id) => L.getModule(id).lesson.script.map((l) => l.say);
+  const unsaidNow = unsaid(linesNow); const unsaidPlant = unsaid((id) => linesNow(id).map((s) => (id === 'hear-it-in-a-word' ? s.split('watermelon').join('melon') : s)));
+  const showsNow = (id) => L.getModule(id).lesson.script.map((l) => l.show).filter(Boolean); const drawnIn = (shows, name) => shows.some((v) => JSON.stringify(v).includes('"name":"' + name + '"'));
+  const pictured = (x) => { const out = new Set(); for (const c of x.choices || []) if (/^(icon|pic):/.test(c)) out.add(String(c).split(':')[1].split('#')[0]); const walk = (v) => { if (!v) return; if (['icon', 'pic'].includes(v.kind)) out.add(v.name); if (v.a) walk(v.a); if (v.b) walk(v.b); (v.items || []).forEach(walk); }; walk(x.visual); walk(x.explainVisual); return [...out]; };
+  const undrawn = (showsOf) => { const out = new Set(); for (const g of BANKS) for (const x of gen(g, 300)) for (const p of pictured(x)) if (!drawnIn(showsOf(lessonOf(g)), p)) out.add(g + ': ' + p); return [...out]; };
+  const undrawnNow = undrawn(showsNow); const undrawnPlant = undrawn((id) => showsNow(id).map((v) => (id === 'hear-it-in-a-word' ? JSON.parse(JSON.stringify(v).split('"name":"guitar"').join('"name":"goat"')) : v)));
+  const printsShown = (id) => showsNow(id).flatMap((v) => { const out = []; const walk = (y) => { if (!y) return; if (y.kind === 'print') out.push(y.text); if (y.a) walk(y.a); if (y.b) walk(y.b); }; walk(v); return out; });
+  const namesUnshown = gen('p3-look-first', 300).filter((x) => !printsShown('look-and-write').includes(x.visual.text)).length;
+  ok('every word, letter, sound and name pass NF\'s ten banks use is said in their own lesson\'s lines first, every picture they show is drawn there, and every name Look and write shows written is shown written in its lines (Hear it in a word with its watermelon never said, and its guitar never drawn, planted, caught)', unsaidNow.length === 0 && unsaidPlant.some((u) => /: watermelon$/.test(u)) && undrawnNow.length === 0 && undrawnPlant.some((u) => /: guitar$/.test(u)) && namesUnshown === 0, [...unsaidNow, ...undrawnNow].slice(0, 6).join(' | '));
+  // 3. Hear it in a word's sounds side by side, and their kinds: no question sets cuh beside guh, or offers any two near sounds; a heard
+  //    choice, and the sound a yes or no plays, is the same kind as the letter's own (the voice's huh, wuh and chuh never beside the app's
+  //    own); a sound a letter can say (C's sss, G's juh) is never a wrong one for it; no question offers K, which says cuh too; and no
+  //    picture beside a sound starts with it or one near it. Since round one's lesson read the yes or no asks about H and W alone (NF_YESNO),
+  //    since about C or G a No could be told without the letter. Plants: guh beside cuh, the app's duh among H's heard sounds, a yes or no
+  //    about C (sss played), K among the letters, and the goat beside C, each caught.
+  const kindOf = (s) => (NF_VOICE.includes(s) ? 'voice' : 'app');
+  const soundOfLetter = (c) => (NF_LETTERS[c] || [])[0] || ({ K: 'cuh' })[c] || null;
+  const offOf = (g, x) => { const ch = x.choices || []; const shown = ndShown(x);
+    if (ch.includes('K')) return 'K';
+    const letterSounds = ch.filter((c) => /^[A-Z]$/.test(c)).map(soundOfLetter).filter(Boolean); if (letterSounds.some((a, i) => letterSounds.some((b, j) => i < j && (a === b || near(a, b))))) return 'letters near';
+    if (x.heardChoices) { const own = NF_LETTERS[shown][0]; if (ch.some((c) => kindOf(c) !== kindOf(own))) return 'kind'; if (ch.some((c) => c !== own && (near(c, own) || (NF_ALSO[shown] || []).includes(c)))) return 'heard near or also'; }
+    if (g === 'p4-hiw-yesno') { const said = (/Listen to this sound\. ([A-Z][a-z]+)\.$/.exec(x.story) || [])[1].toLowerCase(); const own = NF_LETTERS[shown][0]; if (!NF_YESNO.includes(shown)) return 'yes or no letter'; if (kindOf(said) !== kindOf(own)) return 'kind'; if (said !== own && (near(said, own) || (NF_ALSO[shown] || []).includes(said))) return 'said near or also'; }
+    if (g === 'p4-hiw-pic') { const own = NF_LETTERS[shown][0]; if (ch.filter((c) => c !== x.answer).some((c) => NF_FIRST[myName(c)] === own || near(NF_FIRST[myName(c)], own))) return 'picture'; }
+    return null; };
+  const offNow = BANKS.filter((g) => g.startsWith('p4-hiw')).flatMap((g) => gen(g, 400).map((x) => offOf(g, x)).filter(Boolean).map((k) => g + ' ' + k));
+  const qC = gen('p4-hiw-letter', 400).find((x) => x.answer === 'C'); const qH = gen('p4-hiw-sound', 400).find((x) => ndShown(x) === 'H'); const qHy = gen('p4-hiw-yesno', 400).find((x) => ndShown(x) === 'H');
+  const qCp = gen('p4-hiw-pic', 400).find((x) => ndShown(x) === 'C');
+  const offPlants = !!qC && offOf('p4-hiw-letter', { ...qC, choices: ['C', 'G', 'H'] }) === 'letters near' && offOf('p4-hiw-letter', { ...qC, choices: ['C', 'K', 'H'] }) === 'K'
+    && !!qH && offOf('p4-hiw-sound', { ...qH, choices: ['huh', 'duh', 'wuh'] }) === 'kind'
+    && !!qHy && offOf('p4-hiw-yesno', { ...qHy, visual: { kind: 'letters', text: 'C' }, story: 'This is the letter C. Listen to this sound. Sss.' }) === 'yes or no letter'
+    && !!qCp && offOf('p4-hiw-pic', { ...qCp, choices: [qCp.answer, 'icon:goat', 'icon:hat'] }) === 'picture';
+  ok('no question of Hear it in a word sets cuh beside guh or any two near sounds, offers K, plays a heard choice or a yes or no\'s sound of another kind than its letter\'s own, offers a sound a letter can say as wrong for it (C\'s sss, G\'s juh), or shows a picture beside a sound that starts with it or one near it (2,000 questions; five plants caught)', offNow.length === 0 && offPlants, offNow.slice(0, 4).join(' | '));
+  // 4. Every reason is true by the tables. Plant: a reason that says the goat does not start with guh.
+  const reasonTrue = (g, x, c, e) => { let m;
+    if ((m = /^does not say ([a-z]+)\.$/.exec(e.why))) return soundOfLetter(c) !== m[1];
+    if ((m = /^does not say the sound ([a-z]+) starts with\.$/.exec(e.why))) return NF_FIRST[m[1]] ? soundOfLetter(c) !== NF_FIRST[m[1]] : false;
+    if ((m = /^does not say the sound ([A-Z][a-z]+) starts with\.$/.exec(e.why))) return !!LW_NAMES[m[1]] && LW_LETTERS[c] !== LW_NAMES[m[1]][1];
+    if ((m = /^does not start with ([a-z]+)\.$/.exec(e.why))) return NF_FIRST[myName(c)] !== m[1];
+    if ((m = /^is not the sound ([A-Z]) says\.$/.exec(e.why))) return (NF_LETTERS[m[1]] || [])[0] !== c;
+    if ((m = /^would mean ([a-z]+) is not the sound ([A-Z]) says, but it is\.$/.exec(e.why))) return (NF_LETTERS[m[2]] || [])[0] === m[1];
+    if ((m = /^would mean ([a-z]+) is the sound ([A-Z]) says, but ([A-Z]) says ([a-z]+)\.$/.exec(e.why))) return m[2] === m[3] && (NF_LETTERS[m[2]] || [])[0] === m[4] && m[1] !== m[4];
+    if (e.why === 'is not at the start of this name.') return x.visual && x.visual.kind === 'print' && x.visual.text[0] !== c;
+    if (e.why === 'is not the same shape as this letter.') return /^[A-Z]$/.test(c) && c !== ndShown(x);
+    if (/^(?:has|is) /.test(e.why) && /^[A-Z]$/.test(c)) return c !== x.answer;
+    if (/^(?:look a little like letters, but they are not a real letter yet|is a great start, but it is not a real letter yet)\.$/.test(e.why)) return /^icon:/.test(c) && LW_MARKS.includes(myName(c));
+    if ((m = /^would mean ([A-Z]) is not a real letter, but it is\.$/.exec(e.why))) return !!LW_LETTERS[m[1]];
+    if (/^would mean (?:these marks are|the scribble is) a real letter, but (?:they are|it is) not, yet\.$/.test(e.why)) return x.visual && x.visual.kind === 'icon' && LW_MARKS.includes(x.visual.name);
+    return false; };
+  const falseReasons = BANKS.flatMap((g) => gen(g, 400).flatMap((x) => Object.entries(x.whyNot || {}).filter(([c, e]) => !reasonTrue(g, x, c, e)).map(([c, e]) => g + ': ' + c + ' ' + e.why)));
+  const qGoat = gen('p4-hiw-pic', 400).find((x) => x.choices.includes('icon:goat') && x.answer !== 'icon:goat');
+  const reasonPlant = !!qGoat && !reasonTrue('p4-hiw-pic', qGoat, 'icon:goat', { why: 'does not start with guh.' });
+  ok('every reason pass NF\'s ten banks give is true by the test\'s own tables (4,000 questions read; the goat said not to start with guh, planted, caught)', falseReasons.length === 0 && reasonPlant, falseReasons.slice(0, 3).join(' | '));
+  // 5. Every kind of question the ten banks ask is modeled by a line of its lesson that asks it or works it. Plant: each kind's model line
+  //    taken out, caught.
+  const KIND_LINES = { 'p4-hiw-letter': /Listen to this sound\. [A-Z][a-z]+\. Which letter says it/, 'p4-hiw-sound': /say (?:its sound|the sound it says in)/, 'p4-hiw-pic': /Which one starts with the sound that [A-Z] says/,
+    'p4-hiw-first': /Which letter says the sound [a-z]+ starts with/, 'p4-hiw-yesno': /Does [A-Z] say it\? No/, 'p3-look-real': /Which one is the real letter\?/, 'p3-look-same': /Which one looks just like it/,
+    'p3-look-first': /The first letter of a name is the big one at the start/, 'p3-look-name': /Which letter does [A-Z][a-z]+ write first/, 'p3-look-yesno': /Is this a real letter\? (?:No|Yes)/ };
+  const unmodeled = (linesOf) => BANKS.filter((g) => !linesOf(lessonOf(g)).some((s) => KIND_LINES[g].test(s)));
+  const caught = BANKS.filter((g) => unmodeled((id) => linesNow(id).filter((s) => !(id === lessonOf(g) && KIND_LINES[g].test(s)))).includes(g));
+  ok('every kind of question pass NF\'s ten banks ask is modeled by a line of its lesson that asks it or works it (each kind\'s model line taken out, planted, caught: ' + caught.length + ' of ' + BANKS.length + ')', unmodeled(linesNow).length === 0 && caught.length === BANKS.length, unmodeled(linesNow).join(', '));
+  // 6. A child who never hears the sound or the word scores no better than chance by the letters shown (round one's lesson read of pass NE:
+  //    a bank's choices are read over every seed for what a child could learn without hearing). Since cuh and guh are never side by side,
+  //    a question about C or G always shows H and W, so the letter and first-sound banks ask about C and G half as often as H and W: tapping
+  //    the one letter that is not H or W, or always H, or always W, each scores under 40 percent at seeds 1 to 400. Plant: an even draw of
+  //    the four letters, rebuilt by the test's own seeded rule, lets the first of these score half, caught.
+  let seed = 11; const rnd = () => (seed = (seed * 1103515245 + 12345) % 2147483648) / 2147483648;
+  const blind = (qs) => { const notHW = qs.filter((q) => q.choices.find((c) => !['H', 'W'].includes(c)) === q.answer && !['H', 'W'].includes(q.answer)).length / qs.length;
+    const h = qs.filter((q) => q.answer === 'H').length / qs.length; const w = qs.filter((q) => q.answer === 'W').length / qs.length; return Math.max(notHW, h, w); };
+  const scores = ['p4-hiw-letter', 'p4-hiw-first'].map((g) => blind(gen(g, 400)));
+  const even = Array.from({ length: 400 }, () => { const x = ['C', 'G', 'H', 'W'][Math.floor(rnd() * 4)]; const others = ['C', 'G'].includes(x) ? ['H', 'W'] : [x === 'H' ? 'W' : 'H', rnd() < 0.5 ? 'C' : 'G']; return { answer: x, choices: [x, ...others] }; });
+  ok('a child who never hears the sound or the word scores no better than chance by the letters Hear it in a word shows (the best of three blind strategies: ' + scores.map((v) => Math.round(v * 100) + '%').join(' and ') + ' on the letter and first-sound banks; an even draw of the four letters, rebuilt, planted, caught at ' + Math.round(blind(even) * 100) + '%)', scores.every((v) => v < 0.4) && blind(even) >= 0.4, JSON.stringify(scores));
+  // 6b. Round one's lesson read (pass NF): the picture, sound and yes or no banks, read the same way. The picture bank by its one picture that
+  //    starts with cuh or guh (right whenever C or G is asked), under 40 percent since it draws its letter by the weights; the sound bank by
+  //    its choices alone, a child who never taps a sound no letter of the lesson says (sss, juh, chuh, duh), held at its bound, 70 percent,
+  //    since C's and G's heard choices can only be their own sound and the names' sounds (the near pair and the kind rule leave nothing
+  //    else), a kept pattern DECISIONS names; and the yes or no by its sound alone, each sound answered the way it most often is, under 62
+  //    percent, and by its kind, voice or app, under 62 percent too. Plants, each the draw round one found, rebuilt by the test's own seeded
+  //    rule: the picture bank's even draw of the four letters (half), the sound bank's even draw (three in four), and the yes or no about all
+  //    four letters with a No of the letter's own kind (87 in 100 by the sound alone), each caught.
+  const OWN_SOUNDS = Object.values(NF_LETTERS).map((v) => v[0]);
+  const picBlind = (qs) => qs.filter((q) => ['cuh', 'guh'].includes(NF_FIRST[myName(q.answer)])).length / qs.length;
+  const soundBlind = (qs) => qs.reduce((n, q) => { const kept = q.choices.filter((c) => OWN_SOUNDS.includes(c)); return n + (kept.includes(q.answer) ? 1 / kept.length : 0); }, 0) / qs.length;
+  const saidOf = (q) => (/Listen to this sound\. ([A-Z][a-z]+)\.$/.exec(q.story) || [])[1].toLowerCase();
+  const byKey = (qs, key) => { const t = {}; for (const q of qs) { const k = key(q); t[k] = t[k] || { Yes: 0, No: 0 }; t[k][q.answer] += 1; } return Object.values(t).reduce((n, v) => n + Math.max(v.Yes, v.No), 0) / qs.length; };
+  const ynSound = (qs) => byKey(qs, saidOf); const ynKind = (qs) => byKey(qs, (q) => (kindOf(saidOf(q)) === kindOf(NF_LETTERS[ndShown(q)][0]) ? 'same' : 'other'));
+  const pics = gen('p4-hiw-pic', 400); const sounds = gen('p4-hiw-sound', 400); const yns = gen('p4-hiw-yesno', 400);
+  const four = Object.keys(NF_LETTERS); const pickOf = (arr) => arr[Math.floor(rnd() * arr.length)];
+  const evenPics = Array.from({ length: 400 }, () => { const x = pickOf(four); const w = pickOf(NF_LETTERS[x][1]); return { answer: 'icon:' + w }; });
+  const evenSounds = Array.from({ length: 400 }, () => { const x = pickOf(four); const s = NF_LETTERS[x][0]; const wrong = NF_SAID.filter((o) => o !== s && kindOf(o) === kindOf(s) && !near(o, s) && !(NF_ALSO[x] || []).includes(o)); const two = [...wrong].sort(() => rnd() - 0.5).slice(0, 2); return { answer: s, choices: [s, ...two] }; });
+  const oldYn = Array.from({ length: 400 }, () => { const x = pickOf(four); const s = NF_LETTERS[x][0]; const yes = rnd() < 0.5; const wrong = NF_SAID.filter((o) => o !== s && kindOf(o) === kindOf(s) && !near(o, s) && !(NF_ALSO[x] || []).includes(o)); const said = yes ? s : pickOf(wrong);
+    return { answer: yes ? 'Yes' : 'No', story: 'This is the letter ' + x + '. Listen to this sound. ' + said[0].toUpperCase() + said.slice(1) + '.', visual: { kind: 'letters', text: x } }; });
+  const reads6b = { pic: picBlind(pics), sound: soundBlind(sounds), ynSound: ynSound(yns), ynKind: ynKind(yns) };
+  const plants6b = { pic: picBlind(evenPics), sound: soundBlind(evenSounds), yn: ynSound(oldYn) };
+  ok('a child who never hears the sound scores near chance on Hear it in a word\'s picture, sound and yes or no banks too (the picture bank by its cuh or guh picture ' + Math.round(reads6b.pic * 100) + '%, the sound bank by its choices alone ' + Math.round(reads6b.sound * 100) + '%, held at its bound of 70, and the yes or no by its sound ' + Math.round(reads6b.ynSound * 100) + '% and by its kind ' + Math.round(reads6b.ynKind * 100) + '%; round one\'s draws rebuilt, planted, caught at ' + Math.round(plants6b.pic * 100) + '%, ' + Math.round(plants6b.sound * 100) + '% and ' + Math.round(plants6b.yn * 100) + '%)',
+    reads6b.pic < 0.4 && reads6b.sound <= 0.7 && reads6b.ynSound < 0.62 && reads6b.ynKind < 0.62 && plants6b.pic >= 0.4 && plants6b.sound > 0.7 && plants6b.yn >= 0.62, JSON.stringify({ reads6b, plants6b }));
+  // 6c. Round two's content read (pass NF): the blind reads in rounds as built as well as alone. The round's echo rule keys the letter, sound
+  //    and yes or no banks to their letter, the yes or no asks about H and W alone, and a turn the yes or no hands on goes to the letter bank,
+  //    first in the module's list, so every round with a yes or no asks about C or G in its letter or sound question, and the strategies
+  //    above read higher in rounds than alone: with four letters, cuh never beside guh and the yes or no about H and W, no weight can lower
+  //    them, so each is a bound kept and recorded (DECISIONS), held where it reads in 2,000 first rounds, 2,000 later rounds (the last two
+  //    rounds' prompts avoided) and 2,000 Quick Reviews: the letter bank by the one letter not H or W under 57 percent (54.6 when written)
+  //    and by the kind of its heard sound, an app's sound meaning the one C or G shown, under 80 (77.3; 67 alone, which round one named and
+  //    no check held), the sound bank by its choices alone under 78 (75.8), the picture bank by its cuh or guh picture under 47 (44.4), and
+  //    the yes or no by its sound and by its kind under 62, as alone (56.3 and 52). Plant: the same rounds with every second H-or-W question
+  //    of each bank left out, as if a round asked about C or G more often still, caught on every read but the yes or no's, and since the third
+    //    read the same rounds with every second yes or no answered No left out, as if it leaned Yes, caught on the yes or no's two. Each read is the
+    //    most it reads in any of the three groups (pooled, the picture bank's 44.4 in later rounds read as 39.2).
+  const roundsOf = (n) => { const out = { first: [], later: [], reviews: [] }; let p1 = [], p2 = []; for (let s = 1; s <= n; s++) { out.first.push(L.buildAttempt('hear-it-in-a-word', s, []).core); const a = L.buildAttempt('hear-it-in-a-word', s, [], { avoid: [...p1, ...p2] }); out.later.push(a.core); p2 = p1; p1 = a.core.map((q) => q.prompt);
+    const lr = L.buildLightReview([], s, { moduleId: 'hear-it-in-a-word', stage: 'first', missedKinds: [] }); if (lr) out.reviews.push(lr.core); } return out; };
+  const groups6c = roundsOf(2000); const asked = [...groups6c.first, ...groups6c.later, ...groups6c.reviews];
+  const inGroup = (k, g) => groups6c[k].flatMap((r) => r.filter((q) => q.genId === g)); const inRounds = (g) => asked.flatMap((r) => r.filter((q) => q.genId === g));
+  const most6c = (g, f) => Math.max(...['first', 'later', 'reviews'].map((k) => f(inGroup(k, g)))); const fewest6c = (g) => Math.min(...['first', 'later', 'reviews'].map((k) => inGroup(k, g).length));
+  const notHW = (qs) => qs.reduce((n, q) => { const c = q.choices.filter((x) => x !== 'H' && x !== 'W'); return n + (c.includes(q.answer) ? 1 / c.length : 0); }, 0) / qs.length;
+  const byKind = (qs) => qs.reduce((n, q) => { const app = kindOf(saidOf(q)) === 'app'; const c = q.choices.filter((x) => (app ? ['C', 'G'] : ['H', 'W']).includes(x)); return n + (c.includes(q.answer) ? 1 / c.length : 0); }, 0) / qs.length;
+  const fewerHW = (qs, isHW) => { let k = 0; return qs.filter((q) => !isHW(q) || (k += 1) % 2 === 0); };
+  const hwLetter = (q) => ['H', 'W'].includes(q.answer); const hwPic = (q) => ['huh', 'wuh'].includes(NF_FIRST[myName(q.answer)]); const hwSound = (q) => ['huh', 'wuh'].includes(q.answer);
+  const R6c = { letters: inRounds('p4-hiw-letter'), sounds: inRounds('p4-hiw-sound'), pics: inRounds('p4-hiw-pic'), yns: inRounds('p4-hiw-yesno') };
+  const reads6c = { notHW: most6c('p4-hiw-letter', notHW), kind: most6c('p4-hiw-letter', byKind), sound: most6c('p4-hiw-sound', soundBlind), pic: most6c('p4-hiw-pic', picBlind), ynSound: most6c('p4-hiw-yesno', ynSound), ynKind: most6c('p4-hiw-yesno', ynKind) };
+  const fewerNo = (qs) => { let k = 0; return qs.filter((q) => q.answer !== 'No' || (k += 1) % 2 === 0); };
+  const plants6c = { notHW: most6c('p4-hiw-letter', (qs) => notHW(fewerHW(qs, hwLetter))), kind: most6c('p4-hiw-letter', (qs) => byKind(fewerHW(qs, hwLetter))), sound: most6c('p4-hiw-sound', (qs) => soundBlind(fewerHW(qs, hwSound))), pic: most6c('p4-hiw-pic', (qs) => picBlind(fewerHW(qs, hwPic))),
+    ynSound: most6c('p4-hiw-yesno', (qs) => ynSound(fewerNo(qs))), ynKind: most6c('p4-hiw-yesno', (qs) => ynKind(fewerNo(qs))) };
+  const r6 = (v) => Math.round(v * 1000) / 10;
+  ok(`in rounds as built a child who never hears the sound scores on Hear it in a word's banks no more than its kept bounds (round two's content read, pass NF; ${asked.length} rounds and Quick Reviews read, the most in any of first rounds, later rounds and Quick Reviews: the letter bank by the one letter not H or W ${r6(reads6c.notHW)}% and by its heard sound's kind ${r6(reads6c.kind)}%, the sound bank by its choices ${r6(reads6c.sound)}%, the picture bank by its cuh or guh picture ${r6(reads6c.pic)}%, the yes or no by its sound ${r6(reads6c.ynSound)}% and by its kind ${r6(reads6c.ynKind)}%; every second H-or-W question left out, planted, caught at ${r6(plants6c.notHW)}, ${r6(plants6c.kind)}, ${r6(plants6c.sound)} and ${r6(plants6c.pic)}%, and every second yes or no answered No left out, at ${r6(plants6c.ynSound)} and ${r6(plants6c.ynKind)}%)`,
+    R6c.letters.length >= 4000 && R6c.yns.length >= 4000 && fewest6c('p4-hiw-letter') >= 2000 && fewest6c('p4-hiw-yesno') >= 1500 && reads6c.notHW < 0.57 && reads6c.kind < 0.8 && reads6c.sound < 0.78 && reads6c.pic < 0.47 && reads6c.ynSound < 0.62 && reads6c.ynKind < 0.62
+    && plants6c.notHW >= 0.57 && plants6c.kind >= 0.8 && plants6c.sound >= 0.78 && plants6c.pic >= 0.47 && plants6c.ynSound >= 0.62 && plants6c.ynKind >= 0.62, JSON.stringify({ reads6c, plants6c }));
+  // 6d. Round two's content read (pass NF): Look and write's yes or no answers Yes about half the time in rounds as built, as it does alone, since
+  //    it names both the letter and the marks it drew (keyed only to what it showed, rounds answered No 62 times in 100). Its line pinned,
+  //    the old key planted, caught; and its Yes share held between 44 and 56 percent in 2,000 first rounds, later rounds and Quick Reviews.
+  const lwRounds = (() => { const out = []; let p1 = [], p2 = []; for (let s = 1; s <= 2000; s++) { out.push(L.buildAttempt('look-and-write', s, []).core); const a = L.buildAttempt('look-and-write', s, [], { avoid: [...p1, ...p2] }); out.push(a.core); p2 = p1; p1 = a.core.map((q) => q.prompt);
+    const lr = L.buildLightReview([], s, { moduleId: 'look-and-write', stage: 'first', missedKinds: [] }); if (lr) out.push(lr.core); } return out; })();
+  const lwYns = lwRounds.flatMap((r) => r.filter((q) => q.genId === 'p3-look-yesno')); const lwYes = lwYns.filter((q) => q.answer === 'Yes').length / lwYns.length;
+  const lwSrc = readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8'); const LW_KEY = 'choices: yesNo(rng), answer, aboutWords: [x.toLowerCase(), m],';
+  const lwPinned = (src) => src.split(LW_KEY).length === 2; const lwOld = lwSrc.replace(LW_KEY, 'choices: yesNo(rng), answer, aboutWords: [yes ? x.toLowerCase() : m],');
+  ok(`Look and write's yes or no answers Yes about half the time in rounds as built (round two's content read, pass NF; ${lwYns.length} read in rounds and Quick Reviews, Yes ${r6(lwYes)}%; its key to what it showed alone, planted, caught)`, lwYns.length >= 4000 && lwYes >= 0.44 && lwYes <= 0.56 && lwPinned(lwSrc) && lwOld !== lwSrc && !lwPinned(lwOld), r6(lwYes));
+  // 7. Every letter, sound, word and name of the two lessons' tables is asked, and every picture shown, at seeds 1 to 400. Plant: the
+  //    banks read with every question about H taken away, caught.
+  const aboutAll = (gs) => new Set(gs.flatMap((g) => gen(g, 400).flatMap((x) => [...(x.aboutWords || []), ...(x.choices || []).map((c) => (/:/.test(c) ? myName(c) : c))])));
+  const hiwAbout = aboutAll(BANKS.filter((g) => g.startsWith('p4-hiw'))); const lwAbout = aboutAll(BANKS.filter((g) => g.startsWith('p3-look')));
+  const missing = (set) => [...Object.keys(NF_LETTERS).map((l) => l.toLowerCase()), ...Object.keys(NF_FIRST)].filter((u) => !set.has(u) && !set.has(u.toUpperCase()));
+  const lwMissing = [...Object.keys(LW_LETTERS), ...Object.keys(LW_NAMES).map((n) => n.toLowerCase()), ...LW_MARKS].filter((u) => !lwAbout.has(u) && !lwAbout.has(u.toLowerCase()));
+  const withoutH = new Set([...hiwAbout].filter((u) => u !== 'h' && u !== 'H' && u !== 'hat' && u !== 'house'));
+  ok('every letter, word and name of the two lessons\' tables is asked or shown by their banks at seeds 1 to 400 (a bank with every question about H taken away, planted, caught)', missing(hiwAbout).length === 0 && lwMissing.length === 0 && missing(withoutH).length > 0, [...missing(hiwAbout), ...lwMissing].join(', '));
 }
 // The five consonant blends the onset lessons say (pass NB, BLEND_PARTS): one piece each, made by the app from its own two sounds: the
 // first part's sound where the blend starts and the second's where it ends, measured by the bands the rules above measure each sound by
@@ -2557,7 +2849,7 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
     else if (q.visual && q.visual.kind === 'pattern') { if (!Array.isArray(q.visual.items) || (q.visual.counting ? q.visual.items.length < 1 : q.visual.items.length < 3)) problems.push('pattern too short'); } // a counting row (pass HS) may hold one shape
     else if (q.visual && q.visual.kind === 'clock') { if (!(q.visual.hour >= 1 && q.visual.hour <= 12 && [0, 15, 30, 45].includes(q.visual.minute))) problems.push('clock out of range'); }
     else if (q.visual && q.visual.kind === 'picto') { if (!(Array.isArray(q.visual.rows) && q.visual.rows.length >= 2 && q.visual.rows.length <= 3 && q.visual.rows.every((r) => typeof r.icon === 'string' && Number.isInteger(r.count) && r.count >= 0 && r.count <= 6))) problems.push('picture graph out of range'); }   // pass KL: two or three rows of up to six pictures
-    else if (q.visual && q.visual.kind === 'icon') { if (!['sun', 'moon', 'cloud', 'rain', 'snow', 'plant', 'tree', 'flower', 'fish', 'bird', 'rock', 'drop', 'ice', 'fire', 'magnet', 'clip', 'nail', 'cup', 'bus', 'dog', 'hat', 'bed', 'fan', 'soil', 'ball', 'block', 'teddy', 'sock', 'spoon', 'log', 'book', 'glass', 'flashlight', 'lamp', 'shadow', 'pebble', 'boulder', 'speckled', 'flatrock', 'penny', 'wall', 'gravel', 'bricks', 'window', 'nickel', 'dime', 'quarter', 'table', 'hill', 'map', 'globe', 'mountain', 'river', 'lake', 'ocean', 'cactus', 'coat', 'candle', 'cake', 'fridge', 'washer', 'phone', 'tablet', 'pencil', 'crayon', 'doctor', 'shot', 'comb', 'mosquito', 'plate', 'peanut', 'helmet', 'booster', 'belt', 'bubble', 'stop', 'slide', 'knife', 'scissors', 'screwdriver', 'house', 'bottle', 'cigarette', 'camera', 'music', 'search', 'keyboard', 'space', 'backspace', 'save', 'printer', 'chair', 'bulb', 'board', 'star', 'door', 'doghouse', 'birdhouse', 'cupcake', 'sunflower', 'snowball', 'starfish', 'banana', 'butterfly', 'umbrella', 'dinosaur', 'pizza', 'onion', 'feather', 'soap', 'milk', 'pig', 'pie', 'tie', 'shoe', 'boat', 'kite', 'list', 'card', 'envelope', 'marker', 'arrow', 'heart', 'scribble', 'marks', 'word', 'drawing', 'sign', 'jar', 'zebra', 'key', 'nest', 'box'].includes(String(q.visual.name).split('~')[0])) problems.push('unknown icon'); }
+    else if (q.visual && q.visual.kind === 'icon') { if (!['sun', 'moon', 'cloud', 'rain', 'snow', 'plant', 'tree', 'flower', 'fish', 'bird', 'rock', 'drop', 'ice', 'fire', 'magnet', 'clip', 'nail', 'cup', 'bus', 'dog', 'hat', 'bed', 'fan', 'soil', 'ball', 'block', 'teddy', 'sock', 'spoon', 'log', 'book', 'glass', 'flashlight', 'lamp', 'shadow', 'pebble', 'boulder', 'speckled', 'flatrock', 'penny', 'wall', 'gravel', 'bricks', 'window', 'nickel', 'dime', 'quarter', 'table', 'hill', 'map', 'globe', 'mountain', 'river', 'lake', 'ocean', 'cactus', 'coat', 'candle', 'cake', 'fridge', 'washer', 'phone', 'tablet', 'pencil', 'crayon', 'doctor', 'shot', 'comb', 'mosquito', 'plate', 'peanut', 'helmet', 'booster', 'belt', 'bubble', 'stop', 'slide', 'knife', 'scissors', 'screwdriver', 'house', 'bottle', 'cigarette', 'camera', 'music', 'search', 'keyboard', 'space', 'backspace', 'save', 'printer', 'chair', 'bulb', 'board', 'star', 'door', 'doghouse', 'birdhouse', 'cupcake', 'sunflower', 'snowball', 'starfish', 'banana', 'butterfly', 'umbrella', 'dinosaur', 'pizza', 'onion', 'feather', 'soap', 'milk', 'pig', 'pie', 'tie', 'shoe', 'boat', 'kite', 'list', 'card', 'envelope', 'marker', 'arrow', 'heart', 'scribble', 'marks', 'word', 'drawing', 'sign', 'jar', 'zebra', 'key', 'nest', 'box', 'net', 'jellyfish', 'zipper', 'goat', 'guitar', 'watermelon', 'hat', 'house', 'window', 'cup'].includes(String(q.visual.name).split('~')[0])) problems.push('unknown icon'); }
     else if (q.visual && (q.visual.kind === 'pic' || q.visual.kind === 'art')) { if (!q.visual.name) problems.push('picture incomplete'); }
     else if (q.visual && q.visual.kind === 'face') { if (!['happy', 'sad', 'mad', 'scared', 'worried', 'embarrassed'].includes(q.visual.feeling)) problems.push('a face with a feeling the screen cannot draw'); }   // pass MD; worried and embarrassed since pass MN
     else if (q.visual && q.visual.kind === 'numberline') { if (!(q.visual.from < q.visual.to && (q.visual.marks || [q.visual.mark]).every((v) => v === null || v === undefined || (v >= q.visual.from && v <= q.visual.to)))) problems.push('number line out of range'); }
@@ -2948,7 +3240,12 @@ for (const [genId, gen] of Object.entries(L.GENERATORS)) {
           // A letter in a letter-sound bank (pass ND) is named the letter it is and said by the sound it does not say, never by its look,
           // since the question asks for a sound: "The letter S does not say mmm." or "does not say the sound moon starts with." Since pass NE
           // Start or end of the name's and Write it by its sounds' too, X's two sounds (cuh-sss) and a word's last sound among them.
-          if (/^[A-Z]$/.test(c) && /^(?:p3-ls|p4-name|p4-end|p4-soe|p4-wbs)-/.test(genId)) { if (e.name !== `The letter ${c}`) off('name is not its own letter'); if (!/^does not say (?:[a-z]+(?:-[a-z]+)?|the sound [a-z]+ (?:starts|ends) with)\.$/.test(e.why)) off('why does not say the sound the letter does not say'); }
+          if (/^[A-Z]$/.test(c) && /^(?:p3-ls|p4-name|p4-end|p4-soe|p4-wbs|p4-hiw|p3-look-name)-?/.test(genId)) { if (e.name !== `The letter ${c}`) off('name is not its own letter'); if (!/^does not say (?:[a-z]+(?:-[a-z]+)?|the sound (?:[a-z]+|Sam|Mia|Ben) (?:starts|ends) with)\.$/.test(e.why)) off('why does not say the sound the letter does not say'); }
+          // Look and write's written-name question (pass NF): a wrong letter is not at the start of the name shown.
+          else if (/^[A-Z]$/.test(c) && genId === 'p3-look-first') { if (e.name !== `The letter ${c}`) off('name is not its own letter'); if (e.why !== 'is not at the start of this name.') off('why does not say where the letter is not'); }
+          // Look and write's same-shape question (pass NF, round one's lesson read): a wrong letter is not the same shape, the lesson's own words,
+          // since the looks pre-K 4's letter banks give (two pointy hills, curvy like a snake) are said in no pre-K 3 line.
+          else if (/^[A-Z]$/.test(c) && genId === 'p3-look-same') { if (e.name !== `The letter ${c}`) off('name is not its own letter'); if (e.why !== 'is not the same shape as this letter.') off('why is not the lesson\'s same shape'); }
           else if (/^[A-Z]$/.test(c) && /^pl-/.test(genId)) { if (e.name !== `The letter ${c}`) off('name is not its own letter'); if (e.why !== `${WN_LETTER_P4[c]}.`) off('why gives the letter another look'); }
           else if (/^[A-Z]$/.test(c)) { if (e.name !== (['A', 'B', 'H', 'P'].includes(c) ? `The letter ${c}` : 'This letter')) off('name is not its own letter'); if (!e.why.startsWith(WN_LETTER[c] || 'is not ')) off('why gives the letter another look'); }
           // Is this the letter named? Yes means the named letter, and the reason gives the shown letter's own sign; No means
@@ -4279,7 +4576,43 @@ ok('attempt is reproducible from its seed', JSON.stringify(L.buildAttempt('compa
   const screen = []; const reviews = [];
   for (const mid of NAMING) { let n = 0; let prev = []; let prev2 = []; for (let s = 1; s <= 600; s++) { const a = L.buildAttempt(mid, s, [], { avoid: [...prev, ...prev2] }); if (twice(a.core)) n++; prev2 = prev; prev = a.core.map((q) => q.prompt); } screen.push([mid, n]);
     let r = 0; for (let s = 1; s <= 600; s++) { const lr = L.buildLightReview([], s, { moduleId: mid, stage: 'first', missedKinds: [] }); if (lr && twice(lr.core)) r++; } reviews.push([mid, r]); }
-  ok(`a round as the screen builds it, the last two rounds' prompts avoided, and a Quick Review each ask about a word once while they can (rounds ${screen.map(([m, n]) => m + ' ' + n).join(', ')}; Quick Reviews ${reviews.map(([m, n]) => m + ' ' + n).join(', ')}, of 600 each)`, screen.every(([, n]) => n <= 12) && reviews.every(([, n]) => n <= 12), JSON.stringify({ screen, reviews })); }
+  ok(`a round as the screen builds it, the last two rounds' prompts avoided, and a Quick Review each ask about a word once while they can (rounds ${screen.map(([m, n]) => m + ' ' + n).join(', ')}; Quick Reviews ${reviews.map(([m, n]) => m + ' ' + n).join(', ')}, of 600 each)`, screen.every(([, n]) => n <= 12) && reviews.every(([, n]) => n <= 12), JSON.stringify({ screen, reviews }));
+  // Since pass NF an echo its own bank cannot avoid hands its turn to another bank (buildAttempt, buildLightReview): Hear it in a word's
+  // yes or no asks about H and W alone (round one's lesson read), and before the handoff it echoed the letter and sound questions in 58
+  // of 600 rounds, 77 of the screen's and 58 Quick Reviews (the rows above fail without it). The yes or no still comes in most rounds and
+  // Quick Reviews, handing its turn on only when it must, and never comes twice in one.
+  { let rounds = 0; let reviewsWith = 0; let twiceYesNo = 0;
+    for (let s = 1; s <= 600; s++) { const a = L.buildAttempt('hear-it-in-a-word', s, []).core; const n = a.filter((q) => q.genId === 'p4-hiw-yesno').length; if (n) rounds++; if (n > 1) twiceYesNo++;
+      const lr = L.buildLightReview([], s, { moduleId: 'hear-it-in-a-word', stage: 'first', missedKinds: [] }); if (lr && lr.core.some((q) => q.genId === 'p4-hiw-yesno')) reviewsWith++; }
+    // Since round two's code read (pass NF) the Quick Reviews are bounded from above as the rounds are: with buildLightReview's handoff taken
+    // out they read 600 of 600 and the check passed, held only by the word-once row above.
+    ok(`Hear it in a word's yes or no, about H and W alone, hands its turn to another bank only when the round has asked about both (pass NF; in ${rounds} of 600 rounds and ${reviewsWith} of 600 Quick Reviews, twice in ${twiceYesNo})`, rounds >= 480 && rounds < 600 && reviewsWith >= 480 && reviewsWith < 600 && twiceYesNo === 0); } }
+  // Since round two's code read (pass NF) a triple dose's blind reads: Practice the missed ones builds a triple dose with the last two rounds'
+  // prompts avoided (recentPrompts), here two rounds of one dose built just before it. On every yes or no bank of the lessons the echo rule
+  // reaches, the larger of its Yes and No shares (what a child who always taps one scores) is under 70 percent at seeds 1 to 100, but Words
+  // in a sentence's, whose three questions that name nothing are each answered Yes: with no handoff at all it reads 70.2 (EARMARKS A112),
+  // so it is held at seeds 1 to 300 under 75, where it reads 71.1. The round's handoff passes over a question that names nothing (since
+  // this read); planted, the handoff as first built, from logic.mjs's own text in a copy, reads 78.8 and is caught. Its reading with two
+  // triple doses' prompts avoided, the read's own construction (73.4 before the fix), is reported.
+  { const { pathToFileURL } = await import('node:url'); const fsx = await import('node:fs'); const { tmpdir } = await import('node:os'); const { join } = await import('node:path');
+    const isYN = (g) => { const q = L.generateQuestion(g, 1); return Array.isArray(q.choices) && q.choices.length === 2 && q.choices.includes('Yes') && q.choices.includes('No'); };
+    const isTr = (g) => L.generateQuestion(g, 1).type === 'trace'; const namesQ = (q) => (Array.isArray(q.aboutWords) && q.aboutWords.length > 0) || (Array.isArray(q.asksFirstOf) && q.asksFirstOf.length > 0);
+    const reached = L.COURSES.flatMap((c) => c.modules).filter((m) => (m.generators || []).length).filter((m) => { const gs = [...new Set(m.generators)]; return (gs.some(isTr) && !gs.every(isTr)) || gs.some((g) => [1, 2, 3, 4, 5, 6].some((s) => namesQ(L.generateQuestion(g, s)))); });
+    const doses = (LL, m, seeds, wide) => { const out = []; for (let s = 1; s <= seeds; s++) { let avoid;
+      if (wide) avoid = [...LL.buildAttempt(m, s + 70000, [], { dose: 3 }).core, ...LL.buildAttempt(m, s + 80000, [], { dose: 3 }).core].map((q) => q.prompt);
+      else { const h1 = LL.buildAttempt(m, s + 90000, []).core.map((q) => q.prompt); const h2 = LL.buildAttempt(m, s + 95000, [], { avoid: h1 }).core.map((q) => q.prompt); avoid = [...h2, ...h1]; }
+      out.push(...LL.buildAttempt(m, s, [], { dose: 3, avoid }).core); } return out; };
+    const lean = (qs, g) => { const mine = qs.filter((q) => q.genId === g); const y = mine.filter((q) => q.answer === 'Yes').length; return mine.length ? Math.round(1000 * Math.max(y, mine.length - y) / mine.length) / 10 : null; };
+    const WS = ['words-in-a-sentence', 'p3-words-yesno']; const reads = [];
+    for (const m of reached) { const gs = [...new Set(m.generators)].filter(isYN); if (!gs.length || m.id === WS[0]) continue; const qs = doses(L, m.id, 100, false); for (const g of gs) reads.push([g, lean(qs, g)]); }
+    const wsNow = lean(doses(L, WS[0], 300, false), WS[1]); const wsWide = lean(doses(L, WS[0], 100, true), WS[1]);
+    const lsrc = readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8'); const NAMES = ' && (mixed || (Array.isArray(alt.aboutWords) && alt.aboutWords.length > 0) || (Array.isArray(alt.asksFirstOf) && alt.asksFirstOf.length > 0))) { q = alt; break; } }';
+    let wsPlant = null; const dir = fsx.mkdtempSync(join(tmpdir(), 'edu-handoff-'));
+    try { if (lsrc.split(NAMES).length === 2) { const f = join(dir, 'logic-first-handoff.mjs'); fsx.writeFileSync(f, lsrc.replace(NAMES, ') { q = alt; break; } }')); const P = await import(pathToFileURL(f).href); wsPlant = lean(doses(P, WS[0], 300, false), WS[1]); } }
+    finally { fsx.rmSync(dir, { recursive: true, force: true }); }
+    const over = reads.filter(([, v]) => v === null || v >= 70); const most = reads.reduce((a, b) => (b[1] > a[1] ? b : a), ['', 0]);
+    ok(`in a triple dose built after two rounds of one dose, a child who always taps Yes or always taps No scores under 70 percent on every yes or no bank of the lessons the echo rule reaches, but Words in a sentence's, held under 75 (round two's code read, pass NF; ${reached.length} lessons, ${reads.length} banks at seeds 1 to 100, the most ${most[0]} ${most[1]}; Words in a sentence's ${wsNow} at seeds 1 to 300, its own lean 70.2 with no handoff at all, EARMARKS A112, and ${wsWide} with two triple doses' prompts avoided; the handoff as first built, free to hand a turn to a question that names nothing, planted, caught at ${wsPlant})`,
+      reached.length >= 29 && reads.length >= 27 && over.length === 0 && wsNow !== null && wsNow < 75 && wsPlant !== null && wsPlant >= 75, JSON.stringify({ over, wsNow, wsWide, wsPlant })); }
   // A one-way echo (pass NB, round two's content read): Make a rhyme's word, picture and yes or no banks say a change ("Dog ends with og. Keep
   // the end, and change duh to fff.") and their words' rhyme, which answered a later "Which first part changes log into dog?" in 183 of
   // 2,000 rounds and a later "Think of a word that rhymes with dog." in 84; each bank names what it says (saysFirstOf) or asks
@@ -7086,6 +7419,46 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
     const WORDING_FLAG_LIMIT = 0; // pass IB: 13 explanations that only repeat their answer (grades 7, 9 and 12)
     const QR = await import('../tools/question-review.mjs'); const flagged = QR.flaggedQuestions(150);
     ok(`no new question reads badly to the wording checks (at most ${WORDING_FLAG_LIMIT}, now ${flagged.length})`, flagged.length <= WORDING_FLAG_LIMIT);
+    // Since round two's content read (pass NF) every bank is read at seeds 1 to 200 for a count of one before a plural verb with no noun between
+    // them (g1-sub-pic's "Then 1 go away." and g1-sub-missing's "so 1 were taken away.", which neither the tidy step nor the wording checks
+    // read), the sum forms excepted by what comes before the 1 ("9 and 1 are partners", "1 and 1 make 2", "rows of 1 leave", "does 1 need",
+    // "the places 2, 1 are on"); the two slips planted, caught, and the five sum forms passed.
+    const BARE_ONE = /(?<![\d.,/-])(?<!\b(?:and|of|does|do|did)\s)(?<!,\s)\b1 (are|were|have|go|come|do|make|need|leave)\b/;
+    const bareText = (q) => { const t = [q.story, q.prompt, q.explain, q.printedStory, q.printed].filter((x) => typeof x === 'string'); for (const v of Object.values(q.whyNot || {})) if (v && v.why) t.push(v.why); return t.join(' | '); };
+    const bareOnes = Object.keys(L.GENERATORS).flatMap((g) => Array.from({ length: 200 }, (_, i) => { let q; try { q = L.generateQuestion(g, i + 1); } catch (e) { return null; } return BARE_ONE.test(bareText(q)) ? g + ' ' + (i + 1) : null; }).filter(Boolean));
+    const bareCaught = ['Here are 8 dots. Then 1 go away.', 'That takes 1 step, so 1 were taken away.'].every((t) => BARE_ONE.test(t)); const sumsPassed = ['9 and 1 are partners that make 10.', '1 and 1 make 2.', 'Two equal rows of 1 leave one left over.', 'How many more does 1 need to make 10?', 'the places 2, 1 are on'].every((t) => !BARE_ONE.test(t));
+    ok(`no bank says a count of one before a plural verb with no noun between them, at seeds 1 to 200 (round two's content read, pass NF; ${Object.keys(L.GENERATORS).length} banks read; "Then 1 go away." and "so 1 were taken away." planted, caught; the sum forms passed)`, bareOnes.length === 0 && bareCaught && sumsPassed, bareOnes.slice(0, 6).join(', '));
+    // Since pass NF a count of one takes a singular verb (the paper engineer's find: "1 mole of salt are dissolved", and in grade 1 "1 block
+    // are left", "1 dot have no partner" and "1 more are coming"): the four banks read at seeds 1 to 200 say none, and the wording checks
+    // flag one (a planted "1 dot have no partner" caught, "11 dots have no partner" and "1 of the dots are red" passed). Since round one's
+    // code read a count of minus one is read as one here, as the tidy step has read it since pass IB (grade 6's temperature bank says "-1
+    // degree", never "-1 degrees", pinned), and a planted "-1 more are coming" is flagged.
+    const ONE_BANKS = ['s10-molarity', 'g1-add-pic', 'g1-sub-story', 'g1-compare-diff'];
+    const oneVerbs = ONE_BANKS.flatMap((g) => Array.from({ length: 200 }, (_, i) => L.generateQuestion(g, i + 1)).filter((q) => /(?:^|[^\d.,/])(?<!\b\d+ [a-z]+ and )1 [a-z]+(?: of [a-z]+)? (are|were|have)\b/.test([q.story, q.prompt, q.explain].join(' '))).map((q) => g + ' ' + q.seed));
+    const ones = ONE_BANKS.map((g) => Array.from({ length: 200 }, (_, i) => L.generateQuestion(g, i + 1)).filter((q) => /(?:^|[^\d.,/])1 [a-z]+/.test([q.story, q.prompt, q.explain].join(' '))).length);
+    const temps = Array.from({ length: 300 }, (_, i) => L.generateQuestion('g6-temperature', i + 1)).map((q) => [q.story, q.prompt, q.explain, q.answer, ...(q.choices || [])].join(' '));
+    const minusOne = [temps.filter((t) => /(?:^|[^\d.,/])-1 degree\b/.test(t)).length, temps.filter((t) => /(?:^|[^\d.,/])-1 degrees\b/.test(t)).length];
+    const flagOf = (story) => QR.wordingFlags({ type: 'choice', story, prompt: 'How many are there?', choices: ['1', '2'], answer: '1', explain: 'There is 1.' });
+    ok(`a count of one takes a singular verb in every bank, as its noun is singular (pass NF; ${ones.join(', ')} questions with a count of one read in ${ONE_BANKS.join(', ')}, none with a plural verb; a planted "1 dot have no partner" flagged, "11 dots have no partner" and "1 of the dots are red" passed; since round one's code read a count of minus one read as one, as the tidy step reads it: g6-temperature's "-1 degree" on ${minusOne[0]} of seeds 1 to 300 and "-1 degrees" on ${minusOne[1]}, and a planted "-1 more are coming" flagged)`,
+      oneVerbs.length === 0 && ones.every((n) => n > 0) && minusOne[0] > 0 && minusOne[1] === 0 && flagOf('-1 more are coming.').includes('one-verb-are') && flagOf('1 dot have no partner.').includes('one-verb-have') && !flagOf('11 dots have no partner.').some((f) => f.startsWith('one-verb')) && !flagOf('1 of the dots are red.').some((f) => f.startsWith('one-verb')), oneVerbs.slice(0, 4).join(' | '));
+    // Since round two's code read (pass NF) the tidy step's verb line is run as the app runs it: its text, from ONE_OF to the end of
+    // tidyNumberWords in src/logic.mjs, in node:vm, on sentences it fixes (a count of one before a plural verb, minus one too, and after an
+    // "and" that joins two clauses, as grade 1's banks say it) and sentences it keeps (a compound subject of counted things, whose verb is
+    // plural, a count of 11, "1 of the dots"). Planted, each caught: a minus put in its class ("-1 more are coming." kept, which no
+    // check read before), its compound exception taken out ("3 dogs and 1 cat are" made singular), and the reader's plain "not after and"
+    // (grade 1's "and 1 more are coming" kept plural, as it would have been on 72 questions). The wording checks' flag reads them alike.
+    { const vm = await import('node:vm'); const lsrc = readFileSync(new URL('../src/logic.mjs', import.meta.url), 'utf8');
+      const codeOf = (s) => { const a = s.indexOf('const ONE_OF = {'); const b = s.indexOf('\nfunction tidyNumberWords(text) {'); const e = s.indexOf('\n}\n', b); return a >= 0 && b > a && e > b ? s.slice(a, e + 2) : null; };
+      const tidyIn = (code, t) => { const box = {}; vm.createContext(box); vm.runInContext(code + '\nglobalThis.__out = tidyNumberWords(' + JSON.stringify(t) + ');', box); return box.__out; };
+      const FIXED = [['1 block are left.', '1 block is left.'], ['-1 more are coming.', '-1 more is coming.'], ['Here are 6 dots, and 1 more are coming.', 'Here are 6 dots, and 1 more is coming.'], ['Count back 7 from 8, and 1 block are left.', 'Count back 7 from 8, and 1 block is left.'], ['1 mole of salt are dissolved.', '1 mole of salt is dissolved.'], ['1 dot have no partner.', '1 dot has no partner.']];
+      const KEPT = ['3 dogs and 1 cat are in the yard.', '4 cups and 1 cup are 5 cups.', '11 dots have no partner.', '1 of the dots are red.'];
+      const VERB = ".replace(/(^|[^\\d.,/])(?<!\\b\\d+ [a-z]+ and )1 ([a-z]+)((?: of [a-z]+)?) (are|were|have)\\b/g,";
+      const code = codeOf(lsrc); const passes = (c) => !!c && FIXED.every(([a, b]) => tidyIn(c, a) === b) && KEPT.every((a) => tidyIn(c, a) === a);
+      const minusOut = code && code.replace(VERB, VERB.replace('[^\\d.,/]', '[^\\d.,/-]')); const andOut = code && code.replace(VERB, VERB.replace('(?<!\\b\\d+ [a-z]+ and )', '')); const plainAnd = code && code.replace(VERB, VERB.replace('(?<!\\b\\d+ [a-z]+ and )', '(?<!\\band )'));
+      const flagsOk = KEPT.slice(0, 2).every((t) => !flagOf(t).some((f) => f.startsWith('one-verb'))) && flagOf('Here are 6 dots, and 1 more are coming.').includes('one-verb-are');
+      ok(`the tidy step's verb line, run as the app runs it, fixes a count of one before a plural verb (minus one too, and after an "and" that joins two clauses) and keeps a compound subject's plural verb (round two's code read, pass NF; ${FIXED.length} fixed and ${KEPT.length} kept; a minus in its class, its compound exception taken out and a plain "not after and", each planted, caught; the wording checks' flag reads them alike)`,
+        !!code && code.split(VERB).length === 2 && passes(code) && !passes(minusOut) && tidyIn(minusOut, '-1 more are coming.') === '-1 more are coming.' && !passes(andOut) && tidyIn(andOut, KEPT[0]) !== KEPT[0] && !passes(plainAnd) && tidyIn(plainAnd, FIXED[2][0]) === FIXED[2][0] && flagsOk,
+        code ? FIXED.filter(([a, b]) => tidyIn(code, a) !== b).concat(KEPT.filter((a) => tidyIn(code, a) !== a)).join(' | ') : 'no code found'); }
   }
   ok('the two robot games sit in the two programming courses beside their first games', L.COURSE_GAMES['tech-3'].includes('debug-tech-3') && L.COURSE_GAMES['tech-5'].includes('debug-tech-5') && L.GAMES.filter((g) => g.kind === 'debug').every((g) => L.ROBOT_DECKS[g.deck]));
 }
@@ -7151,7 +7524,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   const otherPair = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']);
   const otherPriv = await crypto.subtle.exportKey('jwk', otherPair.privateKey);
   ok('a code signed with any other key is refused', (await L.checkLicenseCode(await L.makeLicenseCode(otherPriv, { id: 'X', name: 'Y', year: '2026-27', until: '2027-07-31' }), new Date('2026-10-01'))).ok === false);
-  ok('pre-K 3, pre-K 4 and kindergarten courses are free, grade 1 and up are not', L.COURSES.filter(L.courseIsFree).length > 0 && L.COURSES.every((c) => L.courseIsFree(c) === ['PK3', 'PK4', 'K'].includes(c.grade)) && L.COURSES.filter(L.courseIsFree).reduce((n, c) => n + c.modules.length, 0) === 209)   // 209 since pass NE's two pre-K 4 lessons;   // 86 plus computer science (FS), economics (FV), art and music (GE), philosophy (GL), psychology (GP) and speech (GT), four modules each, plus the five kindergarten science modules of earmark E1 (pass KK) the two Counting modules of earmark E2 (pass KL) the seven Me and my community modules of earmark E3 (passes KM and KN) the seven Taking care of me modules of earmark E4 (passes KO and KP) the four Tell, show, step and repeat modules of earmark E5 (passes KQ and KR) and the five Letters tracing modules of earmark E6 (pass KS), plus the two Very First Steps feelings modules of earmark E12 (pass MD) and its One more and one fewer and Listen and Point's Words that rhyme (pass ME), plus Very First Steps' Can I play too? and First Steps' three feelings lessons of earmarks E12 and E13 (pass MN), plus First Steps' Let's play together of earmark E13 and Listen and Point's Two steps and Two ideas and First Sounds and Letters' Three steps of earmarks E12 and E13 (pass MO), plus Listen and Point's Learning words and People and events, Very First Steps' Talking with a friend, and First Sounds and Letters' More learning words and Words that go together of earmarks E12 and E13 (pass MQ), plus the nine second halves of Mikey's answer to Q70 (pass MR: four of pre-K 3's, five of pre-K 4's), plus Very First Steps' Say what you need and First Steps' Say it to fit and First Sounds and Letters' Things we do of earmarks E12 and E13 (pass MS), plus Very First Steps' A voice to fit the place, Listen and Point's My voice goes up and down and First Sounds and Letters' My voice tells more of earmarks E12 and E13 (pass MV), plus Listen and Point's Say it in a sentence and One cat, two cats and First Sounds and Letters' Longer sentences and Words that change of earmarks E12 and E13 (pass MW), plus First Sounds and Letters' She, he and they, the second half of Words that change by Mikey's Q70 at his answer to Q83, and Listen and Point's Words in a sentence and First Sounds and Letters' Count the words of earmarks E12 and E13 (pass MX), plus Listen and Point's Two words make one and First Sounds and Letters' Clap the beats of earmarks E12 and E13 (pass MY), plus Listen and Point's Cat or hat? and First Sounds and Letters' Same word or different? of earmarks E12 and E13 (pass MZ), plus Listen and Point's Sun and sock and First Sounds and Letters' Think of a word of earmarks E12 and E13 and Put the beats together, Clap the beats' second half by earmark A75 (pass NA), plus Listen and Point's Dog and frog and First Sounds and Letters' Star and spoon and Make a rhyme of earmarks E12 and E13 (pass NB), plus Listen and Point's Sounds in a word and Draw and tell and First Sounds and Letters' The very first sound, Sound by sound and Write to tell of earmarks E12 and E13 (pass NC)
+  ok('pre-K 3, pre-K 4 and kindergarten courses are free, grade 1 and up are not', L.COURSES.filter(L.courseIsFree).length > 0 && L.COURSES.every((c) => L.courseIsFree(c) === ['PK3', 'PK4', 'K'].includes(c.grade)) && L.COURSES.filter(L.courseIsFree).reduce((n, c) => n + c.modules.length, 0) === 211)   // 211 since pass NF's Hear it in a word and Look and write; 209 since pass NE's two pre-K 4 lessons;   // 86 plus computer science (FS), economics (FV), art and music (GE), philosophy (GL), psychology (GP) and speech (GT), four modules each, plus the five kindergarten science modules of earmark E1 (pass KK) the two Counting modules of earmark E2 (pass KL) the seven Me and my community modules of earmark E3 (passes KM and KN) the seven Taking care of me modules of earmark E4 (passes KO and KP) the four Tell, show, step and repeat modules of earmark E5 (passes KQ and KR) and the five Letters tracing modules of earmark E6 (pass KS), plus the two Very First Steps feelings modules of earmark E12 (pass MD) and its One more and one fewer and Listen and Point's Words that rhyme (pass ME), plus Very First Steps' Can I play too? and First Steps' three feelings lessons of earmarks E12 and E13 (pass MN), plus First Steps' Let's play together of earmark E13 and Listen and Point's Two steps and Two ideas and First Sounds and Letters' Three steps of earmarks E12 and E13 (pass MO), plus Listen and Point's Learning words and People and events, Very First Steps' Talking with a friend, and First Sounds and Letters' More learning words and Words that go together of earmarks E12 and E13 (pass MQ), plus the nine second halves of Mikey's answer to Q70 (pass MR: four of pre-K 3's, five of pre-K 4's), plus Very First Steps' Say what you need and First Steps' Say it to fit and First Sounds and Letters' Things we do of earmarks E12 and E13 (pass MS), plus Very First Steps' A voice to fit the place, Listen and Point's My voice goes up and down and First Sounds and Letters' My voice tells more of earmarks E12 and E13 (pass MV), plus Listen and Point's Say it in a sentence and One cat, two cats and First Sounds and Letters' Longer sentences and Words that change of earmarks E12 and E13 (pass MW), plus First Sounds and Letters' She, he and they, the second half of Words that change by Mikey's Q70 at his answer to Q83, and Listen and Point's Words in a sentence and First Sounds and Letters' Count the words of earmarks E12 and E13 (pass MX), plus Listen and Point's Two words make one and First Sounds and Letters' Clap the beats of earmarks E12 and E13 (pass MY), plus Listen and Point's Cat or hat? and First Sounds and Letters' Same word or different? of earmarks E12 and E13 (pass MZ), plus Listen and Point's Sun and sock and First Sounds and Letters' Think of a word of earmarks E12 and E13 and Put the beats together, Clap the beats' second half by earmark A75 (pass NA), plus Listen and Point's Dog and frog and First Sounds and Letters' Star and spoon and Make a rhyme of earmarks E12 and E13 (pass NB), plus Listen and Point's Sounds in a word and Draw and tell and First Sounds and Letters' The very first sound, Sound by sound and Write to tell of earmarks E12 and E13 (pass NC)
   const mixed = ['counting-k', 'reading-3', 'letters-k'];
   ok('without a license only the free courses open; with one, all of them do', JSON.stringify(L.openCourseIds(mixed, false)) === JSON.stringify(['counting-k', 'letters-k']) && L.openCourseIds(mixed, true).length === 3);
   ok('the app carries a public key only, marked as the development key until launch', !('d' in L.LICENSE_PUBLIC_KEY) && L.LICENSE_KEY_IS_DEVELOPMENT === true);
@@ -7740,9 +8113,10 @@ const moreRightProblems = (L) => { const r = {};
   // and a run inside a sentence may start with shh. A plant changes its text where it stands once, or builds nothing, so no check here
   // passes on a plant that found nothing to change. Since pass NE (round one's screen read) a hyphenated word in the plain words between
   // runs is a span of its own (data-whole-word), read here as a word ({ word }), never as a run, so "A grown-up helps." is one word span
-  // with every character kept, and the hyphen rule taken out is planted, caught.
+  // with every character kept, and the hyphen rule taken out is planted, caught. Since pass NF the slice also holds heldPair, whose box for a
+  // lesson line's last pair of 19 or 20 letters and spaces is read as data too ({ held }), so the slice builds.
   { const src = ui.slice(ui.indexOf('const PART_FORMS = '), ui.indexOf('function inlineRich(text, keyPrefix) {'));
-    const asData = (code) => code.replace(/<span key=\{`\$\{keyPrefix\}-w\$\{n\+\+\}`\} data-whole="" style=\{\{ whiteSpace: 'nowrap' \}\}>\{m\[0\]\}<\/span>/, '({ whole: m[0], k: n++ })').replace(/<span key=\{`\$\{keyPrefix\}-r\$\{n\+\+\}`\} data-whole="" style=\{\{ whiteSpace: 'nowrap' \}\}>\{piece\}<\/span>/, '({ whole: piece, k: n++ })').replace(/<span key=\{`\$\{keyPrefix\}-h\$\{n\+\+\}`\} data-whole-word="" style=\{\{ whiteSpace: 'nowrap' \}\}>\{w\}<\/span>/, '({ word: w, k: n++ })');
+    const asData = (code) => code.replace('<span key="last-two" data-last-two="" style={{ display: \'inline-block\', maxWidth: \'100%\' }}>{pair}</span>', '({ held: pair })').replace(/<span key=\{`\$\{keyPrefix\}-w\$\{n\+\+\}`\} data-whole="" style=\{\{ whiteSpace: 'nowrap' \}\}>\{m\[0\]\}<\/span>/, '({ whole: m[0], k: n++ })').replace(/<span key=\{`\$\{keyPrefix\}-r\$\{n\+\+\}`\} data-whole="" style=\{\{ whiteSpace: 'nowrap' \}\}>\{piece\}<\/span>/, '({ whole: piece, k: n++ })').replace(/<span key=\{`\$\{keyPrefix\}-h\$\{n\+\+\}`\} data-whole-word="" style=\{\{ whiteSpace: 'nowrap' \}\}>\{w\}<\/span>/, '({ word: w, k: n++ })');
     const make = (code) => { try { return new Function('SPEECH_SOUNDS', 'BEAT_RUNS', 'SENTENCE_BREAK', asData(code) + '\nreturn partsWhole;')(L.SPEECH_SOUNDS, L.BEAT_RUNS, L.SENTENCE_BREAK); } catch (e) { return null; } };
     const plant = (from, to) => (src.split(from).length === 2 ? make(src.replace(from, to)) : null);
     const wholes = (fn, t) => { const got = fn ? fn(t, 'k') : null; const out = got && !Array.isArray(got) && typeof got === 'object' ? [got] : got; return Array.isArray(out) ? out.filter((x) => x && typeof x === 'object' && typeof x.whole === 'string').map((x) => x.whole) : []; };
@@ -7767,12 +8141,21 @@ const moreRightProblems = (L) => { const r = {};
     const CALL2 = '{n === own.length - 1 ? lastTwoTogether(partsWhole(sentence, `s${i}`), sentence) : partsWhole(sentence, `s${i}`)}';
     // Since round two's code read the bound is pinned: a pair of 18 joined (Open number lines' third line ends "shows forty-three.") and
     // one of 19 left, and the bound moved to 17 and to 19, each planted, caught; the function is built from the source each plant gives.
-    const twoOf = (src2) => new Function(src2.slice(src2.indexOf('function lastTwoTogether(nodes, sentence) {'), src2.indexOf('function inlineRich(text, keyPrefix) {')) + '\nreturn lastTwoTogether;')();
-    const twoOk = (src2) => { const two = twoOf(src2); const n19 = ['The line shows ', { span: 1 }, '.'];
-      return src2.split(CALL2).length === 2 && two(['Our word is ', { span: 1 }], 'Our word is middle-size.')[0] === 'Our word is\u00a0' && two('Here are all three circles, the small one.', 'Here are all three circles, the small one.')[0].endsWith('small\u00a0one.') && two('A tower of Washington-on-the-Brazos.', 'A tower of Washington-on-the-Brazos.') === 'A tower of Washington-on-the-Brazos.'
-        && two(['The line shows ', { span: 1 }, '.'], 'The line shows forty-three.')[0] === 'The line shows\u00a0' && two(n19, 'The line shows thirty-three.') === n19; };
-    const BOUND2 = 'm[1].length + m[2].length + 1 > 18) return nodes;';
-    ok('a lesson line\'s last two words are held together by a no-break space, so no width leaves its last word alone, and a pair over 18 letters and spaces is left to wrap (round one\'s screen read, pass NE; since round two\'s code read a pair of 18 joined, "shows forty-three.", and one of 19 left; the call taken away, and the bound moved to 17 and to 19, each planted, caught)', ui.includes(BOUND2) && twoOk(ui) && !twoOk(ui.replace(CALL2, '{partsWhole(sentence, `s${i}`)}')) && !twoOk(ui.replace(BOUND2, BOUND2.replace('> 18', '> 17'))) && !twoOk(ui.replace(BOUND2, BOUND2.replace('> 18', '> 19'))), String(twoOk(ui)));
+    // Since pass NF (EARMARKS A103) a pair of 19 or 20 is held as one box no wider than its line (heldPair, built here with its box read as
+    // data, { held }, as partsWhole's spans are read above), and a pair of 21 or more is left: a pair of 19 ("shows thirty-three.") and one of
+    // 20 ("twenty-five fingers.", Counting to 120's fifth line, the hyphenated word a kept span) held whole, the words before them left
+    // outside, and one of 21 ("before seventy-three.", Open number lines' sixth) left; each bound moved a letter either way, planted, caught.
+    const HELD = '<span key="last-two" data-last-two="" style={{ display: \'inline-block\', maxWidth: \'100%\' }}>{pair}</span>';
+    const twoOf = (src2) => { try { return new Function(src2.slice(src2.indexOf('function lastTwoTogether(nodes, sentence) {'), src2.indexOf('function inlineRich(text, keyPrefix) {')).replace(HELD, '({ held: pair })') + '\nreturn lastTwoTogether;')(); } catch (e) { return () => null; } };
+    const twoOk = (src2) => { const two = twoOf(src2); const n19 = ['The line shows ', { span: 1 }, '.']; const n20 = ['Five hands are ', { span: 2 }, ' fingers.']; const n21 = ['So seventy comes before ', { span: 3 }];
+      const h19 = two(n19, 'The line shows thirty-three.'); const h20 = two(n20, 'Five hands are twenty-five fingers.'); const h21 = two(n21, 'So seventy comes before seventy-three.'); const h19s = two('So a mistake disappears.', 'So a mistake disappears.');
+      return src2.split(CALL2).length === 2 && src2.split(HELD).length === 2 && two(['Our word is ', { span: 1 }], 'Our word is middle-size.')[0] === 'Our word is\u00a0' && two('Here are all three circles, the small one.', 'Here are all three circles, the small one.')[0].endsWith('small\u00a0one.') && two('A tower of Washington-on-the-Brazos.', 'A tower of Washington-on-the-Brazos.') === 'A tower of Washington-on-the-Brazos.'
+        && two(['The line shows ', { span: 1 }, '.'], 'The line shows forty-three.')[0] === 'The line shows\u00a0'
+        && Array.isArray(h19) && h19.length === 2 && h19[0] === 'The line ' && !!h19[1] && Array.isArray(h19[1].held) && h19[1].held.length === 3 && h19[1].held[0] === 'shows ' && h19[1].held[1] === n19[1] && h19[1].held[2] === '.'
+        && Array.isArray(h20) && h20.length === 2 && h20[0] === 'Five hands are ' && !!h20[1] && Array.isArray(h20[1].held) && h20[1].held.length === 2 && h20[1].held[0] === n20[1] && h20[1].held[1] === ' fingers.'
+        && Array.isArray(h19s) && h19s[0] === 'So a ' && !!h19s[1] && h19s[1].held.join('') === 'mistake disappears.' && h21 === n21; };
+    const BOUND2 = 'm[1].length + m[2].length + 1 > 18) return heldPair(out) || nodes;'; const BOUND3 = 'm[1].length + m[2].length + 1 > 20) return nodes;';
+    ok('a lesson line\'s last two words are held together by a no-break space, so no width leaves its last word alone, and since pass NF a pair of 19 or 20 letters and spaces as one box no wider than its line, and a pair of 21 or more is left to wrap (round one\'s screen read, pass NE; since round two\'s code read a pair of 18 joined, "shows forty-three."; since pass NF one of 19 and one of 20, "twenty-five fingers.", held, and one of 21, "before seventy-three.", left; the call taken away, and each bound moved a letter either way, planted, caught)', ui.includes(BOUND2) && ui.includes(BOUND3) && twoOk(ui) && !twoOk(ui.replace(CALL2, '{partsWhole(sentence, `s${i}`)}')) && !twoOk(ui.replace(BOUND2, BOUND2.replace('> 18', '> 17'))) && !twoOk(ui.replace(BOUND2, BOUND2.replace('> 18', '> 19'))) && !twoOk(ui.replace(BOUND3, BOUND3.replace('> 20', '> 19'))) && !twoOk(ui.replace(BOUND3, BOUND3.replace('> 20', '> 21'))), String(twoOk(ui)));
     const real = make(src); const nothing = plant('for (const m of piece.matchAll(PARTS_WHOLE))', 'for (const m of [])'); const noEnds = plant("(?:(?:, | and )(?:og|at|ig))?\\\\b'", "\\\\b'"); const noAnd = plant('(?:, | and )', '(?:, )');
     const noRuns = plant('RUN_SOUNDS.map(', '[].map('); const noSlow = plant("(?:-[a-z]+|", '(?:'); const noAlone = plant('if (runAlone(piece))', 'if (false)');
     const noSpaces = plant("new RegExp('(' + SENTENCE_BREAK.source + ')')", 'new RegExp(SENTENCE_BREAK.source)'); const noShh = plant("[...PART_FORMS, 'shh'].map(", 'PART_FORMS.map(');
@@ -7786,6 +8169,26 @@ const moreRightProblems = (L) => { const r = {};
     ok('partsWhole, run from the screen code, keeps a run of parts and a blend whole and leaves other text alone, since pass NC a word\'s sounds one after another, a word said slowly and a run of beats said alone, and since round one\'s screen check a run that is one sentence of a paragraph, every character kept, and a run that starts with shh (pass NB, round two\'s code read; a partsWhole that wraps nothing, one without the endings, pass NC\'s widenings, the sentence test, the kept spaces and the shh each taken out, caught; a count and a pattern left alone, the first run rule planted, caught; since pass NE a hyphenated word kept whole as a word of its own, every character kept, the hyphen rule taken out, caught; every plant found its text once)', unbuilt.length === 0 && works(real) && worksNC(real) && worksAnd(real) && listsAlone(real) && worksSentence(real) && worksShh(real) && !works(nothing) && !works(noEnds) && works(noAnd) && !worksAnd(noAnd) && !worksNC(noRuns) && !worksNC(noSlow) && !worksNC(noAlone) && !worksSentence(noAlone) && !worksSentence(noSpaces) && worksSentence(noShh) && !worksShh(noShh) && !listsAlone(oldAlone) && !works(noHyphens) && worksNC(noHyphens) && worksSentence(noHyphens), JSON.stringify({ unbuilt, real: [works(real), worksNC(real), worksAnd(real), listsAlone(real), worksSentence(real), worksShh(real)], noHyphens: noHyphens ? [works(noHyphens), worksNC(noHyphens)] : null })); }
   ok('the duck\'s and the bee\'s outline reads 3 to 1 or better on white, every name picture\'s tint and the dark theme\'s paper and tiles, on the duck\'s body and head and the bee\'s body and wings, and Q56\'s yellow edge or no outline would not pass (pass MQ, Q62)', grounds.length === 9 && lowFor(gild).length === 0 && worn.duckBodyHead === 2 && worn.beeBody === 1 && worn.beeWings === 2 && nearMisses.every(Boolean), JSON.stringify({ gild, low: lowFor(gild), worn, nearMisses }));
 }
+
+// Since round one's screen read (pass NF): a shape's edge is a pixel and a half or more on the screen wherever it draws small, in a shape alone
+// (ShapePic, since the paper engineer's work) and in a counted row (CountRow, where a look row's little circles wore 1.2 pixels on a 390
+// phone's tile, 1.03 at 320 by 568 and 0.72 in More Info; drawn in screen pixels since the lead's look, since a floor in the row's own
+// units drew 1.28 at 320, where the row shrinks to fit its tile; question-screens measures it), and More Info counts a sound the device voice says as drawn, so Hear it in a word's sound bank lays out one way (chuh, four
+// letters, made H's and W's rows words where C's and G's were boxes). Each line read from the screen code; each fix taken out, planted.
+{ const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+  const SHAPE = '{shapeBody(name, color, variant, tile, Math.max(4, 150 / size))}'; const ROW = '{shapeBody(it, color, null, tile, Math.max(1.5, (4 * cell) / 100), true)}';
+  const WORDED = "some((c) => typeof face(c) === 'string' && String(c).length > 3 && !Object.prototype.hasOwnProperty.call(VOICE_SOUNDS, String(c)));";
+  const held = (src) => src.split(SHAPE).length === 2 && src.split(ROW).length === 2 && src.split(WORDED).length === 2;
+  const plants = [ui.replace(ROW, '{shapeBody(it, color, null, tile)}'), ui.replace(ROW, '{shapeBody(it, color, null, tile, Math.max(4, 150 / cell))}'), ui.replace(SHAPE, '{shapeBody(name, color, variant, tile)}'), ui.replace(WORDED, "some((c) => typeof face(c) === 'string' && String(c).length > 3);")];
+  ok('a counted row\'s shapes keep an edge of a pixel and a half as a shape alone does, and More Info counts a sound the device voice says as drawn (round one\'s screen read, pass NF; each fix taken out, planted, caught)', held(ui) && plants.every((p) => p !== ui && !held(p))); }
+
+// Since pass NF (round one's code read): keepCueRoom passes over a block more than 40 pixels above or below the scroll cue before reading its
+// words one by one (EARMARKS A99, since a story page holds a block for every paragraph); tests/e2e/cue-words.mjs measures its reason (no word
+// reaches 40 pixels past its block's top or foot), and the line is pinned here as it stands, its shift's sign turned, planted, caught.
+{ const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8'); const LINE = 'if (at.bottom - shift.y < box.top - 40 || at.top - shift.y > box.bottom + 40) continue;';
+  const pinned = (src) => src.split(LINE).length === 2 && src.indexOf(LINE) > src.indexOf('function keepCueRoom(spot) {') && src.indexOf(LINE) < src.indexOf('function visibleBand() {');
+  const turned = ui.replace(LINE, LINE.replace(/- shift\.y/g, '+ shift.y'));
+  ok('keepCueRoom passes over a block more than 40 pixels above or below the scroll cue by the line cue-words measures (round one\'s code read, pass NF; the shift\'s sign turned, planted, caught)', pinned(ui) && turned !== ui && !pinned(turned)); }
 
 // Pass MO (round two's code check): the device voice from ui.jsx's own speech code, run in node:vm on a fake clock against a voice
 // modelled on what the code's comments say Chrome does (an utterance queued in the tick of a cancel is dropped, with no events). A

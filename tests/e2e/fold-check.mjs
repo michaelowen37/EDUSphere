@@ -56,7 +56,8 @@ const SEEDS = 6;
 // Since pass NE: its two lessons and ten banks (1,102 lines, 437 banks, the cue on 46 lines in each theme, 200 kept spans, 5,146 sentences lit;
 // since round two the cue on 48, 47 on round two's copy, and 5,148 sentences, since Write it by its sounds' line 13 has one more);
 // and opposites-and-same line 8 waits no more, since p32 keeps wide-open whole, so wide-open eyes. ends the line together.
-const FLOORS = { lines: 1102, banks: 437, cue: { light: 48, dark: 48 }, paintings: 112, whole: 200, lit: 5148 };
+// Since pass NF's third read the lit floor is 5,298, since round two's content read gave Look and write's line 14 a second sentence (5,296 before).
+const FLOORS = { lines: 1130, banks: 447, cue: { light: 48, dark: 48 }, paintings: 112, whole: 200, lit: 5298 };   // since pass NF's two lessons (28 lines, 10 banks)
 // EARMARKS A82 decided (pass NC, round one's screen check): at 320 by 568 no pre-K lesson line ends on one lone word (25 of the 69 lines
 // past six lines did, where a browser balances nothing), a line past six lines wrapping pretty (LessonWords in ui.jsx). A line that
 // must end alone is named here by lesson and line with the reason; a wait for a line that no longer ends alone fails.

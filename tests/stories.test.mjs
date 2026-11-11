@@ -555,5 +555,35 @@ for (const [, cs, id] of LONG_ENTRIES) {
     if (n > 3) over.push(`${kind}${id} (${n})`); }
   ok(`no story has more than three sound effects (${read} stories with audio read)`, read >= 190 && over.length === 0, over.join(', ')); }
 
+// A find named before it is found (MISTAKE-CLASSES C1, owed a machine check since it came back in two passes; pass NF, round one's story
+// flow read, its sixteenth: Where is Bear?'s narrator said "there sat his red wagon" one sentence before Emmett's "Wagon starts with wuh!").
+// In plain terms: in every early-years story, a sentence where the child names what they found by its sound ("Salt starts with sss!",
+// "Box ends with cuh-sss!") marks a find, and the found word is said nowhere before it in the story's words, a plural too, except by the
+// child calling it out alone ("Moon!", "The fan!"), and is named in no picture shown before that paragraph (the main picture, the pictures
+// after earlier paragraphs, their alt text and their ledger prompts, read before a row's check note, whose "no wagon in view" names what
+// must not show) nor in the title. Its plants: the wagon's old narration put back, S4127's prompt given a little red wagon and the title
+// Where is the wagon?, each caught; its near miss: "Wagon! he said." put before the find, passed.
+{ const { readFileSync } = await import('node:fs'); const ledgerRows = new Map(); for (const line of readFileSync(new URL('../docs/ART-REQUESTS.md', import.meta.url), 'utf8').split('\n')) { const c = line.split('|').map((x) => x.trim()); if (/^S\d+$/.test(c[1] || '')) ledgerRows.set(c[1], (c[3] || '').split('(check:')[0] + ' ' + (c[4] || '')); }
+  const gradeOfStory = (id) => { const c = L.COURSES.find((x) => x.modules.some((m) => m.id === id)); return c ? c.grade : null; };
+  const FIND = /(?:^|[.!?]\s+)([A-Z][a-z]+)\s+(?:starts|ends)\s+with\s+[a-z-]+!/g;
+  const offOf = (id, st, rows) => { const out = []; const ws = [].concat(st.words || []);
+    ws.forEach((p, fi) => { for (const m of p.matchAll(FIND)) { const w = m[1].toLowerCase(); const re = new RegExp('\\b' + w + '(?:s|es)?\\b', 'i'); const at = m.index + (m[0].length - m[0].trimStart().length);
+      const earlier = [...ws.slice(0, fi), p.slice(0, at)].join(' ').split(L.SENTENCE_BREAK).filter((s) => re.test(s) && !new RegExp('^(?:the |a |an )?' + w + '!$', 'i').test(s.trim()));
+      if (earlier.length) out.push(id + ': ' + w + ' said before it is found ("' + earlier[0].trim().slice(0, 60) + '")');
+      const shown = [[st.art, st.alt], ...(st.more || []).filter((x) => x.after < fi).map((x) => [x.serial, x.alt])];
+      for (const [serial, alt] of shown) if (re.test(alt || '') || re.test(rows.get(serial) || '')) out.push(id + ': ' + w + ' shown in ' + serial + ' before it is found');
+      if (re.test(st.title || '')) out.push(id + ': ' + w + ' in the title'); } });
+    return out; };
+  const stories = Object.entries(STORIES).filter(([id]) => early.has(gradeOfStory(id)));
+  const finds = stories.reduce((n, [, st]) => n + [].concat(st.words || []).reduce((k, p) => k + [...p.matchAll(FIND)].length, 0), 0);
+  const now = stories.flatMap(([id, st]) => offOf(id, st, ledgerRows));
+  const bear = STORIES['hear-it-in-a-word']; const W4 = bear.words[4];
+  const plantWords = { ...bear, words: bear.words.map((p, i) => (i === 4 ? p.replace('there sat something red on wheels', 'there sat his red wagon') : p)) };
+  const plantRow = new Map(ledgerRows); plantRow.set('S4127', ledgerRows.get('S4127') + ' a little red wagon');
+  const plantTitle = { ...bear, title: 'Where is the wagon?' };
+  const nearMiss = { ...bear, words: bear.words.map((p, i) => (i === 4 ? p.replace('Wagon starts with wuh!', 'Wagon! he said. Wagon starts with wuh!') : p)) };
+  const plants = [W4.includes('there sat something red on wheels') && offOf('bear', plantWords, ledgerRows).length > 0, offOf('bear', bear, plantRow).length > 0, offOf('bear', plantTitle, ledgerRows).length > 0, W4.includes('Wagon starts with wuh!') && offOf('bear', nearMiss, ledgerRows).length === 0];
+  ok(`no early-years story names a find before the child finds it, in its words, its earlier pictures or its title (MISTAKE-CLASSES C1, pass NF; ${stories.length} stories, ${finds} finds read; the wagon's old narration, a wagon in S4127 and a title naming it, planted, caught, and the child's own "Wagon!" first passed)`,
+    stories.length >= 273 && finds >= 8 && now.length === 0 && plants.every(Boolean), `${now.slice(0, 6).join(' | ')}; plants ${plants}`); }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

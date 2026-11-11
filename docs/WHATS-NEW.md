@@ -9,6 +9,13 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## November 10, 2026 (letters whose names do not tell their sounds, and making a real letter)
+
+- Four-year-olds meet four letters whose names do not tell the sound we learn for them. In Hear it in a word, C says cuh and G says guh in lots of words, though C's name starts with sss and G's with juh, and H says huh and W says wuh, though H's name ends with chuh and W's starts with duh. So for these four, a child listens to the start of a word: cat and cup, goat and guitar, hat and house, window and watermelon.
+- Three-year-olds learn to make a real letter in Look and write. Scribbles and marks that look a little like letters are a great way to start, and to make a real letter, a child looks at one a grown-up writes and makes the same shape, starting M, S and B at the top, the first letter of their name first. Every question is a tap, and nothing a child writes is asked for or kept in the app.
+- The four colors the lessons name, red, blue, yellow and green, now each wear a thin edge of their own shade in both color themes, so they read as one set. In the dark theme, the charts, maps and diagrams on a lesson's page have clearer edges, and on a small phone the arrow that shows there is more below no longer sits on a story's words. When the app sits inside another page, that arrow now stands at the bottom of what you can see.
+- Four new Wonder questions for young children are ready for your approval, like every Wonder question: a letter that came out backward, a puzzle piece that will not fit, a guess that turned out wrong, and a kite that will not fly.
+
 ## November 9, 2026 (letters at the start or end of a name, and writing a word by its sounds)
 
 - Four-year-olds meet four more letters whose names hold their sounds. In Start or end of the name, P and D have their sound at the start of their names, puh and duh, and N and X have theirs at the end, nnn and the cuh-sss you hear at the end of box and fox. A child hears each sound, finds the letter that says it, and says the sounds of P, D and N too.

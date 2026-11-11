@@ -43,7 +43,9 @@ echo "10/13 the first week tour, card by card, and pages that open at the top"; 
 # icon (tests/e2e/layout-check.mjs), the games being read in 13g.
 echo "11/13 back button from every screen, and the words in their boxes on every screen it lands on"; run "the back sweep" 200 node tests/e2e/back-sweep.mjs 2>&1 | tail -1 | tee /tmp/edu_back.txt; grep -q " 0 failed" /tmp/edu_back.txt || fail=1
 echo "12/13 dark theme: every word readable, paper screens light"; run "the dark theme" 200 node tests/e2e/dark-contrast.mjs 2>&1 | tail -1 | tee /tmp/edu_dark.txt; grep -q " 0 failed" /tmp/edu_dark.txt || fail=1
-echo "13/13 standalone page keeps its data"; run "the standalone page" 120 node tests/site.test.mjs 2>&1 | tail -1 | tee /tmp/edu_site.txt; grep -q " 0 failed" /tmp/edu_site.txt || fail=1
+# Since pass NF (EARMARKS A100) the standalone page check opens a lesson in a frame as tall as the page, on a phone and on a laptop, and
+# reads where the scroll cue stands as the page around the frame scrolls: about 70 seconds where it took about 46, so its limit is 150.
+echo "13/13 standalone page keeps its data"; run "the standalone page" 150 node tests/site.test.mjs 2>&1 | tail -1 | tee /tmp/edu_site.txt; grep -q " 0 failed" /tmp/edu_site.txt || fail=1
 echo "13b/13 the scroll cue on a phone lesson"; run "the scroll cue" 120 node tests/e2e/scroll-cue.mjs 2>&1 | tail -1 | tee /tmp/edu_cue.txt; grep -q " 0 failed" /tmp/edu_cue.txt || fail=1
 echo "13c/13 the quick look back and Action Items, walked as a student and an educator"; run "the quick look back" 240 node tests/e2e/review-walk.mjs 2>&1 | tail -1 | tee /tmp/edu_review.txt; grep -q " 0 failed" /tmp/edu_review.txt || fail=1
 # Game breaks, elective stories and an early learner's Let's Read (pass MB): about three minutes since pass MF (a reader's
@@ -61,8 +63,10 @@ echo "13d/13 game breaks, elective stories and Let's Read, walked as a student a
 # 16, a lesson's own letters and print at five tablet and laptop sizes, and section 17, a hyphenated word kept whole at six widths, each
 # in both themes) about three and a half more, past two thirds of thirty-three, so the limit is fifty, about twice its time. Since round
 # one's screen read section 18 (sixteen lesson lines' last words at six widths, in both themes) adds about two minutes alone (123
-# seconds in round two's code read), and fifty minutes is still about twice the step's time.
-echo "13e/13 question pictures, More Info, the Wonder pictures and the read-along"; run "the question screens" 3000 node tests/e2e/question-screens.mjs 2>&1 | tail -1 | tee /tmp/edu_qs.txt; grep -q " 0 failed" /tmp/edu_qs.txt || fail=1
+# seconds in round two's code read), and fifty minutes is still about twice the step's time. Pass NF's (section 16 widened, 16b, 16c and
+# 16d, Q90's four colors and a counted row's edge as drawn) took it to 2,019 seconds in the pass's first full run, past two thirds of fifty
+# minutes, so the limit is 4,000 seconds, about twice its time.
+echo "13e/13 question pictures, More Info, the Wonder pictures and the read-along"; run "the question screens" 4000 node tests/e2e/question-screens.mjs 2>&1 | tail -1 | tee /tmp/edu_qs.txt; grep -q " 0 failed" /tmp/edu_qs.txt || fail=1
 # A game's spoken welcome and its demonstration (pass MP, Mikey's notes of October 26, 2026): a tile opens on it, a child's own taps
 # wait, the play clock waits, Begin, Skip, the round arrow, the Instructions link, the speaker, a visit after leaving, a computer's
 # key press and numbers, and less motion; since round two two short screens played whole and the claude.ai preview's page-tall frame.
@@ -102,14 +106,17 @@ echo "13k/13 every drawing on an answer tile, at its edge, in both themes"; run 
 # Every drawing a lesson's line or a question's own picture puts on the dark theme's light paper reads at its edge (pass NE, EARMARKS A92,
 # found by the screen read beyond A89's tiles; the light theme's paper is white, a light tile's color, which 13k reads), none waiting,
 # and every kind a lesson or a question shows read or left out by name: about two and a half minutes alone, so its limit of five
-# minutes is about twice its time.
-echo "13l/13 every drawing on the dark theme's lesson paper, at its edge"; run "the paper edges" 300 node tests/e2e/paper-edges.mjs 2>&1 | tail -1 | tee /tmp/edu_paper.txt; grep -q " 0 failed" /tmp/edu_paper.txt || fail=1
+# minutes was about twice its time. Since pass NF (EARMARKS A98) it reads the 31 kinds of diagram too, their guides aside, More Info's
+# paper boxes and the paper's palette, about eight and a half minutes alone, so its limit is about twice that.
+echo "13l/13 every drawing on the dark theme's lesson paper, at its edge"; run "the paper edges" 1030 node tests/e2e/paper-edges.mjs 2>&1 | tail -1 | tee /tmp/edu_paper.txt; grep -q " 0 failed" /tmp/edu_paper.txt || fail=1
 # No word of a pre-K lesson line, its say-along strip or a practice round's feedback lies under the scroll cue on a short phone (pass NE,
 # EARMARKS A63, the screen read): every read-aloud pre-K lesson line at 320 by 568 and 375 by 667 in both themes, and every pre-K bank
 # after a first wrong tap and the right one, each of its six seeds in one of the four in turn, with the fix undone in the page caught on
 # every screen where the cue shows: about four and a half minutes alone, and since round one's screen read, which added the feedback read
-# every frame with the motion on and Say it again, about five and a half (330 seconds beside four readers; 278 alone since the third read's phone turned during a wobble), so its limit is eleven.
-echo "13m/13 no word under the scroll cue on a short phone, in both themes"; run "the cue's words" 660 node tests/e2e/cue-words.mjs 2>&1 | tail -1 | tee /tmp/edu_cuewords.txt; grep -q " 0 failed" /tmp/edu_cuewords.txt || fail=1
+# every frame with the motion on and Say it again, about five and a half (330 seconds beside four readers; 278 alone since the third read's phone turned during a wobble), so its limit was eleven. Since pass NF (EARMARKS A99 and A103) it reads
+# every read-aloud course's lines, the story pages with no voice and three with the voice, the questions before a pick, the say-along word
+# and the long pairs too: 369 seconds alone on pass NF's merged copy (379 on the engineer's), so its limit is 760, about twice.
+echo "13m/13 no word under the scroll cue on a short phone, in both themes"; run "the cue's words" 760 node tests/e2e/cue-words.mjs 2>&1 | tail -1 | tee /tmp/edu_cuewords.txt; grep -q " 0 failed" /tmp/edu_cuewords.txt || fail=1
 # A step stopped at its limit, or one past two thirds of it (run and slow, above), is named again here, just before the verdict.
 [ -s "$slow_file" ] && cat "$slow_file"
 if [ "$fail" = 0 ]; then echo "ALL CHECKS PASSED"; else echo "CHECKS FAILED - read the lines above"; exit 1; fi

@@ -244,12 +244,20 @@ whose first sound it asks and a word with its mate, each word named on its own: 
 three words, sock sun and map sock sun, that no other question could meet, so the echo went unseen, and with each word its own
 Sun and sock's eight drawn words, sun and sock and moon and map the only words of their sounds, asked about one word twice in 42
 of the rules test's 600 rounds; it draws soap and milk since, words its lines already say, and reads 0, 1 and 2 of 600 rounds,
-screen rounds and Quick Reviews, Think of a word 1, 6 and 2 and Put the beats together 0, 0 and 0; an earlier explanation can still name a later question's answer word, in 247 of 2,000 Sun and sock rounds and 106 of Think of a word, since a question's answer stays out of its aboutWords by design: named too, it would have a round ask about a word twice in 1,456 of 2,000, round two's code read), and a round, and
+screen rounds and Quick Reviews, Think of a word 1, 6 and 2 and Put the beats together 0, 0 and 0, and since pass NF's handoff, below, every lesson that names its words 0, 0 and 0; an earlier explanation can still name a later question's answer word, in 247 of 2,000 Sun and sock rounds and 106 of Think of a word, since a question's answer stays out of its aboutWords by design: named too, it would have a round ask about a word twice in 1,456 of 2,000, round two's code read), and a round, and
 since pass MY's round two a Quick Review, draws another question while one can be found rather than ask about a word
 it has asked about, since the first explanation answers the second ("Yes. Bird and house make birdhouse." before
-"Which word do you hear in birdhouse?"). In a round as the screen builds it, the prompts of the last two rounds are
+"Which word do you hear in birdhouse?"). Since pass NF a question its own bank cannot draw without an echo hands its turn to the
+lesson's other banks that are not traces, as a bank with nothing new does, in a round and in a Quick Review, the first whose question
+neither repeats nor echoes taking it: Hear it in a word asks its yes or no about H and W alone (round one's lesson read), so once its
+letter and sound questions had asked about H and W, the yes or no could only ask about one of them again (58 of the rules test's 600
+rounds, 77 of the screen's and 58 Quick Reviews). The handoff costs time once every word is used: each later echo then tries
+every other bank forty times and keeps the echo when none is free, so a pre-K lesson that names its words builds a triple dose three to
+five times slower than before (Spaces between words 24.4 milliseconds where it took 8.0, Two words make one 12.7 where it took 3.0, 27 at
+the most, on the two-CPU machine pass NF's code read timed it on); a round with no echo draws exactly as before, and every round and
+Quick Review the handoff changes had an echo before and has none after (the code read, every module at seeds 1 to 200). Since round two's code read a round's turn goes only to a question that names what it asks (its words, or what it asks the first of; in a tracing lesson with choice questions, any choice question): a question that names nothing never echoes, so it took every turn the others handed on, and in a triple dose built after two rounds of one dose Words in a sentence's yes or no, whose three such questions are each answered Yes, came 4.31 times in 15 and a child who always tapped Yes scored 78.8 percent on it; with the rule it comes 3.00 times and reads 71.1, its own lean with no handoff 70.2 (EARMARKS A112). The rule changes no round of one dose and only four lessons' triple doses, and gives back 1.5 of the 19.4 echoes the handoff takes out of a triple dose summed over the 29 lessons it reaches, where the read's first fix, a bank's share of the round, gave back 7.5 and read 73.0; a Quick Review keeps the handoff without it, where it changed none of 6,555. In a round as the screen builds it, the prompts of the last two rounds are
 avoided for ten tries, and the echo keeps twenty tries of its own after them (round two's code read: with both in the
-first ten, 48 of 2,000 rounds of Two words make one asked about one word twice; now 6). A wrong tap's reason may still
+first ten, 48 of 2,000 rounds of Two words make one asked about one word twice; then 6, and 0 since pass NF's handoff). A wrong tap's reason may still
 name a word a later question asks about: a child hears it only after tapping that wrong choice, and the later question
 is then a retest after the correction.
 

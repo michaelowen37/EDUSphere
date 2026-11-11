@@ -58,6 +58,11 @@ export function wordingFlags(q) {
   const lowName = allText.match(/\b(alamo|liberty bell|statue of liberty|rio grande|mexican|mexico|texan|texans|texas|industrial revolution|united states|american|britain|british|england|spanish|spain|french|france|europe|european|africa|african|asian|juneteenth|san jacinto|sam houston|stephen f|moses austin|washington|lincoln|jefferson|germany|hitler|martin luther|americans|brown v|rome|lyndon|roosevelt|kennedy|congress passes|january|february|march 1|april|june|july|august|september|october|november|december|monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b/);
   if (lowName) flags.push(`lower-case-name-${lowName[1].replace(/ /g, '-')}`);
   for (const m of allText.matchAll(/(?:^|[^\d.,/-])1 ([a-z]+s)\b/g)) if (!NOT_PLURAL.has(m[1]) && !/ss$/.test(m[1])) { flags.push(`one-${m[1]}`); break; }
+  // A count of one with a plural verb (pass NF): "1 mole of salt are dissolved", "1 block are left", "1 dot have no partner".
+  // A count of minus one is a count of one here, as the tidy step reads it (round one's code read, pass NF), and a count of one that ends a
+  // compound subject of counted things ("3 dogs and 1 cat are") keeps its plural verb, as the tidy step keeps it (round two's code read).
+  const oneVerb = allText.match(/(?:^|[^\d.,/])(?<!\b\d+ [a-z]+ and )1 ([a-z]+)(?: of [a-z]+)? (are|were|have)\b/);
+  if (oneVerb && !/^(of|and|or|to|in)$/.test(oneVerb[1])) flags.push(`one-verb-${oneVerb[2]}`);
   for (const m of allText.matchAll(/\b(a|an) (\d[\d,]*)\b/gi)) if (m[1].toLowerCase() !== articleFor(m[2])) { flags.push(`article-${m[1]}-${m[2]}`); break; }
   // A or an by sound (pass IC): a owl, an cat. Words that start with a vowel letter but a consonant sound (a one, a unit,
   // a European) and the silent-h words (an hour, an honest) are left alone.

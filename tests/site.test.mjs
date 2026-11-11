@@ -143,6 +143,79 @@ ok("What's new stays closed after a reload, because Got it was remembered", news
   const moved = await shows('[role="dialog"][aria-label="What\'s new"]');
   ok("in a page-tall frame, What's new opens at the top of what shows and stays put while the page scrolls (pass MB)", !!news.r && news.r.top >= news.top && news.r.top <= news.top + 40 && !!moved.r && moved.r.top === news.r.top, { news, moved });
   await tall.close(); server.close(); }
+// The scroll cue in a frame as tall as the page (pass NF, EARMARKS A100). In plain terms: the cue is fixed to the bottom of the window it is
+// drawn in, and decides whether to show by what of the page shows; in a frame as tall as the page (the claude.ai preview) that bottom is the
+// page's own foot, so before pass NF the cue for a lesson's line was drawn about 4,400 pixels below what showed, and stayed drawn there once
+// the page around the frame scrolled Next into view. The frame here is served from another origin than the page around it, 5,000 pixels tall
+// and 120 down, as the pop-ups' frame above is. On a 320 by 568 phone and a 1280 by 560 laptop (where .edu-wrap is zoomed 1.08), an
+// educator's walk-through opens Helpers all around, whose first line's Next sits below what shows, and the cue must stand 14 pixels (in the
+// zoomed pixels) above the foot of what shows, within a pixel and a half either way; on the phone it must follow that foot when the page
+// around the frame scrolls 100 pixels, go away once that page scrolls Next into view, come back at the top, and a tap on it must bring Next
+// into view. The fix undone in the frame (the cue's bottom set back to 14 pixels above the frame's own foot by a style that outranks it)
+// is planted and caught, by how far below what shows the cue then stands.
+{ const http = await import('node:http');
+  const html = readFileSync('index.html');
+  const server = http.createServer((req, res) => {
+    res.writeHead(200, { 'content-type': 'text/html' });
+    if (req.url.startsWith('/tall')) res.end(`<!doctype html><meta charset="utf-8"><body style="margin:0"><div style="height:120px"></div><iframe id="app" sandbox="allow-scripts allow-same-origin allow-forms" style="border:0;width:100%;height:5000px;display:block" src="http://127.0.0.1:${server.address().port}/index.html"></iframe><div style="height:600px"></div></body>`);
+    else res.end(html);
+  });
+  await new Promise((r) => server.listen(0, r)); const port = server.address().port;
+  const seen = {};
+  for (const [W, H] of [[320, 568], [1280, 560]]) {
+    const ctx = await b.newContext({ viewport: { width: W, height: H }, hasTouch: W < 700 }); const op = await ctx.newPage();
+    await op.goto(`http://localhost:${port}/tall`);
+    const fr = op.frames().find((x) => x.url().includes('127.0.0.1'));
+    await fr.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'welcome', null, { timeout: 30000 }); await op.waitForTimeout(1000);
+    const tap = (name) => fr.evaluate((n) => { const el = [...document.querySelectorAll('button')].find((x) => x.textContent.trim() === n || x.getAttribute('aria-label') === n); if (el) el.click(); return !!el; }, name);
+    await tap('Educator Login'); await op.waitForTimeout(300);
+    await fr.fill('input[placeholder="PIN"]', '2468'); await fr.fill('input[placeholder="PIN again"]', '2468');
+    await fr.fill('input[placeholder="This device\'s name"]', 'Cue'); await fr.selectOption('select[aria-label="Your state"]', 'TX');
+    await tap('Create account'); await op.waitForTimeout(1500);
+    for (const n of ['Skip tour', 'Later', 'Got it', 'Later', 'Got it']) { await tap(n); await op.waitForTimeout(700); }
+    await tap('Walk through early years'); await fr.waitForFunction(() => window.__eduTest.screen === 'overview', null, { timeout: 10000 }); await op.waitForTimeout(500);
+    await fr.evaluate(() => window.__eduTest.openModule('helpers-all-around')); await fr.waitForFunction(() => window.__eduTest.screen === 'lesson', null, { timeout: 10000 });
+    await op.waitForTimeout(700);   // past the settle-scroll (pass JK), which brings the frame's top to the screen's top 80 and 320 ms after a screen opens
+    // Where the cue stands against what shows of the frame (the page around it scrolled y, the frame 120 down), in the frame's pixels.
+    const at = async (y) => { await op.evaluate((t) => window.scrollTo(0, t), y); await op.waitForTimeout(900);
+      const r = await fr.evaluate(() => { const c = document.querySelector('[data-scroll-cue]'); const n = document.querySelector('[data-lesson-next]'); const w = document.querySelector('.edu-wrap');
+        return { cue: c ? Math.round(c.getBoundingClientRect().bottom * 10) / 10 : null, next: n ? Math.round(n.getBoundingClientRect().bottom) : null, zoom: w ? parseFloat(getComputedStyle(w).zoom) || 1 : 1 }; });
+      const foot = (await op.evaluate(() => window.scrollY)) - 120 + H; return { ...r, foot, want: Math.round((foot - 14 * r.zoom) * 10) / 10 }; };
+    const placed = (s) => s.cue !== null && Math.abs(s.cue - s.want) <= 1.5;
+    const top = await at(0); seen[`${W} by ${H}`] = { top, placed: placed(top) };
+    if (W < 700) {
+      const down = await at(100); const nextIn = await at(Math.max(0, top.next + 120 - H + 20)); const back = await at(0);
+      // A tap on the cue, where it stands on the screen, scrolls the page around the frame until Next shows.
+      const box = await fr.evaluate(() => { const c = document.querySelector('[data-scroll-cue]'); if (!c) return null; const q = c.getBoundingClientRect(); return { x: q.left + q.width / 2, y: q.top + q.height / 2 }; });
+      if (box) { await op.mouse.click(box.x, box.y + 120); await op.waitForTimeout(1500); }
+      const tapped = await fr.evaluate(() => ({ cue: !!document.querySelector('[data-scroll-cue]'), next: Math.round(document.querySelector('[data-lesson-next]').getBoundingClientRect().bottom) }));
+      const shownTo = (await op.evaluate(() => window.scrollY)) - 120 + H;
+      // The plant: the cue's bottom set back to the frame's own foot, read at the top, then taken away.
+      await op.evaluate(() => window.scrollTo(0, 0)); await op.waitForTimeout(900);
+      await fr.evaluate(() => { const s = document.createElement('style'); s.id = 'cue-foot-plant'; s.textContent = '[data-scroll-cue] { bottom: calc(14px + env(safe-area-inset-bottom, 0px)) !important; }'; document.head.appendChild(s); });
+      const planted = await at(0); await fr.evaluate(() => { const s = document.getElementById('cue-foot-plant'); if (s) s.remove(); });
+      Object.assign(seen[`${W} by ${H}`], { down, follows: placed(down), nextIn, gone: nextIn.cue === null, back, returns: placed(back), tapped, nextShown: !!box && !tapped.cue && tapped.next <= shownTo, plantedBelow: planted.cue === null ? null : Math.round(planted.cue - planted.foot) });
+      // Since round one's screen read (pass NF): a practice round after a first wrong tap (p4-soe-first, seed 1) and a story page opened with no
+      // voice (Bear hides), each read at the top of the page around the frame, the cue 14 pixels above the foot of what shows.
+      await op.evaluate(() => window.scrollTo(0, 0)); await op.waitForTimeout(400);
+      const practice = await fr.evaluate(async () => { window.__eduTest.showQuestion('p4-soe-first', 1); for (let k = 0; k < 60 && !(window.__eduTest.screen === 'practice' && window.__eduTest.question); k++) await new Promise((r) => setTimeout(r, 50));
+        const q = window.__eduTest.question; if (!q) return null; const c = q.choices.find((x) => x !== q.answer); const b = [...document.querySelectorAll('button[data-choice]')].find((x) => x.getAttribute('data-choice') === c); if (!b) return null; b.click();
+        await new Promise((r) => setTimeout(r, 150)); const check = [...document.querySelectorAll('button')].find((x) => x.textContent.trim() === 'Check answer'); if (!check) return null; check.click(); return true; });
+      const atPractice = practice ? await at(0) : null;
+      await fr.evaluate(() => { window.__voice = window.speechSynthesis; Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: undefined }); window.__eduTest.openStory('hear-it-in-a-word'); });
+      await op.waitForTimeout(400); const atStory = await at(0);
+      await fr.evaluate(() => { Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: window.__voice }); });
+      Object.assign(seen[`${W} by ${H}`], { atPractice, practicePlaced: !!atPractice && placed(atPractice), atStory, storyPlaced: placed(atStory) });
+    } else {
+      // The laptop with the page around the frame scrolled 100 pixels (round one's screen read): the cue follows the foot of what shows.
+      const down = await at(100); Object.assign(seen[`${W} by ${H}`], { down, follows: placed(down) }); await op.evaluate(() => window.scrollTo(0, 0));
+    }
+    await ctx.close();
+  }
+  server.close();
+  const phone = seen['320 by 568']; const laptop = seen['1280 by 560'];
+  ok(`in a page-tall frame the scroll cue stands 14 pixels above the foot of what shows, follows it as the page around the frame scrolls, goes away when Next shows and comes back, and a tap on it brings Next into view, and since round one's screen read the same on a practice round after a wrong tap and on a story page, and on the laptop as the page scrolls (pass NF, EARMARKS A100; on a 320 by 568 phone the cue's bottom at ${phone.top.cue} for ${phone.top.want}, and at ${laptop.top.cue} for ${laptop.top.want} on a 1280 by 560 laptop at its zoom of ${laptop.top.zoom}; the fix undone, planted, caught: the cue ${phone.plantedBelow} pixels below what shows)`,
+    phone.placed && phone.follows && phone.gone && phone.returns && phone.nextShown && phone.practicePlaced && phone.storyPlaced && laptop.placed && laptop.follows && laptop.top.zoom > 1 && phone.plantedBelow !== null && phone.plantedBelow > 1000, seen); }
 // A tour replayed while What's new still waits (pass MB, the screen check): one pop-up at a time (pass HL), and the news
 // opens when the tour ends.
 { const ctx = await b.newContext({ viewport: { width: 1280, height: 800 } }); const rp = await ctx.newPage();

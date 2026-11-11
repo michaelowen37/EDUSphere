@@ -193,6 +193,34 @@ const rowLook = () => page.evaluate(() => {
   }
   const dotCases = found.filter((r) => r.dots);
   ok('a long row and a close bunch draw their dots one size in the buttons, after the right tap and in More Info, which draws them countable', dotCases.length >= 2 && dotCases.every((r) => r.buttonSpread <= 1.06 && r.explainSpread <= 1.06 && r.sheetSmallest >= 12 && r.sheetSpread <= 1.06), found);
+  // Since round one's screen read and the lead's look at its fix (pass NF): every shape of a counted row draws an edge of a pixel and a
+  // half or more on the screen, read through its drawing's own scale to the screen (getScreenCTM), or as given where its stroke does not
+  // scale, on More and fewer's look rows (p4-looks-like-more, seeds 1 to 4) at 390 by 844 and at 320 by 568, where the row shrinks to fit
+  // its tile, on the tiles and in More Info. Before the round a look row's little circles drew 1.2 pixels at 390, 1.03 at 320 and 0.72 in
+  // More Info, and the round's first fix, a floor in the row's own units, 1.28 at 320. Plants, at 320 on the tiles and in More Info: that
+  // floor put back in the page (caught at 320), and the edge before the round (4 units, caught in both); each put back as it was.
+  const rowEdgePx = (sc, plant) => page.evaluate(([s, pl]) => [...document.querySelectorAll(`${s} svg svg circle, ${s} svg svg path`)].filter((el) => el.getAttribute('stroke')).map((el) => {
+    const was = [el.getAttribute('stroke-width'), el.getAttribute('vector-effect')]; const cell = Number(el.ownerSVGElement.getAttribute('width'));
+    if (pl) { el.setAttribute('stroke-width', String(pl === 'units' ? Math.max(4, 150 / cell) : 4)); el.removeAttribute('vector-effect'); }
+    const cs = getComputedStyle(el); const m = el.getScreenCTM(); const px = cs.vectorEffect === 'non-scaling-stroke' ? parseFloat(cs.strokeWidth) : parseFloat(cs.strokeWidth) * Math.hypot(m.a, m.b);
+    if (pl) { el.setAttribute('stroke-width', was[0]); if (was[1] !== null) el.setAttribute('vector-effect', was[1]); }
+    return Math.round(px * 100) / 100; }), [sc, plant]);
+  const rowReads = []; const rowPlants = {};
+  for (const [w, h] of [[390, 844], [320, 568]]) {
+    await page.setViewportSize({ width: w, height: h }); await page.waitForTimeout(300);
+    for (const seed of [1, 2, 3, 4]) {
+      const q = await show('p4-looks-like-more', seed); const tiles = await rowEdgePx('button[data-choice]', false);
+      if (w === 320 && seed === 1) { rowPlants.tileUnits = Math.min(...await rowEdgePx('button[data-choice]', 'units')); rowPlants.tileBefore = Math.min(...await rowEdgePx('button[data-choice]', 'before')); }
+      await settle(); await page.locator(`button[data-choice="${q.answer}"]`).click(); await page.getByRole('button', { name: 'Check answer' }).click(); await page.waitForTimeout(1200);
+      let info = []; if (await tapIf('More Info')) { await page.waitForTimeout(700); info = await rowEdgePx('[data-more-info]', false);
+        if (w === 320 && seed === 1) { rowPlants.infoUnits = Math.min(...await rowEdgePx('[data-more-info]', 'units')); rowPlants.infoBefore = Math.min(...await rowEdgePx('[data-more-info]', 'before')); }
+        await page.locator('[data-more-info-close] button').first().click({ force: true }).catch(() => {}); await page.waitForTimeout(300); }
+      rowReads.push({ w, seed, tiles: tiles.length, tileLeast: tiles.length ? Math.min(...tiles) : null, info: info.length, infoLeast: info.length ? Math.min(...info) : null });
+    }
+  }
+  const rowShapes = rowReads.reduce((n, r) => n + r.tiles + r.info, 0);
+  ok(`every shape of a counted row draws an edge of a pixel and a half or more on the screen, on More and fewer's look rows at 390 by 844 and at 320 by 568, where the row shrinks to fit its tile, on the tiles and in More Info (round one's screen read and the lead's look, pass NF; ${rowShapes} shapes read; the floor in the row's own units put back, ${rowPlants.tileUnits} pixels at 320, and the edge before the round, ${rowPlants.tileBefore} on the tile and ${rowPlants.infoBefore} in More Info, each planted, caught)`,
+    rowReads.length === 8 && rowReads.every((r) => r.tiles >= 5 && r.info >= 5 && r.tileLeast >= 1.49 && r.infoLeast >= 1.49) && rowPlants.tileUnits < 1.49 && rowPlants.tileBefore < 1.49 && rowPlants.infoBefore < 1.49, { rowReads, rowPlants });
   const cueSeen = [];
   await page.setViewportSize({ width: 375, height: 667 }); await page.waitForTimeout(300);
   for (const [gen, seed] of [['pm-same-things', 1], ['ps-find-match', 1], ['pm-different-vehicles', 2]]) {
@@ -818,11 +846,14 @@ const ponder = () => page.evaluate(() => {
     h.right = await page.evaluate(() => (document.querySelector('.edu-cheer') || {}).textContent || '');
     ok(`${theme}: after two wrong orders the next step's picture wears the "go here" ring, seen where it shows, until it is tapped, each step in turn, and none before then; a tap on another picture takes no number, wobbles, and leaves the ring (Q58)`, h.start.length === 0 && h.checked1.length === 0 && h.again1.length === 0 && h.checked2.length === 0 && h.again2.length === 1 && h.again2[0].c === st[0] && shows(h.again2[0]) && h.offTrack.length === 1 && h.offTrack[0].c === st[0] && shows(h.offTrack[0]) && h.offTap.step === null && h.offTap.nudged && /\bedu-wobble\b/.test(h.offTap.cls) && h.offTap.edge !== plainEdge && !h.settled
       && h.steps.length === 3 && h.steps.every((x, i) => x.length === 1 && x[0].c === st[i] && /\bedu-breathe\b/.test(x[0].cls) && /the next one to tap$/.test(x[0].label) && shows(x[0])) && h.done.length === 0 && /^Correct/.test(h.right), { theme, plainEdge, h });
-    // Q56 (Mikey's answer, pass MP, "Q56 - A"): the yellow square on a question's tile wears its darker edge, in both themes, and its
-    // fill is still the yellow the color lessons name.
-    await show('p3-tap-yellow-green', 1);
-    const yEdge = await page.evaluate(() => { const r = [...document.querySelectorAll('button[data-choice*="yellow"] svg path, button[data-choice*="yellow"] svg rect')].find((el) => (el.getAttribute('fill') || '').toUpperCase() === '#F0C93A'); return r ? { stroke: r.getAttribute('stroke'), width: Number(r.getAttribute('stroke-width')), fill: r.getAttribute('fill') } : null; });
-    ok(`${theme}: Q56's yellow square wears its darker edge on a question's tile, its yellow unchanged`, !!yEdge && yEdge.stroke === '#9C7A14' && yEdge.width >= 3 && yEdge.fill === '#F0C93A', yEdge); }
+    // Q90 (Mikey's answer, pass NF, "Q90 - A"; Q56's yellow before it): all four colors on a question's tiles wear a thin edge of their
+    // own shade, darker in the light theme and lighter on the dark theme's tiles, each fill still the color the lessons name; read as the
+    // page draws them on Yellow and green's squares (yellow, green and blue) and Red and blue's (red and blue).
+    const EDGES = { light: { '#D9534F': '#9F2622', '#4A7FC1': '#2D5383', '#F0C93A': '#9C7A14', '#5E9A62': '#3D6B41' }, dark: { '#D9534F': '#E8837F', '#4A7FC1': '#7FA7DC', '#F0C93A': '#FAE289', '#5E9A62': '#89C28D' } };
+    const colorEdges = () => page.evaluate(() => [...document.querySelectorAll('button[data-choice] svg rect, button[data-choice] svg path, button[data-choice] svg circle')].filter((el) => ['#D9534F', '#4A7FC1', '#F0C93A', '#5E9A62'].includes((el.getAttribute('fill') || '').toUpperCase())).map((el) => ({ fill: el.getAttribute('fill').toUpperCase(), stroke: (el.getAttribute('stroke') || '').toUpperCase(), width: Number(el.getAttribute('stroke-width')) })));
+    await show('p3-tap-any-colour', 1); const four = await colorEdges(); await show('p3-tap-red-blue', 1); four.push(...await colorEdges());
+    const fills = new Set(four.map((x) => x.fill));
+    ok(`${theme}: Q90's four colors each wear a thin edge of their own shade on a question's tile (${theme === 'dark' ? 'lighter' : 'darker'}), the fills unchanged`, fills.size === 4 && four.every((x) => x.stroke === EDGES[theme][x.fill] && x.width >= 3), four); }
   // Round one's screen check (pass MO): the badge sits on its picture's corner, clear of the drawing it numbers, at 320 and 390
   // pixels; the scroll cue waits until every step is tapped, since after one tap it pointed at a Check answer still closed (320 by
   // 568); a laptop keeps a direction's pictures together at a phone's size (Mikey's pass MH words: "small and separated by a lot of
@@ -1506,7 +1537,29 @@ const ponder = () => page.evaluate(() => {
 //    theme, 1.4 times or more (the lesson's scale is 1.45), each line's Next above the fold at those sizes (the earmark's ask, since a grown
 //    letter makes its line taller); on the phone the letters stay at 44 pixels and the print at 28 or less. Its
 //    plants, on the tablet in the light theme: the letter set back to 44 pixels, the print to 28, and the run drawn at 0.7 by a transform
-//    its font size cannot see, each caught.
+//    its font size cannot see, each caught. Since pass NF (EARMARKS A101) five lines more, the letters and print a pair holds: two letters
+//    side by side (Start or end of the name's D and N, line 11), letters stacked over a row of drawings (its N   P over the net and the pig,
+//    line 13), letters stacked under a drawing (Write it by its sounds' F   X under the fox, line 6), a letter beside print (Look and write's
+//    S beside Sam, line 9, the letter read) and a stacked pair of prints inside a stacked pair (its Sam over Mia over Ben, line 8, the first
+//    print read), each 1.4 times the phone's or more and each line's Next above the fold, and each set back to the phone's size, planted,
+//    caught.
+// 16b. EARMARKS A102 (pass NF, pass NE's round one's screen read): writings shown together are drawn at one size (PrintFitGroup in ui.jsx).
+//    Every read-aloud lesson line whose picture is a pair of prints (eight lines in the three writing lessons), at 320 by 568, 375 by 667 and
+//    390 by 844 in both themes: every print in the pair at one font size, each on one line, each inside its box. Before the fix Spaces
+//    between words' line 7 drew Brown bears splash. at 22 pixels in the light theme beside two at 28 on a 320-pixel phone. Its plant, on
+//    that line at 320 in the light theme: the shorter prints set back to 28 pixels, as each fitted alone drew them, caught.
+// 16c. Round one's lesson read (pass NF): a lone letter offered among pictures draws as a picture does. Look and write's Which one is a real
+//    letter? (p3-look-real, seeds 1 and 2) at 320 by 568, 375 by 667, 390 by 844 and 1280 by 800 in both themes: the letter drawn at 56
+//    pixels (LETTER_TILE), its box at least three quarters as tall as the drawing of marks beside it, and on the laptop the answers' column
+//    420 pixels or less at the page's own zoom (PICTURE_COLUMN). Before the fix the letter drew at 18 pixels, the smallest thing on the screen, in a column as wide
+//    as the laptop's card. Its plants, at 390 in the light theme: the letter set back to 18 pixels, and the column let out to the card's
+//    width at 1280, each caught. Since round one's screen read its box is also at most a quarter taller than the drawing of marks (68 beside
+//    64), the letter at 90 pixels planted, caught.
+// 16d. Round one's screen read (pass NF): writings a question compares as its answers are drawn at one size (PrintGroupIf in ui.jsx), as a
+//    lesson's pair is (16b): every bank whose answers are two or more prints, at seeds 1 to 8 at 320 by 568 in both themes. Before the fix
+//    each tile fitted its writing alone, and the answer that has its spaces, the widest, drew smallest (p4-space-which seeds 2, 3 and 5
+//    drew Brown bears splash. at 20 pixels beside 21 and 22). Its plant, on p4-space-which seed 2 in the light theme: each print fitted
+//    alone in the page as FitText fits it, caught.
 // 17. Round one's lesson read (pass NE): a hyphenated word in a lesson line stays whole on its line (Write it by its sounds broke grown-up as
 //    "grown- / up" at 375 pixels in both themes): twelve pre-K lines with grown-up, grown-ups or middle-sized, read at 320, 340, 360, 375,
 //    390 and 412 pixels wide in both themes, every hyphenated word's text on one line. Its plant: a word let break, caught.
@@ -1636,15 +1689,17 @@ const ponder = () => page.evaluate(() => {
   // Section 16 (pass NE, EARMARKS A93). The drawn size of a line's own letters or print: the box of its last character's text, which every
   // scale and transform above it reaches, read with the font size the code set. A plant is set, read and put back in one call, so a fitted
   // text never refits between them.
-  const A93_LINES = [['start-or-end', 1, 'letter'], ['start-or-end', 14, 'run'], ['a-and-b', 2, 'lit'], ['spaces-between-words', 1, 'print']];
+  // Since pass NF (EARMARKS A101) five lines more, by kinds of their own (pair2, stackrun, stackdraw, mixed and printstack, the print read as print).
+  const A93_LINES = [['start-or-end', 1, 'letter'], ['start-or-end', 14, 'run'], ['a-and-b', 2, 'lit'], ['spaces-between-words', 1, 'print'], ['start-or-end', 11, 'pair2'], ['start-or-end', 13, 'stackrun'], ['write-by-sounds', 6, 'stackdraw'], ['look-and-write', 9, 'mixed'], ['look-and-write', 8, 'printstack']];
+  const PRINTISH = ['print', 'printstack']; const A101_KINDS = ['pair2', 'stackrun', 'stackdraw', 'mixed', 'printstack'];
   const a93Read = (pg, kind, how = null) => pg.evaluate(([kd, hw]) => { const card = document.querySelector('.edu-wrap .edu-rise'); if (!card) return null;
-    const host = kd === 'print' ? card.querySelector('[data-print] [data-fit-text]') : [...card.querySelectorAll('p')].find((p) => p.style.letterSpacing === '6px'); if (!host) return null;
+    const host = kd === 'print' || kd === 'printstack' ? card.querySelector('[data-print] [data-fit-text]') : [...card.querySelectorAll('p')].find((p) => p.style.letterSpacing === '6px'); if (!host) return null;
     const was = host.getAttribute('style') || ''; if (hw === 'scale') host.style.transform = 'scale(0.7)'; else if (hw) host.style.fontSize = hw;
     const walker = document.createTreeWalker(host, NodeFilter.SHOW_TEXT); let last = null; let n; while ((n = walker.nextNode())) if (n.textContent.trim()) last = n;
     let out = null; if (last) { const t = last.textContent; let i = t.length - 1; while (i > 0 && !t[i].trim()) i -= 1; const rg = document.createRange(); rg.setStart(last, i); rg.setEnd(last, i + 1);
       const nx = document.querySelector('[data-lesson-next]'); out = { drawn: +rg.getBoundingClientRect().height.toFixed(1), font: parseFloat(getComputedStyle(host).fontSize), text: host.textContent.replace(/\s+/g, ' ').trim(), next: nx ? Math.round(nx.getBoundingClientRect().bottom) : null, H: window.innerHeight }; }
     if (hw) host.setAttribute('style', was); return out; }, [kind, how]);
-  const reads93 = []; const phone93 = {}; let plantLetter93 = null; let plantPrint93 = null; let plantRun93 = null; let nearLetter93 = null;
+  const reads93 = []; const phone93 = {}; let plantLetter93 = null; let plantPrint93 = null; let plantRun93 = null; let nearLetter93 = null; const plants101 = {};
   for (const theme of ['light', 'dark']) for (const [w, h] of [[390, 844], [820, 1180], [1280, 800], [1280, 720], [768, 1024]]) {
     const { ctx, pg } = await openAs(theme, w, h);
     for (const [mod, line, kind] of A93_LINES) { await toLine(pg, mod, line); await pg.waitForTimeout(300); const r = await a93Read(pg, kind); reads93.push({ theme, w, h, mod, line, kind, ...(r || { drawn: null, font: null, next: null }) });
@@ -1654,11 +1709,62 @@ const ponder = () => page.evaluate(() => {
           // Since round one's code read: just under the bar, 1.35 times a phone's 44 pixels, caught, so the bar is pinned from below too.
           const q = await a93Read(pg, kind, (44 * 1.35).toFixed(1) + 'px'); nearLetter93 = !!q && q.drawn >= 1.3 * phone93['light ' + kind] && !(q.drawn >= bar); }
         if (kind === 'print') { const p = await a93Read(pg, kind, '28px'); plantPrint93 = !!p && !(p.drawn >= bar); }
-        if (kind === 'run') { const p = await a93Read(pg, kind, 'scale'); plantRun93 = !!p && p.font === r.font && !(p.drawn >= bar); } } }
+        if (kind === 'run') { const p = await a93Read(pg, kind, 'scale'); plantRun93 = !!p && p.font === r.font && !(p.drawn >= bar); }
+        // A101's lines set back to a phone's size, each caught.
+        if (A101_KINDS.includes(kind)) { const p = await a93Read(pg, kind, PRINTISH.includes(kind) ? '28px' : '44px'); plants101[kind] = !!p && !(p.drawn >= bar); } } }
     await ctx.close(); }
   const wide93 = reads93.filter((x) => x.w >= 768); const phones93 = reads93.filter((x) => x.w === 390); const below93 = wide93.filter((x) => !(x.next > 0 && x.next <= x.H));
-  ok(`in a lesson on a tablet and a laptop its own letters and print grow with the lesson's scale, in both themes, each drawn 1.4 times the phone's or more, each line's Next above the fold, while a phone keeps the letters at 44 pixels and the print at 28 or less (EARMARKS A93, pass NE; ${reads93.length} reads, ${below93.length} below the fold: ${wide93.map((x) => x.theme + ' ' + x.w + 'x' + x.h + ' ' + x.kind + ' ' + (phone93[x.theme + ' ' + x.kind] ? (x.drawn / phone93[x.theme + ' ' + x.kind]).toFixed(2) : 'none')).join(', ')}; the letter set back to 44, the print to 28 and the run drawn at 0.7, planted, caught, and since round one's code read a letter just under the bar, 1.35 times a phone's, caught)`,
-    reads93.length === 40 && below93.length === 0 && reads93.every((x) => x.drawn > 0 && x.font > 0) && wide93.every((x) => phone93[x.theme + ' ' + x.kind] > 0 && x.drawn >= 1.4 * phone93[x.theme + ' ' + x.kind]) && phones93.every((x) => (x.kind === 'print' ? x.font <= 28 : x.font === 44)) && plantLetter93 === true && plantPrint93 === true && plantRun93 === true && nearLetter93 === true, { reads93: reads93.map((x) => [x.theme, x.w, x.h, x.kind, x.drawn, x.font, x.next]), below93: below93.map((x) => [x.theme, x.w, x.h, x.mod, x.line]), phone93, plantLetter93, plantPrint93, plantRun93 });
+  ok(`in a lesson on a tablet and a laptop its own letters and print grow with the lesson's scale, in both themes, each drawn 1.4 times the phone's or more, each line's Next above the fold, while a phone keeps the letters at 44 pixels and the print at 28 or less (EARMARKS A93, pass NE, and since pass NF A101's letters and print in a pair, two letters, letters over a row, letters under a drawing, a letter beside print and prints stacked in a stacked pair, each set back to a phone's size, planted, caught; ${reads93.length} reads, ${below93.length} below the fold: ${wide93.map((x) => x.theme + ' ' + x.w + 'x' + x.h + ' ' + x.kind + ' ' + (phone93[x.theme + ' ' + x.kind] ? (x.drawn / phone93[x.theme + ' ' + x.kind]).toFixed(2) : 'none')).join(', ')}; the letter set back to 44, the print to 28 and the run drawn at 0.7, planted, caught, and since round one's code read a letter just under the bar, 1.35 times a phone's, caught)`,
+    reads93.length === 90 && below93.length === 0 && reads93.every((x) => x.drawn > 0 && x.font > 0) && wide93.every((x) => phone93[x.theme + ' ' + x.kind] > 0 && x.drawn >= 1.4 * phone93[x.theme + ' ' + x.kind]) && phones93.every((x) => (PRINTISH.includes(x.kind) ? x.font <= 28 : x.font === 44)) && plantLetter93 === true && plantPrint93 === true && plantRun93 === true && nearLetter93 === true && A101_KINDS.every((k) => plants101[k] === true), { reads93: reads93.map((x) => [x.theme, x.w, x.h, x.kind, x.drawn, x.font, x.next]), below93: below93.map((x) => [x.theme, x.w, x.h, x.mod, x.line]), phone93, plantLetter93, plantPrint93, plantRun93, plants101 });
+  // Section 16b (pass NF, EARMARKS A102): every lesson line whose picture is a pair of prints, its prints read in the card: each one's font
+  // size, its lines (the rects of its text) and whether it is inside its box. The plant sets the shorter prints of Spaces between words'
+  // line 7 back to 28 pixels in the page, as each fitted alone drew them at 320, and reads them again, the sizes put back after.
+  const PRINT_PAIRS = []; for (const c of L.COURSES.filter((x) => x.readAloud)) for (const m of c.modules) (m.lesson.script || []).forEach((l, i) => { const all = (v) => !!v && (v.kind === 'print' || (v.kind === 'pair' && all(v.a) && all(v.b))); if (l.show && l.show.kind === 'pair' && all(l.show)) PRINT_PAIRS.push([m.id, i + 1]); });
+  const printsRead = (pg, plant = false) => pg.evaluate((pl) => { const card = document.querySelector('.edu-wrap .edu-rise'); const xs = card ? [...card.querySelectorAll('[data-print] [data-fit-text]')] : [];
+    const was = xs.map((x) => x.style.fontSize); if (pl) xs.slice(1).forEach((x) => { x.style.fontSize = '28px'; });
+    const out = xs.map((x) => { const tops = new Set([...x.getClientRects()].filter((r) => r.width > 0).map((r) => Math.round(r.top))); const box = x.parentElement; return { size: parseFloat(getComputedStyle(x).fontSize), lines: tops.size, inside: x.scrollWidth <= box.clientWidth + 0.5 }; });
+    if (pl) xs.forEach((x, i) => { x.style.fontSize = was[i]; }); return out; }, plant);
+  const groups = []; let plantGroup = null;
+  for (const theme of ['light', 'dark']) for (const [w, h] of [[320, 568], [375, 667], [390, 844]]) { const { ctx, pg } = await openAs(theme, w, h);
+    for (const [mod, line] of PRINT_PAIRS) { await toLine(pg, mod, line); await pg.waitForTimeout(350); const r = await printsRead(pg); groups.push({ theme, w, mod, line, r });
+      if (theme === 'light' && w === 320 && mod === 'spaces-between-words' && line === 7) { const p = await printsRead(pg, true); plantGroup = p.length === 3 && new Set(p.map((x) => x.size)).size > 1; } }
+    await ctx.close(); }
+  const groupOff = groups.filter((g) => g.r.length < 2 || new Set(g.r.map((x) => x.size)).size !== 1 || g.r.some((x) => x.lines !== 1 || !x.inside));
+  ok(`writings a lesson line shows together are drawn at one size, the size the longest needs, each on one line inside its box, at 320 by 568, 375 by 667 and 390 by 844 in both themes (EARMARKS A102, pass NF; ${PRINT_PAIRS.length} lines, ${groups.length} reads; Spaces between words' shorter prints set back to 28 pixels at 320, planted, caught)`,
+    PRINT_PAIRS.length === 8 && groups.length === 48 && groupOff.length === 0 && plantGroup === true, { groupOff: groupOff.slice(0, 6).map((g) => [g.theme, g.w, g.mod, g.line, g.r]), plantGroup });
+  // Section 16c (pass NF, round one's lesson read): the lone letter among pictures read in the page, each plant put back after it is read.
+  const tileLetterRead = (pg, plant = '') => pg.evaluate((pl) => { const s = document.querySelector('[data-tile-letter]'); const svg = [...document.querySelectorAll('button[data-choice^="icon:"] svg')][0]; const grid = s && s.closest('button') && s.closest('button').parentElement;
+    if (!s || !svg || !grid) return null; const was = [s.style.fontSize, grid.style.maxWidth]; if (pl === 'small') s.style.fontSize = '18px'; if (pl === 'big') s.style.fontSize = '90px'; if (pl === 'wide') grid.style.maxWidth = 'none';
+    const wrap = document.querySelector('.edu-wrap'); const out = { font: parseFloat(getComputedStyle(s).fontSize), tall: s.getBoundingClientRect().height, marks: svg.getBoundingClientRect().height, column: grid.getBoundingClientRect().width, zoom: (wrap && parseFloat(getComputedStyle(wrap).zoom)) || 1 };
+    s.style.fontSize = was[0]; grid.style.maxWidth = was[1]; return out; }, plant);
+  const tileLetterReads = []; let plantTileSmall = null; let plantTileWide = null; let plantTileBig = null;
+  for (const theme of ['light', 'dark']) for (const [w, h] of [[320, 568], [375, 667], [390, 844], [1280, 800]]) { const { ctx, pg, isScreen } = await openAs(theme, w, h);
+    for (const seed of [1, 2]) { await pg.evaluate((s) => window.__eduTest.showQuestion('p3-look-real', s), seed); await isScreen('practice'); await pg.waitForTimeout(450); const r = await tileLetterRead(pg); tileLetterReads.push({ theme, w, seed, r });
+      if (theme === 'light' && w === 390 && seed === 1) { const p = await tileLetterRead(pg, 'small'); plantTileSmall = !!p && (p.font !== 56 || p.tall < 0.75 * p.marks);
+        const q = await tileLetterRead(pg, 'big'); plantTileBig = !!q && q.tall > 1.25 * q.marks; }
+      if (theme === 'light' && w === 1280 && seed === 1) { const p = await tileLetterRead(pg, 'wide'); plantTileWide = !!p && p.column > 420 * p.zoom + 1; } }
+    await ctx.close(); }
+  const letterOff = tileLetterReads.filter((x) => !x.r || x.r.font !== 56 || x.r.tall < 0.75 * x.r.marks || x.r.tall > 1.25 * x.r.marks || (x.w >= 1280 && x.r.column > 420 * x.r.zoom + 1));
+  ok(`a lone letter among pictures draws as a picture does: Which one is a real letter?'s letter at 56 pixels, at least three quarters as tall as the drawing of marks beside it and at most a quarter taller (since round one's screen read), in a column a phone's width on a laptop at the page's own zoom, at 320 by 568, 375 by 667, 390 by 844 and 1280 by 800 in both themes (pass NF, round one's lesson read; ${tileLetterReads.length} reads; the letter at 18 pixels, the letter at 90 pixels and the column let out to the card's width, planted, caught)`,
+    tileLetterReads.length === 16 && letterOff.length === 0 && plantTileSmall === true && plantTileBig === true && plantTileWide === true, { letterOff: letterOff.slice(0, 6), plantTileSmall, plantTileBig, plantTileWide });
+  // Section 16d (pass NF, round one's screen read): the prints in a question's answers, read in the page as 16b reads a lesson's: each one's
+  // font size, its lines and whether it is inside its box. The plant fits each print alone as FitText fits it (from 22 pixels down half a
+  // pixel at a time to 12, until it fits its own box), reads them, and puts every print's size and wrap back.
+  const PRINT_BANKS = Object.keys(L.GENERATORS).filter((g) => [1, 2, 3, 4, 5, 6, 7, 8].some((s) => (L.generateQuestion(g, s).choices || []).filter((c) => String(c).startsWith('print:')).length >= 2));
+  const choicePrints = (pg, plant = false) => pg.evaluate((pl) => { const xs = [...document.querySelectorAll('button[data-choice^="print:"] [data-print] [data-fit-text]')];
+    const was = xs.map((x) => [x.style.fontSize, x.style.whiteSpace]);
+    if (pl) for (const x of xs) { const box = x.parentElement; x.style.whiteSpace = 'nowrap'; let f = 22; x.style.fontSize = `${f}px`; while (f > 12 && x.scrollWidth > box.clientWidth + 0.5) { f -= 0.5; x.style.fontSize = `${f}px`; } }
+    const out = xs.map((x) => { const tops = new Set([...x.getClientRects()].filter((r) => r.width > 0).map((r) => Math.round(r.top))); return { size: parseFloat(getComputedStyle(x).fontSize), lines: tops.size, inside: x.scrollWidth <= x.parentElement.clientWidth + 0.5 }; });
+    if (pl) xs.forEach((x, i) => { x.style.fontSize = was[i][0]; x.style.whiteSpace = was[i][1]; }); return out; }, plant);
+  const choiceGroups = []; let plantChoices = null;
+  for (const theme of ['light', 'dark']) { const { ctx, pg, isScreen } = await openAs(theme, 320, 568);
+    for (const g of PRINT_BANKS) for (let seed = 1; seed <= 8; seed += 1) { if ((L.generateQuestion(g, seed).choices || []).filter((c) => String(c).startsWith('print:')).length < 2) continue;
+      await pg.evaluate(([gen, s]) => window.__eduTest.showQuestion(gen, s), [g, seed]); await isScreen('practice'); await pg.waitForTimeout(400); const r = await choicePrints(pg); choiceGroups.push({ theme, g, seed, r });
+      if (theme === 'light' && g === 'p4-space-which' && seed === 2) { const p = await choicePrints(pg, true); plantChoices = p.length >= 2 && new Set(p.map((x) => x.size)).size > 1; } }
+    await ctx.close(); }
+  const choiceOff = choiceGroups.filter((x) => x.r.length < 2 || new Set(x.r.map((y) => y.size)).size !== 1 || x.r.some((y) => y.lines !== 1 || !y.inside));
+  ok(`writings a question compares as its answers are drawn at one size, each on one line inside its box, at 320 by 568 in both themes (round one's screen read, pass NF; ${PRINT_BANKS.length} banks at seeds 1 to 8, ${choiceGroups.length} reads; each print fitted alone on p4-space-which seed 2, planted, caught)`,
+    PRINT_BANKS.length >= 5 && choiceGroups.length >= 80 && choiceOff.length === 0 && plantChoices === true, { choiceOff: choiceOff.slice(0, 6).map((x) => [x.theme, x.g, x.seed, x.r]), plantChoices, banks: PRINT_BANKS, reads: choiceGroups.length });
   // Section 17 (pass NE): every hyphenated word in a lesson line's words on one line, read by the rects of its own text.
   const HYPHEN_LINES = [['write-by-sounds', 3], ['write-by-sounds', 13], ['say-what-you-need', 1], ['spaces-between-words', 13], ['space-between-words', 13], ['write-to-tell', 12], ['help-a-friend', 4], ['help-a-friend', 5], ['good-friend', 12], ['feelings-show', 11], ['big-bigger-biggest', 2], ['bigger-and-smaller', 11]];
   const lineSplits = (pg) => pg.evaluate(() => { const out = []; const host = document.querySelector('.edu-wrap .edu-rise'); if (!host) return ['no line']; let read = 0;

@@ -256,13 +256,14 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
 // The stand-in note (pass LW, Mikey): his exact words, worn by a lesson line's drawing while its painting is on the way, by a
 // story's drawn fallback and by a thing drawn in place of its coloring page; on a question only in a walk-through, where no
 // child is answering, and once a picture (half of a pair never adds a second one; since pass MN round one's screen check a pair's
-// two drawings grow on a wide screen in a lesson, big={wide}, and still add none). Explanation pictures of every validated
+// two drawings grow on a wide screen in a lesson, big={wide}, and still add none; since pass NF, EARMARKS A101, big={bigHalf(v)}, a stacked
+// pair's letters and the drawing stacked with them growing too, with lesson={lessonHalf(v)} for a stacked pair of writing inside one). Explanation pictures of every validated
 // kind are drawn (pass LW; only bars and dots were).
 {
   const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
   ok('the stand-in note says exactly what Mikey asked', ui.includes(`const REPLACE_NOTE = "To be replaced with Mikey's provided image.";`) && (ui.match(/\{REPLACE_NOTE\}/g) || []).length === 1);
   ok('a lesson line whose painting is on the way, and a story drawn in its place, wear the note', ui.includes('<Picture visual={visual} animate animKey={animKey} note big lesson />') && ui.includes('<Picture visual={fallback} note />'));
-  ok('a question shows the note only in a walk-through, and half of a pair never adds a second one', (ui.match(/note=\{record\.preview \? undefined : false\}/g) || []).length === 3 && ui.includes('<Picture visual={v} note={false} bare big={wide} />') && ui.includes("const standIn = !!(record && record.preview) && /^art:/.test(c) && thingStandIn("));
+  ok('a question shows the note only in a walk-through, and half of a pair never adds a second one', (ui.match(/note=\{record\.preview \? undefined : false\}/g) || []).length === 3 && ui.includes('<Picture visual={v} note={false} bare big={bigHalf(v)} lesson={lessonHalf(v)} />') && ui.includes("const standIn = !!(record && record.preview) && /^art:/.test(c) && thingStandIn("));
   ok('the note decides a thing is a stand-in the same way the drawing does', ui.includes('const pageSerial = thing && DRAWN_PAGES[picture] ? DRAWN_PAGES[picture][0] : null;') && ui.includes('if (!page || !THING_LINE_ART[picture]) return false;'));
   ok('every explanation picture kind the rules test validates reaches the screen', ui.includes(`q.explainVisual.kind !== 'dots' && <div data-explain-picture="" style={{ marginTop: 8 }}><Picture visual={q.explainVisual}`));
 }
@@ -569,54 +570,79 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   const plants = [ui.replace("deck[dealIndex('debug', round, k, deck.length)]", 'deck[(round * 3 + k) % deck.length]'), ui.replace('round: demoRoundFor(game),', 'round: 977,'), ui.replace('bucketChips(deck, round).map(', 'shuffle(lcg(round * 104729 + 11), deck.a.items).map(')].map((src) => dealProblems(src).length > real.length);
   ok(`every board that deals a run of items deals it by logic's own functions, and the welcome's board takes its game's own round (${Object.keys(BOARDS).length} boards; each near miss caught)`, real.length === 0 && plants.every(Boolean), [...real, `near misses ${plants}`].join(' | '));
 }
-// Q56 (Mikey's answer, pass MP, "Q56 - A"): every yellow shape and color square wears a thin darker edge in both themes, and the
-// lessons' green wears one on the dark theme's paper, each edge 3 to 1 or better on white and on that paper, read from the source;
-// the square and the shapes both draw it, and the fill stays the yellow the color lessons name. Since round one's screen check the
-// green's edge is for the paper alone, as Q56 asked: a choice on the dark theme's answer tile tells its color squares, items and
-// looks so (tile), where the green read 4.2 to 1 as it was and its edge 2.2. Near misses: an edge as pale as the yellow, a square
-// that forgets its edge, a green edge drawn on the tiles too, and a color square on a tile that does not say it is on one.
+// Q90 (Mikey's answer, pass NF, "Q90 - A"): a thin edge of its own color on all four colors, in both themes, on the answer tiles and on a
+// lesson's paper alike, darker where it sits on something light (white, the light theme's tiles, the dark theme's paper) and lighter on
+// the dark theme's tiles, so the four read as one set. Until pass NF the yellow wore its darker edge everywhere and the dark theme's green
+// on paper (Q56, pass MP), and since pass ND a color took an edge on a tile only where it read under 3 to 1 there (the light theme's green,
+// the dark theme's red and blue), so on a light tile the yellow and the green were framed and the red and the blue flat (EARMARKS A94).
+// In plain terms: swatchEdge is taken from ui.jsx and run, for each theme, on a tile and on paper, for each color, and every edge it
+// gives is read: it is there (no color flat anywhere), it is the darker set on light places and the lighter set on dark tiles, it reads
+// 3 to 1 or better on every surface it sits on (white, the light theme's resting, right, wrong and ruled-out tiles and the dark theme's
+// paper for the darker set; the dark theme's resting, right, wrong and ruled-out tiles for the lighter set; THEMES and the ruled-out
+// line read from the source, never typed), and it is a shade of its own color (its hue within 12 degrees of its fill's, darker or lighter
+// than the fill as its set is, and 1.2 to 1 or more from it), while the four fills stay the colors the lessons name. The color square,
+// the shapes and the Wonder answer's little square draw it, and a choice on an answer tile says it is on one. Near misses, each caught:
+// the red's darker edge taken out (a red flat on a light tile), the lighter set used on the dark theme's paper too, the yellow's lighter
+// edge the yellow's own fill, the blue's darker edge in green, the blue's lighter edge as deep as its fill, a color square on a tile that
+// does not say so, the Wonder answer's square back to one translucent dark edge, and a dark tile in THEMES turned the red edge's color.
+// Since round one's screen read a Wonder answer's square lit while the voice reads it is read on the read-along green (readLit's background,
+// read from the source) in both themes: its edge the lit set, 3 to 1 or better there, darker than its fill and a shade of its own color,
+// and the young Wonder row passes lit; near misses, each caught: a lit square on the tile's set (the lighter one in the dark theme), Q56's
+// yellow as the lit yellow, and the row passing no lit.
 {
   const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+  const lumOf = (h) => { const v = [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4)); return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2]; };
+  const cr = (a, b) => { const x = lumOf(a); const y = lumOf(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+  const hueOf = (h) => { const [r, g, b] = [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255); const mx = Math.max(r, g, b); const mn = Math.min(r, g, b); const d = mx - mn; if (!d) return 0; const x = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; return (x * 60 + 360) % 360; };
+  const hueGap = (a, b) => { const d = Math.abs(hueOf(a) - hueOf(b)) % 360; return Math.min(d, 360 - d); };
   const edgeProblems = (src) => {
-    const hex = (re) => (src.match(re) || [])[1];
-    const yellow = hex(/const SWATCH = \{[^}]*yellow: '(#[0-9A-F]{6})'/); const yEdge = hex(/const SWATCH_EDGE = \{ yellow: '(#[0-9A-F]{6})'/); const gEdge = hex(/const SWATCH_EDGE = \{[^}]*green: '(#[0-9A-F]{6})'/);
-    const paper = hex(/mode: 'dark',[\s\S]*?paperBoard: '(#[0-9A-F]{6})'/);
-    const lum = (h) => { const v = [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4)); return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2]; };
-    const cr = (a, b) => { const x = lum(a); const y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
     const bad = [];
-    if (!yellow || !yEdge || !gEdge || !paper) return ['a color is missing from the source'];
-    if (yellow !== '#F0C93A') bad.push(`the lessons' yellow changed to ${yellow}`);
-    for (const [name, edge, on] of [['yellow on white', yEdge, '#FFFFFF'], ['yellow on the dark paper', yEdge, paper], ['green on the dark paper', gEdge, paper]]) if (cr(edge, on) < 3) bad.push(`${name} ${cr(edge, on).toFixed(2)} to 1`);
+    const grab = (re) => (src.match(re) || [])[0];
+    const parts = [grab(/const SWATCH = \{[^}]*\};/), grab(/const SWATCH_EDGE = \{[^}]*\};/), grab(/const SWATCH_TILE_EDGE = \{[^}]*\};/), grab(/const SWATCH_LIT_EDGE = \{[^}]*\};/), grab(/function swatchEdge\([^)]*\) \{[\s\S]*?\n\}/)];
+    if (parts.some((p) => !p)) return ['a color, an edge set or swatchEdge is missing from the source'];
+    let run; try { run = new Function('C', parts.join('\n') + '\nreturn { SWATCH, SWATCH_EDGE, SWATCH_TILE_EDGE, swatchEdge };'); } catch (e) { return ['swatchEdge does not run: ' + e.message]; }
+    const tones = (mode) => { const at = src.indexOf(`mode: '${mode}'`); const b = at < 0 ? '' : src.slice(at, src.indexOf('\n  },', at)); return Object.fromEntries(['surface', 'greenSoft', 'claySoft', 'paperBoard'].map((k) => [k, (b.match(new RegExp(`\\b${k}: '(#[0-9A-Fa-f]{6})'`)) || [])[1]])); };
+    const lt = tones('light'); const dk = tones('dark'); const ruled = (src.match(/if \(ruledOut\) \{ bg = C\.mode === 'dark' \? '(#[0-9A-F]{6})' : '(#[0-9A-F]{6})';/) || []).slice(1);
+    if ([...Object.values(lt), ...Object.values(dk), ...ruled].some((t) => !t) || ruled.length !== 2) return ['a tile or paper color is missing from THEMES or the ruled-out line'];
+    const light = { white: '#FFFFFF', 'the light theme\'s resting tile': lt.surface, 'its right tile': lt.greenSoft, 'its wrong tile': lt.claySoft, 'its ruled-out tile': ruled[1], 'the dark theme\'s paper': dk.paperBoard };
+    const dark = { 'the dark theme\'s resting tile': dk.surface, 'its right tile': dk.greenSoft, 'its wrong tile': dk.claySoft, 'its ruled-out tile': ruled[0] };
+    const FILLS = { red: '#D9534F', blue: '#4A7FC1', yellow: '#F0C93A', green: '#5E9A62' };
+    for (const mode of ['light', 'dark']) for (const tile of [true, false]) {
+      const { SWATCH, SWATCH_EDGE, SWATCH_TILE_EDGE, swatchEdge } = run({ mode });
+      for (const [name, fill] of Object.entries(FILLS)) {
+        if (SWATCH[name] !== fill) { bad.push(`the lessons' ${name} changed to ${SWATCH[name]}`); continue; }
+        const where = `${name} in the ${mode} theme on ${tile ? 'a tile' : 'paper'}`; const e = swatchEdge(fill, 4, tile);
+        if (!e || !e.stroke || !(e.strokeWidth >= 3)) { bad.push(`${where} wears no edge`); continue; }
+        const onDark = mode === 'dark' && tile; const want = (onDark ? SWATCH_TILE_EDGE : SWATCH_EDGE)[name];
+        if (e.stroke !== want) bad.push(`${where} wears ${e.stroke}, not its ${onDark ? 'lighter' : 'darker'} edge ${want}`);
+        for (const [place, t] of Object.entries(onDark ? dark : light)) if (cr(e.stroke, t) < 3) bad.push(`${where}: its edge ${e.stroke} reads ${cr(e.stroke, t).toFixed(2)} to 1 on ${place}`);
+        if (hueGap(e.stroke, fill) > 12) bad.push(`${where}: its edge ${e.stroke} is not a shade of its own color (${hueGap(e.stroke, fill).toFixed(0)} degrees from it)`);
+        if (onDark ? lumOf(e.stroke) <= lumOf(fill) : lumOf(e.stroke) >= lumOf(fill)) bad.push(`${where}: its edge is not ${onDark ? 'lighter' : 'darker'} than its fill`);
+        if (cr(e.stroke, fill) < 1.2) bad.push(`${where}: its edge ${e.stroke} is hardly apart from its fill (${cr(e.stroke, fill).toFixed(2)} to 1)`);
+      }
+    }
+    const litBg = (src.match(/const readLit = \(\) => \(\{ background: '(#[0-9A-Fa-f]{6})'/) || [])[1];
+    if (!litBg) bad.push('readLit\'s background is missing from the source');
+    else for (const mode of ['light', 'dark']) { const { swatchEdge } = run({ mode });
+      for (const [name, fill] of Object.entries(FILLS)) { const e = swatchEdge(fill, 5, true, true); const where = `${name} lit in the ${mode} theme`;
+        if (!e || !e.stroke) { bad.push(`${where} wears no edge`); continue; }
+        if (cr(e.stroke, litBg) < 3) bad.push(`${where}: its edge ${e.stroke} reads ${cr(e.stroke, litBg).toFixed(2)} to 1 on the read-along green ${litBg}`);
+        if (hueGap(e.stroke, fill) > 12) bad.push(`${where}: its edge ${e.stroke} is not a shade of its own color`);
+        if (lumOf(e.stroke) >= lumOf(fill)) bad.push(`${where}: its edge is not darker than its fill`); } }
+    if (!/<OptionSwatch colour=\{optionSwatch\(o\)\} size=\{30\} lit=\{wonderLit === i\} \/>/.test(src)) bad.push('the young Wonder row does not say which answer is lit');
     if (!/function Swatch\([^)]*\) \{[^\n]*\n[^\n]*\{\.\.\.swatchEdge\(SWATCH\[colour\], 4, tile\)\}/.test(src)) bad.push('the color square draws no edge');
     if (!/const edge = swatchEdge\(color, 4, tile\)/.test(src)) bad.push('the shapes draw no edge');
-    if (!/if \(fill === SWATCH\.green && C\.mode === 'dark' && !tile\)/.test(src)) bad.push("the dark theme's green wears its edge on the answer tiles too");
+    if (!/function OptionSwatch\([^)]*\) \{[\s\S]{0,300}?\{\.\.\.swatchEdge\(SWATCH\[colour\], 5, true, lit\)\}/.test(src)) bad.push('the Wonder answer\'s square draws no edge of its own color');
     for (const part of ['<LookGroup token={c} k={k} tile={!paper} />', '<Swatch colour={c.slice(7)} size={Math.round(64 * k)} tile={!paper} />', '<Item spec={c.slice(5)} size={Math.round(64 * k)} tile={!paper} />']) if (!src.includes(part)) bad.push(`a choice on its tile does not say so: ${part.slice(0, 30)}`);
     return bad;
   };
   const real = edgeProblems(ui);
-  const plants = [ui.replace(/(const SWATCH_EDGE = \{ yellow: ')#[0-9A-F]{6}/, '$1#E8C24A'), ui.replace('{...swatchEdge(SWATCH[colour], 4, tile)}', ''), ui.replace("C.mode === 'dark' && !tile)", "C.mode === 'dark')"), ui.replace('<Swatch colour={c.slice(7)} size={Math.round(64 * k)} tile={!paper} />', '<Swatch colour={c.slice(7)} size={Math.round(64 * k)} />')].map((src) => edgeProblems(src).length > real.length);
-  ok('Q56: every yellow shape and color square has its darker edge, and the dark theme\'s green on paper too, each 3 to 1 or better (each near miss caught)', real.length === 0 && plants.every(Boolean), [...real, `near misses ${plants}`].join(' | '));
-  // Since pass ND (EARMARKS A89, the screen read's measure of every drawing on its answer tile): the light theme's green wears its deeper
-  // edge on that theme's answer tiles (it read 2.84 and 2.71 to 1 on a right and a wrong one), and the dark theme's red and blue a lighter
-  // edge of their own color on its answer tiles (2.87 and 2.66 on a right one); each edge 3 to 1 or better on every tile of its theme.
-  // Near misses: the red's edge as deep as its fill, and the light theme's green tile edge taken off; since round one's code read the blue's
-  // edge as deep as its fill, the red's and the blue's lines taken off, and a dark tile turned the red edge's own color, each caught. The
-  // tiles are read from THEMES in ui.jsx (a resting, a right and a wrong tile: surface, greenSoft, claySoft), never typed.
-  const tileEdgeProblems = (src) => { const hex = (re) => (src.match(re) || [])[1];
-    const tones = (mode) => { const at = src.indexOf(`mode: '${mode}'`); const b = at < 0 ? '' : src.slice(at, src.indexOf('\n  },', at)); return ['surface', 'greenSoft', 'claySoft'].map((k) => (b.match(new RegExp(`\\b${k}: '(#[0-9A-Fa-f]{6})'`)) || [])[1]); };
-    const darkTiles = tones('dark'); const lightTiles = tones('light'); if ([...darkTiles, ...lightTiles].some((t) => !t)) return ['a tile color is missing from THEMES']; const lum = (h) => { const v = [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4)); return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2]; };
-    const cr = (a, b) => { const x = lum(a); const y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
-    const red = hex(/const SWATCH_TILE_EDGE = \{ red: '(#[0-9A-F]{6})'/); const blue = hex(/const SWATCH_TILE_EDGE = \{[^}]*blue: '(#[0-9A-F]{6})'/); const green = hex(/const SWATCH_EDGE = \{[^}]*green: '(#[0-9A-F]{6})'/);
-    if (!red || !blue || !green) return ['a tile edge is missing from the source'];
-    const bad = [];
-    for (const [name, edge, tiles] of [['red', red, darkTiles], ['blue', blue, darkTiles], ['green', green, lightTiles]]) for (const t of tiles) if (cr(edge, t) < 3) bad.push(`${name}'s edge on ${t} ${cr(edge, t).toFixed(2)} to 1`);
-    for (const line of ["if (fill === SWATCH.green && C.mode !== 'dark' && tile) return { stroke: SWATCH_EDGE.green, strokeWidth: width };", "if (fill === SWATCH.red && C.mode === 'dark' && tile) return { stroke: SWATCH_TILE_EDGE.red, strokeWidth: width };", "if (fill === SWATCH.blue && C.mode === 'dark' && tile) return { stroke: SWATCH_TILE_EDGE.blue, strokeWidth: width };"]) if (!src.includes(line)) bad.push('no line: ' + line.slice(0, 50));
-    return bad; };
-  const tileReal = tileEdgeProblems(ui);
-  const tilePlants = [ui.replace(/(const SWATCH_TILE_EDGE = \{ red: ')#[0-9A-F]{6}/, '$1#D9534F'), ui.replace("if (fill === SWATCH.green && C.mode !== 'dark' && tile) return { stroke: SWATCH_EDGE.green, strokeWidth: width };", ''),
-    ui.replace(/(const SWATCH_TILE_EDGE = \{[^}]*blue: ')#[0-9A-F]{6}/, '$1#4A7FC1'), ui.replace("if (fill === SWATCH.red && C.mode === 'dark' && tile) return { stroke: SWATCH_TILE_EDGE.red, strokeWidth: width };", ''),
-    ui.replace("if (fill === SWATCH.blue && C.mode === 'dark' && tile) return { stroke: SWATCH_TILE_EDGE.blue, strokeWidth: width };", ''), ui.replace("green: '#7CC3A6', greenSoft: '#22413A'", "green: '#7CC3A6', greenSoft: '#E8837F'")].map((src) => src !== ui && tileEdgeProblems(src).length > tileReal.length);
-  ok('since pass ND (EARMARKS A89) the light theme\'s green wears its deeper edge on its answer tiles and the dark theme\'s red and blue a lighter edge of their own on theirs, each 3 to 1 or better on every tile of its theme as THEMES has them, the fills unchanged (six near misses, each caught)', tileReal.length === 0 && tilePlants.length === 6 && tilePlants.every(Boolean), [...tileReal, `near misses ${tilePlants}`].join(' | '));
+  const plants = [ui.replace(/(const SWATCH_EDGE = \{ )red: '#[0-9A-F]{6}', /, '$1'), ui.replace("C.mode === 'dark' && tile ? SWATCH_TILE_EDGE : SWATCH_EDGE)", "C.mode === 'dark' ? SWATCH_TILE_EDGE : SWATCH_EDGE)"),
+    ui.replace(/(const SWATCH_TILE_EDGE = \{[^}]*yellow: ')#[0-9A-F]{6}/, '$1#F0C93A'), ui.replace(/(const SWATCH_EDGE = \{[^}]*blue: ')#[0-9A-F]{6}/, '$1#3D6B41'), ui.replace(/(const SWATCH_TILE_EDGE = \{[^}]*blue: ')#[0-9A-F]{6}/, '$1#4A7FC1'),
+    ui.replace('<Swatch colour={c.slice(7)} size={Math.round(64 * k)} tile={!paper} />', '<Swatch colour={c.slice(7)} size={Math.round(64 * k)} />'), ui.replace('{...swatchEdge(SWATCH[colour], 5, true, lit)}', 'stroke="rgba(0,0,0,0.28)" strokeWidth="5"'),
+    ui.replace("green: '#7CC3A6', greenSoft: '#22413A'", "green: '#7CC3A6', greenSoft: '#E8837F'"),
+    ui.replace("(lit ? SWATCH_LIT_EDGE : C.mode", "(C.mode"), ui.replace(/(const SWATCH_LIT_EDGE = \{[^}]*yellow: ')#[0-9A-F]{6}/, '$1#9C7A14'), ui.replace(' lit={wonderLit === i} />', ' />')].map((src) => src !== ui && edgeProblems(src).length > real.length);
+  ok('Q90: all four colors wear a thin edge of their own shade in both themes, on a tile and on paper, darker on light places and lighter on the dark theme\'s tiles, each 3 to 1 or better on every surface it sits on and the fills unchanged, and since round one\'s screen read a Wonder answer\'s square lit by the voice in the darker set with a deeper yellow, 3 to 1 or better on the read-along green (eleven near misses, each caught)', real.length === 0 && plants.length === 11 && plants.every(Boolean), [...real, `near misses ${plants}`].join(' | '));
 }
 // Pairs examples (round two's final read, pass MP): a Pairs game's welcome and its written help may give an example of a twin, but
 // never a pair its own deck deals, and an example is one the course that owns the game teaches. Round one found one half and two
@@ -1171,8 +1197,9 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   // where the app plays one and two where it plays two; no line of one breath is directed as two ("Fff." had been, the lead found applying
   // it); every early story row names each hiss as the app plays it, and every sound of a run of a word's sounds (S4079-5's shh and ooh,
   // which round one fixed with no check). Each fault the read planted in the tool is planted here in a row, and caught.
-  // Since pass NE Start or end of the name and Write it by its sounds too, by the same reason (Claude's design).
-  const ONE = ['sounds-in-a-word', 'very-first-sound', 'sound-by-sound', 'letters-and-sounds', 'hear-it-in-the-name', 'end-of-the-name', 'start-or-end', 'write-by-sounds'];
+  // Since pass NE Start or end of the name and Write it by its sounds too, by the same reason (Claude's design), and since pass NF Hear
+  // it in a word, which says C's name starts with sss beside C's own cuh.
+  const ONE = ['sounds-in-a-word', 'very-first-sound', 'sound-by-sound', 'letters-and-sounds', 'hear-it-in-the-name', 'end-of-the-name', 'start-or-end', 'write-by-sounds', 'hear-it-in-a-word'];
   const HISS = Object.keys(L.SOUND_RECORDINGS).filter((n) => L.SOUND_RECORDINGS[n].one);
   const oneForm = (n) => L.goalTag(L.SOUND_RECORDINGS[n].goalOne) + ' ' + L.ipaQuoted(L.SOUND_RECORDINGS[n].one);
   const twoForm = (n) => L.goalTag(L.SOUND_RECORDINGS[n].goal) + ' ' + L.ipaQuoted(L.SOUND_RECORDINGS[n].ipa);
@@ -1278,7 +1305,7 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   plants.push(directionBad(['[saying just the m sound of moon, a steady hum]']).length === 1, directionBad(['[saying just the first sound of red, a steady rrr]']).length === 1,
     directionBad(['[saying just the first sound of pan, the lips popping open once]']).length === 1, backMissing(lsCut) > 0 && backMissing(ls.text) === 0);
   // Each goal names its own sound (round one's code check), in the test's own words: the word a sound starts, or the ending it is.
-  const GOAL_OWN = { m: 'first sound of moon', n: 'first sound of net', s: 'first sound of sun', f: 'first sound of fan', z: 'first sound of zoo', r: 'first sound of red', l: 'first sound of lion', t: 'first sound of tap', p: 'first sound of pan', k: 'first sound of cat', b: 'first sound of ball', d: 'first sound of dog', g: 'first sound of go', j: 'first sound of jam', ig: 'ending of pig', og: 'ending of dog', at: 'ending of cat', fr: 'first part of frog', fl: 'first part of flower', st: 'first part of star', sp: 'first part of spoon', tr: 'first part of tree', a: 'first sound of apple', e: 'first sound of egg', i: 'first sound of igloo', o: 'first sound of octopus', u: 'first sound of up', huh: 'first sound of hat', wuh: 'first sound of wet', shh: 'first sound of ship', ks: 'sounds at the end of six', x: 'last part of box',
+  const GOAL_OWN = { m: 'first sound of moon', n: 'first sound of net', s: 'first sound of sun', f: 'first sound of fan', z: 'first sound of zoo', r: 'first sound of red', l: 'first sound of lion', t: 'first sound of tap', p: 'first sound of pan', k: 'first sound of cat', b: 'first sound of ball', d: 'first sound of dog', g: 'first sound of go', j: 'first sound of jam', ig: 'ending of pig', og: 'ending of dog', at: 'ending of cat', fr: 'first part of frog', fl: 'first part of flower', st: 'first part of star', sp: 'first part of spoon', tr: 'first part of tree', a: 'first sound of apple', e: 'first sound of egg', i: 'first sound of igloo', o: 'first sound of octopus', u: 'first sound of up', huh: 'first sound of hat', wuh: 'first sound of wet', chuh: 'first sound of chair', shh: 'first sound of ship', ks: 'sounds at the end of six', x: 'last part of box',
     // Since round one's code check (pass NC) the long vowels a run says as words, by the test's own words and their own IPA.
     oh: 'middle sound of boat', eye: 'middle sound of kite', ooh: 'middle sound of moon' };
   const VOWEL_IPA = { oh: '/oʊ/', eye: '/aɪ/', ooh: '/uː/' };
@@ -1323,13 +1350,16 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   const genKeys = (t) => [...t.matchAll(/(?:^[ \t]+|[{,][ \t]*)'([a-z0-9][a-z0-9-]*)': (?:\(rng\b|rng\s*=>|[A-Za-z_]\w*\()/gm)].map((m) => m[1]);
   const BUILT = /^(?:pl-(?:hear|lines)-|k(?:5|10)-|wr-)/;
   const deriveBlock = rules.slice(rules.indexOf('const PREK_DERIVE = {'), rules.indexOf('\n};', rules.indexOf('const PREK_DERIVE = {')));
-  const deriveKeys = [...deriveBlock.matchAll(/^\s+'([a-z0-9][a-z0-9-]*)':/gm)].map((m) => m[1]);
+  // Since pass NF (round one's code read) a derivation key is read wherever it stands on a line, as a generator key is: PREK_DERIVE writes
+  // five keys to a line, and the reader that read only a key at a line's start read 251 of 280, eight of pass NF's ten never.
+  const deriveKeysOf = (b) => [...b.matchAll(/(?:^[ \t]+|[{,][ \t]*)'([a-z0-9][a-z0-9-]*)': \(q\)/gm)].map((m) => m[1]); const deriveKeys = deriveKeysOf(deriveBlock);
   const gens = genKeys(src); const genTwice = twice(gens); const deriveTwice = twice(deriveKeys);
   const built = Object.keys(L.GENERATORS).filter((k) => !gens.includes(k)); const builtOk = built.every((k) => BUILT.test(k)) && !gens.some((k) => BUILT.test(k));
   const plant = twice(genKeys(src + "\n  'p4-fit-yesno': (rng) => null,\n")).includes('p4-fit-yesno') && twice(genKeys(src + "\n  'pm-same-animals': themedSame(MATCH_THEMES.animals),\n")).includes('pm-same-animals')
     && genKeys("\n  'k5-more': (rng) => null,\n").some((k) => BUILT.test(k)) && twice([...deriveKeys, 'p4-they-yesno']).includes('p4-they-yesno')
-    && twice(genKeys(src + "\n  'p4-fit-yesno': rng => null,\n")).includes('p4-fit-yesno') && twice(genKeys(src + "\n  'zz-one': (rng) => null, 'p4-fit-yesno': (rng) => null,\n")).includes('p4-fit-yesno');
-  ok(`every generator id in src/logic.mjs and every derivation in the rules test is defined once (${gens.length} written generators, factory calls among them, and ${built.length} built from a name's pattern; ${deriveKeys.length} derivations; six near misses caught)`, gens.length > 1700 && deriveKeys.length > 100 && genTwice.length === 0 && deriveTwice.length === 0 && builtOk && built.length > 0 && plant, `generators twice ${genTwice.join(', ')}; derivations twice ${deriveTwice.join(', ')}; built off pattern ${built.filter((k) => !BUILT.test(k)).slice(0, 5).join(', ')}; plant ${plant}`); }
+    && twice(genKeys(src + "\n  'p4-fit-yesno': rng => null,\n")).includes('p4-fit-yesno') && twice(genKeys(src + "\n  'zz-one': (rng) => null, 'p4-fit-yesno': (rng) => null,\n")).includes('p4-fit-yesno')
+    && twice(deriveKeysOf(deriveBlock.replace("'p4-hiw-yesno': (q) => nfSaysIt(q),", "'p4-hiw-yesno': (q) => nfSaysIt(q), 'p4-hiw-pic': (q) => null,"))).includes('p4-hiw-pic');
+  ok(`every generator id in src/logic.mjs and every derivation in the rules test is defined once (${gens.length} written generators, factory calls among them, and ${built.length} built from a name's pattern; ${deriveKeys.length} derivations, every key read wherever it stands on a line since pass NF; seven near misses caught)`, gens.length > 1700 && deriveKeys.length >= 280 && genTwice.length === 0 && deriveTwice.length === 0 && builtOk && built.length > 0 && plant, `generators twice ${genTwice.join(', ')}; derivations twice ${deriveTwice.join(', ')}; built off pattern ${built.filter((k) => !BUILT.test(k)).slice(0, 5).join(', ')}; plant ${plant}`); }
 // A run of beats said (rab, bit) is a sentence of its own after its word said alone (story flow item 12, pass MY: inside a sentence
 // its first beat is heard as a word or a pause, "but" or "um", and a word beside it as one more beat), in every lesson line, every
 // early-years story paragraph, every early Wonder question and every question of the beats banks; and every ledger row that is a run
@@ -1395,5 +1425,49 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   // A story row's description names huh with the app's sounds (round one's story check's fifth consider; the old description planted).
   const { soundsWritten } = await import('../tools/audio-ledger.mjs'); const told = soundsWritten('Mmm, at, mat, and huh, at, hat!'); const huhTold = (d) => d.includes('huh, ' + L.VOICE_SOUNDS.huh.short);
   ok('a story row\'s description names huh with the app\'s own sounds it is said beside, and no row without them (pass NB, round one\'s story check; the old description caught)', huhTold(told) && !huhTold(told.replace('; huh, ' + L.VOICE_SOUNDS.huh.short, '')) && soundsWritten('Huh? said Grandpa.') === '', told); }
+// Since round two's alignment and content reads (pass NF) the marks drawing, the picture Look and write's "Is this a real letter? No" rests
+// on, holds no closed shape of three points with its middle point above the other two: its triangle, two slanted sides meeting at the top
+// with a bar across, fit Listen and point's own words for A ("Its two slanted sides lean in and meet at the top, with a bar across."), so it
+// is gone and the top row centred. Every path of the drawing is read, each part a move starts. Plant: the drawing as round one left it.
+{ const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8'); const marksOf = (src) => src.split('\n').find((l) => l.trim().startsWith('marks: <g>')) || '';
+  const peaks = (line) => [...line.matchAll(/ d="([^"]+)"/g)].flatMap((m) => m[1].split(/(?=M)/)).filter((part) => /Z\s*$/.test(part.trim())).map((part) => [...part.matchAll(/(-?[\d.]+)[ ,](-?[\d.]+)/g)].map((p) => [Number(p[1]), Number(p[2])]))
+    .filter((pts) => pts.length === 3 && pts[1][1] < pts[0][1] && pts[1][1] < pts[2][1]);
+  const marks = marksOf(ui); const old = marks.replace('</g><path d="M32 57', '<path d="M70 44 L74 30 L78 44 Z" /></g><path d="M32 57');
+  ok(`the marks drawing holds no closed three-point shape with its point at the top, the triangle that fit the letter A's own words (round two's alignment and content reads, pass NF; ${[...marks.matchAll(/ d="/g)].length} paths read; the triangle put back as round one left it, planted, caught)`, marks.length > 0 && peaks(marks).length === 0 && old !== marks && peaks(old).length === 1, JSON.stringify(peaks(marks))); }
+// Every opener of a story page sets the voice's state as it opens it (pass NF, round one's screen read and the advisor's read of its fix):
+// a read-aloud story opened with the voice off drew the scroll cue for StoryBody's 400 ms start window and kept its room for the whole
+// reading. The browser checks open stories through window.__eduTest, so the screen's own openers are read here: every line that opens
+// the story or course-story screen sets setStoryVoiceOn on that line, but the reader lesson's View story, which opens a reader course's
+// story, a page with no voice of its own. Plant: My Stories' button with its voice state taken out, caught.
+// Since round two's code read (pass NF) every setScreen call is read with its argument whole (its parentheses balanced, its strings
+// skipped), since the check read only lines with a literal and a refresh opened a read-aloud story through setScreen(where.screen), the
+// where-note's restore, drawing the cue for about 370 ms: the openers are the calls whose argument holds 'story' or 'course-story'
+// anywhere (a ternary's arm too) and the restore, and each sets the voice's state between itself and the opener before it on its line.
+// Every call whose argument is a name is named here with what it opens (r.screen, an educator screen the idle PIN or Change state left;
+// up, the device's back, which never returns a story; where.screen, the restore; name, the test hook), so a new one fails until it is
+// read, and so does a call whose argument is neither a string, a name nor a choice of two strings. Plants: My Stories' button and the
+// restore each with its voice state taken out, an arm that opens a story with none, and a new name, each caught.
+{ const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8');
+  const callsOf = (src) => { const out = []; let at = 0;
+    while ((at = src.indexOf('setScreen(', at)) >= 0) { const from = at + 'setScreen('.length; let depth = 1; let k = from;
+      while (k < src.length && depth > 0) { const ch = src[k]; if (ch === "'" || ch === '"' || ch === '`') { k++; while (k < src.length && src[k] !== ch) { if (src[k] === '\\') k++; k++; } }
+        else if (ch === '(') depth++; else if (ch === ')') depth--; k++; }
+      out.push({ arg: src.slice(from, k - 1).trim(), at, end: k, line: src.slice(0, at).split('\n').length }); at = k; }
+    return out; };
+  const READER = "noteStoryOpen(mod.id, 'lesson');"; const NAMED = ['r.screen', 'up', 'where.screen', 'name']; const STORY = /'(?:story|course-story)'/;
+  const formOf = (a) => (/^'[^']*'$/.test(a) ? 'string' : /^[\w$.]+$/.test(a) ? 'name' : /^[^?]+\?\s*'[^']*'\s*:\s*'[^']*'$/.test(a) ? 'choice' : 'other');
+  const readOf = (src) => { const calls = callsOf(src); const lines = src.split('\n'); const openers = calls.filter((c) => STORY.test(c.arg) || c.arg === 'where.screen');
+    const unset = openers.filter((c) => { const start = src.lastIndexOf('\n', c.at) + 1; const prev = openers.filter((o) => o.at < c.at && o.at >= start).pop();
+      return !src.slice(prev ? prev.end : start, c.at).includes('setStoryVoiceOn(') && !lines[c.line - 1].includes(READER); }).map((c) => c.line);
+    const names = calls.filter((c) => formOf(c.arg) === 'name').map((c) => c.arg); const odd = calls.filter((c) => formOf(c.arg) === 'other' || (formOf(c.arg) === 'name' && !NAMED.includes(c.arg))).map((c) => `${c.arg} at ${c.line}`);
+    return { calls: calls.length, openers: openers.length, unset, names, odd }; };
+  const myStories = "setStoryVoiceOn(canSpeak() && !!(getCourse((getModule(r.moduleId) || {}).courseId) || {}).readAloud); setScreen('story');";
+  const RESTORE = "if (where.screen === 'story') setStoryVoiceOn(canSpeak() && !!(getCourse(known.courseId) || {}).readAloud); setScreen(where.screen);";
+  const ARM = "setScreen(storyLogFrom === 'report' ? 'educator-report' : 'educator-pick');";
+  const now = readOf(ui); const plants = [ui.replace(myStories, "setScreen('story');"), ui.replace(RESTORE, 'setScreen(where.screen);'), ui.replace(ARM, "setScreen(storyLogFrom === 'report' ? 'story' : 'educator-pick');"), ui.replace('setScreen(up);', 'setScreen(back);')];
+  const [p1, p2, p3, p4] = plants.map(readOf);
+  ok(`every opener of a story page sets the voice's state as it opens it, so a read-aloud story draws no cue in its start window (pass NF, round one's screen read; since round two's code read every setScreen call read whole, ${now.calls} calls: ${now.openers} openers, the where-note's restore among them, the reader lesson's View story named, and the names ${now.names.join(', ')}; planted and caught: My Stories' button and the restore without their voice state, an arm that opens a story without it, and a new name)`,
+    now.openers >= 9 && now.unset.length === 0 && now.odd.length === 0 && NAMED.every((n) => now.names.includes(n)) && now.names.length === NAMED.length && plants.every((p) => p !== ui)
+    && p1.unset.length === 1 && p2.unset.length === 1 && p3.unset.length === 1 && p4.odd.length === 1, JSON.stringify({ unset: now.unset, odd: now.odd, names: now.names, plants: [p1.unset, p2.unset, p3.unset, p4.odd] })); }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

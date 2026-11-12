@@ -21,7 +21,7 @@
 // in view on two short screens and in the claude.ai preview's page-tall frame, and the ways out pressed in the ask's own frame. Since
 // round three: Begin and then the board's top back in what shows once the welcome has gone, Begin's ring seen at its strength and
 // still with less motion, a wrong tap's still sign with less motion, and a device with no voice. Since pass MQ: the note about the
-// placeholder voice under a game (none with no voice), Which Sense's question centred with its speaker to its right, and a wrong
+// placeholder voice under a game (none with no voice), Which Sense's question centered with its speaker to its right, and a wrong
 // tap's edge with motion on too (Q66); since round one's screen check the six games' spoken rows on a small phone and one held
 // sideways, the answer boxes still through rounds of Which Sense and Find the Tool, and Find the Tool's tiles inside every board
 // dealt; since round three's screen read a whole round of Grow the Plant, and since round five the Instructions pop-up with a
@@ -344,7 +344,7 @@ const beginThenBoard = async (fr, band) => {
 // Since round two's alignment read the whole welcome plays at each size too, and no step of it may come to rest under the floating
 // Skip or off the window (the page had scrolled a target only to the window's foot, under Skip, and a drag never brought its
 // landing into view: Walk the Robot's Go on the 375 by 667 phone, Which Sense's nose on the phone held sideways).
-// Since round four: every target the pointer centred lands at the middle of the part it may use (window.__eduIntro.centred, in
+// Since round four: every target the pointer centered lands at the middle of the part it may use (window.__eduIntro.centred, the property's own spelling, in
 // pixels off it; an offset carried into every page had put targets half the floating Skip's bar too low, so the pointer rested under
 // it in Name the Feeling); and Pay It Off, whose board in play is taller than its welcome's, keeps its top in view after Begin (the
 // browser's scroll anchoring had moved the page to keep the links under the board still, the board's top 14 pixels above the window).
@@ -369,7 +369,7 @@ for (const [w, h, id, more, touch] of [[667, 375, 'sense-psychology-k', ['loan-e
   // above the window after 15 welcomes on a phone held sideways, Share the Cookies' at -25 to 32).
   const shown = await beginThenBoard(page, async () => ({ top: 0, bottom: h }));
   ok(`on a ${w} by ${h} ${where}, Begin is wholly in view once ${id}'s welcome has gone, and the board's top once Begin is pressed`, shown.ok, shown);
-  // Each screen must have centred some targets, so its bound is never read over nothing (round five's second read).
+  // Each screen must have centered some targets, so its bound is never read over nothing (round five's second read).
   const centred = (whole && whole.centred) || [];
   ok(`on a ${w} by ${h} ${where}, ${id}'s pointer centred targets, and every one lands within 4 pixels of the middle of the part it may use`, centred.length > 0 && centred.every((d) => Math.abs(d) <= 4), centred);
   for (const g of more) {

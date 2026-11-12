@@ -1,5 +1,5 @@
 // The Wise Human. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
-// Words that spill out of their box, and centred words pushed off centre by an icon beside them (pass MR, Mikey: "see the screenshot
+// Words that spill out of their box, and centered words pushed off center by an icon beside them (pass MR, Mikey: "see the screenshot
 // for the word sunshine bleeding out through a button and there is another example where the centered text is pushed left by the
 // speaker icon.  I never want this to happen anywhere in the app and try to correct every example I find."). In plain terms: this
 // file holds one function a browser test runs inside the page (layoutProblems), which reads every piece of visible text under a root
@@ -8,7 +8,7 @@
 //           border, background or clipping, or the root itself (the game board, the screen); a word clipped inside a box that hides
 //           its overflow counts too, since it is cut off rather than shown;
 //   overlap two runs of words drawn over each other (since round four of pass MS, on a game's board, when asked);
-//   offset  words set to sit in the middle (text-align: center, or a flex or grid cell that centres its content) inside a row that
+//   offset  words set to sit in the middle (text-align: center, or a flex or grid cell that centers its content) inside a row that
 //           also holds an icon or a button with no words (a speaker, a star, a pace snail) or an info button (its one letter, i),
 //           whose middle sits more than 3 pixels from the row's own middle, as Grow the Plant's question did beside its speaker
 //           before pass MQ; and, since round three of pass MR, the words on the line of a centered block (a paragraph, a line with a
@@ -76,7 +76,7 @@ export const layoutProblems = function (rootSelector, opts) {
     for (let i = 0; i < runs.length; i++) for (let j = i + 1; j < runs.length; j++) { const a = runs[i]; const b = runs[j]; if (a.node === b.node) continue;
       const dx = Math.min(a.r.right, b.r.right) - Math.max(a.r.left, b.r.left); const dy = Math.min(a.r.bottom, b.r.bottom) - Math.max(a.r.top, b.r.top);
       if (dx > 1 && dy > 0.5 * Math.min(a.r.height, b.r.height)) { const key = `overlap|${words(a.node.nodeValue)}|${words(b.node.nodeValue)}`; if (!seen.has(key)) { seen.add(key); out.push({ kind: 'overlap', text: `${words(a.node.nodeValue).slice(0, 30)} / ${words(b.node.nodeValue).slice(0, 30)}`, box: label(a.node.parentElement), by: +dx.toFixed(1) }); } } } }
-  // Offset: a row holding centred words beside an icon with no words.
+  // Offset: a row holding centered words beside an icon with no words.
   // An info button (InfoButton in ui.jsx: a small round button whose one letter is i) is an icon too (round three of pass MR).
   const iconLike = (el) => { if (hidden(el)) return false; const r = el.getBoundingClientRect(); if (r.width === 0 || r.width > 72) return false; const txt = words(el.textContent || ''); if (el.tagName === 'BUTTON' && txt === 'i' && r.width <= 24) return true; return !txt && (el.querySelector('svg') || el.tagName === 'BUTTON' || el.tagName.toLowerCase() === 'svg'); };
   const centred = (el) => { const cs = getComputedStyle(el); return cs.textAlign === 'center' || ((cs.display === 'flex' || cs.display === 'inline-flex' || cs.display === 'grid') && (cs.justifyContent === 'center' || cs.justifyItems === 'center')); };
@@ -84,7 +84,7 @@ export const layoutProblems = function (rootSelector, opts) {
     if (hidden(row)) continue;
     const cs = getComputedStyle(row); if (!/flex|grid/.test(cs.display)) continue;
     if (cs.flexDirection && cs.flexDirection.startsWith('column')) continue;
-    // Words written straight into a centred row, beside an icon element, are read too (round one's screen check, pass MR: "Wonder
+    // Words written straight into a centered row, beside an icon element, are read too (round one's screen check, pass MR: "Wonder
     // Questions" and "Progress by course" sat 13 pixels left of center beside their i, and the read saw no words, since a text node
     // is no element).
     const loose = centred(row) ? [...row.childNodes].filter((n) => n.nodeType === 3 && words(n.nodeValue || '')) : [];
@@ -93,7 +93,7 @@ export const layoutProblems = function (rootSelector, opts) {
     if (!icons.length || !texts.length) continue;
     // A row of pictures with one worded tile among them (a pattern's ? beside its shapes) is a row of tiles, each its own box, not a
     // label beside its icon; so is a chip, a box with its own edge or fill that hugs its icon and words (The Better Deal's price tag),
-    // which reads as one centred thing (the sweep's first run, pass MR: both were found and read as fine).
+    // which reads as one centered thing (the sweep's first run, pass MR: both were found and read as fine).
     if (icons.length > 2 || texts.length > 1) continue;
     const rcs = getComputedStyle(row); const hugs = row.getBoundingClientRect().width <= kids.reduce((a, k) => a + k.getBoundingClientRect().width, 0) + (parseFloat(rcs.columnGap) || 0) * (kids.length - 1) + (parseFloat(rcs.paddingLeft) || 0) + (parseFloat(rcs.paddingRight) || 0) + (parseFloat(rcs.borderLeftWidth) || 0) + (parseFloat(rcs.borderRightWidth) || 0) + 2;
     if (hugs && bounded(row)) continue;
@@ -104,7 +104,7 @@ export const layoutProblems = function (rootSelector, opts) {
       // Only words that sit in the same band as the icon (a row of words above a row of buttons is a different layout).
       const ir = icons[0].getBoundingClientRect(); const tr = { top: Math.min(...rects.map((r) => r.top)), bottom: Math.max(...rects.map((r) => r.bottom)) };
       if (ir.bottom < tr.top || ir.top > tr.bottom) continue;
-      // A row that starts its words at the left (a list row with an icon at its end) is not a centred row.
+      // A row that starts its words at the left (a list row with an icon at its end) is not a centered row.
       const off = (left + right) / 2 - mid;
       if (Math.abs(off) > o.offsetPx) out.push({ kind: 'offset', text: words(k.textContent).slice(0, 60), row: label(row), by: +off.toFixed(1) });
     }

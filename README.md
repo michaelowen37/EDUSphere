@@ -227,6 +227,15 @@ tablet with a stylus is the right device: the youngest modules are tracing, conn
 and first strokes, and they require a touch screen. They refuse a mouse on purpose, because the
 point of those modules is practice holding a stylus. Readers can use anything.
 
+Which browsers: Safari 16.4 or later, which on an iPad or iPhone means iPadOS or iOS 16.4 or
+later; Chrome or Edge 80 or later; and Firefox 78 or later (pass NG, Mikey's answer to Q92). On an
+older one the page shows a short note in place of its Loading word, saying what it needs, and where
+the page loads but the app cannot start, a note that says so and suggests reloading. On an
+older iPad or iPhone another browser does not help, since every browser there uses Safari's engine,
+and some, such as the iPad Air 2 and the iPhone 7, cannot update that far. An iPad or
+iPhone that can is updated in Settings, then General, then Software Update. A check holds the
+page to nothing newer than these versions read (tests/e2e/too-old.mjs).
+
 ## Running it
 
 **To use it:** open `index.html`. That one file is the whole product, with React

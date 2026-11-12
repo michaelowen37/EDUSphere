@@ -18,7 +18,7 @@
 //   marks a picture still waiting for its painting with a note under the question's picture (30 pixels) and inside each picture
 //   answer (22 to 28 pixels), notes a child never sees. In the walk-through's dark theme pm-same-things' and pm-different-things'
 //   fifth seeds ended Check answer at 684 and 677; for a child they end above the fold. An educator previewing may scroll a little.
-// - each line's row holding together: Back, the speaker and Next with level tops, the lesson's dots centred under the speaker, and no
+// - each line's row holding together: Back, the speaker and Next with level tops, the lesson's dots centered under the speaker, and no
 //   dot alone on a row, at 375 by 667 and at 320 by 568.
 // - each line again at 320 by 568, the smallest phone the app is drawn for, where the scroll cue must show exactly when more than a
 //   third of Next is below the screen, so it never sits on a Next two thirds of which show (round one: measured on the whole row, the

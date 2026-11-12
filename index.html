@@ -27,17 +27,39 @@
 .edu-boot-word .edu-boot-dots { color: #C9A227; }
 @keyframes edu-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 @media (prefers-reduced-motion: reduce) { .edu-boot-word span { animation: none; } }
+/* The note for a browser too old for the app (Q92, pass NG): plain words where the Loading word was, in the same green. */
+.edu-too-old { max-width: 34em; margin: 0 auto; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 18px; line-height: 1.5; color: #1F3B31; text-align: center; }
+.edu-too-old p { margin: 0 0 14px; }
+.edu-too-old .edu-too-old-head { font-size: 22px; font-weight: 800; color: #2F5D4F; }
 </style>
 </head>
 <body>
 <div id="root"></div>
 <div id="edu-boot" aria-hidden="true"><div class="edu-boot-word"><span style="animation-delay:0.00s">L</span><span style="animation-delay:0.12s">o</span><span style="animation-delay:0.24s">a</span><span style="animation-delay:0.36s">d</span><span style="animation-delay:0.48s">i</span><span style="animation-delay:0.60s">n</span><span style="animation-delay:0.72s">g</span><span class="edu-boot-dots" style="animation-delay:0.9s">...</span></div></div>
 <script>
+// When the app cannot start (Q92, pass NG; tools/build-site.mjs says why). The oldest JavaScript there is, so an old browser runs it.
+(function () {
+  var shown = false;
+  window.__eduCannotStart = function (why) {
+    var boot = document.getElementById('edu-boot'); var root = document.getElementById('root');
+    if (shown || window.__eduAppShown || !boot || (root && root.firstChild)) return false;
+    shown = true; boot.removeAttribute('aria-hidden');
+    while (boot.firstChild) boot.removeChild(boot.firstChild);
+    var stopped = why === 'stopped';
+    var note = document.createElement('div'); note.className = 'edu-too-old'; note.setAttribute('role', 'alert'); note.setAttribute('data-too-old', stopped ? 'stopped' : 'old');
+    var lines = stopped ? ["The Wise Human could not start in this browser.","Reload the page to try again. If it still does not start, update the device or its browser, or open it in a current Chrome, Edge, Firefox or Safari."] : ["This device or browser is too old for The Wise Human.","On an iPad or iPhone, it needs iPadOS or iOS 16.4 or later, and another browser there will not help. Some older iPads and iPhones, such as the iPad Air 2, cannot update that far. To update one that can, open Settings, then General, then Software Update.","On any other device, open it in a current Chrome, Edge, Firefox or Safari."];
+    for (var i = 0; i < lines.length; i++) { var p = document.createElement('p'); if (i === 0) p.className = 'edu-too-old-head'; p.appendChild(document.createTextNode(lines[i])); note.appendChild(p); }
+    boot.appendChild(note);
+    return true;
+  };
+})();
+</script>
+<script>
 window.__eduArt = [];
 window.__eduColoringArt = [];
 window.__eduMapArt = [];
 window.__eduAudio = [];
-window.__eduNews = {"stamp":"November 10, 2026 (letters whose names do not tell their sounds, and making a real letter)","date":"November 10, 2026","items":["Four-year-olds meet four letters whose names do not tell the sound we learn for them. In Hear it in a word, C says cuh and G says guh in lots of words, though C's name starts with sss and G's with juh, and H says huh and W says wuh, though H's name ends with chuh and W's starts with duh. So for these four, a child listens to the start of a word: cat and cup, goat and guitar, hat and house, window and watermelon.","Three-year-olds learn to make a real letter in Look and write. Scribbles and marks that look a little like letters are a great way to start, and to make a real letter, a child looks at one a grown-up writes and makes the same shape, starting M, S and B at the top, the first letter of their name first. Every question is a tap, and nothing a child writes is asked for or kept in the app.","The four colors the lessons name, red, blue, yellow and green, now each wear a thin edge of their own shade in both color themes, so they read as one set. In the dark theme, the charts, maps and diagrams on a lesson's page have clearer edges, and on a small phone the arrow that shows there is more below no longer sits on a story's words. When the app sits inside another page, that arrow now stands at the bottom of what you can see.","Four new Wonder questions for young children are ready for your approval, like every Wonder question: a letter that came out backward, a puzzle piece that will not fit, a guess that turned out wrong, and a kite that will not fly."],"brief":["Four-year-olds meet four letters whose names do not tell the sound we learn for them.","Three-year-olds learn to make a real letter in Look and write.","The four colors the lessons name, red, blue, yellow and green, now each wear a thin edge of their own shade in both color themes, so they read as one set.","Four new Wonder questions for young children are ready for your approval, like every Wonder question."],"history":[{"date":"November 10, 2026","title":"letters whose names do not tell their sounds, and making a real letter","items":["Four-year-olds meet four letters whose names do not tell the sound we learn for them. In Hear it in a word, C says cuh and G says guh in lots of words, though C's name starts with sss and G's with juh, and H says huh and W says wuh, though H's name ends with chuh and W's starts with duh. So for these four, a child listens to the start of a word: cat and cup, goat and guitar, hat and house, window and watermelon.","Three-year-olds learn to make a real letter in Look and write. Scribbles and marks that look a little like letters are a great way to start, and to make a real letter, a child looks at one a grown-up writes and makes the same shape, starting M, S and B at the top, the first letter of their name first. Every question is a tap, and nothing a child writes is asked for or kept in the app.","The four colors the lessons name, red, blue, yellow and green, now each wear a thin edge of their own shade in both color themes, so they read as one set. In the dark theme, the charts, maps and diagrams on a lesson's page have clearer edges, and on a small phone the arrow that shows there is more below no longer sits on a story's words. When the app sits inside another page, that arrow now stands at the bottom of what you can see.","Four new Wonder questions for young children are ready for your approval, like every Wonder question: a letter that came out backward, a puzzle piece that will not fit, a guess that turned out wrong, and a kite that will not fly."]},{"date":"November 9, 2026","title":"letters at the start or end of a name, and writing a word by its sounds","items":["Four-year-olds meet four more letters whose names hold their sounds. In Start or end of the name, P and D have their sound at the start of their names, puh and duh, and N and X have theirs at the end, nnn and the cuh-sss you hear at the end of box and fox. A child hears each sound, finds the letter that says it, and says the sounds of P, D and N too.","Write it by its sounds shows how new writers get a word started: say the word slowly, write the letter for its first sound, then the letter for its last, and a grown-up helps with the middle, the way a child might write S and N for sun. Every question is a tap, and nothing a child writes is asked for or kept in the app.","Lessons read better on every screen. On a tablet or a laptop a lesson's own letters and writing grow with its pictures, a word like grown-up stays whole on one line, the pictures on a lesson's page have clearer edges in the dark theme, and the apples in What is data's picture graph are drawn at last, where gray circles stood in. On a small phone, the arrow that shows there is more below no longer covers a lesson's words or an answer's explanation.","Four new Wonder questions for young children are ready for your approval, like every Wonder question: an ice cream that falls off its cone, hiccups that will not stop, a coat you do not want to put on when it is cold, and favorite shoes that got too small."]},{"date":"November 9, 2026","title":"letters and their sounds, and spaces between words","items":["Three- and four-year-olds have new lessons on the sounds letters make. Letters and sounds shows three-year-olds that M says mmm, S says sss and B says buh, each with words that start with its sound. Hear it in the name and At the end of the name share a trick with four-year-olds: for some letters, the sound is right in the letter's name, at the start of B, T, K, J and Z, and at the end of M, S, F, L and R. A child hears each sound, finds the letter that says it and says it too.","Writing goes on with the spaces between words. Space between words and Spaces between words show that writers leave a little space after each word, about as wide as a finger, so a reader can see where each word starts and stops, and a child picks out the writing that has its spaces. Nothing a child writes is asked for or kept in the app.","Pictures on answer buttons are easier to see. Every drawing was measured on its button in both color themes, and the ones whose edges faded into the button got a clearer edge. On a tablet or a laptop, a picture beside its counting dots in a lesson now grows with them, and a letter beside its picture grows with it.","Four new Wonder questions for young children are ready for your approval, like every Wonder question: how a new haircut feels, what to do when a favorite stuffed animal is lost at bedtime, a birthday gift that was not the one you hoped for, and what helps when it is time to leave the playground."]},{"date":"November 5, 2026","title":"the sounds in a word, and drawing and writing to tell an idea","items":["Three- and four-year-olds have new listening lessons on the sounds in a word. Sounds in a word hears that pie is two sounds, puh and eye, then puts sounds together into a word and takes a word apart. The very first sound finds the one sound a word starts with, even in frog, whose first part is two sounds said together, and Sound by sound puts two or three sounds together and takes words apart, with a dot for each sound. In these lessons a hiss like sss is one short breath, so one sound sounds like one.","Writing begins for three- and four-year-olds, with Draw and tell and Write to tell. They show that people draw and write to tell their ideas, with a list, a card, a letter and a stop sign, and that a child's drawing tells an idea too. Each lesson asks a child to think of something to draw and to tell you about it; nothing a child draws or writes is asked for or kept in the app.","Picture answers on a laptop or a tablet now stay a phone's width, centered, and so do answers that are groups of dots. A picture to match is drawn the same size as the answers beside it, the words of a lesson line no longer shift as the voice lights them up, and a run of sounds such as Puh, eye stays on one line, in stories too. On the smallest phones a lesson's title shrinks to fit beside its speaker, on one line whenever it can, and an arrow points down when the last answer is below the screen.","Four new Wonder questions for young children are ready for your approval, like every Wonder question: what helps while a scraped knee heals, what could help when a new baby takes everyone's time, how to stay friends with someone who moved far away, and whether building a sandcastle was still fun after a wave washed it away."]},{"date":"November 5, 2026","title":"first parts of words, and making rhymes","items":["Pre-K 3 has a new listening lesson, Dog and frog. Children hear that a word can come apart into a first part and an end, like duh and og in dog, and that some first parts are two sounds said together, like fff-rrr in frog. Then they put the parts back together into the word.","Pre-K 4 has two new lessons. Star and spoon tells apart words that start the same way, like sun, star and spoon, by their whole first parts. Make a rhyme shows the trick behind rhyming: keep the end of a word and change its first part, so cat becomes bat, and a pig becomes a big pig.","The app now says those two-sound first parts itself, smoothly and as one piece, so children hear fff-rrr the way a teacher says it.","Four new Wonder questions for young children are ready for your approval, like every Wonder question: what to do when something good happens on a hard day, what helps on a day home sick, whether it is okay to ask for a hug or for help, and how to help someone you love on a hard day."]},{"date":"November 4, 2026","title":"first sounds, beats put together, and My progress in the app's own words","items":["Three- and four-year-olds have new listening lessons on the first sound of a word, each with its own story. Sun and sock (three-year-olds) hears which words start the same, sun and sock, moon and map, finds the one of three that starts with a different sound, and thinks of a word that starts like sun. Think of a word (four-year-olds) shows how to think of one: say the word's first sound, then look and listen for things that start with it, and plays I spy with a sound.","Clap the beats is now two lessons. Clap the beats claps the beats in a word, and Put the beats together puts beats together into the word they make, each word beside one that starts the same way, like pencil and pizza, so a child listens to every beat and not just the first sound. Two words make one now waits for a child to put sun and flower together, and to take cupcake apart, before it says the answer.","My progress now says what the app does: a lesson opens when what it needs is passed, and its star comes with a second pass on another day. A lesson placed by a quick check asks for passes on two different days, and a piece of writing shows no score, only that it waits for your check.","Questions about a picture's first sound now say each picture's name, so a child who would call the fox a cat still hears \"fox\", and the fox itself now looks like a fox. Four new Wonder questions for young children are ready for your approval: what to do when you cannot think of a word, whether you could like a food you did not like, what to do when a friend says your drawing looks funny, and how it feels to do something hard all by yourself."]}]};
+window.__eduNews = {"stamp":"November 11, 2026 (the grown-up's card in every letters lesson)","date":"November 11, 2026","items":["On a phone, tablet or computer that cannot speak, the card for you now comes up in every letters lesson, not only the ones about the sounds letters say. In A and B, Big letters and the three tracing lessons, a question like \"Tap the letter B.\" used to print the letter's name right above the letters, so a child could match the shapes without hearing you. Now you see the card first, read it aloud, and tap Ready to show the letters.","When a question asks about a letter shown on the screen, like \"Does this letter say that sound?\", the letter now waits until you tap Ready. The card has you say just the sound, the sounds, the word or the letter's name, and then the letter appears with the question, so your child listens to answer rather than matching the card's words to the letter. The card now says to read that question aloud after you tap Ready, since it shows only then. In a question about which sound a letter says, read the question after Ready, then point to each button and say its sound again. And when a card names the letter I, it prints it in a serif type, so it is easy to tell from a small l."],"brief":["On a phone, tablet or computer that cannot speak, the card for you now comes up in every letters lesson, not only the ones about the sounds letters say.","When a question asks about a letter shown on the screen, like \"Does this letter say that sound?\", the letter now waits until you tap Ready."],"history":[{"date":"November 11, 2026","title":"the grown-up's card in every letters lesson","items":["On a phone, tablet or computer that cannot speak, the card for you now comes up in every letters lesson, not only the ones about the sounds letters say. In A and B, Big letters and the three tracing lessons, a question like \"Tap the letter B.\" used to print the letter's name right above the letters, so a child could match the shapes without hearing you. Now you see the card first, read it aloud, and tap Ready to show the letters.","When a question asks about a letter shown on the screen, like \"Does this letter say that sound?\", the letter now waits until you tap Ready. The card has you say just the sound, the sounds, the word or the letter's name, and then the letter appears with the question, so your child listens to answer rather than matching the card's words to the letter. The card now says to read that question aloud after you tap Ready, since it shows only then. In a question about which sound a letter says, read the question after Ready, then point to each button and say its sound again. And when a card names the letter I, it prints it in a serif type, so it is easy to tell from a small l."]},{"date":"November 11, 2026","title":"a card for the grown-up, and a plain note for older devices","items":["On a phone, tablet or computer that cannot speak, you read each question aloud to your child. In the letters lessons, the question's own words used to sit right above the letters, so a child could match the printed Sss to the S without hearing a thing. Now those questions show you a card first, with the words to read aloud. Tap Ready, and the card goes away and the answers appear, so your child answers by what they hear. If the answers are sounds, the buttons show their numbers, and the card tells you which sound to say for each one. Show the words again brings the card back any time before the answer is checked. And after a wrong answer, with a voice or without, a letter's name stays on the line with the word before it, and a sound like lll is printed in a serif type, so its l's are easier to tell from capital I's.","If someone opens The Wise Human on a device or browser too old to run it, like an iPad Air 2 or an older iPhone, they now see a short note saying so and what will work, where the page used to just say Loading forever. An iPad or iPhone needs iPadOS or iOS 16.4 or later, and on any other device a current Chrome, Edge, Firefox or Safari works. If the app ever cannot start for another reason, the note says that instead and suggests reloading the page, which then opens at the front door. Nothing changes on a device where the app already runs."]},{"date":"November 10, 2026","title":"letters whose names do not tell their sounds, and making a real letter","items":["Four-year-olds meet four letters whose names do not tell the sound we learn for them. In Hear it in a word, C says cuh and G says guh in lots of words, though C's name starts with sss and G's with juh, and H says huh and W says wuh, though H's name ends with chuh and W's starts with duh. So for these four, a child listens to the start of a word: cat and cup, goat and guitar, hat and house, window and watermelon.","Three-year-olds learn to make a real letter in Look and write. Scribbles and marks that look a little like letters are a great way to start, and to make a real letter, a child looks at one a grown-up writes and makes the same shape, starting M, S and B at the top, the first letter of their name first. Every question is a tap, and nothing a child writes is asked for or kept in the app.","The four colors the lessons name, red, blue, yellow and green, now each wear a thin edge of their own shade in both color themes, so they read as one set. In the dark theme, the charts, maps and diagrams on a lesson's page have clearer edges, and on a small phone the arrow that shows there is more below no longer sits on a story's words. When the app sits inside another page, that arrow now stands at the bottom of what you can see.","Four new Wonder questions for young children are ready for your approval, like every Wonder question: a letter that came out backward, a puzzle piece that will not fit, a guess that turned out wrong, and a kite that will not fly."]},{"date":"November 9, 2026","title":"letters at the start or end of a name, and writing a word by its sounds","items":["Four-year-olds meet four more letters whose names hold their sounds. In Start or end of the name, P and D have their sound at the start of their names, puh and duh, and N and X have theirs at the end, nnn and the cuh-sss you hear at the end of box and fox. A child hears each sound, finds the letter that says it, and says the sounds of P, D and N too.","Write it by its sounds shows how new writers get a word started: say the word slowly, write the letter for its first sound, then the letter for its last, and a grown-up helps with the middle, the way a child might write S and N for sun. Every question is a tap, and nothing a child writes is asked for or kept in the app.","Lessons read better on every screen. On a tablet or a laptop a lesson's own letters and writing grow with its pictures, a word like grown-up stays whole on one line, the pictures on a lesson's page have clearer edges in the dark theme, and the apples in What is data's picture graph are drawn at last, where gray circles stood in. On a small phone, the arrow that shows there is more below no longer covers a lesson's words or an answer's explanation.","Four new Wonder questions for young children are ready for your approval, like every Wonder question: an ice cream that falls off its cone, hiccups that will not stop, a coat you do not want to put on when it is cold, and favorite shoes that got too small."]},{"date":"November 9, 2026","title":"letters and their sounds, and spaces between words","items":["Three- and four-year-olds have new lessons on the sounds letters make. Letters and sounds shows three-year-olds that M says mmm, S says sss and B says buh, each with words that start with its sound. Hear it in the name and At the end of the name share a trick with four-year-olds: for some letters, the sound is right in the letter's name, at the start of B, T, K, J and Z, and at the end of M, S, F, L and R. A child hears each sound, finds the letter that says it and says it too.","Writing goes on with the spaces between words. Space between words and Spaces between words show that writers leave a little space after each word, about as wide as a finger, so a reader can see where each word starts and stops, and a child picks out the writing that has its spaces. Nothing a child writes is asked for or kept in the app.","Pictures on answer buttons are easier to see. Every drawing was measured on its button in both color themes, and the ones whose edges faded into the button got a clearer edge. On a tablet or a laptop, a picture beside its counting dots in a lesson now grows with them, and a letter beside its picture grows with it.","Four new Wonder questions for young children are ready for your approval, like every Wonder question: how a new haircut feels, what to do when a favorite stuffed animal is lost at bedtime, a birthday gift that was not the one you hoped for, and what helps when it is time to leave the playground."]},{"date":"November 5, 2026","title":"the sounds in a word, and drawing and writing to tell an idea","items":["Three- and four-year-olds have new listening lessons on the sounds in a word. Sounds in a word hears that pie is two sounds, puh and eye, then puts sounds together into a word and takes a word apart. The very first sound finds the one sound a word starts with, even in frog, whose first part is two sounds said together, and Sound by sound puts two or three sounds together and takes words apart, with a dot for each sound. In these lessons a hiss like sss is one short breath, so one sound sounds like one.","Writing begins for three- and four-year-olds, with Draw and tell and Write to tell. They show that people draw and write to tell their ideas, with a list, a card, a letter and a stop sign, and that a child's drawing tells an idea too. Each lesson asks a child to think of something to draw and to tell you about it; nothing a child draws or writes is asked for or kept in the app.","Picture answers on a laptop or a tablet now stay a phone's width, centered, and so do answers that are groups of dots. A picture to match is drawn the same size as the answers beside it, the words of a lesson line no longer shift as the voice lights them up, and a run of sounds such as Puh, eye stays on one line, in stories too. On the smallest phones a lesson's title shrinks to fit beside its speaker, on one line whenever it can, and an arrow points down when the last answer is below the screen.","Four new Wonder questions for young children are ready for your approval, like every Wonder question: what helps while a scraped knee heals, what could help when a new baby takes everyone's time, how to stay friends with someone who moved far away, and whether building a sandcastle was still fun after a wave washed it away."]}]};
 // Installable app: the worker keeps a copy of the page for offline use and asks the network first, so a fresh build always wins.
 if ('serviceWorker' in navigator && /^https?:/.test(location.protocol)) { navigator.serviceWorker.register('sw.js').catch(function () {}); }
 var process = { env: { NODE_ENV: 'production' } };
@@ -18821,7 +18843,8 @@ function choiceSpeaks(q, c) {
 // What the question screen prints (pass MM, round two's lesson check B and game check): a read-aloud question that asks for a
 // letter by its name prints its words without the letter while the device can speak ("Tap the letter you hear."), and the voice
 // still says the letter, since a printed capital above the letters to tap lets a child who knows no name match the shape (the
-// shortcut round one took out of "What letter is this?"). With no voice the whole question prints, for a grown-up to read.
+// shortcut round one took out of "What letter is this?"). With no voice the whole question prints, for a grown-up to read, and since
+// pass NH (Q96 (a)) a letters bank's grown-up's card holds it instead (grownUpCard), cardQuestion printing what a device with a voice prints.
 // Since pass MV, with no voice a sentence said in a manner carries its cue in parentheses after it, for the grown-up who reads the
 // question aloud ("Listen. I see a dog. (For the grown-up: say it up high.)"), from VOICE_MANNERS, headed for the grown-up so it is not read
 // to the child as words to copy (round two's alignment read); asking, telling and a strong word need none, since
@@ -18843,6 +18866,168 @@ function printedQuestion(q, voice = true) {
     if (q.unvoicedStory)
         return { story: q.unvoicedStory, prompt: q.prompt };
     return { story: q.story ? mannerCues(q.story, q.voices) : null, prompt: q.prompt };
+}
+// The grown-up's card (Q91, Mikey's answer in pass NG: "Q91 - A"; EARMARKS A96). In plain terms: on a phone, tablet or computer with
+// no voice, a grown-up reads each question aloud, and in 24 kinds of letters question the whole question printed the sound or the
+// word the voice would have said ("Listen to this sound. Sss." above S and B), so a child who matches shapes could answer without
+// hearing it. On such a device these questions show, where the answers go, a card for the grown-up with the words to say and a Ready
+// button. Ready hides the words and shows the answers, so the words and the answers are never on the screen together. Above the card,
+// before Ready and after it, the question prints what a device with a voice prints (cardQuestion), which is the same for every seed
+// of a bank but Write it by its sounds' yes or no (first, or at the end, neither leaning an answer), so nothing printed beside the
+// answers can point at one; a which-sound question prints its own prompt, since with no
+// voice there is nothing to tap and hear, and its buttons show their numbers while the card lists the sounds in the buttons' order
+// for the grown-up to say. GROWN_UP_CARD_BANKS is the one list (the flag these banks carry; 24 in pass NG, 32 since pass NH, below): in pre-K 3's Letters and
+// sounds and in pre-K 4's Hear it in the name, At the end of the name, Start or end of the name and Hear it in a word, each lesson's
+// letter, sound, first-sound and yes or no banks, with Look and write's name heard and Write it by its sounds' first letter, last
+// letter and yes or no. Pass NF counted 22, and pass NG's round one reads found the last two, letters questions of a lesson Q91 named
+// with the same give-away by Q91's own measures: Write it by its sounds' yes or no ("Listen. Box." beside the box and the letter B,
+// above Yes and No) is answered by matching the word's capital to the letter on all 200 of its first-letter questions in seeds 1 to
+// 400 (the screen read), and its last letter ("Listen. Box." above B, X and N) by a child who knows each capital's small letter on all
+// 400, the measure Q91 used for the which-sound kinds (both reads). The lessons' other banks print whole for the grown-up as before;
+// pass NG's record said they print nothing a child could match, since their answers are pictures, which pass NH's round one code read
+// found untrue of the seven picture banks that show a letter (they print the pictures' names in the buttons' order beside it, so a
+// child who matches the letter to a name's capital finds the picture; they wait on Q98 below). The rules test holds the list, every card and the prints over
+// seeds 1 to 400, and every letters bank of a read-aloud course to this list or the waiting list below; tests/e2e/grown-up-card.mjs
+// holds the screen.
+// Since pass NH (Q96, Mikey's answer "Q96 - A"; EARMARKS A114) the list is 32: the eight kinds that ask a letter's name joined it, in
+// pre-K 3's A and B (Tap the letter, the letter in a sign word, the letter beside one that looks a little like it) and pre-K 4's Big
+// letters (Tap the letter, Is this the letter) and three tracing lessons (Tap the letter), which with no voice printed the name ("Tap
+// the letter B." above A and B, "Is this the letter E?" beside a big E), so a child who matched shapes was right on all 400 seeds of each.
+const GROWN_UP_CARD_BANKS = new Set(['p3-ls-letter', 'p3-ls-sound', 'p3-ls-first', 'p3-ls-yesno', 'p3-look-name',
+    'p4-name-letter', 'p4-name-sound', 'p4-name-first', 'p4-name-yesno', 'p4-end-letter', 'p4-end-sound', 'p4-end-first', 'p4-end-yesno',
+    'p4-soe-letter', 'p4-soe-sound', 'p4-soe-first', 'p4-soe-yesno', 'p4-wbs-first', 'p4-wbs-last', 'p4-wbs-yesno',
+    'p4-hiw-letter', 'p4-hiw-sound', 'p4-hiw-first', 'p4-hiw-yesno',
+    'p3-tap-ab', 'p3-ab-in-word', 'p3-ab-look-alike', 'pl-tap-letter', 'pl-is-letter', 'pl-hear-first', 'pl-hear-more', 'pl-hear-ltf']);
+// The letters questions waiting on Mikey's word. Pass NG's eight letter-name kinds waited here on Q96 until his answer in pass NH
+// ("Q96 - A") moved them to the card's list; the rules test holds every letters bank of a read-aloud course to the card's list or this
+// one, so a new letters bank cannot go unread, and one that should wait for a question of his goes here with its number. Since pass NH's
+// round one code read, the seven picture banks that show a letter wait here on Q98 (EARMARKS A119): pre-K 3's Letters and sounds and
+// pre-K 4's Hear it in the name, At the end of the name, Start or end of the name and Hear it in a word ask which picture starts (or
+// ends) with the sound the letter shown says, and Write it by its sounds which picture ends with it and which word two letters are for;
+// with no voice each prints the pictures' names in the buttons' order beside the letter ("This is the letter J. Now listen to these
+// three. Ball. Jar. Table."), so a child who matches the letter to a name's first (or last) letter taps the right picture on 400 of 400
+// seeds in six of them and 309 in Start or end of the name, where the first picture is right 112 to 201 times.
+const GROWN_UP_CARD_WAITING = new Set(['p3-ls-pic', 'p4-name-pic', 'p4-end-pic', 'p4-soe-pic', 'p4-hiw-pic', 'p4-wbs-end', 'p4-wbs-word']);
+// The card's kinds whose picture or letter hides while the card is up (Q97, Mikey's answer in pass NH: "Q97 - A"; EARMARKS A115). In
+// plain terms: in these kinds the question shows the very letter it asks about (or, in Write it by its sounds, the picture and the
+// letter), and with the card's words beside it a child who matched shapes could find the answer before Ready and carry a Yes, a No or a
+// button's number across it: in the six yes or no kinds, answering Yes whenever a word on the card longer than one letter started with
+// the letter shown was right 261 to 400 times in 400, and in the five which-sound kinds, carrying the number of the sound that starts
+// with the letter's small letter, 309 to 400. So while the card is up the picture and the letter hide, nothing prints above the card,
+// and the card says what the voice says without the letter shown (and, where the question asks about its sound, without its name; the two
+// kinds that ask for a letter by its name say the name); Ready shows the picture or letter, the question and the
+// answers, so a child who matches shapes must remember one across Ready, as in the card's other kinds. Each kind's card words:
+//   - the yes or no kinds: the sound alone ("Listen to this sound. Sss."), then the letter and "Does this letter say that sound?";
+//   - Write it by its sounds' yes or no: the word ("Let's write a word by its sounds. Listen. Box."), then the picture, the letter and
+//     "Do we write this letter first?" (or "at the end?"), nothing the voice says lost;
+//   - the which-sound kinds: "Listen to these sounds." and the sounds in the buttons' order, then the letter and "Which sound does
+//     this letter say?" (Q97's own words) and the numbered buttons;
+//   - Big letters' yes or no, Q96's one yes or no kind, which works as Q97 decides (Q96's words): the name alone ("Listen to a
+//     letter's name. E.", Claude's words, from the lesson's "Letters have names", the name held with its sentence by a no-break space
+//     since round one's code read, as "E." stood alone at 320), then the letter and "Is this the letter you hear?";
+//   - A and B's letter in a sign word, which Q97 did not name (Claude's reading of Q97 (a) for the same way around the card, found while
+//     building Q96 (a)): with the sign shown beside the card ("Tap the letter B." above TUB), a child who found the card's capital in the
+//     sign before Ready carried its place across it to the tiles, which stand in the sign's order; so the sign hides too, and the card
+//     says only the letter to find ("Tap the letter B."), and Ready shows the sign, the setup a device with a voice prints ("Here is the
+//     word tub, the way a sign shows it.") and "Tap the letter you hear.", then the tiles. Since round one's code read the card no longer
+//     says the word too: "Here is the word tub." printed the word in small letters beside the capital to find, so a child who knows each
+//     capital's small letter found its place in the card's word and carried it across Ready (right 400 of 400).
+// After Ready only the question prints, no setup line ("Look at this letter, and listen to the sound." pointed at a letter not yet shown
+// and a sound already said), but where a kind's setup names no letter and points at what Ready shows (CARD_SETUP_AFTER_READY, the sign
+// word kind's). A Map, so a bank's id is never read as one of an object's own names.
+const cardSoundOnly = (q) => String(q.story).replace(/^This is the letter [A-Z]\. /, '');
+const cardSoundsOnly = () => 'Listen to these sounds.';
+const GROWN_UP_CARD_HIDES = new Map([
+    ['p3-ls-yesno', cardSoundOnly], ['p4-name-yesno', cardSoundOnly], ['p4-end-yesno', cardSoundOnly], ['p4-soe-yesno', cardSoundOnly], ['p4-hiw-yesno', cardSoundOnly],
+    ['p4-wbs-yesno', (q) => String(q.story)],
+    ['p3-ls-sound', cardSoundsOnly], ['p4-name-sound', cardSoundsOnly], ['p4-end-sound', cardSoundsOnly], ['p4-soe-sound', cardSoundsOnly], ['p4-hiw-sound', cardSoundsOnly],
+    ['pl-is-letter', (q) => `Listen to a letter's name.\u00A0${(String(q.prompt).match(/letter ([A-Z])\?$/) || [])[1]}.`],
+    ['p3-ab-in-word', (q) => String(q.prompt)],
+]);
+const CARD_SETUP_AFTER_READY = new Set(['p3-ab-in-word']);
+// The question a hiding kind prints after Ready, for the grown-up to read aloud: a which-sound question's in Q97's words, any other
+// the question a device with a voice prints.
+const CARD_SOUND_QUESTION = 'Which sound does this letter say?';
+// The letters a question shows: a letters picture's text, or the letters in a pair's halves.
+const lettersShown = (v) => !v ? [] : v.kind === 'letters' ? [String(v.text)] : v.kind === 'pair' ? [...lettersShown(v.a), ...lettersShown(v.b)] : [];
+// A question with picture answers beside a letter shown (since pass NH's round one code read): which picture starts or ends with the
+// sound a letter says, or which word two letters are for. With no voice its print names the pictures beside the letter, so the rules test
+// reads these with the letters questions, and they wait on GROWN_UP_CARD_WAITING (Q98).
+function isLetterPicturesQuestion(q) {
+    if (!q || q.type !== 'choice' || !Array.isArray(q.choices) || !q.choices.length)
+        return false;
+    return q.choices.every((c) => /^[a-z]+:/.test(String(c))) && lettersShown(q.visual).length > 0;
+}
+// A letters question: one whose choices are all single letters, or are sounds the voice says beside a letter shown, or are Yes and No
+// about a letter shown. The rules test reads every bank of a read-aloud course with it.
+function isLettersQuestion(q) {
+    if (!q || q.type !== 'choice' || !Array.isArray(q.choices))
+        return false;
+    if (q.choices.every((c) => /^[A-Za-z]$/.test(String(c))))
+        return true;
+    const shown = lettersShown(q.visual).length > 0;
+    if (shown && q.heardChoices)
+        return true;
+    return shown && q.choices.length === 2 && q.choices.includes('Yes') && q.choices.includes('No');
+}
+// A lone capital keeps the word before it on its line (pass NG): "the letter J" and "the sound N says" are joined by a no-break space,
+// so a line never starts with the letter alone. The card's words (Q91 (a)) and the reason after a wrong tap use it (round one's screen
+// read found "Cuh-sss is not the sound / N says." at 375 pixels in the reason, which the card's words already kept whole). The word I is
+// a letter only after "letter" or "Does" and is left alone anywhere else (since round two's code read: "may I" and "yesterday I" were
+// joined in the reasons of 17 banks outside the letters lessons, where a line may start with I as any line may; since the third read,
+// "Does I", as a lesson about I would ask, is joined, since the word I never follows Does).
+function keepLoneCapitals(text) { return String(text).replace(/(\w+) ([A-Z])(?=[\s.,?!]|$)/g, (m, word, cap) => (cap === 'I' && word !== 'letter' && word !== 'Does' ? m : `${word}\u00A0${cap}`)); }
+// The sound of L written out (lll, Lll, fff-lll) is a run of small l's, and in the app's sans-serif type a small l and a capital I are
+// the same bar, so "Lll." read "LII" and "Button 2, lll." read like the number III (pass NG, round one's screen read, on the grown-up's
+// card). ellRuns splits a text into its plain parts and its runs of l's, every odd piece a run, so the screen draws each run in a serif
+// type, where a small l has its own shape.
+const ELL_RUN = /(\b[Ll]l+\b)/;
+function ellRuns(text) { return String(text).split(ELL_RUN); }
+// On the grown-up's card a lone capital I is a letter as well (Trace more big letters' "Tap the letter I.", pass NH's round one screen
+// read): it is the same bar as a small l in the sans-serif type, and with the tiles hidden until Ready nothing beside it says which
+// letter it is, so the card draws it in the serif type too, where a capital I has its own shape. It is the letter only where a no-break
+// space holds it to the word before it (keepLoneCapitals joins "letter I" and "Does I", and the name card's words "name. I"), and the
+// word I never is. cardRuns splits a text as ellRuns does, every odd piece a run of small l's or that letter I.
+const CARD_RUN = /(\b[Ll]l+\b|(?<=\u00A0)I(?=[\s\u00A0.,?!]|$))/;
+function cardRuns(text) { return String(text).split(CARD_RUN); }
+// The card's words: the whole question as a grown-up reads it aloud (what printedQuestion prints with no voice), and for a question
+// whose choices are sounds, those sounds in the buttons' order. Null for every other question, and the screen asks only with no voice.
+// Since pass NH (Q97 (a)) a kind on GROWN_UP_CARD_HIDES says its own words instead, what the voice says without the letter shown (and
+// without its name where the question asks about its sound), and hides is true, so the screen hides the question's picture and print while the card is up.
+// The card also says what the grown-up does (since pass NH's round one screen read): how, the line under its title, and for a which-sound
+// card after, the line under its list. Every card says to read it aloud and tap Ready. A hiding card whose words stop before the
+// question (asks: the twelve hiding kinds but the sign word's, whose card says "Tap the letter B.") says to read the question after Ready
+// as well, since that question prints only then, where a grown-up who had only ever read a card and tapped Ready left a pre-reader to
+// guess what was asked ("first" or "at the end" in Write it by its sounds is said nowhere else); a which-sound card says it in its line on
+// after Ready, which follows its list, so its first line stays as short as every other card's. Since round two's final read the sign word
+// card, which holds the question but not the setup that prints after Ready above the sign ("Here is the word tub, the way a sign shows
+// it.", CARD_SETUP_AFTER_READY), says to read the words above the sign, so the word the voice says is heard. The words are Claude's.
+const CARD_HOW = 'Read this aloud, then tap\u00A0Ready.';
+const CARD_HOW_ASKS = 'Read this aloud, then tap\u00A0Ready and read the\u00A0question.';
+const CARD_HOW_SETUP = 'Read this aloud, then tap\u00A0Ready and read the words above the\u00A0sign.';
+const cardAfter = (asks) => `After Ready, ${asks ? 'read the question, then ' : ''}point to each button and say its sound again. To see this list again, tap Show\u00A0the\u00A0words\u00A0again.`;
+function grownUpCard(q) {
+    if (!q || !GROWN_UP_CARD_BANKS.has(q.genId))
+        return null;
+    const sounds = q.heardChoices ? (q.choices || []).map(String) : null;
+    const hide = GROWN_UP_CARD_HIDES.get(q.genId);
+    const whole = hide ? null : printedQuestion(q, false);
+    const say = hide ? hide(q) : [whole.story, whole.prompt].filter(Boolean).join(' ');
+    const asks = !!hide && !say.includes(String(q.prompt));
+    const how = asks && !sounds ? CARD_HOW_ASKS : hide && CARD_SETUP_AFTER_READY.has(q.genId) ? CARD_HOW_SETUP : CARD_HOW;
+    return { say, sounds, hides: !!hide, asks, how, after: sounds ? cardAfter(asks) : null };
+}
+// What prints above a card's answers, before Ready and after it: the setup and question a device with a voice prints, a which-sound
+// question's own prompt ("Which sound does it say?") in place of the voice's "Tap to hear each sound."
+// Since pass NH (Q97 (a)) a hiding kind prints nothing while the card is up (cardUp) and after Ready only its question: a which-sound
+// question's CARD_SOUND_QUESTION, any other the question a device with a voice prints.
+function cardQuestion(q, cardUp = false) {
+    if (!q)
+        return { story: null, prompt: '' };
+    if (GROWN_UP_CARD_HIDES.has(q.genId) && GROWN_UP_CARD_BANKS.has(q.genId))
+        return cardUp ? { story: null, prompt: '' }
+            : { story: CARD_SETUP_AFTER_READY.has(q.genId) ? (q.printedStory || q.story || null) : null, prompt: q.heardChoices ? CARD_SOUND_QUESTION : (q.printed || q.prompt) };
+    return { story: q.printedStory || q.story || null, prompt: q.heardChoices ? q.prompt : (q.printed || q.prompt) };
 }
 // The cues a grown-up reads beside a question's sentences said in a manner: each sentence of the words, cut where SENTENCE_BREAK cuts,
 // is matched whole against the voices as mannerOf matches it, and the first one said in a manner with a cue is followed by that cue; the
@@ -58464,7 +58649,7 @@ function namesWordSounds(sentence) {
     const toks = [...s.matchAll(/[A-Za-z]+(?:-[A-Za-z]+)*/g)];
     // The word before the vowel, past an and (tuh and eye): a speech sound, with only a comma, an and or both between them.
     return toks.some((t, i) => {
-        if (!Object.hasOwn(VOWEL_WORDS, t[0].toLowerCase()))
+        if (!Object.prototype.hasOwnProperty.call(VOWEL_WORDS, t[0].toLowerCase()))
             return false;
         let j = i - 1;
         if (j >= 0 && /^and$/i.test(toks[j][0]))
@@ -58546,7 +58731,7 @@ function soundOfNotation(word) {
         return low[0];
     // An own key only (round one's code check: the word constructor read Object's own constructor from a plain table).
     const stops = { tuh: 't', puh: 'p', cuh: 'k', kuh: 'k', buh: 'b', duh: 'd', guh: 'g', juh: 'j' };
-    return Object.hasOwn(stops, low) ? stops[low] : null;
+    return Object.prototype.hasOwnProperty.call(stops, low) ? stops[low] : null;
 }
 // A word, or a run of words joined by hyphens, as the app says it; null for ordinary words, which the voice says as they are. A word
 // said slowly ("Mmm-at", "Sss-am") is its first sound, held, and then the whole word ("mmm", then "Mat"), since a voice handed the
@@ -59216,7 +59401,7 @@ const soundClipSamples = (() => {
     // below and a blend that starts with a stop (tr) both read it, so a blend's cut lands where the uh begins whatever the timing becomes
     // (round one's code check: the blend copied these numbers).
     const stopTiming = (sound, fs) => { const lead = Math.round(0.03 * fs); const burstN = Math.round((sound === 'k' ? 0.016 : 0.008) * fs); const aspN = Math.round((sound === 'k' ? 0.075 : 0.06) * fs); return { lead, burstN, aspN, vStart: lead + Math.round(burstN * 0.6) + Math.round(aspN * 0.6) }; };
-    // Noise with a bell-shaped spread (four uniform draws added), centred on zero.
+    // Noise with a bell-shaped spread (four uniform draws added), centered on zero.
     const noise = (n, seed) => { const r = rng(seed); const x = new Float64Array(n); for (let i = 0; i < n; i++)
         x[i] = (r() + r() + r() + r() - 2) * 0.866; return x; };
     // The standard two-pole filters (the audio cookbook's): low pass, high pass, band pass and a peak.
@@ -59644,7 +59829,7 @@ const soundClipSamples = (() => {
         // and since round two's code read and the third read its place is taken by breath until TR_VOICE_AFTER, so its voice comes in about
         // 43 ms after the t's release, past the 30 to 35 ms where a t is heard as d); a t or p after a hiss keeps its own moment of quiet, the closure of a real st or sp, its
         // burst and its short, soft uh, as the lessons write tuh and puh. The rules test measures each part where it sits.
-        if (Object.hasOwn(BLEND_PARTS, sound)) {
+        if (Object.prototype.hasOwnProperty.call(BLEND_PARTS, sound)) {
             // Since pass NE a hiss that ends a blend (X's cuh-sss) is one breath, as a hissed first sound is, and rises under the last 15 ms of the
             // stop's breath, so no quiet and no vowel come between the k and the s.
             const [a, b] = BLEND_PARTS[sound];
@@ -59701,9 +59886,9 @@ const soundClipSamples = (() => {
         // 2,750 cycles a second and its loudest moment about 0.4 seconds in, a little after the breath's top, as loud as pass MT's quieter whistle; and the crowd is 44
         // people's claps in a small hall for two and a half seconds (crowdOfHands, above). Pass MT's crowd was 320 bursts of noise spread
         // from 900 to 2,600 cycles a second with a hush of noise under them, a hiss far brighter and smoother than clapping: its energy
-        // centred near 2,600 cycles a second, where 40 recordings of real clapping (the ESC-50 set's clapping clips, measured in pass MU)
-        // centre near 1,700, and almost as smooth as static. The new crowd measures like the real group clapping in that set: its energy
-        // centred near 1,800 cycles a second and mostly between 700 and 3,000, its claps standing out of the hum of the room as real ones
+        // centered near 2,600 cycles a second, where 40 recordings of real clapping (the ESC-50 set's clapping clips, measured in pass MU)
+        // center near 1,700, and almost as smooth as static. The new crowd measures like the real group clapping in that set: its energy
+        // centered near 1,800 cycles a second and mostly between 700 and 3,000, its claps standing out of the hum of the room as real ones
         // do; the rules test holds those measures, since a made sound cannot be listened to where it is made.
         if (sound === 'whistle')
             return Float32Array.from(whistleOnBreath(Math.round(0.9 * fs), fs, seed));
@@ -86183,7 +86368,7 @@ function PinInput({ value, onChange, placeholder, style, onEnter = null }) {
 }
 // A stamp of when this copy of the page was built, so a stale page in a cache can be told apart
 // from a fresh one at a glance. Written by the build, never by hand.
-const BUILD_STAMP = '2026-11-10 10:31 PM CST';
+const BUILD_STAMP = '2026-11-12 02:56 AM CST';
 // Every way to the address goes through the popup (pass MB), since a bare email link does nothing where the page may not
 // open an email app: a line given no popup of its own opens one here.
 function ContactLine({ onOpen, inline = false }) {
@@ -88070,10 +88255,10 @@ function IconPic({ name, size = 90, tile = false }) {
         // Since pass NF (the lead's look) no mark is a real letter: the second, two uprights joined by two short bars, read as an H at a
         // phone's size, and Look and write asks of this paper whether it is a real letter, so it is a circle with a cross inside it, clear of
         // its neighbors (round one's picture read: a larger cross joined the top row into one chain). The seventh mark, an upright curling right
-        // at its foot beside a small ring, read as L and o, letters First Sounds and Letters traces, so it is gone, the second row centred under
+        // at its foot beside a small ring, read as L and o, letters First Sounds and Letters traces, so it is gone, the second row centered under
         // the first; and the box's cross is drawn thinner in a larger box, since at 64 pixels its X filled in like a die showing four. The
         // triangle, two slanted sides meeting at the top with a bar across, fit pre-K 3's own words for A, so it is gone, and the top row's three
-        // marks are centred over the second row (round two's content and alignment reads; round one's lesson read had asked for it).
+        // marks are centered over the second row (round two's content and alignment reads; round one's lesson read had asked for it).
         scribble: react_1.default.createElement("g", null,
             react_1.default.createElement("rect", { x: "16", y: "14", width: "68", height: "72", rx: "4", fill: "#FFFDF5", stroke: dk ? '#E9EEF0' : '#6F7A76', strokeWidth: "3" }),
             react_1.default.createElement("path", { d: "M24 36 Q30 24 36 36 T48 36 T60 36 T72 34 M26 58 C34 46 40 70 48 56 S62 46 68 62 S74 70 76 56", fill: "none", stroke: "#4A86C5", strokeWidth: "3.5", strokeLinecap: "round", strokeLinejoin: "round" })),
@@ -88125,7 +88310,7 @@ const ICON_LOOKS = {
         react_1.default.createElement("rect", { x: "79", y: "56", width: "8", height: "32", rx: "2", fill: dk ? '#BB8247' : '#A9743F', stroke: "#6E4A26", strokeWidth: "3" }),
         react_1.default.createElement("path", { d: "M21 36 L79 36 L91 50 L9 50 Z", fill: "#C48A50", stroke: "#6E4A26", strokeWidth: "3", strokeLinejoin: "round" }),
         react_1.default.createElement("rect", { x: "9", y: "50", width: "82", height: "8", rx: "2", fill: dk ? '#BB8247' : '#A9743F', stroke: "#6E4A26", strokeWidth: "3" }))),
-    // The bird a quarter larger, centred, for Two words make one, where it sits beside the house as a word of equal weight (pass MY,
+    // The bird a quarter larger, centered, for Two words make one, where it sits beside the house as a word of equal weight (pass MY,
     // round one's screen check: at its own size it drew at 42 percent of the house's area); the plain bird keeps its size, since lines
     // set a little bird beside a big bear (round two's code read). Its beak is the live palette's gold, so it is drawn from the palette.
     'bird~big': ({ grey, gold }) => react_1.default.createElement("g", { transform: "translate(50 50) scale(1.25) translate(-58 -50)" },
@@ -88532,6 +88717,51 @@ function HeardChoice({ text }) {
             react_1.default.createElement("path", { d: "M4 9.5h3.5L12 5.5v13L7.5 14.5H4z", fill: C.ink }),
             react_1.default.createElement("path", { d: "M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12", fill: "none", stroke: C.ink, strokeWidth: "2", strokeLinecap: "round" })),
         react_1.default.createElement("span", null, text));
+}
+// The grown-up's card (Q91 (a), Mikey's answer in pass NG: "Q91 - A"; grownUpCard in logic.mjs). In plain terms: on a device with no
+// voice, a letters question whose whole words would show the sound or word to say draws this card where its answers go. The grown-up
+// reads the words aloud and taps Ready, which hides the card and shows the answers, so the words and the answers are never on the
+// screen together. A which-sound question lists its sounds in the buttons' order, since its buttons then show only their numbers.
+// Every word is the theme's ink on the soft gold of the app's other notes for grown-ups, so it reads in both themes.
+// Since round one's reads (pass NG): Ready is the plain kind of button, with no pulse, since the green pulsing button at Check answer's
+// place is the one a child is taught to tap, and a child could tap it before the grown-up reads (the screen read); "tap Ready." keeps
+// its two words together and both lines balance, where "Ready." stood alone at 320 pixels; and each run of small l's draws in a serif type
+// (withElls), where "Lll." read "LII" and "Button 2, lll." read like the number III. Since round two's screen read every block of the card's
+// words keeps room for the scroll cue (data-cue-room, as the reason after a wrong tap does), since at 320 by 568 the cue to Ready sat on
+// the card's words on 8 kinds in the light theme and 9 in the dark (the N of "Does N say that sound?" among them), and Ready keeps 28
+// pixels below it when the cue brings it into view (16 in round two, which left the card's own foot on the screen's edge; flush before).
+function GrownUpCard({ card, onReady }) {
+    return (react_1.default.createElement("div", { "data-grown-up-card": "", role: "group", "aria-label": "For the grown-up", style: { padding: '14px 16px', borderRadius: 12, background: C.goldSoft, border: `1px solid ${C.gold}`, textAlign: 'center' } },
+        react_1.default.createElement("p", { "data-cue-room": "", style: { margin: '0 0 4px', fontSize: 15, fontWeight: 700, color: C.ink, paddingRight: 'var(--cue-room, 0px)' } }, "For the grown-up"),
+        react_1.default.createElement("p", { "data-card-how": "", "data-cue-room": "", style: { margin: '0 0 8px', fontSize: 14, color: C.ink, textWrap: 'balance', paddingRight: 'var(--cue-room, 0px)' } }, card.how),
+        react_1.default.createElement("p", { "data-card-say": "", "data-cue-room": "", style: { margin: 0, fontSize: 19, fontWeight: 600, lineHeight: 1.4, color: C.ink, textWrap: 'balance', paddingRight: 'var(--cue-room, 0px)' } }, withElls(keepLoneCapitals(card.say), 'say', cardRuns)),
+        card.sounds && react_1.default.createElement(react_1.default.Fragment, null,
+            react_1.default.createElement("div", { "data-card-sounds": "", style: { marginTop: 6 } }, card.sounds.map((s, i) => react_1.default.createElement("p", { key: s, "data-cue-room": "", style: { margin: '2px 0 0', fontSize: 18, fontWeight: 600, color: C.ink, paddingRight: 'var(--cue-room, 0px)' } }, withElls(`Button ${i + 1}, ${s}.`, `s${i}`)))),
+            react_1.default.createElement("p", { "data-cue-room": "", "data-card-after": "", style: { margin: '10px 0 0', fontSize: 14, color: C.ink, textWrap: 'balance', paddingRight: 'var(--cue-room, 0px)' } }, card.after)),
+        react_1.default.createElement("div", { "data-card-ready": "", style: { marginTop: 12, scrollMarginBottom: 28 } },
+            react_1.default.createElement(Btn, { full: true, kind: "secondary", onClick: onReady }, "Ready"))));
+}
+// A text with each run of small l's (ellRuns in logic.mjs: lll, Lll, the lll of fff-lll) drawn in a serif type (pass NG, round one's
+// screen read), since in the app's sans-serif type a small l is a capital I's bar; the words and their spaces are unchanged. The
+// grown-up's card uses it, and the reason after a wrong tap through ellsIn, where a grown-up reads the words aloud. Since round two's screen
+// read the run's own line height is 1, so a line that holds one is no taller than the lines around it (it had grown a pixel).
+// Since pass NH the card's words split by cardRuns, which also finds the letter I, drawn the same way and marked data-letter-i in place of
+// data-ell, so a check of the runs of l's reads the runs alone.
+const ELL_TYPE = 'Georgia, "Times New Roman", serif';
+function withElls(text, keyPrefix = 'l', split = ellRuns) {
+    const parts = split(text);
+    if (parts.length === 1)
+        return text;
+    return parts.map((part, i) => (i % 2 ? react_1.default.createElement("span", { key: `${keyPrefix}-${i}`, "data-ell": part === 'I' ? undefined : '', "data-letter-i": part === 'I' ? '' : undefined, style: { fontFamily: ELL_TYPE, lineHeight: 1 } }, part) : part)).filter((part) => part !== '');
+}
+// What partsWhole gives back (a text, or its pieces and kept spans), each run of small l's drawn in the serif type, a kept span's words
+// given back inside the same span, so partsWhole itself is unchanged (pass NG; the reason after a wrong tap uses it).
+function ellsIn(nodes, keyPrefix = 'l') {
+    const one = (x, i) => (typeof x === 'string' ? withElls(x, `${keyPrefix}-${i}`)
+        : react_1.default.isValidElement(x) && typeof x.props.children === 'string' && ellRuns(x.props.children).length > 1 ? react_1.default.cloneElement(x, {}, withElls(x.props.children, `${keyPrefix}-${i}`)) : x);
+    if (!Array.isArray(nodes))
+        return one(nodes, 0);
+    return nodes.flatMap((x, i) => { const y = one(x, i); return Array.isArray(y) ? y : [y]; });
 }
 // On a dark theme's answer tile (tile) every dot wears a pale rim, the ball's own highlight (pass ND, round one's code check: the dots'
 // dark rim, #1F3B31, read 1.09 to 1 on #22413A, so 0.67 to 0.78 of a group's edge read 3 to 1 there).
@@ -89132,8 +89362,8 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1, 
         // A run of single letters that wraps balances its rows (round three's alignment read, pass MM: Big letters' last line,
         // "A   B   C   D   E   M   S", left S alone on a row at 390 and at 768 pixels). The gap between two letters is one ordinary
         // space as wide as the text's run of spaces (its size and its spacing that many times a letter's), so a row may break there and
-        // the space drops away at a row's ends, and every row is centred (round four's code read: non-breaking spaces stayed at a row's
-        // ends, and a second row sat about 25 pixels off centre). A run on one row is drawn exactly as before, and the gap takes no
+        // the space drops away at a row's ends, and every row is centered (round four's code read: non-breaking spaces stayed at a row's
+        // ends, and a second row sat about 25 pixels off center). A run on one row is drawn exactly as before, and the gap takes no
         // height of its own (line height 0, set at the middle).
         return (react_1.default.createElement("p", { style: { fontSize: visual.grow || lessonGrows ? Math.round(44 * k) : 44, fontWeight: 700, letterSpacing: 6, margin: '6px 0', textAlign: 'center', color: B.green, textWrap: 'balance' } }, parts.map((ch, i) => (ch[0] === ' '
             ? react_1.default.createElement("span", { key: `${animKey}-${i}`, style: { fontSize: `${ch.length * 100}%`, letterSpacing: 6 * ch.length, lineHeight: 0, verticalAlign: 'middle' } }, ' ')
@@ -90904,7 +91134,7 @@ html[data-theme="dark"] .edu-slide-in { background-image: linear-gradient(90deg,
 /* A story's title row (pass MH): from 640 pixels the speaker, the snail and the hare share one row with the title, the title truly
    centered between an empty column and the controls' column. On a narrower card (pass MO, Mikey: "On narrow phone screens, we can
    move the snail and hair on both sides of the gold sound icon on top to create symmetry.  Keep the same on wider screens") the
-   snail, the speaker and the hare sit centred above the title, the speaker in the middle; only the order on screen changes, so a
+   snail, the speaker and the hare sit centered above the title, the speaker in the middle; only the order on screen changes, so a
    screen reader still meets the speaker first. */
 .edu-story-head { display: grid; grid-template-columns: 1fr; justify-items: center; gap: 8px; margin: 0 0 10px; }
 .edu-story-head .edu-story-tools { justify-self: center; order: -1; display: flex; gap: 12px; align-items: center; }
@@ -93532,7 +93762,7 @@ function ScrollCue({ target, watch, whole = false, hidden = 0, scrollTo = null }
 // Padding was chosen over a float at the block's foot: a float that reaches into a paragraph makes the browser drop its balanced and
 // pretty wrapping for the whole paragraph (Chromium 153, read in the page), which left "says." and "scared." alone on the last lines
 // of two lesson lines, against EARMARKS A82's rule; with padding the line keeps its balanced or pretty wrap in a narrower measure, at
-// most a line or two longer, and a centred line sits a little left of centre, about 18 pixels on a 320-pixel phone, only while the cue
+// most a line or two longer, and a centered line sits a little left of center, about 18 pixels on a 320-pixel phone, only while the cue
 // shows beside it. The words are read where they will rest: a block whose card is still rising (edu-rise, a slide up) is measured less
 // that slide, and one inside a box that turns or swells (a wrong tap's wobble, a right tap's cheer) waits for a check where it is
 // still, since the first check comes before its first frame and the last after it ends.
@@ -95673,7 +95903,7 @@ function BucketsGame({ game, round, onScore = null, demo = false }) {
         [0, 1].map((bin) => (react_1.default.createElement("div", { key: bin, "data-demo-drop": demoNext[bin] ? '' : undefined, "data-demo-what": demo ? (bin === 0 ? 'a' : 'b') : undefined, style: { position: 'absolute', left: bin === 0 ? '3%' : '52%', top: '66%', width: '45%', height: '31%', border: `3px dashed ${B.muted}`, borderRadius: 14, boxSizing: 'border-box' } },
             react_1.default.createElement("span", { style: { position: 'absolute', left: 0, right: 0, top: -22, textAlign: 'center', fontSize: 13, fontWeight: 700, color: B.muted } }, bin === 0 ? deck.a.label : deck.b.label)))),
         chips.map((ch) => {
-            // A chip is centred on its spot by its own transform, and a wrong bucket's wobble is a transform too, which takes the
+            // A chip is centered on its spot by its own transform, and a wrong bucket's wobble is a transform too, which takes the
             // chip's own transform's place while it runs, so the chip shook half its size to the right of and below its spot (round
             // eight's read, pass MO; older than the pass). The wobble sits on an inner box, so a chip dropped in the wrong bucket slides
             // back to its spot and shakes there, for the same reason a lesson pair's 85 percent sits on a wrapper inside each half.
@@ -96659,7 +96889,7 @@ function SpotGame({ game, round, onScore = null, demo = false }) {
 // so the next ask is heard before the next tap counts; with no voice on the device nothing waits. Three asks a board, four
 // boards a round, a row of four dots for how far along, and the star. No clock and no score: a four-year-old is learning
 // names, not racing. The letters fill the board (240 to 490 pixels across, so they stand about 55 to 110 tall), each on a
-// round card 31 units across, the centre card 10 units clear of the corner cards (pass MM, the real page: at 4 units they looked
+// round card 31 units across, the center card 10 units clear of the corner cards (pass MM, the real page: at 4 units they looked
 // as if they touched), since a letter's own ink is too thin to take a small finger's tap.
 // Everything sits on the paper board, so the hear-again button takes the light palette's gold too (SpeakButton's dark-theme
 // ivory would vanish on the paper).
@@ -97728,7 +97958,7 @@ function ReplaySpeaker({ text, label = 'Hear the question again' }) {
 }
 // A spoken question and its speaker (pass MQ, Mikey, of Which Sense: "I think it is being pushed left by the speaker icon but the text
 // should be centered and the speaker icon should sit to the right of the text"): the words sit in the middle of three columns, so they
-// are centred on the board whatever the speaker's width, and the speaker sits in the column to their right, against the words; the
+// are centered on the board whatever the speaker's width, and the speaker sits in the column to their right, against the words; the
 // left column is as wide as the right, so the words never move when the speaker hides (after a right answer, or on a device with no
 // voice). Every game that asks a question beside a speaker uses it: Which Sense, Spot It, Share the Cookies, Grow the Plant, Find
 // the Tool and Find the Letter.
@@ -99938,7 +100168,7 @@ function makeDemoHands(stage, pointer, ring, keycap, alive, note, hush) {
         const dx = left < 0 ? left - 8 : right > vw ? Math.min(right - vw + 8, left - 8) : 0;
         if (!dy && !dx)
             return;
-        // Where a centred target lands is noted for the browser test (window.__eduIntro.centred): how far its middle sits from the middle
+        // Where a centered target lands is noted for the browser test (window.__eduIntro.centred, the property's own spelling, left as it was): how far its middle sits from the middle
         // of the part the pointer may use, measured against that part as it was when the scroll was asked for, and only where the page
         // could move that far (a window, not at its end). Round four's second read: an offset carried into every page put targets half the
         // floating Skip's bar too low, and no check read where a target landed.
@@ -100607,7 +100837,7 @@ function GamePad({ game, name, secondsLeft, total, onClose, modules = [], onScor
     // caption and Skip's row leave with the welcome (round three's second read, pass MP: Begin sat above what showed after 28 of 59
     // welcomes in the claude.ai preview's page-tall frame and 15 on a phone held sideways, and the board's top after Begin in more).
     // Only a visit that had a welcome scrolls; Begin's cover sits where the board will be, so its top is brought 8 pixels under the top
-    // of what shows, unless Begin itself would then fall below it, when Begin is centred instead.
+    // of what shows, unless Begin itself would then fall below it, when Begin is centered instead.
     // Round four's second read: it waits until the page has stopped moving before it reads (a page still scrolling when the welcome
     // ended carried Begin out of what shows in the claude.ai preview's frame), and waits for the Instructions pop-up to close, since a
     // page moved under the pop-up carries it off in that frame. The browser's scroll anchoring is off from the welcome's end until the
@@ -102771,22 +103001,48 @@ async function downloadFile(name, text) {
 // ---------- The app ----------
 // The crash guard (2026-09-24, Mikey): a screen that throws while drawing shows a way home instead of a blank page.
 // Go home remounts the app fresh, which reloads everything from storage, so nothing a student or educator did is lost.
+// Since pass NG (Q92 (b), round one's code read) a stop before the app has shown any screen past Loading (appShown) draws nothing and
+// hands the page its note instead (window.__eduCannotStart, tools/too-old.mjs, the note that the app could not start), since there Go
+// home would only stop again: the guard catches every error in the app's screens, so until then a browser that reads the app's script
+// but stops in its first screen met Go home over and over, and React's onUncaughtError, which the page's start also hands the note to,
+// never heard of it. A page with no note (a test's own page) keeps the guard's screen.
+// Since the third read (pass NG) Go home erases the note of where the student was on the second later stop since the page loaded
+// (laterStops), so a stop that comes back in a remembered screen does not bring the student back to it for ever: the first Go home
+// still resumes where they were, and the second goes to the front door (a practice set in progress there starts over). Until then a
+// remembered overview that stopped after its first screen showed Go home on every tap.
+let appShown = false;
+let laterStops = 0;
 class CrashGuard extends react_1.default.Component {
-    constructor(props) { super(props); this.state = { error: null }; }
-    static getDerivedStateFromError(error) { return { error }; }
-    componentDidCatch(error) { try {
-        console.error('The Wise Human crash guard:', error);
+    constructor(props) { super(props); this.state = { error: null, early: false }; }
+    static getDerivedStateFromError(error) { return { error, early: !appShown && typeof window !== 'undefined' && typeof window.__eduCannotStart === 'function' }; }
+    componentDidCatch(error) {
+        try {
+            console.error('The Wise Human crash guard:', error);
+        }
+        catch (e) { /* a console is not guaranteed */ }
+        // Since round two's code read (pass NG) an early stop also erases the note of where the student was (saveWhere), so the reload the note
+        // asks for starts at the front door: a refresh restores the overview, a lesson, a story, the map or a practice set, and a stop in the
+        // restored screen came before the app had shown one, so every reload restored it and stopped again (a practice set in progress is lost).
+        if (this.state.early) {
+            saveWhere(null);
+            if (!window.__eduCannotStart('stopped'))
+                this.setState({ early: false });
+        } // no note: the guard's own screen
+        else
+            laterStops += 1;
     }
-    catch (e) { /* a console is not guaranteed */ } }
     render() {
         if (!this.state.error)
             return this.props.children;
+        if (this.state.early)
+            return null;
         return (react_1.default.createElement("div", { style: { ...page } },
             react_1.default.createElement("div", { className: "edu-wrap", style: { ...wrap } },
                 react_1.default.createElement("div", { style: { ...card, textAlign: 'center', marginTop: 40 } },
                     react_1.default.createElement("p", { style: { fontWeight: 600, fontSize: 18, margin: '0 0 8px' } }, "Something went wrong on this page."),
                     react_1.default.createElement("p", { style: { margin: '0 0 16px', color: C.muted } }, "Nothing you did was lost. Tap the button to go home."),
-                    react_1.default.createElement(Btn, { onClick: () => { this.setState({ error: null }); this.props.onHome(); } }, "Go home")))));
+                    react_1.default.createElement(Btn, { onClick: () => { if (laterStops >= 2)
+                            saveWhere(null); this.setState({ error: null, early: false }); this.props.onHome(); } }, "Go home")))));
     }
 }
 function EduSphereApp() {
@@ -102806,6 +103062,39 @@ function EduSphereScreens() {
     const [boom, setBoom] = (0, react_1.useState)(false); // test-only: a render that throws on purpose, for the crash guard's check
     if (boom)
         throw new Error('test crash');
+    // The app has shown a screen past Loading (pass NG, the crash guard above): set once that screen's drawing and its effects are done,
+    // on the task after the one that drew it, so a stop in that screen's own drawing or effects, this effect's or a later one's, still counts
+    // as before the first screen; the page's note never shows after it (window.__eduAppShown, tools/too-old.mjs). Since round two's code read
+    // the next task comes by a message, which a background tab does not slow as it slows a timer (to a second or more), a timer only where
+    // a message cannot be sent.
+    (0, react_1.useEffect)(() => {
+        if (screen === 'loading' || appShown || typeof window === 'undefined')
+            return undefined;
+        let live = true;
+        let line = null;
+        const mark = () => { if (live) {
+            appShown = true;
+            window.__eduAppShown = true;
+        } if (line) {
+            line.port1.close();
+            line = null;
+        } };
+        try {
+            line = new MessageChannel();
+            line.port1.onmessage = mark;
+            line.port2.postMessage(0);
+        }
+        catch (e) {
+            line = null;
+        }
+        const t = line ? 0 : setTimeout(mark, 0);
+        return () => { live = false; if (t)
+            clearTimeout(t); if (line) {
+            line.port1.onmessage = null;
+            line.port1.close();
+            line = null;
+        } };
+    }, [screen]);
     const [nameInput, setNameInput] = (0, react_1.useState)('');
     const [roster, setRoster] = (0, react_1.useState)(emptyRoster());
     const [rosterInput, setRosterInput] = (0, react_1.useState)(''); // the ID box on the roster screen
@@ -103263,6 +103552,10 @@ function EduSphereScreens() {
     const [qIndex, setQIndex] = (0, react_1.useState)(0);
     const [given, setGiven] = (0, react_1.useState)('');
     const [checked, setChecked] = (0, react_1.useState)(false);
+    // The question whose grown-up's card Ready has hidden (Q91 (a), pass NG): a key naming the round, the question's place in it and the
+    // question, so the next question shows its own card without a reset at every place a question changes, and Show the words again
+    // brings a card back by clearing it.
+    const [cardReady, setCardReady] = (0, react_1.useState)('');
     const [wasCorrect, setWasCorrect] = (0, react_1.useState)(false);
     const [coreResults, setCoreResults] = (0, react_1.useState)([]);
     const [reviewResult, setReviewResult] = (0, react_1.useState)(null);
@@ -105560,6 +105853,19 @@ function EduSphereScreens() {
         // picture above them at SHORT_PICTURES of their size, so Check answer ends above the fold (pass MZ, EARMARKS A80); two answers with
         // no picture above end high enough at full size, so they keep it (round one's screen check: 167 such screens ended at 640 at most).
         const shortPictures = shortPhone() && q.type === 'choice' && Array.isArray(q.choices) && q.choices.every((c) => ONE_PICTURE_CHOICE.test(String(c))) && (!!q.visual || q.choices.length >= 3);
+        // The grown-up's card (Q91 (a), Mikey's answer in pass NG; grownUpCard in logic.mjs): with no voice, a letters question whose whole
+        // words would print the sound or word to say shows, in the answers' place, a card with those words for the grown-up and a Ready
+        // button, until Ready; what prints above the card and, after Ready, above the answers is cardQuestion's, what a device with a voice
+        // prints, the same for every seed of its bank but Write it by its sounds' yes or no (first, or at the end), and a which-sound question's
+        // buttons show their numbers. The card comes back with Show the words again, never once
+        // the answer is checked.
+        const grownCard = !canSpeak() ? grownUpCard(q) : null;
+        const cardKey = [attempt ? attempt.moduleId + ':' + attempt.seed : '', qIndex, q.genId || '', q.seed === undefined ? '' : q.seed].join('|');
+        const cardUp = !!grownCard && !checked && cardReady !== cardKey;
+        // Since pass NH (Q97, Mikey's answer "Q97 - A"): a kind whose card hides (grownCard.hides) draws neither its picture nor its print
+        // while the card is up, so the letter it asks about is never on the screen with the card's words; Ready shows them with the answers.
+        const cardHides = !!grownCard && grownCard.hides && cardUp;
+        const shownQ = grownCard ? cardQuestion(q, cardUp) : printedQuestion(q, canSpeak());
         return (react_1.default.createElement("div", { style: { ...page } },
             react_1.default.createElement(PageChrome, { idleWarning: idleWarning, logoutIn: logoutIn, walkthrough: !!(record && record.preview) }),
             react_1.default.createElement("div", { className: "edu-wrap", style: { ...wrap } },
@@ -105581,14 +105887,27 @@ function EduSphereScreens() {
                     !isReviewQ && react_1.default.createElement("span", { "aria-hidden": "true" }),
                     !isReviewQ && react_1.default.createElement("p", { style: { margin: 0, fontSize: 18, fontWeight: 600, textAlign: 'center', ...(narrowScreen() ? { minWidth: 0 } : null) } }, narrowScreen() ? react_1.default.createElement(FitText, { size: 18, min: 15, within: "[data-title-row]", less: 2 * (44 + 8) }, titleCase(mod.title)) : titleCase(mod.title)),
                     react_1.default.createElement(SpeakButton, { mini: true, text: questionText, voices: q && q.voices ? q.voices : null, label: readAloud ? 'Hear it again' : 'Read it to me' })),
-                react_1.default.createElement("div", { style: { ...card, position: 'relative', ...(shortPhone() ? { padding: '14px 16px' } : null) } },
-                    printedQuestion(q, canSpeak()).story && react_1.default.createElement("div", { "data-question-setup": "", style: { margin: '0 0 10px', color: C.ink, textWrap: 'balance' } },
-                        react_1.default.createElement(RichText, { text: printedQuestion(q, canSpeak()).story, size: 17, center: true, lineGap: 8 })),
-                    react_1.default.createElement("p", { "data-question-text": "", style: { fontSize: 20, fontWeight: 600, margin: shortPhone() ? '0 0 10px' : '0 0 14px', textAlign: 'center', textWrap: 'balance' } }, printedQuestion(q, canSpeak()).prompt),
-                    q.visual && react_1.default.createElement("div", { style: { margin: shortPhone() ? '0 0 10px' : '0 0 14px' } },
+                react_1.default.createElement("div", { "data-question-card": "", style: { ...card, position: 'relative', ...(shortPhone() ? { padding: '14px 16px' } : null) } },
+                    shownQ.story && react_1.default.createElement("div", { "data-question-setup": "", style: { margin: '0 0 10px', color: C.ink, textWrap: 'balance', scrollMarginTop: 12 } },
+                        react_1.default.createElement(RichText, { text: shownQ.story, size: 17, center: true, lineGap: 8 })),
+                    shownQ.prompt !== '' && react_1.default.createElement("p", { "data-question-text": "", style: { fontSize: 20, fontWeight: 600, margin: shortPhone() ? '0 0 10px' : '0 0 14px', textAlign: 'center', textWrap: 'balance', scrollMarginTop: 12 } }, shownQ.prompt),
+                    q.visual && !cardHides && react_1.default.createElement("div", { "data-question-picture": "", style: { margin: shortPhone() ? '0 0 10px' : '0 0 14px' } },
                         react_1.default.createElement(Picture, { visual: Array.isArray(q.choices) && q.choices.some((c) => String(c).startsWith(`${q.visual.kind}:`)) && matchSize(q.visual) ? { ...shownVisual, size: matchSize(q.visual) } : shownVisual, note: record.preview ? undefined : false, big: !(Array.isArray(q.choices) && q.choices.some((c) => String(c).startsWith(`${q.visual.kind}:`))), shrink: shortPictures ? SHORT_PICTURES : 1 })),
-                    q.type === 'choice' ? (react_1.default.createElement(PrintGroupIf, { on: q.choices.filter((c) => /^print:/.test(String(c))).length >= 2 },
-                        react_1.default.createElement("div", { style: { display: 'grid', gap: shortPhone() ? 8 : 10, alignItems: q.choices.every((c) => /^tower:\d+$/.test(c)) ? 'end' : undefined, gridTemplateColumns: q.corners ? 'repeat(2, minmax(0, 1fr))' : q.choices.every((c) => /^tower:\d+$/.test(c)) ? `repeat(${q.choices.length}, 1fr)` : q.choices.every((c) => /^(\d+|[A-Za-z])$/.test(c)) ? `repeat(auto-fit, minmax(${Math.max(70, Math.max(...q.choices.map((c) => c.length)) * 15 + 24)}px, 1fr))` : '1fr', ...(q.corners ? { maxWidth: 360, margin: '0 auto' } : q.choices.every((c) => ONE_PICTURE_CHOICE.test(String(c)) || /^dots:\d+$/.test(String(c)) || /^print:/.test(String(c))) || loneLetterAmongPictures(q.choices) ? { maxWidth: PICTURE_COLUMN, margin: '0 auto' } : null) } }, q.choices.map((c) => {
+                    q.type === 'choice' && cardUp ? (react_1.default.createElement(GrownUpCard, { card: grownCard, onReady: () => {
+                            setCardReady(cardKey);
+                            if (typeof window !== 'undefined')
+                                window.requestAnimationFrame(() => {
+                                    const top = document.querySelector('[data-question-setup]') || document.querySelector('[data-question-text]');
+                                    // Since the third read's screen read: whenever the question's first line sits within its 12-pixel margin of the top, not only
+                                    // above it (sideways, the cue's tap had left it 2 to 4 pixels from the screen's top edge).
+                                    if (top && top.scrollIntoView && top.getBoundingClientRect().top < visibleBand().top + 12)
+                                        top.scrollIntoView({ block: 'start', behavior: 'auto' });
+                                    const first = document.querySelector('[data-choice]');
+                                    if (first && first.focus)
+                                        first.focus({ preventScroll: true });
+                                });
+                        } })) : q.type === 'choice' ? (react_1.default.createElement(PrintGroupIf, { on: q.choices.filter((c) => /^print:/.test(String(c))).length >= 2 },
+                        react_1.default.createElement("div", { style: { display: 'grid', gap: shortPhone() ? 8 : 10, alignItems: q.choices.every((c) => /^tower:\d+$/.test(c)) ? 'end' : undefined, gridTemplateColumns: q.corners ? 'repeat(2, minmax(0, 1fr))' : q.choices.every((c) => /^tower:\d+$/.test(c)) ? `repeat(${q.choices.length}, 1fr)` : q.choices.every((c) => /^(\d+|[A-Za-z])$/.test(c)) ? `repeat(auto-fit, minmax(${Math.max(70, Math.max(...q.choices.map((c) => c.length)) * 15 + 24)}px, 1fr))` : grownCard && grownCard.sounds ? 'repeat(auto-fit, minmax(70px, 1fr))' : '1fr', ...(q.corners ? { maxWidth: 360, margin: '0 auto' } : q.choices.every((c) => ONE_PICTURE_CHOICE.test(String(c)) || /^dots:\d+$/.test(String(c)) || /^print:/.test(String(c))) || loneLetterAmongPictures(q.choices) ? { maxWidth: PICTURE_COLUMN, margin: '0 auto' } : null) } }, q.choices.map((c) => {
                             const picked = given === c;
                             let bg = C.surface;
                             let border = C.line;
@@ -105625,7 +105944,12 @@ function EduSphereScreens() {
                             // A heard choice (pass MX) prints Tap to hear beside a speaker for a pre-reader while the voice can speak, and a screen
                             // reader hears the sentence itself, as a child hears it when the button is tapped (printedChoice).
                             const heard = readAloud ? printedChoice(q, c, canSpeak()) : null;
-                            return (react_1.default.createElement("button", { key: c, type: "button", "data-choice": c, "data-heard-choice": heard ? '' : undefined, "data-choice-last": c === q.choices[q.choices.length - 1] ? '' : undefined, "aria-label": heard ? c : pictureName, onClick: () => { if (!checked) {
+                            // With a grown-up's card (Q91 (a), pass NG) a which-sound question's buttons show their numbers, 1 and 2 or 1, 2 and 3, in the order
+                            // the card listed its sounds, so no sound is printed beside the letter it belongs to; the grown-up says each one. Since round
+                            // one's screen read (pass NG) they stand in one row, as single letters do, where three full-width bars of one digit each took
+                            // three rows on a phone (the row's columns, above).
+                            const cardNumber = grownCard && grownCard.sounds ? grownCard.sounds.indexOf(String(c)) + 1 : 0;
+                            return (react_1.default.createElement("button", { key: c, type: "button", "data-choice": c, "data-heard-choice": heard ? '' : undefined, "data-choice-last": c === q.choices[q.choices.length - 1] ? '' : undefined, "aria-label": heard ? c : cardNumber ? `Button ${cardNumber}` : pictureName, onClick: () => { if (!checked) {
                                     if (readAloud) {
                                         playTap();
                                         if (choiceSpeaks(q, c))
@@ -105633,7 +105957,7 @@ function EduSphereScreens() {
                                     }
                                     setGiven(c);
                                 } }, style: { opacity: ruledOut && !checked ? (C.mode === 'dark' ? 0.72 : 0.5) : 1, fontFamily: FONT, fontSize: choiceFont(q.choices), textAlign: 'center', textWrap: 'balance', padding: `${shortPictures ? 6 : 12}px 10px ${standIn ? 34 : shortPictures ? 6 : 12}px`, ...(standIn ? { position: 'relative' } : null), minWidth: 0, overflowWrap: /^-?[\d.,\/ ]+$/.test(c) ? 'normal' : 'anywhere', whiteSpace: /^-?[\d.,\/ ]+$/.test(c) ? 'nowrap' : 'normal', borderRadius: 10, background: bg, border: `2px solid ${border}`, color: C.ink, cursor: checked ? 'default' : 'pointer', minHeight: 48 } },
-                                heard ? react_1.default.createElement(HeardChoice, { text: heard }) : choiceFace(c, shortPictures ? SHORT_PICTURES : 1),
+                                heard ? react_1.default.createElement(HeardChoice, { text: heard }) : cardNumber ? react_1.default.createElement("span", { "data-card-number": cardNumber, style: { fontSize: 28, fontWeight: 700 } }, cardNumber) : choiceFace(c, shortPictures ? SHORT_PICTURES : 1),
                                 standIn && react_1.default.createElement(ReplaceNote, { pal: C, style: { right: 8, bottom: 5 } })));
                         })))) : q.type === 'writing' ? (react_1.default.createElement("div", null,
                         react_1.default.createElement("div", { style: { padding: 14, borderRadius: 10, background: C.goldSoft, marginBottom: 12 } },
@@ -105719,10 +106043,14 @@ function EduSphereScreens() {
                     checked && attempt.placement && !wasCorrect && given === '' && (react_1.default.createElement("div", { style: { marginTop: 14, padding: 14, borderRadius: 10, background: C.goldSoft, textAlign: 'center' } },
                         react_1.default.createElement("p", { style: { margin: 0, fontWeight: 600 } }, "No problem. That one does not count against you."),
                         react_1.default.createElement("p", { style: { margin: '6px 0 0', fontSize: 14, color: C.muted } }, "It only tells the check where to start you."))),
+                    q.type === 'choice' && grownCard && !cardUp && !checked && react_1.default.createElement("p", { style: { margin: '10px 0 0', textAlign: 'center' } },
+                        react_1.default.createElement("button", { type: "button", "data-card-again": "", onClick: () => { setCardReady(''); if (typeof window !== 'undefined')
+                                window.requestAnimationFrame(() => { const ready = document.querySelector('[data-card-ready] button'); if (ready && ready.focus)
+                                    ready.focus({ preventScroll: true }); }); }, style: { ...linkBtn, fontSize: 14 } }, "Show the words again")),
                     checked && !(attempt.placement && !wasCorrect && given === '') && (react_1.default.createElement("div", { key: cheer, "data-feedback": "", onAnimationEnd: (e) => { if (e.target === e.currentTarget && typeof window !== 'undefined')
                             window.dispatchEvent(new Event('edu-cue-check')); }, className: wasCorrect ? 'edu-cheer' : 'edu-wobble', style: { position: 'relative', marginTop: 14, padding: 14, borderRadius: 10, background: wasCorrect ? C.greenSoft : C.claySoft } },
                         wasCorrect && react_1.default.createElement(StarBurst, null),
-                        react_1.default.createElement("p", { "data-cue-room": "", style: { margin: 0, fontWeight: 600, color: wasCorrect ? C.green : C.clayInk, paddingRight: 'var(--cue-room, 0px)', textWrap: 'balance' } }, wasCorrect ? 'Correct' : readAloud ? partsWhole(preReaderWrongWords(q, String(given), wrongPicks, canSpeak()), 'why') : `Not quite. The answer is ${describeAnswer(q)}.`),
+                        react_1.default.createElement("p", { "data-cue-room": "", style: { margin: 0, fontWeight: 600, color: wasCorrect ? C.green : C.clayInk, paddingRight: 'var(--cue-room, 0px)', textWrap: 'balance' } }, wasCorrect ? 'Correct' : readAloud ? ellsIn(partsWhole(keepLoneCapitals(preReaderWrongWords(q, String(given), wrongPicks, canSpeak() || !!grownCard)), 'why'), 'why') : `Not quite. The answer is ${describeAnswer(q)}.`),
                         (wasCorrect || !readAloud) && (react_1.default.createElement("div", { "data-cue-room": "", style: { paddingRight: 'var(--cue-room, 0px)' } },
                             react_1.default.createElement("div", { style: { margin: '8px 0 0', textWrap: 'balance' } },
                                 react_1.default.createElement(RichText, { text: formatTeachingText(q.explain), size: 15, lineGap: 6 }),
@@ -105750,14 +106078,15 @@ function EduSphereScreens() {
                         ? react_1.default.createElement(Btn, { full: true, halo: true, onClick: nextQuestion, disabled: busy }, qIndex + 1 < questions.length ? 'Next question' : 'See results')
                         : q.type === 'writing'
                             ? react_1.default.createElement(Btn, { full: true, halo: ticks.length === q.checklist.length, onClick: submitWriting, disabled: busy || ticks.length < q.checklist.length }, "I have finished writing it")
-                            : react_1.default.createElement(react_1.default.Fragment, null,
+                            : cardUp ? null : react_1.default.createElement(react_1.default.Fragment, null,
                                 react_1.default.createElement(Btn, { full: true, halo: given !== '', onClick: checkCurrent, disabled: given === '' || (q.type === 'order' && orderPicked.length < (q.pick || q.items.length)) }, "Check answer"),
                                 attempt.placement && react_1.default.createElement("div", { style: { marginTop: 10 } },
                                     react_1.default.createElement(Btn, { full: true, kind: "secondary", onClick: dontKnow }, "I don't know")))),
                 readAloud && checked && wasCorrect && insight && insight.any && react_1.default.createElement("p", { style: { margin: '10px 0 0', textAlign: 'center' } },
                     react_1.default.createElement("button", { type: "button", "data-more-info-link": "", onClick: () => setMoreInfo(true), style: { ...linkBtn, fontSize: 14 } }, "More Info")),
-                readAloud && !moreInfo && (checked || (given !== '' && !(q.type === 'order' && orderPicked.length < (q.pick || q.items.length)))) && react_1.default.createElement(ScrollCue, { target: "[data-practice-next]", whole: true, watch: `${qIndex}-${checked}-${wasCorrect}-${misses}` }),
-                readAloud && !moreInfo && !checked && given === '' && q && q.type === 'choice' && react_1.default.createElement(ScrollCue, { target: "[data-choice-last]", hidden: 1 / 3, watch: `${questionKey}-${q.genId}-pick` }),
+                readAloud && !moreInfo && !cardUp && (checked || (given !== '' && !(q.type === 'order' && orderPicked.length < (q.pick || q.items.length)))) && react_1.default.createElement(ScrollCue, { target: "[data-practice-next]", whole: true, watch: `${qIndex}-${checked}-${wasCorrect}-${misses}` }),
+                readAloud && !moreInfo && !checked && given === '' && q && q.type === 'choice' && !cardUp && react_1.default.createElement(ScrollCue, { target: "[data-choice-last]", hidden: 1 / 3, watch: `${questionKey}-${q.genId}-pick` }),
+                readAloud && !moreInfo && cardUp && react_1.default.createElement(ScrollCue, { target: "[data-card-ready]", whole: true, watch: `${cardKey}-ready` }),
                 record.preview && react_1.default.createElement("div", { style: { marginTop: 10 } },
                     react_1.default.createElement(Btn, { full: true, kind: "secondary", onClick: () => { setChecked(false); setGiven(''); setOrderPicked([]); if (qIndex + 1 < questions.length) {
                             setQIndex(qIndex + 1);
@@ -108344,8 +108673,12 @@ function EduSphereScreens() {
 
 });</script>
 <script>
-var React = require('react'); var App = require('app').default;
-require('react-dom/client').createRoot(document.getElementById('root')).render(React.createElement(App));
+// The app starts here, inside a guard: if its script never loaded, or it stops before its first screen, the note takes the Loading word's place.
+var eduLoaded = false;
+try {
+  var React = require('react'); var App = require('app').default; eduLoaded = true;
+  require('react-dom/client').createRoot(document.getElementById('root'), { onUncaughtError: function (error) { if (window.__eduCannotStart) window.__eduCannotStart('stopped'); if (typeof window.reportError === 'function') window.reportError(error); else setTimeout(function () { throw error; }, 0); } }).render(React.createElement(App));
+} catch (e) { if (window.__eduCannotStart) window.__eduCannotStart(eduLoaded ? 'stopped' : 'old'); if (window.console && window.console.error) window.console.error(e); }
 </script>
 </body>
 </html>

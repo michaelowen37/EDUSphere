@@ -12,6 +12,7 @@ import { readFileSync, writeFileSync, readdirSync, existsSync, realpathSync } fr
 import { dirname } from 'node:path';
 import { execSync } from 'node:child_process';
 import { newestNews, recentNews } from './whats-new.mjs';
+import { TOO_OLD_SCRIPT, START_SCRIPT } from './too-old.mjs';
 
 const G = execSync('npm root -g').toString().trim();
 const read = (rel) => readFileSync(`${G}/${rel}`, 'utf8');
@@ -48,6 +49,8 @@ const coloringList = existsSync('art/coloring') ? readdirSync('art/coloring').fi
 const mapList = existsSync('art/maps') ? readdirSync('art/maps').filter((f) => f.endsWith('.webp')).map((f) => f.slice(0, -5)) : [];
 
 const wrap = (name, code) => `__def(${JSON.stringify(name)}, function(module, exports, require){${code}\n});`;
+// The note for a browser too old for the app and the guarded start (Q92, pass NG) live in tools/too-old.mjs, read by this build and
+// by tests/e2e/too-old.mjs alike, so the page and its test read the same words.
 const html = `<!doctype html>
 <!-- The Wise Human. Copyright (c) 2026 iECHO, LLC. All rights reserved. Source-available, not open source: reading is allowed, reuse is not. See LICENSE.md. -->
 <html lang="en">
@@ -77,11 +80,16 @@ const html = `<!doctype html>
 .edu-boot-word .edu-boot-dots { color: #C9A227; }
 @keyframes edu-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 @media (prefers-reduced-motion: reduce) { .edu-boot-word span { animation: none; } }
+/* The note for a browser too old for the app (Q92, pass NG): plain words where the Loading word was, in the same green. */
+.edu-too-old { max-width: 34em; margin: 0 auto; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 18px; line-height: 1.5; color: #1F3B31; text-align: center; }
+.edu-too-old p { margin: 0 0 14px; }
+.edu-too-old .edu-too-old-head { font-size: 22px; font-weight: 800; color: #2F5D4F; }
 </style>
 </head>
 <body>
 <div id="root"></div>
 <div id="edu-boot" aria-hidden="true"><div class="edu-boot-word">${'Loading'.split('').map((ch, i) => `<span style="animation-delay:${(i * 0.12).toFixed(2)}s">${ch}</span>`).join('')}<span class="edu-boot-dots" style="animation-delay:0.9s">...</span></div></div>
+<script>${TOO_OLD_SCRIPT}</script>
 <script>
 window.__eduArt = ${JSON.stringify(artList)};
 window.__eduColoringArt = ${JSON.stringify(coloringList)};
@@ -105,10 +113,7 @@ window.storage = {
 };
 </script>
 <script>${Object.entries(mods).map(([n, c]) => wrap(n, c)).join('\n')}</script>
-<script>
-var React = require('react'); var App = require('app').default;
-require('react-dom/client').createRoot(document.getElementById('root')).render(React.createElement(App));
-</script>
+<script>${START_SCRIPT}</script>
 </body>
 </html>`;
 writeFileSync('index.html', html);

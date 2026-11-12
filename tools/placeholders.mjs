@@ -20,7 +20,7 @@ const ROOT = new URL('../', import.meta.url);
 // The docs a person or a new chat reads: every docs/*.md, CLAUDE.md, its second part and the README, as { file, text }.
 export function docTexts() {
   const docs = readdirSync(new URL('docs/', ROOT)).filter((f) => f.endsWith('.md')).map((f) => `docs/${f}`);
-  return ['CLAUDE.md', 'CLAUDE-PART-2.md', 'README.md', ...docs].map((file) => ({ file, text: readFileSync(new URL(file, ROOT), 'utf8') }));
+  return ['CLAUDE.md', 'CLAUDE-PART-2.md', 'CLAUDE-PART-3.md', 'README.md', ...docs].map((file) => ({ file, text: readFileSync(new URL(file, ROOT), 'utf8') }));
 }
 
 // Every name in capitals the code has: src, tools and tests (scripts of every kind), build.sh, check.sh and sw.js. This tool and

@@ -9,6 +9,16 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## November 11, 2026 (the grown-up's card in every letters lesson)
+
+- On a phone, tablet or computer that cannot speak, the card for you now comes up in every letters lesson, not only the ones about the sounds letters say. In A and B, Big letters and the three tracing lessons, a question like "Tap the letter B." used to print the letter's name right above the letters, so a child could match the shapes without hearing you. Now you see the card first, read it aloud, and tap Ready to show the letters.
+- When a question asks about a letter shown on the screen, like "Does this letter say that sound?", the letter now waits until you tap Ready. The card has you say just the sound, the sounds, the word or the letter's name, and then the letter appears with the question, so your child listens to answer rather than matching the card's words to the letter. The card now says to read that question aloud after you tap Ready, since it shows only then. In a question about which sound a letter says, read the question after Ready, then point to each button and say its sound again. And when a card names the letter I, it prints it in a serif type, so it is easy to tell from a small l.
+
+## November 11, 2026 (a card for the grown-up, and a plain note for older devices)
+
+- On a phone, tablet or computer that cannot speak, you read each question aloud to your child. In the letters lessons, the question's own words used to sit right above the letters, so a child could match the printed Sss to the S without hearing a thing. Now those questions show you a card first, with the words to read aloud. Tap Ready, and the card goes away and the answers appear, so your child answers by what they hear. If the answers are sounds, the buttons show their numbers, and the card tells you which sound to say for each one. Show the words again brings the card back any time before the answer is checked. And after a wrong answer, with a voice or without, a letter's name stays on the line with the word before it, and a sound like lll is printed in a serif type, so its l's are easier to tell from capital I's.
+- If someone opens The Wise Human on a device or browser too old to run it, like an iPad Air 2 or an older iPhone, they now see a short note saying so and what will work, where the page used to just say Loading forever. An iPad or iPhone needs iPadOS or iOS 16.4 or later, and on any other device a current Chrome, Edge, Firefox or Safari works. If the app ever cannot start for another reason, the note says that instead and suggests reloading the page, which then opens at the front door. Nothing changes on a device where the app already runs.
+
 ## November 10, 2026 (letters whose names do not tell their sounds, and making a real letter)
 
 - Four-year-olds meet four letters whose names do not tell the sound we learn for them. In Hear it in a word, C says cuh and G says guh in lots of words, though C's name starts with sss and G's with juh, and H says huh and W says wuh, though H's name ends with chuh and W's starts with duh. So for these four, a child listens to the start of a word: cat and cup, goat and guitar, hat and house, window and watermelon.

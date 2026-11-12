@@ -1428,7 +1428,7 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
 // Since round two's alignment and content reads (pass NF) the marks drawing, the picture Look and write's "Is this a real letter? No" rests
 // on, holds no closed shape of three points with its middle point above the other two: its triangle, two slanted sides meeting at the top
 // with a bar across, fit Listen and point's own words for A ("Its two slanted sides lean in and meet at the top, with a bar across."), so it
-// is gone and the top row centred. Every path of the drawing is read, each part a move starts. Plant: the drawing as round one left it.
+// is gone and the top row centered. Every path of the drawing is read, each part a move starts. Plant: the drawing as round one left it.
 { const ui = readFileSync(new URL('../src/ui.jsx', import.meta.url), 'utf8'); const marksOf = (src) => src.split('\n').find((l) => l.trim().startsWith('marks: <g>')) || '';
   const peaks = (line) => [...line.matchAll(/ d="([^"]+)"/g)].flatMap((m) => m[1].split(/(?=M)/)).filter((part) => /Z\s*$/.test(part.trim())).map((part) => [...part.matchAll(/(-?[\d.]+)[ ,](-?[\d.]+)/g)].map((p) => [Number(p[1]), Number(p[2])]))
     .filter((pts) => pts.length === 3 && pts[1][1] < pts[0][1] && pts[1][1] < pts[2][1]);
@@ -1469,5 +1469,17 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   ok(`every opener of a story page sets the voice's state as it opens it, so a read-aloud story draws no cue in its start window (pass NF, round one's screen read; since round two's code read every setScreen call read whole, ${now.calls} calls: ${now.openers} openers, the where-note's restore among them, the reader lesson's View story named, and the names ${now.names.join(', ')}; planted and caught: My Stories' button and the restore without their voice state, an arm that opens a story without it, and a new name)`,
     now.openers >= 9 && now.unset.length === 0 && now.odd.length === 0 && NAMED.every((n) => now.names.includes(n)) && now.names.length === NAMED.length && plants.every((p) => p !== ui)
     && p1.unset.length === 1 && p2.unset.length === 1 && p3.unset.length === 1 && p4.odd.length === 1, JSON.stringify({ unset: now.unset, odd: now.odd, names: now.names, plants: [p1.unset, p2.unset, p3.unset, p4.odd] })); }
+// A picture of a whole page is named as one (pass NH, round two's whole read of RULES-AUDIT: section 9's row on pictures of a screen
+// was held by the doc alone, and two tests took whole-page pictures unnamed). Every fullPage: true in tests/ and tools/ carries the words
+// "a picture of a whole page" on its line or the line above, since such a picture draws what is pinned to the screen where the screen
+// stood. Near miss: a planted whole-page picture with no note, caught.
+{ const { readdirSync, statSync } = await import('node:fs'); const files = [];
+  const walk = (dir) => { for (const f of readdirSync(new URL(dir, import.meta.url))) { if (f === 'out' || f === 'node_modules' || f === 'art') continue; const rel = dir + f; const st = statSync(new URL(rel, import.meta.url)); if (st.isDirectory()) walk(rel + '/'); else if (/\.(mjs|js|py)$/.test(f)) files.push(rel); } };
+  walk('./'); walk('../tools/');
+  const unnamed = (name, text) => { const lines = text.split('\n'); return lines.map((l, i) => (/fullPage:\s*true|full_page\s*=\s*True/.test(l) && !/a picture of a whole page/i.test(l + ' ' + (lines[i - 1] || '')) ? `${name}:${i + 1}` : null)).filter(Boolean); };
+  const found = files.flatMap((f) => unnamed(f, readFileSync(new URL(f, import.meta.url), 'utf8')));
+  const named = files.filter((f) => /fullPage:\s*true/.test(readFileSync(new URL(f, import.meta.url), 'utf8'))).length;
+  const plant = unnamed('plant', "await page.screenshot({ path: 'x.png', full" + "Page: true });");   // split, so this line is not one
+  ok(`every whole-page picture a test or tool takes is named as one (pass NH; ${named} files take one; an unnamed one, planted, caught)`, found.length === 0 && named >= 2 && plant.length === 1, found.join(', ')); }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

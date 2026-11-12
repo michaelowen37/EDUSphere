@@ -342,7 +342,12 @@ function reader() {
     async wordNear() {
       const s = document.querySelector('[data-say-along]'); const holder = s && s.closest('[data-cue-room]'); const x0 = sayWord(); if (!holder || !x0 || !x0.room) return null;
       const was = holder.style.getPropertyValue('--cue-room'); const open = x0.box + x0.room;
-      const at = async (box) => { holder.style.setProperty('--cue-room', `${open - box}px`); holder.dispatchEvent(new Event('edu-refit')); await painted(); return sayWord(); };
+      // Since pass NH (check.sh's first two runs): the page can set the room back between the plant and the read as its own refit runs (the
+      // light theme's narrower box read 201 wide, the room gone, in both runs and never in the step run alone), so the plant is made again
+      // until the box is the one asked for, up to eight times; a plant that never takes is read as it stands, so the check still fails.
+      const at = async (box) => { let got = null;
+        for (let k = 0; k < 8; k++) { holder.style.setProperty('--cue-room', `${open - box}px`); holder.dispatchEvent(new Event('edu-refit')); await painted(); got = sayWord(); if (got && Math.abs(got.box - box) <= 1) break; }
+        return got; };
       const fits = await at(Math.ceil(x0.natural) + 1); const over = await at(Math.floor(x0.natural) - 1);
       holder.style.setProperty('--cue-room', was); holder.dispatchEvent(new Event('edu-refit')); await painted(); const back = sayWord();
       return { word: x0.word, natural: Math.round(x0.natural * 10) / 10, fits: { box: fits.box, font: fits.font, full: fits.full }, over: { box: over.box, font: over.font, width: Math.round(over.width * 10) / 10 }, back: Math.abs(back.font - x0.font) < 0.05 && back.room === x0.room,

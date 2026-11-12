@@ -76,6 +76,8 @@ A finished course (pass ME; every course since pass MF): Result → (the lesson'
 ## Session start prompt (paste at the start of every session)
 Read CLAUDE.md first. All changes must follow CLAUDE.md, docs/DECISIONS.md, docs/DESIGN.md, and the matching skill in .claude/skills/. For anything bigger than a one-sentence change, list the files and rules it touches before editing. Finish with ./check.sh and paste its last line. Do not change existing lines of CLAUDE.md without my approval; adding is fine.
 
+(Since pass NG, Mikey's word lets a line of CLAUDE.md or its parts change when it needs to, each change double checked by the advisor, Fable, or a Fable agent where the session's advisor is not Fable: "You can change this file without my approval when you need to but just have the advisor double check the change to ensure accuracy and no unintended accidental changes." RULES-AUDIT section 9 names each change, and docs/CLAUDE-HISTORY.md keeps every old line. The prompt above keeps his words as he wrote them then.)
+
 ## Writing style
 
 Standard American spelling throughout (color, favorite, center, recognize, gray, math, practice, canceled). Contractions are welcome. A test enforces the spelling and a few style rules on every user-facing string.

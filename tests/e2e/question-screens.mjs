@@ -53,9 +53,13 @@ await page.getByRole('button', { name: 'Create account', exact: true }).first().
 await page.fill('input[placeholder="PIN"]', '2468'); await page.fill('input[placeholder="PIN again"]', '2468'); await page.fill('input[placeholder="This device\'s name"]', 'Screens'); await page.selectOption('select[aria-label="Your state"]', 'TX');
 await page.getByRole('button', { name: 'Create account', exact: true }).click(); await screenIs('educator-pick'); await page.waitForTimeout(500);
 for (const n of ['Skip tour', 'Later', 'Got it']) await tapIf(n);
+// Since pass NG the walk waits out the classroom page's settle window before its tap (pass JM's rule, which the click-through keeps):
+// a new screen asks for its top again at 80 and 320 milliseconds unless the person moves, and on November 11 the Veterans Day note
+// pushed the walk-through buttons below a 900-pixel window, so the tap's own scroll landed inside that window, was undone, and the
+// tap missed (check.sh's first run in pass NG stopped here, and pass NF's page did the same that day).
 const walk = async (label) => {
   await page.evaluate(() => window.__eduTest.goTo('educator-pick')); await page.waitForTimeout(300); for (const n of ['Skip tour', 'Later', 'Got it']) await tapIf(n);
-  await page.getByLabel(label).first().click({ force: true }); await screenIs('overview'); await page.waitForTimeout(300); };
+  await settle(); await page.getByLabel(label).first().click({ force: true }); await screenIs('overview'); await page.waitForTimeout(300); };
 // A question shown as its module asks it (pass MN: a trace from kindergarten up carries the direction rule, so the module is named).
 const show = async (gen, seed, mod = null) => { await page.evaluate(([g, s, m]) => window.__eduTest.showQuestion(g, s, m), [gen, seed, mod]); await screenIs('practice'); await page.waitForTimeout(600); return page.evaluate(() => window.__eduTest.question); };
 await walk('Walk through early years');
@@ -391,7 +395,7 @@ const ponder = () => page.evaluate(() => {
   // j. On a narrow phone the snail and the hare sit either side of the gold speaker (pass MO, Mikey: "On narrow phone screens, we
   //    can move the snail and hair on both sides of the gold sound icon on top to create symmetry.  Keep the same on wider
   //    screens"): at 390 and 360 pixels the snail, the speaker and the hare sit in that order on one line above the title, the
-  //    speaker centred on the card and the two the same distance from it; at 1280 the speaker, the snail and the hare stay to the
+  //    speaker centered on the card and the two the same distance from it; at 1280 the speaker, the snail and the hare stay to the
   //    right of the title, in that order, level with it.
   const heads = [];
   for (const w of [390, 360, 1280]) { await page.setViewportSize({ width: w, height: 900 }); await page.waitForTimeout(400);
@@ -552,9 +556,13 @@ const ponder = () => page.evaluate(() => {
   await show('pl-is-letter', 2); const isText = await qt();
   ok('a letter question prints "Tap the letter you hear." or "Is this the letter you hear?" while the voice can say the letter', tapText === 'Tap the letter you hear.' && isText === 'Is this the letter you hear?', [tapText, isText]);
   await page.evaluate(() => { window.__savedSS = window.speechSynthesis; Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: undefined }); });
+  // Since pass NH (Mikey's answer to Q96, "Q96 - A") Big letters' letter questions show the grown-up's card with no voice: the whole
+  // question is on the card, for the grown-up to read aloud, and above it prints what a device with a voice prints (tests/e2e/grown-up-card.mjs
+  // walks every card).
   const q1 = await show('pl-tap-letter', 3); const noVoice = await qt();
+  const cardSays = ((await page.locator('[data-card-say]').first().textContent()) || '').replace(/\u00A0/g, ' ').trim();
   await page.evaluate(() => Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: window.__savedSS }));
-  ok('with no voice a letter question prints whole, for a grown-up to read', noVoice === q1.prompt && /letter [A-Z]\.$/.test(noVoice), noVoice);
+  ok("with no voice a letter question shows the grown-up's card with the whole question to read aloud, and prints above it what a device with a voice prints (since pass NH, Q96 (a))", noVoice === 'Tap the letter you hear.' && cardSays === q1.prompt && /letter [A-Z]\.$/.test(cardSays), [noVoice, cardSays]);
   // Q49 (pass MN, Mikey: "Q49 - Your recommendation "): one line's dot and arrow at a time, on top of every guide, the next line's
   // once a line is traced; in pre-K a line traced backward stays and nothing is said, and from kindergarten up it clears as the finger
   // lifts and the line under the pad and the voice say TRACE_BACK_WORDS until the finger starts the next line. A finger is drawn on
@@ -636,8 +644,8 @@ const ponder = () => page.evaluate(() => {
       for (const s of [...p.querySelectorAll('span')].filter((x) => x.textContent.trim())) { const r = s.getBoundingClientRect(); const t = Math.round(r.top); const row = per[t] || (per[t] = { n: 0, l: 1e9, r: -1e9 }); row.n += 1; row.l = Math.min(row.l, r.left); row.r = Math.max(row.r, r.right); }
       return { width, rows: Object.values(per).map((x) => x.n), off: +Math.max(...Object.values(per).map((x) => Math.abs((x.l + x.r) / 2 - mid))).toFixed(1) }; }, w)); }
   ok('a run of single letters never leaves one alone on a row (Big letters\' last line at 390, 768 and 320 pixels)', rows.every((r) => !r.missing && r.rows.every((n) => n > 1)), rows);
-  // And every row of it is centred (round four's code read: non-breaking spaces stayed at a row's ends, so a second row sat about
-  // 25 pixels off centre); a letter's own spacing after it leaves each row 3 pixels to the right at most.
+  // And every row of it is centered (round four's code read: non-breaking spaces stayed at a row's ends, so a second row sat about
+  // 25 pixels off center); a letter's own spacing after it leaves each row 3 pixels to the right at most.
   ok("every row of a run of single letters is centred (Big letters' last line at 390, 768 and 320 pixels)", rows.every((r) => !r.missing && r.rows.length >= 2 && r.off <= 4), rows);
   await page.setViewportSize({ width: 375, height: 505 }); await page.evaluate(() => window.__eduTest.openModule('first-letter-tracing')); await page.waitForFunction(() => window.__eduTest.screen === 'lesson'); await page.waitForTimeout(500);
   await page.getByRole('button', { name: 'Next', exact: true }).first().click(); await page.waitForTimeout(400); await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(1500);
@@ -1191,8 +1199,8 @@ const ponder = () => page.evaluate(() => {
   await page.evaluate(() => { const row = document.querySelector('[data-title-row]'); if (row && row.dataset.plantWas !== undefined) { row.style.gridTemplateColumns = row.dataset.plantWas; delete row.dataset.plantWas; } });
   ok('the read catches the old plain columns, which pushed long titles off center', planted && planted.bad > 0, planted);
   await page.setViewportSize({ width: 1280, height: 900 });
-  // The layout read (tests/e2e/layout-check.mjs, check.sh 13g) sees words written straight into a centred row beside an icon: the
-  // planted row, words and a 30-pixel button in a centred flex row, as "Wonder Questions" sat beside its i, is an offset; the same
+  // The layout read (tests/e2e/layout-check.mjs, check.sh 13g) sees words written straight into a centered row beside an icon: the
+  // planted row, words and a 30-pixel button in a centered flex row, as "Wonder Questions" sat beside its i, is an offset; the same
   // words with the button hung outside them, as HeadWithInfo hangs it, are not.
   const { LAYOUT_SOURCE } = await import('./layout-check.mjs');
   const loose = await page.evaluate((src) => { const read = eval(`(${src})`); const host = document.createElement('div'); host.style.cssText = 'position:fixed;left:0;top:0;width:360px;background:#fff;z-index:99999'; document.body.appendChild(host);
@@ -1218,14 +1226,14 @@ const ponder = () => page.evaluate(() => {
 // One thing and a row in a stacked pair draw at one size, side by side (pass MW, from looking at One cat, two cats on a phone: "Here
 // is one cup, and here are two cups." drew the two cups about 60 percent as wide as the one cup above, as if the lesson were about
 // big and small). The row takes the pair's width, held to a row's width, and the one thing draws as a row of one, so at 320, 390
-// and 1280 pixels, in both themes, each cup in the row draws between 90 and 110 percent of the one cup's width, the two cups' centres
+// and 1280 pixels, in both themes, each cup in the row draws between 90 and 110 percent of the one cup's width, the two cups' centers
 // sit no more than 1.3 cups apart (round one's screen check: on a laptop they had sat 2 cups apart), every picture is a cup (so the
 // line measured is the cup line), and with the motion on, after its drift, the sizes hold. Three planted faults must be caught on a
 // laptop: the row's half back to wrapping its content (a cup too small), the pair's width cap gone (cups far apart) and the one
 // cup's half squeezed (a cup too big beside it), each by its own bound.
 { const L3 = await import('../../src/logic.mjs'); const mod = L3.COURSES.flatMap((c) => c.modules).find((m) => m.id === 'one-cat-two-cats');
   const at = mod.lesson.script.findIndex((ln) => /^Here is one cup/.test(ln.say));
-  // Measures the cup line's pair: each cup's width against the one cup's, the two cups' centres apart in cups, and every picture's
+  // Measures the cup line's pair: each cup's width against the one cup's, the two cups' centers apart in cups, and every picture's
   // name; a plant changes one style on the page, is measured and is put back.
   const cups = (plant) => page.evaluate((p) => { const pair = [...document.querySelectorAll('[data-pair]')].find((x) => x.querySelector('.edu-row-pic')); if (!pair) return null;
     const [top, below] = pair.children; const undo = []; const set = (el, k, v) => { undo.push([el, k, el.style[k]]); el.style[k] = v; };
@@ -1334,7 +1342,7 @@ const ponder = () => page.evaluate(() => {
   }
   ok(`the Wonder answer tiles fit at 320, 340, 360, 375, 390 and 412 pixels wide in both themes: no tile past its row or the screen, no words past a tile's edge, none under 13 pixels, and no hyphenated word such as grown-up split across two lines (pass NC, EARMARKS A76; ${WIDE.length} early questions with a hyphenated or long answer, ${screens} screens; a tile pushed past its row, a grown-up let break, words set past a tile's edge, a word at 12 pixels and the row pushed past the screen, planted, caught)`, faults.length === 0 && WIDE.length >= 54 && screens === WIDE.length * 12 && plantPast === true && plantSplit === true && plantEdge === true && plantSmall === true && plantScreen === true, [...faults.slice(0, 6), `plants ${plantPast} ${plantSplit} ${plantEdge} ${plantSmall} ${plantScreen}`]);
 }
-// 11. EARMARKS A77's browser check (pass NC, the screen read): on a laptop a column of picture answers is a phone's width, centred
+// 11. EARMARKS A77's browser check (pass NC, the screen read): on a laptop a column of picture answers is a phone's width, centered
 //    (PICTURE_COLUMN, 420 pixels), where each 69-pixel drawing had sat in a tile 737 pixels wide; read on three banks of pictures at 1280
 //    and 1024 pixels wide in the theme the sections above left on; its plant, the column's width limit taken off, caught. Since round
 //    one's lead run the width is read against 420 times the page's own zoom (a wide screen's 1.08 drew 454), and on a tablet held both

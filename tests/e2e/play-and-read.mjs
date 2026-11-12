@@ -18,7 +18,10 @@ await page.goto(new URL('./page.html', import.meta.url).href);
 const screen = () => page.evaluate(() => window.__eduTest && window.__eduTest.screen);
 const screenIs = (n) => page.waitForFunction((x) => window.__eduTest && window.__eduTest.screen === x, n, { timeout: 15000 });
 const text = async () => (await page.evaluate(() => document.body.innerText)).replace(/\s+/g, ' ');
-const snap = async (name) => { if (shots) await page.screenshot({ path: `${shots}/${name}.png`, fullPage: true }); };
+// --shots keeps a picture of a whole page for each step (RULES-AUDIT section 9's row on pictures of a screen, since pass NH): it draws the
+// green frame, the tab and the scroll cue where the screen stood, so nothing pinned to the screen is read from it; a picture read by eye
+// is taken at the screen's own size.
+const snap = async (name) => { if (shots) await page.screenshot({ path: `${shots}/${name}.png`, fullPage: true }); };   // a picture of a whole page
 const tapIf = async (name) => { const b = page.getByRole('button', { name, exact: true }); if (await b.count()) { await b.first().click(); await page.waitForTimeout(300); return true; } return false; };
 const settle = () => page.waitForFunction(() => !window.__eduSettleUntil || Date.now() >= window.__eduSettleUntil, null, { timeout: 5000 }).catch(() => {});
 // A celebration's cheer, said to its last sentence (pass MQ): the young voice rests about half a second between sentences, so the

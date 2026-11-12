@@ -1875,7 +1875,7 @@ await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen ===
 ok('the class view can be printed', (await page.getByRole('button', { name: 'Print this list' }).count()) === 1 && (await text()).includes('S-1042'));
 t = await text();
 ok('the class view explains its order in plain words', t.includes('To the top for you'));
-await page.screenshot({ path: 'tests/e2e/out/class-view.png', fullPage: true });
+await page.screenshot({ path: 'tests/e2e/out/class-view.png', fullPage: true });   // a picture of a whole page, kept for a look at the list; nothing pinned to the screen is read from it
 ok('the class view leads with a one-breath summary', /(on track|keep an eye on|needs help now)/.test(t));
 await tap('Back to Classroom');
 await tap('Backup classroom');

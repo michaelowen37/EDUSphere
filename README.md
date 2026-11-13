@@ -91,8 +91,10 @@ so a student never meets the same one a third time, and after a round that did n
 go well the questions about failure and feelings come first, because that is when
 they land. For the youngest children there is one spoken question, then four short
 spoken voices and a closing thought, each on a card of its own (since pass MH).
-Nothing a student writes or taps is ever saved. Nothing reaches a
-student until someone at their school has read it and approved it, and the pool
+Nothing a student writes or taps is ever saved. Every question starts on
+(since pass NJ; until then nothing reached a student until someone at the school
+approved it), and someone at the school can read any of them and turn off one,
+several or all of them on the Wonder Questions page. The pool
 grows with the curriculum: a check in the codebase notes any age group with fewer
 questions than modules.
 

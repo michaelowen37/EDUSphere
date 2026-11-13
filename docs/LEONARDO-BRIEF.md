@@ -29,18 +29,20 @@ Rules that never change:
 
 ## The cast, as they age (same person, features kept)
 
-- Mike: brown eyes, sturdy build, warm half-smile. As a boy: shaved-short hair. As a man: bald, close-cropped dark beard, a black ring, dark rolled-sleeve shirts.
-- Chloe: wavy dark hair, bright patterned clothes at every age, paint somewhere on her.
-- Frederick: neat dark hair, and no glasses as a small child (C13, the pre-K stories); glasses by eight (CS37, multiplication-3's long story) and on his young-adult and professor sheets (C5, C6); as a professor, gray hair, a large gray handlebar mustache, always a white lab coat.
-- Georgette: short auburn hair, a red button-front coat, a warm knowing smile; she does not grow up, she grows older.
-- Savanah: copper-red hair (tied up on the farm, in a high bun in the city), freckles, a small line tattoo on one forearm as an adult, tortoiseshell sunglasses pushed up.
-- Jaxon: sandy light-brown hair, a green checkered shirt, a sly kind smile.
-- Harlow: blonde curls in two pigtails with sage-green bows, big blue eyes.
+Skin since pass NJ (Mikey's answer to Q99 and his words on the cast's skin, in docs/CHARACTERS.md's Skin section): each person's words below go in every row that paints them, the same each time.
+
+- Mike: olive-toned tan skin, brown eyes, sturdy build, warm half-smile. As a boy: shaved-short hair. As a man: bald, close-cropped dark beard, a black ring, dark rolled-sleeve shirts.
+- Chloe: light skin with a warm golden tone, wavy dark hair, bright patterned clothes at every age, paint somewhere on her.
+- Frederick: fair skin with a rosy tone, neat dark hair, and no glasses as a small child (C13, the pre-K stories); glasses by eight (CS37, multiplication-3's long story) and on his young-adult and professor sheets (C5, C6); as a professor, gray hair, a large gray handlebar mustache, always a white lab coat.
+- Georgette: pale white skin, short auburn hair, a red button-front coat, a warm knowing smile; she does not grow up, she grows older.
+- Savanah: pale white skin, copper-red hair (tied up on the farm, in a high bun in the city), freckles, a small line tattoo on one forearm as an adult, tortoiseshell sunglasses pushed up.
+- Jaxon: pale white skin, sandy light-brown hair, a green checkered shirt, a sly kind smile.
+- Harlow: pale white skin, blonde curls in two pigtails with sage-green bows, big blue eyes.
 - Miss Hazel, the pre-K 3 teacher of the two picnic stories (pass MH, the picture check): a friendly young woman with her brown hair in a bun and a soft gray cardigan, in every picture she is in (CS613, CS631, CS634, CS635, CS636). She has no character sheet, so each prompt writes her look out.
 
 ## Generation day (Mikey, pass MK, October 18, 2026)
 
-Painting comes after the standards review (Mikey: "All of the image generation comes after our standards review so this is just information to store for future reference.  There may even be new models to use by then."). This section is the plan for that day, and docs/LEONARDO-PROMPTS.csv already follows it, so every pass of the review keeps it current. Mikey's notes, word for word:
+Painting comes after the standards review (Mikey: "All of the image generation comes after our standards review so this is just information to store for future reference.  There may even be new models to use by then."). Since pass NJ it comes in two builds (Mikey: "When we get all the way through 1st grade, I want to start work on the illustrations from Leonardo (stories, coloring pages, lessons etc) and Sound from Eleven Labs for everything spanning prek3 to 1st."): build 1, everything pre-K 3 to grade 1 shows, painted once grade 1's review and earmarks are done, so young learners can test, and build 2, grade 2 and up, after the review of those grades (EARMARKS L23). Build 1 opens with every reference of the set below, all seven people at every age, the older ones too (his words: "We can still develop the core characters reference images (including Savanah with her two kids Jaxon and Harlow) in these beginning image builds too" ... "Just the reference image for older versions is adequate for now so I can feed it back into Leonardo when I need to later."), so the young and the old looks are made in one sitting and one style. This section is the plan for that day, and docs/LEONARDO-PROMPTS.csv already follows it, so every pass of the review keeps it current. Mikey's notes, word for word:
 
 - "Use this link to identify differences between image models on Leonardo: AI Image Models: A Guide to Choosing the Right Model | Leonardo.Ai"
 - "Use this page for tips on generating prompts for illustrations: How to Write Effective AI Image Prompts | Leonardo.Ai"
@@ -65,7 +67,7 @@ Painting comes after the standards review (Mikey: "All of the image generation c
 
 ### The reference set: one per chapter of the cast's clock
 
-Each core character gets one reference for each chapter of docs/CHARACTERS.md's clock they appear in, named by person and number in age order. A number belongs to its chapter for good, so a reference made later fills its own number and nothing is renamed. The fourteen character sheets already in the ledger become references under these names (REFERENCE_NAMES in tools/prompts-csv.mjs); the rest are still to be made.
+Each core character gets one reference for each chapter of docs/CHARACTERS.md's clock they appear in, named by person and number in age order. Since pass NJ every one of them, the eleven still to make below and EARMARKS A21's Savanah in her twenties too, is made at the start of build 1 (L23), each writing its person's skin as docs/CHARACTERS.md gives it (Mikey's answer to Q99). A number belongs to its chapter for good, so a reference made later fills its own number and nothing is renamed. The fourteen character sheets already in the ledger become references under these names (REFERENCE_NAMES in tools/prompts-csv.mjs); the rest are still to be made.
 
 | Person | 1 | 2 | 3 | 4 | 5 |
 |---|---|---|---|---|---|
@@ -85,7 +87,7 @@ How they are made, Mikey's way:
 
 ### The spreadsheet, in painting order
 
-docs/LEONARDO-PROMPTS.csv (node tools/prompts-csv.mjs) lists every ledger row in the order Mikey paints them, numbered in its order column, with its group: each person's references, then the pictures with that person alone, person by person (Mike, Chloe, Frederick, Georgette, Savanah, Jaxon, Harlow); then the pictures with two or more of the cast; then everything else by grade from pre-K 3 up; last, what has no grade (the Let's Color drawing and letter pages, the maps and the star). Each row names its model and settings, the references to attach by name, the prompt with its bans folded in, the bans and the status.
+docs/LEONARDO-PROMPTS.csv (node tools/prompts-csv.mjs) lists every ledger row in the order Mikey paints them, numbered in its order column, with its build (since pass NJ: build 1, pre-K 3 to grade 1 with every character reference, all of it first; build 2, grade 2 and up) and its group, the order below running inside each build; docs/LEONARDO-PROMPTS-EARLY.csv (node tools/prompts-csv.mjs --build 1) is build 1 alone, its rows numbered as in the whole sheet, so the early pictures open on their own. Inside a build the groups are: each person's references, then the pictures with that person alone, person by person (Mike, Chloe, Frederick, Georgette, Savanah, Jaxon, Harlow); then the pictures with two or more of the cast; then everything else by grade from pre-K 3 up; last, what has no grade (the Let's Color drawing and letter pages, the maps and the star). Each row names its model and settings, the references to attach by name, the prompt with its bans folded in, the bans and the status.
 
 ### The model and its settings
 

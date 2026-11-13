@@ -200,6 +200,25 @@ Mikey's example: the pre-K 3 Triangles lesson says a slice of pizza is almost a 
 - A sample built by hand to look like a real screen drifts: the LI tour sample missed the Merge link and the Wonder pill and was laid out differently, and Mikey saw all three at a glance. Feed made-up data through the real component instead, with taps switched off, and the sample can never differ from the page.
 - Count a daily allowance against the day as it started, not as it stands: finishing the first review shrinks the queue, and a rule that rechecked the live queue would cancel the second review the backlog asked for.
 
+## Learned in pass NJ (Mikey's answer Q99 and his new order, a student signed out after fifteen quiet minutes, and every Wonder question on by default)
+
+- A rule that reads the clock is read with the clock set back a few seconds: the idle sign-out sent a child working on a question to the sign-in screen when a time sync stepped the clock back, and erased the practice round.
+- A set of screens that turns a behavior on is a list in logic, named one by one in a test, and every screen the app has is placed once, on it or on a named list with its reason: a floor of fifteen let two of seventeen drop unseen, and placing them all found six educator screens the educator's clock never covered.
+- A default changed for everyone is read for the people who chose before it: a school that had approved only some Wonder questions now has every one on, so What's new says so and Mikey is told.
+- A one-tap action that undoes many careful choices is read for the mis-tap undone: Turn them all off and then on had brought back every question a school turned off.
+- A build read from a page's style is read against what a child can open: Let's Color opens a page for every lesson passed, so its busiest pages open in pre-K.
+- A control a pass makes central is read on a phone with every layer over it and in each of its states: the educator's countdown chip lay over the Wonder sheet's only button, an Off row read 2.9 to 1, and its link was 16 pixels tall.
+- What's new is written before the first read: both readers met the old popup still asking for approval before anything else.
+- A guard narrowed for one kind of event is read for every kind that used to pass through it, and a hold lengthened for every way its end can fail to come (round two's code read): holding only a press let a mouse's first move sign a child out and its click press what then stood there, and a key's hold waited three seconds for a click that never came.
+- Room kept for a layer is read at rest, as the screen opens, not only scrolled to its end (round two's code read): 72 pixels kept at a sheet's foot cleared the countdown chip only once the sheet was scrolled down, so the chip now moves to the top while a sheet is open.
+- What's new is read for what a change costs as well as what it gives (round two's final read): it told every educator nothing was lost at an idle sign-out, where a half-done practice round is.
+- When a rule is removed, every line that states it is searched for (round two's whole reads): the approval gate still stood in RULES-AUDIT's Wonder text row, the Wonder brief and Q5's line after round one, and the old order's "after the standards review" in six of EARMARKS' status cells.
+- A count in a record is taken again by the rule it states after a fix moves rows (round two's whole read of EARMARKS): L23's skin count had left out the long stories and taken in the coloring pages, which write no skin.
+- A fix to a layer is read in every frame the app is shown in, the preview's page-tall frame among them (round three's code and screen reads): the sheet's 56 pixels, marked !important, beat overlayPlace's own room and opened every sheet out of sight in an 800-wide frame.
+- A layer moved to clear one thing is read for what it covers once moved, at rest and scrolled (round three's screen read): the chip moved to a sheet's top cleared the button and lay over the words of 368 of 402 sheets scrolled to their end.
+- A hold that ends on a timer is read for a press begun inside it and let go after it (round three's code read): a mouse moved, pressed at 600 ms and let go at 950 ms had clicked through the 800 ms hold.
+- A test that walks in a page-tall frame presses from inside the frame (round three's second code read): a forced click outside the host's screen threw and ended the tour test with no summary.
+
 ## Learned in pass NI (Q98 (a)'s picture cards, pre-K 4's Q, V and Y and Write your name, four early Wonder questions on feelings, and their stories)
 
 - A story's first draft is read against the story of the lesson before it, beat by beat, before anything else: "Letter day" walked "Bear hides"'s beats (a hiding game with letters), and was rewritten as "I spy on the rug".

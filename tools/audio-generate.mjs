@@ -11,7 +11,8 @@
 // sound, for its seconds and its influence, never sent to the voice, which would read the prompt aloud; its description column says
 // what to listen for and is never sent. Each sound is made in a few takes (the row's takes), saved as audio/takes/<key>-<n>.mp3 for Mikey to pick by ear; the take
 // he likes is copied to audio/<key>.mp3, which this tool never writes for a sound itself, and a sound whose file is there is skipped.
-// Run: ELEVENLABS_API_KEY=... node tools/audio-generate.mjs --voice <id> [--voice-young <id>] [--model eleven_v4] [--sfx-model eleven_text_to_sound_v3] [--only S95] [--limit 50] [--dry-run] [--no-goals]
+// Run: ELEVENLABS_API_KEY=... node tools/audio-generate.mjs --voice <id> [--voice-young <id>] [--model eleven_v4] [--sfx-model eleven_text_to_sound_v3] [--build 1] [--only S95] [--limit 50] [--dry-run] [--no-goals]
+//      (--build 1, since pass NJ, makes build 1 alone: every clip pre-K 3 to grade 1 plays, the early build Mikey records first)
 //      (--only sounds makes the speech sounds and the sound effects alone; --no-goals, since pass MX, sends a row without the short
 //      direction the ledger puts before each speech sound, for a take that still read the direction aloud when made again: delete
 //      that take as well, then run with the voices you used before and --only <its key>, since finished clips are skipped and
@@ -69,8 +70,11 @@ if (process.argv[1] && process.argv[1].endsWith('audio-generate.mjs')) {
   const args = process.argv.slice(2); const opt = (name, fallback = null) => { const i = args.indexOf(`--${name}`); return i >= 0 ? (args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true) : fallback; };
   const voice = opt('voice'); const voiceYoung = opt('voice-young', voice); const model = opt('model', 'eleven_v4'); const sfxModel = opt('sfx-model', 'eleven_text_to_sound_v3');
   const only = opt('only'); const limit = Number(opt('limit', 0)) || Infinity; const dry = !!opt('dry-run', false); const noGoals = !!opt('no-goals', false);
+  // --build 1 makes build 1 alone, every clip pre-K 3 to grade 1 plays (pass NJ: the early build first, so young learners can try the app);
+  // --build 2 the rest. The ledger's last column names each row's build (tools/audio-ledger.mjs).
+  const build = opt('build'); if (build !== null && !['1', '2'].includes(String(build))) { console.log('--build takes 1 or 2'); process.exit(2); }
   const key = process.env.ELEVENLABS_API_KEY;
-  if (!voice || (!key && !dry)) { console.log('Usage: ELEVENLABS_API_KEY=... node tools/audio-generate.mjs --voice <id> [--voice-young <id>] [--model eleven_v4] [--sfx-model eleven_text_to_sound_v3] [--only S95] [--limit 50] [--dry-run] [--no-goals]'); process.exitCode = 1; }
+  if (!voice || (!key && !dry)) { console.log('Usage: ELEVENLABS_API_KEY=... node tools/audio-generate.mjs --voice <id> [--voice-young <id>] [--model eleven_v4] [--sfx-model eleven_text_to_sound_v3] [--build 1] [--only S95] [--limit 50] [--dry-run] [--no-goals]'); process.exitCode = 1; }
   else {
     const rows = withNeighbors(parseCsv(readFileSync(new URL('../docs/AUDIO-LEDGER.csv', import.meta.url), 'utf8')));
     const outDir = new URL('../audio/', import.meta.url); if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true });
@@ -79,6 +83,7 @@ if (process.argv[1] && process.argv[1].endsWith('audio-generate.mjs')) {
     for (const r of rows) {
       if (stop) break;
       if (only && !(r.key === only || r.key.startsWith(`${only}-`) || r.source === only)) continue;
+      if (build !== null && String(r.build) !== String(build)) continue;
       if (existsSync(new URL(`${r.key}.mp3`, outDir))) { skipped++; continue; }
       const req = requestFor(r, { voice, voiceYoung, model, sfxModel, noGoals });
       const names = req.takes > 1 || SOUND_KINDS.includes(r.kind) ? Array.from({ length: req.takes }, (_, k) => `takes/${r.key}-${k + 1}.mp3`) : [`${r.key}.mp3`];

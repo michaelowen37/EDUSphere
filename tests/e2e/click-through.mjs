@@ -9,7 +9,8 @@ const { chromium } = createRequire(import.meta.url)(`${G}/playwright`);
 // The Wonder review counts come from the content itself, so adding a reflection never breaks this test.
 const WONDER_COUNT = (await import('../../src/logic.mjs')).WONDER.length;
 let pass = 0, fail = 0;
-const ok = (label, cond) => { console.log((cond ? 'PASS' : 'FAIL') + ' - ' + label); cond ? pass++ : fail++; };
+// A failed check prints what it measured, when given (since round two's code read: the third argument had been dropped).
+const ok = (label, cond, info) => { console.log((cond ? 'PASS' : 'FAIL') + ' - ' + label + (cond || info === undefined ? '' : '  ' + JSON.stringify(info).slice(0, 600))); cond ? pass++ : fail++; };
 const browser = await chromium.launch();
 // A phone-sized touch screen, so tracing lessons open (they refuse a mouse-only device on purpose).
 // Every tap waits out the page's settle window (pass JM): a new screen asks for its top again at 80 and 320 ms, and a tap whose
@@ -192,8 +193,9 @@ await page.getByLabel('Close').click();
 // Student card links (2026-09-20): Wonder Questions opens a popup with the switch; Add PIN saves from the card.
 await page.getByRole('button', { name: /^Wonder Questions/ }).first().click();
 ok('the Wonder Questions popup says what is current', (await text()).includes('Currently:'));
-// The popup counts what this school has approved for students to see, out of the whole pool (2026-09-29, Mikey).
-ok('the Wonder Questions popup counts the approved questions out of the pool', /\d+ of \d{3} Wonder Questions approved for student viewing/.test(await text()));
+// The popup counts what this school lets students see, out of the whole pool (2026-09-29, Mikey; since pass NJ the questions on, every
+// question starting on, where it counted the ones approved).
+ok('the Wonder Questions popup counts the questions on out of the pool, every one at the start', new RegExp(`${WONDER_COUNT} of ${WONDER_COUNT} Wonder Questions on for students`).test(await text()));
 await page.getByRole('group', { name: 'Wonder Questions' }).getByRole('button', { name: 'Off' }).click();
 await page.waitForTimeout(200);
 ok('switching Wonder Questions off shows on the card', (await page.getByRole('button', { name: /^Wonder Questions/ }).first().textContent()).includes('OFF'));
@@ -304,59 +306,109 @@ await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen ===
 t = await text();
 ok('result talks to the learner and names what comes next', t.includes('Great job!') && (t.includes('Next up is') || t.includes('is open now')));
 ok('a first pass says the star waits for another day', t.includes('another day'));
-ok('no Wonder is offered before a school approves one', (await page.getByRole('button', { name: 'Wonder for a minute' }).count()) === 0);
+ok('no Wonder is offered after one lesson worked (one comes after two different lessons)', (await page.getByRole('button', { name: 'Wonder for a minute' }).count()) === 0);
 
-// 3. An educator approves a Wonder question before any child can see one
+// 3. Every Wonder question starts on (pass NJ, Mikey: "I think I want the wonder questions pre-approved by default too"); the educator
+// turns them all off and turns on just the two the walk meets later, which the page lets a school do (until pass NJ the educator
+// approved those two, every question waiting for approval).
 await tap('Back to overview');
 await tap('Exit');
 await educatorLogin();
 t = await text();
-ok('the classroom page flags questions awaiting review', t.includes('to review'));
+ok('the classroom page says every Wonder question is on for the students', t.includes('On for your students'));
 await page.getByRole('button', { name: 'Wonder Questions' }).last().click();
 await page.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'wonder-review');
 t = await text();
-ok('every question starts as awaiting review', t.includes(`${WONDER_COUNT} to review`));
+ok('every question starts on, with nothing to approve', t.includes(`All ${WONDER_COUNT} on`) && !t.includes('to review') && !t.includes('Approve'));
 ok('the page opens as four stages, not a list of questions', t.includes('Early') && t.includes('Nearly grown') && !t.includes('If you cut a cookie'));
 ok('the page says plainly that nothing a student writes is kept', t.includes('never recorded'));
-ok('an approve all button is offered', (await page.getByRole('button', { name: /^Approve all/ }).count()) === 1);
+ok('a link turns them all off', (await page.getByRole('button', { name: 'Turn them all off', exact: true }).count()) === 1);
+// Since round one's screen read the link keeps its look and is a 44-pixel target (it was 16 pixels tall, a line of small print).
+{ const box = await page.getByRole('button', { name: 'Turn them all off', exact: true }).boundingBox();
+  ok('the link that turns them all off is a target a finger can find, at least 44 pixels tall (round one\'s screen read)', !!box && box.height >= 44, box); }
+await tap('Turn them all off');
+await page.waitForTimeout(300);
+t = await text();
+ok('with all of them off the page says so and offers to turn them all on', t.includes('Off for every student') && (await page.getByRole('button', { name: 'Turn them all on', exact: true }).count()) === 1);
 await page.getByRole('button', { name: /^Growing up/ }).click();
 t = await text();
-ok('opening a stage reveals its questions', t.includes('If you cut a cookie') && t.includes('Awaiting review'));
+ok('opening a stage reveals its questions, each marked On or Off', t.includes('If you cut a cookie') && /\bOff\b/.test(t));
+// Since round one's screen read an Off row reads as plainly as an On row: no fading, its words at 4.5 to 1 or more on the row, and its
+// Off pill's word at 4.5 to 1 on a ground of its own, at least 1.1 to 1 from the row's (the row had been drawn at 0.7, the word at
+// 2.9 to 1, and the pill's gray, 1.01 to 1 from the row's, had vanished into it); the two darker stages' words at full white (Teen's read 3.81 to 1 at 0.85); and with
+// all off a stage counts what is on, never what is off.
+{ const look = await page.evaluate(() => {
+    const rgb = (c) => { const m = /rgba?\(([^)]+)\)/.exec(c || ''); return m ? m[1].split(',').map((x) => parseFloat(x)) : null; };
+    const lum = (p) => { const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; return 0.2126 * f(p[0]) + 0.7152 * f(p[1]) + 0.0722 * f(p[2]); };
+    const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+    const row = [...document.querySelectorAll('[data-wonder-row]')].find((r) => /\bOff\b/.test(r.innerText)); if (!row) return null;
+    const prompt = row.children[0]; const pill = row.children[1] && row.children[1].children[0];
+    const rowBg = rgb(getComputedStyle(row).backgroundColor); const pillBg = rgb(getComputedStyle(pill).backgroundColor);
+    const stages = [...document.querySelectorAll('[data-wonder-stage-state]')].map((x) => ({ text: x.textContent, opacity: getComputedStyle(x).opacity, white: getComputedStyle(x).color }));
+    return { opacity: getComputedStyle(row).opacity, words: ratio(rgb(getComputedStyle(prompt).color), rowBg), pill: ratio(rgb(getComputedStyle(pill).color), pillBg), ground: ratio(pillBg, rowBg), stages };
+  });
+  ok('an Off row reads plainly: no fading, its words and its Off pill at 4.5 to 1 or more, the pill on a ground of its own; the darker stages\' words at full white; and with all off each stage says all off (round one\'s screen read)',
+    !!look && look.opacity === '1' && look.words >= 4.5 && look.pill >= 4.5 && look.ground >= 1.1 && look.stages.length === 4 && look.stages.every((x) => /^all off/.test(x.text))
+    && look.stages.filter((x) => x.white === 'rgb(255, 255, 255)').length === 2 && look.stages.filter((x) => x.white === 'rgb(255, 255, 255)').every((x) => x.opacity === '1'), look); }
 await page.getByRole('button', { name: /If you cut a cookie/ }).click();
 t = await text();
 ok('a question opens over the page rather than pushing it down', t.includes('For the readers:') && t.includes('Closing question'));
+// Since round one's screen read the sheet says, just above its button, what the button did; and since round two's code read, on a phone
+// the educator's countdown chip, which had crossed Turn it off at the foot, moves to the top while a sheet is open, over 56 pixels the
+// sheet keeps clear, above its card (72 pixels kept at the foot had cleared the chip only once the sheet was scrolled to its end).
+{ const sheet = await page.evaluate(() => { const st = document.querySelector('[data-wonder-sheet-state]'); const ov = document.querySelector('.edu-sheet'); const chip = document.querySelector('.edu-logout-chip'); const card = ov && ov.firstElementChild; const cb = chip && chip.getBoundingClientRect(); const kb = card && card.getBoundingClientRect(); return { state: st ? st.textContent : null, role: st ? st.getAttribute('role') : null, top: ov ? getComputedStyle(ov).paddingTop : null, chipBottom: cb ? Math.round(cb.bottom) : null, cardTop: kb ? Math.round(kb.top) : null, width: window.innerWidth }; });
+  ok('the question sheet says above its button that the question is off for the students, and on a phone keeps 56 pixels clear at its top, where the educator\'s countdown chip sits while a sheet is open, above the card (round one\'s screen read; the chip at the top since round two\'s code read)', sheet.state === 'Off for your students.' && sheet.role === 'status' && sheet.width <= 999 && sheet.top === '56px' && sheet.chipBottom !== null && sheet.cardTop !== null && sheet.chipBottom <= sheet.cardTop, sheet); }
 const voiceButtons = await Promise.all(['Frederick', 'Chloe', 'Georgette', 'Mike'].map((n) => page.getByRole('button', { name: new RegExp(`^${n}$`) }).count()));
 ok('the four voices are listed by name, each a button, label and words hidden until asked for', voiceButtons.every((c) => c === 1) && !t.includes('A scientist') && !(await page.getByText('The Scientist', { exact: true }).isVisible()) && !(await page.getByText('The amount of cookie is exactly the same').isVisible().catch(() => false)));
 await page.getByRole('button', { name: /^Frederick$/ }).click();
 const [nameBox, roleBox, saysBox] = await Promise.all([page.getByRole('button', { name: /^Frederick$/ }).boundingBox(), page.getByText('The Scientist', { exact: true }).boundingBox(), page.getByText('The amount of cookie is exactly the same').boundingBox()]);
 ok('a voice opens when chosen, its label between the name and what it says', !!(nameBox && roleBox && saysBox) && nameBox.y < roleBox.y && roleBox.y < saysBox.y);
-await page.getByRole('button', { name: 'Approve', exact: true }).click();
+await page.getByRole('button', { name: 'Turn it on', exact: true }).click();
 await page.waitForTimeout(300);
-ok('approving closes the question by itself', (await page.getByRole('button', { name: 'Close' }).count()) === 0);
-// approve the kindergarten one as well, for the spoken reflection later
+ok('turning one on marks it On where it stands and offers to turn it off again', (await page.getByRole('button', { name: 'Turn it off', exact: true }).count()) === 1);
+ok('after Turn it on the sheet says, where the tap was, that it is on for the students (round one\'s screen read)', (await page.evaluate(() => (document.querySelector('[data-wonder-sheet-state]') || {}).textContent)) === 'On for your students.');
+// A question turned off by name stays off through Turn them all on, and since round two's code read the all-off card says so before its
+// button. Turned off and on again here, the walk's state is as it was.
+await page.getByRole('button', { name: 'Turn it off', exact: true }).click();
+await page.waitForTimeout(300);
+{ const kept = await page.evaluate(() => { const k = document.querySelector('[data-wonder-kept-off]'); return k ? k.textContent : null; });
+  await page.getByRole('button', { name: 'Turn it on', exact: true }).click();
+  await page.waitForTimeout(300);
+  const after = await page.evaluate(() => document.querySelectorAll('[data-wonder-kept-off]').length);
+  ok('with all of them off, a question turned off by name is named on the page as staying off when they are all turned on, and turned on again it is not (round two\'s code read)', kept === 'The question you turned off by name stays off when you turn them all\u00A0on.' && after === 0, { kept, after }); }
+await tap('Close');
+await page.waitForTimeout(200);
+// turn the kindergarten one on as well, for the spoken reflection later
 await page.getByRole('button', { name: /^Early/ }).click();
 await page.getByRole('button', { name: /a big group of tiny ants/ }).click();
 t = await text();
 // Four short voices since pass MH (Mikey: all four voices for pre-readers), each listed for the educator by name.
 { const ants = (await import('../../src/logic.mjs')).WONDER.find((x) => x.id === 'w-ants-elephant');
   ok('a young children\'s question shows the four spoken voices in the review', t.includes('Early Learners') && t.includes('Children who cannot read yet hear the wonder questions instead. They select an answer, also spoken, then hear four differing perspectives which will hopefully broaden their own.') && ants.simple.length === 4 && ants.simple.every((v) => t.includes(v.says))); }
-await page.getByRole('button', { name: 'Approve', exact: true }).click();
+await page.getByRole('button', { name: 'Turn it on', exact: true }).click();
 await page.waitForTimeout(300);
-ok('approving two leaves two fewer waiting', (await text()).includes(`${WONDER_COUNT - 2} to review`));
-ok('reviewed questions fold away under a Reviewed row', (await page.getByRole('button', { name: /^Reviewed \(/ }).count()) >= 1);
-// Everything reviewed brings a Remove All link (it was called Un-approve all until 2026-09-25); using it brings the two we need back
-await page.getByRole('button', { name: /^Approve all/ }).click();
+await tap('Close');
+await page.waitForTimeout(200);
+ok('turning two on says so at the top', (await text()).includes('Off, with 2 turned on'));
+{ const st = await page.evaluate(() => [...document.querySelectorAll('[data-wonder-stage-state]')].map((x) => x.textContent.replace(/[▴▾]/g, '').trim()));
+  ok('with all off and two turned on, each stage counts what is on, never what is off (round one\'s screen read: Early had read "131 off")', st.length === 4 && st[0] === '1 on' && st[1] === '1 on' && st[2] === 'all off' && st[3] === 'all off', st); }
+// Turn them all on puts every question back on but any a school turned off by name (none here: the two were turned on by name, so
+// nothing stays off); turning them all off again and the two back on keeps the walk's pool.
+await tap('Turn them all on');
 await page.waitForTimeout(300);
-ok('once everything is reviewed a Remove All link appears', (await page.getByRole('button', { name: 'Remove All' }).count()) === 1);
-await tap('Remove All');
+ok('turning them all on puts every question back on', (await text()).includes(`All ${WONDER_COUNT} on`));
+await tap('Turn them all off');
 await page.waitForTimeout(300);
-ok('un-approving sends questions back to review', (await text()).includes(`${WONDER_COUNT} to review`));
 await page.getByRole('button', { name: /If you cut a cookie/ }).click();
-await page.getByRole('button', { name: 'Approve', exact: true }).click();
+await page.getByRole('button', { name: 'Turn it on', exact: true }).click();
 await page.waitForTimeout(300);
+await tap('Close');
 await page.getByRole('button', { name: /a big group of tiny ants/ }).click();
-await page.getByRole('button', { name: 'Approve', exact: true }).click();
+await page.getByRole('button', { name: 'Turn it on', exact: true }).click();
 await page.waitForTimeout(300);
+await tap('Close');
+await page.waitForTimeout(200);
+ok('the two are on again and every other question off', (await text()).includes('Off, with 2 turned on'));
 await tap('Back to Classroom');
 await tap('Home');
 await page.getByRole('button', { name: /S-2001$/ }).click();
@@ -392,7 +444,7 @@ ok('result says keep practicing with 2 of 5', t.includes('Keep practicing') && t
 ok('review outcome shown and does not affect mastery', /Memory checks? from earlier: .*correct/.test(t) && t.includes('does not affect mastery'));
 ok('one miss offers a lesson review, not a loop back', t.includes('Review the lesson') && !t.includes('Look back at'));
 // Two different modules are now worked, and right after a failed round is when a reflection lands (Mikey, 2026-09-28).
-ok('an approved question reaches the student right after a failed round', (await page.getByRole('button', { name: 'Wonder for a minute' }).count()) === 1);
+ok('a question the school turned on reaches the student right after a failed round', (await page.getByRole('button', { name: 'Wonder for a minute' }).count()) === 1);
 await tap('Wonder for a minute');
 await page.fill('textarea', 'I think it is still one cookie because it is the same cookie.');
 await tap('See how others think');

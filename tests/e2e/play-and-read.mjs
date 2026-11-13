@@ -48,6 +48,12 @@ await page.getByRole('button', { name: 'Create account', exact: true }).first().
 await page.fill('input[placeholder="PIN"]', '2468'); await page.fill('input[placeholder="PIN again"]', '2468'); await page.fill('input[placeholder="This device\'s name"]', 'Walk'); await page.selectOption('select[aria-label="Your state"]', 'TX');
 await page.getByRole('button', { name: 'Create account', exact: true }).click(); await screenIs('educator-pick'); await page.waitForTimeout(500);
 await tapIf('Skip tour'); await tapIf('Later'); await tapIf('Got it');
+// Since pass NJ every Wonder question starts on (Mikey: "I think I want the wonder questions pre-approved by default too"); this walk follows a
+// round's arrow straight to the next lesson, so it turns them all off for its students on the Wonder Questions page, as a school can. A
+// walk-through still shows every question (its Wonder, below, still comes).
+await page.getByRole('button', { name: 'Wonder Questions' }).last().click(); await screenIs('wonder-review');
+await page.getByRole('button', { name: 'Turn them all off', exact: true }).click(); await page.waitForTimeout(300);
+await page.getByRole('button', { name: 'Back to Classroom' }).click(); await screenIs('educator-pick'); await page.waitForTimeout(300);
 await page.getByRole('button', { name: 'Add someone new' }).first().click(); await page.waitForTimeout(300);
 await page.fill('input[placeholder="School-issued ID"]', 'S-55'); await page.getByRole('button', { name: /^Early years/ }).first().click(); await page.waitForTimeout(200);
 await page.getByRole('button', { name: 'Add', exact: true }).click(); await page.waitForTimeout(500); await tapIf('Later');

@@ -4,7 +4,8 @@
 // also checks that the backup reminder is never put on the page before the tour, that the classroom is at its top after the
 // tour and after Later, that a lesson opens at its top with its title in title case, that inside a frame as tall as the
 // page (some previews work that way) the page around the frame is brought back to the top and card 9 sits on screen, and
-// (since round two of pass MR) that with less motion asked for, in both themes, every card's target still wears its gold ring.
+// (since round two of pass MR) that with less motion asked for, in both themes, every card's target still wears its gold ring, and
+// (since pass NJ's round three) that a sheet opened in such a frame 800 pixels wide shows on screen.
 import { createRequire } from 'node:module'; import { writeFileSync } from 'node:fs';
 import * as L from '../../src/logic.mjs';
 const require = createRequire(import.meta.url);
@@ -192,6 +193,33 @@ for (const [W, H, box] of process.env.FRAME_ONLY ? [] : [[760, 900], [820, 1180]
     await context.close();
   }
 }
+// Since pass NJ's round three code read: a sheet in a frame as tall as the page and narrower than 1000 pixels (the claude.ai preview
+// panel) opens where the page around the frame shows. The 56 pixels a sheet keeps at its top on a phone, for the educator's chip, had
+// beaten overlayPlace's own room with !important, so a question opened partway down the Wonder Questions page put its card at the
+// frame's top, out of sight, the screen only dimmed.
+try { writeFileSync('/tmp/edu-frame-sheet-host.html', `<!doctype html><html><body style="margin:0;background:#111"><div style="height:120px;color:#ccc">Preview header</div><iframe id="app" src="${pageUrl}" style="border:0;width:800px;height:6000px;display:block"></iframe><div style="height:600px"></div></body></html>`);
+  const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+  await page.goto('file:///tmp/edu-frame-sheet-host.html'); await page.waitForTimeout(500);
+  const f = page.frames().find((x) => x.url().endsWith('page.html'));
+  await signUp(f);
+  // The tour's buttons are pressed from inside the frame: in a frame 6000 pixels tall a card can sit where the host's screen does not
+  // reach, and a forced click still refuses an element outside the viewport (round three's second read saw the file end there).
+  for (let i = 0; i < 3; i++) for (const name of ['Skip tour', 'Done', 'Not now', 'Later', 'Got it']) {
+    const b = f.getByRole('button', { name, exact: true }); if (await b.count()) { await b.first().evaluate((el) => el.click()); await page.waitForTimeout(250); }
+  }
+  await f.getByRole('button', { name: 'Wonder Questions' }).last().click();
+  await f.waitForFunction(() => window.__eduTest && window.__eduTest.screen === 'wonder-review', null, { timeout: 8000 });
+  await page.waitForTimeout(500);
+  await f.getByRole('button', { name: /^Growing up/ }).click(); await page.waitForTimeout(300);
+  const rows = f.locator('[data-wonder-row]'); const n = await rows.count(); const row = rows.nth(Math.min(n - 1, 12));
+  await row.scrollIntoViewIfNeeded(); await page.waitForTimeout(400);
+  await row.click(); await page.waitForTimeout(700);
+  const hostY = await page.evaluate(() => Math.round(window.scrollY));
+  const m = await f.evaluate(() => { const ov = document.querySelector('.edu-sheet'); const card = ov && ov.firstElementChild; const r = card && card.getBoundingClientRect(); return { cardTop: r ? Math.round(r.top) : null, padding: ov ? getComputedStyle(ov).paddingTop : null, width: innerWidth }; });
+  const onScreen = m.cardTop === null ? null : m.cardTop + 120 - hostY;
+  ok('in a page-tall frame 800 pixels wide, a Wonder question opened partway down the page opens its card where the page shows (pass NJ, round three\'s code read)', n > 12 && m.width < 1000 && onScreen !== null && onScreen >= 0 && onScreen < 800 - 100, { n, hostY, ...m, onScreen });
+  await page.close();
+} catch (e) { ok('in a page-tall frame 800 pixels wide, the walk to a Wonder question ran to its end', false, String(e).slice(0, 300)); }
 await browser.close();
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exitCode = failed ? 1 : 0;

@@ -3701,6 +3701,10 @@ g[role="button"] { -webkit-tap-highlight-color: transparent; }
   .edu-note-save { display: flex; justify-content: center; margin-top: 8px; }
   /* On a phone the logout countdown sits centered at the foot; on a laptop it stays bottom right. */
   @media (max-width: 999px) { .edu-logout-chip { right: auto !important; left: 50% !important; transform: translateX(-50%); } }
+  /* On a phone, while a sheet is open, the educator's countdown chip moves to the top, above the sheet's card, where a sheet keeps 56
+     pixels clear (pass NJ, round one's screen read: at the foot it lay over a sheet's only button, and room at the sheet's end helped
+     only once it was scrolled, round two's code read). */
+  @media (max-width: 999px) { body.edu-has-sheet .edu-logout-chip { top: 12px !important; bottom: auto !important; } .edu-sheet:not([data-sheet-placed]) { padding-top: 56px !important; } }
   @media (hover: hover) and (pointer: fine) { .edu-frame-bottom { display: block; position: fixed; left: 0; right: 0; bottom: 0; height: 6px; background: ${C.frame}; pointer-events: none; z-index: 50; } }
 .edu-side { display: none; }
 .edu-page-stars { display: none; }
@@ -5399,7 +5403,7 @@ const TOUR = [
   ['Welcome to your classroom', 'add', null, 'below-add', <>Add a student by using their school ID. Then, you'll have an option to create nicknames, assign fun sign-in pictures and more!<br /><br />No names or photos are ever stored.</>],
   ['Lessons, Stories, Practice, Mastery', 'lesson-card', 'lesson', 'flush-right-low', <>We combine mastery-based learning, spaced repetition, story-based learning, reflection questions, images and games to help information stick.<br /><br />Mastery requires continuous proof of competence over time. Modules are presented multiple times across multiple days and even when a student masters a subject, they'll continue to be exposed through "memory checks."<br /><br />Educators see detailed summaries along the way.</>],
   ['Backups live on this device', 'backup', null, 'over-life-by-backup', <>A backup file automatically downloads to your device when a student taps <em>Exit</em> or, when an educator makes changes and <em>signs out</em>.<br /><br />We still recommend periodic manual backups to a password-protected drive folder, which protects you against lost or broken devices.<br /><br />One file restores everything on any device.</>],
-  ['Wonder Questions', 'wonder', null, 'right-mid', <>Wonder questions are deep, thought-provoking questions sprinkled between learning modules. They're designed to promote curiosity, reflection and critical thinking and once a student finds themselves failing modules, the questions are re-prioritized to cover emotional resilience and frame failure as an effective way to learn.<br /><br />Students only see the questions you approve.</>],
+  ['Wonder Questions', 'wonder', null, 'right-mid', <>Wonder questions are deep, thought-provoking questions sprinkled between learning modules. They're designed to promote curiosity, reflection and critical thinking and once a student finds themselves failing modules, the questions are re-prioritized to cover emotional resilience and frame failure as an effective way to learn.<br /><br />Every question starts on, and you can turn off any you'd rather skip.</>],   // pass NJ: the line was "Students only see the questions you approve." (Mikey's words; Q100)
   ['Life skills', 'life', null, 'over-exp-by-life', <>The Wise Human is designed to make learning more efficient. Our curated list of practical life skills is a perfect way to fill the time you gain back.<br /><br />You'll find helpful skills for every age group!</>],
   ['Reading', 'reading', null, 'by-reading', <>Need direction finding books for various age groups? We've got you covered! Our reading list is quite extensive.</>],
   ['Experiments', 'experiments', null, 'under-exp', <>Science is way more fun when it's tangible. We've got experiment ideas for every age group!</>],
@@ -5532,11 +5536,25 @@ function overlayPlace(sheet = false) {
 // later (the first look can come before the page has reported what shows), and then it stays put: educator screens redraw every
 // second, and a box that followed the page as it scrolled could never be scrolled to the buttons at its foot. z is the layer,
 // sheet a pop-up that scrolls as one long page, start a box that sits at the top and scrolls, and the rest pass straight through.
+let openSheets = 0;   // how many sheets are open, so the body's edu-has-sheet class goes only when the last one closes
 function Overlay({ children, z = 100, onClick, role, label, modal, className, bg, pad = 16, sheet = false, start = false, scroll = false }) {
   const [place, setPlace] = useState(() => overlayPlace(sheet));
   useEffect(() => { const t = setTimeout(() => setPlace(overlayPlace(sheet)), 150); return () => clearTimeout(t); }, []);
   const lay = sheet ? { overflowY: 'auto', padding: '24px 12px' } : { display: 'flex', alignItems: start ? 'flex-start' : 'center', justifyContent: 'center', padding: pad, ...(scroll ? { overflowY: 'auto' } : {}) };
-  return <div className={className} role={role} aria-label={label} aria-modal={modal} onClick={onClick} style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: bg || C.scrim, zIndex: z, ...lay, ...place }}>{children}</div>;
+  // A sheet carries edu-sheet: on a phone it keeps 56 pixels clear at its top, and the educator's countdown chip moves there while a sheet
+  // is open, so the chip never lies over a sheet's card or its last button at rest (pass NJ, round one's screen read: it crossed the Wonder
+  // sheet's Turn it off at the foot; the CSS is beside .edu-logout-chip's). Since round three's code read the 56 pixels give way where
+  // overlayPlace placed the sheet (data-sheet-placed: in a frame as tall as the page, the claude.ai preview, !important had beaten its room and
+  // opened the card at the frame's top, out of sight), and the body carries edu-has-sheet while any sheet is open, so the chip moves in a
+  // browser that does not know :has too.
+  useEffect(() => {
+    if (!sheet || typeof document === 'undefined') return undefined;
+    openSheets += 1; document.body.classList.add('edu-has-sheet');
+    return () => { openSheets = Math.max(0, openSheets - 1); if (!openSheets) document.body.classList.remove('edu-has-sheet'); };
+  }, [sheet]);
+  const cls = [className, sheet ? 'edu-sheet' : ''].filter(Boolean).join(' ') || undefined;
+  const placed = sheet && place.paddingTop !== undefined;
+  return <div className={cls} data-sheet-placed={placed ? '' : undefined} role={role} aria-label={label} aria-modal={modal} onClick={onClick} style={{ position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, background: bg || C.scrim, zIndex: z, ...lay, ...place }}>{children}</div>;
 }
 function isFramed() { if (typeof window === 'undefined') return false; try { return window.self !== window.top; } catch (e) { return true; } }
 // readPlace and goToPlace (pass MI, Mikey: "When selecting a book from let's read and selecting the forward arrow to finish, we
@@ -11821,7 +11839,9 @@ function PonderCard({ wonder, title, text, big = false, attrs = null }) {
 }
 
 function Tag({ children, tone }) {
-  const tones = { mastered: [C.goldSoft, C.gold], passed: [C.goldSoft, C.gold], available: [C.greenSoft, C.green], locked: [C.mode === 'dark' ? 'rgba(241, 237, 227, 0.1)' : '#EEF0EA', C.muted], review: [C.claySoft, C.clayInk] };
+  // off (pass NJ, round one's screen read): a Wonder question turned off, on a white ground in the light theme so the pill reads on its
+  // gray row (locked's #EEF0EA vanished into the row's #EDEFEA), as locked in the dark theme.
+  const tones = { mastered: [C.goldSoft, C.gold], passed: [C.goldSoft, C.gold], available: [C.greenSoft, C.green], locked: [C.mode === 'dark' ? 'rgba(241, 237, 227, 0.1)' : '#EEF0EA', C.muted], off: [C.mode === 'dark' ? 'rgba(241, 237, 227, 0.1)' : '#FFFFFF', C.muted], review: [C.claySoft, C.clayInk] };
   const [bg, fg] = tones[tone] || tones.locked;
   return <span style={{ display: 'inline-block', background: bg, color: fg, fontSize: 13, fontWeight: 600, lineHeight: '18px', padding: '4px 10px', borderRadius: 999, whiteSpace: 'nowrap', textAlign: 'center' }}>{children}</span>;
 }
@@ -11906,11 +11926,12 @@ async function loadCovered() {
 }
 async function saveCovered(state) { return storageSet(COVERED_KEY, JSON.stringify(state)); }
 
-// Which reflection questions this school has read and approved.
+// Which reflection questions this school has turned off (since pass NJ every question starts on; until then this held the ones
+// approved). A state saved before pass NJ is read as this version's (wonderReviewState): its removals kept, its approvals left behind.
 const WONDER_KEY = 'edusphere_v1_wonder_review';
 async function loadWonderReview() {
   const raw = await storageGet(WONDER_KEY);
-  if (raw) { const r = safeJson(raw); if (r && Array.isArray(r.approved)) return r; }
+  if (raw) { const r = safeJson(raw); if (r && typeof r === 'object') return wonderReviewState(r); }
   return emptyWonderReview();
 }
 async function saveWonderReview(state) { return storageSet(WONDER_KEY, JSON.stringify(state)); }
@@ -12201,7 +12222,6 @@ function EduSphereScreens() {
   const [openAssigned, setOpenAssigned] = useState(false);
   const [openProgress, setOpenProgress] = useState(false);
   const [openTerms, setOpenTerms] = useState([]);
-  const [openApproved, setOpenApproved] = useState([]);
   const [openProgressGroups, setOpenProgressGroups] = useState([]);
   const [openMapGroups, setOpenMapGroups] = useState([]);           // the standards map's dropdowns, closed until opened
   const [openMapHeads, setOpenMapHeads] = useState([]);             // the standards map's grade (or subject) headings, closed until opened
@@ -12298,8 +12318,8 @@ function EduSphereScreens() {
   const [hideCovered, setHideCovered] = useState(false);
   const [openStages, setOpenStages] = useState([]);           // stages start closed, so the page opens as four rows
   const [wonderReview, setWonderReview] = useState(emptyWonderReview());
-  // In a walk-through every wonder question counts as approved, so the educator sees what students would.
-  const previewReview = () => (record && record.preview ? { ...wonderReview, approved: WONDER.map((w) => w.id), hidden: [] } : wonderReview);
+  // In a walk-through every wonder question is on, so the educator sees every question a student could meet.
+  const previewReview = () => (record && record.preview ? emptyWonderReview() : wonderReview);   // every question on (pass NJ: the empty state)
   const [openWonder, setOpenWonder] = useState([]);
   const [openWonderStages, setOpenWonderStages] = useState([]);
   const [reviewing, setReviewing] = useState(null);           // the question open in the overlay
@@ -12525,7 +12545,11 @@ function EduSphereScreens() {
       setEducator(await loadEducator());
       { const rawProfile = await loadEducatorRaw(); if (rawProfile && !rawProfile.pin) setPendingProfile(rawProfile); }
       // A refresh brings a student back to where they were (pass GV): the remembered student is loaded and their screen restored.
-      const where = whereAtStart;
+      // Since pass NJ only within fifteen minutes of their last activity (whereNoteFresh, Mikey: "I returned what seems like an hour
+      // later and the student was still logged into to the device."): an older note, or one from before pass NJ with no time, is
+      // erased and the sign-in screen shows.
+      const where = whereAtStart && whereNoteFresh(whereAtStart, Date.now()) ? whereAtStart : null;
+      if (whereAtStart && !where) saveWhere(null);
       if (where) {
         try {
           const rec = await withStarterCourses(await loadRecord(where.name));
@@ -12562,10 +12586,11 @@ function EduSphereScreens() {
     if (screen === 'loading') return;
     if (record && !record.preview && WHERE_SCREENS.has(screen)) {
       const inSet = screen === 'practice' && attempt && Array.isArray(attempt.core);
-      saveWhere({ name: record.name, screen, moduleId: screen === 'lesson' || screen === 'story' || screen === 'practice' ? moduleId : null,
+      // at (pass NJ): when the student was last active, so a note older than fifteen minutes brings no one back (whereNoteFresh).
+      saveWhere({ name: record.name, screen, at: Date.now(), moduleId: screen === 'lesson' || screen === 'story' || screen === 'practice' ? moduleId : null,
         ...(inSet ? { set: { attempt, qIndex, given: q && q.type === 'trace' ? '' : given, checked, wasCorrect, misses, coreResults, reviewResult, review2Result, startedAt, placementWalk: attempt.placement ? placementWalk : null } } : {}) });
     } else if (screen === 'welcome') saveWhere(null);
-    else if (record && !record.preview) { const w = loadWhere(); if (w && w.set) saveWhere({ name: w.name, screen: 'overview', moduleId: null }); }
+    else if (record && !record.preview) { const w = loadWhere(); if (w && w.set) saveWhere({ name: w.name, screen: 'overview', at: w.at, moduleId: null }); }
   }, [screen, moduleId, record && record.name, record && record.preview, attempt, qIndex, checked, coreResults, reviewResult, review2Result]);
 
   // Adds one event to the learner's log and saves. This is the ONLY place the log changes.
@@ -12934,8 +12959,9 @@ function EduSphereScreens() {
   // The question's position is a dependency too: two questions in a row can carry the very same words
   // (the same picture picked twice), and the second must still be spoken.
   useEffect(() => { if (screen === 'practice' && readAloud && questionText) speak(questionText, q && q.voices ? { voices: q.voices } : {}); }, [screen, readAloud, questionText, qIndex]);   // a sentence said in a manner (pass MV) is said that way
-  // An educator stays signed in while they are using the screen. After four quiet minutes a
-  // warning appears; after five, the PIN is asked for again. Any tap or key resets the clock.
+  // An educator stays signed in while they are using the screen. After a quiet minute (EDUCATOR_IDLE_MS, counted down on a chip), the
+  // PIN is asked for again, a warning showing for its last ten seconds. Any tap or key resets the clock. (Corrected in pass NJ, when the
+  // student's clock was written beside it: this said four and five quiet minutes, and the next effect's comment thirty seconds.)
   const EDUCATOR_SCREENS = ['educator-pick', 'educator-report', 'transcript', 'life-skills', 'wonder-review', 'backup', 'class-view', 'change-state', 'standards-map'];
   const onEducatorScreen = EDUCATOR_SCREENS.includes(screen);
   const logoutIn = onEducatorScreen && lastActive && tourStep < 0 ? Math.max(0, Math.ceil((EDUCATOR_IDLE_MS - (now - lastActive)) / 1000)) : null;
@@ -12954,8 +12980,8 @@ function EduSphereScreens() {
   }, [onEducatorScreen]);
   useEffect(() => {
     if (!onEducatorScreen) return undefined;
-    // Thirty seconds of quiet ends the session, so a student picking up the device meets the PIN
-    // screen. A warning shows at twenty; any tap or key resets the clock.
+    // EDUCATOR_IDLE_MS of quiet ends the session, so a student picking up the device meets the PIN
+    // screen. A warning shows ten seconds before; any tap or key resets the clock.
     const tick = setInterval(() => {
       if (tourStep >= 0) { setLastActive(Date.now()); return; }   // reading the tour is not idleness, and no one is signed out mid-card
       const quiet = Date.now() - lastActive;
@@ -12965,6 +12991,72 @@ function EduSphereScreens() {
     }, 1000);
     return () => clearInterval(tick);
   }, [onEducatorScreen, lastActive, tourStep]);
+  // A student signed out after fifteen quiet minutes (pass NJ, Mikey: "Maybe we should have students auto-logged out after a period
+  // of inactivity kind of like the instructors?  We don't need it visually displayed like we do for the educators but maybe we log out
+  // after 15 minutes of activity."; the rule, STUDENT_IDLE_MS and studentIdleOver, is in logic.mjs). In plain terms: while a student is
+  // signed in on one of their own screens (STUDENT_SCREENS in logic.mjs since round one's code read), every tap, key, scroll or pointer move marks the time; a check every STUDENT_IDLE_CHECK_MS,
+  // a check as the page comes back into view (a tablet woken, a tab brought forward) and a check at the first touch after a long
+  // quiet each send the student to the sign-in screen once fifteen minutes have gone by, as Exit does but with no backup file (no
+  // download asks anything of an empty room) and nothing on the screen counting down. The time is also written into the where-note,
+  // at most every STUDENT_NOTE_EVERY_MS, so a browser closed and opened again later starts at the sign-in screen (the first-load
+  // effect reads it with whereNoteFresh). A walk-through is the educator's, not a student's, and is never signed out by this; the
+  // first week tour pauses it, as it pauses the educator's clock.
+  const STUDENT_IDLE_CHECK_MS = 15000;
+  const STUDENT_NOTE_EVERY_MS = 30000;
+  const onStudentScreen = !!(record && !record.preview && isStudentScreen(screen));
+  const studentQuietSince = useRef(Date.now());
+  useEffect(() => {
+    if (!onStudentScreen) return undefined;
+    studentQuietSince.current = Date.now();
+    let live = true;
+    const signOutIdle = () => {
+      if (!live) return; live = false;
+      hushSpeech(); setScreen('welcome');   // the welcome screen erases the where-note (the note's effect below)
+    };
+    // A clock moved back is not quiet (round one's code read): the count starts again from now (quietStart in logic.mjs).
+    const quietTooLong = () => { const t = Date.now(); studentQuietSince.current = quietStart(studentQuietSince.current, t); return tourStep < 0 && studentIdleOver(studentQuietSince.current, t); };
+    // The note's time is written at most every STUDENT_NOTE_EVERY_MS, and storage is read only then (round one's code read: the note,
+    // a practice round and all, was read on every tap), or at once when the clock reads earlier than the last write.
+    let noteWritten = 0;
+    const noteTime = (t) => { if (t >= noteWritten && t - noteWritten < STUDENT_NOTE_EVERY_MS) return; const w = loadWhere(); if (w && record && w.name === record.name) { saveWhere({ ...w, at: t }); noteWritten = t; } };
+    // The touch that wakes a device left too long signs the student out and does nothing else: its own press and the click after it
+    // are held back, so a finger landing where a name now shows on the sign-in screen never opens that student's record.
+    // How long the hold lasts follows what woke the page. A press (a finger or a mouse button) is held until the click it stops, or 400 ms
+    // after it lifts or is cancelled (a swipe), at most three seconds (round one's code read: 800 ms from the press let a longer press
+    // through). A key, a mouse moving or a wheel is held 800 ms, as at first (round two's code read: a mouse's first move went unheld, and
+    // a key's hold, with no lift to end it, swallowed a real click for three seconds), and a press begun inside those 800 ms is held as a
+    // press from then on (round three's code read: a mouse moved, its button pressed at 600 ms and let go at 950 ms, clicked through).
+    const holdClick = (kind) => {
+      let done = false; let upTimer = null; let cap = null; let pressed = false;
+      const stop = (ev) => { ev.preventDefault(); ev.stopPropagation(); off(); };
+      const up = () => { clearTimeout(upTimer); upTimer = setTimeout(off, 400); };
+      const press = () => { if (pressed) return; pressed = true; clearTimeout(cap); window.addEventListener('pointerup', up, true); window.addEventListener('pointercancel', up, true); cap = setTimeout(off, 3000); };
+      function off() { if (done) return; done = true; clearTimeout(upTimer); clearTimeout(cap); window.removeEventListener('click', stop, true); window.removeEventListener('pointerdown', press, true); window.removeEventListener('pointerup', up, true); window.removeEventListener('pointercancel', up, true); }
+      window.addEventListener('click', stop, true);
+      if (kind === 'pointerdown') press(); else { window.addEventListener('pointerdown', press, true); cap = setTimeout(off, 800); }
+    };
+    // Nothing is heard after the sign-out (round one's screen read: the sign-in screen's own scroll to its top reached this listener
+    // before its cleanup and held the next real tap on a name), and every waking event but a scroll is held, a scroll being something
+    // the page can do by itself (round two's code read: holding only a press let a mouse's first move through).
+    const touch = (e) => {
+      if (!live) return;
+      if (quietTooLong()) { const held = !!e && e.type !== 'scroll'; if (held) { if (e.type === 'pointerdown' || e.type === 'keydown') { if (e.cancelable) e.preventDefault(); e.stopPropagation(); } holdClick(e.type); } signOutIdle(); return; }
+      const t = Date.now(); studentQuietSince.current = t; noteTime(t);
+    };
+    let lastMove = 0;
+    const move = (e) => { const t = Date.now(); if (t - lastMove > 1500) { lastMove = t; touch(e); } };
+    const back = () => { if (typeof document !== 'undefined' && document.visibilityState === 'visible' && quietTooLong()) signOutIdle(); };
+    window.addEventListener('pointerdown', touch, true); window.addEventListener('keydown', touch, true);
+    window.addEventListener('pointermove', move, true); window.addEventListener('wheel', move, true); window.addEventListener('scroll', move, true);
+    if (typeof document !== 'undefined') document.addEventListener('visibilitychange', back);
+    const tick = setInterval(() => { if (tourStep >= 0) { studentQuietSince.current = Date.now(); return; } if (quietTooLong()) signOutIdle(); }, STUDENT_IDLE_CHECK_MS);
+    return () => {
+      live = false; clearInterval(tick);
+      window.removeEventListener('pointerdown', touch, true); window.removeEventListener('keydown', touch, true);
+      window.removeEventListener('pointermove', move, true); window.removeEventListener('wheel', move, true); window.removeEventListener('scroll', move, true);
+      if (typeof document !== 'undefined') document.removeEventListener('visibilitychange', back);
+    };
+  }, [onStudentScreen, tourStep, record && record.name]);
   // Every screen opens at the top (pass JE, Mikey: lessons opened partway down, and Later left the classroom at its bottom).
   // In plain terms: a new screen starts at its top, and while no tour card is placing the page, the top is asked for again a
   // moment later in case the page was still settling. The one exception is a screen the student is coming back to (pass IU,
@@ -13308,7 +13400,7 @@ function EduSphereScreens() {
     // walk can pass a round whose memory check reaches into a tracing lesson (a finished course has those among its stars).
     traceWell: () => { const def = q && q.type === 'trace' ? TRACE_LETTERS[q.answer] : null; if (!def) return false; const paths = def.strokes.map((s) => s.flatMap((p, i) => (i === 0 ? [p] : Array.from({ length: 8 }, (_, k) => [s[i - 1][0] + ((p[0] - s[i - 1][0]) * (k + 1)) / 8, s[i - 1][1] + ((p[1] - s[i - 1][1]) * (k + 1)) / 8])))); setTracePaths(paths); setGiven(JSON.stringify(paths)); return true; }, openColoring: (pic, opts = null) => { gameIntroNext.current = !!(opts && opts.intro); setColoring(pic); setScreen('coloring'); }, setColoringLeft: (n) => setColorLeft(n), openCertificate: (id, grade) => { setCertFor({ id, grade }); setCertTemplate('classic'); setCertName(''); setCertPhotos([]); setScreen('certificate'); }, visibleModuleIds: () => visibleModules.map((m) => m.id), openStory: (id) => { noteStoryOpen(id, 'shelf'); setModuleId(id); setStoryVoiceOn(canSpeak()); setScreen('story'); }, openCourseStory: (id, part = 'course') => { noteStoryOpen(`${part}:${id}`, 'shelf'); setCourseStoryId(id); setCourseStoryPart(part); setStoryVoiceOn(canSpeak()); setScreen('course-story'); }, openWonderVoices: (id, mid) => { if (mid) setModuleId(mid); setWonder(WONDER.find((w) => w.id === id) || null); setWonderVoiceStep(0); setScreen('wonder-voices'); }, openWonder: (id, mid) => { if (mid) setModuleId(mid); setWonder(WONDER.find((w) => w.id === id) || null); setWonderText(''); setWonderPick(''); setWonderStartedAt(Date.now()); setScreen('wonder'); },
     // Test-only (pass MH): one round of a single named question, so a browser check can look at any kind of question on screen.
-    showQuestion: (genId, seed = 1, fromModule = null) => { const home = (fromModule && getModule(fromModule)) || COURSES.flatMap((c) => c.modules).find((m) => (m.generators || []).includes(genId)); if (!home) return false; setModuleId(home.id); setAttempt({ moduleId: home.id, seed, core: [moduleQuestion(genId, seed, home.id)], review: null, review2: null }); setQIndex(0); setGiven(''); setChecked(false); setMisses(0); setWrongPicks([]); setTracePaths([]); setTraceNote(''); setMoreInfo(false); setCoreResults([]); setOrderPicked([]); setReviewResult(null); setReview2Result(null); setStartedAt(new Date().toISOString()); setQShownAt(Date.now()); setScreen('practice'); return true; }, reviewWonder: (id) => { setReviewing(id); setOpenVoices([]); setScreen('wonder-review'); }, crash: () => setBoom(true), goTo: (name, arg) => {
+    showQuestion: (genId, seed = 1, fromModule = null) => { const home = (fromModule && getModule(fromModule)) || COURSES.flatMap((c) => c.modules).find((m) => (m.generators || []).includes(genId)); if (!home) return false; setModuleId(home.id); setAttempt({ moduleId: home.id, seed, core: [moduleQuestion(genId, seed, home.id)], review: null, review2: null }); setQIndex(0); setGiven(''); setChecked(false); setMisses(0); setWrongPicks([]); setTracePaths([]); setTraceNote(''); setMoreInfo(false); setCoreResults([]); setOrderPicked([]); setReviewResult(null); setReview2Result(null); setStartedAt(new Date().toISOString()); setQShownAt(Date.now()); setScreen('practice'); return true; }, reviewWonder: (id) => { setReviewing(id); setOpenVoices([]); setScreen('wonder-review'); }, crash: () => setBoom(true), quietFor: (ms) => { studentQuietSince.current = Date.now() - Number(ms || 0); return onStudentScreen; }, goTo: (name, arg) => {
     // Test-only: land on a screen with enough state for it to render, so the back-button sweep can press back from every screen.
     if (name === 'story' || name === 'lesson') { if (!moduleId && visibleModules[0]) setModuleId(visibleModules[0].id); }
     if (name === 'course-story') { const c = COURSES.find((x) => courseStoryFor(x.id)); if (c) setCourseStoryId(c.id); }
@@ -14966,7 +15058,7 @@ function EduSphereScreens() {
         </div>
         <div style={{ display: 'grid', gap: 10 }}>
           {cheer && <Btn full halo onClick={celebrate} disabled={busy} style={{ background: C.gold, borderColor: C.gold, color: C.onGold }}>Celebrate!</Btn>}
-          {FEATURES.reflection && !readAloud && wonderOnFor(findStudent(roster, record.name)) && nextWonder(record.events, mod.courseId, wonderReview) && <WonderButton onClick={() => { setWonder(nextWonder(record.events, mod.courseId, wonderReview)); setWonderText(''); setWonderPick(''); setWonderStartedAt(Date.now()); setScreen('wonder'); }}>Wonder for a minute</WonderButton>}
+          {FEATURES.reflection && !readAloud && wonderOnFor(findStudent(roster, record.name)) && nextWonder(record.events, mod.courseId, previewReview()) && <WonderButton onClick={() => { setWonder(nextWonder(record.events, mod.courseId, previewReview())); setWonderText(''); setWonderPick(''); setWonderStartedAt(Date.now()); setScreen('wonder'); }}>Wonder for a minute</WonderButton>}
           {mastered && nextMod && <Btn full onClick={() => openModule(nextMod.id)} disabled={busy}>Next: {titleCase(nextMod.title)}</Btn>}
           {!mastered && loopBackTarget(record.events, mod.id) && <Btn full onClick={() => loopBack(mod.id, loopBackTarget(record.events, mod.id))} disabled={busy}>Look back at {getModule(loopBackTarget(record.events, mod.id)).title.toLowerCase()}</Btn>}
           {!mastered && !loopBackTarget(record.events, mod.id) && <Btn full onClick={() => setScreen('lesson')}>Review the lesson</Btn>}
@@ -15396,7 +15488,11 @@ function EduSphereScreens() {
   }
 
   if (screen === 'wonder-review') {
-    const waiting = wonderAwaitingReview(wonderReview);
+    // Since pass NJ every question starts on (Mikey: "give them the option to opt out when they visit the wonder questions page"):
+    // the card at the top says how many are on and turns them all off or back on, and each question opens to be read and turned off
+    // or back on. Until pass NJ the page asked for each question to be approved before any student met it.
+    const onCount = wonderOnCount(wonderReview); const allOff = wonderReviewState(wonderReview).allOff;
+    const keptOff = wonderReviewState(wonderReview).hidden.filter((id) => WONDER.some((w) => w.id === id)).length;   // turned off by name
     const reviewingQuestion = WONDER.find((w) => w.id === reviewing) || null;
     const apply = async (next) => {
       changedSinceBackup.current = true;
@@ -15422,19 +15518,22 @@ function EduSphereScreens() {
         {showWonderTip && (
           <TipText>
             <p style={{ margin: '0 0 8px' }}>After every two practice rounds, whether it went well or not, a reflection question is introduced. Each question is written toward one of four aims: curiosity about the world, failure as the way learning happens, naming and handling feelings, and the idea that hard days are normal yet, we always get through them.</p>
-            <p style={{ margin: '0 0 8px' }}>These questions rotate. A student never sees the same question more than twice and after a bad practice round, questions about failure and feelings are prioritized. Student answers are never stored and only questions you approve will ever appear.</p>
+            <p style={{ margin: '0 0 8px' }}>These questions rotate. A student never sees the same question more than twice and after a bad practice round, questions about failure and feelings are prioritized. Student answers are never stored and only questions you leave on will ever appear.</p>
             <p style={{ margin: 0 }}>Note: By never storing student answers, there is no pressure for them to answer a certain way. They are free to answer as themselves then they'll see other perspectives to expand their way of thinking. This also keeps The Wise Human compliant with privacy laws.</p>
           </TipText>
         )}
         <p style={{ color: C.muted, marginTop: 0, marginBottom: 26, fontSize: 15, textAlign: 'center' }}>Thought-provoking questions sprinkled between learning modules. Wonder Questions are designed not only to help information stick, but to promote emotional intelligence, curiosity, critical thinking and positive views of failure.</p>
 
-        <div style={{ ...card, marginTop: 22, background: waiting > 0 ? C.goldSoft : C.greenSoft, borderColor: waiting > 0 ? C.goldSoft : C.greenSoft }}>
+        <div data-wonder-all={allOff ? 'off' : 'on'} style={{ ...card, marginTop: 22, background: allOff ? C.goldSoft : C.greenSoft, borderColor: allOff ? C.gold : C.greenSoft }}>
           <p style={{ margin: 0, fontSize: 16, fontWeight: 600, textAlign: 'center' }}>
-            {waiting > 0 ? `${waiting} to review` : `All ${WONDER.length} reviewed`}
+            {allOff ? (onCount > 0 ? `Off, with ${onCount} turned on` : 'Off for every student') : onCount < WONDER.length ? `On, with ${WONDER.length - onCount} turned off` : `All ${WONDER.length} on`}
           </p>
-          <p style={{ margin: '6px 0 10px', fontSize: 15, textAlign: 'center' }}>Students only see what you approve. Responses are never recorded for privacy reasons.</p>
-          {waiting === 0 && WONDER.length > 0 && <p style={{ margin: '0 0 10px', fontSize: 13, textAlign: 'center' }}><button type="button" onClick={() => apply(unapproveAllWonder(wonderReview))} style={{ ...linkBtn, fontSize: 13, padding: 0 }}>Remove All</button></p>}
-          {waiting > 0 && <Btn full kind="secondary" onClick={() => apply(approveAllWonder(wonderReview))}>Approve all</Btn>}
+          <p style={{ margin: '6px 0 10px', fontSize: 15, textAlign: 'center' }}>{allOff ? 'Only the questions you turn on below reach your students.' : 'Every question starts on. Open any question below to read it or turn it off.'} Responses are never recorded for privacy reasons.</p>
+          {/* With all off, the questions a school turned off by name stay off when all are turned on again (round two's code read: the
+              button's words were untrue for a school with a removal, and nothing said so before the tap). */}
+          {allOff && keptOff > 0 && <p data-wonder-kept-off="" style={{ margin: '0 0 10px', fontSize: 14, textAlign: 'center' }}>{keptOff === 1 ? 'The question you turned off by name stays off when you turn them all\u00A0on.' : `The ${keptOff} questions you turned off by name stay off when you turn them all\u00A0on.`}</p>}
+          {allOff ? <Btn full kind="secondary" onClick={() => apply(setAllWonder(wonderReview, true))}>Turn them all on</Btn>
+            : <p style={{ margin: '-6px 0 -4px', fontSize: 13, textAlign: 'center' }}><button type="button" data-wonder-all-off="" onClick={() => apply(setAllWonder(wonderReview, false))} style={{ ...linkBtn, fontSize: 13, padding: '13px 16px', minHeight: 44, display: 'inline-flex', alignItems: 'center' }}>Turn them all off</button></p>}
         </div>
 
         {LIFE_STAGES.map((stage, stageIndex) => {
@@ -15442,7 +15541,7 @@ function EduSphereScreens() {
           const stageBg = stageTint(stageIndex);
           const stageLight = stageIndex < 2;
           const stageOpen = openWonderStages.includes(stage.id);
-          const waitingHere = inStage.filter((w) => !isWonderApproved(wonderReview, w.id) && !isWonderHidden(wonderReview, w.id)).length;
+          const onHere = inStage.filter((w) => isWonderOn(wonderReview, w.id)).length;
           return (
             <div key={stage.id}>
               {/* Four rows to begin with. The questions inside wait until a stage is opened. */}
@@ -15450,9 +15549,10 @@ function EduSphereScreens() {
                 style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: stageBg, border: 'none', borderRadius: 12, padding: '14px 16px', cursor: 'pointer', color: stageLight ? '#24291F' : '#fff', marginBottom: 10 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10 }}>
                   <span style={{ fontSize: 18, fontWeight: 600 }}>{stage.title}</span>
-                  <span style={{ fontSize: 14, opacity: 0.85, whiteSpace: 'nowrap' }}>{inStage.length === 0 ? 'none yet' : waitingHere > 0 ? `${waitingHere} to review` : 'all reviewed'} {stageOpen ? '▴' : '▾'}</span>
+                  <span data-wonder-stage-state="" style={{ fontSize: 14, opacity: stageLight ? 0.85 : 1, whiteSpace: 'nowrap' }}>{inStage.length === 0 ? 'none yet' : onHere === inStage.length ? 'all on' : onHere === 0 ? 'all off' : allOff ? `${onHere} on` : `${inStage.length - onHere} off`} {stageOpen ? '▴' : '▾'}</span>
                 </div>
-                <p style={{ margin: '4px 0 0', fontSize: 14, opacity: 0.85, fontWeight: 400 }}>{stage.blurb}</p>
+                {/* Full white on the two darker stages (pass NJ, round one's screen read: Teen's words read 3.81 to 1 at 0.85). */}
+                <p style={{ margin: '4px 0 0', fontSize: 14, opacity: stageLight ? 0.85 : 1, fontWeight: 400 }}>{stage.blurb}</p>
               </button>
               {stageOpen && inStage.length === 0 && (
                 <div style={{ ...card, marginTop: 0 }}><p style={{ margin: 0, color: C.muted, fontSize: 15 }}>No questions written for this stage yet.</p></div>
@@ -15460,43 +15560,26 @@ function EduSphereScreens() {
               {(() => {
                 if (!stageOpen) return null;
                 const row = (w) => {
-                  const approved = isWonderApproved(wonderReview, w.id);
-                  const hidden = isWonderHidden(wonderReview, w.id);
-                  const tone = hidden ? 'locked' : approved ? 'mastered' : 'review';
-                  const state = hidden ? 'Removed' : approved ? 'Approved' : 'Awaiting review';
+                  const on = isWonderOn(wonderReview, w.id);
+                  const tone = on ? 'available' : 'off';   // green for on, as the student's own Wonder switch shows it
+                  const state = on ? 'On' : 'Off';
                   return (
-                    <button key={w.id} type="button" onClick={() => { setReviewing(w.id); setOpenVoices([]); }}
-                      style={{ ...card, display: 'block', width: '100%', textAlign: 'center', padding: 14, cursor: 'pointer', border: `1px solid ${C.line}`, opacity: hidden ? 0.7 : 1, background: hidden ? (C.mode === 'dark' ? C.panel : '#EDEFEA') : C.surface, fontFamily: FONT, color: C.ink }}>
+                    <button key={w.id} type="button" data-wonder-row={w.id} onClick={() => { setReviewing(w.id); setOpenVoices([]); }}
+                      style={{ ...card, display: 'block', width: '100%', textAlign: 'center', padding: 14, cursor: 'pointer', border: `1px solid ${C.line}`, background: on || C.mode === 'dark' ? C.surface : '#EDEFEA', fontFamily: FONT, color: on ? C.ink : C.muted }}>
                       <span style={{ display: 'block', fontSize: 16, fontWeight: 600, lineHeight: 1.4 }}>{wholeHyphens(w.prompt)}</span>
                       <span style={{ display: 'block', marginTop: 8 }}><Tag tone={tone}>{state}</Tag></span>
                     </button>
                   );
                 };
-                // Awaiting questions stay in view; reviewed ones fold away so the next one is always at the top.
-                const awaiting = inStage.filter((w) => !isWonderApproved(wonderReview, w.id) && !isWonderHidden(wonderReview, w.id));
-                const reviewed = inStage.filter((w) => isWonderApproved(wonderReview, w.id) || isWonderHidden(wonderReview, w.id));
-                const foldOpen = openApproved.includes(stage.id);
-                return (
-                  <>
-                    {reviewed.length > 0 && (
-                      <div style={{ ...card, padding: 0, overflow: 'hidden', background: C.greenSoft, borderColor: C.softEdge }}>
-                        <button type="button" onClick={() => setOpenApproved((list) => (list.includes(stage.id) ? list.filter((x) => x !== stage.id) : [...list, stage.id]))} aria-expanded={foldOpen}
-                          style={{ fontFamily: FONT, width: '100%', textAlign: 'left', background: 'transparent', border: 'none', padding: 14, cursor: 'pointer', color: C.ink, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <span style={{ fontSize: 15, fontWeight: 600, flex: 1, textAlign: 'center', paddingLeft: 18 }}>Reviewed ({reviewed.length})</span>
-                          <span style={{ color: C.muted }}>{foldOpen ? '▴' : '▾'}</span>
-                        </button>
-                        {foldOpen && <div style={{ padding: '0 10px 6px' }}>{reviewed.map(row)}</div>}
-                      </div>
-                    )}
-                    {awaiting.map(row)}
-                  </>
-                );
+                // Every question in view, in the order a student meets them, each with its On or Off (pass NJ: until then the questions
+                // awaiting review stayed in view and the reviewed ones folded away).
+                return <>{inStage.map(row)}</>;
               })()}
             </div>
           );
         })}
 
-        <p style={{ color: C.muted, fontSize: 13, marginTop: 120, lineHeight: 1.6, textAlign: 'center' }}>Wonder questions are written to sit comfortably with families of all beliefs. No individual voice is implied correct and no question or answer will ever argue for or against religion. Although we think faith is important, we strive to remain neutral for the benefit of all. If a question doesn't suit your community, remove it. Nothing is shown to a student until you approve it.</p>
+        <p style={{ color: C.muted, fontSize: 13, marginTop: 120, lineHeight: 1.6, textAlign: 'center' }}>Wonder questions are written to sit comfortably with families of all beliefs. No individual voice is implied correct and no question or answer will ever argue for or against religion. Although we think faith is important, we strive to remain neutral for the benefit of all. If a question doesn't suit your community, turn it off.</p>
         {saveNote && <p style={{ color: C.muted, fontSize: 13, textAlign: 'center', marginTop: 32 }}>{saveNote}</p>}
 
         {/* Reviewing one question opens over the page rather than pushing everything down.
@@ -15507,8 +15590,8 @@ function EduSphereScreens() {
               <button type="button" onClick={() => setReviewing(null)} aria-label="Close"
                 style={{ position: 'absolute', top: 8, right: 10, background: 'none', border: 'none', width: 36, height: 36, fontSize: 30, fontWeight: 400, lineHeight: '34px', cursor: 'pointer', color: C.ink, fontFamily: FONT, padding: 0 }}>×</button>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, padding: '0 40px' }}>
-                <Tag tone={isWonderHidden(wonderReview, reviewingQuestion.id) ? 'locked' : isWonderApproved(wonderReview, reviewingQuestion.id) ? 'mastered' : 'review'}>
-                  {isWonderHidden(wonderReview, reviewingQuestion.id) ? 'Removed' : isWonderApproved(wonderReview, reviewingQuestion.id) ? 'Approved' : 'Awaiting review'}
+                <Tag tone={isWonderOn(wonderReview, reviewingQuestion.id) ? 'available' : 'locked'}>
+                  {isWonderOn(wonderReview, reviewingQuestion.id) ? 'On' : 'Off'}
                 </Tag>
 
               </div>
@@ -15566,19 +15649,13 @@ function EduSphereScreens() {
                 <p style={{ margin: '2px 0 0', fontSize: 15, textAlign: 'center' }}>{wholeHyphens(reviewingQuestion.closing)}</p>
               </div>
 
-              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 16, justifyContent: 'center' }}>
-                {isWonderHidden(wonderReview, reviewingQuestion.id) ? (
-                  <Btn kind="secondary" onClick={() => apply(restoreWonder(wonderReview, reviewingQuestion.id))}>Put it back for review</Btn>
-                ) : isWonderApproved(wonderReview, reviewingQuestion.id) ? (
-                  <>
-                    <Btn kind="secondary" onClick={() => apply(unapproveWonder(wonderReview, reviewingQuestion.id))}>Withdraw approval</Btn>
-                    <Btn kind="secondary" onClick={() => apply(hideWonder(wonderReview, reviewingQuestion.id))}>Remove</Btn>
-                  </>
+              {/* What the tap did, said where the tap is (pass NJ, round one's screen read: the sheet's On or Off is a screen above its button). */}
+              <p role="status" data-wonder-sheet-state="" style={{ margin: '16px 0 0', fontSize: 15, fontWeight: 600, textAlign: 'center', color: isWonderOn(wonderReview, reviewingQuestion.id) ? C.green : C.muted }}>{isWonderOn(wonderReview, reviewingQuestion.id) ? 'On for your students.' : 'Off for your students.'}</p>
+              <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 10, justifyContent: 'center' }}>
+                {isWonderOn(wonderReview, reviewingQuestion.id) ? (
+                  <Btn kind="secondary" onClick={() => apply(setWonderOn(wonderReview, reviewingQuestion.id, false))}>Turn it off</Btn>
                 ) : (
-                  <>
-                    <Btn onClick={() => { apply(approveWonder(wonderReview, reviewingQuestion.id)); setReviewing(null); }}>Approve</Btn>
-                    <Btn kind="secondary" onClick={() => apply(hideWonder(wonderReview, reviewingQuestion.id))}>Remove</Btn>
-                  </>
+                  <Btn onClick={() => apply(setWonderOn(wonderReview, reviewingQuestion.id, true))}>Turn it on</Btn>
                 )}
               </div>
             </div>
@@ -16134,7 +16211,7 @@ function EduSphereScreens() {
           </div>
           <div style={{ marginTop: 26, marginBottom: 20 }}>
             <HeadWithInfo onClick={() => setShowWonderWhy(!showWonderWhy)} label="About wonder questions" open={showWonderWhy}>Wonder Questions</HeadWithInfo>
-            {showWonderWhy && <TipText>Wonder Questions are optional thought-provoking questions sprinkled between learning modules.<br /><br />They're designed to help students reframe failure as an effective way to learn and promote curiosity, emotional resilience and, most importantly, right-hemispheric thinking.<br /><br />Students only see the questions you approve (see bottom of <strong>My Classroom</strong>).</TipText>}
+            {showWonderWhy && <TipText>Wonder Questions are optional thought-provoking questions sprinkled between learning modules.<br /><br />They're designed to help students reframe failure as an effective way to learn and promote curiosity, emotional resilience and, most importantly, right-hemispheric thinking.<br /><br />Every question starts on, and you can turn off any you'd rather skip (see bottom of <strong>My{'\u00A0'}Classroom</strong>).</TipText>}
             <SegToggle size="big" options={[['on', 'On'], ['off', 'Off']]} value={wizardWonder ? 'on' : 'off'} onChange={(v) => setWizardWonder(v === 'on')} ariaLabel="Wonder Questions" />
           </div>
           <Btn full onClick={async () => {
@@ -16266,8 +16343,11 @@ function EduSphereScreens() {
                     <div className="edu-rise" style={{ width: 'min(420px, 100%)', background: C.surface, ...(C.mode === 'dark' ? { border: `1px solid ${C.cardEdge}` } : {}), borderRadius: 14, padding: '26px 22px', textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
                       <p style={{ margin: '0 0 6px', fontSize: 19, fontWeight: 700 }}>Wonder Questions</p>
                       <p style={{ margin: '0 0 6px', fontSize: 15, color: C.muted }}>Currently: <strong style={{ color: wonderOnFor(st) ? C.green : C.ink }}>{wonderOnFor(st) ? 'On' : 'Off'}</strong></p>
-                      {/* How many of the pool this school has approved for students to see (2026-09-29, Mikey): the count follows the review screen and grows with the pool. */}
-                      <p style={{ margin: '0 0 18px', fontSize: 14, color: C.muted }} data-wonder-approved={wonderReview.approved.length}>{wonderReview.approved.length} of {WONDER.length} Wonder Questions approved for student viewing</p>
+                      {/* How many of the pool this school lets students see (2026-09-29, Mikey): the count follows the Wonder Questions page and grows
+                          with the pool. Since pass NJ every question starts on, so it counts the questions on, where it counted the ones approved. */}
+                      <p style={{ margin: wonderOnCount(wonderReview) === 0 ? '0 0 6px' : '0 0 18px', fontSize: 14, color: C.muted }} data-wonder-on={wonderOnCount(wonderReview)}>{wonderOnCount(wonderReview)} of {WONDER.length} Wonder Questions on for students</p>
+                      {/* With every question off for the school, this student's On meets none (pass NJ, round one's screen read). */}
+                      {wonderOnCount(wonderReview) === 0 && <p data-wonder-none="" style={{ margin: '0 0 18px', fontSize: 14, color: C.ink }}>Your school has every question off, so this student meets none.</p>}
                       <SegToggle size="big" options={[['on', 'On'], ['off', 'Off']]} value={wonderOnFor(st) ? 'on' : 'off'} onChange={(v) => applyRoster(setStudentWonder(roster, st.id, v === 'on'))} ariaLabel="Wonder Questions" />
                       <Btn kind="secondary" onClick={() => setWonderPopupFor(null)}>Close</Btn>
                     </div>
@@ -16381,7 +16461,8 @@ function EduSphereScreens() {
         {FEATURES.reflection && (
           <div data-tour="wonder" style={{ ...card, background: C.featWonder, borderColor: C.featWonderLine, color: C.featInk, display: 'flex', flexDirection: 'column' }}>
             <p style={{ margin: '0 0 6px', fontWeight: 600, textAlign: 'center' }}>Wonder Questions</p>
-            <p style={{ margin: '0 0 10px', fontSize: 15, textAlign: 'center' }}>{wonderAwaitingReview(wonderReview) > 0 ? `${wonderAwaitingReview(wonderReview)} to review. These optional reflection questions remain invisible until approved.` : 'All reviewed. Only the ones you approved are shown to students.'}</p>
+            {/* Since pass NJ every question starts on (Mikey: "give them the option to opt out when they visit the wonder questions page"). */}
+            <p data-wonder-card="" style={{ margin: '0 0 10px', fontSize: 15, textAlign: 'center' }}>{wonderOnCount(wonderReview) === 0 ? 'Off for every student. Turn them back on any time.' : wonderOnCount(wonderReview) < WONDER.length ? `${wonderOnCount(wonderReview)} of ${WONDER.length} on for your students.` : 'On for your students. Read any question, or turn off the ones you\'d rather\u00A0skip.'}</p>
             <div style={{ marginTop: 'auto' }}><Btn full kind="secondary" onClick={() => setScreen('wonder-review')} style={C.mode === 'dark' ? { background: '#695D98', color: '#FFFFFF', borderColor: '#695D98' } : null}>Wonder Questions</Btn></div>
           </div>
         )}

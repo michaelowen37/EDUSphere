@@ -5025,21 +5025,34 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
 
 // ---- 8. Wonder: open questions, never stored words, never graded ----
 {
-  const allApproved = L.WONDER.reduce((r, w) => L.approveWonder(r, w.id), L.emptyWonderReview());
-  ok('every course has a Wonder question once approved', L.COURSES.every((c) => L.wonderFor(c.id, 0, allApproved) !== null));
-  ok('nothing is offered to a student before somebody approves it', L.COURSES.every((c) => L.wonderFor(c.id, 0, L.emptyWonderReview()) === null));
-  ok('everything starts out awaiting review', L.wonderAwaitingReview(L.emptyWonderReview()) === L.WONDER.length);
-  ok('approving one leaves the rest waiting', L.wonderAwaitingReview(L.approveWonder(L.emptyWonderReview(), 'w-one-thing')) === L.WONDER.length - 1);
-  ok('an approved question can be withdrawn again', L.wonderFor('fractions-intro', 0, L.unapproveWonder(allApproved, 'w-one-thing')) === null);
-  const hiddenState = L.hideWonder(allApproved, 'w-one-thing');
-  ok('hiding a question also withdraws its approval', L.isWonderApproved(hiddenState, 'w-one-thing') === false && L.isWonderHidden(hiddenState, 'w-one-thing'));
-  ok('a hidden question is not counted as awaiting review', L.wonderAwaitingReview(hiddenState) === 0);
-  ok('a hidden question can be brought back for review', L.wonderAwaitingReview(L.restoreWonder(hiddenState, 'w-one-thing')) === 1);
+  // Since pass NJ every question starts on (Mikey: "I think I want the wonder questions pre-approved by default too so I don't need to
+  // describe to everyone how they need to go in and approve them in advance."); until then nothing was offered before approval.
+  const allApproved = L.emptyWonderReview();   // every question on, the state a new device starts with (its old name kept for the checks below)
+  ok('every course has a Wonder question from the start, with nothing approved first (pass NJ)', L.COURSES.every((c) => L.wonderFor(c.id, 0, L.emptyWonderReview()) !== null) && L.wonderOnCount(L.emptyWonderReview()) === L.WONDER.length);
+  ok('a missing or unreadable state means every question on, as a new device starts', L.COURSES.every((c) => L.wonderFor(c.id, 0, undefined) !== null) && L.isWonderOn(null, 'w-one-thing') && L.isWonderOn('nonsense', 'w-one-thing'));
+  const offOne = L.setWonderOn(L.emptyWonderReview(), 'w-one-thing', false);
+  ok('a question turned off reaches no student, and only it is off', !L.isWonderOn(offOne, 'w-one-thing') && L.wonderOnCount(offOne) === L.WONDER.length - 1 && L.WONDER.filter((w) => w.courseIds.includes('fractions-intro')).every((w) => w.id === 'w-one-thing' || L.isWonderOn(offOne, w.id)));
+  ok('a question turned off can be turned back on', L.isWonderOn(L.setWonderOn(offOne, 'w-one-thing', true), 'w-one-thing') && L.wonderOnCount(L.setWonderOn(offOne, 'w-one-thing', true)) === L.WONDER.length);
+  const allOffState = L.setAllWonder(offOne, false);
+  ok('turning them all off leaves none on, so nothing is offered, and a question added in a later update stays off with them', L.wonderOnCount(allOffState) === 0 && L.COURSES.every((c) => L.wonderFor(c.id, 0, allOffState) === null) && !L.isWonderOn(allOffState, 'w-a-question-from-a-later-update'));
+  const keepTwo = L.setWonderOn(L.setWonderOn(allOffState, 'w-one-thing', true), 'w-ants-elephant', true);
+  ok('with all off, a school can turn on just the few it wants', L.wonderOnCount(keepTwo) === 2 && L.isWonderOn(keepTwo, 'w-one-thing') && L.isWonderOn(keepTwo, 'w-ants-elephant') && L.wonderOnCount(L.setWonderOn(keepTwo, 'w-ants-elephant', false)) === 1);
+  // Since round one's code read a question turned off by name stays off until it is turned on by name: turning them all off and then
+  // all on (a mis-tap undone) brings back nothing the school turned off, where until then it started afresh with every question on;
+  // turning them all on clears only the questions turned on one by one while all were off. The fresh start, planted, is caught.
+  { const keepsOff = (setAll, setOne) => { const back = setAll(setAll(offOne, false), true); const offAgain = setOne(keepTwo, 'w-ants-elephant', false);
+      return !L.isWonderOn(back, 'w-one-thing') && L.wonderOnCount(back) === L.WONDER.length - 1 && L.wonderOnCount(L.setAllWonder(keepTwo, true)) === L.WONDER.length
+        && L.wonderOnCount(offAgain) === 1 && !L.isWonderOn(setAll(offAgain, true), 'w-ants-elephant') && L.wonderOnCount(setAll(offAgain, true)) === L.WONDER.length - 1; };
+    const freshAll = (r, on) => ({ version: 2, allOff: !on, hidden: [], shown: [] });
+    const freshOne = (r, id, on) => { const st = L.wonderReviewState(r); return st.allOff ? { ...st, shown: on ? [...new Set([...st.shown, id])] : st.shown.filter((x) => x !== id) } : { ...st, hidden: on ? st.hidden.filter((x) => x !== id) : [...new Set([...st.hidden, id])] }; };
+    ok('turning them all off and on keeps a question turned off by name off, and turning them all on clears only the ones turned on one by one (round one\'s code read; the fresh start of before it, planted, caught)',
+      keepsOff(L.setAllWonder, L.setWonderOn) && !keepsOff(freshAll, L.setWonderOn) && !keepsOff(L.setAllWonder, freshOne)); }
+  ok('a new question in a later update starts on for a school that has not turned them all off', L.isWonderOn(offOne, 'w-a-question-from-a-later-update'));
+  const v1 = { version: 1, approved: ['w-ants-elephant'], hidden: ['w-one-thing'] };
+  ok('a state saved before pass NJ keeps its removals and turns every other question on, its approvals deciding nothing now', !L.isWonderOn(v1, 'w-one-thing') && L.isWonderOn(v1, 'w-ants-elephant') && L.isWonderOn(v1, 'w-fell-off-bike') && L.wonderOnCount(v1) === L.WONDER.length - 1
+    && JSON.stringify(L.wonderReviewState(v1)) === JSON.stringify({ version: 2, allOff: false, hidden: ['w-one-thing'], shown: [] }));
   ok('questions run from the first met in pre-K to the last', L.wonderInOrder()[0].stage === 'early' && L.wonderInOrder().slice(-1)[0].stage === 'grown');
   ok('every question names a stage the platform knows', L.WONDER.every((w) => L.LIFE_STAGES.some((st) => st.id === w.stage)));
-  ok('approve all approves everything not removed', L.approveAllWonder(L.emptyWonderReview()).approved.length === L.WONDER.length);
-  ok('approve all leaves removed questions removed', L.approveAllWonder(hiddenState).approved.includes('w-one-thing') === false);
-  ok('un-approve all sends everything back to awaiting review and keeps removals', L.unapproveAllWonder(allApproved).approved.length === 0 && L.unapproveAllWonder(hiddenState).hidden.includes('w-one-thing'));
   { const done = ['colours', 'same-and-different', 'match-the-vehicles', 'match-the-things', 'match-the-water-animals', 'match-the-land-animals', 'match-the-shapes', 'match-the-solids', 'more-and-fewer-5', 'bigger-and-smaller', 'patterns', 'count-to-3', 'first-strokes', 'connect-the-dots', 'draw-the-shapes', 'taking-turns', 'big-bigger-biggest', 'helpers-all-around', 'feelings-show', 'how-friends-feel', 'good-friend', 'play-together', 'play-with-a-plan', 'say-it-to-fit'].map((id, i) => ({ type: 'attempt_completed', at: `u${i}`, startedAt: 'u', moduleId: id, seed: 1, core: [], review: null, coreCorrect: 5, coreTotal: 5 }));
     ok('finishing a course unlocks the next course up in that subject', JSON.stringify(L.coursesToUnlock([L.makeCoursesEnabledEvent(['first-steps-pk'], 't'), ...done])) === '["counting-k"]');
     ok('nothing unlocks while a course is unfinished', L.coursesToUnlock([L.makeCoursesEnabledEvent(['first-steps-pk'], 't'), ...done.slice(0, 2)]).length === 0); }
@@ -5054,7 +5067,7 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   ok('two rounds of the same module count as one module, so it is not yet due', L.nextWonder([pass('count-to-5', 't1'), pass('count-to-5', 't2')], 'counting-k', allApproved) === null);
   ok('after a failed round the reflection is about failure, feelings, or getting through', ['failure', 'feelings', 'ups-and-downs'].includes(L.nextWonder([failed('count-to-5', 't1'), failed('count-to-10', 't2')], 'counting-k', allApproved).theme));
   ok('a pre-reader only ever gets a question with its short spoken voices (four since pass MH)', Array.isArray(L.nextWonder(two, 'counting-k', allApproved, true).simple));
-  ok('nothing is due when nothing is approved', L.nextWonder(two, 'counting-k', L.emptyWonderReview()) === null);
+  ok('nothing is due when every question is turned off', L.nextWonder(two, 'counting-k', L.setAllWonder(L.emptyWonderReview(), false)) === null && L.nextWonder(two, 'counting-k', L.emptyWonderReview()) !== null);
   const first = L.nextWonder(two, 'counting-k', allApproved);
   const answered = [...two, L.makeWonderEvent(first.id, 'count-to-10', '2026-09-01T11:30:00.000Z', 20, 1)];
   ok('answering one resets the count', L.nextWonder(answered, 'counting-k', allApproved) === null);
@@ -5222,6 +5235,87 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
     ok('the right PIN opens the record and a wrong one does not', L.pinMatches(st, '4321') && !L.pinMatches(st, '0000') && L.pinMatches(L.findStudent(added, 'S-1042'), ''));
     ok('a PIN can be changed or removed, and Wonder switched back on', L.findStudent(L.setStudentPin(added, 'S-2', '9999'), 'S-2').pin === '9999' && L.findStudent(L.setStudentPin(added, 'S-2', null), 'S-2').pin === null && L.wonderOnFor(L.findStudent(L.setStudentWonder(added, 'S-2', true), 'S-2')));
     ok('Wonder questions are on for a student added without saying', L.wonderOnFor(L.findStudent(added, 'S-1042')));
+  }
+  // A student signed out after fifteen quiet minutes (pass NJ, Mikey: "Maybe we should have students auto-logged out after a period of
+  // inactivity kind of like the instructors?"): the rule in logic, at its edge, and the screens' use of it read from the screen code,
+  // each read caught on a copy of the code with its guard taken out (a plant), so a pin that cannot fail is never counted.
+  { const t = Date.parse('2026-11-12T18:00:00.000Z');
+    ok('a student is quiet too long at fifteen minutes and not a moment before, and a time that cannot be read or lies ahead counts as too long (pass NJ)',
+      L.STUDENT_IDLE_MS === 15 * 60 * 1000 && !L.studentIdleOver(t, t) && !L.studentIdleOver(t, t + L.STUDENT_IDLE_MS - 1) && L.studentIdleOver(t, t + L.STUDENT_IDLE_MS)
+      && L.studentIdleOver(NaN, t) && L.studentIdleOver(undefined, t) && L.studentIdleOver(t + 5, t) && L.studentIdleOver(t, NaN));
+    // Since round one's code read a clock moved back is not quiet: the count starts again from now (a clock set back five seconds had
+    // signed out a child mid-question), and a note a little ahead of the clock still brings its student back.
+    ok('a clock moved back starts the quiet again from now rather than counting as too long, and a later clock keeps the last activity (round one\'s code read)',
+      L.quietStart(t + 5000, t) === t && !L.studentIdleOver(L.quietStart(t + 5000, t), t) && L.quietStart(t, t + 60000) === t && L.quietStart(NaN, t) === t && L.studentIdleOver(L.quietStart(t, t + L.STUDENT_IDLE_MS), t + L.STUDENT_IDLE_MS));
+    ok('a where-note brings its student back only with a time under fifteen minutes old, or at most a minute ahead of the clock; a note with no time, as every note before pass NJ, brings no one back',
+      L.whereNoteFresh({ name: 'T1', screen: 'overview', at: t }, t + 14 * 60 * 1000) && !L.whereNoteFresh({ name: 'T1', screen: 'overview', at: t }, t + L.STUDENT_IDLE_MS)
+      && !L.whereNoteFresh({ name: 'T1', screen: 'overview' }, t) && !L.whereNoteFresh({ name: 'T1', screen: 'overview', at: null }, t) && !L.whereNoteFresh({ name: '', at: t }, t)
+      && !L.whereNoteFresh(null, t) && L.STUDENT_CLOCK_SLACK_MS === 60000 && L.whereNoteFresh({ name: 'T1', at: t + 30000 }, t) && L.whereNoteFresh({ name: 'T1', at: t + 60000 }, t)
+      && !L.whereNoteFresh({ name: 'T1', at: t + 60001 }, t) && !L.whereNoteFresh({ name: 'T1', at: 'yesterday' }, t));
+    // The student's screens, named one by one (since round one's code read the list is in logic, where a floor of fifteen let two drop
+    // unseen), and every screen the app has placed on exactly one of the student's list, the educator's (EDUCATOR_SCREENS in ui.jsx)
+    // and the list of screens neither clock runs on, so a new screen fails here until it is placed. Plants: coloring dropped, an
+    // educator screen added, and a new screen the screens use, each caught.
+    const ui = readFileSync('src/ui.jsx', 'utf8');
+    const STUDENT = ['overview', 'lesson', 'practice', 'story', 'map', 'result', 'quick-result', 'placement-result', 'light-review-result', 'checkpoint-result', 'course-done', 'course-story', 'wonder', 'wonder-voices', 'coloring', 'my-progress', 'writing-sent'];
+    const listIn = (src, name) => { const m = new RegExp(`const ${name} = (?:new Set\\()?\\[([^\\]]*)\\]`).exec(src); return m ? [...m[1].matchAll(/'([a-z-]+)'/g)].map((x) => x[1]) : null; };
+    const placed = (src, student, untimed) => {
+      const educator = listIn(src, 'EDUCATOR_SCREENS') || []; const where = listIn(src, 'WHERE_SCREENS') || [];
+      const used = [...new Set([...src.matchAll(/screen [!=]== '([a-z0-9-]+)'|setScreen\('([a-z0-9-]+)'\)/g)].map((m) => m[1] || m[2]))];
+      const homes = (n) => [student.includes(n), educator.includes(n), Object.prototype.hasOwnProperty.call(untimed, n)].filter(Boolean).length;
+      return { named: JSON.stringify(student) === JSON.stringify(STUDENT), where: where.every((x) => student.includes(x)), once: used.length >= 30 && used.every((n) => homes(n) === 1) && [...student, ...educator, ...Object.keys(untimed)].every((n) => homes(n) === 1), used: used.length };
+    };
+    const pl = placed(ui, L.STUDENT_SCREENS, L.UNTIMED_SCREENS);
+    const plantsMissed = [
+      ['coloring dropped from the student list', placed(ui, L.STUDENT_SCREENS.filter((x) => x !== 'coloring'), L.UNTIMED_SCREENS), 'named'],
+      ['an educator screen among the student screens', placed(ui, [...L.STUDENT_SCREENS, 'wonder-review'], L.UNTIMED_SCREENS), 'once'],
+      ['a new screen the screens use and no list names', placed(ui + "\nsetScreen('a-new-screen');", L.STUDENT_SCREENS, L.UNTIMED_SCREENS), 'once'],
+    ].filter(([, got, key]) => got[key]).map(([name]) => name);
+    ok(`the student's clock runs on the seventeen student screens, named one by one, and every one of the ${pl.used} screens the app uses is on exactly one of the student's list, the educator's and the list of screens neither clock runs on, each with its reason (round one's code read; three plants caught)`,
+      pl.named && pl.where && pl.once && L.isStudentScreen('coloring') && !L.isStudentScreen('welcome') && Object.values(L.UNTIMED_SCREENS).every((why) => typeof why === 'string' && why.length > 10) && plantsMissed.length === 0,
+      JSON.stringify({ ...pl, plantsMissed }));
+    const reads = (src) => {
+      const effect = (src.split('const studentQuietSince = useRef(Date.now());')[1] || '').split('}, [onStudentScreen, tourStep, record && record.name]);')[0];
+      const signOut = (/const signOutIdle = \(\) => \{([\s\S]*?)\n    \};/.exec(effect) || [, ''])[1];
+      const hold = (/const holdClick = \(kind\) => \{([\s\S]*?)\n    \};/.exec(effect) || [, ''])[1];
+      return {
+        firstLoad: /const where = whereAtStart && whereNoteFresh\(whereAtStart, Date\.now\(\)\) \? whereAtStart : null;\s*if \(whereAtStart && !where\) saveWhere\(null\);/.test(src),
+        noteTime: /saveWhere\(\{ name: record\.name, screen, at: Date\.now\(\),/.test(src),
+        notWalkThrough: /const onStudentScreen = !!\(record && !record\.preview && isStudentScreen\(screen\)\);/.test(src),
+        noBackup: signOut.includes("setScreen('welcome')") && !/autoBackup/.test(signOut),
+        checks: /studentIdleOver\(studentQuietSince\.current, t\)/.test(effect) && /setInterval\(/.test(effect) && /visibilitychange/.test(effect) && /holdClick\(e\.type\); \} signOutIdle\(\); return;/.test(effect),
+        liveFirst: /const touch = \(e\) => \{\n\s*if \(!live\) return;/.test(effect),
+        heldButScroll: /const held = !!e && e\.type !== 'scroll'; if \(held\) \{/.test(effect),
+        stopsPress: /if \(held\) \{ if \(e\.type === 'pointerdown' \|\| e\.type === 'keydown'\) \{ if \(e\.cancelable\) e\.preventDefault\(\); e\.stopPropagation\(\); \} holdClick\(e\.type\);/.test(effect),
+        walkThroughResult: /nextWonder\(record\.events, mod\.courseId, previewReview\(\)\) && <WonderButton onClick=\{\(\) => \{ setWonder\(nextWonder\(record\.events, mod\.courseId, previewReview\(\)\)\);/.test(src),
+        noteGuard: /let noteWritten = 0;/.test(effect) && /if \(t >= noteWritten && t - noteWritten < STUDENT_NOTE_EVERY_MS\) return;/.test(effect),
+        clockBack: /studentQuietSince\.current = quietStart\(studentQuietSince\.current, t\); return tourStep < 0 && studentIdleOver/.test(effect),
+        tourPause: /return tourStep < 0 && studentIdleOver\(/.test(effect) && /if \(tourStep >= 0\) \{ studentQuietSince\.current = Date\.now\(\); return; \}/.test(effect),
+        holdTillClick: /const stop = \(ev\) => \{ ev\.preventDefault\(\); ev\.stopPropagation\(\); off\(\); \};/.test(hold) && /setTimeout\(off, 400\)/.test(hold) && /const press = \(\) => \{ if \(pressed\) return; pressed = true; clearTimeout\(cap\); window\.addEventListener\('pointerup', up, true\); window\.addEventListener\('pointercancel', up, true\); cap = setTimeout\(off, 3000\); \};/.test(hold) && /if \(kind === 'pointerdown'\) press\(\); else \{ window\.addEventListener\('pointerdown', press, true\); cap = setTimeout\(off, 800\); \}/.test(hold) && /window\.removeEventListener\('pointerdown', press, true\)/.test(hold) && !/setTimeout\(\(\) => window\.removeEventListener\('click'/.test(hold),
+      };
+    };
+    const as = reads(ui);
+    ok('the screens use the rule: the first load brings back only a fresh note and erases a stale one, the note carries its time, read from storage only every thirty seconds, a walk-through is never signed out and its result screen shows every Wonder question, the idle sign-out saves no backup file, it checks on a timer, as the page comes back into view and at the first touch, a clock moved back starts the count again, the first week tour pauses it, every waking event but a scroll is held, a press until its click or a moment after it lifts or is cancelled and anything else 800 ms unless a press begins inside them, the waking press and key stopped where they land, and nothing is heard after the sign-out (pass NJ; the reads after the first five since rounds one to three)',
+      Object.values(as).every(Boolean), JSON.stringify(as));
+    const planted = [
+      ['the first load without the freshness check', ui.replace('const where = whereAtStart && whereNoteFresh(whereAtStart, Date.now()) ? whereAtStart : null;', 'const where = whereAtStart;'), 'firstLoad'],
+      ['a note saved with no time', ui.replace('saveWhere({ name: record.name, screen, at: Date.now(),', 'saveWhere({ name: record.name, screen,'), 'noteTime'],
+      ['a walk-through signed out', ui.replace('const onStudentScreen = !!(record && !record.preview && isStudentScreen(screen));', 'const onStudentScreen = !!(record && isStudentScreen(screen));'), 'notWalkThrough'],
+      ['a backup saved on the idle sign-out', ui.replace("hushSpeech(); setScreen('welcome');   // the welcome screen erases", "hushSpeech(); autoBackup('sign-out'); setScreen('welcome');   // the welcome screen erases"), 'noBackup'],
+      ['the waking touch let through', ui.replace('holdClick(e.type); } signOutIdle(); return;', '} signOutIdle(); return;'), 'checks'],
+      ['a touch heard after the sign-out', ui.replace('const touch = (e) => {\n      if (!live) return;\n', 'const touch = (e) => {\n'), 'liveFirst'],
+      ['a press alone held, a mouse\'s first move let through (round two\'s code read)', ui.replace("const held = !!e && e.type !== 'scroll'; if (held) {", "const held = !!e && (e.type === 'pointerdown' || e.type === 'keydown'); if (held) {"), 'heldButScroll'],
+      ['every hold three seconds, a key\'s too (round two\'s code read)', ui.replace("if (kind === 'pointerdown') press(); else { window.addEventListener('pointerdown', press, true); cap = setTimeout(off, 800); }", 'press();'), 'holdTillClick'],
+      ['a press begun inside a key\'s or a move\'s hold let through once the 800 ms are over (round three\'s code read)', ui.replace("else { window.addEventListener('pointerdown', press, true); cap = setTimeout(off, 800); }", 'else cap = setTimeout(off, 800);'), 'holdTillClick'],
+      ['the waking press itself let through to what stands under it (round three\'s code read)', ui.replace("if (e.type === 'pointerdown' || e.type === 'keydown') { if (e.cancelable) e.preventDefault(); e.stopPropagation(); } holdClick(e.type);", 'holdClick(e.type);'), 'stopsPress'],
+      ['the walk-through\'s result screen reading the school\'s Wonder state', ui.replace('nextWonder(record.events, mod.courseId, previewReview()) && <WonderButton onClick={() => { setWonder(nextWonder(record.events, mod.courseId, previewReview()));', 'nextWonder(record.events, mod.courseId, wonderReview) && <WonderButton onClick={() => { setWonder(nextWonder(record.events, mod.courseId, wonderReview));'), 'walkThroughResult'],
+      ['the note read from storage on every tap', ui.replace('if (t >= noteWritten && t - noteWritten < STUDENT_NOTE_EVERY_MS) return; ', ''), 'noteGuard'],
+      ['a clock moved back counted as quiet', ui.replace('studentQuietSince.current = quietStart(studentQuietSince.current, t); return tourStep', 'return tourStep'), 'clockBack'],
+      ['the tour not pausing the clock', ui.replace('return tourStep < 0 && studentIdleOver(', 'return studentIdleOver(').replace('if (tourStep >= 0) { studentQuietSince.current = Date.now(); return; } if (quietTooLong())', 'if (quietTooLong())'), 'tourPause'],
+      ['the hold ended 800 ms after the press', ui.replace(/const holdClick = \(kind\) => \{[\s\S]*?\n    \};/, "const holdClick = (kind) => { const stop = (ev) => { ev.preventDefault(); ev.stopPropagation(); }; window.addEventListener('click', stop, true); setTimeout(() => window.removeEventListener('click', stop, true), 800);\n    };"), 'holdTillClick'],
+    ];
+    const missed = planted.filter(([, src, key]) => src === ui || reads(src)[key]).map(([name]) => name);
+    ok(`each of the thirteen reads above fails on a copy of the screen code with its guard taken out (${planted.length} plants, each one changing the code)`, missed.length === 0 && planted.length === 15 && Object.keys(as).length === 13, missed.join('; '));
   }
   // My Classroom order: youngest band first, then by name, unless an educator has dragged the cards.
   { const mk = (label, level, order) => ({ id: label.toLowerCase(), label, level, active: true, ...(order === undefined ? {} : { order }) });
@@ -5898,7 +5992,19 @@ ok('reset: history kept, but nothing counts as mastered afterwards', events.leng
   const merged = L.mergeBackup(later, file);
   ok('restoring an old backup never loses newer work', merged.records[0].events.length === 2);
   ok('restoring twice adds nothing twice', L.mergeBackup(merged, file).records[0].events.length === 2);
-  ok('educator settings take the union', L.mergeBackup({ ...empty, wonderReview: L.approveWonder(L.emptyWonderReview(), 'w-one-thing') }, file).wonderReview.approved.includes('w-one-thing'));
+  ok('educator settings take the union: a question turned off on either side stays off (pass NJ, every question on unless turned off)', !L.isWonderOn(L.mergeBackup({ ...empty, wonderReview: L.setWonderOn(L.emptyWonderReview(), 'w-one-thing', false) }, file).wonderReview, 'w-one-thing') && L.isWonderOn(L.mergeBackup(empty, file).wonderReview, 'w-one-thing'));
+  { const off = L.setAllWonder(L.emptyWonderReview(), false); const keep = L.setWonderOn(off, 'w-ants-elephant', true);
+    const fileOff = { ...file, wonderReview: keep }; const hereOneOff = L.setWonderOn(L.emptyWonderReview(), 'w-ants-elephant', false);
+    ok('a backup that turned them all off keeps them off when restored, but the questions it turned on, less any this device turned off (pass NJ)',
+      L.wonderOnCount(L.mergeBackup(empty, fileOff).wonderReview) === 1 && L.isWonderOn(L.mergeBackup(empty, fileOff).wonderReview, 'w-ants-elephant') && L.wonderOnCount(L.mergeBackup({ ...empty, wonderReview: hereOneOff }, fileOff).wonderReview) === 0
+      && L.wonderOnCount(L.mergeBackup({ ...empty, wonderReview: L.setWonderOn(off, 'w-one-thing', true) }, fileOff).wonderReview) === 2);
+    // Since round one's code read: the mirror case, this device all off and a backup with every question on, stays off; and a question
+    // either side turned off by name stays off once all are turned on again after the restore (the merge had kept no removals with
+    // all off).
+    ok('a device that turned them all off stays off when a backup with every question on is restored, and a question either side turned off by name stays off when all are turned on again (round one\'s code read)',
+      L.wonderOnCount(L.mergeBackup({ ...empty, wonderReview: off }, file).wonderReview) === 0 && L.wonderOnCount(L.mergeBackup({ ...empty, wonderReview: off }, { ...file, wonderReview: L.emptyWonderReview() }).wonderReview) === 0
+      && !L.isWonderOn(L.setAllWonder(L.mergeBackup({ ...empty, wonderReview: hereOneOff }, fileOff).wonderReview, true), 'w-ants-elephant')
+      && L.wonderOnCount(L.setAllWonder(L.mergeBackup({ ...empty, wonderReview: hereOneOff }, fileOff).wonderReview, true)) === L.WONDER.length - 1); }
   ok('days since backup is counted in whole days', L.daysSinceBackup('2026-09-01T00:00:00.000Z', '2026-09-04T12:00:00.000Z') === 3 && L.daysSinceBackup(null, 'now') === null);
   // A backup proves ownership of the classroom, which is what a PIN reset requires
   const code = L.makeRecoveryCode(12345);
@@ -7915,7 +8021,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
 // a row, reframing failure and handling feelings come first, even ahead of questions never seen; never a third time;
 // and every stage holds more than enough, even for a student who struggles often.
 {
-  const approvedAll = L.approveAllWonder(L.emptyWonderReview());
+  const approvedAll = L.emptyWonderReview();   // every question on (pass NJ; the name from when every question had to be approved)
   const at = (h) => `2026-09-01T${String(h).padStart(2, '0')}:00:00.000Z`;
   const round = (id, h, correctFlags) => ({ type: 'attempt_completed', at: at(h), startedAt: at(h), moduleId: id, seed: 1, core: correctFlags.map((c) => ({ correct: c })), review: null, coreCorrect: correctFlags.filter(Boolean).length, coreTotal: correctFlags.length });
   const good = [true, true, true, true, true];
@@ -7933,7 +8039,7 @@ ok('older students get longer rounds at the same bar', L.moduleRules('fraction-m
   const calm = [round('count-to-5', 2, good), round('count-to-10', 3, good)];
   ok('with no rough patch, the rotation is unchanged and a question is still due after two modules', L.nextWonder(calm, 'counting-k', approvedAll) !== null);
   const twice = (w) => [L.makeWonderEvent(w.id, 'm', at(1), 30, 5), L.makeWonderEvent(w.id, 'm', at(2), 30, 5)];
-  const onlyOne = { version: 1, approved: ['w-fell-off-bike'], hidden: [] };
+  const onlyOne = L.setWonderOn(L.setAllWonder(L.emptyWonderReview(), false), 'w-fell-off-bike', true);   // all off but one (pass NJ)
   ok('a question answered twice is never offered a third time', L.nextWonder([...twice({ id: 'w-fell-off-bike' }), round('count-to-5', 3, good), round('count-to-10', 4, failedRound)], 'counting-k', onlyOne) === null);
   // Enough for years: at one reflection per two modules, each stage's pool (each question twice) covers the stage half
   // again, and its failure and feelings questions alone cover three reflections in four.

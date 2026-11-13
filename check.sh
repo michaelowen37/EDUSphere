@@ -118,10 +118,11 @@ echo "13l/13 every drawing on the dark theme's lesson paper, at its edge"; run "
 # every screen where the cue shows: about four and a half minutes alone, and since round one's screen read, which added the feedback read
 # every frame with the motion on and Say it again, about five and a half (330 seconds beside four readers; 278 alone since the third read's phone turned during a wobble), so its limit was eleven. Since pass NF (EARMARKS A99 and A103) it reads
 # every read-aloud course's lines, the story pages with no voice and three with the voice, the questions before a pick, the say-along word
-# and the long pairs too: 369 seconds alone on pass NF's merged copy (379 on the engineer's), so its limit is 760, about twice.
+# and the long pairs too: 369 seconds alone on pass NF's merged copy (379 on the engineer's), so its limit was 760, about twice. Pass NJ's
+# run took 510 of the 760 (its NOTE), so its limit is 1020, about twice that.
 # Since pass NH the cue's words keep their whole log in /tmp/edu_cue_words.log, as the click-through does, since check.sh's first run of
 # that pass ended 48 passed, 1 failed here, with the failing check's own line lost to tail, and the step run alone passed all 49.
-echo "13m/13 no word under the scroll cue on a short phone, in both themes"; run "the cue's words" 760 node tests/e2e/cue-words.mjs > /tmp/edu_cue_words.log 2>&1; tail -1 /tmp/edu_cue_words.log | tee /tmp/edu_cuewords.txt; grep -q " 0 failed" /tmp/edu_cuewords.txt || fail=1
+echo "13m/13 no word under the scroll cue on a short phone, in both themes"; run "the cue's words" 1020 node tests/e2e/cue-words.mjs > /tmp/edu_cue_words.log 2>&1; tail -1 /tmp/edu_cue_words.log | tee /tmp/edu_cuewords.txt; grep -q " 0 failed" /tmp/edu_cuewords.txt || fail=1
 # The grown-up's card on a device with no voice (Q91, Mikey's answer in pass NG: "Q91 - A"): the 24 letters banks show a card with the
 # words to say until Ready, the words and the answers never on the screen together, in both themes, and at 320 by 568 (323 seconds alone
 # after pass NG's round two, so its limit was 660). Since the third read it walks a phone held sideways too and sweeps the which-sound
@@ -135,6 +136,12 @@ echo "13n/13 the grown-up's card on a device with no voice, in both themes"; run
 # start, never when it can, and nothing in the page newer than the browsers the note names (204 seconds beside the rules test after pass
 # NG's round two, so its limit is 420, about twice).
 echo "13o/13 a browser too old for the app sees a note, and the page uses nothing newer than it names"; run "the too-old note" 420 node tests/e2e/too-old.mjs 2>&1 | tail -1 | tee /tmp/edu_old.txt; grep -q " 0 failed" /tmp/edu_old.txt || fail=1
+# A student signed out after fifteen quiet minutes (pass NJ, Mikey: "Maybe we should have students auto-logged out after a period of
+# inactivity kind of like the instructors?"): a browser opened again within fifteen minutes brings the student back and after them does
+# not, a note with no time brings no one back, and while the page is open the quiet minutes end the session on the next check, a tap
+# starts them again, a page brought back into view ends it at once and the waking touch does nothing else. About a minute and a half
+# alone, so its limit of four minutes is about twice its time beside another step.
+echo "13p/13 a student signed out after fifteen quiet minutes"; run "the idle sign-out" 240 node tests/e2e/idle-signout.mjs 2>&1 | tail -1 | tee /tmp/edu_idle.txt; grep -q " 0 failed" /tmp/edu_idle.txt || fail=1
 # A step stopped at its limit, or one past two thirds of it (run and slow, above), is named again here, just before the verdict.
 [ -s "$slow_file" ] && cat "$slow_file"
 if [ "$fail" = 0 ]; then echo "ALL CHECKS PASSED"; else echo "CHECKS FAILED - read the lines above"; exit 1; fi

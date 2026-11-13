@@ -16,7 +16,7 @@
 // of takes tools/audio-generate.mjs asks for.
 // Run: node tools/audio-ledger.mjs > docs/AUDIO-LEDGER.md   (it also writes docs/AUDIO-LEDGER.csv, which tools/audio-generate.mjs reads)
 import { writeFileSync } from 'node:fs';
-import { COURSES, readAloudScript, SENTENCE_BREAK, GAMES, gameIntro, gameBand, cheerTagged, sayAlongParts, storyTitleSpoken, mannerOf, VOICE_MANNERS, speechPieces, SOUND_RECORDINGS, SPEECH_SOUNDS, TRIAL_SOUNDS, SAY_ALONG_VOICES, soundOfNotation, VOICE_SOUNDS, ipaQuoted, goalTag, SOUND_GOAL_TAGS, BEAT_RUNS, NS_PAIRS, VOWEL_WORDS, namesWordSounds, ONE_BREATH_LESSONS } from '../src/logic.mjs';
+import { COURSES, COURSE_GAMES, readAloudScript, SENTENCE_BREAK, GAMES, gameIntro, gameBand, cheerTagged, sayAlongParts, storyTitleSpoken, mannerOf, VOICE_MANNERS, speechPieces, SOUND_RECORDINGS, SPEECH_SOUNDS, TRIAL_SOUNDS, SAY_ALONG_VOICES, soundOfNotation, VOICE_SOUNDS, ipaQuoted, goalTag, SOUND_GOAL_TAGS, BEAT_RUNS, NS_PAIRS, VOWEL_WORDS, namesWordSounds, ONE_BREATH_LESSONS } from '../src/logic.mjs';
 // The voice's own sounds' symbols live in logic.mjs since round one's code check (one source); the ledger keeps its old export.
 export { VOICE_SOUNDS };
 import { STORIES, COURSE_STORIES, MASTERY_STORIES } from '../src/stories.mjs';
@@ -413,6 +413,23 @@ const restedLine = (say) => sentencesOf(say).map(cheerTagged).join(' [pause] ');
     if (r.kind === 'sound effect') add(`sound-${name}`, 'sound effect', 'sounds', 'PK3', r.text, '', 'sounds', r.heard, { voice: 'none', seconds: r.seconds, influence: r.influence, takes: r.takes });
     else add(`sound-${name}`, 'speech sound', 'sounds', 'PK3', r.text, '', 'sounds', `${r.heard}${goalSaid('sound-' + name, false)} If no take says it right, record it yourself and turn it into the lesson voice with ElevenLabs' Voice Changer (EARMARKS A41).`, { takes: r.takes });
   } }
+// The two builds (pass NJ), as the art ledger's (tools/prompts-csv.mjs). Mikey, opening pass NJ: "When we get all the way through 1st
+// grade, I want to start work on the illustrations from Leonardo (stories, coloring pages, lessons etc) and Sound from Eleven Labs for
+// everything spanning prek3 to 1st." and "So maybe we need to reorganize the ledgers containing the illustrations/sounds to reflect these
+// changes so that I can prioritize the early learning designs/sounds and access them easily." In plain terms: build 1 is every clip a
+// child in pre-K 3 to grade 1 can hear (their courses' lessons, stories and long stories, the welcomes of every game they can play, and
+// the app's own sounds), recorded first; build 2 is the rest, grade 2 and up. A whole group goes in one build, so the clips of a story or
+// a game's welcome stay side by side and keep their neighbors' words (tools/audio-generate.mjs stitches a clip to the clips beside it
+// in its group): a game's group goes in build 1 when any line in it is said by a game a young child can play. The rows run build 1 first,
+// each build in the order the ledger has always had, and the build is the CSV's last column; tools/audio-generate.mjs --build 1 makes
+// build 1 alone.
+export const EARLY_GRADES = ['PK3', 'PK4', 'K', '1'];
+const gradeOfCourse = (id) => { const c = COURSES.find((x) => x.id === id); return c ? String(c.grade) : null; };
+export const earlyGame = (g) => !g.minGrade || EARLY_GRADES.includes(String(g.minGrade)) || Object.entries(COURSE_GAMES).some(([cid, ids]) => ids.includes(g.id) && EARLY_GRADES.includes(gradeOfCourse(cid)));
+{ const earlyLines = new Set(); for (const g of GAMES) if (earlyGame(g)) for (const line of gameIntro(g)) earlyLines.add(line.key);
+  const early = new Set(rows.filter((r) => (r.kind === 'speech sound' || r.kind === 'sound effect') || (/^game welcome/.test(r.kind) ? earlyLines.has(r.key) : EARLY_GRADES.includes(r.grade))).map((r) => r.group));
+  for (const r of rows) r.build = early.has(r.group) ? 1 : 2;
+  rows.sort((a, b) => a.build - b.build); }   // a stable sort: each build keeps the ledger's own order
 const csv = (v) => `"${String(v).replace(/"/g, '""')}"`;
 // The app's own sounds as a table for the markdown, one row each.
 const soundTable = () => rows.filter((r) => r.kind === 'speech sound' || r.kind === 'sound effect').map((r) => '| ' + [r.key, r.kind, r.text.replace(/\|/g, '/'), r.description.replace(/\|/g, '/'), r.seconds || 'as said', r.takes].join(' | ') + ' |').join('\n');
@@ -420,7 +437,8 @@ const soundTable = () => rows.filter((r) => r.kind === 'speech sound' || r.kind 
 // one's words stayed in it after the lessons changed, and tools/audio-generate.mjs records from it). It writes only when run alone,
 // read by its own name with endsWith, so a folder with a space in its path still works and an import writes nothing.
 // Since pass MW four more columns follow the text: the description, and a sound's seconds, influence and takes (empty elsewhere).
-export const LEDGER_CSV = ['key,kind,source,grade,voice,group,characters,text,description,seconds,influence,takes', ...rows.map((r) => [r.key, r.kind, r.source, r.grade, r.voice, r.group, r.text.length, r.text, r.description, r.seconds, r.influence, r.takes].map(csv).join(','))].join('\n') + '\n';
+// Since pass NJ a thirteenth column, the build, comes last, so every column a reader finds by its place keeps it.
+export const LEDGER_CSV = ['key,kind,source,grade,voice,group,characters,text,description,seconds,influence,takes,build', ...rows.map((r) => [r.key, r.kind, r.source, r.grade, r.voice, r.group, r.text.length, r.text, r.description, r.seconds, r.influence, r.takes, r.build].map(csv).join(','))].join('\n') + '\n';
 const runAlone = !!process.argv[1] && process.argv[1].endsWith('audio-ledger.mjs');
 if (runAlone) writeFileSync(new URL('../docs/AUDIO-LEDGER.csv', import.meta.url), LEDGER_CSV);
 const longest = Math.max(...rows.map((r) => r.text.length));
@@ -438,12 +456,21 @@ Generated ${new Date().toLocaleDateString('en-CA', { timeZone: 'America/Chicago'
 The quickest way is one command. tools/audio-generate.mjs reads the CSV and, for each clip not yet in audio/, asks Eleven v4 (model eleven_v4) to speak the tagged words, passing the words before and after (previous_text and next_text) so a story sounds like one steady telling, and saves audio/<key>.mp3. It skips clips that already exist, so it can be stopped and started again. The app plays recorded clips in place of the device voice as soon as every clip of a story or lesson line is present; until then it keeps the device voice.
 
     ELEVENLABS_API_KEY=your-key node tools/audio-generate.mjs --voice <voice id> --voice-young <voice id for pre-K to grade 2>
-    (add --only S95 for one story, --limit 50 to try a few, --dry-run to see what would be sent, --model to name another speech
-    model, which takes no neighbors' words if it is eleven_v3, and --sfx-model to name another sound effects model)
+    (add --build 1 for the early build alone, pre-K 3 to grade 1, --only S95 for one story, --limit 50 to try a few, --dry-run to see
+    what would be sent, --model to name another speech model, which takes no neighbors' words if it is eleven_v3, and --sfx-model to
+    name another sound effects model)
 
 Pasting into the ElevenLabs app works too, clip by clip, with Eleven v4 chosen as the model and the text column as written (older models, such as Multilingual v2 and Flash and Turbo v2.5, do not read the bracketed tags), and each file saved as <key>.mp3.
 
 The app's own sounds are rows too (since pass MW, below): \`--only sounds\` makes them alone, a few takes of each in audio/takes (<key>-1.mp3 and on), and the take that sounds right is copied to audio/<key>.mp3, the name the app will look for. A speech sound is spoken by the young voice from its phonetic symbols; a sound effect is made by ElevenLabs' sound effects (model eleven_text_to_sound_v3, or another with --sfx-model) from its text, a prompt describing the sound, for its seconds and influence, never sent to the voice; its description says what to listen for and is never sent.
+
+## The two builds (pass NJ)
+
+Mikey, opening pass NJ: "When we get all the way through 1st grade, I want to start work on the illustrations from Leonardo (stories, coloring pages, lessons etc) and Sound from Eleven Labs for everything spanning prek3 to 1st." So the ledger comes in two builds, as the art ledger does (docs/LEONARDO-PROMPTS-EARLY.csv): build 1, every clip a child in pre-K 3 to grade 1 can hear, recorded first; build 2, grade 2 and up, after those grades' review. The CSV runs build 1 first, its last column names each row's build, and \`--build 1\` makes build 1 alone. A story, a lesson or a game's welcome stays whole in one build, so its clips keep their neighbors' words.
+
+| Build | What it holds | Clips | Characters |
+|---|---|---|---|
+${[1, 2].map((b) => { const rs = rows.filter((r) => r.build === b); return `| ${b} | ${b === 1 ? 'Pre-K 3 to grade 1: their lessons, stories and long stories, the welcomes of every game they can play, and the app\'s own sounds' : 'Grade 2 and up'} | ${rs.length} | ${rs.reduce((a, r) => a + r.text.length, 0).toLocaleString('en-US')} |`; }).join('\n')}
 
 ## Emphasis, sounds and descriptions (pass MW)
 

@@ -25,7 +25,7 @@
 // names those words as the only writing (SCENE_WORDS_BAN, sceneWords). Q44, "run the trial, then move them if they pass": five
 // coloring pages are painted first on Nano Banana 2.1 and on Lucid Origin, and the coloring pages move to Lucid Origin, painted
 // last, unless the trial fails (COLORING_TRIAL, modelFor, trialRows).
-// Run: node tools/prompts-csv.mjs > docs/LEONARDO-PROMPTS.csv
+// Run: node tools/prompts-csv.mjs > docs/LEONARDO-PROMPTS.csv, and since pass NJ node tools/prompts-csv.mjs --build 1 > docs/LEONARDO-PROMPTS-EARLY.csv
 import { readFileSync } from 'node:fs';
 import { MODULES, getCourse, GRADES, gradeLabel, MAPS } from '../src/logic.mjs';
 import { levelOf } from './coloring-levels.mjs';
@@ -285,27 +285,59 @@ export function gradeOfWhere(where) {
 // grade 2 and then the letter pages, since Relaxed Generation covers them only once the tokens are spent; and the group of
 // pictures with no grade is named for what is left in it.
 export const COLORING_LEVEL_ORDER = ['PK3', 'PK4', 'K', '1', '2', 'L'];
-export function coloringGroupName() {
-  const kinds = Object.keys(COLORING_TRIAL).filter((k) => COLORING_TRIAL[k] !== 'failed');
+export function coloringGroupName(build = 1) {
+  // Since pass NJ by build: the letter pages are build 1's, so build 2's group names the coloring pages alone.
+  const kinds = Object.keys(COLORING_TRIAL).filter((k) => COLORING_TRIAL[k] !== 'failed' && (build === 1 || k === 'pages'));
   const what = kinds.length === 2 ? 'Coloring and letter pages' : kinds[0] === 'letters' ? 'Letter pages' : 'Coloring pages';
   return `${what} on ${COLORING_MODEL}, painted last${kinds.some((k) => COLORING_TRIAL[k] === 'waiting') ? ' once the trial passes' : ''} (Q44)`;
 }
-export function noGradeGroupName() {
-  const left = [COLORING_TRIAL.pages === 'failed' && "Let's Color drawing pages", COLORING_TRIAL.letters === 'failed' && 'letter pages', 'maps', COLORING_TRIAL.pages === 'failed' && 'the star'].filter(Boolean);
-  return left.length === 1 ? 'No grade: the maps' : `No grade: ${listOf(left)}`;
+export function noGradeGroupName(build = 2) {
+  // Since pass NJ by build: build 1's holds the Let's Color drawing pages, the letter pages and the star only if their trial fails
+  // (until then they are painted on Lucid Origin, last), and build 2's the maps. The Wonder portraits sit in their persons' groups,
+  // so no group of what has no grade names them (round one's code read).
+  const pages = COLORING_TRIAL.pages === 'failed'; const letters = COLORING_TRIAL.letters === 'failed';
+  const left = build === 1 ? [pages && "Let's Color drawing pages", letters && 'letter pages', pages && 'the star'] : ['maps'];
+  const list = left.filter(Boolean);
+  return list.length === 0 ? 'No grade' : list.length === 1 ? `No grade: ${list[0]}` : `No grade: ${listOf(list)}`;
+}
+// Since pass NJ the spreadsheet comes in two builds (Mikey, opening pass NJ: "When we get all the way through 1st grade, I want to start
+// work on the illustrations from Leonardo (stories, coloring pages, lessons etc) and Sound from Eleven Labs for everything spanning
+// prek3 to 1st." ... "So maybe we need to reorganize the ledgers containing the illustrations/sounds to reflect these changes so that I
+// can prioritize the early learning designs/sounds and access them easily.  We can still develop the core characters reference images
+// (including Savanah with her two kids Jaxon and Harlow) in these beginning image builds too (just to ensure we can have proper
+// reference images for later)." ... "Just the reference image for older versions is adequate for now so I can feed it back into
+// Leonardo when I need to later."). In plain terms: build 1 is everything pre-K 3 to grade 1 shows, painted first so young learners can
+// try the app, and it opens with every character reference of all seven people at every age, the older ones too, so the young and
+// old looks are made in one sitting and one style; build 2, grade 2 and up, is painted after those grades' review, as planned before.
+// Inside each build the order is his of pass MK: the coloring trial first while it waits (build 1), each person's references and then
+// the pictures with that person alone, person by person; the pictures with two or more of the cast; the rest by grade; what has no
+// grade; and the coloring pages on Lucid Origin last. A row's build: a character sheet or a Wonder portrait, 1 (the voices speak from
+// pre-K 3 up); a map, 2 (the map games start at grade 3); a lesson's, a story's or a long story's, its course's grade; and every Let's
+// Color drawing page, letter page and the star, 1, since a page opens for each lesson passed (coloringUnlocked) and pre-K 3 and pre-K 4
+// hold more lessons than Let's Color has pages, so a child opens every one before grade 2 (round one's code read: the last four drawing
+// pages, at grade 2's style level, had gone to build 2; the ledger test reads the pages against the lessons). docs/LEONARDO-PROMPTS.csv holds
+// both builds, numbered through, and docs/LEONARDO-PROMPTS-EARLY.csv build 1 alone, with the same numbers (--build 1).
+export const EARLY_GRADES = ['PK3', 'PK4', 'K', '1'];
+export const BUILDS = { 1: 'Build 1: pre-K 3 to grade 1, with every character reference', 2: 'Build 2: grade 2 and up' };
+export function buildOf(r) {
+  if (/^[CU]\d/.test(r.serial)) return 1;
+  if (/^M\d/.test(r.serial)) return 2;
+  if (r.grade) return EARLY_GRADES.includes(String(r.grade)) ? 1 : 2;
+  return 1;   // a Let's Color drawing page, a letter page or the star: every one opens before grade 2
 }
 export function generationOrder(rows) {
   const people = (r) => [...new Set(r.refs.map(personOf).filter(Boolean))];
   const gradeAt = (r) => { const i = GRADES.indexOf(String(r.grade)); return i < 0 ? GRADES.length : i; };
   const keyed = rows.map((r) => {
-    if (onLucid(r.serial)) return { r, g: 2 * CAST_ORDER.length + 3, sub: COLORING_LEVEL_ORDER.indexOf(pageLevel(r.serial, r.where)), group: coloringGroupName() };
+    const build = buildOf(r);
+    if (onLucid(r.serial)) return { r, build, g: 2 * CAST_ORDER.length + 3, sub: COLORING_LEVEL_ORDER.indexOf(pageLevel(r.serial, r.where)), group: coloringGroupName(build) };
     const self = /^C\d/.test(r.serial) ? personOf(r.serial) : null; const who = people(r);
-    if (self) return { r, g: 2 * CAST_ORDER.indexOf(self), sub: Number(REFERENCE_NAMES[r.serial].split(' - ')[1]), group: `${self}: references` };
-    if (who.length === 1) return { r, g: 2 * CAST_ORDER.indexOf(who[0]) + 1, sub: gradeAt(r), group: who[0] };
-    if (who.length > 1) return { r, g: 2 * CAST_ORDER.length, sub: gradeAt(r), group: 'Two or more of the cast' };
-    return { r, g: 2 * CAST_ORDER.length + (r.grade ? 1 : 2), sub: gradeAt(r), group: r.grade ? gradeLabel(r.grade) : noGradeGroupName() };
+    if (self) return { r, build, g: 2 * CAST_ORDER.indexOf(self), sub: Number(REFERENCE_NAMES[r.serial].split(' - ')[1]), group: `${self}: references` };
+    if (who.length === 1) return { r, build, g: 2 * CAST_ORDER.indexOf(who[0]) + 1, sub: gradeAt(r), group: who[0] };
+    if (who.length > 1) return { r, build, g: 2 * CAST_ORDER.length, sub: gradeAt(r), group: 'Two or more of the cast' };
+    return { r, build, g: 2 * CAST_ORDER.length + (r.grade ? 1 : 2), sub: gradeAt(r), group: r.grade ? gradeLabel(r.grade) : noGradeGroupName(build) };
   });
-  return keyed.sort((a, b) => a.g - b.g || a.sub - b.sub || a.r.at - b.r.at);
+  return keyed.sort((a, b) => a.build - b.build || a.g - b.g || a.sub - b.sub || a.r.at - b.r.at);
 }
 
 // The trial's rows (Q44): each of TRIAL_PAGES whose kind is still waiting, once on each model, in the order the pages are listed.
@@ -320,7 +352,7 @@ export function trialRows(rows) {
 }
 // The spreadsheet as text, the header and one line per ledger row in generationOrder, after the trial's rows (the ledger test
 // compares the file with it).
-export function csvText(ledger, earmarks = '') {
+export function csvText(ledger, earmarks = '', { build = null } = {}) {
   const cell = (t) => '"' + String(t).replace(/"/g, '""') + '"';
   const replan = replanSerials(earmarks);
   const boxOf = (serial) => { const m = Object.values(MAPS).find((x) => x.art === serial); return m ? m.box : null; };
@@ -328,16 +360,23 @@ export function csvText(ledger, earmarks = '') {
     const f = foldPrompt(prompt, negative); const refs = (f.sheets || '').split(/[,\s]+/).filter(Boolean);
     return { serial, where, scene, prompt: f.prompt, negative, refs, at, grade: gradeOfWhere(where), status: replan.has(serial) && status === 'Needed' ? 'Re-plan first (A6)' : status };
   });
-  const out = [['order', 'group', 'serial', 'reference name', 'where', 'grade', 'scene', 'model', 'settings', 'references to attach', 'prompt (bans folded in)', 'bans (already in the prompt)', 'status'].map(cell).join(',')];
+  const out = [['order', 'build', 'group', 'serial', 'reference name', 'where', 'grade', 'scene', 'model', 'settings', 'references to attach', 'prompt (bans folded in)', 'bans (already in the prompt)', 'status'].map(cell).join(',')];
   // The coloring trial (Q44) comes first, while its outcome is waiting: each trial page twice, on Nano Banana 2.1 and then on
   // Lucid Origin, with no reference, so the two models are compared on the words alone. Its pages are not listed again later.
   const trial = trialRows(rows);
   const later = generationOrder(rows.filter((r) => !trial.some((t) => t.r === r)));
-  [...trial, ...later].forEach(({ r, group, model, settings, status }, k) => {
-    out.push([k + 1, group, r.serial, REFERENCE_NAMES[r.serial] || '', r.where, r.grade ? gradeLabel(r.grade) : '', r.scene, model || modelFor(r.serial), settings || settingsFor(r.serial, r.refs, boxOf(r.serial), r.where), r.refs.map(referenceLabel).join(', '), r.prompt, r.negative, status || r.status].map(cell).join(','));
+  // The trial's rows open build 1; a row's number is the same in the whole spreadsheet and in its build's own file.
+  [...trial.map((t) => ({ ...t, build: 1 })), ...later].forEach(({ r, build: inBuild, group, model, settings, status }, k) => {
+    if (build !== null && inBuild !== build) return;
+    out.push([k + 1, BUILDS[inBuild], group, r.serial, REFERENCE_NAMES[r.serial] || '', r.where, r.grade ? gradeLabel(r.grade) : '', r.scene, model || modelFor(r.serial), settings || settingsFor(r.serial, r.refs, boxOf(r.serial), r.where), r.refs.map(referenceLabel).join(', '), r.prompt, r.negative, status || r.status].map(cell).join(','));
   });
   return out.join('\n');
 }
 
 // The spreadsheet, when run on its own (the name check works from a folder with a space in its path, as iCloud Drive's has).
-if (process.argv[1] && process.argv[1].endsWith('prompts-csv.mjs')) console.log(csvText(readFileSync('docs/ART-REQUESTS.md', 'utf8'), readFileSync('docs/EARMARKS.md', 'utf8')));
+// Run: node tools/prompts-csv.mjs > docs/LEONARDO-PROMPTS.csv (both builds) and node tools/prompts-csv.mjs --build 1 > docs/LEONARDO-PROMPTS-EARLY.csv.
+if (process.argv[1] && process.argv[1].endsWith('prompts-csv.mjs')) {
+  const at = process.argv.indexOf('--build'); const build = at > 0 ? Number(process.argv[at + 1]) : null;
+  if (build !== null && !BUILDS[build]) { console.error('--build takes 1 or 2'); process.exit(2); }
+  console.log(csvText(readFileSync('docs/ART-REQUESTS.md', 'utf8'), readFileSync('docs/EARMARKS.md', 'utf8'), { build }));
+}

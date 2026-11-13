@@ -184,7 +184,7 @@ const remembered = async (url) => {
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } }); const p = await ctx.newPage();
   await p.goto(variants.asBuilt); await p.waitForTimeout(5000);
   await p.evaluate(() => { const rec = { version: 1, name: 'T1', createdAt: new Date().toISOString(), events: [{ type: 'courses_enabled', at: new Date().toISOString(), courseIds: [] }] };
-    localStorage.setItem('edusphere_v1_learner_t1', JSON.stringify(rec)); localStorage.setItem('edusphere_v1_where', JSON.stringify({ name: 'T1', screen: 'overview', moduleId: null })); });
+    localStorage.setItem('edusphere_v1_learner_t1', JSON.stringify(rec)); localStorage.setItem('edusphere_v1_where', JSON.stringify({ name: 'T1', screen: 'overview', moduleId: null, at: Date.now() })); });
   const load = async () => { await p.goto(url); await p.waitForTimeout(6000);
     return p.evaluate(() => ({ note: (document.querySelector('[data-too-old]') || {}).getAttribute ? document.querySelector('[data-too-old]').getAttribute('data-too-old') : null,
       rootFilled: !!document.getElementById('root').firstChild, guard: (document.getElementById('root').textContent || '').includes('Something went wrong'), where: localStorage.getItem('edusphere_v1_where') })); };
@@ -227,7 +227,7 @@ const goHome = async (url) => {
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 } }); const p = await ctx.newPage();
   await p.goto(variants.asBuilt); await p.waitForTimeout(5000);
   await p.evaluate(() => { const rec = { version: 1, name: 'T1', createdAt: new Date().toISOString(), events: [{ type: 'courses_enabled', at: new Date().toISOString(), courseIds: [] }] };
-    localStorage.setItem('edusphere_v1_learner_t1', JSON.stringify(rec)); localStorage.setItem('edusphere_v1_where', JSON.stringify({ name: 'T1', screen: 'overview', moduleId: null })); });
+    localStorage.setItem('edusphere_v1_learner_t1', JSON.stringify(rec)); localStorage.setItem('edusphere_v1_where', JSON.stringify({ name: 'T1', screen: 'overview', moduleId: null, at: Date.now() })); });
   await p.goto(url); await p.waitForTimeout(6000);
   const seen = [];
   for (let k = 0; k < 2; k++) { const guard = await p.evaluate(() => (document.getElementById('root').textContent || '').includes('Something went wrong'));

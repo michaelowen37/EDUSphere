@@ -49,8 +49,10 @@ Since pass MM (October 19, 2026), Mikey's words: "We don't need to lean too heav
   question is ever offered a third time. The pool must grow with the curriculum, and
   a check says so when it falls behind.
 - **Stay neutral.** The reflection questions carry four voices and none is right.
-  Nothing argues for or against religion. Nothing reaches a child until the school
-  approves it.
+  Nothing argues for or against religion. Every question starts on, and the school
+  can read any of them and turn off one, several or all of them.
+
+Since pass NJ (November 12, 2026), at Mikey's word: "I think I want the wonder questions pre-approved by default too so I don't need to describe to everyone how they need to go in and approve them in advance.  My assumption is that most people will want to opt in so we can start from that state and give them the option to opt out when they visit the wonder questions page." Stay neutral's last sentence said, until then, "Nothing reaches a child until the school approves it."; its words before are kept in docs/RULES-AUDIT-HISTORY.md.
 
 Since pass NA (November 4, 2026), Mikey's answer to Q86, "Q86 - yes, B": Master, then move and Reflect often say what the app does, as Mastery v2 (September 14, 2026) and his rule restated on September 28, 2026 made it, their aims unchanged, and How to tell if a change is right asks about a pass where it asked about mastery. Their words before are kept in docs/RULES-AUDIT-HISTORY.md. The words beyond his choice are Claude's, each what the code does: unless an educator chooses to open it, or placed past by a check; so it shows the learning has lasted; however many rounds each takes; and the sentence on a hard round.
 

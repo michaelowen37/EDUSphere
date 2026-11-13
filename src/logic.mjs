@@ -39281,8 +39281,9 @@ export const SCIENCE_WHY_GENERATORS = Object.keys(SCIENCE_WHY);
 //    reflection happened, how long it took, and roughly how much was written.
 //    Through pass MA every prompt and every perspective below was written and approved by a human. Since pass MB (Mikey: "You
 //    don't really need me to approve wonder questions, just add them and I'll check them all later.") new questions and edits ship
-//    after the Wonder brief's independent read, each quoted in docs/DECISIONS.md for Mikey's later check, and none reaches a child
-//    until an educator approves it in the app. Perspectives are shown side by side and none is declared right;
+//    after the Wonder brief's independent read, each quoted in docs/DECISIONS.md for Mikey's later check; until pass NJ none reached a
+//    child until an educator approved it in the app, and since then every question is on unless the school turns it off (Mikey: "I
+//    think I want the wonder questions pre-approved by default too"). Perspectives are shown side by side and none is declared right;
 //    none takes a side for or against religion or non-belief.
 // ---------------------------------------------------------------------
 // The four Wonder voices are the core cast (pass LY, Mikey): a reader meets Frederick, Chloe, Georgette and Mike by name, the
@@ -43461,7 +43462,8 @@ export const WONDER = [
   },
   // Pass IS (2026-10-03, Mikey: younger stages, failure and hard feelings first): twelve early and twelve growing
   // questions. Every early one is shared across the whole early stage, so it must make sense from pre-K 3 to grade 2.
-  // Every new text is listed in docs/DECISIONS.md for approval, and none reaches a student until an educator approves it.
+  // Every new text is listed in docs/DECISIONS.md for approval; until pass NJ none reached a student until an educator approved it,
+  // and since then every question is on unless the school turns it off.
   {
     id: 'w-early-spilled-on-my-picture',
     theme: 'failure',
@@ -43907,7 +43909,8 @@ export const WONDER = [
     closing: 'What could make your bedtime a little easier tonight?',
   },
   // Pass IW (2026-10-03): ten teen and ten grown questions, failure and hard feelings first, drawing on Frankl, Marcus
-  // Aurelius, Aristotle, Michael Singer and Rick Hanson. Listed in docs/DECISIONS.md for approval; shown only once approved.
+  // Aurelius, Aristotle, Michael Singer and Rick Hanson. Listed in docs/DECISIONS.md for approval; until pass NJ shown only once an
+  // educator approved them in the app, and since then unless the school turns them off.
   {
     id: 'w-teen-shoved-in-the-bag',
     theme: 'failure',
@@ -44210,7 +44213,7 @@ export const WONDER = [
   },
   // Pass IX (2026-10-03, Mikey: the next Wonder batch for the younger stages, failure and hard feelings first): twelve
   // early and twelve growing questions, every research claim read before use. Listed in docs/DECISIONS.md for approval;
-  // a student meets them only after an educator approves them in the app.
+  // until pass NJ a student met them only after an educator approved them in the app, and since then unless the school turns them off.
   {
     id: 'w-early-drawing-in-my-head',
     theme: 'failure',
@@ -45678,7 +45681,8 @@ export const WONDER = [
   },
   // Pass IZ (2026-10-03): eight teen and eight grown questions, failure and hard feelings first, from Mikey's authors
   // (Aristotle, Marcus Aurelius, Viktor Frankl, Arthur Brooks) and newer research, every claim read before use. Listed in
-  // docs/DECISIONS.md for approval; a student meets them only after an educator approves them in the app.
+  // docs/DECISIONS.md for approval; until pass NJ a student met them only after an educator approved them in the app, and since then
+  // unless the school turns them off.
   {
     id: 'w-teen-reread-felt-ready',
     theme: 'failure',
@@ -45921,10 +45925,28 @@ export const WONDER = [
   },
 ];
 
-// Nothing reaches a student until somebody at the school has read it and said yes.
-// Reflection questions are the most sensitive content in the platform, so approval is
-// deliberately opt in rather than opt out. An unreviewed question simply never appears.
-export function emptyWonderReview() { return { version: 1, approved: [], hidden: [] }; }
+// Every Wonder question starts on, and the school turns off what it would rather skip (pass NJ, Mikey: "I think I want the wonder
+// questions pre-approved by default too so I don't need to describe to everyone how they need to go in and approve them in advance.
+// My assumption is that most people will want to opt in so we can start from that state and give them the option to opt out when
+// they visit the wonder questions page."). In plain terms: a question reaches a student unless somebody at the school has turned it
+// off on the Wonder Questions page, or turned them all off there, and a question added in a later update starts on as well. Until
+// pass NJ it was the other way round: nothing reached a student until somebody approved it, a default this comment called
+// deliberate, since the questions are the most sensitive content in the platform; Mikey chose the new default, and the page keeps
+// every question readable, with a way to turn off one or all. The switch for one student (wonderOnFor, below) is unchanged.
+// The state: { version: 2, allOff: false, hidden: [the ids turned off], shown: [] }. While allOff is false every question is on but
+// those in hidden; once the school turns them all off, every question is off but those turned on again one by one, in shown (so a
+// school can keep only the few it wants). hidden keeps the name it had when it held the questions an educator removed, so a question
+// removed before pass NJ stays off; a version 1 state's approvals decide nothing now and are left behind as it is read
+// (wonderReviewState), so a device or a backup from before pass NJ keeps its removals and turns the rest on.
+export function emptyWonderReview() { return { version: 2, allOff: false, hidden: [], shown: [] }; }
+// Any stored or restored state, read as this version's: whether all are off, and the ids turned off and on, as strings, once each.
+export function wonderReviewState(review) {
+  const r = review && typeof review === 'object' ? review : {};
+  const ids = (x) => [...new Set((Array.isArray(x) ? x : []).filter((y) => typeof y === 'string'))];
+  return { version: 2, allOff: r.allOff === true, hidden: ids(r.hidden), shown: ids(r.shown) };
+}
+// Whether a question reaches students: on unless turned off, or, once all are off, only if turned on again.
+export function isWonderOn(review, id) { const s = wonderReviewState(review); return s.allOff ? s.shown.includes(id) : !s.hidden.includes(id); }
 
 // Ordered the way a student meets them, from the first in kindergarten to the last in
 // twelfth grade. Within a stage we go by the earliest grade the question can appear in.
@@ -45946,34 +45968,19 @@ export function wonderInOrder() {
   return [...WONDER].sort((a, b) => stageOrder(a) - stageOrder(b) || earliestGrade(a) - earliestGrade(b));
 }
 
-// Approves everything that has not been removed. Removed questions stay removed.
-// Everything back to awaiting review, so a school can start over. Removed questions stay removed.
-export function unapproveAllWonder(review) {
-  return { ...review, approved: [] };
+// The page's choices (pass NJ): one question turned off or on, all of them turned off or on, and how many are on. A question turned
+// off by name stays off until it is turned on by name: turning all of them off or on keeps it off, and clears only the questions
+// turned on one by one while all were off (round one's code read: Turn them all off and then Turn them all on had cleared every
+// question the school had turned off, so one mis-tap undone brought them all back, the removals from before pass NJ too).
+export function setWonderOn(review, id, on) {
+  const s = wonderReviewState(review);
+  const hidden = on ? s.hidden.filter((x) => x !== id) : [...new Set([...s.hidden, id])];
+  if (s.allOff) return { ...s, hidden, shown: on ? [...new Set([...s.shown, id])] : s.shown.filter((x) => x !== id) };
+  return { ...s, hidden };
 }
+export function setAllWonder(review, on) { const s = wonderReviewState(review); return { version: 2, allOff: !on, hidden: s.hidden, shown: [] }; }
+export function wonderOnCount(review) { return WONDER.filter((w) => isWonderOn(review, w.id)).length; }
 
-export function approveAllWonder(review) {
-  const ids = WONDER.filter((w) => !review.hidden.includes(w.id)).map((w) => w.id);
-  return { ...review, approved: [...new Set([...review.approved, ...ids])] };
-}
-export function isWonderApproved(review, id) { return review.approved.includes(id); }
-export function isWonderHidden(review, id) { return review.hidden.includes(id); }
-export function approveWonder(review, id) {
-  return { ...review, approved: review.approved.includes(id) ? review.approved : [...review.approved, id], hidden: review.hidden.filter((x) => x !== id) };
-}
-export function unapproveWonder(review, id) {
-  return { ...review, approved: review.approved.filter((x) => x !== id) };
-}
-export function hideWonder(review, id) {
-  return { ...review, hidden: review.hidden.includes(id) ? review.hidden : [...review.hidden, id], approved: review.approved.filter((x) => x !== id) };
-}
-export function restoreWonder(review, id) {
-  return { ...review, hidden: review.hidden.filter((x) => x !== id) };
-}
-// How many are still waiting for somebody to look at them.
-export function wonderAwaitingReview(review) {
-  return WONDER.filter((w) => !review.approved.includes(w.id) && !review.hidden.includes(w.id)).length;
-}
 
 // The four things a reflection is for. Every question carries one, and the rotation
 // keeps them in balance. After a hard round, one not passed or with MISS_STREAK misses in a
@@ -46006,12 +46013,13 @@ export function stageForGrade(grade) {
   return 'grown';
 }
 
-// The reflection a student should meet now, or null if none is due or none is approved.
+// The reflection a student should meet now, or null if none is due or every question is turned off (since pass NJ every question
+// starts on; until then, none approved).
 // Due means WONDER_EVERY different modules worked since the last reflection was answered. The
-// pool is every approved question for this course or this course's stage, rotated so questions
+// pool is every question still on for this course or this course's stage, rotated so questions
 // are met evenly, and never more than WONDER_MAX_REPEATS times each.
 export function nextWonder(events, courseId, review, preReader = false) {
-  const state = review || emptyWonderReview();
+  const state = wonderReviewState(review);
   const active = activeEvents(events);
   const worked = new Set(); let roughPatch = false;
   for (let i = active.length - 1; i >= 0; i--) {
@@ -46022,7 +46030,7 @@ export function nextWonder(events, courseId, review, preReader = false) {
   if (worked.size < WONDER_EVERY) return null;
   const course = getCourse(courseId);
   const stage = course ? stageForGrade(course.grade) : 'early';
-  const pool = WONDER.filter((w) => state.approved.includes(w.id) && !state.hidden.includes(w.id)
+  const pool = WONDER.filter((w) => isWonderOn(state, w.id)
     && wonderAllowed(w, courseId, stage)
     && (!preReader || Array.isArray(w.simple)));
   if (pool.length === 0) return null;
@@ -46044,8 +46052,8 @@ export function nextWonder(events, courseId, review, preReader = false) {
 }
 
 export function wonderFor(courseId, seed, review) {
-  const state = review || emptyWonderReview();
-  const list = WONDER.filter((w) => w.courseIds.includes(courseId) && state.approved.includes(w.id) && !state.hidden.includes(w.id));
+  const state = wonderReviewState(review);
+  const list = WONDER.filter((w) => w.courseIds.includes(courseId) && isWonderOn(state, w.id));
   if (list.length === 0) return null;
   return list[Math.abs(seed) % list.length];
 }
@@ -46195,8 +46203,69 @@ export function setStudentPin(roster, id, pin) {
 }
 export function pinMatches(student, typed) { return !student || !student.pin || student.pin === String(typed || '').trim(); }
 
-// Wonder questions can be switched off for one student. On is the default, and approval still
-// gates every question, so switching one on never shows anything the school has not approved.
+// A student signed out after fifteen quiet minutes (pass NJ, Mikey: "When logging in as a student and exiting the browser.  I
+// returned what seems like an hour later and the student was still logged into to the device.   Maybe we should have students
+// auto-logged out after a period of inactivity kind of like the instructors?  We don't need it visually displayed like we do for the
+// educators but maybe we log out after 15 minutes of activity.", inactivity as he meant). In plain terms: a student who has not
+// tapped, typed, scrolled or moved the pointer for fifteen minutes goes back to the sign-in screen, with no countdown shown, the
+// same as tapping Exit but with no backup file saved, so no download asks anything of an empty room (the work is already saved on
+// the device, and the next sign-out or the day's first sign-in backs it up). The note that brings a student back after a refresh
+// (the where-note in src/ui.jsx) carries the time of the last activity, so a browser closed and opened again later starts at the
+// sign-in screen once fifteen minutes have gone by; until pass NJ the note had no time and brought the student back however long
+// it had been. A time that cannot be read counts as quiet too long. A clock moved back is not quiet (round one's code read: a clock
+// set back five seconds signed out a child mid-question): while the page is open it saw the child itself, so a tap or a check that
+// finds the last activity ahead of the clock starts the count again from now (quietStart), and a where-note up to a minute ahead of
+// the clock still brings its student back (STUDENT_CLOCK_SLACK_MS); a note further ahead, whose age cannot be known, does not. What
+// a sign-out costs: the student chooses their name again, and a practice round left half done starts again, since the sign-in
+// screen erases the where-note and the round in it. The screens decide only when to ask (src/ui.jsx); this decides.
+export const STUDENT_IDLE_MS = 15 * 60 * 1000;
+export const STUDENT_CLOCK_SLACK_MS = 60 * 1000;
+// Whether a student who was last active at lastActiveAt (milliseconds) has been quiet too long at now.
+export function studentIdleOver(lastActiveAt, now) {
+  const last = Number(lastActiveAt); const at = Number(now);
+  if (!Number.isFinite(last) || !Number.isFinite(at) || at < last) return true;
+  return at - last >= STUDENT_IDLE_MS;
+}
+// The time a student's quiet is counted from at now: the last activity, or now when the clock reads earlier than it (a clock moved
+// back), so a clock set back never makes a child at the screen quiet too long.
+export function quietStart(lastActiveAt, now) {
+  const last = Number(lastActiveAt); const at = Number(now);
+  if (!Number.isFinite(at)) return last;
+  return !Number.isFinite(last) || at < last ? at : last;
+}
+// Whether a where-note may still bring its student back: it names a student and its time is under fifteen minutes old, or at most
+// STUDENT_CLOCK_SLACK_MS ahead of the clock (a clock moved back a little since it was written).
+export function whereNoteFresh(note, now) {
+  if (!(note && typeof note.name === 'string' && note.name && note.at !== undefined && note.at !== null)) return false;
+  const at = Number(note.at); const t = Number(now);
+  if (Number.isFinite(at) && Number.isFinite(t) && at > t) return at - t <= STUDENT_CLOCK_SLACK_MS;
+  return !studentIdleOver(at, t);
+}
+// The screens a signed-in student's own clock runs on (pass NJ; round one's code read moved the list here from src/ui.jsx, so the
+// rules test names every one): the overview, a lesson, practice, a story, the map, the five result screens, a course's end and its
+// story, Wonder and its voices, coloring, My progress and a writing sent. A game is played on the coloring screen (its play: pages),
+// so a game left on its Begin card signs out with it. Every screen the app has is on this list, on the educator's (EDUCATOR_SCREENS in src/ui.jsx) or
+// on UNTIMED_SCREENS below, each once, so a new screen fails the rules test until it is placed.
+export const STUDENT_SCREENS = ['overview', 'lesson', 'practice', 'story', 'map', 'result', 'quick-result', 'placement-result', 'light-review-result', 'checkpoint-result', 'course-done', 'course-story', 'wonder', 'wonder-voices', 'coloring', 'my-progress', 'writing-sent'];
+export function isStudentScreen(screen) { return STUDENT_SCREENS.includes(String(screen)); }
+// The screens neither clock runs on, each with its reason: the front door, where no one is signed in, and six screens an educator
+// opens from the classroom that the educator's clock does not cover (older than pass NJ; EARMARKS A131 asks whether it should).
+export const UNTIMED_SCREENS = {
+  welcome: 'the front door: no one is signed in',
+  loading: 'the front door: the app is starting',
+  'educator-pin': "the front door: an educator's PIN is asked for",
+  'educator-setup': 'the front door: the first educator is set up',
+  certificate: "an educator's: a student's certificate, opened from the classroom (A131)",
+  experiments: "an educator's: Science Experiments, opened from the classroom (A131)",
+  'reading-lists': "an educator's: Reading Lists, opened from the classroom (A131)",
+  'story-book': "an educator's: a course's book of stories, opened from the Story Log (A131)",
+  'story-log': "an educator's: the Story Log, opened from the classroom or a student's record (A131)",
+  'whats-new': "an educator's: What's new, opened from the classroom (A131)",
+};
+
+// Wonder questions can be switched off for one student. On is the default, and the school's own choices on the Wonder Questions
+// page still decide which questions there are (since pass NJ every question starts on there), so switching one student on never shows
+// a question the school has turned off.
 export function setStudentWonder(roster, id, on) {
   return { ...roster, students: roster.students.map((s) => (s.id === normalizeStudentId(id) ? { ...s, wonder: on !== false } : s)) };
 }
@@ -46756,7 +46825,11 @@ export function checkBackup(data) {
 
 // Joins a backup into what is already on this device. Students are matched by id, events
 // are joined in time order without duplicates, and the educator's own settings (which
-// reflection questions are approved, which skills are covered) take the union.
+// reflection questions are turned off, which skills are covered) take the union. Since pass NJ the Wonder state is version 2 (every
+// question on unless turned off): a question either side turned off stays off; if either side turned them all off, all stay off but
+// the questions turned on again there (on both sides, those of either), less any the other side turned off, and every question
+// either side turned off by name stays off when all are turned on again (since round one's code read); and a version 1 state
+// from an older backup or device brings its removals and nothing else (wonderReviewState).
 export function mergeBackup(current, backup) {
   const students = [...current.roster.students];
   for (const st of backup.roster.students) {
@@ -46776,7 +46849,11 @@ export function mergeBackup(current, backup) {
   return {
     roster: { ...current.roster, students },
     records: [...records.values()],
-    wonderReview: { version: 1, approved: union(current.wonderReview.approved, backup.wonderReview && backup.wonderReview.approved), hidden: union(current.wonderReview.hidden, backup.wonderReview && backup.wonderReview.hidden) },
+    wonderReview: (() => { const here = wonderReviewState(current.wonderReview); const there = wonderReviewState(backup.wonderReview);
+      const off = union(here.hidden, there.hidden);
+      if (!here.allOff && !there.allOff) return { version: 2, allOff: false, hidden: off, shown: [] };
+      const shown = here.allOff && there.allOff ? union(here.shown, there.shown) : (here.allOff ? here.shown : there.shown);
+      return { version: 2, allOff: true, hidden: off, shown: shown.filter((id) => !off.includes(id)) }; })(),
     covered: { version: 1, covered: union(current.covered.covered, backup.covered && backup.covered.covered) },
     addedStudents: backup.roster.students.filter((st) => !current.roster.students.some((x) => x.id === st.id)).length,
   };
@@ -49828,7 +49905,7 @@ export function buildReport(learnerName, events) {
     enabledCourseIds: enabledCourseIds(events), // a setting, not progress: it survives a reset
     totalAttempts: active.filter((e) => e.type === 'attempt_completed').length,
     reflections: active.filter((e) => e.type === 'wonder_answered').length,
-    reflectionsAvailable: FEATURES.reflection ? WONDER.length : 0, // approval is applied on screen, where the review state lives
+    reflectionsAvailable: FEATURES.reflection ? WONDER.length : 0, // the school's choices (questions turned off, or all off) are applied on screen, where the Wonder state lives
     retention: {
       asked: progress.review.asked,
       correct: progress.review.correct,

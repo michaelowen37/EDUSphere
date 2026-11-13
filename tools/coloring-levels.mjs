@@ -26,7 +26,8 @@ export const COLORING_LEVELS = {
 };
 // Drawing pages by where they sit among Let's Color's drawings (the letter pages between them are not counted). At one
 // picture a lesson, a pre-K 3 child reaches about the ninth drawing and a pre-K 4 child about the twenty-second; the rest
-// arrive in kindergarten and the grades after it, the last four being the busiest.
+// arrive in kindergarten and the grades after it, the last four being the busiest. (Written when pre-K had fewer lessons: since
+// pre-K 3's 47 and pre-K 4's 61, a three-year-old opens 24 of the 39 drawings and a child through pre-K 4 all of them; EARMARKS A130.)
 export const DRAWING_BANDS = [[8, 'PK3'], [21, 'PK4'], [30, 'K'], [34, '1'], [Infinity, '2']];
 // A page that also stands in for a thing in lessons and questions keeps that thing the one focal point, and its negative
 // prompt keeps out what a question might ask a child to find instead (a star on the rocket page, a flower on the butterfly's).

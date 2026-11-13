@@ -7,12 +7,22 @@ Generated 2026-11-12 by tools/audio-ledger.mjs. Every clip the app can play in a
 The quickest way is one command. tools/audio-generate.mjs reads the CSV and, for each clip not yet in audio/, asks Eleven v4 (model eleven_v4) to speak the tagged words, passing the words before and after (previous_text and next_text) so a story sounds like one steady telling, and saves audio/<key>.mp3. It skips clips that already exist, so it can be stopped and started again. The app plays recorded clips in place of the device voice as soon as every clip of a story or lesson line is present; until then it keeps the device voice.
 
     ELEVENLABS_API_KEY=your-key node tools/audio-generate.mjs --voice <voice id> --voice-young <voice id for pre-K to grade 2>
-    (add --only S95 for one story, --limit 50 to try a few, --dry-run to see what would be sent, --model to name another speech
-    model, which takes no neighbors' words if it is eleven_v3, and --sfx-model to name another sound effects model)
+    (add --build 1 for the early build alone, pre-K 3 to grade 1, --only S95 for one story, --limit 50 to try a few, --dry-run to see
+    what would be sent, --model to name another speech model, which takes no neighbors' words if it is eleven_v3, and --sfx-model to
+    name another sound effects model)
 
 Pasting into the ElevenLabs app works too, clip by clip, with Eleven v4 chosen as the model and the text column as written (older models, such as Multilingual v2 and Flash and Turbo v2.5, do not read the bracketed tags), and each file saved as <key>.mp3.
 
 The app's own sounds are rows too (since pass MW, below): `--only sounds` makes them alone, a few takes of each in audio/takes (<key>-1.mp3 and on), and the take that sounds right is copied to audio/<key>.mp3, the name the app will look for. A speech sound is spoken by the young voice from its phonetic symbols; a sound effect is made by ElevenLabs' sound effects (model eleven_text_to_sound_v3, or another with --sfx-model) from its text, a prompt describing the sound, for its seconds and influence, never sent to the voice; its description says what to listen for and is never sent.
+
+## The two builds (pass NJ)
+
+Mikey, opening pass NJ: "When we get all the way through 1st grade, I want to start work on the illustrations from Leonardo (stories, coloring pages, lessons etc) and Sound from Eleven Labs for everything spanning prek3 to 1st." So the ledger comes in two builds, as the art ledger does (docs/LEONARDO-PROMPTS-EARLY.csv): build 1, every clip a child in pre-K 3 to grade 1 can hear, recorded first; build 2, grade 2 and up, after those grades' review. The CSV runs build 1 first, its last column names each row's build, and `--build 1` makes build 1 alone. A story, a lesson or a game's welcome stays whole in one build, so its clips keep their neighbors' words.
+
+| Build | What it holds | Clips | Characters |
+|---|---|---|---|
+| 1 | Pre-K 3 to grade 1: their lessons, stories and long stories, the welcomes of every game they can play, and the app's own sounds | 8740 | 988,502 |
+| 2 | Grade 2 and up | 4559 | 1,015,741 |
 
 ## Emphasis, sounds and descriptions (pass MW)
 

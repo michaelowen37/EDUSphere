@@ -1,0 +1,170 @@
+{
+  "app": "The Wise Human",
+  "recovery": null,
+  "recoveryNote": null,
+  "version": 1,
+  "saved": "Thursday, November 12, 2026 at 1:00 PM Central Standard Time",
+  "savedAt": "2026-11-12T19:00:00.000Z",
+  "deviceName": "Test iPad",
+  "studentIds": [
+    "s_1042",
+    "s_2001"
+  ],
+  "roster": {
+    "version": 1,
+    "students": [
+      {
+        "id": "s_1042",
+        "label": "S-1042",
+        "createdAt": "2026-09-10T15:00:00.000Z",
+        "active": true,
+        "level": "early",
+        "picture": "fox",
+        "tint": "sun"
+      },
+      {
+        "id": "s_2001",
+        "label": "S-2001",
+        "createdAt": "2026-09-10T15:01:00.000Z",
+        "active": true,
+        "level": "elementary",
+        "picture": null,
+        "tint": null
+      }
+    ]
+  },
+  "records": [
+    {
+      "name": "s_1042",
+      "events": [
+        {
+          "type": "lesson_viewed",
+          "at": "2026-09-10T15:05:00.000Z",
+          "moduleId": "count-to-5"
+        },
+        {
+          "type": "attempt_completed",
+          "at": "2026-09-10T15:10:00.000Z",
+          "startedAt": "2026-09-10T15:10:00.000Z",
+          "moduleId": "count-to-5",
+          "seed": 7,
+          "core": [
+            {
+              "correct": true,
+              "timeMs": 5000
+            },
+            {
+              "correct": true,
+              "timeMs": 6000
+            },
+            {
+              "correct": true,
+              "timeMs": 4000
+            },
+            {
+              "correct": true,
+              "timeMs": 7000
+            },
+            {
+              "correct": true,
+              "timeMs": 5000
+            }
+          ],
+          "review": null,
+          "coreCorrect": 5,
+          "coreTotal": 5
+        },
+        {
+          "type": "attempt_completed",
+          "at": "2026-09-10T15:20:00.000Z",
+          "startedAt": "2026-09-10T15:20:00.000Z",
+          "moduleId": "count-to-10",
+          "seed": 7,
+          "core": [
+            {
+              "correct": true,
+              "timeMs": 5000
+            },
+            {
+              "correct": true,
+              "timeMs": 6000
+            },
+            {
+              "correct": true,
+              "timeMs": 4000
+            },
+            {
+              "correct": true,
+              "timeMs": 7000
+            },
+            {
+              "correct": false,
+              "timeMs": 5000
+            }
+          ],
+          "review": null,
+          "coreCorrect": 4,
+          "coreTotal": 5
+        }
+      ]
+    },
+    {
+      "name": "s_2001",
+      "events": [
+        {
+          "type": "courses_enabled",
+          "at": "2026-09-10T15:02:00.000Z",
+          "courseIds": [
+            "fractions-intro"
+          ]
+        },
+        {
+          "type": "attempt_completed",
+          "at": "2026-09-10T15:30:00.000Z",
+          "startedAt": "2026-09-10T15:30:00.000Z",
+          "moduleId": "fraction-meaning",
+          "seed": 7,
+          "core": [
+            {
+              "correct": true,
+              "timeMs": 5000
+            },
+            {
+              "correct": true,
+              "timeMs": 6000
+            },
+            {
+              "correct": true,
+              "timeMs": 4000
+            },
+            {
+              "correct": true,
+              "timeMs": 7000
+            },
+            {
+              "correct": true,
+              "timeMs": 5000
+            }
+          ],
+          "review": null,
+          "coreCorrect": 5,
+          "coreTotal": 5
+        }
+      ]
+    }
+  ],
+  "wonderReview": {
+    "version": 2,
+    "allOff": false,
+    "hidden": [
+      "w-one-thing"
+    ],
+    "shown": []
+  },
+  "covered": {
+    "version": 1,
+    "covered": [
+      "ls-bike"
+    ]
+  }
+}

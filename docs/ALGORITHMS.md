@@ -104,7 +104,7 @@ interval schedule was still to come.
 A reflection is offered after every `WONDER_EVERY` (2) finished rounds, pass or fail,
 since the last one was answered. Each question carries a theme (world, failure,
 feelings, ups-and-downs); the theme met longest ago comes first, and after a failed
-round the failure, feelings and ups-and-downs questions jump the queue. The pool is every approved question written for this course or for
+round the failure, feelings and ups-and-downs questions jump the queue. The pool is every question still on (since pass NJ every question starts on and the school can turn any off; until then, every approved question) written for this course or for
 this course's stage (early, growing, teen, grown), so courses share a pool. The one
 answered longest ago comes first, and never-answered ones come before those, so the
 questions rotate rather than repeat. Pre-readers only ever draw questions that carry a
@@ -759,3 +759,21 @@ starts empty.
 - For a child with progress (EARMARKS A57, before the first classroom): the lesson after a new half locks again, a child who had
   finished pre-K sees the pre-K groups again, a finished course celebrates again when the new half is passed, and a game opened by
   every lesson passed, never played, closes until then.
+
+## A student signed out after fifteen quiet minutes (pass NJ, Mikey: "Maybe we should have students auto-logged out after a period of inactivity kind of like the instructors?")
+
+While a student is signed in on one of their own screens (`STUDENT_SCREENS`, seventeen: the overview, a lesson, practice, a story, the map,
+the five result screens, a course's end and its story, Wonder and its voices, coloring, where a game is played, My progress and a writing
+sent), every tap, key, scroll or pointer move marks the time. A check every fifteen seconds, a check as the page comes back into view and a
+check at the first touch after a long quiet send the student to the sign-in screen once `STUDENT_IDLE_MS` (fifteen minutes) have gone by
+(`studentIdleOver`), with nothing counting down on the screen and no backup file. A clock moved back is not quiet: the count starts again
+from now (`quietStart`). The touch that wakes a device left too long signs out and presses nothing: every waking event but a scroll is held by
+its kind, a press until its click or 400 ms after the finger lifts or the touch is cancelled, at most three seconds, and a key, a
+pointer move or a wheel 800 ms (round two's code read: holding only a press let a mouse's first move through), a press begun inside
+those 800 ms held as a press from then on (round three's code read). The note that brings a student back after a refresh carries the time of the last activity, and a
+browser opened again goes back to the student's place only within fifteen minutes of it, or with a note at most `STUDENT_CLOCK_SLACK_MS`
+(a minute) ahead of the clock (`whereNoteFresh`); otherwise the sign-in screen shows and the note is erased, a practice round left half
+done with it. A reload counts as activity: a note still fresh brings the student back and starts the fifteen minutes again. A walk-through
+is never signed out, and the first week tour pauses the clock. Every screen the app uses is on exactly one of the student's list, the
+educator's (`EDUCATOR_SCREENS`, a quiet minute, counted down on a chip) and `UNTIMED_SCREENS`, the front door and six educator screens the
+educator's clock does not cover (EARMARKS A131), each with its reason.

@@ -1542,5 +1542,40 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   const named = files.filter((f) => /fullPage:\s*true/.test(readFileSync(new URL(f, import.meta.url), 'utf8'))).length;
   const plant = unnamed('plant', "await page.screenshot({ path: 'x.png', full" + "Page: true });");   // split, so this line is not one
   ok(`every whole-page picture a test or tool takes is named as one (pass NH; ${named} files take one; an unnamed one, planted, caught)`, found.length === 0 && named >= 2 && plant.length === 1, found.join(', ')); }
+// The audio ledger in two builds (pass NJ, Mikey: "When we get all the way through 1st grade, I want to start work on the illustrations from
+// Leonardo (stories, coloring pages, lessons etc) and Sound from Eleven Labs for everything spanning prek3 to 1st."): build 1, every clip a
+// child in pre-K 3 to grade 1 can hear, comes first, a group stays whole in one build so its clips keep their neighbors' words, every line a
+// young child's game says is in build 1, the build is the last column, and tools/audio-generate.mjs --build 1 keeps build 1 alone.
+// Plants: an early story's clip moved to build 2, and a game line an early game says moved to build 2, each caught.
+{ const { LEDGER_CSV, EARLY_GRADES, earlyGame } = await import('../tools/audio-ledger.mjs'); const G = await import('../tools/audio-generate.mjs'); const L = await import('../src/logic.mjs');
+  const rows = G.parseCsv(LEDGER_CSV);
+  const earlyLines = new Set(); for (const g of L.GAMES) if (earlyGame(g)) for (const line of L.gameIntro(g)) earlyLines.add(line.key);
+  const faults = (list) => { const out = []; const groupBuild = new Map(); let seenTwo = false;
+    for (const r of list) {
+      if (r.build !== '1' && r.build !== '2') out.push(`${r.key} no build`);
+      if (r.build === '2') seenTwo = true; else if (seenTwo) out.push(`${r.key} build 1 after build 2`);
+      if (groupBuild.has(r.group) && groupBuild.get(r.group) !== r.build) out.push(`${r.group} split`); groupBuild.set(r.group, r.build);
+      const sound = r.kind === 'speech sound' || r.kind === 'sound effect'; const game = /^game welcome/.test(r.kind);
+      if (sound && r.build !== '1') out.push(`${r.key} a sound in build 2`);
+      if (game && earlyLines.has(r.key) && r.build !== '1') out.push(`${r.key} a young child's game line in build 2`);
+      if (!sound && !game && (EARLY_GRADES.includes(r.grade) ? '1' : '2') !== r.build) out.push(`${r.key} grade ${r.grade} in build ${r.build}`);
+    }
+    return out; };
+  const firstEarlyStory = rows.findIndex((r) => r.kind === 'story' && r.grade === 'PK3'); const firstEarlyGame = rows.findIndex((r) => /^game welcome/.test(r.kind) && earlyLines.has(r.key));
+  const planted1 = rows.map((r, i) => (i === firstEarlyStory ? { ...r, build: '2' } : r)); const planted2 = rows.map((r, i) => (i === firstEarlyGame ? { ...r, build: '2' } : r));
+  const one = rows.filter((r) => r.build === '1'); const two = rows.filter((r) => r.build === '2');
+  ok(`the audio ledger runs in two builds, build 1 (${one.length} clips, pre-K 3 to grade 1 with the young games' welcomes and the app's own sounds) before build 2 (${two.length}), every group whole in one build, the build its last column (pass NJ; an early story's clip and a young game's line moved to build 2, planted, each caught)`,
+    LEDGER_CSV.split('\n')[0].endsWith(',build') && faults(rows).length === 0 && one.length >= 8700 && two.length >= 4500 && firstEarlyStory >= 0 && firstEarlyGame >= 0 && faults(planted1).length > 0 && faults(planted2).length > 0,
+    faults(rows).slice(0, 6).join('; '));
+  const gen = readFileSync(new URL('../tools/audio-generate.mjs', import.meta.url), 'utf8');
+  // Since round one's code read the filter is run, not only read: a dry run of each build names exactly that build's clips (a filter
+  // that let every row through would name all of them for --build 1).
+  const { execFileSync } = await import('node:child_process'); const { fileURLToPath } = await import('node:url');
+  const dryKeys = (b) => new Set(execFileSync(process.execPath, [fileURLToPath(new URL('../tools/audio-generate.mjs', import.meta.url)), '--voice', 'dry-run-voice', '--dry-run', '--build', b], { encoding: 'utf8', maxBuffer: 256 * 1024 * 1024, env: { ...process.env, ELEVENLABS_API_KEY: '' } })
+    .split('\n').filter((l) => l.includes(' -> https://')).map((l) => l.split(' -> ')[0]));   // a line per take, each named by its clip's key
+  const k1 = dryKeys('1'); const k2 = dryKeys('2'); const keyOf = (r) => r.key;
+  const all1 = one.every((r) => k1.has(keyOf(r))) && two.every((r) => !k1.has(keyOf(r))); const all2 = two.every((r) => k2.has(keyOf(r))) && one.every((r) => !k2.has(keyOf(r)));
+  ok(`tools/audio-generate.mjs --build 1 makes build 1 alone and --build 2 build 2 alone, by the ledger's build column, a dry run of each naming exactly its build's clips (${k1.size} and ${k2.size}) (pass NJ; run since round one's code read)`,
+    /const build = opt\('build'\);/.test(gen) && /if \(build !== null && String\(r\.build\) !== String\(build\)\) continue;/.test(gen) && all1 && all2 && k1.size === one.length && k2.size === two.length, { k1: k1.size, one: one.length, k2: k2.size, two: two.length }); }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

@@ -9,6 +9,11 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## November 12, 2026 (every Wonder Question on from the start, and a quiet student screen signs itself out)
+
+- Every Wonder Question is now on from the start, with nothing to approve, and you can turn off any you'd rather skip. If a question doesn't suit your community, open Wonder Questions from the classroom page, tap the question to read it, and turn it off. You can also turn them all off and then turn on just the few you want. If you had approved only some before, the rest are on now too, and any you removed stay off. Questions that arrive in later updates start on too, unless you've turned them all off.
+- A student's screen now signs itself out after fifteen quiet minutes, so a child who walks away or closes the browser doesn't leave their place open for the next person who picks up the device. There's no countdown on the screen. The next tap simply finds the app at the front door, and that first tap doesn't press anything there. Everything your student has finished is saved, so they just sign in again. A practice round they left half done starts over, the same as when they leave practice partway through. If the browser closes by mistake and is opened again within about fifteen minutes of your student's last tap, they are still right where they were.
+
 ## November 12, 2026 (Q, V and Y, and writing a name)
 
 - Four-year-olds meet the last three consonants in Q, V and Y. V says vvv, and you can hear it at the very start of V's name. Q and Y are trickier. Q's name starts with cuh and Y's with wuh, but in lots of words Q says kwuh, like queen and quilt, and Y says yuh, like yo-yo and yarn. So for Q and Y, your child listens to the start of a word, not to the letter's name. In the lesson's story, a word called out after its sounds, like "Yuh, yuh, yarn!", and the game I spy each stay on one line.

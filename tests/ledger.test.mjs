@@ -171,28 +171,78 @@ ok('the ledger has no rows the app does not use', orphans.length === 0, orphans.
   // Generation day (Mikey, pass MK): the rows come in his painting order, each person's references, then the pictures with that
   // person alone, person by person; then two or more of the cast; then the rest by grade from pre-K 3 up; then what has no grade.
   // Every row names its model, and every character sheet has its reference name (Mike - 1), one name each.
+  // Since pass NJ in two builds (Mikey: "...so that I can prioritize the early learning designs/sounds and access them easily."): build
+  // 1, pre-K 3 to grade 1 with every character reference at every age, then build 2, grade 2 and up, each in that order inside it, and
+  // docs/LEONARDO-PROMPTS-EARLY.csv is build 1 alone with the same numbers.
   { const parse = (line) => [...line.matchAll(/"((?:[^"]|"")*)"/g)].map((m) => m[1].replace(/""/g, '"'));
     const lines = want.split('\n').slice(1).map(parse); const head = parse(want.split('\n')[0]); const col = (n) => head.indexOf(n);
-    const groups = []; for (const l of lines) if (groups[groups.length - 1] !== l[col('group')]) groups.push(l[col('group')]);
-    // Since pass ML (Mikey's answer to Q44, "run the trial, then move them if they pass"): while the trial waits, its five pages
-    // come first, each on both models, and the coloring pages painted on Lucid Origin come last, after what has no grade.
+    const { BUILDS, EARLY_GRADES, buildOf } = await import('../tools/prompts-csv.mjs');
     const waiting = Object.values(COLORING_TRIAL).includes('waiting'); const moved = Object.values(COLORING_TRIAL).some((s) => s !== 'failed');
-    const trialGroup = waiting ? groups[0] : null; const colorGroup = moved ? groups[groups.length - 1] : null;
-    const middle = groups.slice(waiting ? 1 : 0, moved ? -1 : undefined);
-    const castGroups = CAST_ORDER.flatMap((p) => [`${p}: references`, p]).filter((g) => middle.includes(g));
-    const gradeGroups = middle.slice(castGroups.length + (middle.includes('Two or more of the cast') ? 1 : 0));
-    const names = Object.values(REFERENCE_NAMES);
-    ok('the spreadsheet runs in Mikey\'s painting order: the coloring trial first while it waits, then each person\'s references and then their pictures, person by person, then two or more of the cast, then by grade from pre-K 3, then what has no grade, then the coloring pages on Lucid Origin, numbered from 1, each group once',
-      lines.every((l, k) => Number(l[col('order')]) === k + 1) && groups.length === new Set(groups).size && middle.slice(0, castGroups.length).join() === castGroups.join() && castGroups[0] === 'Mike: references' && gradeGroups[0] === 'Pre-K 3' && gradeGroups[gradeGroups.length - 1].startsWith('No grade')
-      && (!waiting || trialGroup === TRIAL_GROUP) && (!moved || /on Lucid Origin, painted last/.test(colorGroup)),
-      groups.join(' | '));
+    const builds = []; for (const l of lines) if (builds[builds.length - 1] !== l[col('build')]) builds.push(l[col('build')]);
+    const order = (b) => {
+      const mine = lines.filter((l) => l[col('build')] === BUILDS[b]);
+      const groups = []; for (const l of mine) if (groups[groups.length - 1] !== l[col('group')]) groups.push(l[col('group')]);
+      const trialGroup = b === 1 && waiting ? groups[0] : null; const colorGroup = moved ? groups[groups.length - 1] : null;
+      const middle = groups.slice(trialGroup ? 1 : 0, colorGroup ? -1 : undefined);
+      const castGroups = CAST_ORDER.flatMap((p) => [`${p}: references`, p]).filter((g) => middle.includes(g));
+      const gradeGroups = middle.slice(castGroups.length + (middle.includes('Two or more of the cast') ? 1 : 0));
+      return { mine, groups, trialGroup, colorGroup, middle, castGroups, gradeGroups };
+    };
+    const one = order(1); const two = order(2);
+    const label = (g) => ({ PK3: 'Pre-K 3', PK4: 'Pre-K 4', K: 'Kindergarten', 1: 'Grade 1' }[g]);
+    ok('the spreadsheet runs in two builds, build 1 (pre-K 3 to grade 1, with every character reference) and then build 2 (grade 2 and up), each in Mikey\'s painting order: in build 1 the coloring trial first while it waits, then each person\'s references and their pictures, person by person, then two or more of the cast, then by grade from pre-K 3 to grade 1, then the coloring pages on Lucid Origin; in build 2 the same from grade 2, its last grade group the maps; numbered from 1 through both, each group once in its build (pass NJ)',
+      head[1] === 'build' && builds.join('|') === `${BUILDS[1]}|${BUILDS[2]}` && lines.every((l, k) => Number(l[col('order')]) === k + 1)
+      && [one, two].every((o) => o.groups.length === new Set(o.groups).size && o.middle.slice(0, o.castGroups.length).join() === o.castGroups.join() && (!moved || /on Lucid Origin, painted last/.test(o.colorGroup)))
+      && one.castGroups[0] === 'Mike: references' && one.gradeGroups.join('|') === EARLY_GRADES.map(label).join('|') && (!waiting || one.trialGroup === TRIAL_GROUP)
+      && two.castGroups.every((g) => !/: references$/.test(g)) && two.gradeGroups[0] === 'Grade 2' && two.gradeGroups[two.gradeGroups.length - 1].startsWith('No grade') && !two.groups.includes(TRIAL_GROUP),
+      `${one.groups.join(' | ')} || ${two.groups.join(' | ')}`);
+    // What goes in each build: every character sheet and Wonder portrait in build 1 (all seven people at every age, the older ones too,
+    // as Mikey asked), every lesson, story and long story picture by its course's grade, the maps in build 2, and the early file the
+    // same rows as build 1, numbered the same.
+    const early = readFileSync('docs/LEONARDO-PROMPTS-EARLY.csv', 'utf8').trim();
+    const wrongBuild = lines.filter((l) => { const s = l[col('serial')]; const g = l[col('grade')]; const b = l[col('build')] === BUILDS[1] ? 1 : 2;
+      if (/^[CU]\d/.test(s)) return b !== 1; if (/^M\d/.test(s)) return b !== 2; if (l[col('group')] === TRIAL_GROUP) return b !== 1;
+      return g ? b !== (['Pre-K 3', 'Pre-K 4', 'Kindergarten', 'Grade 1'].includes(g) ? 1 : 2) : false; }).map((l) => l[col('serial')]);
+    const sheetsIn1 = one.mine.filter((l) => /^C\d/.test(l[col('serial')])).length;
+    const want1 = csvText(ledger, earmarks, { build: 1 });
+    ok('every character sheet and Wonder portrait is in build 1, every picture with a grade is in its grade\'s build and every map in build 2, and docs/LEONARDO-PROMPTS-EARLY.csv is build 1 alone, its rows numbered as in the whole spreadsheet (node tools/prompts-csv.mjs --build 1) (pass NJ)',
+      wrongBuild.length === 0 && sheetsIn1 === sheetsListed.length && early === want1 && want1.split('\n').length - 1 === one.mine.length && want1.split('\n')[1] === want.split('\n')[1]
+      && buildOf({ serial: 'C99', grade: null, where: 'character sheet' }) === 1 && buildOf({ serial: 'M9', grade: null, where: 'x' }) === 2 && buildOf({ serial: 'S1', grade: '2', where: 'x' }) === 2 && buildOf({ serial: 'S1', grade: '1', where: 'x' }) === 1,
+      `${wrongBuild.slice(0, 8).join(',')}; sheets in build 1 ${sheetsIn1} of ${sheetsListed.length}; early file ${early === want1 ? 'matches' : 'differs'}`);
+    // Since round one's code read: every Let's Color page (each drawing page, letter page and the star) is in build 1, since a page opens
+    // for each lesson passed (coloringUnlocked) and pre-K 3 to grade 1 hold more lessons than Let's Color has pages, so a child opens
+    // every one before grade 2. The rule by a page's style level, planted, put the last four drawing pages (D24 to D27) in build 2.
+    { const { COLORING_PICTURES } = await import('../src/logic.mjs'); const { levelOf } = await import('../tools/coloring-levels.mjs');
+      const earlyLessons = MODULES.filter((m) => { const c = COURSES.find((x) => x.id === m.courseId); return c && EARLY_GRADES.includes(String(c.grade)); }).length;
+      const pageRows = lines.filter((l) => !l[col('grade')] && /^[DLG]\d/.test(l[col('serial')]));
+      const notIn1 = pageRows.filter((l) => l[col('build')] !== BUILDS[1]).map((l) => l[col('serial')]);
+      const byLevel = pageRows.filter((l) => { const s = l[col('serial')]; const lv = /^L\d/.test(s) ? 'L' : levelOf(s, l[col('where')]); return !(lv === 'L' || EARLY_GRADES.includes(String(lv))); }).map((l) => l[col('serial')]);
+      ok(`every Let's Color page (${pageRows.length} rows: the drawing pages, the letter pages and the star) is in build 1, since a child opens all ${COLORING_PICTURES.length} before grade 2 (${earlyLessons} lessons from pre-K 3 to grade 1); the rule by style level, planted, is caught (round one's code read)`,
+        1 + earlyLessons >= COLORING_PICTURES.length && pageRows.length >= 50 && notIn1.length === 0 && ['D24', 'D25', 'D26', 'D27'].every((x) => byLevel.includes(x)),
+        JSON.stringify({ notIn1, byLevel, earlyLessons })); }
+    // Since round one's code read the group of pictures with no grade names only what is in it, build by build: the Wonder portraits sit
+    // in their persons' groups, build 2's group is the maps, and build 1's holds the Let's Color pages only if their trial fails (until
+    // then they are painted last on Lucid Origin). A name that names the portraits, as pass NI's did, planted, is caught.
+    { const pc = await import('../tools/prompts-csv.mjs');
+      const kindOf = (serial) => (/^M\d/.test(serial) ? 'maps' : /^U\d/.test(serial) ? 'Wonder portraits' : /^D\d/.test(serial) ? "Let's Color drawing pages" : /^L\d/.test(serial) ? 'letter pages' : /^G\d/.test(serial) ? 'the star' : 'other');
+      const namesWhatItHolds = (name, serials) => { const named = (name.split('No grade: ')[1] || '').split(/, and |, | and /).filter(Boolean); const held = [...new Set(serials.map(kindOf))]; return named.length === held.length && held.every((k) => named.includes(k)); };
+      const noGrade = lines.filter((l) => /^No grade/.test(l[col('group')]));
+      const groups = [...new Set(noGrade.map((l) => l[col('group')]))];
+      const was = { ...pc.COLORING_TRIAL }; pc.COLORING_TRIAL.pages = 'failed'; pc.COLORING_TRIAL.letters = 'failed';
+      const ifFailed = pc.noGradeGroupName(1); Object.assign(pc.COLORING_TRIAL, was);
+      ok(`the group of pictures with no grade names only what is in it: build 2's is ${JSON.stringify(pc.noGradeGroupName(2))} and holds the ${noGrade.length} maps, build 1 has none while the Let's Color trial waits, and with the trial failed build 1's names its pages; a name with the Wonder portraits, planted, is caught (round one's code read)`,
+        groups.length === 1 && groups[0] === pc.noGradeGroupName(2) && namesWhatItHolds(groups[0], noGrade.map((l) => l[col('serial')])) && noGrade.every((l) => l[col('build')] === BUILDS[2])
+        && pc.noGradeGroupName(1) === 'No grade' && ifFailed === "No grade: Let's Color drawing pages, letter pages and the star" && !/portrait/i.test(groups[0] + ifFailed)
+        && !namesWhatItHolds('No grade: Wonder portraits and maps', noGrade.map((l) => l[col('serial')])),
+        JSON.stringify({ groups, ifFailed, serials: noGrade.map((l) => l[col('serial')]) })); }
+    const names = Object.values(REFERENCE_NAMES); const inColorGroup = (l) => moved && /on Lucid Origin, painted last/.test(l[col('group')]);   // the Lucid groups of both builds (pass NJ)
     // Every row names its model: Nano Banana 2.1 for every painting, reference and map, and for a coloring page the model its
     // kind's trial gives it (Lucid Origin, said with its fallback while the trial waits); the trial's rows name one model each.
     const trialLines = lines.filter((l) => l[col('group')] === TRIAL_GROUP);
     ok('every row names its model and its settings: Nano Banana 2.1 for every painting, reference and map, and for a coloring page the model its trial gives it; every character sheet has a reference name of its own, and a picture names each reference it needs',
       MODEL === 'Nano Banana 2.1' && COLORING_MODEL === 'Lucid Origin' && lines.every((l) => l[col('settings')].length > 20) && sheetsListed.every((s) => REFERENCE_NAMES[s]) && new Set(names).size === names.length
       && lines.filter((l) => l[col('group')] !== TRIAL_GROUP).every((l) => l[col('model')] === modelFor(l[col('serial')]) && (coloringKind(l[col('serial')]) || l[col('model')] === MODEL))
-      && lines.filter((l) => coloringKind(l[col('serial')]) && l[col('group')] !== TRIAL_GROUP).every((l) => (l[col('group')] === colorGroup) === onLucid(l[col('serial')]) && /Lucid Origin/.test(l[col('model')]) === onLucid(l[col('serial')]))
+      && lines.filter((l) => coloringKind(l[col('serial')]) && l[col('group')] !== TRIAL_GROUP).every((l) => inColorGroup(l) === onLucid(l[col('serial')]) && /Lucid Origin/.test(l[col('model')]) === onLucid(l[col('serial')]))
       && lines.filter((l) => l[col('references to attach')]).every((l) => l[col('references to attach')].split(', ').every((x) => /^[A-Z][a-z]+ - \d \(C\d+\)$/.test(x))), names.join(', '));
     // The trial (Q44): five pages, one each of pre-K 3, pre-K 4, kindergarten and grade 2 and one letter page, each painted on
     // Nano Banana 2.1 and then on Lucid Origin with no reference, and none of them listed again later while the trial waits.
@@ -205,8 +255,8 @@ ok('the ledger has no rows the app does not use', orphans.length === 0, orphans.
       trialLines.map((l) => `${l[col('serial')]}:${l[col('model')]}`).join(','));
     // A coloring page on Lucid Origin attaches its level's approved trial page as a Style Reference, so a level's outlines stay alike.
     ok('every coloring page on Lucid Origin attaches its level\'s approved page as a Style Reference (Q44)',
-      lines.filter((l) => l[col('group')] === colorGroup).every((l) => /as a Style Reference at Mid/.test(l[col('settings')])) && (!moved || lines.filter((l) => l[col('group')] === colorGroup).length >= 25),
-      String(lines.filter((l) => l[col('group')] === colorGroup).length));
+      lines.filter(inColorGroup).every((l) => /as a Style Reference at Mid/.test(l[col('settings')])) && (!moved || lines.filter(inColorGroup).length >= 25),
+      String(lines.filter(inColorGroup).length));
     // Leonardo's page for Lucid Origin takes a prompt of up to 2,000 characters, so every coloring page's folded prompt fits it.
     const long = lines.filter((l) => coloringKind(l[col('serial')]) && l[col('prompt (bans folded in)')].length >= 2000).map((l) => l[col('serial')]);
     ok('every coloring page\'s folded prompt fits Lucid Origin\'s 2,000 characters (Q44)', long.length === 0 && lines.some((l) => coloringKind(l[col('serial')])), long.join(',')); }
@@ -406,5 +456,31 @@ ok('the ledger has no rows the app does not use', orphans.length === 0, orphans.
   ok(`no person a pre-K row writes from pass NF on looks like another of their kind in the course of the same subject in the other pre-K grade either, by hair and clothing color, hair written alike or one shared hair word (EARMARKS A97; older pairs only that reading finds wait as counts that only fall, ${counts}, at most ${WIDE_WAITING.look}, ${WIDE_WAITING.hair} and ${WIDE_WAITING.near}; three plants caught beside the rows they echo, which the narrow reading misses)`,
     Object.keys(READINGS).every((k) => now[k].newer.length === 0 && now[k].waiting.length <= WIDE_WAITING[k]) && plants.every(Boolean),
     `new: ${Object.keys(READINGS).flatMap((k) => now[k].newer.map((p) => k + ' ' + p[0].serial + ' and ' + p[1].serial)).join('; ')}; waiting ${counts}; plants ${plants}`); }
+// Skin in a person's look (Mikey's answer to Q99, pass NJ: "Q99 - A"; EARMARKS A123): every row from pass NI's new serials on that paints a
+// person writes skin in plain words (pass NI's writer began it; S4135 "warm brown skin"), and every character sheet and Wonder portrait
+// writes its person's skin as docs/CHARACTERS.md's Skin table gives it (Mikey's words for five, Claude's choice for Frederick and Chloe at his
+// word). An older row gains skin as its lesson is read again (the early build's rows before they are painted, EARMARKS L23), so the rows
+// before pass NI are not read here. A coloring page (D, L or G) is line art with white insides, so it writes no skin (round two's whole read
+// of EARMARKS: a skin word asks the painter for what the page's style forbids); a painting in color does. Plants: a new painting of a person
+// with no skin, C1 without Mike's words, and a new coloring page asked for skin, each caught.
+{ const { foldPrompt: fold, ledgerRows: rowsOf, hasPerson: person } = await import('../tools/prompts-csv.mjs');
+  const FROM = { S: 4135, CS: 661, P: 197 };   // paintings in color only (round two: the coloring pages' D, L and G write no skin)
+  const isNew = (serial) => { const m = /^(CS|[A-Z])(\d+)$/.exec(serial); return !!(m && FROM[m[1]] !== undefined && Number(m[2]) >= FROM[m[1]]); };
+  const body = (prompt) => String(prompt).split(/\s*Style:/)[0];
+  const skinless = (rows) => rows.filter(([serial, , scene, prompt]) => isNew(serial) && person(scene) && !/\bskin\b/i.test(body(prompt))).map((r) => r[0]);
+  // A coloring page from pass NI's serials on that names skin (D301 and L27 and G2 on), which its white insides cannot show.
+  const pageSkin = (rows) => rows.filter(([serial, , , prompt]) => { const m = /^([DLG])(\d+)$/.exec(serial); return !!m && Number(m[2]) >= ({ D: 301, L: 27, G: 2 })[m[1]] && /\bskin\b/i.test(body(prompt)); }).map((r) => r[0]);
+  const cast = readFileSync('docs/CHARACTERS.md', 'utf8'); const table = (cast.split('## Skin, the same in every picture')[1] || '').split('\n## ')[0];
+  const words = Object.fromEntries([...table.matchAll(/^\| (Mike|Savanah|Jaxon|Harlow|Georgette|Frederick|Chloe) \| ([a-z -]+skin[a-z -]*) \|/gm)].map((m) => [m[1], m[2].trim()]));
+  const sheetPeople = { C1: 'Mike', C2: 'Mike', C3: 'Chloe', C4: 'Chloe', C12: 'Chloe', C5: 'Frederick', C6: 'Frederick', C13: 'Frederick', C7: 'Savanah', C8: 'Savanah', C9: 'Jaxon', C10: 'Harlow', C11: 'Georgette', C14: 'Georgette', U2: 'Frederick', U3: 'Chloe', U4: 'Georgette', U5: 'Mike' };
+  const looksOff = (rows) => Object.entries(sheetPeople).filter(([serial, who]) => { const r = rows.find((x) => x[0] === serial); if (!r || !words[who]) return true;
+    const text = body(r[3]); const w = words[who]; return !text.includes(w); }).map(([s]) => s);   // the table's words exactly (round one's code read: U2's turned-round form had passed)
+  const rows = rowsOf(ledger); const newPeople = rows.filter(([serial, , scene]) => isNew(serial) && person(scene)).length;
+  const plantRow = ['S99999', 'q-v-and-y', 'A small boy smiling', 'A small boy with short black hair, in a red shirt, smiling. Style: Clean 3D vector illustration.', 'text', 'Needed'];
+  const plantSheet = rows.map((r) => (r[0] === 'C1' ? [r[0], r[1], r[2], r[3].replace(`${words.Mike}, `, ''), r[4], r[5]] : r));
+  const plantPage = ['D999', 'q-v-and-y', 'A girl coloring', 'A girl with light tan skin coloring a kite, in thick black outlines. Style: Clean black line art for a coloring page.', 'text', 'Needed'];
+  ok(`every painting in color from pass NI's serials on that paints a person writes skin (${newPeople} rows), every character sheet and Wonder portrait writes its person's skin as docs/CHARACTERS.md gives it (${Object.keys(words).length} people, ${Object.keys(sheetPeople).length} rows), and no coloring page from pass NI's serials on asks for skin; a new painting with no skin, C1 without Mike's words and a new coloring page asked for skin, planted, each caught (Q99 (a), pass NJ; the coloring pages since round two's whole read)`,
+    newPeople >= 8 && skinless(rows).length === 0 && Object.keys(words).length === 7 && looksOff(rows).length === 0 && pageSkin(rows).length === 0 && skinless([...rows, plantRow]).includes('S99999') && looksOff(plantSheet).includes('C1') && pageSkin([...rows, plantPage]).includes('D999'),
+    `skinless ${skinless(rows).join(',')}; looks off ${looksOff(rows).join(',')}; coloring pages with skin ${pageSkin(rows).join(',')}; words ${JSON.stringify(words)}`); }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

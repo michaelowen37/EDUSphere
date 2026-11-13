@@ -24,6 +24,20 @@ Characters age faster than the learner, so a student who starts in pre-K meets t
 - **Jaxon**, six, Mike and Savanah's son. Sensitive; cares for everyone in need. Sandy light-brown hair, a green checkered shirt.
 - **Harlow**, three, their daughter. Mischievous, adorable, very sharp. Blonde curls in pigtails with sage-green bows.
 
+## Skin, the same in every picture (Mikey's answer to Q99, pass NJ)
+
+Every picture row painted in color writes each person's skin in plain words, never a word for where anyone is from, the same in every row the person appears in, as the house already asks of hair and clothes (Mikey, pass NJ: "Q99 - A"); a coloring page, line art with white insides for a child to color, writes none (since round two of pass NJ). For the core cast, his words of pass NJ: "For reference, Mike the skeptic has Olive toned tan skin, Savanah, Jaxon and Harlow are a little more pale white.  Georgette is the same pale white.  Frederick and Chloe are also white but you can choose the tone." Frederick's and Chloe's tones are Claude's choice at that word, chosen so the two read apart from each other and from the pale four. Each character sheet (C1 to C14) and Wonder portrait (U2 to U5) writes its person's words below, and so does every new row that paints them; an older row gains them as its lesson is read again, and every early row before the early build is painted (EARMARKS L23).
+
+| Person | Skin, as a row writes it | Whose words |
+|---|---|---|
+| Mike | olive-toned tan skin | Mikey's ("Olive toned tan skin", hyphenated as a describing word before a noun) |
+| Savanah | pale white skin | Mikey's ("a little more pale white") |
+| Jaxon | pale white skin | Mikey's |
+| Harlow | pale white skin | Mikey's |
+| Georgette | pale white skin | Mikey's ("the same pale white") |
+| Frederick | fair skin with a rosy tone | Claude's, at Mikey's word ("you can choose the tone") |
+| Chloe | light skin with a warm golden tone | Claude's, at Mikey's word |
+
 ## The Wonder voices are the cast grown up
 
 The four Wonder voices are Frederick, Chloe, Georgette and Mike speaking as grown people, each from the way of seeing they live by (pass LY), while the stories meet Mike, Chloe and Frederick as small children first. Mikey (pass LZ): "I'm okay with the grown voices for wonder questions. It's like a sophisticated story that has flashbacks to their childhood to show how they developed the mindset they have today. All of the little experiences they had throughout life led them to either become a scientist, artist, grandparent of faith or skeptic. It's one of the beautifully unique aspects of this app."

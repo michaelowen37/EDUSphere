@@ -18,7 +18,10 @@ for (const f of files) {
   ok(`${f}: every record comes back with all its events`, merged.records.every((r) => data.records.find((x) => x.name === r.name).events.length === r.events.length));
   ok(`${f}: the report can still be built from a restored record`, merged.records.every((r) => L.buildReport(r.name, r.events).modules.length > 0));
   ok(`${f}: mastery is preserved after restore`, L.deriveProgress(merged.records.find((r) => r.name === 's_1042').events).masteredIds.includes('count-to-5'));
-  ok(`${f}: educator settings come back`, merged.wonderReview.approved.length > 0 && merged.covered.covered.length > 0);
+  // Since pass NJ every Wonder question starts on and the state is version 2 (Mikey: "I think I want the wonder questions pre-approved by
+  // default too"): an older file's removals come back, its approvals decide nothing, and the November file's question turned off stays off.
+  { const was = L.wonderReviewState(data.wonderReview);
+    ok(`${f}: educator settings come back`, merged.covered.covered.length > 0 && merged.wonderReview.version === 2 && was.hidden.every((id) => !L.isWonderOn(merged.wonderReview, id)) && L.wonderOnCount(merged.wonderReview) === L.WONDER.length - was.hidden.filter((id) => L.WONDER.some((w) => w.id === id)).length); }
   ok(`${f}: pictures and levels survive`, merged.roster.students.some((st) => st.picture === 'fox' && st.level === 'early'));
   // Everything the screens derive from a restored record still runs, and restoring into a classroom
   // that already uses newer fields keeps those fields.

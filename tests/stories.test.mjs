@@ -425,10 +425,12 @@ for (const [, cs, id] of LONG_ENTRIES) {
 // experiments' choking list (the AAP's, and the CPSC small-parts cylinder), with acorns, seeds, hard candy, cherry tomatoes, hot dogs,
 // gum, magnets and batteries added, is read in every pre-K module story and long story and in every picture row of a pre-K lesson,
 // story or coloring page; a coat's buttons are clothing, not a button. A hit passes only when SAFETY_READ lists it with the
-// reason it is safe in that scene, and an entry nothing hits any more leaves the list.
+// reason it is safe in that scene, and an entry nothing hits any more leaves the list. Since pass NI's round two (the final read: a
+// marker's cap, on healthychildren.org's choking list, was held by the story brief alone) a pen's or a marker's cap is read too ("a
+// marker cap", "a plain marker with its cap on"), one item, 'pen or marker cap'.
 { const { readFileSync } = await import('node:fs');
-  const CHOKE = /\b(coins?|pennies|penny|buttons?(?![-\w])|corks?|pebbles?|marbles?|beads?|raisins?|grapes?|popcorn|peanuts?|nuts?|balloons?|small toys?|acorns?|seeds?|hard cand(?:y|ies)|cherry tomato(?:es)?|hot dogs?|chewing gum|gum|magnets?|batter(?:y|ies))\b/gi;
-  const item = (w) => { const x = w.toLowerCase(); return x.startsWith('batter') ? 'battery' : x === 'pennies' ? 'penny' : x.replace(/s$/, ''); };
+  const CHOKE = /\b(coins?|pennies|penny|buttons?(?![-\w])|corks?|pebbles?|marbles?|beads?|raisins?|grapes?|popcorn|peanuts?|nuts?|balloons?|small toys?|acorns?|seeds?|hard cand(?:y|ies)|cherry tomato(?:es)?|hot dogs?|chewing gum|gum|magnets?|batter(?:y|ies)|(?:pen|marker)s? (?:with (?:its|the|a) )?caps?)\b/gi;
+  const item = (w) => { const x = w.toLowerCase(); return /\bcaps?$/.test(x) ? 'pen or marker cap' : x.startsWith('batter') ? 'battery' : x === 'pennies' ? 'penny' : x.replace(/s$/, ''); };
   const SAFETY_READ = {
     'patterns bead': 'big beads for stringing a necklace, said big in the words and asked big in the pictures, a pre-K classroom material; Mom is there at the end',
     'a-and-b acorn': 'pointed at on the ground under the oak, never picked up; its picture asks for the acorn on the ground, not in his hand, his grandma beside him',
@@ -438,6 +440,7 @@ for (const [, cs, id] of LONG_ENTRIES) {
     'circle-and-square small toy': 'a small toy ramp on the floor, far too big to swallow',
     'draw-the-shapes button': 'a button on a table, painted from above as a round shape found at home, never handled',
     'first-marks balloon': 'a balloon drawn on paper, the page a child colors',
+    'write-your-name pen or marker cap': 'a plain marker lying whole on the table with its cap on, beside the lunch bag a grown-up wrote on (S4141 and coloring page D302), never a loose cap; marker caps are on healthychildren.org\'s choking list (pass NI, the story check)',
     // A pre-K lesson's own lines, read since round two's code check (pass MM).
     'lesson:four-feelings balloon': 'a whole balloon floating away into the sky, out of reach, the reason a child feels sad',
     'lesson:a-and-b acorn': 'a word that starts with A, said and shown as a word, never an acorn in a child\'s hand',
@@ -566,24 +569,80 @@ for (const [, cs, id] of LONG_ENTRIES) {
 { const { readFileSync } = await import('node:fs'); const ledgerRows = new Map(); for (const line of readFileSync(new URL('../docs/ART-REQUESTS.md', import.meta.url), 'utf8').split('\n')) { const c = line.split('|').map((x) => x.trim()); if (/^S\d+$/.test(c[1] || '')) ledgerRows.set(c[1], (c[3] || '').split('(check:')[0] + ' ' + (c[4] || '')); }
   const gradeOfStory = (id) => { const c = L.COURSES.find((x) => x.modules.some((m) => m.id === id)); return c ? c.grade : null; };
   const FIND = /(?:^|[.!?]\s+)([A-Z][a-z]+)\s+(?:starts|ends)\s+with\s+[a-z-]+!/g;
+  // Since pass NI (the story check): a find said after its sound, "Vvv, van!", "Yuh, yuh, yarn!" or after a word and its sound, "House, huh,
+  // hat!", is a find too: the word right after a written sound and before the exclamation mark. The check read 8 finds by the first form
+  // alone and missed 19 in nine stories (15 said after their sound and 4 after a word's last part; the story check's own count was 16 in
+  // seven), all clean by hand; a toy van put in S4135's prompt, planted, is caught. Since round two's code read 29, the two "Sock, sss!" and
+  // "Ball, buh!" said before their sound with them.
+  const SOUNDED = (w) => !!w && (/^(?:[bcdfghjklmnpqrstvwxyz]{1,2}uh|([a-z])\1{2,}|shh|ks)$/i.test(w) || !!L.soundOfNotation(w.toLowerCase()));
+  // Since the second story read (pass NI): a word's last part said after its first sound is a sound too, an ending the app plays (ig, og,
+  // at) or a long vowel said as a word (oh, eye, ooh), so "Duh, og, dog!" and "Puh, eye, pie!" are finds, where the reading had missed four.
+  const PART = (w) => ['ig', 'og', 'at'].includes(String(w).toLowerCase()) || Object.hasOwn(L.VOWEL_WORDS, String(w).toLowerCase());
+  const findsIn = (p) => { const out = [...p.matchAll(FIND)].map((m) => ({ w: m[1].toLowerCase(), at: m.index + (m[0].length - m[0].trimStart().length) }));
+    for (const m of p.matchAll(/((?:[A-Za-z]+,\s+)+)([A-Za-z]+)!/g)) { const toks = m[1].split(/,\s+/).filter(Boolean); const last = toks[toks.length - 1];
+      if ((SOUNDED(last) || (PART(last) && toks.slice(0, -1).some(SOUNDED))) && !SOUNDED(m[2])) out.push({ w: m[2].toLowerCase(), at: m.index });
+      // Since round two's code read: a find said before its one sound ("Sock, sss!", "Ball, buh!") is a find of its word too, where the
+      // two open their sentence (in "she said, Sss!" the said is no find); after said, as in Very first sound's "said, Fish, fff!", it is
+      // not read, since the narrator has named the toy the child sorts (the third read's code read).
+      else if (SOUNDED(m[2]) && toks.length === 1 && !SOUNDED(toks[0]) && !PART(toks[0]) && /(?:^|[.!?]["\u201D]?\s+)$/.test(p.slice(0, m.index))) out.push({ w: toks[0].toLowerCase(), at: m.index }); }
+    return out; };
   const offOf = (id, st, rows) => { const out = []; const ws = [].concat(st.words || []);
-    ws.forEach((p, fi) => { for (const m of p.matchAll(FIND)) { const w = m[1].toLowerCase(); const re = new RegExp('\\b' + w + '(?:s|es)?\\b', 'i'); const at = m.index + (m[0].length - m[0].trimStart().length);
-      const earlier = [...ws.slice(0, fi), p.slice(0, at)].join(' ').split(L.SENTENCE_BREAK).filter((s) => re.test(s) && !new RegExp('^(?:the |a |an )?' + w + '!$', 'i').test(s.trim()));
+    ws.forEach((p, fi) => { for (const { w, at } of findsIn(p)) { const re = new RegExp('\\b' + w + '(?:s|es)?\\b', 'i');
+      // The child calling it out first is the find itself: alone ("Moon!"), or ending the sentence right before the find, in the find's own
+      // paragraph ("He handed it to Mom and said, Spoon!", since pass NI's wider reading, which reads "Sss-puh, spoon!" after it as the find).
+      // Since the second story read (pass NI) only there: a "said, Spoon!" a paragraph earlier, or earlier in the find's own paragraph, is
+      // anyone's, a grown-up's too, so it names the find before it is found.
+      const alone = (s) => new RegExp('^(?:the |a |an )?' + w + '!$', 'i').test(s.trim());
+      // Since pass NI's round two (the whole read of INDEPENDENT-CHECKS): a call alone is the child's only where the words after it give
+      // it to no grown-up ("Moon! she said." and "Net! said Ollie." pass; "Spoon! said Mom." a paragraph early named the find and passed).
+      // Since the third read's code read: a grown-up named after a child's name (Rahul's mom, as the early stories say Ava's mom and Mia's
+      // mom), an aunt or an uncle unnamed (his aunt), a nurse, a doctor, a coach, an abuela or an abuelo, and told, answered, replied and cheered.
+      const GROWN = '(?:(?:his|her|their|the|[A-Z][a-z]+\'s) )?(?:mom|dad|mama|papa|mommy|daddy|grandma|grandpa|gran|granny|nana|aunt(?: \\w+)?|uncle(?: \\w+)?|mr\\. \\w+|ms\\. \\w+|mrs\\. \\w+|miss \\w+|teacher|nurse|doctor|coach|abuela|abuelo)';
+      const SAYS = '(?:said|asked|called|shouted|cried|whispered|added|laughed|sang|told|answered|replied|cheered)';
+      const byGrownUp = (next) => new RegExp('^' + SAYS + '\\s+' + GROWN + '\\b|^' + GROWN + '\\s+' + SAYS + '\\b', 'i').test(String(next || '').trim());
+      const childCall = (list, i, after) => alone(list[i]) && !byGrownUp(i + 1 < list.length ? list[i + 1] : after);
+      const own = p.slice(0, at).split(L.SENTENCE_BREAK).map((s) => s.trim()).filter(Boolean); const rightBefore = [...own].reverse().find((s) => /[.!?]$/.test(s));
+      // Since round two's code read: a "said, Spoon!" right before the find is the child's only where no grown-up says it ("Mom pointed and
+      // said, Spoon!" passed, the label calling it Rahul's).
+      // Since the third read's code read a grown-up who says it after then, and, so or but is read too ("Then Mom said, Spoon!").
+      const calledRightBefore = (s) => s.trim() === rightBefore && new RegExp('\\bsaid,\\s+(?:the |a |an )?' + w + '!$', 'i').test(s.trim()) && !new RegExp('(?:^|\\b(?:then|and|so|but) )' + GROWN + '\\b[^,.!?]*\\bsaid,', 'i').test(s.trim());
+      const before = ws.slice(0, fi).join(' ').split(L.SENTENCE_BREAK);
+      const earlier = [...before.filter((s, i) => re.test(s) && !childCall(before, i, p)), ...own.filter((s, i) => re.test(s) && !childCall(own, i, p.slice(at)) && !calledRightBefore(s))];
       if (earlier.length) out.push(id + ': ' + w + ' said before it is found ("' + earlier[0].trim().slice(0, 60) + '")');
       const shown = [[st.art, st.alt], ...(st.more || []).filter((x) => x.after < fi).map((x) => [x.serial, x.alt])];
       for (const [serial, alt] of shown) if (re.test(alt || '') || re.test(rows.get(serial) || '')) out.push(id + ': ' + w + ' shown in ' + serial + ' before it is found');
       if (re.test(st.title || '')) out.push(id + ': ' + w + ' in the title'); } });
     return out; };
   const stories = Object.entries(STORIES).filter(([id]) => early.has(gradeOfStory(id)));
-  const finds = stories.reduce((n, [, st]) => n + [].concat(st.words || []).reduce((k, p) => k + [...p.matchAll(FIND)].length, 0), 0);
+  const finds = stories.reduce((n, [, st]) => n + [].concat(st.words || []).reduce((k, p) => k + findsIn(p).length, 0), 0);
   const now = stories.flatMap(([id, st]) => offOf(id, st, ledgerRows));
   const bear = STORIES['hear-it-in-a-word']; const W4 = bear.words[4];
   const plantWords = { ...bear, words: bear.words.map((p, i) => (i === 4 ? p.replace('there sat something red on wheels', 'there sat his red wagon') : p)) };
   const plantRow = new Map(ledgerRows); plantRow.set('S4127', ledgerRows.get('S4127') + ' a little red wagon');
   const plantTitle = { ...bear, title: 'Where is the wagon?' };
   const nearMiss = { ...bear, words: bear.words.map((p, i) => (i === 4 ? p.replace('Wagon starts with wuh!', 'Wagon! he said. Wagon starts with wuh!') : p)) };
-  const plants = [W4.includes('there sat something red on wheels') && offOf('bear', plantWords, ledgerRows).length > 0, offOf('bear', bear, plantRow).length > 0, offOf('bear', plantTitle, ledgerRows).length > 0, W4.includes('Wagon starts with wuh!') && offOf('bear', nearMiss, ledgerRows).length === 0];
-  ok(`no early-years story names a find before the child finds it, in its words, its earlier pictures or its title (MISTAKE-CLASSES C1, pass NF; ${stories.length} stories, ${finds} finds read; the wagon's old narration, a wagon in S4127 and a title naming it, planted, caught, and the child's own "Wagon!" first passed)`,
-    stories.length >= 273 && finds >= 8 && now.length === 0 && plants.every(Boolean), `${now.slice(0, 6).join(' | ')}; plants ${plants}`); }
+  const plantSpy = new Map(ledgerRows); plantSpy.set('S4135', ledgerRows.get('S4135') + ' a toy van on the rug');
+  // The second story read's near miss (pass NI): Mom's "said, Spoon!" in the paragraph before Rahul's find, and in his own paragraph two
+  // sentences before it, each caught; his own, right before "Sss-puh, spoon!", passed.
+  const picnic = STORIES['star-and-spoon'];
+  const momFirst = { ...picnic, words: picnic.words.map((p, i) => (i === 4 ? p.replace('Mom nodded.', 'Mom nodded. She pointed and said, Spoon!') : p)) };
+  const momInOwn = { ...picnic, words: picnic.words.map((p, i) => (i === 5 ? p.replace('Rahul said it slowly.', 'Mom said, Spoon! Rahul said it slowly.') : p)) };
+  // Round two's near miss (pass NI): Mom's call alone, "Spoon! said Mom.", in the paragraph before his find, caught; Rahul's own there, passed.
+  const momAlone = { ...picnic, words: picnic.words.map((p, i) => (i === 4 ? p.replace('Mom nodded.', 'Mom nodded. Spoon! said Mom.') : p)) };
+  const rahulAlone = { ...picnic, words: picnic.words.map((p, i) => (i === 4 ? p.replace('Mom nodded.', 'Mom nodded. Spoon! said Rahul.') : p)) };
+  const momRightBefore = { ...picnic, words: picnic.words.map((p, i) => (i === 5 ? p.replace('He handed it to Mom and said, Spoon!', 'He handed it to Mom. Mom pointed and said, Spoon!') : p)) };
+  // The third read's near misses: "Then Mom said, Spoon!" right before his find, and "Spoon! said Rahul's mom." a paragraph early, each caught.
+  const thenMom = { ...picnic, words: picnic.words.map((p, i) => (i === 5 ? p.replace('He handed it to Mom and said, Spoon!', 'He handed it to Mom. Then Mom said, Spoon!') : p)) };
+  const rahulsMom = { ...picnic, words: picnic.words.map((p, i) => (i === 4 ? p.replace('Mom nodded.', "Mom nodded. Spoon! said Rahul's mom.") : p)) };
+  // And a find read only by its parts (Two parts at the pond's "Duh, og, dog!"): the narrator's dog where the story says puppy, caught.
+  const pond = STORIES['dog-and-frog']; const pondDog = { ...pond, words: pond.words.map((p, i) => (i === 0 ? p.replace('their puppy splashed', 'their dog splashed') : p)) };
+  const plants = [W4.includes('there sat something red on wheels') && offOf('bear', plantWords, ledgerRows).length > 0, offOf('bear', bear, plantRow).length > 0, offOf('bear', plantTitle, ledgerRows).length > 0, W4.includes('Wagon starts with wuh!') && offOf('bear', nearMiss, ledgerRows).length === 0,
+    offOf('spy', STORIES['q-v-and-y'], ledgerRows).length === 0 && offOf('spy', STORIES['q-v-and-y'], plantSpy).some((x) => /van shown in S4135/.test(x)),
+    picnic.words[5].includes('He handed it to Mom and said, Spoon! Sss-puh, spoon!') && offOf('picnic', picnic, ledgerRows).length === 0 && offOf('picnic', momFirst, ledgerRows).some((x) => /spoon said before/.test(x)) && offOf('picnic', momInOwn, ledgerRows).some((x) => /spoon said before/.test(x)),
+    picnic.words[4].includes('Mom nodded.') && offOf('picnic', momAlone, ledgerRows).some((x) => /spoon said before/.test(x)) && offOf('picnic', rahulAlone, ledgerRows).length === 0 && offOf('picnic', momRightBefore, ledgerRows).some((x) => /spoon said before/.test(x))
+      && offOf('picnic', thenMom, ledgerRows).some((x) => /spoon said before/.test(x)) && offOf('picnic', rahulsMom, ledgerRows).some((x) => /spoon said before/.test(x)),
+    pond.words[0].includes('their puppy splashed') && offOf('pond', pond, ledgerRows).length === 0 && offOf('pond', pondDog, ledgerRows).some((x) => /dog said before/.test(x))];
+  ok(`no early-years story names a find before the child finds it, in its words, its earlier pictures or its title (MISTAKE-CLASSES C1, pass NF; ${stories.length} stories, ${finds} finds read, since pass NI those said after their sound too, and since round two those said before their one sound; the wagon's old narration, a wagon in S4127, a title naming it, a toy van in S4135's prompt, Mom's "said, Spoon!" before Rahul's find, in his paragraph and the one before, Mom's "Spoon! said Mom." alone the paragraph before and her "said, Spoon!" right before it, and the pond's dog named before "Duh, og, dog!", planted, caught, and the child's own "Wagon!" first, Rahul's "said, Spoon!" right before his find and his "Spoon! said Rahul." the paragraph before passed)`,
+    stories.length >= 275 && finds >= 29 && now.length === 0 && plants.every(Boolean), `${now.slice(0, 6).join(' | ')}; plants ${plants}; finds ${finds}`); }
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;   // never process.exit(): it can drop the last lines of a piped stdout (2026-09-23)

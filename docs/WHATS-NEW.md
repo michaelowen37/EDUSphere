@@ -9,6 +9,13 @@ The newest block is what educators see once, in a pop-up on the classroom page, 
 
 
 
+## November 12, 2026 (Q, V and Y, and writing a name)
+
+- Four-year-olds meet the last three consonants in Q, V and Y. V says vvv, and you can hear it at the very start of V's name. Q and Y are trickier. Q's name starts with cuh and Y's with wuh, but in lots of words Q says kwuh, like queen and quilt, and Y says yuh, like yo-yo and yarn. So for Q and Y, your child listens to the start of a word, not to the letter's name. In the lesson's story, a word called out after its sounds, like "Yuh, yuh, yarn!", and the game I spy each stay on one line.
+- In Write your name, four-year-olds learn that a name's letters always go in the same order, from left to right, with the big first letter first. The app keeps no names, so the lesson asks you to write your child's name on paper with a marker, and your child writes it under yours, one letter at a time, then checks each letter from left to right. Every question in the app is a tap, and nothing your child writes is asked for or kept. A spelled name like "H, e, c, t, o, r" stays on one line, a single letter like "m" stays with the word before it, and More Info shows the tries at writing a name at full size.
+- On a phone, tablet or computer that cannot speak, the letters questions with pictures for answers now show the card for you first too. You say just the pictures' names, and then the letter and the question appear, so your child listens to answer instead of matching a printed name to the letter. After you tap Ready, the card asks you to read the question and then point to each picture and say its name again, just as the voice would. Show the words again now sits under Check answer, so Check answer stays in view on a small phone.
+- Four new Wonder questions for young children are ready for your approval, like every Wonder question: the giggles, a birthday party that feels like too much, winning while a friend is sad, and feeling bored.
+
 ## November 11, 2026 (the grown-up's card in every letters lesson)
 
 - On a phone, tablet or computer that cannot speak, the card for you now comes up in every letters lesson, not only the ones about the sounds letters say. In A and B, Big letters and the three tracing lessons, a question like "Tap the letter B." used to print the letter's name right above the letters, so a child could match the shapes without hearing you. Now you see the card first, read it aloud, and tap Ready to show the letters.

@@ -1486,13 +1486,65 @@ function IconPic({ name, size = 90, tile = false }) {
     // Since pass NF (the lead's look) no mark is a real letter: the second, two uprights joined by two short bars, read as an H at a
     // phone's size, and Look and write asks of this paper whether it is a real letter, so it is a circle with a cross inside it, clear of
     // its neighbors (round one's picture read: a larger cross joined the top row into one chain). The seventh mark, an upright curling right
-    // at its foot beside a small ring, read as L and o, letters First Sounds and Letters traces, so it is gone, the second row centred under
+    // at its foot beside a small ring, read as L and o, letters First Sounds and Letters traces, so it is gone, the second row centered under
     // the first; and the box's cross is drawn thinner in a larger box, since at 64 pixels its X filled in like a die showing four. The
     // triangle, two slanted sides meeting at the top with a bar across, fit pre-K 3's own words for A, so it is gone, and the top row's three
-    // marks are centred over the second row (round two's content and alignment reads; round one's lesson read had asked for it).
+    // marks are centered over the second row (round two's content and alignment reads; round one's lesson read had asked for it).
     scribble: <g><rect x="16" y="14" width="68" height="72" rx="4" fill="#FFFDF5" stroke={dk ? '#E9EEF0' : '#6F7A76'} strokeWidth="3" /><path d="M24 36 Q30 24 36 36 T48 36 T60 36 T72 34 M26 58 C34 46 40 70 48 56 S62 46 68 62 S74 70 76 56" fill="none" stroke="#4A86C5" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" /></g>,
     marks: <g><rect x="16" y="14" width="68" height="72" rx="4" fill="#FFFDF5" stroke={dk ? '#E9EEF0' : '#6F7A76'} strokeWidth="3" /><g fill="none" stroke="#C9573E" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"><g transform="translate(7 0)"><circle cx="26" cy="32" r="5" /><path d="M26 37 L26 46" /><circle cx="41" cy="38" r="6" /><path d="M41 32 L41 44 M35 38 L47 38" /><path d="M59 30 L59 44 M53 37 L65 37 M54.5 32.5 L63.5 41.5 M63.5 32.5 L54.5 41.5" /></g><path d="M32 57 L46 57 L46 71 L32 71 Z M32 57 L46 71 M46 57 L32 71" strokeWidth="2.6" /><path d="M56 64 a2 2 0 1 1 4 0 a4 4 0 1 1 -8 0 a6 6 0 1 1 12 0" /></g></g>,
     word: <g><rect x="16" y="14" width="68" height="72" rx="4" fill="#FFFDF5" stroke={dk ? '#E9EEF0' : '#6F7A76'} strokeWidth="3" /><text x="50" y="60" textAnchor="middle" fontSize="30" fontWeight="700" fill="#2E2E2E" style={{ fontFamily: 'inherit' }}>cat</text></g>,
+    // The words of pre-K 4's Q, V and Y (pass NI; Claude's drawings): a queen and a quilt for Q, a van and a volcano for V, and a yo-yo and a
+    // ball of yarn for Y, each outlined in a dark line on light places and a light one on the dark theme's tiles, so it reads on every tile.
+    // The queen, head and shoulders: a gold crown with three jewels, long black hair, a purple robe with a white fur collar, and a smile.
+    queen: (
+      <g>
+        <path d="M27 42 Q25 22 38 17 L62 17 Q75 22 73 42 Q75 58 71 70 L29 70 Q25 58 27 42 Z" fill="#2B2321" stroke={dk ? '#C9B8AE' : '#1A1412'} strokeWidth="2" strokeLinejoin="round" />
+        <path d="M13 100 Q13 75 34 67 L66 67 Q87 75 87 100 Z" fill="#6E3FA3" stroke={dk ? '#D9C6F2' : '#3E2160'} strokeWidth="3" strokeLinejoin="round" />
+        <path d="M43 52 L57 52 L58 69 Q50 74 42 69 Z" fill="#B97A50" />
+        <path d="M28 68 Q50 84 72 68 L77 74 Q50 94 23 74 Z" fill="#FFFFFF" stroke={dk ? '#E9EEF0' : '#6F7A76'} strokeWidth="1.6" strokeLinejoin="round" />
+        {[[33, 75], [42, 80], [50, 82], [58, 80], [67, 75]].map(([x, y]) => <path key={x} d={`M${x} ${y - 1.6} L${x} ${y + 1.6}`} stroke="#2B2321" strokeWidth="1.6" strokeLinecap="round" />)}
+        <ellipse cx="50" cy="42" rx="14" ry="17" fill="#C68E62" stroke="#8A5A36" strokeWidth="1.2" />
+        <path d="M36 37 Q37 25 50 25 Q63 25 64 37 Q58 31 50 31 Q42 31 36 37 Z" fill="#2B2321" />
+        <circle cx="44.5" cy="42" r="1.9" fill="#2B2321" /><circle cx="55.5" cy="42" r="1.9" fill="#2B2321" />
+        <circle cx="41" cy="48" r="2.6" fill="#E58A7A" opacity="0.55" /><circle cx="59" cy="48" r="2.6" fill="#E58A7A" opacity="0.55" />
+        <path d="M44.5 50.5 Q50 55 55.5 50.5" fill="none" stroke="#6E2E22" strokeWidth="1.7" strokeLinecap="round" />
+        <path d="M33 27 L35 9 L42 18 L50 5 L58 18 L65 9 L67 27 Z" fill="#F2C14E" stroke={dk ? '#F7DE9C' : '#8A6424'} strokeWidth="2.4" strokeLinejoin="round" />
+        <circle cx="50" cy="20" r="2.6" fill="#D9473B" /><circle cx="41" cy="22.5" r="1.9" fill="#4A86C5" /><circle cx="59" cy="22.5" r="1.9" fill="#4CAF6E" />
+      </g>
+    ),
+    // A quilt, a square of nine patches sewn together, some one color and some two triangles, a stitched line inside each patch, and a
+    // binding around its edge.
+    quilt: <g><rect x="11" y="11" width="78" height="78" rx="5" fill="#F6E7C8" stroke={dk ? '#E9EEF0' : '#6B4A2E'} strokeWidth="3" />
+      {[[0, 0, '#D9473B', '#F6E7C8'], [1, 0, '#4A86C5', null], [2, 0, '#F2C14E', '#F6E7C8'], [0, 1, '#4CAF6E', null], [1, 1, '#D9473B', '#F2C14E'], [2, 1, '#4A86C5', null], [0, 2, '#4A86C5', '#F6E7C8'], [1, 2, '#F2C14E', null], [2, 2, '#4CAF6E', '#F6E7C8']].map(([c, r, a, b]) => { const x = 15 + c * 24; const y = 15 + r * 24;
+        return <g key={`${c}-${r}`}><rect x={x} y={y} width="22" height="22" fill={a} />{b && <path d={`M${x} ${y} L${x + 22} ${y} L${x} ${y + 22} Z`} fill={b} />}<rect x={x + 3} y={y + 3} width="16" height="16" fill="none" stroke="#FFFFFF" strokeWidth="1.1" strokeDasharray="2.2 1.8" opacity="0.85" /></g>; })}</g>,
+    // A van, seen from the side and facing right: a long orange body, a sloped windshield, two side windows, a door, a headlight, and two
+    // wheels.
+    van: <g><path d="M8 66 L8 36 Q8 30 14 30 L64 30 Q70 30 74 35 L86 50 Q92 52 92 58 L92 66 Q92 72 86 72 L14 72 Q8 72 8 66 Z" fill="#E88A3A" stroke={dk ? '#F6C79A' : '#7A3E12'} strokeWidth="3" strokeLinejoin="round" />
+      <path d="M15 36 L34 36 L34 50 L15 50 Z M40 36 L58 36 L58 50 L40 50 Z M64 36 Q68 36 70 39 L80 50 L64 50 Z" fill="#CFEAF7" stroke={dk ? '#F6C79A' : '#7A3E12'} strokeWidth="2" strokeLinejoin="round" />
+      <path d="M61 54 L61 70" stroke={dk ? '#F6C79A' : '#7A3E12'} strokeWidth="2" /><rect x="86" y="56" width="5" height="5" rx="1.5" fill="#F2C14E" />
+      {[26, 72].map((x) => <g key={x}><circle cx={x} cy="72" r="10" fill="#2E2E2E" stroke={dk ? '#D8DEE2' : '#2E2E2E'} strokeWidth="2.5" /><circle cx={x} cy="72" r="4" fill="#B9C2C9" /></g>)}</g>,
+    // A volcano: a brown mountain with red and orange lava at its top and running down its sides, and a gray cloud of smoke above it.
+    volcano: <g><path d="M29 24 Q22 16 30 11 Q33 4 42 7 Q48 1 56 7 Q64 4 66 12 Q74 15 69 24 Z" fill="#C9CFD3" stroke={dk ? '#E9EEF0' : '#6F7A76'} strokeWidth="2.5" strokeLinejoin="round" />
+      <path d="M6 90 L36 36 Q50 30 64 36 L94 90 Z" fill="#8B5A2B" stroke={dk ? '#E8C9A0' : '#4A2E14'} strokeWidth="3" strokeLinejoin="round" />
+      <path d="M36 36 Q43 28 50 31 Q57 28 64 36 Q57 41 50 38 Q43 41 36 36 Z" fill="#F28C28" stroke={dk ? '#F7C089' : '#9A3412'} strokeWidth="2" strokeLinejoin="round" />
+      <path d="M42 38 Q37 50 41 60 Q46 54 47 39 Z M55 38 Q61 54 56 66 Q51 57 53 39 Z" fill="#E8505B" /></g>,
+    // A yo-yo: a red disc with a lighter ring, its axle in the middle, and its string running up from the top of its rim to a loop for a
+    // finger (since pass NI's round one screen read: from the axle across the disc it read weakly on a 64-pixel tile).
+    'yo-yo': <g><circle cx="50" cy="62" r="28" fill="#D9473B" stroke={dk ? '#F4B4AC' : '#7A1F18'} strokeWidth="3" /><circle cx="50" cy="62" r="18" fill="none" stroke="#F08A80" strokeWidth="3" />
+      <path d="M33 47 Q38 40 46 38" fill="none" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" opacity="0.7" /><circle cx="50" cy="62" r="6" fill="#7A1F18" />
+      <path d="M50 14 L50 34" stroke={dk ? '#E9EEF0' : '#4A4F49'} strokeWidth="2.5" strokeLinecap="round" /><ellipse cx="50" cy="9" rx="5" ry="4.5" fill="none" stroke={dk ? '#E9EEF0' : '#4A4F49'} strokeWidth="2.5" /></g>,
+    // A ball of yarn: a purple ball wound round and round, and its loose end trailing off to one side.
+    yarn: (
+      <g>
+        <defs><clipPath id={`${uid}-yarn`}><circle cx="46" cy="50" r="31" /></clipPath></defs>
+        <path d="M70 70 Q84 76 80 86 Q77 95 93 93" fill="none" stroke={dk ? '#F0C6E8' : '#5E2A57'} strokeWidth="3.5" strokeLinecap="round" />
+        <circle cx="46" cy="50" r="32" fill="#B565A7" stroke={dk ? '#F0C6E8' : '#5E2A57'} strokeWidth="3" />
+        <g clipPath={`url(#${uid}-yarn)`} fill="none" stroke="#7E3A73" strokeWidth="2.6" strokeLinecap="round">
+          <path d="M10 36 Q46 24 82 42" /><path d="M10 50 Q46 38 82 56" /><path d="M12 64 Q46 54 80 70" /><path d="M18 78 Q46 70 74 84" />
+          <path d="M30 14 Q20 50 36 86" /><path d="M46 12 Q36 50 52 88" />
+        </g>
+      </g>
+    ),
   }[base] || <circle cx="50" cy="50" r="30" fill={grey} />;
   // A look after ~ (pass MP) draws the same thing another way, and its name stays the thing's own, so a screen reader hears block;
   // since pass MW a look that is a state its line names is said with it (pictureLookName: a broken crayon, a sleeping baby).
@@ -1528,7 +1580,7 @@ const ICON_LOOKS = {
       <rect x="9" y="50" width="82" height="8" rx="2" fill={dk ? '#BB8247' : '#A9743F'} stroke="#6E4A26" strokeWidth="3" />
     </g>
   ),
-  // The bird a quarter larger, centred, for Two words make one, where it sits beside the house as a word of equal weight (pass MY,
+  // The bird a quarter larger, centered, for Two words make one, where it sits beside the house as a word of equal weight (pass MY,
   // round one's screen check: at its own size it drew at 42 percent of the house's area); the plain bird keeps its size, since lines
   // set a little bird beside a big bear (round two's code read). Its beak is the live palette's gold, so it is drawn from the palette.
   'bird~big': ({ grey, gold }) => <g transform="translate(50 50) scale(1.25) translate(-58 -50)"><ellipse cx="50" cy="54" rx="22" ry="14" fill={grey} stroke="#6B716A" strokeWidth="2.5" /><circle cx="70" cy="42" r="9" fill={grey} stroke="#6B716A" strokeWidth="2.5" /><circle cx="72.5" cy="40" r="2.2" fill="#24291F" /><path d="M78 42l10 3-10 3z" fill={gold} stroke="#7A5A1A" strokeWidth="1.5" strokeLinejoin="round" /><path d="M40 50q10-16 26-6" fill="none" stroke="#6B716A" strokeWidth="4" strokeLinecap="round" /></g>,
@@ -1845,6 +1897,76 @@ function HeardChoice({ text }) {
   return <span aria-hidden="true" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
     <svg viewBox="0 0 24 24" width="24" height="24"><path d="M4 9.5h3.5L12 5.5v13L7.5 14.5H4z" fill={C.ink} /><path d="M15.5 8.5a5 5 0 010 7M18 6a8.5 8.5 0 010 12" fill="none" stroke={C.ink} strokeWidth="2" strokeLinecap="round" /></svg>
     <span>{text}</span></span>;
+}
+// The grown-up's card (Q91 (a), Mikey's answer in pass NG: "Q91 - A"; grownUpCard in logic.mjs). In plain terms: on a device with no
+// voice, a letters question whose whole words would show the sound or word to say draws this card where its answers go. The grown-up
+// reads the words aloud and taps Ready, which hides the card and shows the answers, so the words and the answers are never on the
+// screen together. A which-sound question lists its sounds in the buttons' order, since its buttons then show only their numbers.
+// Every word is the theme's ink on the soft gold of the app's other notes for grown-ups, so it reads in both themes.
+// Since round one's reads (pass NG): Ready is the plain kind of button, with no pulse, since the green pulsing button at Check answer's
+// place is the one a child is taught to tap, and a child could tap it before the grown-up reads (the screen read); "tap Ready." keeps
+// its two words together and both lines balance, where "Ready." stood alone at 320 pixels; and each run of small l's draws in a serif type
+// (withElls), where "Lll." read "LII" and "Button 2, lll." read like the number III. Since round two's screen read every block of the card's
+// words keeps room for the scroll cue (data-cue-room, as the reason after a wrong tap does), since at 320 by 568 the cue to Ready sat on
+// the card's words on 8 kinds in the light theme and 9 in the dark (the N of "Does N say that sound?" among them), and Ready keeps 28
+// pixels below it when the cue brings it into view (16 in round two, which left the card's own foot on the screen's edge; flush before).
+function GrownUpCard({ card, onReady }) {
+  // Where the after line's second sentence, the way back to the words ("To see the names again, ..."), begins (pass NI's third read).
+  const againAt = card.after ? card.after.indexOf(' To see ') : -1;
+  return (
+    <div data-grown-up-card="" role="group" aria-label="For the grown-up" style={{ padding: '14px 16px', borderRadius: 12, background: C.goldSoft, border: `1px solid ${C.gold}`, textAlign: 'center' }}>
+      <p data-cue-room="" style={{ margin: '0 0 4px', fontSize: 15, fontWeight: 700, color: C.ink, paddingRight: 'var(--cue-room, 0px)' }}>For the grown-up</p>
+      {/* What to do, the card's own words (grownUpCard's how): since pass NH's round one screen read a card whose words stop before the
+          question says to read the question after Ready too. */}
+      <p data-card-how="" data-cue-room="" style={{ margin: '0 0 8px', fontSize: 14, color: C.ink, textWrap: 'balance', paddingRight: 'var(--cue-room, 0px)' }}>{card.how}</p>
+      {/* A lone capital keeps the word before it on its line (the letter J, Does J), so a line never starts with the letter alone, and since
+          pass NH the letter I draws in the serif type, as a run of small l's does (cardRuns). */}
+      <p data-card-say="" data-cue-room="" style={{ margin: 0, fontSize: 19, fontWeight: 600, lineHeight: 1.4, color: C.ink, textWrap: 'balance', paddingRight: 'var(--cue-room, 0px)' }}>{cardWords(keepLoneCapitals(card.say), 'say', cardRuns)}</p>
+      {card.sounds && <>
+        {/* One sound to a line, in the buttons' order, so a grown-up finds each button's sound at a glance. Since pass NH (Q97 (a)) the list
+            stands straight under the card's words ("Listen to these sounds."), since the grown-up reads it aloud before Ready, as Q97 (a)
+            has it, and the line on what to do after Ready follows it (round one's code read: above the list, it told a grown-up to say the
+            sounds only after Ready). */}
+        <div data-card-sounds="" style={{ marginTop: 6 }}>{card.sounds.map((s, i) => <p key={s} data-cue-room="" style={{ margin: '2px 0 0', fontSize: 18, fontWeight: 600, color: C.ink, paddingRight: 'var(--cue-room, 0px)' }}>{cardWords(`Button ${i + 1}, ${s}.`, `s${i}`)}</p>)}</div>
+      </>}
+      {/* Since round two's reads (pass NG) it says how to bring the list back, the link's name held whole, as tap Ready is ("Show the
+          words / again" broke at 320); since pass NH it follows the list and says to say each sound again after Ready, and since its
+          round one screen read to read the question first (grownUpCard's after). Since pass NI's round one screen read a picture card has
+          one too, under its names: to read the question, then point to each picture and say its name again, since its pictures show
+          only after Ready, with no names. Since pass NI's third read (its screen read, as round two's had asked) the second sentence, the
+          way back to the words, stands on a row of its own, since it began mid-row ("To see the names / again," beside a second again);
+          its space stays in the text, so a screen reader and the tests read the line as before. */}
+      {card.after && <p data-cue-room="" data-card-after="" style={{ margin: '10px 0 0', fontSize: 14, color: C.ink, textWrap: 'balance', paddingRight: 'var(--cue-room, 0px)' }}>{againAt < 0 ? cardWords(card.after, 'after') : <>{cardWords(card.after.slice(0, againAt + 1), 'after')}<span data-card-again-line="" style={{ display: 'block' }}>{cardWords(card.after.slice(againAt + 1), 'again')}</span></>}</p>}
+      <div data-card-ready="" style={{ marginTop: 12, scrollMarginBottom: 28 }}><Btn full kind="secondary" onClick={onReady}>Ready</Btn></div>
+    </div>
+  );
+}
+// A text with each run of small l's (ellRuns in logic.mjs: lll, Lll, the lll of fff-lll) drawn in a serif type (pass NG, round one's
+// screen read), since in the app's sans-serif type a small l is a capital I's bar; the words and their spaces are unchanged. The
+// grown-up's card uses it, and the reason after a wrong tap through ellsIn, where a grown-up reads the words aloud. Since round two's screen
+// read the run's own line height is 1, so a line that holds one is no taller than the lines around it (it had grown a pixel).
+// Since pass NH the card's words split by cardRuns, which also finds the letter I, drawn the same way and marked data-letter-i in place of
+// data-ell, so a check of the runs of l's reads the runs alone.
+const ELL_TYPE = 'Georgia, "Times New Roman", serif';
+function withElls(text, keyPrefix = 'l', split = ellRuns) {
+  const parts = split(text); if (parts.length === 1) return text;
+  return parts.map((part, i) => (i % 2 ? <span key={`${keyPrefix}-${i}`} data-ell={part === 'I' ? undefined : ''} data-letter-i={part === 'I' ? '' : undefined} style={{ fontFamily: ELL_TYPE, lineHeight: 1 }}>{part}</span> : part)).filter((part) => part !== '');
+}
+// A card's words keep a hyphenated word of 22 characters or fewer whole, as every line partsWhole draws has since pass NE (pass NI's round
+// two screen read: "Yo- / yo." broke on Q, V and Y's picture card at 320 by 568, seeds 10 and 12, in the names a grown-up reads aloud), in
+// its words, its sound lines (X's cuh-sss) and its line after them, each piece's runs of l's and its letter I drawn as before.
+function cardWords(text, keyPrefix, split = ellRuns) {
+  const pieces = String(text).split(/(\S+-\S+)/); if (pieces.length === 1) return withElls(text, keyPrefix, split);
+  return pieces.flatMap((w, i) => { if (!w) return []; const inner = withElls(w, `${keyPrefix}-${i}`, split);
+    return i % 2 && w.length <= 22 ? [<span key={`${keyPrefix}-h${i}`} data-whole-word="" style={{ whiteSpace: 'nowrap' }}>{inner}</span>] : (Array.isArray(inner) ? inner : [inner]); });
+}
+// What partsWhole gives back (a text, or its pieces and kept spans), each run of small l's drawn in the serif type, a kept span's words
+// given back inside the same span, so partsWhole itself is unchanged (pass NG; the reason after a wrong tap uses it).
+function ellsIn(nodes, keyPrefix = 'l') {
+  const one = (x, i) => (typeof x === 'string' ? withElls(x, `${keyPrefix}-${i}`)
+    : React.isValidElement(x) && typeof x.props.children === 'string' && ellRuns(x.props.children).length > 1 ? React.cloneElement(x, {}, withElls(x.props.children, `${keyPrefix}-${i}`)) : x);
+  if (!Array.isArray(nodes)) return one(nodes, 0);
+  return nodes.flatMap((x, i) => { const y = one(x, i); return Array.isArray(y) ? y : [y]; });
 }
 // On a dark theme's answer tile (tile) every dot wears a pale rim, the ball's own highlight (pass ND, round one's code check: the dots'
 // dark rim, #1F3B31, read 1.09 to 1 on #22413A, so 0.67 to 0.78 of a group's edge read 3 to 1 there).
@@ -2302,8 +2424,8 @@ function PictureInner({ visual, animate = false, animKey = 0, nudge = 0, k = 1, 
     // A run of single letters that wraps balances its rows (round three's alignment read, pass MM: Big letters' last line,
     // "A   B   C   D   E   M   S", left S alone on a row at 390 and at 768 pixels). The gap between two letters is one ordinary
     // space as wide as the text's run of spaces (its size and its spacing that many times a letter's), so a row may break there and
-    // the space drops away at a row's ends, and every row is centred (round four's code read: non-breaking spaces stayed at a row's
-    // ends, and a second row sat about 25 pixels off centre). A run on one row is drawn exactly as before, and the gap takes no
+    // the space drops away at a row's ends, and every row is centered (round four's code read: non-breaking spaces stayed at a row's
+    // ends, and a second row sat about 25 pixels off center). A run on one row is drawn exactly as before, and the gap takes no
     // height of its own (line height 0, set at the middle).
     return (
       <p style={{ fontSize: visual.grow || lessonGrows ? Math.round(44 * k) : 44, fontWeight: 700, letterSpacing: 6, margin: '6px 0', textAlign: 'center', color: B.green, textWrap: 'balance' }}>
@@ -3740,7 +3862,7 @@ html[data-theme="dark"] .edu-slide-in { background-image: linear-gradient(90deg,
 /* A story's title row (pass MH): from 640 pixels the speaker, the snail and the hare share one row with the title, the title truly
    centered between an empty column and the controls' column. On a narrower card (pass MO, Mikey: "On narrow phone screens, we can
    move the snail and hair on both sides of the gold sound icon on top to create symmetry.  Keep the same on wider screens") the
-   snail, the speaker and the hare sit centred above the title, the speaker in the middle; only the order on screen changes, so a
+   snail, the speaker and the hare sit centered above the title, the speaker in the middle; only the order on screen changes, so a
    screen reader still meets the speaker first. */
 .edu-story-head { display: grid; grid-template-columns: 1fr; justify-items: center; gap: 8px; margin: 0 0 10px; }
 .edu-story-head .edu-story-tools { justify-self: center; order: -1; display: flex; gap: 12px; align-items: center; }
@@ -4047,8 +4169,14 @@ const RUN_SOUNDS = [...new Set([...PART_FORMS, 'shh', 'oh', 'eye', 'ooh'])].sort
 const PARTS_WHOLE = new RegExp('\\b(?:' + [...PART_FORMS, 'shh'].map((f) => f.replace(/-/g, '\\-')).join('|') + ')(?:-[a-z]+|(?:, (?:' + RUN_SOUNDS.map((f) => f.replace(/-/g, '\\-')).join('|') + '))+)?(?:(?:, | and )(?:og|at|ig))?\\b', 'gi');
 const RUN_ALONE = /^\s*[A-Za-z]{1,7}(?:, [A-Za-z]{1,7})+[.!?]?\s*$/;
 const RUN_ENDS = ['og', 'at', 'ig'];
+// Since pass NI's round one screen read a find called out after its sounds is kept whole too, a sentence that is one or more sounds and then
+// the word they start ("Yuh, yuh, yarn!", "Vvv, van!", "Kwuh, quilt!", "Duh, og, dog!"), the device voice's own sounds among them
+// (VOICE_SOUNDS: yuh, kwuh, wuh and the rest), at most 24 letters, spaces and commas, so it fits a story's column at 320 pixels ("Yuh, yuh,
+// / yarn!" broke there, and "Queen, / kwuh, quilt!" at 375 in the story's first draft).
+const CHANT_SOUNDS = new Set([...RUN_SOUNDS, ...RUN_ENDS, ...Object.keys(VOICE_SOUNDS)]);
 function runAlone(s) { if (!RUN_ALONE.test(s)) return false; const t = s.trim().replace(/[.!?]$/, '').toLowerCase(); const parts = t.split(', ');
-  return parts.length > 1 && (Object.prototype.hasOwnProperty.call(BEAT_RUNS, t) || parts.every((p) => RUN_SOUNDS.includes(p) || RUN_ENDS.includes(p))); }
+  if (parts.length > 1 && (Object.prototype.hasOwnProperty.call(BEAT_RUNS, t) || parts.every((p) => RUN_SOUNDS.includes(p) || RUN_ENDS.includes(p)))) return true;
+  return parts.length > 1 && t.length <= 24 && parts.slice(0, -1).every((p) => CHANT_SOUNDS.has(p)) && !CHANT_SOUNDS.has(parts[parts.length - 1]); }
 // Since round one's screen check (pass NC) a run that is one sentence of a longer text, a story paragraph, the reason after a wrong tap
 // or an explanation, is kept whole too: the text is split where SENTENCE_BREAK splits it, its spaces kept, and each sentence runAlone
 // takes is one span (a text that is one run alone, as a lesson line's sentence can be, is its own one sentence), so a story's run is
@@ -4062,9 +4190,17 @@ const SENTENCE_PARTS = new RegExp('(' + SENTENCE_BREAK.source + ')');
 // lesson paragraphs. A word of 22 characters or fewer (about 224 pixels at a lesson line's 20, inside the 238 a 320-pixel phone leaves
 // it) is kept whole, and a longer one breaks at its hyphens as before (round two's final read: great-great-great-grandmother, 29, the
 // longest the app says, drew 251 pixels in a story's 234-pixel column at 320, 17 into the card's padding).
+// Since pass NI's round one screen read a run of three or more letters spelled aloud ("H, e, c, t, o, r", "N, e, d"), at most 24 letters,
+// spaces and commas, is one kept span too (data-whole), since "H, e, c, t, o, / r, he said." broke at 375; and so is the game I spy, since
+// "played I / spy" read as the word I at a line's end.
+// Since round two's screen read the and before a run's last letter may be held to it by a no-break space, as keepLoneLetters holds a lesson
+// line's lone letter to the word before it ("j, a and m" lost its run on nine lesson sentences, and "j, a" ended a row at 320, read as a).
+const SPELLED_RUN = /((?<![A-Za-z'])[A-Za-z](?:(?:, (?:and[ \u00A0])?| and[ \u00A0])[A-Za-z](?![A-Za-z'])){2,}|\bI spy\b)/;
 function partsWhole(text, keyPrefix = 'p') {
   const s = String(text); const out = []; let n = 0;
-  const plain = (t) => String(t).split(/(\S+-\S+)/).forEach((w, i) => { if (!w) return; out.push(i % 2 && w.length <= 22 ? <span key={`${keyPrefix}-h${n++}`} data-whole-word="" style={{ whiteSpace: 'nowrap' }}>{w}</span> : w); });
+  const hyphens = (t) => String(t).split(/(\S+-\S+)/).forEach((w, i) => { if (!w) return; out.push(i % 2 && w.length <= 22 ? <span key={`${keyPrefix}-h${n++}`} data-whole-word="" style={{ whiteSpace: 'nowrap' }}>{w}</span> : w); });
+  const plain = (t) => String(t).split(SPELLED_RUN).forEach((w, i) => { if (!w) return; if (!(i % 2) || w.length > 24) { hyphens(w); return; }
+    out.push(<span key={`${keyPrefix}-l${n++}`} data-whole="" style={{ whiteSpace: 'nowrap' }}>{w}</span>); });
   for (const piece of s.split(SENTENCE_PARTS)) {
     if (!piece) continue;
     if (runAlone(piece)) { out.push(<span key={`${keyPrefix}-r${n++}`} data-whole="" style={{ whiteSpace: 'nowrap' }}>{piece}</span>); continue; }
@@ -4085,6 +4221,11 @@ function partsWhole(text, keyPrefix = 'p') {
 // together wherever they fit on one line, and where they do not it wraps inside itself, as the words did before, never past the line. A
 // pair of 21 or more is left to wrap: Open number lines' sixth line ends on "seventy-three." alone at every width, and held with "before"
 // (21) it left "comes" alone on the row above at every width, a worse break, and ran past the line beside the cue at 320 by 568.
+// A lone letter keeps the word before it on a lesson line (pass NI's round one screen read): Write your name, the first lesson whose lines
+// name small letters, left "m." alone at a line's start ("and last comes / m.", read as an abbreviation) and "u, then n" parted from
+// "then"; the card and the reason already held a lone capital (keepLoneCapitals). A small letter is held too, all but a, which is a word,
+// and the word I is left as keepLoneCapitals leaves it. Only the space changes.
+const keepLoneLetters = (t) => keepLoneCapitals(t).replace(/(\w+) ([b-z])(?=[\s.,?!]|$)/g, (m, w, l) => `${w}\u00A0${l}`);
 function lastTwoTogether(nodes, sentence) {
   const m = /(\S+) (\S+)$/.exec(String(sentence).trim()); if (!m || m[1].length + m[2].length + 1 > 20) return nodes;
   const out = Array.isArray(nodes) ? [...nodes] : [nodes];
@@ -5565,7 +5706,7 @@ function ScrollCue({ target, watch, whole = false, hidden = 0, scrollTo = null }
 // Padding was chosen over a float at the block's foot: a float that reaches into a paragraph makes the browser drop its balanced and
 // pretty wrapping for the whole paragraph (Chromium 153, read in the page), which left "says." and "scared." alone on the last lines
 // of two lesson lines, against EARMARKS A82's rule; with padding the line keeps its balanced or pretty wrap in a narrower measure, at
-// most a line or two longer, and a centred line sits a little left of centre, about 18 pixels on a 320-pixel phone, only while the cue
+// most a line or two longer, and a centered line sits a little left of center, about 18 pixels on a 320-pixel phone, only while the cue
 // shows beside it. The words are read where they will rest: a block whose card is still rising (edu-rise, a slide up) is measured less
 // that slide, and one inside a box that turns or swells (a wrong tap's wobble, a right tap's cheer) waits for a check where it is
 // still, since the first check comes before its first frame and the last after it ends.
@@ -5961,12 +6102,17 @@ function StoryBody({ story, pace: paceDefault = null, part = null, autoRead = fa
             <div key={m.serial} className={`edu-par-pic edu-reveal ${story.more.indexOf(m) % 2 ? 'edu-pic-left' : 'edu-pic-right'}${hasArt(m.serial) ? ' edu-story-pic' : ''}`} style={{ order: 2 }}><StoryArt serial={m.serial} alt={m.alt} /></div>
           ))}
           {/* A paragraph's last line never a lone word where the browser can help (pass NB, round two's code read: "so listen for both. / Fff-rrr."). */}
+          {/* Since pass NI's round two screen read its lone letters keep the word before them, as a lesson line's do (keepLoneLetters; "but /
+              W does not say duh" in Bear hides and "and / Y says yuh." in I spy on the rug at 320). Only spaces change, never after a sentence's
+              end, and since the third read's code read the sentence rule's middle-initial guard takes the no-break space the hold puts before
+              an initial ("Stephen F." held), so the reading light cuts the page's sentences as the voice cuts the words (the rules test reads
+              every story paragraph both ways; six were cut after "F." with the old guard). */}
           {/* Since pass NF (EARMARKS A99) a paragraph keeps room for the scroll cue as a lesson line does (data-cue-room, keepCueRoom beside
               ScrollCue): on a read-aloud story page the cue shows while the arrow below the story is out of sight, and at the top of the
               page, as a story opens with no voice or before its voice starts, it sat on a paragraph's words on 178 of the 257 early-years
               stories at 320 by 568 and 131 at 375 by 667, in both themes. While the cue shows beside it at rest, the paragraph's lines end
               short of it; a paragraph the cue does not reach, and every paragraph on a page with no cue, looks as it did. */}
-          <div data-story-par={i} data-cue-room="" data-reading={readingAt === i ? '' : undefined} style={{ order: 1, textWrap: 'pretty', paddingRight: 'var(--cue-room, 0px)' }}><RichText text={t} size={17} lineGap={12} lit={readingAt === i ? readingSentence : null} /></div>
+          <div data-story-par={i} data-cue-room="" data-reading={readingAt === i ? '' : undefined} style={{ order: 1, textWrap: 'pretty', paddingRight: 'var(--cue-room, 0px)' }}><RichText text={keepLoneLetters(t)} size={17} lineGap={12} lit={readingAt === i ? readingSentence : null} /></div>
         </div>
       )))}
       {/* A pre-reader's story (round, pass MD) has the round drawn speaker of the young learners' screens, where a worded button
@@ -6985,7 +7131,7 @@ function BucketsGame({ game, round, onScore = null, demo = false }) {
         </div>
       ))}
       {chips.map((ch) => {
-        // A chip is centred on its spot by its own transform, and a wrong bucket's wobble is a transform too, which takes the
+        // A chip is centered on its spot by its own transform, and a wrong bucket's wobble is a transform too, which takes the
         // chip's own transform's place while it runs, so the chip shook half its size to the right of and below its spot (round
         // eight's read, pass MO; older than the pass). The wobble sits on an inner box, so a chip dropped in the wrong bucket slides
         // back to its spot and shakes there, for the same reason a lesson pair's 85 percent sits on a wrapper inside each half.
@@ -7638,7 +7784,7 @@ function SpotGame({ game, round, onScore = null, demo = false }) {
 // so the next ask is heard before the next tap counts; with no voice on the device nothing waits. Three asks a board, four
 // boards a round, a row of four dots for how far along, and the star. No clock and no score: a four-year-old is learning
 // names, not racing. The letters fill the board (240 to 490 pixels across, so they stand about 55 to 110 tall), each on a
-// round card 31 units across, the centre card 10 units clear of the corner cards (pass MM, the real page: at 4 units they looked
+// round card 31 units across, the center card 10 units clear of the corner cards (pass MM, the real page: at 4 units they looked
 // as if they touched), since a letter's own ink is too thin to take a small finger's tap.
 // Everything sits on the paper board, so the hear-again button takes the light palette's gold too (SpeakButton's dark-theme
 // ivory would vanish on the paper).
@@ -7726,7 +7872,7 @@ function FindLetterGame({ round, demo = false }) {
     <div className="edu-game-box" style={{ ...GAME_BOX, aspectRatio: 'auto', padding: 12 }}>
       {/* The heading names no letter while the voice can (round two's checks): a printed capital above the cards is a shape to
           match, and the game asks for a name. With no voice it names the letter, for a grown-up to read, and after a right letter says
-          so while the board holds (pass MS). Centred, with its speaker to its right (SpokenRow, pass MQ). */}
+          so while the board holds (pass MS). Centered, with its speaker to its right (SpokenRow, pass MQ). */}
       {/* With no voice the row is as tall as its tallest heading, an ask or a right letter's praise, so the cards never move (round
           one's screen check, pass MS); the two end lines, between boards and at the end, are left out of its sizing, since nothing is
           tapped while they show, and the longest of them had held 114 pixels at 320 where the praise needs 57 (round three's code and
@@ -8322,7 +8468,7 @@ function ReplaySpeaker({ text, label = 'Hear the question again' }) {
 }
 // A spoken question and its speaker (pass MQ, Mikey, of Which Sense: "I think it is being pushed left by the speaker icon but the text
 // should be centered and the speaker icon should sit to the right of the text"): the words sit in the middle of three columns, so they
-// are centred on the board whatever the speaker's width, and the speaker sits in the column to their right, against the words; the
+// are centered on the board whatever the speaker's width, and the speaker sits in the column to their right, against the words; the
 // left column is as wide as the right, so the words never move when the speaker hides (after a right answer, or on a device with no
 // voice). Every game that asks a question beside a speaker uses it: Which Sense, Spot It, Share the Cookies, Grow the Plant, Find
 // the Tool and Find the Letter.
@@ -9722,7 +9868,7 @@ function makeDemoHands(stage, pointer, ring, keycap, alive, note, hush) {
     const left = Math.min(...rs.map((r) => r.left)); const right = Math.max(...rs.map((r) => r.right));
     const dx = left < 0 ? left - 8 : right > vw ? Math.min(right - vw + 8, left - 8) : 0;
     if (!dy && !dx) return;
-    // Where a centred target lands is noted for the browser test (window.__eduIntro.centred): how far its middle sits from the middle
+    // Where a centered target lands is noted for the browser test (window.__eduIntro.centred, the property's own spelling, left as it was): how far its middle sits from the middle
     // of the part the pointer may use, measured against that part as it was when the scroll was asked for, and only where the page
     // could move that far (a window, not at its end). Round four's second read: an offset carried into every page put targets half the
     // floating Skip's bar too low, and no check read where a target landed.
@@ -10032,7 +10178,7 @@ function GameIntro({ game, Game, gameProps, onEnd, onSize = null }) {
           and game checks: Skip sat below the fold for the whole welcome; a sticky row could not hold it, since the page's body is a
           scroll box of its own that never scrolls). The floating Skip rides in a bar with the line being said beside it (round three's
           second read: a pill alone sat on the caption's words, 119 of 155 moments in Walk the Robot on a phone held sideways, once the
-          pointer centred its targets). The bar keeps the height of the welcome's longest line, as the caption does, so it never grows
+          pointer centered its targets). The bar keeps the height of the welcome's longest line, as the caption does, so it never grows
           over the pointer or a target between lines; the pointer keeps above it (usable, in makeDemoHands). */}
       <p ref={skipRowRef} data-intro-skip-row="" style={{ margin: '4px 0 0', textAlign: 'center', visibility: skipFloats ? 'hidden' : 'visible' }}>
         {skipButton}
@@ -10097,7 +10243,7 @@ function GamePad({ game, name, secondsLeft, total, onClose, modules = [], onScor
   // caption and Skip's row leave with the welcome (round three's second read, pass MP: Begin sat above what showed after 28 of 59
   // welcomes in the claude.ai preview's page-tall frame and 15 on a phone held sideways, and the board's top after Begin in more).
   // Only a visit that had a welcome scrolls; Begin's cover sits where the board will be, so its top is brought 8 pixels under the top
-  // of what shows, unless Begin itself would then fall below it, when Begin is centred instead.
+  // of what shows, unless Begin itself would then fall below it, when Begin is centered instead.
   // Round four's second read: it waits until the page has stopped moving before it reads (a page still scrolling when the welcome
   // ended carried Begin out of what shows in the claude.ai preview's frame), and waits for the Instructions pop-up to close, since a
   // page moved under the pop-up carries it off in that frame. The browser's scroll anchoring is off from the welcome's end until the
@@ -11300,7 +11446,7 @@ function PageChrome({ idleWarning = false, stars = true, logoutIn = null, walkth
           Logging out in {logoutIn}
         </div>
       )}
-      {/* A walk-through says so on every screen, as a small tab hanging from the top of the green frame, centred, in the frame's own
+      {/* A walk-through says so on every screen, as a small tab hanging from the top of the green frame, centered, in the frame's own
           green (pass MR: at the bottom left it sat over a game's Instructions link in Mikey's screenshot, and over whatever else a short
           page put there). At the top of a page it covers nothing, since every screen's content starts below it, and content that scrolls
           passes under it as under a header. */}
@@ -11664,8 +11810,12 @@ function seedOf(text) { let h = 7; for (const ch of String(text || '')) h = (h *
 function PonderCard({ wonder, title, text, big = false, attrs = null }) {
   return (
     <PonderFrame seed={seedOf(`${wonder.id}-closing`)} attrs={attrs} className="edu-rise" style={{ ...card, background: C.goldSoft, borderColor: C.goldEdge, textAlign: 'center', padding: big ? '20px 18px 22px' : '14px 16px 16px', margin: '0 0 14px' }}>
-        <p data-ponder-title="" className="edu-ponder-title" style={{ margin: '0 0 8px', fontSize: big ? 24 : 19, fontWeight: 800, letterSpacing: '0.01em', color: C.mode === 'dark' ? '#E9C46A' : C.green }}>{title}</p>
-        <p style={{ fontSize: big ? 20 : 16, lineHeight: 1.5, margin: 0 }}>{wholeHyphens(text)}</p>
+        {/* Balanced, its last two words held together (pass NI's round one screen read: "Something to Wonder About" ended on "About" alone at
+            320, 375 and 390). */}
+        <p data-ponder-title="" className="edu-ponder-title" style={{ margin: '0 0 8px', fontSize: big ? 24 : 19, fontWeight: 800, letterSpacing: '0.01em', textWrap: 'balance', color: C.mode === 'dark' ? '#E9C46A' : C.green }}>{String(title).replace(/ (\S+)$/, '\u00A0$1')}</p>
+        {/* Since pass NI's round two screen read the line under the title is balanced and its last two words held, as the title is: 22 of the
+            93 early closing lines ended on one word alone at 320 ("Who do you love to laugh / with?"). */}
+        <p data-ponder-line="" style={{ fontSize: big ? 20 : 16, lineHeight: 1.5, margin: 0, textWrap: 'balance' }}>{wholeHyphens(String(text).replace(/ (\S+)$/, '\u00A0$1'))}</p>
     </PonderFrame>
   );
 }
@@ -11866,18 +12016,37 @@ async function downloadFile(name, text) {
 // ---------- The app ----------
 // The crash guard (2026-09-24, Mikey): a screen that throws while drawing shows a way home instead of a blank page.
 // Go home remounts the app fresh, which reloads everything from storage, so nothing a student or educator did is lost.
+// Since pass NG (Q92 (b), round one's code read) a stop before the app has shown any screen past Loading (appShown) draws nothing and
+// hands the page its note instead (window.__eduCannotStart, tools/too-old.mjs, the note that the app could not start), since there Go
+// home would only stop again: the guard catches every error in the app's screens, so until then a browser that reads the app's script
+// but stops in its first screen met Go home over and over, and React's onUncaughtError, which the page's start also hands the note to,
+// never heard of it. A page with no note (a test's own page) keeps the guard's screen.
+// Since the third read (pass NG) Go home erases the note of where the student was on the second later stop since the page loaded
+// (laterStops), so a stop that comes back in a remembered screen does not bring the student back to it for ever: the first Go home
+// still resumes where they were, and the second goes to the front door (a practice set in progress there starts over). Until then a
+// remembered overview that stopped after its first screen showed Go home on every tap.
+let appShown = false;
+let laterStops = 0;
 class CrashGuard extends React.Component {
-  constructor(props) { super(props); this.state = { error: null }; }
-  static getDerivedStateFromError(error) { return { error }; }
-  componentDidCatch(error) { try { console.error('The Wise Human crash guard:', error); } catch (e) { /* a console is not guaranteed */ } }
+  constructor(props) { super(props); this.state = { error: null, early: false }; }
+  static getDerivedStateFromError(error) { return { error, early: !appShown && typeof window !== 'undefined' && typeof window.__eduCannotStart === 'function' }; }
+  componentDidCatch(error) {
+    try { console.error('The Wise Human crash guard:', error); } catch (e) { /* a console is not guaranteed */ }
+    // Since round two's code read (pass NG) an early stop also erases the note of where the student was (saveWhere), so the reload the note
+    // asks for starts at the front door: a refresh restores the overview, a lesson, a story, the map or a practice set, and a stop in the
+    // restored screen came before the app had shown one, so every reload restored it and stopped again (a practice set in progress is lost).
+    if (this.state.early) { saveWhere(null); if (!window.__eduCannotStart('stopped')) this.setState({ early: false }); }   // no note: the guard's own screen
+    else laterStops += 1;
+  }
   render() {
     if (!this.state.error) return this.props.children;
+    if (this.state.early) return null;
     return (
       <div style={{ ...page }}><div className="edu-wrap" style={{ ...wrap }}>
         <div style={{ ...card, textAlign: 'center', marginTop: 40 }}>
           <p style={{ fontWeight: 600, fontSize: 18, margin: '0 0 8px' }}>Something went wrong on this page.</p>
           <p style={{ margin: '0 0 16px', color: C.muted }}>Nothing you did was lost. Tap the button to go home.</p>
-          <Btn onClick={() => { this.setState({ error: null }); this.props.onHome(); }}>Go home</Btn>
+          <Btn onClick={() => { if (laterStops >= 2) saveWhere(null); this.setState({ error: null, early: false }); this.props.onHome(); }}>Go home</Btn>
         </div>
       </div></div>
     );
@@ -11895,6 +12064,19 @@ function EduSphereScreens() {
   applyTheme(PAPER_SCREENS.has(screen) ? 'light' : theme);
   const [boom, setBoom] = useState(false);                             // test-only: a render that throws on purpose, for the crash guard's check
   if (boom) throw new Error('test crash');
+  // The app has shown a screen past Loading (pass NG, the crash guard above): set once that screen's drawing and its effects are done,
+  // on the task after the one that drew it, so a stop in that screen's own drawing or effects, this effect's or a later one's, still counts
+  // as before the first screen; the page's note never shows after it (window.__eduAppShown, tools/too-old.mjs). Since round two's code read
+  // the next task comes by a message, which a background tab does not slow as it slows a timer (to a second or more), a timer only where
+  // a message cannot be sent.
+  useEffect(() => {
+    if (screen === 'loading' || appShown || typeof window === 'undefined') return undefined;
+    let live = true; let line = null;
+    const mark = () => { if (live) { appShown = true; window.__eduAppShown = true; } if (line) { line.port1.close(); line = null; } };
+    try { line = new MessageChannel(); line.port1.onmessage = mark; line.port2.postMessage(0); } catch (e) { line = null; }
+    const t = line ? 0 : setTimeout(mark, 0);
+    return () => { live = false; if (t) clearTimeout(t); if (line) { line.port1.onmessage = null; line.port1.close(); line = null; } };
+  }, [screen]);
   const [nameInput, setNameInput] = useState('');
   const [roster, setRoster] = useState(emptyRoster());
   const [rosterInput, setRosterInput] = useState('');         // the ID box on the roster screen
@@ -12257,6 +12439,10 @@ function EduSphereScreens() {
   const [qIndex, setQIndex] = useState(0);
   const [given, setGiven] = useState('');
   const [checked, setChecked] = useState(false);
+  // The question whose grown-up's card Ready has hidden (Q91 (a), pass NG): a key naming the round, the question's place in it and the
+  // question, so the next question shows its own card without a reset at every place a question changes, and Show the words again
+  // brings a card back by clearing it.
+  const [cardReady, setCardReady] = useState('');
   const [wasCorrect, setWasCorrect] = useState(false);
   const [coreResults, setCoreResults] = useState([]);
   const [reviewResult, setReviewResult] = useState(null);
@@ -13328,7 +13514,7 @@ function EduSphereScreens() {
                   .map((st) => (
                     <button key={st.id} type="button" aria-label={st.label} onClick={() => { if (st.pin) { setPinAsk(st.id); setPinTry(''); setPinWrong(false); } else startWithName(st.id); }} disabled={busy} className="edu-press edu-name"
                       style={{ fontFamily: FONT, fontSize: 15, fontWeight: 600, borderRadius: 10, background: C.surface, border: `2px solid ${C.line}`, color: C.ink, cursor: 'pointer', minHeight: 84, padding: '12px 14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, overflow: 'hidden', position: 'relative' }}>
-                      {/* Every button has the same three slots: a picture slot on the left, the name centred
+                      {/* Every button has the same three slots: a picture slot on the left, the name centered
                           in the middle, and a matching empty slot on the right, so names line up across the
                           grid whether or not a student has a picture. */}
                       <span style={{ display: 'flex', alignItems: 'center', width: '100%', gap: 8 }}>
@@ -13929,7 +14115,7 @@ function EduSphereScreens() {
               instead (pass MS), the word big and lit a syllable at a time, so the paragraph never fills with "Different, different". */}
           {/* Balanced, so no lesson line ends on one lone word (pass MY, round one's screen check); a browser balances up to about six
               lines, so a longer line can still end on one at 320 pixels (round two's code read). */}
-          <LessonWords lineKey={`${moduleId}-${lessonStep}`} style={{ fontSize: shortPhone() ? 20 : 22, lineHeight: 1.5, margin: shortPhone() ? '12px 0 0' : '18px 0 0', textWrap: 'balance' }}>{(() => { const own = sentencesOf(line).map((sentence, i) => ({ sentence, i })).filter(({ i }) => !lineParts[i] || lineParts[i].role === 'say'); return own.map(({ sentence, i }, n) => <React.Fragment key={i}><span data-read-lit={litSentence === i ? '' : undefined} style={litSentence === i ? { ...readLit(), ...LIT_WORDS } : { background: 'transparent' }}>{n === own.length - 1 ? lastTwoTogether(partsWhole(sentence, `s${i}`), sentence) : partsWhole(sentence, `s${i}`)}</span>{n < own.length - 1 ? ' ' : ''}</React.Fragment>); })()}</LessonWords>
+          <LessonWords lineKey={`${moduleId}-${lessonStep}`} style={{ fontSize: shortPhone() ? 20 : 22, lineHeight: 1.5, margin: shortPhone() ? '12px 0 0' : '18px 0 0', textWrap: 'balance' }}>{(() => { const own = sentencesOf(line).map((sentence, i) => ({ sentence, i })).filter(({ i }) => !lineParts[i] || lineParts[i].role === 'say'); return own.map(({ sentence, i }, n) => <React.Fragment key={i}><span data-read-lit={litSentence === i ? '' : undefined} style={litSentence === i ? { ...readLit(), ...LIT_WORDS } : { background: 'transparent' }}>{n === own.length - 1 ? lastTwoTogether(partsWhole(keepLoneLetters(sentence), `s${i}`), keepLoneLetters(sentence)) : partsWhole(keepLoneLetters(sentence), `s${i}`)}</span>{n < own.length - 1 ? ' ' : ''}</React.Fragment>); })()}</LessonWords>
           {/* The strip's room for the scroll cue sits on this wrapper, outside the strip's key, so Say it again, which draws the strip anew,
               keeps it (round one's screen read, pass NE); the big word's size reads it through the wrapper. */}
           {lineParts.some((x) => x.role === 'open') && <div data-cue-room="" style={{ paddingRight: 'var(--cue-room, 0px)' }}><SayAlongStrip key={`${lessonStep}-${replays}`} parts={lineParts} lit={litSentence} /></div>}
@@ -14239,6 +14425,19 @@ function EduSphereScreens() {
     // picture above them at SHORT_PICTURES of their size, so Check answer ends above the fold (pass MZ, EARMARKS A80); two answers with
     // no picture above end high enough at full size, so they keep it (round one's screen check: 167 such screens ended at 640 at most).
     const shortPictures = shortPhone() && q.type === 'choice' && Array.isArray(q.choices) && q.choices.every((c) => ONE_PICTURE_CHOICE.test(String(c))) && (!!q.visual || q.choices.length >= 3);
+    // The grown-up's card (Q91 (a), Mikey's answer in pass NG; grownUpCard in logic.mjs): with no voice, a letters question whose whole
+    // words would print the sound or word to say shows, in the answers' place, a card with those words for the grown-up and a Ready
+    // button, until Ready; what prints above the card and, after Ready, above the answers is cardQuestion's, what a device with a voice
+    // prints, the same for every seed of its bank but Write it by its sounds' yes or no (first, or at the end), and a which-sound question's
+    // buttons show their numbers. The card comes back with Show the words again, never once
+    // the answer is checked.
+    const grownCard = !canSpeak() ? grownUpCard(q) : null;
+    const cardKey = [attempt ? attempt.moduleId + ':' + attempt.seed : '', qIndex, q.genId || '', q.seed === undefined ? '' : q.seed].join('|');
+    const cardUp = !!grownCard && !checked && cardReady !== cardKey;
+    // Since pass NH (Q97, Mikey's answer "Q97 - A"): a kind whose card hides (grownCard.hides) draws neither its picture nor its print
+    // while the card is up, so the letter it asks about is never on the screen with the card's words; Ready shows them with the answers.
+    const cardHides = !!grownCard && grownCard.hides && cardUp;
+    const shownQ = grownCard ? cardQuestion(q, cardUp) : printedQuestion(q, canSpeak());
     return (
       <div style={{ ...page }}><PageChrome idleWarning={idleWarning} logoutIn={logoutIn} walkthrough={!!(record && record.preview)} /><div className="edu-wrap" style={{ ...wrap }}>
         {/* Module name on the left, the question count in the middle, and a bold green X on the
@@ -14270,28 +14469,42 @@ function EduSphereScreens() {
         {/* On a short phone the card sits a little tighter, and a question whose answers are each one picture draws them, and its own
             picture, at SHORT_PICTURES of their size (pass MZ, EARMARKS A80: 21 pre-K questions ended Check answer under a 375 by 667
             phone's fold, by 3 to 89 pixels, three or four answers stacked full width). */}
-        <div style={{ ...card, position: 'relative', ...(shortPhone() ? { padding: '14px 16px' } : null) }}>
+        <div data-question-card="" style={{ ...card, position: 'relative', ...(shortPhone() ? { padding: '14px 16px' } : null) }}>
           {/* The setup line comes first and the question after it (pass MH, Mikey: "What is a kind thing to do?  New line Your friend
               looks sad."  Would reach much better like What is a kind thing to do when your friend looks sad?"), the order the voice
               has always read them in; until pass MH the question sat above its setup, so a reader met them backward. */}
-          {/* What prints is printedQuestion's (pass MM): a letter question shows no letter while the voice can say it. */}
-          {printedQuestion(q, canSpeak()).story && <div data-question-setup="" style={{ margin: '0 0 10px', color: C.ink, textWrap: 'balance' }}><RichText text={printedQuestion(q, canSpeak()).story} size={17} center lineGap={8} /></div>}
+          {/* What prints is printedQuestion's (pass MM): a letter question shows no letter while the voice can say it. Since pass NG a
+              question with a grown-up's card prints cardQuestion's instead, with no voice (shownQ, above). */}
+          {/* Each keeps 12 pixels above it when Ready brings it into view (round two's screen read, pass NG: its first line met the screen's top). */}
+          {shownQ.story && <div data-question-setup="" style={{ margin: '0 0 10px', color: C.ink, textWrap: 'balance', scrollMarginTop: 12 }}><RichText text={shownQ.story} size={17} center lineGap={8} /></div>}
           {/* The printed question wraps balanced too, so it never ends on one lone word (pass MY, round one's screen check). */}
-          <p data-question-text="" style={{ fontSize: 20, fontWeight: 600, margin: shortPhone() ? '0 0 10px' : '0 0 14px', textAlign: 'center', textWrap: 'balance' }}>{printedQuestion(q, canSpeak()).prompt}</p>
+          {/* A hiding kind's card stands alone while it is up (pass NH, Q97 (a)): no question prints above it. */}
+          {shownQ.prompt !== '' && <p data-question-text="" style={{ fontSize: 20, fontWeight: 600, margin: shortPhone() ? '0 0 10px' : '0 0 14px', textAlign: 'center', textWrap: 'balance', scrollMarginTop: 12 }}>{shownQ.prompt}</p>}
           {/* The question's own picture draws bigger (pass MH, Mikey), except when its answers are pictures of the same kind (a
               turtle to match among animal answers), so the one that is the same never looks a different size from the answer. */}
-          {q.visual && <div style={{ margin: shortPhone() ? '0 0 10px' : '0 0 14px' }}><Picture visual={Array.isArray(q.choices) && q.choices.some((c) => String(c).startsWith(`${q.visual.kind}:`)) && matchSize(q.visual) ? { ...shownVisual, size: matchSize(q.visual) } : shownVisual} note={record.preview ? undefined : false} big={!(Array.isArray(q.choices) && q.choices.some((c) => String(c).startsWith(`${q.visual.kind}:`)))} shrink={shortPictures ? SHORT_PICTURES : 1} /></div>}
-          {q.type === 'choice' ? (
+          {q.visual && !cardHides && <div data-question-picture="" style={{ margin: shortPhone() ? '0 0 10px' : '0 0 14px' }}><Picture visual={Array.isArray(q.choices) && q.choices.some((c) => String(c).startsWith(`${q.visual.kind}:`)) && matchSize(q.visual) ? { ...shownVisual, size: matchSize(q.visual) } : shownVisual} note={record.preview ? undefined : false} big={!(Array.isArray(q.choices) && q.choices.some((c) => String(c).startsWith(`${q.visual.kind}:`)))} shrink={shortPictures ? SHORT_PICTURES : 1} /></div>}
+          {q.type === 'choice' && cardUp ? (
+            // The grown-up's card stands in the answers' place until Ready (Q91 (a), pass NG; GrownUpCard above). Since round one's reads
+            // (pass NG) Ready brings the question back into view when the page was scrolled past it to reach Ready (at 320 by 568 the card
+            // ends below the fold on 18 of the 24 kinds at seed 1, and with the shorter answers in its place the question and the letter it asks about
+            // sat above the screen), and hands the keyboard's focus to the first answer, where it fell to the page.
+            <GrownUpCard card={grownCard} onReady={() => { setCardReady(cardKey); if (typeof window !== 'undefined') window.requestAnimationFrame(() => {
+              const top = document.querySelector('[data-question-setup]') || document.querySelector('[data-question-text]');
+              // Since the third read's screen read: whenever the question's first line sits within its 12-pixel margin of the top, not only
+              // above it (sideways, the cue's tap had left it 2 to 4 pixels from the screen's top edge).
+              if (top && top.scrollIntoView && top.getBoundingClientRect().top < visibleBand().top + 12) top.scrollIntoView({ block: 'start', behavior: 'auto' });
+              const first = document.querySelector('[data-choice]'); if (first && first.focus) first.focus({ preventScroll: true }); }); }} />
+          ) : q.type === 'choice' ? (
             // Number answers never stack onto two lines (2026-09-23, Mikey): the columns are as wide as the longest one needs.
             // Towers stand side by side on one floor (pass MA): the explanation says both stand on the same floor, so the buttons do too.
-            // A column of picture answers (pass NC, EARMARKS A77) is a phone's width on any screen, centred, so a 69-pixel drawing never sits
+            // A column of picture answers (pass NC, EARMARKS A77) is a phone's width on any screen, centered, so a 69-pixel drawing never sits
             // in a tile as wide as a laptop's card (737 pixels); a phone's card is narrower than that width, so a phone draws it as before.
             // Two ideas' four corners (q.corners, pass MO) sit two by two, a phone's width on any screen, so the corners read as corners and
             // the fourth and Check answer fit a short phone (round two's code check: four full-width rows ended 30 pixels below its fold).
             // Since round one's screen read (pass NF) a grid whose choices are two or more prints is one print group (PrintGroupIf, PrintFitGroup),
             // as a lesson's pair of prints is (EARMARKS A102): at 320 by 568 each tile fitted its writing alone, and since the writing that
             // has its spaces is the widest, the answer drew smallest (Brown bears splash. at 20 pixels beside 21 and 22).
-            <PrintGroupIf on={q.choices.filter((c) => /^print:/.test(String(c))).length >= 2}><div style={{ display: 'grid', gap: shortPhone() ? 8 : 10, alignItems: q.choices.every((c) => /^tower:\d+$/.test(c)) ? 'end' : undefined, gridTemplateColumns: q.corners ? 'repeat(2, minmax(0, 1fr))' : q.choices.every((c) => /^tower:\d+$/.test(c)) ? `repeat(${q.choices.length}, 1fr)` : q.choices.every((c) => /^(\d+|[A-Za-z])$/.test(c)) ? `repeat(auto-fit, minmax(${Math.max(70, Math.max(...q.choices.map((c) => c.length)) * 15 + 24)}px, 1fr))` : '1fr', ...(q.corners ? { maxWidth: 360, margin: '0 auto' } : q.choices.every((c) => ONE_PICTURE_CHOICE.test(String(c)) || /^dots:\d+$/.test(String(c)) || /^print:/.test(String(c))) || loneLetterAmongPictures(q.choices) ? { maxWidth: PICTURE_COLUMN, margin: '0 auto' } : null) }}>
+            <PrintGroupIf on={q.choices.filter((c) => /^print:/.test(String(c))).length >= 2}><div style={{ display: 'grid', gap: shortPhone() ? 8 : 10, alignItems: q.choices.every((c) => /^tower:\d+$/.test(c)) ? 'end' : undefined, gridTemplateColumns: q.corners ? 'repeat(2, minmax(0, 1fr))' : q.choices.every((c) => /^tower:\d+$/.test(c)) ? `repeat(${q.choices.length}, 1fr)` : q.choices.every((c) => /^(\d+|[A-Za-z])$/.test(c)) ? `repeat(auto-fit, minmax(${Math.max(70, Math.max(...q.choices.map((c) => c.length)) * 15 + 24)}px, 1fr))` : grownCard && grownCard.sounds ? 'repeat(auto-fit, minmax(70px, 1fr))' : '1fr', ...(q.corners ? { maxWidth: 360, margin: '0 auto' } : q.choices.every((c) => ONE_PICTURE_CHOICE.test(String(c)) || /^dots:\d+$/.test(String(c)) || /^print:/.test(String(c))) || loneLetterAmongPictures(q.choices) ? { maxWidth: PICTURE_COLUMN, margin: '0 auto' } : null) }}>
               {q.choices.map((c) => {
                 const picked = given === c;
                 let bg = C.surface; let border = C.line;
@@ -14317,12 +14530,17 @@ function EduSphereScreens() {
                 // A heard choice (pass MX) prints Tap to hear beside a speaker for a pre-reader while the voice can speak, and a screen
                 // reader hears the sentence itself, as a child hears it when the button is tapped (printedChoice).
                 const heard = readAloud ? printedChoice(q, c, canSpeak()) : null;
+                // With a grown-up's card (Q91 (a), pass NG) a which-sound question's buttons show their numbers, 1 and 2 or 1, 2 and 3, in the order
+                // the card listed its sounds, so no sound is printed beside the letter it belongs to; the grown-up says each one. Since round
+                // one's screen read (pass NG) they stand in one row, as single letters do, where three full-width bars of one digit each took
+                // three rows on a phone (the row's columns, above).
+                const cardNumber = grownCard && grownCard.sounds ? grownCard.sounds.indexOf(String(c)) + 1 : 0;
                 return (
                   // A word answer says itself for a child who cannot read; a picture answer never does, because naming it would
                   // hand over the answer, nor, since pass MC, a single letter (choiceSpeaks reads only the choice, never which one is right).
-                  <button key={c} type="button" data-choice={c} data-heard-choice={heard ? '' : undefined} data-choice-last={c === q.choices[q.choices.length - 1] ? '' : undefined} aria-label={heard ? c : pictureName} onClick={() => { if (!checked) { if (readAloud) { playTap(); if (choiceSpeaks(q, c)) speak(c, q.voices ? { voices: q.voices } : {}); } setGiven(c); } }}
+                  <button key={c} type="button" data-choice={c} data-heard-choice={heard ? '' : undefined} data-choice-last={c === q.choices[q.choices.length - 1] ? '' : undefined} aria-label={heard ? c : cardNumber ? `Button ${cardNumber}` : pictureName} onClick={() => { if (!checked) { if (readAloud) { playTap(); if (choiceSpeaks(q, c)) speak(c, q.voices ? { voices: q.voices } : {}); } setGiven(c); } }}
                     style={{ opacity: ruledOut && !checked ? (C.mode === 'dark' ? 0.72 : 0.5) : 1, fontFamily: FONT, fontSize: choiceFont(q.choices), textAlign: 'center', textWrap: 'balance', padding: `${shortPictures ? 6 : 12}px 10px ${standIn ? 34 : shortPictures ? 6 : 12}px`, ...(standIn ? { position: 'relative' } : null), minWidth: 0, overflowWrap: /^-?[\d.,\/ ]+$/.test(c) ? 'normal' : 'anywhere', whiteSpace: /^-?[\d.,\/ ]+$/.test(c) ? 'nowrap' : 'normal', borderRadius: 10, background: bg, border: `2px solid ${border}`, color: C.ink, cursor: checked ? 'default' : 'pointer', minHeight: 48 }}>
-                    {heard ? <HeardChoice text={heard} /> : choiceFace(c, shortPictures ? SHORT_PICTURES : 1)}
+                    {heard ? <HeardChoice text={heard} /> : cardNumber ? <span data-card-number={cardNumber} style={{ fontSize: 28, fontWeight: 700 }}>{cardNumber}</span> : choiceFace(c, shortPictures ? SHORT_PICTURES : 1)}
                     {standIn && <ReplaceNote pal={C} style={{ right: 8, bottom: 5 }} />}
                   </button>
                 );
@@ -14358,7 +14576,7 @@ function EduSphereScreens() {
             // Follow the directions (pass MO): the pictures stay where they are, and each tap puts its number in the picture's corner,
             // one, two and three, in a gold badge with dark ink; a tap on a numbered picture takes it back, with every number after it,
             // and once every step is tapped the other pictures wait. Four pictures sit in two columns and three or six in three, so a phone
-            // shows them all, and on a laptop the grid keeps a phone's size, centred (round one's screen check: a 69-pixel picture sat in a
+            // shows them all, and on a laptop the grid keeps a phone's size, centered (round one's screen check: a 69-pixel picture sat in a
             // tile 363 pixels wide, the look Mikey called "small and separated by a lot of space" in pass MH). Each tile tells a screen
             // reader its picture's name and, once tapped, its number (the badge is a drawing, hidden from it), since three squares of three
             // colors all read "square". After two wrong orders the next step's picture wears the app's "go here" ring (edu-breathe, still
@@ -14452,7 +14670,7 @@ function EduSphereScreens() {
                   their lines end short of it. The explanation keeps it as one block, its words and its picture together (a spacing bank's
                   explanation shows its sentence as print fitted to its box, PrintWords, and "splash." and "dog." sat under the cue after the
                   right tap). The box keeps its full width and color; only what is in it steps aside. */}
-              <p data-cue-room="" style={{ margin: 0, fontWeight: 600, color: wasCorrect ? C.green : C.clayInk, paddingRight: 'var(--cue-room, 0px)', textWrap: 'balance' }}>{wasCorrect ? 'Correct' : readAloud ? partsWhole(preReaderWrongWords(q, String(given), wrongPicks, canSpeak()), 'why') : `Not quite. The answer is ${describeAnswer(q)}.`}</p>
+              <p data-cue-room="" style={{ margin: 0, fontWeight: 600, color: wasCorrect ? C.green : C.clayInk, paddingRight: 'var(--cue-room, 0px)', textWrap: 'balance' }}>{wasCorrect ? 'Correct' : readAloud ? ellsIn(partsWhole(keepLoneCapitals(preReaderWrongWords(q, String(given), wrongPicks, canSpeak() || !!grownCard)), 'why'), 'why') : `Not quite. The answer is ${describeAnswer(q)}.`}</p>
               {(wasCorrect || !readAloud) && (
                 <div data-cue-room="" style={{ paddingRight: 'var(--cue-room, 0px)' }}>
                   <div style={{ margin: '8px 0 0', textWrap: 'balance' }}><RichText text={formatTeachingText(q.explain)} size={15} lineGap={6} />{!wasCorrect && !readAloud && taughtLine(mod.id, q.answer) && <p style={{ margin: '8px 0 0', fontSize: 14, color: C.muted }}>From the lesson: “{taughtLine(mod.id, q.answer)}”</p>}{!wasCorrect && !readAloud && mod.lesson.example && mod.lesson.example.another && (wrongWay ? <div style={{ margin: '8px 0 0', padding: '10px 12px', borderRadius: 10, background: C.goldSoft }}><div style={{ maxWidth: 240, margin: '0 auto 8px' }}><Picture visual={wayVisual(mod.lesson.example, 1)} note={record.preview ? undefined : false} /></div><RichText text={wayText([].concat(mod.lesson.example.another)[0])} size={14} lineGap={6} /></div> : <p style={{ margin: '8px 0 0', textAlign: 'center' }}><button type="button" style={{ ...linkBtn, fontSize: 14 }} onClick={() => setWrongWay(true)}>Show me another way</button></p>)}{!wasCorrect && q.choiceNotes && q.choiceNotes[given] && !(insight && insight.any) && <p style={{ margin: '6px 0 0', fontSize: 15, color: C.muted }}>{q.choiceNotes[given]}</p>}</div>
@@ -14467,14 +14685,17 @@ function EduSphereScreens() {
               {!readAloud && insight && insight.any && <p style={{ margin: '8px 0 0', textAlign: 'center' }}><button type="button" data-more-info-link="" onClick={() => setMoreInfo(true)} style={{ ...linkBtn, fontSize: 14 }}>More Info</button></p>}
             </div>
           )}
-          {moreInfo && insight && insight.any && <MoreInfoSheet insight={insight} face={(c) => choiceFace(c, 0.6, true)} visual={q.visual || null} young={readAloud} onClose={() => setMoreInfo(false)} />}
+          {/* A print answer at its own size in More Info (pass NI's round one screen read: Write your name's tries, the comparison its question is
+            about, drew at 13 pixels under the question's own name at 28; FitText still fits the row). */}
+          {moreInfo && insight && insight.any && <MoreInfoSheet insight={insight} face={(c) => choiceFace(c, /^print:/.test(String(c)) ? 1 : 0.6, true)} visual={q.visual || null} young={readAloud} onClose={() => setMoreInfo(false)} />}
         </div>
         {/* A pre-reader who got it wrong tries again. Nobody moves on from a wrong answer. The row is a scroll cue's target (pass
             MH, the alignment read): a pre-reader's reason after a wrong tap can push Try again below a short phone's screen, where a
             child who cannot read would never find it, and the explanation after a right tap can push Next question down the same
             way, so the cue's arrows point at it while any of it is hidden (whole: the cue's corner covers only the end of a full-width
             button; a lesson's round Next, in that corner, brings it while a third is hidden, and a story's button while less than 24 pixels
-            of it show). */}
+            of it show). While a grown-up's card shows (Q91 (a), pass NG) the row is empty: Ready, on the card, comes first, and Check
+            answer waits for the answers it checks. */}
         <div data-practice-next="" style={{ scrollMarginBottom: 56 }}>
         {checked && !wasCorrect && readAloud
           ? <Btn full halo onClick={tryAgain}>Try again</Btn>
@@ -14482,22 +14703,32 @@ function EduSphereScreens() {
             ? <Btn full halo onClick={nextQuestion} disabled={busy}>{qIndex + 1 < questions.length ? 'Next question' : 'See results'}</Btn>
             : q.type === 'writing'
               ? <Btn full halo={ticks.length === q.checklist.length} onClick={submitWriting} disabled={busy || ticks.length < q.checklist.length}>I have finished writing it</Btn>
-              : <>
+              : cardUp ? null : <>
                 <Btn full halo={given !== ''} onClick={checkCurrent} disabled={given === '' || (q.type === 'order' && orderPicked.length < (q.pick || q.items.length))}>Check answer</Btn>
                 {attempt.placement && <div style={{ marginTop: 10 }}><Btn full kind="secondary" onClick={dontKnow}>I don't know</Btn></div>}
               </>}
         </div>
+        {/* After Ready, the grown-up can bring the card back (Q91 (a), pass NG): the answers hide again while it shows, so the words and
+            the answers are still never on the screen together, and a which-sound question's sounds can be read again in the buttons'
+            order. It goes once the answer is checked. Since pass NI's round one screen read it stands under Check answer, where it stood
+            between the answers and Check answer: on Write it by its sounds' word kind it pushed Check answer under a 375 by 667 phone's
+            fold, by up to 26 pixels in the dark theme, on every seed. */}
+        {q.type === 'choice' && grownCard && !cardUp && !checked && <p style={{ margin: '10px 0 0', textAlign: 'center' }}><button type="button" data-card-again="" onClick={() => { setCardReady(''); if (typeof window !== 'undefined') window.requestAnimationFrame(() => { const ready = document.querySelector('[data-card-ready] button'); if (ready && ready.focus) ready.focus({ preventScroll: true }); }); }} style={{ ...linkBtn, fontSize: 14 }}>Show the words again</button></p>}
         {/* For a pre-reader, More Info waits under the next button after the right tap (pass MH, the alignment read): it is for the
             grown-up beside the child, so it never pushes the child's own button down. */}
         {readAloud && checked && wasCorrect && insight && insight.any && <p style={{ margin: '10px 0 0', textAlign: 'center' }}><button type="button" data-more-info-link="" onClick={() => setMoreInfo(true)} style={{ ...linkBtn, fontSize: 14 }}>More Info</button></p>}
         {/* The cue waits for a whole direction (round one's screen check, pass MO: after the first tap it pointed at a Check answer
             that stays closed until every step is tapped). */}
         {/* It stays away while More Info is open (pass MX, round two's code read: it floated over the sheet's words). */}
-        {readAloud && !moreInfo && (checked || (given !== '' && !(q.type === 'order' && orderPicked.length < (q.pick || q.items.length)))) && <ScrollCue target="[data-practice-next]" whole watch={`${qIndex}-${checked}-${wasCorrect}-${misses}`} />}
+        {/* While the grown-up's card is up its row is empty (round one's code read, pass NG: Show the words again after a pick). */}
+        {readAloud && !moreInfo && !cardUp && (checked || (given !== '' && !(q.type === 'order' && orderPicked.length < (q.pick || q.items.length)))) && <ScrollCue target="[data-practice-next]" whole watch={`${qIndex}-${checked}-${wasCorrect}-${misses}`} />}
         {/* Before a pick (pass NC, EARMARKS A72 decided): on a short phone the last answer can sit partly under the screen with nothing
             pointing down (32 of 2,412 question screens at 320 by 568), so the cue shows while more than a third of it is hidden and nothing
             is picked, and leads to that answer, never to the closed Check answer. */}
-        {readAloud && !moreInfo && !checked && given === '' && q && q.type === 'choice' && <ScrollCue target="[data-choice-last]" hidden={1 / 3} watch={`${questionKey}-${q.genId}-pick`} />}
+        {/* While the grown-up's card is up the cue points at Ready, and after it at the answers (round one's reads, pass NG: at 320 by 568
+            Ready sat below the fold on 16 of the card's kinds with nothing pointing at it). */}
+        {readAloud && !moreInfo && !checked && given === '' && q && q.type === 'choice' && !cardUp && <ScrollCue target="[data-choice-last]" hidden={1 / 3} watch={`${questionKey}-${q.genId}-pick`} />}
+        {readAloud && !moreInfo && cardUp && <ScrollCue target="[data-card-ready]" whole watch={`${cardKey}-ready`} />}
         {record.preview && <div style={{ marginTop: 10 }}><Btn full kind="secondary" onClick={() => { setChecked(false); setGiven(''); setOrderPicked([]); if (qIndex + 1 < questions.length) { setQIndex(qIndex + 1); setQShownAt(Date.now()); } else { setScreen('overview'); } }}>Skip (walk-through)</Btn></div>}
         <SilentNote shown={heardNote} />
         <VoiceNote />

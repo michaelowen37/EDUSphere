@@ -57,7 +57,7 @@ const SEEDS = 6;
 // since round two the cue on 48, 47 on round two's copy, and 5,148 sentences, since Write it by its sounds' line 13 has one more);
 // and opposites-and-same line 8 waits no more, since p32 keeps wide-open whole, so wide-open eyes. ends the line together.
 // Since pass NF's third read the lit floor is 5,298, since round two's content read gave Look and write's line 14 a second sentence (5,296 before).
-const FLOORS = { lines: 1130, banks: 447, cue: { light: 48, dark: 48 }, paintings: 112, whole: 200, lit: 5298 };   // since pass NF's two lessons (28 lines, 10 banks)
+const FLOORS = { lines: 1157, banks: 457, cue: { light: 48, dark: 48 }, paintings: 112, whole: 210, lit: 5432 };   // since pass NI's two lessons (27 lines, 10 banks)
 // EARMARKS A82 decided (pass NC, round one's screen check): at 320 by 568 no pre-K lesson line ends on one lone word (25 of the 69 lines
 // past six lines did, where a browser balances nothing), a line past six lines wrapping pretty (LessonWords in ui.jsx). A line that
 // must end alone is named here by lesson and line with the reason; a wait for a line that no longer ends alone fails.
@@ -161,8 +161,18 @@ for (const theme of ['light', 'dark']) {
   const loneRead = () => page.evaluate(() => { const p = document.querySelector('[data-lesson-words]'); if (!p) return null; const tops = []; const words = [];
     const walk = document.createTreeWalker(p, NodeFilter.SHOW_TEXT); let t; while ((t = walk.nextNode())) for (const m of t.textContent.matchAll(/\S+/g)) { const r = document.createRange(); r.setStart(t, m.index); r.setEnd(t, m.index + m[0].length); const rect = r.getClientRects()[0]; if (rect) { tops.push(Math.round(rect.top)); words.push(m[0]); } }
     const lines = []; let at = null; tops.forEach((y, i) => { if (at === null || Math.abs(y - at) > 4) { lines.push([]); at = y; } lines[lines.length - 1].push(words[i]); });
-    const last = lines[lines.length - 1] || []; return { lines: lines.length, alone: lines.length > 1 && last.length === 1 ? last[0] : null, wrap: p.style.textWrap }; });
-  const loneOff = []; const loneSeen = new Set(); let loneLines = 0; let plantLone = null;
+    // Since pass NI's round one screen read: a line after the first that starts with a lone letter (b to z, or a capital but A and I, each
+    // a word as well), as "m." stood at a line's start in Write your name's line 7 and read as an abbreviation. Since the browser checks
+    // on round one's fixes: the rule is the one keepLoneLetters keeps, a letter held to the word right before it, so a letter after a
+    // mark (a period, a question mark, an exclamation mark, a comma, a colon or a semicolon) is passed over, since it starts its own
+    // sentence, clause or item as any word may start a line ("Letters have sounds. / M says mmm", "C says cuh, / G says guh"), and
+    // keepLoneLetters, which holds a letter only to a word, rightly leaves it; those are counted (sentences), and a letter after a word
+    // still fails ("comes / m.", "then / n").
+    const after = lines.slice(1).map((l, i) => ({ w: l[0], before: lines[i][lines[i].length - 1] })).filter((x) => /^[b-zB-HJ-Z][.,?!]?$/.test(x.w));
+    const opens = (x) => /[.?!,;:]["\u201D\u2019)]?$/.test(x.before);
+    const starts = after.filter((x) => !opens(x)).map((x) => x.w); const sentences = after.filter(opens).length;
+    const last = lines[lines.length - 1] || []; return { lines: lines.length, alone: lines.length > 1 && last.length === 1 ? last[0] : null, wrap: p.style.textWrap, starts, sentences }; });
+  const loneOff = []; const loneSeen = new Set(); let loneLines = 0; let plantLone = null; const letterOff = []; let plantLetter = null; let letterSentences = 0;
   for (const m of lessons) {
     await page.evaluate((id) => window.__eduTest.openModule(id), m.id); await screenIs('lesson'); await page.waitForTimeout(500);
     for (let i = 0; i < m.lesson.script.length; i++) {
@@ -205,6 +215,12 @@ for (const theme of ['light', 'dark']) {
       await page.setViewportSize(SMALL); const c = await readCue();
       for (const f of await rowFaults()) rowOff.push(`${key} (320): ${f}`); rowsRead++; await readWhole(`${key} (320)`);
       const lone = await loneRead(); if (lone) { loneLines++; if (lone.alone && !LONE_WAITS[key]) loneOff.push(`${key}: "${lone.alone}" alone on its last line of ${lone.lines}`); if (lone.alone) loneSeen.add(key); }
+      if (lone && lone.starts.length) letterOff.push(`${key}: a line starts with "${lone.starts[0]}"`); if (lone) letterSentences += lone.sentences;
+      // Its plant, once: Write your name's line 7 with its no-break spaces set back to spaces, as round one drew it, puts "m." at a line's start.
+      if (plantLetter === null && key === 'write-your-name line 7') {
+        await page.evaluate(() => { const p = document.querySelector('[data-lesson-words]'); const w = document.createTreeWalker(p, NodeFilter.SHOW_TEXT); let x; window.__nbLetters = []; while ((x = w.nextNode())) if (x.textContent.includes('\u00A0')) { window.__nbLetters.push([x, x.textContent]); x.textContent = x.textContent.replace(/\u00A0/g, ' '); } });
+        const set = await loneRead(); plantLetter = !!set && set.starts.length > 0;
+        await page.evaluate(() => { for (const [x, s] of window.__nbLetters || []) x.textContent = s; delete window.__nbLetters; }); }
       if (plantLone === null && lone && lone.lines > 6 && !lone.alone) {
         // Since pass NE the plant sets the line's no-break spaces back to spaces as well, since a line's last two words held together cannot
         // end alone under balance either.
@@ -229,6 +245,7 @@ for (const theme of ['light', 'dark']) {
   ok(`every line's row holds together at 375 by 667 and 320 by 568 in the ${theme} theme: Back, the speaker and Next with level tops, the dots centred under the speaker, no dot alone on a row (${rowsRead} rows read; a speaker pushed 6 pixels down, dots pushed 16 pixels right and a dot left alone caught)`, rowOff.length === 0 && rowsRead >= FLOORS.lines * 2 && plantTops === true && plantMiddle === true && plantAlone === true, { rowOff: rowOff.slice(0, 12), plantTops, plantMiddle, plantAlone });
   ok(`at 320 by 568 the scroll cue shows on a lesson line exactly when more than a third of Next is below the screen in the ${theme} theme, so it never sits on a Next two thirds of which show (${cueLines} lines read, the cue on ${cueShown}; a cue put over a Next wholly shown and a cue taken away from a Next a third hidden caught)`, cueOff.length === 0 && cueLines >= FLOORS.lines && cueShown >= FLOORS.cue[theme] && plantFake === true && plantGone === true, { cueOff: cueOff.slice(0, 12), plantFake, plantGone });
   ok(`every speech part kept whole on a pre-K lesson line stays on one line at 375 by 667 and 320 by 568 in the ${theme} theme, a blend, a run of a word's parts or sounds, a word said slowly and a run of beats, and inside its paragraph (pass NC, EARMARKS A82; ${wholeSeen} spans read; a span broken in two and a span run past its paragraph, planted, caught)`, wholeOff.length === 0 && wholeSeen >= FLOORS.whole && plantWhole === true && plantOutside === true, { off: wholeOff.slice(0, 4), seen: wholeSeen, floor: FLOORS.whole, plantWhole, plantOutside });
+  ok(`no line of a pre-K lesson line but its first starts with a lone letter at 320 by 568 in the ${theme} theme, each held to the word before it, a letter after a mark that starts a sentence or a clause aside (pass NI's round one screen read; ${loneLines} lines read; ${letterSentences} letters after a mark at a line's start passed over; Write your name's line 7 with its no-break spaces set back to spaces, planted, caught)`, letterOff.length === 0 && plantLetter === true, { letterOff: letterOff.slice(0, 4), plantLetter });
   const loneStale = Object.keys(LONE_WAITS).filter((k) => !loneSeen.has(k));
   ok(`no pre-K lesson line ends on one lone word at 320 by 568 in the ${theme} theme, a line past six lines wrapping pretty (pass NC, EARMARKS A82; ${loneLines} lines read; ${Object.keys(LONE_WAITS).length} lines that must end alone named with their reasons, none stale; a long line set back to balance, its last two words parted, ended alone and was caught)`, loneOff.length === 0 && loneStale.length === 0 && loneLines >= FLOORS.lines && plantLone === true, { loneOff: loneOff.slice(0, 8), loneStale, plantLone });
   ok(`every pre-K lesson line breaks the same with each of its sentences lit in turn as with none lit, at 375 by 667 and 320 by 568 in the ${theme} theme, so the reading light never moves the words, each word read by its place (pass NC, EARMARKS A86; ${reflowRead} sentences lit; the old padding, planted, moved the words and was caught)`, reflowOff.length === 0 && reflowRead >= FLOORS.lit && plantReflow === true, reflowOff.slice(0, 4));

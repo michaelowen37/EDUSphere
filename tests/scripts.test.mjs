@@ -1155,6 +1155,55 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   // Every manner a lesson can show has a few words for whoever makes its clip (VOICE_MANNERS against MANNER_HEARD).
   const mannersMissing = (heard) => Object.keys(L.VOICE_MANNERS).filter((k) => !(typeof heard[k] === 'string' && heard[k].length > 8));
   const mannersBad = mannersMissing(MANNER_HEARD); const { whisper, ...withoutWhisper } = MANNER_HEARD; const plantManners = mannersMissing(withoutWhisper).length === 1;
+  // What the child does in a turn, as each turn row's description says it (pass NI, the story writer's note and the lead's read of every
+  // turn row): "says it back" told the voice to wait for a sentence said back where a turn asked the child to draw in the air, tell or ask a
+  // grown-up, write their name, answer a question or say something of their own. A turn row saying "says it back" is a sentence the child
+  // says after the voice; a turn that draws, tells, asks a grown-up, writes or answers names it. Read here from each row's own sentence, not
+  // from the tool's wording; the old default, on Look and write's air drawing and Write your name's question, planted, caught.
+  // Since round one's code read (pass NI) a word taken apart by name too (Take the word tie apart), which the tool reads as taking it apart.
+  const TURN_NAMES = [[/\bdraw it in the air\b/i, 'draws it in the air'], [/\btell a grown-up\b/i, 'tells a grown-up'], [/\bwrite it under theirs\b/i, 'writes their name'], [/\bask a grown-up to write your name\b/i, 'asks a grown-up'], [/\btake the word \w+ apart\b/i, 'takes it apart']];
+  const turnOff = (r) => { const d = r.description; if (!/then the child /.test(d)) return null; const sen = strip(r.text).trim();
+    for (const [re, says] of TURN_NAMES) if (re.test(sen) && !d.includes(says)) return `${r.key}: "${sen}" not named as ${says}`;
+    if (/then the child says it back/.test(d) && (/\?$/.test(sen) || /\bsay\b/i.test(sen) || TURN_NAMES.some(([re]) => re.test(sen)))) return `${r.key}: "${sen}" heard as said back`;
+    return null; };
+  const turnRows = rows.filter((r) => r.kind === 'lesson line' && /then the child /.test(r.description));
+  const turnBad = turnRows.map(turnOff).filter(Boolean);
+  const turnPlants = [['look-and-write-5-1', 'draws it in the air in a turn of their own'], ['write-your-name-7-1', 'answers in a turn of their own'], ['sounds-in-a-word-11-1', 'takes it apart in a turn of their own', 'answers in a turn of their own']].map(([k, was, now = 'says it back']) => byKey.get(k) && byKey.get(k).description.includes(was) && turnOff({ ...byKey.get(k), description: byKey.get(k).description.replace(was, now) }) !== null);
+  // A voice sound a story uses as a sound, and a run of letters spelled aloud, are named in the row's description (pass NI, the story
+  // check): S4135's "Yuh!" and "Yuh, yuh, yarn!" had no sound direction, since the tool named a voice sound only beside the app's own
+  // sounds, and Eleven can read "Yuh!" as "Yeah!"; and "H, e, c, t, o, r" was named as the letter H alone, where a lone e can come out as
+  // "eh". Read here from each row's own words: a voice sound after says, said, starts with or ends with, alone as a sentence, or in a
+  // short run that ends on a word; a run of three or more single letters set off by commas. The old gate (Bear hides' S4127-5, "Wuh! W
+  // says wuh!", unnamed) and the old letter rule (S4139-6 naming H alone), planted, caught.
+  const EARLY_STORY = rows.filter((r) => ['story', 'long story', 'next long story'].includes(r.kind) && r.voice === 'young');
+  const voiceSoundOff = (r) => { const t = strip(r.text); const off = [];
+    for (const [k, v] of Object.entries(L.VOICE_SOUNDS)) { const used = [new RegExp(`\\b(?:says?|said|starts? with|ends? with)\\s+${k}\\b`, 'i'), new RegExp(`(?:^|[.!?]\\s+)${k}[.!]`, 'i'), new RegExp(`\\b${k},\\s+(?:${k},\\s+)*[A-Za-z]+[.!]`, 'i'), new RegExp(`\\b[A-Za-z]+,\\s+${k},\\s+[A-Za-z]+[.!]`, 'i')].some((re) => re.test(t));
+      if (used && !new RegExp(`\\b${k}, ${v.short.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'i').test(r.description)) off.push(`${r.key}: ${k} used as a sound, not named`); }
+    return off; };
+  // Since the second story read (pass NI): every letter of a run in the order it is spelled, a repeated one too (S338-1's "S, h, e, l, l"
+  // had been named S, H, E and L), and a run inside a sung clip (its tags say singing) sung, each letter clear, where "Say" sat over a song.
+  const spellOff = (r) => { const t = strip(r.text); const off = []; const sung = /\[[^\]]*\bsing(?:s|ing)?\b[^\]]*\]/i.test(r.text);
+    for (const m of t.matchAll(/(?<![A-Za-z'])[A-Za-z](?:(?:,\s+(?:and\s+)?|\s+and\s+)[A-Za-z](?![A-Za-z'])){2,}/g)) { const want = m[0].replace(/\band\b/g, '').match(/[A-Za-z]/g).map((l) => l.toUpperCase());
+      const said = new RegExp(`${sung ? 'Sing' : 'Say'} the letters? ([A-Z](?:, [A-Z])*(?: and [A-Z])?) by (?:their|its) names?, one at a time${sung ? ', each one clear' : ''}`).exec(r.description); const named = said ? said[1].split(/, | and /) : [];
+      if (!named.join('').includes(want.join(''))) off.push(`${r.key}: "${m[0]}" spelled, ${named.join('') || 'none'} named one at a time${sung ? ' and sung' : ''}`); }
+    return off; };
+  const soundRowsBad = EARLY_STORY.flatMap(voiceSoundOff); const spellRowsBad = EARLY_STORY.flatMap(spellOff);   // a story's own description (lettersNamed: its capitals and a spelled run's letters, a lone small letter outside a run not yet); a lesson line sends its key letters and the letter A by name (elevenSentence), its other small letters bare until EARMARKS A127
+  const s4127 = byKey.get('S4127-5'); const s4139 = byKey.get('S4139-6');
+  const soundPlant = s4127 && voiceSoundOff({ ...s4127, description: s4127.description.replace(/ Say each sound written as letters as the sound itself, never as letters: Wuh, the w of wet, a short wuh\./, '') }).length > 0 && voiceSoundOff(s4127).length === 0;
+  const spellPlant = s4139 && spellOff({ ...s4139, description: s4139.description.replace(/Say the letters H, E, C, T, O and R by their names, one at a time\./, 'Say the letter H by its name.') }).length > 0 && spellOff(s4139).length === 0;
+  // Since round two's code read: the tool's own form for a voice sound alone as a sentence ("Yuh! she said."), which no row needed alone, is
+  // held by the tool's output (the form taken out, the sound goes unnamed), and an interjection asked as a question ("Huh? said Dad.")
+  // is a word, left; a story that means an interjection writes it as a question.
+  const { soundsWritten: sw } = await import('../tools/audio-ledger.mjs');
+  const aloneForm = sw('Yuh! she said.').toLowerCase().includes('yuh, ' + L.VOICE_SOUNDS.yuh.short) && sw('Huh? said Dad.') === '';
+  // The second story read's two (pass NI): S338-1's repeated L dropped, and the alphabet song's S278-4 asked to say its letters, each caught.
+  const s338 = byKey.get('S338-1'); const s278 = byKey.get('S278-4');
+  const spellPlants2 = !!s338 && !!s278 && spellOff(s338).length === 0 && spellOff(s278).length === 0
+    && spellOff({ ...s338, description: s338.description.replace('S, H, E, L and L', 'S, H, E and L') }).length > 0 && spellOff({ ...s278, description: s278.description.replace(' Sing the letters', ' Say the letters').replace(', one at a time, each one clear', ', one at a time') }).length > 0;
+  ok(`every early story row names a voice sound it uses as a sound, and a run of letters it spells aloud, each letter said one at a time (pass NI, the story check; ${EARLY_STORY.length} early story rows; Bear hides' unnamed wuh, Whose lunch?'s H alone, a spelled run's repeated L dropped and a sung run asked to be said, planted, caught; since round two the tool names "Yuh! she said." and leaves "Huh? said Dad.")`,
+    soundRowsBad.length === 0 && spellRowsBad.length === 0 && soundPlant && spellPlant && spellPlants2 && aloneForm && EARLY_STORY.length >= 1000, JSON.stringify({ soundRowsBad: soundRowsBad.slice(0, 6), spellRowsBad: spellRowsBad.slice(0, 6), soundPlant, spellPlant, aloneForm, n: EARLY_STORY.length }));
+  ok(`every turn row of the audio ledger names what the child does: a question answered, something said, an air drawing, a grown-up told or asked, a name written, a word taken apart by name, and "says it back" only for a sentence said back (pass NI; ${turnRows.length} turn rows; the old default on an air drawing and on a question, and a word taken apart by name called an answer, planted, caught)`,
+    turnBad.length === 0 && turnRows.length >= 100 && turnPlants.every(Boolean), JSON.stringify({ turnBad: turnBad.slice(0, 6), n: turnRows.length, turnPlants }));
   // Round one's fixes, each held since round two's code read (each could be undone with every check passing): the letter A named as
   // a letter is its name in IPA and the article is not; a sentence of sounds alone is never a blend, a run with a vowel is; eleven_v3
   // gets no neighbors' words and eleven_v4 does; --sfx-model reaches a sound effect's request; and every story paragraph whose tags ask
@@ -1174,8 +1223,10 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   // less BEATS_NOT_LETTERS; since pass NE's round two a letter with 's too, as the tool reads it) says so, and no other does; every one with a sound written as letters (soundsWritten) says so; the four
   // tags QUICK took in round two carry the note, and a sound's tag does not; and Buh and buh are named once.
   const EARLY = ['PK3', 'PK4', 'K', '1', '2']; const STORY_ROWS = [...STORY_KINDS, 'story title', 'long story title', 'next long story title'];
-  const namesLetter = (r) => { const s = strip(r.text); const skip = BEATS_NOT_LETTERS[r.group] || []; return [...s.matchAll(/[A-Za-z][A-Za-z'-]*/g)].some((m) => { const t = m[0].replace(/'s$/, ''); return t.length === 1 && isLetterNamed(s, m.index, m.index + 1, t) && !skip.includes(t.toUpperCase()); }); };
-  const storyNotesOff = (rs) => rs.filter((r) => STORY_ROWS.includes(r.kind) && EARLY.includes(r.grade) && (namesLetter(r) !== /Say the letter/.test(r.description) || (soundsWritten(strip(r.text)) !== '') !== /Say each sound written as letters/.test(r.description))).map((r) => r.key);
+  // Since pass NI (the story check) a run of three or more single letters set off by commas or a last and ("c, v, x", "s, j and y") names
+  // letters too, small ones included, as the ledger's lettersNamed reads it.
+  const namesLetter = (r) => { const s = strip(r.text); const skip = BEATS_NOT_LETTERS[r.group] || []; return [...s.matchAll(/[A-Za-z][A-Za-z'-]*/g)].some((m) => { const t = m[0].replace(/'s$/, ''); return t.length === 1 && isLetterNamed(s, m.index, m.index + 1, t) && !skip.includes(t.toUpperCase()); }) || /(?<![A-Za-z'])[A-Za-z](?:(?:,\s+(?:and\s+)?|\s+and\s+)[A-Za-z](?![A-Za-z'])){2,}/.test(s); };
+  const storyNotesOff = (rs) => rs.filter((r) => STORY_ROWS.includes(r.kind) && EARLY.includes(r.grade) && (namesLetter(r) !== /S(?:ay|ing) the letter/.test(r.description) || (soundsWritten(strip(r.text)) !== '') !== /Say each sound written as letters/.test(r.description))).map((r) => r.key);
   const storyOff = storyNotesOff(rows); const plantStory = storyNotesOff([{ ...byKey.get('S305-3'), description: byKey.get('S305-3').description.replace(/ Say the letters?[^.]*\./, '') }, { ...byKey.get('S200-1'), description: byKey.get('S200-1').description.replace(/ Say each sound written as letters[^.]*\./, '') }]).length === 2;
   // Since round two's content read (pass NE): a letter with 's ("At the end of N's name") is a letter named, its 's taken off before it is
   // read, so S4119-6 asks for D's name and N's, where it asked for D's alone (lettersNamed in tools/audio-ledger.mjs, and namesLetter above);
@@ -1198,8 +1249,9 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
   // it); every early story row names each hiss as the app plays it, and every sound of a run of a word's sounds (S4079-5's shh and ooh,
   // which round one fixed with no check). Each fault the read planted in the tool is planted here in a row, and caught.
   // Since pass NE Start or end of the name and Write it by its sounds too, by the same reason (Claude's design), and since pass NF Hear
-  // it in a word, which says C's name starts with sss beside C's own cuh.
-  const ONE = ['sounds-in-a-word', 'very-first-sound', 'sound-by-sound', 'letters-and-sounds', 'hear-it-in-the-name', 'end-of-the-name', 'start-or-end', 'write-by-sounds', 'hear-it-in-a-word'];
+  // it in a word, which says C's name starts with sss beside C's own cuh. Since pass NI Q, V and Y, by the same reason: V's vvv is held
+  // as fff is, and its lesson sets van beside fan.
+  const ONE = ['sounds-in-a-word', 'very-first-sound', 'sound-by-sound', 'letters-and-sounds', 'hear-it-in-the-name', 'end-of-the-name', 'start-or-end', 'write-by-sounds', 'hear-it-in-a-word', 'q-v-and-y'];
   const HISS = Object.keys(L.SOUND_RECORDINGS).filter((n) => L.SOUND_RECORDINGS[n].one);
   const oneForm = (n) => L.goalTag(L.SOUND_RECORDINGS[n].goalOne) + ' ' + L.ipaQuoted(L.SOUND_RECORDINGS[n].one);
   const twoForm = (n) => L.goalTag(L.SOUND_RECORDINGS[n].goal) + ' ' + L.ipaQuoted(L.SOUND_RECORDINGS[n].ipa);
@@ -1231,8 +1283,10 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
       for (const t of sen.toLowerCase().match(/[a-z]+/g) || []) { const v = Object.hasOwn(L.VOWEL_WORDS, t) ? L.VOWEL_WORDS[t] : Object.hasOwn(L.VOICE_SOUNDS, t) ? L.VOICE_SOUNDS[t] : null; if (v && !r.description.includes(v.short)) off.push(`${t} said in a run, not named`); } }
     return off; };
   const storyBreathBad = rows.filter((r) => STORY_ALL.includes(r.kind)).flatMap((r) => storyBreathOff(r).map((o) => `${r.key}: ${o}`));
-  // The floors are the counts the code has (pass ND, round one's code read: 52, 17 and 4 stood against 69, 38 and 10).
-  const BREATH_FLOORS = { parts: 69, once: 38, twice: 36, storyRows: 10 };
+  // The floors are the counts the code has (pass ND, round one's code read: 52, 17 and 4 stood against 69, 38 and 10; since pass NI,
+  // with Q, V and Y's lines, 78 parts, 49 of one breath and 36 of two, and with its story, I spy on the rug, 15 story rows; round one's
+  // code read found the floor at 14, under the count, and the story named by its first draft's title).
+  const BREATH_FLOORS = { parts: 78, once: 49, twice: 36, storyRows: 15 };
   const storyOnceRows = rows.filter((r) => STORY_ALL.includes(r.kind) && ONE.includes(r.source) && L.speechPieces(strip(r.text), { trial: true, once: true }).some((x) => x.sound && HISS.includes(x.sound))).map((r) => r.key);
   const storyPlants = [storyBreathOff({ ...byKey.get('S4087-1'), description: byKey.get('S4087-1').description.split(', once').join(', twice') }).length > 0,
     storyBreathOff({ ...byKey.get('S4079-5'), description: byKey.get('S4079-5').description.replace(' Shh, the sh of ship, held;', '') }).length > 0];
@@ -1306,6 +1360,8 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
     directionBad(['[saying just the first sound of pan, the lips popping open once]']).length === 1, backMissing(lsCut) > 0 && backMissing(ls.text) === 0);
   // Each goal names its own sound (round one's code check), in the test's own words: the word a sound starts, or the ending it is.
   const GOAL_OWN = { m: 'first sound of moon', n: 'first sound of net', s: 'first sound of sun', f: 'first sound of fan', z: 'first sound of zoo', r: 'first sound of red', l: 'first sound of lion', t: 'first sound of tap', p: 'first sound of pan', k: 'first sound of cat', b: 'first sound of ball', d: 'first sound of dog', g: 'first sound of go', j: 'first sound of jam', ig: 'ending of pig', og: 'ending of dog', at: 'ending of cat', fr: 'first part of frog', fl: 'first part of flower', st: 'first part of star', sp: 'first part of spoon', tr: 'first part of tree', a: 'first sound of apple', e: 'first sound of egg', i: 'first sound of igloo', o: 'first sound of octopus', u: 'first sound of up', huh: 'first sound of hat', wuh: 'first sound of wet', chuh: 'first sound of chair', shh: 'first sound of ship', ks: 'sounds at the end of six', x: 'last part of box',
+    // Since pass NI (pre-K 4's V, Q and Y): the app's vvv, and the voice's yuh and kwuh.
+    v: 'first sound of van', yuh: 'first sound of yes', kwuh: 'first two sounds of queen',
     // Since round one's code check (pass NC) the long vowels a run says as words, by the test's own words and their own IPA.
     oh: 'middle sound of boat', eye: 'middle sound of kite', ooh: 'middle sound of moon' };
   const VOWEL_IPA = { oh: '/oʊ/', eye: '/aɪ/', ooh: '/uː/' };
@@ -1315,12 +1371,17 @@ ok('the drawn things older lessons show without naming them wait by name, on eve
     for (const [name, r] of Object.entries(recs)) { if (r.kind !== 'speech sound') continue; const want = GOAL_OWN[name];
       if (!want || !String(r.goal).includes(want)) out.push(name); if (r.one && !(String(r.goalOne).includes(want) && /\btwice\b/.test(r.goal) && /\bonce\b/.test(r.goalOne))) out.push(name + ' one'); }
     for (const [name, v] of Object.entries(voices)) if (!GOAL_OWN[name] || !String(v.goal).includes(GOAL_OWN[name])) out.push(name);
+    // Both ways (pass NI, round one's code read: the table was read only by the code's own keys, so a sound the code dropped, the voice's
+    // yuh or kwuh, was never missed): every sound the table names is still one the app sends with its goal.
+    for (const name of Object.keys(GOAL_OWN)) if (!(recs[name] && recs[name].kind === 'speech sound') && !Object.hasOwn(voices, name) && !Object.hasOwn(vowels, name)) out.push(name + ' gone');
     return out; };
   const swap = (o, x, y, field = 'goal') => ({ ...o, [x]: { ...o[x], [field]: o[y][field] }, [y]: { ...o[y], [field]: o[x][field] } });
   const ownWrong = ownOff(L.SOUND_RECORDINGS, L.VOICE_SOUNDS);
   plants.push(ownOff(swap(L.SOUND_RECORDINGS, 'm', 'n'), L.VOICE_SOUNDS).length > 0, ownOff(swap(L.SOUND_RECORDINGS, 'd', 'og'), L.VOICE_SOUNDS).length > 0,
     ownOff({ ...L.SOUND_RECORDINGS, s: { ...L.SOUND_RECORDINGS.s, goal: L.SOUND_RECORDINGS.s.goalOne, goalOne: L.SOUND_RECORDINGS.s.goal } }, L.VOICE_SOUNDS).length > 0, ownOff(L.SOUND_RECORDINGS, swap(L.VOICE_SOUNDS, 'huh', 'wuh')).length > 0,
-    ownOff(L.SOUND_RECORDINGS, L.VOICE_SOUNDS, swap(L.VOWEL_WORDS, 'oh', 'eye')).length > 0, ownOff(L.SOUND_RECORDINGS, L.VOICE_SOUNDS, swap(L.VOWEL_WORDS, 'oh', 'eye', 'ipa')).length > 0);
+    ownOff(L.SOUND_RECORDINGS, L.VOICE_SOUNDS, swap(L.VOWEL_WORDS, 'oh', 'eye')).length > 0, ownOff(L.SOUND_RECORDINGS, L.VOICE_SOUNDS, swap(L.VOWEL_WORDS, 'oh', 'eye', 'ipa')).length > 0,
+    // Since pass NI: the voice's yuh and kwuh dropped from the code, each caught by the table's own key.
+    ['yuh', 'kwuh'].every((k) => ownOff(L.SOUND_RECORDINGS, Object.fromEntries(Object.entries(L.VOICE_SOUNDS).filter(([n]) => n !== k))).includes(k + ' gone')));
   // The place marks: a word in capitals that a goal also names is capped outside the goal, never inside it.
   const { elevenSentence } = await import('../tools/audio-ledger.mjs');
   const ogGoal = L.goalTag(L.SOUND_RECORDINGS.og.goal); const capped = [elevenSentence('Dog ends with og.', { stress: ['dog'] }).text, elevenSentence('Dog and log end with og.', { word: 'dog' }).text];

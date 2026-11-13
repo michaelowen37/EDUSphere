@@ -69,23 +69,26 @@ const VOICED_ROOM = ['hear-it-in-a-word', 'look-and-write'];
 // Since pass NF the floors are pass NF's counts: its lessons and banks (A104's words among them) brought the pre-K lines to 1130 and the
 // questions read to 657 to 660, and the lines of every other read-aloud course are read too, so the lines and their cue are counted for
 // pre-K and for the rest apart, and the pre-K cue at 375 by 667 stays a ceiling of none, which the fold check holds as well.
+// Since pass NI (round two's whole read of RULES-AUDIT, which found them still pass NF's) the floors are pass NI's counts, read in three
+// whole runs, the last two after round two's fixes (the third read's card change is on a screen with no voice, which this test does not read): its two lessons bring the pre-K lines to 1157, the questions read to 673 and 674 and
+// the states the reach reads to 2954 and 3017 (2953 and 3016 in the first run, before round two's words); every count the same in both.
 const FLOORS = {
-  lines: { preK: 1130, rest: 1158 },
+  lines: { preK: 1157, rest: 1158 },
   // Pre-K at 375 by 667 none, a ceiling as well as a floor (round one's code read: a verdict that read no line could not fail).
   // Since round two's code read (pass NF) the states the reach reads in each theme are the counts the code has (they were held only above
   // 1,000; 2,895 in the light theme on round two's copy, 2,896 since round two's fixes), and the held stories read for the put-back are the
   // five lesson stories held at light 320 by 568.
-  reach: { light: 2896, dark: 2965 }, putBacks: 5,
+  reach: { light: 2954, dark: 3017 }, putBacks: 5,
   cueLines: { preK: { 'light 320 by 568': 48, 'light 375 by 667': 0, 'dark 320 by 568': 48, 'dark 375 by 667': 0 }, rest: { 'light 320 by 568': 92, 'light 375 by 667': 0, 'dark 320 by 568': 106, 'dark 375 by 667': 0 } },
-  screens: { 'light 320 by 568': 658, 'light 375 by 667': 657, 'dark 320 by 568': 659, 'dark 375 by 667': 660 },
+  screens: { 'light 320 by 568': 673, 'light 375 by 667': 673, 'dark 320 by 568': 674, 'dark 375 by 667': 674 },
   // The cue after a first wrong tap at 320 by 568 in the light theme was on 477 questions in one whole run of pass NF's copy and 479 in
   // three, so its floor is the lower.
-  cueScreens: { wrong: { 'light 320 by 568': 477, 'light 375 by 667': 99, 'dark 320 by 568': 502, 'dark 375 by 667': 107 }, right: { 'light 320 by 568': 581, 'light 375 by 667': 288, 'dark 320 by 568': 588, 'dark 375 by 667': 290 } },
+  cueScreens: { wrong: { 'light 320 by 568': 489, 'light 375 by 667': 106, 'dark 320 by 568': 514, 'dark 375 by 667': 114 }, right: { 'light 320 by 568': 594, 'light 375 by 667': 298, 'dark 320 by 568': 602, 'dark 375 by 667': 298 } },
   // Since pass NF: the cue before a pick, the strips that keep room for the cue, the story pages read and those where the cue shows.
-  pick: { 'light 320 by 568': 8, 'light 375 by 667': 0, 'dark 320 by 568': 12, 'dark 375 by 667': 0 },
+  pick: { 'light 320 by 568': 8, 'light 375 by 667': 0, 'dark 320 by 568': 13, 'dark 375 by 667': 0 },
   strips: { 'light 320 by 568': 9, 'light 375 by 667': 0, 'dark 320 by 568': 11, 'dark 375 by 667': 0 },
   // 275 on the merged copy, pass NF's two new lessons' stories with them (273 on the engineer's copy).
-  stories: 275, storyCue: { 'light 320 by 568': 275, 'light 375 by 667': 275, 'dark 320 by 568': 275, 'dark 375 by 667': 275 },
+  stories: 277, storyCue: { 'light 320 by 568': 277, 'light 375 by 667': 277, 'dark 320 by 568': 277, 'dark 375 by 667': 277 },
   // The lines whose last two words are over 18 letters and spaces (A103 (c)).
   longPairs: 5,
 };
@@ -107,7 +110,9 @@ const zeroOr = (n, f) => (f === 0 ? n === 0 : n >= f);
 // round one's content fixes, found 261 in four runs (132 there): round one's fixes changed 12 of the 671 questions read at dark 320 by 568
 // (in Look and write's, Write it by its sounds' and Hear it in a word's banks), and the plant then finds 131 where it found 132 (round one's
 // screen read: the cue's own count after a first wrong tap, 477 in pass NE's build, has read 479 in every run since).
-const PLANT_FLOORS = { lines: { 'light 320 by 568': 22, 'dark 320 by 568': 21 }, restLines: { 'light 320 by 568': 64, 'dark 320 by 568': 81 }, wrong: 260, right: 188, words: { 'light 320 by 568': 8, 'dark 320 by 568': 10 }, stories: { 'light 320 by 568': 168, 'light 375 by 667': 94, 'dark 320 by 568': 168, 'dark 375 by 667': 94 } };
+// Since pass NI the plants' floors are its counts too, the same in its three runs: 268 questions after a first wrong tap and 194 after the
+// right one, and 169 and 96 story pages in each theme, its two lessons' stories among them.
+const PLANT_FLOORS = { lines: { 'light 320 by 568': 22, 'dark 320 by 568': 21 }, restLines: { 'light 320 by 568': 64, 'dark 320 by 568': 81 }, wrong: 268, right: 194, words: { 'light 320 by 568': 8, 'dark 320 by 568': 10 }, stories: { 'light 320 by 568': 169, 'light 375 by 667': 96, 'dark 320 by 568': 169, 'dark 375 by 667': 96 } };
 // CUE_WORDS_ONLY=<lesson ids, comma-separated> reads only those lessons and their banks, for a focused look; it pins no floor.
 const ONLY = (process.env.CUE_WORDS_ONLY || '').split(',').map((x) => x.trim()).filter(Boolean);
 const early = L.COURSES.filter((c) => (c.grade === 'PK3' || c.grade === 'PK4') && c.readAloud);

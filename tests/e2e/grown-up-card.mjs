@@ -1,7 +1,7 @@
 // The Wise Human. Copyright (c) 2026. Source-available; not for reuse. See LICENSE.md.
 // The grown-up's card, walked in the real page (Q91, Mikey's answer in pass NG: "Q91 - A"; EARMARKS A96). In plain terms: on a
-// device with no voice, a grown-up reads each question aloud, and the letters banks GROWN_UP_CARD_BANKS names (24 in pass NG, 32 since
-// pass NH) show, where their answers go, a card with the words to say and a Ready button. This walks every one at seeds 1 and 2 in both themes on a
+// device with no voice, a grown-up reads each question aloud, and the letters banks GROWN_UP_CARD_BANKS names (24 in pass NG, 32 in
+// pass NH, 44 since pass NI) show, where their answers go, a card with the words to say and a Ready button. This walks every one at seeds 1 and 2 in both themes on a
 // 375 by 667 phone, and each at seed 1 on a 320 by 568 phone and on a phone held sideways (667 by 375), in both themes, and checks, as
 // a child and a grown-up meet it:
 //   - before Ready the card shows its words (the whole question as grownUpCard gives it, and a which-sound question's sounds in the
@@ -27,7 +27,10 @@
 // read (pass NG): after the cue's tap Ready sits 28 pixels above the screen's foot and after Ready the question's first line 12 pixels
 // below its top (11 or more), at 320 by 568 and sideways; a which-sound card's sound lines stand at one height (the serif run's line
 // height taken away, planted, caught); and its way back to the list holds the link's name by no-break spaces and on one line at every
-// width (round two's sentence, planted, caught).
+// width (round two's sentence, planted, caught). Since pass NI's round two screen read every hyphenated word on the nine cards that
+// print one stands on one row at 320 by 568 in both themes (the hold's nowrap taken away on Q, V and Y's picture card at seed 10,
+// planted, breaks Yo-yo at its hyphen, caught). Since the third read the after line's way back starts its own row on the picture,
+// word and which-sound cards at 375 by 667 and 320 by 568 (drawn inline, planted, it starts mid-row, caught).
 // Since pass NH (Mikey's answers "Q96 - A" and "Q97 - A"): the 32 banks, the eight letter-name kinds of A and B, Big letters and the
 // tracing lessons among them; and in the thirteen kinds whose picture or letter hides while the card is up (GROWN_UP_CARD_HIDES), the
 // question card shows the grown-up's card alone before Ready, with no picture, no letter and no print, and again with Show the words
@@ -37,6 +40,20 @@
 // (the card's first line, or a which-sound card's line after its list, worked out here from the question), and the sign word card to read
 // the words above the sign (round two's final read); and a card of Trace more big letters that says "Tap the letter I." draws the I in the
 // serif type, and a card without it none.
+// Since pass NI (Mikey's answer "Q98 - A"): the 39 banks, the seven picture kinds beside a letter among them, each a hiding kind, its card
+// saying the pictures' names alone and asking the grown-up to read the question after Ready; Write it by its sounds' word card asks for the
+// words above the two letters, its line on what they are for printed there after Ready. A picture kind's reason after a wrong tap names
+// the picture tapped ("The ball does not start with juh."), one of the names its card said, which points at no answer still open, so the
+// reason's check reads the card's other added words. With no voice a bank of a letters lesson off the list (Look and write's real
+// letter, since every letters bank is on it) shows no card and prints its whole question. Q, V and Y (pass NI) add five banks, 44 in all:
+// its which-sound, picture and yes or no kinds hide their letter (23 hiding kinds, 22 of whose cards ask the grown-up to read the question
+// after Ready), and its letter and first-letter kinds ask for a letter by its name, as the older ones do.
+// Since pass NI's round one screen read: the eight picture cards (the seven picture kinds and Q, V and Y's) say only to read them aloud and
+// tap Ready in their first line, and under their names to read the question (the word card, the words above the letters) and then point
+// to each picture and say its name again, since the pictures show only after Ready, with no names; and Check answer ends above a 375 by 667
+// phone's fold after Ready on all 44 banks at seeds 1 to 6, in both themes, read as a child the educator added sees them, with the test
+// page's own margin taken off so the count is the product's (Show the words again stood between the answers and Check answer, and on
+// Write it by its sounds' word kind pushed it under the fold on every seed in the dark theme; that place, planted, is caught).
 // Run: node tests/e2e/make-page.mjs && node tests/e2e/grown-up-card.mjs
 import { createRequire } from 'node:module'; import { execSync } from 'node:child_process';
 const G = execSync('npm root -g').toString().trim(); const { chromium } = createRequire(import.meta.url)(`${G}/playwright`);
@@ -47,7 +64,10 @@ const words = (t) => String(t || '').toLowerCase().match(/[a-z']+/g) || [];
 const FRAME = new Set(['a', 'an', 'the', 'is', 'this', 'that', 'these', 'those', 'letter', 'letters', 'two', 'now', 'listen', 'to', 'at', 'look', 'word', 'name', 'and', 'sound', 'let\'s', 'write', 'by', 'its', 'sounds']);
 // What a device with a voice prints is its printedStory, or its story where it has none (since pass NH: the sign word kind prints its story
 // with a voice, and since round one's fixes after Ready with none too, so its words are no words the card added).
-const heardWords = (q) => { const shown = words(q.visual && q.visual.kind === 'letters' ? q.visual.text : ''); const printed = words(L.printedQuestion(q, true).story || '');
+// Since pass NI Write it by its sounds' word kind prints its first sentence after Ready with no voice (what the two letters are for, read
+// by this test's own rule), which names no letter, sound or word to say, so its words are no words the card added either.
+const wordSetup = (q) => (q.genId === 'p4-wbs-word' ? (/^(These two letters are for the first sound and the last sound of a word\.) Now listen to these /.exec(q.story) || [])[1] || '' : '');
+const heardWords = (q) => { const shown = words(q.visual && q.visual.kind === 'letters' ? q.visual.text : ''); const printed = words(L.printedQuestion(q, true).story || '').concat(words(wordSetup(q)));
   return [...new Set(words(q.story).filter((x) => !printed.includes(x) && !shown.includes(x) && !FRAME.has(x)))]; };
 const flat = (t) => String(t || '').replace(/ /g, ' ').replace(/\s+/g, ' ').trim();
 
@@ -102,6 +122,10 @@ const state = (page) => page.evaluate(() => {
     // since pass NH: what else shows in the question card beside the grown-up's card (words, a drawing or a picture), and the question's picture
     others: qCard ? [...qCard.querySelectorAll('*')].filter((el) => !el.closest('[data-grown-up-card]') && vis(el) && (/^(svg|img|canvas)$/i.test(el.tagName) || [...el.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim()))).map((el) => `${el.tagName}:${(el.textContent || '').trim().slice(0, 24)}`) : ['no question card'],
     picture: vis(document.querySelector('[data-question-picture]')),
+    // since pass NI's round one screen read: a card's line after its names or sounds, and Check answer's bottom on the page less the page's
+    // own top margin (the test page keeps the browser's 8 pixels; the product has none), so the count is the product's
+    after: (document.querySelector('[data-card-after]') || {}).textContent || null,
+    checkBottom: (() => { const b = [...document.querySelectorAll('button')].find((x) => x.textContent.trim() === 'Check answer' && vis(x)); if (!b) return null; return Math.round(b.getBoundingClientRect().bottom + window.scrollY - (parseFloat(getComputedStyle(document.body).marginTop) || 0)); })(),
     setupTop: (() => { const t = document.querySelector('[data-question-setup]') || document.querySelector('[data-question-text]'); return t ? Math.round(t.getBoundingClientRect().top) : null; })() };
 });
 // Every run of small l's in a text, as ellRuns finds them, and whether every lone capital of a text keeps the word before it.
@@ -124,7 +148,7 @@ const cardContrast = (page) => page.evaluate(() => {
 const banks = [...L.GROWN_UP_CARD_BANKS];
 for (const theme of ['light', 'dark']) {
   const page = await openPage(theme); await noVoice(page);
-  const faults = { before: [], after: [], numbers: [], again: [], together: [], fold: [], contrast: [], reason: [], ready: [], ells: [], focus: [], row: [], alone: [] }; let ellReasons = 0; let hidden = 0; let asking = 0;
+  const faults = { before: [], after: [], numbers: [], again: [], together: [], fold: [], contrast: [], reason: [], ready: [], ells: [], focus: [], row: [], alone: [] }; let ellReasons = 0; let hidden = 0; let asking = 0; let pictureCards = 0;
   for (const g of banks) for (const seed of [1, 2]) {
     const q = L.generateQuestion(g, seed); const card = L.grownUpCard(q); const want = L.cardQuestion(q); const wantUp = L.cardQuestion(q, true);
     // What the voice would have said that a device with a voice never prints: the words of the whole setup that its printed setup
@@ -143,9 +167,15 @@ for (const theme of ['light', 'dark']) {
     // Since round one's screen read (pass NH): a hiding card whose words do not hold the question the voice asks tells the grown-up to read
     // it after Ready, in its first line, or a which-sound card in its line on after Ready (read below), worked out here from the question.
     { const asks = card.hides && !flat(card.say).includes(flat(q.prompt)); if (asks) asking += 1;
-      // Since round two's final read: the sign word card, whose setup prints only after Ready, says to read the words above the sign.
-      const how = asks && !card.sounds ? 'Read this aloud, then tap\u00A0Ready and read the\u00A0question.' : L.CARD_SETUP_AFTER_READY.has(g) ? 'Read this aloud, then tap\u00A0Ready and read the words above the\u00A0sign.' : 'Read this aloud, then tap\u00A0Ready.';
-      if (s.readyPulse || s.how !== how) faults.ready.push({ where, pulse: s.readyPulse, how: s.how, want: how }); }
+      // Since round two's final read: the sign word card, whose setup prints only after Ready, says to read the words above the sign; and
+      // since pass NI the two letters' word card the words above the letters (this test's own table of the two).
+      const above = g === 'p3-ab-in-word' ? 'sign' : g === 'p4-wbs-word' ? 'letters' : null;
+      // Since pass NI's round one screen read a picture card (its answers pictures) says only to read it and tap Ready, and in its line
+      // after its names what to do after Ready, worked out here from the question.
+      const pictures = card.hides && !card.sounds && q.choices.every((c) => /^(?:icon|pic|art):/.test(String(c))); if (pictures) pictureCards += 1;
+      const how = pictures ? 'Read this aloud, then tap\u00A0Ready.' : above ? `Read this aloud, then tap\u00A0Ready and read the words above the\u00A0${above}.` : asks && !card.sounds ? 'Read this aloud, then tap\u00A0Ready and read the\u00A0question.' : 'Read this aloud, then tap\u00A0Ready.';
+      const afterWant = pictures ? `After Ready, read ${above ? 'the words above the letters' : 'the question'}, then point to each picture and say its name again. To see the names again, tap Show the words again, under Check answer.` : null;
+      if (s.readyPulse || s.how !== how || (pictures ? flat(s.after) !== afterWant : !card.sounds && s.after !== null)) faults.ready.push({ where, pulse: s.readyPulse, how: s.how, want: how, after: s.after }); }
     { const want2 = ellsIn(s.cardText); const got = s.ells.map((e) => e.t); if (JSON.stringify(got) !== JSON.stringify(want2) || s.ells.some((e) => !e.serif)) faults.ells.push({ where, want: want2, got: s.ells }); }
     if (!lonesHeld(s.say)) faults.ells.push({ where, lone: s.say });
     const low = await cardContrast(page); if (low.length) faults.contrast.push({ where, low });
@@ -175,20 +205,23 @@ for (const theme of ['light', 'dark']) {
     await page.locator(`[data-choice="${wrong}"]`).first().click(); await page.getByRole('button', { name: 'Check answer', exact: true }).click(); await page.waitForTimeout(250);
     s = await state(page);
     // Only where two or more answers are still open after the tap is the retry still a question (a yes or no, or any two answers,
-    // leaves one), so only there may the reason not print a word the card added; it is always shown.
-    if (!s.feedback || (q.choices.length >= 3 && added.some((x) => words(s.feedback).includes(x)))) faults.reason.push({ where, feedback: flat(s.feedback), added });
+    // leaves one), so only there may the reason not print a word the card added; it is always shown. Since pass NI the reason may name the
+    // picture tapped (a picture kind's card said the pictures' names), which points at no answer still open.
+    const tapped = words(q.whyNot && q.whyNot[wrong] ? q.whyNot[wrong].name : '');
+    if (!s.feedback || (q.choices.length >= 3 && added.some((x) => !tapped.includes(x) && words(s.feedback).includes(x)))) faults.reason.push({ where, feedback: flat(s.feedback), added });
     if (!lonesHeld(s.feedback)) faults.reason.push({ where, lone: s.feedback });
     { const want2 = ellsIn(s.feedback); const got = s.ells.map((e) => e.t); if (want2.length) ellReasons += 1; if (JSON.stringify(got) !== JSON.stringify(want2) || s.ells.some((e) => !e.serif)) faults.ells.push({ where, step: 'reason', want: want2, got: s.ells }); }
     if (s.card) faults.together.push({ where, step: 'after a wrong tap' });
   }
-  ok(`${theme}: before Ready each of the ${banks.length} banks shows the grown-up's card with its words and no answers or Check answer, at seeds 1 and 2 (Q91 (a); Q96 (a))`, faults.before.length === 0 && banks.length === 32, faults.before.slice(0, 3));
-  ok(`${theme}: in the kinds whose picture or letter hides (${hidden} questions), the card stands alone before Ready and with the words again, and after Ready the picture and the question show with no setup line (Q97 (a))`, faults.alone.length === 0 && hidden === 2 * L.GROWN_UP_CARD_HIDES.size, faults.alone.slice(0, 3));
+  ok(`${theme}: before Ready each of the ${banks.length} banks shows the grown-up's card with its words and no answers or Check answer, at seeds 1 and 2 (Q91 (a); Q96 (a); Q98 (a))`, faults.before.length === 0 && banks.length === 44, faults.before.slice(0, 3));
+  ok(`${theme}: in the kinds whose picture or letter hides (${hidden} questions), the card stands alone before Ready and with the words again, and after Ready the picture and the question show with no setup line but the two kinds' own (Q97 (a); Q98 (a))`, faults.alone.length === 0 && hidden === 2 * L.GROWN_UP_CARD_HIDES.size && hidden === 2 * 23, faults.alone.slice(0, 3));
   ok(`${theme}: Ready shows the answers under the same print, with Show the words again, and no word the card added prints beside them`, faults.after.length === 0, faults.after.slice(0, 3));
   ok(`${theme}: a which-sound card lists its sounds in the buttons' order, and its buttons show their numbers, never a sound`, faults.numbers.length === 0, faults.numbers.slice(0, 3));
   ok(`${theme}: Show the words again brings the card back and hides the answers`, faults.again.length === 0, faults.again.slice(0, 3));
   ok(`${theme}: the card and the answers are never on the screen together, before Ready, after it, with the words again or after a wrong tap`, faults.together.length === 0, faults.together.slice(0, 3));
   ok(`${theme}: the card's Ready ends above a 375 by 667 phone's fold on all ${banks.length} banks`, faults.fold.length === 0, faults.fold.slice(0, 3));
-  ok(`${theme}: Ready is the plain button, never the pulsing one, "tap Ready." holds together, and the ${asking} cards whose words stop before the question say to read it after Ready`, faults.ready.length === 0 && asking === 2 * 12, faults.ready.slice(0, 3));
+  ok(`${theme}: the eight picture cards (${pictureCards} questions) say under their names to read the question, or the words above the letters, then point to each picture and say its name again (pass NI's round one screen read)`, pictureCards === 16, pictureCards);
+  ok(`${theme}: Ready is the plain button, never the pulsing one, "tap Ready." holds together, and the ${asking} cards whose words stop before the question say to read it after Ready (the two letters' word card the words above them)`, faults.ready.length === 0 && asking === 2 * 22, faults.ready.slice(0, 3));
   ok(`${theme}: every run of small l's on the card and in the reason draws in a serif type (${ellReasons} reasons hold one), and no lone capital starts a line of the card's words`, faults.ells.length === 0 && ellReasons >= 2, faults.ells.slice(0, 3));
   ok(`${theme}: Ready hands the focus to the first answer, and Show the words again hands it back to Ready`, faults.focus.length === 0, faults.focus.slice(0, 3));
   ok(`${theme}: a which-sound question's numbered buttons stand in one row`, faults.row.length === 0, faults.row.slice(0, 3));
@@ -201,8 +234,9 @@ for (const theme of ['light', 'dark']) {
       // Since pass NH's round one code read: a hiding kind with a voice keeps its picture and its setup, as before the pass.
       if (L.GROWN_UP_CARD_HIDES.has(g) && (!s.picture || s.setup === null)) voiced.push(`${g}: picture ${s.picture}, setup ${s.setup}`); }
     ok('with a voice the letters banks show their answers and no card, and a hiding kind its picture and its setup', voiced.length === 0, voiced);
-    await noVoice(page); await show(page, 'p3-ls-pic', 1); const off = await state(page); const whole = L.printedQuestion(L.generateQuestion('p3-ls-pic', 1), false);
-    ok("with no voice a letters bank off the list (Letters and sounds' picture bank) shows no card and prints its whole question for the grown-up", !off.card && off.choices.length === 2 && flat(off.setup) === whole.story, { card: off.card, setup: off.setup });
+    // Since pass NI every letters bank is on the list, so the bank off it is Look and write's real letter, which asks by sight.
+    await noVoice(page); await show(page, 'p3-look-real', 1); const off = await state(page); const offQ = L.generateQuestion('p3-look-real', 1); const whole = L.printedQuestion(offQ, false);
+    ok("with no voice a bank of a letters lesson off the list (Look and write's real letter) shows no card and prints its whole question for the grown-up", !L.GROWN_UP_CARD_BANKS.has('p3-look-real') && !off.card && off.choices.length === offQ.choices.length && flat(off.setup) === whole.story && flat(off.prompt) === whole.prompt, { card: off.card, setup: off.setup, prompt: off.prompt });
     // Near miss 1: the card's words put back beside the answers after Ready (a line added to the question card) is caught.
     await show(page, 'p3-ls-letter', 1); await page.locator('[data-card-ready] button').click(); await page.waitForTimeout(200);
     const q1 = L.generateQuestion('p3-ls-letter', 1); const added1 = heardWords(q1);
@@ -226,6 +260,49 @@ for (const theme of ['light', 'dark']) {
     const beside = await state(page); await page.evaluate(() => document.querySelectorAll('[data-plant]').forEach((n) => n.remove()));
     ok("near miss: the letter's picture planted beside a hiding kind's card is caught", beside.card && beside.others.length > 0, beside.others);
   }
+  await page.close();
+}
+// Check answer above the fold after Ready (pass NI's round one screen read): on a 375 by 667 phone, in both themes, as a child the educator
+// added sees the question (no Walkthrough Mode tab), every one of the 44 banks at seeds 1 to 6 is shown with no voice, Ready is tapped, and
+// Check answer must end above the fold, its bottom read with the test page's own margin taken off (the fold check reads the same with a
+// voice). Near miss: Show the words again put back between the answers and Check answer, where round one had it, on Write it by its
+// sounds' word kind at seed 2, caught.
+async function openChild(theme) {
+  const page = await openPage(theme);
+  const screenIs = (n) => page.waitForFunction((x) => window.__eduTest && window.__eduTest.screen === x, n, { timeout: 60000 });
+  const tapIf = async (name) => { const b = page.getByRole('button', { name, exact: true }); if (await b.count()) { await b.first().click({ force: true }); await page.waitForTimeout(250); } };
+  await page.evaluate(() => window.__eduTest.goHome()); await screenIs('educator-pick'); await page.waitForTimeout(400);
+  for (const n of ['Skip tour', 'Later', 'Got it']) await tapIf(n);
+  await page.getByRole('button', { name: 'Add someone new' }).first().click(); await page.waitForTimeout(300);
+  await page.fill('input[placeholder="School-issued ID"]', 'C-1'); await page.getByRole('button', { name: /^Early years/ }).first().click(); await page.waitForTimeout(200);
+  await page.getByRole('button', { name: 'Add', exact: true }).click(); await page.waitForTimeout(500); await tapIf('Later');
+  await page.getByRole('button', { name: 'Home' }).first().click(); await page.waitForTimeout(500);
+  await page.getByRole('button', { name: /C-1$/ }).first().click(); await page.waitForTimeout(900); await tapIf('Later');
+  await screenIs('overview');
+  return page;
+}
+const homeOf = (g) => (L.COURSES.flatMap((c) => c.modules).find((m) => (m.generators || []).includes(g)) || {}).id;
+for (const theme of ['light', 'dark']) {
+  const page = await openChild(theme); await noVoice(page);
+  const child = await page.evaluate(() => ![...document.querySelectorAll('[role="status"]')].some((x) => /Walkthrough Mode/.test(x.textContent)));
+  const under = []; let read = 0; let highest = 0; let planted = null;
+  for (const g of banks) for (let seed = 1; seed <= 6; seed++) {
+    await page.evaluate(([x, s, mid]) => window.__eduTest.showQuestion(x, s, mid), [g, seed, homeOf(g)]);
+    await page.waitForFunction(() => window.__eduTest.screen === 'practice' && !!document.querySelector('[data-card-ready] button'), null, { timeout: 15000 });
+    await page.locator('[data-card-ready] button').click(); await page.waitForTimeout(150);
+    const s = await state(page); read += 1;
+    if (s.checkBottom === null || s.checkBottom > 667) under.push({ where: `${g} s${seed}`, bottom: s.checkBottom }); else highest = Math.max(highest, s.checkBottom);
+    // The plant, once: the link put back where round one had it, at the foot of the question's card under the answers, on the word kind
+    // at seed 2 (on the product page as a child sees it, 673 in the light theme and 693 in the dark, by the screen read and the lead's
+    // probe), and then put back under Check answer, where the page draws it.
+    if (g === 'p4-wbs-word' && seed === 2) {
+      await page.evaluate(() => { const link = document.querySelector('[data-card-again]'); const card = document.querySelector('[data-question-card]'); if (link && card) card.appendChild(link.closest('p')); });
+      planted = (await state(page)).checkBottom;
+      await page.evaluate(() => { const link = document.querySelector('[data-card-again]'); const next = document.querySelector('[data-practice-next]'); if (link && next) next.after(link.closest('p')); });
+    }
+  }
+  ok(`${theme}: after Ready, Check answer ends above a 375 by 667 phone's fold on all 44 banks at seeds 1 to 6, read as a child sees them (${read} questions, the lowest ending at ${highest}; Show the words again at the foot of the question's card, where round one had it, planted on the word kind, caught at ${planted})`,
+    child && read === 6 * banks.length && banks.length === 44 && under.length === 0 && planted !== null && planted > 667, { child, under: under.slice(0, 4), planted });
   await page.close();
 }
 // A 320 by 568 phone (since round one's reads, pass NG): wherever Ready sits below the fold the scroll cue shows and a tap on it brings
@@ -316,13 +393,16 @@ for (const [W, H] of [[320, 568], [667, 375]]) for (const theme of ['light', 'da
   const NAME = 'Show the words again';
   const said = await page.evaluate(() => { const el = [...document.querySelectorAll('[data-grown-up-card] p')].find((x) => /this list again/.test(x.textContent)); return el ? el.textContent : null; });
   const nameLines = () => page.evaluate((name) => { const el = [...document.querySelectorAll('[data-grown-up-card] p')].find((x) => /Show.the.words.again/.test(x.textContent)); if (!el) return 0;
-    const node = el.firstChild; const at = node.data.replace(/ /g, ' ').indexOf(name); if (at < 0) return 0; const rg = document.createRange(); rg.setStart(node, at); rg.setEnd(node, at + name.length);
+    // Since the third read the line's way back is a block of its own, so the name is looked for in every text node of the line.
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT); let node = null; let at = -1; let t;
+    while ((t = walker.nextNode())) { const i = t.data.replace(/\u00A0/g, ' ').indexOf(name); if (i >= 0) { node = t; at = i; break; } }
+    if (!node) return 0; const rg = document.createRange(); rg.setStart(node, at); rg.setEnd(node, at + name.length);
     const tops = [...rg.getClientRects()].filter((r) => r.width > 0).map((r) => r.top).sort((a, b) => a - b);
     return tops.length ? 1 + tops.slice(1).filter((t, i) => t - tops[i] > 4).length : 0; }, NAME);
   const sweep = async (stopAtSplit) => { const split = []; for (let w = 320; w <= 1280; w += 4) { await page.setViewportSize({ width: w, height: 568 }); await page.waitForTimeout(60);
     const n = await nameLines(); if (n !== 1) { split.push({ w, lines: n }); if (stopAtSplit) break; } } return split; };
   const held = await sweep(false);
-  await page.evaluate(() => { const el = [...document.querySelectorAll('[data-grown-up-card] p')].find((x) => /this list again/.test(x.textContent)); if (el) el.firstChild.data = 'After Ready, point to each button and say its sound. Show the words again brings this list back.'; });
+  await page.evaluate(() => { const el = [...document.querySelectorAll('[data-grown-up-card] p')].find((x) => /this list again/.test(x.textContent)); if (el) el.textContent = 'After Ready, point to each button and say its sound. Show the words again brings this list back.'; });
   const plain = await sweep(true);
   // Since pass NH (Q97 (a), round one's code read) the line follows the list and asks for each sound again after Ready, since the grown-up
   // reads the list aloud before Ready; the list stands right under the card's words, read below.
@@ -330,8 +410,8 @@ for (const [W, H] of [[320, 568], [667, 375]]) for (const theme of ['light', 'da
     return !!(say && list && after) && say.compareDocumentPosition(list) === Node.DOCUMENT_POSITION_FOLLOWING && list.compareDocumentPosition(after) === Node.DOCUMENT_POSITION_FOLLOWING && say.nextElementSibling === list; });
   ok("a which-sound card's sounds stand right under its words and the line on what to do after Ready follows them (pass NH, Q97 (a))", order, order);
   // Since round one's screen read (pass NH) the line says to read the question first, which prints only after Ready.
-  ok('a which-sound card says to read the question after Ready and "To see this list again, tap Show the words again.", the name held by no-break spaces and on one line at every width from 320 to 1280 (round two\'s sentence, planted, splits it, caught)',
-    said === 'After Ready, read the question, then point to each button and say its sound again. To see this list again, tap Show the words again.' && held.length === 0 && plain.length > 0, { said, nbsp: String(said).includes(' '), held: held.slice(0, 3), plain });
+  ok('a which-sound card says to read the question after Ready and "To see this list again, tap Show the words again, under Check answer.", the name held by no-break spaces and on one line at every width from 320 to 1280 (round two\'s sentence, planted, splits it, caught)',
+    said === 'After Ready, read the question, then point to each button and say its sound again. To see this list again, tap Show the words again, under Check answer.' && held.length === 0 && plain.length > 0, { said, nbsp: String(said).includes(' '), held: held.slice(0, 3), plain });
   await page.close(); }
 // A reason whose run of l's sits inside a span partsWhole keeps whole (since round two's code read, pass NG): ellsIn draws the run in the
 // serif type inside the same span, with a voice, as every reason after a wrong tap does ("Lll, og." in Put the beats together's first
@@ -356,6 +436,47 @@ for (const [W, H] of [[320, 568], [667, 375]]) for (const theme of ['light', 'da
   await show(page, 'pl-hear-more', seedH); const withoutI = await read();
   ok(`Trace more big letters' card draws the letter I in the serif type (seed ${seedI}), marked as the letter and not as a run of l's, and a card without it draws none (seed ${seedH})`, !!seedI && !!seedH && withI.length === 1 && withI[0].t === 'I' && withI[0].serif && ellOnI === 0 && withoutI.length === 0, { withI, ellOnI, withoutI });
   await page.close(); }
+// The way back on a row of its own (pass NI's third read, its screen read, as round two's had asked): the after line's second sentence,
+// "To see the names again, tap Show the words again, under Check answer.", starts its own row, below the first sentence's full stop, on
+// the picture card, the word card and the which-sound card, at 375 by 667 and 320 by 568 in both themes; with its row taken away (the
+// span drawn inline), planted on Q, V and Y's picture card at 375 by 667, the sentence starts mid-row beside the full stop, caught.
+{ const CASES = [['p4-qvy-pic', 1], ['p4-wbs-word', 1], ['p4-end-sound', 1]];
+  const rows = (page) => page.evaluate(() => { const p = document.querySelector('[data-grown-up-card] [data-card-after]'); if (!p) return null;
+    const walker = document.createTreeWalker(p, NodeFilter.SHOW_TEXT); let n; let dot = null; let to = null;
+    while ((n = walker.nextNode()) && !to) { const i = n.data.indexOf('To see'); if (i >= 0) { to = [n, i]; break; } const j = n.data.lastIndexOf('.'); if (j >= 0) dot = [n, j]; }
+    if (!to || !dot) return null; const top = ([t, i], len) => { const rg = document.createRange(); rg.setStart(t, i); rg.setEnd(t, i + len); const r = [...rg.getClientRects()].filter((x) => x.width > 0)[0]; return r ? Math.round(r.top) : null; };
+    return { to: top(to, 2), dot: top(dot, 1) }; });
+  const midRow = []; let read = 0; let planted = null;
+  for (const theme of ['light', 'dark']) for (const [W, H] of [[375, 667], [320, 568]]) {
+    const page = await openPage(theme); await noVoice(page); await page.setViewportSize({ width: W, height: H }); await page.waitForTimeout(300);
+    for (const [g, seed] of CASES) { await show(page, g, seed); if (await page.locator('[data-card-again]').count()) { await page.locator('[data-card-again]').click(); await page.waitForTimeout(200); }
+      await page.waitForTimeout(150); const r = await rows(page); read += 1; if (!r || r.to === null || r.dot === null || !(r.to > r.dot + 2)) midRow.push({ theme, size: `${W} by ${H}`, where: `${g} s${seed}`, r }); }
+    if (theme === 'light' && W === 375) { await show(page, 'p4-qvy-pic', 1); if (await page.locator('[data-card-again]').count()) { await page.locator('[data-card-again]').click(); await page.waitForTimeout(200); }
+      await page.evaluate(() => { const sp = document.querySelector('[data-card-again-line]'); if (sp) sp.style.display = 'inline'; }); await page.waitForTimeout(150); planted = await rows(page); }
+    await page.close(); }
+  ok(`the after line's way back starts its own row on the picture, word and which-sound cards at 375 by 667 and 320 by 568 in both themes (${read} cards read)`, midRow.length === 0 && read === 12, midRow.slice(0, 3));
+  ok('near miss: with the way back drawn inline on p4-qvy-pic seed 1 at 375 by 667, it starts mid-row beside the full stop, caught', !!planted && planted.to !== null && planted.to === planted.dot, planted); }
+// A hyphenated word on the card stays whole (pass NI's round two screen read: the card read "Now listen to / these three. Yo- / yo."
+// on Q, V and Y's picture kind at seeds 10 and 12 at 320 by 568, in both themes, before cardWords held it): on every card that read
+// found printing one (p4-qvy-pic seeds 2, 3, 4, 10 and 12, p4-qvy-first 2, p4-soe-letter 4, p4-soe-yesno 4 and p4-soe-sound 1), at 320
+// by 568 in both themes, each hyphenated word on the card stands on one row; with the hold's nowrap taken away on p4-qvy-pic seed 10,
+// planted, Yo-yo breaks at its hyphen, caught, so the read can see a break where there is one.
+{ const CASES = [['p4-qvy-pic', 2], ['p4-qvy-pic', 3], ['p4-qvy-pic', 4], ['p4-qvy-pic', 10], ['p4-qvy-pic', 12], ['p4-qvy-first', 2], ['p4-soe-letter', 4], ['p4-soe-yesno', 4], ['p4-soe-sound', 1]];
+  const rowsOf = (page) => page.evaluate(() => [...document.querySelectorAll('[data-grown-up-card] [data-whole-word]')].map((el) => ({ w: el.textContent, rows: new Set([...el.getClientRects()].filter((r) => r.width > 0).map((r) => Math.round(r.top))).size })));
+  const broken = []; const none = []; let read = 0; let planted = null;
+  for (const theme of ['light', 'dark']) { const page = await openPage(theme); await noVoice(page); await page.setViewportSize({ width: 320, height: 568 }); await page.waitForTimeout(300);
+    for (const [g, seed] of CASES) {
+      await show(page, g, seed); if (await page.locator('[data-card-again]').count()) { await page.locator('[data-card-again]').click(); await page.waitForTimeout(200); }
+      await page.waitForTimeout(150); const rows = await rowsOf(page); read += rows.length;
+      if (!rows.some((r) => /-/.test(r.w))) none.push(`${theme} ${g} s${seed}`);
+      for (const r of rows) if (r.rows !== 1) broken.push({ theme, where: `${g} s${seed}`, ...r });
+    }
+    if (theme === 'light') { await show(page, 'p4-qvy-pic', 10); if (await page.locator('[data-card-again]').count()) { await page.locator('[data-card-again]').click(); await page.waitForTimeout(200); }
+      await page.evaluate(() => document.querySelectorAll('[data-grown-up-card] [data-whole-word]').forEach((el) => { el.style.whiteSpace = 'normal'; })); await page.waitForTimeout(150);
+      planted = (await rowsOf(page)).filter((r) => /^yo-yo/i.test(r.w)); }
+    await page.close(); }
+  ok(`320 by 568, both themes: every hyphenated word on the nine cards that print one stands on one row (${read} words read), each card holding one`, broken.length === 0 && none.length === 0 && read >= 20, { broken: broken.slice(0, 3), none });   // 20, the count the code has (the third read's code read)
+  ok('near miss: with the hold\'s nowrap taken away on p4-qvy-pic seed 10, Yo-yo breaks at its hyphen, caught', !!planted && planted.length > 0 && planted.some((r) => r.rows > 1), planted); }
 await browser.close();
 ok('the page threw no error while the card was shown, readied, brought back and answered, in either theme', pageErrors.length === 0, pageErrors.slice(0, 3));
 console.log(`\n${passed} passed, ${failed} failed`);

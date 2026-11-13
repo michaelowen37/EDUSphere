@@ -128,7 +128,9 @@ echo "13m/13 no word under the scroll cue on a short phone, in both themes"; run
 # card's way back to its list across every width: 526 seconds alone, past two thirds of 660, so its limit is 1,000, about twice.
 # Since pass NH (Q96 (a) and Q97 (a)) it walks 32 banks, where it walked 24, and reads the hiding kinds' cards standing alone: 639 seconds run
 # alone, past 60 percent of the 1,000 it had, so its limit is 1,300, about twice its time (run, above).
-echo "13n/13 the grown-up's card on a device with no voice, in both themes"; run "the grown-up's card" 1300 node tests/e2e/grown-up-card.mjs 2>&1 | tail -1 | tee /tmp/edu_card.txt; grep -q " 0 failed" /tmp/edu_card.txt || fail=1
+# Since pass NI (Q98 (a), and Q, V and Y's five) it walks 44 banks: 862 seconds alone beside two reading agents, just under two thirds
+# of the 1,300 it had, so its limit is 1,700, about twice.
+echo "13n/13 the grown-up's card on a device with no voice, in both themes"; run "the grown-up's card" 1700 node tests/e2e/grown-up-card.mjs 2>&1 | tail -1 | tee /tmp/edu_card.txt; grep -q " 0 failed" /tmp/edu_card.txt || fail=1
 # A browser too old for the app (Q92, Mikey's answer in pass NG: "Q92 - B"): a note in place of the Loading word when the app cannot
 # start, never when it can, and nothing in the page newer than the browsers the note names (204 seconds beside the rules test after pass
 # NG's round two, so its limit is 420, about twice).

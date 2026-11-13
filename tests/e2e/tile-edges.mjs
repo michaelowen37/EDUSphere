@@ -50,7 +50,7 @@ const tilesOf = async (page) => {
 };
 const TILE_QUESTION = ['p3-sort-red-blue', 11];
 // The counts the code has (as the fold check's FLOORS): how many drawings the banks put on tiles, read in each theme.
-const FLOORS = { drawings: 432 };   // 262 when the check was written, 416 since round one's code check read every kind, 424 since pass NE, 432 since pass NF's new tile drawings (Hear it in a word's and A104's pictures, and Look and write's marks)
+const FLOORS = { drawings: 468 };   // 262 when the check was written, 416 since round one's code check read every kind, 424 since pass NE, 432 since pass NF's new tile drawings (Hear it in a word's and A104's pictures, and Look and write's marks), 468 since pass NI's (Q, V and Y's six pictures, and Write your name's names in print, each order a try can take)
 // Where each drawing first shows on a tile: a bank, a seed and its module, and the questions that show them all.
 const where = new Map();
 for (const c of L.COURSES) for (const m of c.modules) for (const g of [...new Set(m.generators || [])]) for (let s = 1; s <= 80; s++) {

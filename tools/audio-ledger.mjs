@@ -235,6 +235,13 @@ export const soundsWritten = (words, { once = false } = {}) => { const seen = ne
   // A voice sound said beside the app's own sounds is a sound too (pass NB, round one's story check: "Mmm, at, mat, and huh, at, hat!"
   // named mmm, at and sss but not huh, which Eleven may read as the questioning word), named after the app's sounds.
   if (seen.size || runs) for (const [k, v] of Object.entries(VOICE_SOUNDS)) { const m = new RegExp(`\\b${k}\\b`, 'i').exec(String(words)); if (m && !seen.has(k)) seen.set(k, m[0] + ', ' + v.short); }
+  // Since pass NI (the story check): a voice sound a paragraph uses as a sound is named though the paragraph has none of the app's own
+  // sounds, after says, said, starts with or ends with ("Y's name starts with wuh"), standing alone as a sentence ("Yuh!"), or in a short
+  // run that ends on a word ("Yuh, yuh, yarn!", "Queen, kwuh, quilt!"), since Eleven can read "Yuh!" as "Yeah!" at a story's turn; a
+  // voice sound asked as a question ("Huh?") or opening a longer sentence ("Shh, the baby is sleeping.") is a word, and left.
+  for (const [k, v] of Object.entries(VOICE_SOUNDS)) { if (seen.has(k)) continue; const t = String(words);
+    const asSound = [new RegExp(`\\b(?:says?|said|starts? with|ends? with)\\s+${k}\\b`, 'i'), new RegExp(`(?:^|[.!?]\\s+)${k}[.!]`, 'i'), new RegExp(`\\b${k},\\s+(?:${k},\\s+)*[A-Za-z]+[.!]`, 'i'), new RegExp(`\\b[A-Za-z]+,\\s+${k},\\s+[A-Za-z]+[.!]`, 'i')].some((r) => r.test(t));
+    const m = asSound ? new RegExp(`\\b${k}\\b`, 'i').exec(t) : null; if (m) seen.set(k, m[0] + ', ' + v.short); }
   // Since pass NC a long vowel a sentence sets off in a run of a word's sounds (Buh, oh, tuh. Boat!) is named too, read sentence by sentence.
   if (seen.size || runs) for (const sentence of String(words).split(SENTENCE_BREAK)) if (namesWordSounds(sentence)) for (const [k, v] of Object.entries(VOWEL_WORDS)) { const m = new RegExp(`(?:[A-Za-z]+)\\s*(?:,\\s*|\\s+and\\s+)(${k})\\b`, 'i').exec(sentence); if (m && !seen.has(k)) seen.set(k, m[1] + ', ' + v.short); }
   const sounds = [...seen.values()];
@@ -242,19 +249,35 @@ export const soundsWritten = (words, { once = false } = {}) => { const seen = ne
 // The letters a story names as letters (round two's code read: "C says cuh, A says the sound at the start of apple"), said by their
 // names; a story keeps its words, so its description says how, the letter A above all, which a voice can read as the word a. skip
 // leaves out a capital that is not a letter there (BEATS_NOT_LETTERS).
-export const lettersNamed = (words, skip = []) => { const s = String(words); const found = [];
+export const lettersNamed = (words, skip = [], { sung = false } = {}) => { const s = String(words); const found = [];
   // Since pass NE (round two's content read) a letter with 's ("At the end of N's name") is a letter named too, its 's taken off first.
   for (const m of s.matchAll(/[A-Za-z][A-Za-z'-]*/g)) { const tok = m[0].replace(/'s$/, ''); if (tok.length === 1 && isLetterNamed(s, m.index, m.index + 1, tok) && !skip.includes(tok.toUpperCase())) found.push(tok.toUpperCase()); }
-  const ls = [...new Set(found)]; if (!ls.length) return '';
+  // Since pass NI (the story check): a run of three or more single letters set off by commas, small ones too ("H, e, c, t, o, r", a
+  // name spelled aloud, or "L, T and F"), names every letter in it, said one at a time, since a lone small e can come out as "eh".
+  // The run's letters come first, in the order they are spelled, and a run's last letter may follow and alone ("a, d, g and q").
+  // Since the second story read (pass NI): a run keeps every letter it spells, a repeated one too ("S, h, e, l, l" is S, H, E, L and L,
+  // where the set of its letters had dropped the second L), each run once, the row's other letters after it; and a run inside a sung
+  // clip (sung: its tags say singing, as the alphabet song's do) asks for the letters sung, each one clear, where "Say" sat over a song.
+  let spelled = false; const runs = [];
+  for (const m of s.matchAll(/(?<![A-Za-z'])[A-Za-z](?:(?:,\s+(?:and\s+)?|\s+and\s+)[A-Za-z](?![A-Za-z'])){2,}/g)) { spelled = true; const r = []; for (const l of m[0].replace(/\band\b/g, '').match(/[A-Za-z]/g)) if (!skip.includes(l.toUpperCase())) r.push(l.toUpperCase()); if (r.length && !runs.some((x) => x.join() === r.join())) runs.push(r); }
+  const run = runs.flat(); const ls = [...run, ...[...new Set(found)].filter((l) => !run.includes(l))]; if (!ls.length) return '';
   const list = ls.length > 1 ? ls.slice(0, -1).join(', ') + ' and ' + ls[ls.length - 1] : ls[0];
-  return ' Say the letter' + (ls.length > 1 ? 's ' : ' ') + list + ' by ' + (ls.length > 1 ? 'their names' : 'its name') + (ls.includes('A') ? ', A as ay, never the word a' : '') + '.'; };
+  return (sung && spelled ? ' Sing the letter' : ' Say the letter') + (ls.length > 1 ? 's ' : ' ') + list + ' by ' + (ls.length > 1 ? 'their names' : 'its name') + (spelled ? (sung ? ', one at a time, each one clear' : ', one at a time') : '') + (ls.includes('A') ? ', A as ay, never the word a' : '') + '.'; };
 // A word said in its beats (pass MY, round one's story check): each run of beats a row's words say ("Um, brel, luh.") is that word said
 // slowly, each beat even and a little word of its own, and um, umbrella's first beat, is never a hesitation, nor bah, banana's, a sigh.
 // What the child does in a turn (pass MY): puts words or beats together, takes a word apart, or says a word slowly and claps once for
 // each beat, where the line asks it (Now you try, and put these two words together.), and otherwise says the words back. Since pass MZ
 // (round two's code check) also points to the one said, says same or different, or finds the silly word, as Cat or hat? and Same word or
 // different? ask, where "says it back" had told the voice to wait for the wrong thing.
-const turnSaid = (say) => (/\bput (?:these|them)\b[^.]*\btogether\b/i.test(say) ? ', then the child puts them together in a turn of their own' : /\btake (?:one|it) apart\b/i.test(say) ? ', then the child takes it apart in a turn of their own' : /\bclap once for each beat\b/i.test(say) ? ', then the child says it slowly and claps once for each beat in a turn of their own' : /\bpoint to the one\b/i.test(say) ? ', then the child points to the one they heard, in a turn of their own' : /\bsay same or different\b/i.test(say) ? ', then the child says same or different, in a turn of their own' : /\bfind the silly word\b/i.test(say) ? ', then the child finds the silly word, in a turn of their own' : ', then the child says it back');
+// Since pass NI (the story writer's note and the lead's read of every turn row): a turn that asks the child to draw in the air, to tell or ask
+// a grown-up, or to write their name says so, a question's turn says the child answers, a turn that asks the child to say something says
+// the child says it, and "says it back" is left for a sentence the child says after the voice; a word taken apart by name (Take the word
+// tie apart) is a word taken apart. The scripts test reads every turn row's description against its sentence. A turn is read from the
+// sentence the turn follows, so the ask-a-grown-up turn matches Look and write's line, whose turn follows that sentence, and none of Write
+// your name's, whose line asks it first and ends on writing the name under theirs (round one's code read).
+const turnSaid = (say, sentence = '') => (/\bput (?:these|them)\b[^.]*\btogether\b/i.test(say) ? ', then the child puts them together in a turn of their own' : /\btake (?:one|it|the word \w+) apart\b/i.test(say) ? ', then the child takes it apart in a turn of their own' : /\bclap once for each beat\b/i.test(say) ? ', then the child says it slowly and claps once for each beat in a turn of their own' : /\bpoint to the one\b/i.test(say) ? ', then the child points to the one they heard, in a turn of their own' : /\bsay same or different\b/i.test(say) ? ', then the child says same or different, in a turn of their own' : /\bfind the silly word\b/i.test(say) ? ', then the child finds the silly word, in a turn of their own'
+  : /\bdraw it in the air\b/i.test(sentence) ? ', then the child draws it in the air in a turn of their own' : /\btell a grown-up\b/i.test(sentence) ? ', then the child tells a grown-up in a turn of their own' : /\bwrite it under theirs\b/i.test(sentence) ? ', then the child writes their name under the grown-up\'s, on paper, in a turn of their own'
+  : /\bask a grown-up to write your name\b/i.test(sentence) ? ', then the child asks a grown-up to write their name and looks at it, in a turn of their own' : /\?\s*$/.test(sentence) ? ', then the child answers in a turn of their own' : /\bsay\b/i.test(sentence) ? ', then the child says it in a turn of their own' : ', then the child says it back');
 // A sentence that is only a run of beats ("Um, brel, luh.") is asked for as that word said slowly in short, even beats (round one's story
 // flow check: the early direction's "drawing out key words" invited a long ummm), the word named, never a letter.
 const BEAT_COUNT_WORDS = ['', 'one', 'two', 'three', 'four'];
@@ -286,10 +309,12 @@ export const BEATS_NOT_LETTERS = { S302: ['E'] };
 // A paragraph's description (pass MW): its place, its voice, and since round one what a listener should know before rejecting a
 // right take: a stretch its tags ask to go quickly, a fraction (25/100, which a voice can read as a date), a sound written as letters
 // (buh, sss, mmm), which the story's own words keep (EARMARKS A41), and since round two a letter named as a letter.
+// A clip whose tags say it is sung ([singing the alphabet song], [singing], [singing, building]; the second story read, pass NI).
+const SUNG = /\[[^\]]*\bsing(?:s|ing)?\b[^\]]*\]/i;
 function storySaid(story, i, grade, moduleId) { const n = (story.words || []).length; const audio = (story.audio && story.audio[i]) || ''; const words = story.words[i] || '';
   const quick = QUICK.test(audio) ? ' Where its tags ask for a quicker pace (rushed, hurried, quickly, quick, breathless, out of breath or faster), that part is quick on purpose, and the telling settles back to calm after it.' : '';
   const fractions = [...new Set(words.match(/\b\d+\/\d+\b/g) || [])]; const fraction = fractions.length ? ' Read ' + fractions.join(' and ') + ' as the story means ' + (fractions.length > 1 ? 'them' : 'it') + ', never as a date.' : '';
-  const sound = band(grade) === 'early' ? soundsWritten(words, { once: ONE_BREATH_LESSONS.includes(moduleId) }) + lettersNamed(words, BEATS_NOT_LETTERS[story.art] || []) : '';
+  const sound = band(grade) === 'early' ? soundsWritten(words, { once: ONE_BREATH_LESSONS.includes(moduleId) }) + lettersNamed(words, BEATS_NOT_LETTERS[story.art] || [], { sung: SUNG.test(audio) }) : '';
   return '"' + story.title + '", paragraph ' + (i + 1) + ' of ' + n + ': ' + (band(grade) === 'early' ? VOICE_WORDS.earlyStory : VOICE_WORDS[band(grade)]) + (story.audio ? ', following its hand-written tags' : '') + '.' + quick + fraction + sound + beatsSaid(words) + boomsSaid(words, moduleId) + nearSaid(words, moduleId); }
 // Pre-K first, then up (the review's order), so the ledger reads in the order the review tags it.
 const rank = (g) => { const s = String(g); if (/^pk3$/i.test(s)) return 0; if (/^pk/i.test(s)) return 1; if (/^k$/i.test(s)) return 2; if (/^\d+$/.test(s)) return 2 + Number(s); return 15; };
@@ -336,7 +361,7 @@ for (const c of courses) {
           add(key, 'lesson line', m.id, c.grade, `${SAY_ALONG_TALK[part.role]} ${part.sentence}`, part.sentence, `${m.id}-lesson`, `${where}: ${heard}.`);
         } else if (manner) {
           const runPart = beatRunPart(part.sentence); const mannerTag = runPart ? VOICE_MANNERS[manner.manner].tag.replace(/\]$/, ', ' + runPart + ']') : VOICE_MANNERS[manner.manner].tag;
-          add(key, 'lesson line', m.id, c.grade, `${mannerTag} ${part.sentence}`, part.sentence, `${m.id}-lesson`, `${where}: said ${MANNER_HEARD[manner.manner]}${manner.turn ? turnSaid(line.say) : ''}.${beatsSaid(part.sentence)}${nearSaid(part.sentence, m.id)}`);
+          add(key, 'lesson line', m.id, c.grade, `${mannerTag} ${part.sentence}`, part.sentence, `${m.id}-lesson`, `${where}: said ${MANNER_HEARD[manner.manner]}${manner.turn ? turnSaid(line.say, part.sentence) : ''}.${beatsSaid(part.sentence)}${nearSaid(part.sentence, m.id)}`);
         } else {
           const e = elevenSentence(part.sentence, { voices: line.voices, word: si === wordAt ? parts[open].word : null, stress: line.stress || [], once: ONE_BREATH_LESSONS.includes(m.id) });
           const beatRun = beatRunOf(part.sentence);

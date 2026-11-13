@@ -1,8 +1,8 @@
 # Review ledger
 
-Generated 2026-11-10 by tools/review-ledger.mjs. What Mikey wants from the review is in docs/FABLE-REVIEW.md; this file is the work list, in order. To mark an item reviewed, add its key to "reviewed" in docs/review-status.json with the pass that did it (keys look like module:saving-investing-and-risk, course-story:econ-9, game:dots-kite, wonder:w-grown-the-rumor), then run the tool again.
+Generated 2026-11-12 by tools/review-ledger.mjs. What Mikey wants from the review is in docs/FABLE-REVIEW.md; this file is the work list, in order. To mark an item reviewed, add its key to "reviewed" in docs/review-status.json with the pass that did it (keys look like module:saving-investing-and-risk, course-story:econ-9, game:dots-kite, wonder:w-grown-the-rumor), then run the tool again.
 
-Reviewed to the full standard so far: 267 of 1523 items; first pass only (accuracy, punctuation, audio tags): 0 (721 modules with their lessons, stories and question banks, 106 long stories, 4 next long stories, 160 games and 398 Wonder questions). Colons today: 2110 in lessons and 1261 in stories (times like 3:30 and ratios are not counted). Pictures are reviewed through docs/ART-REQUESTS.md as they are painted; a rewritten story keeps each picture beside the paragraph it shows.
+Reviewed to the full standard so far: 267 of 1529 items; first pass only (accuracy, punctuation, audio tags): 0 (723 modules with their lessons, stories and question banks, 106 long stories, 4 next long stories, 160 games and 402 Wonder questions). Colons today: 2110 in lessons and 1261 in stories (times like 3:30 and ratios are not counted). Pictures are reviewed through docs/ART-REQUESTS.md as they are painted; a rewritten story keeps each picture beside the paragraph it shows.
 
 ## 1. Every module, in review order (pre-K first, then up through college)
 
@@ -114,6 +114,8 @@ Reviewed to the full standard so far: 267 of 1523 items; first pass only (accura
 |  | PK4 | First sounds and letters | Start or end of the name (`start-or-end`) | 0 | In it goes (S4119) | 0 | p4-soe-letter, p4-soe-sound, p4-soe-pic, p4-soe-first, p4-soe-yesno |
 |  | PK4 | First sounds and letters | Write it by its sounds (`write-by-sounds`) | 0 | A word for the fox (S4123) | 0 | p4-wbs-first, p4-wbs-last, p4-wbs-word, p4-wbs-end, p4-wbs-yesno |
 |  | PK4 | First sounds and letters | Hear it in a word (`hear-it-in-a-word`) | 0 | Bear hides (S4127) | 0 | p4-hiw-letter, p4-hiw-sound, p4-hiw-pic, p4-hiw-first, p4-hiw-yesno |
+|  | PK4 | First sounds and letters | Q, V and Y (`q-v-and-y`) | 0 | I spy on the rug (S4135) | 0 | p4-qvy-pic, p4-qvy-first, p4-qvy-letter, p4-qvy-sound, p4-qvy-yesno |
+|  | PK4 | First sounds and letters | Write your name (`write-your-name`) | 0 | Whose lunch? (S4139) | 0 | p4-wyn-first, p4-wyn-next, p4-wyn-last, p4-wyn-right, p4-wyn-yesno |
 | yes (JY, full standard: the moon shines with sunlight that bounces off it; the stars are there in the day, hidden by the bright sun; day and night take turns, with three new what-comes-next questions (TEKS K.9A asks a child to predict); a star drawing; TEKS K.9A and K.9B from the 2021 standards for the 2017 code K.8B; NGSS K-ESS2-1 (weather) no longer cited for the sun and moon) | K | Looking at the world | Day and night (`day-and-night`) | 0 | The rooster and the sun (S23) | 0 | sk-day-or-night, sk-tap-sky |
 | yes (JY, full standard: wind is moving air (TEKS K.10C) and weather changes with the seasons (K.10B), both new; questions show the weather without naming it; a wind drawing and painting P25; K.10B and K.10C for the 2017 code K.8A) | K | Looking at the world | Kinds of weather (`kinds-of-weather`) | 0 | The puddle by the gate (S83) | 0 | sk-which-weather, sk-tap-weather, sk-what-to-wear |
 | yes (JY, full standard: living things need water, air and food or sunlight, grow, and make young (seeds, eggs, babies), a test that also settles ice; explanations no longer say a plant eats; TEKS K.12B for the 2017 code K.9A, which the 2021 standards dropped) | K | Looking at the world | Living or not living (`living-or-not`) | 0 | The rock and the snail (S86) | 0 | sk-living-or-not, sk-tap-living, sk-tap-not-living |
@@ -1521,6 +1523,10 @@ Reviewed to the full standard so far: 267 of 1523 items; first pass only (accura
 |  | `w-early-puzzle-piece` | You tried a puzzle piece, and it did not fit. What now? |
 |  | `w-early-wrong-guess` | You guessed what was in the bag, and your guess was wrong. Was guessing a mistake? |
 |  | `w-early-kite-would-not-fly` | Your kite would not fly. What do you do next? |
+|  | `w-early-got-the-giggles` | You and a friend got the giggles and could not stop. What made you laugh so much? |
+|  | `w-early-party-too-loud` | The birthday party is loud and full of people, and it feels like too much. What could you do? |
+|  | `w-early-won-the-game` | You won the game, and your friend lost and looks sad. What could you do? |
+|  | `w-early-nothing-to-do` | You feel bored, and there is nothing you want to do. What could you try? |
 |  | `w-early-hurt-by-words` | A friend said your drawing looks funny, and your feelings were hurt. What can you do? |
 |  | `w-early-did-it-myself` | You did something hard all by yourself, like putting on your own shoes. How does that feel? |
 |  | `w-growing-left-it-at-home` | You finished your homework and then left it at home. What would help next time? |

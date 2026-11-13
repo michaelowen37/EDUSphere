@@ -25,7 +25,9 @@
 // whisper, an inside voice, a big outside voice, a kind, soft voice, up high and down low with the child's turn after each, a question
 // going up and telling going down, a word said strong, the same words asking and telling, the same words happy and sad, and one
 // question's heard sentence, each line word for word as its lesson says it and each row's voices handed to speechPieces as the
-// lesson hands them.
+// lesson hands them. Since pass NI (round one's code read: the page played no vvv, nor pass NE's x or pass NB's five blends) rows 85
+// to 91 play the sounds the app has made for its lessons since pass NB, and the self-test fails any sound the app makes that has no
+// row (soundsWithoutRows).
 // Run: node tools/voice-check.mjs   (writes dist/voice-check.html, published as its own small page when Mikey listens again, after the
 // ElevenLabs recordings, since pass MW; dist stays out of git)
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
@@ -120,7 +122,20 @@ export const VOICE_CHECK_ROWS = [
   { n: 82, kind: 'line', text: 'The same words can ask a question or tell you something. You have a dog? With the voice going up at the end, it asks. You have a dog. With the voice going down, it tells.', voices: [['You have a dog?', 'ask'], ['You have a dog.', 'tell']], note: 'New in pass MV: the same words asked and told. A phone\'s voice may lift a question with a telling\'s words only a little; the recording will lift it clearly.' },
   { n: 83, kind: 'line', text: 'The same words can sound happy or sad. We are going home! In a quick voice going up high, that sounds happy. We are going home. In a slow, low voice, that sounds sad. So listen to how something is said, and you can tell if someone feels happy or sad.', voices: [['We are going home!', 'happy'], ['We are going home.', 'sad']], note: 'New in pass MV: the same words happy, quick and high, then sad, slow, soft and low.' },
   { n: 84, kind: 'line', text: 'Listen to how it is said. The bus is here. How does it sound?', voices: [['The bus is here.', 'sad']], note: 'New in pass MV: a question from My voice tells more, its sentence said sad; a child answers with a happy or a sad face.' },
+  // Pass NI (round one's code read): the sounds the app makes for its lessons since pass NB, each with no row until then: five blends,
+  // each two of its sounds together as one piece (BLEND_PARTS), pass NE's x, cuh and one short sss together, and pass NI's vvv.
+  { group: 'Sounds the app makes since pass NB: five blends, x and vvv' },
+  { n: 85, kind: 'sound', sound: 'fr', label: 'fr, as in frog (written fff-rrr)', note: 'Since pass NB: fff and rrr together, as one piece.' },
+  { n: 86, kind: 'sound', sound: 'fl', label: 'fl, as in flower (written fff-lll)', note: 'Since pass NB: fff and lll together, as one piece.' },
+  { n: 87, kind: 'sound', sound: 'st', label: 'st, as in star (written sss-tuh)', note: 'Since pass NB: sss and tuh together, as one piece.' },
+  { n: 88, kind: 'sound', sound: 'sp', label: 'sp, as in spoon (written sss-puh)', note: 'Since pass NB: sss and puh together, as one piece.' },
+  { n: 89, kind: 'sound', sound: 'tr', label: 'tr, as in tree (written tuh-rrr)', note: 'Since pass NB: tuh and rrr together, as one piece.' },
+  { n: 90, kind: 'sound', sound: 'x', label: 'x, as in box (written cuh-sss)', note: 'Since pass NE: cuh and one short sss together, as one piece.' },
+  { n: 91, kind: 'sound', sound: 'v', label: 'vvv, as in van', note: 'New in pass NI: two short buzzes, the voice through the lips with a soft breath under it.' },
 ];
+// Every sound the app makes has a row (pass NI, round one's code read): the app's speech sounds, its sounds on trial, and the cheer's
+// whistle and crowd. Returns the sounds with no row, so the self-test can name them and the rules test can plant a page without one.
+export const soundsWithoutRows = (L, rows = VOICE_CHECK_ROWS) => [...Object.keys(L.SPEECH_SOUNDS), ...Object.keys(L.TRIAL_SOUNDS), 'whistle', 'applause'].filter((s) => !rows.some((r) => r.kind === 'sound' && r.sound === s));
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 // A row shows the words it says (a line, a trial line, or what a single row hands the voice, in quotes; round three's wording of row
@@ -211,9 +226,9 @@ h2 { font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: 
 </style>
 <main>
 <h1>Voice check</h1>
-<p class="intro">Tap a row to hear it, with the sound on. The sounds in the first list and in the lists from row 33 are made by the app, so every phone plays the same ones. The words are your phone's own voice, a placeholder until the recorded voice. Tell Claude the numbers that sound wrong, and how, whenever you like. A green note under a row says what changed in pass MP, MQ, MR, MS, MT, MU or MV. Inside an app's preview, such as Claude's app on a phone, the phone's own voice may say nothing while the app's sounds still play; open this page's link in Safari or Chrome to hear every row.</p>
+<p class="intro">Tap a row to hear it, with the sound on. The sounds in the first list and in the lists from row 33 are made by the app, so every phone plays the same ones. The words are your phone's own voice, a placeholder until the recorded voice. Tell Claude the numbers that sound wrong, and how, whenever you like. A green note under a row says what changed in pass MP to MV, and since pass NB under rows 85 to 91. Inside an app's preview, such as Claude's app on a phone, the phone's own voice may say nothing while the app's sounds still play; open this page's link in Safari or Chrome to hear every row.</p>
 <p class="voice" id="voice">Your phone's voice: finding it...</p>
-<p class="novoice" id="novoice" hidden>This browser has no voice, so only the app's own sounds play here: rows 1 to 10, 33 to 44, 65 and 66. To hear every row, open this page's link in Safari or Chrome rather than inside another app.</p>
+<p class="novoice" id="novoice" hidden>This browser has no voice, so only the app's own sounds play here: rows 1 to 10, 33 to 44, 65, 66 and 85 to 91. To hear every row, open this page's link in Safari or Chrome rather than inside another app.</p>
 ${rowsHtml}
 <p class="foot">Built from the app's own speech code, so a lesson says each line the way this page does.</p>
 </main>
@@ -260,6 +275,7 @@ export async function voiceCheckSelfTest(L, script = VOICE_CHECK_SCRIPT) {
     for (const r of VOICE_CHECK_ROWS.filter((x) => x.kind === 'line' || x.kind === 'trial')) { const o = r.kind === 'trial' ? { trial: true } : r.voices ? { voices: r.voices } : {}; if (JSON.stringify(vc.speechPieces(r.text, o)) !== JSON.stringify(L.speechPieces(r.text, o))) problems.push(`row ${r.n} is said otherwise on the page`); }
     // Every sound a row plays is one the app makes (pass MP: the trial rows' sounds, and the new sound rows', are made, never silent).
     for (const r of VOICE_CHECK_ROWS.filter((x) => x.kind === 'sound')) { const w = vc.soundClipWav(r.sound); if (!w || w.length < 1000) problems.push(`row ${r.n}'s sound ${r.sound} is not made`); }
+    for (const s of soundsWithoutRows(L)) problems.push(`the app's sound ${s} has no row`);
     for (const r of VOICE_CHECK_ROWS.filter((x) => x.kind === 'trial')) for (const p of L.speechPieces(r.text, { trial: true })) if (p.sound && !vc.soundClipWav(p.sound)) problems.push(`row ${r.n}'s sound ${p.sound} is not made`);
     // The notice for a browser with no voice names exactly the rows that are sounds (round one's code check, pass MT: it still named
     // row 64, retired with the clap).

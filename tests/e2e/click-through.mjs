@@ -542,8 +542,9 @@ ok('the fourth voice follows', (await page.getAttribute('[data-wonder-portrait]'
   await page.evaluate(() => { window.__spoken = []; });
   ok('the last voice is not the end yet: Next goes on', (await page.getByLabel('Finish').count()) === 0 && (await page.getByLabel('Next').count()) === 1);
   await page.getByLabel('Next').click(); await page.waitForTimeout(400);
-  // Since pass MH the card wears a rotating title above the closing line (PONDER_TITLES), so the line is read on its own.
-  const closing = await page.evaluate(() => { const c = document.querySelector('[data-wonder-closing]'); const line = c ? [...c.querySelectorAll('p')].find((p) => !p.hasAttribute('data-ponder-title')) : null; return line ? line.textContent.trim() : null; });
+  // Since pass MH the card wears a rotating title above the closing line (PONDER_TITLES), so the line is read on its own. Since pass NI's
+  // round two screen read the line holds its last two words by a no-break space, which the compare takes out (the third read's code read).
+  const closing = await page.evaluate(() => { const c = document.querySelector('[data-wonder-closing]'); const line = c ? [...c.querySelectorAll('p')].find((p) => !p.hasAttribute('data-ponder-title')) : null; return line ? line.textContent.replace(/\u00A0/g, ' ').trim() : null; });
   // The card's words come a sentence at a time with the young voice's rest between (pass MQ), so the check waits for the line.
   await page.waitForFunction((line) => window.__spoken.join(' ').replace(/\s+/g, ' ').includes(line), w ? w.closing.split('? ')[0] : '', { timeout: 8000 }).catch(() => {});
   const heard = (await page.evaluate(() => window.__spoken.join(' '))).replace(/\s+/g, ' ');

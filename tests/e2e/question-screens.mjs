@@ -295,7 +295,7 @@ const ponder = () => page.evaluate(() => {
   const who = seen.filter((c) => c.who).map((c) => c.who);
   ok('a pre-reader meets four voices, each with a portrait, in the cast\'s order, with the question shown above', who.join(',') === 'Frederick,Chloe,Georgette,Mike' && seen.filter((c) => c.who).every((c) => c.asked.includes('Are you big or small?')), seen);
   const last = seen[seen.length - 1];
-  ok('the closing card wears a title from the rotating list', last.closing && L.PONDER_TITLES.includes(last.title.trim()), last);
+  ok('the closing card wears a title from the rotating list', last.closing && L.PONDER_TITLES.includes(last.title.replace(/\u00A0/g, ' ').trim()), last);
   const wide = await ponder();
   ok('on a laptop the closing card holds six pondering pictures inside it, above and below its words, none beside them', !!wide && wide.n === 6 && wide.outside === 0 && wide.beside === 0 && wide.above >= 2 && wide.below >= 2 && wide.lineArt && wide.filled === 0, wide);
   const g2 = await gapUnder(); ok('the closing card keeps at least 10 pixels of space above the speaker under it', g2 !== null && g2 >= 10, g2);
@@ -1370,14 +1370,28 @@ const ponder = () => page.evaluate(() => {
   // a story passed with one saying kept).
   const runOff = (r, run) => { const said = r.seen.split(run).length - 1; return said === 0 || r.texts.filter((t) => t === run).length !== said; };
   await page.evaluate(() => { window.__voiceBeforeRest = window.speechSynthesis; Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: { speaking: false, pending: false, cancel() {}, getVoices() { return []; }, speak() {} } }); });
-  const STORIES_KEPT = { 'put-beats-together': ['Peet, suh.', 'Rab, bit.'], 'clap-the-beats': ['Dye, nuh, sore.'], 'sounds-in-a-word': ['Puh, eye.', 'Shh, ooh.', 'Mmm, ooh, nnn.'], 'sound-by-sound': ['Cuh, eye, tuh.', 'Buh, oh, tuh.', 'Mmm, ooh, nnn.'], 'star-and-spoon': ['Puh, ig.'], 'dog-and-frog': ['Duh, og.'] };
+  const STORIES_KEPT = { 'put-beats-together': ['Peet, suh.', 'Rab, bit.'], 'clap-the-beats': ['Dye, nuh, sore.'], 'sounds-in-a-word': ['Puh, eye.', 'Shh, ooh.', 'Mmm, ooh, nnn.'], 'sound-by-sound': ['Cuh, eye, tuh.', 'Buh, oh, tuh.', 'Mmm, ooh, nnn.'], 'star-and-spoon': ['Puh, ig.'], 'dog-and-frog': ['Duh, og.', 'Duh, og, dog!'],
+    // Since pass NI's round one screen read: a find called out after its sounds, and a name spelled aloud, kept whole too.
+    'q-v-and-y': ['Yuh, yuh, yarn!', 'Vvv, van!', 'Kwuh, quilt!', 'I spy'], 'write-your-name': ['H, e, c, t, o, r'] };
   // A seed and a wrong choice whose reason says the run and is said to a pre-reader (it leaves the answer unsaid, or one choice is left).
   const reasonAt = (gen, run) => { for (let sd = 1; sd <= 120; sd++) { const q = L.generateQuestion(gen, sd); const w = q.choices.find((c) => c !== q.answer && q.whyNot && q.whyNot[c] && (q.whyNot[c].name + ' ' + q.whyNot[c].why).includes(run) && (q.choices.length === 2 || !L.whyNotNamesAnswer(q, c))); if (w) return [sd, w]; } return [0, null]; };
   const REASONS_KEPT = [['p4-beats-yesno', 'Rab, bit.'], ['p4-beats-blend', 'Um, brel, luh.'], ['p4-part-blend', 'Lll, og.']].map(([g, run]) => [g, run, ...reasonAt(g, run)]);
   // The spans read, as a floor at the count the code has (81 in pass NC: round two's code and screen read counted 81 in each theme, six
-  // stories and three reasons at three widths, and the lead's run the same), so a run that stops being kept is caught even where no
-  // story or reason above names it.
-  const KEPT_FLOOR = 81;
+  // stories and three reasons at three widths, and the lead's run the same; 99 since pass NI's two stories and Two parts at the pond's
+  // find, eight stories and three reasons), so a run that stops being kept is caught even where no story or reason above names it.
+  const KEPT_FLOOR = 99;
+  // Since the browser checks on pass NI's round one fixes: a find called out after its sounds, a run spelled aloud and I spy are kept in
+  // every story that says one, every grade's, not only the stories named above, so every story whose words have a sentence such a run
+  // could be (a short run with commas, RUN_ALONE's shape in ui.jsx, or a spelled run, SPELLED_RUN's) is opened at the three widths too,
+  // and every span the page keeps there is read whole and inside its paragraph (pass NE: a change that keeps words whole is read for
+  // every older line whose wrap it moves). Their floors are the counts the code has: 70 stories (53 until round two's code read found the
+  // words read joined with commas), and 150 spans at the three widths, the lead's run alone of this read (none broken, none past its
+  // paragraph; the 17 stories the paragraph reading adds keep no span today).
+  const { STORIES: ALL_STORIES } = await import('../../src/stories.mjs');
+  const SPELLED = /((?<![A-Za-z'])[A-Za-z](?:(?:, (?:and )?| and )[A-Za-z](?![A-Za-z'])){2,}|\bI spy\b)/; const SHORT_RUN = /^\s*[A-Za-z]{1,7}(?:, [A-Za-z]{1,7})+[.!?]?\s*$/;
+  const SENTENCES = new RegExp('(' + L.SENTENCE_BREAK.source + ')');
+  const OLDER_KEPT = Object.keys(ALL_STORIES).filter((id) => !STORIES_KEPT[id] && [].concat(ALL_STORIES[id].words || []).some((p) => String(p).split(SENTENCES).some((x) => SHORT_RUN.test(x) || SPELLED.test(x))));   // paragraph by paragraph (round two's code read: the words joined with commas hid a run that ends a paragraph)
+  const OLDER_FLOOR = { stories: 70, spans: 150 }; let olderScreens = 0; let olderSpans = 0;
   const off = []; let spans = 0; let screens = 0; let plantBroken = null; let plantGone = null;
   const plants = async (run) => {
     if (plantBroken === null) { plantBroken = await page.evaluate(() => { const s = [...document.querySelectorAll('[data-whole]')].find((x) => x.offsetParent !== null); if (!s) return null; const br = document.createElement('br'); br.setAttribute('data-plant-br', ''); s.insertBefore(br, s.lastChild); return true; }); plantBroken = !!plantBroken && (await keptRead()).broken.length > 0; await page.evaluate(() => { const b = document.querySelector('[data-plant-br]'); if (b) b.remove(); }); }
@@ -1393,6 +1407,11 @@ const ponder = () => page.evaluate(() => {
       for (const run of runs) if (runOff(r, run)) off.push(`${width} ${id}: "${run}" not kept everywhere it is said`);
       if (width === 320 && (plantBroken === null || plantGone === null)) await plants(runs[0]);
     }
+    for (const id of OLDER_KEPT) {
+      await page.evaluate((m) => window.__eduTest.openStory(m), id); await screenIs('story'); await page.waitForTimeout(400);
+      const r = await keptRead(); olderScreens++; olderSpans += r.texts.length;
+      for (const x of r.broken) off.push(`${width} ${id}: "${x}" broken`); for (const x of r.outside) off.push(`${width} ${id}: "${x}" past its paragraph`);
+    }
     for (const [gen, run, sd, wrong] of REASONS_KEPT) {
       if (!sd) { off.push(`${gen}: no seed whose reason says "${run}"`); continue; }
       await show(gen, sd); await settle(); await page.locator(`button[data-choice="${wrong}"]`).click(); await page.getByRole('button', { name: 'Check answer' }).click(); await page.waitForTimeout(500);
@@ -1403,7 +1422,7 @@ const ponder = () => page.evaluate(() => {
     }
   }
   await page.evaluate(() => { Object.defineProperty(window, 'speechSynthesis', { configurable: true, value: window.__voiceBeforeRest }); delete window.__voiceBeforeRest; });
-  ok(`a run kept whole stays whole and inside its paragraph at rest, in six stories' paragraphs and in three banks' reasons after a wrong tap, at 320, 375 and 390 pixels wide, and the runs they say are kept wherever they are said (pass NC, round one's screen check; ${screens} screens, ${spans} spans read; a kept span broken and a run's span taken away, planted, caught)`, off.length === 0 && screens === 27 && spans >= KEPT_FLOOR && plantBroken === true && plantGone === true, { off: off.slice(0, 8), screens, spans, plantBroken, plantGone });
+  ok(`a run kept whole stays whole and inside its paragraph at rest, in eight stories' paragraphs and in three banks' reasons after a wrong tap, at 320, 375 and 390 pixels wide, and the runs they say are kept wherever they are said (pass NC, round one's screen check; ${screens} screens, ${spans} spans read; a kept span broken and a run's span taken away, planted, caught); and since pass NI every span kept in the ${OLDER_KEPT.length} other stories, every grade's, that say a run of the kinds pass NI keeps (${olderScreens} screens, ${olderSpans} spans read)`, off.length === 0 && screens === 33 && spans >= KEPT_FLOOR && plantBroken === true && plantGone === true && OLDER_KEPT.length >= OLDER_FLOOR.stories && olderScreens === 3 * OLDER_KEPT.length && olderSpans >= OLDER_FLOOR.spans, { off: off.slice(0, 8), screens, spans, plantBroken, plantGone, older: OLDER_KEPT.length, olderScreens, olderSpans });
   await page.setViewportSize({ width: 1280, height: 900 }); }
 // 13. EARMARKS A72 decided (pass NC, round one's screen check): at 320 by 568, before a pick, the scroll cue shows on a question exactly
 //    when more than a third of its last answer is below the screen (32 of 2,412 question screens there had nothing pointing down), read on
@@ -1724,8 +1743,9 @@ const ponder = () => page.evaluate(() => {
   const wide93 = reads93.filter((x) => x.w >= 768); const phones93 = reads93.filter((x) => x.w === 390); const below93 = wide93.filter((x) => !(x.next > 0 && x.next <= x.H));
   ok(`in a lesson on a tablet and a laptop its own letters and print grow with the lesson's scale, in both themes, each drawn 1.4 times the phone's or more, each line's Next above the fold, while a phone keeps the letters at 44 pixels and the print at 28 or less (EARMARKS A93, pass NE, and since pass NF A101's letters and print in a pair, two letters, letters over a row, letters under a drawing, a letter beside print and prints stacked in a stacked pair, each set back to a phone's size, planted, caught; ${reads93.length} reads, ${below93.length} below the fold: ${wide93.map((x) => x.theme + ' ' + x.w + 'x' + x.h + ' ' + x.kind + ' ' + (phone93[x.theme + ' ' + x.kind] ? (x.drawn / phone93[x.theme + ' ' + x.kind]).toFixed(2) : 'none')).join(', ')}; the letter set back to 44, the print to 28 and the run drawn at 0.7, planted, caught, and since round one's code read a letter just under the bar, 1.35 times a phone's, caught)`,
     reads93.length === 90 && below93.length === 0 && reads93.every((x) => x.drawn > 0 && x.font > 0) && wide93.every((x) => phone93[x.theme + ' ' + x.kind] > 0 && x.drawn >= 1.4 * phone93[x.theme + ' ' + x.kind]) && phones93.every((x) => (PRINTISH.includes(x.kind) ? x.font <= 28 : x.font === 44)) && plantLetter93 === true && plantPrint93 === true && plantRun93 === true && nearLetter93 === true && A101_KINDS.every((k) => plants101[k] === true), { reads93: reads93.map((x) => [x.theme, x.w, x.h, x.kind, x.drawn, x.font, x.next]), below93: below93.map((x) => [x.theme, x.w, x.h, x.mod, x.line]), phone93, plantLetter93, plantPrint93, plantRun93, plants101 });
-  // Section 16b (pass NF, EARMARKS A102): every lesson line whose picture is a pair of prints, its prints read in the card: each one's font
-  // size, its lines (the rects of its text) and whether it is inside its box. The plant sets the shorter prints of Spaces between words'
+  // Section 16b (pass NF, EARMARKS A102): every lesson line whose picture is a pair of prints (eight when it was written, and twelve since
+  // pass NI's Write your name, whose lines 5, 10, 11 and 13 show a name beside a try or a mix of its letters; the counts are the code's),
+  // its prints read in the card: each one's font size, its lines (the rects of its text) and whether it is inside its box. The plant sets the shorter prints of Spaces between words'
   // line 7 back to 28 pixels in the page, as each fitted alone drew them at 320, and reads them again, the sizes put back after.
   const PRINT_PAIRS = []; for (const c of L.COURSES.filter((x) => x.readAloud)) for (const m of c.modules) (m.lesson.script || []).forEach((l, i) => { const all = (v) => !!v && (v.kind === 'print' || (v.kind === 'pair' && all(v.a) && all(v.b))); if (l.show && l.show.kind === 'pair' && all(l.show)) PRINT_PAIRS.push([m.id, i + 1]); });
   const printsRead = (pg, plant = false) => pg.evaluate((pl) => { const card = document.querySelector('.edu-wrap .edu-rise'); const xs = card ? [...card.querySelectorAll('[data-print] [data-fit-text]')] : [];
@@ -1739,7 +1759,7 @@ const ponder = () => page.evaluate(() => {
     await ctx.close(); }
   const groupOff = groups.filter((g) => g.r.length < 2 || new Set(g.r.map((x) => x.size)).size !== 1 || g.r.some((x) => x.lines !== 1 || !x.inside));
   ok(`writings a lesson line shows together are drawn at one size, the size the longest needs, each on one line inside its box, at 320 by 568, 375 by 667 and 390 by 844 in both themes (EARMARKS A102, pass NF; ${PRINT_PAIRS.length} lines, ${groups.length} reads; Spaces between words' shorter prints set back to 28 pixels at 320, planted, caught)`,
-    PRINT_PAIRS.length === 8 && groups.length === 48 && groupOff.length === 0 && plantGroup === true, { groupOff: groupOff.slice(0, 6).map((g) => [g.theme, g.w, g.mod, g.line, g.r]), plantGroup });
+    PRINT_PAIRS.length === 12 && groups.length === 72 && groupOff.length === 0 && plantGroup === true, { groupOff: groupOff.slice(0, 6).map((g) => [g.theme, g.w, g.mod, g.line, g.r]), plantGroup });
   // Section 16c (pass NF, round one's lesson read): the lone letter among pictures read in the page, each plant put back after it is read.
   const tileLetterRead = (pg, plant = '') => pg.evaluate((pl) => { const s = document.querySelector('[data-tile-letter]'); const svg = [...document.querySelectorAll('button[data-choice^="icon:"] svg')][0]; const grid = s && s.closest('button') && s.closest('button').parentElement;
     if (!s || !svg || !grid) return null; const was = [s.style.fontSize, grid.style.maxWidth]; if (pl === 'small') s.style.fontSize = '18px'; if (pl === 'big') s.style.fontSize = '90px'; if (pl === 'wide') grid.style.maxWidth = 'none';
